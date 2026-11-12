@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    {"id": "g-petla", "type": "group", "x": -620, "y": -360, "width": 1240, "height": 420, "label": "Pętla główna — propozycja D-013 (walka od razu)", "color": "3"},
+    {"id": "plac", "type": "text", "x": -580, "y": -300, "width": 200, "height": 110, "text": "## Plac\nspawn, mapa teleportu", "color": "4"},
+    {"id": "karczma", "type": "text", "x": -340, "y": -300, "width": 200, "height": 110, "text": "## Karczma\nwybór strefy", "color": "4"},
+    {"id": "walka", "type": "text", "x": -100, "y": -300, "width": 200, "height": 110, "text": "## Walka 8–15 s\nauto, liczy serwer", "color": "1"},
+    {"id": "lup", "type": "text", "x": 140, "y": -300, "width": 200, "height": 110, "text": "## Łup\n+ rozgłos strefy", "color": "3"},
+    {"id": "sklep", "type": "text", "x": 380, "y": -300, "width": 200, "height": 110, "text": "## Sklep i statystyki\n6 slotów co 5 min", "color": "3"},
+    {"id": "loch", "type": "text", "x": 140, "y": -120, "width": 200, "height": 130, "text": "## Loch\n10 przeciwników + boss\nłatwy / średni / trudny", "color": "6"},
+    {"id": "strefa", "type": "text", "x": -340, "y": -120, "width": 200, "height": 130, "text": "## Nowa strefa\nlas → pustynia → kryształy", "color": "6"},
+
+    {"id": "g-rownolegle", "type": "group", "x": -620, "y": 110, "width": 800, "height": 230, "label": "Równolegle — liczniki tylko tutaj (powód, żeby wrócić)", "color": "5"},
+    {"id": "jajko", "type": "text", "x": -580, "y": 160, "width": 220, "height": 130, "text": "## Wylęgarnia\njajko: pierwsze od razu, kolejne 1–10 min", "color": "5"},
+    {"id": "najemnik", "type": "text", "x": -330, "y": 160, "width": 220, "height": 130, "text": "## Najemnik\ndrugi slot wyprawy w opanowanej strefie", "color": "5"},
+    {"id": "twierdza", "type": "text", "x": -80, "y": 160, "width": 220, "height": 130, "text": "## Twierdza\nzasoby na sekundę od pierwszej sesji", "color": "5"},
+
+    {"id": "g-notatki", "type": "group", "x": 240, "y": 110, "width": 800, "height": 560, "label": "Notatki", "color": "2"},
+    {"id": "n-prop", "type": "file", "file": "Gra/Propozycje z rozmowy 2026-11-12.md", "x": 270, "y": 160, "width": 360, "height": 230},
+    {"id": "n-ocena", "type": "file", "file": "Badania/Ocena potencjału gry.md", "x": 650, "y": 160, "width": 360, "height": 230},
+    {"id": "n-pytania", "type": "file", "file": "Produkcja/Pytania otwarte.md", "x": 270, "y": 410, "width": 360, "height": 230},
+    {"id": "n-rozmowa", "type": "file", "file": "Produkcja/Rozmowa 2026-11-12 — zapis ustaleń.md", "x": 650, "y": 410, "width": 360, "height": 230},
+
+    {"id": "zasada", "type": "text", "x": -620, "y": 400, "width": 800, "height": 120, "text": "**Zasada:** gracz nigdy nie patrzy na pasek czasu, nie mając nic innego do kliknięcia.\nTo propozycja — kanonem zostaje D-004, dopóki Game Director nie zdecyduje (Pytania otwarte #7).", "color": "1"}
+  ],
+  "edges": [
+    {"id": "e1", "fromNode": "plac", "fromSide": "right", "toNode": "karczma", "toSide": "left"},
+    {"id": "e2", "fromNode": "karczma", "fromSide": "right", "toNode": "walka", "toSide": "left"},
+    {"id": "e3", "fromNode": "walka", "fromSide": "right", "toNode": "lup", "toSide": "left"},
+    {"id": "e4", "fromNode": "lup", "fromSide": "right", "toNode": "sklep", "toSide": "left"},
+    {"id": "e5", "fromNode": "sklep", "fromSide": "bottom", "toNode": "loch", "toSide": "right", "label": "mocniejszy"},
+    {"id": "e6", "fromNode": "loch", "fromSide": "left", "toNode": "strefa", "toSide": "right", "label": "boss pokonany"},
+    {"id": "e7", "fromNode": "strefa", "fromSide": "top", "toNode": "karczma", "toSide": "bottom"},
+    {"id": "e8", "fromNode": "lup", "fromSide": "bottom", "toNode": "loch", "toSide": "top"},
+    {"id": "e9", "fromNode": "walka", "fromSide": "bottom", "toNode": "jajko", "toSide": "top", "label": "jajko z questa"},
+    {"id": "e10", "fromNode": "karczma", "fromSide": "bottom", "toNode": "najemnik", "toSide": "top", "label": "wynajem"},
+    {"id": "e11", "fromNode": "lup", "fromSide": "bottom", "toNode": "twierdza", "toSide": "top", "label": "złoto"}
+  ]
+}

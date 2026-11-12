@@ -13,6 +13,8 @@ plac → karczma: wybierz strefę → walka 8–15 s (auto, cutscenka) → łup 
      → sklep / ulepszenie statystyk → mocniejszy quest → loch (10 przeciwników + boss) → nowa strefa
 w tle, równolegle: jajko w wylęgarni · najemnik na wyprawie · budynki twierdzy dające zasoby na sekundę
 ```
+Ta sama pętla jako tablica Obsidiana (Canvas): `Gra/Pętla gry — propozycja.canvas`.
+
 Zasada: **gracz nigdy nie patrzy na pasek czasu, nie mając nic innego do kliknięcia**. Długie liczniki istnieją, ale tylko jako równoległe sloty (jajko, wyprawa najemnika, budowa), a ich odbiór jest powodem powrotu do gry. To godzi obie strony sporu z [11:32–13:14] i nie łamie decyzji D-004 (aktywna rozgrywka).
 
 ## Komentarz punkt po punkcie
