@@ -212,6 +212,7 @@ Blocky&Crycket/
 │   ├── 00 Start.md            strona startowa sejfu
 │   ├── Jak prowadzimy sejf.md zasady sejfu
 │   ├── Gra/ Postacie/ Styl/ UI/ Technika/ Produkcja/
+│   ├── Badania/               rozeznanie rynku, mechanik i narzędzi (propozycje ze źródłami)
 │   ├── Szablony/              szablony notatek i decyzji
 │   ├── Źródła/                oryginalna dokumentacja (tylko do odczytu)
 │   └── .obsidian/             ustawienia Obsidiana
@@ -220,12 +221,22 @@ Blocky&Crycket/
 │   ├── client/                → StarterPlayer.StarterPlayerScripts.Client
 │   ├── shared/                → ReplicatedStorage.Shared
 │   └── gui/                   → StarterGui (*.model.json)
+├── panel/                     💡 Panel zespołu: okno na sejf, raporty, podgląd 3D, agent (Python, port 8787)
+│   ├── serwer.py  bc/  static/   serwer bez zależności, moduły, interfejs
+│   ├── narzedzia/             CLI dla agentów: raport.py, migawka.py
+│   └── dane/                  wspólne dane panelu: raporty, komentarze, migawki (plik na wpis)
+├── swiat/                     💡 mapy z klocków: generator → czesci.json → Blender / Studio / panel
+│   └── demo_lesna_baza/       demo „Leśna baza startowa” (generuj.py, czesci.json, .blend, podglad/)
 ├── tools/studio/              skrypty Luau uruchamiane w Studio (rzeczy spoza Rojo)
+├── tools/studio_mcp.py        klient MCP Roblox Studio z terminala (bez zależności)
+├── tools/studio_buduj.py      buduje w Studio scenę z czesci.json (jeden kontener, do cofnięcia)
+├── tools/blender/klocki.py    czesci.json ↔ scena Blendera, rendery podglądu
+├── tools/sejf_lint.py         kontrola sejfu: linki, statusy, sekrety
 ├── tools/*.py                 narzędzia pipeline'u assetów (obróbka, upload, manifest)
 ├── assets/                    pipeline assetów: manifest.json, refs/, processed/, raw/ (poza Git)
 ├── docs/                      instrukcja pipeline'u i wcześniejsze prompty (HUD, pasek ładowania)
 ├── .claude/skills/            skille Claude Code (figma-to-roblox, asset)
-├── .mcp.json                  serwer MCP Higgsfield (dla pipeline'u assetów)
+├── .mcp.json                  serwery MCP: Higgsfield (pipeline assetów) i Roblox Studio
 ├── requirements.txt           zależności Pythona pipeline'u
 ├── dashboard/                 ARCHIWUM: porzucona aplikacja „AI Development Studio”
 ├── Blocky&Crycket.rbxl        plik miejsca Roblox (binarny)
@@ -358,6 +369,8 @@ Ramka portretu ma w PNG wypalony zielony pasek. Pasek XP w HUD jest nałożony d
 | **Git + GitHub** | wersjonowanie i kopia zapasowa | [repozytorium](https://github.com/przeczkowskyy/Blocky-Crycket) (publiczne), gałąź `main` |
 | **Pipeline assetów `/asset`** | grafiki z Higgsfield (MCP) → obróbka → Figma → upload przez Roblox Open Cloud, zawsze z akceptacją Game Directora | w projekcie gry (`.claude/skills/asset`, `tools/*.py`, `assets/`); zainstalowany 12.11.2026, czeka na klucz Open Cloud i logowanie Higgsfield ([Pipeline assetów](B%26C/Technika/Pipeline%20asset%C3%B3w.md)) |
 | Python | jednorazowe skrypty pomocnicze Claude (np. generowanie `.model.json`) | nie jest częścią gry |
+| 💡 **Panel zespołu** | lokalna strona dla dwóch osób: decyzje i zadania z sejfu, raporty z wdrożeń z akceptacją, podgląd 3D mapy (także z telefonu), agent Claude Code na subskrypcji, głosówki, graf sejfu, analityka | `python panel/serwer.py` → `http://127.0.0.1:8787`; instrukcja [`panel/INSTALACJA.md`](panel/INSTALACJA.md); propozycja D-012, czeka na zgodę ([Panel zespołu](B%26C/Technika/Panel%20zespo%C5%82u.md)) |
+| 💡 **Klocki: Blender ↔ Roblox** | mapa z prostych brył z jednego pliku `czesci.json`: Blender (podgląd, edycja), Studio (części), panel (model 3D) | `swiat/`, `tools/blender/klocki.py`, `tools/studio_buduj.py`; demo `Workspace/DemoLesnaBaza` ([Klocki — Blender i Roblox](B%26C/Technika/Klocki%20%E2%80%94%20Blender%20i%20Roblox.md)) |
 
 ### Przewidziane w dokumentacji do tworzenia assetów ✅
 | Obszar | Narzędzia |
@@ -559,3 +572,4 @@ Pełna historia: [Dziennik zmian](B%26C/Produkcja/Dziennik%20zmian.md).
   - ekran ładowania w Roblox: key-art i natywny pasek z Figmy, potem minimalny czas ładowania i rotujące wskazówki;
   - HUD: najpierw 6 przycisków (160 px, wyśrodkowane), potem pełny HUD z Figmy (panel gracza i przyciski 128 px niżej przy krawędzi), na koniec przyciski powiększone do 150 px.
 - **12.11.2026:** projekt w repozytorium GitHub, ten dokument; instalacja pipeline'u assetów `/asset`.
+- **12.11.2026 (wieczór, Claude Code u Karola):** rozmowa o grze spisana i skomentowana, sześć notatek badawczych i ocena potencjału (`B&C/Badania/`), propozycje D-012–D-018 i pytania 7–14; 💡 panel zespołu (`panel/`); 💡 pipeline klocków i demo mapy „Leśna baza startowa” w Blenderze i w Studio (`swiat/`). Wszystko jako propozycje do zatwierdzenia.

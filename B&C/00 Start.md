@@ -15,6 +15,7 @@ Gra Roblox: **RPG / Incremental / Tycoon / Pet Collector**. Komiksowy humor w st
 - [[Koncepcja i Core Loop]]
 - Mechaniki: [[Karczma (Questy)]] · [[Twierdza (Tycoon)]] · [[Pety]] · [[System RPG]] · [[Arena (PvP)]]
 - Postacie: [[Rycerz]] · [[Kot-Mag]] · [[Karczmarz]]
+- Po rozmowie 12.11 (propozycje): [[Propozycje z rozmowy 2026-11-12]] · [[Rozmowa 2026-11-12 — zapis ustaleń]]
 
 ## 🎨 Styl
 - [[Kierunek artystyczny]]
@@ -29,6 +30,12 @@ Gra Roblox: **RPG / Incremental / Tycoon / Pet Collector**. Komiksowy humor w st
 - [[Workflow i Git]]
 - [[Pipeline assetów]]
 - [[Narzędzia]]
+- [[Panel zespołu]] · [[Klocki — Blender i Roblox]] · [[Skille Claude do Roblox]] (propozycje)
+
+## 🔬 Badania (propozycje, ze źródłami)
+- [[Ocena potencjału gry]]
+- [[Rynek Roblox i konkurencja]] · [[Shakes & Fidget — rozbiór mechanik]] · [[Retencja i monetyzacja — co wolno i co działa]]
+- [[Styl UI gier Roblox]] · [[Technika gry — serwery, światy, walki]] · [[Narzędzia i skille do Roblox]]
 
 ## 📋 Produkcja
 - [[Roadmapa]] — obecnie **Faza 1 — Frontend**

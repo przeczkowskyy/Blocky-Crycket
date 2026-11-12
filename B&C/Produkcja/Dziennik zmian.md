@@ -6,6 +6,17 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-12 · Claude Code u Karola (rozmowa, badania, panel zespołu, demo mapy)
+- **Rozmowa o grze (33 min) spisana i skomentowana.** Nowe notatki: [[Rozmowa 2026-11-12 — zapis ustaleń]], [[Propozycje z rozmowy 2026-11-12]], [[Ocena potencjału gry]]. Pełna transkrypcja została lokalnie u Karola (repo jest publiczne).
+- **Badania ze źródłami** (nowy folder `B&C/Badania/`): [[Rynek Roblox i konkurencja]], [[Shakes & Fidget — rozbiór mechanik]], [[Retencja i monetyzacja — co wolno i co działa]], [[Styl UI gier Roblox]], [[Narzędzia i skille do Roblox]], [[Technika gry — serwery, światy, walki]].
+- **Sprzeczności z kanonem zgłoszone, niczego nie nadpisano:** pytania 7–15 w [[Pytania otwarte]] (m.in. questy na czas a D-004, panel a D-008, styl UI a kanon) i propozycje D-012–D-018 w [[Rejestr decyzji]] (wszystkie 💡).
+- **Panel zespołu** (`panel/`, Python bez zależności, port 8787): okno na sejf, raporty z akceptacją, podgląd 3D, agent na subskrypcji Claude Code, głosówki, sieć notatek, analityka, lustro tylko-do-odczytu. Notatka [[Panel zespołu]]; instrukcja `panel/INSTALACJA.md`; skill `.claude/skills/panel/`. Stary `dashboard/` nietknięty.
+- **Mapy z klocków** (`swiat/`, `tools/blender/klocki.py`, `tools/studio_buduj.py`, `tools/studio_mcp.py`): demo „Leśna baza startowa” — 2599 części w `Workspace/DemoLesnaBaza` (jeden kontener, do cofnięcia), ten sam plik `czesci.json` w Blenderze i w podglądzie 3D. Notatka [[Klocki — Blender i Roblox]]. Oświetlenie i reszta miejsca bez zmian; nic nie opublikowano.
+- **Previz cutscenki auto-walki 3D** (prośba z rozmowy [17:08]): 9 sekund z Blendera — Rycerz kontra Leśny Slime, cios, kontra z blokiem, krytyk, liczby obrażeń, paski życia, łup z jajkiem. Pliki: `swiat/test_cutscenki/` (`cutscenka.py`, `cutscenka_v1.mp4`, `.blend`). To szkic do decyzji „2D czy 3D”, nie assety gry.
+- **Skille Claude** do Roblox (6, po przeglądzie, MIT i Apache-2.0): [[Skille Claude do Roblox]], `.claude/skills/LICENCJE-OBCE.md`.
+- **Repo:** `.mcp.json` (dodany serwer Roblox Studio), `CLAUDE.md` (sekcje o panelu, klockach i dwóch osobach), `.gitignore`, `.gitattributes`, `tools/sejf_lint.py` (kontrola linków, statusów i sekretów), workflow `.github/workflows/panel-lustro.yml` (ręczny), `DOKUMENTACJA.md`.
+- Zaktualizowano: [[00 Start]], [[Jak prowadzimy sejf]] (folder Badania), [[Zadania]].
+
 ## 2026-11-12 · Claude Code (pipeline assetów w projekcie gry)
 - Pipeline przeniesiony z osobnego folderu do projektu gry, żeby `/asset` działał w tym samym oknie: `.claude/skills/asset/`, `tools/*.py` + `tools/resolve_image_id.luau`, `assets/`, `docs/`, `requirements.txt`, `.env` (poza Git).
 - Nowy `.mcp.json` z serwerem Higgsfield. `.gitignore`: `assets/raw/`, `__pycache__/`. `CLAUDE.md`: sekcja o pipeline.

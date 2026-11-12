@@ -18,6 +18,7 @@ tags: [hub, zasady]
 - **UI/** ekrany interfejsu
 - **Technika/** Rojo, Figma, narzędzia
 - **Produkcja/** [[Roadmapa]], [[Zadania]], [[Rejestr decyzji]], [[Pytania otwarte]], [[Dziennik zmian]]
+- **Badania/** rozeznanie rynku, mechanik i narzędzi ze źródłami (zawsze `propozycja`, dopóki nie zapadnie decyzja)
 - **Źródła/** oryginalne dokumenty (nie edytujemy ich, tylko cytujemy)
 - **Szablony/** szablony nowych notatek (Obsidian: *Wstaw szablon*)
 
