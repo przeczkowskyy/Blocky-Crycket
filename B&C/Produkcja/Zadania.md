@@ -14,6 +14,8 @@ tags: [produkcja, zadania]
 - [ ] [[Okno Karczmy]]: tablica questów. Najpierw ustalić, gdzie jest istniejące drzewo · #wysoki
 - [ ] [[HUD]]: test na telefonie (Device Emulator) i ręczny test hovera · #wysoki
 - [ ] Decyzja: przyciski HUD z Figmy vs kanon ([[Pytania otwarte]] #5) · #wysoki
+- [ ] [[Pipeline assetów]]: wpisać klucz Open Cloud do `.env`, zalogować Higgsfield przez `/mcp`, sprawdzić połączenia · #wysoki
+- [ ] Decyzja D-011: pipeline assetów i moduł `AssetIds` ([[Rejestr decyzji]]) · #średni
 
 ## 📥 Backlog
 - [ ] Postęp EXP i Level w HUD (animacja level-up „POW!”) · #średni
@@ -30,6 +32,8 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-12: Pipeline assetów przeniesiony do projektu gry (działa w jednym oknie Claude Code)
+- [x] 2026-11-12: Instalacja [[Pipeline assetów|pipeline'u assetów]]: zależności, `.env` (bez klucza), oficjalny Studio MCP, manifest z ID istniejących assetów
 - [x] 2026-11-12: Projekt na GitHubie (publiczne repo `przeczkowskyy/Blocky-Crycket`) + `DOKUMENTACJA.md`, zob. [[Workflow i Git]]
 - [x] 2026-11-11: [[HUD]] z Figmy: panel gracza (XP, poziom, złoto, diamenty) + 6 przycisków, pokazywany po ekranie ładowania
 - [x] 2026-11-11: [[Ekran ładowania]] w Roblox: key-art + natywny pasek z Figmy w `ReplicatedFirst` (skrypt `tools/studio/build_loading_screen.luau`)

@@ -26,3 +26,8 @@ Desktop.ini
 .DS_Store
 
 # (dashboard/ ma własny .gitignore: node_modules, dist, data, .env)
+
+# Pipeline assetów: surowe wyniki z Higgsfield i cache Pythona
+assets/raw/**
+!assets/raw/.gitkeep
+__pycache__/

@@ -24,6 +24,7 @@ Never change a note to `kanon` or a decision to ✅ without the user's explicit 
 - `src/server` → ServerScriptService.Server, `src/client` → StarterPlayerScripts.Client, `src/shared` → ReplicatedStorage.Shared, `src/gui` → StarterGui (`*.model.json`). Details: `B&C/Technika/Rojo i struktura projektu.md`.
 - All nodes use `$ignoreUnknownInstances: true`; content that exists only in `Blocky&Crycket.rbxl` is invisible to file tools. Never edit the `.rbxl`.
 - Figma → GUI: skill `figma-to-roblox` (`.claude/skills/figma-to-roblox/SKILL.md`).
+- Asset pipeline (new graphics: Higgsfield → processing → Figma → Roblox Open Cloud): skill `asset` (`.claude/skills/asset/SKILL.md`, rules in `references/project-rules.md`), tools in `tools/*.py`, registry `assets/manifest.json`, secrets in `.env` (gitignored — never print it). Upload to Roblox ONLY after the user's explicit "tak". Status: `B&C/Technika/Pipeline assetów.md`.
 - `ReplicatedFirst` (loading screen) is not mapped by Rojo; its reproducible source is `tools/studio/build_loading_screen.luau` (run via Roblox Studio MCP).
 
 ## Git (GitHub)

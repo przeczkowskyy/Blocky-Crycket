@@ -1,0 +1,133 @@
+{
+  "figma_file": "BbLd4jDnvxAmOWZN1hAZQJ",
+  "assets": {
+    "Teleport": {
+      "created_at": "2026-11-11T22:26:12+00:00",
+      "history": [],
+      "category": "button",
+      "status": "in_roblox",
+      "processed": "assets/processed/Teleport.png",
+      "figma_node": "10:1563",
+      "usage": "HUD button",
+      "notes": "Oryginal od zespolu (pelny przycisk z napisem)",
+      "updated_at": "2026-11-12T19:37:52+00:00",
+      "roblox_image": "133130837278176",
+      "roblox_target": "StarterGui.HUD.LeftColumn.TeleportSlot.Teleport.Image"
+    },
+    "Equipment": {
+      "created_at": "2026-11-11T22:26:12+00:00",
+      "history": [],
+      "category": "button",
+      "status": "in_roblox",
+      "processed": "assets/processed/Equipment.png",
+      "figma_node": "10:1564",
+      "usage": "HUD button",
+      "notes": "Oryginal od zespolu (pelny przycisk z napisem)",
+      "updated_at": "2026-11-12T19:37:52+00:00",
+      "roblox_image": "72063518170257",
+      "roblox_target": "StarterGui.HUD.LeftColumn.EquipmentSlot.Equipment.Image"
+    },
+    "Pets": {
+      "created_at": "2026-11-11T22:26:12+00:00",
+      "history": [],
+      "category": "button",
+      "status": "in_roblox",
+      "processed": "assets/processed/Pets.png",
+      "figma_node": "10:1565",
+      "usage": "HUD button",
+      "notes": "Oryginal od zespolu (pelny przycisk z napisem)",
+      "updated_at": "2026-11-12T19:37:52+00:00",
+      "roblox_image": "114125804667140",
+      "roblox_target": "StarterGui.HUD.LeftColumn.PetsSlot.Pets.Image"
+    },
+    "Quests": {
+      "created_at": "2026-11-11T22:26:12+00:00",
+      "history": [],
+      "category": "button",
+      "status": "in_roblox",
+      "processed": "assets/processed/Quests.png",
+      "figma_node": "10:1566",
+      "usage": "HUD button",
+      "notes": "Oryginal od zespolu (pelny przycisk z napisem)",
+      "updated_at": "2026-11-12T19:37:52+00:00",
+      "roblox_image": "97193506181159",
+      "roblox_target": "StarterGui.HUD.RightColumn.QuestsSlot.Quests.Image"
+    },
+    "Shop": {
+      "created_at": "2026-11-11T22:26:12+00:00",
+      "history": [],
+      "category": "button",
+      "status": "in_roblox",
+      "processed": "assets/processed/Shop.png",
+      "figma_node": "10:1567",
+      "usage": "HUD button",
+      "notes": "Oryginal od zespolu (pelny przycisk z napisem)",
+      "updated_at": "2026-11-12T19:37:52+00:00",
+      "roblox_image": "101275423490142",
+      "roblox_target": "StarterGui.HUD.RightColumn.ShopSlot.Shop.Image"
+    },
+    "Guilds": {
+      "created_at": "2026-11-11T22:26:12+00:00",
+      "history": [],
+      "category": "button",
+      "status": "in_roblox",
+      "processed": "assets/processed/Guilds.png",
+      "figma_node": "10:1568",
+      "usage": "HUD button",
+      "notes": "Oryginal od zespolu (pelny przycisk z napisem)",
+      "updated_at": "2026-11-12T19:37:52+00:00",
+      "roblox_image": "133105071163555",
+      "roblox_target": "StarterGui.HUD.RightColumn.GuildsSlot.Guilds.Image"
+    },
+    "PlayerFrame": {
+      "created_at": "2026-11-11T22:26:12+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/PlayerFrame.png",
+      "figma_node": "14:146",
+      "usage": "HUD Player Panel - ramka portretu (pasek XP nakladany natywnie)",
+      "notes": "Wypalony zielony pasek przykryty natywnym XPBar; nie zmieniaj cropu 416x476",
+      "updated_at": "2026-11-12T19:37:52+00:00",
+      "roblox_image": "128244393062229",
+      "roblox_target": "StarterGui.HUD.PlayerPanel.FrameArt.Image"
+    },
+    "Coin": {
+      "created_at": "2026-11-11T22:26:12+00:00",
+      "history": [],
+      "category": "currency",
+      "status": "in_roblox",
+      "processed": "assets/processed/Coin.png",
+      "figma_node": "14:158",
+      "usage": "HUD Player Panel - zloto",
+      "updated_at": "2026-11-12T19:37:53+00:00",
+      "roblox_image": "139011825868727",
+      "roblox_target": "StarterGui.HUD.PlayerPanel.GoldIcon.Image"
+    },
+    "Gem": {
+      "created_at": "2026-11-11T22:26:12+00:00",
+      "history": [],
+      "category": "currency",
+      "status": "in_roblox",
+      "processed": "assets/processed/Gem.png",
+      "figma_node": "14:159",
+      "usage": "HUD Player Panel - waluta premium",
+      "updated_at": "2026-11-12T19:37:53+00:00",
+      "roblox_image": "130974323293639",
+      "roblox_target": "StarterGui.HUD.PlayerPanel.GemsIcon.Image"
+    },
+    "KeyArt": {
+      "created_at": "2026-11-11T22:26:12+00:00",
+      "history": [],
+      "category": "keyart",
+      "status": "in_roblox",
+      "processed": "assets/processed/KeyArt.png",
+      "figma_node": "2:76",
+      "usage": "Loading screen background, tlo HUD mockupu",
+      "updated_at": "2026-11-12T19:37:53+00:00",
+      "roblox_image": "129202798952612",
+      "roblox_target": "ReplicatedFirst.LoadingScreen.Background.Image"
+    }
+  },
+  "updated_at": "2026-11-12T19:37:53+00:00"
+}

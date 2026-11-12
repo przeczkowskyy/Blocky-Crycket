@@ -34,6 +34,7 @@ tags: [technika, workflow, git]
 ## Do ustalenia
 - Czy repo ma zostać publiczne?
 - Czy pracujemy na gałęziach (np. jedna na funkcję), czy wszystko idzie na `main`?
+- Gra jest już opublikowana na Roblox i Studio otwiera wersję z chmury. Czy dalej trzymamy w repo plik `.rbxl` (Studio → File → Save to File), czy źródłem jest miejsce w chmurze?
 
 ## Powiązane
 - [[Narzędzia]] · [[Pipeline Figma → Roblox]] · [[Rojo i struktura projektu]] · [[00 Start]]

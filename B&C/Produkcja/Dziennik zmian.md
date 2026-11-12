@@ -6,6 +6,19 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-12 · Claude Code (pipeline assetów w projekcie gry)
+- Pipeline przeniesiony z osobnego folderu do projektu gry, żeby `/asset` działał w tym samym oknie: `.claude/skills/asset/`, `tools/*.py` + `tools/resolve_image_id.luau`, `assets/`, `docs/`, `requirements.txt`, `.env` (poza Git).
+- Nowy `.mcp.json` z serwerem Higgsfield. `.gitignore`: `assets/raw/`, `__pycache__/`. `CLAUDE.md`: sekcja o pipeline.
+- Zasady paczki przeniesione do `references/project-rules.md` z zastrzeżeniem: kanon jest w sejfie, reguła `AssetIds` to propozycja D-011.
+- Notatki: [[Pipeline assetów]], [[Zadania]]; `DOKUMENTACJA.md`.
+
+## 2026-11-12 · Claude Code (pipeline assetów)
+- Zainstalowano paczkę `blocky-asset-pipeline` (osobny folder, poza repo): zależności Python, `.env` z typem i ID twórcy (bez klucza API), `.mcp.json` przestawiony na oficjalny serwer MCP Roblox Studio zamiast społecznościowego `robloxstudio-mcp`.
+- Manifest paczki uzupełniony o ID 10 istniejących assetów (status `in_roblox`), żeby pipeline nie wgrywał ich drugi raz.
+- Test: obróbka obrazka i generator `AssetIds` działają. `rembg` blokuje Windows (Inteligentna kontrola aplikacji), więc obróbka używa flood fill.
+- Gra jest już opublikowana na Roblox; Studio otwiera wersję z chmury.
+- Nowe: [[Pipeline assetów]] (propozycja), D-011 w [[Rejestr decyzji]] (💡). Zaktualizowano: [[Narzędzia]], [[Zadania]], [[Workflow i Git]], [[00 Start]], `DOKUMENTACJA.md`.
+
 ## 2026-11-12 · Claude Code (GitHub i dokumentacja)
 - Projekt wypchnięty do publicznego repozytorium https://github.com/przeczkowskyy/Blocky-Crycket (gałąź `main`): sejf, kod `src/`, `tools/`, skill, plik `.rbxl` i archiwalny `dashboard/` (bez `node_modules`, bazy danych i `.env`).
 - Nowe pliki w repo: `DOKUMENTACJA.md` (pełne podsumowanie projektu: gra, styl, UI, architektura, narzędzia, workflow), `README.md`, `.gitignore`, `.gitattributes`. `CLAUDE.md`: sekcja Git.

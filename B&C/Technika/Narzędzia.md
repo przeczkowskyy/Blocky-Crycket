@@ -18,3 +18,4 @@ Generowanie grafik zawsze z prefiksem [[Style Lock]].
 - **Claude Code** pracuje przez MCP z **Figmą** (odczyt projektów) i z **Roblox Studio** (uruchamianie Luau, zrzuty ekranu, Play, Output). Skill: `figma-to-roblox`.
 - **Git + GitHub**: repozytorium https://github.com/przeczkowskyy/Blocky-Crycket (publiczne). Zob. [[Workflow i Git]].
 - Oryginalna dokumentacja wymienia Cursor/Copilot do Luau; w praktyce tę rolę pełni Claude Code.
+- **Pipeline assetów** (`/asset`): Higgsfield (MCP) → obróbka → Figma → Roblox Open Cloud. Zainstalowany 2026-11-12 w osobnym folderze, czeka na klucz Open Cloud i logowania. Zob. [[Pipeline assetów]].

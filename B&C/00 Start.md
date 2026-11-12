@@ -27,6 +27,7 @@ Gra Roblox: **RPG / Incremental / Tycoon / Pet Collector**. Komiksowy humor w st
 - [[Rojo i struktura projektu]]
 - [[Pipeline Figma → Roblox]]
 - [[Workflow i Git]]
+- [[Pipeline assetów]]
 - [[Narzędzia]]
 
 ## 📋 Produkcja

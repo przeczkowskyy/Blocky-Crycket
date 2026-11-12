@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+"""Rejestr assetow Blocky&Crycket (assets/manifest.json) + generator ReplicatedStorage.AssetIds.
+
+  python tools/manifest.py status                      # tabela wszystkich assetow
+  python tools/manifest.py get IconArena               # JSON jednego assetu
+  python tools/manifest.py upsert IconArena category=icon status=processed processed=assets/processed/IconArena.png
+  python tools/manifest.py approve IconArena           # TYLKO po wyraznym "tak" uzytkownika (zapisuje sha256 pliku)
+  python tools/manifest.py gen-lua > build/AssetIds.lua
+
+Pola (upsert): category, status, usage, prompt, raw, processed, figma_node, roblox_target,
+               roblox_decal, roblox_image, moderation, notes
+Statusy: planned, generated, processed, in_figma, awaiting_approval, approved, in_roblox, pending_studio, done, rejected
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+MANIFEST = ROOT / "assets" / "manifest.json"
+FIELDS = {"category", "status", "usage", "prompt", "raw", "processed", "figma_node", "roblox_target",
+          "roblox_decal", "roblox_image", "moderation", "notes"}
+PROTECTED = {"approved_by_user", "approved_sha256", "approved_at"}
+# zmiana tych pol uniewaznia akceptacje (nowy plik = nowa decyzja)
+INVALIDATES_APPROVAL = {"processed"}
+
+
+def now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def load() -> dict:
+    if MANIFEST.exists():
+        return json.loads(MANIFEST.read_text(encoding="utf-8"))
+    return {"figma_file": "BbLd4jDnvxAmOWZN1hAZQJ", "assets": {}}
+
+
+def save(data: dict) -> None:
+    MANIFEST.parent.mkdir(parents=True, exist_ok=True)
+    data["updated_at"] = now()
+    MANIFEST.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def cmd_status(_: list[str]) -> int:
+    data = load()
+    rows = [("Name", "Cat", "Status", "Approved", "Figma", "Decal", "Image")]
+    for name, a in sorted(data["assets"].items()):
+        rows.append((name, a.get("category", ""), a.get("status", ""), "tak" if a.get("approved_by_user") else "-",
+                     a.get("figma_node", "") or "-", str(a.get("roblox_decal") or "-"), str(a.get("roblox_image") or "-")))
+    widths = [max(len(r[i]) for r in rows) for i in range(len(rows[0]))]
+    for i, r in enumerate(rows):
+        print(" | ".join(c.ljust(widths[j]) for j, c in enumerate(r)))
+        if i == 0:
+            print("-+-".join("-" * w for w in widths))
+    return 0
+
+
+def cmd_get(args: list[str]) -> int:
+    a = load()["assets"].get(args[0]) if args else None
+    if a is None:
+        print(f"brak assetu: {args[0] if args else '?'}", file=sys.stderr)
+        return 1
+    print(json.dumps(a, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_upsert(args: list[str]) -> int:
+    if not args:
+        print(__doc__); return 2
+    name, pairs = args[0], args[1:]
+    data = load()
+    a = data["assets"].setdefault(name, {"created_at": now(), "history": []})
+    for p in pairs:
+        if "=" not in p:
+            print(f"zly argument (oczekiwano klucz=wartosc): {p}", file=sys.stderr); return 2
+        k, v = p.split("=", 1)
+        if k in PROTECTED:
+            print(f"'{k}' ustawia tylko komenda `approve` (po akceptacji uzytkownika)", file=sys.stderr); return 2
+        if k not in FIELDS:
+            print(f"nieznane pole: {k} (dozwolone: {', '.join(sorted(FIELDS))})", file=sys.stderr); return 2
+        old = a.get(k)
+        if k in ("roblox_decal", "roblox_image") and old and str(old) != v:
+            a.setdefault("history", []).append({k: old, "replaced_at": now()})
+        if k in INVALIDATES_APPROVAL and old != v and a.get("approved_by_user"):
+            a["approved_by_user"] = False
+            a.pop("approved_sha256", None)
+            print("uwaga: zmiana pliku processed uniewaznila akceptacje", file=sys.stderr)
+        a[k] = v
+    a["updated_at"] = now()
+    save(data)
+    print(json.dumps({name: a}, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_approve(args: list[str]) -> int:
+    if not args:
+        print(__doc__); return 2
+    name = args[0]
+    data = load()
+    a = data["assets"].get(name)
+    if not a or not a.get("processed"):
+        print(f"'{name}' nie ma pola processed – najpierw obrobka (krok 4)", file=sys.stderr); return 1
+    path = ROOT / a["processed"]
+    if not path.exists():
+        print(f"brak pliku {path}", file=sys.stderr); return 1
+    a.update(approved_by_user=True, approved_at=now(), status="approved",
+             approved_sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+    save(data)
+    print(json.dumps({"approved": name, "file": a["processed"], "sha256": a["approved_sha256"]}, indent=2))
+    return 0
+
+
+def cmd_gen_lua(_: list[str]) -> int:
+    data = load()
+    lines = [
+        "-- AUTO-GENERATED by tools/manifest.py gen-lua -- NIE EDYTUJ RECZNIE.",
+        f"-- {now()}",
+        "-- Uzycie: local AssetIds = require(game.ReplicatedStorage.AssetIds); img.Image = AssetIds.Teleport",
+        "return {",
+    ]
+    for name, a in sorted(data["assets"].items()):
+        if a.get("roblox_image"):
+            lines.append(f'\t{name} = "rbxassetid://{a["roblox_image"]}",')
+        elif a.get("roblox_decal"):
+            lines.append(f'\t{name} = "rbxthumb://type=Asset&id={a["roblox_decal"]}&w=420&h=420", '
+                         f'-- TODO: brak imageId (tools/resolve_image_id.luau)')
+    lines.append("}")
+    print("\n".join(lines))
+    return 0
+
+
+COMMANDS = {"status": cmd_status, "get": cmd_get, "upsert": cmd_upsert, "approve": cmd_approve, "gen-lua": cmd_gen_lua}
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2 or sys.argv[1] not in COMMANDS:
+        print(__doc__); raise SystemExit(2)
+    raise SystemExit(COMMANDS[sys.argv[1]](sys.argv[2:]))

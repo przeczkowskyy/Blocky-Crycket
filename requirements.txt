@@ -1,0 +1,6 @@
+pillow>=10.0
+requests>=2.31
+python-dotenv>=1.0
+numpy>=1.24
+# opcjonalnie (lepsze wycinanie tła; ~170 MB modelu przy pierwszym użyciu):
+rembg[cpu]>=2.0.50

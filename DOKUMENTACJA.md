@@ -221,7 +221,12 @@ Blocky&Crycket/
 │   ├── shared/                → ReplicatedStorage.Shared
 │   └── gui/                   → StarterGui (*.model.json)
 ├── tools/studio/              skrypty Luau uruchamiane w Studio (rzeczy spoza Rojo)
-├── .claude/skills/            skille Claude Code (figma-to-roblox)
+├── tools/*.py                 narzędzia pipeline'u assetów (obróbka, upload, manifest)
+├── assets/                    pipeline assetów: manifest.json, refs/, processed/, raw/ (poza Git)
+├── docs/                      instrukcja pipeline'u i wcześniejsze prompty (HUD, pasek ładowania)
+├── .claude/skills/            skille Claude Code (figma-to-roblox, asset)
+├── .mcp.json                  serwer MCP Higgsfield (dla pipeline'u assetów)
+├── requirements.txt           zależności Pythona pipeline'u
 ├── dashboard/                 ARCHIWUM: porzucona aplikacja „AI Development Studio”
 ├── Blocky&Crycket.rbxl        plik miejsca Roblox (binarny)
 ├── default.project.json       konfiguracja Rojo
@@ -351,6 +356,7 @@ Ramka portretu ma w PNG wypalony zielony pasek. Pasek XP w HUD jest nałożony d
 | **Roblox Studio MCP** | Claude steruje otwartym Studio: uruchamia Luau, robi zrzuty ekranu, startuje i zatrzymuje Play, czyta Output, symuluje mysz | Studio musi być otwarte |
 | **Obsidian** | sejf `B&C`: wiedza, zadania, decyzje, dziennik | szablony w `B&C/Szablony` |
 | **Git + GitHub** | wersjonowanie i kopia zapasowa | [repozytorium](https://github.com/przeczkowskyy/Blocky-Crycket) (publiczne), gałąź `main` |
+| **Pipeline assetów `/asset`** | grafiki z Higgsfield (MCP) → obróbka → Figma → upload przez Roblox Open Cloud, zawsze z akceptacją Game Directora | w projekcie gry (`.claude/skills/asset`, `tools/*.py`, `assets/`); zainstalowany 12.11.2026, czeka na klucz Open Cloud i logowanie Higgsfield ([Pipeline assetów](B%26C/Technika/Pipeline%20asset%C3%B3w.md)) |
 | Python | jednorazowe skrypty pomocnicze Claude (np. generowanie `.model.json`) | nie jest częścią gry |
 
 ### Przewidziane w dokumentacji do tworzenia assetów ✅
@@ -416,7 +422,7 @@ Zamiany warstw: Frame → `Frame`, tekst → `TextLabel`, przycisk → `TextButt
 4. Jeśli nie wiadomo, które ID jest którym obrazkiem, Claude wyświetla je w Studio i rozpoznaje po podglądzie.
 5. ID są zapisywane w notatce ekranu w sejfie i w tabeli 6.7.
 
-Rojo nie wgrywa grafik. Alternatywą byłby klucz Open Cloud API z uprawnieniem `asset:write`, ale na razie nie jest używany.
+Rojo nie wgrywa grafik. **W trakcie wdrażania:** pipeline `/asset` wgrywa obrazki sam przez Roblox Open Cloud (po akceptacji Game Directora) i zapisuje ID w manifeście. Zob. [Pipeline assetów](B%26C/Technika/Pipeline%20asset%C3%B3w.md) i propozycję D-011.
 
 ### 8.6 Testowanie
 - **Walidacja plików:** `rojo build default.project.json -o <katalog_tymczasowy>/check.rbxlx` musi się udać.
@@ -445,6 +451,7 @@ Rojo nie wgrywa grafik. Alternatywą byłby klucz Open Cloud API z uprawnieniem 
   - `Blocky&Crycket.rbxl` jest binarny i Git nie umie go scalać. Miejsce naraz edytuje jedna osoba, a przed otwarciem Studio robi się `git pull`.
   - Nigdy nie commituj sekretów (`.env`, kluczy API, tokenów).
   - Claude Code robi commit i push tylko na wyraźną prośbę.
+- ❓ Gra jest już opublikowana na Roblox i Studio otwiera wersję z chmury. Czy `.rbxl` w repo dalej aktualizujemy (File → Save to File), jest do ustalenia.
 
 ```bash
 git pull
@@ -473,6 +480,7 @@ Każdy prompt 2D/UI zaczyna się od prefiksu Style Lock (sekcja 4). Wynik sprawd
 | D-008 | Sejf Obsidian `B&C` jest mózgiem projektu; dashboard porzucony | ✅ |
 | D-009 | Karczma: poziomy misji i Energia | 💡 |
 | D-010 | Fazy roadmapy 2–6 | 💡 |
+| D-011 | Pipeline assetów `/asset` i moduł `AssetIds` (ID obrazków nie wpisane na sztywno) | 💡 |
 
 ### Pytania otwarte
 [Pytania otwarte](B%26C/Produkcja/Pytania%20otwarte.md)
@@ -523,6 +531,7 @@ Z [Zadań](B%26C/Produkcja/Zadania.md), Sprint 1:
 - **W Studio wszystko ładuje się w ~1 s.** Dlatego ekran ładowania ma minimalny czas wyświetlania.
 - **Symulowana mysz przez MCP nie wywołuje `MouseEnter`**, więc hover trzeba sprawdzać ręcznie.
 - **Pliki testowe** `Hello.server.luau`, `Hello.client.luau` i `FigmaTest.model.json` są do usunięcia.
+- **Windows blokuje `rembg`** (Inteligentna kontrola aplikacji nie wpuszcza biblioteki `numba`). Pipeline assetów sam przełącza się na wycinanie tła flood fill, które dobrze działa przy białym tle.
 
 ## 11. Słowniczek
 | Pojęcie | Znaczenie |
@@ -549,4 +558,4 @@ Pełna historia: [Dziennik zmian](B%26C/Produkcja/Dziennik%20zmian.md).
   - zbudowany i porzucony dashboard; sejf Obsidian ustanowiony mózgiem projektu (D-008);
   - ekran ładowania w Roblox: key-art i natywny pasek z Figmy, potem minimalny czas ładowania i rotujące wskazówki;
   - HUD: najpierw 6 przycisków (160 px, wyśrodkowane), potem pełny HUD z Figmy (panel gracza i przyciski 128 px niżej przy krawędzi), na koniec przyciski powiększone do 150 px.
-- **12.11.2026:** projekt w repozytorium GitHub, ten dokument.
+- **12.11.2026:** projekt w repozytorium GitHub, ten dokument; instalacja pipeline'u assetów `/asset`.

@@ -50,5 +50,10 @@ Trzy misje: Łatwa / Średnia / Epicki Boss. Misje zużywają Energię odnawian�
 💡 propozycja · roadmapa · źródło: master prompt
 Zob. [[Roadmapa]].
 
+### D-011 Pipeline assetów `/asset` i moduł `AssetIds`
+💡 propozycja · technika / grafika · 2026-11-12 · źródło: paczka `blocky-asset-pipeline`
+Nowe grafiki powstają przez skill `/asset`: Higgsfield → obróbka → Figma → akceptacja Game Directora → upload przez Roblox Open Cloud → wpis w manifeście. Zasady paczki: asset ID w kodzie gry tylko przez moduł `AssetIds` (nie wpisane na sztywno), zero tekstu w grafikach AI (napisy natywnie). Obecny [[HUD]] i [[Ekran ładowania]] mają ID wpisane na sztywno, a przyciski HUD mają wypalone napisy, więc przyjęcie decyzji oznacza ich przepięcie. Zob. [[Pipeline assetów]].
+Powiązane: [[Narzędzia]], [[Style Lock]]
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*
