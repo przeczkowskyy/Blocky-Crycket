@@ -1,0 +1,28 @@
+# Roblox Studio: blokada pliku otwartego miejsca
+*.rbxl.lock
+*.rbxlx.lock
+
+# Rojo: wyniki buildów i sourcemapa
+/build/
+sourcemap.json
+
+# Obsidian: stan okien i kosz (prywatne dla każdej osoby)
+B&C/.obsidian/workspace.json
+B&C/.obsidian/workspace-mobile.json
+B&C/.trash/
+
+# Claude Code: lokalne ustawienia i uprawnienia
+.claude/settings.local.json
+
+# Sekrety: nigdy nie commitować
+.env
+.env.*
+!.env.example
+
+# Zależności i system
+node_modules/
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# (dashboard/ ma własny .gitignore: node_modules, dist, data, .env)

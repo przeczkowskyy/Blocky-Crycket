@@ -1,0 +1,9 @@
+# Teksty: normalizacja końców linii
+* text=auto
+
+# Pliki binarne Roblox i grafiki: bez zmian i bez prób scalania
+*.rbxl binary
+*.rbxm binary
+*.png binary
+*.jpg binary
+*.db binary

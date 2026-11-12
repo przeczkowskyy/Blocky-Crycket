@@ -1,0 +1,1614 @@
+{
+  "ClassName": "ScreenGui",
+  "Properties": {
+    "Enabled": false,
+    "ResetOnSpawn": false,
+    "IgnoreGuiInset": false,
+    "ScreenInsets": "CoreUISafeInsets",
+    "ZIndexBehavior": "Sibling",
+    "DisplayOrder": 10
+  },
+  "Children": [
+    {
+      "Name": "PlayerPanel",
+      "ClassName": "Frame",
+      "Properties": {
+        "BackgroundTransparency": 1,
+        "BorderSizePixel": 0,
+        "Position": {
+          "UDim2": [
+            [
+              0.02083,
+              0
+            ],
+            [
+              0.02778,
+              0
+            ]
+          ]
+        },
+        "Size": {
+          "UDim2": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.1963,
+              0
+            ]
+          ]
+        }
+      },
+      "Children": [
+        {
+          "Name": "UIAspectRatioConstraint",
+          "ClassName": "UIAspectRatioConstraint",
+          "Properties": {
+            "AspectRatio": 2.21698,
+            "DominantAxis": "Height"
+          }
+        },
+        {
+          "Name": "FrameArt",
+          "ClassName": "ImageLabel",
+          "Properties": {
+            "Image": "rbxassetid://128244393062229",
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "ScaleType": "Fit",
+            "ZIndex": 1,
+            "Position": {
+              "UDim2": [
+                [
+                  0.0,
+                  0
+                ],
+                [
+                  0.0,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0.38298,
+                  0
+                ],
+                [
+                  0.9717,
+                  0
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "Name": "PortraitSlot",
+          "ClassName": "Frame",
+          "Properties": {
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "ZIndex": 2,
+            "Position": {
+              "UDim2": [
+                [
+                  0.03617,
+                  0
+                ],
+                [
+                  0.08019,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0.30426,
+                  0
+                ],
+                [
+                  0.61321,
+                  0
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "Name": "XPBar",
+          "ClassName": "Frame",
+          "Properties": {
+            "BackgroundColor3": [
+              1,
+              1,
+              1
+            ],
+            "BorderSizePixel": 0,
+            "ZIndex": 3,
+            "ClipsDescendants": true,
+            "Position": {
+              "UDim2": [
+                [
+                  0.06076,
+                  0
+                ],
+                [
+                  0.75721,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0.26146,
+                  0
+                ],
+                [
+                  0.17757,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UICorner",
+              "ClassName": "UICorner",
+              "Properties": {
+                "CornerRadius": {
+                  "UDim": [
+                    0.2656,
+                    0
+                  ]
+                }
+              }
+            },
+            {
+              "Name": "UIGradient",
+              "ClassName": "UIGradient",
+              "Properties": {
+                "Rotation": 90,
+                "Color": {
+                  "ColorSequence": {
+                    "keypoints": [
+                      {
+                        "time": 0,
+                        "color": [
+                          0.1686,
+                          0.2078,
+                          0.3216
+                        ]
+                      },
+                      {
+                        "time": 1,
+                        "color": [
+                          0.102,
+                          0.1255,
+                          0.2039
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Name": "UIStroke",
+              "ClassName": "UIStroke",
+              "Properties": {
+                "Color": [
+                  0.102,
+                  0.0784,
+                  0.0627
+                ],
+                "Thickness": 3,
+                "LineJoinMode": "Round",
+                "ApplyStrokeMode": "Border"
+              }
+            },
+            {
+              "Name": "XPFill",
+              "ClassName": "Frame",
+              "Properties": {
+                "BackgroundColor3": [
+                  1,
+                  1,
+                  1
+                ],
+                "BorderSizePixel": 0,
+                "Size": {
+                  "UDim2": [
+                    [
+                      0,
+                      0
+                    ],
+                    [
+                      1,
+                      0
+                    ]
+                  ]
+                },
+                "Visible": false,
+                "ZIndex": 4
+              },
+              "Children": [
+                {
+                  "Name": "UICorner",
+                  "ClassName": "UICorner",
+                  "Properties": {
+                    "CornerRadius": {
+                      "UDim": [
+                        0.2125,
+                        0
+                      ]
+                    }
+                  }
+                },
+                {
+                  "Name": "UIGradient",
+                  "ClassName": "UIGradient",
+                  "Properties": {
+                    "Rotation": 90,
+                    "Color": {
+                      "ColorSequence": {
+                        "keypoints": [
+                          {
+                            "time": 0,
+                            "color": [
+                              0.7137,
+                              0.949,
+                              0.4157
+                            ]
+                          },
+                          {
+                            "time": 1,
+                            "color": [
+                              0.298,
+                              0.702,
+                              0.2353
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  "Name": "Highlight",
+                  "ClassName": "Frame",
+                  "Properties": {
+                    "BackgroundColor3": [
+                      1,
+                      1,
+                      1
+                    ],
+                    "BackgroundTransparency": 0.55,
+                    "BorderSizePixel": 0,
+                    "Position": {
+                      "UDim2": [
+                        [
+                          0.04,
+                          0
+                        ],
+                        [
+                          0.12,
+                          0
+                        ]
+                      ]
+                    },
+                    "Size": {
+                      "UDim2": [
+                        [
+                          0.92,
+                          0
+                        ],
+                        [
+                          0.22,
+                          0
+                        ]
+                      ]
+                    },
+                    "ZIndex": 5
+                  },
+                  "Children": [
+                    {
+                      "Name": "UICorner",
+                      "ClassName": "UICorner",
+                      "Properties": {
+                        "CornerRadius": {
+                          "UDim": [
+                            0.5,
+                            0
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "Level",
+          "ClassName": "TextLabel",
+          "Properties": {
+            "Text": "1",
+            "FontFace": {
+              "Font": {
+                "family": "rbxasset://fonts/families/LuckiestGuy.json",
+                "weight": "Regular",
+                "style": "Normal"
+              }
+            },
+            "TextScaled": true,
+            "TextColor3": [
+              1,
+              1,
+              1
+            ],
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "ZIndex": 6,
+            "Position": {
+              "UDim2": [
+                [
+                  0.06076,
+                  0
+                ],
+                [
+                  0.76665,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0.26146,
+                  0
+                ],
+                [
+                  0.1587,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UIGradient",
+              "ClassName": "UIGradient",
+              "Properties": {
+                "Rotation": 90,
+                "Color": {
+                  "ColorSequence": {
+                    "keypoints": [
+                      {
+                        "time": 0,
+                        "color": [
+                          1.0,
+                          0.9412,
+                          0.6588
+                        ]
+                      },
+                      {
+                        "time": 0.55,
+                        "color": [
+                          0.949,
+                          0.7608,
+                          0.2902
+                        ]
+                      },
+                      {
+                        "time": 1,
+                        "color": [
+                          0.7216,
+                          0.5255,
+                          0.1647
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Name": "UIStroke",
+              "ClassName": "UIStroke",
+              "Properties": {
+                "Color": [
+                  0.102,
+                  0.0784,
+                  0.0627
+                ],
+                "Thickness": 4.5,
+                "LineJoinMode": "Round",
+                "ApplyStrokeMode": "Contextual"
+              }
+            },
+            {
+              "Name": "UIScale",
+              "ClassName": "UIScale",
+              "Properties": {
+                "Scale": 1
+              }
+            }
+          ]
+        },
+        {
+          "Name": "GoldPillInk",
+          "ClassName": "Frame",
+          "Properties": {
+            "BackgroundColor3": [
+              0.102,
+              0.0784,
+              0.0627
+            ],
+            "BorderSizePixel": 0,
+            "ZIndex": 1,
+            "Position": {
+              "UDim2": [
+                [
+                  0.44681,
+                  0
+                ],
+                [
+                  0.12264,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0.53617,
+                  0
+                ],
+                [
+                  0.31132,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UICorner",
+              "ClassName": "UICorner",
+              "Properties": {
+                "CornerRadius": {
+                  "UDim": [
+                    0.5,
+                    0
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "Name": "GoldPill",
+          "ClassName": "Frame",
+          "Properties": {
+            "BackgroundColor3": [
+              1,
+              1,
+              1
+            ],
+            "BorderSizePixel": 0,
+            "ZIndex": 2,
+            "Position": {
+              "UDim2": [
+                [
+                  0.45532,
+                  0
+                ],
+                [
+                  0.14151,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0.51915,
+                  0
+                ],
+                [
+                  0.27358,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UICorner",
+              "ClassName": "UICorner",
+              "Properties": {
+                "CornerRadius": {
+                  "UDim": [
+                    0.5,
+                    0
+                  ]
+                }
+              }
+            },
+            {
+              "Name": "UIGradient",
+              "ClassName": "UIGradient",
+              "Properties": {
+                "Rotation": 90,
+                "Color": {
+                  "ColorSequence": {
+                    "keypoints": [
+                      {
+                        "time": 0,
+                        "color": [
+                          0.1686,
+                          0.2078,
+                          0.3216
+                        ]
+                      },
+                      {
+                        "time": 1,
+                        "color": [
+                          0.102,
+                          0.1255,
+                          0.2039
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Name": "UIStroke",
+              "ClassName": "UIStroke",
+              "Properties": {
+                "Color": [
+                  0.851,
+                  0.7059,
+                  0.3529
+                ],
+                "Thickness": 4,
+                "LineJoinMode": "Round",
+                "ApplyStrokeMode": "Border"
+              }
+            }
+          ]
+        },
+        {
+          "Name": "Gold",
+          "ClassName": "TextLabel",
+          "Properties": {
+            "Text": "0",
+            "FontFace": {
+              "Font": {
+                "family": "rbxasset://fonts/families/LuckiestGuy.json",
+                "weight": "Regular",
+                "style": "Normal"
+              }
+            },
+            "TextScaled": true,
+            "TextXAlignment": "Left",
+            "TextColor3": [
+              1.0,
+              0.8235,
+              0.2471
+            ],
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "ZIndex": 3,
+            "Position": {
+              "UDim2": [
+                [
+                  0.60851,
+                  0
+                ],
+                [
+                  0.18868,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0.35106,
+                  0
+                ],
+                [
+                  0.17925,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UIStroke",
+              "ClassName": "UIStroke",
+              "Properties": {
+                "Color": [
+                  0.102,
+                  0.0784,
+                  0.0627
+                ],
+                "Thickness": 5,
+                "LineJoinMode": "Round",
+                "ApplyStrokeMode": "Contextual"
+              }
+            },
+            {
+              "Name": "UIScale",
+              "ClassName": "UIScale",
+              "Properties": {
+                "Scale": 1
+              }
+            }
+          ]
+        },
+        {
+          "Name": "GoldIcon",
+          "ClassName": "ImageLabel",
+          "Properties": {
+            "Image": "rbxassetid://139011825868727",
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "ScaleType": "Fit",
+            "ZIndex": 4,
+            "Position": {
+              "UDim2": [
+                [
+                  0.40426,
+                  0
+                ],
+                [
+                  0.08491,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0.17447,
+                  0
+                ],
+                [
+                  0.38208,
+                  0
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "Name": "GemsPillInk",
+          "ClassName": "Frame",
+          "Properties": {
+            "BackgroundColor3": [
+              0.102,
+              0.0784,
+              0.0627
+            ],
+            "BorderSizePixel": 0,
+            "ZIndex": 1,
+            "Position": {
+              "UDim2": [
+                [
+                  0.44681,
+                  0
+                ],
+                [
+                  0.54717,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0.53617,
+                  0
+                ],
+                [
+                  0.31132,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UICorner",
+              "ClassName": "UICorner",
+              "Properties": {
+                "CornerRadius": {
+                  "UDim": [
+                    0.5,
+                    0
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "Name": "GemsPill",
+          "ClassName": "Frame",
+          "Properties": {
+            "BackgroundColor3": [
+              1,
+              1,
+              1
+            ],
+            "BorderSizePixel": 0,
+            "ZIndex": 2,
+            "Position": {
+              "UDim2": [
+                [
+                  0.45532,
+                  0
+                ],
+                [
+                  0.56604,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0.51915,
+                  0
+                ],
+                [
+                  0.27358,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UICorner",
+              "ClassName": "UICorner",
+              "Properties": {
+                "CornerRadius": {
+                  "UDim": [
+                    0.5,
+                    0
+                  ]
+                }
+              }
+            },
+            {
+              "Name": "UIGradient",
+              "ClassName": "UIGradient",
+              "Properties": {
+                "Rotation": 90,
+                "Color": {
+                  "ColorSequence": {
+                    "keypoints": [
+                      {
+                        "time": 0,
+                        "color": [
+                          0.1686,
+                          0.2078,
+                          0.3216
+                        ]
+                      },
+                      {
+                        "time": 1,
+                        "color": [
+                          0.102,
+                          0.1255,
+                          0.2039
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Name": "UIStroke",
+              "ClassName": "UIStroke",
+              "Properties": {
+                "Color": [
+                  0.851,
+                  0.7059,
+                  0.3529
+                ],
+                "Thickness": 4,
+                "LineJoinMode": "Round",
+                "ApplyStrokeMode": "Border"
+              }
+            }
+          ]
+        },
+        {
+          "Name": "Gems",
+          "ClassName": "TextLabel",
+          "Properties": {
+            "Text": "0",
+            "FontFace": {
+              "Font": {
+                "family": "rbxasset://fonts/families/LuckiestGuy.json",
+                "weight": "Regular",
+                "style": "Normal"
+              }
+            },
+            "TextScaled": true,
+            "TextXAlignment": "Left",
+            "TextColor3": [
+              0.5412,
+              0.9412,
+              1.0
+            ],
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "ZIndex": 3,
+            "Position": {
+              "UDim2": [
+                [
+                  0.60851,
+                  0
+                ],
+                [
+                  0.61321,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0.35106,
+                  0
+                ],
+                [
+                  0.17925,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UIStroke",
+              "ClassName": "UIStroke",
+              "Properties": {
+                "Color": [
+                  0.102,
+                  0.0784,
+                  0.0627
+                ],
+                "Thickness": 5,
+                "LineJoinMode": "Round",
+                "ApplyStrokeMode": "Contextual"
+              }
+            },
+            {
+              "Name": "UIScale",
+              "ClassName": "UIScale",
+              "Properties": {
+                "Scale": 1
+              }
+            }
+          ]
+        },
+        {
+          "Name": "GemsIcon",
+          "ClassName": "ImageLabel",
+          "Properties": {
+            "Image": "rbxassetid://130974323293639",
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "ScaleType": "Fit",
+            "ZIndex": 4,
+            "Position": {
+              "UDim2": [
+                [
+                  0.4,
+                  0
+                ],
+                [
+                  0.5283,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0.18298,
+                  0
+                ],
+                [
+                  0.35849,
+                  0
+                ]
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "LeftColumn",
+      "ClassName": "Frame",
+      "Properties": {
+        "BackgroundTransparency": 1,
+        "BorderSizePixel": 0,
+        "AnchorPoint": [
+          0,
+          1
+        ],
+        "Position": {
+          "UDim2": [
+            [
+              0.02083,
+              0
+            ],
+            [
+              0.85185,
+              0
+            ]
+          ]
+        },
+        "Size": {
+          "UDim2": [
+            [
+              0.2,
+              0
+            ],
+            [
+              0.45556,
+              0
+            ]
+          ]
+        }
+      },
+      "Children": [
+        {
+          "Name": "UIListLayout",
+          "ClassName": "UIListLayout",
+          "Properties": {
+            "FillDirection": "Vertical",
+            "SortOrder": "LayoutOrder",
+            "VerticalAlignment": "Bottom",
+            "HorizontalAlignment": "Left",
+            "Padding": {
+              "UDim": [
+                0.04268,
+                0
+              ]
+            }
+          }
+        },
+        {
+          "Name": "TeleportSlot",
+          "ClassName": "Frame",
+          "Properties": {
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "LayoutOrder": 1,
+            "Size": {
+              "UDim2": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  0.30488,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UIAspectRatioConstraint",
+              "ClassName": "UIAspectRatioConstraint",
+              "Properties": {
+                "AspectRatio": 1,
+                "DominantAxis": "Height"
+              }
+            },
+            {
+              "Name": "UISizeConstraint",
+              "ClassName": "UISizeConstraint",
+              "Properties": {
+                "MinSize": [
+                  66,
+                  66
+                ],
+                "MaxSize": [
+                  175,
+                  175
+                ]
+              }
+            },
+            {
+              "Name": "Teleport",
+              "ClassName": "ImageButton",
+              "Properties": {
+                "Image": "rbxassetid://133130837278176",
+                "BackgroundTransparency": 1,
+                "BorderSizePixel": 0,
+                "ScaleType": "Fit",
+                "AnchorPoint": [
+                  0.5,
+                  0.5
+                ],
+                "Position": {
+                  "UDim2": [
+                    [
+                      0.5,
+                      0
+                    ],
+                    [
+                      0.5,
+                      0
+                    ]
+                  ]
+                },
+                "Size": {
+                  "UDim2": [
+                    [
+                      1,
+                      0
+                    ],
+                    [
+                      1,
+                      0
+                    ]
+                  ]
+                },
+                "AutoButtonColor": false
+              },
+              "Children": [
+                {
+                  "Name": "UIScale",
+                  "ClassName": "UIScale",
+                  "Properties": {
+                    "Scale": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "EquipmentSlot",
+          "ClassName": "Frame",
+          "Properties": {
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "LayoutOrder": 2,
+            "Size": {
+              "UDim2": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  0.30488,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UIAspectRatioConstraint",
+              "ClassName": "UIAspectRatioConstraint",
+              "Properties": {
+                "AspectRatio": 1,
+                "DominantAxis": "Height"
+              }
+            },
+            {
+              "Name": "UISizeConstraint",
+              "ClassName": "UISizeConstraint",
+              "Properties": {
+                "MinSize": [
+                  66,
+                  66
+                ],
+                "MaxSize": [
+                  175,
+                  175
+                ]
+              }
+            },
+            {
+              "Name": "Equipment",
+              "ClassName": "ImageButton",
+              "Properties": {
+                "Image": "rbxassetid://72063518170257",
+                "BackgroundTransparency": 1,
+                "BorderSizePixel": 0,
+                "ScaleType": "Fit",
+                "AnchorPoint": [
+                  0.5,
+                  0.5
+                ],
+                "Position": {
+                  "UDim2": [
+                    [
+                      0.5,
+                      0
+                    ],
+                    [
+                      0.5,
+                      0
+                    ]
+                  ]
+                },
+                "Size": {
+                  "UDim2": [
+                    [
+                      1,
+                      0
+                    ],
+                    [
+                      1,
+                      0
+                    ]
+                  ]
+                },
+                "AutoButtonColor": false
+              },
+              "Children": [
+                {
+                  "Name": "UIScale",
+                  "ClassName": "UIScale",
+                  "Properties": {
+                    "Scale": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "PetsSlot",
+          "ClassName": "Frame",
+          "Properties": {
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "LayoutOrder": 3,
+            "Size": {
+              "UDim2": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  0.30488,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UIAspectRatioConstraint",
+              "ClassName": "UIAspectRatioConstraint",
+              "Properties": {
+                "AspectRatio": 1,
+                "DominantAxis": "Height"
+              }
+            },
+            {
+              "Name": "UISizeConstraint",
+              "ClassName": "UISizeConstraint",
+              "Properties": {
+                "MinSize": [
+                  66,
+                  66
+                ],
+                "MaxSize": [
+                  175,
+                  175
+                ]
+              }
+            },
+            {
+              "Name": "Pets",
+              "ClassName": "ImageButton",
+              "Properties": {
+                "Image": "rbxassetid://114125804667140",
+                "BackgroundTransparency": 1,
+                "BorderSizePixel": 0,
+                "ScaleType": "Fit",
+                "AnchorPoint": [
+                  0.5,
+                  0.5
+                ],
+                "Position": {
+                  "UDim2": [
+                    [
+                      0.5,
+                      0
+                    ],
+                    [
+                      0.5,
+                      0
+                    ]
+                  ]
+                },
+                "Size": {
+                  "UDim2": [
+                    [
+                      1,
+                      0
+                    ],
+                    [
+                      1,
+                      0
+                    ]
+                  ]
+                },
+                "AutoButtonColor": false
+              },
+              "Children": [
+                {
+                  "Name": "UIScale",
+                  "ClassName": "UIScale",
+                  "Properties": {
+                    "Scale": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "RightColumn",
+      "ClassName": "Frame",
+      "Properties": {
+        "BackgroundTransparency": 1,
+        "BorderSizePixel": 0,
+        "AnchorPoint": [
+          1,
+          1
+        ],
+        "Position": {
+          "UDim2": [
+            [
+              0.97917,
+              0
+            ],
+            [
+              0.85185,
+              0
+            ]
+          ]
+        },
+        "Size": {
+          "UDim2": [
+            [
+              0.2,
+              0
+            ],
+            [
+              0.45556,
+              0
+            ]
+          ]
+        }
+      },
+      "Children": [
+        {
+          "Name": "UIListLayout",
+          "ClassName": "UIListLayout",
+          "Properties": {
+            "FillDirection": "Vertical",
+            "SortOrder": "LayoutOrder",
+            "VerticalAlignment": "Bottom",
+            "HorizontalAlignment": "Right",
+            "Padding": {
+              "UDim": [
+                0.04268,
+                0
+              ]
+            }
+          }
+        },
+        {
+          "Name": "QuestsSlot",
+          "ClassName": "Frame",
+          "Properties": {
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "LayoutOrder": 1,
+            "Size": {
+              "UDim2": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  0.30488,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UIAspectRatioConstraint",
+              "ClassName": "UIAspectRatioConstraint",
+              "Properties": {
+                "AspectRatio": 1,
+                "DominantAxis": "Height"
+              }
+            },
+            {
+              "Name": "UISizeConstraint",
+              "ClassName": "UISizeConstraint",
+              "Properties": {
+                "MinSize": [
+                  66,
+                  66
+                ],
+                "MaxSize": [
+                  175,
+                  175
+                ]
+              }
+            },
+            {
+              "Name": "Quests",
+              "ClassName": "ImageButton",
+              "Properties": {
+                "Image": "rbxassetid://97193506181159",
+                "BackgroundTransparency": 1,
+                "BorderSizePixel": 0,
+                "ScaleType": "Fit",
+                "AnchorPoint": [
+                  0.5,
+                  0.5
+                ],
+                "Position": {
+                  "UDim2": [
+                    [
+                      0.5,
+                      0
+                    ],
+                    [
+                      0.5,
+                      0
+                    ]
+                  ]
+                },
+                "Size": {
+                  "UDim2": [
+                    [
+                      1,
+                      0
+                    ],
+                    [
+                      1,
+                      0
+                    ]
+                  ]
+                },
+                "AutoButtonColor": false
+              },
+              "Children": [
+                {
+                  "Name": "UIScale",
+                  "ClassName": "UIScale",
+                  "Properties": {
+                    "Scale": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "ShopSlot",
+          "ClassName": "Frame",
+          "Properties": {
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "LayoutOrder": 2,
+            "Size": {
+              "UDim2": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  0.30488,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UIAspectRatioConstraint",
+              "ClassName": "UIAspectRatioConstraint",
+              "Properties": {
+                "AspectRatio": 1,
+                "DominantAxis": "Height"
+              }
+            },
+            {
+              "Name": "UISizeConstraint",
+              "ClassName": "UISizeConstraint",
+              "Properties": {
+                "MinSize": [
+                  66,
+                  66
+                ],
+                "MaxSize": [
+                  175,
+                  175
+                ]
+              }
+            },
+            {
+              "Name": "Shop",
+              "ClassName": "ImageButton",
+              "Properties": {
+                "Image": "rbxassetid://101275423490142",
+                "BackgroundTransparency": 1,
+                "BorderSizePixel": 0,
+                "ScaleType": "Fit",
+                "AnchorPoint": [
+                  0.5,
+                  0.5
+                ],
+                "Position": {
+                  "UDim2": [
+                    [
+                      0.5,
+                      0
+                    ],
+                    [
+                      0.5,
+                      0
+                    ]
+                  ]
+                },
+                "Size": {
+                  "UDim2": [
+                    [
+                      1,
+                      0
+                    ],
+                    [
+                      1,
+                      0
+                    ]
+                  ]
+                },
+                "AutoButtonColor": false
+              },
+              "Children": [
+                {
+                  "Name": "UIScale",
+                  "ClassName": "UIScale",
+                  "Properties": {
+                    "Scale": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "GuildsSlot",
+          "ClassName": "Frame",
+          "Properties": {
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "LayoutOrder": 3,
+            "Size": {
+              "UDim2": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  0.30488,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UIAspectRatioConstraint",
+              "ClassName": "UIAspectRatioConstraint",
+              "Properties": {
+                "AspectRatio": 1,
+                "DominantAxis": "Height"
+              }
+            },
+            {
+              "Name": "UISizeConstraint",
+              "ClassName": "UISizeConstraint",
+              "Properties": {
+                "MinSize": [
+                  66,
+                  66
+                ],
+                "MaxSize": [
+                  175,
+                  175
+                ]
+              }
+            },
+            {
+              "Name": "Guilds",
+              "ClassName": "ImageButton",
+              "Properties": {
+                "Image": "rbxassetid://133105071163555",
+                "BackgroundTransparency": 1,
+                "BorderSizePixel": 0,
+                "ScaleType": "Fit",
+                "AnchorPoint": [
+                  0.5,
+                  0.5
+                ],
+                "Position": {
+                  "UDim2": [
+                    [
+                      0.5,
+                      0
+                    ],
+                    [
+                      0.5,
+                      0
+                    ]
+                  ]
+                },
+                "Size": {
+                  "UDim2": [
+                    [
+                      1,
+                      0
+                    ],
+                    [
+                      1,
+                      0
+                    ]
+                  ]
+                },
+                "AutoButtonColor": false
+              },
+              "Children": [
+                {
+                  "Name": "UIScale",
+                  "ClassName": "UIScale",
+                  "Properties": {
+                    "Scale": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
