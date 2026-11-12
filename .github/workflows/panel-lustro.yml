@@ -1,0 +1,48 @@
+# Lustro panelu zespołu (tylko do odczytu) na GitHub Pages: plan, raporty, podgląd 3D i sieć notatek z telefonu,
+# także wtedy, gdy żaden komputer z panelem nie jest włączony.
+#
+# Jednorazowo (właściciel repozytorium): Settings → Pages → Build and deployment → Source: "GitHub Actions".
+# Potem: Actions → "Panel — lustro" → Run workflow. Adres strony pojawi się w podsumowaniu przebiegu.
+#
+# Celowo tylko uruchamianie ręczne: bez włączonego Pages każdy przebieg kończyłby się błędem.
+# Żeby lustro odświeżało się samo po każdym pushu, odkomentuj sekcję `push` poniżej.
+name: Panel — lustro
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [main]
+  #   paths: ["panel/**", "B&C/**"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: panel-lustro
+  cancel-in-progress: true
+
+jobs:
+  lustro:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.wdrozenie.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Testy panelu
+        working-directory: panel
+        run: python -m unittest discover -s testy -t .
+      - name: Eksport lustra
+        run: python panel/serwer.py --eksport _site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: wdrozenie
+        uses: actions/deploy-pages@v4

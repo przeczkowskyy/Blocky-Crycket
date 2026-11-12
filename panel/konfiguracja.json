@@ -1,0 +1,18 @@
+{
+  "port": 8787,
+  "gra": {
+    "nazwa": "BLOCKY & CRYCKET",
+    "universeId": 10776202722,
+    "placeId": 129485428021967
+  },
+  "sejfy": [
+    { "id": "B&C", "nazwa": "Sejf gry", "sciezka": "B&C" }
+  ],
+  "agent": {
+    "tryb_domyslny": "praca",
+    "model": "",
+    "limit_czasu_min": 30
+  },
+  "glos": { "model": "large-v3-turbo", "jezyk": "pl" },
+  "git": { "sciezki_panelu": ["panel/dane"] }
+}

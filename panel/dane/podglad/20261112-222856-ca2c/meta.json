@@ -1,0 +1,101 @@
+{
+ "id": "20261112-222856-ca2c",
+ "tytul": "Demo: Leśna baza startowa",
+ "opis": "Pierwsza podglądowa mapa: plac ze spawnem, karczma, koło fortuny, wylęgarnia, stajnia, stragan, brama areny, portal lochów, staw i las. Części wyeksportowane z Roblox Studio (Workspace/DemoLesnaBaza); obrazy to rendery tej samej sceny z Blendera, bo okno Studio było zminimalizowane.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-12T22:28:56+01:00",
+ "zrodlo": "studio",
+ "czesci": 2599,
+ "grupy": [
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Arena",
+   "czesci": 40
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Brama",
+   "czesci": 117
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Karczma",
+   "czesci": 222
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/KoloFortuny",
+   "czesci": 18
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Las",
+   "czesci": 1039
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Latarnie",
+   "czesci": 60
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Ognisko",
+   "czesci": 26
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Plac",
+   "czesci": 115
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/PortalLochow",
+   "czesci": 58
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Runo",
+   "czesci": 646
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Sklep",
+   "czesci": 37
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Stajnia",
+   "czesci": 48
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Staw",
+   "czesci": 42
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/TablicaZlecen",
+   "czesci": 16
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Teren",
+   "czesci": 78
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Wylegarnia",
+   "czesci": 37
+  }
+ ],
+ "zrzuty": [
+  "blender_1_panorama.jpg",
+  "blender_2_karczma.jpg",
+  "blender_3_mapa.jpg",
+  "blender_4_od_bramy.jpg",
+  "blender_5_portal.jpg",
+  "blender_6_arena_stajnia_wylegarnia.jpg",
+  "blender_7_wylegarnia_i_kolo.jpg"
+ ],
+ "zakres": {
+  "min": [
+   -116.343,
+   -0.238,
+   -116.541
+  ],
+  "max": [
+   119.632,
+   59.7,
+   115.0
+  ]
+ },
+ "miejsce": {
+  "placeId": 129485428021967,
+  "nazwa": "Blocky&Crycket (placeId: 129485428021967)"
+ },
+ "korzen": "Workspace/DemoLesnaBaza"
+}

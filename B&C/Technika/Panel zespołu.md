@@ -33,7 +33,9 @@ Bez instalowania zależności (sam Python 3.9+). Pełna instrukcja: `panel/INSTA
 - **Podgląd 3D** rysuje części Roblox (bloki, kliny, walce, kule) w przeglądarce z pliku `czesci.json`; siatki z importu pokazuje jako ramki, a prawdziwy wygląd dają zrzuty ze Studio.
 
 ## Bezpieczeństwo i prywatność
-- Domyślnie panel słucha tylko na tym komputerze. Wejście z telefonu wymaga kodu; agent z telefonu jest domyślnie wyłączony.
+- Domyślnie panel słucha tylko na tym komputerze. Wejście z telefonu wymaga kodu; agent z telefonu jest domyślnie wyłączony (włącza go osoba przy komputerze: Ustawienia → Telefon).
+- Uprawnienia „osoby przy komputerze” (agent, git, nowa migawka) daje **klucz lokalny** zapamiętany w przeglądarce po uruchomieniu `panel\start.bat` — samo połączenie z tego samego komputera nie wystarcza. Wspólna konfiguracja z repozytorium nie może zmienić ustawień bezpieczeństwa.
+- Kod przeszedł przegląd bezpieczeństwa 12.11.2026 (14 potwierdzonych uwag, wszystkie poprawione; lista w opisie commita).
 - Rozmowy z agentem i nagrania głosowe zostają lokalnie. Do repozytorium trafia tylko tekst raportów i komentarzy.
 - **Repozytorium jest publiczne** — wszystko w `panel/dane/` jest widoczne dla każdego. Zob. [[Workflow i Git]].
 

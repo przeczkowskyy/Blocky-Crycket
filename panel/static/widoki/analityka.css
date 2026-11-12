@@ -1,0 +1,51 @@
+/* Analityka — style specyficzne dla widoku */
+.an { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.an [hidden] { display: none !important; }
+.an-gora { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.an-tytul { margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.2; }
+.an-tytul::after { content: ""; display: block; width: 42px; height: 5px; margin-top: 6px; border-radius: 3px; background: var(--zloto, #f5b82e); transform: skewX(-20deg); }
+@media (max-width: 899px) { .an-tytul { font-size: 22px; } }
+.an-akt { font-size: 13px; display: block; margin-top: 6px; }
+.an-gora .przycisk { min-height: 44px; }
+.an-naglowek { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.an-naglowek .karta-tytul { margin: 0; }
+
+.an-kafle { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 720px) { .an-kafle { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.an-kafel { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.an-kafel-tytul { font-size: .85rem; }
+.an-kafel-wartosc { font-size: 1.9rem; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.an-kafel-pod { font-size: .8rem; }
+.an-zywe .an-kafel-wartosc { color: var(--zielen, #3ecf8e); }
+.an-oceny-pasek { display: flex; gap: 2px; height: 8px; border-radius: 4px; overflow: hidden; margin: 4px 0 2px; }
+.an-za { background: var(--zielen, #3ecf8e); border-radius: 4px 0 0 4px; }
+.an-przeciw { background: var(--czerwien, #ef5a5a); border-radius: 0 4px 4px 0; }
+
+.an-stan { display: flex; gap: 14px; align-items: flex-start; }
+.an-stan-ikona { margin: 0; flex: none; }
+.an-stan .karta-tytul { margin-bottom: 4px; }
+.an-blad { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.an-gora { align-items: flex-start; }
+.an-stan p { margin: 4px 0 0; }
+.an-szczegol { font-size: .8rem; overflow-wrap: anywhere; }
+
+.an-zakres { font-size: .8rem; }
+.an-wykres { position: relative; width: 100%; min-width: 0; }
+.an-svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+.an-siatka { stroke: var(--obrys, #2a3042); stroke-width: 1; }
+.an-os { fill: var(--przygaszony, #9aa3b8); font-size: 11px; font-family: inherit; font-variant-numeric: tabular-nums; }
+.an-linia { fill: none; stroke: var(--niebieski, #4ea8ff); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.an-kropka { fill: var(--niebieski, #4ea8ff); stroke: var(--karta, #1b1f2b); stroke-width: 2; }
+.an-celownik { stroke: var(--przygaszony, #9aa3b8); stroke-width: 1; stroke-dasharray: 3 3; }
+.an-dymek { position: absolute; pointer-events: none; background: var(--karta2, #232838); border: 1px solid var(--obrys, #2a3042); border-radius: 8px;
+  padding: 6px 10px; display: flex; flex-direction: column; font-size: .82rem; white-space: nowrap; box-shadow: 0 6px 18px rgba(0, 0, 0, .4); }
+
+.an-studio-chipy { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.an-konsola { background: #0c0e14; border: 1px solid var(--obrys, #2a3042); border-radius: 10px; padding: 8px 10px; max-height: 260px; overflow: auto;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace; font-size: .8rem; line-height: 1.45; }
+.an-linia-k { white-space: pre-wrap; overflow-wrap: anywhere; }
+.an-linia-k.info { color: #c3c9d8; }
+.an-linia-k.ostrz { color: var(--zloto, #f5b82e); }
+.an-linia-k.blad { color: var(--czerwien, #ef5a5a); }
+.an-poziom { display: inline-block; min-width: 4.2em; font-weight: 700; opacity: .8; }
+.an-dodatek p { margin: 0; }
