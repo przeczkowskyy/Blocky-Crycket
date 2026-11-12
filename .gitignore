@@ -31,3 +31,10 @@ Desktop.ini
 assets/raw/**
 !assets/raw/.gitkeep
 __pycache__/
+
+# Blender: kopie zapasowe
+*.blend1
+*.blend2
+
+# Panel zespołu: pliki tymczasowe zapisu (stan lokalny leży poza repo: %LOCALAPPDATA%\BlockyCrycket)
+panel/dane/**/*.tmp

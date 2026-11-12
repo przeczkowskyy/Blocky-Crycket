@@ -7,3 +7,9 @@
 *.png binary
 *.jpg binary
 *.db binary
+*.blend binary
+*.glb binary
+
+# Pliki wsadowe Windows muszą mieć końce linii CRLF
+*.bat text eol=crlf
+*.mp4 binary
