@@ -22,6 +22,9 @@ Dwóch niezależnych krytyków oceniło pierwszą wersję: wygląd 6,5/10, techn
 ## Przymierzalnia zestawów
 Przy manekinach z zestawami Rekruta, Rycerza i Maga w uruchomionej grze (w Studio) pojawia się podpowiedź „Przymierz”. Po naciśnięciu zestaw ląduje na awatarze gracza jako zwykłe akcesoria Roblox zbudowane z klocków — znów bez wgrywania zasobów. Sprawdzone 13.11.2026 na zwykłym awatarze R15: wszystkie trzy zestawy zakładają się i zdejmują. Dopasowanie jest liczone dla klockowego awatara; zestaw Maga jest za ciężki (527 części) i wymaga uproszczenia, zanim trafi do gry. Sloty i podział na części to nadal propozycja ([[Pytania otwarte]] #24).
 
+## Pety idące za graczem
+W uruchomionej grze (w Studio) przy psie, slimie i smoku pojawia się podpowiedź „Weź peta”. Pet idzie wtedy za awatarem: pies biegnie, slime skacze, smok leci nad ziemią, a gdy gracz stoi, pet odpoczywa obok. Drugie naciśnięcie odsyła go na miejsce. Sprawdzone 13.11.2026 w marszu przez rynek. To próba zachowania pod [[Pety]], a nie system: bez omijania przeszkód, zapisu i ekonomii.
+
 ## Dwie drogi do Robloxa
 | | Postać z klocków (części Roblox) | Siatka (FBX/GLB) |
 |---|---|---|
@@ -38,7 +41,7 @@ Polecenia i szczegóły: `swiat/postacie/README.md`. Budowa w Studio: `python -B
 - **Animacje.** Klipy stoją w Studio jako `KeyframeSequence` w `AnimSaves` każdej postaci i odtwarzają się w Studio. W opublikowanej grze animacja musi być zasobem Animation; publikuje się ją z Animation Editora i według dokumentacji Roblox ma należeć do właściciela gry (osoby albo grupy). To czynność i decyzja właściciela — zob. [[Pytania otwarte]] #24.
 - **Zasoby wgrane przez współpracownika** (siatki, obrazy) trzeba udostępnić grze właściciela w Creator Dashboard, inaczej się nie wczytają.
 - **Wgrywanie przez Studio (Open Cloud)** wymaga dwóch zgód w Assistant → Settings → MCP Permissions: zakresów `asset:read`/`asset:write` (włączone) i zatwierdzonego folderu z plikami (brak — do kliknięcia przez człowieka).
-- **Kontener `TestPostaci`** ma skrypty pokazu i przymierzalni działające tylko w Studio. Przed publikacją gry trzeba go usunąć, tak jak `TestWalki`.
+- **Kontener `TestPostaci`** ma skrypty pokazu, przymierzalni i petów działające tylko w Studio. Przed publikacją gry trzeba go usunąć, tak jak `TestWalki`.
 
 ## Czego nie sprawdzono
 - Importu siatek: skali, kierunku przodu, kolorów z tekstury-palety, kości i punktów zaczepienia po imporcie.

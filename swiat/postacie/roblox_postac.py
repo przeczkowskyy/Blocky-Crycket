@@ -280,15 +280,15 @@ local kont = workspace:FindFirstChild("__KONTENER__")
 if not kont or kont:GetAttribute("Wygenerowane") ~= true then
 	return "STOP: brak kontenera"
 end
-local stary = kont:FindFirstChild("PokazAnimacji")
+local stary = kont:FindFirstChild("__NAZWA__")
 if stary then
 	stary:Destroy()
 end
 local s = Instance.new("Script")
-s.Name = "PokazAnimacji"
+s.Name = "__NAZWA__"
 s.Source = __ZRODLO__
 s.Parent = kont
-game:GetService("ChangeHistoryService"):SetWaypoint("Postacie: skrypt pokazu animacji")
+game:GetService("ChangeHistoryService"):SetWaypoint("Postacie: skrypt __NAZWA__")
 local modeli, czesci = 0, 0
 for _, d in kont:GetChildren() do
 	if d:IsA("Model") then
@@ -300,7 +300,7 @@ for _, d in kont:GetDescendants() do
 		czesci += 1
 	end
 end
-return string.format("skrypt pokazu zainstalowany (%d znaków); w kontenerze %d postaci, %d części", #s.Source, modeli, czesci)
+return string.format("skrypt __NAZWA__ zainstalowany (%d znaków); w kontenerze %d postaci, %d części", #s.Source, modeli, czesci)
 '''
 
 EKWIPUNEK = r'''
@@ -406,7 +406,7 @@ def main():
     ap.add_argument("--usun", action="store_true", help="usuń kontener Workspace/%s" % KONTENER)
     ap.add_argument("--liniowo", action="store_true", help="klipy liniowo między kluczami (bez Blendera)")
     ap.add_argument("--bez-klipow", action="store_true")
-    ap.add_argument("--bez-pokazu", action="store_true", help="nie instaluj skryptu PokazAnimacji (pokaz klipów w Play/Run)")
+    ap.add_argument("--bez-pokazu", action="store_true", help="nie instaluj skryptów działających w Play (PokazAnimacji, PetyTestowe, Przymierzalnia)")
     ap.add_argument("--wyj", default=os.path.join(TU, "wynik", "_roblox"), help="folder na <id>_klocki.json")
     a = ap.parse_args()
 
@@ -496,9 +496,11 @@ def main():
                 k.update(model=d["model"], szkielet=szkielet, priorytet=PRIORYTETY.get(k["n"], "Action"))
                 print("Studio:", wykonaj(KLIP.replace("__KLIP__", luau(k)).replace("__KONTENER__", KONTENER)))
         if not a.bez_pokazu and not a.bez_klipow:
-            with open(os.path.join(TU, "roblox", "PokazAnimacji.server.luau"), encoding="utf-8") as f:
-                zrodlo = f.read()
-            print("Studio:", wykonaj(POKAZ.replace("__KONTENER__", KONTENER).replace("__ZRODLO__", luau(zrodlo))))
+            for nazwa in ("PokazAnimacji", "PetyTestowe"):            # skrypty działające tylko w Studio
+                with open(os.path.join(TU, "roblox", nazwa + ".server.luau"), encoding="utf-8") as f:
+                    zrodlo = f.read()
+                print("Studio:", wykonaj(POKAZ.replace("__KONTENER__", KONTENER).replace("__NAZWA__", nazwa)
+                                         .replace("__ZRODLO__", luau(zrodlo))))
         if ekwipunek and not a.bez_pokazu:
             with open(os.path.join(TU, "roblox", "Przymierzalnia.server.luau"), encoding="utf-8") as f:
                 zrodlo = f.read()

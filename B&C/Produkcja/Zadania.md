@@ -55,7 +55,7 @@ tags: [produkcja, zadania]
 - [x] 2026-11-13: Diagnoza pomysłu i poprawiona koncepcja: [[Diagnoza pomysłu 2026-11-13]], [[Myśl przewodnia v2]], [[Systemy gry v2]], [[Psychologia gracza v2]], [[Karta ocen v2 i plan sprawdzenia]], [[Specyfikacja v2.1 — Krzywa Banda]]
 - [x] 2026-11-13: Test cutscenki auto-walki w samym Roblox (`swiat/test_walki_roblox/`, `Workspace/TestWalki`): 2 postacie R15, kamera skryptowa, POMIŃ, panel wyniku; zweryfikowany niezależnie (42 sprawdzenia w trybie Play)
 - [x] 2026-11-13: [[Panel zespołu|Panel]]: zakładka Assety (rejestr grafik z `assets/manifest.json`) i sekcja „Telemetria gry” w Analityce; kod telemetrii w `src/server/Telemetria` ([[Telemetria gry]]); 141 testów
-- [x] 2026-11-13: Postacie, pety i ekwipunek z kodu (`swiat/postacie/`): 6 postaci, 3 zestawy, 8 broni, 20 klipów; w Studio jako postacie z klocków w `Workspace/TestPostaci`, animacje sprawdzone w Edit i Play; manekiny z zestawami i przymierzalnia na awatarze gracza ([[Postacie 3D — Blender i Roblox]])
+- [x] 2026-11-13: Postacie, pety i ekwipunek z kodu (`swiat/postacie/`): 6 postaci, 3 zestawy, 8 broni, 20 klipów; w Studio jako postacie z klocków w `Workspace/TestPostaci`, animacje sprawdzone w Edit i Play; manekiny z zestawami, przymierzalnia na awatarze gracza i pety idące za graczem ([[Postacie 3D — Blender i Roblox]])
 - [x] 2026-11-13: [[Panel zespołu|Panel]]: zapis do sejfu z panelu (odpowiedzi, zadania, decyzje z kluczem Game Directora) — gotowy, po niezależnym przeglądzie, wyłączony do decyzji; 216 testów
 - [x] 2026-11-13: Mapa v2 „Krzywe Miasteczko” w Studio po rundzie poprawek; kontrola kolizji ([[Klocki — Blender i Roblox]])
 - [x] 2026-11-13: Migawka dema ze zrzutami z prawdziwego Roblox Studio (panel → Podgląd 3D)

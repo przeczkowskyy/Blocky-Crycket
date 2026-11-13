@@ -1,6 +1,7 @@
 -- Pokaz animacji postaci z klocków — TYLKO w Roblox Studio (Play albo Run). W opublikowanej grze nic nie robi.
 -- Instalowany przez `python -B swiat/postacie/roblox_postac.py` jako Workspace/TestPostaci/PokazAnimacji.
 -- Każda postać odtwarza po kolei swoje klipy z `AnimSaves` (KeyframeSequence) przez własny Animator.
+-- Model z atrybutem `Zajety` (np. pet idący za graczem — skrypt PetyTestowe) jest na ten czas pomijany.
 -- Uwaga: `RegisterKeyframeSequence` działa wyłącznie w Studio. Do prawdziwej gry klipy trzeba opublikować jako
 -- zasoby Animation (Animation Editor → Publish to Roblox) na koncie WŁAŚCICIELA gry i wpisać ich AnimationId.
 local RunService = game:GetService("RunService")
@@ -10,6 +11,18 @@ end
 local KSP = game:GetService("KeyframeSequenceProvider")
 local kontener = script.Parent
 local PRZERWA = 0.5 -- sekundy w pozie spoczynkowej między klipami
+
+-- czeka podaną liczbę sekund; false, gdy w tym czasie model został zajęty przez inny skrypt
+local function czekaj(model, sekundy)
+	local t = 0
+	while t < sekundy do
+		if model:GetAttribute("Zajety") then
+			return false
+		end
+		t += task.wait(0.1)
+	end
+	return true
+end
 
 local function pokaz(model)
 	local kontroler = model:FindFirstChildWhichIsA("AnimationController")
@@ -40,13 +53,18 @@ local function pokaz(model)
 	model:SetAttribute("Klipow", #sciezki)
 	while model.Parent do
 		for _, s in sciezki do
+			while model:GetAttribute("Zajety") do
+				task.wait(0.3)
+			end
 			model:SetAttribute("Klip", s.nazwa)
 			s.track:Play(0.15)
 			local dl = s.track.Length
-			task.wait(if s.petla then math.max(2.4, dl * 3) else dl + 0.1)
-			s.track:Stop(0.15)
+			local caly = czekaj(model, if s.petla then math.max(2.4, dl * 3) else dl + 0.1)
+			s.track:Stop(if caly then 0.15 else 0)
 			model:SetAttribute("Klip", "")
-			task.wait(PRZERWA)
+			if caly then
+				czekaj(model, PRZERWA)
+			end
 		end
 	end
 end
