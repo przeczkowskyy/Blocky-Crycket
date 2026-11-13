@@ -12,7 +12,7 @@ Wszystkie testy:                   python -m unittest discover -s testy -t .
   POST /api/git/pobierz i /api/git/wyslij są sprawdzane wyłącznie jako odmowy (403).
 - Sejf B&C jest czytany naprawdę (tylko odczyt) — testy sprawdzają kształt odpowiedzi, nie treść notatek.
 - Zapis do sejfu (TestZapisSejfuAPI) idzie WYŁĄCZNIE do tymczasowego sejfu wskazanego w konfiguracji lokalnej
-  serwera testowego; klucz Game Directora też jest tymczasowy.
+  serwera testowego; klucz zatwierdzania (plik klucz_gd.txt) też jest tymczasowy.
 """
 import json
 import os
@@ -194,11 +194,13 @@ class TestAPI(SerwerTestowy):
         self.assertPola(o, ["ok", "app", "wersja", "start", "pid", "port", "lan"])
         self.assertEqual((o["app"], o["port"], o["lan"]), ("bc-panel", self.port, False))
         s, o, _ = self.get("/api/ja", kto="Paweł Ż")
-        self.assertPola(o, ["kto", "lokalny", "gospodarz", "tryb_statyczny", "wersja", "game_director", "zapis_sejfu"])
+        self.assertPola(o, ["kto", "lokalny", "gospodarz", "tryb_statyczny", "wersja", "game_director", "decydent",
+                            "zapis_sejfu"])
         self.assertEqual((o["kto"], o["lokalny"], o["tryb_statyczny"]), ("Paweł Ż", True, False))
-        self.assertFalse(o["game_director"])                                         # bez klucza GD nikt nim nie jest
+        self.assertFalse(o["game_director"])                                         # bez klucza zatwierdzania
+        self.assertTrue(o["decydent"])                                               # ale przy komputerze z panelem
         s, o, _ = self.get("/api/ja", zdalny=True)
-        self.assertEqual((s, o["lokalny"], o["kto"]), (200, False, "gość"))
+        self.assertEqual((s, o["lokalny"], o["kto"], o["decydent"]), (200, False, "gość", False))
         s, o, _ = self.get("/api/konfiguracja")
         self.assertPola(o, ["port", "gra", "sejfy", "agent", "glos"])
         self.assertPola(o["gra"], ["nazwa", "universeId", "placeId"])
@@ -635,17 +637,21 @@ class TestZapisSejfuAPI(SerwerTestowy):
             for p in s["pozycje"]:
                 self.assertRegex(p["id"], r"^z[0-9a-f]{10}$")
 
-    def test_game_director_klucz(self):
+    def test_klucz_zatwierdzania(self):
+        """Klucz zatwierdzania (dawny klucz Game Directora: plik klucz_gd.txt, ciasteczko bc_gd, parametr gd)."""
         self.assertFalse(self.get("/api/ja")[1]["game_director"])
         self.assertTrue(self.get("/api/ja", gd=self.klucz_gd)[1]["game_director"])
-        self.assertTrue(self.get("/api/ja", gd=self.klucz_gd, zdalny=True)[1]["game_director"])     # także przez tunel
+        o = self.get("/api/ja", gd=self.klucz_gd, zdalny=True)[1]                         # także przez tunel
+        self.assertEqual((o["game_director"], o["decydent"], o["lokalny"]), (True, True, False))
+        o = self.get("/api/ja", zdalny=True)[1]
+        self.assertEqual((o["game_director"], o["decydent"]), (False, False))           # gość: nie decyduje
         self.assertFalse(self.get("/api/ja", naglowki={"Cookie": "bc_gd=zly"})[1]["game_director"])
         self.assertTrue(self.get("/api/ja", naglowki={"Cookie": "bc_gd=" + self.klucz_gd})[1]["game_director"])
-        # klucz GD nie zastępuje dostępu do panelu: bez kodu dostępu i bez klucza lokalnego nadal 401
+        # klucz zatwierdzania nie zastępuje dostępu do panelu: bez kodu dostępu i bez klucza lokalnego nadal 401
         self.assertBlad(self.get("/api/ja", klucz=False, gd=self.klucz_gd), 401)
         # zły klucz: 200 bez uprawnień (próba liczy się do limitu)
         s, o, _ = self.get("/api/ja", gd="zly-klucz-0123456789-0123456789")
-        self.assertEqual((s, o["game_director"]), (200, False))
+        self.assertEqual((s, o["game_director"], o["decydent"]), (200, False, True))   # decydent tylko z lokalnego
         # link z kluczem: ciasteczko HttpOnly i przekierowanie na adres bez klucza (lokalnie i z kodem dostępu)
         import http.client
         for zapytanie, naglowki in (("/?gd=" + self.klucz_gd, {"X-BC-Lokalny": self.klucz}),
@@ -690,15 +696,17 @@ class TestZapisSejfuAPI(SerwerTestowy):
             finally:
                 c.close()
 
-    def test_odpowiedz_game_directora_ma_znacznik(self):
+    def test_odpowiedz_z_kluczem_zatwierdzania_ma_znacznik(self):
         o = self.plan(zdalny=True, gd=self.klucz_gd)
         s, w, _ = self.post("/api/sejf/pytania/4/odpowiedz", {"tekst": "Zatwierdzam", "wersja": o["wersje"]["pytania"]},
                             zdalny=True, gd=self.klucz_gd, kto="Paweł")
         self.assertEqual(s, 200, w)
-        self.assertIn("\n- Paweł (Game Director, ", self.plik("Pytania otwarte.md"))
-        s, e, _ = self.post("/api/sejf/pytania/4/odpowiedz", {"tekst": "x", "wersja": w["wersja"]}, zdalny=True,
-                            kto="Game Director")                                       # zastrzeżone imię bez klucza
-        self.assertEqual((s, e.get("kod")), (400, "imie_zastrzezone"), e)
+        self.assertIn("\n- Paweł (klucz zatwierdzania, ", self.plik("Pytania otwarte.md"))
+        self.assertIn("\n- Paweł (klucz zatwierdzania): odpowiedź na pytanie 4", self.plik("Dziennik zmian.md"))
+        for kto in ("Game Director", "Klucz Zatwierdzania", "gość panelu"):              # imiona = znaczniki serwera
+            s, e, _ = self.post("/api/sejf/pytania/4/odpowiedz", {"tekst": "x", "wersja": w["wersja"]}, zdalny=True,
+                                kto=kto)
+            self.assertEqual((s, e.get("kod")), (400, "imie_zastrzezone"), (kto, e))
 
     def test_odpowiedz_jako_gosc(self):
         o = self.plan(zdalny=True)
@@ -738,47 +746,75 @@ class TestZapisSejfuAPI(SerwerTestowy):
         self.assertBlad(self.post("/api/sejf/zadania/odhacz", {"wersja": w["wersja"], "nieznane": 1}), 400)
         self.assertBlad(self.get("/api/sejf/zadania/odhacz"), 405)
 
-    def test_decyzje_tylko_game_director(self):
+    def test_decyzje_karol_albo_pawel(self):
+        """Status decyzji: klucz zatwierdzania albo osoba przy komputerze; gość 403; bez imienia 400; podpis imię i data."""
         o = self.plan()
         przed = self.plik("Rejestr decyzji.md")
         cialo = {"status": "zatwierdzona", "uzasadnienie": "Tak", "wersja": o["wersje"]["decyzje"]}
-        for kw in ({}, {"zdalny": True}, {"kto": "Paweł"}, {"zdalny": True, "kto": "Game Director"},
-                   {"gd": "zly-klucz-0123456789-0123456789"}):
+        for kw in ({"zdalny": True}, {"zdalny": True, "kto": "Paweł"}, {"zdalny": True, "kto": "Game Director"},
+                   {"zdalny": True, "gd": "zly-klucz-0123456789-0123456789", "kto": "Paweł"}):
             s, e, _ = self.post("/api/sejf/decyzje/D-002/status", cialo, **kw)
-            self.assertEqual((s, e.get("kod")), (403, "tylko_game_director"), (kw, e))
+            self.assertEqual((s, e.get("kod")), (403, "brak_klucza_zatwierdzania"), (kw, e))
+            self.assertIn("--klucz-zatwierdzania", e["blad"])
+        # decydent bez prawdziwego imienia: 400 brak_imienia (lokalnie i z kluczem przez tunel). Także przy komputerze
+        # BEZ nagłówka X-BC-Kto — serwer nie podpisuje decyzji domyślnym imieniem z `git config user.name`.
+        for kw in ({"kto": "gość"}, {"zdalny": True, "gd": self.klucz_gd, "kto": "Gość"}, {}, {"gd": self.klucz_gd}):
+            s, e, _ = self.post("/api/sejf/decyzje/D-002/status", cialo, **kw)
+            self.assertEqual((s, e.get("kod")), (400, "brak_imienia"), (kw, e))
+            self.assertIn("Ustawieniach", e["blad"])
         self.assertEqual(self.plik("Rejestr decyzji.md"), przed)
-        s, w, _ = self.post("/api/sejf/decyzje/D-002/status", cialo, gd=self.klucz_gd, kto="Paweł")
+        # osoba przy komputerze z panelem, BEZ klucza zatwierdzania
+        s, w, _ = self.post("/api/sejf/decyzje/D-002/status", cialo, kto="Karol")
         self.assertEqual(s, 200, w)
-        self.assertIn("✅ zatwierdzona · game design · 2026-11-13 · źródło: [[Notatka]] · zdecydował: Game Director (Paweł) ",
-                      self.plik("Rejestr decyzji.md"))
+        rejestr = self.plik("Rejestr decyzji.md")
+        self.assertIn("✅ zatwierdzona · game design · 2026-11-13 · źródło: [[Notatka]] · zdecydował: Karol ", rejestr)
+        self.assertIn("\nUzasadnienie — Karol, ", rejestr)
+        self.assertNotIn("Game Director", rejestr)
+        self.assertIn("\n- Karol: decyzja D-002 zatwierdzona ([[Rejestr decyzji]])\n", self.plik("Dziennik zmian.md"))
+        # klucz zatwierdzania przez tunel
         s, w, _ = self.post("/api/sejf/decyzje/D-003/status", {"status": "odrzucona", "wersja": w["wersja"]},
-                            gd=self.klucz_gd, zdalny=True, kto="Paweł")                   # Game Director przez tunel
+                            gd=self.klucz_gd, zdalny=True, kto="Paweł")
         self.assertEqual(s, 200, w)
+        self.assertIn("· zaproponował: Claude Code · zdecydował: Paweł ", self.plik("Rejestr decyzji.md"))
+        self.assertIn("\n- Paweł (klucz zatwierdzania): decyzja D-003 odrzucona ([[Rejestr decyzji]])\n",
+                      self.plik("Dziennik zmian.md"))
         s, e, _ = self.post("/api/sejf/decyzje/D-001/status", {"status": "odrzucona", "wersja": w["wersja"]},
-                            gd=self.klucz_gd)
+                            gd=self.klucz_gd, kto="Paweł")
         self.assertEqual((s, e.get("kod")), (409, "status_zamkniety"), e)
-        self.assertIn("decyzja D-003 odrzucona", self.plik("Dziennik zmian.md"))
 
-    def test_z_polecenie_klucz_gd(self):
-        """`--klucz-gd` wypisuje link z istniejącym kluczem; `--nowy-klucz-gd` unieważnia stary bez restartu panelu.
+    def test_z_polecenie_klucz_zatwierdzania(self):
+        """`--klucz-zatwierdzania` (i dawne `--klucz-gd`) wypisuje link z istniejącym kluczem; `--nowy-klucz-zatwierdzania`
+        (i dawne `--nowy-klucz-gd`) unieważnia stary bez restartu panelu. Plik klucza dalej nazywa się klucz_gd.txt.
         (Nazwa z „z_”, żeby test szedł ostatni — zmienia klucz.)"""
         env = dict(os.environ, BC_PANEL_RUNTIME=os.path.join(self.tmp, "runtime"), PYTHONDONTWRITEBYTECODE="1",
                    PYTHONIOENCODING="utf-8")
         bez_okna = 0x08000000 if os.name == "nt" else 0
-        r = subprocess.run([sys.executable, "-B", os.path.join(PANEL, "serwer.py"), "--klucz-gd"], env=env, cwd=REPO,
-                           capture_output=True, timeout=60, creationflags=bez_okna)
-        self.assertEqual(r.returncode, 0)
-        self.assertIn("/?gd=" + self.klucz_gd, r.stdout.decode("utf-8"))
-        r = subprocess.run([sys.executable, "-B", os.path.join(PANEL, "serwer.py"), "--nowy-klucz-gd"], env=env,
-                           cwd=REPO, capture_output=True, timeout=60, creationflags=bez_okna)
-        self.assertEqual(r.returncode, 0)
-        with open(os.path.join(self.tmp, "runtime", "klucz_gd.txt"), encoding="utf-8") as f:
-            nowy = f.read().strip()
-        self.assertNotEqual(nowy, self.klucz_gd)
-        self.assertIn("/?gd=" + nowy, r.stdout.decode("utf-8"))
-        self.assertFalse(self.get("/api/ja", gd=self.klucz_gd)[1]["game_director"])
-        self.assertTrue(self.get("/api/ja", gd=nowy)[1]["game_director"])
-        type(self).klucz_gd = nowy
+
+        def polecenie(nazwa):
+            r = subprocess.run([sys.executable, "-B", os.path.join(PANEL, "serwer.py"), nazwa], env=env, cwd=REPO,
+                               capture_output=True, timeout=60, creationflags=bez_okna)
+            self.assertEqual(r.returncode, 0, (nazwa, r.stderr.decode("utf-8", "replace")))
+            return r.stdout.decode("utf-8")
+
+        def plik_klucza():
+            with open(os.path.join(self.tmp, "runtime", "klucz_gd.txt"), encoding="utf-8") as f:
+                return f.read().strip()
+
+        for nazwa in ("--klucz-zatwierdzania", "--klucz-gd"):
+            wyjscie = polecenie(nazwa)
+            self.assertIn("/?gd=" + self.klucz_gd, wyjscie)
+            self.assertIn("Klucz zatwierdzania", wyjscie)
+            self.assertIn("--nowy-klucz-zatwierdzania", wyjscie)
+            self.assertNotIn("Game Director", wyjscie)
+        for nazwa in ("--nowy-klucz-zatwierdzania", "--nowy-klucz-gd"):
+            stary = self.klucz_gd
+            wyjscie = polecenie(nazwa)
+            nowy = plik_klucza()
+            self.assertNotEqual(nowy, stary)
+            self.assertIn("/?gd=" + nowy, wyjscie)
+            self.assertFalse(self.get("/api/ja", gd=stary)[1]["game_director"])
+            self.assertTrue(self.get("/api/ja", gd=nowy)[1]["game_director"])
+            type(self).klucz_gd = nowy
 
 
 if __name__ == "__main__":

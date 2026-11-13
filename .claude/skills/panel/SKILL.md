@@ -5,7 +5,7 @@ description: Panel zespołu BLOCKY & CRYCKET — publikowanie raportów z wdroż
 
 # Panel zespołu — jak z niego korzysta Claude
 
-Panel (`panel/`, `http://127.0.0.1:8787`) to okno na sejf `B&C/` dla dwóch osób: Pawła (Game Director) i Karola. Ludzie oglądają w nim raporty, model 3D mapy i komentują konkretne elementy — często z telefonu. **Twoja praca jest dla nich niewidoczna, dopóki nie opublikujesz raportu.**
+Panel (`panel/`, `http://127.0.0.1:8787`) to okno na sejf `B&C/` dla dwóch osób: Pawła i Karola, którzy razem prowadzą projekt. Ludzie oglądają w nim raporty, model 3D mapy i komentują konkretne elementy — często z telefonu. **Twoja praca jest dla nich niewidoczna, dopóki nie opublikujesz raportu.**
 
 Narzędzia działają bez uruchomionego serwera (piszą pliki do `panel/dane/`). Uruchamiaj je z głównego folderu repozytorium.
 
@@ -34,7 +34,7 @@ python panel/narzedzia/raport.py odpowiedzi --od 2026-11-12T20:00      # decyzje
 python panel/narzedzia/raport.py odpowiedzi --raport <id>
 python panel/narzedzia/raport.py lista --czeka
 ```
-„Do poprawy” z komentarzem to zlecenie poprawki. „Akceptuję” dotyczy tego jednego raportu — **nie robi z niczego kanonu**; kanon zatwierdza Game Director w sejfie.
+„Do poprawy” z komentarzem to zlecenie poprawki. „Akceptuję” pod raportem nadal dotyczy tylko tego jednego raportu — **nie robi z niczego kanonu**. Decyzje zatwierdza Karol albo Paweł (równe prawa od 13.11.2026, wystarcza jeden z nich). W panelu wymaga to klucza lokalnego (osoba przy komputerze z panelem) albo klucza zatwierdzania, a panel podpisuje każdą decyzję imieniem i datą: w Rejestrze `zdecydował: Paweł 2026-11-13` / `oznaczył: Karol 2026-11-13`, w Dzienniku zmian `- Paweł (klucz zatwierdzania): decyzja D-019 zatwierdzona` albo `- Karol: decyzja …`. Odpowiedź w `Pytania otwarte.md` jest zgodą tylko bez znacznika (komputer z panelem) albo ze znacznikiem `(klucz zatwierdzania, data)` — nigdy z `(gość panelu, …)`. Wpisy z 13.11.2026 sprzed tej zmiany ze znacznikiem `Game Director` znaczą to samo co `klucz zatwierdzania`.
 
 ## Zasady
 - Jeden plik na wpis: nigdy nie edytuj ani nie usuwaj cudzych plików w `panel/dane/` (raportów, komentarzy, migawek). Własny raport poprawiasz nowym raportem.

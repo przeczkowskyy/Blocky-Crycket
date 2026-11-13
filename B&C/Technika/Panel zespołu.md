@@ -5,7 +5,7 @@ tags: [technika, panel, workflow, narzędzia]
 # Panel zespołu
 
 > [!info] W skrócie
-> Lokalna strona (`panel/`, port 8787) dla dwóch osób: **okno na ten sejf**, raporty z wdrożeń z akceptacją, podgląd 3D tego, co stoi w Roblox Studio, agent Claude Code na subskrypcji, głosówki, sieć notatek i analityka gry. Powstał na prośbę Karola 12.11.2026. **Nie zastępuje sejfu** (decyzja D-008): decyzje, zadania i roadmapę czyta z notatek, a własne dane to tylko raporty, komentarze i migawki. Czeka na zgodę Game Directora — [[Pytania otwarte]] #11, propozycja D-012 w [[Rejestr decyzji]].
+> Lokalna strona (`panel/`, port 8787) dla dwóch osób: **okno na ten sejf**, raporty z wdrożeń z akceptacją, podgląd 3D tego, co stoi w Roblox Studio, agent Claude Code na subskrypcji, głosówki, sieć notatek i analityka gry. Powstał na prośbę Karola 12.11.2026. **Nie zastępuje sejfu** (decyzja D-008): decyzje, zadania i roadmapę czyta z notatek, a własne dane to tylko raporty, komentarze i migawki. Czeka na zgodę (Karol albo Paweł, decyzja D-030) — [[Pytania otwarte]] #11, propozycja D-012 w [[Rejestr decyzji]].
 
 ## Po co, skoro jest sejf
 | Potrzeba | Sejf w Obsidianie | Panel |
@@ -41,8 +41,22 @@ Bez instalowania zależności (sam Python 3.9+). Pełna instrukcja: `panel/INSTA
 - Rozmowy z agentem i nagrania głosowe zostają lokalnie. Do repozytorium trafia tylko tekst raportów i komentarzy.
 - **Repozytorium jest publiczne** — wszystko w `panel/dane/` jest widoczne dla każdego. Zob. [[Workflow i Git]].
 
-## Praca na sejfie z panelu (propozycja D-028, na razie wyłączona)
-Zakładka Plan potrafi zapisywać do sejfu: odpowiedź pod pytaniem otwartym, odhaczenie i dodanie zadania, a z osobistym kluczem Game Directora — zatwierdzenie albo odrzucenie decyzji. Każda zmiana to mały, czytelny wiersz w tym samym pliku Markdown co zawsze i ślad w [[Dziennik zmian]] (sekcja „Panel (ludzie)”); panel sprawdza, czy plik nie zmienił się w międzyczasie w Obsidianie. Odpowiedzi osób bez klucza lokalnego są oznaczane „gość panelu”, a zgodę Game Directora poznaje się po znaczniku stawianym przez serwer — samo imię nie daje uprawnień. Włączenie: `"zapis_sejfu": true` w konfiguracji lokalnej; link z kluczem: `python panel/serwer.py --klucz-gd`. Szczegóły i API: `panel/README.md`. Do ustalenia: [[Pytania otwarte]] #23.
+## Praca na sejfie z panelu (D-028)
+Zakładka Plan potrafi zapisywać do sejfu: odpowiedź pod pytaniem otwartym, odhaczenie i dodanie zadania oraz zatwierdzenie albo odrzucenie decyzji. Każda zmiana to mały, czytelny wiersz w tym samym pliku Markdown co zawsze i ślad w [[Dziennik zmian]] (sekcja „Panel (ludzie)”); panel sprawdza, czy plik nie zmienił się w międzyczasie w Obsidianie. Odpowiedzi gości z samym kodem dostępu (bez klucza lokalnego i bez klucza zatwierdzania) są oznaczane „gość panelu” — samo imię nie daje uprawnień. Zapis jest włączony (D-028; odpowiedź Karola na [[Pytania otwarte]] #23); wyłączenie: `"zapis_sejfu": false` w konfiguracji. Szczegóły i API: `panel/README.md`.
+
+### Kto zatwierdza decyzje w panelu (D-030)
+Od 13.11.2026 Karol i Paweł mają równe prawa: wystarcza decyzja jednego z nich, a każda zostaje w logach z imieniem i datą. W panelu status decyzji zmienia:
+- osoba **przy komputerze, na którym działa panel** (klucz lokalny) — bez dodatkowego klucza;
+- przeglądarka z **kluczem zatwierdzania** (dawniej „klucz Game Directora”) — także z telefonu i przez tunel. Link z kluczem wypisuje `python panel/serwer.py --klucz-zatwierdzania` (dawna nazwa `--klucz-gd` działa dalej, link zapisany wcześniej w przeglądarce też).
+
+Gość z samym kodem dostępu decyzji nie zmienia. Przed zatwierdzaniem trzeba wpisać imię w Ustawieniach — bez imienia panel decyzji nie zapisze, bo musi ją podpisać. Dotyczy to także komputera z panelem: imię, którym podpisuje się tam Git, decyzji nie podpisuje.
+
+Jak panel podpisuje:
+- w [[Rejestr decyzji]]: `zdecydował: Paweł 2026-11-13` (zatwierdzona albo odrzucona), `oznaczył: Karol 2026-11-13` („do decyzji”), wiersz `Uzasadnienie — Paweł, 2026-11-13: …`;
+- w [[Dziennik zmian]]: `- Paweł (klucz zatwierdzania): decyzja D-019 zatwierdzona` (z kluczem zatwierdzania) albo `- Karol: decyzja D-019 zatwierdzona` (przy komputerze z panelem);
+- w odpowiedziach w [[Pytania otwarte]]: `- Paweł (klucz zatwierdzania, 2026-11-13): …`, `- Karol (2026-11-13): …` albo `- Paweł (gość panelu, 2026-11-13): …`. Odpowiedź „gościa panelu” nie jest zgodą, nawet podpisana imieniem Karola albo Pawła.
+
+Wpisy z 13.11.2026 sprzed tej zmiany mają jeszcze znacznik „Game Director” (np. `zdecydował: Game Director (Paweł) 2026-11-13` albo `- Paweł (Game Director): …`) — znaczy on dokładnie to samo co „klucz zatwierdzania”. Zapis podpisany imieniem „Game Director”, „klucz zatwierdzania” albo „gość panelu” panel odrzuca, bo takie imię udawałoby znacznik serwera.
 
 ## Wejście z telefonu spoza domu (tunel)
 Sprawdzone naprawdę 13.11.2026: przenośny `cloudflared` (bez instalatora i uprawnień administratora) wystawia panel pod losowym adresem https, a wejście wymaga kodu dostępu. Gość z tunelu nie dostaje uprawnień osoby przy komputerze — nie uruchomi agenta, gita ani nowej migawki — nawet jeśli zna klucz lokalny. Przed udostępnieniem adresu drugiej osobie trzeba wyjąć z konfiguracji lokalnej prywatne sejfy podpięte do panelu. Kroki: `panel/INSTALACJA.md`.
