@@ -1,0 +1,189 @@
+{
+ "id": "20261113-105308-9639",
+ "tytul": "Krzywe Miasteczko — mapa v2 (komiksowe miasteczko z klocków)",
+ "opis": "Nowa mapa-hub zbudowana z samych prymitywów Roblox w stylu komiksowym: krzywe, przerysowane budynki, obrys tuszem, kolor dachu jako kod funkcji. Rynek ze studnią i straganami, gospoda z tablicą zleceń, zbrojownia, sklep magiczny, wylęgarnia, stajnia, brama lochów, arena i gildia (zamknięte), koło, brama twierdzy, brama miejska, mur i wzgórza w tle. Kontener Workspace/KrzyweMiasteczko, 700 studów na północ od dema v1.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T10:53:09+01:00",
+ "zrodlo": "studio",
+ "czesci": 5182,
+ "grupy": [
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Arena",
+   "czesci": 259
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/BramaLochow",
+   "czesci": 258
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/BramaMiejska",
+   "czesci": 201
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/BramaTwierdzy",
+   "czesci": 228
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Chmury",
+   "czesci": 50
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom1",
+   "czesci": 67
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom2",
+   "czesci": 65
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom3",
+   "czesci": 73
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom4",
+   "czesci": 65
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom5",
+   "czesci": 65
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom6",
+   "czesci": 72
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom7",
+   "czesci": 66
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom8",
+   "czesci": 66
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom9",
+   "czesci": 64
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Gildia",
+   "czesci": 262
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Karczma",
+   "czesci": 257
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Karczma/Tablica",
+   "czesci": 28
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/KoloFortuny",
+   "czesci": 118
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Mur",
+   "czesci": 318
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Mur/Baszty",
+   "czesci": 128
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Rekwizyty",
+   "czesci": 502
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Rynek",
+   "czesci": 157
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/SklepMagiczny",
+   "czesci": 200
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Spawn",
+   "czesci": 2
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Stajnia",
+   "czesci": 233
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Staw",
+   "czesci": 38
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Stragany",
+   "czesci": 125
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/StudniaPomnik",
+   "czesci": 87
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Teren",
+   "czesci": 10
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Teren/Niecka",
+   "czesci": 30
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Teren/Pagorki",
+   "czesci": 6
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Teren/Podium",
+   "czesci": 15
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Teren/Podworka",
+   "czesci": 12
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Tlo",
+   "czesci": 272
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Ulice",
+   "czesci": 184
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Wylegarnia",
+   "czesci": 155
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Zbrojownia",
+   "czesci": 191
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Zielen",
+   "czesci": 241
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Zielen/Ogrod",
+   "czesci": 12
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "zakres": {
+  "min": [
+   -244.851,
+   -87.286,
+   -956.31
+  ],
+  "max": [
+   236.822,
+   160.258,
+   -462.732
+  ]
+ },
+ "miejsce": {
+  "placeId": 129485428021967,
+  "nazwa": "Blocky&Crycket (placeId: 129485428021967)"
+ },
+ "korzen": "Workspace/KrzyweMiasteczko"
+}
