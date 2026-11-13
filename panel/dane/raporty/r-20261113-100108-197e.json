@@ -1,0 +1,37 @@
+{
+ "id": "r-20261113-100108-197e",
+ "tytul": "Diagnoza pomysłu: dziś 3,8/10, po poprawkach 6,0 — nowa myśl przewodnia do decyzji",
+ "opis_md": "Prosiliście o diagnozę całego pomysłu i poprawkę, która da 10/10. Uczciwa odpowiedź: **na papierze dziesiątki nie da się obiecać**. Da się za to pokazać, gdzie pomysł jest dziś, jak go poprawić i jakim pomiarem sprawdzić resztę.\n\n**Wynik w liczbach:** dziś **3,8/10** → po poprawkach **6,0/10** (najsłabsze kryteria: społeczność i wykonalność, po 5). Autor koncepcji dawał sobie 7,4, a trzech sceptyków zbiło to do 5,6 — wyżej może pójść tylko po teście z graczami.\n\n**Jak to powstało:** 8 analiz z różnych perspektyw (rynek, pierwsze 10 minut, psychologia gracza, retencja, monetyzacja, społeczność, tożsamość, wykonalność), niezależne sprawdzenie liczb w źródłach, 4 konkurencyjne koncepcje, 2 sędziów, potem 3 sceptyków próbujących projekt obalić.\n\n**Dlaczego dziś nie jest dobrze (skrót 10 przyczyn):**\n- gra jest opisana jako „cudza gra w 3D”, a nie własna fantazja z czasownikiem;\n- rdzeniem jest patrzenie na walkę — gracz niczego nie decyduje;\n- pierwsza sesja zaczyna się od menu, a pety i twierdza są poza nią;\n- inni gracze niczego nie wnoszą;\n- kilka rzeczy koliduje z zasadami Roblox (niżej).\n\n**Twarde fakty, których nie mieliśmy 12.11:**\n- nową grę widzą najpierw tylko gracze **16+** ze sprawdzonym wiekiem;\n- odniesienia do **alkoholu** (kufel, piwo) są dozwolone tylko w grach 18+ — ikona Karczmy i szyld z kuflem muszą się zmienić;\n- płatne losowanie obejmuje też rerolle, bilety spinów i walutę kupioną za Robuxy.\n\n**Proponowana myśl przewodnia:** *„Rozbij potwora na klocki, a kot złoży go krzywo — z błędem, który daje moc.”* Jeden duży przycisk BONK (wybity potwór przewraca stado jak kula kręgle), banda krzywo złożonych kumpli dobija, Crycket (Kot-Mag) składa pokonanych źle, a błąd montażu staje się ich mocą. Zero losowania i zero waluty za Robuxy. Logo zostaje jako „Pracownia Montażu BLOCKY & CRYCKET”.\n\n**To duża zmiana, nie kosmetyka** — odsuwa punkty statystyk i auto-walkę, a okno ekwipunku zamienia w okno bandy. Paweł, widzę, że w nocy powstały `StatPoints`, `Items` i zmiany w `EquipmentPanel`: niczego nie ruszałem i niczego nie przesądzam. Najtańszy sprawdzian to tygodniowy szary prototyp BONK-a porównany z botem-klikaczem — jeśli nie bawi, zostajemy przy obecnej osi i poprawiamy tylko pierwszą minutę.\n\nWszystko ma status **propozycji** (D-019–D-022); kanon bez zmian.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T10:01:08+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Gra/Myśl przewodnia v2.md",
+   "etykieta": "Myśl przewodnia v2"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Gra/Systemy gry v2.md",
+   "etykieta": "Systemy gry v2"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Gra/Psychologia gracza v2.md",
+   "etykieta": "Psychologia gracza v2"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Gra/Karta ocen v2 i plan sprawdzenia.md",
+   "etykieta": "Karta ocen i 15 decyzji"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Badania/Diagnoza pomysłu 2026-11-13.md",
+   "etykieta": "Diagnoza ze źródłami"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Paweł, Karol: czy robimy tygodniowy szary prototyp BONK-a (pytanie 16)? I jak godzimy go ze statystykami i ekwipunkiem, które właśnie powstają (pytanie 17)?"
+}

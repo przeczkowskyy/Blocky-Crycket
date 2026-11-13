@@ -18,7 +18,10 @@ tags: [produkcja, zadania]
 - [ ] Decyzja D-011: pipeline assetów i moduł `AssetIds` ([[Rejestr decyzji]]) · #średni
 - [ ] Decyzje po rozmowie 12.11: pytania 7–14 w [[Pytania otwarte]] i propozycje D-012–D-018 w [[Rejestr decyzji]] · #wysoki
 - [ ] Obejrzeć demo `Workspace/DemoLesnaBaza` w Studio i w [[Panel zespołu|panelu]]: styl, skala, co poprawić ([[Klocki — Blender i Roblox]]) · #wysoki
-- [ ] Szara pętla MVP: plac → karczma → walka 10 s → łup → statystyki ([[Ocena potencjału gry]], tydzień 1) · #wysoki
+- [ ] Szara pętla MVP: plac → karczma → walka 10 s → łup → statystyki ([[Ocena potencjału gry]], tydzień 1) — wersja sprzed diagnozy; propozycja v2 zamienia ją na szary prototyp BONK-a (pytanie 16) · #wysoki
+- [ ] Decyzje dnia 0 po nocnej diagnozie: pytania 16–21 w [[Pytania otwarte]] i 15 decyzji w [[Karta ocen v2 i plan sprawdzenia]] · #wysoki
+- [ ] Makieta siatki: 12 kafelków z prawdziwą konkurencją, co najmniej 40 graczy 16+ — test haczyka przed prototypem ([[Karta ocen v2 i plan sprawdzenia]]) · #wysoki
+- [ ] Szary prototyp BONK-a z botem-klikaczem (bramka B1, [[Systemy gry v2]]) — po decyzji z pytania 16 · #wysoki
 
 ## 📥 Backlog
 - [ ] Postęp EXP i Level w HUD (animacja level-up „POW!”) · #średni
@@ -26,12 +29,11 @@ tags: [produkcja, zadania]
 - [ ] ViewportFrame z modelem [[Rycerz|Rycerza]] / [[Kot-Mag|Kota-Maga]] · #średni
 - [ ] Podgląd peta podążającego za graczem ([[Pety]]) · #niski
 - [ ] Usunąć pliki testowe Rojo: `Hello.server.luau`, `Hello.client.luau`, `FigmaTest.model.json` · #niski
-- [ ] Decyzja po previzie cutscenki (`swiat/test_cutscenki/cutscenka_v1.mp4`): walki jako ekran 2D czy cutscenka 3D? · #średni
-- [ ] Test cutscenki w samym Roblox: 2 postacie R15, 3 animacje, 8–10 s, kamera skryptowa, przycisk „pomiń”; pomiar na tanim telefonie (po decyzji wyżej) · #średni
-- [ ] Zrzuty ze Studio do migawki dema: okno Studio musi być widoczne; przycisk „Nowa migawka” w [[Panel zespołu|panelu]] · #średni
-- [ ] Łańcuch narzędzi: Rokit z przypiętymi wersjami, aktualizacja Rojo do 7.7.1 u obu osób naraz ([[Narzędzia i skille do Roblox]]) · #średni
-- [ ] Telemetria gry i analityka (AnalyticsService + klucz Open Cloud tylko do odczytu) → karty w [[Panel zespołu|panelu]] · #średni
-- [ ] [[Panel zespołu|Panel]]: zakładka Assety z `assets/manifest.json` (miniatury, statusy, zgody) — wsparcie dla [[Pipeline assetów]] · #niski
+- [ ] Decyzja po previzie i teście cutscenki: walki jako ekran 2D, cutscenka 3D czy — jak proponuje D-024 — cutscenka tylko przy bossie? Test do obejrzenia w Studio: Play, na wschód od placu do świecącego słupa, klawisz E · #średni
+- [ ] Pomiar cutscenki i walki na tanim telefonie (≥ 30 klatek/s) — wymaga testowej publikacji albo urządzenia; na komputerze zmierzone · #średni
+- [ ] Usunąć prototyp `Workspace/TestWalki` przed publikacją miejsca: `python swiat/test_walki_roblox/zbuduj.py --usun` · #średni
+- [ ] Łańcuch narzędzi: `rokit.toml` jest w repo (Rojo 7.6.1); każda osoba instaluje Rokit u siebie (agent nie mógł — instalator zablokowany); potem wspólne podniesienie Rojo do 7.7.1 ([[Narzędzia i skille do Roblox]]) · #średni
+- [ ] Włączyć telemetrię gry (decyzja D-023): skrypt startowy z `Telemetria.start()`, publikacja, klucz Open Cloud tylko do odczytu wpisany lokalnie ([[Telemetria gry]]) · #średni
 - [ ] [[Panel zespołu|Panel]]: lustro tylko-do-odczytu na GitHub Pages (właściciel repo włącza Pages → Source: GitHub Actions, potem uruchamia workflow „Panel — lustro”) · #niski
 
 ## 🎨 Assety do stworzenia
@@ -46,6 +48,11 @@ tags: [produkcja, zadania]
 - [x] 2026-11-12: Badania: [[Rynek Roblox i konkurencja]], [[Shakes & Fidget — rozbiór mechanik]], [[Retencja i monetyzacja — co wolno i co działa]], [[Styl UI gier Roblox]], [[Narzędzia i skille do Roblox]], [[Technika gry — serwery, światy, walki]]
 - [x] 2026-11-12: [[Panel zespołu]] (`panel/`) i demo mapy „Leśna baza startowa” w Blenderze i w Studio ([[Klocki — Blender i Roblox]])
 - [x] 2026-11-12: Previz cutscenki auto-walki 3D w Blenderze (9 s: cios, kontra z blokiem, krytyk, łup) — prośba z rozmowy [17:08]; `swiat/test_cutscenki/`
+- [x] 2026-11-13: Diagnoza pomysłu i poprawiona koncepcja: [[Diagnoza pomysłu 2026-11-13]], [[Myśl przewodnia v2]], [[Systemy gry v2]], [[Psychologia gracza v2]], [[Karta ocen v2 i plan sprawdzenia]], [[Specyfikacja v2.1 — Krzywa Banda]]
+- [x] 2026-11-13: Test cutscenki auto-walki w samym Roblox (`swiat/test_walki_roblox/`, `Workspace/TestWalki`): 2 postacie R15, kamera skryptowa, POMIŃ, panel wyniku; zweryfikowany niezależnie (42 sprawdzenia w trybie Play)
+- [x] 2026-11-13: [[Panel zespołu|Panel]]: zakładka Assety (rejestr grafik z `assets/manifest.json`) i sekcja „Telemetria gry” w Analityce; kod telemetrii w `src/server/Telemetria` ([[Telemetria gry]]); 141 testów
+- [x] 2026-11-13: Migawka dema ze zrzutami z prawdziwego Roblox Studio (panel → Podgląd 3D)
+- [x] 2026-11-13: Biblioteka map v2 (`swiat/biblioteka/`: krzywe bryły, obrys tuszem, podgląd w Blenderze) i `rokit.toml`
 - [x] 2026-11-12: Przegląd bezpieczeństwa [[Panel zespołu|panelu]]: 14 potwierdzonych uwag poprawionych (klucz lokalny, konfiguracja wspólna bez ustawień bezpieczeństwa, limity czasu), przełącznik „Agent z telefonu”, 76 testów
 - [x] 2026-11-12: Pipeline assetów przeniesiony do projektu gry (działa w jednym oknie Claude Code)
 - [x] 2026-11-12: Instalacja [[Pipeline assetów|pipeline'u assetów]]: zależności, `.env` (bez klucza), oficjalny Studio MCP, manifest z ID istniejących assetów

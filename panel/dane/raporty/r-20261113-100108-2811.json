@@ -1,0 +1,27 @@
+{
+ "id": "r-20261113-100108-2811",
+ "tytul": "Test walki 3D w samym Robloxie — działa; wniosek: cutscenka tylko przy bossie",
+ "opis_md": "Zadanie z kolejki: sprawdzić w samym Robloxie, jak wygląda i ile kosztuje cutscenka auto-walki 3D (wcześniej był tylko previz z Blendera).\n\n**Jak obejrzeć:** w Studio naciśnij Play, idź na wschód od placu do świecącego żółtego słupa i przy tablicy naciśnij **E**. Walka trwa ok. 9 sekund; jest przycisk POMIŃ, a na końcu panel wyniku z łupem.\n\n**Co jest w środku:**\n- dwie postacie R15 (Rycerz i Zbir), domyślne animacje Roblox plus ruch proceduralny;\n- kamera skryptowa z 6–8 ujęciami, napisy obrażeń, „BLOK!”, „KRYTYK!”, paski życia;\n- **serwer liczy walkę, klient tylko ją odtwarza** — klient nie może narzucić wyniku ani łupu (sprawdzone próbą oszustwa);\n- wszystko w jednym kontenerze `Workspace/TestWalki`; skrypty działają tylko w Studio.\n\n**Pomiary (komputer, nie telefon):** 9,2 s, nasz kod zajmuje średnio 0,15 ms na klatkę, od naciśnięcia E do pierwszej klatki 0,16 s, ok. 950 obiektów tworzonych lokalnie na walkę i sprzątanych po niej. **Telefonu nie dało się zmierzyć** bez testowej publikacji.\n\n**Sprawdzenie:** drugi, niezależny agent odtworzył wszystko od zera i znalazł 4 ważne uwagi (m.in. serwer nie sprawdzał, czy gracz stoi przy tablicy) — wszystkie poprawione; test w trybie Play ma 42 sprawdzenia.\n\n**Wniosek do decyzji „2D czy 3D”:** technicznie cutscenka 3D jest wykonalna i tania dla procesora. Diagnoza pomysłu mówi jednak, że *oglądanie* walki nie wytrzyma setnego powtórzenia, więc proponuję cutscenkę najwyżej jako nagrodę przy bossie (propozycja D-024), a nie jako codzienną czynność.\n\n**Uwaga przed publikacją miejsca:** prototyp trzeba usunąć poleceniem `python swiat/test_walki_roblox/zbuduj.py --usun`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T10:01:08+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestWalki",
+   "etykieta": "Arena testu walki"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/test_walki_roblox/README.md",
+   "etykieta": "Opis testu i pomiary"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ],
+ "pytanie": "Obejrzyjcie w Studio (Play, na wschód od placu, klawisz E): czy cutscenka zostaje tylko jako nagroda przy bossie (D-024)?"
+}

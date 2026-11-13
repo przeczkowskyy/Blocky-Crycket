@@ -16,6 +16,7 @@ Gra Roblox: **RPG / Incremental / Tycoon / Pet Collector**. Komiksowy humor w st
 - Mechaniki: [[Karczma (Questy)]] · [[Twierdza (Tycoon)]] · [[Pety]] · [[System RPG]] · [[Arena (PvP)]]
 - Postacie: [[Rycerz]] · [[Kot-Mag]] · [[Karczmarz]]
 - Po rozmowie 12.11 (propozycje): [[Propozycje z rozmowy 2026-11-12]] · [[Rozmowa 2026-11-12 — zapis ustaleń]]
+- Po nocnej diagnozie 13.11 (propozycje): [[Myśl przewodnia v2]] · [[Systemy gry v2]] · [[Psychologia gracza v2]] · [[Karta ocen v2 i plan sprawdzenia]] · [[Specyfikacja v2.1 — Krzywa Banda]]
 
 ## 🎨 Styl
 - [[Kierunek artystyczny]]
@@ -30,10 +31,10 @@ Gra Roblox: **RPG / Incremental / Tycoon / Pet Collector**. Komiksowy humor w st
 - [[Workflow i Git]]
 - [[Pipeline assetów]]
 - [[Narzędzia]]
-- [[Panel zespołu]] · [[Klocki — Blender i Roblox]] · [[Skille Claude do Roblox]] (propozycje)
+- [[Panel zespołu]] · [[Klocki — Blender i Roblox]] · [[Skille Claude do Roblox]] · [[Telemetria gry]] (propozycje)
 
 ## 🔬 Badania (propozycje, ze źródłami)
-- [[Ocena potencjału gry]]
+- [[Ocena potencjału gry]] · [[Diagnoza pomysłu 2026-11-13]]
 - [[Rynek Roblox i konkurencja]] · [[Shakes & Fidget — rozbiór mechanik]] · [[Retencja i monetyzacja — co wolno i co działa]]
 - [[Styl UI gier Roblox]] · [[Technika gry — serwery, światy, walki]] · [[Narzędzia i skille do Roblox]]
 
