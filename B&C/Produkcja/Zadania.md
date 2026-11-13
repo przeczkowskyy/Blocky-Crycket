@@ -19,9 +19,12 @@ tags: [produkcja, zadania]
 - [ ] Decyzje po rozmowie 12.11: pytania 7–14 w [[Pytania otwarte]] i propozycje D-012–D-018 w [[Rejestr decyzji]] · #wysoki
 - [ ] Obejrzeć demo `Workspace/DemoLesnaBaza` w Studio i w [[Panel zespołu|panelu]]: styl, skala, co poprawić ([[Klocki — Blender i Roblox]]) · #wysoki
 - [ ] Szara pętla MVP: plac → karczma → walka 10 s → łup → statystyki ([[Ocena potencjału gry]], tydzień 1) — wersja sprzed diagnozy; propozycja v2 zamienia ją na szary prototyp BONK-a (pytanie 16) · #wysoki
-- [ ] Wspólne wdrożenie panelu jako miejsca pracy: decyzja z pytania 23, potem włączenie zapisu (`"zapis_sejfu": true` w konfiguracji lokalnej) i link z kluczem Game Directora ([[Panel zespołu]]) · #wysoki
-- [ ] Import siatek postaci do Studio: zatwierdzić folder `swiat/postacie/wynik` w Assistant → Settings → MCP Permissions, potem próba na Rycerzu (skala, kierunek, kolory, kości) · #średni
-- [ ] Decyzja z pytania 24: droga postaci do gry i właściciel animacji ([[Postacie 3D — Blender i Roblox]]) · #średni
+- [ ] Paweł dodaje Karola jako współpracownika repozytorium (GitHub → Settings → Collaborators → Add people), potem push gałęzi `karol/panel-wiedza-demo` — praca z 12–13.11 leży tylko na komputerze Karola · #wysoki
+- [ ] Walka: spisać błędy zauważone 13.11 w `Workspace/TestWalki` i je poprawić; decyzja o zmienionej propozycji D-024 (walka w każdej potyczce, w trzech długościach) · #wysoki
+- [ ] Przymierzalnia „do poprawy” (Karol, panel, 13.11): założony przedmiot ma być widoczny wszędzie, także w animacjach walki; broń trzymana w ręku nie może nachodzić na twarz w żadnej animacji ani po wygranej walce — dodać liczbową kontrolę przenikania broni z głową i tułowiem dla wszystkich klipów · #wysoki
+- [ ] Postacie z siatek: sprawdzić animacje i broń na zaimportowanym Rycerzu (`Workspace/TestPostaci`), potem druga postać i pet · #średni
+- [ ] Decyzja z pytania 24: droga postaci do gry (po udanym imporcie siatek z 13.11 są dwie sprawdzone drogi) i właściciel animacji ([[Postacie 3D — Blender i Roblox]]) · #średni
+- [ ] Paweł: klucz zatwierdzania na własny telefon albo własny panel — `python panel/serwer.py --klucz-gd` na komputerze z panelem wypisuje link ([[Panel zespołu]]) · #średni
 - [ ] Decyzje dnia 0 po nocnej diagnozie: pytania 16–21 w [[Pytania otwarte]] i 15 decyzji w [[Karta ocen v2 i plan sprawdzenia]] · #wysoki
 - [ ] Makieta siatki: 12 kafelków z prawdziwą konkurencją, co najmniej 40 graczy 16+ — test haczyka przed prototypem ([[Karta ocen v2 i plan sprawdzenia]]) · #wysoki
 - [ ] Szary prototyp BONK-a z botem-klikaczem (bramka B1, [[Systemy gry v2]]) — po decyzji z pytania 16 · #wysoki
@@ -32,12 +35,11 @@ tags: [produkcja, zadania]
 - [ ] ViewportFrame z modelem [[Rycerz|Rycerza]] / [[Kot-Mag|Kota-Maga]] · #średni
 - [ ] Podgląd peta podążającego za graczem ([[Pety]]) · #niski
 - [ ] Usunąć pliki testowe Rojo: `Hello.server.luau`, `Hello.client.luau`, `FigmaTest.model.json` · #niski
-- [ ] Decyzja po previzie i teście cutscenki: walki jako ekran 2D, cutscenka 3D czy — jak proponuje D-024 — cutscenka tylko przy bossie? Test do obejrzenia w Studio: Play, na wschód od placu do świecącego słupa, klawisz E · #średni
+- [ ] Test powtórek walki (po decyzji o D-024): losowe warianty ciosów, krótka wersja 3–4 s, licznik pominięć; 20 walk z rzędu w Studio (Play, na wschód od placu do świecącego słupa, klawisz E) · #średni
 - [ ] Pomiar cutscenki i walki na tanim telefonie (≥ 30 klatek/s) — wymaga testowej publikacji albo urządzenia; na komputerze zmierzone · #średni
 - [ ] Usunąć prototyp `Workspace/TestWalki` przed publikacją miejsca: `python swiat/test_walki_roblox/zbuduj.py --usun` · #średni
 - [ ] Łańcuch narzędzi: `rokit.toml` jest w repo (Rojo 7.6.1); każda osoba instaluje Rokit u siebie (agent nie mógł — instalator zablokowany); potem wspólne podniesienie Rojo do 7.7.1 ([[Narzędzia i skille do Roblox]]) · #średni
 - [ ] Włączyć telemetrię gry (decyzja D-023): skrypt startowy z `Telemetria.start()`, publikacja, klucz Open Cloud tylko do odczytu wpisany lokalnie ([[Telemetria gry]]) · #średni
-- [ ] Po potwierdzeniu D-027: przepiąć szablony promptów skilla `/asset` na [[Instrukcja promptów — Glossy Ink]] (dziś mają starszy opis stylu i ciemnogranatowe tło ramek) · #średni
 - [ ] [[Panel zespołu|Panel]]: lustro tylko-do-odczytu na GitHub Pages (właściciel repo włącza Pages → Source: GitHub Actions, potem uruchamia workflow „Panel — lustro”) · #niski
 
 ## 🎨 Assety do stworzenia
@@ -48,6 +50,11 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-13: Panel jako miejsce pracy: zapis do sejfu z panelu włączony na komputerze Karola (pytanie 23, D-028), klucz zatwierdzania w jego przeglądarce; zasada równych praw Karola i Pawła (pytanie 15, D-030) wpisana do [[Jak prowadzimy sejf]] i `CLAUDE.md`
+- [x] 2026-11-13: Instrukcja „Glossy Ink” zatwierdzona (pytanie 22, D-027): zastępuje prefiks Style Lock oraz zapisy o pixel-arcie ikon i płaskim interfejsie
+- [x] 2026-11-13: Szablony promptów skilla `/asset` przepięte na [[Instrukcja promptów — Glossy Ink]] (stały początek, koniec i negative prompt zgodne znak w znak z oryginałem); notatki [[Style Lock]], [[Kierunek artystyczny]] i [[Pipeline assetów]] zaktualizowane. Bez próby w generatorze
+- [x] 2026-11-13: [[Panel zespołu|Panel]]: decyzje zatwierdza Karol albo Paweł (osoba przy komputerze z panelem albo klucz zatwierdzania), podpis imieniem i datą zamiast „Game Director”; 221 testów
+- [x] 2026-11-13: Import siatek sprawdzony na Rycerzu: plik FBX wgrany na konto Karola i wstawiony do `Workspace/TestPostaci` jako postać R15 — 15 części, skala 1:1, poprawne kolory, komplet punktów zaczepienia; bez miecza i bez animacji ([[Postacie 3D — Blender i Roblox]])
 - [x] 2026-11-12: Rozmowa o grze spisana i skomentowana: [[Rozmowa 2026-11-12 — zapis ustaleń]], [[Propozycje z rozmowy 2026-11-12]], [[Ocena potencjału gry]]
 - [x] 2026-11-12: Badania: [[Rynek Roblox i konkurencja]], [[Shakes & Fidget — rozbiór mechanik]], [[Retencja i monetyzacja — co wolno i co działa]], [[Styl UI gier Roblox]], [[Narzędzia i skille do Roblox]], [[Technika gry — serwery, światy, walki]]
 - [x] 2026-11-12: [[Panel zespołu]] (`panel/`) i demo mapy „Leśna baza startowa” w Blenderze i w Studio ([[Klocki — Blender i Roblox]])

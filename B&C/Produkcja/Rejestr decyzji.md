@@ -8,15 +8,18 @@ Tylko decyzje **✅ zatwierdzone** są obowiązujące. Zatwierdzonej decyzji si�
 
 Statusy: ✅ zatwierdzona · 🕓 do decyzji · 💡 propozycja · ❌ odrzucona · ♻️ zastąpiona
 
+Zatwierdza Karol albo Paweł — wystarczy decyzja jednego (D-030). Wiersz statusu niesie podpis `zdecydował: <imię> <data>`, a ślad trafia też do [[Dziennik zmian]].
+
 ---
 
 ### D-001 Obowiązkowy prefiks Style Lock
-✅ zatwierdzona · styl · źródło: dokumentacja
+♻️ zastąpiona · styl · źródło: dokumentacja · zastąpiona przez D-027 (2026-11-13)
 Każdy prompt 2D/UI zaczyna się od prefiksu z [[Style Lock]].
 
 ### D-002 Hybryda trzech estetyk
 ✅ zatwierdzona · styl · źródło: dokumentacja
 Komiks/pop-art Shakes & Fidget + Roblox voxel/low-poly + pixel-art ikon. Zob. [[Kierunek artystyczny]].
+Od 2026-11-13 część o pixel-arcie ikon i płaskim interfejsie zastępuje D-027; komiks/pop-art i voxel/low-poly obowiązują dalej.
 
 ### D-003 Projekty głównych postaci
 ✅ zatwierdzona · styl · źródło: dokumentacja
@@ -103,9 +106,9 @@ Nową grę widzą najpierw tylko gracze 16+ ze sprawdzonym wiekiem, a młodsi do
 💡 propozycja · technika · 2026-11-13 · zaproponował: Karol (przez Claude Code)
 Moduł `src/server/Telemetria` (bezwładny do czasu włączenia, bez danych osobowych: sesje, gracze naraz, wydane Robuxy, błędy, serwery) i sekcja „Telemetria gry” w Analityce panelu. Włączenie wymaga skryptu startowego w grze, publikacji i klucza Open Cloud tylko do odczytu, trzymanego lokalnie. Zob. [[Telemetria gry]], [[Pytania otwarte]] #13 i #20.
 
-### D-024 Cutscenka walki 3D jako nagroda, nie jako rdzeń
-💡 propozycja · game design / technika · 2026-11-13 · źródło: test w Roblox (`swiat/test_walki_roblox/`)
-Test w samym Roblox (kontener `Workspace/TestWalki`, 9 sekund, serwer liczy — klient odtwarza) pokazał, że cutscenka jest wykonalna i tania dla procesora na komputerze (telefon niezmierzony). Diagnoza wskazuje jednak, że oglądanie walki nie wytrzyma powtórek, więc cutscenka zostaje najwyżej przy bossie. Prototyp trzeba usunąć ze wspólnego miejsca przed publikacją (`python swiat/test_walki_roblox/zbuduj.py --usun`). Dotyczy D-016.
+### D-024 Walka 3D w każdej potyczce, w trzech długościach
+💡 propozycja · game design / technika · 2026-11-13 · źródło: test w Roblox (`swiat/test_walki_roblox/`) · zmieniona wieczorem 2026-11-13
+Test w samym Roblox (kontener `Workspace/TestWalki`, 9 sekund, serwer liczy — klient odtwarza) pokazał, że cutscenka jest wykonalna i tania dla procesora na komputerze (telefon niezmierzony). Poranna wersja tej propozycji („cutscenka jako nagroda, nie jako rdzeń”) zostawiała ją tylko przy bossie, bo diagnoza przewidywała, że oglądanie walki nie wytrzyma powtórek. To było przewidywanie, nie pomiar. Wieczorem Karol obejrzał test w Studio i ocenił walkę jako bardzo wciągającą mimo drobnych błędów, więc propozycja brzmi teraz tak: zwykła potyczka trwa 3–4 s (dwie–trzy wymiany losowane z wyniku serwera: cios, blok, unik, krytyk; „POMIŃ” od pierwszej sekundy), a pełna wersja 9–12 s z pracą kamery zostaje na pierwsze spotkanie z nowym potworem, bossa i arenę. Różnorodność ma wynikać z postępu gracza: nowa broń daje nowy cios, a pet dokłada swój atak. Powtarzalność sprawdzamy pomiarem — licznik pominięć na numer walki. Stanowisko Karola z panelu (13.11): „cutscenka powinna być przy każdej walce z każdym potworem czy bossem”; z decyzją czeka na Pawła. Prototyp trzeba usunąć ze wspólnego miejsca przed publikacją (`python swiat/test_walki_roblox/zbuduj.py --usun`). Dotyczy D-016 i pętli z D-020.
 
 ### D-025 Mapy v2: biblioteka krzywych brył i „Krzywe Miasteczko”
 💡 propozycja · technika / 3D · 2026-11-13 · zaproponował: Karol (przez Claude Code)
@@ -116,16 +119,20 @@ Test w samym Roblox (kontener `Workspace/TestWalki`, 9 sekund, serwer liczy — 
 Plik `rokit.toml` w repozytorium przypina Rojo 7.6.1 (wersja z kanonu). Rokit instaluje każda osoba u siebie; podniesienie Rojo do 7.7.1 robimy u obu osób naraz, razem z pluginem w Studio.
 
 ### D-027 Instrukcja promptów „Glossy Ink” zastępuje prefiks Style Lock
-🕓 do decyzji · styl / grafika · 2026-11-13 · źródło: dokument Game Directora przekazany przez Karola
-Każdy prompt graficzny składa się ze stałego początku „Glossy Ink” (odwołanie do własnego obrazu referencyjnego, bez cudzej nazwy), zmiennego środka, stałego końca i osobnego negative promptu; do tego zasady zamkniętych krawędzi, pustych kontenerów, okien ze statystykami i map izometrycznych. Zastąpiłaby prefiks z D-001 i zapisy o pixel-arcie oraz płaskim interfejsie z D-002; zgodna z propozycją D-018. Czeka tylko na formalne potwierdzenie Game Directora; do tego czasu nowe prompty piszemy już według niej. Zob. [[Instrukcja promptów — Glossy Ink]], [[Pytania otwarte]] #22.
+✅ zatwierdzona · styl / grafika · 2026-11-13 · źródło: dokument Game Directora przekazany przez Karola · zdecydował: Karol i Paweł 2026-11-13
+Każdy prompt graficzny składa się ze stałego początku „Glossy Ink” (odwołanie do własnego obrazu referencyjnego, bez cudzej nazwy), zmiennego środka, stałego końca i osobnego negative promptu; do tego zasady zamkniętych krawędzi, pustych kontenerów, okien ze statystykami i map izometrycznych. Zastępuje prefiks z D-001 oraz zapisy o pixel-arcie ikon i płaskim interfejsie z D-002; reszta D-002 obowiązuje dalej. Jest zgodna z propozycją D-018, ale jej nie zatwierdza. Zob. [[Instrukcja promptów — Glossy Ink]], [[Pytania otwarte]] #22.
 
 ### D-028 Panel jako miejsce pracy: zapis do sejfu z panelu i klucz Game Directora
-💡 propozycja · narzędzia · 2026-11-13 · zaproponował: Karol (przez Claude Code)
-Z panelu da się odpowiadać na pytania otwarte, odhaczać i dodawać zadania oraz — tylko z osobistym kluczem Game Directora — zatwierdzać i odrzucać decyzje. Panel zapisuje zmiany do tych samych plików sejfu (małe, czytelne wiersze, ślad w dzienniku), więc D-008 zostaje w mocy: sejf jest jedynym źródłem prawdy, a panel staje się wygodnym miejscem pracy na nim. Odpowiedzi gości są oznaczane „gość panelu”, a zgoda Game Directora ma znacznik stawiany przez serwer. Kod jest gotowy i po niezależnym przeglądzie, ale zapis jest **wyłączony** do wspólnej decyzji. Rozwija D-012. Zob. [[Panel zespołu]], [[Pytania otwarte]] #23.
+✅ zatwierdzona · narzędzia · 2026-11-13 · zaproponował: Karol (przez Claude Code) · zdecydował: Karol 2026-11-13
+Z panelu da się odpowiadać na pytania otwarte, odhaczać i dodawać zadania oraz zatwierdzać i odrzucać decyzje. Panel zapisuje zmiany do tych samych plików sejfu (małe, czytelne wiersze, ślad w dzienniku), więc D-008 zostaje w mocy: sejf jest jedynym źródłem prawdy, a panel staje się wygodnym miejscem pracy na nim. Zapis jest włączony od 13.11.2026 na komputerze Karola, bez dodatkowych ograniczeń dla wejść z kodem dostępu, bo dostęp do panelu mają tylko Karol i Paweł. Odpowiedzi gości są oznaczane „gość panelu”. Zmiana statusu decyzji wymaga klucza lokalnego albo klucza zatwierdzania i jest podpisywana imieniem i datą (D-030). Rozwija D-012. Zob. [[Panel zespołu]], [[Pytania otwarte]] #23.
 
 ### D-029 Postacie, pety i ekwipunek z kodu; w Roblox najpierw postacie z klocków
 💡 propozycja · technika / grafika 3D · 2026-11-13 · zaproponował: Karol (przez Claude Code)
-Postacie, pety i ekwipunek opisujemy kodem (jeden plik na postać), a z tego opisu powstają siatki z animacjami w Blenderze oraz postacie z części Roblox ze stawami, które da się postawić w Studio bez wgrywania zasobów. Propozycja: na start NPC i pety stawiać w grze jako postacie z klocków, a import siatek zostawić jako drugą drogę do sprawdzenia. Dziś postacie stoją tylko w Studio jako próba (animacje i skrypty działają wyłącznie w Studio). Rozwija D-017. Wygląd postaci i sloty ekwipunku pozostają do akceptacji Game Directora. Zob. [[Postacie 3D — Blender i Roblox]], [[Pytania otwarte]] #24.
+Postacie, pety i ekwipunek opisujemy kodem (jeden plik na postać), a z tego opisu powstają siatki z animacjami w Blenderze oraz postacie z części Roblox ze stawami, które da się postawić w Studio bez wgrywania zasobów. Propozycja: na start NPC i pety stawiać w grze jako postacie z klocków, a import siatek zostawić jako drugą drogę do sprawdzenia. Dziś postacie stoją tylko w Studio jako próba (animacje i skrypty działają wyłącznie w Studio). Import siatki sprawdzono 13.11.2026 wieczorem na Rycerzu: wyszła poprawna postać R15 z 15 części, więc obie drogi są do wyboru. Rozwija D-017. Wygląd postaci i sloty ekwipunku pozostają do decyzji Karola albo Pawła. Zob. [[Postacie 3D — Blender i Roblox]], [[Pytania otwarte]] #24.
+
+### D-030 Decyzje zatwierdza Karol albo Paweł; każda zostaje w logach
+✅ zatwierdzona · zasady pracy · 2026-11-13 · zdecydował: Karol i Paweł 2026-11-13
+Obaj mają takie same prawa do zatwierdzania decyzji i nadawania notatkom statusu `kanon`. Wystarczy decyzja jednej osoby, bo ustalenia i tak omawiają na bieżąco. Każda decyzja zostaje w logach: w tym rejestrze (podpis `zdecydował: <imię> <data>`) i w [[Dziennik zmian]]. Zastępuje zasadę jednego zatwierdzającego Game Directora z [[Jak prowadzimy sejf]] i z `CLAUDE.md`. W panelu zmiana statusu decyzji wymaga klucza lokalnego (osoba przy komputerze z panelem) albo klucza zatwierdzania; wpis oznaczony „gość panelu” decyzją nie jest. Gdy obaj się różnią, spór trafia do [[Pytania otwarte]] i nic nie jest nadpisywane. Odpowiedź na [[Pytania otwarte]] #15. Zob. [[Panel zespołu]].
 
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*
