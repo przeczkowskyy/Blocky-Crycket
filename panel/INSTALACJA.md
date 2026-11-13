@@ -60,12 +60,14 @@ Tryby: **Plan** (tylko czyta i planuje), **Praca** (edytuje pliki i używa dozwo
 
 ### Jeden panel dla obu osób na żywo (tunel, opcjonalnie)
 Domyślnie każdy uruchamia panel u siebie, a wspólne dane płyną przez git (Pobierz / Wyślij). Gdy chcecie patrzeć na **ten sam** panel jednocześnie albo wejść z telefonu poza domem przy włączonym komputerze:
-1. Zainstaluj darmowy `cloudflared` (bez konta): `winget install Cloudflare.cloudflared`.
+1. Pobierz darmowy `cloudflared` (bez konta). Najprościej wersję przenośną — jeden plik `cloudflared-windows-amd64.exe` z oficjalnej strony wydań Cloudflare, bez instalatora i bez uprawnień administratora. (`winget install Cloudflare.cloudflared` też działa, ale instalator prosi o uprawnienia administratora.)
 2. W `%LOCALAPPDATA%\BlockyCrycket\panel\konfiguracja.lokalna.json` dopisz: `{ "dozwolone_hosty": [".trycloudflare.com"] }`.
 3. Uruchom panel jak zwykle, a w drugim oknie: `cloudflared tunnel --url http://127.0.0.1:8787` — program wypisze adres `https://….trycloudflare.com`.
 4. Wyślij drugiej osobie ten adres z dopiskiem `/?k=<kod>` (kod: Ustawienia → Telefon).
 
-Wejście przez tunel zawsze wymaga kodu i nie ma uprawnień osoby przy komputerze: agent, git i nowa migawka są dla niego wyłączone. Adres zmienia się przy każdym uruchomieniu tunelu. Zabezpieczenia sprawdzone 12.11.2026 w symulacji (nagłówki tunelu); prawdziwy tunel nie był jeszcze uruchamiany.
+Wejście przez tunel zawsze wymaga kodu i nie ma uprawnień osoby przy komputerze: agent, git i nowa migawka są dla niego wyłączone. Adres zmienia się przy każdym uruchomieniu tunelu. Zabezpieczenia sprawdzone 13.11.2026 na prawdziwym tunelu, od zewnątrz: bez kodu panel odmawia, z kodem gość nie ma agenta, gita ani lokalnych ścieżek, a klucz lokalny przez tunel nie działa.
+
+**Zanim wyślesz adres drugiej osobie:** jeśli w `konfiguracja.lokalna.json` masz podpięte prywatne sejfy (np. własne notatki), wyjmij je na czas tunelu — gość z kodem widzi wszystkie sejfy panelu. Komputer musi zostać włączony i nie może zasnąć.
 
 Poza domem, przy wyłączonym komputerze, działa **lustro tylko do odczytu** (plan, raporty, podgląd 3D, sieć): `python panel/serwer.py --eksport <folder>` zapisuje stronę statyczną, którą można wystawić np. na GitHub Pages (workflow `.github/workflows/panel-lustro.yml`, uruchamiany ręcznie po włączeniu Pages w ustawieniach repozytorium).
 

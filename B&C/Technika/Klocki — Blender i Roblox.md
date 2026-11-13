@@ -22,6 +22,14 @@ swiat/<scena>/generuj.py ──► czesci.json ──► Blender   (tools/blende
 ## Demo: Leśna baza startowa
 Plac ze spawnem i studnią, karczma z szyldem-kuflem, tablica zleceń, koło fortuny, stragan sklepu, stajnia z koniem, wylęgarnia z jajami, brama areny, portal lochów, brama z palisadą, ognisko, staw z pomostem, las. Pliki: `swiat/demo_lesna_baza/` (`generuj.py`, `czesci.json`, `lesna_baza_claude_v1.blend`, `podglad/*.jpg`). W Studio: `Workspace/DemoLesnaBaza`. To szkic do rozmowy o stylu i skali, nie gotowa mapa — wnętrz budynków nie ma.
 
+## Mapy v2: biblioteka krzywych brył i Krzywe Miasteczko (13.11.2026)
+Demo v1 było zbyt grzeczne: proste ściany, drobne szyldy, mapa ginęła w lesie. Wersja v2 ma trzy nowe rzeczy.
+- **Biblioteka `swiat/biblioteka/`.** `scena.py` pozwala budować w układach lokalnych: budynek powstaje wokół własnego (0, 0, 0), a `with s.uklad(pos, obrot, skala)` ustawia go, obraca i pochyla — układy można zagnieżdżać (przekrzywione piętro na pochylonym parterze). Do tego obrys „tuszem” z ciemnych klocków, cechy części (bez kolizji, bez cienia) i kontrola jakości (migotanie nakładających się ścian, budżet części). `podglad.py` renderuje pojedynczy budynek albo całą mapę w Blenderze w tle, także w płaskim świetle podobnym do domyślnego oświetlenia miejsca.
+- **Mapa `swiat/krzywe_miasteczko/`** (`Workspace/KrzyweMiasteczko`, 700 studów na północ od dema): rynek ze studnią i straganami, gospoda z tablicą zleceń, zbrojownia, sklep magiczny, wylęgarnia, stajnia, brama lochów, brama twierdzy, brama miejska, arena i gildia (zamknięte), koło, domy tła, mur i wzgórza. Kontrakt dla budowniczych: `PROJEKT.md` (przykazania stylu z liczbami, paleta, układ, karty budynków). Każdy budynek to osobny plik w `budynki/`.
+- **Proces**, który się sprawdził: szkolenie (styl, rzemiosło Roblox, układ hubu, przepisy na bryły, rubryka oceny) → projekt z liczbami → wspólny zestaw elementów → budynki równolegle, każdy z podglądem → złożenie miasta → niezależna krytyka na renderach → poprawki → zrzuty z prawdziwego Studio (`tools/studio_zrzuty.py`).
+
+Najważniejsze ustalenia ze szkolenia: krzywizna od 4° wzwyż (mniej wygląda jak błąd), dach to 45–60% wysokości budynku, rekwizyt-szyld ma 8–12 studów, trzy walory koloru zamiast polegania na cieniu, kolor dachu jako kod funkcji; słońce tego miejsca stoi na północnym zachodzie, więc fronty głównych budynków patrzą w tę stronę; bez odniesień do alkoholu (Roblox dopuszcza je tylko w grach 18+). Według propozycji v2 gry miasteczko wchodzi do rozgrywki dopiero po sprawdzeniu pętli — na razie to demo stylu (propozycja D-025).
+
 ## Kiedy klocki, a kiedy siatki
 | | Klocki (części) | Siatki z Blendera (FBX/GLB) |
 |---|---|---|

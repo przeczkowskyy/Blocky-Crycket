@@ -6,6 +6,9 @@
 |---|---|
 | `demo_lesna_baza/` | demo „Leśna baza startowa”: `generuj.py` (scena opisana kodem) → `czesci.json` (2599 części), plik Blendera, rendery w `podglad/` |
 | `test_cutscenki/` | previz 9-sekundowej auto-walki 3D (Rycerz kontra Leśny Slime): `cutscenka.py`, `cutscenka_v1.mp4`, klatki |
+| `biblioteka/` | wspólny kręgosłup generatorów v2: `scena.py` (układy lokalne do krzywych, pochylonych brył, prymitywy, obrys „tuszem”, cechy części, kontrola jakości) i `podglad.py` (podgląd budynku albo całej mapy w Blenderze w tle) |
+| `krzywe_miasteczko/` | mapa v2 „Krzywe Miasteczko” w stylu komiksowym: `PROJEKT.md` (przykazania stylu, paleta, układ, karty budynków), `paleta.py`, `zestaw.py`, `budynki/*.py` (jeden plik na budynek), `generuj.py` → `czesci.json`, `ujecia.json`, `podglad/` |
+| `test_walki_roblox/` | test cutscenki auto-walki w samym Roblox (kontener `Workspace/TestWalki`): źródła Luau, `zbuduj.py`, testy, klatki, README z pomiarami |
 
 ## Polecenia (z głównego folderu repozytorium)
 ```
@@ -27,6 +30,19 @@ python tools/studio_buduj.py swiat/demo_lesna_baza/czesci.json --usun      # usu
 python panel/narzedzia/migawka.py --tytul "…" --korzen Workspace/DemoLesnaBaza
 python panel/narzedzia/raport.py dodaj --tytul "…" --opis-plik opis.md --migawka <id>
 ```
+
+## Mapy v2 (biblioteka)
+```
+# podgląd jednego budynku (stoi na podłożu, z ludzikiem wzrostu gracza): kadry a_przod34, b_tyl34, c_bok, d_oczy, e_gora
+python swiat/biblioteka/podglad.py --modul swiat/krzywe_miasteczko/budynki/karczma.py --wyj <folder> [--swiatlo studio]
+
+# cała mapa: generator, rendery z własnych ujęć, budowa w Studio, zrzuty ze Studio z tych samych ujęć
+python swiat/krzywe_miasteczko/generuj.py
+python swiat/biblioteka/podglad.py --json swiat/krzywe_miasteczko/czesci.json --ujecia swiat/krzywe_miasteczko/ujecia.json --przesun 0,0,-700 --wyj <folder>
+python tools/studio_buduj.py swiat/krzywe_miasteczko/czesci.json
+python tools/studio_zrzuty.py swiat/krzywe_miasteczko/ujecia.json --przesun 0,0,-700 --wyj <folder>
+```
+Budynek to moduł z `NAZWA`, `OBRYS` i `buduj(s, rnd)`: powstaje wokół (0, 0, 0) frontem ku +Z, a miejsce, obrót i pochylenie nadaje `with s.uklad(...)`. `--swiatlo studio` renderuje w płaskim, szarym świetle — uczciwy test, czy bryły nie zlewają się bez cieni. Blender działa w tle, a rendery ustawiają się w kolejce.
 
 ## Zasady
 - 1 jednostka = 1 stud; układ Roblox (Y w górę, przód −Z). Geometria klinów, walców i kul: [`panel/luau/KSZTALTY.md`](../panel/luau/KSZTALTY.md).
