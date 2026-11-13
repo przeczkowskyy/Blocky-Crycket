@@ -6,6 +6,24 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-13 · Panel (ludzie)
+- Karol Balucki: decyzja D-007 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-011 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-012 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-014 odrzucona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-015 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-016 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-017 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-022 odrzucona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-023 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-024 odrzucona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-009 odrzucona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-013 odrzucona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-018 odrzucona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-021 odrzucona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-026 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-029 zatwierdzona ([[Rejestr decyzji]])
+
 ## 2026-11-13 · Claude Code u Karola (wieczór: decyzje Karola, panel jako miejsce pracy, import siatek)
 - **Sprostowanie podpisów:** D-030 i D-027 były przez kilkadziesiąt minut podpisane „Karol i Paweł”. To decyzje samego Karola, więc podpisy poprawiono, a potwierdzenie zasady równych praw przez Pawła czeka w pytaniu 27.
 - **Kto zatwierdza:** Karol i Paweł mają takie same prawa, wystarczy decyzja jednego, a każda decyzja zostaje w logach. Nowa decyzja D-030 w [[Rejestr decyzji]] (zdecydował Karol, odpowiedź na pytanie 15 w [[Pytania otwarte]]); zasada wpisana do [[Jak prowadzimy sejf]] i `CLAUDE.md`.
