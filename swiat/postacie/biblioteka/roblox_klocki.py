@@ -172,9 +172,14 @@ def _z(v, n=4):
     return [round(float(x), n) for x in v]
 
 
-def _czesci(lista, indeks_kosci, grupa, materialy, uwagi):
+def _czesci(lista, indeks_kosci, grupa, materialy, uwagi, skad):
     wyn = []
     for c in lista:
+        if indeks_kosci[c["kosc"]] == 0:
+            # kość bez części w Roblox (korzeń = HumanoidRootPart, HumanoidRootNode): budowniczy nie miałby do czego
+            # przyspawać bryły i zniknęłaby bez śladu — lepiej zatrzymać się od razu
+            raise ValueError("%s: bryła „%s” na kości %s, która w Roblox nie ma własnej części (korzeń / "
+                             "HumanoidRootNode) — przypnij ją do innej kości" % (skad, c["n"], c["kosc"]))
         R0 = macierz_obrotu(*c["r"])
         mat = c["m"] if c["m"] in MATERIALY_ROBLOX else "zwykly"
         if mat not in materialy:
@@ -196,6 +201,9 @@ def rig(p, klipy=None):
 
     klipy: {nazwa klipu: {kość: {"obrot": [[rx, ry, rz], …], "przes": [[x, y, z], …]}}} — próbki co klatkę w układzie
     DANYCH (stopnie, studs), np. z blender_probki.py; None = bez animacji.
+
+    Nic nie znika po cichu: bryła (także akcesorium) na kości bez własnej części Roblox (korzeń „Root”, w R15 też
+    HumanoidRootNode) to ValueError; zaczepy i kanały klipów na takich kościach są pomijane z wpisem w "uwagi".
     """
     d = p.json()
     s = p.skala
@@ -228,14 +236,16 @@ def rig(p, klipy=None):
     # HumanoidRootPart: w stawie pierwszej kości (biodra / tułów stwora)
     hrp = tuple(kosci[0][2:5]) if kosci else (0.0, 1.0, 0.0)      # już w układzie rigu
     materialy, grupy = [], ["Cialo"]
-    czesci = _czesci(d["czesci"], indeks, 0, materialy, uwagi)
+    czesci = _czesci(d["czesci"], indeks, 0, materialy, uwagi, "Postać %s" % p.id)
     for a in d["akcesoria"]:
         grupy.append(a["id"])
-        czesci += _czesci(a["czesci"], indeks, len(grupy) - 1, materialy, uwagi)
+        czesci += _czesci(a["czesci"], indeks, len(grupy) - 1, materialy, uwagi,
+                          "Postać %s, akcesorium %s (zaczep %s)" % (p.id, a["id"], a["zaczep"]))
     zaczepy = []
     for z in d["zaczepy"]:
         ki = indeks[z["kosc"]]
         if ki == 0:
+            uwagi.append("zaczep %s na kości %s pominięty — ta kość nie ma w Roblox własnej części" % (z["n"], z["kosc"]))
             continue
         srodek = kosci[ki - 1][5:8]
         pz = _poz(z["p"])
@@ -252,6 +262,11 @@ def rig(p, klipy=None):
             continue
         if any(kan["typ"] == "skala" for kan in kl["kanaly"]):
             uwagi.append("klip %s: kanał skali pominięty (Motor6D nie skaluje)" % kl["n"])
+        bez_czesci = sorted({kan["kosc"] for kan in kl["kanaly"]
+                             if kan["typ"] != "skala" and indeks.get(kan["kosc"], 0) == 0})
+        if bez_czesci:
+            uwagi.append("klip %s: kanały kości %s pominięte — te kości nie mają w Roblox własnej części "
+                         "(HumanoidRootPart jest zakotwiczony)" % (kl["n"], ", ".join(bez_czesci)))
         animowane = [n for n in nazwy if n in pr and indeks.get(n, 0) > 0]
         klatki = []
         for f in range(kl["dlugosc"] + 1):

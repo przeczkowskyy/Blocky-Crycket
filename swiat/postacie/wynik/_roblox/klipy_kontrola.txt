@@ -1,0 +1,43 @@
+Kontrola klipów w Animatorze Roblox Studio (tryb Edit), 2026-11-13 16:23. Tolerancja: 0.05° i 0.005 studa.
+Karczmarz          idle         2.00 s pętla stawów  7, klatek próby 5: odchyłka 0.0000° / 0.00000 st.  ZGODNY
+Karczmarz          zaproszenie  2.00 s pętla stawów  7, klatek próby 5: odchyłka 0.0280° / 0.00000 st.  ZGODNY
+Karczmarz          smiech       1.33 s pętla stawów  6, klatek próby 5: odchyłka 0.0000° / 0.00000 st.  ZGODNY
+Karczmarz          powrót do spoczynku: odchyłka 0.0000 st. / 0.00°  OK
+Kot-Mag Crycket    idle         2.00 s pętla stawów  9, klatek próby 5: odchyłka 0.0280° / 0.00000 st.  ZGODNY
+Kot-Mag Crycket    chod         0.67 s pętla stawów 16, klatek próby 5: odchyłka 0.0000° / 0.00000 st.  ZGODNY
+Kot-Mag Crycket    czar         1.80 s raz   stawów 10, klatek próby 5: odchyłka 0.0000° / 0.00000 st.  ZGODNY
+Kot-Mag Crycket    wiwat        1.00 s pętla stawów 16, klatek próby 5: odchyłka 0.0280° / 0.00002 st.  ZGODNY
+Kot-Mag Crycket    powrót do spoczynku: odchyłka 0.0000 st. / 0.00°  OK
+Pies               idle         2.00 s pętla stawów  6, klatek próby 5: odchyłka 0.0000° / 0.00000 st.  ZGODNY
+Pies               bieg         0.53 s pętla stawów 14, klatek próby 5: odchyłka 0.0000° / 0.00001 st.  ZGODNY
+Pies               szczek       1.00 s pętla stawów 14, klatek próby 5: odchyłka 0.0000° / 0.00001 st.  ZGODNY
+Pies               powrót do spoczynku: odchyłka 0.0001 st. / 0.00°  OK
+Rycerz Blocky      idle         2.00 s pętla stawów  6, klatek próby 5: odchyłka 0.0280° / 0.00000 st.  ZGODNY
+Rycerz Blocky      chod         0.80 s pętla stawów 13, klatek próby 5: odchyłka 0.0280° / 0.00000 st.  ZGODNY
+Rycerz Blocky      atak_miecz   1.07 s raz   stawów 11, klatek próby 5: odchyłka 0.0280° / 0.00000 st.  ZGODNY
+Rycerz Blocky      wiwat        1.20 s pętla stawów 12, klatek próby 5: odchyłka 0.0280° / 0.00000 st.  ZGODNY
+Rycerz Blocky      powrót do spoczynku: odchyłka 0.0000 st. / 0.00°  OK
+Slime              idle         1.60 s pętla stawów 11, klatek próby 5: odchyłka 0.0000° / 0.00001 st.  ZGODNY
+Slime              skok         1.33 s pętla stawów 11, klatek próby 5: odchyłka 0.0000° / 0.00005 st.  ZGODNY
+Slime              atak         1.20 s raz   stawów  8, klatek próby 5: odchyłka 0.0000° / 0.00007 st.  ZGODNY
+Slime              powrót do spoczynku: odchyłka 0.0000 st. / 0.00°  OK
+Smok               idle_lot     1.60 s pętla stawów 13, klatek próby 5: odchyłka 0.0280° / 0.00001 st.  ZGODNY
+Smok               lot          0.80 s pętla stawów 14, klatek próby 5: odchyłka 0.0000° / 0.00001 st.  ZGODNY
+Smok               zioniecie    1.60 s raz   stawów 15, klatek próby 5: odchyłka 0.0000° / 0.00003 st.  ZGODNY
+Smok               powrót do spoczynku: odchyłka 0.0000 st. / 0.00°  OK
+Manekin Mag        spoczynek    2.00 s pętla stawów  6, klatek próby 5: odchyłka 0.0280° / 0.00000 st.  ZGODNY
+Manekin Mag        chod         0.80 s pętla stawów 11, klatek próby 5: odchyłka 0.0280° / 0.00000 st.  ZGODNY
+Manekin Mag        atak         1.00 s raz   stawów  5, klatek próby 5: odchyłka 0.0396° / 0.00000 st.  ZGODNY
+Manekin Mag        trzymanie    0.07 s pętla stawów  2, klatek próby 1: odchyłka 0.0000° / 0.00000 st.  ZGODNY
+Manekin Mag        powrót do spoczynku: odchyłka 0.0000 st. / 0.00°  OK
+Manekin Rekrut     spoczynek    2.00 s pętla stawów  6, klatek próby 5: odchyłka 0.0280° / 0.00000 st.  ZGODNY
+Manekin Rekrut     chod         0.80 s pętla stawów 11, klatek próby 5: odchyłka 0.0280° / 0.00000 st.  ZGODNY
+Manekin Rekrut     atak         1.00 s raz   stawów  5, klatek próby 5: odchyłka 0.0396° / 0.00000 st.  ZGODNY
+Manekin Rekrut     trzymanie    0.07 s pętla stawów  2, klatek próby 1: odchyłka 0.0000° / 0.00000 st.  ZGODNY
+Manekin Rekrut     powrót do spoczynku: odchyłka 0.0000 st. / 0.00°  OK
+Manekin Rycerz     spoczynek    2.00 s pętla stawów  6, klatek próby 5: odchyłka 0.0280° / 0.00000 st.  ZGODNY
+Manekin Rycerz     chod         0.80 s pętla stawów 11, klatek próby 5: odchyłka 0.0280° / 0.00000 st.  ZGODNY
+Manekin Rycerz     atak         1.00 s raz   stawów  5, klatek próby 5: odchyłka 0.0396° / 0.00000 st.  ZGODNY
+Manekin Rycerz     trzymanie    0.07 s pętla stawów  2, klatek próby 1: odchyłka 0.0000° / 0.00000 st.  ZGODNY
+Manekin Rycerz     powrót do spoczynku: odchyłka 0.0000 st. / 0.00°  OK
+RAZEM: klipów 32, porównań staw × klatka 1431; wierszy z zastrzeżeniem: 0. WYNIK: ZGODNE

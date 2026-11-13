@@ -11,7 +11,12 @@ Animator postaci, ustawiany na czas klatki i przeliczany (`Animator:StepAnimatio
 animacja pójdzie w grze. Potem zrzut ekranu z kamery ustawionej względem postaci. Na końcu poza wraca do spoczynku.
 Wynik: pojedyncze klatki JPG i arkusz `<model>_<klip>_studio.jpg` (kolejność wierszami).
 Po zrzutach postać wraca do spoczynku przez klip neutralny i narzędzie MIERZY, czy części naprawdę wróciły
-(samo zatrzymanie ścieżki w trybie Edit zostawia części w ostatniej pozie). `--tylko-reset` robi sam powrót.
+(samo zatrzymanie ścieżki w trybie Edit zostawia części w ostatniej pozie). Powrót idzie też po każdym błędzie
+i po Ctrl+C (miejsce jest wspólne, poza z trybu Edit replikuje się do drugiej osoby i zapisałaby się z miejscem);
+gdy się nie uda albo pomiar go nie potwierdzi, narzędzie podaje komendę naprawczą i kończy się kodem ≠ 0.
+`--tylko-reset` robi sam powrót. Poza dotyka tylko miejsca gry (PlaceId) i kontenera z atrybutem `Wygenerowane`.
+Kąt `--katy` liczony od przodu postaci (LookVector) w stronę jej PRAWEJ strony (RightVector): 90 = kamera z prawego
+boku postaci, 180 = z tyłu, 270 (albo −90) = z lewego boku.
 """
 import argparse
 import json
@@ -26,15 +31,27 @@ sys.path.insert(0, os.path.join(REPO, "tools"))
 from studio_mcp import StudioMCP, StudioError, first_studio_id  # noqa: E402
 
 KONTENER = "TestPostaci"
+PLACE_ID = 129485428021967                                        # to samo miejsce, co w roblox_postac.py
 
+# `stop` = odmowa, zanim czegokolwiek dotknięto; `blad` = błąd po rozpoczęciu pozowania
 POZA = r'''
+if game.PlaceId ~= __PLACE__ then
+	return { stop = "to nie jest miejsce gry (PlaceId " .. tostring(game.PlaceId) .. ")" }
+end
 local kont = workspace:FindFirstChild("__KONTENER__")
-local model = kont and kont:FindFirstChild(__MODEL__)
+if not kont or kont:GetAttribute("Wygenerowane") ~= true then
+	return { stop = "brak kontenera '__KONTENER__' z atrybutem Wygenerowane — nie ruszam cudzej pracy" }
+end
+local model = kont:FindFirstChild(__MODEL__)
 if not model then
-	return { blad = "brak modelu" }
+	return { stop = "brak modelu" }
+end
+local ac = model:FindFirstChild("AnimationController")
+local animator = ac and ac:FindFirstChild("Animator")
+if not animator then
+	return { stop = "model bez AnimationController/Animator" }
 end
 local KSP = game:GetService("KeyframeSequenceProvider")
-local animator = model.AnimationController.Animator
 local stare = animator:GetPlayingAnimationTracks()
 for _, t in stare do
 	t:Stop(0)
@@ -135,9 +152,14 @@ return wynik
 '''
 
 
+class BladPozy(Exception):
+    """Studio odpowiedziało na wywołanie pozy błędem albo odmową (`blad` / `stop`)."""
+
+
 def main():
-    if hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(encoding="utf-8")
+    for strumien in (sys.stdout, sys.stderr):                 # komunikaty o powrocie do spoczynku idą też na stderr
+        if hasattr(strumien, "reconfigure"):
+            strumien.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="Klatki animacji postaci z klocków ze Studio (tryb Edit)")
     ap.add_argument("--model", required=True, help="nazwa modelu w Workspace/%s" % KONTENER)
     ap.add_argument("--klip", default="")
@@ -145,7 +167,8 @@ def main():
     ap.add_argument("--fps", type=float, default=30.0)
     ap.add_argument("--spoczynek", action="store_true", help="poza spoczynkowa z kilku stron (--katy)")
     ap.add_argument("--tylko-reset", action="store_true", help="tylko przywróć pozę spoczynkową (bez zrzutów)")
-    ap.add_argument("--katy", default="35", help="kąt kamery w stopniach od przodu postaci (dodatni = od jej lewej strony)")
+    ap.add_argument("--katy", default="35", help="kąt kamery w stopniach od przodu postaci (dodatni = w stronę jej "
+                                                 "prawej strony, 90 = prawy bok, 270 = lewy bok)")
     ap.add_argument("--odleglosc", type=float, default=0.0, help="odległość kamery (0 = dobierz do wzrostu)")
     ap.add_argument("--wyj", default=os.path.join(TU, "wynik", "_roblox"))
     ap.add_argument("--kolumny", type=int, default=4)
@@ -154,6 +177,8 @@ def main():
     os.makedirs(a.wyj, exist_ok=True)
     from PIL import Image
 
+    tknieta = False            # od pierwszego wysłanego wywołania pozy postać może stać w pozie (nawet bez odpowiedzi)
+    problem_resetu = None
     try:
         with StudioMCP() as s:
             sid = first_studio_id(s)
@@ -161,18 +186,39 @@ def main():
                 sys.exit("Roblox Studio nie jest podłączone.")
 
             def poza(klip, czas):
-                kod = (POZA.replace("__KONTENER__", KONTENER).replace("__MODEL__", json.dumps(a.model, ensure_ascii=False))
+                nonlocal tknieta
+                kod = (POZA.replace("__PLACE__", str(PLACE_ID)).replace("__KONTENER__", KONTENER)
+                       .replace("__MODEL__", json.dumps(a.model, ensure_ascii=False))
                        .replace("__KLIP__", json.dumps(klip)).replace("__CZAS__", repr(float(czas))))
+                bylo, tknieta = tknieta, True
                 r = s.call("execute_luau", {"code": kod, "datamodel_type": "Edit", "studio_id": sid}, timeout=120)
                 if r["is_error"]:
                     raise StudioError(r["text"])
                 d = json.loads(r["text"])
+                if d.get("stop"):
+                    tknieta = bylo                             # Studio odmówiło, zanim czegokolwiek dotknęło
+                    raise BladPozy(d["stop"])
                 if d.get("blad"):
-                    sys.exit("Studio: %s" % d["blad"])
+                    raise BladPozy(d["blad"])
                 for k, v in list(d.items()):                   # tablice Luau wracają jako {"1": …, "2": …}
                     if isinstance(v, dict):
                         d[k] = [v[str(i)] for i in range(1, len(v) + 1)]
                 return d
+
+            def wroc():
+                """Powrót do spoczynku z pomiarem. Zwraca None, gdy pomiar go potwierdza, albo opis problemu."""
+                if not s.alive():
+                    return "mostek MCP Studio już nie działa — nie mogłem przywrócić pozy spoczynkowej"
+                try:
+                    k = poza("", 0.0)
+                    st, deg = float(k["odchylka_st"]), float(k["odchylka_deg"])
+                except (Exception, KeyboardInterrupt) as e:
+                    return "powrót do spoczynku nie powiódł się (%s: %s)" % (type(e).__name__, str(e)[:200])
+                if st > 0.01 or deg > 0.5:
+                    return "postać NIE wróciła do spoczynku (odchyłka %.3f studa, %.1f°)" % (st, deg)
+                print("%s: poza wróciła do spoczynku — sprawdzone pomiarem (odchyłka %.4f studa, %.2f°)"
+                      % (a.model, st, deg))
+                return None
 
             def zrzut(nazwa, info, kat):
                 x, y, z = info["hrp"]
@@ -194,40 +240,57 @@ def main():
                 os.remove(png)
                 return im
 
-            if a.tylko_reset:
-                k = poza("", 0.0)
-                print("%s: spoczynek, odchyłka %.4f studa, %.2f°" % (a.model, k["odchylka_st"], k["odchylka_deg"]))
-                return
-            slug = "".join(c if c.isalnum() else "_" for c in a.model.lower())
-            kafle, podpisy = [], []
-            if a.spoczynek or not a.klip:
-                info = poza("", 0.0)
-                for kat in [float(v) for v in a.katy.split(",")]:
-                    kafle.append(zrzut("%s_spoczynek_%03d" % (slug, int(kat)), info, kat))
-                    podpisy.append("%d°" % int(kat))
-                nazwa_arkusza = "%s_spoczynek_studio.jpg" % slug
-            else:
-                info = poza(a.klip, 0.0)
-                ostatnia = int(round(info["dlugosc"] * a.fps))
-                if a.klatki:
-                    klatki = [int(v) for v in a.klatki.split(",")]
+            # Od pierwszego wywołania pozy powrót do spoczynku idzie w `finally` na KAŻDEJ drodze wyjścia
+            # (sys.exit, StudioError, Ctrl+C, dowolny wyjątek): miejsce jest wspólne, a poza z trybu Edit zostaje.
+            przerwane = True
+            try:
+                if a.tylko_reset:
+                    tknieta = True                         # sam powrót: postać mogła zostać w pozie z wcześniejszego przebiegu
                 else:
-                    klatki = [int(round(ostatnia * i / 8.0)) for i in range(8)]
-                kat = float(a.katy.split(",")[0])
-                for f in klatki:
-                    info = poza(a.klip, f / a.fps)
-                    kafle.append(zrzut("%s_%s_%03d" % (slug, a.klip, f), info, kat))
-                    podpisy.append("kl. %d" % f)
-                nazwa_arkusza = "%s_%s_studio.jpg" % (slug, a.klip)
-            koniec = poza("", 0.0)
-            if koniec["odchylka_st"] > 0.01 or koniec["odchylka_deg"] > 0.5:
-                print("UWAGA: postać NIE wróciła do spoczynku (odchyłka %.3f studa, %.1f°) — przebuduj ją: roblox_postac.py --tylko …"
-                      % (koniec["odchylka_st"], koniec["odchylka_deg"]))
-            else:
-                print("poza wróciła do spoczynku — sprawdzone pomiarem (odchyłka %.4f studa, %.2f°)"
-                      % (koniec["odchylka_st"], koniec["odchylka_deg"]))
+                    slug = "".join(c if c.isalnum() else "_" for c in a.model.lower())
+                    kafle, podpisy = [], []
+                    if a.spoczynek or not a.klip:
+                        info = poza("", 0.0)
+                        for kat in [float(v) for v in a.katy.split(",")]:
+                            kafle.append(zrzut("%s_spoczynek_%03d" % (slug, int(kat)), info, kat))
+                            podpisy.append("%d°" % int(kat))
+                        nazwa_arkusza = "%s_spoczynek_studio.jpg" % slug
+                    else:
+                        info = poza(a.klip, 0.0)
+                        ostatnia = int(round(info["dlugosc"] * a.fps))
+                        if a.klatki:
+                            klatki = [int(v) for v in a.klatki.split(",")]
+                        else:
+                            klatki = [int(round(ostatnia * i / 8.0)) for i in range(8)]
+                        kat = float(a.katy.split(",")[0])
+                        for f in klatki:
+                            info = poza(a.klip, f / a.fps)
+                            kafle.append(zrzut("%s_%s_%03d" % (slug, a.klip, f), info, kat))
+                            podpisy.append("kl. %d" % f)
+                        nazwa_arkusza = "%s_%s_studio.jpg" % (slug, a.klip)
+                przerwane = False
+            finally:
+                if tknieta:
+                    if przerwane:
+                        print("Przerwane — przywracam pozę spoczynkową…", file=sys.stderr)
+                    problem_resetu = wroc()
+                    if problem_resetu:
+                        problem_resetu = (
+                            "UWAGA: %s. Postać „%s” może stać w ostatniej pozie we wspólnym miejscu (drugi współpracownik "
+                            "ją widzi, a zapis miejsca by ją utrwalił). Napraw:\n"
+                            "  python -B swiat/postacie/roblox_klatki.py --model %s --tylko-reset\n"
+                            "a gdy to nie pomoże, przebuduj postać: python -B swiat/postacie/roblox_postac.py --tylko <id modułu>"
+                            % (problem_resetu, a.model, json.dumps(a.model, ensure_ascii=False)))
+                        print(problem_resetu, file=sys.stderr)  # od razu: po błędzie program kończy pierwotny wyjątek
     except StudioError as e:
         sys.exit("BŁĄD Studio: %s" % e)
+    except BladPozy as e:
+        sys.exit("Studio: %s" % e)
+
+    if a.tylko_reset:
+        if problem_resetu:
+            sys.exit("Postać nie wróciła do spoczynku — patrz UWAGA wyżej.")
+        return
 
     # arkusz: kafelki kwadratowe wycięte ze środka zrzutu
     bok, kol = a.bok, min(a.kolumny, len(kafle))
@@ -241,6 +304,8 @@ def main():
     sciezka = os.path.join(a.wyj, nazwa_arkusza)
     arkusz.save(sciezka, "JPEG", quality=88)
     print("arkusz: %s (%s)" % (sciezka, ", ".join(podpisy)))
+    if problem_resetu:                                     # klatki są dobre, ale postać nie wróciła — kod ≠ 0
+        sys.exit("Postać nie wróciła do spoczynku — patrz UWAGA wyżej.")
 
 
 if __name__ == "__main__":

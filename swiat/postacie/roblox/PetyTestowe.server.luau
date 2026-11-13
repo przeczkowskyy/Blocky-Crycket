@@ -1,7 +1,7 @@
 -- Pety idące za graczem — TYLKO w Roblox Studio (Play). W opublikowanej grze nic nie robi.
 -- Instalowany przez `python -B swiat/postacie/roblox_postac.py` jako Workspace/TestPostaci/PetyTestowe.
 -- Przy psie, slimie i smoku pojawia się podpowiedź „Weź peta” (klawisz E albo dotknięcie; odesłanie: klawisz R). Pet rusza za graczem:
--- gdy gracz idzie, odtwarza klip ruchu (bieg, skok, lot), gdy stoi — spoczynek. Drugie naciśnięcie odsyła go na miejsce.
+-- gdy gracz idzie, odtwarza klip ruchu (bieg, skok, lot), gdy stoi — spoczynek. Klawisz R („Odeślij”) odsyła go na miejsce.
 -- Do testów ze skryptu: kontener.WezPeta:Fire(gracz, "Pies") — weź albo odeślij.
 -- To próba zachowania, nie system petów: ruch liczy serwer co klatkę (zakotwiczony korzeń przesuwany po CFrame),
 -- bez omijania przeszkód i bez zapisu, kto ma jakiego peta.
@@ -14,11 +14,13 @@ local kontener = script.Parent
 
 -- nazwa modelu -> klip ruchu, klip spoczynku, prędkość (studs/s), miejsce względem gracza (w prawo, do tyłu), unoszenie
 local PETY = {
-	Pies = { ruch = "bieg", spoczynek = "idle", predkosc = 15, bok = 3.0, tyl = 3.5, unoszenie = 0 },
-	Slime = { ruch = "skok", spoczynek = "idle", predkosc = 10, bok = -3.5, tyl = 4.0, unoszenie = 0 },
-	Smok = { ruch = "lot", spoczynek = "idle_lot", predkosc = 17, bok = 0.5, tyl = 6.0, unoszenie = 2.5 },
+	-- prędkości są większe od domyślnej prędkości gracza (16 studów/s), żeby pet nie zostawał w tyle w długim marszu
+	Pies = { ruch = "bieg", spoczynek = "idle", predkosc = 20, bok = 3.0, tyl = 3.5, unoszenie = 0 },
+	Slime = { ruch = "skok", spoczynek = "idle", predkosc = 17, bok = -3.5, tyl = 4.0, unoszenie = 0 },
+	Smok = { ruch = "lot", spoczynek = "idle_lot", predkosc = 22, bok = 0.5, tyl = 6.0, unoszenie = 2.5 },
 }
-local BLISKO = 0.7 -- bliżej niż tyle studów od celu pet stoi
+local BLISKO = 0.7 -- bliżej niż tyle studów od celu pet staje
+local RUSZ = 1.8 -- stojący pet rusza dopiero, gdy cel odsunie się dalej niż tyle (bez migania między biegiem a spoczynkiem)
 local DALEKO = 80 -- dalej niż tyle (np. po teleporcie gracza) pet przeskakuje do celu
 
 local parametry = RaycastParams.new()
@@ -155,9 +157,14 @@ RunService.Heartbeat:Connect(function(dt)
 			local odl = plasko.Magnitude
 			local kierunek = stan.korzen.CFrame.LookVector
 			local nowa
+			if odl > RUSZ then
+				stan.wRuchu = true
+			elseif odl <= BLISKO then
+				stan.wRuchu = false
+			end
 			if odl > DALEKO then
 				nowa = cel
-			elseif odl > BLISKO then
+			elseif stan.wRuchu then
 				local krok = math.min(odl, stan.cfg.predkosc * dt)
 				kierunek = plasko.Unit
 				local y = poz.Y + (cel.Y - poz.Y) * math.min(1, dt * 6)

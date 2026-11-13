@@ -3,3 +3,5 @@
 wynik/**/*.fbx
 wynik/**/*.glb
 wynik/**/*.blend
+# Stan wgrywania zasobów (numer konta i surowe odpowiedzi Open Cloud) zostaje tylko na komputerze, z którego wgrywano.
+wynik/_roblox/wgranie_*.json

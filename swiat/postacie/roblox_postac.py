@@ -6,7 +6,7 @@
     python -B swiat/postacie/roblox_postac.py                        # wszystkie postacie z ROZMIESZCZENIE
     python -B swiat/postacie/roblox_postac.py --tylko rycerz,pies    # wybrane
     python -B swiat/postacie/roblox_postac.py --sucho                # tylko policz i zapisz JSON, bez Studio
-    python -B swiat/postacie/roblox_postac.py --usun                 # usuń kontener Workspace/TestPostaci
+    python -B swiat/postacie/roblox_postac.py --usun                 # usuń własne kontenery Workspace/TestPostaci
     python -B swiat/postacie/roblox_postac.py --liniowo              # bez Blendera (klipy liniowo między kluczami)
 
 Co powstaje w Studio (tylko we własnym kontenerze `Workspace/TestPostaci` z atrybutem `Wygenerowane`):
@@ -16,12 +16,17 @@ Klipy można od razu otworzyć w Animation Editorze; opublikowanie ich jako zaso
 (zasób animacji działa tylko w grach tego samego właściciela co animacja).
 
 Zasady wspólnego miejsca Team Create: nic poza własnym kontenerem nie jest zmieniane; przed i po budowie punkt
-historii (cofa się jednym Ctrl+Z); skrypt niczego nie publikuje i nie zapisuje miejsca.
+historii (cofa się jednym Ctrl+Z); skrypt niczego nie publikuje i nie zapisuje miejsca. Każdy kod wysłany do Studio
+najpierw sprawdza PlaceId i atrybut `Wygenerowane` kontenera; odmowa („STOP”, np. inne miejsce, cudzy obiekt
+o tej nazwie albo dwa kontenery naraz) kończy przebieg kodem błędu. Dane przymierzalni (`DaneEkwipunku`,
+`ekwipunek_klocki.json`) zawsze obejmują wszystkie zestawy z ROZMIESZCZENIE, także przy --tylko.
 """
 import argparse
 import importlib.util
 import json
 import os
+import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -58,16 +63,47 @@ ROZMIESZCZENIE = {
 }
 PRIORYTETY = {"idle": "Idle", "idle_lot": "Idle", "chod": "Movement", "bieg": "Movement", "lot": "Movement"}
 
-BUDOWA = r'''
-local D = __DANE__
-local KONTENER = "__KONTENER__"
+# wspólny początek każdego kodu wysyłanego do Studio: właściwe miejsce, potem tylko własny kontener
+WSTEP = r'''
 if game.PlaceId ~= __PLACE__ then
-	return "STOP: to nie jest miejsce gry (PlaceId " .. tostring(game.PlaceId) .. ")"
+	return "STOP: to nie jest miejsce gry (PlaceId " .. tostring(game.PlaceId) .. ", oczekiwane __PLACE__) — nic nie zmieniono"
 end
+local KONTENER = "__KONTENER__"
+-- wszystkie obiekty Workspace o nazwie kontenera: własne (atrybut Wygenerowane) i cudze
+local function kontenery()
+	local nasze, obce = {}, {}
+	for _, d in workspace:GetChildren() do
+		if d.Name == KONTENER then
+			if d:GetAttribute("Wygenerowane") == true then
+				table.insert(nasze, d)
+			else
+				table.insert(obce, d)
+			end
+		end
+	end
+	return nasze, obce
+end
+-- jedyny własny kontener (albo nil, gdy go nie ma); drugi wynik = powód odmowy
+local function kontener()
+	local nasze, obce = kontenery()
+	if #obce > 0 then
+		return nil, string.format("STOP: w Workspace jest %d obiekt(ów) '%s' bez atrybutu Wygenerowane — nie ruszam cudzej pracy",
+			#obce, KONTENER)
+	end
+	if #nasze > 1 then
+		return nil, string.format("STOP: w Workspace są %d kontenery '%s' (np. budowa z dwóch komputerów naraz) — "
+			.. "usuń je (--usun) i zbuduj od nowa", #nasze, KONTENER)
+	end
+	return nasze[1], nil
+end
+'''
+
+BUDOWA = WSTEP + r'''
+local D = __DANE__
 local CH = game:GetService("ChangeHistoryService")
-local kont = workspace:FindFirstChild(KONTENER)
-if kont and kont:GetAttribute("Wygenerowane") ~= true then
-	return "STOP: w Workspace jest już obiekt '" .. KONTENER .. "' bez atrybutu Wygenerowane — nie ruszam cudzej pracy"
+local kont, odmowa = kontener()
+if odmowa then
+	return odmowa
 end
 CH:SetWaypoint("Postacie: przed budową " .. D.model)
 if not kont then
@@ -214,14 +250,17 @@ return string.format("%s: %d brył, %d kości, %d zaczepów; podłoże: %s na y 
 	D.model, n, #D.kosci, #D.zaczepy, traf and traf.Instance:GetFullName() or "BRAK", y, pos.X, pos.Y, pos.Z)
 '''
 
-KLIP = r'''
+KLIP = WSTEP + r'''
 local K = __KLIP__
-local kont = workspace:FindFirstChild("__KONTENER__")
-local model = kont and kont:FindFirstChild(K.model)
-if not model or kont:GetAttribute("Wygenerowane") ~= true then
-	return "STOP: brak modelu " .. K.model
+local kont, odmowa = kontener()
+if odmowa then
+	return odmowa
 end
-local saves = model:FindFirstChild("AnimSaves")
+local model = kont and kont:FindFirstChild(K.model)
+local saves = model and model:FindFirstChild("AnimSaves")
+if not saves then
+	return "STOP: brak modelu " .. K.model .. " (albo jego AnimSaves) w Workspace/" .. KONTENER
+end
 local stary = saves:FindFirstChild(K.n)
 if stary then
 	stary:Destroy()
@@ -275,10 +314,13 @@ ks.Parent = saves
 return string.format("%s/%s: %d klatek (%.2f s), %d póz, pętla %s", K.model, K.n, K.dl + 1, K.dl / K.fps, poz, tostring(K.petla))
 '''
 
-POKAZ = r'''
-local kont = workspace:FindFirstChild("__KONTENER__")
-if not kont or kont:GetAttribute("Wygenerowane") ~= true then
-	return "STOP: brak kontenera"
+POKAZ = WSTEP + r'''
+local kont, odmowa = kontener()
+if odmowa then
+	return odmowa
+end
+if not kont then
+	return "STOP: brak kontenera Workspace/" .. KONTENER
 end
 local stary = kont:FindFirstChild("__NAZWA__")
 if stary then
@@ -303,10 +345,13 @@ end
 return string.format("skrypt __NAZWA__ zainstalowany (%d znaków); w kontenerze %d postaci, %d części", #s.Source, modeli, czesci)
 '''
 
-EKWIPUNEK = r'''
-local kont = workspace:FindFirstChild("__KONTENER__")
-if not kont or kont:GetAttribute("Wygenerowane") ~= true then
-	return "STOP: brak kontenera"
+EKWIPUNEK = WSTEP + r'''
+local kont, odmowa = kontener()
+if odmowa then
+	return odmowa
+end
+if not kont then
+	return "STOP: brak kontenera Workspace/" .. KONTENER
 end
 for _, nazwa in { "DaneEkwipunku", "Przymierzalnia" } do
 	local stary = kont:FindFirstChild(nazwa)
@@ -326,19 +371,27 @@ game:GetService("ChangeHistoryService"):SetWaypoint("Postacie: przymierzalnia ze
 return string.format("przymierzalnia zainstalowana: dane %d znaków, skrypt %d znaków", #dane.Source, #s.Source)
 '''
 
-USUN = r'''
-local CH = game:GetService("ChangeHistoryService")
-local kont = workspace:FindFirstChild("__KONTENER__")
-if not kont then
+# usuwa KAŻDY własny kontener o tej nazwie (także duplikat po równoczesnej budowie), cudze tylko zgłasza
+USUN = WSTEP + r'''
+local nasze, obce = kontenery()
+local zostawione = ""
+if #obce > 0 then
+	zostawione = string.format("; zostawiono %d obiekt(ów) '%s' bez atrybutu Wygenerowane (cudza praca, nie ruszam)",
+		#obce, KONTENER)
+end
+if #nasze == 0 then
+	if #obce > 0 then
+		return "STOP: nic nie usunięto" .. zostawione
+	end
 	return "nie ma czego usuwać"
 end
-if kont:GetAttribute("Wygenerowane") ~= true then
-	return "STOP: '__KONTENER__' nie ma atrybutu Wygenerowane — nie ruszam cudzej pracy"
+local CH = game:GetService("ChangeHistoryService")
+CH:SetWaypoint("Postacie: przed usunięciem " .. KONTENER)
+for _, k in nasze do
+	k:Destroy()
 end
-CH:SetWaypoint("Postacie: przed usunięciem __KONTENER__")
-kont:Destroy()
-CH:SetWaypoint("Postacie: usunięto __KONTENER__")
-return "USUNIĘTO Workspace/__KONTENER__"
+CH:SetWaypoint("Postacie: usunięto " .. KONTENER)
+return string.format("USUNIĘTO %d × Workspace/%s%s", #nasze, KONTENER, zostawione)
 '''
 
 
@@ -355,6 +408,17 @@ def luau(v):
     if isinstance(v, dict):
         return "{" + ",".join("%s=%s" % (k, luau(x)) for k, x in v.items()) + "}"
     raise TypeError(type(v))
+
+
+def kod_luau(szablon, **wartosci):
+    """Szablon Luau -> kod: pola __NAZWA__ dostają wartości (napisy), KONTENER i PLACE zawsze te z tego pliku.
+    Jedno przejście: wstawione dane (np. źródło skryptu) nie są przeszukiwane drugi raz; brak wartości = KeyError."""
+    wartosci = dict(wartosci, KONTENER=KONTENER, PLACE=str(PLACE_ID))
+    return re.sub(r"__([A-Z]+)__", lambda m: wartosci[m.group(1)], szablon)
+
+
+class Odmowa(Exception):
+    """Kod w Studio odmówił pracy (wynik zaczyna się od „STOP”) — przebieg musi się zakończyć błędem."""
 
 
 def wczytaj_modul(sciezka):
@@ -380,21 +444,25 @@ def postacie_z_modulu(sciezka):
 def probki_z_blendera(postacie):
     """Próbki klipów co klatkę z Blendera (pod wspólną blokadą). Zwraca {id: {klip: {kość: {...}}}}."""
     tmp = tempfile.mkdtemp(prefix="bc_probki_")
-    wej, wyj = os.path.join(tmp, "pakiet.json"), os.path.join(tmp, "probki.json")
-    zapisz_json(pakiet(postacie), wej)
-    polecenie = [blender_exe(), "-b", "--factory-startup", "--python-exit-code", "1", "--python",
-                 os.path.join(TU, "biblioteka", "blender_probki.py"), "--", wej, wyj]
-    blokada = zajmij_blender()
     try:
-        r = subprocess.run(polecenie, capture_output=True, timeout=10 * 60,
-                           creationflags=0x08000000 if os.name == "nt" else 0)
+        wej, wyj = os.path.join(tmp, "pakiet.json"), os.path.join(tmp, "probki.json")
+        zapisz_json(pakiet(postacie), wej)
+        polecenie = [blender_exe(), "-b", "--factory-startup", "--python-exit-code", "1", "--python",
+                     os.path.join(TU, "biblioteka", "blender_probki.py"), "--", wej, wyj]
+        blokada = zajmij_blender()
+        try:
+            r = subprocess.run(polecenie, capture_output=True, timeout=10 * 60,
+                               creationflags=0x08000000 if os.name == "nt" else 0)
+        finally:
+            zwolnij_blender(blokada)
+        if r.returncode != 0 or not os.path.isfile(wyj):
+            tekst = (r.stdout + r.stderr).decode("utf-8", "replace")
+            raise RuntimeError("Blender nie policzył próbek (kod %d):\n%s"
+                               % (r.returncode, "\n".join(tekst.splitlines()[-25:])))
+        with open(wyj, encoding="utf-8") as f:
+            return json.load(f)
     finally:
-        zwolnij_blender(blokada)
-    if r.returncode != 0 or not os.path.isfile(wyj):
-        tekst = (r.stdout + r.stderr).decode("utf-8", "replace")
-        raise RuntimeError("Blender nie policzył próbek (kod %d):\n%s" % (r.returncode, "\n".join(tekst.splitlines()[-25:])))
-    with open(wyj, encoding="utf-8") as f:
-        return json.load(f)
+        shutil.rmtree(tmp, ignore_errors=True)                 # folder tymczasowy nie zostaje w %TEMP%
 
 
 def main():
@@ -403,7 +471,8 @@ def main():
     ap = argparse.ArgumentParser(description="Postacie jako rigi z klocków w Roblox Studio (bez uploadu)")
     ap.add_argument("--tylko", default="", help="id modułów po przecinku (domyślnie wszystkie z ROZMIESZCZENIE)")
     ap.add_argument("--sucho", action="store_true", help="tylko policz i zapisz JSON, bez Studio")
-    ap.add_argument("--usun", action="store_true", help="usuń kontener Workspace/%s" % KONTENER)
+    ap.add_argument("--usun", action="store_true",
+                    help="usuń każdy własny kontener Workspace/%s (cudze obiekty o tej nazwie tylko zgłasza)" % KONTENER)
     ap.add_argument("--liniowo", action="store_true", help="klipy liniowo między kluczami (bez Blendera)")
     ap.add_argument("--bez-klipow", action="store_true")
     ap.add_argument("--bez-pokazu", action="store_true", help="nie instaluj skryptów działających w Play (PokazAnimacji, PetyTestowe, Przymierzalnia)")
@@ -423,24 +492,49 @@ def main():
                     r = s.call("execute_luau", {"code": kod, "datamodel_type": "Edit", "studio_id": sid}, timeout=240)
                     if r["is_error"]:
                         raise StudioError(r["text"])
-                    return r["text"].strip()
+                    tekst = r["text"].strip()
+                    if tekst.startswith("STOP"):
+                        raise Odmowa(tekst)
+                    return tekst
                 return fn(wykonaj)
         except StudioError as e:
             sys.exit("BŁĄD Studio: %s" % e)
+        except Odmowa as e:
+            sys.exit("PRZERWANO — Studio odmówiło: %s\n(kroki wypisane wyżej jako „Studio: …” zostały wykonane)" % e)
 
     if a.usun:
-        print(studio(lambda wykonaj: wykonaj(USUN.replace("__KONTENER__", KONTENER))))
+        print("Studio:", studio(lambda wykonaj: wykonaj(kod_luau(USUN))))
         return
 
     wybrane = [x for x in a.tylko.split(",") if x] or list(ROZMIESZCZENIE)
-    postacie = []
     for mid in wybrane:
         if mid not in ROZMIESZCZENIE:
             sys.exit("Nie ma rozmieszczenia dla %r (są: %s)" % (mid, ", ".join(ROZMIESZCZENIE)))
+    # dane przymierzalni zawsze obejmują WSZYSTKIE zestawy z ROZMIESZCZENIE (także przy --tylko): moduł DaneEkwipunku
+    # jest wymieniany w całości, a manekiny spoza tego przebiegu dalej stoją w kontenerze
+    zestawy = [mid for mid, roz in ROZMIESZCZENIE.items() if roz.get("zestaw")]
+    moduly = {}
+    for mid in wybrane + [m for m in zestawy if m not in wybrane]:
+        if mid in moduly:
+            continue
         znalezione = postacie_z_modulu(os.path.join(TU, mid + ".py"))
         if not znalezione:
             sys.exit("Moduł %s nie zwraca postaci" % mid)
-        postacie.append((mid, znalezione[0]))
+        moduly[mid] = znalezione[0]
+    bledy = []
+    for mid, p in moduly.items():                                # sprawdzian biblioteki, jak przed podglądem w Blenderze
+        b, u = p.sprawdz()
+        bledy += b
+        for x in u:
+            print("sprawdz %-10s uwaga: %s" % (p.id, x))
+    if bledy:
+        sys.exit("Postacie nie przeszły sprawdzianu (Postac.sprawdz) — nic nie zbudowano:\n  " + "\n  ".join(bledy))
+    postacie = [(mid, moduly[mid]) for mid in wybrane]
+    ekwipunek, uwagi_zestawow = {}, {}
+    for mid in zestawy:
+        akcesoria, materialy, uw = akcesoria_noszone(moduly[mid])
+        ekwipunek[mid] = {"nazwa": ROZMIESZCZENIE[mid]["zestaw"], "materialy": materialy, "akcesoria": akcesoria}
+        uwagi_zestawow[mid] = uw
     probki = {}
     if not a.bez_klipow:
         if a.liniowo:
@@ -450,9 +544,12 @@ def main():
             probki = probki_z_blendera([p for _, p in postacie])
             print("próbki klipów z Blendera: %.0f s" % (time.time() - t0))
     os.makedirs(a.wyj, exist_ok=True)
-    dane, ekwipunek = [], {}
+    dane = []
     for mid, p in postacie:
-        d = rig(p, probki.get(p.id))
+        try:
+            d = rig(p, probki.get(p.id))
+        except ValueError as e:
+            sys.exit("BŁĄD %s: %s — nic nie zbudowano" % (mid, e))
         roz = ROZMIESZCZENIE[mid]
         d["model"] = p.nazwa.replace("„", "").replace("”", "").replace('"', "")
         d["poz"] = [roz["poz"][0] + PRZESUNIECIE[0], roz["poz"][1] + PRZESUNIECIE[1]]
@@ -461,10 +558,7 @@ def main():
         if roz.get("nazwa"):
             d["model"] = roz["nazwa"]
         d["zestaw"], d["id_modulu"] = roz.get("zestaw", ""), mid
-        if roz.get("zestaw"):
-            akcesoria, materialy, uw = akcesoria_noszone(p)
-            ekwipunek[mid] = {"nazwa": roz["zestaw"], "materialy": materialy, "akcesoria": akcesoria}
-            d["uwagi"] += uw
+        d["uwagi"] += uwagi_zestawow.get(mid, [])
         zapisz_json(d, os.path.join(a.wyj, p.id + "_klocki.json"))
         print("%-10s %3d brył -> %3d części Roblox, %2d kości, %2d zaczepów, klipy: %s"
               % (p.id, len(p.czesci) + sum(len(x[0].czesci) for x in p.zalozone), len(d["czesci"]), len(d["kosci"]),
@@ -472,11 +566,14 @@ def main():
         for u in d["uwagi"]:
             print("           uwaga:", u)
         dane.append(d)
-    if ekwipunek:
+    if ekwipunek:                                                # zawsze wszystkie zestawy, niezależnie od --tylko
         zapisz_json(ekwipunek, os.path.join(a.wyj, "ekwipunek_klocki.json"))
         for mid, e in ekwipunek.items():
             print("%-14s do noszenia: %d akcesoriów, %d części Roblox"
                   % (mid, len(e["akcesoria"]), sum(len(x["czesci"]) for x in e["akcesoria"])))
+            if mid not in wybrane:                               # uwagi zbudowanych wypisały się już przy postaci
+                for u in uwagi_zestawow[mid]:
+                    print("               uwaga:", u)
     if a.sucho:
         return
 
@@ -485,29 +582,23 @@ def main():
         for d in dane:
             klipy = d.pop("klipy")
             d.pop("uwagi", None)
-            kod = (BUDOWA.replace("__DANE__", luau(d)).replace("__KONTENER__", KONTENER)
-                   .replace("__PLACE__", str(PLACE_ID)).replace("__CZAS__", czas))
-            wynik = wykonaj(kod)
-            print("Studio:", wynik)
-            if wynik.startswith("STOP"):
-                return
+            print("Studio:", wykonaj(kod_luau(BUDOWA, DANE=luau(d), CZAS=czas)))
             szkielet = [[k[0], k[1]] for k in d["kosci"]]
             for k in klipy:
                 k.update(model=d["model"], szkielet=szkielet, priorytet=PRIORYTETY.get(k["n"], "Action"))
-                print("Studio:", wykonaj(KLIP.replace("__KLIP__", luau(k)).replace("__KONTENER__", KONTENER)))
+                print("Studio:", wykonaj(kod_luau(KLIP, KLIP=luau(k))))
         if not a.bez_pokazu and not a.bez_klipow:
             for nazwa in ("PokazAnimacji", "PetyTestowe"):            # skrypty działające tylko w Studio
                 with open(os.path.join(TU, "roblox", nazwa + ".server.luau"), encoding="utf-8") as f:
                     zrodlo = f.read()
-                print("Studio:", wykonaj(POKAZ.replace("__KONTENER__", KONTENER).replace("__NAZWA__", nazwa)
-                                         .replace("__ZRODLO__", luau(zrodlo))))
+                print("Studio:", wykonaj(kod_luau(POKAZ, NAZWA=nazwa, ZRODLO=luau(zrodlo))))
+        # przymierzalnia razem z pozostałymi skryptami Play, zawsze z danymi wszystkich zestawów
         if ekwipunek and not a.bez_pokazu:
             with open(os.path.join(TU, "roblox", "Przymierzalnia.server.luau"), encoding="utf-8") as f:
                 zrodlo = f.read()
             modul = ("-- Wygenerowane przez swiat/postacie/roblox_postac.py — nie edytuj ręcznie." + chr(10) +
                      "return " + luau(ekwipunek) + chr(10))
-            print("Studio:", wykonaj(EKWIPUNEK.replace("__KONTENER__", KONTENER).replace("__DANE__", luau(modul))
-                                     .replace("__ZRODLO__", luau(zrodlo))))
+            print("Studio:", wykonaj(kod_luau(EKWIPUNEK, DANE=luau(modul), ZRODLO=luau(zrodlo))))
     studio(buduj)
 
 

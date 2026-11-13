@@ -125,7 +125,7 @@ Z panelu da się odpowiadać na pytania otwarte, odhaczać i dodawać zadania or
 
 ### D-029 Postacie, pety i ekwipunek z kodu; w Roblox najpierw postacie z klocków
 💡 propozycja · technika / grafika 3D · 2026-11-13 · zaproponował: Karol (przez Claude Code)
-Postacie, pety i ekwipunek opisujemy kodem (jeden plik na postać), a z tego opisu powstają siatki z animacjami w Blenderze oraz postacie z części Roblox ze stawami, które da się postawić w Studio bez wgrywania zasobów. Na start NPC i pety stoją w grze jako postacie z klocków; import siatek zostaje jako druga droga do sprawdzenia. Rozwija D-017. Wygląd postaci i sloty ekwipunku pozostają do akceptacji Game Directora. Zob. [[Postacie 3D — Blender i Roblox]], [[Pytania otwarte]] #24.
+Postacie, pety i ekwipunek opisujemy kodem (jeden plik na postać), a z tego opisu powstają siatki z animacjami w Blenderze oraz postacie z części Roblox ze stawami, które da się postawić w Studio bez wgrywania zasobów. Propozycja: na start NPC i pety stawiać w grze jako postacie z klocków, a import siatek zostawić jako drugą drogę do sprawdzenia. Dziś postacie stoją tylko w Studio jako próba (animacje i skrypty działają wyłącznie w Studio). Rozwija D-017. Wygląd postaci i sloty ekwipunku pozostają do akceptacji Game Directora. Zob. [[Postacie 3D — Blender i Roblox]], [[Pytania otwarte]] #24.
 
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*
