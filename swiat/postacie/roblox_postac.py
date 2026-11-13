@@ -52,9 +52,9 @@ ROZMIESZCZENIE = {
     "slime": {"poz": (20.0, 30.5), "patrz": (21.4, 18.0)},
     "smok": {"poz": (15.0, 26.5), "patrz": (21.4, 18.0)},
     # manekiny z zestawami ekwipunku („przymierzalnia”) po drugiej stronie płyty startu; zestaw = nazwa na podpowiedzi
-    "zestaw_rekrut": {"poz": (28.5, 8.5), "patrz": (21.4, 18.0), "nazwa": "Manekin Rekrut", "zestaw": "Zestaw Rekruta"},
-    "zestaw_rycerz": {"poz": (34.5, 10.0), "patrz": (21.4, 18.0), "nazwa": "Manekin Rycerz", "zestaw": "Zestaw Rycerza"},
-    "zestaw_mag": {"poz": (40.0, 13.5), "patrz": (21.4, 18.0), "nazwa": "Manekin Mag", "zestaw": "Zestaw Maga"},
+    "zestaw_rekrut": {"poz": (22.0, 8.5), "patrz": (21.4, 18.0), "nazwa": "Manekin Rekrut", "zestaw": "Zestaw Rekruta"},
+    "zestaw_rycerz": {"poz": (31.0, 9.0), "patrz": (21.4, 18.0), "nazwa": "Manekin Rycerz", "zestaw": "Zestaw Rycerza"},
+    "zestaw_mag": {"poz": (40.0, 10.0), "patrz": (21.4, 18.0), "nazwa": "Manekin Mag", "zestaw": "Zestaw Maga"},
 }
 PRIORYTETY = {"idle": "Idle", "idle_lot": "Idle", "chod": "Movement", "bieg": "Movement", "lot": "Movement"}
 

@@ -130,7 +130,7 @@ for _, model in kontener:GetChildren() do
 		pp.ActionText = "Przymierz"
 		pp.ObjectText = model:GetAttribute("Zestaw") or id
 		pp.HoldDuration = 0
-		pp.MaxActivationDistance = 12
+		pp.MaxActivationDistance = 8 -- manekiny stoją co 9 studów: przy jednym nie łapie się sąsiad
 		pp.RequiresLineOfSight = false
 		pp.Parent = model.PrimaryPart
 		pp.Triggered:Connect(function(gracz)

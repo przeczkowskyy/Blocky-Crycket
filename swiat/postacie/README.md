@@ -92,7 +92,7 @@ Sześć postaci to razem 658 widocznych części i 20 klipów; z trzema manekina
 
 **Przymierzalnia zestawów** (`roblox/Przymierzalnia.server.luau`, tylko w Studio): przy każdym manekinie pojawia się w grze podpowiedź „Przymierz” (klawisz E albo dotknięcie). Zestaw trafia na awatar gracza jako zwykłe obiekty `Accessory` zbudowane z części Roblox i zakładane przez `Humanoid:AddAccessory` na standardowe punkty zaczepienia awatara (`HatAttachment`, `NeckAttachment`, `RightGripAttachment`…). Ponowne naciśnięcie zdejmuje zestaw. Dane części: `wynik/_roblox/ekwipunek_klocki.json`.
 
-**Pety idące za graczem** (`roblox/PetyTestowe.server.luau`, tylko w Studio): przy psie, slimie i smoku pojawia się w grze podpowiedź „Weź peta”. Pet rusza za graczem: w marszu odtwarza klip ruchu (bieg, skok, lot), w miejscu spoczynek; drugie naciśnięcie odsyła go na miejsce. Ruch liczy serwer co klatkę, przesuwając zakotwiczony korzeń postaci. To próba zachowania, nie system petów: bez omijania przeszkód, bez zapisu i bez limitu petów.
+**Pety idące za graczem** (`roblox/PetyTestowe.server.luau`, tylko w Studio): przy psie, slimie i smoku pojawia się w grze podpowiedź „Weź peta” (klawisz E). Pet rusza za graczem: w marszu odtwarza klip ruchu (bieg, skok, lot), w miejscu spoczynek; klawisz R („Odeślij”) odsyła go na miejsce. Ruch liczy serwer co klatkę, przesuwając zakotwiczony korzeń postaci. To próba zachowania, nie system petów: bez omijania przeszkód, bez zapisu i bez limitu petów.
 
 **Co sprawdzono w Studio:**
 - Wygląd z czterech stron każdej postaci i ujęcia grupowe (`wynik/_roblox/*_spoczynek_studio.jpg`, `studio_grupa*.jpg`). Strony się nie odbijają lustrzanie: miecz jest w prawej dłoni.
@@ -103,6 +103,8 @@ Sześć postaci to razem 658 widocznych części i 20 klipów; z trzema manekina
 - Przymierzalnia w uruchomionej grze: zestawy Rekrut (10 akcesoriów, 175 części), Rycerz (14, 223) i Mag (15, 527) założone po kolei na prawdziwy awatar R15 i zdjęte; wszystkie części trzymają się awatara, konsola bez błędów (`wynik/_roblox/play_awatar_w_zestawach_*.jpg`).
 
 - Pety w uruchomionej grze: po zawołaniu pies, slime i smok dochodzą do gracza (4–6 studów), idą za nim przez rynek (pies i smok trzymają się 6–7 studów, wolniejszy slime zostaje do 11 studów w tyle), po zatrzymaniu wracają do spoczynku, a odesłane wracają na miejsce i oddają sterowanie pokazowi animacji (`wynik/_roblox/play_pety_ida_za_graczem.jpg`).
+
+- Droga człowieka w uruchomionej grze, z prawdziwym naciśnięciem klawisza: E przy manekinie Rycerza, Maga i Rekruta zakłada właściwy zestaw (także gdy za graczem idą dwa pety), E przy psie i smoku zabiera peta, R odsyła najbliższego idącego peta. Pierwsza wersja miała tu usterkę: manekiny stały co 6 studów przy zasięgu podpowiedzi 12, więc E zakładało zestaw sąsiada, a idący pet przechwytywał E. Poprawione: manekiny co 9 studów, zasięg 8, odsyłanie na osobnym klawiszu.
 
 **Pułapka spawania akcesoriów (sprawdzona 13.11.2026):** części akcesorium trzeba łączyć z uchwytem obiektem `Weld` z jawnym przesunięciem (`C0`). `WeldConstraint` zapamiętuje wzajemne położenie dopiero po wejściu do świata, czyli już po tym, jak `AddAccessory` przeniesie uchwyt na awatar, i części zostają tam, gdzie powstały.
 
@@ -115,6 +117,7 @@ Sześć postaci to razem 658 widocznych części i 20 klipów; z trzema manekina
 - Ostrosłup, którego góra wystaje poza podstawę (zawinięty szpic kapelusza, mankiet), jest w klockach uproszczony do zwykłego klocka. Dotyczy to kilku brył zestawu Maga.
 - Postacie są zakotwiczonymi figurami bez `Humanoid` i bez kolizji. To nie jest jeszcze postać gracza ani chodzący NPC.
 - Wydajności na telefonie nie mierzono (658 części to mało, ale liczba jest do sprawdzenia przy większej obsadzie).
+- Klipy leżą w miejscu jako obiekty: 32 `KeyframeSequence` to razem ok. 12,8 tys. obiektów `Pose`, które w Play trafiają też do każdego klienta. Do próby to wystarcza; w prawdziwej grze animacje są zasobami i tego kosztu nie ma.
 - **Klipy grają tylko w Studio.** W opublikowanej grze animacja musi być zasobem Animation. Publikuje się ją z Animation Editora i według dokumentacji Roblox musi należeć do właściciela gry (osoby albo grupy). To decyzja i czynność właściciela.
 - Skrypty `PokazAnimacji`, `Przymierzalnia` i `PetyTestowe` oraz cały kontener `TestPostaci` trzeba usunąć przed publikacją (`--usun`).
 

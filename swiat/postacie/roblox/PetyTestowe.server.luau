@@ -1,6 +1,6 @@
 -- Pety idące za graczem — TYLKO w Roblox Studio (Play). W opublikowanej grze nic nie robi.
 -- Instalowany przez `python -B swiat/postacie/roblox_postac.py` jako Workspace/TestPostaci/PetyTestowe.
--- Przy psie, slimie i smoku pojawia się podpowiedź „Weź peta” (klawisz E albo dotknięcie). Pet rusza za graczem:
+-- Przy psie, slimie i smoku pojawia się podpowiedź „Weź peta” (klawisz E albo dotknięcie; odesłanie: klawisz R). Pet rusza za graczem:
 -- gdy gracz idzie, odtwarza klip ruchu (bieg, skok, lot), gdy stoi — spoczynek. Drugie naciśnięcie odsyła go na miejsce.
 -- Do testów ze skryptu: kontener.WezPeta:Fire(gracz, "Pies") — weź albo odeślij.
 -- To próba zachowania, nie system petów: ruch liczy serwer co klatkę (zakotwiczony korzeń przesuwany po CFrame),
@@ -81,7 +81,8 @@ local function przygotuj(model, cfg)
 	pp.ActionText = "Weź peta"
 	pp.ObjectText = model.Name
 	pp.HoldDuration = 0
-	pp.MaxActivationDistance = 12
+	pp.MaxActivationDistance = 8
+	pp.KeyboardKeyCode = Enum.KeyCode.E
 	pp.RequiresLineOfSight = false
 	pp.Parent = korzen
 	stan.podpowiedz = pp
@@ -98,11 +99,15 @@ local function wezAlboOdeslij(gracz, nazwa)
 		stan.wlasciciel = nil
 		stan.wraca = true
 		stan.podpowiedz.ActionText = "Weź peta"
+		stan.podpowiedz.KeyboardKeyCode = Enum.KeyCode.E
 	elseif stan.wlasciciel == nil then
 		stan.wlasciciel = gracz
 		stan.wraca = false
 		stan.model:SetAttribute("Zajety", true) -- PokazAnimacji przestaje sterować tym modelem
 		stan.podpowiedz.ActionText = "Odeślij"
+		-- pet idzie tuż za graczem, więc jego podpowiedź jest zawsze najbliżej: osobny klawisz (R), żeby nie
+		-- przechwytywała naciśnięcia E przy innym pecie albo manekinie
+		stan.podpowiedz.KeyboardKeyCode = Enum.KeyCode.R
 	end
 end
 
@@ -132,6 +137,7 @@ RunService.Heartbeat:Connect(function(dt)
 		if wl and (not wl.Parent or not cialo) then
 			stan.wlasciciel, stan.wraca = nil, true -- gracz wyszedł albo nie ma postaci: pet wraca
 			stan.podpowiedz.ActionText = "Weź peta"
+			stan.podpowiedz.KeyboardKeyCode = Enum.KeyCode.E
 			cialo = nil
 		end
 		if cialo then
