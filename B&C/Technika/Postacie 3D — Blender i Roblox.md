@@ -50,7 +50,7 @@ Niezależny przegląd dzisiejszego kodu znalazł dziewięć usterek w ścieżkac
 - Importu siatek: skali, kierunku przodu, kolorów z tekstury-palety, kości i punktów zaczepienia po imporcie.
 - Wydajności na telefonie.
 - Postaci jako awatara gracza i chodzącego NPC (dziś to zakotwiczone figury bez `Humanoid`).
-- Zgodności slotów ekwipunku z kodem Game Directora: katalog ma też slot „druga ręka” i podział torsu na części — to propozycja, nie kanon ([[System RPG]]).
+- Sloty ekwipunku: 41 przedmiotów katalogu ma te same nazwy slotów i zakładek plecaka co moduł przedmiotów w kodzie gry (stan z 13.11.2026: Helmet, Chest, Gloves, Boots, Amulet, Belt, Ring, Trinket, Weapon; Weapons, Armor, Amulets, Others). Poza kodem gry jest tylko slot „druga ręka” (tarcza, księga), a tors bywa złożony z kilku części modelu. Gotowa tabela w formacie kodu gry leży jako propozycja w `swiat/postacie/roblox/PrzedmiotyPropozycja.luau` (nigdzie niewczytywana). To propozycja, nie kanon ([[System RPG]], [[Pytania otwarte]] #24).
 
 ## Powiązane
 [[Klocki — Blender i Roblox]] · [[Pipeline assetów]] · [[Panel zespołu]] · [[Rejestr decyzji]] D-029 · [[Pytania otwarte]] #24
