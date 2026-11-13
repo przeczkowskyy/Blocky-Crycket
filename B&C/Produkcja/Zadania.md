@@ -19,7 +19,7 @@ tags: [produkcja, zadania]
 - [ ] Decyzje po rozmowie 12.11: pytania 7–14 w [[Pytania otwarte]] i propozycje D-012–D-018 w [[Rejestr decyzji]] · #wysoki
 - [ ] Obejrzeć demo `Workspace/DemoLesnaBaza` w Studio i w [[Panel zespołu|panelu]]: styl, skala, co poprawić ([[Klocki — Blender i Roblox]]) · #wysoki
 - [ ] Szara pętla MVP: plac → karczma → walka 10 s → łup → statystyki ([[Ocena potencjału gry]], tydzień 1) — wersja sprzed diagnozy; propozycja v2 zamienia ją na szary prototyp BONK-a (pytanie 16) · #wysoki
-- [ ] [[Panel zespołu|Panel]]: zakładka „Sesja” — rozmowa głosowa Karola i Pawła w panelu, przycisk „Agent słucha” (transkrypcja na żywo, notatki, ustalenia jako propozycje) i lista tematów z [[Sesje główne]]; zlecenie Karola z 13.11, w budowie · #wysoki
+- [ ] Pierwsza próba zakładki „Sesja” z człowiekiem: Karol przy komputerze dołącza, włącza „Agent słucha”, mówi kilka minut i klika „Notatki teraz”; potem próba z Pawłem przez link tunelu (głos między dwoma domami, telefon). Do tej pory sprawdzone tylko automatem i syntezatorem mowy ([[Panel zespołu]]) · #wysoki
 - [ ] [[Panel zespołu|Panel]]: połączyć zakładki Plan i Raporty w jedną z wszystkim, co czeka na decyzję (z przyciskiem „Na sesję główną”), poprawić czytelność Pulpitu i pokazać aktywne osoby w lewym dolnym rogu; Analityki nie ruszać do publikacji gry — zlecenie Karola z 13.11. Bez dubli: pytanie i decyzje, których dotyczy, w jednej karcie; gdy decyzja rozstrzyga pytanie, pytanie samo znika z kolejki; lista odświeża się sama · #wysoki
 - [ ] Paweł: `git pull` na `main`, uruchomić `panel\start.bat`, wpisać imię w Ustawieniach i odpowiedzieć na pytanie 27 w [[Pytania otwarte]] · #wysoki
 - [ ] Walka: spisać błędy zauważone 13.11 w `Workspace/TestWalki` i je poprawić; decyzja o zmienionej propozycji D-024 (walka w każdej potyczce, w trzech długościach) · #wysoki
@@ -54,6 +54,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-13: [[Panel zespołu|Panel]]: zakładka „Sesja” — rozmowa głosowa w panelu (do 6 osób), przycisk „Agent słucha”, lokalna transkrypcja na żywo, notatki agenta, „Zakończ sesję i spisz ustalenia” (ustalenia jako propozycje) i lista tematów z [[Sesje główne]]; po niezależnym przeglądzie siedem uwag poprawionych, 266 testów, próba prawdziwej transkrypcji na syntezatorze mowy udana
 - [x] 2026-11-13: Dwa raporty-porównania na prośbę Karola (uzasadnienia przy D-029 i D-018): Rycerz jako render z Blendera, klocki Roblox i siatka w Roblox; dwa style mapy obok siebie (Leśna baza i Krzywe Miasteczko) — czekają w panelu na odpowiedź
 - [x] 2026-11-13: Lista tematów na długie rozmowy głosowe: [[Sesje główne]] (siedem tematów z decyzji i komentarzy Karola z 13.11)
 - [x] 2026-11-13: Karol ma prawo zapisu w repozytorium; gałąź `karol/panel-wiedza-demo` wypchnięta i scalona z `main` razem z commitem Pawła (okno ekwipunku, mapa teleportacji)

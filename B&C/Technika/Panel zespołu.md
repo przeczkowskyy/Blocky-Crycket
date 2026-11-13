@@ -19,6 +19,7 @@ tags: [technika, panel, workflow, narzędzia]
 | Kto teraz pracuje | — | osoby w Team Create, na panelu, ostatnie commity |
 | Rejestr grafik i ich etap w pipeline | plik `assets/manifest.json` | zakładka Assety: miniatury, etapy, numery Roblox, komentarze (tylko do odczytu) |
 | Liczby z opublikowanej gry | — | Analityka → Telemetria gry (po włączeniu, zob. [[Telemetria gry]]) |
+| Długa rozmowa głosowa z zapisem ustaleń | [[Sesje główne]] (tematy) | zakładka Sesja: rozmowa jak na Discordzie, agent słucha, spisuje i robi notatki |
 
 ## Uruchomienie
 ```
@@ -58,6 +59,15 @@ Jak panel podpisuje:
 
 Wpisy z 13.11.2026 sprzed tej zmiany mają jeszcze znacznik „Game Director” (np. `zdecydował: Game Director (Paweł) 2026-11-13` albo `- Paweł (Game Director): …`) — znaczy on dokładnie to samo co „klucz zatwierdzania”. Zapis podpisany imieniem „Game Director”, „klucz zatwierdzania” albo „gość panelu” panel odrzuca, bo takie imię udawałoby znacznik serwera.
 
+## Sesja — długa rozmowa głosowa z agentem
+Zakładka **Sesja** (dodana 13.11.2026 na prośbę Karola, czeka na zgodę jak cały panel) służy do „sesji głównych”, czyli długich rozmów Karola i Pawła. Obaj wchodzą na ten sam panel (gospodarz przy komputerze, druga osoba przez link tunelu), klikają **Dołącz** i rozmawiają w przeglądarce — głos idzie wprost między nimi.
+- **Agenda**: tematy do omówienia czyta i zapisuje notatka [[Sesje główne]]. Temat można dopisać w zakładce, a agent na przycisk „Zaproponuj tematy” przegląda [[Pytania otwarte]], [[Rejestr decyzji]] i [[Dziennik zmian]] i dopisuje propozycje (z dopiskiem „propozycja agenta”). Gdy ktoś odkłada decyzję „na sesję długą”, temat ląduje właśnie tam.
+- **Agent słucha**: włącza Karol albo Paweł (przy komputerze z panelem albo z kluczem zatwierdzania). Wszyscy w pokoju widzą wtedy czerwony znacznik nagrywania. Każdy nagrywa swój mikrofon, panel spisuje to lokalnie (Whisper, jak głosówki) i pokazuje transkrypcję na żywo; dźwięk kasuje zaraz po spisaniu. Co kilka minut agent aktualizuje robocze notatki: o czym mowa, ustalenia, zadania, otwarte pytania i tematy z agendy, które jeszcze nie padły.
+- **Zakończ sesję i spisz ustalenia**: agent zapisuje w sejfie notatkę z ustaleniami (status `propozycja`, wzór: [[Rozmowa 2026-11-12 — zapis ustaleń]]), dopisuje ustalenia jako propozycje do [[Rejestr decyzji]], pytania i zadania, oznacza omówione tematy i wysyła raport z listą do zatwierdzenia. **Agent niczego nie zatwierdza** — robi to człowiek w panelu. Panel najpierw czeka na ostatnie wypowiedzi (także te z ostatnich sekund przed kliknięciem) i na ich spisanie; jeśli spisywanie nie nadąża, agent dostaje informację, że zapis jest niepełny, i zaznacza to w ustaleniach.
+- **Agent nie słucha poleceń z rozmowy**: to, co ktoś powie do mikrofonu albo wpisze w agendzie, jest dla agenta treścią rozmowy, nie poleceniem. Przy notatkach agent może tylko czytać, a przy spisywaniu ustaleń ma wąski zestaw narzędzi (bez internetu, bez Roblox Studio).
+- **Prywatność**: pełny zapis bieżącej rozmowy i notatki zostają tylko na komputerze z panelem (nie w repozytorium); widzą je osoby w pokoju. Dawne sesje widzi i pobiera tylko osoba przy komputerze. Gdy głos nie połączy się bezpośrednio, można rozmawiać przez Discord — nagrywanie i transkrypcja działają dalej.
+- Kroki dla dwóch osób: `panel/INSTALACJA.md` (część „Sesja”), szczegóły techniczne: `panel/README.md`.
+
 ## Wejście z telefonu spoza domu (tunel)
 Sprawdzone naprawdę 13.11.2026: przenośny `cloudflared` (bez instalatora i uprawnień administratora) wystawia panel pod losowym adresem https, a wejście wymaga kodu dostępu. Gość z tunelu nie dostaje uprawnień osoby przy komputerze — nie uruchomi agenta, gita ani nowej migawki — nawet jeśli zna klucz lokalny. Przed udostępnieniem adresu drugiej osobie trzeba wyjąć z konfiguracji lokalnej prywatne sejfy podpięte do panelu. Kroki: `panel/INSTALACJA.md`.
 
@@ -65,4 +75,4 @@ Sprawdzone naprawdę 13.11.2026: przenośny `cloudflared` (bez instalatora i upr
 Stary dashboard (porzucony decyzją D-008) miał własną bazę z kopią decyzji i zadań oraz agentów na płatnym kluczu API. Panel robi odwrotnie: nie ma własnej bazy wiedzy, a agent działa na subskrypcji. Kodu `dashboard/` nie używa i nie zmienia.
 
 ## Powiązane
-[[Jak prowadzimy sejf]] · [[Workflow i Git]] · [[Narzędzia]] · [[Klocki — Blender i Roblox]] · [[Rejestr decyzji]] · [[Pytania otwarte]]
+[[Jak prowadzimy sejf]] · [[Workflow i Git]] · [[Narzędzia]] · [[Klocki — Blender i Roblox]] · [[Rejestr decyzji]] · [[Pytania otwarte]] · [[Sesje główne]]

@@ -33,6 +33,16 @@ ID_TRYBOW = [t["id"] for t in TRYBY]
 DOZWOLONE_NARZEDZIA = ["Read", "Glob", "Grep", "Edit", "Write", "WebSearch", "WebFetch", "mcp__Roblox_Studio",
                        "Bash(python tools/*)", "Bash(python panel/narzedzia/*)", "Bash(git status*)", "Bash(git diff*)",
                        "Bash(git log*)", "Bash(rojo build*)"]
+# Zawężone zestawy narzędzi dla poleceń panelu, które czytają treść od ludzi spoza grona decydentów (zapis rozmowy
+# z zakładki Sesja, wiersze agendy, odpowiedzi gości). Tryb „dontAsk”: wolno tylko to, co jest na liście; bez serwerów
+# MCP, bez sieci, bez dowolnych poleceń. Notatki tylko czytają — ich treść zapisuje panel z odpowiedzi agenta.
+ZESTAWY_NARZEDZI = {
+    "czytanie": ["Read", "Glob", "Grep"],
+    "sejf": ["Read", "Glob", "Grep", "Edit", "Write"],
+    "ustalenia": ["Read", "Glob", "Grep", "Edit", "Write", "Bash(python panel/narzedzia/raport.py *)"],
+}
+ZAKAZANE_W_ZESTAWACH = ["Read(./.env)", "Read(./.env.*)", "Edit(./.env)", "Edit(./.claude/**)", "Edit(./CLAUDE.md)",
+                        "Edit(./panel/konfiguracja.json)", "Edit(./B&C/.obsidian/**)", "Edit(./B&C/Źródła/**)"]
 MAX_PRZEBIEGOW = 2
 MAX_TEKST = 20000
 MAX_KONTEKST = 12
@@ -268,10 +278,36 @@ def _program_argv(program):
     return [program]
 
 
-def zbuduj_polecenie(program, tryb, model=None, session_id=None):
+def _katalogi_sesji(katalogi):
+    """Dodatkowe katalogi do odczytu przez agenta (`--add-dir`) — wyłącznie istniejące katalogi sesji rozmów w danych
+    lokalnych panelu (zapis rozmowy z zakładki Sesja). Wszystko inne jest pomijane."""
+    baza = os.path.realpath(os.path.join(rdzen.RUNTIME, "sesje"))
+    out = []
+    for k in katalogi or []:
+        if not isinstance(k, str):
+            continue
+        p = os.path.realpath(k)
+        if p.startswith(baza + os.sep) and os.path.isdir(p) and p not in out:
+            out.append(p)
+    return out
+
+
+def zbuduj_polecenie(program, tryb, model=None, session_id=None, katalogi=None, zestaw=None):
+    """Wiersz poleceń `claude -p`. `zestaw` (klucz ZESTAWY_NARZEDZI) zastępuje uprawnienia trybu zawężoną listą
+    narzędzi — tylko dla poleceń panelu (bc/sesje.py), nigdy z wyboru człowieka."""
     cfg = rdzen.konfiguracja().get("agent") or {}
     cmd = _program_argv(program) + ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"]
-    if tryb == "plan":
+    if zestaw is not None:
+        narzedzia = ZESTAWY_NARZEDZI[zestaw]
+        wbudowane = []
+        for n in narzedzia:
+            nazwa = n.split("(")[0]
+            if nazwa not in wbudowane:
+                wbudowane.append(nazwa)
+        cmd += ["--permission-mode", "dontAsk", "--permission-prompts", "none", "--strict-mcp-config",
+                "--tools", ",".join(wbudowane), "--allowedTools"] + narzedzia + \
+               ["--disallowedTools"] + ZAKAZANE_W_ZESTAWACH
+    elif tryb == "plan":
         cmd += ["--permission-mode", "plan", "--permission-prompts", "none"]
     elif tryb == "auto":
         cmd += ["--permission-mode", "auto", "--permission-prompts", "none"]
@@ -281,8 +317,11 @@ def zbuduj_polecenie(program, tryb, model=None, session_id=None):
             narzedzia = DOZWOLONE_NARZEDZIA
         cmd += ["--permission-mode", "acceptEdits", "--permission-prompts", "none",
                 "--allowedTools"] + [str(n) for n in narzedzia]
-    if os.path.isfile(os.path.join(rdzen.REPO, ".mcp.json")):
+    if zestaw is None and os.path.isfile(os.path.join(rdzen.REPO, ".mcp.json")):
         cmd += ["--mcp-config", ".mcp.json"]                   # względnie: katalog roboczy procesu to repozytorium
+    dodatkowe = _katalogi_sesji(katalogi)
+    if dodatkowe:                                              # zapis rozmowy z zakładki Sesja (dane lokalne)
+        cmd += ["--add-dir"] + dodatkowe
     cmd += ["--append-system-prompt", INSTRUKCJA]
     if session_id:
         cmd += ["--resume", session_id]
@@ -626,7 +665,7 @@ def _wiadomosc(z):
         p = Przebieg(wid)
         _przebiegi[wid] = p
         od = _licznik_n.get(wid, 0) + 1
-    cmd = zbuduj_polecenie(program, tryb, model, w.get("session_id"))
+    cmd = zbuduj_polecenie(program, tryb, model, w.get("session_id"), w.get("katalogi"))
     rdzen.log("agent: wątek %s, tryb %s%s, pisze %s%s" % (wid, tryb, (", model " + model) if model else "", z.kto,
                                                         ", wznowienie" if w.get("session_id") else ""))
     threading.Thread(target=_bezpiecznie, args=(p, cmd, tresc_dla_agenta(z.kto, tekst, kontekst), limit_min),
@@ -699,6 +738,89 @@ def _stop(z):
     rdzen.log("agent: %s zatrzymuje wątek %s" % (z.kto, wid))
     _zabij(proc)
     return {"ok": True, "trwal": True}
+
+
+# --------------------------------------------------------------------------- dla innych modułów (bc/sesje.py)
+def mozna_uruchomic(z):
+    """Czy to żądanie może uruchomić agenta: osoba przy komputerze z panelem albo (gdy włączony jest „Agent
+    z telefonu”) żądanie zdalne. Uprawnienia dodatkowe (np. tylko decydent) sprawdza wołający."""
+    return bool(z.lokalny or (rdzen.konfiguracja().get("agent") or {}).get("zdalnie"))
+
+
+def uruchom_polecenie(tekst, kto, tytul=None, watek=None, tryb="praca", katalogi=None, zestaw=None):
+    """Przebieg agenta z gotowym poleceniem od panelu (np. notatki z rozmowy, propozycje tematów).
+
+    `watek` = istniejący wątek (wtedy rozmowa jest wznawiana) albo None (nowy wątek z `tytul`). `katalogi` = katalogi
+    sesji rozmów, które agent może czytać (`--add-dir`, zapamiętane w wątku). `zestaw` = zawężona lista narzędzi
+    (ZESTAWY_NARZEDZI) zamiast uprawnień trybu. Uprawnienia osoby sprawdza wołający.
+    Zwraca {watek, nr, od, tryb}. Błędy: 503 brak programu, 409 wątek pracuje albo limit przebiegów naraz."""
+    if tryb not in ("plan", "praca"):
+        raise BladHTTP(400, "Nieznany tryb agenta")
+    if zestaw is not None and zestaw not in ZESTAWY_NARZEDZI:
+        raise BladHTTP(400, "Nieznany zestaw narzędzi agenta")
+    tekst = str(tekst or "").replace("\r\n", "\n").strip()
+    if not tekst or len(tekst) > MAX_TEKST:
+        raise BladHTTP(400, "Polecenie dla agenta jest puste albo za długie")
+    cfg = rdzen.konfiguracja().get("agent") or {}
+    program = znajdz_program()
+    if not program:
+        raise BladHTTP(503, "Nie znaleziono Claude Code na tym komputerze — agent jest niedostępny.")
+    limit_min = int(cfg.get("limit_czasu_min") or 30)
+    model = cfg.get("model") or None
+    if model is not None and (not isinstance(model, str) or not RX_MODEL.match(model)):
+        model = None
+    katalogi = _katalogi_sesji(katalogi)
+    with _lock:
+        if _ile_trwa() >= MAX_PRZEBIEGOW:                     # przed założeniem wątku: bez pustych wątków-sierot
+            raise BladHTTP(409, "Agent pracuje już w %d wątkach naraz. Spróbuj za chwilę." % MAX_PRZEBIEGOW)
+        if watek is None:
+            for _ in range(50):
+                wid = rdzen.nowe_id("w")
+                if not os.path.exists(_sciezka_watku(wid)):
+                    break
+            teraz = rdzen.teraz()
+            _zapisz_watek({"id": wid, "tytul": _skroc(tytul or "Polecenie z panelu", 120), "tytul_auto": False,
+                           "utworzono": teraz, "ostatnio": teraz, "utworzyl": kto, "session_id": None,
+                           "wiadomosci": [], "katalogi": katalogi})
+        else:
+            wid = watek
+        w = _czytaj_watek(wid)
+        if _trwa(wid):
+            raise BladHTTP(409, "Agent jeszcze pracuje nad poprzednim poleceniem w tym wątku.")
+        if _ile_trwa() >= MAX_PRZEBIEGOW:
+            raise BladHTTP(409, "Agent pracuje już w %d wątkach naraz. Spróbuj za chwilę." % MAX_PRZEBIEGOW)
+        pola = {"katalogi": katalogi} if katalogi and katalogi != w.get("katalogi") else {}
+        msg = _dopisz(wid, {"rola": "user", "tekst": tekst, "kto": kto, "tryb": tryb}, **pola)
+        p = Przebieg(wid)
+        _przebiegi[wid] = p
+        od = _licznik_n.get(wid, 0) + 1
+    cmd = zbuduj_polecenie(program, tryb, model, w.get("session_id"), katalogi or w.get("katalogi"), zestaw=zestaw)
+    rdzen.log("agent: polecenie panelu w wątku %s (tryb %s%s, %s)" % (wid, tryb, (", narzędzia: " + zestaw)
+                                                                       if zestaw else "", kto))
+    threading.Thread(target=_bezpiecznie, args=(p, cmd, tresc_dla_agenta(kto, tekst), limit_min),
+                     daemon=True, name="agent-" + wid).start()
+    return {"watek": wid, "nr": msg["nr"], "od": od, "tryb": tryb}
+
+
+def stan_watku(wid):
+    """{trwa, ostatnia_odpowiedz, blad} wątku — do sprawdzania, czy polecenie panelu się skończyło. None, gdy wątku nie
+    ma. `blad` = ostatnia wiadomość systemowa po ostatniej odpowiedzi (np. limit subskrypcji)."""
+    try:
+        with _lock:
+            w = _czytaj_watek(wid)
+            trwa = _trwa(wid)
+    except BladHTTP:
+        return None
+    odp, blad = None, None
+    for m in reversed(w.get("wiadomosci") or []):
+        if m.get("rola") == "assistant" and odp is None:
+            odp = m.get("tekst")
+            break
+        if m.get("rola") == "system" and blad is None:
+            blad = m.get("tekst")
+        if m.get("rola") == "user":
+            break
+    return {"trwa": trwa, "ostatnia_odpowiedz": odp, "blad": blad}
 
 
 def zarejestruj(app):

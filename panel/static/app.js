@@ -10,6 +10,7 @@ const WIDOKI = [
   { id: "raporty", tytul: "Raporty", ikona: "raporty", kolejnosc: 30 },
   { id: "podglad", tytul: "Podgląd", ikona: "podglad", kolejnosc: 40 },
   { id: "agent", tytul: "Agent", ikona: "agent", kolejnosc: 50 },
+  { id: "sesja", tytul: "Sesja", ikona: "mikrofon", kolejnosc: 55 },
   { id: "siec", tytul: "Sieć", ikona: "siec", kolejnosc: 60 },
   { id: "assety", tytul: "Assety", ikona: "assety", kolejnosc: 65 },
   { id: "analityka", tytul: "Analityka", ikona: "analityka", kolejnosc: 70 },

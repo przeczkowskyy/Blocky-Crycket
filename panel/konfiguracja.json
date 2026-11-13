@@ -14,5 +14,7 @@
     "limit_czasu_min": 30
   },
   "glos": { "model": "large-v3-turbo", "jezyk": "pl" },
+  "sesje": { "max_osob": 6, "odcinek_s": 12, "notatki_co_min": 5,
+             "stun": ["stun:stun.l.google.com:19302", "stun:stun.cloudflare.com:3478"] },
   "git": { "sciezki_panelu": ["panel/dane"] }
 }

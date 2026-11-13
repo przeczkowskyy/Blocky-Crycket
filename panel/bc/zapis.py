@@ -350,16 +350,42 @@ def _sprawdz_limit(z):
 
 
 # =========================================================================== pliki i stan lokalny
+# Notatki sejfu spoza planu, które panel też zmienia (agenda sesji głównych — bc/sesje.py). Klucz -> nazwa pliku
+# w <sejf B&C>/Produkcja/. Plan (sejf.PLIKI_PLANU) zostaje bez zmian.
+PLIKI_DODATKOWE = {"sesje": "Sesje główne.md"}
+
+
 def _plik(klucz):
+    if klucz in PLIKI_DODATKOWE:
+        wynik = sejf.plik_produkcji(PLIKI_DODATKOWE[klucz])
+        if wynik:
+            return wynik
+        raise BladHTTP(503, "Panel nie widzi sejfu B&C — sprawdź listę sejfów w konfiguracji.")
     pliki = sejf.pliki_planu()
     if klucz not in pliki:
         raise BladHTTP(503, "Panel nie widzi sejfu B&C — sprawdź listę sejfów w konfiguracji.")
     return pliki[klucz]
 
 
+def plik(klucz):
+    """(ścieżka bezwzględna, ścieżka do pokazania) pliku sejfu, który zmienia panel (także „sesje”)."""
+    return _plik(klucz)
+
+
 def _notatka(klucz):
     """Nazwa notatki do wikilinku w Dzienniku zmian, np. „Pytania otwarte”."""
-    return sejf.PLIKI_PLANU[klucz][:-3]
+    return (PLIKI_DODATKOWE.get(klucz) or sejf.PLIKI_PLANU[klucz])[:-3]
+
+
+def wykonaj(klucz, wersja, zmiana, kto, znacznik=None):
+    """Publiczna droga zapisu dla innych modułów (bc/sesje.py): to samo co odpowiedzi i zadania — blokada sejfu,
+    kontrola wersji, zapis atomowy, ślad w Dzienniku zmian i dla „Wyślij”. `zmiana(dok)` zwraca opis do dziennika."""
+    return _wykonaj(klucz, wersja, zmiana, kto, znacznik)
+
+
+def sprawdz_limit(z):
+    """Limit zapisów gościa (429) — ten sam licznik co odpowiedzi i zadania."""
+    _sprawdz_limit(z)
 
 
 def _czytaj_bajty(sciezka, pokaz):
@@ -512,8 +538,8 @@ def blokada_wysylania(czekaj_s=15):
 def do_wyslania(repo, git):
     """Pliki sejfu zmienione przez panel, które można bezpiecznie wysłać przyciskiem „Wyślij”.
 
-    Plik idzie do commita tylko wtedy, gdy: leży w repozytorium, jest jednym z czterech plików planu, które zmienia
-    panel (pytania, zadania, decyzje, dziennik), jego treść jest dokładnie tą, którą zapisał panel, a wersja w HEAD
+    Plik idzie do commita tylko wtedy, gdy: leży w repozytorium, jest jednym z plików, które zmienia panel (pytania,
+    zadania, decyzje, dziennik i agenda sesji głównych „Sesje główne.md”), jego treść jest dokładnie tą, którą zapisał panel, a wersja w HEAD
     jest tą, od której panel zaczynał — czyli w pliku nie ma cudzych, niezatwierdzonych zmian.
     Zwraca (ścieżki względem repo, opisy zmian, uwagi dla człowieka). `git(argumenty, repo)` = gitsync.git.
     """
@@ -521,10 +547,10 @@ def do_wyslania(repo, git):
         stan = rdzen.czytaj_json(_plik_stanu(), {}) or {}
     dozwolone = {}
     try:
-        for klucz in ("pytania", "zadania", "decyzje", "dziennik"):
-            p, _ = sejf.pliki_planu()[klucz]
+        for klucz in ("pytania", "zadania", "decyzje", "dziennik", "sesje"):
+            p, _ = _plik(klucz)
             dozwolone[_klucz_stanu(p)] = p
-    except KeyError:
+    except (KeyError, BladHTTP):
         return [], [], []
     sciezki, opisy, uwagi, do_usuniecia = [], [], [], []
     for k, wpis in sorted((stan.get("pliki") or {}).items()):

@@ -37,6 +37,8 @@ Panel otworzy się w przeglądarce (`http://127.0.0.1:8787`). Przy pierwszym wej
 | Nowa migawka ze Studio, „kto jest w Studio”, konsola Studio | uruchomione Roblox Studio z włączonym serwerem MCP (niżej) |
 | Agent | Claude Code zainstalowany i zalogowany na tym komputerze |
 | Głosówki zamieniane na tekst | `pip install faster-whisper` (model ok. 1,6 GB pobiera się przy pierwszym nagraniu) |
+| Sesja: rozmowa głosowa w panelu | przeglądarka z mikrofonem; strona po https (link tunelu) albo na komputerze z panelem |
+| Sesja: „Agent słucha” (transkrypcja i notatki) | to samo co głosówki (`faster-whisper`) i — do notatek i ustaleń — Claude Code na komputerze z panelem |
 | Mniejsze zrzuty w migawkach i raportach, lekkie miniatury w Assetach | `pip install pillow` (opcjonalnie) |
 | Wejście z telefonu | uruchomienie przez `panel\start_lan.bat` (niżej) |
 
@@ -96,6 +98,21 @@ Wejście przez tunel zawsze wymaga kodu i nie ma uprawnień osoby przy komputerz
 
 **Zanim wyślesz adres drugiej osobie:** jeśli w `konfiguracja.lokalna.json` masz podpięte prywatne sejfy (np. własne notatki), wyjmij je na czas tunelu — gość z kodem widzi wszystkie sejfy panelu. Komputer musi zostać włączony i nie może zasnąć.
 
+### Sesja — długa rozmowa głosowa we dwóch (zakładka „Sesja”)
+Zakładka działa jak rozmowa na Discordzie, tylko w panelu: obaj wchodzicie na **ten sam** panel, klikacie **Dołącz** i rozmawiacie. Po włączeniu **Agent słucha** agent spisuje rozmowę, co kilka minut robi notatki, a na koniec spisuje ustalenia do sejfu jako propozycje do zatwierdzenia.
+1. **Gospodarz** (osoba, na której komputerze działa panel): uruchamia panel jak zwykle (`panel\start.bat`) i tunel jak w części wyżej (`cloudflared tunnel --url http://127.0.0.1:8787`). Wysyła drugiej osobie adres `https://….trycloudflare.com/?k=<kod>`. Sam wchodzi w zakładkę **Sesja** na swoim komputerze (adres `127.0.0.1` też jest „bezpieczny” dla mikrofonu).
+2. **Druga osoba** otwiera link tunelu (https — tylko po https przeglądarka daje mikrofon), wpisuje swoje imię, wchodzi w **Sesja** i klika **Dołącz**.
+3. **Zgoda na mikrofon**: przy pierwszym „Dołącz” przeglądarka zapyta o mikrofon — trzeba kliknąć **Zezwól**. Gdy ktoś kliknął „Blokuj”: ikona kłódki (albo mikrofonu) przy adresie → Mikrofon → Zezwalaj, potem jeszcze raz Dołącz. Bez mikrofonu można słuchać.
+4. **Agent słucha** włącza Karol albo Paweł: przy komputerze z panelem albo z kluczem zatwierdzania (link z `--klucz-zatwierdzania`, przez tunel dopisany `&gd=…`). Wszyscy w pokoju widzą wtedy czerwony znacznik. Każdy nagrywa **swój** mikrofon, więc w zapisie przy każdej wypowiedzi jest właściwe imię. Nagrania i zapis zostają na komputerze z panelem; dźwięk jest kasowany zaraz po spisaniu.
+5. **Rozłącz** i wyłączenie „Agent słucha” nie gubią ostatnich zdań — przeglądarka wysyła jeszcze nagrany do tej chwili kawałek.
+6. **Notatki teraz** i **Zakończ sesję i spisz ustalenia** uruchamiają agenta na subskrypcji gospodarza — działają przy komputerze z panelem (zdalnie tylko z kluczem zatwierdzania i włączonym „Agentem z telefonu”). Tematy na rozmowę zbiera notatka sejfu **Sesje główne** (agenda w zakładce; „Zaproponuj tematy” prosi agenta o propozycje).
+
+**Przeglądarki:** Chrome, Edge i Firefox na komputerze; Chrome na Androidzie; Safari na iPhonie (iOS 14.3+; tej przeglądarki nie sprawdzaliśmy jeszcze w prawdziwej rozmowie). Telefon nie może przejść w uśpienie w trakcie rozmowy — zgaszony ekran zwykle wyłącza mikrofon. Gdy panel pokaże „Miernik mikrofonu nie działa w tej przeglądarce”, nagrywanie i tak działa (agent dostaje całe nagranie); gdy pokaże „Agent może cię nie słyszeć”, sprawdź, czy przeglądarka używa właściwego mikrofonu.
+
+**Przed pierwszą prawdziwą sesją** warto sprawdzić, czy komputer z panelem nadąża ze spisywaniem: włączcie „Agent słucha” na kilka minut i patrzcie na „Czeka na spisanie”. Jeśli ta liczba stale rośnie (panel pokaże „Transkrypcja nie nadąża”), tekst pojawia się coraz później, a na koniec agent może spisać ustalenia z niepełnego zapisu (napisze to wprost). Pomaga zamknięcie ciężkich programów na komputerze z panelem.
+
+**Gdy głos się nie łączy** (panel pokaże „Głosu nie udało się połączyć bezpośrednio”): niektóre sieci (np. komórkowe, firmowe) nie przepuszczają bezpośredniego połączenia. Wtedy rozmawiajcie przez Discord, a zakładkę Sesja zostawcie otwartą z włączonym mikrofonem — nagrywanie i transkrypcja działają dalej, bo każdy wysyła swój mikrofon do panelu zwykłym https. Na stałe pomaga serwer TURN — tylko w konfiguracji lokalnej, nigdy w repozytorium: `{ "sesje": { "turn": { "adres": "turn:…:3478", "uzytkownik": "…", "haslo": "…" } } }`. Echo albo pisk: załóżcie słuchawki.
+
 Poza domem, przy wyłączonym komputerze, działa **lustro tylko do odczytu** (plan, raporty, podgląd 3D, sieć): `python panel/serwer.py --eksport <folder>` zapisuje stronę statyczną, którą można wystawić np. na GitHub Pages (workflow `.github/workflows/panel-lustro.yml`, uruchamiany ręcznie po włączeniu Pages w ustawieniach repozytorium).
 
 ## Codzienna praca we dwóch
@@ -117,13 +134,18 @@ Pamiętaj: repozytorium jest publiczne, więc raporty i komentarze widzi każdy.
 | Głosówka „brak Whispera” | `pip install faster-whisper` |
 | „Nieznany adres panelu” w przeglądarce | wchodź przez `127.0.0.1` / `localhost` albo adres z Ustawień → Telefon; własną nazwę hosta dopisz do `dozwolone_hosty` w `konfiguracja.lokalna.json` |
 | Telefon nie łączy się | ta sama sieć Wi-Fi, panel uruchomiony z `--lan`, zgoda w zaporze Windows |
+| Sesja: „Rozmowa zacznie działać po restarcie panelu” | panel działa w starej wersji — zamknij okno serwera panelu i uruchom `panel\start.bat` jeszcze raz |
+| Sesja: „Mikrofon działa tylko przez bezpieczne połączenie” | wejdź przez link tunelu (https) albo na komputerze z panelem przez `127.0.0.1`; adres `http://192.168…` z sieci domowej nie daje mikrofonu |
+| Sesja: nie słychać drugiej osoby | sprawdź, czy przy jej imieniu jest „głos połączony”; jeśli „głos się nie łączy” — rozmawiajcie przez Discord (zapis działa dalej) |
+| Sesja: brak tekstu w transkrypcji | agent musi słuchać (czerwony znacznik), mikrofon nie może być wyciszony, a na komputerze z panelem musi być `faster-whisper` |
 
 ## Gdzie są dane
 | Dane | Miejsce |
 |---|---|
 | Wspólne (raporty, komentarze, migawki) | `panel/dane/` w repozytorium |
 | Odpowiedzi, zadania, statusy decyzji z panelu | w sejfie: `B&C/Produkcja/*.md` (te same pliki co w Obsidianie) |
-| Tylko ten komputer (kod dostępu, klucz lokalny, klucz zatwierdzania, log, rozmowy z agentem, nagrania, ustawienia lokalne) | `%LOCALAPPDATA%\BlockyCrycket\panel\` |
+| Tylko ten komputer (kod dostępu, klucz lokalny, klucz zatwierdzania, log, rozmowy z agentem, nagrania, zapisy rozmów z zakładki Sesja, ustawienia lokalne) | `%LOCALAPPDATA%\BlockyCrycket\panel\` (zapisy rozmów: podfolder `sesje\`) |
+| Tematy na sesje główne | w sejfie: `B&C/Produkcja/Sesje główne.md` |
 
 Usunięcie folderu z danymi lokalnymi przywraca panel do stanu początkowego; danych wspólnych to nie rusza.
 
@@ -132,4 +154,4 @@ Usunięcie folderu z danymi lokalnymi przywraca panel do stanu początkowego; da
 cd panel
 python -B -m unittest discover -s testy -t .
 ```
-(`-B` = bez plików `__pycache__` w folderze projektu.)
+(`-B` = bez plików `__pycache__` w folderze projektu.) Testy w prawdziwej przeglądarce (Plan i Sesja, potrzebują Edge albo Chrome i Node 22+) uruchamia zmienna `BC_TEST_PRZEGLADARKA=1`.
