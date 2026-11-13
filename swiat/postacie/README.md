@@ -96,6 +96,7 @@ Sześć postaci to razem 658 widocznych części i 20 klipów; z trzema manekina
 
 **Co sprawdzono w Studio:**
 - Wygląd z czterech stron każdej postaci i ujęcia grupowe (`wynik/_roblox/*_spoczynek_studio.jpg`, `studio_grupa*.jpg`). Strony się nie odbijają lustrzanie: miecz jest w prawej dłoni.
+- Rozkład brył liczbowo: `python -B swiat/postacie/biblioteka/test_roblox_klocki.py` porównuje punkt po punkcie 400 losowych ostrosłupów z sumą części Roblox (0% punktów niezgodnych) i sprawdza zamianę układu (pozy co do 1e-15; obroty brył co do 0,15° przy kątach bliskich ±90°, co wynika z progu w bibliotece). Kierunek skosu `WedgePart` i wierzchołka `CornerWedgePart` potwierdzony promieniami w samym Studio.
 - Animacje w trybie Edit przez prawdziwy `Animator` (`RegisterKeyframeSequence` → `LoadAnimation` → `StepAnimations`): po jednym klipie każdej postaci, Rycerz trzy klipy (`wynik/_roblox/*_studio.jpg`). Kąt stawu w Studio zgadza się z danymi (udo w 6. klatce chodu: 32°).
 - Animacje w uruchomionej grze (Play): po stronie serwera wszystkie sześć postaci odtwarza kolejne klipy, konsola bez błędów (`wynik/_roblox/play_grupa_8_klatek.jpg`, obok stoi zwykły awatar gracza dla skali).
 
