@@ -115,5 +115,9 @@ Test w samym Roblox (kontener `Workspace/TestWalki`, 9 sekund, serwer liczy — 
 💡 propozycja · narzędzia · 2026-11-13 · źródło: [[Narzędzia i skille do Roblox]]
 Plik `rokit.toml` w repozytorium przypina Rojo 7.6.1 (wersja z kanonu). Rokit instaluje każda osoba u siebie; podniesienie Rojo do 7.7.1 robimy u obu osób naraz, razem z pluginem w Studio.
 
+### D-027 Instrukcja promptów „Glossy Ink” zastępuje prefiks Style Lock
+🕓 do decyzji · styl / grafika · 2026-11-13 · źródło: dokument Game Directora przekazany przez Karola
+Każdy prompt graficzny składa się ze stałego początku „Glossy Ink” (odwołanie do własnego obrazu referencyjnego, bez cudzej nazwy), zmiennego środka, stałego końca i osobnego negative promptu; do tego zasady zamkniętych krawędzi, pustych kontenerów, okien ze statystykami i map izometrycznych. Zastąpiłaby prefiks z D-001 i zapisy o pixel-arcie oraz płaskim interfejsie z D-002; zgodna z propozycją D-018. Czeka tylko na formalne potwierdzenie Game Directora; do tego czasu nowe prompty piszemy już według niej. Zob. [[Instrukcja promptów — Glossy Ink]], [[Pytania otwarte]] #22.
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*

@@ -6,6 +6,16 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-13 · Claude Code u Karola (noc i poranek: diagnoza, propozycja v2, kolejka zadań, instrukcja stylu)
+- **Diagnoza całego pomysłu** (8 perspektyw, niezależna weryfikacja liczb w źródłach): ocena dziś 3,8/10, dziesięć przyczyn źródłowych i twarde ograniczenia platformy, których nie było w notatkach z 12.11 (nową grę widzą najpierw gracze 16+, odniesienia do alkoholu tylko w grach 18+, zakres płatnej losowości). Notatka [[Diagnoza pomysłu 2026-11-13]].
+- **Propozycja v2 „krzywy montaż”** po panelu czterech koncepcji, dwóch sędziów i czerwonym zespole: [[Myśl przewodnia v2]], [[Systemy gry v2]], [[Psychologia gracza v2]], [[Karta ocen v2 i plan sprawdzenia]], [[Specyfikacja v2.1 — Krzywa Banda]], tablica `Gra/Pętla gry v2.canvas`. Uczciwa ocena po poprawkach: 6,0/10; wyżej tylko po pomiarze z graczami. Nic nie jest kanonem.
+- **Rejestry:** propozycje D-019–D-026 i D-027 (🕓) w [[Rejestr decyzji]], pytania 16–22 w [[Pytania otwarte]], nowe pozycje w [[Zadania]], linki w [[00 Start]].
+- **Instrukcja stylu Game Directora** (przekazana przez Karola 13.11): oryginał w `Źródła/Instrukcja stylu i promptowania (oryginał 2026-11-13).md`, notatka robocza [[Instrukcja promptów — Glossy Ink]], odsyłacz w [[Style Lock]]. Zastępuje prefiks z D-001 po formalnym potwierdzeniu (D-027).
+- **Test cutscenki walki w samym Roblox:** `swiat/test_walki_roblox/` i kontener `Workspace/TestWalki` (serwer liczy walkę, klient odtwarza; POMIŃ, panel wyniku). Zweryfikowany niezależnie; pomiary z komputera, telefon niezmierzony. Wniosek jako propozycja D-024. Prototyp usunąć przed publikacją miejsca.
+- **Panel:** zakładka Assety (rejestr grafik z `assets/manifest.json`) i sekcja „Telemetria gry” w Analityce; moduł `src/server/Telemetria` (bezwładny do włączenia) i notatka [[Telemetria gry]]. Po niezależnym przeglądzie 14 błędów poprawionych; 141 testów. Pierwsze prawdziwe uruchomienie tunelu (Cloudflare): zabezpieczenia sprawdzone od zewnątrz.
+- **Mapy:** biblioteka v2 `swiat/biblioteka/` (krzywe bryły w układach lokalnych, obrys tuszem, podgląd w Blenderze), opcje w `tools/blender/klocki.py` i `tools/studio_buduj.py`, nowe `tools/studio_zrzuty.py`; migawka dema ze zrzutami z prawdziwego Studio. `rokit.toml` z Rojo 7.6.1 (instalacja Rokit po stronie ludzi).
+- **Zauważone w Studio, nie nasze:** nowe `ServerScriptService.Server.StatPoints`, `ReplicatedStorage.Shared.Items` i zmiana w `EquipmentPanel` (praca Game Directora) — nietknięte; łączą się z pytaniem 17.
+
 ## 2026-11-12 · Claude Code u Karola (rozmowa, badania, panel zespołu, demo mapy)
 - **Rozmowa o grze (33 min) spisana i skomentowana.** Nowe notatki: [[Rozmowa 2026-11-12 — zapis ustaleń]], [[Propozycje z rozmowy 2026-11-12]], [[Ocena potencjału gry]]. Pełna transkrypcja została lokalnie u Karola (repo jest publiczne).
 - **Badania ze źródłami** (nowy folder `B&C/Badania/`): [[Rynek Roblox i konkurencja]], [[Shakes & Fidget — rozbiór mechanik]], [[Retencja i monetyzacja — co wolno i co działa]], [[Styl UI gier Roblox]], [[Narzędzia i skille do Roblox]], [[Technika gry — serwery, światy, walki]].
