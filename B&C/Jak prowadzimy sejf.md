@@ -12,7 +12,7 @@ tags: [hub, zasady]
 | `do-decyzji` | Czeka na odpowiedź jednego z nas |
 
 ## Kto zatwierdza (D-030, 2026-11-13)
-- Karol i Paweł mają takie same prawa. Wystarczy decyzja jednego.
+- Karol i Paweł mają takie same prawa. Wystarczy decyzja jednego. Zasadę przyjął Karol 13.11.2026; potwierdzenie Pawła czeka w [[Pytania otwarte]] #27, a do tego czasu Paweł może cofnąć decyzje zatwierdzone tylko przez Karola.
 - Każda decyzja zostaje w logach: w [[Rejestr decyzji]] z podpisem `zdecydował: <imię> <data>` i w [[Dziennik zmian]].
 - W [[Panel zespołu|panelu]] status decyzji zmienia osoba przy komputerze z panelem albo osoba z kluczem zatwierdzania. Wpis oznaczony „gość panelu” decyzją nie jest.
 - Gdy się różnimy, spór trafia do [[Pytania otwarte]] i nic nie jest nadpisywane.

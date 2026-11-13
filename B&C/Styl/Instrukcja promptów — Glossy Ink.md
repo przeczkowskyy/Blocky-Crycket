@@ -5,7 +5,7 @@ tags: [styl, prompty, grafika, ui]
 ---
 # Instrukcja promptów — Glossy Ink
 
-*Zatwierdzona 13.11.2026 decyzją D-027 w [[Rejestr decyzji]] (Karol i Paweł). Zastępuje prefiks z [[Style Lock]] (D-001) oraz zapisy o pixel-arcie ikon i płaskim interfejsie z [[Kierunek artystyczny]] (D-002).*
+*Zatwierdzona 13.11.2026 decyzją D-027 w [[Rejestr decyzji]] (zdecydował Karol). Zastępuje prefiks z [[Style Lock]] (D-001) oraz zapisy o pixel-arcie ikon i płaskim interfejsie z [[Kierunek artystyczny]] (D-002).*
 
 > [!info] W skrócie
 > Instrukcja Game Directora (Pawła) z 13.11.2026 dla każdego, kto pisze prompty do generatorów grafiki (Higgsfield, Midjourney, DALL-E 3). **Złota zasada:** opisu stylu nie wymyśla się od zera — każdy prompt zaczyna się od stałego początku, kończy stałym końcem i ma osobny stały negative prompt; zmienia się tylko środek z układem i obiektami. Styl nazywa się „Glossy Ink” i jest wzorowany na ekranie ładowania. Pełny tekst z przykładem: [[Instrukcja stylu i promptowania (oryginał 2026-11-13)]].

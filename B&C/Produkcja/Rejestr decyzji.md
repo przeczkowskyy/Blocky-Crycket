@@ -119,7 +119,7 @@ Test w samym Roblox (kontener `Workspace/TestWalki`, 9 sekund, serwer liczy — 
 Plik `rokit.toml` w repozytorium przypina Rojo 7.6.1 (wersja z kanonu). Rokit instaluje każda osoba u siebie; podniesienie Rojo do 7.7.1 robimy u obu osób naraz, razem z pluginem w Studio.
 
 ### D-027 Instrukcja promptów „Glossy Ink” zastępuje prefiks Style Lock
-✅ zatwierdzona · styl / grafika · 2026-11-13 · źródło: dokument Game Directora przekazany przez Karola · zdecydował: Karol i Paweł 2026-11-13
+✅ zatwierdzona · styl / grafika · 2026-11-13 · źródło: dokument Game Directora przekazany przez Karola · zdecydował: Karol 2026-11-13
 Każdy prompt graficzny składa się ze stałego początku „Glossy Ink” (odwołanie do własnego obrazu referencyjnego, bez cudzej nazwy), zmiennego środka, stałego końca i osobnego negative promptu; do tego zasady zamkniętych krawędzi, pustych kontenerów, okien ze statystykami i map izometrycznych. Zastępuje prefiks z D-001 oraz zapisy o pixel-arcie ikon i płaskim interfejsie z D-002; reszta D-002 obowiązuje dalej. Jest zgodna z propozycją D-018, ale jej nie zatwierdza. Zob. [[Instrukcja promptów — Glossy Ink]], [[Pytania otwarte]] #22.
 
 ### D-028 Panel jako miejsce pracy: zapis do sejfu z panelu i klucz Game Directora
@@ -131,8 +131,8 @@ Z panelu da się odpowiadać na pytania otwarte, odhaczać i dodawać zadania or
 Postacie, pety i ekwipunek opisujemy kodem (jeden plik na postać), a z tego opisu powstają siatki z animacjami w Blenderze oraz postacie z części Roblox ze stawami, które da się postawić w Studio bez wgrywania zasobów. Propozycja: na start NPC i pety stawiać w grze jako postacie z klocków, a import siatek zostawić jako drugą drogę do sprawdzenia. Dziś postacie stoją tylko w Studio jako próba (animacje i skrypty działają wyłącznie w Studio). Import siatki sprawdzono 13.11.2026 wieczorem na Rycerzu: wyszła poprawna postać R15 z 15 części, więc obie drogi są do wyboru. Rozwija D-017. Wygląd postaci i sloty ekwipunku pozostają do decyzji Karola albo Pawła. Zob. [[Postacie 3D — Blender i Roblox]], [[Pytania otwarte]] #24.
 
 ### D-030 Decyzje zatwierdza Karol albo Paweł; każda zostaje w logach
-✅ zatwierdzona · zasady pracy · 2026-11-13 · zdecydował: Karol i Paweł 2026-11-13
-Obaj mają takie same prawa do zatwierdzania decyzji i nadawania notatkom statusu `kanon`. Wystarczy decyzja jednej osoby, bo ustalenia i tak omawiają na bieżąco. Każda decyzja zostaje w logach: w tym rejestrze (podpis `zdecydował: <imię> <data>`) i w [[Dziennik zmian]]. Zastępuje zasadę jednego zatwierdzającego Game Directora z [[Jak prowadzimy sejf]] i z `CLAUDE.md`. W panelu zmiana statusu decyzji wymaga klucza lokalnego (osoba przy komputerze z panelem) albo klucza zatwierdzania; wpis oznaczony „gość panelu” decyzją nie jest. Gdy obaj się różnią, spór trafia do [[Pytania otwarte]] i nic nie jest nadpisywane. Odpowiedź na [[Pytania otwarte]] #15. Zob. [[Panel zespołu]].
+✅ zatwierdzona · zasady pracy · 2026-11-13 · zdecydował: Karol 2026-11-13
+**Zdecydował Karol; potwierdzenie Pawła czeka w [[Pytania otwarte]] #27.** Do tego czasu decyzje zatwierdzone tylko przez Karola mają jego podpis, a Paweł może je cofnąć. Obaj mają takie same prawa do zatwierdzania decyzji i nadawania notatkom statusu `kanon`. Wystarczy decyzja jednej osoby, bo ustalenia i tak omawiają na bieżąco. Każda decyzja zostaje w logach: w tym rejestrze (podpis `zdecydował: <imię> <data>`) i w [[Dziennik zmian]]. Zastępuje zasadę jednego zatwierdzającego Game Directora z [[Jak prowadzimy sejf]] i z `CLAUDE.md`. W panelu zmiana statusu decyzji wymaga klucza lokalnego (osoba przy komputerze z panelem) albo klucza zatwierdzania; wpis oznaczony „gość panelu” decyzją nie jest. Gdy obaj się różnią, spór trafia do [[Pytania otwarte]] i nic nie jest nadpisywane. Odpowiedź na [[Pytania otwarte]] #15. Zob. [[Panel zespołu]].
 
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*

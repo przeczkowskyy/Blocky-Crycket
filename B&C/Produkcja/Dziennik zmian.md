@@ -6,9 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
-## 2026-11-13 · Claude Code u Karola (wieczór: decyzje Karola i Pawła, panel jako miejsce pracy, import siatek)
-- **Kto zatwierdza:** Karol i Paweł mają takie same prawa, wystarczy decyzja jednego, a każda decyzja zostaje w logach. Nowa decyzja D-030 w [[Rejestr decyzji]] (zdecydowali Karol i Paweł, odpowiedź na pytanie 15 w [[Pytania otwarte]]); zasada wpisana do [[Jak prowadzimy sejf]] i `CLAUDE.md`.
-- **Glossy Ink:** D-027 zatwierdzona (Karol i Paweł, pytanie 22). Zastępuje prefiks z D-001 (teraz ♻️) oraz zapisy o pixel-arcie ikon i płaskim interfejsie z D-002; reszta D-002 obowiązuje. Linki w [[00 Start]] zaktualizowane; szablony skilla `/asset` i notatki stylu są przepinane osobno.
+## 2026-11-13 · Claude Code u Karola (wieczór: decyzje Karola, panel jako miejsce pracy, import siatek)
+- **Sprostowanie podpisów:** D-030 i D-027 były przez kilkadziesiąt minut podpisane „Karol i Paweł”. To decyzje samego Karola, więc podpisy poprawiono, a potwierdzenie zasady równych praw przez Pawła czeka w pytaniu 27.
+- **Kto zatwierdza:** Karol i Paweł mają takie same prawa, wystarczy decyzja jednego, a każda decyzja zostaje w logach. Nowa decyzja D-030 w [[Rejestr decyzji]] (zdecydował Karol, odpowiedź na pytanie 15 w [[Pytania otwarte]]); zasada wpisana do [[Jak prowadzimy sejf]] i `CLAUDE.md`.
+- **Glossy Ink:** D-027 zatwierdzona (Karol, pytanie 22). Zastępuje prefiks z D-001 (teraz ♻️) oraz zapisy o pixel-arcie ikon i płaskim interfejsie z D-002; reszta D-002 obowiązuje. Linki w [[00 Start]] zaktualizowane; szablony skilla `/asset` i notatki stylu są przepinane osobno.
 - **Panel jako miejsce pracy:** D-028 zatwierdzona (Karol, pytanie 23). Zapis do sejfu z panelu włączony na komputerze Karola bez dodatkowych ograniczeń dla wejść z kodem dostępu; utworzony klucz zatwierdzania. Tunel zostaje otwarty, prywatny Warsztat Karola zostaje odpięty.
 - **Walka:** Karol obejrzał test w `Workspace/TestWalki` i ocenił walkę jako bardzo wciągającą mimo drobnych błędów. Propozycja D-024 zmieniona z „cutscenka tylko przy bossie” na „walka w każdej potyczce, w trzech długościach”; nadal 💡, czeka na decyzję i na listę błędów.
 - **Import siatek sprawdzony:** po zatwierdzeniu folderu w Studio plik `rycerz.fbx` został wgrany na konto Karola (zasób Model, moderacja zatwierdziła od razu) i wstawiony do `Workspace/TestPostaci` jako „Rycerz Blocky (import FBX)”. Roblox zrobił z niego postać R15: 15 części-siatek, `Humanoid`, komplet punktów zaczepienia, skala 1:1, kolory z tekstury-palety poprawne. Miecz i animacje nie wchodzą razem z modelem. Wynik: `swiat/postacie/wynik/_roblox/import_rycerz_fbx.json` i dwa zrzuty.
