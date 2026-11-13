@@ -1,0 +1,1654 @@
+{
+ "modul": "zestaw_rekrut",
+ "modele": [
+  {
+   "id": "zestaw_rekrut_przymiarka",
+   "nazwa": "Przymiarka zestawu Rekrut na manekinie R15",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      2.04,
+      0.4,
+      1.04
+     ],
+     "min": [
+      -1.02,
+      2.0,
+      -0.52
+     ],
+     "max": [
+      1.02,
+      2.4,
+      0.52
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      1.6,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.4,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ],
+     "min": [
+      -0.625,
+      4.0,
+      -0.625
+     ],
+     "max": [
+      0.625,
+      5.25,
+      0.695
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      1.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.04,
+      0.85,
+      1.04
+     ],
+     "min": [
+      -0.02,
+      1.15,
+      -0.52
+     ],
+     "max": [
+      1.02,
+      2.0,
+      0.52
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.04,
+      0.8,
+      1.04
+     ],
+     "min": [
+      -0.02,
+      0.35,
+      -0.52
+     ],
+     "max": [
+      1.02,
+      1.15,
+      0.52
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.04,
+      0.85,
+      1.04
+     ],
+     "min": [
+      -1.02,
+      1.15,
+      -0.52
+     ],
+     "max": [
+      0.02,
+      2.0,
+      0.52
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.04,
+      0.8,
+      1.04
+     ],
+     "min": [
+      -1.02,
+      0.35,
+      -0.52
+     ],
+     "max": [
+      0.02,
+      1.15,
+      0.52
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "rekrut_czapka_Akc",
+     "kosc": "Head",
+     "trojkaty": 656,
+     "wierzcholki": 372,
+     "wymiary": [
+      1.818,
+      1.405,
+      1.713
+     ],
+     "min": [
+      -0.909,
+      4.325,
+      -0.825
+     ],
+     "max": [
+      0.909,
+      5.73,
+      0.888
+     ]
+    },
+    {
+     "nazwa": "rekrut_przeszywanica_Akc",
+     "kosc": "UpperTorso",
+     "trojkaty": 596,
+     "wierzcholki": 344,
+     "wymiary": [
+      1.98,
+      2.08,
+      1.355
+     ],
+     "min": [
+      -0.99,
+      2.02,
+      -0.64
+     ],
+     "max": [
+      0.99,
+      4.1,
+      0.715
+     ]
+    },
+    {
+     "nazwa": "rekrut_rekaw_l_Akc",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 148,
+     "wierzcholki": 88,
+     "wymiary": [
+      1.13,
+      0.96,
+      1.22
+     ],
+     "min": [
+      1.0,
+      3.1,
+      -0.61
+     ],
+     "max": [
+      2.13,
+      4.06,
+      0.61
+     ]
+    },
+    {
+     "nazwa": "rekrut_rekaw_p_Akc",
+     "kosc": "RightUpperArm",
+     "trojkaty": 148,
+     "wierzcholki": 88,
+     "wymiary": [
+      1.13,
+      0.96,
+      1.22
+     ],
+     "min": [
+      -2.13,
+      3.1,
+      -0.61
+     ],
+     "max": [
+      -1.0,
+      4.06,
+      0.61
+     ]
+    },
+    {
+     "nazwa": "rekrut_rekawica_l_Akc",
+     "kosc": "LeftHand",
+     "trojkaty": 388,
+     "wierzcholki": 216,
+     "wymiary": [
+      1.26,
+      1.355,
+      1.438
+     ],
+     "min": [
+      0.99,
+      1.71,
+      -0.65
+     ],
+     "max": [
+      2.25,
+      3.065,
+      0.788
+     ]
+    },
+    {
+     "nazwa": "rekrut_rekawica_p_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 388,
+     "wierzcholki": 216,
+     "wymiary": [
+      1.26,
+      1.355,
+      1.438
+     ],
+     "min": [
+      -2.25,
+      1.71,
+      -0.65
+     ],
+     "max": [
+      -0.99,
+      3.065,
+      0.788
+     ]
+    },
+    {
+     "nazwa": "rekrut_but_l_Akc",
+     "kosc": "LeftFoot",
+     "trojkaty": 380,
+     "wierzcholki": 216,
+     "wymiary": [
+      1.135,
+      1.205,
+      1.63
+     ],
+     "min": [
+      -0.01,
+      -0.03,
+      -0.58
+     ],
+     "max": [
+      1.125,
+      1.175,
+      1.05
+     ]
+    },
+    {
+     "nazwa": "rekrut_but_p_Akc",
+     "kosc": "RightFoot",
+     "trojkaty": 380,
+     "wierzcholki": 216,
+     "wymiary": [
+      1.135,
+      1.205,
+      1.63
+     ],
+     "min": [
+      -1.125,
+      -0.03,
+      -0.58
+     ],
+     "max": [
+      0.01,
+      1.175,
+      1.05
+     ]
+    },
+    {
+     "nazwa": "rekrut_pas_Akc",
+     "kosc": "LowerTorso",
+     "trojkaty": 460,
+     "wierzcholki": 264,
+     "wymiary": [
+      1.96,
+      0.8,
+      1.885
+     ],
+     "min": [
+      -0.98,
+      1.54,
+      -0.7
+     ],
+     "max": [
+      0.98,
+      2.34,
+      1.185
+     ]
+    },
+    {
+     "nazwa": "rekrut_miecz_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 340,
+     "wierzcholki": 200,
+     "wymiary": [
+      1.25,
+      0.42,
+      4.02
+     ],
+     "min": [
+      -2.125,
+      1.94,
+      -0.79
+     ],
+     "max": [
+      -0.875,
+      2.36,
+      3.23
+     ]
+    }
+   ],
+   "trojkaty_razem": 4852,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 19
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.0,
+    5.25,
+    1.32
+   ],
+   "wymiary_z_akcesoriami": [
+    4.5,
+    5.76,
+    4.055
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.25,
+     -0.03,
+     -0.825
+    ],
+    [
+     2.25,
+     5.73,
+     3.23
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "chod",
+     "dlugosc": 24,
+     "fps": 30,
+     "sekundy": 0.8,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    },
+    {
+     "n": "trzymanie",
+     "dlugosc": 2,
+     "fps": 30,
+     "sekundy": 0.07,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "rekrut_czapka",
+     "zaczep": "HatAttachment",
+     "eksport": true
+    },
+    {
+     "id": "rekrut_przeszywanica",
+     "zaczep": "BodyFrontAttachment",
+     "eksport": true
+    },
+    {
+     "id": "rekrut_rekaw_l",
+     "zaczep": "LeftShoulderAttachment",
+     "eksport": true
+    },
+    {
+     "id": "rekrut_rekaw_p",
+     "zaczep": "RightShoulderAttachment",
+     "eksport": true
+    },
+    {
+     "id": "rekrut_rekawica_l",
+     "zaczep": "LeftGripAttachment",
+     "eksport": true
+    },
+    {
+     "id": "rekrut_rekawica_p",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    },
+    {
+     "id": "rekrut_but_l",
+     "zaczep": "LeftFootAttachment",
+     "eksport": true
+    },
+    {
+     "id": "rekrut_but_p",
+     "zaczep": "RightFootAttachment",
+     "eksport": true
+    },
+    {
+     "id": "rekrut_pas",
+     "zaczep": "WaistCenterAttachment",
+     "eksport": true
+    },
+    {
+     "id": "rekrut_miecz",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 132,
+     "limit": 4000,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ]
+    },
+    "Torso": {
+     "trojkaty": 132,
+     "limit": 1750,
+     "wymiary": [
+      2.04,
+      2.0,
+      1.04
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 220,
+     "limit": 1248,
+     "wymiary": [
+      1.04,
+      2.0,
+      1.04
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 220,
+     "limit": 1248,
+     "wymiary": [
+      1.04,
+      2.0,
+      1.04
+     ]
+    }
+   },
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_czapka",
+   "nazwa": "Skórzana czapka rekruta",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_czapka",
+     "kosc": null,
+     "trojkaty": 656,
+     "wierzcholki": 372,
+     "wymiary": [
+      1.818,
+      1.405,
+      1.713
+     ],
+     "min": [
+      -0.909,
+      -0.925,
+      -0.825
+     ],
+     "max": [
+      0.909,
+      0.48,
+      0.888
+     ]
+    }
+   ],
+   "trojkaty_razem": 656,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 4
+   },
+   "zaczep": "HatAttachment",
+   "typ_roblox": "Hat",
+   "zakres_od_zaczepu": [
+    [
+     -0.909,
+     -0.925,
+     -0.825
+    ],
+    [
+     0.909,
+     0.48,
+     0.888
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    -0.223,
+    0.032
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_przeszywanica",
+   "nazwa": "Przeszywanica rekruta",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_przeszywanica",
+     "kosc": null,
+     "trojkaty": 596,
+     "wierzcholki": 344,
+     "wymiary": [
+      1.98,
+      2.08,
+      1.355
+     ],
+     "min": [
+      -0.99,
+      -1.18,
+      -1.14
+     ],
+     "max": [
+      0.99,
+      0.9,
+      0.215
+     ]
+    }
+   ],
+   "trojkaty_razem": 596,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "BodyFrontAttachment",
+   "typ_roblox": "Front",
+   "zakres_od_zaczepu": [
+    [
+     -0.99,
+     -1.18,
+     -1.14
+    ],
+    [
+     0.99,
+     0.9,
+     0.215
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    -0.14,
+    -0.462
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_przeszywanica_cala",
+   "nazwa": "Przeszywanica rekruta (z rękawami)",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_przeszywanica_cala",
+     "kosc": null,
+     "trojkaty": 892,
+     "wierzcholki": 520,
+     "wymiary": [
+      4.526,
+      2.12,
+      1.355
+     ],
+     "min": [
+      -2.263,
+      -1.18,
+      -1.14
+     ],
+     "max": [
+      2.263,
+      0.94,
+      0.215
+     ]
+    }
+   ],
+   "trojkaty_razem": 892,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "BodyFrontAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -2.263,
+     -1.18,
+     -1.14
+    ],
+    [
+     2.263,
+     0.94,
+     0.215
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    -0.12,
+    -0.462
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_rekaw_l",
+   "nazwa": "Rękaw przeszywanicy (lewy)",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_rekaw_l",
+     "kosc": null,
+     "trojkaty": 148,
+     "wierzcholki": 88,
+     "wymiary": [
+      1.13,
+      0.96,
+      1.22
+     ],
+     "min": [
+      -0.5,
+      -0.9,
+      -0.61
+     ],
+     "max": [
+      0.63,
+      0.06,
+      0.61
+     ]
+    }
+   ],
+   "trojkaty_razem": 148,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 3
+   },
+   "zaczep": "LeftShoulderAttachment",
+   "typ_roblox": "Shoulder",
+   "zakres_od_zaczepu": [
+    [
+     -0.5,
+     -0.9,
+     -0.61
+    ],
+    [
+     0.63,
+     0.06,
+     0.61
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.065,
+    -0.42,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_rekaw_p",
+   "nazwa": "Rękaw przeszywanicy (prawy)",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_rekaw_p",
+     "kosc": null,
+     "trojkaty": 148,
+     "wierzcholki": 88,
+     "wymiary": [
+      1.13,
+      0.96,
+      1.22
+     ],
+     "min": [
+      -0.63,
+      -0.9,
+      -0.61
+     ],
+     "max": [
+      0.5,
+      0.06,
+      0.61
+     ]
+    }
+   ],
+   "trojkaty_razem": 148,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 3
+   },
+   "zaczep": "RightShoulderAttachment",
+   "typ_roblox": "Shoulder",
+   "zakres_od_zaczepu": [
+    [
+     -0.63,
+     -0.9,
+     -0.61
+    ],
+    [
+     0.5,
+     0.06,
+     0.61
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.065,
+    -0.42,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_rekawica_l",
+   "nazwa": "Skórzana rękawica (lewa)",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_rekawica_l",
+     "kosc": null,
+     "trojkaty": 388,
+     "wierzcholki": 216,
+     "wymiary": [
+      1.26,
+      1.438,
+      1.355
+     ],
+     "min": [
+      -0.51,
+      -0.65,
+      -0.915
+     ],
+     "max": [
+      0.75,
+      0.788,
+      0.44
+     ]
+    }
+   ],
+   "trojkaty_razem": 388,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "LeftGripAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -0.51,
+     -0.65,
+     -0.915
+    ],
+    [
+     0.75,
+     0.788,
+     0.44
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.12,
+    0.069,
+    -0.238
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_rekawica_p",
+   "nazwa": "Skórzana rękawica (prawa)",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_rekawica_p",
+     "kosc": null,
+     "trojkaty": 388,
+     "wierzcholki": 216,
+     "wymiary": [
+      1.26,
+      1.438,
+      1.355
+     ],
+     "min": [
+      -0.75,
+      -0.65,
+      -0.915
+     ],
+     "max": [
+      0.51,
+      0.788,
+      0.44
+     ]
+    }
+   ],
+   "trojkaty_razem": 388,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -0.75,
+     -0.65,
+     -0.915
+    ],
+    [
+     0.51,
+     0.788,
+     0.44
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.12,
+    0.069,
+    -0.238
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_rekawice",
+   "nazwa": "Skórzane rękawice rekruta",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_rekawice",
+     "kosc": null,
+     "trojkaty": 776,
+     "wierzcholki": 432,
+     "wymiary": [
+      3.13,
+      1.355,
+      1.817
+     ],
+     "min": [
+      -1.565,
+      -0.915,
+      -0.888
+     ],
+     "max": [
+      1.565,
+      0.44,
+      0.929
+     ]
+    }
+   ],
+   "trojkaty_razem": 776,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.565,
+     -0.915,
+     -0.888
+    ],
+    [
+     1.565,
+     0.44,
+     0.929
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    -0.238,
+    0.021
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_but_l",
+   "nazwa": "Połatany but (lewy)",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_but_l",
+     "kosc": null,
+     "trojkaty": 380,
+     "wierzcholki": 216,
+     "wymiary": [
+      1.135,
+      1.205,
+      1.63
+     ],
+     "min": [
+      -0.51,
+      -0.03,
+      -0.58
+     ],
+     "max": [
+      0.625,
+      1.175,
+      1.05
+     ]
+    }
+   ],
+   "trojkaty_razem": 380,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "LeftFootAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -0.51,
+     -0.03,
+     -0.58
+    ],
+    [
+     0.625,
+     1.175,
+     1.05
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.057,
+    0.573,
+    0.235
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_but_p",
+   "nazwa": "Połatany but (prawy)",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_but_p",
+     "kosc": null,
+     "trojkaty": 380,
+     "wierzcholki": 216,
+     "wymiary": [
+      1.135,
+      1.205,
+      1.63
+     ],
+     "min": [
+      -0.625,
+      -0.03,
+      -0.58
+     ],
+     "max": [
+      0.51,
+      1.175,
+      1.05
+     ]
+    }
+   ],
+   "trojkaty_razem": 380,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "RightFootAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -0.625,
+     -0.03,
+     -0.58
+    ],
+    [
+     0.51,
+     1.175,
+     1.05
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.057,
+    0.573,
+    0.235
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_buty",
+   "nazwa": "Połatane buty rekruta",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_buty",
+     "kosc": null,
+     "trojkaty": 760,
+     "wierzcholki": 432,
+     "wymiary": [
+      2.115,
+      1.205,
+      2.887
+     ],
+     "min": [
+      -1.156,
+      -0.03,
+      -1.358
+     ],
+     "max": [
+      0.959,
+      1.175,
+      1.529
+     ]
+    }
+   ],
+   "trojkaty_razem": 760,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "RightFootAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.156,
+     -0.03,
+     -1.358
+    ],
+    [
+     0.959,
+     1.175,
+     1.529
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.098,
+    0.573,
+    0.085
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_pas",
+   "nazwa": "Sznurek z sakiewką",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_pas",
+     "kosc": null,
+     "trojkaty": 460,
+     "wierzcholki": 264,
+     "wymiary": [
+      1.96,
+      0.8,
+      1.885
+     ],
+     "min": [
+      -0.98,
+      -0.66,
+      -0.7
+     ],
+     "max": [
+      0.98,
+      0.14,
+      1.185
+     ]
+    }
+   ],
+   "trojkaty_razem": 460,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "WaistCenterAttachment",
+   "typ_roblox": "Waist",
+   "zakres_od_zaczepu": [
+    [
+     -0.98,
+     -0.66,
+     -0.7
+    ],
+    [
+     0.98,
+     0.14,
+     1.185
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    -0.26,
+    0.243
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_miecz",
+   "nazwa": "Drewniany miecz ćwiczebny",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_miecz",
+     "kosc": null,
+     "trojkaty": 340,
+     "wierzcholki": 200,
+     "wymiary": [
+      1.25,
+      4.02,
+      0.42
+     ],
+     "min": [
+      -0.625,
+      -0.79,
+      -0.21
+     ],
+     "max": [
+      0.625,
+      3.23,
+      0.21
+     ]
+    }
+   ],
+   "trojkaty_razem": 340,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.625,
+     -0.79,
+     -0.21
+    ],
+    [
+     0.625,
+     3.23,
+     0.21
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.22,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_amulet",
+   "nazwa": "Ząb na rzemyku",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_amulet",
+     "kosc": null,
+     "trojkaty": 222,
+     "wierzcholki": 129,
+     "wymiary": [
+      1.31,
+      1.79,
+      0.182
+     ],
+     "min": [
+      -0.655,
+      -1.105,
+      -0.091
+     ],
+     "max": [
+      0.655,
+      0.685,
+      0.091
+     ]
+    }
+   ],
+   "trojkaty_razem": 222,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 3
+   },
+   "zaczep": "NeckAttachment",
+   "typ_roblox": "Neck",
+   "zakres_od_zaczepu": [
+    [
+     -0.655,
+     -1.105,
+     -0.091
+    ],
+    [
+     0.655,
+     0.685,
+     0.091
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    -0.21,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_pierscien",
+   "nazwa": "Miedziany pierścień",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_pierscien",
+     "kosc": null,
+     "trojkaty": 440,
+     "wierzcholki": 240,
+     "wymiary": [
+      0.798,
+      0.939,
+      0.26
+     ],
+     "min": [
+      -0.399,
+      -0.399,
+      -0.13
+     ],
+     "max": [
+      0.399,
+      0.54,
+      0.13
+     ]
+    }
+   ],
+   "trojkaty_razem": 440,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 3
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -0.399,
+     -0.399,
+     -0.13
+    ],
+    [
+     0.399,
+     0.54,
+     0.13
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.071,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rekrut_podkowa",
+   "nazwa": "Zardzewiała podkowa",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rekrut_podkowa",
+     "kosc": null,
+     "trojkaty": 536,
+     "wierzcholki": 304,
+     "wymiary": [
+      1.3,
+      1.348,
+      0.155
+     ],
+     "min": [
+      -0.65,
+      -0.658,
+      -0.07
+     ],
+     "max": [
+      0.65,
+      0.69,
+      0.085
+     ]
+    }
+   ],
+   "trojkaty_razem": 536,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 4
+   },
+   "zaczep": "WaistCenterAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -0.65,
+     -0.658,
+     -0.07
+    ],
+    [
+     0.65,
+     0.69,
+     0.085
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.016,
+    0.007
+   ],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "zestaw_rekrut_przymiarka.fbx: siatki 44, kości 17, trójkąty 5080, wzrost 5.76 st., akcje brak -> ZGODNE",
+  "zestaw_rekrut_przymiarka__spoczynek.fbx: siatki 44, kości 17, trójkąty 5080, wzrost 5.76 st., akcje zestaw_rekrut_przymiarka|Scene 1-61 -> ZGODNE",
+  "zestaw_rekrut_przymiarka__chod.fbx: siatki 44, kości 17, trójkąty 5080, wzrost 5.76 st., akcje zestaw_rekrut_przymiarka|Scene 1-25 -> ZGODNE",
+  "zestaw_rekrut_przymiarka__atak.fbx: siatki 44, kości 17, trójkąty 5080, wzrost 5.76 st., akcje zestaw_rekrut_przymiarka|Scene 1-31 -> ZGODNE",
+  "zestaw_rekrut_przymiarka__trzymanie.fbx: siatki 44, kości 17, trójkąty 5080, wzrost 5.76 st., akcje zestaw_rekrut_przymiarka|Scene 1-3 -> ZGODNE",
+  "zestaw_rekrut_przymiarka.glb: siatki 44, kości 17, trójkąty 5080, wzrost 5.76 st., akcje atak 0-30, chod 0-24, spoczynek 0-60, trzymanie 0-2 -> ZGODNE",
+  "rekrut_czapka.fbx: siatki 1, kości 0, trójkąty 656, wzrost 1.41 st., akcje brak -> ZGODNE",
+  "rekrut_czapka.glb: siatki 1, kości 0, trójkąty 656, wzrost 1.41 st., akcje brak -> ZGODNE",
+  "rekrut_przeszywanica.fbx: siatki 1, kości 0, trójkąty 596, wzrost 2.08 st., akcje brak -> ZGODNE",
+  "rekrut_przeszywanica.glb: siatki 1, kości 0, trójkąty 596, wzrost 2.08 st., akcje brak -> ZGODNE",
+  "rekrut_przeszywanica_cala.fbx: siatki 1, kości 0, trójkąty 892, wzrost 2.12 st., akcje brak -> ZGODNE",
+  "rekrut_przeszywanica_cala.glb: siatki 1, kości 0, trójkąty 892, wzrost 2.12 st., akcje brak -> ZGODNE",
+  "rekrut_rekaw_l.fbx: siatki 1, kości 0, trójkąty 148, wzrost 0.96 st., akcje brak -> ZGODNE",
+  "rekrut_rekaw_l.glb: siatki 1, kości 0, trójkąty 148, wzrost 0.96 st., akcje brak -> ZGODNE",
+  "rekrut_rekaw_p.fbx: siatki 1, kości 0, trójkąty 148, wzrost 0.96 st., akcje brak -> ZGODNE",
+  "rekrut_rekaw_p.glb: siatki 1, kości 0, trójkąty 148, wzrost 0.96 st., akcje brak -> ZGODNE",
+  "rekrut_rekawica_l.fbx: siatki 1, kości 0, trójkąty 388, wzrost 1.44 st., akcje brak -> ZGODNE",
+  "rekrut_rekawica_l.glb: siatki 1, kości 0, trójkąty 388, wzrost 1.44 st., akcje brak -> ZGODNE",
+  "rekrut_rekawica_p.fbx: siatki 1, kości 0, trójkąty 388, wzrost 1.44 st., akcje brak -> ZGODNE",
+  "rekrut_rekawica_p.glb: siatki 1, kości 0, trójkąty 388, wzrost 1.44 st., akcje brak -> ZGODNE",
+  "rekrut_rekawice.fbx: siatki 1, kości 0, trójkąty 776, wzrost 1.35 st., akcje brak -> ZGODNE",
+  "rekrut_rekawice.glb: siatki 1, kości 0, trójkąty 776, wzrost 1.35 st., akcje brak -> ZGODNE",
+  "rekrut_but_l.fbx: siatki 1, kości 0, trójkąty 380, wzrost 1.21 st., akcje brak -> ZGODNE",
+  "rekrut_but_l.glb: siatki 1, kości 0, trójkąty 380, wzrost 1.21 st., akcje brak -> ZGODNE",
+  "rekrut_but_p.fbx: siatki 1, kości 0, trójkąty 380, wzrost 1.21 st., akcje brak -> ZGODNE",
+  "rekrut_but_p.glb: siatki 1, kości 0, trójkąty 380, wzrost 1.21 st., akcje brak -> ZGODNE",
+  "rekrut_buty.fbx: siatki 1, kości 0, trójkąty 760, wzrost 1.21 st., akcje brak -> ZGODNE",
+  "rekrut_buty.glb: siatki 1, kości 0, trójkąty 760, wzrost 1.21 st., akcje brak -> ZGODNE",
+  "rekrut_pas.fbx: siatki 1, kości 0, trójkąty 460, wzrost 0.80 st., akcje brak -> ZGODNE",
+  "rekrut_pas.glb: siatki 1, kości 0, trójkąty 460, wzrost 0.80 st., akcje brak -> ZGODNE",
+  "rekrut_miecz.fbx: siatki 1, kości 0, trójkąty 340, wzrost 4.02 st., akcje brak -> ZGODNE",
+  "rekrut_miecz.glb: siatki 1, kości 0, trójkąty 340, wzrost 4.02 st., akcje brak -> ZGODNE",
+  "rekrut_amulet.fbx: siatki 1, kości 0, trójkąty 222, wzrost 1.79 st., akcje brak -> ZGODNE",
+  "rekrut_amulet.glb: siatki 1, kości 0, trójkąty 222, wzrost 1.79 st., akcje brak -> ZGODNE",
+  "rekrut_pierscien.fbx: siatki 1, kości 0, trójkąty 440, wzrost 0.94 st., akcje brak -> ZGODNE",
+  "rekrut_pierscien.glb: siatki 1, kości 0, trójkąty 440, wzrost 0.94 st., akcje brak -> ZGODNE",
+  "rekrut_podkowa.fbx: siatki 1, kości 0, trójkąty 536, wzrost 1.35 st., akcje brak -> ZGODNE",
+  "rekrut_podkowa.glb: siatki 1, kości 0, trójkąty 536, wzrost 1.35 st., akcje brak -> ZGODNE"
+ ]
+}

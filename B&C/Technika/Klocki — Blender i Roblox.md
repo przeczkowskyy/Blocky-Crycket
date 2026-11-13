@@ -30,6 +30,9 @@ Demo v1 było zbyt grzeczne: proste ściany, drobne szyldy, mapa ginęła w lesi
 
 Najważniejsze ustalenia ze szkolenia: krzywizna od 4° wzwyż (mniej wygląda jak błąd), dach to 45–60% wysokości budynku, rekwizyt-szyld ma 8–12 studów, trzy walory koloru zamiast polegania na cieniu, kolor dachu jako kod funkcji; słońce tego miejsca stoi na północnym zachodzie, więc fronty głównych budynków patrzą w tę stronę; bez odniesień do alkoholu (Roblox dopuszcza je tylko w grach 18+). Według propozycji v2 gry miasteczko wchodzi do rozgrywki dopiero po sprawdzeniu pętli — na razie to demo stylu (propozycja D-025).
 
+## Postacie z klocków (13.11.2026)
+Tą samą drogą co mapa da się postawić w Studio postacie: części Roblox połączone stawami `Motor6D`, z klipami animacji jako `KeyframeSequence`. Sześć postaci stoi w `Workspace/TestPostaci` na rynku miasteczka. Opis: [[Postacie 3D — Blender i Roblox]].
+
 ## Kiedy klocki, a kiedy siatki
 | | Klocki (części) | Siatki z Blendera (FBX/GLB) |
 |---|---|---|

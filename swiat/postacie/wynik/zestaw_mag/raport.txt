@@ -1,0 +1,177 @@
+RAPORT — zestaw_mag
+ZESTAW EKWIPUNKU „MAG” (poziom średni, alternatywa) dla awatara gracza R15 — fiolet i złoto, turkusowe kryształy.
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/zestaw_mag.py · wygenerowano 13.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py zestaw_mag
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: zestaw_mag_przymiarka
+- przedmioty (akcesoria): 16
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 38 plików, zgodnych 38
+- ostrzeżenia z raportu: 1; uwagi podglądu: 1
+
+ZNANE SŁABOŚCI
+- Każdy przedmiot to sztywne akcesorium dopasowane do klockowego R15 biblioteki (5,25 studa); na innym ciele (Rthro) nie będzie przylegać.
+- Dół szaty jest krótki (do 0,45 pod pasem), żeby uda nie przechodziły przez niego w chodzie; dłuższej, falującej szaty sztywne akcesorium nie da.
+- Rękawy-dzwony wiszą z ramienia: przy uniesionej ręce (atak) dzwon obraca się z ramieniem.
+- Klepsydra wisi przy samym ciele, więc z założonym dołem szaty częściowo chowa się w spódnicy.
+- mag_szata_cala to model tylko do ikony (w przedmioty.json nie jest częścią do założenia).
+
+MODEL zestaw_mag_przymiarka „Przymiarka na manekinie R15” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 5,04 × 7,05 × 5,81
+  trójkąty: 5812 (siatek: 30)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, atak 30 kl. 1,00 s jednorazowy, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: mag_kapelusz na HatAttachment, mag_szata na BodyFrontAttachment, mag_szata_dol na WaistCenterAttachment, mag_rekaw_l na LeftShoulderAttachment, mag_rekaw_p na RightShoulderAttachment, mag_rekawica_l na LeftGripAttachment, mag_rekawica_p na RightGripAttachment, mag_cizma_l na LeftFootAttachment, mag_cizma_p na RightFootAttachment, mag_pas na WaistCenterAttachment, mag_kostur na RightGripAttachment, mag_ksiega na LeftGripAttachment, mag_amulet na NeckAttachment, mag_pierscien na RightGripAttachment, mag_klepsydra na WaistCenterAttachment
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+mag_kapelusz           HatAttachment              Hat          326  2,56 × 2,25 × 2,56   (-0,00; -0,67; -0,00) 
+mag_szata              BodyFrontAttachment        Front        516  2,04 × 2,22 × 1,58   (-0,00; -0,26; 0,62)  
+mag_szata_dol          WaistCenterAttachment      Waist        268  2,48 × 0,67 × 1,60   (-0,00; 0,12; -0,00)  
+mag_rekaw_l            LeftShoulderAttachment     Shoulder     240  1,50 × 1,56 × 1,40   (-0,27; 0,69; -0,00)  
+mag_rekaw_p            RightShoulderAttachment    Shoulder     240  1,50 × 1,56 × 1,40   (0,27; 0,69; -0,00)   
+mag_rekawica_l         LeftGripAttachment         Inne         276  1,26 × 1,34 × 0,80   (-0,15; -0,01; 0,17)  
+mag_rekawica_p         RightGripAttachment        Inne         276  1,26 × 1,34 × 0,80   (0,15; -0,01; 0,17)   
+mag_cizma_l            LeftFootAttachment         Inne         404  1,16 × 1,15 × 1,93   (-0,10; -0,57; -0,32) 
+mag_cizma_p            RightFootAttachment        Inne         404  1,16 × 1,15 × 1,93   (0,10; -0,57; -0,32)  
+mag_pas                WaistCenterAttachment      Waist        596  2,02 × 0,61 × 1,69   (-0,00; 0,12; -0,17)  
+mag_kostur             RightGripAttachment        Bron         578  0,75 × 5,81 × 0,75   (-0,00; -1,05; -0,00) 
+mag_ksiega             LeftGripAttachment         Inne         316  0,98 × 0,44 × 1,12   (-0,07; -0,81; -0,13) 
+mag_amulet             NeckAttachment             Neck         152  1,41 × 0,99 × 1,04   (-0,00; 0,49; -0,22)  
+mag_pierscien          RightGripAttachment        Inne         144  0,44 × 0,37 × 0,71   (-0,00; -0,62; 0,07)  
+mag_klepsydra          WaistCenterAttachment      Waist        328  0,28 × 0,71 × 0,28   (-0,30; 0,41; -0,70)  
+mag_szata_cala         BodyFrontAttachment        Front       1264  5,04 × 2,82 × 1,72   (-0,00; 0,04; 0,56)   
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+OSTRZEŻENIE mag_szata_cala: mag_szata_cala: oś X -2.52…2.52 poza pudełkiem typu Front (-1.50…1.50, skala Classic)
+
+UWAGI PODGLĄDU
+- mag_szata_cala: wystaje poza pudełko typu Front w osi X (-2.52…2.52, dozwolone -1.50…1.50)
+
+KONTROLA EKSPORTÓW
+- zestaw_mag_przymiarka.fbx: siatki 49, kości 17, trójkąty 6040, wzrost 7.05 st., akcje brak -> ZGODNE
+- zestaw_mag_przymiarka__spoczynek.fbx: siatki 49, kości 17, trójkąty 6040, wzrost 7.05 st., akcje zestaw_mag_przymiarka|Scene 1-61 -> ZGODNE
+- zestaw_mag_przymiarka__chod.fbx: siatki 49, kości 17, trójkąty 6040, wzrost 7.05 st., akcje zestaw_mag_przymiarka|Scene 1-25 -> ZGODNE
+- zestaw_mag_przymiarka__atak.fbx: siatki 49, kości 17, trójkąty 6040, wzrost 7.05 st., akcje zestaw_mag_przymiarka|Scene 1-31 -> ZGODNE
+- zestaw_mag_przymiarka__trzymanie.fbx: siatki 49, kości 17, trójkąty 6040, wzrost 7.05 st., akcje zestaw_mag_przymiarka|Scene 1-3 -> ZGODNE
+- zestaw_mag_przymiarka.glb: siatki 49, kości 17, trójkąty 6040, wzrost 7.05 st., akcje atak 0-30, chod 0-24, spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- mag_kapelusz.fbx: siatki 1, kości 0, trójkąty 326, wzrost 2.25 st., akcje brak -> ZGODNE
+- mag_kapelusz.glb: siatki 1, kości 0, trójkąty 326, wzrost 2.25 st., akcje brak -> ZGODNE
+- mag_szata.fbx: siatki 1, kości 0, trójkąty 516, wzrost 2.22 st., akcje brak -> ZGODNE
+- mag_szata.glb: siatki 1, kości 0, trójkąty 516, wzrost 2.22 st., akcje brak -> ZGODNE
+- mag_szata_dol.fbx: siatki 1, kości 0, trójkąty 268, wzrost 0.67 st., akcje brak -> ZGODNE
+- mag_szata_dol.glb: siatki 1, kości 0, trójkąty 268, wzrost 0.67 st., akcje brak -> ZGODNE
+- mag_rekaw_l.fbx: siatki 1, kości 0, trójkąty 240, wzrost 1.56 st., akcje brak -> ZGODNE
+- mag_rekaw_l.glb: siatki 1, kości 0, trójkąty 240, wzrost 1.56 st., akcje brak -> ZGODNE
+- mag_rekaw_p.fbx: siatki 1, kości 0, trójkąty 240, wzrost 1.56 st., akcje brak -> ZGODNE
+- mag_rekaw_p.glb: siatki 1, kości 0, trójkąty 240, wzrost 1.56 st., akcje brak -> ZGODNE
+- mag_rekawica_l.fbx: siatki 1, kości 0, trójkąty 276, wzrost 1.34 st., akcje brak -> ZGODNE
+- mag_rekawica_l.glb: siatki 1, kości 0, trójkąty 276, wzrost 1.34 st., akcje brak -> ZGODNE
+- mag_rekawica_p.fbx: siatki 1, kości 0, trójkąty 276, wzrost 1.34 st., akcje brak -> ZGODNE
+- mag_rekawica_p.glb: siatki 1, kości 0, trójkąty 276, wzrost 1.34 st., akcje brak -> ZGODNE
+- mag_cizma_l.fbx: siatki 1, kości 0, trójkąty 404, wzrost 1.15 st., akcje brak -> ZGODNE
+- mag_cizma_l.glb: siatki 1, kości 0, trójkąty 404, wzrost 1.15 st., akcje brak -> ZGODNE
+- mag_cizma_p.fbx: siatki 1, kości 0, trójkąty 404, wzrost 1.15 st., akcje brak -> ZGODNE
+- mag_cizma_p.glb: siatki 1, kości 0, trójkąty 404, wzrost 1.15 st., akcje brak -> ZGODNE
+- mag_pas.fbx: siatki 1, kości 0, trójkąty 596, wzrost 0.61 st., akcje brak -> ZGODNE
+- mag_pas.glb: siatki 1, kości 0, trójkąty 596, wzrost 0.61 st., akcje brak -> ZGODNE
+- mag_kostur.fbx: siatki 1, kości 0, trójkąty 578, wzrost 5.81 st., akcje brak -> ZGODNE
+- mag_kostur.glb: siatki 1, kości 0, trójkąty 578, wzrost 5.81 st., akcje brak -> ZGODNE
+- mag_ksiega.fbx: siatki 1, kości 0, trójkąty 316, wzrost 0.44 st., akcje brak -> ZGODNE
+- mag_ksiega.glb: siatki 1, kości 0, trójkąty 316, wzrost 0.44 st., akcje brak -> ZGODNE
+- mag_amulet.fbx: siatki 1, kości 0, trójkąty 152, wzrost 0.99 st., akcje brak -> ZGODNE
+- mag_amulet.glb: siatki 1, kości 0, trójkąty 152, wzrost 0.99 st., akcje brak -> ZGODNE
+- mag_pierscien.fbx: siatki 1, kości 0, trójkąty 144, wzrost 0.37 st., akcje brak -> ZGODNE
+- mag_pierscien.glb: siatki 1, kości 0, trójkąty 144, wzrost 0.37 st., akcje brak -> ZGODNE
+- mag_klepsydra.fbx: siatki 1, kości 0, trójkąty 328, wzrost 0.71 st., akcje brak -> ZGODNE
+- mag_klepsydra.glb: siatki 1, kości 0, trójkąty 328, wzrost 0.71 st., akcje brak -> ZGODNE
+- mag_szata_cala.fbx: siatki 1, kości 0, trójkąty 1264, wzrost 2.82 st., akcje brak -> ZGODNE
+- mag_szata_cala.glb: siatki 1, kości 0, trójkąty 1264, wzrost 2.82 st., akcje brak -> ZGODNE
+
+PLIKI
+- zestaw_mag_przymiarka.blend
+- zestaw_mag_przymiarka.fbx
+- zestaw_mag_przymiarka.glb
+- zestaw_mag_przymiarka__atak.fbx
+- zestaw_mag_przymiarka__chod.fbx
+- zestaw_mag_przymiarka__spoczynek.fbx
+- zestaw_mag_przymiarka__trzymanie.fbx
+- zestaw_mag_przymiarka_bohater.jpg
+- zestaw_mag_przymiarka_plansza.jpg
+- zestaw_mag_przymiarka_tekstury/
+- zestaw_mag_przymiarka_chod.mp4
+- zestaw_mag_przymiarka_chod_klatki.jpg
+- zestaw_mag_przymiarka_chod_z_filmu.jpg
+- przedmioty/mag_kapelusz.fbx
+- przedmioty/mag_kapelusz.glb
+- przedmioty/mag_kapelusz_tekstury/
+- ikony/mag_kapelusz_ikona.png
+- przedmioty/mag_szata.fbx
+- przedmioty/mag_szata.glb
+- przedmioty/mag_szata_tekstury/
+- ikony/mag_szata_ikona.png
+- przedmioty/mag_szata_dol.fbx
+- przedmioty/mag_szata_dol.glb
+- przedmioty/mag_szata_dol_tekstury/
+- ikony/mag_szata_dol_ikona.png
+- przedmioty/mag_rekaw_l.fbx
+- przedmioty/mag_rekaw_l.glb
+- przedmioty/mag_rekaw_l_tekstury/
+- ikony/mag_rekaw_l_ikona.png
+- przedmioty/mag_rekaw_p.fbx
+- przedmioty/mag_rekaw_p.glb
+- przedmioty/mag_rekaw_p_tekstury/
+- ikony/mag_rekaw_p_ikona.png
+- przedmioty/mag_rekawica_l.fbx
+- przedmioty/mag_rekawica_l.glb
+- przedmioty/mag_rekawica_l_tekstury/
+- ikony/mag_rekawica_l_ikona.png
+- przedmioty/mag_rekawica_p.fbx
+- przedmioty/mag_rekawica_p.glb
+- przedmioty/mag_rekawica_p_tekstury/
+- ikony/mag_rekawica_p_ikona.png
+- przedmioty/mag_cizma_l.fbx
+- przedmioty/mag_cizma_l.glb
+- przedmioty/mag_cizma_l_tekstury/
+- ikony/mag_cizma_l_ikona.png
+- przedmioty/mag_cizma_p.fbx
+- przedmioty/mag_cizma_p.glb
+- przedmioty/mag_cizma_p_tekstury/
+- ikony/mag_cizma_p_ikona.png
+- przedmioty/mag_pas.fbx
+- przedmioty/mag_pas.glb
+- przedmioty/mag_pas_tekstury/
+- ikony/mag_pas_ikona.png
+- przedmioty/mag_kostur.fbx
+- przedmioty/mag_kostur.glb
+- przedmioty/mag_kostur_tekstury/
+- ikony/mag_kostur_ikona.png
+- przedmioty/mag_ksiega.fbx
+- przedmioty/mag_ksiega.glb
+- przedmioty/mag_ksiega_tekstury/
+- ikony/mag_ksiega_ikona.png
+- przedmioty/mag_amulet.fbx
+- przedmioty/mag_amulet.glb
+- przedmioty/mag_amulet_tekstury/
+- ikony/mag_amulet_ikona.png
+- przedmioty/mag_pierscien.fbx
+- przedmioty/mag_pierscien.glb
+- przedmioty/mag_pierscien_tekstury/
+- ikony/mag_pierscien_ikona.png
+- przedmioty/mag_klepsydra.fbx
+- przedmioty/mag_klepsydra.glb
+- przedmioty/mag_klepsydra_tekstury/
+- ikony/mag_klepsydra_ikona.png
+- przedmioty/mag_szata_cala.fbx
+- przedmioty/mag_szata_cala.glb
+- przedmioty/mag_szata_cala_tekstury/
+- ikony/mag_szata_cala_ikona.png
+- zestaw_mag_ikony_arkusz.jpg
+- raport.json
+- raport.txt

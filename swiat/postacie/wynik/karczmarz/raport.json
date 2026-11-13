@@ -1,0 +1,589 @@
+{
+ "modul": "karczmarz",
+ "modele": [
+  {
+   "id": "karczmarz",
+   "nazwa": "Karczmarz",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      2.88,
+      0.5,
+      2.69
+     ],
+     "min": [
+      -1.44,
+      1.4,
+      -0.99
+     ],
+     "max": [
+      1.44,
+      1.9,
+      1.7
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 416,
+     "wierzcholki": 240,
+     "wymiary": [
+      3.1,
+      2.295,
+      2.908
+     ],
+     "min": [
+      -1.55,
+      1.68,
+      -1.05
+     ],
+     "max": [
+      1.55,
+      3.975,
+      1.858
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 956,
+     "wierzcholki": 538,
+     "wymiary": [
+      2.18,
+      2.03,
+      2.01
+     ],
+     "min": [
+      -1.09,
+      3.72,
+      -0.935
+     ],
+     "max": [
+      1.09,
+      5.75,
+      1.075
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.24,
+      1.0,
+      1.02
+     ],
+     "min": [
+      1.47,
+      2.8,
+      -0.51
+     ],
+     "max": [
+      2.71,
+      3.8,
+      0.51
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.85,
+      1.1,
+      0.85
+     ],
+     "min": [
+      1.775,
+      2.0,
+      -0.425
+     ],
+     "max": [
+      2.625,
+      3.1,
+      0.425
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 144,
+     "wierzcholki": 80,
+     "wymiary": [
+      0.34,
+      0.8,
+      1.308
+     ],
+     "min": [
+      2.03,
+      1.2,
+      -0.51
+     ],
+     "max": [
+      2.37,
+      2.0,
+      0.798
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.16,
+      0.55,
+      1.16
+     ],
+     "min": [
+      0.12,
+      0.85,
+      -0.58
+     ],
+     "max": [
+      1.28,
+      1.4,
+      0.58
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.19,
+      0.5,
+      1.19
+     ],
+     "min": [
+      0.105,
+      0.35,
+      -0.595
+     ],
+     "max": [
+      1.295,
+      0.85,
+      0.595
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.21,
+      0.35,
+      1.58
+     ],
+     "min": [
+      0.095,
+      0.0,
+      -0.555
+     ],
+     "max": [
+      1.305,
+      0.35,
+      1.025
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.24,
+      1.0,
+      1.02
+     ],
+     "min": [
+      -2.71,
+      2.8,
+      -0.51
+     ],
+     "max": [
+      -1.47,
+      3.8,
+      0.51
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.85,
+      1.1,
+      0.85
+     ],
+     "min": [
+      -2.625,
+      2.0,
+      -0.425
+     ],
+     "max": [
+      -1.775,
+      3.1,
+      0.425
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.95,
+      0.4,
+      1.09
+     ],
+     "min": [
+      -2.675,
+      1.6,
+      -0.475
+     ],
+     "max": [
+      -1.725,
+      2.0,
+      0.615
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.16,
+      0.55,
+      1.16
+     ],
+     "min": [
+      -1.28,
+      0.85,
+      -0.58
+     ],
+     "max": [
+      -0.12,
+      1.4,
+      0.58
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.19,
+      0.5,
+      1.19
+     ],
+     "min": [
+      -1.295,
+      0.35,
+      -0.595
+     ],
+     "max": [
+      -0.105,
+      0.85,
+      0.595
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.21,
+      0.35,
+      1.58
+     ],
+     "min": [
+      -1.305,
+      0.0,
+      -0.555
+     ],
+     "max": [
+      -0.095,
+      0.35,
+      1.025
+     ]
+    },
+    {
+     "nazwa": "karczmarz_chochla_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 612,
+     "wierzcholki": 326,
+     "wymiary": [
+      1.22,
+      0.9,
+      2.48
+     ],
+     "min": [
+      -3.27,
+      1.35,
+      -0.56
+     ],
+     "max": [
+      -2.05,
+      2.25,
+      1.92
+     ]
+    }
+   ],
+   "trojkaty_razem": 3384,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 33
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    5.42,
+    5.75,
+    2.908
+   ],
+   "wymiary_z_akcesoriami": [
+    5.98,
+    5.75,
+    2.97
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -3.27,
+     0.0,
+     -1.05
+    ],
+    [
+     2.71,
+     5.75,
+     1.92
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "zaproszenie",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "smiech",
+     "dlugosc": 40,
+     "fps": 30,
+     "sekundy": 1.33,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "karczmarz_chochla",
+     "zaczep": "RightGripAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 956,
+     "limit": 4000,
+     "wymiary": [
+      2.18,
+      2.03,
+      2.01
+     ]
+    },
+    "Torso": {
+     "trojkaty": 592,
+     "limit": 1750,
+     "wymiary": [
+      3.1,
+      2.575,
+      2.908
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 332,
+     "limit": 1248,
+     "wymiary": [
+      1.24,
+      2.6,
+      1.308
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 276,
+     "limit": 1248,
+     "wymiary": [
+      1.24,
+      2.2,
+      1.125
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 308,
+     "limit": 1248,
+     "wymiary": [
+      1.21,
+      1.4,
+      1.62
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 308,
+     "limit": 1248,
+     "wymiary": [
+      1.21,
+      1.4,
+      1.62
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało Head: wys 2.03 poza 0.50…2.00 studa (limit części ciała awatara)"
+   ]
+  },
+  {
+   "id": "karczmarz_chochla",
+   "nazwa": "Chochla karczmarza",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "karczmarz_chochla",
+     "kosc": null,
+     "trojkaty": 612,
+     "wierzcholki": 326,
+     "wymiary": [
+      1.22,
+      2.48,
+      0.9
+     ],
+     "min": [
+      -1.07,
+      -0.56,
+      -0.45
+     ],
+     "max": [
+      0.15,
+      1.92,
+      0.45
+     ]
+    }
+   ],
+   "trojkaty_razem": 612,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 7
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.07,
+     -0.56,
+     -0.45
+    ],
+    [
+     0.15,
+     1.92,
+     0.45
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.46,
+    0.68,
+    0.0
+   ],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "karczmarz.fbx: siatki 34, kości 17, trójkąty 3000, wzrost 5.75 st., akcje brak -> ZGODNE",
+  "karczmarz__idle.fbx: siatki 34, kości 17, trójkąty 3000, wzrost 5.75 st., akcje karczmarz|Scene 1-61 -> ZGODNE",
+  "karczmarz__zaproszenie.fbx: siatki 34, kości 17, trójkąty 3000, wzrost 5.75 st., akcje karczmarz|Scene 1-61 -> ZGODNE",
+  "karczmarz__smiech.fbx: siatki 34, kości 17, trójkąty 3000, wzrost 5.75 st., akcje karczmarz|Scene 1-41 -> ZGODNE",
+  "karczmarz.glb: siatki 34, kości 17, trójkąty 3000, wzrost 5.75 st., akcje idle 0-60, smiech 0-40, zaproszenie 0-60 -> ZGODNE",
+  "karczmarz_chochla.fbx: siatki 1, kości 0, trójkąty 612, wzrost 2.48 st., akcje brak -> ZGODNE",
+  "karczmarz_chochla.glb: siatki 1, kości 0, trójkąty 612, wzrost 2.48 st., akcje brak -> ZGODNE"
+ ]
+}

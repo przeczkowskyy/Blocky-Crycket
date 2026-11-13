@@ -1,0 +1,171 @@
+RAPORT — zestaw_rekrut
+zestaw_rekrut
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/zestaw_rekrut.py · wygenerowano 13.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py zestaw_rekrut
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: zestaw_rekrut_przymiarka
+- przedmioty (akcesoria): 16
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 38 plików, zgodnych 38
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Każdy przedmiot to sztywne akcesorium dopasowane do klockowego R15 biblioteki (5,25 studa).
+- Lniane spodnie na przymiarce to tylko podgląd (część manekina przymiarki), nie przedmiot zestawu.
+- Drobiazgi (amulet, pierścień, podkowa) to modele do ikon — nie są zakładane na przymiarkę.
+
+MODEL zestaw_rekrut_przymiarka „Przymiarka zestawu Rekrut na manekinie R15” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 4,50 × 5,76 × 4,05
+  trójkąty: 4852 (siatek: 25)
+  budżety ciała R15: Head 132/4000, Torso 132/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 220/1248, RightLeg 220/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, atak 30 kl. 1,00 s jednorazowy, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: rekrut_czapka na HatAttachment, rekrut_przeszywanica na BodyFrontAttachment, rekrut_rekaw_l na LeftShoulderAttachment, rekrut_rekaw_p na RightShoulderAttachment, rekrut_rekawica_l na LeftGripAttachment, rekrut_rekawica_p na RightGripAttachment, rekrut_but_l na LeftFootAttachment, rekrut_but_p na RightFootAttachment, rekrut_pas na WaistCenterAttachment, rekrut_miecz na RightGripAttachment
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+rekrut_czapka          HatAttachment              Hat          656  1,82 × 1,41 × 1,71   (-0,00; 0,22; -0,03)  
+rekrut_przeszywanica   BodyFrontAttachment        Front        596  1,98 × 2,08 × 1,35   (-0,00; 0,14; 0,46)   
+rekrut_przeszywanica_cala BodyFrontAttachment        Inne         892  4,53 × 2,12 × 1,35   (-0,00; 0,12; 0,46)   
+rekrut_rekaw_l         LeftShoulderAttachment     Shoulder     148  1,13 × 0,96 × 1,22   (-0,07; 0,42; -0,00)  
+rekrut_rekaw_p         RightShoulderAttachment    Shoulder     148  1,13 × 0,96 × 1,22   (0,07; 0,42; -0,00)   
+rekrut_rekawica_l      LeftGripAttachment         Inne         388  1,26 × 1,44 × 1,35   (-0,12; -0,07; 0,24)  
+rekrut_rekawica_p      RightGripAttachment        Inne         388  1,26 × 1,44 × 1,35   (0,12; -0,07; 0,24)   
+rekrut_rekawice        RightGripAttachment        Inne         776  3,13 × 1,35 × 1,82   (-0,00; 0,24; -0,02)  
+rekrut_but_l           LeftFootAttachment         Inne         380  1,14 × 1,21 × 1,63   (-0,06; -0,57; -0,23) 
+rekrut_but_p           RightFootAttachment        Inne         380  1,14 × 1,21 × 1,63   (0,06; -0,57; -0,23)  
+rekrut_buty            RightFootAttachment        Inne         760  2,12 × 1,21 × 2,89   (0,10; -0,57; -0,09)  
+rekrut_pas             WaistCenterAttachment      Waist        460  1,96 × 0,80 × 1,89   (-0,00; 0,26; -0,24)  
+rekrut_miecz           RightGripAttachment        Bron         340  1,25 × 4,02 × 0,42   (-0,00; -1,22; -0,00) 
+rekrut_amulet          NeckAttachment             Neck         222  1,31 × 1,79 × 0,18   (-0,00; 0,21; -0,00)  
+rekrut_pierscien       RightGripAttachment        Inne         440  0,80 × 0,94 × 0,26   (-0,00; -0,07; -0,00) 
+rekrut_podkowa         WaistCenterAttachment      Inne         536  1,30 × 1,35 × 0,15   (-0,00; -0,02; -0,01) 
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+KONTROLA EKSPORTÓW
+- zestaw_rekrut_przymiarka.fbx: siatki 44, kości 17, trójkąty 5080, wzrost 5.76 st., akcje brak -> ZGODNE
+- zestaw_rekrut_przymiarka__spoczynek.fbx: siatki 44, kości 17, trójkąty 5080, wzrost 5.76 st., akcje zestaw_rekrut_przymiarka|Scene 1-61 -> ZGODNE
+- zestaw_rekrut_przymiarka__chod.fbx: siatki 44, kości 17, trójkąty 5080, wzrost 5.76 st., akcje zestaw_rekrut_przymiarka|Scene 1-25 -> ZGODNE
+- zestaw_rekrut_przymiarka__atak.fbx: siatki 44, kości 17, trójkąty 5080, wzrost 5.76 st., akcje zestaw_rekrut_przymiarka|Scene 1-31 -> ZGODNE
+- zestaw_rekrut_przymiarka__trzymanie.fbx: siatki 44, kości 17, trójkąty 5080, wzrost 5.76 st., akcje zestaw_rekrut_przymiarka|Scene 1-3 -> ZGODNE
+- zestaw_rekrut_przymiarka.glb: siatki 44, kości 17, trójkąty 5080, wzrost 5.76 st., akcje atak 0-30, chod 0-24, spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- rekrut_czapka.fbx: siatki 1, kości 0, trójkąty 656, wzrost 1.41 st., akcje brak -> ZGODNE
+- rekrut_czapka.glb: siatki 1, kości 0, trójkąty 656, wzrost 1.41 st., akcje brak -> ZGODNE
+- rekrut_przeszywanica.fbx: siatki 1, kości 0, trójkąty 596, wzrost 2.08 st., akcje brak -> ZGODNE
+- rekrut_przeszywanica.glb: siatki 1, kości 0, trójkąty 596, wzrost 2.08 st., akcje brak -> ZGODNE
+- rekrut_przeszywanica_cala.fbx: siatki 1, kości 0, trójkąty 892, wzrost 2.12 st., akcje brak -> ZGODNE
+- rekrut_przeszywanica_cala.glb: siatki 1, kości 0, trójkąty 892, wzrost 2.12 st., akcje brak -> ZGODNE
+- rekrut_rekaw_l.fbx: siatki 1, kości 0, trójkąty 148, wzrost 0.96 st., akcje brak -> ZGODNE
+- rekrut_rekaw_l.glb: siatki 1, kości 0, trójkąty 148, wzrost 0.96 st., akcje brak -> ZGODNE
+- rekrut_rekaw_p.fbx: siatki 1, kości 0, trójkąty 148, wzrost 0.96 st., akcje brak -> ZGODNE
+- rekrut_rekaw_p.glb: siatki 1, kości 0, trójkąty 148, wzrost 0.96 st., akcje brak -> ZGODNE
+- rekrut_rekawica_l.fbx: siatki 1, kości 0, trójkąty 388, wzrost 1.44 st., akcje brak -> ZGODNE
+- rekrut_rekawica_l.glb: siatki 1, kości 0, trójkąty 388, wzrost 1.44 st., akcje brak -> ZGODNE
+- rekrut_rekawica_p.fbx: siatki 1, kości 0, trójkąty 388, wzrost 1.44 st., akcje brak -> ZGODNE
+- rekrut_rekawica_p.glb: siatki 1, kości 0, trójkąty 388, wzrost 1.44 st., akcje brak -> ZGODNE
+- rekrut_rekawice.fbx: siatki 1, kości 0, trójkąty 776, wzrost 1.35 st., akcje brak -> ZGODNE
+- rekrut_rekawice.glb: siatki 1, kości 0, trójkąty 776, wzrost 1.35 st., akcje brak -> ZGODNE
+- rekrut_but_l.fbx: siatki 1, kości 0, trójkąty 380, wzrost 1.21 st., akcje brak -> ZGODNE
+- rekrut_but_l.glb: siatki 1, kości 0, trójkąty 380, wzrost 1.21 st., akcje brak -> ZGODNE
+- rekrut_but_p.fbx: siatki 1, kości 0, trójkąty 380, wzrost 1.21 st., akcje brak -> ZGODNE
+- rekrut_but_p.glb: siatki 1, kości 0, trójkąty 380, wzrost 1.21 st., akcje brak -> ZGODNE
+- rekrut_buty.fbx: siatki 1, kości 0, trójkąty 760, wzrost 1.21 st., akcje brak -> ZGODNE
+- rekrut_buty.glb: siatki 1, kości 0, trójkąty 760, wzrost 1.21 st., akcje brak -> ZGODNE
+- rekrut_pas.fbx: siatki 1, kości 0, trójkąty 460, wzrost 0.80 st., akcje brak -> ZGODNE
+- rekrut_pas.glb: siatki 1, kości 0, trójkąty 460, wzrost 0.80 st., akcje brak -> ZGODNE
+- rekrut_miecz.fbx: siatki 1, kości 0, trójkąty 340, wzrost 4.02 st., akcje brak -> ZGODNE
+- rekrut_miecz.glb: siatki 1, kości 0, trójkąty 340, wzrost 4.02 st., akcje brak -> ZGODNE
+- rekrut_amulet.fbx: siatki 1, kości 0, trójkąty 222, wzrost 1.79 st., akcje brak -> ZGODNE
+- rekrut_amulet.glb: siatki 1, kości 0, trójkąty 222, wzrost 1.79 st., akcje brak -> ZGODNE
+- rekrut_pierscien.fbx: siatki 1, kości 0, trójkąty 440, wzrost 0.94 st., akcje brak -> ZGODNE
+- rekrut_pierscien.glb: siatki 1, kości 0, trójkąty 440, wzrost 0.94 st., akcje brak -> ZGODNE
+- rekrut_podkowa.fbx: siatki 1, kości 0, trójkąty 536, wzrost 1.35 st., akcje brak -> ZGODNE
+- rekrut_podkowa.glb: siatki 1, kości 0, trójkąty 536, wzrost 1.35 st., akcje brak -> ZGODNE
+
+PLIKI
+- zestaw_rekrut_przymiarka.blend
+- zestaw_rekrut_przymiarka.fbx
+- zestaw_rekrut_przymiarka.glb
+- zestaw_rekrut_przymiarka__atak.fbx
+- zestaw_rekrut_przymiarka__chod.fbx
+- zestaw_rekrut_przymiarka__spoczynek.fbx
+- zestaw_rekrut_przymiarka__trzymanie.fbx
+- zestaw_rekrut_przymiarka_bohater.jpg
+- zestaw_rekrut_przymiarka_plansza.jpg
+- zestaw_rekrut_przymiarka_tekstury/
+- zestaw_rekrut_przymiarka_chod.mp4
+- zestaw_rekrut_przymiarka_chod_klatki.jpg
+- zestaw_rekrut_przymiarka_chod_z_filmu.jpg
+- przedmioty/rekrut_czapka.fbx
+- przedmioty/rekrut_czapka.glb
+- przedmioty/rekrut_czapka_tekstury/
+- ikony/rekrut_czapka_ikona.png
+- przedmioty/rekrut_przeszywanica.fbx
+- przedmioty/rekrut_przeszywanica.glb
+- przedmioty/rekrut_przeszywanica_tekstury/
+- ikony/rekrut_przeszywanica_ikona.png
+- przedmioty/rekrut_przeszywanica_cala.fbx
+- przedmioty/rekrut_przeszywanica_cala.glb
+- przedmioty/rekrut_przeszywanica_cala_tekstury/
+- ikony/rekrut_przeszywanica_cala_ikona.png
+- przedmioty/rekrut_rekaw_l.fbx
+- przedmioty/rekrut_rekaw_l.glb
+- przedmioty/rekrut_rekaw_l_tekstury/
+- ikony/rekrut_rekaw_l_ikona.png
+- przedmioty/rekrut_rekaw_p.fbx
+- przedmioty/rekrut_rekaw_p.glb
+- przedmioty/rekrut_rekaw_p_tekstury/
+- ikony/rekrut_rekaw_p_ikona.png
+- przedmioty/rekrut_rekawica_l.fbx
+- przedmioty/rekrut_rekawica_l.glb
+- przedmioty/rekrut_rekawica_l_tekstury/
+- ikony/rekrut_rekawica_l_ikona.png
+- przedmioty/rekrut_rekawica_p.fbx
+- przedmioty/rekrut_rekawica_p.glb
+- przedmioty/rekrut_rekawica_p_tekstury/
+- ikony/rekrut_rekawica_p_ikona.png
+- przedmioty/rekrut_rekawice.fbx
+- przedmioty/rekrut_rekawice.glb
+- przedmioty/rekrut_rekawice_tekstury/
+- ikony/rekrut_rekawice_ikona.png
+- przedmioty/rekrut_but_l.fbx
+- przedmioty/rekrut_but_l.glb
+- przedmioty/rekrut_but_l_tekstury/
+- ikony/rekrut_but_l_ikona.png
+- przedmioty/rekrut_but_p.fbx
+- przedmioty/rekrut_but_p.glb
+- przedmioty/rekrut_but_p_tekstury/
+- ikony/rekrut_but_p_ikona.png
+- przedmioty/rekrut_buty.fbx
+- przedmioty/rekrut_buty.glb
+- przedmioty/rekrut_buty_tekstury/
+- ikony/rekrut_buty_ikona.png
+- przedmioty/rekrut_pas.fbx
+- przedmioty/rekrut_pas.glb
+- przedmioty/rekrut_pas_tekstury/
+- ikony/rekrut_pas_ikona.png
+- przedmioty/rekrut_miecz.fbx
+- przedmioty/rekrut_miecz.glb
+- przedmioty/rekrut_miecz_tekstury/
+- ikony/rekrut_miecz_ikona.png
+- przedmioty/rekrut_amulet.fbx
+- przedmioty/rekrut_amulet.glb
+- przedmioty/rekrut_amulet_tekstury/
+- ikony/rekrut_amulet_ikona.png
+- przedmioty/rekrut_pierscien.fbx
+- przedmioty/rekrut_pierscien.glb
+- przedmioty/rekrut_pierscien_tekstury/
+- ikony/rekrut_pierscien_ikona.png
+- przedmioty/rekrut_podkowa.fbx
+- przedmioty/rekrut_podkowa.glb
+- przedmioty/rekrut_podkowa_tekstury/
+- ikony/rekrut_podkowa_ikona.png
+- zestaw_rekrut_ikony_arkusz.jpg
+- raport.json
+- raport.txt

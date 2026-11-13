@@ -226,7 +226,8 @@ Blocky&Crycket/
 │   ├── narzedzia/             CLI dla agentów: raport.py, migawka.py
 │   └── dane/                  wspólne dane panelu: raporty, komentarze, migawki (plik na wpis)
 ├── swiat/                     💡 mapy z klocków: generator → czesci.json → Blender / Studio / panel
-│   └── demo_lesna_baza/       demo „Leśna baza startowa” (generuj.py, czesci.json, .blend, podglad/)
+│   ├── demo_lesna_baza/       demo „Leśna baza startowa” (generuj.py, czesci.json, .blend, podglad/)
+│   └── postacie/              💡 postacie, pety i ekwipunek z kodu: Blender (siatki, animacje) i postacie z klocków w Studio
 ├── tools/studio/              skrypty Luau uruchamiane w Studio (rzeczy spoza Rojo)
 ├── tools/studio_mcp.py        klient MCP Roblox Studio z terminala (bez zależności)
 ├── tools/studio_buduj.py      buduje w Studio scenę z czesci.json (jeden kontener, do cofnięcia)
@@ -371,6 +372,7 @@ Ramka portretu ma w PNG wypalony zielony pasek. Pasek XP w HUD jest nałożony d
 | Python | jednorazowe skrypty pomocnicze Claude (np. generowanie `.model.json`) | nie jest częścią gry |
 | 💡 **Panel zespołu** | lokalna strona dla dwóch osób: decyzje i zadania z sejfu, raporty z wdrożeń z akceptacją, podgląd 3D mapy (także z telefonu), agent Claude Code na subskrypcji, głosówki, graf sejfu, analityka | `panel\start.bat` albo `python panel/serwer.py` → `http://127.0.0.1:8787` (start otwiera panel z kluczem lokalnym — tylko wtedy działa agent, git i nowa migawka); instrukcja [`panel/INSTALACJA.md`](panel/INSTALACJA.md); propozycja D-012, czeka na zgodę ([Panel zespołu](B%26C/Technika/Panel%20zespo%C5%82u.md)) |
 | 💡 **Klocki: Blender ↔ Roblox** | mapa z prostych brył z jednego pliku `czesci.json`: Blender (podgląd, edycja), Studio (części), panel (model 3D) | `swiat/`, `tools/blender/klocki.py`, `tools/studio_buduj.py`; demo `Workspace/DemoLesnaBaza` ([Klocki — Blender i Roblox](B%26C/Technika/Klocki%20%E2%80%94%20Blender%20i%20Roblox.md)) |
+| 💡 **Postacie 3D** | postacie, pety i ekwipunek opisane kodem: w Blenderze siatki ze szkieletem i animacjami, w Studio postacie z części Roblox ze stawami i klipami (bez wgrywania zasobów) | `swiat/postacie/` (`README.md`), `python -B swiat/postacie/roblox_postac.py`; kontener `Workspace/TestPostaci` ([Postacie 3D — Blender i Roblox](B%26C/Technika/Postacie%203D%20%E2%80%94%20Blender%20i%20Roblox.md)) |
 
 ### Przewidziane w dokumentacji do tworzenia assetów ✅
 | Obszar | Narzędzia |
@@ -572,5 +574,6 @@ Pełna historia: [Dziennik zmian](B%26C/Produkcja/Dziennik%20zmian.md).
   - ekran ładowania w Roblox: key-art i natywny pasek z Figmy, potem minimalny czas ładowania i rotujące wskazówki;
   - HUD: najpierw 6 przycisków (160 px, wyśrodkowane), potem pełny HUD z Figmy (panel gracza i przyciski 128 px niżej przy krawędzi), na koniec przyciski powiększone do 150 px.
 - **12.11.2026:** projekt w repozytorium GitHub, ten dokument; instalacja pipeline'u assetów `/asset`.
+- **13.11.2026 (popołudnie, Claude Code u Karola):** 💡 postacie, pety i ekwipunek z kodu (`swiat/postacie/`: 6 postaci, 3 zestawy, 8 broni, 20 klipów animacji) oraz te same postacie w Studio jako postacie z klocków ze stawami (`Workspace/TestPostaci`), animacje sprawdzone w trybie Edit i Play; import siatek nie sprawdzony (propozycja D-029, pytanie 24); 💡 zapis do sejfu z panelu (D-028, wyłączony do decyzji).
 - **13.11.2026 (noc i poranek, Claude Code u Karola):** diagnoza całego pomysłu (dziś 3,8/10) i propozycja v2 „krzywy montaż” z uczciwą oceną 6,0/10 i planem pomiarów (`B&C/Gra/*v2*.md`, `B&C/Badania/Diagnoza pomysłu 2026-11-13.md`; propozycje D-019–D-027, pytania 16–22); 💡 mapa v2 „Krzywe Miasteczko” i biblioteka krzywych brył (`swiat/biblioteka/`, `swiat/krzywe_miasteczko/`, `Workspace/KrzyweMiasteczko`); 💡 test cutscenki walki w samym Roblox (`swiat/test_walki_roblox/`, `Workspace/TestWalki`); panel: zakładka Assety, telemetria gry (`src/server/Telemetria`, bezwładna do włączenia), tunel sprawdzony naprawdę; instrukcja promptów „Glossy Ink” od Game Directora (`B&C/Styl/`). Wszystko jako propozycje do zatwierdzenia.
 - **12.11.2026 (wieczór, Claude Code u Karola):** rozmowa o grze spisana i skomentowana, sześć notatek badawczych i ocena potencjału (`B&C/Badania/`), propozycje D-012–D-018 i pytania 7–14; 💡 panel zespołu (`panel/`); 💡 pipeline klocków i demo mapy „Leśna baza startowa” w Blenderze i w Studio (`swiat/`). Wszystko jako propozycje do zatwierdzenia.

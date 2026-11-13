@@ -32,7 +32,7 @@ Gra Roblox: **RPG / Incremental / Tycoon / Pet Collector**. Komiksowy humor w st
 - [[Workflow i Git]]
 - [[Pipeline assetów]]
 - [[Narzędzia]]
-- [[Panel zespołu]] · [[Klocki — Blender i Roblox]] · [[Skille Claude do Roblox]] · [[Telemetria gry]] (propozycje)
+- [[Panel zespołu]] · [[Klocki — Blender i Roblox]] · [[Postacie 3D — Blender i Roblox]] · [[Skille Claude do Roblox]] · [[Telemetria gry]] (propozycje)
 
 ## 🔬 Badania (propozycje, ze źródłami)
 - [[Ocena potencjału gry]] · [[Diagnoza pomysłu 2026-11-13]]

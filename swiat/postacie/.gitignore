@@ -1,0 +1,5 @@
+# Eksporty do odtworzenia poleceniem `python -B swiat/postacie/przebuduj.py <moduł>` (potrzebny Blender 5.0).
+# Zostają w repozytorium: kod, raporty, plansze, filmy, ikony i dane rigów z klocków.
+wynik/**/*.fbx
+wynik/**/*.glb
+wynik/**/*.blend
