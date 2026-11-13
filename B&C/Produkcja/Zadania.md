@@ -30,6 +30,8 @@ tags: [produkcja, zadania]
 - [ ] Szary prototyp BONK-a z botem-klikaczem (bramka B1, [[Systemy gry v2]]) — po decyzji z pytania 16 · #wysoki
 
 ## 📥 Backlog
+- [ ] [[Okno ekwipunku]]: test na telefonie; potem prawdziwe przedmioty i statystyki z serwera · #wysoki
+- [ ] [[Mapa teleportacji]]: wygenerować mapę z ramką i 7 pinów (prompty w notatce), potem `TeleportMapGui` i teleport przez RemoteEvent. Najpierw potwierdzić listę lokacji ([[Pytania otwarte]] #28) · #średni
 - [ ] Postęp EXP i Level w HUD (animacja level-up „POW!”) · #średni
 - [ ] [[Ekran ładowania]]: test na prawdziwym serwerze / telefonie (w Studio ekran znika po ~1 s) · #średni
 - [ ] ViewportFrame z modelem [[Rycerz|Rycerza]] / [[Kot-Mag|Kota-Maga]] · #średni

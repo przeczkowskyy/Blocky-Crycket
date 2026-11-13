@@ -73,7 +73,8 @@ def main():
                 elif st.group(1) not in STATUSY:
                     ostrzezenia.append("%s: nieznany status „%s”" % (rel, st.group(1)))
             for cel in LINK.findall(bez_kodu(tekst)):
-                cel = cel.strip()
+                # w tabelach Obsidian zapisuje alias jako [[Notatka\|Alias]] — ukośnik przed kreską nie należy do nazwy
+                cel = cel.strip().rstrip("\\").strip()
                 if cel.lower() not in nazwy and not os.path.exists(os.path.join(sejf, cel)):
                     bledy.append("%s: link [[%s]] nie wskazuje żadnej notatki" % (rel, cel))
             for wzor, opis in SEKRETY:

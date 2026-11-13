@@ -119,6 +119,8 @@ Dawny prefiks Style Lock (D-001, z nazwą gry-inspiracji) jest zastąpiony i zos
 | HUD | ✅ kanon (specyfikacja) + wersja z Figmy ❓ | ✅ wersja z Figmy: panel gracza + 6 przycisków | [HUD](B%26C/UI/HUD.md) |
 | Okno Karczmy | ❓ do decyzji | ⬜ nie rozpoczęte | [Okno Karczmy](B%26C/UI/Okno%20Karczmy.md) |
 | Selektor bohatera | 💡 propozycja | ⬜ nie rozpoczęty | [Selektor bohatera](B%26C/UI/Selektor%20bohatera.md) |
+| Mapa teleportacji | 💡 propozycja (specyfikacja + prompty) | ⬜ nie rozpoczęta | [Mapa teleportacji](B%26C/UI/Mapa%20teleportacji.md) |
+| Okno ekwipunku | 💡 propozycja (grafika od Game Directora) | 🟡 GUI + skrypt gotowe, grafiki czekają na upload | [Okno ekwipunku](B%26C/UI/Okno%20ekwipunku.md) |
 | Menu główne | w roadmapie Fazy 1 | ⬜ nie rozpoczęte | — |
 
 Projekty UI są w Figmie (plik `BbLd4jDnvxAmOWZN1hAZQJ`). Numery węzłów (node) podane są przy ekranach.
@@ -204,6 +206,12 @@ TavernQuestGui (ScreenGui)
 
 ### 5.4 Selektor bohatera 💡
 Nie ma go w kanonie. Pomysł: centralny ViewportFrame z postacią (na beczce w karczmie), po lewej wybór **rasy** (zmienia model), po prawej wybór **klasy** (zabawne animacje idle), wielki przycisk „Wyrusz na szlak!”.
+
+### 5.5 Mapa teleportacji 💡
+Przycisk Teleport w HUD otwiera okno z mapą miasteczka 2D (16:9) w drewniano-złotej ramce z X w prawym górnym rogu. Nad budynkami są piny lokacji (`ImageButton` pozycjonowane w Scale względem mapy), a kliknięcie pinu teleportuje gracza przez RemoteEvent. Napisy i stany pinów (hover, blokada) są natywne. Prompty Higgsfield na mapę i piny są w notatce.
+
+### 5.6 Okno ekwipunku 💡
+Przycisk Equipment w HUD otwiera okno CHARACTER + BACKPACK. Tło to grafika Game Directora oczyszczona z tekstu i pocięta na 4 kafelki; zakładki, „+” i X to osobne grafiki, a napisy, sloty i plecak są natywne. Źródło układu: `assets/processed/EquipmentPanel/layout.json`, GUI generuje `tools/eq_build_gui.py`, logika: `EquipmentPanelClient`. Figma: strona „Equipment Panel” (node 23:74).
 
 ## 6. Architektura techniczna
 
@@ -514,6 +522,10 @@ Propozycje D-012–D-026 i D-029 (💡) są opisane w rejestrze.
 5. Przyciski HUD: Figma (6 przycisków, angielskie napisy) czy kanon (5 zakładek)? Gdzie trafią Tycoon i Arena?
 6. Diamenty (Gems) w HUD a Magiczne Kryształy w kanonie: ta sama waluta? Waluta premium?
 
+Dalsze pytania są w notatce:
+- pytania 7–27 pochodzą z rozmowy 12.11, nocnej diagnozy i decyzji z 13.11 (odpowiedzi mają już #15, #22 i #23);
+- pytanie 28 (Paweł): mapa teleportacji — czy lista 7 lokacji jest dobra i w jakim języku mają być nazwy. Jego druga część, o prefiksie Style Lock bez nazwy cudzej gry, jest rozstrzygnięta: prefiks zastąpiła instrukcja Glossy Ink (D-027).
+
 ### Roadmapa
 [Roadmapa](B%26C/Produkcja/Roadmapa.md)
 
@@ -582,8 +594,9 @@ Pełna historia: [Dziennik zmian](B%26C/Produkcja/Dziennik%20zmian.md).
   - zbudowany i porzucony dashboard; sejf Obsidian ustanowiony mózgiem projektu (D-008);
   - ekran ładowania w Roblox: key-art i natywny pasek z Figmy, potem minimalny czas ładowania i rotujące wskazówki;
   - HUD: najpierw 6 przycisków (160 px, wyśrodkowane), potem pełny HUD z Figmy (panel gracza i przyciski 128 px niżej przy krawędzi), na koniec przyciski powiększone do 150 px.
-- **12.11.2026:** projekt w repozytorium GitHub, ten dokument; instalacja pipeline'u assetów `/asset`.
-- **13.11.2026 (wieczór, Karol z Claude Code):** ✅ D-030 — decyzje zatwierdza Karol albo Paweł, wystarczy jeden, każda zostaje w logach (zdecydował Karol; potwierdzenie Pawła czeka w pytaniu 27); ✅ D-027 — instrukcja „Glossy Ink” zastępuje prefiks Style Lock; ✅ D-028 — panel jako miejsce pracy, zapis do sejfu z panelu włączony; propozycja D-024 o walce zmieniona na „trzy długości”; import siatek sprawdzony na Rycerzu (postać R15 z 15 części w `Workspace/TestPostaci`).
-- **13.11.2026 (popołudnie, Claude Code u Karola):** 💡 postacie, pety i ekwipunek z kodu (`swiat/postacie/`: 6 postaci, 3 zestawy, 8 broni, 20 klipów animacji) oraz te same postacie w Studio jako postacie z klocków ze stawami (`Workspace/TestPostaci`), animacje sprawdzone w trybie Edit i Play; import siatek nie sprawdzony (propozycja D-029, pytanie 24); 💡 zapis do sejfu z panelu (D-028, wyłączony do decyzji).
-- **13.11.2026 (noc i poranek, Claude Code u Karola):** diagnoza całego pomysłu (dziś 3,8/10) i propozycja v2 „krzywy montaż” z uczciwą oceną 6,0/10 i planem pomiarów (`B&C/Gra/*v2*.md`, `B&C/Badania/Diagnoza pomysłu 2026-11-13.md`; propozycje D-019–D-027, pytania 16–22); 💡 mapa v2 „Krzywe Miasteczko” i biblioteka krzywych brył (`swiat/biblioteka/`, `swiat/krzywe_miasteczko/`, `Workspace/KrzyweMiasteczko`); 💡 test cutscenki walki w samym Roblox (`swiat/test_walki_roblox/`, `Workspace/TestWalki`); panel: zakładka Assety, telemetria gry (`src/server/Telemetria`, bezwładna do włączenia), tunel sprawdzony naprawdę; instrukcja promptów „Glossy Ink” od Game Directora (`B&C/Styl/`). Wszystko jako propozycje do zatwierdzenia.
+- **12.11.2026:** projekt w repozytorium GitHub, ten dokument; instalacja pipeline'u assetów `/asset`; specyfikacja i prompty mapy teleportacji.
 - **12.11.2026 (wieczór, Claude Code u Karola):** rozmowa o grze spisana i skomentowana, sześć notatek badawczych i ocena potencjału (`B&C/Badania/`), propozycje D-012–D-018 i pytania 7–14; 💡 panel zespołu (`panel/`); 💡 pipeline klocków i demo mapy „Leśna baza startowa” w Blenderze i w Studio (`swiat/`). Wszystko jako propozycje do zatwierdzenia.
+- **13.11.2026:** okno ekwipunku: grafika pocięta na komponenty, Figma, GUI i skrypt w Roblox (grafiki czekają na upload).
+- **13.11.2026 (noc i poranek, Claude Code u Karola):** diagnoza całego pomysłu (dziś 3,8/10) i propozycja v2 „krzywy montaż” z uczciwą oceną 6,0/10 i planem pomiarów (`B&C/Gra/*v2*.md`, `B&C/Badania/Diagnoza pomysłu 2026-11-13.md`; propozycje D-019–D-027, pytania 16–22); 💡 mapa v2 „Krzywe Miasteczko” i biblioteka krzywych brył (`swiat/biblioteka/`, `swiat/krzywe_miasteczko/`, `Workspace/KrzyweMiasteczko`); 💡 test cutscenki walki w samym Roblox (`swiat/test_walki_roblox/`, `Workspace/TestWalki`); panel: zakładka Assety, telemetria gry (`src/server/Telemetria`, bezwładna do włączenia), tunel sprawdzony naprawdę; instrukcja promptów „Glossy Ink” od Game Directora (`B&C/Styl/`). Wszystko jako propozycje do zatwierdzenia.
+- **13.11.2026 (popołudnie, Claude Code u Karola):** 💡 postacie, pety i ekwipunek z kodu (`swiat/postacie/`: 6 postaci, 3 zestawy, 8 broni, 20 klipów animacji) oraz te same postacie w Studio jako postacie z klocków ze stawami (`Workspace/TestPostaci`), animacje sprawdzone w trybie Edit i Play; import siatek nie sprawdzony (propozycja D-029, pytanie 24); 💡 zapis do sejfu z panelu (D-028, wyłączony do decyzji).
+- **13.11.2026 (wieczór, Karol z Claude Code):** ✅ D-030 — decyzje zatwierdza Karol albo Paweł, wystarczy jeden, każda zostaje w logach (zdecydował Karol; potwierdzenie Pawła czeka w pytaniu 27); ✅ D-027 — instrukcja „Glossy Ink” zastępuje prefiks Style Lock; ✅ D-028 — panel jako miejsce pracy, zapis do sejfu z panelu włączony; propozycja D-024 o walce zmieniona na „trzy długości”; import siatek sprawdzony na Rycerzu (postać R15 z 15 części w `Workspace/TestPostaci`).

@@ -24,7 +24,7 @@ Gra Roblox: **RPG / Incremental / Tycoon / Pet Collector**. Komiksowy humor w st
 - [[Style Lock]] — dawny prefiks promptów, zastąpiony przez Glossy Ink (zostaje jako historia)
 
 ## 🖥️ Interfejs
-- [[HUD]] · [[Ekran ładowania]] · [[Okno Karczmy]] · [[Selektor bohatera]]
+- [[HUD]] · [[Ekran ładowania]] · [[Okno Karczmy]] · [[Selektor bohatera]] · [[Mapa teleportacji]] · [[Okno ekwipunku]]
 
 ## ⚙️ Technika
 - [[Rojo i struktura projektu]]
