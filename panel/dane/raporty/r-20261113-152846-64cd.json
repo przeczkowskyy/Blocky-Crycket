@@ -1,0 +1,40 @@
+{
+ "id": "r-20261113-152846-64cd",
+ "tytul": "Na wieczór 13.11: co obejrzeć najpierw i jakie decyzje czekają",
+ "opis_md": "**Po co ten wpis:** od wczorajszego wieczora przybyło kilkanaście raportów. Tu jest kolejność, w jakiej warto je przejść, i lista decyzji, które czekają na Was.\n\n## Co obejrzeć najpierw (ok. 15 minut)\n1. **Postacie w Robloxie** — Blocky, Crycket, Karczmarz, pies, slime i smok stoją na rynku miasteczka. W Studio naciśnij Play albo Run nad rynkiem, żeby zobaczyć animacje.\n2. **Przymierzalnia** — w Play podejdź do manekina i naciśnij E, żeby założyć zestaw Rekruta, Rycerza albo Maga na własny awatar.\n3. **Pety idą za graczem** — w Play naciśnij E przy psie, slimie albo smoku. Odesłanie peta jest teraz na klawiszu **R** (zmiana po teście: idący pet przechwytywał klawisz E; wcześniejszy raport o petach mówi jeszcze o drugim naciśnięciu E).\n4. **Krzywe Miasteczko** — mapa w stylu komiksowym, na której to wszystko stoi.\n5. **Diagnoza pomysłu i propozycja v2** — ocena dziś 3,8/10, po poprawkach 6,0/10, z planem pomiarów.\n6. **Panel gotowy do pracy na sejfie** — zapis odpowiedzi, zadań i decyzji z panelu, na razie wyłączony.\n\n## Decyzje, które czekają\n- **Pytanie 23:** czy włączamy zapis do sejfu z panelu i na jakich zasadach (goście, znacznik Game Directora, link z kluczem).\n- **Pytanie 24:** którą drogą postacie trafiają do gry (klocki czy siatki), kto publikuje animacje, czyje sloty ekwipunku obowiązują.\n- **Pytania 16–17:** czy idziemy w propozycję v2 i jak ją pogodzić z rozpoczętymi statystykami i ekwipunkiem.\n- **D-027:** potwierdzenie instrukcji promptów „Glossy Ink”.\n\n## Co wymaga kliknięcia człowieka\n- **Roblox Studio (Karol):** Assistant → Settings → MCP Permissions → approved upload directories → folder `swiat/postacie/wynik`. Bez tego nie da się sprawdzić importu siatek z Blendera.\n- **GitHub:** konto Karola nie ma prawa zapisu do repozytorium, więc cała praca leży lokalnie na gałęzi `karol/panel-wiedza-demo` (nic nie trafiło jeszcze na GitHub).\n- **Panel:** jeśli włączamy zapis, Game Director potrzebuje swojego linku z kluczem (polecenie na komputerze z panelem).\n\n## Czego nie zrobiłem i co jest niesprawdzone\n- Importu siatek z Blendera do Robloxa (czeka na kliknięcie wyżej).\n- Wydajności na telefonie — wszystkie pomiary są z komputera.\n- Instalacji Rokit i lustra panelu na GitHub Pages (wymagają zgody albo dostępu właściciela).\n- Animacje i skrypty testowe działają tylko w Studio. Przed publikacją gry trzeba usunąć kontenery `TestPostaci` i `TestWalki`.\n- Wszystko, co powstało, ma status propozycji. Kanon zatwierdza Game Director.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T15:28:46+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytania otwarte"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Rejestr decyzji.md",
+   "etykieta": "Rejestr decyzji"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Zadania.md",
+   "etykieta": "Zadania"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Postacie 3D — Blender i Roblox.md",
+   "etykieta": "Postacie 3D"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Panel zespołu.md",
+   "etykieta": "Panel zespołu"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg"
+ ],
+ "migawka": "20261113-152845-ca65"
+}
