@@ -1,0 +1,26 @@
+{
+ "id": "r-20261113-133905-1546",
+ "tytul": "Panel gotowy do pracy na sejfie — odpowiedzi, zadania i decyzje z panelu (na razie wyłączone)",
+ "opis_md": "Napisałeś, Karol, że wieczorem chcecie zrobić z panelu jedyne miejsce pracy. Brakowało do tego jednej rzeczy: z panelu dało się tylko **oglądać** plan. Teraz da się na nim **pracować** — funkcja jest gotowa, ale celowo **wyłączona**, żebyście włączyli ją razem.\n\n**Co potrafi zakładka Plan po włączeniu**\n- **Pytania:** pole odpowiedzi pod każdym pytaniem otwartym.\n- **Zadania:** odhaczanie (z 5 sekundami na cofnięcie) i dodawanie nowych z priorytetem.\n- **Decyzje:** przyciski Zatwierdź / Odrzuć — widoczne tylko dla Game Directora.\n\n**Sejf zostaje mózgiem (D-008).** Panel zapisuje do tych samych plików co Obsidian i agenci: jeden czytelny wiersz na zmianę, ślad w Dzienniku zmian, a jeśli ktoś w międzyczasie zmienił plik w Obsidianie, panel nie nadpisze go, tylko poprosi o odświeżenie.\n\n**Kto co może**\n- Zatwierdzić decyzję może wyłącznie osoba z osobistym kluczem Game Directora (link generowany na komputerze z panelem). Samo wpisanie imienia „Paweł” nic nie daje.\n- Odpowiedzi osób wchodzących kodem dostępu są oznaczane jako „gość panelu”, żeby nikt nie mógł podszyć się pod zgodę.\n\n**Jakość:** niezależny, wrogi przegląd znalazł 16 uwag (4 ważne, żadnej krytycznej) — wszystkie poprawione; panel ma 216 testów. Wszystko testowane na kopii sejfu.\n\n**Zrzuty niżej pochodzą z testów na kopii** — w prawdziwym sejfie nic nie zostało zatwierdzone ani dopisane.\n\n**Do ustalenia wieczorem (pytanie 23):** czy goście z kodem mogą pisać do sejfu, reguła dla agentów o znaczniku zgody Game Directora i kto dostaje link z kluczem.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T13:39:05+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Panel zespołu.md",
+   "etykieta": "Panel zespołu"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytanie 23"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "pytanie": "Włączamy wieczorem? Jeśli tak — czy goście z kodem dostępu mogą pisać do sejfu?"
+}

@@ -1,0 +1,55 @@
+RAPORT — pies
+PIES — pet: brązowy kanciasty pies na czterech łapach (ok. 2,2 studa w kłębie), duża klockowa głowa
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/pies.py · wygenerowano 13.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py pies
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: pies
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 5 plików, zgodnych 5
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości psa nie są R15 — klipy importuje się na własny rig (nie testowane w Studio).
+- Sztywne bryły na kościach: przy galopie łapy przenikają brzuch, a przy szczeknięciu szyja chowa się w obrożę.
+- Bieg to szkic galopu (16 klatek) z jedną fazą lotu; brak kurzu i śladów.
+
+MODEL pies „Pies” (stwor)
+  wymiary ciała: 2,03 × 3,58 × 4,55; z akcesoriami: 2,03 × 3,58 × 4,55
+  trójkąty: 1992 (siatek: 14)
+  kości (15): Root, Tulow, Glowa, Szczeka, UchoL, UchoP, LapaPrzodL_Gora, LapaPrzodL_Dol, LapaTylL_Gora, LapaTylL_Dol, LapaPrzodP_Gora, LapaPrzodP_Dol, LapaTylP_Gora, LapaTylP_Dol, Ogon
+  klipy: idle 60 kl. 2,00 s pętla, bieg 16 kl. 0,53 s pętla, szczek 30 kl. 1,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment
+
+KONTROLA EKSPORTÓW
+- pies.fbx: siatki 16, kości 15, trójkąty 2016, wzrost 3.58 st., akcje brak -> ZGODNE
+- pies__idle.fbx: siatki 16, kości 15, trójkąty 2016, wzrost 3.58 st., akcje pies|Scene 1-61 -> ZGODNE
+- pies__bieg.fbx: siatki 16, kości 15, trójkąty 2016, wzrost 3.58 st., akcje pies|Scene 1-17 -> ZGODNE
+- pies__szczek.fbx: siatki 16, kości 15, trójkąty 2016, wzrost 3.58 st., akcje pies|Scene 1-31 -> ZGODNE
+- pies.glb: siatki 16, kości 15, trójkąty 2016, wzrost 3.58 st., akcje bieg 0-16, idle 0-60, szczek 0-30 -> ZGODNE
+
+PLIKI
+- pies.blend
+- pies.fbx
+- pies.glb
+- pies__bieg.fbx
+- pies__idle.fbx
+- pies__szczek.fbx
+- pies_bohater.jpg
+- pies_ikona.png
+- pies_plansza.jpg
+- pies_tekstury/
+- pies_idle.mp4
+- pies_idle_klatki.jpg
+- pies_idle_z_filmu.jpg
+- pies_bieg.mp4
+- pies_bieg_klatki.jpg
+- pies_bieg_z_filmu.jpg
+- pies_szczek.mp4
+- pies_szczek_klatki.jpg
+- pies_szczek_z_filmu.jpg
+- raport.json
+- raport.txt

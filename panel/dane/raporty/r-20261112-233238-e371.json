@@ -1,0 +1,32 @@
+{
+ "id": "r-20261112-233238-e371",
+ "tytul": "Panel zespołu gotowy — instalacja w 3 krokach i pytanie o D-012",
+ "opis_md": "Panel, na który właśnie patrzysz, jest gotowy do używania przez nas dwóch. To **okno na sejf `B&C/`**, a nie drugi mózg projektu: decyzje, zadania i roadmapę czyta z notatek (D-008 zostaje w mocy), a sam przechowuje tylko raporty, komentarze i migawki.\n\n**Instalacja u drugiej osoby (około 2 minut):** `git pull`, potem `python panel/serwer.py --sprawdz`, potem dwuklik w `panel\\start.bat`. Można też wkleić swojemu Claude: „Przeczytaj `panel/INSTALACJA.md` i wykonaj kroki 1–3”. Potrzebny jest tylko Python i Git.\n\n**Co jest w środku**\n- **Pulpit** — co czeka na Twoją decyzję, kto pracuje (panel, Team Create, commity), synchronizacja danych.\n- **Plan** — harmonogram, zadania, decyzje, pytania i dziennik prosto z sejfu.\n- **Raporty** — to, co wdrożył Claude albo człowiek, ze zrzutami; przyciski Akceptuję / Do poprawy i komentarze, także głosowe.\n- **Podgląd 3D** — mapa z Roblox Studio w przeglądarce, także na telefonie; klik w budynek otwiera komentarze do niego.\n- **Agent** — ten sam Claude Code, na subskrypcji osoby przy komputerze. Z telefonu domyślnie wyłączony.\n- **Sieć neuronowa** — graf notatek bez Obsidiana.\n- **Analityka** — gracze online i wizyty, konsola Studio.\n\n**Co sprawdziłem:** 76 testów automatycznych, próbna instalacja w czystym folderze, prawdziwa rozmowa z agentem przez panel, głosówka zamieniona na tekst, wszystkie widoki na telefonie i komputerze bez błędów. Kod przeszedł przegląd bezpieczeństwa: 14 uwag, wszystkie poprawione.\n\n**Czego jeszcze nie ma**\n- Analityka pokazuje zera, dopóki gra jest prywatna. Wydane Robuxy, logi serwerów i crashe wymagają telemetrii w grze i klucza Open Cloud (zadanie w backlogu).\n- Zrzuty ze Studio do migawki wychodzą czarne, gdy okno Studio jest zminimalizowane — dlatego przy demie są rendery z Blendera.\n- Wersja „tylko do odczytu” pod stałym adresem (GitHub Pages) czeka na włączenie Pages przez właściciela repozytorium.\n\nRepozytorium jest publiczne: raporty i komentarze widzi każdy. Rozmowy z agentem i nagrania zostają na komputerze.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-12T23:32:38+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Panel zespołu.md",
+   "etykieta": "Panel zespołu"
+  },
+  {
+   "typ": "plik",
+   "cel": "panel/INSTALACJA.md",
+   "etykieta": "Instrukcja instalacji"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Rejestr decyzji.md",
+   "etykieta": "Rejestr decyzji (D-012)"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ],
+ "pytanie": "Paweł: czy panel zostaje jako narzędzie zespołu (D-012)? Czego brakuje do Twojego sposobu pracy z Figmą i Higgsfieldem?"
+}

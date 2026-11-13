@@ -1,0 +1,2243 @@
+{
+ "status": "propozycja",
+ "opis": "Lista przedmiotów z modeli w swiat/postacie (proceduralnie, Blender). Propozycja, nie kanon: sloty, kategorie plecaka i podział na części do akceptacji Game Directora. Bez statystyk. Ścieżki względem folderu swiat/postacie/. Przedmiot z kilkoma częściami = kilka akcesoriów (każda część ma własny punkt zaczepienia R15). Generator: swiat/postacie/zestawienie.py.",
+ "attachment": "czesci[].attachment = gotowe ustawienie obiektu Attachment w Handle części (nazwa = czesci[].zaczep): glb = model z pliku .glb (przód +Z), fbx = model z pliku .fbx (eksport obraca go o 180° wokół pionu). pos w studach, rot = Orientation w stopniach. Liczone z raportu Blendera (minus środek skrzynki siatki od punktu zaczepienia). Nie sprawdzone w Studio. Skrypt: swiat/postacie/zaczepy_akcesoriow.luau.",
+ "sloty": [
+  "Helmet",
+  "Chest",
+  "Gloves",
+  "Boots",
+  "Belt",
+  "Weapon",
+  "OffHand",
+  "Amulet",
+  "Ring",
+  "Trinket"
+ ],
+ "kategorie": [
+  "Weapons",
+  "Armor",
+  "Amulets",
+  "Others"
+ ],
+ "zestawy": {
+  "zestaw_rekrut": "Rekrut (start)",
+  "zestaw_rycerz": "Rycerz",
+  "zestaw_mag": "Mag",
+  "bronie": "Zbrojownia",
+  "kot_mag": "Rekwizyty Kota-Maga"
+ },
+ "przedmioty": [
+  {
+   "id": "rekrut_czapka",
+   "nazwa": "Skórzana czapka rekruta",
+   "slot": "Helmet",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_rekrut",
+   "plik_modelu": "wynik/zestaw_rekrut/przedmioty/rekrut_czapka.fbx",
+   "czesci": [
+    {
+     "id": "rekrut_czapka",
+     "zaczep": "HatAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_czapka.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_czapka.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.223,
+        -0.032
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.223,
+        0.032
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rekrut/ikony/rekrut_czapka_ikona.png"
+  },
+  {
+   "id": "rekrut_przeszywanica",
+   "nazwa": "Przeszywanica rekruta (z rękawami)",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_rekrut",
+   "plik_modelu": "wynik/zestaw_rekrut/przedmioty/rekrut_przeszywanica.fbx",
+   "czesci": [
+    {
+     "id": "rekrut_przeszywanica",
+     "zaczep": "BodyFrontAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_przeszywanica.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_przeszywanica.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.14,
+        0.462
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.14,
+        -0.462
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "rekrut_rekaw_l",
+     "zaczep": "LeftShoulderAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_rekaw_l.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_rekaw_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.065,
+        0.42,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.065,
+        0.42,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "rekrut_rekaw_p",
+     "zaczep": "RightShoulderAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_rekaw_p.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_rekaw_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.065,
+        0.42,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.065,
+        0.42,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rekrut/ikony/rekrut_przeszywanica_cala_ikona.png"
+  },
+  {
+   "id": "rekrut_rekawice",
+   "nazwa": "Skórzane rękawice rekruta",
+   "slot": "Gloves",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_rekrut",
+   "plik_modelu": "wynik/zestaw_rekrut/przedmioty/rekrut_rekawica_l.fbx",
+   "czesci": [
+    {
+     "id": "rekrut_rekawica_l",
+     "zaczep": "LeftGripAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_rekawica_l.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_rekawica_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.12,
+        -0.069,
+        0.238
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.12,
+        -0.069,
+        -0.238
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "rekrut_rekawica_p",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_rekawica_p.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_rekawica_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.12,
+        -0.069,
+        0.238
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.12,
+        -0.069,
+        -0.238
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rekrut/ikony/rekrut_rekawice_ikona.png"
+  },
+  {
+   "id": "rekrut_buty",
+   "nazwa": "Połatane buty rekruta",
+   "slot": "Boots",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_rekrut",
+   "plik_modelu": "wynik/zestaw_rekrut/przedmioty/rekrut_but_l.fbx",
+   "czesci": [
+    {
+     "id": "rekrut_but_l",
+     "zaczep": "LeftFootAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_but_l.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_but_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.057,
+        -0.573,
+        -0.235
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.057,
+        -0.573,
+        0.235
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "rekrut_but_p",
+     "zaczep": "RightFootAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_but_p.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_but_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.057,
+        -0.573,
+        -0.235
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.057,
+        -0.573,
+        0.235
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rekrut/ikony/rekrut_buty_ikona.png"
+  },
+  {
+   "id": "rekrut_pas",
+   "nazwa": "Sznurek z sakiewką",
+   "slot": "Belt",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_rekrut",
+   "plik_modelu": "wynik/zestaw_rekrut/przedmioty/rekrut_pas.fbx",
+   "czesci": [
+    {
+     "id": "rekrut_pas",
+     "zaczep": "WaistCenterAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_pas.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_pas.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.26,
+        -0.243
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.26,
+        0.243
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rekrut/ikony/rekrut_pas_ikona.png"
+  },
+  {
+   "id": "rekrut_miecz",
+   "nazwa": "Drewniany miecz ćwiczebny",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "zestaw_rekrut",
+   "plik_modelu": "wynik/zestaw_rekrut/przedmioty/rekrut_miecz.fbx",
+   "czesci": [
+    {
+     "id": "rekrut_miecz",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_miecz.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_miecz.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -1.22,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -1.22,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rekrut/ikony/rekrut_miecz_ikona.png"
+  },
+  {
+   "id": "rekrut_amulet",
+   "nazwa": "Ząb na rzemyku",
+   "slot": "Amulet",
+   "kategoria": "Amulets",
+   "zestaw": "zestaw_rekrut",
+   "plik_modelu": "wynik/zestaw_rekrut/przedmioty/rekrut_amulet.fbx",
+   "czesci": [
+    {
+     "id": "rekrut_amulet",
+     "zaczep": "NeckAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_amulet.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_amulet.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.21,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.21,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rekrut/ikony/rekrut_amulet_ikona.png"
+  },
+  {
+   "id": "rekrut_pierscien",
+   "nazwa": "Miedziany pierścień",
+   "slot": "Ring",
+   "kategoria": "Amulets",
+   "zestaw": "zestaw_rekrut",
+   "plik_modelu": "wynik/zestaw_rekrut/przedmioty/rekrut_pierscien.fbx",
+   "czesci": [
+    {
+     "id": "rekrut_pierscien",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_pierscien.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_pierscien.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.071,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.071,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rekrut/ikony/rekrut_pierscien_ikona.png"
+  },
+  {
+   "id": "rekrut_podkowa",
+   "nazwa": "Zardzewiała podkowa",
+   "slot": "Trinket",
+   "kategoria": "Others",
+   "zestaw": "zestaw_rekrut",
+   "plik_modelu": "wynik/zestaw_rekrut/przedmioty/rekrut_podkowa.fbx",
+   "czesci": [
+    {
+     "id": "rekrut_podkowa",
+     "zaczep": "WaistCenterAttachment",
+     "fbx": "wynik/zestaw_rekrut/przedmioty/rekrut_podkowa.fbx",
+     "glb": "wynik/zestaw_rekrut/przedmioty/rekrut_podkowa.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.016,
+        -0.007
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.016,
+        0.007
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rekrut/ikony/rekrut_podkowa_ikona.png"
+  },
+  {
+   "id": "zr_helm",
+   "nazwa": "Hełm Rycerza z pióropuszem",
+   "slot": "Helmet",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_rycerz",
+   "plik_modelu": "wynik/zestaw_rycerz/przedmioty/zr_helm.fbx",
+   "czesci": [
+    {
+     "id": "zr_helm",
+     "zaczep": "HatAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_helm.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_helm.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.18,
+        0.19
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.18,
+        -0.19
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rycerz/ikony/zr_helm_ikona.png"
+  },
+  {
+   "id": "zr_napiersnik",
+   "nazwa": "Napierśnik Rycerza z tabardem",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_rycerz",
+   "plik_modelu": "wynik/zestaw_rycerz/przedmioty/zr_napiersnik.fbx",
+   "czesci": [
+    {
+     "id": "zr_napiersnik",
+     "zaczep": "NeckAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_napiersnik.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_napiersnik.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        1.035,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        1.035,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "zr_naramiennik_l",
+     "zaczep": "LeftShoulderAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_naramiennik_l.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_naramiennik_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.059,
+        0.08,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.059,
+        0.08,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "zr_naramiennik_p",
+     "zaczep": "RightShoulderAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_naramiennik_p.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_naramiennik_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.059,
+        0.08,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.059,
+        0.08,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "zr_pola",
+     "zaczep": "WaistFrontAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_pola.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_pola.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.646,
+        -0.251
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.646,
+        0.251
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rycerz/ikony/zr_napiersnik_ikona.png"
+  },
+  {
+   "id": "zr_rekawice",
+   "nazwa": "Stalowe rękawice Rycerza",
+   "slot": "Gloves",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_rycerz",
+   "plik_modelu": "wynik/zestaw_rycerz/przedmioty/zr_rekawica_l.fbx",
+   "czesci": [
+    {
+     "id": "zr_rekawica_l",
+     "zaczep": "LeftGripAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_rekawica_l.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_rekawica_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.14,
+        -0.02,
+        0.216
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.14,
+        -0.02,
+        -0.216
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "zr_rekawica_p",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_rekawica_p.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_rekawica_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.14,
+        -0.02,
+        0.216
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.14,
+        -0.02,
+        -0.216
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rycerz/ikony/zr_rekawica_l_ikona.png"
+  },
+  {
+   "id": "zr_buty",
+   "nazwa": "Stalowe buty z ostrogą",
+   "slot": "Boots",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_rycerz",
+   "plik_modelu": "wynik/zestaw_rycerz/przedmioty/zr_but_l.fbx",
+   "czesci": [
+    {
+     "id": "zr_but_l",
+     "zaczep": "LeftFootAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_but_l.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_but_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.12,
+        -0.552,
+        0.13
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.12,
+        -0.552,
+        -0.13
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "zr_but_p",
+     "zaczep": "RightFootAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_but_p.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_but_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.12,
+        -0.552,
+        0.13
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.12,
+        -0.552,
+        -0.13
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rycerz/ikony/zr_but_l_ikona.png"
+  },
+  {
+   "id": "zr_pas",
+   "nazwa": "Szeroki pas Rycerza",
+   "slot": "Belt",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_rycerz",
+   "plik_modelu": "wynik/zestaw_rycerz/przedmioty/zr_pas.fbx",
+   "czesci": [
+    {
+     "id": "zr_pas",
+     "zaczep": "WaistCenterAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_pas.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_pas.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.052
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.052
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rycerz/ikony/zr_pas_ikona.png"
+  },
+  {
+   "id": "zr_miecz",
+   "nazwa": "Wielki miecz Rycerza",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "zestaw_rycerz",
+   "plik_modelu": "wynik/zestaw_rycerz/przedmioty/zr_miecz.fbx",
+   "czesci": [
+    {
+     "id": "zr_miecz",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_miecz.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_miecz.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -1.68,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -1.68,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rycerz/ikony/zr_miecz_ikona.png"
+  },
+  {
+   "id": "zr_tarcza",
+   "nazwa": "Tarcza z herbem",
+   "slot": "OffHand",
+   "kategoria": "Weapons",
+   "zestaw": "zestaw_rycerz",
+   "plik_modelu": "wynik/zestaw_rycerz/przedmioty/zr_tarcza.fbx",
+   "czesci": [
+    {
+     "id": "zr_tarcza",
+     "zaczep": "LeftGripAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_tarcza.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_tarcza.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.741,
+        -0.0,
+        0.32
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.741,
+        -0.0,
+        -0.32
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rycerz/ikony/zr_tarcza_ikona.png"
+  },
+  {
+   "id": "zr_amulet",
+   "nazwa": "Amulet z niebieskim klejnotem",
+   "slot": "Amulet",
+   "kategoria": "Amulets",
+   "zestaw": "zestaw_rycerz",
+   "plik_modelu": "wynik/zestaw_rycerz/przedmioty/zr_amulet.fbx",
+   "czesci": [
+    {
+     "id": "zr_amulet",
+     "zaczep": "NeckAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_amulet.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_amulet.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.634,
+        -0.05
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.634,
+        0.05
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rycerz/ikony/zr_amulet_ikona.png"
+  },
+  {
+   "id": "zr_sygnet",
+   "nazwa": "Sygnet Rycerza",
+   "slot": "Ring",
+   "kategoria": "Others",
+   "zestaw": "zestaw_rycerz",
+   "plik_modelu": "wynik/zestaw_rycerz/przedmioty/zr_sygnet.fbx",
+   "czesci": [
+    {
+     "id": "zr_sygnet",
+     "zaczep": "LeftGripAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_sygnet.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_sygnet.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.077,
+        -0.025
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.077,
+        0.025
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rycerz/ikony/zr_sygnet_ikona.png"
+  },
+  {
+   "id": "zr_ostroga",
+   "nazwa": "Złota ostroga",
+   "slot": "Trinket",
+   "kategoria": "Others",
+   "zestaw": "zestaw_rycerz",
+   "plik_modelu": "wynik/zestaw_rycerz/przedmioty/zr_ostroga.fbx",
+   "czesci": [
+    {
+     "id": "zr_ostroga",
+     "zaczep": "WaistCenterAttachment",
+     "fbx": "wynik/zestaw_rycerz/przedmioty/zr_ostroga.fbx",
+     "glb": "wynik/zestaw_rycerz/przedmioty/zr_ostroga.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        1.067,
+        0.42,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -1.067,
+        0.42,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_rycerz/ikony/zr_ostroga_ikona.png"
+  },
+  {
+   "id": "mag_kapelusz",
+   "nazwa": "Kapelusz maga",
+   "slot": "Helmet",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_mag",
+   "plik_modelu": "wynik/zestaw_mag/przedmioty/mag_kapelusz.fbx",
+   "czesci": [
+    {
+     "id": "mag_kapelusz",
+     "zaczep": "HatAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_kapelusz.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_kapelusz.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.672,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.672,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_mag/ikony/mag_kapelusz_ikona.png"
+  },
+  {
+   "id": "mag_szata",
+   "nazwa": "Szata maga",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_mag",
+   "plik_modelu": "wynik/zestaw_mag/przedmioty/mag_szata.fbx",
+   "czesci": [
+    {
+     "id": "mag_szata",
+     "zaczep": "BodyFrontAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_szata.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_szata.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.261,
+        0.623
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.261,
+        -0.623
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "mag_szata_dol",
+     "zaczep": "WaistCenterAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_szata_dol.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_szata_dol.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.115,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.115,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "mag_rekaw_l",
+     "zaczep": "LeftShoulderAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_rekaw_l.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_rekaw_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.269,
+        0.693,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.269,
+        0.693,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "mag_rekaw_p",
+     "zaczep": "RightShoulderAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_rekaw_p.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_rekaw_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.269,
+        0.693,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.269,
+        0.693,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_mag/ikony/mag_szata_cala_ikona.png"
+  },
+  {
+   "id": "mag_rekawice",
+   "nazwa": "Rękawice runiczne",
+   "slot": "Gloves",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_mag",
+   "plik_modelu": "wynik/zestaw_mag/przedmioty/mag_rekawica_l.fbx",
+   "czesci": [
+    {
+     "id": "mag_rekawica_l",
+     "zaczep": "LeftGripAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_rekawica_l.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_rekawica_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.15,
+        -0.01,
+        0.17
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.15,
+        -0.01,
+        -0.17
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "mag_rekawica_p",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_rekawica_p.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_rekawica_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.15,
+        -0.01,
+        0.17
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.15,
+        -0.01,
+        -0.17
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_mag/ikony/mag_rekawica_l_ikona.png"
+  },
+  {
+   "id": "mag_cizmy",
+   "nazwa": "Zakręcone ciżmy",
+   "slot": "Boots",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_mag",
+   "plik_modelu": "wynik/zestaw_mag/przedmioty/mag_cizma_l.fbx",
+   "czesci": [
+    {
+     "id": "mag_cizma_l",
+     "zaczep": "LeftFootAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_cizma_l.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_cizma_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.1,
+        -0.575,
+        -0.322
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.1,
+        -0.575,
+        0.322
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "id": "mag_cizma_p",
+     "zaczep": "RightFootAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_cizma_p.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_cizma_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.1,
+        -0.575,
+        -0.322
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.1,
+        -0.575,
+        0.322
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_mag/ikony/mag_cizma_l_ikona.png"
+  },
+  {
+   "id": "mag_pas",
+   "nazwa": "Pas z fiolkami",
+   "slot": "Belt",
+   "kategoria": "Armor",
+   "zestaw": "zestaw_mag",
+   "plik_modelu": "wynik/zestaw_mag/przedmioty/mag_pas.fbx",
+   "czesci": [
+    {
+     "id": "mag_pas",
+     "zaczep": "WaistCenterAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_pas.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_pas.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.125,
+        -0.165
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.125,
+        0.165
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_mag/ikony/mag_pas_ikona.png"
+  },
+  {
+   "id": "mag_kostur",
+   "nazwa": "Kostur turkusowego kryształu",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "zestaw_mag",
+   "plik_modelu": "wynik/zestaw_mag/przedmioty/mag_kostur.fbx",
+   "czesci": [
+    {
+     "id": "mag_kostur",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_kostur.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_kostur.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -1.055,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -1.055,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_mag/ikony/mag_kostur_ikona.png"
+  },
+  {
+   "id": "mag_ksiega",
+   "nazwa": "Księga zaklęć",
+   "slot": "OffHand",
+   "kategoria": "Weapons",
+   "zestaw": "zestaw_mag",
+   "plik_modelu": "wynik/zestaw_mag/przedmioty/mag_ksiega.fbx",
+   "czesci": [
+    {
+     "id": "mag_ksiega",
+     "zaczep": "LeftGripAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_ksiega.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_ksiega.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.07,
+        -0.81,
+        -0.13
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.07,
+        -0.81,
+        0.13
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_mag/ikony/mag_ksiega_ikona.png"
+  },
+  {
+   "id": "mag_amulet",
+   "nazwa": "Amulet fioletowego kryształu",
+   "slot": "Amulet",
+   "kategoria": "Amulets",
+   "zestaw": "zestaw_mag",
+   "plik_modelu": "wynik/zestaw_mag/przedmioty/mag_amulet.fbx",
+   "czesci": [
+    {
+     "id": "mag_amulet",
+     "zaczep": "NeckAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_amulet.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_amulet.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.49,
+        -0.219
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.49,
+        0.219
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_mag/ikony/mag_amulet_ikona.png"
+  },
+  {
+   "id": "mag_pierscien",
+   "nazwa": "Pierścień z fioletowym kamieniem",
+   "slot": "Ring",
+   "kategoria": "Amulets",
+   "zestaw": "zestaw_mag",
+   "plik_modelu": "wynik/zestaw_mag/przedmioty/mag_pierscien.fbx",
+   "czesci": [
+    {
+     "id": "mag_pierscien",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_pierscien.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_pierscien.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.62,
+        0.069
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.62,
+        -0.069
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_mag/ikony/mag_pierscien_ikona.png"
+  },
+  {
+   "id": "mag_klepsydra",
+   "nazwa": "Klepsydra",
+   "slot": "Trinket",
+   "kategoria": "Others",
+   "zestaw": "zestaw_mag",
+   "plik_modelu": "wynik/zestaw_mag/przedmioty/mag_klepsydra.fbx",
+   "czesci": [
+    {
+     "id": "mag_klepsydra",
+     "zaczep": "WaistCenterAttachment",
+     "fbx": "wynik/zestaw_mag/przedmioty/mag_klepsydra.fbx",
+     "glb": "wynik/zestaw_mag/przedmioty/mag_klepsydra.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.3,
+        0.406,
+        -0.7
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.3,
+        0.406,
+        0.7
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/zestaw_mag/ikony/mag_klepsydra_ikona.png"
+  },
+  {
+   "id": "palka_gwozdz",
+   "nazwa": "Pałka z gwoździem",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "bronie",
+   "plik_modelu": "wynik/bronie/przedmioty/palka_gwozdz.fbx",
+   "czesci": [
+    {
+     "id": "palka_gwozdz",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/bronie/przedmioty/palka_gwozdz.fbx",
+     "glb": "wynik/bronie/przedmioty/palka_gwozdz.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.241,
+        -0.984,
+        -0.121
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.241,
+        -0.984,
+        0.121
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/bronie/ikony/palka_gwozdz_ikona.png"
+  },
+  {
+   "id": "patelnia",
+   "nazwa": "Patelnia z jajkiem",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "bronie",
+   "plik_modelu": "wynik/bronie/przedmioty/patelnia.fbx",
+   "czesci": [
+    {
+     "id": "patelnia",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/bronie/przedmioty/patelnia.fbx",
+     "glb": "wynik/bronie/przedmioty/patelnia.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.02,
+        -1.065,
+        -0.095
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.02,
+        -1.065,
+        0.095
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/bronie/ikony/patelnia_ikona.png"
+  },
+  {
+   "id": "mlot_bojowy",
+   "nazwa": "Młot bojowy",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "bronie",
+   "plik_modelu": "wynik/bronie/przedmioty/mlot_bojowy.fbx",
+   "czesci": [
+    {
+     "id": "mlot_bojowy",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/bronie/przedmioty/mlot_bojowy.fbx",
+     "glb": "wynik/bronie/przedmioty/mlot_bojowy.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.156,
+        -1.165,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.156,
+        -1.165,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/bronie/ikony/mlot_bojowy_ikona.png"
+  },
+  {
+   "id": "topor_dwureczny",
+   "nazwa": "Topór dwuręczny",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "bronie",
+   "plik_modelu": "wynik/bronie/przedmioty/topor_dwureczny.fbx",
+   "czesci": [
+    {
+     "id": "topor_dwureczny",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/bronie/przedmioty/topor_dwureczny.fbx",
+     "glb": "wynik/bronie/przedmioty/topor_dwureczny.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.209,
+        -1.167,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.209,
+        -1.167,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/bronie/ikony/topor_dwureczny_ikona.png"
+  },
+  {
+   "id": "wlocznia_choragiew",
+   "nazwa": "Włócznia z chorągiewką",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "bronie",
+   "plik_modelu": "wynik/bronie/przedmioty/wlocznia_choragiew.fbx",
+   "czesci": [
+    {
+     "id": "wlocznia_choragiew",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/bronie/przedmioty/wlocznia_choragiew.fbx",
+     "glb": "wynik/bronie/przedmioty/wlocznia_choragiew.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.79,
+        -1.905,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.79,
+        -1.905,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/bronie/ikony/wlocznia_choragiew_ikona.png"
+  },
+  {
+   "id": "miecz_plomienisty",
+   "nazwa": "Miecz płomienisty",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "bronie",
+   "plik_modelu": "wynik/bronie/przedmioty/miecz_plomienisty.fbx",
+   "czesci": [
+    {
+     "id": "miecz_plomienisty",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/bronie/przedmioty/miecz_plomienisty.fbx",
+     "glb": "wynik/bronie/przedmioty/miecz_plomienisty.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -1.62,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -1.62,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/bronie/ikony/miecz_plomienisty_ikona.png"
+  },
+  {
+   "id": "kostur_lodu",
+   "nazwa": "Kostur lodu",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "bronie",
+   "plik_modelu": "wynik/bronie/przedmioty/kostur_lodu.fbx",
+   "czesci": [
+    {
+     "id": "kostur_lodu",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/bronie/przedmioty/kostur_lodu.fbx",
+     "glb": "wynik/bronie/przedmioty/kostur_lodu.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.006,
+        -1.7,
+        -0.021
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.006,
+        -1.7,
+        0.021
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/bronie/ikony/kostur_lodu_ikona.png"
+  },
+  {
+   "id": "chochla_mistrza",
+   "nazwa": "Wielka chochla mistrza",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "bronie",
+   "plik_modelu": "wynik/bronie/przedmioty/chochla_mistrza.fbx",
+   "czesci": [
+    {
+     "id": "chochla_mistrza",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/bronie/przedmioty/chochla_mistrza.fbx",
+     "glb": "wynik/bronie/przedmioty/chochla_mistrza.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -1.509,
+        -0.044
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -1.509,
+        0.044
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/bronie/ikony/chochla_mistrza_ikona.png"
+  },
+  {
+   "id": "kot_mag_kapelusz",
+   "nazwa": "Kapelusz Kota-Maga",
+   "slot": "Helmet",
+   "kategoria": "Armor",
+   "zestaw": "kot_mag",
+   "plik_modelu": "wynik/kot_mag/przedmioty/kot_mag_kapelusz.fbx",
+   "czesci": [
+    {
+     "id": "kot_mag_kapelusz",
+     "zaczep": "HatAttachment",
+     "fbx": "wynik/kot_mag/przedmioty/kot_mag_kapelusz.fbx",
+     "glb": "wynik/kot_mag/przedmioty/kot_mag_kapelusz.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.878,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.878,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/kot_mag/ikony/kot_mag_kapelusz_ikona.png"
+  },
+  {
+   "id": "kot_mag_kostur",
+   "nazwa": "Kostur Kota-Maga",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "kot_mag",
+   "plik_modelu": "wynik/kot_mag/przedmioty/kot_mag_kostur.fbx",
+   "czesci": [
+    {
+     "id": "kot_mag_kostur",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/kot_mag/przedmioty/kot_mag_kostur.fbx",
+     "glb": "wynik/kot_mag/przedmioty/kot_mag_kostur.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.835,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.835,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/kot_mag/ikony/kot_mag_kostur_ikona.png"
+  },
+  {
+   "id": "rycerz_miecz",
+   "nazwa": "Wielki miecz Rycerza",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "rycerz",
+   "plik_modelu": "wynik/rycerz/przedmioty/rycerz_miecz.fbx",
+   "czesci": [
+    {
+     "id": "rycerz_miecz",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/rycerz/przedmioty/rycerz_miecz.fbx",
+     "glb": "wynik/rycerz/przedmioty/rycerz_miecz.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -1.659,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -1.659,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ikony/rycerz_miecz_ikona.png"
+  },
+  {
+   "id": "karczmarz_chochla",
+   "nazwa": "Chochla karczmarza",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "karczmarz",
+   "plik_modelu": "wynik/karczmarz/przedmioty/karczmarz_chochla.fbx",
+   "czesci": [
+    {
+     "id": "karczmarz_chochla",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/karczmarz/przedmioty/karczmarz_chochla.fbx",
+     "glb": "wynik/karczmarz/przedmioty/karczmarz_chochla.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.46,
+        -0.68,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.46,
+        -0.68,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "plik_ikony": "wynik/karczmarz/ikony/karczmarz_chochla_ikona.png"
+  }
+ ]
+}

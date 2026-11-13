@@ -1,0 +1,199 @@
+RAPORT — bronie
+ZBROJOWNIA — osiem broni do prawej dłoni klockowego awatara R15, w rosnącej „randze”.
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/bronie.py · wygenerowano 13.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py bronie
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: przym_palka_gwozdz, przym_patelnia, przym_mlot_bojowy, przym_topor_dwureczny, przym_wlocznia_choragiew, przym_miecz_plomienisty, przym_kostur_lodu, przym_chochla_mistrza
+- przedmioty (akcesoria): 8
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 48 plików, zgodnych 48
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Każda broń to jedno sztywne akcesorium na RightGripAttachment; jako Tool trzeba ustawić Grip ręcznie (albo z attachment_pos z przedmioty.json).
+- Płomienie miecza i lód kostura świecą tylko w renderze; w grze dać Neon albo ParticleEmitter.
+- Przymiarki (szary manekin z bronią w pozie trzymanie) są tylko planszami, bez eksportu.
+
+MODEL przym_palka_gwozdz „Przymiarka: Pałka z gwoździem” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 4,39 × 5,25 × 3,72
+  trójkąty: 1268 (siatek: 16)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: palka_gwozdz na RightGripAttachment
+
+MODEL przym_patelnia „Przymiarka: Patelnia z jajkiem” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 4,54 × 5,25 × 3,77
+  trójkąty: 1204 (siatek: 16)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: patelnia na RightGripAttachment
+
+MODEL przym_mlot_bojowy „Przymiarka: Młot bojowy” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 4,31 × 5,25 × 4,53
+  trójkąty: 1198 (siatek: 16)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: mlot_bojowy na RightGripAttachment
+
+MODEL przym_topor_dwureczny „Przymiarka: Topór dwuręczny” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 4,99 × 5,25 × 5,85
+  trójkąty: 1306 (siatek: 16)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: topor_dwureczny na RightGripAttachment
+
+MODEL przym_wlocznia_choragiew „Przymiarka: Włócznia z chorągiewką” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 5,60 × 5,25 × 8,29
+  trójkąty: 1228 (siatek: 16)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: wlocznia_choragiew na RightGripAttachment
+
+MODEL przym_miecz_plomienisty „Przymiarka: Miecz płomienisty” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 4,22 × 5,25 × 5,26
+  trójkąty: 1092 (siatek: 16)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: miecz_plomienisty na RightGripAttachment
+
+MODEL przym_kostur_lodu „Przymiarka: Kostur lodu” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 4,37 × 5,25 × 7,40
+  trójkąty: 1264 (siatek: 16)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: kostur_lodu na RightGripAttachment
+
+MODEL przym_chochla_mistrza „Przymiarka: Wielka chochla mistrza” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 4,68 × 5,25 × 6,74
+  trójkąty: 1552 (siatek: 16)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: chochla_mistrza na RightGripAttachment
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+palka_gwozdz           RightGripAttachment        Bron         520  1,30 × 3,72 × 1,28   (0,24; -0,98; -0,12)  
+patelnia               RightGripAttachment        Bron         456  2,04 × 3,77 × 0,49   (0,02; -1,06; -0,10)  
+mlot_bojowy            RightGripAttachment        Bron         450  1,93 × 4,53 × 0,98   (-0,16; -1,17; -0,00) 
+topor_dwureczny        RightGripAttachment        Bron         558  2,56 × 5,85 × 0,48   (0,21; -1,17; -0,00)  
+wlocznia_choragiew     RightGripAttachment        Bron         480  2,62 × 8,29 × 0,34   (0,79; -1,91; -0,00)  
+miecz_plomienisty      RightGripAttachment        Bron         344  1,44 × 5,26 × 0,51   (-0,00; -1,62; -0,00) 
+kostur_lodu            RightGripAttachment        Bron         516  1,74 × 7,40 × 1,34   (0,01; -1,70; -0,02)  
+chochla_mistrza        RightGripAttachment        Bron         804  2,36 × 6,74 × 2,28   (-0,00; -1,51; -0,04) 
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+KONTROLA EKSPORTÓW
+- przym_palka_gwozdz.fbx: siatki 35, kości 17, trójkąty 1496, wzrost 5.25 st., akcje brak -> ZGODNE
+- przym_palka_gwozdz__spoczynek.fbx: siatki 35, kości 17, trójkąty 1496, wzrost 5.25 st., akcje przym_palka_gwozdz|Scene 1-61 -> ZGODNE
+- przym_palka_gwozdz__trzymanie.fbx: siatki 35, kości 17, trójkąty 1496, wzrost 5.25 st., akcje przym_palka_gwozdz|Scene 1-3 -> ZGODNE
+- przym_palka_gwozdz.glb: siatki 35, kości 17, trójkąty 1496, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- przym_patelnia.fbx: siatki 35, kości 17, trójkąty 1432, wzrost 5.25 st., akcje brak -> ZGODNE
+- przym_patelnia__spoczynek.fbx: siatki 35, kości 17, trójkąty 1432, wzrost 5.25 st., akcje przym_patelnia|Scene 1-61 -> ZGODNE
+- przym_patelnia__trzymanie.fbx: siatki 35, kości 17, trójkąty 1432, wzrost 5.25 st., akcje przym_patelnia|Scene 1-3 -> ZGODNE
+- przym_patelnia.glb: siatki 35, kości 17, trójkąty 1432, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- przym_mlot_bojowy.fbx: siatki 35, kości 17, trójkąty 1426, wzrost 5.25 st., akcje brak -> ZGODNE
+- przym_mlot_bojowy__spoczynek.fbx: siatki 35, kości 17, trójkąty 1426, wzrost 5.25 st., akcje przym_mlot_bojowy|Scene 1-61 -> ZGODNE
+- przym_mlot_bojowy__trzymanie.fbx: siatki 35, kości 17, trójkąty 1426, wzrost 5.25 st., akcje przym_mlot_bojowy|Scene 1-3 -> ZGODNE
+- przym_mlot_bojowy.glb: siatki 35, kości 17, trójkąty 1426, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- przym_topor_dwureczny.fbx: siatki 35, kości 17, trójkąty 1534, wzrost 5.25 st., akcje brak -> ZGODNE
+- przym_topor_dwureczny__spoczynek.fbx: siatki 35, kości 17, trójkąty 1534, wzrost 5.25 st., akcje przym_topor_dwureczny|Scene 1-61 -> ZGODNE
+- przym_topor_dwureczny__trzymanie.fbx: siatki 35, kości 17, trójkąty 1534, wzrost 5.25 st., akcje przym_topor_dwureczny|Scene 1-3 -> ZGODNE
+- przym_topor_dwureczny.glb: siatki 35, kości 17, trójkąty 1534, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- przym_wlocznia_choragiew.fbx: siatki 35, kości 17, trójkąty 1456, wzrost 5.25 st., akcje brak -> ZGODNE
+- przym_wlocznia_choragiew__spoczynek.fbx: siatki 35, kości 17, trójkąty 1456, wzrost 5.25 st., akcje przym_wlocznia_choragiew|Scene 1-61 -> ZGODNE
+- przym_wlocznia_choragiew__trzymanie.fbx: siatki 35, kości 17, trójkąty 1456, wzrost 5.25 st., akcje przym_wlocznia_choragiew|Scene 1-3 -> ZGODNE
+- przym_wlocznia_choragiew.glb: siatki 35, kości 17, trójkąty 1456, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- przym_miecz_plomienisty.fbx: siatki 35, kości 17, trójkąty 1320, wzrost 5.25 st., akcje brak -> ZGODNE
+- przym_miecz_plomienisty__spoczynek.fbx: siatki 35, kości 17, trójkąty 1320, wzrost 5.25 st., akcje przym_miecz_plomienisty|Scene 1-61 -> ZGODNE
+- przym_miecz_plomienisty__trzymanie.fbx: siatki 35, kości 17, trójkąty 1320, wzrost 5.25 st., akcje przym_miecz_plomienisty|Scene 1-3 -> ZGODNE
+- przym_miecz_plomienisty.glb: siatki 35, kości 17, trójkąty 1320, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- przym_kostur_lodu.fbx: siatki 35, kości 17, trójkąty 1492, wzrost 5.25 st., akcje brak -> ZGODNE
+- przym_kostur_lodu__spoczynek.fbx: siatki 35, kości 17, trójkąty 1492, wzrost 5.25 st., akcje przym_kostur_lodu|Scene 1-61 -> ZGODNE
+- przym_kostur_lodu__trzymanie.fbx: siatki 35, kości 17, trójkąty 1492, wzrost 5.25 st., akcje przym_kostur_lodu|Scene 1-3 -> ZGODNE
+- przym_kostur_lodu.glb: siatki 35, kości 17, trójkąty 1492, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- przym_chochla_mistrza.fbx: siatki 35, kości 17, trójkąty 1780, wzrost 5.25 st., akcje brak -> ZGODNE
+- przym_chochla_mistrza__spoczynek.fbx: siatki 35, kości 17, trójkąty 1780, wzrost 5.25 st., akcje przym_chochla_mistrza|Scene 1-61 -> ZGODNE
+- przym_chochla_mistrza__trzymanie.fbx: siatki 35, kości 17, trójkąty 1780, wzrost 5.25 st., akcje przym_chochla_mistrza|Scene 1-3 -> ZGODNE
+- przym_chochla_mistrza.glb: siatki 35, kości 17, trójkąty 1780, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- palka_gwozdz.fbx: siatki 1, kości 0, trójkąty 520, wzrost 3.72 st., akcje brak -> ZGODNE
+- palka_gwozdz.glb: siatki 1, kości 0, trójkąty 520, wzrost 3.72 st., akcje brak -> ZGODNE
+- patelnia.fbx: siatki 1, kości 0, trójkąty 456, wzrost 3.77 st., akcje brak -> ZGODNE
+- patelnia.glb: siatki 1, kości 0, trójkąty 456, wzrost 3.77 st., akcje brak -> ZGODNE
+- mlot_bojowy.fbx: siatki 1, kości 0, trójkąty 450, wzrost 4.53 st., akcje brak -> ZGODNE
+- mlot_bojowy.glb: siatki 1, kości 0, trójkąty 450, wzrost 4.53 st., akcje brak -> ZGODNE
+- topor_dwureczny.fbx: siatki 1, kości 0, trójkąty 558, wzrost 5.85 st., akcje brak -> ZGODNE
+- topor_dwureczny.glb: siatki 1, kości 0, trójkąty 558, wzrost 5.85 st., akcje brak -> ZGODNE
+- wlocznia_choragiew.fbx: siatki 1, kości 0, trójkąty 480, wzrost 8.29 st., akcje brak -> ZGODNE
+- wlocznia_choragiew.glb: siatki 1, kości 0, trójkąty 480, wzrost 8.29 st., akcje brak -> ZGODNE
+- miecz_plomienisty.fbx: siatki 1, kości 0, trójkąty 344, wzrost 5.26 st., akcje brak -> ZGODNE
+- miecz_plomienisty.glb: siatki 1, kości 0, trójkąty 344, wzrost 5.26 st., akcje brak -> ZGODNE
+- kostur_lodu.fbx: siatki 1, kości 0, trójkąty 516, wzrost 7.40 st., akcje brak -> ZGODNE
+- kostur_lodu.glb: siatki 1, kości 0, trójkąty 516, wzrost 7.40 st., akcje brak -> ZGODNE
+- chochla_mistrza.fbx: siatki 1, kości 0, trójkąty 804, wzrost 6.74 st., akcje brak -> ZGODNE
+- chochla_mistrza.glb: siatki 1, kości 0, trójkąty 804, wzrost 6.74 st., akcje brak -> ZGODNE
+
+PLIKI
+- przym_palka_gwozdz_plansza.jpg
+- przym_patelnia_plansza.jpg
+- przym_mlot_bojowy_plansza.jpg
+- przym_topor_dwureczny_plansza.jpg
+- przym_wlocznia_choragiew_plansza.jpg
+- przym_miecz_plomienisty_plansza.jpg
+- przym_kostur_lodu_plansza.jpg
+- przym_chochla_mistrza_plansza.jpg
+- przedmioty/palka_gwozdz.fbx
+- przedmioty/palka_gwozdz.glb
+- przedmioty/palka_gwozdz_tekstury/
+- ikony/palka_gwozdz_ikona.png
+- przedmioty/patelnia.fbx
+- przedmioty/patelnia.glb
+- przedmioty/patelnia_tekstury/
+- ikony/patelnia_ikona.png
+- przedmioty/mlot_bojowy.fbx
+- przedmioty/mlot_bojowy.glb
+- przedmioty/mlot_bojowy_tekstury/
+- ikony/mlot_bojowy_ikona.png
+- przedmioty/topor_dwureczny.fbx
+- przedmioty/topor_dwureczny.glb
+- przedmioty/topor_dwureczny_tekstury/
+- ikony/topor_dwureczny_ikona.png
+- przedmioty/wlocznia_choragiew.fbx
+- przedmioty/wlocznia_choragiew.glb
+- przedmioty/wlocznia_choragiew_tekstury/
+- ikony/wlocznia_choragiew_ikona.png
+- przedmioty/miecz_plomienisty.fbx
+- przedmioty/miecz_plomienisty.glb
+- przedmioty/miecz_plomienisty_tekstury/
+- ikony/miecz_plomienisty_ikona.png
+- przedmioty/kostur_lodu.fbx
+- przedmioty/kostur_lodu.glb
+- przedmioty/kostur_lodu_tekstury/
+- ikony/kostur_lodu_ikona.png
+- przedmioty/chochla_mistrza.fbx
+- przedmioty/chochla_mistrza.glb
+- przedmioty/chochla_mistrza_tekstury/
+- ikony/chochla_mistrza_ikona.png
+- bronie_ikony_arkusz.jpg
+- raport.json
+- raport.txt

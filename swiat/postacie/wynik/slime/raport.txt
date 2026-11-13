@@ -1,0 +1,55 @@
+RAPORT — slime
+SLIME (pet) — świecąca błękitno-turkusowa kostka galarety z wesołą buzią.
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/slime.py · wygenerowano 13.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py slime
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: slime
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 5 plików, zgodnych 5
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Galareta jest skórowana na dwóch kościach (Dol, Gora) — import wag do Roblox nie był testowany; brzuszki, powieki i krzyk to sztywne bryły na własnych kościach.
+- Brak prawdziwej przezroczystości: szkło udają jasna skorupka i ciemniejszy rdzeń; poświatę w grze dać materiałem Neon albo PointLight.
+- Kości petów nie są R15 — klipy importuje się na własny rig (nie testowane w Studio).
+
+MODEL slime „Slime” (stwor)
+  wymiary ciała: 3,27 × 2,27 × 2,81; z akcesoriami: 3,27 × 2,27 × 2,81
+  trójkąty: 966 (siatek: 10)
+  kości (13): Root, Cialo, Dol, Gora, Powieki, UstaO, BokL, BokP, Przod, Tyl, KroplaL, KroplaP, KroplaT
+  klipy: idle 48 kl. 1,60 s pętla, skok 40 kl. 1,33 s pętla, atak 36 kl. 1,20 s jednorazowy
+  punkty zaczepienia: RootAttachment, GlowaAttachment, PyskAttachment
+
+KONTROLA EKSPORTÓW
+- slime.fbx: siatki 13, kości 13, trójkąty 1002, wzrost 2.27 st., akcje brak -> ZGODNE
+- slime__idle.fbx: siatki 13, kości 13, trójkąty 1002, wzrost 2.27 st., akcje slime|Scene 1-49 -> ZGODNE
+- slime__skok.fbx: siatki 13, kości 13, trójkąty 1002, wzrost 2.27 st., akcje slime|Scene 1-41 -> ZGODNE
+- slime__atak.fbx: siatki 13, kości 13, trójkąty 1002, wzrost 2.27 st., akcje slime|Scene 1-37 -> ZGODNE
+- slime.glb: siatki 13, kości 13, trójkąty 1002, wzrost 2.27 st., akcje atak 0-36, idle 0-48, skok 0-40 -> ZGODNE
+
+PLIKI
+- slime.blend
+- slime.fbx
+- slime.glb
+- slime__atak.fbx
+- slime__idle.fbx
+- slime__skok.fbx
+- slime_bohater.jpg
+- slime_ikona.png
+- slime_plansza.jpg
+- slime_tekstury/
+- slime_idle.mp4
+- slime_idle_klatki.jpg
+- slime_idle_z_filmu.jpg
+- slime_skok.mp4
+- slime_skok_klatki.jpg
+- slime_skok_z_filmu.jpg
+- slime_atak.mp4
+- slime_atak_klatki.jpg
+- slime_atak_z_filmu.jpg
+- raport.json
+- raport.txt

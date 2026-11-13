@@ -1,0 +1,38 @@
+{
+ "id": "r-20261113-105335-0950",
+ "tytul": "Krzywe Miasteczko — nowa mapa w stylu komiksowym stoi w Studio",
+ "opis_md": "Nowa mapa stoi w Roblox Studio: **Krzywe Miasteczko**, 5196 części, wszystko z samych prymitywów Roblox (bloki, kliny, walce, kule) — bez siatek, tekstur i uploadów. Oświetlenie miejsca bez zmian.\n\n**Jak obejrzeć**\n- W panelu: Podgląd 3D → migawka „Krzywe Miasteczko” (klik w budynek otwiera komentarze do niego).\n- W Studio: w Explorerze zaznacz `Workspace/KrzyweMiasteczko` i naciśnij **F**. Miasto leży 700 studów na północ od dema v1, w osobnym kontenerze — demo v1 zostało nietknięte.\n\n**Co jest na mapie:** rynek ze studnią-pomnikiem i straganami, gospoda z tablicą zleceń (serce pętli), zbrojownia z mieczem w dachu, sklep magiczny w kapeluszu czarodzieja, wylęgarnia w skorupie jajka, stajnia, brama lochów jako paszcza z oczami, brama twierdzy, brama miejska, arena i siedziba gildii (zamknięte, „wkrótce”), koło, 9 domów tła, mur z basztami i wzgórza zasłaniające horyzont.\n\n**Czym różni się od dema v1**\n- budynki są krzywe i przerysowane (pochylenia od 4°, wysunięte piętra, dachy na pół wysokości), a nie „grzeczne pudełka”;\n- obrys tuszem zrobiony z ciemnych klocków, kolor dachu mówi, co to za miejsce;\n- wielkie rekwizyty-szyldy czytelne z daleka zamiast drobnych tabliczek;\n- fronty głównych budynków ustawione do słońca tego miejsca (zmierzyłem jego kierunek w Studio), więc pierwszy widok nie jest w cieniu;\n- **bez alkoholu**: gospoda ma kocioł z chochlą i udziec zamiast kufla (wymóg Roblox dla gier poniżej 18 lat).\n\n**Jak powstała:** najpierw szkolenie (pięć opracowań: styl komiksowy w klockach, rzemiosło Roblox, układ hubu, przepisy na bryły, rubryka oceny), potem projekt z liczbami, wspólny zestaw elementów, 12 budynków budowanych równolegle z podglądem w Blenderze i złożenie miasta. Projekty są własne — niczego nie kopiowałem z gry-inspiracji.\n\n**Uczciwie o jakości:** niezależny krytyk stylu dał **7/10** i 23 konkretne poprawki (m.in. 9 domów tła za podobnych do siebie, kocioł na gospodzie słabo widoczny z dołu, chmury i wzgórza odstają stylem). Runda poprawek jeszcze trwa; wynik pojawi się jako nowa migawka. Nie sprawdzone: chodzenie po mapie w trybie Play i wydajność na telefonie.\n\n**Do decyzji:** propozycja v2 gry mówi, że miasteczko-hub wchodzi do gry dopiero po sprawdzeniu samej pętli, i odradza koło fortuny. Na dziś to demo stylu i poligon narzędzi (D-025).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T10:53:35+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/KrzyweMiasteczko/Karczma",
+   "etykieta": "Gospoda z tablicą zleceń"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/KrzyweMiasteczko/BramaLochow",
+   "etykieta": "Brama lochów"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/KrzyweMiasteczko/SklepMagiczny",
+   "etykieta": "Sklep magiczny"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/krzywe_miasteczko/PROJEKT.md",
+   "etykieta": "Projekt mapy"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ],
+ "migawka": "20261113-105308-9639",
+ "pytanie": "Jak oceniacie styl i skalę? Które budynki poprawić w pierwszej kolejności?"
+}

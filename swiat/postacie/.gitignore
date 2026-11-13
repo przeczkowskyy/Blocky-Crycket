@@ -1,0 +1,7 @@
+# Eksporty do odtworzenia poleceniem `python -B swiat/postacie/przebuduj.py <moduł>` (potrzebny Blender 5.0).
+# Zostają w repozytorium: kod, raporty, plansze, filmy, ikony i dane rigów z klocków.
+wynik/**/*.fbx
+wynik/**/*.glb
+wynik/**/*.blend
+# Stan wgrywania zasobów (numer konta i surowe odpowiedzi Open Cloud) zostaje tylko na komputerze, z którego wgrywano.
+wynik/_roblox/wgranie_*.json

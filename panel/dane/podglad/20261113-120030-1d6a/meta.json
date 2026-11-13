@@ -1,0 +1,189 @@
+{
+ "id": "20261113-120030-1d6a",
+ "tytul": "Krzywe Miasteczko — po poprawkach (25 zmian po krytyce)",
+ "opis": "Ta sama mapa po rundzie poprawek po dwóch niezależnych krytykach: kocioł gospody widoczny z rynku, piktogramy na tablicy zleceń (miecz, jajo, klucz), nowy wariant domów tła, wzgórza i chmury z klocków, czytelniejsze ścieżki-kody, poprawione kolizje bram.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T12:00:31+01:00",
+ "zrodlo": "studio",
+ "czesci": 5245,
+ "grupy": [
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Arena",
+   "czesci": 260
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/BramaLochow",
+   "czesci": 262
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/BramaMiejska",
+   "czesci": 201
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/BramaTwierdzy",
+   "czesci": 228
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Chmury",
+   "czesci": 50
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom1",
+   "czesci": 67
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom2",
+   "czesci": 58
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom3",
+   "czesci": 71
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom4",
+   "czesci": 65
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom5",
+   "czesci": 57
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom6",
+   "czesci": 70
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom7",
+   "czesci": 59
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom8",
+   "czesci": 66
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/DomyTla/Dom9",
+   "czesci": 57
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Gildia",
+   "czesci": 280
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Karczma",
+   "czesci": 269
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Karczma/Tablica",
+   "czesci": 41
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/KoloFortuny",
+   "czesci": 127
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Mur",
+   "czesci": 319
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Mur/Baszty",
+   "czesci": 128
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Rekwizyty",
+   "czesci": 501
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Rynek",
+   "czesci": 159
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/SklepMagiczny",
+   "czesci": 204
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Spawn",
+   "czesci": 2
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Stajnia",
+   "czesci": 233
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Staw",
+   "czesci": 38
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Stragany",
+   "czesci": 125
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/StudniaPomnik",
+   "czesci": 76
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Teren",
+   "czesci": 10
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Teren/Niecka",
+   "czesci": 30
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Teren/Pagorki",
+   "czesci": 6
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Teren/Podium",
+   "czesci": 15
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Teren/Podworka",
+   "czesci": 14
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Tlo",
+   "czesci": 304
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Ulice",
+   "czesci": 198
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Wylegarnia",
+   "czesci": 158
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Zbrojownia",
+   "czesci": 191
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Zielen",
+   "czesci": 230
+  },
+  {
+   "sciezka": "Workspace/KrzyweMiasteczko/Zielen/Ogrod",
+   "czesci": 16
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "zakres": {
+  "min": [
+   -262.258,
+   -46.538,
+   -956.502
+  ],
+  "max": [
+   257.586,
+   104.016,
+   -438.608
+  ]
+ },
+ "miejsce": {
+  "placeId": 129485428021967,
+  "nazwa": "Blocky&Crycket (placeId: 129485428021967)"
+ },
+ "korzen": "Workspace/KrzyweMiasteczko"
+}

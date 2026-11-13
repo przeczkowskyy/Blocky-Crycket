@@ -1,0 +1,1788 @@
+{
+ "modul": "zestaw_mag",
+ "modele": [
+  {
+   "id": "zestaw_mag_przymiarka",
+   "nazwa": "Przymiarka na manekinie R15",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      0.4,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.4,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      1.6,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.4,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ],
+     "min": [
+      -0.625,
+      4.0,
+      -0.625
+     ],
+     "max": [
+      0.625,
+      5.25,
+      0.695
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      1.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      0.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "mag_kapelusz_Akc",
+     "kosc": "Head",
+     "trojkaty": 326,
+     "wierzcholki": 191,
+     "wymiary": [
+      2.56,
+      2.255,
+      2.56
+     ],
+     "min": [
+      -1.28,
+      4.795,
+      -1.28
+     ],
+     "max": [
+      1.28,
+      7.05,
+      1.28
+     ]
+    },
+    {
+     "nazwa": "mag_szata_Akc",
+     "kosc": "UpperTorso",
+     "trojkaty": 516,
+     "wierzcholki": 296,
+     "wymiary": [
+      2.04,
+      2.222,
+      1.585
+     ],
+     "min": [
+      -1.02,
+      2.35,
+      -0.915
+     ],
+     "max": [
+      1.02,
+      4.572,
+      0.67
+     ]
+    },
+    {
+     "nazwa": "mag_szata_dol_Akc",
+     "kosc": "LowerTorso",
+     "trojkaty": 268,
+     "wierzcholki": 168,
+     "wymiary": [
+      2.48,
+      0.67,
+      1.6
+     ],
+     "min": [
+      -1.24,
+      1.75,
+      -0.8
+     ],
+     "max": [
+      1.24,
+      2.42,
+      0.8
+     ]
+    },
+    {
+     "nazwa": "mag_rekaw_l_Akc",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 240,
+     "wierzcholki": 144,
+     "wymiary": [
+      1.498,
+      1.565,
+      1.396
+     ],
+     "min": [
+      1.02,
+      2.525,
+      -0.698
+     ],
+     "max": [
+      2.518,
+      4.09,
+      0.698
+     ]
+    },
+    {
+     "nazwa": "mag_rekaw_p_Akc",
+     "kosc": "RightUpperArm",
+     "trojkaty": 240,
+     "wierzcholki": 144,
+     "wymiary": [
+      1.498,
+      1.565,
+      1.396
+     ],
+     "min": [
+      -2.518,
+      2.525,
+      -0.698
+     ],
+     "max": [
+      -1.02,
+      4.09,
+      0.698
+     ]
+    },
+    {
+     "nazwa": "mag_rekawica_l_Akc",
+     "kosc": "LeftHand",
+     "trojkaty": 276,
+     "wierzcholki": 168,
+     "wymiary": [
+      1.26,
+      0.8,
+      1.34
+     ],
+     "min": [
+      1.02,
+      1.92,
+      -0.66
+     ],
+     "max": [
+      2.28,
+      2.72,
+      0.68
+     ]
+    },
+    {
+     "nazwa": "mag_rekawica_p_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 276,
+     "wierzcholki": 168,
+     "wymiary": [
+      1.26,
+      0.8,
+      1.34
+     ],
+     "min": [
+      -2.28,
+      1.92,
+      -0.66
+     ],
+     "max": [
+      -1.02,
+      2.72,
+      0.68
+     ]
+    },
+    {
+     "nazwa": "mag_cizma_l_Akc",
+     "kosc": "LeftFoot",
+     "trojkaty": 404,
+     "wierzcholki": 226,
+     "wymiary": [
+      1.16,
+      1.15,
+      1.925
+     ],
+     "min": [
+      0.02,
+      0.0,
+      -0.64
+     ],
+     "max": [
+      1.18,
+      1.15,
+      1.285
+     ]
+    },
+    {
+     "nazwa": "mag_cizma_p_Akc",
+     "kosc": "RightFoot",
+     "trojkaty": 404,
+     "wierzcholki": 226,
+     "wymiary": [
+      1.16,
+      1.15,
+      1.925
+     ],
+     "min": [
+      -1.18,
+      0.0,
+      -0.64
+     ],
+     "max": [
+      -0.02,
+      1.15,
+      1.285
+     ]
+    },
+    {
+     "nazwa": "mag_pas_Akc",
+     "kosc": "LowerTorso",
+     "trojkaty": 596,
+     "wierzcholki": 332,
+     "wymiary": [
+      2.02,
+      0.61,
+      1.69
+     ],
+     "min": [
+      -1.01,
+      1.77,
+      -0.68
+     ],
+     "max": [
+      1.01,
+      2.38,
+      1.01
+     ]
+    },
+    {
+     "nazwa": "mag_kostur_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 578,
+     "wierzcholki": 321,
+     "wymiary": [
+      0.75,
+      0.75,
+      5.81
+     ],
+     "min": [
+      -1.875,
+      1.775,
+      -1.85
+     ],
+     "max": [
+      -1.125,
+      2.525,
+      3.96
+     ]
+    },
+    {
+     "nazwa": "mag_ksiega_Akc",
+     "kosc": "LeftHand",
+     "trojkaty": 316,
+     "wierzcholki": 184,
+     "wymiary": [
+      0.98,
+      1.12,
+      0.44
+     ],
+     "min": [
+      1.08,
+      1.46,
+      0.59
+     ],
+     "max": [
+      2.06,
+      2.58,
+      1.03
+     ]
+    },
+    {
+     "nazwa": "mag_amulet_Akc",
+     "kosc": "UpperTorso",
+     "trojkaty": 152,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.41,
+      0.99,
+      1.038
+     ],
+     "min": [
+      -0.705,
+      3.015,
+      -0.3
+     ],
+     "max": [
+      0.705,
+      4.005,
+      0.738
+     ]
+    },
+    {
+     "nazwa": "mag_pierscien_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 144,
+     "wierzcholki": 96,
+     "wymiary": [
+      0.436,
+      0.713,
+      0.368
+     ],
+     "min": [
+      -1.718,
+      1.862,
+      0.436
+     ],
+     "max": [
+      -1.282,
+      2.575,
+      0.804
+     ]
+    },
+    {
+     "nazwa": "mag_klepsydra_Akc",
+     "kosc": "LowerTorso",
+     "trojkaty": 328,
+     "wierzcholki": 184,
+     "wymiary": [
+      0.278,
+      0.711,
+      0.278
+     ],
+     "min": [
+      0.161,
+      1.439,
+      0.561
+     ],
+     "max": [
+      0.439,
+      2.15,
+      0.839
+     ]
+    }
+   ],
+   "trojkaty_razem": 5812,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 19
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.0,
+    5.25,
+    1.32
+   ],
+   "wymiary_z_akcesoriami": [
+    5.036,
+    7.05,
+    5.81
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.518,
+     0.0,
+     -1.85
+    ],
+    [
+     2.518,
+     7.05,
+     3.96
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "chod",
+     "dlugosc": 24,
+     "fps": 30,
+     "sekundy": 0.8,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    },
+    {
+     "n": "trzymanie",
+     "dlugosc": 2,
+     "fps": 30,
+     "sekundy": 0.07,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "mag_kapelusz",
+     "zaczep": "HatAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_szata",
+     "zaczep": "BodyFrontAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_szata_dol",
+     "zaczep": "WaistCenterAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_rekaw_l",
+     "zaczep": "LeftShoulderAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_rekaw_p",
+     "zaczep": "RightShoulderAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_rekawica_l",
+     "zaczep": "LeftGripAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_rekawica_p",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_cizma_l",
+     "zaczep": "LeftFootAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_cizma_p",
+     "zaczep": "RightFootAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_pas",
+     "zaczep": "WaistCenterAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_kostur",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_ksiega",
+     "zaczep": "LeftGripAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_amulet",
+     "zaczep": "NeckAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_pierscien",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    },
+    {
+     "id": "mag_klepsydra",
+     "zaczep": "WaistCenterAttachment",
+     "eksport": true
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 132,
+     "limit": 4000,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ]
+    },
+    "Torso": {
+     "trojkaty": 88,
+     "limit": 1750,
+     "wymiary": [
+      2.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    }
+   },
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_kapelusz",
+   "nazwa": "Kapelusz maga",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_kapelusz",
+     "kosc": null,
+     "trojkaty": 326,
+     "wierzcholki": 191,
+     "wymiary": [
+      2.56,
+      2.255,
+      2.56
+     ],
+     "min": [
+      -1.28,
+      -0.455,
+      -1.28
+     ],
+     "max": [
+      1.28,
+      1.8,
+      1.28
+     ]
+    }
+   ],
+   "trojkaty_razem": 326,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 4
+   },
+   "zaczep": "HatAttachment",
+   "typ_roblox": "Hat",
+   "zakres_od_zaczepu": [
+    [
+     -1.28,
+     -0.455,
+     -1.28
+    ],
+    [
+     1.28,
+     1.8,
+     1.28
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.672,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_szata",
+   "nazwa": "Szata maga",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_szata",
+     "kosc": null,
+     "trojkaty": 516,
+     "wierzcholki": 296,
+     "wymiary": [
+      2.04,
+      2.222,
+      1.585
+     ],
+     "min": [
+      -1.02,
+      -0.85,
+      -1.415
+     ],
+     "max": [
+      1.02,
+      1.372,
+      0.17
+     ]
+    }
+   ],
+   "trojkaty_razem": 516,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 4
+   },
+   "zaczep": "BodyFrontAttachment",
+   "typ_roblox": "Front",
+   "zakres_od_zaczepu": [
+    [
+     -1.02,
+     -0.85,
+     -1.415
+    ],
+    [
+     1.02,
+     1.372,
+     0.17
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.261,
+    -0.623
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_szata_dol",
+   "nazwa": "Szata maga — dół",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_szata_dol",
+     "kosc": null,
+     "trojkaty": 268,
+     "wierzcholki": 168,
+     "wymiary": [
+      2.48,
+      0.67,
+      1.6
+     ],
+     "min": [
+      -1.24,
+      -0.45,
+      -0.8
+     ],
+     "max": [
+      1.24,
+      0.22,
+      0.8
+     ]
+    }
+   ],
+   "trojkaty_razem": 268,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 4
+   },
+   "zaczep": "WaistCenterAttachment",
+   "typ_roblox": "Waist",
+   "zakres_od_zaczepu": [
+    [
+     -1.24,
+     -0.45,
+     -0.8
+    ],
+    [
+     1.24,
+     0.22,
+     0.8
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    -0.115,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_rekaw_l",
+   "nazwa": "Szata maga — lewy rękaw",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_rekaw_l",
+     "kosc": null,
+     "trojkaty": 240,
+     "wierzcholki": 144,
+     "wymiary": [
+      1.498,
+      1.565,
+      1.396
+     ],
+     "min": [
+      -0.48,
+      -1.475,
+      -0.698
+     ],
+     "max": [
+      1.018,
+      0.09,
+      0.698
+     ]
+    }
+   ],
+   "trojkaty_razem": 240,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "LeftShoulderAttachment",
+   "typ_roblox": "Shoulder",
+   "zakres_od_zaczepu": [
+    [
+     -0.48,
+     -1.475,
+     -0.698
+    ],
+    [
+     1.018,
+     0.09,
+     0.698
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.269,
+    -0.693,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_rekaw_p",
+   "nazwa": "Szata maga — prawy rękaw",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_rekaw_p",
+     "kosc": null,
+     "trojkaty": 240,
+     "wierzcholki": 144,
+     "wymiary": [
+      1.498,
+      1.565,
+      1.396
+     ],
+     "min": [
+      -1.018,
+      -1.475,
+      -0.698
+     ],
+     "max": [
+      0.48,
+      0.09,
+      0.698
+     ]
+    }
+   ],
+   "trojkaty_razem": 240,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "RightShoulderAttachment",
+   "typ_roblox": "Shoulder",
+   "zakres_od_zaczepu": [
+    [
+     -1.018,
+     -1.475,
+     -0.698
+    ],
+    [
+     0.48,
+     0.09,
+     0.698
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.269,
+    -0.693,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_rekawica_l",
+   "nazwa": "Rękawica runiczna (lewa)",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_rekawica_l",
+     "kosc": null,
+     "trojkaty": 276,
+     "wierzcholki": 168,
+     "wymiary": [
+      1.26,
+      1.34,
+      0.8
+     ],
+     "min": [
+      -0.48,
+      -0.66,
+      -0.57
+     ],
+     "max": [
+      0.78,
+      0.68,
+      0.23
+     ]
+    }
+   ],
+   "trojkaty_razem": 276,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "LeftGripAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -0.48,
+     -0.66,
+     -0.57
+    ],
+    [
+     0.78,
+     0.68,
+     0.23
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.15,
+    0.01,
+    -0.17
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_rekawica_p",
+   "nazwa": "Rękawica runiczna (prawa)",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_rekawica_p",
+     "kosc": null,
+     "trojkaty": 276,
+     "wierzcholki": 168,
+     "wymiary": [
+      1.26,
+      1.34,
+      0.8
+     ],
+     "min": [
+      -0.78,
+      -0.66,
+      -0.57
+     ],
+     "max": [
+      0.48,
+      0.68,
+      0.23
+     ]
+    }
+   ],
+   "trojkaty_razem": 276,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -0.78,
+     -0.66,
+     -0.57
+    ],
+    [
+     0.48,
+     0.68,
+     0.23
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.15,
+    0.01,
+    -0.17
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_cizma_l",
+   "nazwa": "Zakręcona ciżma (lewa)",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_cizma_l",
+     "kosc": null,
+     "trojkaty": 404,
+     "wierzcholki": 226,
+     "wymiary": [
+      1.16,
+      1.15,
+      1.925
+     ],
+     "min": [
+      -0.48,
+      0.0,
+      -0.64
+     ],
+     "max": [
+      0.68,
+      1.15,
+      1.285
+     ]
+    }
+   ],
+   "trojkaty_razem": 404,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 7
+   },
+   "zaczep": "LeftFootAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -0.48,
+     0.0,
+     -0.64
+    ],
+    [
+     0.68,
+     1.15,
+     1.285
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.1,
+    0.575,
+    0.322
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_cizma_p",
+   "nazwa": "Zakręcona ciżma (prawa)",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_cizma_p",
+     "kosc": null,
+     "trojkaty": 404,
+     "wierzcholki": 226,
+     "wymiary": [
+      1.16,
+      1.15,
+      1.925
+     ],
+     "min": [
+      -0.68,
+      0.0,
+      -0.64
+     ],
+     "max": [
+      0.48,
+      1.15,
+      1.285
+     ]
+    }
+   ],
+   "trojkaty_razem": 404,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 7
+   },
+   "zaczep": "RightFootAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -0.68,
+     0.0,
+     -0.64
+    ],
+    [
+     0.48,
+     1.15,
+     1.285
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.1,
+    0.575,
+    0.322
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_pas",
+   "nazwa": "Pas z fiolkami",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_pas",
+     "kosc": null,
+     "trojkaty": 596,
+     "wierzcholki": 332,
+     "wymiary": [
+      2.02,
+      0.61,
+      1.69
+     ],
+     "min": [
+      -1.01,
+      -0.43,
+      -0.68
+     ],
+     "max": [
+      1.01,
+      0.18,
+      1.01
+     ]
+    }
+   ],
+   "trojkaty_razem": 596,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 8
+   },
+   "zaczep": "WaistCenterAttachment",
+   "typ_roblox": "Waist",
+   "zakres_od_zaczepu": [
+    [
+     -1.01,
+     -0.43,
+     -0.68
+    ],
+    [
+     1.01,
+     0.18,
+     1.01
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    -0.125,
+    0.165
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_kostur",
+   "nazwa": "Kostur turkusowego kryształu",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_kostur",
+     "kosc": null,
+     "trojkaty": 578,
+     "wierzcholki": 321,
+     "wymiary": [
+      0.75,
+      5.81,
+      0.75
+     ],
+     "min": [
+      -0.375,
+      -1.85,
+      -0.375
+     ],
+     "max": [
+      0.375,
+      3.96,
+      0.375
+     ]
+    }
+   ],
+   "trojkaty_razem": 578,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 4
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.375,
+     -1.85,
+     -0.375
+    ],
+    [
+     0.375,
+     3.96,
+     0.375
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.055,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_ksiega",
+   "nazwa": "Księga zaklęć",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_ksiega",
+     "kosc": null,
+     "trojkaty": 316,
+     "wierzcholki": 184,
+     "wymiary": [
+      0.98,
+      0.44,
+      1.12
+     ],
+     "min": [
+      -0.42,
+      0.59,
+      -0.43
+     ],
+     "max": [
+      0.56,
+      1.03,
+      0.69
+     ]
+    }
+   ],
+   "trojkaty_razem": 316,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "LeftGripAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -0.42,
+     0.59,
+     -0.43
+    ],
+    [
+     0.56,
+     1.03,
+     0.69
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.07,
+    0.81,
+    0.13
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_amulet",
+   "nazwa": "Amulet fioletowego kryształu",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_amulet",
+     "kosc": null,
+     "trojkaty": 152,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.41,
+      0.99,
+      1.038
+     ],
+     "min": [
+      -0.705,
+      -0.985,
+      -0.3
+     ],
+     "max": [
+      0.705,
+      0.005,
+      0.738
+     ]
+    }
+   ],
+   "trojkaty_razem": 152,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 4
+   },
+   "zaczep": "NeckAttachment",
+   "typ_roblox": "Neck",
+   "zakres_od_zaczepu": [
+    [
+     -0.705,
+     -0.985,
+     -0.3
+    ],
+    [
+     0.705,
+     0.005,
+     0.738
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    -0.49,
+    0.219
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_pierscien",
+   "nazwa": "Pierścień z fioletowym kamieniem",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_pierscien",
+     "kosc": null,
+     "trojkaty": 144,
+     "wierzcholki": 96,
+     "wymiary": [
+      0.436,
+      0.368,
+      0.713
+     ],
+     "min": [
+      -0.218,
+      0.436,
+      -0.425
+     ],
+     "max": [
+      0.218,
+      0.804,
+      0.288
+     ]
+    }
+   ],
+   "trojkaty_razem": 144,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 4
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -0.218,
+     0.436,
+     -0.425
+    ],
+    [
+     0.218,
+     0.804,
+     0.288
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.62,
+    -0.069
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_klepsydra",
+   "nazwa": "Klepsydra",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_klepsydra",
+     "kosc": null,
+     "trojkaty": 328,
+     "wierzcholki": 184,
+     "wymiary": [
+      0.278,
+      0.711,
+      0.278
+     ],
+     "min": [
+      0.161,
+      -0.761,
+      0.561
+     ],
+     "max": [
+      0.439,
+      -0.05,
+      0.839
+     ]
+    }
+   ],
+   "trojkaty_razem": 328,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "WaistCenterAttachment",
+   "typ_roblox": "Waist",
+   "zakres_od_zaczepu": [
+    [
+     0.161,
+     -0.761,
+     0.561
+    ],
+    [
+     0.439,
+     -0.05,
+     0.839
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.3,
+    -0.406,
+    0.7
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_szata_cala",
+   "nazwa": "Szata maga (cała, do ikony)",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_szata_cala",
+     "kosc": null,
+     "trojkaty": 1264,
+     "wierzcholki": 752,
+     "wymiary": [
+      5.036,
+      2.822,
+      1.715
+     ],
+     "min": [
+      -2.518,
+      -1.45,
+      -1.415
+     ],
+     "max": [
+      2.518,
+      1.372,
+      0.3
+     ]
+    }
+   ],
+   "trojkaty_razem": 1264,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "BodyFrontAttachment",
+   "typ_roblox": "Front",
+   "zakres_od_zaczepu": [
+    [
+     -2.518,
+     -1.45,
+     -1.415
+    ],
+    [
+     2.518,
+     1.372,
+     0.3
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    -0.039,
+    -0.557
+   ],
+   "ostrzezenia": [
+    "mag_szata_cala: oś X -2.52…2.52 poza pudełkiem typu Front (-1.50…1.50, skala Classic)"
+   ]
+  }
+ ],
+ "uwagi_podgladu": [
+  "mag_szata_cala: wystaje poza pudełko typu Front w osi X (-2.52…2.52, dozwolone -1.50…1.50)"
+ ],
+ "kontrola": [
+  "zestaw_mag_przymiarka.fbx: siatki 49, kości 17, trójkąty 6040, wzrost 7.05 st., akcje brak -> ZGODNE",
+  "zestaw_mag_przymiarka__spoczynek.fbx: siatki 49, kości 17, trójkąty 6040, wzrost 7.05 st., akcje zestaw_mag_przymiarka|Scene 1-61 -> ZGODNE",
+  "zestaw_mag_przymiarka__chod.fbx: siatki 49, kości 17, trójkąty 6040, wzrost 7.05 st., akcje zestaw_mag_przymiarka|Scene 1-25 -> ZGODNE",
+  "zestaw_mag_przymiarka__atak.fbx: siatki 49, kości 17, trójkąty 6040, wzrost 7.05 st., akcje zestaw_mag_przymiarka|Scene 1-31 -> ZGODNE",
+  "zestaw_mag_przymiarka__trzymanie.fbx: siatki 49, kości 17, trójkąty 6040, wzrost 7.05 st., akcje zestaw_mag_przymiarka|Scene 1-3 -> ZGODNE",
+  "zestaw_mag_przymiarka.glb: siatki 49, kości 17, trójkąty 6040, wzrost 7.05 st., akcje atak 0-30, chod 0-24, spoczynek 0-60, trzymanie 0-2 -> ZGODNE",
+  "mag_kapelusz.fbx: siatki 1, kości 0, trójkąty 326, wzrost 2.25 st., akcje brak -> ZGODNE",
+  "mag_kapelusz.glb: siatki 1, kości 0, trójkąty 326, wzrost 2.25 st., akcje brak -> ZGODNE",
+  "mag_szata.fbx: siatki 1, kości 0, trójkąty 516, wzrost 2.22 st., akcje brak -> ZGODNE",
+  "mag_szata.glb: siatki 1, kości 0, trójkąty 516, wzrost 2.22 st., akcje brak -> ZGODNE",
+  "mag_szata_dol.fbx: siatki 1, kości 0, trójkąty 268, wzrost 0.67 st., akcje brak -> ZGODNE",
+  "mag_szata_dol.glb: siatki 1, kości 0, trójkąty 268, wzrost 0.67 st., akcje brak -> ZGODNE",
+  "mag_rekaw_l.fbx: siatki 1, kości 0, trójkąty 240, wzrost 1.56 st., akcje brak -> ZGODNE",
+  "mag_rekaw_l.glb: siatki 1, kości 0, trójkąty 240, wzrost 1.56 st., akcje brak -> ZGODNE",
+  "mag_rekaw_p.fbx: siatki 1, kości 0, trójkąty 240, wzrost 1.56 st., akcje brak -> ZGODNE",
+  "mag_rekaw_p.glb: siatki 1, kości 0, trójkąty 240, wzrost 1.56 st., akcje brak -> ZGODNE",
+  "mag_rekawica_l.fbx: siatki 1, kości 0, trójkąty 276, wzrost 1.34 st., akcje brak -> ZGODNE",
+  "mag_rekawica_l.glb: siatki 1, kości 0, trójkąty 276, wzrost 1.34 st., akcje brak -> ZGODNE",
+  "mag_rekawica_p.fbx: siatki 1, kości 0, trójkąty 276, wzrost 1.34 st., akcje brak -> ZGODNE",
+  "mag_rekawica_p.glb: siatki 1, kości 0, trójkąty 276, wzrost 1.34 st., akcje brak -> ZGODNE",
+  "mag_cizma_l.fbx: siatki 1, kości 0, trójkąty 404, wzrost 1.15 st., akcje brak -> ZGODNE",
+  "mag_cizma_l.glb: siatki 1, kości 0, trójkąty 404, wzrost 1.15 st., akcje brak -> ZGODNE",
+  "mag_cizma_p.fbx: siatki 1, kości 0, trójkąty 404, wzrost 1.15 st., akcje brak -> ZGODNE",
+  "mag_cizma_p.glb: siatki 1, kości 0, trójkąty 404, wzrost 1.15 st., akcje brak -> ZGODNE",
+  "mag_pas.fbx: siatki 1, kości 0, trójkąty 596, wzrost 0.61 st., akcje brak -> ZGODNE",
+  "mag_pas.glb: siatki 1, kości 0, trójkąty 596, wzrost 0.61 st., akcje brak -> ZGODNE",
+  "mag_kostur.fbx: siatki 1, kości 0, trójkąty 578, wzrost 5.81 st., akcje brak -> ZGODNE",
+  "mag_kostur.glb: siatki 1, kości 0, trójkąty 578, wzrost 5.81 st., akcje brak -> ZGODNE",
+  "mag_ksiega.fbx: siatki 1, kości 0, trójkąty 316, wzrost 0.44 st., akcje brak -> ZGODNE",
+  "mag_ksiega.glb: siatki 1, kości 0, trójkąty 316, wzrost 0.44 st., akcje brak -> ZGODNE",
+  "mag_amulet.fbx: siatki 1, kości 0, trójkąty 152, wzrost 0.99 st., akcje brak -> ZGODNE",
+  "mag_amulet.glb: siatki 1, kości 0, trójkąty 152, wzrost 0.99 st., akcje brak -> ZGODNE",
+  "mag_pierscien.fbx: siatki 1, kości 0, trójkąty 144, wzrost 0.37 st., akcje brak -> ZGODNE",
+  "mag_pierscien.glb: siatki 1, kości 0, trójkąty 144, wzrost 0.37 st., akcje brak -> ZGODNE",
+  "mag_klepsydra.fbx: siatki 1, kości 0, trójkąty 328, wzrost 0.71 st., akcje brak -> ZGODNE",
+  "mag_klepsydra.glb: siatki 1, kości 0, trójkąty 328, wzrost 0.71 st., akcje brak -> ZGODNE",
+  "mag_szata_cala.fbx: siatki 1, kości 0, trójkąty 1264, wzrost 2.82 st., akcje brak -> ZGODNE",
+  "mag_szata_cala.glb: siatki 1, kości 0, trójkąty 1264, wzrost 2.82 st., akcje brak -> ZGODNE"
+ ]
+}

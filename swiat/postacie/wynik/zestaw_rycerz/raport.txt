@@ -1,0 +1,171 @@
+RAPORT — zestaw_rycerz
+ZESTAW „RYCERZ” — ekwipunek gracza (poziom średni) dla klockowego awatara R15.
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/zestaw_rycerz.py · wygenerowano 13.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py zestaw_rycerz
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: zestaw_rycerz_przymiarka
+- przedmioty (akcesoria): 15
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 36 plików, zgodnych 36
+- ostrzeżenia z raportu: 1; uwagi podglądu: 3
+
+ZNANE SŁABOŚCI
+- Każdy przedmiot to sztywne akcesorium dopasowane do klockowego R15 biblioteki (5,25 studa); na innym ciele (Rthro) nie będzie przylegać.
+- Hełm ma tylko wariant z otwartą twarzą; przyłbica (zamknięty wariant) to osobna propozycja, niezrobiona.
+- Napierśnik to 4 akcesoria (napierśnik, 2 naramienniki, poła); naramienniki idą za ramieniem, więc przy uniesionej ręce odsłaniają bark.
+- Sygnet nie jest zakładany na przymiarkę (w rękawicy byłby niewidoczny) — przedmiot do ikony i eksportu.
+
+MODEL zestaw_rycerz_przymiarka „Zestaw Rycerza — przymiarka na manekinie R15” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 4,91 × 6,87 × 5,55
+  trójkąty: 5312 (siatek: 29)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, atak 30 kl. 1,00 s jednorazowy, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: zr_helm na HatAttachment, zr_napiersnik na NeckAttachment, zr_naramiennik_l na LeftShoulderAttachment, zr_naramiennik_p na RightShoulderAttachment, zr_pola na WaistFrontAttachment, zr_rekawica_l na LeftGripAttachment, zr_rekawica_p na RightGripAttachment, zr_but_l na LeftFootAttachment, zr_but_p na RightFootAttachment, zr_pas na WaistCenterAttachment, zr_miecz na RightGripAttachment, zr_tarcza na LeftGripAttachment, zr_amulet na NeckAttachment, zr_ostroga na WaistCenterAttachment
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+zr_helm                HatAttachment              Hat          792  1,68 × 2,84 × 2,05   (-0,00; -0,18; 0,19)  
+zr_napiersnik          NeckAttachment             Shoulder     260  2,06 × 2,03 × 1,37   (-0,00; 1,03; -0,00)  
+zr_naramiennik_l       LeftShoulderAttachment     Shoulder     164  1,21 × 0,80 × 1,24   (-0,06; 0,08; -0,00)  
+zr_naramiennik_p       RightShoulderAttachment    Shoulder     164  1,21 × 0,80 × 1,24   (0,06; 0,08; -0,00)   
+zr_pola                WaistFrontAttachment       Waist        276  0,92 × 1,21 × 0,49   (-0,00; 0,65; -0,25)  
+zr_rekawica_l          LeftGripAttachment         Inne         368  1,24 × 1,44 × 1,25   (-0,14; -0,02; 0,22)  
+zr_rekawica_p          RightGripAttachment        Inne         368  1,24 × 1,44 × 1,25   (0,14; -0,02; 0,22)   
+zr_but_l               LeftFootAttachment         Inne         376  1,20 × 1,15 × 1,94   (-0,12; -0,55; 0,13)  
+zr_but_p               RightFootAttachment        Inne         376  1,20 × 1,15 × 1,94   (0,12; -0,55; 0,13)   
+zr_pas                 WaistCenterAttachment      Waist        260  2,08 × 0,62 × 1,61   (-0,00; -0,00; -0,05) 
+zr_miecz               RightGripAttachment        Bron         476  1,81 × 5,32 × 0,46   (-0,00; -1,68; -0,00) 
+zr_tarcza              LeftGripAttachment         Bron         284  0,52 × 1,50 × 1,80   (-0,74; -0,00; 0,32)  
+zr_amulet              NeckAttachment             Neck         196  1,46 × 1,33 × 1,54   (-0,00; 0,63; -0,05)  
+zr_sygnet              LeftGripAttachment         Inne         164  0,66 × 0,81 × 0,31   (-0,00; -0,08; -0,03) 
+zr_ostroga             WaistCenterAttachment      Waist        204  0,10 × 1,06 × 0,55   (1,07; 0,42; -0,00)   
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+OSTRZEŻENIE zr_napiersnik: zr_napiersnik: oś Y -2.05…-0.02 poza pudełkiem typu Shoulder (-1.50…1.50, skala Classic)
+
+UWAGI PODGLĄDU
+- zr_napiersnik: wystaje poza pudełko typu Shoulder w osi Y (-2.05…-0.02, dozwolone -1.50…1.50)
+- zr_pola: część „Krokiew” cieńsza niż 0,02 studa
+- zr_pola: część „Romb” cieńsza niż 0,02 studa
+
+KONTROLA EKSPORTÓW
+- zestaw_rycerz_przymiarka.fbx: siatki 48, kości 17, trójkąty 5540, wzrost 6.87 st., akcje brak -> ZGODNE
+- zestaw_rycerz_przymiarka__spoczynek.fbx: siatki 48, kości 17, trójkąty 5540, wzrost 6.87 st., akcje zestaw_rycerz_przymiarka|Scene 1-61 -> ZGODNE
+- zestaw_rycerz_przymiarka__chod.fbx: siatki 48, kości 17, trójkąty 5540, wzrost 6.87 st., akcje zestaw_rycerz_przymiarka|Scene 1-25 -> ZGODNE
+- zestaw_rycerz_przymiarka__atak.fbx: siatki 48, kości 17, trójkąty 5540, wzrost 6.87 st., akcje zestaw_rycerz_przymiarka|Scene 1-31 -> ZGODNE
+- zestaw_rycerz_przymiarka__trzymanie.fbx: siatki 48, kości 17, trójkąty 5540, wzrost 6.87 st., akcje zestaw_rycerz_przymiarka|Scene 1-3 -> ZGODNE
+- zestaw_rycerz_przymiarka.glb: siatki 48, kości 17, trójkąty 5540, wzrost 6.87 st., akcje atak 0-30, chod 0-24, spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- zr_helm.fbx: siatki 1, kości 0, trójkąty 792, wzrost 2.84 st., akcje brak -> ZGODNE
+- zr_helm.glb: siatki 1, kości 0, trójkąty 792, wzrost 2.84 st., akcje brak -> ZGODNE
+- zr_napiersnik.fbx: siatki 1, kości 0, trójkąty 260, wzrost 2.03 st., akcje brak -> ZGODNE
+- zr_napiersnik.glb: siatki 1, kości 0, trójkąty 260, wzrost 2.03 st., akcje brak -> ZGODNE
+- zr_naramiennik_l.fbx: siatki 1, kości 0, trójkąty 164, wzrost 0.80 st., akcje brak -> ZGODNE
+- zr_naramiennik_l.glb: siatki 1, kości 0, trójkąty 164, wzrost 0.80 st., akcje brak -> ZGODNE
+- zr_naramiennik_p.fbx: siatki 1, kości 0, trójkąty 164, wzrost 0.80 st., akcje brak -> ZGODNE
+- zr_naramiennik_p.glb: siatki 1, kości 0, trójkąty 164, wzrost 0.80 st., akcje brak -> ZGODNE
+- zr_pola.fbx: siatki 1, kości 0, trójkąty 276, wzrost 1.21 st., akcje brak -> ZGODNE
+- zr_pola.glb: siatki 1, kości 0, trójkąty 276, wzrost 1.21 st., akcje brak -> ZGODNE
+- zr_rekawica_l.fbx: siatki 1, kości 0, trójkąty 368, wzrost 1.44 st., akcje brak -> ZGODNE
+- zr_rekawica_l.glb: siatki 1, kości 0, trójkąty 368, wzrost 1.44 st., akcje brak -> ZGODNE
+- zr_rekawica_p.fbx: siatki 1, kości 0, trójkąty 368, wzrost 1.44 st., akcje brak -> ZGODNE
+- zr_rekawica_p.glb: siatki 1, kości 0, trójkąty 368, wzrost 1.44 st., akcje brak -> ZGODNE
+- zr_but_l.fbx: siatki 1, kości 0, trójkąty 376, wzrost 1.15 st., akcje brak -> ZGODNE
+- zr_but_l.glb: siatki 1, kości 0, trójkąty 376, wzrost 1.15 st., akcje brak -> ZGODNE
+- zr_but_p.fbx: siatki 1, kości 0, trójkąty 376, wzrost 1.15 st., akcje brak -> ZGODNE
+- zr_but_p.glb: siatki 1, kości 0, trójkąty 376, wzrost 1.15 st., akcje brak -> ZGODNE
+- zr_pas.fbx: siatki 1, kości 0, trójkąty 260, wzrost 0.62 st., akcje brak -> ZGODNE
+- zr_pas.glb: siatki 1, kości 0, trójkąty 260, wzrost 0.62 st., akcje brak -> ZGODNE
+- zr_miecz.fbx: siatki 1, kości 0, trójkąty 476, wzrost 5.32 st., akcje brak -> ZGODNE
+- zr_miecz.glb: siatki 1, kości 0, trójkąty 476, wzrost 5.32 st., akcje brak -> ZGODNE
+- zr_tarcza.fbx: siatki 1, kości 0, trójkąty 284, wzrost 1.50 st., akcje brak -> ZGODNE
+- zr_tarcza.glb: siatki 1, kości 0, trójkąty 284, wzrost 1.50 st., akcje brak -> ZGODNE
+- zr_amulet.fbx: siatki 1, kości 0, trójkąty 196, wzrost 1.33 st., akcje brak -> ZGODNE
+- zr_amulet.glb: siatki 1, kości 0, trójkąty 196, wzrost 1.33 st., akcje brak -> ZGODNE
+- zr_sygnet.fbx: siatki 1, kości 0, trójkąty 164, wzrost 0.81 st., akcje brak -> ZGODNE
+- zr_sygnet.glb: siatki 1, kości 0, trójkąty 164, wzrost 0.81 st., akcje brak -> ZGODNE
+- zr_ostroga.fbx: siatki 1, kości 0, trójkąty 204, wzrost 1.06 st., akcje brak -> ZGODNE
+- zr_ostroga.glb: siatki 1, kości 0, trójkąty 204, wzrost 1.06 st., akcje brak -> ZGODNE
+
+PLIKI
+- zestaw_rycerz_przymiarka.blend
+- zestaw_rycerz_przymiarka.fbx
+- zestaw_rycerz_przymiarka.glb
+- zestaw_rycerz_przymiarka__atak.fbx
+- zestaw_rycerz_przymiarka__chod.fbx
+- zestaw_rycerz_przymiarka__spoczynek.fbx
+- zestaw_rycerz_przymiarka__trzymanie.fbx
+- zestaw_rycerz_przymiarka_bohater.jpg
+- zestaw_rycerz_przymiarka_plansza.jpg
+- zestaw_rycerz_przymiarka_tekstury/
+- zestaw_rycerz_przymiarka_chod.mp4
+- zestaw_rycerz_przymiarka_chod_klatki.jpg
+- zestaw_rycerz_przymiarka_chod_z_filmu.jpg
+- przedmioty/zr_helm.fbx
+- przedmioty/zr_helm.glb
+- przedmioty/zr_helm_tekstury/
+- ikony/zr_helm_ikona.png
+- przedmioty/zr_napiersnik.fbx
+- przedmioty/zr_napiersnik.glb
+- przedmioty/zr_napiersnik_tekstury/
+- ikony/zr_napiersnik_ikona.png
+- przedmioty/zr_naramiennik_l.fbx
+- przedmioty/zr_naramiennik_l.glb
+- przedmioty/zr_naramiennik_l_tekstury/
+- ikony/zr_naramiennik_l_ikona.png
+- przedmioty/zr_naramiennik_p.fbx
+- przedmioty/zr_naramiennik_p.glb
+- przedmioty/zr_naramiennik_p_tekstury/
+- ikony/zr_naramiennik_p_ikona.png
+- przedmioty/zr_pola.fbx
+- przedmioty/zr_pola.glb
+- przedmioty/zr_pola_tekstury/
+- ikony/zr_pola_ikona.png
+- przedmioty/zr_rekawica_l.fbx
+- przedmioty/zr_rekawica_l.glb
+- przedmioty/zr_rekawica_l_tekstury/
+- ikony/zr_rekawica_l_ikona.png
+- przedmioty/zr_rekawica_p.fbx
+- przedmioty/zr_rekawica_p.glb
+- przedmioty/zr_rekawica_p_tekstury/
+- ikony/zr_rekawica_p_ikona.png
+- przedmioty/zr_but_l.fbx
+- przedmioty/zr_but_l.glb
+- przedmioty/zr_but_l_tekstury/
+- ikony/zr_but_l_ikona.png
+- przedmioty/zr_but_p.fbx
+- przedmioty/zr_but_p.glb
+- przedmioty/zr_but_p_tekstury/
+- ikony/zr_but_p_ikona.png
+- przedmioty/zr_pas.fbx
+- przedmioty/zr_pas.glb
+- przedmioty/zr_pas_tekstury/
+- ikony/zr_pas_ikona.png
+- przedmioty/zr_miecz.fbx
+- przedmioty/zr_miecz.glb
+- przedmioty/zr_miecz_tekstury/
+- ikony/zr_miecz_ikona.png
+- przedmioty/zr_tarcza.fbx
+- przedmioty/zr_tarcza.glb
+- przedmioty/zr_tarcza_tekstury/
+- ikony/zr_tarcza_ikona.png
+- przedmioty/zr_amulet.fbx
+- przedmioty/zr_amulet.glb
+- przedmioty/zr_amulet_tekstury/
+- ikony/zr_amulet_ikona.png
+- przedmioty/zr_sygnet.fbx
+- przedmioty/zr_sygnet.glb
+- przedmioty/zr_sygnet_tekstury/
+- ikony/zr_sygnet_ikona.png
+- przedmioty/zr_ostroga.fbx
+- przedmioty/zr_ostroga.glb
+- przedmioty/zr_ostroga_tekstury/
+- ikony/zr_ostroga_ikona.png
+- zestaw_rycerz_ikony_arkusz.jpg
+- raport.json
+- raport.txt

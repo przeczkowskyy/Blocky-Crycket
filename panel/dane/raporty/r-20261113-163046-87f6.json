@@ -1,0 +1,20 @@
+{
+ "id": "r-20261113-163046-87f6",
+ "tytul": "Film z trybu Play: animacje postaci oraz awatar w zestawie Rycerza z petami",
+ "opis_md": "**W skrócie:** dwa krótkie nagrania z trybu Play w Roblox Studio, żeby dało się zobaczyć ruch bez otwierania Studio.\n\n## Co widać\n1. **Animacje przy płycie startu.** Kamera stoi za awatarem gracza. Blocky, Karczmarz, pies, Crycket i slime odtwarzają po kolei swoje animacje.\n2. **Zestaw i pety w marszu.** Awatar w zestawie Rycerza idzie przez rynek, a za nim pies, smok i slime.\n\n## Jak to czytać\n- Nagrania powstały ze zrzutów ekranu robionych jeden po drugim, ok. 3,5 klatki na sekundę. Ruch jest przez to skokowy. W Studio animacje są płynne (30 klatek na sekundę).\n- To tryb Play w Studio. W opublikowanej grze nic z tego jeszcze nie działa.\n- Pliki MP4 są w repozytorium: `swiat/postacie/wynik/_roblox/play_animacje.mp4` i `play_zestaw_i_pety.mp4`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T16:30:46+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Postacie 3D — Blender i Roblox.md",
+   "etykieta": "Postacie 3D"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg"
+ ],
+ "migawka": "20261113-152845-ca65"
+}

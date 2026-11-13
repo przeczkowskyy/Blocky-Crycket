@@ -1,0 +1,32 @@
+{
+ "id": "r-20261112-224735-3c2e",
+ "tytul": "Previz cutscenki walki 3D — Rycerz kontra Leśny Slime",
+ "opis_md": "Mały test z rozmowy [17:08]: jak mogłaby wyglądać **walka automatyczna jak w Shakes & Fidget, ale w 3D**.\n\n**Co jest na filmie (9 s):** baner „Rycerz VS Leśny Slime”, cios rycerza (−128), kontra slime'a przyjęta na tarczę (BLOK! −23), cios krytyczny z obrotem (KRYTYK! −512), slime pęka na monety i jajko, ekran zwycięstwa z łupem. Paski życia u góry jak w bijatyce; gracz niczego nie klika.\n\n**Film:** `swiat/test_cutscenki/cutscenka_v1.mp4` w repozytorium (poszedł też na telefon Karola). Poniżej cztery klatki.\n\n**Czym to jest, a czym nie:** to previz z Blendera — klocki i animacja napisana kodem, zrobione w godzinę. Nie są to modele ani animacje do gry. Pokazuje rytm (ok. 3 s na wymianę ciosów), czytelność liczb i to, że kamera z boku z lekkim najazdem wystarcza.\n\n**Wnioski do decyzji:**\n- Taka scena w Roblox to lokalna arena po stronie klienta, kamera skryptowa i 3–4 animacje na postać; wynik liczy serwer, więc wygląd można zmienić później.\n- Pełna walka 9 s jest za długa na setny quest — potrzebny przycisk „pomiń” i wersja skrócona (2–3 s) dla serii.\n- Koszt: każdy typ przeciwnika to model i animacje. Ekran 2D skaluje się taniej (jedna ilustracja na przeciwnika).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-12T22:47:35+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/test_cutscenki/cutscenka_v1.mp4",
+   "etykieta": "Film (MP4, 9 s)"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Badania/Technika gry — serwery, światy, walki.md",
+   "etykieta": "Jak to zrobić w Roblox"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Gra/Propozycje z rozmowy 2026-11-12.md",
+   "etykieta": "Komentarz do walki 2D/3D"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ],
+ "pytanie": "Walki w MVP: ekran 2D, taka cutscenka 3D, czy 3D tylko dla bossów i pojedynków?"
+}

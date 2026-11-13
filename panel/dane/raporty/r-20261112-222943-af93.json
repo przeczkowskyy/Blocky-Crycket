@@ -1,0 +1,37 @@
+{
+ "id": "r-20261112-222943-af93",
+ "tytul": "Rozmowa 12.11 spisana i skomentowana — 9 pytań do rozstrzygnięcia",
+ "opis_md": "Rozmowa (33 min) jest spisana jako zapis ustaleń, a każdy pomysł ma komentarz i rekomendację — także tam, gdzie się nie zgadzam.\n\n**Zgoda:** hub 3D z mapą teleportu, rozgłos stref, lochy z rozstawionymi przeciwnikami, sklep 6 slotów, pety, eventy tygodniowe, wydawanie etapami.\n\n**Niezgoda (z uzasadnieniem):**\n1. Czekanie 3 minuty na quest w pierwszej sesji — proponuję walkę od razu, a długie liczniki tylko w slotach równoległych.\n2. Tokeny odświeżenia i spiny za Robuxy — to płatna losowość; proponuję sprzedawać wygodę i sloty.\n3. Twierdza dopiero od 25. poziomu — dochód na sekundę powinien wejść w pierwszej sesji.\n\n**Ocena potencjału:** 3–4/10 w wersji „S&F jeden do jednego”, 5–6/10 z proponowaną pętlą. Rekomendacja: czterotygodniowe MVP jednej pętli i decyzja na danych.\n\nW sejfie czeka 9 nowych pytań (7–15) i propozycje decyzji D-012–D-018. Nic nie jest kanonem bez zgody Game Directora.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-12T22:29:43+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Rozmowa 2026-11-12 — zapis ustaleń.md",
+   "etykieta": "Zapis ustaleń"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Gra/Propozycje z rozmowy 2026-11-12.md",
+   "etykieta": "Komentarz i rekomendacje"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Badania/Ocena potencjału gry.md",
+   "etykieta": "Ocena potencjału"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytania otwarte"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Rejestr decyzji.md",
+   "etykieta": "Rejestr decyzji"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Od którego pytania zaczynamy: pętla questów (7), twierdza (9) czy monetyzacja (12)?"
+}

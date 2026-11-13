@@ -1,0 +1,27 @@
+{
+ "id": "r-20261113-120031-d8fa",
+ "tytul": "Krzywe Miasteczko — wersja po poprawkach w Studio",
+ "opis_md": "Runda poprawek mapy jest skończona i wgrana do Studio (5259 części). Dwóch niezależnych krytyków — styl oraz projekt poziomów — oceniło pierwszą wersję na 7/10 i 6/10 i wskazało razem 54 uwagi; wprowadzone zostało 25 najważniejszych.\n\n**Co się zmieniło**\n- **Gospoda:** kocioł przeniesiony na frontową połać dachu i pochylony ku rynkowi — wcześniej z dołu nie było go widać; dach łamany na trzy krzywe części.\n- **Tablica zleceń:** własne piktogramy (miecz, jajo, klucz) zamiast przypadkowych znaków.\n- **Pierwszy widok:** punkt wejścia obrócony tak, żeby w kadrze były naraz gospoda, brama lochów, zbrojownia i szyld wylęgarni.\n- **Domy tła:** nowy niski wariant i mocniejsze krzywizny — mniej „dziewięciu takich samych domków”.\n- **Tło:** wzgórza z klockowych tarasów zamiast gładkich kul, chmury schowane dalej; liczba kul na mapie spadła ze 101 do 56 (lżej dla telefonów).\n- **Przejścia:** brama areny i brama miejska mają poprawne blokady, stragany nie zasłaniają już drzwi ani osi ulic.\n\n**Czego nie zrobiono** (zapisane w folderze mapy): krata w bramie miejskiej (do Waszej decyzji), sekret ze schodami na dach gospody, drobne poprawki stajni.\n\n**Nadal niesprawdzone:** chodzenie po mapie w trybie Play i wydajność na telefonie. Ocen po poprawkach nie mam — krytycy nie oglądali drugiej wersji, więc nie podaję nowej liczby.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T12:00:31+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/KrzyweMiasteczko/Karczma",
+   "etykieta": "Gospoda"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/KrzyweMiasteczko/Tablica",
+   "etykieta": "Tablica zleceń"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ],
+ "migawka": "20261113-120030-1d6a"
+}

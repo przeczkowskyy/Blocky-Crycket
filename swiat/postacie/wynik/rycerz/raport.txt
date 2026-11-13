@@ -1,0 +1,78 @@
+RAPORT — rycerz
+RYCERZ „Blocky” — jeden z dwóch bohaterów-maskotek (kanon: B&C/Postacie/Rycerz.md, obraz KeyArt.png).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/rycerz.py · wygenerowano 13.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py rycerz
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: rycerz
+- przedmioty (akcesoria): 1
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 8 plików, zgodnych 8
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Miecz jest osobnym przedmiotem (przedmioty/rycerz_miecz.fbx) — w FBX postaci go nie ma; w grze trzeba go dać jako Tool albo akcesorium na RightGripAttachment.
+- Bryły sztywno przypięte do kości: przy dużych zamachach naramienniki przenikają hełm i tułów.
+- Tabard i poły są sztywne (nie falują w chodzie); w ataku poła tnie uda.
+- Klipy to szkice (1–2 s), nie gotowa animacja; atak nie ma efektu cięcia (smugi).
+- LowerTorso i Root nie są w 0,0,0 (biodra na wysokości 1,9) — dla NPC bez znaczenia, ciało awatara może tego wymagać (sprawdzić przy pierwszym imporcie).
+
+MODEL rycerz „Rycerz Blocky” (r15)
+  wymiary ciała: 4,77 × 5,71 × 1,98; z akcesoriami: 4,77 × 5,71 × 5,12
+  trójkąty: 3284 (siatek: 16)
+  budżety ciała R15: Head 944/4000, Torso 428/1750, LeftArm 376/1248, RightArm 376/1248, LeftLeg 320/1248, RightLeg 320/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: idle 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, atak_miecz 32 kl. 1,07 s jednorazowy, wiwat 36 kl. 1,20 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: rycerz_miecz na RightGripAttachment (tylko podgląd, bez eksportu)
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+rycerz_miecz           RightGripAttachment        Bron         520  1,40 × 4,94 × 0,53   (-0,00; -1,66; -0,00) 
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+KONTROLA EKSPORTÓW
+- rycerz.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje brak -> ZGODNE
+- rycerz__idle.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-61 -> ZGODNE
+- rycerz__chod.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-25 -> ZGODNE
+- rycerz__atak_miecz.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-33 -> ZGODNE
+- rycerz__wiwat.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-37 -> ZGODNE
+- rycerz.glb: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje atak_miecz 0-32, chod 0-24, idle 0-60, wiwat 0-36 -> ZGODNE
+- rycerz_miecz.fbx: siatki 1, kości 0, trójkąty 520, wzrost 4.94 st., akcje brak -> ZGODNE
+- rycerz_miecz.glb: siatki 1, kości 0, trójkąty 520, wzrost 4.94 st., akcje brak -> ZGODNE
+
+PLIKI
+- rycerz.blend
+- rycerz.fbx
+- rycerz.glb
+- rycerz__atak_miecz.fbx
+- rycerz__chod.fbx
+- rycerz__idle.fbx
+- rycerz__wiwat.fbx
+- rycerz_bohater.jpg
+- rycerz_ikona.png
+- rycerz_plansza.jpg
+- rycerz_tekstury/
+- rycerz_idle.mp4
+- rycerz_idle_klatki.jpg
+- rycerz_idle_z_filmu.jpg
+- rycerz_chod.mp4
+- rycerz_chod_klatki.jpg
+- rycerz_chod_z_filmu.jpg
+- rycerz_atak_miecz.mp4
+- rycerz_atak_miecz_klatki.jpg
+- rycerz_atak_miecz_z_filmu.jpg
+- rycerz_wiwat.mp4
+- rycerz_wiwat_klatki.jpg
+- rycerz_wiwat_z_filmu.jpg
+- przedmioty/rycerz_miecz.fbx
+- przedmioty/rycerz_miecz.glb
+- przedmioty/rycerz_miecz_tekstury/
+- ikony/rycerz_miecz_ikona.png
+- rycerz_ikony_arkusz.jpg
+- raport.json
+- raport.txt

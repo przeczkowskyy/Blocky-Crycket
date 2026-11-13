@@ -34,3 +34,13 @@ assets/raw/**
 !assets/raw/EquipmentPanel/
 !assets/raw/EquipmentPanel/source.png
 __pycache__/
+
+# Blender: kopie zapasowe
+*.blend1
+*.blend2
+
+# Panel zespołu: pliki tymczasowe zapisu (stan lokalny leży poza repo: %LOCALAPPDATA%\BlockyCrycket)
+panel/dane/**/*.tmp
+
+# pliki tymczasowe zapisu do sejfu z panelu (po przerwanym zapisie)
+B&C/**/*.md.*.tmp

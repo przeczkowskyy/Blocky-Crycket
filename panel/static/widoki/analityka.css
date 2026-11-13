@@ -1,0 +1,125 @@
+/* Analityka — style specyficzne dla widoku */
+.an { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.an [hidden] { display: none !important; }
+.an-gora { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.an-tytul { margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.2; }
+.an-tytul::after { content: ""; display: block; width: 42px; height: 5px; margin-top: 6px; border-radius: 3px; background: var(--zloto, #f5b82e); transform: skewX(-20deg); }
+@media (max-width: 899px) { .an-tytul { font-size: 22px; } }
+.an-akt { font-size: 13px; display: block; margin-top: 6px; }
+.an-gora .przycisk { min-height: 44px; }
+.an-naglowek { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.an-naglowek .karta-tytul { margin: 0; }
+
+.an-kafle { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 720px) { .an-kafle { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.an-kafel { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.an-kafel-tytul { font-size: .85rem; }
+.an-kafel-wartosc { font-size: 1.9rem; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.an-kafel-pod { font-size: .8rem; }
+.an-zywe .an-kafel-wartosc { color: var(--zielen, #3ecf8e); }
+.an-oceny-pasek { display: flex; gap: 2px; height: 8px; border-radius: 4px; overflow: hidden; margin: 4px 0 2px; }
+.an-za { background: var(--zielen, #3ecf8e); border-radius: 4px 0 0 4px; }
+.an-przeciw { background: var(--czerwien, #ef5a5a); border-radius: 0 4px 4px 0; }
+
+.an-stan { display: flex; gap: 14px; align-items: flex-start; }
+.an-stan-ikona { margin: 0; flex: none; }
+.an-stan .karta-tytul { margin-bottom: 4px; }
+.an-blad { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.an-gora { align-items: flex-start; }
+.an-stan p { margin: 4px 0 0; }
+.an-szczegol { font-size: .8rem; overflow-wrap: anywhere; }
+
+.an-zakres { font-size: .8rem; }
+.an-wykres { position: relative; width: 100%; min-width: 0; }
+.an-svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+.an-siatka { stroke: var(--obrys, #2a3042); stroke-width: 1; }
+.an-os { fill: var(--przygaszony, #9aa3b8); font-size: 11px; font-family: inherit; font-variant-numeric: tabular-nums; }
+.an-linia { fill: none; stroke: var(--niebieski, #4ea8ff); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.an-kropka { fill: var(--niebieski, #4ea8ff); stroke: var(--karta, #1b1f2b); stroke-width: 2; }
+.an-celownik { stroke: var(--przygaszony, #9aa3b8); stroke-width: 1; stroke-dasharray: 3 3; }
+.an-dymek { position: absolute; pointer-events: none; background: var(--karta2, #232838); border: 1px solid var(--obrys, #2a3042); border-radius: 8px;
+  padding: 6px 10px; display: flex; flex-direction: column; font-size: .82rem; white-space: nowrap; box-shadow: 0 6px 18px rgba(0, 0, 0, .4); }
+
+.an-studio-chipy { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.an-konsola { background: #0c0e14; border: 1px solid var(--obrys, #2a3042); border-radius: 10px; padding: 8px 10px; max-height: 260px; overflow: auto;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace; font-size: .8rem; line-height: 1.45; }
+.an-linia-k { white-space: pre-wrap; overflow-wrap: anywhere; }
+.an-linia-k.info { color: #c3c9d8; }
+.an-linia-k.ostrz { color: var(--zloto, #f5b82e); }
+.an-linia-k.blad { color: var(--czerwien, #ef5a5a); }
+.an-poziom { display: inline-block; min-width: 4.2em; font-weight: 700; opacity: .8; }
+
+/* ---- telemetria gry: nagłówek sekcji, karta „Jak włączyć”, cztery karty z liczbami, wykres godzinowy */
+.an-tel { display: flex; flex-direction: column; gap: 16px; min-width: 0; --an-slupek: #3d93ec; }
+.an-tel-gora { display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; min-width: 0; }
+.an-tel-tytul { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 900; letter-spacing: -0.01em; }
+.an-tel-tytul .ikona { color: var(--zloto, #f5b82e); }
+.an-tel-okres { margin-left: auto; font-size: .8rem; }
+.an-tel .karta-tytul { margin-bottom: 6px; }
+
+.an-tel-baner { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; font-size: .9rem;
+  background: rgba(245, 184, 46, .1); border: 2px dashed rgba(245, 184, 46, .55); }
+.an-tel-baner > .ikona { color: var(--zloto, #f5b82e); flex: none; }
+.an-tel-baner > div { flex: 1; min-width: 0; }
+.an-tel-baner.blad { background: rgba(239, 90, 90, .1); border: 2px solid rgba(239, 90, 90, .45); }
+.an-tel-baner.blad > .ikona { color: var(--czerwien, #ef5a5a); }
+/* dane przykładowe: każda karta ma przerywany, złoty obrys — nie da się ich pomylić z danymi z gry */
+.an-tel.przykladowe .karta { border-style: dashed; border-color: rgba(245, 184, 46, .5); }
+
+.an-tel-powod { margin: 0 0 4px; }
+.an-kroki { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; counter-reset: an-krok; }
+.an-krok { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--obrys, #2a3042); counter-increment: an-krok; }
+.an-krok-tresc { flex: 1; min-width: 0; }
+.an-krok-tresc > strong::before { content: counter(an-krok) ". "; color: var(--przygaszony, #9aa3b8); }
+.an-krok-tresc p { margin: 2px 0 0; line-height: 1.5; }
+.an-krok-tresc code { font-size: .82em; }
+.an-tel-stopka { display: flex; align-items: center; justify-content: space-between; gap: 10px 14px; flex-wrap: wrap;
+  padding-top: 12px; border-top: 1px solid var(--obrys, #2a3042); }
+.an-tel-stopka > span { flex: 1 1 220px; }
+
+.an-tel-karty { grid-template-columns: minmax(0, 1fr); align-items: stretch; }
+@media (min-width: 720px) { .an-tel-karty { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.an-tel-karta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.an-tel-wartosc { font-size: 1.9rem; font-weight: 800; line-height: 1.15; overflow-wrap: anywhere; }
+.an-tel-pod { font-size: .82rem; }
+.an-tel-lista { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; }
+.an-tel-lista li { display: flex; align-items: baseline; gap: 10px; min-width: 0; padding: 7px 0; border-top: 1px solid var(--obrys, #2a3042); font-size: .86rem; }
+.an-tel-nazwa { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.an-tel-liczba { flex: none; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.an-tel-liczba.cichy-tekst { font-weight: 600; }
+.an-tel-komunikat { flex: 1; min-width: 0; font-family: var(--mono, ui-monospace, Consolas, monospace); font-size: .76rem; line-height: 1.45;
+  overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+.an-tel-serwer { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+.an-tel-serwer code { font-size: .78rem; }
+.an-tel-serwer .cichy-tekst { font-size: .78rem; }
+.an-tel-pusta { margin: 8px 0 0; padding-top: 8px; border-top: 1px solid var(--obrys, #2a3042); }
+/* rozkład długości sesji: nazwa przedziału, pasek udziału, procent — paski w jednej kolumnie */
+.an-tel-rozklad { list-style: none; margin: 8px 0 0; padding: 8px 0 0; border-top: 1px solid var(--obrys, #2a3042);
+  display: grid; grid-template-columns: max-content minmax(40px, 1fr) max-content; gap: 7px 10px; align-items: center; font-size: .82rem; }
+.an-tel-rozklad li { display: contents; }
+.an-tel-rozklad-nazwa { color: var(--przygaszony, #9aa3b8); white-space: nowrap; }
+.an-tel-rozklad-tor { height: 8px; border-radius: 4px; background: rgba(61, 147, 236, .16); overflow: hidden; }
+.an-tel-rozklad-pasek { display: block; height: 100%; min-width: 2px; border-radius: 4px; background: var(--an-slupek); }
+.an-tel-uwagi { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 2px; }
+
+.an-tel-wykres .an-naglowek { margin-bottom: 4px; }
+.an-tel-wykres .an-zakres { display: block; margin-bottom: 8px; }
+.an-tel-pole { min-height: 60px; }
+.an-tel-pole .an-tel-pusta { border-top: 0; padding-top: 0; }
+.an-slupek { fill: var(--an-slupek); }
+.an-slupek.w-toku { fill-opacity: .5; }
+.an-slupek.aktywny { fill: var(--niebieski, #4ea8ff); fill-opacity: 1; }
+/* tabela godzin: na bardzo wąskim telefonie (320 px) przewija się w karcie, a nie cała strona */
+.an-tabela { margin-top: 10px; border-top: 1px solid var(--obrys, #2a3042); padding-top: 8px; overflow-x: auto; }
+.an-tabela summary { cursor: pointer; min-height: 32px; display: flex; align-items: center; gap: 6px; font-size: .82rem; font-weight: 700;
+  color: var(--przygaszony, #9aa3b8); list-style: none; user-select: none; -webkit-user-select: none; }
+.an-tabela summary::-webkit-details-marker { display: none; }
+.an-tabela summary::before { content: "▸"; display: inline-block; transition: transform .15s; }
+.an-tabela[open] summary::before { transform: rotate(90deg); }
+.an-tabela summary:hover { color: var(--tekst, #e8eaf2); }
+@media (pointer: coarse) { .an-tabela summary { min-height: 44px; } }
+.an-tabela table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: .8rem; font-variant-numeric: tabular-nums; }
+.an-tabela th, .an-tabela td { padding: 5px 6px; text-align: right; border-top: 1px solid var(--obrys, #2a3042); white-space: nowrap; }
+.an-tabela thead th { border-top: 0; color: var(--przygaszony, #9aa3b8); font-weight: 700; }
+.an-tabela th:first-child { text-align: left; padding-left: 0; font-weight: 600; }
+.an-tabela td:last-child, .an-tabela th:last-child { padding-right: 0; }

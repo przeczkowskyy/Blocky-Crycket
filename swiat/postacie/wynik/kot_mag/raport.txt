@@ -1,0 +1,89 @@
+RAPORT — kot_mag
+KOT-MAG „Crycket” — drugi bohater-maskotka: mały kanciasty pomarańczowy kot w za dużej fioletowej szacie,
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/kot_mag.py · wygenerowano 13.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py kot_mag
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: kot_mag
+- przedmioty (akcesoria): 2
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- ostrzeżenia z raportu: 1; uwagi podglądu: 1
+
+ZNANE SŁABOŚCI
+- Rig NPC, nie ciało awatara: kości Tail i TailTip spoza R15, wzrost ok. 3,7 studa z kapeluszem.
+- Kapelusz i kostur są osobnymi przedmiotami (przedmioty/kot_mag_*.fbx); w FBX kota ich nie ma.
+- Dzwon szaty jest sztywny (idzie za biodrami): w chodzie nogi są schowane, ruch widać po łapach i kołysaniu.
+- Tren leży na ziemi tylko w spoczynku; przy podskoku w wiwacie unosi się razem z biodrami.
+- Czar i zianie nie mają efektów cząsteczkowych; kryształ świeci tylko w renderze.
+
+MODEL kot_mag „Kot-Mag Crycket” (r15)
+  wymiary ciała: 2,51 × 3,82 × 2,30; z akcesoriami: 2,64 × 4,94 × 2,47
+  trójkąty: 3286 (siatek: 19)
+  budżety ciała R15: Head 760/4000, Torso 580/1750, LeftArm 232/1248, RightArm 232/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (19): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, Tail, TailTip
+  klipy: idle 60 kl. 2,00 s pętla, chod 20 kl. 0,67 s pętla, czar 54 kl. 1,80 s jednorazowy, wiwat 30 kl. 1,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: kot_mag_kapelusz na HatAttachment (tylko podgląd, bez eksportu), kot_mag_kostur na RightGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+kot_mag_kapelusz       HatAttachment              Hat          258  2,25 × 1,78 × 2,05   (-0,00; -0,88; -0,00) 
+kot_mag_kostur         RightGripAttachment        Bron         384  0,90 × 3,45 × 0,54   (-0,00; -0,83; -0,00) 
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+UWAGI PODGLĄDU
+- kot_mag: kości spoza standardu R15 (Tail, TailTip) — w Roblox to już nie zwykły R15
+
+KONTROLA EKSPORTÓW
+- kot_mag.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje brak -> ZGODNE
+- kot_mag__idle.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje kot_mag|Scene 1-61 -> ZGODNE
+- kot_mag__chod.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje kot_mag|Scene 1-21 -> ZGODNE
+- kot_mag__czar.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje kot_mag|Scene 1-55 -> ZGODNE
+- kot_mag__wiwat.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje kot_mag|Scene 1-31 -> ZGODNE
+- kot_mag.glb: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje chod 0-20, czar 0-54, idle 0-60, wiwat 0-30 -> ZGODNE
+- kot_mag_kapelusz.fbx: siatki 1, kości 0, trójkąty 258, wzrost 1.78 st., akcje brak -> ZGODNE
+- kot_mag_kapelusz.glb: siatki 1, kości 0, trójkąty 258, wzrost 1.78 st., akcje brak -> ZGODNE
+- kot_mag_kostur.fbx: siatki 1, kości 0, trójkąty 384, wzrost 3.45 st., akcje brak -> ZGODNE
+- kot_mag_kostur.glb: siatki 1, kości 0, trójkąty 384, wzrost 3.45 st., akcje brak -> ZGODNE
+
+PLIKI
+- kot_mag.blend
+- kot_mag.fbx
+- kot_mag.glb
+- kot_mag__chod.fbx
+- kot_mag__czar.fbx
+- kot_mag__idle.fbx
+- kot_mag__wiwat.fbx
+- kot_mag_bohater.jpg
+- kot_mag_ikona.png
+- kot_mag_plansza.jpg
+- kot_mag_tekstury/
+- kot_mag_idle.mp4
+- kot_mag_idle_klatki.jpg
+- kot_mag_idle_z_filmu.jpg
+- kot_mag_chod.mp4
+- kot_mag_chod_klatki.jpg
+- kot_mag_chod_z_filmu.jpg
+- kot_mag_czar.mp4
+- kot_mag_czar_klatki.jpg
+- kot_mag_czar_z_filmu.jpg
+- kot_mag_wiwat.mp4
+- kot_mag_wiwat_klatki.jpg
+- kot_mag_wiwat_z_filmu.jpg
+- przedmioty/kot_mag_kapelusz.fbx
+- przedmioty/kot_mag_kapelusz.glb
+- przedmioty/kot_mag_kapelusz_tekstury/
+- ikony/kot_mag_kapelusz_ikona.png
+- przedmioty/kot_mag_kostur.fbx
+- przedmioty/kot_mag_kostur.glb
+- przedmioty/kot_mag_kostur_tekstury/
+- ikony/kot_mag_kostur_ikona.png
+- kot_mag_ikony_arkusz.jpg
+- raport.json
+- raport.txt

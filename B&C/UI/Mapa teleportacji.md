@@ -64,7 +64,7 @@ Avoid: text, letters, numbers, words, logo, watermark, padlock, exclamation mark
 - Jeśli X lub ramka wyjdą słabo, wygenerować je osobno: ramka jako panel do 9-slice, a X jako osobny przycisk.
 
 ## Do ustalenia
-- Lista lokacji (tabela wyżej) i ich polskie lub angielskie nazwy (zob. [[Pytania otwarte]] #5 i #7).
+- Lista lokacji (tabela wyżej) i ich polskie lub angielskie nazwy (zob. [[Pytania otwarte]] #5 i #25).
 - Które lokacje są zablokowane na start i od jakiego poziomu.
 - Teleport w obrębie jednego place czy osobne place (`TeleportService`)?
 

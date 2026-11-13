@@ -1,0 +1,45 @@
+{
+  "nodes": [
+    {"id": "g-rdzen", "type": "group", "x": -780, "y": -460, "width": 950, "height": 430, "label": "Pętla rdzenia — decyzja co 2–5 sekund (propozycja v2)", "color": "1"},
+    {"id": "bonk", "type": "text", "x": -740, "y": -400, "width": 240, "height": 130, "text": "## BONK\nwybierasz kierunek i moment; wróg leci w stado jak kula w kręgle", "color": "1"},
+    {"id": "kombo", "type": "text", "x": -460, "y": -400, "width": 240, "height": 130, "text": "## KOMBO i stado\nogłuszeni padają, banda dobija; hałas wabi ściąga kolejne stado", "color": "1"},
+    {"id": "final", "type": "text", "x": -170, "y": -400, "width": 300, "height": 130, "text": "## Finał: Wielkie Sklejenie\nKlej opada po 5 s; mnożnik z długości łańcucha; drugi BONK przewraca wieżę", "color": "1"},
+    {"id": "klocki", "type": "text", "x": -170, "y": -200, "width": 300, "height": 130, "text": "## Klocki do torby Crycketa\ntylko z nokautów; nigdy za Robuxy", "color": "3"},
+    {"id": "montaz", "type": "text", "x": -460, "y": -200, "width": 240, "height": 130, "text": "## Krzywy montaż\nkot składa źle, a błąd daje kumplowi zdolność", "color": "3"},
+
+    {"id": "g-postep", "type": "group", "x": -780, "y": 20, "width": 950, "height": 430, "label": "Warstwy postępu — dni 1–28", "color": "6"},
+    {"id": "moc", "type": "text", "x": -740, "y": 80, "width": 240, "height": 150, "text": "## Moc bandy\njedna duża liczba; poziomy za złoto do limitu stopnia; liczby ×10 na strefę", "color": "6"},
+    {"id": "strefy", "type": "text", "x": -460, "y": 80, "width": 240, "height": 150, "text": "## Strefy, Żarłok i Sława ★\n★1 boss · ★2 wszystkie Bardziej Krzywe", "color": "6"},
+    {"id": "album", "type": "text", "x": -170, "y": 80, "width": 300, "height": 150, "text": "## Album\nKrzywy (10) → Bardziej Krzywy (60) → Arcydzieło (300)\nkażdy stopień: nowy błąd i mocniejsza zdolność", "color": "6"},
+    {"id": "wyprawa", "type": "text", "x": -740, "y": 270, "width": 240, "height": 150, "text": "## Po bramce D7\nWyprawa (prestiż), Pracownia, Drużyna Karczmy, pojedynki\n*nie w MVP*"},
+    {"id": "wyczyn", "type": "text", "x": -460, "y": 270, "width": 240, "height": 150, "text": "## Warianty za wyczyn\nnp. Złoty Słojak za KOMBO ×6\nbez losu, bez terminu", "color": "6"},
+    {"id": "spizarnia", "type": "text", "x": -170, "y": 270, "width": 300, "height": 150, "text": "## Spiżarnia Bez Dna\nzamówienie u Chochli → piętra bez końca (HP ×1,15 na piętro), rekord i top 100", "color": "6"},
+
+    {"id": "g-powroty", "type": "group", "x": 240, "y": -460, "width": 440, "height": 910, "label": "Powody powrotu — „co tracę, gdy nie wrócę?” → nic", "color": "5"},
+    {"id": "nasze", "type": "text", "x": 280, "y": -400, "width": 360, "height": 130, "text": "## Nasze\nKocioł świata: dzienny licznik ze wszystkich serwerów, efekty na teraz", "color": "5"},
+    {"id": "echo", "type": "text", "x": 280, "y": -230, "width": 360, "height": 130, "text": "## Twoja banda u innych\necho bandy (oznaczone, bez nicku); raport „Twoje echo podało 4 razy”", "color": "5"},
+    {"id": "wypoczynek", "type": "text", "x": 280, "y": -60, "width": 360, "height": 130, "text": "## Wypoczynek\n15 min podwójnych klocków za każdy dzień; narasta bez limitu", "color": "5"},
+    {"id": "niedok", "type": "text", "x": 280, "y": 100, "width": 360, "height": 130, "text": "## Niedokończone i ciekawe\nstrona Albumu na 80%, sylwetka „???”", "color": "5"},
+    {"id": "moje", "type": "text", "x": 280, "y": 270, "width": 360, "height": 130, "text": "## Moje\nrekord i miejsce w Spiżarni; nic nie spada pod nieobecność", "color": "5"},
+
+    {"id": "zasada", "type": "text", "x": -780, "y": 490, "width": 1460, "height": 110, "text": "**Zasada:** umiejętność przyspiesza, pieniądze nie. Za Robuxy tylko złoto i wygląd; zero losu i waluty za Robuxy.\nPropozycja v2 — nie kanon. Zob. [[Systemy gry v2]] i [[Psychologia gracza v2]].", "color": "2"}
+  ],
+  "edges": [
+    {"id": "e1", "fromNode": "bonk", "fromSide": "right", "toNode": "kombo", "toSide": "left"},
+    {"id": "e2", "fromNode": "kombo", "fromSide": "right", "toNode": "final", "toSide": "left", "label": "pełny Klej"},
+    {"id": "e3", "fromNode": "final", "fromSide": "bottom", "toNode": "klocki", "toSide": "top", "label": "+1 za sklejonego"},
+    {"id": "e4", "fromNode": "klocki", "fromSide": "left", "toNode": "montaz", "toSide": "right", "label": "strona pełna"},
+    {"id": "e5", "fromNode": "montaz", "fromSide": "top", "toNode": "kombo", "toSide": "bottom", "label": "nowy kumpel dobija"},
+    {"id": "e6", "fromNode": "montaz", "fromSide": "bottom", "toNode": "album", "toSide": "top", "label": "stopnie"},
+    {"id": "e7", "fromNode": "bonk", "fromSide": "bottom", "toNode": "moc", "toSide": "top", "label": "złoto"},
+    {"id": "e8", "fromNode": "album", "fromSide": "left", "toNode": "strefy", "toSide": "right", "label": "★2"},
+    {"id": "e9", "fromNode": "strefy", "fromSide": "bottom", "toNode": "wyczyn", "toSide": "top", "label": "Żarłok na Trudnym"},
+    {"id": "e10", "fromNode": "strefy", "fromSide": "bottom", "toNode": "spizarnia", "toSide": "top", "label": "po 1. Żarłoku"},
+    {"id": "e11", "fromNode": "moc", "fromSide": "bottom", "toNode": "wyprawa", "toSide": "top", "label": "później"},
+    {"id": "e12", "fromNode": "album", "fromSide": "right", "toNode": "niedok", "toSide": "left"},
+    {"id": "e13", "fromNode": "spizarnia", "fromSide": "right", "toNode": "moje", "toSide": "left", "label": "rekord"},
+    {"id": "e14", "fromNode": "final", "fromSide": "right", "toNode": "nasze", "toSide": "left", "label": "nokauty"},
+    {"id": "e15", "fromNode": "klocki", "fromSide": "right", "toNode": "echo", "toSide": "left", "label": "PODANIE: +1"},
+    {"id": "e16", "fromNode": "wypoczynek", "fromSide": "left", "toNode": "klocki", "toSide": "bottom", "label": "×2"}
+  ]
+}

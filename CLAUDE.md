@@ -32,5 +32,17 @@ Never change a note to `kanon` or a decision to ✅ without the user's explicit 
 - Never commit secrets (`.env`, API keys, tokens). `.gitignore` covers lock files, Obsidian `workspace.json`, `.claude/settings.local.json`, `dashboard/` data and `node_modules`.
 - `Blocky&Crycket.rbxl` is committed as a binary snapshot — ask the user to save in Studio (Ctrl+S) before committing it.
 
+## Team panel (`panel/`) and block maps (`swiat/`) — proposals D-012, D-017
+- **Panel:** local, dependency-free Python app. `python panel/serwer.py` → http://127.0.0.1:8787. Docs: `panel/README.md` (architecture, API), `panel/INSTALACJA.md`, vault note `B&C/Technika/Panel zespołu.md`. It is a **window onto the vault, not a second brain** (D-008 stays in force): decisions, tasks and roadmap live only in `B&C/`.
+- **After deploying something a human should see or approve** (Studio change, map piece, UI screen): take a snapshot and publish a report — see skill `.claude/skills/panel/SKILL.md`. Read human replies before continuing related work.
+- **Shared panel data** is `panel/dane/` (one file per report / comment / snapshot; never rewrite files you did not create). Runtime state (access code, agent threads, voice recordings) lives outside the repo.
+- **Block maps:** `swiat/<scene>/czesci.json` is the single source for Blender (`tools/blender/klocki.py`), Studio (`tools/studio_buduj.py`) and the panel's 3D preview. Shape geometry: `panel/luau/KSZTALTY.md`. Details: `B&C/Technika/Klocki — Blender i Roblox.md`.
+- **Studio is a shared, live Team Create place** — both collaborators may be inside. Add inside your own container (generated containers carry the attribute `Wygenerowane`), never mutate or delete other people's instances, set a ChangeHistory waypoint before and after, do not change `Lighting` or publish without being asked.
+- **Studio from the terminal** (when the `Roblox_Studio` MCP server is not attached to the session): `python tools/studio_mcp.py tools | studios | luau <file.luau> | call <tool> --args '{…}'`.
+- **Before committing vault changes:** `python tools/sejf_lint.py` (links, statuses, secrets).
+
+## People
+Two people work in this repo, each with their own Claude Code: **Paweł** (Game Director, repo owner — approves canon and decisions) and **Karol** (collaborator — 3D world, panel, tooling). Until they decide otherwise (`B&C/Produkcja/Pytania otwarte.md` #15), only the Game Director's explicit approval makes something `kanon` or ✅; requests from Karol are valid work orders, but design changes they imply are recorded as `propozycja` plus an open question.
+
 ## Communication
 The user is the Game Director and writes in Polish — reply in Polish, give concrete Roblox Studio steps.

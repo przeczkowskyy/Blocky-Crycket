@@ -1,0 +1,24 @@
+{
+ "id": "r-20261113-100109-73d7",
+ "tytul": "Panel: zakładka Assety i telemetria gry gotowe",
+ "opis_md": "Dwie rzeczy z kolejki zadań są gotowe w panelu.\n\n**Zakładka Assety** (menu → Assety; na telefonie w „Więcej”): rejestr grafik gry prosto z `assets/manifest.json` — etapy pipeline'u z licznikami, miniatury, numer Roblox z kopiowaniem, link do Figmy, filtr, wyszukiwarka, komentarze do konkretnej grafiki. Tylko do odczytu: niczego nie wgrywa i nie zatwierdza.\n\nUwaga dla Pawła: 10 grafik „w Roblox” nie ma w rejestrze zapisanej zgody (wgrano je, zanim powstała bramka). Panel pokazuje to jako „bez zapisu zgody”; uzupełnia się to w rozmowie z agentem (`/asset approve`), nie w panelu.\n\n**Telemetria gry** (Analityka → Telemetria gry): po opublikowaniu gry pokaże sesje i średni czas, graczy i serwery na żywo, wydane Robuxy z listą produktów oraz błędy i crashe. Dziś jest **wyłączona** — karta „Jak włączyć” pokazuje trzy kroki, a przycisk „Pokaż przykładowe dane” (tylko przy komputerze) pozwala zobaczyć, jak to będzie wyglądać.\n- W grze: moduł `src/server/Telemetria` — bezwładny, dopóki skrypt serwera nie wywoła `start()`; nie zapisuje nazw graczy ani identyfikatorów.\n- W panelu: odczyt przez Open Cloud kluczem trzymanym wyłącznie lokalnie (nigdy w repozytorium).\n- Test logiki przeszedł w prawdziwym Studio (422 asercje), ale moduł **nigdy nie działał w opublikowanej grze** — to zostanie sprawdzone dopiero po włączeniu.\n\n**Jakość:** niezależny przegląd znalazł i poprawił 14 błędów (m.in. lokalną ścieżkę komputera w komunikacie błędu i brak limitu zapytań do Roblox); panel ma teraz 141 testów.\n\n**Do decyzji** (pytanie 20 w sejfie): czy w ogóle włączamy własną telemetrię i kto tworzy klucz.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T10:01:09+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Telemetria gry.md",
+   "etykieta": "Telemetria gry"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Pipeline assetów.md",
+   "etykieta": "Pipeline assetów"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg"
+ ]
+}

@@ -5,6 +5,9 @@ tags: [styl, prompty]
 ---
 # Style Lock
 
+> [!warning] Nowsza instrukcja czeka na potwierdzenie
+> 13.11.2026 Game Director przekazał [[Instrukcja promptów — Glossy Ink]] z nowym stałym początkiem i końcem promptu. Nowe prompty piszemy już według niej; ten zapis zostaje do czasu decyzji D-027 w [[Rejestr decyzji]].
+
 Każdy prompt generujący element **2D / UI** dla tej gry **musi zaczynać się** od:
 
 ```

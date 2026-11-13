@@ -1,0 +1,63 @@
+{
+ "id": "r-20261112-222944-1382",
+ "tytul": "Demo: Leśna baza startowa — pierwsza podglądowa mapa",
+ "opis_md": "W Roblox Studio stoi pierwsza podglądowa mapa: **2599 części w `Workspace/DemoLesnaBaza`**, po jednym Modelu na budowlę. Nic poza tym kontenerem nie zostało zmienione; całość cofa się jednym Ctrl+Z, a oświetlenie miejsca zostało nietknięte.\n\nCo jest na mapie: plac ze spawnem i studnią, **karczma** z szyldem-kuflem, tablica zleceń, koło fortuny, stragan sklepu, stajnia z koniem, wylęgarnia z jajami, brama areny, portal lochów, brama z palisadą, ognisko, staw i las.\n\nTa sama scena istnieje w trzech miejscach z jednego pliku `swiat/demo_lesna_baza/czesci.json`: w Blenderze (obrazy poniżej), w Studio i w podglądzie 3D obok. To szkic do rozmowy o stylu i skali — budynki nie mają wnętrz.\n\nObrazy to rendery z Blendera; zrzuty z samego Studio dojdą, gdy jego okno będzie widoczne (przycisk „Nowa migawka”).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-12T22:29:44+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/DemoLesnaBaza/Karczma",
+   "etykieta": "Karczma"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/DemoLesnaBaza/Plac",
+   "etykieta": "Plac i spawn"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/DemoLesnaBaza/KoloFortuny",
+   "etykieta": "Koło fortuny"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/DemoLesnaBaza/Wylegarnia",
+   "etykieta": "Wylęgarnia"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/DemoLesnaBaza/PortalLochow",
+   "etykieta": "Portal lochów"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/DemoLesnaBaza/Arena",
+   "etykieta": "Brama areny"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/DemoLesnaBaza/Stajnia",
+   "etykieta": "Stajnia"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/DemoLesnaBaza/Sklep",
+   "etykieta": "Sklep"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Klocki — Blender i Roblox.md",
+   "etykieta": "Jak to działa"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ],
+ "migawka": "20261112-222856-ca2c",
+ "pytanie": "Czy styl i skala pasują do gry? Co poprawić najpierw: karczmę, plac czy las?"
+}

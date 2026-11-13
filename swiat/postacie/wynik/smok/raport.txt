@@ -1,0 +1,55 @@
+RAPORT — smok
+SMOK — pet: mały czerwony kanciasty smok (ok. 2,6 studa wysokości ze skrzydłami w górze).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/smok.py · wygenerowano 13.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py smok
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: smok
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 5 plików, zgodnych 5
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości smoka nie są R15 — klipy importuje się na własny rig (nie testowane w Studio).
+- Zianie to sam ruch (otwarty pysk); płomień dorobić w grze (ParticleEmitter na PyskAttachment).
+- Błona skrzydeł to płaskie płyty — z boku skrzydło jest cienką kreską.
+
+MODEL smok „Smok” (stwor)
+  wymiary ciała: 4,48 × 2,64 × 3,26; z akcesoriami: 4,48 × 2,64 × 3,26
+  trójkąty: 2330 (siatek: 15)
+  kości (16): Root, Tulow, Szyja, Glowa, Szczeka, SkrzydloL1, SkrzydloL2, SkrzydloP1, SkrzydloP2, Ogon1, Ogon2, Ogon3, LapaPL, LapaPP, LapaTL, LapaTP
+  klipy: idle_lot 48 kl. 1,60 s pętla, lot 24 kl. 0,80 s pętla, zioniecie 48 kl. 1,60 s jednorazowy
+  punkty zaczepienia: RootAttachment, GlowaAttachment, PyskAttachment
+
+KONTROLA EKSPORTÓW
+- smok.fbx: siatki 18, kości 16, trójkąty 2366, wzrost 2.64 st., akcje brak -> ZGODNE
+- smok__idle_lot.fbx: siatki 18, kości 16, trójkąty 2366, wzrost 2.64 st., akcje smok|Scene 1-49 -> ZGODNE
+- smok__lot.fbx: siatki 18, kości 16, trójkąty 2366, wzrost 2.64 st., akcje smok|Scene 1-25 -> ZGODNE
+- smok__zioniecie.fbx: siatki 18, kości 16, trójkąty 2366, wzrost 2.64 st., akcje smok|Scene 1-49 -> ZGODNE
+- smok.glb: siatki 18, kości 16, trójkąty 2366, wzrost 2.64 st., akcje idle_lot 0-48, lot 0-24, zioniecie 0-48 -> ZGODNE
+
+PLIKI
+- smok.blend
+- smok.fbx
+- smok.glb
+- smok__idle_lot.fbx
+- smok__lot.fbx
+- smok__zioniecie.fbx
+- smok_bohater.jpg
+- smok_ikona.png
+- smok_plansza.jpg
+- smok_tekstury/
+- smok_idle_lot.mp4
+- smok_idle_lot_klatki.jpg
+- smok_idle_lot_z_filmu.jpg
+- smok_lot.mp4
+- smok_lot_klatki.jpg
+- smok_lot_z_filmu.jpg
+- smok_zioniecie.mp4
+- smok_zioniecie_klatki.jpg
+- smok_zioniecie_z_filmu.jpg
+- raport.json
+- raport.txt

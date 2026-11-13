@@ -1,0 +1,241 @@
+{
+ "id": "20261113-152845-ca65",
+ "tytul": "Rynek z postaciami, manekinami i petami (stan na wieczór 13.11)",
+ "opis": "Sześć postaci i trzy manekiny w zestawach na rynku Krzywego Miasteczka, po rozsunięciu manekinów. Poza spoczynkowa.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T15:28:46+01:00",
+ "zrodlo": "studio",
+ "czesci": 1639,
+ "grupy": [
+  {
+   "sciezka": "Workspace/TestPostaci/Karczmarz",
+   "czesci": 88
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Karczmarz/karczmarz_chochla",
+   "czesci": 10
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Kot-Mag Crycket",
+   "czesci": 124
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Kot-Mag Crycket/kot_mag_kapelusz",
+   "czesci": 19
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Kot-Mag Crycket/kot_mag_kostur",
+   "czesci": 23
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag",
+   "czesci": 17
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_amulet",
+   "czesci": 18
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_cizma_l",
+   "czesci": 25
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_cizma_p",
+   "czesci": 25
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_kapelusz",
+   "czesci": 62
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_klepsydra",
+   "czesci": 14
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_kostur",
+   "czesci": 23
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_ksiega",
+   "czesci": 13
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_pas",
+   "czesci": 17
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_pierscien",
+   "czesci": 28
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_rekaw_l",
+   "czesci": 57
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_rekaw_p",
+   "czesci": 57
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_rekawica_l",
+   "czesci": 20
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_rekawica_p",
+   "czesci": 20
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_szata",
+   "czesci": 51
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Mag/mag_szata_dol",
+   "czesci": 97
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rekrut",
+   "czesci": 22
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rekrut/rekrut_but_l",
+   "czesci": 21
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rekrut/rekrut_but_p",
+   "czesci": 21
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rekrut/rekrut_czapka",
+   "czesci": 30
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rekrut/rekrut_miecz",
+   "czesci": 17
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rekrut/rekrut_pas",
+   "czesci": 17
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rekrut/rekrut_przeszywanica",
+   "czesci": 23
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rekrut/rekrut_rekaw_l",
+   "czesci": 7
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rekrut/rekrut_rekaw_p",
+   "czesci": 7
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rekrut/rekrut_rekawica_l",
+   "czesci": 16
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rekrut/rekrut_rekawica_p",
+   "czesci": 16
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz",
+   "czesci": 17
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_amulet",
+   "czesci": 11
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_but_l",
+   "czesci": 17
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_but_p",
+   "czesci": 17
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_helm",
+   "czesci": 46
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_miecz",
+   "czesci": 21
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_napiersnik",
+   "czesci": 11
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_naramiennik_l",
+   "czesci": 14
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_naramiennik_p",
+   "czesci": 14
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_ostroga",
+   "czesci": 13
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_pas",
+   "czesci": 11
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_pola",
+   "czesci": 11
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_rekawica_l",
+   "czesci": 12
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_rekawica_p",
+   "czesci": 12
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Manekin Rycerz/zr_tarcza",
+   "czesci": 13
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Pies",
+   "czesci": 59
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Rycerz Blocky",
+   "czesci": 97
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Rycerz Blocky/rycerz_miecz",
+   "czesci": 16
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Slime",
+   "czesci": 42
+  },
+  {
+   "sciezka": "Workspace/TestPostaci/Smok",
+   "czesci": 180
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "zakres": {
+  "min": [
+   12.564,
+   0.22,
+   -693.127
+  ],
+  "max": [
+   41.682,
+   7.3,
+   -667.63
+  ]
+ },
+ "miejsce": {
+  "placeId": 129485428021967,
+  "nazwa": "Blocky&Crycket (placeId: 129485428021967)"
+ },
+ "korzen": "Workspace/TestPostaci"
+}

@@ -1,0 +1,393 @@
+{
+ "modul": "pies",
+ "modele": [
+  {
+   "id": "pies",
+   "nazwa": "Pies",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 252,
+     "wierzcholki": 138,
+     "wymiary": [
+      1.4,
+      1.15,
+      2.24
+     ],
+     "min": [
+      -0.7,
+      1.13,
+      -1.12
+     ],
+     "max": [
+      0.7,
+      2.28,
+      1.12
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 696,
+     "wierzcholki": 392,
+     "wymiary": [
+      1.5,
+      1.931,
+      2.263
+     ],
+     "min": [
+      -0.75,
+      1.649,
+      0.747
+     ],
+     "max": [
+      0.75,
+      3.58,
+      3.01
+     ]
+    },
+    {
+     "nazwa": "Szczeka_Geo",
+     "kosc": "Szczeka",
+     "trojkaty": 112,
+     "wierzcholki": 64,
+     "wymiary": [
+      0.72,
+      0.455,
+      0.905
+     ],
+     "min": [
+      -0.36,
+      1.905,
+      1.99
+     ],
+     "max": [
+      0.36,
+      2.36,
+      2.895
+     ]
+    },
+    {
+     "nazwa": "UchoL_Geo",
+     "kosc": "UchoL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.386,
+      0.92,
+      0.6
+     ],
+     "min": [
+      0.627,
+      2.582,
+      1.1
+     ],
+     "max": [
+      1.013,
+      3.502,
+      1.7
+     ]
+    },
+    {
+     "nazwa": "UchoP_Geo",
+     "kosc": "UchoP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.386,
+      0.92,
+      0.6
+     ],
+     "min": [
+      -1.013,
+      2.582,
+      1.1
+     ],
+     "max": [
+      -0.627,
+      3.502,
+      1.7
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodL_Gora_Geo",
+     "kosc": "LapaPrzodL_Gora",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.46,
+      0.8,
+      0.5
+     ],
+     "min": [
+      0.19,
+      0.84,
+      0.47
+     ],
+     "max": [
+      0.65,
+      1.64,
+      0.97
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodL_Dol_Geo",
+     "kosc": "LapaPrzodL_Dol",
+     "trojkaty": 112,
+     "wierzcholki": 64,
+     "wymiary": [
+      0.5,
+      0.84,
+      0.63
+     ],
+     "min": [
+      0.17,
+      0.0,
+      0.48
+     ],
+     "max": [
+      0.67,
+      0.84,
+      1.11
+     ]
+    },
+    {
+     "nazwa": "LapaTylL_Gora_Geo",
+     "kosc": "LapaTylL_Gora",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.46,
+      0.8,
+      0.5
+     ],
+     "min": [
+      0.19,
+      0.84,
+      -0.97
+     ],
+     "max": [
+      0.65,
+      1.64,
+      -0.47
+     ]
+    },
+    {
+     "nazwa": "LapaTylL_Dol_Geo",
+     "kosc": "LapaTylL_Dol",
+     "trojkaty": 112,
+     "wierzcholki": 64,
+     "wymiary": [
+      0.5,
+      0.84,
+      0.63
+     ],
+     "min": [
+      0.17,
+      0.0,
+      -0.96
+     ],
+     "max": [
+      0.67,
+      0.84,
+      -0.33
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodP_Gora_Geo",
+     "kosc": "LapaPrzodP_Gora",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.46,
+      0.8,
+      0.5
+     ],
+     "min": [
+      -0.65,
+      0.84,
+      0.47
+     ],
+     "max": [
+      -0.19,
+      1.64,
+      0.97
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodP_Dol_Geo",
+     "kosc": "LapaPrzodP_Dol",
+     "trojkaty": 112,
+     "wierzcholki": 64,
+     "wymiary": [
+      0.5,
+      0.84,
+      0.63
+     ],
+     "min": [
+      -0.67,
+      0.0,
+      0.48
+     ],
+     "max": [
+      -0.17,
+      0.84,
+      1.11
+     ]
+    },
+    {
+     "nazwa": "LapaTylP_Gora_Geo",
+     "kosc": "LapaTylP_Gora",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.46,
+      0.8,
+      0.5
+     ],
+     "min": [
+      -0.65,
+      0.84,
+      -0.97
+     ],
+     "max": [
+      -0.19,
+      1.64,
+      -0.47
+     ]
+    },
+    {
+     "nazwa": "LapaTylP_Dol_Geo",
+     "kosc": "LapaTylP_Dol",
+     "trojkaty": 112,
+     "wierzcholki": 64,
+     "wymiary": [
+      0.5,
+      0.84,
+      0.63
+     ],
+     "min": [
+      -0.67,
+      0.0,
+      -0.96
+     ],
+     "max": [
+      -0.17,
+      0.84,
+      -0.33
+     ]
+    },
+    {
+     "nazwa": "Ogon_Geo",
+     "kosc": "Ogon",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      0.3,
+      1.097,
+      0.636
+     ],
+     "min": [
+      -0.15,
+      1.93,
+      -1.541
+     ],
+     "max": [
+      0.15,
+      3.027,
+      -0.905
+     ]
+    }
+   ],
+   "trojkaty_razem": 1992,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 19
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.026,
+    3.58,
+    4.551
+   ],
+   "wymiary_z_akcesoriami": [
+    2.026,
+    3.58,
+    4.551
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.013,
+     0.0,
+     -1.541
+    ],
+    [
+     1.013,
+     3.58,
+     3.01
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Tulow",
+    "Glowa",
+    "Szczeka",
+    "UchoL",
+    "UchoP",
+    "LapaPrzodL_Gora",
+    "LapaPrzodL_Dol",
+    "LapaTylL_Gora",
+    "LapaTylL_Dol",
+    "LapaPrzodP_Gora",
+    "LapaPrzodP_Dol",
+    "LapaTylP_Gora",
+    "LapaTylP_Dol",
+    "Ogon"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "bieg",
+     "dlugosc": 16,
+     "fps": 30,
+     "sekundy": 0.53,
+     "petla": true
+    },
+    {
+     "n": "szczek",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "pies.fbx: siatki 16, kości 15, trójkąty 2016, wzrost 3.58 st., akcje brak -> ZGODNE",
+  "pies__idle.fbx: siatki 16, kości 15, trójkąty 2016, wzrost 3.58 st., akcje pies|Scene 1-61 -> ZGODNE",
+  "pies__bieg.fbx: siatki 16, kości 15, trójkąty 2016, wzrost 3.58 st., akcje pies|Scene 1-17 -> ZGODNE",
+  "pies__szczek.fbx: siatki 16, kości 15, trójkąty 2016, wzrost 3.58 st., akcje pies|Scene 1-31 -> ZGODNE",
+  "pies.glb: siatki 16, kości 15, trójkąty 2016, wzrost 3.58 st., akcje bieg 0-16, idle 0-60, szczek 0-30 -> ZGODNE"
+ ]
+}

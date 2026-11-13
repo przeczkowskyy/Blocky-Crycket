@@ -1,0 +1,4576 @@
+{
+ "modul": "bronie",
+ "modele": [
+  {
+   "id": "przym_palka_gwozdz",
+   "nazwa": "Przymiarka: Pałka z gwoździem",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      0.4,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.4,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      1.6,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.4,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ],
+     "min": [
+      -0.625,
+      4.0,
+      -0.625
+     ],
+     "max": [
+      0.625,
+      5.25,
+      0.695
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      1.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      0.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "palka_gwozdz_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 520,
+     "wierzcholki": 296,
+     "wymiary": [
+      1.304,
+      1.277,
+      3.724
+     ],
+     "min": [
+      -2.393,
+      1.39,
+      -0.878
+     ],
+     "max": [
+      -1.089,
+      2.667,
+      2.846
+     ]
+    }
+   ],
+   "trojkaty_razem": 1268,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 9
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.0,
+    5.25,
+    1.32
+   ],
+   "wymiary_z_akcesoriami": [
+    4.393,
+    5.25,
+    3.724
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.393,
+     0.0,
+     -0.878
+    ],
+    [
+     2.0,
+     5.25,
+     2.846
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "trzymanie",
+     "dlugosc": 2,
+     "fps": 30,
+     "sekundy": 0.07,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "palka_gwozdz",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 132,
+     "limit": 4000,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ]
+    },
+    "Torso": {
+     "trojkaty": 88,
+     "limit": 1750,
+     "wymiary": [
+      2.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    }
+   },
+   "ostrzezenia": []
+  },
+  {
+   "id": "przym_patelnia",
+   "nazwa": "Przymiarka: Patelnia z jajkiem",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      0.4,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.4,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      1.6,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.4,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ],
+     "min": [
+      -0.625,
+      4.0,
+      -0.625
+     ],
+     "max": [
+      0.625,
+      5.25,
+      0.695
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      1.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      0.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "patelnia_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 456,
+     "wierzcholki": 246,
+     "wymiary": [
+      2.04,
+      0.49,
+      3.77
+     ],
+     "min": [
+      -2.54,
+      1.81,
+      -0.82
+     ],
+     "max": [
+      -0.5,
+      2.3,
+      2.95
+     ]
+    }
+   ],
+   "trojkaty_razem": 1204,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 8
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.0,
+    5.25,
+    1.32
+   ],
+   "wymiary_z_akcesoriami": [
+    4.54,
+    5.25,
+    3.77
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.54,
+     0.0,
+     -0.82
+    ],
+    [
+     2.0,
+     5.25,
+     2.95
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "trzymanie",
+     "dlugosc": 2,
+     "fps": 30,
+     "sekundy": 0.07,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "patelnia",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 132,
+     "limit": 4000,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ]
+    },
+    "Torso": {
+     "trojkaty": 88,
+     "limit": 1750,
+     "wymiary": [
+      2.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    }
+   },
+   "ostrzezenia": []
+  },
+  {
+   "id": "przym_mlot_bojowy",
+   "nazwa": "Przymiarka: Młot bojowy",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      0.4,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.4,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      1.6,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.4,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ],
+     "min": [
+      -0.625,
+      4.0,
+      -0.625
+     ],
+     "max": [
+      0.625,
+      5.25,
+      0.695
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      1.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      0.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "mlot_bojowy_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 450,
+     "wierzcholki": 259,
+     "wymiary": [
+      1.932,
+      0.98,
+      4.53
+     ],
+     "min": [
+      -2.31,
+      1.66,
+      -1.1
+     ],
+     "max": [
+      -0.378,
+      2.64,
+      3.43
+     ]
+    }
+   ],
+   "trojkaty_razem": 1198,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 10
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.0,
+    5.25,
+    1.32
+   ],
+   "wymiary_z_akcesoriami": [
+    4.31,
+    5.25,
+    4.53
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.31,
+     0.0,
+     -1.1
+    ],
+    [
+     2.0,
+     5.25,
+     3.43
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "trzymanie",
+     "dlugosc": 2,
+     "fps": 30,
+     "sekundy": 0.07,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "mlot_bojowy",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 132,
+     "limit": 4000,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ]
+    },
+    "Torso": {
+     "trojkaty": 88,
+     "limit": 1750,
+     "wymiary": [
+      2.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    }
+   },
+   "ostrzezenia": []
+  },
+  {
+   "id": "przym_topor_dwureczny",
+   "nazwa": "Przymiarka: Topór dwuręczny",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      0.4,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.4,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      1.6,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.4,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ],
+     "min": [
+      -0.625,
+      4.0,
+      -0.625
+     ],
+     "max": [
+      0.625,
+      5.25,
+      0.695
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      1.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      0.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "topor_dwureczny_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 558,
+     "wierzcholki": 321,
+     "wymiary": [
+      2.565,
+      0.48,
+      5.854
+     ],
+     "min": [
+      -2.991,
+      1.91,
+      -1.76
+     ],
+     "max": [
+      -0.426,
+      2.39,
+      4.094
+     ]
+    }
+   ],
+   "trojkaty_razem": 1306,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 10
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.0,
+    5.25,
+    1.32
+   ],
+   "wymiary_z_akcesoriami": [
+    4.991,
+    5.25,
+    5.854
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.991,
+     0.0,
+     -1.76
+    ],
+    [
+     2.0,
+     5.25,
+     4.094
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "trzymanie",
+     "dlugosc": 2,
+     "fps": 30,
+     "sekundy": 0.07,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "topor_dwureczny",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 132,
+     "limit": 4000,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ]
+    },
+    "Torso": {
+     "trojkaty": 88,
+     "limit": 1750,
+     "wymiary": [
+      2.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    }
+   },
+   "ostrzezenia": []
+  },
+  {
+   "id": "przym_wlocznia_choragiew",
+   "nazwa": "Przymiarka: Włócznia z chorągiewką",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      0.4,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.4,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      1.6,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.4,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ],
+     "min": [
+      -0.625,
+      4.0,
+      -0.625
+     ],
+     "max": [
+      0.625,
+      5.25,
+      0.695
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      1.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      0.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "wlocznia_choragiew_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 480,
+     "wierzcholki": 282,
+     "wymiary": [
+      2.621,
+      0.34,
+      8.29
+     ],
+     "min": [
+      -3.6,
+      1.98,
+      -2.24
+     ],
+     "max": [
+      -0.979,
+      2.32,
+      6.05
+     ]
+    }
+   ],
+   "trojkaty_razem": 1228,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 11
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.0,
+    5.25,
+    1.32
+   ],
+   "wymiary_z_akcesoriami": [
+    5.6,
+    5.25,
+    8.29
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -3.6,
+     0.0,
+     -2.24
+    ],
+    [
+     2.0,
+     5.25,
+     6.05
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "trzymanie",
+     "dlugosc": 2,
+     "fps": 30,
+     "sekundy": 0.07,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "wlocznia_choragiew",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 132,
+     "limit": 4000,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ]
+    },
+    "Torso": {
+     "trojkaty": 88,
+     "limit": 1750,
+     "wymiary": [
+      2.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    }
+   },
+   "ostrzezenia": []
+  },
+  {
+   "id": "przym_miecz_plomienisty",
+   "nazwa": "Przymiarka: Miecz płomienisty",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      0.4,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.4,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      1.6,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.4,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ],
+     "min": [
+      -0.625,
+      4.0,
+      -0.625
+     ],
+     "max": [
+      0.625,
+      5.25,
+      0.695
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      1.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      0.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "miecz_plomienisty_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 344,
+     "wierzcholki": 212,
+     "wymiary": [
+      1.444,
+      0.512,
+      5.26
+     ],
+     "min": [
+      -2.222,
+      1.894,
+      -1.01
+     ],
+     "max": [
+      -0.778,
+      2.406,
+      4.25
+     ]
+    }
+   ],
+   "trojkaty_razem": 1092,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 10
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.0,
+    5.25,
+    1.32
+   ],
+   "wymiary_z_akcesoriami": [
+    4.222,
+    5.25,
+    5.26
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.222,
+     0.0,
+     -1.01
+    ],
+    [
+     2.0,
+     5.25,
+     4.25
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "trzymanie",
+     "dlugosc": 2,
+     "fps": 30,
+     "sekundy": 0.07,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "miecz_plomienisty",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 132,
+     "limit": 4000,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ]
+    },
+    "Torso": {
+     "trojkaty": 88,
+     "limit": 1750,
+     "wymiary": [
+      2.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    }
+   },
+   "ostrzezenia": []
+  },
+  {
+   "id": "przym_kostur_lodu",
+   "nazwa": "Przymiarka: Kostur lodu",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      0.4,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.4,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      1.6,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.4,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ],
+     "min": [
+      -0.625,
+      4.0,
+      -0.625
+     ],
+     "max": [
+      0.625,
+      5.25,
+      0.695
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      1.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      0.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "kostur_lodu_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 516,
+     "wierzcholki": 298,
+     "wymiary": [
+      1.737,
+      1.34,
+      7.4
+     ],
+     "min": [
+      -2.374,
+      1.459,
+      -2.0
+     ],
+     "max": [
+      -0.637,
+      2.799,
+      5.4
+     ]
+    }
+   ],
+   "trojkaty_razem": 1264,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 9
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.0,
+    5.25,
+    1.32
+   ],
+   "wymiary_z_akcesoriami": [
+    4.374,
+    5.25,
+    7.4
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.374,
+     0.0,
+     -2.0
+    ],
+    [
+     2.0,
+     5.25,
+     5.4
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "trzymanie",
+     "dlugosc": 2,
+     "fps": 30,
+     "sekundy": 0.07,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "kostur_lodu",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 132,
+     "limit": 4000,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ]
+    },
+    "Torso": {
+     "trojkaty": 88,
+     "limit": 1750,
+     "wymiary": [
+      2.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    }
+   },
+   "ostrzezenia": []
+  },
+  {
+   "id": "przym_chochla_mistrza",
+   "nazwa": "Przymiarka: Wielka chochla mistrza",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      0.4,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.4,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      2.0,
+      1.6,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      2.4,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ],
+     "min": [
+      -0.625,
+      4.0,
+      -0.625
+     ],
+     "max": [
+      0.625,
+      5.25,
+      0.695
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      1.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      1.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      2.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      0.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      0.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      1.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.95,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      3.05,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      4.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.75,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.3,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      3.05,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.3,
+      1.0
+     ],
+     "min": [
+      -2.0,
+      2.0,
+      -0.5
+     ],
+     "max": [
+      -1.0,
+      2.3,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      1.15,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      2.0,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.8,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.35,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      1.15,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.0,
+      0.35,
+      1.0
+     ],
+     "min": [
+      -1.0,
+      0.0,
+      -0.5
+     ],
+     "max": [
+      0.0,
+      0.35,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "chochla_mistrza_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 804,
+     "wierzcholki": 460,
+     "wymiary": [
+      2.36,
+      2.282,
+      6.739
+     ],
+     "min": [
+      -2.68,
+      0.965,
+      -1.86
+     ],
+     "max": [
+      -0.32,
+      3.247,
+      4.879
+     ]
+    }
+   ],
+   "trojkaty_razem": 1552,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 12
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.0,
+    5.25,
+    1.32
+   ],
+   "wymiary_z_akcesoriami": [
+    4.68,
+    5.25,
+    6.739
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.68,
+     0.0,
+     -1.86
+    ],
+    [
+     2.0,
+     5.25,
+     4.879
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "trzymanie",
+     "dlugosc": 2,
+     "fps": 30,
+     "sekundy": 0.07,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "chochla_mistrza",
+     "zaczep": "RightGripAttachment",
+     "eksport": true
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 132,
+     "limit": 4000,
+     "wymiary": [
+      1.25,
+      1.25,
+      1.32
+     ]
+    },
+    "Torso": {
+     "trojkaty": 88,
+     "limit": 1750,
+     "wymiary": [
+      2.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 132,
+     "limit": 1248,
+     "wymiary": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    }
+   },
+   "ostrzezenia": []
+  },
+  {
+   "id": "palka_gwozdz",
+   "nazwa": "Pałka z gwoździem",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "palka_gwozdz",
+     "kosc": null,
+     "trojkaty": 520,
+     "wierzcholki": 296,
+     "wymiary": [
+      1.304,
+      3.724,
+      1.277
+     ],
+     "min": [
+      -0.893,
+      -0.878,
+      -0.517
+     ],
+     "max": [
+      0.411,
+      2.846,
+      0.76
+     ]
+    }
+   ],
+   "trojkaty_razem": 520,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.893,
+     -0.878,
+     -0.517
+    ],
+    [
+     0.411,
+     2.846,
+     0.76
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.241,
+    0.984,
+    0.121
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "patelnia",
+   "nazwa": "Patelnia z jajkiem",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "patelnia",
+     "kosc": null,
+     "trojkaty": 456,
+     "wierzcholki": 246,
+     "wymiary": [
+      2.04,
+      3.77,
+      0.49
+     ],
+     "min": [
+      -1.04,
+      -0.82,
+      -0.15
+     ],
+     "max": [
+      1.0,
+      2.95,
+      0.34
+     ]
+    }
+   ],
+   "trojkaty_razem": 456,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -1.04,
+     -0.82,
+     -0.15
+    ],
+    [
+     1.0,
+     2.95,
+     0.34
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.02,
+    1.065,
+    0.095
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mlot_bojowy",
+   "nazwa": "Młot bojowy",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mlot_bojowy",
+     "kosc": null,
+     "trojkaty": 450,
+     "wierzcholki": 259,
+     "wymiary": [
+      1.932,
+      4.53,
+      0.98
+     ],
+     "min": [
+      -0.81,
+      -1.1,
+      -0.49
+     ],
+     "max": [
+      1.122,
+      3.43,
+      0.49
+     ]
+    }
+   ],
+   "trojkaty_razem": 450,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 7
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.81,
+     -1.1,
+     -0.49
+    ],
+    [
+     1.122,
+     3.43,
+     0.49
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.156,
+    1.165,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "topor_dwureczny",
+   "nazwa": "Topór dwuręczny",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "topor_dwureczny",
+     "kosc": null,
+     "trojkaty": 558,
+     "wierzcholki": 321,
+     "wymiary": [
+      2.565,
+      5.854,
+      0.48
+     ],
+     "min": [
+      -1.491,
+      -1.76,
+      -0.24
+     ],
+     "max": [
+      1.074,
+      4.094,
+      0.24
+     ]
+    }
+   ],
+   "trojkaty_razem": 558,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 7
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -1.491,
+     -1.76,
+     -0.24
+    ],
+    [
+     1.074,
+     4.094,
+     0.24
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.209,
+    1.167,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "wlocznia_choragiew",
+   "nazwa": "Włócznia z chorągiewką",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "wlocznia_choragiew",
+     "kosc": null,
+     "trojkaty": 480,
+     "wierzcholki": 282,
+     "wymiary": [
+      2.621,
+      8.29,
+      0.34
+     ],
+     "min": [
+      -2.1,
+      -2.24,
+      -0.17
+     ],
+     "max": [
+      0.521,
+      6.05,
+      0.17
+     ]
+    }
+   ],
+   "trojkaty_razem": 480,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 8
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -2.1,
+     -2.24,
+     -0.17
+    ],
+    [
+     0.521,
+     6.05,
+     0.17
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.79,
+    1.905,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "miecz_plomienisty",
+   "nazwa": "Miecz płomienisty",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "miecz_plomienisty",
+     "kosc": null,
+     "trojkaty": 344,
+     "wierzcholki": 212,
+     "wymiary": [
+      1.444,
+      5.26,
+      0.512
+     ],
+     "min": [
+      -0.722,
+      -1.01,
+      -0.256
+     ],
+     "max": [
+      0.722,
+      4.25,
+      0.256
+     ]
+    }
+   ],
+   "trojkaty_razem": 344,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 7
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.722,
+     -1.01,
+     -0.256
+    ],
+    [
+     0.722,
+     4.25,
+     0.256
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.62,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "kostur_lodu",
+   "nazwa": "Kostur lodu",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "kostur_lodu",
+     "kosc": null,
+     "trojkaty": 516,
+     "wierzcholki": 298,
+     "wymiary": [
+      1.737,
+      7.4,
+      1.34
+     ],
+     "min": [
+      -0.874,
+      -2.0,
+      -0.649
+     ],
+     "max": [
+      0.863,
+      5.4,
+      0.691
+     ]
+    }
+   ],
+   "trojkaty_razem": 516,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.874,
+     -2.0,
+     -0.649
+    ],
+    [
+     0.863,
+     5.4,
+     0.691
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.006,
+    1.7,
+    0.021
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "chochla_mistrza",
+   "nazwa": "Wielka chochla mistrza",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "chochla_mistrza",
+     "kosc": null,
+     "trojkaty": 804,
+     "wierzcholki": 460,
+     "wymiary": [
+      2.36,
+      6.739,
+      2.282
+     ],
+     "min": [
+      -1.18,
+      -1.86,
+      -1.097
+     ],
+     "max": [
+      1.18,
+      4.879,
+      1.185
+     ]
+    }
+   ],
+   "trojkaty_razem": 804,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 9
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -1.18,
+     -1.86,
+     -1.097
+    ],
+    [
+     1.18,
+     4.879,
+     1.185
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.509,
+    0.044
+   ],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "przym_palka_gwozdz.fbx: siatki 35, kości 17, trójkąty 1496, wzrost 5.25 st., akcje brak -> ZGODNE",
+  "przym_palka_gwozdz__spoczynek.fbx: siatki 35, kości 17, trójkąty 1496, wzrost 5.25 st., akcje przym_palka_gwozdz|Scene 1-61 -> ZGODNE",
+  "przym_palka_gwozdz__trzymanie.fbx: siatki 35, kości 17, trójkąty 1496, wzrost 5.25 st., akcje przym_palka_gwozdz|Scene 1-3 -> ZGODNE",
+  "przym_palka_gwozdz.glb: siatki 35, kości 17, trójkąty 1496, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE",
+  "przym_patelnia.fbx: siatki 35, kości 17, trójkąty 1432, wzrost 5.25 st., akcje brak -> ZGODNE",
+  "przym_patelnia__spoczynek.fbx: siatki 35, kości 17, trójkąty 1432, wzrost 5.25 st., akcje przym_patelnia|Scene 1-61 -> ZGODNE",
+  "przym_patelnia__trzymanie.fbx: siatki 35, kości 17, trójkąty 1432, wzrost 5.25 st., akcje przym_patelnia|Scene 1-3 -> ZGODNE",
+  "przym_patelnia.glb: siatki 35, kości 17, trójkąty 1432, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE",
+  "przym_mlot_bojowy.fbx: siatki 35, kości 17, trójkąty 1426, wzrost 5.25 st., akcje brak -> ZGODNE",
+  "przym_mlot_bojowy__spoczynek.fbx: siatki 35, kości 17, trójkąty 1426, wzrost 5.25 st., akcje przym_mlot_bojowy|Scene 1-61 -> ZGODNE",
+  "przym_mlot_bojowy__trzymanie.fbx: siatki 35, kości 17, trójkąty 1426, wzrost 5.25 st., akcje przym_mlot_bojowy|Scene 1-3 -> ZGODNE",
+  "przym_mlot_bojowy.glb: siatki 35, kości 17, trójkąty 1426, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE",
+  "przym_topor_dwureczny.fbx: siatki 35, kości 17, trójkąty 1534, wzrost 5.25 st., akcje brak -> ZGODNE",
+  "przym_topor_dwureczny__spoczynek.fbx: siatki 35, kości 17, trójkąty 1534, wzrost 5.25 st., akcje przym_topor_dwureczny|Scene 1-61 -> ZGODNE",
+  "przym_topor_dwureczny__trzymanie.fbx: siatki 35, kości 17, trójkąty 1534, wzrost 5.25 st., akcje przym_topor_dwureczny|Scene 1-3 -> ZGODNE",
+  "przym_topor_dwureczny.glb: siatki 35, kości 17, trójkąty 1534, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE",
+  "przym_wlocznia_choragiew.fbx: siatki 35, kości 17, trójkąty 1456, wzrost 5.25 st., akcje brak -> ZGODNE",
+  "przym_wlocznia_choragiew__spoczynek.fbx: siatki 35, kości 17, trójkąty 1456, wzrost 5.25 st., akcje przym_wlocznia_choragiew|Scene 1-61 -> ZGODNE",
+  "przym_wlocznia_choragiew__trzymanie.fbx: siatki 35, kości 17, trójkąty 1456, wzrost 5.25 st., akcje przym_wlocznia_choragiew|Scene 1-3 -> ZGODNE",
+  "przym_wlocznia_choragiew.glb: siatki 35, kości 17, trójkąty 1456, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE",
+  "przym_miecz_plomienisty.fbx: siatki 35, kości 17, trójkąty 1320, wzrost 5.25 st., akcje brak -> ZGODNE",
+  "przym_miecz_plomienisty__spoczynek.fbx: siatki 35, kości 17, trójkąty 1320, wzrost 5.25 st., akcje przym_miecz_plomienisty|Scene 1-61 -> ZGODNE",
+  "przym_miecz_plomienisty__trzymanie.fbx: siatki 35, kości 17, trójkąty 1320, wzrost 5.25 st., akcje przym_miecz_plomienisty|Scene 1-3 -> ZGODNE",
+  "przym_miecz_plomienisty.glb: siatki 35, kości 17, trójkąty 1320, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE",
+  "przym_kostur_lodu.fbx: siatki 35, kości 17, trójkąty 1492, wzrost 5.25 st., akcje brak -> ZGODNE",
+  "przym_kostur_lodu__spoczynek.fbx: siatki 35, kości 17, trójkąty 1492, wzrost 5.25 st., akcje przym_kostur_lodu|Scene 1-61 -> ZGODNE",
+  "przym_kostur_lodu__trzymanie.fbx: siatki 35, kości 17, trójkąty 1492, wzrost 5.25 st., akcje przym_kostur_lodu|Scene 1-3 -> ZGODNE",
+  "przym_kostur_lodu.glb: siatki 35, kości 17, trójkąty 1492, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE",
+  "przym_chochla_mistrza.fbx: siatki 35, kości 17, trójkąty 1780, wzrost 5.25 st., akcje brak -> ZGODNE",
+  "przym_chochla_mistrza__spoczynek.fbx: siatki 35, kości 17, trójkąty 1780, wzrost 5.25 st., akcje przym_chochla_mistrza|Scene 1-61 -> ZGODNE",
+  "przym_chochla_mistrza__trzymanie.fbx: siatki 35, kości 17, trójkąty 1780, wzrost 5.25 st., akcje przym_chochla_mistrza|Scene 1-3 -> ZGODNE",
+  "przym_chochla_mistrza.glb: siatki 35, kości 17, trójkąty 1780, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE",
+  "palka_gwozdz.fbx: siatki 1, kości 0, trójkąty 520, wzrost 3.72 st., akcje brak -> ZGODNE",
+  "palka_gwozdz.glb: siatki 1, kości 0, trójkąty 520, wzrost 3.72 st., akcje brak -> ZGODNE",
+  "patelnia.fbx: siatki 1, kości 0, trójkąty 456, wzrost 3.77 st., akcje brak -> ZGODNE",
+  "patelnia.glb: siatki 1, kości 0, trójkąty 456, wzrost 3.77 st., akcje brak -> ZGODNE",
+  "mlot_bojowy.fbx: siatki 1, kości 0, trójkąty 450, wzrost 4.53 st., akcje brak -> ZGODNE",
+  "mlot_bojowy.glb: siatki 1, kości 0, trójkąty 450, wzrost 4.53 st., akcje brak -> ZGODNE",
+  "topor_dwureczny.fbx: siatki 1, kości 0, trójkąty 558, wzrost 5.85 st., akcje brak -> ZGODNE",
+  "topor_dwureczny.glb: siatki 1, kości 0, trójkąty 558, wzrost 5.85 st., akcje brak -> ZGODNE",
+  "wlocznia_choragiew.fbx: siatki 1, kości 0, trójkąty 480, wzrost 8.29 st., akcje brak -> ZGODNE",
+  "wlocznia_choragiew.glb: siatki 1, kości 0, trójkąty 480, wzrost 8.29 st., akcje brak -> ZGODNE",
+  "miecz_plomienisty.fbx: siatki 1, kości 0, trójkąty 344, wzrost 5.26 st., akcje brak -> ZGODNE",
+  "miecz_plomienisty.glb: siatki 1, kości 0, trójkąty 344, wzrost 5.26 st., akcje brak -> ZGODNE",
+  "kostur_lodu.fbx: siatki 1, kości 0, trójkąty 516, wzrost 7.40 st., akcje brak -> ZGODNE",
+  "kostur_lodu.glb: siatki 1, kości 0, trójkąty 516, wzrost 7.40 st., akcje brak -> ZGODNE",
+  "chochla_mistrza.fbx: siatki 1, kości 0, trójkąty 804, wzrost 6.74 st., akcje brak -> ZGODNE",
+  "chochla_mistrza.glb: siatki 1, kości 0, trójkąty 804, wzrost 6.74 st., akcje brak -> ZGODNE"
+ ]
+}

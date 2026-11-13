@@ -1,0 +1,34 @@
+{
+ "id": "r-20261113-151728-d676",
+ "tytul": "Pety idą za graczem: pies biegnie, slime skacze, smok leci (próba w Studio)",
+ "opis_md": "**W skrócie:** pies, slime i smok potrafią iść za graczem. W uruchomionej grze podchodzisz do peta, naciskasz **E** („Weź peta”) i pet rusza za Twoim awatarem. Drugie naciśnięcie odsyła go na miejsce.\n\n## Jak spróbować\n1. Roblox Studio → **Play** (albo Play Here na rynku Krzywego Miasteczka).\n2. Podejdź do psa, slime'a albo smoka i naciśnij E.\n3. Przejdź się po rynku. Pies biegnie, slime skacze, smok leci nad ziemią. Gdy staniesz, pet odpoczywa obok.\n\n## Co sprawdziłem\n- Po zawołaniu wszystkie trzy pety dochodzą do gracza na 4–6 studów.\n- W marszu przez rynek pies i smok trzymają się 6–7 studów za graczem. Slime jest wolniejszy i zostaje do 11 studów w tyle, potem dogania.\n- Po odesłaniu pety wracają na swoje miejsca. Konsola bez błędów.\n\n## Czego to nie jest\n- To próba zachowania, a nie system petów. Nie ma zapisu, ekonomii, wylęgania ani limitu petów.\n- Pet idzie po linii prostej i nie omija przeszkód, więc może przejść przez stragan.\n- Ruch liczy serwer co klatkę. Przy wielu graczach i petach trzeba to zrobić inaczej.\n- Działa tylko w Studio. Przed publikacją gry kontener `TestPostaci` trzeba usunąć.\n\nSzczegóły: notatka „Postacie 3D — Blender i Roblox”.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T15:17:28+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Pies",
+   "etykieta": "Pies"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Slime",
+   "etykieta": "Slime"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Smok",
+   "etykieta": "Smok"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Gra/Pety.md",
+   "etykieta": "Notatka o petach"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg"
+ ],
+ "migawka": "20261113-151132-6970"
+}

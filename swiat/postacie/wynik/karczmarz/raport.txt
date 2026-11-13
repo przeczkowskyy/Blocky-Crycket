@@ -1,0 +1,73 @@
+RAPORT — karczmarz
+KARCZMARZ — gospodarz gospody (NPC). Gruby, szeroki klockowy ludzik R15: wielki brzuch, krótkie nogi,
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/karczmarz.py · wygenerowano 13.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py karczmarz
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: karczmarz
+- przedmioty (akcesoria): 1
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 7 plików, zgodnych 7
+- ostrzeżenia z raportu: 1; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Chochla jest osobnym przedmiotem (przedmioty/karczmarz_chochla.fbx); w FBX postaci jej nie ma.
+- Brzuch, kamizelka i ręce to sztywne bryły na kościach: w geście zaproszenia ramię lekko wchodzi w bufkę rękawa, a w śmiechu przedramię dotyka brzucha.
+- Lewa dłoń jest otwarta (płaska) także w pozie ręki na biodrze; prawa to pięść z chochlą.
+- Klipy to szkice (1–2 s), nie gotowa animacja.
+
+MODEL karczmarz „Karczmarz” (r15)
+  wymiary ciała: 5,42 × 5,75 × 2,91; z akcesoriami: 5,98 × 5,75 × 2,97
+  trójkąty: 3384 (siatek: 16)
+  budżety ciała R15: Head 956/4000, Torso 592/1750, LeftArm 332/1248, RightArm 276/1248, LeftLeg 308/1248, RightLeg 308/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: idle 60 kl. 2,00 s pętla, zaproszenie 60 kl. 2,00 s pętla, smiech 40 kl. 1,33 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: karczmarz_chochla na RightGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało Head: wys 2.03 poza 0.50…2.00 studa (limit części ciała awatara)
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+karczmarz_chochla      RightGripAttachment        Inne         612  1,22 × 2,48 × 0,90   (0,46; -0,68; -0,00)  
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+KONTROLA EKSPORTÓW
+- karczmarz.fbx: siatki 34, kości 17, trójkąty 3000, wzrost 5.75 st., akcje brak -> ZGODNE
+- karczmarz__idle.fbx: siatki 34, kości 17, trójkąty 3000, wzrost 5.75 st., akcje karczmarz|Scene 1-61 -> ZGODNE
+- karczmarz__zaproszenie.fbx: siatki 34, kości 17, trójkąty 3000, wzrost 5.75 st., akcje karczmarz|Scene 1-61 -> ZGODNE
+- karczmarz__smiech.fbx: siatki 34, kości 17, trójkąty 3000, wzrost 5.75 st., akcje karczmarz|Scene 1-41 -> ZGODNE
+- karczmarz.glb: siatki 34, kości 17, trójkąty 3000, wzrost 5.75 st., akcje idle 0-60, smiech 0-40, zaproszenie 0-60 -> ZGODNE
+- karczmarz_chochla.fbx: siatki 1, kości 0, trójkąty 612, wzrost 2.48 st., akcje brak -> ZGODNE
+- karczmarz_chochla.glb: siatki 1, kości 0, trójkąty 612, wzrost 2.48 st., akcje brak -> ZGODNE
+
+PLIKI
+- karczmarz.blend
+- karczmarz.fbx
+- karczmarz.glb
+- karczmarz__idle.fbx
+- karczmarz__smiech.fbx
+- karczmarz__zaproszenie.fbx
+- karczmarz_bohater.jpg
+- karczmarz_ikona.png
+- karczmarz_plansza.jpg
+- karczmarz_tekstury/
+- karczmarz_idle.mp4
+- karczmarz_idle_klatki.jpg
+- karczmarz_idle_z_filmu.jpg
+- karczmarz_zaproszenie.mp4
+- karczmarz_zaproszenie_klatki.jpg
+- karczmarz_zaproszenie_z_filmu.jpg
+- karczmarz_smiech.mp4
+- karczmarz_smiech_klatki.jpg
+- karczmarz_smiech_z_filmu.jpg
+- przedmioty/karczmarz_chochla.fbx
+- przedmioty/karczmarz_chochla.glb
+- przedmioty/karczmarz_chochla_tekstury/
+- ikony/karczmarz_chochla_ikona.png
+- karczmarz_ikony_arkusz.jpg
+- raport.json
+- raport.txt

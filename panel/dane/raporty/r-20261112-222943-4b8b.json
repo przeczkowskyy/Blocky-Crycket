@@ -1,0 +1,41 @@
+{
+ "id": "r-20261112-222943-4b8b",
+ "tytul": "Badania: rynek, Shakes & Fidget, retencja, UI, narzędzia, technika",
+ "opis_md": "Sześć notatek badawczych w sejfie (`B&C/Badania/`), każda ze źródłami i sekcją weryfikacji. Najważniejsze wnioski:\n\n- **Rynek:** Roblox to 138 mln graczy dziennie, ale pierwszy raz się kurczy; mediana zarobków twórców to ok. 1500 $ rocznie. Wygrywają gry z dochodem „na sekundę” i jajkami.\n- **Shakes & Fidget:** ok. 20 systemów odblokowywanych poziomem — gotowa mapa treści na rok aktualizacji. Kopiować wolno mechaniki, nie nazwy i grafiki.\n- **Zasady:** losowanie za Robuxy wymaga tabeli szans i blokady w części krajów; symulowany hazard jest zakazany; „Labubu” to cudza marka.\n- **Technika:** limit to 200 graczy na serwer (nie 1000); zalecany hub na 16–20 osób; walki liczy serwer, klient je odtwarza.\n- **UI:** wdrożone grafiki HUD pasują do stylu, który działa na Roblox — to zapis o pixel-arcie w kanonie warto poprawić.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-12T22:29:43+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Badania/Rynek Roblox i konkurencja.md",
+   "etykieta": "Rynek"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Badania/Shakes & Fidget — rozbiór mechanik.md",
+   "etykieta": "Rozbiór S&F"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Badania/Retencja i monetyzacja — co wolno i co działa.md",
+   "etykieta": "Retencja i monetyzacja"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Badania/Technika gry — serwery, światy, walki.md",
+   "etykieta": "Technika"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Badania/Styl UI gier Roblox.md",
+   "etykieta": "Styl UI"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Badania/Narzędzia i skille do Roblox.md",
+   "etykieta": "Narzędzia"
+  }
+ ],
+ "zrzuty": []
+}

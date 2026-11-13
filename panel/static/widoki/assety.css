@@ -1,0 +1,226 @@
+/* Assety — style specyficzne dla widoku (rejestr grafik gry).
+   Układ reaguje na szerokość samego widoku (zapytania kontenerowe), bo na komputerze część ekranu zabiera lewy pasek. */
+.as { display: flex; flex-direction: column; gap: 14px; min-width: 0; container: as / inline-size; }
+.as [hidden] { display: none !important; }
+.as .nagl-widoku { margin-bottom: 0; }
+
+/* kratka przezroczystości pod obrazami */
+.as-kratka { background: repeating-conic-gradient(#2c3244 0% 25%, #232838 0% 50%) 50% / 16px 16px; }
+
+/* ------------------------------------------------------------------ baner: coś czeka na zgodę człowieka */
+.as-baner { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 2px solid rgba(245, 184, 46, 0.55); background: rgba(245, 184, 46, 0.09); }
+.as-baner > .ikona { color: var(--zloto); }
+.as-baner p { flex: 1; min-width: 0; font-weight: 700; }
+
+/* ------------------------------------------------------------------ pasek etapów pipeline'u */
+.as-etapy { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 10px; }
+.as-etap {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  min-height: 62px; padding: 8px 2px 7px; min-width: 0;
+  border-radius: 12px; border: 2px solid var(--obrys); background: var(--tlo-gleb); color: var(--tekst); text-align: center;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.08s;
+}
+.as-etap:hover { border-color: var(--obrys-jasny); }
+.as-etap:active { transform: translateY(1px); }
+/* strzałka do następnego etapu — w przerwie między kaflami */
+.as-etap:not(:last-child)::after {
+  content: ""; position: absolute; right: -9px; top: 50%; width: 6px; height: 6px; pointer-events: none;
+  border-top: 2px solid var(--obrys-jasny); border-right: 2px solid var(--obrys-jasny); transform: translateY(-50%) rotate(45deg);
+}
+.as-etap-gora { display: flex; align-items: center; justify-content: center; gap: 3px; max-width: 100%; font-size: 10.5px; font-weight: 800; color: var(--przygaszony); line-height: 1.2; }
+.as-etap-gora .ikona { width: 11px; height: 11px; stroke-width: 2.6; }
+.as-etap-nr { display: none; }
+.as-etap-nazwa { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.as-pelna { display: none; }
+.as-etap-liczba { font-size: 22px; font-weight: 900; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.as-etap.zero .as-etap-liczba { color: var(--szary); opacity: 0.75; }
+.as-etap-opis { display: none; }
+.as-etap.bramka { border-style: dashed; border-color: rgba(245, 184, 46, 0.4); }
+.as-etap.bramka .as-etap-gora { color: var(--zloto); }
+.as-etap.czeka { border-style: solid; border-color: var(--zloto); background: rgba(245, 184, 46, 0.1); }
+.as-etap.czeka .as-etap-liczba { color: var(--zloto); }
+.as-etap.wybrany { border-style: solid; border-color: var(--zloto); background: rgba(245, 184, 46, 0.14); box-shadow: 0 0 0 3px rgba(245, 184, 46, 0.14); }
+.as-etap.wybrany .as-etap-gora { color: var(--zloto); }
+
+.as-zasada { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.45; color: var(--przygaszony); }
+.as-zasada > .ikona { width: 16px; height: 16px; margin-top: 1px; color: var(--zloto); }
+.as-zasada strong { color: var(--tekst); }
+
+/* ------------------------------------------------------------------ szukanie i filtry */
+.as-narzedzia { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.as-szukaj { grid-column: 1 / -1; position: relative; display: block; }
+.as-szukaj > .ikona { position: absolute; left: 12px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%); color: var(--przygaszony); pointer-events: none; }
+.as-szukaj .pole { padding-left: 38px; }
+.as-wybor {
+  appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 36px; text-overflow: ellipsis;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aa3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;
+}
+.as-wybor option { background: var(--karta); color: var(--tekst); }
+
+.as-podsumowanie { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; min-height: 24px; font-size: 13px; color: var(--przygaszony); }
+.as-podsumowanie:empty { display: none; }
+.as-ile { font-weight: 800; color: var(--tekst); }
+.as-kiedy { margin-left: auto; }
+.as-wyczysc { color: var(--zloto); }
+.as-wyczysc .ikona { width: 14px; height: 14px; }
+
+.as-uwaga { display: flex; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 2px solid rgba(245, 184, 46, 0.45); background: rgba(245, 184, 46, 0.08); font-size: 14px; }
+.as-uwaga > .ikona { color: var(--zloto); margin-top: 2px; }
+.as-blad, .as-pusty-akcja { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.as-blad > .pusty { align-self: stretch; }
+
+/* ------------------------------------------------------------------ siatka kart (telefon: karta pozioma) */
+.as-siatka { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.as-siatka.as-bez-wejscia .karta { animation: none; }
+.as-karta { display: flex; flex-direction: column; padding: 0; overflow: hidden; transition: border-color 0.15s, transform 0.15s; }
+.as-karta:hover { border-color: var(--obrys-jasny); }
+.as-karta.czeka { border-color: rgba(245, 184, 46, 0.6); }
+.as-otworz {
+  display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; align-items: start; flex: 1;
+  width: 100%; padding: 12px; border: 0; border-radius: 12px 12px 0 0; background: none; color: inherit; text-align: left;
+}
+.as-otworz:focus-visible { outline-offset: -3px; }
+.as-otworz:hover .as-nazwa { color: var(--zloto); }
+.as-mini { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 1; border-radius: 10px; border: 2px solid var(--obrys); overflow: hidden; }
+/* obraz nie bierze udziału w układzie — nie rozepchnie kratki, gdy ma inne proporcje niż ona */
+.as-mini img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; padding: 6px; object-fit: contain; }
+.as-mini-ramka { position: relative; display: block; min-width: 0; }
+.as-mini-znaki { position: absolute; top: 6px; left: 6px; right: 6px; display: flex; align-items: flex-start; gap: 4px; pointer-events: none; }
+.as-znak { display: inline-flex; align-items: center; gap: 3px; min-height: 20px; padding: 0 6px; border-radius: 999px; border: 1.5px solid #0b0d12; box-shadow: 1.5px 1.5px 0 #0b0d12; font-size: 11px; font-weight: 800; line-height: 1; }
+.as-znak .ikona { width: 12px; height: 12px; stroke-width: 2.6; }
+.as-znak-uwaga { padding: 0 4px; background: var(--zloto); color: #1a1300; }
+.as-znak-kom { margin-left: auto; background: var(--niebieski); color: #04121f; }
+.as-mini.brak { align-content: center; gap: 4px; background: repeating-linear-gradient(45deg, #151925 0 10px, #11141d 10px 20px); color: var(--obrys-jasny); }
+.as-mini.brak .ikona { width: 28px; height: 28px; }
+.as-mini-brak { display: none; padding: 0 8px; font-size: 11.5px; line-height: 1.3; text-align: center; color: var(--szary); }
+.as-opis { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.as-nazwa { display: block; min-width: 0; font-size: 16px; font-weight: 800; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.15s; }
+.as-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; }
+.as-uzycie { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; font-size: 13px; line-height: 1.35; color: #c3c9d8; }
+.as-uzycie.brak { color: var(--szary); font-style: italic; }
+
+/* pasek postępu assetu: kreska na etap */
+.as-tor { display: flex; gap: 3px; }
+.as-tor-krok { flex: 1; height: 5px; border-radius: 3px; background: var(--obrys); }
+.as-tor-krok.zrobiony { background: #6d7892; }
+.as-tor-krok.biezacy { background: var(--przygaszony); }
+.as-tor-krok.biezacy.zloto { background: var(--zloto); }
+.as-tor-krok.biezacy.zielen { background: var(--zielen); }
+.as-tor-krok.biezacy.niebieski { background: var(--niebieski); }
+.as-tor-krok.biezacy.fiolet { background: var(--fiolet); }
+.as-tor-krok.biezacy.szary { background: var(--szary); }
+.as-tor.gotowy .as-tor-krok { background: var(--zielen); }
+.as-tor.odrzucony .as-tor-krok { background: rgba(239, 90, 90, 0.4); }
+/* bramka minięta bez zapisanej zgody (np. grafiki sprzed pipeline'u): kreska pusta w środku */
+.as-tor .as-tor-krok.bez-zapisu { background: transparent; box-shadow: inset 0 0 0 1.5px #6d7892; }
+.as-tor.gotowy .as-tor-krok.bez-zapisu { box-shadow: inset 0 0 0 1.5px rgba(62, 207, 142, 0.75); }
+
+.as-stopka { display: flex; align-items: center; gap: 4px; min-height: 44px; padding: 4px 6px; border-top: 1px solid var(--obrys); background: rgba(0, 0, 0, 0.16); }
+.as-stopka .as-kopiuj { flex: 0 1 auto; min-width: 0; padding: 0 8px; gap: 6px; }
+.as-numer { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-family: var(--mono); font-size: 12.5px; font-weight: 600; }
+.as-brak-numeru { padding: 0 8px; font-size: 12.5px; }
+.as-stopka .as-figma { flex: none; margin-left: auto; padding: 0 10px; gap: 6px; }
+
+/* ------------------------------------------------------------------ szerszy widok: kafle etapów z opisami, karty pionowe */
+@container as (min-width: 560px) {
+  .as-etapy { gap: 14px; }
+  .as-etap { min-height: 72px; padding: 10px 6px; }
+  .as-etap:not(:last-child)::after { right: -12px; width: 7px; height: 7px; }
+  .as-etap-gora { font-size: 12.5px; gap: 5px; }
+  .as-etap-gora .ikona { width: 13px; height: 13px; }
+  .as-etap-liczba { font-size: 26px; }
+  .as-narzedzia { grid-template-columns: minmax(0, 1fr) clamp(170px, 24%, 220px) clamp(170px, 24%, 220px); }
+  .as-szukaj { grid-column: auto; }
+
+  .as-siatka { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+  .as-otworz { grid-template-columns: minmax(0, 1fr); gap: 10px; align-content: start; padding: 10px 10px 12px; }
+  .as-mini { aspect-ratio: 4 / 3; }
+  .as-mini img { padding: 10px; }
+  .as-mini-brak { display: block; }
+  .as-opis { padding: 0 4px; }
+}
+@container as (min-width: 760px) {
+  .as-etap { align-items: flex-start; justify-content: flex-start; gap: 3px; padding: 10px 12px 11px; text-align: left; }
+  .as-etap-gora { justify-content: flex-start; font-size: 13px; }
+  .as-etap-nr { display: inline-grid; place-items: center; flex: none; width: 18px; height: 18px; border-radius: 6px; border: 1.5px solid var(--obrys-jasny); background: var(--karta2); color: var(--tekst); font-size: 10.5px; line-height: 1; }
+  .as-etap-gora .ikona { width: 15px; height: 15px; }
+  .as-pelna { display: inline; }
+  .as-skrot { display: none; }
+  .as-etap-liczba { font-size: 28px; }
+}
+@container as (min-width: 960px) {
+  .as-etap-opis { display: block; font-size: 12px; line-height: 1.35; color: var(--przygaszony); }
+  .as-etap.czeka .as-etap-opis { color: var(--zloto); font-weight: 700; }
+}
+
+/* ------------------------------------------------------------------ arkusz szczegółów (żyje poza widokiem, w <body>) */
+.as-szczegoly { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.as-sz-gora { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.as-sz-lewa { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.as-sz-podglad { position: relative; display: grid; place-items: center; width: 100%; height: 220px; padding: 0; border-radius: 12px; border: 2px solid var(--obrys); overflow: hidden; color: inherit; cursor: zoom-in; }
+.as-sz-podglad:hover { border-color: var(--obrys-jasny); }
+.as-sz-podglad img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; padding: 12px; object-fit: contain; }
+.as-sz-podglad.brak { align-content: center; gap: 8px; padding: 16px; background: repeating-linear-gradient(45deg, #151925 0 10px, #11141d 10px 20px); color: var(--szary); font-size: 13px; text-align: center; cursor: default; }
+.as-sz-podglad.brak .ikona { width: 36px; height: 36px; color: var(--obrys-jasny); }
+.as-sz-lupa { position: absolute; right: 8px; bottom: 8px; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; border: 2px solid var(--obrys-jasny); background: rgba(18, 20, 28, 0.82); color: var(--tekst); }
+.as-sz-lupa .ikona { width: 18px; height: 18px; }
+.as-sz-podpis { text-align: center; font-size: 12px; }
+.as-sz-prawa { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.as-sz-wyjasnienie { font-size: 14px; color: #c9cede; }
+@media (min-width: 640px) {
+  .as-sz-gora { grid-template-columns: 250px minmax(0, 1fr); align-items: start; }
+  .as-sz-podglad { height: 250px; }
+}
+
+.as-kroki { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.as-krok { display: flex; align-items: center; gap: 8px; min-height: 28px; font-size: 14px; color: var(--przygaszony); }
+.as-krok-znak { display: grid; place-items: center; flex: none; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--obrys-jasny); }
+.as-krok-znak .ikona { width: 11px; height: 11px; stroke-width: 3.2; }
+.as-krok.bramka .as-krok-znak { border-radius: 7px; }
+.as-krok.zrobiony { color: var(--tekst); }
+.as-krok.zrobiony .as-krok-znak { background: var(--zielen); border-color: #0b0d12; color: #04241a; }
+.as-krok.biezacy { color: var(--tekst); font-weight: 800; }
+.as-krok.biezacy .as-krok-znak { border-color: var(--kolor-kroku, var(--przygaszony)); background: color-mix(in srgb, var(--kolor-kroku, var(--przygaszony)) 22%, transparent); color: var(--kolor-kroku, var(--tekst)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--kolor-kroku, var(--przygaszony)) 16%, transparent); }
+.as-krok.zloto { --kolor-kroku: var(--zloto); } .as-krok.zielen { --kolor-kroku: var(--zielen); } .as-krok.niebieski { --kolor-kroku: var(--niebieski); }
+.as-krok.fiolet { --kolor-kroku: var(--fiolet); } .as-krok.szary { --kolor-kroku: var(--szary); }
+.as-krok.bez-zapisu .as-krok-znak { border-style: dashed; }
+.as-krok-nazwa { flex: none; }
+.as-krok-stan { min-width: 0; font-weight: 600; color: var(--kolor-kroku, var(--przygaszony)); }
+
+.as-bramka-info { display: flex; gap: 10px; padding: 12px; border-radius: 12px; border: 2px solid rgba(245, 184, 46, 0.55); background: rgba(245, 184, 46, 0.09); font-size: 14px; }
+.as-bramka-info > .ikona { color: var(--zloto); margin-top: 2px; }
+.as-bramka-info > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.as-bramka-info strong { color: var(--zloto); }
+.as-komenda { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; color: var(--przygaszony); font-size: 13px; }
+
+.as-dane { grid-template-columns: minmax(92px, auto) minmax(0, 1fr); align-items: start; gap: 8px 14px; padding: 12px; border-radius: 12px; border: 2px solid var(--obrys); background: var(--tlo-gleb); }
+.as-dane dt { padding-top: 1px; font-size: 13px; }
+.as-dane dd { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; font-weight: 600; }
+.as-dane dd .cichy-tekst { font-weight: 400; }
+.as-wartosc { display: inline-flex; align-items: center; gap: 2px; min-width: 0; max-width: 100%; }
+.as-wartosc code { min-width: 0; font-size: 12.5px; font-weight: 400; overflow-wrap: anywhere; }
+.as-wartosc .przycisk { flex: none; }
+.as-link { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; font-weight: 700; }
+.as-link .ikona { width: 16px; height: 16px; }
+/* myszka: przyciski kopiowania zwarte, żeby wiersze danych nie rozjeżdżały się w pionie; palec: pełne 44 px */
+@media (pointer: fine) { .as-wartosc .przycisk.maly.ikonowy { width: 28px; min-width: 28px; min-height: 28px; border-radius: 8px; } .as-wartosc .przycisk .ikona { width: 15px; height: 15px; } }
+@media (pointer: coarse) { .as-link { min-height: 44px; } }
+/* wąski ekran: etykieta nad wartością — długie numery i ścieżki mają całą szerokość */
+@media (max-width: 520px) {
+  .as-dane { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .as-dane dt { padding-top: 8px; font-size: 12px; }
+  .as-dane dt:first-child { padding-top: 0; }
+}
+
+.as-sekcja { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.as-sekcja > .etykieta { margin: 0; }
+.as-notatki { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14.5px; }
+.as-prompt { margin-top: 0; }
+.as-prompt[open] { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.as-historia .wiersz { align-items: flex-start; }
+.as-historia code { align-self: flex-start; font-size: 12.5px; }
+.as-sz-kom { padding: 12px; border-radius: 12px; border: 2px solid var(--obrys); background: var(--tlo-gleb); }
+
+/* powiększenie: kratka pod przezroczystym obrazem (klasę dokłada widok Assety) */
+.lb-obraz.as-lb-obraz { background: repeating-conic-gradient(#343b4f 0% 25%, #282e3f 0% 50%) 50% / 20px 20px; }
