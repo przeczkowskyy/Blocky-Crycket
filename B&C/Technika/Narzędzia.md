@@ -12,7 +12,7 @@ tags: [technika]
 | Modele 3D | Blockbench (low-poly z malowanymi teksturami), Meshy AI |
 | Wiedza o projekcie | Obsidian: ten sejf `B&C` |
 
-Generowanie grafik zawsze z prefiksem [[Style Lock]].
+Generowanie grafik zawsze według [[Instrukcja promptów — Glossy Ink]] (D-027; dawny prefiks [[Style Lock]] jest zastąpiony).
 
 ## Stan faktyczny (2026-11-12)
 - **Claude Code** pracuje przez MCP z **Figmą** (odczyt projektów) i z **Roblox Studio** (uruchamianie Luau, zrzuty ekranu, Play, Output). Skill: `figma-to-roblox`.

@@ -3,7 +3,7 @@
 > **Uwaga (projekt gry):** kanon gry jest w sejfie `B&C/` (opis systemów poniżej NIE jest kanonem, zob. `B&C/Produkcja/Pytania otwarte.md` #5). Reguły 4 i 9 (asset ID tylko przez `AssetIds`) to propozycja D-011 w `B&C/Produkcja/Rejestr decyzji.md`: do jej zatwierdzenia nie przepinaj istniejącego kodu gry bez zgody Game Directora. Status pipeline'u: `B&C/Technika/Pipeline assetów.md`.
 
 ## Projekt
-Gra Roblox: grind / incremental / RPG inspirowana *Shakes & Fidget*. Styl: kreskówkowy Roblox + akcenty pixel art.
+Gra Roblox: grind / incremental / RPG inspirowana *Shakes & Fidget*. Styl grafik 2D/UI: „Glossy Ink” (komiksowy obrys, malarski cel-shading, połysk), według instrukcji z sejfu `B&C/Styl/Instrukcja promptów — Glossy Ink.md` (kanon, decyzja D-027 z 13.11.2026, zastępuje prefiks Style Lock z D-001 i pixel-art ikon z D-002). Nazwy gry-inspiracji nie wpisuj do promptów.
 Systemy: misje, dungeony, sklep z bronią/magią, arena, twierdza (tycoon), pety, gildie, teleport, ekwipunek.
 Zespół: 2 osoby. Komunikacja: **po polsku, zwięźle**. Preferowane: gotowe, kompletne wyniki zamiast dopytywania – pytaj tylko o rzeczy nieodwracalne lub kosztowne (kredyty, publikacja).
 
@@ -24,9 +24,9 @@ Każdy nowy asset graficzny przechodzi przez skill **`/asset`** (`.claude/skills
 Źródło prawdy: **`assets/manifest.json`** – po każdym kroku aktualizuj wpis (`python tools/manifest.py upsert ...`).
 
 ## Twarde reguły
-1. **Styl** – zawsze trzymaj się `.claude/skills/asset/references/style-guide.md`. Do Higgsfield dołączaj referencje z `assets/refs/`, jeśli narzędzie przyjmuje obraz referencyjny.
-2. **Zero tekstu w grafikach AI.** Napisy robimy natywnie (Figma / Roblox, font Luckiest Guy; drobny tekst: Pixelify Sans w Figmie, `Enum.Font.Arcade` w Roblox).
-3. **Białe, jednolite tło** przy generowaniu (łatwe wycinanie), potem `tools/process_image.py`.
+1. **Styl i prompt** – każdy prompt składaj według `.claude/skills/asset/references/prompt-templates.md` (Glossy Ink, D-027): stały początek + zmienny środek + stały koniec, osobno stały negative prompt; części stałe 1:1, bez zmian i bez tłumaczenia. Ocenę wariantów opieraj na `style-guide.md`. Do Higgsfield dołączaj key-art ekranu ładowania `assets/refs/KeyArt_ref.jpg` jako referencję stylu (plus najwyżej 1 plik z `assets/refs/` najbliższy kategorii), jeśli narzędzie przyjmuje obraz referencyjny.
+2. **Zero tekstu w grafikach AI.** Napisy robimy natywnie (Figma / Roblox, font Luckiest Guy; drobny tekst: Pixelify Sans w Figmie, `Enum.Font.Arcade` w Roblox). Instrukcja Glossy Ink dopuszcza dokładne napisy w cudzysłowie — używamy tego tylko na wyraźną prośbę, np. dla makiety okna (szczegóły w `prompt-templates.md`, sekcja „Napisy w obrazie”).
+3. **Białe, jednolite tło** przy generowaniu (łatwe wycinanie; daje je stały koniec Glossy Ink), potem `tools/process_image.py`. Wyjątki: tła, key-art i mapy (`--bg none`).
 4. **Asset ID tylko przez `AssetIds`** – w kodzie gry `require(ReplicatedStorage.AssetIds).NazwaAssetu`. Nigdy hardcode `rbxassetid://`.
 5. **Kredyty** – domyślnie 3 warianty na asset; przy batchu > 5 assetów najpierw pokaż szacunek kredytów i poczekaj na OK.
 6. **Akceptacja** – dwa progi:

@@ -35,10 +35,13 @@ Dla każdego assetu ustal i pokaż w 1 tabeli:
 Sprawdź w manifeście, czy nazwa już istnieje → jeśli tak, to nowa **wersja** (`v2`), nie nadpisuj historii.
 Batch > 5 assetów albo szacunek > 60 kredytów → **zatrzymaj się i poproś o OK**. W przeciwnym razie leć dalej.
 
-## Krok 1 – Prompt
-Złóż prompt z `references/prompt-templates.md` (szablon kategorii) + blok stylu z `style-guide.md`.
-Zasady: angielski prompt, **bez tekstu w obrazie**, **czysto białe tło**, gruby czarny obrys, centralna kompozycja.
-Jeśli narzędzie Higgsfield przyjmuje obraz referencyjny – dołącz 1–2 pliki z `assets/refs/` najbliższe kategorii (np. dla ikon HUD: `Shop.png`, `Pets.png`; dla walut: `Coin.png`, `Gem.png`).
+## Krok 1 – Prompt (Glossy Ink, D-027)
+Złóż prompt według `references/prompt-templates.md` (instrukcja Glossy Ink z sejfu, kanon od 13.11.2026):
+**stały początek (1:1) + zmienny środek (szablon kategorii) + stały koniec (1:1)**, a **stały negative prompt (1:1) osobno**.
+Części stałych nie zmieniaj ani nie tłumacz; wszystkie dopiski idą do zmiennego środka. Dawnego prefiksu Style Lock (D-001) nie używaj.
+Zasady: angielski prompt, domyślnie **bez tekstu w obrazie** (`no text, no letters` w środku), **czysto białe tło** (daje je stały koniec; wyjątki: tła i mapy), żelazne zasady z szablonów (zamknięte krawędzie, puste kontenery, okna ze statystykami, mapy izometryczne).
+Jeśli narzędzie Higgsfield przyjmuje obraz referencyjny – zawsze dołącz key-art ekranu ładowania `assets/refs/KeyArt_ref.jpg` jako referencję stylu, a obok najwyżej 1 plik z `assets/refs/` najbliższy kategorii (np. dla ikon HUD: `Shop.png` albo `Pets.png`; dla walut: `Coin.png` albo `Gem.png`).
+Pełny prompt i negative prompt zapisz w manifeście (pole `prompt`, krok 2.5).
 
 ## Krok 2 – Generowanie (Higgsfield MCP)
 1. Sprawdź dostępne modele/parametry narzędzia `generate_image` (schemat narzędzia). Wybierz model obrazkowy o najlepszej zgodności z promptem; proporcje 1:1 (ikony) lub 16:9 (tła).
@@ -48,7 +51,7 @@ Jeśli narzędzie Higgsfield przyjmuje obraz referencyjny – dołącz 1–2 pli
 5. `python tools/manifest.py upsert <Name> category=<cat> status=generated prompt="<prompt>" raw=assets/raw/<Name>`
 
 ## Krok 3 – Akceptacja
-Pokaż warianty (otwórz pliki obrazów, żeby je zobaczyć, i wypisz ścieżki) + 1 zdanie oceny każdego względem style-guide (obrys, paleta, czytelność w 64 px).
+Pokaż warianty (otwórz pliki obrazów, żeby je zobaczyć, i wypisz ścieżki) + 1 zdanie oceny każdego względem style-guide (obrys, paleta, czytelność w 64 px, żelazne zasady Glossy Ink).
 - bez `--auto`: **zapytaj, który wariant** (albo „żaden – popraw: …” → wróć do kroku 1 z poprawką).
 - z `--auto`: wybierz sam wg checklisty QA ze style-guide, napisz którego i dlaczego.
 
@@ -125,8 +128,9 @@ Krótko, po polsku:
 | Problem | Działanie |
 |---|---|
 | Higgsfield: brak kredytów / błąd auth | stop, raport; nie próbuj innego dostawcy bez zgody |
-| Wynik ma tekst/litery | odrzuć wariant, dopisz do promptu „no text, no letters, no logo” |
-| Kolorowe/szare tło zamiast białego | `--bg rembg`; jeśli brak rembg – regeneruj z mocniejszym „pure white #FFFFFF background” |
+| Wynik ma tekst/litery | odrzuć wariant, dopisz do **zmiennego środka** „no text, no letters, no logo” (części stałych i negative promptu nie zmieniaj) |
+| Kolorowe/szare tło zamiast białego | `--bg rembg`; jeśli brak rembg – regeneruj z dopiskiem „pure white #FFFFFF background” w **zmiennym środku** |
+| Coś wystaje poza ramkę / portret nie jest pusty | odrzuć wariant, wzmocnij w środku odpowiednią żelazną zasadę (`prompt-templates.md`) |
 | Figma upload 403 / timeout | 1 ponowienie z nowym `upload_assets`; dalej – raport |
 | Roblox moderacja `Rejected` | raport + propozycja zmiany (zwykle: zbyt realistyczne/krwawe/tekst) |
 | Studio rozłączone | kroki 7–9 pomiń, oznacz `status=pending_studio`, `/asset sync` później |

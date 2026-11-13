@@ -12,7 +12,7 @@ Pierwotnie paczka `blocky-asset-pipeline` w osobnym folderze. **Od 2026-11-12 je
 
 `/asset ikona Arena do HUD, styl jak przyciski Shop/Pets`
 
-1. **Generowanie** w Higgsfield (MCP), domyślnie 3 warianty. Prompt łączy blok stylu paczki i referencje z `assets/refs/`.
+1. **Generowanie** w Higgsfield (MCP), domyślnie 3 warianty. Prompt powstaje według [[Instrukcja promptów — Glossy Ink]] (opis niżej, „Budowa promptu”), a jako obraz referencyjny stylu idzie key-art ekranu ładowania z `assets/refs/`.
 2. **Wybór wariantu** przez Game Directora (bez `--auto`).
 3. **Obróbka** `tools/process_image.py`: wycięcie tła, przycięcie, kwadrat, rozmiar docelowy.
 4. **Figma**: wrzucenie do biblioteki assetów albo podmiana obrazka w komponencie.
@@ -29,6 +29,15 @@ Pierwotnie paczka `blocky-asset-pipeline` w osobnym folderze. **Od 2026-11-12 je
 | `/asset approve <Nazwa>` | akceptacja assetu, który czeka → upload |
 | `/asset status` | tabela z manifestu |
 | `/asset sync` | ponowne wygenerowanie modułu `AssetIds` |
+
+## Budowa promptu (Glossy Ink, D-027 od 13.11.2026)
+Od 13.11.2026 skill `/asset` składa każdy prompt według [[Instrukcja promptów — Glossy Ink]] (kanon, decyzja D-027). Szablony są w `.claude/skills/asset/references/prompt-templates.md`.
+1. **Stały początek** — przepisany 1:1 z instrukcji, bez zmian i bez tłumaczenia.
+2. **Zmienny środek** — szablon kategorii (ikona, przycisk, przedmiot, pet, waluta, ramka, okno, tło, mapa izometryczna, arkusz pinezek) z podstawionym opisem. Tu idą wszystkie dopiski, np. „no text, no letters” po nieudanym wariancie.
+3. **Stały koniec** — przepisany 1:1. Daje białe tło, które narzędzie obróbki wycina. Mapa miasteczka kończy się drewnianą ramką z przyciskiem „X” zamiast zdania o białym tle; pełne tła i key-art kończą się bez tego zdania (to rozszerzenie skilla, nie zapis z instrukcji).
+4. **Stały negative prompt** — przepisany 1:1 i zawsze podawany osobno.
+
+Przed generowaniem skill sprawdza żelazne zasady instrukcji: nic nie wystaje poza ramki, portret i sloty są puste, okna to jedna scalona bryła ze statystykami w 2 kolumnach po 3 wiersze, mapy izometryczne nie mają pinezek ani napisów. Dawny prefiks z [[Style Lock]] (D-001) i dawny blok stylu paczki nie są już używane. Zasada „zero tekstu w grafikach AI” zostaje: napisy w obrazie tylko na wyraźną prośbę, np. przy makiecie okna.
 
 ## Stan instalacji (2026-11-12)
 - [x] Zależności Python (`pip install -r requirements.txt`).
@@ -48,4 +57,4 @@ Pierwotnie paczka `blocky-asset-pipeline` w osobnym folderze. **Od 2026-11-12 je
 - `CLAUDE.md` paczki wymienia systemy spoza kanonu (sklep z bronią i magią, gildie, teleport). Zob. [[Pytania otwarte]] #5.
 
 ## Powiązane
-- [[Narzędzia]] · [[Style Lock]] · [[Pipeline Figma → Roblox]] · [[Workflow i Git]] · [[Rejestr decyzji]]
+- [[Narzędzia]] · [[Instrukcja promptów — Glossy Ink]] · [[Style Lock]] (historia) · [[Pipeline Figma → Roblox]] · [[Workflow i Git]] · [[Rejestr decyzji]]
