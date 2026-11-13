@@ -10,6 +10,11 @@ a przesunięcie/obrót/skalowanie klocka w Blenderze wraca do Robloxa przez --do
         --z-json <czesci.json> [--zapisz <plik.blend>] [--render <folder>] [--szer 1600] [--probki 48]
     blender -b --factory-startup <plik.blend> --python-exit-code 1 --python tools/blender/klocki.py -- --do-json <czesci.json>
 
+Kadry renderu: domyślnie ujęcia dema „Leśna baza”; `--auto` = kadry wyliczone z rozmiaru sceny (przód 3/4, tył 3/4, bok,
+oczy gracza, rzut z góry); `--ujecia <plik.json>` = własna lista [[nazwa, [x,y,z] kamery, [x,y,z] celu, ogniskowa mm,
+skala rzutu prostokątnego albo null], …] w układzie Roblox; `--tylko a,b` = tylko ujęcia zawierające te słowa.
+`--swiatlo studio` = płaskie, szare światło jak w domyślnym miejscu Roblox (uczciwy test kontrastu); domyślnie słońce.
+
 Ścieżki ZAWSZE bezwzględne (katalog roboczy Blendera to C:\\). Render uruchamiaj pod blokadą GPU (gpu_lock.py).
 Własności obiektu: rbx_ksztalt (0 blok, 1 kula, 2 walec, 3 klin, 4 klin narożny), rbx_kolor, rbx_material, rbx_alfa,
 rbx_grupa. Obiekty bez rbx_ksztalt (np. importowane siatki) są przy eksporcie pomijane — idą osobną drogą (FBX/GLB).
@@ -173,7 +178,7 @@ def z_json(sciezka):
     bpy.context.scene.collection.children.link(korzen)
     kolekcje = [kolekcja(g, korzen) for g in d["grupy"]]
     for c in d["czesci"]:
-        ks, gi, x, y, z, rx, ry, rz, sx, sy, sz, kolor, mi, alfa, nazwa = c
+        ks, gi, x, y, z, rx, ry, rz, sx, sy, sz, kolor, mi, alfa, nazwa = c[:15]   # 16. pole (cechy) dotyczy tylko Studio
         mat = d["materialy"][mi]
         ob = bpy.data.objects.new(nazwa, siatki.get(ks, siatki[0]))
         if ks == 1:
@@ -259,12 +264,13 @@ def swiatlo_i_swiat():
     swiat = bpy.data.worlds.new("Niebo")
     swiat.use_nodes = True
     tlo = swiat.node_tree.nodes.get("Background")
-    tlo.inputs[0].default_value = (0.42, 0.62, 0.95, 1.0)
-    tlo.inputs[1].default_value = 0.9
+    studio = arg("--swiatlo", "slonce") == "studio"            # „studio” = płaskie, szare światło domyślnego miejsca Roblox
+    tlo.inputs[0].default_value = (0.60, 0.64, 0.72, 1.0) if studio else (0.42, 0.62, 0.95, 1.0)
+    tlo.inputs[1].default_value = 1.15 if studio else 0.9
     sc.world = swiat
     slonce = bpy.data.lights.new("Slonce", "SUN")
-    slonce.energy = 3.4
-    slonce.color = (1.0, 0.94, 0.82)
+    slonce.energy = 1.9 if studio else 3.4
+    slonce.color = (1.0, 1.0, 1.0) if studio else (1.0, 0.94, 0.82)
     slonce.angle = math.radians(6)
     ob = bpy.data.objects.new("Slonce", slonce)
     sc.collection.objects.link(ob)
@@ -284,6 +290,41 @@ def swiatlo_i_swiat():
         pass
 
 
+def ujecia_auto():
+    """Kadry dopasowane do sceny: przód 3/4, tył 3/4, bok, oczy gracza przed frontem (+Z), rzut z góry.
+    Zakres liczony z obiektów „klocków” (własność rbx_ksztalt), z pominięciem grup, których nazwa zaczyna się od „_”
+    (np. „_Podloze”) — podłoże nie rozdmuchuje kadru. Współrzędne w układzie Roblox."""
+    mn, mx = [1e9] * 3, [-1e9] * 3
+    for ob in bpy.data.objects:
+        if "rbx_ksztalt" not in ob.keys() or str(ob.get("rbx_grupa", "")).split("/")[-1].startswith("_"):
+            continue
+        for naroznik in ob.bound_box:
+            w = CT @ (ob.matrix_world @ Vector(naroznik))
+            for i in range(3):
+                mn[i] = min(mn[i], w[i])
+                mx[i] = max(mx[i], w[i])
+    if mn[0] > mx[0]:
+        mn, mx = [-10, 0, -10], [10, 10, 10]
+    c = [(mn[i] + mx[i]) / 2.0 for i in range(3)]
+    sx, sy, sz = (mx[i] - mn[i] for i in range(3))
+    r = math.sqrt(sx * sx + sy * sy + sz * sz) / 2.0
+    d = r / math.sin(math.radians(15.5)) * 0.76                # ogniskowa 35 mm, kadr 16:9: pionowy kąt widzenia ok. 32°
+    cel = (c[0], mn[1] + sy * 0.45, c[2])
+
+    def z_kierunku(kx, ky, kz):
+        n = math.sqrt(kx * kx + ky * ky + kz * kz)
+        return (cel[0] + kx / n * d, cel[1] + ky / n * d, cel[2] + kz / n * d)
+
+    oczy_d = max(sx * 0.9, sy * 1.35) + sz / 2.0
+    return [
+        ("a_przod34", z_kierunku(0.62, 0.45, 1.0), cel, 35.0, None),
+        ("b_tyl34", z_kierunku(-0.7, 0.5, -1.0), cel, 35.0, None),
+        ("c_bok", z_kierunku(1.0, 0.22, 0.12), cel, 35.0, None),
+        ("d_oczy", (c[0] + sx * 0.12, mn[1] + 5.5, c[2] + oczy_d), (c[0], mn[1] + sy * 0.42, c[2]), 24.0, None),
+        ("e_gora", (c[0], mx[1] + 300, c[2] + 0.01), (c[0], mn[1], c[2]), 35.0, max(sx, sz) * 1.18),
+    ]
+
+
 def render(folder):
     sc = bpy.context.scene
     os.makedirs(folder, exist_ok=True)
@@ -293,18 +334,27 @@ def render(folder):
     sc.render.image_settings.file_format = "JPEG"
     sc.render.image_settings.quality = 90
     swiatlo_i_swiat()
-    ujecia = [
-        ("1_panorama", (78, 62, 104), (-2, 6, -18), 32.0, None),
-        ("2_karczma", (7, 7.5, 25), (-2, 16, -42), 24.0, None),
-        ("3_mapa", (0, 400, 0.01), (0, 0, 0), 35.0, 236.0),
-        ("4_od_bramy", (0.5, 7.0, 101), (0, 13, 0), 22.0, None),
-        ("5_portal", (42, 9, -1), (78, 7.5, -6), 28.0, None),
-        ("6_arena_stajnia_wylegarnia", (-14, 17, 14), (-62, 5, -4), 26.0, None),
-        ("7_wylegarnia_i_kolo", (-24, 8, -4), (-25, 6, -26), 26.0, None),
-    ]
-    tylko = arg("--tylko")
+    if arg("--ujecia"):                                        # własna lista: [[nazwa, [x,y,z], [x,y,z], ogniskowa, orto|null], …]
+        px, py, pz = (float(v) for v in arg("--przesun", "0,0,0").split(","))   # przesunięcie mapy w świecie (ujęcia są lokalne)
+        with open(arg("--ujecia"), encoding="utf-8") as f:
+            ujecia = [(u[0], (u[1][0] + px, u[1][1] + py, u[1][2] + pz), (u[2][0] + px, u[2][1] + py, u[2][2] + pz),
+                       float(u[3] if len(u) > 3 and u[3] else 35.0),
+                       (float(u[4]) if len(u) > 4 and u[4] else None)) for u in json.load(f)]
+    elif "--auto" in A:                                        # kadry wyliczone z rozmiaru sceny (pojedynczy budynek, dowolna mapa)
+        ujecia = ujecia_auto()
+    else:                                                      # demo „Leśna baza startowa”
+        ujecia = [
+            ("1_panorama", (78, 62, 104), (-2, 6, -18), 32.0, None),
+            ("2_karczma", (7, 7.5, 25), (-2, 16, -42), 24.0, None),
+            ("3_mapa", (0, 400, 0.01), (0, 0, 0), 35.0, 236.0),
+            ("4_od_bramy", (0.5, 7.0, 101), (0, 13, 0), 22.0, None),
+            ("5_portal", (42, 9, -1), (78, 7.5, -6), 28.0, None),
+            ("6_arena_stajnia_wylegarnia", (-14, 17, 14), (-62, 5, -4), 26.0, None),
+            ("7_wylegarnia_i_kolo", (-24, 8, -4), (-25, 6, -26), 26.0, None),
+        ]
+    tylko = [t for t in (arg("--tylko") or "").split(",") if t]
     for nazwa, pos, cel, ogn, orto in ujecia:
-        if tylko and tylko not in nazwa:
+        if tylko and not any(t in nazwa for t in tylko):
             continue
         cam = kamera("KAMERA_" + nazwa, pos, cel, ogn, orto)
         if orto:                                               # mapa: kwadrat, północ (−Z Robloxa) u góry

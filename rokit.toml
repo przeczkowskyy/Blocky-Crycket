@@ -1,0 +1,15 @@
+# Narzędzia projektu przypięte do wersji — PROPOZYCJA (zadanie „Łańcuch narzędzi” w B&C/Produkcja/Zadania.md).
+# Dzięki temu obie osoby i ich agenci używają dokładnie tych samych wersji.
+#
+# Instalacja Rokit (raz na komputer): https://github.com/rojo-rbx/rokit — potem w tym folderze: rokit install
+#
+# Rojo zostaje na 7.6.1, bo tę wersję opisuje kanon (B&C/Technika/Rojo i struktura projektu.md) i taką ma plugin
+# w Studio. Podniesienie do 7.7.1 robimy u obu osób naraz: zmiana linii poniżej + aktualizacja pluginu Rojo w Studio.
+#
+# Do rozważenia później (nieużywane jeszcze w projekcie, dlatego wyłączone):
+#   lune   = "lune-org/lune@0.11.1"        # uruchamianie testów logiki Luau bez Studio
+#   selene = "Kampfkarren/selene@0.32.0"   # linter Luau
+#   stylua = "JohnnyMorganz/StyLua@2.6.0"  # formatowanie Luau
+
+[tools]
+rojo = "rojo-rbx/rojo@7.6.1"

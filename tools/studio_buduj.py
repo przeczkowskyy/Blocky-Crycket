@@ -112,13 +112,32 @@ return n
 KONIEC = r'''
 local f = workspace:FindFirstChild("__KORZEN__")
 local n = 0
+local obrysow = 0
 if f then
 	for _, d in f:GetDescendants() do
 		if d:IsA("BasePart") then n += 1 end
 	end
+	for _, sciezka in __OBRYSY__ do
+		local path = string.split(sciezka, "/")
+		local cur = workspace
+		for k = 2, #path do
+			cur = cur and cur:FindFirstChild(path[k])
+		end
+		if cur and cur:IsDescendantOf(f) then
+			local h = Instance.new("Highlight")
+			h.Name = "ObrysKomiksowy"
+			h.FillTransparency = 1
+			h.OutlineColor = Color3.fromRGB(24, 20, 18)
+			h.OutlineTransparency = 0
+			h.DepthMode = Enum.HighlightDepthMode.Occluded
+			h.Adornee = cur
+			h.Parent = cur
+			obrysow += 1
+		end
+	end
 end
 game:GetService("ChangeHistoryService"):SetWaypoint("Panel: zbudowano __KORZEN__")
-return n
+return n .. " części, obrysów: " .. obrysow
 '''
 
 
@@ -143,6 +162,8 @@ def main():
     ap.add_argument("--paczka", type=int, default=150)
     ap.add_argument("--sucho", action="store_true")
     ap.add_argument("--usun", action="store_true")
+    ap.add_argument("--obrysy", action="store_true",
+                    help="dodaj komiksowy obrys sylwetki (Highlight) grupom z listy „obrysy” w pliku; limit silnika: 31 naraz")
     a = ap.parse_args()
     with open(a.plik, encoding="utf-8") as f:
         d = json.load(f)
@@ -151,6 +172,7 @@ def main():
     if len(korzenie) != 1:
         sys.exit("Wszystkie grupy muszą leżeć w jednym kontenerze Workspace/<Nazwa>/… (jest: %s)" % sorted(korzenie))
     korzen = korzenie.pop()
+    jest_v2 = d.get("generator") == "biblioteka-v2" or "obrysy" in d or any(len(c) > 15 for c in czesci)   # v2: cechy w 16. polu
     print("Kontener: Workspace/%s · części: %d · grup: %d · materiały: %s" % (korzen, len(czesci), len(grupy), ", ".join(materialy)))
     if a.sucho:
         return
@@ -180,14 +202,20 @@ def main():
                 paczka = []
                 for c in czesci[i:i + a.paczka]:
                     nazwa = c[14]
-                    kolizja = 0 if any(k in nazwa for k in BEZ_KOLIZJI) else 1
-                    cien = 0 if any(k in nazwa for k in BEZ_CIENIA) else 1
-                    paczka.append(list(c) + [kolizja, cien])
+                    if len(c) > 15:                            # v2: cechy zapisane w pliku (1 = bez kolizji, 2 = bez cienia)
+                        kolizja, cien = (0 if int(c[15]) & 1 else 1), (0 if int(c[15]) & 2 else 1)
+                    elif jest_v2:
+                        kolizja, cien = 1, 1
+                    else:                                      # v1: po słowach w nazwie części
+                        kolizja = 0 if any(k in nazwa for k in BEZ_KOLIZJI) else 1
+                        cien = 0 if any(k in nazwa for k in BEZ_CIENIA) else 1
+                    paczka.append(list(c[:15]) + [kolizja, cien])
                 n = wykonaj(wspolne + PACZKA.replace("__DANE__", luau(paczka)))
                 razem += int(float(n))
                 print("  %5d / %d" % (razem, len(czesci)), flush=True)
-            n = wykonaj(KONIEC.replace("__KORZEN__", korzen))
-            print("gotowe: w Studio jest %s części w Workspace/%s (%.0f s)" % (n, korzen, time.time() - t0))
+            obrysy = [g for g in d.get("obrysy") or [] if isinstance(g, str)][:31] if a.obrysy else []
+            n = wykonaj(KONIEC.replace("__KORZEN__", korzen).replace("__OBRYSY__", luau(obrysy)))
+            print("gotowe: w Studio jest %s w Workspace/%s (%.0f s)" % (n, korzen, time.time() - t0))
     except StudioError as e:
         sys.exit("BŁĄD Studio: %s" % e)
 

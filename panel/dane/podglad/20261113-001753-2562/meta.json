@@ -1,0 +1,97 @@
+{
+ "id": "20261113-001753-2562",
+ "tytul": "Demo: Leśna baza startowa — zrzuty z Roblox Studio",
+ "opis": "Ta sama scena co w pierwszej migawce (Workspace/DemoLesnaBaza), tym razem ze zrzutami z prawdziwego Roblox Studio — widać, jak mapa wygląda w domyślnym oświetleniu miejsca (bardziej płasko i szaro niż na renderach z Blendera).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T00:17:55+01:00",
+ "zrodlo": "studio",
+ "czesci": 2599,
+ "grupy": [
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Arena",
+   "czesci": 40
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Brama",
+   "czesci": 117
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Karczma",
+   "czesci": 222
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/KoloFortuny",
+   "czesci": 18
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Las",
+   "czesci": 1039
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Latarnie",
+   "czesci": 60
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Ognisko",
+   "czesci": 26
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Plac",
+   "czesci": 115
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/PortalLochow",
+   "czesci": 58
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Runo",
+   "czesci": 646
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Sklep",
+   "czesci": 37
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Stajnia",
+   "czesci": 48
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Staw",
+   "czesci": 42
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/TablicaZlecen",
+   "czesci": 16
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Teren",
+   "czesci": 78
+  },
+  {
+   "sciezka": "Workspace/DemoLesnaBaza/Wylegarnia",
+   "czesci": 37
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "zakres": {
+  "min": [
+   -116.343,
+   -0.238,
+   -116.541
+  ],
+  "max": [
+   119.632,
+   59.7,
+   115.0
+  ]
+ },
+ "miejsce": {
+  "placeId": 129485428021967,
+  "nazwa": "Blocky&Crycket (placeId: 129485428021967)"
+ },
+ "korzen": "Workspace/DemoLesnaBaza"
+}
