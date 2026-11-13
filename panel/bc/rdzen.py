@@ -186,8 +186,11 @@ DOMYSLNA = {
 # Ustawienia, od których zależy bezpieczeństwo komputera, wolno ustawić TYLKO w konfiguracji lokalnej. Wspólny plik
 # panel/konfiguracja.json leży w repozytorium: może go zmienić druga osoba albo scalona cudza zmiana, więc nie może
 # włączać agenta dla połączeń zdalnych, wskazywać programu do uruchomienia, poszerzać listy narzędzi ani dopisywać hostów.
+# Tak samo klucz Open Cloud do telemetrii i adres, pod który jest wysyłany (bc/telemetria.py): sekret nie może
+# przyjść z publicznego repozytorium ani zostać przekierowany na cudzy serwer.
 TYLKO_LOKALNE_GLOWNE = ("dozwolone_hosty",)
-TYLKO_LOKALNE_SEKCJE = {"agent": ("zdalnie", "sciezka", "dozwolone_narzedzia"), "glos": ("katalog_modeli",)}
+TYLKO_LOKALNE_SEKCJE = {"agent": ("zdalnie", "sciezka", "dozwolone_narzedzia"), "glos": ("katalog_modeli",),
+                        "analityka": ("klucz_open_cloud", "adres_open_cloud")}
 
 
 def _bezpieczna_wspolna(cfg):

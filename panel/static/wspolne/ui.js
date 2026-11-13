@@ -93,6 +93,7 @@ const IKONY = {
   notatka: '<path d="M6 3h8.5L19 7.5V21H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',
   studio: '<rect x="3.5" y="9" width="17" height="11" rx="1.5"/><path d="M7 9V6h4v3M13 9V6h4v3"/>',
   obraz: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-9 8"/>',
+  assety: '<rect x="3" y="7.5" width="14" height="12.5" rx="2"/><path d="M7.5 4H19a2 2 0 0 1 2 2v10"/><circle cx="7.8" cy="12" r="1.5"/><path d="M17 16.5l-3.8-3.8L6.5 20"/>',
   uzytkownik: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
   zegar: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>',
   narzedzie: '<path d="M14.7 6.3a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3z"/><path d="M14.7 6.3L17 4l3 3-2.3 2.3"/>',

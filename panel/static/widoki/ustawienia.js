@@ -10,6 +10,8 @@ const MODULY = {
   studio: { nazwa: "Roblox Studio (MCP)", naprawa: "Otwórz Roblox Studio z włączonym serwerem MCP (Assistant → MCP) i odśwież." },
   podglad: { nazwa: "Podgląd 3D (migawki)", naprawa: "Migawki wymagają połączenia ze Studio; podgląd istniejących działa bez niego." },
   analityka: { nazwa: "Analityka gry", naprawa: "Wpisz universeId i placeId gry w panel/konfiguracja.json." },
+  telemetria: { nazwa: "Telemetria gry (Open Cloud)", naprawa: "Jak ją włączyć, pokazuje zakładka Analityka → Telemetria gry." },
+  assety: { nazwa: "Assety (rejestr grafik)", naprawa: "Plik assets/manifest.json musi być poprawnym JSON-em — zapisuje go pipeline grafik (tools/manifest.py)." },
   raporty: { nazwa: "Raporty i komentarze", naprawa: "Sprawdź, czy folder panel/dane jest zapisywalny (OneDrive potrafi go blokować)." },
   agent: { nazwa: "Agent (Claude Code)", naprawa: "Zainstaluj Claude Code i zaloguj się: w terminalu „claude”, potem /login." },
   glos: { nazwa: "Głosówki (transkrypcja)", naprawa: "Opcjonalne: transkrypcja potrzebuje faster-whisper na komputerze z panelem (patrz INSTALACJA.md)." },

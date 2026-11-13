@@ -31,10 +31,11 @@ Panel otworzy się w przeglądarce (`http://127.0.0.1:8787`). Przy pierwszym wej
 |---|---|
 | Pulpit, Plan (decyzje, zadania, roadmapa), Raporty, Sieć notatek | nic |
 | Podgląd 3D zapisanych migawek | nic |
+| Assety — rejestr grafik gry z `assets/manifest.json`: statusy, numery Roblox, linki do Figmy (tylko podgląd) | nic |
 | Nowa migawka ze Studio, „kto jest w Studio”, konsola Studio | uruchomione Roblox Studio z włączonym serwerem MCP (niżej) |
 | Agent | Claude Code zainstalowany i zalogowany na tym komputerze |
 | Głosówki zamieniane na tekst | `pip install faster-whisper` (model ok. 1,6 GB pobiera się przy pierwszym nagraniu) |
-| Mniejsze zrzuty w migawkach i raportach | `pip install pillow` (opcjonalnie) |
+| Mniejsze zrzuty w migawkach i raportach, lekkie miniatury w Assetach | `pip install pillow` (opcjonalnie) |
 | Wejście z telefonu | uruchomienie przez `panel\start_lan.bat` (niżej) |
 
 ### Roblox Studio

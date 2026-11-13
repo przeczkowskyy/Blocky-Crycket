@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Lustro tylko-do-odczytu: strona statyczna z tym, co panel pokazuje z repozytorium (plan, raporty, podgląd 3D, sieć).
+"""Lustro tylko-do-odczytu: strona statyczna z tym, co panel pokazuje z repozytorium (plan, raporty, podgląd 3D, sieć,
+assety).
 
 Po co: żeby zobaczyć stan projektu z telefonu, gdy żaden komputer z panelem nie jest włączony (np. przez GitHub Pages).
 Jak: eksporter woła te same trasy GET co przeglądarka i zapisuje odpowiedzi jako pliki `dane/<klucz>.json`;
@@ -195,6 +196,9 @@ def eksportuj(app, folder, czas=None):
     trasa("/api/studio/konsola", {"linie": [], "bledy": 0, "ostrzezenia": 0})
     trasa("/api/zdrowie", {"rdzen": {}, "moduly": {}, "szczegoly": {}, "lustro": True})
     trasa("/api/dostep", {"lan": False, "token": "", "adresy": [], "podpowiedz": niedostepne})
+    # telemetria gry: do lustra nie trafia nic z gry (odczyt wymaga klucza Open Cloud na komputerze z panelem)
+    for sciezka in ("/api/telemetria", "/api/telemetria?godzin=24"):
+        trasa(sciezka, {"wlaczona": False, "powod": "niedostępne w podglądzie"})
 
     # 3) sejf
     trasa("/api/sejf/plan")
@@ -234,6 +238,18 @@ def eksportuj(app, folder, czas=None):
             if isinstance(g, dict) and g.get("sciezka"):
                 cele.add(("studio", g["sciezka"]))
 
+    # 4b) assety: rejestr grafik i gotowe obrazy pod tymi samymi ścieżkami co w API (nic z assets/raw/)
+    assety = trasa("/api/assety") or {}
+    obrazy = set()
+    for a in assety.get("assety") or []:
+        obrazy.update(str(a[pole]).split("?")[0] for pole in ("obraz", "miniatura") if a.get(pole))
+        if a.get("cel_komentarzy"):
+            cele.add(("plik", a["cel_komentarzy"]))
+    for adres in sorted(obrazy):
+        plik(adres)
+    if assety.get("assety"):
+        trasa("/api/komentarze?typ=plik")                      # liczniki komentarzy na kartach assetów
+
     # 5) raporty i komentarze
     raporty = trasa("/api/raporty") or {}
     for r in raporty.get("raporty") or []:
@@ -253,7 +269,7 @@ def eksportuj(app, folder, czas=None):
         if c.get("typ") and c.get("cel"):
             cele.add((c["typ"], c["cel"]))
     for typ, cel in sorted(cele):
-        if typ in ("raport", "studio", "notatka", "migawka"):  # tylko cele, do których da się pisać komentarze
+        if typ in ("raport", "studio", "notatka", "migawka", "plik"):  # tylko cele, do których da się pisać komentarze
             trasa("/api/komentarze?typ=%s&cel=%s" % (enc(typ), enc(cel)))
 
     # 6) reszta: obecność i git (same commity — bez listy lokalnych plików), analityka (publiczne liczby z chwili eksportu)

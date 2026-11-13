@@ -31,7 +31,7 @@ from .rdzen import BladHTTP
 RODZAJE = ("wdrozenie", "pytanie", "informacja")
 DECYZJE = ("zaakceptowane", "do_poprawy")
 TYPY_KOMPONENTU = ("studio", "notatka", "plik", "migawka")
-TYPY_CELU = ("raport", "studio", "notatka", "migawka")
+TYPY_CELU = ("raport", "studio", "notatka", "migawka", "plik")   # „plik” = ścieżka w repo (np. obraz assetu)
 ZRODLA = ("tekst", "glos")
 
 MAX_TYTUL = 140

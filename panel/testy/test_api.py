@@ -345,6 +345,24 @@ class TestAPI(unittest.TestCase):
         self.assertPola(o["telemetria"], ["podlaczona", "opis"])
         self.assertPola(o["robuxy"], ["dostepne", "opis"])
 
+    def test_telemetria(self):
+        """Telemetria gry bez klucza i bez sieci: „wyłączona” z powodem; dane przykładowe tylko przy komputerze."""
+        s, o, _ = self.get("/api/telemetria?godzin=24")
+        self.assertEqual(s, 200)
+        self.assertPola(o, ["wlaczona", "zrodlo", "kod", "powod", "kroki", "plik_konfiguracji"])
+        self.assertEqual((o["wlaczona"], o["zrodlo"], o["kod"]), (False, None, "brak_universe"))
+        s, o, _ = self.get("/api/telemetria", zdalny=True)
+        self.assertEqual((s, o["wlaczona"]), (200, False))
+        self.assertNotIn("plik_konfiguracji", o)                                     # lokalna ścieżka nie dla gościa
+        self.assertBlad(self.get("/api/telemetria?probka=1", zdalny=True), 403)
+        self.assertBlad(self.get("/api/telemetria?probka=1", klucz=False, naglowki={"X-BC-Token": self.token}), 403)
+        s, o, _ = self.get("/api/telemetria?godzin=6&probka=1")
+        self.assertEqual((s, o["wlaczona"], o["zrodlo"], o["przykladowe"]), (200, False, "probka", True))
+        self.assertPola(o, ["powod", "okres", "suma", "godziny", "zakupy", "bledy", "serwery"])
+        self.assertPola(o["suma"], ["sesje", "sredni_czas_sesji_s", "ccu_max", "robuxy", "zakupy", "bledy"])
+        self.assertEqual(len(o["godziny"]), 6)
+        self.assertIn("telemetria", self.get("/api/zdrowie", timeout=60)[1]["moduly"])
+
     # ------------------------------------------------------------------ podgląd
     def test_podglad(self):
         s, o, _ = self.get("/api/podglad")
@@ -366,6 +384,47 @@ class TestAPI(unittest.TestCase):
         self.assertBlad(self.post("/api/podglad/migawka", {"tytul": "x"}, zdalny=True), 403)
         self.assertBlad(self.post("/api/podglad/migawka", {"tytul": "x"}), 503)                 # Studio niedostępne
         self.assertBlad(self.post("/api/podglad/migawka", [1]), 400)
+
+    # ------------------------------------------------------------------ assety (rejestr grafik — tylko odczyt)
+    def test_assety(self):
+        """Prawdziwy assets/manifest.json jest tylko czytany — sprawdzamy kształt odpowiedzi, nie treść rejestru."""
+        s, o, _ = self.get("/api/assety")
+        self.assertEqual(s, 200, o)
+        self.assertPola(o, ["zrodlo", "assety", "liczniki", "etapy", "statusy", "czeka"])
+        self.assertEqual(o["zrodlo"], "assets/manifest.json")
+        self.assertEqual([e["id"] for e in o["etapy"]], ["generowanie", "obrobka", "figma", "zgoda", "roblox"])
+        self.assertEqual(sum(o["liczniki"].values()), len(o["assety"]))
+        for a in o["assety"]:
+            self.assertPola(a, ["nazwa", "kategoria", "status", "status_opis", "etap", "uzycie", "notatki", "obraz",
+                                "historia", "czeka_na_zgode", "cel_komentarzy"])
+        s, gosc, _ = self.get("/api/assety", zdalny=True)                           # gość widzi ten sam rejestr
+        self.assertEqual((s, [a["nazwa"] for a in gosc["assety"]]), (200, [a["nazwa"] for a in o["assety"]]))
+        z_obrazem = next((a for a in o["assety"] if a["obraz"]), None)
+        if z_obrazem:                                                                # adresy z rejestru prowadzą do obrazów
+            s, _, (nagl, b) = self.get(z_obrazem["obraz"], bajty=True, zdalny=True)
+            self.assertEqual((s, len(b)), (200, z_obrazem["rozmiar"]))
+            self.assertTrue(nagl["Content-Type"].startswith("image/"), nagl["Content-Type"])
+            self.assertIn("max-age", nagl["Cache-Control"])
+            s, _, (nagl, b) = self.get(z_obrazem["miniatura"], bajty=True)
+            self.assertEqual(s, 200)
+            self.assertTrue(nagl["Content-Type"].startswith("image/") and b, nagl["Content-Type"])
+        for zla in ("..", "%2e%2e", "..%2Fmanifest.json", "..%2F..%2F.env", "..%5C..%5C.env", "manifest.json",
+                    "nie-ma-takiego-assetu.png"):
+            for rodzaj in ("plik", "miniatura"):
+                self.assertEqual(self.get("/api/assety/%s/%s" % (rodzaj, zla))[0], 404, zla)
+        for trasa in ("/api/assety", "/api/assety/plik/x", "/api/assety/miniatura/x"):
+            self.assertBlad(self.post(trasa, {}), 405)                               # zakładka niczego nie zapisuje
+        # komentarz do assetu = cel typu „plik” (ścieżka obrazu w repo); trafia do katalogu tymczasowego testu
+        cel = "assets/processed/TestowyAsset.png"
+        s, k, _ = self.post("/api/komentarze", {"cel": {"typ": "plik", "cel": cel, "etykieta": "TestowyAsset"},
+                                                "tekst": "Za ciemny obrys"}, kto="Paweł")
+        self.assertEqual((s, k["cel"]["typ"]), (201, "plik"), k)
+        s, w, _ = self.get("/api/komentarze?typ=plik&cel=" + urllib.parse.quote(cel))
+        self.assertEqual([x["id"] for x in w["komentarze"]], [k["id"]])
+        s, z, _ = self.get("/api/zdrowie", timeout=60)
+        self.assertTrue(z["moduly"]["assety"]["ok"], z["moduly"]["assety"])
+        self.assertPola(z["szczegoly"]["assety"], ["manifest", "assety", "bez_obrazu"])
+        self.assertEqual(z["szczegoly"]["assety"]["assety"], len(o["assety"]))
 
     # ------------------------------------------------------------------ raporty i komentarze
     def test_raporty_i_komentarze(self):

@@ -1,10 +1,26 @@
-// Analityka — gracze, wizyty, oceny (publiczne API Roblox), stan Roblox Studio i konsola.
-// Odświeżanie co 30 s, tylko gdy widok jest widoczny.
+// Analityka — gracze, wizyty, oceny (publiczne API Roblox), telemetria gry (sesje, Robuxy, błędy, serwery na żywo
+// z modułu w grze przez Open Cloud), stan Roblox Studio i konsola.
+// Odświeżanie co 30 s (telemetria co 5 min — tyle serwer pamięta odpowiedź), tylko gdy widok jest widoczny.
 
-import { ikona, ladowanie, pusty } from "../wspolne/ui.js";
+import { ikona, ladowanie, pusty, przelacznik, czasTrwania } from "../wspolne/ui.js";
 
 const CSS = new URL("./analityka.css", import.meta.url).href;
 const ODSWIEZ_MS = 30000;
+// Dokładnie ten napis jest kluczem pliku w lustrze tylko do odczytu (bc/statyczny.py) — zmieniaj w obu miejscach.
+const TELEMETRIA = "/api/telemetria?godzin=24";
+const ODSWIEZ_TELEMETRIE_MS = 5 * 60 * 1000;
+// Co pokazuje wykres godzinowy: pole z /api/telemetria → godziny[], podpis i odmiana jednostki.
+const METRYKI = [
+  { id: "sesje", tekst: "Sesje", opis: "sesje rozpoczęte w godzinie", jednostka: ["sesja", "sesje", "sesji"], pusto: "W tym okresie nikt nie wszedł do gry." },
+  { id: "ccu_max", tekst: "Gracze", opis: "najwięcej graczy naraz w godzinie", jednostka: ["gracz naraz", "graczy naraz", "graczy naraz"], pusto: "W tym okresie na serwerach nie było graczy." },
+  { id: "robuxy", tekst: "Robuxy", opis: "Robuxy wydane w godzinie", jednostka: ["R$", "R$", "R$"], pusto: "W tym okresie nikt nic nie kupił." },
+  { id: "bledy", tekst: "Błędy", opis: "błędy skryptów w godzinie", jednostka: ["błąd", "błędy", "błędów"], pusto: "W tym okresie nie było błędów skryptów." },
+];
+// Przedziały długości sesji — te same nazwy co w grze (Agregator.luau: przedzial_sesji).
+const PRZEDZIALY_SESJI = [
+  { id: "do_1", tekst: "do 1 min" }, { id: "do_5", tekst: "1–5 min" }, { id: "do_15", tekst: "5–15 min" },
+  { id: "do_30", tekst: "15–30 min" }, { id: "do_60", tekst: "30–60 min" }, { id: "ponad_60", tekst: "ponad 1 godz." },
+];
 
 function el(tag, at, ...dzieci) {
   const e = document.createElement(tag);
@@ -67,16 +83,18 @@ export default {
   utworz(ctx) {
     dolaczCss(CSS);
     const S = { widoczny: false, dane: null, timer: 0, trwa: false, blad: null };
+    // telemetria gry: osobne żądanie i osobny rytm odświeżania
+    const T = { dane: null, blad: null, trwa: false, kiedy: 0, probka: false, metryka: "sesje", tabela: false, wykres: null, ro: null, schowajDymek: null };
 
     const aktualizacja = el("span", { class: "cichy-tekst an-akt" });
-    const odswiezBtn = el("button", { class: "przycisk cichy ikonowy", type: "button", "aria-label": "Odśwież", title: "Odśwież", onclick: () => wczytaj(true) }, ikona("odswiez"));
+    const odswiezBtn = el("button", { class: "przycisk cichy ikonowy", type: "button", "aria-label": "Odśwież", title: "Odśwież", onclick: () => { wczytaj(true); wczytajTelemetrie(true); } }, ikona("odswiez"));
     const gra = el("div", { class: "an-gra" });
     const wykres = el("div", { class: "karta an-wykres-karta" });
+    const telemetria = el("section", { class: "an-tel", "aria-label": "Telemetria gry" });
     const studio = el("div", { class: "karta an-studio" });
-    const dodatki = el("div", { class: "siatka an-dodatki" });
     const root = el("section", { class: "an" },
       el("header", { class: "an-gora" }, el("div", {}, el("h1", { class: "an-tytul", text: "Analityka" }), aktualizacja), odswiezBtn),
-      gra, wykres, studio, dodatki);
+      gra, wykres, telemetria, studio);
 
     async function wczytaj(recznie) {
       if (S.trwa) return;
@@ -109,10 +127,10 @@ export default {
             el("p", { text: S.blad }),
             el("button", { class: "przycisk", type: "button", onclick: () => wczytaj(true) }, ikona("odswiez"), "Spróbuj ponownie")), "ostrzezenie")
           : ladowanie("Wczytuję analitykę…"));
-        wykres.hidden = studio.hidden = dodatki.hidden = true;
+        wykres.hidden = studio.hidden = true;
         return;
       }
-      wykres.hidden = studio.hidden = dodatki.hidden = false;
+      wykres.hidden = studio.hidden = false;
       const g = d.gra || {};
       aktualizacja.textContent = (g.nazwa ? g.nazwa + " · " : "") + (g.zaktualizowano ? "dane z Roblox " + czasTemu(g.zaktualizowano) : "") +
         (S.blad ? " · ostatnie odświeżenie nie wyszło" : "");
@@ -151,17 +169,308 @@ export default {
 
       rysujWykres(d.historia || [], niedostepna);
       rysujStudio(d.studio || {});
-      const t = d.telemetria || {}, r = d.robuxy || {};
-      dodatki.replaceChildren(
-        el("div", { class: "karta an-dodatek" },
-          el("div", { class: "an-naglowek" }, el("h2", { class: "karta-tytul" }, ikona("zdrowie"), el("span", { text: "Telemetria gry" })),
-            el("span", { class: "chip " + (t.podlaczona ? "zielen" : ""), text: t.podlaczona ? "podłączona" : "niepodłączona" })),
-          el("p", { class: "cichy-tekst", text: t.opis || (t.podlaczona ? "Dane z gry spływają do panelu." : "Gra nie wysyła jeszcze danych do panelu.") })),
-        el("div", { class: "karta an-dodatek" },
-          el("div", { class: "an-naglowek" }, el("h2", { class: "karta-tytul" }, ikona("rakieta"), el("span", { text: "Robuxy" })),
-            el("span", { class: "chip " + (r.dostepne ? "zielen" : ""), text: r.dostepne ? "podłączone" : "niepodłączone" })),
-          el("p", { class: "cichy-tekst", text: r.opis || (r.dostepne ? "" : "Zarobki nie są jeszcze podłączone.") })));
     }
+
+    // ------------------------------------------------------------------ telemetria gry
+    async function wczytajTelemetrie(recznie) {
+      if (T.trwa) return;
+      T.trwa = true;
+      let sciezka = TELEMETRIA;
+      if (T.probka) sciezka += "&probka=1";
+      else if (recznie && ctx.ja.lokalny && !ctx.statyczny) sciezka += "&odswiez=1";
+      let bezProbki = false;
+      try {
+        T.dane = await ctx.api(sciezka, { czas: 45000 });
+        T.blad = null;
+      } catch (e) {
+        if (T.probka) bezProbki = true;                        // dane przykładowe są tylko dla osoby przy komputerze
+        else T.blad = e.message || "błąd";
+      } finally {
+        T.trwa = false;
+      }
+      if (bezProbki) {
+        T.probka = false;
+        return wczytajTelemetrie(false);
+      }
+      T.kiedy = Date.now();
+      rysujTelemetrie();
+    }
+
+    function ustawProbke(wlacz) {
+      T.probka = !!wlacz;
+      T.dane = null;
+      T.blad = null;
+      rysujTelemetrie();
+      wczytajTelemetrie(false);
+    }
+
+    function naglowekTelemetrii(...dodatki) {
+      return el("div", { class: "an-tel-gora" },
+        el("h2", { class: "an-tel-tytul" }, ikona("zdrowie"), el("span", { text: "Telemetria gry" })), ...dodatki);
+    }
+
+    function rysujTelemetrie() {
+      if (T.ro) { T.ro.disconnect(); T.ro = null; }
+      T.wykres = null;
+      T.schowajDymek = null;
+      telemetria.classList.remove("przykladowe");
+      const t = T.dane;
+      if (!t) {
+        telemetria.replaceChildren(naglowekTelemetrii(), T.blad
+          ? el("div", { class: "karta an-stan" }, el("div", { class: "pusty-ikona an-stan-ikona" }, ikona("ostrzezenie")),
+            el("div", {}, el("h3", { class: "karta-tytul", text: "Nie udało się pobrać telemetrii" }),
+              el("p", { class: "cichy-tekst", text: T.blad }),
+              el("p", {}, el("button", { class: "przycisk maly", type: "button", onclick: () => wczytajTelemetrie(true) }, ikona("odswiez"), "Spróbuj ponownie"))))
+          : ladowanie("Wczytuję telemetrię gry…"));
+        return;
+      }
+      if (!t.zrodlo) {
+        telemetria.replaceChildren(naglowekTelemetrii(el("span", { class: "chip", text: t.chwilowe ? "chwilowo niedostępna" : "wyłączona" })),
+          ctx.statyczny ? kartaPodgladu() : t.chwilowe ? kartaAwarii(t) : kartaJakWlaczyc(t));
+        return;
+      }
+      const przykladowe = t.zrodlo === "probka";
+      telemetria.classList.toggle("przykladowe", przykladowe);
+      const okres = t.okres || {};
+      // filter(Boolean): natywne replaceChildren() wypisałoby brakujący element jako napis „null”
+      telemetria.replaceChildren(...[
+        naglowekTelemetrii(
+          przykladowe ? el("span", { class: "chip zloto", text: "dane przykładowe" }) : el("span", { class: "chip zielen", text: "dane z gry" }),
+          el("span", { class: "cichy-tekst an-tel-okres", text: "ostatnie " + (okres.godzin || 24) + " h" + (t.zaktualizowano && !przykladowe ? " · odczyt " + czasTemu(t.zaktualizowano) : "") })),
+        przykladowe ? el("div", { class: "an-tel-baner", role: "note" }, ikona("info"),
+          el("div", {}, el("strong", { text: "To są dane przykładowe." }), " Pokazują, jak będzie wyglądać telemetria po włączeniu — nie pochodzą z gry."),
+          el("button", { class: "przycisk maly", type: "button", onclick: () => ustawProbke(false) }, "Ukryj")) : null,
+        t.blad ? el("div", { class: "an-tel-baner blad", role: "note" }, ikona("ostrzezenie"), el("div", { text: t.blad })) : null,
+        kartyTelemetrii(t),
+        kartaGodzin(t),
+        (t.uwagi || []).length ? el("ul", { class: "an-tel-uwagi cichy-tekst" }, ...t.uwagi.map((u) => el("li", { text: u }))) : null,
+      ].filter(Boolean));
+      rysujGodziny();
+      const pole = T.wykres && T.wykres.pole;
+      if (pole) {
+        let szer = pole.clientWidth;
+        T.ro = new ResizeObserver(() => { if (pole.clientWidth !== szer) { szer = pole.clientWidth; rysujGodziny(); } });
+        T.ro.observe(pole);
+      }
+    }
+
+    // ---- telemetria wyłączona: jedna karta z trzema krokami zamiast pustych kafli
+    function kartaJakWlaczyc(t) {
+      const kroki = t.kroki || {};
+      const jestKlucz = !!kroki.klucz;
+      // klucz jest wpisany, ale Roblox go nie przyjął albo brakuje mu uprawnień: krok 2 wymaga poprawki
+      const kluczZly = jestKlucz && (t.kod === "klucz_odrzucony" || t.kod === "brak_uprawnien");
+      const OPISY = { ok: "zrobione", zle: "do poprawy", uwaga: "do zrobienia" };
+      const IKONY_KROKU = { ok: "ok", zle: "krzyzyk", uwaga: "zegar" };
+      const krok = (stan, tytul, ...opis) => el("li", { class: "an-krok" },
+        el("span", { class: "znacznik " + stan, role: "img", "aria-label": OPISY[stan] }, ikona(IKONY_KROKU[stan])),
+        el("div", { class: "an-krok-tresc" }, el("strong", { text: tytul }), el("p", { class: "cichy-tekst" }, ...opis)));
+      return el("div", { class: "karta an-tel-jak" },
+        el("h3", { class: "karta-tytul" }, ikona("zarowka"), el("span", { text: "Jak włączyć telemetrię" })),
+        el("p", { class: "an-tel-powod", text: t.powod || "Telemetria gry nie jest jeszcze włączona." }),
+        t.szczegoly ? el("p", { class: "cichy-tekst an-szczegol", text: "Odpowiedź Roblox: " + t.szczegoly }) : null,
+        el("ol", { class: "an-kroki" },
+          krok(kroki.modul === true ? "ok" : "uwaga", "Game Director włącza moduł w grze",
+            "Dodaje skrypt serwera, który woła ", el("code", { text: "Telemetria.start()" }), ", i publikuje grę. Bez tego gra niczego nie zapisuje. Instrukcja: notatka ",
+            el("a", { href: "#/siec", "data-wikilink": "Telemetria gry", text: "Telemetria gry" }), " w sejfie."),
+          krok(kluczZly ? "zle" : jestKlucz ? "ok" : "uwaga", "Tworzy klucz Open Cloud tylko do odczytu",
+            "Creator Dashboard → API Keys: dla tej gry operacja ", el("code", { text: "universe-datastores.objects:read" }),
+            " (odczyt wpisów Data Store), a do listy serwerów na żywo także ", el("code", { text: "memory-store.sorted-map:read" }), "."),
+          krok(jestKlucz ? "ok" : "uwaga", "Wpisuje klucz lokalnie, na komputerze z panelem",
+            "Zmienna środowiskowa ", el("code", { text: "BC_OPEN_CLOUD_KEY" }), " albo pole ", el("code", { text: "analityka.klucz_open_cloud" }), " w pliku ",
+            el("code", { text: t.plik_konfiguracji || "konfiguracja.lokalna.json" }), ". Klucz nigdy nie trafia do repozytorium.")),
+        el("div", { class: "an-tel-stopka" },
+          el("span", { class: "cichy-tekst", text: "Do tego czasu liczby graczy pochodzą tylko z publicznego API Roblox (kafle wyżej)." }),
+          ctx.ja.lokalny ? el("button", { class: "przycisk maly", type: "button", onclick: () => ustawProbke(true) }, ikona("oko"), "Pokaż przykładowe dane") : null));
+    }
+
+    function kartaAwarii(t) {
+      return el("div", { class: "karta an-stan" }, el("div", { class: "pusty-ikona an-stan-ikona" }, ikona("ostrzezenie")),
+        el("div", {}, el("h3", { class: "karta-tytul", text: "Telemetria jest chwilowo niedostępna" }),
+          el("p", { class: "cichy-tekst", text: t.powod || "Roblox nie odpowiedział." }),
+          t.szczegoly ? el("p", { class: "cichy-tekst an-szczegol", text: "Odpowiedź Roblox: " + t.szczegoly }) : null,
+          el("p", {}, el("button", { class: "przycisk maly", type: "button", onclick: () => wczytajTelemetrie(true) }, ikona("odswiez"), "Spróbuj ponownie"))));
+    }
+
+    function kartaPodgladu() {
+      return el("div", { class: "karta an-stan" }, el("div", { class: "pusty-ikona an-stan-ikona" }, ikona("oko")),
+        el("div", {}, el("h3", { class: "karta-tytul", text: "Niedostępne w podglądzie" }),
+          el("p", { class: "cichy-tekst", text: "Sesje, Robuxy, błędy i serwery na żywo widać tylko w panelu uruchomionym na komputerze — do podglądu tylko do odczytu nie trafiają żadne dane z gry." })));
+    }
+
+    // ---- cztery karty: sesje, Robuxy, błędy, serwery
+    function kartaTel(tytul, nazwaIkony, wartosc, podpisy, tresc) {
+      return el("div", { class: "karta an-tel-karta" },
+        el("h3", { class: "karta-tytul" }, ikona(nazwaIkony), el("span", { text: tytul })),
+        el("div", { class: "an-tel-wartosc", text: wartosc }),
+        ...podpisy.filter(Boolean).map((p) => el("div", { class: "an-tel-pod cichy-tekst", text: p })),
+        tresc || null);
+    }
+    const listaTel = (pozycje, pusta) => (pozycje.length
+      ? el("ul", { class: "an-tel-lista" }, ...pozycje)
+      : el("p", { class: "an-tel-pusta cichy-tekst", text: pusta }));
+
+    function kartyTelemetrii(t) {
+      const su = t.suma || {};
+      const robux = (n) => liczba(n) + " R$";
+      // sesje: liczba, średni czas i rozkład długości (ile sesji kończy się w każdym przedziale)
+      const dl = t.dlugosci_sesji || {};
+      const razemDl = PRZEDZIALY_SESJI.reduce((a, p) => a + (Number(dl[p.id]) || 0), 0);
+      const rozklad = razemDl ? el("ul", { class: "an-tel-rozklad", "aria-label": "Długość sesji" }, ...PRZEDZIALY_SESJI.map((p) => {
+        const ile = Number(dl[p.id]) || 0, proc = Math.round((ile / razemDl) * 100);
+        const ileSesji = liczba(ile) + " " + odmiana(ile, "sesja", "sesje", "sesji");
+        return el("li", {},
+          el("span", { class: "an-tel-rozklad-nazwa", text: p.tekst }),
+          el("span", { class: "an-tel-rozklad-tor", title: ileSesji }, ile ? el("span", { class: "an-tel-rozklad-pasek", style: `width:${(ile / razemDl) * 100}%` }) : null),
+          el("span", { class: "an-tel-liczba", title: ileSesji, text: proc + "%" }));
+      })) : null;
+      const sesje = kartaTel("Sesje", "zespol", liczba(su.sesje), [
+        su.sredni_czas_sesji_s != null ? "średni czas sesji: " + czasTrwania(su.sredni_czas_sesji_s) : "średni czas sesji: brak zakończonych sesji",
+        "najwięcej graczy naraz: " + liczba(su.ccu_max)], rozklad);
+      // Robuxy
+      const zakupy = (t.zakupy || []).slice(0, 5);
+      const robuxy = kartaTel("Wydane Robuxy", "rakieta", robux(su.robuxy), [
+        liczba(su.zakupy) + " " + odmiana(su.zakupy, "zakup", "zakupy", "zakupów")],
+      listaTel(zakupy.map((z) => el("li", {},
+        el("span", { class: "an-tel-nazwa", text: z.nazwa || z.id, title: z.nazwa || z.id }),
+        el("span", { class: "an-tel-liczba cichy-tekst", text: liczba(z.n) + "×" }),
+        el("span", { class: "an-tel-liczba", text: robux(z.robuxy) }))), "Brak zakupów w tym okresie."));
+      // błędy i crashe
+      const awarie = (su.niedomkniete || 0) + (su.brak_pamieci || 0);
+      const bledy = kartaTel("Błędy i crashe", "ostrzezenie", liczba(su.bledy), [
+        odmiana(su.bledy, "błąd skryptu", "błędy skryptów", "błędów skryptów") + " na serwerach",
+        su.niedomkniete == null && !su.brak_pamieci ? null
+          : awarie ? "możliwe awarie serwerów: " + liczba(awarie) + (su.brak_pamieci ? " (z braku pamięci: " + liczba(su.brak_pamieci) + ")" : "")
+            : "bez awarii serwerów"],
+      listaTel((t.bledy || []).slice(0, 5).map((b) => el("li", {},
+        el("span", { class: "an-tel-komunikat", text: b.komunikat, title: b.komunikat }),
+        el("span", { class: "an-tel-liczba", text: liczba(b.n) + "×" }))), "Brak błędów w tym okresie."));
+      // serwery na żywo
+      const znane = su.serwery_teraz != null;
+      const lista = (t.serwery || []).slice(0, 5);
+      const serwery = kartaTel("Serwery na żywo", "siec", znane ? liczba(su.serwery_teraz) : "—", [
+        znane ? liczba(su.gracze_teraz) + " " + odmiana(su.gracze_teraz, "gracz", "graczy", "graczy") + " teraz" : "lista serwerów jest niedostępna (szczegóły niżej)"],
+      znane ? listaTel(lista.map((s) => {
+        const od = Date.parse(s.od);
+        const dodatki = [od ? "działa " + czasTrwania((Date.now() - od) / 1000).replace(/ \d+ s$/, "") : null,
+          s.pamiec_mb ? liczba(s.pamiec_mb) + " MB" : null, s.fps ? liczba(s.fps) + " kl./s" : null,
+          s.bledy ? liczba(s.bledy) + " " + odmiana(s.bledy, "błąd", "błędy", "błędów") : null].filter(Boolean).join(" · ");
+        return el("li", {},
+          el("span", { class: "an-tel-serwer" }, el("code", { text: s.id }), el("span", { class: "cichy-tekst", text: dodatki })),
+          el("span", { class: "an-tel-liczba", text: liczba(s.gracze) + " " + odmiana(s.gracze, "gracz", "graczy", "graczy") }));
+      }), "Żaden serwer teraz nie działa.") : null);
+      if (znane && (t.serwery || []).length > lista.length) {
+        serwery.append(el("div", { class: "an-tel-pod cichy-tekst", text: "…i " + ((su.serwery_teraz || 0) - lista.length) + " więcej" }));
+      }
+      return el("div", { class: "siatka an-tel-karty" }, sesje, robuxy, bledy, serwery);
+    }
+
+    // ---- wykres godzinowy: słupki jednej serii (wybór przełącznikiem), siatka w tle, podpowiedź po najechaniu
+    function kartaGodzin(t) {
+      const godziny = (t.godziny || []).map((g) => Object.assign({}, g, { t: czasPunktu(g.t) })).filter((g) => g.t).sort((a, b) => a.t - b.t);
+      const pole = el("div", { class: "an-wykres an-tel-pole" });
+      const opis = el("span", { class: "cichy-tekst an-zakres" });
+      const wybor = przelacznik(METRYKI.map((m) => ({ id: m.id, tekst: m.tekst })), T.metryka, (id) => { T.metryka = id; rysujGodziny(); }, "Co pokazuje wykres");
+      wybor.classList.add("maly");
+      const godzina = (ms) => new Date(ms).toLocaleString("pl-PL", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+      const tabela = el("details", { class: "an-tabela", open: T.tabela },
+        el("summary", { text: "Liczby godzina po godzinie" }),
+        el("table", {},
+          el("thead", {}, el("tr", {}, el("th", { scope: "col", text: "Godzina" }), ...METRYKI.map((m) => el("th", { scope: "col", text: m.tekst })))),
+          el("tbody", {}, ...godziny.slice().reverse().map((g) => el("tr", {}, el("th", { scope: "row", text: godzina(g.t) }),
+            ...METRYKI.map((m) => el("td", { text: liczba(g[m.id]) })))))));
+      tabela.addEventListener("toggle", () => { T.tabela = tabela.open; });
+      T.wykres = { pole, opis, godziny };
+      return el("div", { class: "karta an-tel-wykres" },
+        el("div", { class: "an-naglowek" }, el("h3", { class: "karta-tytul" }, ikona("analityka"), el("span", { text: "Godzina po godzinie" })), wybor),
+        opis, pole, tabela);
+    }
+
+    function rysujGodziny() {
+      if (!T.wykres) return;
+      const { pole, opis, godziny } = T.wykres;
+      const m = METRYKI.find((x) => x.id === T.metryka) || METRYKI[0];
+      const pkt = godziny.map((g) => ({ t: g.t, v: Math.max(0, Number(g[m.id]) || 0) }));
+      const n = pkt.length;
+      const maxV = Math.max(0, ...pkt.map((p) => p.v));
+      opis.textContent = m.opis.charAt(0).toUpperCase() + m.opis.slice(1) + (maxV ? " · ostatni słupek to godzina w toku" : "");
+      T.schowajDymek = null;
+      if (!n || !maxV) {
+        pole.replaceChildren(el("p", { class: "an-tel-pusta cichy-tekst", text: m.pusto }));
+        return;
+      }
+      const dymek = el("div", { class: "an-dymek", hidden: true });
+      const W = Math.max(260, pole.clientWidth || 600), H = 176;
+      const L = 40, R = 8, G = 10, D = 24;
+      const krok = ladnyKrok(maxV);
+      const yMax = Math.max(krok, Math.ceil(maxV / krok) * krok);
+      const pasmo = (W - L - R) / n;
+      const szer = Math.max(2, Math.min(24, pasmo - 2));          // słupek najwyżej 24 px, między słupkami 2 px tła
+      const dno = H - D;
+      const Y = (v) => G + (1 - v / yMax) * (dno - G);
+      const srodek = (i) => L + i * pasmo + pasmo / 2;
+      const najwiecej = pkt.reduce((a, p) => (p.v > a.v ? p : a), pkt[0]);
+      const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, class: "an-svg", role: "img",
+        "aria-label": `Wykres: ${m.opis}, ostatnie ${n} h. Razem ${liczba(pkt.reduce((a, p) => a + p.v, 0))}, najwięcej ${liczba(najwiecej.v)} o ${new Date(najwiecej.t).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" })}. Wszystkie liczby są w tabeli pod wykresem.` });
+      for (let v = 0; v <= yMax + krok / 2; v += krok) {
+        svg.append(s("line", { x1: L, x2: W - R, y1: Y(v), y2: Y(v), class: "an-siatka" }));
+        const tx = s("text", { x: L - 6, y: Y(v) + 4, class: "an-os", "text-anchor": "end" });
+        tx.textContent = krotko(v);
+        svg.append(tx);
+      }
+      // podpisy godzin: co kilka słupków, licząc od najnowszego, tyle ile się zmieści
+      const coIle = Math.max(1, Math.ceil(n / Math.max(2, Math.floor((W - L - R) / 54))));
+      pkt.forEach((p, i) => {
+        if ((n - 1 - i) % coIle) return;
+        const tx = s("text", { x: Math.min(srodek(i), W - R), y: H - 7, class: "an-os", "text-anchor": i === n - 1 ? "end" : "middle" });
+        tx.textContent = new Date(p.t).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" });
+        svg.append(tx);
+      });
+      const slupki = pkt.map((p, i) => {
+        if (!p.v) return null;
+        const h = Math.max(2, dno - Y(p.v)), x = srodek(i) - szer / 2, y = dno - h, r = Math.min(4, szer / 2, h);
+        const sl = s("path", { class: "an-slupek" + (i === n - 1 ? " w-toku" : ""),
+          d: `M${x} ${dno}V${y + r}Q${x} ${y} ${x + r} ${y}H${x + szer - r}Q${x + szer} ${y} ${x + szer} ${y + r}V${dno}Z` });
+        svg.append(sl);
+        return sl;
+      });
+      const strefa = s("rect", { x: L, y: 0, width: W - L - R, height: H, fill: "transparent" });
+      svg.append(strefa);
+      let aktywny = -1;
+      const pokaz = (e) => {
+        const r = svg.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width) * W;
+        const i = Math.max(0, Math.min(n - 1, Math.floor((x - L) / pasmo)));
+        if (i !== aktywny) {
+          if (slupki[aktywny]) slupki[aktywny].classList.remove("aktywny");
+          if (slupki[i]) slupki[i].classList.add("aktywny");
+          aktywny = i;
+          const p = pkt[i];
+          const od = new Date(p.t), doG = new Date(p.t + 3600000);
+          const hm = (d) => d.toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" });
+          dymek.replaceChildren(el("b", { text: `${liczba(p.v)} ${odmiana(p.v, ...m.jednostka)}` }),
+            el("span", { class: "cichy-tekst", text: `${od.toLocaleDateString("pl-PL", { day: "numeric", month: "short" })}, ${hm(od)}–${hm(doG)}${i === n - 1 ? " · w toku" : ""}` }));
+        }
+        dymek.hidden = false;
+        const sx = (srodek(i) / W) * r.width;
+        dymek.style.left = Math.max(4, Math.min(r.width - dymek.offsetWidth - 4, sx - dymek.offsetWidth / 2)) + "px";
+        dymek.style.top = Math.max(0, (Y(pkt[i].v) / H) * r.height - 54) + "px";
+      };
+      const schowaj = () => {
+        if (slupki[aktywny]) slupki[aktywny].classList.remove("aktywny");
+        aktywny = -1;
+        dymek.hidden = true;
+      };
+      strefa.addEventListener("pointermove", pokaz);
+      strefa.addEventListener("pointerdown", pokaz);
+      // mysz: podpowiedź znika po zjechaniu z wykresu; palec: zostaje po dotknięciu, aż dotkniesz obok wykresu
+      strefa.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") schowaj(); });
+      T.schowajDymek = schowaj;
+      pole.replaceChildren(svg, dymek);
+    }
+    document.addEventListener("pointerdown", (e) => {
+      if (T.wykres && T.schowajDymek && !T.wykres.pole.contains(e.target)) T.schowajDymek();
+    });
 
     // ---- wykres historii graczy (SVG, bez bibliotek): jedna seria, siatka w tle, celownik z podpowiedzią
     function rysujWykres(historia, niedostepna) {
@@ -291,12 +600,20 @@ export default {
     }
 
     rysuj();
+    rysujTelemetrie();
     return {
       el: root,
-      async pokaz() {
+      async pokaz(parametry) {
         S.widoczny = true;
+        // #/analityka?probka=1 — od razu dane przykładowe (tylko osoba przy komputerze; serwer i tak to sprawdza)
+        if (parametry && parametry.probka && ctx.ja.lokalny && !ctx.statyczny) T.probka = true;
         clearInterval(S.timer);
-        S.timer = setInterval(() => { if (S.widoczny && document.visibilityState === "visible") wczytaj(); }, ODSWIEZ_MS);
+        S.timer = setInterval(() => {
+          if (!S.widoczny || document.visibilityState !== "visible") return;
+          wczytaj();
+          if (Date.now() - T.kiedy >= ODSWIEZ_TELEMETRIE_MS) wczytajTelemetrie(false);
+        }, ODSWIEZ_MS);
+        wczytajTelemetrie(false);
         await wczytaj();
       },
       ukryj() {
