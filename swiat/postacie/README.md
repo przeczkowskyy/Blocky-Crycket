@@ -16,6 +16,7 @@ Wszystko powstało skryptami Pythona w Blenderze 5.0 uruchamianym w tle, bez pł
 | **Zbrojownia** | `bronie.py` → `wynik/bronie/` | 8 broni do prawej dłoni (od pałki do chochli mistrza) |
 | **Lista przedmiotów** | `przedmioty.json` | id, nazwa, slot, kategoria plecaka, zestaw, pliki, części (każda z punktem zaczepienia i gotowym ustawieniem `attachment`), plik ikony. Bez statystyk |
 | **Postacie z klocków w Studio** | `roblox_postac.py`, `roblox_klatki.py`, `roblox/`, `wynik/_roblox/` | budowa rigów z części Roblox bez uploadu, arkusze klatek ze Studio, skrypt pokazu, zrzuty i dane rigów (`<id>_klocki.json`) |
+| **Próba importu siatek** | `roblox_import.py` | wgranie FBX/GLB przez Studio (tylko z opcją `--tak-wgraj`), wstawienie, kontrola, naprawa skali, zrzuty — przygotowane, nie przeszło jeszcze prawdziwego wgrania |
 | **Skrypt do Studio** | `zaczepy_akcesoriow.luau` | tworzy Attachmenty w Handle zaimportowanych części według `przedmioty.json` (wygenerowany, nie testowany) |
 | **Narzędzia** | `przebuduj.py`, `zestawienie.py` | przebudowa modułu do `wynik/<moduł>/`; prezentacja całości i `przedmioty.json` |
 | **Biblioteka** | `biblioteka/` | kod wspólny; opis API, konwencji i faktów Roblox w `biblioteka/README.md` |
@@ -118,6 +119,13 @@ Sześć postaci to razem 658 widocznych części i 20 klipów; z trzema manekina
 
 ## Import do Roblox Studio — krok po kroku
 > **Nie testowane.** Każdy krok importu wgrywa zasoby na konto Roblox. 13.11.2026 właściciel konta zgodził się na próbę, ale wgranie przez Studio (Open Cloud) wymaga jeszcze zatwierdzenia folderu z plikami: Assistant → Settings → MCP Permissions → approved upload directories → folder `swiat/postacie/wynik`. Zasoby wgrane na konto współpracownika trzeba potem udostępnić grze właściciela (Creator Dashboard → uprawnienia zasobu).
+
+**0. Próba z terminala (przygotowana, czeka na zgodę w Studio)**
+```
+python -B swiat/postacie/roblox_import.py --modul rycerz               # plan: co i na czyje konto by poszło (nic nie wysyła)
+python -B swiat/postacie/roblox_import.py --modul rycerz --tak-wgraj   # wgraj, wstaw, sprawdź, napraw skalę, zrób zrzuty
+```
+Skrypt wgrywa plik przez Studio na konto osoby zalogowanej w Studio (zasób jest trwały), wstawia model do `Workspace/TestPostaci`, liczy siatki, kości, stawy i zaczepy, sprawdza tekstury, mierzy wzrost i poprawia skalę, kotwiczy części, stawia model obok wersji z klocków i robi dwa zrzuty. Wynik: `wynik/_roblox/import_<moduł>_<format>.json`. 13.11.2026 sprawdzone są tylko: plan, kontrola (na modelu z klocków — wzrost 5,71 studa zgodny z raportem) i reakcja na niezatwierdzony folder. Kroki po wgraniu czekają na pierwszy prawdziwy import i trzeba je wtedy obejrzeć krok po kroku.
 
 **1. Postać albo pet (model z kośćmi)**
 1. Studio → zakładka *Home* lub *Avatar* → **Import 3D** → wybierz `wynik/<id>/<id>.fbx` (np. `rycerz.fbx`).
