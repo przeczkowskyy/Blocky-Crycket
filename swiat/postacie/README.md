@@ -91,6 +91,8 @@ Razem 658 widocznych części (752 z niewidzialnymi częściami kości) i 20 kli
 - Animacje w trybie Edit przez prawdziwy `Animator` (`RegisterKeyframeSequence` → `LoadAnimation` → `StepAnimations`): po jednym klipie każdej postaci, Rycerz trzy klipy (`wynik/_roblox/*_studio.jpg`). Kąt stawu w Studio zgadza się z danymi (udo w 6. klatce chodu: 32°).
 - Animacje w uruchomionej grze (Play): po stronie serwera wszystkie sześć postaci odtwarza kolejne klipy, konsola bez błędów (`wynik/_roblox/play_grupa_8_klatek.jpg`, obok stoi zwykły awatar gracza dla skali).
 
+**Pułapka trybu Edit (sprawdzona 13.11.2026):** zatrzymanie ścieżki animacji ani wpisanie `Motor6D.Transform` nie cofa części — postać zostaje w ostatniej pozie, a staw, którego kolejny klip nie animuje, niesie pozę z poprzedniego. `roblox_klatki.py` odtwarza więc pod każdym klipem klip neutralny (wszystkie stawy w zerze), po zrzutach wraca nim do spoczynku i mierzy, czy części naprawdę wróciły. Sam powrót: `python -B swiat/postacie/roblox_klatki.py --model "<Nazwa>" --tylko-reset`. W uruchomionej grze tego problemu nie ma.
+
 **Czego klocki nie oddają i czego nie sprawdzono:**
 - Krawędzie są ostre (bez fazowania), stożki są schodkowe, komiksowego obrysu nie ma (można go dać obiektem `Highlight`).
 - Slime nie zgniata się naprawdę: jego ścianki przesuwają się osobno, bo części Roblox nie mają skórowania. Świecenie i półprzezroczystość nie są dopracowane.

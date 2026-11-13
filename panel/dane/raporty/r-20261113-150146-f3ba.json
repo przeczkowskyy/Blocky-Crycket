@@ -1,0 +1,60 @@
+{
+ "id": "r-20261113-150146-f3ba",
+ "tytul": "Postacie w Robloxie: Blocky, Crycket i reszta stoją na rynku — z klocków, z animacjami, bez wgrywania",
+ "opis_md": "**W skrócie:** Blocky, Crycket, Karczmarz, pies, slime i smok stoją w Roblox Studio na rynku Krzywego Miasteczka, tuż przed punktem startu. Są zbudowane z tych samych klocków co mapa, mają stawy i animacje. Na konto Roblox nic nie zostało wgrane.\n\n## Co widać\n- **Sześć postaci** w `Workspace/TestPostaci` (658 części). Gracz po wejściu patrzy w stronę gospody i ma je przed sobą.\n- **20 animacji**: spoczynek, chód, bieg, lot, atak mieczem, czar, zianie, wiwat, zaproszenie, śmiech, szczekanie, skok.\n- **Podgląd 3D** w tym raporcie pokazuje postacie w pozie spoczynkowej. Rycerz trzyma wtedy miecz poziomo — tak wygląda poza wyjściowa, w animacjach unosi go do góry.\n\n## Jak zobaczyć ruch\n1. Otwórz miejsce w Roblox Studio i podleć kamerą nad rynek miasteczka.\n2. Naciśnij **Run** (F8) albo **Play**.\n3. Każda postać odtwarza po kolei swoje animacje.\n\n## Co sprawdziłem\n- Wygląd każdej postaci z czterech stron. Lewa i prawa strona się zgadzają (miecz w prawej dłoni).\n- Animacje w edytorze: osiem arkuszy klatek, kąty stawów zgodne z danymi z Blendera.\n- Animacje w uruchomionej grze: wszystkie sześć postaci gra swoje klipy, konsola bez błędów. Na zrzucie obok stoi zwykły awatar gracza dla porównania skali.\n\n## Czego nie ma i co nie działa\n- **Importu siatek z Blendera nie sprawdziłem.** Studio wgrywa pliki tylko z folderu zatwierdzonego przez człowieka. Do kliknięcia: Assistant → Settings → MCP Permissions → approved upload directories → folder `swiat/postacie/wynik`.\n- **Animacje grają tylko w Studio.** Do prawdziwej gry trzeba je opublikować jako zasoby Animation, a według dokumentacji Roblox muszą należeć do właściciela gry.\n- Klocki mają ostre krawędzie, stożki są schodkowe, a slime się nie zgniata (jego ścianki przesuwają się osobno).\n- Postacie to figury bez kolizji. Nie chodzą i nie są jeszcze postacią gracza.\n- Wydajności na telefonie nie mierzyłem.\n- Wygląd postaci to propozycja. Krytycy ocenili modele na 6,5/10 za wygląd i 6/10 za technikę. Najsłabsze: brzuch Karczmarza i przeładowany zestaw Maga.\n- Kontener `TestPostaci` ma skrypt pokazu działający tylko w Studio. Przed publikacją gry trzeba go usunąć.\n\nSzczegóły: notatka „Postacie 3D — Blender i Roblox”, propozycja D-029, pytanie 24.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T15:01:46+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Rycerz Blocky",
+   "etykieta": "Rycerz Blocky"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Kot-Mag Crycket",
+   "etykieta": "Kot-Mag Crycket"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Karczmarz",
+   "etykieta": "Karczmarz"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Pies",
+   "etykieta": "Pies"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Slime",
+   "etykieta": "Slime"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Smok",
+   "etykieta": "Smok"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Postacie 3D — Blender i Roblox.md",
+   "etykieta": "Notatka o postaciach"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/README.md",
+   "etykieta": "Instrukcja"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ],
+ "migawka": "20261113-150104-150f",
+ "pytanie": "Czy NPC i pety mogą zostać w grze jako postacie z klocków (bez wgrywania), czy czekamy na import siatek z Blendera?"
+}
