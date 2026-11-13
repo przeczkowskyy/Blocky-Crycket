@@ -44,4 +44,5 @@ Gra Roblox: **RPG / Incremental / Tycoon / Pet Collector**. Komiksowy humor w st
 - [[Zadania]]
 - [[Rejestr decyzji]]
 - [[Pytania otwarte]]
+- [[Sesje główne]] — tematy na długie rozmowy głosowe Karola i Pawła
 - [[Dziennik zmian]]

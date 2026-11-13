@@ -19,7 +19,9 @@ tags: [produkcja, zadania]
 - [ ] Decyzje po rozmowie 12.11: pytania 7–14 w [[Pytania otwarte]] i propozycje D-012–D-018 w [[Rejestr decyzji]] · #wysoki
 - [ ] Obejrzeć demo `Workspace/DemoLesnaBaza` w Studio i w [[Panel zespołu|panelu]]: styl, skala, co poprawić ([[Klocki — Blender i Roblox]]) · #wysoki
 - [ ] Szara pętla MVP: plac → karczma → walka 10 s → łup → statystyki ([[Ocena potencjału gry]], tydzień 1) — wersja sprzed diagnozy; propozycja v2 zamienia ją na szary prototyp BONK-a (pytanie 16) · #wysoki
-- [ ] Paweł dodaje Karola jako współpracownika repozytorium (GitHub → Settings → Collaborators → Add people), potem push gałęzi `karol/panel-wiedza-demo` — praca z 12–13.11 leży tylko na komputerze Karola · #wysoki
+- [ ] [[Panel zespołu|Panel]]: zakładka „Sesja” — rozmowa głosowa Karola i Pawła w panelu, przycisk „Agent słucha” (transkrypcja na żywo, notatki, ustalenia jako propozycje) i lista tematów z [[Sesje główne]]; zlecenie Karola z 13.11, w budowie · #wysoki
+- [ ] [[Panel zespołu|Panel]]: połączyć zakładki Plan i Raporty w jedną z wszystkim, co czeka na decyzję (z przyciskiem „Na sesję główną”), poprawić czytelność Pulpitu i pokazać aktywne osoby w lewym dolnym rogu; Analityki nie ruszać do publikacji gry — zlecenie Karola z 13.11. Bez dubli: pytanie i decyzje, których dotyczy, w jednej karcie; gdy decyzja rozstrzyga pytanie, pytanie samo znika z kolejki; lista odświeża się sama · #wysoki
+- [ ] Paweł: `git pull` na `main`, uruchomić `panel\start.bat`, wpisać imię w Ustawieniach i odpowiedzieć na pytanie 27 w [[Pytania otwarte]] · #wysoki
 - [ ] Walka: spisać błędy zauważone 13.11 w `Workspace/TestWalki` i je poprawić; decyzja o zmienionej propozycji D-024 (walka w każdej potyczce, w trzech długościach) · #wysoki
 - [ ] Przymierzalnia „do poprawy” (Karol, panel, 13.11): założony przedmiot ma być widoczny wszędzie, także w animacjach walki; broń trzymana w ręku nie może nachodzić na twarz w żadnej animacji ani po wygranej walce — dodać liczbową kontrolę przenikania broni z głową i tułowiem dla wszystkich klipów · #wysoki
 - [ ] Postacie z siatek: sprawdzić animacje i broń na zaimportowanym Rycerzu (`Workspace/TestPostaci`), potem druga postać i pet · #średni
@@ -52,6 +54,9 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-13: Dwa raporty-porównania na prośbę Karola (uzasadnienia przy D-029 i D-018): Rycerz jako render z Blendera, klocki Roblox i siatka w Roblox; dwa style mapy obok siebie (Leśna baza i Krzywe Miasteczko) — czekają w panelu na odpowiedź
+- [x] 2026-11-13: Lista tematów na długie rozmowy głosowe: [[Sesje główne]] (siedem tematów z decyzji i komentarzy Karola z 13.11)
+- [x] 2026-11-13: Karol ma prawo zapisu w repozytorium; gałąź `karol/panel-wiedza-demo` wypchnięta i scalona z `main` razem z commitem Pawła (okno ekwipunku, mapa teleportacji)
 - [x] 2026-11-13: Panel jako miejsce pracy: zapis do sejfu z panelu włączony na komputerze Karola (pytanie 23, D-028), klucz zatwierdzania w jego przeglądarce; zasada równych praw Karola i Pawła (pytanie 15, D-030) wpisana do [[Jak prowadzimy sejf]] i `CLAUDE.md`
 - [x] 2026-11-13: Instrukcja „Glossy Ink” zatwierdzona (pytanie 22, D-027): zastępuje prefiks Style Lock oraz zapisy o pixel-arcie ikon i płaskim interfejsie
 - [x] 2026-11-13: Szablony promptów skilla `/asset` przepięte na [[Instrukcja promptów — Glossy Ink]] (stały początek, koniec i negative prompt zgodne znak w znak z oryginałem); notatki [[Style Lock]], [[Kierunek artystyczny]] i [[Pipeline assetów]] zaktualizowane. Bez próby w generatorze

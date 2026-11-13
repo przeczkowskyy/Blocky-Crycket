@@ -34,8 +34,9 @@ Misje w instancjonowanych mini-dungeonach (walka 3D lub clicker), bez biernego c
 Najpierw logika UI, ViewportFrame postaci, ożywienie HUD. Bez restartu projektu i bez przeprojektowywania zatwierdzonych elementów.
 
 ### D-006 Mapowanie Rojo z `$ignoreUnknownInstances`
-🕓 do decyzji · technika · zaproponował: Claude Code
+✅ zatwierdzona · technika · zaproponował: Claude Code · zdecydował: Karol 2026-11-13
 Zob. [[Rojo i struktura projektu]]. Dotychczasowa zawartość `.rbxl` jest bezpieczna.
+Uzasadnienie — Karol, 2026-11-13: zgoda w rozmowie z Claude Code po wyjaśnieniu, że to zasada techniczna (Rojo wgrywa kod z plików i nie kasuje w Studio tego, czego w plikach nie ma) i w kanonie gry nic nie zmienia.
 
 ### D-007 GUI z Figmy jako pliki `.model.json`
 ✅ zatwierdzona · technika · zaproponował: Claude Code · zdecydował: Karol Balucki 2026-11-13

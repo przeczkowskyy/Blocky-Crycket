@@ -1,0 +1,30 @@
+{
+ "id": "r-20261113-202142-9815",
+ "tytul": "Dwa style mapy obok siebie: Leśna baza i Krzywe Miasteczko",
+ "opis_md": "**W skrócie:** dwa style mapy obok siebie na zrzutach z Roblox Studio. Obie mapy stoją w Studio, więc można je też obejść na żywo.\n\n## Co widać na zdjęciach\n1. **Z góry:** po lewej Leśna baza (pierwsza mapa, 12.11), po prawej Krzywe Miasteczko (13.11).\n2. **Z ukosa:** te same dwie mapy.\n\n## Czym się różnią\n| | Styl 1: Leśna baza | Styl 2: Krzywe Miasteczko |\n|---|---|---|\n| Charakter | spokojna polana w lesie, proste budynki | komiksowe miasteczko: krzywe ściany, przerysowane dachy |\n| Kolory | stonowane zielenie i brązy | żywe, nasycone |\n| Ciemny obrys budynków | nie ma | jest |\n| Budynki | karczma i kilka małych obiektów | 12 budynków, rynek, mur |\n| Liczba części | 2599 | 5259 |\n\n## Jak obejrzeć na żywo\n- W Roblox Studio: kontenery `DemoLesnaBaza` i `KrzyweMiasteczko` w Workspace.\n- W panelu: zakładka Podgląd, migawki obu map (model 3D działa też na telefonie).\n\n## Uwaga do decyzji D-018\nPrzy D-018 napisałeś, że chcesz zobaczyć oba style miasta. D-018 w rejestrze dotyczy jednak stylu interfejsu (przyciski i okna), a styl mapy opisuje propozycja D-025. Odrzucenia D-018 nie zmieniałem. Napisz, czy chodziło Ci o mapę — wtedy zapiszę Twoją odpowiedź przy D-025.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T20:21:42+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "migawka",
+   "cel": "20261113-001753-2562",
+   "etykieta": "Leśna baza w 3D"
+  },
+  {
+   "typ": "migawka",
+   "cel": "20261113-120030-1d6a",
+   "etykieta": "Krzywe Miasteczko w 3D"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Klocki — Blender i Roblox.md",
+   "etykieta": "Notatka o mapach z klocków"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg"
+ ],
+ "pytanie": "Który styl mapy bierzemy jako bazę: 1 (Leśna baza), 2 (Krzywe Miasteczko) czy mieszankę obu?"
+}
