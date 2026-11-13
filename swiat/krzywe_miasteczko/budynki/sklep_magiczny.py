@@ -124,14 +124,18 @@ def _wykusz(s, h):
 
 
 def _koci_ogon(s, h):
-    """Pomarańczowy koci ogon z 5 segmentów (razem 8,1) wychodzący z okna i zakręcony w znak zapytania; podkładka tusz.
-    10 części."""
-    seg = [(1.8, 1.0, -70), (1.9, 0.95, 60), (1.6, 0.9, 40), (1.4, 0.85, 60), (1.3, 0.8, 55)]
+    """Pomarańczowy koci ogon z 6 segmentów: wychodzi z okna nad parapetem, zwisa ok. 4 w dół po ścianie i zawija się
+    w górę w hak z końcówką tusz; podkładka tusz; w oknie dwa czarne uszy-kliny (kot siedzi na parapecie). Po krytyce:
+    cienki zawijas na szybie czytał się jak znak „?” albo „2”. 14 części."""
+    seg = [(2.4, 1.4, 180), (2.0, 1.4, 0), (1.4, 1.35, 45), (1.4, 1.3, 50), (1.3, 1.25, 55), (1.0, 1.2, 50)]
     with s.cechy(kolizja=False):
         podkl = [(dl + (0.3 if i == len(seg) - 1 else 0.0), g + 0.5, k) for i, (dl, g, k) in enumerate(seg)]
-        zestaw.lamana(s, "Ogon podkładka", podkl, "tusz", start=(3.7, 2.2), z=h + 0.5, glebokosc=0.8)
-        kol = ["pomarancz"] * 4 + [cien(s, "pomarancz", 0.8)]
-        zestaw.lamana(s, "Koci ogon", seg, kol, start=(3.7, 2.2), z=h + 0.85, glebokosc=1.0)
+        zestaw.lamana(s, "Ogon podkładka", podkl, "tusz", start=(3.6, 2.4), z=h + 0.5, glebokosc=0.8)
+        kol = ["pomarancz", cien(s, "pomarancz", 0.88)] * 2 + ["pomarancz", "tusz"]
+        zestaw.lamana(s, "Koci ogon", seg, kol, start=(3.6, 2.4), z=h + 0.85, glebokosc=1.0)
+        with s.cechy(cien=False):
+            for x, ry in ((1.9, -90), (3.3, 90)):
+                s.klin("Kocie ucho", (x, 2.6, h + 0.35), (0.3, 1.2, 1.2), "tusz", rot=(0, ry, 0))
 
 
 # --------------------------------------------------------------------------- piętro 2 (łamany trzon)

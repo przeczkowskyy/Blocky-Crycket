@@ -174,9 +174,8 @@ def _komin(s):
         with s.cechy(cien=False):
             for x, y, z, k in ((0.9, 1.5, 0.7, 20), (-1.1, 2.3, -0.5, 40), (0.2, 3.3, 1.1, 10)):
                 s.blok("Komin iskra", (xe + x, ye + y, z), (0.7, 0.7, 0.7), "neon_ogien", "Neon", rot=(k, k, 30))
-        with s.cechy(kolizja=False, cien=False):           # ciemny dym z kuźni: jeden kłąb z 3 kul zachodzących na siebie
-            for x, y, z, dd, k in ((0.5, 2.6, 0.2, 3.0, cien(s, COKOL)), (1.7, 4.2, 0.5, 4.4, COKOL), (0.2, 5.6, -0.3, 3.4, cien(s, COKOL))):
-                s.kula("Dym", (xe + x, ye + y, z), dd, k)
+        # dym z kuźni: szare klocki (po krytyce: 3 ciemne kule czytały się jak bomby)
+        zestaw.dym(s, (xe + 0.5, ye + 2.6, 0.2), n=3, skala=1.1, kolor=cien(s, "biel", 0.72), ksztalt="klocek")
 
 
 def _tarcza(s):
@@ -226,7 +225,7 @@ def _kuznia(s):
                 s.blok("Obcęgi", (9.35, 7.3, -1.5), (0.4, 3.6, 0.4), "tusz", rot=(k, 0, 0))
             s.blok("Młot trzonek", (9.4, 7.2, 2.6), (0.4, 3.2, 0.4), "drewno", rot=(-6, 0, 0))
             s.blok("Młot obuch", (9.6, 5.6, 2.8), (0.9, 1.0, 1.9), "metal_ciemny")
-    _kowadlo(s, (11.6, 0.3, 1.5))
+    _szlifierka(s, (11.6, 0.3, 1.5), ry=-18)        # po krytyce zamiana: toczydło w głąb kuźni, kowadło przed nią
 
 
 def _kowadlo(s, pos):
@@ -239,7 +238,7 @@ def _kowadlo(s, pos):
             s.blok("Kowadło głowa", (-0.2, 4.2, 0), (3.8, 1.2, 3.0), "metal_ciemny")
             s.klin("Kowadło róg", (2.8, 4.2, 0), (1.8, 1.2, 2.2), "metal_ciemny", rot=(0, -90, 180))
             with s.cechy(cien=False):
-                s.blok("Sztaba żarząca", (0.2, 5.05, -0.5), (3.0, 0.5, 0.7), "neon_ogien", "Neon", rot=(0, 16, 0))
+                s.blok("Sztaba żarząca", (0.2, 5.2, -0.5), (3.6, 0.7, 0.9), "neon_ogien", "Neon", rot=(0, 16, 0))
                 s.blok("Młot trzonek", (-0.6, 5.05, 0.8), (3.4, 0.5, 0.5), "drewno", rot=(0, -25, 0))
                 s.blok("Młot obuch", (-2.1, 5.25, 1.5), (1.0, 1.0, 1.9), "metal_ciemny", rot=(0, -25, 0))
 
@@ -247,7 +246,8 @@ def _kowadlo(s, pos):
 # =========================================================================== rekwizyty przy wejściu
 def _rekwizyty(s, rnd):
     zestaw.beczka(s, (13.8, 0.3, -3.4), "woda", przechyl=(0, 6))
-    _szlifierka(s, (12.9, 0, 10.2), ry=-18)
+    with s.uklad(pos=(11.4, 0, 10.6), obrot=(0, 180, 0), skala=1.25):   # kowadło w słońcu, rogiem ku drzwiom
+        _kowadlo(s, (0, 0, 0))
     zestaw.latarnia(s, (14.3, 0, 9.6), wys=9.0, ry=180, plama_r=3.0)
     # beczka z bronią (duży), hełm (mały) — przy oknie, z dala od drzwi i pola interakcji
     zestaw.beczka(s, (-13.9, 0, 10.4), None, r=1.7, h=3.8, przechyl=(5, 0))

@@ -18,7 +18,7 @@ PALETA = {
     "drewno_ciemne": "5C3A22",
     "drewno": "8B5A2E",
     "drewno_jasne": "D49A5A",
-    "kamien_cieply": "D6C6AC",
+    "kamien_cieply": "E3C3A8",          # po krytyce: cieplej (S 26%, odcień 27°, inny niż bruk), było D6C6AC — mur był zimnoszary
     "kamien_cokol": "6B5848",
     "kamien_lochu": "4A4560",
     # dachy = kod funkcji (jeden kolor na typ budynku)

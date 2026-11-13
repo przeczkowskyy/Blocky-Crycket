@@ -61,7 +61,7 @@ def buduj(s, rnd):
             with s.uklad(pos=(-0.4, 8.0 - 0.95, -0.3), obrot=(0, -12, -6)):
                 _pietro3(s)
                 # korona 18 × 18 × 4 w kontrze: rz +5° bezwzględnie (+11° względem piętra 3), ry +5° bezwzględnie
-                with s.uklad(pos=(0.6, 7.0 - 1.7, 0.0), obrot=(0, 11, 11)):
+                with s.uklad(pos=(0.6, 6.0 - 1.7, 0.0), obrot=(0, 11, 11)):
                     _korona(s)
                     kotwice["korona_rog"] = _do_bazy(s, baza, (8.4, 0.4, 8.4))
         _rusztowanie(s)
@@ -202,14 +202,14 @@ def _rog(s):
 
 # --------------------------------------------------------------------------- piętro 3 (ry −6°, rz −6°) — najwyższe okno świeci
 def _pietro3(s):
-    W, Hp = 16.0, 7.0
+    W, Hp = 16.0, 6.0                                           # po krytyce 7 → 6 (miejsce na wyższą iglicę w limicie 40)
     h = W / 2.0
     s.blok("Piętro 3", (0, Hp / 2.0, 0), (W, Hp, W), SCIANA)
     with s.cechy(kolizja=False):
         s.blok("Belka piętra 3", (0, 0.85, 0), (W + 0.6, 1.0, W + 0.6), "tusz")
         for sx in (-1, 1):
             for sz in (-1, 1):
-                s.blok("Narożnik piętra 3", (sx * (h - 0.15), 3.9, sz * (h - 0.15)), (1.2, 5.2, 1.2), "tusz")
+                s.blok("Narożnik piętra 3", (sx * (h - 0.15), (Hp + 0.8) / 2.0, sz * (h - 0.15)), (1.2, Hp - 1.8, 1.2), "tusz")
     zestaw.okno(s, (-2.2, 3.5, h), 2.8, 2.4, ksztalt="luk", przechyl=5, swiatlo="neon_okno")
     zestaw.okno(s, (3.4, 3.2, h), 2.0, ksztalt="okragle", przechyl=0, swiatlo=CIEMNA, tanie=True)
     zestaw.okno(s, (-h, 3.4, 1.5), 2.6, 3.0, przechyl=-6, swiatlo=CIEMNA, ry=-90, tanie=True)
@@ -220,10 +220,11 @@ def _pietro3(s):
 # --------------------------------------------------------------------------- korona z blankami i hełm-ostrosłup
 def _korona(s):
     """Korona 18 × 18: rant tusz, pas tynku, gzyms tusz, 12 blanek (co druga wyższa i w cieniu) i 4 narożne filarki
-    niosące hełm; między blankami ciemny rdzeń. Hełm 20 × 20 × 7,6 dach_gildia na złotej desce czołowej, złote krawędzie
-    i gałka. 29 części."""
+    niosące hełm; między blankami ciemny rdzeń. Iglica (po krytyce: niski czterospad różnił się od zbrojowni tylko
+    kolorem): dolny ostrosłup 18 × 18 × 6, z niego smukły szpic 10 × 10 × 8 skręcony ry +15° i przechylony rz +8°,
+    złote krawędzie i gałka. Ok. 37 części."""
     W = 18.0
-    y0 = 5.6                                                    # spód ostrosłupa hełmu
+    y0 = 4.6                                                    # spód iglicy (po krytyce: korona niższa o 1)
     with s.cechy(kolizja=False):
         s.blok("Korona rant", (0, 0.3, 0), (W + 0.6, 0.6, W + 0.6), "tusz")
         s.blok("Korona", (0, 1.45, 0), (W, 2.3, W), SCIANA)
@@ -239,23 +240,31 @@ def _korona(s):
                 kol = SCIANA if i % 2 == 0 else cien(s, SCIANA, 0.88)
                 s.blok("Blanka", (x, 3.0 + wys / 2.0, z), (1.8, wys, 1.8), kol)
                 i += 1
-        # hełm: rant tusz, deska czołowa zloto, ostrosłup, krawędzie i gałka
-        H = 7.6
-        s.blok("Hełm rant", (0, y0 - 0.6, 0), (20.4, 0.35, 20.4), "tusz")
-        s.blok("Hełm deska", (0, y0 - 0.2, 0), (20.8, 0.5, 20.8), "zloto")
-        s.ostroslup("Hełm", (0, y0, 0), 10.0, 10.0, H, DACH)
+        # iglica: rant tusz, deska czołowa zloto, dolny ostrosłup, skręcony szpic, krawędzie i gałka
+        H1, Y2, A2, H2 = 6.0, 2.6, 5.0, 7.7                      # dół 18 → wierzchołek na 6; szpic od 2,6 (tam dół ma ok. 10)
+        s.blok("Hełm rant", (0, y0 - 0.6, 0), (18.4, 0.35, 18.4), "tusz")
+        s.blok("Hełm deska", (0, y0 - 0.2, 0), (18.8, 0.5, 18.8), "zloto")
+        s.ostroslup("Hełm", (0, y0, 0), 9.0, 9.0, H1, DACH)
+        k = 1.0 - Y2 / H1
         for sx in (-1, 1):
             for sz in (-1, 1):
-                s.belka("Hełm krawędź", (sx * 10.1, y0 + 0.15, sz * 10.1), (0, y0 + H + 0.2, 0), 0.8, "zloto", "SmoothPlastic")
-        s.blok("Gałka szyjka", (0, y0 + H + 0.3, 0), (1.0, 0.6, 1.0), "zloto")
-        s.kula("Gałka", (0, y0 + H + 1.0, 0), 1.4, "zloto")
+                s.belka("Hełm krawędź", (sx * 9.1, y0 + 0.15, sz * 9.1), (sx * 9.1 * k, y0 + Y2, sz * 9.1 * k), 0.8, "zloto",
+                        "SmoothPlastic")
+        with s.uklad(pos=(0, y0 + Y2, 0), obrot=(0, 15, 8)):
+            s.ostroslup("Iglica", (0, 0.3, 0), A2, A2, H2, cien(s, DACH, 0.9))
+            for sx in (-1, 1):
+                for sz in (-1, 1):
+                    s.belka("Iglica krawędź", (sx * (A2 + 0.1), 0.35, sz * (A2 + 0.1)), (0, H2 + 0.4, 0), 0.6, "zloto",
+                            "SmoothPlastic")
+            s.blok("Gałka szyjka", (0, H2 + 0.5, 0), (0.8, 0.6, 0.8), "zloto")
+            s.kula("Gałka", (0, H2 + 1.2, 0), 1.4, "zloto")
 
 
 # --------------------------------------------------------------------------- szyld: sztandar gildii (w układzie bazy, zwisa pionowo)
 def _sztandar(s, kotwice):
     """Sztandar 6 × 14 z 3 segmentów falujących ±8° na drążku zawieszonym wspornikiem pod prawym przednim narożnikiem
     korony, obrócony ku frontowi i w prawo (ry 35°) — cały poza bryłą wieży, nie zasłania drzwi ani okien. Płetwa tusz,
-    na segmentach herb z trzech wielkich kształtów (koło zloto, kwadrat biel, trójkąt czerwien), złota frędzla i ogon
+    na segmentach herb z trzech wielkich znaków (skrzyżowane klocki, gwiazda, grot), złota frędzla i ogon
     jaskółczy. Środek ok. 17,5 nad ziemią. 27 części."""
     kx, ky, kz = kotwice["korona_rog"]
     xs, zs = 12.0, 9.4                                          # środek sztandaru w planie
@@ -282,19 +291,27 @@ def _sztandar(s, kotwice):
 
 
 def _herb(s, i, yc):
-    """Jeden kształt herbu na segmencie i (lico segmentu z = +0,2): 0 koło zloto, 1 kwadrat biel, 2 trójkąt czerwien;
-    każdy z podkładką tusz. 2 części (trójkąt 4)."""
+    """Jeden znak herbu na segmencie i (lico segmentu z = +0,2), każdy z podkładką tusz. Po krytyce bez koła, kwadratu
+    i trójkąta (komplet przycisków cudzej konsoli): 0 — dwa skrzyżowane klocki 3 × 1,5 z 2 wypustkami (zloto i biel,
+    ±30°), 1 — gwiazda z 2 kwadratów 2,4 (0° i 45°), 2 — grot strzały w górę (2 kliny). 4–10 części."""
     with s.cechy(cien=False):
         if i == 0:
-            s.walec("Herb koło podkładka", (0, yc, 0.3), 1.85, 0.2, "tusz", os="z")
-            s.walec("Herb koło", (0, yc, 0.5), 1.5, 0.3, "zloto", os="z")
+            for j, (k, kol) in enumerate(((30, "zloto"), (-30, "biel"))):
+                with s.uklad(pos=(0, yc, 0.3 + 0.12 * j), obrot=(0, 0, k)):
+                    s.blok("Herb klocek podkładka", (0, 0.2, 0), (3.6, 2.6, 0.2), "tusz")
+                    s.blok("Herb klocek", (0, 0, 0.2), (3.0, 1.5, 0.3), kol)
+                    for x in (-0.75, 0.75):
+                        s.blok("Herb klocek wypustka", (x, 0.97, 0.2), (0.7, 0.45, 0.3), kol)
         elif i == 1:
-            s.blok("Herb kwadrat podkładka", (0, yc, 0.3), (3.4, 3.4, 0.2), "tusz", rot=(0, 0, 10))
-            s.blok("Herb kwadrat", (0, yc, 0.5), (2.7, 2.7, 0.3), "biel", rot=(0, 0, 10))
-        else:                                                   # trójkąt ostrzem w górę (dwa kliny, wysokie krawędzie w środku)
+            for j, k in enumerate((0, 45)):
+                s.blok("Herb gwiazda podkładka", (0, yc, 0.3 + 0.06 * j), (3.1, 3.1, 0.2), "tusz", rot=(0, 0, k + 8))
+                s.blok("Herb gwiazda", (0, yc, 0.55 + 0.06 * j), (2.4, 2.4, 0.3), "zloto", rot=(0, 0, k + 8))
+        else:                                                   # grot strzały w górę (dwa kliny) z drzewcem
+            s.blok("Herb drzewce podkładka", (0, yc - 1.1, 0.3), (1.2, 2.2, 0.2), "tusz")
+            s.blok("Herb drzewce", (0, yc - 1.1, 0.5), (0.6, 2.0, 0.3), "biel")
             for zn in (-1, 1):
-                s.klin("Herb trójkąt podkładka", (zn * 0.95, yc - 0.1, 0.3), (0.2, 3.4, 1.9), "tusz", rot=(0, -zn * 90, 0))
-                s.klin("Herb trójkąt", (zn * 0.75, yc - 0.15, 0.5), (0.3, 2.6, 1.5), "czerwien", rot=(0, -zn * 90, 0))
+                s.klin("Herb grot podkładka", (zn * 0.95, yc + 0.6, 0.3), (0.2, 2.4, 1.9), "tusz", rot=(0, -zn * 90, 0))
+                s.klin("Herb grot", (zn * 0.75, yc + 0.55, 0.5), (0.3, 1.9, 1.5), "czerwien", rot=(0, -zn * 90, 0))
 
 
 # --------------------------------------------------------------------------- żart: rusztowanie malarza (lewy bok, układ parteru)

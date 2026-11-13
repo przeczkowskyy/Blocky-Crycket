@@ -18,6 +18,7 @@ if _REPO not in sys.path:
     sys.path.insert(0, _REPO)
 
 from swiat.krzywe_miasteczko import zestaw  # noqa: E402
+from swiat.biblioteka.scena import katy_z_macierzy  # noqa: E402
 from swiat.krzywe_miasteczko.paleta import cien  # noqa: E402
 
 NAZWA = "KoloFortuny"
@@ -41,7 +42,7 @@ def buduj(s, rnd):
     # --- stojak + koło + dłoń: cały zestaw pochylony w prawo (karta: pochylenie −, słup rz −6°)
     with s.uklad(pos=(-0.3, 1.0, -3.8), obrot=(0, 0, -6)):
         _stojak(s)
-        with s.uklad(pos=(0, 10.0, 1.9), obrot=(-8, 0, 0)):        # koło odchylone 8° do tyłu
+        with s.uklad(pos=(0, 12.5, 1.9), obrot=(-8, 0, 0)):        # koło odchylone 8° do tyłu; po krytyce wyżej o 2,5 (markiza)
             _kolo(s)
     # znak miasteczka: chorągiewka duetu (Kot-Mag) wbita w tylny lewy róg cokołu
     zestaw.choragiewka_duetu(s, (-3.9, 0.95, -6.4), "kot", ry=200, przechyl=12)
@@ -58,29 +59,25 @@ def buduj(s, rnd):
 def _stojak(s):
     """Odwrócone V z dwóch nóg 1,5 (±12°) krzyżujących się na wysokości osi, poprzeczka, tylna zastrzałka
     i słup koła łamany do góry (za kołem), na nim wysięgnik z dłonią-wskaźnikiem i chorągiewka."""
-    for zn in (-1, 1):                                           # nogi: stopa w x = ±2,2, krzyżują się na y ≈ 10
-        L = 12.0
+    for zn in (-1, 1):                                           # nogi: stopa w x = ±2,75, krzyżują się na y ≈ 12,5
+        L = 14.5
         a = math.radians(12)
-        x0, y0 = zn * 2.2, -0.4
+        x0, y0 = zn * 2.75, -0.4
         s.blok("Noga stojaka", (x0 - zn * (L / 2) * math.sin(a), y0 + (L / 2) * math.cos(a), -0.2), (1.5, L, 1.5),
                "drewno", "Wood", rot=(0, 0, zn * 12))
     with s.cechy(kolizja=False):
         s.blok("Poprzeczka", (0, 3.0, 0.75), (4.6, 0.9, 0.5), "drewno_ciemne", "Wood", rot=(0, 0, 4))
-        s.belka("Zastrzałka", (0, 9.8, -0.9), (0, -0.4, -2.4), 1.2, "drewno")
+        s.belka("Zastrzałka", (0, 12.3, -0.9), (0, -0.4, -2.4), 1.2, "drewno")
         xe, ye, kat = zestaw.lamana(s, "Słup koła", [(7.5, 1.2, 0), (5.0, 1.0, -8)], "drewno_ciemne", "Wood",
-                                    start=(0.0, 8.5), z=-1.3)
+                                    start=(0.0, 11.0), z=-1.3)
         # dłoń przed kołem: palec wskazuje złote pole u góry, rękaw biegnie w górę-w prawo do wysięgnika
         kd = -32.0
         dx, dy = math.sin(math.radians(-kd)), math.cos(math.radians(kd))     # kierunek „w górę ręki”
-        cx, cy, cz = 2.6, 19.2, 3.8
+        cx, cy, cz = 2.6, 20.2, 3.8
         s.belka("Wysięgnik", (xe, ye - 0.5, -1.3), (cx + 3.2 * dx, cy + 3.2 * dy, cz - 0.6), 0.8, "drewno_ciemne")
         with s.uklad(pos=(cx, cy, cz), obrot=(-8, 0, kd)):
             _dlon(s)
-        # echo: chorągiewka koła na czubku słupa
-        with s.uklad(pos=(xe, ye - 0.2, -1.3), obrot=(0, 0, kat + 10)), s.cechy(cien=False):
-            s.blok("Chorągiewka maszt", (0, 1.3, 0), (0.4, 3.0, 0.4), "tusz")
-            s.klin("Chorągiewka", (1.6, 2.3, 0), (0.3, 1.2, 2.8), KOD, "Fabric", rot=(0, -90, 0))
-            s.klin("Chorągiewka", (1.6, 1.1, 0), (0.3, 1.2, 2.8), "biel", "Fabric", rot=(0, -90, 180))
+        s.blok("Słup koła czapa", (xe, ye + 0.2, -1.3), (1.6, 0.5, 1.6), "tusz", rot=(0, 0, kat))
 
 
 def _dlon(s):
@@ -107,10 +104,15 @@ def _kolo(s):
 
 def _kolo_detale(s):
     s.walec("Koło tył", (0, 0, -0.95), 6.5, 0.2, cien(s, KOD), os="z")
-    for k in range(8):                                           # pola-szprychy 2,8 × 6,4, co drugie wyżej o 0,1
+    # pola: trójkąty o podstawie 5,0 na obręczy z 2 klinów każde (po krytyce: belki 2,8 × 6,2 dawały gwiazdkę, nie koło)
+    r0, R1 = 0.6, 6.8
+    for k in range(8):
         a = 45.0 * k
         with s.uklad(obrot=(0, 0, a - 90)), s.cechy(cien=False):
-            s.blok("Koło pole", (0, 3.6, 0.5 + 0.1 * (k % 2)), (2.8, 6.2, 0.3), POLA[k % 4])
+            for zn in (-1, 1):
+                m = ((0, zn, 0), (0, 0, 1), (zn, 0, 0))
+                s.klin("Koło pole", (zn * 1.25, (r0 + R1) / 2.0, 0.5 + 0.1 * (k % 2)), (0.3, 2.5, R1 - r0), POLA[k % 4],
+                       rot=katy_z_macierzy(m))
     for k in range(8):                                           # promienie-romby za podkładką, 2 i 3 poza obręcz
         a = 22.5 + 45.0 * k
         wyst = PROMIENIE[k]                                      # ile wystaje poza obręcz (2–3, nierówno)
@@ -150,7 +152,7 @@ def _lada(s):
         # znak miasteczka: wypadnięty klocek z lewego boku lady
         zestaw.wypadniety_klocek(s, (-6.0, 1.9, -0.2), (-7.0, 0, 0.4), "drewno_jasne", ry=-90, obrot_klocka=24)
         # markiza 7 pasów pod 11°, przesunięta w prawo (lewy koniec lady wolny — tam żart), rz +4° w kontrze do koła
-        n, Wm, Dm, mx, my = 7, 11.2, 4.8, 1.0, 8.7
+        n, Wm, Dm, mx, my = 7, 11.2, 4.8, 1.0, 7.4
         pas = Wm / n
         rx, rz = 11.0, 4.0
         for zn, xs, k1, k2 in ((-1, mx - Wm / 2.0 + 0.6, 5, -10), (1, mx + Wm / 2.0 - 0.6, -4, 9)):
@@ -172,6 +174,11 @@ def _lada(s):
             # łata z fastrygą na markizie (wierzch = lokalne +Y)
             with s.uklad(pos=(-1.6, 0.26, -0.6), obrot=(-90, 0, 0)):
                 zestaw.lata(s, (0, 0, 0), 2.4, 1.8, "tynk_blekit", przechyl=10)
+        # echo: chorągiewka koła na lewym rogu lady (po krytyce: ze szczytu słupa — limit wysokości 25)
+        with s.uklad(pos=(-5.7, 3.9, 1.1), obrot=(0, 0, 8)), s.cechy(cien=False):
+            s.blok("Chorągiewka maszt", (0, 1.5, 0), (0.4, 3.0, 0.4), "tusz")
+            s.klin("Chorągiewka", (1.6, 2.5, 0), (0.3, 1.2, 2.8), KOD, "Fabric", rot=(0, -90, 0))
+            s.klin("Chorągiewka", (1.6, 1.3, 0), (0.3, 1.2, 2.8), "biel", "Fabric", rot=(0, -90, 180))
         # żart: przewrócony prezent na lewym końcu blatu, z uchylonego wieczka wytacza się jajko
         with s.uklad(pos=(-3.3, 3.9 + 1.68, -0.4), obrot=(0, -78, 10)):
             _prezent_z_jajkiem(s)

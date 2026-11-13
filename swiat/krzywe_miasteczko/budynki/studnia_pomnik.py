@@ -38,7 +38,7 @@ Y_KAMIENI = Y_RANT - 0.25       # spód kamieni (wpuszczone w rant, żeby przech
 # (rx, rz) każdego kamienia: ręcznie układane, 0° albo ≥ 4° (przykazanie 1); poziome pod słupami kołowrotu (i = 1, 10)
 # i pod leżącym klockiem (i = 2)
 KAMIENIE_PRZECHYL = [(0, 5), (0, 0), (0, 0), (-4, -6), (0, 4), (0, 0), (4, -5), (0, 6), (0, 0), (-5, -4), (0, 0), (4, 5)]
-KLOCEK_ROT = (15.0, 12.0, -25.0)  # przód 15° (wypustki ku frontowi), skręt 12°, w bok 25° (lewy koniec w górze)
+KLOCEK_ROT = (35.0, 12.0, -25.0)  # przód 35° (po krytyce: wierzch z wypustkami patrzy na rynek), skręt 12°, w bok 25°
 
 
 def _kamienie(s):
@@ -75,8 +75,10 @@ def _kolumna(s):
                 rot=(0, 0, k))
         if i == len(SLUPY_KAT) - 1:                                                # pęknięcie pod ciężarem klocka
             with s.uklad(pos=(cx, cy, 0), obrot=(0, 0, k)), s.cechy(kolizja=False, cien=False):
-                for px, py, pk in ((0.25, 0.95, 32), (-0.05, 0.25, -38), (0.2, -0.45, 30)):
-                    s.blok("Kolumna pęknięcie", (px, py, r - 0.08), (0.3, 0.95, 0.3), "tusz", rot=(0, 0, pk))
+                # łamana rysa (po krytyce: dwa równoległe pociągnięcia dawały znak „Z” albo „<”) i odprysk
+                for px, py, pk, dl in ((0.35, 1.0, 55, 1.6), (-0.15, 0.2, -30, 1.0), (0.3, -0.6, 65, 1.3)):
+                    s.blok("Kolumna pęknięcie", (px, py, r - 0.08), (0.3, dl, 0.3), "tusz", rot=(0, 0, pk))
+                s.klin("Kolumna odprysk", (-0.7, -1.2, r + 0.1), (0.8, 0.8, 0.8), cien(s, KAMIEN, 0.8), rot=(20, 40, 0))
         x, y = x + dx * dl, y + dy * dl
         if i < len(SLUPY_KAT) - 1:
             s.walec("Kolumna gzyms", (x, y, 0), r + 0.4, 0.5, "tusz", os="y", rot=(0, 0, k))
@@ -106,18 +108,14 @@ def _klocek(s, kontakt):
     with s.uklad(pos=srodek, obrot=KLOCEK_ROT):
         s.blok("Pierwszy Klocek", (0, 0, 0), (8.0, 4.0, 4.0), "zloto")
         with s.cechy(kolizja=False):
-            g, e = 0.5, 0.3                                                      # obrys krawędzi: grubość, zapas na końcach
-            for y in (-2.0, 2.0):
-                for z in (-2.0, 2.0):
-                    s.blok("Klocek obrys", (0, y, z), (8.0 + e, g, g), "tusz")
-            for x in (-4.0, 4.0):
-                for z in (-2.0, 2.0):
-                    s.blok("Klocek obrys", (x, 0, z), (g, 4.0 + e, g), "tusz")
-                for y in (-2.0, 2.0):
-                    s.blok("Klocek obrys", (x, y, 0), (g, g, 4.0 + e), "tusz")
+            # po krytyce: zamiast czarnej ramy wokół lica (złoty „billboard”) podkładka za klockiem i pod nim
+            s.blok("Klocek podkładka", (0, -0.3, -0.3), (8.8, 4.8, 3.8), "tusz")
+            # 7 kwadratowych wypustek (jednej brakuje — klocek, który „nie pasuje”), własny kształt zamiast okrągłych
             for x in (-3.0, -1.0, 1.0, 3.0):
                 for z in (-1.0, 1.0):
-                    s.walec("Klocek wypustka", (x, 2.35, z), 0.8, 0.8, "zloto", os="y")
+                    if (x, z) == (3.0, 1.0):
+                        continue
+                    s.blok("Klocek wypustka", (x, 2.35, z), (1.4, 0.8, 1.4), "zloto")
     return do_budynku
 
 

@@ -122,7 +122,7 @@ def _kurtyna(s, ciemny):
         s.blok("Kurtyna rant tył", (0.5, 20.85, Z_TYL - 0.15), (16.0, 0.7, 0.5), "tusz")
         for i, x in enumerate((-6.2, -3.6, -1.0, 1.6, 4.2, 6.9)):   # blanki kurtyny, co drugi wyższy i ciemniejszy
             h = 1.6 + (0.25 if i % 2 else 0.0)
-            s.blok("Kurtyna blanka", (x, KURT_TOP + h / 2.0, 0.45), (1.6, h, 1.3), KAMIEN if i % 2 == 0 else cien(s, KAMIEN))
+            s.blok("Kurtyna blanka", (x, KURT_TOP + h / 2.0, 0.45), (1.6, h, 1.3), cien(s, KAMIEN, 0.8 if i % 2 == 0 else 0.72))
         # ciosy na kurtynie i ciemne strzelnice z tyłu (tył też jest oglądany)
         with s.cechy(cien=False):
             for x, y, w in ((-4.2, 19.6, 2.2), (4.6, 18.2, 1.8), (6.1, 13.6, 1.2)):
@@ -218,7 +218,7 @@ def _baszta_lewa(s, ciemny):
                 kat = 22.5 + 45.0 * i
                 h = 1.6 + (0.25 if i % 2 else 0.0)
                 pos, ry = _na_walcu(r + 0.8, kat, yb + h / 2.0, -0.35)
-                s.blok("Baszta L blanka", pos, (2.3, h, 1.0), KAMIEN if i % 2 == 0 else cien(s, KAMIEN), rot=(0, ry, 0))
+                s.blok("Baszta L blanka", pos, (2.3, h, 1.0), cien(s, KAMIEN, 0.8 if i % 2 == 0 else 0.72), rot=(0, ry, 0))
             pos, ry = _na_walcu(r, 10, 3.6, -0.2)
             s.blok("Strzelnica", pos, (0.9, 2.6, 0.6), "tusz", rot=(0, ry, 0))
 
@@ -263,7 +263,7 @@ def _baszta_prawa(s, ciemny):
                         continue
                     hz = 1.6 + (0.25 if (sx + sz) % 2 else 0.0)
                     s.blok("Baszta P blanka", (sx * (a + 0.2), yb + hz / 2.0, sz * (a + 0.2)), (1.6, hz, 1.6),
-                           KAMIEN if (sx + sz) % 2 == 0 else cien(s, KAMIEN))
+                           cien(s, KAMIEN, 0.8 if (sx + sz) % 2 == 0 else 0.72))
                     i += 1
             # okno na pochylonym froncie (lico zwęża się o 1 na 13,4 → rx −4,3°)
             kat = -math.degrees(math.atan2(t, h))

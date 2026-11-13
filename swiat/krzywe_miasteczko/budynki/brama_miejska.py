@@ -99,7 +99,7 @@ def _wieza_lewa(s):
             zestaw.okno(s, (-1.3, 4.6, W1 / 2.0), 2.4, 3.2, ksztalt="luk", przechyl=-6)
             zestaw.okno(s, (1.6, 5.2, -W1 / 2.0), 2.2, 2.6, przechyl=7, swiatlo="woda_gleboka", ry=180, tanie=True)
             # dach-ostrosłup (smukły „szpic”, 48°) w kontrze (rz −4 względem głowy), skręcony o 9°
-            with s.uklad(pos=(0, H1 + 0.3, 0), obrot=(0, 9, -4)):
+            with s.uklad(pos=(0, H1 + 0.3, 0), obrot=(0, 9, -10)):      # po krytyce: bezwzględnie −4° (nie 1–3°)
                 s.ostroslup("Wieża L dach", (0, 0, 0), 5.6, 5.6, 5.8, DACH)
                 s.blok("Wieża L okap", (0, 0.05, 0), (11.8, 0.4, 11.8), "tusz")
                 s.blok("Wieża L gałka", (0, 5.55, 0), (0.9, 0.9, 0.9), "zloto", rot=(45, 0, 45))
@@ -132,7 +132,7 @@ def _wieza_prawa(s):
             s.walec("Wieża P wieniec", (0, H1 + 0.15, 0), r1 + 0.5, 0.7, "tusz")
             _okno_strazy(s, 28.0, 3.4, r1)
             # stożek „gwiazda”: dwa ostrosłupy obrócone o 45°, drugi o 0,05 wyżej, w dwóch tonach; w kontrze rz +4
-            with s.uklad(pos=(0, H1 + 0.5, 0), obrot=(0, 0, 4)):
+            with s.uklad(pos=(0, H1 + 0.5, 0), obrot=(0, 0, 9)):        # po krytyce: bezwzględnie +4° (nie 1°)
                 s.ostroslup("Wieża P stożek", (0, 0, 0), 4.7, 4.7, 5.0, DACH)
                 with s.uklad(obrot=(0, 45, 0)):
                     s.ostroslup("Wieża P stożek", (0, 0.05, 0), 4.7, 4.7, 5.0, cien(s, DACH, 0.8))
@@ -190,7 +190,7 @@ def _mury(s):
             xs = [x1 - 1.0 - 3.6 * i for i in range(2)] if zn > 0 else [x0 + 1.0 + 3.6 * i for i in range(2)]
             for i, x in enumerate(xs):
                 h = 2.0 + 0.3 * (i % 2)
-                s.blok("Mur blank", (x, 14.6 + h / 2.0, zc), (2.0, h, d - 0.4), KAMIEN if i % 2 == 0 else cien(s, KAMIEN))
+                s.blok("Mur blank", (x, 14.6 + h / 2.0, zc), (2.0, h, d - 0.4), cien(s, KAMIEN, 0.8 if i % 2 == 0 else 0.72))
     # za wieżami: mur do krawędzi przejścia (widać go od strony pól)
     for x0, x1 in ((-17.3, -8.6), (8.6, 17.1)):
         L, xc = x1 - x0, (x0 + x1) / 2.0
@@ -242,7 +242,7 @@ def _ganek(s):
     # od pól: chodnik straży za gankiem z blankami (ciąg dalszy rantu muru)
     for i, x in enumerate((-6.6, -1.4, 3.9)):
         h = 1.8 + 0.3 * (i % 2)
-        s.blok("Ganek blank", (x, YP + h / 2.0, -6.2), (2.0, h, 1.2), KAMIEN if i % 2 == 0 else cien(s, KAMIEN))
+        s.blok("Ganek blank", (x, YP + h / 2.0, -6.2), (2.0, h, 1.2), cien(s, KAMIEN, 0.8 if i % 2 == 0 else 0.72))
     # dach-czapa na ganku: połać frontowa 30°, tylna 42°, skręcony o 6° (lewy koniec okapu bardziej ku miastu)
     gl = ZG1 - ZG0
     with s.uklad(pos=((XL + XP) / 2.0, YG, (ZG0 + ZG1) / 2.0), obrot=(0, -6, 0)):

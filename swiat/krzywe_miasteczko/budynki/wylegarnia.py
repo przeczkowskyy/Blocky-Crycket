@@ -34,8 +34,9 @@ OBRYS_SYLWETKI = False           # PROJEKT 5.0 p. 4: Highlight w budynkach zakaz
 SKORUPA, KOD = "biel", "dach_wylegarnia"
 CZ = -2.0                        # środek jaja (z)
 # walce skorupy: (x środka, promień, y0, y1); co drugi przesunięty o 0,6 w bok
-WALCE = ((0.0, 8.0, 0.0, 4.0), (0.6, 10.0, 4.0, 10.0), (0.0, 10.5, 10.0, 15.0))
-C4_X, C4_R, C4_Y0, C4_H, C4_RZ = 0.6, 9.5, 14.2, 4.5, -5.0
+# po krytyce: było 8 / 10 / 10,5 / 9,5 od dołu (najszersze na 2/3 wysokości — garnek albo silos); teraz jajo
+WALCE = ((0.0, 9.6, 0.0, 4.0), (0.6, 10.6, 4.0, 9.5), (0.0, 9.8, 9.5, 13.5))
+C4_X, C4_R, C4_Y0, C4_H, C4_RZ = 0.6, 8.0, 13.0, 3.5, -5.0
 DRZWI_X, DRZWI_Z, DRZWI_RY = -5.0, 7.4, -14.0
 
 
@@ -91,10 +92,10 @@ def _gora(s, rnd):
                 s.belka("Pęknięcie", p1, p2, 0.6, "tusz", "SmoothPlastic", 0.6)
             # kapsel: zawias przy prawej krawędzi, uchylony o −20° względem czubka (razem −25°); lewą krawędź
             # podpiera głową slime
-            PX, KAT = 8.4, 20.0
+            PX, KAT, RK = 7.0, 20.0, 6.2                      # zawias, uchylenie, promień kapsla
             tg = math.tan(math.radians(KAT))
-            lid_c = (PX - 7.5, 0.3)                            # środek kapsla na czubku (x, z)
-            SX, SZ = -6.2, 3.6                                 # slime (środek podstawy w układzie czubka)
+            lid_c = (PX - RK, 0.3)                             # środek kapsla na czubku (x, z)
+            SX, SZ = -4.8, 3.0                                 # slime (środek podstawy w układzie czubka)
             # zęby ułamanej skorupy na krawędzi — tylko tam, gdzie kapsel jest dość wysoko i nie zasłaniają slime'a
             phi_s = math.degrees(math.atan2(SX, SZ))
             for k in range(12):
@@ -105,32 +106,26 @@ def _gora(s, rnd):
                 rr = C4_R - 0.4
                 x, z = rr * math.sin(a), rr * math.cos(a)
                 h = 2.4 if k % 2 else 1.6
-                if math.hypot(x - lid_c[0], z - lid_c[1]) < 8.3:
+                if math.hypot(x - lid_c[0], z - lid_c[1]) < RK + 0.8:
                     h = min(h, (PX - x) * tg - 0.5)
                 if h < 0.8:
                     continue
                 with s.uklad(pos=(x, H - 0.1, z), obrot=(0, phi, 0)):
                     s.klin("Ząb skorupy", (0, h / 2.0, 0), (0.6, h, 2.6), SKORUPA, rot=(0, -90 if k % 3 else 90, 0))
             with s.uklad(pos=(PX, H + 0.05, 0.3), obrot=(0, 0, -KAT)):
-                s.walec("Kapsel rant", (-7.5, 0.3, 0), 7.9, 0.6, "tusz", os="y")
-                s.walec("Kapsel", (-7.5, 0.4 + 1.3, 0), 7.5, 2.6, KOD, os="y")
-                s.walec("Kapsel", (-6.6, 3.0 + 0.7, 0.3), 5.0, 1.4, KOD, os="y")
+                s.walec("Kapsel rant", (-RK, 0.3, 0), RK + 0.4, 0.6, "tusz", os="y")
+                s.walec("Kapsel", (-RK, 0.4 + 1.3, 0), RK, 2.6, KOD, os="y")
+                s.walec("Kapsel", (-RK + 0.8, 3.0 + 0.7, 0.3), 3.6, 1.4, KOD, os="y")
+                s.walec("Kapsel gałka", (-RK + 0.8, 5.0, 0.3), 2.0, 1.2, KOD, os="y")   # było: kula Ø 8,4 (garnek z pokrywką)
                 with s.cechy(cien=False):                      # białe kropki: kapsel to kawałek skorupy
-                    for (x, z, r) in ((-12.6, 2.4, 1.3), (-3.6, -4.8, 1.1)):
+                    for (x, z, r) in ((-10.0, 1.8, 1.1), (-3.2, -3.8, 0.9)):
                         s.walec("Kapsel kropka", (x, 3.05, z), r, 0.3, SKORUPA, os="y")
-                # ułamana krawędź kapsla: zęby w dół (tylko tam, gdzie kapsel jest wysoko nad skorupą i nie ma slime'a)
+                # ułamana krawędź kapsla: wyraźne zęby w dół 2–2,5 (kapsel czyta się jak kawałek skorupy)
                 for phi in (-162, -128, -18, 12, 168):
                     a = math.radians(phi)
-                    h = 1.5 if phi % 2 else 1.2
-                    with s.uklad(pos=(-7.5 + 7.15 * math.sin(a), 0.5, 7.15 * math.cos(a)), obrot=(0, phi, 0)):
+                    h = 2.5 if phi % 2 else 2.0
+                    with s.uklad(pos=(-RK + (RK - 0.35) * math.sin(a), 0.5, (RK - 0.35) * math.cos(a)), obrot=(0, phi, 0)):
                         s.klin("Kapsel ząb", (0, -h / 2.0, 0), (0.6, h, 2.4), KOD, rot=(0, -90, 180))
-            # gałka-kopuła: liczona ręcznie i dodana bez obrotu (zakres podglądu liczy obróconą kulę jak sześcian)
-            gx, gy = -6.0, 3.3                                 # w układzie kapsla
-            ka = math.radians(-KAT)
-            px = PX + gx * math.cos(ka) - gy * math.sin(ka)
-            py = H + 0.05 + gx * math.sin(ka) + gy * math.cos(ka)
-            with s.uklad(pos=(px, py, 0.6), obrot=(0, 0, -C4_RZ)):
-                s.kula("Kapsel kopuła", (0, 0, 0), 8.4, KOD)
             # pet-slime wyglądający spod kapsla (z przodu, po lewej) — głową podpiera uchyloną krawędź
             with s.uklad(pos=(SX, H + 0.35, SZ), obrot=(0, 22, 0)):
                 with s.cechy(cien=False):
@@ -186,13 +181,17 @@ def _szyld_lapa(s):
         # łapa dwustronna: poduszka i palce przechodzą przez płetwę, więc z tyłu też widać łapę;
         # wysięgnik kończy się tuż za tylnym licem poduszki (nie przebija jej)
         with s.uklad(pos=(xe + 0.3, ye + 0.6, 1.3), obrot=(10, 18, 12)):
-            s.walec("Łapa płetwa", (0, 0, 0), 5.0, 0.4, "tusz", os="z")
+            # obrys w kształcie łapy (po krytyce: czarny krąg Ø 10 był drugim najmocniejszym ogniskiem kadru)
+            s.walec("Łapa płetwa", (0, -1.3, 0), 3.5, 0.4, "tusz", os="z")
+            for a in (-55, -20, 20, 55):
+                r = math.radians(a)
+                s.walec("Łapa płetwa", (3.95 * math.sin(r), -1.3 + 4.0 * math.cos(r), 0), 1.55, 0.4, "tusz", os="z")
             s.walec("Łapa poduszka", (0, -1.3, 0), 3.0, 1.4, "pomarancz", os="z")
             for a in (-55, -20, 20, 55):
                 r = math.radians(a)
                 s.walec("Łapa palec", (3.95 * math.sin(r), -1.3 + 4.0 * math.cos(r), 0), 1.05, 1.4, "pomarancz", os="z")
             # chorągiewka duetu (znak miasteczka) zatknięta na medalionie
-            zestaw.choragiewka_duetu(s, (1.2, 4.6, 0), "kot", przechyl=3)
+            zestaw.choragiewka_duetu(s, (1.37, 3.3, 0), "kot", przechyl=3)
 
 
 # --------------------------------------------------------------------------- echo: miska z kością

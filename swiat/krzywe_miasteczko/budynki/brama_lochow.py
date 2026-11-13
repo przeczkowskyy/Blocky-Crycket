@@ -59,13 +59,15 @@ def buduj(s, rnd):
 def _czapa_mchu(s, w, d, y, kapki=(), kapki_tyl=(), dx=0.0):
     """Czapa mchu na wierzchu bloku (w bieżącym układzie bloku, y = wierzch bloku): podkładka tusz pod spodem
     (ciemny rant widoczny od dołu i na tle nieba) + płyta mchu + kapki spływające po licu i tyle (x, długość)."""
+    # po krytyce: płyta mchu nie przykrywa całego wierzchu (był „budynek z zielonym wiekiem”), kapki dłuższe — mech spływa
     with s.cechy(kolizja=False):
-        s.blok("Mech rant", (dx, y + 0.15, 0), (w + 1.0, 0.5, d + 1.0), "tusz")
-        s.blok("Mech", (dx, y + 0.7, 0), (w + 0.5, 0.7, d + 0.5), MECH)
+        s.blok("Mech rant", (dx - 0.12 * w, y + 0.15, 0), (0.72 * w + 1.0, 0.5, d + 1.0), "tusz")
+        s.blok("Mech", (dx - 0.12 * w, y + 0.7, 0), (0.72 * w + 0.5, 0.7, d + 0.5), MECH)
         with s.cechy(cien=False):
             for zn, lista in ((1, kapki), (-1, kapki_tyl)):
                 for x, dl in lista:
-                    s.blok("Mech kapka", (dx + x, y + 0.6 - dl / 2.0, zn * (d / 2.0 + 0.35)), (1.4, dl, 0.5), MECH)
+                    dl2 = dl * 1.6
+                    s.blok("Mech kapka", (dx + x, y + 0.6 - dl2 / 2.0, zn * (d / 2.0 + 0.35)), (1.2, dl2, 0.5), MECH)
 
 
 def _krawedz(s, nazwa, x, y0, y1, z, zn=1):
@@ -132,15 +134,20 @@ def _masyw(s, ciemny):
             s.blok("Czoło warga", (0, 0.3, 6.1), (14.4, 0.9, 0.9), JASNY)
         _czapa_mchu(s, 8.0, 12.0, 10.0, kapki=((-2.0, 2.6), (2.4, 1.6)), kapki_tyl=((0.5, 2.2),), dx=3.4)
         _kolec(s, "Kolec skalny", (3.4, 10.6, -2.4), 3.0, 1.2, (-8, 30, -13), ciemny)
+        # po krytyce: poszarpana korona zamiast płaskich tarasów (kliny narożne 3–5 skręcone ±15°)
+        s.naroznik("Skała ząb", (-4.6, 11.6, -1.2), (5.0, 4.0, 5.0), SKALA, rot=(0, 15, 0))
     # lewa korona (do 34 z kolcem)
     with s.uklad(pos=(-8.6, 26.9, -1.2), obrot=(6, -10, -11)):
         s.blok("Skała lewa korona", (0, 2.4, 0), (11.0, 4.8, 11.0), SKALA)
         _czapa_mchu(s, 11.0, 11.0, 4.8, kapki=((-3.6, 3.0), (1.0, 1.8), (3.8, 2.4)), kapki_tyl=((-2.0, 2.6), (2.6, 1.6)))
         _kolec(s, "Kolec skalny", (-3.2, 5.3, 1.6), 2.4, 1.5, (10, 15, 16), SKALA)
+        s.naroznik("Skała ząb", (2.8, 5.9, -2.0), (4.5, 3.0, 4.5), ciemny, rot=(0, 165, 0))
     # prawa korona (do 26)
     with s.uklad(pos=(10.4, 22.4, -2.4), obrot=(5, 11, -9)):
         s.blok("Skała prawa korona", (0, 1.6, 0), (8.6, 3.2, 9.0), SKALA)
         _czapa_mchu(s, 8.6, 9.0, 3.2, kapki=((-2.2, 2.2), (2.0, 1.4)), kapki_tyl=((1.0, 2.0),))
+        s.naroznik("Skała ząb", (-1.4, 5.3, 0.8), (5.0, 5.0, 5.0), SKALA, rot=(0, 15, 0))
+        s.naroznik("Skała ząb", (2.8, 4.3, -2.4), (3.5, 3.0, 3.5), ciemny, rot=(0, -105, 0))
 
 
 # --------------------------------------------------------------------------- gardziel: filary, łuk, portal, zęby, język

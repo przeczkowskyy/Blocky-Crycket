@@ -35,11 +35,25 @@ with open(os.path.join(TU, "uklad.json"), encoding="utf-8") as _f:
 
 # Stragany przestawione względem uklad.json: w PROJEKT 4.7 stragan_1 i stragan_5 zwężały wylot Bramnej do ok. 5 studów,
 # stragan_2 stał w osi wylotu Arenowej, a stragan_3 zasłaniał wejście sklepu magicznego (kwadrat 8 × 8 przed drzwiami).
-PRZESTAWIONE_STRAGANY = {"stragan_1": (-29.5, -15.5, 58.0), "stragan_2": (-29.0, 23.0, 128.0), "stragan_3": (27.5, -19.0, -55.0),
+# Po krytyce (13.11): stragan_3 zasłaniał łukowe drzwi sklepu z rynku → bliżej zbrojowni, bokiem do osi spawn → sklep, lada ku studni; stragan_2 stał
+# w osi fasady stajni (markiza na podkowie) → na łąkę Z3 przy Bramnej, lada ku Podmurnej.
+PRZESTAWIONE_STRAGANY = {"stragan_1": (-29.5, -15.5, 58.0), "stragan_2": (-66.0, -22.0, 70.0), "stragan_3": (31.5, -1.5, -72.0),
                          "stragan_5": (-9.5, -31.0, 17.0)}
 for _st in U["stragany"]:
     if _st["id"] in PRZESTAWIONE_STRAGANY:
         _st["x"], _st["z"], _st["rot"] = PRZESTAWIONE_STRAGANY[_st["id"]]
+
+# Poprawki układu po krytyce (13.11; uklad.json zostaje źródłem bazowym, tu nadpisania):
+# - punkt wejścia patrzy na 70° (było 58°): w kadrze kamery gracza mieści się miecz i tarcza zbrojowni, karczma cała;
+# - baszta przy bramie miejskiej odsunięta (wchodziła w mur korpus bramy i w jej lewą wieżę);
+# - domy niższe (rzędy 54 → 42 → ≤ 30): 20–23 zamiast 22–28.
+U["patrz"] = 70.0
+U["spawn_orientation_y_studio"] = -110.0
+U["baszty"][1] = [-104.0, -56.0]
+WYS_DOMOW = {"dom_1": 23.0, "dom_2": 20.0, "dom_3": 22.0, "dom_4": 23.0, "dom_5": 19.0, "dom_6": 22.0, "dom_7": 21.0,
+             "dom_8": 22.0, "dom_9": 19.5}
+for _d in U["domy"]:
+    _d["h"] = WYS_DOMOW.get(_d["id"], _d["h"])
 
 MODULY = ["karczma", "zbrojownia", "sklep_magiczny", "wylegarnia", "brama_lochow", "stajnia", "brama_twierdzy", "gildia",
           "arena", "brama_miejska", "studnia_pomnik", "kolo_fortuny"]
@@ -156,8 +170,25 @@ def wolne_miejsce(x, z, r, maks=12.0, ulice=True, korytarz=True, rynek=True):
             px, pz = x + rr * math.cos(a), z + rr * math.sin(a)
             if kolizja(px, pz, r, ulice=ulice, rynek=rynek) or (korytarz and w_korytarzu(px, pz)) or w_niecce(px, pz, r + 1.0):
                 continue
+            if przy_zieleni(px, pz, r):
+                continue
             return px, pz
     return None
+
+
+def przy_zieleni(px, pz, r):
+    """Czy rekwizyt o promieniu r wchodzi w koronę drzewa (≥ 5 od pnia) albo w krzak (≥ 2,5)? Po krytyce: skrzynie
+    i beczki przenikały się z krzakami."""
+    return any(math.hypot(px - x, pz - z) < r + 5.0 for x, z in DRZEWA) or         any(math.hypot(px - x, pz - z) < r + 2.5 for x, z in KRZAKI)
+
+
+# osie widoku: punkt wejścia → punkty interakcji celów (latarnie i chorągwie nie mogą ich zasłaniać)
+CELE_WIDOKU = [(59.7, 57.9), (64.5, 39.7), (42.5, 2.4), (18.4, 37.3), (95.9, 20.4), (-30.0, 92.2), (24.0, -33.8),
+               (-8.1, 18.3)]
+
+
+def w_osi_widoku(px, pz, zapas=4.0):
+    return any(odl_odcinek(px, pz, SPAWN, c) < zapas for c in CELE_WIDOKU)
 
 
 def w_korytarzu(px, pz, zapas=3.0):
@@ -299,14 +330,21 @@ def teren(s, rnd):
                                                      ((-1, 15.5), (1.5, 16.6), (-2, 17.4))):
                     s.belka("Pęknięcie", (x1, -3.9, z1), (x2, -3.9, z2), 0.3, "neon_portal", "Neon", 0.5)
                     s.belka("Pęknięcie", (x2, -3.9, z2), (x3, -3.9, z3), 0.3, "neon_portal", "Neon", 0.5)
-            # skała za murem: bryły Slate 20–30 nad ziemią, dwie z czapą mchu
+            # skała za murem: bryły Slate 20–30 nad ziemią, mocno przechylone (12–20°), co druga to klin narożny-szczyt,
+            # mech tylko na dwóch (po krytyce: wyglądały jak fioletowe pudła z zielonymi wiekami)
             with s.cechy(kolizja=False):
                 for i, (x, z, w, h, d, ry, rz) in enumerate(((-24, -21, 14, 24, 12, 18, 8), (-12, -24, 12, 30, 12, -12, -6),
                                                              (2, -26, 16, 27, 12, 8, 5), (15, -23, 12, 22, 12, -20, -9),
                                                              (27, -20, 12, 20, 10, 25, 7), (-34, -17, 10, 18, 10, -8, -10))):
-                    s.blok("Skała", (x, h / 2.0 - 3.0, z), (w, h, d), "kamien_lochu", "Slate", (rnd.uniform(-6, 6), ry, rz))
-                    if i in (1, 3):
-                        s.blok("Skała mech", (x, h - 2.6, z), (w * 0.8, 1.2, d * 0.8), "dach_lochy", rot=(0, ry, rz))
+                    rx = rnd.choice((-1, 1)) * rnd.uniform(12, 18)
+                    rz2 = math.copysign(rnd.uniform(12, 20), rz)
+                    with s.uklad(pos=(x, h / 2.0 - 4.5, z), obrot=(rx, ry, rz2)):
+                        if i % 2 == 0:
+                            s.naroznik("Skała", (0, 0, 0), (w, h, d), "kamien_lochu", "Slate", (0, 90 * i, 0))
+                        else:
+                            s.blok("Skała", (0, 0, 0), (w, h, d), "kamien_lochu", "Slate")
+                            if i in (1, 3):
+                                s.blok("Skała mech", (0, h / 2.0 - 0.2, 0), (w * 0.8, 1.2, d * 0.8), "dach_lochy")
         # --- podium karczmy z pięcioma stopniami (wierzch bruk na +4)
         with s.grupa("Teren/Podium"), s.uklad(pos=(_K["x"], 0, _K["z"]), obrot=(0, _K["rot"], 0)):
             s.blok("Podium", (0, 1.8, 0), (46.0, 3.6, 38.0), "kamien_cokol", "Cobblestone")
@@ -327,7 +365,8 @@ def teren(s, rnd):
             for d in U["domy"]:
                 with s.uklad(pos=(d["x"], 0, d["z"]), obrot=(0, d["rot"], 0)):
                     s.blok("Podwórko", (0, Y_PODWORKO - 0.1, -0.5), (d["w"] + 5.0, 0.2, d["d"] + 4.0), "ziemia")
-            for (x, z, w, d, r) in ((67.5, -39.0, 22, 16, -40), (89.2, 80.3, 20, 16, 45), (-62.4, -31.8, 14, 12, 20)):
+            for (x, z, w, d, r) in ((67.5, -39.0, 22, 16, -40), (89.2, 80.3, 20, 16, 45), (-62.4, -31.8, 14, 12, 20),
+                                    (35.0, -62.0, 24, 16, -35), (-50.0, 12.0, 18, 14, 15)):
                 with s.uklad(pos=(x, 0, z), obrot=(0, r, 0)):
                     s.blok("Podwórko", (0, Y_PODWORKO - 0.1, 0), (w, 0.2, d), "ziemia")
         # --- pagórki w trawie (łagodne czasze, bez kolizji ze ścieżkami)
@@ -351,13 +390,14 @@ def rynek(s, rnd):
             g = G[bid]
             with s.uklad(pos=(g["x"], 0, g["z"]), obrot=(0, g["rot"], 0)), s.cechy(cien=False):
                 s.blok("Przedpole", ((x0 + x1) / 2.0, Y_RYNEK - 0.275, (z0 + z1) / 2.0), (x1 - x0, 0.55, z1 - z0), "bruk")
-        # --- pierścień wokół studni (12 płyt) i promienie-ścieżki w kolorach kodów
+        # --- pierścień wokół studni (16 płyt 4 × 5 na r 11–15, dwa tony), obręcz na r 24 z przerwami i ścieżki-kody
+        # (po krytyce: jasny bruk zajmował 34–45% kadru z oczu — więcej wzoru, ciemniej w trójkącie spawn → karczma)
         with s.cechy(kolizja=False, cien=False):
-            for i in range(12):
-                a = math.radians(i * 30 + 7)
-                r = 12.4
-                s.blok("Pierścień", (r * math.cos(a), Y_WZOR - 0.15, r * math.sin(a)), (2.6, 0.3, 2 * 13.7 * math.tan(math.radians(15)) + 0.1),
-                       "bruk_ciemny", rot=(0, -math.degrees(a), 0))
+            for i in range(16):
+                a = math.radians(i * 22.5 + 7)
+                r = 13.0
+                s.blok("Pierścień", (r * math.cos(a), Y_WZOR - 0.15, r * math.sin(a)), (4.0, 0.3, 2 * 11.0 * math.tan(math.radians(11.25)) - 0.08),
+                       "bruk_ciemny" if i % 2 else cien(s, "bruk", 0.85), rot=(0, -math.degrees(a), 0))
             kreski = []
             for kod, trasa in SCIEZKI:
                 L = 0.0
@@ -366,22 +406,39 @@ def rynek(s, rnd):
                     segs.append((a, b, L))
                     L += math.hypot(b[0] - a[0], b[1] - a[1])
                 t = 0.0
-                while t + 4.0 <= L:
-                    p1, p2 = _punkt_na(segs, t), _punkt_na(segs, t + 4.0)
+                k = 0
+                while t + 3.0 <= L:
+                    p1, p2 = _punkt_na(segs, t), _punkt_na(segs, t + 3.0)
                     mid = ((p1[0] + p2[0]) / 2.0, (p1[1] + p2[1]) / 2.0)
-                    if odl_wielokat(mid[0], mid[1], wiel) < -1.2 or _w_przedpolu(mid[0], mid[1]):
-                        pas(s, "Ścieżka-kod", p1, p2, Y_KOD, 0.3, 2.0, kod)
+                    if (odl_wielokat(mid[0], mid[1], wiel) < -1.2 or _w_przedpolu(mid[0], mid[1])) and                             math.hypot(mid[0] - SPAWN[0], mid[1] - SPAWN[1]) > 6.0:
+                        znak_kodu(s, kod, p1, p2, Y_KOD, k)
                         kreski.append((p1, p2))
+                        k += 1
                     t += 6.0
+            # obręcz na r 24: łuki bruk_ciemny szer. 1,5 (4 długości, przerwa 2), z dala od kodów i spawnu
+            n_ob = int(2 * math.pi * 24.0 / 6.0)
+            for i in range(n_ob):
+                a = 2 * math.pi * (i + 0.5) / n_ob
+                x, z = 24.0 * math.cos(a), 24.0 * math.sin(a)
+                if math.hypot(x - SPAWN[0], z - SPAWN[1]) < 5.0 or odl_wielokat(x, z, wiel) > -1.5 or _w_przedpolu(x, z):
+                    continue
+                if any(odl_odcinek(x, z, a1, b1) < 2.2 for a1, b1 in kreski):
+                    continue
+                s.blok("Obręcz", (x, Y_WZOR - 0.15, z), (1.5, 0.3, 4.0), "bruk_ciemny", rot=(0, -math.degrees(a), 0))
             # płyty w trzech tonach (4–8), z dala od studni, spawnu i ścieżek
             plyty = []
             proby = 0
-            while len(plyty) < 34 and proby < 4000:
+            while len(plyty) < 54 and proby < 6000:
                 proby += 1
-                x, z = rnd.uniform(-42, 56), rnd.uniform(-38, 49)
+                if len(plyty) < 14:                              # najpierw trójkąt spawn → schody karczmy
+                    x, z = rnd.uniform(22, 56), rnd.uniform(18, 49)
+                    if not w_wielokacie(x, z, U["korytarz_karczmy"]):
+                        continue
+                else:
+                    x, z = rnd.uniform(-42, 56), rnd.uniform(-38, 49)
                 w, d = rnd.choice((4.0, 5.0, 6.0, 8.0)), rnd.choice((4.0, 5.0, 6.0))
                 r = math.hypot(w, d) / 2.0
-                if math.hypot(x, z) < 16 + r or math.hypot(x - SPAWN[0], z - SPAWN[1]) < 5 + r:
+                if math.hypot(x, z) < 16 + r or math.hypot(x - SPAWN[0], z - SPAWN[1]) < 5 + r or abs(math.hypot(x, z) - 24.0) < r + 1.0:
                     continue
                 if odl_wielokat(x, z, wiel) > -(r + 1.0):
                     continue
@@ -390,7 +447,8 @@ def rynek(s, rnd):
                 if any(math.hypot(x - px, z - pz) < r + pr + 0.6 for px, pz, pr in plyty):
                     continue
                 plyty.append((x, z, r))
-                s.blok("Płyta bruku", (x, Y_WZOR - 0.15, z), (w, 0.3, d), rnd.choice(("bruk_ciemny", cien(s, "bruk", 0.9))),
+                s.blok("Płyta bruku", (x, Y_WZOR - 0.15, z), (w, 0.3, d),
+                       "bruk_ciemny" if len(plyty) <= 14 else rnd.choice(("bruk_ciemny", cien(s, "bruk", 0.9))),
                        rot=(0, rnd.uniform(-14, 14), 0))
         # --- krawężnik tuszem na granicy bruk / trawa
         def wolny(px, pz):
@@ -451,6 +509,29 @@ def _od_studni(cel, r=14.5):
     return (cel[0] / d * r, cel[1] / d * r)
 
 
+def znak_kodu(s, kod, p1, p2, y_gora, k, szer=1.4):
+    """Znak ścieżki-kodu między p1 a p2 (po krytyce: czerwienie Areny, Bramnej i karczmy były nie do odróżnienia):
+    Arenowa — dwa kwadraty 1,6 na przemian dach_arena / biel; Bramna — strzałka z 2 klinów grotem ku bramie (kierunek
+    p1 → p2); reszta — pas szer. 1,4."""
+    if kod == "dach_arena":
+        dx, dz = p2[0] - p1[0], p2[1] - p1[1]
+        for j, f in enumerate((0.27, 0.73)):
+            c = (p1[0] + dx * f, p1[1] + dz * f)
+            s.blok("Ścieżka-kod", (c[0], y_gora - 0.15, c[1]), (1.6, 0.3, 1.6), kod if (j + k) % 2 == 0 else "biel",
+                   rot=(0, math.degrees(math.atan2(dx, dz)), 0))
+    elif kod == "dach_brama":
+        dx, dz = p2[0] - p1[0], p2[1] - p1[1]
+        dl = math.hypot(dx, dz) or 1.0
+        ux, uz = dx / dl, dz / dl
+        c = ((p1[0] + p2[0]) / 2.0, (p1[1] + p2[1]) / 2.0)
+        A = (c[0] + ux * 1.1, c[1] + uz * 1.1)
+        B = (c[0] - ux * 0.9 - uz * 1.1, c[1] - uz * 0.9 + ux * 1.1)
+        C = (c[0] - ux * 0.9 + uz * 1.1, c[1] - uz * 0.9 - ux * 1.1)
+        trojkat(s, "Ścieżka-kod", A, B, C, y_gora, 0.3, kod)
+    else:
+        pas(s, "Ścieżka-kod", p1, p2, y_gora, 0.3, szer, kod)
+
+
 _SCH = lok2sw(_K, -3.0, 29.5)
 SCIEZKI = [
     ("dach_lochy", [_od_studni((37.1, 15.0)), (37.1, 15.0)]),
@@ -507,7 +588,11 @@ def ulice(s, rnd):
                     while t < L - 2.0:
                         x, z = _punkt_na(segs, t)
                         if odl_wielokat(x, z, U["rynek"]) > 1.0:
-                            s.blok("Kamień milowy", (x, y + 0.04, z), (1.3, 0.3, 1.3), KOD[uid], rot=(0, 45 + rnd.uniform(-8, 8), 0))
+                            if uid in ("arenowa", "bramna"):
+                                q = _punkt_na(segs, min(L, t + 2.4))
+                                znak_kodu(s, KOD[uid], (x, z), q, y + 0.19, int(t / 8.0))
+                            else:
+                                s.blok("Kamień milowy", (x, y + 0.04, z), (1.3, 0.3, 1.3), KOD[uid], rot=(0, 45 + rnd.uniform(-8, 8), 0))
                         t += 8.0
 
 
@@ -527,6 +612,7 @@ def mur(s, rnd):
     pts = U["mur"]
     n = len(pts)
     k_c = cien(s, "kamien_cieply")
+    BLANK[:] = [cien(s, "kamien_cieply", 0.8), cien(s, "kamien_cieply", 0.72)]
     with s.grupa("Mur"):
         for i in range(n):
             A, B = pts[i], pts[(i + 1) % n]
@@ -558,10 +644,16 @@ def mur(s, rnd):
         with s.grupa("Mur/_Blokada"), s.cechy(cien=False):
             g = G["brama_miejska"]
             with s.uklad(pos=(g["x"], 0, g["z"]), obrot=(0, g["rot"], 0)):
-                s.blok("Blokada przejścia", (0, 8.0, -8.6), (17.0, 16.0, 1.0), "tusz", alfa=1.0)
+                # po krytyce: szersza (zakładka 0,3 na mur i wieże) i grubsza — wcześniej za jej końcem zostawał korytarz 1,1
+                s.blok("Blokada przejścia", (0, 8.0, -7.5), (19.5, 16.0, 1.6), "tusz", alfa=1.0)
+        # wypełniacz szpary w murze przy zachodnim końcu areny (0,7–1,75 między korpusem muru a cokołem areny)
+        s.blok("Mur wypełniacz", (-3.1, 7.0, -121.5), (1.5, 14.0, 5.0), "kamien_cieply", rot=(0, 174, 0))
         with s.grupa("Mur/Baszty"):
             for i, (x, z) in enumerate(U["baszty"]):
                 baszta(s, rnd, x, z, 1 if i % 2 else -1, "rycerz" if i % 2 else "kot")
+
+
+BLANK = []                                                      # blanki: cien(kamien_cieply, 0,8) / 0,72 (odcinają się od nieba)
 
 
 def _odcinek_muru(s, p0, p1, nrm, k_c, ciete):
@@ -597,7 +689,7 @@ def _odcinek_muru(s, p0, p1, nrm, k_c, ciete):
                 for i in range(m):
                     h = 2.0 + (0.3 if i % 2 else 0.0)
                     with s.cechy(cien=False):
-                        s.blok("Mur blank", (x0 + 4.0 * i, 14.2 + h / 2.0, 0), (2.0, h, 3.8), "kamien_cieply" if i % 2 == 0 else k_c)
+                        s.blok("Mur blank", (x0 + 4.0 * i, 14.2 + h / 2.0, 0), (2.0, h, 3.8), BLANK[i % 2])
 
 
 def baszta(s, rnd, x, z, znak, kto):
@@ -606,17 +698,17 @@ def baszta(s, rnd, x, z, znak, kto):
         s.walec("Baszta", (0, 6.0, 0), 6.0, 12.0, "kamien_cieply", os="y")
         with s.cechy(kolizja=False):
             s.walec("Baszta gzyms", (0, 12.2, 0), 6.5, 0.6, "tusz", os="y")
-            with s.uklad(pos=(0, 12.4, 0), obrot=(0, 0, 4.0 * znak)):
+            with s.uklad(pos=(0, 12.4, 0), obrot=(0, 0, 5.0 * znak)):
                 s.walec("Baszta", (0, 3.9, 0), 5.4, 7.8, cien(s, "kamien_cieply", 0.93), os="y")
                 s.walec("Baszta gzyms", (0, 7.9, 0), 5.9, 0.6, "tusz", os="y")
-                with s.uklad(pos=(0, 8.1, 0), obrot=(0, 0, -6.0 * znak)):
+                with s.uklad(pos=(0, 8.1, 0), obrot=(0, 0, -10.0 * znak)):     # bezwzględnie −5° (nie 1–3°)
                     s.walec("Baszta", (0, 2.4, 0), 5.0, 4.8, "kamien_cieply", os="y")
                     s.walec("Baszta gzyms", (0, 4.9, 0), 5.5, 0.6, "tusz", os="y")
                     for i in range(6):
                         a = math.radians(i * 60)
                         h = 1.8 + (0.35 if i % 2 else 0.0)
                         s.blok("Baszta blank", (4.3 * math.cos(a), 5.2 + h / 2.0, 4.3 * math.sin(a)), (1.4, h, 2.2),
-                               "kamien_cieply" if i % 2 == 0 else cien(s, "kamien_cieply"), rot=(0, -math.degrees(a), 0))
+                               BLANK[i % 2], rot=(0, -math.degrees(a), 0))
                     zestaw.choragiewka_duetu(s, (0, 5.2, 0), kto, ry=rnd.uniform(0, 360), przechyl=12 * znak)
 
 
@@ -630,7 +722,8 @@ def budynki(s, ziarno):
 
 
 # =========================================================================== DOMY TŁA i STRAGANY
-WARIANTY_DOMOW = ["a", "b", "c", "b", "a", "c", "b", "a", "b"]
+WARIANTY_DOMOW = ["a", "d", "c", "b", "d", "c", "d", "a", "d"]   # „d” = parterowy z wielką czapą (po krytyce: koniec klonów)
+DYM_DOMOW = {0, 3, 7}                                               # dym tylko z dom_1, dom_4, dom_8
 OKIENNICE = ["dach_twierdza", "pomarancz", "dach_wylegarnia", "dach_kolo", "zloto", "dach_karczma", "dach_gildia", "pomarancz",
              "dach_twierdza"]
 
@@ -640,7 +733,7 @@ def domy(s, rnd):
         with s.uklad(pos=(d["x"], 0, d["z"]), obrot=(0, d["rot"], 0), grupa="DomyTla/Dom%d" % (i + 1)):
             zestaw.dom_mieszkalny(s, random.Random(rnd.randint(0, 10 ** 6)), WARIANTY_DOMOW[i], d["dach"], d["sciana"],
                                   d["w"], d["d"], d["h"], pochyl=1 if i % 2 == 0 else -1, neon_okna=1 + (i % 3 == 0),
-                                  okiennica=OKIENNICE[i], znak="klocek" if i % 2 else "lata")
+                                  okiennica=OKIENNICE[i], znak="klocek" if i % 2 else "lata", dym_n=2 if i in DYM_DOMOW else 0)
 
 
 TOWARY = {"stragan_1": (("dach_karczma", "biel"), "jablka"), "stragan_2": (("dach_stajnia", "biel"), "chleby"),
@@ -697,7 +790,7 @@ def drzewa_strefy(s, rnd, srodek, n, promien, skala=(0.85, 1.0), owoce=False, ul
         proby += 1
         a, r = rnd.uniform(0, 2 * math.pi), rnd.uniform(0, promien)
         x, z = srodek[0] + r * math.cos(a), srodek[1] + r * math.sin(a)
-        if kolizja(x, z, 3.0, ulice=ulice) or w_korytarzu(x, z) or odl_wielokat(x, z, U["rynek"]) < 3.0:
+        if kolizja(x, z, 3.8, ulice=ulice) or w_korytarzu(x, z) or odl_wielokat(x, z, U["rynek"]) < 3.0:
             continue
         if any(math.hypot(x - px, z - pz) < 7.0 for px, pz in DRZEWA):
             continue
@@ -709,6 +802,7 @@ def drzewa_strefy(s, rnd, srodek, n, promien, skala=(0.85, 1.0), owoce=False, ul
 
 
 DRZEWA = []
+KRZAKI = []
 
 
 def krzaki(s, rnd, srodek, n, promien):
@@ -718,9 +812,10 @@ def krzaki(s, rnd, srodek, n, promien):
         proby += 1
         a, r = rnd.uniform(0, 2 * math.pi), rnd.uniform(0, promien)
         x, z = srodek[0] + r * math.cos(a), srodek[1] + r * math.sin(a)
-        if kolizja(x, z, 1.6) or odl_wielokat(x, z, U["rynek"]) < 1.5:
+        if kolizja(x, z, 1.6) or odl_wielokat(x, z, U["rynek"]) < 1.5 or any(math.hypot(x - a, z - b) < 5.0 for a, b in DRZEWA):
             continue
         zestaw.krzak(s, (x, 0, z), rnd, rnd.uniform(0.9, 1.25))
+        KRZAKI.append((x, z))
         k += 1
 
 
@@ -731,7 +826,7 @@ def zielen(s, rnd):
         drzewa_strefy(s, rnd, (-62.4, -31.8), 2, 7)                      # Z3 łąka przy bramie
         drzewa_strefy(s, rnd, (-64.0, 52.0), 2, 12)                      # Z4 przy padoku
         drzewa_strefy(s, rnd, (31.5, 77.9), 2, 8)                        # Z5 ogród przy stawie
-        drzewa_strefy(s, rnd, (92.0, 82.0), 2, 14)                       # Z6 zaplecze karczmy
+        drzewa_strefy(s, rnd, (92.0, 82.0), 1, 14)                       # Z6 zaplecze karczmy
         drzewa_strefy(s, rnd, (-100.0, 42.0), 1, 8)
         for c, n, r in (((67.5, -39.0), 4, 10), ((-18.6, -69.5), 3, 10), ((-62.4, -31.8), 3, 8), ((31.5, 77.9), 3, 8),
                         ((89.2, 80.3), 2, 8), ((-9.1, 74.4), 3, 11), ((95.0, -20.0), 2, 8), ((-88.0, 40.0), 2, 8),
@@ -746,6 +841,12 @@ def zielen(s, rnd):
                         rozm = 1.6 if owoc == "pomarancz" else 1.2
                         s.blok("Dynia" if owoc == "pomarancz" else "Sałata", (x + 0.3 * (i % 2), 0.5 + rozm / 2.0, z), (rozm * 1.2, rozm, rozm * 1.2),
                                owoc, rot=(0, 20 * j + 10 * i, 0))
+        # grządka dyń na nowym podwórku między Arenową a sklepem (mniej trawnika w murze)
+        with s.grupa("Zielen/Ogrod"), s.uklad(pos=(31.0, 0, -65.0), obrot=(0, -35, 0)):
+            s.blok("Grządka", (0, 0.25, 0), (9.0, 0.5, 2.4), "ziemia")
+            with s.cechy(kolizja=False):
+                for j, x in enumerate((-3.0, 0.2, 3.2)):
+                    s.blok("Dynia", (x, 1.3, 0), (1.9, 1.6, 1.9), "pomarancz", rot=(0, 25 * j + 10, 0))
         # kwiaty przy wejściach (≤ 2 na budynek)
         for bid, kand, ry in (("wylegarnia", ((6.0, 16.5),), 4), ("sklep_magiczny", ((-9.0, 13.5), (5.5, 14.5)), -6),
                               ("zbrojownia", ((-8.0, 15.5),), 5), ("stajnia", ((8.0, 13.5),), -4)):
@@ -767,16 +868,27 @@ def zielen(s, rnd):
 def tlo(s, rnd):
     with s.grupa("Tlo"), s.cechy(kolizja=False, cien=False):
         kolory = ["lisc_ciemny", "igla", "trawa", "lisc_ciemny", "igla", "lisc", "lisc_ciemny", "trawa"]
+        # wzgórza z trzech klocków-tarasów (po krytyce: gładkie kule były najbardziej obłymi bryłami świata);
+        # dół wzdłuż stycznej do okręgu, środek i góra skręcone w kontrze, na 4 wzgórzach szczyt z klina narożnego
         for i in range(16):
             a = math.radians(i * 22.5 + rnd.uniform(-5, 5))
             R = rnd.uniform(48, 60)
             h = rnd.uniform(26, 44)
-            r = max(rnd.uniform(168, 198), 140.0 + math.sqrt(R * R - (R - h) ** 2))   # podnóże za murem i pasem drzew
+            r = max(rnd.uniform(168, 198), 140.0 + 0.65 * R)          # podnóże za murem i pasem drzew
             x, z = r * math.cos(a), r * math.sin(a)
-            s.kula("Wzgórze", (x, h - R, z), 2 * R, kolory[i % len(kolory)])
-            if i % 4 == 1:
-                Rc = R * 0.55
-                s.kula("Wzgórze czapa", (x, h + 1.4 - Rc, z), 2 * Rc, "lisc_jasny")
+            kol = kolory[i % len(kolory)]
+            ry0 = -math.degrees(a) - 90.0 + rnd.uniform(-10, 10)
+            with s.uklad(pos=(x, 0, z), obrot=(0, ry0, 0)):
+                s.blok("Wzgórze", (0, (0.5 * h - 1.0) / 2.0, 0), (1.9 * R, 0.5 * h + 1.0, 1.3 * R), cien(s, kol, 0.88))
+                with s.uklad(pos=(rnd.uniform(-0.12, 0.12) * R, 0.5 * h - 1.0, rnd.uniform(-0.05, 0.08) * R),
+                             obrot=(0, 12.0, rnd.choice((-4.0, 4.0)))):
+                    s.blok("Wzgórze", (0, (0.35 * h + 1.0) / 2.0, 0), (1.3 * R, 0.35 * h + 1.0, 0.9 * R), kol)
+                    with s.uklad(pos=(rnd.uniform(-0.12, 0.12) * R, 0.35 * h, 0.0), obrot=(0, -21.0, 0)):
+                        s.blok("Wzgórze", (0, (0.25 * h + 1.0) / 2.0, 0), (0.7 * R, 0.25 * h + 1.0, 0.5 * R),
+                               "lisc_jasny" if i % 4 == 1 else kol)
+                        if i % 4 == 3:
+                            s.naroznik("Wzgórze szczyt", (0, 0.25 * h + 0.9 + 0.1 * h, 0), (0.45 * R, 0.2 * h, 0.35 * R),
+                                       cien(s, kol, 0.92), rot=(0, rnd.choice((0, 90, 180, 270)), 0))
         n_ig = 0
         proby = 0
         while n_ig < 36 and proby < 2000:
@@ -803,10 +915,11 @@ def tlo(s, rnd):
             zestaw.drzewo_lisciaste(s, (x, 0, z), rnd, rnd.uniform(1.2, 1.5))
             n_d += 1
     with s.grupa("Chmury"):
+        # po krytyce: dalej i niżej (r 230–270, y 70–95) — z rynku widać je z boku nad wzgórzami, nie od spodu
         for i in range(10):
             a = math.radians(i * 36 + rnd.uniform(-10, 10))
-            r = rnd.uniform(125, 215)
-            zestaw.chmura(s, (r * math.cos(a), rnd.uniform(110, 150), r * math.sin(a)), rnd, rnd.uniform(1.0, 1.6))
+            r = rnd.uniform(230, 270)
+            zestaw.chmura(s, (r * math.cos(a), rnd.uniform(70, 95), r * math.sin(a)), rnd, rnd.uniform(1.0, 1.6))
 
 
 # =========================================================================== REKWIZYTY
@@ -860,7 +973,7 @@ def rekwizyty(s, rnd):
                 segs.append((tuple(a), tuple(b), L))
                 L += math.hypot(b[0] - a[0], b[1] - a[1])
             t, strona = 10.0, 1
-            while t < L - 12.0:
+            while t < L - 20.0:                               # ostatnie 20 przed bramą wolne (głowica na kłódce areny)
                 p = _punkt_na(segs, t)
                 q = _punkt_na(segs, min(L, t + 0.5))
                 dx, dz = q[0] - p[0], q[1] - p[1]
@@ -868,15 +981,17 @@ def rekwizyty(s, rnd):
                 nx, nz = -dz / dl * strona, dx / dl * strona
                 x, z = p[0] + nx * (w / 2.0 + 1.3), p[1] + nz * (w / 2.0 + 1.3)
                 przeszk = kolizja(x, z, 1.0, ulice=False)
-                if not przeszk and odl_wielokat(x, z, U["rynek"]) > 1.0:
+                if not przeszk and odl_wielokat(x, z, U["rynek"]) > 1.0 and not w_osi_widoku(x, z):
                     ry = math.degrees(math.atan2(nz, -nx))         # wysięgnik (+X) nad ulicę
                     latarnia(s, (x, 0, z), 9.0, ry, plama_r=3.0)
                     latarnie.append((x, z))
                 t += 16.0
                 strona = -strona
         for x, z in ((-36.0, 16.0), (-37.0, -8.5), (-18.0, -33.0), (36.0, -20.0), (38.0, -9.0), (8.0, 36.0)):
-            if kolizja(x, z, 1.0, ulice=False, mur=False) or w_korytarzu(x, z):
-                print("UWAGA: latarnia rynku w (%.1f, %.1f) koliduje z %s" % (x, z, kolizja(x, z, 1.0, ulice=False, mur=False)))
+            if kolizja(x, z, 1.0, ulice=False, mur=False) or w_korytarzu(x, z) or w_osi_widoku(x, z):
+                print("INFO: latarnia rynku w (%.1f, %.1f) pominięta (%s)" % (x, z, kolizja(x, z, 1.0, ulice=False, mur=False)
+                                                                              or "oś widoku"))
+                continue
             latarnia(s, (x, Y_RYNEK, z), 9.0, math.degrees(math.atan2(z, -x)), plama_r=3.0)   # wysięgnik ku studni
             latarnie.append((x, z))
         with s.uklad(pos=(_K["x"], 0, _K["z"]), obrot=(0, _K["rot"], 0)):
@@ -895,17 +1010,18 @@ def rekwizyty(s, rnd):
             for proba, strona in enumerate((1, -1, 1, -1)):
                 if postawione >= 2 or (proba >= 2 and ostatnie[strona] is None):
                     continue                                   # druga chorągiew po tej samej stronie, gdy drugiej strony brak
-                t = 5.0 if ostatnie[strona] is None else ostatnie[strona] + 14.0
+                t = (9.0 if uid == "bramna" else 5.0) if ostatnie[strona] is None else ostatnie[strona] + 14.0
                 while t < L - 3.0:
                     p, q = _punkt_na(segs, t), _punkt_na(segs, t + 0.5)
                     dl = math.hypot(q[0] - p[0], q[1] - p[1]) or 1.0
                     ex, ez = (q[0] - p[0]) / dl, (q[1] - p[1]) / dl
-                    x = p[0] - ez * strona * (w / 2.0 + 1.6)
-                    z = p[1] + ex * strona * (w / 2.0 + 1.6)
+                    x = p[0] - ez * strona * (w / 2.0 + 2.3)            # 2 study za krawężnikiem
+                    z = p[1] + ex * strona * (w / 2.0 + 2.3)
                     if not (kolizja(x, z, 1.0, ulice=False) or w_korytarzu(x, z, 7.0) or odl_wielokat(x, z, U["rynek"]) < 1.0
-                            or any(math.hypot(x - lx, z - lz) < 3.0 for lx, lz in latarnie)):
-                        zestaw.choragiew(s, (x, 0, z), KOD[uid], wys=12.0 + (1.0 if strona > 0 else 0.0),
-                                         ry=math.degrees(math.atan2(ex, ez)) + 90 + rnd.uniform(-20, 20))
+                            or any(math.hypot(x - lx, z - lz) < 3.0 for lx, lz in latarnie) or w_osi_widoku(x, z)):
+                        # po krytyce: niższe (9) i wolnym końcem płata ku celowi szprychy, nie ku rynkowi
+                        zestaw.choragiew(s, (x, 0, z), KOD[uid], wys=9.0 + (0.6 if strona > 0 else 0.0),
+                                         ry=math.degrees(math.atan2(ex, ez)) - 90 + rnd.uniform(-10, 10))
                         postawione += 1
                         ostatnie[strona] = t
                         break
@@ -915,15 +1031,15 @@ def rekwizyty(s, rnd):
         # --- trójki beczek, skrzyń i siana
         for (x, z, ry, typ) in ((72.0, -44.0, -30, "mieszana"), (62.0, -33.0, 40, "beczki"), (101.0, 84.0, 30, "beczki"),
                                 (93.0, 86.0, -50, "mieszana"), (-57.5, 52.5, 40, "siano"), (-66.0, -36.0, 10, "siano"),
-                                (-62.0, -76.0, 30, "beczki"), (-30.0, -36.0, 60, "mieszana"), (36.0, 56.0, -20, "beczki"),
-                                (-80.0, 22.0, 80, "mieszana")):
-            p = wolne_miejsce(x, z, 3.6)
+                                (-62.0, -76.0, 30, "beczki"), (-30.0, -36.0, 60, "mieszana"), (36.0, 56.0, -20, "mieszana"),
+                                (-80.0, 22.0, 80, "mieszana"), (38.0, -58.0, -35, "mieszana")):
+            p = wolne_miejsce(x, z, 3.6, maks=18.0)
             if p is None:
                 print("UWAGA: brak miejsca na trójkę przy (%.1f, %.1f)" % (x, z))
                 continue
             trojka(s, rnd, p[0] - 1.5, p[1] - 1.5, ry, typ)
         # --- ławki przy studni i przy stawie
-        for a in (115, 160, 205, 250, 295):
+        for a in (140, 175, 210, 250, 295):               # po krytyce: 115° stała 3 od punktu koła fortuny
             r = 17.0
             x, z = r * math.cos(math.radians(a)), r * math.sin(math.radians(a))
             ry = math.degrees(math.atan2(-x, -z))
@@ -933,7 +1049,7 @@ def rekwizyty(s, rnd):
                 continue
             zestaw.lawka(s, (x, Y_RYNEK, z), ry)
         sx, sz = U["staw"]["srodek"]
-        for x, z in ((sx - 11.5, sz - 3.0), (sx + 10.5, sz + 4.5)):
+        for x, z in ((sx + 3.0, sz - 10.5), (sx + 10.5, sz + 4.5)):   # pierwsza zeszła z krawędzi Twierdzowej
             zestaw.lawka(s, (x, 0, z), math.degrees(math.atan2(sx - x, sz - z)))
         zestaw.lawka(s, (-14.0, 0, -64.0), 200)
         # --- płot padoku i łąki
@@ -975,6 +1091,7 @@ def generuj(przesun=(0.0, 0.0, -700.0), ziarno=7):
     s = Scena("Workspace/KrzyweMiasteczko", paleta=PALETA)
     rnd = random.Random(ziarno)
     DRZEWA.clear()
+    KRZAKI.clear()
     with s.uklad(pos=przesun):
         teren(s, random.Random(rnd.randint(0, 10 ** 6)))
         rynek(s, random.Random(rnd.randint(0, 10 ** 6)))

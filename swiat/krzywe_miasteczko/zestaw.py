@@ -192,7 +192,7 @@ def latarnia(s, pos, wys=9.0, ry=0.0, swiatlo="neon_okno", plama=True, lustro=Fa
         s.blok("Latarnia spód", (xe, ye - 3.05, 0), (1.7, 0.4, 1.7), "tusz", rot=(0, 45, 0))
         if plama:
             with s.cechy(cien=False):
-                s.walec("Latarnia plama", (xe, 0.06, 0), plama_r, 0.1, "tynk_krem", os="y")
+                s.walec("Latarnia plama", (xe, 0.11, 0), plama_r, 0.2, "tynk_krem", os="y")
 
 
 def skrzynia(s, pos, ry=0.0, dl=4.0, a=3.5, przechyl=7.0, kolor="drewno", kolizja=True):
@@ -279,11 +279,12 @@ def stragan(s, pos, ry=0.0, kolory=("dach_karczma", "biel"), towar="jablka", tan
             with s.uklad(pos=(0, 8.65, 0), obrot=(11, 0, 0)):
                 for i in range(n):
                     x = -Wm / 2.0 + pas * (i + 0.5)
-                    kol = kolory[i % len(kolory)]
+                    # po krytyce: pasy w bieli (nie konkurują z kodami celów), kolor towaru tylko w środkowym pasie i ząbkach
+                    kol = kolory[0] if i == n // 2 else ("biel" if i % 2 == 0 else cien(s, "biel", 0.88))
                     s.blok("Stragan markiza", (x, 0.06 * (i % 2), 0), (pas, 0.4, Dm), kol, "Fabric")
                     if not tani:
                         with s.cechy(cien=False):
-                            s.blok("Stragan ząbek", (x, -0.6, Dm / 2.0 + 0.05), (pas - 0.35, 1.0, 0.3), kol, "Fabric")
+                            s.blok("Stragan ząbek", (x, -0.6, Dm / 2.0 + 0.05), (pas - 0.35, 1.0, 0.3), kolory[0], "Fabric")
                 s.blok("Stragan markiza rant", (0, -0.25, 0), (Wm + 0.6, 0.25, Dm + 0.6), "tusz")
             _towar(s, towar, 3.75, 2.0, tani)
 
@@ -403,7 +404,7 @@ def dym(s, pos, n=3, skala=1.0, kolor="biel", alfa=0.0, dryf=(0.7, 0.3), ksztalt
 
 
 def komin(s, pos, segmenty=((4.0, 2.8, 7.0), (3.0, 2.5, -11.0), (2.2, 2.3, 8.0)), kolor=("kamien_cokol", None), mat="Brick",
-          czapa="tusz", dym_n=3, ry=0.0, dym_skala=0.8):
+          czapa="tusz", dym_n=3, ry=0.0, dym_skala=0.8, dym_ksztalt="kula", dym_kolor="biel"):
     """Komin łamany (przykazanie 1: 8–12° na segment): segmenty = [(wys, bok, kąt_względny°), …] z lamana(), na przemian
     kolor i jego cień (None w krotce = cien(pierwszego)), czapa tusz szersza o 1, dym z `dym_n` kul (Ø 2 / 2,8 / 3,6 przy
     dym_skala 0,8).
@@ -415,7 +416,7 @@ def komin(s, pos, segmenty=((4.0, 2.8, 7.0), (3.0, 2.5, -11.0), (2.2, 2.3, 8.0))
         g = segmenty[-1][1]
         s.blok("Komin czapa", (xe, ye + 0.15, 0), (g + 1.0, 0.6, g + 1.0), czapa, rot=(0, 0, kat))
         if dym_n:
-            dym(s, (xe + 0.3 * dym_skala, ye + 0.6 + 1.6 * dym_skala, 0.2), dym_n, dym_skala)
+            dym(s, (xe + 0.3 * dym_skala, ye + 0.6 + 1.6 * dym_skala, 0.2), dym_n, dym_skala, kolor=dym_kolor, ksztalt=dym_ksztalt)
 
 
 # =========================================================================== znaki miasteczka (przykazanie 15)
@@ -498,8 +499,8 @@ def krzak(s, pos, rnd=None, skala=1.0, jagody=("czerwien", "zloto")):
         s.blok("Krzak", (-0.6 * k, 2.7 * k, -0.4 * k), (2.4 * k, 2.2 * k, 2.4 * k), "lisc_jasny", rot=(0, r.uniform(15, 40), r.uniform(10, 25)))
         if jagody:
             with s.cechy(cien=False):
-                s.blok("Krzak jagoda", (1.9 * k, 2.7 * k, 1.6 * k), (0.8, 0.8, 0.8), jagody[0], rot=(30, 30, 0))
-                s.blok("Krzak jagoda", (-1.9 * k, 1.6 * k, 1.2 * k), (0.8, 0.8, 0.8), jagody[-1], rot=(0, 45, 30))
+                s.blok("Krzak jagoda", (1.9 * k, 2.7 * k, 1.6 * k), (1.2, 1.2, 1.2), jagody[0], rot=(30, 30, 0))
+                s.blok("Krzak jagoda", (-1.9 * k, 1.6 * k, 1.2 * k), (1.2, 1.2, 1.2), jagody[-1], rot=(0, 45, 30))
 
 
 def kwiaty(s, pos, ry=0.0, kolory=("czerwien", "zloto")):
@@ -533,15 +534,16 @@ def kamien(s, pos, rnd=None, rozmiar=3.0, kolor="kamien_cieply", mat="SmoothPlas
 
 
 def chmura(s, pos, rnd=None, skala=1.0):
-    """Chmura: 4 kule Ø 11 / 15 / 13 / 9 `biel` na płaskim spodzie 24 × 3,2 × 8 `tynk_blekit` (spód chmury). pos = środek
-    chmury (y 110–150 w mieście). Bez kolizji i cienia. Części: 5 (4 kule)."""
+    """Chmura: 4 kule Ø 11 / 15 / 13 / 9 `biel` na płaskim spodzie 20 × 2,4 × 7 w cien(biel, 0,9), schowanym w kulach
+    (po krytyce: niebieski spód 24 × 3,2 × 8 czytał się z rynku jak latający klocek). pos = środek chmury (y 70–95, daleko
+    za murem). Bez kolizji i cienia. Części: 5 (4 kule)."""
     _pal(s)
     r = _rnd(rnd)
     k = skala
     with s.uklad(pos=pos, obrot=(0, r.uniform(0, 360), 0)), s.cechy(kolizja=False, cien=False):
         for x, y, d in ((-8.0, 0.0, 11.0), (-2.5, 2.2, 15.0), (4.5, 1.0, 13.0), (9.5, -0.6, 9.0)):
             s.kula("Chmura", (x * k, y * k, r.uniform(-1.2, 1.2) * k), d * k, "biel")
-        s.blok("Chmura spód", (0.5 * k, -4.5 * k, 0), (24.0 * k, 3.2 * k, 8.0 * k), "tynk_blekit")
+        s.blok("Chmura spód", (0.5 * k, -3.0 * k, 0), (20.0 * k, 2.4 * k, 7.0 * k), cien(s, "biel", 0.9))
 
 
 def plot(s, punkty, rnd=None, wys=3.0, przeslo=6.0, kolizja=True):
@@ -608,8 +610,46 @@ def dach_czapa(s, dl, gl, wys, kolor, okap=2.5, okap_bok=1.5, podzial=0.62, kale
 
 # =========================================================================== dom mieszkalny (wzorzec)
 KOMIN_DOMU = ((3.6, 2.6, 7.0), (2.6, 2.3, -11.0), (1.8, 2.1, 8.0))
+
+
+def _dach_parterowy(s, r, W0, D0, H0, wys, sg, bok, kolor_dachu, kolor_sciany, szyby, dym_n):
+    """Wariant „d” domu: wielka czapa dachu wprost na parterze (kontra rz 4°·sg, skręt 5°), lukarna 5 × 4 na połaci
+    frontowej przechylona o 8°, okrągłe okienko w szczycie bocznym, komin łamany na połaci tylnej. Wywołanie w układzie
+    parteru (y = 0 na ziemi). Części: ok. 22 + dym_n."""
+    hr = wys - H0
+    okap, okap_bok, podzial = 2.4, 1.6, 0.6
+    with s.uklad(pos=(0, H0, 0), obrot=(0, -5.0 * sg, 4.0 * sg)):
+        ext = (W0 / 2.0) * math.sin(math.radians(4.0)) + 0.25
+        with s.cechy(kolizja=False):
+            s.blok("Kolanko", (0, -ext / 2.0 + 0.05, 0), (W0 - 0.8, ext, D0 - 0.8), kolor_sciany)
+            for sx in (-1, 1):
+                for sz in (-1, 1):
+                    s.blok("Narożnik", (sx * (W0 / 2.0 - 0.25), -0.15, sz * (D0 / 2.0 - 0.25)), (1.2, 0.6, 1.2), "tusz")
+        info = dach_czapa(s, W0, D0, hr, kolor_dachu, okap=okap, okap_bok=okap_bok, podzial=podzial, szczyt=kolor_sciany)
+        with s.uklad(pos=(-bok * (W0 / 2.0 + okap_bok + 0.3), hr * 0.3, info["z_kalenicy"] + 0.4), obrot=(0, 90 * (-bok), 0)):
+            okno(s, (0, 0, 0), 2.2, ksztalt="okragle", swiatlo="woda_gleboka", tanie=True)
+        # lukarna: front na 30% biegu połaci, korpus wpuszczony 4 w połać, daszek dwuspadowy, okrągłe okno
+        zf, zr = D0 / 2.0 + okap, info["z_kalenicy"]
+        zl = zf - (zf - zr) * 0.32
+        yl = hr * (zf - zl) / (zf - zr)
+        with s.uklad(pos=(sg * W0 * 0.17, 0, zl), obrot=(0, -4.0 * sg, 8.0 * sg)):
+            with s.cechy(kolizja=False):
+                s.blok("Lukarna", (0, yl + 1.6, -2.0), (5.0, 4.0, 4.0), kolor_sciany)
+                for sx in (-1, 1):
+                    s.blok("Lukarna narożnik", (sx * 2.3, yl + 1.7, 0.05), (0.7, 3.8, 0.7), "tusz")
+                with s.uklad(pos=(0, yl + 3.6, -1.6)):
+                    s.klin("Lukarna daszek", (-1.5, 0.9, 0), (5.4, 1.8, 3.0), kolor_dachu, rot=(0, 90, 0))
+                    s.klin("Lukarna daszek", (1.5, 0.9, 0), (5.4, 1.8, 3.0), cien(s, kolor_dachu, 0.85), rot=(0, -90, 0))
+                    s.blok("Lukarna rant", (0, -0.15, 0.2), (6.4, 0.4, 5.8), "tusz")
+            okno(s, (0, yl + 1.5, 0.1), 2.2, ksztalt="okragle", swiatlo=szyby[4], przechyl=0, tanie=True)
+        # komin na połaci tylnej, po stronie przeciwnej do lukarny
+        Pb = (1.0 - podzial) * D0 + okap
+        zk = zr - Pb * 0.4
+        yk = hr * (1.0 - 0.4) - 1.4
+        komin(s, (-sg * W0 * 0.28, yk, zk), KOMIN_DOMU, ("kamien_cokol", None), dym_n=dym_n, dym_ksztalt="klocek",
+              dym_kolor=cien(s, "biel", 0.9))
 def dom_mieszkalny(s, rnd=None, wariant="a", kolor_dachu="dach_dom_ceglasty", kolor_sciany="tynk_krem", szer=16.0, gl=14.0,
-                   wys=26.0, pochyl=1, neon_okna=1, okiennica=None, znak="lata"):
+                   wys=26.0, pochyl=1, neon_okna=1, okiennica=None, znak="lata", dym_n=2):
     """Krzywy domek tła wg PROJEKT rozdz. 6: prosty cokół i parter (10,5, pionowy, skręt ±4°), piętro-poddasze (5,5–6)
     z nawisem (front 2, jeden bok 1) przechylone rz 5° i skręcone ry 4–5° w kontrze do parteru, dach-czapa w kontrze
     (abs. −4°, kalenica przesunięta 64/36 → połacie różnią się o ≥ 10°), komin łamany po stronie przeciwnej do nawisu,
@@ -621,7 +661,9 @@ def dom_mieszkalny(s, rnd=None, wariant="a", kolor_dachu="dach_dom_ceglasty", ko
     (naprzemiennie u sąsiadów; drzwi zawsze po stronie wyższej). wariant:
       "a" — kalenica wzdłuż frontu, nawis z boku, okrągłe okno w szczycie;
       "b" — szczyt do ulicy (kalenica wzdłuż Z), okrągłe okno w trójkącie szczytu, daszek nad drzwiami;
-      "c" — jak „a” + wieżyczka narożna (3 walce, hełm-ostrosłup, chorągiewka duetu).
+      "c" — jak „a” + wieżyczka narożna (3 walce, hełm-ostrosłup, chorągiewka duetu);
+      "d" — sam parter 10,5 z wielką czapą dachu (ok. 50% wysokości, kontra 4°) i lukarną 5 × 4 przechyloną o 8°.
+    dym_n = liczba kłębów-klocków dymu nad kominem (0 = komin bez dymu; po krytyce dym tylko na co trzecim domu).
     okiennica = klucz koloru jednej okiennicy (None = kolor dachu). znak = "lata" albo "klocek" (wypadnięty klocek).
     Front węższy niż 12 (parter = szer − 3,7) i wariant „c”: okno parteru przechodzi na bok, front = drzwi + znak.
     Kolizję mają cokół, parter, piętro i połacie (6–7 części). Neon: neon_okna (1–2). Komin + dym sięgają ok. wys + 8.
@@ -635,13 +677,13 @@ def dom_mieszkalny(s, rnd=None, wariant="a", kolor_dachu="dach_dom_ceglasty", ko
     W0, D0 = W - 3.7 - wb, D - 3.8                            # parter (zapas na skręt, portal drzwi i nawis)
     zp = -0.85                                                 # parter: z od −D/2+1,05 do D/2−2,75
     bok = -sg                                                  # nawis boczny po stronie niższej
-    W1, D1 = W0 + 1.5, D0 + 2.0                                # piętro: nawis front 2, bok 1 / 0,5
-    x1, z1 = bok * 0.25, 1.0
+    W1, D1 = W0 + 1.5, D0 + 3.0                                # piętro: nawis front 3, bok 1 / 0,5 (po krytyce: śmielej)
+    x1, z1 = bok * 0.25, 1.5
     H0 = 10.5                                                  # parter z cokołem
     hp1 = 5.5 if wys < 25 else 6.0                             # piętro (poddasze)
     ry0 = 4.0 * r.choice((-1, 1))
-    rz1, ry1 = 5.0 * sg, -math.copysign(r.uniform(4.0, 5.0), ry0)   # skręt piętra w kontrze do parteru (R8)
-    rz_dach = -9.0 * sg                                        # względem piętra → bezwzględnie −4°·sg (kontra)
+    rz1, ry1 = 7.0 * sg, -math.copysign(r.uniform(6.0, 8.0), ry0)   # skręt piętra w kontrze do parteru (R8)
+    rz_dach = -12.0 * sg                                       # względem piętra → bezwzględnie −5°·sg (kontra)
     hr = wys - H0 - hp1                                        # wysokość dachu nad piętrem
     okn = okiennica or kolor_dachu
     szyby = ["neon_okno" if i < neon_okna else "woda_gleboka" for i in range(5)]
@@ -680,6 +722,9 @@ def dom_mieszkalny(s, rnd=None, wariant="a", kolor_dachu="dach_dom_ceglasty", ko
         else:
             lata(s, (-W0 / 2.0 * sg, 3.6, D0 * 0.15), 2.6, 2.2, "dach_twierdza" if r.random() < 0.5 else "pomarancz", ry=-90 * sg)
 
+        if wariant == "d":
+            _dach_parterowy(s, r, W0, D0, H0, wys, sg, bok, kolor_dachu, kolor_sciany, szyby, dym_n)
+            return {"czesci": len(s.czesci) - n0, "wys": wys, "dach": wys - H0}
         # --- piętro: nawis, przechył, skręt
         with s.uklad(pos=(x1, H0, z1), obrot=(0, ry1, rz1)):
             with s.cechy(kolizja=False):
@@ -711,14 +756,16 @@ def dom_mieszkalny(s, rnd=None, wariant="a", kolor_dachu="dach_dom_ceglasty", ko
                     zf = D1 / 2.0 + 1.2 + 0.3
                     xk = W1 / 2.0 - 0.6 * W1                   # oś kalenicy po obrocie (z' → x)
                     okno(s, (xk + 0.4 * sg, hr * 0.32, zf), 2.6, ksztalt="okragle", swiatlo=szyby[4], przechyl=8)
-                    komin(s, (-bok * W1 * 0.3, hr * 0.35, -D1 * 0.25), KOMIN_DOMU, ("kamien_cokol", None), dym_n=2)
+                    komin(s, (-bok * W1 * 0.3, hr * 0.35, -D1 * 0.25), KOMIN_DOMU, ("kamien_cokol", None), dym_n=dym_n,
+                          dym_ksztalt="klocek", dym_kolor=cien(s, "biel", 0.9))
                 else:
                     info = dach_czapa(s, W1, D1, hr, kolor_dachu, okap=2.0, okap_bok=1.2, podzial=0.64, szczyt=kolor_sciany)
                     with s.uklad(pos=(-bok * (W1 / 2.0 + 1.2 + 0.3), hr * 0.3, info["z_kalenicy"] + 0.6), obrot=(0, 90 * (-bok), 0)):  # okienko w bocznym szczycie
                         okno(s, (0, 0, 0), 2.2, ksztalt="okragle", swiatlo="woda_gleboka", tanie=True)
                     zk = info["z_kalenicy"] - (1 - 0.64) * D1 * 0.45
                     yk = hr * (1 - 0.45 * (1 - 0.64) * D1 / ((1 - 0.64) * D1 + 2.0)) - 1.6
-                    komin(s, (-bok * W1 * 0.3, yk, zk), KOMIN_DOMU, ("kamien_cokol", None), dym_n=2)
+                    komin(s, (-bok * W1 * 0.3, yk, zk), KOMIN_DOMU, ("kamien_cokol", None), dym_n=dym_n,
+                          dym_ksztalt="klocek", dym_kolor=cien(s, "biel", 0.9))
     if wariant == "c":                                         # wieżyczka narożna (prosta do 10, wyżej krzywa)
         xt, zt = bok * (W / 2.0 - 2.95), D / 2.0 - 2.95
         rt = r.uniform(0, 30)

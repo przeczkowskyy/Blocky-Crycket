@@ -125,10 +125,10 @@ def _mur(s):
 def _wnetrze(s):
     """Wnętrze za murem (widać je z góry i zza muru): ubity piasek areny i dwie drewniane ławy trybun przy bokach."""
     with s.cechy(kolizja=False, cien=False):
-        s.blok("Arena piasek", (0, 0.06, -5.0), (21.0, 0.12, 21.0), "ziemia")
-        s.blok("Arena piasek", (0, 0.05, -9.0), (34.0, 0.1, 13.0), "ziemia")
+        s.blok("Arena piasek", (0, 0.02, -5.0), (21.0, 0.2, 21.0), "ziemia")
+        s.blok("Arena piasek", (0, 0.0, -9.0), (34.0, 0.2, 13.0), "ziemia")
         for zn in (-1, 1):
-            s.blok("Arena piasek", (zn * 13.5, 0.04, -0.5), (6.0, 0.08, 6.0), "ziemia", rot=(0, 45, 0))
+            s.blok("Arena piasek", (zn * 13.5, -0.02, -0.5), (6.0, 0.2, 6.0), "ziemia", rot=(0, 45, 0))
     for kat in (-72.0, 73.0):
         with _na_luku(s, kat, R - GRUB / 2.0 - 1.6):
             s.blok("Trybuna", (0, 1.6, 0), (12.5, 3.2, 3.0), "drewno", "WoodPlanks")
@@ -176,15 +176,16 @@ def _przejscie(s):
     """Nadproże nad przejściem 12 × 14, skrzydła zabite deskami, szpara ze światłem, łańcuchy z kłódką."""
     z0 = FIL_Z
     s.blok("Nadproże", (0, PRZ_H + 1.05, z0 + 0.3), (PRZ + 2.6, 1.7, 5.6), KAMIEN)
+    # skrzydła bramy z wąską szparą pośrodku; za szparą światło, za światłem zaślepka (od strony areny).
+    # Skrzydła i zaślepka MAJĄ kolizję: brama „wkrótce” jest zamknięta (inaczej trybuny są schodami na mur).
+    zs = z0 + 1.2
+    for zn in (-1, 1):
+        s.blok("Brama skrzydło", (zn * 3.25, PRZ_H / 2.0, zs), (5.7, PRZ_H - 0.1, 0.6), "drewno_ciemne", "WoodPlanks")
+    s.blok("Brama zaślepka", (0, PRZ_H / 2.0, zs - 0.9), (3.0, PRZ_H - 0.3, 0.4), "drewno_ciemne", "WoodPlanks")
     with s.cechy(kolizja=False):
         s.blok("Nadproże spód", (0, PRZ_H + 0.2, z0 + 0.3), (PRZ + 2.2, 0.4, 6.0), "tusz")
-        # skrzydła bramy z wąską szparą pośrodku; za szparą światło, za światłem zaślepka (od strony areny)
-        zs = z0 + 1.2
-        for zn in (-1, 1):
-            s.blok("Brama skrzydło", (zn * 3.25, PRZ_H / 2.0, zs), (5.7, PRZ_H - 0.1, 0.6), "drewno_ciemne", "WoodPlanks")
         with s.cechy(cien=False):
             s.blok("Brama światło", (0, PRZ_H / 2.0, zs - 0.45), (1.6, PRZ_H - 0.6, 0.3), "neon_okno", "Neon")
-        s.blok("Brama zaślepka", (0, PRZ_H / 2.0, zs - 0.9), (3.0, PRZ_H - 0.3, 0.4), "drewno_ciemne", "WoodPlanks")
         # deski na krzyż (dwie warstwy) i jedna pozioma
         for i, k in enumerate((39, -37)):
             s.blok("Brama deska", (0, 7.0, zs + 0.6 + 0.45 * i), (1.6, 17.0, 0.4), "drewno_jasne", "WoodPlanks", rot=(0, 0, k))
@@ -220,8 +221,10 @@ def _helm(s):
         s.walec("Hełm płetwa", (0, 0, 0), 7.3, 0.4, "tusz", os="z")
         s.blok("Hełm rant", (0, -5.0, 0), (14.4, 0.9, 8.4), "zloto")
         s.blok("Hełm grzebień", (0, 6.8, -0.3), (1.2, 1.2, 7.0), "zloto")
-        s.blok("Hełm przyłbica", (0, -1.4, 4.15), (11.0, 1.1, 0.4), "tusz")
-        s.blok("Hełm przyłbica", (0, -3.2, 4.15), (1.1, 2.6, 0.4), "tusz")
+        # przyłbica: dwie osobne szpary na oczy i złoty nosal między nimi (bez czarnego „T”, które czytało się jak litera)
+        for zn in (-1, 1):
+            s.blok("Hełm przyłbica", (zn * 2.8, -1.4, 4.15), (4.5, 1.0, 0.4), "tusz")
+        s.blok("Hełm nosal", (0, -1.6, 4.35), (1.4, 6.0, 0.4), "zloto")
         with s.cechy(cien=False):
             for x, y in ((3.2, -2.9), (4.4, -3.5), (3.4, -4.1)):
                 s.blok("Hełm otwór", (x, y, 4.12), (0.7, 0.7, 0.3), "tusz")
@@ -277,8 +280,8 @@ def _odcisk(s, rnd):
 def _puchar(s):
     """Złoty puchar ok. 9 wys. na postumencie za murem (widać kielich ponad koroną), z plastrem na krzyż `biel`."""
     with _na_luku(s, -60.0, 14.5):
-        s.blok("Puchar postument", (0, 9.4, 0), (4.0, 18.8, 4.0), "kamien_cokol")
-        with s.uklad(pos=(0, 18.8, 0), obrot=(0, 50, -6)):
+        s.blok("Puchar postument", (0, 10.9, 0), (4.0, 21.8, 4.0), "kamien_cokol")   # +3: kielich ma wystawać ponad koronę
+        with s.uklad(pos=(0, 21.8, 0), obrot=(0, 50, -6)):
             s.blok("Puchar stopa", (0, 0.5, 0), (4.2, 1.0, 4.2), "zloto")
             s.walec("Puchar nóżka", (0, 2.0, 0), 0.8, 2.4, cien(s, "zloto", 0.85), os="y")
             s.walec("Puchar czasza", (0, 4.0, 0), 2.2, 1.6, "zloto", os="y")
