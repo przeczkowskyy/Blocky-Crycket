@@ -117,6 +117,8 @@ Checklista zgodności grafiki: komiksowe obrysy 3–4 px · nasycone kolory · g
 | HUD | ✅ kanon (specyfikacja) + wersja z Figmy ❓ | ✅ wersja z Figmy: panel gracza + 6 przycisków | [HUD](B%26C/UI/HUD.md) |
 | Okno Karczmy | ❓ do decyzji | ⬜ nie rozpoczęte | [Okno Karczmy](B%26C/UI/Okno%20Karczmy.md) |
 | Selektor bohatera | 💡 propozycja | ⬜ nie rozpoczęty | [Selektor bohatera](B%26C/UI/Selektor%20bohatera.md) |
+| Mapa teleportacji | 💡 propozycja (specyfikacja + prompty) | ⬜ nie rozpoczęta | [Mapa teleportacji](B%26C/UI/Mapa%20teleportacji.md) |
+| Okno ekwipunku | 💡 propozycja (grafika od Game Directora) | 🟡 GUI + skrypt gotowe, grafiki czekają na upload | [Okno ekwipunku](B%26C/UI/Okno%20ekwipunku.md) |
 | Menu główne | w roadmapie Fazy 1 | ⬜ nie rozpoczęte | — |
 
 Projekty UI są w Figmie (plik `BbLd4jDnvxAmOWZN1hAZQJ`). Numery węzłów (node) podane są przy ekranach.
@@ -202,6 +204,12 @@ TavernQuestGui (ScreenGui)
 
 ### 5.4 Selektor bohatera 💡
 Nie ma go w kanonie. Pomysł: centralny ViewportFrame z postacią (na beczce w karczmie), po lewej wybór **rasy** (zmienia model), po prawej wybór **klasy** (zabawne animacje idle), wielki przycisk „Wyrusz na szlak!”.
+
+### 5.5 Mapa teleportacji 💡
+Przycisk Teleport w HUD otwiera okno z mapą miasteczka 2D (16:9) w drewniano-złotej ramce z X w prawym górnym rogu. Nad budynkami są piny lokacji (`ImageButton` pozycjonowane w Scale względem mapy), a kliknięcie pinu teleportuje gracza przez RemoteEvent. Napisy i stany pinów (hover, blokada) są natywne. Prompty Higgsfield na mapę i piny są w notatce.
+
+### 5.6 Okno ekwipunku 💡
+Przycisk Equipment w HUD otwiera okno CHARACTER + BACKPACK. Tło to grafika Game Directora oczyszczona z tekstu i pocięta na 4 kafelki; zakładki, „+” i X to osobne grafiki, a napisy, sloty i plecak są natywne. Źródło układu: `assets/processed/EquipmentPanel/layout.json`, GUI generuje `tools/eq_build_gui.py`, logika: `EquipmentPanelClient`. Figma: strona „Equipment Panel” (node 23:74).
 
 ## 6. Architektura techniczna
 
@@ -490,6 +498,7 @@ Każdy prompt 2D/UI zaczyna się od prefiksu Style Lock (sekcja 4). Wynik sprawd
 4. Czy propozycje D-006, D-007, D-009, D-010 są zatwierdzone?
 5. Przyciski HUD: Figma (6 przycisków, angielskie napisy) czy kanon (5 zakładek)? Gdzie trafią Tycoon i Arena?
 6. Diamenty (Gems) w HUD a Magiczne Kryształy w kanonie: ta sama waluta? Waluta premium?
+7. Mapa teleportacji: czy lista 7 lokacji jest dobra i czy zmienić prefiks Style Lock (bez nazwy cudzej gry)?
 
 ### Roadmapa
 [Roadmapa](B%26C/Produkcja/Roadmapa.md)
@@ -558,4 +567,5 @@ Pełna historia: [Dziennik zmian](B%26C/Produkcja/Dziennik%20zmian.md).
   - zbudowany i porzucony dashboard; sejf Obsidian ustanowiony mózgiem projektu (D-008);
   - ekran ładowania w Roblox: key-art i natywny pasek z Figmy, potem minimalny czas ładowania i rotujące wskazówki;
   - HUD: najpierw 6 przycisków (160 px, wyśrodkowane), potem pełny HUD z Figmy (panel gracza i przyciski 128 px niżej przy krawędzi), na koniec przyciski powiększone do 150 px.
-- **12.11.2026:** projekt w repozytorium GitHub, ten dokument; instalacja pipeline'u assetów `/asset`.
+- **12.11.2026:** projekt w repozytorium GitHub, ten dokument; instalacja pipeline'u assetów `/asset`; specyfikacja i prompty mapy teleportacji.
+- **13.11.2026:** okno ekwipunku: grafika pocięta na komponenty, Figma, GUI i skrypt w Roblox (grafiki czekają na upload).

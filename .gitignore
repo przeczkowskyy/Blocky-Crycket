@@ -30,4 +30,7 @@ Desktop.ini
 # Pipeline assetów: surowe wyniki z Higgsfield i cache Pythona
 assets/raw/**
 !assets/raw/.gitkeep
+# oryginał grafiki okna ekwipunku od Game Directora – wejście dla tools/eq_*.py
+!assets/raw/EquipmentPanel/
+!assets/raw/EquipmentPanel/source.png
 __pycache__/

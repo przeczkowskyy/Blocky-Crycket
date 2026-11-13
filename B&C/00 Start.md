@@ -21,7 +21,7 @@ Gra Roblox: **RPG / Incremental / Tycoon / Pet Collector**. Komiksowy humor w st
 - [[Style Lock]] — obowiązkowy prefiks promptów
 
 ## 🖥️ Interfejs
-- [[HUD]] · [[Ekran ładowania]] · [[Okno Karczmy]] · [[Selektor bohatera]]
+- [[HUD]] · [[Ekran ładowania]] · [[Okno Karczmy]] · [[Selektor bohatera]] · [[Mapa teleportacji]] · [[Okno ekwipunku]]
 
 ## ⚙️ Technika
 - [[Rojo i struktura projektu]]
