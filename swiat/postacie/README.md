@@ -142,6 +142,12 @@ Skrypt wgrywa plik przez Studio na konto osoby zalogowanej w Studio (zasób jest
 
 **Stan na 13.11.2026:** w Studio sprawdzone są plan, kontrola (na modelu z klocków — wzrost 5,71 studa zgodny z raportem) i reakcja na niezatwierdzony folder. Logikę wgrywania sprawdza bez Studio test `biblioteka/test_roblox_import.py` (12 scenariuszy na udawanym Studio: przerwane wysyłanie, wznowienie, moderacja, duplikaty nazw). Prawdziwego wgrania jeszcze nie było, więc pierwszy import trzeba obejrzeć krok po kroku — nieznane są m.in. dokładne napisy stanu moderacji i to, jak narzędzie nazywa wstawiony model.
 
+**Znane drobne braki skryptu importu** (zgłoszone przez weryfikatora, zostawione świadomie):
+- Dwa uruchomienia `--tak-wgraj` w odstępie kilku sekund (dwa terminale, dwóch agentów) mogą oba uznać, że nic jeszcze nie wgrano. Wgrywa jedna osoba z jednego terminala.
+- Błąd przy odpytywaniu operacji albo moderacji (np. brak uprawnienia, wygasła operacja) wygląda jak „jeszcze nie gotowe”: skrypt czeka do limitu czasu i dopiero ostatnia wypisana odpowiedź pokazuje prawdziwy powód.
+- Gdy operacja skończy się bez numeru zasobu, komunikat każe sprawdzić Creator Dashboard, ale nie przypomina, że znaleziony zasób wstawia się przez `--asset <numer>`.
+- Skrypt nie wykrywa, że model z danego zasobu już stoi w kontenerze, więc ponowne uruchomienie dokłada kopię.
+
 **1. Postać albo pet (model z kośćmi)**
 1. Studio → zakładka *Home* lub *Avatar* → **Import 3D** → wybierz `wynik/<id>/<id>.fbx` (np. `rycerz.fbx`).
 2. W oknie importu: **Scale Unit = Stud**, **World Forward = Front**, **World Up = Top**. Rycerz, Karczmarz i Kot-Mag mają kości R15 (Kot-Mag ma też ogon: Tail i TailTip, więc to rig NPC, a nie ciało awatara). Pety mają własne kości, nie R15; ciało slime'a jest skórowane na dwóch kościach (Dol, Gora).

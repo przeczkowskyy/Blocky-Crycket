@@ -1,0 +1,27 @@
+{
+ "id": "r-20261113-162726-f424",
+ "tytul": "Sprostowania do dzisiejszych raportów o postaciach i poprawki po przeglądzie kodu",
+ "opis_md": "**Po co ten wpis:** po południu kazałem niezależnie sprawdzić własny kod i własne opisy. Znalazło się dziewięć usterek w kodzie (wszystkie poprawione) i osiem nieścisłości w tekstach. Raportów nie da się edytować, więc poprawki do trzech dzisiejszych raportów są tutaj.\n\n## Sprostowania do raportów o postaciach\n- **„W uruchomionej grze” znaczy wszędzie: po naciśnięciu Play w Roblox Studio.** W opublikowanej grze nic z tego jeszcze nie działa: animacje i skrypty są tylko do prób w Studio.\n- **Pety odsyła się klawiszem R**, nie drugim naciśnięciem E (raport o petach mówi inaczej).\n- **Slime i smok nie stoją przed graczem**, tylko po jego prawej ręce. Po wejściu trzeba się obrócić.\n- **Uproszczone bryły** są w dwóch zestawach, nie w jednym: sześć brył zestawu Maga i cztery mankiety zestawu Rycerza.\n- **Liczby:** sześć postaci to 658 części i 20 animacji. Razem z trzema manekinami w kontenerze jest 1781 części i 32 animacje.\n- **„Kąty stawów zgodne z danymi”** opierało się wtedy na jednym pomiarze. Teraz jest pełna kontrola: wszystkie 32 animacje, 1431 porównań, największa różnica 0,04 stopnia.\n- **Pety w długim marszu zostawały w tyle** (pies był wolniejszy od gracza). Przyspieszyłem je: pies trzyma się 4–5 studów za graczem, smok 6–7, slime 6–8.\n\n## Co poprawiłem w kodzie po przeglądzie\n- Skrypt importu siatek nie wgra już tego samego pliku drugi raz przy ponownym uruchomieniu. Wcześniej było to możliwe, a wgrany zasób jest trwały.\n- Narzędzie do klatek animacji wraca do pozy spoczynkowej także wtedy, gdy coś się po drodze nie uda.\n- Budowa i usuwanie postaci sprawdzają, czy działają we właściwym miejscu, i nie ruszają cudzego obiektu o tej samej nazwie.\n- Przebudowa jednego zestawu nie kasuje już danych przymierzalni dla pozostałych.\n\n## Czego nadal nie ma\n- Importu siatek z Blendera: czeka na zatwierdzenie folderu w Studio.\n- Pomiaru na telefonie.\n- Niczego gotowego do opublikowanej gry — to wciąż próby i propozycje.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T16:27:26+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Postacie 3D — Blender i Roblox.md",
+   "etykieta": "Postacie 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/README.md",
+   "etykieta": "Instrukcja i lista sprawdzonych rzeczy"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/_roblox/klipy_kontrola.txt",
+   "etykieta": "Kontrola 32 animacji"
+  }
+ ],
+ "zrzuty": [],
+ "migawka": "20261113-152845-ca65"
+}
