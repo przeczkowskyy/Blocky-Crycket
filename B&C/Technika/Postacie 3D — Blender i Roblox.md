@@ -15,9 +15,12 @@ tags: [technika, blender, postacie, 3d, pipeline, animacje]
 | Ekwipunek | zestawy Rekrut, Rycerz, Mag i 8 broni: 41 przedmiotów w `przedmioty.json` (bez statystyk), 65 ikon |
 | Animacje | 20 klipów: spoczynek, chód/bieg/lot, atak/czar/zianie, wiwat, zaproszenie, śmiech, szczekanie, skok |
 | Prezentacja | `wynik/_zestawienie/` (postacie w jednej skali, katalog ekwipunku, film ze wszystkimi klipami) |
-| W Studio | `Workspace/TestPostaci`: sześć postaci na rynku Krzywego Miasteczka ([[Klocki — Blender i Roblox]]), przed punktem startu |
+| W Studio | `Workspace/TestPostaci`: sześć postaci na rynku Krzywego Miasteczka ([[Klocki — Blender i Roblox]]), przed punktem startu, oraz trzy manekiny z zestawami ekwipunku |
 
 Dwóch niezależnych krytyków oceniło pierwszą wersję: wygląd 6,5/10, technika 6/10 (40 uwag, część poprawiona). Najsłabsze: brzuch Karczmarza, przeładowany zestaw Maga, sztywne szaty w ruchu, ikony części ubioru. Drugiej wersji krytycy nie oceniali.
+
+## Przymierzalnia zestawów
+Przy manekinach z zestawami Rekruta, Rycerza i Maga w uruchomionej grze (w Studio) pojawia się podpowiedź „Przymierz”. Po naciśnięciu zestaw ląduje na awatarze gracza jako zwykłe akcesoria Roblox zbudowane z klocków — znów bez wgrywania zasobów. Sprawdzone 13.11.2026 na zwykłym awatarze R15: wszystkie trzy zestawy zakładają się i zdejmują. Dopasowanie jest liczone dla klockowego awatara; zestaw Maga jest za ciężki (527 części) i wymaga uproszczenia, zanim trafi do gry. Sloty i podział na części to nadal propozycja ([[Pytania otwarte]] #24).
 
 ## Dwie drogi do Robloxa
 | | Postać z klocków (części Roblox) | Siatka (FBX/GLB) |
@@ -35,7 +38,7 @@ Polecenia i szczegóły: `swiat/postacie/README.md`. Budowa w Studio: `python -B
 - **Animacje.** Klipy stoją w Studio jako `KeyframeSequence` w `AnimSaves` każdej postaci i odtwarzają się w Studio. W opublikowanej grze animacja musi być zasobem Animation; publikuje się ją z Animation Editora i według dokumentacji Roblox ma należeć do właściciela gry (osoby albo grupy). To czynność i decyzja właściciela — zob. [[Pytania otwarte]] #24.
 - **Zasoby wgrane przez współpracownika** (siatki, obrazy) trzeba udostępnić grze właściciela w Creator Dashboard, inaczej się nie wczytają.
 - **Wgrywanie przez Studio (Open Cloud)** wymaga dwóch zgód w Assistant → Settings → MCP Permissions: zakresów `asset:read`/`asset:write` (włączone) i zatwierdzonego folderu z plikami (brak — do kliknięcia przez człowieka).
-- **Kontener `TestPostaci`** ma skrypt pokazu działający tylko w Studio. Przed publikacją gry trzeba go usunąć, tak jak `TestWalki`.
+- **Kontener `TestPostaci`** ma skrypty pokazu i przymierzalni działające tylko w Studio. Przed publikacją gry trzeba go usunąć, tak jak `TestWalki`.
 
 ## Czego nie sprawdzono
 - Importu siatek: skali, kierunku przodu, kolorów z tekstury-palety, kości i punktów zaczepienia po imporcie.

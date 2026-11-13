@@ -268,6 +268,29 @@ def rig(p, klipy=None):
     return wynik
 
 
+def akcesoria_noszone(p):
+    """Akcesoria założone na postać (p.zalozone) jako dane do obiektów Accessory w Roblox: każda bryła w układzie
+    PUNKTU ZACZEPIENIA w konwencji Roblox (przód −Z), z poprawką położenia i obrotu z p.zaloz(...).
+    Zwraca (lista {"id", "nazwa", "zaczep", "czesci": [[kształt, px, py, pz, rx, ry, rz, sx, sy, sz, kolor, materiał,
+    siatka], …]}, lista materiałów [[materiał Roblox, Reflectance], …], uwagi)."""
+    materialy, uwagi, wynik = [], [], []
+    for akc, zaczep, pos, obrot, _eksport in p.zalozone:
+        czesci = []
+        for c in akc.czesci_w(macierz_obrotu(*obrot), pos):
+            R0 = macierz_obrotu(*c["r"])
+            mat = c["m"] if c["m"] in MATERIALY_ROBLOX else "zwykly"
+            if mat not in materialy:
+                materialy.append(mat)
+            for ks, o, R, rozmiar, siatka in rozloz(c, uwagi):
+                if min(rozmiar) < 0.001:
+                    continue
+                pp = _poz(tuple(c["p"][i] + razy_wektor(R0, o)[i] for i in range(3)))
+                czesci.append([ks] + _z(pp) + _z(_katy_bryly(mnoz(R0, R)), 5) + _z(rozmiar) +
+                              [c["c"], materialy.index(mat), siatka])
+        wynik.append({"id": akc.id, "nazwa": akc.nazwa, "zaczep": zaczep, "czesci": czesci})
+    return wynik, [list(MATERIALY_ROBLOX[m]) for m in materialy], uwagi
+
+
 def probki_liniowe(p):
     """Zapas bez Blendera: próbki klipów liczone liniowo między kluczami (Klip.wartosc) — kanciaste, ale bez zależności."""
     wynik = {}

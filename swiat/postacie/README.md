@@ -83,23 +83,34 @@ python -B swiat/postacie/roblox_klatki.py --model "Rycerz Blocky" --klip atak_mi
 | Pies | 59 → 59 | 14 | idle, bieg, szczek |
 | Slime | 35 → 42 | 12 | idle, skok, atak |
 | Smok | 91 → 180 | 15 | idle_lot, lot, zioniecie |
+| Manekin Rekrut (10 części zestawu) | 197 | 15 | spoczynek, chod, atak, trzymanie |
+| Manekin Rycerz (14 części zestawu) | 240 | 15 | spoczynek, chod, atak, trzymanie |
+| Manekin Mag (15 części zestawu) | 544 | 15 | spoczynek, chod, atak, trzymanie |
 
-Razem 658 widocznych części (752 z niewidzialnymi częściami kości) i 20 klipów. Postacie stoją na rynku Krzywego Miasteczka przed punktem startu („komitet powitalny”), w słońcu, twarzami do gracza.
+Sześć postaci to razem 658 widocznych części i 20 klipów; z trzema manekinami w kontenerze jest 1781 części. Postacie stoją na rynku Krzywego Miasteczka przed punktem startu („komitet powitalny”), w słońcu, twarzami do gracza.
+
+**Przymierzalnia zestawów** (`roblox/Przymierzalnia.server.luau`, tylko w Studio): przy każdym manekinie pojawia się w grze podpowiedź „Przymierz” (klawisz E albo dotknięcie). Zestaw trafia na awatar gracza jako zwykłe obiekty `Accessory` zbudowane z części Roblox i zakładane przez `Humanoid:AddAccessory` na standardowe punkty zaczepienia awatara (`HatAttachment`, `NeckAttachment`, `RightGripAttachment`…). Ponowne naciśnięcie zdejmuje zestaw. Dane części: `wynik/_roblox/ekwipunek_klocki.json`.
 
 **Co sprawdzono w Studio:**
 - Wygląd z czterech stron każdej postaci i ujęcia grupowe (`wynik/_roblox/*_spoczynek_studio.jpg`, `studio_grupa*.jpg`). Strony się nie odbijają lustrzanie: miecz jest w prawej dłoni.
 - Animacje w trybie Edit przez prawdziwy `Animator` (`RegisterKeyframeSequence` → `LoadAnimation` → `StepAnimations`): po jednym klipie każdej postaci, Rycerz trzy klipy (`wynik/_roblox/*_studio.jpg`). Kąt stawu w Studio zgadza się z danymi (udo w 6. klatce chodu: 32°).
 - Animacje w uruchomionej grze (Play): po stronie serwera wszystkie sześć postaci odtwarza kolejne klipy, konsola bez błędów (`wynik/_roblox/play_grupa_8_klatek.jpg`, obok stoi zwykły awatar gracza dla skali).
 
+- Przymierzalnia w uruchomionej grze: zestawy Rekrut (10 akcesoriów, 175 części), Rycerz (14, 223) i Mag (15, 527) założone po kolei na prawdziwy awatar R15 i zdjęte; wszystkie części trzymają się awatara, konsola bez błędów (`wynik/_roblox/play_awatar_w_zestawach_*.jpg`).
+
+**Pułapka spawania akcesoriów (sprawdzona 13.11.2026):** części akcesorium trzeba łączyć z uchwytem obiektem `Weld` z jawnym przesunięciem (`C0`). `WeldConstraint` zapamiętuje wzajemne położenie dopiero po wejściu do świata, czyli już po tym, jak `AddAccessory` przeniesie uchwyt na awatar, i części zostają tam, gdzie powstały.
+
 **Pułapka trybu Edit (sprawdzona 13.11.2026):** zatrzymanie ścieżki animacji ani wpisanie `Motor6D.Transform` nie cofa części — postać zostaje w ostatniej pozie, a staw, którego kolejny klip nie animuje, niesie pozę z poprzedniego. `roblox_klatki.py` odtwarza więc pod każdym klipem klip neutralny (wszystkie stawy w zerze), po zrzutach wraca nim do spoczynku i mierzy, czy części naprawdę wróciły. Sam powrót: `python -B swiat/postacie/roblox_klatki.py --model "<Nazwa>" --tylko-reset`. W uruchomionej grze tego problemu nie ma.
 
 **Czego klocki nie oddają i czego nie sprawdzono:**
 - Krawędzie są ostre (bez fazowania), stożki są schodkowe, komiksowego obrysu nie ma (można go dać obiektem `Highlight`).
 - Slime nie zgniata się naprawdę: jego ścianki przesuwają się osobno, bo części Roblox nie mają skórowania. Świecenie i półprzezroczystość nie są dopracowane.
+- Zestawy są dopasowane do klockowego awatara R15 w standardowej skali. Włosy awatara przebijają przez czapki, buty obejmują stopy pudełkiem, a na innych ciałach (Rthro) części będą odstawać. Zestaw Maga ma 527 części na jednym graczu — za dużo do prawdziwej gry bez uproszczenia.
+- Ostrosłup, którego góra wystaje poza podstawę (zawinięty szpic kapelusza, mankiet), jest w klockach uproszczony do zwykłego klocka. Dotyczy to kilku brył zestawu Maga.
 - Postacie są zakotwiczonymi figurami bez `Humanoid` i bez kolizji. To nie jest jeszcze postać gracza ani chodzący NPC.
 - Wydajności na telefonie nie mierzono (658 części to mało, ale liczba jest do sprawdzenia przy większej obsadzie).
 - **Klipy grają tylko w Studio.** W opublikowanej grze animacja musi być zasobem Animation. Publikuje się ją z Animation Editora i według dokumentacji Roblox musi należeć do właściciela gry (osoby albo grupy). To decyzja i czynność właściciela.
-- Skrypt `PokazAnimacji` i cały kontener `TestPostaci` trzeba usunąć przed publikacją (`--usun`).
+- Skrypty `PokazAnimacji` i `Przymierzalnia` oraz cały kontener `TestPostaci` trzeba usunąć przed publikacją (`--usun`).
 
 ## Import do Roblox Studio — krok po kroku
 > **Nie testowane.** Każdy krok importu wgrywa zasoby na konto Roblox. 13.11.2026 właściciel konta zgodził się na próbę, ale wgranie przez Studio (Open Cloud) wymaga jeszcze zatwierdzenia folderu z plikami: Assistant → Settings → MCP Permissions → approved upload directories → folder `swiat/postacie/wynik`. Zasoby wgrane na konto współpracownika trzeba potem udostępnić grze właściciela (Creator Dashboard → uprawnienia zasobu).

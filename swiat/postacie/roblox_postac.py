@@ -35,8 +35,8 @@ for sciezka in (REPO, os.path.join(REPO, "tools")):
         sys.path.insert(0, sciezka)
 
 from swiat.biblioteka.podglad import blender_exe, zajmij_blender, zwolnij_blender  # noqa: E402
-from swiat.postacie.biblioteka.postac import Postac, pakiet, zapisz_json  # noqa: E402
-from swiat.postacie.biblioteka.roblox_klocki import probki_liniowe, rig  # noqa: E402
+from swiat.postacie.biblioteka.postac import Akcesorium, Postac, pakiet, przymiarka, zapisz_json  # noqa: E402
+from swiat.postacie.biblioteka.roblox_klocki import akcesoria_noszone, probki_liniowe, rig  # noqa: E402
 
 KONTENER = "TestPostaci"
 PLACE_ID = 129485428021967                                        # to miejsce i żadne inne
@@ -51,6 +51,10 @@ ROZMIESZCZENIE = {
     "pies": {"poz": (30.0, 31.0), "patrz": (21.4, 18.0)},
     "slime": {"poz": (20.0, 30.5), "patrz": (21.4, 18.0)},
     "smok": {"poz": (15.0, 26.5), "patrz": (21.4, 18.0)},
+    # manekiny z zestawami ekwipunku („przymierzalnia”) po drugiej stronie płyty startu; zestaw = nazwa na podpowiedzi
+    "zestaw_rekrut": {"poz": (28.5, 8.5), "patrz": (21.4, 18.0), "nazwa": "Manekin Rekrut", "zestaw": "Zestaw Rekruta"},
+    "zestaw_rycerz": {"poz": (34.5, 10.0), "patrz": (21.4, 18.0), "nazwa": "Manekin Rycerz", "zestaw": "Zestaw Rycerza"},
+    "zestaw_mag": {"poz": (40.0, 13.5), "patrz": (21.4, 18.0), "nazwa": "Manekin Mag", "zestaw": "Zestaw Maga"},
 }
 PRIORYTETY = {"idle": "Idle", "idle_lot": "Idle", "chod": "Movement", "bieg": "Movement", "lot": "Movement"}
 
@@ -92,6 +96,10 @@ model.Name = D.model
 model:SetAttribute("Wygenerowane", true)
 model:SetAttribute("Postac", D.id)
 model:SetAttribute("Zbudowano", "__CZAS__")
+if D.zestaw ~= "" then
+	model:SetAttribute("Zestaw", D.zestaw)
+	model:SetAttribute("ZestawId", D.id_modulu)
+end
 
 local function bezFizyki(p)
 	p.CanCollide = false
@@ -295,6 +303,29 @@ end
 return string.format("skrypt pokazu zainstalowany (%d znaków); w kontenerze %d postaci, %d części", #s.Source, modeli, czesci)
 '''
 
+EKWIPUNEK = r'''
+local kont = workspace:FindFirstChild("__KONTENER__")
+if not kont or kont:GetAttribute("Wygenerowane") ~= true then
+	return "STOP: brak kontenera"
+end
+for _, nazwa in { "DaneEkwipunku", "Przymierzalnia" } do
+	local stary = kont:FindFirstChild(nazwa)
+	if stary then
+		stary:Destroy()
+	end
+end
+local dane = Instance.new("ModuleScript")
+dane.Name = "DaneEkwipunku"
+dane.Source = __DANE__
+dane.Parent = kont
+local s = Instance.new("Script")
+s.Name = "Przymierzalnia"
+s.Source = __ZRODLO__
+s.Parent = kont
+game:GetService("ChangeHistoryService"):SetWaypoint("Postacie: przymierzalnia zestawów")
+return string.format("przymierzalnia zainstalowana: dane %d znaków, skrypt %d znaków", #dane.Source, #s.Source)
+'''
+
 USUN = r'''
 local CH = game:GetService("ChangeHistoryService")
 local kont = workspace:FindFirstChild("__KONTENER__")
@@ -334,8 +365,16 @@ def wczytaj_modul(sciezka):
 
 
 def postacie_z_modulu(sciezka):
+    """Postacie z modułu. Moduł z samym ekwipunkiem (bez postaci) dostaje szary manekin R15 z założonymi częściami,
+    tak jak w podglądzie Blendera (przymiarka())."""
     w = wczytaj_modul(sciezka).zbuduj()
-    return [o for o in (w if isinstance(w, (list, tuple)) else [w]) if isinstance(o, Postac)]
+    w = list(w) if isinstance(w, (list, tuple)) else [w]
+    postacie = [o for o in w if isinstance(o, Postac)]
+    if not postacie:
+        akcesoria = [o for o in w if isinstance(o, Akcesorium)]
+        if akcesoria:
+            postacie = [przymiarka(os.path.splitext(os.path.basename(sciezka))[0] + "_przymiarka", akcesoria)]
+    return postacie
 
 
 def probki_z_blendera(postacie):
@@ -411,7 +450,7 @@ def main():
             probki = probki_z_blendera([p for _, p in postacie])
             print("próbki klipów z Blendera: %.0f s" % (time.time() - t0))
     os.makedirs(a.wyj, exist_ok=True)
-    dane = []
+    dane, ekwipunek = [], {}
     for mid, p in postacie:
         d = rig(p, probki.get(p.id))
         roz = ROZMIESZCZENIE[mid]
@@ -419,6 +458,13 @@ def main():
         d["poz"] = [roz["poz"][0] + PRZESUNIECIE[0], roz["poz"][1] + PRZESUNIECIE[1]]
         d["patrz"] = [roz["patrz"][0] + PRZESUNIECIE[0], roz["patrz"][1] + PRZESUNIECIE[1]]
         d["nad"] = float(roz.get("nad_ziemia", 0.0))
+        if roz.get("nazwa"):
+            d["model"] = roz["nazwa"]
+        d["zestaw"], d["id_modulu"] = roz.get("zestaw", ""), mid
+        if roz.get("zestaw"):
+            akcesoria, materialy, uw = akcesoria_noszone(p)
+            ekwipunek[mid] = {"nazwa": roz["zestaw"], "materialy": materialy, "akcesoria": akcesoria}
+            d["uwagi"] += uw
         zapisz_json(d, os.path.join(a.wyj, p.id + "_klocki.json"))
         print("%-10s %3d brył -> %3d części Roblox, %2d kości, %2d zaczepów, klipy: %s"
               % (p.id, len(p.czesci) + sum(len(x[0].czesci) for x in p.zalozone), len(d["czesci"]), len(d["kosci"]),
@@ -426,6 +472,11 @@ def main():
         for u in d["uwagi"]:
             print("           uwaga:", u)
         dane.append(d)
+    if ekwipunek:
+        zapisz_json(ekwipunek, os.path.join(a.wyj, "ekwipunek_klocki.json"))
+        for mid, e in ekwipunek.items():
+            print("%-14s do noszenia: %d akcesoriów, %d części Roblox"
+                  % (mid, len(e["akcesoria"]), sum(len(x["czesci"]) for x in e["akcesoria"])))
     if a.sucho:
         return
 
@@ -448,6 +499,13 @@ def main():
             with open(os.path.join(TU, "roblox", "PokazAnimacji.server.luau"), encoding="utf-8") as f:
                 zrodlo = f.read()
             print("Studio:", wykonaj(POKAZ.replace("__KONTENER__", KONTENER).replace("__ZRODLO__", luau(zrodlo))))
+        if ekwipunek and not a.bez_pokazu:
+            with open(os.path.join(TU, "roblox", "Przymierzalnia.server.luau"), encoding="utf-8") as f:
+                zrodlo = f.read()
+            modul = ("-- Wygenerowane przez swiat/postacie/roblox_postac.py — nie edytuj ręcznie." + chr(10) +
+                     "return " + luau(ekwipunek) + chr(10))
+            print("Studio:", wykonaj(EKWIPUNEK.replace("__KONTENER__", KONTENER).replace("__DANE__", luau(modul))
+                                     .replace("__ZRODLO__", luau(zrodlo))))
     studio(buduj)
 
 

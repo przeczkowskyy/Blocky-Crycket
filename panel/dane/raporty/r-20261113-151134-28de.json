@@ -1,0 +1,45 @@
+{
+ "id": "r-20261113-151134-28de",
+ "tytul": "Przymierzalnia: zestawy Rekruta, Rycerza i Maga zakładane na własny awatar jednym klawiszem",
+ "opis_md": "**W skrócie:** obok postaci stoją trzy manekiny w zestawach Rekruta, Rycerza i Maga. W uruchomionej grze podchodzisz do manekina, naciskasz **E** i Twój awatar zakłada cały zestaw. Wszystko z klocków Roblox, bez wgrywania czegokolwiek na konto.\n\n## Jak spróbować\n1. Otwórz miejsce w Roblox Studio i naciśnij **Play**.\n2. Dojdź do rynku Krzywego Miasteczka (manekiny stoją po lewej od żółtej płyty startu, patrząc na gospodę) albo użyj **Play Here** na rynku.\n3. Przy manekinie pojawi się podpowiedź „Przymierz”. Naciśnij E.\n4. Drugie naciśnięcie przy tym samym manekinie zdejmuje zestaw.\n\n## Co widać na zdjęciach\n- Awatar gracza kolejno: bez zestawu, Rekrut, Rycerz, Mag (z przodu i z boku).\n- Trzy manekiny w Studio.\n\n## Co sprawdziłem\n- Każdy zestaw założyłem na zwykły awatar w uruchomionej grze i zdjąłem. Wszystkie części trzymają się ciała, konsola bez błędów.\n- Rekrut to 10 elementów, Rycerz 14, Mag 15.\n\n## Czego nie ma i co kuleje\n- Zestawy pasują do klockowego awatara. Na innych ciałach części będą odstawać.\n- Włosy awatara przebijają przez czapki i hełm. Buty obejmują stopy pudełkiem.\n- Zestaw Maga ma 527 części na jednym graczu. To za dużo do prawdziwej gry i wymaga uproszczenia.\n- Kilka brył Maga (zawinięty szpic kapelusza, mankiety) jest w klockach uproszczonych do zwykłych klocków.\n- Zestawy nie mają statystyk i nie są połączone z plecakiem ani panelem ekwipunku. To tylko przymiarka wyglądu.\n- Sloty i podział na części to propozycja, nie kanon. W katalogu jest też slot „druga ręka” (tarcza, księga).\n- Skrypt działa tylko w Studio. Przed publikacją gry kontener `TestPostaci` trzeba usunąć.\n\nSzczegóły: notatka „Postacie 3D — Blender i Roblox”, pytanie 24.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T15:11:34+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Manekin Rekrut",
+   "etykieta": "Manekin Rekrut"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Manekin Rycerz",
+   "etykieta": "Manekin Rycerz"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Manekin Mag",
+   "etykieta": "Manekin Mag"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Postacie 3D — Blender i Roblox.md",
+   "etykieta": "Notatka o postaciach"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/przedmioty.json",
+   "etykieta": "Lista przedmiotów"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ],
+ "migawka": "20261113-151132-6970",
+ "pytanie": "Czy sloty i podział zestawów na części pasują do systemu ekwipunku w kodzie gry, czy mam je dopasować do Twoich slotów?"
+}
