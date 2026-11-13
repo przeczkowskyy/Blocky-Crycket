@@ -41,6 +41,9 @@ Bez instalowania zależności (sam Python 3.9+). Pełna instrukcja: `panel/INSTA
 - Rozmowy z agentem i nagrania głosowe zostają lokalnie. Do repozytorium trafia tylko tekst raportów i komentarzy.
 - **Repozytorium jest publiczne** — wszystko w `panel/dane/` jest widoczne dla każdego. Zob. [[Workflow i Git]].
 
+## Praca na sejfie z panelu (propozycja D-028, na razie wyłączona)
+Zakładka Plan potrafi zapisywać do sejfu: odpowiedź pod pytaniem otwartym, odhaczenie i dodanie zadania, a z osobistym kluczem Game Directora — zatwierdzenie albo odrzucenie decyzji. Każda zmiana to mały, czytelny wiersz w tym samym pliku Markdown co zawsze i ślad w [[Dziennik zmian]] (sekcja „Panel (ludzie)”); panel sprawdza, czy plik nie zmienił się w międzyczasie w Obsidianie. Odpowiedzi osób bez klucza lokalnego są oznaczane „gość panelu”, a zgodę Game Directora poznaje się po znaczniku stawianym przez serwer — samo imię nie daje uprawnień. Włączenie: `"zapis_sejfu": true` w konfiguracji lokalnej; link z kluczem: `python panel/serwer.py --klucz-gd`. Szczegóły i API: `panel/README.md`. Do ustalenia: [[Pytania otwarte]] #23.
+
 ## Wejście z telefonu spoza domu (tunel)
 Sprawdzone naprawdę 13.11.2026: przenośny `cloudflared` (bez instalatora i uprawnień administratora) wystawia panel pod losowym adresem https, a wejście wymaga kodu dostępu. Gość z tunelu nie dostaje uprawnień osoby przy komputerze — nie uruchomi agenta, gita ani nowej migawki — nawet jeśli zna klucz lokalny. Przed udostępnieniem adresu drugiej osobie trzeba wyjąć z konfiguracji lokalnej prywatne sejfy podpięte do panelu. Kroki: `panel/INSTALACJA.md`.
 

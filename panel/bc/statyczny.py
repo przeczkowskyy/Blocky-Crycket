@@ -8,7 +8,8 @@ Jak: eksporter woła te same trasy GET co przeglądarka i zapisuje odpowiedzi ja
 
     python panel/serwer.py --eksport <folder>          # albo: cd panel && python -m bc.statyczny --do <folder>
 
-W lustrze NIE ma: agenta, głosówek, wysyłania komentarzy ani danych lokalnych (rozmowy z agentem, nagrania, kod dostępu).
+W lustrze NIE ma: agenta, głosówek, wysyłania komentarzy, zapisu do sejfu (odpowiedzi, zadania, decyzje) ani danych
+lokalnych (rozmowy z agentem, nagrania, kod dostępu, klucz Game Directora).
 Jest tylko to, co i tak leży w repozytorium, plus publiczne liczby gry pobrane w chwili eksportu.
 """
 import json
@@ -182,7 +183,7 @@ def eksportuj(app, folder, czas=None):
 
     # 2) rdzeń i stany „niedostępne w lustrze”
     trasa("/api/ja", {"kto": "gość", "lokalny": False, "gospodarz": "", "tryb_statyczny": True, "wersja": rdzen.WERSJA,
-                      "czas_lustra": czas})
+                      "czas_lustra": czas, "game_director": False, "zapis_sejfu": False})   # lustro niczego nie zapisuje
     cfg = rdzen.konfiguracja()
     w_repo = [s for s in cfg.get("sejfy") or [] if isinstance(s, dict) and not os.path.isabs(str(s.get("sciezka") or ""))]
     trasa("/api/konfiguracja", {"port": None, "gra": cfg.get("gra"),

@@ -11,6 +11,8 @@ Wszystkie testy:                   python -m unittest discover -s testy -t .
 - Git tylko czyta (zdrowie, obecność). GET /api/git/stan nie jest wołany, bo uruchamia `git fetch` w tle;
   POST /api/git/pobierz i /api/git/wyslij są sprawdzane wyłącznie jako odmowy (403).
 - Sejf B&C jest czytany naprawdę (tylko odczyt) — testy sprawdzają kształt odpowiedzi, nie treść notatek.
+- Zapis do sejfu (TestZapisSejfuAPI) idzie WYŁĄCZNIE do tymczasowego sejfu wskazanego w konfiguracji lokalnej
+  serwera testowego; klucz Game Directora też jest tymczasowy.
 """
 import json
 import os
@@ -40,11 +42,21 @@ def _wolny_port():
     return port
 
 
-class TestAPI(unittest.TestCase):
+class SerwerTestowy(unittest.TestCase):
+    """Prawdziwy serwer panelu w osobnym procesie na katalogach tymczasowych (bez testów — tylko rozruch i klient)."""
     port = None
     proc = None
     tmp = None
     token = None
+
+    @classmethod
+    def konfiguracja_lokalna(cls):
+        """Konfiguracja lokalna serwera testowego (podklasy mogą np. wskazać tymczasowy sejf)."""
+        return {"gra": {"universeId": None}}                            # analityka bez sieci
+
+    @classmethod
+    def przygotuj(cls, runtime):
+        """Miejsce na dodatkowe pliki w danych lokalnych przed startem serwera."""
 
     # ------------------------------------------------------------------ serwer
     @classmethod
@@ -53,7 +65,8 @@ class TestAPI(unittest.TestCase):
         dane, runtime = os.path.join(cls.tmp, "dane"), os.path.join(cls.tmp, "runtime")
         os.makedirs(runtime)
         with open(os.path.join(runtime, "konfiguracja.lokalna.json"), "w", encoding="utf-8") as f:
-            json.dump({"gra": {"universeId": None}}, f)                 # analityka bez sieci
+            json.dump(cls.konfiguracja_lokalna(), f, ensure_ascii=False)
+        cls.przygotuj(runtime)
         cls.klucz = "klucz-lokalny-testowy-0123456789"                  # serwer bierze istniejący plik (min. 20 znaków)
         with open(os.path.join(runtime, "klucz_lokalny.txt"), "w", encoding="utf-8") as f:
             f.write(cls.klucz + "\n")
@@ -120,7 +133,7 @@ class TestAPI(unittest.TestCase):
     # ------------------------------------------------------------------ klient
     @classmethod
     def zadanie(cls, metoda, sciezka, cialo=None, zdalny=False, xbc=True, ct="application/json", surowe=None,
-                kto=None, naglowki=None, timeout=30, bajty=False, klucz=True):
+                kto=None, naglowki=None, timeout=30, bajty=False, klucz=True, gd=None):
         """Zwraca (status, obiekt JSON albo None, nagłówki); z bajty=True trzecim elementem są (nagłówki, bajty).
 
         Domyślnie żądanie idzie jak z przeglądarki przy komputerze (z kluczem lokalnym); `zdalny=True` udaje telefon
@@ -137,6 +150,8 @@ class TestAPI(unittest.TestCase):
             h["X-BC-Lokalny"] = cls.klucz
         if kto:
             h["X-BC-Kto"] = urllib.parse.quote(kto)
+        if gd:
+            h["X-BC-GD"] = gd
         h.update(naglowki or {})
         dane = surowe if surowe is not None else (json.dumps(cialo).encode("utf-8") if cialo is not None else None)
         if metoda == "POST" and dane is None:
@@ -169,6 +184,9 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(s, status, o)
         self.assertTrue(o and isinstance(o.get("blad"), str) and o["blad"], o)
 
+
+class TestAPI(SerwerTestowy):
+
     # ------------------------------------------------------------------ rdzeń i zabezpieczenia
     def test_rdzen(self):
         s, o, _ = self.get("/api/ping")
@@ -176,8 +194,9 @@ class TestAPI(unittest.TestCase):
         self.assertPola(o, ["ok", "app", "wersja", "start", "pid", "port", "lan"])
         self.assertEqual((o["app"], o["port"], o["lan"]), ("bc-panel", self.port, False))
         s, o, _ = self.get("/api/ja", kto="Paweł Ż")
-        self.assertPola(o, ["kto", "lokalny", "gospodarz", "tryb_statyczny", "wersja"])
+        self.assertPola(o, ["kto", "lokalny", "gospodarz", "tryb_statyczny", "wersja", "game_director", "zapis_sejfu"])
         self.assertEqual((o["kto"], o["lokalny"], o["tryb_statyczny"]), ("Paweł Ż", True, False))
+        self.assertFalse(o["game_director"])                                         # bez klucza GD nikt nim nie jest
         s, o, _ = self.get("/api/ja", zdalny=True)
         self.assertEqual((s, o["lokalny"], o["kto"]), (200, False, "gość"))
         s, o, _ = self.get("/api/konfiguracja")
@@ -251,7 +270,8 @@ class TestAPI(unittest.TestCase):
         self.assertPola(o, ["rdzen", "moduly", "szczegoly"])
         zle = {k: v for k, v in o["moduly"].items() if k != "statyczny" and not v.get("ok")}
         self.assertFalse(zle, "moduły z błędem: %s" % zle)
-        for nazwa in ("sejf", "gitsync", "obecnosc", "studio", "podglad", "analityka", "raporty", "agent", "glos"):
+        for nazwa in ("sejf", "zapis", "gitsync", "obecnosc", "studio", "podglad", "analityka", "raporty", "agent",
+                      "glos"):
             self.assertIn(nazwa, o["moduly"])
 
     # ------------------------------------------------------------------ sejf
@@ -575,6 +595,190 @@ class TestAPI(unittest.TestCase):
         self.assertBlad(self.post("/api/glos", surowe=b"\x00" * 4000, ct="audio/webm"), 415)
         self.assertBlad(self.post("/api/glos", surowe=b'{"a": 1}', ct="application/json"), 415)
         self.assertBlad(self.get("/api/glos/g-20990101-000000-0000"), 404)
+
+
+class TestZapisSejfuAPI(SerwerTestowy):
+    """Trasy zapisu do sejfu na tymczasowym sejfie (konfiguracja lokalna serwera testowego wskazuje kopię plików)."""
+    klucz_gd = "klucz-game-directora-testowy-0123456789"
+
+    @classmethod
+    def konfiguracja_lokalna(cls):
+        cls.sejf = os.path.join(cls.tmp, "sejf")
+        return {"gra": {"universeId": None}, "sejfy": [{"id": "B&C", "nazwa": "Sejf testowy", "sciezka": cls.sejf}]}
+
+    @classmethod
+    def przygotuj(cls, runtime):
+        from testy.test_zapis import PLIKI
+        os.makedirs(os.path.join(cls.sejf, "Produkcja"))
+        for nazwa, tekst in PLIKI.values():
+            with open(os.path.join(cls.sejf, "Produkcja", nazwa), "w", encoding="utf-8", newline="\n") as f:
+                f.write(tekst)
+        with open(os.path.join(runtime, "klucz_gd.txt"), "w", encoding="utf-8") as f:
+            f.write(cls.klucz_gd + "\n")
+
+    def plik(self, nazwa):
+        with open(os.path.join(self.sejf, "Produkcja", nazwa), encoding="utf-8", newline="") as f:
+            return f.read()
+
+    def plan(self, **kw):
+        s, o, _ = self.get("/api/sejf/plan", **kw)
+        self.assertEqual(s, 200, o)
+        return o
+
+    def test_plan_ma_wersje_i_identyfikatory(self):
+        o = self.plan()
+        self.assertEqual(set(o["wersje"]), {"roadmapa", "zadania", "decyzje", "pytania", "dziennik"})
+        self.assertIsNone(o["wersje"]["roadmapa"])                                   # brak pliku = brak wersji
+        self.assertRegex(o["wersje"]["zadania"], r"^[0-9a-f]{16}$")
+        self.assertTrue(o["pliki"]["zadania"].endswith("Produkcja/Zadania.md"))
+        for s in o["zadania"]["sekcje"]:
+            for p in s["pozycje"]:
+                self.assertRegex(p["id"], r"^z[0-9a-f]{10}$")
+
+    def test_game_director_klucz(self):
+        self.assertFalse(self.get("/api/ja")[1]["game_director"])
+        self.assertTrue(self.get("/api/ja", gd=self.klucz_gd)[1]["game_director"])
+        self.assertTrue(self.get("/api/ja", gd=self.klucz_gd, zdalny=True)[1]["game_director"])     # także przez tunel
+        self.assertFalse(self.get("/api/ja", naglowki={"Cookie": "bc_gd=zly"})[1]["game_director"])
+        self.assertTrue(self.get("/api/ja", naglowki={"Cookie": "bc_gd=" + self.klucz_gd})[1]["game_director"])
+        # klucz GD nie zastępuje dostępu do panelu: bez kodu dostępu i bez klucza lokalnego nadal 401
+        self.assertBlad(self.get("/api/ja", klucz=False, gd=self.klucz_gd), 401)
+        # zły klucz: 200 bez uprawnień (próba liczy się do limitu)
+        s, o, _ = self.get("/api/ja", gd="zly-klucz-0123456789-0123456789")
+        self.assertEqual((s, o["game_director"]), (200, False))
+        # link z kluczem: ciasteczko HttpOnly i przekierowanie na adres bez klucza (lokalnie i z kodem dostępu)
+        import http.client
+        for zapytanie, naglowki in (("/?gd=" + self.klucz_gd, {"X-BC-Lokalny": self.klucz}),
+                                    ("/?k=%s&gd=%s" % (self.token, self.klucz_gd), {"X-Forwarded-For": "192.168.1.50"})):
+            c = http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)
+            try:
+                c.request("GET", zapytanie, headers=naglowki)
+                r = c.getresponse()
+                r.read()
+                self.assertEqual((r.status, r.getheader("Location")), (302, "/"))
+                ciastka = r.msg.get_all("Set-Cookie") or []
+                gd = [x for x in ciastka if x.startswith("bc_gd=")]
+                self.assertEqual(len(gd), 1, ciastka)
+                self.assertTrue(gd[0].startswith("bc_gd=" + self.klucz_gd + ";"))
+                self.assertIn("HttpOnly", gd[0])
+                if "k=" in zapytanie:
+                    self.assertTrue(any(x.startswith("bc_t=") for x in ciastka), ciastka)
+            finally:
+                c.close()
+
+    def test_przekierowanie_tylko_w_panelu(self):
+        """Po zamianie klucza z adresu na ciasteczko przekierowanie nigdy nie wyprowadza na obcą stronę."""
+        import http.client
+        przypadki = [("/%5Cevil.example/?gd=" + self.klucz_gd, {"X-BC-Lokalny": self.klucz}, "/"),
+                     ("/%5C%5Cevil.example?k=" + self.token, {"X-Forwarded-For": "192.168.1.50"}, "/"),
+                     ("/%2F%2Fevil.example?l=" + self.klucz, {}, "/"),
+                     ("/\\evil.example?l=" + self.klucz, {}, "/"),
+                     ("//evil.example/?l=" + self.klucz, {}, None),    # nowszy Python sam skraca „//” do „/”
+                     ("/podglad?k=" + self.token, {"X-Forwarded-For": "192.168.1.50"}, "/podglad")]
+        for zapytanie, naglowki, dokad in przypadki:
+            c = http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)
+            try:
+                c.request("GET", zapytanie, headers=naglowki)
+                r = c.getresponse()
+                r.read()
+                gdzie = r.getheader("Location") or ""
+                self.assertEqual(r.status, 302, zapytanie)
+                self.assertRegex(gdzie, r"^/(?![/\\])[^\\]*$", zapytanie)               # zawsze ścieżka tego panelu
+                self.assertNotRegex(urllib.parse.unquote(gdzie), r"^/[/\\]|\\", zapytanie)
+                if dokad is not None:
+                    self.assertEqual(gdzie, dokad, zapytanie)
+            finally:
+                c.close()
+
+    def test_odpowiedz_game_directora_ma_znacznik(self):
+        o = self.plan(zdalny=True, gd=self.klucz_gd)
+        s, w, _ = self.post("/api/sejf/pytania/4/odpowiedz", {"tekst": "Zatwierdzam", "wersja": o["wersje"]["pytania"]},
+                            zdalny=True, gd=self.klucz_gd, kto="Paweł")
+        self.assertEqual(s, 200, w)
+        self.assertIn("\n- Paweł (Game Director, ", self.plik("Pytania otwarte.md"))
+        s, e, _ = self.post("/api/sejf/pytania/4/odpowiedz", {"tekst": "x", "wersja": w["wersja"]}, zdalny=True,
+                            kto="Game Director")                                       # zastrzeżone imię bez klucza
+        self.assertEqual((s, e.get("kod")), (400, "imie_zastrzezone"), e)
+
+    def test_odpowiedz_jako_gosc(self):
+        o = self.plan(zdalny=True)
+        s, w, _ = self.post("/api/sejf/pytania/2/odpowiedz", {"tekst": "Z telefonu", "wersja": o["wersje"]["pytania"]},
+                            zdalny=True, kto="Paweł")
+        self.assertEqual(s, 200, w)
+        self.assertPola(w, ["ok", "opis", "plik", "wersja", "plan"])
+        self.assertIn("- Paweł (", self.plik("Pytania otwarte.md"))
+        self.assertIn("): Z telefonu\n", self.plik("Pytania otwarte.md"))
+        self.assertIn("· Panel (ludzie)\n", self.plik("Dziennik zmian.md"))
+        self.assertIn("\n- Paweł (gość panelu): odpowiedź na pytanie 2 ([[Pytania otwarte]])\n", self.plik("Dziennik zmian.md"))
+        self.assertIn("- Paweł (gość panelu, ", self.plik("Pytania otwarte.md"))     # imię gościa niczego nie dowodzi
+        self.assertEqual(w["plan"]["wersje"]["pytania"], self.plan()["wersje"]["pytania"])
+        # stara wersja = konflikt, z kodem do rozpoznania w interfejsie
+        s, e, _ = self.post("/api/sejf/pytania/2/odpowiedz", {"tekst": "x", "wersja": o["wersje"]["pytania"]})
+        self.assertEqual((s, e.get("kod")), (409, "konflikt_wersji"), e)
+        self.assertBlad(self.post("/api/sejf/pytania/2/odpowiedz", {"tekst": "# wstrzyknięcie", "wersja": w["wersja"]}), 400)
+        self.assertBlad(self.post("/api/sejf/pytania/abc/odpowiedz", {"tekst": "x", "wersja": w["wersja"]}), 400)
+        self.assertBlad(self.post("/api/sejf/pytania/77/odpowiedz", {"tekst": "x", "wersja": w["wersja"]}), 404)
+        self.assertBlad(self.post("/api/sejf/pytania/2/odpowiedz", {"tekst": "x", "wersja": w["wersja"]}, xbc=False), 403)
+        self.assertBlad(self.post("/api/sejf/pytania/2/odpowiedz", {"tekst": "x", "wersja": w["wersja"]}, klucz=False), 401)
+
+    def test_zadania_jako_gosc(self):
+        o = self.plan(zdalny=True)
+        poz = next(p for s in o["zadania"]["sekcje"] for p in s["pozycje"] if p["tekst_md"] == "Coś na później")
+        s, w, _ = self.post("/api/sejf/zadania/odhacz", {"id": poz["id"], "wersja": o["wersje"]["zadania"]}, zdalny=True)
+        self.assertEqual(s, 200, w)
+        self.assertNotIn("- [ ] Coś na później", self.plik("Zadania.md"))
+        self.assertIn("## ✅ Zrobione\n- [x] ", self.plik("Zadania.md"))
+        s, w, _ = self.post("/api/sejf/zadania/dodaj", {"tekst": "Z panelu", "sekcja": "teraz", "priorytet": "niski",
+                                                         "wersja": w["wersja"]}, zdalny=True)
+        self.assertEqual(s, 200, w)
+        self.assertIn("- [ ] Z panelu · #niski\n", self.plik("Zadania.md"))
+        self.assertBlad(self.post("/api/sejf/zadania/dodaj", {"tekst": "x", "sekcja": "teraz", "priorytet": "x",
+                                                               "wersja": w["wersja"]}), 400)
+        self.assertBlad(self.post("/api/sejf/zadania/odhacz", {"id": "z0000000000", "wersja": w["wersja"]}), 404)
+        self.assertBlad(self.post("/api/sejf/zadania/odhacz", {"wersja": w["wersja"], "nieznane": 1}), 400)
+        self.assertBlad(self.get("/api/sejf/zadania/odhacz"), 405)
+
+    def test_decyzje_tylko_game_director(self):
+        o = self.plan()
+        przed = self.plik("Rejestr decyzji.md")
+        cialo = {"status": "zatwierdzona", "uzasadnienie": "Tak", "wersja": o["wersje"]["decyzje"]}
+        for kw in ({}, {"zdalny": True}, {"kto": "Paweł"}, {"zdalny": True, "kto": "Game Director"},
+                   {"gd": "zly-klucz-0123456789-0123456789"}):
+            s, e, _ = self.post("/api/sejf/decyzje/D-002/status", cialo, **kw)
+            self.assertEqual((s, e.get("kod")), (403, "tylko_game_director"), (kw, e))
+        self.assertEqual(self.plik("Rejestr decyzji.md"), przed)
+        s, w, _ = self.post("/api/sejf/decyzje/D-002/status", cialo, gd=self.klucz_gd, kto="Paweł")
+        self.assertEqual(s, 200, w)
+        self.assertIn("✅ zatwierdzona · game design · 2026-11-13 · źródło: [[Notatka]] · zdecydował: Game Director (Paweł) ",
+                      self.plik("Rejestr decyzji.md"))
+        s, w, _ = self.post("/api/sejf/decyzje/D-003/status", {"status": "odrzucona", "wersja": w["wersja"]},
+                            gd=self.klucz_gd, zdalny=True, kto="Paweł")                   # Game Director przez tunel
+        self.assertEqual(s, 200, w)
+        s, e, _ = self.post("/api/sejf/decyzje/D-001/status", {"status": "odrzucona", "wersja": w["wersja"]},
+                            gd=self.klucz_gd)
+        self.assertEqual((s, e.get("kod")), (409, "status_zamkniety"), e)
+        self.assertIn("decyzja D-003 odrzucona", self.plik("Dziennik zmian.md"))
+
+    def test_z_polecenie_klucz_gd(self):
+        """`--klucz-gd` wypisuje link z istniejącym kluczem; `--nowy-klucz-gd` unieważnia stary bez restartu panelu.
+        (Nazwa z „z_”, żeby test szedł ostatni — zmienia klucz.)"""
+        env = dict(os.environ, BC_PANEL_RUNTIME=os.path.join(self.tmp, "runtime"), PYTHONDONTWRITEBYTECODE="1",
+                   PYTHONIOENCODING="utf-8")
+        bez_okna = 0x08000000 if os.name == "nt" else 0
+        r = subprocess.run([sys.executable, "-B", os.path.join(PANEL, "serwer.py"), "--klucz-gd"], env=env, cwd=REPO,
+                           capture_output=True, timeout=60, creationflags=bez_okna)
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("/?gd=" + self.klucz_gd, r.stdout.decode("utf-8"))
+        r = subprocess.run([sys.executable, "-B", os.path.join(PANEL, "serwer.py"), "--nowy-klucz-gd"], env=env,
+                           cwd=REPO, capture_output=True, timeout=60, creationflags=bez_okna)
+        self.assertEqual(r.returncode, 0)
+        with open(os.path.join(self.tmp, "runtime", "klucz_gd.txt"), encoding="utf-8") as f:
+            nowy = f.read().strip()
+        self.assertNotEqual(nowy, self.klucz_gd)
+        self.assertIn("/?gd=" + nowy, r.stdout.decode("utf-8"))
+        self.assertFalse(self.get("/api/ja", gd=self.klucz_gd)[1]["game_director"])
+        self.assertTrue(self.get("/api/ja", gd=nowy)[1]["game_director"])
+        type(self).klucz_gd = nowy
 
 
 if __name__ == "__main__":

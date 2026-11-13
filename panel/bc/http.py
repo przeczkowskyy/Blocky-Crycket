@@ -31,7 +31,8 @@ Zwracane wartości handlera:
     None                   -> 204
 
 Pola Zadania: metoda, sciezka, query (dict), params (z wzorca trasy), naglowki, cialo (bytes), json, lokalny (bool —
-żądanie z tego komputera), kto (nazwa osoby z nagłówka X-BC-Kto albo `git config user.name`), ip.
+żądanie z tego komputera), kto (nazwa osoby z nagłówka X-BC-Kto albo `git config user.name`), ip, game_director
+(bool — żądanie niesie klucz Game Directora; tylko to, a nie imię, pozwala zmieniać kanon, np. statusy decyzji).
 """
 import json
 import mimetypes
@@ -58,7 +59,7 @@ def mime_pliku(sciezka):
 
 class Zadanie:
     __slots__ = ("metoda", "sciezka", "query", "params", "naglowki", "cialo", "_json", "_json_ok", "lokalny", "kto",
-                 "ip", "host")
+                 "ip", "host", "game_director")
 
     def __init__(self, metoda, sciezka, query, naglowki, cialo, lokalny, kto, ip, host):
         self.metoda = metoda
@@ -73,6 +74,7 @@ class Zadanie:
         self.kto = kto
         self.ip = ip
         self.host = host
+        self.game_director = False                             # ustawia serwer po sprawdzeniu klucza Game Directora
 
     @property
     def json(self):
@@ -128,6 +130,7 @@ class Odp:
 
     @staticmethod
     def przekieruj(dokad, ciasteczko=None):
+        """`ciasteczko` = jeden napis Set-Cookie albo lista (każde idzie osobnym nagłówkiem)."""
         h = {"Location": dokad}
         if ciasteczko:
             h["Set-Cookie"] = ciasteczko

@@ -119,5 +119,9 @@ Plik `rokit.toml` w repozytorium przypina Rojo 7.6.1 (wersja z kanonu). Rokit in
 🕓 do decyzji · styl / grafika · 2026-11-13 · źródło: dokument Game Directora przekazany przez Karola
 Każdy prompt graficzny składa się ze stałego początku „Glossy Ink” (odwołanie do własnego obrazu referencyjnego, bez cudzej nazwy), zmiennego środka, stałego końca i osobnego negative promptu; do tego zasady zamkniętych krawędzi, pustych kontenerów, okien ze statystykami i map izometrycznych. Zastąpiłaby prefiks z D-001 i zapisy o pixel-arcie oraz płaskim interfejsie z D-002; zgodna z propozycją D-018. Czeka tylko na formalne potwierdzenie Game Directora; do tego czasu nowe prompty piszemy już według niej. Zob. [[Instrukcja promptów — Glossy Ink]], [[Pytania otwarte]] #22.
 
+### D-028 Panel jako miejsce pracy: zapis do sejfu z panelu i klucz Game Directora
+💡 propozycja · narzędzia · 2026-11-13 · zaproponował: Karol (przez Claude Code)
+Z panelu da się odpowiadać na pytania otwarte, odhaczać i dodawać zadania oraz — tylko z osobistym kluczem Game Directora — zatwierdzać i odrzucać decyzje. Panel zapisuje zmiany do tych samych plików sejfu (małe, czytelne wiersze, ślad w dzienniku), więc D-008 zostaje w mocy: sejf jest jedynym źródłem prawdy, a panel staje się wygodnym miejscem pracy na nim. Odpowiedzi gości są oznaczane „gość panelu”, a zgoda Game Directora ma znacznik stawiany przez serwer. Kod jest gotowy i po niezależnym przeglądzie, ale zapis jest **wyłączony** do wspólnej decyzji. Rozwija D-012. Zob. [[Panel zespołu]], [[Pytania otwarte]] #23.
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*

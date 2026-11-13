@@ -16,7 +16,11 @@ Bezpieczeństwo (wzorzec z panelu Saga Studio):
 - prawa osoby przy komputerze („lokalny”) daje dopiero KLUCZ LOKALNY: ciasteczko ustawiane przez adres z kluczem,
   który panel otwiera w przeglądarce przy starcie (jak Jupyter). Samo połączenie z pętli zwrotnej nie wystarcza, bo
   przekierowanie portu (ssh -R, ngrok tcp, netsh portproxy) też przychodzi z 127.0.0.1. Żądanie bez klucza —
-  także z tego komputera — potrzebuje zwykłego kodu dostępu i ma prawa osoby zdalnej.
+  także z tego komputera — potrzebuje zwykłego kodu dostępu i ma prawa osoby zdalnej;
+- zmianę kanonu z panelu (status decyzji) daje wyłącznie KLUCZ GAME DIRECTORA: osobny sekret w danych lokalnych
+  (`klucz_gd.txt`, tworzy go `--klucz-gd`), przyniesiony adresem `/?gd=<klucz>` (zamieniany na ciasteczko bc_gd
+  i usuwany z adresu) albo nagłówkiem X-BC-GD. Działa też przez tunel, ale zawsze OBOK zwykłego dostępu (kod dostępu
+  albo klucz lokalny) — nie zastępuje go. Nieudane próby liczą się do tego samego limitu co kod dostępu.
 """
 import argparse
 import hmac
@@ -43,8 +47,8 @@ from bc import rdzen  # noqa: E402
 from bc.http import Aplikacja, Odp, Strumien, Zadanie, mime_pliku  # noqa: E402
 from bc.rdzen import BladHTTP  # noqa: E402
 
-MODULY = ["sejf", "gitsync", "obecnosc", "studio", "podglad", "analityka", "telemetria", "assety", "raporty", "agent",
-          "glos", "statyczny"]
+MODULY = ["sejf", "zapis", "gitsync", "obecnosc", "studio", "podglad", "analityka", "telemetria", "assety", "raporty",
+          "agent", "glos", "statyczny"]
 ROZSZERZENIA_STATIC = {".html", ".js", ".mjs", ".css", ".json", ".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico",
                        ".woff2", ".glb", ".md", ".txt", ".map"}
 LIMIT_JSON = 4 * 1024 * 1024
@@ -83,6 +87,55 @@ def _klucz_lokalny():
     return t
 
 
+_gd_pamiec = {"stan": None, "klucz": None}
+
+
+def _plik_klucza_gd():
+    return os.path.join(rdzen.RUNTIME, "klucz_gd.txt")
+
+
+def _klucz_gd():
+    """Klucz Game Directora albo None, gdy go nie utworzono (wtedy nikt nie zmienia kanonu z panelu).
+    Czytany przy każdym żądaniu (z pamięcią po czasie zmiany pliku) — nowy klucz działa bez restartu panelu."""
+    sciezka = _plik_klucza_gd()
+    try:
+        st = os.stat(sciezka)
+        stan = (st.st_mtime_ns, st.st_size)
+    except OSError:
+        return None
+    if _gd_pamiec["stan"] != stan:
+        t = (rdzen.czytaj_tekst(sciezka) or "").strip()
+        _gd_pamiec.update(stan=stan, klucz=t if len(t) >= 20 else None)
+    return _gd_pamiec["klucz"]
+
+
+def utworz_klucz_gd(nowy=False):
+    """Zwraca klucz Game Directora; tworzy go, gdy go nie ma (albo zawsze, z nowy=True — stary przestaje działać)."""
+    sciezka = _plik_klucza_gd()
+    t = "" if nowy else (rdzen.czytaj_tekst(sciezka) or "").strip()
+    if len(t) < 20:
+        t = secrets.token_urlsafe(24)
+        rdzen.upewnij_katalog(rdzen.RUNTIME)
+        with open(sciezka, "w", encoding="utf-8") as f:
+            f.write(t + "\n")
+    return t
+
+
+def wypisz_link_gd(nowy=False):
+    """Polecenie --klucz-gd: wypisuje link Game Directora (klucz w danych lokalnych tego komputera)."""
+    klucz = utworz_klucz_gd(nowy)
+    port = int(rdzen.konfiguracja().get("port") or 8787)
+    print("Klucz Game Directora %s. Tylko z nim panel pozwala zatwierdzać i odrzucać decyzje (zmiana kanonu)."
+          % ("utworzony na nowo (stary już nie działa)" if nowy else "gotowy"))
+    print("\n  Na tym komputerze (przeglądarka, w której działa już panel):\n    http://127.0.0.1:%d/?gd=%s" % (port, klucz))
+    print("\n  Przez tunel albo telefon: do adresu z kodem dostępu dopisz  &gd=%s" % klucz)
+    print("    np. https://<adres-tunelu>/?k=<kod dostępu>&gd=%s" % klucz)
+    print("\nPrzeglądarka zapamięta klucz (ciasteczko) i usunie go z adresu. Link działa jak hasło — przekaż go tylko\n"
+          "Game Directorowi, nie wklejaj w publicznych miejscach (repozytorium jest publiczne).\n"
+          "Unieważnienie i nowy klucz: python panel/serwer.py --nowy-klucz-gd")
+    return 0
+
+
 def _adresy_lan():
     adresy = set()
     try:
@@ -119,6 +172,18 @@ def _host_dozwolony(host):
         if wzor and (nazwa == wzor or (wzor.startswith(".") and nazwa.endswith(wzor))):
             return True
     return False
+
+
+def adres_powrotu(surowa_sciezka):
+    """Dokąd przekierować po zamianie klucza z adresu na ciasteczko: ta sama ścieżka panelu, ale tylko gdy na pewno
+    jest lokalna. `/\\obca.strona` albo `//obca.strona` przeglądarka potraktowałaby jak inny serwer (otwarte
+    przekierowanie) — wtedy zawsze „/”. Ścieżka zostaje w postaci z żądania (z kodowaniem %XX)."""
+    p = surowa_sciezka or "/"
+    odkodowana = urllib.parse.unquote(p)
+    if (not p.startswith("/") or re.search(r"[\x00-\x20\x7f\\]", p)
+            or re.match(r"^/[/\\]", odkodowana) or re.search(r"[\x00-\x1f\x7f\\]", odkodowana)):
+        return "/"
+    return p
 
 
 def _za_duzo_prob(ip):
@@ -199,7 +264,8 @@ class Obsluga(http.server.BaseHTTPRequestHandler):
         if odp.mime.startswith("text/html"):
             self.send_header("Content-Security-Policy", CSP)
         for k, v in odp.naglowki.items():
-            self.send_header(k, v)
+            for wartosc in (v if isinstance(v, (list, tuple)) else [v]):    # np. kilka Set-Cookie naraz
+                self.send_header(k, wartosc)
         self.end_headers()
         if self.command != "HEAD":
             self.wfile.write(odp.cialo)
@@ -326,14 +392,14 @@ class Obsluga(http.server.BaseHTTPRequestHandler):
         klucz_l = STAN["klucz_lokalny"]
         podany_l = query.get("l") or self.headers.get("X-BC-Lokalny") or ciastka.get("bc_l") or ""
         lokalny = bool(petla and klucz_l and podany_l and hmac.compare_digest(podany_l.encode(), klucz_l.encode()))
+        do_ustawienia = []                                     # ciasteczka z kluczami z adresu (potem przekierowanie)
         if petla and query.get("l"):
             if not lokalny:
                 if _za_duzo_prob(klient):
                     return self._prosta(429, {"blad": "Za dużo nieudanych prób. Spróbuj za kilka minut."})
                 _zapisz_probe(klient)
             elif not api and self.command == "GET":            # zapamiętaj klucz w przeglądarce i usuń go z adresu
-                return self._odp(Odp.przekieruj(sciezka, "bc_l=%s; Path=/; Max-Age=31536000; HttpOnly; SameSite=Strict" % klucz_l),
-                                 False)
+                do_ustawienia.append("bc_l=%s; Path=/; Max-Age=31536000; HttpOnly; SameSite=Strict" % klucz_l)
 
         # --- kod dostępu dla wszystkich bez klucza lokalnego (telefon, sieć, tunel, przekierowanie portu)
         ustaw_ciasteczko = None
@@ -353,7 +419,27 @@ class Obsluga(http.server.BaseHTTPRequestHandler):
                     return self._prosta(401, {"blad": "Wymagany kod dostępu", "kod": "brak_dostepu"})
                 return self._odp(Odp(401, STRONA_KODU.encode("utf-8"), "text/html; charset=utf-8"), False)
             if ustaw_ciasteczko and not api and self.command == "GET":
-                return self._odp(Odp.przekieruj(sciezka, ustaw_ciasteczko), False)
+                do_ustawienia.append(ustaw_ciasteczko)
+
+        # --- klucz Game Directora: uprawnienie do zmiany kanonu, zawsze OBOK dostępu do panelu (nie zamiast niego)
+        klucz_gd = _klucz_gd()
+        podany_gd = query.get("gd") or self.headers.get("X-BC-GD") or ""
+        game_director = False
+        if podany_gd:
+            if _za_duzo_prob(klient):
+                return self._prosta(429, {"blad": "Za dużo nieudanych prób. Spróbuj za kilka minut."})
+            if klucz_gd and hmac.compare_digest(podany_gd.encode(), klucz_gd.encode()):
+                game_director = True
+                if query.get("gd") and not api and self.command == "GET":
+                    do_ustawienia.append("bc_gd=%s; Path=/; Max-Age=31536000; HttpOnly; SameSite=Lax" % klucz_gd)
+            else:
+                _zapisz_probe(klient)
+                rdzen.log("Nieudana próba klucza Game Directora (%s)" % klient)
+        else:
+            ciastko_gd = ciastka.get("bc_gd") or ""
+            game_director = bool(klucz_gd and ciastko_gd and hmac.compare_digest(ciastko_gd.encode(), klucz_gd.encode()))
+        if do_ustawienia and not api and self.command == "GET":   # klucze z adresu -> ciasteczka, adres bez kluczy
+            return self._odp(Odp.przekieruj(adres_powrotu(url.path), do_ustawienia), False)
 
         # --- ochrona POST
         cialo = b""
@@ -396,6 +482,7 @@ class Obsluga(http.server.BaseHTTPRequestHandler):
             return self._prosta(404, {"blad": "Nie ma takiej trasy: %s" % sciezka})
         z = Zadanie(self.command, sciezka, query, self.headers, cialo, lokalny, kto, ip, host)
         z.params = params
+        z.game_director = game_director
         extra = {"Set-Cookie": ustaw_ciasteczko} if ustaw_ciasteczko else None
         try:
             wynik = fn(z)
@@ -444,8 +531,9 @@ def _ping(z):
 
 
 def _ja(z):
+    zapis = bool((APP.moduly.get("zapis") or {}).get("ok")) and rdzen.konfiguracja().get("zapis_sejfu", True) is not False
     return {"kto": z.kto, "lokalny": z.lokalny, "gospodarz": rdzen.git_uzytkownik(), "tryb_statyczny": False,
-            "wersja": rdzen.WERSJA}
+            "wersja": rdzen.WERSJA, "game_director": bool(z.game_director), "zapis_sejfu": zapis}
 
 
 def _konfiguracja(z):
@@ -582,9 +670,15 @@ def main():
     ap.add_argument("--sprawdz", action="store_true", help="sprawdź środowisko i zakończ")
     ap.add_argument("--bez-przegladarki", action="store_true")
     ap.add_argument("--eksport", metavar="FOLDER", help="zapisz lustro tylko-do-odczytu (strona statyczna) i zakończ")
+    ap.add_argument("--klucz-gd", action="store_true",
+                    help="wypisz link Game Directora (zatwierdzanie decyzji w panelu) i zakończ")
+    ap.add_argument("--nowy-klucz-gd", action="store_true",
+                    help="utwórz nowy klucz Game Directora (stary przestaje działać), wypisz link i zakończ")
     a = ap.parse_args()
     if a.sprawdz:
         sys.exit(sprawdz())
+    if a.klucz_gd or a.nowy_klucz_gd:
+        sys.exit(wypisz_link_gd(nowy=a.nowy_klucz_gd))
     if a.eksport:
         zaladuj_moduly()
         from bc import statyczny

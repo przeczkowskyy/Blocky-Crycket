@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Sejf Obsidiana: indeks notatek, graf („sieć neuronowa”), treść notatek, wyszukiwanie i plan produkcji.
 
-Zasada D-008: mózgiem projektu jest sejf `B&C/`. Ten moduł niczego nie zapisuje — tylko czyta notatki.
+Zasada D-008: mózgiem projektu jest sejf `B&C/`. Ten moduł niczego nie zapisuje — tylko czyta notatki
+(zapis zmian z panelu — odpowiedzi, zadania, statusy decyzji — robi bc/zapis.py i woła potem `uniewaznij()`).
 
 - Indeks obejmuje wszystkie sejfy z `konfiguracja()["sejfy"]` (ścieżka względem repo albo bezwzględna;
   brak folderu = sejf pomijany bez błędu). Przebudowa tylko wtedy, gdy zmienił się zestaw plików albo ich czasy
@@ -10,6 +11,7 @@ Zasada D-008: mózgiem projektu jest sejf `B&C/`. Ten moduł niczego nie zapisuj
 - Plan (roadmapa, zadania, decyzje, pytania, dziennik) parsowany z `<sejf B&C>/Produkcja/*.md`.
 """
 import datetime
+import hashlib
 import os
 import re
 import threading
@@ -239,13 +241,22 @@ _RX_LINK_LUB_KOD = re.compile(r"(`+)(?:.+?)\1|(!?)\[\[([^\[\]\n]+?)\]\]")
 _RX_PLOT = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 
 
+def zamyka_plot(linia, plot):
+    """Czy `linia` zamyka blok kodu otwarty płotkiem `plot` (CommonMark: ten sam znak, co najmniej tyle samo znaków,
+    za płotkiem tylko spacje). Jedna reguła dla parsera planu i dla zapisu z panelu (bc/zapis.py) — inaczej panel
+    pokazywałby inne sekcje, niż zmienia."""
+    m = _RX_PLOT.match(linia)
+    return bool(m and m.group(1)[0] == plot[0] and len(m.group(1)) >= len(plot)
+                and not linia.strip()[len(m.group(1)):].strip())
+
+
 def bez_blokow_kodu(tekst):
     """Zastępuje linie bloków kodu (``` / ~~~) pustymi liniami (numeracja linii zostaje)."""
     wyjscie, plot = [], None
     for linia in tekst.split("\n"):
         m = _RX_PLOT.match(linia)
         if plot:
-            if m and m.group(1)[0] == plot[0] and len(m.group(1)) >= len(plot) and not linia.strip()[len(m.group(1)):].strip():
+            if zamyka_plot(linia, plot):
                 plot = None
             wyjscie.append("")
             continue
@@ -528,12 +539,13 @@ _RX_LINIA_POZIOMA = re.compile(r"^\s{0,3}([-*_])(\s*\1){2,}\s*$")
 
 
 def _sekcje(tekst, poziom=2):
-    """Dzieli tekst na sekcje po nagłówkach danego poziomu (pomija bloki kodu). Zwraca [(nagłówek, [linie])]."""
+    """Dzieli tekst na sekcje po nagłówkach danego poziomu (pomija bloki kodu). Zwraca [(nagłówek, [linie])].
+    Bloki kodu zamyka ta sama reguła co w bc/zapis.py (`zamyka_plot`)."""
     wynik, biezaca, plot = [], None, None
     for linia in tekst.split("\n"):
         m_plot = _RX_PLOT.match(linia)
         if plot:
-            if m_plot and m_plot.group(1)[0] == plot[0]:
+            if zamyka_plot(linia, plot):
                 plot = None
             if biezaca is not None:
                 biezaca[1].append(linia)
@@ -620,6 +632,17 @@ def parsuj_roadmape(tekst):
     return {"fazy": fazy, "propozycje": propozycje}
 
 
+def id_zadania(tekst_pola):
+    """Identyfikator pozycji zadań: skrót surowego tekstu pola (po `[ ] `, z priorytetem). Używa go bc/zapis.py —
+    kontrola wersji pliku gwarantuje, że wskazuje to samo zadanie, które człowiek widział."""
+    return "z" + hashlib.sha1(_nfc(tekst_pola).strip().encode("utf-8")).hexdigest()[:10]
+
+
+def wersja_bajtow(dane):
+    """Znacznik wersji pliku do kontroli zapisu (skrót SHA-256 treści, 16 znaków)."""
+    return hashlib.sha256(dane).hexdigest()[:16]
+
+
 def parsuj_zadania(tekst):
     _, tresc, _ = parsuj_frontmatter(tekst)
     sekcje, otwarte, zrobione = [], 0, 0
@@ -627,7 +650,7 @@ def parsuj_zadania(tekst):
         pozycje = []
         for linia in linie:
             for zrob, t in _pola_wyboru(linia):
-                poz = {"tekst_md": t, "zrobione": zrob}
+                poz = {"id": id_zadania(t), "tekst_md": t, "zrobione": zrob}
                 mp = _RX_PRIORYTET.search(t)
                 if mp:
                     p = mp.group(1).lower()
@@ -794,34 +817,53 @@ def pliki_planu():
 
 
 def plan():
+    """Plan z plików Produkcja/*.md. Oprócz części planu: `zrodla` (ścieżka -> czas zmiany), `pliki` (klucz ->
+    ścieżka do pokazania) i `wersje` (klucz -> znacznik wersji treści albo None) — znacznik klient odsyła przy
+    zapisie (bc/zapis.py), żeby nie nadpisać cudzej zmiany."""
     pliki = pliki_planu()
     stany = {}
     for klucz, (p, _) in pliki.items():
         try:
-            stany[klucz] = os.stat(p).st_mtime_ns
+            st = os.stat(p)
+            stany[klucz] = (st.st_mtime_ns, st.st_size)
         except OSError:
             stany[klucz] = None
     podpis = tuple(sorted((k, pliki[k][0], v) for k, v in stany.items()))
     with _plan_blokada:
         if _plan_pamiec["plan"] is not None and _plan_pamiec["podpis"] == podpis:
             return _plan_pamiec["plan"]
-        wynik, zrodla = {}, {}
+        wynik, zrodla, wersje = {}, {}, {}
         for klucz in PARSERY:
             wynik[klucz] = PUSTY_PLAN[klucz]()
+            wersje[klucz] = None
             if klucz not in pliki or stany.get(klucz) is None:
                 continue
             p, pokaz = pliki[klucz]
-            tekst = _czytaj(p)
-            if tekst is None:
+            try:
+                with open(p, "rb") as f:
+                    surowe = f.read()
+            except OSError:
                 continue
-            zrodla[pokaz] = _iso_z_mtime(stany[klucz] / 1e9)
+            wersje[klucz] = wersja_bajtow(surowe)
+            tekst = surowe.decode("utf-8-sig", "replace").replace("\r\n", "\n").replace("\r", "\n")
+            zrodla[pokaz] = _iso_z_mtime(stany[klucz][0] / 1e9)
             try:
                 wynik[klucz] = PARSERY[klucz](tekst)
             except Exception as e:                             # plan nigdy nie zwraca błędu
                 rdzen.log("sejf: nie udało się odczytać %s: %r" % (pokaz, e))
         wynik["zrodla"] = zrodla
+        wynik["pliki"] = {k: pokaz for k, (_, pokaz) in pliki.items()}
+        wynik["wersje"] = wersje
         _plan_pamiec.update(podpis=podpis, plan=wynik)
         return wynik
+
+
+def uniewaznij():
+    """Czyści pamięć planu i indeksu notatek — po zapisie z panelu następny odczyt widzi zmianę od razu."""
+    with _plan_blokada:
+        _plan_pamiec.update(podpis=None, plan=None)
+    with _blokada:
+        _pamiec["sprawdzono"] = 0.0
 
 
 # =========================================================================== trasy

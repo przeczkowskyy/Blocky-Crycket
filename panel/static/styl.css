@@ -676,6 +676,43 @@ details.callout[open] > summary::before { content: "▾ "; }
 .pytanie:not(.otwarte) { opacity: 0.85; }
 .odpowiedz { padding: 10px 12px; border-radius: 10px; background: rgba(62, 207, 142, 0.07); border: 2px solid rgba(62, 207, 142, 0.3); }
 
+/* Plan — praca na sejfie (odhaczanie, odpowiedzi, decyzje Game Directora) */
+.pole-wyboru-przycisk {
+  flex: none; width: 44px; height: 44px; margin: -11px; padding: 0; border: 0; border-radius: 12px;
+  background: none; color: inherit; display: grid; place-items: center; cursor: pointer;
+}
+.pole-wyboru-przycisk:hover .pole-wyboru { border-color: var(--zielen); box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.15); }
+.pole-wyboru-przycisk:focus-visible { outline: 2px solid var(--zloto); outline-offset: -5px; }
+.pole-wyboru.oczekuje { animation: odhaczenie 0.3s cubic-bezier(.2,1.4,.4,1) both; }
+@keyframes odhaczenie { from { transform: scale(0.6); } to { transform: none; } }
+.zadanie-wiersz.oczekuje { background: linear-gradient(90deg, rgba(62, 207, 142, 0.08), transparent 70%); }
+.plan-akcje { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
+.plan-akcje > .cichy-tekst { flex: 1 1 200px; }
+@media (max-width: 480px) { .plan-akcje > .przycisk { width: 100%; } }
+.odpowiedz-formularz { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; margin-top: 2px; border-top: 2px dashed var(--obrys); }
+.odpowiedz-formularz .etykieta { margin: 0; }
+.zwijane > .odpowiedz-formularz { border-top: 0; padding-top: 4px; }
+.decyzja-akcje { padding-top: 12px; border-top: 2px dashed var(--obrys); }
+@media (max-width: 480px) { .decyzja-akcje .przycisk { flex: 1 1 0; } .decyzja-potwierdz .przycisk:last-child { flex: 1 1 auto; } }
+.decyzja-podglad { max-height: 38vh; overflow: auto; padding: 4px 0 4px 12px; border-left: 3px solid var(--obrys-jasny); overflow-wrap: anywhere; }
+.podpis-odpowiedzi { margin: -2px 0 0; font-size: 13px; overflow-wrap: anywhere; }
+.podglad-sejfu { margin: 0; padding: 8px 10px; max-height: 32vh; overflow: auto; border-radius: 10px; background: var(--pole-tlo); border: 2px solid var(--obrys); font-family: var(--mono); font-size: 12px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+.podglad-sejfu .dodane { color: var(--zielen); }
+.podglad-sejfu .usuniete { color: var(--czerwien); }
+.decyzja-gd { display: flex; align-items: center; gap: 8px; padding-top: 10px; border-top: 2px dashed var(--obrys); }
+.decyzja-gd .ikona { width: 16px; height: 16px; color: var(--zloto); flex: none; }
+.decyzja-komentarze { margin-top: 0; }
+.decyzja-komentarze > summary .ikona + .ikona { transform: none; }
+.decyzja-watek { padding: 12px; border-radius: 12px; background: var(--tlo-gleb); border: 2px solid var(--obrys); margin-top: 4px; }
+.gd-wiersz { align-items: flex-start; border-top: 2px dashed var(--obrys); padding-top: 12px; margin-top: 4px; }
+.gd-wiersz .wiersz-tekst > .cichy-tekst { display: block; margin-top: 2px; }
+.toast > span { flex: 1; min-width: 0; }
+.toast-akcja {
+  flex: none; min-height: 36px; padding: 0 14px; border-radius: 10px; cursor: pointer;
+  border: 2px solid var(--obrys-jasny); background: var(--karta2); color: var(--zloto); font-weight: 800; font-size: 14px;
+}
+.toast-akcja:hover { filter: brightness(1.15); }
+
 .os-czasu { list-style: none; margin: 0; padding: 0 0 0 26px; position: relative; display: flex; flex-direction: column; gap: 14px; }
 .os-czasu::before { content: ""; position: absolute; left: 9px; top: 6px; bottom: 6px; width: 3px; border-radius: 2px; background: repeating-linear-gradient(180deg, var(--obrys-jasny) 0 8px, transparent 8px 14px); }
 .os-wpis { position: relative; }

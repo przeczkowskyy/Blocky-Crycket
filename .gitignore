@@ -38,3 +38,6 @@ __pycache__/
 
 # Panel zespołu: pliki tymczasowe zapisu (stan lokalny leży poza repo: %LOCALAPPDATA%\BlockyCrycket)
 panel/dane/**/*.tmp
+
+# pliki tymczasowe zapisu do sejfu z panelu (po przerwanym zapisie)
+B&C/**/*.md.*.tmp

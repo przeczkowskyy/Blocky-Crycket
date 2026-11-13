@@ -230,13 +230,31 @@ export default {
       c.replaceChildren(...czesci);
     }
 
+    /** Co dokładnie pójdzie do publicznego repozytorium z plików sejfu (wiersze dodane i usunięte, z git diff). */
+    function podgladSejfu(lista) {
+      if (!Array.isArray(lista) || !lista.length) return null;
+      return el("div", { class: "kolumna" },
+        el("span", { class: "etykieta" }, "Zmiany w sejfie (repozytorium jest publiczne — sprawdź, co wysyłasz)"),
+        lista.map((p) => el("div", null,
+          el("p", { class: "cichy-tekst" }, el("code", null, p.plik)),
+          el("pre", { class: "podglad-sejfu" },
+            (p.wiersze || []).map((w) => el("div", { class: w[0] === "+" ? "dodane" : "usuniete" }, w)),
+            p.ucieto ? el("div", { class: "cichy-tekst" }, "… i " + p.ucieto + " " + odmiana(p.ucieto, ["wiersz", "wiersze", "wierszy"]) + " więcej") : null))));
+    }
+
     function oknoWysylania(g, ile) {
       const lista = Array.isArray(g.zmiany_panelu) ? g.zmiany_panelu : [];
-      const pole = el("input", { class: "pole", placeholder: "np. Raport z HUD i komentarze", maxlength: "120", "aria-label": "Opis zmian" });
+      const sejf = Array.isArray(g.zmiany_sejfu) ? g.zmiany_sejfu : [];
+      const pole = el("input", { class: "pole", placeholder: sejf.length ? "puste = opis zmian z panelu" : "np. Raport z HUD i komentarze", maxlength: "120", "aria-label": "Opis zmian" });
       const przycisk = el("button", { class: "przycisk glowny szeroki", type: "submit" }, ikona("wypchnij"), el("span", null, "Wyślij do repozytorium"));
       const form = el("form", { class: "formularz" },
-        el("p", { class: "cichy-tekst" }, "Wyślę tylko dane panelu (raporty, komentarze, migawki) — " + ile + " " + odmiana(ile, ["plik", "pliki", "plików"]) + ". Kod gry i sejf zostają bez zmian."),
+        el("p", { class: "cichy-tekst" }, "Wyślę tylko dane panelu (raporty, komentarze, migawki)" +
+          (sejf.length ? " i pliki sejfu zmienione w panelu (odpowiedzi, zadania, decyzje)" : "") + " — " + ile + " " +
+          odmiana(ile, ["plik", "pliki", "plików"]) + ". Kod gry i reszta sejfu zostają bez zmian."),
         lista.length ? el("ul", { class: "lista pliki-lista" }, lista.slice(0, 12).map((z) => el("li", { class: "cichy-tekst" }, el("code", null, z.plik || String(z)), z.stan ? " · " + z.stan : ""))) : null,
+        sejf.length ? el("ul", { class: "lista pliki-lista" }, sejf.map((p) => el("li", { class: "cichy-tekst" }, el("code", null, p), " · zmiana z panelu"))) : null,
+        podgladSejfu(g.podglad_sejfu),
+        (g.uwagi_sejfu || []).length ? el("p", { class: "cichy-tekst" }, ikona("ostrzezenie"), " ", g.uwagi_sejfu.join(" ")) : null,
         el("label", { class: "etykieta" }, "Opis (opcjonalnie)"), pole, przycisk);
       const ark = arkusz({ tytul: "Wyślij zmiany panelu", tresc: form });
       form.addEventListener("submit", async (e) => {
@@ -246,6 +264,7 @@ export default {
           const r = await ctx.api("/api/git/wyslij", { metoda: "POST", cialo: pole.value.trim() ? { opis: pole.value.trim() } : {}, czas: 120000 });
           if (r && r.ok === false) throw new Error(skroc(r.wyjscie || "nieznany błąd", 240));
           toast(r && r.commit ? "Wysłano (" + String(r.commit).slice(0, 7) + ")." : "Wysłano.", "ok");
+          if (r && r.uwaga) toast(r.uwaga, "info", { czas: 8000 });
           ark.zamknij();
         } catch (err) {
           toast("Wysyłanie nie wyszło: " + err.message, "blad");

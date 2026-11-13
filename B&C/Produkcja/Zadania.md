@@ -19,6 +19,7 @@ tags: [produkcja, zadania]
 - [ ] Decyzje po rozmowie 12.11: pytania 7–14 w [[Pytania otwarte]] i propozycje D-012–D-018 w [[Rejestr decyzji]] · #wysoki
 - [ ] Obejrzeć demo `Workspace/DemoLesnaBaza` w Studio i w [[Panel zespołu|panelu]]: styl, skala, co poprawić ([[Klocki — Blender i Roblox]]) · #wysoki
 - [ ] Szara pętla MVP: plac → karczma → walka 10 s → łup → statystyki ([[Ocena potencjału gry]], tydzień 1) — wersja sprzed diagnozy; propozycja v2 zamienia ją na szary prototyp BONK-a (pytanie 16) · #wysoki
+- [ ] Wspólne wdrożenie panelu jako miejsca pracy: decyzja z pytania 23, potem włączenie zapisu (`"zapis_sejfu": true` w konfiguracji lokalnej) i link z kluczem Game Directora ([[Panel zespołu]]) · #wysoki
 - [ ] Decyzje dnia 0 po nocnej diagnozie: pytania 16–21 w [[Pytania otwarte]] i 15 decyzji w [[Karta ocen v2 i plan sprawdzenia]] · #wysoki
 - [ ] Makieta siatki: 12 kafelków z prawdziwą konkurencją, co najmniej 40 graczy 16+ — test haczyka przed prototypem ([[Karta ocen v2 i plan sprawdzenia]]) · #wysoki
 - [ ] Szary prototyp BONK-a z botem-klikaczem (bramka B1, [[Systemy gry v2]]) — po decyzji z pytania 16 · #wysoki
@@ -52,6 +53,8 @@ tags: [produkcja, zadania]
 - [x] 2026-11-13: Diagnoza pomysłu i poprawiona koncepcja: [[Diagnoza pomysłu 2026-11-13]], [[Myśl przewodnia v2]], [[Systemy gry v2]], [[Psychologia gracza v2]], [[Karta ocen v2 i plan sprawdzenia]], [[Specyfikacja v2.1 — Krzywa Banda]]
 - [x] 2026-11-13: Test cutscenki auto-walki w samym Roblox (`swiat/test_walki_roblox/`, `Workspace/TestWalki`): 2 postacie R15, kamera skryptowa, POMIŃ, panel wyniku; zweryfikowany niezależnie (42 sprawdzenia w trybie Play)
 - [x] 2026-11-13: [[Panel zespołu|Panel]]: zakładka Assety (rejestr grafik z `assets/manifest.json`) i sekcja „Telemetria gry” w Analityce; kod telemetrii w `src/server/Telemetria` ([[Telemetria gry]]); 141 testów
+- [x] 2026-11-13: [[Panel zespołu|Panel]]: zapis do sejfu z panelu (odpowiedzi, zadania, decyzje z kluczem Game Directora) — gotowy, po niezależnym przeglądzie, wyłączony do decyzji; 216 testów
+- [x] 2026-11-13: Mapa v2 „Krzywe Miasteczko” w Studio po rundzie poprawek; kontrola kolizji ([[Klocki — Blender i Roblox]])
 - [x] 2026-11-13: Migawka dema ze zrzutami z prawdziwego Roblox Studio (panel → Podgląd 3D)
 - [x] 2026-11-13: Biblioteka map v2 (`swiat/biblioteka/`: krzywe bryły, obrys tuszem, podgląd w Blenderze) i `rokit.toml`
 - [x] 2026-11-12: Przegląd bezpieczeństwa [[Panel zespołu|panelu]]: 14 potwierdzonych uwag poprawionych (klucz lokalny, konfiguracja wspólna bez ustawień bezpieczeństwa, limity czasu), przełącznik „Agent z telefonu”, 76 testów

@@ -6,9 +6,12 @@
   (LC_ALL=C), żeby dało się je rozpoznać i przetłumaczyć na zrozumiały polski.
 - Stan pamiętany 5 s. `git fetch` w tle (osobny wątek) najwyżej raz na 5 minut, wyzwalany leniwie przez
   GET /api/git/stan — żądanie nigdy na niego nie czeka.
-- „Wyślij” dodaje i commituje WYŁĄCZNIE ścieżki z `git.sciezki_panelu` (domyślnie `panel/dane`).
+- „Wyślij” dodaje i commituje WYŁĄCZNIE ścieżki z `git.sciezki_panelu` (domyślnie `panel/dane`) oraz te pliki planu
+  sejfu (Pytania otwarte, Zadania, Rejestr decyzji, Dziennik zmian), które naprawdę zmienił panel i w których nie ma
+  cudzych niezatwierdzonych zmian (bc/zapis.py: `do_wyslania`; ślad w danych lokalnych). Opis commita: „panel: …”.
 - Funkcje przyjmują `repo=` (domyślnie rdzen.REPO), żeby dało się je sprawdzić na repozytorium testowym.
 """
+import contextlib
 import datetime
 import os
 import re
@@ -307,85 +310,185 @@ def _opis_commita(opis):
     return "panel: " + (opis or "dane panelu")
 
 
-def wyslij(repo=None, opis=None, sciezki=None):
-    """Commit wyłącznie ścieżek panelu + push. Zwraca {ok, commit?, wyjscie}."""
+def sejf_do_wyslania(repo=None):
+    """(ścieżki względem repo, opisy, uwagi) plików sejfu zmienionych przez panel — patrz bc/zapis.py."""
     repo = _repo(repo)
+    try:
+        from . import zapis
+        return zapis.do_wyslania(repo, lambda argumenty, r: git(argumenty, r, timeout=15))
+    except Exception as e:                                     # bez modułu zapisu „Wyślij” działa jak dawniej
+        rdzen.log("git: nie udało się sprawdzić zmian sejfu z panelu: %r" % e)
+        return [], [], []
+
+
+PODGLAD_WIERSZY = 40
+PODGLAD_ZNAKOW = 240
+
+
+def podglad_sejfu(sciezki_rel, repo=None):
+    """Co naprawdę pójdzie do publicznego repozytorium z plików sejfu: [{plik, wiersze:["+ …"/"- …"], ucieto}] z
+    `git diff HEAD` (bez kontekstu). Pokazuje to okno „Wyślij”, zanim człowiek kliknie."""
+    repo = _repo(repo)
+    wynik = []
+    for rel in sciezki_rel:
+        kod, out, _ = git(["diff", "--no-color", "--no-ext-diff", "-U0", "HEAD", "--", rel], repo, timeout=15)
+        if kod != 0:
+            continue
+        wiersze, w_zmianach = [], False
+        for l in out.split("\n"):
+            if l.startswith("@@"):                             # nagłówek fragmentu; wcześniej są nagłówki pliku
+                w_zmianach = True
+            elif w_zmianach and l[:1] in ("+", "-"):
+                wiersze.append(l[0] + " " + l[1:].rstrip("\r")[:PODGLAD_ZNAKOW])
+        wynik.append({"plik": rel, "wiersze": wiersze[:PODGLAD_WIERSZY],
+                      "ucieto": max(0, len(wiersze) - PODGLAD_WIERSZY)})
+    return wynik
+
+
+def wyslij(repo=None, opis=None, sciezki=None, z_sejfem=None):
+    """Commit wyłącznie ścieżek panelu (+ plików sejfu zmienionych przez panel) + push. Zwraca {ok, commit?, wyjscie}.
+    `z_sejfem` domyślnie włączone, gdy nie podano własnych `sciezki`."""
+    repo = _repo(repo)
+    if z_sejfem is None:
+        z_sejfem = sciezki is None
     sciezki = sciezki if sciezki is not None else sciezki_panelu()
     if not _zapis_blokada.acquire(blocking=False):
         raise BladHTTP(409, "Trwa już inna operacja Git. Poczekaj chwilę.")
     try:
-        # tylko ścieżki, które istnieją na dysku albo są znane gitowi (inaczej `git add` zgłasza błąd)
-        istniejace = []
-        for s in sciezki:
-            if os.path.exists(os.path.join(repo, *s.split("/"))):
-                istniejace.append(s)
-            else:
-                kod, out, _ = git(["ls-files", "--", s], repo, timeout=15)
-                if kod == 0 and out.strip():
-                    istniejace.append(s)
-        wyjscia, commit = [], None
-        if istniejace:
-            kod, out, err = git(["add", "-A", "--"] + istniejace, repo, timeout=60)
-            if kod != 0:
-                raise BladHTTP(409, "Nie udało się przygotować plików do wysłania.", wyjscie=(out + err).strip(),
-                               ok=False)
-            kod, _, _ = git(["diff", "--cached", "--quiet", "--"] + istniejace, repo, timeout=30)
-            if kod == 1:
-                kod, out, err = git(["commit", "-m", _opis_commita(opis), "--"] + istniejace, repo, timeout=60)
-                wyjscia.append((out + err).strip())
-                if kod != 0:
-                    t = (out + err).lower()
-                    if "please tell me who you are" in t or "user.email" in t or "user.name" in t:
-                        komunikat = ("Git nie zna Twojego imienia i e-maila. Ustaw je raz: "
-                                     "git config --global user.name \"Imię\" oraz user.email.")
-                    else:
-                        komunikat = "Nie udało się zapisać zmian (commit)."
-                    raise BladHTTP(409, komunikat, wyjscie="\n".join(wyjscia), ok=False)
-                kod, out, _ = git(["rev-parse", "--short", "HEAD"], repo, timeout=10)
-                commit = out.strip() if kod == 0 else None
-            elif kod != 0:
-                raise BladHTTP(409, "Nie udało się sprawdzić zmian w danych panelu.", ok=False)
-
-        upstream = _upstream(repo)
-        if upstream:
-            kod, out, _ = git(["rev-list", "--count", "@{u}..HEAD"], repo, timeout=15)
-            do_wyslania = int(out.strip() or 0) if kod == 0 else 1
-            polecenie = ["push"]
-        else:
-            kod, out, _ = git(["remote"], repo, timeout=10)
-            zdalne = out.split()
-            if not zdalne:
-                if commit:
-                    return {"ok": True, "commit": commit, "wyjscie": "\n".join(wyjscia),
-                            "uwaga": "Zapisano lokalnie, ale repozytorium nie ma połączenia z GitHubem."}
-                raise BladHTTP(409, "Repozytorium nie jest połączone z GitHubem, więc nie ma dokąd wysłać.", ok=False)
-            do_wyslania = 1
-            polecenie = ["push", "-u", "origin" if "origin" in zdalne else zdalne[0], "HEAD"]
-
-        if not commit and do_wyslania == 0:
-            return {"ok": True, "commit": None,
-                    "wyjscie": "Nie ma nic do wysłania — dane panelu są już na GitHubie."}
-
-        kod, out, err = git(polecenie, repo, timeout=180)
-        wyjscia.append((out + err).strip())
-        wyjscie = "\n".join(w for w in wyjscia if w)
-        if kod != 0:
-            zapisano = (" Twoje zmiany są zapisane na tym komputerze (commit %s) i pójdą przy następnym wysłaniu."
-                        % commit) if commit else ""
-            if _odrzucony_push(err + out):
-                raise BladHTTP(409, "Ktoś wysłał zmiany przed Tobą. Najpierw kliknij Pobierz, a potem Wyślij jeszcze raz."
-                               + zapisano, wyjscie=wyjscie, ok=False, commit=commit)
-            raise BladHTTP(502 if kod == -2 else 409, _tlumacz_blad(wyjscie, "Nie udało się wysłać zmian.") + zapisano,
-                           wyjscie=wyjscie, ok=False, commit=commit)
-        return {"ok": True, "commit": commit, "wyjscie": wyjscie}
+        return _wyslij(repo, opis, sciezki, z_sejfem)
     finally:
         _uniewaznij(repo)
         _zapis_blokada.release()
 
 
+def _blokada_sejfu(z_sejfem):
+    """Blokada zapisu sejfu z panelu (bc/zapis.py) na czas od sprawdzenia plików do wyczyszczenia śladu po commicie —
+    inaczej odpowiedź zapisana w trakcie commita zostałaby niezacommitowana i bez śladu. Bez modułu zapisu: nic."""
+    if z_sejfem:
+        try:
+            from . import zapis
+            return zapis.blokada_wysylania()
+        except ImportError:
+            pass
+    return contextlib.nullcontext()
+
+
+def _wyslij(repo, opis, sciezki, z_sejfem):
+    with _blokada_sejfu(z_sejfem):                             # push (długi) już poza blokadą sejfu
+        commit, wyjscia, dodatki = _zatwierdz(repo, opis, sciezki, z_sejfem)
+
+    def wynik(d):
+        if dodatki.get("uwaga") and d.get("uwaga"):
+            d["uwaga"] = d["uwaga"] + " " + dodatki["uwaga"]
+        return dict(dodatki, **d)
+    return _wypchnij(repo, commit, wyjscia, wynik)
+
+
+def _zatwierdz(repo, opis, sciezki, z_sejfem):
+    """`git add` + `git commit` ścieżek panelu i plików sejfu z panelu. Zwraca (commit albo None, wyjścia, dodatki)."""
+    sejf_sciezki, sejf_opisy, sejf_uwagi = sejf_do_wyslania(repo) if z_sejfem else ([], [], [])
+    dodatki = {}
+    if sejf_sciezki:
+        dodatki["pliki_sejfu"] = sejf_sciezki
+    uwagi = list(sejf_uwagi)
+    if not str(opis or "").strip() and sejf_opisy:
+        opis = "; ".join(dict.fromkeys(sejf_opisy))           # bez powtórzeń, w kolejności zmian
+
+    # tylko ścieżki, które istnieją na dysku albo są znane gitowi (inaczej `git add` zgłasza błąd)
+    istniejace = []
+    for s in sciezki:
+        if os.path.exists(os.path.join(repo, *s.split("/"))):
+            istniejace.append(s)
+        else:
+            kod, out, _ = git(["ls-files", "--", s], repo, timeout=15)
+            if kod == 0 and out.strip():
+                istniejace.append(s)
+    istniejace += [s for s in sejf_sciezki if s not in istniejace]
+    wyjscia, commit = [], None
+    if istniejace:
+        kod, out, err = git(["add", "-A", "--"] + istniejace, repo, timeout=60)
+        if kod != 0:
+            raise BladHTTP(409, "Nie udało się przygotować plików do wysłania.", wyjscie=(out + err).strip(),
+                           ok=False)
+        kod, _, _ = git(["diff", "--cached", "--quiet", "--"] + istniejace, repo, timeout=30)
+        if kod == 1:
+            kod, out, err = git(["commit", "-m", _opis_commita(opis), "--"] + istniejace, repo, timeout=60)
+            wyjscia.append((out + err).strip())
+            if kod != 0:
+                t = (out + err).lower()
+                if "please tell me who you are" in t or "user.email" in t or "user.name" in t:
+                    komunikat = ("Git nie zna Twojego imienia i e-maila. Ustaw je raz: "
+                                 "git config --global user.name \"Imię\" oraz user.email.")
+                else:
+                    komunikat = "Nie udało się zapisać zmian (commit)."
+                raise BladHTTP(409, komunikat, wyjscie="\n".join(wyjscia), ok=False)
+            kod, out, _ = git(["rev-parse", "--short", "HEAD"], repo, timeout=10)
+            commit = out.strip() if kod == 0 else None
+            if sejf_sciezki:                                   # zmiany sejfu z panelu są już w commicie
+                try:
+                    from . import zapis
+                    gitfn = lambda argumenty, r: git(argumenty, r, timeout=15)
+                    for rel in zapis.po_commicie(repo, gitfn, sejf_sciezki):
+                        uwagi.append("%s zmienił się w trakcie wysyłania (Obsidian albo agent) — commit zawiera też "
+                                     "tę zmianę spoza panelu; zajrzyj do niego." % rel)
+                    zapis.wyslano(repo, sejf_sciezki)
+                except Exception as e:
+                    rdzen.log("git: nie udało się wyczyścić śladu zmian sejfu: %r" % e)
+        elif kod != 0:
+            raise BladHTTP(409, "Nie udało się sprawdzić zmian w danych panelu.", ok=False)
+    if uwagi:
+        dodatki["uwaga"] = " ".join(uwagi)
+    return commit, wyjscia, dodatki
+
+
+def _wypchnij(repo, commit, wyjscia, wynik):
+    """`git push` po commicie (albo zaległych commitach). `wynik(d)` dokleja pola z etapu commita."""
+
+    upstream = _upstream(repo)
+    if upstream:
+        kod, out, _ = git(["rev-list", "--count", "@{u}..HEAD"], repo, timeout=15)
+        do_wyslania = int(out.strip() or 0) if kod == 0 else 1
+        polecenie = ["push"]
+    else:
+        kod, out, _ = git(["remote"], repo, timeout=10)
+        zdalne = out.split()
+        if not zdalne:
+            if commit:
+                return wynik({"ok": True, "commit": commit, "wyjscie": "\n".join(wyjscia),
+                              "uwaga": "Zapisano lokalnie, ale repozytorium nie ma połączenia z GitHubem."})
+            raise BladHTTP(409, "Repozytorium nie jest połączone z GitHubem, więc nie ma dokąd wysłać.", ok=False)
+        do_wyslania = 1
+        polecenie = ["push", "-u", "origin" if "origin" in zdalne else zdalne[0], "HEAD"]
+
+    if not commit and do_wyslania == 0:
+        return wynik({"ok": True, "commit": None,
+                      "wyjscie": "Nie ma nic do wysłania — dane panelu są już na GitHubie."})
+
+    kod, out, err = git(polecenie, repo, timeout=180)
+    wyjscia.append((out + err).strip())
+    wyjscie = "\n".join(w for w in wyjscia if w)
+    if kod != 0:
+        zapisano = (" Twoje zmiany są zapisane na tym komputerze (commit %s) i pójdą przy następnym wysłaniu."
+                    % commit) if commit else ""
+        if _odrzucony_push(err + out):
+            raise BladHTTP(409, "Ktoś wysłał zmiany przed Tobą. Najpierw kliknij Pobierz, a potem Wyślij jeszcze raz."
+                           + zapisano, wyjscie=wyjscie, ok=False, commit=commit)
+        raise BladHTTP(502 if kod == -2 else 409, _tlumacz_blad(wyjscie, "Nie udało się wysłać zmian.") + zapisano,
+                       wyjscie=wyjscie, ok=False, commit=commit)
+    return wynik({"ok": True, "commit": commit, "wyjscie": wyjscie})
+
+
 # --------------------------------------------------------------------------- trasy
 def _t_stan(z):
     wynik = stan()
+    if not wynik.get("blad"):                                  # pliki sejfu zmienione w panelu też idą przyciskiem „Wyślij”
+        sejf_sciezki, _, sejf_uwagi = sejf_do_wyslania()
+        wynik["zmiany_sejfu"] = sejf_sciezki
+        wynik["zmiany_panelu"] = wynik.get("zmiany_panelu", 0) + len(sejf_sciezki)
+        if sejf_uwagi:
+            wynik["uwagi_sejfu"] = sejf_uwagi
+        if sejf_sciezki:
+            wynik["podglad_sejfu"] = podglad_sejfu(sejf_sciezki)
     if not wynik.get("blad") and wynik.get("zdalne"):
         if moze_fetch():
             wynik["fetch_trwa"] = True

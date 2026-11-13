@@ -30,6 +30,8 @@ Panel otworzy się w przeglądarce (`http://127.0.0.1:8787`). Przy pierwszym wej
 | Funkcja | Wymaga |
 |---|---|
 | Pulpit, Plan (decyzje, zadania, roadmapa), Raporty, Sieć notatek | nic |
+| Odpowiadanie na pytania otwarte, odhaczanie i dodawanie zadań (zapis w sejfie) | nic — także dla gościa z kodem dostępu |
+| Zatwierdzanie i odrzucanie decyzji (zmiana kanonu) | link Game Directora (niżej) |
 | Podgląd 3D zapisanych migawek | nic |
 | Assety — rejestr grafik gry z `assets/manifest.json`: statusy, numery Roblox, linki do Figmy (tylko podgląd) | nic |
 | Nowa migawka ze Studio, „kto jest w Studio”, konsola Studio | uruchomione Roblox Studio z włączonym serwerem MCP (niżej) |
@@ -37,6 +39,27 @@ Panel otworzy się w przeglądarce (`http://127.0.0.1:8787`). Przy pierwszym wej
 | Głosówki zamieniane na tekst | `pip install faster-whisper` (model ok. 1,6 GB pobiera się przy pierwszym nagraniu) |
 | Mniejsze zrzuty w migawkach i raportach, lekkie miniatury w Assetach | `pip install pillow` (opcjonalnie) |
 | Wejście z telefonu | uruchomienie przez `panel\start_lan.bat` (niżej) |
+
+### Praca na sejfie i Game Director
+W zakładce **Plan** można pracować wprost na sejfie: odpowiadać na pytania otwarte, odhaczać i dodawać zadania. Panel zapisuje to w tych samych plikach co Obsidian (`B&C/Produkcja/Pytania otwarte.md`, `Zadania.md`, `Dziennik zmian.md`) — małymi zmianami, z podpisem imieniem z Ustawień i wpisem w Dzienniku zmian. Jeśli w tym samym czasie ktoś zmienił plik (druga osoba, Obsidian, agent), panel nic nie nadpisze: pokaże „Ktoś zmienił ten plik — odświeżam” i zostawi wpisany tekst do ponownego wysłania.
+
+**Co wolno gościowi** (telefon, tunel, wejście z kodem dostępu): czytać wszystko, komentować, odpowiadać na pytania, odhaczać i dodawać zadania (najwyżej 30 zapisów na 10 minut). Nie wolno: agent (chyba że włączony „Agent z telefonu”), git, nowa migawka, ustawienia — i **zmiana statusu decyzji**.
+
+**Podpis odpowiedzi.** Imię z Ustawień każdy wpisuje sam, dlatego serwer dopisuje znacznik: `- Paweł (Game Director, 2026-11-13): …` (przeglądarka z kluczem Game Directora), `- Karol (2026-11-13): …` (komputer z panelem), `- Paweł (gość panelu, 2026-11-13): …` (gość z kodem dostępu). **Zgodą Game Directora jest tylko odpowiedź ze znacznikiem „(Game Director, data)”** — „Tak, zatwierdzam” od „gościa panelu” nią nie jest, nawet podpisane „Paweł”. Pod polem odpowiedzi panel pokazuje, jak zostanie podpisana. Uwaga: włączony „Agent z telefonu” pozwala gościowi z kodem dostępu zmieniać przez agenta dowolne pliki sejfu — klucz Game Directora tego nie blokuje.
+
+**Zatwierdzanie decyzji to zmiana kanonu** — może ją zrobić tylko Game Director. Samo imię „Paweł” w Ustawieniach nic nie daje; potrzebny jest **klucz Game Directora**:
+1. Na komputerze, na którym działa panel, uruchom:
+   ```
+   python panel/serwer.py --klucz-gd
+   ```
+   Polecenie wypisze link `http://127.0.0.1:8787/?gd=…` (klucz leży w `%LOCALAPPDATA%\BlockyCrycket\panel\klucz_gd.txt`).
+2. Game Director przy tym komputerze: otwiera link w przeglądarce, w której działa już panel.
+   Game Director zdalnie (tunel, telefon): do adresu z kodem dostępu dopisuje `&gd=…`, np. `https://<adres-tunelu>/?k=<kod>&gd=<klucz>`.
+3. Przeglądarka zapamięta klucz na rok i usunie go z adresu. W **Ustawieniach** pojawi się „Game Director: tak”, a w **Plan → Decyzje** przy propozycjach i decyzjach „do decyzji” przyciski **Zatwierdź** / **Odrzuć** (z potwierdzeniem i polem na uzasadnienie). Pozostali widzą tam „Zatwierdza Game Director” i mogą komentować.
+
+Link działa jak hasło: przekaż go tylko Game Directorowi i nie wklejaj w publicznych miejscach (repozytorium jest publiczne). Gdy wycieknie: `python panel/serwer.py --nowy-klucz-gd` — stary klucz przestaje działać od razu, bez restartu panelu.
+
+Zmiany sejfu z panelu wysyła ten sam przycisk **Pulpit → Wyślij** (commit `panel: …`), ale tylko pliki, które naprawdę zmienił panel. Okno „Wyślij” pokazuje dodane i usunięte wiersze tych plików — repozytorium jest publiczne, więc przejrzyj, co piszą goście, zanim klikniesz. Jeśli w tym samym pliku są też Twoje niezatwierdzone zmiany z Obsidiana albo od agenta, panel go pominie i powie, żeby wysłać go zwykłym commitem. Zapis do sejfu można wyłączyć wpisem `"zapis_sejfu": false` w konfiguracji.
 
 ### Roblox Studio
 W Studio: **Assistant → … → Manage MCP Servers → Enable Studio as MCP server**. Test z terminala:
@@ -74,8 +97,8 @@ Poza domem, przy wyłączonym komputerze, działa **lustro tylko do odczytu** (p
 ## Codzienna praca we dwóch
 1. **Pulpit → Pobierz** (albo `git pull`) — ściąga raporty, komentarze i migawki drugiej osoby.
 2. Pracujesz z Claude'em; po wdrożeniu Claude publikuje migawkę i raport (skill `.claude/skills/panel/`).
-3. Oglądasz raport, klikasz **Akceptuję** albo **Do poprawy**, komentujesz elementy w podglądzie 3D.
-4. **Pulpit → Wyślij** — commit i push samych danych panelu (`panel/dane/`). Resztę zmian commitujesz jak zwykle.
+3. Oglądasz raport, klikasz **Akceptuję** albo **Do poprawy**, komentujesz elementy w podglądzie 3D. W **Plan** odpowiadasz na pytania, odhaczasz zadania, a Game Director zatwierdza decyzje.
+4. **Pulpit → Wyślij** — commit i push danych panelu (`panel/dane/`) i plików sejfu zmienionych w panelu. Resztę zmian commitujesz jak zwykle.
 
 Pamiętaj: repozytorium jest publiczne, więc raporty i komentarze widzi każdy. Rozmowy z agentem i nagrania głosowe zostają tylko na Twoim komputerze.
 
@@ -95,7 +118,8 @@ Pamiętaj: repozytorium jest publiczne, więc raporty i komentarze widzi każdy.
 | Dane | Miejsce |
 |---|---|
 | Wspólne (raporty, komentarze, migawki) | `panel/dane/` w repozytorium |
-| Tylko ten komputer (kod dostępu, klucz lokalny, log, rozmowy z agentem, nagrania, ustawienia lokalne) | `%LOCALAPPDATA%\BlockyCrycket\panel\` |
+| Odpowiedzi, zadania, statusy decyzji z panelu | w sejfie: `B&C/Produkcja/*.md` (te same pliki co w Obsidianie) |
+| Tylko ten komputer (kod dostępu, klucz lokalny, klucz Game Directora, log, rozmowy z agentem, nagrania, ustawienia lokalne) | `%LOCALAPPDATA%\BlockyCrycket\panel\` |
 
 Usunięcie folderu z danymi lokalnymi przywraca panel do stanu początkowego; danych wspólnych to nie rusza.
 

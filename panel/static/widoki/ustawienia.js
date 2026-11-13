@@ -53,6 +53,21 @@ export default {
       el("div", { class: "siatka" }, kKto.el, kTelefon.el, kZdrowie.el, kO.el));
 
     // ------------------------------------------------------------------ kim jesteś
+    /** Game Director = przeglądarka z kluczem Game Directora (ciasteczko z linku --klucz-gd), a nie wpisane imię. */
+    function wierszGameDirectora() {
+      const gd = !!ctx.ja.game_director;
+      return el("div", { class: "wiersz gd-wiersz" },
+        el("span", { class: "znacznik " + (gd ? "ok" : "uwaga") }, ikona("klodka")),
+        el("span", { class: "wiersz-tekst" },
+          el("strong", null, "Game Director: " + (gd ? "tak" : "nie")),
+          gd
+            ? el("span", { class: "cichy-tekst" }, "Ta przeglądarka ma klucz Game Directora: w Planie → Decyzje możesz zatwierdzać i odrzucać propozycje (to zmiana kanonu w Rejestrze decyzji).")
+            : el("span", { class: "cichy-tekst" },
+              "Zatwierdzanie decyzji wymaga klucza Game Directora — samo imię go nie daje. Na komputerze, na którym działa panel, uruchom ",
+              el("code", null, "python panel/serwer.py --klucz-gd"),
+              " i otwórz wypisany link w tej przeglądarce (przez tunel: dopisz ", el("code", null, "&gd=…"), " do adresu z kodem dostępu). Odpowiadać na pytania i pracować na zadaniach może każdy.")));
+    }
+
     function rysujKto() {
       let zapisane = "";
       try {
@@ -67,7 +82,8 @@ export default {
         el("label", { class: "etykieta" }, "Imię widoczne dla zespołu"),
         el("div", { class: "pole-z-przyciskiem" }, pole, zapisz),
         ctx.ja.gospodarz && ctx.ja.lokalny ? el("p", { class: "cichy-tekst" }, "Na tym komputerze Git podpisuje się jako „" + ctx.ja.gospodarz + "”.") : null,
-        el("p", { class: "cichy-tekst" }, "Imię zapamiętuje ta przeglądarka — na telefonie ustaw je osobno."));
+        el("p", { class: "cichy-tekst" }, "Imię zapamiętuje ta przeglądarka — na telefonie ustaw je osobno."),
+        ctx.statyczny ? null : wierszGameDirectora());
       form.addEventListener("submit", (e) => {
         e.preventDefault();
         const v = pole.value.trim();

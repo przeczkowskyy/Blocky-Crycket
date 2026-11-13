@@ -217,23 +217,36 @@ export function odmiana(n, formy) {
 // --------------------------------------------------------------------------- toast
 let kontenerToastow = null;
 
-/** toast(tekst, typ?) — typ: "ok" | "blad" | "info" (domyślnie). */
-export function toast(tekst, typ = "info") {
+/**
+ * toast(tekst, typ?, {akcja?: {tekst, fn}, czas?}) — typ: "ok" | "blad" | "info" (domyślnie).
+ * `akcja` dodaje przycisk (np. „Cofnij”); `czas` w ms. Zwraca element z metodą .zamknij().
+ */
+export function toast(tekst, typ = "info", opcje = {}) {
   if (!kontenerToastow || !kontenerToastow.isConnected) {
     kontenerToastow = el("div", { class: "toasty", role: "status", "aria-live": "polite" });
     document.body.appendChild(kontenerToastow);
   }
   const nazwaIkony = typ === "ok" ? "ok" : typ === "blad" ? "ostrzezenie" : "info";
-  const t = el("div", { class: "toast toast-" + typ }, ikona(nazwaIkony), el("span", null, String(tekst)));
-  const zamknij = () => {
+  const akcja = opcje && opcje.akcja;
+  const t = el("div", { class: "toast toast-" + typ }, ikona(nazwaIkony), el("span", null, String(tekst)),
+    akcja ? el("button", {
+      type: "button", class: "toast-akcja",
+      onclick: (e) => {
+        e.stopPropagation();
+        zamknij();
+        akcja.fn();
+      },
+    }, akcja.tekst) : null);
+  function zamknij() {
     if (!t.isConnected) return;
     t.classList.add("znika");
     setTimeout(() => t.remove(), 220);
-  };
+  }
   t.addEventListener("click", zamknij);
   kontenerToastow.appendChild(t);
   while (kontenerToastow.children.length > 3) kontenerToastow.firstChild.remove();
-  setTimeout(zamknij, typ === "blad" ? 6500 : 3500);
+  setTimeout(zamknij, (opcje && opcje.czas) || (typ === "blad" ? 6500 : 3500));
+  t.zamknij = zamknij;
   return t;
 }
 

@@ -98,8 +98,9 @@ async function pobierz(url, init, czasMs) {
 }
 
 /**
- * api(sciezka, {metoda?, cialo?, czas?}) → Promise<obiekt>.
+ * api(sciezka, {metoda?, cialo?, czas?, keepalive?}) → Promise<obiekt>.
  * Rzuca Error z polami .status (0 = brak połączenia) i .message (pole `blad` z serwera albo opis po polsku).
+ * keepalive: true — żądanie dokończy się także po zamknięciu karty (np. odhaczenie przy blokadzie ekranu telefonu).
  */
 export async function api(sciezka, opcje = {}) {
   const metoda = (opcje.metoda || "GET").toUpperCase();
@@ -110,6 +111,7 @@ export async function api(sciezka, opcje = {}) {
     return odpowiedz(r);
   }
   const init = { method: metoda, headers: naglowki(metoda !== "GET") };
+  if (opcje.keepalive) init.keepalive = true;
   if (metoda !== "GET" && metoda !== "HEAD") {
     init.headers["Content-Type"] = "application/json";
     init.body = JSON.stringify(opcje.cialo === undefined ? {} : opcje.cialo);
