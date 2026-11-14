@@ -6,7 +6,7 @@ The Obsidian vault in `B&C/` is the **single source of truth** for this project 
 **Before any meaningful work:** read `B&C/00 Start.md`, `B&C/Jak prowadzimy sejf.md`, and the notes relevant to the task (follow `[[wikilinks]]`). Check `B&C/Produkcja/Rejestr decyzji.md` for what is approved.
 
 **Status discipline** (frontmatter `status:`):
-- `kanon` = approved by Karol or Paweł (either one is enough — decision D-030), binding.
+- `kanon` = decided by Karol or Paweł and confirmed by the other (decisions D-030 and D-043), binding. A decision with only one signature is a working agreement the other person may still overturn.
 - `propozycja` = idea / older spec, NOT a fact — never present it as decided.
 - `do-decyzji` = waiting for the user.
 Never change a note to `kanon` or a decision to ✅ without explicit approval from Karol or Paweł, and when you do, record who decided and when (`zdecydował: <imię> <data>` in `Rejestr decyzji.md` plus an entry in `Dziennik zmian.md`). If a request conflicts with canon, say so and add the conflict to `B&C/Produkcja/Pytania otwarte.md` instead of silently overriding.
@@ -17,6 +17,8 @@ Never change a note to `kanon` or a decision to ✅ without explicit approval fr
 3. Add an entry at the top of `B&C/Produkcja/Dziennik zmian.md` (date, what changed, files/notes touched).
 4. New ideas → `status: propozycja` notes or 💡 entries in `Rejestr decyzji.md`.
 5. If the change affects something described in `DOKUMENTACJA.md` (repo-wide summary of the vault + code), update it too.
+
+**Questions and proposals for people must be short** (Karol's request, 2026-11-14): a title of at most ten words, then two to four bullet points saying what it is about and what the options are; longer context goes below, under a line starting with `Szczegóły:`. One question = one matter: before adding a question, check `Pytania otwarte.md` for one that already covers it and extend that instead. If a decision settles the question, add the line `Rozstrzyga: D-0XX`.
 
 **Vault rules:** write in Polish; use `[[wikilinks]]` to existing note names; never edit `B&C/Źródła/` (original documents — cite them); never touch `B&C/.obsidian/` except settings the user asks for; use templates from `B&C/Szablony/`.
 
@@ -43,7 +45,7 @@ Never change a note to `kanon` or a decision to ✅ without explicit approval fr
 - **Before committing vault changes:** `python tools/sejf_lint.py` (links, statuses, secrets).
 
 ## People
-Two people work in this repo, each with their own Claude Code: **Paweł** (Game Director, repo owner) and **Karol** (3D world, panel, tooling). Since 2026-11-13 (decision D-030, answer to `B&C/Produkcja/Pytania otwarte.md` #15) both have equal rights: explicit approval from either one makes something `kanon` or ✅ — one decision is enough, but every decision must stay in the logs (who and when, in `Rejestr decyzji.md` and `Dziennik zmian.md`). D-030 was decided by Karol; **Paweł has not confirmed it yet** (`Pytania otwarte.md` #27). Until he does, decisions approved only by Karol carry his signature and Paweł may overturn them; anything Paweł approves is binding as before. A request that is not an explicit approval is still a work order: record the design changes it implies as `propozycja` plus an open question. If the two disagree, put the conflict in `Pytania otwarte.md` and override nothing.
+Two people work in this repo, each with their own Claude Code: **Paweł** (Game Director, repo owner) and **Karol** (3D world, panel, tooling). Since 2026-11-13 (decision D-030, answer to `B&C/Produkcja/Pytania otwarte.md` #15) both have equal rights: explicit approval from either one makes something `kanon` or ✅ — one decision is enough, but every decision must stay in the logs (who and when, in `Rejestr decyzji.md` and `Dziennik zmian.md`). Since 2026-11-14 (decision D-043, agreed aloud by both in the first main session and approved in the panel by Karol) one person decides and the other confirms: the decision is recorded with the first person's signature and waits for the other's answer — agree, disagree or discuss. It is fully binding once both have signed. The confirmation channel (a Telegram alert sent by the panel) is being built; until it works, treat single-signature decisions as working agreements, never add the second signature yourself, and remember that Paweł has not yet reviewed the decisions Karol made alone on 13–14.11 (`Pytania otwarte.md` #27). A request that is not an explicit approval is still a work order: record the design changes it implies as `propozycja` plus an open question. If the two disagree, put the conflict in `Pytania otwarte.md` and override nothing.
 
 ## Communication
 The user is Karol or Paweł and writes in Polish — reply in Polish, give concrete Roblox Studio steps.

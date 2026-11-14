@@ -16,6 +16,7 @@ tags: [hub, zasady]
 - Każda decyzja zostaje w logach: w [[Rejestr decyzji]] z podpisem `zdecydował: <imię> <data>` i w [[Dziennik zmian]].
 - W [[Panel zespołu|panelu]] status decyzji zmienia osoba przy komputerze z panelem albo osoba z kluczem zatwierdzania. Wpis oznaczony „gość panelu” decyzją nie jest.
 - Gdy się różnimy, spór trafia do [[Pytania otwarte]] i nic nie jest nadpisywane.
+- Od 14.11.2026 (D-043, ustalone na pierwszej sesji głównej): jedna osoba podejmuje decyzję, a druga ją potwierdza — zgoda, brak zgody albo „przedyskutuj”. Decyzja z jednym podpisem to robocze ustalenie, które druga osoba może jeszcze cofnąć; w pełni obowiązuje po dwóch podpisach. Alert na Telegramie, którym panel będzie prosił o potwierdzenie, jest w budowie.
 
 ## Struktura
 - **Gra/** mechaniki i koncepcja
@@ -37,6 +38,7 @@ tags: [hub, zasady]
    - dopisuje wpis do [[Dziennik zmian]].
 4. Nowe pomysły zapisuje jako `propozycja` albo jako 💡 w [[Rejestr decyzji]]. Nigdy jako kanon.
 5. Nie zmienia statusu na `kanon` bez wyraźnej zgody Karola albo Pawła, a przy zmianie zapisuje, kto i kiedy zdecydował.
+6. Pytania i propozycje dla ludzi pisze krótko: tytuł do dziesięciu słów, potem dwa–cztery punkty (czego dotyczy, co jest do wyboru), a dłuższy kontekst niżej pod wierszem `Szczegóły:`. Jedno pytanie to jedna sprawa — zanim doda nowe, sprawdza, czy takie już jest. Gdy pytanie rozstrzyga decyzja, dopisuje wiersz `Rozstrzyga: D-0XX`.
 
 ## My (Karol i Paweł)
 - Możemy pisać notatki dowolnie, Claude je przeczyta.

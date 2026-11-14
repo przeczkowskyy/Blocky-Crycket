@@ -7,6 +7,13 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Karol i Paweł: zatwierdzić albo odrzucić propozycje z sesji 14.11 — D-032–D-045 oraz D-019 i D-020 (do tego D-031 z pytania Pawła o walutę premium) — w panelu (zakładka Decyzje → Czeka na Ciebie); odpowiedzieć na pytania 29–33 ([[Sesja główna 2026-11-14 — zapis ustaleń]]) · #wysoki
+- [ ] Paweł: przełączyć repozytorium na prywatne w ustawieniach GitHub (D-044) — działanie właściciela, po zatwierdzeniu decyzji; wtedy lustro panelu na GitHub Pages odpada · #wysoki
+- [ ] Zaproponować nazwę waluty premium zamiast roboczych „Diamentów” (tematyczna; rozważyć Magiczne Kryształy z kanonu) oraz nazwę koła fortuny zamiast „Labubu”; do tego propozycja, co kupuje się za Złoto, walutę premium i trzecią walutę (D-031, D-038, D-040) — prośba Karola i Pawła z sesji 14.11 · #średni
+- [ ] Porównanie Krzywego Miasteczka w Blenderze i w Roblox obok siebie (prośba Pawła z sesji 14.11) i wskazanie raportu „Rycerz w trzech wersjach” z 13.11 — do decyzji o Blenderze (pytanie 24) · #średni
+- [ ] Kroki założenia grupy Roblox, publikacji gry jako gry grupy i ponownego wgrania animacji — po odpowiedzi na pytanie 31 (D-044) · #średni
+- [ ] Powiadomienia o decyzjach na telefon (bot Telegram albo e-mail) z potwierdzeniem drugiej osoby — po decyzji D-043 i odpowiedzi na pytanie 29 · #średni
+- [ ] Krzywe Miasteczko: zebrać od Karola zmiany w kolorystyce i poprawić czytelność sklepu z Petami i wejścia do dungeonu (pytanie 33, D-041) · #średni
 - [ ] Przenieść istniejące skrypty z `.rbxl` do `src/` (Studio → Save to File), bo inaczej Claude ich nie widzi · #wysoki
 - [ ] Uporządkować hierarchię StarterGui: MainHUD, LoadingScreenGui, TavernQuestGui, HeroSelectorGui, PetGui, InventoryGui · #wysoki
 - [ ] Moduł statystyk gracza (HP / Mana / EXP / Level) z replikacją do klienta, jako źródło danych dla [[HUD]] · #wysoki
@@ -19,10 +26,12 @@ tags: [produkcja, zadania]
 - [ ] Decyzje po rozmowie 12.11: pytania 7–14 w [[Pytania otwarte]] i propozycje D-012–D-018 w [[Rejestr decyzji]] · #wysoki
 - [ ] Obejrzeć demo `Workspace/DemoLesnaBaza` w Studio i w [[Panel zespołu|panelu]]: styl, skala, co poprawić ([[Klocki — Blender i Roblox]]) · #wysoki
 - [ ] Szara pętla MVP: plac → karczma → walka 10 s → łup → statystyki ([[Ocena potencjału gry]], tydzień 1) — wersja sprzed diagnozy; propozycja v2 zamienia ją na szary prototyp BONK-a (pytanie 16) · #wysoki
-- [ ] Pierwsza próba zakładki „Sesja” z człowiekiem: Karol przy komputerze dołącza, włącza „Agent słucha”, mówi kilka minut i klika „Notatki teraz”; potem próba z Pawłem przez link tunelu (głos między dwoma domami, telefon). Do tej pory sprawdzone tylko automatem i syntezatorem mowy ([[Panel zespołu]]) · #wysoki
 - [ ] [[Panel zespołu|Panel]]: połączyć zakładki Plan i Raporty w jedną z wszystkim, co czeka na decyzję (z przyciskiem „Na sesję główną”), poprawić czytelność Pulpitu i pokazać aktywne osoby w lewym dolnym rogu; Analityki nie ruszać do publikacji gry — zlecenie Karola z 13.11. Bez dubli: pytanie i decyzje, których dotyczy, w jednej karcie; gdy decyzja rozstrzyga pytanie, pytanie samo znika z kolejki; lista odświeża się sama · #wysoki
+- [ ] [[Panel zespołu|Panel]], druga fala uwag Karola z 14.11: karty pytań krótkie (punkty na górze, „Szczegóły” zwinięte), bez kolorowego paska z lewej i bez „pudełkowego” wyglądu (także lista pytań w zakładce Sesja); pytania nie mogą się dublować; odpowiedź, która padła w rozmowie na sesji, ma na bieżąco aktualizować listę pytań · #wysoki
+- [ ] [[Panel zespołu|Panel]], zakładka Agent: krótsze, bardziej zwarte rozmowy i trzy wyspecjalizowane okna agenta — **Balans** (statystyki i rzadkość przedmiotów, tempo progresji, czas do następnego biomu), **Świat** (biomy, ich wygląd, potwory, bossowie), **Wydanie** (publikacja, zasady Roblox, marketing, koszty, media społecznościowe); zlecenie Karola z 14.11 · #wysoki
+- [ ] [[Panel zespołu|Panel]]: alerty na Telegramie z potwierdzeniem decyzji przez drugą osobę (D-043); bot jest założony, czeka na wspólną grupę Karola i Pawła · #wysoki
 - [ ] Paweł: `git pull` na `main`, uruchomić `panel\start.bat`, wpisać imię w Ustawieniach i odpowiedzieć na pytanie 27 w [[Pytania otwarte]] · #wysoki
-- [ ] Walka: spisać błędy zauważone 13.11 w `Workspace/TestWalki` i je poprawić; decyzja o zmienionej propozycji D-024 (walka w każdej potyczce, w trzech długościach) · #wysoki
+- [ ] Walka: spisać błędy zauważone 13.11 w `Workspace/TestWalki` i je poprawić; decyzja o D-033 (po sesji 14.11: cutscenka tylko przy bossach, rzadkich przeciwnikach i na koniec zadania; zastępuje D-024) · #wysoki
 - [ ] Przymierzalnia „do poprawy” (Karol, panel, 13.11): założony przedmiot ma być widoczny wszędzie, także w animacjach walki; broń trzymana w ręku nie może nachodzić na twarz w żadnej animacji ani po wygranej walce — dodać liczbową kontrolę przenikania broni z głową i tułowiem dla wszystkich klipów · #wysoki
 - [ ] Postacie z siatek: sprawdzić animacje i broń na zaimportowanym Rycerzu (`Workspace/TestPostaci`), potem druga postać i pet · #średni
 - [ ] Decyzja z pytania 24: droga postaci do gry (po udanym imporcie siatek z 13.11 są dwie sprawdzone drogi) i właściciel animacji ([[Postacie 3D — Blender i Roblox]]) · #średni
@@ -54,6 +63,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-14: Pierwsza sesja główna w zakładce „Sesja” z ludźmi: Karol przy komputerze, Paweł przez tunel, 42 minuty, agent słuchał, transkrypcja rozpoznała obu mówców (notatki co 5 minut działały). Ustalenia spisane: [[Sesja główna 2026-11-14 — zapis ustaleń]], propozycje D-032–D-045, pytania 29–33, raport „Sesja główna 2026-11-14 — do zatwierdzenia” w panelu
 - [x] 2026-11-13: [[Panel zespołu|Panel]]: zakładka „Sesja” — rozmowa głosowa w panelu (do 6 osób), przycisk „Agent słucha”, lokalna transkrypcja na żywo, notatki agenta, „Zakończ sesję i spisz ustalenia” (ustalenia jako propozycje) i lista tematów z [[Sesje główne]]; po niezależnym przeglądzie siedem uwag poprawionych, 266 testów, próba prawdziwej transkrypcji na syntezatorze mowy udana
 - [x] 2026-11-13: Dwa raporty-porównania na prośbę Karola (uzasadnienia przy D-029 i D-018): Rycerz jako render z Blendera, klocki Roblox i siatka w Roblox; dwa style mapy obok siebie (Leśna baza i Krzywe Miasteczko) — czekają w panelu na odpowiedź
 - [x] 2026-11-13: Lista tematów na długie rozmowy głosowe: [[Sesje główne]] (siedem tematów z decyzji i komentarzy Karola z 13.11)

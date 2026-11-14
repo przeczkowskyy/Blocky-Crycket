@@ -1,0 +1,32 @@
+{
+ "id": "r-20261114-121049-6035",
+ "tytul": "Sesja główna 2026-11-14 — do zatwierdzenia",
+ "opis_md": "Spisałem ustalenia z Waszej pierwszej sesji głównej (11:00–11:43, 42 minuty). **Nic nie jest jeszcze zatwierdzone** — każda propozycja czeka na Wasze kliknięcie w zakładce Decyzje → „Czeka na Ciebie”. Pełny zapis własnymi słowami (kto co powiedział, z godziną) jest w notatce „Sesja główna 2026-11-14 — zapis ustaleń” (link niżej). Zapis rozmowy został tylko na komputerze z panelem, nie w repozytorium.\n\n## Do zatwierdzenia albo odrzucenia — 14 propozycji z sesji\n- **D-032** Poziomy trudności zadań (łatwy / średni / trudny) lokalne dla biomu.\n- **D-033** Cutscenka walki tylko przy bossach, rzadkich przeciwnikach i na koniec zadania; zwykłe potwory z prostą animacją.\n- **D-034** Pętla: zadania z karczmy na czas, a równolegle strefy, dungeony, sklep, Twierdza; jedna karczma. Zmienia D-004 („bez biernego czekania”).\n- **D-035** Zakres pierwszego wydania: co na premierę, co w aktualizacjach.\n- **D-036** Co sprzedajemy za Robuxy: waluta, paczki przedmiotów i czasu, surowce, emotki, game passy; bez skinów postaci.\n- **D-037** Bilety na rolki za Robuxy i „mistrz gier planszowych” — **sprzeczne z zatwierdzoną D-015** (bez płatnej losowości). Szczegóły i trzy drogi: pytanie 30.\n- **D-038** Złoto i Diamenty (nazwa robocza), konwersja tylko Diamenty → Złoto. Rozstrzygnijcie razem z **D-031** (Magiczne Kryształy — propozycja z pytania Pawła w panelu, nie z sesji).\n- **D-039** Drzewka umiejętności za Diamenty: postać, Twierdza, każdy pet.\n- **D-040** Trzecia waluta na game passy („chrupki Crycketa”) i osobna waluta petów.\n- **D-041** Krzywe Miasteczko jako oficjalny styl świata: kreskówka z ciemną kreską, nie pixel-art.\n- **D-042** Wejście do dungeonów: wrota z kłódką i hala portali (pomysł Pawła).\n- **D-043** Decyzja jednej osoby plus potwierdzenie drugiej po alercie na telefon — zastępowałaby D-030. Jak to zrobić technicznie: pytanie 29.\n- **D-044** Jedna gra w grupie Roblox i prywatne repozytorium.\n- **D-045** Język gry: angielski z tłumaczeniami.\n\nDo tego **D-019 i D-020** (koncepcja v2): na sesji obaj je odrzuciliście — kliknijcie „Odrzuć” przy pytaniu 16.\n\n## Nowe pytania 29–33\nAlerty na telefon i panel bez komputera (z moją odpowiedzią techniczną), rolki za Robuxy a D-015, grupa Roblox (kto zakłada, wypłaty, klucz), pierwsze wydanie (ulepszanie, gildie, biomy), kolorystyka i czytelność Krzywego Miasteczka.\n\n## Czego nie spisałem jako decyzji\nEnergia w karczmie, Twierdza (od którego poziomu działka, co produkuje), lista lokacji mapy teleportacji i przyciski HUD — nie padły, więc wróciły do agendy sesji (notatka „Sesje główne”).\n\n## Uwagi\n- O cutscenkach zmieniliście zdanie w trakcie (11:03 „zawsze”, 11:10 „tylko bossowie i koniec zadania”) — spisałem wersję późniejszą (D-033).\n- Paweł pytał o porównanie Blender a Roblox: raport „Rycerz w trzech wersjach” czeka w panelu od wczoraj (`#/decyzje?raport=r-20261113-202142-233c`). Porównanie samego miasteczka w obu wersjach jest w zadaniach.\n- Prośby z rozmowy (nazwa waluty premium, nazwa koła fortuny, kroki założenia grupy Roblox) zapisałem jako zadania — zrobię je po Waszych decyzjach.",
+ "kto": "Claude (sesja)",
+ "czas": "2026-11-14T12:10:49+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesja główna 2026-11-14 — zapis ustaleń.md",
+   "etykieta": "Zapis ustaleń z sesji"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Rejestr decyzji.md",
+   "etykieta": "Rejestr decyzji (D-032–D-045)"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytania otwarte 29–33"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesje główne.md",
+   "etykieta": "Agenda sesji głównych"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Które propozycje D-032–D-045 zatwierdzacie, a które odrzucacie? Przy D-037 (rolki za Robuxy, sprzeczna z D-015) i D-043 (potwierdzenie drugiej osoby zamiast D-030) proszę o decyzję wprost."
+}

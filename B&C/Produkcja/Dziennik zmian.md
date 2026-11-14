@@ -6,6 +6,53 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-14 · Claude Code u Karola (po sesji głównej: kontrola ustaleń, odpowiedzi, wypchnięcie)
+- **Pierwsza sesja główna zadziałała w całości:** Karol przy komputerze, Paweł przez tunel, 42 minuty, 359 wypowiedzi obu osób spisanych lokalnie bez błędów; nagrania skasowane po spisaniu. Zapis ustaleń agenta panelu ([[Sesja główna 2026-11-14 — zapis ustaleń]]) porównany z pełną transkrypcją temat po temacie — zgodny. Propozycje D-032–D-045 agent zapisał jako propozycje; zatwierdzał je Karol w panelu.
+- **Odpowiedzi po sesji w [[Pytania otwarte]]:** pytanie 29 — Karol wybrał Telegram w dwóch etapach; pytanie 30 — dopisek z oficjalnymi zasadami Roblox (stawianie waluty na wynik losowy jest zakazane niezależnie od nazwy postaci; losowe nagrody za Robuxy wymagają jawnych szans); pytanie 31 — sprostowanie: grę da się przenieść z konta na grupę w Creator Hub; pytanie 24 — Karol zaakceptował raport o Rycerzu: klocki Roblox jako główna droga dla postaci.
+- **Nowa propozycja D-046** w [[Rejestr decyzji]]: nazwy trzeciej waluty („Chrupki”), waluty petów („Łapki”) i koła („Krzywe Koło”).
+- **Agent z telefonu:** jest włączony na komputerze Karola, więc pytania Pawła zadane przez tunel zużywają subskrypcję Karola; wątek agenta nie zapisuje dziś, kto go założył — w poprawkach panelu.
+- **Git:** commity z 13.11 wieczorem (decyzje, tematy sesji, zakładka Sesja) wypchnięte na `main`; kopia Karola pracuje na `main`.
+- **W toku:** przebudowa zakładki na jedną listę „Pytania” z wyszukiwarką i listą pytań w zakładce Sesja (uwagi Karola z 14.11).
+
+## 2026-11-14 · Claude Code u Karola (pytanie Pawła z panelu: waluta premium)
+- **Waluta premium zamiast grzybków:** Paweł zapytał przez panel, czym zastąpić grzybki z S&F. Nowa propozycja D-031 w [[Rejestr decyzji]]: Magiczne Kryształy (ikona diamentu z HUD) jako jedna waluta premium, zdobywana w grze i kupowana za Robuxy w stałych paczkach, wydawana tylko na rzeczy pewne zgodnie z D-015; odrzucone nazwy Żetony i Klocki, zabawna alternatywa Złote Rybki. Pytanie 6 w [[Pytania otwarte]] dostało wiersz `Rozstrzyga: D-031` i komentarz. Nic nie zatwierdzono.
+
+## 2026-11-14 · Panel (ludzie)
+- Karol Balucki: omówiony temat sesji: Karczma: poziomy trudności zadań i Energia (D-009) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Walka 3D: czy cutscenka jest przy każdej walce i jak długa (D-024, D-016) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Pętla bez czekania: walka od razu, liczniki tylko równolegle (D-013) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Czym jest nasza gra w jednym zdaniu (D-019, D-020, pytanie 16) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Zakres pierwszego wydania ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Monetyzacja: gdzie jest kompromis (D-021, D-015, pytanie 12) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Treści dla wszystkich graczy (D-022, pytanie 19) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Paweł potwierdza zasadę równych praw i przegląda decyzje Karola z 13.11 (D-030, pytanie 27) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Styl grafiki: pixel-art z kanonu czy cartoon, Krzywe Miasteczko, ramki i dymki (D-018, D-025… ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Postacie i ekwipunek: Blender czy klocki Roblox, kto publikuje animacje, sloty a statystyki… ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Własność gry i repozytorium: konto jednej osoby czy grupa Roblox, repo publiczne czy prywatne… ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Waluty i Twierdza: Diamenty a Magiczne Kryształy, od którego poziomu działka i co produkuje… ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Lokacje i język gry: przyciski HUD (5 z kanonu czy 6 z Figmy), lista 7 lokacji mapy teleportacji… ([[Sesje główne]])
+- Karol Balucki: decyzja D-045 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-043 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-040 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-039 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-038 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-035 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-032 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-031 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-044 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 13 (rozstrzygnięte decyzjami: D-044 zatwierdzona) ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 14 (rozstrzygnięte decyzjami: D-044 zatwierdzona) ([[Pytania otwarte]])
+- Karol Balucki: decyzja D-041 zatwierdzona ([[Rejestr decyzji]])
+
+## 2026-11-14 · Claude Code u Karola (sesja główna: zapis ustaleń)
+- **Pierwsza sesja główna** Karola i Pawła w zakładce Sesja panelu (11:00–11:43, 42 min; agent słuchał, transkrypcja rozpoznała obu mówców). Ustalenia własnymi słowami: [[Sesja główna 2026-11-14 — zapis ustaleń]] (`propozycja`). Zapis rozmowy zostaje lokalnie u gospodarza, poza repozytorium.
+- **Rejestr:** 14 nowych propozycji D-032–D-045 — poziomy trudności lokalne dla biomu, cutscenka tylko przy bossach i na koniec zadania, pętla z czekaniem i zajęciami równoległymi, zakres pierwszego wydania, co sprzedajemy za Robuxy, bilety na rolki i mistrz gier (konflikt z D-015), Złoto i Diamenty z konwersją w jedną stronę, drzewka umiejętności, trzecia waluta i waluta petów, Krzywe Miasteczko jako styl świata, wrota dungeonów z kłódką, decyzja plus potwierdzenie drugiej osoby po alercie (zastępowałaby D-030), grupa Roblox i prywatne repozytorium, język angielski z tłumaczeniami. Numeracja od D-032, bo równolegle (pytanie Pawła z panelu) powstała D-031 o walucie premium — D-038 i D-037 odsyłają do niej jako do propozycji do rozstrzygnięcia razem. Niczego nie zatwierdzono; D-019 i D-020 czekają na kliknięcie „odrzuć” (pytanie 16).
+- **Pytania otwarte:** dopiski z sesji przy pytaniach 5, 6, 7, 8, 9, 10, 12, 13, 14, 16, 19, 24, 25, 27 i 28; wiersze `Rozstrzyga` rozszerzone (6: D-038; 7: D-034; 10: D-041; 13 i 14: D-044); nowe pytania 29–33 (alerty na telefon i panel bez komputera — z odpowiedzią techniczną agenta; rolki za Robuxy a D-015; grupa Roblox; pierwsze wydanie; kolorystyka i czytelność Krzywego Miasteczka).
+- **Sesje główne:** 13 odhaczonych tematów ma krótki wynik i link do notatki ustaleń; osiem nowych tematów na później (Energia, Twierdza, mistrz gier, pety Pawła, biomy, lokacje i HUD, decyzje Karola z 13.11, Blender po porównaniu).
+- **Zadania:** pierwsza próba zakładki Sesja odhaczona (odbyła się z dwiema osobami); nowe zadania — zatwierdzenie propozycji, nazwy waluty i koła fortuny, porównanie miasteczka Blender i Roblox, prywatne repozytorium (Paweł), kroki grupy Roblox, powiadomienia na telefon, kolorystyka Krzywego Miasteczka.
+- **Raport** „Sesja główna 2026-11-14 — do zatwierdzenia” (rodzaj: pytanie) w panelu.
+- Nie zrobiono: prośby z rozmowy (nazwy, kroki grupy, porównanie miasteczka) tylko zapisane jako zadania; repozytorium nie przełączono na prywatne (działanie właściciela, po decyzji D-043).
+
 ## 2026-11-13 · Panel (ludzie)
 - Karol Balucki: decyzja D-007 zatwierdzona ([[Rejestr decyzji]])
 - Karol Balucki: decyzja D-011 zatwierdzona ([[Rejestr decyzji]])
