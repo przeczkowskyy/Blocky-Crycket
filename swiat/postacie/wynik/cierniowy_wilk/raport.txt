@@ -1,0 +1,87 @@
+RAPORT — cierniowy_wilk
+CIERNIOWY WILK — zwykły, szybki przeciwnik lasu (ok. 3 study w kłębie; pies-pet ma 2,2, gracz 5,7).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/cierniowy_wilk.py · wygenerowano 14.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py cierniowy_wilk
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: cierniowy_wilk
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości wilka nie są R15 (własny szkielet: Root + 21 kości, jak u petów) — klipy importuje się na własny rig; import do Roblox Studio nie był testowany.
+- Bryły są sztywno przypięte do kości (jedna siatka na kość): górne części łap i nasady uszu siedzą w tułowiu i czaszce (celowo), a przy mocnym zgięciu grzbietu pierś i talia lekko się przenikają.
+- Galop jest w miejscu (łapa w podporze sunie po ziemi); faza lotu jest krótka i niska, a przednia łapa przy pełnym wykroku jest prawie wyprostowana (dłuższego kroku ten szkielet nie da). W ataku, umiejętności i trafieniu stojące łapy przesuwają się po ziemi przy powrocie na miejsce.
+- Rozszarpanie przesuwa wilka o 2,4 studa do przodu i odskokiem wraca na miejsce — w grze trzeba zgrać to z odległością od celu (albo przesuwać model skryptem i skrócić odskok).
+- Świecenie oczu jest tylko w teksturze-palecie (emisja) — w grze trzeba je dać materiałem Neon albo PointLight; krwawienia, śladów pazurów i kurzu nie ma (dorobić efektem na PyskAttachment).
+- Kolce jeżyny i pędy (także gęstwina ogona) są sztywnymi bryłami — nie kołyszą się w biegu; ogon rusza się tylko dwiema kośćmi.
+- Powieki przy mrugnięciu na 1–2 klatki wysuwają się z czaszki przez twarz (szybko, z daleka nie widać).
+- Kolizje sprawdzane w przybliżeniu (punkty skrzynek brył w każdej klatce, wartości kluczy liniowo): dolne części łap, łapy i koniec ogona nie wchodzą w głowę ani tułów; czaszka, kufa i żuchwa nie wchodzą w tułów. Kolce i pędy na tułowiu nie były sprawdzane. Po przeglądzie (dłuższy wypad w ataku, szerszy galop, opadające łapy w leżeniu) przenikanie sprawdzono tylko na renderach z dwóch stron, nie liczbowo.
+- Obrys renderu (odwrócona otoczka) przy ostrym bocznym spojrzeniu nadal rysuje cienką pionową kreskę przy dalszym oku — to efekt podglądu, w grze obrysu nie ma.
+- Klipy to szkice (0,5–1,9 s), nie gotowa animacja; mimika tylko z żuchwy, uszu i powiek.
+
+MODEL cierniowy_wilk „Cierniowy Wilk” (stwor)
+  wymiary ciała: 2,17 × 4,36 × 7,67; z akcesoriami: 2,17 × 4,36 × 7,67
+  trójkąty: 4470 (siatek: 21)
+  kości (22): Root, Zad, Klatka, Glowa, Szczeka, UchoL, UchoP, Powieki, LapaPrzodL_Gora, LapaPrzodL_Dol, LapaPrzodL_Stopa, LapaTylL_Gora, LapaTylL_Dol, LapaTylL_Stopa, LapaPrzodP_Gora, LapaPrzodP_Dol, LapaPrzodP_Stopa, LapaTylP_Gora, LapaTylP_Dol, LapaTylP_Stopa, Ogon, OgonKoniec
+  klipy: idle 72 kl. 2,40 s pętla, ruch 16 kl. 0,53 s pętla, atak 27 kl. 0,90 s jednorazowy, umiejetnosc 54 kl. 1,80 s jednorazowy, trafienie 18 kl. 0,60 s jednorazowy, unik 28 kl. 0,93 s jednorazowy, upadek 56 kl. 1,87 s jednorazowy, ryk 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, PyskAttachment
+
+KONTROLA EKSPORTÓW
+- cierniowy_wilk.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje brak -> ZGODNE
+- cierniowy_wilk__idle.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-73 -> ZGODNE
+- cierniowy_wilk__ruch.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-17 -> ZGODNE
+- cierniowy_wilk__atak.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-28 -> ZGODNE
+- cierniowy_wilk__umiejetnosc.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-55 -> ZGODNE
+- cierniowy_wilk__trafienie.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-19 -> ZGODNE
+- cierniowy_wilk__unik.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-29 -> ZGODNE
+- cierniowy_wilk__upadek.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-57 -> ZGODNE
+- cierniowy_wilk__ryk.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-61 -> ZGODNE
+- cierniowy_wilk.glb: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje atak 0-27, idle 0-72, ruch 0-16, ryk 0-60, trafienie 0-18, umiejetnosc 0-54, unik 0-28, upadek 0-56 -> ZGODNE
+
+PLIKI
+- cierniowy_wilk.blend
+- cierniowy_wilk.fbx
+- cierniowy_wilk.glb
+- cierniowy_wilk__atak.fbx
+- cierniowy_wilk__idle.fbx
+- cierniowy_wilk__ruch.fbx
+- cierniowy_wilk__ryk.fbx
+- cierniowy_wilk__trafienie.fbx
+- cierniowy_wilk__umiejetnosc.fbx
+- cierniowy_wilk__unik.fbx
+- cierniowy_wilk__upadek.fbx
+- cierniowy_wilk_bohater.jpg
+- cierniowy_wilk_ikona.png
+- cierniowy_wilk_plansza.jpg
+- cierniowy_wilk_tekstury/
+- cierniowy_wilk_idle.mp4
+- cierniowy_wilk_idle_klatki.jpg
+- cierniowy_wilk_idle_z_filmu.jpg
+- cierniowy_wilk_ruch.mp4
+- cierniowy_wilk_ruch_klatki.jpg
+- cierniowy_wilk_ruch_z_filmu.jpg
+- cierniowy_wilk_atak.mp4
+- cierniowy_wilk_atak_klatki.jpg
+- cierniowy_wilk_atak_z_filmu.jpg
+- cierniowy_wilk_umiejetnosc.mp4
+- cierniowy_wilk_umiejetnosc_klatki.jpg
+- cierniowy_wilk_umiejetnosc_z_filmu.jpg
+- cierniowy_wilk_trafienie.mp4
+- cierniowy_wilk_trafienie_klatki.jpg
+- cierniowy_wilk_trafienie_z_filmu.jpg
+- cierniowy_wilk_unik.mp4
+- cierniowy_wilk_unik_klatki.jpg
+- cierniowy_wilk_unik_z_filmu.jpg
+- cierniowy_wilk_upadek.mp4
+- cierniowy_wilk_upadek_klatki.jpg
+- cierniowy_wilk_upadek_z_filmu.jpg
+- cierniowy_wilk_ryk.mp4
+- cierniowy_wilk_ryk_klatki.jpg
+- cierniowy_wilk_ryk_z_filmu.jpg
+- raport.json
+- raport.txt

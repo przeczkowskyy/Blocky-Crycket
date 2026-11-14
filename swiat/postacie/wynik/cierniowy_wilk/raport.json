@@ -1,0 +1,589 @@
+{
+ "modul": "cierniowy_wilk",
+ "modele": [
+  {
+   "id": "cierniowy_wilk",
+   "nazwa": "Cierniowy Wilk",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Zad_Geo",
+     "kosc": "Zad",
+     "trojkaty": 678,
+     "wierzcholki": 389,
+     "wymiary": [
+      1.602,
+      1.266,
+      1.915
+     ],
+     "min": [
+      -0.801,
+      2.0,
+      -1.795
+     ],
+     "max": [
+      0.801,
+      3.266,
+      0.12
+     ]
+    },
+    {
+     "nazwa": "Klatka_Geo",
+     "kosc": "Klatka",
+     "trojkaty": 754,
+     "wierzcholki": 435,
+     "wymiary": [
+      1.702,
+      2.072,
+      1.557
+     ],
+     "min": [
+      -0.851,
+      1.36,
+      0.1
+     ],
+     "max": [
+      0.851,
+      3.432,
+      1.657
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 704,
+     "wierzcholki": 424,
+     "wymiary": [
+      2.174,
+      1.642,
+      2.923
+     ],
+     "min": [
+      -1.087,
+      2.28,
+      0.945
+     ],
+     "max": [
+      1.087,
+      3.922,
+      3.868
+     ]
+    },
+    {
+     "nazwa": "Szczeka_Geo",
+     "kosc": "Szczeka",
+     "trojkaty": 140,
+     "wierzcholki": 82,
+     "wymiary": [
+      0.528,
+      0.456,
+      1.074
+     ],
+     "min": [
+      -0.264,
+      2.5,
+      2.62
+     ],
+     "max": [
+      0.264,
+      2.956,
+      3.694
+     ]
+    },
+    {
+     "nazwa": "UchoL_Geo",
+     "kosc": "UchoL",
+     "trojkaty": 42,
+     "wierzcholki": 27,
+     "wymiary": [
+      0.389,
+      0.775,
+      0.268
+     ],
+     "min": [
+      0.177,
+      3.58,
+      1.953
+     ],
+     "max": [
+      0.566,
+      4.355,
+      2.221
+     ]
+    },
+    {
+     "nazwa": "UchoP_Geo",
+     "kosc": "UchoP",
+     "trojkaty": 42,
+     "wierzcholki": 27,
+     "wymiary": [
+      0.389,
+      0.775,
+      0.269
+     ],
+     "min": [
+      -0.566,
+      3.58,
+      1.952
+     ],
+     "max": [
+      -0.177,
+      4.355,
+      2.221
+     ]
+    },
+    {
+     "nazwa": "Powieki_Geo",
+     "kosc": "Powieki",
+     "trojkaty": 24,
+     "wierzcholki": 16,
+     "wymiary": [
+      1.248,
+      0.478,
+      0.048
+     ],
+     "min": [
+      -0.624,
+      3.197,
+      2.626
+     ],
+     "max": [
+      0.624,
+      3.675,
+      2.674
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodL_Gora_Geo",
+     "kosc": "LapaPrzodL_Gora",
+     "trojkaty": 58,
+     "wierzcholki": 33,
+     "wymiary": [
+      0.42,
+      1.2,
+      0.79
+     ],
+     "min": [
+      0.19,
+      1.18,
+      0.49
+     ],
+     "max": [
+      0.61,
+      2.38,
+      1.28
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodL_Dol_Geo",
+     "kosc": "LapaPrzodL_Dol",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.34,
+      0.84,
+      0.41
+     ],
+     "min": [
+      0.23,
+      0.4,
+      0.81
+     ],
+     "max": [
+      0.57,
+      1.24,
+      1.22
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodL_Stopa_Geo",
+     "kosc": "LapaPrzodL_Stopa",
+     "trojkaty": 142,
+     "wierzcholki": 83,
+     "wymiary": [
+      0.46,
+      0.46,
+      0.688
+     ],
+     "min": [
+      0.17,
+      0.0,
+      0.84
+     ],
+     "max": [
+      0.63,
+      0.46,
+      1.528
+     ]
+    },
+    {
+     "nazwa": "LapaTylL_Gora_Geo",
+     "kosc": "LapaTylL_Gora",
+     "trojkaty": 58,
+     "wierzcholki": 33,
+     "wymiary": [
+      0.497,
+      1.32,
+      1.173
+     ],
+     "min": [
+      0.19,
+      1.24,
+      -1.847
+     ],
+     "max": [
+      0.687,
+      2.56,
+      -0.674
+     ]
+    },
+    {
+     "nazwa": "LapaTylL_Dol_Geo",
+     "kosc": "LapaTylL_Dol",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      0.34,
+      1.289,
+      0.782
+     ],
+     "min": [
+      0.23,
+      0.27,
+      -1.64
+     ],
+     "max": [
+      0.57,
+      1.559,
+      -0.858
+     ]
+    },
+    {
+     "nazwa": "LapaTylL_Stopa_Geo",
+     "kosc": "LapaTylL_Stopa",
+     "trojkaty": 142,
+     "wierzcholki": 83,
+     "wymiary": [
+      0.46,
+      0.31,
+      0.688
+     ],
+     "min": [
+      0.17,
+      0.0,
+      -1.61
+     ],
+     "max": [
+      0.63,
+      0.31,
+      -0.922
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodP_Gora_Geo",
+     "kosc": "LapaPrzodP_Gora",
+     "trojkaty": 58,
+     "wierzcholki": 33,
+     "wymiary": [
+      0.42,
+      1.2,
+      0.79
+     ],
+     "min": [
+      -0.61,
+      1.18,
+      0.49
+     ],
+     "max": [
+      -0.19,
+      2.38,
+      1.28
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodP_Dol_Geo",
+     "kosc": "LapaPrzodP_Dol",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.34,
+      0.84,
+      0.41
+     ],
+     "min": [
+      -0.57,
+      0.4,
+      0.81
+     ],
+     "max": [
+      -0.23,
+      1.24,
+      1.22
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodP_Stopa_Geo",
+     "kosc": "LapaPrzodP_Stopa",
+     "trojkaty": 142,
+     "wierzcholki": 83,
+     "wymiary": [
+      0.46,
+      0.46,
+      0.688
+     ],
+     "min": [
+      -0.63,
+      0.0,
+      0.84
+     ],
+     "max": [
+      -0.17,
+      0.46,
+      1.528
+     ]
+    },
+    {
+     "nazwa": "LapaTylP_Gora_Geo",
+     "kosc": "LapaTylP_Gora",
+     "trojkaty": 58,
+     "wierzcholki": 33,
+     "wymiary": [
+      0.497,
+      1.32,
+      1.173
+     ],
+     "min": [
+      -0.687,
+      1.24,
+      -1.847
+     ],
+     "max": [
+      -0.19,
+      2.56,
+      -0.674
+     ]
+    },
+    {
+     "nazwa": "LapaTylP_Dol_Geo",
+     "kosc": "LapaTylP_Dol",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      0.34,
+      1.289,
+      0.782
+     ],
+     "min": [
+      -0.57,
+      0.27,
+      -1.64
+     ],
+     "max": [
+      -0.23,
+      1.559,
+      -0.858
+     ]
+    },
+    {
+     "nazwa": "LapaTylP_Stopa_Geo",
+     "kosc": "LapaTylP_Stopa",
+     "trojkaty": 142,
+     "wierzcholki": 83,
+     "wymiary": [
+      0.46,
+      0.31,
+      0.688
+     ],
+     "min": [
+      -0.63,
+      0.0,
+      -1.61
+     ],
+     "max": [
+      -0.17,
+      0.31,
+      -0.922
+     ]
+    },
+    {
+     "nazwa": "Ogon_Geo",
+     "kosc": "Ogon",
+     "trojkaty": 86,
+     "wierzcholki": 51,
+     "wymiary": [
+      0.707,
+      0.745,
+      0.799
+     ],
+     "min": [
+      -0.25,
+      2.352,
+      -2.451
+     ],
+     "max": [
+      0.457,
+      3.097,
+      -1.652
+     ]
+    },
+    {
+     "nazwa": "OgonKoniec_Geo",
+     "kosc": "OgonKoniec",
+     "trojkaty": 824,
+     "wierzcholki": 474,
+     "wymiary": [
+      1.151,
+      1.435,
+      1.654
+     ],
+     "min": [
+      -0.57,
+      1.884,
+      -3.802
+     ],
+     "max": [
+      0.581,
+      3.319,
+      -2.148
+     ]
+    }
+   ],
+   "trojkaty_razem": 4470,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 15
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.174,
+    4.355,
+    7.67
+   ],
+   "wymiary_z_akcesoriami": [
+    2.174,
+    4.355,
+    7.67
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.087,
+     0.0,
+     -3.802
+    ],
+    [
+     1.087,
+     4.355,
+     3.868
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Zad",
+    "Klatka",
+    "Glowa",
+    "Szczeka",
+    "UchoL",
+    "UchoP",
+    "Powieki",
+    "LapaPrzodL_Gora",
+    "LapaPrzodL_Dol",
+    "LapaPrzodL_Stopa",
+    "LapaTylL_Gora",
+    "LapaTylL_Dol",
+    "LapaTylL_Stopa",
+    "LapaPrzodP_Gora",
+    "LapaPrzodP_Dol",
+    "LapaPrzodP_Stopa",
+    "LapaTylP_Gora",
+    "LapaTylP_Dol",
+    "LapaTylP_Stopa",
+    "Ogon",
+    "OgonKoniec"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment",
+    "PyskAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att",
+    "Pysk_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 72,
+     "fps": 30,
+     "sekundy": 2.4,
+     "petla": true
+    },
+    {
+     "n": "ruch",
+     "dlugosc": 16,
+     "fps": 30,
+     "sekundy": 0.53,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 27,
+     "fps": 30,
+     "sekundy": 0.9,
+     "petla": false
+    },
+    {
+     "n": "umiejetnosc",
+     "dlugosc": 54,
+     "fps": 30,
+     "sekundy": 1.8,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 18,
+     "fps": 30,
+     "sekundy": 0.6,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 28,
+     "fps": 30,
+     "sekundy": 0.93,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 56,
+     "fps": 30,
+     "sekundy": 1.87,
+     "petla": false
+    },
+    {
+     "n": "ryk",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "cierniowy_wilk.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje brak -> ZGODNE",
+  "cierniowy_wilk__idle.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-73 -> ZGODNE",
+  "cierniowy_wilk__ruch.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-17 -> ZGODNE",
+  "cierniowy_wilk__atak.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-28 -> ZGODNE",
+  "cierniowy_wilk__umiejetnosc.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-55 -> ZGODNE",
+  "cierniowy_wilk__trafienie.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-19 -> ZGODNE",
+  "cierniowy_wilk__unik.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-29 -> ZGODNE",
+  "cierniowy_wilk__upadek.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-57 -> ZGODNE",
+  "cierniowy_wilk__ryk.fbx: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje cierniowy_wilk|Scene 1-61 -> ZGODNE",
+  "cierniowy_wilk.glb: siatki 24, kości 22, trójkąty 4506, wzrost 4.36 st., akcje atak 0-27, idle 0-72, ruch 0-16, ryk 0-60, trafienie 0-18, umiejetnosc 0-54, unik 0-28, upadek 0-56 -> ZGODNE"
+ ]
+}
