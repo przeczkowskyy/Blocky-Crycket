@@ -11,7 +11,10 @@
 //
 // Każda pozycja to pytanie do człowieka (wspolne/kolejka.js: zbudujPytania): pytanie otwarte z polem odpowiedzi
 // (z decyzjami z wiersza „Rozstrzyga:” i przyciskami Tak / Nie w tej samej karcie), decyzja „Czy zatwierdzamy: …?”
-// z Tak / Nie (z uzasadnieniem) i „Na sesję główną”, raport „Czy akceptujesz: …?” z Akceptuję / Do poprawy.
+// z Tak / Nie (z uzasadnieniem) i „Na sesję główną”, raport „Czy akceptujesz: …?” z Akceptuję / Do poprawy,
+// decyzja drugiej osoby czekająca na moje potwierdzenie (D-043) „Karol zatwierdził: … — zgadzasz się?” z Zgoda /
+// Brak zgody (z powodem) / Przedyskutuj (POST /api/sejf/decyzje/<id>/potwierdzenie). Decyzje w historii mają
+// dyskretny znacznik podpisów: „czeka na potwierdzenie: Imię” albo „dwa podpisy: …”.
 //
 // Zapis do sejfu (bc/zapis.py): każdy zapis wysyła znacznik wersji pliku z chwili, gdy człowiek go zobaczył (karta
 // pamięta wersje z chwili narysowania, okno decyzji — z chwili otwarcia); przy cudzej zmianie serwer odmawia (409),
@@ -26,7 +29,7 @@ import { komentarze } from "./komentarze.js";
 import { kartyRaportow } from "./raport_karta.js";
 import {
   zbudujPytania, bezWierszaRozstrzyga, numerDecyzji, OTWARTE_DECYZJE, pytaniaZamknieteDecyzjami, pasuje, zwykly,
-  pytanieDecyzji,
+  pytanieDecyzji, kanoniczne,
 } from "./kolejka.js";
 
 const ARKUSZ_STYLOW = new URL("./lista_pytan.css", import.meta.url).href;
@@ -348,6 +351,7 @@ export function listaPytan(ctx, opcje = {}) {
         el("p", null, "W Rejestrze decyzji wiersz statusu zmieni się na „" + (zatw ? "✅ zatwierdzona" : "❌ odrzucona") +
           " · … · zdecydował: " + kto + " " + dzisiaj() + "”, a ślad trafi do Dziennika zmian. Cofnąć można tylko ręcznie w Obsidianie." +
           ("decydent" in ctx.ja && bezImienia ? " Decyzja musi mieć podpis — bez imienia panel jej nie zapisze." : "")),
+        el("p", { class: "cichy-tekst" }, "Druga osoba dostanie pytanie o zgodę (w panelu i na Telegramie). Do jej odpowiedzi to robocze ustalenie."),
         el("p", { class: "cichy-tekst" }, "Zatwierdzasz dokładnie tę treść. Jeśli ktoś zmieni Rejestr, zanim klikniesz, panel nic nie zapisze i pokaże nową wersję."))),
       el("label", { class: "etykieta" }, "Uzasadnienie (opcjonalnie)"), pole,
       el("div", { class: "rzad-przyciskow decyzja-potwierdz" }, anuluj, el("span", { class: "rozpychacz" }), przycisk));
@@ -411,6 +415,110 @@ export function listaPytan(ctx, opcje = {}) {
       el("button", { type: "button", class: "przycisk sukces" + male, title: "Zatwierdź " + d.id, onclick: () => oknoDecyzji(d, "zatwierdzona", wersja()) }, ikona("ok"), el("span", null, "Tak")),
       el("button", { type: "button", class: "przycisk grozny" + male, title: "Odrzuć " + d.id, onclick: () => oknoDecyzji(d, "odrzucona", wersja()) }, ikona("krzyzyk"), el("span", null, "Nie")),
       dodatkowe || null);
+  }
+
+  // ------------------------------------------------------------------ potwierdzenie decyzji drugiej osoby (D-043)
+  const ODPOWIEDZI = {
+    zgoda: { tytul: "Zgoda", przycisk: "Zgoda — potwierdzam", klasa: "sukces", ikona: "ok", pole: null,
+      opis: (d) => "Do wiersza statusu dojdzie „potwierdził: " + imieZUstawien() + " " + dzisiaj() + "” — " + d.id + " będzie mieć dwa podpisy i zacznie obowiązywać." },
+    sprzeciw: { tytul: "Brak zgody", przycisk: "Nie zgadzam się", klasa: "grozny", ikona: "krzyzyk", pole: "Dlaczego nie (opcjonalnie, krótko)",
+      opis: (d) => d.id + " wróci na „do decyzji”, a w Rejestrze zostanie ślad „sprzeciw: " + imieZUstawien() + " " + dzisiaj() + "”. Sprawa wróci na listę „Do odpowiedzi”." },
+    rozmowa: { tytul: "Przedyskutujmy", przycisk: "Na sesję główną", klasa: "glowny", ikona: "kalendarz", pole: "Dopisek do tematu (opcjonalnie)",
+      opis: (d) => d.id + " wróci na „do decyzji” ze śladem „do rozmowy”, a temat trafi na agendę sesji głównej." },
+  };
+
+  function imieZUstawien() {
+    let t = "";
+    try {
+      t = localStorage.getItem("bc.kto") || "";
+    } catch (e) { /* bez pamięci przeglądarki imienia nie ma */ }
+    t = t.trim();
+    return !t || /^go[sś][cć]$/i.test(t) ? "" : t;
+  }
+
+  function oknoPotwierdzenia(d, odpowiedz, wersjaPrzeczytana) {
+    const o = ODPOWIEDZI[odpowiedz];
+    const imie = imieZUstawien();
+    const pole = o.pole ? el("textarea", { class: "pole", rows: 3, maxlength: "1000", placeholder: o.pole, "aria-label": o.pole }) : null;
+    const przycisk = el("button", { type: "submit", class: "przycisk " + o.klasa }, ikona(o.ikona), el("span", null, o.przycisk));
+    const anuluj = el("button", { type: "button", class: "przycisk cichy" }, "Anuluj");
+    const zd = d.zdecydowal || {};
+    const form = el("form", { class: "formularz" },
+      el("p", null, el("strong", null, d.id + " "), d.tytul || ""),
+      el("p", { class: "cichy-tekst" }, (zd.kto || "Ktoś") + (d.status === "odrzucona" ? " odrzucił" : " zatwierdził") + (zd.data ? " " + zd.data : "") + "."),
+      d.opis_md ? el("div", { class: "decyzja-podglad" }, html(d.opis_md)) : null,
+      el("div", { class: "podpowiedz" }, ikona("info"), el("div", null,
+        el("p", null, o.opis(d)),
+        imie ? null : el("p", null, el("strong", null, "Wpisz swoje imię w Ustawieniach — odpowiedź musi mieć podpis.")))),
+      pole ? el("label", { class: "etykieta" }, o.pole) : null, pole,
+      el("div", { class: "rzad-przyciskow decyzja-potwierdz" }, anuluj, el("span", { class: "rozpychacz" }), przycisk));
+    const ark = arkusz({ tytul: o.tytul + ": " + d.id, tresc: form });
+    anuluj.addEventListener("click", () => ark.zamknij());
+    let wToku = false;
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (wToku) return;
+      wToku = true;
+      przycisk.disabled = true;
+      try {
+        const cialo = { odpowiedz };
+        if (pole && pole.value.trim()) cialo.uzasadnienie = pole.value.trim();
+        const w = await zapiszDoSejfu("/api/sejf/decyzje/" + encodeURIComponent(d.id) + "/potwierdzenie", cialo, wersjaPrzeczytana,
+          { konflikt: "Rejestr decyzji zmienił się, odkąd otworzyłeś to okno — nic nie zapisano. Przeczytaj " + d.id + " jeszcze raz." });
+        const kod = ostatniBladZapisu && ostatniBladZapisu.dane && ostatniBladZapisu.dane.kod;
+        if (w) {
+          ark.zamknij();
+          toast(odpowiedz === "zgoda" ? d.id + " ma dwa podpisy." : odpowiedz === "sprzeciw" ? d.id + " wraca „do decyzji”." :
+            d.id + " czeka na sesję główną.", "ok", odpowiedz === "rozmowa" ? { akcja: { tekst: "Sesja", fn: () => ctx.idz("sesja") } } : undefined);
+          if (odpowiedz === "rozmowa") pobierz(true);           // agenda: sprawa przechodzi do „Odłożone”
+        } else if (kod === "konflikt_wersji" || kod === "nic_nie_czeka") {
+          ark.zamknij();
+          if (kod === "nic_nie_czeka") pobierz(true);
+        } else if (ostatniBladZapisu && ostatniBladZapisu.status === 404 && !(ostatniBladZapisu.dane && ostatniBladZapisu.dane.kod)) {
+          ark.zamknij();                                       // stary serwer bez tej trasy
+          toast("Potwierdzanie zacznie działać po restarcie panelu.", "info", { czas: 7000 });
+        } else {
+          przycisk.disabled = false;
+        }
+      } finally {
+        wToku = false;
+      }
+    });
+  }
+
+  /** Zgoda / Brak zgody / Przedyskutuj — dla decydenta; reszta widzi, gdzie potwierdzić. */
+  function przyciskiPotwierdzenia(d, wersja) {
+    if (!mozeZapisywac()) return el("p", { class: "decyzja-gd cichy-tekst" }, ikona("klodka"), "Potwierdzisz w panelu na komputerze albo przyciskiem na Telegramie.");
+    if (!decydent()) {
+      return el("p", { class: "decyzja-gd cichy-tekst" }, ikona("klodka"),
+        "Potwierdzasz przy komputerze z panelem, z kluczem zatwierdzania albo przyciskiem na Telegramie.");
+    }
+    const male = zwarta ? " maly" : "";
+    return el("div", { class: "rzad-przyciskow decyzja-akcje potwierdzenie-akcje", dataset: { decyzja: d.id } },
+      el("button", { type: "button", class: "przycisk sukces" + male, dataset: { odpowiedz: "zgoda" }, onclick: () => oknoPotwierdzenia(d, "zgoda", wersja()) }, ikona("ok"), el("span", null, "Zgoda")),
+      el("button", { type: "button", class: "przycisk grozny" + male, dataset: { odpowiedz: "sprzeciw" }, onclick: () => oknoPotwierdzenia(d, "sprzeciw", wersja()) }, ikona("krzyzyk"), el("span", null, "Brak zgody")),
+      el("button", { type: "button", class: "przycisk cichy" + male, dataset: { odpowiedz: "rozmowa" }, onclick: () => oknoPotwierdzenia(d, "rozmowa", wersja()) }, ikona("komentarz"), el("span", null, "Przedyskutuj")));
+  }
+
+  /** Dyskretny znacznik podpisów decyzji (D-043). */
+  function znacznikPodpisow(d) {
+    if (!d) return null;
+    const p = (x) => (x && x.kto ? x.kto + (x.data ? " " + kiedy(x.data) : "") : "?");
+    if (d.zdecydowal && d.potwierdzil) {
+      return el("p", { class: "cichy-tekst decyzja-podpisy dwa" }, ikona("ok"), el("span", null, "Dwa podpisy: " + p(d.zdecydowal) + " i " + p(d.potwierdzil)));
+    }
+    if (d.czeka_na) {
+      const moja = kanoniczne(ctx.ja.kto) && kanoniczne(ctx.ja.kto) === kanoniczne(d.zdecydowal && d.zdecydowal.kto);
+      return el("p", { class: "cichy-tekst decyzja-podpisy czeka" }, ikona("zegar"),
+        el("span", null, "Czeka na potwierdzenie: " + d.czeka_na + (moja ? " (Twoja decyzja — robocze ustalenie)" : " · podpis: " + p(d.zdecydowal))));
+    }
+    const slad = d.sprzeciw ? ["Brak zgody", d.sprzeciw] : d.do_rozmowy ? ["Do rozmowy", d.do_rozmowy] : null;
+    if (slad) {
+      const w = slad[1].wobec;
+      return el("p", { class: "cichy-tekst decyzja-podpisy slad" }, ikona("info"),
+        el("span", null, slad[0] + ": " + p(slad[1]) + (w ? " (wobec: " + (w.status || "") + " przez " + p(w) + ")" : "")));
+    }
+    return null;
   }
 
   function komentarzeCelu(klucz, cel, tekst) {
@@ -598,7 +706,7 @@ export function listaPytan(ctx, opcje = {}) {
     if (zwarta) {
       dopisz(k, goraKarty(s, el("span", { class: "chip " + st.kolor }, st.tekst)),
         el("h3", { class: "sprawa-tytul" }, s.pytanie),
-        szczegoly(s.klucz, meta, d.opis_md ? html(d.opis_md) : null), powtorka,
+        szczegoly(s.klucz, meta, d.opis_md ? html(d.opis_md) : null), powtorka, znacznikPodpisow(d),
         przyciskiDecyzji(d, wersjaRejestru));
       return;
     }
@@ -607,8 +715,35 @@ export function listaPytan(ctx, opcje = {}) {
       goraKarty(s, el("span", { class: "chip " + st.kolor }, d.emoji ? el("span", { "aria-hidden": "true" }, d.emoji) : null, st.tekst),
         d.kategoria ? el("span", { class: "chip" }, d.kategoria) : null),
       el("h2", { class: "sprawa-tytul" }, s.pytanie),
-      meta, opis, powtorka,
+      meta, znacznikPodpisow(d), opis, powtorka,
       przyciskiDecyzji(d, wersjaRejestru, [przyciskNaSesje(s)]),
+      !ctx.statyczny ? komentarzeDecyzji(d) : null);
+  }
+
+  /** Decyzja drugiej osoby, która czeka na moje potwierdzenie (D-043). */
+  function kartaPotwierdzenia(s, k) {
+    const d = s.d;
+    const st = STATUSY_DECYZJI[d.status] || { tekst: d.status || "?", kolor: "" };
+    const wersjaRejestru = () => (k._wersje && k._wersje.decyzje) || "";
+    k.classList.add("decyzja", "potwierdzenie", "status-" + (d.status || "brak"));
+    k.dataset.decyzja = d.id;
+    const meta = (d.meta || []).length ? el("p", { class: "cichy-tekst decyzja-meta" }, (d.meta || []).join(" · ")) : null;
+    const chipCzeka = el("span", { class: "chip zloto" }, ikona("zegar"), "czeka na Ciebie");
+    if (zwarta) {
+      dopisz(k, goraKarty(s, el("span", { class: "chip " + st.kolor }, st.tekst), chipCzeka),
+        el("h3", { class: "sprawa-tytul" }, s.pytanie),
+        szczegoly(s.klucz, meta, d.opis_md ? html(d.opis_md) : null),
+        przyciskiPotwierdzenia(d, wersjaRejestru));
+      return;
+    }
+    const opis = d.opis_md ? el("details", { class: "zwijane" }, el("summary", null, ikona("dol"), "Opis decyzji"), html(d.opis_md)) : null;
+    dopisz(k,
+      goraKarty(s, el("span", { class: "chip " + st.kolor }, d.emoji ? el("span", { "aria-hidden": "true" }, d.emoji) : null, st.tekst), chipCzeka),
+      el("h2", { class: "sprawa-tytul" }, s.pytanie),
+      el("p", { class: "cichy-tekst sprawa-podpowiedz" }, ikona("info"),
+        el("span", null, "Z jednym podpisem to robocze ustalenie — obowiązuje po Twojej zgodzie.")),
+      meta, opis,
+      przyciskiPotwierdzenia(d, wersjaRejestru),
       !ctx.statyczny ? komentarzeDecyzji(d) : null);
   }
 
@@ -626,6 +761,7 @@ export function listaPytan(ctx, opcje = {}) {
     k._wersje = Object.assign({}, (plan && plan.wersje) || {});
     k._sprawa = s;
     if (s.typ === "pytanie") kartaPytania(s, k);
+    else if (s.typ === "potwierdzenie") kartaPotwierdzenia(s, k);
     else kartaDecyzji(s, k);
     return k;
   }
@@ -642,7 +778,8 @@ export function listaPytan(ctx, opcje = {}) {
     const flagi = [mozeZapisywac(), decydent(), naSesjeMozna(), s.zamknieta, s.odlozona];
     if (s.typ === "raport") return JSON.stringify([s.r, flagi, raportyUI.zmieniaDecyzje(s.r.id)]);
     if (s.typ === "pytanie") return JSON.stringify([s.p, s.decyzje.map((x) => x.d), s.powiazane.map((x) => x.d && x.d.status), flagi]);
-    return JSON.stringify([s.d, s.powtorzona, flagi]);
+    // potwierdzenie i decyzja zależą też od tego, kto patrzy (znacznik „Twoja decyzja”, czyja kolejka)
+    return JSON.stringify([s.typ, s.d, s.powtorzona, flagi, kanoniczne(ctx.ja.kto)]);
   }
 
   function oznaczZmiane(k, tekst, s, mapa) {
@@ -763,10 +900,10 @@ export function listaPytan(ctx, opcje = {}) {
 
   // ------------------------------------------------------------------ rysowanie listy
   function przebuduj() {
-    sprawy = zbudujPytania(plan || {}, raporty || [], agenda);
+    sprawy = zbudujPytania(plan || {}, raporty || [], agenda, ctx.ja);
     gdzieDecyzja = new Map();
     for (const s of [...sprawy.czekajace, ...sprawy.odlozone, ...sprawy.odpowiedziane]) {
-      if (s.typ === "decyzja" && !gdzieDecyzja.has(s.nr)) gdzieDecyzja.set(s.nr, s.klucz);
+      if ((s.typ === "decyzja" || s.typ === "potwierdzenie") && !gdzieDecyzja.has(s.nr)) gdzieDecyzja.set(s.nr, s.klucz);
       if (s.typ === "pytanie" && !s.zamknieta) {
         for (const x of s.decyzje) if (x.d && OTWARTE_DECYZJE.includes(x.d.status)) gdzieDecyzja.set(numerDecyzji(x.id), s.klucz);
       }

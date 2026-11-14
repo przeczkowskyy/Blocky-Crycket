@@ -58,6 +58,11 @@ class SerwerTestowy(unittest.TestCase):
     def przygotuj(cls, runtime):
         """Miejsce na dodatkowe pliki w danych lokalnych przed startem serwera."""
 
+    @classmethod
+    def srodowisko(cls):
+        """Dodatkowe zmienne środowiska serwera testowego (np. tryb testowy bota Telegram z adresem atrapy)."""
+        return {}
+
     # ------------------------------------------------------------------ serwer
     @classmethod
     def setUpClass(cls):
@@ -74,6 +79,9 @@ class SerwerTestowy(unittest.TestCase):
         cls.port = _wolny_port()
         env = dict(os.environ, BC_PANEL_DANE=dane, BC_PANEL_RUNTIME=runtime, PYTHONDONTWRITEBYTECODE="1",
                    PYTHONIOENCODING="utf-8", STUDIO_MCP_CMD="exit 1")
+        for k in ("BC_TELEGRAM_TRYB_TESTOWY", "BC_TELEGRAM_API_TESTOWE"):
+            env.pop(k, None)                                   # bot tylko tam, gdzie test sam poda atrapę
+        env.update(cls.srodowisko())
         cls.log = open(os.path.join(cls.tmp, "serwer.log"), "wb")
         cls.proc = subprocess.Popen([sys.executable, "-B", os.path.join(PANEL, "serwer.py"), "--bez-przegladarki",
                                      "--port", str(cls.port)], cwd=REPO, env=env, stdin=subprocess.DEVNULL,

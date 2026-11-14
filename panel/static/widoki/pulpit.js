@@ -131,6 +131,7 @@ export default {
         const otw = (s.decyzje || []).filter((x) => x.d && (x.d.status === "propozycja" || x.d.status === "do_decyzji")).length;
         return { ikona: "pytanie", kolor: "zloto", nad: s.pochodzenie || "pytanie #" + s.p.nr, pod: otw ? "z " + otw + " " + odmiana(otw, ["decyzją", "decyzjami", "decyzjami"]) + " do zatwierdzenia" : "czeka na odpowiedź" };
       }
+      if (s.typ === "potwierdzenie") return { ikona: "decyzja", kolor: "zloto", nad: s.pochodzenie || "decyzja " + s.d.id, pod: "Zgoda, brak zgody czy rozmowa?" };
       return { ikona: "decyzja", kolor: "fiolet", nad: s.pochodzenie || "decyzja " + s.d.id, pod: "Tak czy nie? · " + (STATUSY_DECYZJI[s.d.status] || s.d.status) };
     }
 
@@ -138,7 +139,7 @@ export default {
       const c = kCzeka.cialo;
       const { plan, raporty, agenda, bladPlanu, bladRaportow } = dane;
       if (!plan && !raporty) return c.replaceChildren(stanBledu(bladPlanu || bladRaportow || {}, "Sprawy"));
-      const k = zbudujKolejke(plan || {}, raporty || [], agenda);
+      const k = zbudujKolejke(plan || {}, raporty || [], agenda, ctx.ja);   // z potwierdzeniami decyzji (D-043)
       const n = k.aktywne.length;
       ctx.licznik("pytania", n);
       kCzeka.akcje.replaceChildren();

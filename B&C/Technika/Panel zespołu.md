@@ -67,6 +67,15 @@ Jak panel podpisuje:
 
 Wpisy z 13.11.2026 sprzed tej zmiany mają jeszcze znacznik „Game Director” (np. `zdecydował: Game Director (Paweł) 2026-11-13` albo `- Paweł (Game Director): …`) — znaczy on dokładnie to samo co „klucz zatwierdzania”. Zapis podpisany imieniem „Game Director”, „klucz zatwierdzania” albo „gość panelu” panel odrzuca, bo takie imię udawałoby znacznik serwera.
 
+### Potwierdzanie przez drugą osobę (D-043)
+Zbudowane 14.11.2026 według D-043 (jedna osoba decyduje, druga dostaje alert i odpowiada). Po zatwierdzeniu albo odrzuceniu decyzji w panelu druga osoba dostaje pytanie: w zakładce Pytania („Karol zatwierdził: … — zgadzasz się?”) i — gdy działa bot — na Telegramie, w grupie „B&C decyzje”, z przyciskami **Zgoda**, **Brak zgody** i **Przedyskutuj**. Decyzja z jednym podpisem to **robocze ustalenie**; obowiązuje po dwóch podpisach. Wszystko zostaje w wierszu statusu w [[Rejestr decyzji]] (bez nowych statusów):
+- czeka: `✅ zatwierdzona · … · zdecydował: Karol Balucki 2026-11-14`;
+- zgoda: `… · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14`;
+- brak zgody: `🕓 do decyzji · … · sprzeciw: Paweł 2026-11-14 (wobec: zatwierdzona przez Karol Balucki 2026-11-14)`, opcjonalnie wiersz `Uzasadnienie sprzeciwu — Paweł, 2026-11-14: …`; sprawa wraca na listę „Do odpowiedzi”;
+- przedyskutuj: jak brak zgody, ale `do rozmowy: …`, a temat trafia na agendę [[Sesje główne]].
+
+Czekają decyzje z podpisem Karola albo Pawła od 13.11.2026 (pełne imię „Karol Balucki” to Karol); starsze i podpisy „Game Director” nie czekają. Własnej decyzji nie da się potwierdzić. Każda odpowiedź zostawia ślad w [[Dziennik zmian]] z dopiskiem „przez panel” albo „przez Telegram” (np. `- Paweł (Telegram): decyzja D-019 potwierdzona: zgoda (…), przez Telegram`). Ponowna decyzja zaczyna potwierdzanie od nowa. Agenci nigdy nie dopisują drugiego podpisu sami. Na Telegramie: `/czeka` pokazuje, co czeka na Twoje potwierdzenie, `/pomoc` — opis. Bot działa tylko wtedy, gdy włączony jest komputer z panelem; ustawienia bota (token, numery osób i grupy) leżą wyłącznie w danych lokalnych tego komputera, nigdy w repozytorium. Zakładanie bota: `panel/INSTALACJA.md`, szczegóły: `panel/README.md`. Dotyczy [[Pytania otwarte]] #29: technika jest gotowa i sprawdzona w testach, czeka na próbę na prawdziwym Telegramie; działanie bez włączonego komputera zostaje otwarte.
+
 ## Sesja — długa rozmowa głosowa z agentem
 Zakładka **Sesja** (dodana 13.11.2026 na prośbę Karola, czeka na zgodę jak cały panel) służy do „sesji głównych”, czyli długich rozmów Karola i Pawła. Obaj wchodzą na ten sam panel (gospodarz przy komputerze, druga osoba przez link tunelu), klikają **Dołącz** i rozmawiają w przeglądarce — głos idzie wprost między nimi.
 - **Agenda**: tematy do omówienia czyta i zapisuje notatka [[Sesje główne]]. Temat można dopisać w zakładce, a agent na przycisk „Zaproponuj tematy” przegląda [[Pytania otwarte]], [[Rejestr decyzji]] i [[Dziennik zmian]] i dopisuje propozycje (z dopiskiem „propozycja agenta”). Gdy ktoś odkłada decyzję „na sesję długą”, temat ląduje właśnie tam.

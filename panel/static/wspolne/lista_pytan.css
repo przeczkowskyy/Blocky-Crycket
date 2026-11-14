@@ -29,6 +29,13 @@
 .sprawa.sprawa-decyzja.status-do_decyzji { border-left-color: var(--zloto); }
 .sprawa.sprawa-decyzja.status-propozycja { border-left-color: var(--fiolet); }
 .sprawa.sprawa-raport { border-left-color: var(--niebieski); }
+.sprawa.sprawa-potwierdzenie { border-left-color: var(--zloto); }
+/* znacznik podpisów decyzji (D-043): czeka na drugą osobę / dwa podpisy / sprzeciw albo rozmowa */
+.decyzja-podpisy { display: flex; align-items: center; gap: 6px; font-size: 13px; margin: 0; }
+.decyzja-podpisy > .ikona { flex: none; width: 15px; height: 15px; }
+.decyzja-podpisy.czeka > .ikona { color: var(--zloto); }
+.decyzja-podpisy.dwa > .ikona { color: var(--zielen); }
+.potwierdzenie-akcje .przycisk { flex: 1 1 auto; }
 .sprawa.sprawa-raport::before { display: none; }
 .sprawa.sprawa-zamknieta, .sprawa.sprawa-raport:not(.status-czeka) { border-left-color: var(--obrys-jasny); }
 .sprawa.sprawa-decyzja.status-zatwierdzona { border-left-color: rgba(62, 207, 142, 0.7); }

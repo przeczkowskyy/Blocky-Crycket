@@ -9,6 +9,8 @@ Zasada D-008: mózgiem projektu jest sejf `B&C/`. Ten moduł niczego nie zapisuj
   modyfikacji; sprawdzenie najwyżej co 3 s.
 - Frontmatter czyta prosty parser YAML własnej roboty, który nigdy nie rzuca wyjątku.
 - Plan (roadmapa, zadania, decyzje, pytania, dziennik) parsowany z `<sejf B&C>/Produkcja/*.md`.
+- Decyzje mają pola potwierdzania przez drugą osobę (D-043): `zdecydowal`, `potwierdzil`, `sprzeciw`,
+  `do_rozmowy`, `czeka_na` — patrz „potwierdzanie decyzji” niżej.
 """
 import datetime
 import hashlib
@@ -700,8 +702,112 @@ def _linia_statusu(linia):
     return status, emoji, (czesci[1] if len(czesci) > 1 else ""), czesci[2:]
 
 
-def parsuj_decyzje(tekst):
+# --------------------------------------------------------------------------- potwierdzanie decyzji (D-043)
+# Jedna osoba decyduje (podpis „zdecydował: Imię RRRR-MM-DD” w wierszu statusu), druga potwierdza:
+#   zgoda           → do wiersza dochodzi „· potwierdził: Imię RRRR-MM-DD” (dwa podpisy = decyzja obowiązuje);
+#   brak zgody      → status wraca na „🕓 do decyzji”, a podpis zastępuje
+#                     „· sprzeciw: Imię RRRR-MM-DD (wobec: zatwierdzona przez Imię RRRR-MM-DD)”;
+#   przedyskutujmy  → tak samo, ale „· do rozmowy: Imię RRRR-MM-DD (wobec: …)” i temat na agendzie sesji głównej.
+# Decyzja CZEKA na potwierdzenie, gdy: status zatwierdzona/odrzucona, podpis „zdecydował” osoby z zespołu z datą
+# od POTWIERDZANIE_OD i bez pola „potwierdził”. Starsze decyzje i podpis „Game Director” nie czekają.
+# Osoba kanoniczna = pierwsze słowo imienia bez wielkości liter i polskich znaków („Karol Balucki” = „Karol”).
+ZESPOL = ("Karol", "Paweł")                                    # zespół zawsze; telegram.json może dopisać osoby
+POTWIERDZANIE_OD = "2026-11-13"
+POLA_PODPISU = {"zdecydował": "zdecydowal", "zdecydowała": "zdecydowal", "oznaczył": "oznaczyl",
+                "oznaczyła": "oznaczyl", "potwierdził": "potwierdzil", "potwierdziła": "potwierdzil",
+                "sprzeciw": "sprzeciw", "do rozmowy": "do_rozmowy"}
+_RX_POLE_PODPISU = re.compile(r"^(zdecydował[a]?|oznaczył[a]?|potwierdził[a]?|sprzeciw|do rozmowy)\s*:\s*(.*)$",
+                              re.IGNORECASE)
+_RX_KTO_DATA = re.compile(r"^(.*?)\s+(\d{4}-\d{2}-\d{2})(?:\s*\((.*)\))?\s*$")
+_RX_WOBEC = re.compile(r"^\s*wobec:\s*(zatwierdzona|odrzucona)\s+przez\s+(.+?)\s+(\d{4}-\d{2}-\d{2})\s*$", re.IGNORECASE)
+
+
+def kanoniczne(imie):
+    """Osoba kanoniczna: pierwsze słowo imienia, małe litery, bez polskich znaków („Paweł X” → „pawel”)."""
+    slowa = str(imie or "").strip().split()
+    if not slowa:
+        return ""
+    t = unicodedata.normalize("NFD", slowa[0].casefold().replace("ł", "l"))
+    return "".join(c for c in t if not unicodedata.combining(c))
+
+
+def zespol():
+    """Imiona osób, które podpisują i potwierdzają decyzje: ZESPOL i osoby z ustawień bota (telegram.json, jeśli
+    jest) — bez powtórzeń (po osobie kanonicznej)."""
+    osoby = list(ZESPOL)
+    try:
+        from . import telegram                                 # leniwie: telegram importuje ten moduł
+        osoby += telegram.imiona_osob()
+    except Exception:
+        pass
+    wynik, widziane = [], set()
+    for o in osoby:
+        k = kanoniczne(o)
+        if k and k not in widziane:
+            widziane.add(k)
+            wynik.append(o)
+    return wynik
+
+
+def osoba_zespolu(imie, osoby=None):
+    """Imię z zespołu („Paweł”) dla imienia z panelu albo podpisu („paweł nowak”), albo None."""
+    k = kanoniczne(imie)
+    if not k:
+        return None
+    return next((o for o in (osoby if osoby is not None else zespol()) if kanoniczne(o) == k), None)
+
+
+def _kto_data(wartosc):
+    m = _RX_KTO_DATA.match(wartosc or "")
+    if not m:
+        return {"kto": (wartosc or "").strip() or None, "data": None}, None
+    return {"kto": m.group(1).strip() or None, "data": m.group(2)}, m.group(3)
+
+
+def pola_podpisu(linia_statusu):
+    """Pola podpisu z wiersza statusu: {zdecydowal, oznaczyl, potwierdzil, sprzeciw, do_rozmowy} — każde
+    {kto, data} albo None; sprzeciw i do_rozmowy mają też `wobec` ({status, kto, data} albo None)."""
+    wynik = {v: None for v in POLA_PODPISU.values()}
+    for czesc in re.split(r"\s+·\s+", (linia_statusu or "").strip()):
+        m = _RX_POLE_PODPISU.match(czesc.strip().rstrip("·").strip())
+        if not m:
+            continue
+        klucz = POLA_PODPISU[m.group(1).lower()]
+        pole, nawias = _kto_data(m.group(2))
+        if klucz in ("sprzeciw", "do_rozmowy"):
+            mw = _RX_WOBEC.match(nawias or "")
+            pole["wobec"] = {"status": mw.group(1).lower(), "kto": mw.group(2), "data": mw.group(3)} if mw else None
+        wynik[klucz] = pole
+    return wynik
+
+
+def czeka_na(status, pola, osoby=None):
+    """Imię osoby, która ma potwierdzić decyzję, albo None (nic nie czeka)."""
+    zd = (pola or {}).get("zdecydowal")
+    if status not in ("zatwierdzona", "odrzucona") or not zd or not zd.get("data") or (pola or {}).get("potwierdzil"):
+        return None
+    if zd["data"] < POTWIERDZANIE_OD:
+        return None
+    osoby = osoby if osoby is not None else zespol()
+    decydujacy = osoba_zespolu(zd.get("kto"), osoby)
+    if not decydujacy:
+        return None
+    inni = [o for o in osoby if kanoniczne(o) != kanoniczne(decydujacy)]
+    return inni[0] if inni else None
+
+
+def odcisk_decyzji(ident, status, pola):
+    """Krótki znacznik stanu czekającej decyzji (8 hex: identyfikator, status, kto i kiedy zdecydował) — przycisk
+    na Telegramie niesie go, żeby nie potwierdzić decyzji, która zmieniła się od wysłania alertu."""
+    zd = (pola or {}).get("zdecydowal") or {}
+    zrodlo = "%s|%s|%s|%s" % (id_decyzji(int(ident[2:])) if re.match(r"^D-\d+$", ident or "") else ident, status,
+                              kanoniczne(zd.get("kto")), zd.get("data") or "")
+    return hashlib.sha256(zrodlo.encode("utf-8")).hexdigest()[:8]
+
+
+def parsuj_decyzje(tekst, osoby=None):
     _, tresc, _ = parsuj_frontmatter(tekst)
+    osoby = osoby if osoby is not None else zespol()
     decyzje = []
     for naglowek, linie in _sekcje(tresc, 3):
         m = re.match(r"^(D-\d+)\s*[:.—–-]?\s*(.*)$", naglowek)
@@ -716,15 +822,21 @@ def parsuj_decyzje(tekst):
         while tresc_linie and not tresc_linie[0].strip():
             tresc_linie.pop(0)
         status, emoji, kategoria, meta = "propozycja", "", "", []
+        pola = pola_podpisu("")
         if tresc_linie:
             st = _linia_statusu(tresc_linie[0])
             if st:
                 status, emoji, kategoria, meta = st
+                pola = pola_podpisu(tresc_linie[0])
                 tresc_linie.pop(0)
         tytul_md = m.group(2).strip()
         decyzje.append({"id": m.group(1), "tytul": tytul_md.replace("`", ""), "tytul_md": tytul_md, "status": status,
                         "emoji": emoji, "kategoria": kategoria, "meta": meta,
-                        "opis_md": "\n".join(tresc_linie).strip()})
+                        "opis_md": "\n".join(tresc_linie).strip(),
+                        # potwierdzanie przez drugą osobę (D-043): podpisy i kto ma jeszcze potwierdzić
+                        "zdecydowal": pola["zdecydowal"], "potwierdzil": pola["potwierdzil"],
+                        "sprzeciw": pola["sprzeciw"], "do_rozmowy": pola["do_rozmowy"],
+                        "czeka_na": czeka_na(status, pola, osoby)})
     return decyzje
 
 
@@ -871,7 +983,8 @@ def plan():
             stany[klucz] = (st.st_mtime_ns, st.st_size)
         except OSError:
             stany[klucz] = None
-    podpis = tuple(sorted((k, pliki[k][0], v) for k, v in stany.items()))
+    # zespół (osoby z ustawień bota) zmienia pole `czeka_na` decyzji, więc też jest w podpisie pamięci
+    podpis = (tuple(sorted((k, pliki[k][0], v) for k, v in stany.items())), tuple(zespol()))
     with _plan_blokada:
         if _plan_pamiec["plan"] is not None and _plan_pamiec["podpis"] == podpis:
             return _plan_pamiec["plan"]

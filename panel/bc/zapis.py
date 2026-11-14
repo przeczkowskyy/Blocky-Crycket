@@ -19,7 +19,11 @@ Markdown (`<sejf>/Produkcja/*.md`), których używa Obsidian i agenci, małymi z
   przerwanym zapisie pliki tymczasowe panelu (`<plik>.md.<pid>.<hex>.tmp`, starsze niż 10 min) są sprzątane;
 - samo-rozstrzyganie: zatwierdzenie albo odrzucenie decyzji, które zamyka ostatnią otwartą decyzję z wiersza
   „Rozstrzyga: D-0XX, …” pytania bez odpowiedzi, w tej samej operacji dopisuje odpowiedź pod tym pytaniem
-  (sekcja 4 niżej; oba pliki albo żaden).
+  (sekcja 4 niżej; oba pliki albo żaden);
+- potwierdzanie decyzji przez drugą osobę (D-043, sekcja 5): zgoda dopisuje „· potwierdził: Imię data”, brak zgody
+  i „przedyskutujmy” cofają status na „do decyzji” ze śladem „sprzeciw: …” / „do rozmowy: …”; ta sama funkcja dla
+  panelu (POST /api/sejf/decyzje/<id>/potwierdzenie) i bota Telegram (bc/telegram.py), który słucha zdarzeń zapisu
+  (`dodaj_sluchacza`) i wysyła alerty w tle.
 
 Pliki biorą się z konfiguracji sejfów (`sejf.pliki_planu()`), nie ze sztywnej ścieżki — testy i próby działają na kopii.
 
@@ -113,7 +117,10 @@ _RX_ZASTRZEZONE_IMIE = re.compile(r"game\s*director|klucz\s*zatwierdzania|go[śs
 _RX_STATUS_NA_POCZATKU = re.compile(
     r"^(?P<wciecie>\s*)(?P<emoji>[^\w\s·*]+)?(?P<odstep>\s*)(?P<format>[*_]*)"
     r"(?P<slowo>(?:propozycj|do[ _]decyzji|zatwierdzon|odrzucon|zast[aą]pion)\w*)?", re.IGNORECASE)
-_RX_STARY_PODPIS = re.compile(r"\s+·\s+(?:zdecydował|zdecydowała|oznaczył|oznaczyła)\b[^·]*?(?=\s+·\s|\s*$)",
+# Pola podpisu, które zmiana statusu zastępuje nowym: „zdecydował/oznaczył” i ślady potwierdzania przez drugą osobę
+# (D-043: „potwierdził:”, „sprzeciw:”, „do rozmowy:”) — ponowna decyzja zaczyna potwierdzanie od nowa.
+_RX_STARY_PODPIS = re.compile(r"\s+·\s+(?:(?:zdecydował|zdecydowała|oznaczył|oznaczyła)\b|"
+                              r"(?:potwierdził|potwierdziła|sprzeciw|do rozmowy)\s*:)[^·]*?(?=\s+·\s|\s*$)",
                               re.IGNORECASE)
 
 
@@ -1140,6 +1147,214 @@ def _wykonaj_decyzje(wersja, zmiana, kto, znacznik, numer, rozstrzygaj):
     return wynik
 
 
+# =========================================================================== 5. potwierdzanie decyzji (D-043)
+# Jedna osoba decyduje, druga odpowiada: zgoda, brak zgody albo „przedyskutujmy”. Format pól w wierszu statusu
+# (bez nowych statusów) i to, kiedy decyzja czeka, opisuje bc/sejf.py („potwierdzanie decyzji”). Odpowiedź przychodzi
+# z panelu (trasa niżej) albo z Telegrama (bc/telegram.py) — ta sama funkcja i ta sama droga zapisu: blokada sejfu,
+# kontrola wersji, zapis atomowy jednej linii, ślad w Dzienniku zmian z dopiskiem „przez panel” / „przez Telegram”.
+ODPOWIEDZI_POTWIERDZENIA = ("zgoda", "sprzeciw", "rozmowa")
+SKAD_POTWIERDZENIA = {"panel": "przez panel", "telegram": "przez Telegram"}
+ZNACZNIK_TELEGRAMA = "Telegram"
+LIMIT_POWODU = 1000
+
+_sluchacze = []                                                # fn(zdarzenie) — np. bot Telegram (alerty)
+
+
+def dodaj_sluchacza(fn):
+    """Funkcja wołana po zmianie statusu decyzji z panelu i po każdej odpowiedzi drugiej osoby. Zdarzenie:
+    {"typ": "status"|"potwierdzenie", "id": "D-019", "status"?, "odpowiedz"?, "kto", "skad"}. Słuchacz nie może
+    blokować (bot Telegram tylko wrzuca zadanie do kolejki); błąd słuchacza nie psuje zapisu."""
+    if fn not in _sluchacze:
+        _sluchacze.append(fn)
+
+
+def usun_sluchacza(fn):
+    if fn in _sluchacze:
+        _sluchacze.remove(fn)
+
+
+def _powiadom(zdarzenie):
+    for fn in list(_sluchacze):
+        try:
+            fn(dict(zdarzenie))
+        except Exception as e:                                 # zapis już się udał — słuchacz go nie cofa
+            rdzen.log("zapis: słuchacz zdarzeń: %s" % e.__class__.__name__)
+
+
+def _numer_decyzji(id_decyzji):
+    m = re.match(r"^D-(\d{1,4})$", str(id_decyzji or ""), re.IGNORECASE)
+    if not m:
+        raise BladHTTP(400, "Niepoprawny identyfikator decyzji (oczekiwano np. D-019)")
+    return int(m.group(1))
+
+
+def _sekcja_decyzji(dok, numer):
+    """(indeks nagłówka, „D-019”, koniec sekcji, indeks wiersza statusu albo None) jedynej decyzji o tym numerze."""
+    trafienia = []
+    for i, poziom, naglowek in dok.naglowki():
+        mm = _RX_NR_DECYZJI.match(naglowek)
+        if poziom == 3 and mm and int(mm.group(1)) == numer:
+            trafienia.append((i, "D-%s" % mm.group(1)))
+    i, ident = _jedna(trafienia, "Nie ma decyzji D-%03d w Rejestrze decyzji" % numer,
+                      "W Rejestrze decyzji są %d decyzje D-%03d — popraw numerację w Obsidianie." % (len(trafienia), numer))
+    koniec = dok.koniec_sekcji(i, 3, na_linii_poziomej=True)
+    j = next((k for k in range(i + 1, koniec) if dok.tresc(k).strip()), None)
+    if j is not None and not sejf._linia_statusu(dok.tresc(j)):
+        j = None
+    return i, ident, koniec, j
+
+
+def _dopisz_pole(linia, pole):
+    """Wiersz statusu z nowym polem „· pole” na końcu (spacje na końcu wiersza zostają)."""
+    tresc = linia.rstrip()
+    ogon = linia[len(tresc):]
+    if tresc.endswith("·"):
+        tresc = tresc[:-1].rstrip()
+    return tresc + " · " + pole + ogon
+
+
+def _bez_czekania(ident, status, pola):
+    """Czytelny powód, dla którego decyzja nie czeka na potwierdzenie (409 nic_nie_czeka)."""
+    pt = pola.get("potwierdzil")
+    if pt:
+        return "%s ma już dwa podpisy (potwierdził: %s %s) — nic nie czeka na potwierdzenie." % (
+            ident, pt.get("kto") or "?", pt.get("data") or "")
+    if status not in ("zatwierdzona", "odrzucona"):
+        return "%s nie czeka na potwierdzenie — ma status „%s”." % (ident, NAZWY_STATUSOW.get(status, status))
+    return ("%s nie czeka na potwierdzenie — to decyzja sprzed zasady dwóch podpisów (D-043) albo bez podpisu osoby "
+            "z zespołu." % ident)
+
+
+def _wykonaj_z_biezaca_wersja(klucz, wersja, zmiana, kto, znacznik):
+    """`wersja` None (Telegram nie zna wersji pliku) = bieżąca, z jedną ponowną próbą, gdy plik zmieni się w tej
+    samej chwili. Bezpieczeństwo treści daje wtedy sprawdzenie stanu decyzji pod blokadą (w `zmiana`)."""
+    proby = 1 if wersja else 2
+    for proba in range(proby):
+        w = wersja
+        if not w:
+            p, pokaz = _plik(klucz)
+            w = sejf.wersja_bajtow(_czytaj_bajty(p, pokaz))
+        try:
+            return _wykonaj(klucz, w, zmiana, kto, znacznik)
+        except BladHTTP as e:
+            if wersja or proba + 1 >= proby or e.dodatkowe.get("kod") != "konflikt_wersji":
+                raise
+
+
+def potwierdz_decyzje(id_decyzji, odpowiedz, uzasadnienie, wersja, kto, znacznik=None, skad="panel", odcisk=None):
+    """Odpowiedź drugiej osoby na decyzję z jednym podpisem (D-043).
+
+    `odpowiedz`: „zgoda” (pole „potwierdził”), „sprzeciw” (status wraca na „do decyzji”, ślad „sprzeciw: …”,
+    opcjonalnie wiersz „Uzasadnienie sprzeciwu — Imię, data: …”) albo „rozmowa” (status wraca na „do decyzji”, ślad
+    „do rozmowy: …” i temat na agendzie sesji głównych — `uzasadnienie` idzie wtedy jako dopisek tematu).
+    `kto` = imię osoby (musi być z zespołu i INNE niż decydującego). `wersja` = znacznik Rejestru od klienta albo None
+    (Telegram: bieżąca). `odcisk` (Telegram) = stan decyzji z chwili wysłania przycisku — inny = 409 decyzja_zmieniona.
+    Uprawnienia sprawdza wołający (trasa panelu: decydent; Telegram: osoba z ustawień bota)."""
+    numer = _numer_decyzji(id_decyzji)
+    if odpowiedz not in ODPOWIEDZI_POTWIERDZENIA:
+        raise BladHTTP(400, "Pole „odpowiedz” musi mieć wartość „zgoda”, „sprzeciw” albo „rozmowa”")
+    if skad not in SKAD_POTWIERDZENIA:
+        raise BladHTTP(400, "Nieznane źródło odpowiedzi")
+    if bez_imienia(kto):
+        raise BladHTTP(400, KOMUNIKAT_BRAK_IMIENIA, kod="brak_imienia")
+    osoby = sejf.zespol()
+    if not sejf.osoba_zespolu(kto, osoby):
+        raise BladHTTP(403, "Decyzję potwierdza druga osoba z zespołu (%s). Wpisz w Ustawieniach swoje imię."
+                       % " albo ".join(osoby), kod="spoza_zespolu")
+    uzasadnienie = czysty_tekst(uzasadnienie, LIMIT_UZASADNIENIA, "uzasadnienie", wymagany=False)
+    data = dzis()
+    info = {}
+
+    def zmiana(dok):
+        i, ident, koniec, j = _sekcja_decyzji(dok, numer)
+        linia = dok.tresc(j) if j is not None else ""
+        st = sejf._linia_statusu(linia) if j is not None else None
+        status = st[0] if st else "propozycja"
+        pola = sejf.pola_podpisu(linia) if st else sejf.pola_podpisu("")
+        zd = pola.get("zdecydowal") or {}
+        czeka = sejf.czeka_na(status, pola, osoby)
+        if not czeka:
+            raise BladHTTP(409, _bez_czekania(ident, status, pola), kod="nic_nie_czeka")
+        if sejf.kanoniczne(zd.get("kto")) == sejf.kanoniczne(kto):
+            raise BladHTTP(403, "To Twoja decyzja (%s, %s) — potwierdza ją druga osoba: %s." % (
+                ident, NAZWY_STATUSOW.get(status, status), czeka), kod="wlasna_decyzja")
+        if odcisk is not None and odcisk != sejf.odcisk_decyzji(ident, status, pola):
+            raise BladHTTP(409, "%s zmieniła się od wysłania tego pytania — sprawdź ją jeszcze raz." % ident,
+                           kod="decyzja_zmieniona")
+        wobec = "%s przez %s %s" % (NAZWY_STATUSOW[status], zd.get("kto"), zd.get("data"))
+        info.update(id=ident, status=status, wobec={"status": status, "kto": zd.get("kto"), "data": zd.get("data")})
+        sposob = SKAD_POTWIERDZENIA[skad]
+        if odpowiedz == "zgoda":
+            dok.zamien(j, _dopisz_pole(linia, "potwierdził: %s %s" % (kto, data)))
+            return "decyzja %s potwierdzona: zgoda (%s), %s" % (ident, wobec, sposob)
+        pole = "%s: %s %s (wobec: %s)" % ("sprzeciw" if odpowiedz == "sprzeciw" else "do rozmowy", kto, data, wobec)
+        emoji, slowo, _, _ = STATUSY_DOCELOWE["do_decyzji"]
+        dok.zamien(j, _wiersz_statusu(linia, emoji, slowo, pole))
+        if odpowiedz == "sprzeciw":
+            if uzasadnienie:
+                dok.wstaw(dok.za_trescia(i, koniec), ["Uzasadnienie sprzeciwu — %s, %s: %s" % (kto, data, uzasadnienie)])
+            return "decyzja %s: brak zgody (%s) — wraca „do decyzji”, %s" % (ident, wobec, sposob)
+        naglowek = sejf._RX_NAGLOWEK.match(dok.tresc(i))
+        info["tytul"] = re.sub(r"^D-\d+\s*[:.—–-]?\s*", "", naglowek.group(2) if naglowek else "").strip()
+        return "decyzja %s: do rozmowy na sesji głównej (%s) — wraca „do decyzji”, %s" % (ident, wobec, sposob)
+
+    wynik = _wykonaj_z_biezaca_wersja("decyzje", wersja, zmiana, kto, znacznik)
+    uwagi = [wynik["uwaga"]] if wynik.get("uwaga") else []
+    if odpowiedz == "rozmowa":
+        wynik["agenda"] = _na_agende(info, uzasadnienie, kto, znacznik, uwagi)
+    if uwagi:
+        wynik["uwaga"] = " ".join(uwagi)
+    wynik["potwierdzenie"] = {"id": info.get("id"), "odpowiedz": odpowiedz, "kto": kto, "data": data,
+                              "wobec": info.get("wobec"), "skad": skad}
+    _powiadom({"typ": "potwierdzenie", "id": info.get("id"), "odpowiedz": odpowiedz, "kto": kto, "skad": skad})
+    return wynik
+
+
+def _na_agende(info, dopisek, kto, znacznik, uwagi):
+    """Temat „przedyskutujmy” na agendzie sesji głównych — ta sama funkcja co przycisk „Na sesję główną”
+    (bc/sesje.py: dodaj_temat ze źródłem „D-0XX”). Temat już czeka = bez błędu. → True / False."""
+    from . import sesje                                        # leniwie: sesje importuje ten moduł
+    tytul = re.sub(r"[`*_\[\]]", "", info.get("tytul") or "").strip()
+    tytul = skrot(tytul or info.get("id"), 150)
+    w = info.get("wobec") or {}
+    kontekst = dopisek or "%s prosi o rozmowę o decyzji (%s przez %s %s)" % (
+        kto, NAZWY_STATUSOW.get(w.get("status"), w.get("status")), w.get("kto"), w.get("data"))
+    try:
+        sesje.dodaj_temat(tytul, skrot(kontekst, 480), info.get("id"), None, kto, znacznik, tylko_nowe_zrodlo=True)
+        return True
+    except BladHTTP as e:
+        if e.dodatkowe.get("kod") == "juz_zapisane":
+            return True
+        uwagi.append("Zapisano w Rejestrze, ale temat nie trafił na agendę sesji: %s" % e.komunikat)
+        return False
+    except Exception as e:                                     # Rejestr już zapisany — awaria agendy go nie cofa
+        rdzen.log("zapis: agenda sesji (do rozmowy): %s" % e.__class__.__name__)
+        uwagi.append("Zapisano w Rejestrze, ale temat nie trafił na agendę sesji (błąd zapisu). "
+                     "Dodaj go w panelu przyciskiem „Na sesję główną”.")
+        return False
+
+
+def dopisz_powod_sprzeciwu(id_decyzji, tekst, kto, znacznik=None, skad="telegram"):
+    """Powód braku zgody dopisany później (Telegram: odpowiedź na prośbę bota w ciągu 15 minut) — wiersz
+    „Uzasadnienie sprzeciwu — Imię, data: …” pod decyzją, która ma ostatni „sprzeciw:” tej samej osoby."""
+    numer = _numer_decyzji(id_decyzji)
+    tekst = czysty_tekst(tekst, LIMIT_POWODU, "powód")
+    if skad not in SKAD_POTWIERDZENIA:
+        raise BladHTTP(400, "Nieznane źródło odpowiedzi")
+    data = dzis()
+
+    def zmiana(dok):
+        i, ident, koniec, j = _sekcja_decyzji(dok, numer)
+        pola = sejf.pola_podpisu(dok.tresc(j)) if j is not None else {}
+        sp = pola.get("sprzeciw")
+        if not sp or sejf.kanoniczne(sp.get("kto")) != sejf.kanoniczne(kto):
+            raise BladHTTP(409, "%s nie ma Twojego sprzeciwu — powodu nie dopisano." % ident, kod="nic_nie_czeka")
+        dok.wstaw(dok.za_trescia(i, koniec), ["Uzasadnienie sprzeciwu — %s, %s: %s" % (kto, data, tekst)])
+        return "decyzja %s: powód braku zgody, %s" % (ident, SKAD_POTWIERDZENIA[skad])
+
+    return _wykonaj_z_biezaca_wersja("decyzje", None, zmiana, kto, znacznik)
+
+
 # =========================================================================== trasy
 def _dane(z, dozwolone):
     if not dostepny():
@@ -1192,7 +1407,30 @@ def _t_status(z):
         # konta systemu. Takie imię nie podpisuje decyzji: trafiłoby do publicznego Rejestru bez wiedzy człowieka.
         raise BladHTTP(400, KOMUNIKAT_BRAK_IMIENIA, kod="brak_imienia")
     kto, znacznik = podpis(z)
-    return zmien_status_decyzji(z.params["id"], d.get("status"), d.get("uzasadnienie"), d.get("wersja"), kto, znacznik)
+    wynik = zmien_status_decyzji(z.params["id"], d.get("status"), d.get("uzasadnienie"), d.get("wersja"), kto, znacznik)
+    m = re.match(r"^decyzja (D-\d+) ", wynik.get("opis") or "")
+    _powiadom({"typ": "status", "id": m.group(1) if m else z.params["id"], "status": d.get("status"), "kto": kto,
+               "skad": "panel"})                               # np. alert na Telegramie (w tle, nie blokuje)
+    return wynik
+
+
+def _t_potwierdzenie(z):
+    """Odpowiedź drugiej osoby na decyzję z jednym podpisem (D-043): zgoda, brak zgody albo rozmowa."""
+    if not decydent(z):
+        if not dostepny():
+            raise BladHTTP(403, "Zapis do sejfu z panelu jest wyłączony (ustawienie „zapis_sejfu” w konfiguracji).")
+        raise BladHTTP(403, "Decyzję potwierdza Karol albo Paweł: przy komputerze z panelem, w przeglądarce z kluczem "
+                            "zatwierdzania albo przyciskiem na Telegramie. Link z kluczem wypisuje na komputerze "
+                            "z panelem polecenie: python panel/serwer.py --klucz-zatwierdzania.",
+                       kod="brak_klucza_zatwierdzania")
+    d = _dane(z, ("odpowiedz", "uzasadnienie", "wersja"))
+    if not getattr(z, "kto_z_naglowka", False):
+        raise BladHTTP(400, KOMUNIKAT_BRAK_IMIENIA, kod="brak_imienia")
+    kto, znacznik = podpis(z)
+    if not isinstance(d.get("wersja"), str) or not d.get("wersja").strip():
+        raise BladHTTP(400, "Brak pola „wersja” (znacznik z GET /api/sejf/plan) — odśwież plan i spróbuj jeszcze raz.")
+    return potwierdz_decyzje(z.params["id"], d.get("odpowiedz"), d.get("uzasadnienie"), d.get("wersja"), kto,
+                             znacznik, skad="panel")
 
 
 def zarejestruj(app):
@@ -1200,6 +1438,7 @@ def zarejestruj(app):
     app.dodaj("POST", "/api/sejf/zadania/odhacz", _t_odhacz)
     app.dodaj("POST", "/api/sejf/zadania/dodaj", _t_dodaj)
     app.dodaj("POST", "/api/sejf/decyzje/<id>/status", _t_status)
+    app.dodaj("POST", "/api/sejf/decyzje/<id>/potwierdzenie", _t_potwierdzenie)
 
 
 def zdrowie():

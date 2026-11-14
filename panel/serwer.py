@@ -52,7 +52,7 @@ from bc.http import Aplikacja, Odp, Strumien, Zadanie, mime_pliku  # noqa: E402
 from bc.rdzen import BladHTTP  # noqa: E402
 
 MODULY = ["sejf", "zapis", "gitsync", "obecnosc", "studio", "podglad", "analityka", "telemetria", "assety", "raporty",
-          "agent", "glos", "sesje", "statyczny"]
+          "agent", "glos", "sesje", "telegram", "statyczny"]
 ROZSZERZENIA_STATIC = {".html", ".js", ".mjs", ".css", ".json", ".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico",
                        ".woff2", ".glb", ".md", ".txt", ".map"}
 LIMIT_JSON = 4 * 1024 * 1024
@@ -604,6 +604,18 @@ def _zdrowie(z):
     return wynik
 
 
+def uruchom_w_tle():
+    """Wątki modułów (np. odbiór bota Telegram) — tylko w działającym serwerze, nie przy --sprawdz ani --eksport.
+    Moduł, który ich potrzebuje, ma funkcję `uruchom_w_tle()`."""
+    for nazwa in MODULY:
+        mod = sys.modules.get("bc." + nazwa)
+        if (APP.moduly.get(nazwa) or {}).get("ok") and hasattr(mod, "uruchom_w_tle"):
+            try:
+                mod.uruchom_w_tle()
+            except Exception as e:
+                rdzen.log("Moduł %s: wątki w tle nie wstały (%s)" % (nazwa, e.__class__.__name__))
+
+
 def zaladuj_moduly():
     APP.dodaj("GET", "/api/ping", _ping)
     APP.dodaj("GET", "/api/ja", _ja)
@@ -725,6 +737,7 @@ def main():
     for nazwa, st in APP.moduly.items():
         if not st["ok"]:
             rdzen.log("  moduł %s wyłączony: %s" % (nazwa, st["blad"]))
+    uruchom_w_tle()
     print("\n  Panel zespołu (ten komputer, adres z kluczem lokalnym — nie udostępniaj):\n    %s" % url)
     if a.lan:
         for adr in STAN["adresy_lan"]:

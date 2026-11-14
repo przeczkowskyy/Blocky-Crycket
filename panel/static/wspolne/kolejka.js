@@ -2,7 +2,10 @@
 //   - pytania otwarte bez odpowiedzi (z decyzjami z wiersza „Rozstrzyga: D-0XX, …” w tej samej karcie),
 //   - decyzje „propozycja” / „do decyzji”, które nie są przypięte do żadnego czekającego pytania — jako pytanie
 //     „Czy zatwierdzamy: <tytuł>?”,
-//   - raporty czekające na „Akceptuję” / „Do poprawy” — ich własne pytanie (pole `pytanie`) albo „Czy akceptujesz: …?”.
+//   - raporty czekające na „Akceptuję” / „Do poprawy” — ich własne pytanie (pole `pytanie`) albo „Czy akceptujesz: …?”,
+//   - decyzje z jednym podpisem, które czekają na MOJE potwierdzenie (D-043, pole `czeka_na`) — jako pytanie
+//     „Karol zatwierdził: <tytuł> — zgadzasz się?” (typ „potwierdzenie”, klucz jak decyzji: „D-019”). Decyzje, które
+//     sam podjąłem, nie są w mojej kolejce (w historii mają znacznik „czeka na potwierdzenie: Imię”).
 // Sprawa, której źródło („D-009”, „pytanie 19”) jest na agendzie sesji głównej, trafia do grupy „Odłożone”.
 // Historia „Odpowiedziane”: pytania z odpowiedzią, decyzje zamknięte (zatwierdzone, odrzucone, zastąpione) i raporty
 // po decyzji albo informacyjne — razem, od najnowszych.
@@ -127,7 +130,7 @@ export function ostatniaData(tekst) {
   return max;
 }
 
-const KOLEJNOSC_TYPOW = { raport: 0, pytanie: 1, decyzja: 2 };
+const KOLEJNOSC_TYPOW = { raport: 0, pytanie: 1, decyzja: 2, potwierdzenie: 2 };
 
 function porownaj(a, b) {
   return String(b.dzien).localeCompare(String(a.dzien)) || (b.waga || 0) - (a.waga || 0) ||
@@ -147,7 +150,9 @@ export const SLOWA_STATUSU_RAPORTU = {
 };
 
 function tekstDecyzji(d) {
-  return [d.id, d.tytul, (d.meta || []).join(" "), d.opis_md, d.kategoria, SLOWA_STATUSU_DECYZJI[d.status] || d.status].join(" ");
+  return [d.id, d.tytul, (d.meta || []).join(" "), d.opis_md, d.kategoria, SLOWA_STATUSU_DECYZJI[d.status] || d.status,
+    d.czeka_na ? "czeka na potwierdzenie " + d.czeka_na : "", d.potwierdzil ? "potwierdzona dwa podpisy" : "",
+    d.sprzeciw ? "sprzeciw brak zgody" : "", d.do_rozmowy ? "do rozmowy" : ""].join(" ");
 }
 
 /** Pytanie raportu jako tytuł karty: własne pole `pytanie` (krótkie, jedna linia) albo „Czy akceptujesz: …?”. */
@@ -161,13 +166,37 @@ export function pytanieDecyzji(d) {
   return "Czy zatwierdzamy: " + zwykly((d && d.tytul) || (d && d.id) || "decyzję") + "?";
 }
 
+// ----------------------------------------------------------------------------- potwierdzanie decyzji (D-043)
+// Serwer (bc/sejf.py) podaje przy decyzji: zdecydowal {kto, data}, potwierdzil, sprzeciw, do_rozmowy i czeka_na
+// (imię drugiej osoby albo null). Starszy serwer tych pól nie ma — wtedy nic nie czeka na potwierdzenie.
+
+/** Osoba kanoniczna jak na serwerze: pierwsze słowo imienia, małe litery, bez polskich znaków. */
+export function kanoniczne(imie) {
+  const s = String(imie || "").trim().split(/\s+/)[0] || "";
+  return s.toLowerCase().replace(/ł/g, "l").normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
+
+/** Czy ta decyzja czeka na potwierdzenie osoby `kto` (imię z panelu). */
+export function czekaNaMnie(d, kto) {
+  const ja = kanoniczne(kto);
+  return !!(d && d.czeka_na && ja && ja !== "gosc" && kanoniczne(d.czeka_na) === ja);
+}
+
+/** „Karol zatwierdził: Tytuł — zgadzasz się?” */
+export function pytaniePotwierdzenia(d) {
+  const kto = (d && d.zdecydowal && d.zdecydowal.kto) || "Ktoś";
+  const czyn = d && d.status === "odrzucona" ? "odrzucił" : "zatwierdził";
+  return kto + " " + czyn + ": " + zwykly((d && d.tytul) || (d && d.id) || "decyzję") + " — zgadzasz się?";
+}
+
 /**
- * zbudujPytania(plan, raporty, agenda) → {czekajace, odlozone, odpowiedziane}
- * sprawa: {typ:"pytanie"|"decyzja"|"raport", klucz, zrodlo?, pytanie (tytuł karty), pochodzenie (mała etykieta),
+ * zbudujPytania(plan, raporty, agenda, ja?) → {czekajace, odlozone, odpowiedziane}   (ja = ctx.ja: imię do potwierdzeń)
+ * sprawa: {typ:"pytanie"|"decyzja"|"raport"|"potwierdzenie", klucz, zrodlo?, pytanie (tytuł karty), pochodzenie (mała etykieta),
  *          dzien, czas, waga, nr, szukaj, p?, d?, r?, decyzje?:[{id, d}], powiazane?:[{id, d}], odlozona, zamknieta}
  * klucz: "pytanie-19", "D-009" (powtórzony numer: "D-031~2"), "raport-<id>" (adres #/pytania?sprawa=<klucz>).
  */
-export function zbudujPytania(plan, raporty, agenda) {
+export function zbudujPytania(plan, raporty, agenda, ja) {
+  const kto = ja && ja.kto;                                    // potwierdzenia: tylko te, które czekają na MNIE
   const decyzje = mapaDecyzji(plan);
   const decyzja = (id) => decyzje.get(numerDecyzji(id)) || null;
   const odlozoneZrodla = zrodlaAgendy(agenda);
@@ -226,6 +255,17 @@ export function zbudujPytania(plan, raporty, agenda) {
     if (otwarta && przypiete.has(n) && ile === 1) continue;    // ta decyzja jest już w karcie swojego pytania
     const zrodlo = idDecyzji(n);
     const meta = (d.meta || []).join(" ");
+    if (ile === 1 && czekaNaMnie(d, kto)) {                    // druga osoba zdecydowała — pytanie do mnie (D-043)
+      const p = pytaniePotwierdzenia(d);
+      czekajace.push({
+        typ: "potwierdzenie", klucz: d.id, zrodlo, pytanie: p, tytul: d.tytul || "",
+        pochodzenie: "decyzja " + d.id + " · potwierdzenie",
+        dzien: (d.zdecydowal && d.zdecydowal.data) || ostatniaData(meta), czas: "", waga: 2, nr: n, d,
+        odlozona: odlozoneZrodla.has(zrodlo), zamknieta: false,
+        szukaj: doSzukania([p, tekstDecyzji(d), "decyzja", "potwierdzenie czeka na potwierdzenie"].join(" ")),
+      });
+      continue;
+    }
     const s = {
       // w historii też jako pytanie — odpowiedzią jest status (zatwierdzona / odrzucona / zastąpiona)
       typ: "decyzja", klucz: d.id + (ile > 1 ? "~" + ile : ""), zrodlo, pytanie: pytanieDecyzji(d),
@@ -247,8 +287,8 @@ export function zbudujPytania(plan, raporty, agenda) {
 }
 
 /** Zgodność wstecz (Pulpit, powłoka): {aktywne, odlozone, wszystkie} — tylko sprawy czekające. */
-export function zbudujKolejke(plan, raporty, agenda) {
-  const k = zbudujPytania(plan, raporty, agenda);
+export function zbudujKolejke(plan, raporty, agenda, ja) {
+  const k = zbudujPytania(plan, raporty, agenda, ja);
   return { aktywne: k.czekajace, odlozone: k.odlozone, wszystkie: [...k.czekajace, ...k.odlozone], odpowiedziane: k.odpowiedziane };
 }
 
@@ -275,7 +315,7 @@ export async function pobierzKolejke(ctx) {
   const r = rap.status === "fulfilled" ? (rap.value && rap.value.raporty) || [] : null;
   const a = agenda.status === "fulfilled" ? agenda.value || null : null;
   return {
-    kolejka: zbudujKolejke(p || {}, r || [], a), plan: p, raporty: r, agenda: a,
+    kolejka: zbudujKolejke(p || {}, r || [], a, ctx.ja), plan: p, raporty: r, agenda: a,
     bledy: { plan: plan.status === "rejected" ? plan.reason : null, raporty: rap.status === "rejected" ? rap.reason : null },
   };
 }

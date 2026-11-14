@@ -15,6 +15,9 @@
 //   A. okno zatwierdzania decyzji wysyła wersję Rejestru z chwili otwarcia — gdy odświeżanie w tle przerysuje kartę
 //      nową treścią, „Tak” nic nie zapisuje (409) i zamyka okno;
 //   T. decyzja pokazana jako pytanie „Czy zatwierdzamy: …?” i zatwierdzona przyciskiem Tak — przechodzi do historii;
+//   P. potwierdzanie przez drugą osobę (D-043): moja decyzja czeka w historii ze znacznikiem „czeka na potwierdzenie:
+//      Karol”, a decyzja Karola jest w MOJEJ kolejce jako „Karol … zatwierdził: … — zgadzasz się?”; „Zgoda”
+//      dopisuje drugi podpis w Rejestrze i karta przechodzi do historii z dwoma podpisami;
 //   B. podwójny Ctrl+Enter w odpowiedzi = jedno żądanie, bez „ktoś zmienił plik” i bez przywróconego szkicu; karta
 //      pytania znika z listy i jest w historii „Odpowiedziane”;
 //   S. ciche odświeżanie nie kasuje wpisanego tekstu (karta zostaje, z informacją o zmianie); gdy nowa treść (data)
@@ -244,6 +247,31 @@ try {
   sprawdz("T: po „Tak” karta zniknęła z listy i jest w historii", await czekajNa(`!${wLiscie("D-005")} && ${wHistorii("D-005")}`),
     await js(`(${karta("D-005")} || {}).className`));
   sprawdz("T: decyzja zatwierdzona w Rejestrze", statusDecyzji("D-005").startsWith("✅"), statusDecyzji("D-005"));
+
+  // ------------------------------------------------------------ P: potwierdzenie decyzji drugiej osoby (D-043)
+  const tp = new Date();
+  const dzisP = tp.getFullYear() + "-" + String(tp.getMonth() + 1).padStart(2, "0") + "-" + String(tp.getDate()).padStart(2, "0");
+  sprawdz("P: moja decyzja (D-005) w historii ze znacznikiem „czeka na potwierdzenie: Karol”, nie w mojej kolejce",
+    await czekajNa(`${wHistorii("D-005")} && ${karta("D-005")}.textContent.includes('Czeka na potwierdzenie: Karol')`),
+    await js(`(${karta("D-005")} || {}).textContent`));
+  pisz("Rejestr decyzji.md", czytaj("Rejestr decyzji.md").replace("---\n*Stopka rejestru.*",
+    "### D-009 Decyzja Karola\n✅ zatwierdzona · test · zdecydował: Karol Balucki " + dzisP + "\nOpis decyzji Karola.\n\n---\n*Stopka rejestru.*"));
+  await sleep(300);
+  await odswiezWTle();
+  sprawdz("P: decyzja Karola jest w mojej kolejce jako pytanie z Zgoda / Brak zgody / Przedyskutuj", await czekajNa(`${wLiscie("D-009")} &&
+    ${karta("D-009")}.querySelector('.sprawa-tytul').textContent === 'Karol Balucki zatwierdził: Decyzja Karola — zgadzasz się?' &&
+    [...${karta("D-009")}.querySelectorAll('.potwierdzenie-akcje .przycisk')].map(b => b.textContent.trim()).join(',') === 'Zgoda,Brak zgody,Przedyskutuj'`),
+    await js(`(${karta("D-009")} || {}).textContent`));
+  await zrzut("P0_potwierdzenie");
+  await js(`${karta("D-009")}.querySelector('.potwierdzenie-akcje [data-odpowiedz="zgoda"]').click(); true`);
+  await czekajNa(`!!document.querySelector('${OKNO} form')`);
+  await js(`document.querySelector('${OKNO} form button[type=submit]').click(); true`);
+  const dwaPodpisy = "zdecydował: Karol Balucki " + dzisP + " · potwierdził: Paweł " + dzisP;
+  for (let i = 0; i < 50 && !statusDecyzji("D-009").includes(dwaPodpisy); i++) await sleep(150);
+  sprawdz("P: po „Zgoda” drugi podpis w Rejestrze", statusDecyzji("D-009").endsWith(dwaPodpisy), statusDecyzji("D-009"));
+  sprawdz("P: karta zniknęła z kolejki i jest w historii z dwoma podpisami", await czekajNa(`!${wLiscie("D-009")} && ${wHistorii("D-009")} &&
+    ${karta("D-009")}.textContent.includes('Dwa podpisy: Karol Balucki')`), await js(`(${karta("D-009")} || {}).textContent`));
+  await zrzut("P1_dwa_podpisy");
 
   // ------------------------------------------------------------ B: podwójny Ctrl+Enter
   await czekajNa(`!document.querySelector('.arkusz-tlo') && !!(${karta("pytanie-2")} && ${karta("pytanie-2")}.querySelector('textarea'))`);
