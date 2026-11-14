@@ -1,0 +1,89 @@
+RAPORT — straznik_gaju
+STRAŻNIK GAJU — strażnik biomu lasu, najważniejszy przeciwnik lasu (ok. 14,5 studa z koroną, 12,8 bez niej; gracz ma 5,7).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/straznik_gaju.py · wygenerowano 14.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py straznik_gaju
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: straznik_gaju
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości strażnika nie są R15 (własny szkielet, 37 kości razem z 15 kośćmi korzeni umiejętności) — klipy importuje się na własny rig; import do Roblox Studio nie był testowany.
+- Korzenie umiejętności poza klipem siedzą schowane w kamiennym tułowiu i w jednej klatce przenoszą się pod ziemię przed strażnikiem (i z powrotem). Roblox odtwarza klip 30 kl./s z przejściami między klatkami, więc w grze w 60 kl./s przez jedną klatkę obrazu korzenie mogą mignąć w połowie drogi; przerwanie umiejętności innym klipem (np. trafienie z wyższym priorytetem) przeciągnie je przez nogi w czasie przejścia. Dla pewności w grze: umiejętności nie przerywać albo efekt korzeni zrobić osobnym modelem.
+- Świecenie (kryształ, oczy, żyłki) to materiał świecący w Blenderze — w Roblox trzeba je dorobić (Neon, PointLight albo SurfaceAppearance z mapą emisji z tekstury-palety). Gaśnięcie kryształu w upadku to zamiana dwóch kryształów (świecący chowa się w tułów, szary wysuwa) i kamienne powieki na oczach, a nie zmiana materiału.
+- Pulsowanie kryształu to tylko przesunięcie i obrót (bez skali): kryształ wysuwa się o 0,1 i obraca, żyłki chowają się w rowki i wysuwają. Z daleka to subtelne — mocniejszy puls najlepiej dodać w grze światłem.
+- Bryły są sztywno przypięte do kości (jedna siatka na kość): głazy na barkach są kulami ze środkiem w stawie barku i stale lekko wchodzą w tułów; w głębokim przysiadzie umiejętności brzuch dotyka ud.
+- Upadek: głazy (głowa, korona, ręce, tułów, miednica, uda) spadają po prostych torach z przyspieszeniem i lekkim odbiciem, bez toczenia; pnie goleni z korzeniami-stopami zostają na miejscu jak dwa pniaki. Głazy częściowo się przenikają w stosie.
+- Chód jest w miejscu (stopy ślizgają się względem ziemi); w uniku całe ciało przesuwa się w bok razem ze stopami (ciężki odskok bez kroku).
+- Wspólny kadr filmów obejmuje korzenie umiejętności przed strażnikiem i stos głazów z upadku, więc w filmach strażnik zajmuje ok. 2/3 wysokości kadru; bliższe ujęcia: plansza i kadr bohaterski.
+- Kolizje sprawdzane w przybliżeniu (wierzchołki i środki krawędzi brył w każdej klatce każdego klipu): ręce, pięści i przedramiona nie wchodzą w głowę, tułów ani miednicę (oprócz głazu barku osadzonego na stałe), korzenie umiejętności nie wchodzą w ciało ani pięści. Uda i brzuch, korona i dłonie w ryku oraz korzenie między sobą nie były sprawdzane — zaciśnięte szpice korzeni stykają się nad środkiem uścisku.
+- Wzrost z koroną to ok. 14,5 studa (głowa powiększona przy przeglądzie o 15% dla czytelności twarzy) — odrobinę ponad zakładane 13–14 studów.
+- Atak: z kamery 3/4 trafienie (kl. 17) widać jako pięść wysuniętą ku widzowi na wysokości piersi gracza; w zamachu lewa pięść jest przed brzuchem (bez przenikania).
+- Klipy to szkice (0,7–3 s), nie gotowa animacja; twarz nie ma mimiki poza szczęką i powiekami.
+
+MODEL straznik_gaju „Strażnik Gaju” (stwor)
+  wymiary ciała: 8,90 × 14,54 × 4,94; z akcesoriami: 8,90 × 14,54 × 4,94
+  trójkąty: 11168 (siatek: 36)
+  kości (37): Root, Biodra, Tulow, Glowa, Szczeka, Powieki, Korona, Krysztal, Zgasly, Blask, RamieL, PrzedramieL, DlonL, RamieP, PrzedramieP, DlonP, UdoL, GolenL, StopaL, UdoP, GolenP, StopaP, K1A, K1B, K1C, K2A, K2B, K2C, K3A, K3B, K3C, K4A, K4B, K4C, K5A, K5B, K5C
+  klipy: idle 72 kl. 2,40 s pętla, ruch 60 kl. 2,00 s pętla, atak 42 kl. 1,40 s jednorazowy, umiejetnosc 90 kl. 3,00 s jednorazowy, trafienie 20 kl. 0,67 s jednorazowy, unik 30 kl. 1,00 s jednorazowy, upadek 80 kl. 2,67 s jednorazowy, ryk 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, KrysztalAttachment, PiescLAttachment, PiescPAttachment, KorzenieAttachment
+
+KONTROLA EKSPORTÓW
+- straznik_gaju.fbx: siatki 42, kości 37, trójkąty 11240, wzrost 14.54 st., akcje brak -> ZGODNE
+- straznik_gaju__idle.fbx: siatki 42, kości 37, trójkąty 11240, wzrost 14.54 st., akcje straznik_gaju|Scene 1-73 -> ZGODNE
+- straznik_gaju__ruch.fbx: siatki 42, kości 37, trójkąty 11240, wzrost 14.54 st., akcje straznik_gaju|Scene 1-61 -> ZGODNE
+- straznik_gaju__atak.fbx: siatki 42, kości 37, trójkąty 11240, wzrost 14.54 st., akcje straznik_gaju|Scene 1-43 -> ZGODNE
+- straznik_gaju__umiejetnosc.fbx: siatki 42, kości 37, trójkąty 11240, wzrost 14.54 st., akcje straznik_gaju|Scene 1-91 -> ZGODNE
+- straznik_gaju__trafienie.fbx: siatki 42, kości 37, trójkąty 11240, wzrost 14.54 st., akcje straznik_gaju|Scene 1-21 -> ZGODNE
+- straznik_gaju__unik.fbx: siatki 42, kości 37, trójkąty 11240, wzrost 14.54 st., akcje straznik_gaju|Scene 1-31 -> ZGODNE
+- straznik_gaju__upadek.fbx: siatki 42, kości 37, trójkąty 11240, wzrost 14.54 st., akcje straznik_gaju|Scene 1-81 -> ZGODNE
+- straznik_gaju__ryk.fbx: siatki 42, kości 37, trójkąty 11240, wzrost 14.54 st., akcje straznik_gaju|Scene 1-61 -> ZGODNE
+- straznik_gaju.glb: siatki 42, kości 37, trójkąty 11240, wzrost 14.54 st., akcje atak 0-42, idle 0-72, ruch 0-60, ryk 0-60, trafienie 0-20, umiejetnosc 0-90, unik 0-30, upadek 0-80 -> ZGODNE
+
+PLIKI
+- straznik_gaju.blend
+- straznik_gaju.fbx
+- straznik_gaju.glb
+- straznik_gaju__atak.fbx
+- straznik_gaju__idle.fbx
+- straznik_gaju__ruch.fbx
+- straznik_gaju__ryk.fbx
+- straznik_gaju__trafienie.fbx
+- straznik_gaju__umiejetnosc.fbx
+- straznik_gaju__unik.fbx
+- straznik_gaju__upadek.fbx
+- straznik_gaju_bohater.jpg
+- straznik_gaju_ikona.png
+- straznik_gaju_plansza.jpg
+- straznik_gaju_tekstury/
+- straznik_gaju_idle.mp4
+- straznik_gaju_idle_klatki.jpg
+- straznik_gaju_idle_z_filmu.jpg
+- straznik_gaju_ruch.mp4
+- straznik_gaju_ruch_klatki.jpg
+- straznik_gaju_ruch_z_filmu.jpg
+- straznik_gaju_atak.mp4
+- straznik_gaju_atak_klatki.jpg
+- straznik_gaju_atak_z_filmu.jpg
+- straznik_gaju_umiejetnosc.mp4
+- straznik_gaju_umiejetnosc_klatki.jpg
+- straznik_gaju_umiejetnosc_z_filmu.jpg
+- straznik_gaju_trafienie.mp4
+- straznik_gaju_trafienie_klatki.jpg
+- straznik_gaju_trafienie_z_filmu.jpg
+- straznik_gaju_unik.mp4
+- straznik_gaju_unik_klatki.jpg
+- straznik_gaju_unik_z_filmu.jpg
+- straznik_gaju_upadek.mp4
+- straznik_gaju_upadek_klatki.jpg
+- straznik_gaju_upadek_z_filmu.jpg
+- straznik_gaju_ryk.mp4
+- straznik_gaju_ryk_klatki.jpg
+- straznik_gaju_ryk_z_filmu.jpg
+- raport.json
+- raport.txt
