@@ -79,6 +79,7 @@ Rycerz i Kot-Mag to wizytówka gry. Wszystkie postacie i pety są w stylu voxel 
 [System RPG](B%26C/Gra/System%20RPG.md)
 Kanon mówi tylko o „rozbudowanym systemie RPG” i o HUD z poziomem, HP, Maną/Energią i EXP. Lista z późniejszej specyfikacji (do potwierdzenia): poziomy i EXP, HP i Mana/Energia, ekwipunek i inwentarz, umiejętności na hotbarze, walka i loot.
 Decyzja D-039 (Karol, 14.11.2026): drzewka umiejętności za Diamenty — postaci, Twierdzy i każdego peta. Propozycja kształtu drzewka postaci: [Drzewko umiejętności postaci](B%26C/Gra/Drzewko%20umiej%C4%99tno%C5%9Bci%20postaci.md) (D-047, pytanie 34) — trzy gałęzie (Walka, Wyprawa, Fortuna) i pień, pięć pięter za poziom, pierwsza ranga węzła za punkt talentu, kolejne za Diamenty.
+Silnik walki v2 (propozycja, 14.11.2026): [Walka v2 — silnik, klasy i umiejętności](B%26C/Gra/Walka%20v2%20%E2%80%94%20silnik%2C%20klasy%20i%20umiej%C4%99tno%C5%9Bci.md) — serwer liczy całą walkę i oddaje dziennik zdarzeń (D-016); klasy Wojownik, Zwiadowca, Mag; długość walki tylko ze statystyk i losowości (D-068); klasy zbalansowane bez kontrowania (D-069). Kod w `src/server/Walka/` i `src/shared/Walka/`, symulacja, testy i tabela balansu w `tools/walka/`.
 
 ### Arena (PvP) 💡
 [Arena (PvP)](B%26C/Gra/Arena%20%28PvP%29.md)
@@ -241,6 +242,7 @@ Blocky&Crycket/
 ├── swiat/                     💡 mapy z klocków: generator → czesci.json → Blender / Studio / panel
 │   ├── demo_lesna_baza/       demo „Leśna baza startowa” (generuj.py, czesci.json, .blend, podglad/)
 │   └── postacie/              💡 postacie, pety i ekwipunek z kodu: Blender (siatki, animacje) i postacie z klocków w Studio
+├── tools/walka/               💡 silnik walki v2 w Pythonie: symulacja, testy, tabela balansu, zgodność z Luau w Studio
 ├── tools/studio/              skrypty Luau uruchamiane w Studio (rzeczy spoza Rojo)
 ├── tools/studio_mcp.py        klient MCP Roblox Studio z terminala (bez zależności)
 ├── tools/studio_buduj.py      buduje w Studio scenę z czesci.json (jeden kontener, do cofnięcia)
@@ -266,6 +268,8 @@ Blocky&Crycket/
 | `src/client/HUDClient.client.luau` | logika HUD: pokazanie po ekranie ładowania, animacje, dane z atrybutów, kliknięcia |
 | `src/server/PlayerStatsDefaults.server.luau` | domyślne staty gracza jako atrybuty (tymczasowo, do czasu DataStore) |
 | `src/shared/Config.luau` | wspólna konfiguracja serwera i klienta (na razie nazwa gry) |
+| `src/server/Walka/*.luau` | 💡 silnik walki v2 (czyste moduły: `Silnik`, `Statystyki`, `Umiejetnosci`, `Przeciwnicy`, `Los`, wygenerowany `Dane`) — nic nie uruchamia się samo |
+| `src/shared/Walka/Dziennik.luau` | 💡 format dziennika walki i jego niezmienniki dla klienta (`sprawdz`) |
 | `tools/studio/build_loading_screen.luau` | buduje `ReplicatedFirst.LoadingScreen` i `LoadingClient` |
 | `src/server/Hello.server.luau`, `src/client/Hello.client.luau`, `src/gui/FigmaTest.model.json` | pliki testowe Rojo i pipeline'u, do usunięcia |
 | `.claude/skills/figma-to-roblox/SKILL.md` | przepis dla Claude Code: ramka z Figmy → `.model.json` |

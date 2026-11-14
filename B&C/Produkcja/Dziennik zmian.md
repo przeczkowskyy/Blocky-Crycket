@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-14 · Claude Code u Karola (silnik walki v2; modele: Zwiadowca, Cierniowy Wilk, Muchomornik)
+- **Silnik walki v2** gotowy i sprawdzony: [[Walka v2 — silnik, klasy i umiejętności]] (`propozycja`). Kod gry w `src/server/Walka/` i `src/shared/Walka/` (czyste moduły, nic nie uruchamia się samo), symulacja, 41 testów i tabela balansu w `tools/walka/`. Niezależny przegląd zgłosił pięć uwag (m.in. nierówne klasy na poziomach spoza testu, rozjazd przy dużych ziarnach, luka w sprawdzaniu listy umiejętności) — wszystkie poprawione. Zgodność kodu gry z symulacją sprawdzona w Roblox Studio (tryb Edit, tylko odczyt): 496/496 identycznych walk, 38/38 złych wejść odrzuconych.
+- **Wynik balansu:** pojedynki klasa na klasę 45,5–54,5% na 13 poziomach; różnica klas przy tym samym potworze do 7 pp, wyjątek Leśny Slime na poziomach 1–4 (do 8,6 pp na ziarnach kontrolnych); cel 5 pp spełnia 53 z 65 zestawień. Długość walki wyłącznie ze statystyk i losowości (D-068): 624 tys. walk, najdłuższa 38 tur, techniczny limit nie zadziałał ani razu.
+- **Pięć wyborów do decyzji ludzi** (atak Maga, mechanizm umiejętności, unik wobec umiejętności, dolna granica obrony, sloty na starcie) — w notatce i w raporcie „Silnik walki v2 — wyniki i wybory”.
+- **Modele z Blendera** (każdy z raportem do akceptacji i notatką `propozycja`): [[Zwiadowca]] (druga klasa gracza, łuk i sztylet), [[Cierniowy Wilk]], [[Muchomornik]]. Wcześniej [[Leśny Troll]]. W budowie: Strażnik Gaju, Leśny Slime.
+- Roblox Studio otwarte przez Claude Code na koncie Karola w trybie edycji (Karol poza komputerem) — do sprawdzenia silnika; niczego w miejscu nie zmieniono.
+- Pliki: `src/server/Walka/`, `src/shared/Walka/`, `tools/walka/`, `swiat/postacie/`, [[System RPG]], `DOKUMENTACJA.md`, [[Zadania]].
+
 ## 2026-11-14 · Claude Code u Karola (stała synchronizacja panelu; Leśny Troll; wysyłka bez okna logowania)
 - **Stała synchronizacja z GitHubem (D-070)** działa od 18:21: panel co 90 s sam pobiera zmiany drugiej osoby i sam wysyła zmiany zrobione w panelu. Pobieranie nie rusza pracy w toku — bez autostash, bez rebase i bez zwykłego scalania w katalogu roboczym; kolizja z lokalnymi zmianami daje stan „Czeka”, konflikt treści „Konflikt — potrzebny człowiek” (także na Telegramie). Niezależny przegląd znalazł dwa przypadki możliwej utraty plików (pliki dodane `git add` przy scalaniu; ignorowany plik na drodze katalogu) — oba naprawione i pokryte testami. 472 testy panelu przechodzą. Szczegóły: [[Panel zespołu]], `panel/README.md`.
 - **Wysyłka na GitHub bez okna logowania:** `git push` zawieszał się na oknie wyboru konta, gdy nikogo nie było przy komputerze (z tego samego powodu nie działał przycisk „Wyślij”). W lokalnej konfiguracji repozytorium u Karola wpisana nazwa konta; wysyłka przechodzi bez okna.

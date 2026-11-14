@@ -8,7 +8,9 @@ tags: [produkcja, zadania]
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
 - [ ] Paweł (i każdy, kto ma własny panel): pobrać kod i zrestartować panel, zanim ktokolwiek oznaczy **decyzję** jako nieaktualną — stary panel bierze `🗃️ nieaktualna` za propozycję i po „Tak” psuje wpis w [[Rejestr decyzji]]; pytania i raporty nie mają tego ryzyka · #wysoki
-- [ ] Silnik walki v2 (D-068, D-069, D-062; `src/server/Walka/`, `tools/walka/`): po zakończeniu sprawdzić zgodność Luau z Pythonem w Studio (tryb Edit), wpisać wybory do decyzji do [[Pytania otwarte]], potem odtwarzacz cutscenki v2 (magia, umiejętności, walki o różnej długości) · #wysoki
+- [ ] Odtwarzacz cutscenki v2 dla silnika walki v2: magia, umiejętności, efekty, walki o różnej długości, „×2” i „pomiń”; aktorzy z nowych modeli (Zwiadowca, potwory lasu) · #wysoki
+- [ ] Karol i Paweł: pięć wyborów w silniku walki v2 (atak Maga, działanie umiejętności, unik wobec umiejętności, dolna granica obrony, sloty na starcie) — raport „Silnik walki v2 — wyniki i wybory” w panelu · #wysoki
+- [ ] [[Drzewko umiejętności postaci]]: węzeł „Jeszcze stoję” (ostatni dech) jest sprzeczny z D-068 — usunąć albo przeprojektować; przy 0 slotach na starcie (D-055) potwory pierwszych poziomów trzeba osłabić · #średni
 - [ ] Modele lasu z Blendera (Leśny Troll, Zwiadowca, Cierniowy Wilk, Muchomornik, Strażnik Gaju, Leśny Slime): akceptacja raportów w panelu, potem import do Roblox (stała zgoda Karola z 14.11) i brakujące klipy walki dla Rycerza i Kota-Maga · #wysoki
 - [ ] Karol i Paweł: zatwierdzić albo odrzucić propozycje z trzeciej sesji 14.11 — D-056–D-067 (trzy drzewka, węzły za Gemy, pety: stały skill i ewolucja, walki petów osobno, inkubatory bez dropu z potworów, osiem biomów, model statystyk, Training Center w jednym budynku od 1. poziomu, mapa z lotu ptaka, Blender dla postaci, sklep za Robuxy, gildie po premierze) — w panelu (zakładka Pytania); odpowiedzieć na pytania 39–43 ([[Sesja główna 2026-11-14 (3) — zapis ustaleń]]) · #wysoki
 - [ ] Training Center: zaprojektować sześć mini-gier 3D — jedna na statystykę, interaktywne, nie za trudne, logicznie związane ze statystyką (wzór: Swords & Souls; przykład Pawła: rozbijanie mieczem rzucanych przedmiotów klikaniem strzałek — Siła) — prośba Karola i Pawła z trzeciej sesji 14.11; najpierw pytanie 39 (pięć czy sześć) i D-063 · #średni
@@ -80,6 +82,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-14: Silnik walki v2 (`src/server/Walka/`, `src/shared/Walka/`, `tools/walka/`): klasy, sześć statystyk, umiejętności, efekty, przeciwnicy lasu, łup; 41 testów i 624 tys. walk próbnych; zgodność kodu gry z symulacją sprawdzona w Studio (496/496); notatka [[Walka v2 — silnik, klasy i umiejętności]]
 - [x] 2026-11-14: [[Panel zespołu|Panel]]: stała synchronizacja z GitHubem (D-070) — panel sam pobiera zmiany drugiej osoby i sam wysyła zmiany z panelu, bez ruszania pracy w toku; stan na Pulpicie, powiadomienia na Telegramie; włączona na komputerze Karola od 18:21
 - [x] 2026-11-14: [[Panel zespołu|Panel]]: alerty na Telegramie z potwierdzeniem decyzji przez drugą osobę (D-043) — grupa „B&C decyzje” działa, Paweł potwierdza decyzje przyciskami
 - [x] 2026-11-14: [[Panel zespołu|Panel]]: status „Nieaktualne” przy pytaniach, decyzjach i raportach, także hurtem („Zaznacz kilka”) — prośba Karola; pięć raportów oznaczonych przez Karola komentarzem przeniesione na ten status
