@@ -8,6 +8,8 @@ tags: [produkcja, sesja, game-design]
 > [!info] Co to jest
 > Zapis pierwszej sesji głównej Karola i Pawła (42 minuty) w zakładce Sesja [[Panel zespołu|panelu]]. To **materiał źródłowy, nie kanon**: nic z tej notatki nie obowiązuje, dopóki nie trafi do [[Rejestr decyzji]] jako ✅. Propozycje z tej sesji mają numery **D-032–D-045** (D-031 powstała równolegle z pytania Pawła w panelu i dotyczy tej samej waluty premium); zatwierdza je Karol albo Paweł w panelu (zakładka Decyzje). Każda osoba nagrywała własny mikrofon, więc przypisanie mówców jest pewne; transkrypcja jest automatyczna i miejscami niewyraźna (zwłaszcza dłuższe wypowiedzi Pawła), więc liczby i nazwy traktuj ostrożnie. Znaczniki `[11:02]` to godzina z zapisu. Pełny zapis rozmowy leży lokalnie u gospodarza sesji i nie trafia do repozytorium. W rozmowie padało „to nasza decyzja”, ale decyzją jest dopiero kliknięcie w panelu z podpisem.
 
+Tego samego dnia po południu (13:12–13:52) odbyła się **druga sesja**: [[Sesja główna 2026-11-14 (2) — zapis ustaleń]] (Energia, Twierdza, mistrz gier planszowych, drzewko umiejętności; propozycje D-048–D-055) oraz **trzecia** (13:52–14:40): [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (drzewka za Gemy, pety i jajka, osiem biomów, model statystyk, Training Center, mapa z lotu ptaka, Blender; propozycje D-056–D-067).
+
 Karol prowadził i szedł po agendzie z [[Sesje główne]]; wszystkie 13 tematów odhaczył w panelu. Trzy odhaczył bez rozstrzygnięcia (Postacie i ekwipunek, Prawa decyzyjne, Twierdza w temacie Walut) — zaznaczone niżej.
 
 ## 1. Karczma: poziomy trudności zadań (D-009) [11:00–11:02] → D-032

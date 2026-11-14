@@ -98,12 +98,12 @@ Cecha klasy to własne liczby i nazwy — mechanik S&F nie chroni prawo autorski
 
 - **Rozwija D-039 ✅** (drzewko postaci za Diamenty): dokłada punkty talentu jako darmową ścieżkę — to wymaga zgody (D-047, pytanie 34).
 - **Zgodne z** D-015 (nic losowego za Diamenty), D-031 i D-038 (Diamenty premium), D-035 (próg progresji), D-036 („trochę pay-to-win”).
-- **Osobno, później:** drzewka petów za Łapki (D-039, D-040 — temat Pawła w [[Sesje główne]]) i drzewko Twierdzy (pytanie 9). Ta notatka ich nie projektuje.
+- **Osobno, później:** drzewka petów za Łapki (D-039, D-040 — temat Pawła w [[Sesje główne]]) i drzewko Twierdzy (pytanie 9). Ta notatka ich nie projektuje. Trzecia sesja 14.11: drzewko każdego peta odpada — jedno ogólne drzewko petów i drzewko Twierdzy jako mnożniki procentowe (propozycja D-056).
 - Statystyki za punkty i Złoto to nadal propozycja (pytanie 17); drzewko zakłada, że zostają.
 
 ## Do ustalenia
-- Jedno wspólne drzewko czy osobne dla klas (§5) — pytanie 34, D-047.
-- Punkty talentu obok Diamentów czy tylko Diamenty (§3) — D-047.
+- Jedno wspólne drzewko czy osobne dla klas (§5) — pytanie 34, D-047. **Druga sesja 14.11 (D-055):** Karol — osobne drzewko na klasę; klasy Wojownik, Zwiadowca, Mag ze specjalizacjami jako rozgałęzienia (D-054, pytanie 35); węzły procentowe plus **umiejętności aktywne** z 0–3 slotami odblokowywanymi w drzewku; jedno okno z sekcjami (gracz, pety, karczma, Twierdza) koło zakładki ekwipunku; za co kupuje się węzły — nie padło. Zob. [[Sesja główna 2026-11-14 (2) — zapis ustaleń]].
+- Punkty talentu obok Diamentów czy tylko Diamenty (§3) — D-047. **Rozstrzygnięte 14.11:** D-047 odrzucona z dwoma podpisami (Karol: „płacimy jedynie Diamentami za drzewko”), D-055 zatwierdzona — drzewko na klasę; trzecia sesja: węzły za Gemy, bez punktów talentu, a poziom daje punkty statystyk, sklep i strefy (propozycja D-057); okno z trzema sekcjami gracz / pety / Twierdza, bez karczmy (D-056). Gałęzie i piętra z tej notatki trzeba przeprojektować pod drzewko na klasę. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
 - Pełna lista węzłów i liczby → kalkulator balansu (okno **Balans** agenta w panelu, zlecenie Karola z 14.11 w [[Zadania]]); do tego tempo zdobywania Diamentów w grze.
 - Zakładka w [[Okno ekwipunku]] czy osobne okno (§6).
 - Czy Chrupki (D-040) kiedykolwiek kupują węzły.

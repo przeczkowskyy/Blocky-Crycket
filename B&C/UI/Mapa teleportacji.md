@@ -67,6 +67,7 @@ Avoid: text, letters, numbers, words, logo, watermark, padlock, exclamation mark
 - Lista lokacji (tabela wyżej) i ich polskie lub angielskie nazwy (zob. [[Pytania otwarte]] #5 i #28).
 - Które lokacje są zablokowane na start i od jakiego poziomu.
 - Teleport w obrębie jednego place czy osobne place (`TeleportService`)?
+- Trzecia sesja 14.11 (propozycja D-064): zamiast wygenerowanej grafiki mapy z ramką — **widok z lotu ptaka** z kamery na zbudowane miasteczko (przelot po kliknięciu Teleport, jak w GTA V), piny tylko przy dostępnych lokacjach, klik teleportuje; prompty wyżej wtedy odpadają, piny mogą zostać jako ikony. Do sprawdzenia płynność na telefonie. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
 
 ## Stan implementacji
 - [x] Specyfikacja i prompty (2026-11-12)

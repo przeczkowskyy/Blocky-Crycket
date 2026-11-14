@@ -1,0 +1,32 @@
+{
+ "id": "r-20261114-140956-6be8",
+ "tytul": "Sesja główna 2026-11-14 (2) — do zatwierdzenia",
+ "opis_md": "Druga sesja główna z 14.11 (13:12–13:52, z przerwą na obiad) jest spisana w sejfie: **Sesja główna 2026-11-14 (2) — zapis ustaleń** (status: propozycja). Niczego nie zatwierdzono — każdą propozycję klikacie w zakładce Pytania (Tak / Nie), a druga osoba potwierdza.\n\n**Uwaga:** pod koniec sesji transkrypcja nie nadążała (Karol to zauważył), więc ostatnie zdania o drzewku umiejętności mogły się nie spisać. Nic z tej części nie zgadywałem.\n\n## Propozycje do zatwierdzenia (D-048–D-055)\n1. **D-048 — Rezygnacja z Energii w karczmie.** Karol zaproponował, Paweł zgodził się. Skutek: pasek „Many/Energii” w HUD zostaje paskiem Many.\n2. **D-049 — Twierdza: zamek z mini-budynkami i lista budynków.** Kopalnie złota i diamentów, drewno i kamień, pasywne doświadczenie, Training Center, budynek gildyjny, kowal, kryształy wyżej. Odrzucone w rozmowie: napady na twierdze innych graczy. Konflikt: kopalnia diamentów a D-031, kowal a D-035.\n3. **D-050 — Training Center: statystyki z mini-gier 3D.** Ciachanie rzucanych przedmiotów, +1 za trafienie, combo; bez limitu grindu, tryb AFK bez mnożników. Karol: „to musimy przegadać” → pytanie 36.\n4. **D-051 — Kowal ulepsza i rozbiera przedmioty, zaklinacz w biomie dodaje pasywki** (trucizna, podpalenie). Tiery przedmiotów — nie teraz.\n5. **D-052 — Pety: stajnia w mieście, jajka za Złoto na strefę, karmienie petów.** Uwaga: Złoto da się kupić przez Diamenty, więc szanse z jajek muszą być jawne.\n6. **D-053 — Mistrz gier planszowych bez stawek.** Kostka, stałe nagrody na polach, darmowy rzut na czas plus płatne rzuty za Złoto, kolejne lepsze plansze. **Zmienia D-037**: nie ma stawiania monet ani utraty połowy.\n7. **D-054 — Klasy: Wojownik, Zwiadowca, Mag**, specjalizacje (Berserker, Paladyn…) jako rozgałęzienia drzewka. Pytanie o klasach dodałem na prośbę Karola z rozmowy.\n8. **D-055 — Drzewko na klasę**, pasywki procentowe, umiejętności aktywne z 0–3 slotami, jedno okno koło ekwipunku. To inny wariant niż D-047 (jedno drzewko z trzema gałęziami) — rozstrzygnijcie razem.\n\n## Nowe pytania (35–38)\n- **35** Klasy postaci: trzy klasy, podział po broni czy Rycerz i Kot-Mag?\n- **36** Training Center: czy statystyki z mini-gier nie wypierają reszty gry?\n- **37** Mistrz gier: nagrody, koszt rzutu, częstość darmowego rzutu, czy bilety za Robuxy zostają.\n- **38** Pety od początku czy z drzewka; jawne szanse jajek.\n\nDopiski przy pytaniach 6, 8, 9, 17, 28, 32 i 34 (pytanie 8 zamknie się po decyzjach D-034 i D-048; pytanie 34 — po D-047 i D-055).\n\n## Nie padło na sesji\nOd którego poziomu działka Twierdzy, gdzie stoi Training Center, podziemia; za co kupuje się węzły drzewka; drzewka petów. Te tematy wróciły do agendy w „Sesje główne”.\n\n## Zadania\nZatwierdzenie D-048–D-055 i odpowiedzi 35–38; panel: wyciszenie mikrofonu w zakładce Sesja bez odłączania nasłuchu agenta (uwaga Pawła) i kolejka transkrypcji przy „Zakończ sesję”.\n\nNic nie commitowałem. Zapis rozmowy zostaje lokalnie u gospodarza, poza repozytorium.",
+ "kto": "Claude (sesja)",
+ "czas": "2026-11-14T14:09:56+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesja główna 2026-11-14 (2) — zapis ustaleń.md",
+   "etykieta": "Zapis ustaleń (druga sesja)"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Rejestr decyzji.md",
+   "etykieta": "Rejestr decyzji (D-048–D-055)"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytania otwarte (35–38)"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesje główne.md",
+   "etykieta": "Agenda sesji"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Czy zatwierdzamy propozycje D-048–D-055 z drugiej sesji 14.11?"
+}

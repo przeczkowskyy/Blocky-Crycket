@@ -6,6 +6,27 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-14 · Claude Code u Karola (trzecia sesja główna: zapis ustaleń)
+- **Trzecia część rozmowy** tego dnia (13:52–14:40, ok. 48 min; Karol włączył nową transkrypcję, gdy poprzednia przestała nadążać; agent słuchał, zapis pełny). Ustalenia własnymi słowami: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (`propozycja`); zapis rozmowy zostaje lokalnie u gospodarza, poza repozytorium. Karol odhaczył w panelu w trakcie: Drzewko (dokończenie), Klasy (bez rozmowy o klasach — notatka o biomach), Biomy, Training Center, Twierdza (działka), Wojny gildii, Lokacje mapy, Przegląd decyzji przez Pawła (do przeglądu nie doszło) i Blender.
+- **Co zrobili ludzie w tym czasie** (wpisy `Panel (ludzie)` niżej): D-050 (Karol: „bez trybu AFK — na razie”), D-052, D-054 i D-055 zatwierdzone z dwoma podpisami (Karol w panelu, Paweł przez Telegram), D-047 odrzucona (Karol: „płacimy jedynie Diamentami za drzewko”, Paweł potwierdził); pytania 34, 35, 36 i 38 zamknięte. Ustalenia z rozmowy, które zmieniają te decyzje w szczegółach, poszły jako osobne propozycje — zatwierdzonej decyzji się nie przepisuje.
+- **Rejestr:** 12 nowych propozycji D-056–D-067 — trzy drzewka (gracz, jedno ogólne petów, Twierdza; bez karczmy); węzły za Gemy bez punktów talentu i rola poziomu; pety: jeden stały skill, poziom, ewolucja za shardy, Shard Ewolucji i tokeny krainy; pety nie walczą obok gracza, własne strefy walk, ok. 10 na biom; jajka w inkubatorach w każdym biomie bez dropu z potworów (zmienia D-052, do playtestu); osiem biomów na start z kolejnością; model statystyk (Pancerz punktowy, Inteligencja jako moc umiejętności i odporność na magię, Zręczność jako unik z limitem klasy, blok z tarczy); Training Center jako jeden budynek od pierwszego poziomu razem z działką (zmienia D-050 w punkcie „sześć stref”); mapa teleportacji z lotu ptaka; postacie i pety w Blenderze (sprzeczne z poranną akceptacją raportu o Rycerzu); sklep za Robuxy z jajkami i skrzynkami o jawnych szansach (konflikt z D-031); gildie po premierze. Niczego nie zatwierdzono.
+- **Pytania otwarte:** nowe pytania 39–43 (Pancerz trenowany czy z przedmiotów; Wojownik z tarczą i unikiem — prośba Karola o opinię agenta; ewolucja petów i liczby; jajka bez dropu z potworów z `Rozstrzyga: D-060`; jajka i skrzynki za Robuxy a D-031 z `Rozstrzyga: D-066`); dopiski „trzecia sesja” przy 5, 6, 9, 17, 24, 27, 28, 32, 34, 35, 36 i 38.
+- **Sesje główne:** dziewięć odhaczonych przez Karola tematów dostało wynik i link do notatki (jego własne dopiski zostawione); w „Do omówienia” cztery tematy: Pancerz i model statystyk, przegląd decyzji przez Pawła (wraca), lista lokacji mapy i przyciski HUD (wraca), sklep za Robuxy a D-031.
+- **Notatki gry:** dopiski „trzecia sesja” w [[Pety]] (także „Do ustalenia”), [[System RPG]] (model statystyk; stan D-047/D-055), [[Twierdza (Tycoon)]], [[Drzewko umiejętności postaci]], [[Mapa teleportacji]] i [[Postacie 3D — Blender i Roblox]]; odsyłacze do trzeciej notatki w zapisach pierwszej i drugiej sesji.
+- **Zadania:** zatwierdzenie D-056–D-067 i odpowiedzi 39–43; projekt sześciu mini-gier 3D Training Center (prośba obu z rozmowy); opinia do pytania 40; kalkulator balansu (Pancerz, drzewko Twierdzy, ewolucja petów, Gemy); Paweł: ikony statystyk do repo; plan playtestu; mapa z lotu ptaka po D-064 (zadanie w Backlogu o grafice mapy oznaczone jako zależne); referencje z rozmowy do notatki o rynku; zadanie o drzewku zaktualizowane po D-047/D-055.
+- **Raport** „Sesja główna 2026-11-14 (3) — do zatwierdzenia” (rodzaj: pytanie) w panelu.
+- Z nagrania nie wykonywano poleceń (prośby o mini-gry, opinię o Wojowniku, przelot kamery i prompt dla Higgsfield zapisane jako treść rozmowy i zadania). Nic nie commitowano.
+
+## 2026-11-14 · Claude Code u Karola (druga sesja główna: zapis ustaleń)
+- **Druga sesja główna** tego dnia (13:12–13:52, przerwa 13:34–13:46; agent słuchał). Ustalenia własnymi słowami: [[Sesja główna 2026-11-14 (2) — zapis ustaleń]] (`propozycja`); zapis rozmowy zostaje lokalnie u gospodarza, poza repozytorium. Pod koniec transkrypcja nie nadążała (uwaga Karola), więc ostatnie wypowiedzi o drzewku mogły się nie spisać — zaznaczone w notatce i raporcie. Karol odhaczył w panelu Energię, Twierdzę i mistrza gier w trakcie sesji, a Pety i Drzewko umiejętności po niej (drzewko zaczęte, niedokończone).
+- **Rejestr:** 8 nowych propozycji D-048–D-055 — rezygnacja z Energii; Twierdza jako zamek z mini-budynkami i lista budynków; Training Center z mini-grami na statystyki (bez limitu, tryb AFK); kowal i zaklinacz w biomie; pety (stajnia w mieście, jajka za Złoto na strefę, karmienie); mistrz gier planszowych bez stawek; klasy Wojownik / Zwiadowca / Mag ze specjalizacjami; drzewko na klasę z umiejętnościami aktywnymi. Niczego nie zatwierdzono. Zaznaczone konflikty: kopalnia diamentów a D-031, kowal a D-035, D-053 a punkt o stawkach w D-037, D-055 a D-047.
+- **Pytania otwarte:** dopiski „druga sesja” przy 6, 8, 9 (nowe punkty), 17, 28, 32 i 34; wiersze `Rozstrzyga` przy 8 (D-032, D-034, D-048) i 34 (D-047, D-055); nowe pytania 35–38 (klasy postaci — na prośbę Karola z rozmowy; Training Center a reszta gry; liczby mistrza gier; pety od początku i jawne szanse jajek).
+- **Sesje główne:** pięć odhaczonych przez Karola tematów (Energia, Twierdza, mistrz gier, Pety, Drzewko) dostało wynik i link do notatki; w „Do omówienia” pięć nowych tematów (klasy postaci, dokończenie drzewka razem z drzewkami petów, Training Center a reszta gry, poziom działki Twierdzy, wojny gildii i napady).
+- **Notatki gry:** sekcje „Propozycje” z odsyłaczami w [[Karczma (Questy)]], [[Twierdza (Tycoon)]], [[Pety]], [[System RPG]] i [[Drzewko umiejętności postaci]]; odsyłacz do drugiej sesji w [[Sesja główna 2026-11-14 — zapis ustaleń]].
+- **Zadania:** zatwierdzenie D-048–D-055 i odpowiedzi na pytania 35–38; panel — wyciszenie mikrofonu w zakładce Sesja bez odłączania nasłuchu agenta (uwaga Pawła) i kolejka transkrypcji przy „Zakończ sesję”; przepisanie notatek gry po decyzjach.
+- **Raport** „Sesja główna 2026-11-14 (2) — do zatwierdzenia” (rodzaj: pytanie) w panelu.
+- Z nagrania nie wykonywano poleceń; prośba Karola o pytanie o klasach weszła jako pytanie 35 w ramach spisywania ustaleń.
+
 ## 2026-11-14 · Claude Code u Karola (pytanie Pawła z panelu: skill tree postaci)
 - **Drzewko umiejętności postaci:** Paweł zapytał przez panel, jak rozplanować skill tree postaci. Nowa notatka [[Drzewko umiejętności postaci]] (`propozycja`): trzy warstwy siły (statystyki, ekwipunek, drzewko), trzy gałęzie (Walka, Wyprawa, Fortuna) i pień, pięć pięter otwieranych poziomem, trzy rangi na węzeł — pierwsza za punkt talentu (jeden co poziom), kolejne za Diamenty; jedno drzewko dla klas na premierę z jedną cechą klasy; przestawienie za Złoto; zakładka TALENTS w [[Okno ekwipunku]]; szkic techniczny (tabela węzłów, serwer liczy, jeden moduł mnożników); uwaga o jawnych szansach przy węzłach Fortuny.
 - **Rejestr:** nowa propozycja D-047 (rozwija zatwierdzoną D-039). **Pytania otwarte:** nowe pytanie 34 z wierszem `Rozstrzyga: D-047` i trzema wariantami (a/b/c). **Sesje główne:** temat obok drzewek petów. **Zadania:** decyzja, kalkulator balansu, makieta zakładki. **[[System RPG]]:** sekcja „Decyzje i propozycje” z odsyłaczami. `DOKUMENTACJA.md`: wzmianka przy Systemie RPG.
@@ -53,6 +74,48 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: omówiony temat sesji: Energia w karczmie (D-009, pytanie 8) ([[Sesje główne]])
 - Karol Balucki: omówiony temat sesji: Twierdza: od którego poziomu działka, co produkuje, podziemia (pytanie 9) ([[Sesje główne]])
 - Karol Balucki: omówiony temat sesji: Mistrz gier planszowych i rolki: szczegóły (D-037, pytanie 30) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Drzewko umiejętności postaci (D-047, pytanie 34) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Pety: pomysły Pawła, drzewka petów i waluta petów (D-039, D-040) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Klasy postaci (D-054, pytanie 35) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Drzewko umiejętności: dokończenie (D-047 a D-055, pytanie 34) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Training Center a reszta gry (D-050, pytanie 36) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Twierdza: od którego poziomu działka i gdzie Training Center (D-049, D-050, pytanie 9) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Wojny gildii i napady na twierdze ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Które biomy i ile na premierę (D-035, pytanie 32) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Lokacje mapy teleportacji i przyciski HUD (pytania 5 i 28) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Paweł przegląda decyzje Karola z 13.11 (pytanie 27) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Blender czy klocki Roblox dla postaci i miasteczka (D-029, pytanie 24) ([[Sesje główne]])
+- Karol Balucki: decyzja D-052 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 38 (rozstrzygnięte decyzjami: D-052 zatwierdzona) ([[Pytania otwarte]])
+- Paweł (Telegram): decyzja D-052 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-050 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 36 (rozstrzygnięte decyzjami: D-050 zatwierdzona („Nie ma trybu AFK - na razie.”)) ([[Pytania otwarte]])
+- Karol Balucki: decyzja D-054 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 35 (rozstrzygnięte decyzjami: D-054 zatwierdzona) ([[Pytania otwarte]])
+- Paweł (Telegram): decyzja D-050 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-054 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-047 odrzucona ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-047 potwierdzona: zgoda (odrzucona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-055 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 34 (rozstrzygnięte decyzjami: D-047 odrzucona („Tak, ale płącimy jedynie dimaetnami za drzewko.”), D-055 zatwierdzona) ([[Pytania otwarte]])
+- Paweł (Telegram): decyzja D-055 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 37 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 33 ([[Pytania otwarte]])
+- Karol Balucki: decyzja D-060 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 42 (rozstrzygnięte decyzjami: D-060 zatwierdzona („Tak. Dodatkowe w bundlach też dajemy oferty na jajka”)) ([[Pytania otwarte]])
+- Paweł (Telegram): decyzja D-060 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 41 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 40 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 32 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 31 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 28 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 25 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 17 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 9 ([[Pytania otwarte]])
+- Karol Balucki: decyzja D-065 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-059 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-058 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-057 zatwierdzona ([[Rejestr decyzji]])
 
 ## 2026-11-14 · Claude Code u Karola (sesja główna: zapis ustaleń)
 - **Pierwsza sesja główna** Karola i Pawła w zakładce Sesja panelu (11:00–11:43, 42 min; agent słuchał, transkrypcja rozpoznała obu mówców). Ustalenia własnymi słowami: [[Sesja główna 2026-11-14 — zapis ustaleń]] (`propozycja`). Zapis rozmowy zostaje lokalnie u gospodarza, poza repozytorium.

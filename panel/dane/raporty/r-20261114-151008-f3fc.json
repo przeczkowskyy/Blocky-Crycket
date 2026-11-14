@@ -1,0 +1,32 @@
+{
+ "id": "r-20261114-151008-f3fc",
+ "tytul": "Sesja główna 2026-11-14 (3) — do zatwierdzenia",
+ "opis_md": "Trzecia część rozmowy z 14.11 (13:52–14:40, po restarcie transkrypcji) jest spisana w sejfie: **Sesja główna 2026-11-14 (3) — zapis ustaleń** (status: propozycja). Zapis był pełny. Niczego nie zatwierdziłem — każdą propozycję klikacie w zakładce Pytania (Tak / Nie), a druga osoba potwierdza.\n\n**Co już macie za sobą:** w trakcie i po tej części zatwierdziliście z dwoma podpisami D-050 (Training Center, Karol: „bez AFK na razie”), D-052 (pety), D-054 (klasy) i D-055 (drzewko na klasę), a D-047 odrzuciliście. Kilka ustaleń z rozmowy **zmienia te decyzje w szczegółach** — zapisałem je jako osobne propozycje, bo zatwierdzonej decyzji się nie przepisuje.\n\n## Propozycje do zatwierdzenia (D-056–D-067)\n1. **D-056 — Trzy drzewka: gracz, pety (jedno ogólne), Twierdza; bez karczmy.** Zmienia D-055 (cztery sekcje → trzy) i D-039 (koniec z drzewkiem każdego peta). Drzewko Twierdzy mnoży procentowo wydajność budynku — Karol: „tu musi wejść matematyka”.\n2. **D-057 — Węzły za Gemy, bez punktów talentu.** Poziom daje za to sklep, punkty statystyk i strefy. Zgodne z Waszym odrzuceniem D-047. „Gemy” = Diamenty = Magiczne Kryształy — nazwa nadal w pytaniu 6.\n3. **D-058 — Pety: jeden stały skill, poziom (maks. 30) i ewolucja** (piesek → Cerber) za shardy peta ze skrapowania, Shard Ewolucji ze strażnika biomu i tokeny krainy. Zmienia D-040 (waluta petów) i D-039. Sporne: wszystkie pety ewoluują czy tylko lepsze → pytanie 41.\n4. **D-059 — Pety nie walczą obok gracza.** Dają pasywne premie i mają własne strefy walk petów; ok. 10 petów na biom, jedno jajko = jeden pet.\n5. **D-060 — Jajka w inkubatorach w każdym biomie, wyklucie od razu (3–10 s), bez jajek z potworów.** **Zmienia D-052** (oba podpisy) w jednym punkcie. Karol „zdał się” na Pawła; playtest przed premierą rozstrzygnie → pytanie 42.\n6. **D-061 — Osiem biomów na start:** las → bagno → dżungla → pustynia (zaklinacz) → góry z tundrą → lodowiec → wulkaniczny → kryształowy. Obsydian pod znakiem zapytania. Każdy biom ma strażnika i swoje pety.\n7. **D-062 — Model statystyk:** Pancerz jako punkty odejmowane od ciosu (nie procent), Inteligencja = moc umiejętności i odporność na magię, Zręczność = unik z limitem na klasę (Zwiadowca 25–50%), Szczęście = krytyk, blok z tarczy tylko u Wojownika. Sporne: Wojownik z tarczą i unikiem → pytanie 40.\n8. **D-063 — Training Center: jeden budynek z wyborem mini-gry, od pierwszego poziomu razem z działką.** Zmienia D-050 (sześć stref → jeden budynek). Sporne: pięć czy sześć mini-gier (Pancerz) → pytanie 39.\n9. **D-064 — Mapa teleportacji jako widok z lotu ptaka** z pinami dostępnych lokacji (pomysł Pawła, „jak w GTA V”). Zamiast wygenerowanej grafiki mapy.\n10. **D-065 — Postacie i pety projektuje Karol w Blenderze.** Uwaga: rano Karol zaakceptował raport o Rycerzu z wnioskiem „klocki Roblox główną drogą” — to się wyklucza, wybierzcie jedno (pytanie 24).\n11. **D-066 — Sklep za Robuxy: paczki jajek i skrzynki z jawnymi szansami, game passy, darmowy pet.** **Konflikt z D-031** („nigdy jajek za walutę premium”) → pytanie 43.\n12. **D-067 — Gildie i wojny gildii po premierze.** Budynek gildyjny z D-049 też później.\n\n## Nowe pytania (39–43)\n- **39** Pancerz: trenować w Training Center (sześć mini-gier, Karol) czy tylko z przedmiotów (pięć, Paweł)?\n- **40** Wojownik z tarczą i unikiem: jak ograniczyć Zręczność? Karol prosił o moją opinię — dojdzie jako komentarz z liczbami (zadanie).\n- **41** Ewolucja petów: wszystkie czy tylko lepsze; liczby.\n- **42** Jajka bez dropu z potworów — zmiana D-052 (rozstrzyga D-060).\n- **43** Jajka i skrzynki za Robuxy a D-031 (rozstrzyga D-066).\n\nDopiski przy pytaniach 5, 6, 9, 17, 24, 27, 28, 32, 34, 35, 36 i 38.\n\n## Odhaczone w agendzie bez rozmowy\n„Klasy postaci” (notatka Karola dotyczy biomów) i „Paweł przegląda decyzje Karola” (do przeglądu nie doszło) — drugi temat wrócił do agendy razem z Pancerzem, listą lokacji mapy i sklepem za Robuxy.\n\n## Zadania\nZatwierdzenie D-056–D-067 i odpowiedzi 39–43; projekt sześciu mini-gier Training Center (Wasza prośba z rozmowy); opinia do pytania 40; kalkulator balansu (Pancerz, drzewko Twierdzy, ewolucja petów, Gemy); Paweł: ikony statystyk do repo; plan playtestu; mapa z lotu ptaka po decyzji.\n\nZ nagrania nie wykonywałem poleceń. Nic nie commitowałem. Zapis rozmowy zostaje lokalnie u gospodarza, poza repozytorium.",
+ "kto": "Claude (sesja)",
+ "czas": "2026-11-14T15:10:08+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesja główna 2026-11-14 (3) — zapis ustaleń.md",
+   "etykieta": "Zapis ustaleń (trzecia sesja)"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Rejestr decyzji.md",
+   "etykieta": "Rejestr decyzji (D-056–D-067)"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytania otwarte (39–43)"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesje główne.md",
+   "etykieta": "Agenda sesji"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Czy zatwierdzamy propozycje D-056–D-067 z trzeciej części rozmowy 14.11?"
+}
