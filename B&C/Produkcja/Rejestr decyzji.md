@@ -313,5 +313,9 @@ Walka trwa, aż życie jednej strony spadnie do zera, a jej długość wynika ty
 ✅ zatwierdzona · game design · 2026-11-14 · źródło: rozmowa Karola z Claude Code 14.11 · zdecydował: Karol Balucki 2026-11-14
 Nie ma klasy, która z założenia wygrywa z inną (np. Zwiadowca kontrujący Maga). Wojownik, Zwiadowca i Mag (D-054) różnią się stylem gry, nie skutecznością: przy tym samym poziomie i tej samej puli punktów statystyk każda klasa ma podobne wyniki z każdym przeciwnikiem, a pojedynek klasa na klasę wychodzi blisko 50%. Tabela balansu z symulacji silnika ma to wykazać — nie pokazuje, „kto kogo kontruje”. Dotyczy modelu statystyk z D-062 (magia omijająca Pancerz nie może zrobić z Maga kontry na Wojownika) i [[Arena (PvP)]]. Zob. [[System RPG]].
 
+### D-070 Wszystko od razu na GitHub; panel jedynym źródłem prawdy
+✅ zatwierdzona · proces · 2026-11-14 · źródło: rozmowa Karola z Claude Code 14.11 · zdecydował: Karol Balucki 2026-11-14
+Cokolwiek Karol albo Paweł (albo ich Claude Code) zmienia w grze, sejfie lub kodzie, trafia od razu na GitHub: po każdej skończonej zmianie commit i push na `main`, bez czekania na osobną prośbę — tak, żeby druga osoba widziała to od razu (Karol: „cokolwiek Paweł robi w grze, musi to robić, jednocześnie pushując na GitHuba — i vice versa”). Panel jest jedynym miejscem, w którym obaj oglądają stan pracy (modele, raporty, decyzje), i sam się odświeża: sam pobiera zmiany drugiej osoby i sam wysyła zmiany zrobione w panelu. Zmienia zasadę „commit i push tylko na prośbę” z `CLAUDE.md`. Bez zmian: żadnych sekretów w repozytorium, `python tools/sejf_lint.py` przed commitem zmian w sejfie, nigdy siłowego nadpisania — konflikt rozwiązuje człowiek albo Claude razem z nim. Paweł wchodzi do panelu Karola przez link, więc własnego panelu nie musi uruchamiać. Zob. [[Panel zespołu]], [[Zadania]].
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*

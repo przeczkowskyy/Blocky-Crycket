@@ -30,7 +30,8 @@ Never change a note to `kanon` or a decision to ✅ without explicit approval fr
 - `ReplicatedFirst` (loading screen) is not mapped by Rojo; its reproducible source is `tools/studio/build_loading_screen.luau` (run via Roblox Studio MCP).
 
 ## Git (GitHub)
-- Repo: https://github.com/przeczkowskyy/Blocky-Crycket — **public**, branch `main`. Commit/push only when the user asks.
+- Repo: https://github.com/przeczkowskyy/Blocky-Crycket — **public**, branch `main`.
+- **Push finished work right away (D-070, Karol's decision of 2026-11-14, awaiting Paweł's confirmation):** whatever Karol or Paweł (or their Claude Code) changes in the game, the vault or the code goes to GitHub at once — pull before you start, and after each finished and checked change commit and push to `main`, so the other person sees it immediately in the panel (the single place where both look at the state of work). In Paweł's sessions ask him first until he confirms D-070. Do not push half-finished work, never force-push, and on a pull conflict stop and resolve it together with the person.
 - Never commit secrets (`.env`, API keys, tokens). `.gitignore` covers lock files, Obsidian `workspace.json`, `.claude/settings.local.json`, `dashboard/` data and `node_modules`.
 - `Blocky&Crycket.rbxl` is committed as a binary snapshot — ask the user to save in Studio (Ctrl+S) before committing it.
 

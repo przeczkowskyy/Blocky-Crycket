@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-14 · Claude Code u Karola (umowa: wszystko od razu na GitHub; panel jedynym źródłem prawdy)
+- **D-070** (decyzja Karola z czatu, czeka na potwierdzenie Pawła): każda skończona zmiana w grze, sejfie i kodzie od razu trafia na GitHub — po obu stronach; panel jest jedynym miejscem oglądania stanu pracy i sam się odświeża. `CLAUDE.md` (sekcja Git) zmienione: zamiast „commit i push tylko na prośbę” — wysyłanie skończonej, sprawdzonej pracy od razu; w sesjach Pawła do czasu jego potwierdzenia nadal po zapytaniu.
+- **W budowie:** stała synchronizacja w panelu (samo pobieranie zmian drugiej osoby i samo wysyłanie zmian z panelu) — zadanie w [[Zadania]]. Karol i Paweł są do końca dnia poza komputerem; gotowe modele i raporty idą do Karola na telefon.
+- Pliki: `CLAUDE.md`, [[Rejestr decyzji]].
+
 ## 2026-11-14 · Claude Code u Karola (panel: „Nieaktualne” i okna agenta; start silnika walki v2 i modeli lasu)
 - **Panel — status „Nieaktualne”** (prośba Karola): przy pytaniach, decyzjach i raportach, także hurtem („Zaznacz kilka”). Pytanie dostaje odpowiedź „nieaktualne — powód”; decyzja status `🗃️ nieaktualna` z podpisem `oznaczył:` (nie obowiązuje, nie czeka na drugi podpis, bez alertu na Telegramie; „Przywróć” wraca do „do decyzji”); raport trzecią wartość decyzji. Gdy pytanie oznacza osoba z prawem decyzji, z kolejki schodzą też czekające decyzje z jego wiersza „Rozstrzyga:”. Legenda statusów w [[Rejestr decyzji]] uzupełniona. Pięć raportów, które Karol oznaczył komentarzem „NIEAKTUALNE” (15:39–15:41), przeniesione na ten status. **Uwaga:** panel na starym kodzie nie zna nowego statusu — zanim ktoś oznaczy decyzję, druga osoba musi pobrać kod i zrestartować swój panel.
 - **Panel — zakładka Agent:** pięć okien (Ogólny, Balans, Świat, Modele, Wydanie) z kartami w `panel/agenci/`, krótkie odpowiedzi, usuwanie rozmów, tytuł z pierwszego pytania, rozmowy wspólne dla obu osób. Okna Balans, Świat, Modele i Wydanie zapisują tylko w sejfie i tylko propozycje; Wydanie ma dostęp do sieci. Sprawdzone prawdziwą rozmową w oknie Balans (krótka odpowiedź, zapis w sejfie przeszedł, zapis poza sejfem odrzucony).
