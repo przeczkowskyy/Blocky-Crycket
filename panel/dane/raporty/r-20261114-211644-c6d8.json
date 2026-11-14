@@ -1,0 +1,17 @@
+{
+ "id": "r-20261114-211644-c6d8",
+ "tytul": "Silnik walki v2 — wyniki i wybory",
+ "opis_md": "Silnik walki v2 jest gotowy i sprawdzony. To sama logika — serwer liczy całą walkę i oddaje dziennik do odtworzenia. Walk na ekranie jeszcze nie ma (to następny krok: nowa cutscenka).\n\n**Co liczy**\n- Klasy: Wojownik, Zwiadowca, Mag. Sześć statystyk tak, jak ustaliliście na sesji (Pancerz punktowy, unik z limitem klasy, blok tylko z tarczy, magia omija Pancerz).\n- Umiejętności w slotach, trucizna, podpalenie, spowolnienie, zdarcie pancerza, tarcza.\n- Pięciu przeciwników lasu: Leśny Slime, Cierniowy Wilk, Muchomornik, Leśny Troll, Strażnik Lasu. Łup bez jajek; Shard Ewolucji tylko ze strażnika.\n\n**Długość walki (D-068)** — wynika tylko ze statystyk i losowości. Na 624 tysiącach walk próbnych najdłuższa miała 38 tur; żadna reguła nie skraca ani nie wydłuża walki.\n\n**Równość klas (D-069)**\n- Klasa na klasę: wszystkie pary między 45,5% a 54,5% wygranych, na 13 poziomach.\n- Z potworami: różnica między klasami przy tym samym potworze do 7 punktów procentowych. Wyjątek: Leśny Slime na poziomach 1–4 (do 8,6). Cel 5 punktów spełnia 53 z 65 zestawień.\n- Każda z sześciu statystyk coś daje każdej klasie, ale punkt Siły i Kondycji jest wart 2–3 razy więcej niż punkt Zręczności i Szczęścia.\n\n**Sprawdzone:** 41 testów; kod gry daje w Roblox Studio dokładnie te same walki co symulacja (496 z 496).\n\n**Pięć wyborów — tak jest teraz, napiszcie, jeśli ma być inaczej**\n1. **Zwykły atak Maga** bije Siłą jak u wszystkich, a magia to tylko rodzaj obrażeń. Inna opcja: Inteligencją — wtedy Siła jest dla Maga bezużyteczna.\n2. **Umiejętności w walce automatycznej** odnawiają się co kilka akcji i odpalają się same w kolejności slotów. Inne opcje: losowa szansa co turę albo jedna umiejętność na walkę.\n3. **Umiejętność przeciwnika da się uniknąć i zablokować**; trucizna i podpalenie omijają obronę. Inna opcja: umiejętność zawsze trafia.\n4. **Pancerz nigdy nie zeruje ciosu** — zawsze przechodzi co najmniej 25%. Inne opcje: 10% albo 50%.\n5. **Sloty umiejętności:** 1 od pierwszego poziomu, 2 od piątego, 3 od dziesiątego. Inna opcja: sloty częściej albo od razu trzy — mniejsze skoki siły i łatwiejszy balans.\n\nSzczegóły, wzory i pełne tabele są w notatce.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-14T21:16:44+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Gra/Walka v2 — silnik, klasy i umiejętności.md",
+   "etykieta": "Notatka o silniku walki"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Czy pięć wyborów zostaje tak, jak jest? Jeśli nie — który punkt zmienić i na co?"
+}
