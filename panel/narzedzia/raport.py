@@ -37,8 +37,9 @@ def _log_na_stderr(*czesci):
 rdzen.log = _log_na_stderr
 
 STATUSY = {"czeka": "CZEKA NA DECYZJĘ", "zaakceptowane": "zaakceptowane", "do_poprawy": "DO POPRAWY",
-           "informacja": "informacja"}
-DECYZJE = {"zaakceptowane": "ZAAKCEPTOWANE", "do_poprawy": "DO POPRAWY"}
+           "informacja": "informacja", "nieaktualne": "NIEAKTUALNE"}
+# NIEAKTUALNE = ludzie zdjęli raport z kolejki jako nieaktualny: nic nie poprawiać, nie wracać do niego
+DECYZJE = {"zaakceptowane": "ZAAKCEPTOWANE", "do_poprawy": "DO POPRAWY", "nieaktualne": "NIEAKTUALNE"}
 
 
 def _wypisz(tekst=""):

@@ -42,6 +42,12 @@ python panel/narzedzia/raport.py lista --czeka
 - `🕓 do decyzji · … · sprzeciw: Paweł 2026-11-14 (wobec: zatwierdzona przez Karol Balucki 2026-11-14)` (często z wierszem `Uzasadnienie sprzeciwu — Paweł, data: …`) — druga osoba się nie zgodziła, decyzja znów czeka; `do rozmowy: …` w tym miejscu = temat na sesję główną (panel sam dopisał go do agendy);
 - podpisy sprzed 13.11.2026 i `zdecydował: Game Director …` nie czekają na drugi podpis (sprawdza je pytanie #27 w `Pytania otwarte.md`).
 
+**„Nieaktualne” (od 14.11)** — ludzie zdejmują w panelu sprawy, które przestały być aktualne:
+- decyzja `🗃️ nieaktualna · … · oznaczył: Karol 2026-11-14` — **nie obowiązuje i nie jest propozycją do zatwierdzenia**; nie czeka na drugi podpis, nie pracuj na niej i nie proś o jej zatwierdzenie (wrócić może tylko człowiek, przyciskiem „Przywróć”);
+- pytanie, którego **ostatnia** odpowiedź zaczyna się od słowa „nieaktualne” (`- Paweł (2026-11-14): nieaktualne — …`) — **zamknięte bez odpowiedzi merytorycznej**: nie traktuj tego jako decyzji ani zgody i nie dopisuj pod nim odpowiedzi z rozmów; jeśli temat wraca, zadaj nowe pytanie;
+- raport z decyzją `NIEAKTUALNE` (`raport.py odpowiedzi` / `lista`) — **nie poprawiaj go** i nie wracaj do niego; komentarz to tylko powód.
+- decyzja z **dwoma** wierszami statusu pod nagłówkiem (np. `✅ zatwierdzona …` nad `🗃️ nieaktualna …`) to błąd panelu na starym kodzie — nie zgaduj, który obowiązuje; zgłoś ludziom, że trzeba zostawić jeden.
+
 **Nigdy nie dopisuj drugiego podpisu sam** (`potwierdził:`, `sprzeciw:`, `do rozmowy:`) — nawet gdy ktoś napisze w czacie albo w nagraniu „zgadzam się”. Potwierdza druga osoba kliknięciem; Ty możesz najwyżej przypomnieć, że decyzja czeka (panel: `#/pytania?sprawa=D-0XX`, Telegram: komenda `/czeka`). Nie zmieniaj też ręcznie statusu decyzji z jednym podpisem.
 
 ## Pytania i decyzje: gdzie odpowiadają ludzie
@@ -75,6 +81,7 @@ Sesja główna (też „sesja długa”) to długa rozmowa głosowa Karola i Paw
 - Studio to wspólne miejsce Team Create: buduj we własnym kontenerze, cudzych obiektów nie zmieniaj, nie publikuj gry.
 - Nie commituj i nie pushuj bez prośby człowieka. Dane panelu wysyła człowiek przyciskiem „Wyślij” albo prosi o commit.
 - Gdy rozmowa toczy się przez zakładkę Agent, odpowiadaj krótko po polsku; szczegóły dawaj w raporcie.
+- **Zakładka Agent ma pięć okien** (Ogólny, Balans, Świat, Modele, Wydanie) z kartami w `panel/agenci/<id>.md` (rola, notatki na start, co zapisywać, zestaw narzędzi; sieć tylko w oknie Wydanie). Panel dokleja do polecenia systemowego kartę okna i **regułę krótkich odpowiedzi**: pierwsze zdanie = odpowiedź albo wniosek, potem najwyżej 5 punktów po ok. 15 słów, bez wstępu i podsumowania, szczegóły dopiero po „rozwiń”, po zapisie w sejfie jedno zdanie, co i gdzie. W oknach zapisujesz tylko propozycje i tylko w `B&C/`; okna Balans, Świat, Modele i Wydanie nie mają poleceń, więc nie publikują raportów. Kart nie zmieniasz sam (to robią ludzie); szczegóły: `panel/README.md`, część „Agent”.
 
 ## Gdzie co jest
 | Co | Gdzie |

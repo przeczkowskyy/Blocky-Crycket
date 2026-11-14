@@ -20,7 +20,8 @@ export function postepFazy(f) {
 
 const PRIORYTETY = { wysoki: "czerwien", "średni": "zloto", sredni: "zloto", niski: "niebieski" };
 const STANY_ROZMOWY = { mowi: "mówi", wyciszony: "wyciszony", bez_mikrofonu: "bez mikrofonu", polaczony: "połączony", laczenie: "łączy się" };
-const STATUSY_DECYZJI = { zatwierdzona: "zatwierdzona", odrzucona: "odrzucona", do_decyzji: "do decyzji", propozycja: "propozycja", zastapiona: "zastąpiona" };
+// „Czeka na Ciebie” liczy tylko sprawy czekające (wspolne/kolejka.js) — nieaktualne są w historii, więc się nie liczą
+const STATUSY_DECYZJI = { zatwierdzona: "zatwierdzona", odrzucona: "odrzucona", do_decyzji: "do decyzji", propozycja: "propozycja", zastapiona: "zastąpiona", nieaktualna: "nieaktualna" };
 
 export function chipPriorytetu(p) {
   if (!p) return null;

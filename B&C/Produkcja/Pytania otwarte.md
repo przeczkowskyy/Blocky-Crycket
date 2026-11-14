@@ -11,18 +11,21 @@ Odpowiedź dopisz pod pytaniem. Jeśli odpowiedź jest decyzją, przenieś ją d
 - Potrzebne do napisów w grze, nazwy grupy Roblox i strony gry.
 Szczegóły: Dokumentacja używa „**Blocky n Crycket**”, a logo i późniejsze materiały „**BLOCKY & CRYCKET**”. Sejf nazywa się `B&C`.
 **Odpowiedź:**
+- Karol Balucki (2026-11-14): BLOCKY & CRYCKET
 
 ## 2. Gdzie jest zaprojektowane drzewo obiektów Karczmy?
 - Dokumentacja mówi, że układ okna Karczmy istnieje, ale nie ma go w plikach projektu.
 - Do wskazania: jest w pliku gry, w Figmie, czy projektujemy od nowa.
 Szczegóły: Dokumentacja mówi, że struktura UI Karczmy istnieje, ale nie ma jej w `src/gui`. Jest w pliku `.rbxl`, w Figmie, czy gdzie indziej? Zob. [[Okno Karczmy]].
 **Odpowiedź:**
+- Karol Balucki (2026-11-14): Nie ma chyba
 
 ## 3. Czy w `.rbxl` są już skrypty lub GUI?
 - Jeśli w pliku gry są skrypty albo okna, których nie ma w `src/`, Claude ich nie widzi.
 - Do zrobienia przez właściciela pliku: wyeksportować je do `src/`.
 Szczegóły: Jeśli tak, wyeksportuj je do `src/`, żeby Claude mógł nad nimi pracować. Zob. [[Rojo i struktura projektu]].
 **Odpowiedź:**
+- Karol Balucki (2026-11-14): Sprawdź
 
 ## 4. Czy zatwierdzasz propozycje D-006, D-007, D-009, D-010?
 Zob. [[Rejestr decyzji]].
@@ -152,6 +155,7 @@ Kod jest gotowy i bezwładny (propozycja D-023, [[Telemetria gry]]). Do decyzji:
 - Jaki jest limit wydatków na reklamę.
 Szczegóły: Plan v2 zakłada dziennik godzin (ok. 20 h na osobę tygodniowo daje Etap A w ok. 4 tygodnie; przy 15 h — ok. 8 tygodni), tani telefon z Androidem do pomiarów oraz reklamę rzędu 400 nowych graczy tygodniowo na kohortę z limitem kwoty od Game Directora. Ile godzin realnie mamy i jaki limit wydatków przyjmujemy?
 **Odpowiedź:**
+- Karol Balucki (2026-11-14): codziennie każdy może spędzić 2 godziny. Wydatki na reklame to około 2000 zł
 
 ## 22. Czy instrukcja „Glossy Ink” zastępuje Style Lock?
 13.11 Game Director przekazał (przez Karola) [[Instrukcja promptów — Glossy Ink]]: nowy stały początek i koniec promptu, negative prompt i żelazne zasady. Różni się od zatwierdzonego [[Style Lock]] (D-001: inny prefiks, z nazwą gry-inspiracji) i od [[Kierunek artystyczny]] (D-002: pixel-art ikon, płaski interfejs). Rekomendacja Claude Code: tak, zastąpić — nowa wersja opisuje to, co faktycznie wdrożono, i nie zawiera cudzej nazwy. Po potwierdzeniu: wpis ✅ w rejestrze (D-027) i przepięcie szablonów skilla `/asset`.
@@ -190,6 +194,7 @@ Dopisek z 2026-11-14 (sesja główna): styl świata wybrany (D-041: Krzywe Miast
 - Opis HUD nadal mówi o pixel-artowych ikonach walut.
 Szczegóły: Przy przepinaniu skilla `/asset` wyszły cztery sprawy. (1) Stały negative prompt zawiera „floating map pins”, co działa przeciw arkuszowi pinezek mapy — czy przy tym jednym szablonie wolno tę frazę pominąć? (2) Zakończenia promptu dla mapy miasteczka oraz dla pełnych teł i key-artu instrukcja podaje tylko po polsku albo wcale; w szablonach są angielskie wersje naszego autorstwa — do potwierdzenia. (3) Instrukcja pozwala wpisywać dokładne napisy w obrazie, a zasada skilla mówi „zero tekstu w grafikach AI” (napisy natywnie); dziś skill dopuszcza napisy tylko na wyraźną prośbę. (4) Kanoniczna specyfikacja [[HUD]] nadal mówi o pixel-artowych ikonach walut — poprawiamy ją po D-027? Zob. [[Instrukcja promptów — Glossy Ink]], [[Pipeline assetów]].
 **Odpowiedź:**
+- Karol Balucki (2026-11-14): NIEAKTUALNE
 
 ## 27. Paweł: czy potwierdzasz zasadę równych praw (D-030)?
 - Karol sam zatwierdził albo odrzucił kilkanaście decyzji 13–14.11.

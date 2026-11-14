@@ -7,7 +7,8 @@ Wszystkie testy:                   python -m unittest discover -s testy -t .
 - Serwer startuje na wolnym porcie z katalogami tymczasowymi (BC_PANEL_DANE, BC_PANEL_RUNTIME) — prawdziwe
   panel/dane i dane lokalne komputera zostają nietknięte; katalog tymczasowy jest usuwany na końcu.
 - Bez Roblox Studio (STUDIO_MCP_CMD = mostek, który od razu się kończy), bez sieci (universeId wyłączone
-  w konfiguracji lokalnej), bez przebiegu agenta i bez robotnika głosówek (atrapa pliku pid).
+  w konfiguracji lokalnej), bez przebiegu agenta i bez robotnika głosówek (atrapa pliku pid). Program agenta to
+  zawsze atrapa (`agent.sciezka` → testy/atrapa_agenta.py), więc prawdziwy `claude` nie jest uruchamiany nawet po wersję.
 - Git tylko czyta (zdrowie, obecność). GET /api/git/stan nie jest wołany, bo uruchamia `git fetch` w tle;
   POST /api/git/pobierz i /api/git/wyslij są sprawdzane wyłącznie jako odmowy (403).
 - Sejf B&C jest czytany naprawdę (tylko odczyt) — testy sprawdzają kształt odpowiedzi, nie treść notatek.
@@ -27,6 +28,8 @@ import unittest
 import urllib.error
 import urllib.parse
 import urllib.request
+
+from testy import atrapa_agenta
 
 PANEL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = os.path.dirname(PANEL)
@@ -69,8 +72,12 @@ class SerwerTestowy(unittest.TestCase):
         cls.tmp = tempfile.mkdtemp(prefix="bc_test_api_")
         dane, runtime = os.path.join(cls.tmp, "dane"), os.path.join(cls.tmp, "runtime")
         os.makedirs(runtime)
+        cfg = cls.konfiguracja_lokalna()
+        # zawsze atrapa programu Claude Code: serwer testowy nie znajdzie ani nie uruchomi prawdziwego `claude`
+        # (nawet `claude --version` przy GET /api/agent/stan); patrz testy/atrapa_agenta.py
+        cfg.setdefault("agent", {}).setdefault("sciezka", atrapa_agenta.przygotuj(os.path.join(cls.tmp, "atrapa_agenta")))
         with open(os.path.join(runtime, "konfiguracja.lokalna.json"), "w", encoding="utf-8") as f:
-            json.dump(cls.konfiguracja_lokalna(), f, ensure_ascii=False)
+            json.dump(cfg, f, ensure_ascii=False)
         cls.przygotuj(runtime)
         cls.klucz = "klucz-lokalny-testowy-0123456789"                  # serwer bierze istniejący plik (min. 20 znaków)
         with open(os.path.join(runtime, "klucz_lokalny.txt"), "w", encoding="utf-8") as f:
@@ -296,7 +303,7 @@ class TestAPI(SerwerTestowy):
             self.assertTrue(0 <= f["postep"] <= 100)
         for d in o["decyzje"]:
             self.assertPola(d, ["id", "tytul", "status", "emoji", "kategoria", "meta", "opis_md"])
-            self.assertIn(d["status"], ("zatwierdzona", "do_decyzji", "propozycja", "odrzucona", "zastapiona"))
+            self.assertIn(d["status"], ("zatwierdzona", "do_decyzji", "propozycja", "odrzucona", "zastapiona", "nieaktualna"))
         for p in o["pytania"]:
             self.assertPola(p, ["nr", "tytul", "tresc_md", "odpowiedz_md", "otwarte"])
         self.assertLessEqual(len(o["dziennik"]), 30)

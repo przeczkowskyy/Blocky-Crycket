@@ -10,7 +10,8 @@
 //     pytanie = karta na liście Pytania i w historii; zwarta = lista w zakładce Sesja; pelna = cały raport
 //     (dawne `kompakt: true` = tryb „pytanie”)
 //   karty.pelny(raport)  → okno z pełnym raportem (zrzuty, komponenty, migawki, komentarze)
-//   karty.decyduj(raport, "zaakceptowane" | "do_poprawy", komentarz?) → Promise<raport po zmianie>
+//   karty.decyduj(raport, "zaakceptowane" | "do_poprawy" | "nieaktualne", komentarz?) → Promise<raport po zmianie>
+//   opcje.przyciskNieaktualne(raport, kartaEl, o) → element obok Akceptuję / Do poprawy (albo null)
 
 import { el, dopisz, ikona, czasTemu, dataKrotka, toast, arkusz, awatar, powiekszenie } from "./ui.js";
 import { md } from "./markdown.js";
@@ -25,6 +26,7 @@ export const STATUSY_RAPORTU = {
   zaakceptowane: { tekst: "zaakceptowany", kolor: "zielen", ikona: "ok" },
   do_poprawy: { tekst: "do poprawy", kolor: "czerwien", ikona: "krzyzyk" },
   informacja: { tekst: "informacja", kolor: "niebieski", ikona: "info" },
+  nieaktualne: { tekst: "nieaktualne", kolor: "szary", ikona: null },   // zdjęty z kolejki (14.11): nie poprawiać
 };
 const RODZAJE = { wdrozenie: "wdrożenie", pytanie: "pytanie", informacja: "informacja" };
 const IKONY_KOMPONENTOW = { studio: "studio", notatka: "notatka", plik: "notatka", migawka: "migawka" };
@@ -105,7 +107,8 @@ export function kartyRaportow(ctx, opcje = {}) {
     const d = r.decyzja;
     if (!d) return null;
     const s = STATUSY_RAPORTU[d.wartosc] || { tekst: d.wartosc, kolor: "" };
-    const czasownik = d.wartosc === "zaakceptowane" ? "zaakceptował(a)" : d.wartosc === "do_poprawy" ? "odesłał(a) do poprawy" : "zdecydował(a)";
+    const czasownik = d.wartosc === "zaakceptowane" ? "zaakceptował(a)" : d.wartosc === "do_poprawy" ? "odesłał(a) do poprawy"
+      : d.wartosc === "nieaktualne" ? "oznaczył(a) jako nieaktualne" : "zdecydował(a)";
     return el("div", { class: "decyzja-info " + s.kolor },
       ikona(s.ikona || "info"),
       el("div", null,
@@ -190,6 +193,11 @@ export function kartyRaportow(ctx, opcje = {}) {
       });
       rzad.append(ok, el("button", { type: "button", class: "przycisk grozny" + (tryb === "zwarta" ? " maly" : ""), onclick: () => oknoPoprawy(r) },
         ikona("krzyzyk"), el("span", null, "Do poprawy")));
+      // „Nieaktualne” (trzecia możliwość) — kontrolkę daje lista pytań (wspolne/lista_pytan.js)
+      if (typeof opcje.przyciskNieaktualne === "function") {
+        const n = opcje.przyciskNieaktualne(r, kartaEl, o);
+        if (n) rzad.append(n);
+      }
     }
     if (tryb !== "pelna") {
       rzad.appendChild(el("button", { type: "button", class: "przycisk cichy" + (tryb === "zwarta" ? " maly" : ""), onclick: () => pelny(r) },

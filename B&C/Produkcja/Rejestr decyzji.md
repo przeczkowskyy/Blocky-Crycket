@@ -6,7 +6,7 @@ tags: [produkcja, decyzje]
 
 Tylko decyzje **✅ zatwierdzone** są obowiązujące. Zatwierdzonej decyzji się nie przepisuje: dodaje się nową, która ją **zastępuje**, i zostawia ślad.
 
-Statusy: ✅ zatwierdzona · 🕓 do decyzji · 💡 propozycja · ❌ odrzucona · ♻️ zastąpiona
+Statusy: ✅ zatwierdzona · 🕓 do decyzji · 💡 propozycja · ❌ odrzucona · ♻️ zastąpiona · 🗃️ nieaktualna (zdjęta z kolejki: nie obowiązuje i nie czeka na drugi podpis)
 
 Zatwierdza Karol albo Paweł — wystarczy decyzja jednego (D-030). Wiersz statusu niesie podpis `zdecydował: <imię> <data>`, a ślad trafia też do [[Dziennik zmian]].
 
@@ -52,7 +52,7 @@ Trzy misje: Łatwa / Średnia / Epicki Boss. Misje zużywają Energię odnawian�
 Uzasadnienie — Karol Balucki, 2026-11-13: Nie - będzie to duzo bardziej rozwinięte. Zostawiamy ten temat i dajemy go do omówienia na sesji długiej
 
 ### D-010 Fazy roadmapy 2–6
-💡 propozycja · roadmapa · źródło: master prompt
+✅ zatwierdzona · roadmapa · źródło: master prompt · zdecydował: Karol Balucki 2026-11-14
 Zob. [[Roadmapa]].
 
 ### D-011 Pipeline assetów `/asset` i moduł `AssetIds`
@@ -95,12 +95,14 @@ Wdrożone grafiki HUD pasują do standardu Roblox, a przeczą zapisom o pixel-ar
 Uzasadnienie — Karol Balucki, 2026-11-13: Potrzebuje zobaczyć oba te style miasta jako zdjęcie na zywo. Nie jestem w stanie tak od razu odpowiedzieć któy styl będzie tym finalnym
 
 ### D-019 Myśl przewodnia v2: „krzywy montaż”
-💡 propozycja · game design · 2026-11-13 · źródło: [[Diagnoza pomysłu 2026-11-13]] i panel koncepcji (Claude Code u Karola)
+❌ odrzucona · game design · 2026-11-13 · źródło: [[Diagnoza pomysłu 2026-11-13]] i panel koncepcji (Claude Code u Karola) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Gra opisana jednym zdaniem o czynności — „Rozbij potwora na klocki, a kot złoży go krzywo, z błędem, który daje moc” — zamiast porównania do gry-inspiracji i listy czterech gatunków. Duet z logo staje się maskotkami (Crycket — kot składający potwory, Blocky — strażnik placu), a gracz gra własnym awatarem. Zmieniałaby [[Koncepcja i Core Loop]] i role z D-003 (wygląd postaci bez zmian). Zob. [[Myśl przewodnia v2]], [[Pytania otwarte]] #16.
+Uzasadnienie — Karol Balucki, 2026-11-14: NIEAKTUALNE
 
 ### D-020 Pętla v2: BONK, banda i Album; dwa etapy z bramkami pomiaru
-💡 propozycja · game design / roadmapa · 2026-11-13 · źródło: [[Systemy gry v2]]
+❌ odrzucona · game design / roadmapa · 2026-11-13 · źródło: [[Systemy gry v2]] · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Rdzeń: jeden przycisk BONK w otwartej strefie (wybity potwór przewraca stado), banda dobija, Finał, Album z jawnymi progami zamiast losowania; mini-dungeon z D-004 jako „Spiżarnia”. Budowa w dwóch etapach (A: rdzeń i pierwsze 10 minut, B: wersja do uczciwego pomiaru) z bramkami B0–B4. Rozwija D-013, zastępowałaby D-014. Zob. [[Karta ocen v2 i plan sprawdzenia]], [[Specyfikacja v2.1 — Krzywa Banda]].
+Uzasadnienie — Karol Balucki, 2026-11-14: NIEAKTUALNE
 
 ### D-021 Gra bez alkoholu, bez losowych nagród i bez waluty za Robuxy
 ❌ odrzucona · zgodność / monetyzacja · 2026-11-13 · źródło: [[Diagnoza pomysłu 2026-11-13]] · zdecydował: Karol Balucki 2026-11-13
@@ -122,7 +124,7 @@ Test w samym Roblox (kontener `Workspace/TestWalki`, 9 sekund, serwer liczy — 
 Uzasadnienie — Karol Balucki, 2026-11-13: To pytanie będzie głębsze i będzie wymagało dyskusji na głos z Pawłem do transkrypcji
 
 ### D-025 Mapy v2: biblioteka krzywych brył i „Krzywe Miasteczko”
-💡 propozycja · technika / 3D · 2026-11-13 · zaproponował: Karol (przez Claude Code)
+✅ zatwierdzona · technika / 3D · 2026-11-13 · zaproponował: Karol (przez Claude Code) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 `swiat/biblioteka/` (układy lokalne do pochylonych brył, obrys „tuszem”, podgląd w Blenderze) i mapa `swiat/krzywe_miasteczko/` w stylu komiksowym. Według propozycji v2 miasteczko-hub wchodzi do gry dopiero po bramce D7 — do tego czasu to demo stylu i poligon narzędzi. Rozwija D-017. Zob. [[Klocki — Blender i Roblox]].
 
 ### D-026 Łańcuch narzędzi: Rokit z przypiętym Rojo 7.6.1
@@ -155,11 +157,12 @@ Grzybki w *Shakes & Fidget* to waluta premium, której symbolu nie kopiujemy ([[
 Każde zadanie z karczmy ma trzy poziomy: łatwy / średni / trudny, ale skala jest lokalna dla biomu — łatwe zadanie w biomie kryształowym jest trudniejsze niż trudne zadanie w lesie, bo przeciwnicy mają tam wyższy poziom. Biomy odblokowują się poziomem gracza (las od początku, kolejne wyżej). Z sesji: Karol zaproponował, Paweł się zgodził. Zastępuje część odrzuconej D-009 o poziomach misji; Energia z D-009 nadal nierozstrzygnięta. Zob. [[Karczma (Questy)]], [[Pytania otwarte]] #8.
 
 ### D-033 Cutscenka walki tylko przy bossach, rzadkich przeciwnikach i na koniec zadania
-💡 propozycja · game design / technika · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 — zapis ustaleń]] (temat 2)
+❌ odrzucona · game design / technika · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 — zapis ustaleń]] (temat 2) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Zwykłe potwory w strefie bije się bez cutscenki, z prostą animacją zamachu (miecz, różdżka). Cutscenka 3D jest przy bossach i ważnych przeciwnikach (np. troll jaskiniowy), przy rzadkim przeciwniku, który pojawia się w strefie, i na koniec zadania z karczmy. Walka trwa, aż zdrowie jednej strony spadnie do zera; jej długość wynika z losowości i statystyk, nie ze stałej liczby sekund. Z sesji: Paweł zwrócił uwagę, że cutscenka przy 20 potworach w strefie zmęczy; Karol zmienił swoje stanowisko z 13.11 („cutscenka przy każdej walce”). Zastępuje odrzuconą D-024 i zamyka „po teście” z D-016. Zob. [[Pytania otwarte]] #7.
+Uzasadnienie — Karol Balucki, 2026-11-14: Nie, animacja walki przy każdej walce
 
 ### D-034 Pętla gry: zadania z karczmy na czas plus zajęcia równoległe, jedna karczma
-💡 propozycja · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 — zapis ustaleń]] (temat 3)
+✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 — zapis ustaleń]] (temat 3) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Karczma daje zadania na czas jak w S&F (miejsce, krótki opis, nagroda, czas); licznik zadania widać w HUD. W tym czasie gracz ma co robić: strefy z odradzającymi się potworami (podejście, E, walka), dungeony, sklep, Twierdza, odbieranie nagród — „zawsze coś do zrobienia”. Jedna karczma dla całej gry, nie po jednej na biom. Z sesji: Paweł zaproponował połączenie licznika z farmieniem w strefie (sam licznik zachęcałby do botów), Karol chce gry, od której nie da się oderwać. Zastępuje odrzuconą D-013 i zmienia D-004 w części „bez biernego czekania” (czekanie zostaje, ale równolegle z aktywną grą). Zob. [[Koncepcja i Core Loop]], [[Pytania otwarte]] #7.
 
 ### D-035 Zakres pierwszego wydania
@@ -167,7 +170,7 @@ Karczma daje zadania na czas jak w S&F (miejsce, krótki opis, nagroda, czas); l
 Na premierę: karczma z zadaniami na czas, kilka biomów (lista do ustalenia), strefy z potworami, pierwsze dungeony, sklep z bronią i sklep magiczny, Pety (zamiast wierzchowców), Twierdza w podstawie, kilka potworów (m.in. slime w kolorze biomu, troll) i kilku bossów. Po premierze w aktualizacjach: kolejne biomy i potwory, kowal, podziemia Twierdzy. Sporne: ulepszanie przedmiotów (Karol: może od razu, Paweł: później); gildie nie padły. Progresja ma mieć próg — gry nie da się „zmaksować” w dwa dni, dalsza treść przychodzi aktualizacjami; balans przez playtesty. Zastępuje odrzuconą D-014. Zob. [[Roadmapa]], [[Pytania otwarte]] #32.
 
 ### D-036 Monetyzacja: co sprzedajemy za Robuxy
-💡 propozycja · monetyzacja · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 — zapis ustaleń]] (temat 7)
+✅ zatwierdzona · monetyzacja · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 — zapis ustaleń]] (temat 7) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Za Robuxy: waluta (Diamenty, Złoto), paczki przedmiotów skalowane z poziomem gracza, paczki czasowe (pominięcie czekania, np. odebranie nagród z 24 godzin zadań karczmy albo budowy), paczki surowców po wejściu Twierdzy, emotki, game passy stałe (np. podwójne doświadczenie, VIP z pokojem VIP; także tanie passy rzędu 10 Robuxów). Nie sprzedajemy skinów postaci, chrom do przedmiotów, tańców ani finisherów (bronie mają je w zestawie); skiny budynków Twierdzy — może później. Z sesji: Karol zaznaczył, że stałe podwójne doświadczenie to „trochę pay-to-win, ale nie za bardzo”. Doprecyzowuje D-015 (wygoda, kosmetyka, VIP) i rozwija odpowiedź Karola przy D-021. Zob. [[Retencja i monetyzacja — co wolno i co działa]], [[Pytania otwarte]] #12.
 
 ### D-037 Bilety na rolki za Robuxy i „mistrz gier planszowych”
@@ -193,8 +196,9 @@ Uzasadnienie — Karol Balucki, 2026-11-14: Tak ale ta waluta na game passy będ
 Paweł obejrzał raport-porównanie dwóch stylów mapy i podgląd 3D; obaj wybrali Krzywe Miasteczko. Kierunek świata 3D: kreskówkowy z wyraźną ciemną kreską (obrys „tuszem”), nie pixel-art. Karol: „coś poprawiamy w kolorystyce” — co, do ustalenia; Paweł nie rozpoznał sklepu z Petami i wejścia do dungeonu, więc czytelność modeli do poprawy. Zastępuje odrzuconą D-018 w części „pixel-art czy cartoon” (zatwierdzenie oznacza aktualizację [[Kierunek artystyczny]]); przyjmuje mapę z D-025 jako wzorzec stylu (D-025 zostaje osobną propozycją o narzędziach). Ramki, nachylone przyciski i dymki z D-002 — bez zmian do pytania #25. Zob. [[Klocki — Blender i Roblox]], [[Pytania otwarte]] #10, #33.
 
 ### D-042 Wejście do dungeonów: wrota z kłódką i hala portali
-💡 propozycja · game design / świat · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 — zapis ustaleń]] (temat 10)
+✅ zatwierdzona · game design / świat · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 — zapis ustaleń]] (temat 10) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Pomysł Pawła: w miasteczku stoją wrota z kłódką; po osiągnięciu wymaganego poziomu gracz widzi animację (kłódka spada, wrota się otwierają), a za nimi jest hala z portalami do dungeonów. Stan blokady jest widoczny osobno dla każdego gracza (gracz 8. poziomu widzi zamknięte, gracz 50. — otwarte). Karol: podoba mu się. Zob. [[Koncepcja i Core Loop]].
+Uzasadnienie — Karol Balucki, 2026-11-14: Tak, ale w momencie odblokowania daneonu przez gracza to odpala mu się dokładniej mówią Cut scenka, a nie koniecznie animacja
 
 ### D-043 Decyzja jednej osoby plus potwierdzenie drugiej po alercie
 ✅ zatwierdzona · zasady pracy · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 — zapis ustaleń]] (temat 9) · zdecydował: Karol Balucki 2026-11-14
@@ -209,8 +213,9 @@ Zamiast dwóch kopii gry (projekt Pawła i jego kopia u Karola) jedna gra w grup
 Teksty w grze po angielsku, z tłumaczeniami (gracz z polskim ustawieniem widzi polski) — Paweł, Karol zgadza się. Rozstrzyga język nazw z pytań #5 i #28; lista lokacji mapy teleportacji i zestaw przycisków HUD zostają otwarte. Wymaga napisów natywnych, nie wypalonych w grafikach (zgodnie z D-011). Zob. [[HUD]], [[Mapa teleportacji]].
 
 ### D-046 Nazwy: trzecia waluta „Chrupki”, waluta petów „Łapki”, koło „Krzywe Koło”
-💡 propozycja · game design / nazwy · 2026-11-14 · zaproponował: Claude Code (na prośbę Karola i Pawła z sesji 14.11)
+❌ odrzucona · game design / nazwy · 2026-11-14 · zaproponował: Claude Code (na prośbę Karola i Pawła z sesji 14.11) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Na sesji padła prośba o nazwy. Waluta premium ma już nazwę z D-031 (Magiczne Kryształy). Propozycje dla reszty: trzecia waluta z D-040, zdobywana graniem i wydawana na game passy — **Chrupki** (pomysł Pawła: przysmak Crycketa; po angielsku „Crunchies”); waluta petów z D-040 — **Łapki** („Paws”); koło fortuny zamiast nazwy z cudzą marką — **Krzywe Koło** („Wonky Wheel”), pasuje do Krzywego Miasteczka (D-041). Każdą nazwę można przyjąć osobno. Zob. [[Sesja główna 2026-11-14 — zapis ustaleń]], [[Pytania otwarte]] #12.
+Uzasadnienie — Karol Balucki, 2026-11-14: Nowa waluta to Rybki. Pety nie mają swojej waluty, tylko shardy o których mówiliśmy. Shardy podczas scrapowania lub manualnego zabijania potworów. Krzywe Koło jest okej
 
 ### D-047 Drzewko umiejętności postaci: trzy gałęzie i pień, piętra za poziom, pierwsza ranga za punkt talentu, kolejne za Diamenty
 ❌ odrzucona · game design / monetyzacja · 2026-11-14 · źródło: pytanie Pawła w panelu („jak rozplanować skill tree postaci”) · zaproponował: Claude Code (u Karola) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
@@ -218,11 +223,11 @@ Rozwija zatwierdzoną D-039 (drzewko postaci za Diamenty). Drzewko jest trzecią
 Uzasadnienie — Karol Balucki, 2026-11-14: Tak, ale płącimy jedynie dimaetnami za drzewko.
 
 ### D-048 Rezygnacja z Energii w karczmie
-✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (2) — zapis ustaleń]] (temat 1) · zdecydował: Karol Balucki 2026-11-14
+✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (2) — zapis ustaleń]] (temat 1) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Zadania z karczmy nie zużywają Energii. Tempo gry wyznaczają czas zadania (D-034), poziomy trudności lokalne dla biomu (D-032) i poziom gracza. Z sesji: Karol rozważał Energię rosnącą z trudnością zadania i poziomem biomu, z limitem rosnącym z poziomem postaci; Paweł pytał, czy farmienie stref też ją zużywa (nie) i jak ją odnawiać (przedmiot za Robuxy albo z misji, bez klikacza). Obaj uznali, że gracz bez Energii musiałby przestać grać — Karol zaproponował rezygnację, Paweł się zgodził. Zamyka część „Energia” z odrzuconej D-009. Skutek dla interfejsu: kanoniczny niebieski pasek „Many/Energii” w [[HUD]] zostaje paskiem Many (do potwierdzenia). Zob. [[Karczma (Questy)]], [[Pytania otwarte]] #8.
 
 ### D-049 Twierdza: zamek z mini-budynkami i lista budynków
-✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (2) — zapis ustaleń]] (temat 2) · zdecydował: Karol Balucki 2026-11-14
+✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (2) — zapis ustaleń]] (temat 2) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Twierdza to działka z zamkiem jako sercem i osobnymi mini-budynkami; poziom zamku odblokowuje ulepszenia budynków. Budynki (lista robocza, obaj zgodni): kopalnia złota, kopalnia diamentów, pozyskiwanie drewna i kamienia (surowce na kolejne budynki), budynek pasywnego doświadczenia (odbiór po powrocie do gry), Training Center (D-050), budynek gildyjny (tu gracz dołącza do gildii), kowal (D-051); kopalnia kryształów na wyższych poziomach — Karol: kryształ odblokowuje „technologie”. Twierdza „chodzi sama”, bez stałej uwagi gracza (Karol); Training Center i kowal są aktywne. Nie kopiujemy budynków S&F (Karol). Odłożone: łowisko dające Złote Rybki (Paweł; Karol nie chce opierać wszystkiego na rybce). Odrzucone w rozmowie: napady na twierdze innych graczy z kradzieżą surowców (Paweł; Karol: niesprawiedliwe, niezbalansowane). Nie padło: od którego poziomu działka (Paweł chce Training Center od początku za grosze; 12.11 mówiono o ok. 25. poziomie), podziemia. Konflikty do rozstrzygnięcia: kopalnia diamentów produkuje walutę premium, a zatwierdzona D-031 przewiduje, że droppery dają tylko Złoto albo bardzo mało Kryształów (pytanie 6); kowal jest na liście, a D-035 odkłada go na po premierze (pytanie 32); kanon [[Twierdza (Tycoon)]] buduje droppery za surowce z misji, tu surowce powstają w Twierdzy. Zob. [[Pytania otwarte]] #9.
 
 ### D-050 Training Center: statystyki z mini-gier 3D, grind bez limitu, tryb AFK
@@ -231,7 +236,7 @@ Pomysł Pawła: w Twierdzy stoi Training Center ze strefą mini-gry na każdą s
 Uzasadnienie — Karol Balucki, 2026-11-14: Nie ma trybu AFK - na razie.
 
 ### D-051 Kowal ulepsza przedmioty, zaklinacz w biomie dodaje pasywki
-✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (2) — zapis ustaleń]] (temat 2) · zdecydował: Karol Balucki 2026-11-14
+✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (2) — zapis ustaleń]] (temat 2) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Paweł: kowal w Twierdzy (D-049) rozbiera zbędne przedmioty na materiały, a za materiały ulepsza inne — podnosi statystyki przedmiotu. Zaklinanie osobno, u postaci spotykanej w biomie: pasywki na broń (trucizna, podpalenie — dodatkowe obrażenia widoczne w animacji trafienia). Karol: „makes sense”. Tiery przedmiotów (np. drewniany miecz) — Paweł: „nie teraz”. Łączy się ze sporem o ulepszanie na premierę (D-035, pytanie 32). Zob. [[Okno ekwipunku]].
 
 ### D-052 Pety: stajnia w mieście, jajka za Złoto w każdej strefie, karmienie petów
@@ -239,7 +244,7 @@ Paweł: kowal w Twierdzy (D-049) rozbiera zbędne przedmioty na materiały, a za
 Stajnia (sklep z Petami) stoi w mieście, nie na działce Twierdzy (obaj). Pety wykluwają się z jajek kupowanych za Złoto; każda strefa ma własny zestaw jajek — w pierwszym mieście np. trzy podstawowe, najdroższe ok. 10 tys. Złota z ok. 1% szansy na legendarnego peta; lepsze pety w dalszych biomach (Paweł). Bardzo rzadko jajka wypadają też z potworów (Karol). Karmienie: słabszym petem karmi się lepszego, przekazując część jego doświadczenia — nie 1:1, przeliczone przez rzadkość zjadanego (Karol; Paweł: standard w grach Roblox). Od kiedy: Paweł — podstawowe jajka od początku; Karol pamiętał odblokowanie petów w drzewku i nie potwierdził wprost. Zgodne z kanonem [[Pety]] (jajka) i z D-015 (losowanie za walutę z gry), ale: skoro Diamenty kupione za Robuxy zamienia się na Złoto (D-038), jajka za Złoto podpadają pod zasady płatnych przedmiotów losowych — lista petów i szanse widoczne przed zakupem ([[Retencja i monetyzacja — co wolno i co działa]]). Drzewka i waluta petów: D-039, D-040. Zob. [[Pytania otwarte]] #38.
 
 ### D-053 Mistrz gier planszowych: plansza i kostka bez stawek, płatne rzuty i darmowy rzut na czas
-✅ zatwierdzona · game design / zgodność · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (2) — zapis ustaleń]] (temat 3) · zdecydował: Karol Balucki 2026-11-14
+✅ zatwierdzona · game design / zgodność · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (2) — zapis ustaleń]] (temat 3) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Doprecyzowuje zatwierdzoną D-037 i zmienia ją w jednym punkcie: **bez stawiania monet i bez utraty połowy**. Mistrz gier siedzi w karczmie; podejście odpala cutscenkę. Gracz rzuca kostką sześcienną, pionek idzie po polach, każde pole ma stałą, zawsze dodatnią nagrodę — im dalej, tym lepszą; szanse są jawne, bo to kostka (Paweł: „żeby uniknąć gamble”). Rzut co jakiś czas darmowy (Paweł), każdy kolejny kosztuje Złoto i gracz decyduje, czy iść dalej (Karol); cena rzutów rośnie. Plansza ma np. 100 pól; po przejściu pojawia się nowa, lepsza (pierwsze pole nowej lepsze od ostatniego starej — „jak biomy”); planszę da się też ominąć płacąc. Karol woli osobne plansze (zmiana widoczna w 3D) od pętli z ulepszającymi się polami (pomysł Pawła). Na premierę tylko plansza, inne gry u mistrza później (Karol). Nagroda zawsze dodatnia, więc zgodne z D-015 i zasadami Roblox z pytania 30; Złoto jest wymienialne z Diamentów (D-038), więc nagrody pól muszą być widoczne przed rzutem. Bilety za Robuxy z D-037 nie padły. Zob. [[Karczma (Questy)]], [[Pytania otwarte]] #37.
 
 ### D-054 Klasy postaci: Wojownik, Zwiadowca, Mag; specjalizacje jako rozgałęzienia drzewka
@@ -251,19 +256,19 @@ Paweł: trzy klasy podstawowe — Wojownik, Zwiadowca, Mag; w pewnym miejscu drz
 Wariant z sesji, inny niż D-047: każda klasa ma własne drzewko (Karol), a w nim specjalizacje z D-054. Węzły dają stałe bonusy procentowe (siła, kondycja i życie, szczęście — także do zdarzeń losowych — oraz zniżki w sklepach, np. −2%) i umiejętności aktywne do walki (np. cięcie Wojownika za 200% obrażeń, uderzenie z góry z szansą na krytyk, cios spowalniający i zdzierający pancerz); gracz dobiera je pod swój build. Sloty umiejętności odblokowuje drzewko: na start 0, potem 1 i 2, maksymalnie 3 (Karol; Paweł: jedna na walkę). Okno: jeden przycisk przy bohaterze, koło zakładki ekwipunku, z sekcjami gracz / pety / karczma / Twierdza (Paweł; Karol zgadza się). Nie padło: za co kupuje się węzły (D-039: Diamenty; D-047: punkt talentu + Diamenty), piętra i poziomy, jak umiejętności działają w walce liczonej automatycznie (D-016). Odpowiada wariantowi (c) z pytania 34; rozstrzygnąć razem z D-047. Zob. [[Drzewko umiejętności postaci]], [[Pytania otwarte]] #34.
 
 ### D-056 Drzewka umiejętności: trzy sekcje — gracz, pety (jedno ogólne), Twierdza; bez karczmy
-✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 1) · zdecydował: Karol Balucki 2026-11-14
+✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 1) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Okno drzewek ma trzy sekcje: **gracz** (procentowe premie do statystyk, pasywny dochód Złota i doświadczenia, szczęście — także do dropu przedmiotów i zadań — oraz umiejętności z D-055), **pety** (jedno wspólne drzewko: szybkość wyklucia, szczęście do jajek, otwieranie kilku jajek naraz, więcej petów przy graczu, +% do statystyk wszystkich petów) i **Twierdza** (procent wydajności konkretnego budynku — kopalnie, drwal, kamień — oraz większe przyrosty z Training Center i +% generowanego doświadczenia; budynek daje bazę, drzewko ją mnoży). Sekcja karczmy z D-055 odpada (Paweł; Karol zgodził się). Z sesji: Karol — „wcześniej mówiliśmy, że każdy pet ma swoje drzewko, ale z tego zrezygnowaliśmy”; Paweł — osobne drzewko na peta to za dużo. Karol o drzewku Twierdzy: „tu będzie musiała wejść matematyka”, żeby mnożnik z drzewka razy ulepszenie budynku nie wymknął się z balansu — liczby do kalkulatora. Zmienia zatwierdzoną D-039 w punkcie „każdy pet ma własne drzewko” (zatwierdzenie oznacza nową decyzję zastępującą ten punkt) i zatwierdzoną z dwoma podpisami D-055 w liczbie sekcji okna (cztery → trzy). Zob. [[Drzewko umiejętności postaci]], [[Pety]], [[Twierdza (Tycoon)]], [[Pytania otwarte]] #34.
 
 ### D-057 Węzły drzewek za Gemy (walutę premium), bez punktów talentu; poziom daje sklep, punkty statystyk i strefy
-✅ zatwierdzona · game design / monetyzacja · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 1) · zdecydował: Karol Balucki 2026-11-14
+✅ zatwierdzona · game design / monetyzacja · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 1) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Węzły drzewek kupuje się za walutę premium (w rozmowie „Gemy” — to samo, co Diamenty z D-038 i Magiczne Kryształy z D-031; nazwa: pytanie 6), **bez punktów talentu** (Paweł: „bez skill pointów”; Karol: „za Gemy”). Gemy rzadko wypadają też z potworów (Karol, jak w grach Roblox). Poziom postaci (EXP) daje coś innego: dostęp do lepszych przedmiotów w sklepie, stały przyrost statystyk co poziom, podstawowe punkty statystyk do rozdania i dostęp do stref od poziomu (Paweł; Karol: „procenty to drzewko, punkty to statystyki”). Zgodne z tym, co stało się po sesji w panelu: D-047 odrzucona z dopiskiem Karola „płacimy jedynie Diamentami za drzewko” (Paweł potwierdził), D-055 (drzewko na klasę) zatwierdzona z dwoma podpisami — D-057 dopisuje do tego źródło Gemów i rolę poziomu. Gałęzie i piętra z D-047 przepadają razem z nią, chyba że wrócą osobną propozycją. Skutek: drzewko jest ujściem waluty premium w całości, więc tempo zdobywania Gemów w grze decyduje, czy gracz bez płacenia ma do niego dostęp (D-035: próg progresji; D-036: „trochę pay-to-win”). Zob. [[Drzewko umiejętności postaci]], [[Pytania otwarte]] #34, #6.
 
 ### D-058 Pety: jeden stały skill, poziom i ewolucja za shardy peta, Shard Ewolucji i tokeny krainy
-✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 2) · zdecydował: Karol Balucki 2026-11-14
+✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 2) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Każdy typ peta ma **jedną stałą umiejętność** (piesek — ugryzienie; legendarny pet — np. wzmocnienie obrażeń na kilka tur); bez losowania skilli, bez puli skilli na rzadkość i bez przenoszenia skilli między petami (Karol; Paweł zrezygnował ze swoich wariantów). Pet ma poziom (Karol: robocze maks. 30) zdobywany karmieniem (D-052); poziom otwiera **ewolucje** — pet zmienia wygląd i wzmacnia skill (Karol: piesek na maksymalnej ewolucji staje się Cerberem). Ewolucja kosztuje: **shardy tego peta** (skrapowanie kopii — jedna kopia daje jeden shard), **Shard Ewolucji** (jeden na ewolucję; rzadki drop ze strażnika biomu, z szansą) i **tokeny krainy**, z której pet pochodzi (ręczne zabijanie potworów w krainie; mniej z walk petów). Dzięki temu duplikaty z jajek się nie marnują (obaj). Nierozstrzygnięte: ewolucje dla wszystkich petów (Karol) czy tylko dla lepszych (Paweł); liczby. Zmienia zatwierdzoną D-040 w części „osobna waluta petów na drzewka petów” (teraz tokeny krain i shardy na ewolucje) i D-039 (drzewko każdego peta — razem z D-056); nazwa „Łapki” z D-046 traci przedmiot albo może nazwać tokeny. Uzupełnia zatwierdzoną D-052 (karmienie). Zob. [[Pety]], [[Pytania otwarte]] #41.
 
 ### D-059 Pety nie walczą z graczem: pasywne premie dla gracza i własne strefy walk petów; ok. 10 petów na biom
-✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (tematy 2 i 3) · zdecydował: Karol Balucki 2026-11-14
+✅ zatwierdzona · game design · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (tematy 2 i 3) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Pety chodzą za graczem i dają mu **bazowe, pasywne premie do statystyk**, ale nie biorą udziału w jego walce (Paweł; Karol myślał, że biją się razem z graczem, przyjął model Pawła). Pety mają **własne środowiska walk** — strefy z przeciwnikami-petami (wejście koło portali do dungeonów albo wydzielone miejsce w biomie); pokonany pet daje jedzenie (karmienie → poziom), tokeny krainy i doświadczenie peta. Każdy biom ma własne pety: ok. **10 na biom** (Karol chciał 20, Paweł: 10–11 to już dużo modeli), np. dwa jajka po 5–6 petów; z jednego jajka wykluwa się jeden pet, losowany z puli jajka z jawnymi szansami. Zgodne z kanonem [[Pety]] (towarzyszą, modyfikują statystyki, pasywne ekspedycje). Dla walki liczonej na serwerze (D-016) oznacza, że pet jest tylko mnożnikiem statystyk gracza. Zob. [[Pety]], [[Pytania otwarte]] #41.
 
 ### D-060 Jajka: inkubatory w każdym biomie, wyklucie od razu z animacją, bez jajek z potworów — do playtestu
@@ -288,7 +293,7 @@ Doprecyzowuje zatwierdzoną z dwoma podpisami D-050: zamiast sześciu stref — 
 Po kliknięciu Teleport w [[HUD]] kamera odjeżdża zza pleców gracza i pokazuje miasto z lotu ptaka (krótki przelot); na widoku są piny przypięte do konkretnych lokacji (karczma, sklepy, Twierdza…), tylko dostępne dla tego gracza; klik pina teleportuje (Paweł; Karol: „jak w GTA V”). Zastępuje w [[Mapa teleportacji]] wygenerowaną grafikę mapy z ramką i siedmioma pinami widokiem z prawdziwej kamery na zbudowane miasteczko (D-041) — bez promptów Higgsfield na mapę, piny mogą zostać jako ikony. Lista lokacji nadal otwarta (pytania 5 i 28); przy ośmiu biomach (D-061) mapa musi też obsłużyć wejścia do biomów. Do sprawdzenia: wydajność i czytelność przelotu na telefonie. Zob. [[Mapa teleportacji]], [[Pytania otwarte]] #5, #28.
 
 ### D-065 Postacie i pety projektuje Karol w Blenderze
-✅ zatwierdzona · 3D / pipeline · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 10) · zdecydował: Karol Balucki 2026-11-14
+✅ zatwierdzona · 3D / pipeline · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 10) · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-14
 Paweł: „Blender, zdecydowanie — ładniejszy był ten ludek”; Karol: projekty postaci i petów robi on w Blenderze (ma Blendera), Paweł podrzuca pomysły; „postawiliśmy raczej na Blendera, bo ładnie wyglądało”. **Sprzeczne z odpowiedzią Karola na pytanie 24 z tego samego dnia** (11:52, akceptacja raportu „Rycerz w trzech wersjach”: klocki Roblox główną drogą, siatki z Blendera tylko tam, gdzie pomiar na telefonie pokaże potrzebę) i z zatwierdzoną D-029 („w Roblox najpierw postacie z klocków”). Zatwierdzenie oznacza: siatki z Blendera (import FBX sprawdzony 13.11 na Rycerzu) jako główna droga dla postaci i petów; miasteczko i mapy z klocków (D-017, D-025) bez zmian — na sesji o nich nie mówiono. Kto publikuje siatki i animacje: grupa Roblox (D-044). Zob. [[Postacie 3D — Blender i Roblox]], [[Pytania otwarte]] #24.
 Uzasadnienie — Karol Balucki, 2026-11-14: Tak to ja (Karol) Pomyliłem twoją próbkę z Blendera vs Rolbox - Blender wyglądał bardziej dopracowany
 
@@ -299,6 +304,14 @@ Karol: sklep za Robuxy „takim samym modelem”, jak w dochodowych grach Roblox
 ### D-067 Gildie i wojny gildii po premierze
 💡 propozycja · roadmapa · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 7)
 Gildii nie ma w pierwszej wersji (Karol: „na razie gildii nie będziemy robić”; Paweł: zostawić na później, nie w podstawowej implementacji). Wojny gildii między światami z rozmowy 12.11 i napady na twierdze (odrzucone na drugiej sesji) — nie na premierę. Doprecyzowuje zatwierdzoną D-035 („gildie nie padły”) i zamyka drugą część pytania 32. Skutek: budynek gildyjny z listy D-049 „do wersji początkowej” też po premierze, a przycisk „Guilds” w wdrożonym [[HUD]] (pytanie 5) nie ma na start treści. Zob. [[Roadmapa]], [[Pytania otwarte]] #32.
+
+### D-068 Walka: długość wyłącznie ze statystyk i losowości
+✅ zatwierdzona · game design · 2026-11-14 · źródło: rozmowa Karola z Claude Code 14.11 (korekta zlecenia na silnik walki v2) · zdecydował: Karol Balucki 2026-11-14
+Walka trwa, aż życie jednej strony spadnie do zera, a jej długość wynika tylko ze statystyk i losowości. Rodzaj przeciwnika jej nie wyznacza: zwykły potwór, który zrobi dziesięć uników z rzędu, daje długą walkę, a boss, który dostanie potężnego krytyka, może paść od jednego ciosu (Karol: „wszystko zależy od RNG”). Żadnych reguł sztucznie skracających ani wydłużających walkę — prototyp z 13.11 miał sztywne 4–6 wymian i cios rozstrzygający; tego nie przenosimy. Animacja jest przy każdej walce (uzasadnienie odrzucenia D-033). Zgodne z ustaleniem z pierwszej sesji 14.11 (temat 2). Realizuje to silnik walki v2 (`src/server/Walka/`, `tools/walka/`). Zob. [[System RPG]], [[Sesja główna 2026-11-14 — zapis ustaleń]].
+
+### D-069 Klasy zbalansowane, bez kontrowania
+✅ zatwierdzona · game design · 2026-11-14 · źródło: rozmowa Karola z Claude Code 14.11 · zdecydował: Karol Balucki 2026-11-14
+Nie ma klasy, która z założenia wygrywa z inną (np. Zwiadowca kontrujący Maga). Wojownik, Zwiadowca i Mag (D-054) różnią się stylem gry, nie skutecznością: przy tym samym poziomie i tej samej puli punktów statystyk każda klasa ma podobne wyniki z każdym przeciwnikiem, a pojedynek klasa na klasę wychodzi blisko 50%. Tabela balansu z symulacji silnika ma to wykazać — nie pokazuje, „kto kogo kontruje”. Dotyczy modelu statystyk z D-062 (magia omijająca Pancerz nie może zrobić z Maga kontry na Wojownika) i [[Arena (PvP)]]. Zob. [[System RPG]].
 
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*

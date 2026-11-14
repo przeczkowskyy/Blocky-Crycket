@@ -13,7 +13,24 @@
 // Starszy serwer nie zwraca pól `rozstrzyga` / `powiazane` — wtedy wiersz „Rozstrzyga:” czytamy z treści pytania.
 
 export const OTWARTE_DECYZJE = ["propozycja", "do_decyzji"];
-export const ZAMKNIETE_DECYZJE = ["zatwierdzona", "odrzucona", "zastapiona"];
+// „nieaktualna” (14.11): zdjęta z kolejki jako nieaktualna — zamknięta, nie obowiązuje, nie czeka na drugą osobę
+export const ZAMKNIETE_DECYZJE = ["zatwierdzona", "odrzucona", "zastapiona", "nieaktualna"];
+
+// Pytanie nieaktualne: OSTATNIA odpowiedź zaczyna się od słowa „nieaktualne” (jak bc/sejf.py: jest_nieaktualne).
+// Serwer podaje pole `nieaktualne`; przy starszym serwerze czytamy to z odpowiedzi.
+const RX_PUNKT_ODP = /^[-*+]\s+(.*)$/;
+const RX_PODPIS_ODP = /^[^:()\n]{1,60}?(?:\s*\([^()\n]{0,80}\))?\s*:\s*/;
+const RX_NIEAKTUALNE = /^[*_\s]*nieaktualn/i;
+
+export function pytanieNieaktualne(p) {
+  if (!p) return false;
+  if (typeof p.nieaktualne === "boolean") return p.nieaktualne;
+  const linie = String(p.odpowiedz_md || "").split("\n").filter((l) => l.trim());
+  if (!linie.length) return false;
+  const punkty = linie.map((l) => RX_PUNKT_ODP.exec(l)).filter(Boolean).map((m) => m[1]);
+  const ostatnia = (punkty.length ? punkty[punkty.length - 1] : linie[0]).trim();
+  return RX_NIEAKTUALNE.test(ostatnia.replace(RX_PODPIS_ODP, "")) || RX_NIEAKTUALNE.test(ostatnia);
+}
 
 const RX_ROZSTRZYGA = /^\s*(?:[-*+]\s+)?(?:\*\*|__)?\s*Rozstrzyga\s*(?:\*\*|__)?\s*:\s*(?:\*\*|__)?(.*)$/i;
 
@@ -240,10 +257,11 @@ function porownaj(a, b) {
 // (dawne filtry Planu i Raportów). Kilka form, bo ludzie wpisują i „odrzucona”, i „odrzucone”.
 export const SLOWA_STATUSU_DECYZJI = {
   zatwierdzona: "zatwierdzona zatwierdzone", odrzucona: "odrzucona odrzucone", zastapiona: "zastąpiona zastąpione",
-  propozycja: "propozycja propozycje", do_decyzji: "do decyzji",
+  propozycja: "propozycja propozycje", do_decyzji: "do decyzji", nieaktualna: "nieaktualna nieaktualne",
 };
 export const SLOWA_STATUSU_RAPORTU = {
   czeka: "czeka czekające", zaakceptowane: "zaakceptowany zaakceptowane", do_poprawy: "do poprawy", informacja: "informacja",
+  nieaktualne: "nieaktualne nieaktualny",
 };
 
 function tekstDecyzji(d) {
@@ -309,6 +327,7 @@ export function zbudujPytania(plan, raporty, agenda, ja) {
     const s = {
       typ: "raport", klucz: "raport-" + r.id, pytanie: pyt.tekst, tytul: r.tytul || "(bez tytułu)", pochodzenie: "z raportu",
       dzien: String(czas).slice(0, 10), czas, waga: 1, nr: 0, r, odlozona: false, zamknieta: !czeka,
+      nieaktualna: r.status === "nieaktualne",
       szukaj: doSzukania([pyt.tekst, r.tytul, r.opis_md, r.pytanie, r.kto, r.id, "raport",
         r.decyzja && r.decyzja.komentarz, SLOWA_STATUSU_RAPORTU[r.status] || r.status].join(" ")),
     };
@@ -329,11 +348,13 @@ export function zbudujPytania(plan, raporty, agenda, ja) {
         if (dd > dzien) dzien = dd;
       }
     }
+    const nieakt = !p.otwarte && pytanieNieaktualne(p);
     const s = {
       typ: "pytanie", klucz: "pytanie-" + p.nr, zrodlo, pytanie: zwykly(p.tytul) || "Pytanie #" + p.nr, tytul: p.tytul || "",
       pochodzenie: "pytanie #" + p.nr, dzien, czas: "", waga: otwarteDec.length ? 2 : 1, nr: p.nr || 0, p,
-      decyzje: roz, powiazane: pow, odlozona: p.otwarte && odlozoneZrodla.has(zrodlo), zamknieta: !p.otwarte,
-      szukaj: doSzukania([p.tytul, p.tresc_md, p.odpowiedz_md, "pytanie #" + p.nr, p.otwarte ? "bez odpowiedzi" : "odpowiedziane",
+      decyzje: roz, powiazane: pow, odlozona: p.otwarte && odlozoneZrodla.has(zrodlo), zamknieta: !p.otwarte, nieaktualna: nieakt,
+      szukaj: doSzukania([p.tytul, p.tresc_md, p.odpowiedz_md, "pytanie #" + p.nr,
+        p.otwarte ? "bez odpowiedzi" : nieakt ? "nieaktualne nieaktualna" : "odpowiedziane",
         ...roz.map((x) => x.d ? tekstDecyzji(x.d) : x.id)].join(" ")),
     };
     if (p.otwarte) {
@@ -369,6 +390,7 @@ export function zbudujPytania(plan, raporty, agenda, ja) {
       tytul: d.tytul || "",
       pochodzenie: "decyzja " + d.id, dzien: ostatniaData(meta), czas: "", waga: d.status === "do_decyzji" ? 2 : 1, nr: n, d,
       powtorzona: ile > 1, odlozona: otwarta && odlozoneZrodla.has(zrodlo), zamknieta: !otwarta,
+      nieaktualna: d.status === "nieaktualna",
       szukaj: doSzukania([pytanieDecyzji(d), tekstDecyzji(d), "decyzja"].join(" ")),
     };
     if (otwarta) czekajace.push(s);

@@ -38,7 +38,7 @@ class TestPlanNaPrawdziwymSejfie(unittest.TestCase):
         decyzje = {d["id"]: d for d in self.plan["decyzje"]}
         for nr in range(1, 12):
             self.assertIn("D-%03d" % nr, decyzje)
-        dozwolone = {"zatwierdzona", "do_decyzji", "propozycja", "odrzucona", "zastapiona"}
+        dozwolone = {"zatwierdzona", "do_decyzji", "propozycja", "odrzucona", "zastapiona", "nieaktualna"}
         for d in decyzje.values():
             self.assertIn(d["status"], dozwolone)
             self.assertTrue(d["tytul"])

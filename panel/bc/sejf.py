@@ -672,11 +672,15 @@ def parsuj_zadania(tekst):
     return {"sekcje": sekcje, "otwarte": otwarte, "zrobione": zrobione}
 
 
+# „🗃️ nieaktualna” (14.11): decyzja zdjęta z kolejki jako nieaktualna — status zamknięty, nie obowiązuje i nie czeka na
+# potwierdzenie drugiej osoby (porządkowanie, nie zatwierdzenie treści). Emoji kartoteki U+1F5C3 z selektorem U+FE0F.
+EMOJI_NIEAKTUALNEJ = "\U0001F5C3️"
 _STATUSY_SLOWA = [("zatwierdzon", "zatwierdzona"), ("do decyzji", "do_decyzji"), ("do_decyzji", "do_decyzji"),
                   ("propozycj", "propozycja"), ("odrzucon", "odrzucona"), ("zastąpion", "zastapiona"),
-                  ("zastapion", "zastapiona")]
+                  ("zastapion", "zastapiona"), ("nieaktualn", "nieaktualna")]
 _STATUSY_EMOJI = {"✅": "zatwierdzona", "✔": "zatwierdzona", "🕓": "do_decyzji", "🕒": "do_decyzji",
-                  "⏳": "do_decyzji", "💡": "propozycja", "❌": "odrzucona", "♻": "zastapiona"}
+                  "⏳": "do_decyzji", "💡": "propozycja", "❌": "odrzucona", "♻": "zastapiona",
+                  "\U0001F5C3": "nieaktualna"}
 
 
 def _linia_statusu(linia):
@@ -700,6 +704,21 @@ def _linia_statusu(linia):
     if status is None:
         return None
     return status, emoji, (czesci[1] if len(czesci) > 1 else ""), czesci[2:]
+
+
+def drugi_status(linie):
+    """Status DRUGIEGO wiersza statusu albo None. `linie` = wiersze sekcji decyzji ZA pierwszym wierszem statusu.
+
+    Panel na starym kodzie (sprzed 14.11) nie zna „🗃️ nieaktualna”: decyzję uważa za propozycję i przy zmianie
+    statusu wstawia pod nagłówkiem drugi wiersz statusu. Taki zapis jest sprzeczny — nowy panel go wykrywa, nie
+    traktuje decyzji jako czekającej na potwierdzenie i nie zmienia jej statusu, dopóki ktoś nie poprawi Rejestru.
+    Liczy się tylko pierwszy niepusty wiersz zaczynający się od emoji statusu (zwykły tekst opisu się nie liczy)."""
+    linia = next((l for l in linie if l.strip()), "")
+    s = linia.strip()
+    if not any(s.startswith(znak) for znak in _STATUSY_EMOJI):
+        return None
+    st = _linia_statusu(s)
+    return st[0] if st else None
 
 
 # --------------------------------------------------------------------------- potwierdzanie decyzji (D-043)
@@ -823,12 +842,14 @@ def parsuj_decyzje(tekst, osoby=None):
             tresc_linie.pop(0)
         status, emoji, kategoria, meta = "propozycja", "", "", []
         pola = pola_podpisu("")
+        sprzeczny = None
         if tresc_linie:
             st = _linia_statusu(tresc_linie[0])
             if st:
                 status, emoji, kategoria, meta = st
                 pola = pola_podpisu(tresc_linie[0])
                 tresc_linie.pop(0)
+                sprzeczny = drugi_status(tresc_linie)
         tytul_md = m.group(2).strip()
         decyzje.append({"id": m.group(1), "tytul": tytul_md.replace("`", ""), "tytul_md": tytul_md, "status": status,
                         "emoji": emoji, "kategoria": kategoria, "meta": meta,
@@ -836,7 +857,10 @@ def parsuj_decyzje(tekst, osoby=None):
                         # potwierdzanie przez drugą osobę (D-043): podpisy i kto ma jeszcze potwierdzić
                         "zdecydowal": pola["zdecydowal"], "potwierdzil": pola["potwierdzil"],
                         "sprzeciw": pola["sprzeciw"], "do_rozmowy": pola["do_rozmowy"],
-                        "czeka_na": czeka_na(status, pola, osoby)})
+                        # dwa wiersze statusu (zapis starego panelu) = nic nie czeka, a `sprzeczny_status` niesie
+                        # status drugiego wiersza, żeby interfejs pokazał ostrzeżenie
+                        "czeka_na": None if sprzeczny else czeka_na(status, pola, osoby),
+                        "sprzeczny_status": sprzeczny})
     return decyzje
 
 
@@ -863,12 +887,32 @@ def _identyfikatory(tekst):
     return wynik
 
 
+# Pytanie oznaczone jako nieaktualne (14.11): OSTATNIA odpowiedź zaczyna się od słowa „nieaktualne” (bez względu na
+# wielkość liter), np. „- Karol (2026-11-14): nieaktualne — temat zamknięty na sesji”. Odpowiedź to punkt listy
+# z podpisem „Imię (…):” albo „Imię:”; bez punktów liczy się pierwszy wiersz odpowiedzi.
+_RX_PUNKT_ODPOWIEDZI = re.compile(r"^[-*+]\s+(.*)$")
+_RX_PODPIS_ODPOWIEDZI = re.compile(r"^[^:()\n]{1,60}?(?:\s*\([^()\n]{0,80}\))?\s*:\s*")
+_RX_NIEAKTUALNE = re.compile(r"^[*_\s]*nieaktualn\w*", re.IGNORECASE)
+
+
+def jest_nieaktualne(odpowiedz_md):
+    """Czy ostatnia odpowiedź pod pytaniem zaczyna się od słowa „nieaktualne”."""
+    linie = [l for l in (odpowiedz_md or "").split("\n") if l.strip()]
+    if not linie:
+        return False
+    punkty = [m.group(1) for m in (_RX_PUNKT_ODPOWIEDZI.match(l) for l in linie) if m]
+    ostatnia = (punkty[-1] if punkty else linie[0]).strip()
+    tresc = _RX_PODPIS_ODPOWIEDZI.sub("", ostatnia, count=1) if _RX_PODPIS_ODPOWIEDZI.match(ostatnia) else ostatnia
+    return bool(_RX_NIEAKTUALNE.match(tresc) or _RX_NIEAKTUALNE.match(ostatnia))
+
+
 def parsuj_pytania(tekst):
-    """Pytania otwarte: {nr, tytul, tresc_md, odpowiedz_md, otwarte, rozstrzyga, powiazane}.
+    """Pytania otwarte: {nr, tytul, tresc_md, odpowiedz_md, otwarte, nieaktualne, rozstrzyga, powiazane}.
 
     `rozstrzyga` = decyzje z wiersza „Rozstrzyga: D-0XX, …” w treści pytania (jawne powiązanie — gdy wszystkie są
     zamknięte, panel sam dopisuje odpowiedź, patrz bc/zapis.py); `powiazane` = pozostałe wzmianki „D-0XX” w tytule
-    i treści pytania (bez automatyki)."""
+    i treści pytania (bez automatyki); `nieaktualne` = ostatnia odpowiedź zaczyna się od słowa „nieaktualne”
+    (pytanie zamknięte bez odpowiedzi merytorycznej)."""
     _, tresc, _ = parsuj_frontmatter(tekst)
     pytania = []
     for naglowek, linie in _sekcje(tresc, 2):
@@ -894,7 +938,8 @@ def parsuj_pytania(tekst):
         tresc_md = "\n".join(pytanie).strip()
         powiazane = [i for i in _identyfikatory(m.group(2) + "\n" + tresc_md) if i not in rozstrzyga]
         pytania.append({"nr": int(m.group(1)), "tytul": m.group(2).strip(), "tresc_md": tresc_md,
-                        "odpowiedz_md": odp, "otwarte": not odp, "rozstrzyga": rozstrzyga, "powiazane": powiazane})
+                        "odpowiedz_md": odp, "otwarte": not odp, "nieaktualne": jest_nieaktualne(odp),
+                        "rozstrzyga": rozstrzyga, "powiazane": powiazane})
     return pytania
 
 
@@ -1010,6 +1055,8 @@ def plan():
         wynik["zrodla"] = zrodla
         wynik["pliki"] = {k: pokaz for k, (_, pokaz) in pliki.items()}
         wynik["wersje"] = wersje
+        # co umie ten serwer — interfejs przy starszym serwerze (bez pola) mówi, że akcja ruszy po restarcie panelu
+        wynik["funkcje"] = {"nieaktualne": True}
         _plan_pamiec.update(podpis=podpis, plan=wynik)
         return wynik
 

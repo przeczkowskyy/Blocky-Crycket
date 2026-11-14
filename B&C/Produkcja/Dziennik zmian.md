@@ -6,6 +6,15 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-14 · Claude Code u Karola (panel: „Nieaktualne” i okna agenta; start silnika walki v2 i modeli lasu)
+- **Panel — status „Nieaktualne”** (prośba Karola): przy pytaniach, decyzjach i raportach, także hurtem („Zaznacz kilka”). Pytanie dostaje odpowiedź „nieaktualne — powód”; decyzja status `🗃️ nieaktualna` z podpisem `oznaczył:` (nie obowiązuje, nie czeka na drugi podpis, bez alertu na Telegramie; „Przywróć” wraca do „do decyzji”); raport trzecią wartość decyzji. Gdy pytanie oznacza osoba z prawem decyzji, z kolejki schodzą też czekające decyzje z jego wiersza „Rozstrzyga:”. Legenda statusów w [[Rejestr decyzji]] uzupełniona. Pięć raportów, które Karol oznaczył komentarzem „NIEAKTUALNE” (15:39–15:41), przeniesione na ten status. **Uwaga:** panel na starym kodzie nie zna nowego statusu — zanim ktoś oznaczy decyzję, druga osoba musi pobrać kod i zrestartować swój panel.
+- **Panel — zakładka Agent:** pięć okien (Ogólny, Balans, Świat, Modele, Wydanie) z kartami w `panel/agenci/`, krótkie odpowiedzi, usuwanie rozmów, tytuł z pierwszego pytania, rozmowy wspólne dla obu osób. Okna Balans, Świat, Modele i Wydanie zapisują tylko w sejfie i tylko propozycje; Wydanie ma dostęp do sieci. Sprawdzone prawdziwą rozmową w oknie Balans (krótka odpowiedź, zapis w sejfie przeszedł, zapis poza sejfem odrzucony).
+- **Bezpieczeństwo agenta:** próba na prawdziwym programie pokazała, że agent panelu mógł czytać dowolny plik na dysku gospodarza; czytanie zawężone do folderu projektu we wszystkich zestawach (okna, sesje głosowe, tryb Praca) i sprawdzone ponownie na prawdziwym programie. Zapis rozmowy z sesji nadal jest dla agenta dostępny.
+- **Testy:** 437 testów panelu przechodzi; testy przeglądarkowe Pytań, Sesji, Agenta i „Nieaktualne” uruchamiane osobno — zaliczone. Panel zrestartowany o 16:45 (nie trwała żadna sesja).
+- **Decyzje Karola z czatu:** D-068 (długość walki wyłącznie ze statystyk i losowości) i D-069 (klasy zbalansowane, bez kontrowania) — zatwierdzone przez Karola, czekają na potwierdzenie Pawła. Karol dał też stałą zgodę na wgrywanie modeli i materiałów do Roblox bez pytania za każdym razem, póki gra jest w testach (nie dotyczy publikacji miejsca), i zostawił mi projekt potworów.
+- **W toku:** silnik walki v2 (`src/server/Walka/`, `src/shared/Walka/`, `tools/walka/`) oraz sześć modeli lasu z Blendera (Leśny Troll, Zwiadowca, Cierniowy Wilk, Muchomornik, Strażnik Gaju, Leśny Slime) — raporty do akceptacji pojawią się w panelu.
+- Pliki: `panel/bc/agent.py`, `sejf.py`, `zapis.py`, `raporty.py`, `panel/narzedzia/raport.py`, `panel/agenci/`, `panel/static/widoki/{agent,pytania,pulpit}.js`, `panel/static/wspolne/{kolejka,lista_pytan,raport_karta}.js`, `panel/testy/`, `panel/README.md`, `.claude/skills/panel/SKILL.md`, [[Panel zespołu]], [[Rejestr decyzji]], [[Zadania]].
+
 ## 2026-11-14 · Claude Code u Karola (trzecia sesja główna: zapis ustaleń)
 - **Trzecia część rozmowy** tego dnia (13:52–14:40, ok. 48 min; Karol włączył nową transkrypcję, gdy poprzednia przestała nadążać; agent słuchał, zapis pełny). Ustalenia własnymi słowami: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (`propozycja`); zapis rozmowy zostaje lokalnie u gospodarza, poza repozytorium. Karol odhaczył w panelu w trakcie: Drzewko (dokończenie), Klasy (bez rozmowy o klasach — notatka o biomach), Biomy, Training Center, Twierdza (działka), Wojny gildii, Lokacje mapy, Przegląd decyzji przez Pawła (do przeglądu nie doszło) i Blender.
 - **Co zrobili ludzie w tym czasie** (wpisy `Panel (ludzie)` niżej): D-050 (Karol: „bez trybu AFK — na razie”), D-052, D-054 i D-055 zatwierdzone z dwoma podpisami (Karol w panelu, Paweł przez Telegram), D-047 odrzucona (Karol: „płacimy jedynie Diamentami za drzewko”, Paweł potwierdził); pytania 34, 35, 36 i 38 zamknięte. Ustalenia z rozmowy, które zmieniają te decyzje w szczegółach, poszły jako osobne propozycje — zatwierdzonej decyzji się nie przepisuje.
@@ -121,6 +130,37 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: decyzja D-051 zatwierdzona ([[Rejestr decyzji]])
 - Karol Balucki: decyzja D-049 zatwierdzona ([[Rejestr decyzji]])
 - Karol Balucki: decyzja D-048 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-046 odrzucona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-042 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-036 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-034 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-033 odrzucona ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 26 ([[Pytania otwarte]])
+- Karol Balucki: decyzja D-025 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-020 odrzucona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-019 odrzucona ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 21 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 3 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 2 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 1 ([[Pytania otwarte]])
+- Paweł (Telegram): decyzja D-065 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-059 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-058 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-057 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-056 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-053 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-051 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-049 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-048 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-046 potwierdzona: zgoda (odrzucona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-042 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-036 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-034 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-033 potwierdzona: zgoda (odrzucona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-025 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-019 potwierdzona: zgoda (odrzucona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-020 potwierdzona: zgoda (odrzucona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-010 zatwierdzona ([[Rejestr decyzji]])
 
 ## 2026-11-14 · Claude Code u Karola (sesja główna: zapis ustaleń)
 - **Pierwsza sesja główna** Karola i Pawła w zakładce Sesja panelu (11:00–11:43, 42 min; agent słuchał, transkrypcja rozpoznała obu mówców). Ustalenia własnymi słowami: [[Sesja główna 2026-11-14 — zapis ustaleń]] (`propozycja`). Zapis rozmowy zostaje lokalnie u gospodarza, poza repozytorium.

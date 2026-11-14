@@ -92,6 +92,37 @@ button.sprawa-meta-klik:hover { color: var(--tekst); }
 .sprawa-szczegoly-tresc .md { font-size: 14px; }
 @media (pointer: coarse) { .sprawa-szczegoly > summary { min-height: 40px; } }
 
+/* „Nieaktualne” (14.11): dyskretny przycisk-napis obok akcji, mały przycisk „powód” i pole powodu w tym samym miejscu */
+.nieaktualne-akcja { display: inline-flex; align-items: center; gap: 2px; flex-wrap: wrap; min-width: 0; }
+.sprawa .rzad-przyciskow > .nieaktualne-akcja > .przycisk.cichy { color: var(--przygaszony); font-weight: 600; }
+.sprawa .nieaktualne-przycisk { min-height: 36px; padding: 0 8px; font-size: 13px; }
+.sprawa .nieaktualne-przycisk:hover:not(:disabled) { color: var(--tekst); }
+.sprawa .nieaktualne-powod-przycisk { min-height: 36px; min-width: 36px; padding: 0; }
+.sprawa .nieaktualne-powod-przycisk .ikona { width: 15px; height: 15px; }
+.nieaktualne-powod { flex: 1 1 180px; min-width: 0; min-height: 36px; padding: 6px 10px; font-size: 13.5px; }
+.nieaktualne-powod[hidden] { display: none; }
+@media (pointer: coarse) { .sprawa .nieaktualne-przycisk, .sprawa .nieaktualne-powod-przycisk { min-height: 40px; } }
+/* historia: sprawa nieaktualna — przygaszona, bez żadnego koloru */
+.sprawa.sprawa-nieaktualna { opacity: 0.78; }
+.sprawa.sprawa-nieaktualna .odpowiedz { background: var(--tlo-gleb); }
+
+/* tryb zaznaczania (zakładka Pytania): pole wyboru w górnym wierszu karty i pasek nad listą */
+.sprawa-zaznacz { display: inline-flex; align-items: center; margin-right: 8px; cursor: pointer; min-height: 28px; }
+.sprawa-zaznacz input { width: 20px; height: 20px; margin: 0; accent-color: var(--zloto); cursor: pointer; }
+.sprawa-gora > .sprawa-zaznacz + *::before { content: none; }
+@media (pointer: coarse) { .sprawa-zaznacz { min-height: 40px; min-width: 32px; } }
+.zaznaczanie-pasek {
+  position: sticky; top: calc(var(--gora, 0px) + 6px); z-index: 5; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 8px 10px; border-radius: 12px; background: var(--karta2); border: 1px solid var(--obrys);
+}
+.zaznaczanie-pasek[hidden] { display: none; }
+.zaznaczanie-liczba { font-size: 14px; }
+.zaznaczanie-powod { flex: 1 1 200px; min-width: 0; min-height: 36px; padding: 6px 10px; font-size: 13.5px; }
+.zaznaczanie-postep { flex: 1 1 100%; font-size: 13px; }
+.zaznaczanie-postep:empty { display: none; }
+.sprawa-blad-zbiorczy { display: flex; align-items: flex-start; gap: 6px; margin: 0; font-size: 13px; color: #ffb4b4; }
+.sprawa-blad-zbiorczy .ikona { width: 15px; height: 15px; flex: none; margin-top: 2px; }
+
 /* „sprawa zmieniła się, gdy pisałeś” */
 .sprawa-zmiana {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 6px 6px 10px; border-radius: 10px;

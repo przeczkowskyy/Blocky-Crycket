@@ -4,6 +4,7 @@
 Układ plików (rdzen.DANE = panel/dane):
     raporty/<id>.json            raport (bez pola status — status wylicza się przy odczycie)
     raporty/<id>.decyzja.json    decyzja człowieka {kto, czas, wartosc, komentarz}
+                                 (wartosc: zaakceptowane | do_poprawy | nieaktualne — ostatnia decyzja wygrywa)
     raporty/<id>/                załączniki (zrzuty ekranu)
     komentarze/<id>.json         komentarz {id, cel:{typ, cel, etykieta?}, kto, czas, tekst, zrodlo}
 
@@ -29,7 +30,7 @@ from .http import Odp
 from .rdzen import BladHTTP
 
 RODZAJE = ("wdrozenie", "pytanie", "informacja")
-DECYZJE = ("zaakceptowane", "do_poprawy")
+DECYZJE = ("zaakceptowane", "do_poprawy", "nieaktualne")       # nieaktualne (14.11): zdjęty z kolejki, nie poprawiać
 TYPY_KOMPONENTU = ("studio", "notatka", "plik", "migawka")
 TYPY_CELU = ("raport", "studio", "notatka", "migawka", "plik")   # „plik” = ścieżka w repo (np. obraz assetu)
 ZRODLA = ("tekst", "glos")
@@ -510,7 +511,7 @@ def _post_decyzja(z):
     if nieznane:
         raise BladHTTP(400, "Nieznane pola decyzji: %s" % ", ".join(sorted(nieznane)))
     if "wartosc" not in dane:
-        raise BladHTTP(400, "Brak pola „wartosc” (zaakceptowane albo do_poprawy)")
+        raise BladHTTP(400, "Brak pola „wartosc” (zaakceptowane, do_poprawy albo nieaktualne)")
     return zapisz_decyzje(rid, dane.get("wartosc"), z.kto, dane.get("komentarz"))
 
 

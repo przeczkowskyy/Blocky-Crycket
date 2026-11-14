@@ -78,6 +78,7 @@ export default {
 
     // ------------------------------------------------------------------ szkielet
     const lista = listaPytan(ctx, {
+      zaznaczanie: true,                                       // „Zaznacz kilka” → kilka spraw naraz jako nieaktualne
       naDane: (d) => {
         D = d;
         rysujReszte();
@@ -104,7 +105,7 @@ export default {
     const historiaLicznik = el("span", { class: "chip" });
     const historia = el("section", { class: "pytania-historia", id: "pytania-historia", "aria-labelledby": "pytania-historia-tytul" },
       el("div", { class: "kolejka-nagl" }, el("h2", { id: "pytania-historia-tytul" }, "Odpowiedziane"), historiaLicznik),
-      el("p", { class: "cichy-tekst" }, "Pytania z odpowiedziami, decyzje zatwierdzone i odrzucone, raporty po decyzji — od najnowszych."),
+      el("p", { class: "cichy-tekst" }, "Pytania z odpowiedziami, decyzje zatwierdzone i odrzucone, raporty po decyzji, sprawy nieaktualne — od najnowszych."),
       historiaLista, historiaWiecej);
 
     const segment = przelacznik(CZESCI_PLANU, czescPlanu, (id) => {
@@ -147,7 +148,7 @@ export default {
       zegarSzukania = setTimeout(szukaj, 120);
     });
     // podpowiedź przy pustym polu: szukać można też po statusie (dawne filtry Planu i Raportów)
-    const PODPOWIEDZ_SZUKANIA = "Szuka też po statusie, np. „do poprawy”, „odrzucona”, „zatwierdzona”.";
+    const PODPOWIEDZ_SZUKANIA = "Szuka też po statusie, np. „do poprawy”, „odrzucona”, „zatwierdzona”, „nieaktualne”.";
     poleSzukania.addEventListener("focus", () => {
       if (!poleSzukania.value.trim()) wynikSzukania.textContent = PODPOWIEDZ_SZUKANIA;
     });

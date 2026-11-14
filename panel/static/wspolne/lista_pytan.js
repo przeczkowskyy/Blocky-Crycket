@@ -46,7 +46,13 @@ export const STATUSY_DECYZJI = {
   propozycja: { tekst: "propozycja", kolor: "fiolet" },
   odrzucona: { tekst: "odrzucona", kolor: "czerwien" },
   zastapiona: { tekst: "zastąpiona", kolor: "szary" },
+  nieaktualna: { tekst: "nieaktualna", kolor: "szary" },
 };
+
+// „Nieaktualne” (14.11): trzecia możliwość obok odpowiedzi / Tak / Nie / Akceptuję / Do poprawy — zdejmuje sprawę
+// z kolejki. Pytanie: zwykła odpowiedź „nieaktualne — powód”; decyzja: status „nieaktualna” (tylko decydent);
+// raport: decyzja „nieaktualne”. Serwer sprzed tej zmiany nie zna statusu decyzji ani wartości raportu.
+const TEKST_RESTART = "„Nieaktualne” przy decyzjach i raportach zadziała po restarcie panelu.";
 
 const html = (tekst) => el("div", { class: "md", html: md(tekst || "") });
 
@@ -138,8 +144,20 @@ export function listaPytan(ctx, opcje = {}) {
   const naSesjeMozna = () => !zwarta && mozeZapisywac() && agendaDostepna && ctx.jest("sesje");
   const plikPytan = () => (plan && plan.pliki && plan.pliki.pytania) || "B&C/Produkcja/Pytania otwarte.md";
   const plikRejestru = () => (plan && plan.pliki && plan.pliki.decyzje) || "B&C/Produkcja/Rejestr decyzji.md";
+  // serwer umie „nieaktualne” (pole planu `funkcje`); plan nieznany (np. sejf wyłączony) = spróbuj i zobacz
+  const serwerUmie = () => !plan || !!(plan.funkcje && plan.funkcje.nieaktualne);
+  const powody = new Map();           // klucz sprawy -> niewysłany powód „Nieaktualne”
+  const otwartePowody = new Set();    // karty z odsłoniętym polem powodu
+  // tryb zaznaczania (zakładka Pytania): kilka spraw naraz jako nieaktualne
+  let trybZaznaczania = false;
+  let zbiorczoWToku = false;
+  const zaznaczone = new Set();       // klucze zaznaczonych spraw
+  const bledyZbiorcze = new Map();    // klucz -> powód, dla którego ostatnio się nie udało
 
   const raportyUI = kartyRaportow(ctx, {
+    // „Nieaktualne” przy raporcie czekającym na decyzję (i przy „Zmień decyzję”) — ta sama kontrolka co w kartach
+    przyciskNieaktualne: (r) => kontrolkaNieaktualne("raport-" + r.id, "Oznacz raport jako nieaktualny",
+      (powod) => nieaktualneJedno({ typ: "raport", klucz: "raport-" + r.id, r }, powod, {})),
     naZmiane: (nowy) => {
       if (raporty) {
         const i = raporty.findIndex((x) => x.id === nowy.id);
@@ -168,17 +186,39 @@ export function listaPytan(ctx, opcje = {}) {
   const brakWynikow = el("p", { class: "cichy-tekst kolejka-brak-wynikow", hidden: true }, "Tu nic nie pasuje do szukanego słowa.");
   const odlozoneEl = el("div", { class: "kolejka-odlozone" });
   const tytulId = prefiks + "lista-tytul";
+  // tryb zaznaczania (opcje.zaznaczanie): „Zaznacz kilka” w nagłówku i pasek z liczbą zaznaczonych i wspólnym powodem
+  const zaznaczKilka = opcje.zaznaczanie && !zwarta ? el("button", {
+    type: "button", class: "przycisk cichy maly zaznacz-kilka", hidden: true, "aria-pressed": "false",
+    onclick: () => ustawZaznaczanie(!trybZaznaczania),
+  }, "Zaznacz kilka") : null;
+  const liczbaZaznaczonych = el("strong", null, "0");
+  const poleWspolne = el("input", { type: "text", class: "pole zaznaczanie-powod bez-blokady", maxlength: "300",
+    placeholder: "Wspólny powód (opcjonalnie)", "aria-label": "Wspólny powód dla zaznaczonych spraw" });
+  const przyciskZbiorczy = el("button", { type: "button", class: "przycisk glowny maly zaznaczanie-oznacz", disabled: true,
+    onclick: () => oznaczZaznaczone() }, "Oznacz jako nieaktualne");
+  const postepZbiorczy = el("span", { class: "cichy-tekst zaznaczanie-postep", role: "status", "aria-live": "polite" });
+  poleWspolne.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      oznaczZaznaczone();
+    }
+  });
+  const pasekZaznaczania = zaznaczKilka ? el("div", { class: "zaznaczanie-pasek", hidden: true, role: "region", "aria-label": "Zaznaczone sprawy" },
+    el("span", { class: "zaznaczanie-liczba" }, "Zaznaczone: ", liczbaZaznaczonych),
+    el("button", { type: "button", class: "przycisk cichy maly zaznaczanie-wszystkie", onclick: () => zaznaczWidoczne() }, "Zaznacz widoczne"),
+    el("button", { type: "button", class: "przycisk cichy maly zaznaczanie-zadne", onclick: () => { zaznaczone.clear(); odswiezZaznaczenie(); } }, "Odznacz"),
+    poleWspolne, przyciskZbiorczy, postepZbiorczy) : null;
   // w Sesji nagłówek listy jest tytułem karty (jak Agenda obok)
   const naglowek = zwarta
     ? el("h2", { class: "karta-tytul", id: tytulId }, ikona(opcje.ikona || "pytanie"), el("span", null, opcje.tytul || "Pytania"),
       el("div", { class: "karta-akcje" }, licznikEl, opcje.akcjeNaglowka || null))
     : el("div", { class: "kolejka-nagl" },
       el("h2", { id: tytulId }, opcje.tytul || "Do odpowiedzi"), licznikEl,
-      el("span", { class: "rozpychacz" }), opcje.akcjeNaglowka || null);
+      el("span", { class: "rozpychacz" }), zaznaczKilka, opcje.akcjeNaglowka || null);
   const korzen = el("section", { class: "kolejka lista-pytan" + (zwarta ? " zwarta" : ""), "aria-labelledby": tytulId },
     opcje.naglowek === false ? null : naglowek,
     opcje.opis ? el("p", { class: "cichy-tekst lista-pytan-opis" }, opcje.opis) : null,
-    infoEl, listaEl, brakWynikow, odlozoneEl);
+    pasekZaznaczania, infoEl, listaEl, brakWynikow, odlozoneEl);
 
   // Odłożone przerysowanie wraca, gdy nikt już nie pisze: po wyjściu z pola albo chwilę po wyczyszczeniu tekstu.
   let zegarPisania = null;
@@ -225,6 +265,7 @@ export function listaPytan(ctx, opcje = {}) {
       return w;
     } catch (e) {
       ostatniBladZapisu = e;
+      if (o.cicho) return null;                                // wołający sam mówi, co się stało („Nieaktualne”)
       if (e.status === 409 && e.dane && e.dane.kod === "konflikt_wersji") {
         toast(o.konflikt || "Ktoś zmienił ten plik — odświeżam", "info", { czas: 6500 });
         await pobierz(true);
@@ -634,6 +675,298 @@ export function listaPytan(ctx, opcje = {}) {
     return el("button", { type: "button", class: "przycisk maly cichy", onclick: () => oknoNaSesje(s) }, ikona("kalendarz"), el("span", null, "Na sesję główną"));
   }
 
+  // ------------------------------------------------------------------ „Nieaktualne”
+  const BRAK_UPRAWNIEN = "brak uprawnień — decyzje zdejmuje Karol albo Paweł (klucz zatwierdzania)";
+
+  /** Czy błąd to stary serwer, który nie zna statusu „nieaktualna” / wartości raportu „nieaktualne”. */
+  function staryBlad(e) {
+    const t = String((e && e.message) || "");
+    return !!e && ((e.status === 400 && /Pole „status”|Decyzja musi być|Brak pola „wartosc”/.test(t)) ||
+      (e.status === 404 && !(e.dane && e.dane.kod) && /Tej części panelu/.test(t)));
+  }
+
+  function opisBledu(e) {
+    if (!e) return "nie udało się";
+    if (staryBlad(e)) return TEKST_RESTART;
+    const kod = e.dane && e.dane.kod;
+    if (kod === "konflikt_wersji") return "konflikt wersji — ktoś zmienił plik w międzyczasie, spróbuj jeszcze raz";
+    if (kod === "brak_klucza_zatwierdzania") return BRAK_UPRAWNIEN;
+    return e.message || "nie udało się";
+  }
+
+  const wynikBledu = (e) => ({ ok: false, blad: opisBledu(e), restart: staryBlad(e), konflikt: !!(e && e.dane && e.dane.kod === "konflikt_wersji") });
+
+  /** Decyzja → status „nieaktualna” (z uzasadnieniem, gdy jest powód). → {ok, wersja?, rozstrzygniete?} albo błąd. */
+  async function decyzjaNieaktualna(d, powod, wersja) {
+    if (!decydent()) return { ok: false, blad: BRAK_UPRAWNIEN };
+    if (!serwerUmie()) return { ok: false, blad: TEKST_RESTART, restart: true };
+    const cialo = { status: "nieaktualna" };
+    if (powod) cialo.uzasadnienie = powod;
+    const w = await zapiszDoSejfu("/api/sejf/decyzje/" + encodeURIComponent(d.id) + "/status", cialo, wersja, { cicho: true });
+    return w ? { ok: true, wersja: w.wersja, rozstrzygniete: w.rozstrzygniete } : wynikBledu(ostatniBladZapisu);
+  }
+
+  /**
+   * Oznacza sprawę jako nieaktualną. `wersje` = znaczniki plików, które człowiek widział (karta: z chwili narysowania;
+   * tryb zaznaczania: bieżące). → {ok, opis?, zostaly?, blad?, restart?, konflikt?} — bez komunikatów (robi to wołający).
+   *   pytanie: wiersz odpowiedzi „nieaktualne — powód”; decydent zdejmuje też czekające decyzje z wiersza „Rozstrzyga:”
+   *            tej karty (inaczej wyskoczyłyby na listę jako osobne sprawy);
+   *   decyzja: status „nieaktualna”; raport: decyzja „nieaktualne” (komentarz = powód).
+   */
+  async function oznaczNieaktualne(s, powod, wersje) {
+    wersje = wersje || {};
+    if (s.typ === "pytanie") {
+      const nr = s.p.nr;
+      const tekst = "nieaktualne" + (powod ? " — " + powod : "");
+      const w = await zapiszDoSejfu("/api/sejf/pytania/" + encodeURIComponent(nr) + "/odpowiedz", { tekst }, wersje.pytania, { cicho: true });
+      if (!w && !(ostatniBladZapisu && ostatniBladZapisu.dane && ostatniBladZapisu.dane.kod === "juz_zapisane")) return wynikBledu(ostatniBladZapisu);
+      const otwarte = (s.decyzje || []).filter((x) => x.d && OTWARTE_DECYZJE.includes(x.d.status)).map((x) => x.d);
+      const zdjete = [];
+      const zostaly = [];
+      let wRej = wersje.decyzje;
+      for (const d of otwarte) {
+        if (!decydent() || !serwerUmie()) {
+          zostaly.push(d.id);
+          continue;
+        }
+        const wd = await decyzjaNieaktualna(d, powod || "pytanie #" + nr + " oznaczone jako nieaktualne", wRej);
+        if (wd.ok) {
+          zdjete.push(d.id);
+          wRej = wd.wersja;
+        } else zostaly.push(d.id);
+      }
+      return { ok: true, opis: "Pytanie #" + nr + (zdjete.length ? " i " + zdjete.join(", ") : "") + " — nieaktualne.", zostaly };
+    }
+    if (s.typ === "decyzja") {
+      const w = await decyzjaNieaktualna(s.d, powod, wersje.decyzje);
+      if (!w.ok) return w;
+      const roz = Array.isArray(w.rozstrzygniete) ? w.rozstrzygniete : [];
+      if (roz.length) pokazInfo((roz.length === 1 ? "Pytanie " : "Pytania ") + roz.map((r) => "#" + r.nr).join(", ") + " — rozstrzygnięte decyzjami, odpowiedź dopisana w sejfie.");
+      return { ok: true, opis: s.d.id + " — nieaktualna." };
+    }
+    if (s.typ === "raport") {
+      if (!serwerUmie()) return { ok: false, blad: TEKST_RESTART, restart: true };
+      try {
+        await raportyUI.decyduj(s.r, "nieaktualne", powod || "");
+        return { ok: true, opis: "Raport „" + skroc(zwykly(s.r.tytul || "raport"), 60) + "” — nieaktualny." };
+      } catch (e) {
+        return wynikBledu(e);
+      }
+    }
+    return { ok: false, blad: "tej sprawy nie da się oznaczyć jako nieaktualnej" };
+  }
+
+  /** Jedno kliknięcie w karcie: oznacza, mówi, co się stało; przy konflikcie wersji odświeża listę. */
+  async function nieaktualneJedno(s, powod, wersje) {
+    const w = await oznaczNieaktualne(s, powod, wersje);
+    if (w.ok) {
+      const reszta = w.zostaly && w.zostaly.length ? " Decyzje " + w.zostaly.join(", ") + " czekają dalej" +
+        (decydent() ? "." : " — zdejmuje je Karol albo Paweł.") : "";
+      toast(w.opis + " Zdjęte z listy." + reszta, "ok", { czas: reszta ? 7000 : 3500 });
+    } else {
+      toast(w.restart ? w.blad : "Nie oznaczono jako nieaktualne: " + w.blad, w.restart ? "info" : "blad", { czas: 7000 });
+      if (w.konflikt) pobierz(true);
+    }
+    return w;
+  }
+
+  /**
+   * Kontrolka „Nieaktualne”: jedno kliknięcie zdejmuje sprawę z kolejki. Obok mały przycisk „Powód”, który odsłania
+   * pole na krótki powód w tym samym miejscu (Enter = oznacz z powodem, Esc = schowaj); pusty powód jest w porządku.
+   */
+  function kontrolkaNieaktualne(klucz, opis, wykonaj) {
+    const otwarte = otwartePowody.has(klucz);
+    const pole = el("input", { type: "text", class: "pole nieaktualne-powod", maxlength: "300", placeholder: "Powód (opcjonalnie)", "aria-label": "Powód — " + opis, hidden: !otwarte });
+    pole.value = powody.get(klucz) || "";
+    const przycisk = el("button", { type: "button", class: "przycisk cichy maly nieaktualne-przycisk", title: opis, dataset: { nieaktualne: klucz } }, "Nieaktualne");
+    const powodBtn = el("button", { type: "button", class: "przycisk cichy maly ikonowy nieaktualne-powod-przycisk", title: "Dodaj powód (opcjonalnie)",
+      "aria-label": "Dodaj powód", "aria-expanded": otwarte ? "true" : "false" }, ikona("komentarz"));
+    const pokazPole = (tak) => {
+      pole.hidden = !tak;
+      powodBtn.setAttribute("aria-expanded", tak ? "true" : "false");
+      if (tak) otwartePowody.add(klucz);
+      else {
+        otwartePowody.delete(klucz);
+        powody.delete(klucz);
+        pole.value = "";
+      }
+    };
+    pole.addEventListener("input", () => {
+      if (pole.value) powody.set(klucz, pole.value);
+      else powody.delete(klucz);
+    });
+    let wToku = false;                                         // podwójny klik / Enter = jedno żądanie
+    const uruchom = async () => {
+      if (wToku) return;
+      wToku = true;
+      przycisk.disabled = true;
+      const powod = pole.hidden ? "" : pole.value.trim();
+      const zapas = pole.value;
+      pole.value = "";                                         // karta nie może uchodzić za „w trakcie pisania” przy przerysowaniu
+      powody.delete(klucz);
+      if (document.activeElement === pole) pole.blur();
+      try {
+        const w = await wykonaj(powod);
+        if (w && w.ok) otwartePowody.delete(klucz);
+        else if (zapas) {
+          powody.set(klucz, zapas);
+          if (pole.isConnected) pole.value = zapas;
+        }
+      } finally {
+        wToku = false;
+        if (przycisk.isConnected) przycisk.disabled = false;
+      }
+    };
+    przycisk.addEventListener("click", uruchom);
+    powodBtn.addEventListener("click", () => {
+      pokazPole(pole.hidden);
+      if (!pole.hidden) pole.focus();
+    });
+    pole.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        uruchom();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        pokazPole(false);
+        powodBtn.focus();
+      }
+    });
+    return el("span", { class: "nieaktualne-akcja" }, przycisk, powodBtn, pole);
+  }
+
+  /** „Nieaktualne” w karcie pytania albo decyzji (bez kart potwierdzenia i bez historii). */
+  function nieaktualneKarty(s, k) {
+    if (s.zamknieta || !mozeZapisywac()) return null;
+    if (s.typ === "decyzja" && !decydent()) return null;
+    if (s.typ !== "pytanie" && s.typ !== "decyzja") return null;
+    const otwarte = s.typ === "pytanie" ? (s.decyzje || []).filter((x) => x.d && OTWARTE_DECYZJE.includes(x.d.status)).map((x) => x.d.id) : [];
+    const opis = s.typ === "pytanie"
+      ? "Oznacz pytanie #" + s.nr + (otwarte.length && decydent() ? " i decyzje " + otwarte.join(", ") : "") + " jako nieaktualne"
+      : "Oznacz " + s.d.id + " jako nieaktualną (nie obowiązuje, nie czeka na zatwierdzenie)";
+    return kontrolkaNieaktualne(s.klucz, opis, (powod) => nieaktualneJedno(k._sprawa || s, powod, k._wersje));
+  }
+
+  /** „Przywróć” przy decyzji nieaktualnej w historii: z powrotem na „do decyzji” (wraca na listę). */
+  function przyciskPrzywroc(d, wersja) {
+    if (!mozeZapisywac() || !decydent() || d.status !== "nieaktualna") return null;
+    let wToku = false;
+    const b = el("button", { type: "button", class: "przycisk cichy maly przywroc-decyzje", title: "Wróć " + d.id + " na listę „Do odpowiedzi” (status „do decyzji”)" }, "Przywróć");
+    b.addEventListener("click", async () => {
+      if (wToku) return;
+      wToku = true;
+      b.disabled = true;
+      try {
+        const w = await zapiszDoSejfu("/api/sejf/decyzje/" + encodeURIComponent(d.id) + "/status", { status: "do_decyzji" }, wersja());
+        if (w) toast(d.id + " wraca na listę „Do odpowiedzi” (do decyzji).", "ok");
+        else if (b.isConnected) b.disabled = false;
+      } finally {
+        wToku = false;
+      }
+    });
+    return el("div", { class: "rzad-przyciskow" }, b);
+  }
+
+  // ------------------------------------------------------------------ tryb zaznaczania (kilka spraw naraz)
+  const moznaZaznaczyc = (s) => !!opcje.zaznaczanie && !zwarta && mozeZapisywac() && !s.zamknieta &&
+    (s.typ === "pytanie" || s.typ === "decyzja" || s.typ === "raport");
+
+  function ustawZaznaczanie(tak) {
+    trybZaznaczania = !!tak;
+    if (!trybZaznaczania) {
+      zaznaczone.clear();
+      bledyZbiorcze.clear();
+      postepZbiorczy.textContent = "";
+    }
+    rysuj();
+    if (trybZaznaczania) przyciskZbiorczy.scrollIntoView({ block: "nearest" });
+  }
+
+  /** Pola wyboru w kartach i pasek (liczba, przycisk) — bez przerysowania kart. */
+  function odswiezZaznaczenie() {
+    if (!zaznaczKilka) return;
+    zaznaczKilka.hidden = !mozeZapisywac();
+    zaznaczKilka.textContent = trybZaznaczania ? "Zakończ zaznaczanie" : "Zaznacz kilka";
+    zaznaczKilka.setAttribute("aria-pressed", trybZaznaczania ? "true" : "false");
+    pasekZaznaczania.hidden = !trybZaznaczania;
+    korzen.classList.toggle("zaznaczanie", trybZaznaczania);
+    for (const cb of korzen.querySelectorAll(".sprawa-zaznacz input")) {
+      const k = cb.closest(".sprawa");
+      cb.checked = !!(k && zaznaczone.has(k.dataset.klucz));
+    }
+    liczbaZaznaczonych.textContent = String(zaznaczone.size);
+    przyciskZbiorczy.disabled = zbiorczoWToku || !zaznaczone.size;
+  }
+
+  function zaznaczWidoczne() {
+    for (const kontener of [listaEl, odlozoneEl.querySelector(".kolejka-lista")]) {
+      if (!kontener) continue;
+      for (const k of kontener.children) if (k._sprawa && !k.hidden && moznaZaznaczyc(k._sprawa)) zaznaczone.add(k._sprawa.klucz);
+    }
+    odswiezZaznaczenie();
+  }
+
+  function poleZaznaczenia(s) {
+    const cb = el("input", { type: "checkbox", class: "bez-blokady", "aria-label": "Zaznacz: " + zwykly(s.pytanie) });
+    cb.checked = zaznaczone.has(s.klucz);
+    cb.addEventListener("change", () => {
+      if (cb.checked) zaznaczone.add(s.klucz);
+      else zaznaczone.delete(s.klucz);
+      odswiezZaznaczenie();
+    });
+    return el("label", { class: "sprawa-zaznacz", title: "Zaznacz" }, cb);
+  }
+
+  /** Oznacza zaznaczone po kolei (każda z bieżącymi wersjami plików), mówi, ile się udało; nieudane zostają zaznaczone. */
+  async function oznaczZaznaczone() {
+    if (zbiorczoWToku || !zaznaczone.size) return;
+    const biezace = () => [...sprawy.czekajace, ...sprawy.odlozone];
+    const klucze = biezace().filter((s) => zaznaczone.has(s.klucz) && moznaZaznaczyc(s)).map((s) => s.klucz);
+    for (const k of [...zaznaczone]) if (!klucze.includes(k)) zaznaczone.delete(k);   // już nie czekają
+    if (!klucze.length) {
+      odswiezZaznaczenie();
+      return;
+    }
+    zbiorczoWToku = true;
+    const powod = poleWspolne.value.trim();
+    let udane = 0;
+    let znikle = 0;                                            // zniknęły z listy, zanim przyszła ich kolej — nie nasze oznaczenie
+    const nieudane = [];
+    try {
+      odswiezZaznaczenie();
+      for (let i = 0; i < klucze.length; i++) {
+        postepZbiorczy.textContent = "Oznaczam " + (i + 1) + " z " + klucze.length + "…";
+        bledyZbiorcze.delete(klucze[i]);
+        const s = biezace().find((x) => x.klucz === klucze[i]);
+        if (!s) {                                              // zniknęła w międzyczasie (ktoś odpowiedział)
+          zaznaczone.delete(klucze[i]);
+          znikle++;
+          continue;
+        }
+        const w = await oznaczNieaktualne(s, powod, Object.assign({}, (plan && plan.wersje) || {}));
+        if (w.ok) {
+          udane++;
+          zaznaczone.delete(s.klucz);
+        } else {
+          nieudane.push(s.klucz);
+          bledyZbiorcze.set(s.klucz, w.blad);
+        }
+      }
+    } finally {
+      zbiorczoWToku = false;
+    }
+    const oZniklych = znikle ? " Zniknęło z listy wcześniej (ktoś już odpowiedział): " + znikle + "." : "";
+    postepZbiorczy.textContent = (nieudane.length
+      ? "Oznaczono " + udane + " z " + klucze.length + ". Nie udało się: " + nieudane.length + " (zostają zaznaczone — powód w karcie)."
+      : "Oznaczono " + udane + " z " + klucze.length + ".") + oZniklych;
+    toast("Oznaczono jako nieaktualne: " + udane + " z " + klucze.length + "." + oZniklych +
+      (nieudane.length ? " Nie udało się: " + nieudane.length + " — zostają zaznaczone." : ""), nieudane.length ? "info" : "ok", { czas: 7000 });
+    if (!nieudane.length) poleWspolne.value = "";
+    podpisDanych = "";
+    await pobierz(true);
+    przerysuj();
+  }
+
   // ------------------------------------------------------------------ karty
   function chipOdlozona() {
     if (zwarta) return etykieta("na agendzie");
@@ -687,7 +1020,7 @@ export function listaPytan(ctx, opcje = {}) {
     k.classList.add("pytanie", s.zamknieta ? "zamkniete" : "otwarte");
     if (s.zamknieta) {                                         // historia: odpowiedź i „Dopisz odpowiedź”
       dopisz(k,
-        goraKarty(s, etykieta("odpowiedziane")),
+        goraKarty(s, s.nieaktualna ? etykieta("nieaktualne", "status-nieaktualne") : etykieta("odpowiedziane")),
         el("h3", { class: "sprawa-tytul" }, s.pytanie),
         trescPytania(s),
         s.decyzje.length ? blokDecyzji(s, wersjaRejestru) : null,
@@ -699,7 +1032,8 @@ export function listaPytan(ctx, opcje = {}) {
       return;
     }
     const otwarte = s.decyzje.filter((x) => x.d && OTWARTE_DECYZJE.includes(x.d.status)).map((x) => x.d);
-    const dodatkowe = zwarta ? [] : [!ctx.statyczny ? omowZAgentem(nr, p.tytul) : null, przyciskNaSesje(s)];
+    const dodatkowe = zwarta ? [nieaktualneKarty(s, k)]
+      : [!ctx.statyczny ? omowZAgentem(nr, p.tytul) : null, przyciskNaSesje(s), nieaktualneKarty(s, k)];
     const formularz = mozeZapisywac() ? formularzOdpowiedzi(p, nr, wersjaPytan, { otwarteDecyzje: otwarte, przyciski: dodatkowe })
       : (dodatkowe.some(Boolean) ? el("div", { class: "rzad-przyciskow" }, dodatkowe) : null);
     if (zwarta) {
@@ -727,18 +1061,23 @@ export function listaPytan(ctx, opcje = {}) {
     k.dataset.decyzja = d.id;
     const powtorka = s.powtorzona ? el("p", { class: "cichy-tekst sprawa-podpowiedz" }, ikona("ostrzezenie"),
       el("span", null, "W Rejestrze są dwie decyzje " + d.id + " — panel zapisze status dopiero, gdy numery zostaną poprawione w Obsidianie.")) : null;
+    // dwa wiersze statusu (zapis panelu na starym kodzie, bc/sejf.py: drugi_status) — panel nie zmieni statusu
+    const sprzeczny = d.sprzeczny_status ? el("p", { class: "cichy-tekst sprawa-podpowiedz" }, ikona("ostrzezenie"),
+      el("span", null, d.id + " ma w Rejestrze dwa wiersze statusu (drugi: „" +
+        ((STATUSY_DECYZJI[d.sprzeczny_status] || {}).tekst || d.sprzeczny_status) + "”). Zostaw jeden w Obsidianie.")) : null;
     if (zwarta) {
       dopisz(k, goraKarty(s, etykieta(st.tekst, "status-" + (d.status || "brak"))),
         el("h3", { class: "sprawa-tytul" }, s.pytanie),
-        opisDecyzji(s, d), powtorka, znacznikPodpisow(d),
-        przyciskiDecyzji(d, wersjaRejestru));
+        opisDecyzji(s, d), powtorka, sprzeczny, znacznikPodpisow(d),
+        przyciskiDecyzji(d, wersjaRejestru, [nieaktualneKarty(s, k)]));
       return;
     }
     dopisz(k,
       goraKarty(s, etykieta(st.tekst, "status-" + (d.status || "brak")), d.kategoria ? etykieta(d.kategoria) : null),
       el("h2", { class: "sprawa-tytul" }, s.pytanie),
-      znacznikPodpisow(d), opisDecyzji(s, d), powtorka,
-      przyciskiDecyzji(d, wersjaRejestru, [przyciskNaSesje(s)]),
+      znacznikPodpisow(d), opisDecyzji(s, d), powtorka, sprzeczny,
+      przyciskiDecyzji(d, wersjaRejestru, [przyciskNaSesje(s), nieaktualneKarty(s, k)]),
+      s.zamknieta ? przyciskPrzywroc(d, wersjaRejestru) : null,
       !ctx.statyczny ? komentarzeDecyzji(d) : null);
   }
 
@@ -768,21 +1107,30 @@ export function listaPytan(ctx, opcje = {}) {
   }
 
   function kartaSprawy(s) {
+    let k;
     if (s.typ === "raport") {
-      const k = raportyUI.karta(s.r, { tryb: zwarta ? "zwarta" : "pytanie" });
+      k = raportyUI.karta(s.r, { tryb: zwarta ? "zwarta" : "pytanie" });
       k.classList.add("sprawa", "sprawa-raport");
       k.id = prefiks + s.klucz;
       k.dataset.klucz = s.klucz;
       if (s.odlozona) k.querySelector(".sprawa-gora").append(chipOdlozona());
       k._sprawa = s;
-      return k;
+    } else {
+      k = el("article", { class: "karta sprawa sprawa-" + s.typ + (s.zamknieta ? " sprawa-zamknieta" : ""), id: prefiks + s.klucz, dataset: { klucz: s.klucz } });
+      k._wersje = Object.assign({}, (plan && plan.wersje) || {});
+      k._sprawa = s;
+      if (s.typ === "pytanie") kartaPytania(s, k);
+      else if (s.typ === "potwierdzenie") kartaPotwierdzenia(s, k);
+      else kartaDecyzji(s, k);
     }
-    const k = el("article", { class: "karta sprawa sprawa-" + s.typ + (s.zamknieta ? " sprawa-zamknieta" : ""), id: prefiks + s.klucz, dataset: { klucz: s.klucz } });
-    k._wersje = Object.assign({}, (plan && plan.wersje) || {});
-    k._sprawa = s;
-    if (s.typ === "pytanie") kartaPytania(s, k);
-    else if (s.typ === "potwierdzenie") kartaPotwierdzenia(s, k);
-    else kartaDecyzji(s, k);
+    if (s.nieaktualna) k.classList.add("sprawa-nieaktualna");
+    if (trybZaznaczania && moznaZaznaczyc(s)) {               // tryb zaznaczania: pole wyboru (bez kart potwierdzenia)
+      const gora = k.querySelector(".sprawa-gora");
+      if (gora) gora.prepend(poleZaznaczenia(s));
+      const blad = bledyZbiorcze.get(s.klucz);
+      if (blad && gora) gora.after(el("p", { class: "cichy-tekst sprawa-blad-zbiorczy", role: "status" }, ikona("ostrzezenie"),
+        el("span", null, "Nie oznaczono: " + blad)));
+    }
     return k;
   }
 
@@ -795,7 +1143,8 @@ export function listaPytan(ctx, opcje = {}) {
   }
 
   function podpisSprawy(s) {
-    const flagi = [mozeZapisywac(), decydent(), naSesjeMozna(), s.zamknieta, s.odlozona];
+    const flagi = [mozeZapisywac(), decydent(), naSesjeMozna(), s.zamknieta, s.odlozona,
+      trybZaznaczania && moznaZaznaczyc(s), bledyZbiorcze.get(s.klucz) || ""];
     if (s.typ === "raport") return JSON.stringify([s.r, flagi, raportyUI.zmieniaDecyzje(s.r.id)]);
     if (s.typ === "pytanie") return JSON.stringify([s.p, s.decyzje.map((x) => x.d), s.powiazane.map((x) => x.d && x.d.status), flagi]);
     // potwierdzenie i decyzja zależą też od tego, kto patrzy (znacznik „Twoja decyzja”, czyja kolejka)
@@ -950,6 +1299,11 @@ export function listaPytan(ctx, opcje = {}) {
       filtruj();
       return;
     }
+    // zaznaczone, które już nie czekają (ktoś odpowiedział), wypadają z zaznaczenia
+    if (zaznaczone.size && !zbiorczoWToku) {
+      const czeka = new Set([...sprawy.czekajace, ...sprawy.odlozone].map((s) => s.klucz));
+      for (const k of [...zaznaczone]) if (!czeka.has(k)) zaznaczone.delete(k);
+    }
     let odl = uzgodnij(listaEl, sprawy.czekajace, kartyKolejki, pustyEl);
     if (!sprawy.odlozone.length) {
       odlozoneEl.replaceChildren();
@@ -972,6 +1326,7 @@ export function listaPytan(ctx, opcje = {}) {
     }
     kolejkaOdlozona = odl;
     filtruj();
+    odswiezZaznaczenie();
   }
 
   function przerysuj() {

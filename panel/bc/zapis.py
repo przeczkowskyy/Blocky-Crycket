@@ -17,7 +17,9 @@ Markdown (`<sejf>/Produkcja/*.md`), których używa Obsidian i agenci, małymi z
 - każda operacja dopisuje ślad do Dziennika zmian w sekcji dnia „## RRRR-MM-DD · Panel (ludzie)” z linkiem do notatki;
 - zapis atomowy (plik tymczasowy + os.replace) i unieważnienie pamięci planu w bc/sejf.py; pozostawione po
   przerwanym zapisie pliki tymczasowe panelu (`<plik>.md.<pid>.<hex>.tmp`, starsze niż 10 min) są sprzątane;
-- samo-rozstrzyganie: zatwierdzenie albo odrzucenie decyzji, które zamyka ostatnią otwartą decyzję z wiersza
+- „nieaktualne” (14.11): decyzja dostaje status „🗃️ nieaktualna” (podpis „oznaczył:”, bez potwierdzania i bez alertu
+  Telegrama; wrócić można tylko na „do decyzji”), pytanie — zwykłą odpowiedź zaczynającą się od słowa „nieaktualne”;
+- samo-rozstrzyganie: zatwierdzenie, odrzucenie albo „nieaktualna” decyzji, które zamyka ostatnią otwartą decyzję z wiersza
   „Rozstrzyga: D-0XX, …” pytania bez odpowiedzi, w tej samej operacji dopisuje odpowiedź pod tym pytaniem
   (sekcja 4 niżej; oba pliki albo żaden);
 - potwierdzanie decyzji przez drugą osobę (D-043, sekcja 5): zgoda dopisuje „· potwierdził: Imię data”, brak zgody
@@ -91,10 +93,14 @@ NAZWY_SEKCJI = {"teraz": "Teraz", "backlog": "Backlog", "zrobione": "Zrobione"}
 # status docelowy -> (emoji, słowo w pliku, słowo do dziennika, podpis)
 STATUSY_DOCELOWE = {"zatwierdzona": ("✅", "zatwierdzona", "zatwierdzona", "zdecydował"),
                     "odrzucona": ("❌", "odrzucona", "odrzucona", "zdecydował"),
-                    "do_decyzji": ("🕓", "do decyzji", "oznaczona „do decyzji”", "oznaczył")}
+                    "do_decyzji": ("🕓", "do decyzji", "oznaczona „do decyzji”", "oznaczył"),
+                    # porządkowanie kolejki (14.11): nie obowiązuje, nie czeka na drugą osobę, bez alertu Telegrama
+                    "nieaktualna": (sejf.EMOJI_NIEAKTUALNEJ, "nieaktualna", "oznaczona jako nieaktualna", "oznaczył")}
 STATUSY_ZMIENIALNE = ("propozycja", "do_decyzji")              # zatwierdzonej decyzji się nie przepisuje
+# z „nieaktualnej” można tylko wrócić na „do decyzji” (przycisk „Przywróć” w historii)
+POWROTY = {"nieaktualna": ("do_decyzji",)}
 NAZWY_STATUSOW = {"zatwierdzona": "zatwierdzona", "odrzucona": "odrzucona", "zastapiona": "zastąpiona",
-                  "propozycja": "propozycja", "do_decyzji": "do decyzji"}
+                  "propozycja": "propozycja", "do_decyzji": "do decyzji", "nieaktualna": "nieaktualna"}
 
 _blokada = threading.Lock()                                    # jedna blokada zapisu na cały sejf
 _stan_blokada = threading.Lock()
@@ -116,7 +122,7 @@ _RX_ZASTRZEZONE_IMIE = re.compile(r"game\s*director|klucz\s*zatwierdzania|go[śs
 # początek wiersza statusu decyzji: [wcięcie][emoji][odstęp][*_][słowo statusu] — reszta wiersza zostaje bajt w bajt
 _RX_STATUS_NA_POCZATKU = re.compile(
     r"^(?P<wciecie>\s*)(?P<emoji>[^\w\s·*]+)?(?P<odstep>\s*)(?P<format>[*_]*)"
-    r"(?P<slowo>(?:propozycj|do[ _]decyzji|zatwierdzon|odrzucon|zast[aą]pion)\w*)?", re.IGNORECASE)
+    r"(?P<slowo>(?:propozycj|do[ _]decyzji|zatwierdzon|odrzucon|zast[aą]pion|nieaktualn)\w*)?", re.IGNORECASE)
 # Pola podpisu, które zmiana statusu zastępuje nowym: „zdecydował/oznaczył” i ślady potwierdzania przez drugą osobę
 # (D-043: „potwierdził:”, „sprzeciw:”, „do rozmowy:”) — ponowna decyzja zaczyna potwierdzanie od nowa.
 _RX_STARY_PODPIS = re.compile(r"\s+·\s+(?:(?:zdecydował|zdecydowała|oznaczył|oznaczyła)\b|"
@@ -955,7 +961,8 @@ def zmien_status_decyzji(id_decyzji, status, uzasadnienie, wersja, kto, znacznik
         raise BladHTTP(400, "Niepoprawny identyfikator decyzji (oczekiwano np. D-019)")
     numer = int(m.group(1))
     if status not in STATUSY_DOCELOWE:
-        raise BladHTTP(400, "Pole „status” musi mieć wartość „zatwierdzona”, „odrzucona” albo „do_decyzji”")
+        raise BladHTTP(400, "Pole „status” musi mieć wartość „zatwierdzona”, „odrzucona”, „do_decyzji” albo "
+                            "„nieaktualna”")
     if bez_imienia(kto):
         raise BladHTTP(400, KOMUNIKAT_BRAK_IMIENIA, kod="brak_imienia")
     uzasadnienie = czysty_tekst(uzasadnienie, LIMIT_UZASADNIENIA, "uzasadnienie", wymagany=False)
@@ -974,8 +981,14 @@ def zmien_status_decyzji(id_decyzji, status, uzasadnienie, wersja, kto, znacznik
         koniec = dok.koniec_sekcji(i, 3, na_linii_poziomej=True)
         j = next((k for k in range(i + 1, koniec) if dok.tresc(k).strip()), None)
         st = sejf._linia_statusu(dok.tresc(j)) if j is not None else None
+        if st:
+            _bez_sprzecznosci(dok, j, koniec, ident)
         obecny = st[0] if st else "propozycja"
-        if obecny not in STATUSY_ZMIENIALNE:
+        if obecny in POWROTY:
+            if status != obecny and status not in POWROTY[obecny]:
+                raise BladHTTP(409, "%s jest oznaczona jako nieaktualna — najpierw przywróć ją na „do decyzji” "
+                                    "(przycisk „Przywróć” w historii)." % ident, kod="status_zamkniety")
+        elif obecny not in STATUSY_ZMIENIALNE:
             raise BladHTTP(409, "%s ma już status „%s” — takiej decyzji się nie przepisuje. Dodaj nową decyzję, "
                                 "która ją zastąpi." % (ident, NAZWY_STATUSOW.get(obecny, obecny)), kod="status_zamkniety")
         if obecny == status:
@@ -990,16 +1003,17 @@ def zmien_status_decyzji(id_decyzji, status, uzasadnienie, wersja, kto, znacznik
             dok.wstaw(dok.za_trescia(i, koniec), ["Uzasadnienie — %s, %s: %s" % (kto, data, uzasadnienie)])
         return "decyzja %s %s" % (ident, w_dzienniku)
 
-    return _wykonaj_decyzje(wersja, zmiana, kto, znacznik, numer, rozstrzygaj=status in ("zatwierdzona", "odrzucona"))
+    return _wykonaj_decyzje(wersja, zmiana, kto, znacznik, numer,
+                            rozstrzygaj=status in ("zatwierdzona", "odrzucona", "nieaktualna"))
 
 
 # =========================================================================== 4. samo-rozstrzyganie pytań decyzjami
 # Pytanie z wierszem „Rozstrzyga: D-019, D-020” (bc/sejf.py: pole `rozstrzyga`) rozstrzyga się samo, gdy zmiana
-# statusu na „zatwierdzona” albo „odrzucona” zamyka OSTATNIĄ otwartą decyzję z tej listy: w tej samej operacji
+# statusu na „zatwierdzona”, „odrzucona” albo „nieaktualna” zamyka OSTATNIĄ otwartą decyzję z tej listy: w tej samej operacji
 # (ta sama blokada, oba pliki liczone w pamięci przed pierwszym zapisem) panel dopisuje pod pytaniem odpowiedź
 # `- Imię (znacznik, RRRR-MM-DD): rozstrzygnięte decyzjami: D-019 zatwierdzona, D-020 odrzucona („…”)`
 # z podpisem osoby, która zmieniła status. Nieudany zapis Pytań cofa zmianę Rejestru (bez częściowego zapisu).
-STATUSY_ZAMKNIETE = ("zatwierdzona", "odrzucona", "zastapiona")
+STATUSY_ZAMKNIETE = ("zatwierdzona", "odrzucona", "zastapiona", "nieaktualna")   # nieaktualna: od 14.11
 LIMIT_UZASADNIENIA_W_ODPOWIEDZI = 160
 _RX_UZASADNIENIE = re.compile(r"^\s*Uzasadnienie\s+—\s+[^,:\n]{1,60},\s*\d{4}-\d{2}-\d{2}\s*:\s*(.+?)\s*$")
 
@@ -1204,6 +1218,18 @@ def _sekcja_decyzji(dok, numer):
     return i, ident, koniec, j
 
 
+def _bez_sprzecznosci(dok, j, koniec, ident):
+    """409 sprzeczny_status, gdy pod wierszem statusu (indeks `j`) stoi drugi wiersz statusu — tak zapisuje panel na
+    starym kodzie, który nie zna „🗃️ nieaktualna” (patrz sejf.drugi_status). Panel nie zgaduje, który jest prawdziwy."""
+    if j is None:
+        return
+    drugi = sejf.drugi_status([dok.tresc(k) for k in range(j + 1, koniec)])
+    if drugi:
+        raise BladHTTP(409, "%s ma w Rejestrze dwa wiersze statusu (drugi: „%s”) — zwykle po zmianie w panelu na starym "
+                            "kodzie. Zostaw jeden w Obsidianie, potem zmieniaj." % (ident, NAZWY_STATUSOW.get(drugi, drugi)),
+                       kod="sprzeczny_status")
+
+
 def _dopisz_pole(linia, pole):
     """Wiersz statusu z nowym polem „· pole” na końcu (spacje na końcu wiersza zostają)."""
     tresc = linia.rstrip()
@@ -1267,6 +1293,7 @@ def potwierdz_decyzje(id_decyzji, odpowiedz, uzasadnienie, wersja, kto, znacznik
 
     def zmiana(dok):
         i, ident, koniec, j = _sekcja_decyzji(dok, numer)
+        _bez_sprzecznosci(dok, j, koniec, ident)
         linia = dok.tresc(j) if j is not None else ""
         st = sejf._linia_statusu(linia) if j is not None else None
         status = st[0] if st else "propozycja"
