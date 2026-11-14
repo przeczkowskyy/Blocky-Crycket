@@ -124,6 +124,9 @@ Procent wygranych Wojownik / Zwiadowca / Mag z potworem tego samego poziomu (zia
 
 **Dlaczego Slime na poziomach 1–4 odstaje:** przy jednym slocie Wojownik (blok tarczą wobec wielu słabych ciosów) znosi tę długą walkę najlepiej, a Mag na 3.–4. poziomie najgorzej. Te same liczby Slime’a obowiązują przy 2 i 3 slotach, gdzie różnica jest już mała, więc strojenie samego Slime’a nie usunęło jej do końca. Test pilnuje tu 8 pp zamiast 7 (jawny wyjątek w `tools/walka/test_walki.py`); zniknie albo zmaleje, gdy zapadnie decyzja o slotach na starcie (wybór 5 i „Co niesprawdzone”).
 
+## Walka na ekranie — prototyp w Studio (15.11.2026)
+Dziennik z silnika odtwarza prototyp `Workspace/TestWalki2` (źródła i instrukcja: `swiat/test_walki2/README.md`; tylko w Roblox Studio, obok starego prototypu `Workspace/TestWalki`). Przy tablicy gracz wybiera klasę, przeciwnika i poziom; serwer liczy walkę, klient odtwarza **cały** dziennik zdarzenie po zdarzeniu (D-068): ciosy, krytyki, bloki, uniki, umiejętności z lecącymi pociskami, efekty na postaci z licznikiem tur, łup. Tempo ×1/×2/×4 i „pomiń” to wybór gracza. Aktorzy to nasze modele z części Roblox z własnymi klipami granymi z danych — bez wgrywania czegokolwiek. Sprawdzone: ekran zgadza się ze stanem silnika zdarzenie po zdarzeniu (5 walk, 93 zdarzenia), kopia silnika w Studio zgodna z symulacją (45/45). Nie sprawdzono: prawdziwego telefonu, dźwięku, odbioru przez człowieka w normalnym tempie. Raport: „Walka v2 na ekranie — prototyp w Studio” w panelu.
+
 ## Wybory do decyzji
 
 Zrobione tak, jak w pierwszej opcji — każdą da się zmienić w danych albo w kilku liniach kodu.

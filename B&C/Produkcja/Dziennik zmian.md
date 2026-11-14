@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-15 · Claude Code u Karola (walka v2 na ekranie; Leśny Slime po dwóch uwagach Karola)
+- **Walka v2 na ekranie** — prototyp `Workspace/TestWalki2` w Roblox Studio (źródła `swiat/test_walki2/`, stary `Workspace/TestWalki` bez zmian): panel wyboru klasy, przeciwnika i poziomu; serwer liczy walkę silnikiem v2, klient odtwarza cały dziennik (umiejętności z lecącymi pociskami, efekty na postaci, tempo ×1/×2/×4, „pomiń”, łup). Aktorzy z naszych modeli z części Roblox, klipy grane z danych — niczego nie wgrano. Niezależny przegląd zgłosił 8 uwag (kamera w chwili trafienia, czytelność na telefonie, „−0”, napisy efektów, odmiana, komunikat odmowy, test pasków) — wszystkie poprawione. Testy: 9/9 i 6/6 bez Studio; w trybie Play 24/24, 112/112 i 29/29; kopia silnika zgodna z symulacją 45/45. Opis: [[Walka v2 — silnik, klasy i umiejętności]] (sekcja „Walka na ekranie”). Raport do akceptacji w panelu; zrzuty wysłane Karolowi.
+- **Leśny Slime:** Karol odesłał model dwa razy — „ma być bardziej cute” (wersja 2: duże oczy, uśmiech, rumieńce, kiełek, miny) i „powinien być sześcianowy, animacje bardzo dobre” (wersja 3: sama bryła zmieniona na sześcian 2,7 studa, twarz i klipy bez zmian). Uwagi wpisane przy raportach w panelu; notatka [[Leśny Slime]] zaktualizowana.
+- **W toku:** podmiana modeli zastępczych w prototypie na właściwe (sześcienny Leśny Slime, Strażnik Gaju) i jedna nazwa strażnika — „Strażnik Gaju” (zapowiedziane domyślne rozstrzygnięcie; Karol nie odpowiedział na pytanie o nazwę).
+- Do decyzji ludzi: obrys postaci w grze (bez / cienki / gruby komiksowy — porównanie na Leśnym Trollu w raporcie) i pięć wyborów w silniku walki (raport „Silnik walki v2 — wyniki i wybory”).
+- Pliki: `swiat/test_walki2/`, `swiat/postacie/lesny_slime.py`, `DOKUMENTACJA.md`, [[Zadania]].
+
 ## 2026-11-14 · Claude Code u Karola (komplet modeli lasu; start cutscenki walki v2)
 - **Komplet sześciu modeli lasu** (Blender, każdy z ośmioma–dziewięcioma klipami walki, po przeglądzie świeżym okiem): doszły [[Strażnik Gaju]] (strażnik biomu, 14,5 studa, uścisk korzeni, rozsypuje się na głazy) i [[Leśny Slime]] (zielona odmiana slime’a, kwaśny plusk; niebieski pet bez zmian). Raporty „Model: …” czekają w panelu; modele wysłane Karolowi na telefon. Uwagi do importu zebrane w [[Postacie 3D — Blender i Roblox]] (sekcja „Modele lasu”).
 - **Cutscenka walki v2** w budowie w Roblox Studio (własny kontener `Workspace/TestWalki2`, źródła `swiat/test_walki2/`): aktorzy z nowych modeli bez uploadu, odtwarzacz dziennika silnika v2, panel wyboru klasy i przeciwnika. Stary prototyp `Workspace/TestWalki` bez zmian.

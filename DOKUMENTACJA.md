@@ -241,6 +241,8 @@ Blocky&Crycket/
 │   └── dane/                  wspólne dane panelu: raporty, komentarze, migawki (plik na wpis)
 ├── swiat/                     💡 mapy z klocków: generator → czesci.json → Blender / Studio / panel
 │   ├── demo_lesna_baza/       demo „Leśna baza startowa” (generuj.py, czesci.json, .blend, podglad/)
+│   ├── test_walki_roblox/     💡 prototyp walki v1 w Studio (Workspace/TestWalki): Rycerz kontra Zbir, 8–10 s
+│   ├── test_walki2/           💡 prototyp walki v2 w Studio (Workspace/TestWalki2): silnik v2, nowe modele, umiejętności i efekty
 │   └── postacie/              💡 postacie, pety i ekwipunek z kodu: Blender (siatki, animacje) i postacie z klocków w Studio
 ├── tools/walka/               💡 silnik walki v2 w Pythonie: symulacja, testy, tabela balansu, zgodność z Luau w Studio
 ├── tools/studio/              skrypty Luau uruchamiane w Studio (rzeczy spoza Rojo)

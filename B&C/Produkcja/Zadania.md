@@ -8,7 +8,8 @@ tags: [produkcja, zadania]
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
 - [ ] Paweł (i każdy, kto ma własny panel): pobrać kod i zrestartować panel, zanim ktokolwiek oznaczy **decyzję** jako nieaktualną — stary panel bierze `🗃️ nieaktualna` za propozycję i po „Tak” psuje wpis w [[Rejestr decyzji]]; pytania i raporty nie mają tego ryzyka · #wysoki
-- [ ] Odtwarzacz cutscenki v2 dla silnika walki v2: magia, umiejętności, efekty, walki o różnej długości, „×2” i „pomiń”; aktorzy z nowych modeli (Zwiadowca, potwory lasu) · #wysoki
+- [ ] Karol i Paweł: obejrzeć walkę v2 w Studio (Play → na południe do zielonego słupa → tablica „WALKA v2” → E) i odpowiedzieć na raport „Walka v2 na ekranie — prototyp w Studio”: co poprawić najpierw; do tego decyzja o obrysie postaci (bez / cienki Highlight / gruba czarna „skorupa”) · #wysoki
+- [ ] Walka v2, dalej: dźwięki czarów i strzał, mniej tłoku napisów w turach z wieloma zdarzeniami, pełne klipy walki dla Rycerza i Kota-Maga zamiast szkiców (w modelu Kota-Maga kostur przechodzi przez głowę w klipach „czar” i „wiwat”), pomiar na prawdziwym telefonie · #średni
 - [ ] Karol i Paweł: pięć wyborów w silniku walki v2 (atak Maga, działanie umiejętności, unik wobec umiejętności, dolna granica obrony, sloty na starcie) — raport „Silnik walki v2 — wyniki i wybory” w panelu · #wysoki
 - [ ] [[Drzewko umiejętności postaci]]: węzeł „Jeszcze stoję” (ostatni dech) jest sprzeczny z D-068 — usunąć albo przeprojektować; przy 0 slotach na starcie (D-055) potwory pierwszych poziomów trzeba osłabić · #średni
 - [ ] Karol i Paweł: zaakceptować albo odesłać do poprawy sześć modeli lasu (raporty „Model: …” w panelu): [[Leśny Troll]], [[Zwiadowca]], [[Cierniowy Wilk]], [[Muchomornik]], [[Strażnik Gaju]], [[Leśny Slime]] · #wysoki
@@ -84,6 +85,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-15: Walka v2 na ekranie — prototyp `Workspace/TestWalki2` (`swiat/test_walki2/`): wybór klasy, przeciwnika i poziomu, odtwarzanie całego dziennika silnika v2 z umiejętnościami, pociskami i efektami, tempo ×1/×2/×4, łup; aktorzy z naszych modeli bez uploadu; niezależny przegląd i poprawki; raport w panelu
 - [x] 2026-11-14: Sześć modeli lasu z Blendera z klipami walki (Leśny Troll, Zwiadowca, Cierniowy Wilk, Muchomornik, Strażnik Gaju, Leśny Slime) — każdy po przeglądzie świeżym okiem, z notatką i raportem do akceptacji w panelu
 - [x] 2026-11-14: Silnik walki v2 (`src/server/Walka/`, `src/shared/Walka/`, `tools/walka/`): klasy, sześć statystyk, umiejętności, efekty, przeciwnicy lasu, łup; 41 testów i 624 tys. walk próbnych; zgodność kodu gry z symulacją sprawdzona w Studio (496/496); notatka [[Walka v2 — silnik, klasy i umiejętności]]
 - [x] 2026-11-14: [[Panel zespołu|Panel]]: stała synchronizacja z GitHubem (D-070) — panel sam pobiera zmiany drugiej osoby i sam wysyła zmiany z panelu, bez ruszania pracy w toku; stan na Pulpicie, powiadomienia na Telegramie; włączona na komputerze Karola od 18:21
