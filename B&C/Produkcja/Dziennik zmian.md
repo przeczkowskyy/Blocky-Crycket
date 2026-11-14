@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-14 · Claude Code u Karola (stała synchronizacja panelu; Leśny Troll; wysyłka bez okna logowania)
+- **Stała synchronizacja z GitHubem (D-070)** działa od 18:21: panel co 90 s sam pobiera zmiany drugiej osoby i sam wysyła zmiany zrobione w panelu. Pobieranie nie rusza pracy w toku — bez autostash, bez rebase i bez zwykłego scalania w katalogu roboczym; kolizja z lokalnymi zmianami daje stan „Czeka”, konflikt treści „Konflikt — potrzebny człowiek” (także na Telegramie). Niezależny przegląd znalazł dwa przypadki możliwej utraty plików (pliki dodane `git add` przy scalaniu; ignorowany plik na drodze katalogu) — oba naprawione i pokryte testami. 472 testy panelu przechodzą. Szczegóły: [[Panel zespołu]], `panel/README.md`.
+- **Wysyłka na GitHub bez okna logowania:** `git push` zawieszał się na oknie wyboru konta, gdy nikogo nie było przy komputerze (z tego samego powodu nie działał przycisk „Wyślij”). W lokalnej konfiguracji repozytorium u Karola wpisana nazwa konta; wysyłka przechodzi bez okna.
+- **Model Leśny Troll** (Blender, osiem klipów walki) — raport „Model: Leśny Troll” czeka w panelu na akceptację; notatka [[Leśny Troll]] (`propozycja`); pliki w `swiat/postacie/wynik/lesny_troll/`. Kolejne modele lasu w budowie.
+- Informacja dla obu osób o zmianach w panelu opublikowana jako raport „Panel synchronizuje się sam; nowe: „Nieaktualne” i okna agenta”.
+- Pliki: `panel/bc/gitsync.py`, `panel/bc/telegram.py`, `panel/serwer.py`, `panel/static/…`, `panel/testy/…`, [[Zadania]].
+
 ## 2026-11-14 · Claude Code u Karola (umowa: wszystko od razu na GitHub; panel jedynym źródłem prawdy)
 - **D-070** (decyzja Karola z czatu, czeka na potwierdzenie Pawła): każda skończona zmiana w grze, sejfie i kodzie od razu trafia na GitHub — po obu stronach; panel jest jedynym miejscem oglądania stanu pracy i sam się odświeża. `CLAUDE.md` (sekcja Git) zmienione: zamiast „commit i push tylko na prośbę” — wysyłanie skończonej, sprawdzonej pracy od razu; w sesjach Pawła do czasu jego potwierdzenia nadal po zapytaniu.
 - **W budowie:** stała synchronizacja w panelu (samo pobieranie zmian drugiej osoby i samo wysyłanie zmian z panelu) — zadanie w [[Zadania]]. Karol i Paweł są do końca dnia poza komputerem; gotowe modele i raporty idą do Karola na telefon.
