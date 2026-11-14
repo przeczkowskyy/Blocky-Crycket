@@ -1,0 +1,503 @@
+{
+ "modul": "lesny_troll",
+ "modele": [
+  {
+   "id": "lesny_troll",
+   "nazwa": "Leśny Troll",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Biodra_Geo",
+     "kosc": "Biodra",
+     "trojkaty": 360,
+     "wierzcholki": 216,
+     "wymiary": [
+      4.338,
+      2.093,
+      3.244
+     ],
+     "min": [
+      -2.169,
+      2.407,
+      -1.722
+     ],
+     "max": [
+      2.169,
+      4.5,
+      1.522
+     ]
+    },
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 2368,
+     "wierzcholki": 1322,
+     "wymiary": [
+      4.46,
+      6.351,
+      4.275
+     ],
+     "min": [
+      -2.23,
+      3.593,
+      -1.559
+     ],
+     "max": [
+      2.23,
+      9.944,
+      2.716
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 924,
+     "wierzcholki": 522,
+     "wymiary": [
+      2.73,
+      1.989,
+      2.02
+     ],
+     "min": [
+      -1.365,
+      6.876,
+      2.443
+     ],
+     "max": [
+      1.365,
+      8.865,
+      4.463
+     ]
+    },
+    {
+     "nazwa": "Szczeka_Geo",
+     "kosc": "Szczeka",
+     "trojkaty": 328,
+     "wierzcholki": 186,
+     "wymiary": [
+      2.08,
+      1.03,
+      1.969
+     ],
+     "min": [
+      -1.04,
+      6.226,
+      2.543
+     ],
+     "max": [
+      1.04,
+      7.256,
+      4.512
+     ]
+    },
+    {
+     "nazwa": "RamieL_Geo",
+     "kosc": "RamieL",
+     "trojkaty": 364,
+     "wierzcholki": 200,
+     "wymiary": [
+      1.5,
+      2.74,
+      1.55
+     ],
+     "min": [
+      2.26,
+      5.047,
+      0.521
+     ],
+     "max": [
+      3.76,
+      7.787,
+      2.071
+     ]
+    },
+    {
+     "nazwa": "PrzedramieL_Geo",
+     "kosc": "PrzedramieL",
+     "trojkaty": 168,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.85,
+      2.05,
+      1.89
+     ],
+     "min": [
+      2.025,
+      2.822,
+      0.331
+     ],
+     "max": [
+      3.875,
+      4.872,
+      2.221
+     ]
+    },
+    {
+     "nazwa": "DlonL_Geo",
+     "kosc": "DlonL",
+     "trojkaty": 440,
+     "wierzcholki": 240,
+     "wymiary": [
+      1.92,
+      1.15,
+      1.77
+     ],
+     "min": [
+      1.93,
+      1.652,
+      0.471
+     ],
+     "max": [
+      3.85,
+      2.802,
+      2.241
+     ]
+    },
+    {
+     "nazwa": "UdoL_Geo",
+     "kosc": "UdoL",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      1.75,
+      1.55,
+      1.785
+     ],
+     "min": [
+      0.325,
+      1.925,
+      -0.875
+     ],
+     "max": [
+      2.075,
+      3.475,
+      0.91
+     ]
+    },
+    {
+     "nazwa": "GolenL_Geo",
+     "kosc": "GolenL",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.5,
+      1.425,
+      1.57
+     ],
+     "min": [
+      0.45,
+      0.725,
+      -0.75
+     ],
+     "max": [
+      1.95,
+      2.15,
+      0.82
+     ]
+    },
+    {
+     "nazwa": "StopaL_Geo",
+     "kosc": "StopaL",
+     "trojkaty": 320,
+     "wierzcholki": 176,
+     "wymiary": [
+      2.002,
+      0.785,
+      2.64
+     ],
+     "min": [
+      0.199,
+      0.0,
+      -0.833
+     ],
+     "max": [
+      2.201,
+      0.785,
+      1.807
+     ]
+    },
+    {
+     "nazwa": "RamieP_Geo",
+     "kosc": "RamieP",
+     "trojkaty": 364,
+     "wierzcholki": 200,
+     "wymiary": [
+      1.5,
+      2.74,
+      1.55
+     ],
+     "min": [
+      -3.76,
+      5.047,
+      0.521
+     ],
+     "max": [
+      -2.26,
+      7.787,
+      2.071
+     ]
+    },
+    {
+     "nazwa": "PrzedramieP_Geo",
+     "kosc": "PrzedramieP",
+     "trojkaty": 168,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.85,
+      2.05,
+      1.89
+     ],
+     "min": [
+      -3.875,
+      2.822,
+      0.331
+     ],
+     "max": [
+      -2.025,
+      4.872,
+      2.221
+     ]
+    },
+    {
+     "nazwa": "DlonP_Geo",
+     "kosc": "DlonP",
+     "trojkaty": 440,
+     "wierzcholki": 240,
+     "wymiary": [
+      1.92,
+      1.15,
+      1.77
+     ],
+     "min": [
+      -3.85,
+      1.652,
+      0.471
+     ],
+     "max": [
+      -1.93,
+      2.802,
+      2.241
+     ]
+    },
+    {
+     "nazwa": "UdoP_Geo",
+     "kosc": "UdoP",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      1.75,
+      1.55,
+      1.785
+     ],
+     "min": [
+      -2.075,
+      1.925,
+      -0.875
+     ],
+     "max": [
+      -0.325,
+      3.475,
+      0.91
+     ]
+    },
+    {
+     "nazwa": "GolenP_Geo",
+     "kosc": "GolenP",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.5,
+      1.425,
+      1.57
+     ],
+     "min": [
+      -1.95,
+      0.725,
+      -0.75
+     ],
+     "max": [
+      -0.45,
+      2.15,
+      0.82
+     ]
+    },
+    {
+     "nazwa": "StopaP_Geo",
+     "kosc": "StopaP",
+     "trojkaty": 320,
+     "wierzcholki": 176,
+     "wymiary": [
+      2.002,
+      0.785,
+      2.64
+     ],
+     "min": [
+      -2.201,
+      0.0,
+      -0.833
+     ],
+     "max": [
+      -0.199,
+      0.785,
+      1.807
+     ]
+    },
+    {
+     "nazwa": "Maczuga_Geo",
+     "kosc": "Maczuga",
+     "trojkaty": 902,
+     "wierzcholki": 505,
+     "wymiary": [
+      6.991,
+      2.719,
+      2.576
+     ],
+     "min": [
+      -8.835,
+      0.119,
+      -0.218
+     ],
+     "max": [
+      -1.844,
+      2.838,
+      2.358
+     ]
+    }
+   ],
+   "trojkaty_razem": 7778,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 17
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    12.71,
+    9.944,
+    6.234
+   ],
+   "wymiary_z_akcesoriami": [
+    12.71,
+    9.944,
+    6.234
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -8.835,
+     0.0,
+     -1.722
+    ],
+    [
+     3.875,
+     9.944,
+     4.512
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Biodra",
+    "Tulow",
+    "Glowa",
+    "Szczeka",
+    "RamieL",
+    "PrzedramieL",
+    "DlonL",
+    "UdoL",
+    "GolenL",
+    "StopaL",
+    "RamieP",
+    "PrzedramieP",
+    "DlonP",
+    "UdoP",
+    "GolenP",
+    "StopaP",
+    "Maczuga"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment",
+    "PyskAttachment",
+    "MaczugaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att",
+    "Pysk_Att",
+    "Maczuga_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 72,
+     "fps": 30,
+     "sekundy": 2.4,
+     "petla": true
+    },
+    {
+     "n": "ruch",
+     "dlugosc": 48,
+     "fps": 30,
+     "sekundy": 1.6,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "umiejetnosc",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 20,
+     "fps": 30,
+     "sekundy": 0.67,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "ryk",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "lesny_troll.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje brak -> ZGODNE",
+  "lesny_troll__idle.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-73 -> ZGODNE",
+  "lesny_troll__ruch.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-49 -> ZGODNE",
+  "lesny_troll__atak.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-37 -> ZGODNE",
+  "lesny_troll__umiejetnosc.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-61 -> ZGODNE",
+  "lesny_troll__trafienie.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-21 -> ZGODNE",
+  "lesny_troll__unik.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-31 -> ZGODNE",
+  "lesny_troll__upadek.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-61 -> ZGODNE",
+  "lesny_troll__ryk.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-61 -> ZGODNE",
+  "lesny_troll.glb: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje atak 0-36, idle 0-72, ruch 0-48, ryk 0-60, trafienie 0-20, umiejetnosc 0-60, unik 0-30, upadek 0-60 -> ZGODNE"
+ ]
+}

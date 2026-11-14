@@ -1,0 +1,88 @@
+RAPORT — lesny_troll
+LEŚNY TROLL — rzadki, ciężki przeciwnik lasu (ok. 10 studów wzrostu z grzybami; gracz ma 5,7).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/lesny_troll.py · wygenerowano 14.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py lesny_troll
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: lesny_troll
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości trolla nie są R15 (własny szkielet, 18 kości jak u petów) — klipy importuje się na własny rig; import do Roblox Studio nie był testowany.
+- Bryły są sztywno przypięte do kości (jedna siatka na kość): w barkach ramię lekko wchodzi w pierś, przy rękach w górze poducha mchu na ramieniu wchodzi w garb, a w leżeniu grzyby na garbie dotykają ziemi.
+- Maczuga jest kością modelu, a nie osobnym przedmiotem — w FBX jest razem z trollem i nie da się jej wymienić jak broni gracza.
+- Ogłuszające uderzenie to sam ruch: fali uderzeniowej, kurzu i gwiazdek ogłuszenia nie ma (dorobić w grze na MaczugaAttachment).
+- Klipy jednorazowe mają klucz w każdej klatce (tak liczone są stopy na ziemi i łuk maczugi) — pliki klipów są większe, a poprawki trzeba robić w pozach kluczowych w module, nie w Blenderze.
+- Wspólny kadr filmów obejmuje zasięg maczugi ze wszystkich klipów (w umiejętności korzenie przechodzą przez ok. 16 studów wysokości, a uderzenie kładzie pień ok. 11 studów przed trollem), więc w filmach i arkuszach klatek troll zajmuje tylko ok. 1/3 wysokości kadru; bliższe ujęcia: plansza i kadr bohaterski.
+- Chód jest w miejscu (stopy ślizgają się względem ziemi, w fazie przenoszenia obie stopy są do 0,2 studa nad ziemią), maczuga w chodzie nie podskakuje na nierównościach; w upadku troll leży lekko podparty na garbie.
+- Spoczynek i chód mają różny kierunek pnia (w spoczynku korzenie leżą z boku, w chodzie za trollem) — przejście idle→ruch w grze obraca maczugę o ok. 55° (z boku za plecy); powinno to wyglądać jak zarzucenie pnia za siebie, ale wymaga obejrzenia w silniku.
+- W kadrze 3/4 od lewej strony trolla bryłę korzeni widać częściowo od czoła — z daleka przypomina kolczastą kulę (z przodu i z tyłu pień z korzeniami czyta się dobrze).
+- Kolizje sprawdzane w przybliżeniu (punkty skrzynek brył w każdej klatce, wartości kluczy liniowo): maczuga, pięści i przedramiona nie wchodzą w głowę, szczękę, tułów, garb ani biodra; ramiona sprawdzone tylko względem głowy.
+- Klipy to szkice (0,7–2,4 s), nie gotowa animacja; twarz nie ma mimiki poza otwieraniem żuchwy.
+
+MODEL lesny_troll „Leśny Troll” (stwor)
+  wymiary ciała: 12,71 × 9,94 × 6,23; z akcesoriami: 12,71 × 9,94 × 6,23
+  trójkąty: 7778 (siatek: 17)
+  kości (18): Root, Biodra, Tulow, Glowa, Szczeka, RamieL, PrzedramieL, DlonL, UdoL, GolenL, StopaL, RamieP, PrzedramieP, DlonP, UdoP, GolenP, StopaP, Maczuga
+  klipy: idle 72 kl. 2,40 s pętla, ruch 48 kl. 1,60 s pętla, atak 36 kl. 1,20 s jednorazowy, umiejetnosc 60 kl. 2,00 s jednorazowy, trafienie 20 kl. 0,67 s jednorazowy, unik 30 kl. 1,00 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, ryk 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, PyskAttachment, MaczugaAttachment
+
+KONTROLA EKSPORTÓW
+- lesny_troll.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje brak -> ZGODNE
+- lesny_troll__idle.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-73 -> ZGODNE
+- lesny_troll__ruch.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-49 -> ZGODNE
+- lesny_troll__atak.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-37 -> ZGODNE
+- lesny_troll__umiejetnosc.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-61 -> ZGODNE
+- lesny_troll__trafienie.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-21 -> ZGODNE
+- lesny_troll__unik.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-31 -> ZGODNE
+- lesny_troll__upadek.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-61 -> ZGODNE
+- lesny_troll__ryk.fbx: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje lesny_troll|Scene 1-61 -> ZGODNE
+- lesny_troll.glb: siatki 21, kości 18, trójkąty 7826, wzrost 9.94 st., akcje atak 0-36, idle 0-72, ruch 0-48, ryk 0-60, trafienie 0-20, umiejetnosc 0-60, unik 0-30, upadek 0-60 -> ZGODNE
+
+PLIKI
+- lesny_troll.blend
+- lesny_troll.fbx
+- lesny_troll.glb
+- lesny_troll__atak.fbx
+- lesny_troll__idle.fbx
+- lesny_troll__ruch.fbx
+- lesny_troll__ryk.fbx
+- lesny_troll__trafienie.fbx
+- lesny_troll__umiejetnosc.fbx
+- lesny_troll__unik.fbx
+- lesny_troll__upadek.fbx
+- lesny_troll_bohater.jpg
+- lesny_troll_ikona.png
+- lesny_troll_plansza.jpg
+- lesny_troll_tekstury/
+- lesny_troll_idle.mp4
+- lesny_troll_idle_klatki.jpg
+- lesny_troll_idle_z_filmu.jpg
+- lesny_troll_ruch.mp4
+- lesny_troll_ruch_klatki.jpg
+- lesny_troll_ruch_z_filmu.jpg
+- lesny_troll_atak.mp4
+- lesny_troll_atak_klatki.jpg
+- lesny_troll_atak_z_filmu.jpg
+- lesny_troll_umiejetnosc.mp4
+- lesny_troll_umiejetnosc_klatki.jpg
+- lesny_troll_umiejetnosc_z_filmu.jpg
+- lesny_troll_trafienie.mp4
+- lesny_troll_trafienie_klatki.jpg
+- lesny_troll_trafienie_z_filmu.jpg
+- lesny_troll_unik.mp4
+- lesny_troll_unik_klatki.jpg
+- lesny_troll_unik_z_filmu.jpg
+- lesny_troll_upadek.mp4
+- lesny_troll_upadek_klatki.jpg
+- lesny_troll_upadek_z_filmu.jpg
+- lesny_troll_ryk.mp4
+- lesny_troll_ryk_klatki.jpg
+- lesny_troll_ryk_z_filmu.jpg
+- raport.json
+- raport.txt
