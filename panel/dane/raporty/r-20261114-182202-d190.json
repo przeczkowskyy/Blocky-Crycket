@@ -1,0 +1,16 @@
+{
+ "id": "r-20261114-182202-d190",
+ "tytul": "Panel synchronizuje się sam; nowe: „Nieaktualne” i okna agenta",
+ "opis_md": "Od dziś (14.11, ok. 18:20) panel działa trochę inaczej. Najważniejsze w czterech punktach:\n\n- **Panel sam się synchronizuje z GitHubem.** Co półtorej minuty sam pobiera to, co druga osoba wysłała, i sam wysyła to, co klikacie w panelu. Nie trzeba już naciskać „Pobierz” ani „Wyślij” (przyciski zostały na wszelki wypadek). Stan widać na Pulpicie: „Zsynchronizowano 18:21”.\n- **„Czeka” i „Konflikt”.** Gdy panel nie może czegoś pobrać bez ruszania pracy w toku, pisze „Czeka” i próbuje dalej sam. Przy „Konflikt — potrzebny człowiek” nic nie nadpisuje — kliknij napis, żeby zobaczyć, co zrobić. O konflikcie da też znać na Telegramie.\n- **Przycisk „Nieaktualne”** przy każdym pytaniu, decyzji i raporcie — zdejmuje sprawę z kolejki jednym kliknięciem. „Zaznacz kilka” w zakładce Pytania pozwala oznaczyć wiele spraw naraz.\n- **Zakładka Agent ma okna:** Ogólny, Balans, Świat, Modele i Wydanie. Odpowiedzi są krótkie, rozmowy można usuwać, a do tej samej rozmowy mogą pisać obie osoby.\n\nUmowa, na której to stoi, to decyzja D-070: wszystko, co ktoś z Was zmieni w grze, sejfie albo kodzie, idzie od razu na GitHub, a panel jest jedynym miejscem, w którym oglądacie stan pracy. Paweł ma ją do potwierdzenia.\n\nNowe modele (pierwszy: Leśny Troll) i silnik walki pojawiają się jako osobne raporty.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-14T18:22:02+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Panel zespołu.md",
+   "etykieta": "Notatka o panelu"
+  }
+ ],
+ "zrzuty": []
+}
