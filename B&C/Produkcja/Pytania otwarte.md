@@ -155,6 +155,7 @@ Szczegóły: Plan v2 zakłada dziennik godzin (ok. 20 h na osobę tygodniowo daj
 
 ## 22. Czy instrukcja „Glossy Ink” zastępuje Style Lock?
 13.11 Game Director przekazał (przez Karola) [[Instrukcja promptów — Glossy Ink]]: nowy stały początek i koniec promptu, negative prompt i żelazne zasady. Różni się od zatwierdzonego [[Style Lock]] (D-001: inny prefiks, z nazwą gry-inspiracji) i od [[Kierunek artystyczny]] (D-002: pixel-art ikon, płaski interfejs). Rekomendacja Claude Code: tak, zastąpić — nowa wersja opisuje to, co faktycznie wdrożono, i nie zawiera cudzej nazwy. Po potwierdzeniu: wpis ✅ w rejestrze (D-027) i przepięcie szablonów skilla `/asset`.
+2026-11-14: szablony skilla `/asset` przepiął Karol 13.11 (D-027 zatwierdzona przez niego, potwierdzenie Pawła → pytanie 27); Claude Code u Pawła dopisał model Nano Banana 2.1.
 Rozstrzyga: D-027
 **Odpowiedź:**
 - Karol (2026-11-13): Tak, zastępuje. D-027 jest zatwierdzona, a szablony skilla `/asset` przeszły na nową instrukcję. Decyzja Karola podana w sesji Claude Code.
@@ -209,6 +210,7 @@ Dopisek z 13.11.2026: prefiks Style Lock zastąpiła instrukcja Glossy Ink (D-02
 Dopisek z 2026-11-14 (sesja główna): język — angielski z tłumaczeniami (propozycja D-045); lista lokacji nie padła. Budynki wymienione w rozmowie: karczma, sklep z bronią, sklep magiczny, Pety, Twierdza, hala portali do dungeonów (D-042), mistrz gier planszowych. Zob. [[Sesja główna 2026-11-14 — zapis ustaleń]].
 Dopisek z 2026-11-14 (druga sesja): stajnia petów stoi w mieście, nie na działce (D-052); mistrz gier siedzi w karczmie (D-053); Training Center raczej w Twierdzy (D-050). Zob. [[Sesja główna 2026-11-14 (2) — zapis ustaleń]].
 Dopisek z 2026-11-14 (trzecia sesja): zamiast wygenerowanej grafiki mapy — widok z lotu ptaka z kamery na miasteczko, piny tylko przy dostępnych lokacjach, klik teleportuje (propozycja D-064; pomysł Pawła, Karol: „jak w GTA V”). Lista lokacji nie padła; osiem biomów (D-061) też musi być z mapy osiągalne. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
+Dopisek Pawła z 2026-11-14 (przy scaleniu): [[Mapa teleportacji]] ma 7 lokacji według promptu-wytycznej Game Directora: Karczma, Arena, Portal do lochów, Twierdza, Siedziba Gildii, Kuźnia, Zagroda petów (Targ wypadł, Shop zostaje w HUD). Czy lista jest dobra? Polskie czy angielskie nazwy na mapie? Prefiks stylu rozstrzygnęła D-027 (Glossy Ink); prompty mapy są od 2026-11-14 w tym formacie. Ramka mapy: instrukcja każe dać cienką drewnianą ramkę bez ciężkich kamiennych ram, a prompt-wytyczna miał „chunky stone-and-wood border”. W promptach jest cienka ramka — zostawić?
 **Odpowiedź:**
 - Karol Balucki (2026-11-14): Targ to to samo co skelp z bronią i armorem - łączymy te sklepy. / Twoja propozycja jest dobra. co do lokalizacji
 
@@ -346,4 +348,9 @@ Rozstrzyga: D-060
 - Do wyboru: (a) zatwierdzić D-066 — nowa decyzja zastępuje ten punkt D-031; (b) odrzucić — jajka tylko za Złoto, za Robuxy sama waluta.
 Szczegóły: Zasady Roblox z pytania 30: losowe nagrody kupowane za Robuxy albo za walutę kupioną za Robuxy są dozwolone, jeśli lista nagród i dokładne szanse są widoczne przed zakupem, gra sprawdza uprawnienia gracza (`PolicyService`) i pokazuje zmienione szanse przy ulepszeniach szczęścia; stawianie waluty na wynik losowy jest zakazane. Ponieważ Złoto da się kupić przez Diamenty (D-038), już dzisiejsze jajka za Złoto podpadają pod te zasady (D-052). D-066 zbiera też resztę sklepu z sesji: waluta, lepsze przedmioty, game passy (podwójna waluta, podwójna moc treningu), darmowy pet. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]], [[Retencja i monetyzacja — co wolno i co działa]].
 Rozstrzyga: D-066
+**Odpowiedź:**
+
+## 44. Rybki — trzecia waluta w HUD
+14.11 Game Director kazał dodać do panelu gracza trzeci licznik z ikoną złotej rybki (pod Złotem i Diamentami; atrybut gracza `Fish`). Kanon zna dwie waluty (pytanie 6). Do czego służą Rybki: waluta z łowienia, karma dla petów czy coś innego? Jak się je zdobywa i na co wydaje?
+Dopisek Claude Code z 2026-11-14 (przy scaleniu): na sesjach 14.11 trzecia waluta dostała rolę z D-040 — zdobywana graniem, wydawana na game passy. Nazwę proponuje D-046 („Chrupki”), a D-031 wymieniała „Złote Rybki” jako wariant. Rybki z HUD mogą być tą walutą — do potwierdzenia. Pytanie miało u Pawła numer 29; przy scaleniu dostało numer 44, bo numery 29–43 były już zajęte.
 **Odpowiedź:**

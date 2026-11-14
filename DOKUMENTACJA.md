@@ -107,6 +107,8 @@ Styl to hybryda **trzech estetyk** (D-002):
 
 Każdy prompt generujący grafikę składa się z czterech części kopiowanych z notatki bez zmian: stałego początku, zmiennego środka (opis konkretnego assetu), stałego końca i osobnego negative promptu. Do tego dochodzą żelazne zasady z instrukcji: zamknięte krawędzie, puste kontenery, okna ze statystykami i mapy izometryczne.
 
+Generujemy w Higgsfield modelem **Nano Banana 2.1** (`nano_banana_2_1`) z key-artem ekranu ładowania jako referencją stylu (szablony: `.claude/skills/asset/references/prompt-templates.md`).
+
 Dawny prefiks Style Lock (D-001, z nazwą gry-inspiracji) jest zastąpiony i zostaje w sejfie tylko jako historia: [Style Lock](B%26C/Styl/Style%20Lock.md).
 
 ### Przełożenie na Roblox 💡
@@ -488,7 +490,7 @@ git push
 ```
 
 ### 8.8 Grafiki generowane przez AI
-Każdy prompt składa się według instrukcji „Glossy Ink” (sekcja 4): stały początek, zmienny środek, stały koniec i osobny negative prompt. Wynik sprawdza się z zasadami instrukcji, a dopiero potem wgrywa do gry (8.5).
+Każdy prompt składa się według instrukcji „Glossy Ink” (sekcja 4): stały początek, zmienny środek, stały koniec i osobny negative prompt. Wynik sprawdza się z zasadami instrukcji, a dopiero potem wgrywa do gry (8.5). Model Higgsfield: Nano Banana 2.1.
 
 ## 9. Decyzje, pytania i roadmapa
 
@@ -525,7 +527,8 @@ Propozycje D-012–D-026 i D-029 (💡) są opisane w rejestrze.
 
 Dalsze pytania są w notatce:
 - pytania 7–27 pochodzą z rozmowy 12.11, nocnej diagnozy i decyzji z 13.11 (odpowiedzi mają już #15, #22 i #23);
-- pytanie 28 (Paweł): mapa teleportacji — czy lista 7 lokacji jest dobra i w jakim języku mają być nazwy. Jego druga część, o prefiksie Style Lock bez nazwy cudzej gry, jest rozstrzygnięta: prefiks zastąpiła instrukcja Glossy Ink (D-027).
+- pytanie 28 (Paweł): mapa teleportacji — czy lista 7 lokacji (z Kuźnią zamiast Targu) jest dobra, w jakim języku mają być nazwy i czy zostawić cienką ramkę mapy. Jego druga część, o prefiksie Style Lock bez nazwy cudzej gry, jest rozstrzygnięta: prefiks zastąpiła instrukcja Glossy Ink (D-027).
+- pytanie 44 (Paweł): Rybki — do czego służy trzecia waluta z HUD (u Pawła miało numer 29; na sesjach 14.11 trzecia waluta dostała rolę w D-040).
 
 ### Roadmapa
 [Roadmapa](B%26C/Produkcja/Roadmapa.md)
@@ -597,7 +600,8 @@ Pełna historia: [Dziennik zmian](B%26C/Produkcja/Dziennik%20zmian.md).
   - HUD: najpierw 6 przycisków (160 px, wyśrodkowane), potem pełny HUD z Figmy (panel gracza i przyciski 128 px niżej przy krawędzi), na koniec przyciski powiększone do 150 px.
 - **12.11.2026:** projekt w repozytorium GitHub, ten dokument; instalacja pipeline'u assetów `/asset`; specyfikacja i prompty mapy teleportacji.
 - **12.11.2026 (wieczór, Claude Code u Karola):** rozmowa o grze spisana i skomentowana, sześć notatek badawczych i ocena potencjału (`B&C/Badania/`), propozycje D-012–D-018 i pytania 7–14; 💡 panel zespołu (`panel/`); 💡 pipeline klocków i demo mapy „Leśna baza startowa” w Blenderze i w Studio (`swiat/`). Wszystko jako propozycje do zatwierdzenia.
-- **13.11.2026:** okno ekwipunku: grafika pocięta na komponenty, Figma, GUI i skrypt w Roblox (grafiki czekają na upload).
+- **13.11.2026 (Claude Code u Game Directora):** okno ekwipunku: grafika pocięta na komponenty, Figma, GUI, przeciąganie przedmiotów, przyciski „+” przez serwer, zasłonki slotów; grafiki wgrane do Roblox.
 - **13.11.2026 (noc i poranek, Claude Code u Karola):** diagnoza całego pomysłu (dziś 3,8/10) i propozycja v2 „krzywy montaż” z uczciwą oceną 6,0/10 i planem pomiarów (`B&C/Gra/*v2*.md`, `B&C/Badania/Diagnoza pomysłu 2026-11-13.md`; propozycje D-019–D-027, pytania 16–22); 💡 mapa v2 „Krzywe Miasteczko” i biblioteka krzywych brył (`swiat/biblioteka/`, `swiat/krzywe_miasteczko/`, `Workspace/KrzyweMiasteczko`); 💡 test cutscenki walki w samym Roblox (`swiat/test_walki_roblox/`, `Workspace/TestWalki`); panel: zakładka Assety, telemetria gry (`src/server/Telemetria`, bezwładna do włączenia), tunel sprawdzony naprawdę; instrukcja promptów „Glossy Ink” od Game Directora (`B&C/Styl/`). Wszystko jako propozycje do zatwierdzenia.
 - **13.11.2026 (popołudnie, Claude Code u Karola):** 💡 postacie, pety i ekwipunek z kodu (`swiat/postacie/`: 6 postaci, 3 zestawy, 8 broni, 20 klipów animacji) oraz te same postacie w Studio jako postacie z klocków ze stawami (`Workspace/TestPostaci`), animacje sprawdzone w trybie Edit i Play; import siatek nie sprawdzony (propozycja D-029, pytanie 24); 💡 zapis do sejfu z panelu (D-028, wyłączony do decyzji).
 - **13.11.2026 (wieczór, Karol z Claude Code):** ✅ D-030 — decyzje zatwierdza Karol albo Paweł, wystarczy jeden, każda zostaje w logach (zdecydował Karol; potwierdzenie Pawła czeka w pytaniu 27); ✅ D-027 — instrukcja „Glossy Ink” zastępuje prefiks Style Lock; ✅ D-028 — panel jako miejsce pracy, zapis do sejfu z panelu włączony; propozycja D-024 o walce zmieniona na „trzy długości”; import siatek sprawdzony na Rycerzu (postać R15 z 15 części w `Workspace/TestPostaci`).
+- **14.11.2026 (Claude Code u Game Directora):** okno ekwipunku: rozmiary napisów 15/16/20 px i wyśrodkowane zakładki; skill `/asset`: model Nano Banana 2.1, prompty mapy teleportacji w formacie Glossy Ink; HUD: trzecia waluta Rybki (ikona wgrana do Roblox).

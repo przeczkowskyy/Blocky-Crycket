@@ -44,7 +44,7 @@ Jeśli narzędzie Higgsfield przyjmuje obraz referencyjny – zawsze dołącz ke
 Pełny prompt i negative prompt zapisz w manifeście (pole `prompt`, krok 2.5).
 
 ## Krok 2 – Generowanie (Higgsfield MCP)
-1. Sprawdź dostępne modele/parametry narzędzia `generate_image` (schemat narzędzia). Wybierz model obrazkowy o najlepszej zgodności z promptem; proporcje 1:1 (ikony) lub 16:9 (tła).
+1. Model **`nano_banana_2_1`** (polecenie Game Directora; **nie** `gpt_image_*`, nawet jeśli narzędzie podaje go jako domyślny). Inny model tylko na wyraźną prośbę użytkownika. Ustawienia (rozdzielczość, proporcje, seed, referencje): tabela na początku `references/prompt-templates.md`. Model nie ma pola negative – negative idzie osobnym akapitem po stałym końcu.
 2. Wygeneruj **3 warianty** (różne seedy / lekkie wariacje opisu).
 3. Odpytuj `get_generation_status` aż do `completed` (co ~5 s, max ~3 min; przy błędzie 1 ponowienie).
 4. Pobierz wyniki do `assets/raw/<Name>/v<N>_<i>.png` (np. `curl -L -o ...`).

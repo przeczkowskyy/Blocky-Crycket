@@ -116,6 +116,11 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: decyzja D-059 zatwierdzona ([[Rejestr decyzji]])
 - Karol Balucki: decyzja D-058 zatwierdzona ([[Rejestr decyzji]])
 - Karol Balucki: decyzja D-057 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-056 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-053 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-051 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-049 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-048 zatwierdzona ([[Rejestr decyzji]])
 
 ## 2026-11-14 · Claude Code u Karola (sesja główna: zapis ustaleń)
 - **Pierwsza sesja główna** Karola i Pawła w zakładce Sesja panelu (11:00–11:43, 42 min; agent słuchał, transkrypcja rozpoznała obu mówców). Ustalenia własnymi słowami: [[Sesja główna 2026-11-14 — zapis ustaleń]] (`propozycja`). Zapis rozmowy zostaje lokalnie u gospodarza, poza repozytorium.
@@ -125,6 +130,41 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - **Zadania:** pierwsza próba zakładki Sesja odhaczona (odbyła się z dwiema osobami); nowe zadania — zatwierdzenie propozycji, nazwy waluty i koła fortuny, porównanie miasteczka Blender i Roblox, prywatne repozytorium (Paweł), kroki grupy Roblox, powiadomienia na telefon, kolorystyka Krzywego Miasteczka.
 - **Raport** „Sesja główna 2026-11-14 — do zatwierdzenia” (rodzaj: pytanie) w panelu.
 - Nie zrobiono: prośby z rozmowy (nazwy, kroki grupy, porównanie miasteczka) tylko zapisane jako zadania; repozytorium nie przełączono na prywatne (działanie właściciela, po decyzji D-043).
+
+## 2026-11-14 · Claude Code (scalenie z main Karola)
+- Scalone 7 commitów Karola (decyzje D-027/D-028/D-030, szablony Glossy Ink w skillu `/asset`, import siatek, odpowiedzi w panelu). W skillu `/asset` przyjęta wersja Karola, dopisany tylko model **Nano Banana 2.1** (`prompt-templates.md`, `SKILL.md`, `project-rules.md`, [[Pipeline assetów]]).
+- Numeracja pytań wg Karola: mapa teleportacji #28 (opis zaktualizowany: Kuźnia zamiast Targu, ramka), Rybki #29 (po scaleniu z pracą Karola z 14.11: #44, bo 29–43 były zajęte). Odwołania poprawione w [[Mapa teleportacji]], [[HUD]], [[Zadania]], `DOKUMENTACJA.md`.
+
+## 2026-11-14 · Claude Code (HUD: trzecia waluta — Rybki)
+- Na polecenie Game Directora: w panelu gracza trzeci wiersz pod Złotem i Diamentami, ikona złotej rybki (grafika od Game Directora, `assets/raw/Fish/source.png` → `assets/processed/Fish.png`, wycięte flood fill), ta sama pigułka z granatowym gradientem i złotym obrysem, licznik w kolorze `#FFA53D` (odróżnia się od żółtego złota).
+- Figma: komponent `Player Panel` (14:145) powiększony do 300 px wysokości, nowe warstwy Fish Pill / Fish Pill Ink / Fish / Fish Icon (PNG) 30:111–30:114.
+- Roblox: `src/gui/HUD.model.json` (FishPillInk, FishPill, Fish, FishIcon), `src/client/HUDClient.client.luau` (atrybut `Fish`, animowany licznik), `src/server/PlayerStatsDefaults.server.luau` (`Fish = 0`); to samo w miejscu z chmury przez MCP (skrypty w Studio były identyczne z gitem). Test Play: licznik „1 250” po zmianie atrybutu.
+- Ikona wgrana po „tak” Game Directora: `rbxassetid://92474194471064` (manifest `Fish`: zatwierdzony, sha256, `in_roblox`), podpięta w `FishIcon` (plik i miejsce z chmury); test Play: wczytana. Rola Rybek: [[Pytania otwarte]] #29. Notatki: [[HUD]], [[Zadania]].
+
+## 2026-11-14 · Claude Code (prompty Higgsfield: jeden format Glossy Ink)
+- Na polecenie Game Directora szablony skilla `/asset` przepięte na [[Instrukcja promptów — Glossy Ink]]: stały początek, koniec i negative kopiowane 1:1, środki dla każdej kategorii (ikona, przycisk, przedmiot, pet, waluta, okno, arkusz przycisków, mapa, tło). Dodana reguła projektu: napisy natywnie, więc w obrazie puste tabliczki (`NO text`).
+- Domyślny model Higgsfield zapisany w skillu i sejfie: **Nano Banana 2.1** (`nano_banana_2_1`, nie GPT Image). Model nie ma pola negative, więc negative idzie na końcu promptu. Referencja stylu zawsze `assets/refs/KeyArt_ref.jpg`.
+- [[Mapa teleportacji]]: prompty przepisane na Glossy Ink według promptu-wytycznej Game Directora (układ lokacji, Kuźnia zamiast Targu, cienka ramka), piny jako jeden arkusz 7 przycisków; tabela lokacji zaktualizowana.
+- `style-guide.md` skilla: Glossy Ink ma pierwszeństwo, w nowych promptach bez pixel-artu.
+- Pliki: `.claude/skills/asset/SKILL.md`, `references/prompt-templates.md`, `references/style-guide.md`, `references/project-rules.md`; notatki: [[Instrukcja promptów — Glossy Ink]], [[Pipeline assetów]], [[Mapa teleportacji]], [[Pytania otwarte]] (#22, #28), [[Zadania]]; `DOKUMENTACJA.md`. Po scaleniu z pracą Karola (D-027 zatwierdzona przez niego 13.11) w skillu zostały jego szablony, a z tej zmiany doszły model Nano Banana 2.1 i nowe prompty mapy.
+
+## 2026-11-14 · Claude Code (okno ekwipunku: wyśrodkowanie zakładek, pola podpisów)
+- Napisy zakładek wyśrodkowane na kolorowej części zakładki, nie na całym obrazku (`tools/eq_slice.py` mierzy korpus w `EqTab*.png`); OTHERS był przesunięty w prawo (korpus ma środek na 46% obrazka), AMULETS/WEAPONS o 1–2 px.
+- Pola podpisów kart poszerzone (od wewnętrznego obrysu do „+”), żeby „DMG RED 25%” miał zapas przy 15 px. Wszystkie podpisy: 15 px (pomiar w Play).
+- Zmienione w plikach (`layout.json`, `EquipmentPanel.model.json`) i w miejscu z chmury przez MCP (punkt historii). Grafiki bez zmian.
+
+## 2026-11-14 · Claude Code (okno ekwipunku: rozmiary napisów 15/16/20)
+- Na prośbę Game Directora: napisy statystyk (nazwa, wartość, podpis) max 15 px, zakładki postaci (ATTRIBUTES…) max 16 px, zakładki plecaka (WEAPONS…) max 20 px (`UITextSizeConstraint.MaxTextSize`, nadal skalowane w dół na małych ekranach). Zmienione w `tools/eq_build_gui.py` → `src/gui/EquipmentPanel.model.json` i w miejscu z chmury przez MCP (punkt historii). Pomiar w Play: 15 / 16 / 20 px.
+
+## 2026-11-14 · Claude Code (okno ekwipunku na serwerze: rozmiar napisów)
+- W miejscu z chmury (Team Create, place 129485428021967) wszystkie 29 napisów `StarterGui.EquipmentPanel` miało `TextScaled = false` (stały rozmiar 8 px) – napisy malutkie, inaczej niż w plikach i w Figmie. HUD bez zmian. Przyczyna nieznana (pliki w repo mają `TextScaled = true`).
+- Naprawione w Studio przez MCP (punkt historii „EquipmentPanel: TextScaled jak w plikach”, tylko nasze okno). Zrzut z Play: napisy jak na grafice. `EqBg3` v5 przeszedł moderację i wyświetla się.
+- Na przyszłość: połączyć Rojo z miejscem z chmury, żeby GUI szło z plików.
+
+## 2026-11-13 · Claude Code (połączenie z gałęzią Karola)
+- Gałąź `karol/panel-wiedza-demo` (31 commitów: Krzywe Miasteczko, postacie, panel zespołu, telemetria, sejf) połączona lokalnie z `main` (commit `11c4b4c`, niewypchnięty). Konflikty w sejfie rozwiązane przez zachowanie obu stron; pytanie o mapę teleportacji przeniesione z #7 na #25 (po scaleniu u Karola: #28).
+- Miasto zbudowane w otwartym Studio skryptem Karola: `python tools/studio_buduj.py swiat/krzywe_miasteczko/czesci.json` → `Workspace/KrzyweMiasteczko` (5259 części). Uwaga: Studio miało otwarty lokalny `Blocky&Crycket.rbxl`, nie miejsce z chmury.
+
 
 ## 2026-11-13 · Panel (ludzie)
 - Karol Balucki: decyzja D-007 zatwierdzona ([[Rejestr decyzji]])

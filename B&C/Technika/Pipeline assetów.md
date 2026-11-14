@@ -12,7 +12,7 @@ Pierwotnie paczka `blocky-asset-pipeline` w osobnym folderze. **Od 2026-11-12 je
 
 `/asset ikona Arena do HUD, styl jak przyciski Shop/Pets`
 
-1. **Generowanie** w Higgsfield (MCP), domyślnie 3 warianty. Prompt powstaje według [[Instrukcja promptów — Glossy Ink]] (opis niżej, „Budowa promptu”), a jako obraz referencyjny stylu idzie key-art ekranu ładowania z `assets/refs/`.
+1. **Generowanie** w Higgsfield (MCP) modelem **Nano Banana 2.1** (`nano_banana_2_1`, polecenie Game Directora; nie GPT Image), domyślnie 3 warianty. Prompt powstaje według [[Instrukcja promptów — Glossy Ink]] (opis niżej, „Budowa promptu”), a jako obraz referencyjny stylu idzie key-art ekranu ładowania z `assets/refs/`.
 2. **Wybór wariantu** przez Game Directora (bez `--auto`).
 3. **Obróbka** `tools/process_image.py`: wycięcie tła, przycięcie, kwadrat, rozmiar docelowy.
 4. **Figma**: wrzucenie do biblioteki assetów albo podmiana obrazka w komponencie.

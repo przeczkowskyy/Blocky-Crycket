@@ -3,6 +3,17 @@
 Źródło: notatka sejfu `B&C/Styl/Instrukcja promptów — Glossy Ink.md` (kanon, decyzja D-027 zatwierdzona 13.11.2026), oryginał `B&C/Źródła/Instrukcja stylu i promptowania (oryginał 2026-11-13).md`.
 Ta instrukcja zastępuje dawny prefiks z notatki `Style Lock` (D-001) i dawny „STYLE BLOCK” tej paczki. Nie używaj ich w nowych promptach.
 
+## Model i ustawienia Higgsfield (polecenie Game Directora, 2026-11-13)
+| pole | wartość |
+|---|---|
+| model | **`nano_banana_2_1`** (Nano Banana 2.1) — **nie** `gpt_image_*`, nawet gdy narzędzie podaje go jako domyślny; inny model tylko na wyraźną prośbę |
+| `medias` → `image_references` | `assets/refs/KeyArt_ref.jpg` + najwyżej 1 ref kategorii (wgraj przez `media_upload` → `media_confirm`) |
+| `resolution` | `2k` ikony / przyciski · `4k` okna, mapy, tła |
+| `aspect_ratio` | `1:1` ikony / pety · `16:9` okna, mapy, tła · `21:9` arkusz pinezek |
+| `seed` | stały w obrębie serii (np. wszystkie pinezki) |
+
+Nano Banana 2.1 **nie ma osobnego pola na negative prompt** → negative dajesz jako osobny akapit po stałym końcu (zasada niżej).
+
 ## Budowa każdego promptu
 
 Każdy prompt składa się z czterech części, po angielsku:
