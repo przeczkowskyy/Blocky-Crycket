@@ -60,6 +60,28 @@ Czego import nie przeniósł i czego jeszcze nie wiemy:
 - **Wgrywanie przez Studio (Open Cloud)** wymaga dwóch zgód w Assistant → Settings → MCP Permissions: zakresów `asset:read`/`asset:write` (włączone) i zatwierdzonego folderu z plikami (od 13.11.2026 zatwierdzony jest `swiat/postacie/wynik` na komputerze Karola).
 - **„W grze” znaczy tu wszędzie: po naciśnięciu Play w Roblox Studio.** Kontener `TestPostaci` ma skrypty pokazu, przymierzalni i petów działające tylko w Studio, a klipy nie są jeszcze zasobami. Przed publikacją gry trzeba go usunąć, tak jak `TestWalki`.
 
+## Modele lasu (14.11.2026) — co wiedzieć przy imporcie
+Sześć modeli do walki (każdy `propozycja`, raport do akceptacji w panelu, pliki w `swiat/postacie/wynik/<id>/`). Żaden nie jest jeszcze w Roblox.
+
+| Model | Rola | Szkielet | Broń | Wzrost (gracz 5,7) | Klipy |
+|---|---|---|---|---|---|
+| [[Zwiadowca]] | druga klasa gracza | R15 (zaczepy jak Rycerz) | łuk i sztylet jako osobne przedmioty | 5,76 | idle, ruch, atak, umiejetnosc (strzał), uderzenie_z_gory, trafienie, unik, upadek, wiwat |
+| [[Leśny Troll]] | rzadki, ciężki przeciwnik | własny, 18 kości | maczuga jako kość modelu | 9,94 | idle, ruch, atak, umiejetnosc, trafienie, unik, upadek, ryk |
+| [[Cierniowy Wilk]] | zwykły, szybki | własny, 22 kości (czworonóg) | brak | ok. 3 w kłębie | jak wyżej |
+| [[Muchomornik]] | zwykły | własny, 29 kości (w tym zarodniki) | laska jako kość modelu | 3,60 | jak wyżej (wiwat zamiast ryku) |
+| [[Strażnik Gaju]] | strażnik biomu | własny, 37 kości (w tym korzenie) | brak — pięści | 14,54 | jak wyżej |
+| [[Leśny Slime]] | zwykły | własny, skórowanie galarety na dwóch kościach | brak | 2,6 | jak wyżej (wiwat) |
+
+Wspólne uwagi z przeglądów (szczegóły i klatki trafień w notatkach modeli):
+- Tylko Zwiadowca jest R15. Pięć potworów ma własne szkielety, więc ich klipy importuje się na własny rig, nie na Humanoida R15.
+- Eksport FBX ma przód w +Z — przy pierwszym imporcie sprawdzić, w którą stronę postać patrzy (możliwy obrót o 180°). GLB zachowuje przód.
+- Klipy przesuwają kości (unik, wypad, upadek, zarodniki, kula kwasu), nie tylko je obracają — import musi przenosić pozycję. Kanału skali nie ma w żadnym klipie.
+- Upadek kończy się leżeniem albo rozsypaniem — odtwarzacz ma zatrzymać ostatnią klatkę, bez powrotu do spoczynku.
+- Leśny Slime: galareta jest skórowana na dwóch kościach — najpierw sprawdzić, czy importer Roblox zachowa wagi.
+- Świecenie (oczy wilka, kryształ strażnika, zarodniki, kwas) jest tylko w teksturze emisji — w Studio trzeba dać Neon albo światło. Czarny obrys jest tylko w renderach z Blendera.
+- Efekty do dorobienia w grze: lecąca strzała i smuga trucizny, fala uderzenia maczugi, chmura zarodników, rozprysk kwasu.
+- Nazwa do ujednolicenia: w danych silnika walki strażnik nazywa się „Strażnik Lasu”, model i notatka — „Strażnik Gaju”.
+
 ## Kontrola jakości kodu (13.11.2026)
 Niezależny przegląd dzisiejszego kodu znalazł dziewięć usterek w ścieżkach błędów (m.in. możliwość dwukrotnego wgrania zasobu przy ponownym uruchomieniu, postać zostająca w pozie po nieudanym zrzucie, brak kodu błędu przy odmowie). Wszystkie poprawiono; każdą grupę poprawek sprawdził osobny, wrogo nastawiony weryfikator, a potem przeszły próby w Studio (odmowy, usuwanie i odbudowa kontenera, powrót do spoczynku po błędzie, prawdziwe klawisze). Osobna kontrola twierdzeń poprawiła osiem nieścisłości w opisach.
 

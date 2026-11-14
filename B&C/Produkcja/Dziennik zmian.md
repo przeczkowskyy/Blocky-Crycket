@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-14 · Claude Code u Karola (komplet modeli lasu; start cutscenki walki v2)
+- **Komplet sześciu modeli lasu** (Blender, każdy z ośmioma–dziewięcioma klipami walki, po przeglądzie świeżym okiem): doszły [[Strażnik Gaju]] (strażnik biomu, 14,5 studa, uścisk korzeni, rozsypuje się na głazy) i [[Leśny Slime]] (zielona odmiana slime’a, kwaśny plusk; niebieski pet bez zmian). Raporty „Model: …” czekają w panelu; modele wysłane Karolowi na telefon. Uwagi do importu zebrane w [[Postacie 3D — Blender i Roblox]] (sekcja „Modele lasu”).
+- **Cutscenka walki v2** w budowie w Roblox Studio (własny kontener `Workspace/TestWalki2`, źródła `swiat/test_walki2/`): aktorzy z nowych modeli bez uploadu, odtwarzacz dziennika silnika v2, panel wyboru klasy i przeciwnika. Stary prototyp `Workspace/TestWalki` bez zmian.
+- Do decyzji Karola: nazwa strażnika biomu („Strażnik Gaju” czy „Strażnik Lasu”).
+- Pliki: `swiat/postacie/straznik_gaju.py`, `lesny_slime.py`, `swiat/postacie/wynik/…`, [[Zadania]].
+
 ## 2026-11-14 · Claude Code u Karola (silnik walki v2; modele: Zwiadowca, Cierniowy Wilk, Muchomornik)
 - **Silnik walki v2** gotowy i sprawdzony: [[Walka v2 — silnik, klasy i umiejętności]] (`propozycja`). Kod gry w `src/server/Walka/` i `src/shared/Walka/` (czyste moduły, nic nie uruchamia się samo), symulacja, 41 testów i tabela balansu w `tools/walka/`. Niezależny przegląd zgłosił pięć uwag (m.in. nierówne klasy na poziomach spoza testu, rozjazd przy dużych ziarnach, luka w sprawdzaniu listy umiejętności) — wszystkie poprawione. Zgodność kodu gry z symulacją sprawdzona w Roblox Studio (tryb Edit, tylko odczyt): 496/496 identycznych walk, 38/38 złych wejść odrzuconych.
 - **Wynik balansu:** pojedynki klasa na klasę 45,5–54,5% na 13 poziomach; różnica klas przy tym samym potworze do 7 pp, wyjątek Leśny Slime na poziomach 1–4 (do 8,6 pp na ziarnach kontrolnych); cel 5 pp spełnia 53 z 65 zestawień. Długość walki wyłącznie ze statystyk i losowości (D-068): 624 tys. walk, najdłuższa 38 tur, techniczny limit nie zadziałał ani razu.
