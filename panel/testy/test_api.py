@@ -782,6 +782,37 @@ class TestZapisSejfuAPI(SerwerTestowy):
                             gd=self.klucz_gd, kto="Paweł")
         self.assertEqual((s, e.get("kod")), (409, "status_zamkniety"), e)
 
+    def test_rozstrzyganie_pytania_decyzja(self):
+        """Kontrakt: plan ma `rozstrzyga`/`powiazane` przy pytaniach; zmiana statusu zwraca `rozstrzygniete`."""
+        sciezka = os.path.join(self.sejf, "Produkcja", "Pytania otwarte.md")
+        with open(sciezka, "a", encoding="utf-8", newline="\n") as f:
+            f.write("\n\n## 9. Test rozstrzygania\nZob. D-001.\nRozstrzyga: D-005\n**Odpowiedź:**\n")
+        o = self.plan()
+        p = next(x for x in o["pytania"] if x["nr"] == 9)
+        self.assertEqual((p["rozstrzyga"], p["powiazane"], p["otwarte"]), (["D-005"], ["D-001"], True))
+        for x in o["pytania"]:
+            self.assertPola(x, ["nr", "tytul", "tresc_md", "odpowiedz_md", "otwarte", "rozstrzyga", "powiazane"])
+        # gość nie zmienia statusu, więc nic się nie rozstrzyga
+        s, e, _ = self.post("/api/sejf/decyzje/D-005/status", {"status": "zatwierdzona", "wersja": o["wersje"]["decyzje"]},
+                            zdalny=True, kto="Paweł")
+        self.assertEqual(s, 403, e)
+        s, w, _ = self.post("/api/sejf/decyzje/D-005/status", {"status": "zatwierdzona", "uzasadnienie": "Krótko",
+                                                               "wersja": o["wersje"]["decyzje"]}, kto="Karol")
+        self.assertEqual(s, 200, w)
+        self.assertPola(w, ["ok", "opis", "plik", "wersja", "plan", "rozstrzygniete"])
+        self.assertEqual(w["rozstrzygniete"], [{"nr": 9, "tytul": "Test rozstrzygania",
+                                                "odpowiedz": "rozstrzygnięte decyzjami: D-005 zatwierdzona („Krótko”)",
+                                                "decyzje": [{"id": "D-005", "status": "zatwierdzona"}]}])
+        self.assertFalse(next(x for x in w["plan"]["pytania"] if x["nr"] == 9)["otwarte"])
+        self.assertIn("- Karol (", self.plik("Pytania otwarte.md"))
+        self.assertIn("): rozstrzygnięte decyzjami: D-005 zatwierdzona („Krótko”)\n", self.plik("Pytania otwarte.md"))
+        self.assertIn("- Karol: odpowiedź na pytanie 9 (rozstrzygnięte decyzjami: D-005 zatwierdzona („Krótko”)) "
+                      "([[Pytania otwarte]])", self.plik("Dziennik zmian.md"))
+        # „do decyzji” nigdy nie rozstrzyga; odpowiedź ma puste `rozstrzygniete`
+        s, w, _ = self.post("/api/sejf/decyzje/D-002/status", {"status": "do_decyzji", "wersja": w["wersja"]}, kto="Karol")
+        if s == 200:
+            self.assertEqual(w["rozstrzygniete"], [])
+
     def test_z_polecenie_klucz_zatwierdzania(self):
         """`--klucz-zatwierdzania` (i dawne `--klucz-gd`) wypisuje link z istniejącym kluczem; `--nowy-klucz-zatwierdzania`
         (i dawne `--nowy-klucz-gd`) unieważnia stary bez restartu panelu. Plik klucza dalej nazywa się klucz_gd.txt.

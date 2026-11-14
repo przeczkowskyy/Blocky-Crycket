@@ -70,13 +70,23 @@
 .sesja-slucha[aria-checked="true"] .sesja-slucha-suwak::after { transform: translateX(16px); }
 .sesja-slucha-opis { flex: 1 1 220px; margin: 0; font-size: 13px; }
 
-/* trzy części: na telefonie jedna kolumna */
+/* części: na telefonie jedna kolumna (Agenda albo Pytania — przełącznik), szerzej Agenda | Pytania, a pod nimi
+   Transkrypcja | Notatki */
 .sesja-siatka { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; }
-@media (min-width: 1100px) { .sesja-siatka { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (min-width: 720px) and (max-width: 1099px) {
-  .sesja-siatka { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .sesja-siatka > .sesja-czesc:first-child { grid-column: 1 / -1; }
+.sesja-tematy { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; min-width: 0; }
+.sesja-tematy-przelacznik .przelacznik { width: 100%; }
+.sesja-tematy-przelacznik .przelacznik-opcja { flex: 1 1 0; justify-content: center; }
+@media (max-width: 719px) {
+  .sesja-tematy[data-pokaz="agenda"] > .sesja-pytania, .sesja-tematy[data-pokaz="pytania"] > .sesja-czesc:not(.sesja-pytania) { display: none; }
 }
+@media (min-width: 720px) {
+  .sesja-siatka { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sesja-siatka > .sesja-tematy { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sesja-tematy-przelacznik { display: none; }
+  .sesja-pytania .kolejka-lista { max-height: min(75vh, 900px); overflow-y: auto; padding-right: 4px; scrollbar-width: thin; }
+}
+.sesja-pytania .lista-pytan { gap: 10px; }
+.sesja-pytania .lista-pytan-opis { margin: -4px 0 0; font-size: 13px; }
 .sesja-czesc { display: flex; flex-direction: column; gap: 10px; }
 .sesja-czesc .karta-tytul { margin-bottom: 2px; }
 

@@ -1,0 +1,31 @@
+/* Pytania — wyszukiwarka, historia „Odpowiedziane” i zwijany „Plan”. Karty i lista „Do odpowiedzi” mają style
+   w wspolne/lista_pytan.css, wspólne klasy i zmienne są w styl.css. */
+
+.pytania { display: flex; flex-direction: column; gap: 18px; }
+.pytania .nagl-widoku { margin-bottom: 0; }
+
+/* wyszukiwarka */
+.pytania-szukaj { position: relative; display: flex; align-items: center; }
+.pytania-szukaj-ikona { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--przygaszony); display: flex; pointer-events: none; }
+.pytania-szukaj-ikona .ikona { width: 18px; height: 18px; }
+.pytania-szukaj-pole { width: 100%; min-height: 46px; padding-left: 40px; padding-right: 44px; font-size: 16px; }
+.pytania-szukaj-pole::-webkit-search-cancel-button { display: none; }
+.pytania-szukaj > .przycisk { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); }
+.pytania-szukaj-wynik { margin-top: -10px; }
+.pytania-szukaj-wynik:empty { display: none; }
+
+/* historia */
+.pytania-historia { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 2px dashed var(--obrys); scroll-margin-top: calc(var(--gora) + 8px); }
+.pytania-historia .kolejka-nagl h2 { font-size: 17px; }
+.historia-lista:empty { display: none; }
+.historia-lista .sprawa { box-shadow: none; }
+.historia-wiecej:empty { display: none; }
+
+/* plan (zwijany) */
+.pytania-plan { margin-top: 0; border: 2px solid var(--obrys); border-radius: var(--promien); padding: 4px 14px; background: var(--karta); scroll-margin-top: calc(var(--gora) + 8px); }
+.pytania-plan > summary { width: 100%; min-height: 48px; gap: 8px; }
+.pytania-plan > summary .ikona + .ikona { transform: none; color: var(--zloto); }
+.pytania-plan-tytul { font-weight: 800; font-size: 16px; }
+.pytania-plan-wnetrze { display: flex; flex-direction: column; gap: 12px; padding: 6px 0 14px; }
+.pytania-plan-wnetrze .przelacznik-przewijany { margin-bottom: 0; }
+.pytania-plan .sekcja-zadan .karta-tytul { font-size: 15px; }

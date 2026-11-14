@@ -1,7 +1,10 @@
-// Pulpit: stan gry na jednym ekranie — faza, kto pracuje, co czeka, co teraz, synchronizacja, ostatnia migawka.
+// Pulpit: najważniejsze na jednym ekranie, od góry: Czeka na Ciebie (liczba i trzy pierwsze sprawy), Rozmowa
+// (zakładka Sesja: kto jest, czy agent słucha), Co nowego (raporty, decyzje, wpisy ludzi), Synchronizacja (Pobierz /
+// Wyślij z podglądem zmian sejfu), a niżej reszta: Teraz (zadania), Kto pracuje, Napisz do agenta, Ostatnia migawka.
 
-import { el, dopisz, zamien, ikona, czasTemu, toast, arkusz, awatar, karta, pusty, stanBledu, ladowanie, odmiana, skroc } from "../wspolne/ui.js";
+import { el, dopisz, zamien, ikona, czasTemu, dataKrotka, toast, arkusz, awatar, karta, pusty, stanBledu, ladowanie, odmiana, skroc } from "../wspolne/ui.js";
 import { mdLinia } from "../wspolne/markdown.js";
+import { zbudujKolejke } from "../wspolne/kolejka.js";
 
 const enc = encodeURIComponent;
 
@@ -16,6 +19,8 @@ export function postepFazy(f) {
 }
 
 const PRIORYTETY = { wysoki: "czerwien", "średni": "zloto", sredni: "zloto", niski: "niebieski" };
+const STANY_ROZMOWY = { mowi: "mówi", wyciszony: "wyciszony", bez_mikrofonu: "bez mikrofonu", polaczony: "połączony", laczenie: "łączy się" };
+const STATUSY_DECYZJI = { zatwierdzona: "zatwierdzona", odrzucona: "odrzucona", do_decyzji: "do decyzji", propozycja: "propozycja", zastapiona: "zastąpiona" };
 
 export function chipPriorytetu(p) {
   if (!p) return null;
@@ -26,29 +31,49 @@ function nazwaFazy(f) {
   return String(f.nazwa || "").replace(/^[▶►\s]+/, "");
 }
 
+function zwykly(t) {
+  return String(t || "").replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, "$2").replace(/\[\[([^\]]+)\]\]/g, "$1")
+    .replace(/[`*_]/g, "").trim();
+}
+
+/** „dziś” / „13 lis” dla samej daty, „5 min temu” dla czasu. */
+function kiedy(t) {
+  if (!t) return "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(t)) {
+    const d = new Date();
+    const dzis = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    return t === dzis ? "dziś" : dataKrotka(t);
+  }
+  return czasTemu(t);
+}
+
 export default {
   id: "pulpit",
   tytul: "Pulpit",
   ikona: "pulpit",
   kolejnosc: 10,
   utworz(ctx) {
-    // --- nagłówek (bohater)
-    const powitanie = el("span", { class: "hero-powitanie" });
-    const heroFaza = el("div", { class: "hero-faza" });
-    const hero = el("section", { class: "karta hero" },
-      el("div", { class: "hero-tlo", "aria-hidden": "true" }),
-      powitanie,
-      el("h1", { class: "hero-tytul" }, (ctx.konfiguracja.gra && ctx.konfiguracja.gra.nazwa) || "BLOCKY & CRYCKET"),
-      heroFaza);
+    // Przejścia do zakładki Pytania: karta („pytanie-19”, „D-009”, „raport-<id>”) albo część (zadania, roadmapa, dziennik).
+    const doSprawy = (klucz) => ctx.idz("pytania", { sprawa: klucz });
+    const doSekcji = (sekcja) => ctx.idz("pytania", { sekcja });
 
-    const kCzeka = karta("Czeka na Ciebie", "raporty", { klasa: "karta-czeka" });
+    // --- nagłówek: powitanie i faza (krótko)
+    const powitanie = el("h1", { class: "pulpit-powitanie" });
+    const faza = el("div", { class: "pulpit-faza" });
+    const gora = el("header", { class: "pulpit-gora" },
+      el("div", { class: "pulpit-gora-tekst" }, powitanie),
+      faza);
+
+    const kCzeka = karta("Czeka na Ciebie", "pytanie", { klasa: "karta-czeka" });
+    const kRozmowa = karta("Rozmowa", "mikrofon", { klasa: "karta-rozmowa" });
+    const kNowe = karta("Co nowego", "zegar", { klasa: "karta-nowe" });
+    const kSync = karta("Synchronizacja", "git", { klasa: "karta-sync" });
     const kTeraz = karta("Teraz", "ogien", { klasa: "karta-teraz" });
     const kKto = karta("Kto pracuje", "zespol", { klasa: "karta-kto" });
-    const kSync = karta("Synchronizacja", "git", { klasa: "karta-sync" });
     const kAgent = karta("Napisz do agenta", "agent", { klasa: "karta-agent" });
     const kMigawka = karta("Ostatnia migawka", "migawka", { klasa: "karta-migawka" });
 
-    for (const k of [kCzeka, kTeraz, kKto, kSync, kMigawka]) k.cialo.appendChild(ladowanie());
+    for (const k of [kCzeka, kRozmowa, kNowe, kSync, kTeraz, kKto, kMigawka]) k.cialo.appendChild(ladowanie());
 
     // --- szybkie pole do agenta
     if (!ctx.statyczny) {
@@ -73,70 +98,130 @@ export default {
         el("button", { class: "przycisk glowny", type: "button", onclick: wyslij }, ikona("strzalka"), el("span", null, "Do agenta"))));
     }
 
-    // Trzy kolumny na szerokim ekranie (bez dziur pod niskimi kartami); na telefonie kolumny „znikają”
-    // (display: contents) i karty układają się jedna pod drugą w kolejności z CSS (order).
-    const siatka = el("div", { class: "pulpit-kolumny" },
-      el("div", { class: "kolumna" }, kCzeka.el, kKto.el),
-      el("div", { class: "kolumna" }, ctx.statyczny ? null : kAgent.el, kSync.el, kMigawka.el),
-      el("div", { class: "kolumna" }, kTeraz.el));
-    const korzen = el("div", { class: "widok pulpit" }, hero, siatka);
+    // Najważniejsze na górze (telefon: jedna kolumna w tej kolejności); niżej reszta w siatce.
+    const glowne = el("div", { class: "pulpit-glowne" }, kCzeka.el, kRozmowa.el, kNowe.el, kSync.el);
+    const reszta = el("div", { class: "pulpit-reszta" }, kTeraz.el, kKto.el, ctx.statyczny ? null : kAgent.el, kMigawka.el);
+    const korzen = el("div", { class: "widok pulpit" }, gora, glowne,
+      el("h2", { class: "pulpit-naglowek" }, "Reszta"), reszta);
 
     let stop = null;
     let ostatnieDane = {};
 
     // ------------------------------------------------------------------ rysowanie kart
-    function rysujHero(plan, blad) {
+    function rysujGore(plan, blad) {
       const kto = ctx.ja.kto && ctx.ja.kto !== "gość" ? ctx.ja.kto : "";
       powitanie.textContent = kto ? "Cześć, " + kto + "!" : "Panel zespołu";
-      heroFaza.replaceChildren();
-      if (blad || !plan) {
-        heroFaza.append(el("span", { class: "cichy-tekst" }, blad ? "Plan z sejfu jeszcze niedostępny." : ""));
-        return;
-      }
+      faza.replaceChildren();
+      if (blad || !plan) return;
       const fazy = (plan.roadmapa && plan.roadmapa.fazy) || [];
       const f = fazy.find((x) => x.aktywna) || fazy.find((x) => postepFazy(x) < 1) || fazy[0];
-      if (!f) {
-        heroFaza.append(el("span", { class: "cichy-tekst" }, "Roadmapa jest jeszcze pusta."));
-        return;
-      }
-      const p = postepFazy(f);
-      const poz = f.pozycje || [];
-      const zrob = poz.filter((x) => x.zrobione).length;
-      dopisz(heroFaza,
-        el("a", { class: "hero-faza-nazwa", href: "#/plan?zakladka=harmonogram" },
-          el("span", { class: "chip zloto" }, ikona("flaga"), f.aktywna ? "aktywna faza" : "faza"),
-          el("strong", null, nazwaFazy(f))),
-        f.status_tekst ? el("span", { class: "cichy-tekst" }, f.status_tekst) : null,
-        el("div", { class: "pasek duzy", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(Math.round(p * 100)) },
-          el("div", { class: "pasek-wypelnienie", style: { width: Math.round(p * 100) + "%" } })),
-        el("div", { class: "hero-postep" },
-          el("strong", null, Math.round(p * 100) + "%"),
-          el("span", { class: "cichy-tekst" }, poz.length ? zrob + " z " + poz.length + " " + odmiana(poz.length, ["pozycji", "pozycji", "pozycji"]) + " gotowe" : "")));
+      if (!f) return;
+      const p = Math.round(postepFazy(f) * 100);
+      faza.append(el("button", { type: "button", class: "pulpit-faza-przycisk", onclick: () => doSekcji("roadmapa"), "aria-label": "Faza: " + nazwaFazy(f) + ", " + p + "% — pokaż roadmapę" },
+        el("span", { class: "pulpit-faza-nazwa" }, ikona("flaga"), el("span", null, nazwaFazy(f))),
+        el("span", { class: "pasek", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(p) },
+          el("span", { class: "pasek-wypelnienie", style: { width: p + "%", display: "block" } })),
+        el("strong", { class: "pulpit-faza-procent" }, p + "%")));
     }
 
-    function rysujCzeka(d, blad) {
+    /** Wiersz „Czeka na Ciebie”: każda sprawa jako pytanie (tytuł karty z zakładki Pytania), z małą etykietą pochodzenia. */
+    function opisSprawy(s) {
+      if (s.typ === "raport") return { ikona: "raporty", kolor: "niebieski", nad: s.pochodzenie || "z raportu", pod: (s.r.kto || "ktoś") + " · " + czasTemu(s.r.czas) };
+      if (s.typ === "pytanie") {
+        const otw = (s.decyzje || []).filter((x) => x.d && (x.d.status === "propozycja" || x.d.status === "do_decyzji")).length;
+        return { ikona: "pytanie", kolor: "zloto", nad: s.pochodzenie || "pytanie #" + s.p.nr, pod: otw ? "z " + otw + " " + odmiana(otw, ["decyzją", "decyzjami", "decyzjami"]) + " do zatwierdzenia" : "czeka na odpowiedź" };
+      }
+      return { ikona: "decyzja", kolor: "fiolet", nad: s.pochodzenie || "decyzja " + s.d.id, pod: "Tak czy nie? · " + (STATUSY_DECYZJI[s.d.status] || s.d.status) };
+    }
+
+    function rysujCzeka(dane) {
       const c = kCzeka.cialo;
-      if (blad) return c.replaceChildren(stanBledu(blad, "Raporty"));
-      const czekajace = (d.raporty || []).filter((r) => r.status === "czeka");
-      const n = typeof d.czeka === "number" ? d.czeka : czekajace.length;
-      ctx.licznik("raporty", n);
+      const { plan, raporty, agenda, bladPlanu, bladRaportow } = dane;
+      if (!plan && !raporty) return c.replaceChildren(stanBledu(bladPlanu || bladRaportow || {}, "Sprawy"));
+      const k = zbudujKolejke(plan || {}, raporty || [], agenda);
+      const n = k.aktywne.length;
+      ctx.licznik("pytania", n);
+      kCzeka.akcje.replaceChildren();
       if (!n) {
         return c.replaceChildren(el("div", { class: "czeka-zero" },
           el("span", { class: "czeka-liczba zero" }, ikona("ok")),
-          el("div", null, el("strong", null, "Nic nie czeka"), el("p", { class: "cichy-tekst" }, "Wszystkie raporty z wdrożeń są rozpatrzone."))));
+          el("div", null, el("strong", null, "Nic nie czeka"),
+            el("p", { class: "cichy-tekst" }, k.odlozone.length ? k.odlozone.length + " " + odmiana(k.odlozone.length, ["pytanie czeka", "pytania czekają", "pytań czeka"]) + " na sesję główną." : "Na wszystkie pytania jest odpowiedź."))));
       }
-      c.replaceChildren(
-        el("a", { class: "czeka-gora", href: "#/raporty" },
+      zamien(c,
+        el("button", { type: "button", class: "czeka-gora", onclick: () => ctx.idz("pytania") },
           el("span", { class: "czeka-liczba" }, String(n)),
-          el("div", null, el("strong", null, odmiana(n, ["raport czeka", "raporty czekają", "raportów czeka"])),
-            el("p", { class: "cichy-tekst" }, "na akceptację albo odpowiedź"))),
-        el("ul", { class: "lista" }, czekajace.slice(0, 3).map((r) => el("li", null,
-          el("button", { type: "button", class: "wiersz wiersz-klik", onclick: () => ctx.idz("raporty", { raport: r.id }) },
-            awatar(r.kto, { maly: true }),
-            el("span", { class: "wiersz-tekst" }, el("strong", null, r.tytul || "(bez tytułu)"),
-              el("span", { class: "cichy-tekst" }, (r.kto || "ktoś") + " · " + czasTemu(r.czas))),
-            r.rodzaj === "pytanie" ? el("span", { class: "chip zloto" }, "pytanie") : null,
-            ikona("prawo", { klasa: "wiersz-strzalka" }))))));
+          el("span", { class: "czeka-opis" }, el("strong", null, odmiana(n, ["pytanie czeka", "pytania czekają", "pytań czeka"])),
+            el("span", { class: "cichy-tekst" }, "na Twoją odpowiedź — zakładka Pytania"))),
+        el("ul", { class: "lista" }, k.aktywne.slice(0, 3).map((s) => {
+          const o = opisSprawy(s);
+          return el("li", null, el("button", { type: "button", class: "wiersz wiersz-klik sprawa-wiersz", onclick: () => doSprawy(s.klucz) },
+            el("span", { class: "sprawa-znak " + o.kolor }, ikona(o.ikona)),
+            el("span", { class: "wiersz-tekst" },
+              el("span", { class: "sprawa-nad" }, o.nad),
+              el("strong", null, skroc(zwykly(s.pytanie || s.tytul), 90) || "(bez tytułu)"),
+              el("span", { class: "cichy-tekst" }, o.pod)),
+            ikona("prawo", { klasa: "wiersz-strzalka" })));
+        })),
+        n > 3 ? el("button", { type: "button", class: "przycisk szeroki", onclick: () => ctx.idz("pytania") },
+          el("span", null, "Wszystkie (" + n + ")"), ikona("strzalka")) : null);
+    }
+
+    function rysujRozmowe(ob, blad) {
+      const c = kRozmowa.cialo;
+      kRozmowa.akcje.replaceChildren();
+      if (blad) return c.replaceChildren(stanBledu(blad, "Obecność"));
+      const r = (ob && ob.rozmowa && typeof ob.rozmowa === "object") ? ob.rozmowa : null;
+      const osoby = (r && r.osoby) || [];
+      const przycisk = el("button", { type: "button", class: "przycisk" + (osoby.length ? " glowny" : ""), onclick: () => ctx.idz("sesja") },
+        ikona("mikrofon"), el("span", null, osoby.length ? "Dołącz w Sesji" : "Otwórz Sesję"));
+      if (ctx.statyczny) return c.replaceChildren(el("p", { class: "cichy-tekst" }, "Rozmowa działa tylko na żywym panelu."));
+      if (!osoby.length) {
+        return c.replaceChildren(el("p", { class: "cichy-tekst" }, r ? "Nikt teraz nie rozmawia." : "Stan rozmowy pokaże się po restarcie panelu."),
+          el("div", { class: "rzad-przyciskow" }, przycisk));
+      }
+      if (r.slucha) kRozmowa.akcje.append(el("span", { class: "chip czerwien" }, el("span", { class: "kropka-nagrywania", "aria-hidden": "true" }), "agent słucha"));
+      c.replaceChildren(
+        el("ul", { class: "lista osoby" }, osoby.map((o) => el("li", { class: "wiersz" },
+          awatar(o.kto, { maly: true }),
+          el("span", { class: "wiersz-tekst" }, el("strong", null, o.kto || "ktoś"),
+            el("span", { class: "cichy-tekst" }, (STANY_ROZMOWY[o.stan] || "w rozmowie") + (o.od ? " · od " + czasTemu(o.od).replace(/ temu$/, "") : "")))))),
+        el("div", { class: "rzad-przyciskow" }, przycisk));
+    }
+
+    function rysujNowe(dane) {
+      const c = kNowe.cialo;
+      const { plan, raporty } = dane;
+      if (!plan && !raporty) return c.replaceChildren(el("p", { class: "cichy-tekst" }, "Brak danych."));
+      const wpisy = [];
+      for (const r of (raporty || []).slice().sort((a, b) => String(b.czas || "").localeCompare(String(a.czas || ""))).slice(0, 3)) {
+        wpisy.push({ ikona: "raporty", tekst: r.tytul || "(bez tytułu)", pod: "Raport · " + (r.kto || "ktoś"), czas: r.czas || "", akcja: () => doSprawy("raport-" + r.id) });
+      }
+      const decyzje = [];
+      for (const d of (plan && plan.decyzje) || []) {
+        if (d.status !== "zatwierdzona" && d.status !== "odrzucona") continue;
+        for (const m of d.meta || []) {
+          const mm = /^(?:zdecydował|zdecydowała)\S*:\s*(.+?)\s+(\d{4}-\d{2}-\d{2})$/.exec(String(m).trim());
+          if (mm) decyzje.push({ ikona: "decyzja", tekst: d.id + " " + (d.tytul || ""), pod: "Decyzja " + STATUSY_DECYZJI[d.status] + " · " + mm[1], czas: mm[2], akcja: () => doSprawy(d.id) });
+        }
+      }
+      decyzje.sort((a, b) => b.czas.localeCompare(a.czas));
+      wpisy.push(...decyzje.slice(0, 3));
+      const ludzie = [];
+      for (const w of (plan && plan.dziennik) || []) {
+        if (!/panel/i.test(w.kto || "") || !/ludzie/i.test(w.temat || "")) continue;
+        for (const p of (w.punkty_md || []).slice().reverse()) {
+          ludzie.push({ ikona: "uzytkownik", tekst: zwykly(p).replace(/\s*\((?:Pytania otwarte|Rejestr decyzji|Zadania|Sesje główne)\)\s*$/, ""), pod: "Wpis w Dzienniku", czas: w.data, akcja: () => doSekcji("dziennik") });
+        }
+      }
+      wpisy.push(...ludzie.slice(0, 3));
+      wpisy.sort((a, b) => String(b.czas).slice(0, 10).localeCompare(String(a.czas).slice(0, 10)));
+      if (!wpisy.length) return c.replaceChildren(el("p", { class: "cichy-tekst" }, "Na razie nic nowego."));
+      c.replaceChildren(el("ul", { class: "lista" }, wpisy.slice(0, 6).map((w) => el("li", null,
+        el("button", { type: "button", class: "wiersz wiersz-klik nowe-wiersz", onclick: w.akcja },
+          el("span", { class: "sprawa-znak" }, ikona(w.ikona)),
+          el("span", { class: "wiersz-tekst" }, el("strong", null, skroc(w.tekst, 90)), el("span", { class: "cichy-tekst" }, w.pod)),
+          el("span", { class: "cichy-tekst nowe-kiedy" }, kiedy(w.czas)))))));
     }
 
     function rysujTeraz(plan, blad) {
@@ -146,15 +231,15 @@ export default {
       const pierwsza = sekcje.find((s) => (s.pozycje || []).some((p) => !p.zrobione)) || sekcje[0];
       if (!pierwsza) return c.replaceChildren(pusty("Brak zadań", "Lista zadań w sejfie jest pusta."));
       const otwarte = (pierwsza.pozycje || []).filter((p) => !p.zrobione);
-      kTeraz.akcje.replaceChildren(el("a", { class: "przycisk cichy maly", href: "#/plan?zakladka=zadania" }, "Wszystkie"));
+      kTeraz.akcje.replaceChildren(el("button", { type: "button", class: "przycisk cichy maly", onclick: () => doSekcji("zadania") }, "Wszystkie"));
       if (!otwarte.length) return c.replaceChildren(pusty("Wszystko zrobione", "W sekcji „" + pierwsza.nazwa + "” nie ma otwartych zadań.", "ok"));
       zamien(c,
         el("p", { class: "cichy-tekst sekcja-nazwa" }, pierwsza.nazwa),
-        el("ul", { class: "lista zadania-lista" }, otwarte.slice(0, 6).map((p) => el("li", { class: "wiersz zadanie-wiersz" },
+        el("ul", { class: "lista zadania-lista" }, otwarte.slice(0, 5).map((p) => el("li", { class: "wiersz zadanie-wiersz" },
           el("span", { class: "pole-wyboru", "aria-hidden": "true" }),
           el("span", { class: "md md-linia wiersz-tekst", html: mdLinia(p.tekst_md) }),
           chipPriorytetu(p.priorytet)))),
-        otwarte.length > 6 ? el("p", { class: "cichy-tekst" }, "…i jeszcze " + (otwarte.length - 6) + " w tej sekcji.") : null);
+        otwarte.length > 5 ? el("p", { class: "cichy-tekst" }, "…i jeszcze " + (otwarte.length - 5) + " w tej sekcji.") : null);
     }
 
     function rysujKto(ob, blad) {
@@ -167,10 +252,9 @@ export default {
       czesci.push(el("p", { class: "etykieta" }, "Na panelu"));
       if (panel.length) {
         czesci.push(el("ul", { class: "lista osoby" }, panel.map((o) => el("li", { class: "wiersz" },
-          el("span", { class: "awatar-z-kropka" }, awatar(o.kto), el("span", { class: "kropka-online" })),
+          el("span", { class: "awatar-z-kropka" }, awatar(o.kto, { maly: true }), el("span", { class: "kropka-online" })),
           el("span", { class: "wiersz-tekst" }, el("strong", null, o.kto || "ktoś"),
-            el("span", { class: "cichy-tekst" }, "ogląda: " + ctx.nazwaWidoku(o.widok || "pulpit") + (o.lokalny ? "" : " · zdalnie"))),
-          el("span", { class: "cichy-tekst" }, czasTemu(o.od || o.ostatnio))))));
+            el("span", { class: "cichy-tekst" }, ctx.nazwaWidoku(o.widok || "pulpit") + (o.lokalny ? "" : " · zdalnie")))))));
       } else czesci.push(el("p", { class: "cichy-tekst" }, "Nikogo poza Tobą."));
 
       czesci.push(el("p", { class: "etykieta" }, "W Roblox Studio"));
@@ -181,7 +265,7 @@ export default {
 
       if (git.length) {
         czesci.push(el("p", { class: "etykieta" }, "Ostatnie zmiany w repozytorium"));
-        czesci.push(el("ul", { class: "lista commity" }, git.slice(0, 4).map((g) => el("li", { class: "wiersz" },
+        czesci.push(el("ul", { class: "lista commity" }, git.slice(0, 3).map((g) => el("li", { class: "wiersz" },
           awatar(g.autor, { maly: true }),
           el("span", { class: "wiersz-tekst" }, el("span", { class: "commit-temat" }, g.temat || ""),
             el("span", { class: "cichy-tekst" }, (g.autor || "") + " · " + czasTemu(g.ostatnio)))))));
@@ -223,7 +307,7 @@ export default {
           }
         });
         bWyslij.addEventListener("click", () => oknoWysylania(g, zmianyPanelu));
-        czesci.push(el("div", { class: "rzad-przyciskow" }, bPobierz, bWyslij));
+        czesci.push(el("div", { class: "rzad-przyciskow sync-przyciski" }, bPobierz, bWyslij));
       } else if (!ctx.statyczny) {
         czesci.push(el("p", { class: "cichy-tekst" }, "Pobieranie i wysyłanie działa na komputerze z panelem."));
       }
@@ -298,31 +382,40 @@ export default {
     const bierz = (sciezka, modul) => (ctx.jest(modul) ? ctx.api(sciezka) : Promise.reject(Object.assign(new Error("moduł wyłączony"), { status: 404 })));
 
     async function odswiez() {
-      const [plan, rap, ob, git, pod] = await Promise.allSettled([
+      const [plan, rap, ob, git, pod, ag] = await Promise.allSettled([
         bierz("/api/sejf/plan", "sejf"), bierz("/api/raporty", "raporty"), bierz("/api/obecnosc", "obecnosc"),
-        bierz("/api/git/stan", "gitsync"), bierz("/api/podglad", "podglad"),
+        bierz("/api/git/stan", "gitsync"), bierz("/api/podglad", "podglad"), bierz("/api/sesje/agenda", "sesje"),
       ]);
       const sygn = (r) => (r.status === "fulfilled" ? JSON.stringify(r.value) : "!" + (r.reason && r.reason.message));
-      const rysuj = (klucz, r, fn) => {
-        const s = sygn(r);
+      const rysuj = (klucz, s, fn) => {
         if (ostatnieDane[klucz] === s) return;
         ostatnieDane[klucz] = s;
         try {
-          fn(r.status === "fulfilled" ? r.value || {} : null, r.status === "rejected" ? r.reason : null);
+          fn();
         } catch (e) {
           console.warn("pulpit: " + klucz, e);
         }
       };
-      rysuj("hero", plan, rysujHero);
-      rysuj("teraz", plan, rysujTeraz);
-      rysuj("czeka", rap, rysujCzeka);
-      rysuj("kto", ob, rysujKto);
-      rysuj("sync", git, rysujSync);
-      rysuj("migawka", pod, rysujMigawke);
+      const wart = (r) => (r.status === "fulfilled" ? r.value || {} : null);
+      const blad = (r) => (r.status === "rejected" ? r.reason : null);
+      const dane = {
+        plan: wart(plan), raporty: rap.status === "fulfilled" ? (rap.value && rap.value.raporty) || [] : null,
+        agenda: wart(ag), bladPlanu: blad(plan), bladRaportow: blad(rap),
+      };
+      const sPlan = sygn(plan);
+      const sRap = sygn(rap);
+      rysuj("gora", sPlan, () => rysujGore(dane.plan, dane.bladPlanu));
+      rysuj("czeka", sPlan + sRap + sygn(ag), () => rysujCzeka(dane));
+      rysuj("rozmowa", sygn(ob), () => rysujRozmowe(wart(ob), blad(ob)));
+      rysuj("nowe", sPlan + sRap, () => rysujNowe(dane));
+      rysuj("sync", sygn(git), () => rysujSync(wart(git), blad(git)));
+      rysuj("teraz", sPlan, () => rysujTeraz(wart(plan), blad(plan)));
+      rysuj("kto", sygn(ob), () => rysujKto(wart(ob), blad(ob)));
+      rysuj("migawka", sygn(pod), () => rysujMigawke(wart(pod), blad(pod)));
     }
 
     window.addEventListener("bc:kto", () => {
-      ostatnieDane.hero = null;
+      ostatnieDane.gora = null;
       odswiez();
     });
 

@@ -2,8 +2,12 @@
 """Agent = Claude Code w trybie bezobsługowym (`claude -p --output-format stream-json`), na subskrypcji osoby przy
 tym komputerze (nie klucz API, nie --bare — działa CLAUDE.md, skille i serwery MCP z .mcp.json).
 
-- Wątek rozmowy: RUNTIME/agent/watki/<id>.json {id, tytul, utworzono, ostatnio, session_id, wiadomosci:[…]}.
-  Kolejne wiadomości wznawiają tę samą sesję (`--resume <session_id>`).
+- Wątek rozmowy: RUNTIME/agent/watki/<id>.json {id, tytul, utworzono, ostatnio, utworzyl, zdalnie, session_id,
+  wiadomosci:[…]}. Kolejne wiadomości wznawiają tę samą sesję (`--resume <session_id>`).
+- Kto zużywa subskrypcję: każdy przebieg idzie na subskrypcji osoby przy komputerze z panelem, także gdy pisze ktoś
+  zdalnie (przez tunel). Dlatego wątek pamięta, kto go założył (`utworzyl` — imię z panelu) i czy zdalnie
+  (`zdalnie`), a każda wiadomość człowieka — `kto` i `zdalnie`; lista wątków pokazuje to w zakładce Agent.
+  Starsze wątki nie mają pola `zdalnie` (null = nie wiadomo).
 - Przebieg: proces potomny w katalogu repozytorium; wiadomość idzie przez stdin; wyjście stream-json zamieniamy na
   zdarzenia {n, typ:"tekst"|"narzedzie"|"wiadomosc"|"blad"|"koniec", …} trzymane w pamięci (bufor przebiegu)
   i wysyłane strumieniem SSE (`?od=<n>` = wyślij zdarzenia o numerze >= n, potem nowe).
@@ -182,9 +186,32 @@ def _ile_trwa():
         return sum(1 for p in _przebiegi.values() if not p.zakonczony)
 
 
+def _osoby_watku(w):
+    """Kto pisał w wątku: [{kto, zdalnie}] bez powtórzeń, w kolejności pierwszej wiadomości (zdalnie = true, gdy
+    choć jedna wiadomość tej osoby przyszła zdalnie; null, gdy stary wątek tego nie zapisał)."""
+    osoby = collections.OrderedDict()
+    for m in w.get("wiadomosci") or []:
+        if not isinstance(m, dict) or m.get("rola") != "user":
+            continue
+        kto = str(m.get("kto") or "").strip() or "ktoś"
+        z = m.get("zdalnie")
+        if kto not in osoby:
+            osoby[kto] = z
+        elif z is True or (osoby[kto] is None and z is False):
+            osoby[kto] = z
+    return [{"kto": k, "zdalnie": v} for k, v in osoby.items()]
+
+
+def _kto_zalozyl(w):
+    return {"utworzyl": w.get("utworzyl") or None, "zdalnie": w.get("zdalnie") if isinstance(w.get("zdalnie"), bool) else None}
+
+
 def _widok_watku(w):
-    return {"id": w["id"], "tytul": w.get("tytul") or "Rozmowa", "utworzono": w.get("utworzono"),
-            "ostatnio": w.get("ostatnio"), "trwa": _trwa(w["id"]), "wiadomosci": w.get("wiadomosci") or []}
+    out = {"id": w["id"], "tytul": w.get("tytul") or "Rozmowa", "utworzono": w.get("utworzono"),
+           "ostatnio": w.get("ostatnio"), "trwa": _trwa(w["id"]), "wiadomosci": w.get("wiadomosci") or [],
+           "osoby": _osoby_watku(w)}
+    out.update(_kto_zalozyl(w))
+    return out
 
 
 # --------------------------------------------------------------------------- przebieg
@@ -558,9 +585,11 @@ def _lista(z):
         w = rdzen.czytaj_json(os.path.join(_kat_watkow(), n))
         if not isinstance(w, dict) or not w.get("id"):
             continue
-        out.append({"id": w["id"], "tytul": w.get("tytul") or "Rozmowa", "utworzono": w.get("utworzono"),
-                    "ostatnio": w.get("ostatnio") or w.get("utworzono"), "wiadomosci": len(w.get("wiadomosci") or []),
-                    "trwa": _trwa(w["id"])})
+        wpis = {"id": w["id"], "tytul": w.get("tytul") or "Rozmowa", "utworzono": w.get("utworzono"),
+                "ostatnio": w.get("ostatnio") or w.get("utworzono"), "wiadomosci": len(w.get("wiadomosci") or []),
+                "trwa": _trwa(w["id"]), "osoby": _osoby_watku(w)}
+        wpis.update(_kto_zalozyl(w))
+        out.append(wpis)
     out.sort(key=lambda w: (w["ostatnio"] or "", w["id"]), reverse=True)
     return {"watki": out}
 
@@ -583,7 +612,7 @@ def _nowy(z):
                 break
         teraz = rdzen.teraz()
         w = {"id": wid, "tytul": tytul or "Nowa rozmowa", "tytul_auto": not tytul, "utworzono": teraz,
-             "ostatnio": teraz, "utworzyl": z.kto, "session_id": None, "wiadomosci": []}
+             "ostatnio": teraz, "utworzyl": z.kto, "zdalnie": not z.lokalny, "session_id": None, "wiadomosci": []}
         _zapisz_watek(w)
     return 201, _widok_watku(w)
 
@@ -653,7 +682,7 @@ def _wiadomosc(z):
             raise BladHTTP(409, "Agent jeszcze odpowiada w tym wątku. Poczekaj albo go zatrzymaj.")
         if _ile_trwa() >= MAX_PRZEBIEGOW:
             raise BladHTTP(409, "Agent pracuje już w %d wątkach naraz. Poczekaj, aż któryś skończy." % MAX_PRZEBIEGOW)
-        wiad = {"rola": "user", "tekst": tekst, "kto": z.kto, "tryb": tryb}
+        wiad = {"rola": "user", "tekst": tekst, "kto": z.kto, "zdalnie": not z.lokalny, "tryb": tryb}
         if kontekst:
             wiad["kontekst"] = kontekst
         pola = {}
@@ -747,12 +776,13 @@ def mozna_uruchomic(z):
     return bool(z.lokalny or (rdzen.konfiguracja().get("agent") or {}).get("zdalnie"))
 
 
-def uruchom_polecenie(tekst, kto, tytul=None, watek=None, tryb="praca", katalogi=None, zestaw=None):
+def uruchom_polecenie(tekst, kto, tytul=None, watek=None, tryb="praca", katalogi=None, zestaw=None, zdalnie=None):
     """Przebieg agenta z gotowym poleceniem od panelu (np. notatki z rozmowy, propozycje tematów).
 
     `watek` = istniejący wątek (wtedy rozmowa jest wznawiana) albo None (nowy wątek z `tytul`). `katalogi` = katalogi
     sesji rozmów, które agent może czytać (`--add-dir`, zapamiętane w wątku). `zestaw` = zawężona lista narzędzi
-    (ZESTAWY_NARZEDZI) zamiast uprawnień trybu. Uprawnienia osoby sprawdza wołający.
+    (ZESTAWY_NARZEDZI) zamiast uprawnień trybu. `zdalnie` = czy polecenie zlecił ktoś zdalnie (None = nie wiadomo;
+    zapisuje się przy wątku i wiadomości). Uprawnienia osoby sprawdza wołający.
     Zwraca {watek, nr, od, tryb}. Błędy: 503 brak programu, 409 wątek pracuje albo limit przebiegów naraz."""
     if tryb not in ("plan", "praca"):
         raise BladHTTP(400, "Nieznany tryb agenta")
@@ -780,8 +810,8 @@ def uruchom_polecenie(tekst, kto, tytul=None, watek=None, tryb="praca", katalogi
                     break
             teraz = rdzen.teraz()
             _zapisz_watek({"id": wid, "tytul": _skroc(tytul or "Polecenie z panelu", 120), "tytul_auto": False,
-                           "utworzono": teraz, "ostatnio": teraz, "utworzyl": kto, "session_id": None,
-                           "wiadomosci": [], "katalogi": katalogi})
+                           "utworzono": teraz, "ostatnio": teraz, "utworzyl": kto, "zdalnie": zdalnie,
+                           "session_id": None, "wiadomosci": [], "katalogi": katalogi})
         else:
             wid = watek
         w = _czytaj_watek(wid)
@@ -790,7 +820,10 @@ def uruchom_polecenie(tekst, kto, tytul=None, watek=None, tryb="praca", katalogi
         if _ile_trwa() >= MAX_PRZEBIEGOW:
             raise BladHTTP(409, "Agent pracuje już w %d wątkach naraz. Spróbuj za chwilę." % MAX_PRZEBIEGOW)
         pola = {"katalogi": katalogi} if katalogi and katalogi != w.get("katalogi") else {}
-        msg = _dopisz(wid, {"rola": "user", "tekst": tekst, "kto": kto, "tryb": tryb}, **pola)
+        wiad = {"rola": "user", "tekst": tekst, "kto": kto, "tryb": tryb}
+        if zdalnie is not None:
+            wiad["zdalnie"] = bool(zdalnie)
+        msg = _dopisz(wid, wiad, **pola)
         p = Przebieg(wid)
         _przebiegi[wid] = p
         od = _licznik_n.get(wid, 0) + 1

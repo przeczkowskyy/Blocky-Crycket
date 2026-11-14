@@ -29,7 +29,7 @@ Panel otworzy się w przeglądarce (`http://127.0.0.1:8787`). Przy pierwszym wej
 ## Co działa od razu, a co wymaga dodatków
 | Funkcja | Wymaga |
 |---|---|
-| Pulpit, Plan (decyzje, zadania, roadmapa), Raporty, Sieć notatek | nic |
+| Pulpit, Pytania (lista „Do odpowiedzi”, historia, wyszukiwarka, zadania, roadmapa, dziennik), Sieć notatek | nic |
 | Odpowiadanie na pytania otwarte, odhaczanie i dodawanie zadań (zapis w sejfie) | nic — także dla gościa z kodem dostępu |
 | Zatwierdzanie i odrzucanie decyzji (zmiana kanonu, Karol albo Paweł) | komputer z panelem albo link z kluczem zatwierdzania (niżej) i imię w Ustawieniach |
 | Podgląd 3D zapisanych migawek | nic |
@@ -43,7 +43,7 @@ Panel otworzy się w przeglądarce (`http://127.0.0.1:8787`). Przy pierwszym wej
 | Wejście z telefonu | uruchomienie przez `panel\start_lan.bat` (niżej) |
 
 ### Praca na sejfie i zatwierdzanie decyzji
-W zakładce **Plan** można pracować wprost na sejfie: odpowiadać na pytania otwarte, odhaczać i dodawać zadania. Panel zapisuje to w tych samych plikach co Obsidian (`B&C/Produkcja/Pytania otwarte.md`, `Zadania.md`, `Dziennik zmian.md`) — małymi zmianami, z podpisem imieniem z Ustawień i wpisem w Dzienniku zmian. Jeśli w tym samym czasie ktoś zmienił plik (druga osoba, Obsidian, agent), panel nic nie nadpisze: pokaże „Ktoś zmienił ten plik — odświeżam” i zostawi wpisany tekst do ponownego wysłania.
+W zakładce **Pytania** można pracować wprost na sejfie: odpowiadać na pytania otwarte, zatwierdzać decyzje, akceptować raporty, odhaczać i dodawać zadania. Na górze jest wyszukiwarka i jedna lista **Do odpowiedzi** — wszystko, co czeka na człowieka, a każda pozycja to pytanie: pytanie z notatki Pytania otwarte (z polem odpowiedzi), decyzja „Czy zatwierdzamy: …?” (przyciski **Tak** / **Nie**) albo raport „Czy akceptujesz: …?” (**Akceptuję** / **Do poprawy**). Bez dubli: pytanie i decyzje, które je rozstrzygają (wiersz `Rozstrzyga: D-0XX` w notatce Pytania otwarte), są jedną kartą, a zatwierdzenie ostatniej takiej decyzji samo zamyka pytanie. Najnowsze i najważniejsze są na górze. Pod listą jest historia **Odpowiedziane** (pytania z odpowiedziami, decyzje po zatwierdzeniu albo odrzuceniu, raporty po decyzji) i zwijany **Plan** (zadania, roadmapa, dziennik zmian). Lista odświeża się sama (co kilkanaście sekund i po każdej akcji), ale nie rusza karty, w której właśnie piszesz. Przycisk **Na sesję główną** odkłada sprawę do agendy zakładki Sesja; tę samą listę pytań widać w zakładce **Sesja** obok Agendy, żeby odpowiadać w trakcie rozmowy. Dawne adresy zakładek Plan, Raporty i Decyzje (np. zapisane zakładki w telefonie) same przechodzą do Pytań. Kto jest teraz na panelu (i w której zakładce, czy rozmawia w Sesji, czy agent słucha), widać w lewym dolnym rogu; na telefonie — znaczek z liczbą osób w górnym pasku. Panel zapisuje to w tych samych plikach co Obsidian (`B&C/Produkcja/Pytania otwarte.md`, `Zadania.md`, `Dziennik zmian.md`) — małymi zmianami, z podpisem imieniem z Ustawień i wpisem w Dzienniku zmian. Jeśli w tym samym czasie ktoś zmienił plik (druga osoba, Obsidian, agent), panel nic nie nadpisze: pokaże „Ktoś zmienił ten plik — odświeżam” i zostawi wpisany tekst do ponownego wysłania.
 
 **Co wolno gościowi** (telefon, tunel, wejście z kodem dostępu): czytać wszystko, komentować, odpowiadać na pytania, odhaczać i dodawać zadania (najwyżej 30 zapisów na 10 minut). Nie wolno: agent (chyba że włączony „Agent z telefonu”), git, nowa migawka, ustawienia — i **zmiana statusu decyzji**.
 
@@ -61,7 +61,7 @@ Samo imię „Paweł” w Ustawieniach nic nie daje; gość z samym kodem dostę
    Polecenie wypisze link `http://127.0.0.1:8787/?gd=…` (klucz leży w `%LOCALAPPDATA%\BlockyCrycket\panel\klucz_gd.txt`). Dawna nazwa polecenia, `--klucz-gd`, działa dalej, a link zapisany wcześniej w przeglądarce nadal działa.
 2. Przy tym komputerze: otwórz link w przeglądarce, w której działa już panel.
    Zdalnie (tunel, telefon): do adresu z kodem dostępu dopisz `&gd=…`, np. `https://<adres-tunelu>/?k=<kod>&gd=<klucz>`.
-3. Przeglądarka zapamięta klucz na rok i usunie go z adresu. W **Ustawieniach** pojawi się „Zatwierdzanie decyzji: tak”, a w **Plan → Decyzje** przy propozycjach i decyzjach „do decyzji” przyciski **Zatwierdź** / **Odrzuć** (z potwierdzeniem, podglądem podpisu i polem na uzasadnienie). Pozostali widzą tam „Zatwierdza Karol albo Paweł (klucz zatwierdzania)” i mogą komentować.
+3. Przeglądarka zapamięta klucz na rok i usunie go z adresu. W **Ustawieniach** pojawi się „Zatwierdzanie decyzji: tak”, a w zakładce **Pytania** przy decyzjach „Czy zatwierdzamy: …?” przyciski **Tak** / **Nie** (z potwierdzeniem, podglądem podpisu i polem na uzasadnienie). Pozostali widzą tam „Zatwierdza Karol albo Paweł (klucz zatwierdzania)” i mogą komentować.
 
 Link działa jak hasło: przekaż go tylko Karolowi albo Pawłowi i nie wklejaj w publicznych miejscach (repozytorium jest publiczne). Gdy wycieknie: `python panel/serwer.py --nowy-klucz-zatwierdzania` (dawniej `--nowy-klucz-gd`) — stary klucz przestaje działać od razu, bez restartu panelu.
 
@@ -80,6 +80,8 @@ Panel sam szuka programu `claude` (PATH, `%USERPROFILE%\.local\bin`, rozszerzeni
 { "agent": { "sciezka": "C:/pełna/ścieżka/do/claude.exe" } }
 ```
 Tryby: **Plan** (tylko czyta i planuje), **Praca** (edytuje pliki i używa dozwolonych narzędzi, reszty odmawia), **Auto**.
+
+Agent zawsze działa na subskrypcji osoby zalogowanej w Claude Code **na komputerze z panelem** — także gdy pisze do niego ktoś z telefonu albo przez tunel (np. Paweł do panelu Karola). Na liście rozmów w zakładce **Agent** widać przy każdym wątku, kto go założył i czy zdalnie, oraz kto jeszcze w nim pisał. Jeśli druga osoba ma pracować na własnej subskrypcji, musi uruchomić agenta (Claude Code albo własny panel) na swoim komputerze.
 
 ### Telefon
 1. Uruchom `panel\start_lan.bat` (albo `python panel/serwer.py --lan`). Windows może zapytać o zgodę zapory — zezwól dla sieci prywatnej.
@@ -118,7 +120,7 @@ Poza domem, przy wyłączonym komputerze, działa **lustro tylko do odczytu** (p
 ## Codzienna praca we dwóch
 1. **Pulpit → Pobierz** (albo `git pull`) — ściąga raporty, komentarze i migawki drugiej osoby.
 2. Pracujesz z Claude'em; po wdrożeniu Claude publikuje migawkę i raport (skill `.claude/skills/panel/`).
-3. Oglądasz raport, klikasz **Akceptuję** albo **Do poprawy**, komentujesz elementy w podglądzie 3D. W **Plan** odpowiadasz na pytania, odhaczasz zadania, a Karol albo Paweł zatwierdza decyzje (przy komputerze z panelem albo z kluczem zatwierdzania).
+3. Oglądasz raport (Pulpit → Czeka na Ciebie albo zakładka Pytania), klikasz **Akceptuję** albo **Do poprawy**, komentujesz elementy w podglądzie 3D. W **Pytaniach** odpowiadasz na pytania, odhaczasz zadania (Plan), a Karol albo Paweł zatwierdza decyzje (przy komputerze z panelem albo z kluczem zatwierdzania).
 4. **Pulpit → Wyślij** — commit i push danych panelu (`panel/dane/`) i plików sejfu zmienionych w panelu. Resztę zmian commitujesz jak zwykle.
 
 Pamiętaj: repozytorium jest publiczne, więc raporty i komentarze widzi każdy. Rozmowy z agentem i nagrania głosowe zostają tylko na Twoim komputerze.
@@ -154,4 +156,4 @@ Usunięcie folderu z danymi lokalnymi przywraca panel do stanu początkowego; da
 cd panel
 python -B -m unittest discover -s testy -t .
 ```
-(`-B` = bez plików `__pycache__` w folderze projektu.) Testy w prawdziwej przeglądarce (Plan i Sesja, potrzebują Edge albo Chrome i Node 22+) uruchamia zmienna `BC_TEST_PRZEGLADARKA=1`.
+(`-B` = bez plików `__pycache__` w folderze projektu.) Testy w prawdziwej przeglądarce (Pytania i Sesja, potrzebują Edge albo Chrome i Node 22+) uruchamia zmienna `BC_TEST_PRZEGLADARKA=1`.

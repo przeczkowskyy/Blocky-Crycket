@@ -340,7 +340,21 @@ export default {
         },
       },
       el("span", { class: "watek-tytul" }, w.trwa ? el("span", { class: "kropka-pulsujaca", title: "pracuje" }) : null, w.tytul || "Rozmowa"),
+      kimWatek(w),
       el("span", { class: "cichy-tekst" }, czasTemu(w.ostatnio || w.utworzono) + " · " + (w.wiadomosci || 0) + " " + odmiana(w.wiadomosci || 0, ["wiadomość", "wiadomości", "wiadomości"]))))));
+    }
+
+    /** Kto założył wątek i czy zdalnie (agent zawsze idzie na subskrypcji osoby przy komputerze z panelem) oraz kto
+     * jeszcze w nim pisał. Starszy serwer tych pól nie zwraca — wtedy nic. */
+    function kimWatek(w) {
+      const zal = String(w.utworzyl || "").trim();
+      const inni = (Array.isArray(w.osoby) ? w.osoby : []).filter((o) => o && o.kto && o.kto !== zal);
+      if (!zal && !inni.length) return null;
+      const gdzie = (z) => (z === true ? " (zdalnie)" : z === false ? " (przy komputerze)" : "");
+      const tekst = (zal ? "założył(a): " + zal + gdzie(w.zdalnie) : "") +
+        (inni.length ? (zal ? " · " : "") + "pisze też: " + inni.map((o) => o.kto + gdzie(o.zdalnie)).join(", ") : "");
+      return el("span", { class: "cichy-tekst watek-kto", title: "Agent pracuje na subskrypcji osoby przy komputerze z panelem — także dla osób zdalnych." },
+        ikona("uzytkownik"), el("span", null, tekst));
     }
 
     async function wczytajWatki() {

@@ -729,16 +729,41 @@ def parsuj_decyzje(tekst):
 
 
 _RX_ODPOWIEDZ = re.compile(r"^\s*\*\*\s*Odpowied[źz]\s*:?\s*\*\*\s*:?\s*(.*)$", re.IGNORECASE)
+# Jawne powiązanie pytania z decyzjami, które je rozstrzygają: wiersz „Rozstrzyga: D-019, D-020” w treści pytania
+# (przed „**Odpowiedź:**”). Dopuszczalne pogrubienie i punkt listy: „- **Rozstrzyga:** D-019”.
+RX_ROZSTRZYGA = re.compile(r"^\s*(?:[-*+]\s+)?(?:\*\*|__)?\s*Rozstrzyga\s*(?:\*\*|__)?\s*:\s*(?:\*\*|__)?(.*)$",
+                           re.IGNORECASE)
+RX_ID_DECYZJI = re.compile(r"\bD-(\d{1,4})\b")
+
+
+def id_decyzji(numer):
+    """Numer decyzji -> identyfikator jak w Rejestrze („D-019”)."""
+    return "D-%03d" % int(numer)
+
+
+def _identyfikatory(tekst):
+    """Wszystkie odwołania „D-0XX” w tekście, bez powtórzeń, w kolejności wystąpienia."""
+    wynik = []
+    for m in RX_ID_DECYZJI.finditer(tekst or ""):
+        ident = id_decyzji(m.group(1))
+        if ident not in wynik:
+            wynik.append(ident)
+    return wynik
 
 
 def parsuj_pytania(tekst):
+    """Pytania otwarte: {nr, tytul, tresc_md, odpowiedz_md, otwarte, rozstrzyga, powiazane}.
+
+    `rozstrzyga` = decyzje z wiersza „Rozstrzyga: D-0XX, …” w treści pytania (jawne powiązanie — gdy wszystkie są
+    zamknięte, panel sam dopisuje odpowiedź, patrz bc/zapis.py); `powiazane` = pozostałe wzmianki „D-0XX” w tytule
+    i treści pytania (bez automatyki)."""
     _, tresc, _ = parsuj_frontmatter(tekst)
     pytania = []
     for naglowek, linie in _sekcje(tresc, 2):
         m = re.match(r"^(\d+)[.)]?\s+(.*)$", naglowek)
         if not m:
             continue
-        pytanie, odpowiedz, w_odpowiedzi = [], [], False
+        pytanie, odpowiedz, w_odpowiedzi, rozstrzyga = [], [], False, []
         for linia in linie:
             mo = _RX_ODPOWIEDZ.match(linia) if not w_odpowiedzi else None
             if mo:
@@ -748,10 +773,16 @@ def parsuj_pytania(tekst):
                 continue
             if _RX_LINIA_POZIOMA.match(linia):
                 continue
+            if not w_odpowiedzi:
+                mr = RX_ROZSTRZYGA.match(linia)
+                if mr:
+                    rozstrzyga.extend(i for i in _identyfikatory(mr.group(1)) if i not in rozstrzyga)
             (odpowiedz if w_odpowiedzi else pytanie).append(linia)
         odp = "\n".join(odpowiedz).strip()
-        pytania.append({"nr": int(m.group(1)), "tytul": m.group(2).strip(), "tresc_md": "\n".join(pytanie).strip(),
-                        "odpowiedz_md": odp, "otwarte": not odp})
+        tresc_md = "\n".join(pytanie).strip()
+        powiazane = [i for i in _identyfikatory(m.group(2) + "\n" + tresc_md) if i not in rozstrzyga]
+        pytania.append({"nr": int(m.group(1)), "tytul": m.group(2).strip(), "tresc_md": tresc_md,
+                        "odpowiedz_md": odp, "otwarte": not odp, "rozstrzyga": rozstrzyga, "powiazane": powiazane})
     return pytania
 
 

@@ -559,43 +559,69 @@ details.callout[open] > summary::before { content: "▾ "; }
 
 /* ------------------------------------------------------------------ Pulpit */
 .pulpit { display: flex; flex-direction: column; gap: 16px; }
-.hero {
-  overflow: hidden; padding: 20px 18px 18px;
-  background: linear-gradient(135deg, #1f2433 0%, #1b1f2b 55%, #221d2f 100%);
-  border-color: #343c54;
-  display: flex; flex-direction: column; gap: 10px;
+/* nagłówek: powitanie i faza w jednym pasku */
+.pulpit-gora { display: flex; align-items: center; gap: 12px 18px; flex-wrap: wrap; }
+.pulpit-gora-tekst { display: flex; flex-direction: column; min-width: 0; flex: 1 1 220px; }
+.pulpit-gra { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: var(--zloto); }
+.pulpit-powitanie { font-size: 24px; font-weight: 900; letter-spacing: -0.02em; }
+.pulpit-faza { flex: 1 1 280px; max-width: 460px; min-width: 0; }
+.pulpit-faza:empty { display: none; }
+.pulpit-faza-przycisk {
+  width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 10px;
+  min-height: 52px; padding: 8px 12px; border-radius: 12px; border: 2px solid var(--obrys); background: var(--karta);
+  color: var(--tekst); text-align: left; box-shadow: var(--cien-twardy);
 }
-.hero-tlo {
-  position: absolute; inset: 0; pointer-events: none;
-  background:
-    radial-gradient(circle at 92% 18%, rgba(245, 184, 46, 0.22) 0 2px, transparent 2.5px) 0 0 / 12px 12px,
-    linear-gradient(115deg, transparent 58%, rgba(245, 184, 46, 0.07) 58% 64%, transparent 64% 70%, rgba(139, 92, 246, 0.08) 70% 74%, transparent 74%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 35%, #000 100%); mask-image: linear-gradient(90deg, transparent 35%, #000 100%);
+.pulpit-faza-przycisk:hover { border-color: rgba(245, 184, 46, 0.5); }
+.pulpit-faza-nazwa { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; min-width: 0; }
+.pulpit-faza-nazwa > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pulpit-faza-nazwa .ikona { width: 16px; height: 16px; color: var(--zloto); }
+.pulpit-faza-procent { font-weight: 900; grid-row: span 2; font-size: 18px; }
+.pulpit-faza .pasek { display: block; height: 10px; }
+/* najważniejsze karty: telefon — jedna kolumna w tej kolejności; szeroki ekran — dwie kolumny */
+.pulpit-glowne, .pulpit-reszta { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) { .pulpit-glowne { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 720px) { .pulpit-reszta { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1300px) { .pulpit-reszta { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.pulpit-naglowek { font-size: 13px; color: var(--przygaszony); text-transform: uppercase; letter-spacing: 0.08em; margin: 6px 0 -6px; }
+.pulpit .karta-tytul { font-size: 16px; }
+.karta-czeka { border-color: rgba(245, 184, 46, 0.45); }
+.sprawa-wiersz, .nowe-wiersz { align-items: center; min-height: 56px; }
+.sprawa-znak { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; flex: none; background: var(--karta2); border: 2px solid var(--obrys); color: var(--przygaszony); }
+.sprawa-znak .ikona { width: 18px; height: 18px; }
+.sprawa-znak.zloto { color: var(--zloto); border-color: rgba(245, 184, 46, 0.45); }
+.sprawa-znak.fiolet { color: #b69bff; border-color: rgba(139, 92, 246, 0.5); }
+.sprawa-znak.niebieski { color: #7cc0ff; border-color: rgba(78, 168, 255, 0.45); }
+.sprawa-nad { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--przygaszony); }
+.pulpit .wiersz-tekst > strong { display: block; white-space: nowrap; }
+button.czeka-gora { background: none; border: 0; padding: 0; width: 100%; text-align: left; cursor: pointer; border-radius: 14px; }
+.czeka-opis { display: flex; flex-direction: column; min-width: 0; }
+.nowe-kiedy { flex: none; white-space: nowrap; }
+.sync-przyciski .przycisk { flex: 1 1 auto; }
+.kropka-nagrywania { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--czerwien); flex: none; animation: nagrywanieKropka 1.4s ease-in-out infinite; }
+@keyframes nagrywanieKropka { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 90, 90, 0.6); } 50% { box-shadow: 0 0 0 6px rgba(239, 90, 90, 0); } }
+
+/* aktywne osoby: lewy dolny róg (komputer) i znaczek w górnym pasku (telefon) */
+.bok-obecni { padding: 4px 4px 10px; margin-bottom: 8px; border-bottom: 2px dashed var(--obrys); }
+.obecni-tytul { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--przygaszony); margin: 0 4px 6px; }
+.obecni-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.obecny { display: flex; align-items: center; gap: 9px; min-height: 40px; padding: 4px 6px; border-radius: 10px; }
+.obecny.w-rozmowie { background: rgba(62, 207, 142, 0.06); }
+.obecny-kropka { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--zielen); box-shadow: 0 0 0 2px rgba(62, 207, 142, 0.2); }
+.obecny-kropka.mowi { animation: puls 1.3s ease-in-out infinite; }
+.obecny-tekst { display: flex; flex-direction: column; min-width: 0; flex: 1; line-height: 1.2; }
+.obecny-tekst strong { font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.obecny-tekst span { font-size: 12px; color: var(--przygaszony); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.obecny-rozmowa { display: inline-flex; align-items: center; gap: 3px; flex: none; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; color: var(--zielen); background: rgba(62, 207, 142, 0.12); border: 1.5px solid rgba(62, 207, 142, 0.45); }
+.obecny-rozmowa .ikona { width: 12px; height: 12px; }
+.obecni-slucha { display: flex; align-items: center; gap: 7px; margin: 0 4px 6px; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 800; color: #ff9b9b; background: rgba(239, 90, 90, 0.12); border: 1.5px solid rgba(239, 90, 90, 0.5); }
+.gora-obecni {
+  display: inline-flex; align-items: center; gap: 5px; min-height: 36px; min-width: 44px; padding: 0 10px; border-radius: 999px;
+  border: 2px solid var(--obrys-jasny); background: var(--karta2); color: var(--zielen); font-weight: 800; font-size: 13px;
 }
-.hero > * { position: relative; }
-.hero-powitanie { font-weight: 700; color: var(--przygaszony); font-size: 14px; }
-.hero-tytul {
-  font-size: clamp(30px, 8.5vw, 52px); font-weight: 900; letter-spacing: -0.03em; line-height: 0.95;
-  color: var(--zloto); text-shadow: 3px 3px 0 #0b0d12, -1px -1px 0 #0b0d12, 1px -1px 0 #0b0d12, -1px 1px 0 #0b0d12;
-  transform: rotate(-1.2deg); transform-origin: left; margin: 2px 0 6px;
-}
-.hero-faza { display: flex; flex-direction: column; gap: 8px; max-width: 640px; }
-.hero-faza-nazwa { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--tekst); text-decoration: none !important; font-size: 17px; }
-.hero-postep { display: flex; align-items: baseline; gap: 10px; }
-.hero-postep strong { font-size: 20px; font-weight: 900; }
-/* telefon: jedna kolumna w kolejności ważności; tablet: dwie kolumny „gazetowe”; komputer: trzy stałe kolumny */
-.pulpit-kolumny { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
-.pulpit-kolumny > .kolumna { display: contents; }
-.pulpit-kolumny .karta-czeka { order: 1; } .pulpit-kolumny .karta-agent { order: 2; } .pulpit-kolumny .karta-teraz { order: 3; }
-.pulpit-kolumny .karta-kto { order: 4; } .pulpit-kolumny .karta-sync { order: 5; } .pulpit-kolumny .karta-migawka { order: 6; }
-@media (min-width: 720px) and (max-width: 1099px) {
-  .pulpit-kolumny { display: block; columns: 2; column-gap: 16px; }
-  .pulpit-kolumny .karta { break-inside: avoid; margin-bottom: 16px; }
-}
-@media (min-width: 1100px) {
-  .pulpit-kolumny { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
-  .pulpit-kolumny > .kolumna { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
-}
+.gora-obecni .ikona { width: 18px; height: 18px; }
+.obecni-arkusz { display: flex; flex-direction: column; gap: 10px; }
+.obecni-arkusz .obecny { min-height: 48px; }
+.obecni-arkusz .obecny-tekst strong { font-size: 15px; }
 
 .czeka-gora { display: flex; align-items: center; gap: 14px; color: var(--tekst); text-decoration: none !important; }
 .czeka-liczba {
@@ -739,9 +765,13 @@ details.callout[open] > summary::before { content: "▾ "; }
   .raport-gora > .chip { order: 3; margin-left: 48px; }
 }
 .raport-opis { font-size: 14.5px; }
+/* Zwinięty opis i „Pokaż więcej”. Wersja „krotki” (karta na liście) MUSI stać tu, przed „rozwiniety”, i nigdzie
+   indziej: osobny arkusz widoku wczytany później wygrywał z „rozwiniety” i lista się nie rozwijała. */
 .zwijany-opis { position: relative; max-height: 220px; overflow: hidden; }
 .zwijany-opis::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 70px; background: linear-gradient(transparent, var(--karta)); pointer-events: none; }
-.zwijany-opis.rozwiniety { max-height: none; }
+.zwijany-opis.krotki { max-height: 130px; }
+.zwijany-opis.krotki::after { height: 50px; }
+.zwijany-opis.rozwiniety, .zwijany-opis.krotki.rozwiniety { max-height: none; }
 .zwijany-opis.rozwiniety::after { display: none; }
 .pokaz-wiecej { margin-top: 2px; color: var(--zloto); }
 .raport-pytanie { padding: 12px 14px; border-radius: 12px; background: rgba(245, 184, 46, 0.09); border: 2px solid rgba(245, 184, 46, 0.45); }
@@ -841,6 +871,9 @@ textarea.agent-pole { flex: 1; min-width: 0; resize: none; max-height: 40vh; }
 .watek:hover { background: rgba(255, 255, 255, 0.04); }
 .watek.aktywny { background: rgba(245, 184, 46, 0.1); border-color: rgba(245, 184, 46, 0.35); }
 .watek-tytul { font-weight: 700; display: flex; align-items: center; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.watek-kto { display: flex; align-items: center; gap: 4px; min-width: 0; font-size: 12px; }
+.watek-kto .ikona { width: 13px; height: 13px; flex: none; }
+.watek-kto > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .watki-pusto { padding: 12px; }
 @media (min-width: 900px) {
   .agent { grid-template-columns: 290px minmax(0, 1fr); }

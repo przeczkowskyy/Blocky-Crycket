@@ -1,23 +1,31 @@
-// Powłoka panelu: nawigacja (#/<id>), ładowanie widoków, odznaki, puls obecności, imię osoby, tryb statyczny.
+// Powłoka panelu: nawigacja (#/<id>), ładowanie widoków, odznaki, puls obecności, aktywne osoby, imię osoby, tryb statyczny.
 
 import { api, apiSurowe, sse, STATYCZNY, plik } from "./wspolne/api.js";
 import { el, ikona, maIkone, toast, arkusz, awatar } from "./wspolne/ui.js";
+import { pobierzKolejke } from "./wspolne/kolejka.js";
 
 // Kolejność i opisy na wypadek, gdyby moduł widoku nie wstał (wtedy pokazujemy komunikat zamiast niego).
+// Zakładka Pytania łączy dawne Plan, Raporty i Decyzje; stare adresy (#/decyzje, #/plan, #/raporty,
+// #/raporty/<id>) przekierowują.
 const WIDOKI = [
   { id: "pulpit", tytul: "Pulpit", ikona: "pulpit", kolejnosc: 10 },
-  { id: "plan", tytul: "Plan", ikona: "plan", kolejnosc: 20 },
-  { id: "raporty", tytul: "Raporty", ikona: "raporty", kolejnosc: 30 },
+  { id: "pytania", tytul: "Pytania", ikona: "pytanie", kolejnosc: 20 },
+  { id: "sesja", tytul: "Sesja", ikona: "mikrofon", kolejnosc: 30 },
   { id: "podglad", tytul: "Podgląd", ikona: "podglad", kolejnosc: 40 },
   { id: "agent", tytul: "Agent", ikona: "agent", kolejnosc: 50 },
-  { id: "sesja", tytul: "Sesja", ikona: "mikrofon", kolejnosc: 55 },
   { id: "siec", tytul: "Sieć", ikona: "siec", kolejnosc: 60 },
   { id: "assety", tytul: "Assety", ikona: "assety", kolejnosc: 65 },
   { id: "analityka", tytul: "Analityka", ikona: "analityka", kolejnosc: 70 },
   { id: "ustawienia", tytul: "Ustawienia", ikona: "ustawienia", kolejnosc: 80 },
 ];
-const NA_DOLE = ["pulpit", "raporty", "podglad", "agent"];
-const PARAMETRY_W_ADRESIE = ["raport", "notatka", "migawka", "grupa", "zakladka", "watek"];
+const NA_DOLE = ["pulpit", "pytania", "sesja", "podglad"];
+const PARAMETRY_W_ADRESIE = ["raport", "notatka", "migawka", "grupa", "zakladka", "watek", "sekcja", "sprawa", "szukaj"];
+// dawne zakładki Planu i sekcje zakładki Decyzje -> części zakładki Pytania (Plan albo historia „Odpowiedziane”)
+const SEKCJE_PLANU = { harmonogram: "roadmapa", zadania: "zadania", decyzje: "historia", pytania: "historia", dziennik: "dziennik" };
+const SEKCJE_DECYZJI = { zadania: "zadania", roadmapa: "roadmapa", dziennik: "dziennik", raporty: "historia", rejestr: "historia", pytania: "historia" };
+// nazwy dawnych zakładek w „Teraz na panelu” (przeglądarka ze starą wersją panelu zgłasza stary identyfikator)
+const DAWNE_WIDOKI = { plan: "Pytania", raporty: "Pytania", decyzje: "Pytania" };
+const STANY_ROZMOWY = { mowi: "mówi", wyciszony: "wyciszony", bez_mikrofonu: "bez mikrofonu", polaczony: "w rozmowie", laczenie: "łączy się" };
 
 const stan = {
   widoki: new Map(),          // id -> {meta, def, inst, kontener, blad}
@@ -25,6 +33,7 @@ const stan = {
   oczekujace: null,
   liczniki: {},
   moduly: null,
+  obecnosc: null,             // ostatnia odpowiedź pulsu / GET /api/obecnosc
 };
 
 function czytajLS(k) {
@@ -90,7 +99,13 @@ const ctx = {
   odpytuj,
   /** Czy moduł serwera działa (true, gdy jeszcze nie wiadomo). */
   jest: (nazwa) => !stan.moduly || !stan.moduly[nazwa] || stan.moduly[nazwa].ok !== false,
-  nazwaWidoku: (id) => (stan.widoki.get(id) ? stan.widoki.get(id).meta.tytul : id),
+  /** Czy panel ma taką zakładkę. */
+  maWidok: (id) => stan.widoki.has(id),
+  nazwaWidoku: (id) => (stan.widoki.get(id) ? stan.widoki.get(id).meta.tytul : DAWNE_WIDOKI[id] || id),
+  /** Ostatnia znana obecność (odpowiedź pulsu): {panel, studio, git, rozmowa?} albo null. */
+  get obecnosc() {
+    return stan.obecnosc;
+  },
   ustawKto,
   get aktywnyWidok() {
     return stan.aktywny;
@@ -137,6 +152,8 @@ function zbudujPowloke() {
   elementy.ktoGora = el("a", { class: "gora-osoba", href: "#/ustawienia", "aria-label": "Ustawienia — kim jesteś" });
   elementy.tytulGora = el("span", { class: "gora-widok" });
   elementy.nazwaGry = el("span", { class: "marka-nazwa" }, ctx.konfiguracja.gra.nazwa || "BLOCKY & CRYCKET");
+  elementy.obecniBok = el("div", { class: "bok-obecni", hidden: true, "aria-label": "Kto jest teraz na panelu" });
+  elementy.obecniGora = el("button", { type: "button", class: "gora-obecni", hidden: true, "aria-haspopup": "dialog", onclick: otworzObecnych });
 
   const marka = () => el("a", { class: "marka", href: "#/pulpit", "aria-label": "Pulpit" },
     el("span", { class: "logo-znak", "aria-hidden": "true" }, "B&C"));
@@ -144,10 +161,10 @@ function zbudujPowloke() {
   const bok = el("aside", { class: "bok" },
     el("div", { class: "bok-marka" }, marka(), el("div", { class: "bok-marka-tekst" }, elementy.nazwaGry, el("span", { class: "marka-pod" }, "Panel zespołu"))),
     navBok,
-    el("div", { class: "bok-stopka" }, elementy.ktoBok));
+    el("div", { class: "bok-stopka" }, elementy.obecniBok, elementy.ktoBok));
 
   const gora = el("header", { class: "gora" }, marka(), el("div", { class: "gora-tytuly" },
-    el("span", { class: "gora-gra" }, ctx.konfiguracja.gra.nazwa || "BLOCKY & CRYCKET"), elementy.tytulGora), elementy.ktoGora);
+    el("span", { class: "gora-gra" }, ctx.konfiguracja.gra.nazwa || "BLOCKY & CRYCKET"), elementy.tytulGora), elementy.obecniGora, elementy.ktoGora);
 
   elementy.tresc = el("main", { class: "tresc", id: "tresc", tabindex: "-1" });
   const korzen = el("div", { class: "powloka" + (STATYCZNY ? " statyczna" : "") },
@@ -186,6 +203,71 @@ function otworzWiecej() {
   const ark = arkusz({ tytul: "Więcej", tresc: el("div", { class: "kafelki" }, kafelki) });
 }
 
+// --------------------------------------------------------------------------- aktywne osoby (lewy dolny róg / górny pasek)
+/** Osoby z pulsów, bez powtórzeń (dwie karty tej samej osoby = jedna osoba), z ich stanem w rozmowie z zakładki Sesja. */
+function osobyObecne(d) {
+  const rozmowa = (d && d.rozmowa && typeof d.rozmowa === "object") ? d.rozmowa : { aktywna: false, slucha: false, osoby: [] };
+  const wRozmowie = new Map();
+  for (const o of rozmowa.osoby || []) {
+    const k = String(o.kto || "").trim().toLowerCase();
+    if (k && !wRozmowie.has(k)) wRozmowie.set(k, o);
+  }
+  const osoby = new Map();
+  for (const p of (d && d.panel) || []) {
+    const kto = String(p.kto || "").trim() || "gość";
+    const k = kto.toLowerCase();
+    if (osoby.has(k)) continue;                                // lista idzie od najświeższego pulsu
+    osoby.set(k, { kto, widok: p.widok || "", lokalny: !!p.lokalny, rozmowa: wRozmowie.get(k) || null });
+  }
+  for (const [k, o] of wRozmowie) {                            // w rozmowie, ale bez otwartego panelu w tej chwili
+    if (!osoby.has(k)) osoby.set(k, { kto: o.kto, widok: "sesja", lokalny: false, rozmowa: o });
+  }
+  return { osoby: [...osoby.values()], slucha: !!rozmowa.slucha, aktywna: !!rozmowa.aktywna };
+}
+
+function wierszOsoby(o) {
+  const ja = (ctx.ja.kto || "").trim().toLowerCase() === o.kto.toLowerCase();
+  const stanMik = o.rozmowa ? STANY_ROZMOWY[o.rozmowa.stan] || "w rozmowie" : "";
+  return el("li", { class: "obecny" + (o.rozmowa ? " w-rozmowie" : "") },
+    el("span", { class: "obecny-kropka" + (o.rozmowa && o.rozmowa.stan === "mowi" ? " mowi" : ""), "aria-hidden": "true" }),
+    el("span", { class: "obecny-tekst" },
+      el("strong", null, o.kto + (ja ? " (Ty)" : "")),
+      el("span", null, o.widok ? ctx.nazwaWidoku(o.widok) : "panel")),
+    o.rozmowa ? el("span", { class: "obecny-rozmowa", title: "W rozmowie (zakładka Sesja): " + stanMik },
+      ikona(o.rozmowa.stan === "wyciszony" || o.rozmowa.stan === "bez_mikrofonu" ? "zamknij" : "mikrofon"), stanMik) : null);
+}
+
+function listaObecnych(dane) {
+  return [
+    dane.slucha ? el("p", { class: "obecni-slucha", role: "status" }, el("span", { class: "kropka-nagrywania", "aria-hidden": "true" }), "Agent słucha rozmowy") : null,
+    el("ul", { class: "obecni-lista" }, dane.osoby.map(wierszOsoby)),
+  ];
+}
+
+function odswiezObecnych() {
+  if (!elementy.obecniBok || STATYCZNY) return;
+  const dane = osobyObecne(stan.obecnosc);
+  const n = dane.osoby.length;
+  elementy.obecniBok.hidden = !n;
+  elementy.obecniGora.hidden = !n;
+  if (!n) return;
+  elementy.obecniBok.replaceChildren(el("p", { class: "obecni-tytul" }, "Teraz na panelu"), ...listaObecnych(dane).filter(Boolean));
+  elementy.obecniGora.replaceChildren(...[ikona("zespol"), el("span", null, String(n)),
+    dane.slucha ? el("span", { class: "kropka-nagrywania", "aria-hidden": "true" }) : null].filter(Boolean));
+  elementy.obecniGora.setAttribute("aria-label", "Na panelu: " + n + (dane.slucha ? ", agent słucha rozmowy" : "") + " — pokaż kto");
+  if (elementy.arkuszObecnych && elementy.arkuszObecnych.el.isConnected) {
+    elementy.arkuszObecnych.cialo.replaceChildren(el("div", { class: "obecni-arkusz" }, ...listaObecnych(dane).filter(Boolean)));
+  }
+}
+
+function otworzObecnych() {
+  const dane = osobyObecne(stan.obecnosc);
+  const tresc = el("div", { class: "obecni-arkusz" }, ...listaObecnych(dane).filter(Boolean),
+    el("div", { class: "rzad-przyciskow" }, el("a", { class: "przycisk maly", href: "#/sesja", onclick: () => setTimeout(() => ark.zamknij(), 0) }, ikona("mikrofon"), el("span", null, "Sesja"))));
+  const ark = arkusz({ tytul: "Teraz na panelu", tresc, naZamkniecie: () => { elementy.arkuszObecnych = null; } });
+  elementy.arkuszObecnych = ark;
+}
+
 // --------------------------------------------------------------------------- liczniki (odznaki)
 function licznik(id, n) {
   n = Number(n) || 0;
@@ -194,7 +276,7 @@ function licznik(id, n) {
     o.hidden = !n;
     o.textContent = n > 99 ? "99+" : String(n);
   }
-  const reszta = Object.entries(stan.liczniki).filter(([k]) => !NA_DOLE.includes(k)).reduce((s, [, v]) => s + (v || 0), 0);
+  const reszta = Object.entries(stan.liczniki).filter(([k]) => stan.widoki.has(k) && !NA_DOLE.includes(k)).reduce((s, [, v]) => s + (v || 0), 0);
   for (const o of document.querySelectorAll('[data-odznaka="_wiecej"]')) {
     o.hidden = !reszta;
     o.textContent = String(reszta);
@@ -204,7 +286,7 @@ function licznik(id, n) {
 
 function ustawTytulStrony() {
   const w = stan.widoki.get(stan.aktywny);
-  const czeka = stan.liczniki.raporty || 0;
+  const czeka = stan.liczniki.pytania || 0;
   document.title = (czeka ? "(" + czeka + ") " : "") + (w ? w.meta.tytul + " · " : "") + "Panel B&C";
 }
 
@@ -220,23 +302,57 @@ function parsujHash() {
   return { id: id || "pulpit", p };
 }
 
-function idz(id, parametry) {
-  parametry = parametry || {};
-  if (!stan.widoki.has(id)) id = "pulpit";
-  stan.oczekujace = { id, p: parametry };
+/** Dawne adresy Planu, Raportów i Decyzji → zakładka Pytania (właściwa część albo karta). */
+function przekieruj(id, p) {
+  p = Object.assign({}, p || {});
+  const m = /^raporty\/(.+)$/.exec(id || "");
+  if (m) {
+    p.raport = m[1];
+    id = "raporty";
+  }
+  if (id === "raporty") return { id: "pytania", p: p.raport ? { raport: String(p.raport) } : {} };
+  if (id === "plan") {
+    const sekcja = SEKCJE_PLANU[p.zakladka];
+    return { id: "pytania", p: sekcja ? { sekcja } : {} };
+  }
+  if (id === "decyzje") {
+    const q = {};
+    for (const k of ["sprawa", "raport", "szukaj"]) if (p[k]) q[k] = String(p[k]);
+    if (SEKCJE_DECYZJI[p.sekcja]) q.sekcja = SEKCJE_DECYZJI[p.sekcja];
+    return { id: "pytania", p: q };
+  }
+  return { id, p };
+}
+
+function adres(id, parametry) {
   const proste = {};
   for (const k of PARAMETRY_W_ADRESIE) {
     const v = parametry[k];
     if (typeof v === "string" || typeof v === "number") proste[k] = String(v);
   }
   const qs = new URLSearchParams(proste).toString();
-  const hash = "#/" + id + (qs ? "?" + qs : "");
+  return "#/" + id + (qs ? "?" + qs : "");
+}
+
+function idz(id, parametry) {
+  ({ id, p: parametry } = przekieruj(id, parametry || {}));
+  if (!stan.widoki.has(id)) id = "pulpit";
+  stan.oczekujace = { id, p: parametry };
+  const hash = adres(id, parametry);
   if (location.hash === hash) naZmianeAdresu();
   else location.hash = hash;
 }
 
 function naZmianeAdresu() {
   let { id, p } = parsujHash();
+  const po = przekieruj(id, p);
+  if (po.id !== id) {                                          // stary adres: podmień w pasku bez nowego wpisu w historii
+    id = po.id;
+    p = po.p;
+    try {
+      history.replaceState(null, "", adres(id, p));
+    } catch (e) { /* nic */ }
+  }
   if (!stan.widoki.has(id)) id = "pulpit";
   let parametry = p;
   if (stan.oczekujace && stan.oczekujace.id === id) {
@@ -322,19 +438,33 @@ function pokazWidok(id, parametry) {
 
 // --------------------------------------------------------------------------- obecność i liczniki w tle
 let ostatniPuls = 0;
+let pulsZaplanowany = null;
 function puls() {
   if (STATYCZNY || !ctx.jest("obecnosc")) return;
-  if (Date.now() - ostatniPuls < 2000) return;
+  const czekaj = 2000 - (Date.now() - ostatniPuls);
+  if (czekaj > 0) {                                            // najwyżej jeden puls na 2 s, ale ostatnia zakładka dochodzi
+    if (!pulsZaplanowany) pulsZaplanowany = setTimeout(() => { pulsZaplanowany = null; puls(); }, czekaj);
+    return;
+  }
   ostatniPuls = Date.now();
-  api("/api/obecnosc/puls", { metoda: "POST", cialo: { klient: idKlienta(), widok: stan.aktywny }, czas: 10000 }).catch(() => {});
+  api("/api/obecnosc/puls", { metoda: "POST", cialo: { klient: idKlienta(), widok: stan.aktywny }, czas: 10000 })
+    .then((d) => {
+      if (d && typeof d === "object" && Array.isArray(d.panel)) {
+        stan.obecnosc = d;
+        odswiezObecnych();
+        window.dispatchEvent(new CustomEvent("bc:obecnosc", { detail: d }));
+      }
+    })
+    .catch(() => {});
 }
 
-async function odswiezLicznikRaportow() {
-  if (!ctx.jest("raporty")) return;
+/** Plakietka zakładki Pytania: cała lista „Do odpowiedzi” (bez odłożonych na sesję). Widoki Pytania, Sesja i Pulpit
+ * liczą ją same, gdy są otwarte. */
+async function odswiezLicznikSpraw() {
+  if (stan.aktywny === "pytania" || stan.aktywny === "sesja" || stan.aktywny === "pulpit") return;
   try {
-    const d = await api("/api/raporty", { czas: 15000 });
-    const n = typeof d.czeka === "number" ? d.czeka : (d.raporty || []).filter((r) => r.status === "czeka").length;
-    licznik("raporty", n);
+    const { kolejka } = await pobierzKolejke(ctx);
+    licznik("pytania", kolejka.aktywne.length);
   } catch (e) { /* moduł może jeszcze nie istnieć */ }
 }
 
@@ -344,7 +474,9 @@ function ustawKto(imie) {
   zapiszLS("bc.kto", imie || null);
   ctx.ja.kto = imie || ctx.ja.gospodarz || "gość";
   odswiezOsobe();
+  odswiezObecnych();
   window.dispatchEvent(new CustomEvent("bc:kto", { detail: ctx.ja.kto }));
+  ostatniPuls = 0;
   puls();
 }
 
@@ -408,8 +540,8 @@ async function start() {
     const m = moduly[i];
     const def = m.def || null;
     const pelnaMeta = Object.assign({}, meta);
-    if (def) {
-      if (def.tytul) pelnaMeta.tytul = String(def.tytul);
+    if (def) {                                                 // nazwy w nawigacji są krótkie i stałe (WIDOKI wyżej)
+      if (def.tytul && !pelnaMeta.tytul) pelnaMeta.tytul = String(def.tytul);
       if (def.ikona) pelnaMeta.ikona = String(def.ikona);
     }
     stan.widoki.set(meta.id, { meta: pelnaMeta, def, blad: m.blad || null });
@@ -443,8 +575,8 @@ async function start() {
       if (document.visibilityState === "visible") puls();
     });
   }
-  odswiezLicznikRaportow();
-  odpytuj(odswiezLicznikRaportow, 60000);
+  odswiezLicznikSpraw();
+  odpytuj(odswiezLicznikSpraw, 60000);
 }
 
 start().catch((e) => {

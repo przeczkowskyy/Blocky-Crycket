@@ -100,6 +100,11 @@ class TestPlanNaPrawdziwymSejfie(unittest.TestCase):
         for p in pytania:
             self.assertTrue(p["tresc_md"] and p["tytul"])
             self.assertEqual(p["otwarte"], not p["odpowiedz_md"])
+            for ident in p["rozstrzyga"] + p["powiazane"]:
+                self.assertRegex(ident, r"^D-\d{3,4}$")
+            self.assertFalse(set(p["rozstrzyga"]) & set(p["powiazane"]))
+        # wiersze „Rozstrzyga: D-0XX” są w prawdziwych pytaniach (np. 16: D-019, D-020)
+        self.assertTrue(any(p["rozstrzyga"] for p in pytania))
 
     def test_dziennik_ma_daty(self):
         d = self.plan["dziennik"]
@@ -226,6 +231,13 @@ class TestParserowNaSztucznychDanych(unittest.TestCase):
         p = sejf.parsuj_pytania("## 1. Pyt\nTreść\n**Odpowiedź:** Tak, zgoda.\n\n## 2. Drugie\n**Odpowiedź:**\n")
         self.assertEqual([x["otwarte"] for x in p], [False, True])
         self.assertEqual(p[0]["odpowiedz_md"], "Tak, zgoda.")
+        self.assertEqual((p[0]["rozstrzyga"], p[0]["powiazane"]), ([], []))
+
+    def test_pytania_rozstrzyga_i_wzmianki(self):
+        p = sejf.parsuj_pytania("## 4. Czy D-006 i D-7?\nZob. D-009.\n- **Rozstrzyga:** D-6, D-007\n"
+                                "rozstrzyga: D-010\n**Odpowiedź:**\nRozstrzyga: D-011 (w odpowiedzi — pomijane)\n")
+        self.assertEqual(p[0]["rozstrzyga"], ["D-006", "D-007", "D-010"])
+        self.assertEqual(p[0]["powiazane"], ["D-009"])                   # D-011 jest w odpowiedzi, nie w treści
 
 
 def _git(args, cwd):

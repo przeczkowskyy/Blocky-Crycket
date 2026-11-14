@@ -16,7 +16,10 @@ Markdown (`<sejf>/Produkcja/*.md`), których używa Obsidian i agenci, małymi z
   zgadywania, którą zmienić;
 - każda operacja dopisuje ślad do Dziennika zmian w sekcji dnia „## RRRR-MM-DD · Panel (ludzie)” z linkiem do notatki;
 - zapis atomowy (plik tymczasowy + os.replace) i unieważnienie pamięci planu w bc/sejf.py; pozostawione po
-  przerwanym zapisie pliki tymczasowe panelu (`<plik>.md.<pid>.<hex>.tmp`, starsze niż 10 min) są sprzątane.
+  przerwanym zapisie pliki tymczasowe panelu (`<plik>.md.<pid>.<hex>.tmp`, starsze niż 10 min) są sprzątane;
+- samo-rozstrzyganie: zatwierdzenie albo odrzucenie decyzji, które zamyka ostatnią otwartą decyzję z wiersza
+  „Rozstrzyga: D-0XX, …” pytania bez odpowiedzi, w tej samej operacji dopisuje odpowiedź pod tym pytaniem
+  (sekcja 4 niżej; oba pliki albo żaden).
 
 Pliki biorą się z konfiguracji sejfów (`sejf.pliki_planu()`), nie ze sztywnej ścieżki — testy i próby działają na kopii.
 
@@ -667,31 +670,32 @@ def _wykonaj(klucz, wersja, zmiana, kto, znacznik=None):
     return wynik
 
 
-def _dopisz_do_dziennika(kto, opis, notatka):
+def _dopisz_do_dziennika(kto, opis, notatka, dodatkowe=()):
     """Wiersz „- <Imię>: <opis> ([[<notatka>]])” w sekcji dnia „## RRRR-MM-DD · Panel (ludzie)” (nowa sekcja na
-    górze wpisów)."""
+    górze wpisów). `dodatkowe` = dalsze pary (opis, notatka) tej samej operacji — idą kolejnymi wierszami w jednym
+    zapisie (np. pytanie rozstrzygnięte przy okazji zmiany statusu decyzji)."""
     p, pokaz = _plik("dziennik")
     przed = _czytaj_bajty(p, pokaz)
     dok = Dokument(przed)
     _sprawdz_tresc(przed, dok, pokaz)
     tytul = "%s · Panel (ludzie)" % dzis()
-    wiersz = "- %s: %s ([[%s]])" % (kto, opis, notatka)
+    wiersze = ["- %s: %s ([[%s]])" % (kto, o, n) for o, n in [(opis, notatka)] + list(dodatkowe)]
     naglowki = dok.naglowki()
     for i, poziom, tekst in naglowki:
         if poziom == 2 and tekst == tytul:
-            dok.wstaw(dok.za_trescia(i, dok.koniec_sekcji(i, 2)), [wiersz])
+            dok.wstaw(dok.za_trescia(i, dok.koniec_sekcji(i, 2)), wiersze)
             break
     else:
         pierwszy = next((i for i, poziom, tekst in naglowki if poziom == 2 and _RX_DATA_NAGLOWKA.match(tekst)), None)
         if pierwszy is not None:
-            dok.wstaw(pierwszy, ["## " + tytul, wiersz, ""])
+            dok.wstaw(pierwszy, ["## " + tytul] + wiersze + [""])
         else:
             koniec = len(dok)
             pusta = koniec == 0 or not dok.tresc(koniec - 1).strip()
-            dok.wstaw(koniec, ([] if pusta else [""]) + ["## " + tytul, wiersz])
+            dok.wstaw(koniec, ([] if pusta else [""]) + ["## " + tytul] + wiersze)
     _zapisz(p, dok.bajty(), przed)
     try:
-        _zapamietaj(p, przed, dok.bajty(), opis)
+        _zapamietaj(p, przed, dok.bajty(), opis)              # opisy dodatkowe zapamiętuje ich własny plik
     except OSError as e:
         rdzen.log("zapis: nie udało się zapamiętać zmiany dziennika: %r" % e)
 
@@ -727,31 +731,42 @@ def _za_odpowiedziami(dok, j, koniec):
     return j
 
 
+def wiersz_odpowiedzi(kto, znacznik, tekst):
+    """`- Imię (znacznik, RRRR-MM-DD): tekst` — wiersz odpowiedzi pod pytaniem (znacznik dopisuje serwer)."""
+    return "- %s (%s%s): %s" % (kto, (znacznik + ", ") if znacznik else "", dzis(), tekst)
+
+
+def _dopisz_odpowiedz(dok, nr, wiersz):
+    """Dopisuje wiersz odpowiedzi pod pytaniem `## <nr>. …` (pod dotychczasowymi odpowiedziami; bez wiersza
+    „**Odpowiedź:**” — dopisuje i jego). Wspólne dla odpowiedzi człowieka i samo-rozstrzygania decyzjami."""
+    trafienia = []
+    for i, poziom, naglowek in dok.naglowki():
+        m = _RX_NR_PYTANIA.match(naglowek)
+        if poziom == 2 and m and int(m.group(1)) == nr:
+            trafienia.append(i)
+    i = _jedna(trafienia, "Nie ma pytania nr %d w Pytaniach otwartych" % nr,
+               "W Pytaniach otwartych są %d pytania nr %d — popraw numerację w Obsidianie, potem odpowiedz."
+               % (len(trafienia), nr))
+    # sekcja jak w parserze planu: do następnego nagłówka ## (linia --- w treści pytania jej nie kończy)
+    koniec = dok.koniec_sekcji(i, 2)
+    if any(dok.tresc(j) == wiersz for j in range(i + 1, koniec)):
+        raise BladHTTP(409, "Ta odpowiedź jest już zapisana pod pytaniem %d." % nr, kod="juz_zapisane")
+    linia_odp = next((j for j in range(i + 1, koniec) if sejf._RX_ODPOWIEDZ.match(dok.tresc(j))), None)
+    if linia_odp is None:                                     # pytanie bez wiersza „**Odpowiedź:**” — dopisz go
+        granica = koniec
+        if koniec == len(dok):                                 # ostatnie pytanie: linia --- przed stopką pliku
+            granica = next((j for j in range(i + 1, koniec) if sejf._RX_LINIA_POZIOMA.match(dok.tresc(j))), koniec)
+        dok.wstaw(dok.za_trescia(i, granica), ["**Odpowiedź:**", wiersz])
+        return
+    dok.wstaw(_za_odpowiedziami(dok, linia_odp + 1, koniec), [wiersz])
+
+
 def odpowiedz(nr, tekst, wersja, kto, znacznik=None):
     tekst = czysty_tekst(tekst, LIMIT_ODPOWIEDZI, "tekst")
-    wiersz = "- %s (%s%s): %s" % (kto, (znacznik + ", ") if znacznik else "", dzis(), tekst)
+    wiersz = wiersz_odpowiedzi(kto, znacznik, tekst)
 
     def zmiana(dok):
-        trafienia = []
-        for i, poziom, naglowek in dok.naglowki():
-            m = _RX_NR_PYTANIA.match(naglowek)
-            if poziom == 2 and m and int(m.group(1)) == nr:
-                trafienia.append(i)
-        i = _jedna(trafienia, "Nie ma pytania nr %d w Pytaniach otwartych" % nr,
-                   "W Pytaniach otwartych są %d pytania nr %d — popraw numerację w Obsidianie, potem odpowiedz."
-                   % (len(trafienia), nr))
-        # sekcja jak w parserze planu: do następnego nagłówka ## (linia --- w treści pytania jej nie kończy)
-        koniec = dok.koniec_sekcji(i, 2)
-        if any(dok.tresc(j) == wiersz for j in range(i + 1, koniec)):
-            raise BladHTTP(409, "Ta odpowiedź jest już zapisana pod pytaniem %d." % nr, kod="juz_zapisane")
-        linia_odp = next((j for j in range(i + 1, koniec) if sejf._RX_ODPOWIEDZ.match(dok.tresc(j))), None)
-        if linia_odp is None:                                 # pytanie bez wiersza „**Odpowiedź:**” — dopisz go
-            granica = koniec
-            if koniec == len(dok):                             # ostatnie pytanie: linia --- przed stopką pliku
-                granica = next((j for j in range(i + 1, koniec) if sejf._RX_LINIA_POZIOMA.match(dok.tresc(j))), koniec)
-            dok.wstaw(dok.za_trescia(i, granica), ["**Odpowiedź:**", wiersz])
-            return "odpowiedź na pytanie %d" % nr
-        dok.wstaw(_za_odpowiedziami(dok, linia_odp + 1, koniec), [wiersz])
+        _dopisz_odpowiedz(dok, nr, wiersz)
         return "odpowiedź na pytanie %d" % nr
 
     return _wykonaj("pytania", wersja, zmiana, kto, znacznik)
@@ -968,7 +983,161 @@ def zmien_status_decyzji(id_decyzji, status, uzasadnienie, wersja, kto, znacznik
             dok.wstaw(dok.za_trescia(i, koniec), ["Uzasadnienie — %s, %s: %s" % (kto, data, uzasadnienie)])
         return "decyzja %s %s" % (ident, w_dzienniku)
 
-    return _wykonaj("decyzje", wersja, zmiana, kto, znacznik)
+    return _wykonaj_decyzje(wersja, zmiana, kto, znacznik, numer, rozstrzygaj=status in ("zatwierdzona", "odrzucona"))
+
+
+# =========================================================================== 4. samo-rozstrzyganie pytań decyzjami
+# Pytanie z wierszem „Rozstrzyga: D-019, D-020” (bc/sejf.py: pole `rozstrzyga`) rozstrzyga się samo, gdy zmiana
+# statusu na „zatwierdzona” albo „odrzucona” zamyka OSTATNIĄ otwartą decyzję z tej listy: w tej samej operacji
+# (ta sama blokada, oba pliki liczone w pamięci przed pierwszym zapisem) panel dopisuje pod pytaniem odpowiedź
+# `- Imię (znacznik, RRRR-MM-DD): rozstrzygnięte decyzjami: D-019 zatwierdzona, D-020 odrzucona („…”)`
+# z podpisem osoby, która zmieniła status. Nieudany zapis Pytań cofa zmianę Rejestru (bez częściowego zapisu).
+STATUSY_ZAMKNIETE = ("zatwierdzona", "odrzucona", "zastapiona")
+LIMIT_UZASADNIENIA_W_ODPOWIEDZI = 160
+_RX_UZASADNIENIE = re.compile(r"^\s*Uzasadnienie\s+—\s+[^,:\n]{1,60},\s*\d{4}-\d{2}-\d{2}\s*:\s*(.+?)\s*$")
+
+
+def _tekst_pliku(bajty):
+    """Treść pliku tak, jak widzi ją parser planu (bc/sejf.py: plan())."""
+    return bajty.decode("utf-8-sig", "replace").replace("\r\n", "\n").replace("\r", "\n")
+
+
+def _krotkie_uzasadnienie(opis_md):
+    """Ostatnie „Uzasadnienie — Imię, data: …” z opisu decyzji, gdy jest krótkie (do odpowiedzi pod pytaniem)."""
+    ostatnie = None
+    for linia in (opis_md or "").split("\n"):
+        m = _RX_UZASADNIENIE.match(linia)
+        if m:
+            ostatnie = m.group(1)
+    if not ostatnie:
+        return ""
+    t = _jedna_linia(ostatnie)
+    if len(t) > LIMIT_UZASADNIENIA_W_ODPOWIEDZI or re.search(r"\*\*\s*odpowied[źz]", t, re.IGNORECASE):
+        return ""
+    return t
+
+
+def pytania_do_rozstrzygniecia(tekst_decyzji, tekst_pytan, numer):
+    """Pytania bez odpowiedzi, których WSZYSTKIE decyzje z wiersza „Rozstrzyga:” są zamknięte (zatwierdzona,
+    odrzucona, zastąpiona), a wśród nich jest decyzja `numer` (ta, której status właśnie się zmienił).
+    -> [(pytanie z parsera, [(„D-019”, status, krótkie uzasadnienie albo "")])]."""
+    decyzje = {}
+    for d in sejf.parsuj_decyzje(tekst_decyzji):
+        m = sejf.RX_ID_DECYZJI.match(d["id"])
+        if m:
+            decyzje.setdefault(int(m.group(1)), d)
+    wynik = []
+    for p in sejf.parsuj_pytania(tekst_pytan):
+        numery = [int(i[2:]) for i in p.get("rozstrzyga") or []]
+        if not p["otwarte"] or numer not in numery:
+            continue
+        lista = []
+        for n in numery:
+            d = decyzje.get(n)
+            if not d or d["status"] not in STATUSY_ZAMKNIETE:
+                break
+            lista.append((sejf.id_decyzji(n), d["status"], _krotkie_uzasadnienie(d["opis_md"])))
+        else:
+            wynik.append((p, lista))
+    return wynik
+
+
+def tekst_rozstrzygniecia(lista, z_uzasadnieniem=True):
+    """„rozstrzygnięte decyzjami: D-019 zatwierdzona, D-020 odrzucona („za drogie”)” — treść automatycznej odpowiedzi."""
+    czesci = []
+    for ident, status, uzasadnienie in lista:
+        s = "%s %s" % (ident, NAZWY_STATUSOW.get(status, status))
+        if uzasadnienie and z_uzasadnieniem:
+            s += " („%s”)" % uzasadnienie
+        czesci.append(s)
+    t = "rozstrzygnięte decyzjami: " + ", ".join(czesci)
+    if len(t) > LIMIT_ODPOWIEDZI and z_uzasadnieniem:
+        return tekst_rozstrzygniecia(lista, False)
+    return t
+
+
+def _wykonaj_decyzje(wersja, zmiana, kto, znacznik, numer, rozstrzygaj):
+    """Jak `_wykonaj("decyzje", …)`, a do tego samo-rozstrzyganie pytań (patrz wyżej): kontrola wersji Rejestru
+    (znacznik od klienta) i Pytań (treść odczytana pod blokadą — `_zapisz` sprawdza ją jeszcze raz tuż przed
+    podmianą pliku), obie zmiany policzone przed pierwszym zapisem, zapis atomowy każdego pliku, a gdy zapis Pytań
+    się nie uda — Rejestr wraca do treści sprzed operacji i nic nie zostaje zapisane."""
+    if not _blokada.acquire(timeout=15):
+        raise BladHTTP(409, "Trwa inny zapis do sejfu. Spróbuj za chwilę.")
+    uwagi, rozstrzygniete, opisy_pytan = [], [], []
+    try:
+        p, pokaz = _plik("decyzje")
+        _sprzataj_tymczasowe(os.path.dirname(p))
+        przed = _czytaj_bajty(p, pokaz)
+        _sprawdz_wersje(przed, wersja, pokaz)
+        dok = Dokument(przed)
+        _sprawdz_tresc(przed, dok, pokaz)
+        opis = zmiana(dok)
+        po = dok.bajty()
+        if po == przed:
+            raise BladHTTP(409, "Nic się nie zmieniło.")
+
+        pp = ppokaz = pprzed = ppo = None
+        if rozstrzygaj:
+            pdok = None
+            try:
+                pp, ppokaz = _plik("pytania")
+                pprzed = _czytaj_bajty(pp, ppokaz)
+                pdok = Dokument(pprzed)
+                _sprawdz_tresc(pprzed, pdok, ppokaz)
+            except BladHTTP as e:
+                pdok = None
+                if e.status != 404:                            # brak pliku pytań = nie ma czego rozstrzygać
+                    uwagi.append("Nie sprawdzono, czy ta decyzja rozstrzyga jakieś pytanie: %s" % e.komunikat)
+            if pdok is not None:
+                for pyt, lista in pytania_do_rozstrzygniecia(_tekst_pliku(po), _tekst_pliku(pprzed), numer):
+                    tekst = tekst_rozstrzygniecia(lista)
+                    try:
+                        _dopisz_odpowiedz(pdok, pyt["nr"], wiersz_odpowiedzi(kto, znacznik, tekst))
+                    except BladHTTP as e:
+                        uwagi.append("Pytanie %d nie dostało automatycznej odpowiedzi: %s" % (pyt["nr"], e.komunikat))
+                        continue
+                    rozstrzygniete.append({"nr": pyt["nr"], "tytul": pyt["tytul"], "odpowiedz": tekst,
+                                           "decyzje": [{"id": i, "status": s} for i, s, _ in lista]})
+                    opisy_pytan.append(skrot("odpowiedź na pytanie %d (%s)" % (pyt["nr"], tekst)))
+                if rozstrzygniete:
+                    ppo = pdok.bajty()
+
+        _zapisz(p, po, przed)
+        if ppo is not None:
+            try:
+                _zapisz(pp, ppo, pprzed)
+            except BaseException as e:
+                try:
+                    _zapisz(p, przed, po)                      # cofnięcie: Rejestr wraca do treści sprzed operacji
+                except Exception as e2:
+                    rdzen.log("zapis: nie udało się cofnąć zmiany Rejestru po błędzie Pytań: %r / %r" % (e, e2))
+                    raise BladHTTP(500, "Status decyzji zapisał się, ale odpowiedź pod pytaniem nie — i nie udało się "
+                                        "tego cofnąć. Sprawdź Rejestr decyzji i Pytania otwarte w Obsidianie.")
+                if isinstance(e, BladHTTP):
+                    raise BladHTTP(e.status, "Nic nie zapisano: w tej samej chwili zmienił się plik Pytania otwarte "
+                                             "(%s). Spróbuj jeszcze raz." % e.komunikat, **e.dodatkowe)
+                raise
+        for sciezka, a, b, o in ((p, przed, po, opis),) + (((pp, pprzed, ppo, "; ".join(opisy_pytan)),) if ppo else ()):
+            try:
+                _zapamietaj(sciezka, a, b, o)
+            except OSError as e:                               # brak śladu dla „Wyślij” nie cofa zmiany w sejfie
+                rdzen.log("zapis: nie udało się zapamiętać zmiany: %r" % e)
+        kto_dz = _kto_w_dzienniku(kto, znacznik)
+        try:
+            _dopisz_do_dziennika(kto_dz, opis, _notatka("decyzje"), [(o, _notatka("pytania")) for o in opisy_pytan])
+        except (BladHTTP, OSError) as e:
+            uwagi.append("Zapisano, ale nie udało się dopisać śladu do Dziennika zmian: %s" % getattr(e, "komunikat", e))
+            rdzen.log("zapis: dziennik: %s" % uwagi[-1])
+        rdzen.log("Sejf: %s — %s (%s)%s" % (pokaz, opis, kto_dz, "".join("; " + o for o in opisy_pytan)))
+        nowa = sejf.wersja_bajtow(po)
+    finally:
+        sejf.uniewaznij()
+        _blokada.release()
+    wynik = {"ok": True, "opis": opis, "plik": pokaz, "wersja": nowa, "rozstrzygniete": rozstrzygniete,
+             "plan": sejf.plan()}
+    if uwagi:
+        wynik["uwaga"] = " ".join(uwagi)
+    return wynik
 
 
 # =========================================================================== trasy

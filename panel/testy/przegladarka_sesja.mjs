@@ -9,7 +9,8 @@
 // Sprawdza: obie osoby dołączają, połączenie WebRTC dochodzi do stanu „połączony” na pętli zwrotnej, gość nie
 // włącza słuchania, po włączeniu „Agent słucha” obie strony widzą czerwony znacznik, odcinek dźwięku dochodzi do
 // serwera i w widoku pojawia się wiersz transkrypcji (atrapa robotnika — BC_GLOS_ATRAPA=1 w serwerze testowym),
-// obecność pokazuje dwie osoby, po rozłączeniu B znika z listy u A.
+// obecność pokazuje dwie osoby, po rozłączeniu B znika z listy u A. Do tego lista Pytania obok Agendy (na telefonie
+// przełącznik, na komputerze obok siebie) i odpowiedź na pytanie prosto z tej listy.
 // Klucze czyta z plików danych lokalnych serwera testowego i nigdzie ich nie wypisuje.
 // Wynik: wiersze „OK …” / „BŁĄD …”, kod wyjścia 0 = wszystko przeszło.
 import { spawn } from "node:child_process";
@@ -202,6 +203,29 @@ try {
   sprawdz("A: widok Sesja wstał z agendą", await A.czekajNa(`document.querySelectorAll('.sesja-temat').length >= 2`));
   sprawdz("B: przełącznik „Agent słucha” zablokowany dla gościa", await B.czekajNa(`document.querySelector('.sesja-slucha').disabled === true`));
   sprawdz("A: przełącznik „Agent słucha” dostępny", await A.czekajNa(`document.querySelector('.sesja-slucha').disabled === false`));
+
+  // ------------------------------------------------------------ lista Pytania obok Agendy (ta sama co w zakładce Pytania)
+  const widoczny = (sel) => `(() => { const e = document.querySelector(${JSON.stringify(sel)}); return !!(e && e.getClientRects().length && e.getBoundingClientRect().height > 0); })()`;
+  sprawdz("A (telefon): przełącznik Agenda / Pytania, na start widać Agendę",
+    await A.czekajNa(`${widoczny(".sesja-tematy-przelacznik")} && ${widoczny(".sesja-agenda")} && !${widoczny(".sesja-pytania")}`));
+  await A.js(`[...document.querySelectorAll('.sesja-tematy-przelacznik .przelacznik-opcja')].find(b => b.textContent.includes('Pytania')).click(); true`);
+  sprawdz("A (telefon): po przełączeniu widać listę Pytania z pytaniem #2",
+    await A.czekajNa(`${widoczny(".sesja-pytania")} && !!document.getElementById('sesja-sprawa-pytanie-2')`, 8000),
+    await A.js(`(document.querySelector('.sesja-pytania') || {}).textContent`));
+  await A.zrzut("sesja_A_pytania_telefon");
+  const odpSesja = "Odpowiedź z listy w Sesji " + Date.now();
+  await A.js(`(() => { const k = document.getElementById('sesja-sprawa-pytanie-2'); const p = k.querySelector('textarea');
+    p.value = ${JSON.stringify(odpSesja)}; p.dispatchEvent(new Event('input')); k.querySelector('form button[type=submit]').click(); return true; })()`);
+  sprawdz("A: odpowiedź z listy w Sesji zapisana w sejfie i karta znika", await A.czekajNa(`fetch('/api/sejf/plan').then(r => r.json()).then(p =>
+    (p.pytania.find(x => x.nr === 2) || {}).odpowiedz_md.includes(${JSON.stringify(odpSesja)}) && !document.getElementById('sesja-sprawa-pytanie-2'))`, 10000));
+  await wyslij("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false }, A.sesja);
+  sprawdz("A (komputer): Agenda i Pytania obok siebie", await A.czekajNa(`(() => {
+    const a = document.querySelector('.sesja-agenda').closest('.sesja-czesc').getBoundingClientRect();
+    const p = document.querySelector('.sesja-pytania').getBoundingClientRect();
+    return a.width > 0 && p.width > 0 && Math.abs(a.top - p.top) < 4 && p.left > a.right - 1; })()`, 5000));
+  await A.zrzut("sesja_A_pytania_komputer");
+  await wyslij("Emulation.setDeviceMetricsOverride", { width: 412, height: 915, deviceScaleFactor: 1, mobile: true }, A.sesja);
+  await A.js(`[...document.querySelectorAll('.sesja-tematy-przelacznik .przelacznik-opcja')].find(b => b.textContent.includes('Agenda')).click(); true`);
 
   // ------------------------------------------------------------ dołączenie i WebRTC
   await A.js(`${przycisk("Dołącz")}.click(); true`);

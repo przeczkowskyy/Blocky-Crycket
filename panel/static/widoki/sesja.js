@@ -1,11 +1,13 @@
 // Sesja: długa rozmowa głosowa w panelu (jak na Discordzie) z agentem, który słucha, spisuje i robi notatki.
-// Na górze pokój (uczestnicy, Dołącz/Rozłącz, wyciszenie, miernik, „Agent słucha”), niżej trzy części: Agenda
-// (tematy z notatki sejfu „Sesje główne”), Transkrypcja na żywo, Notatki agenta. Serwer: bc/sesje.py.
+// Na górze pokój (uczestnicy, Dołącz/Rozłącz, wyciszenie, miernik, „Agent słucha”), niżej: Agenda (tematy z notatki
+// sejfu „Sesje główne”) i obok niej Pytania (lista „Do odpowiedzi” z zakładki Pytania, wspolne/lista_pytan.js),
+// Transkrypcja na żywo, Notatki agenta. Serwer: bc/sesje.py.
 // Rozmowa trwa także po przejściu do innej zakładki panelu (obiekt rozmowy żyje w tym module).
 
-import { el, zamien, ikona, toast, arkusz, pusty, awatar, kopiuj, odmiana, dataKrotka } from "../wspolne/ui.js";
+import { el, zamien, ikona, toast, arkusz, pusty, awatar, kopiuj, odmiana, dataKrotka, przelacznik } from "../wspolne/ui.js";
 import { md, mdLinia } from "../wspolne/markdown.js";
 import { Rozmowa, mozliwosci } from "../wspolne/rozmowa.js";
+import { listaPytan } from "../wspolne/lista_pytan.js";
 
 const CSS = new URL("./sesja.css", import.meta.url).href;
 const STAN_MS = 5000;
@@ -75,6 +77,20 @@ export default {
       el("h2", { class: "karta-tytul" }, ikona("plan"), el("span", null, "Agenda"), el("div", { class: "karta-akcje" }, przyciskPropozycji)),
       agendaLista);
 
+    // Pytania obok Agendy: ta sama lista „Do odpowiedzi” co w zakładce Pytania (wspolne/lista_pytan.js), w zwartej
+    // formie — żeby odpowiadać w trakcie rozmowy. Na telefonie przełącznik Agenda / Pytania.
+    const listaP = listaPytan(ctx, {
+      zwarta: true, prefiks: "sesja-sprawa-", tytul: "Pytania",
+      opis: "Te same pytania co w zakładce Pytania — odpowiadajcie w trakcie rozmowy.",
+      akcjeNaglowka: el("button", { type: "button", class: "przycisk cichy maly", onclick: () => ctx.idz("pytania") }, "Wszystkie"),
+      naLicznik: (n) => przelacznikTematow.licznik("pytania", n || null),
+    });
+    const kPytania = el("section", { class: "karta sesja-czesc sesja-pytania" }, listaP.el);
+    const przelacznikTematow = przelacznik([{ id: "agenda", tekst: "Agenda", ikona: "plan" }, { id: "pytania", tekst: "Pytania", ikona: "pytanie" }],
+      "agenda", (id) => { tematy.dataset.pokaz = id; }, "Agenda albo pytania");
+    const tematy = el("div", { class: "sesja-tematy", dataset: { pokaz: "agenda" } },
+      el("div", { class: "sesja-tematy-przelacznik" }, przelacznikTematow), kAgenda, kPytania);
+
     const zapisLista = el("div", { class: "sesja-zapis", role: "log", "aria-live": "polite", "aria-label": "Transkrypcja na żywo" });
     const zapisStan = el("p", { class: "cichy-tekst sesja-zapis-stan" });
     const zapisAkcje = el("div", { class: "karta-akcje" });
@@ -93,7 +109,7 @@ export default {
       el("header", { class: "nagl-widoku" }, el("div", null, el("h1", null, "Sesja"),
         el("p", { class: "cichy-tekst" }, "Długa rozmowa głosowa w panelu — jak na Discordzie. Agent może słuchać, spisywać rozmowę i robić notatki."))),
       baner, komunikaty, kPokoj,
-      el("div", { class: "sesja-siatka" }, kAgenda, kZapis, kNotatki), audio);
+      el("div", { class: "sesja-siatka" }, tematy, kZapis, kNotatki), audio);
 
     // ------------------------------------------------------------------ pomocnicze
     const ja = () => (S.stan && S.stan.ja) || { decydent: !!ctx.ja.decydent, lokalny: !!ctx.ja.lokalny, agent: false };
@@ -114,8 +130,10 @@ export default {
           ? pusty("Rozmowa działa tylko na żywym panelu", "To jest podgląd tylko do odczytu. Rozmowa głosowa, nagrywanie i notatki działają w panelu uruchomionym na komputerze (albo przez link tunelu).", "oko")
           : pusty("Rozmowa zacznie działać po restarcie panelu", "Serwer panelu działa jeszcze w starej wersji, która nie zna zakładki Sesja. Na komputerze z panelem zamknij okno panelu i uruchom panel\\start.bat jeszcze raz.", "info"));
       if (S.statyczny) {
-        korzen.querySelector(".sesja-siatka").append(kAgenda);
+        korzen.querySelector(".sesja-siatka").append(tematy);
         rysujAgende();
+      } else {
+        korzen.querySelector(".sesja-siatka").append(kPytania);   // pytania działają też na starym serwerze
       }
     }
 
@@ -594,6 +612,7 @@ export default {
       el: korzen,
       async pokaz() {
         S.widoczny = true;
+        listaP.pokaz();
         if (S.statyczny) {
           rysujNiedostepne();
           await odswiezAgende();
@@ -609,6 +628,7 @@ export default {
       },
       ukryj() {
         S.widoczny = false;                                    // rozmowa trwa dalej w tle (jak na Discordzie)
+        listaP.ukryj();
       },
     };
   },

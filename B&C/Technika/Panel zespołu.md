@@ -10,13 +10,13 @@ tags: [technika, panel, workflow, narzędzia]
 ## Po co, skoro jest sejf
 | Potrzeba | Sejf w Obsidianie | Panel |
 |---|---|---|
-| Decyzje, zadania, roadmapa, dziennik | źródło prawdy | tylko wyświetla, też na telefonie |
+| Pytania, decyzje, zadania, roadmapa, dziennik | źródło prawdy | zakładka Pytania: jedna lista „Do odpowiedzi” (pytania, decyzje do zatwierdzenia, raporty do akceptacji), historia, wyszukiwarka, Plan; odpowiedzi, decyzje i zadania zapisywane w tych samych notatkach, też na telefonie |
 | „Co zostało wdrożone i czy to akceptuję?” | wpis w dzienniku | karta raportu ze zrzutami i przyciskami Akceptuję / Do poprawy |
 | Zobaczyć mapę bez uruchamiania Studio | — | podgląd 3D z migawki części + zrzuty ze Studio |
 | Komentarz do konkretnego budynku | — | klik w element modelu → wątek komentarzy, także głosowy |
 | Polecenie dla Claude'a bez otwierania edytora | — | zakładka Agent (ten sam Claude Code, to samo konto) |
 | Graf notatek bez Obsidiana | widok grafu | zakładka Sieć |
-| Kto teraz pracuje | — | osoby w Team Create, na panelu, ostatnie commity |
+| Kto teraz pracuje | — | lewy dolny róg: kto jest na panelu, w której zakładce, kto rozmawia w Sesji; na Pulpicie także Team Create i ostatnie commity |
 | Rejestr grafik i ich etap w pipeline | plik `assets/manifest.json` | zakładka Assety: miniatury, etapy, numery Roblox, komentarze (tylko do odczytu) |
 | Liczby z opublikowanej gry | — | Analityka → Telemetria gry (po włączeniu, zob. [[Telemetria gry]]) |
 | Długa rozmowa głosowa z zapisem ustaleń | [[Sesje główne]] (tematy) | zakładka Sesja: rozmowa jak na Discordzie, agent słucha, spisuje i robi notatki |
@@ -31,7 +31,7 @@ Bez instalowania zależności (sam Python 3.9+). Pełna instrukcja: `panel/INSTA
 
 ## Jak działa wspólna praca
 - **Wspólne dane idą przez git**: raport, komentarz i migawka to osobne pliki w `panel/dane/`, więc dwie osoby mogą dopisywać naraz bez konfliktów. Przyciski Pobierz i Wyślij na Pulpicie robią `git pull` i commit samych danych panelu.
-- **Agent** to `claude -p` uruchamiany w folderze projektu: czyta `CLAUDE.md`, ten sejf i skille, działa na subskrypcji osoby, na której komputerze stoi panel. Tryby: Plan (tylko czyta), Praca (edytuje i używa dozwolonych narzędzi), Auto.
+- **Agent** to `claude -p` uruchamiany w folderze projektu: czyta `CLAUDE.md`, ten sejf i skille, działa na subskrypcji osoby, na której komputerze stoi panel — także wtedy, gdy pisze do niego ktoś zdalnie (telefon, tunel). Dlatego lista wątków w zakładce Agent pokazuje przy każdym wątku, kto go założył i czy zdalnie, oraz kto jeszcze w nim pisał (od 14.11.2026; starsze wątki bez tej informacji). Tryby: Plan (tylko czyta), Praca (edytuje i używa dozwolonych narzędzi), Auto.
 - **Raport od Claude'a**: po wdrożeniu czegokolwiek Claude robi migawkę (`python panel/narzedzia/migawka.py`) i publikuje raport (`python panel/narzedzia/raport.py dodaj …`) z odwołaniem do elementów; odpowiedź człowieka czyta poleceniem `raport.py odpowiedzi`. Opis dla agentów: skill `.claude/skills/panel/`.
 - **Podgląd 3D** rysuje części Roblox (bloki, kliny, walce, kule) w przeglądarce z pliku `czesci.json`; siatki z importu pokazuje jako ramki, a prawdziwy wygląd dają zrzuty ze Studio.
 
@@ -43,7 +43,15 @@ Bez instalowania zależności (sam Python 3.9+). Pełna instrukcja: `panel/INSTA
 - **Repozytorium jest publiczne** — wszystko w `panel/dane/` jest widoczne dla każdego. Zob. [[Workflow i Git]].
 
 ## Praca na sejfie z panelu (D-028)
-Zakładka Plan potrafi zapisywać do sejfu: odpowiedź pod pytaniem otwartym, odhaczenie i dodanie zadania oraz zatwierdzenie albo odrzucenie decyzji. Każda zmiana to mały, czytelny wiersz w tym samym pliku Markdown co zawsze i ślad w [[Dziennik zmian]] (sekcja „Panel (ludzie)”); panel sprawdza, czy plik nie zmienił się w międzyczasie w Obsidianie. Odpowiedzi gości z samym kodem dostępu (bez klucza lokalnego i bez klucza zatwierdzania) są oznaczane „gość panelu” — samo imię nie daje uprawnień. Zapis jest włączony (D-028; odpowiedź Karola na [[Pytania otwarte]] #23); wyłączenie: `"zapis_sejfu": false` w konfiguracji. Szczegóły i API: `panel/README.md`.
+Zakładka Pytania (dawniej Plan, potem Decyzje) potrafi zapisywać do sejfu: odpowiedź pod pytaniem otwartym, odhaczenie i dodanie zadania oraz zatwierdzenie albo odrzucenie decyzji. Każda zmiana to mały, czytelny wiersz w tym samym pliku Markdown co zawsze i ślad w [[Dziennik zmian]] (sekcja „Panel (ludzie)”); panel sprawdza, czy plik nie zmienił się w międzyczasie w Obsidianie. Odpowiedzi gości z samym kodem dostępu (bez klucza lokalnego i bez klucza zatwierdzania) są oznaczane „gość panelu” — samo imię nie daje uprawnień. Zapis jest włączony (D-028; odpowiedź Karola na [[Pytania otwarte]] #23); wyłączenie: `"zapis_sejfu": false` w konfiguracji. Szczegóły i API: `panel/README.md`.
+
+### Zakładka Pytania (od 14.11.2026)
+Na prośbę Karola z 13.11.2026 zakładki Plan i Raporty połączono w jedną (najpierw nazwaną Decyzje), a 14.11.2026, po jego uwagach, wszystko skondensowano do jednej kategorii — **Pytania**. Zakładka ma jedną listę **Do odpowiedzi**, bez podzakładek: każda pozycja jest pytaniem do człowieka — pytanie z [[Pytania otwarte]] (pole odpowiedzi), decyzja „propozycja” albo „do decyzji” z [[Rejestr decyzji]] jako „Czy zatwierdzamy: …?” z przyciskami **Tak** / **Nie** i raport czekający na akceptację jako „Czy akceptujesz: …?” (albo własne pytanie raportu) z **Akceptuję** / **Do poprawy**. Mała etykieta nad tytułem mówi, skąd pozycja pochodzi. Najnowsze i najważniejsze są na górze. Nad listą jest **wyszukiwarka** (tytuły i treść wszystkiego, także historii; szuka też po statusie, np. „do poprawy”, „odrzucona”), pod nią wspólna historia **Odpowiedziane** (pytania z odpowiedziami, decyzje zatwierdzone i odrzucone, raporty po decyzji — od najnowszych) i zwijany **Plan**: Zadania, Roadmapa, Dziennik zmian. Ta sama lista pytań stoi w zakładce **Sesja** obok Agendy, żeby odpowiadać w trakcie rozmowy głosowej.
+- **Pytanie i jego decyzje to jedna karta.** Powiązanie zapisuje się w notatce pytań wierszem `Rozstrzyga: D-019, D-020` w treści pytania (przed „**Odpowiedź:**”). Gdy Karol albo Paweł zatwierdzi lub odrzuci ostatnią otwartą decyzję z tej listy, panel w tej samej chwili dopisuje pod pytaniem odpowiedź z jego podpisem, np. `- Karol (2026-11-13): rozstrzygnięte decyzjami: D-019 zatwierdzona, D-020 odrzucona`, i ślad w [[Dziennik zmian]]. Sama wzmianka o decyzji w treści pytania (bez tego wiersza) jest tylko pokazywana jako „Powiązane decyzje”.
+- **Na sesję główną** — przycisk przy pytaniu i decyzji dopisuje temat do [[Sesje główne]]; sprawa znika z listy do grupy „Odłożone na sesję główną”.
+- Lista odświeża się sama (po każdej akcji, co kilkanaście sekund i po powrocie do karty), ale nie rusza karty, w której ktoś pisze.
+- Pulpit pokazuje na górze liczbę pytań i trzy pierwsze z nich, stan rozmowy w zakładce Sesja, „Co nowego” i przyciski Pobierz / Wyślij.
+- To zmiana wyglądu i działania panelu (narzędzia), nie kanonu gry; zasada D-008 (sejf jest jedynym źródłem prawdy) zostaje bez zmian.
 
 ### Kto zatwierdza decyzje w panelu (D-030)
 Od 13.11.2026 Karol i Paweł mają równe prawa: wystarcza decyzja jednego z nich, a każda zostaje w logach z imieniem i datą. W panelu status decyzji zmienia:

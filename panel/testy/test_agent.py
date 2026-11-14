@@ -96,6 +96,35 @@ class TestPoleceniaPanelu(unittest.TestCase):
         self.zakoncz()
         self.assertFalse(agent.stan_watku(r["watek"])["trwa"])
 
+    def test_kto_zalozyl_watek_i_czy_zdalnie(self):
+        """Lista wątków pokazuje, kto założył wątek i czy zdalnie, oraz kto w nim pisał (subskrypcja jest jedna —
+        osoby przy komputerze z panelem)."""
+        class Z:
+            def __init__(self, kto, lokalny, dane=None, wid=None):
+                self.kto, self.lokalny, self.json, self.params = kto, lokalny, dane, {"id": wid}
+        self.cfg["agent"]["zdalnie"] = True
+        s, w = agent._nowy(Z("Paweł", False, {"tytul": "Pytanie o walutę"}))
+        self.assertEqual((s, w["utworzyl"], w["zdalnie"]), (201, "Paweł", True))
+        r = agent._wiadomosc(Z("Paweł", False, {"tekst": "Jaką walutę premium?"}, w["id"]))
+        self.assertEqual(r[0], 202)
+        self.czekaj_na_przebieg(1)
+        self.zakoncz()
+        agent._dopisz(w["id"], {"rola": "user", "tekst": "Dopisuję", "kto": "Karol", "zdalnie": False})
+        lista = {x["id"]: x for x in agent._lista(Z("Karol", True))["watki"]}
+        x = lista[w["id"]]
+        self.assertEqual((x["utworzyl"], x["zdalnie"]), ("Paweł", True))
+        self.assertEqual(x["osoby"], [{"kto": "Paweł", "zdalnie": True}, {"kto": "Karol", "zdalnie": False}])
+        self.assertTrue(agent._czytaj_watek(w["id"])["wiadomosci"][0]["zdalnie"])
+        s, w2 = agent._nowy(Z("Karol", True, {}))                  # przy komputerze
+        self.assertEqual((w2["utworzyl"], w2["zdalnie"]), ("Karol", False))
+        # polecenie panelu bez informacji o miejscu i stary wątek bez pola: „nie wiadomo” (null), nie „przy komputerze”
+        r3 = agent.uruchom_polecenie("Notatki.", "Karol", tytul="Sesja")
+        self.czekaj_na_przebieg(2)
+        self.zakoncz()
+        stary = agent._czytaj_watek(r3["watek"])
+        self.assertIsNone(agent._widok_watku(stary)["zdalnie"])
+        self.assertEqual(agent._widok_watku(stary)["osoby"], [{"kto": "Karol", "zdalnie": None}])
+
     def test_wznowienie_istniejacego_watku(self):
         r = agent.uruchom_polecenie("Pierwsze.", "Karol", tytul="T", katalogi=[self.kat_sesji])
         self.czekaj_na_przebieg(1)

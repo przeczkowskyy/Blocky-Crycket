@@ -758,6 +758,157 @@ class TestPoPrzegladzie(Baza):
 
 
 # =========================================================================== podział na linie: bezstratny na prawdziwym sejfie
+# =========================================================================== samo-rozstrzyganie pytań decyzjami
+PYTANIA_ROZSTRZYGA = """---
+status: do-decyzji
+---
+# Pytania otwarte
+
+## 1. Jedna decyzja
+Treść pierwszego. Zob. D-001.
+Rozstrzyga: D-002
+**Odpowiedź:**
+
+## 2. Dwie decyzje
+Treść drugiego.
+Rozstrzyga: D-003, D-005
+**Odpowiedź:**
+
+## 3. Już z odpowiedzią
+Rozstrzyga: D-002
+**Odpowiedź:**
+- Karol (2026-11-12): Wcześniej.
+
+## 4. Decyzja zastąpiona i propozycja
+Rozstrzyga: D-004, D-005
+
+## 5. Tylko wzmianka o D-002
+Bez wiersza rozstrzygającego, więc bez automatyki.
+**Odpowiedź:**
+"""
+
+
+class TestSamoRozstrzyganie(Baza):
+    """Zmiana statusu decyzji zamyka pytanie z wierszem „Rozstrzyga:”, gdy wszystkie jego decyzje są zamknięte."""
+
+    def setUp(self):
+        super().setUp()
+        self.zapisz_pliki(pytania=PYTANIA_ROZSTRZYGA)
+        sejf.uniewaznij()
+
+    def tekst(self, klucz):
+        return self.bajty(klucz).decode("utf-8-sig").replace("\r\n", "\n")
+
+    def test_parser(self):
+        p = {x["nr"]: x for x in sejf.plan()["pytania"]}
+        self.assertEqual(p[1]["rozstrzyga"], ["D-002"])
+        self.assertEqual(p[1]["powiazane"], ["D-001"])
+        self.assertEqual(p[2]["rozstrzyga"], ["D-003", "D-005"])
+        self.assertEqual(p[4]["rozstrzyga"], ["D-004", "D-005"])
+        self.assertEqual((p[5]["rozstrzyga"], p[5]["powiazane"]), ([], ["D-002"]))
+        self.assertIn("Rozstrzyga: D-002", p[1]["tresc_md"])            # treść bez zmian (zgodność ze starym widokiem)
+
+    def test_jedna_decyzja(self):
+        w = zapis.zmien_status_decyzji("D-002", "zatwierdzona", "Gramy dalej", self.wersja("decyzje"), "Karol")
+        self.assertEqual([r["nr"] for r in w["rozstrzygniete"]], [1])     # pytanie 3 ma już odpowiedź, 5 bez wiersza
+        self.assertEqual(w["rozstrzygniete"][0]["decyzje"], [{"id": "D-002", "status": "zatwierdzona"}])
+        oczek = PYTANIA_ROZSTRZYGA.replace(
+            "Rozstrzyga: D-002\n**Odpowiedź:**\n\n## 2.",
+            "Rozstrzyga: D-002\n**Odpowiedź:**\n- Karol (%s): rozstrzygnięte decyzjami: D-002 zatwierdzona („Gramy dalej”)"
+            "\n\n## 2." % DZIS)
+        self.assertNotEqual(oczek, PYTANIA_ROZSTRZYGA)
+        self.assertPlik("pytania", oczek)
+        p = {x["nr"]: x for x in w["plan"]["pytania"]}
+        self.assertFalse(p[1]["otwarte"])
+        self.assertTrue(p[5]["otwarte"])
+        dz = self.tekst("dziennik")
+        self.assertIn("\n- Karol: decyzja D-002 zatwierdzona ([[Rejestr decyzji]])\n- Karol: odpowiedź na pytanie 1 "
+                      "(rozstrzygnięte decyzjami: D-002 zatwierdzona („Gramy dalej”)) ([[Pytania otwarte]])\n", dz)
+        self.assertEqual(dz.count("## %s · Panel (ludzie)" % DZIS), 1)
+        # ślad dla „Wyślij”: oba pliki zapamiętane
+        with open(os.path.join(self.tmp, "zapis_sejfu.json"), encoding="utf-8") as f:
+            stan = json.load(f)
+        self.assertEqual(len(stan["pliki"]), 3)                            # rejestr, pytania, dziennik
+
+    def test_kilka_decyzji_i_czesciowe(self):
+        w = zapis.zmien_status_decyzji("D-003", "odrzucona", None, self.wersja("decyzje"), "Paweł", "klucz zatwierdzania")
+        self.assertEqual(w["rozstrzygniete"], [])                         # D-005 dalej otwarta
+        self.assertPlik("pytania", PYTANIA_ROZSTRZYGA)
+        w = zapis.zmien_status_decyzji("D-005", "zatwierdzona", None, self.wersja("decyzje"), "Paweł", "klucz zatwierdzania")
+        self.assertEqual([r["nr"] for r in w["rozstrzygniete"]], [2, 4])  # 4: D-004 zastąpiona liczy się jako zamknięta
+        t = self.tekst("pytania")
+        self.assertIn("Rozstrzyga: D-003, D-005\n**Odpowiedź:**\n- Paweł (klucz zatwierdzania, %s): rozstrzygnięte "
+                      "decyzjami: D-003 odrzucona, D-005 zatwierdzona\n" % DZIS, t)
+        self.assertIn("Rozstrzyga: D-004, D-005\n**Odpowiedź:**\n- Paweł (klucz zatwierdzania, %s): rozstrzygnięte "
+                      "decyzjami: D-004 zastąpiona, D-005 zatwierdzona\n" % DZIS, t)
+        dz = self.tekst("dziennik")
+        self.assertIn("- Paweł (klucz zatwierdzania): odpowiedź na pytanie 2 (rozstrzygnięte decyzjami: D-003 "
+                      "odrzucona, D-005 zatwierdzona) ([[Pytania otwarte]])", dz)
+
+    def test_do_decyzji_nie_rozstrzyga(self):
+        w = zapis.zmien_status_decyzji("D-002", "do_decyzji", None, self.wersja("decyzje"), "Karol")
+        self.assertEqual(w["rozstrzygniete"], [])
+        self.assertPlik("pytania", PYTANIA_ROZSTRZYGA)
+
+    def test_brak_czesciowego_zapisu(self):
+        """Gdy zapis Pytań się nie uda (ktoś zapisał plik w tej samej chwili), Rejestr wraca do treści sprzed operacji."""
+        przed_r, przed_p, przed_d = self.bajty("decyzje"), self.bajty("pytania"), self.bajty("dziennik")
+        oryginal = zapis._zapisz
+        sciezka_pytan = os.path.join(self.sejf, "Produkcja", "Pytania otwarte.md")
+
+        def zapisz(sciezka, dane, przed=None):
+            if os.path.normcase(sciezka) == os.path.normcase(sciezka_pytan):
+                with open(sciezka, "ab") as f:                             # „Obsidian” zapisuje w tej samej chwili
+                    f.write(self.kodu("\nDopisek obcy.\n"))
+            return oryginal(sciezka, dane, przed)
+
+        with mock.patch.object(zapis, "_zapisz", zapisz):
+            e = self.assertBlad(409, zapis.zmien_status_decyzji, "D-002", "zatwierdzona", None, self.wersja("decyzje"), "Karol")
+        self.assertEqual(e.dodatkowe.get("kod"), "konflikt_wersji")
+        self.assertIn("Nic nie zapisano", e.komunikat)
+        self.assertEqual(self.bajty("decyzje"), przed_r)
+        self.assertEqual(self.bajty("pytania"), przed_p + self.kodu("\nDopisek obcy.\n"))
+        self.assertEqual(self.bajty("dziennik"), przed_d)
+        self.assertFalse(os.path.exists(os.path.join(self.tmp, "zapis_sejfu.json")))
+
+    def test_kontrola_wersji_rejestru(self):
+        stara = self.wersja("decyzje")
+        zapis.zmien_status_decyzji("D-003", "odrzucona", None, stara, "Karol")
+        e = self.assertBlad(409, zapis.zmien_status_decyzji, "D-005", "zatwierdzona", None, stara, "Karol")
+        self.assertEqual(e.dodatkowe.get("kod"), "konflikt_wersji")
+        self.assertPlik("pytania", PYTANIA_ROZSTRZYGA)
+
+    def test_pytania_z_bledem_nie_blokuja_decyzji(self):
+        """Pytania z konfliktem gita: decyzja zapisuje się, pytania zostają bez zmian, odpowiedź ma uwagę."""
+        zepsute = PYTANIA_ROZSTRZYGA + "<<<<<<< HEAD\na\n=======\nb\n>>>>>>> inna\n"
+        self.zapisz_pliki(pytania=zepsute)
+        w = zapis.zmien_status_decyzji("D-002", "zatwierdzona", None, self.wersja("decyzje"), "Karol")
+        self.assertEqual(w["rozstrzygniete"], [])
+        self.assertIn("konfliktu gita", w["uwaga"])
+        self.assertPlik("pytania", zepsute)
+
+    def test_gosc_nie_zmienia_statusu(self):
+        przed = (self.bajty("decyzje"), self.bajty("pytania"))
+        cialo = {"status": "zatwierdzona", "wersja": self.wersja("decyzje")}
+        self.assertBlad(403, zapis._t_status, _zadanie(cialo, kto="Paweł", params={"id": "D-002"}))
+        self.assertEqual((self.bajty("decyzje"), self.bajty("pytania")), przed)
+        w = zapis._t_status(_zadanie(cialo, gd=True, kto="Paweł", params={"id": "D-002"}))
+        self.assertEqual([r["nr"] for r in w["rozstrzygniete"]], [1])
+        self.assertIn("- Paweł (klucz zatwierdzania, %s): rozstrzygnięte decyzjami: D-002 zatwierdzona\n" % DZIS,
+                      self.tekst("pytania"))
+
+    def test_teksty(self):
+        lista = [("D-012", "zatwierdzona", ""), ("D-013", "odrzucona", "za drogie")]
+        self.assertEqual(zapis.tekst_rozstrzygniecia(lista),
+                         "rozstrzygnięte decyzjami: D-012 zatwierdzona, D-013 odrzucona („za drogie”)")
+        self.assertEqual(zapis._krotkie_uzasadnienie("Opis.\nUzasadnienie — Karol, 2026-11-13: krótko"), "krótko")
+        self.assertEqual(zapis._krotkie_uzasadnienie("Uzasadnienie — Karol, 2026-11-13: " + "x" * 300), "")
+
+
+class TestSamoRozstrzyganieCRLF(TestSamoRozstrzyganie):
+    nl = "\r\n"
+
+
 class TestDokument(unittest.TestCase):
     def test_bez_strat_na_prawdziwym_sejfie(self):
         katalog = os.path.join(rdzen.REPO, "B&C")

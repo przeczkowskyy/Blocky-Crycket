@@ -51,17 +51,24 @@ class Eksport(unittest.TestCase):
         r = subprocess.run([sys.executable, os.path.join(PANEL, "serwer.py"), "--eksport", wyj], capture_output=True, env=env,
                            timeout=180)
         self.assertEqual(r.returncode, 0, (r.stdout + r.stderr).decode("utf-8", "replace")[-800:])
-        for nazwa in ("index.html", "app.js", "tryb.js", ".nojekyll"):
+        for nazwa in ("index.html", "app.js", "tryb.js", ".nojekyll", "widoki/pytania.js", "widoki/pytania.css",
+                      "wspolne/kolejka.js", "wspolne/raport_karta.js", "wspolne/lista_pytan.js", "wspolne/lista_pytan.css"):
             self.assertTrue(os.path.isfile(os.path.join(wyj, nazwa)), nazwa)
+        for nazwa in ("widoki/decyzje.js", "widoki/plan.js", "widoki/raporty.js"):     # dawne zakładki nie wracają
+            self.assertFalse(os.path.isfile(os.path.join(wyj, nazwa)), nazwa)
         with open(os.path.join(wyj, "tryb.js"), encoding="utf-8") as f:
             self.assertIn("window.BC_STATYCZNY = true", f.read())
-        for sciezka in ("/api/ja", "/api/sejf/plan", "/api/sejf/siec", "/api/raporty", "/api/podglad", "/api/agent/stan"):
+        # zakładka Pytania (i lista Pytania w Sesji) w lustrze czyta plan, raporty i agendę sesji głównych; zapis
+        # wyłączony (/api/ja)
+        for sciezka in ("/api/ja", "/api/sejf/plan", "/api/sejf/siec", "/api/raporty", "/api/podglad", "/api/agent/stan",
+                        "/api/sesje/agenda", "/api/obecnosc"):
             plik = os.path.join(wyj, "dane", statyczny.klucz(sciezka) + ".json")
             self.assertTrue(os.path.isfile(plik), sciezka)
         with open(os.path.join(wyj, "dane", statyczny.klucz("/api/ja") + ".json"), encoding="utf-8") as f:
             ja = json.load(f)
         self.assertTrue(ja["tryb_statyczny"])
         self.assertFalse(ja["lokalny"])
+        self.assertEqual((ja["zapis_sejfu"], ja["decydent"]), (False, False))   # bez przycisków zapisu w Pytaniach
         with open(os.path.join(wyj, "dane", statyczny.klucz("/api/raporty") + ".json"), encoding="utf-8") as f:
             self.assertEqual(json.load(f)["raporty"][0]["tytul"], "Test lustra")
         # w lustrze nie ma danych lokalnych ani sejfów spoza repozytorium
