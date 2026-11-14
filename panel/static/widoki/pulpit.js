@@ -126,13 +126,13 @@ export default {
 
     /** Wiersz „Czeka na Ciebie”: każda sprawa jako pytanie (tytuł karty z zakładki Pytania), z małą etykietą pochodzenia. */
     function opisSprawy(s) {
-      if (s.typ === "raport") return { ikona: "raporty", kolor: "niebieski", nad: s.pochodzenie || "z raportu", pod: (s.r.kto || "ktoś") + " · " + czasTemu(s.r.czas) };
+      if (s.typ === "raport") return { nad: s.pochodzenie || "z raportu", pod: (s.r.kto || "ktoś") + " · " + czasTemu(s.r.czas) };
       if (s.typ === "pytanie") {
         const otw = (s.decyzje || []).filter((x) => x.d && (x.d.status === "propozycja" || x.d.status === "do_decyzji")).length;
-        return { ikona: "pytanie", kolor: "zloto", nad: s.pochodzenie || "pytanie #" + s.p.nr, pod: otw ? "z " + otw + " " + odmiana(otw, ["decyzją", "decyzjami", "decyzjami"]) + " do zatwierdzenia" : "czeka na odpowiedź" };
+        return { nad: s.pochodzenie || "pytanie #" + s.p.nr, pod: otw ? "z " + otw + " " + odmiana(otw, ["decyzją", "decyzjami", "decyzjami"]) + " do zatwierdzenia" : "czeka na odpowiedź" };
       }
-      if (s.typ === "potwierdzenie") return { ikona: "decyzja", kolor: "zloto", nad: s.pochodzenie || "decyzja " + s.d.id, pod: "Zgoda, brak zgody czy rozmowa?" };
-      return { ikona: "decyzja", kolor: "fiolet", nad: s.pochodzenie || "decyzja " + s.d.id, pod: "Tak czy nie? · " + (STATUSY_DECYZJI[s.d.status] || s.d.status) };
+      if (s.typ === "potwierdzenie") return { nad: s.pochodzenie || "decyzja " + s.d.id, pod: "Zgoda, brak zgody czy rozmowa?" };
+      return { nad: s.pochodzenie || "decyzja " + s.d.id, pod: "Tak czy nie? · " + (STATUSY_DECYZJI[s.d.status] || s.d.status) };
     }
 
     function rysujCzeka(dane) {
@@ -154,10 +154,10 @@ export default {
           el("span", { class: "czeka-liczba" }, String(n)),
           el("span", { class: "czeka-opis" }, el("strong", null, odmiana(n, ["pytanie czeka", "pytania czekają", "pytań czeka"])),
             el("span", { class: "cichy-tekst" }, "na Twoją odpowiedź — zakładka Pytania"))),
-        el("ul", { class: "lista" }, k.aktywne.slice(0, 3).map((s) => {
+        // lekkie wiersze jak karty w zakładce Pytania: mała szara etykieta, tytuł, krótki dopisek — bez kolorowych znaczków
+        el("ul", { class: "lista czeka-lista" }, k.aktywne.slice(0, 3).map((s) => {
           const o = opisSprawy(s);
           return el("li", null, el("button", { type: "button", class: "wiersz wiersz-klik sprawa-wiersz", onclick: () => doSprawy(s.klucz) },
-            el("span", { class: "sprawa-znak " + o.kolor }, ikona(o.ikona)),
             el("span", { class: "wiersz-tekst" },
               el("span", { class: "sprawa-nad" }, o.nad),
               el("strong", null, skroc(zwykly(s.pytanie || s.tytul), 90) || "(bez tytułu)"),

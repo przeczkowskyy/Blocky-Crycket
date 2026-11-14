@@ -16,6 +16,11 @@
 // Brak zgody (z powodem) / Przedyskutuj (POST /api/sejf/decyzje/<id>/potwierdzenie). Decyzje w historii mają
 // dyskretny znacznik podpisów: „czeka na potwierdzenie: Imię” albo „dwa podpisy: …”.
 //
+// Wygląd karty: lekka (spokojne tło, bez kolorowego paska z lewej), wyraźny tytuł, mała szara etykieta pochodzenia
+// i statusu, krótka treść — punkty z góry pytania albo dwa pierwsze zdania opisu decyzji (kolejka.js: podzielPytanie,
+// skrotOpisu); reszta („Szczegóły:”, „Dopisek …”, „Sprostowanie …”, dalszy opis, meta decyzji) jest zwinięta za
+// „Pokaż szczegóły”. Wiersz „Rozstrzyga:” nie jest pokazywany jako tekst (decyzje są w karcie osobno).
+//
 // Zapis do sejfu (bc/zapis.py): każdy zapis wysyła znacznik wersji pliku z chwili, gdy człowiek go zobaczył (karta
 // pamięta wersje z chwili narysowania, okno decyzji — z chwili otwarcia); przy cudzej zmianie serwer odmawia (409),
 // a lista odświeża dane. Zatwierdzenie decyzji, które zamyka ostatnią decyzję pytania, serwer od razu zapisuje też
@@ -28,8 +33,8 @@ import { md } from "./markdown.js";
 import { komentarze } from "./komentarze.js";
 import { kartyRaportow } from "./raport_karta.js";
 import {
-  zbudujPytania, bezWierszaRozstrzyga, numerDecyzji, OTWARTE_DECYZJE, pytaniaZamknieteDecyzjami, pasuje, zwykly,
-  pytanieDecyzji, kanoniczne,
+  zbudujPytania, numerDecyzji, OTWARTE_DECYZJE, pytaniaZamknieteDecyzjami, pasuje, zwykly,
+  pytanieDecyzji, kanoniczne, podzielPytanie, skrotOpisu,
 } from "./kolejka.js";
 
 const ARKUSZ_STYLOW = new URL("./lista_pytan.css", import.meta.url).href;
@@ -541,21 +546,42 @@ export function listaPytan(ctx, opcje = {}) {
   const komentarzeDecyzji = (d) => komentarzeCelu("d:" + d.id, { typ: "notatka", cel: plikRejestru() + "#" + d.id, etykieta: d.id + " " + (d.tytul || "") });
   const komentarzePytania = (p) => komentarzeCelu("p:" + p.nr, { typ: "notatka", cel: plikPytan() + "#pytanie-" + p.nr, etykieta: "Pytanie #" + p.nr });
 
+  /** Mała szara etykieta w górnym wierszu karty (status, „czeka na Ciebie”) — zamiast kolorowych znaczków. */
+  const etykieta = (tekst, klasa) => el("span", { class: "sprawa-meta" + (klasa ? " " + klasa : "") }, tekst);
+
   function chipDecyzji(d) {
-    const s = d ? STATUSY_DECYZJI[d.status] || { tekst: d.status || "?", kolor: "" } : { tekst: "brak w Rejestrze", kolor: "szary" };
-    return el("span", { class: "chip " + s.kolor }, d && d.emoji ? el("span", { "aria-hidden": "true" }, d.emoji) : null, s.tekst);
+    const s = d ? STATUSY_DECYZJI[d.status] || { tekst: d.status || "?" } : { tekst: "brak w Rejestrze" };
+    return etykieta(s.tekst, "status-" + ((d && d.status) || "brak"));
   }
 
-  /** Zwijane „Szczegóły” w karcie zwartej (pamięta, które są otwarte). */
+  /** Zwijane „Pokaż szczegóły” (pamięta, które są otwarte). */
   function szczegoly(klucz, ...tresc) {
-    if (!tresc.some(Boolean)) return null;
-    const det = el("details", { class: "zwijane sprawa-szczegoly", open: otwarteSzczegoly.has(klucz) },
-      el("summary", null, ikona("dol"), "Szczegóły"), ...tresc);
+    if (!tresc.flat().some(Boolean)) return null;
+    const otwarte = otwarteSzczegoly.has(klucz);
+    const napis = el("span", null, otwarte ? "Ukryj szczegóły" : "Pokaż szczegóły");
+    const det = el("details", { class: "zwijane sprawa-szczegoly", open: otwarte },
+      el("summary", null, ikona("dol"), napis), el("div", { class: "sprawa-szczegoly-tresc" }, ...tresc));
     det.addEventListener("toggle", () => {
+      napis.textContent = det.open ? "Ukryj szczegóły" : "Pokaż szczegóły";
       if (det.open) otwarteSzczegoly.add(klucz);
       else otwarteSzczegoly.delete(klucz);
     });
     return det;
+  }
+
+  /** Krótka treść pytania: punkty z góry widoczne, reszta zwinięta (kolejka.js: podzielPytanie). */
+  function trescPytania(s) {
+    const { krotko, szczegoly: reszta } = podzielPytanie(s.p.tresc_md);
+    return [krotko ? el("div", { class: "md sprawa-krotko", html: md(krotko) }) : null,
+      reszta ? szczegoly(s.klucz, html(reszta)) : null];
+  }
+
+  /** Opis decyzji: dwa pierwsze zdania widoczne, reszta i meta (źródło, kategoria) zwinięte. */
+  function opisDecyzji(s, d, ...dodatki) {
+    const { krotko, reszta } = skrotOpisu(d.opis_md, 2);
+    const meta = (d.meta || []).length ? el("p", { class: "cichy-tekst decyzja-meta" }, (d.meta || []).join(" · ")) : null;
+    return [krotko ? el("div", { class: "md sprawa-krotko", html: md(krotko) }) : null,
+      szczegoly(s.klucz, reszta ? html(reszta) : null, meta, ...dodatki)];
   }
 
   // ------------------------------------------------------------------ na sesję główną
@@ -610,8 +636,8 @@ export function listaPytan(ctx, opcje = {}) {
 
   // ------------------------------------------------------------------ karty
   function chipOdlozona() {
-    if (zwarta) return el("span", { class: "chip fiolet" }, ikona("kalendarz"), "na agendzie");
-    return el("button", { type: "button", class: "chip klik fiolet", onclick: () => ctx.idz("sesja") }, ikona("kalendarz"), "czeka na sesję");
+    if (zwarta) return etykieta("na agendzie");
+    return el("button", { type: "button", class: "sprawa-meta sprawa-meta-klik", onclick: () => ctx.idz("sesja") }, "czeka na sesję");
   }
 
   function goraKarty(s, ...chipy) {
@@ -648,7 +674,7 @@ export function listaPytan(ctx, opcje = {}) {
         return el("div", { class: "sprawa-dec status-" + (d.status || "brak"), dataset: { decyzja: d.id } },
           el("div", { class: "decyzja-gora" }, el("span", { class: "sprawa-zrodlo" }, "rozstrzyga decyzja " + d.id), chipDecyzji(d)),
           el("strong", { class: "sprawa-dec-tytul" }, otwarta ? pytanieDecyzji(d) : zwykly(d.tytul)),
-          d.opis_md ? el("details", { class: "zwijane" }, el("summary", null, ikona("dol"), "Opis decyzji"), html(d.opis_md)) : null,
+          d.opis_md ? szczegoly(s.klucz + "~" + d.id, html(d.opis_md)) : null,
           s.zamknieta ? null : przyciskiDecyzji(d, wersja));
       }));
   }
@@ -658,13 +684,12 @@ export function listaPytan(ctx, opcje = {}) {
     const nr = p.nr;
     const wersjaPytan = () => (k._wersje && k._wersje.pytania) || "";
     const wersjaRejestru = () => (k._wersje && k._wersje.decyzje) || "";
-    const tresc = bezWierszaRozstrzyga(p.tresc_md);
     k.classList.add("pytanie", s.zamknieta ? "zamkniete" : "otwarte");
     if (s.zamknieta) {                                         // historia: odpowiedź i „Dopisz odpowiedź”
       dopisz(k,
-        goraKarty(s, el("span", { class: "chip zielen" }, ikona("ok"), "odpowiedziane")),
+        goraKarty(s, etykieta("odpowiedziane")),
         el("h3", { class: "sprawa-tytul" }, s.pytanie),
-        tresc ? html(tresc) : null,
+        trescPytania(s),
         s.decyzje.length ? blokDecyzji(s, wersjaRejestru) : null,
         s.powiazane.length ? chipyPowiazanych(s.powiazane) : null,
         p.odpowiedz_md ? el("div", { class: "odpowiedz" }, el("span", { class: "etykieta" }, "Odpowiedź"), html(p.odpowiedz_md)) : null,
@@ -679,7 +704,7 @@ export function listaPytan(ctx, opcje = {}) {
       : (dodatkowe.some(Boolean) ? el("div", { class: "rzad-przyciskow" }, dodatkowe) : null);
     if (zwarta) {
       dopisz(k, goraKarty(s), el("h3", { class: "sprawa-tytul" }, s.pytanie),
-        szczegoly(s.klucz, tresc ? html(tresc) : null),
+        trescPytania(s),
         s.decyzje.length ? blokDecyzji(s, wersjaRejestru) : null,
         formularz);
       return;
@@ -687,7 +712,7 @@ export function listaPytan(ctx, opcje = {}) {
     dopisz(k,
       goraKarty(s),
       el("h2", { class: "sprawa-tytul" }, s.pytanie),
-      tresc ? html(tresc) : null,
+      trescPytania(s),
       s.decyzje.length ? blokDecyzji(s, wersjaRejestru) : null,
       s.powiazane.length ? chipyPowiazanych(s.powiazane) : null,
       formularz,
@@ -700,22 +725,19 @@ export function listaPytan(ctx, opcje = {}) {
     const wersjaRejestru = () => (k._wersje && k._wersje.decyzje) || "";
     k.classList.add("decyzja", "status-" + (d.status || "brak"));
     k.dataset.decyzja = d.id;
-    const meta = (d.meta || []).length ? el("p", { class: "cichy-tekst decyzja-meta" }, (d.meta || []).join(" · ")) : null;
     const powtorka = s.powtorzona ? el("p", { class: "cichy-tekst sprawa-podpowiedz" }, ikona("ostrzezenie"),
       el("span", null, "W Rejestrze są dwie decyzje " + d.id + " — panel zapisze status dopiero, gdy numery zostaną poprawione w Obsidianie.")) : null;
     if (zwarta) {
-      dopisz(k, goraKarty(s, el("span", { class: "chip " + st.kolor }, st.tekst)),
+      dopisz(k, goraKarty(s, etykieta(st.tekst, "status-" + (d.status || "brak"))),
         el("h3", { class: "sprawa-tytul" }, s.pytanie),
-        szczegoly(s.klucz, meta, d.opis_md ? html(d.opis_md) : null), powtorka, znacznikPodpisow(d),
+        opisDecyzji(s, d), powtorka, znacznikPodpisow(d),
         przyciskiDecyzji(d, wersjaRejestru));
       return;
     }
-    const opis = d.opis_md ? (d.opis_md.length > 700 ? el("details", { class: "zwijane" }, el("summary", null, ikona("dol"), "Pełny opis"), html(d.opis_md)) : html(d.opis_md)) : null;
     dopisz(k,
-      goraKarty(s, el("span", { class: "chip " + st.kolor }, d.emoji ? el("span", { "aria-hidden": "true" }, d.emoji) : null, st.tekst),
-        d.kategoria ? el("span", { class: "chip" }, d.kategoria) : null),
+      goraKarty(s, etykieta(st.tekst, "status-" + (d.status || "brak")), d.kategoria ? etykieta(d.kategoria) : null),
       el("h2", { class: "sprawa-tytul" }, s.pytanie),
-      meta, znacznikPodpisow(d), opis, powtorka,
+      znacznikPodpisow(d), opisDecyzji(s, d), powtorka,
       przyciskiDecyzji(d, wersjaRejestru, [przyciskNaSesje(s)]),
       !ctx.statyczny ? komentarzeDecyzji(d) : null);
   }
@@ -727,22 +749,20 @@ export function listaPytan(ctx, opcje = {}) {
     const wersjaRejestru = () => (k._wersje && k._wersje.decyzje) || "";
     k.classList.add("decyzja", "potwierdzenie", "status-" + (d.status || "brak"));
     k.dataset.decyzja = d.id;
-    const meta = (d.meta || []).length ? el("p", { class: "cichy-tekst decyzja-meta" }, (d.meta || []).join(" · ")) : null;
-    const chipCzeka = el("span", { class: "chip zloto" }, ikona("zegar"), "czeka na Ciebie");
+    const chipCzeka = etykieta("czeka na Ciebie", "wazne");
     if (zwarta) {
-      dopisz(k, goraKarty(s, el("span", { class: "chip " + st.kolor }, st.tekst), chipCzeka),
+      dopisz(k, goraKarty(s, etykieta(st.tekst, "status-" + (d.status || "brak")), chipCzeka),
         el("h3", { class: "sprawa-tytul" }, s.pytanie),
-        szczegoly(s.klucz, meta, d.opis_md ? html(d.opis_md) : null),
+        opisDecyzji(s, d),
         przyciskiPotwierdzenia(d, wersjaRejestru));
       return;
     }
-    const opis = d.opis_md ? el("details", { class: "zwijane" }, el("summary", null, ikona("dol"), "Opis decyzji"), html(d.opis_md)) : null;
     dopisz(k,
-      goraKarty(s, el("span", { class: "chip " + st.kolor }, d.emoji ? el("span", { "aria-hidden": "true" }, d.emoji) : null, st.tekst), chipCzeka),
+      goraKarty(s, etykieta(st.tekst, "status-" + (d.status || "brak")), chipCzeka),
       el("h2", { class: "sprawa-tytul" }, s.pytanie),
-      el("p", { class: "cichy-tekst sprawa-podpowiedz" }, ikona("info"),
+      el("p", { class: "cichy-tekst sprawa-podpowiedz" },
         el("span", null, "Z jednym podpisem to robocze ustalenie — obowiązuje po Twojej zgodzie.")),
-      meta, opis,
+      opisDecyzji(s, d),
       przyciskiPotwierdzenia(d, wersjaRejestru),
       !ctx.statyczny ? komentarzeDecyzji(d) : null);
   }

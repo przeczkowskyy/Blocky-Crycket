@@ -591,7 +591,9 @@ details.callout[open] > summary::before { content: "▾ "; }
 .sprawa-znak.zloto { color: var(--zloto); border-color: rgba(245, 184, 46, 0.45); }
 .sprawa-znak.fiolet { color: #b69bff; border-color: rgba(139, 92, 246, 0.5); }
 .sprawa-znak.niebieski { color: #7cc0ff; border-color: rgba(78, 168, 255, 0.45); }
-.sprawa-nad { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--przygaszony); }
+.sprawa-nad { font-size: 12px; font-weight: 700; color: var(--przygaszony); }
+.czeka-lista .sprawa-wiersz { min-height: 52px; }
+.czeka-lista .wiersz-tekst > strong { font-weight: 700; }
 .pulpit .wiersz-tekst > strong { display: block; white-space: nowrap; }
 button.czeka-gora { background: none; border: 0; padding: 0; width: 100%; text-align: left; cursor: pointer; border-radius: 14px; }
 .czeka-opis { display: flex; flex-direction: column; min-width: 0; }

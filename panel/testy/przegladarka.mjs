@@ -11,7 +11,11 @@
 //   R. stare adresy #/decyzje, #/plan?zakladka=…, #/raporty i #/raporty/<id> prowadzą do zakładki Pytania
 //      (właściwa część, karta albo pełny raport); plakietka liczy listę „Do odpowiedzi”;
 //   O. lista aktywnych osób pokazuje osobę (znaczek w górnym pasku telefonu i lewy dolny róg);
-//   U. „Pokaż więcej” / „Pokaż mniej” rozwija i zwija opis raportu na liście i w pełnym raporcie (błąd z 14.11);
+//   U. „Pokaż więcej” rozwija opis w pełnym raporcie (błąd z 14.11); na liście raport ma dwa pierwsze zdania opisu,
+//      a resztę za „Pokaż szczegóły” / „Ukryj szczegóły”;
+//   K. karta pytania jest krótka i lekka: punkty z góry treści widoczne, „Szczegóły:” i dopisek zwinięte za
+//      „Pokaż szczegóły”, wiersza „Rozstrzyga:” nie ma w tekście, karty bez kolorowego paska z lewej;
+//   Z. historia „Odpowiedziane” pokazuje 12 pozycji, „Pokaż więcej” dokłada, „Pokaż mniej” wraca do 12;
 //   A. okno zatwierdzania decyzji wysyła wersję Rejestru z chwili otwarcia — gdy odświeżanie w tle przerysuje kartę
 //      nową treścią, „Tak” nic nie zapisuje (409) i zamyka okno;
 //   T. decyzja pokazana jako pytanie „Czy zatwierdzamy: …?” i zatwierdzona przyciskiem Tak — przechodzi do historii;
@@ -194,21 +198,45 @@ try {
   await zamknijOkno();
   await czekajNa(`!document.querySelector('.arkusz-tlo')`);
 
-  // ------------------------------------------------------------ U: „Pokaż więcej” / „Pokaż mniej” na liście
-  await czekajNa(`!!(${karta("raport-" + dlugi)} && ${karta("raport-" + dlugi)}.querySelector('.pokaz-wiecej'))`);
-  const opisK = `${karta("raport-" + dlugi)}.querySelector('.zwijany-opis')`;
-  const przyciskK = `${karta("raport-" + dlugi)}.querySelector('.pokaz-wiecej')`;
-  const h0 = await js(`${opisK}.getBoundingClientRect().height`);
-  await js(`${przyciskK}.click(); true`);
+  // ------------------------------------------------------------ U: raport na liście — dwa pierwsze zdania, reszta zwinięta
+  const kD = karta("raport-" + dlugi);
+  await czekajNa(`!!(${kD} && ${kD}.querySelector('details.sprawa-szczegoly'))`);
+  sprawdz("U: raport na liście pokazuje początek opisu, resztę zwiniętą", await js(`(() => { const k = ${kD};
+    const kr = k.querySelector('.sprawa-krotko'); const d = k.querySelector('details.sprawa-szczegoly');
+    return !!kr && kr.textContent.includes('Akapit 1') && !kr.textContent.includes('Akapit 3') && !d.open &&
+      d.textContent.includes('Akapit 14') && d.querySelector('summary').textContent.trim() === 'Pokaż szczegóły'; })()`),
+    await js(`(${kD} || {}).textContent`));
+  const trescD = `${kD}.querySelector('.sprawa-szczegoly-tresc').getBoundingClientRect().height`;
+  await js(`${kD}.querySelector('details.sprawa-szczegoly > summary').click(); true`);
   await sleep(250);
-  const h1 = await js(`${opisK}.getBoundingClientRect().height`);
-  const napis1 = await js(`${przyciskK}.textContent`);
-  sprawdz("U: Pokaż więcej rozwija opis raportu na liście", h1 > h0 + 40 && napis1 === "Pokaż mniej", h0 + " -> " + h1 + " / " + napis1);
+  sprawdz("U: „Pokaż szczegóły” rozwija opis raportu na liście", (await js(trescD)) > 100 &&
+    (await js(`${kD}.querySelector('details.sprawa-szczegoly > summary').textContent.trim()`)) === "Ukryj szczegóły", await js(trescD));
   await zrzut("U_rozwiniety");
-  await js(`${przyciskK}.click(); true`);
+  await js(`${kD}.querySelector('details.sprawa-szczegoly > summary').click(); true`);
   await sleep(250);
-  const h2 = await js(`${opisK}.getBoundingClientRect().height`);
-  sprawdz("U: Pokaż mniej zwija opis", Math.abs(h2 - h0) < 2 && (await js(`${przyciskK}.textContent`)) === "Pokaż więcej", h1 + " -> " + h2);
+  sprawdz("U: „Ukryj szczegóły” zwija opis", await js(`!${kD}.querySelector('details.sprawa-szczegoly').open`));
+
+  // ------------------------------------------------------------ K: krótka, lekka karta pytania
+  const k4 = karta("pytanie-4");
+  await czekajNa(`!!${k4}`);
+  sprawdz("K: karta pytania pokazuje punkty z góry treści", await js(`(() => { const kr = ${k4}.querySelector('.sprawa-krotko');
+    return !!kr && kr.querySelectorAll('li').length === 2 && !kr.textContent.includes('Długi opis') && !kr.textContent.includes('dopisek'); })()`),
+    await js(`(${k4} || {}).textContent`));
+  sprawdz("K: „Szczegóły:” i dopisek zwinięte za „Pokaż szczegóły”", await js(`(() => { const d = ${k4}.querySelector('details.sprawa-szczegoly');
+    return !!d && !d.open && d.textContent.includes('Długi opis') && d.textContent.includes('dopisek zwinięty') &&
+      !d.textContent.includes('Szczegóły:') && d.querySelector('summary').textContent.trim() === 'Pokaż szczegóły' &&
+      !d.querySelector('.sprawa-szczegoly-tresc').checkVisibility(); })()`),
+    await js(`(() => { const d = ${k4}.querySelector('details.sprawa-szczegoly'); return d ? [d.open, d.textContent, d.querySelector('.sprawa-szczegoly-tresc').checkVisibility()].join(' | ') : 'brak'; })()`));
+  await js(`${k4}.querySelector('details.sprawa-szczegoly > summary').click(); true`);
+  sprawdz("K: przycisk rozwija szczegóły", await czekajNa(`(() => { const d = ${k4}.querySelector('details.sprawa-szczegoly'); const t = d.querySelector('.sprawa-szczegoly-tresc');
+    return d.open && t.checkVisibility() && t.getBoundingClientRect().height > 10 && d.querySelector('summary').textContent.trim() === 'Ukryj szczegóły'; })()`));
+  sprawdz("K: wiersz „Rozstrzyga:” nie jest pokazywany jako tekst", await js(`!${karta("pytanie-1")}.querySelector('.sprawa-krotko').textContent.includes('Rozstrzyga')`));
+  sprawdz("K: karty bez kolorowego paska z lewej", await js(`[...document.querySelectorAll('${LISTA} > .sprawa')].every(k => {
+    const s = getComputedStyle(k); return parseFloat(s.borderLeftWidth) <= 1 && s.borderLeftColor === s.borderRightColor; })`),
+    await js(`[...document.querySelectorAll('${LISTA} > .sprawa')].map(k => k.id + ':' + getComputedStyle(k).borderLeftWidth).join(',')`));
+  await js(`${karta("pytanie-1")}.scrollIntoView({ block: 'start' }); true`);
+  await zrzut("K_karta_pytania");
+  await js(`window.scrollTo(0, 0); true`);
 
   // ------------------------------------------------------------ A: okno decyzji a odświeżenie w tle
   await czekajNa(`!!(${karta("D-003")} && ${karta("D-003")}.querySelector('.decyzja-akcje .przycisk.sukces'))`);
@@ -401,6 +429,26 @@ try {
   await szukaj("");
   sprawdz("W: puste pole pokazuje znów wszystko", await czekajNa(`[...document.querySelectorAll('${LISTA} > .sprawa')].every(k => !k.hidden) &&
     document.querySelectorAll('#pytania-historia .historia-lista > .sprawa').length >= 4`));
+
+  // ------------------------------------------------------------ Z: historia „Odpowiedziane” — Pokaż więcej / Pokaż mniej
+  pisz("Pytania otwarte.md", czytaj("Pytania otwarte.md") + Array.from({ length: 16 }, (_, i) =>
+    "\n## " + (40 + i) + ". Dawne pytanie " + (40 + i) + "\nTreść dawnego pytania.\n**Odpowiedź:**\n- Karol (2026-11-01): tak.\n").join(""));
+  await sleep(300);
+  await odswiezWTle();
+  const kartyHist = `document.querySelectorAll('#pytania-historia .historia-lista > .sprawa').length`;
+  const przyciskHist = (t) => `[...document.querySelectorAll('#pytania-historia .historia-wiecej button')].find(b => b.textContent.startsWith(${JSON.stringify(t)}))`;
+  sprawdz("Z: historia pokazuje 12 pozycji i „Pokaż więcej”", await czekajNa(`Number(document.querySelector('#pytania-historia .kolejka-nagl .chip').textContent) >= 16 &&
+    ${kartyHist} === 12 && !!${przyciskHist("Pokaż więcej")} && !${przyciskHist("Pokaż mniej")}`, 10000),
+    await js(`${kartyHist} + ' / ' + document.querySelector('#pytania-historia .kolejka-nagl .chip').textContent`));
+  const wszystkieHist = await js(`Number(document.querySelector('#pytania-historia .kolejka-nagl .chip').textContent)`);
+  await js(`${przyciskHist("Pokaż więcej")}.click(); true`);
+  sprawdz("Z: „Pokaż więcej” dokłada pozycje i daje „Pokaż mniej”", await czekajNa(`${kartyHist} === ${Math.min(wszystkieHist, 32)} && !!${przyciskHist("Pokaż mniej")}`),
+    await js(kartyHist) + " z " + wszystkieHist);
+  await js(`document.getElementById('pytania-historia').scrollIntoView({ block: 'start' }); true`);
+  await zrzut("Z_historia_wiecej");
+  await js(`${przyciskHist("Pokaż mniej")}.click(); true`);
+  sprawdz("Z: „Pokaż mniej” wraca do 12 pozycji", await czekajNa(`${kartyHist} === 12 && !!${przyciskHist("Pokaż więcej")} && !${przyciskHist("Pokaż mniej")}`),
+    await js(kartyHist));
 
   // ------------------------------------------------------------ C / D: zadania (zwijany Plan)
   await idz(STRONA + "#/pytania?sekcja=zadania");

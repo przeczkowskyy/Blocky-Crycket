@@ -6,12 +6,11 @@
 .kolejka-nagl h2 { font-size: 19px; }
 .kolejka-nagl h3 { font-size: 16px; }
 .kolejka-licznik {
-  display: inline-grid; place-items: center; min-width: 34px; height: 34px; padding: 0 9px; border-radius: 11px;
-  background: var(--zloto); color: #1a1300; font-weight: 900; font-size: 17px;
-  border: 2px solid #0b0d12; box-shadow: 2px 2px 0 #0b0d12; transform: rotate(-3deg);
+  display: inline-grid; place-items: center; min-width: 28px; height: 26px; padding: 0 8px; border-radius: 999px;
+  background: rgba(245, 184, 46, 0.14); color: var(--zloto); font-weight: 800; font-size: 14px;
 }
-.kolejka-licznik.zero { background: var(--zielen); color: #04241a; }
-.lista-pytan.zwarta .kolejka-licznik { min-width: 28px; height: 28px; font-size: 14px; border-radius: 9px; }
+.kolejka-licznik.zero { background: var(--karta2); color: var(--przygaszony); }
+.lista-pytan.zwarta .kolejka-licznik { min-width: 24px; height: 22px; font-size: 12.5px; }
 .kolejka-info {
   display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 12px; border-radius: 12px;
   background: rgba(62, 207, 142, 0.1); border: 2px solid rgba(62, 207, 142, 0.45); font-weight: 600; font-size: 14px;
@@ -22,57 +21,76 @@
 .kolejka-pusta { padding: 20px 16px; }
 .kolejka-brak-wynikow { padding: 6px 2px; }
 
-/* karta pytania (każdego rodzaju) */
-.sprawa { display: flex; flex-direction: column; gap: 10px; scroll-margin: 90px; border-left-width: 6px; }
+/* karta pytania (każdego rodzaju): lekka — spokojne tło, bez kolorowego paska i ciężkiej ramki; hierarchia przez
+   wielkość i grubość pisma oraz odstępy. Reguły z „.sprawa” wygrywają z ogólnymi .karta / .decyzja / .pytanie / .raport
+   ze styl.css (podwójna klasa). */
+.sprawa.karta {
+  display: flex; flex-direction: column; gap: 8px; scroll-margin: 90px;
+  border: 1px solid rgba(255, 255, 255, 0.045); border-radius: 12px; box-shadow: none;
+  background: var(--karta); padding: 14px 16px;
+}
 .sprawa[hidden] { display: none; }
-.sprawa.sprawa-pytanie { border-left-color: var(--zloto); }
-.sprawa.sprawa-decyzja.status-do_decyzji { border-left-color: var(--zloto); }
-.sprawa.sprawa-decyzja.status-propozycja { border-left-color: var(--fiolet); }
-.sprawa.sprawa-raport { border-left-color: var(--niebieski); }
-.sprawa.sprawa-potwierdzenie { border-left-color: var(--zloto); }
+.sprawa.karta::before { display: none; }
+.sprawa.sprawa-zamknieta, .historia-lista .sprawa.karta { background: rgba(27, 31, 43, 0.55); }
+.sprawa.sprawa-zamknieta .sprawa-tytul { color: #d3d7e3; }
 /* znacznik podpisów decyzji (D-043): czeka na drugą osobę / dwa podpisy / sprzeciw albo rozmowa */
 .decyzja-podpisy { display: flex; align-items: center; gap: 6px; font-size: 13px; margin: 0; }
-.decyzja-podpisy > .ikona { flex: none; width: 15px; height: 15px; }
-.decyzja-podpisy.czeka > .ikona { color: var(--zloto); }
-.decyzja-podpisy.dwa > .ikona { color: var(--zielen); }
+.decyzja-podpisy > .ikona { flex: none; width: 14px; height: 14px; color: var(--przygaszony); }
 .potwierdzenie-akcje .przycisk { flex: 1 1 auto; }
-.sprawa.sprawa-raport::before { display: none; }
-.sprawa.sprawa-zamknieta, .sprawa.sprawa-raport:not(.status-czeka) { border-left-color: var(--obrys-jasny); }
-.sprawa.sprawa-decyzja.status-zatwierdzona { border-left-color: rgba(62, 207, 142, 0.7); }
-.sprawa.sprawa-decyzja.status-odrzucona { border-left-color: rgba(239, 90, 90, 0.7); }
-.sprawa-gora { display: flex; align-items: center; gap: 6px 8px; flex-wrap: wrap; }
-/* mała, dyskretna etykieta pochodzenia — nie kategoria */
-.sprawa-zrodlo { font-size: 11.5px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--przygaszony); }
-.sprawa-kiedy { font-size: 12px; color: var(--przygaszony); }
-.sprawa-kiedy::before { content: "·"; margin-right: 6px; }
-.sprawa-tytul { font-size: 17px; line-height: 1.3; }
-.sprawa .md { font-size: 14.5px; }
-.raport-podtytul { display: flex; align-items: center; flex-wrap: wrap; gap: 0 4px; font-size: 13px; }
-.raport-podtytul .ikona { width: 15px; height: 15px; }
-.raport.kompakt { gap: 10px; }
-
-.sprawa-decyzje { display: flex; flex-direction: column; gap: 8px; }
-.sprawa-dec {
-  display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 12px;
-  background: var(--tlo-gleb); border: 2px solid var(--obrys); border-left-width: 5px;
+.sprawa-gora { display: flex; align-items: center; gap: 2px 0; flex-wrap: wrap; font-size: 12px; color: var(--przygaszony); }
+/* mała, szara etykieta pochodzenia i statusu (bez kolorowych znaczków) */
+.sprawa-zrodlo { font-size: 12px; font-weight: 700; color: var(--przygaszony); }
+.sprawa-kiedy, .sprawa-meta { font-size: 12px; color: var(--przygaszony); }
+.sprawa-gora > * + *::before { content: "·"; margin: 0 6px; color: var(--obrys-jasny); font-weight: 400; }
+.sprawa-meta.wazne { color: var(--tekst); font-weight: 700; }
+button.sprawa-meta-klik {
+  background: none; border: 0; padding: 0; font: inherit; color: var(--przygaszony); cursor: pointer;
+  text-decoration: underline; text-decoration-color: var(--obrys-jasny); text-underline-offset: 3px; min-height: 24px;
 }
-.sprawa-dec .decyzja-gora { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.sprawa-dec.status-zatwierdzona { border-left-color: var(--zielen); }
-.sprawa-dec.status-do_decyzji { border-left-color: var(--zloto); }
-.sprawa-dec.status-propozycja { border-left-color: var(--fiolet); }
-.sprawa-dec.status-odrzucona { border-left-color: var(--czerwien); }
-.sprawa-dec.status-zastapiona { border-left-color: var(--szary); }
+button.sprawa-meta-klik:hover { color: var(--tekst); }
+.sprawa-tytul { font-size: 17px; line-height: 1.3; font-weight: 800; }
+.sprawa .md { font-size: 14.5px; line-height: 1.5; }
+.sprawa-krotko ul, .sprawa-krotko ol { margin: 0; padding-left: 1.2em; }
+.sprawa-krotko li { margin: 2px 0; }
+.sprawa-krotko li::marker { color: var(--przygaszony); }
+.sprawa-krotko p { margin: 0 0 4px; }
+.raport-podtytul { display: flex; align-items: center; flex-wrap: wrap; gap: 0 4px; font-size: 12.5px; margin: -4px 0 0; }
+.raport.kompakt { gap: 8px; }
+/* przyciski w karcie: bez cienia, mniejsze; „Nie” / „Do poprawy” / „Brak zgody” tylko obrysem */
+.sprawa .przycisk { box-shadow: none; }
+.sprawa .przycisk:active:not(:disabled) { transform: none; }
+.sprawa .przycisk:not(.maly):not(.ikonowy) { min-height: 40px; padding: 0 14px; font-size: 14px; }
+.sprawa .przycisk.grozny { background: transparent; color: #ff9b9b; border-color: rgba(239, 90, 90, 0.45); }
+.sprawa .przycisk.grozny:hover:not(:disabled) { background: rgba(239, 90, 90, 0.1); border-color: rgba(239, 90, 90, 0.7); }
+.sprawa .odpowiedz-formularz, .sprawa .decyzja-akcje, .sprawa .raport-akcje, .sprawa .decyzja-gd { border-top: 0; padding-top: 2px; }
+.sprawa .odpowiedz { padding: 8px 12px; border: 0; border-radius: 10px; background: rgba(62, 207, 142, 0.06); }
+.sprawa .raport-pytanie { padding: 8px 12px; border: 0; background: var(--tlo-gleb); }
+.sprawa .raport-pytanie .etykieta { color: var(--przygaszony); }
+.sprawa .decyzja-info { border: 0; padding: 8px 12px; }
+
+.sprawa-decyzje { display: flex; flex-direction: column; gap: 6px; }
+.sprawa-dec {
+  display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: 10px;
+  background: var(--tlo-gleb); border: 0;
+}
+.sprawa-dec .decyzja-gora { display: flex; align-items: center; gap: 0; flex-wrap: wrap; font-size: 12px; }
+.sprawa-dec .decyzja-gora > * + *::before { content: "·"; margin: 0 6px; color: var(--obrys-jasny); }
 .sprawa-dec-tytul { font-size: 15px; }
 .sprawa-dec .zwijane { margin-top: 0; }
-.sprawa-dec .decyzja-akcje, .sprawa-dec .decyzja-gd { padding-top: 8px; border-top: 1px dashed var(--obrys); }
-.decyzja-akcje .przycisk.sukces, .decyzja-akcje .przycisk.grozny { min-width: 92px; }
+.sprawa-dec .decyzja-akcje, .sprawa-dec .decyzja-gd { padding-top: 6px; }
+.decyzja-akcje .przycisk.sukces, .decyzja-akcje .przycisk.grozny { min-width: 84px; }
 .kolumna-mala { display: flex; flex-direction: column; gap: 8px; }
 .sprawa-powiazane .etykieta { margin-bottom: 4px; }
-.sprawa-podpowiedz { display: flex; gap: 6px; align-items: flex-start; }
-.sprawa-podpowiedz .ikona { width: 16px; height: 16px; color: var(--niebieski); margin-top: 1px; flex: none; }
+.sprawa-podpowiedz { display: flex; gap: 6px; align-items: flex-start; margin: 0; }
+.sprawa-podpowiedz .ikona { width: 15px; height: 15px; color: var(--przygaszony); margin-top: 2px; flex: none; }
 .sprawa .odpowiedz-formularz .rzad-przyciskow > .przycisk.cichy { padding: 0 10px; }
-.sprawa-szczegoly { margin-top: 0; }
-.sprawa-szczegoly > :not(summary) { margin-top: 6px; }
+/* „Pokaż szczegóły”: mały przycisk-napis, treść pod nim */
+.sprawa-szczegoly { margin-top: -2px; }
+.sprawa-szczegoly > summary { min-height: 30px; font-size: 13px; font-weight: 600; }
+.sprawa-szczegoly > summary .ikona { width: 14px; height: 14px; }
+.sprawa-szczegoly-tresc { display: flex; flex-direction: column; gap: 6px; padding: 2px 0 4px; color: #cfd3df; }
+.sprawa-szczegoly-tresc .md { font-size: 14px; }
+@media (pointer: coarse) { .sprawa-szczegoly > summary { min-height: 40px; } }
 
 /* „sprawa zmieniła się, gdy pisałeś” */
 .sprawa-zmiana {
@@ -83,17 +101,22 @@
 .sprawa-zmiana > span { flex: 1 1 160px; min-width: 0; }
 
 /* odłożone na sesję główną */
-.kolejka-odlozone-grupa { margin-top: 0; border: 2px dashed var(--obrys); border-radius: var(--promien); padding: 4px 12px; background: rgba(139, 92, 246, 0.04); }
+.kolejka-odlozone-grupa { margin-top: 0; border: 1px solid var(--obrys); border-radius: 12px; padding: 4px 12px; background: none; }
 .kolejka-odlozone-grupa > summary { width: 100%; min-height: 44px; }
-.kolejka-odlozone-grupa > summary .ikona + .ikona { transform: none; color: #b69bff; }
+.kolejka-odlozone-grupa > summary .ikona + .ikona { transform: none; color: var(--przygaszony); }
 .odlozone-tytul { flex: 1; }
 .odlozone-tresc { display: flex; flex-direction: column; gap: 10px; padding: 4px 0 12px; }
 
 .karta.podswietlony { animation: podswietl 2.4s ease both; }
 
-/* karty zwarte (zakładka Sesja) */
-.lista-pytan.zwarta .sprawa { padding: 12px 12px 12px 12px; gap: 8px; box-shadow: none; }
+/* karty zwarte (zakładka Sesja): w karcie „Pytania” — bez tła, oddzielone cienką linią */
+.lista-pytan.zwarta .kolejka-lista { gap: 0; }
+.lista-pytan.zwarta .sprawa.karta {
+  padding: 12px 0; gap: 6px; background: none; border: 0; border-top: 1px solid var(--obrys); border-radius: 0;
+}
+.lista-pytan.zwarta .sprawa.karta:first-child { border-top: 0; padding-top: 4px; }
 .lista-pytan.zwarta .sprawa-tytul { font-size: 15px; }
+.lista-pytan.zwarta .sprawa .md { font-size: 13.5px; }
 .lista-pytan.zwarta .sprawa-dec { padding: 8px 10px; }
 .lista-pytan.zwarta .sprawa-dec-tytul { font-size: 14px; }
 .lista-pytan.zwarta .odpowiedz-formularz { gap: 6px; }
@@ -101,8 +124,12 @@
 .lista-pytan.zwarta .raport-akcje { padding-top: 8px; }
 .galeria.male .galeria-miniatura { width: 96px; }
 
+/* ciche przyciski (Pełny raport, Komentarze, Do agenta, Omów z agentem) małe, w jednym rzędzie */
+.sprawa .rzad-przyciskow > .przycisk.cichy:not(.ikonowy) { min-height: 36px; padding: 0 8px; font-size: 13px; }
+@media (pointer: coarse) { .sprawa .rzad-przyciskow > .przycisk.cichy:not(.ikonowy) { min-height: 40px; } }
 @media (max-width: 480px) {
-  .sprawa { padding: 14px 12px 14px 12px; }
+  .sprawa .raport-akcje > .przycisk.cichy { flex: 0 1 auto; }
+  .sprawa.karta { padding: 12px 12px; }
   .sprawa .decyzja-akcje .przycisk { flex: 1 1 0; }
   .sprawa .odpowiedz-formularz .rzad-przyciskow > .przycisk.glowny { flex: 1 1 100%; }
 }

@@ -1,5 +1,6 @@
 // Karta raportu z wdrożenia (wspólna dla listy Pytania, historii, listy Pytania w zakładce Sesja i pełnego raportu):
-// pytanie raportu jako tytuł („Czy akceptujesz: …?” albo własne pole `pytanie`), opis (zwijany), miniatury zrzutów,
+// pytanie raportu jako tytuł („Czy akceptujesz: …?” albo własne pole `pytanie`), opis (na liście najwyżej dwa pierwsze
+// zdania, reszta za „Pokaż szczegóły”; w pełnym raporcie zwinięty długi opis z „Pokaż więcej”), miniatury zrzutów,
 // komponenty (Studio, notatki, migawki — w pełnym raporcie), decyzja ludzi, „Akceptuję” / „Do poprawy” z komentarzem
 // (także głosem), komentarze, „Pełny raport”, „Do agenta”, „Zmień decyzję”.
 //
@@ -15,7 +16,7 @@ import { el, dopisz, ikona, czasTemu, dataKrotka, toast, arkusz, awatar, powieks
 import { md } from "./markdown.js";
 import { komentarze } from "./komentarze.js";
 import { dyktafon } from "./dyktafon.js";
-import { pytanieRaportu } from "./kolejka.js";
+import { pytanieRaportu, skrotOpisu } from "./kolejka.js";
 
 const enc = encodeURIComponent;
 
@@ -272,27 +273,42 @@ export function kartyRaportow(ctx, opcje = {}) {
         watek);
       return k;
     }
-    // karta-pytanie (lista Pytania, historia) i karta zwarta (Sesja)
+    // karta-pytanie (lista Pytania, historia) i karta zwarta (Sesja): tytuł, kto i kiedy, najwyżej dwa pierwsze
+    // zdania opisu; reszta opisu i pytanie agenta zwinięte za „Pokaż szczegóły”
     const pyt = pytanieRaportu(r);
     const zwarta = tryb === "zwarta";
-    const szczegoly = [
-      el("p", { class: "cichy-tekst raport-podtytul" }, ikona("raporty"), el("span", null, r.tytul || "(bez tytułu)"), " · ", ...meta),
-      zwarta ? null : opis(r, true),
-      !pyt.wlasne && r.pytanie ? el("div", { class: "raport-pytanie" }, el("span", { class: "etykieta" }, ikona("pytanie"), "Pytanie agenta"), el("div", { class: "md", html: md(r.pytanie) })) : null,
-    ];
+    const { krotko, reszta } = skrotOpisu(r.opis_md, 2);
+    const pytanieAgenta = !pyt.wlasne && r.pytanie
+      ? el("div", { class: "raport-pytanie" }, el("span", { class: "etykieta" }, "Pytanie agenta"), el("div", { class: "md", html: md(r.pytanie) })) : null;
+    const s = STATUSY_RAPORTU[r.status] || { tekst: r.status || "" };
     dopisz(k,
       el("div", { class: "sprawa-gora" },
         el("span", { class: "sprawa-zrodlo" }, "z raportu"),
-        r.status !== "czeka" ? chipStatusu(r) : null),
+        r.status !== "czeka" ? el("span", { class: "sprawa-meta status-" + (r.status || "brak") }, s.tekst) : null),
       el(zwarta ? "h3" : "h2", { class: "sprawa-tytul" }, pyt.tekst),
-      zwarta && r.opis_md
-        ? el("details", { class: "zwijane sprawa-szczegoly" }, el("summary", null, ikona("dol"), "Szczegóły"), ...szczegoly, opis(r, true))
-        : szczegoly,
+      el("p", { class: "cichy-tekst raport-podtytul" }, el("span", null, r.tytul || "(bez tytułu)"), " · ", ...meta),
+      krotko ? el("div", { class: "md raport-opis sprawa-krotko", html: md(krotko) }) : null,
+      szczegolyRaportu(r, reszta ? el("div", { class: "md raport-opis", html: md(reszta) }) : null, pytanieAgenta),
       zrzuty(r, zwarta),
       zwarta ? null : decyzjaInfo(r),
       akcje,
       watek);
     return k;
+  }
+
+  /** „Pokaż szczegóły” w karcie raportu na liście (pamięta otwarte). */
+  function szczegolyRaportu(r, ...tresc) {
+    if (!tresc.some(Boolean)) return null;
+    const otwarte = rozwinieteOpisy.has("s:" + r.id);
+    const napis = el("span", null, otwarte ? "Ukryj szczegóły" : "Pokaż szczegóły");
+    const det = el("details", { class: "zwijane sprawa-szczegoly", open: otwarte },
+      el("summary", null, ikona("dol"), napis), el("div", { class: "sprawa-szczegoly-tresc" }, ...tresc));
+    det.addEventListener("toggle", () => {
+      napis.textContent = det.open ? "Ukryj szczegóły" : "Pokaż szczegóły";
+      if (det.open) rozwinieteOpisy.add("s:" + r.id);
+      else rozwinieteOpisy.delete("s:" + r.id);
+    });
+    return det;
   }
 
   /** Czy przy raporcie otwarto „Zmień decyzję” (lista pytań dolicza to do podpisu karty). */

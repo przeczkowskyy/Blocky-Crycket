@@ -15,7 +15,7 @@
 .pytania-szukaj-wynik:empty { display: none; }
 
 /* historia */
-.pytania-historia { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 2px dashed var(--obrys); scroll-margin-top: calc(var(--gora) + 8px); }
+.pytania-historia { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--obrys); scroll-margin-top: calc(var(--gora) + 8px); }
 .pytania-historia .kolejka-nagl h2 { font-size: 17px; }
 .historia-lista:empty { display: none; }
 .historia-lista .sprawa { box-shadow: none; }

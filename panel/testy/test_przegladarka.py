@@ -26,7 +26,8 @@ PRZEGLADARKI = [os.environ.get("BC_PRZEGLADARKA") or "",
                 shutil.which("msedge") or "", shutil.which("google-chrome") or "", shutil.which("chromium") or ""]
 
 # Pytania do próby: 1 rozstrzyga decyzja D-002 (samo-rozstrzyganie), 2 — odpowiedź tekstem, 3 — szkic przy cichym
-# odświeżeniu i „Na sesję główną”. D-003 i D-005 nie są przypięte do pytań, więc są osobnymi kartami „Czy zatwierdzamy: …?” na liście.
+# odświeżeniu i „Na sesję główną”, 4 — krótka karta (punkty widoczne, „Szczegóły:” i dopisek zwinięte).
+# D-003 i D-005 nie są przypięte do pytań, więc są osobnymi kartami „Czy zatwierdzamy: …?” na liście.
 PYTANIA = """---
 status: do-decyzji
 ---
@@ -43,6 +44,13 @@ Treść drugiego.
 
 ## 3. Pytanie na sesję
 Treść trzeciego.
+**Odpowiedź:**
+
+## 4. Pytanie z punktami
+- Pierwszy punkt pytania.
+- Drugi punkt pytania.
+Szczegóły: Długi opis, którego nie widać od razu. Ciąg dalszy opisu.
+Dopisek (sesja główna): dopisek zwinięty.
 **Odpowiedź:**
 """
 

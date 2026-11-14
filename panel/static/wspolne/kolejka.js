@@ -60,6 +60,103 @@ export function bezWierszaRozstrzyga(md) {
   return String(md || "").split("\n").filter((l) => !RX_ROZSTRZYGA.test(l)).join("\n").trim();
 }
 
+// ----------------------------------------------------------------------------- krótka treść karty
+// Karta pokazuje krótko, czego sprawa dotyczy; reszta jest zwinięta za „Pokaż szczegóły”.
+// Pytania w sejfie mają na górze 2–4 punkty, a dłuższy opis pod wierszem „Szczegóły:” i w wierszach „Dopisek …”
+// i „Sprostowanie …”. Bez lookbehind w wyrażeniach (starsze Safari na telefonach go nie zna).
+const RX_SZCZEGOLY = /^\s*(?:[-*+]\s+)?(?:\*\*|__)?\s*Szczeg[oó][lł]y\s*(?:\*\*|__)?\s*:\s*(?:\*\*|__)?\s*/i;
+const RX_DOPISEK = /^\s*(?:[-*+]\s+)?(?:\*\*|__)?\s*(?:Dopisek|Sprostowanie)\b/i;
+const RX_PUNKT = /^\s*(?:[-*+]|\d+[.)])\s+/;
+const SKROTY = new Set(["np", "ok", "tzw", "itp", "itd", "zob", "tj", "godz", "nr", "dr", "ul", "wg", "pkt", "ds", "m.in", "r", "w", "s", "por", "jw", "ang"]);
+
+/** Tekst → lista zdań (bez dzielenia na „np.”, „12.11”, „ok. 25”). */
+export function zdania(tekst) {
+  const t = String(tekst || "").trim();
+  const rx = /[.!?…]+["”»)\]]*\s+/g;
+  const wynik = [];
+  let od = 0;
+  let m;
+  while ((m = rx.exec(t))) {
+    const dalej = t.slice(m.index + m[0].length, m.index + m[0].length + 1);
+    if (!/[A-ZĄĆĘŁŃÓŚŹŻ„"(]/.test(dalej)) continue;           // po kropce małe litery albo cyfra: to nie koniec zdania
+    const slowo = (/([\p{L}.]+)$/u.exec(t.slice(0, m.index)) || ["", ""])[1].toLowerCase();
+    if (/[.]$/.test(m[0].trim()) && SKROTY.has(slowo)) continue;
+    const koniec = m.index + m[0].trimEnd().length;
+    wynik.push(t.slice(od, koniec).trim());
+    od = koniec;
+  }
+  if (t.slice(od).trim()) wynik.push(t.slice(od).trim());
+  return wynik;
+}
+
+/** Pierwsze `n` zdań tekstu → {krotko, reszta} (reszta pusta, gdy tekst jest krótki). */
+export function pierwszeZdania(tekst, n = 2) {
+  const z = zdania(tekst);
+  return { krotko: z.slice(0, n).join(" "), reszta: z.slice(n).join(" ") };
+}
+
+/** Akapit pytania bez punktów → {krotko, reszta}: pierwsze zdanie (kontekst) i najwyżej dwa zdania-pytania („…?”),
+ * żeby samo pytanie nie schowało się w szczegółach; bez zdań-pytań — dwa pierwsze zdania. */
+function akapitPytania(tekst) {
+  const z = zdania(tekst);
+  const pytajace = z.map((x, i) => (i > 0 && /\?["”»)]*$/.test(x) ? i : -1)).filter((i) => i > 0).slice(0, 2);
+  const pokaz = new Set(pytajace.length ? [0, ...pytajace] : [0, 1]);
+  return { krotko: z.filter((_, i) => pokaz.has(i)).join(" "), reszta: z.filter((_, i) => !pokaz.has(i)).join(" ") };
+}
+
+/**
+ * Treść pytania (bez wiersza „Rozstrzyga:”) → {krotko, szczegoly} w Markdownie. Krótko = punkty i krótkie wiersze
+ * z góry treści (starsze pytania bez punktów: pierwsze zdanie i zdania-pytania); szczegóły = wiersz „Szczegóły:” i wszystko pod nim
+ * (bez samej etykiety), wiersze „Dopisek …” i „Sprostowanie …” oraz reszta długiego akapitu.
+ */
+export function podzielPytanie(md) {
+  const linie = bezWierszaRozstrzyga(String(md || "").replace(/\r\n?/g, "\n")).split("\n");
+  const gora = [];
+  const szczegoly = [];
+  let wSzczegolach = false;
+  for (const l of linie) {
+    if (!wSzczegolach && RX_SZCZEGOLY.test(l)) {
+      wSzczegolach = true;
+      const reszta = l.replace(RX_SZCZEGOLY, "").trim();
+      if (reszta) szczegoly.push(reszta);
+      continue;
+    }
+    if (wSzczegolach || RX_DOPISEK.test(l)) szczegoly.push(l);
+    else gora.push(l);
+  }
+  let krotko = gora.join("\n").trim();
+  if (krotko && !gora.some((l) => RX_PUNKT.test(l))) {          // sam akapit: kontekst i pytanie, reszta zwinięta
+    const z = akapitPytania(krotko);
+    krotko = z.krotko;
+    if (z.reszta) szczegoly.unshift(z.reszta);
+  }
+  return { krotko, szczegoly: szczegoly.join("\n").trim() };
+}
+
+/** Opis decyzji albo raportu → {krotko, reszta}: najwyżej dwa pierwsze zdania (albo dwa pierwsze punkty) pierwszego
+ * akapitu, reszta zwinięta. */
+export function skrotOpisu(md, n = 2) {
+  const linie = String(md || "").replace(/\r\n/g, "\n").split("\n");
+  let i = 0;
+  while (i < linie.length && !linie[i].trim()) i++;
+  if (i >= linie.length) return { krotko: "", reszta: "" };
+  const reszta = (od) => linie.slice(od).join("\n").trim();
+  if (RX_PUNKT.test(linie[i])) {                              // lista: dwa pierwsze punkty
+    let j = i;
+    let punkty = 0;
+    while (j < linie.length && punkty < n && linie[j].trim() && (RX_PUNKT.test(linie[j]) || /^\s{2,}\S/.test(linie[j]))) {
+      if (RX_PUNKT.test(linie[j])) punkty++;
+      j++;
+    }
+    while (j < linie.length && /^\s{2,}\S/.test(linie[j])) j++;   // wcięte dalsze wiersze ostatniego punktu
+    return { krotko: linie.slice(i, j).join("\n").trim(), reszta: reszta(j) };
+  }
+  let j = i;
+  while (j < linie.length && linie[j].trim() && !RX_PUNKT.test(linie[j]) && !/^\s*#/.test(linie[j])) j++;
+  const z = pierwszeZdania(linie.slice(i, j).join("\n"), n);
+  return { krotko: z.krotko, reszta: [z.reszta, reszta(j)].filter(Boolean).join("\n\n") };
+}
+
 /** Tekst bez znaczników Markdown (do tytułów i etykiet): [[a|b]] → b, [[a]] → a, `kod` → kod. */
 export function zwykly(t) {
   return String(t || "").replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, "$2").replace(/\[\[([^\]]+)\]\]/g, "$1")

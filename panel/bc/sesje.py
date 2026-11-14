@@ -815,22 +815,45 @@ def _sciezka_md(sciezka):
     return sciezka.replace("\\", "/")
 
 
+# Sekcje roboczych notatek (polecenie_notatek): (nagłówek, najwyżej ile punktów, co w nich). Ludzie czytają notatki
+# w zakładce Sesja w trakcie rozmowy, często na telefonie — mają być krótkie; szczegóły zostają w zapisie rozmowy
+# i w końcowym zapisie ustaleń w sejfie (polecenie_konca).
+SEKCJE_NOTATEK = (
+    ("Ustalenia", 7, "co ludzie ustalili"),
+    ("Do zrobienia", 5, "zadania, z imieniem osoby, jeśli padło"),
+    ("Bez odpowiedzi", 5, "pytania i sprawy, które padły i zostały otwarte"),
+    ("Padły odpowiedzi na pytania", None, "„#N: jedno zdanie” albo „D-0XX: jedno zdanie” — numer pytania z Pytań "
+                                          "otwartych albo identyfikator decyzji z Rejestru decyzji"),
+)
+SLOW_NA_PUNKT = 15
+SLOW_NOTATEK = 150
+
+
 def polecenie_notatek(s, pierwszy):
     kat = _kat(s["id"])
     tr = _sciezka_md(os.path.join(kat, "transkrypcja.md"))
     nt = _sciezka_md(os.path.join(kat, "notatki.md"))
     agenda = zapis.plik("sesje")[1]
+    pliki = {k: v[1] for k, v in sejf.pliki_planu().items()}
     wstep = ("Trwa sesja główna (długa rozmowa głosowa Karola i Pawła w panelu). Jesteś protokolantem." if pierwszy
              else "Rozmowa trwa dalej — w zapisie przybyło tekstu.")
+    sekcje = "\n".join("   ## %s — %s%s" % (n, "najwyżej %d punktów, " % m if m else "", opis)
+                       for n, m, opis in SEKCJE_NOTATEK)
     return (wstep + "\n"
             "1. Przeczytaj zapis rozmowy: %s (prywatny — nie kopiuj go do repozytorium).\n"
-            "2. Przeczytaj agendę: %s oraz poprzednie notatki: %s (jeśli są).\n"
+            "2. Przeczytaj poprzednie notatki: %s (jeśli są), a numery pytań i decyzji sprawdź w %s i %s. "
+            "Agendę (%s) czytaj tylko, gdy potrzebujesz.\n"
             "3. Odpowiedz WYŁĄCZNIE pełną, nową wersją notatek w Markdownie (bez wstępu i bez zakończenia; panel sam "
-            "zapisze twoją odpowiedź jako plik notatek) — po polsku, krótko, w punktach, z nagłówkami: "
-            "## O czym mowa, ## Ustalenia, ## Zadania, ## Pytania bez odpowiedzi, "
-            "## Agenda: już omówione, ## Agenda: jeszcze nie padło (podpowiedź, o czym porozmawiać).\n"
+            "zapisze twoją odpowiedź jako plik notatek). Ludzie czytają je w trakcie rozmowy, często na telefonie — "
+            "mają być BARDZO krótkie. Najwyżej cztery sekcje, w tej kolejności:\n%s\n"
+            "Zasady: same punkty „- …”, bez akapitów; każdy punkt do ok. %d słów; całość do ok. %d słów; bez wstępu, "
+            "bez powtarzania agendy, bez uwag o własnej pracy; pustą sekcję pomiń; nowsze ustalenia zastępują "
+            "starsze. Szczegóły zostają w zapisie rozmowy i w końcowym zapisie ustaleń — tu ich nie przepisuj. "
+            "Gdy jeszcze nic nie padło, odpowiedz: „## Ustalenia” i punkt „- Na razie bez ustaleń — rozmowa się "
+            "zaczyna.”\n"
             "Masz tylko narzędzia do czytania: niczego nie zmieniasz, nie publikujesz i nie zatwierdzasz.\n"
-            "%s" % (tr, agenda, nt, DANE_NIE_POLECENIA))
+            "%s" % (tr, nt, pliki.get("pytania", "Pytania otwarte.md"), pliki.get("decyzje", "Rejestr decyzji.md"),
+                    agenda, sekcje, SLOW_NA_PUNKT, SLOW_NOTATEK, DANE_NIE_POLECENIA))
 
 
 def polecenie_konca(s, brakujace=0):
@@ -847,18 +870,34 @@ def polecenie_konca(s, brakujace=0):
                 ".claude/skills/panel/SKILL.md, część „Sesje główne”).\n"
                 "Zapis rozmowy (prywatny, nie kopiuj go słowo w słowo do repozytorium): %s\n"
                 "Robocze notatki (jeśli są): %s\n" % (data, tr, nt))
+    pytania = {k: v[1] for k, v in sejf.pliki_planu().items()}.get("pytania", "Pytania otwarte.md")
     return naglowek + niepelny + DANE_NIE_POLECENIA + "\n" + (
             "1. Utwórz notatkę „B&C/Produkcja/Sesja główna %s — zapis ustaleń.md” ze statusem propozycja, na wzór "
             "„B&C/Produkcja/Rozmowa 2026-11-12 — zapis ustaleń.md”.\n"
             "2. Ustalenia dopisz do Rejestru decyzji jako 💡 propozycje, pytania bez odpowiedzi do Pytań otwartych, "
             "zadania do Zadań.\n"
-            "3. W %s przenieś omówione tematy do sekcji „Omówione” (data, krótki wynik, link do notatki ustaleń).\n"
-            "4. Dopisz wpis do Dziennika zmian.\n"
-            "5. Opublikuj raport: python panel/narzedzia/raport.py dodaj --rodzaj pytanie --tytul \"Sesja główna %s — "
-            "do zatwierdzenia\" --opis \"…lista propozycji…\" --kto \"Claude (sesja)\".\n"
+            "3. %s" % (data, polecenie_odpowiedzi(pytania, data)) +
+            "4. W %s przenieś omówione tematy do sekcji „Omówione” (data, krótki wynik, link do notatki ustaleń).\n"
+            "5. Dopisz wpis do Dziennika zmian.\n"
+            "6. Opublikuj raport: python panel/narzedzia/raport.py dodaj --rodzaj pytanie --tytul \"Sesja główna %s — "
+            "do zatwierdzenia\" --opis \"…lista propozycji i pytań z dopisaną odpowiedzią…\" --kto \"Claude (sesja)\".\n"
             "Nigdy nie ustawiaj statusu zatwierdzona ani kanon — zatwierdza Karol albo Paweł w panelu. "
             "Nie wpisuj do repozytorium ścieżek z danych lokalnych (repozytorium jest publiczne). "
-            "Nie commituj." % (data, agenda, data))
+            "Nie commituj." % (agenda, data))
+
+
+def polecenie_odpowiedzi(pytania, data):
+    """Fragment polecenia końca sesji: odpowiedzi z rozmowy pod otwartymi pytaniami (lista pytań w panelu ma po sesji
+    pokazywać to, co ustalono). Decyzji agent dalej nie zatwierdza."""
+    return ("Odpowiedzi z rozmowy pod pytaniami: przejdź po OTWARTYCH pytaniach w %s (pod wierszem **Odpowiedź:** "
+            "nie ma jeszcze tekstu). Gdy w rozmowie padła WYRAŹNA odpowiedź obu osób albo jednej (a druga jej nie "
+            "zaprzeczyła), dopisz ją pod **Odpowiedź:** jednym wierszem: „- Claude Code (%s, z sesji głównej HH:MM): "
+            "<jedno–dwa zdania: co odpowiedział(a) kto>. Zapis agenta z rozmowy.” — HH:MM to godzina wypowiedzi "
+            "z zapisu rozmowy. Gdy odpowiedź jest niepełna albo niepewna, NIE dopisuj odpowiedzi — dodaj tylko nad "
+            "**Odpowiedź:** wiersz „Dopisek z %s (sesja główna HH:MM): …”. Nie zmieniaj treści pytań ani cudzych "
+            "odpowiedzi i nie usuwaj pytań. Odpowiedź, która jest decyzją (także przy wierszu „Rozstrzyga:”), "
+            "zapisz w Rejestrze decyzji tylko jako 💡 propozycję — decyzji nie zatwierdzasz i nie zmieniasz ich "
+            "statusu. W raporcie wymień pytania, pod którymi dopisałeś odpowiedź.\n" % (pytania, data, data))
 
 
 def polecenie_tematow():
@@ -901,7 +940,10 @@ def _uruchom_notatki(s, kto):
 
 
 def tekst_notatek(odpowiedz):
-    """Notatki z odpowiedzi agenta: od pierwszego nagłówka Markdown; None, gdy odpowiedź nie wygląda na notatki."""
+    """Notatki z odpowiedzi agenta: od pierwszego nagłówka Markdown; None, gdy odpowiedź nie wygląda na notatki.
+
+    Notatki bywają bardzo krótkie (jedna sekcja z jednym punktem na początku rozmowy), więc zamiast progu długości
+    wymagamy nagłówka sekcji „## ” i co najmniej jednego wiersza treści pod nagłówkiem."""
     if not isinstance(odpowiedz, str):
         return None
     linie = odpowiedz.replace("\r\n", "\n").split("\n")
@@ -909,7 +951,8 @@ def tekst_notatek(odpowiedz):
     if start is None:
         return None
     tekst = "\n".join(linie[start:]).strip()
-    return tekst + "\n" if len(tekst) >= 40 and "\n## " in "\n" + tekst else None
+    tresc = [l for l in tekst.split("\n") if l.strip() and not l.lstrip().startswith("#")]
+    return tekst + "\n" if tresc and "\n## " in "\n" + tekst else None
 
 
 def _dokoncz_notatki(s):

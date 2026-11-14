@@ -1,7 +1,9 @@
 // Sesja: długa rozmowa głosowa w panelu (jak na Discordzie) z agentem, który słucha, spisuje i robi notatki.
-// Na górze pokój (uczestnicy, Dołącz/Rozłącz, wyciszenie, miernik, „Agent słucha”), niżej: Agenda (tematy z notatki
-// sejfu „Sesje główne”) i obok niej Pytania (lista „Do odpowiedzi” z zakładki Pytania, wspolne/lista_pytan.js),
-// Transkrypcja na żywo, Notatki agenta. Serwer: bc/sesje.py.
+// Na górze wąski pasek pokoju (uczestnicy, Dołącz/Rozłącz, wyciszenie, miernik, „Agent słucha” ze znacznikiem
+// nagrywania). Pod nim na komputerze dwie główne kolumny na wysokość okna, każda z własnym przewijaniem:
+// Transkrypcja na żywo i Notatki agenta (krótkie punkty); niżej Agenda (tematy z notatki sejfu „Sesje główne”)
+// i Pytania (lista „Do odpowiedzi” z zakładki Pytania, wspolne/lista_pytan.js). Na telefonie pod paskiem pokoju
+// przełącznik Transkrypcja / Notatki / Agenda / Pytania (domyślnie Transkrypcja). Serwer: bc/sesje.py.
 // Rozmowa trwa także po przejściu do innej zakładki panelu (obiekt rozmowy żyje w tym module).
 
 import { el, zamien, ikona, toast, arkusz, pusty, awatar, kopiuj, odmiana, dataKrotka, przelacznik } from "../wspolne/ui.js";
@@ -57,7 +59,7 @@ export default {
     const baner = el("div", { class: "sesja-baner", role: "status", hidden: true });
     const komunikaty = el("div", { class: "sesja-komunikaty" });
     const osoby = el("ul", { class: "lista sesja-osoby", "aria-label": "Uczestnicy rozmowy" });
-    const licznikOsob = el("span", { class: "chip" });
+    const licznikOsob = el("span", { class: "sesja-licznik-osob cichy-tekst" });
     const przyciskDolacz = el("button", { type: "button", class: "przycisk glowny sesja-dolacz" });
     const przyciskWycisz = el("button", { type: "button", class: "przycisk sesja-wycisz", hidden: true });
     const miernikWyp = el("span", { class: "sesja-miernik-wyp" });
@@ -65,51 +67,93 @@ export default {
       "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": "0" }, miernikWyp);
     const przelacznikSluchania = el("button", { type: "button", class: "sesja-slucha", role: "switch", "aria-checked": "false" });
     const opisSluchania = el("p", { class: "cichy-tekst sesja-slucha-opis" });
-    const kPokoj = el("section", { class: "karta sesja-pokoj" },
-      el("h2", { class: "karta-tytul" }, ikona("zespol"), el("span", null, "Pokój"), el("div", { class: "karta-akcje" }, licznikOsob)),
-      osoby,
-      el("div", { class: "sesja-sterowanie" }, przyciskDolacz, przyciskWycisz, miernik),
-      el("div", { class: "sesja-slucha-rzad" }, przelacznikSluchania, opisSluchania));
+    // na komputerze: skróty do Agendy i Pytań (są pod dwiema głównymi kolumnami); na telefonie zastępuje je przełącznik
+    const skrotAgenda = el("button", { type: "button", class: "przycisk cichy maly sesja-skrot", onclick: () => przewinDo(kAgenda) }, ikona("plan"), el("span", null, "Agenda"));
+    const skrotPytania = el("button", { type: "button", class: "przycisk cichy maly sesja-skrot", onclick: () => przewinDo(kPytania) }, ikona("pytanie"), el("span", null, "Pytania"));
+    const kPokoj = el("section", { class: "karta sesja-pokoj", "aria-label": "Pokój rozmowy" },
+      el("div", { class: "sesja-pokoj-rzad" },
+        el("h2", { class: "sesja-pokoj-tytul" }, ikona("zespol"), el("span", null, "Pokój"), licznikOsob),
+        osoby,
+        el("div", { class: "sesja-sterowanie" }, przyciskDolacz, przyciskWycisz, miernik, przelacznikSluchania)),
+      el("div", { class: "sesja-pokoj-dol" }, opisSluchania, el("span", { class: "sesja-skroty" }, skrotAgenda, skrotPytania)));
 
     const agendaLista = el("div", { class: "sesja-agenda" });
     const przyciskPropozycji = el("button", { type: "button", class: "przycisk cichy maly", hidden: true }, ikona("zarowka"), "Zaproponuj tematy");
-    const kAgenda = el("section", { class: "karta sesja-czesc" },
+    const kAgenda = el("section", { class: "karta sesja-czesc sesja-agenda-karta" },
       el("h2", { class: "karta-tytul" }, ikona("plan"), el("span", null, "Agenda"), el("div", { class: "karta-akcje" }, przyciskPropozycji)),
       agendaLista);
 
-    // Pytania obok Agendy: ta sama lista „Do odpowiedzi” co w zakładce Pytania (wspolne/lista_pytan.js), w zwartej
-    // formie — żeby odpowiadać w trakcie rozmowy. Na telefonie przełącznik Agenda / Pytania.
+    // Pytania: ta sama lista „Do odpowiedzi” co w zakładce Pytania (wspolne/lista_pytan.js), w zwartej formie —
+    // żeby odpowiadać w trakcie rozmowy.
     const listaP = listaPytan(ctx, {
       zwarta: true, prefiks: "sesja-sprawa-", tytul: "Pytania",
       opis: "Te same pytania co w zakładce Pytania — odpowiadajcie w trakcie rozmowy.",
       akcjeNaglowka: el("button", { type: "button", class: "przycisk cichy maly", onclick: () => ctx.idz("pytania") }, "Wszystkie"),
-      naLicznik: (n) => przelacznikTematow.licznik("pytania", n || null),
+      naLicznik: (n) => {
+        przelacznikCzesci.licznik("pytania", n || null);
+        ustawLicznikSkrotu(skrotPytania, n);
+      },
     });
     const kPytania = el("section", { class: "karta sesja-czesc sesja-pytania" }, listaP.el);
-    const przelacznikTematow = przelacznik([{ id: "agenda", tekst: "Agenda", ikona: "plan" }, { id: "pytania", tekst: "Pytania", ikona: "pytanie" }],
-      "agenda", (id) => { tematy.dataset.pokaz = id; }, "Agenda albo pytania");
-    const tematy = el("div", { class: "sesja-tematy", dataset: { pokaz: "agenda" } },
-      el("div", { class: "sesja-tematy-przelacznik" }, przelacznikTematow), kAgenda, kPytania);
 
     const zapisLista = el("div", { class: "sesja-zapis", role: "log", "aria-live": "polite", "aria-label": "Transkrypcja na żywo" });
     const zapisStan = el("p", { class: "cichy-tekst sesja-zapis-stan" });
     const zapisAkcje = el("div", { class: "karta-akcje" });
-    const kZapis = el("section", { class: "karta sesja-czesc" },
+    const kZapis = el("section", { class: "karta sesja-czesc sesja-glowna sesja-zapis-karta" },
       el("h2", { class: "karta-tytul" }, ikona("glos"), el("span", null, "Transkrypcja na żywo"), zapisAkcje),
       zapisStan, zapisLista);
 
     const notatkiTresc = el("div", { class: "sesja-notatki" });
+    const notatkiCzas = el("span", { class: "cichy-tekst sesja-notatki-czas" });
     const notatkiAkcje = el("div", { class: "sesja-notatki-akcje" });
-    const kNotatki = el("section", { class: "karta sesja-czesc" },
-      el("h2", { class: "karta-tytul" }, ikona("notatka"), el("span", null, "Notatki agenta")),
+    const kNotatki = el("section", { class: "karta sesja-czesc sesja-glowna sesja-notatki-karta" },
+      el("h2", { class: "karta-tytul" }, ikona("notatka"), el("span", null, "Notatki agenta"), el("div", { class: "karta-akcje" }, notatkiCzas)),
       notatkiTresc, notatkiAkcje);
 
+    // Telefon: jedna część naraz (domyślnie Transkrypcja); komputer: Transkrypcja | Notatki, pod nimi Agenda | Pytania.
+    const czesci = el("div", { class: "sesja-czesci", dataset: { pokaz: "zapis" } }, kZapis, kNotatki, kAgenda, kPytania);
+    const przelacznikCzesci = przelacznik([
+      { id: "zapis", tekst: "Transkrypcja", ikona: "glos" }, { id: "notatki", tekst: "Notatki", ikona: "notatka" },
+      { id: "agenda", tekst: "Agenda", ikona: "plan" }, { id: "pytania", tekst: "Pytania", ikona: "pytanie" },
+    ], "zapis", (id) => {
+      czesci.dataset.pokaz = id;
+      dopasujWysokosc();
+    }, "Część sesji");
+    const pasekCzesci = el("div", { class: "sesja-przelacznik" }, przelacznikCzesci);
+
+    const naglowek = el("header", { class: "nagl-widoku" }, el("div", null, el("h1", null, "Sesja"),
+      el("p", { class: "cichy-tekst" }, "Rozmowa głosowa w panelu. Agent słucha, spisuje i robi krótkie notatki.")));
     const audio = el("div", { class: "sesja-audio", hidden: true });
-    const korzen = el("div", { class: "widok sesja" },
-      el("header", { class: "nagl-widoku" }, el("div", null, el("h1", null, "Sesja"),
-        el("p", { class: "cichy-tekst" }, "Długa rozmowa głosowa w panelu — jak na Discordzie. Agent może słuchać, spisywać rozmowę i robić notatki."))),
-      baner, komunikaty, kPokoj,
-      el("div", { class: "sesja-siatka" }, tematy, kZapis, kNotatki), audio);
+    const korzen = el("div", { class: "widok sesja" }, naglowek, baner, komunikaty, kPokoj, pasekCzesci, czesci, audio);
+
+    function przewinDo(k) {
+      k.scrollIntoView({ block: "start", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    }
+    function ustawLicznikSkrotu(b, n) {
+      let l = b.querySelector(".przelacznik-licznik");
+      if (!n) {
+        if (l) l.remove();
+        return;
+      }
+      if (!l) b.append(l = el("span", { class: "przelacznik-licznik" }));
+      l.textContent = String(n);
+    }
+
+    // Transkrypcja i Notatki mają wysokość do dołu okna (komputer: obie obok siebie bez przewijania strony; telefon:
+    // wybrana część do dolnego paska). Wysokość liczymy z położenia kolumn, bo pasek pokoju i komunikaty zmieniają się.
+    function dopasujWysokosc() {
+      if (!S.widoczny || !czesci.isConnected) return;
+      const nav = document.querySelector(".nav-dol");
+      const dol = nav && getComputedStyle(nav).display !== "none" ? nav.getBoundingClientRect().height : 0;
+      const gora = czesci.getBoundingClientRect().top + window.scrollY;
+      const wys = Math.max(300, Math.floor(window.innerHeight - gora - dol - 16));
+      if (czesci.style.getPropertyValue("--sesja-wys") !== wys + "px") czesci.style.setProperty("--sesja-wys", wys + "px");
+    }
+    window.addEventListener("resize", () => dopasujWysokosc());
+    if (typeof ResizeObserver === "function") {
+      const obs = new ResizeObserver(() => dopasujWysokosc());
+      for (const e of [naglowek, baner, komunikaty, kPokoj, pasekCzesci]) obs.observe(e);
+    }
 
     // ------------------------------------------------------------------ pomocnicze
     const ja = () => (S.stan && S.stan.ja) || { decydent: !!ctx.ja.decydent, lokalny: !!ctx.ja.lokalny, agent: false };
@@ -123,17 +167,21 @@ export default {
 
     // ------------------------------------------------------------------ niedostępne (stary serwer, lustro)
     function rysujNiedostepne() {
-      zamien(korzen.querySelector(".sesja-siatka"));
+      kPokoj.classList.add("niedostepny");
       kPokoj.replaceChildren(
         el("h2", { class: "karta-tytul" }, ikona("zespol"), el("span", null, "Pokój")),
         S.statyczny
           ? pusty("Rozmowa działa tylko na żywym panelu", "To jest podgląd tylko do odczytu. Rozmowa głosowa, nagrywanie i notatki działają w panelu uruchomionym na komputerze (albo przez link tunelu).", "oko")
           : pusty("Rozmowa zacznie działać po restarcie panelu", "Serwer panelu działa jeszcze w starej wersji, która nie zna zakładki Sesja. Na komputerze z panelem zamknij okno panelu i uruchom panel\\start.bat jeszcze raz.", "info"));
+      pasekCzesci.hidden = true;
+      czesci.classList.add("pojedyncze");
       if (S.statyczny) {
-        korzen.querySelector(".sesja-siatka").append(tematy);
+        czesci.replaceChildren(kAgenda, kPytania);               // lustro: Agenda i Pytania jedna pod drugą
+        czesci.dataset.pokaz = "wszystko";                       // żadna reguła „jedna część naraz” tego nie ukrywa
         rysujAgende();
       } else {
-        korzen.querySelector(".sesja-siatka").append(kPytania);   // pytania działają też na starym serwerze
+        czesci.replaceChildren(kPytania);                        // pytania działają też na starym serwerze
+        czesci.dataset.pokaz = "pytania";
       }
     }
 
@@ -145,8 +193,8 @@ export default {
         const s = S.stan.sluchanie;
         zamien(baner, el("span", { class: "sesja-kropka-rec", "aria-hidden": "true" }),
           el("span", null, el("strong", null, "Agent słucha — rozmowa jest nagrywana i spisywana. "),
-            "Nagrania i zapis zostają na komputerze z panelem; do sejfu trafią tylko ustalenia do zatwierdzenia.",
-            s.kto ? el("span", { class: "sesja-baner-kto" }, " Włączył(a): " + s.kto + (s.od ? ", " + dataKrotka(s.od) : "") + ".") : null));
+            el("span", { class: "sesja-baner-kto" }, "Nagrania zostają na komputerze z panelem; do sejfu trafią tylko ustalenia do zatwierdzenia." +
+              (s.kto ? " Włączył(a): " + s.kto + (s.od ? ", " + dataKrotka(s.od) : "") + "." : ""))));
       }
       korzen.classList.toggle("nagrywa", slucha);
     }
@@ -186,20 +234,20 @@ export default {
       const moje = rozmowa && wRozmowie() ? rozmowa.stanyPolaczen() : new Map();
       const mojId = rozmowa && wRozmowie() ? rozmowa.u : null;
       if (!lista.length) {
-        zamien(osoby, el("li", { class: "sesja-osoba-pusto cichy-tekst" }, "Nikogo jeszcze nie ma w rozmowie. Dołącz — druga osoba wejdzie przez swój link do panelu."));
+        zamien(osoby, el("li", { class: "sesja-osoba-pusto cichy-tekst" }, "Nikogo nie ma w rozmowie. Dołącz — druga osoba wejdzie przez swój link do panelu."));
       } else {
         zamien(osoby, lista.map((o) => {
           const ty = o.id && o.id === mojId;
           const stanOsoby = ty && rozmowa ? (rozmowa.wyciszony ? "wyciszony" : !rozmowa.strumien ? "bez_mikrofonu" : rozmowa.mowi ? "mowi" : o.stan) : o.stan;
           const opis = NAZWY_STANOW[stanOsoby] || { tekst: stanOsoby, klasa: "" };
           const pol = o.id && !ty ? moje.get(o.id) : null;
-          return el("li", { class: "wiersz sesja-osoba" + (stanOsoby === "mowi" ? " mowi" : ""), dataset: { uczestnik: o.id || "", stan: stanOsoby, polaczenie: pol || "" } },
-            awatar(o.kto),
+          const rola = o.rola === "gość" ? "gość" : o.rola === "przy komputerze" ? "przy komputerze z panelem" : "klucz zatwierdzania";
+          return el("li", { class: "wiersz sesja-osoba" + (stanOsoby === "mowi" ? " mowi" : ""), title: o.kto + " — " + rola,
+            dataset: { uczestnik: o.id || "", stan: stanOsoby, polaczenie: pol || "" } },
+            awatar(o.kto, { maly: true }),
             el("span", { class: "wiersz-tekst" },
               el("strong", null, o.kto + (ty ? " (ty)" : "")),
-              el("span", { class: "cichy-tekst" }, o.rola === "gość" ? "gość" : o.rola === "przy komputerze" ? "przy komputerze z panelem" : "klucz zatwierdzania",
-                pol ? " · " + (NAZWY_POLACZEN[pol] || pol) : "")),
-            el("span", { class: "chip " + opis.klasa }, opis.tekst));
+              el("span", { class: "cichy-tekst" }, opis.tekst, pol ? " · " + (NAZWY_POLACZEN[pol] || pol) : "")));
         }));
       }
       // przyciski
@@ -225,11 +273,12 @@ export default {
       przelacznikSluchania.replaceChildren(el("span", { class: "sesja-slucha-suwak", "aria-hidden": "true" }),
         el("span", null, "Agent słucha"));
       opisSluchania.textContent = moze
-        ? (slucha ? "Każdy w pokoju nagrywa swój mikrofon odcinkami; serwer spisuje je lokalnie i usuwa dźwięk po transkrypcji."
-          : "Włącz, żeby agent spisywał rozmowę i robił notatki. Wszyscy w pokoju zobaczą czerwony znacznik.")
-        : "Włącza i wyłącza Karol albo Paweł (przy komputerze z panelem albo z kluczem zatwierdzania).";
+        ? (slucha ? "Każdy nagrywa swój mikrofon; serwer spisuje to lokalnie i usuwa dźwięk po transkrypcji."
+          : "Włącz „Agent słucha”, żeby agent spisywał rozmowę i robił notatki. Wszyscy zobaczą czerwony znacznik.")
+        : "„Agent słucha” włącza Karol albo Paweł (przy komputerze z panelem albo z kluczem zatwierdzania).";
       rysujBaner();
       rysujKomunikaty();
+      dopasujWysokosc();
     }
 
     function rysujMiernik() {
@@ -320,8 +369,10 @@ export default {
       }
       const moznaPisac = !S.statyczny && ja().zapis_sejfu !== false && ctx.ja.zapis_sejfu !== false;
       const tematy = a.do_omowienia || [];
+      przelacznikCzesci.licznik("agenda", tematy.length || null);
+      ustawLicznikSkrotu(skrotAgenda, tematy.length);
       const lista = tematy.length
-        ? el("ul", { class: "lista sesja-tematy" }, tematy.map((t) => el("li", { class: "sesja-temat", dataset: { temat: t.id } },
+        ? el("ul", { class: "lista sesja-lista-tematow" }, tematy.map((t) => el("li", { class: "sesja-temat", dataset: { temat: t.id } },
           el("div", { class: "sesja-temat-tresc" },
             el("strong", { class: "md-linia", html: mdLinia(t.temat || t.tekst_md) }),
             t.kontekst ? el("span", { class: "cichy-tekst md-linia", html: mdLinia(t.kontekst) }) : null,
@@ -428,12 +479,12 @@ export default {
             toast((await kopiuj(tekst)) ? "Skopiowano zapis rozmowy." : "Nie udało się skopiować.", "info");
           } }, ikona("kopiuj"), "Kopiuj"));
       }
-      const czesci = [];
-      if (sluchanie()) czesci.push("Agent słucha. Tekst pojawia się z opóźnieniem kilkunastu sekund.");
-      else czesci.push(sesja ? "Agent nie słucha — nic nowego nie jest zapisywane." : "Agent nie słucha. Włącz „Agent słucha”, żeby zacząć zapis.");
-      if (S.czeka) czesci.push("Czeka na spisanie: " + S.czeka + " " + odmiana(S.czeka, ["odcinek", "odcinki", "odcinków"]) + ".");
-      if (rozmowa && rozmowa.nagrywa) czesci.push("Nagrywam twój mikrofon (wysłane odcinki: " + rozmowa.wyslane + ", pominięte jako cisza: " + rozmowa.pominiete + ").");
-      zapisStan.textContent = czesci.join(" ");
+      const opis = [];
+      if (sluchanie()) opis.push("Agent słucha. Tekst pojawia się z opóźnieniem kilkunastu sekund.");
+      else opis.push(sesja ? "Agent nie słucha — nic nowego nie jest zapisywane." : "Agent nie słucha. Włącz „Agent słucha”, żeby zacząć zapis.");
+      if (S.czeka) opis.push("Czeka na spisanie: " + S.czeka + " " + odmiana(S.czeka, ["odcinek", "odcinki", "odcinków"]) + ".");
+      if (rozmowa && rozmowa.nagrywa) opis.push("Nagrywam twój mikrofon (wysłane odcinki: " + rozmowa.wyslane + ", pominięte jako cisza: " + rozmowa.pominiete + ").");
+      zapisStan.textContent = opis.join(" ");
       if (!S.wpisy.length) {
         zamien(zapisLista, el("p", { class: "cichy-tekst sesja-zapis-pusto" }, "Jeszcze nic nie zostało spisane."));
         return;
@@ -497,15 +548,18 @@ export default {
     function rysujNotatki() {
       const sesja = S.stan && S.stan.sesja;
       const nt = S.notatki;
+      notatkiCzas.textContent = widziZapis() && nt ? (nt.trwa ? "aktualizuję…" : nt.czas && nt.tekst_md ? godzina(nt.czas).slice(0, 5) : "") : "";
+      notatkiCzas.title = widziZapis() && nt && nt.czas ? "Zaktualizowane: " + dataKrotka(nt.czas) : "";
       if (!widziZapis()) {
-        zamien(notatkiTresc, pusty("Notatki widzą osoby w pokoju", "Dołącz do rozmowy, żeby zobaczyć notatki agenta.", "klodka"));
+        zamien(notatkiTresc, el("p", { class: "cichy-tekst sesja-notatki-pusto" }, "Notatki agenta widzą osoby w pokoju — dołącz do rozmowy."));
       } else if (nt && nt.tekst_md) {
-        zamien(notatkiTresc, el("div", { class: "md", html: md(nt.tekst_md) }),
-          el("p", { class: "cichy-tekst" }, nt.trwa ? "Agent właśnie aktualizuje notatki…" : nt.czas ? "Zaktualizowane: " + dataKrotka(nt.czas) : ""));
+        // krótkie punkty w sekcjach (bc/sesje.py: polecenie_notatek); starsze, dłuższe notatki też się pokażą
+        zamien(notatkiTresc, el("div", { class: "md sesja-notatki-md", html: md(nt.tekst_md) }));
       } else {
         const co = (S.stan && S.stan.notatki_co_min) || 0;
-        zamien(notatkiTresc, pusty(nt && nt.trwa ? "Agent pisze pierwsze notatki…" : "Jeszcze nie ma notatek",
-          co ? "Gdy agent słucha, co " + co + " min aktualizuje notatki: o czym mowa, ustalenia, zadania, pytania i tematy z agendy, które jeszcze nie padły." : "Notatki robi agent na przycisk „Notatki teraz”.", "notatka"));
+        zamien(notatkiTresc, el("p", { class: "cichy-tekst sesja-notatki-pusto" }, nt && nt.trwa ? "Agent pisze pierwsze notatki — pojawią się tu za kilka minut."
+          : co ? "Pierwsze notatki pojawią się ok. " + co + " min po włączeniu „Agent słucha”, potem co " + co + " min."
+            : "Notatki robi agent na przycisk „Notatki teraz” — pojawi się, gdy agent słucha."));
       }
       if (nt && nt.blad && widziZapis()) notatkiTresc.append(el("p", { class: "cichy-tekst sesja-blad-notatek" }, "Ostatnia próba notatek: " + nt.blad));
       const zak = S.stan && S.stan.zakonczenie;
@@ -518,12 +572,12 @@ export default {
       }
       if (!sesja && zak) {
         const opis = zak.stan === "czeka_na_transkrypcje" ? "Sesja zakończona — czekam na ostatnie odcinki" + (zak.czeka ? " (do spisania: " + zak.czeka + ")" : "") + ", potem agent spisze ustalenia."
-          : zak.stan === "agent" ? "Sesja zakończona — agent spisuje ustalenia do sejfu jako propozycje. Lista do zatwierdzenia pojawi się w Raportach." +
+          : zak.stan === "agent" ? "Sesja zakończona — agent spisuje ustalenia do sejfu jako propozycje i dopisuje odpowiedzi, które padły. Lista do zatwierdzenia pojawi się w zakładce Pytania." +
             (zak.brakujace ? " Uwaga: transkrypcja nie nadążyła — " + zak.brakujace + " " + odmiana(zak.brakujace, ["odcinek", "odcinki", "odcinków"]) + " nie trafiło do ustaleń (agent zaznaczy, że zapis jest niepełny)." : "")
             : zak.stan === "bez_spisywania" ? "Sesja zakończona bez spisywania ustaleń."
               : "Sesja zakończona, ale spisanie się nie udało: " + (zak.blad || "nieznany błąd") + ".";
         akcje.push(el("p", { class: "cichy-tekst" }, opis),
-          zak.stan === "agent" ? el("button", { type: "button", class: "przycisk cichy maly", onclick: () => ctx.idz("raporty") }, ikona("raporty"), "Raporty") : null,
+          zak.stan === "agent" ? el("button", { type: "button", class: "przycisk cichy maly", onclick: () => ctx.idz("pytania") }, ikona("pytanie"), "Pytania") : null,
           zak.watek && ctx.ja.lokalny ? el("button", { type: "button", class: "przycisk cichy maly", onclick: () => ctx.idz("agent", { watek: zak.watek }) }, ikona("agent"), "Zobacz pracę agenta") : null);
       }
       zamien(notatkiAkcje, akcje);
@@ -545,7 +599,7 @@ export default {
       const spisz = el("button", { type: "button", class: "przycisk glowny szeroki", disabled: !zAgentem }, "Zakończ i spisz ustalenia");
       const bez = el("button", { type: "button", class: "przycisk cichy szeroki" }, "Zakończ bez spisywania");
       const tresc = el("div", { class: "formularz" },
-        el("p", null, "Agent przestanie słuchać. Po spisaniu ostatnich odcinków zapisze w sejfie notatkę z ustaleniami (status: propozycja), dopisze ustalenia jako propozycje do Rejestru decyzji, pytania do Pytań otwartych i zadania do Zadań, oznaczy omówione tematy i wyśle raport z listą rzeczy do zatwierdzenia."),
+        el("p", null, "Agent przestanie słuchać. Po spisaniu ostatnich odcinków zapisze w sejfie notatkę z ustaleniami (status: propozycja), dopisze ustalenia jako propozycje do Rejestru decyzji, odpowiedzi, które padły w rozmowie, pod pytaniami, nowe pytania do Pytań otwartych i zadania do Zadań, oznaczy omówione tematy i wyśle raport z listą rzeczy do zatwierdzenia."),
         el("p", { class: "cichy-tekst" }, "Agent niczego nie zatwierdza — zatwierdza Karol albo Paweł jednym kliknięciem w panelu."),
         zAgentem ? null : el("p", { class: "cichy-tekst" }, "Spisanie uruchamia agenta na komputerze z panelem — zrób to przy tym komputerze albo włącz tam „Agent z telefonu”."),
         spisz, bez);
@@ -622,9 +676,11 @@ export default {
         rysujAgende();
         rysujZapis();
         rysujNotatki();
+        requestAnimationFrame(() => dopasujWysokosc());
         await odswiezStan();
         if (S.niedostepne) return;
         await Promise.all([odswiezAgende(), odswiezZapis()]);
+        dopasujWysokosc();
       },
       ukryj() {
         S.widoczny = false;                                    // rozmowa trwa dalej w tle (jak na Discordzie)
