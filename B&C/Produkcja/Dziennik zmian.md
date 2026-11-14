@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-14 · Claude Code u Karola (pytanie Pawła z panelu: skill tree postaci)
+- **Drzewko umiejętności postaci:** Paweł zapytał przez panel, jak rozplanować skill tree postaci. Nowa notatka [[Drzewko umiejętności postaci]] (`propozycja`): trzy warstwy siły (statystyki, ekwipunek, drzewko), trzy gałęzie (Walka, Wyprawa, Fortuna) i pień, pięć pięter otwieranych poziomem, trzy rangi na węzeł — pierwsza za punkt talentu (jeden co poziom), kolejne za Diamenty; jedno drzewko dla klas na premierę z jedną cechą klasy; przestawienie za Złoto; zakładka TALENTS w [[Okno ekwipunku]]; szkic techniczny (tabela węzłów, serwer liczy, jeden moduł mnożników); uwaga o jawnych szansach przy węzłach Fortuny.
+- **Rejestr:** nowa propozycja D-047 (rozwija zatwierdzoną D-039). **Pytania otwarte:** nowe pytanie 34 z wierszem `Rozstrzyga: D-047` i trzema wariantami (a/b/c). **Sesje główne:** temat obok drzewek petów. **Zadania:** decyzja, kalkulator balansu, makieta zakładki. **[[System RPG]]:** sekcja „Decyzje i propozycje” z odsyłaczami. `DOKUMENTACJA.md`: wzmianka przy Systemie RPG.
+- **Raport** „Drzewko umiejętności postaci — propozycja” (rodzaj: pytanie) w panelu. Nic nie zatwierdzono; liczby są robocze.
+
 ## 2026-11-14 · Claude Code u Karola (po sesji głównej: kontrola ustaleń, odpowiedzi, wypchnięcie)
 - **Pierwsza sesja główna zadziałała w całości:** Karol przy komputerze, Paweł przez tunel, 42 minuty, 359 wypowiedzi obu osób spisanych lokalnie bez błędów; nagrania skasowane po spisaniu. Zapis ustaleń agenta panelu ([[Sesja główna 2026-11-14 — zapis ustaleń]]) porównany z pełną transkrypcją temat po temacie — zgodny. Propozycje D-032–D-045 agent zapisał jako propozycje; zatwierdzał je Karol w panelu.
 - **Odpowiedzi po sesji w [[Pytania otwarte]]:** pytanie 29 — Karol wybrał Telegram w dwóch etapach; pytanie 30 — dopisek z oficjalnymi zasadami Roblox (stawianie waluty na wynik losowy jest zakazane niezależnie od nazwy postaci; losowe nagrody za Robuxy wymagają jawnych szans); pytanie 31 — sprostowanie: grę da się przenieść z konta na grupę w Creator Hub; pytanie 24 — Karol zaakceptował raport o Rycerzu: klocki Roblox jako główna droga dla postaci.
@@ -43,6 +48,11 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: odpowiedź na pytanie 13 (rozstrzygnięte decyzjami: D-044 zatwierdzona) ([[Pytania otwarte]])
 - Karol Balucki: odpowiedź na pytanie 14 (rozstrzygnięte decyzjami: D-044 zatwierdzona) ([[Pytania otwarte]])
 - Karol Balucki: decyzja D-041 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-037 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 30 (rozstrzygnięte decyzjami: D-037 zatwierdzona) ([[Pytania otwarte]])
+- Karol Balucki: omówiony temat sesji: Energia w karczmie (D-009, pytanie 8) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Twierdza: od którego poziomu działka, co produkuje, podziemia (pytanie 9) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Mistrz gier planszowych i rolki: szczegóły (D-037, pytanie 30) ([[Sesje główne]])
 
 ## 2026-11-14 · Claude Code u Karola (sesja główna: zapis ustaleń)
 - **Pierwsza sesja główna** Karola i Pawła w zakładce Sesja panelu (11:00–11:43, 42 min; agent słuchał, transkrypcja rozpoznała obu mówców). Ustalenia własnymi słowami: [[Sesja główna 2026-11-14 — zapis ustaleń]] (`propozycja`). Zapis rozmowy zostaje lokalnie u gospodarza, poza repozytorium.

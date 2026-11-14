@@ -211,6 +211,7 @@ Zatwierdzona 13.11 D-015 mówi: losowania tylko za walutę i tokeny zdobywane w 
 Dopisek Claude Code z 2026-11-14 (sprawdzone w oficjalnych zasadach Roblox): symulowany hazard, czyli stawianie waluty na wynik losowy z szansą na więcej albo stratę, jest zakazany także wtedy, gdy waluty nie da się kupić za Robuxy, a nazwa postaci tego nie zmienia. Plansza, na której stawia się monety, a pole je mnoży albo zabiera połowę, pod to podpada. Losowe nagrody kupowane za Robuxy albo za walutę kupioną za Robuxy są dozwolone pod trzema warunkami: lista nagród i dokładne szanse widoczne przed zakupem, sprawdzenie uprawnień gracza (`PolicyService`) i pokazywanie zmienionych szans przy ulepszeniach szczęścia. Darmowa dzienna rolka bez stawki jest bezpieczna. Źródła: create.roblox.com/docs/production/monetization/paid-random-items oraz Roblox Rules of Conduct (en.help.roblox.com/hc/en-us/articles/203313410). Karol przyjął to wyjaśnienie w rozmowie 14.11; D-037 czeka na kliknięcie w panelu.
 Rozstrzyga: D-037
 **Odpowiedź:**
+- Karol Balucki (2026-11-14): rozstrzygnięte decyzjami: D-037 zatwierdzona
 
 ## 31. Grupa Roblox: kto zakłada, wypłaty, klucz Open Cloud i przeniesienie gry (D-044)
 - Kto zakłada grupę i jest jej właścicielem.
@@ -233,4 +234,12 @@ Szczegóły: Lista „na premierę” i „później” jest w D-035. Sporne alb
 - Jak oznaczać budynki, żeby było widać, co jest czym (Paweł nie rozpoznał sklepu z Petami ani wejścia do dungeonu).
 - Czy wejście do dungeonu zastępują wrota z kłódką (D-042).
 Szczegóły: Karol na sesji 14.11: Krzywe Miasteczko to styl oficjalny, ale „coś poprawiamy w kolorystyce” — co dokładnie (paleta, nasycenie, kontrast obrysu, kolory dachów)? Paweł nie rozpoznał w podglądzie 3D sklepu z Petami ani wejścia do dungeonu — jak oznaczać budynki (szyldy bez napisów, ikony nad wejściem, charakterystyczny kształt)? Czy wejście do dungeonu zastępują wrota z kłódką i hala portali (D-042)? Zob. [[Klocki — Blender i Roblox]], [[Sesja główna 2026-11-14 — zapis ustaleń]].
+**Odpowiedź:**
+
+## 34. Drzewko umiejętności postaci: kształt i zasady (D-039, D-047)
+- Paweł zapytał w panelu 14.11, jak rozplanować skill tree postaci.
+- Propozycja D-047: trzy gałęzie (Walka, Wyprawa, Fortuna) i pień, pięć pięter za poziom, pierwsza ranga węzła za punkt talentu, kolejne za Diamenty; jedno drzewko dla klas na premierę.
+- Do wyboru: (a) tak, jak w D-047; (b) tylko Diamenty, bez punktów talentu (D-039 dosłownie); (c) osobne drzewko dla każdej klasy już na premierę.
+Szczegóły: Pełny opis z przykładowymi węzłami, liczbami roboczymi, oknem i szkicem technicznym: [[Drzewko umiejętności postaci]]. Drzewko ma mnożyć statystyki i ekwipunek, nie je zastępować; piętra otwiera poziom postaci, więc Diamenty przyspieszają, ale nie przeskakują pięter (D-035). Liczby (poziomy pięter, koszty w Diamentach, 1 punkt talentu co poziom) są hipotezą do kalkulatora balansu i zależą od tempa zdobywania Diamentów w grze (pytanie 9, D-031). Osobno zostają drzewka petów (D-039, D-040 — temat Pawła w [[Sesje główne]]) i drzewko Twierdzy. Jeśli wybieracie (b) albo (c), odrzućcie D-047 i napiszcie wariant w komentarzu.
+Rozstrzyga: D-047
 **Odpowiedź:**

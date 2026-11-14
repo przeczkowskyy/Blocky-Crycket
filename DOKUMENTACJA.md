@@ -78,6 +78,7 @@ Rycerz i Kot-Mag to wizytówka gry. Wszystkie postacie i pety są w stylu voxel 
 ### System RPG 💡
 [System RPG](B%26C/Gra/System%20RPG.md)
 Kanon mówi tylko o „rozbudowanym systemie RPG” i o HUD z poziomem, HP, Maną/Energią i EXP. Lista z późniejszej specyfikacji (do potwierdzenia): poziomy i EXP, HP i Mana/Energia, ekwipunek i inwentarz, umiejętności na hotbarze, walka i loot.
+Decyzja D-039 (Karol, 14.11.2026): drzewka umiejętności za Diamenty — postaci, Twierdzy i każdego peta. Propozycja kształtu drzewka postaci: [Drzewko umiejętności postaci](B%26C/Gra/Drzewko%20umiej%C4%99tno%C5%9Bci%20postaci.md) (D-047, pytanie 34) — trzy gałęzie (Walka, Wyprawa, Fortuna) i pień, pięć pięter za poziom, pierwsza ranga węzła za punkt talentu, kolejne za Diamenty.
 
 ### Arena (PvP) 💡
 [Arena (PvP)](B%26C/Gra/Arena%20%28PvP%29.md)

@@ -9,6 +9,7 @@ tags: [produkcja, zadania]
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
 - [ ] Karol i Paweł: zatwierdzić albo odrzucić propozycje z sesji 14.11 — D-032–D-045 oraz D-019 i D-020 (do tego D-031 z pytania Pawła o walutę premium) — w panelu (zakładka Decyzje → Czeka na Ciebie); odpowiedzieć na pytania 29–33 ([[Sesja główna 2026-11-14 — zapis ustaleń]]) · #wysoki
 - [ ] Paweł: przełączyć repozytorium na prywatne w ustawieniach GitHub (D-044) — działanie właściciela, po zatwierdzeniu decyzji; wtedy lustro panelu na GitHub Pages odpada · #wysoki
+- [ ] Drzewko umiejętności postaci: decyzja D-047 (pytanie 34, odpowiedź na pytanie Pawła z panelu 14.11); potem pełna lista węzłów z liczbami w kalkulatorze balansu (okno Balans agenta) i makieta zakładki TALENTS w [[Okno ekwipunku]] ([[Drzewko umiejętności postaci]]) · #średni
 - [ ] Zaproponować nazwę waluty premium zamiast roboczych „Diamentów” (tematyczna; rozważyć Magiczne Kryształy z kanonu) oraz nazwę koła fortuny zamiast „Labubu”; do tego propozycja, co kupuje się za Złoto, walutę premium i trzecią walutę (D-031, D-038, D-040) — prośba Karola i Pawła z sesji 14.11 · #średni
 - [ ] Porównanie Krzywego Miasteczka w Blenderze i w Roblox obok siebie (prośba Pawła z sesji 14.11) i wskazanie raportu „Rycerz w trzech wersjach” z 13.11 — do decyzji o Blenderze (pytanie 24) · #średni
 - [ ] Kroki założenia grupy Roblox, publikacji gry jako gry grupy i ponownego wgrania animacji — po odpowiedzi na pytanie 31 (D-044) · #średni

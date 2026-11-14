@@ -1,0 +1,22 @@
+{
+ "id": "r-20261114-130426-9b9b",
+ "tytul": "Drzewko umiejętności postaci — propozycja (odpowiedź na pytanie Pawła)",
+ "opis_md": "Paweł zapytał w panelu: **jak rozplanować skill tree postaci**. Oto propozycja do oceny. Pełny opis z przykładami węzłów jest w notatce sejfu „Drzewko umiejętności postaci” (link w komponentach). To propozycja D-047, nie kanon.\n\n## Trzy warstwy siły postaci\n1. **Statystyki** (Siła, Kondycja…) — punkty za poziom i dokupywanie za Złoto. Surowe liczby.\n2. **Ekwipunek** — główne źródło statystyk.\n3. **Drzewko** — stałe premie procentowe (EXP, Złoto, obrażenia, szczęście) i wygoda. **Mnoży to, co gracz już ma, nie zastępuje przedmiotów.** Dzięki temu płacący nie wygrywa „z niczego”.\n\n## Kształt: trzy gałęzie i pień, pięć pięter\n- ⚔️ **Walka** — +HP, +obrażenia, +krytyk, „Jeszcze stoję” (raz na walkę przeżywasz cios), na szczycie cios specjalny widoczny w cutscence.\n- 🗺️ **Wyprawa** — +EXP (pomysł Pawła), krótsze zadania karczmy, +Złoto z zadań, lepszy łup z dungeonów.\n- 🍀 **Fortuna** — większe szczęście do rolek (pomysł Pawła), tańsze sklepy, dodatkowy darmowy rzut u mistrza gier, szybsze jajka petów.\n- 🌳 **Pień** (wspólny, jeden węzeł na piętro) — większy plecak, druga mikstura, odbiór wszystkich nagród jednym stuknięciem.\n\nPięć pięter otwiera **poziom postaci** (robocze: 1 / 10 / 25 / 40 / 60) plus dwa wykupione węzły piętra niżej. Diamenty przyspieszają, ale **nie przeskakują pięter** — nikt nie zmaksuje drzewka w dwa dni (D-035). Na telefonie to trzy czytelne kolumny, nie pajęczyna węzłów.\n\n## Za co kupujemy: „punkt otwiera, Diamenty pogłębiają”\nKażdy węzeł ma trzy rangi (★ → ★★★):\n- **★ pierwsza za 1 punkt talentu** — jeden punkt za każdy poziom. Darmowy gracz z czasem odblokuje całą szerokość drzewka.\n- **★★ i ★★★ za Diamenty** (robocze 25–800 za rangę zależnie od piętra) — głębia drzewka to ujście Diamentów na długie miesiące.\n\nTo rozwija zatwierdzoną D-039 („drzewka za Diamenty”) o darmową ścieżkę — dlatego pytam.\n\n## Reszta w skrócie\n- **Klasy:** na premierę jedno wspólne drzewko, klasa (Rycerz / Kot-Mag) daje jedną stałą cechę startową. Osobne drzewka na klasę jako aktualizacja.\n- **Reset:** pierwszy darmowy, kolejne za Złoto; nic nie przepada.\n- **Okno:** zakładka TALENTS w oknie ekwipunku, w stylu „Krzywego Drzewka” z ciemną kreską.\n- **Zasady Roblox:** jeśli rolki będą za Diamenty lub Robuxy, panel szans musi pokazywać szanse po premii z drzewka.\n- Liczby są hipotezą do kalkulatora balansu; drzewka petów i Twierdzy to osobne notatki na później.\n\n## Co ma ocenić\nW zakładce Pytania czeka pytanie 34 z decyzją D-047. **Tak** = wariant wyżej. Jeśli wolicie tylko Diamenty bez punktów talentu albo osobne drzewka na klasę od razu, odrzućcie D-047 i napiszcie wariant w komentarzu.",
+ "kto": "Claude (panel, pytanie Pawła)",
+ "czas": "2026-11-14T13:04:26+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Gra/Drzewko umiejętności postaci.md",
+   "etykieta": "Notatka z pełną propozycją"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/UI/Okno ekwipunku.md",
+   "etykieta": "Okno ekwipunku (zakładka TALENTS)"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Drzewko: trzy gałęzie i pień, piętra za poziom, pierwsza ranga za punkt talentu, kolejne za Diamenty — idziemy w to (D-047)?"
+}
