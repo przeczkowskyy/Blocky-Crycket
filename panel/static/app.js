@@ -468,6 +468,32 @@ async function odswiezLicznikSpraw() {
   } catch (e) { /* moduł może jeszcze nie istnieć */ }
 }
 
+// --------------------------------------------------------------------------- stała synchronizacja z GitHubem (D-070)
+// Co 30 s GET /api/git/auto (sam stan, serwer nie uruchamia gita). Gdy panel sam pobrał nowe zmiany — krótka informacja
+// „kto i co” (zwykły tekst) i zdarzenie bc:git-pobrano dla widoków. Pierwsze sprawdzenie tylko zapamiętuje stan.
+// Stary serwer bez tej trasy (404) — nic się nie zmienia; kolejna próba za 5 min (po restarcie panelu ruszy sama).
+const sync = { ostatnie: null, przerwaDo: 0 };
+async function sprawdzSynchronizacje() {
+  if (STATYCZNY || Date.now() < sync.przerwaDo || !ctx.jest("gitsync")) return;
+  let a;
+  try {
+    a = await api("/api/git/auto", { czas: 10000 });
+  } catch (e) {
+    if (e && (e.status === 404 || e.status === 405)) sync.przerwaDo = Date.now() + 5 * 60000;
+    return;
+  }
+  const p = a && typeof a === "object" ? a.pobranie : null;
+  const id = p && p.id ? String(p.id) : "";
+  if (sync.ostatnie !== null && id && id !== sync.ostatnie) {
+    const n = Number(p.ile) || 0;
+    const tematy = (p.commity || []).slice(0, 2).map((c) => "„" + String(c.temat || "").slice(0, 60) + "”").join("; ");
+    toast("Z GitHuba: " + (p.autorzy || []).join(", ") + " — " + n + " " + (n === 1 ? "zmiana" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "zmiany" : "zmian") +
+      (tematy ? ": " + tematy : "") + ". Panel już je pobrał.", "info", { czas: 9000 });
+    window.dispatchEvent(new CustomEvent("bc:git-pobrano", { detail: p }));
+  }
+  sync.ostatnie = id;
+}
+
 // --------------------------------------------------------------------------- imię
 function ustawKto(imie) {
   imie = String(imie || "").replace(/[\u0000-\u001f\u007f]/g, "").trim().slice(0, 40);
@@ -577,6 +603,10 @@ async function start() {
   }
   odswiezLicznikSpraw();
   odpytuj(odswiezLicznikSpraw, 60000);
+  if (!STATYCZNY) {
+    sprawdzSynchronizacje();
+    odpytuj(sprawdzSynchronizacje, 30000);
+  }
 }
 
 start().catch((e) => {

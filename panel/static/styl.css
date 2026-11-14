@@ -599,6 +599,24 @@ button.czeka-gora { background: none; border: 0; padding: 0; width: 100%; text-a
 .czeka-opis { display: flex; flex-direction: column; min-width: 0; }
 .nowe-kiedy { flex: none; white-space: nowrap; }
 .sync-przyciski .przycisk { flex: 1 1 auto; }
+/* stała synchronizacja (D-070): mały, dyskretny stan nad przyciskami Pobierz / Wyślij; klik = szczegóły */
+.sync-auto {
+  display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; padding: 6px 10px; margin: 0;
+  background: var(--karta2); border: 1.5px solid var(--obrys-jasny); border-radius: 10px; color: var(--przygaszony);
+  font: inherit; font-size: 13px; text-align: left; cursor: pointer;
+}
+.sync-auto:hover { border-color: currentColor; }
+.sync-auto-tekst { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sync-auto .ikona { width: 14px; height: 14px; flex: none; opacity: 0.7; }
+.sync-auto-kropka { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+.sync-auto.zielen { color: var(--zielen); }
+.sync-auto.zloto { color: var(--zloto); }
+.sync-auto.czerwien { color: #ff8080; border-color: rgba(239, 90, 90, 0.5); }
+.sync-auto.niebieski { color: #7cc0ff; }
+.sync-auto.szary { color: var(--szary); }
+.sync-pobranie { display: flex; align-items: flex-start; gap: 4px; overflow-wrap: anywhere; }
+.sync-pobranie .ikona { width: 14px; height: 14px; flex: none; margin-top: 2px; }
+.sync-szczegoly code { overflow-wrap: anywhere; }
 .kropka-nagrywania { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--czerwien); flex: none; animation: nagrywanieKropka 1.4s ease-in-out infinite; }
 @keyframes nagrywanieKropka { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 90, 90, 0.6); } 50% { box-shadow: 0 0 0 6px rgba(239, 90, 90, 0); } }
 

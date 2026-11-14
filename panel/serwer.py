@@ -755,6 +755,18 @@ def main():
         print("\nZatrzymuję panel…")
     finally:
         srv.server_close()
+        zatrzymaj_w_tle()
+
+
+def zatrzymaj_w_tle():
+    """Przy zamykaniu: moduły z funkcją `zatrzymaj_w_tle()` (np. stała synchronizacja git) kończą swoje wątki."""
+    for nazwa in MODULY:
+        mod = sys.modules.get("bc." + nazwa)
+        if hasattr(mod, "zatrzymaj_w_tle"):
+            try:
+                mod.zatrzymaj_w_tle()
+            except Exception as e:
+                rdzen.log("Moduł %s: wątki w tle nie zatrzymały się czysto (%s)" % (nazwa, e.__class__.__name__))
 
 
 if __name__ == "__main__":

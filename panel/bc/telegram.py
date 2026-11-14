@@ -432,6 +432,22 @@ class Bot:
         for a in _zmien_stan(fn):
             self._zmien_wiadomosc(a["czat"], a["wiadomosc"], "%s\n\n%s" % (a.get("tekst") or ident, dopisek))
 
+    def wyslij_do_grup(self, tekst, ustaw=None):
+        """Krótka wiadomość ZWYKŁYM TEKSTEM (bez HTML) do grup z ustawień bota. Bez bota albo grup — nic. Nie rzuca:
+        błąd trafia do stanu bota. → liczba wysłanych wiadomości."""
+        ustaw = ustaw or ustawienia()
+        tekst = str(tekst or "").strip()
+        if not ustaw["wlaczony"] or not tekst:
+            return 0
+        wyslane = 0
+        for czat in ustaw["grupy"]:
+            try:
+                self._wyslij(czat, tekst[:3500], html_tak=False)
+                wyslane += 1
+            except BladTelegrama as e:
+                self._blad(e)
+        return wyslane
+
     def ponow_zalegle(self, ustaw=None):
         """Alerty, których nie udało się wysłać (błąd sieci) — jeszcze raz, jeśli decyzja dalej czeka."""
         self._ostatnie_ponowienie = time.time()
@@ -685,6 +701,11 @@ def zarejestruj(app):
 def uruchom_w_tle():
     """Woła serwer.py dopiero, gdy panel naprawdę obsługuje żądania (nie przy --sprawdz ani --eksport)."""
     BOT.uruchom()
+
+
+def wyslij_do_zespolu(tekst):
+    """Zaczep dla innych modułów (np. stała synchronizacja z GitHubem, bc/gitsync.py): zwykły tekst do grup zespołu."""
+    return BOT.wyslij_do_grup(tekst)
 
 
 def zdrowie():

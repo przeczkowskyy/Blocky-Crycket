@@ -10,11 +10,16 @@
   sejfu (Pytania otwarte, Zadania, Rejestr decyzji, Dziennik zmian), które naprawdę zmienił panel i w których nie ma
   cudzych niezatwierdzonych zmian (bc/zapis.py: `do_wyslania`; ślad w danych lokalnych). Opis commita: „panel: …”.
 - Funkcje przyjmują `repo=` (domyślnie rdzen.REPO), żeby dało się je sprawdzić na repozytorium testowym.
+- Stała synchronizacja (decyzja D-070, od 14.11): wątek w tle co `git.auto_co_s` s robi fetch, samo pobieranie
+  (przewinięcie albo zwykłe scalenie — NIGDY autostash ani rebase, bo w katalogu roboczym pracują agenci, Blender
+  i ludzie) i samo wysyłanie tego, co wysyła przycisk „Wyślij”. Opis zasad: część „Stała synchronizacja” niżej
+  i panel/README.md (Git).
 """
 import contextlib
 import datetime
 import os
 import re
+import sys
 import threading
 import time
 
@@ -39,7 +44,7 @@ OPISY_STANU = {"M": "zmieniony", "A": "dodany", "D": "usunięty", "R": "przenies
 def _srodowisko():
     env = dict(os.environ)
     env.update({"GIT_TERMINAL_PROMPT": "0", "GCM_INTERACTIVE": "never", "LC_ALL": "C", "LANG": "C",
-                "LANGUAGE": "C", "GIT_OPTIONAL_LOCKS": "0"})
+                "LANGUAGE": "C", "GIT_OPTIONAL_LOCKS": "0", "GIT_MERGE_AUTOEDIT": "no"})
     env.setdefault("GIT_SSH_COMMAND", "ssh -o BatchMode=yes")
     env.pop("GIT_DIR", None)
     env.pop("GIT_WORK_TREE", None)
@@ -228,6 +233,10 @@ def _fetch_watek(repo):
 def moze_fetch(repo=None, wymus=False):
     """Startuje `git fetch` w tle, jeśli od ostatniej próby minęło ≥ 5 min. Nigdy nie czeka. Zwraca True, gdy ruszył."""
     repo = _repo(repo)
+    if petla_dziala(repo):                                     # stała synchronizacja sama robi fetch (jedna operacja naraz)
+        return False
+    if os.environ.get("BC_GIT_BEZ_SIECI") == "1":              # testy: serwer testowy nie łączy się z GitHubem
+        return False
     with _fetch_blokada:
         st = _fetch.setdefault(repo, {"proba": 0.0, "kiedy": None, "trwa": False, "blad": None})
         if st["trwa"] or (not wymus and time.time() - st["proba"] < FETCH_CO_S):
@@ -275,14 +284,29 @@ def _upstream(repo):
 
 
 # --------------------------------------------------------------------------- pobierz / wyślij
-def pobierz(repo=None):
-    """`git pull --rebase --autostash`. Zwraca {ok, wyjscie}; przy problemie rzuca BladHTTP z czytelnym opisem."""
+def pobierz(repo=None, bezpiecznie=None):
+    """„Pobierz”. Przy działającej stałej synchronizacji (albo `bezpiecznie=True`) tą samą bezpieczną drogą co samo
+    pobieranie: fetch + przewinięcie albo zwykłe scalenie, bez autostash i bez rebase — praca w toku na tym komputerze
+    zostaje nietknięta. Bez niej (jak dawniej) `git pull --rebase --autostash`.
+    Zwraca {ok, wyjscie, uwaga?}; przy problemie rzuca BladHTTP z czytelnym opisem."""
     repo = _repo(repo)
+    if bezpiecznie is None:
+        bezpiecznie = petla_dziala(repo)
+    if bezpiecznie:
+        _pilnuj(repo)
     if not _zapis_blokada.acquire(blocking=False):
         raise BladHTTP(409, "Trwa już inna operacja Git. Poczekaj chwilę.")
     try:
+        # przed _upstream: w trakcie cudzego rebase HEAD jest odłączony, a `git rebase --abort` niżej nie może
+        # przerwać rebase, którego panel nie zaczął
+        cudza = _cudza_operacja(repo)
+        if cudza in ("index_lock", "scalanie"):
+            raise BladHTTP(409, "Ktoś właśnie zapisuje commit albo scala zmiany w repozytorium (terminal, agent) — "
+                                "spróbuj za chwilę.", ok=False)
         if not _upstream(repo):
             raise BladHTTP(409, "Ta gałąź nie jest połączona z GitHubem, więc nie ma skąd pobrać zmian.")
+        if bezpiecznie:
+            return _pobierz_reczne_bezpiecznie(repo)
         kod, out, err = git(["pull", "--rebase", "--autostash"], repo, timeout=180)
         wyjscie = (out + ("\n" if out and err else "") + err).strip()
         if kod == 0:
@@ -355,7 +379,10 @@ def wyslij(repo=None, opis=None, sciezki=None, z_sejfem=None):
     if not _zapis_blokada.acquire(blocking=False):
         raise BladHTTP(409, "Trwa już inna operacja Git. Poczekaj chwilę.")
     try:
-        return _wyslij(repo, opis, sciezki, z_sejfem)
+        wynik = _wyslij(repo, opis, sciezki, z_sejfem)
+        if wynik.get("ok") and (wynik.get("commit") or "Nie ma nic do wysłania" not in str(wynik.get("wyjscie"))):
+            _zapisz_wyslanie(repo, _st(repo), wynik.get("commit"), recznie=True)
+        return wynik
     finally:
         _uniewaznij(repo)
         _zapis_blokada.release()
@@ -495,7 +522,13 @@ def _t_stan(z):
     st = _fetch.get(_repo(None)) or {}
     if st.get("blad"):
         wynik["blad_fetch"] = st["blad"]
+    wynik["auto"] = stan_auto()
     return wynik
+
+
+def _t_auto(z):
+    """Sam stan stałej synchronizacji — bez uruchamiania gita (powłoka pyta co 30 s, czy przyszły cudze zmiany)."""
+    return stan_auto()
 
 
 def _tylko_lokalnie(z):
@@ -516,11 +549,857 @@ def _t_wyslij(z):
 
 def zarejestruj(app):
     app.dodaj("GET", "/api/git/stan", _t_stan)
+    app.dodaj("GET", "/api/git/auto", _t_auto)
     app.dodaj("POST", "/api/git/pobierz", _t_pobierz)
     app.dodaj("POST", "/api/git/wyslij", _t_wyslij)
 
 
 def zdrowie():
     s = stan()
+    a = stan_auto()
     return {"galaz": s.get("galaz"), "zdalne": (s.get("zdalne") or {}).get("url"), "blad": s.get("blad"),
-            "sciezki_panelu": sciezki_panelu()}
+            "sciezki_panelu": sciezki_panelu(), "auto": {"wlaczona": a["wlaczona"], "stan": a["stan"]}}
+
+
+# =========================================================================== stała synchronizacja (D-070)
+# Pętla w tle (wątek „git-auto”) na komputerze z panelem. Co `git.auto_co_s` s (domyślnie 90) jeden obieg:
+#   0. nic nie rób, gdy trwa inna operacja panelu (ta sama blokada co „Pobierz”/„Wyślij”), ktoś właśnie commituje
+#      (index.lock) albo trwa cudze scalanie / rebase / cherry-pick;
+#   1. `git fetch` (bez czekania na hasło, z limitem czasu);
+#   2. SAMO POBIERANIE, bezpieczne dla pracy w toku: najpierw próba na sucho (`git merge-tree`, `git diff`), czy
+#      nadchodzące zmiany nie dotykają plików zmienionych lokalnie (także nieśledzonych i ignorowanych, także pliku
+#      leżącego tam, gdzie nadchodzi katalog), czy nikt nie ma plików dodanych do commita (`git add` bez commita) i czy
+#      nie ma konfliktu. Gdy dotykają albo są dodane — stan „czeka” (nic nie ruszone); konflikt — stan „konflikt”, bez
+#      ponawiania, dopóki nie zmieni się lokalny albo zdalny commit. Inaczej katalog roboczy rusza tylko przewinięcie
+#      (`merge --ff-only --no-autostash --no-overwrite-ignore`), które git przy kolizji czysto odrzuca. Przy własnych
+#      commitach commit scalający „panel: scalenie zmian z GitHuba” powstaje POZA katalogiem roboczym (`merge-tree` →
+#      `commit-tree`), a gałąź przechodzi na niego tym samym przewinięciem. Zwykłego `git merge` nie ma (przy odmowie
+#      strategia ort sama robi reset --hard i stash apply), nie ma też rebase, reset, stash ani usuwania plików;
+#   3. SAMO WYSYŁANIE: dokładnie to, co przycisk „Wyślij” (`_zatwierdz`: ścieżki panelu i pliki sejfu zmienione w
+#      panelu bez cudzych zmian), gdy od ostatniej zmiany minęło `git.auto_wyslij_po_s` s (domyślnie 60) albo od
+#      pierwszej czekającej 5 min; lokalne commity — gdy najnowszy ma co najmniej tyle samo lat. Push (nigdy --force);
+#      odrzucony, bo ktoś wysłał wcześniej — krok 2 i push jeszcze raz (jeden raz).
+# Błąd sieci: rosnący odstęp (2×, 4×, … `auto_co_s`, najwyżej 15 min); brak logowania: od razu co 15 min.
+# Telegram (bc/telegram.py, wyłącznik `git.auto_telegram`): cudze commity po samym pobraniu; konflikt / błąd / brak
+# logowania dłużej niż dwa obiegi — jedna wiadomość na incydent i jedna po powrocie do normy.
+STANY_AUTO = ("ok", "pobieram", "wysylam", "czeka", "konflikt", "blad", "brak_logowania", "wylaczona")
+STANY_PROBLEMU = ("konflikt", "blad", "brak_logowania")
+ZMIENNA_WYLACZNIKA = "BC_GIT_AUTO"                             # "0" = wyłączone, "1" = włączone także na danych zastępczych
+ZBIERAJ_NAJWYZEJ_S = 300                                       # najdłużej czekająca zmiana panelu idzie po 5 min
+MAKS_ODSTEP_S = 900                                            # przy błędach najwyżej co 15 min
+START_PO_S = 15                                                # pierwszy obieg chwilę po starcie panelu
+POMINIEC_DO_UWAGI = 10                                         # tyle obiegów z index.lock = uwaga dla człowieka
+OPIS_SCALENIA = "panel: scalenie zmian z GitHuba"
+MAKS_PLIKOW_W_STANIE = 10
+MAKS_COMMITOW_W_STANIE = 5
+_RX_STERUJACE = re.compile("[\x00-\x1f\x7f-\x9f​-‏‪-‮⁠-⁩﻿]")
+
+_auto = {}                                                     # repo -> stan (słownik, pod _auto_blokada)
+_auto_blokada = threading.RLock()
+_petla = {"watek": None, "stop": None, "repo": None}
+_ID_STARTU = "%x" % int(time.time())                          # część id pobrania: nowy proces = nowe id
+
+
+def _liczba(wartosc, domyslnie, od, do):
+    try:
+        w = float(wartosc)
+    except (TypeError, ValueError):
+        return domyslnie
+    return max(od, min(do, w))
+
+
+def ustawienia_auto():
+    """{auto, co_s, wyslij_po_s, telegram} z `git.*` konfiguracji (domyślnie: włączone, 90 s, 60 s, Telegram tak).
+    Liczby przycięte do rozsądnych granic — wspólna konfiguracja jest w repozytorium, więc nie może wymusić fetch co
+    sekundę."""
+    g = rdzen.konfiguracja().get("git") or {}
+    return {"auto": g.get("auto", True) is not False,
+            "co_s": _liczba(g.get("auto_co_s"), 90.0, 30.0, 3600.0),
+            "wyslij_po_s": _liczba(g.get("auto_wyslij_po_s"), 60.0, 10.0, 3600.0),
+            "telegram": g.get("auto_telegram", True) is not False}
+
+
+def powod_wylaczenia():
+    """None, gdy pętla może wystartować na tym komputerze; inaczej zdanie, dlaczego nie."""
+    zm = os.environ.get(ZMIENNA_WYLACZNIKA, "").strip()
+    if zm == "0":
+        return "Samo pobieranie i wysyłanie jest wyłączone (zmienna środowiskowa BC_GIT_AUTO=0)."
+    if zm != "1" and (os.environ.get("BC_PANEL_DANE") or os.environ.get("BC_PANEL_RUNTIME")):
+        return "Samo pobieranie i wysyłanie jest wyłączone: panel działa na katalogach zastępczych (np. w testach)."
+    if not ustawienia_auto()["auto"]:
+        return "Samo pobieranie i wysyłanie jest wyłączone w ustawieniach panelu (git.auto = false)."
+    return None
+
+
+_PRAWDZIWE_REPO = os.path.normcase(os.path.realpath(rdzen.REPO))   # z chwili importu: test nie podmieni go łatką
+
+
+def _pilnuj(repo):
+    """Bezpiecznik testów: w procesie z unittest samo pobieranie i wysyłanie nie ruszy prawdziwego repozytorium."""
+    if "unittest" in sys.modules and os.path.normcase(os.path.realpath(repo)) == _PRAWDZIWE_REPO:
+        raise RuntimeError("Bezpiecznik testów: stała synchronizacja nie działa na prawdziwym repozytorium w testach "
+                           "— podaj repo= z katalogu tymczasowego.")
+
+
+def petla_dziala(repo=None):
+    w = _petla.get("watek")
+    return bool(w and w.is_alive() and _petla.get("repo") == _repo(repo))
+
+
+def _nowy_stan():
+    return {"wlaczona": True, "stan": "ok", "opis": "Pierwsze sprawdzenie GitHuba za chwilę.", "krotko": None,
+            "co_zrobic": None, "pliki": [], "plikow": 0, "zgodne": None, "ostatni_obieg": None, "nastepna_proba": 0.0,
+            "bledy_z_rzedu": 0, "pominiete": 0, "konflikt_klucz": None, "pierwsza_zmiana": None,
+            "czeka_na_wyslanie": 0, "pobranie": None, "wyslanie": None, "licznik_pobran": 0, "obiegi_problemu": 0,
+            "incydent": None, "do_powiadomienia": None}
+
+
+def _st(repo):
+    with _auto_blokada:
+        return _auto.setdefault(_repo(repo), _nowy_stan())
+
+
+def _bez_sciezek(t):
+    """Ścieżki bezwzględne repozytorium i katalogu domowego (z nazwą użytkownika systemu) → krótkie znaczniki.
+    Opis błędu gita widzi też gość przez link i grupa na Telegramie."""
+    for sciezka, znak in ((rdzen.REPO, "<repo>"), (os.path.expanduser("~"), "~")):
+        if not sciezka or len(sciezka) < 4:
+            continue
+        for wariant in sorted({sciezka, sciezka.replace("\\", "/"), sciezka.replace("/", "\\")}):
+            t = re.sub(re.escape(wariant), lambda m, z=znak: z, t, flags=re.IGNORECASE)
+    return t
+
+
+def _czysty(t, n=120):
+    t = re.sub(r"\s+", " ", _RX_STERUJACE.sub(" ", str(t or ""))).strip()
+    t = re.sub(r"([a-z][a-z0-9+.-]*://)[^/@\s]*@", r"\1", t, flags=re.IGNORECASE)   # bez loginu i tokenu w adresach
+    t = _bez_sciezek(t)
+    return t if len(t) <= n else t[:n - 1].rstrip() + "…"
+
+
+def _ustaw(st, stan, opis, krotko=None, co_zrobic=None, pliki=None, zgodne=False):
+    with _auto_blokada:
+        st.update(stan=stan, opis=_czysty(opis, 400), krotko=krotko, co_zrobic=co_zrobic)
+        if pliki is not None:
+            st["pliki"] = [_czysty(p, 200) for p in pliki[:MAKS_PLIKOW_W_STANIE]]
+            st["plikow"] = len(pliki)
+        elif stan not in ("pobieram", "wysylam"):
+            st["pliki"], st["plikow"] = [], 0
+        if zgodne:
+            st["zgodne"] = rdzen.teraz()
+
+
+def stan_auto(repo=None):
+    """Stan stałej synchronizacji dla API (pole `auto` w GET /api/git/stan i GET /api/git/auto). Bez uruchamiania gita."""
+    repo = _repo(repo)
+    st = _st(repo)
+    ustaw = ustawienia_auto()
+    with _auto_blokada:
+        wynik = {k: st.get(k) for k in ("wlaczona", "stan", "opis", "krotko", "co_zrobic", "pliki", "plikow", "zgodne",
+                                        "ostatni_obieg", "czeka_na_wyslanie", "pobranie", "wyslanie")}
+        wynik["pobranie"] = dict(st["pobranie"]) if st.get("pobranie") else None
+        wynik["wyslanie"] = dict(st["wyslanie"]) if st.get("wyslanie") else None
+        wynik["pliki"] = list(st.get("pliki") or [])
+        if st.get("nastepna_proba") and st["nastepna_proba"] > time.time():
+            wynik["nastepna_proba"] = datetime.datetime.fromtimestamp(st["nastepna_proba"]).astimezone().isoformat(
+                timespec="seconds")
+    # pętla nie działa w tym procesie i nie było żadnego obiegu (np. testy, --lan bez GitHuba): „wyłączona” z powodem
+    if not petla_dziala(repo) and not wynik.get("ostatni_obieg") and wynik.get("stan") != "wylaczona":
+        wynik.update(stan="wylaczona", krotko=None, co_zrobic=None,
+                     opis=powod_wylaczenia() or "Samo pobieranie i wysyłanie nie działa w tym procesie panelu.")
+    if wynik.get("stan") == "wylaczona":
+        wynik["wlaczona"] = False
+    wynik.update(co_s=int(ustaw["co_s"]), wyslij_po_s=int(ustaw["wyslij_po_s"]))
+    return wynik
+
+
+# --------------------------------------------------------------------------- pomocnicze polecenia (tylko odczyt)
+def _git_dir(repo):
+    kod, out, _ = git(["rev-parse", "--absolute-git-dir"], repo, timeout=10)
+    return out.strip() if kod == 0 and out.strip() else None
+
+
+def _cudza_operacja(repo):
+    """None, "index_lock" (ktoś właśnie zapisuje indeks / commituje), "scalanie" (cudze scalanie, rebase,
+    cherry-pick, revert) albo "brak_repo" (git nie widzi repozytorium) — wtedy panel nic nie robi."""
+    gd = _git_dir(repo)
+    if not gd:
+        return "brak_repo"
+    if os.path.exists(os.path.join(gd, "index.lock")):
+        return "index_lock"
+    for n in ("MERGE_HEAD", "CHERRY_PICK_HEAD", "REVERT_HEAD", "rebase-merge", "rebase-apply"):
+        if os.path.exists(os.path.join(gd, n)):
+            return "scalanie"
+    return None
+
+
+def _rev(repo, ref):
+    kod, out, _ = git(["rev-parse", "--verify", "--quiet", ref + "^{commit}"], repo, timeout=10)
+    return out.strip() if kod == 0 and out.strip() else None
+
+
+def _przod_tyl(repo):
+    kod, out, _ = git(["rev-list", "--left-right", "--count", "HEAD...@{u}"], repo, timeout=20)
+    try:
+        a, b = out.split()
+        return int(a), int(b)
+    except ValueError:
+        return 0, 0
+
+
+def _brudne(repo):
+    """Ścieżki zmienione lokalnie (śledzone i nieśledzone, bez ignorowanych) — z `git status`. None = błąd."""
+    kod, out, _ = git(["status", "--porcelain=v1", "-z", "-uall", "--no-renames"], repo, timeout=60)
+    if kod != 0:
+        return None
+    return [p for _, p in _parsuj_status(out)[1]]
+
+
+def _lista_z(out):
+    return [p for p in out.split("\0") if p]
+
+
+def _zmienione_miedzy(repo, a, b):
+    kod, out, _ = git(["diff", "--name-only", "-z", "--no-renames", a, b], repo, timeout=60)
+    return _lista_z(out) if kod == 0 else None
+
+
+def _dodane_do_indeksu(repo):
+    """Ścieżki dodane do indeksu (`git add`), a jeszcze bez commita — indeks różny od HEAD. None = błąd."""
+    kod, out, _ = git(["diff", "--cached", "--name-only", "-z", "--no-renames", "HEAD", "--"], repo, timeout=60)
+    return _lista_z(out) if kod == 0 else None
+
+
+def _ignorowane_na_drodze(repo, pliki):
+    """Pliki, które scalenie by zapisało, a na dysku leżą jako nieśledzone IGNOROWANE (git nadpisałby je bez pytania),
+    oraz katalogi nadrzędne nadchodzących plików, które na dysku są nieśledzonym PLIKIEM albo dowiązaniem (nadchodzi
+    `build/x.txt`, a leży ignorowany plik `build` — git skasowałby go bez pytania)."""
+    wynik = []
+    istniejace = [p for p in pliki if os.path.lexists(os.path.join(repo, *p.split("/")))]
+    for i in range(0, len(istniejace), 100):
+        kod, out, _ = git(["--literal-pathspecs", "ls-files", "-z", "--others", "--ignored", "--exclude-standard",
+                           "--"] + istniejace[i:i + 100], repo, timeout=60)
+        if kod == 0:
+            wynik += _lista_z(out)
+    przedrostki = {}
+    for p in pliki:
+        cz = p.split("/")
+        for j in range(1, len(cz)):
+            d = "/".join(cz[:j])
+            if d in przedrostki:
+                continue
+            pelna = os.path.join(repo, *cz[:j])
+            przedrostki[d] = os.path.lexists(pelna) and (os.path.islink(pelna) or not os.path.isdir(pelna))
+    na_drodze = [d for d, plik in przedrostki.items() if plik]
+    if na_drodze:
+        kod, out, _ = git(["--literal-pathspecs", "ls-files", "-z", "--"] + na_drodze, repo, timeout=60)
+        sledzone = set(_lista_z(out)) if kod == 0 else set()
+        # śledzony plik zastąpiony katalogiem to zwykła zmiana z GitHuba (git sprawdzi, czy nie jest zmieniony lokalnie)
+        wynik += [d for d in na_drodze if d not in sledzone and d not in wynik]
+    return wynik
+
+
+def _migawka(repo):
+    """Stan katalogu roboczego do porównania przed i po próbie: wynik `git status` + rozmiar i czas zmian plików."""
+    kod, out, _ = git(["status", "--porcelain=v1", "-z", "-uall", "--no-renames"], repo, timeout=60)
+    pliki = {}
+    for _, p in _parsuj_status(out)[1]:
+        try:
+            s = os.stat(os.path.join(repo, *p.split("/")))
+            pliki[p] = (s.st_size, s.st_mtime_ns)
+        except OSError:
+            pliki[p] = None
+    return out if kod == 0 else None, pliki
+
+
+def _pliki_z_odmowy(tekst):
+    """Lista plików z komunikatu gita „…would be overwritten by merge:” — pod nim pliki z wcięciem (tabulator albo
+    spacje, zależnie od miejsca w gicie), do pierwszego wiersza bez wcięcia."""
+    wynik, w_liscie = [], False
+    for l in (tekst or "").splitlines():
+        if l.rstrip().endswith(":") and ("would be" in l or "untracked working tree files" in l):
+            w_liscie = True
+            continue
+        if w_liscie and l[:1] in ("\t", " ") and l.strip():
+            wynik.append(l.strip())
+            continue
+        w_liscie = False
+    return list(dict.fromkeys(wynik))
+
+
+def _nadchodzace(repo, gora):
+    kod, out, _ = git(["log", "--no-merges", "-n", "200", "--format=%h%x1f%an%x1f%s", "HEAD.." + gora], repo, timeout=20)
+    wynik = []
+    for linia in (out.splitlines() if kod == 0 else []):
+        cz = linia.split("\x1f")
+        if len(cz) >= 3:
+            wynik.append({"hash": cz[0][:12], "autor": _czysty(cz[1], 60) or "ktoś", "temat": _czysty(cz[2], 120)})
+    return wynik
+
+
+def _ja(repo):
+    kod, out, _ = git(["config", "user.name"], repo, timeout=10)
+    return out.strip() if kod == 0 else ""
+
+
+def _rodzaj_bledu(tekst):
+    t = (tekst or "").lower()
+    if "authentication failed" in t or "terminal prompts disabled" in t or "could not read username" in t \
+            or "could not read password" in t or "permission denied" in t or "error: 403" in t \
+            or "invalid username or password" in t or "returned error: 403" in t:
+        return "brak_logowania"
+    if "could not resolve host" in t or "unable to access" in t or "failed to connect" in t or "timed out" in t \
+            or "przekroczony czas" in t or "connection reset" in t or "network is unreachable" in t:
+        return "siec"
+    return "inny"
+
+
+CO_ZROBIC_LOGOWANIE = ("Na komputerze z panelem zaloguj się raz do GitHuba (np. `git push` w terminalu albo GitHub "
+                       "Desktop). Panel sam spróbuje znowu za 15 minut.")
+CO_ZROBIC_SIEC = "Sprawdź internet. Panel spróbuje sam — coraz rzadziej, najwyżej co 15 minut."
+
+
+def _porazka(st, rodzaj, teraz, co_s):
+    """Rosnący odstęp przed kolejną próbą (bez szybkich ponowień przy błędzie)."""
+    with _auto_blokada:
+        st["bledy_z_rzedu"] = st.get("bledy_z_rzedu", 0) + 1
+        if rodzaj == "brak_logowania":
+            odstep = MAKS_ODSTEP_S
+        else:
+            odstep = min(MAKS_ODSTEP_S, co_s * (2 ** min(st["bledy_z_rzedu"], 10)))
+        st["nastepna_proba"] = teraz + odstep
+
+
+def _blad_sieci(st, tekst, teraz, ustaw, co_robil):
+    rodzaj = _rodzaj_bledu(tekst)
+    if rodzaj == "brak_logowania":
+        _ustaw(st, "brak_logowania", "GitHub nie przyjął logowania (%s)." % co_robil, krotko="brak logowania",
+               co_zrobic=CO_ZROBIC_LOGOWANIE)
+    elif rodzaj == "siec":
+        _ustaw(st, "blad", "Brak połączenia z GitHubem (%s)." % co_robil, krotko="brak połączenia",
+               co_zrobic=CO_ZROBIC_SIEC)
+    else:
+        _ustaw(st, "blad", "Git zgłosił błąd (%s): %s" % (co_robil, _czysty(tekst, 240) or "bez opisu"),
+               krotko="błąd gita", co_zrobic="Poproś agenta na komputerze z panelem, żeby sprawdził `git fetch` "
+                                             "i `git push`. Panel spróbuje sam — coraz rzadziej, najwyżej co 15 minut.")
+    _porazka(st, rodzaj, teraz, ustaw["co_s"])
+
+
+def _fetch_teraz(repo):
+    kod, _, err = git(["fetch", "--quiet", "--prune"], repo, timeout=90)
+    with _fetch_blokada:
+        f = _fetch.setdefault(repo, {"proba": 0.0, "kiedy": None, "trwa": False, "blad": None})
+        f["proba"] = time.time()
+        if kod == 0:
+            f.update(kiedy=rdzen.teraz(), blad=None)
+        else:
+            f["blad"] = _tlumacz_blad(err, "Nie udało się sprawdzić zmian na GitHubie")
+    return kod, err
+
+
+# --------------------------------------------------------------------------- S2: samo pobieranie
+def _zapisz_pobranie(repo, st, commity):
+    ja = _ja(repo).strip().casefold()
+    with _auto_blokada:
+        st["licznik_pobran"] = st.get("licznik_pobran", 0) + 1
+        autorzy = list(dict.fromkeys(c["autor"] for c in commity))
+        st["pobranie"] = {"id": "%s-%d" % (_ID_STARTU, st["licznik_pobran"]), "kiedy": rdzen.teraz(),
+                          "ile": len(commity), "autorzy": autorzy[:MAKS_COMMITOW_W_STANIE],
+                          "commity": [dict(c) for c in commity[:MAKS_COMMITOW_W_STANIE]]}
+        obce = [c for c in commity if c["autor"].strip().casefold() != ja]
+        st["do_powiadomienia"] = obce or None
+
+
+def _pobierz_bezpiecznie(repo, st, reczne=False):
+    """Krok S2. Zwraca (wynik, szczegóły): "aktualne", "pobrano", "czeka", "konflikt", "blad". Ustawia stan.
+    Niczego nie nadpisuje: każda kolizja z lokalną pracą = „czeka” bez dotykania plików."""
+    przod, tyl = _przod_tyl(repo)
+    if tyl == 0:
+        with _auto_blokada:
+            st["konflikt_klucz"] = None
+        return "aktualne", {"przod": przod}
+    head, gora = _rev(repo, "HEAD"), _rev(repo, "@{u}")
+    if not head or not gora:
+        _ustaw(st, "blad", "Nie udało się odczytać commitów (HEAD albo gałęzi na GitHubie).", krotko="błąd gita",
+               co_zrobic="Poproś agenta, żeby sprawdził repozytorium na komputerze z panelem.")
+        return "blad", {}
+    klucz = head + ".." + gora
+    if not reczne and st.get("konflikt_klucz") == klucz:          # ten sam konflikt — nie próbujemy w kółko
+        return "konflikt", {"powtorka": True}
+    commity = _nadchodzace(repo, gora)
+    ile = len(commity) or tyl
+    nazwy = _odmiana_zmian(ile)                                 # „1 zmianę”, „2 zmiany”, „5 zmian”
+    drzewo = None
+    if przod == 0:
+        zmienione = _zmienione_miedzy(repo, head, gora)
+    else:
+        kod, out, err = git(["merge-tree", "--write-tree", "--name-only", "--no-messages", head, gora], repo,
+                            timeout=120)
+        linie = [l for l in out.splitlines() if l.strip()]
+        if kod == 1 and linie:
+            konfl = list(dict.fromkeys(linie[1:]))
+            with _auto_blokada:
+                st["konflikt_klucz"] = klucz
+            _ustaw(st, "konflikt", "Zmiany z GitHuba (%d) i commity z tego komputera zmieniają te same miejsca w "
+                                   "plikach. Panel niczego nie zmienił." % ile,
+                   krotko="potrzebny człowiek", pliki=konfl,
+                   co_zrobic="Poproś agenta na komputerze z panelem: „scal zmiany z GitHuba i rozwiąż konflikt” "
+                             "(albo w terminalu `git pull` i ręczne scalenie). Panel spróbuje sam dopiero, gdy "
+                             "zmieni się commit tutaj albo na GitHubie.")
+            return "konflikt", {"pliki": konfl}
+        if kod != 0 or not linie:
+            _ustaw(st, "blad", "Nie udało się sprawdzić scalenia na sucho: %s" % (_czysty(err, 200) or kod),
+                   krotko="błąd gita", co_zrobic="Poproś agenta, żeby pobrał zmiany ręcznie (git pull bez rebase).")
+            return "blad", {}
+        drzewo = linie[0].strip()
+        if not re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", drzewo):
+            _ustaw(st, "blad", "Próba scalenia na sucho dała nieoczekiwany wynik.", krotko="błąd gita",
+                   co_zrobic="Poproś agenta, żeby pobrał zmiany ręcznie (git pull bez rebase).")
+            return "blad", {}
+        zmienione = _zmienione_miedzy(repo, head, drzewo)
+    brudne = _brudne(repo)
+    if zmienione is None or brudne is None:
+        _ustaw(st, "blad", "Nie udało się porównać zmian z GitHuba z plikami na dysku.", krotko="błąd gita",
+               co_zrobic="Panel spróbuje w następnym obiegu.")
+        return "blad", {}
+    lokalne = {os.path.normcase(p): p for p in brudne}
+    kolizje = [p for p in zmienione if os.path.normcase(p) in lokalne]
+    kolizje += [p for p in _ignorowane_na_drodze(repo, [p for p in zmienione if p not in kolizje]) if p not in kolizje]
+    if kolizje:
+        _ustaw_czeka_na_pliki(st, kolizje, ile)
+        return "czeka", {"pliki": kolizje}
+    dodane = _dodane_do_indeksu(repo)                         # ktoś jest w trakcie commita (git add, commit jeszcze nie)
+    if dodane is None:
+        _ustaw(st, "blad", "Nie udało się sprawdzić plików dodanych do commita (git diff --cached).",
+               krotko="błąd gita", co_zrobic="Panel spróbuje w następnym obiegu.")
+        return "blad", {}
+    if dodane:
+        _ustaw_czeka_na_dodane(st, dodane, ile)
+        return "czeka", {"pliki": dodane}
+
+    # Katalog roboczy rusza WYŁĄCZNIE `git merge --ff-only` (przewinięcie): git sprawdza pliki i odmawia czysto, bez
+    # stash i bez reset. Zwykłego `git merge` nie ma — przy odmowie strategia ort sama robi reset --hard i stash apply,
+    # co przy programach piszących równolegle gubi pracę w toku. Commit scalający powstaje więc poza katalogiem roboczym
+    # (`merge-tree` → `commit-tree`), a gałąź przechodzi na niego przewinięciem.
+    cel = gora
+    if przod:
+        kod, out, err = git(["commit-tree", drzewo, "-p", head, "-p", gora, "-m", OPIS_SCALENIA], repo, timeout=60)
+        cel = out.strip()
+        if kod != 0 or not cel:
+            _ustaw(st, "blad", "Nie udało się przygotować commita scalającego: %s" % (_czysty(err, 200) or kod),
+                   krotko="błąd gita", co_zrobic="Poproś agenta, żeby pobrał zmiany ręcznie (git pull bez rebase).")
+            return "blad", {}
+    if _rev(repo, "HEAD") != head:                             # w tym czasie powstał commit — następnym razem
+        _ustaw(st, "czeka", "W trakcie pobierania na tym komputerze powstał nowy commit — panel spróbuje w następnym "
+                            "obiegu.", krotko="nowy commit w trakcie", co_zrobic="Nic — panel ruszy sam.")
+        return "czeka", {}
+    przed = _migawka(repo)
+    _ustaw(st, "pobieram", ("Scalam %s z GitHuba z commitami z tego komputera." if przod else
+                            "Pobieram %s z GitHuba (przewinięcie).") % nazwy, krotko=None)
+    kod, out, err = git(["merge", "--ff-only", "--no-autostash", "--no-overwrite-ignore", "--quiet", cel], repo,
+                        timeout=180)
+    tekst = out + "\n" + err
+    if kod == 0:
+        with _auto_blokada:
+            st["konflikt_klucz"] = None
+        _sprawdz_po_scaleniu(repo, przed, zmienione)
+        _zapisz_pobranie(repo, st, commity or [{"hash": gora[:12], "autor": "ktoś", "temat": "(scalenie)"}])
+        rdzen.log("git-auto: pobrano %s (%s)" % (nazwy, "scalenie" if przod else "przewinięcie"))
+        return "pobrano", {"ile": ile, "scalenie": bool(przod)}
+    po = _migawka(repo)
+    if przed[0] is None or po[0] != przed[0] or po[1] != przed[1]:
+        rdzen.log("git-auto: UWAGA — po odmowie przewinięcia katalog roboczy różni się od stanu sprzed próby "
+                  "(git przewinięcia nie zaczął, więc pisał w tym czasie inny program)")
+    if "would be overwritten" in tekst or "untracked working tree files" in tekst or "would be removed" in tekst:
+        pliki = _pliki_z_odmowy(tekst)
+        if not pliki:
+            rdzen.log("git-auto: odmowa pobrania, git podał: %s" % _czysty(tekst, 800))
+        _ustaw_czeka_na_pliki(st, pliki or ["(lista plików w logu panelu)"], ile)
+        return "czeka", {}
+    if _rev(repo, "HEAD") != head or "not possible to fast-forward" in tekst.lower():
+        _ustaw(st, "czeka", "W trakcie pobierania na tym komputerze powstał nowy commit — panel spróbuje w następnym "
+                            "obiegu.", krotko="nowy commit w trakcie", co_zrobic="Nic — panel ruszy sam.")
+        return "czeka", {}
+    _ustaw(st, "blad", "Nie udało się pobrać zmian z GitHuba: %s" % (_czysty(tekst, 240) or kod), krotko="błąd gita",
+           co_zrobic="Poproś agenta, żeby sprawdził repozytorium. Panel spróbuje sam — coraz rzadziej.")
+    return "blad", {}
+
+
+def _ustaw_czeka_na_pliki(st, pliki, ile):
+    n = len(pliki)
+    _ustaw(st, "czeka", "Na GitHubie są nowe zmiany (%d), ale dotyczą plików, które ktoś zmienia na tym komputerze "
+                        "(zmiany jeszcze niezapisane commitem). Panel ich nie rusza." % ile,
+           krotko="lokalne zmiany w %d %s" % (n, "pliku" if n == 1 else "plikach"), pliki=pliki,
+           co_zrobic="Zapisz te pliki commitem (albo poproś agenta, który je zmienia) — panel scali resztę sam "
+                     "w kolejnym obiegu.")
+
+
+def _ustaw_czeka_na_dodane(st, pliki, ile):
+    n = len(pliki)
+    _ustaw(st, "czeka", "Na GitHubie są nowe zmiany (%d), ale na tym komputerze są pliki dodane do commita (git add), "
+                        "a commit jeszcze nie powstał. Panel czeka, żeby nie przeszkadzać." % ile,
+           krotko="pliki dodane do commita (git add) — dokończ commit", pliki=pliki,
+           co_zrobic="Dokończ commit (albo poproś agenta, który dodał %s) — panel pobierze zmiany sam w kolejnym "
+                     "obiegu." % ("ten plik" if n == 1 else "te pliki"))
+
+
+def _sprawdz_po_scaleniu(repo, przed, zmienione):
+    """Pliki zmienione lokalnie przed scaleniem (a nie przez scalenie) muszą zostać co do rozmiaru i czasu zmiany."""
+    _, po = _migawka(repo)
+    ruszone = {os.path.normcase(p) for p in zmienione}
+    inne = [p for p, s in przed[1].items() if os.path.normcase(p) not in ruszone and po.get(p) != s]
+    if inne:
+        rdzen.log("git-auto: po scaleniu zmieniły się też pliki spoza scalenia (inny program?): %s" % ", ".join(inne[:5]))
+
+
+def _pobierz_reczne_bezpiecznie(repo):
+    """Przycisk „Pobierz” przy stałej synchronizacji (woła `pobierz` pod blokadą, po sprawdzeniu cudzej operacji
+    i gałęzi śledzącej): fetch + krok S2."""
+    _pilnuj(repo)
+    st = _st(repo)
+    kod, err = _fetch_teraz(repo)
+    if kod != 0:
+        raise BladHTTP(502 if kod == -2 else 409, _tlumacz_blad(err, "Nie udało się sprawdzić zmian na GitHubie."),
+                       wyjscie=_czysty(err, 300), ok=False)
+    wynik, sz = _pobierz_bezpiecznie(repo, st, reczne=True)
+    if wynik == "aktualne":
+        _ustaw(st, "ok", "Wszystko zgodne z GitHubem." if not sz.get("przod") else
+               "Zmiany z GitHuba są pobrane; commity z tego komputera czekają na wysłanie.",
+               zgodne=not sz.get("przod"))
+        return {"ok": True, "wyjscie": "Już aktualne."}
+    if wynik == "pobrano":
+        with _auto_blokada:
+            st["do_powiadomienia"] = None                      # ręczne pobranie: bez wiadomości na Telegramie
+        _ustaw(st, "ok", "Pobrano zmiany z GitHuba.", zgodne=not sz.get("scalenie"))
+        return {"ok": True, "wyjscie": "Pobrano %s." % _odmiana_zmian(sz["ile"]) +
+                (" Powstał commit scalający (na tym komputerze były też własne commity)." if sz.get("scalenie") else "")}
+    raise BladHTTP(409, "Nie pobrano: %s %s" % (st.get("opis") or "", st.get("co_zrobic") or ""), ok=False,
+                   wyjscie=", ".join(st.get("pliki") or []), stan=wynik)
+
+
+# --------------------------------------------------------------------------- S3: samo wysyłanie
+def _czekajace(repo, sciezki, brudne):
+    """Zmiany panelu czekające na wysłanie: (lista ścieżek, czas ostatniej zmiany albo None)."""
+    panelowe = [p for p in brudne if _w_sciezkach(p, sciezki)]
+    sejf_sciezki, _, _ = sejf_do_wyslania(repo)
+    wszystkie = list(dict.fromkeys(panelowe + list(sejf_sciezki)))
+    ostatnia = None
+    for p in wszystkie:
+        pelna = os.path.join(repo, *p.split("/"))
+        for kandydat in (pelna, os.path.dirname(pelna)):       # usunięty plik: czas zmiany folderu
+            try:
+                t = os.path.getmtime(kandydat)
+                ostatnia = t if ostatnia is None else max(ostatnia, t)
+                break
+            except OSError:
+                continue
+    return wszystkie, ostatnia, bool(sejf_sciezki)
+
+
+def _opis_danych(sciezki_zmian):
+    rodzaje = []
+    for p in sciezki_zmian:
+        cz = p.split("/")
+        if len(cz) >= 3 and cz[0] == "panel" and cz[1] == "dane":
+            rodzaje.append(cz[2] if len(cz) > 3 else "pliki")
+    rodzaje = list(dict.fromkeys(rodzaje))
+    return ("dane panelu: " + ", ".join(rodzaje[:6])) if rodzaje else None
+
+
+def _lokalne_gotowe(repo, teraz, po_s):
+    """Lokalne commity (niewysłane) idą, gdy najnowszy zwykły commit ma co najmniej `po_s` s (same scalenia — od razu)."""
+    kod, out, _ = git(["log", "-1", "--no-merges", "--format=%ct", "@{u}..HEAD"], repo, timeout=15)
+    if kod != 0:
+        return False
+    if not out.strip():
+        return True
+    try:
+        return teraz - int(out.strip()) >= po_s
+    except ValueError:
+        return True
+
+
+def _zapisz_wyslanie(repo, st, commit, recznie=False, ile=None):
+    kod, out, _ = git(["log", "-1", "--format=%h%x1f%s"], repo, timeout=10)
+    cz = out.strip().split("\x1f") if kod == 0 else []
+    with _auto_blokada:
+        st["wyslanie"] = {"kiedy": rdzen.teraz(), "commit": (commit or (cz[0] if cz else None)),
+                          "temat": _czysty(cz[1], 120) if len(cz) > 1 else None, "ile": ile, "recznie": bool(recznie)}
+
+
+def _wyslij_bezpiecznie(repo, sciezki, ustaw, teraz, st):
+    """Krok S3. Zwraca "nic", "czeka_na_spokoj", "wyslano", "czeka", "konflikt", "blad"."""
+    brudne = _brudne(repo)
+    if brudne is None:
+        _ustaw(st, "blad", "Nie udało się sprawdzić plików (git status).", krotko="błąd gita",
+               co_zrobic="Panel spróbuje w następnym obiegu.")
+        return "blad"
+    czekajace, ostatnia, z_sejfu = _czekajace(repo, sciezki, brudne)
+    przod, tyl = _przod_tyl(repo)
+    with _auto_blokada:
+        if czekajace:
+            st["pierwsza_zmiana"] = st.get("pierwsza_zmiana") or teraz
+        else:
+            st["pierwsza_zmiana"] = None
+        st["czeka_na_wyslanie"] = len(czekajace)
+        pierwsza = st["pierwsza_zmiana"]
+    gotowe_zmiany = False
+    if czekajace:
+        spokoj = teraz - min(teraz, ostatnia if ostatnia is not None else pierwsza)
+        gotowe_zmiany = spokoj >= ustaw["wyslij_po_s"] or teraz - pierwsza >= ZBIERAJ_NAJWYZEJ_S
+    gotowe_commity = przod > 0 and _lokalne_gotowe(repo, teraz, ustaw["wyslij_po_s"])
+    if tyl or (not gotowe_zmiany and not gotowe_commity):
+        if czekajace or przod:
+            n = len(czekajace)
+            _ustaw(st, "ok", ("%d %s z panelu pójdzie na GitHuba za chwilę." % (n, "zmiana" if n == 1 else "zmiany")
+                              if n else "Commity z tego komputera pójdą na GitHuba za chwilę."),
+                   krotko="zmiany pójdą za chwilę")
+            return "czeka_na_spokoj"
+        _ustaw(st, "ok", "Wszystko zgodne z GitHubem.", zgodne=True)
+        return "nic"
+
+    commit = None
+    if gotowe_zmiany:
+        _ustaw(st, "wysylam", "Zapisuję zmiany z panelu (commit).")
+        try:
+            with _blokada_sejfu(True):
+                commit, _, dodatki = _zatwierdz(repo, None if z_sejfu else _opis_danych(czekajace), sciezki, True)
+            if dodatki.get("uwaga"):
+                rdzen.log("git-auto: %s" % dodatki["uwaga"])
+        except BladHTTP as e:
+            if "Trwa zapis do sejfu" in e.komunikat:          # zapis z panelu w toku — następny obieg
+                _ustaw(st, "ok", "Zapis z panelu w toku — wyślę w następnym obiegu.", krotko="zmiany pójdą za chwilę")
+                return "czeka_na_spokoj"
+            _ustaw(st, "blad", "Nie udało się zapisać zmian z panelu: %s" % e.komunikat, krotko="błąd commita",
+                   co_zrobic="Poproś agenta na komputerze z panelem, żeby sprawdził commit danych panelu.")
+            _porazka(st, "inny", teraz, ustaw["co_s"])
+            return "blad"
+        with _auto_blokada:
+            st["pierwsza_zmiana"] = None
+            st["czeka_na_wyslanie"] = 0
+    return _wypchnij_auto(repo, ustaw, teraz, st, commit, ponow=True)
+
+
+def _wypchnij_auto(repo, ustaw, teraz, st, commit, ponow):
+    przod, _ = _przod_tyl(repo)
+    if przod == 0:
+        _ustaw(st, "ok", "Wszystko zgodne z GitHubem.", zgodne=True)
+        return "nic"
+    _ustaw(st, "wysylam", "Wysyłam %d %s na GitHuba." % (przod, "commit" if przod == 1 else "commity"))
+    kod, out, err = git(["push"], repo, timeout=180)
+    tekst = out + "\n" + err
+    if kod == 0:
+        _zapisz_wyslanie(repo, st, commit, ile=przod)
+        _ustaw(st, "ok", "Wysłano na GitHuba.", zgodne=True)
+        rdzen.log("git-auto: wysłano %d commit(ów)" % przod)
+        return "wyslano"
+    if _odrzucony_push(tekst) and ponow:                       # ktoś wysłał wcześniej: pobierz i jeszcze raz (raz)
+        kod_f, err_f = _fetch_teraz(repo)
+        if kod_f != 0:
+            _blad_sieci(st, err_f, teraz, ustaw, "pobieranie po odrzuconym wysłaniu")
+            return "blad"
+        wynik, _ = _pobierz_bezpiecznie(repo, st)
+        if wynik not in ("aktualne", "pobrano"):
+            return wynik
+        return _wypchnij_auto(repo, ustaw, teraz, st, commit, ponow=False)
+    if _odrzucony_push(tekst):
+        _ustaw(st, "blad", "GitHub drugi raz odrzucił wysłanie (ktoś znowu wysłał zmiany w tym samym czasie).",
+               krotko="odrzucone wysłanie", co_zrobic="Panel spróbuje sam w następnym obiegu.")
+        _porazka(st, "inny", teraz, ustaw["co_s"])
+        return "blad"
+    _blad_sieci(st, tekst, teraz, ustaw, "wysyłanie")
+    return "blad"
+
+
+# --------------------------------------------------------------------------- jeden obieg i pętla
+def obieg(repo=None, sciezki=None, ustaw=None, teraz=None):
+    """Jeden obieg stałej synchronizacji (S1–S3). Nie rzuca — błąd trafia do stanu. Zwraca `stan_auto(repo)`.
+    Testy podają repo= z katalogu tymczasowego (bezpiecznik `_pilnuj`), `ustaw` i `teraz`."""
+    repo = _repo(repo)
+    _pilnuj(repo)
+    ustaw = dict(ustawienia_auto(), **(ustaw or {}))
+    sciezki = sciezki if sciezki is not None else sciezki_panelu()
+    teraz = time.time() if teraz is None else float(teraz)
+    st = _st(repo)
+    with _auto_blokada:
+        st["wlaczona"] = True
+    if not ustaw["auto"]:
+        _ustaw(st, "wylaczona", "Samo pobieranie i wysyłanie jest wyłączone w ustawieniach panelu (git.auto = false).")
+        with _auto_blokada:
+            st["ostatni_obieg"] = rdzen.teraz()
+        return stan_auto(repo)
+    if teraz < (st.get("nastepna_proba") or 0):                # odstęp po błędzie
+        return stan_auto(repo)
+    if not _zapis_blokada.acquire(blocking=False):             # trwa „Pobierz” albo „Wyślij” z panelu
+        return stan_auto(repo)
+    proba = False
+    poprzedni = st.get("stan")
+    try:
+        proba = _obieg(repo, sciezki, ustaw, teraz, st)
+    except Exception as e:                                     # pętla nigdy nie pada
+        rdzen.log("git-auto: nieoczekiwany błąd obiegu: %r" % e)
+        _ustaw(st, "blad", "Nieoczekiwany błąd synchronizacji: %s" % _czysty(str(e) or e.__class__.__name__, 200),
+               krotko="błąd panelu", co_zrobic="Poproś agenta, żeby zajrzał do logu panelu (panel.log).")
+        _porazka(st, "inny", teraz, ustaw["co_s"])
+        proba = True
+    finally:
+        _uniewaznij(repo)
+        _zapis_blokada.release()
+    if st.get("stan") in ("pobieram", "wysylam"):              # nie powinno zostać — na wszelki wypadek
+        _ustaw(st, poprzedni if poprzedni not in ("pobieram", "wysylam", None) else "ok", "Obieg zakończony.")
+    if proba:
+        _po_obiegu(repo, st, ustaw)
+    return stan_auto(repo)
+
+
+def _obieg(repo, sciezki, ustaw, teraz, st):
+    """Zwraca True, gdy obieg naprawdę próbował (do liczenia obiegów incydentu), False — gdy pominięty."""
+    with _auto_blokada:
+        st["ostatni_obieg"] = rdzen.teraz()
+    cudza = _cudza_operacja(repo)                              # przed _upstream: w trakcie rebase HEAD jest odłączony
+    if cudza == "index_lock":
+        with _auto_blokada:
+            st["pominiete"] = st.get("pominiete", 0) + 1
+            dlugo = st["pominiete"] >= POMINIEC_DO_UWAGI
+        if dlugo:
+            _ustaw(st, "czeka", "Od dłuższego czasu leży plik .git/index.lock (ktoś commituje albo git przerwał "
+                                "pracę) — panel czeka.", krotko="blokada gita",
+                   co_zrobic="Jeśli żaden program nie używa teraz gita, poproś agenta o usunięcie .git/index.lock.")
+        return False
+    with _auto_blokada:
+        st["pominiete"] = 0
+    if cudza == "brak_repo":
+        _ustaw(st, "wylaczona", "Git nie widzi tu repozytorium — nie ma skąd pobierać ani dokąd wysyłać.")
+        return False
+    if cudza:
+        _ustaw(st, "czeka", "W repozytorium trwa scalanie albo rebase (terminal, agent) — panel czeka, aż się skończy.",
+               krotko="trwa scalanie w repozytorium",
+               co_zrobic="Dokończ albo przerwij scalanie w terminalu (albo poproś agenta). Panel ruszy sam.")
+        return True
+    if not _upstream(repo):
+        _ustaw(st, "wylaczona", "Ta gałąź nie jest połączona z GitHubem (brak gałęzi śledzącej) — nie ma skąd pobierać "
+                                "ani dokąd wysyłać.")
+        return False
+    kod, err = _fetch_teraz(repo)
+    if kod != 0:
+        _blad_sieci(st, err, teraz, ustaw, "sprawdzanie GitHuba")
+        return True
+    with _auto_blokada:
+        st["bledy_z_rzedu"] = 0
+        st["nastepna_proba"] = 0.0
+    wynik, _ = _pobierz_bezpiecznie(repo, st)
+    if wynik in ("czeka", "konflikt", "blad"):
+        return True
+    _wyslij_bezpiecznie(repo, sciezki, ustaw, teraz, st)
+    if wynik == "pobrano" and st.get("stan") == "ok" and st.get("opis") == "Wszystko zgodne z GitHubem.":
+        p = st.get("pobranie") or {}
+        _ustaw(st, "ok", "Pobrano z GitHuba %s." % _odmiana_zmian(p.get("ile") or 0), zgodne=True)
+    return True
+
+
+def _odmiana_zmian(n):
+    return "%d %s" % (n, "zmianę" if n == 1 else ("zmiany" if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14
+                                                  else "zmian"))
+
+
+def tekst_pobrania(commity):
+    """Wiadomość o cudzych commitach (zwykły tekst — autorzy i tematy to treść od ludzi)."""
+    autorzy = list(dict.fromkeys(c["autor"] for c in commity))
+    tematy = ["„%s”" % _czysty(c["temat"], 90) for c in commity[:3]]
+    reszta = len(commity) - len(tematy)
+    return "Panel pobrał z GitHuba %s (%s): %s%s." % (_odmiana_zmian(len(commity)), ", ".join(autorzy[:3]),
+                                                      "; ".join(tematy), (" i %d więcej" % reszta) if reszta > 0 else "")
+
+
+def _tekst_incydentu(st):
+    nazwy = {"konflikt": "Synchronizacja z GitHubem stoi — konflikt, potrzebny człowiek.",
+             "brak_logowania": "Synchronizacja z GitHubem stoi — GitHub nie przyjmuje logowania.",
+             "blad": "Synchronizacja z GitHubem nie działa."}
+    linie = [nazwy.get(st.get("stan"), "Synchronizacja z GitHubem nie działa."), _czysty(st.get("opis"), 300)]
+    if st.get("pliki"):
+        linie.append("Pliki: " + ", ".join(st["pliki"][:5]))
+    if st.get("co_zrobic"):
+        linie.append("Co zrobić: " + _czysty(st["co_zrobic"], 300))
+    return "\n".join(l for l in linie if l)
+
+
+def _telegram(tekst):
+    try:
+        from . import telegram
+        return telegram.wyslij_do_zespolu(tekst)
+    except Exception as e:                                     # brak modułu albo błąd bota: synchronizacja działa dalej
+        rdzen.log("git-auto: wiadomość na Telegram nie poszła (%s)" % e.__class__.__name__)
+        return 0
+
+
+def _po_obiegu(repo, st, ustaw):
+    """Licznik obiegów incydentu i wiadomości na Telegram (poza blokadą gita)."""
+    wiadomosci = []
+    with _auto_blokada:
+        obce = st.get("do_powiadomienia")
+        st["do_powiadomienia"] = None
+        if obce:
+            wiadomosci.append(tekst_pobrania(obce))
+        if st.get("stan") in STANY_PROBLEMU:
+            st["obiegi_problemu"] = st.get("obiegi_problemu", 0) + 1
+            if st["obiegi_problemu"] > 2 and not st.get("incydent"):
+                st["incydent"] = st["stan"]
+                wiadomosci.append(_tekst_incydentu(st))
+        else:
+            st["obiegi_problemu"] = 0
+            if st.get("incydent") and st.get("stan") == "ok":
+                st["incydent"] = None
+                wiadomosci.append("Synchronizacja z GitHubem znów działa.")
+    if ustaw.get("telegram"):
+        for w in wiadomosci:
+            _telegram(w)
+
+
+def _petla_watek(repo, stop):
+    if stop.wait(START_PO_S):
+        return
+    while not stop.is_set():
+        try:
+            obieg(repo)
+        except Exception as e:                                 # obieg sam łapie błędy; to tylko ostatnia siatka
+            rdzen.log("git-auto: błąd pętli: %r" % e)
+        try:
+            co_s = ustawienia_auto()["co_s"]
+        except Exception:
+            co_s = 90.0
+        stop.wait(co_s)
+
+
+def uruchom_w_tle():
+    """Woła serwer.py, gdy panel naprawdę obsługuje żądania. Pętla startuje tylko, gdy nic jej nie wyłącza
+    (`powod_wylaczenia`) i gałąź ma gałąź śledzącą na GitHubie."""
+    repo = _repo(None)
+    st = _st(repo)
+    powod = powod_wylaczenia()
+    # w trakcie cudzego rebase HEAD jest odłączony (brak @{u}) — pętla i tak rusza, a obieg poczeka na koniec rebase
+    if not powod and not _upstream(repo) and _cudza_operacja(repo) != "scalanie":
+        powod ="Ta gałąź nie jest połączona z GitHubem (brak gałęzi śledzącej) — samo pobieranie i wysyłanie nie rusza."
+    if powod:
+        _ustaw(st, "wylaczona", powod)
+        with _auto_blokada:
+            st["wlaczona"] = False
+        rdzen.log("git-auto: " + powod)
+        return
+    if petla_dziala(repo):
+        return
+    _pilnuj(repo)
+    stop = threading.Event()
+    w = threading.Thread(target=_petla_watek, args=(repo, stop), name="git-auto", daemon=True)
+    _petla.update(watek=w, stop=stop, repo=repo)
+    w.start()
+    u = ustawienia_auto()
+    rdzen.log("git-auto: stała synchronizacja włączona (co %d s, wysyłanie po %d s spokoju)" % (u["co_s"], u["wyslij_po_s"]))
+
+
+def zatrzymaj_w_tle(czekaj_s=20.0):
+    """Zamykanie panelu: koniec pętli; czeka na trwające polecenie gita najwyżej `czekaj_s` s."""
+    stop, w = _petla.get("stop"), _petla.get("watek")
+    if stop:
+        stop.set()
+    if w and w.is_alive() and w is not threading.current_thread():
+        w.join(czekaj_s)

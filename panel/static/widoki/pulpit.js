@@ -1,6 +1,7 @@
 // Pulpit: najważniejsze na jednym ekranie, od góry: Czeka na Ciebie (liczba i trzy pierwsze sprawy), Rozmowa
-// (zakładka Sesja: kto jest, czy agent słucha), Co nowego (raporty, decyzje, wpisy ludzi), Synchronizacja (Pobierz /
-// Wyślij z podglądem zmian sejfu), a niżej reszta: Teraz (zadania), Kto pracuje, Napisz do agenta, Ostatnia migawka.
+// (zakładka Sesja: kto jest, czy agent słucha), Co nowego (raporty, decyzje, wpisy ludzi), Synchronizacja (stan stałej
+// synchronizacji z GitHubem, Pobierz / Wyślij z podglądem zmian sejfu), a niżej reszta: Teraz (zadania), Kto pracuje,
+// Napisz do agenta, Ostatnia migawka.
 
 import { el, dopisz, zamien, ikona, czasTemu, dataKrotka, toast, arkusz, awatar, karta, pusty, stanBledu, ladowanie, odmiana, skroc } from "../wspolne/ui.js";
 import { mdLinia } from "../wspolne/markdown.js";
@@ -293,6 +294,12 @@ export default {
           g.ostatni_fetch ? " · sprawdzono " + czasTemu(g.ostatni_fetch) : "",
           g.czyste === false && !zmianyPanelu ? " · są inne niezapisane zmiany w repo" : ""),
       ];
+      // stała synchronizacja (D-070): mały stan obok przycisków; stary serwer bez pola `auto` — widok jak dotąd
+      if (g.auto && typeof g.auto === "object" && !ctx.statyczny) {
+        czesci.push(stanSynchronizacji(g.auto));
+        const p = g.auto.pobranie;
+        if (p && p.kiedy && Date.now() - Date.parse(p.kiedy) < 30 * 60000) czesci.push(wierszPobrania(p));
+      }
       if (ctx.ja.lokalny && !ctx.statyczny) {
         const bPobierz = el("button", { class: "przycisk", type: "button" }, ikona("pobierz"), el("span", null, "Pobierz"));
         const bWyslij = el("button", { class: "przycisk glowny", type: "button", disabled: !zmianyPanelu && !doWyslania }, ikona("wypchnij"), el("span", null, "Wyślij"));
@@ -314,6 +321,68 @@ export default {
         czesci.push(el("p", { class: "cichy-tekst" }, "Pobieranie i wysyłanie działa na komputerze z panelem."));
       }
       c.replaceChildren(...czesci);
+    }
+
+    /** Krótki napis i kolor stanu stałej synchronizacji (pole `auto` z GET /api/git/stan). */
+    function napisAuto(a) {
+      const n = Number(a.plikow) || 0;
+      switch (a.stan) {
+        case "ok": return { tekst: (a.zgodne ? "Zsynchronizowano " + godzina(a.zgodne) : "Synchronizacja włączona") + (a.krotko ? " · " + a.krotko : ""), kolor: "zielen" };
+        case "pobieram": return { tekst: "Pobieram zmiany…", kolor: "niebieski" };
+        case "wysylam": return { tekst: "Wysyłam zmiany…", kolor: "niebieski" };
+        case "czeka": return { tekst: "Czeka: " + (a.krotko || (n ? "lokalne zmiany w " + n + " " + odmiana(n, ["pliku", "plikach", "plikach"]) : "na człowieka")), kolor: "zloto" };
+        case "konflikt": return { tekst: "Konflikt — potrzebny człowiek", kolor: "czerwien" };
+        case "brak_logowania": return { tekst: "Brak logowania do GitHuba", kolor: "czerwien" };
+        case "blad": return { tekst: "Błąd synchronizacji" + (a.krotko ? " (" + a.krotko + ")" : ""), kolor: "czerwien" };
+        case "wylaczona": return { tekst: "Synchronizacja ręczna", kolor: "szary" };
+        default: return { tekst: "Synchronizacja", kolor: "szary" };
+      }
+    }
+
+    /** „17:42” dziś, „13 lis 17:42” innego dnia. */
+    function godzina(t) {
+      const d = new Date(t);
+      if (isNaN(d)) return "";
+      const hm = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+      const dzis = new Date();
+      return d.toDateString() === dzis.toDateString() ? hm : dataKrotka(t) + " " + hm;
+    }
+
+    function stanSynchronizacji(a) {
+      const n = napisAuto(a);
+      return el("button", { type: "button", class: "sync-auto " + n.kolor, dataset: { stan: String(a.stan || "") }, onclick: () => oknoAuto(a), "aria-label": n.tekst + " — szczegóły" },
+        el("span", { class: "sync-auto-kropka", "aria-hidden": "true" }), el("span", { class: "sync-auto-tekst" }, n.tekst), ikona("prawo"));
+    }
+
+    /** „Pobrano 14:03 · Paweł: 2 zmiany — temat; temat” (autorzy i tematy to tekst od ludzi — zawsze jako tekst). */
+    function wierszPobrania(p) {
+      const tematy = (p.commity || []).slice(0, 3).map((c) => "„" + skroc(c.temat || "", 70) + "”").join("; ");
+      return el("p", { class: "cichy-tekst sync-pobranie" }, ikona("pobierz"), " ",
+        "Pobrano " + godzina(p.kiedy) + " · " + (p.autorzy || []).join(", ") + ": " + p.ile + " " + odmiana(Number(p.ile) || 0, ["zmiana", "zmiany", "zmian"]) + (tematy ? " — " + tematy : ""));
+    }
+
+    function oknoAuto(a) {
+      const n = napisAuto(a);
+      const p = a.pobranie;
+      const w = a.wyslanie;
+      const pliki = Array.isArray(a.pliki) ? a.pliki : [];
+      const tresc = el("div", { class: "kolumna sync-szczegoly" },
+        el("p", null, el("span", { class: "chip " + n.kolor }, n.tekst)),
+        a.opis ? el("p", null, a.opis) : null,
+        pliki.length ? el("div", null, el("span", { class: "etykieta" }, "Pliki"),
+          el("ul", { class: "lista pliki-lista" }, pliki.map((f) => el("li", { class: "cichy-tekst" }, el("code", null, f)))),
+          Number(a.plikow) > pliki.length ? el("p", { class: "cichy-tekst" }, "… i " + (a.plikow - pliki.length) + " więcej") : null) : null,
+        a.co_zrobic ? el("div", null, el("span", { class: "etykieta" }, "Co zrobić"), el("p", null, a.co_zrobic)) : null,
+        el("span", { class: "etykieta" }, "Ostatnio"),
+        el("ul", { class: "lista" },
+          el("li", { class: "cichy-tekst" }, "Wszystko zgodne: " + (a.zgodne ? godzina(a.zgodne) + " (" + czasTemu(a.zgodne) + ")" : "jeszcze nie")),
+          el("li", { class: "cichy-tekst" }, "Pobrane: " + (p ? godzina(p.kiedy) + " · " + p.ile + " " + odmiana(Number(p.ile) || 0, ["zmiana", "zmiany", "zmian"]) + " (" + (p.autorzy || []).join(", ") + ")" : "—")),
+          p && (p.commity || []).length ? el("li", null, el("ul", { class: "lista commity" }, p.commity.map((c) => el("li", { class: "cichy-tekst" }, el("strong", null, c.autor || ""), ": " + (c.temat || ""))))) : null,
+          el("li", { class: "cichy-tekst" }, "Wysłane: " + (w ? godzina(w.kiedy) + (w.temat ? " · " + w.temat : "") + (w.recznie ? " (przyciskiem)" : "") : "—"))),
+        el("p", { class: "cichy-tekst" }, a.wlaczona === false
+          ? "Samo pobieranie i wysyłanie nie działa — zostają przyciski Pobierz i Wyślij."
+          : "Panel sam sprawdza GitHuba co " + (a.co_s || 90) + " s, pobiera cudze zmiany i wysyła zmiany z panelu po " + (a.wyslij_po_s || 60) + " s spokoju. Nigdy nie rusza plików, nad którymi ktoś pracuje."));
+      arkusz({ tytul: "Synchronizacja z GitHubem", tresc });
     }
 
     /** Co dokładnie pójdzie do publicznego repozytorium z plików sejfu (wiersze dodane i usunięte, z git diff). */
@@ -420,6 +489,8 @@ export default {
       ostatnieDane.gora = null;
       odswiez();
     });
+    // panel sam pobrał zmiany z GitHuba (powłoka, app.js) — od razu nowe dane, bez czekania na odpytywanie
+    window.addEventListener("bc:git-pobrano", () => odswiez());
 
     return {
       el: korzen,
