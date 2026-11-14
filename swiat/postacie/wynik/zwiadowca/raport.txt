@@ -1,0 +1,115 @@
+RAPORT — zwiadowca
+ZWIADOWCA — druga klasa gracza (obok Wojownika-Rycerza i Maga): zwinny leśny zwiadowca z łukiem i sztyletem.
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/zwiadowca.py · wygenerowano 14.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py zwiadowca
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: zwiadowca
+- przedmioty (akcesoria): 2
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 15 plików, zgodnych 15
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Łuk i sztylet są osobnymi przedmiotami (przedmioty/zwiadowca_luk.fbx, zwiadowca_sztylet.fbx) — w FBX postaci ich nie ma; w grze trzeba je dać jako Tool albo akcesoria na LeftGripAttachment i RightGripAttachment.
+- Strzał z łuku to sam ruch: łuk się nie ugina, cięciwa jest sztywna i nie dochodzi do dłoni, strzały ani zielonej smugi trucizny nie ma (efekt do dorobienia w grze). Z boku i z tyłu (kamera gracza) strzał czyta się dobrze; w kadrze 3/4 z przodu widać łuk wyciągnięty do kamery, a dłoń naciągającą zasłania tułów; od przodu pięść z łukiem jest przed dolną częścią twarzy (postać celuje w widza — tylko zasłanianie, bez przenikania).
+- Sztylet zostaje w prawej dłoni także przy strzale — cięciwę „naciąga” pięść ze sztyletem ostrzem w dół i na zewnątrz. Barki R15 są szerokie (3,15 studa), a ręka krótka (1,45 studa do nadgarstka), więc dłoń nie sięga twarzy ani linii strzały: naciąg to pięść wysoko przy prawym barku z łokciem cofniętym w tył.
+- Bryły są sztywno przypięte do kości: kaptur, peleryna i chusta nie falują; poły tuniki siedzą na udach (idą z nogą, nie przebijają jej). Upadek kończy się leżeniem na brzuchu (na plecach ciało wisiało na kołczanie); głowa w kapturze jest najniższym punktem, więc pierś jest ok. 0,15 studa nad ziemią.
+- Twarz nie ma mimiki — ten sam pogodny uśmiech przy trafieniu i upadku.
+- Unik i uderzenie z góry przesuwają postać w samym klipie (kość LowerTorso): salto ok. 3,25 studa w bok i odskok z powrotem, wypad ok. 0,5 studa do przodu; klip kończy się w punkcie startu. W salcie biodra obracają się o −360° (ostatnia klatka ma kąt −360 = ta sama orientacja co 0) — do sprawdzenia przy imporcie klipu do Roblox.
+- Kolizje sprawdzone w przybliżeniu skryptem poza repozytorium (punkty skrzynek brył łuku, sztyletu, dłoni i przedramion w każdej klatce kontra skrzynki głowy z kapturem, tułowia i bioder; najniższy punkt ciała i broni): bez przecięć, najniżej −0,03 studa (chwila przy padaniu na kolana). Nie sprawdzano broni względem nóg ani łuku względem własnego przedramienia.
+- Wspólny kadr filmów obejmuje salto w bok, więc w filmach i arkuszach klatek postać jest mniejsza niż na planszy.
+- Klipy to szkice (0,67–2 s), nie gotowa animacja. Bieg jest w miejscu (stopy ślizgają się względem ziemi).
+- LowerTorso i Root nie są w 0,0,0 (biodra na wysokości 1,9) — tak jak u Rycerza; dla postaci w grze bez znaczenia, ciało awatara może tego wymagać (sprawdzić przy pierwszym imporcie).
+
+MODEL zwiadowca „Zwiadowca” (r15)
+  wymiary ciała: 4,23 × 5,76 × 2,66; z akcesoriami: 4,23 × 5,76 × 3,51
+  trójkąty: 4198 (siatek: 17)
+  budżety ciała R15: Head 1014/4000, Torso 1072/1750, LeftArm 332/1248, RightArm 332/1248, LeftLeg 312/1248, RightLeg 312/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: idle 60 kl. 2,00 s pętla, ruch 20 kl. 0,67 s pętla, atak 28 kl. 0,93 s jednorazowy, umiejetnosc 54 kl. 1,80 s jednorazowy, uderzenie_z_gory 46 kl. 1,53 s jednorazowy, trafienie 20 kl. 0,67 s jednorazowy, unik 40 kl. 1,33 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, wiwat 48 kl. 1,60 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: zwiadowca_luk na LeftGripAttachment (tylko podgląd, bez eksportu), zwiadowca_sztylet na RightGripAttachment (tylko podgląd, bez eksportu)
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+zwiadowca_luk          LeftGripAttachment         Bron         468  0,28 × 3,32 × 0,69   (-0,00; -0,00; 0,18)  
+zwiadowca_sztylet      RightGripAttachment        Bron         356  0,78 × 2,42 × 0,33   (-0,00; -0,54; -0,01) 
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+KONTROLA EKSPORTÓW
+- zwiadowca.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje brak -> ZGODNE
+- zwiadowca__idle.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-61 -> ZGODNE
+- zwiadowca__ruch.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-21 -> ZGODNE
+- zwiadowca__atak.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-29 -> ZGODNE
+- zwiadowca__umiejetnosc.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-55 -> ZGODNE
+- zwiadowca__uderzenie_z_gory.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-47 -> ZGODNE
+- zwiadowca__trafienie.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-21 -> ZGODNE
+- zwiadowca__unik.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-41 -> ZGODNE
+- zwiadowca__upadek.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-61 -> ZGODNE
+- zwiadowca__wiwat.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-49 -> ZGODNE
+- zwiadowca.glb: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje atak 0-28, idle 0-60, ruch 0-20, trafienie 0-20, uderzenie_z_gory 0-46, umiejetnosc 0-54, unik 0-40, upadek 0-60, wiwat 0-48 -> ZGODNE
+- zwiadowca_luk.fbx: siatki 1, kości 0, trójkąty 468, wzrost 3.32 st., akcje brak -> ZGODNE
+- zwiadowca_luk.glb: siatki 1, kości 0, trójkąty 468, wzrost 3.32 st., akcje brak -> ZGODNE
+- zwiadowca_sztylet.fbx: siatki 1, kości 0, trójkąty 356, wzrost 2.42 st., akcje brak -> ZGODNE
+- zwiadowca_sztylet.glb: siatki 1, kości 0, trójkąty 356, wzrost 2.42 st., akcje brak -> ZGODNE
+
+PLIKI
+- zwiadowca.blend
+- zwiadowca.fbx
+- zwiadowca.glb
+- zwiadowca__atak.fbx
+- zwiadowca__idle.fbx
+- zwiadowca__ruch.fbx
+- zwiadowca__trafienie.fbx
+- zwiadowca__uderzenie_z_gory.fbx
+- zwiadowca__umiejetnosc.fbx
+- zwiadowca__unik.fbx
+- zwiadowca__upadek.fbx
+- zwiadowca__wiwat.fbx
+- zwiadowca_bohater.jpg
+- zwiadowca_ikona.png
+- zwiadowca_plansza.jpg
+- zwiadowca_tekstury/
+- zwiadowca_idle.mp4
+- zwiadowca_idle_klatki.jpg
+- zwiadowca_idle_z_filmu.jpg
+- zwiadowca_ruch.mp4
+- zwiadowca_ruch_klatki.jpg
+- zwiadowca_ruch_z_filmu.jpg
+- zwiadowca_atak.mp4
+- zwiadowca_atak_klatki.jpg
+- zwiadowca_atak_z_filmu.jpg
+- zwiadowca_umiejetnosc.mp4
+- zwiadowca_umiejetnosc_klatki.jpg
+- zwiadowca_umiejetnosc_z_filmu.jpg
+- zwiadowca_uderzenie_z_gory.mp4
+- zwiadowca_uderzenie_z_gory_klatki.jpg
+- zwiadowca_uderzenie_z_gory_z_filmu.jpg
+- zwiadowca_trafienie.mp4
+- zwiadowca_trafienie_klatki.jpg
+- zwiadowca_trafienie_z_filmu.jpg
+- zwiadowca_unik.mp4
+- zwiadowca_unik_klatki.jpg
+- zwiadowca_unik_z_filmu.jpg
+- zwiadowca_upadek.mp4
+- zwiadowca_upadek_klatki.jpg
+- zwiadowca_upadek_z_filmu.jpg
+- zwiadowca_wiwat.mp4
+- zwiadowca_wiwat_klatki.jpg
+- zwiadowca_wiwat_z_filmu.jpg
+- przedmioty/zwiadowca_luk.fbx
+- przedmioty/zwiadowca_luk.glb
+- przedmioty/zwiadowca_luk_tekstury/
+- ikony/zwiadowca_luk_ikona.png
+- przedmioty/zwiadowca_sztylet.fbx
+- przedmioty/zwiadowca_sztylet.glb
+- przedmioty/zwiadowca_sztylet_tekstury/
+- ikony/zwiadowca_sztylet_ikona.png
+- zwiadowca_ikony_arkusz.jpg
+- raport.json
+- raport.txt

@@ -1,0 +1,716 @@
+{
+ "modul": "zwiadowca",
+ "modele": [
+  {
+   "id": "zwiadowca",
+   "nazwa": "Zwiadowca",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 200,
+     "wierzcholki": 112,
+     "wymiary": [
+      2.24,
+      0.53,
+      1.57
+     ],
+     "min": [
+      -1.12,
+      1.77,
+      -0.88
+     ],
+     "max": [
+      1.12,
+      2.3,
+      0.69
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 872,
+     "wierzcholki": 512,
+     "wymiary": [
+      2.84,
+      2.608,
+      1.96
+     ],
+     "min": [
+      -1.69,
+      1.952,
+      -1.22
+     ],
+     "max": [
+      1.15,
+      4.56,
+      0.74
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 1014,
+     "wierzcholki": 577,
+     "wymiary": [
+      1.86,
+      1.992,
+      2.629
+     ],
+     "min": [
+      -0.93,
+      3.77,
+      -1.764
+     ],
+     "max": [
+      0.93,
+      5.762,
+      0.865
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      0.985,
+      1.018,
+      1.01
+     ],
+     "min": [
+      1.13,
+      2.85,
+      -0.505
+     ],
+     "max": [
+      2.115,
+      3.868,
+      0.505
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 112,
+     "wierzcholki": 64,
+     "wymiary": [
+      0.98,
+      0.75,
+      0.97
+     ],
+     "min": [
+      1.09,
+      2.1,
+      -0.485
+     ],
+     "max": [
+      2.07,
+      2.85,
+      0.485
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.9,
+      0.36,
+      0.9
+     ],
+     "min": [
+      1.125,
+      1.75,
+      -0.45
+     ],
+     "max": [
+      2.025,
+      2.11,
+      0.45
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 112,
+     "wierzcholki": 64,
+     "wymiary": [
+      1.09,
+      0.81,
+      1.11
+     ],
+     "min": [
+      0.005,
+      1.1,
+      -0.555
+     ],
+     "max": [
+      1.095,
+      1.91,
+      0.555
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.11,
+      0.75,
+      1.11
+     ],
+     "min": [
+      -0.005,
+      0.35,
+      -0.555
+     ],
+     "max": [
+      1.105,
+      1.1,
+      0.555
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.05,
+      0.35,
+      1.42
+     ],
+     "min": [
+      0.025,
+      0.0,
+      -0.525
+     ],
+     "max": [
+      1.075,
+      0.35,
+      0.895
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      0.985,
+      1.018,
+      1.01
+     ],
+     "min": [
+      -2.115,
+      2.85,
+      -0.505
+     ],
+     "max": [
+      -1.13,
+      3.868,
+      0.505
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 112,
+     "wierzcholki": 64,
+     "wymiary": [
+      0.98,
+      0.75,
+      0.97
+     ],
+     "min": [
+      -2.07,
+      2.1,
+      -0.485
+     ],
+     "max": [
+      -1.09,
+      2.85,
+      0.485
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.9,
+      0.36,
+      0.9
+     ],
+     "min": [
+      -2.025,
+      1.75,
+      -0.45
+     ],
+     "max": [
+      -1.125,
+      2.11,
+      0.45
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 112,
+     "wierzcholki": 64,
+     "wymiary": [
+      1.09,
+      0.81,
+      1.11
+     ],
+     "min": [
+      -1.095,
+      1.1,
+      -0.555
+     ],
+     "max": [
+      -0.005,
+      1.91,
+      0.555
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.11,
+      0.75,
+      1.11
+     ],
+     "min": [
+      -1.105,
+      0.35,
+      -0.555
+     ],
+     "max": [
+      0.005,
+      1.1,
+      0.555
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.05,
+      0.35,
+      1.42
+     ],
+     "min": [
+      -1.075,
+      0.0,
+      -0.525
+     ],
+     "max": [
+      -0.025,
+      0.35,
+      0.895
+     ]
+    },
+    {
+     "nazwa": "zwiadowca_luk_Akc",
+     "kosc": "LeftHand",
+     "trojkaty": 468,
+     "wierzcholki": 264,
+     "wymiary": [
+      0.28,
+      0.694,
+      3.32
+     ],
+     "min": [
+      1.435,
+      1.755,
+      -1.66
+     ],
+     "max": [
+      1.715,
+      2.449,
+      1.66
+     ]
+    },
+    {
+     "nazwa": "zwiadowca_sztylet_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 356,
+     "wierzcholki": 202,
+     "wymiary": [
+      0.78,
+      0.33,
+      2.419
+     ],
+     "min": [
+      -1.965,
+      1.745,
+      -0.67
+     ],
+     "max": [
+      -1.185,
+      2.075,
+      1.749
+     ]
+    }
+   ],
+   "trojkaty_razem": 4198,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 22
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.23,
+    5.762,
+    2.659
+   ],
+   "wymiary_z_akcesoriami": [
+    4.23,
+    5.762,
+    3.513
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.115,
+     0.0,
+     -1.764
+    ],
+    [
+     2.115,
+     5.762,
+     1.749
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "ruch",
+     "dlugosc": 20,
+     "fps": 30,
+     "sekundy": 0.67,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 28,
+     "fps": 30,
+     "sekundy": 0.93,
+     "petla": false
+    },
+    {
+     "n": "umiejetnosc",
+     "dlugosc": 54,
+     "fps": 30,
+     "sekundy": 1.8,
+     "petla": false
+    },
+    {
+     "n": "uderzenie_z_gory",
+     "dlugosc": 46,
+     "fps": 30,
+     "sekundy": 1.53,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 20,
+     "fps": 30,
+     "sekundy": 0.67,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 40,
+     "fps": 30,
+     "sekundy": 1.33,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "wiwat",
+     "dlugosc": 48,
+     "fps": 30,
+     "sekundy": 1.6,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "zwiadowca_luk",
+     "zaczep": "LeftGripAttachment",
+     "eksport": false
+    },
+    {
+     "id": "zwiadowca_sztylet",
+     "zaczep": "RightGripAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 1014,
+     "limit": 4000,
+     "wymiary": [
+      1.86,
+      1.992,
+      2.629
+     ]
+    },
+    "Torso": {
+     "trojkaty": 1072,
+     "limit": 1750,
+     "wymiary": [
+      2.84,
+      2.79,
+      1.96
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 332,
+     "limit": 1248,
+     "wymiary": [
+      1.025,
+      2.118,
+      1.01
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 332,
+     "limit": 1248,
+     "wymiary": [
+      1.025,
+      2.118,
+      1.01
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 312,
+     "limit": 1248,
+     "wymiary": [
+      1.11,
+      1.91,
+      1.45
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 312,
+     "limit": 1248,
+     "wymiary": [
+      1.11,
+      1.91,
+      1.45
+     ]
+    }
+   },
+   "ostrzezenia": []
+  },
+  {
+   "id": "zwiadowca_luk",
+   "nazwa": "Łuk Zwiadowcy",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "zwiadowca_luk",
+     "kosc": null,
+     "trojkaty": 468,
+     "wierzcholki": 264,
+     "wymiary": [
+      0.28,
+      3.32,
+      0.694
+     ],
+     "min": [
+      -0.14,
+      -1.66,
+      -0.524
+     ],
+     "max": [
+      0.14,
+      1.66,
+      0.17
+     ]
+    }
+   ],
+   "trojkaty_razem": 468,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 3
+   },
+   "zaczep": "LeftGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.14,
+     -1.66,
+     -0.524
+    ],
+    [
+     0.14,
+     1.66,
+     0.17
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.0,
+    -0.177
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "zwiadowca_sztylet",
+   "nazwa": "Sztylet Zwiadowcy",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "zwiadowca_sztylet",
+     "kosc": null,
+     "trojkaty": 356,
+     "wierzcholki": 202,
+     "wymiary": [
+      0.78,
+      2.419,
+      0.33
+     ],
+     "min": [
+      -0.39,
+      -0.67,
+      -0.15
+     ],
+     "max": [
+      0.39,
+      1.749,
+      0.18
+     ]
+    }
+   ],
+   "trojkaty_razem": 356,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.39,
+     -0.67,
+     -0.15
+    ],
+    [
+     0.39,
+     1.749,
+     0.18
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.54,
+    0.015
+   ],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "zwiadowca.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje brak -> ZGODNE",
+  "zwiadowca__idle.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-61 -> ZGODNE",
+  "zwiadowca__ruch.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-21 -> ZGODNE",
+  "zwiadowca__atak.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-29 -> ZGODNE",
+  "zwiadowca__umiejetnosc.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-55 -> ZGODNE",
+  "zwiadowca__uderzenie_z_gory.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-47 -> ZGODNE",
+  "zwiadowca__trafienie.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-21 -> ZGODNE",
+  "zwiadowca__unik.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-41 -> ZGODNE",
+  "zwiadowca__upadek.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-61 -> ZGODNE",
+  "zwiadowca__wiwat.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-49 -> ZGODNE",
+  "zwiadowca.glb: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje atak 0-28, idle 0-60, ruch 0-20, trafienie 0-20, uderzenie_z_gory 0-46, umiejetnosc 0-54, unik 0-40, upadek 0-60, wiwat 0-48 -> ZGODNE",
+  "zwiadowca_luk.fbx: siatki 1, kości 0, trójkąty 468, wzrost 3.32 st., akcje brak -> ZGODNE",
+  "zwiadowca_luk.glb: siatki 1, kości 0, trójkąty 468, wzrost 3.32 st., akcje brak -> ZGODNE",
+  "zwiadowca_sztylet.fbx: siatki 1, kości 0, trójkąty 356, wzrost 2.42 st., akcje brak -> ZGODNE",
+  "zwiadowca_sztylet.glb: siatki 1, kości 0, trójkąty 356, wzrost 2.42 st., akcje brak -> ZGODNE"
+ ]
+}
