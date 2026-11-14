@@ -104,6 +104,8 @@ Każdy prompt generujący grafikę **2D / UI** musi zaczynać się od:
 ```
 Game UI component, hybrid of Shakes & Fidget comic book ink style and vibrant Roblox aesthetic, thick 4px solid black outlines, subtle pop-art halftone dot texture, painterly shading, vibrant saturated colors...
 ```
+> **Od 13–14.11.2026 nowe prompty piszemy według [Instrukcji promptów — Glossy Ink](B%26C/Styl/Instrukcja%20prompt%C3%B3w%20%E2%80%94%20Glossy%20Ink.md)** (stały początek „Glossy Ink”, zmienny środek, stały koniec, stały negative; generowanie modelem Nano Banana 2.1 z ekranem ładowania jako referencją). Szablony: `.claude/skills/asset/references/prompt-templates.md`. Formalne zastąpienie D-001 czeka na D-027 (pytanie 22).
+
 Checklista zgodności grafiki: komiksowe obrysy 3–4 px · nasycone kolory · geometria voxel/low-poly · ikony w pixel-arcie w ramce 4 px · tekstura halftone · cel-shading · przerysowane proporcje · zgodność z projektami postaci.
 
 ### Przełożenie na Roblox 💡
@@ -484,7 +486,7 @@ git push
 ```
 
 ### 8.8 Grafiki generowane przez AI
-Każdy prompt 2D/UI zaczyna się od prefiksu Style Lock (sekcja 4). Wynik sprawdza się z checklistą zgodności, a dopiero potem wgrywa do gry (8.5).
+Każdy prompt 2D/UI składa się według instrukcji Glossy Ink (sekcja 4; do decyzji D-027 formalnie obowiązuje Style Lock). Model Higgsfield: Nano Banana 2.1. Wynik sprawdza się z checklistą zgodności, a dopiero potem wgrywa do gry (8.5).
 
 ## 9. Decyzje, pytania i roadmapa
 
@@ -514,7 +516,7 @@ Każdy prompt 2D/UI zaczyna się od prefiksu Style Lock (sekcja 4). Wynik sprawd
 5. Przyciski HUD: Figma (6 przycisków, angielskie napisy) czy kanon (5 zakładek)? Gdzie trafią Tycoon i Arena?
 6. Diamenty (Gems) w HUD a Magiczne Kryształy w kanonie: ta sama waluta? Waluta premium?
 7.–24. Pytania z rozmowy 12.11 i nocnej diagnozy (questy na czas, Karczma, Twierdza, styl UI, panel, publiczność, własność gry, repo, kanon przy dwóch osobach, v2, statystyki, telemetria, Glossy Ink, postacie) – pełna lista w sejfie.
-25. Mapa teleportacji: czy lista 7 lokacji jest dobra i czy zmienić prefiks Style Lock (bez nazwy cudzej gry)?
+25. Mapa teleportacji: czy lista 7 lokacji (z Kuźnią zamiast Targu) jest dobra i czy zostawić cienką ramkę mapy?
 
 ### Roadmapa
 [Roadmapa](B%26C/Produkcja/Roadmapa.md)

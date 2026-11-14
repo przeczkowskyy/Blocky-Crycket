@@ -18,10 +18,10 @@ implementacja: wersja z Figmy (panel gracza + 6 przycisków) w Roblox, 2026-11-1
 > Kanon (tabela wyżej) przewiduje 5 zakładek: Karczma, Pety, Tycoon, Arena, Ekwipunek. Figma ma 6 przycisków: **Teleport, Equipment, Pets** (lewa) i **Quests, Shop, Guilds** (prawa), z angielskimi napisami. Wdrożono wersję z Figmy na polecenie Game Directora; kanon bez zmian do decyzji. Zob. [[Pytania otwarte]].
 
 - Figma: layout [node 9:1571](https://www.figma.com/design/BbLd4jDnvxAmOWZN1hAZQJ?node-id=9-1571), panel gracza [14:145](https://www.figma.com/design/BbLd4jDnvxAmOWZN1hAZQJ?node-id=14-145), przyciski [9:1570](https://www.figma.com/design/BbLd4jDnvxAmOWZN1hAZQJ?node-id=9-1570).
-- **Panel gracza (lewa góra):** ramka portretu (`rbxassetid://128244393062229`) z paskiem XP i poziomem; Złoto (`…139011825868727`) i Diamenty (`…130974323293639`). Liczby z separatorem tysięcy („125 430”), animowane.
+- **Panel gracza (lewa góra):** ramka portretu (`rbxassetid://128244393062229`) z paskiem XP i poziomem; Złoto (`…139011825868727`), Diamenty (`…130974323293639`) i **Rybki** (trzeci wiersz pod Diamentami, dodany na polecenie Game Directora 2026-11-14; atrybut `Fish`, licznik `#FFA53D`; rola waluty → [[Pytania otwarte]] #26). Liczby z separatorem tysięcy („125 430”), animowane.
 - **Przyciski:** 150 px @1080p (Figma: 128; powiększone na prośbę Game Directora 2026-11-11), odstęp 21, 40 px od boku, dół 160 px od dołu jak w Figmie. Limity: min 66 px, max 175 px. Telefon: kolumny wyśrodkowane na 55% wysokości.
 - **Wejście:** HUD ukryty do końca [[Ekran ładowania|ekranu ładowania]] (atrybut gracza `LoadingDone`), potem panel zjeżdża z góry, przyciski wjeżdżają z boków.
-- **Dane (tymczasowo):** atrybuty gracza `Level, XP, XPMax, Gold, Gems` ustawiane przez `PlayerStatsDefaults` (placeholder do czasu DataStore).
+- **Dane (tymczasowo):** atrybuty gracza `Level, XP, XPMax, Gold, Gems, Fish` ustawiane przez `PlayerStatsDefaults` (placeholder do czasu DataStore).
 - **Kliknięcia:** `ReplicatedStorage.HUDButtonPressed` (BindableEvent na kliencie) z nazwą przycisku. Okien (Shop, Pets…) jeszcze nie ma.
 - Pliki: `src/gui/HUD.model.json`, `src/client/HUDClient.client.luau`, `src/server/PlayerStatsDefaults.server.luau`.
 
@@ -29,6 +29,8 @@ implementacja: wersja z Figmy (panel gracza + 6 przycisków) w Roblox, 2026-11-1
 - [x] ScreenGui `HUD` (`src/gui/HUD.model.json`), zgodny z Figmą 9:1571 (2026-11-11)
 - [x] Logika HUD: `src/client/HUDClient.client.luau` (2026-11-11)
 - [x] Ikony walut: moneta i diament z Figmy (2026-11-11)
+- [x] Wiersz Rybek: Figma (komponent Player Panel 14:145, ikona 30:114), `HUD.model.json`, `HUDClient`, `PlayerStatsDefaults`, miejsce z chmury przez MCP; test Play OK (2026-11-14)
+- [x] Ikona Rybki w Roblox: `rbxassetid://92474194471064` (upload po „tak” Game Directora, 2026-11-14; test Play: wczytana)
 - [x] Test Play Solo: ukryty podczas ładowania, animacje wejścia, zmiany XP/Złota/Poziomu/Diamentów z serwera, kliknięcia w Output (2026-11-11)
 - [ ] Test na telefonie (Device Emulator): przyciski vs joystick/skok, panel vs przyciski Robloxa
 - [ ] Hover na przyciskach sprawdzony ręcznie myszą

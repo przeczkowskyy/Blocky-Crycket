@@ -35,13 +35,14 @@ Dla każdego assetu ustal i pokaż w 1 tabeli:
 Sprawdź w manifeście, czy nazwa już istnieje → jeśli tak, to nowa **wersja** (`v2`), nie nadpisuj historii.
 Batch > 5 assetów albo szacunek > 60 kredytów → **zatrzymaj się i poproś o OK**. W przeciwnym razie leć dalej.
 
-## Krok 1 – Prompt
-Złóż prompt z `references/prompt-templates.md` (szablon kategorii) + blok stylu z `style-guide.md`.
-Zasady: angielski prompt, **bez tekstu w obrazie**, **czysto białe tło**, gruby czarny obrys, centralna kompozycja.
-Jeśli narzędzie Higgsfield przyjmuje obraz referencyjny – dołącz 1–2 pliki z `assets/refs/` najbliższe kategorii (np. dla ikon HUD: `Shop.png`, `Pets.png`; dla walut: `Coin.png`, `Gem.png`).
+## Krok 1 – Prompt (format „Glossy Ink”)
+Złóż prompt według `references/prompt-templates.md`: **STAŁY POCZĄTEK** (1:1) → **środek z szablonu kategorii** → **STAŁY KONIEC** (1:1; mapa i tło mają swój wyjątek) → **STAŁY NEGATIVE** jako ostatni akapit `Negative Prompt: …`.
+Części stałych nie przerabiaj ani nie skracaj – zmieniasz tylko środek. Zasady środka są w szablonach (zamknięte krawędzie, puste kontenery, lekkie ramki, napisy natywnie → `NO text`).
+Referencje: zawsze `assets/refs/KeyArt_ref.jpg` (ekran ładowania = Style Reference) + najwyżej 1 plik z `assets/refs/` najbliższy kategorii (ikony HUD: `Shop.png`, `Pets.png`; waluty: `Coin.png`, `Gem.png`). Wgraj je przez `media_upload` → `media_confirm` i podaj jako `image_references`.
+Pokaż użytkownikowi gotowy prompt w raporcie z kroku 0, jeśli pisał własny prompt-wytyczną – środek ma się na nim opierać.
 
 ## Krok 2 – Generowanie (Higgsfield MCP)
-1. Sprawdź dostępne modele/parametry narzędzia `generate_image` (schemat narzędzia). Wybierz model obrazkowy o najlepszej zgodności z promptem; proporcje 1:1 (ikony) lub 16:9 (tła).
+1. Model **`nano_banana_2_1`** (polecenie Game Directora; **nie** `gpt_image_*`, nawet jeśli narzędzie podaje go jako domyślny). Inny model tylko na wyraźną prośbę użytkownika. Ustawienia: `resolution` 2k (ikony) / 4k (okna, mapy, tła), proporcje 1:1 (ikony) lub 16:9 (okna, tła), stały `seed` w obrębie serii. Negative nie ma osobnego pola – jest na końcu promptu.
 2. Wygeneruj **3 warianty** (różne seedy / lekkie wariacje opisu).
 3. Odpytuj `get_generation_status` aż do `completed` (co ~5 s, max ~3 min; przy błędzie 1 ponowienie).
 4. Pobierz wyniki do `assets/raw/<Name>/v<N>_<i>.png` (np. `curl -L -o ...`).

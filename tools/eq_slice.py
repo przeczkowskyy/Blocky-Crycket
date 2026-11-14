@@ -157,6 +157,16 @@ def main():
         "TabWeapons": ((1478, 268, 1716, 322), "WEAPONS"), "TabArmor": ((1748, 268, 1972, 322), "ARMOR"),
         "TabAmulets": ((2008, 268, 2242, 322), "AMULETS"), "TabOthers": ((2272, 268, 2508, 322), "OTHERS"),
     }.items():
+        # wyśrodkuj napis na KOLOROWEJ części zakładki (obrazek ma niesymetryczny obrys/cień, np. OTHERS)
+        sx0, _, sx1, _ = SPRITES["Eq" + name][0]
+        spr = np.array(Image.open(OUT / f"Eq{name}.png").convert("RGBA")).astype(int)
+        body = (spr[..., 3] > 128) & ((spr[..., :3].max(-1) - spr[..., :3].min(-1)) > 40) & (spr[..., :3].max(-1) > 90)
+        ys, _ = np.nonzero(body)
+        row = np.nonzero(body[int(np.median(ys))])[0]
+        frac = (row.min() + row.max()) / 2 / spr.shape[1]
+        cx = sx0 + frac * (sx1 - sx0)
+        half = (r[2] - r[0]) / 2
+        r = (cx - half, r[1], cx + half, r[3])
         texts[name + "Label"] = [norm(r), label, "Center", "tab"]
 
     cards = {}
@@ -164,7 +174,7 @@ def main():
         (cx0, cx1), (cy0, cy1) = CARD_COLS[i % 3], CARD_ROWS[i // 3]
         name_r = (cx0 + CARD_ICON_W[i % 3] + 8, cy0 + 22, cx1 - 100, cy0 + 72)
         val_r = (cx1 - 100, cy0 + 22, cx1 - 22, cy0 + 72)
-        sub_r = (cx0 + 32, cy0 + 96, cx0 + 248, cy0 + 138)
+        sub_r = (cx0 + 26, cy0 + 96, cx1 - 97, cy0 + 138)  # od wewn. obrysu do przycisku „+” (zapas na „DMG RED 25%”)
         cards[key] = {"card": norm((cx0, cy0, cx1, cy1)), "name": [norm(name_r), nm], "value": [norm(val_r), val],
                       "sub": [norm(sub_r), sub], "plus": plus[key]}
 

@@ -92,6 +92,7 @@ Plan v2 zakłada dziennik godzin (ok. 20 h na osobę tygodniowo daje Etap A w ok
 
 ## 22. Czy instrukcja „Glossy Ink” zastępuje Style Lock?
 13.11 Game Director przekazał (przez Karola) [[Instrukcja promptów — Glossy Ink]]: nowy stały początek i koniec promptu, negative prompt i żelazne zasady. Różni się od zatwierdzonego [[Style Lock]] (D-001: inny prefiks, z nazwą gry-inspiracji) i od [[Kierunek artystyczny]] (D-002: pixel-art ikon, płaski interfejs). Rekomendacja Claude Code: tak, zastąpić — nowa wersja opisuje to, co faktycznie wdrożono, i nie zawiera cudzej nazwy. Po potwierdzeniu: wpis ✅ w rejestrze (D-027) i przepięcie szablonów skilla `/asset`.
+2026-11-14: na polecenie Game Directora szablony skilla `/asset` są już przepięte na Glossy Ink (z modelem Nano Banana 2.1). Zostaje formalny wpis ✅ D-027.
 **Odpowiedź:**
 
 ## 23. Czy włączamy pracę na sejfie z panelu (D-028)?
@@ -102,6 +103,10 @@ Panel potrafi już zapisywać do sejfu odpowiedzi na pytania, zadania i — z kl
 Sześć postaci stoi w Studio jako postacie z klocków z 20 klipami animacji ([[Postacie 3D — Blender i Roblox]]). Do ustalenia: (1) czy NPC i pety zostają w grze jako klocki, czy czekamy na import siatek; (2) kto publikuje animacje — według dokumentacji Roblox zasób animacji ma należeć do właściciela gry, więc albo konto Game Directora, albo przeniesienie gry do grupy; (3) czy katalog ekwipunku (41 przedmiotów, sloty łącznie z „drugą ręką” i podziałem torsu) ma się dopasować do slotów w kodzie Game Directora, czy odwrotnie; (4) czy wygląd Rycerza, Kota-Maga i Karczmarza z modeli jest do przyjęcia jako kierunek. Łączy się z pytaniami #15 i #17.
 
 ## 25. Mapa teleportacji: lokacje i prefiks stylu
-[[Mapa teleportacji]] proponuje 7 lokacji: Karczma, Arena, Twierdza, Zagroda petów, Targ, Gildia, Portal do lochów. Czy lista jest dobra? Polskie czy angielskie nazwy na mapie?
-Prompty w tej notatce opisują styl słowami („hand-inked comic book style…”) zamiast nazwy gry-inspiracji z prefiksu [[Style Lock]] (kanon), bo nazwa cudzej gry ciągnie model do kopiowania jej budynków. Czy zmieniamy też prefiks w Style Lock?
+[[Mapa teleportacji]] ma 7 lokacji według promptu-wytycznej Game Directora: Karczma, Arena, Portal do lochów, Twierdza, Siedziba Gildii, Kuźnia, Zagroda petów (Targ wypadł, Shop zostaje w HUD). Czy lista jest dobra? Polskie czy angielskie nazwy na mapie?
+Prompty mapy są od 2026-11-14 w formacie [[Instrukcja promptów — Glossy Ink|Glossy Ink]] (sprawa prefiksu → pytanie 22). Ramka mapy: instrukcja każe dać cienką drewnianą ramkę bez ciężkich kamiennych ram, a prompt-wytyczna miał „chunky stone-and-wood border”. W promptach jest cienka ramka — zostawić?
+**Odpowiedź:**
+
+## 26. Rybki — trzecia waluta w HUD
+14.11 Game Director kazał dodać do panelu gracza trzeci licznik z ikoną złotej rybki (pod Złotem i Diamentami; atrybut gracza `Fish`). Kanon zna dwie waluty (pytanie 6). Do czego służą Rybki: waluta z łowienia, karma dla petów czy coś innego? Jak się je zdobywa i na co wydaje?
 **Odpowiedź:**

@@ -15,6 +15,10 @@ tags: [styl, prompty, grafika, ui]
 1. Wgraj do generatora ekran ładowania gry jako obraz referencyjny stylu (Style Reference).
 2. Sklej prompt po angielsku z części: **stały początek → zmienny środek → stały koniec**; negative prompt podaj osobno.
 3. W zmiennym środku opisz tylko układ i obiekty (lewo / prawo / środek, kolory kafelków, ikony, dokładne napisy w cudzysłowie) i pilnuj żelaznych zasad niżej.
+4. Generuj w Higgsfield modelem **Nano Banana 2.1** (`nano_banana_2_1`, polecenie Game Directora z 13.11), nie GPT Image. Model nie ma osobnego pola na negative prompt, więc negative dopisujemy jako ostatni akapit promptu (`Negative Prompt: …`).
+5. Napisy na przyciskach i tabliczkach robimy w Roblox natywnie. W środku promptu prosimy więc o puste tabliczki (`NO text`), chyba że napis ma być częścią grafiki (logo, grafika marketingowa).
+
+Gotowe środki dla każdej kategorii (ikona, przycisk, przedmiot, pet, okno, arkusz przycisków, mapa, tło) są w szablonach skilla `/asset`: `.claude/skills/asset/references/prompt-templates.md`. Przykład pełnych promptów: [[Mapa teleportacji]].
 
 ## Części stałe — kopiować 1:1
 
@@ -62,7 +66,7 @@ Instrukcja zgadza się z propozycją D-018 (styl „bubbly cartoon”) i z wnios
 
 ## Do ustalenia
 - Formalne potwierdzenie Game Directora, że instrukcja zastępuje prefiks z D-001 i zapisy o pixel-arcie z D-002 (D-027, pytanie #22).
-- Szablony promptów skilla `/asset` (`.claude/skills/asset/references/prompt-templates.md`) mają własny, starszy opis stylu i ciemnogranatowe tło ramek — do przepięcia na tę instrukcję po potwierdzeniu ([[Pipeline assetów]]).
+- ~~Przepięcie szablonów skilla `/asset`~~ — zrobione 2026-11-14 na polecenie Game Directora ([[Pipeline assetów]]).
 - Przykład z instrukcji (okno Kowala) używa diamentów i przycisków „+” przy statystykach, co łączy się z pytaniami #6 (waluty) i #17 (statystyki) w [[Pytania otwarte]].
 
 ## Powiązane

@@ -1,11 +1,13 @@
 # Style guide – Blocky&Crycket
 
+> **Prompty piszemy według instrukcji „Glossy Ink”** (sejf: `B&C/Styl/Instrukcja promptów — Glossy Ink.md`, szablony: `prompt-templates.md`). Gdy ten plik się z nią nie zgadza, wygrywa instrukcja: ikony **malarskie z połyskiem, bez pixel-artu**, ramki lekkie (cienkie złoto / drewno, bez ciężkich kamiennych ram), tła okien jako ciepłe wnętrze domu, nie granat. Paleta HEX, typografia natywna i checklista QA niżej nadal obowiązują.
+
 Źródło: key art + istniejące assety (`assets/processed/`: KeyArt, Teleport, Equipment, Pets, Quests, Shop, Guilds, PlayerFrame, Coin, Gem) oraz komponenty w Figmie.
 
 ## Charakter
 - Kreskówka w stylu Roblox: blokowe postacie, przesadzone proporcje, wesołe, czytelne sylwetki.
 - Fantasy-średniowiecze: drewno, kamień, złoto, ametysty, magiczne portale, sztandary.
-- **Akcenty pixel art**: drobne pikselowe iskierki/gwiazdki (krzyżyki z kwadratów), pixelowy font w drobnych napisach UI. Nie cały asset w pixel art – tylko akcenty.
+- ~~Akcenty pixel art~~ – w nowych promptach nie używamy (instrukcja Glossy Ink). Starsze assety (HUD) mają pikselowe iskierki; nie przerabiamy ich bez decyzji.
 
 ## Linia i cieniowanie
 - **Gruby, ciemny obrys** (`#1A1410` / `#2B1A10`), równej grubości, zaokrąglone łączenia. Na ikonie 512 px ≈ 10–14 px.

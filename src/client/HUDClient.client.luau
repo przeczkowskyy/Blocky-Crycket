@@ -3,7 +3,7 @@
 	GUI: src/gui/HUD.model.json (StarterGui.HUD, Enabled = false).
 
 	Pokazuje HUD po loading screenie (atrybut gracza "LoadingDone" z ReplicatedFirst.LoadingClient).
-	Dane: atrybuty gracza Level, XP, XPMax, Gold, Gems (serwer: src/server/PlayerStatsDefaults.server.luau).
+	Dane: atrybuty gracza Level, XP, XPMax, Gold, Gems, Fish (serwer: src/server/PlayerStatsDefaults.server.luau).
 	Kliknięcia: ReplicatedStorage.HUDButtonPressed (BindableEvent, tylko klient):
 
 		RS:WaitForChild("HUDButtonPressed").Event:Connect(function(name) ... end)
@@ -29,7 +29,7 @@ local player = Players.LocalPlayer
 local hud = player:WaitForChild("PlayerGui"):WaitForChild("HUD")
 local panel = hud:WaitForChild("PlayerPanel")
 local xpFill = panel.XPBar.XPFill
-local levelLbl, goldLbl, gemsLbl = panel.Level, panel.Gold, panel.Gems
+local levelLbl, goldLbl, gemsLbl, fishLbl = panel.Level, panel.Gold, panel.Gems, panel:WaitForChild("Fish")
 
 local pressed = RS:FindFirstChild("HUDButtonPressed")
 if not pressed then
@@ -104,7 +104,7 @@ local function updateLevel(animate)
 	end
 end
 
-local shown = { Gold = 0, Gems = 0 }
+local shown = { Gold = 0, Gems = 0, Fish = 0 }
 local counters = {}
 local function setCurrency(label, key, instant)
 	local target = player:GetAttribute(key) or 0
@@ -154,6 +154,9 @@ end)
 player:GetAttributeChangedSignal("Gems"):Connect(function()
 	setCurrency(gemsLbl, "Gems", not ready)
 end)
+player:GetAttributeChangedSignal("Fish"):Connect(function()
+	setCurrency(fishLbl, "Fish", not ready)
+end)
 
 ------------------------------------------------ czekaj na koniec loadingu
 local t0 = os.clock()
@@ -170,6 +173,7 @@ updateXP(true)
 updateLevel(false)
 setCurrency(goldLbl, "Gold", true)
 setCurrency(gemsLbl, "Gems", true)
+setCurrency(fishLbl, "Fish", true)
 
 ------------------------------------------------ telefon: kolumny wyżej, nad kontrolkami dotykowymi
 local columns = { hud.LeftColumn, hud.RightColumn }

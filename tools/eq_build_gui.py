@@ -58,10 +58,12 @@ def corner(scale=0.0, off=0):
 # styl tekstu: kolor, obrys, grubość (px przy panelu 1376 px szerokości – skalowane w EquipmentPanelClient), max rozmiar
 TEXT = {
     "title": ("FCE3B0", "2B1A10", 4, 70),
-    "tab": ("FFFFFF", "1A1410", 3, 36),
-    "name": ("F4F1E8", "0E1220", 2, 32),
-    "value": ("FFD23F", "0E1220", 2, 36),
-    "sub": ("3A2412", None, 0, 28),
+    # max rozmiary wg Game Directora (14.11): statystyki 15, zakładki postaci 16, zakładki plecaka 20
+    "tab": ("FFFFFF", "1A1410", 3, 16),
+    "tab_bag": ("FFFFFF", "1A1410", 3, 20),
+    "name": ("F4F1E8", "0E1220", 2, 15),
+    "value": ("FFD23F", "0E1220", 2, 15),
+    "sub": ("3A2412", None, 0, 15),
     "level": ("E6FFC9", "0E3B12", 3, 36),
 }
 
@@ -129,17 +131,17 @@ def main():
         full("EquipSlots", [hotspot("Slot_" + k, r, cover_=L["slot_covers"][k]) for k, r in L["slots"].items()]),
     ])
 
-    def tabs(names, group):
+    def tabs(names, group, style):
         out = []
         for i, n in enumerate(names):
             lab = L["texts"][n.replace("Eq", "") + "Label"]
-            btn = sprite_button(n.replace("Eq", ""), S[n], n, [text("Label", lab[0], lab[1], "tab", S[n])])
+            btn = sprite_button(n.replace("Eq", ""), S[n], n, [text("Label", lab[0], lab[1], style, S[n])])
             btn["Properties"]["LayoutOrder"] = i + 1
             out.append(btn)
         return full(group, out)
 
-    char_tabs = tabs(["EqTabAttributes", "EqTabDescription", "EqTabInfo", "EqTabInteractions"], "CharacterTabs")
-    bag_tabs = tabs(["EqTabWeapons", "EqTabArmor", "EqTabAmulets", "EqTabOthers"], "BackpackTabs")
+    char_tabs = tabs(["EqTabAttributes", "EqTabDescription", "EqTabInfo", "EqTabInteractions"], "CharacterTabs", "tab")
+    bag_tabs = tabs(["EqTabWeapons", "EqTabArmor", "EqTabAmulets", "EqTabOthers"], "BackpackTabs", "tab_bag")
 
     cards = []
     for k, c in L["cards"].items():

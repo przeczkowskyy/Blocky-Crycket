@@ -24,7 +24,7 @@ Każdy nowy asset graficzny przechodzi przez skill **`/asset`** (`.claude/skills
 Źródło prawdy: **`assets/manifest.json`** – po każdym kroku aktualizuj wpis (`python tools/manifest.py upsert ...`).
 
 ## Twarde reguły
-1. **Styl** – zawsze trzymaj się `.claude/skills/asset/references/style-guide.md`. Do Higgsfield dołączaj referencje z `assets/refs/`, jeśli narzędzie przyjmuje obraz referencyjny.
+1. **Styl** – prompty zawsze w formacie „Glossy Ink” z `prompt-templates.md` (stały początek / koniec / negative 1:1), uzupełniająco `style-guide.md`. Model Higgsfield: `nano_banana_2_1`. Zawsze dołączaj `assets/refs/KeyArt_ref.jpg` jako referencję stylu.
 2. **Zero tekstu w grafikach AI.** Napisy robimy natywnie (Figma / Roblox, font Luckiest Guy; drobny tekst: Pixelify Sans w Figmie, `Enum.Font.Arcade` w Roblox).
 3. **Białe, jednolite tło** przy generowaniu (łatwe wycinanie), potem `tools/process_image.py`.
 4. **Asset ID tylko przez `AssetIds`** – w kodzie gry `require(ReplicatedStorage.AssetIds).NazwaAssetu`. Nigdy hardcode `rbxassetid://`.

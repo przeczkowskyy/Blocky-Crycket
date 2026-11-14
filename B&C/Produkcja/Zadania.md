@@ -28,7 +28,9 @@ tags: [produkcja, zadania]
 
 ## 📥 Backlog
 - [ ] [[Okno ekwipunku]]: test na telefonie; potem prawdziwe przedmioty i statystyki z serwera · #wysoki
-- [ ] [[Mapa teleportacji]]: wygenerować mapę z ramką i 7 pinów (prompty w notatce), potem `TeleportMapGui` i teleport przez RemoteEvent. Najpierw potwierdzić listę lokacji ([[Pytania otwarte]] #25) · #średni
+- [x] [[HUD]]: Rybki — ikona `Fish` wgrana do Roblox (2026-11-14, po „tak”)
+- [ ] [[HUD]]: ustalić rolę Rybek jako waluty ([[Pytania otwarte]] #26) · #średni
+- [ ] [[Mapa teleportacji]]: wygenerować mapę z ramką i arkusz 7 pinów (prompty Glossy Ink w notatce, Nano Banana 2.1), potem `TeleportMapGui` i teleport przez RemoteEvent. Najpierw potwierdzić listę lokacji ([[Pytania otwarte]] #25) · #średni
 - [ ] Postęp EXP i Level w HUD (animacja level-up „POW!”) · #średni
 - [ ] [[Ekran ładowania]]: test na prawdziwym serwerze / telefonie (w Studio ekran znika po ~1 s) · #średni
 - [ ] ViewportFrame z modelem [[Rycerz|Rycerza]] / [[Kot-Mag|Kota-Maga]] · #średni
@@ -39,7 +41,7 @@ tags: [produkcja, zadania]
 - [ ] Usunąć prototyp `Workspace/TestWalki` przed publikacją miejsca: `python swiat/test_walki_roblox/zbuduj.py --usun` · #średni
 - [ ] Łańcuch narzędzi: `rokit.toml` jest w repo (Rojo 7.6.1); każda osoba instaluje Rokit u siebie (agent nie mógł — instalator zablokowany); potem wspólne podniesienie Rojo do 7.7.1 ([[Narzędzia i skille do Roblox]]) · #średni
 - [ ] Włączyć telemetrię gry (decyzja D-023): skrypt startowy z `Telemetria.start()`, publikacja, klucz Open Cloud tylko do odczytu wpisany lokalnie ([[Telemetria gry]]) · #średni
-- [ ] Po potwierdzeniu D-027: przepiąć szablony promptów skilla `/asset` na [[Instrukcja promptów — Glossy Ink]] (dziś mają starszy opis stylu i ciemnogranatowe tło ramek) · #średni
+- [x] Przepiąć szablony promptów skilla `/asset` na [[Instrukcja promptów — Glossy Ink]] i wpisać model Nano Banana 2.1 (2026-11-14, na polecenie Game Directora; formalne ✅ D-027 nadal czeka) · #średni
 - [ ] [[Panel zespołu|Panel]]: lustro tylko-do-odczytu na GitHub Pages (właściciel repo włącza Pages → Source: GitHub Actions, potem uruchamia workflow „Panel — lustro”) · #niski
 
 ## 🎨 Assety do stworzenia

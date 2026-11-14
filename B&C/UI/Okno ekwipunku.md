@@ -36,6 +36,7 @@ Statystyki na grafice (Strength, Constitution, Intelligence, Dexterity, Luck, Ar
 - [x] Poprawki 2 (2026-11-13): karty bez ciemnych krawędzi i plam pod nazwą (`EqBg3` v3, wgrany 2026-11-13, ID 101459179682764; Figma zsynchronizowana), „+” podnosi statystykę przez serwer (`StatPoints.server.luau`, RemoteEvent `AddStatPoint`, test bez kosztu), podpisy DMG/HP/DEF/CRIT przeliczane (wzory: propozycja), plecak z osobną stroną na każdą zakładkę (Scrap = Amulets). Test Play: STR 20→23, Scrap widoczny tylko w AMULETS
 - [x] Karty v4 (każda kolumna z własnymi granicami) wgrane: `EqBg3` 134448521798525 (2026-11-13)
 - [x] Zasłonka sylwetki w slotach ekwipunku: natywna ramka `Cover` w kolorze wnętrza slotu, widoczna tylko z przedmiotem (`ZIndex` 1, ikona 2). Test Play OK (2026-11-13)
+- [x] Rozmiary napisów: statystyki 15 px, zakładki postaci 16 px, zakładki plecaka 20 px (2026-11-14)
 - [ ] Test na telefonie (Device Emulator)
 - [ ] Prawdziwe dane: przedmioty w slotach, statystyki z serwera, portret postaci
 
