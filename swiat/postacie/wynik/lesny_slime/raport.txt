@@ -1,5 +1,5 @@
 RAPORT — lesny_slime
-LEŚNY SLIME — zwykły przeciwnik lasu: mchowozielona kostka galarety z liściem i grzybkiem zatopionymi w środku.
+LEŚNY SLIME — zwykły przeciwnik lasu: pulchna, soczyście zielona kostka galarety z uroczą buzią i kiełkiem na czubku.
 
 Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
 Źródło: swiat/postacie/lesny_slime.py · wygenerowano 14.11.2026 poleceniem:
@@ -13,35 +13,37 @@ PODSUMOWANIE
 - ostrzeżenia z raportu: 0; uwagi podglądu: 0
 
 ZNANE SŁABOŚCI
-- Brak prawdziwej przezroczystości (jeden materiał na model): szkło udają jasna skorupka i ciemniejszy rdzeń, a liść i grzybek „w środku” to płaskie rzuty na wierzchu, bokach i tyle (policzone z jednego położenia, więc z każdej strony są w tym samym miejscu). Z bliska widać, że to naklejki, a od przodu ich nie widać (przód to twarz) — w kadrze 3/4 widać je tylko na boku. W grze można dać galarecie materiał Glass i zostawić same prawdziwe bryły liścia i grzybka (kości Lisc i Grzybek).
-- Galareta jest skórowana na dwóch kościach (Dol, Gora) — import wag do Roblox nie był testowany. Oczy, kreski zamkniętych oczu, paszcza, brzuszki, kula i kałuża to sztywne bryły na własnych kościach: oczy nie zgniatają się razem z galaretą (brwi i usta tak).
-- Rozlanie (upadek) to spłaszczona kostka (0,45 studa) z czterema płaskimi płatami-soczewkami dookoła — z daleka czyta się jako kałuża, z bliska środek dalej ma prostokątny obrys spłaszczonej kostki. Brwi i usta spłaszczają się do krzywych pasków na przedniej krawędzi. Kula kwasu leży na ziemi i wystaje z kałuży jak świecące „żółtko”.
-- Kałuża kwasu z umiejętności wsiąka na końcu w ziemię (schodzi pod nią) i w ostatniej klatce wraca skokiem do schowka w podstawie slime'a; prawdziwy rozprysk (cząsteczki, dym) dorobić efektem na PluskAttachment.
-- Brzuszki przy zgnieceniu (atak, ruch, umiejętność, trafienie, unik, wiwat) wysuwają się nisko z boków i tyłu jako spłaszczone soczewki (galareta „siada” u dołu) — w kadrze 3/4 wyglądają trochę jak policzek przy dolnej krawędzi i na chwilę zasłaniają rzut grzybka na boku. Przód zostaje gładki, bo pod twarzą brzuszek wyglądał jak listwa.
-- Kości nie są R15 (własny szkielet: Root + 17 kości) — klipy importuje się na własny rig; Studio nie testowane.
-- Świecenie skorupki i kwasu jest tylko w teksturze-palecie (emisja) — w grze dać Neon albo PointLight.
+- Brak prawdziwej przezroczystości (jeden materiał na model): galareta jest jednolicie zielona (bez płytek „rdzenia”, które robiły z przodu ekran w ramce), a liść i grzybek „w środku” to płaskie rzuty tylko z tyłu i na prawym boku (−X). Z przodu, z lewego boku i z góry ich nie widać. Gdy slime obraca się w uniku, obrys renderu rysuje wokół tych naklejek ciemny cień (w grze obrysu nie ma). W grze można dać galarecie materiał Glass i zostawić same prawdziwe bryły liścia i grzybka (kości Lisc, Grzybek).
+- Mimika to podmiana sztywnych brył: pięć wersji oczu i cztery wersje ust siedzą na własnych kościach (schowane 0,1 studa głębiej, przód 0,04 pod przednią ścianą), a klip wysuwa jedną z nich. Zmiana miny trwa ok. jednej klatki (waga wyostrzona w środku odcinka) — bez klatki pośredniej, jak w kreskówce. Oczy i usta nie zgniatają się razem z galaretą (jadą z nią w górę i w dół), rumieńce na ścianie tak. W Roblox obrys (Highlight) obejmie tylko sylwetkę — kreski oczu i ust nie będą miały obwódki z renderu.
+- Galareta jest skórowana na dwóch kościach (Dol, Gora) — import wag do Roblox nie był testowany.
+- Kiełek kiwa się z prostej symulacji sprężyny liczonej z ruchu ciała (wypalonej w klucze), nie z fizyki gry; w pętlach symulacja biegnie trzy razy, żeby szew pętli był gładki, ale może zostać drobny skok kąta. W ostrym ataku łodyżka kładzie się płasko (ograniczenie 38°), a listki mogą wtedy na chwilę wchodzić w wierzch galarety.
+- Rozlanie (upadek) to spłaszczona kostka (0,5 studa) z czterema płaskimi płatami dookoła — z bliska środek ma prostokątny obrys. Oczka leżą na wierzchu odchylone o 40° (dolny brzeg lekko zanurzony), buzia przed nimi; w klatkach ok. 36–40 oczy przechodzą przez przednią krawędź i na 1–2 klatki chowają się do połowy, a przedni płat przejeżdża przed buzią. Rumieńce na ścianie spłaszczają się z galaretą do różowych kresek.
+- Unik ma pełny piruet (obrót Y od 0 do 360°): ostatnia klatka ma Y = 360°, czyli tę samą pozę co 0° — odtwarzacz, który miesza kąty Eulera zamiast obrotów (CFrame/kwaternion), mógłby zakręcić slime'em z powrotem.
+- Kałuża kwasu z umiejętności wsiąka na końcu w ziemię i w ostatniej klatce wraca skokiem do schowka w podstawie slime'a; prawdziwy rozprysk (cząsteczki) dorobić efektem na PluskAttachment.
+- Kości nie są R15 (własny szkielet: Root + 27 kości) — klipy importuje się na własny rig; Studio nie testowane.
+- Świecenie galarety i kwasu jest tylko w teksturze-palecie (emisja) — w grze dać Neon albo PointLight.
 - Ruch to podskok w miejscu (bez przesuwania korzenia); szybkość przesuwania ustawia gra.
-- Kadr filmów jest wspólny dla wszystkich klipów i obejmuje lot kuli i kałużę ok. 4,3 studa przed slime'em, więc w filmach slime jest mały; bliżej: plansza i kadr bohaterski.
-- Klipy to szkice (0,6–2,2 s), nie gotowa animacja; mimika tylko z oczu (otwarte/zamknięte) i paszczy.
+- Kadr filmów jest wspólny dla wszystkich klipów i obejmuje lot bańki i kałużę ok. 4,3 studa przed slime'em, więc w filmach slime jest mały; bliżej: plansza i kadr bohaterski.
+- Klipy to szkice (0,6–2,2 s), nie gotowa animacja.
 
 MODEL lesny_slime „Leśny Slime” (stwor)
-  wymiary ciała: 3,89 × 2,67 × 3,31; z akcesoriami: 3,89 × 2,67 × 3,31
-  trójkąty: 2472 (siatek: 15)
-  kości (18): Root, Cialo, Dol, Gora, Oczy, Powieki, UstaO, BokL, BokP, Przod, Tyl, Lisc, Grzybek, Kula, Plusk, KroplaL, KroplaP, KroplaT
+  wymiary ciała: 4,22 × 2,98 × 3,38; z akcesoriami: 4,22 × 2,98 × 3,38
+  trójkąty: 4396 (siatek: 25)
+  kości (28): Root, Cialo, Dol, Gora, Kielek, ListekL, ListekP, Oczy, Powieki, OczyRad, OczyZac, OczyWiel, Usta, UstaO, UstaRad, UstaFala, Policzki, BokL, BokP, Przod, Tyl, Lisc, Grzybek, Kula, Plusk, KroplaL, KroplaP, KroplaT
   klipy: idle 60 kl. 2,00 s pętla, ruch 24 kl. 0,80 s pętla, atak 30 kl. 1,00 s jednorazowy, umiejetnosc 66 kl. 2,20 s jednorazowy, trafienie 18 kl. 0,60 s jednorazowy, unik 27 kl. 0,90 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, wiwat 40 kl. 1,33 s pętla
   punkty zaczepienia: RootAttachment, GlowaAttachment, PyskAttachment, PluskAttachment
 
 KONTROLA EKSPORTÓW
-- lesny_slime.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje brak -> ZGODNE
-- lesny_slime__idle.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-61 -> ZGODNE
-- lesny_slime__ruch.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-25 -> ZGODNE
-- lesny_slime__atak.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-31 -> ZGODNE
-- lesny_slime__umiejetnosc.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-67 -> ZGODNE
-- lesny_slime__trafienie.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-19 -> ZGODNE
-- lesny_slime__unik.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-28 -> ZGODNE
-- lesny_slime__upadek.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-61 -> ZGODNE
-- lesny_slime__wiwat.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-41 -> ZGODNE
-- lesny_slime.glb: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje atak 0-30, idle 0-60, ruch 0-24, trafienie 0-18, umiejetnosc 0-66, unik 0-27, upadek 0-60, wiwat 0-40 -> ZGODNE
+- lesny_slime.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje brak -> ZGODNE
+- lesny_slime__idle.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-61 -> ZGODNE
+- lesny_slime__ruch.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-25 -> ZGODNE
+- lesny_slime__atak.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-31 -> ZGODNE
+- lesny_slime__umiejetnosc.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-67 -> ZGODNE
+- lesny_slime__trafienie.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-19 -> ZGODNE
+- lesny_slime__unik.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-28 -> ZGODNE
+- lesny_slime__upadek.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-61 -> ZGODNE
+- lesny_slime__wiwat.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-41 -> ZGODNE
+- lesny_slime.glb: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje atak 0-30, idle 0-60, ruch 0-24, trafienie 0-18, umiejetnosc 0-66, unik 0-27, upadek 0-60, wiwat 0-40 -> ZGODNE
 
 PLIKI
 - lesny_slime.blend
