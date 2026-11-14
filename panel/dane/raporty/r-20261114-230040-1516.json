@@ -1,0 +1,28 @@
+{
+ "id": "r-20261114-230040-1516",
+ "tytul": "Model: Leśny Slime",
+ "opis_md": "- **Kto to:** Leśny Slime, zwykły przeciwnik lasu. To duża, zielona kostka galarety ze złośliwą miną, a w środku ma liść i mały grzybek. Ma dużo życia i słabe ciosy.\n- **Obrazki:** plansza (z boku, z tyłu i obok szarego gracza dla skali), duży kadr z przodu i klatki trzech ruchów: ataku, umiejętności i upadku.\n- **Ruchy:** spoczynek, podskoki, uderzenie całym ciałem i kwaśny plusk. Przy plusku nadyma się, w paszczy świeci mu kula kwasu, pluje nią i robi się kałuża. Do tego reakcja na cios, unik, upadek (rozlewa się w kałużę, z której wypływa grzybek) i radość po wygranej.\n- **Poprawione w przeglądzie:** boki przy zgnieceniu wyglądały jak uchwyty szuflady, a teraz galareta miękko „siada” u dołu. Kula kwasu jest widoczna w paszczy przed plunięciem. Kałuża po upadku ma płaskie płaty dookoła i nic nie wchodzi pod ziemię.\n- **Co jeszcze słabe:** liść i grzybek widać tylko z boków, z tyłu i z góry, bo przód zajmuje twarz. Środek kałuży z bliska jest dalej trochę prostokątny. W filmach slime jest mały, bo kadr obejmuje lot kuli.\n- **To propozycja.** Modelu nie ma jeszcze w Roblox (import będzie osobnym krokiem).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-14T23:00:40+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Postacie/Leśny Slime.md",
+   "etykieta": "Notatka"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/lesny_slime/raport.txt",
+   "etykieta": "Raport techniczny"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg"
+ ],
+ "pytanie": "Czy wygląd i ruch pasują do gry? Co zmienić?"
+}

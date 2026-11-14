@@ -1,0 +1,87 @@
+RAPORT — lesny_slime
+LEŚNY SLIME — zwykły przeciwnik lasu: mchowozielona kostka galarety z liściem i grzybkiem zatopionymi w środku.
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/lesny_slime.py · wygenerowano 14.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py lesny_slime
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: lesny_slime
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Brak prawdziwej przezroczystości (jeden materiał na model): szkło udają jasna skorupka i ciemniejszy rdzeń, a liść i grzybek „w środku” to płaskie rzuty na wierzchu, bokach i tyle (policzone z jednego położenia, więc z każdej strony są w tym samym miejscu). Z bliska widać, że to naklejki, a od przodu ich nie widać (przód to twarz) — w kadrze 3/4 widać je tylko na boku. W grze można dać galarecie materiał Glass i zostawić same prawdziwe bryły liścia i grzybka (kości Lisc i Grzybek).
+- Galareta jest skórowana na dwóch kościach (Dol, Gora) — import wag do Roblox nie był testowany. Oczy, kreski zamkniętych oczu, paszcza, brzuszki, kula i kałuża to sztywne bryły na własnych kościach: oczy nie zgniatają się razem z galaretą (brwi i usta tak).
+- Rozlanie (upadek) to spłaszczona kostka (0,45 studa) z czterema płaskimi płatami-soczewkami dookoła — z daleka czyta się jako kałuża, z bliska środek dalej ma prostokątny obrys spłaszczonej kostki. Brwi i usta spłaszczają się do krzywych pasków na przedniej krawędzi. Kula kwasu leży na ziemi i wystaje z kałuży jak świecące „żółtko”.
+- Kałuża kwasu z umiejętności wsiąka na końcu w ziemię (schodzi pod nią) i w ostatniej klatce wraca skokiem do schowka w podstawie slime'a; prawdziwy rozprysk (cząsteczki, dym) dorobić efektem na PluskAttachment.
+- Brzuszki przy zgnieceniu (atak, ruch, umiejętność, trafienie, unik, wiwat) wysuwają się nisko z boków i tyłu jako spłaszczone soczewki (galareta „siada” u dołu) — w kadrze 3/4 wyglądają trochę jak policzek przy dolnej krawędzi i na chwilę zasłaniają rzut grzybka na boku. Przód zostaje gładki, bo pod twarzą brzuszek wyglądał jak listwa.
+- Kości nie są R15 (własny szkielet: Root + 17 kości) — klipy importuje się na własny rig; Studio nie testowane.
+- Świecenie skorupki i kwasu jest tylko w teksturze-palecie (emisja) — w grze dać Neon albo PointLight.
+- Ruch to podskok w miejscu (bez przesuwania korzenia); szybkość przesuwania ustawia gra.
+- Kadr filmów jest wspólny dla wszystkich klipów i obejmuje lot kuli i kałużę ok. 4,3 studa przed slime'em, więc w filmach slime jest mały; bliżej: plansza i kadr bohaterski.
+- Klipy to szkice (0,6–2,2 s), nie gotowa animacja; mimika tylko z oczu (otwarte/zamknięte) i paszczy.
+
+MODEL lesny_slime „Leśny Slime” (stwor)
+  wymiary ciała: 3,89 × 2,67 × 3,31; z akcesoriami: 3,89 × 2,67 × 3,31
+  trójkąty: 2472 (siatek: 15)
+  kości (18): Root, Cialo, Dol, Gora, Oczy, Powieki, UstaO, BokL, BokP, Przod, Tyl, Lisc, Grzybek, Kula, Plusk, KroplaL, KroplaP, KroplaT
+  klipy: idle 60 kl. 2,00 s pętla, ruch 24 kl. 0,80 s pętla, atak 30 kl. 1,00 s jednorazowy, umiejetnosc 66 kl. 2,20 s jednorazowy, trafienie 18 kl. 0,60 s jednorazowy, unik 27 kl. 0,90 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, wiwat 40 kl. 1,33 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, PyskAttachment, PluskAttachment
+
+KONTROLA EKSPORTÓW
+- lesny_slime.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje brak -> ZGODNE
+- lesny_slime__idle.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-61 -> ZGODNE
+- lesny_slime__ruch.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-25 -> ZGODNE
+- lesny_slime__atak.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-31 -> ZGODNE
+- lesny_slime__umiejetnosc.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-67 -> ZGODNE
+- lesny_slime__trafienie.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-19 -> ZGODNE
+- lesny_slime__unik.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-28 -> ZGODNE
+- lesny_slime__upadek.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-61 -> ZGODNE
+- lesny_slime__wiwat.fbx: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje lesny_slime|Scene 1-41 -> ZGODNE
+- lesny_slime.glb: siatki 19, kości 18, trójkąty 2520, wzrost 2.67 st., akcje atak 0-30, idle 0-60, ruch 0-24, trafienie 0-18, umiejetnosc 0-66, unik 0-27, upadek 0-60, wiwat 0-40 -> ZGODNE
+
+PLIKI
+- lesny_slime.blend
+- lesny_slime.fbx
+- lesny_slime.glb
+- lesny_slime__atak.fbx
+- lesny_slime__idle.fbx
+- lesny_slime__ruch.fbx
+- lesny_slime__trafienie.fbx
+- lesny_slime__umiejetnosc.fbx
+- lesny_slime__unik.fbx
+- lesny_slime__upadek.fbx
+- lesny_slime__wiwat.fbx
+- lesny_slime_bohater.jpg
+- lesny_slime_ikona.png
+- lesny_slime_plansza.jpg
+- lesny_slime_tekstury/
+- lesny_slime_idle.mp4
+- lesny_slime_idle_klatki.jpg
+- lesny_slime_idle_z_filmu.jpg
+- lesny_slime_ruch.mp4
+- lesny_slime_ruch_klatki.jpg
+- lesny_slime_ruch_z_filmu.jpg
+- lesny_slime_atak.mp4
+- lesny_slime_atak_klatki.jpg
+- lesny_slime_atak_z_filmu.jpg
+- lesny_slime_umiejetnosc.mp4
+- lesny_slime_umiejetnosc_klatki.jpg
+- lesny_slime_umiejetnosc_z_filmu.jpg
+- lesny_slime_trafienie.mp4
+- lesny_slime_trafienie_klatki.jpg
+- lesny_slime_trafienie_z_filmu.jpg
+- lesny_slime_unik.mp4
+- lesny_slime_unik_klatki.jpg
+- lesny_slime_unik_z_filmu.jpg
+- lesny_slime_upadek.mp4
+- lesny_slime_upadek_klatki.jpg
+- lesny_slime_upadek_z_filmu.jpg
+- lesny_slime_wiwat.mp4
+- lesny_slime_wiwat_klatki.jpg
+- lesny_slime_wiwat_z_filmu.jpg
+- raport.json
+- raport.txt
