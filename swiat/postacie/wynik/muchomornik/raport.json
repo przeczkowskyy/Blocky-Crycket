@@ -1,0 +1,745 @@
+{
+ "modul": "muchomornik",
+ "modele": [
+  {
+   "id": "muchomornik",
+   "nazwa": "Muchomornik",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Biodra_Geo",
+     "kosc": "Biodra",
+     "trojkaty": 144,
+     "wierzcholki": 80,
+     "wymiary": [
+      1.12,
+      0.4,
+      0.97
+     ],
+     "min": [
+      -0.56,
+      0.42,
+      -0.475
+     ],
+     "max": [
+      0.56,
+      0.82,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 432,
+     "wierzcholki": 256,
+     "wymiary": [
+      1.3,
+      0.8,
+      1.175
+     ],
+     "min": [
+      -0.65,
+      0.72,
+      -0.565
+     ],
+     "max": [
+      0.65,
+      1.52,
+      0.61
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 572,
+     "wierzcholki": 322,
+     "wymiary": [
+      1.44,
+      1.01,
+      1.36
+     ],
+     "min": [
+      -0.72,
+      1.5,
+      -0.55
+     ],
+     "max": [
+      0.72,
+      2.51,
+      0.81
+     ]
+    },
+    {
+     "nazwa": "Kapelusz_Geo",
+     "kosc": "Kapelusz",
+     "trojkaty": 1236,
+     "wierzcholki": 684,
+     "wymiary": [
+      2.951,
+      1.429,
+      2.665
+     ],
+     "min": [
+      -1.465,
+      2.152,
+      -1.393
+     ],
+     "max": [
+      1.486,
+      3.581,
+      1.272
+     ]
+    },
+    {
+     "nazwa": "Zarodnik0_Geo",
+     "kosc": "Zarodnik0",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.317,
+      0.363,
+      0.363
+     ],
+     "min": [
+      -0.902,
+      2.843,
+      0.155
+     ],
+     "max": [
+      -0.585,
+      3.206,
+      0.518
+     ]
+    },
+    {
+     "nazwa": "Zarodnik1_Geo",
+     "kosc": "Zarodnik1",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.293,
+      0.335,
+      0.335
+     ],
+     "min": [
+      0.657,
+      2.74,
+      0.131
+     ],
+     "max": [
+      0.95,
+      3.075,
+      0.466
+     ]
+    },
+    {
+     "nazwa": "Zarodnik2_Geo",
+     "kosc": "Zarodnik2",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.342,
+      0.391,
+      0.391
+     ],
+     "min": [
+      -0.307,
+      2.892,
+      0.386
+     ],
+     "max": [
+      0.035,
+      3.283,
+      0.777
+     ]
+    },
+    {
+     "nazwa": "Zarodnik3_Geo",
+     "kosc": "Zarodnik3",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.293,
+      0.335,
+      0.335
+     ],
+     "min": [
+      0.209,
+      2.677,
+      -0.918
+     ],
+     "max": [
+      0.502,
+      3.012,
+      -0.583
+     ]
+    },
+    {
+     "nazwa": "Zarodnik4_Geo",
+     "kosc": "Zarodnik4",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.317,
+      0.363,
+      0.363
+     ],
+     "min": [
+      -0.842,
+      2.853,
+      -0.65
+     ],
+     "max": [
+      -0.525,
+      3.216,
+      -0.287
+     ]
+    },
+    {
+     "nazwa": "Zarodnik5_Geo",
+     "kosc": "Zarodnik5",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.293,
+      0.335,
+      0.335
+     ],
+     "min": [
+      0.701,
+      2.618,
+      -0.509
+     ],
+     "max": [
+      0.994,
+      2.953,
+      -0.174
+     ]
+    },
+    {
+     "nazwa": "Zarodnik6_Geo",
+     "kosc": "Zarodnik6",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.366,
+      0.418,
+      0.419
+     ],
+     "min": [
+      0.034,
+      2.834,
+      -0.176
+     ],
+     "max": [
+      0.4,
+      3.252,
+      0.243
+     ]
+    },
+    {
+     "nazwa": "Zarodnik7_Geo",
+     "kosc": "Zarodnik7",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.317,
+      0.363,
+      0.363
+     ],
+     "min": [
+      -0.392,
+      2.842,
+      -0.498
+     ],
+     "max": [
+      -0.075,
+      3.205,
+      -0.135
+     ]
+    },
+    {
+     "nazwa": "Zarodnik8_Geo",
+     "kosc": "Zarodnik8",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.293,
+      0.335,
+      0.335
+     ],
+     "min": [
+      0.364,
+      2.852,
+      0.421
+     ],
+     "max": [
+      0.657,
+      3.187,
+      0.756
+     ]
+    },
+    {
+     "nazwa": "Zarodnik9_Geo",
+     "kosc": "Zarodnik9",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.269,
+      0.307,
+      0.307
+     ],
+     "min": [
+      -0.514,
+      2.858,
+      -1.022
+     ],
+     "max": [
+      -0.245,
+      3.165,
+      -0.715
+     ]
+    },
+    {
+     "nazwa": "Broda_Geo",
+     "kosc": "Broda",
+     "trojkaty": 130,
+     "wierzcholki": 75,
+     "wymiary": [
+      0.938,
+      0.85,
+      0.293
+     ],
+     "min": [
+      -0.469,
+      0.79,
+      0.5
+     ],
+     "max": [
+      0.469,
+      1.64,
+      0.793
+     ]
+    },
+    {
+     "nazwa": "Powieki_Geo",
+     "kosc": "Powieki",
+     "trojkaty": 24,
+     "wierzcholki": 16,
+     "wymiary": [
+      0.94,
+      0.4,
+      0.04
+     ],
+     "min": [
+      -0.47,
+      2.26,
+      0.47
+     ],
+     "max": [
+      0.47,
+      2.66,
+      0.51
+     ]
+    },
+    {
+     "nazwa": "RamieL_Geo",
+     "kosc": "RamieL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.42,
+      0.42
+     ],
+     "min": [
+      0.57,
+      0.98,
+      -0.21
+     ],
+     "max": [
+      0.95,
+      1.4,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "DlonL_Geo",
+     "kosc": "DlonL",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      0.43,
+      0.43,
+      0.54
+     ],
+     "min": [
+      0.6,
+      0.61,
+      -0.19
+     ],
+     "max": [
+      1.03,
+      1.04,
+      0.35
+     ]
+    },
+    {
+     "nazwa": "NogaL_Geo",
+     "kosc": "NogaL",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.34,
+      0.32,
+      0.34
+     ],
+     "min": [
+      0.13,
+      0.22,
+      -0.17
+     ],
+     "max": [
+      0.47,
+      0.54,
+      0.17
+     ]
+    },
+    {
+     "nazwa": "StopaL_Geo",
+     "kosc": "StopaL",
+     "trojkaty": 100,
+     "wierzcholki": 58,
+     "wymiary": [
+      0.46,
+      0.26,
+      0.705
+     ],
+     "min": [
+      0.07,
+      0.0,
+      -0.23
+     ],
+     "max": [
+      0.53,
+      0.26,
+      0.475
+     ]
+    },
+    {
+     "nazwa": "RamieP_Geo",
+     "kosc": "RamieP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.42,
+      0.42
+     ],
+     "min": [
+      -0.95,
+      0.98,
+      -0.21
+     ],
+     "max": [
+      -0.57,
+      1.4,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "DlonP_Geo",
+     "kosc": "DlonP",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      0.43,
+      0.43,
+      0.54
+     ],
+     "min": [
+      -1.03,
+      0.61,
+      -0.19
+     ],
+     "max": [
+      -0.6,
+      1.04,
+      0.35
+     ]
+    },
+    {
+     "nazwa": "NogaP_Geo",
+     "kosc": "NogaP",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.34,
+      0.32,
+      0.34
+     ],
+     "min": [
+      -0.47,
+      0.22,
+      -0.17
+     ],
+     "max": [
+      -0.13,
+      0.54,
+      0.17
+     ]
+    },
+    {
+     "nazwa": "StopaP_Geo",
+     "kosc": "StopaP",
+     "trojkaty": 100,
+     "wierzcholki": 58,
+     "wymiary": [
+      0.46,
+      0.26,
+      0.705
+     ],
+     "min": [
+      -0.53,
+      0.0,
+      -0.23
+     ],
+     "max": [
+      -0.07,
+      0.26,
+      0.475
+     ]
+    },
+    {
+     "nazwa": "Laska_Geo",
+     "kosc": "Laska",
+     "trojkaty": 434,
+     "wierzcholki": 245,
+     "wymiary": [
+      0.562,
+      2.077,
+      0.423
+     ],
+     "min": [
+      -1.242,
+      -0.023,
+      -0.01
+     ],
+     "max": [
+      -0.68,
+      2.054,
+      0.413
+     ]
+    },
+    {
+     "nazwa": "ZarodekL0_Geo",
+     "kosc": "ZarodekL0",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.122,
+      0.14,
+      0.14
+     ],
+     "min": [
+      -1.381,
+      1.85,
+      0.17
+     ],
+     "max": [
+      -1.259,
+      1.99,
+      0.31
+     ]
+    },
+    {
+     "nazwa": "ZarodekL1_Geo",
+     "kosc": "ZarodekL1",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.11,
+      0.126,
+      0.126
+     ],
+     "min": [
+      -1.435,
+      1.597,
+      -0.063
+     ],
+     "max": [
+      -1.325,
+      1.723,
+      0.063
+     ]
+    },
+    {
+     "nazwa": "ZarodekL2_Geo",
+     "kosc": "ZarodekL2",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.11,
+      0.126,
+      0.126
+     ],
+     "min": [
+      -1.175,
+      1.437,
+      0.197
+     ],
+     "max": [
+      -1.065,
+      1.563,
+      0.323
+     ]
+    }
+   ],
+   "trojkaty_razem": 4272,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 19
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.951,
+    3.604,
+    2.665
+   ],
+   "wymiary_z_akcesoriami": [
+    2.951,
+    3.604,
+    2.665
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.465,
+     -0.023,
+     -1.393
+    ],
+    [
+     1.486,
+     3.581,
+     1.272
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Biodra",
+    "Tulow",
+    "Glowa",
+    "Kapelusz",
+    "Zarodnik0",
+    "Zarodnik1",
+    "Zarodnik2",
+    "Zarodnik3",
+    "Zarodnik4",
+    "Zarodnik5",
+    "Zarodnik6",
+    "Zarodnik7",
+    "Zarodnik8",
+    "Zarodnik9",
+    "Broda",
+    "Powieki",
+    "RamieL",
+    "DlonL",
+    "NogaL",
+    "StopaL",
+    "RamieP",
+    "DlonP",
+    "NogaP",
+    "StopaP",
+    "Laska",
+    "ZarodekL0",
+    "ZarodekL1",
+    "ZarodekL2"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment",
+    "ChmuraAttachment",
+    "LaskaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att",
+    "Chmura_Att",
+    "Laska_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 72,
+     "fps": 30,
+     "sekundy": 2.4,
+     "petla": true
+    },
+    {
+     "n": "ruch",
+     "dlugosc": 24,
+     "fps": 30,
+     "sekundy": 0.8,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 27,
+     "fps": 30,
+     "sekundy": 0.9,
+     "petla": false
+    },
+    {
+     "n": "umiejetnosc",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 18,
+     "fps": 30,
+     "sekundy": 0.6,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 27,
+     "fps": 30,
+     "sekundy": 0.9,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "wiwat",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "muchomornik.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje brak -> ZGODNE",
+  "muchomornik__idle.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-73 -> ZGODNE",
+  "muchomornik__ruch.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-25 -> ZGODNE",
+  "muchomornik__atak.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-28 -> ZGODNE",
+  "muchomornik__umiejetnosc.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-61 -> ZGODNE",
+  "muchomornik__trafienie.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-19 -> ZGODNE",
+  "muchomornik__unik.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-28 -> ZGODNE",
+  "muchomornik__upadek.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-61 -> ZGODNE",
+  "muchomornik__wiwat.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-61 -> ZGODNE",
+  "muchomornik.glb: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje atak 0-27, idle 0-72, ruch 0-24, trafienie 0-18, umiejetnosc 0-60, unik 0-27, upadek 0-60, wiwat 0-60 -> ZGODNE"
+ ]
+}

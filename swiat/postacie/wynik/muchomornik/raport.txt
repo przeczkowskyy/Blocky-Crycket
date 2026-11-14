@@ -1,0 +1,90 @@
+RAPORT — muchomornik
+MUCHOMORNIK — zwykły przeciwnik lasu: niski grzybowy ludek (ok. 3,5 studa z kapeluszem; gracz ma 5,7).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/muchomornik.py · wygenerowano 14.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py muchomornik
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: muchomornik
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości Muchomornika nie są R15 (własny szkielet: Root + 28 kości, w tym 13 kości zarodników) — klipy importuje się na własny rig; import do Roblox Studio nie był testowany.
+- Bryły są sztywno przypięte do kości (jedna siatka na kość): ramiona lekko siedzą w tułowiu, broda dotyka brzucha, a laska przechodzi przez prawą dłoń-rękawicę (celowo — dłoń ją „obejmuje”).
+- Zarodniki to dziesięć małych brył na własnych kościach — w spoczynku schowane w środku kapelusza. Po wylądowaniu wsiąkają w ziemię (schodzą pod nią w ostatnich klatkach umiejętności), więc w grze ziemia musi je zasłonić; prawdziwej chmury (dymu, poświaty, trucizny) nie ma — dorobić efektem cząsteczek na ChmuraAttachment.
+- Świecenie bulwy i zarodników jest tylko w teksturze-palecie (emisja) — w grze trzeba je dać materiałem Neon albo PointLight.
+- Laska przesuwa się w dłoni wzdłuż swojej osi (w ataku chwyt bliżej dolnego końca, przy uderzeniu w ziemię wyżej) — z daleka nie widać, ale z bliska laska „ślizga się” przez rękawicę.
+- Przy upadku kapelusz spada z głowy i zsuwa się leżącemu na twarz (oparty o nos i brodę, przechylony kopułą do widza — miejsce liczone w module na skrzynkach brył, więc spód kopuły może o włos wisieć nad brodą); twarzy wtedy nie widać. Leży bokiem do kamery od przodu (obrót o 60° przy siadzie) — z kamery od drugiego boku kapelusz zasłoni więcej. Po przejściu z upadku do idle kapelusz wraca na głowę skokiem — w grze po upadku postać i tak znika.
+- Kapelusz ma 19 kropek-brył (wystają 0,03 nad skośne ściany kopuły); kopuła to ośmiokątne ścięte stożki, więc z bliska widać kanty.
+- Chód jest w miejscu (stopy ślizgają się względem ziemi); nóżki są bez kolan, więc krok to kołysanie całych nóg i bioder.
+- Powieki przy mrugnięciu na 1–2 klatki wysuwają się spod kapelusza przez czoło (szybko, z daleka nie widać).
+- Kolizje sprawdzane w przybliżeniu skryptem poza modułem (punkty skrzynek brył w każdej klatce, kopuła jako ośmiokąt): laska, zarodniki laski i dłonie nie wchodzą w głowę, kapelusz, brodę, tułów ani spodenki; zarodniki kapelusza po wylocie (kl. 23–25 wychodzą przez kopułę — celowo) nie przelatują przez kapelusz ani ciało; stopy, ciało i laska nie schodzą pod ziemię. Ramiona, nogi i broda względem siebie nie były sprawdzane liczbowo. Przegląd 14.11.2026 powtórzył kontrolę drugim skryptem (walec i stożek jako elipsa w przekroju): laska, zarodki laski i dłonie bez wejścia w głowę, kapelusz, brodę i tułów we wszystkich klatkach ośmiu klipów.
+- Atak widziany od przodu: cios idzie w stronę kamery, więc laska w trafieniu jest skrócona perspektywą, a przechylony do przodu kapelusz na 3–4 klatki zasłania twarz (to celowe „dobicie” ciężkim kapeluszem). Z boku łuk ciosu czyta się najlepiej.
+- Kadr filmów i arkuszy jest wspólny dla wszystkich klipów, a zarodniki wylatują do ok. 4,3 studa i lądują ok. 2 studów od niego — w filmach postać zajmuje mniej niż połowę wysokości kadru; bliżej: plansza i kadr bohaterski.
+- Klipy to szkice (0,6–2 s), nie gotowa animacja; mimika tylko z powiek i ruchu kapelusza.
+
+MODEL muchomornik „Muchomornik” (stwor)
+  wymiary ciała: 2,95 × 3,60 × 2,67; z akcesoriami: 2,95 × 3,60 × 2,67
+  trójkąty: 4272 (siatek: 28)
+  kości (29): Root, Biodra, Tulow, Glowa, Kapelusz, Zarodnik0, Zarodnik1, Zarodnik2, Zarodnik3, Zarodnik4, Zarodnik5, Zarodnik6, Zarodnik7, Zarodnik8, Zarodnik9, Broda, Powieki, RamieL, DlonL, NogaL, StopaL, RamieP, DlonP, NogaP, StopaP, Laska, ZarodekL0, ZarodekL1, ZarodekL2
+  klipy: idle 72 kl. 2,40 s pętla, ruch 24 kl. 0,80 s pętla, atak 27 kl. 0,90 s jednorazowy, umiejetnosc 60 kl. 2,00 s jednorazowy, trafienie 18 kl. 0,60 s jednorazowy, unik 27 kl. 0,90 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, wiwat 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, ChmuraAttachment, LaskaAttachment
+
+KONTROLA EKSPORTÓW
+- muchomornik.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje brak -> ZGODNE
+- muchomornik__idle.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-73 -> ZGODNE
+- muchomornik__ruch.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-25 -> ZGODNE
+- muchomornik__atak.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-28 -> ZGODNE
+- muchomornik__umiejetnosc.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-61 -> ZGODNE
+- muchomornik__trafienie.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-19 -> ZGODNE
+- muchomornik__unik.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-28 -> ZGODNE
+- muchomornik__upadek.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-61 -> ZGODNE
+- muchomornik__wiwat.fbx: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje muchomornik|Scene 1-61 -> ZGODNE
+- muchomornik.glb: siatki 32, kości 29, trójkąty 4320, wzrost 3.60 st., akcje atak 0-27, idle 0-72, ruch 0-24, trafienie 0-18, umiejetnosc 0-60, unik 0-27, upadek 0-60, wiwat 0-60 -> ZGODNE
+
+PLIKI
+- muchomornik.blend
+- muchomornik.fbx
+- muchomornik.glb
+- muchomornik__atak.fbx
+- muchomornik__idle.fbx
+- muchomornik__ruch.fbx
+- muchomornik__trafienie.fbx
+- muchomornik__umiejetnosc.fbx
+- muchomornik__unik.fbx
+- muchomornik__upadek.fbx
+- muchomornik__wiwat.fbx
+- muchomornik_bohater.jpg
+- muchomornik_ikona.png
+- muchomornik_plansza.jpg
+- muchomornik_tekstury/
+- muchomornik_idle.mp4
+- muchomornik_idle_klatki.jpg
+- muchomornik_idle_z_filmu.jpg
+- muchomornik_ruch.mp4
+- muchomornik_ruch_klatki.jpg
+- muchomornik_ruch_z_filmu.jpg
+- muchomornik_atak.mp4
+- muchomornik_atak_klatki.jpg
+- muchomornik_atak_z_filmu.jpg
+- muchomornik_umiejetnosc.mp4
+- muchomornik_umiejetnosc_klatki.jpg
+- muchomornik_umiejetnosc_z_filmu.jpg
+- muchomornik_trafienie.mp4
+- muchomornik_trafienie_klatki.jpg
+- muchomornik_trafienie_z_filmu.jpg
+- muchomornik_unik.mp4
+- muchomornik_unik_klatki.jpg
+- muchomornik_unik_z_filmu.jpg
+- muchomornik_upadek.mp4
+- muchomornik_upadek_klatki.jpg
+- muchomornik_upadek_z_filmu.jpg
+- muchomornik_wiwat.mp4
+- muchomornik_wiwat_klatki.jpg
+- muchomornik_wiwat_z_filmu.jpg
+- raport.json
+- raport.txt

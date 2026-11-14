@@ -1,0 +1,28 @@
+{
+ "id": "r-20261114-211321-788d",
+ "tytul": "Model: Muchomornik",
+ "opis_md": "- **Kto to:** Muchomornik, zwykły przeciwnik lasu. Mały, złośliwy grzybowy szaman: bije krzywą laską, a jego umiejętność „chmura zarodników” truje.\n- **Na obrazkach:** plansza (z przodu, z boku, z tyłu i obok szarego ludzika w skali gracza), duży kadr i arkusze klatek trzech ruchów. Ma ok. 3,6 studa wzrostu, a gracz 5,7. Wielki czerwony kapelusz w białe kropki widać z daleka.\n- **Ruchy (8):** spoczynek, chód, cios laską z góry, chmura zarodników (uderza laską w ziemię, potrząsa kapeluszem, świecące zarodniki wylatują i opadają przed nim), reakcja na cios, unik w bok, upadek i złośliwy śmiech po wygranej.\n- **Poprawione w przeglądzie:** mocniejszy zamach przed ciosem, a przy upadku leży bokiem i kapelusz zsuwa mu się na twarz, więc dobrze to widać od przodu. Do tego bielsze kropki i widoczny ząb w uśmiechu.\n- **Co jeszcze słabe:** chmura to tylko 10 świecących kosteczek, bez dymu, a efekt trzeba dorobić w grze. Chodzi w miejscu i nie ma kolan. Przy ciosie widzianym od przodu kapelusz na chwilę zasłania mu twarz.\n- **Status:** to propozycja do oceny. Modelu nie ma jeszcze w Roblox, import będzie osobnym krokiem.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-14T21:13:21+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Postacie/Muchomornik.md",
+   "etykieta": "Notatka"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/muchomornik/raport.txt",
+   "etykieta": "Raport techniczny"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg"
+ ],
+ "pytanie": "Czy wygląd i ruch pasują do gry? Co zmienić?"
+}
