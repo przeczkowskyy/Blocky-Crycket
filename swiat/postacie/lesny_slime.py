@@ -8,7 +8,7 @@ z liściem i małym grzybkiem zatopionymi w środku; podskakuje i zostawia lepki
 umiejętność „kwaśny plusk” zdziera pancerz.
 
 Wersja 2 (14.11.2026, uwaga właściciela: „ma być bardziej cute”): przeciwnik, ale uroczy, nie groźny.
-- Bryła: niższa i szersza kostka (3,1 × 2,3 × 2,8 studa; pet 2,4 × 2,25 × 2,35, gracz 5,7) z mocnym ścięciem
+- Bryła: sześcian 2,7 × 2,7 × 2,7 studa (uwaga Karola z 15.11; pet 2,4 × 2,25 × 2,35, gracz 5,7) ze ścięciem
   krawędzi — przysadzista jak galaretka. Na czubku kiełek z dwoma listkami, który kiwa się sprężyście przy każdym
   ruchu (liczone symulacją sprężyny z ruchu ciała).
 - Twarz: duże, okrągłe, błyszczące oczy (czarne, z jaśniejszą zielenią u dołu i dwoma białymi błyskami) osadzone
@@ -65,15 +65,15 @@ from swiat.postacie.biblioteka.postac import Postac, macierz_obrotu, razy_wektor
 ID = "lesny_slime"
 
 # ------------------------------------------------------------------------------------------- wymiary (studs)
-W, H, D = 3.1, 2.3, 2.8          # kostka: szer X, wys Y, głęb Z — niska i szeroka (pet: 2,4 × 2,25 × 2,35)
-FAZA = 0.42                      # mocne ścięcie krawędzi = pulchna, „miękka” kostka
+W, H, D = 2.7, 2.7, 2.7          # SZEŚCIAN (uwaga Karola z 15.11: „powinien być sześcianowy”); pet: 2,4 × 2,25 × 2,35
+FAZA = 0.32                      # ścięcie krawędzi: miękko, ale bryła ma czytać się jako sześcian
 ZF = D / 2                       # przednia ściana
 
 # twarz (wysokości od ziemi w spoczynku)
-YO, XO = 1.13, 0.66              # środek oczu, odległość oka od środka (nisko i szeroko)
+YO, XO = 1.32, 0.62              # środek oczu, odległość oka od środka (nisko i szeroko)
 OKO = (0.56, 0.68)               # oko: szer, wys
-YU = 0.72                        # środek ust (tuż pod oczami)
-YP, XP = 0.70, 0.98              # rumieńce / policzki (na wysokości ust, z boku pod oczami)
+YU = 0.86                        # środek ust (tuż pod oczami)
+YP, XP = 0.82, 0.84              # rumieńce / policzki (na wysokości ust, z boku pod oczami)
 Z_TW = 0.045                     # bryły twarzy: środek 0,045 przed przednią ścianą (wystają 0,03–0,06)
 POKAZ = 0.1                      # o ile wysuwa się schowana wersja oczu/ust (schowana: przód 0,04 pod ścianą)
 
@@ -82,7 +82,7 @@ USTA = (0.0, YU, ZF)             # wspólny staw wszystkich wersji ust
 POLICZKI = (0.0, YP, ZF)
 KULA = (0.0, YU, ZF - 0.45)      # staw bańki kwasu = jej środek (schowana za ustami)
 R_KULA = 0.28
-LISC = (0.3, 1.38, -0.25)        # środek liścia w kostce
+LISC = (0.3, 1.62, -0.25)        # środek liścia w kostce
 GRZYB = (-0.72, 0.42, -0.45)     # podstawa grzybka
 GRZYB_H = (0.36, 0.32)           # wysokość trzonu i kapelusza grzybka
 GRZYB_SZ = (0.24, 0.76)          # szerokość trzonu i kapelusza
@@ -101,7 +101,7 @@ BOKI = {  # kość: (staw = środek schowanego brzuszka, kierunek wysuwania)
     "Przod": ((0.0, 0.45, ZF - _G - 0.3), (0, 0, 1)),   # głębiej: inaczej przebijał dolne ścięcie („drugi uśmiech”)
     "Tyl": ((0.0, Y_BRZ, -ZF + _G), (0, 0, -1)),
 }
-KROPLE = {"KroplaL": (1.95, 0.85, 0.2), "KroplaP": (-1.9, 1.05, 0.17), "KroplaT": (1.2, -1.75, 0.16)}  # x, z, promień
+KROPLE = {"KroplaL": (1.75, 0.85, 0.2), "KroplaP": (-1.7, 1.05, 0.17), "KroplaT": (1.2, -1.7, 0.16)}  # x, z, promień
 
 PALETA = {
     "skorupka": "7EDB57",      # galareta: jednolita, soczysta jasna zieleń, lekko świecąca

@@ -1,7 +1,7 @@
 ---
 status: propozycja
 tags: [postacie, potwor, model-3d]
-źródło: "swiat/postacie/lesny_slime.py (model z Blendera, 14.11.2026, wersja 2 po uwadze „ma być bardziej cute”)"
+źródło: "swiat/postacie/lesny_slime.py (model z Blendera, 14.11.2026, wersja 2 po uwadze „ma być bardziej cute”; 15.11.2026: bryła zmieniona na sześcian)"
 ---
 # Leśny Slime
 
@@ -20,7 +20,7 @@ Zwykły przeciwnik lasu w walce: pulchna kostka galarety z dużą ilością życ
 - Policzki nadymają się przy kwaśnym plusku.
 
 ## Wymiary
-- Kostka ma 3,1 × 2,3 × 2,8 studa (pet ma 2,25 wysokości, gracz 5,7). Z kiełkiem i kropelkami zajmuje 4,2 × 3,0 × 3,4 studa.
+- Kostka to sześcian 2,7 × 2,7 × 2,7 studa (pet ma 2,25 wysokości, gracz 5,7) — od 15.11.2026, po uwadze Karola „powinien być sześcianowy”; twarz i animacje bez zmian. Z kiełkiem i kropelkami zajmuje 3,8 × 3,4 × 3,3 studa.
 - Model ma 4396 trójkątów w 25 siatkach (limit Roblox to 20 000 na siatkę). Szkielet ma 28 kości: Root i 27 własnych (to nie R15). Każda wersja oczu i ust ma własną kość.
 
 ## Klipy (30 kl./s, patrzy w +Z)

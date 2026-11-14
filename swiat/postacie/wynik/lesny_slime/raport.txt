@@ -2,7 +2,7 @@ RAPORT — lesny_slime
 LEŚNY SLIME — zwykły przeciwnik lasu: pulchna, soczyście zielona kostka galarety z uroczą buzią i kiełkiem na czubku.
 
 Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
-Źródło: swiat/postacie/lesny_slime.py · wygenerowano 14.11.2026 poleceniem:
+Źródło: swiat/postacie/lesny_slime.py · wygenerowano 15.11.2026 poleceniem:
   python -B swiat/postacie/przebuduj.py lesny_slime
 Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
 
@@ -27,23 +27,23 @@ ZNANE SŁABOŚCI
 - Klipy to szkice (0,6–2,2 s), nie gotowa animacja.
 
 MODEL lesny_slime „Leśny Slime” (stwor)
-  wymiary ciała: 4,22 × 2,98 × 3,38; z akcesoriami: 4,22 × 2,98 × 3,38
+  wymiary ciała: 3,82 × 3,38 × 3,29; z akcesoriami: 3,82 × 3,38 × 3,29
   trójkąty: 4396 (siatek: 25)
   kości (28): Root, Cialo, Dol, Gora, Kielek, ListekL, ListekP, Oczy, Powieki, OczyRad, OczyZac, OczyWiel, Usta, UstaO, UstaRad, UstaFala, Policzki, BokL, BokP, Przod, Tyl, Lisc, Grzybek, Kula, Plusk, KroplaL, KroplaP, KroplaT
   klipy: idle 60 kl. 2,00 s pętla, ruch 24 kl. 0,80 s pętla, atak 30 kl. 1,00 s jednorazowy, umiejetnosc 66 kl. 2,20 s jednorazowy, trafienie 18 kl. 0,60 s jednorazowy, unik 27 kl. 0,90 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, wiwat 40 kl. 1,33 s pętla
   punkty zaczepienia: RootAttachment, GlowaAttachment, PyskAttachment, PluskAttachment
 
 KONTROLA EKSPORTÓW
-- lesny_slime.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje brak -> ZGODNE
-- lesny_slime__idle.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-61 -> ZGODNE
-- lesny_slime__ruch.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-25 -> ZGODNE
-- lesny_slime__atak.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-31 -> ZGODNE
-- lesny_slime__umiejetnosc.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-67 -> ZGODNE
-- lesny_slime__trafienie.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-19 -> ZGODNE
-- lesny_slime__unik.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-28 -> ZGODNE
-- lesny_slime__upadek.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-61 -> ZGODNE
-- lesny_slime__wiwat.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje lesny_slime|Scene 1-41 -> ZGODNE
-- lesny_slime.glb: siatki 29, kości 28, trójkąty 4444, wzrost 2.98 st., akcje atak 0-30, idle 0-60, ruch 0-24, trafienie 0-18, umiejetnosc 0-66, unik 0-27, upadek 0-60, wiwat 0-40 -> ZGODNE
+- lesny_slime.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 3.38 st., akcje brak -> ZGODNE
+- lesny_slime__idle.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 3.38 st., akcje lesny_slime|Scene 1-61 -> ZGODNE
+- lesny_slime__ruch.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 3.38 st., akcje lesny_slime|Scene 1-25 -> ZGODNE
+- lesny_slime__atak.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 3.38 st., akcje lesny_slime|Scene 1-31 -> ZGODNE
+- lesny_slime__umiejetnosc.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 3.38 st., akcje lesny_slime|Scene 1-67 -> ZGODNE
+- lesny_slime__trafienie.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 3.38 st., akcje lesny_slime|Scene 1-19 -> ZGODNE
+- lesny_slime__unik.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 3.38 st., akcje lesny_slime|Scene 1-28 -> ZGODNE
+- lesny_slime__upadek.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 3.38 st., akcje lesny_slime|Scene 1-61 -> ZGODNE
+- lesny_slime__wiwat.fbx: siatki 29, kości 28, trójkąty 4444, wzrost 3.38 st., akcje lesny_slime|Scene 1-41 -> ZGODNE
+- lesny_slime.glb: siatki 29, kości 28, trójkąty 4444, wzrost 3.38 st., akcje atak 0-30, idle 0-60, ruch 0-24, trafienie 0-18, umiejetnosc 0-66, unik 0-27, upadek 0-60, wiwat 0-40 -> ZGODNE
 
 PLIKI
 - lesny_slime.blend

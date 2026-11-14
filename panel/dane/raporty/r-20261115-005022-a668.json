@@ -1,0 +1,23 @@
+{
+ "id": "r-20261115-005022-a668",
+ "tytul": "Model: Leśny Slime — wersja 3, sześcian",
+ "opis_md": "Drobna poprawka po uwadze Karola: „slime powinien być sześcianowy, animacje bardzo dobre”.\n\n- **Co zmienione:** tylko kształt bryły. Zamiast niskiej, szerokiej kostki jest teraz równy sześcian (2,7 × 2,7 × 2,7 studa) z trochę mniejszym ścięciem krawędzi, żeby czytał się jako sześcian.\n- **Co zostało:** twarz, miny i wszystkie osiem ruchów — bez zmian. Dopasowane jest tylko położenie twarzy i kropelek do nowej bryły.\n- **Na obrazkach:** plansza z czterech stron, duży kadr oraz klatki pacnięcia, plucia bańką i rozpływania się w kałużkę.\n- To nadal **propozycja**; modelu nie ma jeszcze w Roblox. Nazwy ruchów i kości bez zmian.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T00:50:22+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Postacie/Leśny Slime.md",
+   "etykieta": "Notatka"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg"
+ ],
+ "pytanie": "Czy sześcienny slime jest już dobry?"
+}
