@@ -1,0 +1,34 @@
+{
+ "id": "r-20261115-005603-a641",
+ "tytul": "Walka v2 na ekranie - prototyp w Studio",
+ "opis_md": "**Walka v2 na ekranie — prototyp tylko w Roblox Studio** (obok starego prototypu, który zostaje bez zmian).\n\n1. **Co widać:** nowa leśna arena na południe od miejsca startu. Przy tablicy „WALKA v2” wybierasz klasę (Wojownik, Zwiadowca, Mag), przeciwnika z lasu i poziom (1, 5 albo 10). Potem oglądasz całą walkę policzoną przez nowy silnik walki, od pierwszego ciosu do łupu.\n2. **Jak obejrzeć:** w Studio naciśnij Play. Idź na południe do zielonego, świecącego słupa. Przy tablicy naciśnij E, wybierz walkę i kliknij WALCZ! Na dole ekranu są przyciski ×1, ×2, ×4 (tempo) i POMIŃ. Na końcu wybierasz JESZCZE RAZ albo ZAMKNIJ.\n3. **Nowe względem starego prototypu:** prawdziwe walki nowego silnika z umiejętnościami, krytykami, blokami, tarczami i efektami (trucizna, ogień, krwawienie, spowolnienie). Grają nasze modele z własnymi ruchami. Czary i strzały naprawdę lecą. Efekty widać na postaci przez cały czas trwania, a przy pasku są ikony z licznikiem tur. Walka trwa tyle, ile wyliczy silnik: czasem 3 tury, czasem 30.\n4. **Poprawione po przeglądzie:** kamera w chwili trafienia pokazuje i tego, kto bije, i cel. Napisy zgadzają się z dziennikiem walki („SPOWOLNIENIE!”). Nie ma już „−0”, gdy cios weźmie tarcza. Gdy serwer odmówi walki, gracz widzi powód. Panel wyboru da się przeczytać na ekranie wielkości telefonu (sprawdzone w emulacji).\n5. **Modele zastępcze:** Leśny Slime to przemalowany na zielono slime-pet, a Strażnik Lasu to powiększony troll. Prawdziwe modele (Leśny Slime i Strażnik Gaju) dojdą później. Rycerz i Kot-Mag mają na razie szkicowe ruchy (blok, unik, cięcie, czary).\n6. **Co jeszcze słabe:** czary i strzały są bez dźwięku, a strzała leci bardzo szybko. Gdy w jednej turze dzieje się dużo, robi się tłoczno od napisów. Duże modele bywają przycięte w zbliżeniach. Na prawdziwym telefonie nikt jeszcze tego nie oglądał.\n7. **Obrys (do decyzji):** ostatnie zdjęcie porównuje trzy wersje: bez obrysu, z cienkim obrysem i z grubą czarną linią komiksową (u Trolla to dodatkowe 92 części). Na razie walka jest bez obrysu.\n8. **To prototyp:** działa tylko w Studio i nie trafi do gry. Przed publikacją miejsca usuwa się go jednym poleceniem.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T00:56:03+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/test_walki2/README.md",
+   "etykieta": "Jak obejrzec"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestWalki2",
+   "etykieta": "Arena walki v2"
+  },
+  {
+   "typ": "migawka",
+   "cel": "20261115-005554-998f",
+   "etykieta": "Migawka areny"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ],
+ "pytanie": "Czy tak maja wygladac walki? Co poprawic najpierw?"
+}

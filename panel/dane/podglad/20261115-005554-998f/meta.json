@@ -1,0 +1,117 @@
+{
+ "id": "20261115-005554-998f",
+ "tytul": "Walka v2: arena i aktorzy (prototyp)",
+ "opis": "Leśna arena prototypu walki v2 z tablicą wyboru i galerią ośmiu aktorów (Leśny Slime i Strażnik Lasu zastępcze). Tylko Studio.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T00:55:55+01:00",
+ "zrodlo": "studio",
+ "czesci": 2379,
+ "grupy": [
+  {
+   "sciezka": "Workspace/TestWalki2/Aktorzy/cierniowy_wilk",
+   "czesci": 544
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Aktorzy/lesny_slime",
+   "czesci": 42
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Aktorzy/lesny_troll",
+   "czesci": 390
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Aktorzy/mag",
+   "czesci": 166
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Aktorzy/muchomornik",
+   "czesci": 157
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Aktorzy/straznik_lasu",
+   "czesci": 392
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Aktorzy/wojownik",
+   "czesci": 123
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Aktorzy/zwiadowca",
+   "czesci": 182
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Arena/Las",
+   "czesci": 325
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Arena/Podest",
+   "czesci": 28
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Arena/Podloze",
+   "czesci": 2
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Arena/Slup",
+   "czesci": 6
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Arena/Tablica",
+   "czesci": 6
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Galeria/cierniowy_wilk",
+   "czesci": 2
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Galeria/lesny_slime",
+   "czesci": 2
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Galeria/lesny_troll",
+   "czesci": 2
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Galeria/mag",
+   "czesci": 2
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Galeria/muchomornik",
+   "czesci": 2
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Galeria/straznik_lasu",
+   "czesci": 2
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Galeria/wojownik",
+   "czesci": 2
+  },
+  {
+   "sciezka": "Workspace/TestWalki2/Galeria/zwiadowca",
+   "czesci": 2
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "zakres": {
+  "min": [
+   -74.0,
+   -0.482,
+   192.0
+  ],
+  "max": [
+   62.0,
+   151.6,
+   313.992
+  ]
+ },
+ "miejsce": {
+  "placeId": 129485428021967,
+  "nazwa": "Blocky&Crycket (placeId: 129485428021967)"
+ },
+ "korzen": "Workspace/TestWalki2"
+}
