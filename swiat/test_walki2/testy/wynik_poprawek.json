@@ -1,0 +1,156 @@
+{
+ "data": "2026-11-15 00:49",
+ "wynik": "29/29",
+ "testy": [
+  {
+   "test": "kadr ciecie (wojownik/lesny_slime/1, zd. 6, wrecz)",
+   "ok": true,
+   "opis": "krytyk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+  },
+  {
+   "test": "kadr miazdzacy_cios (wojownik/lesny_slime/5, zd. 8, wrecz)",
+   "ok": true,
+   "opis": "krytyk: atak w kadrze 0.98 odsł. 0.98 | cel w kadrze 1.00 odsł. 1.00"
+  },
+  {
+   "test": "kadr uderzenie_z_gory (zwiadowca/cierniowy_wilk/1, zd. 8, skok)",
+   "ok": true,
+   "opis": "krytyk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+  },
+  {
+   "test": "kadr zatruta_strzala (zwiadowca/lesny_slime/5, zd. 7, pocisk)",
+   "ok": true,
+   "opis": "pocisk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+  },
+  {
+   "test": "kadr kula_ognia (mag/cierniowy_wilk/1, zd. 8, pocisk)",
+   "ok": true,
+   "opis": "pocisk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+  },
+  {
+   "test": "kadr lodowy_pocisk (mag/lesny_slime/5, zd. 10, pocisk)",
+   "ok": true,
+   "opis": "pocisk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+  },
+  {
+   "test": "kadr kwasny_plusk (wojownik/lesny_slime/1, zd. 6, pocisk)",
+   "ok": true,
+   "opis": "boczny: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+  },
+  {
+   "test": "kadr rozszarpanie (wojownik/cierniowy_wilk/1, zd. 5, wrecz)",
+   "ok": true,
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 0.37 odsł. 0.37"
+  },
+  {
+   "test": "kadr chmura_zarodnikow (wojownik/muchomornik/1, zd. 5, chmura)",
+   "ok": true,
+   "opis": "pocisk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+  },
+  {
+   "test": "kadr ogluszajace_uderzenie (mag/lesny_troll/5, zd. 9, wrecz)",
+   "ok": true,
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+  },
+  {
+   "test": "kadr uscisk_korzeni (wojownik/straznik_lasu/5, zd. 9, korzenie)",
+   "ok": true,
+   "opis": "krytyk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+  },
+  {
+   "test": "kadr dluga: 21 trafień (wojownik/straznik_lasu/10)",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "kadr najdluzsza: 32 trafień (zwiadowca/straznik_lasu/1)",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "bez −0 przy pełnej tarczy (blok, wojownik/cierniowy_wilk/10 ziarno 475464, zd. 12)",
+   "ok": true,
+   "opis": "napisy: ['−71', '−47', '−80', 'BLOK!', '−12', 'UNIK!', 'BLOK!', '−17', '−140', 'ZDARTY PANCERZ!', 'KRYTYK!', '−173', 'KAMIENNA SKÓRA! 69', 'BLOK!', 'TARCZA −12']"
+  },
+  {
+   "test": "bez −0 przy pełnej tarczy (cios, mag/cierniowy_wilk/10 ziarno 150785, zd. 18)",
+   "ok": true,
+   "opis": "napisy: ['−83', '−60', '−83', '−66', '−229', 'PODPALENIE!', '−43', '−93', 'KRWAWIENIE!', '−27', 'UNIK!', '−43', '−66', '−27', 'BARIERA! 54', 'TARCZA −53']"
+  },
+  {
+   "test": "spowolnienie od ogluszajace_uderzenie (wojownik/lesny_troll/5 ziarno 104736, zd. 8)",
+   "ok": true,
+   "opis": "napisy ['−32', 'KRYTYK!', '−78', '−27', 'KRYTYK!', '−76', 'BLOK!', '−7', '−130', '−65', 'SPOWOLNIENIE!']; ozdoba Gwiazdka: 6 szt."
+  },
+  {
+   "test": "spowolnienie od uscisk_korzeni (wojownik/straznik_lasu/5 ziarno 104736, zd. 8)",
+   "ok": true,
+   "opis": "napisy ['−27', 'KRYTYK!', '−77', '−22', 'KRYTYK!', '−75', 'BLOK!', '−6', '−129', '−59', 'SPOWOLNIENIE!']; ozdoba Pnacze: 4 szt."
+  },
+  {
+   "test": "spowolnienie od lodowy_pocisk (mag/lesny_slime/5 ziarno 209465, zd. 12)",
+   "ok": true,
+   "opis": "napisy ['UNIK!', '−44', '−37', '−50', '−37', 'ZDARTY PANCERZ!', 'KRYTYK!', '−265', 'PODPALENIE!', '−25', '−45', '−116', 'SPOWOLNIENIE!']; ozdoba Krysztal: 5 szt."
+  },
+  {
+   "test": "odmiana w panelu wyniku (tury: 3, zdarzenia: 3, przegrana)",
+   "ok": true,
+   "opis": "Muchomornik (poz. 5) był silniejszy — 3 tury | dziennik policzył serwer  •  ziarno 823742  •  3 tury  •  3 zdarzenia  •  7.3 s"
+  },
+  {
+   "test": "odmiana w panelu wyniku (tury: 24, zdarzenia: 33, wygrana)",
+   "ok": true,
+   "opis": "Strażnik Lasu (poz. 10) pokonany w 24 turach | dziennik policzył serwer  •  ziarno 348759  •  24 tury  •  33 zdarzenia  •  39.1 s"
+  },
+  {
+   "test": "paski, tura i efekty = silnik (wojownik/cierniowy_wilk/1 ziarno 53484, 14 zdarzeń)",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "paski, tura i efekty = silnik (mag/cierniowy_wilk/5 ziarno 910854, 13 zdarzeń)",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "paski, tura i efekty = silnik (zwiadowca/lesny_troll/10 ziarno 950601, 14 zdarzeń)",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "paski, tura i efekty = silnik (wojownik/lesny_slime/10 ziarno 4043, 23 zdarzeń)",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "paski, tura i efekty = silnik (wojownik/straznik_lasu/10 ziarno 348759, 29 zdarzeń)",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "odmowa za_daleko → dymek z powodem",
+   "ok": true,
+   "opis": "{'dymek': 'Za daleko od tablicy — podejdź bliżej i spróbuj jeszcze raz.', 'stan': 'odmowa', 'komunikat': 'Za daleko od tablicy — podejdź bliżej i spróbuj jeszcze raz.', 'odmowa': 'za_daleko'}"
+  },
+  {
+   "test": "odmowa zly_wybor przy tablicy → panel z komunikatem",
+   "ok": true,
+   "opis": "{'panel': True, 'odmowa': 'zly_wybor', 'status': 'Serwer nie przyjął tego wyboru — wybierz jeszcze raz.'}"
+  },
+  {
+   "test": "konsola bez komunikatów z TestWalki2",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "Studio wróciło do trybu Edit",
+   "ok": true,
+   "opis": ""
+  }
+ ],
+ "progi_kadru": {
+  "wKadrze": 0.6,
+  "odslonietyCel": 0.45,
+  "odslonietyAtak": 0.3
+ }
+}

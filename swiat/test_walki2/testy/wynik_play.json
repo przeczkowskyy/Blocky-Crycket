@@ -1,0 +1,540 @@
+{
+ "wyniki": [
+  [
+   "1a. E przy tablicy otwiera panel wyboru",
+   true
+  ],
+  [
+   "1b. kliknięcia zaznaczają klasę, przeciwnika i poziom",
+   true
+  ],
+  [
+   "1c. WALCZ → walka startuje, panel znika",
+   true
+  ],
+  [
+   "1d. walka z panelu (wojownik/lesny_slime/1): panel wyniku",
+   true
+  ],
+  [
+   "1d. walka z panelu (wojownik/lesny_slime/1): dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "1d. walka z panelu (wojownik/lesny_slime/1): każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "1d. walka z panelu (wojownik/lesny_slime/1): paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "1d. walka z panelu (wojownik/lesny_slime/1): licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "1e. po pełnej walce JESZCZE RAZ od razu dostępne",
+   true
+  ],
+  [
+   "1f. po ZAMKNIJ: kamera Custom na postaci",
+   true
+  ],
+  [
+   "1f. po ZAMKNIJ: GUI walki i scena lokalna usunięte",
+   true
+  ],
+  [
+   "1f. po ZAMKNIJ: lista graczy i czat z powrotem",
+   true
+  ],
+  [
+   "1f. po ZAMKNIJ: blokady klawiszy zdjęte, podpowiedź włączona",
+   true
+  ],
+  [
+   "1f. po ZAMKNIJ: szablony aktorów znów widoczne",
+   true
+  ],
+  [
+   "1g. po ZAMKNIJ postać chodzi (W 0,9 s)",
+   true
+  ],
+  [
+   "2.2 wojownik/muchomornik/5 ×4: panel wyniku",
+   true
+  ],
+  [
+   "2.2 wojownik/muchomornik/5 ×4: dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "2.2 wojownik/muchomornik/5 ×4: każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "2.2 wojownik/muchomornik/5 ×4: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "2.2 wojownik/muchomornik/5 ×4: licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "2.3 wojownik/straznik_lasu/10 ×4: panel wyniku",
+   true
+  ],
+  [
+   "2.3 wojownik/straznik_lasu/10 ×4: dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "2.3 wojownik/straznik_lasu/10 ×4: każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "2.3 wojownik/straznik_lasu/10 ×4: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "2.3 wojownik/straznik_lasu/10 ×4: licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "2.4 zwiadowca/cierniowy_wilk/5 ×1: panel wyniku",
+   true
+  ],
+  [
+   "2.4 zwiadowca/cierniowy_wilk/5 ×1: dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "2.4 zwiadowca/cierniowy_wilk/5 ×1: każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "2.4 zwiadowca/cierniowy_wilk/5 ×1: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "2.4 zwiadowca/cierniowy_wilk/5 ×1: licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "2.5 zwiadowca/lesny_troll/10 ×4: panel wyniku",
+   true
+  ],
+  [
+   "2.5 zwiadowca/lesny_troll/10 ×4: dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "2.5 zwiadowca/lesny_troll/10 ×4: każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "2.5 zwiadowca/lesny_troll/10 ×4: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "2.5 zwiadowca/lesny_troll/10 ×4: licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "2.6 zwiadowca/lesny_slime/1 ×4: panel wyniku",
+   true
+  ],
+  [
+   "2.6 zwiadowca/lesny_slime/1 ×4: dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "2.6 zwiadowca/lesny_slime/1 ×4: każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "2.6 zwiadowca/lesny_slime/1 ×4: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "2.6 zwiadowca/lesny_slime/1 ×4: licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "2.7 mag/muchomornik/10 ×1: panel wyniku",
+   true
+  ],
+  [
+   "2.7 mag/muchomornik/10 ×1: dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "2.7 mag/muchomornik/10 ×1: każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "2.7 mag/muchomornik/10 ×1: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "2.7 mag/muchomornik/10 ×1: licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "2.8 mag/straznik_lasu/1 ×4: panel wyniku",
+   true
+  ],
+  [
+   "2.8 mag/straznik_lasu/1 ×4: dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "2.8 mag/straznik_lasu/1 ×4: każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "2.8 mag/straznik_lasu/1 ×4: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "2.8 mag/straznik_lasu/1 ×4: licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "2.9 mag/cierniowy_wilk/5 ×4: panel wyniku",
+   true
+  ],
+  [
+   "2.9 mag/cierniowy_wilk/5 ×4: dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "2.9 mag/cierniowy_wilk/5 ×4: każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "2.9 mag/cierniowy_wilk/5 ×4: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "2.9 mag/cierniowy_wilk/5 ×4: licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "2. każda klasa walczyła z ≥ 3 różnymi przeciwnikami",
+   true
+  ],
+  [
+   "3a. długa walka 24 tur (wojownik/straznik_lasu/10): panel wyniku",
+   true
+  ],
+  [
+   "3a. długa walka 24 tur (wojownik/straznik_lasu/10): dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "3a. długa walka 24 tur (wojownik/straznik_lasu/10): każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "3a. długa walka 24 tur (wojownik/straznik_lasu/10): paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "3a. długa walka 24 tur (wojownik/straznik_lasu/10): licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "3a'. długa walka: odtworzenie trwa ≥ czas dziennika (nic nie skrócone)",
+   true
+  ],
+  [
+   "3b. krótka walka 3 tury (mag/muchomornik/5): panel wyniku",
+   true
+  ],
+  [
+   "3b. krótka walka 3 tury (mag/muchomornik/5): dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "3b. krótka walka 3 tury (mag/muchomornik/5): każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "3b. krótka walka 3 tury (mag/muchomornik/5): paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "3b. krótka walka 3 tury (mag/muchomornik/5): licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "3c. klik ×4 w trakcie walki zmienia tempo",
+   true
+  ],
+  [
+   "3d. najdłuższa walka 33 tur przy ×4: panel wyniku",
+   true
+  ],
+  [
+   "3d. najdłuższa walka 33 tur przy ×4: dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "3d. najdłuższa walka 33 tur przy ×4: każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "3d. najdłuższa walka 33 tur przy ×4: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "3d. najdłuższa walka 33 tur przy ×4: licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "3e. ×4 skraca odtwarzanie (≈ 2 s + reszta/4)",
+   true
+  ],
+  [
+   "3f. POMIŃ → panel wyniku od razu",
+   true
+  ],
+  [
+   "3g. po POMIŃ: panel wyniku",
+   true
+  ],
+  [
+   "3g. po POMIŃ: dziennik z serwera = port Pythona",
+   true
+  ],
+  [
+   "3g. po POMIŃ: każde zdarzenie obsłużone, bez braków i błędów",
+   true
+  ],
+  [
+   "3g. po POMIŃ: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   true
+  ],
+  [
+   "3g. po POMIŃ: licznik tur = silnik, łup na panelu = dziennik",
+   true
+  ],
+  [
+   "3h. po POMIŃ JESZCZE RAZ zablokowane z odliczaniem",
+   true
+  ],
+  [
+   "3i. klik w trakcie blokady nic nie robi",
+   true
+  ],
+  [
+   "3j. blokada zdjęta po czasie walki",
+   true
+  ],
+  [
+   "3k. JESZCZE RAZ → nowa walka (ten sam wybór)",
+   true
+  ],
+  [
+   "4a. reset przerywa walkę",
+   true
+  ],
+  [
+   "4b. zaraz po resecie: kamera Custom na postaci",
+   true
+  ],
+  [
+   "4b. zaraz po resecie: GUI walki i scena lokalna usunięte",
+   true
+  ],
+  [
+   "4b. zaraz po resecie: lista graczy i czat z powrotem",
+   true
+  ],
+  [
+   "4b. zaraz po resecie: blokady klawiszy zdjęte, podpowiedź włączona",
+   true
+  ],
+  [
+   "4b. zaraz po resecie: szablony aktorów znów widoczne",
+   true
+  ],
+  [
+   "4c. po odrodzeniu: kamera Custom na postaci",
+   true
+  ],
+  [
+   "4c. po odrodzeniu: GUI walki i scena lokalna usunięte",
+   true
+  ],
+  [
+   "4c. po odrodzeniu: lista graczy i czat z powrotem",
+   true
+  ],
+  [
+   "4c. po odrodzeniu: blokady klawiszy zdjęte, podpowiedź włączona",
+   true
+  ],
+  [
+   "4c. po odrodzeniu: szablony aktorów znów widoczne",
+   true
+  ],
+  [
+   "4d. po odrodzeniu własna postać widoczna",
+   true
+  ],
+  [
+   "4e. po odrodzeniu postać chodzi",
+   true
+  ],
+  [
+   "5a. zły wybór „zla_klasa” → odmowa zly_wybor",
+   true
+  ],
+  [
+   "5a. zły wybór „poziom_liczba” → odmowa zly_wybor",
+   true
+  ],
+  [
+   "5a. zły wybór „poziom_spoza” → odmowa zly_wybor",
+   true
+  ],
+  [
+   "5a. zły wybór „zly_wrog” → odmowa zly_wybor",
+   true
+  ],
+  [
+   "5a. zły wybór „nie_tabela” → odmowa zly_wybor",
+   true
+  ],
+  [
+   "5a. zły wybór „bez_argumentow” → odmowa zly_wybor",
+   true
+  ],
+  [
+   "5b. liczby od klienta zignorowane (ziarno i statystyki serwera)",
+   true
+  ],
+  [
+   "5c. druga prośba w 1 s → za_szybko",
+   true
+  ],
+  [
+   "5d. prośba w trakcie sesji walki → walka_trwa",
+   true
+  ],
+  [
+   "5e. prośba z daleka (≈ 33 studów) → za_daleko",
+   true
+  ],
+  [
+   "5f. bez walki nie ma łupu (odmowy nie niosą dziennika ani łupu)",
+   true
+  ],
+  [
+   "6. obcy w pudle sceny i z tagiem: schowani w walce, widoczni przed i po",
+   true
+  ],
+  [
+   "7. poza Studio serwer usuwa swój kontener (serwer i klient)",
+   true
+  ],
+  [
+   "8. konsola bez komunikatów z TestWalki2",
+   true
+  ],
+  [
+   "Studio wróciło do trybu Edit",
+   true
+  ]
+ ],
+ "pomiary": [
+  {
+   "OstatniCzasTrwania": 27.76,
+   "OstatniaSredniaKlatki": 16.68,
+   "OstatniP95Klatki": 17.94,
+   "OstatniaMaksKlatki": 49.81,
+   "OstatniKosztSkryptuSredni": 0.21,
+   "OstatniKosztSkryptuP95": 0.43,
+   "OstatniKosztSkryptuMaks": 1.77,
+   "OstatniaLiczbaInstancji": 1108,
+   "OstatniaLiczbaUjec": 13,
+   "OstatniCzasPrzygotowania": 153,
+   "OstatniCzasSerwera": 75.8,
+   "OstatnieTempo": 1,
+   "nazwa": "wojownik/lesny_slime/1 ×1",
+   "czas_dziennika": 19.8,
+   "tury": 12
+  },
+  {
+   "OstatniCzasTrwania": 28.91,
+   "OstatniaSredniaKlatki": 16.7,
+   "OstatniP95Klatki": 17.88,
+   "OstatniaMaksKlatki": 92.31,
+   "OstatniKosztSkryptuSredni": 0.31,
+   "OstatniKosztSkryptuP95": 0.66,
+   "OstatniKosztSkryptuMaks": 1.93,
+   "OstatniaLiczbaInstancji": 2301,
+   "OstatniaLiczbaUjec": 18,
+   "OstatniCzasPrzygotowania": 170,
+   "OstatniCzasSerwera": 59.7,
+   "OstatnieTempo": 1,
+   "nazwa": "zwiadowca/cierniowy_wilk/5 ×1",
+   "czas_dziennika": 23.6,
+   "tury": 12
+  },
+  {
+   "OstatniCzasTrwania": 24.75,
+   "OstatniaSredniaKlatki": 16.68,
+   "OstatniP95Klatki": 17.96,
+   "OstatniaMaksKlatki": 51.55,
+   "OstatniKosztSkryptuSredni": 0.24,
+   "OstatniKosztSkryptuP95": 0.49,
+   "OstatniKosztSkryptuMaks": 2.19,
+   "OstatniaLiczbaInstancji": 1768,
+   "OstatniaLiczbaUjec": 14,
+   "OstatniCzasPrzygotowania": 169,
+   "OstatniCzasSerwera": 71.7,
+   "OstatnieTempo": 1,
+   "nazwa": "mag/muchomornik/10 ×1",
+   "czas_dziennika": 21.0,
+   "tury": 10
+  },
+  {
+   "OstatniCzasTrwania": 42.85,
+   "OstatniaSredniaKlatki": 16.67,
+   "OstatniP95Klatki": 17.89,
+   "OstatniaMaksKlatki": 37.43,
+   "OstatniKosztSkryptuSredni": 0.24,
+   "OstatniKosztSkryptuP95": 0.5,
+   "OstatniKosztSkryptuMaks": 1.97,
+   "OstatniaLiczbaInstancji": 2303,
+   "OstatniaLiczbaUjec": 22,
+   "OstatniCzasPrzygotowania": 168,
+   "OstatniCzasSerwera": 74.4,
+   "OstatnieTempo": 1,
+   "nazwa": "długa 24 tur ×1",
+   "czas_dziennika": 39.1,
+   "tury": 24
+  },
+  {
+   "OstatniCzasTrwania": 12.61,
+   "OstatniaSredniaKlatki": 16.67,
+   "OstatniP95Klatki": 17.97,
+   "OstatniaMaksKlatki": 32.76,
+   "OstatniKosztSkryptuSredni": 0.24,
+   "OstatniKosztSkryptuP95": 0.5,
+   "OstatniKosztSkryptuMaks": 1.62,
+   "OstatniaLiczbaInstancji": 1257,
+   "OstatniaLiczbaUjec": 4,
+   "OstatniCzasPrzygotowania": 169,
+   "OstatniCzasSerwera": 57.1,
+   "OstatnieTempo": 1,
+   "nazwa": "krótka 3 tury ×1",
+   "czas_dziennika": 7.3,
+   "tury": 3
+  }
+ ],
+ "data": "2026-11-15 00:48"
+}

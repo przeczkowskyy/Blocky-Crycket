@@ -1,0 +1,1134 @@
+{
+ "najdluzsza": {
+  "klasa": "zwiadowca",
+  "przeciwnik": "straznik_lasu",
+  "poziom": 1,
+  "ziarno": 158424,
+  "wynik": "przegrana",
+  "tury": 33,
+  "zdarzen": 35,
+  "czas": 47.7,
+  "typy": [
+   "cios",
+   "efekt_koniec",
+   "efekt_nalozony",
+   "krytyk",
+   "umiejetnosc",
+   "unik",
+   "utrata_tury"
+  ],
+  "umiejetnosci": [
+   "uderzenie_z_gory",
+   "uscisk_korzeni"
+  ],
+  "trafione": [
+   "uderzenie_z_gory",
+   "uscisk_korzeni"
+  ],
+  "krytyk": true,
+  "lup": {
+   "zloto": 0,
+   "doswiadczenie": 20,
+   "tokeny_krainy": 0,
+   "gemy": 0,
+   "shard_ewolucji": 0,
+   "kraina": "las"
+  }
+ },
+ "dluga": {
+  "klasa": "wojownik",
+  "przeciwnik": "straznik_lasu",
+  "poziom": 10,
+  "ziarno": 348759,
+  "wynik": "wygrana",
+  "tury": 24,
+  "zdarzen": 33,
+  "czas": 39.1,
+  "typy": [
+   "blok",
+   "cios",
+   "efekt_koniec",
+   "efekt_nalozony",
+   "umiejetnosc",
+   "utrata_tury"
+  ],
+  "umiejetnosci": [
+   "ciecie",
+   "kamienna_skora",
+   "miazdzacy_cios",
+   "uscisk_korzeni"
+  ],
+  "trafione": [
+   "ciecie",
+   "kamienna_skora",
+   "miazdzacy_cios",
+   "uscisk_korzeni"
+  ],
+  "krytyk": true,
+  "lup": {
+   "zloto": 597,
+   "doswiadczenie": 475,
+   "tokeny_krainy": 6,
+   "gemy": 0,
+   "shard_ewolucji": 0,
+   "kraina": "las"
+  }
+ },
+ "krotka": {
+  "klasa": "mag",
+  "przeciwnik": "muchomornik",
+  "poziom": 5,
+  "ziarno": 823742,
+  "wynik": "przegrana",
+  "tury": 3,
+  "zdarzen": 3,
+  "czas": 7.3,
+  "typy": [
+   "cios",
+   "krytyk"
+  ],
+  "umiejetnosci": [],
+  "trafione": [],
+  "krytyk": true,
+  "lup": {
+   "zloto": 0,
+   "doswiadczenie": 8,
+   "tokeny_krainy": 0,
+   "gemy": 0,
+   "shard_ewolucji": 0,
+   "kraina": "las"
+  }
+ },
+ "wszystkie_typy": {
+  "wojownik": {
+   "klasa": "wojownik",
+   "przeciwnik": "cierniowy_wilk",
+   "poziom": 5,
+   "ziarno": 277334,
+   "wynik": "wygrana",
+   "tury": 10,
+   "zdarzen": 13,
+   "czas": 17.6,
+   "typy": [
+    "blok",
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "krytyk",
+    "umiejetnosc",
+    "unik",
+    "utrata_tury"
+   ],
+   "umiejetnosci": [
+    "ciecie",
+    "miazdzacy_cios",
+    "rozszarpanie"
+   ],
+   "trafione": [
+    "miazdzacy_cios"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 53,
+    "doswiadczenie": 37,
+    "tokeny_krainy": 2,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   },
+   "brakuje": [
+    "efekt_tick"
+   ]
+  },
+  "zwiadowca": {
+   "klasa": "zwiadowca",
+   "przeciwnik": "lesny_troll",
+   "poziom": 10,
+   "ziarno": 950601,
+   "wynik": "przegrana",
+   "tury": 11,
+   "zdarzen": 15,
+   "czas": 18.9,
+   "typy": [
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc",
+    "unik",
+    "utrata_tury"
+   ],
+   "umiejetnosci": [
+    "ogluszajace_uderzenie",
+    "uderzenie_z_gory",
+    "zatruta_strzala"
+   ],
+   "trafione": [
+    "ogluszajace_uderzenie",
+    "uderzenie_z_gory",
+    "zatruta_strzala"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 0,
+    "doswiadczenie": 41,
+    "tokeny_krainy": 0,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   },
+   "brakuje": []
+  },
+  "mag": {
+   "klasa": "mag",
+   "przeciwnik": "cierniowy_wilk",
+   "poziom": 5,
+   "ziarno": 910854,
+   "wynik": "wygrana",
+   "tury": 9,
+   "zdarzen": 14,
+   "czas": 17.3,
+   "typy": [
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc",
+    "unik",
+    "utrata_tury"
+   ],
+   "umiejetnosci": [
+    "kula_ognia",
+    "lodowy_pocisk",
+    "rozszarpanie"
+   ],
+   "trafione": [
+    "lodowy_pocisk",
+    "rozszarpanie"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 51,
+    "doswiadczenie": 41,
+    "tokeny_krainy": 2,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   },
+   "brakuje": []
+  }
+ },
+ "umiejetnosci": {
+  "ciecie": {
+   "klasa": "wojownik",
+   "przeciwnik": "lesny_slime",
+   "poziom": 1,
+   "ziarno": 356397,
+   "wynik": "wygrana",
+   "tury": 6,
+   "zdarzen": 6,
+   "czas": 11.6,
+   "typy": [
+    "blok",
+    "cios",
+    "krytyk",
+    "umiejetnosc"
+   ],
+   "umiejetnosci": [
+    "ciecie",
+    "kwasny_plusk"
+   ],
+   "trafione": [
+    "ciecie"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 18,
+    "doswiadczenie": 12,
+    "tokeny_krainy": 1,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "miazdzacy_cios": {
+   "klasa": "wojownik",
+   "przeciwnik": "lesny_slime",
+   "poziom": 5,
+   "ziarno": 554496,
+   "wynik": "wygrana",
+   "tury": 7,
+   "zdarzen": 8,
+   "czas": 13.2,
+   "typy": [
+    "cios",
+    "efekt_nalozony",
+    "krytyk",
+    "umiejetnosc",
+    "unik"
+   ],
+   "umiejetnosci": [
+    "ciecie",
+    "kwasny_plusk",
+    "miazdzacy_cios"
+   ],
+   "trafione": [
+    "ciecie",
+    "kwasny_plusk",
+    "miazdzacy_cios"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 60,
+    "doswiadczenie": 31,
+    "tokeny_krainy": 2,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "kamienna_skora": {
+   "klasa": "wojownik",
+   "przeciwnik": "lesny_slime",
+   "poziom": 10,
+   "ziarno": 24078,
+   "wynik": "wygrana",
+   "tury": 11,
+   "zdarzen": 15,
+   "czas": 19.6,
+   "typy": [
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "krytyk",
+    "umiejetnosc",
+    "unik"
+   ],
+   "umiejetnosci": [
+    "ciecie",
+    "kamienna_skora",
+    "kwasny_plusk",
+    "miazdzacy_cios"
+   ],
+   "trafione": [
+    "ciecie",
+    "kamienna_skora",
+    "kwasny_plusk",
+    "miazdzacy_cios"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 91,
+    "doswiadczenie": 55,
+    "tokeny_krainy": 2,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "uderzenie_z_gory": {
+   "klasa": "zwiadowca",
+   "przeciwnik": "cierniowy_wilk",
+   "poziom": 1,
+   "ziarno": 47559,
+   "wynik": "wygrana",
+   "tury": 6,
+   "zdarzen": 8,
+   "czas": 12.8,
+   "typy": [
+    "cios",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc"
+   ],
+   "umiejetnosci": [
+    "rozszarpanie",
+    "uderzenie_z_gory"
+   ],
+   "trafione": [
+    "rozszarpanie",
+    "uderzenie_z_gory"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 20,
+    "doswiadczenie": 15,
+    "tokeny_krainy": 1,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "zatruta_strzala": {
+   "klasa": "zwiadowca",
+   "przeciwnik": "lesny_slime",
+   "poziom": 5,
+   "ziarno": 47680,
+   "wynik": "wygrana",
+   "tury": 7,
+   "zdarzen": 7,
+   "czas": 12.8,
+   "typy": [
+    "cios",
+    "krytyk",
+    "umiejetnosc",
+    "unik"
+   ],
+   "umiejetnosci": [
+    "kwasny_plusk",
+    "uderzenie_z_gory",
+    "zatruta_strzala"
+   ],
+   "trafione": [
+    "uderzenie_z_gory",
+    "zatruta_strzala"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 45,
+    "doswiadczenie": 34,
+    "tokeny_krainy": 1,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "skupienie": {
+   "klasa": "zwiadowca",
+   "przeciwnik": "lesny_slime",
+   "poziom": 10,
+   "ziarno": 546732,
+   "wynik": "wygrana",
+   "tury": 10,
+   "zdarzen": 13,
+   "czas": 17.1,
+   "typy": [
+    "cios",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc",
+    "unik"
+   ],
+   "umiejetnosci": [
+    "kwasny_plusk",
+    "skupienie",
+    "uderzenie_z_gory",
+    "zatruta_strzala"
+   ],
+   "trafione": [
+    "skupienie",
+    "uderzenie_z_gory",
+    "zatruta_strzala"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 81,
+    "doswiadczenie": 55,
+    "tokeny_krainy": 1,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "kula_ognia": {
+   "klasa": "mag",
+   "przeciwnik": "cierniowy_wilk",
+   "poziom": 1,
+   "ziarno": 47559,
+   "wynik": "wygrana",
+   "tury": 6,
+   "zdarzen": 8,
+   "czas": 12.4,
+   "typy": [
+    "cios",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc"
+   ],
+   "umiejetnosci": [
+    "kula_ognia",
+    "rozszarpanie"
+   ],
+   "trafione": [
+    "kula_ognia",
+    "rozszarpanie"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 26,
+    "doswiadczenie": 14,
+    "tokeny_krainy": 1,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "lodowy_pocisk": {
+   "klasa": "mag",
+   "przeciwnik": "lesny_slime",
+   "poziom": 5,
+   "ziarno": 63518,
+   "wynik": "wygrana",
+   "tury": 7,
+   "zdarzen": 10,
+   "czas": 14.4,
+   "typy": [
+    "cios",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc"
+   ],
+   "umiejetnosci": [
+    "kula_ognia",
+    "kwasny_plusk",
+    "lodowy_pocisk"
+   ],
+   "trafione": [
+    "kula_ognia",
+    "kwasny_plusk",
+    "lodowy_pocisk"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 44,
+    "doswiadczenie": 33,
+    "tokeny_krainy": 1,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "bariera": {
+   "klasa": "mag",
+   "przeciwnik": "lesny_slime",
+   "poziom": 10,
+   "ziarno": 31997,
+   "wynik": "wygrana",
+   "tury": 11,
+   "zdarzen": 20,
+   "czas": 21.9,
+   "typy": [
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc",
+    "utrata_tury"
+   ],
+   "umiejetnosci": [
+    "bariera",
+    "kula_ognia",
+    "kwasny_plusk",
+    "lodowy_pocisk"
+   ],
+   "trafione": [
+    "bariera",
+    "kula_ognia",
+    "kwasny_plusk",
+    "lodowy_pocisk"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 103,
+    "doswiadczenie": 53,
+    "tokeny_krainy": 2,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "kwasny_plusk": {
+   "klasa": "wojownik",
+   "przeciwnik": "lesny_slime",
+   "poziom": 1,
+   "ziarno": 451425,
+   "wynik": "wygrana",
+   "tury": 7,
+   "zdarzen": 8,
+   "czas": 13.1,
+   "typy": [
+    "cios",
+    "efekt_nalozony",
+    "krytyk",
+    "umiejetnosc"
+   ],
+   "umiejetnosci": [
+    "ciecie",
+    "kwasny_plusk"
+   ],
+   "trafione": [
+    "ciecie",
+    "kwasny_plusk"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 19,
+    "doswiadczenie": 12,
+    "tokeny_krainy": 2,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "rozszarpanie": {
+   "klasa": "wojownik",
+   "przeciwnik": "cierniowy_wilk",
+   "poziom": 1,
+   "ziarno": 55478,
+   "wynik": "wygrana",
+   "tury": 6,
+   "zdarzen": 8,
+   "czas": 11.7,
+   "typy": [
+    "cios",
+    "efekt_nalozony",
+    "efekt_tick",
+    "umiejetnosc"
+   ],
+   "umiejetnosci": [
+    "ciecie",
+    "rozszarpanie"
+   ],
+   "trafione": [
+    "ciecie",
+    "rozszarpanie"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 23,
+    "doswiadczenie": 14,
+    "tokeny_krainy": 1,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "chmura_zarodnikow": {
+   "klasa": "wojownik",
+   "przeciwnik": "muchomornik",
+   "poziom": 1,
+   "ziarno": 15880,
+   "wynik": "wygrana",
+   "tury": 6,
+   "zdarzen": 8,
+   "czas": 12.2,
+   "typy": [
+    "cios",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc",
+    "unik"
+   ],
+   "umiejetnosci": [
+    "chmura_zarodnikow",
+    "ciecie"
+   ],
+   "trafione": [
+    "chmura_zarodnikow",
+    "ciecie"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 21,
+    "doswiadczenie": 15,
+    "tokeny_krainy": 1,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "ogluszajace_uderzenie": {
+   "klasa": "mag",
+   "przeciwnik": "lesny_troll",
+   "poziom": 5,
+   "ziarno": 150627,
+   "wynik": "wygrana",
+   "tury": 8,
+   "zdarzen": 10,
+   "czas": 15.6,
+   "typy": [
+    "cios",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc"
+   ],
+   "umiejetnosci": [
+    "kula_ognia",
+    "lodowy_pocisk",
+    "ogluszajace_uderzenie"
+   ],
+   "trafione": [
+    "kula_ognia",
+    "lodowy_pocisk",
+    "ogluszajace_uderzenie"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 157,
+    "doswiadczenie": 122,
+    "tokeny_krainy": 4,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  "uscisk_korzeni": {
+   "klasa": "wojownik",
+   "przeciwnik": "straznik_lasu",
+   "poziom": 5,
+   "ziarno": 689121,
+   "wynik": "wygrana",
+   "tury": 13,
+   "zdarzen": 17,
+   "czas": 21.3,
+   "typy": [
+    "blok",
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "umiejetnosc",
+    "utrata_tury"
+   ],
+   "umiejetnosci": [
+    "ciecie",
+    "miazdzacy_cios",
+    "uscisk_korzeni"
+   ],
+   "trafione": [
+    "ciecie",
+    "miazdzacy_cios",
+    "uscisk_korzeni"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 293,
+    "doswiadczenie": 242,
+    "tokeny_krainy": 5,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  }
+ },
+ "play": [
+  {
+   "klasa": "wojownik",
+   "przeciwnik": "lesny_slime",
+   "poziom": 1,
+   "ziarno": 198017,
+   "wynik": "wygrana",
+   "tury": 12,
+   "zdarzen": 14,
+   "czas": 19.8,
+   "typy": [
+    "blok",
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "krytyk",
+    "umiejetnosc",
+    "unik"
+   ],
+   "umiejetnosci": [
+    "ciecie",
+    "kwasny_plusk"
+   ],
+   "trafione": [
+    "ciecie",
+    "kwasny_plusk"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 22,
+    "doswiadczenie": 12,
+    "tokeny_krainy": 2,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  {
+   "klasa": "wojownik",
+   "przeciwnik": "muchomornik",
+   "poziom": 5,
+   "ziarno": 71437,
+   "wynik": "wygrana",
+   "tury": 11,
+   "zdarzen": 18,
+   "czas": 20.4,
+   "typy": [
+    "blok",
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "efekt_tick",
+    "umiejetnosc",
+    "unik",
+    "utrata_tury"
+   ],
+   "umiejetnosci": [
+    "chmura_zarodnikow",
+    "ciecie",
+    "miazdzacy_cios"
+   ],
+   "trafione": [
+    "chmura_zarodnikow",
+    "ciecie",
+    "miazdzacy_cios"
+   ],
+   "krytyk": false,
+   "lup": {
+    "zloto": 54,
+    "doswiadczenie": 37,
+    "tokeny_krainy": 2,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  {
+   "klasa": "wojownik",
+   "przeciwnik": "straznik_lasu",
+   "poziom": 10,
+   "ziarno": 515058,
+   "wynik": "przegrana",
+   "tury": 11,
+   "zdarzen": 14,
+   "czas": 19.2,
+   "typy": [
+    "blok",
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "krytyk",
+    "umiejetnosc",
+    "utrata_tury"
+   ],
+   "umiejetnosci": [
+    "ciecie",
+    "miazdzacy_cios",
+    "uscisk_korzeni"
+   ],
+   "trafione": [
+    "ciecie",
+    "miazdzacy_cios",
+    "uscisk_korzeni"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 0,
+    "doswiadczenie": 92,
+    "tokeny_krainy": 0,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  {
+   "klasa": "zwiadowca",
+   "przeciwnik": "cierniowy_wilk",
+   "poziom": 5,
+   "ziarno": 641608,
+   "wynik": "wygrana",
+   "tury": 12,
+   "zdarzen": 20,
+   "czas": 23.6,
+   "typy": [
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc",
+    "unik"
+   ],
+   "umiejetnosci": [
+    "rozszarpanie",
+    "uderzenie_z_gory",
+    "zatruta_strzala"
+   ],
+   "trafione": [
+    "rozszarpanie",
+    "uderzenie_z_gory",
+    "zatruta_strzala"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 68,
+    "doswiadczenie": 41,
+    "tokeny_krainy": 1,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  {
+   "klasa": "zwiadowca",
+   "przeciwnik": "lesny_troll",
+   "poziom": 10,
+   "ziarno": 950601,
+   "wynik": "przegrana",
+   "tury": 11,
+   "zdarzen": 15,
+   "czas": 18.9,
+   "typy": [
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc",
+    "unik",
+    "utrata_tury"
+   ],
+   "umiejetnosci": [
+    "ogluszajace_uderzenie",
+    "uderzenie_z_gory",
+    "zatruta_strzala"
+   ],
+   "trafione": [
+    "ogluszajace_uderzenie",
+    "uderzenie_z_gory",
+    "zatruta_strzala"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 0,
+    "doswiadczenie": 41,
+    "tokeny_krainy": 0,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  {
+   "klasa": "zwiadowca",
+   "przeciwnik": "lesny_slime",
+   "poziom": 1,
+   "ziarno": 237612,
+   "wynik": "przegrana",
+   "tury": 11,
+   "zdarzen": 13,
+   "czas": 18.1,
+   "typy": [
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "krytyk",
+    "umiejetnosc",
+    "unik"
+   ],
+   "umiejetnosci": [
+    "kwasny_plusk",
+    "uderzenie_z_gory"
+   ],
+   "trafione": [
+    "kwasny_plusk",
+    "uderzenie_z_gory"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 0,
+    "doswiadczenie": 2,
+    "tokeny_krainy": 0,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  {
+   "klasa": "mag",
+   "przeciwnik": "muchomornik",
+   "poziom": 10,
+   "ziarno": 879330,
+   "wynik": "przegrana",
+   "tury": 10,
+   "zdarzen": 20,
+   "czas": 21.0,
+   "typy": [
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc",
+    "unik",
+    "utrata_tury"
+   ],
+   "umiejetnosci": [
+    "bariera",
+    "chmura_zarodnikow",
+    "kula_ognia",
+    "lodowy_pocisk"
+   ],
+   "trafione": [
+    "bariera",
+    "chmura_zarodnikow",
+    "kula_ognia",
+    "lodowy_pocisk"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 0,
+    "doswiadczenie": 14,
+    "tokeny_krainy": 0,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  {
+   "klasa": "mag",
+   "przeciwnik": "straznik_lasu",
+   "poziom": 1,
+   "ziarno": 158424,
+   "wynik": "przegrana",
+   "tury": 13,
+   "zdarzen": 19,
+   "czas": 21.8,
+   "typy": [
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc",
+    "unik",
+    "utrata_tury"
+   ],
+   "umiejetnosci": [
+    "kula_ognia",
+    "uscisk_korzeni"
+   ],
+   "trafione": [
+    "kula_ognia",
+    "uscisk_korzeni"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 0,
+    "doswiadczenie": 20,
+    "tokeny_krainy": 0,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  },
+  {
+   "klasa": "mag",
+   "przeciwnik": "cierniowy_wilk",
+   "poziom": 5,
+   "ziarno": 910854,
+   "wynik": "wygrana",
+   "tury": 9,
+   "zdarzen": 14,
+   "czas": 17.3,
+   "typy": [
+    "cios",
+    "efekt_koniec",
+    "efekt_nalozony",
+    "efekt_tick",
+    "krytyk",
+    "umiejetnosc",
+    "unik",
+    "utrata_tury"
+   ],
+   "umiejetnosci": [
+    "kula_ognia",
+    "lodowy_pocisk",
+    "rozszarpanie"
+   ],
+   "trafione": [
+    "lodowy_pocisk",
+    "rozszarpanie"
+   ],
+   "krytyk": true,
+   "lup": {
+    "zloto": 51,
+    "doswiadczenie": 41,
+    "tokeny_krainy": 2,
+    "gemy": 0,
+    "shard_ewolucji": 0,
+    "kraina": "las"
+   }
+  }
+ ],
+ "shard": {
+  "klasa": "zwiadowca",
+  "przeciwnik": "straznik_lasu",
+  "poziom": 10,
+  "ziarno": 325002,
+  "wynik": "wygrana",
+  "tury": 13,
+  "zdarzen": 19,
+  "czas": 23.6,
+  "typy": [
+   "cios",
+   "efekt_koniec",
+   "efekt_nalozony",
+   "efekt_tick",
+   "krytyk",
+   "umiejetnosc",
+   "unik"
+  ],
+  "umiejetnosci": [
+   "skupienie",
+   "uderzenie_z_gory",
+   "uscisk_korzeni",
+   "zatruta_strzala"
+  ],
+  "trafione": [
+   "skupienie",
+   "uderzenie_z_gory",
+   "zatruta_strzala"
+  ],
+  "krytyk": true,
+  "lup": {
+   "zloto": 554,
+   "doswiadczenie": 503,
+   "tokeny_krainy": 5,
+   "gemy": 0,
+   "shard_ewolucji": 1,
+   "kraina": "las"
+  }
+ },
+ "gem": {
+  "klasa": "mag",
+  "przeciwnik": "cierniowy_wilk",
+  "poziom": 1,
+  "ziarno": 617727,
+  "wynik": "wygrana",
+  "tury": 5,
+  "zdarzen": 5,
+  "czas": 9.1,
+  "typy": [
+   "cios",
+   "umiejetnosc",
+   "unik"
+  ],
+  "umiejetnosci": [
+   "kula_ognia"
+  ],
+  "trafione": [
+   "kula_ognia"
+  ],
+  "krytyk": true,
+  "lup": {
+   "zloto": 23,
+   "doswiadczenie": 13,
+   "tokeny_krainy": 2,
+   "gemy": 1,
+   "shard_ewolucji": 0,
+   "kraina": "las"
+  }
+ }
+}

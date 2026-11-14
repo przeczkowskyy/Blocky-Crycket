@@ -1,0 +1,975 @@
+{
+ "prog_pkt": 12.0,
+ "data": "2026-11-15 00:50",
+ "ekrany": {
+  "844x390": {
+   "panel": {
+    "napisow": 28,
+    "najmniejszy_pkt": 12.2,
+    "najmniejszy": {
+     "linii": 1,
+     "t": "ZASTĘPCZY",
+     "pkt": 12.2,
+     "n": "Ekran.Karta.Wrogowie.Wrog_lesny_slime.Zastepczy.Napis"
+    },
+    "ponizej_progu": [],
+    "wszystkie": [
+     {
+      "linii": 1,
+      "t": "ZASTĘPCZY",
+      "pkt": 12.2,
+      "n": "Ekran.Karta.Wrogowie.Wrog_lesny_slime.Zastepczy.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "CIERNIOWY WILK",
+      "pkt": 12.2,
+      "n": "Ekran.Karta.Wrogowie.Wrog_cierniowy_wilk.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "ZASTĘPCZY",
+      "pkt": 12.2,
+      "n": "Ekran.Karta.Wrogowie.Wrog_straznik_lasu.Zastepczy.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "MUCHOMORNIK",
+      "pkt": 13.3,
+      "n": "Ekran.Karta.Wrogowie.Wrog_muchomornik.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "STRAżNIK LASU",
+      "pkt": 13.3,
+      "n": "Ekran.Karta.Wrogowie.Wrog_straznik_lasu.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "Wojownik poz. 5  kontra  Leśny Slime poz. 5 (model zastępczy)",
+      "pkt": 13.3,
+      "n": "Ekran.Karta.Podsumowanie"
+     },
+     {
+      "linii": 1,
+      "t": "wytrzymałość i blok tarczą",
+      "pkt": 15.5,
+      "n": "Ekran.Karta.Klasy.Klasa_wojownik.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "LEśNY TROLL",
+      "pkt": 15.5,
+      "n": "Ekran.Karta.Wrogowie.Wrog_lesny_troll.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "LEśNY SLIME",
+      "pkt": 16.6,
+      "n": "Ekran.Karta.Wrogowie.Wrog_lesny_slime.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "ZWYKŁY",
+      "pkt": 16.6,
+      "n": "Ekran.Karta.Wrogowie.Wrog_lesny_slime.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "ZWYKŁY",
+      "pkt": 16.6,
+      "n": "Ekran.Karta.Wrogowie.Wrog_cierniowy_wilk.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "ZWYKŁY",
+      "pkt": 16.6,
+      "n": "Ekran.Karta.Wrogowie.Wrog_muchomornik.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "RZADKI",
+      "pkt": 16.6,
+      "n": "Ekran.Karta.Wrogowie.Wrog_lesny_troll.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "STRAŻNIK",
+      "pkt": 16.6,
+      "n": "Ekran.Karta.Wrogowie.Wrog_straznik_lasu.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "POZIOM (OBU STRON)",
+      "pkt": 17.7,
+      "n": "Ekran.Karta.Naglowek"
+     },
+     {
+      "linii": 1,
+      "t": "unik i krytyk",
+      "pkt": 18.9,
+      "n": "Ekran.Karta.Klasy.Klasa_zwiadowca.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "magia i umiejętności",
+      "pkt": 18.9,
+      "n": "Ekran.Karta.Klasy.Klasa_mag.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "TWOJA KLASA",
+      "pkt": 21.1,
+      "n": "Ekran.Karta.Naglowek"
+     },
+     {
+      "linii": 1,
+      "t": "ZWIADOWCA",
+      "pkt": 21.1,
+      "n": "Ekran.Karta.Klasy.Klasa_zwiadowca.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "PRZECIWNIK (LAS)",
+      "pkt": 21.1,
+      "n": "Ekran.Karta.Naglowek"
+     },
+     {
+      "linii": 1,
+      "t": "WOJOWNIK",
+      "pkt": 22.2,
+      "n": "Ekran.Karta.Klasy.Klasa_wojownik.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "1",
+      "pkt": 26.6,
+      "n": "Ekran.Karta.Poziomy.Poziom_1.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "5",
+      "pkt": 26.6,
+      "n": "Ekran.Karta.Poziomy.Poziom_5.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "10",
+      "pkt": 26.6,
+      "n": "Ekran.Karta.Poziomy.Poziom_10.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "MAG",
+      "pkt": 31.1,
+      "n": "Ekran.Karta.Klasy.Klasa_mag.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "X",
+      "pkt": 32.2,
+      "n": "Ekran.Karta.Zamknij"
+     },
+     {
+      "linii": 1,
+      "t": "WALKA v2 — WYBIERZ!",
+      "pkt": 33.3,
+      "n": "Ekran.Karta.Wstega.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "WALCZ!",
+      "pkt": 59.9,
+      "n": "Ekran.Karta.Walcz.Przycisk.Napis"
+     }
+    ]
+   },
+   "skala_emulacji": 0.9016587677725119,
+   "okno_studio": [
+    761,
+    675
+   ],
+   "walka": {
+    "napisow": 22,
+    "najmniejszy_pkt": 12.2,
+    "najmniejszy": {
+     "linii": 1,
+     "t": "RZADKI",
+     "pkt": 12.2,
+     "n": "Kadr.TabliczkaWroga.Ranga.Napis"
+    },
+    "ponizej_progu": [],
+    "wszystkie": [
+     {
+      "linii": 1,
+      "t": "RZADKI",
+      "pkt": 12.2,
+      "n": "Kadr.TabliczkaWroga.Ranga.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "1",
+      "pkt": 15.5,
+      "n": "Kadr.TabliczkaGracza.Efekty.Efekt_spowolnienie.Licznik.Tury"
+     },
+     {
+      "linii": 1,
+      "t": "TURA 7",
+      "pkt": 15.5,
+      "n": "Kadr.Tura"
+     },
+     {
+      "linii": 1,
+      "t": "214 / 423",
+      "pkt": 21.1,
+      "n": "Kadr.TabliczkaGracza.Pasek.Liczba"
+     },
+     {
+      "linii": 1,
+      "t": "578 / 1058",
+      "pkt": 21.1,
+      "n": "Kadr.TabliczkaWroga.Pasek.Liczba"
+     },
+     {
+      "linii": 1,
+      "t": "ZWIADOWCA  •  POZ. 10",
+      "pkt": 22.2,
+      "n": "Kadr.TabliczkaGracza.Nazwa"
+     },
+     {
+      "linii": 1,
+      "t": "LEśNY TROLL  •  POZ. 10",
+      "pkt": 22.2,
+      "n": "Kadr.TabliczkaWroga.Nazwa"
+     },
+     {
+      "linii": 1,
+      "t": "VS",
+      "pkt": 22.2,
+      "n": "Kadr.VS.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "OGłUSZAJąCE UDERZENIE",
+      "pkt": 22.2,
+      "n": "Kadr.Umiejetnosc.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "POMIŃ  »",
+      "pkt": 28.8,
+      "n": "Kadr.Pomin.Przycisk.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "×1",
+      "pkt": 28.8,
+      "n": "Kadr.Tempo.Tempo1.Przycisk.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "×2",
+      "pkt": 28.8,
+      "n": "Kadr.Tempo.Tempo2.Przycisk.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "×4",
+      "pkt": 28.8,
+      "n": "Kadr.Tempo.Tempo4.Przycisk.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "SPOWOLNIENIE!",
+      "pkt": 31.1,
+      "n": "Napisy.Napis_efekt.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "UNIK!",
+      "pkt": 38.8,
+      "n": "Napisy.Napis_unik.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "UNIK!",
+      "pkt": 38.8,
+      "n": "Napisy.Napis_unik.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "−68",
+      "pkt": 42.1,
+      "n": "Napisy.Napis_otrzymane.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "−141",
+      "pkt": 42.1,
+      "n": "Napisy.Napis_otrzymane.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "KRYTYK!",
+      "pkt": 44.4,
+      "n": "Napisy.Napis_krytyk.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "−45",
+      "pkt": 46.6,
+      "n": "Napisy.Napis_zadane.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "−42",
+      "pkt": 46.6,
+      "n": "Napisy.Napis_zadane.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "−393",
+      "pkt": 64.3,
+      "n": "Napisy.Napis_krytykLiczba.Tekst"
+     }
+    ]
+   },
+   "wynik": {
+    "napisow": 23,
+    "najmniejszy_pkt": 12.2,
+    "najmniejszy": {
+     "linii": 1,
+     "t": "RZADKI",
+     "pkt": 12.2,
+     "n": "Kadr.TabliczkaWroga.Ranga.Napis"
+    },
+    "ponizej_progu": [],
+    "wszystkie": [
+     {
+      "linii": 1,
+      "t": "RZADKI",
+      "pkt": 12.2,
+      "n": "Kadr.TabliczkaWroga.Ranga.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "dziennik policzył serwer  •  ziarno 950601  •  11 tur  •  15 zdarzeń  •  18.9 s",
+      "pkt": 12.2,
+      "n": "Kadr.Wynik.Stopka"
+     },
+     {
+      "linii": 1,
+      "t": "ZŁOTO",
+      "pkt": 14.4,
+      "n": "Kadr.Wynik.Karta.Kafel1.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "DOŚWIADCZ.",
+      "pkt": 14.4,
+      "n": "Kadr.Wynik.Karta.Kafel2.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "TOKENY LASU",
+      "pkt": 14.4,
+      "n": "Kadr.Wynik.Karta.Kafel3.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "GEM",
+      "pkt": 14.4,
+      "n": "Kadr.Wynik.Karta.Kafel4.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "SHARD EWOL.",
+      "pkt": 14.4,
+      "n": "Kadr.Wynik.Karta.Kafel5.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "3",
+      "pkt": 15.5,
+      "n": "Kadr.TabliczkaWroga.Efekty.Efekt_trucizna.Licznik.Tury"
+     },
+     {
+      "linii": 1,
+      "t": "TURA 11",
+      "pkt": 15.5,
+      "n": "Kadr.Tura"
+     },
+     {
+      "linii": 1,
+      "t": "0 / 423",
+      "pkt": 21.1,
+      "n": "Kadr.TabliczkaGracza.Pasek.Liczba"
+     },
+     {
+      "linii": 1,
+      "t": "244 / 1058",
+      "pkt": 21.1,
+      "n": "Kadr.TabliczkaWroga.Pasek.Liczba"
+     },
+     {
+      "linii": 1,
+      "t": "Leśny Troll (poz. 10) był silniejszy — 11 tur",
+      "pkt": 21.1,
+      "n": "Kadr.Wynik.Karta.Podtytul"
+     },
+     {
+      "linii": 1,
+      "t": "ZWIADOWCA  •  POZ. 10",
+      "pkt": 22.2,
+      "n": "Kadr.TabliczkaGracza.Nazwa"
+     },
+     {
+      "linii": 1,
+      "t": "LEśNY TROLL  •  POZ. 10",
+      "pkt": 22.2,
+      "n": "Kadr.TabliczkaWroga.Nazwa"
+     },
+     {
+      "linii": 1,
+      "t": "VS",
+      "pkt": 22.2,
+      "n": "Kadr.VS.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "—",
+      "pkt": 26.6,
+      "n": "Kadr.Wynik.Karta.Kafel1.Wartosc"
+     },
+     {
+      "linii": 1,
+      "t": "+41",
+      "pkt": 26.6,
+      "n": "Kadr.Wynik.Karta.Kafel2.Wartosc"
+     },
+     {
+      "linii": 1,
+      "t": "—",
+      "pkt": 26.6,
+      "n": "Kadr.Wynik.Karta.Kafel3.Wartosc"
+     },
+     {
+      "linii": 1,
+      "t": "—",
+      "pkt": 26.6,
+      "n": "Kadr.Wynik.Karta.Kafel4.Wartosc"
+     },
+     {
+      "linii": 1,
+      "t": "—",
+      "pkt": 26.6,
+      "n": "Kadr.Wynik.Karta.Kafel5.Wartosc"
+     },
+     {
+      "linii": 1,
+      "t": "JESZCZE RAZ",
+      "pkt": 28.8,
+      "n": "Kadr.Wynik.Karta.JeszczeRaz.Przycisk.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "ZAMKNIJ",
+      "pkt": 28.8,
+      "n": "Kadr.Wynik.Karta.Zamknij.Przycisk.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "PORAŻKA!",
+      "pkt": 47.7,
+      "n": "Kadr.Wynik.Wstega.Tytul"
+     }
+    ]
+   }
+  },
+  "667x375": {
+   "panel": {
+    "napisow": 28,
+    "najmniejszy_pkt": 12,
+    "najmniejszy": {
+     "linii": 1,
+     "t": "ZASTĘPCZY",
+     "pkt": 12,
+     "n": "Ekran.Karta.Wrogowie.Wrog_lesny_slime.Zastepczy.Napis"
+    },
+    "ponizej_progu": [],
+    "wszystkie": [
+     {
+      "linii": 1,
+      "t": "ZASTĘPCZY",
+      "pkt": 12,
+      "n": "Ekran.Karta.Wrogowie.Wrog_lesny_slime.Zastepczy.Napis"
+     },
+     {
+      "linii": 2,
+      "t": "CIERNIOWY WILK",
+      "pkt": 12,
+      "n": "Ekran.Karta.Wrogowie.Wrog_cierniowy_wilk.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "ZASTĘPCZY",
+      "pkt": 12,
+      "n": "Ekran.Karta.Wrogowie.Wrog_straznik_lasu.Zastepczy.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "MUCHOMORNIK",
+      "pkt": 13,
+      "n": "Ekran.Karta.Wrogowie.Wrog_muchomornik.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "STRAżNIK LASU",
+      "pkt": 13,
+      "n": "Ekran.Karta.Wrogowie.Wrog_straznik_lasu.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "Wojownik poz. 5  kontra  Leśny Slime poz. 5 (model zastępczy)",
+      "pkt": 13,
+      "n": "Ekran.Karta.Podsumowanie"
+     },
+     {
+      "linii": 1,
+      "t": "wytrzymałość i blok tarczą",
+      "pkt": 15,
+      "n": "Ekran.Karta.Klasy.Klasa_wojownik.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "LEśNY SLIME",
+      "pkt": 16,
+      "n": "Ekran.Karta.Wrogowie.Wrog_lesny_slime.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "ZWYKŁY",
+      "pkt": 16,
+      "n": "Ekran.Karta.Wrogowie.Wrog_lesny_slime.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "ZWYKŁY",
+      "pkt": 16,
+      "n": "Ekran.Karta.Wrogowie.Wrog_cierniowy_wilk.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "ZWYKŁY",
+      "pkt": 16,
+      "n": "Ekran.Karta.Wrogowie.Wrog_muchomornik.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "LEśNY TROLL",
+      "pkt": 16,
+      "n": "Ekran.Karta.Wrogowie.Wrog_lesny_troll.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "RZADKI",
+      "pkt": 16,
+      "n": "Ekran.Karta.Wrogowie.Wrog_lesny_troll.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "STRAŻNIK",
+      "pkt": 16,
+      "n": "Ekran.Karta.Wrogowie.Wrog_straznik_lasu.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "unik i krytyk",
+      "pkt": 18,
+      "n": "Ekran.Karta.Klasy.Klasa_zwiadowca.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "magia i umiejętności",
+      "pkt": 18,
+      "n": "Ekran.Karta.Klasy.Klasa_mag.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "POZIOM (OBU STRON)",
+      "pkt": 18,
+      "n": "Ekran.Karta.Naglowek"
+     },
+     {
+      "linii": 1,
+      "t": "TWOJA KLASA",
+      "pkt": 20,
+      "n": "Ekran.Karta.Naglowek"
+     },
+     {
+      "linii": 1,
+      "t": "ZWIADOWCA",
+      "pkt": 20,
+      "n": "Ekran.Karta.Klasy.Klasa_zwiadowca.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "PRZECIWNIK (LAS)",
+      "pkt": 20,
+      "n": "Ekran.Karta.Naglowek"
+     },
+     {
+      "linii": 1,
+      "t": "WOJOWNIK",
+      "pkt": 22,
+      "n": "Ekran.Karta.Klasy.Klasa_wojownik.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "1",
+      "pkt": 26,
+      "n": "Ekran.Karta.Poziomy.Poziom_1.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "5",
+      "pkt": 26,
+      "n": "Ekran.Karta.Poziomy.Poziom_5.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "10",
+      "pkt": 26,
+      "n": "Ekran.Karta.Poziomy.Poziom_10.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "MAG",
+      "pkt": 30,
+      "n": "Ekran.Karta.Klasy.Klasa_mag.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "X",
+      "pkt": 31,
+      "n": "Ekran.Karta.Zamknij"
+     },
+     {
+      "linii": 1,
+      "t": "WALKA v2 — WYBIERZ!",
+      "pkt": 32,
+      "n": "Ekran.Karta.Wstega.Tytul"
+     },
+     {
+      "linii": 1,
+      "t": "WALCZ!",
+      "pkt": 57,
+      "n": "Ekran.Karta.Walcz.Przycisk.Napis"
+     }
+    ]
+   },
+   "skala_emulacji": 1,
+   "okno_studio": [
+    761,
+    675
+   ],
+   "walka": {
+    "napisow": 22,
+    "najmniejszy_pkt": 12,
+    "najmniejszy": {
+     "linii": 1,
+     "t": "RZADKI",
+     "pkt": 12,
+     "n": "Kadr.TabliczkaWroga.Ranga.Napis"
+    },
+    "ponizej_progu": [],
+    "wszystkie": [
+     {
+      "linii": 1,
+      "t": "RZADKI",
+      "pkt": 12,
+      "n": "Kadr.TabliczkaWroga.Ranga.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "1",
+      "pkt": 15,
+      "n": "Kadr.TabliczkaGracza.Efekty.Efekt_spowolnienie.Licznik.Tury"
+     },
+     {
+      "linii": 1,
+      "t": "TURA 7",
+      "pkt": 15,
+      "n": "Kadr.Tura"
+     },
+     {
+      "linii": 1,
+      "t": "OGłUSZAJąCE UDERZENIE",
+      "pkt": 17,
+      "n": "Kadr.Umiejetnosc.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "ZWIADOWCA  •  POZ. 10",
+      "pkt": 20,
+      "n": "Kadr.TabliczkaGracza.Nazwa"
+     },
+     {
+      "linii": 1,
+      "t": "214 / 423",
+      "pkt": 20,
+      "n": "Kadr.TabliczkaGracza.Pasek.Liczba"
+     },
+     {
+      "linii": 1,
+      "t": "LEśNY TROLL  •  POZ. 10",
+      "pkt": 20,
+      "n": "Kadr.TabliczkaWroga.Nazwa"
+     },
+     {
+      "linii": 1,
+      "t": "578 / 1058",
+      "pkt": 20,
+      "n": "Kadr.TabliczkaWroga.Pasek.Liczba"
+     },
+     {
+      "linii": 1,
+      "t": "VS",
+      "pkt": 22,
+      "n": "Kadr.VS.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "POMIŃ  »",
+      "pkt": 25,
+      "n": "Kadr.Pomin.Przycisk.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "×1",
+      "pkt": 28,
+      "n": "Kadr.Tempo.Tempo1.Przycisk.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "×2",
+      "pkt": 28,
+      "n": "Kadr.Tempo.Tempo2.Przycisk.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "×4",
+      "pkt": 28,
+      "n": "Kadr.Tempo.Tempo4.Przycisk.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "SPOWOLNIENIE!",
+      "pkt": 30,
+      "n": "Napisy.Napis_efekt.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "UNIK!",
+      "pkt": 37,
+      "n": "Napisy.Napis_unik.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "UNIK!",
+      "pkt": 37,
+      "n": "Napisy.Napis_unik.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "−68",
+      "pkt": 41,
+      "n": "Napisy.Napis_otrzymane.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "−141",
+      "pkt": 41,
+      "n": "Napisy.Napis_otrzymane.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "KRYTYK!",
+      "pkt": 43,
+      "n": "Napisy.Napis_krytyk.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "−45",
+      "pkt": 45,
+      "n": "Napisy.Napis_zadane.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "−42",
+      "pkt": 45,
+      "n": "Napisy.Napis_zadane.Tekst"
+     },
+     {
+      "linii": 1,
+      "t": "−393",
+      "pkt": 61,
+      "n": "Napisy.Napis_krytykLiczba.Tekst"
+     }
+    ]
+   },
+   "wynik": {
+    "napisow": 23,
+    "najmniejszy_pkt": 11,
+    "najmniejszy": {
+     "linii": 1,
+     "t": "dziennik policzył serwer  •  ziarno 950601  •  11 tur  •  15 zdarzeń  •  18.9 s",
+     "pkt": 11,
+     "n": "Kadr.Wynik.Stopka"
+    },
+    "ponizej_progu": [],
+    "wszystkie": [
+     {
+      "linii": 1,
+      "t": "dziennik policzył serwer  •  ziarno 950601  •  11 tur  •  15 zdarzeń  •  18.9 s",
+      "pkt": 11,
+      "n": "Kadr.Wynik.Stopka"
+     },
+     {
+      "linii": 1,
+      "t": "RZADKI",
+      "pkt": 12,
+      "n": "Kadr.TabliczkaWroga.Ranga.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "ZŁOTO",
+      "pkt": 14,
+      "n": "Kadr.Wynik.Karta.Kafel1.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "DOŚWIADCZ.",
+      "pkt": 14,
+      "n": "Kadr.Wynik.Karta.Kafel2.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "TOKENY LASU",
+      "pkt": 14,
+      "n": "Kadr.Wynik.Karta.Kafel3.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "GEM",
+      "pkt": 14,
+      "n": "Kadr.Wynik.Karta.Kafel4.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "SHARD EWOL.",
+      "pkt": 14,
+      "n": "Kadr.Wynik.Karta.Kafel5.Podpis"
+     },
+     {
+      "linii": 1,
+      "t": "3",
+      "pkt": 15,
+      "n": "Kadr.TabliczkaWroga.Efekty.Efekt_trucizna.Licznik.Tury"
+     },
+     {
+      "linii": 1,
+      "t": "TURA 11",
+      "pkt": 15,
+      "n": "Kadr.Tura"
+     },
+     {
+      "linii": 1,
+      "t": "ZWIADOWCA  •  POZ. 10",
+      "pkt": 20,
+      "n": "Kadr.TabliczkaGracza.Nazwa"
+     },
+     {
+      "linii": 1,
+      "t": "0 / 423",
+      "pkt": 20,
+      "n": "Kadr.TabliczkaGracza.Pasek.Liczba"
+     },
+     {
+      "linii": 1,
+      "t": "LEśNY TROLL  •  POZ. 10",
+      "pkt": 20,
+      "n": "Kadr.TabliczkaWroga.Nazwa"
+     },
+     {
+      "linii": 1,
+      "t": "244 / 1058",
+      "pkt": 20,
+      "n": "Kadr.TabliczkaWroga.Pasek.Liczba"
+     },
+     {
+      "linii": 1,
+      "t": "Leśny Troll (poz. 10) był silniejszy — 11 tur",
+      "pkt": 20,
+      "n": "Kadr.Wynik.Karta.Podtytul"
+     },
+     {
+      "linii": 1,
+      "t": "VS",
+      "pkt": 22,
+      "n": "Kadr.VS.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "JESZCZE RAZ",
+      "pkt": 23,
+      "n": "Kadr.Wynik.Karta.JeszczeRaz.Przycisk.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "—",
+      "pkt": 26,
+      "n": "Kadr.Wynik.Karta.Kafel1.Wartosc"
+     },
+     {
+      "linii": 1,
+      "t": "+41",
+      "pkt": 26,
+      "n": "Kadr.Wynik.Karta.Kafel2.Wartosc"
+     },
+     {
+      "linii": 1,
+      "t": "—",
+      "pkt": 26,
+      "n": "Kadr.Wynik.Karta.Kafel3.Wartosc"
+     },
+     {
+      "linii": 1,
+      "t": "—",
+      "pkt": 26,
+      "n": "Kadr.Wynik.Karta.Kafel4.Wartosc"
+     },
+     {
+      "linii": 1,
+      "t": "—",
+      "pkt": 26,
+      "n": "Kadr.Wynik.Karta.Kafel5.Wartosc"
+     },
+     {
+      "linii": 1,
+      "t": "ZAMKNIJ",
+      "pkt": 26,
+      "n": "Kadr.Wynik.Karta.Zamknij.Przycisk.Napis"
+     },
+     {
+      "linii": 1,
+      "t": "PORAŻKA!",
+      "pkt": 46,
+      "n": "Kadr.Wynik.Wstega.Tytul"
+     }
+    ]
+   }
+  }
+ },
+ "ponizej_progu_razem": 0
+}

@@ -1,0 +1,23 @@
+{
+ "obrys_brak": {
+  "czesci": 408,
+  "ms": 29.368699993938208,
+  "skorupy": 0,
+  "instancje": 825,
+  "widoczne": 390
+ },
+ "obrys_highlight": {
+  "czesci": 408,
+  "ms": 9.143600007519126,
+  "skorupy": 0,
+  "instancje": 826,
+  "widoczne": 390
+ },
+ "obrys_skorupa": {
+  "czesci": 408,
+  "ms": 12.332500016782433,
+  "skorupy": 92,
+  "instancje": 1102,
+  "widoczne": 390
+ }
+}

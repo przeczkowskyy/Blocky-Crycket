@@ -1,0 +1,119 @@
+{
+ "umiejetnosc_ciecie": {
+  "wybor": "wojownik/lesny_slime/1",
+  "ziarno": 356397,
+  "opis": "umiejętność ciecie (zdarzenie 6)"
+ },
+ "umiejetnosc_miazdzacy_cios": {
+  "wybor": "wojownik/lesny_slime/5",
+  "ziarno": 554496,
+  "opis": "umiejętność miazdzacy_cios (zdarzenie 8)"
+ },
+ "umiejetnosc_kamienna_skora": {
+  "wybor": "wojownik/lesny_slime/10",
+  "ziarno": 24078,
+  "opis": "umiejętność kamienna_skora (zdarzenie 11)"
+ },
+ "umiejetnosc_uderzenie_z_gory": {
+  "wybor": "zwiadowca/cierniowy_wilk/1",
+  "ziarno": 47559,
+  "opis": "umiejętność uderzenie_z_gory (zdarzenie 8)"
+ },
+ "umiejetnosc_zatruta_strzala": {
+  "wybor": "zwiadowca/lesny_slime/5",
+  "ziarno": 47680,
+  "opis": "umiejętność zatruta_strzala (zdarzenie 7)"
+ },
+ "umiejetnosc_skupienie": {
+  "wybor": "zwiadowca/lesny_slime/10",
+  "ziarno": 546732,
+  "opis": "umiejętność skupienie (zdarzenie 11)"
+ },
+ "umiejetnosc_kula_ognia": {
+  "wybor": "mag/cierniowy_wilk/1",
+  "ziarno": 47559,
+  "opis": "umiejętność kula_ognia (zdarzenie 8)"
+ },
+ "umiejetnosc_lodowy_pocisk": {
+  "wybor": "mag/lesny_slime/5",
+  "ziarno": 63518,
+  "opis": "umiejętność lodowy_pocisk (zdarzenie 10)"
+ },
+ "umiejetnosc_bariera": {
+  "wybor": "mag/lesny_slime/10",
+  "ziarno": 31997,
+  "opis": "umiejętność bariera (zdarzenie 16)"
+ },
+ "umiejetnosc_kwasny_plusk": {
+  "wybor": "wojownik/lesny_slime/1",
+  "ziarno": 451425,
+  "opis": "umiejętność kwasny_plusk (zdarzenie 6)"
+ },
+ "umiejetnosc_rozszarpanie": {
+  "wybor": "wojownik/cierniowy_wilk/1",
+  "ziarno": 55478,
+  "opis": "umiejętność rozszarpanie (zdarzenie 5)"
+ },
+ "umiejetnosc_chmura_zarodnikow": {
+  "wybor": "wojownik/muchomornik/1",
+  "ziarno": 15880,
+  "opis": "umiejętność chmura_zarodnikow (zdarzenie 5)"
+ },
+ "umiejetnosc_ogluszajace_uderzenie": {
+  "wybor": "mag/lesny_troll/5",
+  "ziarno": 150627,
+  "opis": "umiejętność ogluszajace_uderzenie (zdarzenie 9)"
+ },
+ "umiejetnosc_uscisk_korzeni": {
+  "wybor": "wojownik/straznik_lasu/5",
+  "ziarno": 689121,
+  "opis": "umiejętność uscisk_korzeni (zdarzenie 9)"
+ },
+ "krytyk": {
+  "wybor": "wojownik/cierniowy_wilk/5",
+  "ziarno": 277334,
+  "opis": "krytyk wręcz (zwolnienie, wjazd kamery) (zdarzenie 4)"
+ },
+ "blok": {
+  "wybor": "wojownik/cierniowy_wilk/5",
+  "ziarno": 277334,
+  "opis": "blok tarczą Wojownika (zdarzenie 1)"
+ },
+ "unik": {
+  "wybor": "wojownik/cierniowy_wilk/5",
+  "ziarno": 277334,
+  "opis": "unik (zdarzenie 6)"
+ },
+ "utrata_tury": {
+  "wybor": "wojownik/cierniowy_wilk/5",
+  "ziarno": 277334,
+  "opis": "utrata tury (ogłuszenie) (zdarzenie 11)"
+ },
+ "tykniecie": {
+  "wybor": "zwiadowca/lesny_troll/10",
+  "ziarno": 950601,
+  "opis": "tyknięcie efektu (zdarzenie 14)"
+ },
+ "final_wygrana": {
+  "wybor": "zwiadowca/straznik_lasu/10",
+  "ziarno": 325002,
+  "opis": "finał (wygrana), ostatnia klatka = panel wyniku"
+ },
+ "final_przegrana": {
+  "wybor": "mag/muchomornik/5",
+  "ziarno": 823742,
+  "opis": "finał (przegrana), ostatnia klatka = panel wyniku"
+ },
+ "dluga_walka": {
+  "wybor": "wojownik/straznik_lasu/10",
+  "ziarno": 348759,
+  "opis": "długa walka (24 tur) — przekrój ujęć"
+ },
+ "panel_wyboru": {
+  "opis": "panel wyboru przy tablicy (C5): klasa, przeciwnik z rangą, poziom, WALCZ",
+  "rozmiar": [
+   761,
+   675
+  ]
+ }
+}

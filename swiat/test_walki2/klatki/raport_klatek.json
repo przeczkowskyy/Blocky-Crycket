@@ -1,0 +1,82 @@
+{
+ "wojownik": {
+  "klon": {
+   "czesci": 139,
+   "ms": 20.259699987946078,
+   "skorupy": 0,
+   "instancje": 303,
+   "widoczne": 123
+  },
+  "odchylka_stawow": 0.0
+ },
+ "zwiadowca": {
+  "klon": {
+   "czesci": 198,
+   "ms": 29.44370001205243,
+   "skorupy": 0,
+   "instancje": 419,
+   "widoczne": 182
+  },
+  "odchylka_stawow": 0.0
+ },
+ "mag": {
+  "klon": {
+   "czesci": 184,
+   "ms": 25.27439998812042,
+   "skorupy": 0,
+   "instancje": 399,
+   "widoczne": 166
+  },
+  "odchylka_stawow": 0.0
+ },
+ "lesny_slime": {
+  "klon": {
+   "czesci": 55,
+   "ms": 7.4235999782104045,
+   "skorupy": 0,
+   "instancje": 122,
+   "widoczne": 42
+  },
+  "odchylka_stawow": 0.0
+ },
+ "cierniowy_wilk": {
+  "klon": {
+   "czesci": 566,
+   "ms": 51.60269999760203,
+   "skorupy": 0,
+   "instancje": 1138,
+   "widoczne": 544
+  },
+  "odchylka_stawow": 0.0
+ },
+ "muchomornik": {
+  "klon": {
+   "czesci": 186,
+   "ms": 34.722200012765825,
+   "skorupy": 0,
+   "instancje": 388,
+   "widoczne": 157
+  },
+  "odchylka_stawow": 0.0
+ },
+ "lesny_troll": {
+  "klon": {
+   "czesci": 408,
+   "ms": 37.519500008784235,
+   "skorupy": 0,
+   "instancje": 825,
+   "widoczne": 390
+  },
+  "odchylka_stawow": 0.0
+ },
+ "straznik_lasu": {
+  "klon": {
+   "czesci": 410,
+   "ms": 29.500800010282546,
+   "skorupy": 0,
+   "instancje": 831,
+   "widoczne": 392
+  },
+  "odchylka_stawow": 0.0
+ }
+}
