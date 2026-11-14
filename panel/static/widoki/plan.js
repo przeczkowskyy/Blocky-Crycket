@@ -3,9 +3,10 @@
 // Praca na sejfie (bc/zapis.py): odpowiedzi na pytania, odhaczanie i dodawanie zadań, statusy decyzji. Zmiany idą
 // do tych samych plików B&C/Produkcja/*.md, których używa Obsidian. Każdy zapis odsyła znacznik wersji pliku z chwili,
 // gdy człowiek go zobaczył (`wersjeWidoczne`) — jeśli ktoś w tym czasie zmienił plik, serwer odmawia (409), a widok
-// pokazuje „Ktoś zmienił ten plik — odświeżam”. Statusy decyzji (zmiana kanonu) zmienia tylko Game Director
-// (ctx.ja.game_director = klucz Game Directora, nie imię); okno zatwierdzania wysyła wersję Rejestru z chwili
-// otwarcia (to, co Game Director przeczytał), a nie z odświeżenia w tle. Formularze mają flagę „w toku” (podwójny
+// pokazuje „Ktoś zmienił ten plik — odświeżam”. Statusy decyzji (zmiana kanonu) zmienia Karol albo Paweł — w panelu
+// „decydent” (ctx.ja.decydent = klucz zatwierdzania albo osoba przy komputerze z panelem, nie imię; stary serwer
+// bez tego pola: ctx.ja.game_director). Okno zatwierdzania wysyła wersję Rejestru z chwili otwarcia (to, co
+// decydujący przeczytał), a nie z odświeżenia w tle. Formularze mają flagę „w toku” (podwójny
 // Ctrl+Enter / Enter = jedno żądanie), odhaczenie przy konflikcie wersji ponawia się raz, a przy ukryciu karty idzie
 // od razu (keepalive). W lustrze tylko do odczytu przycisków zapisu nie ma.
 
@@ -370,12 +371,22 @@ export default {
     // ------------------------------------------------------------------ decyzje
     function oknoDecyzji(d, status) {
       const zatw = status === "zatwierdzona";
-      // Wersja Rejestru z chwili otwarcia okna = treść, którą Game Director właśnie przeczytał (na karcie i w oknie).
+      // Wersja Rejestru z chwili otwarcia okna = treść, którą decydujący właśnie przeczytał (na karcie i w oknie).
       // Odpytywanie w tle może w tym czasie przerysować listę za oknem i podmienić `wersjeWidoczne` — wysłanie tej
       // nowszej wersji zatwierdziłoby treść, której nikt nie widział. Dlatego idzie wersja zapamiętana tutaj.
       const wersjaPrzeczytana = wersjeWidoczne.decyzje || "";
-      const imie = (ctx.ja.kto || "").trim();
-      const kto = imie && imie !== "gość" && imie !== "Game Director" ? "Game Director (" + imie + ")" : "Game Director";
+      // Nowy serwer podpisuje decyzję tylko imieniem z Ustawień (to, co przeglądarka wysyła w X-BC-Kto); imienia
+      // podstawionego z gita na komputerze z panelem (ctx.ja.kto) do decyzji nie użyje — wtedy pokazujemy ostrzeżenie.
+      let zUstawien = "";
+      try {
+        zUstawien = localStorage.getItem("bc.kto") || "";
+      } catch (e) { /* bez pamięci przeglądarki imienia nie ma */ }
+      const imie = ("decydent" in ctx.ja ? zUstawien : ctx.ja.kto || "").trim();
+      const bezImienia = !imie || imie.toLowerCase() === "gość" || imie.toLowerCase() === "gosc";
+      // Nowy serwer (pole `decydent`) podpisuje samym imieniem i datą; stary — „Game Director (imię)”.
+      const kto = "decydent" in ctx.ja
+        ? (bezImienia ? "(wpisz imię w Ustawieniach)" : imie)
+        : (!bezImienia && imie !== "Game Director" ? "Game Director (" + imie + ")" : "Game Director");
       const pole = el("textarea", { class: "pole", rows: 3, maxlength: "1000", placeholder: zatw ? "Dlaczego tak (opcjonalnie)" : "Dlaczego nie (opcjonalnie)", "aria-label": "Uzasadnienie" });
       const przycisk = el("button", { type: "submit", class: "przycisk " + (zatw ? "sukces" : "grozny") },
         ikona(zatw ? "ok" : "krzyzyk"), el("span", null, (zatw ? "Zatwierdzam " : "Odrzucam ") + d.id));
@@ -386,7 +397,8 @@ export default {
         el("div", { class: "podpowiedz" }, ikona("info"), el("div", null,
           el("strong", null, "To zmiana kanonu"),
           el("p", null, "W Rejestrze decyzji wiersz statusu zmieni się na „" + (zatw ? "✅ zatwierdzona" : "❌ odrzucona") +
-            " · … · zdecydował: " + kto + " " + dzisiaj() + "”, a ślad trafi do Dziennika zmian. Cofnąć można tylko ręcznie w Obsidianie."),
+            " · … · zdecydował: " + kto + " " + dzisiaj() + "”, a ślad trafi do Dziennika zmian. Cofnąć można tylko ręcznie w Obsidianie." +
+            ("decydent" in ctx.ja && bezImienia ? " Decyzja musi mieć podpis — bez imienia panel jej nie zapisze." : "")),
           el("p", { class: "cichy-tekst" }, "Zatwierdzasz dokładnie tę treść. Jeśli ktoś zmieni Rejestr, zanim klikniesz, panel nic nie zapisze i pokaże nową wersję."))),
         el("label", { class: "etykieta" }, "Uzasadnienie (opcjonalnie)"), pole,
         el("div", { class: "rzad-przyciskow decyzja-potwierdz" }, anuluj, el("span", { class: "rozpychacz" }), przycisk));
@@ -439,7 +451,8 @@ export default {
       const lista = dane.decyzje || [];
       if (!lista.length) return pusty("Brak decyzji", "Decyzje opisuje notatka B&C/Produkcja/Rejestr decyzji.md.", "decyzja");
       const moze = mozeZapisywac();
-      const gd = moze && !!ctx.ja.game_director;
+      // decydent = klucz zatwierdzania albo osoba przy komputerze; stary serwer nie zna tego pola → game_director
+      const gd = moze && !!("decydent" in ctx.ja ? ctx.ja.decydent : ctx.ja.game_director);
       const liczby = {};
       for (const d of lista) liczby[d.status] = (liczby[d.status] || 0) + 1;
       const filtry = [{ id: "wszystkie", tekst: "Wszystkie", licznik: lista.length }];
@@ -465,7 +478,7 @@ export default {
             ? el("div", { class: "rzad-przyciskow decyzja-akcje" },
               el("button", { type: "button", class: "przycisk sukces maly", onclick: () => oknoDecyzji(d, "zatwierdzona") }, ikona("ok"), el("span", null, "Zatwierdź")),
               el("button", { type: "button", class: "przycisk grozny maly", onclick: () => oknoDecyzji(d, "odrzucona") }, ikona("krzyzyk"), el("span", null, "Odrzuć")))
-            : el("p", { class: "decyzja-gd cichy-tekst" }, ikona("klodka"), "Zatwierdza Game Director — możesz zostawić komentarz.");
+            : el("p", { class: "decyzja-gd cichy-tekst" }, ikona("klodka"), "Zatwierdza Karol albo Paweł (klucz zatwierdzania) — możesz zostawić komentarz.");
         }
         return el("article", { class: "karta decyzja status-" + (d.status || "brak"), style: { "--i": i } },
           el("div", { class: "decyzja-gora" },
@@ -485,8 +498,9 @@ export default {
     // ------------------------------------------------------------------ pytania
     /** Jak serwer podpisze odpowiedź (bc/zapis.py: znacznik zależy od klucza, nie od imienia). */
     function podpisOdpowiedzi() {
-      const kto = (ctx.ja.kto || "").trim() || (ctx.ja.game_director ? "Game Director" : "gość");
-      if (ctx.ja.game_director) return kto + " (Game Director, " + dzisiaj() + ") — znacznik zgody Game Directora";
+      const nowy = "decydent" in ctx.ja;                       // stary serwer pisze jeszcze znacznik „Game Director”
+      const kto = (ctx.ja.kto || "").trim() || (ctx.ja.game_director && !nowy ? "Game Director" : "gość");
+      if (ctx.ja.game_director) return kto + " (" + (nowy ? "klucz zatwierdzania" : "Game Director") + ", " + dzisiaj() + ") — znacznik klucza zatwierdzania";
       if (ctx.ja.lokalny) return kto + " (" + dzisiaj() + ")";
       return kto + " (gość panelu, " + dzisiaj() + ")";
     }

@@ -1,0 +1,26 @@
+{
+ "id": "r-20261113-202142-233c",
+ "tytul": "Rycerz w trzech wersjach: render z Blendera, klocki Roblox i siatka w Roblox — czy potrzebujemy Blendera?",
+ "opis_md": "**W skrócie:** do samej gry Blender nie jest konieczny. Jest potrzebny tylko wtedy, gdy chcemy gładszych modeli z małej liczby części albo obrazków poza Robloxem.\n\n## Co widać na zdjęciach\n1. **Render z Blendera.** Tak Rycerz wygląda poza Robloxem: czarny obrys, ścięte krawędzie, miękkie światło. Tak powstają ikony przedmiotów i obrazki.\n2. **Rycerz z klocków w Roblox Studio**, z czterech stron. Zbudowany z samych części Roblox, bez wgrywania czegokolwiek na konto.\n3. **Obie wersje obok siebie w Studio.** Z przodu po prawej stoi siatka z Blendera wgrana do Robloxa (ręce rozłożone, bez miecza). W środku wersja z klocków z mieczem, z tyłu manekin z zestawem ekwipunku.\n\n## Porównanie\n| | Klocki Roblox | Siatka z Blendera |\n|---|---|---|\n| Potrzebny Blender | nie | tak (działa w tle, z kodu) |\n| Wgrywanie na konto Roblox | nie | tak, każdy model osobno |\n| Liczba części (Rycerz) | 129 | 15 |\n| Krawędzie | ostre | ścięte, gładsze |\n| Czarny obrys jak na renderze | nie ma | nie ma |\n| Animacje | wszystkie klipy sprawdzone | wstępnie działają, pełnej kontroli jeszcze nie było |\n| Broń w ręku | jest | trzeba dopiąć osobno |\n| Zmiana wyglądu | od razu, z kodu | nowe wgranie modelu |\n\nObie wersje powstają z tego samego opisu postaci w kodzie, więc wybór jednej nie zamyka drugiej.\n\n## Moja ocena\n- Do gry wystarczą klocki. Wyglądają „po robloxowemu” i pasują do map z klocków.\n- Siatka ma jedną dużą zaletę: 15 części zamiast 129. Przy wielu postaciach naraz na telefonie może to mieć znaczenie, ale tego jeszcze nie mierzyliśmy.\n- Blender zostaje przydatny do ikon i obrazków, nie do samej gry.\n- Propozycja: zaczynamy od klocków, a siatki bierzemy tylko tam, gdzie pomiar na telefonie pokaże, że klocki są za ciężkie.\n\n## Czego nie wiem\n- Wydajności na telefonie nie mierzyliśmy w żadnej wersji.\n- Pełne sprawdzenie animacji na siatce przerwałem, bo Roblox Studio zostało zamknięte.\n- Siatka jest na koncie Karola. Nie sprawdzaliśmy, jak wczyta się w opublikowanej grze innego właściciela.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-13T20:21:42+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Postacie 3D — Blender i Roblox.md",
+   "etykieta": "Notatka o postaciach"
+  },
+  {
+   "typ": "migawka",
+   "cel": "20261113-152845-ca65",
+   "etykieta": "Rynek z postaciami w 3D"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "pytanie": "Zostajemy przy klockach Roblox jako głównej drodze dla postaci, a siatki z Blendera bierzemy tylko tam, gdzie pomiar na telefonie pokaże potrzebę?"
+}

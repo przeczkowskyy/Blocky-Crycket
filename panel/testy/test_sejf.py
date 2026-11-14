@@ -46,9 +46,10 @@ class TestPlanNaPrawdziwymSejfie(unittest.TestCase):
         self.assertEqual(decyzje["D-008"]["status"], "zatwierdzona")
         self.assertEqual(decyzje["D-008"]["emoji"], "✅")
         self.assertEqual(decyzje["D-008"]["kategoria"], "narzędzia")
-        # (statusów D-006 / D-009 nie sprawdzamy — zmieniają się, gdy zespół podejmuje decyzje)
+        # (statusów D-006 / D-009 nie sprawdzamy — zmieniają się, gdy zespół podejmuje decyzje; zatwierdzoną decyzję
+        # może też zastąpić nowsza — tak D-027 zastąpiła D-001 13.11.2026)
         for nr in range(1, 6):
-            self.assertEqual(decyzje["D-%03d" % nr]["status"], "zatwierdzona")
+            self.assertIn(decyzje["D-%03d" % nr]["status"], ("zatwierdzona", "zastapiona"), "D-%03d" % nr)
         # tytuł z odwrotnymi apostrofami
         self.assertIn("$ignoreUnknownInstances", decyzje["D-006"]["tytul"])
         self.assertNotIn("`", decyzje["D-006"]["tytul"])

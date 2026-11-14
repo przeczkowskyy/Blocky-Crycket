@@ -17,10 +17,14 @@ Bezpieczeństwo (wzorzec z panelu Saga Studio):
   który panel otwiera w przeglądarce przy starcie (jak Jupyter). Samo połączenie z pętli zwrotnej nie wystarcza, bo
   przekierowanie portu (ssh -R, ngrok tcp, netsh portproxy) też przychodzi z 127.0.0.1. Żądanie bez klucza —
   także z tego komputera — potrzebuje zwykłego kodu dostępu i ma prawa osoby zdalnej;
-- zmianę kanonu z panelu (status decyzji) daje wyłącznie KLUCZ GAME DIRECTORA: osobny sekret w danych lokalnych
-  (`klucz_gd.txt`, tworzy go `--klucz-gd`), przyniesiony adresem `/?gd=<klucz>` (zamieniany na ciasteczko bc_gd
-  i usuwany z adresu) albo nagłówkiem X-BC-GD. Działa też przez tunel, ale zawsze OBOK zwykłego dostępu (kod dostępu
-  albo klucz lokalny) — nie zastępuje go. Nieudane próby liczą się do tego samego limitu co kod dostępu.
+- status decyzji zmienia „decydent” (decyzja z 13.11.2026: Karol i Paweł mają równe prawa, wystarcza decyzja
+  jednego): osoba przy komputerze z panelem (klucz lokalny) albo przeglądarka z KLUCZEM ZATWIERDZANIA — osobnym
+  sekretem w danych lokalnych (`klucz_gd.txt`, tworzy go `--klucz-zatwierdzania`; nazwy pliku, ciasteczka bc_gd
+  i parametru `gd` zostały po dawnym kluczu Game Directora, żeby zapisane linki działały dalej), przyniesionym adresem
+  `/?gd=<klucz>` (zamieniany na ciasteczko bc_gd i usuwany z adresu) albo nagłówkiem X-BC-GD. Działa też przez tunel,
+  ale zawsze OBOK zwykłego dostępu (kod dostępu albo klucz lokalny) — nie zastępuje go. Nieudane próby liczą się do
+  tego samego limitu co kod dostępu. GET /api/ja: `decydent` = klucz zatwierdzania albo lokalny; `game_director` =
+  sam klucz zatwierdzania (stara nazwa pola, zostaje dla zgodności).
 """
 import argparse
 import hmac
@@ -48,7 +52,7 @@ from bc.http import Aplikacja, Odp, Strumien, Zadanie, mime_pliku  # noqa: E402
 from bc.rdzen import BladHTTP  # noqa: E402
 
 MODULY = ["sejf", "zapis", "gitsync", "obecnosc", "studio", "podglad", "analityka", "telemetria", "assety", "raporty",
-          "agent", "glos", "statyczny"]
+          "agent", "glos", "sesje", "statyczny"]
 ROZSZERZENIA_STATIC = {".html", ".js", ".mjs", ".css", ".json", ".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico",
                        ".woff2", ".glb", ".md", ".txt", ".map"}
 LIMIT_JSON = 4 * 1024 * 1024
@@ -91,11 +95,12 @@ _gd_pamiec = {"stan": None, "klucz": None}
 
 
 def _plik_klucza_gd():
+    """Plik klucza zatwierdzania. Nazwa `klucz_gd.txt` została po dawnym kluczu Game Directora — nie zmieniać."""
     return os.path.join(rdzen.RUNTIME, "klucz_gd.txt")
 
 
 def _klucz_gd():
-    """Klucz Game Directora albo None, gdy go nie utworzono (wtedy nikt nie zmienia kanonu z panelu).
+    """Klucz zatwierdzania albo None, gdy go nie utworzono (wtedy statusy decyzji zmienia tylko osoba przy komputerze).
     Czytany przy każdym żądaniu (z pamięcią po czasie zmiany pliku) — nowy klucz działa bez restartu panelu."""
     sciezka = _plik_klucza_gd()
     try:
@@ -110,7 +115,7 @@ def _klucz_gd():
 
 
 def utworz_klucz_gd(nowy=False):
-    """Zwraca klucz Game Directora; tworzy go, gdy go nie ma (albo zawsze, z nowy=True — stary przestaje działać)."""
+    """Zwraca klucz zatwierdzania; tworzy go, gdy go nie ma (albo zawsze, z nowy=True — stary przestaje działać)."""
     sciezka = _plik_klucza_gd()
     t = "" if nowy else (rdzen.czytaj_tekst(sciezka) or "").strip()
     if len(t) < 20:
@@ -122,17 +127,19 @@ def utworz_klucz_gd(nowy=False):
 
 
 def wypisz_link_gd(nowy=False):
-    """Polecenie --klucz-gd: wypisuje link Game Directora (klucz w danych lokalnych tego komputera)."""
+    """Polecenie --klucz-zatwierdzania (dawniej --klucz-gd): wypisuje link z kluczem zatwierdzania (klucz leży
+    w danych lokalnych tego komputera)."""
     klucz = utworz_klucz_gd(nowy)
     port = int(rdzen.konfiguracja().get("port") or 8787)
-    print("Klucz Game Directora %s. Tylko z nim panel pozwala zatwierdzać i odrzucać decyzje (zmiana kanonu)."
-          % ("utworzony na nowo (stary już nie działa)" if nowy else "gotowy"))
+    print("Klucz zatwierdzania %s. Z nim (albo przy komputerze z panelem) można w panelu zatwierdzać i odrzucać "
+          "decyzje." % ("utworzony na nowo (stary już nie działa)" if nowy else "gotowy"))
+    print("Decyzje zatwierdza Karol albo Paweł; panel podpisuje każdą imieniem i datą.")
     print("\n  Na tym komputerze (przeglądarka, w której działa już panel):\n    http://127.0.0.1:%d/?gd=%s" % (port, klucz))
     print("\n  Przez tunel albo telefon: do adresu z kodem dostępu dopisz  &gd=%s" % klucz)
     print("    np. https://<adres-tunelu>/?k=<kod dostępu>&gd=%s" % klucz)
     print("\nPrzeglądarka zapamięta klucz (ciasteczko) i usunie go z adresu. Link działa jak hasło — przekaż go tylko\n"
-          "Game Directorowi, nie wklejaj w publicznych miejscach (repozytorium jest publiczne).\n"
-          "Unieważnienie i nowy klucz: python panel/serwer.py --nowy-klucz-gd")
+          "Karolowi albo Pawłowi, nie wklejaj w publicznych miejscach (repozytorium jest publiczne).\n"
+          "Unieważnienie i nowy klucz: python panel/serwer.py --nowy-klucz-zatwierdzania")
     return 0
 
 
@@ -421,7 +428,7 @@ class Obsluga(http.server.BaseHTTPRequestHandler):
             if ustaw_ciasteczko and not api and self.command == "GET":
                 do_ustawienia.append(ustaw_ciasteczko)
 
-        # --- klucz Game Directora: uprawnienie do zmiany kanonu, zawsze OBOK dostępu do panelu (nie zamiast niego)
+        # --- klucz zatwierdzania: zmiana statusów decyzji, zawsze OBOK dostępu do panelu (nie zamiast niego)
         klucz_gd = _klucz_gd()
         podany_gd = query.get("gd") or self.headers.get("X-BC-GD") or ""
         game_director = False
@@ -434,7 +441,7 @@ class Obsluga(http.server.BaseHTTPRequestHandler):
                     do_ustawienia.append("bc_gd=%s; Path=/; Max-Age=31536000; HttpOnly; SameSite=Lax" % klucz_gd)
             else:
                 _zapisz_probe(klient)
-                rdzen.log("Nieudana próba klucza Game Directora (%s)" % klient)
+                rdzen.log("Nieudana próba klucza zatwierdzania (%s)" % klient)
         else:
             ciastko_gd = ciastka.get("bc_gd") or ""
             game_director = bool(klucz_gd and ciastko_gd and hmac.compare_digest(ciastko_gd.encode(), klucz_gd.encode()))
@@ -472,6 +479,7 @@ class Obsluga(http.server.BaseHTTPRequestHandler):
         except Exception:
             kto = ""
         kto = re.sub(r"[\x00-\x1f\x7f]", "", kto).strip()[:40]
+        kto_z_naglowka = bool(kto)                             # imię wpisane w Ustawieniach, nie domyślne z gita
         if not kto:
             kto = rdzen.git_uzytkownik() if lokalny else "gość"
 
@@ -480,7 +488,7 @@ class Obsluga(http.server.BaseHTTPRequestHandler):
             if params == "metoda":
                 return self._prosta(405, {"blad": "Metoda niedozwolona"})
             return self._prosta(404, {"blad": "Nie ma takiej trasy: %s" % sciezka})
-        z = Zadanie(self.command, sciezka, query, self.headers, cialo, lokalny, kto, ip, host)
+        z = Zadanie(self.command, sciezka, query, self.headers, cialo, lokalny, kto, ip, host, kto_z_naglowka)
         z.params = params
         z.game_director = game_director
         extra = {"Set-Cookie": ustaw_ciasteczko} if ustaw_ciasteczko else None
@@ -532,8 +540,10 @@ def _ping(z):
 
 def _ja(z):
     zapis = bool((APP.moduly.get("zapis") or {}).get("ok")) and rdzen.konfiguracja().get("zapis_sejfu", True) is not False
+    # game_director = sam klucz zatwierdzania (stara nazwa pola); decydent = może zmieniać statusy decyzji
     return {"kto": z.kto, "lokalny": z.lokalny, "gospodarz": rdzen.git_uzytkownik(), "tryb_statyczny": False,
-            "wersja": rdzen.WERSJA, "game_director": bool(z.game_director), "zapis_sejfu": zapis}
+            "wersja": rdzen.WERSJA, "game_director": bool(z.game_director),
+            "decydent": bool(z.game_director or z.lokalny), "zapis_sejfu": zapis}
 
 
 def _konfiguracja(z):
@@ -670,15 +680,18 @@ def main():
     ap.add_argument("--sprawdz", action="store_true", help="sprawdź środowisko i zakończ")
     ap.add_argument("--bez-przegladarki", action="store_true")
     ap.add_argument("--eksport", metavar="FOLDER", help="zapisz lustro tylko-do-odczytu (strona statyczna) i zakończ")
-    ap.add_argument("--klucz-gd", action="store_true",
-                    help="wypisz link Game Directora (zatwierdzanie decyzji w panelu) i zakończ")
-    ap.add_argument("--nowy-klucz-gd", action="store_true",
-                    help="utwórz nowy klucz Game Directora (stary przestaje działać), wypisz link i zakończ")
+    ap.add_argument("--klucz-zatwierdzania", "--klucz-gd", dest="klucz_zatwierdzania", action="store_true",
+                    help="wypisz link z kluczem zatwierdzania (zatwierdzanie decyzji w panelu) i zakończ; "
+                         "--klucz-gd to dawna nazwa tego polecenia")
+    ap.add_argument("--nowy-klucz-zatwierdzania", "--nowy-klucz-gd", dest="nowy_klucz_zatwierdzania",
+                    action="store_true",
+                    help="utwórz nowy klucz zatwierdzania (stary przestaje działać), wypisz link i zakończ; "
+                         "--nowy-klucz-gd to dawna nazwa tego polecenia")
     a = ap.parse_args()
     if a.sprawdz:
         sys.exit(sprawdz())
-    if a.klucz_gd or a.nowy_klucz_gd:
-        sys.exit(wypisz_link_gd(nowy=a.nowy_klucz_gd))
+    if a.klucz_zatwierdzania or a.nowy_klucz_zatwierdzania:
+        sys.exit(wypisz_link_gd(nowy=a.nowy_klucz_zatwierdzania))
     if a.eksport:
         zaladuj_moduly()
         from bc import statyczny

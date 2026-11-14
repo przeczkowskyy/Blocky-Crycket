@@ -5,6 +5,8 @@
 - Sekcja `studio` pyta moduł bc/studio.py (`studio.stan()`); jego brak, brak funkcji albo wyjątek = Studio niedostępne.
   Wywołanie idzie w osobnym wątku i czekamy na nie najwyżej 2,5 s — zawieszone Studio nie zablokuje panelu.
 - Sekcja `git`: ostatni commit każdego autora z `git log` (pamięć 60 s).
+- Sekcja `rozmowa`: kto jest teraz w rozmowie głosowej z zakładki Sesja (bc/sesje.py: `obecni()`), bez identyfikatorów
+  uczestników — tylko imię, stan (mowi / wyciszony / bez_mikrofonu / polaczony / laczenie) i od kiedy.
 """
 import datetime
 import threading
@@ -119,9 +121,24 @@ def git_autorzy(repo=None):
     return wynik
 
 
+# --------------------------------------------------------------------------- rozmowa (zakładka Sesja)
+NIKOGO_W_ROZMOWIE = {"aktywna": False, "slucha": False, "osoby": []}
+
+
+def rozmowa():
+    """Kto jest teraz w rozmowie głosowej (bc/sesje.py): {aktywna, slucha, osoby:[{kto, stan, od}]}. Brak modułu albo
+    błąd = nikogo."""
+    try:
+        from . import sesje
+        wynik = sesje.obecni()
+        return wynik if isinstance(wynik, dict) else dict(NIKOGO_W_ROZMOWIE)
+    except Exception:
+        return dict(NIKOGO_W_ROZMOWIE)
+
+
 # --------------------------------------------------------------------------- trasy
 def obecnosc():
-    return {"panel": panel(), "studio": studio_stan(), "git": git_autorzy()}
+    return {"panel": panel(), "studio": studio_stan(), "git": git_autorzy(), "rozmowa": rozmowa()}
 
 
 def _t_puls(z):

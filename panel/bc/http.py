@@ -31,8 +31,11 @@ Zwracane wartości handlera:
     None                   -> 204
 
 Pola Zadania: metoda, sciezka, query (dict), params (z wzorca trasy), naglowki, cialo (bytes), json, lokalny (bool —
-żądanie z tego komputera), kto (nazwa osoby z nagłówka X-BC-Kto albo `git config user.name`), ip, game_director
-(bool — żądanie niesie klucz Game Directora; tylko to, a nie imię, pozwala zmieniać kanon, np. statusy decyzji).
+żądanie z tego komputera), kto (nazwa osoby z nagłówka X-BC-Kto albo `git config user.name`), kto_z_naglowka (bool —
+imię naprawdę przyszło w nagłówku X-BC-Kto, czyli człowiek wpisał je w Ustawieniach; False, gdy serwer wziął imię
+z gita albo systemu), ip, game_director (bool — żądanie niesie KLUCZ ZATWIERDZANIA; nazwa pola została po dawnym
+kluczu Game Directora). Statusy decyzji zmienia żądanie z kluczem zatwierdzania albo lokalne (klucz lokalny) — nigdy
+samo imię — i tylko z imieniem z nagłówka; domyślne imię z gita nie podpisuje decyzji (patrz bc/zapis.py).
 """
 import json
 import mimetypes
@@ -59,9 +62,9 @@ def mime_pliku(sciezka):
 
 class Zadanie:
     __slots__ = ("metoda", "sciezka", "query", "params", "naglowki", "cialo", "_json", "_json_ok", "lokalny", "kto",
-                 "ip", "host", "game_director")
+                 "ip", "host", "game_director", "kto_z_naglowka")
 
-    def __init__(self, metoda, sciezka, query, naglowki, cialo, lokalny, kto, ip, host):
+    def __init__(self, metoda, sciezka, query, naglowki, cialo, lokalny, kto, ip, host, kto_z_naglowka=True):
         self.metoda = metoda
         self.sciezka = sciezka
         self.query = query
@@ -72,9 +75,10 @@ class Zadanie:
         self._json_ok = False
         self.lokalny = lokalny
         self.kto = kto
+        self.kto_z_naglowka = bool(kto_z_naglowka)             # serwer.py podaje False, gdy imię wziął z gita/systemu
         self.ip = ip
         self.host = host
-        self.game_director = False                             # ustawia serwer po sprawdzeniu klucza Game Directora
+        self.game_director = False                             # ustawia serwer po sprawdzeniu klucza zatwierdzania
 
     @property
     def json(self):

@@ -816,6 +816,18 @@ def pliki_planu():
     return wynik
 
 
+def plik_produkcji(nazwa):
+    """(ścieżka bezwzględna, ścieżka do pokazania) pliku `<sejf B&C>/Produkcja/<nazwa>` (np. „Sesje główne.md”) albo
+    None, gdy panel nie widzi sejfu. Tak samo jak pliki_planu(), ale dla notatek spoza planu."""
+    s = _sejf_planu()
+    if not s:
+        return None
+    sid, _, baza = s
+    p = os.path.join(baza, FOLDER_PLANU, nazwa)
+    pokaz = _nfc(rdzen.wzgledem_repo(p)) if _w_repo(baza) else "sejf:%s/%s/%s" % (sid, FOLDER_PLANU, nazwa)
+    return p, pokaz
+
+
 def plan():
     """Plan z plików Produkcja/*.md. Oprócz części planu: `zrodla` (ścieżka -> czas zmiany), `pliki` (klucz ->
     ścieżka do pokazania) i `wersje` (klucz -> znacznik wersji treści albo None) — znacznik klient odsyła przy

@@ -3,7 +3,8 @@
 //
 //   node testy/przegladarka.mjs <port> <katalog danych lokalnych> <katalog Produkcja> <przeglądarka> [katalog zrzutów]
 //
-// Klucze (lokalny, Game Directora) czyta z plików danych lokalnych serwera testowego i nigdzie ich nie wypisuje.
+// Klucze (lokalny, zatwierdzania — plik klucz_gd.txt) czyta z plików danych lokalnych serwera testowego i nigdzie
+// ich nie wypisuje.
 // Scenariusze z wrogiego przeglądu zapisu do sejfu:
 //   A. okno zatwierdzania decyzji wysyła wersję Rejestru z chwili otwarcia — gdy odpytywanie w tle przerysuje listę
 //      nową treścią, „Zatwierdzam” nic nie zapisuje (409) i zamyka okno;
@@ -118,11 +119,11 @@ try {
   await js(`document.dispatchEvent(new Event('visibilitychange')); true`);   // powrót do karty
   sprawdz("A: lista za oknem przerysowana nową treścią",
     await czekajNa(`document.querySelector('.plan-tresc').textContent.includes('PRZEPISANE PRZEZ AGENTA')`));
-  const ja = await js(`fetch('/api/ja', { headers: { 'X-BC-Kto': encodeURIComponent('Paweł') } }).then(r => r.json()).then(j => j.game_director)`);
-  sprawdz("A: przeglądarka ma klucz Game Directora", ja === true);
+  const ja = await js(`fetch('/api/ja', { headers: { 'X-BC-Kto': encodeURIComponent('Paweł') } }).then(r => r.json()).then(j => j.game_director && j.decydent)`);
+  sprawdz("A: przeglądarka ma klucz zatwierdzania (decydent)", ja === true);
   await js(`document.querySelector('.arkusz form button[type=submit]').click(); true`);
   let tA = "";
-  for (let i = 0; i < 30 && !/zmienił się|zatwierdzona|Game Director/.test(tA); i++) {
+  for (let i = 0; i < 30 && !/zmienił się|zatwierdzona|imię/.test(tA); i++) {
     tA += " " + (await toasty());                                            // toast znika po kilku sekundach
     await sleep(200);
   }
@@ -146,7 +147,7 @@ try {
   sprawdz("B: bez „Ktoś zmienił”", !/Ktoś zmienił/.test(tB), tB);
   sprawdz("B: szkic nie wraca do pola",
     !(await js(`[...document.querySelectorAll('.karta.pytanie textarea')].some(p => p.value.includes(${JSON.stringify(tekst)}))`)));
-  sprawdz("B: znacznik Game Directora w podpisie", pytania.includes("- Paweł (Game Director, "));
+  sprawdz("B: znacznik klucza zatwierdzania w podpisie", pytania.includes("- Paweł (klucz zatwierdzania, "));
 
   // ------------------------------------------------------------ C / D
   await idz(PANEL + "/#/plan?zakladka=zadania");

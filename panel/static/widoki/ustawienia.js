@@ -53,18 +53,24 @@ export default {
       el("div", { class: "siatka" }, kKto.el, kTelefon.el, kZdrowie.el, kO.el));
 
     // ------------------------------------------------------------------ kim jesteś
-    /** Game Director = przeglądarka z kluczem Game Directora (ciasteczko z linku --klucz-gd), a nie wpisane imię. */
+    /** Zatwierdzanie decyzji (Karol albo Paweł) = przeglądarka z kluczem zatwierdzania (ciasteczko z linku
+     *  --klucz-zatwierdzania) albo osoba przy komputerze z panelem — nie wpisane imię. ctx.ja.decydent; stary serwer
+     *  bez tego pola: ctx.ja.game_director. */
     function wierszGameDirectora() {
-      const gd = !!ctx.ja.game_director;
+      const nowy = "decydent" in ctx.ja;
+      const gd = !!(nowy ? ctx.ja.decydent : ctx.ja.game_director);
+      const opisTak = ctx.ja.game_director
+        ? "Ta przeglądarka ma klucz zatwierdzania: w Planie → Decyzje możesz zatwierdzać i odrzucać propozycje (to zmiana kanonu w Rejestrze decyzji). Panel podpisze decyzję imieniem zapisanym wyżej i datą — bez zapisanego imienia decyzji nie zapisze."
+        : "Jesteś przy komputerze z panelem: w Planie → Decyzje możesz zatwierdzać i odrzucać propozycje (to zmiana kanonu w Rejestrze decyzji). Panel podpisze decyzję imieniem zapisanym wyżej i datą — bez zapisanego imienia decyzji nie zapisze (imię z gita nie wystarczy).";
       return el("div", { class: "wiersz gd-wiersz" },
         el("span", { class: "znacznik " + (gd ? "ok" : "uwaga") }, ikona("klodka")),
         el("span", { class: "wiersz-tekst" },
-          el("strong", null, "Game Director: " + (gd ? "tak" : "nie")),
+          el("strong", null, "Zatwierdzanie decyzji: " + (gd ? "tak" : "nie")),
           gd
-            ? el("span", { class: "cichy-tekst" }, "Ta przeglądarka ma klucz Game Directora: w Planie → Decyzje możesz zatwierdzać i odrzucać propozycje (to zmiana kanonu w Rejestrze decyzji).")
+            ? el("span", { class: "cichy-tekst" }, opisTak)
             : el("span", { class: "cichy-tekst" },
-              "Zatwierdzanie decyzji wymaga klucza Game Directora — samo imię go nie daje. Na komputerze, na którym działa panel, uruchom ",
-              el("code", null, "python panel/serwer.py --klucz-gd"),
+              "Decyzje zatwierdza Karol albo Paweł — w panelu przy komputerze z panelem albo z kluczem zatwierdzania; samo imię go nie daje. Na komputerze, na którym działa panel, uruchom ",
+              el("code", null, "python panel/serwer.py --klucz-zatwierdzania"),
               " i otwórz wypisany link w tej przeglądarce (przez tunel: dopisz ", el("code", null, "&gd=…"), " do adresu z kodem dostępu). Odpowiadać na pytania i pracować na zadaniach może każdy.")));
     }
 
@@ -73,7 +79,9 @@ export default {
       try {
         zapisane = localStorage.getItem("bc.kto") || "";
       } catch (e) { /* nic */ }
-      const pole = el("input", { class: "pole", value: zapisane || (ctx.ja.lokalny ? ctx.ja.gospodarz || "" : ""), maxlength: "40", placeholder: "np. Karol", autocomplete: "given-name", "aria-label": "Twoje imię" });
+      // Podpowiedź z gita tylko jako samo imię (pierwszy wyraz) — podpis trafia do publicznych plików sejfu.
+      const podpowiedz = ctx.ja.lokalny ? String(ctx.ja.gospodarz || "").trim().split(/\s+/)[0] || "" : "";
+      const pole = el("input", { class: "pole", value: zapisane || podpowiedz, maxlength: "40", placeholder: "np. Karol", autocomplete: "given-name", "aria-label": "Twoje imię" });
       const zapisz = el("button", { class: "przycisk glowny", type: "submit" }, ikona("ok"), el("span", null, "Zapisz"));
       const form = el("form", { class: "formularz" },
         el("div", { class: "kto-podglad" }, awatar(ctx.ja.kto || "?"), el("div", null,

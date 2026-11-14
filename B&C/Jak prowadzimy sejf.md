@@ -7,14 +7,20 @@ tags: [hub, zasady]
 ## Statusy notatek (pole `status` w nagłówku)
 | Status | Znaczenie |
 |---|---|
-| `kanon` | Zatwierdzone przez Ciebie, obowiązuje |
+| `kanon` | Zatwierdzone przez Karola albo Pawła, obowiązuje |
 | `propozycja` | Pomysł Claude albo starszej specyfikacji, **nie jest faktem** |
-| `do-decyzji` | Czeka na Twoją odpowiedź |
+| `do-decyzji` | Czeka na odpowiedź jednego z nas |
+
+## Kto zatwierdza (D-030, 2026-11-13)
+- Karol i Paweł mają takie same prawa. Wystarczy decyzja jednego. Zasadę przyjął Karol 13.11.2026; potwierdzenie Pawła czeka w [[Pytania otwarte]] #27, a do tego czasu Paweł może cofnąć decyzje zatwierdzone tylko przez Karola.
+- Każda decyzja zostaje w logach: w [[Rejestr decyzji]] z podpisem `zdecydował: <imię> <data>` i w [[Dziennik zmian]].
+- W [[Panel zespołu|panelu]] status decyzji zmienia osoba przy komputerze z panelem albo osoba z kluczem zatwierdzania. Wpis oznaczony „gość panelu” decyzją nie jest.
+- Gdy się różnimy, spór trafia do [[Pytania otwarte]] i nic nie jest nadpisywane.
 
 ## Struktura
 - **Gra/** mechaniki i koncepcja
 - **Postacie/** bohaterowie, NPC, pety
-- **Styl/** kierunek artystyczny i [[Style Lock]]
+- **Styl/** kierunek artystyczny i [[Instrukcja promptów — Glossy Ink]] (zastąpiła [[Style Lock]], D-027)
 - **UI/** ekrany interfejsu
 - **Technika/** Rojo, Figma, narzędzia
 - **Produkcja/** [[Roadmapa]], [[Zadania]], [[Rejestr decyzji]], [[Pytania otwarte]], [[Dziennik zmian]]
@@ -30,8 +36,8 @@ tags: [hub, zasady]
    - odhacza [[Zadania]],
    - dopisuje wpis do [[Dziennik zmian]].
 4. Nowe pomysły zapisuje jako `propozycja` albo jako 💡 w [[Rejestr decyzji]]. Nigdy jako kanon.
-5. Nie zmienia statusu na `kanon` bez Twojej zgody.
+5. Nie zmienia statusu na `kanon` bez wyraźnej zgody Karola albo Pawła, a przy zmianie zapisuje, kto i kiedy zdecydował.
 
-## Ty
-- Możesz pisać notatki dowolnie, Claude je przeczyta.
-- Żeby coś stało się obowiązujące, ustaw `status: kanon` albo powiedz Claude „zatwierdzam”.
+## My (Karol i Paweł)
+- Możemy pisać notatki dowolnie, Claude je przeczyta.
+- Żeby coś stało się obowiązujące, ustaw `status: kanon`, zatwierdź decyzję w panelu albo powiedz Claude „zatwierdzam”.

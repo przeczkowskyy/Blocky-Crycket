@@ -1,15 +1,17 @@
 ---
-status: do-decyzji
+status: kanon
 tags: [styl, prompty, grafika, ui]
 źródło: "[[Instrukcja stylu i promptowania (oryginał 2026-11-13)]]"
 ---
 # Instrukcja promptów — Glossy Ink
 
+*Zatwierdzona 13.11.2026 decyzją D-027 w [[Rejestr decyzji]] (zdecydował Karol). Zastępuje prefiks z [[Style Lock]] (D-001) oraz zapisy o pixel-arcie ikon i płaskim interfejsie z [[Kierunek artystyczny]] (D-002).*
+
 > [!info] W skrócie
 > Instrukcja Game Directora (Pawła) z 13.11.2026 dla każdego, kto pisze prompty do generatorów grafiki (Higgsfield, Midjourney, DALL-E 3). **Złota zasada:** opisu stylu nie wymyśla się od zera — każdy prompt zaczyna się od stałego początku, kończy stałym końcem i ma osobny stały negative prompt; zmienia się tylko środek z układem i obiektami. Styl nazywa się „Glossy Ink” i jest wzorowany na ekranie ładowania. Pełny tekst z przykładem: [[Instrukcja stylu i promptowania (oryginał 2026-11-13)]].
 
-> [!warning] Status: do decyzji — ale to najnowsze polecenie Game Directora
-> Instrukcja zastępuje prefiks z zatwierdzonego [[Style Lock]] (D-001) i zmienia zapisy o pixel-arcie i płaskim interfejsie z [[Kierunek artystyczny]] (D-002), więc potrzebuje wpisu w [[Rejestr decyzji]] (D-027, [[Pytania otwarte]] #22). Dokument przekazał Karol; formalne „tak” należy do Game Directora. **Przy nowych promptach stosujemy tę instrukcję** — stary prefiks zawiera cudzą nazwę, a ta wersja odwołuje się do własnego obrazu referencyjnego.
+> [!success] Obowiązuje (kanon, D-027)
+> Każdy nowy prompt graficzny składamy według tej instrukcji. Dawny prefiks z [[Style Lock]] nie obowiązuje — zawierał nazwę cudzej gry, a ta wersja odwołuje się do własnego obrazu referencyjnego. Z [[Kierunek artystyczny]] (D-002) Glossy Ink zastępuje tylko pixel-art ikon i płaski (flat) design interfejsu. Reszta D-002 obowiązuje dalej: komiks i pop-art, Roblox voxel / low-poly, czytelność na telefonach, asymetryczne ramki, lekko nachylone przyciski, komiksowe fonty i dymki. Skill `/asset` składa prompty według tej notatki ([[Pipeline assetów]]).
 
 ## Jak używać
 1. Wgraj do generatora ekran ładowania gry jako obraz referencyjny stylu (Style Reference).
@@ -54,19 +56,24 @@ Negative Prompt: realistic 3D, photorealism, plastic texture, blurry, external d
 3. **Okna i statystyki.** Okno z kilku części powstaje jako jedna scalona bryła. Statystyki w 2 szerokich kolumnach po 3 wiersze; wiersz to: ikona, nazwa z niebieskim podtytułem, bardzo szerokie ciemne pole na liczby sześciocyfrowe, kwadratowy przycisk ze złotym „+”. Bez pasków postępu i bez nawiasów „[+]”.
 4. **Mapy izometryczne** (teleport, miasteczko). Kamera wysoko nad ziemią, budynki pomniejszone o 30–40%, szerokie kamienne ścieżki i dużo zieleni. Bez pływających pinezek, kłódek i napisów — pinezki powstają osobnym promptem jako arkusz przycisków.
 
-## Co to zmienia względem kanonu
-| Temat | Kanon dziś | Instrukcja |
+## Co zmieniła względem wcześniejszego kanonu
+| Temat | Kanon do 13.11.2026 | Glossy Ink (od 13.11.2026) |
 |---|---|---|
 | Początek promptu | [[Style Lock]]: prefiks z nazwą gry-inspiracji | stały początek „Glossy Ink” z odwołaniem do własnego obrazu referencyjnego |
 | Ikony | pixel-art w komiksowych ramkach ([[Kierunek artystyczny]]) | malarski cel-shading z połyskiem |
-| Interfejs | płaski, asymetryczne ramki | połysk, lekkie ramki, ciepłe tła wnętrz |
+| Interfejs | płaski (flat design) | połysk, lekkie ramki, ciepłe tła wnętrz (asymetryczne ramki, nachylone przyciski i komiksowe dymki z [[Kierunek artystyczny]] obowiązują dalej) |
 | Negative prompt | brak | stały, podawany osobno |
 
 Instrukcja zgadza się z propozycją D-018 (styl „bubbly cartoon”) i z wnioskiem z [[Diagnoza pomysłu 2026-11-13]], że opis stylu nie powinien zawierać cudzej nazwy.
 
+## Wdrożenie w skillu `/asset`
+Szablony promptów skilla (`.claude/skills/asset/references/prompt-templates.md`) składają od 13.11.2026 każdy prompt według tej instrukcji: stały początek, zmienny środek z szablonu kategorii, stały koniec i osobny negative prompt. Dawny opis stylu paczki i ciemnogranatowe tło ramek zostały usunięte. Szczegóły: [[Pipeline assetów]].
+
 ## Do ustalenia
-- Formalne potwierdzenie Game Directora, że instrukcja zastępuje prefiks z D-001 i zapisy o pixel-arcie z D-002 (D-027, pytanie #22).
-- ~~Przepięcie szablonów skilla `/asset`~~ — zrobione 2026-11-14 na polecenie Game Directora ([[Pipeline assetów]]).
+- Instrukcja opisuje angielskie zakończenie mapy miasteczka (drewniana ramka z przyciskiem „X”) tylko po polsku, a pełnych teł i key-artu nie opisuje wcale. Skill `/asset` ma na to własne zakończenia, oznaczone w szablonach jako nasze — przy wątpliwościach decyduje Game Director.
+- Instrukcja pozwala na dokładne napisy w cudzysłowie, a zasady skilla `/asset` mówią „zero tekstu w grafikach AI” (napisy robimy natywnie). Skill dopuszcza napisy w obrazie tylko na wyraźną prośbę, np. przy makiecie okna.
+- Stały negative prompt zawiera „floating map pins” i „character inside portrait frame”, a żelazna zasada 4 każe robić pinezki osobnym promptem jako arkusz przycisków. Przy takim arkuszu negative prompt działa więc przeciw celowi promptu. Szablon skilla `/asset` opisuje pinezki jako samodzielne przyciski UI w kształcie pinezki, nieumieszczone na mapie, a stałego negative promptu nie zmienia. Czy przy arkuszu pinezek wolno pominąć „floating map pins”, decyduje Game Director.
+- Instrukcja zaleca połysk i lekkie ramki, ale nie mówi nic o asymetrycznych ramkach ani lekko nachylonych przyciskach z [[Kierunek artystyczny]]. Te zapisy obowiązują dalej (D-027 ich nie zmienia); czy pasują do Glossy Ink, decyduje Game Director.
 - Przykład z instrukcji (okno Kowala) używa diamentów i przycisków „+” przy statystykach, co łączy się z pytaniami #6 (waluty) i #17 (statystyki) w [[Pytania otwarte]].
 
 ## Powiązane

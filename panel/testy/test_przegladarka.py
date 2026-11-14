@@ -6,7 +6,7 @@ Test jest NA ŻĄDANIE (trwa ok. minuty i potrzebuje przeglądarki oraz Node 22+
 Bez zmiennej BC_TEST_PRZEGLADARKA=1 jest pomijany, więc zwykłe `unittest discover` go nie uruchamia.
 
 Serwer testowy jak w test_api.py: katalogi tymczasowe, tymczasowy sejf z konfiguracji lokalnej, tymczasowe klucze
-(lokalny i Game Directora). Właściwe kroki są w testy/przegladarka.mjs. Zrzuty ekranu: BC_TEST_ZRZUTY=<katalog>.
+(lokalny i zatwierdzania). Właściwe kroki są w testy/przegladarka.mjs. Zrzuty ekranu: BC_TEST_ZRZUTY=<katalog>.
 """
 import os
 import shutil

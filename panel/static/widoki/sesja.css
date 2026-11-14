@@ -1,0 +1,126 @@
+/* Sesja (rozmowa głosowa z agentem) — style widoku; wspólne klasy i zmienne są w styl.css */
+.sesja { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.sesja [hidden] { display: none !important; }
+.sesja .nagl-widoku { margin-bottom: 0; }
+
+/* czerwony znacznik nagrywania — widzi go każdy, gdy agent słucha */
+.sesja-baner {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 14px; border-radius: var(--promien);
+  background: rgba(239, 90, 90, 0.16); border: 2px solid var(--czerwien); color: var(--tekst);
+  position: sticky; top: 8px; z-index: 5;
+}
+.sesja-baner strong { color: #ff8a8a; }
+.sesja-baner-kto { color: var(--przygaszony); font-size: 13px; }
+.sesja-kropka-rec {
+  flex: none; width: 14px; height: 14px; margin-top: 3px; border-radius: 50%;
+  background: var(--czerwien); box-shadow: 0 0 0 4px rgba(239, 90, 90, 0.25);
+  animation: sesja-rec 1.2s ease-in-out infinite;
+}
+@keyframes sesja-rec { 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .sesja-kropka-rec { animation: none; } }
+.sesja.nagrywa .sesja-pokoj { border-color: rgba(239, 90, 90, 0.6); }
+
+.sesja-komunikaty { display: flex; flex-direction: column; gap: 8px; }
+.sesja-komunikaty:empty { display: none; }
+.sesja-komunikat {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 12px;
+  background: var(--karta); border: 2px solid var(--obrys); font-size: 14px; line-height: 1.4;
+}
+.sesja-komunikat .ikona { flex: none; width: 18px; height: 18px; margin-top: 1px; color: var(--niebieski); }
+.sesja-komunikat.blad { border-color: rgba(239, 90, 90, 0.55); }
+.sesja-komunikat.blad .ikona { color: var(--czerwien); }
+
+/* pokój */
+.sesja-osoby { margin-bottom: 10px; }
+.sesja-osoba { gap: 10px; }
+.sesja-osoba .wiersz-tekst > span { font-size: 13px; overflow-wrap: anywhere; }
+.sesja-osoba.mowi .awatar { box-shadow: 0 0 0 3px var(--zielen); }
+.sesja-osoba .chip { flex: none; }
+.sesja-osoba-pusto { padding: 6px 0 10px; }
+.sesja-sterowanie { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.sesja-wycisz.wyciszony { border-color: var(--czerwien); color: #ff8a8a; }
+.sesja-miernik {
+  flex: 1 1 120px; min-width: 90px; max-width: 260px; height: 12px;
+  border-radius: 999px; background: var(--tlo-gleb, #0d0f15); border: 2px solid var(--obrys); overflow: hidden;
+}
+.sesja-miernik-wyp { display: block; height: 100%; width: 0; background: var(--niebieski); transition: width 0.1s linear; }
+.sesja-miernik.mowi .sesja-miernik-wyp { background: var(--zielen); }
+
+.sesja-slucha-rzad {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-top: 14px; padding-top: 12px; border-top: 2px dashed var(--obrys);
+}
+.sesja-slucha {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 14px 0 8px;
+  border-radius: 999px; border: 2px solid var(--obrys-jasny, #3a425a); background: var(--karta2); color: var(--tekst);
+  font-weight: 800; font-size: 15px; cursor: pointer;
+}
+.sesja-slucha:disabled { opacity: 0.55; cursor: not-allowed; }
+.sesja-slucha-suwak {
+  position: relative; width: 40px; height: 24px; border-radius: 999px; background: #3a4157; flex: none;
+  transition: background 0.15s;
+}
+.sesja-slucha-suwak::after {
+  content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; transition: transform 0.15s;
+}
+.sesja-slucha[aria-checked="true"] { border-color: var(--czerwien); }
+.sesja-slucha[aria-checked="true"] .sesja-slucha-suwak { background: var(--czerwien); }
+.sesja-slucha[aria-checked="true"] .sesja-slucha-suwak::after { transform: translateX(16px); }
+.sesja-slucha-opis { flex: 1 1 220px; margin: 0; font-size: 13px; }
+
+/* trzy części: na telefonie jedna kolumna */
+.sesja-siatka { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 1100px) { .sesja-siatka { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 720px) and (max-width: 1099px) {
+  .sesja-siatka { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sesja-siatka > .sesja-czesc:first-child { grid-column: 1 / -1; }
+}
+.sesja-czesc { display: flex; flex-direction: column; gap: 10px; }
+.sesja-czesc .karta-tytul { margin-bottom: 2px; }
+
+/* agenda */
+.sesja-agenda { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.sesja-tematy { gap: 0; }
+.sesja-temat {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-top: 1px solid var(--obrys);
+}
+.sesja-tematy > .sesja-temat:first-child { border-top: 0; padding-top: 2px; }
+.sesja-temat-tresc { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.sesja-temat-tresc .cichy-tekst { font-size: 13px; }
+.sesja-temat-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px; }
+.sesja-temat .przycisk { flex: none; }
+.sesja-temat.omowiony { opacity: 0.8; }
+.sesja-nowy-temat { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 2px dashed var(--obrys); }
+.sesja-nowy-temat .przycisk { align-self: flex-end; }
+.sesja-omowione summary { cursor: pointer; font-weight: 700; color: var(--przygaszony); min-height: 32px; display: flex; align-items: center; }
+.sesja-zrodlo { font-size: 12px; margin: 0; }
+
+/* transkrypcja na żywo */
+.sesja-zapis-stan { margin: 0; font-size: 13px; }
+.sesja-zapis {
+  display: flex; flex-direction: column; gap: 8px; max-height: min(60vh, 520px); overflow-y: auto;
+  padding: 10px; border-radius: 12px; background: var(--tlo-gleb, #0d0f15); border: 2px solid var(--obrys);
+  min-height: 120px; overscroll-behavior: contain;
+}
+.sesja-zapis > .pusty { border: 0; background: none; }
+.sesja-wpis { font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }
+.sesja-wpis-czas { color: var(--przygaszony); font-size: 12px; font-variant-numeric: tabular-nums; margin-right: 6px; }
+.sesja-wpis-kto { margin-right: 4px; color: var(--zloto); }
+.sesja-zapis-pusto { margin: auto; text-align: center; }
+
+/* notatki agenta */
+.sesja-notatki { min-width: 0; overflow-wrap: anywhere; }
+.sesja-notatki .md h2 { font-size: 15px; margin: 12px 0 4px; }
+.sesja-notatki .md h2:first-child { margin-top: 0; }
+.sesja-blad-notatek { font-size: 12px; }
+.sesja-notatki-akcje { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sesja-notatki-akcje:empty { display: none; }
+.sesja-notatki-akcje > p { flex: 1 1 100%; margin: 0; font-size: 13px; }
+
+@media (max-width: 480px) {
+  .sesja-sterowanie > .przycisk { flex: 1 1 auto; }
+  .sesja-miernik { flex-basis: 100%; max-width: none; }
+  .sesja-notatki-akcje > .przycisk { flex: 1 1 auto; }
+}

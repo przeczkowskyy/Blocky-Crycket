@@ -35,21 +35,23 @@ Dla każdego assetu ustal i pokaż w 1 tabeli:
 Sprawdź w manifeście, czy nazwa już istnieje → jeśli tak, to nowa **wersja** (`v2`), nie nadpisuj historii.
 Batch > 5 assetów albo szacunek > 60 kredytów → **zatrzymaj się i poproś o OK**. W przeciwnym razie leć dalej.
 
-## Krok 1 – Prompt (format „Glossy Ink”)
-Złóż prompt według `references/prompt-templates.md`: **STAŁY POCZĄTEK** (1:1) → **środek z szablonu kategorii** → **STAŁY KONIEC** (1:1; mapa i tło mają swój wyjątek) → **STAŁY NEGATIVE** jako ostatni akapit `Negative Prompt: …`.
-Części stałych nie przerabiaj ani nie skracaj – zmieniasz tylko środek. Zasady środka są w szablonach (zamknięte krawędzie, puste kontenery, lekkie ramki, napisy natywnie → `NO text`).
-Referencje: zawsze `assets/refs/KeyArt_ref.jpg` (ekran ładowania = Style Reference) + najwyżej 1 plik z `assets/refs/` najbliższy kategorii (ikony HUD: `Shop.png`, `Pets.png`; waluty: `Coin.png`, `Gem.png`). Wgraj je przez `media_upload` → `media_confirm` i podaj jako `image_references`.
-Pokaż użytkownikowi gotowy prompt w raporcie z kroku 0, jeśli pisał własny prompt-wytyczną – środek ma się na nim opierać.
+## Krok 1 – Prompt (Glossy Ink, D-027)
+Złóż prompt według `references/prompt-templates.md` (instrukcja Glossy Ink z sejfu, kanon od 13.11.2026):
+**stały początek (1:1) + zmienny środek (szablon kategorii) + stały koniec (1:1)**, a **stały negative prompt (1:1) osobno**.
+Części stałych nie zmieniaj ani nie tłumacz; wszystkie dopiski idą do zmiennego środka. Dawnego prefiksu Style Lock (D-001) nie używaj.
+Zasady: angielski prompt, domyślnie **bez tekstu w obrazie** (`no text, no letters` w środku), **czysto białe tło** (daje je stały koniec; wyjątki: tła i mapy), żelazne zasady z szablonów (zamknięte krawędzie, puste kontenery, okna ze statystykami, mapy izometryczne).
+Jeśli narzędzie Higgsfield przyjmuje obraz referencyjny – zawsze dołącz key-art ekranu ładowania `assets/refs/KeyArt_ref.jpg` jako referencję stylu, a obok najwyżej 1 plik z `assets/refs/` najbliższy kategorii (np. dla ikon HUD: `Shop.png` albo `Pets.png`; dla walut: `Coin.png` albo `Gem.png`).
+Pełny prompt i negative prompt zapisz w manifeście (pole `prompt`, krok 2.5).
 
 ## Krok 2 – Generowanie (Higgsfield MCP)
-1. Model **`nano_banana_2_1`** (polecenie Game Directora; **nie** `gpt_image_*`, nawet jeśli narzędzie podaje go jako domyślny). Inny model tylko na wyraźną prośbę użytkownika. Ustawienia: `resolution` 2k (ikony) / 4k (okna, mapy, tła), proporcje 1:1 (ikony) lub 16:9 (okna, tła), stały `seed` w obrębie serii. Negative nie ma osobnego pola – jest na końcu promptu.
+1. Model **`nano_banana_2_1`** (polecenie Game Directora; **nie** `gpt_image_*`, nawet jeśli narzędzie podaje go jako domyślny). Inny model tylko na wyraźną prośbę użytkownika. Ustawienia (rozdzielczość, proporcje, seed, referencje): tabela na początku `references/prompt-templates.md`. Model nie ma pola negative – negative idzie osobnym akapitem po stałym końcu.
 2. Wygeneruj **3 warianty** (różne seedy / lekkie wariacje opisu).
 3. Odpytuj `get_generation_status` aż do `completed` (co ~5 s, max ~3 min; przy błędzie 1 ponowienie).
 4. Pobierz wyniki do `assets/raw/<Name>/v<N>_<i>.png` (np. `curl -L -o ...`).
 5. `python tools/manifest.py upsert <Name> category=<cat> status=generated prompt="<prompt>" raw=assets/raw/<Name>`
 
 ## Krok 3 – Akceptacja
-Pokaż warianty (otwórz pliki obrazów, żeby je zobaczyć, i wypisz ścieżki) + 1 zdanie oceny każdego względem style-guide (obrys, paleta, czytelność w 64 px).
+Pokaż warianty (otwórz pliki obrazów, żeby je zobaczyć, i wypisz ścieżki) + 1 zdanie oceny każdego względem style-guide (obrys, paleta, czytelność w 64 px, żelazne zasady Glossy Ink).
 - bez `--auto`: **zapytaj, który wariant** (albo „żaden – popraw: …” → wróć do kroku 1 z poprawką).
 - z `--auto`: wybierz sam wg checklisty QA ze style-guide, napisz którego i dlaczego.
 
@@ -126,8 +128,9 @@ Krótko, po polsku:
 | Problem | Działanie |
 |---|---|
 | Higgsfield: brak kredytów / błąd auth | stop, raport; nie próbuj innego dostawcy bez zgody |
-| Wynik ma tekst/litery | odrzuć wariant, dopisz do promptu „no text, no letters, no logo” |
-| Kolorowe/szare tło zamiast białego | `--bg rembg`; jeśli brak rembg – regeneruj z mocniejszym „pure white #FFFFFF background” |
+| Wynik ma tekst/litery | odrzuć wariant, dopisz do **zmiennego środka** „no text, no letters, no logo” (części stałych i negative promptu nie zmieniaj) |
+| Kolorowe/szare tło zamiast białego | `--bg rembg`; jeśli brak rembg – regeneruj z dopiskiem „pure white #FFFFFF background” w **zmiennym środku** |
+| Coś wystaje poza ramkę / portret nie jest pusty | odrzuć wariant, wzmocnij w środku odpowiednią żelazną zasadę (`prompt-templates.md`) |
 | Figma upload 403 / timeout | 1 ponowienie z nowym `upload_assets`; dalej – raport |
 | Roblox moderacja `Rejected` | raport + propozycja zmiany (zwykle: zbyt realistyczne/krwawe/tekst) |
 | Studio rozłączone | kroki 7–9 pomiń, oznacz `status=pending_studio`, `/asset sync` później |

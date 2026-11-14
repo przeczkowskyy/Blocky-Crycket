@@ -188,9 +188,10 @@ DOMYSLNA = {
 # włączać agenta dla połączeń zdalnych, wskazywać programu do uruchomienia, poszerzać listy narzędzi ani dopisywać hostów.
 # Tak samo klucz Open Cloud do telemetrii i adres, pod który jest wysyłany (bc/telemetria.py): sekret nie może
 # przyjść z publicznego repozytorium ani zostać przekierowany na cudzy serwer.
+# Zakładka Sesja (bc/sesje.py): serwer TURN z hasłem i zostawianie nagrań rozmowy na dysku — też tylko lokalnie.
 TYLKO_LOKALNE_GLOWNE = ("dozwolone_hosty",)
 TYLKO_LOKALNE_SEKCJE = {"agent": ("zdalnie", "sciezka", "dozwolone_narzedzia"), "glos": ("katalog_modeli",),
-                        "analityka": ("klucz_open_cloud", "adres_open_cloud")}
+                        "analityka": ("klucz_open_cloud", "adres_open_cloud"), "sesje": ("turn", "zostaw_dzwiek")}
 
 
 def _bezpieczna_wspolna(cfg):

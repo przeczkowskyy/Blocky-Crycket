@@ -7,9 +7,9 @@
 
 | Oznaczenie | Znaczenie |
 |---|---|
-| ✅ **kanon** | zatwierdzone przez Game Directora, obowiązuje |
+| ✅ **kanon** | zatwierdzone przez Karola albo Pawła (wystarczy jeden, D-030), obowiązuje |
 | 💡 **propozycja** | pomysł albo starsza specyfikacja, **nie jest faktem** |
-| ❓ **do decyzji** | czeka na decyzję Game Directora |
+| ❓ **do decyzji** | czeka na decyzję jednego z nich |
 
 ## Spis treści
 1. [Gra w skrócie](#1-gra-w-skrócie)
@@ -88,7 +88,7 @@ Kanon wspomina tylko zakładkę Arena (ikona mieczy) w HUD. Pomysł: pojedynki z
 - HUD z Figmy pokazuje **Złoto** i **Diamenty (Gems)**, opisane jako waluta premium. Czy Diamenty to Magiczne Kryształy, i czy są płatne? ❓ (pytanie otwarte #6).
 
 ## 4. Kierunek artystyczny
-✅ kanon · [Kierunek artystyczny](B%26C/Styl/Kierunek%20artystyczny.md) · [Style Lock](B%26C/Styl/Style%20Lock.md)
+✅ kanon · [Kierunek artystyczny](B%26C/Styl/Kierunek%20artystyczny.md) · [Instrukcja promptów — Glossy Ink](B%26C/Styl/Instrukcja%20prompt%C3%B3w%20%E2%80%94%20Glossy%20Ink.md)
 
 Styl to hybryda **trzech estetyk** (D-002):
 1. **Komiks i pop-art (Shakes & Fidget):** grube czarne obrysy 3–4 px (cel-shading), przerysowane proporcje, wygięta i asymetryczna architektura, subtelny wzór halftone (kropki rastrowe) w tłach i cieniach.
@@ -99,14 +99,16 @@ Styl to hybryda **trzech estetyk** (D-002):
 
 **Zakazane:** fotorealizm, minimalistyczne korporacyjne ilustracje, generyczne sci-fi, niezwiązane estetyki fantasy, niespójne proporcje postaci, niezwiązane palety barw.
 
-### Style Lock (obowiązkowy prefiks promptów, D-001)
-Każdy prompt generujący grafikę **2D / UI** musi zaczynać się od:
-```
-Game UI component, hybrid of Shakes & Fidget comic book ink style and vibrant Roblox aesthetic, thick 4px solid black outlines, subtle pop-art halftone dot texture, painterly shading, vibrant saturated colors...
-```
-> **Od 13–14.11.2026 nowe prompty piszemy według [Instrukcji promptów — Glossy Ink](B%26C/Styl/Instrukcja%20prompt%C3%B3w%20%E2%80%94%20Glossy%20Ink.md)** (stały początek „Glossy Ink”, zmienny środek, stały koniec, stały negative; generowanie modelem Nano Banana 2.1 z ekranem ładowania jako referencją). Szablony: `.claude/skills/asset/references/prompt-templates.md`. Formalne zastąpienie D-001 czeka na D-027 (pytanie 22).
+> **Zmiana z 13.11.2026 (D-027).** Instrukcja „Glossy Ink” zastąpiła dwa zapisy: pixel-art ikon (punkt 3) i słowa „płaski (flat design)” w opisie interfejsu. Reszta obowiązuje dalej: komiks/pop-art, voxel/low-poly, czytelność na telefonach, asymetryczne ramki, nachylone przyciski i komiksowe dymki (te trzy ostatnie czekają na pytanie otwarte #25). Wzmianki o pixel-artowych ikonach w dalszych sekcjach (ustawienie `Pixelated`, ikony walut w HUD) są sprzed tej decyzji.
 
-Checklista zgodności grafiki: komiksowe obrysy 3–4 px · nasycone kolory · geometria voxel/low-poly · ikony w pixel-arcie w ramce 4 px · tekstura halftone · cel-shading · przerysowane proporcje · zgodność z projektami postaci.
+### Instrukcja promptów „Glossy Ink” (D-027, obowiązuje od 13.11.2026)
+[Instrukcja promptów — Glossy Ink](B%26C/Styl/Instrukcja%20prompt%C3%B3w%20%E2%80%94%20Glossy%20Ink.md)
+
+Każdy prompt generujący grafikę składa się z czterech części kopiowanych z notatki bez zmian: stałego początku, zmiennego środka (opis konkretnego assetu), stałego końca i osobnego negative promptu. Do tego dochodzą żelazne zasady z instrukcji: zamknięte krawędzie, puste kontenery, okna ze statystykami i mapy izometryczne.
+
+Generujemy w Higgsfield modelem **Nano Banana 2.1** (`nano_banana_2_1`) z key-artem ekranu ładowania jako referencją stylu (szablony: `.claude/skills/asset/references/prompt-templates.md`).
+
+Dawny prefiks Style Lock (D-001, z nazwą gry-inspiracji) jest zastąpiony i zostaje w sejfie tylko jako historia: [Style Lock](B%26C/Styl/Style%20Lock.md).
 
 ### Przełożenie na Roblox 💡
 `UIStroke` 3–4 px `#000000` jako obrys · `Rotation` od −2 do 2 na kartach i przyciskach · `ResampleMode = Pixelated` dla ikon pixel-art · halftone jako nakładka `ImageLabel` o niskiej widoczności.
@@ -380,7 +382,7 @@ Ramka portretu ma w PNG wypalony zielony pasek. Pasek XP w HUD jest nałożony d
 | **Git + GitHub** | wersjonowanie i kopia zapasowa | [repozytorium](https://github.com/przeczkowskyy/Blocky-Crycket) (publiczne), gałąź `main` |
 | **Pipeline assetów `/asset`** | grafiki z Higgsfield (MCP) → obróbka → Figma → upload przez Roblox Open Cloud, zawsze z akceptacją Game Directora | w projekcie gry (`.claude/skills/asset`, `tools/*.py`, `assets/`); zainstalowany 12.11.2026, czeka na klucz Open Cloud i logowanie Higgsfield ([Pipeline assetów](B%26C/Technika/Pipeline%20asset%C3%B3w.md)) |
 | Python | jednorazowe skrypty pomocnicze Claude (np. generowanie `.model.json`) | nie jest częścią gry |
-| 💡 **Panel zespołu** | lokalna strona dla dwóch osób: decyzje i zadania z sejfu, raporty z wdrożeń z akceptacją, podgląd 3D mapy (także z telefonu), agent Claude Code na subskrypcji, głosówki, graf sejfu, analityka | `panel\start.bat` albo `python panel/serwer.py` → `http://127.0.0.1:8787` (start otwiera panel z kluczem lokalnym — tylko wtedy działa agent, git i nowa migawka); instrukcja [`panel/INSTALACJA.md`](panel/INSTALACJA.md); propozycja D-012, czeka na zgodę ([Panel zespołu](B%26C/Technika/Panel%20zespo%C5%82u.md)) |
+| ✅ **Panel zespołu** | lokalna strona dla dwóch osób i miejsce pracy na sejfie: odpowiedzi na pytania, zadania i decyzje zapisywane do sejfu, raporty z wdrożeń z akceptacją, podgląd 3D mapy (także z telefonu), agent Claude Code na subskrypcji, głosówki, graf sejfu, analityka oraz zakładka **Sesja** — rozmowa głosowa w panelu z przyciskiem „Agent słucha” (lokalna transkrypcja na żywo, notatki, ustalenia jako propozycje) i listą tematów z notatki [Sesje główne](B%26C/Produkcja/Sesje%20g%C5%82%C3%B3wne.md) | `panel\start.bat` albo `python panel/serwer.py` → `http://127.0.0.1:8787` (start otwiera panel z kluczem lokalnym — tylko wtedy działa agent, git i nowa migawka); instrukcja [`panel/INSTALACJA.md`](panel/INSTALACJA.md); D-012 i D-028 zatwierdzone 13.11.2026 ([Panel zespołu](B%26C/Technika/Panel%20zespo%C5%82u.md)). Nagrania i pełna transkrypcja sesji zostają w danych lokalnych komputera z panelem, poza repozytorium |
 | 💡 **Klocki: Blender ↔ Roblox** | mapa z prostych brył z jednego pliku `czesci.json`: Blender (podgląd, edycja), Studio (części), panel (model 3D) | `swiat/`, `tools/blender/klocki.py`, `tools/studio_buduj.py`; demo `Workspace/DemoLesnaBaza` ([Klocki — Blender i Roblox](B%26C/Technika/Klocki%20%E2%80%94%20Blender%20i%20Roblox.md)) |
 | 💡 **Postacie 3D** | postacie, pety i ekwipunek opisane kodem: w Blenderze siatki ze szkieletem i animacjami, w Studio postacie z części Roblox ze stawami i klipami (bez wgrywania zasobów) | `swiat/postacie/` (`README.md`), `python -B swiat/postacie/roblox_postac.py`; kontener `Workspace/TestPostaci` ([Postacie 3D — Blender i Roblox](B%26C/Technika/Postacie%203D%20%E2%80%94%20Blender%20i%20Roblox.md)) |
 
@@ -417,7 +419,8 @@ Oryginalna dokumentacja wymienia też Cursor/Copilot do skryptów Luau. W prakty
 ### 8.3 Zasady sejfu
 [Jak prowadzimy sejf](B%26C/Jak%20prowadzimy%20sejf.md)
 - Każda notatka ma w nagłówku `status`: `kanon`, `propozycja` albo `do-decyzji`.
-- Tylko Game Director zmienia coś na `kanon` lub zatwierdza decyzję (✅). Zatwierdzonej decyzji się nie przepisuje: dodaje się nową, która ją zastępuje.
+- Na `kanon` zmienia coś i decyzję zatwierdza (✅) Karol albo Paweł — obaj mają takie same prawa i wystarczy decyzja jednego (D-030, 13.11.2026). Każda decyzja zostaje w logach: podpis `zdecydował: <imię> <data>` w Rejestrze decyzji i wpis w Dzienniku zmian. Zatwierdzonej decyzji się nie przepisuje: dodaje się nową, która ją zastępuje.
+- Od 13.11.2026 na sejfie pracuje się też z panelu zespołu (D-028): odpowiedzi na pytania, zadania i statusy decyzji zapisują się do tych samych plików sejfu.
 - Gdy prośba jest sprzeczna z kanonem, konflikt trafia do [Pytań otwartych](B%26C/Produkcja/Pytania%20otwarte.md), a kanon się nie zmienia.
 - Po pracy aktualizuje się:
   - notatki, których dotyczyła zmiana (np. „Stan implementacji” w `B&C/UI/*.md`),
@@ -486,7 +489,7 @@ git push
 ```
 
 ### 8.8 Grafiki generowane przez AI
-Każdy prompt 2D/UI składa się według instrukcji Glossy Ink (sekcja 4; do decyzji D-027 formalnie obowiązuje Style Lock). Model Higgsfield: Nano Banana 2.1. Wynik sprawdza się z checklistą zgodności, a dopiero potem wgrywa do gry (8.5).
+Każdy prompt składa się według instrukcji „Glossy Ink” (sekcja 4): stały początek, zmienny środek, stały koniec i osobny negative prompt. Wynik sprawdza się z zasadami instrukcji, a dopiero potem wgrywa do gry (8.5). Model Higgsfield: Nano Banana 2.1.
 
 ## 9. Decyzje, pytania i roadmapa
 
@@ -495,8 +498,8 @@ Każdy prompt 2D/UI składa się według instrukcji Glossy Ink (sekcja 4; do dec
 
 | ID | Decyzja | Status |
 |---|---|---|
-| D-001 | Obowiązkowy prefiks Style Lock w promptach 2D/UI | ✅ |
-| D-002 | Hybryda trzech estetyk (komiks, voxel, pixel-art) | ✅ |
+| D-001 | Obowiązkowy prefiks Style Lock w promptach 2D/UI | ♻️ zastąpiona przez D-027 |
+| D-002 | Hybryda trzech estetyk (komiks, voxel, pixel-art) | ✅ (pixel-art ikon i płaski interfejs zastąpione przez D-027) |
 | D-003 | Projekty głównych postaci (Rycerz, Kot-Mag, pety) | ✅ |
 | D-004 | Aktywna rozgrywka zamiast pasków czasu | ✅ |
 | D-005 | Priorytet: Faza 1 — Frontend | ✅ |
@@ -506,6 +509,11 @@ Każdy prompt 2D/UI składa się według instrukcji Glossy Ink (sekcja 4; do dec
 | D-009 | Karczma: poziomy misji i Energia | 💡 |
 | D-010 | Fazy roadmapy 2–6 | 💡 |
 | D-011 | Pipeline assetów `/asset` i moduł `AssetIds` (ID obrazków nie wpisane na sztywno) | 💡 |
+| D-027 | Instrukcja promptów „Glossy Ink” zastępuje prefiks Style Lock | ✅ 13.11.2026 |
+| D-028 | Panel jako miejsce pracy: zapis do sejfu z panelu | ✅ 13.11.2026 |
+| D-030 | Decyzje zatwierdza Karol albo Paweł; każda zostaje w logach | ✅ 13.11.2026 |
+
+Propozycje D-012–D-026 i D-029 (💡) są opisane w rejestrze.
 
 ### Pytania otwarte
 [Pytania otwarte](B%26C/Produkcja/Pytania%20otwarte.md)
@@ -515,8 +523,11 @@ Każdy prompt 2D/UI składa się według instrukcji Glossy Ink (sekcja 4; do dec
 4. Czy propozycje D-006, D-007, D-009, D-010 są zatwierdzone?
 5. Przyciski HUD: Figma (6 przycisków, angielskie napisy) czy kanon (5 zakładek)? Gdzie trafią Tycoon i Arena?
 6. Diamenty (Gems) w HUD a Magiczne Kryształy w kanonie: ta sama waluta? Waluta premium?
-7.–24. Pytania z rozmowy 12.11 i nocnej diagnozy (questy na czas, Karczma, Twierdza, styl UI, panel, publiczność, własność gry, repo, kanon przy dwóch osobach, v2, statystyki, telemetria, Glossy Ink, postacie) – pełna lista w sejfie.
-25. Mapa teleportacji: czy lista 7 lokacji (z Kuźnią zamiast Targu) jest dobra i czy zostawić cienką ramkę mapy?
+
+Dalsze pytania są w notatce:
+- pytania 7–27 pochodzą z rozmowy 12.11, nocnej diagnozy i decyzji z 13.11 (odpowiedzi mają już #15, #22 i #23);
+- pytanie 28 (Paweł): mapa teleportacji — czy lista 7 lokacji (z Kuźnią zamiast Targu) jest dobra, w jakim języku mają być nazwy i czy zostawić cienką ramkę mapy. Jego druga część, o prefiksie Style Lock bez nazwy cudzej gry, jest rozstrzygnięta: prefiks zastąpiła instrukcja Glossy Ink (D-027).
+- pytanie 29 (Paweł): Rybki — do czego służy trzecia waluta z HUD.
 
 ### Roadmapa
 [Roadmapa](B%26C/Produkcja/Roadmapa.md)
@@ -576,7 +587,8 @@ Z [Zadań](B%26C/Produkcja/Zadania.md), Sprint 1:
 | **Play Solo** | test gry w Studio z jednym graczem |
 | **Atrybut** | własna wartość zapisana na obiekcie Roblox (`SetAttribute` / `GetAttribute`) |
 | **Dropper** | budynek w Twierdzy, który pasywnie generuje walutę |
-| **Style Lock** | obowiązkowy prefiks promptów do grafik 2D/UI |
+| **Glossy Ink** | obowiązująca instrukcja składania promptów do grafik (D-027) |
+| **Style Lock** | dawny prefiks promptów do grafik 2D/UI, zastąpiony przez Glossy Ink |
 
 ## 12. Historia zmian
 Pełna historia: [Dziennik zmian](B%26C/Produkcja/Dziennik%20zmian.md).
@@ -586,7 +598,9 @@ Pełna historia: [Dziennik zmian](B%26C/Produkcja/Dziennik%20zmian.md).
   - ekran ładowania w Roblox: key-art i natywny pasek z Figmy, potem minimalny czas ładowania i rotujące wskazówki;
   - HUD: najpierw 6 przycisków (160 px, wyśrodkowane), potem pełny HUD z Figmy (panel gracza i przyciski 128 px niżej przy krawędzi), na koniec przyciski powiększone do 150 px.
 - **12.11.2026:** projekt w repozytorium GitHub, ten dokument; instalacja pipeline'u assetów `/asset`; specyfikacja i prompty mapy teleportacji.
-- **13.11.2026 (popołudnie, Claude Code u Karola):** 💡 postacie, pety i ekwipunek z kodu (`swiat/postacie/`: 6 postaci, 3 zestawy, 8 broni, 20 klipów animacji) oraz te same postacie w Studio jako postacie z klocków ze stawami (`Workspace/TestPostaci`), animacje sprawdzone w trybie Edit i Play; import siatek nie sprawdzony (propozycja D-029, pytanie 24); 💡 zapis do sejfu z panelu (D-028, wyłączony do decyzji).
-- **13.11.2026 (noc i poranek, Claude Code u Karola):** diagnoza całego pomysłu (dziś 3,8/10) i propozycja v2 „krzywy montaż” z uczciwą oceną 6,0/10 i planem pomiarów (`B&C/Gra/*v2*.md`, `B&C/Badania/Diagnoza pomysłu 2026-11-13.md`; propozycje D-019–D-027, pytania 16–22); 💡 mapa v2 „Krzywe Miasteczko” i biblioteka krzywych brył (`swiat/biblioteka/`, `swiat/krzywe_miasteczko/`, `Workspace/KrzyweMiasteczko`); 💡 test cutscenki walki w samym Roblox (`swiat/test_walki_roblox/`, `Workspace/TestWalki`); panel: zakładka Assety, telemetria gry (`src/server/Telemetria`, bezwładna do włączenia), tunel sprawdzony naprawdę; instrukcja promptów „Glossy Ink” od Game Directora (`B&C/Styl/`). Wszystko jako propozycje do zatwierdzenia.
 - **12.11.2026 (wieczór, Claude Code u Karola):** rozmowa o grze spisana i skomentowana, sześć notatek badawczych i ocena potencjału (`B&C/Badania/`), propozycje D-012–D-018 i pytania 7–14; 💡 panel zespołu (`panel/`); 💡 pipeline klocków i demo mapy „Leśna baza startowa” w Blenderze i w Studio (`swiat/`). Wszystko jako propozycje do zatwierdzenia.
 - **13.11.2026 (Claude Code u Game Directora):** okno ekwipunku: grafika pocięta na komponenty, Figma, GUI, przeciąganie przedmiotów, przyciski „+” przez serwer, zasłonki slotów; grafiki wgrane do Roblox.
+- **13.11.2026 (noc i poranek, Claude Code u Karola):** diagnoza całego pomysłu (dziś 3,8/10) i propozycja v2 „krzywy montaż” z uczciwą oceną 6,0/10 i planem pomiarów (`B&C/Gra/*v2*.md`, `B&C/Badania/Diagnoza pomysłu 2026-11-13.md`; propozycje D-019–D-027, pytania 16–22); 💡 mapa v2 „Krzywe Miasteczko” i biblioteka krzywych brył (`swiat/biblioteka/`, `swiat/krzywe_miasteczko/`, `Workspace/KrzyweMiasteczko`); 💡 test cutscenki walki w samym Roblox (`swiat/test_walki_roblox/`, `Workspace/TestWalki`); panel: zakładka Assety, telemetria gry (`src/server/Telemetria`, bezwładna do włączenia), tunel sprawdzony naprawdę; instrukcja promptów „Glossy Ink” od Game Directora (`B&C/Styl/`). Wszystko jako propozycje do zatwierdzenia.
+- **13.11.2026 (popołudnie, Claude Code u Karola):** 💡 postacie, pety i ekwipunek z kodu (`swiat/postacie/`: 6 postaci, 3 zestawy, 8 broni, 20 klipów animacji) oraz te same postacie w Studio jako postacie z klocków ze stawami (`Workspace/TestPostaci`), animacje sprawdzone w trybie Edit i Play; import siatek nie sprawdzony (propozycja D-029, pytanie 24); 💡 zapis do sejfu z panelu (D-028, wyłączony do decyzji).
+- **13.11.2026 (wieczór, Karol z Claude Code):** ✅ D-030 — decyzje zatwierdza Karol albo Paweł, wystarczy jeden, każda zostaje w logach (zdecydował Karol; potwierdzenie Pawła czeka w pytaniu 27); ✅ D-027 — instrukcja „Glossy Ink” zastępuje prefiks Style Lock; ✅ D-028 — panel jako miejsce pracy, zapis do sejfu z panelu włączony; propozycja D-024 o walce zmieniona na „trzy długości”; import siatek sprawdzony na Rycerzu (postać R15 z 15 części w `Workspace/TestPostaci`).
+- **14.11.2026 (Claude Code u Game Directora):** okno ekwipunku: rozmiary napisów 15/16/20 px i wyśrodkowane zakładki; skill `/asset`: model Nano Banana 2.1, prompty mapy teleportacji w formacie Glossy Ink; HUD: trzecia waluta Rybki (ikona wgrana do Roblox).

@@ -5,7 +5,7 @@ Uruchomienie (z katalogu panel/):  python -B -m unittest testy.test_zapis
 
 Każda operacja jest sprawdzana bajt w bajt: plik po zmianie musi być DOKŁADNIE oryginałem z jedną oczekiwaną zmianą
 (końce linii LF i CRLF, BOM, brak końca linii na końcu pliku). Do tego konflikt wersji, złe dane, próby wstrzyknięcia
-struktury Markdown, uprawnienia (gość, osoba przy komputerze bez klucza GD, Game Director), przejścia statusów
+struktury Markdown, uprawnienia (gość, osoba przy komputerze, klucz zatwierdzania), przejścia statusów
 decyzji, Dziennik zmian i ślad dla przycisku „Wyślij” na tymczasowym repozytorium git.
 Prawdziwy sejf B&C/ jest tylko czytany (test, że podział na linie jest bezstratny).
 """
@@ -302,7 +302,7 @@ class TestOperacje(Baza):
     def test_decyzje_przejscia(self):
         w = zapis.zmien_status_decyzji("D-002", "zatwierdzona", "Prototyp\nnajpierw", self.wersja("decyzje"), "Paweł")
         self.assertEqual(w["opis"], "decyzja D-002 zatwierdzona")
-        gd = "Game Director (Paweł)"
+        gd = "Paweł"                                           # podpis: samo imię i data (bez „Game Director”)
         oczek = zamien_linie(DECYZJE, "💡 propozycja · game design · 2026-11-13 · źródło: [[Notatka]]",
                              "✅ zatwierdzona · game design · 2026-11-13 · źródło: [[Notatka]] · zdecydował: %s %s" % (gd, DZIS))
         oczek = wstaw_po(oczek, "Powiązane: [[Inna]]", ["Uzasadnienie — %s, %s: Prototyp / najpierw" % (gd, DZIS)])
@@ -344,14 +344,16 @@ class TestOperacje(Baza):
         self.assertPlik("dziennik", oczek)
         zapis.odhacz(None, "Pierwsze zadanie", self.wersja("zadania"), "Karol", "gość panelu")
         zapis.dodaj_zadanie("Nowe", "backlog", "niski", self.wersja("zadania"), "Karol")
-        zapis.zmien_status_decyzji("D-002", "zatwierdzona", None, self.wersja("decyzje"), "Paweł")
+        zapis.zmien_status_decyzji("D-002", "zatwierdzona", None, self.wersja("decyzje"), "Paweł", "klucz zatwierdzania")
+        zapis.zmien_status_decyzji("D-003", "odrzucona", None, self.wersja("decyzje"), "Karol")   # przy komputerze
         oczek = wstaw_po(oczek, pierwszy, [
             "- Karol (gość panelu): odhaczone zadanie: Pierwsze zadanie ([[Zadania]])",
             "- Karol: dodane zadanie: Nowe (Backlog) ([[Zadania]])",
-            "- Paweł (Game Director): decyzja D-002 zatwierdzona ([[Rejestr decyzji]])"])
+            "- Paweł (klucz zatwierdzania): decyzja D-002 zatwierdzona ([[Rejestr decyzji]])",
+            "- Karol: decyzja D-003 odrzucona ([[Rejestr decyzji]])"])
         self.assertPlik("dziennik", oczek)
         wpis = sejf.plan()["dziennik"][0]
-        self.assertEqual((wpis["data"], wpis["kto"], wpis["temat"], len(wpis["punkty_md"])), (DZIS, "Panel", "ludzie", 4))
+        self.assertEqual((wpis["data"], wpis["kto"], wpis["temat"], len(wpis["punkty_md"])), (DZIS, "Panel", "ludzie", 5))
 
     def test_dziennik_bez_wpisow_z_data(self):
         self.zapisz_pliki(dziennik="# Dziennik zmian\n\nPusto.")
@@ -443,8 +445,9 @@ class TestPlikMieszany(Baza):
 
 
 # =========================================================================== uprawnienia (trasy)
-def _zadanie(cialo, lokalny=False, kto="gość", gd=False, params=None):
-    z = Zadanie("POST", "/api/x", {}, {}, json.dumps(cialo).encode("utf-8"), lokalny, kto, "127.0.0.1", "h")
+def _zadanie(cialo, lokalny=False, kto="gość", gd=False, params=None, z_naglowka=True):
+    z = Zadanie("POST", "/api/x", {}, {}, json.dumps(cialo).encode("utf-8"), lokalny, kto, "127.0.0.1", "h",
+                z_naglowka)
     z.params = params or {}
     z.game_director = gd
     return z
@@ -461,19 +464,77 @@ class TestUprawnienia(Baza):
         w = zapis._t_odhacz(_zadanie({"tekst": "Od gościa", "wersja": self.wersja("zadania")}, kto="Paweł"))
         self.assertTrue(w["ok"])
 
-    def test_decyzje_tylko_game_director(self):
+    def test_decyzje_gosc_nie(self):
+        """Gość z samym kodem dostępu nie zmienia statusu — nawet podpisany „Paweł”; komunikat mówi, jak zdobyć klucz."""
         przed = self.bajty("decyzje")
         cialo = {"status": "zatwierdzona", "wersja": self.wersja("decyzje")}
-        for z in (_zadanie(cialo, params={"id": "D-002"}),                                 # gość z kodem dostępu
-                  _zadanie(cialo, lokalny=True, kto="Paweł", params={"id": "D-002"}),       # przy komputerze, bez klucza GD
-                  _zadanie(cialo, lokalny=True, kto="Game Director", params={"id": "D-002"})):
-            e = self.assertBlad(403, zapis._t_status, z)
-            self.assertEqual(e.dodatkowe.get("kod"), "tylko_game_director")
-            self.assertIn("--klucz-gd", e.komunikat)
+        for kto in ("gość", "Paweł", "Karol"):
+            e = self.assertBlad(403, zapis._t_status, _zadanie(cialo, kto=kto, params={"id": "D-002"}))
+            self.assertEqual(e.dodatkowe.get("kod"), "brak_klucza_zatwierdzania")
+            self.assertIn("--klucz-zatwierdzania", e.komunikat)
+            self.assertIn("Karol albo Paweł", e.komunikat)
         self.assertEqual(self.bajty("decyzje"), przed)
-        w = zapis._t_status(_zadanie(cialo, gd=True, kto="Paweł", params={"id": "D-002"}))   # Game Director (także zdalnie)
+        self.assertNotIn("Panel (ludzie)", self.bajty("dziennik").decode("utf-8-sig"))
+
+    def test_decyzje_lokalny_bez_klucza(self):
+        """Osoba przy komputerze z panelem (klucz lokalny) zmienia status bez klucza zatwierdzania; podpis bez znacznika."""
+        cialo = {"status": "zatwierdzona", "uzasadnienie": "Gramy", "wersja": self.wersja("decyzje")}
+        w = zapis._t_status(_zadanie(cialo, lokalny=True, kto="Karol", params={"id": "D-002"}))
         self.assertEqual(w["opis"], "decyzja D-002 zatwierdzona")
-        self.assertIn("zdecydował: Game Director (Paweł) %s" % DZIS, self.bajty("decyzje").decode("utf-8"))
+        tekst = self.bajty("decyzje").decode("utf-8-sig").replace("\r\n", "\n")
+        self.assertIn("✅ zatwierdzona · game design · 2026-11-13 · źródło: [[Notatka]] · zdecydował: Karol %s\n" % DZIS, tekst)
+        self.assertIn("\nUzasadnienie — Karol, %s: Gramy\n" % DZIS, tekst)
+        self.assertNotIn("Game Director", tekst)
+        self.assertIn("\n- Karol: decyzja D-002 zatwierdzona ([[Rejestr decyzji]])\n",
+                      self.bajty("dziennik").decode("utf-8-sig").replace("\r\n", "\n"))
+
+    def test_decyzje_klucz_zatwierdzania(self):
+        """Klucz zatwierdzania działa także zdalnie; w Rejestrze samo imię i data, w Dzienniku znacznik klucza."""
+        cialo = {"status": "do_decyzji", "wersja": self.wersja("decyzje")}
+        w = zapis._t_status(_zadanie(cialo, gd=True, kto="Paweł", params={"id": "D-005"}))
+        self.assertEqual(w["opis"], "decyzja D-005 oznaczona „do decyzji”")
+        tekst = self.bajty("decyzje").decode("utf-8-sig").replace("\r\n", "\n")
+        self.assertIn("\n🕓 do decyzji · narzędzia · oznaczył: Paweł %s\n" % DZIS, tekst)
+        dz = self.bajty("dziennik").decode("utf-8-sig").replace("\r\n", "\n")
+        self.assertIn("\n- Paweł (klucz zatwierdzania): decyzja D-005 oznaczona „do decyzji” ([[Rejestr decyzji]])\n", dz)
+        self.assertNotIn("Game Director", tekst + dz)
+
+    def test_decyzje_brak_imienia(self):
+        """Decyzja musi mieć podpis: puste, domyślne „gość” albo imię spoza Ustawień (z gita) = 400 brak_imienia
+        (dla lokalnego i dla klucza)."""
+        przed = {k: self.bajty(k) for k in PLIKI}
+        cialo = {"status": "zatwierdzona", "wersja": self.wersja("decyzje")}
+        for kw in ({"lokalny": True, "kto": ""}, {"lokalny": True, "kto": "gość"}, {"gd": True, "kto": "  "},
+                   {"gd": True, "kto": "Gość"}, {"lokalny": True, "kto": "**()**"},
+                   # imię domyślne z gita/systemu (przeglądarka nie wysłała X-BC-Kto) nie podpisuje decyzji
+                   {"lokalny": True, "kto": "Jan Kowalski", "z_naglowka": False},
+                   {"gd": True, "kto": "Jan Kowalski", "z_naglowka": False}):
+            e = self.assertBlad(400, zapis._t_status, _zadanie(cialo, params={"id": "D-002"}, **kw))
+            self.assertEqual(e.dodatkowe.get("kod"), "brak_imienia", kw)
+            self.assertIn("Ustawieniach", e.komunikat)
+        self.assertBlad(400, zapis.zmien_status_decyzji, "D-002", "zatwierdzona", None, self.wersja("decyzje"), "gość")
+        self.assertEqual({k: self.bajty(k) for k in PLIKI}, przed)
+
+    def test_decyzje_zastrzezone_imiona(self):
+        """Imię równe znacznikowi serwera jest odrzucane także dla decydenta (podpis ma nieść prawdziwe imię)."""
+        przed = self.bajty("decyzje")
+        cialo = {"status": "zatwierdzona", "wersja": self.wersja("decyzje")}
+        for kw in ({"gd": True, "kto": "Game Director"}, {"lokalny": True, "kto": "KLUCZ ZATWIERDZANIA"},
+                   {"lokalny": True, "kto": "Gość panelu"}, {"gd": True, "kto": "gosc  panelu"}):
+            e = self.assertBlad(400, zapis._t_status, _zadanie(cialo, params={"id": "D-002"}, **kw))
+            self.assertEqual(e.dodatkowe.get("kod"), "imie_zastrzezone", kw)
+        self.assertEqual(self.bajty("decyzje"), przed)
+
+    def test_decyzje_stary_podpis_zastepowany(self):
+        """Podpisy sprzed zmiany („zdecydował: Game Director …”) są rozpoznawane i zastępowane nowym, nie dublowane."""
+        for stary in ("zdecydował: Game Director", "zdecydował: Game Director (Paweł) 2026-11-13",
+                      "oznaczył: Game Director 2026-11-12", "zdecydował: Karol 2026-11-13"):
+            dec = DECYZJE.replace("💡 propozycja · narzędzia", "🕓 do decyzji · narzędzia · %s" % stary)
+            self.zapisz_pliki(decyzje=dec)
+            zapis._t_status(_zadanie({"status": "zatwierdzona", "wersja": self.wersja("decyzje")}, lokalny=True,
+                                     kto="Paweł", params={"id": "D-005"}))
+            self.assertPlik("decyzje", dec.replace("🕓 do decyzji · narzędzia · %s" % stary,
+                                                   "✅ zatwierdzona · narzędzia · zdecydował: Paweł %s" % DZIS))
 
     def test_zle_ciala_zadan(self):
         for fn, cialo, params in ((zapis._t_odpowiedz, {"tekst": "x", "wersja": "a", "inne": 1}, {"nr": "2"}),
@@ -503,7 +564,7 @@ class TestPoPrzegladzie(Baza):
         zapis.zmien_status_decyzji("D-003", "zatwierdzona", None, self.wersja("decyzje"), "Paweł")   # inne działają
 
     def test_znaczniki_podpisu(self):
-        """Gość nie podpisze się jako Game Director; zgodę GD z panelu niesie wyłącznie znacznik serwera."""
+        """Gość nie podrobi znacznika; klucz zatwierdzania poznać wyłącznie po znaczniku dopisanym przez serwer."""
         tresc = lambda: self.bajty("pytania").decode("utf-8-sig").replace("\r\n", "\n")
         zapis._t_odpowiedz(_zadanie({"tekst": "Tak, zatwierdzam", "wersja": self.wersja("pytania")}, kto="Paweł",
                                     params={"nr": "2"}))
@@ -511,15 +572,18 @@ class TestPoPrzegladzie(Baza):
         zapis._t_odpowiedz(_zadanie({"tekst": "Przy komputerze", "wersja": self.wersja("pytania")}, lokalny=True,
                                     kto="Karol", params={"nr": "2"}))
         self.assertIn("\n- Karol (%s): Przy komputerze\n" % DZIS, tresc())
-        zapis._t_odpowiedz(_zadanie({"tekst": "Zgoda GD", "wersja": self.wersja("pytania")}, gd=True, kto="Paweł",
-                                    params={"nr": "2"}))
-        self.assertIn("\n- Paweł (Game Director, %s): Zgoda GD\n" % DZIS, tresc())
+        zapis._t_odpowiedz(_zadanie({"tekst": "Zgoda z kluczem", "wersja": self.wersja("pytania")}, gd=True,
+                                    kto="Paweł", params={"nr": "2"}))
+        self.assertIn("\n- Paweł (klucz zatwierdzania, %s): Zgoda z kluczem\n" % DZIS, tresc())
         dz = self.bajty("dziennik").decode("utf-8-sig")
         self.assertIn("- Paweł (gość panelu): odpowiedź na pytanie 2", dz)
-        self.assertIn("- Paweł (Game Director): odpowiedź na pytanie 2", dz)
-        # imię „Game Director” bez klucza: 400, nic nie zapisane; próba podrobienia znacznika w imieniu nic nie daje
+        self.assertIn("- Paweł (klucz zatwierdzania): odpowiedź na pytanie 2", dz)
+        self.assertNotIn("Game Director", tresc() + dz)
+        # imiona równe znacznikom: 400, nic nie zapisane; próba podrobienia znacznika w imieniu nic nie daje
         przed = self.bajty("pytania")
-        for kw in ({"kto": "Game Director"}, {"kto": "game  director", "lokalny": True}):
+        for kw in ({"kto": "Game Director"}, {"kto": "game  director", "lokalny": True},
+                   {"kto": "Klucz zatwierdzania"}, {"kto": "klucz zatwierdzania", "gd": True},
+                   {"kto": "GOŚĆ PANELU", "lokalny": True}):
             e = self.assertBlad(400, zapis._t_odpowiedz, _zadanie({"tekst": "x", "wersja": self.wersja("pytania")},
                                                                   params={"nr": "2"}, **kw))
             self.assertEqual(e.dodatkowe.get("kod"), "imie_zastrzezone")
@@ -539,7 +603,7 @@ class TestPoPrzegladzie(Baza):
                                                             "wersja": self.wersja("zadania")}))
         self.assertEqual(e.dodatkowe.get("kod"), "limit_zapisow")
         self.assertEqual(self.bajty("zadania"), przed)
-        # inny klient za tunelem ma własny limit; osoba przy komputerze i Game Director — bez limitu
+        # inny klient za tunelem ma własny limit; osoba przy komputerze i klucz zatwierdzania — bez limitu
         z = _zadanie({"tekst": "Inny gość", "sekcja": "backlog", "priorytet": "niski", "wersja": self.wersja("zadania")})
         z.naglowki = {"Cf-Connecting-Ip": "203.0.113.9"}
         self.assertTrue(zapis._t_dodaj(z)["ok"])
@@ -610,18 +674,18 @@ class TestPoPrzegladzie(Baza):
         self.assertPlik("decyzje", dec.replace(
             "💡 propozycja (wstępna, czeka na test B1) ·  narzędzia  · zaproponował: Karol ",
             "✅ zatwierdzona (wstępna, czeka na test B1) ·  narzędzia  · zaproponował: Karol · "
-            "zdecydował: Game Director (Paweł) %s " % DZIS))
+            "zdecydował: Paweł %s " % DZIS))
         d = {x["id"]: x for x in sejf.plan()["decyzje"]}["D-005"]
-        self.assertEqual(d["meta"], ["zaproponował: Karol", "zdecydował: Game Director (Paweł) %s" % DZIS])
-        # status zapisany samym emoji, pogrubione słowo, GD bez imienia
+        self.assertEqual(d["meta"], ["zaproponował: Karol", "zdecydował: Paweł %s" % DZIS])
+        # status zapisany samym emoji, pogrubione słowo
         dec = DECYZJE.replace("💡 propozycja · narzędzia", "💡 · narzędzia").replace("🕓 do decyzji · technika",
                                                                                      "🕓 **do decyzji** · technika")
         self.zapisz_pliki(decyzje=dec)
-        zapis.zmien_status_decyzji("D-005", "do_decyzji", None, self.wersja("decyzje"), "gość")
+        zapis.zmien_status_decyzji("D-005", "do_decyzji", None, self.wersja("decyzje"), "Karol")
         zapis.zmien_status_decyzji("D-003", "odrzucona", None, self.wersja("decyzje"), "Paweł")
         tekst = self.bajty("decyzje").decode("utf-8-sig").replace("\r\n", "\n")
-        self.assertIn("\n🕓 do decyzji · narzędzia · oznaczył: Game Director %s\n" % DZIS, tekst)
-        self.assertIn("\n❌ **odrzucona** · technika · zaproponował: Claude Code · zdecydował: Game Director (Paweł) %s\n"
+        self.assertIn("\n🕓 do decyzji · narzędzia · oznaczył: Karol %s\n" % DZIS, tekst)
+        self.assertIn("\n❌ **odrzucona** · technika · zaproponował: Claude Code · zdecydował: Paweł %s\n"
                       % DZIS, tekst)
 
     def test_podzadania_i_otwarte_w_zrobionych(self):

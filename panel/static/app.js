@@ -10,6 +10,7 @@ const WIDOKI = [
   { id: "raporty", tytul: "Raporty", ikona: "raporty", kolejnosc: 30 },
   { id: "podglad", tytul: "Podgląd", ikona: "podglad", kolejnosc: 40 },
   { id: "agent", tytul: "Agent", ikona: "agent", kolejnosc: 50 },
+  { id: "sesja", tytul: "Sesja", ikona: "mikrofon", kolejnosc: 55 },
   { id: "siec", tytul: "Sieć", ikona: "siec", kolejnosc: 60 },
   { id: "assety", tytul: "Assety", ikona: "assety", kolejnosc: 65 },
   { id: "analityka", tytul: "Analityka", ikona: "analityka", kolejnosc: 70 },
@@ -353,7 +354,8 @@ function zapytajOImie() {
     if (sessionStorage.getItem("bc.pytano")) return;
     sessionStorage.setItem("bc.pytano", "1");
   } catch (e) { /* nic */ }
-  const domyslne = ctx.ja.lokalny ? ctx.ja.gospodarz || "" : "";
+  // Podpowiedź z gita tylko jako samo imię (pierwszy wyraz): podpis trafia do publicznych plików sejfu.
+  const domyslne = ctx.ja.lokalny ? String(ctx.ja.gospodarz || "").trim().split(/\s+/)[0] || "" : "";
   const pole = el("input", { class: "pole", value: domyslne, placeholder: "np. Karol", autocomplete: "given-name", maxlength: "40", "aria-label": "Imię" });
   const zapisz = el("button", { class: "przycisk glowny szeroki", type: "submit" }, "Zapisz");
   const form = el("form", { class: "formularz-imie" },

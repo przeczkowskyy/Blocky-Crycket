@@ -1,0 +1,629 @@
+{
+ "modul": "rycerz",
+ "format": "fbx",
+ "oczekiwane": {
+  "nazwa": "Rycerz Blocky",
+  "wymiary": [
+   4.77,
+   5.71,
+   1.978
+  ],
+  "siatek_ciala": 16,
+  "kosci": 17,
+  "znacznikow_att": 19,
+  "trojkaty": 3284
+ },
+ "nazwa": "Rycerz Blocky (import FBX)",
+ "asset": "106439426352070",
+ "moderacja": "Approved",
+ "wstawianie": "{\"insertGuid\":\"96c098cf-4cf7-4764-b91f-b5b7a30088de\",\"insertedInstances\":[{\"fullPath\":\"game.Workspace.TestPostaci.Rycerz Blocky (import FBX)\",\"name\":\"Rycerz Blocky (import FBX)\",\"className\":\"Model\"}],\"sandboxed\":false,\"assetType\":\"Model\",\"assetId\":\"106439426352070\",\"assetName\":\"Rycerz Blocky (import FBX)\",\"status\":\"success\",\"isPackage\":true,\"tag\":\"Assistant:96c098cf-4cf7-4764-b91f-b5b7a30088de\"}",
+ "model": {
+  "nazwa": "Rycerz Blocky (import FBX)",
+  "sciezka": "Workspace.TestPostaci.Rycerz Blocky (import FBX)",
+  "klasa": "Model",
+  "znaleziony": {
+   "rodzic": "kontener",
+   "n": "Rycerz Blocky (import FBX)",
+   "k": "Model",
+   "id": "0_647494"
+  },
+  "kroki": []
+ },
+ "kontrola_przed": {
+  "klasy": {
+   "Vector3Value": 68,
+   "NoCollisionConstraint": 19,
+   "AnimationConstraint": 15,
+   "SurfaceAppearance": 15,
+   "MeshPart": 15,
+   "CFrameValue": 48,
+   "NumberValue": 6,
+   "StringValue": 15,
+   "Humanoid": 1,
+   "BallSocketConstraint": 14,
+   "Part": 1,
+   "Status": 1,
+   "Attachment": 52,
+   "Folder": 1,
+   "PackageLink": 1
+  },
+  "primary": "HumanoidRootPart",
+  "klasa": "Model",
+  "siatki": [
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://76891842915257",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.0199999809265137,
+     1.9600000381469727,
+     1.8700001239776611
+    ],
+    "n": "Head"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://81521919776015",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.090000033378601,
+     0.3500002920627594,
+     1.4500000476837158
+    ],
+    "n": "LeftFoot"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://129275621076358",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0399999618530273,
+     0.4700000286102295,
+     1.0399999618530273
+    ],
+    "n": "LeftHand"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://87238879597932",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0099998712539673,
+     0.8300001621246338,
+     1.0049999952316284
+    ],
+    "n": "LeftLowerArm"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://102520121617826",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0500000715255737,
+     0.8500000834465027,
+     1.2100000381469727
+    ],
+    "n": "LeftLowerLeg"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://138104465898659",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.3700000047683716,
+     1.070000171661377,
+     1.3200000524520874
+    ],
+    "n": "LeftUpperArm"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://123874257109020",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0499999523162842,
+     0.8000001907348633,
+     1.1100001335144043
+    ],
+    "n": "LeftUpperLeg"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://105744705553633",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.200000286102295,
+     1.5661942958831787,
+     1.9776142835617065
+    ],
+    "n": "LowerTorso"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://76127416453247",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.090000033378601,
+     0.3500003218650818,
+     1.4500000476837158
+    ],
+    "n": "RightFoot"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://126676883882525",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0399999618530273,
+     0.4700000286102295,
+     1.0399999618530273
+    ],
+    "n": "RightHand"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://71994791109007",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0099998712539673,
+     0.8300001621246338,
+     1.0049999952316284
+    ],
+    "n": "RightLowerArm"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://77201115671113",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0500001907348633,
+     0.8500000834465027,
+     1.2100000381469727
+    ],
+    "n": "RightLowerLeg"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://137444796220251",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.3700002431869507,
+     1.070000171661377,
+     1.3200000524520874
+    ],
+    "n": "RightUpperArm"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://95855807173999",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0500000715255737,
+     0.8000001907348633,
+     1.1100001335144043
+    ],
+    "n": "RightUpperLeg"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://71279639033270",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.200000286102295,
+     1.580000638961792,
+     1.3950001001358032
+    ],
+    "n": "UpperTorso"
+   }
+  ],
+  "zaczepy": [
+   "FaceCenterAttachment@Head",
+   "FaceFrontAttachment@Head",
+   "HairAttachment@Head",
+   "HatAttachment@Head",
+   "NeckRigAttachment@Head",
+   "LeftFootAttachment@LeftFoot",
+   "LeftAnkleRigAttachment@LeftFoot",
+   "LeftGripAttachment@LeftHand",
+   "LeftWristRigAttachment@LeftHand",
+   "LeftWristRigAttachment@LeftLowerArm",
+   "LeftElbowRigAttachment@LeftLowerArm",
+   "LeftAnkleRigAttachment@LeftLowerLeg",
+   "LeftKneeRigAttachment@LeftLowerLeg",
+   "LeftShoulderAttachment@LeftUpperArm",
+   "LeftElbowRigAttachment@LeftUpperArm",
+   "LeftShoulderRigAttachment@LeftUpperArm",
+   "JointRotation@LeftShoulderRigAttachment",
+   "LeftKneeRigAttachment@LeftUpperLeg",
+   "LeftHipRigAttachment@LeftUpperLeg",
+   "WaistBackAttachment@LowerTorso",
+   "WaistCenterAttachment@LowerTorso",
+   "WaistFrontAttachment@LowerTorso",
+   "WaistRigAttachment@LowerTorso",
+   "LeftHipRigAttachment@LowerTorso",
+   "RightHipRigAttachment@LowerTorso",
+   "RootRigAttachment@LowerTorso",
+   "RightFootAttachment@RightFoot",
+   "RightAnkleRigAttachment@RightFoot",
+   "RightGripAttachment@RightHand",
+   "RightWristRigAttachment@RightHand",
+   "RightWristRigAttachment@RightLowerArm",
+   "RightElbowRigAttachment@RightLowerArm",
+   "RightAnkleRigAttachment@RightLowerLeg",
+   "RightKneeRigAttachment@RightLowerLeg",
+   "RightShoulderAttachment@RightUpperArm",
+   "RightElbowRigAttachment@RightUpperArm",
+   "RightShoulderRigAttachment@RightUpperArm",
+   "JointRotation@RightShoulderRigAttachment",
+   "RightKneeRigAttachment@RightUpperLeg",
+   "RightHipRigAttachment@RightUpperLeg",
+   "BodyBackAttachment@UpperTorso",
+   "BodyFrontAttachment@UpperTorso",
+   "LeftCollarAttachment@UpperTorso",
+   "NeckAttachment@UpperTorso",
+   "RightCollarAttachment@UpperTorso",
+   "NeckRigAttachment@UpperTorso",
+   "LeftShoulderRigAttachment@UpperTorso",
+   "JointRotation@LeftShoulderRigAttachment",
+   "RightShoulderRigAttachment@UpperTorso",
+   "JointRotation@RightShoulderRigAttachment",
+   "WaistRigAttachment@UpperTorso",
+   "RootRigAttachment@HumanoidRootPart"
+  ],
+  "skala": 1,
+  "wymiary": [
+   2.0873985290527344,
+   5.710001111030579,
+   4.83123779296875
+  ],
+  "skrzynka_max": [
+   -27.612445831298828,
+   3.810000419616699,
+   -693.3916015625
+  ],
+  "kosci": [],
+  "lewa_po_lewej": true,
+  "nazwa": "Rycerz Blocky (import FBX)",
+  "skrzynka_min": [
+   -29.699844360351562,
+   -1.9000006914138794,
+   -698.2228393554688
+  ],
+  "przod": [
+   -0.9986848831176758,
+   0.05126938596367836
+  ]
+ },
+ "naprawa": {
+  "kroki": [
+   "zakotwiczono części: 16",
+   "skala bez zmian (wzrost 5.71 studa)",
+   "postawiono w (32.3; 0.25; -676.0)"
+  ]
+ },
+ "kontrola_po": {
+  "klasy": {
+   "Vector3Value": 68,
+   "NoCollisionConstraint": 19,
+   "AnimationConstraint": 15,
+   "SurfaceAppearance": 15,
+   "MeshPart": 15,
+   "CFrameValue": 48,
+   "NumberValue": 6,
+   "StringValue": 15,
+   "Humanoid": 1,
+   "BallSocketConstraint": 14,
+   "Part": 1,
+   "Status": 1,
+   "Attachment": 52,
+   "Folder": 1,
+   "PackageLink": 1
+  },
+  "primary": "HumanoidRootPart",
+  "klasa": "Model",
+  "siatki": [
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://76891842915257",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.0199999809265137,
+     1.9600000381469727,
+     1.8700001239776611
+    ],
+    "n": "Head"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://81521919776015",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.090000033378601,
+     0.3500002920627594,
+     1.4500000476837158
+    ],
+    "n": "LeftFoot"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://129275621076358",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0399999618530273,
+     0.4700000286102295,
+     1.0399999618530273
+    ],
+    "n": "LeftHand"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://87238879597932",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0099998712539673,
+     0.8300001621246338,
+     1.0049999952316284
+    ],
+    "n": "LeftLowerArm"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://102520121617826",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0500000715255737,
+     0.8500000834465027,
+     1.2100000381469727
+    ],
+    "n": "LeftLowerLeg"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://138104465898659",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.3700000047683716,
+     1.070000171661377,
+     1.3200000524520874
+    ],
+    "n": "LeftUpperArm"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://123874257109020",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0499999523162842,
+     0.8000001907348633,
+     1.1100001335144043
+    ],
+    "n": "LeftUpperLeg"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://105744705553633",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.200000286102295,
+     1.5661942958831787,
+     1.9776142835617065
+    ],
+    "n": "LowerTorso"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://76127416453247",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.090000033378601,
+     0.3500003218650818,
+     1.4500000476837158
+    ],
+    "n": "RightFoot"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://126676883882525",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0399999618530273,
+     0.4700000286102295,
+     1.0399999618530273
+    ],
+    "n": "RightHand"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://71994791109007",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0099998712539673,
+     0.8300001621246338,
+     1.0049999952316284
+    ],
+    "n": "RightLowerArm"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://77201115671113",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0500001907348633,
+     0.8500000834465027,
+     1.2100000381469727
+    ],
+    "n": "RightLowerLeg"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://137444796220251",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.3700002431869507,
+     1.070000171661377,
+     1.3200000524520874
+    ],
+    "n": "RightUpperArm"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://95855807173999",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0500000715255737,
+     0.8000001907348633,
+     1.1100001335144043
+    ],
+    "n": "RightUpperLeg"
+   },
+   {
+    "colormap": "rbxassetid://119036143201989",
+    "mesh": "rbxassetid://71279639033270",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.200000286102295,
+     1.580000638961792,
+     1.3950001001358032
+    ],
+    "n": "UpperTorso"
+   }
+  ],
+  "zaczepy": [
+   "FaceCenterAttachment@Head",
+   "FaceFrontAttachment@Head",
+   "HairAttachment@Head",
+   "HatAttachment@Head",
+   "NeckRigAttachment@Head",
+   "LeftFootAttachment@LeftFoot",
+   "LeftAnkleRigAttachment@LeftFoot",
+   "LeftGripAttachment@LeftHand",
+   "LeftWristRigAttachment@LeftHand",
+   "LeftWristRigAttachment@LeftLowerArm",
+   "LeftElbowRigAttachment@LeftLowerArm",
+   "LeftAnkleRigAttachment@LeftLowerLeg",
+   "LeftKneeRigAttachment@LeftLowerLeg",
+   "LeftShoulderAttachment@LeftUpperArm",
+   "LeftElbowRigAttachment@LeftUpperArm",
+   "LeftShoulderRigAttachment@LeftUpperArm",
+   "JointRotation@LeftShoulderRigAttachment",
+   "LeftKneeRigAttachment@LeftUpperLeg",
+   "LeftHipRigAttachment@LeftUpperLeg",
+   "WaistBackAttachment@LowerTorso",
+   "WaistCenterAttachment@LowerTorso",
+   "WaistFrontAttachment@LowerTorso",
+   "WaistRigAttachment@LowerTorso",
+   "LeftHipRigAttachment@LowerTorso",
+   "RightHipRigAttachment@LowerTorso",
+   "RootRigAttachment@LowerTorso",
+   "RightFootAttachment@RightFoot",
+   "RightAnkleRigAttachment@RightFoot",
+   "RightGripAttachment@RightHand",
+   "RightWristRigAttachment@RightHand",
+   "RightWristRigAttachment@RightLowerArm",
+   "RightElbowRigAttachment@RightLowerArm",
+   "RightAnkleRigAttachment@RightLowerLeg",
+   "RightKneeRigAttachment@RightLowerLeg",
+   "RightShoulderAttachment@RightUpperArm",
+   "RightElbowRigAttachment@RightUpperArm",
+   "RightShoulderRigAttachment@RightUpperArm",
+   "JointRotation@RightShoulderRigAttachment",
+   "RightKneeRigAttachment@RightUpperLeg",
+   "RightHipRigAttachment@RightUpperLeg",
+   "BodyBackAttachment@UpperTorso",
+   "BodyFrontAttachment@UpperTorso",
+   "LeftCollarAttachment@UpperTorso",
+   "NeckAttachment@UpperTorso",
+   "RightCollarAttachment@UpperTorso",
+   "NeckRigAttachment@UpperTorso",
+   "LeftShoulderRigAttachment@UpperTorso",
+   "JointRotation@LeftShoulderRigAttachment",
+   "RightShoulderRigAttachment@UpperTorso",
+   "JointRotation@RightShoulderRigAttachment",
+   "WaistRigAttachment@UpperTorso",
+   "RootRigAttachment@HumanoidRootPart"
+  ],
+  "skala": 1,
+  "wymiary": [
+   2.087400436401367,
+   5.710002452135086,
+   4.83135986328125
+  ],
+  "skrzynka_max": [
+   33.34996795654297,
+   5.960007190704346,
+   -673.5914916992188
+  ],
+  "kosci": [],
+  "lewa_po_lewej": true,
+  "nazwa": "Rycerz Blocky (import FBX)",
+  "skrzynka_min": [
+   31.2625675201416,
+   0.25000473856925964,
+   -678.4228515625
+  ],
+  "przod": [
+   -0.9986848831176758,
+   0.05126938596367836
+  ]
+ }
+}

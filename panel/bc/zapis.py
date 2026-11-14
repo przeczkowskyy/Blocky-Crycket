@@ -21,13 +21,24 @@ Markdown (`<sejf>/Produkcja/*.md`), których używa Obsidian i agenci, małymi z
 Pliki biorą się z konfiguracji sejfów (`sejf.pliki_planu()`), nie ze sztywnej ścieżki — testy i próby działają na kopii.
 
 Uprawnienia: odpowiedzi i zadania — każdy z dostępem do panelu (także gość z kodem dostępu przez tunel; goście mają
-limit zapisów). Statusy decyzji to zmiana kanonu — wyłącznie Game Director (klucz Game Directora: `z.game_director`,
-patrz serwer.py). Imię wpisane w panelu niczego nie daje — służy tylko do podpisu, a o zaufaniu mówi ZNACZNIK, który
-dopisuje serwer i którego nie da się wpisać w imieniu (nawiasy są z imienia usuwane):
-  - `- Paweł (Game Director, 2026-11-13): …`  — żądanie z kluczem Game Directora (jedyny znacznik zgody GD z panelu);
-  - `- Karol (2026-11-13): …`                 — osoba przy komputerze z panelem (klucz lokalny);
-  - `- Paweł (gość panelu, 2026-11-13): …`     — gość z kodem dostępu (telefon, tunel) — imię niczego nie dowodzi.
-Imię „Game Director” bez klucza Game Directora jest odrzucane (400).
+limit zapisów). Statusy decyzji (decyzja z 13.11.2026: Karol i Paweł mają równe prawa, wystarcza decyzja jednego,
+każda zostaje w logach z imieniem i datą) zmienia „decydent”: żądanie z KLUCZEM ZATWIERDZANIA (`z.game_director` —
+nazwa pola została po dawnym kluczu Game Directora, patrz serwer.py) albo osoba przy komputerze z panelem
+(`z.lokalny`, klucz lokalny). Gość z samym kodem dostępu dostaje 403. Zmiana statusu wymaga prawdziwego imienia
+wpisanego w Ustawieniach panelu (nagłówek X-BC-Kto, `z.kto_z_naglowka`); puste albo domyślne „gość” = 400
+`brak_imienia`, bo decyzja musi mieć podpis. Dotyczy to także osoby przy komputerze: gdy przeglądarka nie wysyła
+imienia, serwer bierze do innych podpisów `git config user.name` (albo nazwę konta systemu), ale takim domyślnym
+imieniem decyzji nie podpisze — też 400 `brak_imienia`. W Rejestrze decyzji podpis to
+„zdecydował: Imię RRRR-MM-DD” / „oznaczył: Imię RRRR-MM-DD” i „Uzasadnienie — Imię, RRRR-MM-DD: …”.
+
+Imię wpisane w panelu niczego nie daje — służy tylko do podpisu, a o zaufaniu mówi ZNACZNIK, który dopisuje serwer
+i którego nie da się wpisać w imieniu (nawiasy są z imienia usuwane):
+  - `- Paweł (klucz zatwierdzania, 2026-11-13): …` — żądanie z kluczem zatwierdzania;
+  - `- Karol (2026-11-13): …`                      — osoba przy komputerze z panelem (klucz lokalny);
+  - `- Paweł (gość panelu, 2026-11-13): …`          — gość z kodem dostępu (telefon, tunel) — imię niczego nie dowodzi.
+Wpisy z 13.11.2026 sprzed tej zmiany mają znacznik „Game Director” — znaczy on to samo co „klucz zatwierdzania”.
+Imiona zawierające znaczniki („Game Director”, „klucz zatwierdzania”, „gość panelu”, bez względu na wielkość liter)
+są odrzucane (400 `imie_zastrzezone`) — także z kluczem, bo podpis ma nieść prawdziwe imię.
 
 Tekst od ludzi: limit długości, bez znaków sterujących, zawsze jedna linia (nowe linie → „ / ”), bez prób
 wstrzyknięcia struktury pliku (nagłówek „#”, pole zadania „- [ ]”, „**Odpowiedź:**”, kolejne pole „· [ ]”).
@@ -55,14 +66,16 @@ LIMIT_IMIENIA = 40
 LIMIT_W_DZIENNIKU = 140
 PLIK_STANU = "zapis_sejfu.json"                               # w danych lokalnych (rdzen.RUNTIME), poza repozytorium
 
-# Goście (bez klucza lokalnego i bez klucza Game Directora): najwyżej tyle zapisów w oknie czasu — na klienta
-# i razem dla wszystkich gości. Osoba przy komputerze i Game Director nie mają limitu.
+# Goście (bez klucza lokalnego i bez klucza zatwierdzania): najwyżej tyle zapisów w oknie czasu — na klienta
+# i razem dla wszystkich gości. Osoba przy komputerze i przeglądarka z kluczem zatwierdzania nie mają limitu.
 OKNO_LIMITU_S = 600
 LIMIT_ZAPISOW_GOSCIA = 30
 LIMIT_ZAPISOW_GOSCI = 120
 
-ZNACZNIK_GD = "Game Director"
+ZNACZNIK_ZATWIERDZANIA = "klucz zatwierdzania"
 ZNACZNIK_GOSCIA = "gość panelu"
+DOMYSLNE_IMIE = "gość"
+KOMUNIKAT_BRAK_IMIENIA = "Wpisz swoje imię w Ustawieniach — decyzja musi mieć podpis (imię i datę)."
 
 PRIORYTETY = {"wysoki": "wysoki", "średni": "średni", "sredni": "średni", "niski": "niski"}
 SEKCJE_DODAWANIA = ("teraz", "backlog")
@@ -91,7 +104,8 @@ _RX_NR_DECYZJI = re.compile(r"^D-(\d+)\b")
 _RX_KONFLIKT_POCZATEK = re.compile(rb"^<<<<<<<(?: |\r?$)", re.MULTILINE)
 _RX_KONFLIKT_KONIEC = re.compile(rb"^>>>>>>>(?: |\r?$)", re.MULTILINE)
 _RX_PLIK_TYMCZASOWY = re.compile(r"^.+\.md\.\d+\.[0-9a-f]{6}\.tmp$")
-_RX_ZASTRZEZONE_IMIE = re.compile(r"game\s*director", re.IGNORECASE)
+# znaczniki serwera (i dawny „Game Director”) nie mogą być imieniem — inaczej imię udawałoby znacznik zaufania
+_RX_ZASTRZEZONE_IMIE = re.compile(r"game\s*director|klucz\s*zatwierdzania|go[śs][ćc]\s*panelu", re.IGNORECASE)
 # początek wiersza statusu decyzji: [wcięcie][emoji][odstęp][*_][słowo statusu] — reszta wiersza zostaje bajt w bajt
 _RX_STATUS_NA_POCZATKU = re.compile(
     r"^(?P<wciecie>\s*)(?P<emoji>[^\w\s·*]+)?(?P<odstep>\s*)(?P<format>[*_]*)"
@@ -265,18 +279,29 @@ def imie(z):
     znacznika dopisywanego przez serwer (patrz `podpis`) i do pól wiersza statusu. Nie daje żadnych uprawnień."""
     t = _jedna_linia(str(getattr(z, "kto", "") or "")).replace(" / ", " ")
     t = re.sub(r"\s{2,}", " ", re.sub(r"[*_\[\]#`|<>:()·,]", "", t)).strip()[:LIMIT_IMIENIA].strip()
-    return t or "gość"
+    return t or DOMYSLNE_IMIE
+
+
+def bez_imienia(kto):
+    """Czy imię jest puste albo domyślne („gość”) — takim imieniem nie da się podpisać decyzji."""
+    return not (kto or "").strip() or (kto or "").strip().casefold() in (DOMYSLNE_IMIE, "gosc")
+
+
+def decydent(z):
+    """Czy żądanie może zmieniać statusy decyzji: klucz zatwierdzania albo osoba przy komputerze (klucz lokalny)."""
+    return bool(getattr(z, "game_director", False) or getattr(z, "lokalny", False))
 
 
 def podpis(z):
     """(imię, znacznik) do podpisu zmiany. Znacznik dopisuje serwer na podstawie kluczy, nie imienia:
-    „Game Director” (klucz Game Directora), None (osoba przy komputerze z kluczem lokalnym), „gość panelu” (reszta)."""
+    „klucz zatwierdzania” (klucz zatwierdzania), None (osoba przy komputerze z kluczem lokalnym), „gość panelu”
+    (reszta). Imię ze znacznikiem w środku jest odrzucane (400) dla każdego — także z kluczem."""
     kto = imie(z)
-    if getattr(z, "game_director", False):
-        return (ZNACZNIK_GD if kto == "gość" else kto), ZNACZNIK_GD
     if _RX_ZASTRZEZONE_IMIE.search(kto):
-        raise BladHTTP(400, "Imię „%s” jest zarezerwowane dla przeglądarki z kluczem Game Directora — zmień imię "
-                            "w Ustawieniach." % kto, kod="imie_zastrzezone")
+        raise BladHTTP(400, "Imię „%s” jest zastrzeżone — tak brzmią znaczniki, które dopisuje panel. Wpisz swoje "
+                            "imię w Ustawieniach." % kto, kod="imie_zastrzezone")
+    if getattr(z, "game_director", False):
+        return kto, ZNACZNIK_ZATWIERDZANIA
     return kto, (None if getattr(z, "lokalny", False) else ZNACZNIK_GOSCIA)
 
 
@@ -306,7 +331,7 @@ def _klient(z):
 
 
 def _sprawdz_limit(z):
-    """Limit zapisów gościa (429). Osoba przy komputerze i Game Director bez limitu."""
+    """Limit zapisów gościa (429). Osoba przy komputerze i przeglądarka z kluczem zatwierdzania bez limitu."""
     if getattr(z, "lokalny", False) or getattr(z, "game_director", False):
         return
     teraz = time.time()
@@ -325,16 +350,42 @@ def _sprawdz_limit(z):
 
 
 # =========================================================================== pliki i stan lokalny
+# Notatki sejfu spoza planu, które panel też zmienia (agenda sesji głównych — bc/sesje.py). Klucz -> nazwa pliku
+# w <sejf B&C>/Produkcja/. Plan (sejf.PLIKI_PLANU) zostaje bez zmian.
+PLIKI_DODATKOWE = {"sesje": "Sesje główne.md"}
+
+
 def _plik(klucz):
+    if klucz in PLIKI_DODATKOWE:
+        wynik = sejf.plik_produkcji(PLIKI_DODATKOWE[klucz])
+        if wynik:
+            return wynik
+        raise BladHTTP(503, "Panel nie widzi sejfu B&C — sprawdź listę sejfów w konfiguracji.")
     pliki = sejf.pliki_planu()
     if klucz not in pliki:
         raise BladHTTP(503, "Panel nie widzi sejfu B&C — sprawdź listę sejfów w konfiguracji.")
     return pliki[klucz]
 
 
+def plik(klucz):
+    """(ścieżka bezwzględna, ścieżka do pokazania) pliku sejfu, który zmienia panel (także „sesje”)."""
+    return _plik(klucz)
+
+
 def _notatka(klucz):
     """Nazwa notatki do wikilinku w Dzienniku zmian, np. „Pytania otwarte”."""
-    return sejf.PLIKI_PLANU[klucz][:-3]
+    return (PLIKI_DODATKOWE.get(klucz) or sejf.PLIKI_PLANU[klucz])[:-3]
+
+
+def wykonaj(klucz, wersja, zmiana, kto, znacznik=None):
+    """Publiczna droga zapisu dla innych modułów (bc/sesje.py): to samo co odpowiedzi i zadania — blokada sejfu,
+    kontrola wersji, zapis atomowy, ślad w Dzienniku zmian i dla „Wyślij”. `zmiana(dok)` zwraca opis do dziennika."""
+    return _wykonaj(klucz, wersja, zmiana, kto, znacznik)
+
+
+def sprawdz_limit(z):
+    """Limit zapisów gościa (429) — ten sam licznik co odpowiedzi i zadania."""
+    _sprawdz_limit(z)
 
 
 def _czytaj_bajty(sciezka, pokaz):
@@ -487,8 +538,8 @@ def blokada_wysylania(czekaj_s=15):
 def do_wyslania(repo, git):
     """Pliki sejfu zmienione przez panel, które można bezpiecznie wysłać przyciskiem „Wyślij”.
 
-    Plik idzie do commita tylko wtedy, gdy: leży w repozytorium, jest jednym z czterech plików planu, które zmienia
-    panel (pytania, zadania, decyzje, dziennik), jego treść jest dokładnie tą, którą zapisał panel, a wersja w HEAD
+    Plik idzie do commita tylko wtedy, gdy: leży w repozytorium, jest jednym z plików, które zmienia panel (pytania,
+    zadania, decyzje, dziennik i agenda sesji głównych „Sesje główne.md”), jego treść jest dokładnie tą, którą zapisał panel, a wersja w HEAD
     jest tą, od której panel zaczynał — czyli w pliku nie ma cudzych, niezatwierdzonych zmian.
     Zwraca (ścieżki względem repo, opisy zmian, uwagi dla człowieka). `git(argumenty, repo)` = gitsync.git.
     """
@@ -496,10 +547,10 @@ def do_wyslania(repo, git):
         stan = rdzen.czytaj_json(_plik_stanu(), {}) or {}
     dozwolone = {}
     try:
-        for klucz in ("pytania", "zadania", "decyzje", "dziennik"):
-            p, _ = sejf.pliki_planu()[klucz]
+        for klucz in ("pytania", "zadania", "decyzje", "dziennik", "sesje"):
+            p, _ = _plik(klucz)
             dozwolone[_klucz_stanu(p)] = p
-    except KeyError:
+    except (KeyError, BladHTTP):
         return [], [], []
     sciezki, opisy, uwagi, do_usuniecia = [], [], [], []
     for k, wpis in sorted((stan.get("pliki") or {}).items()):
@@ -851,10 +902,11 @@ def dodaj_zadanie(tekst, sekcja, priorytet, wersja, kto, znacznik=None):
     return _wykonaj("zadania", wersja, zmiana, kto, znacznik)
 
 
-# =========================================================================== 3. status decyzji (tylko Game Director)
+# =========================================================================== 3. status decyzji (Karol albo Paweł)
 def _wiersz_statusu(linia, emoji, slowo, podpis_txt):
     """Nowy wiersz statusu: podmienia TYLKO emoji i słowo statusu w pierwszym polu, usuwa poprzedni podpis panelu
-    („zdecydował: …” / „oznaczył: …”) i dopisuje nowy na końcu. Reszta wiersza (dopiski, pola, odstępy) bez zmian."""
+    („zdecydował: …” / „oznaczył: …” — także dawny „zdecydował: Game Director (Paweł) 2026-11-13”) i dopisuje nowy
+    na końcu. Reszta wiersza (dopiski, pola, odstępy) bez zmian."""
     m = _RX_STATUS_NA_POCZATKU.match(linia)
     if not m or not (m.group("emoji") or m.group("slowo")):
         raise BladHTTP(409, "Nie rozumiem wiersza statusu tej decyzji — zmień go w Obsidianie.")
@@ -871,19 +923,22 @@ def _wiersz_statusu(linia, emoji, slowo, podpis_txt):
     return tresc + " · " + podpis_txt + ogon
 
 
-def zmien_status_decyzji(id_decyzji, status, uzasadnienie, wersja, kto):
-    """Zmiana kanonu — wołać tylko dla żądania z kluczem Game Directora (patrz `_t_status`)."""
+def zmien_status_decyzji(id_decyzji, status, uzasadnienie, wersja, kto, znacznik=None):
+    """Zmiana statusu decyzji — wołać tylko dla decydenta (klucz zatwierdzania albo klucz lokalny, patrz `_t_status`).
+
+    W Rejestrze decyzji podpis to samo imię i data („zdecydował: Paweł 2026-11-13”); znacznik zaufania
+    („klucz zatwierdzania” albo None dla osoby przy komputerze) trafia tylko do Dziennika zmian."""
     m = re.match(r"^D-(\d{1,4})$", str(id_decyzji or ""), re.IGNORECASE)
     if not m:
         raise BladHTTP(400, "Niepoprawny identyfikator decyzji (oczekiwano np. D-019)")
     numer = int(m.group(1))
     if status not in STATUSY_DOCELOWE:
         raise BladHTTP(400, "Pole „status” musi mieć wartość „zatwierdzona”, „odrzucona” albo „do_decyzji”")
+    if bez_imienia(kto):
+        raise BladHTTP(400, KOMUNIKAT_BRAK_IMIENIA, kod="brak_imienia")
     uzasadnienie = czysty_tekst(uzasadnienie, LIMIT_UZASADNIENIA, "uzasadnienie", wymagany=False)
     emoji, slowo, w_dzienniku, czasownik = STATUSY_DOCELOWE[status]
     data = dzis()
-    # podpis jak w sejfie („zdecydował: Game Director”), z imieniem z panelu w nawiasie
-    kto_gd = ZNACZNIK_GD if kto in ("", "gość", ZNACZNIK_GD) else "%s (%s)" % (ZNACZNIK_GD, kto)
 
     def zmiana(dok):
         trafienia = []
@@ -903,17 +958,17 @@ def zmien_status_decyzji(id_decyzji, status, uzasadnienie, wersja, kto):
                                 "która ją zastąpi." % (ident, NAZWY_STATUSOW.get(obecny, obecny)), kod="status_zamkniety")
         if obecny == status:
             raise BladHTTP(409, "%s ma już status „%s”." % (ident, NAZWY_STATUSOW[status]))
-        podpis_txt = "%s: %s %s" % (czasownik, kto_gd, data)
+        podpis_txt = "%s: %s %s" % (czasownik, kto, data)
         if st:
             dok.zamien(j, _wiersz_statusu(dok.tresc(j), emoji, slowo, podpis_txt))
         else:                                                  # decyzja bez wiersza statusu: dopisz go pod nagłówkiem
             dok.wstaw(i + 1, ["%s %s · %s" % (emoji, slowo, podpis_txt)])
             koniec += 1
         if uzasadnienie:
-            dok.wstaw(dok.za_trescia(i, koniec), ["Uzasadnienie — %s, %s: %s" % (kto_gd, data, uzasadnienie)])
+            dok.wstaw(dok.za_trescia(i, koniec), ["Uzasadnienie — %s, %s: %s" % (kto, data, uzasadnienie)])
         return "decyzja %s %s" % (ident, w_dzienniku)
 
-    return _wykonaj("decyzje", wersja, zmiana, kto, ZNACZNIK_GD)
+    return _wykonaj("decyzje", wersja, zmiana, kto, znacznik)
 
 
 # =========================================================================== trasy
@@ -955,15 +1010,20 @@ def _t_dodaj(z):
 
 
 def _t_status(z):
-    if not getattr(z, "game_director", False):
+    if not decydent(z):
         if not dostepny():
             raise BladHTTP(403, "Zapis do sejfu z panelu jest wyłączony (ustawienie „zapis_sejfu” w konfiguracji).")
-        raise BladHTTP(403, "Status decyzji zmienia tylko Game Director — to zmiana kanonu. Potrzebny jest link "
-                            "z kluczem Game Directora (polecenie: python panel/serwer.py --klucz-gd na komputerze "
-                            "z panelem). Możesz zostawić komentarz pod decyzją.", kod="tylko_game_director")
+        raise BladHTTP(403, "Status decyzji zmienia Karol albo Paweł: przy komputerze z panelem albo w przeglądarce "
+                            "z kluczem zatwierdzania. Link z kluczem wypisuje na komputerze z panelem polecenie: "
+                            "python panel/serwer.py --klucz-zatwierdzania. Możesz zostawić komentarz pod decyzją.",
+                       kod="brak_klucza_zatwierdzania")
     d = _dane(z, ("status", "uzasadnienie", "wersja"))
-    kto, _ = podpis(z)
-    return zmien_status_decyzji(z.params["id"], d.get("status"), d.get("uzasadnienie"), d.get("wersja"), kto)
+    if not getattr(z, "kto_z_naglowka", False):
+        # Imię nie przyszło z Ustawień (X-BC-Kto), tylko serwer wziął domyślne z `git config user.name` albo z nazwy
+        # konta systemu. Takie imię nie podpisuje decyzji: trafiłoby do publicznego Rejestru bez wiedzy człowieka.
+        raise BladHTTP(400, KOMUNIKAT_BRAK_IMIENIA, kod="brak_imienia")
+    kto, znacznik = podpis(z)
+    return zmien_status_decyzji(z.params["id"], d.get("status"), d.get("uzasadnienie"), d.get("wersja"), kto, znacznik)
 
 
 def zarejestruj(app):

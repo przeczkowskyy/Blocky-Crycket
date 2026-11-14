@@ -9,6 +9,13 @@
   nvidia-smi pokazuje >= 2500 MB wolnej pamięci i nie ma blokady Sagi (%LOCALAPPDATA%/SagaPipeline/gpu.lock).
   W każdym innym razie i po każdym błędzie karty: procesor int8.
 - Serwer nigdy nie importuje faster_whisper (ciężki) — sprawdza tylko, czy pakiet jest (importlib.util.find_spec).
+- Odcinki rozmowy z zakładki Sesja (bc/sesje.py) idą przez tę samą kolejkę i tego samego robotnika: identyfikator
+  `s-<id sesji>-<numer>` wskazuje katalog RUNTIME/sesje/<id sesji>/odcinki/<id>/. Po udanej transkrypcji odcinka
+  z `usun_audio` plik dźwięku jest usuwany. Po odcinku sesji robotnik czeka do CZEKAJ_NA_ODCINKI_S sekund na następny
+  (model zostaje w pamięci, bo odcinki przychodzą co kilkanaście sekund). Trasa GET /api/glos/<id> nie pokazuje
+  odcinków sesji (zapis rozmowy widzą tylko uczestnicy pokoju — przez bc/sesje.py).
+- Atrapa do testów: zmienna środowiska BC_GLOS_ATRAPA=1 — robotnik nie ładuje modelu, tylko zwraca stały tekst
+  (testy nie mogą ładować Whispera: mało pamięci). BC_GLOS_CZEKAJ_S zmienia czas czekania na kolejne odcinki.
 """
 import importlib.util
 import json
@@ -31,6 +38,20 @@ BELOW_NORMAL_PRIORITY_CLASS = 0x00004000
 SLOWNIK_GRY = "Roblox, karczma, questy, dungeon, tycoon, pety, gildia, Robuxy, Blender, Figma, Obsidian"
 PODPOWIEDZ_WHISPER = "Transkrypcja wymaga pakietu faster-whisper. Zainstaluj go na komputerze z panelem: pip install faster-whisper"
 RX_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$")
+RX_ODCINEK = re.compile(r"^s-(\d{8}-\d{6}-[0-9a-f]{4})-\d{6}$")    # odcinek rozmowy z zakładki Sesja
+TEKST_ATRAPY = "Atrapa transkrypcji (test): odcinek rozmowy dotarł do serwera."
+
+
+def _czekaj_na_odcinki_s():
+    try:
+        return max(0.0, min(600.0, float(os.environ.get("BC_GLOS_CZEKAJ_S") or 60)))
+    except ValueError:
+        return 60.0
+
+
+def atrapa():
+    """Tryb testowy: transkrypcja bez modelu (zmienna środowiska BC_GLOS_ATRAPA=1, nigdy z konfiguracji)."""
+    return os.environ.get("BC_GLOS_ATRAPA") == "1"
 
 # sztampowe „napisy” wymyślane przez Whispera na ciszy — usuwane zawsze
 HALUCYNACJE = [re.compile(w, re.I) for w in (
@@ -61,10 +82,36 @@ def _plik_pid():
     return os.path.join(_kat_nagran(), "robotnik.pid")
 
 
+def _kat_odcinkow(sid):
+    """Katalog odcinków jednej sesji rozmowy (sid sprawdza wołający — tu tylko składamy ścieżkę)."""
+    return os.path.join(rdzen.RUNTIME, "sesje", sid, "odcinki")
+
+
 def _kat(nid):
     if not isinstance(nid, str) or not RX_ID.match(nid):
         raise BladHTTP(400, "Niepoprawny identyfikator nagrania")
+    m = RX_ODCINEK.match(nid)
+    if m:
+        return os.path.join(_kat_odcinkow(m.group(1)), nid)
     return os.path.join(_kat_nagran(), nid)
+
+
+def nowy_odcinek(sid, numer, dane, ext, pola):
+    """Kładzie odcinek rozmowy do kolejki transkrypcji i budzi robotnika. Woła bc/sesje.py (po sprawdzeniu
+    uprawnień, rozmiaru i formatu). Zwraca identyfikator odcinka `s-<sid>-<numer 6 cyfr>`."""
+    nid = "s-%s-%06d" % (sid, int(numer))
+    if not RX_ODCINEK.match(nid):
+        raise BladHTTP(400, "Niepoprawny identyfikator sesji")
+    rdzen.zapisz_bajty(os.path.join(_kat(nid), "nagranie." + ext), dane)
+    stan = dict(pola)
+    stan.update(id=nid, stan="czeka", czas=rdzen.teraz(), rozmiar=len(dane), format=ext, proby=0)
+    stan.setdefault("usun_audio", True)                        # konfiguracja lokalna może kazać zostawić dźwięk
+    if not (whisper_dostepny() or atrapa()):
+        stan.update(stan="brak_whispera", podpowiedz=PODPOWIEDZ_WHISPER)
+    _zapisz_stan(nid, stan)
+    if stan["stan"] == "czeka":
+        uruchom_robotnika()
+    return nid
 
 
 def _czytaj_stan(nid):
@@ -309,6 +356,8 @@ def _przyjmij(z):
 
 def _odczytaj(z):
     nid = z.params["id"]
+    if RX_ODCINEK.match(nid or ""):                            # zapis rozmowy widzą tylko uczestnicy (bc/sesje.py)
+        raise BladHTTP(404, "Nie ma takiego nagrania")
     st = _czytaj_stan(nid)
     if not isinstance(st, dict):
         raise BladHTTP(404, "Nie ma takiego nagrania")
@@ -393,15 +442,28 @@ def _puknij():
 
 
 def _do_zrobienia():
+    """Najpierw głosówki (ktoś czeka na tekst w polu komentarza), potem odcinki rozmów w kolejności przyjścia."""
     try:
         nazwy = sorted(os.listdir(_kat_nagran()))
     except OSError:
-        return []
-    out = []
-    for n in nazwy:
-        if not RX_ID.match(n):
+        nazwy = []
+    kandydaci = [n for n in nazwy if RX_ID.match(n) and not RX_ODCINEK.match(n)]
+    try:
+        sesje = sorted(os.listdir(os.path.join(rdzen.RUNTIME, "sesje")))
+    except OSError:
+        sesje = []
+    for sid in sesje:
+        try:
+            odcinki = sorted(os.listdir(_kat_odcinkow(sid)))
+        except OSError:
             continue
-        st = rdzen.czytaj_json(os.path.join(_kat_nagran(), n, "stan.json"))
+        for n in odcinki:
+            m = RX_ODCINEK.match(n)
+            if m and m.group(1) == sid:
+                kandydaci.append(n)
+    out = []
+    for n in kandydaci:
+        st = rdzen.czytaj_json(os.path.join(_kat(n), "stan.json"))
         if isinstance(st, dict) and st.get("stan") in ("czeka", "transkrybuje"):   # „transkrybuje” = po padniętym
             out.append(n)
     return out
@@ -460,6 +522,8 @@ class _Transkryptor:
         return teksty, float(getattr(info, "duration", 0.0) or 0.0)
 
     def transkrybuj(self, sciezka, puls):
+        if atrapa():                                           # testy: bez modelu i bez pamięci na niego
+            return [TEKST_ATRAPY], 1.0, "cpu"
         try:
             return self._jedno(sciezka, puls) + (self.urzadzenie,)
         except Exception as e:
@@ -481,7 +545,7 @@ def _przetworz(nid, tr):
     if proby > MAX_PROB:
         _zmien_stan(nid, stan="blad", blad="Nie udało się spisać nagrania (%d próby)." % MAX_PROB)
         return
-    if not whisper_dostepny():
+    if not (whisper_dostepny() or atrapa()):
         _zmien_stan(nid, stan="brak_whispera", podpowiedz=PODPOWIEDZ_WHISPER)
         return
     nagranie = next((os.path.join(_kat(nid), n) for n in os.listdir(_kat(nid)) if n.startswith("nagranie.")), None)
@@ -508,6 +572,11 @@ def _przetworz(nid, tr):
     _zmien_stan(nid, stan="gotowe", tekst=tekst, pusty=(not tekst) or None, dlugosc_s=round(dlugosc, 1),
                 urzadzenie="karta graficzna" if urz == "cuda" else "procesor",
                 czas_transkrypcji_s=round(time.time() - t0, 1), blad=None)
+    if st.get("usun_audio"):                                   # odcinek rozmowy: dźwięk nie jest już potrzebny
+        try:
+            os.remove(nagranie)
+        except OSError:
+            pass
     rdzen.log("glos: %s spisane w %.1f s (%s, %.1f s nagrania)" % (nid, time.time() - t0, urz, dlugosc))
 
 
@@ -524,14 +593,20 @@ def robotnik():
             while not stop.wait(15):
                 _puknij()
         threading.Thread(target=_serce, daemon=True).start()
+        czekaj_do = 0.0                                        # po odcinku rozmowy: chwilę czekaj na następny
         try:
             while True:
                 lista = _do_zrobienia()
                 if not lista:
+                    if time.time() < czekaj_do:
+                        time.sleep(1.0)
+                        continue
                     break
                 for nid in lista:
                     _puknij()
                     _przetworz(nid, tr)
+                    if RX_ODCINEK.match(nid):
+                        czekaj_do = time.time() + _czekaj_na_odcinki_s()
         finally:
             stop.set()
             _zwolnij_pid()

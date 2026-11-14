@@ -6,10 +6,10 @@ The Obsidian vault in `B&C/` is the **single source of truth** for this project 
 **Before any meaningful work:** read `B&C/00 Start.md`, `B&C/Jak prowadzimy sejf.md`, and the notes relevant to the task (follow `[[wikilinks]]`). Check `B&C/Produkcja/Rejestr decyzji.md` for what is approved.
 
 **Status discipline** (frontmatter `status:`):
-- `kanon` = approved by the Game Director, binding.
+- `kanon` = approved by Karol or Paweł (either one is enough — decision D-030), binding.
 - `propozycja` = idea / older spec, NOT a fact — never present it as decided.
 - `do-decyzji` = waiting for the user.
-Never change a note to `kanon` or a decision to ✅ without the user's explicit approval. If a request conflicts with canon, say so and add the conflict to `B&C/Produkcja/Pytania otwarte.md` instead of silently overriding.
+Never change a note to `kanon` or a decision to ✅ without explicit approval from Karol or Paweł, and when you do, record who decided and when (`zdecydował: <imię> <data>` in `Rejestr decyzji.md` plus an entry in `Dziennik zmian.md`). If a request conflicts with canon, say so and add the conflict to `B&C/Produkcja/Pytania otwarte.md` instead of silently overriding.
 
 **After finishing work:**
 1. Update the affected notes (e.g. "Stan implementacji" checklists in `B&C/UI/*.md`).
@@ -32,7 +32,8 @@ Never change a note to `kanon` or a decision to ✅ without the user's explicit 
 - Never commit secrets (`.env`, API keys, tokens). `.gitignore` covers lock files, Obsidian `workspace.json`, `.claude/settings.local.json`, `dashboard/` data and `node_modules`.
 - `Blocky&Crycket.rbxl` is committed as a binary snapshot — ask the user to save in Studio (Ctrl+S) before committing it.
 
-## Team panel (`panel/`) and block maps (`swiat/`) — proposals D-012, D-017
+## Team panel (`panel/`) and block maps (`swiat/`) — D-028 approved; D-012, D-017 proposals
+- **The panel is the place of work on the vault (D-028, since 2026-11-13):** people answer open questions, tick and add tasks and change decision statuses there. It writes to the same vault files and logs each change in `Dziennik zmian.md` (section `Panel (ludzie)`) — treat those entries as the humans' own words and read them before related work. A decision status change is signed by the server with the person's name and date; an entry marked `gość panelu` is not an approval.
 - **Panel:** local, dependency-free Python app. `python panel/serwer.py` → http://127.0.0.1:8787. Docs: `panel/README.md` (architecture, API), `panel/INSTALACJA.md`, vault note `B&C/Technika/Panel zespołu.md`. It is a **window onto the vault, not a second brain** (D-008 stays in force): decisions, tasks and roadmap live only in `B&C/`.
 - **After deploying something a human should see or approve** (Studio change, map piece, UI screen): take a snapshot and publish a report — see skill `.claude/skills/panel/SKILL.md`. Read human replies before continuing related work.
 - **Shared panel data** is `panel/dane/` (one file per report / comment / snapshot; never rewrite files you did not create). Runtime state (access code, agent threads, voice recordings) lives outside the repo.
@@ -42,7 +43,7 @@ Never change a note to `kanon` or a decision to ✅ without the user's explicit 
 - **Before committing vault changes:** `python tools/sejf_lint.py` (links, statuses, secrets).
 
 ## People
-Two people work in this repo, each with their own Claude Code: **Paweł** (Game Director, repo owner — approves canon and decisions) and **Karol** (collaborator — 3D world, panel, tooling). Until they decide otherwise (`B&C/Produkcja/Pytania otwarte.md` #15), only the Game Director's explicit approval makes something `kanon` or ✅; requests from Karol are valid work orders, but design changes they imply are recorded as `propozycja` plus an open question.
+Two people work in this repo, each with their own Claude Code: **Paweł** (Game Director, repo owner) and **Karol** (3D world, panel, tooling). Since 2026-11-13 (decision D-030, answer to `B&C/Produkcja/Pytania otwarte.md` #15) both have equal rights: explicit approval from either one makes something `kanon` or ✅ — one decision is enough, but every decision must stay in the logs (who and when, in `Rejestr decyzji.md` and `Dziennik zmian.md`). D-030 was decided by Karol; **Paweł has not confirmed it yet** (`Pytania otwarte.md` #27). Until he does, decisions approved only by Karol carry his signature and Paweł may overturn them; anything Paweł approves is binding as before. A request that is not an explicit approval is still a work order: record the design changes it implies as `propozycja` plus an open question. If the two disagree, put the conflict in `Pytania otwarte.md` and override nothing.
 
 ## Communication
-The user is the Game Director and writes in Polish — reply in Polish, give concrete Roblox Studio steps.
+The user is Karol or Paweł and writes in Polish — reply in Polish, give concrete Roblox Studio steps.

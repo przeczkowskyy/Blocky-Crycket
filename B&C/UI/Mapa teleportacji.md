@@ -23,7 +23,7 @@ Układ na mapie według promptu-wytycznej Game Directora (2026-11-13). Zmiana wz
 | 6 | Kuźnia | lewy dół, obok Gildii | ulepszanie (okno Kowala z przykładu instrukcji) | kowadło z młotem | granit `#5A6A92` |
 | 7 | Zagroda petów | prawy dół | [[Pety]] | świecące jajo | zieleń `#78D2A4` |
 
-Targ (Shop z HUD) nie ma budynku na mapie: Shop otwiera się z HUD ([[Pytania otwarte]] #25).
+Targ (Shop z HUD) nie ma budynku na mapie: Shop otwiera się z HUD ([[Pytania otwarte]] #28).
 
 ## Wygląd i zachowanie (natywnie w Roblox)
 - **Otwarcie:** tło przyciemnione (czarne, przezroczystość ~0,45). Ramka wskakuje z efektem *pop* (skala 0,85 → 1,0, `Back` Out, 0,25 s). Piny pojawiają się po kolei z lekkim podskokiem.
@@ -60,12 +60,12 @@ Negative Prompt: realistic 3D, photorealism, plastic texture, blurry, external d
 ## Wskazówki do generowania
 - Jako referencję stylu podawaj **nasze** assety (`assets/refs/KeyArt_ref.jpg`), nie zrzuty cudzej gry. Inaczej model skopiuje cudze budynki.
 - Mapa: 4 warianty, wybieramy wg checklisty [[Style Lock]]. Piny: jeden arkusz, po wybraniu wariantu tniemy go na 7 plików `Pin*`.
-- Ramka jest lekka (cienkie drewno ze złotą obwódką), bo instrukcja zakazuje ciężkich kamiennych ram. Prompt-wytyczna Game Directora miał „chunky stone-and-wood border”; zostawiona jest cienka ramka z wyjątku dla map (do potwierdzenia, [[Pytania otwarte]] #25).
+- Ramka jest lekka (cienkie drewno ze złotą obwódką), bo instrukcja zakazuje ciężkich kamiennych ram. Prompt-wytyczna Game Directora miał „chunky stone-and-wood border”; zostawiona jest cienka ramka z wyjątku dla map (do potwierdzenia, [[Pytania otwarte]] #28).
 - Jeśli X lub ramka wyjdą słabo, generujemy je osobno: ramkę jako panel do 9-slice, a X jako osobny przycisk.
 - Wcześniejsze próby z GPT Image (`assets/raw/TeleportMap`, `assets/raw/PinTavern`) są nieaktualne.
 
 ## Do ustalenia
-- Lista lokacji (tabela wyżej) i ich polskie lub angielskie nazwy (zob. [[Pytania otwarte]] #5 i #25).
+- Lista lokacji (tabela wyżej) i ich polskie lub angielskie nazwy (zob. [[Pytania otwarte]] #5 i #28).
 - Które lokacje są zablokowane na start i od jakiego poziomu.
 - Teleport w obrębie jednego place czy osobne place (`TeleportService`)?
 

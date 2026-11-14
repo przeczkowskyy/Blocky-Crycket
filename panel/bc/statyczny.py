@@ -8,8 +8,9 @@ Jak: eksporter woła te same trasy GET co przeglądarka i zapisuje odpowiedzi ja
 
     python panel/serwer.py --eksport <folder>          # albo: cd panel && python -m bc.statyczny --do <folder>
 
-W lustrze NIE ma: agenta, głosówek, wysyłania komentarzy, zapisu do sejfu (odpowiedzi, zadania, decyzje) ani danych
-lokalnych (rozmowy z agentem, nagrania, kod dostępu, klucz Game Directora).
+W lustrze NIE ma: agenta, głosówek, rozmowy głosowej z zakładki Sesja (jest tylko agenda z notatki sejfu), wysyłania
+komentarzy, zapisu do sejfu (odpowiedzi, zadania, decyzje) ani danych lokalnych (rozmowy z agentem, nagrania, zapisy
+rozmów, kod dostępu, klucz zatwierdzania).
 Jest tylko to, co i tak leży w repozytorium, plus publiczne liczby gry pobrane w chwili eksportu.
 """
 import json
@@ -183,7 +184,8 @@ def eksportuj(app, folder, czas=None):
 
     # 2) rdzeń i stany „niedostępne w lustrze”
     trasa("/api/ja", {"kto": "gość", "lokalny": False, "gospodarz": "", "tryb_statyczny": True, "wersja": rdzen.WERSJA,
-                      "czas_lustra": czas, "game_director": False, "zapis_sejfu": False})   # lustro niczego nie zapisuje
+                      "czas_lustra": czas, "game_director": False, "decydent": False,
+                      "zapis_sejfu": False})                   # lustro niczego nie zapisuje
     cfg = rdzen.konfiguracja()
     w_repo = [s for s in cfg.get("sejfy") or [] if isinstance(s, dict) and not os.path.isabs(str(s.get("sciezka") or ""))]
     trasa("/api/konfiguracja", {"port": None, "gra": cfg.get("gra"),
@@ -201,8 +203,13 @@ def eksportuj(app, folder, czas=None):
     for sciezka in ("/api/telemetria", "/api/telemetria?godzin=24"):
         trasa(sciezka, {"wlaczona": False, "powod": "niedostępne w podglądzie"})
 
+    # rozmowa głosowa (zakładka Sesja) działa tylko na żywym panelu; agenda to notatka sejfu z repozytorium
+    trasa("/api/sesje/stan", {"lustro": True, "pokoj": {"uczestnicy": [], "max_osob": 0},
+                              "sluchanie": {"wlaczone": False}, "sesja": None, "powod": niedostepne})
+
     # 3) sejf
     trasa("/api/sejf/plan")
+    trasa("/api/sesje/agenda")
     try:
         siec = _tylko_repo(_wywolaj(app, "/api/sejf/siec")[0] or {})
     except Exception as e:
@@ -276,7 +283,8 @@ def eksportuj(app, folder, czas=None):
     # 6) reszta: obecność i git (same commity — bez listy lokalnych plików), analityka (publiczne liczby z chwili eksportu)
     try:
         ob = _wywolaj(app, "/api/obecnosc")[0] or {}
-        zapisz("/api/obecnosc", {"panel": [], "studio": {"dostepne": False, "osoby": []}, "git": ob.get("git") or []})
+        zapisz("/api/obecnosc", {"panel": [], "studio": {"dostepne": False, "osoby": []}, "git": ob.get("git") or [],
+                                 "rozmowa": {"aktywna": False, "slucha": False, "osoby": []}})
     except Exception as e:
         stat["bledy"].append("/api/obecnosc: %s" % e)
     try:
