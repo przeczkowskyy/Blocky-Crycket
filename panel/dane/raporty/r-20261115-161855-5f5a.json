@@ -1,0 +1,31 @@
+{
+ "id": "r-20261115-161855-5f5a",
+ "tytul": "Walka v2: Wojownik i Mag walczą własnymi ruchami (filmy)",
+ "opis_md": "**Co to jest.** Wojownik i Mag walczą teraz w prototypie walki własnymi ruchami z ich modeli (tymi, które już przyjąłeś), a nie szkicami. Nagrałem dwie całe walki i obejrzałem je klatka po klatce.\n\n**Co widać na filmach**\n- **Blok tarczą działa.** Wojownik trzyma tarczę z własnego modelu w lewej ręce. Gdy wilk gryzie, przy tarczy pojawiają się niebieskie iskry, a Wojownik lekko się cofa (zdjęcie 1).\n- **Ciosy Wojownika sięgają celu.** Potężne cięcie to pchnięcie mieczem prosto w wilka; w tej walce wilk robi unik i to dobrze widać (zdjęcie 2). Miażdżący cios kończy się iskrami na wilku i falą na ziemi.\n- **Mag rzuca czary z kostura.** Kula ognia rośnie przy krysztale, leci do slime'a i wybucha na nim (zdjęcie 3). Lodowy pocisk też wylatuje z kryształu.\n- **Finały są w kadrze.** Zwycięzca cieszy się na swoim miejscu, a pokonany leży cały w ujęciu (zdjęcie 4).\n- **Nic nie skacze ani nie ślizga się dwa razy.** Stopy bohaterów stoją na ziemi. Podskoki pojawiają się tylko tam, gdzie są w samym ruchu (na przykład wyskok przy Miażdżącym ciosie).\n\n**Co jest jeszcze słabe (uczciwie)**\n- Przy krytycznym ciosie Wojownika błysk trafienia pojawia się chwilę po tym, jak miecz minie głowę wilka. Ruch kończy się przy ziemi, a wilk jest niski. W normalnym tempie to ułamek sekundy, ale uważne oko może to zauważyć.\n- Miażdżący cios pokazujemy zza pleców Wojownika. Wojownik jest wtedy bardzo blisko kamery, zasłania pół ekranu, a przy zamachu jego głowa wychodzi poza kadr.\n- Gdy Wojownik robi unik przed Trollem, maczuga przez jedną–dwie klatki przechodzi przez jego przód.\n- Przy Barierze Mag na pół sekundy lekko unosi się nad ziemię. Tak jest w samym ruchu z modelu.\n- W walce Maga na filmie nie wypadły ani Bariera, ani unik, więc tych dwóch rzeczy film nie pokazuje. Poprzedni etap sprawdził je na zdjęciach z gry.\n\n**Sprawdzone:** wszystkie testy prototypu przeszły bez błędów, łącznie z grą na ekranie telefonu. Testy w grze uruchomił poprzedni etap na tym samym kodzie. Ja niczego w kodzie nie zmieniałem, więc ich nie powtarzałem.\n\n**Filmy:** `swiat/test_walki2/klatki/film_wojownik_cierniowy_wilk_5.mp4` (27 s) i `swiat/test_walki2/klatki/film_mag_lesny_slime_5.mp4` (22 s).\n\n**Pytanie:** czy ruchy bohaterów w walce wyglądają dobrze?",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T16:18:55+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestWalki2",
+   "etykieta": "Prototyp walki"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/test_walki2/klatki/film_wojownik_cierniowy_wilk_5.mp4",
+   "etykieta": "Film Wojownika"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/test_walki2/klatki/film_mag_lesny_slime_5.mp4",
+   "etykieta": "Film Maga"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ]
+}
