@@ -1,0 +1,22 @@
+{
+ "id": "r-20261115-151124-57db",
+ "tytul": "Lekka mgła w lesie (tylko w lesie, miasteczko bez zmian)",
+ "opis_md": "**Co to jest.** Lekka mgła w biomie Las, dodana po Twojej zgodzie z 15.11.\n\n- **Mgła jest tylko w lesie i tylko u gracza, który w nim jest.** Wspólne ustawienia światła miejsca zostały nietknięte, więc miasteczko wygląda dokładnie jak dotąd (zdjęcie 4: dwa identyczne kadry).\n- **Jak działa:** gdy gracz zbliża się do lasu, mgła płynnie narasta; gdy wychodzi, wraca do zwykłego widoku. W Studio w trybie edycji mgły nie widać — pojawia się dopiero w grze (Play).\n- **Co zmienia:** dal robi się miękka i lekko niebieskawa, las mniej wygląda jak makieta (zdjęcia 1–3: przed i po). Z bliska prawie nic się nie zmienia.\n- **Cofnięcie:** jedno polecenie usuwa skrypt mgły; wtedy wszystko wraca do stanu sprzed zmiany. Siłę i kolor mgły zmienia się w jednym miejscu.\n- **Sprawdzone w grze:** w lesie mgła pełna, w miasteczku wartości światła bez zmian (porównanie obrazów: różnica 0).\n- **Do oceny:** czy mgła nie jest za słaba albo za ciemna przy horyzoncie. Mogę ją rozjaśnić, zagęścić albo wyłączyć.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T15:11:24+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/biom_las/zrodla/MglaLasu.client.luau",
+   "etykieta": "Skrypt mgły"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ],
+ "pytanie": "Czy taka mgła w lesie pasuje? Mocniej, słabiej, jaśniej?"
+}
