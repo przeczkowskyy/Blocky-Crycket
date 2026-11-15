@@ -103,10 +103,16 @@ def hotspot(name, r, parent=None, round_=0.12, circle=False, cover_=None):
     ])
 
 
-def sprite_button(name, r, img_name, children=None, parent=None):
+def sprite_button(name, r, img_name, children=None, parent=None, anchor=(0.5, 0.5)):
+    """anchor = punkt, wokół którego UIScale powiększa przycisk przy hoverze (Roblox skaluje względem AnchorPoint).
+    Domyślnie środek; zakładki: środek dolnej krawędzi, żeby podstawa nie odjeżdżała od panelu."""
     img, attrs = image(img_name)
     kids = [node("UIScale", "UIScale", {"Scale": 1})] + (children or [])
-    return node(name, "ImageButton", {**rel(r, parent), "BackgroundTransparency": 1, "Image": img,
+    props = rel(r, parent)
+    (xs, _), (ys, _) = props["Position"]["UDim2"]
+    (ws, _), (hs, _) = props["Size"]["UDim2"]
+    props["Position"] = {"UDim2": [[round(xs + ws * anchor[0], 5), 0], [round(ys + hs * anchor[1], 5), 0]]}
+    return node(name, "ImageButton", {**props, "AnchorPoint": list(anchor), "BackgroundTransparency": 1, "Image": img,
                                       "ScaleType": "Stretch", "AutoButtonColor": False}, kids, attrs)
 
 
@@ -135,7 +141,8 @@ def main():
         out = []
         for i, n in enumerate(names):
             lab = L["texts"][n.replace("Eq", "") + "Label"]
-            btn = sprite_button(n.replace("Eq", ""), S[n], n, [text("Label", lab[0], lab[1], style, S[n])])
+            btn = sprite_button(n.replace("Eq", ""), S[n], n, [text("Label", lab[0], lab[1], style, S[n])],
+                                anchor=(0.5, 1))
             btn["Properties"]["LayoutOrder"] = i + 1
             out.append(btn)
         return full(group, out)

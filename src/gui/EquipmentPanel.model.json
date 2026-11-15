@@ -2224,11 +2224,11 @@
         "Position": {
          "UDim2": [
           [
-           0.04528,
+           0.09921,
            0
           ],
           [
-           0.51729,
+           0.57815,
            0
           ]
          ]
@@ -2245,8 +2245,12 @@
           ]
          ]
         },
+        "AnchorPoint": [
+         0.5,
+         1
+        ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://118346147307937",
+        "Image": "rbxassetid://105807701025717",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 1
@@ -2342,11 +2346,11 @@
         "Position": {
          "UDim2": [
           [
-           0.15079,
+           0.2063,
            0
           ],
           [
-           0.52559,
+           0.57815,
            0
           ]
          ]
@@ -2363,8 +2367,12 @@
           ]
          ]
         },
+        "AnchorPoint": [
+         0.5,
+         1
+        ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://103877021344813",
+        "Image": "rbxassetid://82356272484128",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 2
@@ -2460,11 +2468,11 @@
         "Position": {
          "UDim2": [
           [
-           0.2626,
+           0.31142,
            0
           ],
           [
-           0.52559,
+           0.57815,
            0
           ]
          ]
@@ -2481,8 +2489,12 @@
           ]
          ]
         },
+        "AnchorPoint": [
+         0.5,
+         1
+        ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://109984432002864",
+        "Image": "rbxassetid://135885148703992",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 3
@@ -2578,11 +2590,11 @@
         "Position": {
          "UDim2": [
           [
-           0.35866,
+           0.41929,
            0
           ],
           [
-           0.52559,
+           0.57815,
            0
           ]
          ]
@@ -2599,8 +2611,12 @@
           ]
          ]
         },
+        "AnchorPoint": [
+         0.5,
+         1
+        ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://105542617391529",
+        "Image": "rbxassetid://94845610267337",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 4
@@ -2730,11 +2746,11 @@
         "Position": {
          "UDim2": [
           [
-           0.53189,
+           0.58582,
            0
           ],
           [
-           0.12725,
+           0.19087,
            0
           ]
          ]
@@ -2751,8 +2767,12 @@
           ]
          ]
         },
+        "AnchorPoint": [
+         0.5,
+         1
+        ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://84370502536750",
+        "Image": "rbxassetid://119962244091320",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 1
@@ -2848,11 +2868,11 @@
         "Position": {
          "UDim2": [
           [
-           0.63819,
+           0.69016,
            0
           ],
           [
-           0.13278,
+           0.19087,
            0
           ]
          ]
@@ -2869,8 +2889,12 @@
           ]
          ]
         },
+        "AnchorPoint": [
+         0.5,
+         1
+        ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://84198321823648",
+        "Image": "rbxassetid://123440891296586",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 2
@@ -2966,11 +2990,11 @@
         "Position": {
          "UDim2": [
           [
-           0.74055,
+           0.79448,
            0
           ],
           [
-           0.13278,
+           0.19087,
            0
           ]
          ]
@@ -2987,8 +3011,12 @@
           ]
          ]
         },
+        "AnchorPoint": [
+         0.5,
+         1
+        ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://84360874613826",
+        "Image": "rbxassetid://75894078702551",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 3
@@ -3084,11 +3112,11 @@
         "Position": {
          "UDim2": [
           [
-           0.84606,
+           0.8996,
            0
           ],
           [
-           0.13278,
+           0.19087,
            0
           ]
          ]
@@ -3105,8 +3133,12 @@
           ]
          ]
         },
+        "AnchorPoint": [
+         0.5,
+         1
+        ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://122432945054881",
+        "Image": "rbxassetid://110956701948264",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 4
@@ -3476,11 +3508,11 @@
           "Position": {
            "UDim2": [
             [
-             0.74072,
+             0.8319,
              0
             ],
             [
-             0.53746,
+             0.71559,
              0
             ]
            ]
@@ -3497,6 +3529,10 @@
             ]
            ]
           },
+          "AnchorPoint": [
+           0.5,
+           0.5
+          ],
           "BackgroundTransparency": 1,
           "Image": "rbxassetid://93265368617663",
           "ScaleType": "Stretch",
@@ -3762,11 +3798,11 @@
           "Position": {
            "UDim2": [
             [
-             0.74791,
+             0.83656,
              0
             ],
             [
-             0.53746,
+             0.71559,
              0
             ]
            ]
@@ -3783,6 +3819,10 @@
             ]
            ]
           },
+          "AnchorPoint": [
+           0.5,
+           0.5
+          ],
           "BackgroundTransparency": 1,
           "Image": "rbxassetid://93265368617663",
           "ScaleType": "Stretch",
@@ -4048,11 +4088,11 @@
           "Position": {
            "UDim2": [
             [
-             0.74145,
+             0.83237,
              0
             ],
             [
-             0.53746,
+             0.71559,
              0
             ]
            ]
@@ -4069,6 +4109,10 @@
             ]
            ]
           },
+          "AnchorPoint": [
+           0.5,
+           0.5
+          ],
           "BackgroundTransparency": 1,
           "Image": "rbxassetid://93265368617663",
           "ScaleType": "Stretch",
@@ -4334,11 +4378,11 @@
           "Position": {
            "UDim2": [
             [
-             0.74072,
+             0.8319,
              0
             ],
             [
-             0.53746,
+             0.71559,
              0
             ]
            ]
@@ -4355,6 +4399,10 @@
             ]
            ]
           },
+          "AnchorPoint": [
+           0.5,
+           0.5
+          ],
           "BackgroundTransparency": 1,
           "Image": "rbxassetid://93265368617663",
           "ScaleType": "Stretch",
@@ -4620,11 +4668,11 @@
           "Position": {
            "UDim2": [
             [
-             0.74791,
+             0.83656,
              0
             ],
             [
-             0.53746,
+             0.71559,
              0
             ]
            ]
@@ -4641,6 +4689,10 @@
             ]
            ]
           },
+          "AnchorPoint": [
+           0.5,
+           0.5
+          ],
           "BackgroundTransparency": 1,
           "Image": "rbxassetid://93265368617663",
           "ScaleType": "Stretch",
@@ -4906,11 +4958,11 @@
           "Position": {
            "UDim2": [
             [
-             0.74145,
+             0.83237,
              0
             ],
             [
-             0.53746,
+             0.71559,
              0
             ]
            ]
@@ -4927,6 +4979,10 @@
             ]
            ]
           },
+          "AnchorPoint": [
+           0.5,
+           0.5
+          ],
           "BackgroundTransparency": 1,
           "Image": "rbxassetid://93265368617663",
           "ScaleType": "Stretch",
@@ -7526,11 +7582,11 @@
       "Position": {
        "UDim2": [
         [
-         0.94921,
+         0.97205,
          0
         ],
         [
-         0.0166,
+         0.05464,
          0
         ]
        ]
@@ -7547,6 +7603,10 @@
         ]
        ]
       },
+      "AnchorPoint": [
+       0.5,
+       0.5
+      ],
       "BackgroundTransparency": 1,
       "Image": "rbxassetid://116146986242036",
       "ScaleType": "Stretch",

@@ -234,7 +234,12 @@
     },
     "EqTabAttributes": {
       "created_at": "2026-11-12T23:12:33+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "118346147307937",
+          "replaced_at": "2026-11-14T14:13:10+00:00"
+        }
+      ],
       "category": "button",
       "status": "in_roblox",
       "processed": "assets/processed/EquipmentPanel/EqTabAttributes.png",
@@ -242,16 +247,21 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-12T23:16:55+00:00",
+      "updated_at": "2026-11-14T14:13:10+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-12T23:15:40+00:00",
-      "approved_sha256": "23ab5fe2c482ba19ed35348363e9cfa20bfea4c749c04d19643a4ae80326e8db",
-      "roblox_image": "118346147307937",
+      "approved_at": "2026-11-14T14:12:38+00:00",
+      "approved_sha256": "f4f452e7c6b7388026ccb3cdafbe662832eb1a253424263731f3a6eb244af597",
+      "roblox_image": "105807701025717",
       "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
     },
     "EqTabDescription": {
       "created_at": "2026-11-12T23:12:33+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "103877021344813",
+          "replaced_at": "2026-11-14T14:13:09+00:00"
+        }
+      ],
       "category": "button",
       "status": "in_roblox",
       "processed": "assets/processed/EquipmentPanel/EqTabDescription.png",
@@ -259,16 +269,21 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-12T23:16:55+00:00",
+      "updated_at": "2026-11-14T14:13:09+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-12T23:15:40+00:00",
-      "approved_sha256": "c9146a0846ac7c45de5f395a5c4aedd4be28b081efb5954a45ea635e3890fa4d",
-      "roblox_image": "103877021344813",
+      "approved_at": "2026-11-14T14:12:38+00:00",
+      "approved_sha256": "e7368a748ad8162eb5c050268a19abf776442be447cc31afa05235bf575184ed",
+      "roblox_image": "82356272484128",
       "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
     },
     "EqTabInfo": {
       "created_at": "2026-11-12T23:12:33+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "109984432002864",
+          "replaced_at": "2026-11-14T14:13:09+00:00"
+        }
+      ],
       "category": "button",
       "status": "in_roblox",
       "processed": "assets/processed/EquipmentPanel/EqTabInfo.png",
@@ -276,16 +291,21 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-12T23:16:55+00:00",
+      "updated_at": "2026-11-14T14:13:09+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-12T23:15:40+00:00",
-      "approved_sha256": "d101f0687a0043abbdad5ee7733268a7de33d6a06123b476f6ec90930998a59d",
-      "roblox_image": "109984432002864",
+      "approved_at": "2026-11-14T14:12:38+00:00",
+      "approved_sha256": "ae980d42ee49c0438e3f78bc7a4f94eea4176ae25732a7ebdb25c6f0f438079d",
+      "roblox_image": "135885148703992",
       "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
     },
     "EqTabInteractions": {
       "created_at": "2026-11-12T23:12:33+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "105542617391529",
+          "replaced_at": "2026-11-14T14:13:10+00:00"
+        }
+      ],
       "category": "button",
       "status": "in_roblox",
       "processed": "assets/processed/EquipmentPanel/EqTabInteractions.png",
@@ -293,16 +313,21 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-12T23:16:55+00:00",
+      "updated_at": "2026-11-14T14:13:10+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-12T23:15:41+00:00",
-      "approved_sha256": "61315e26dff21aa8d4c55d93f810d2e92c941edef6965617d64029420147da97",
-      "roblox_image": "105542617391529",
+      "approved_at": "2026-11-14T14:12:38+00:00",
+      "approved_sha256": "672730437ff1e46c40d06c06b7886b53053d0e6f55b5fc6beeb54302e5594b6c",
+      "roblox_image": "94845610267337",
       "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
     },
     "EqTabWeapons": {
       "created_at": "2026-11-12T23:12:34+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "84370502536750",
+          "replaced_at": "2026-11-14T14:13:09+00:00"
+        }
+      ],
       "category": "button",
       "status": "in_roblox",
       "processed": "assets/processed/EquipmentPanel/EqTabWeapons.png",
@@ -310,16 +335,21 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-12T23:16:55+00:00",
+      "updated_at": "2026-11-14T14:13:09+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-12T23:15:41+00:00",
-      "approved_sha256": "06bed8025c9351af0962dfd994ab535dea351e088c1c6bb330911951f32d5031",
-      "roblox_image": "84370502536750",
+      "approved_at": "2026-11-14T14:12:38+00:00",
+      "approved_sha256": "a9652b52a996134126c9413f3db1c140abdbc1913d0f1688d86476802a729d32",
+      "roblox_image": "119962244091320",
       "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
     },
     "EqTabArmor": {
       "created_at": "2026-11-12T23:12:34+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "84198321823648",
+          "replaced_at": "2026-11-14T14:13:09+00:00"
+        }
+      ],
       "category": "button",
       "status": "in_roblox",
       "processed": "assets/processed/EquipmentPanel/EqTabArmor.png",
@@ -327,16 +357,21 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-12T23:16:55+00:00",
+      "updated_at": "2026-11-14T14:13:09+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-12T23:15:41+00:00",
-      "approved_sha256": "faf8a3a8296e3a4e17089ddd21e4eb7f609e539907a42ecc4c7e4b8718b9e003",
-      "roblox_image": "84198321823648",
+      "approved_at": "2026-11-14T14:12:39+00:00",
+      "approved_sha256": "7a7256adf319230e149fa7fa50353c212ae16e2b80d1c29cf07471ea7168f6d7",
+      "roblox_image": "123440891296586",
       "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
     },
     "EqTabAmulets": {
       "created_at": "2026-11-12T23:12:34+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "84360874613826",
+          "replaced_at": "2026-11-14T14:13:09+00:00"
+        }
+      ],
       "category": "button",
       "status": "in_roblox",
       "processed": "assets/processed/EquipmentPanel/EqTabAmulets.png",
@@ -344,16 +379,21 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-12T23:16:55+00:00",
+      "updated_at": "2026-11-14T14:13:09+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-12T23:15:41+00:00",
-      "approved_sha256": "bf3f8fd83ddbfc38e2e60e43a3189e97436dbd72e1fbdea068a58bb467db9a8a",
-      "roblox_image": "84360874613826",
+      "approved_at": "2026-11-14T14:12:39+00:00",
+      "approved_sha256": "fe33a780f93b175d5d8fe4c0aefa55e9f533e0419726a2cd6d4e8893478c8b9e",
+      "roblox_image": "75894078702551",
       "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
     },
     "EqTabOthers": {
       "created_at": "2026-11-12T23:12:34+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "122432945054881",
+          "replaced_at": "2026-11-14T14:13:09+00:00"
+        }
+      ],
       "category": "button",
       "status": "in_roblox",
       "processed": "assets/processed/EquipmentPanel/EqTabOthers.png",
@@ -361,11 +401,11 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-12T23:16:55+00:00",
+      "updated_at": "2026-11-14T14:13:09+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-12T23:15:41+00:00",
-      "approved_sha256": "04dc3e11cdcce8a5ab7627e3cb8dcef5927f9884746b841ef85f937f295e8413",
-      "roblox_image": "122432945054881",
+      "approved_at": "2026-11-14T14:12:39+00:00",
+      "approved_sha256": "73d9df91470e910e8506f2b23486e3895c804c1876dc88779443144b7fb17194",
+      "roblox_image": "110956701948264",
       "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
     },
     "EqPlus": {
@@ -434,5 +474,5 @@
       "roblox_image": "92474194471064"
     }
   },
-  "updated_at": "2026-11-14T13:58:26+00:00"
+  "updated_at": "2026-11-14T14:13:10+00:00"
 }

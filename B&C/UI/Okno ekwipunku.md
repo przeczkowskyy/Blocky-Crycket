@@ -37,6 +37,7 @@ Statystyki na grafice (Strength, Constitution, Intelligence, Dexterity, Luck, Ar
 - [x] Karty v4 (każda kolumna z własnymi granicami) wgrane: `EqBg3` 134448521798525 (2026-11-13)
 - [x] Zasłonka sylwetki w slotach ekwipunku: natywna ramka `Cover` w kolorze wnętrza slotu, widoczna tylko z przedmiotem (`ZIndex` 1, ikona 2). Test Play OK (2026-11-13)
 - [x] Rozmiary napisów: statystyki 15 px, zakładki postaci 16 px, zakładki plecaka 20 px (2026-11-14)
+- [x] Hover bez artefaktów (2026-11-14): przyciski powiększają się wokół środka (zakładki: wokół środka dolnej krawędzi, podstawa zostaje przy panelu), 8 zakładek wyciętych od nowa bez kawałków tła (`tools/eq_slice.py`, tryb `tight`) i wgranych po „tak” Game Directora; X i „+” bez zmian
 - [ ] Test na telefonie (Device Emulator)
 - [ ] Prawdziwe dane: przedmioty w slotach, statystyki z serwera, portret postaci
 

@@ -66,7 +66,7 @@ STATS = [("Strength", "STR", "DMG ~12", "20"), ("Constitution", "CONST", "HP 192
          ("Luck", "LUCK", "CRIT 8.75%", "7"), ("Armor", "ARMOR", "DMG RED 25%", "57")]
 
 
-def segment(arr, rect, seed, tol, grow):
+def segment(arr, rect, seed, tol, grow, tight=False):
     x0, y0, x1, y1 = rect
     crop = arr[y0:y1, x0:x1, :3].astype(np.int32)
     sx, sy = seed[0] - x0, seed[1] - y0
@@ -77,7 +77,32 @@ def segment(arr, rect, seed, tol, grow):
     body = ndimage.binary_fill_holes(body)
     body = ndimage.binary_closing(body, iterations=4)
     body = ndimage.binary_fill_holes(body)
-    mask = ndimage.binary_dilation(body, iterations=grow)  # obrys
+    if not tight:  # X i „+”: gładkie tło, obrys asymetryczny (gruby cień z prawej/dołu) -> zwykła dylatacja
+        mask = ndimage.binary_dilation(body, iterations=grow)
+        alpha = Image.fromarray((mask * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.8))
+        rgba = Image.fromarray(arr[y0:y1, x0:x1, :3].astype(np.uint8)).convert("RGBA")
+        rgba.putalpha(alpha)
+        return rgba
+    # zakładki: obrys = tylko CIEMNE piksele wokół korpusu. Sama dylatacja łapała też tło (beżową listwę ramki pod zakładką,
+    # słoje drewna nad nią) – niewidoczne w miejscu, ale wystające poza obrys po powiększeniu przy hoverze.
+    dark = crop.max(-1) < 70  # czarny obrys (ciemnobrązowe deski tła mają max ~90)
+    # grubość obrysu: mediana długości ciemnego odcinka nad górną krawędzią korpusu (środkowe 60% szerokości)
+    ys, xs = np.nonzero(body)
+    runs = []
+    for x in range(int(np.percentile(xs, 20)), int(np.percentile(xs, 80))):
+        col = np.nonzero(body[:, x])[0]
+        if not len(col):
+            continue
+        y, n = col.min() - 1, 0
+        while y >= 0 and dark[y, x]:
+            n, y = n + 1, y - 1
+        runs.append(n)
+    thick = max(3, min(grow, int(np.median(runs)) if runs else grow))
+    # dalej od korpusu niż obrys = tło (kreski desek, beżowa listwa) -> poza maską
+    dist = ndimage.distance_transform_edt(~body)
+    ring = dark & (dist <= thick + 0.5)
+    mask = ndimage.binary_fill_holes(ndimage.binary_closing(body | ring, iterations=1))
+    mask = ndimage.binary_opening(mask, iterations=1) | body
     alpha = Image.fromarray((mask * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.8))
     rgba = Image.fromarray(arr[y0:y1, x0:x1, :3].astype(np.uint8)).convert("RGBA")
     rgba.putalpha(alpha)
@@ -120,7 +145,7 @@ def main():
 
     sprites = {}
     for name, (rect, seed, tol, grow) in SPRITES.items():
-        img = segment(sprite_arr, rect, seed, tol, grow)
+        img = segment(sprite_arr, rect, seed, tol, grow, tight=name.startswith("EqTab"))
         img = img.resize((max(1, round(img.width * scale)), max(1, round(img.height * scale))), Image.LANCZOS)
         img.save(OUT / f"{name}.png")
         sprites[name] = norm(rect)

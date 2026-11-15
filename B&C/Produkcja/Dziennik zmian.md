@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-14 · Claude Code (okno ekwipunku: hover przycisków)
+- Zgłoszenie Game Directora: po najechaniu przycisk był „źle przycięty, coś wystaje za obrys”. Dwie przyczyny: (1) `UIScale` powiększa względem `AnchorPoint`, a przyciski miały (0, 0), więc zjeżdżały w prawo i w dół na ramkę; (2) maska sprite'ów zakładek (sama dylatacja) łapała tło – beżową listwę pod zakładką i kreski desek nad nią.
+- `tools/eq_build_gui.py`: `AnchorPoint` zakładek (0.5, 1), „+” i X (0.5, 0.5), pozycje przeliczone. `tools/eq_slice.py`: tryb `tight` dla zakładek – obrys to tylko ciemne piksele w odległości grubości obrysu (mierzonej nad korpusem); X i „+” po staremu (obrys asymetryczny). `layout.json` bez zmian.
+- 8 grafik `EqTab*` wgranych po „tak” Game Directora (nowe ID w manifeście), podpięte w pliku i w miejscu z chmury; test Play: wszystkie wczytane, hover OTHERS / DESCRIPTION czysty.
+
 ## 2026-11-15 · Claude Code u Karola (południe: gołe modele i strój, lista „Prace w toku”, akceptacje Karola)
 - **Gołe modele i strój jako przedmioty (D-071):** [[Rycerz]], [[Kot-Mag]] i [[Zwiadowca]] mają ciała bazowe (ludzie w lnianej koszuli i krótkich spodenkach, kot w samym futrze), a dzisiejszy wygląd to komplet przedmiotów zakładanych na model: Rycerz 8 (tarcza poza pełnym strojem — widać ją tylko, gdy jest założona), Zwiadowca 8, Kot-Mag 4. Zasady w `swiat/postacie/EKWIPUNEK.md`; plansze, filmy w strojach, gołe ciała i części przedmiotów w `swiat/postacie/wynik/<id>/ekwipunek/`. Zgodność wstecz sprawdzona (te same kości, klipy i bryły; pełny strój wygląda jak dotąd). Niezależny przegląd usunął migotanie spodenek pod pasem i połami. Raport „Gołe modele i strój jako przedmioty (D-071)” czeka w panelu. W Roblox Studio jeszcze niesprawdzone.
 - **Do decyzji ludzi:** spodnie jako część zbroi czy osobny slot; łuk Zwiadowcy z kołczanem w drugiej ręce i peleryna razem z kapturem; goły Rycerz i kot po upadku leżą ok. 0,2 studa nad ziemią (osobny klip czy przesunięcie w grze).
