@@ -30,6 +30,13 @@ Stan: napisany 13.11.2026 PRZED pierwszym udanym wgraniem — części „wstaw 
 modelu z klocków. Pierwszy prawdziwy import trzeba obejrzeć krok po kroku.
 Logika bez Studio (odpowiedzi Open Cloud, moderacja, plik stanu, nazwy, wybór nowego modelu) ma sprawdzian:
     python -B swiat/postacie/biblioteka/test_roblox_import.py
+
+Uwaga: bez --tak-wgraj skrypt niczego nie wgrywa, ale ŁĄCZY SIĘ ze Studio (sprawdza miejsce i konto). Plan bez
+żadnego połączenia daje `roblox_import_lasu.py` (domyślny tryb). Od 15.11.2026 main() przyjmuje z Pythona opcjonalny
+`profil` (parametry_profilu: punkty przodu dla własnych szkieletów, miejsce modelu spoza ROZMIESZCZENIE, skala
+kamery zrzutów) i zwraca słownik wyniku; KONTROLA zapisuje też drzewo kości (`kosci_drzewo`), stawy (`stawy`)
+i materiał każdej siatki. Bez profilu przebieg jest taki sam jak wcześniej. KTO liczy też obiekty o nazwie kontenera
+i czyta atrybut Wygenerowane: inny niż jeden własny kontener zatrzymuje skrypt przed wgraniem (scenariusz T sprawdzianu).
 """
 import argparse
 import hashlib
@@ -58,11 +65,20 @@ NOWY_MIMO = "--nowy-zasob-mimo-poprzedniego"
 # ROZMIESZCZENIE / PRZESUNIECIE / literał Luau z roblox_postac są importowane w main(), żeby sam import tego pliku
 # (np. w sprawdzianie) nie ciągnął reszty narzędzi
 
+# Od 15.11.2026 KTO liczy też kontenery o tej nazwie i sprawdza atrybut Wygenerowane: skrypt pracuje tylko w jednym,
+# własnym kontenerze (tak jak roblox_postac.py), a cudzy obiekt o tej nazwie zatrzymuje wszystko przed wgraniem.
 KTO = r'''
+local kont, ile = nil, 0
+for _, d in workspace:GetChildren() do
+	if d.Name == "__KONTENER__" then
+		kont, ile = d, ile + 1
+	end
+end
 return game:GetService("HttpService"):JSONEncode({
 	placeId = game.PlaceId, creatorType = tostring(game.CreatorType), creatorId = game.CreatorId,
 	userId = game:GetService("StudioService"):GetUserId(),
-	kontener = workspace:FindFirstChild("__KONTENER__") ~= nil,
+	kontener = kont ~= nil, kontenerow = ile,
+	wygenerowane = kont ~= nil and kont:GetAttribute("Wygenerowane") == true,
 })
 '''
 
@@ -160,11 +176,23 @@ end
 if not model then
 	return HS:JSONEncode({ blad = "brak modelu w kontenerze" })
 end
-local w = { nazwa = model.Name, klasa = model.ClassName, klasy = {}, siatki = {}, zaczepy = {}, kosci = {} }
+local w = { nazwa = model.Name, klasa = model.ClassName, klasy = {}, siatki = {}, zaczepy = {}, kosci = {},
+	kosci_drzewo = {}, stawy = {} }
 local minV, maxV = Vector3.new(math.huge, math.huge, math.huge), Vector3.new(-math.huge, -math.huge, -math.huge)
-local czesci = {}
+local czesci, kosciMapa = {}, {}
 local function dodaj(d)
 	w.klasy[d.ClassName] = (w.klasy[d.ClassName] or 0) + 1
+	-- stawy: Motor6D (części) albo AnimationConstraint (zaczepy); a = rodzic, b = dziecko
+	if (d:IsA("Motor6D") or d:IsA("AnimationConstraint")) and #w.stawy < 120 then
+		local a, b
+		if d:IsA("Motor6D") then
+			a, b = d.Part0, d.Part1
+		else
+			a = d.Attachment0 and d.Attachment0.Parent
+			b = d.Attachment1 and d.Attachment1.Parent
+		end
+		table.insert(w.stawy, { n = d.Name, k = d.ClassName, a = a and a.Name or "", b = b and b.Name or "" })
+	end
 	if d:IsA("BasePart") then
 		czesci[d.Name] = d
 		local h = d.Size / 2
@@ -177,11 +205,25 @@ local function dodaj(d)
 	if d:IsA("MeshPart") and #w.siatki < 60 then
 		local sa = d:FindFirstChildWhichIsA("SurfaceAppearance")
 		table.insert(w.siatki, { n = d.Name, rozmiar = { d.Size.X, d.Size.Y, d.Size.Z }, tekstura = d.TextureID,
-			colormap = sa and sa.ColorMap or "", kolor = d.Color:ToHex(), zakotwiczona = d.Anchored, mesh = d.MeshId })
-	elseif d:IsA("Attachment") and #w.zaczepy < 60 then
+			colormap = sa and sa.ColorMap or "", kolor = d.Color:ToHex(), zakotwiczona = d.Anchored, mesh = d.MeshId,
+			mat = d.Material.Name })
+	elseif d:IsA("Bone") then
+		-- Bone dziedziczy po Attachment, więc musi być sprawdzany PRZED zaczepami (inaczej kości lądują w zaczepach)
+		kosciMapa[d.Name] = d
+		if #w.kosci < 120 then
+			table.insert(w.kosci, d.Name)
+		end
+		if #w.kosci_drzewo < 120 then
+			local g, r = 0, d.Parent
+			while r and r:IsA("Bone") do
+				g += 1
+				r = r.Parent
+			end
+			table.insert(w.kosci_drzewo, { n = d.Name, r = d.Parent and d.Parent.Name or "", g = g,
+				kr = d.Parent ~= nil and d.Parent:IsA("Bone") })
+		end
+	elseif d:IsA("Attachment") and #w.zaczepy < 120 then
 		table.insert(w.zaczepy, d.Name .. "@" .. (d.Parent and d.Parent.Name or "?"))
-	elseif d:IsA("Bone") and #w.kosci < 60 then
-		table.insert(w.kosci, d.Name)
 	end
 end
 if model:IsA("BasePart") then
@@ -195,16 +237,45 @@ if maxV.X >= minV.X then
 	w.skrzynka_max = { maxV.X, maxV.Y, maxV.Z }
 	w.wymiary = { maxV.X - minV.X, maxV.Y - minV.Y, maxV.Z - minV.Z }
 end
--- kierunek przodu w świecie: stopa wystaje przed łydkę; lewa ręka ma być po lewej stronie przodu
-local stopa, lydka = czesci.LeftFoot or czesci.LeftFoot_Geo, czesci.LeftLowerLeg or czesci.LeftLowerLeg_Geo
+-- kierunek przodu w świecie: punkt „przod” wystaje przed punkt „tyl” (R15: stopa przed łydką); punkt „lewa” ma być po
+-- lewej stronie przodu. Punkty to środki części o podanych nazwach, a gdy którejś brak — położenia kości o tych nazwach
+-- (obie z tego samego rodzaju, żeby nie mieszać środka siatki ze stawem).
+local P = __PRZOD__
+local function punkty(a, b, kosci)
+	local function jeden(nazwy)
+		for _, n in nazwy do
+			if kosci then
+				if kosciMapa[n] then
+					return kosciMapa[n].WorldPosition
+				end
+			elseif czesci[n] then
+				return czesci[n].Position
+			end
+		end
+		return nil
+	end
+	local pa, pb = jeden(a), jeden(b)
+	if pa and pb then
+		return pa, pb
+	end
+	return nil, nil
+end
+local function para(a, b)
+	local pa, pb = punkty(a, b, false)
+	if not pa then
+		pa, pb = punkty(a, b, true)
+	end
+	return pa, pb
+end
+local stopa, lydka = para(P.przod, P.tyl)
 if stopa and lydka then
-	local d = stopa.Position - lydka.Position
+	local d = stopa - lydka
 	local plasko = Vector3.new(d.X, 0, d.Z)
 	if plasko.Magnitude > 0.02 then
 		w.przod = { plasko.Unit.X, plasko.Unit.Z }
-		local lewa, prawa = czesci.LeftUpperArm or czesci.LeftUpperArm_Geo, czesci.RightUpperArm or czesci.RightUpperArm_Geo
+		local lewa, prawa = para(P.lewa, P.prawa)
 		if lewa and prawa then
-			local wLewo = lewa.Position - prawa.Position
+			local wLewo = lewa - prawa
 			-- dla przodu f lewa strona to (f.Z, −f.X) w płaszczyźnie XZ (Roblox: prawa = przód × góra)
 			w.lewa_po_lewej = (wLewo.X * plasko.Unit.Z - wLewo.Z * plasko.Unit.X) > 0
 		end
@@ -561,6 +632,31 @@ def wybierz_nowa(przed, po, nazwy, tekst=""):
     return {"rodzic": e["rodzic"], "n": e["n"], "k": e["k"], "id": e.get("id") or ""}, None
 
 
+# punkty kierunku przodu w KONTROLA (nazwy części, a gdy ich brak — kości); domyślnie R15, jak w pierwszej wersji
+PRZOD_R15 = {"przod": ["LeftFoot", "LeftFoot_Geo"], "tyl": ["LeftLowerLeg", "LeftLowerLeg_Geo"],
+             "lewa": ["LeftUpperArm", "LeftUpperArm_Geo"], "prawa": ["RightUpperArm", "RightUpperArm_Geo"]}
+
+
+def parametry_profilu(profil, modul, rozmieszczenie):
+    """Profil modelu spoza ROZMIESZCZENIE (np. potwory lasu z roblox_import_lasu.py) -> (przód, miejsce, skala zrzutów).
+
+    profil: None albo słownik z kluczami (każdy opcjonalny) „przod” ({przod, tyl, lewa, prawa}: listy nazw),
+    „rozmieszczenie” ({poz, patrz} w układzie miasta, jak w roblox_postac.ROZMIESZCZENIE) i „zrzut_skala” (mnożnik
+    odległości i wysokości kamery dla dużych modeli). Bez profilu wynik jest taki sam jak przed jego dodaniem: przód
+    z części R15, miejsce tylko z ROZMIESZCZENIE, kamera bez zmian. Miejsce z ROZMIESZCZENIE ma pierwszeństwo."""
+    profil = profil or {}
+    przod = dict(PRZOD_R15)
+    for k, v in (profil.get("przod") or {}).items():
+        if k not in PRZOD_R15:
+            raise ValueError("profil.przod: nieznany klucz %r" % k)
+        przod[k] = [str(x) for x in v]
+    roz = (rozmieszczenie or {}).get(modul) or profil.get("rozmieszczenie")
+    skala = float(profil.get("zrzut_skala") or 1.0)
+    if not skala > 0:
+        raise ValueError("profil.zrzut_skala musi być dodatnie")
+    return przod, roz, skala
+
+
 def sha256_pliku(sciezka):
     h = hashlib.sha256()
     with open(sciezka, "rb") as f:
@@ -576,7 +672,9 @@ def teraz():
 # ---------------------------------------------------------------- przebieg ze Studio
 
 
-def main(argv=None):
+def main(argv=None, profil=None):
+    """Przebieg z linii poleceń. `profil` (opcjonalny, tylko z Pythona) opisuje parametry_profilu(); zwraca słownik
+    wyniku zapisany do import_<moduł>_<format>.json albo None (plan, zatrzymanie)."""
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="Próba importu siatki postaci do Roblox Studio (Open Cloud)")
@@ -641,7 +739,7 @@ def main(argv=None):
             print("rozmiar:     %.2f MB (limit %d MB)" % (mb, LIMIT_MB))
             if mb > LIMIT_MB:
                 sys.exit("Plik za duży na jedno wgranie.")
-    roz = ROZMIESZCZENIE.get(a.modul)
+    przod_luau, roz, skala_zrzutu = parametry_profilu(profil, a.modul, ROZMIESZCZENIE)
     os.makedirs(a.wyj, exist_ok=True)
 
     st = {}                                                         # bieżący stan wgrania (to, co jest w pliku)
@@ -682,7 +780,8 @@ def main(argv=None):
                 return kod, dane, tekst, bool(r["is_error"])
 
             def kontrola(model):
-                return luau(KONTROLA.replace("__KONTENER__", KONTENER).replace("__MODEL__", json.dumps(model, ensure_ascii=False)))
+                return luau(KONTROLA.replace("__KONTENER__", KONTENER).replace("__PRZOD__", literal(przod_luau))
+                            .replace("__MODEL__", json.dumps(model, ensure_ascii=False)))
 
             def spis():
                 return luau(SPIS.replace("__KONTENER__", KONTENER))
@@ -694,6 +793,11 @@ def main(argv=None):
                   % (kto["userId"], kto["creatorType"].replace("Enum.CreatorType.", ""), kto["creatorId"]))
             if not kto["kontener"]:
                 sys.exit("Nie ma kontenera Workspace/%s — najpierw `python -B swiat/postacie/roblox_postac.py`." % KONTENER)
+            # pola kontenerow/wygenerowane zwraca KTO od 15.11.2026; ich brak (stara odpowiedź) niczego nie blokuje
+            if kto.get("kontenerow", 1) != 1 or kto.get("wygenerowane") is False:
+                sys.exit("Workspace/%s nie jest jednym własnym kontenerem (obiektów o tej nazwie: %s, atrybut Wygenerowane: "
+                         "%s) — nie ruszam cudzej pracy i niczego nie wgrywam." % (KONTENER, kto.get("kontenerow"),
+                                                                                 kto.get("wygenerowane")))
 
             wynik = {"modul": a.modul, "format": a.format, "oczekiwane": oczek, "nazwa": nazwa}
             model = a.sprawdz
@@ -870,12 +974,13 @@ def main(argv=None):
                     if wynik["kontrola_po"].get("blad"):
                         bledy.append("kontrola po naprawie: %s" % wynik["kontrola_po"]["blad"])
                     for i, (odl, bok) in enumerate(((11.0, 0.35), (9.0, -0.6))):
+                        odl = odl * skala_zrzutu                       # duże modele (profil): kamera dalej i wyżej
                         sx, sz = (px + cel_xz[0]) / 2, (pz + cel_xz[1]) / 2
                         kx, kz = fx * math.cos(bok) - fz * math.sin(bok), fx * math.sin(bok) + fz * math.cos(bok)
                         try:
                             r = s.call("screen_capture", {"studio_id": sid, "capture_id": "import_%s_%d" % (a.modul, i),
-                                                          "camera_position": [sx + kx * odl, 5.5, sz + kz * odl],
-                                                          "look_at_position": [sx, 3.0, sz]}, timeout=120)
+                                                          "camera_position": [sx + kx * odl, 5.5 * skala_zrzutu, sz + kz * odl],
+                                                          "look_at_position": [sx, 3.0 * skala_zrzutu, sz]}, timeout=120)
                         except StudioError as e:
                             bledy.append("zrzut %d: %s" % (i, e))
                             continue
@@ -896,6 +1001,7 @@ def main(argv=None):
             print("zapisano:    %s" % sciezka)
             if bledy:
                 sys.exit("Niektóre kroki się nie udały: %s" % "; ".join(bledy))
+            return wynik
     except StudioError as e:
         if st:
             print("Stan wgrania jest zapisany w %s — to samo polecenie z --tak-wgraj wznowi od niego, NIE wgra drugi raz."

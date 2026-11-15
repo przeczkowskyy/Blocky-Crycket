@@ -12,6 +12,9 @@ katalogu tymczasowego systemu i są usuwane. Sprawdza: zapis stanu przed POST, b
 nazwą, przeniesienie z Workspace, to, że kontrola trafia w nowy model, a nie w starszy o tej samej nazwie ani w cudzą
 rzecz dodaną w tej chwili do kontenera, niezatwierdzony folder zgłoszony wyjątkiem MCP, ostrzeżenie o pliku zmienionym
 od wgrania i komunikat po nieudanym wstawieniu przy --asset.
+Od 15.11.2026 także `profil` (parametry_profilu): bez profilu punkty przodu R15, kamera zrzutów i brak naprawy dla
+modułu spoza ROZMIESZCZENIE są takie same jak wcześniej (R, S), a z profilem — własne punkty przodu w kodzie KONTROLA,
+miejsce, naprawa i kamera przeskalowana (S); kość (Bone dziedziczy po Attachment) jest sprawdzana przed zaczepem.
 """
 import contextlib
 import io
@@ -160,6 +163,34 @@ def test_czystych():
     w, b = ri.wybierz_nowa({"kontener": [], "workspace": [{"n": K}]}, {"kontener": [{"n": "Model"}], "workspace": [{"n": K}]}, {"A"})
     sprawdz(w and w["n"] == "Model", "jedyny nowy obiekt, inna nazwa, nic więcej nowego -> bierzemy: %r %r" % (w, b))
 
+    # profil (15.11): bez profilu dokładnie to, co było przed jego dodaniem
+    P = ri.parametry_profilu
+    przod, roz, sk = P(None, "rycerz", {"rycerz": {"poz": (1, 2), "patrz": (3, 4)}})
+    sprawdz(przod == ri.PRZOD_R15 and roz == {"poz": (1, 2), "patrz": (3, 4)} and sk == 1.0,
+            "profil None: %r %r %r" % (przod, roz, sk))
+    sprawdz(ri.PRZOD_R15 == {"przod": ["LeftFoot", "LeftFoot_Geo"], "tyl": ["LeftLowerLeg", "LeftLowerLeg_Geo"],
+                             "lewa": ["LeftUpperArm", "LeftUpperArm_Geo"], "prawa": ["RightUpperArm", "RightUpperArm_Geo"]},
+            "domyślne punkty przodu to części R15 z pierwszej wersji: %r" % ri.PRZOD_R15)
+    sprawdz(P(None, "inny", {"rycerz": {}})[1] is None, "moduł spoza ROZMIESZCZENIE bez profilu: brak miejsca")
+    przod, roz, sk = P({"przod": {"przod": ["Szczeka_Geo", "Szczeka"], "tyl": ["Tulow_Geo"]},
+                        "rozmieszczenie": {"poz": (5, 6), "patrz": (7, 8)}, "zrzut_skala": 1.75}, "lesny_troll", {})
+    sprawdz(przod["przod"] == ["Szczeka_Geo", "Szczeka"] and przod["tyl"] == ["Tulow_Geo"]
+            and przod["lewa"] == ri.PRZOD_R15["lewa"] and roz == {"poz": (5, 6), "patrz": (7, 8)} and sk == 1.75,
+            "profil z punktami, miejscem i skalą: %r %r %r" % (przod, roz, sk))
+    sprawdz(P({"rozmieszczenie": {"poz": (9, 9), "patrz": (0, 0)}}, "rycerz", {"rycerz": {"poz": (1, 2), "patrz": (3, 4)}})[1]
+            == {"poz": (1, 2), "patrz": (3, 4)}, "ROZMIESZCZENIE ma pierwszeństwo przed profilem")
+    for zly in ({"przod": {"gora": ["X"]}}, {"zrzut_skala": -1}):
+        try:
+            P(zly, "x", {})
+            sprawdz(False, "zły profil przeszedł: %r" % zly)
+        except ValueError:
+            pass
+    sprawdz(ri.PRZOD_R15["przod"] == ["LeftFoot", "LeftFoot_Geo"], "profil nie może zmieniać stałej PRZOD_R15")
+    # kontrola: kość (Bone dziedziczy po Attachment) musi być sprawdzana przed zaczepem, a przód ma parametr
+    k = ri.KONTROLA
+    sprawdz(k.index('d:IsA("Bone")') < k.index('d:IsA("Attachment")'), "KONTROLA: Bone przed Attachment")
+    sprawdz("__PRZOD__" in k and "czesci.LeftFoot" not in k, "KONTROLA: punkty przodu z parametru, nie na stałe")
+
     tmp = tempfile.mkdtemp(prefix="test_roblox_import_")
     try:
         p = ri.sciezka_stanu("m", "fbx", tmp)
@@ -195,6 +226,7 @@ class Udawane:
         self.wstaw_blad = False
         self.cudze_przy_wstawieniu = None          # nazwa rzeczy, którą „współpracownik” dodaje do kontenera w tej chwili
         self.kontrolowane, self.naprawiane = [], []
+        self.kody_kontroli = []                    # pełny kod KONTROLA wysłany do Studio (sprawdzian punktów przodu)
 
     def _nowy(self, n, k="Model"):
         self._id += 1
@@ -234,8 +266,8 @@ class Udawane:
 
     def _luau(self, kod):
         if "GetUserId" in kod:
-            return self._odp({"placeId": ri.PLACE_ID, "creatorType": "Enum.CreatorType.User", "creatorId": 1,
-                              "userId": 42, "kontener": True})
+            return self._odp(dict({"placeId": ri.PLACE_ID, "creatorType": "Enum.CreatorType.User", "creatorId": 1,
+                                   "userId": 42, "kontener": True}, **getattr(self, "kto_dodatki", {})))
         if "-- roblox_import: SPIS" in kod:
             return self._odp({"kontener": self._spis(self.kontener), "workspace": self._spis(self.workspace)})
         if "-- roblox_import: PRZENIES" in kod:
@@ -262,6 +294,7 @@ class Udawane:
                 return self._odp({"blad": "instancji: %d" % len(z)})
             if "KONTROLA" in kod:
                 self.kontrolowane.append(z[0]["id"])
+                self.kody_kontroli.append(kod)
                 return self._odp({"nazwa": nazwa, "klasa": "Model", "klasy": {"MeshPart": 2, "Bone": 3}, "siatki": [],
                                   "wymiary": [2.0, 5.0, 1.0]})
             self.naprawiane.append(z[0]["id"])
@@ -295,15 +328,17 @@ def _podmien_moduly():
     return sm
 
 
-def uruchom(swiat, *argumenty):
-    """main() na udawanym Studio -> (kod wyjścia, wypisane)."""
+def uruchom(swiat, *argumenty, modul="testowy", profil=None, zwrot=None):
+    """main() na udawanym Studio -> (kod wyjścia, wypisane). zwrot: lista, do której trafia wartość zwrócona z main()."""
     assert sys.modules["studio_mcp"].StudioMCP is _Sesja, "podmiana studio_mcp nie działa — przerywam"
     AKTYWNE["swiat"] = swiat
     out = io.StringIO()
     kod = 0
     with contextlib.redirect_stdout(out), contextlib.redirect_stderr(out):
         try:
-            ri.main(["--modul", "testowy"] + list(argumenty))
+            w = ri.main(["--modul", modul] + list(argumenty), **({"profil": profil} if profil is not None else {}))
+            if zwrot is not None:
+                zwrot.append(w)
         except SystemExit as e:
             kod = 0 if e.code in (None, 0) else (e.code if isinstance(e.code, int) else 1)
             if isinstance(e.code, str):
@@ -550,6 +585,67 @@ def test_przebiegu():
         sprawdz(kod != 0 and not s.kontener and "--asset 555" in out and "nie da się odczytać" in out
                 and "od razu go wstawi" not in out and (stan() or {}).get("asset") == "555", "Q: moderacja nieznana: %s" % out)
         ri.MODERACJA_MAX = 5
+
+        # R) bez profilu (15.11): kod KONTROLA ma punkty przodu R15, zrzuty z kamerą jak w pierwszej wersji, main() zwraca wynik
+        import math
+        s = Udawane()
+        zw = []
+        kod, out = uruchom(s, "--asset", "999", zwrot=zw)
+        kody = s.kody_kontroli
+        sprawdz(kod == 0 and kody and all("__PRZOD__" not in x and '"LeftFoot"' in x and '"RightUpperArm_Geo"' in x for x in kody),
+                "R: punkty przodu R15 w kodzie KONTROLA: %s" % out)
+        kamery = [a["camera_position"] for n, a in s.wywolania if n == "screen_capture"]
+        cele = [a["look_at_position"] for n, a in s.wywolania if n == "screen_capture"]
+        # stary wzór dla „testowy” (poz (0, 0), patrz (0, 1)): środek (3,25; 0), kamera 5,5 wys., cel 3,0 wys.
+        stara_kamera = [[3.25 + (-math.sin(b)) * o, 5.5, math.cos(b) * o] for o, b in ((11.0, 0.35), (9.0, -0.6))]
+        sprawdz(len(kamery) == 2 and all(abs(x - y) < 1e-9 for k1, k2 in zip(kamery, stara_kamera) for x, y in zip(k1, k2))
+                and all(c == [3.25, 3.0, 0.0] for c in cele), "R: kamera zrzutów bez profilu zmieniona: %r %r" % (kamery, cele))
+        sprawdz(len(zw) == 1 and isinstance(zw[0], dict) and zw[0].get("kontrola_przed") and zw[0].get("naprawa"),
+                "R: main() nie zwrócił wyniku: %r" % zw)
+        sprawdz(uruchom(Udawane(), zwrot=[])[0] == 0, "R: plan bez --tak-wgraj nadal kończy się kodem 0")
+
+        # S) moduł spoza ROZMIESZCZENIE: bez profilu bez naprawy i zrzutów (jak dotąd); z profilem — naprawa, zrzuty
+        #    z kamerą ×2 i własne punkty przodu w KONTROLA
+        os.makedirs(os.path.join(ri.WYNIK, "lasowy"))
+        with open(os.path.join(ri.WYNIK, "lasowy", "lasowy.fbx"), "wb") as f:
+            f.write(b"FBX" * 50)
+        with open(os.path.join(ri.WYNIK, "lasowy", "raport.json"), "w", encoding="utf-8") as f:
+            json.dump({"modele": [{"rodzaj": "postac", "nazwa": "Lasowy", "wymiary_ciala": [3.0, 9.0, 2.0],
+                                   "siatki": [1], "kosci": [1, 2], "trojkaty_razem": 5}]}, f)
+        s = Udawane()
+        kod, out = uruchom(s, "--asset", "998", modul="lasowy")
+        sprawdz(kod == 0 and not s.naprawiane and not [n for n, a in s.wywolania if n == "screen_capture"],
+                "S: moduł spoza ROZMIESZCZENIE bez profilu dostał naprawę albo zrzuty: %s" % out)
+        s = Udawane()
+        profil = {"przod": {"przod": ["Szczeka_Geo", "Szczeka"], "tyl": ["Tulow_Geo", "Tulow"]},
+                  "rozmieszczenie": {"poz": (0.0, 0.0), "patrz": (0.0, 1.0)}, "zrzut_skala": 2.0}
+        zw = []
+        kod, out = uruchom(s, "--asset", "998", modul="lasowy", profil=profil, zwrot=zw)
+        kamery = [a["camera_position"] for n, a in s.wywolania if n == "screen_capture"]
+        nowe = [[3.25 + (-math.sin(b)) * o * 2, 11.0, math.cos(b) * o * 2] for o, b in ((11.0, 0.35), (9.0, -0.6))]
+        sprawdz(kod == 0 and len(s.naprawiane) == 1 and len(kamery) == 2
+                and all(abs(x - y) < 1e-9 for k1, k2 in zip(kamery, nowe) for x, y in zip(k1, k2)),
+                "S: profil — naprawa i kamera ×2: kod %s, kamery %r: %s" % (kod, kamery, out))
+        sprawdz(s.kody_kontroli and all('"Szczeka_Geo"' in x and '"LeftUpperArm"' in x and '"LeftFoot"' not in x
+                                        for x in s.kody_kontroli), "S: punkty przodu z profilu w kodzie KONTROLA")
+        sprawdz(zw and zw[0]["modul"] == "lasowy" and os.path.isfile(os.path.join(ri.STAN_DIR, "import_lasowy_fbx.json")),
+                "S: wynik modułu z profilem: %r" % zw)
+
+        # T) kontener cudzy (bez atrybutu Wygenerowane) albo dwa o tej samej nazwie: stop przed wgraniem, zero POST,
+        #    bez pliku stanu; kod KTO liczy kontenery i czyta atrybut (15.11)
+        sprawdz("kontenerow = ile" in ri.KTO and 'GetAttribute("Wygenerowane")' in ri.KTO, "T: KTO bez kontroli kontenera")
+        for dodatki, opis in (({"kontenerow": 1, "wygenerowane": False}, "bez atrybutu"),
+                              ({"kontenerow": 2, "wygenerowane": True}, "dwa kontenery")):
+            wyczysc()
+            s = Udawane()
+            s.kto_dodatki = dodatki
+            s.chmura = lambda arg: (_ for _ in ()).throw(AssertionError("T: zapytanie do chmury przy cudzym kontenerze"))
+            kod, out = uruchom(s, "--tak-wgraj")
+            sprawdz(kod != 0 and ile_post(s) == 0 and stan() is None and "cudzej pracy" in out,
+                    "T: kontener %s: kod %s, POST %d: %s" % (opis, kod, ile_post(s), out[-300:]))
+        s = Udawane()
+        s.kto_dodatki = {"kontenerow": 1, "wygenerowane": True}
+        sprawdz(uruchom(s, "--asset", "999")[0] == 0, "T: własny kontener z polami KTO nie przechodzi")
     finally:
         (ri.WYNIK, ri.STAN_DIR, ri.OPERACJA_MAX, ri.OPERACJA_CO, ri.MODERACJA_MAX, ri.MODERACJA_CO) = stare
         shutil.rmtree(tmp, ignore_errors=True)
