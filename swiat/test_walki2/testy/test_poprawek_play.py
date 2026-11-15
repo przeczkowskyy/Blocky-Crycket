@@ -90,7 +90,9 @@ def kadr(s):
 
 
 def napisy(s):
-    return json.loads(s.steruj('"napisy"'))
+    """Napisy tego trafienia: widoczne i czekające w kolejce przy postaci (od 15.11 napisy wchodzą po kolei)."""
+    d = json.loads(s.steruj('"napisy"'))
+    return (d.get("napisy") or []) + (d.get("czekajace") or [])
 
 
 def ocen_kadr(k, atak, cel):

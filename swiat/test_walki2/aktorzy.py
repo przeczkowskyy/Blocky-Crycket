@@ -107,6 +107,14 @@ AKTORZY = [
          {"kosci": ["Kula"], "klatki": [[21, 0.0], [31, 1.0], [32, 0.0]], "luk": 1.2},
          # kałuża stoi kl. 31–65 (w kl. 30 i 66 jest w schowku w podstawie)
          {"kosci": ["Plusk"], "klatki": [[30, 0.0], [31, 1.0], [65, 1.0], [66, 0.0]]}]},
+     # brzuszki schowane tuż pod ścianą (0,03 studa): na rigu z klocków prześwitywały jak soczewki — widoczne dopiero,
+     # gdy klip wysuwa je na zewnątrz o więcej niż próg (kierunek w układzie kości Cialo, przód rigu = −Z)
+     "chowane": {"BokL": ((-1, 0, 0), 0.05), "BokP": ((1, 0, 0), 0.05), "Przod": ((0, 0, -1), 0.05),
+                 "Tyl": ((0, 0, 1), 0.05)},
+     # galareta i kropelki: materiał Glass na rigu z klocków jest ciemny i szklisty (z przodu prawie butelkowy) —
+     # w prototypie gładki plastik i jaśniejsza, soczysta zieleń jak na renderach (plik modelu bez zmian)
+     "wyglad_roblox": {"materialy": {"Glass": ("SmoothPlastic", 0.0)},
+                       "kolory": {"7EDB57": "8CE865", "B4F07F": "BDF58F"}},
      "zastepcze_klipy": []},
     {"klucz": "cierniowy_wilk", "rola": "przeciwnik", "nazwa": "Cierniowy Wilk", "model": "cierniowy_wilk", "przerobka": None,
      "zastepczy": None, "kolory": {},

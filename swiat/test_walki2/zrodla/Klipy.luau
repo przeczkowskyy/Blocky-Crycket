@@ -9,6 +9,9 @@
 
 	Skóra (dane.skora): bryły skórowane na dwóch kościach (galareta Leśnego Slime'a) mają SpecialMesh, który odtwarzacz
 	co klatkę przesuwa i rozciąga w pionie (opis przy przygotujSkory) — inaczej galareta nie zgniatałaby się wcale.
+	Bryły schowane (dane.chowane: brzuszki slime'a tuż pod ścianą galarety): póki klip nie wysuwa kości na zewnątrz
+	(przesunięcie wzdłuż kierunku z danych ≤ próg i bez obrotu), są lokalnie niewidoczne — na rigu z klocków prześwitywały
+	przez ścianę jak obce soczewki.
 
 	Model musi mieć: zakotwiczony korzeń (HumanoidRootPart), części kości jako bezpośrednie dzieci modelu
 	(nazwy jak w danych) i w każdej z nich jej Motor6D do rodzica. NIE może mieć Animatora, który grałby swoje ścieżki
@@ -29,6 +32,8 @@
 			opcje.przejsciePotem  s przejścia do „potem” (domyślnie jak przejscie)
 			opcje.wydluz     studs — kości z dane.wydluzenia[nazwa] (bańka, kałuża, korzenie) sięgają o tyle dalej
 			                 do przodu (efekt z klipu trafia w cel, który stoi dalej niż w klipie)
+			opcje.odcinki    { { od = s, ["do"] = s, predkosc = p }, … } — w tych przedziałach CZASU KLIPU tor gra z
+			                 własną prędkością (np. lot bańki kwasu wolniej, żeby było go widać); poza nimi predkosc
 		o:zatrzymaj(przejscie?)        wszystkie tory wygasają do pozy zerowej (spoczynek klocków)
 		o:poza(nazwa, czas)            natychmiastowa poza: klip zatrzymany w chwili czas (do zrzutów klatek)
 		o:ustawNakladke(kosc, cf|nil)  dodatkowy obrót/przesunięcie kości PO klipie (ruch proceduralny: garda,
@@ -151,16 +156,20 @@ local function przygotujSkory(model: Model, dane)
 	return wynik
 end
 
-local function zastosujSkory(skory, pozy: { [number]: CFrame })
+-- zwraca najmniejszą wysokość skóry względem spoczynku (1 = spoczynek, 0,2 = kałuża)
+local function zastosujSkory(skory, pozy: { [number]: CFrame }): number
+	local najnizej = 1
 	for _, s in skory do
 		local cf = pozy[s.gora]
 		local t = if cf then cf.Position else Vector3.zero
 		local rozciag = t.Y / math.max(1e-3, s.y1 - s.y0)
+		najnizej = math.min(najnizej, 1 + rozciag)
 		for _, b in s.bryly do
 			b.siatka.Offset = b.przesuniecie + b.rel:VectorToObjectSpace(t * b.waga)
 			b.siatka.Scale = b.skala * (Vector3.one + b.osPionu * rozciag)
 		end
 	end
+	return najnizej
 end
 
 local function zerujSkory(skory)
@@ -169,6 +178,57 @@ local function zerujSkory(skory)
 			if b.siatka.Parent then
 				b.siatka.Offset = b.przesuniecie
 				b.siatka.Scale = b.skala
+			end
+		end
+	end
+end
+
+------------------------------------------------------------------ bryły schowane (brzuszki tuż pod ścianą)
+-- dane.chowane = { { indeks kości, { x, y, z } kierunek na zewnątrz (układ rodzica), próg w studach }, … }
+local function przygotujChowane(model: Model, dane)
+	local wynik = {}
+	for _, w in dane.chowane or {} do
+		local kosc = model:FindFirstChild(dane.kosci[w[1]][1])
+		if kosc then
+			local czesci = {}
+			for _, c in model:GetDescendants() do
+				if c:IsA("BasePart") then
+					local wc = c:FindFirstChildOfClass("WeldConstraint")
+					if wc and wc.Part0 == kosc then
+						table.insert(czesci, c)
+					end
+				end
+			end
+			table.insert(wynik, { idx = w[1], kier = Vector3.new(w[2][1], w[2][2], w[2][3]), prog = w[3] or 0.05,
+				czesci = czesci, schowane = nil })
+		end
+	end
+	return wynik
+end
+
+--[[ Brzuszek wysunięty z galarety (pacnięcie) jest widoczny od razu. Brzuszek OBRÓCONY (płat kałuży w upadku)
+	pojawia się dopiero, gdy galareta jest już rozlana: przegląd 15.11 — płaty wychodziły na ścianę stojącego jeszcze
+	sześcianu jako zielone soczewki. Przezroczystość płata rośnie od wysokości skóry 0,42 (widoczny) do 0,62 (schowany); w klipie upadku
+	galareta jest niżej niż 0,62 od kl. 33, a płaty są całe widoczne od kl. 37 (kałuża 0,19). ]]
+local function zastosujChowane(chowane, pozy: { [number]: CFrame }, wysokoscSkory: number)
+	for _, s in chowane do
+		local cf = pozy[s.idx] or ID
+		local obrocone = cf.LookVector:Dot(Vector3.new(0, 0, -1)) < 0.999 or cf.UpVector.Y < 0.999
+		local wysuniete = cf.Position:Dot(s.kier) > s.prog
+		local krycie
+		if obrocone then
+			krycie = math.clamp((wysokoscSkory - 0.42) / 0.2, 0, 1)
+		elseif wysuniete then
+			krycie = 0
+		else
+			krycie = 1
+		end
+		krycie = math.floor(krycie * 20 + 0.5) / 20
+		if s.krycie ~= krycie then
+			s.krycie = krycie
+			s.schowane = krycie >= 1
+			for _, c in s.czesci do
+				c.LocalTransparencyModifier = krycie
 			end
 		end
 	end
@@ -253,6 +313,7 @@ function Klipy.nowy(model: Model, dane, opcje: any?)
 	end
 	self.wydluzenia = dane.wydluzenia or {}
 	self.skory = przygotujSkory(model, dane)
+	self.chowane = przygotujChowane(model, dane)
 	self.tory = {} -- najstarszy pierwszy
 	self.nakladki = {} -- indeks kości -> CFrame
 	self.tempo = 1
@@ -296,7 +357,36 @@ local function nowyTor(klip, opcje)
 	t.potem = opcje.potem
 	t.przejsciePotem = opcje.przejsciePotem
 	t.wydluz = if type(opcje.wydluz) == "number" and opcje.wydluz ~= 0 then opcje.wydluz else nil
+	t.odcinki = if type(opcje.odcinki) == "table" and #opcje.odcinki > 0 then opcje.odcinki else nil
 	return t
+end
+
+-- czas klipu po upływie `budzet` sekund (przy tempie 1), gdy tor ma odcinki z własną prędkością
+local function czasZOdcinkami(t, budzet: number): number
+	local c = t.czas
+	for _ = 1, 12 do
+		if budzet <= 0 or c >= t.dlugosc then
+			break
+		end
+		local p, granica = t.predkosc, t.dlugosc
+		for _, o in t.odcinki do
+			if c >= o.od and c < o["do"] then
+				p = o.predkosc
+				granica = math.min(granica, o["do"])
+			elseif o.od > c then
+				granica = math.min(granica, o.od)
+			end
+		end
+		local potrzeba = (granica - c) / math.max(p, 1e-4)
+		if budzet >= potrzeba then
+			c = granica
+			budzet -= potrzeba
+		else
+			c += budzet * p
+			budzet = 0
+		end
+	end
+	return c
 end
 
 -- przejście: nowy tor rośnie 0 → 1, a wszystkie stare gasną 1 → 0 w tym samym czasie
@@ -399,6 +489,9 @@ function Klipy:krok(dt: number)
 		if krok ~= 0 then
 			local przed = t.czas
 			local nowy = przed + krok
+			if t.odcinki and not t.petla then
+				nowy = czasZOdcinkami(t, dt * self.tempo)
+			end
 			if t.petla then
 				local zawinal = t.dlugosc > 0 and nowy >= t.dlugosc
 				local koniec = nowy
@@ -500,8 +593,18 @@ function Klipy:zastosuj()
 	for idx, staw in self.stawy do
 		staw.Transform = koncowe[idx]
 	end
+	local wysokoscSkory = 1
 	if #self.skory > 0 then
-		zastosujSkory(self.skory, koncowe)
+		wysokoscSkory = zastosujSkory(self.skory, koncowe)
+		-- do testów (zaokrąglona, żeby nie zmieniać atrybutu co klatkę)
+		local w = math.floor(wysokoscSkory * 50 + 0.5) / 50
+		if self.ostatniaWysokosc ~= w then
+			self.ostatniaWysokosc = w
+			self.model:SetAttribute("WysokoscSkory", w)
+		end
+	end
+	if #self.chowane > 0 then
+		zastosujChowane(self.chowane, koncowe, wysokoscSkory)
 	end
 end
 

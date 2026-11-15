@@ -112,6 +112,15 @@ local IKONY = {
 		paleta = { Y = "#FFD23F", y = "#E79A12", K = "#17121F", W = "#FFFFFF" },
 		mapa = { "........", "..YYYY..", ".YWWWWY.", "YWWKKWWY", "YWKKKKWY", ".YWWWWY.", "..YYYY..", "........" },
 	},
+	-- przycisk dźwięku: głośnik i głośnik z czerwonym krzyżykiem (wyciszone)
+	glosnik = {
+		paleta = { W = "#FFFFFF", Y = "#FFD23F" },
+		mapa = { "....W...", "...WW.Y.", "WWWWW..Y", "WWWWW..Y", "WWWWW..Y", "WWWWW..Y", "...WW.Y.", "....W..." },
+	},
+	cisza = {
+		paleta = { W = "#C9CED6", R = "#E8364F" },
+		mapa = { "....W...", "...WW...", "WWWWWR.R", "WWWWW.R.", "WWWWWR.R", "WWWWW...", "...WW...", "....W..." },
+	},
 	-- łup
 	moneta = {
 		paleta = { Y = "#FFD23F", O = "#E79A12", W = "#FFF3B0", D = "#8A5A0A" },
@@ -234,6 +243,14 @@ function Interfejs.nowy(playerGui: Instance, Ustawienia: any)
 	self.obrysy = {} :: { [UIStroke]: number }
 	self.skalaObrysu = 1
 	self.napisy = {}
+	self.kolejkaNapisow = {}
+	self.ostatnieWejscie = {}
+	self.trybNapisow = {}
+	self.skalaStosu = {}
+	self.kotwice = {}
+	self.zegarNapisow = 0
+	self.skalaZycia = 1
+	self.statNapisow = { maksNaraz = 0, nakladania = 0, naCelu = 0, naInnym = 0, naGlowie = 0, pokazane = 0 }
 	self.polaczenia = {} :: { RBXScriptConnection }
 	self.paski = {}
 	self.wspolczynnikPasa = 1
@@ -260,6 +277,7 @@ function Interfejs.nowy(playerGui: Instance, Ustawienia: any)
 	self:_zbudujUmiejetnosc()
 	self:_zbudujPomin()
 	self:_zbudujTempo()
+	self:_zbudujDzwiek()
 	self:_zbudujWynik()
 
 	self.zegar = self:_tekst(self.kadr, {
@@ -569,6 +587,48 @@ function Interfejs:_zbudujTempo()
 	self.tempoPas = pas
 end
 
+-- przycisk wyciszenia (obok POMIŃ, od strony środka; wstęga umiejętności na dole telefonu kończy się przed nim)
+function Interfejs:_zbudujDzwiek()
+	local uchwyt, p = self:_przycisk(self.kadr, "Dzwiek", "", self.K.niebieski, {
+		AnchorPoint = Vector2.new(1, 1), Position = UDim2.fromScale(0.772, 0.955), Size = UDim2.fromScale(0.068, 0.115),
+		Rotation = 2, ZIndex = 40,
+	})
+	uchwyt.Visible = false
+	self.dzwiek = uchwyt
+	self.dzwiekPrzycisk = p
+	self:ustawDzwiek(false)
+end
+
+function Interfejs:ustawDzwiek(wyciszone: boolean)
+	local p = self.dzwiekPrzycisk
+	local stara = p:FindFirstChild("Ikona")
+	if stara then
+		stara:Destroy()
+	end
+	local ikona = self:_ikona(p, if wyciszone then "cisza" else "glosnik", 0.2)
+	ikona.ZIndex = p.ZIndex + 2
+	for _, d in ikona:GetDescendants() do
+		if d:IsA("GuiObject") then
+			d.ZIndex = p.ZIndex + 2
+		end
+	end
+	p.BackgroundColor3 = if wyciszone then self.K.szary else self.K.niebieski
+	p:SetAttribute("Wyciszone", wyciszone)
+end
+
+function Interfejs:pokazDzwiek(wyciszone: boolean, naZmiane: () -> ())
+	self.dzwiek.Visible = true
+	if self.polaczenieDzwieku then
+		self.polaczenieDzwieku:Disconnect()
+	end
+	self.polaczenieDzwieku = self.dzwiekPrzycisk.Activated:Connect(naZmiane)
+	self:ustawDzwiek(wyciszone)
+end
+
+function Interfejs:ukryjDzwiek()
+	self.dzwiek.Visible = false
+end
+
 function Interfejs:_zbudujWynik()
 	local K = self.K
 	local uchwyt = self:_nowy("Frame", {
@@ -756,8 +816,23 @@ function Interfejs:ukryjUmiejetnosc()
 	self.umiejetnosc.Visible = false
 end
 
---[[ Komiksowy napis nad postacią. styl: zadane, otrzymane, magiczne, blok, unik, krytyk, krytykLiczba, efekt (kolor
-	z argumentu), info (mały). Pozycja śledzi punkt w świecie. ]]
+--[[ Komiksowe napisy przy postaciach (styl: zadane, otrzymane, magiczne, blok, unik, krytyk, krytykLiczba, efekt —
+	kolor z argumentu, tyk, info).
+
+	Kolejka i stos (poprawka D3 z 15.11, po przeglądzie przebudowane): przy jednej postaci (klucz = strona) widać
+	NAJWYŻEJ 3 napisy naraz; kolejne czekają w kolejce i wchodzą co najmniej co ODSTEP_NAPISOW sekund (liczby obrażeń
+	mają pierwszeństwo — gdy czekają dłużej niż 0,3 s, najstarszy inny napis gaśnie wcześniej). Napisy jednej postaci
+	stoją w stosie w kolejności wejścia (nowy na końcu, nikt się nie przesuwa); miejsce w stosie liczy się z
+	NARYSOWANEGO rozmiaru (obrót, gwiazda „KRYTYK!” w każdym obrocie, obrys, powiększenie przy wejściu) i zwalnia się
+	dopiero, gdy napis całkiem zgaśnie — wtedy dalsze napisy dojeżdżają płynnie, ale nigdy nie wchodzą na poprzedni.
+	Miejsce całego stosu wybiera ocena kandydatów (`_miejsceStosu`): nad postacią, obok niej, pod nią, a przy dużym
+	celu także na sylwetce przy zewnętrznym brzegu — nigdy na własnej małej postaci, na głowie dużej, na tabliczkach,
+	przyciskach i wstędze; drugi stos omija pierwszy. Wiek napisu liczy się w czasie podanym przez odtwarzacz (w testach
+	poklatkowych — w czasie sceny przeliczonym na ×1, więc arkusze i filmy pokazują to samo co gra). ]]
+local MAKS_NAPISOW = 3
+local ODSTEP_NAPISOW = 0.12
+local NADMIAR_WEJSCIA = 1.08 -- największe powiększenie napisu w animacji wejścia (miejsce w stosie liczone z nim)
+local LICZBY = { zadane = true, otrzymane = true, magiczne = true, krytykLiczba = true, tyk = true }
 local STYLE = {
 	zadane = { kolor = "#FFFFFF", rozmiar = 0.12, zycie = 0.95 },
 	otrzymane = { kolor = "#FF8A9A", rozmiar = 0.11, zycie = 0.95 },
@@ -770,24 +845,104 @@ local STYLE = {
 	tyk = { kolor = "#FFFFFF", rozmiar = 0.09, zycie = 0.8 },
 	info = { kolor = "#E3E7EC", rozmiar = 0.06, zycie = 0.9 },
 }
+Interfejs.LICZBY = LICZBY
 
-function Interfejs:napis(punkt: Vector3, tekst: string, styl: string, przesuniecie: Vector2?, obrot: number?, kolor: Color3?)
+--[[ Rozmiar napisu w stosie (ułamki wysokości kadru): prostokąt po obrocie napisu, gwiazda „KRYTYK!” w każdym
+	obrocie (kwadrat 1,15 wysokości kręci się → przekątna 1,63), obrys i cień tekstu, powiększenie w animacji
+	wejścia. Przegląd 15.11: stos liczony z samych prostokątów tekstu — gwiazda i wejście nachodziły na sąsiadów. ]]
+local function rozmiarNapisu(szer: number, wys: number, obrot: number, gwiazda: boolean): (number, number)
+	local a = math.rad(math.abs(obrot))
+	local w = szer * math.cos(a) + wys * math.sin(a)
+	local h = szer * math.sin(a) + wys * math.cos(a)
+	if gwiazda then
+		local s = 1.15 * wys * math.sqrt(2)
+		w, h = math.max(w, s), math.max(h, s)
+	end
+	return (w + 0.014) * NADMIAR_WEJSCIA, (h + 0.014) * NADMIAR_WEJSCIA
+end
+
+-- szerokość tekstu w czcionce napisów jako ułamek jego wysokości (z pamięcią: te same napisy wracają co walkę)
+local TextService = game:GetService("TextService")
+local szerokosci = {}
+local function szerokoscTekstu(tekst: string): number
+	local w = szerokosci[tekst]
+	if w then
+		return w
+	end
+	local ok, v = pcall(function()
+		return TextService:GetTextSize(tekst, 100, KOMIKS, Vector2.new(10000, 10000))
+	end)
+	w = if ok and v then v.X / 100 else 0.6 * (utf8.len(tekst) or #tekst)
+	szerokosci[tekst] = w
+	return w
+end
+
+-- napis do kolejki; klucz = postać, przy której stoi ("gracz" / "wrog"); przesuniecie zostaje dla zgodności (stos
+-- układa się sam)
+function Interfejs:napis(punkt: Vector3, tekst: string, styl: string, _przesuniecie: Vector2?, obrot: number?, kolor: Color3?, klucz: string?)
 	local def = STYLE[styl] or STYLE.zadane
-	local K = self.K
+	self.licznikNapisow = (self.licznikNapisow or 0) + 1
 	local wys = def.rozmiar
-	-- kilka napisów naraz nad tą samą postacią (cios + efekt + tarcza): każdy kolejny niżej, żeby się nie nakładały
-	local zajete = 0
+	-- szerokość z prawdziwej szerokości tekstu w tej czcionce (Bangers ma ok. 0,37 wysokości na znak; wcześniej
+	-- 0,6 na znak — stos rezerwował o 60% za szerokie miejsce i długie napisy efektów nie mieściły się obok celu)
+	local naWys = szerokoscTekstu(tekst)
+	local szer = def.rozmiar * math.max(1.2, naWys * 1.12)
+	-- długi napis obraca się mniej: obrócony prostokąt „ZDARTY PANCERZ!” byłby wysoki jak dwa napisy
+	local maksObrot = math.min(8, math.deg(math.asin(math.clamp(0.3 * wys / szer, 0, 1))))
+	local o = math.clamp(obrot or 0, -maksObrot, maksObrot)
+	local lw, lh = rozmiarNapisu(szer, wys, o, def.gwiazda == true)
+	table.insert(self.kolejkaNapisow, {
+		punkt = punkt, tekst = tekst, styl = styl, def = def, obrot = o, kolor = kolor, klucz = klucz or "?",
+		prio = if LICZBY[styl] then 3 elseif styl == "krytyk" or styl == "blok" or styl == "unik" then 2 else 1,
+		nr = self.licznikNapisow, czeka = 0, zycie = def.zycie * (self.skalaZycia or 1), wys = wys, szer = szer,
+		lw = lw, lh = lh,
+	})
+	self:_wpuscNapisy()
+end
+
+-- z kolejki na ekran: najwyżej MAKS_NAPISOW przy postaci, kolejne co ODSTEP_NAPISOW; liczby najpierw
+function Interfejs:_wpuscNapisy()
+	local kolejka = self.kolejkaNapisow
+	if #kolejka == 0 then
+		return
+	end
+	local ile = {}
 	for _, n in self.napisy do
-		if n.wiek < n.zycie * 0.75 and (n.punkt - punkt).Magnitude < 2.5 then
-			zajete += 1
+		ile[n.klucz] = (ile[n.klucz] or 0) + 1
+	end
+	local i = 1
+	while i <= #kolejka do
+		local n = kolejka[i]
+		local k = n.klucz
+		local ostatnio = self.ostatnieWejscie[k]
+		local wolno = (ile[k] or 0) < MAKS_NAPISOW and (ostatnio == nil or self.zegarNapisow - ostatnio >= ODSTEP_NAPISOW - 1e-6)
+		if wolno then
+			-- najważniejszy czekający przy tej postaci (liczba przed resztą, potem kolejność)
+			local najlepszy = i
+			for j = i + 1, #kolejka do
+				local m = kolejka[j]
+				if m.klucz == k and m.prio > kolejka[najlepszy].prio then
+					najlepszy = j
+				end
+			end
+			local wybrany = table.remove(kolejka, najlepszy)
+			self:_pokazNapis(wybrany)
+			ile[k] = (ile[k] or 0) + 1
+			self.ostatnieWejscie[k] = self.zegarNapisow
+		else
+			i += 1
 		end
 	end
-	if zajete > 0 then
-		przesuniecie = (przesuniecie or Vector2.zero) + Vector2.new(0, 0.085 * math.min(zajete, 3))
-	end
+end
+
+function Interfejs:_pokazNapis(n)
+	local def = n.def
+	local styl = n.styl
+	local K = self.K
+	local tekst = n.tekst
 	local pole = self:_nowy("Frame", {
 		Name = "Napis_" .. styl, BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0.5),
-		Size = UDim2.fromOffset(100, 100), Rotation = obrot or 0, ZIndex = 20,
+		Size = UDim2.fromOffset(100, 100), Rotation = n.obrot, ZIndex = 20, Visible = false,
 	}, self.warstwaNapisow)
 	local skala = self:_nowy("UIScale", { Scale = 0.2 }, pole)
 	local gwiazda = {}
@@ -808,12 +963,146 @@ function Interfejs:napis(punkt: Vector3, tekst: string, styl: string, przesuniec
 	}, if styl == "info" then 3 else 5)
 	local napis = self:_tekst(pole, {
 		Name = "Tekst", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1, 1),
-		Font = KOMIKS, Text = tekst, TextColor3 = kolor or Color3.fromHex(def.kolor), ZIndex = 22,
+		Font = KOMIKS, Text = tekst, TextColor3 = n.kolor or Color3.fromHex(def.kolor), ZIndex = 22,
 	}, if styl == "info" then 3 else 4.5)
-	table.insert(self.napisy, {
-		pole = pole, skala = skala, cien = cien, napis = napis, gwiazda = gwiazda, punkt = punkt, wiek = 0, zycie = def.zycie,
-		wys = wys, szer = wys * (0.6 * math.max(3, utf8.len(tekst) or #tekst)), przesuniecie = przesuniecie or Vector2.zero,
-	})
+	n.pole, n.skala, n.cien, n.napis, n.gwiazda, n.wiek = pole, skala, cien, napis, gwiazda, 0
+	self.licznikWejsc = (self.licznikWejsc or 0) + 1
+	n.wejscie = self.licznikWejsc
+	table.insert(self.napisy, n)
+	self.statNapisow.pokazane += 1
+end
+
+--[[ Miejsce stosu napisów jednej postaci (przegląd 15.11: stos nad postacią albo obok niej i wyjątek „duży cel”
+	przykrywały głowę Strażnika, małego wilka i siebie nawzajem). Kandydaci: nad postacią, obok (dalej / bliżej
+	przeciwnika), pod nią, a przy dużym celu także na jego sylwetce przy zewnętrznym brzegu — każdy w kilku miejscach.
+	Ocena kandydata (mniej = lepiej):
+	  • twarde (bardzo drogie): poza kadrem, na tabliczkach, przyciskach i wstędze, na drugim stosie, na własnej
+	    postaci, gdy jest mała (< 40% wysokości kadru), na głowie postaci (prostokąt górnej części), na małym przeciwniku;
+	  • miękkie: odległość od postaci, nachodzenie na dużego przeciwnika i na własną sylwetkę dużego celu, zmiana
+	    miejsca względem poprzedniej klatki (stos nie skacze), „pod” i „na” trochę gorsze od „nad” i „obok”.
+	Wynik: prostokąt stosu, kierunek wzrostu (−1 w górę od postaci, +1 w dół) i klucz miejsca. ]]
+local function pole2(a, b): number
+	local w = math.min(a.x1, b.x1) - math.max(a.x0, b.x0)
+	local h = math.min(a.y1, b.y1) - math.max(a.y0, b.y0)
+	if w <= 0 or h <= 0 then
+		return 0
+	end
+	return w * h
+end
+Interfejs.wspolnePole = pole2
+
+function Interfejs:_zakazane()
+	local kadr = self.kadrPx
+	local wynik = {}
+	local function dodaj(x0, y0, x1, y1)
+		table.insert(wynik, { x0 = kadr.x + kadr.sz * x0, y0 = kadr.y + kadr.wys * y0, x1 = kadr.x + kadr.sz * x1, y1 = kadr.y + kadr.wys * y1 })
+	end
+	local g = (self.gornyMargines or 0.045) - 0.045
+	if self.paski.gracz and self.paski.gracz.tabliczka.Visible then
+		dodaj(0, 0, 0.43, 0.27 + g) -- tabliczka gracza z rangą i ikonami efektów
+		dodaj(0.57, 0, 1, 0.27 + g) -- tabliczka przeciwnika
+		dodaj(0.43, 0, 0.57, 0.225 + g) -- VS i licznik tury
+	end
+	if self.umiejetnosc and self.umiejetnosc.Visible then
+		if self.wstegaNaDole then
+			dodaj(0.31, 0.85, 0.69, 1)
+		else
+			dodaj(0.26, 0.225 + g, 0.74, 0.32 + g)
+		end
+	end
+	if self.baner and self.baner.Visible then
+		dodaj(0.08, 0.2, 0.92, 0.44)
+	end
+	dodaj(0, 0.835, 1, 1) -- przyciski tempa, dźwięku i POMIŃ
+	return wynik
+end
+
+function Interfejs:_miejsceStosu(klucz: string, W: number, Hs: number, R, O, przeszkody, poprzedni: string?)
+	local kadr = self.kadrPx
+	local kw = kadr.wys
+	local odstep = math.max(4, kw * 0.014)
+	local L, P = kadr.x + 4, kadr.x + kadr.sz - 4
+	local T, B = kadr.y + kw * 0.04, kadr.y + kw * 0.98
+	local Rh = R.y1 - R.y0
+	local duzy = Rh >= kw * 0.4
+	local cx, cy = (R.x0 + R.x1) / 2, (R.y0 + R.y1) / 2
+	local dalej = "lewo"
+	if O and (O.x0 + O.x1) / 2 < cx then
+		dalej = "prawo"
+	end
+	local G = R.glowa
+	local OG = O and O.glowa
+	local oMaly = O and (O.y1 - O.y0) < kw * 0.4
+	local najlepszy, najKoszt, najKlucz, najKier = nil, math.huge, nil, -1
+	local poprzKoszt, poprzProst, poprzKier = nil, nil, nil
+	local function ocen(nazwa: string, x: number, y: number, kier: number, kara: number)
+		x = math.clamp(x, L, math.max(L, P - W))
+		y = math.clamp(y, T, math.max(T, B - Hs))
+		local p = { x0 = x, y0 = y, x1 = x + W, y1 = y + Hs }
+		local pp = W * Hs
+		local twarde = 0
+		for _, z in przeszkody do
+			twarde += pole2(p, z) / pp * (z.waga or 1000)
+		end
+		if not duzy then
+			twarde += pole2(p, R) / pp * 100
+		elseif G then
+			twarde += pole2(p, G) / math.max(1, (G.x1 - G.x0) * (G.y1 - G.y0)) * 100
+		end
+		local miekkie = 0
+		if O then
+			if oMaly then
+				twarde += pole2(p, O) / pp * 30
+			else
+				miekkie += pole2(p, O) / pp * 2
+				if OG then
+					twarde += pole2(p, OG) / math.max(1, (OG.x1 - OG.x0) * (OG.y1 - OG.y0)) * 30
+				end
+			end
+		end
+		if duzy then
+			miekkie += pole2(p, R) / pp * 1.2
+		end
+		-- odległość stosu od postaci (0 = przylega)
+		local dx = math.max(R.x0 - p.x1, 0, p.x0 - R.x1)
+		local dy = math.max(R.y0 - p.y1, 0, p.y0 - R.y1)
+		miekkie += math.sqrt(dx * dx + dy * dy) / kw * 2.5
+		miekkie += kara
+		local koszt = twarde + miekkie
+		if nazwa == poprzedni then
+			poprzKoszt, poprzProst, poprzKier = koszt, p, kier
+		end
+		if koszt < najKoszt then
+			najlepszy, najKoszt, najKlucz, najKier = p, koszt, nazwa, kier
+		end
+	end
+	local xs = { cx - W / 2, R.x0, R.x1 - W, cx - W, cx }
+	for i, x in xs do
+		ocen("nad" .. i, x, R.y0 - odstep - Hs, -1, 0)
+		ocen("pod" .. i, x, R.y1 + odstep, 1, 0.12)
+	end
+	local ys = { R.y0 + Rh * 0.08, cy - Hs / 2, R.y1 - Hs, R.y0 - Hs * 0.5 }
+	for i, y in ys do
+		ocen("prawo" .. i, R.x1 + odstep, y, 1, if dalej == "prawo" then 0 else 0.06)
+		ocen("lewo" .. i, R.x0 - odstep - W, y, 1, if dalej == "lewo" then 0 else 0.06)
+	end
+	if duzy then
+		local yG = if G then G.y1 + odstep else R.y0 + Rh * 0.3
+		for i, y in { yG, cy - Hs / 2, R.y1 - Hs - Rh * 0.08 } do
+			local x = if dalej == "prawo" then R.x1 - W - Rh * 0.02 else R.x0 + Rh * 0.02
+			ocen("na" .. i, x, y, 1, 0.3)
+		end
+	end
+	-- stabilność: zostań na poprzednim miejscu, gdy jest prawie tak dobre (bez twardych kar)
+	if poprzKoszt and poprzKoszt < 1 and poprzKoszt <= najKoszt + 0.25 then
+		return poprzProst, poprzKier, poprzedni, poprzKoszt
+	end
+	return najlepszy, najKier, najKlucz, najKoszt
+end
+
+-- kotwice napisów: prostokąty postaci na ekranie (piksele) — ustawia odtwarzacz co klatkę
+function Interfejs:ustawKotwice(kotwice)
+	self.kotwice = kotwice
 end
 
 function Interfejs:pokazBaner(tekst: string, kolorNapisu: Color3, kolorWstegi: Color3, wysokosc: number?)
@@ -1007,9 +1296,260 @@ function Interfejs:usunNapisy()
 		n.pole:Destroy()
 	end
 	table.clear(self.napisy)
+	table.clear(self.kolejkaNapisow)
+	table.clear(self.ostatnieWejscie)
+	table.clear(self.trybNapisow)
+	table.clear(self.skalaStosu)
 end
 
-function Interfejs:aktualizuj(dt: number, kamera: Camera)
+-- statystyki napisów do testów (zerowane na początku walki)
+function Interfejs:zerujStatystykiNapisow()
+	self.statNapisow = { maksNaraz = 0, nakladania = 0, naCelu = 0, naInnym = 0, naGlowie = 0, pokazane = 0 }
+end
+
+-- napisy: kolejka, wiek, stos przy kotwicy, zanik; dtNapisow = czas napisów (domyślnie dt)
+function Interfejs:_aktualizujNapisy(dtNapisow: number, kamera: Camera)
+	self.zegarNapisow += dtNapisow
+	-- liczby czekające w kolejce dłużej niż 0,3 s: najstarszy inny napis przy tej postaci gaśnie wcześniej
+	for _, q in self.kolejkaNapisow do
+		q.czeka += dtNapisow
+		if q.czeka > 0.3 then
+			local ofiara = nil
+			for _, n in self.napisy do
+				if n.klucz == q.klucz and n.wiek < n.zycie * 0.74 and (n.prio < q.prio or q.czeka > 0.6)
+					and (ofiara == nil or n.nr < ofiara.nr) then
+					ofiara = n
+				end
+			end
+			if ofiara then
+				ofiara.wiek = ofiara.zycie * 0.74
+			end
+		end
+	end
+	-- wiek i koniec życia (miejsce w stosie zwalnia się dopiero, gdy napis całkiem zgaśnie)
+	for i = #self.napisy, 1, -1 do
+		local n = self.napisy[i]
+		n.wiek += dtNapisow
+		if n.wiek >= n.zycie then
+			n.pole:Destroy()
+			table.remove(self.napisy, i)
+		end
+	end
+	self:_wpuscNapisy()
+	if #self.napisy == 0 then
+		self.prostokatyNapisow = {}
+		return
+	end
+	local kadr = self.kadrPx
+	local kw = kadr.wys
+	local odstep = math.max(4, kw * 0.014)
+	-- grupy przy postaciach, w kolejności wejścia (nowy napis idzie na koniec stosu — nikt się nie przesuwa)
+	local grupy = {}
+	for _, n in self.napisy do
+		grupy[n.klucz] = grupy[n.klucz] or {}
+		table.insert(grupy[n.klucz], n)
+	end
+	local kolejnosc = {}
+	for klucz, lista in grupy do
+		table.sort(lista, function(a, b)
+			return a.wejscie < b.wejscie
+		end)
+		local prio = 0
+		for _, n in lista do
+			prio = math.max(prio, n.prio)
+		end
+		table.insert(kolejnosc, { klucz = klucz, lista = lista, prio = prio })
+		self.statNapisow.maksNaraz = math.max(self.statNapisow.maksNaraz, #lista)
+	end
+	-- najpierw stos z liczbą obrażeń (cel), drugi omija pierwszy
+	table.sort(kolejnosc, function(a, b)
+		if a.prio ~= b.prio then
+			return a.prio > b.prio
+		end
+		return a.klucz < b.klucz
+	end)
+	local przeszkody = self:_zakazane()
+	local stosy = {}
+	for _, g in kolejnosc do
+		local klucz, lista = g.klucz, g.lista
+		local R = self.kotwice[klucz]
+		if not R then
+			-- bez kotwicy (np. stary klucz): mały prostokąt w punkcie napisu
+			local e = kamera:WorldToViewportPoint(lista[1].punkt)
+			R = { x0 = e.X - 10, y0 = e.Y - 10, x1 = e.X + 10, y1 = e.Y + 10, widac = e.Z > 0 }
+		end
+		local O = nil
+		for k2, r2 in self.kotwice do
+			if k2 ~= klucz then
+				O = r2
+			end
+		end
+		-- przesunięcia napisów wzdłuż stosu (od strony postaci): po zgaśnięciu napisu dalsze dojeżdżają płynnie, ale
+		-- nigdy nie wchodzą na poprzedni (pchnięcie w pętli); stos zajmuje tyle, ile sięga ostatni (także w dojeździe)
+		local wygladz = 1 - math.exp(-dtNapisow * 14)
+		local skala = 1
+		local function przesuniecia(odNowa: boolean): (number, number)
+			local W, zajete = 0, 0
+			for _, n in lista do
+				local h = n.lh * kw * skala
+				W = math.max(W, n.lw * kw * skala)
+				if n.przes == nil or odNowa then
+					n.przes = zajete
+				else
+					n.przes += (zajete - n.przes) * wygladz
+					n.przes = math.max(n.przes, zajete) -- nie bliżej postaci, niż pozwala poprzedni napis
+				end
+				zajete = n.przes + h + odstep
+			end
+			return W, zajete - odstep
+		end
+		local stare = {}
+		for i, n in lista do
+			stare[i] = n.przes
+		end
+		--[[ Gdy stos nigdzie się nie mieści bez twardej kary (mały cel w rogu kadru, obok tabliczki i przyciski —
+			przegląd 15.11: „KRYTYK!” lądował na małym slimie przy ×4), napisy tej postaci maleją: 0,85, potem 0,7
+			(na telefonie 844 × 390 najmniejszy napis efektu to wtedy ok. 22 punkty). ]]
+		local W, Hs, prost, kier, miejsce
+		for _, sk in { 1, 0.85, 0.7 } do
+			skala = sk
+			for i, n in lista do
+				n.przes = stare[i]
+			end
+			W, Hs = przesuniecia(false)
+			local koszt
+			prost, kier, miejsce, koszt = self:_miejsceStosu(klucz, W, Hs, R, O, przeszkody, self.trybNapisow[klucz])
+			if koszt < 1 then
+				break
+			end
+		end
+		local innaSkala = skala ~= (self.skalaStosu[klucz] or 1)
+		self.skalaStosu[klucz] = skala
+		if miejsce ~= self.trybNapisow[klucz] or innaSkala then
+			-- nowe miejsce stosu: napisy od razu na swoich miejscach (bez przejazdu przez postać)
+			for i, n in lista do
+				n.przes = stare[i]
+			end
+			W, Hs = przesuniecia(true)
+			prost = { x0 = prost.x0, y0 = if kier < 0 then prost.y1 - Hs else prost.y0, x1 = prost.x1,
+				y1 = if kier < 0 then prost.y1 else prost.y0 + Hs }
+		end
+		self.trybNapisow[klucz] = miejsce
+		table.insert(przeszkody, { x0 = prost.x0 - 3, y0 = prost.y0 - 3, x1 = prost.x1 + 3, y1 = prost.y1 + 3, waga = 500 })
+		stosy[klucz] = { lista = lista, prost = prost, kier = kier, R = R, skala = skala }
+	end
+	-- pozycje, skala i zanik; prostokąty NARYSOWANE (z animacją wejścia, obrotem i gwiazdą) do pomiaru
+	local prostokaty = {}
+	for _, s in stosy do
+		local p = s.prost
+		for _, n in s.lista do
+			local h = n.lh * kw * s.skala
+			local cx = (p.x0 + p.x1) / 2
+			local cy = if s.kier < 0 then p.y1 - n.przes - h / 2 else p.y0 + n.przes + h / 2
+			n.x, n.y = cx, cy
+			local wysPx = n.wys * kw * s.skala
+			local szerPx = n.szer * kw * s.skala
+			n.pole.Visible = s.R.widac ~= false
+			n.pole.Position = UDim2.fromOffset(cx, cy)
+			n.pole.Size = UDim2.fromOffset(szerPx, wysPx)
+			local sk
+			if n.wiek < 0.1 then
+				sk = 0.2 + (NADMIAR_WEJSCIA - 0.2) * (n.wiek / 0.1)
+			elseif n.wiek < 0.2 then
+				sk = NADMIAR_WEJSCIA - (NADMIAR_WEJSCIA - 1) * ((n.wiek - 0.1) / 0.1)
+			else
+				sk = 1
+			end
+			n.skala.Scale = sk
+			local zanik = math.clamp((n.wiek / n.zycie - 0.74) / 0.26, 0, 1)
+			if zanik > 0 or n.zanikal then
+				n.zanikal = true
+				n.napis.TextTransparency = zanik
+				n.cien.TextTransparency = zanik
+				for _, d in n.pole:GetDescendants() do
+					if d:IsA("UIStroke") then
+						d.Transparency = zanik
+					elseif d:IsA("Frame") then
+						d.BackgroundTransparency = zanik
+					end
+				end
+			end
+			local obrotGwiazdy = nil
+			for j, g in n.gwiazda do
+				g.Rotation += dtNapisow * (if j == 1 then 40 else -55)
+				obrotGwiazdy = g.Rotation
+			end
+			-- prostokąt narysowany: tekst po obrocie (+ obrys i cień), gwiazda w bieżącym obrocie, skala wejścia
+			local a = math.rad(math.abs(n.obrot))
+			local w = szerPx * math.cos(a) + wysPx * math.sin(a)
+			local hh = szerPx * math.sin(a) + wysPx * math.cos(a)
+			if #n.gwiazda > 0 then
+				local bok = 1.15 * wysPx
+				local maks = 0
+				for _, g in n.gwiazda do
+					local r = math.rad(g.Rotation + n.obrot)
+					maks = math.max(maks, bok * (math.abs(math.cos(r)) + math.abs(math.sin(r))))
+				end
+				w, hh = math.max(w, maks), math.max(hh, maks)
+			end
+			local m = 0.007 * kw
+			w, hh = (w + 2 * m) * sk, (hh + 2 * m) * sk
+			local _ = obrotGwiazdy
+			table.insert(prostokaty, { n = n, x0 = cx - w / 2, y0 = cy - hh / 2, x1 = cx + w / 2, y1 = cy + hh / 2, R = s.R,
+				widoczny = (s.R.widac ~= false) and zanik < 0.9 })
+		end
+	end
+	-- pomiar (D3): nakładanie się narysowanych napisów (także w wejściu i wygaszaniu), napis na małym celu (każdy,
+	-- nie tylko liczba), ułamek głowy dużego celu przykryty napisami
+	local zle = false
+	for i = 1, #prostokaty do
+		local a = prostokaty[i]
+		if a.widoczny then
+			for j = i + 1, #prostokaty do
+				local b = prostokaty[j]
+				if b.widoczny and pole2(a, { x0 = b.x0 + 2, y0 = b.y0 + 2, x1 = b.x1 - 2, y1 = b.y1 - 2 }) > 0 then
+					zle = true
+				end
+			end
+		end
+	end
+	if zle then
+		self.statNapisow.nakladania += 1
+	end
+	local naCelu, naInnym = false, false
+	local glowy = {}
+	for _, p in prostokaty do
+		if p.widoczny then
+			for k, R in self.kotwice do
+				local maly = R.y1 - R.y0 < kw * 0.4
+				if maly and pole2(p, { x0 = R.x0 + 3, y0 = R.y0 + 3, x1 = R.x1 - 3, y1 = R.y1 - 3 }) > 0 then
+					if k == p.n.klucz then
+						naCelu = true
+					else
+						naInnym = true
+					end
+				end
+				if R.glowa and not maly then
+					glowy[k] = (glowy[k] or 0) + pole2(p, R.glowa)
+				end
+			end
+		end
+	end
+	if naCelu then
+		self.statNapisow.naCelu += 1
+	end
+	if naInnym then
+		self.statNapisow.naInnym = (self.statNapisow.naInnym or 0) + 1
+	end
+	for k, pole in glowy do
+		local G = self.kotwice[k].glowa
+		local u = pole / math.max(1, (G.x1 - G.x0) * (G.y1 - G.y0))
+		self.statNapisow.naGlowie = math.max(self.statNapisow.naGlowie or 0, u)
+	end
+	self.prostokatyNapisow = prostokaty
+end
+
+function Interfejs:aktualizuj(dt: number, kamera: Camera, dtNapisow: number?)
 	for _, p in self.paski do
 		if p.pokazane ~= p.cel then
 			p.pokazane += (p.cel - p.pokazane) * math.min(1, dt * 14)
@@ -1034,55 +1574,8 @@ function Interfejs:aktualizuj(dt: number, kamera: Camera)
 			p.tabliczka.Rotation = p.obrotBazowy + math.sin(p.wstrzas * 40) * 2.2 * p.wstrzas
 		end
 	end
-	if #self.napisy > 0 then
-		local kadr = self.kadrPx
-		for i = #self.napisy, 1, -1 do
-			local n = self.napisy[i]
-			n.wiek += dt
-			local u = n.wiek / n.zycie
-			if u >= 1 then
-				n.pole:Destroy()
-				table.remove(self.napisy, i)
-			else
-				local ekran = kamera:WorldToViewportPoint(n.punkt)
-				local wysPx = n.wys * kadr.wys
-				local szerPx = n.szer * kadr.wys
-				local wznios = (0.02 + 0.075 * (1 - (1 - u) * (1 - u))) * kadr.wys
-				local bazaY = math.clamp(ekran.Y - wznios, kadr.y + kadr.wys * 0.42, kadr.y + kadr.wys * 0.74)
-				local x = ekran.X + n.przesuniecie.X * kadr.wys
-				-- nie wyżej niż pod wstęgą z nazwą umiejętności
-				local y = math.max(bazaY + n.przesuniecie.Y * kadr.wys, kadr.y + kadr.wys * (self.gornaGranicaNapisow or 0.33) + wysPx * 0.5)
-				x = math.clamp(x, kadr.x + szerPx * 0.5 + 6, kadr.x + kadr.sz - szerPx * 0.5 - 6)
-				n.pole.Visible = ekran.Z > 0
-				n.pole.Position = UDim2.fromOffset(x, y)
-				n.pole.Size = UDim2.fromOffset(szerPx, wysPx)
-				local s
-				if n.wiek < 0.1 then
-					s = 0.2 + 1.1 * (n.wiek / 0.1)
-				elseif n.wiek < 0.2 then
-					s = 1.3 - 0.3 * ((n.wiek - 0.1) / 0.1)
-				else
-					s = 1
-				end
-				n.skala.Scale = s
-				local zanik = math.clamp((u - 0.74) / 0.26, 0, 1)
-				if zanik > 0 or n.zanikal then
-					n.zanikal = true
-					n.napis.TextTransparency = zanik
-					n.cien.TextTransparency = zanik
-					for _, d in n.pole:GetDescendants() do
-						if d:IsA("UIStroke") then
-							d.Transparency = zanik
-						elseif d:IsA("Frame") then
-							d.BackgroundTransparency = zanik
-						end
-					end
-				end
-				for j, g in n.gwiazda do
-					g.Rotation += dt * (if j == 1 then 40 else -55)
-				end
-			end
-		end
+	if #self.napisy > 0 or #self.kolejkaNapisow > 0 then
+		self:_aktualizujNapisy(if dtNapisow ~= nil then dtNapisow else dt, kamera)
 	end
 	local w = self.wynik
 	if w.uchwyt.Visible and #w.liczniki > 0 then
@@ -1116,6 +1609,9 @@ function Interfejs:zniszcz()
 	end
 	if self.polaczeniePomin then
 		self.polaczeniePomin:Disconnect()
+	end
+	if self.polaczenieDzwieku then
+		self.polaczenieDzwieku:Disconnect()
 	end
 	for _, c in self.polaczeniaTempa or {} do
 		c:Disconnect()

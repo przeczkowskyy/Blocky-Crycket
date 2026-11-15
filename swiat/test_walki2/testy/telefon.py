@@ -151,6 +151,9 @@ def main():
                 st, _ = s.czekaj(("odtwarzanie",), 15)
                 if st.get("OstatniStan") == "odtwarzanie":
                     s.steruj('"przewinDo", %f' % tau)
+                    # od 15.11 napisy w trybie poklatkowym starzeją się tylko przy przewijaniu — 0,25 s „jak w grze”,
+                    # żeby świeże napisy skończyły powiększanie przy wejściu (inaczej mierzymy je w pół animacji)
+                    s.steruj('"przewin", 0.25')
                     time.sleep(0.3)
                     p = zmierz(s, "TestWalki2Cutscenka")
                     im, _ = s.zrzut_odtwarzacza()

@@ -52,7 +52,7 @@ Ch.STYLE = { "wrecz", "skok", "pocisk", "chmura", "korzenie", "w_klipie", "na_si
 -- zwykły cios aktora: klucz aktora → wpis jak u umiejętności; brak wpisu = ZWYKLY_CIOS
 Ch.ZWYKLY_CIOS = { styl = "wrecz", smuga = false }
 Ch.ATAK = {
-	mag = { styl = "pocisk", pocisk = "iskra", wybuch = "iskra" }, -- zwykły atak Maga jest magiczny: mały pocisk z kostura
+	mag = { styl = "pocisk", pocisk = "iskra", wybuch = "iskra", predkosc = 20 }, -- zwykły atak Maga jest magiczny: mały pocisk z kostura
 }
 
 -- umiejętność bez wpisu (gdyby się trafiła): magiczna → pocisk, inna → cios wręcz
@@ -69,14 +69,18 @@ Ch.UMIEJETNOSCI = {
 	kamienna_skora = { styl = "na_siebie", aura = "kamien" },
 	-- Zwiadowca
 	uderzenie_z_gory = { styl = "skok", smuga = "#FFFFFF", fala = "#B08A58", wysokosc = 4.5, wstrzas = 0.45 },
-	zatruta_strzala = { styl = "pocisk", pocisk = "strzala", wybuch = "trucizna", predkosc = 42, stronaKamery = -1 },
+	-- prędkości pocisków (studs/s) od 15.11 niższe: lot 0,45–0,7 s (odtwarzacz i tak pilnuje tych granic)
+	zatruta_strzala = { styl = "pocisk", pocisk = "strzala", wybuch = "trucizna", predkosc = 16, stronaKamery = -1 },
 	skupienie = { styl = "na_siebie", aura = "zloto" },
 	-- Mag
-	kula_ognia = { styl = "pocisk", pocisk = "kula_ognia", wybuch = "ogien", predkosc = 26, wstrzas = 0.45 },
-	lodowy_pocisk = { styl = "pocisk", pocisk = "lod", wybuch = "lod", predkosc = 34, wstrzas = 0.3 },
+	kula_ognia = { styl = "pocisk", pocisk = "kula_ognia", wybuch = "ogien", predkosc = 15, wstrzas = 0.45 },
+	lodowy_pocisk = { styl = "pocisk", pocisk = "lod", wybuch = "lod", predkosc = 17, wstrzas = 0.3 },
 	bariera = { styl = "na_siebie", aura = "bariera" },
 	-- potwory lasu
-	kwasny_plusk = { styl = "w_klipie", punkt = "Plusk", wybuch = "kwas", celPrzod = true, wstrzas = 0.3, kamera = "boczny" }, -- bańka i kałuża z klipu modelu
+	-- bańka i kałuża z klipu modelu; lot = bańka leci od kl. 21 (0,7 s klipu) do trafienia, odtwarzacz gra ten odcinek
+	-- wolniej (ok. 0,55 s sceny) ze smugą za kością Kula; kaluza = dysk kwasu na ziemi do końca kałuży w klipie (kl. 65)
+	-- (wpis w jednym wierszu: test bez Studio czyta tę tabelę wierszami)
+	kwasny_plusk = { styl = "w_klipie", punkt = "Plusk", wybuch = "kwas", celPrzod = true, wstrzas = 0.3, kamera = "boczny", skalaWybuchu = 1.25, lot = { od = 0.7, czas = 0.55, kosc = "Kula", kolor = "#C8FF5A", szer = 0.4 }, kaluza = { koniec = 2.167, promien = 2.1, kolor = "#8EE83C" } },
 	rozszarpanie = { styl = "wrecz", pazury = "#FF3B4F", wstrzas = 0.4, kamera = "zaBroniacym" },
 	chmura_zarodnikow = { styl = "chmura", kolor = "#B07CFF", wybuch = "zarodniki" },
 	ogluszajace_uderzenie = { styl = "wrecz", fala = "#8B6A43", wstrzas = 0.7, kamera = "zaBroniacym" },
@@ -116,6 +120,9 @@ Ch.TRAFIENIE = { cios = 0.5, blok = 0.5, unik = 0.5, krytyk = 0.5, umiejetnosc =
 Ch.ZWOLNIENIE = {
 	krytyk = { przed = 0.28, po = 0.42, tempo = 0.22 }, -- krytyk: scena zwalnia wokół trafienia (jak w v1)
 	nokaut = { przed = 0.12, po = 0.55, tempo = 0.4 }, -- cios kończący walkę
+	-- atak z lotem (pocisk, chmura, bańka z klipu): zwolnienie zaczyna się dopiero w chwili dolotu (przegląd 15.11 —
+	-- przy 0,28 s „przed” pocisk dolatywał 1,1–1,3 s i wyglądał, jakby stał przed celem); rampa = wejście w zwolnienie
+	lot = { przed = 0, rampa = 0.03 },
 }
 
 -- kolory obrażeń (fizyczne i magiczne muszą się różnić) — liczby nad postaciami

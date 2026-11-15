@@ -57,12 +57,36 @@ U.POKAZ_PUNKTOW = false -- true: punkty aktorów (Punkt_*) jako małe świecące
 U.PRZEJSCIE_KLIPOW = 0.15 -- s: domyślne płynne przejście między klipami
 
 ------------------------------------------------------------------ dźwięki wbudowane w klienta Roblox (nie są to uploady)
+--[[ Klient Roblox ma wbudowanych tylko 11 plików dźwięku (content/sounds; sprawdzone 15.11.2026 w instalacji
+	klienta i Studia): action_falling (10 s szumu wiatru), action_footsteps_plastic, action_get_up, action_jump,
+	action_jump_land, action_swim, impact_explosion_03, impact_water, oof, ouch, volume_slider (czysty ton ok. 390 Hz).
+	Z nich robimy wszystko: różna prędkość odtwarzania (wysokość), krótsze wycięcie (maks = s pliku, potem stop),
+	a melodie zwycięstwa i porażki to cztery „nuty” z volume_slider. Głośność wyrównana do szczytów plików
+	(jump_land ma szczyt −20 dB, wybuch 0 dB). Pociski, czary i strzała nie mają własnych odgłosów — to świst skoku
+	(action_jump) w innej wysokości. ]]
 U.DZWIEKI_WLACZONE = true
+U.GLOSNOSC = 0.5 -- mnożnik wszystkich dźwięków walki (umiarkowanie)
+U.DZWIEKI_NARAZ = 3 -- najwyżej tyle naraz (przy ×4 dźwięki nie zlewają się w hałas)
+local S = "rbxasset://sounds/"
 U.DZWIEKI = {
-	cios = "rbxasset://sounds/action_jump_land.mp3",
-	krytyk = "rbxasset://sounds/impact_explosion_03.mp3",
-	upadek = "rbxasset://sounds/action_falling.ogg",
-	przycisk = "rbxasset://sounds/volume_slider.ogg",
+	cios = { id = S .. "action_jump_land.mp3", glosnosc = 2.2, szybkosc = 1.0 },
+	krytyk = { id = S .. "impact_explosion_03.mp3", glosnosc = 0.34, szybkosc = 1.25, maks = 0.9 },
+	blok = { id = S .. "action_jump_land.mp3", glosnosc = 2.4, szybkosc = 1.9 },
+	unik = { id = S .. "action_jump.mp3", glosnosc = 1.4, szybkosc = 1.25 },
+	strzal = { id = S .. "action_jump.mp3", glosnosc = 1.2, szybkosc = 1.75 },
+	czar = { id = S .. "action_get_up.mp3", glosnosc = 1.6, szybkosc = 1.3 },
+	wybuch = { id = S .. "impact_explosion_03.mp3", glosnosc = 0.22, szybkosc = 1.6, maks = 0.6 },
+	plusk = { id = S .. "impact_water.mp3", glosnosc = 0.5, szybkosc = 1.15, maks = 0.8 },
+	upadek = { id = S .. "oof.ogg", glosnosc = 0.32, szybkosc = 1.0 },
+	lomot = { id = S .. "action_jump_land.mp3", glosnosc = 2.6, szybkosc = 0.55 },
+	nuta = { id = S .. "volume_slider.ogg", glosnosc = 0.55, szybkosc = 1.0, maks = 0.3 },
+	przycisk = { id = S .. "volume_slider.ogg", glosnosc = 0.45, szybkosc = 1.0, maks = 0.3 },
+	lup = { id = S .. "volume_slider.ogg", glosnosc = 0.4, szybkosc = 2.4, maks = 0.2 },
+}
+-- melodie finału: prędkości „nuty” (1 = ok. 390 Hz) i odstęp w sekundach
+U.MELODIE = {
+	zwyciestwo = { nuty = { 1.0, 1.26, 1.5, 2.0 }, odstep = 0.11 },
+	porazka = { nuty = { 1.0, 0.84, 0.71, 0.53 }, odstep = 0.17 },
 }
 
 ------------------------------------------------------------------ kolory (kierunek artystyczny: nasycone barwy, ciemny obrys)

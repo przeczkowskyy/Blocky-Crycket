@@ -56,6 +56,7 @@ local Odtwarzacz = {}
 local sesja = nil
 local wolnaOd = 0
 local zapamietaneTempo = 1
+local zapamietaneWyciszenie = false -- przycisk dźwięku: wybór gracza zostaje do końca sesji gry
 
 local function wolnaZa(): number
 	return math.max(0, wolnaOd - workspace:GetServerTimeNow())
@@ -494,20 +495,117 @@ function Sesja:przygotujScene()
 		end
 	end)
 	self:schowajObcych()
+	-- dźwięki: po dwa (nuty po cztery) obiekty Sound na nazwę — wbudowane w klienta (rbxasset://), bez uploadu
 	self.dzwieki = {}
 	if U.DZWIEKI_WLACZONE then
-		for nazwa, id in U.DZWIEKI do
-			self.dzwieki[nazwa] = self:nowa("Sound", { Name = nazwa, SoundId = id, Volume = 0.45 }, self.ui.gui)
+		for nazwa, def in U.DZWIEKI do
+			local pula = {}
+			for i = 1, (if nazwa == "nuta" then 4 else 2) do
+				table.insert(pula, self:nowa("Sound", { Name = nazwa .. i, SoundId = def.id, Volume = 0 }, self.ui.gui))
+			end
+			self.dzwieki[nazwa] = pula
 		end
+	end
+	self.statDzwiekow = { zagrane = 0, pominiete = 0, maksNaraz = 0 }
+end
+
+-- ile dźwięków walki gra teraz
+function Sesja:grajaceDzwieki(): number
+	local n = 0
+	for _, pula in self.dzwieki or {} do
+		for _, s in pula do
+			if s.IsPlaying then
+				n += 1
+			end
+		end
+	end
+	return n
+end
+
+--[[ Dźwięk z U.DZWIEKI. Przy szybkim tempie dźwięki się nie zlewają: ta sama nazwa najwyżej co 0,06 / 0,1 / 0,16 s
+	(×1 / ×2 / ×4), a naraz gra najwyżej U.DZWIEKI_NARAZ (reszta jest pomijana i liczona). wymus = melodia finału. ]]
+function Sesja:dzwiek(nazwa: string, szybkosc: number?, wymus: boolean?)
+	local pula = self.dzwieki and self.dzwieki[nazwa]
+	local def = U.DZWIEKI[nazwa]
+	if not pula or not def or (self.pominieto and nazwa ~= "przycisk") or zapamietaneWyciszenie or self.zakonczona then
+		return
+	end
+	local st = self.statDzwiekow
+	local teraz = os.clock()
+	self.ostatniDzwiek = self.ostatniDzwiek or {}
+	local odstep = if self.tempo >= 4 then 0.16 elseif self.tempo >= 2 then 0.1 else 0.06
+	local graja = self:grajaceDzwieki()
+	if not wymus and ((self.ostatniDzwiek[nazwa] or -1) > teraz - odstep or graja >= U.DZWIEKI_NARAZ) then
+		st.pominiete += 1
+		return
+	end
+	if wymus and graja >= U.DZWIEKI_NARAZ then
+		-- melodia finału: zwalnia miejsce, zatrzymując jeden z grających dźwięków (limit naraz zostaje)
+		for n, inna in self.dzwieki do
+			if n ~= "nuta" then
+				for _, s2 in inna do
+					if s2.IsPlaying and graja >= U.DZWIEKI_NARAZ then
+						s2:Stop()
+						graja -= 1
+					end
+				end
+			end
+		end
+	end
+	local s = nil
+	for _, kand in pula do
+		if not kand.IsPlaying then
+			s = kand
+			break
+		end
+	end
+	s = s or pula[1]
+	self.ostatniDzwiek[nazwa] = teraz
+	s.PlaybackSpeed = (szybkosc or 1) * def.szybkosc * (1 + 0.06 * (math.min(self.tempo, 4) - 1))
+	s.Volume = def.glosnosc * U.GLOSNOSC
+	s.TimePosition = 0
+	s:Play()
+	st.zagrane += 1
+	st.maksNaraz = math.max(st.maksNaraz, graja + 1)
+	if def.maks then
+		local nr = (s:GetAttribute("Nr") or 0) + 1
+		s:SetAttribute("Nr", nr)
+		task.delay(def.maks / math.max(s.PlaybackSpeed, 0.1), function()
+			if s.Parent and s:GetAttribute("Nr") == nr then
+				s:Stop()
+			end
+		end)
 	end
 end
 
-function Sesja:dzwiek(nazwa: string, szybkosc: number?)
-	local d = self.dzwieki and self.dzwieki[nazwa]
-	if d and not self.pominieto then
-		d.PlaybackSpeed = (szybkosc or 1) * math.min(self.tempo, 1.5)
-		d:Play()
+-- melodia finału (cztery nuty z wbudowanego tonu), w czasie rzeczywistym
+function Sesja:melodia(nazwa: string)
+	local m = U.MELODIE and U.MELODIE[nazwa]
+	if not m then
+		return
 	end
+	for i, nuta in m.nuty do
+		task.delay((i - 1) * m.odstep, function()
+			if not self.zakonczona and not self.pominieto then
+				self:dzwiek("nuta", nuta, true)
+			end
+		end)
+	end
+end
+
+function Sesja:przelaczDzwiek()
+	zapamietaneWyciszenie = not zapamietaneWyciszenie
+	if zapamietaneWyciszenie then
+		for _, pula in self.dzwieki or {} do
+			for _, s in pula do
+				s:Stop()
+			end
+		end
+	else
+		self:dzwiek("przycisk")
+	end
+	self.ui:ustawDzwiek(zapamietaneWyciszenie)
+	self:atrybut("OstatnieWyciszenie", zapamietaneWyciszenie)
 end
 
 -- punkt sceny (x, y, z) → świat
@@ -606,6 +704,15 @@ function Sesja:zaplanuj(walka)
 	local losU = Random.new(walka.ziarno % 2147483647)
 	local ostatnieTyp = "ogolny"
 	local licznikZwyklych = 0
+	-- zdarzenie, w którym pokonany traci ostatnie życie (cios kończący: upadek, zwolnienie, ujęcie pokonanego)
+	local polePokonanego = if self.pokonany == "gracz" then "hp_gracz" else "hp_wrog"
+	local nrKonczacego = nil
+	for i, z in walka.dziennik do
+		if z[polePokonanego] == 0 then
+			nrKonczacego = i
+			break
+		end
+	end
 	for i, z in walka.dziennik do
 		local ev = { nr = i, z = z, typ = z.typ, kto = z.kto, cel = z.cel, t = z.t, trwa = z.trwa, koniec = z.t + z.trwa }
 		if AKCJE_TURY[z.typ] and z.kto ~= stronaTury then
@@ -616,7 +723,7 @@ function Sesja:zaplanuj(walka)
 		ev.tura = tura
 		ev.stronaTury = stronaTury
 		ev.obsluga = Ch.ZDARZENIA[z.typ]
-		ev.smiertelny = i == n and (z.hp_gracz == 0 or z.hp_wrog == 0)
+		ev.smiertelny = i == nrKonczacego
 		ev.atak = ATAKI[z.typ] or (z.typ == "umiejetnosc" and z.kto ~= z.cel)
 		ev.naSiebie = z.typ == "umiejetnosc" and z.kto == z.cel
 		if ev.atak or ev.naSiebie then
@@ -624,13 +731,13 @@ function Sesja:zaplanuj(walka)
 			ev.choreo, ev.znana = self:wpisChoreo(z, klucz)
 			ev.styl = if ev.naSiebie then "na_siebie" else (ev.choreo.styl or "wrecz")
 			self:policzCzasy(ev)
-			local krytyk = z.krytyk == true
-			if krytyk then
-				local zw = Ch.ZWOLNIENIE.krytyk
-				table.insert(zwolnienia, { od = ev.t + ev.eHit - zw.przed, ["do"] = ev.t + ev.eHit + zw.po, tempo = zw.tempo })
-			elseif ev.smiertelny then
-				local zw = Ch.ZWOLNIENIE.nokaut
-				table.insert(zwolnienia, { od = ev.t + ev.eHit - zw.przed, ["do"] = ev.t + ev.eHit + zw.po, tempo = zw.tempo })
+			local zw = if z.krytyk == true then Ch.ZWOLNIENIE.krytyk elseif ev.smiertelny then Ch.ZWOLNIENIE.nokaut else nil
+			if zw then
+				-- atak z lotem: zwolnienie dopiero przy dolocie (inaczej pocisk „stał” przed celem przez ponad sekundę)
+				local zLot = (ev.lot or 0) > 0 and Ch.ZWOLNIENIE.lot or nil
+				local przed = if zLot then zLot.przed else zw.przed
+				table.insert(zwolnienia, { od = ev.t + ev.eHit - przed, ["do"] = ev.t + ev.eHit + zw.po, tempo = zw.tempo,
+					rampa = zLot and zLot.rampa or nil })
 			end
 		elseif z.typ == "efekt_tick" then
 			ev.eHit = 0.18
@@ -691,14 +798,38 @@ function Sesja:zaplanuj(walka)
 	end
 	local ostatni = plan[n]
 	self.tKoniecDziennika = ostatni.koniec
-	-- finał: objazd po upadku
-	self.tObjazdu = if ostatni.eHit then ostatni.t + ostatni.eHit + 0.7 else ostatni.koniec
+	--[[ Finał (wybór odtwarzacza, nie silnika — cały dziennik jest już odegrany): po ciosie kończącym krótkie ujęcie
+		POKONANEGO, w którym kończy się jego klip upadku (kałuża z oczkami, stos głazów, leżący troll albo bohater), dopiero
+		potem radość zwycięzcy, objazd, baner, łup i panel wyniku. Od chwili tuż przed ciosem kończącym finał gra zawsze
+		w tempie ×1 (przy ×2/×4 ujęcie pokonanego trwałoby ułamek sekundy). Klip upadku dłuższy niż 1,9 s (Strażnik
+		2,7 s) gra szybciej, żeby skończył się w ujęciu. ]]
+	self.tPokonany = nil
+	self.predkoscUpadku = 1
+	self.tempoFinaluOd = math.huge
+	local konczacy = nrKonczacego and plan[nrKonczacego]
+	local P = self.aktorzy[self.pokonany]
+	if konczacy and P then
+		local tHit = konczacy.t + (konczacy.eHit or 0.2)
+		local klip = P:maKlip("upadek")
+		local dl = (klip and P.klipy:dlugoscKlipu(klip)) or 1.2
+		self.predkoscUpadku = math.max(1, dl / 1.9)
+		local koniecUpadku = tHit + dl / self.predkoscUpadku
+		self.tPokonany = tHit + 0.38
+		self.tRadosc = math.max(math.clamp(koniecUpadku + 0.3, self.tPokonany + 1.1, self.tPokonany + 1.8), ostatni.koniec + 0.05)
+		self.tempoFinaluOd = tHit - 0.25
+	else
+		self.tRadosc = ostatni.koniec + 0.05
+	end
+	self.tObjazdu = self.tRadosc
+	-- koniec sceny: tyle po radości, ile silnik przewidział na finał po ostatnim zdarzeniu (≥ czas dziennika)
+	self.czasKonca = math.max(walka.czas, self.tRadosc + math.max(0.8, walka.czas - ostatni.koniec - 0.05))
 	self.plan = plan
 	self.zwolnienia = zwolnienia
 	self.ujeciaPlan = ujecia
 end
 
 -- czasy ataku / umiejętności w zdarzeniu (sekundy od jego początku, w czasie sceny)
+local LOT_MIN, LOT_MAKS = 0.45, 0.7 -- s czasu sceny: lot pocisku (i bańki z klipu) ma być widać
 function Sesja:policzCzasy(ev)
 	local z = ev.z
 	local A, D = self.aktorzy[z.kto], self.aktorzy[z.cel]
@@ -717,8 +848,9 @@ function Sesja:policzCzasy(ev)
 	local lot = 0
 	local wyrownanie = eHit
 	if styl == "pocisk" then
-		local pr = ev.choreo.predkosc or 30
-		lot = math.clamp(self.geo.S / pr, 0.2, 0.6)
+		-- lot ma być czytelny (poprawka D2): 0,45–0,7 s czasu sceny, obrażenia w chwili, gdy pocisk dolatuje
+		local pr = ev.choreo.predkosc or 20
+		lot = math.clamp(self.geo.S / pr, LOT_MIN, LOT_MAKS)
 		if eHit - lot < 0.3 then
 			eHit = math.min(trwa - 0.3, 0.3 + lot)
 		end
@@ -773,6 +905,28 @@ function Sesja:policzCzasy(ev)
 		ev.zasiegEfektu = zasieg + ev.wydluz -- gdzie przed atakującym ląduje efekt (kałuża) w chwili trafienia
 		-- cel trzymany przez efekt (korzenie) do chwili, gdy klip go puszcza (sekundy klipu po trafieniu przy prędkości 1)
 		ev.trzymaDo = (ev.choreo.puszcza or 0) / predkosc
+		--[[ Lot efektu z klipu (bańka kwasu, poprawka D2): w klipie bańka leci 10 klatek (0,33 s) — przy ok. 7 studach
+			wydłużenia to za szybko, żeby ją zobaczyć. Klip gra trzema prędkościami: do wypuszczenia szybciej, lot wolniej
+			(LOT_MIN–LOT_MAKS s czasu sceny), po trafieniu ×1 (kałuża stoi tyle, ile w modelu). Bańka nadal dolatuje
+			dokładnie w chwili trafienia z dziennika (eHit). ]]
+		local c = ev.choreo
+		if c.lot and klip then
+			local a, b = c.lot.od, chw
+			local L = math.clamp(c.lot.czas or 0.55, LOT_MIN, LOT_MAKS)
+			local pMaks = 2.6
+			if wyrownanie - L < a / pMaks then
+				L = math.max(0.25, wyrownanie - a / pMaks)
+			end
+			local p1 = math.clamp(a / math.max(wyrownanie - L, 0.05), 0.75, pMaks)
+			local p2 = (b - a) / L
+			ev.predkosc = p1
+			ev.eStart = math.max(0, wyrownanie - (a / p1 + L))
+			ev.odcinki = { { od = a, ["do"] = b, predkosc = p2 }, { od = b, ["do"] = 1e6, predkosc = 1 } }
+			ev.lot = L
+			ev.tWypuszczenia = ev.eStart + a / p1
+			ev.dlKlipu = ev.tWypuszczenia + L + (dl - b)
+			ev.trzymaDo = (c.puszcza or 0)
+		end
 	end
 end
 
@@ -927,6 +1081,31 @@ function Sesja:piers(strona: string): Vector3
 	return if p then p.Position else (a:cfZiemi() * CFrame.new(0, a.wpis.wysokosc * 0.55, 0)).Position
 end
 
+-- pierwszy punkt bryły aktora na odcinku od → do (części klonów mają CanQuery = false: na czas promienia włączamy je
+-- lokalnie i przywracamy); nil = promień nie trafia w aktora
+function Sesja:powierzchnia(strona: string, od: Vector3, do_: Vector3): Vector3?
+	local a = self.aktorzy[strona]
+	if not a then
+		return nil
+	end
+	local zmienione = {}
+	for _, c in a.model:GetDescendants() do
+		if c:IsA("BasePart") and c ~= a.hrp and not c.CanQuery and c.Transparency < 0.9 then
+			c.CanQuery = true
+			table.insert(zmienione, c)
+		end
+	end
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = { a.model }
+	local kier = do_ - od
+	local traf = workspace:Raycast(od, kier + kier.Unit * 0.5, params)
+	for _, c in zmienione do
+		c.CanQuery = false
+	end
+	return traf and traf.Position or nil
+end
+
 function Sesja:liczba(z, strona: string): (string, string, Color3?)
 	local tekst = "−" .. tostring(z.obrazenia)
 	if z.rodzaj == "magiczne" then
@@ -950,6 +1129,7 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 	if cicho then
 		return
 	end
+	self.pomiarTwarzy = ev.nr
 	local D = self.aktorzy[z.cel]
 	local glowa = self:glowa(z.cel)
 	local piers = self:piers(z.cel)
@@ -958,40 +1138,49 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 	local kolorLiczby = if magia then Color3.fromHex(Ch.KOLOR_OBRAZEN.magiczne) else nil
 	-- całość na tarczy (kamienna skóra, bariera): zamiast „−0” tylko napis „TARCZA −n” niżej — w każdej gałęzi
 	local liczbaWidoczna = Sesja.pokazLiczbe(z)
+	local cel = z.cel
 	if z.typ == "unik" then
-		self.ui:napis(glowa, "UNIK!", "unik", Vector2.new(0, -0.03), los:NextNumber(-7, 7))
+		self.ui:napis(glowa, "UNIK!", "unik", nil, los:NextNumber(-7, 7), nil, cel)
+		self:dzwiek("unik", los:NextNumber(0.95, 1.05))
 	elseif z.typ == "blok" then
-		self.ui:napis(glowa, "BLOK!", "blok", Vector2.new(0, -0.1), -5)
+		self.ui:napis(glowa, "BLOK!", "blok", nil, -5, nil, cel)
 		if liczbaWidoczna then
 			local t, st = self:liczba(z, z.cel)
-			self.ui:napis(glowa, t, st, Vector2.new(0.03, 0.05), 4)
+			self.ui:napis(glowa, t, st, nil, 4, nil, cel)
 		end
 		local tarcza = D:punkt("Tarcza")
 		self.fx:wybuch("blok", if tarcza then tarcza.Position else piers, s)
-		self:dzwiek("cios", 1.5)
+		self:dzwiek("blok", los:NextNumber(0.95, 1.05))
 		self:wstrzas(0.15)
 	elseif z.krytyk then
-		self.ui:napis(glowa, "KRYTYK!", "krytyk", Vector2.new(0, -0.115), -6)
+		self.ui:napis(glowa, "KRYTYK!", "krytyk", nil, -6, nil, cel)
 		if liczbaWidoczna then
-			self.ui:napis(glowa, "−" .. tostring(z.obrazenia), "krytykLiczba", Vector2.new(0.01, 0.05), 4, kolorLiczby)
+			self.ui:napis(glowa, "−" .. tostring(z.obrazenia), "krytykLiczba", nil, 4, kolorLiczby, cel)
 		end
 		self.fx:wybuch("krytyk", piers, s)
-		self:dzwiek("krytyk", 1.25)
+		self:dzwiek("krytyk", 1.0)
 		self:wstrzas(0.6)
 	else
 		if liczbaWidoczna then
 			local t, st = self:liczba(z, z.cel)
-			self.ui:napis(glowa, t, st, Vector2.new(0, -0.02), los:NextNumber(-8, 8))
+			self.ui:napis(glowa, t, st, nil, los:NextNumber(-8, 8), nil, cel)
 		end
 		-- pocisk i efekt w klipie mają własny rozbłysk w miejscu trafienia (Choreo) — tu bez drugiego na piersi
 		if not (ev.styl == "w_klipie" and ev.choreo.wybuch) then
 			self.fx:wybuch(if ev.choreo and ev.choreo.wybuch and ev.styl ~= "pocisk" then ev.choreo.wybuch else "cios", piers, s)
 		end
-		self:dzwiek("cios", los:NextNumber(0.9, 1.1))
+		local c = ev.choreo
+		if c and c.wybuch == "kwas" then
+			self:dzwiek("plusk", los:NextNumber(0.95, 1.05))
+		elseif ev.styl == "pocisk" or ev.styl == "chmura" then
+			self:dzwiek("wybuch", los:NextNumber(0.9, 1.1))
+		else
+			self:dzwiek("cios", los:NextNumber(0.9, 1.1))
+		end
 		self:wstrzas(math.max(0.22, ev.choreo and ev.choreo.wstrzas or 0.24))
 	end
 	if z.pochloniete > 0 then
-		self.ui:napis(glowa, "TARCZA −" .. tostring(z.pochloniete), "efekt", Vector2.new(0.05, 0.12), 3, Color3.fromHex("#9FE8FF"))
+		self.ui:napis(glowa, "TARCZA −" .. tostring(z.pochloniete), "efekt", nil, 3, Color3.fromHex("#9FE8FF"), cel)
 		self.fx:wybuch("tarcza", piers, s)
 	end
 	-- dodatki umiejętności
@@ -1007,14 +1196,21 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 	end
 	-- reakcja celu
 	if ev.smiertelny then
-		self:klip(D, "upadek", { przejscie = 0.08 })
-		self:usunOzdobyStrony(z.cel)
-		self:dzwiek("upadek", 1.1)
+		self:upadek(z.cel)
 	elseif z.typ == "blok" then
 		-- klip bloku gra od wcześniej (garda przed ciosem)
 	elseif z.typ ~= "unik" then
 		self:klip(D, "trafienie", { predkosc = if z.krytyk then 0.9 else 1.15 })
 	end
+end
+
+-- upadek pokonanego (cios albo tyknięcie kończące): klip upadku w prędkości dobranej do ujęcia pokonanego
+function Sesja:upadek(strona: string)
+	local P = self.aktorzy[strona]
+	self.torUpadku = self:klip(P, "upadek", { przejscie = 0.08, predkosc = self.predkoscUpadku or 1 })
+	self:usunOzdobyStrony(strona)
+	self:dzwiek("upadek", if strona == "gracz" then 1.0 else 0.75)
+	self:dzwiek("lomot", 1.0)
 end
 
 function Sesja:wstrzas(sila: number)
@@ -1031,7 +1227,7 @@ local function zaplanujAtak(self, ev, f_wypuszczenie)
 	local A, D = self.aktorzy[z.kto], self.aktorzy[z.cel]
 	local t0 = ev.t
 	self:zaplanujAkcje(t0 + ev.eStart, function(sp)
-		self:klip(A, ev.akcja, { predkosc = ev.predkosc, wydluz = ev.wydluz }, sp)
+		self:klip(A, ev.akcja, { predkosc = ev.predkosc, wydluz = ev.wydluz, odcinki = ev.odcinki }, sp)
 	end)
 	if ev.choreo and ev.choreo.smuga or z.krytyk then
 		local kolor = Color3.fromHex(if type(ev.choreo.smuga) == "string" then ev.choreo.smuga else "#FFF3B0")
@@ -1082,18 +1278,31 @@ Choreo.pocisk = function(self, ev)
 	zaplanujAtak(self, ev, function(sp)
 		local od = A:punkt("Pocisk")
 		local start = if od then od.Position else self:piers(z.kto)
-		local cel = self:piers(z.cel)
 		local c = ev.choreo
-		self.fx:pocisk(c.pocisk or "iskra", start, cel, math.max(0.05, ev.lot - sp), {
-			luk = c.luk, chybiony = z.typ == "unik",
+		local nazwa = c.pocisk or "iskra"
+		--[[ Lot kończy się na PRZEDNIEJ powierzchni celu (przegląd 15.11): punkt Piers leży w środku bryły, więc przy
+			Trollu strzała wchodziła w jego ciało i znikała na 1,4 s przed trafieniem. Powierzchnia = promień od wylotu do
+			piersi przecięty z bryłami celu; pocisk ustawia się tak, żeby grot (strzała) albo przód kuli dotykał tej
+			powierzchni w chwili trafienia, a strzała zostaje wbita na czas reakcji celu. ]]
+		local piers = self:piers(z.cel)
+		local pow = self:powierzchnia(z.cel, start, piers) or piers
+		-- ile przed środkiem pocisku jest jego przód (grot strzały 2,1 studa; Efekty3D liczy z tego koniec lotu)
+		local przod = if nazwa == "strzala" then 2.1 elseif nazwa == "lod" then 0.85 else 0.35
+		ev.punktTrafienia = pow
+		self.fx:pocisk(nazwa, start, pow, math.max(0.05, ev.lot - sp), {
+			luk = c.luk, chybiony = z.typ == "unik", grot = przod,
+			zostaw = if nazwa == "strzala" and z.typ ~= "unik" then 0.75 else nil,
+			przyczep = function()
+				return D:cfZiemi()
+			end,
 		})
 		if c.wybuch and z.typ ~= "unik" then
 			self:zaplanujAkcje(ev.t + ev.eHit, function()
 				local s = math.clamp(D.wpis.wysokosc / 5.5, 0.8, 1.8)
-				self.fx:wybuch(c.wybuch, self:piers(z.cel), s)
+				self.fx:wybuch(c.wybuch, pow:Lerp(self:piers(z.cel), 0.3), s)
 			end)
 		end
-		self:dzwiek("pocisk", 1.1)
+		self:dzwiek(if c.pocisk == "strzala" then "strzal" else "czar", 1.0)
 	end)
 end
 
@@ -1132,6 +1341,16 @@ Choreo.w_klipie = function(self, ev)
 	local A, D = self.aktorzy[z.kto], self.aktorzy[z.cel]
 	zaplanujAtak(self, ev, nil)
 	local c = ev.choreo
+	-- lot efektu z klipu (bańka): smuga za kością i świst przy wypuszczeniu
+	if c.lot and ev.tWypuszczenia then
+		self:zaplanujAkcje(ev.t + ev.tWypuszczenia, function()
+			local kosc = A.model:FindFirstChild(c.lot.kosc or "Kula")
+			if kosc and kosc:IsA("BasePart") then
+				self.fx:smugaCzesci(kosc, Color3.fromHex(c.lot.kolor or "#B8F55A"), ev.lot + 0.05, c.lot.szer or 0.45)
+			end
+			self:dzwiek("strzal", 0.8)
+		end)
+	end
 	if c.wybuch and z.typ ~= "unik" then
 		self:zaplanujAkcje(ev.t + ev.eHit, function()
 			-- miejsce liczone, nie czytane z punktu: WorldCFrame punktu jest o klatkę za Transform, a kałuża w klipie
@@ -1140,7 +1359,14 @@ Choreo.w_klipie = function(self, ev)
 			local cf = A:cfZiemi()
 			local p = if ev.zasiegEfektu then cf.Position + cf.LookVector * ev.zasiegEfektu + Vector3.new(0, 0.3, 0)
 				else self:piers(z.cel)
-			self.fx:wybuch(c.wybuch, p, s)
+			self.fx:wybuch(c.wybuch, p, s * (c.skalaWybuchu or 1))
+			-- kałuża kwasu przy celu: płaski dysk na ziemi tak długo, jak stoi kałuża w klipie (po trafieniu klip gra ×1)
+			if c.kaluza and ev.zasiegEfektu then
+				local ziemia = cf.Position + cf.LookVector * ev.zasiegEfektu
+				local dlugo = math.max(0.4, (c.kaluza.koniec or 2.17) - (A:chwila(ev.akcja) or 1))
+				self.fx:kaluza(ziemia, c.kaluza.promien or 2, Color3.fromHex(c.kaluza.kolor or "#9BF04A"), dlugo)
+				self.fx:fala(ziemia + Vector3.new(0, 0.12, 0), Color3.fromHex(c.kaluza.kolor or "#9BF04A"), (c.kaluza.promien or 2) * 1.6)
+			end
 		end)
 	end
 end
@@ -1189,22 +1415,24 @@ Obsluga.tykniecie = function(self, ev)
 			return
 		end
 		local glowa = self:glowa(z.kto)
+		if z.kto == "wrog" then
+			self.pomiarTwarzy = ev.nr
+		end
 		if z.obrazenia > 0 then
-			self.ui:napis(glowa, "−" .. tostring(z.obrazenia), "tyk", Vector2.new(los:NextNumber(-0.03, 0.03), 0), los:NextNumber(-6, 6), Color3.fromHex(ch.kolor))
+			self.ui:napis(glowa, "−" .. tostring(z.obrazenia), "tyk", nil, los:NextNumber(-6, 6), Color3.fromHex(ch.kolor), z.kto)
 		end
 		if z.pochloniete > 0 then
-			self.ui:napis(glowa, "TARCZA −" .. tostring(z.pochloniete), "efekt", Vector2.new(0.05, 0.1), 3, Color3.fromHex("#9FE8FF"))
+			self.ui:napis(glowa, "TARCZA −" .. tostring(z.pochloniete), "efekt", nil, 3, Color3.fromHex("#9FE8FF"), z.kto)
 		end
 		local o = self.ozdoby[z.kto .. ":" .. z.efekt]
 		if o then
 			o:puls()
 		end
 		if ev.smiertelny then
-			self:klip(A, "upadek", { przejscie = 0.08 })
-			self:usunOzdobyStrony(z.kto)
-			self:dzwiek("upadek", 1.1)
+			self:upadek(z.kto)
 		else
 			self:klip(A, "trafienie", { predkosc = 1.5 })
+			self:dzwiek("cios", 1.3)
 		end
 	end)
 end
@@ -1237,7 +1465,7 @@ Obsluga.nalozenie = function(self, ev)
 	if nowy.zapas then
 		tekst = tekst .. " " .. tostring(nowy.zapas)
 	end
-	self.ui:napis(self:glowa(z.cel), tekst, "efekt", Vector2.new(0, -0.08), los:NextNumber(-4, 4), Color3.fromHex(ch.kolor))
+	self.ui:napis(self:glowa(z.cel), tekst, "efekt", nil, los:NextNumber(-4, 4), Color3.fromHex(ch.kolor), z.cel)
 end
 
 Obsluga.koniec = function(self, ev)
@@ -1257,7 +1485,7 @@ Obsluga.koniec = function(self, ev)
 	end
 	local nazwa = (Dane.efekty[z.efekt] and Dane.efekty[z.efekt].nazwa) or z.efekt
 	if zapas ~= nil and zapas <= 0 then
-		self.ui:napis(self:glowa(z.cel), "TARCZA PĘKŁA!", "efekt", Vector2.new(0, -0.14), -4, Color3.fromHex("#9FE8FF"))
+		self.ui:napis(self:glowa(z.cel), "TARCZA PĘKŁA!", "efekt", nil, -4, Color3.fromHex("#9FE8FF"), z.cel)
 		self.fx:wybuch("bariera", self:piers(z.cel), 1)
 	end
 	-- zwykły koniec efektu: znika ikona i ozdoba na postaci; bez napisu (w długiej walce napisów byłoby za dużo)
@@ -1270,7 +1498,7 @@ Obsluga.utrata = function(self, ev)
 		if self.pominieto then
 			return
 		end
-		self.ui:napis(self:glowa(z.kto), "TRACI TURĘ!", "efekt", Vector2.new(0, -0.12), -5, Color3.fromHex("#FFE14A"))
+		self.ui:napis(self:glowa(z.kto), "TRACI TURĘ!", "efekt", nil, -5, Color3.fromHex("#FFE14A"), z.kto)
 		local o = self.ozdoby[z.kto .. ":spowolnienie"]
 		if o then
 			o:puls()
@@ -1394,11 +1622,18 @@ function Sesja:aktualizujPozy(tau: number)
 			end
 		end
 	end
+	-- finał: zwycięzca w radości obraca się w stronę widza (kamery objazdu), żeby wiwat było widać z przodu (przegląd 15.11)
+	local obrotZw = 0
+	if self.final and self.final.radosc and self.obrotZwyciezcy and self.tRadosc then
+		obrotZw = self.obrotZwyciezcy * gladko((tau - self.tRadosc) / 0.45)
+	end
 	for strona, a in self.aktorzy do
 		local p = pozy[strona]
 		local kier = self.geo.kier[strona]
 		local x = self.geo.x[strona] + kier * p.przod
-		local cf = self.cfSceny * CFrame.lookAt(Vector3.new(x, p.gora, p.bok), Vector3.new(x + kier, p.gora, p.bok))
+		local yaw = if strona == self.zwyciezca then obrotZw else 0
+		local cf = self.cfSceny * CFrame.lookAt(Vector3.new(x, p.gora, p.bok),
+			Vector3.new(x + kier * math.cos(yaw), p.gora, p.bok + math.sin(yaw)))
 		cf = cf * CFrame.Angles(-p.pochyl, 0, p.przechyl)
 		a:ustaw(cf)
 	end
@@ -1408,10 +1643,11 @@ end
 function Sesja:zwolnienie(tau: number): number
 	local t = 1
 	for _, w in self.zwolnienia do
-		if tau > w.od - 0.08 and tau < w["do"] + 0.08 then
+		local r = w.rampa or 0.08
+		if tau > w.od - r and tau < w["do"] + 0.08 then
 			local k
 			if tau < w.od then
-				k = gladko((tau - (w.od - 0.08)) / 0.08)
+				k = gladko((tau - (w.od - r)) / r)
 			elseif tau > w["do"] then
 				k = 1 - gladko((tau - w["do"]) / 0.08)
 			else
@@ -1477,7 +1713,7 @@ function Sesja:obrysPary(A: string, D: string, zDomem: boolean?): (number, numbe
 end
 
 function Sesja:proponujUjecie(uj)
-	local teraz = os.clock()
+	local teraz = self.zegar
 	local odCiecia = teraz - (self.kam.ostatnieCiecie or 0)
 	local tura = uj.ev and uj.ev.tura or 0
 	local dluga = tura > 12
@@ -1509,14 +1745,282 @@ function Sesja:proponujUjecie(uj)
 	else
 		self.kam.od = nil
 	end
+	if uj.typ == "objazd" and not self.obrotZwyciezcy then
+		self.katObjazduMin = nil -- liczony w pierwszej klatce objazdu (leżący pokonany już na ziemi)
+	end
 	self.kam.uj = uj
 	self.kam.start = self.tau
 	self.kam.ostatnieCiecie = teraz
 	self.licznikUjec += 1
 end
 
--- ujęcie → (pozycja, cel, kąt) w układzie sceny (X w prawo, Y w górę, Z do kamery planu ogólnego)
+--[[ Twarz potwora (poprawka D5): kamera prawie zawsze widziała potwora z boku albo od tyłu. Kąt twarzy = kąt (w poziomie)
+	między kierunkiem, w którym patrzy potwór, a kierunkiem od niego do kamery: 0° = prosto w twarz, 90° = profil.
+	Po policzeniu ujęcia, gdy kąt > MAKS_KAT_TWARZY, kamera obraca się wokół punktu, na który patrzy (kadr zostaje), w
+	stronę gracza — do ujęcia 3/4 od strony gracza. Nie dotyczy objazdu, ujęcia pokonanego i ujęć samego gracza. ]]
+local MAKS_KAT_TWARZY = 56
+
+function Sesja:katTwarzy(poz: Vector3): number
+	local M = self.aktorzy and self.aktorzy.wrog
+	if not M then
+		return 0
+	end
+	local pM = self:wScenie("wrog")
+	local f = self.cfSceny:VectorToObjectSpace(M:cfZiemi().LookVector)
+	f = Vector3.new(f.X, 0, f.Z)
+	local v = Vector3.new(poz.X - pM.X, 0, poz.Z - pM.Z)
+	if v.Magnitude < 1e-3 or f.Magnitude < 1e-3 then
+		return 0
+	end
+	return math.deg(math.acos(math.clamp(v.Unit:Dot(f.Unit), -1, 1)))
+end
+
+-- punkty próbne bryły aktora (walec z jego szerokości i głębokości, cztery wysokości) w układzie sceny — do szybkiego
+-- pomiaru, jaka część postaci mieści się w kadrze z kamery, której jeszcze nie ustawiono
+local PROBKI_KATY = { 0, 60, 120, 180, 240, 300 }
+function Sesja:probkiAktora(strona: string): { Vector3 }
+	local a = self.aktorzy[strona]
+	local w = a.wpis
+	local cf = self.cfSceny:ToObjectSpace(a:cfZiemi())
+	local wynik = table.create(22)
+	for _, uy in { 0.15, 0.5, 0.85 } do
+		local y = w.wysokosc * uy
+		table.insert(wynik, (cf * Vector3.new(0, y, 0)))
+		for _, k in PROBKI_KATY do
+			local r = rad(k)
+			table.insert(wynik, (cf * Vector3.new(math.cos(r) * w.szerokosc * 0.4, y, math.sin(r) * w.glebokosc * 0.4)))
+		end
+	end
+	table.insert(wynik, (cf * Vector3.new(0, w.wysokosc, 0))) -- czubek głowy (ucięta głowa = złe ujęcie)
+	return wynik
+end
+
+--[[ Ocena postaci w kadrze 16:9 kamery (poz → cel, pionowy kąt kat): ułamek punktów w kadrze, góra i wysokość
+	postaci w kadrze (−1 … 1 = dół … góra kadru), środek w poziomie i głębokość. ]]
+local function rzutPostaci(probki: { Vector3 }, cf: CFrame, tv: number, th: number)
+	local n, gora, dol, lewo, prawo, glebia = 0, -math.huge, math.huge, math.huge, -math.huge, 0
+	for _, p in probki do
+		local l = cf:PointToObjectSpace(p)
+		local z = -l.Z
+		if z > 0.3 then
+			local x, y = l.X / (th * z), l.Y / (tv * z)
+			gora, dol = math.max(gora, y), math.min(dol, y)
+			lewo, prawo = math.min(lewo, x), math.max(prawo, x)
+			glebia += z
+			if math.abs(x) <= 1 and math.abs(y) <= 1 then
+				n += 1
+			end
+		end
+	end
+	return { u = n / math.max(1, #probki), gora = gora, wys = gora - dol, x0 = lewo, x1 = prawo, y0 = dol, y1 = gora,
+		z = glebia / math.max(1, #probki) }
+end
+
+-- ułamek punktów próbnych w kadrze 16:9 kamery (poz → cel, pionowy kąt kat)
+local function ulamekWKadrze(probki: { Vector3 }, poz: Vector3, cel: Vector3, kat: number): number
+	local tv = math.tan(rad(kat / 2))
+	return rzutPostaci(probki, CFrame.lookAt(poz, cel), tv, tv * 16 / 9).u
+end
+Sesja.ulamekWKadrze = ulamekWKadrze
+
+-- ułamek punktów postaci B, których nie zasłania postać A stojąca bliżej kamery (prostokąt A w kadrze, ściśnięty o 15%)
+local function odsloniecie(probkiB: { Vector3 }, rzA, cf: CFrame, tv: number, th: number): number
+	local mx, my = (rzA.x1 - rzA.x0) * 0.15, (rzA.y1 - rzA.y0) * 0.15
+	local n, ile = 0, 0
+	for _, p in probkiB do
+		local l = cf:PointToObjectSpace(p)
+		local z = -l.Z
+		if z > 0.3 then
+			ile += 1
+			local x, y = l.X / (th * z), l.Y / (tv * z)
+			local zaA = z > rzA.z and x > rzA.x0 + mx and x < rzA.x1 - mx and y > rzA.y0 + my and y < rzA.y1 - my
+			if not zaA then
+				n += 1
+			end
+		end
+	end
+	return n / math.max(1, ile)
+end
+
+--[[ Obrót do twarzy potwora i pilnowanie gracza w kadrze (przegląd 15.11: po obrocie Wojownik stał ogromny na
+	pierwszym planie, tyłem, z głową uciętą górną krawędzią, a w zbliżeniu zasłaniał slime'a — „kto kogo bije” czytało
+	się słabo). Kandydaci: pełny obrót i mniejsze (r = 1 … 0) × odjazd od punktu, na który kamera patrzy (f = 1 … 1,8).
+	Warunki kandydata:
+	  • gracz ≥ 62% punktów próbnych w kadrze (≥ 72%, gdy potwór bije gracza), potwór ≥ 65%;
+	  • gracz nie bliżej kamery niż 0,85 odległości potwora (nie „wielki na pierwszym planie”), nie wyższy w kadrze niż
+	    60% wysokości kadru (chyba że jest dużo wyższy od potwora), czubek głowy gracza co najmniej 10% pod górną
+	    krawędzią kadru;
+	  • potwór odsłonięty przez gracza w ≥ 70% punktów (i gracz przez potwora w ≥ 60%).
+	Spośród spełniających — najtańszy (najmniej odjęty obrót, potem najmniejszy odjazd); gdy żaden — najlepsza ocena.
+	Wybór liczony co 0,1 s i wygładzany, żeby kamera nie skakała. ]]
+local TWARZ_R = { 1, 0.85, 0.7, 0.5, 0.25, 0 }
+local TWARZ_F = { 1, 1.12, 1.25, 1.4, 1.6, 1.8 }
+function Sesja:twarzPotwora(poz: Vector3, cel: Vector3, kat: number, uj): Vector3
+	local rx, rz = poz.X - cel.X, poz.Z - cel.Z
+	local function obroc(a: number): Vector3
+		local c, s = math.cos(a), math.sin(a)
+		return Vector3.new(cel.X + rx * c - rz * s, poz.Y, cel.Z + rx * s + rz * c)
+	end
+	-- pełny obrót do kąta twarzy ≤ MAKS_KAT_TWARZY
+	local krok = rad(2)
+	local znak = if self:katTwarzy(obroc(krok)) < self:katTwarzy(obroc(-krok)) then 1 else -1
+	local phi = 0
+	if self:katTwarzy(poz) > MAKS_KAT_TWARZY then
+		for i = 1, 60 do
+			phi = znak * krok * i
+			if self:katTwarzy(obroc(phi)) <= MAKS_KAT_TWARZY then
+				break
+			end
+		end
+	end
+	local function kandydat(r: number, f: number): Vector3
+		local p = obroc(phi * r)
+		return cel + (p - cel) * f
+	end
+	-- wybór (r, f) co 0,1 s czasu kamery; między wyborami wygładzanie
+	local tw = self.kam.twarz
+	if not tw or tw.uj ~= uj then
+		tw = { uj = uj, r = nil, f = nil, rCel = 1, fCel = 1, t = -math.huge, zegar = self.zegar }
+		self.kam.twarz = tw
+	end
+	if self.zegar - tw.t >= 0.1 then
+		tw.t = self.zegar
+		local pG, pW = self:probkiAktora("gracz"), self:probkiAktora("wrog")
+		local srG, srW = self:wScenie("gracz") + Vector3.new(0, self.geo.h.gracz * 0.5, 0),
+			self:wScenie("wrog") + Vector3.new(0, self.geo.h.wrog * 0.5, 0)
+		local progG = if uj and uj.broniacy == "gracz" then 0.72 else 0.62
+		local wyzszy = self.geo.h.gracz > 1.6 * self.geo.h.wrog
+		-- ujęcia, w których gracz z założenia jest blisko kamery albo poza kadrem, mają łagodniejsze warunki:
+		-- zza gracza i start lotu pocisku (gracz na pierwszym planie, ale w kadrze ≥ 72% gdy obrywa, inaczej ≥ 40%),
+		-- zbliżenie potwora (z gracza widać rękę z bronią), ujęcia samego potwora (efekt, umiejętność na siebie)
+		local typ = uj and uj.typ or "ogolny"
+		local pierwszyPlan = typ == "zaAtakujacym" or typ == "zaBroniacym" or typ == "pocisk"
+		local samPotwor = (typ == "efekt" or typ == "naSiebie") or (typ == "zblizenie" and uj.broniacy == "wrog")
+		if pierwszyPlan and not (uj and uj.broniacy == "gracz") then
+			progG = 0.4
+		end
+		local tv = math.tan(rad(kat / 2))
+		local th = tv * 16 / 9
+		local najlepszy, koszt = nil, math.huge
+		local zapas, zapasOcena = nil, -math.huge
+		for _, r in TWARZ_R do
+			for _, f in TWARZ_F do
+				local q = kandydat(r, f)
+				local cf = CFrame.lookAt(q, cel)
+				local G, M = rzutPostaci(pG, cf, tv, th), rzutPostaci(pW, cf, tv, th)
+				local dG, dW = (q - srG).Magnitude, (q - srW).Magnitude
+				local odsM = if G.z < M.z then odsloniecie(pW, G, cf, tv, th) else 1
+				local odsG = if M.z < G.z then odsloniecie(pG, M, cf, tv, th) else 1
+				local c = (1 - r) * 1.0 + (f - 1) * 0.9
+				local oceny
+				if samPotwor then
+					oceny = { M.u / 0.65, odsM / 0.7 }
+				elseif typ == "zblizenie" then
+					oceny = { G.u / 0.72, odsG / 0.6 } -- zbliżenie gracza, gdy obrywa (z potwora widać część)
+				elseif pierwszyPlan then
+					oceny = { G.u / progG, M.u / 0.65, odsM / 0.7, odsG / 0.6 }
+				else
+					oceny = {
+						G.u / progG, M.u / 0.65, dG / (0.85 * dW), odsM / 0.7, odsG / 0.6,
+						if wyzszy then 1 else 1.2 / math.max(G.wys, 0.01), 0.8 / math.max(G.gora, 0.01),
+					}
+				end
+				local najgorsza = math.huge
+				for _, o in oceny do
+					najgorsza = math.min(najgorsza, o)
+				end
+				if najgorsza >= 1 then
+					if c < koszt then
+						najlepszy, koszt = { r, f }, c
+					end
+				else
+					local ocena = najgorsza - c * 0.05
+					if ocena > zapasOcena then
+						zapas, zapasOcena = { r, f }, ocena
+					end
+				end
+			end
+		end
+		local wybor = najlepszy or zapas or { 1, 1 }
+		tw.rCel, tw.fCel = wybor[1], wybor[2]
+	end
+	if tw.r == nil then
+		tw.r, tw.f = tw.rCel, tw.fCel
+	else
+		local u = 1 - math.exp(-math.max(0, self.zegar - tw.zegar) * 7)
+		tw.r += (tw.rCel - tw.r) * u
+		tw.f += (tw.fCel - tw.f) * u
+	end
+	tw.zegar = self.zegar
+	return kandydat(tw.r, tw.f)
+end
+
+-- ujęcie → (pozycja, cel, kąt) w układzie sceny, z poprawką „twarz potwora”
 function Sesja:ujecie(uj, tau: number): (Vector3, Vector3, number)
+	local poz, cel, kat = self:ujecieSurowe(uj, tau)
+	local typ = uj.typ
+	local tylkoGracz = (typ == "naSiebie" or typ == "efekt") and uj.atakujacy == "gracz"
+	if typ ~= "objazd" and typ ~= "pokonany" and not tylkoGracz then
+		poz = self:twarzPotwora(poz, cel, kat, uj)
+	end
+	return poz, cel, kat
+end
+
+-- prostokąt leżącego pokonanego w układzie sceny (X, Z) z obwiedni ostatniej klatki upadku (TabelaAktorow: lezy)
+function Sesja:lezacy(strona: string): (number, number, number, number, number)
+	local g = self.geo
+	local p = self:wScenie(strona)
+	local k = g.kier[strona]
+	local lz = self.aktorzy[strona].wpis.lezy
+	if lz then
+		-- rig: przód −Z, prawa +X; scena: aktor patrzy w k·X, jego prawa = k·Z
+		local xa, xb = p.X - k * lz.mn[3], p.X - k * lz.mx[3]
+		local za, zb = p.Z + k * lz.mn[1], p.Z + k * lz.mx[1]
+		return math.min(xa, xb), math.max(xa, xb), math.min(za, zb), math.max(za, zb), math.max(lz.mx[2], 0.8)
+	end
+	local r = math.max(g.w[strona], g.h[strona] * 0.5)
+	return p.X - r, p.X + r, p.Z - r, p.Z + r, g.h[strona] * 0.5
+end
+
+--[[ Najmniejszy kąt objazdu (stopnie), od którego kamera nie wjeżdża w leżącego pokonanego: kamera poza jego
+	prostokątem (z zapasem), widok na zwycięzcę nie przechodzi przez niego, a szczątki nie są bliżej kamery niż 0,95
+	odległości do zwycięzcy (nie wchodzą na pierwszy plan). Duży pokonany (stos głazów Strażnika) → objazd bardziej
+	z przodu zwycięzcy. ]]
+function Sesja:katObjazdu(W: Vector3, znak: number, R: number): number
+	local x0, x1, z0, z1 = self:lezacy(self.pokonany)
+	local m = 1.2
+	x0, x1, z0, z1 = x0 - m, x1 + m, z0 - m, z1 + m
+	local function wPudle(x: number, z: number): boolean
+		return x > x0 and x < x1 and z > z0 and z < z1
+	end
+	local function dobry(katSt: number): boolean
+		local k = rad(katSt)
+		local cx, cz = W.X + znak * R * math.cos(k), R * math.sin(k)
+		if wPudle(cx, cz) then
+			return false
+		end
+		for i = 1, 24 do
+			local u = i / 25
+			if wPudle(cx + (W.X - cx) * u, cz + (0 - cz) * u) then
+				return false
+			end
+		end
+		local dx = math.max(x0 - cx, 0, cx - x1)
+		local dz = math.max(z0 - cz, 0, cz - z1)
+		local doZw = math.sqrt((cx - W.X) ^ 2 + cz ^ 2)
+		return math.sqrt(dx * dx + dz * dz) >= 0.95 * doZw
+	end
+	local katMin = 20
+	for katSt = 140, 20, -2 do
+		if not dobry(katSt) then
+			katMin = katSt + 2
+			break
+		end
+	end
+	return katMin
+end
+
+function Sesja:ujecieSurowe(uj, tau: number): (Vector3, Vector3, number)
 	local g = self.geo
 	local lt = tau - (self.kam.start or 0)
 	local typ = uj.typ
@@ -1526,6 +2030,12 @@ function Sesja:ujecie(uj, tau: number): (Vector3, Vector3, number)
 	local hA, hD = g.h[A], g.h[D]
 	local wA, wD = g.w[A], g.w[D]
 	local dir = if xD > xA then 1 elseif xD < xA then -1 else g.kier[A]
+	-- zza pleców potwora nie widać jego twarzy (D5): ujęcie „zza pleców” zawsze zza gracza
+	if typ == "zaAtakujacym" and A == "wrog" then
+		typ = "zaBroniacym"
+	elseif typ == "zaBroniacym" and D == "wrog" then
+		typ = "zaAtakujacym"
+	end
 	-- zza pleców dużo większego aktora nic nie widać (Troll przed Wojownikiem) — wtedy ujęcie z boku
 	-- …a przy bardzo różnym wzroście (Mag przy Strażniku) mały aktor ląduje w rogu kadru
 	local roznica = math.max(hA, hD) / math.max(math.min(hA, hD), 0.5)
@@ -1552,7 +2062,8 @@ function Sesja:ujecie(uj, tau: number): (Vector3, Vector3, number)
 		end
 		local srodek = (lo + hi) / 2
 		-- skos od strony atakującego; gdy atakujący jest olbrzymem, od strony celu (inaczej jego bryła zasłania cel)
-		local strona = if olbrzym then -1 else 1
+		-- …i gdy atakuje potwór — od strony gracza, czyli od strony twarzy potwora (D5)
+		local strona = if olbrzym or A == "wrog" then -1 else 1
 		local xKam, xCel = srodek - dir * strona * (g.S * 0.32 + 0.6 * k), srodek + dir * strona * g.S * 0.08
 		-- kamera stoi w skosie: oba brzegi pary (np. szeroki slime z brzegu kadru) muszą zmieścić się w poziomie
 		local tanPol = math.tan(rad(21)) * 16 / 9 * 0.86
@@ -1654,6 +2165,25 @@ function Sesja:ujecie(uj, tau: number): (Vector3, Vector3, number)
 			d = math.max(d, odlDlaGory(hA, 0.48 * hA, 44) / 0.9)
 		end
 		return Vector3.new(xA + f * d * 0.4, 0.6 * hA + 0.8, d * 0.9 - 0.5 * k), Vector3.new(xA + f * 0.4, 0.48 * hA, 0), 44
+	elseif typ == "pokonany" then
+		-- finał (D1): pokonany z góry 3/4, od strony zwycięzcy i widza — widać koniec upadku (kałuża z oczkami, stos
+		-- głazów, leżący troll albo bohater); kadr z obwiedni leżenia, na początku jeszcze z zapasem na stojącego
+		local P = self.pokonany
+		local kP = g.kier[P]
+		local x0, x1, z0, z1, hLez = self:lezacy(P)
+		-- na początku ujęcia pokonany jeszcze się przewraca: cel kamery i zapas w pionie przechodzą od stojącego do leżącego
+		local u0 = gladko(lt / 0.9)
+		local c = Vector3.new((x0 + x1) / 2, g.h[P] * 0.42 * (1 - u0) + hLez * 0.3 * u0, (z0 + z1) / 2)
+		local rozp = math.max(x1 - x0, z1 - z0) * 0.5
+		local k = gladko(lt / 1.6)
+		local wys = math.max(hLez, g.h[P] * 0.8 * (1 - u0))
+		local t = math.tan(rad(22))
+		-- (perspektywa z góry powiększa bliższą krawędź leżącego — stąd zapas 1,3)
+		local d = math.max(7, ((rozp * 1.2 + 1.0) / (t * 16 / 9) + rozp * 0.5) * 1.3, (wys * 0.9 + 1.2) / t)
+		d *= 1.08 - 0.08 * k
+		local a, e = rad(62), rad(30)
+		local u = Vector3.new(kP * math.cos(a), 0, math.sin(a))
+		return c + u * (d * math.cos(e)) + Vector3.new(0, d * math.sin(e), 0), c, 44
 	end
 	-- objazd wokół zwycięzcy (finał); kończy się ze zwycięzcą w jednej ćwiartce, panel wyniku w drugiej połowie
 	local zw = self.zwyciezca
@@ -1662,21 +2192,64 @@ function Sesja:ujecie(uj, tau: number): (Vector3, Vector3, number)
 	local czas = math.max(0, tau - (self.kam.start or tau)) + self.tauWyniku
 	local k = wyjscie(czas / 2.6)
 	local dryf = math.min(math.max(0, czas - 2.6) * 1.2, 12)
-	local kat = rad(62 - 22 * k - dryf)
-	local R = 1.25 * hZ + 6.5
-	if hZ > DUZY then
-		R = math.max(R, odlDlaGory(hZ, 0.5 * hZ, 44))
+	local W, R, przesuniecie = self:parametryObjazdu()
+	-- objazd nie wjeżdża w leżącego pokonanego (stos głazów Strażnika) i nie ma go na pierwszym planie (D1)
+	if self.katObjazduMin == nil then
+		self:przygotujObjazd()
 	end
-	local W = Vector3.new(g.x[zw], 0, 0)
-	local cel = W + Vector3.new(znak * R * 0.32, hZ * 0.5, 0)
+	local kat = rad(math.max(62 - 22 * k - dryf, self.katObjazduMin))
+	local cel = W + Vector3.new(znak * R * przesuniecie, hZ * 0.5, 0)
 	return W + Vector3.new(znak * R * math.cos(kat), hZ * 0.55 + 1.6, R * math.sin(kat)), cel, 44
+end
+
+-- objazd zwycięzcy: punkt zwycięzcy W (scena), promień R i przesunięcie kadru
+function Sesja:parametryObjazdu(): (Vector3, number, number)
+	local g = self.geo
+	local zw = self.zwyciezca
+	local hZ = g.h[zw]
+	local R = 1.25 * hZ + 6.5
+	local przesuniecie = 0.32
+	if hZ > DUZY then
+		-- duży zwycięzca (Troll, Strażnik): dalej i bliżej środka kadru — inaczej korona i bok były ucięte
+		R = math.max(R, odlDlaGory(hZ, 0.5 * hZ, 44)) * 1.15
+		przesuniecie = 0.2
+	end
+	return Vector3.new(g.x[zw], 0, 0), R, przesuniecie
+end
+
+--[[ Kąt objazdu (bez szczątków na pierwszym planie) i obrót zwycięzcy do widza. Kamera objazdu stoi pod kątem
+	`kat` od kierunku, w którym zwycięzca patrzy (na pokonanego). Gdy leżący zmusza kamerę do dużego kąta (stos głazów,
+	kałuża przed zwycięzcą), kamera stawała za plecami zwycięzcy i wiwatu nie było widać (przegląd 15.11) — teraz
+	zwycięzca w radości obraca się w stronę kamery tak, żeby kąt twarzy (0° = przodem do kamery) był ≤ 35° na początku
+	objazdu; objazd potem zmniejsza kąt najwyżej o ok. 34° (wjazd i dryf), więc twarz zostaje w kadrze. ]]
+function Sesja:przygotujObjazd()
+	local W, R = self:parametryObjazdu()
+	self.katObjazduMin = self:katObjazdu(W, self.geo.kier[self.zwyciezca], R)
+	local katStart = math.max(62, self.katObjazduMin)
+	self.obrotZwyciezcy = rad(math.clamp(katStart - 35, 0, 150))
+end
+
+-- kąt twarzy dowolnej postaci z punktu sceny poz (0° = przodem do punktu, 90° = profil, 180° = tyłem)
+function Sesja:katTwarzyStrony(strona: string, poz: Vector3): number
+	local a = self.aktorzy and self.aktorzy[strona]
+	if not a then
+		return 0
+	end
+	local p = self:wScenie(strona)
+	local f = self.cfSceny:VectorToObjectSpace(a:cfZiemi().LookVector)
+	f = Vector3.new(f.X, 0, f.Z)
+	local v = Vector3.new(poz.X - p.X, 0, poz.Z - p.Z)
+	if v.Magnitude < 1e-3 or f.Magnitude < 1e-3 then
+		return 0
+	end
+	return math.deg(math.acos(math.clamp(v.Unit:Dot(f.Unit), -1, 1)))
 end
 
 function Sesja:aktualizujKamere(tau: number, dt: number)
 	local kam = self.kam
 	local poz, cel, kat = self:ujecie(kam.uj, tau)
 	if kam.od then
-		local u = gladko((os.clock() - kam.przejscieStart) / kam.przejscie)
+		local u = gladko((self.zegar - kam.przejscieStart) / kam.przejscie)
 		if u >= 1 then
 			kam.od = nil
 		else
@@ -1725,14 +2298,23 @@ function Sesja:rozpocznij(walka)
 	self.koszt = table.create(2000)
 	self.zegarStartu = os.clock()
 	self.wstrzasKam = { sila = 0, wiek = 0 }
-	self:ustawAktorow(walka)
-	self:zaplanuj(walka)
+	self.katyTwarzy = {}
+	self.pomiarTwarzy = nil
+	self.torUpadku = nil
+	self.czasUjeciaPokonanego = nil
+	self.upadekWUjeciu = nil
+	self.katObjazduMin = nil
+	self.obrotZwyciezcy = nil
+	self.statDzwiekow = { zagrane = 0, pominiete = 0, maksNaraz = 0 }
 	self.zwyciezca = if walka.wynik == "wygrana" then "gracz" else "wrog"
 	self.pokonany = inna(self.zwyciezca)
-	self.final = { radosc = false, baner = false, lup = false, objazd = false }
+	self:ustawAktorow(walka)
+	self:zaplanuj(walka)
+	self.final = { radosc = false, baner = false, lup = false, objazd = false, pokonany = false }
 	self.wstep = { pokazany = false, schowany = false }
-	self.kam = { uj = { typ = "ogolny", prio = 3 }, start = 0, ostatnieCiecie = os.clock() }
+	self.kam = { uj = { typ = "ogolny", prio = 3 }, start = 0, ostatnieCiecie = self.zegar }
 	self.ui:usunNapisy()
+	self.ui:zerujStatystykiNapisow()
 	self.ui:ukryjWynik()
 	self.ui:ukryjBaner(true)
 	self.ui:ukryjUmiejetnosc()
@@ -1743,6 +2325,11 @@ function Sesja:rozpocznij(walka)
 	end)
 	self.ui:pokazTempo(self.tempo, function(t)
 		self:ustawTempo(t)
+		self:dzwiek("przycisk", 1.2)
+	end)
+	self.ui.skalaZycia = if self.tempo >= 4 then 0.7 elseif self.tempo >= 2 then 0.85 else 1
+	self.ui:pokazDzwiek(zapamietaneWyciszenie, function()
+		self:przelaczDzwiek()
 	end)
 	self.zaslonaCel = 0
 	self.faza = "odtwarzanie"
@@ -1761,12 +2348,14 @@ function Sesja:ustawTempo(t: number)
 	self.tempo = t
 	zapamietaneTempo = t
 	self.ui:ustawTempo(t)
+	-- przy ×2 / ×4 napisy żyją krócej (kolejka przy postaci nie rośnie)
+	self.ui.skalaZycia = if t >= 4 then 0.7 elseif t >= 2 then 0.85 else 1
 	self:atrybut("OstatnieTempo", t)
 end
 
 ------------------------------------------------------------------ krok sceny (czas sceny d)
 function Sesja:krokSceny(d: number, dt: number)
-	local tau = math.min(self.tau + d, self.walka.czas)
+	local tau = math.min(self.tau + d, self.czasKonca)
 	self.tau = tau
 	-- początki zdarzeń
 	while self.nastepne <= #self.plan and self.plan[self.nastepne].t <= tau do
@@ -1794,30 +2383,44 @@ function Sesja:krokSceny(d: number, dt: number)
 		self.wstep.schowany = true
 		self.ui:ukryjBaner(false)
 	end
-	-- finał
-	if not self.final.objazd and tau >= self.tObjazdu then
-		self.final.objazd = true
-		self:proponujUjecie({ typ = "objazd", prio = 3 })
+	-- finał: ujęcie pokonanego (koniec jego upadku), potem radość zwycięzcy, objazd, baner, łup, panel wyniku
+	if self.tPokonany and not self.final.pokonany and tau >= self.tPokonany then
+		self.final.pokonany = true
+		self.final.pokonanyZegar = self.zegar
+		self:proponujUjecie({ typ = "pokonany", prio = 3 })
 	end
-	local f = tau - self.tKoniecDziennika
-	if f >= 0.05 and not self.final.radosc then
+	if not self.final.radosc and tau >= self.tRadosc then
 		self.final.radosc = true
+		if self.final.pokonanyZegar then
+			self.czasUjeciaPokonanego = self.zegar - self.final.pokonanyZegar
+			local tor = self.torUpadku
+			self.upadekWUjeciu = tor ~= nil and (tor.zakonczony or tor.czas >= tor.dlugosc - 0.02)
+		end
+		self:przygotujObjazd() -- kąt objazdu i obrót zwycięzcy do widza (aktualizujPozy)
 		self:klip(self.aktorzy[self.zwyciezca], "radosc", { petla = true, przejscie = 0.2 })
 		self.ui:ustawTure(self.turaNr)
 		self:atrybut("OstatniaLiczbaTurOdtworzona", self.turaNr)
 	end
-	if f >= 0.25 and not self.final.baner then
+	if not self.final.objazd and tau >= self.tObjazdu then
+		self.final.objazd = true
+		self:proponujUjecie({ typ = "objazd", prio = 3 })
+	end
+	local f = tau - self.tRadosc
+	if f >= 0.2 and not self.final.baner then
 		self.final.baner = true
 		self.ui:ukryjPomin()
 		self.ui:ukryjTempo()
+		self.ui:ukryjDzwiek()
 		self.ui:ukryjUmiejetnosc()
 		if self.zwyciezca == "gracz" then
 			self.ui:pokazBaner("ZWYCIĘSTWO!", K.zolty, K.czerwony, 0.83)
+			self:melodia("zwyciestwo")
 		else
 			self.ui:pokazBaner("PORAŻKA!", K.bialy, K.fiolet, 0.83)
+			self:melodia("porazka")
 		end
 	end
-	if f >= 0.35 and not self.final.lup then
+	if f >= 0.3 and not self.final.lup then
 		self.final.lup = true
 		if self.zwyciezca == "gracz" then
 			self:wyrzucLup(false)
@@ -1863,13 +2466,18 @@ function Sesja:krok(dt: number)
 		ui:aktualizuj(dt, kamera)
 		return
 	end
+	local reczny = self.opcje.reczny and self.faza == "odtwarzanie"
+	if not reczny then
+		self.zegar += dt
+	end
 	if self.faza == "odtwarzanie" then
 		table.insert(self.klatki, dt)
 		local d = 0
 		if not self.opcje.reczny then
-			d = dt * self.tempo * self:zwolnienie(self.tau)
+			d = dt * self:tempoTeraz() * self:zwolnienie(self.tau)
 		end
-		self:krokSceny(d, dt)
+		self:krokSceny(d, if reczny then 0 else dt)
+		self:mierzTwarz()
 		if self.opcje.pominPo and self.tau >= self.opcje.pominPo then
 			self:pomin()
 		end
@@ -1882,39 +2490,115 @@ function Sesja:krok(dt: number)
 		self.fx:krok(dt)
 		self:aktualizujKamere(self.tau, dt)
 	end
-	ui:aktualizuj(dt, kamera)
+	self:ustawKotwice()
+	-- w trybie poklatkowym (testy, filmy) napisy starzeją się tylko przy przewijaniu — w czasie „jak w grze”
+	ui:aktualizuj(dt, kamera, if reczny then 0 else dt)
 	if self.opcje.etykietaCzasu then
 		ui:ustawZegar(string.format("t = %.2f / %.2f s  zd. %s/%d  tura %d  ujęcie %s  ×%d", self.tau, self.walka.czas,
 			tostring(self.biezace), #self.plan, self.turaNr, self.kam.uj.typ, self.tempo))
 	end
-	if self.faza == "odtwarzanie" and self.tau >= self.walka.czas then
+	if self.faza == "odtwarzanie" and self.tau >= self.czasKonca then
 		self:pokazWynik()
 	end
 end
 
--- testy: ręczne przesunięcie czasu sceny (opcje.reczny), drobnymi krokami jak w zwykłym odtwarzaniu
+-- tempo sceny teraz: wybór gracza, a od chwili tuż przed ciosem kończącym (finał) zawsze ×1
+function Sesja:tempoTeraz(): number
+	if self.tau >= (self.tempoFinaluOd or math.huge) then
+		return 1
+	end
+	return self.tempo
+end
+
+-- kotwice napisów: prostokąty postaci na ekranie (z wymiarów aktora wokół jego ziemi)
+function Sesja:ustawKotwice()
+	if not self.aktorzy or not self.ui or not self.ui.kadrPx then
+		return
+	end
+	local kam = self.kamera or workspace.CurrentCamera
+	local kotwice = {}
+	-- prostokąt walca (szerokość × głębokość aktora) od ziemi do wysokości — ciaśniej niż narożniki pudła, które
+	-- z ukosa poszerzały postać o ok. 40% (napisy dużego celu nie mieściły się obok niego); głowa = górna ćwiartka
+	local function rzut(cf: CFrame, rx: number, rz: number, y0: number, y1: number)
+		local x0, yy0, x1, yy1 = math.huge, math.huge, -math.huge, -math.huge
+		local przed = 0
+		for i = 0, 7 do
+			local r = rad(i * 45)
+			for _, y in { y0, y1 } do
+				local p, widac = kam:WorldToViewportPoint((cf * CFrame.new(math.cos(r) * rx, y, math.sin(r) * rz)).Position)
+				if widac then
+					przed += 1
+					x0, yy0, x1, yy1 = math.min(x0, p.X), math.min(yy0, p.Y), math.max(x1, p.X), math.max(yy1, p.Y)
+				end
+			end
+		end
+		if przed == 0 then
+			return nil
+		end
+		return { x0 = x0, y0 = yy0, x1 = x1, y1 = yy1 }
+	end
+	for strona, a in self.aktorzy do
+		local w = a.wpis
+		local cf = a:cfZiemi()
+		local r = rzut(cf, w.szerokosc * 0.5, w.glebokosc * 0.5, 0, w.wysokosc)
+		if r then
+			r.widac = true
+			r.glowa = rzut(cf, w.szerokosc * 0.3, w.glebokosc * 0.3, w.wysokosc * 0.74, w.wysokosc)
+			kotwice[strona] = r
+		end
+	end
+	self.ui:ustawKotwice(kotwice)
+end
+
+-- pomiar twarzy potwora (D5): w chwili trafienia ataku albo tyknięcia na potworze — kąt twarzy z bieżącej kamery
+function Sesja:mierzTwarz()
+	local p = self.pomiarTwarzy
+	if not p or not self.kamera then
+		return
+	end
+	self.pomiarTwarzy = nil
+	local poz = self.cfSceny:PointToObjectSpace(self.kamera.CFrame.Position)
+	local o = self.kam.ostatnie
+	local uG, uW = -1, -1
+	if o then
+		uG = math.floor(ulamekWKadrze(self:probkiAktora("gracz"), o[1], o[2], o[3]) * 100 + 0.5)
+		uW = math.floor(ulamekWKadrze(self:probkiAktora("wrog"), o[1], o[2], o[3]) * 100 + 0.5)
+	end
+	table.insert(self.katyTwarzy, { kat = math.floor(self:katTwarzy(poz) + 0.5), typ = self.kam.uj.typ, nr = p, uG = uG, uW = uW })
+end
+
+-- testy: ręczne przesunięcie czasu (opcje.reczny) o `sekundy` czasu „jak w grze” (tempo gracza, zwolnienia), drobnymi
+-- krokami; napisy, przejścia kamery i wstrząs liczą się w tym samym czasie, więc film poklatkowy wygląda jak gra
 function Sesja:przewin(sekundy: number)
 	local zostalo = sekundy
 	while zostalo > 1e-6 and self.faza == "odtwarzanie" do
 		local d = math.min(zostalo, 1 / 60)
 		zostalo -= d
-		self:krokSceny(d * self:zwolnienie(self.tau), 1 / 60)
-		if self.tau >= self.walka.czas then
+		self.zegar += d
+		self:krokSceny(d * self:tempoTeraz() * self:zwolnienie(self.tau), d)
+		self:mierzTwarz()
+		self:ustawKotwice()
+		self.ui:aktualizuj(d, self.kamera, d)
+		if self.tau >= self.czasKonca then
 			self:pokazWynik()
 		end
 	end
-	self.ui:aktualizuj(0.05, self.kamera)
 end
 
--- testy: przewiń do chwili sceny τ (bez zwolnienia — cel jest w czasie sceny)
+-- testy: przewiń do chwili sceny τ (krokami czasu sceny; napisy i kamera dostają odpowiadający im czas „jak w grze”)
 function Sesja:przewinDo(cel: number)
 	while self.faza == "odtwarzanie" and self.tau < cel - 1e-6 do
-		self:krokSceny(math.min(cel - self.tau, 1 / 60), 1 / 60)
-		if self.tau >= self.walka.czas then
+		local d = math.min(cel - self.tau, 1 / 60)
+		local dr = d / math.max(self:tempoTeraz() * self:zwolnienie(self.tau), 0.05)
+		self.zegar += dr
+		self:krokSceny(d, dr)
+		self:mierzTwarz()
+		self:ustawKotwice()
+		self.ui:aktualizuj(dr, self.kamera, dr)
+		if self.tau >= self.czasKonca then
 			self:pokazWynik()
 		end
 	end
-	self.ui:aktualizuj(0.05, self.kamera)
 end
 
 ------------------------------------------------------------------ pomiń, wynik, jeszcze raz
@@ -1922,8 +2606,8 @@ function Sesja:pomin()
 	if self.faza ~= "odtwarzanie" or self.pominieto then
 		return
 	end
-	self.pominieto = true
 	self:dzwiek("przycisk")
+	self.pominieto = true
 	self.ui:usunNapisy()
 	self.ui:ukryjBaner(true)
 	self.ui:ukryjUmiejetnosc()
@@ -1955,8 +2639,15 @@ function Sesja:pomin()
 		P:graj("upadek", { przejscie = 0, odCzasu = dl })
 	end
 	self.aktorzy[self.zwyciezca]:graj("radosc", { przejscie = 0, petla = true })
-	self.final = { radosc = true, baner = true, lup = true, objazd = true }
-	self.tau = self.walka.czas
+	self.final = { radosc = true, baner = true, lup = true, objazd = true, pokonany = true }
+	self.tau = self.czasKonca
+	-- objazd i zwycięzca obrócony do widza, jak w zwykłym finale
+	self:przygotujObjazd()
+	do
+		local zw = self.zwyciezca
+		local x, kier, yaw = self.geo.x[zw], self.geo.kier[zw], self.obrotZwyciezcy or 0
+		self.aktorzy[zw]:ustaw(self.cfSceny * CFrame.lookAt(Vector3.new(x, 0, 0), Vector3.new(x + kier * math.cos(yaw), 0, math.sin(yaw))))
+	end
 	self.kam.uj = { typ = "objazd", prio = 3 }
 	self.kam.start = self.tau
 	self.kam.od = nil
@@ -1972,6 +2663,27 @@ function Sesja:pokazWynik()
 	local ui = self.ui
 	ui:ukryjPomin()
 	ui:ukryjTempo()
+	ui:ukryjDzwiek()
+	-- pomiary poprawek z 15.11 (D1, D3, D4, D5)
+	self:atrybut("OstatnieUjeciePokonanego", if self.czasUjeciaPokonanego then math.floor(self.czasUjeciaPokonanego * 100 + 0.5) / 100 else -1)
+	self:atrybut("OstatniUpadekWUjeciu", self.upadekWUjeciu == true)
+	self:atrybut("OstatniKatObjazdu", self.katObjazduMin or -1)
+	local sn = ui.statNapisow or {}
+	self:atrybut("OstatnieNapisyMaksNaraz", sn.maksNaraz or 0)
+	self:atrybut("OstatnieNapisyNakladania", sn.nakladania or 0)
+	self:atrybut("OstatnieNapisyNaCelu", sn.naCelu or 0)
+	self:atrybut("OstatnieNapisyNaInnym", sn.naInnym or 0)
+	self:atrybut("OstatnieNapisyNaGlowie", math.floor((sn.naGlowie or 0) * 100 + 0.5) / 100)
+	self:atrybut("OstatnieNapisyPokazane", sn.pokazane or 0)
+	local sd = self.statDzwiekow or {}
+	self:atrybut("OstatnieDzwiekiZagrane", sd.zagrane or 0)
+	self:atrybut("OstatnieDzwiekiPominiete", sd.pominiete or 0)
+	self:atrybut("OstatnieDzwiekiMaksNaraz", sd.maksNaraz or 0)
+	local katy = {}
+	for _, k in self.katyTwarzy or {} do
+		table.insert(katy, string.format("%d:%s:%d:%d:%d", k.nr, k.typ, k.kat, k.uG or -1, k.uW or -1))
+	end
+	self:atrybut("OstatnieKatyTwarzy", table.concat(katy, ","))
 	ui:ukryjBaner(false)
 	ui:ukryjUmiejetnosc()
 	local klatki = self.klatki
@@ -2194,7 +2906,7 @@ function Odtwarzacz.uruchom(kontener: Instance, wybor: any, opcje: any?): boolea
 	local s = setmetatable({
 		kontener = kontener, gracz = gracz, opcje = o, tempo = tempo, wybor = { klasa = w.klasa, przeciwnik = w.przeciwnik, poziom = w.poziom },
 		sprzatanie = {}, utworzono = 0, faza = "prosba", zakonczona = false, zaslona = 0, zaslonaCel = 0, tau = 0, tauWyniku = 0,
-		licznikUjec = 0,
+		licznikUjec = 0, zegar = 0,
 	}, Sesja)
 	sesja = s
 	local ok, blad = xpcall(function()
@@ -2302,19 +3014,51 @@ function Odtwarzacz.kadr()
 	end
 	wynik.ujecie = s.kam and s.kam.uj and s.kam.uj.typ
 	wynik.tau = s.tau
+	-- kąt twarzy potwora z bieżącej kamery (0° = w twarz, 90° = profil) i najbliższa część pokonanego od kamery
+	wynik.katTwarzy = s:katTwarzy(s.cfSceny:PointToObjectSpace(kam.CFrame.Position))
+	if s.zwyciezca then
+		wynik.katTwarzyZwyciezcy = s:katTwarzyStrony(s.zwyciezca, s.cfSceny:PointToObjectSpace(kam.CFrame.Position))
+	end
+	local P = s.aktorzy[s.pokonany]
+	if P then
+		local najblizej = math.huge
+		for _, c in P.model:GetDescendants() do
+			if c:IsA("BasePart") and c ~= P.hrp and c.Transparency < 0.9 then
+				local lok = c.CFrame:PointToObjectSpace(o)
+				local h = c.Size / 2
+				local dx = math.max(math.abs(lok.X) - h.X, 0)
+				local dy = math.max(math.abs(lok.Y) - h.Y, 0)
+				local dz = math.max(math.abs(lok.Z) - h.Z, 0)
+				najblizej = math.min(najblizej, math.sqrt(dx * dx + dy * dy + dz * dz))
+			end
+		end
+		wynik.pokonanyOdKamery = najblizej
+		wynik.zwyciezcaOdKamery = (s.aktorzy[s.zwyciezca]:cfZiemi().Position - o).Magnitude
+	end
 	return wynik
 end
 
--- testy: napisy nad postaciami widoczne teraz (tekst i styl)
+-- testy: napisy przy postaciach widoczne teraz (tekst, styl, postać, prostokąt w pikselach) i kotwice postaci
 function Odtwarzacz.napisy()
 	local s = sesja
 	local lista = {}
 	if s and s.ui then
-		for _, n in s.ui.napisy do
-			table.insert(lista, { tekst = n.napis.Text, styl = string.sub(n.pole.Name, 7) })
+		for _, p in s.ui.prostokatyNapisow or {} do
+			local n = p.n
+			if n.pole and n.pole.Parent then
+				table.insert(lista, { tekst = n.tekst, styl = n.styl, klucz = n.klucz, wiek = n.wiek, zycie = n.zycie,
+					x0 = p.x0, y0 = p.y0, x1 = p.x1, y1 = p.y1, widac = n.pole.Visible, widoczny = p.widoczny,
+					przezr = n.napis.TextTransparency, skala = n.skala.Scale })
+			end
 		end
+		local czekajace = {}
+		for _, n in s.ui.kolejkaNapisow do
+			table.insert(czekajace, { tekst = n.tekst, styl = n.styl, klucz = n.klucz, czeka = n.czeka })
+		end
+		return { napisy = lista, czekajace = czekajace, kotwice = s.ui.kotwice, kadr = s.ui.kadrPx,
+			tau = s.tau, biezace = s.biezace }
 	end
-	return lista
+	return { napisy = lista }
 end
 
 -- stan do testów (bez instancji): faza, czas, bieżące zdarzenie, paski, kamera
@@ -2332,6 +3076,8 @@ function Odtwarzacz.stan()
 		patrz = { (kam.CFrame.Position + kam.CFrame.LookVector * 10).X, (kam.CFrame.Position + kam.CFrame.LookVector * 10).Y,
 			(kam.CFrame.Position + kam.CFrame.LookVector * 10).Z },
 		fov = kam.FieldOfView,
+		czasKonca = s.czasKonca, tPokonany = s.tPokonany, tRadosc = s.tRadosc, tempoTeraz = s.walka and s:tempoTeraz(),
+		zegar = s.zegar, pokonany = s.pokonany, zwyciezca = s.zwyciezca,
 	}
 	if s.plan and s.biezace then
 		local ev = s.plan[s.biezace]
@@ -2340,6 +3086,16 @@ function Odtwarzacz.stan()
 		wynik.t = ev.t
 		wynik.trafienie = if ev.eHit then ev.t + ev.eHit else nil
 		wynik.styl = ev.styl
+		wynik.lot = ev.lot
+		wynik.wypuszczenie = if ev.tWypuszczenia then ev.t + ev.tWypuszczenia elseif ev.eRel and ev.lot and ev.lot > 0 then ev.t + ev.eRel else nil
+		wynik.cel = ev.z.cel
+		wynik.krytyk = ev.z.krytyk == true
+		local pt = ev.punktTrafienia
+		wynik.punktTrafienia = if pt then { pt.X, pt.Y, pt.Z } else nil
+	end
+	local tor = s.torUpadku
+	if tor then
+		wynik.upadek = { czas = tor.czas, dlugosc = tor.dlugosc, koniec = tor.zakonczony }
 	end
 	return wynik
 end

@@ -1,5 +1,5 @@
 {
- "data": "2026-11-15 02:01",
+ "data": "2026-11-15 12:04",
  "wynik": "29/29",
  "testy": [
   {
@@ -40,7 +40,7 @@
   {
    "test": "kadr rozszarpanie (wojownik/cierniowy_wilk/1, zd. 5, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 0.34 odsł. 0.34"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 0.70 odsł. 0.70"
   },
   {
    "test": "kadr chmura_zarodnikow (wojownik/muchomornik/1, zd. 5, chmura)",
@@ -50,12 +50,12 @@
   {
    "test": "kadr ogluszajace_uderzenie (mag/lesny_troll/5, zd. 9, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.99 | cel w kadrze 1.00 odsł. 1.00"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.83 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
    "test": "kadr uscisk_korzeni (wojownik/straznik_lasu/5, zd. 9, w_klipie)",
    "ok": true,
-   "opis": "krytyk: atak w kadrze 1.00 odsł. 0.90 | cel w kadrze 1.00 odsł. 0.93"
+   "opis": "krytyk: atak w kadrze 1.00 odsł. 0.90 | cel w kadrze 1.00 odsł. 0.79"
   },
   {
    "test": "kadr dluga: 21 trafień (wojownik/straznik_lasu/10)",
@@ -70,27 +70,27 @@
   {
    "test": "bez −0 przy pełnej tarczy (blok, wojownik/cierniowy_wilk/10 ziarno 475464, zd. 12)",
    "ok": true,
-   "opis": "napisy: ['−71', '−47', '−80', 'BLOK!', '−12', 'UNIK!', 'BLOK!', '−17', '−140', 'ZDARTY PANCERZ!', 'KRYTYK!', '−173', 'KAMIENNA SKÓRA! 69', 'BLOK!', 'TARCZA −12']"
+   "opis": "napisy: ['BLOK!', 'TARCZA −12']"
   },
   {
    "test": "bez −0 przy pełnej tarczy (cios, mag/cierniowy_wilk/10 ziarno 150785, zd. 18)",
    "ok": true,
-   "opis": "napisy: ['−83', '−60', '−83', '−66', '−229', 'PODPALENIE!', '−43', '−93', 'KRWAWIENIE!', '−27', 'UNIK!', '−43', '−66', '−27', 'BARIERA! 54', 'TARCZA −53']"
+   "opis": "napisy: ['TARCZA −53']"
   },
   {
    "test": "spowolnienie od ogluszajace_uderzenie (wojownik/lesny_troll/5 ziarno 104736, zd. 8)",
    "ok": true,
-   "opis": "napisy ['−32', 'KRYTYK!', '−78', '−27', 'KRYTYK!', '−76', 'BLOK!', '−7', '−130', '−65', 'SPOWOLNIENIE!']; ozdoba Gwiazdka: 6 szt."
+   "opis": "napisy ['−65', 'SPOWOLNIENIE!']; ozdoba Gwiazdka: 6 szt."
   },
   {
    "test": "spowolnienie od uscisk_korzeni (wojownik/straznik_lasu/5 ziarno 104736, zd. 8)",
    "ok": true,
-   "opis": "napisy ['−27', 'KRYTYK!', '−77', '−22', 'KRYTYK!', '−75', 'BLOK!', '−6', '−129', '−59', 'SPOWOLNIENIE!']; ozdoba Pnacze: 3 szt."
+   "opis": "napisy ['SPOWOLNIENIE!']; ozdoba Pnacze: 3 szt."
   },
   {
    "test": "spowolnienie od lodowy_pocisk (mag/lesny_slime/5 ziarno 209465, zd. 12)",
    "ok": true,
-   "opis": "napisy ['UNIK!', '−44', '−37', '−50', '−37', 'ZDARTY PANCERZ!', 'KRYTYK!', '−265', 'PODPALENIE!', '−25', '−45', '−116', 'SPOWOLNIENIE!']; ozdoba Krysztal: 5 szt."
+   "opis": "napisy ['−116', 'SPOWOLNIENIE!']; ozdoba Krysztal: 5 szt."
   },
   {
    "test": "odmiana w panelu wyniku (tury: 3, zdarzenia: 3, przegrana)",

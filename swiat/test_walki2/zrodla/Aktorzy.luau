@@ -149,7 +149,9 @@ function Aktorzy.obrys(model: Model, tryb: string?)
 		local n = 0
 		for _, c in bryly(model) do
 			local r = c.Size
-			if math.min(r.X, r.Y, r.Z) < Ustawienia.OBRYS_MIN or not klocek(c) then
+			-- bryły skóry (galareta slime'a) zgniata siatka co klatkę, a skorupa jest sztywną kopią rozmiaru spoczynku —
+			-- przy przysiadzie i w kałuży wystawałaby czarną ramą, więc skóra nie dostaje skorupy (D8)
+			if math.min(r.X, r.Y, r.Z) < Ustawienia.OBRYS_MIN or not klocek(c) or c:GetAttribute("Skora") then
 				continue
 			end
 			local s = Instance.new("Part")

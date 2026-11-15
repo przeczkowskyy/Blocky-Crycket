@@ -17,6 +17,8 @@
 		fx:chmura(od, do, czas, kolor)           chmura zarodników płynąca do celu
 		fx:korzenie(cfZiemi, promien, kolor, czasWzrostu, czasTrwania)
 		fx:smuga(aktor, kolor, czas)             smuga (Trail) za bronią aktora przez czas sceny
+		fx:smugaCzesci(czesc, kolor, czas, szer) smuga za dowolną częścią (bańka kwasu z klipu)
+		fx:kaluza(poz, promien, kolor, czas)     płaska kałuża kwasu na ziemi przez czas sceny
 		fx:wyglad(nazwa, aktor) → ozdoba         Wyglad.<nazwa> — trwały efekt na postaci; ozdoba:puls(), ozdoba:zniszcz()
 		fx:lup(zrodlo, cel, lup, natychmiast)    wysypany łup (monety, żetony, klejnot, kryształ)
 		fx:krok(d)                               d = krok czasu sceny
@@ -297,8 +299,10 @@ Wybuch.lod = function(fx, poz, s)
 	fx:iskry(poz, { hex("#BDF3FF"), hex("#FFFFFF"), hex("#6FD6FF") }, 12, 13, 1.0 * s, 20)
 end
 Wybuch.kwas = function(fx, poz, s)
-	fx:kula(poz, hex("#9BF04A"), 0.8 * s, 3.6 * s, 0.35, nil, 0.3)
-	fx:iskry(poz, { hex("#9BF04A"), hex("#5FD13A"), hex("#DFFF9A") }, 12, 12, 1.0 * s, 40)
+	-- rozprysk bańki kwasu (D2: większy) — rozbłysk, krople w górę i na boki
+	fx:kula(poz, hex("#C8FF7A"), 0.8 * s, 4.6 * s, 0.3, nil, 0.25)
+	fx:kula(poz, hex("#9BF04A"), 1.2 * s, 6.0 * s, 0.5, Enum.Material.SmoothPlastic, 0.45)
+	fx:iskry(poz, { hex("#9BF04A"), hex("#5FD13A"), hex("#DFFF9A") }, 22, 15, 1.25 * s, 36)
 end
 Wybuch.trucizna = function(fx, poz, s)
 	fx:kula(poz, hex("#8BEA4E"), 0.5 * s, 2.4 * s, 0.3, nil, 0.35)
@@ -353,6 +357,17 @@ local function lot(fx, czesci: { { BasePart | CFrame } }, od: Vector3, do_: Vect
 	if chybiony then
 		-- pocisk mija cel (unik): leci dalej za plecy celu i gaśnie
 		cel = do_ + (do_ - od).Unit * 6 + Vector3.new(0, 1.2, 0)
+	elseif opcje.grot and opcje.grot > 0 then
+		--[[ do_ = punkt na powierzchni celu, który ma trafić PRZÓD pocisku (grot strzały): środek pocisku kończy lot
+			o grot studs przed nim wzdłuż stycznej łuku w chwili dolotu (styczna = (cel − od) − (0, 4·łuk, 0)), więc
+			przy stromym strzale w kryształ Strażnika grot nie kończy ok. 1,2 studa pod punktem trafienia. ]]
+		for _ = 1, 4 do
+			local styczna = (cel - od) - Vector3.new(0, 4 * luk, 0)
+			if styczna.Magnitude < 1e-3 then
+				break
+			end
+			cel = do_ - styczna.Unit * opcje.grot
+		end
 	end
 	local obr = opcje.obrot or 0
 	local function ustaw(u: number)
@@ -372,14 +387,50 @@ local function lot(fx, czesci: { { BasePart | CFrame } }, od: Vector3, do_: Vect
 		poprz = p
 	end
 	ustaw(0)
+	-- światło pocisku gaśnie przy dolocie (przegląd 15.11: zielone światło strzały barwiło cały cel na blado)
+	local swiatlo = opcje.swiatlo
+	local jasnosc = swiatlo and swiatlo.Brightness or 0
+	-- opcje.zostaw = s: pocisk zostaje wbity w cel (strzała) i jedzie za nim (opcje.przyczep() = CFrame celu)
+	local wbity = nil
 	return fx:dodaj({
 		krok = function(_, d)
 			wiek += d
+			if wbity then
+				local cf = opcje.przyczep and opcje.przyczep()
+				local u2 = (wiek - czas) / opcje.zostaw
+				for i, c in czesci do
+					local p = c[1] :: BasePart
+					if cf then
+						p.CFrame = cf * wbity[i]
+					end
+					if u2 > 0.7 then
+						p.LocalTransparencyModifier = math.clamp((u2 - 0.7) / 0.3, 0, 1)
+					end
+				end
+				return u2 < 1
+			end
 			local u = math.min(wiek / math.max(czas, 0.01), 1)
 			ustaw(if chybiony then u * 1.25 else u)
+			if swiatlo then
+				swiatlo.Brightness = jasnosc * (1 - gladko((u - 0.55) / 0.35))
+			end
 			if u >= 1 then
 				if opcje.naKoniec then
 					task.spawn(opcje.naKoniec)
+				end
+				if opcje.zostaw and not chybiony then
+					local cf = opcje.przyczep and opcje.przyczep()
+					wbity = {}
+					for i, c in czesci do
+						local p = c[1] :: BasePart
+						wbity[i] = if cf then cf:ToObjectSpace(p.CFrame) else CFrame.identity
+						for _, t in p:GetChildren() do
+							if t:IsA("Trail") or t:IsA("Light") then
+								t.Enabled = false
+							end
+						end
+					end
+					return true
 				end
 				return false
 			end
@@ -400,13 +451,25 @@ Pocisk.iskra = function(fx, od, do_, czas, opcje)
 	fx:nowa("PointLight", { Color = hex("#B07CFF"), Range = 8, Brightness = 2 }, g)
 	return lot(fx, { { g, CFrame.identity }, { o, CFrame.identity } }, od, do_, czas, opcje)
 end
+-- strzała (poprawka D2): większa i czytelna jako strzała z daleka — jasne drzewce, świecący zielony grot (trucizna),
+-- dwie czerwone lotki na krzyż, zielona smuga i poświata; leci 0,45–0,7 s lekkim łukiem
 Pocisk.strzala = function(fx, od, do_, czas, opcje)
-	local drzewce = fx:czesc({ Name = "Strzala", Size = Vector3.new(0.14, 0.14, 2.4), Color = hex("#8A5A34"), Material = Enum.Material.Wood })
-	local grot = fx:czesc({ Name = "StrzalaGrot", Size = Vector3.new(0.32, 0.32, 0.5), Color = hex("#8BEA4E") })
-	local lotka = fx:czesc({ Name = "StrzalaLotka", Size = Vector3.new(0.5, 0.08, 0.45), Color = hex("#E8364F"), Material = Enum.Material.SmoothPlastic })
-	fx:trail(drzewce, Vector3.new(0, 0.12, 1.1), Vector3.new(0, -0.12, 1.1), hex("#8BEA4E"), 0.25)
-	return lot(fx, { { drzewce, CFrame.identity }, { grot, CFrame.new(0, 0, -1.3) * CFrame.Angles(0, 0, rad(45)) },
-		{ lotka, CFrame.new(0, 0, 1.05) } }, od, do_, czas, opcje)
+	local drzewce = fx:czesc({ Name = "Strzala", Size = Vector3.new(0.22, 0.22, 3.2), Color = hex("#E0B07A"), Material = Enum.Material.SmoothPlastic })
+	local grot = fx:czesc({ Klasa = "WedgePart", Name = "StrzalaGrot", Size = Vector3.new(0.12, 0.55, 0.85), Color = hex("#8BEA4E") })
+	local grot2 = fx:czesc({ Klasa = "WedgePart", Name = "StrzalaGrot", Size = Vector3.new(0.12, 0.55, 0.85), Color = hex("#8BEA4E") })
+	local lotka = fx:czesc({ Name = "StrzalaLotka", Size = Vector3.new(0.75, 0.07, 0.7), Color = hex("#E8364F"), Material = Enum.Material.SmoothPlastic })
+	local lotka2 = fx:czesc({ Name = "StrzalaLotka", Size = Vector3.new(0.07, 0.75, 0.7), Color = hex("#E8364F"), Material = Enum.Material.SmoothPlastic })
+	fx:trail(drzewce, Vector3.new(0, 0.28, 1.4), Vector3.new(0, -0.28, 1.4), hex("#8BEA4E"), 0.4, 1.4)
+	-- słabe światło o małym zasięgu, gaśnie przy dolocie (wcześniej Range 7 / Brightness 2,5 barwiło cały cel na zielono)
+	opcje.swiatlo = fx:nowa("PointLight", { Color = hex("#8BEA4E"), Range = 3, Brightness = 1.2 }, grot)
+	if opcje.luk == nil then
+		opcje.luk = 0.7
+	end
+	-- dwa kliny (pełna ściana z tyłu, ostrze z przodu, −Z) tworzą grot w kształcie rombu
+	return lot(fx, { { drzewce, CFrame.identity },
+		{ grot, CFrame.new(0, 0.27, -1.9) },
+		{ grot2, CFrame.new(0, -0.27, -1.9) * CFrame.Angles(0, 0, math.pi) },
+		{ lotka, CFrame.new(0, 0, 1.3) }, { lotka2, CFrame.new(0, 0, 1.3) } }, od, do_, czas, opcje)
 end
 Pocisk.kula_ognia = function(fx, od, do_, czas, opcje)
 	local g = fx:czesc({ Name = "KulaOgnia", Shape = Enum.PartType.Ball, Size = Vector3.one * 1.2, Color = hex("#FFE14A") })
@@ -555,6 +618,93 @@ function Efekty:smuga(aktor, kolor: Color3, czas: number)
 				t.Attachment1:Destroy()
 			end
 			t:Destroy()
+		end,
+	})
+end
+
+-- smuga za dowolną częścią (np. kością bańki kwasu z klipu slime'a) przez czas sceny
+function Efekty:smugaCzesci(czesc: BasePart, kolor: Color3, czas: number, szer: number?)
+	local s = szer or 0.4
+	local t = self:trail(czesc, Vector3.new(0, s, 0), Vector3.new(0, -s, 0), kolor, 0.35, 1.3)
+	t.LightEmission = 0.8
+	-- poświata wokół (mała bańka z klipu z daleka ginie): świecąca kula idzie za częścią do końca lotu
+	local aura = self:czesc({ Name = "SmugaPoswiata", Shape = Enum.PartType.Ball, Size = Vector3.one * (s * 3), Color = kolor,
+		Transparency = 0.45, CFrame = czesc.CFrame })
+	local wiek = 0
+	self:dodaj({
+		krok = function(_, d)
+			wiek += d
+			if wiek > czas then
+				t.Enabled = false
+				aura.Transparency = 1
+			else
+				aura.CFrame = CFrame.new(czesc.Position)
+			end
+			return wiek < czas + 0.4
+		end,
+		zniszcz = function()
+			aura:Destroy()
+			if t.Attachment0 then
+				t.Attachment0:Destroy()
+			end
+			if t.Attachment1 then
+				t.Attachment1:Destroy()
+			end
+			t:Destroy()
+		end,
+	})
+end
+
+--[[ Kałuża kwasu na ziemi (poprawka D2): płaski świecący dysk z jaśniejszym środkiem i bąblami — rośnie w 0,15 s,
+	stoi `czas` sekund sceny (tyle, ile kałuża w klipie modelu), na końcu kurczy się i blednie. ]]
+function Efekty:kaluza(poz: Vector3, promien: number, kolor: Color3, czas: number)
+	local cf = CFrame.new(poz + Vector3.new(0, 0.05, 0)) * CFrame.Angles(0, 0, rad(90))
+	local dysk = self:czesc({ Name = "KaluzaKwasu", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.1, 0.1, 0.1),
+		Color = kolor, Material = Enum.Material.SmoothPlastic, Transparency = 0.1, CFrame = cf })
+	local srodek = self:czesc({ Name = "KaluzaKwasuSrodek", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.1, 0.1, 0.1),
+		Color = hex("#E4FF9A"), Material = Enum.Material.Neon, Transparency = 0.35, CFrame = cf * CFrame.new(0.03, 0, 0) })
+	local plamy = {}
+	for i = 1, 4 do
+		local kat = (i - 1) / 4 * math.pi * 2 + los:NextNumber(-0.4, 0.4)
+		local p = self:czesc({ Name = "KaluzaKwasuPlama", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.1, 0.1, 0.1),
+			Color = kolor, Material = Enum.Material.SmoothPlastic, Transparency = 0.15 })
+		plamy[i] = { p = p, off = Vector3.new(math.cos(kat), 0, math.sin(kat)) * promien * los:NextNumber(0.8, 1.05),
+			r = promien * los:NextNumber(0.28, 0.42) }
+	end
+	local nosnik = self:czesc({ Name = "KaluzaKwasuBable", Size = Vector3.new(promien * 1.4, 0.1, promien * 1.4),
+		Transparency = 1, CFrame = CFrame.new(poz + Vector3.new(0, 0.1, 0)) })
+	local e = self:emiter(nosnik, { Color = ColorSequence.new(hex("#DFFF9A"), kolor), Rate = 14,
+		Lifetime = NumberRange.new(0.3, 0.6), Speed = NumberRange.new(0.6, 1.4), SpreadAngle = Vector2.new(15, 15),
+		EmissionDirection = Enum.NormalId.Top, Size = NumberSequence.new(0.25, 0.05), LightEmission = 0.7,
+		Shape = Enum.ParticleEmitterShape.Box })
+	local wiek = 0
+	return self:dodaj({
+		krok = function(_, d)
+			wiek += d
+			local rosnie = gladko(wiek / 0.15)
+			local znika = if wiek > czas then gladko((wiek - czas) / 0.3) else 0
+			local r = promien * rosnie * (1 - 0.35 * znika)
+			dysk.Size = Vector3.new(0.1, r * 2, r * 2)
+			dysk.CFrame = cf
+			dysk.Transparency = 0.1 + 0.9 * znika
+			srodek.Size = Vector3.new(0.11, r * 1.1, r * 1.1)
+			srodek.Transparency = 0.35 + 0.65 * znika
+			for _, pl in plamy do
+				local rr = pl.r * rosnie * (1 - 0.35 * znika)
+				pl.p.Size = Vector3.new(0.09, rr * 2, rr * 2)
+				pl.p.CFrame = CFrame.new(poz + pl.off * rosnie + Vector3.new(0, 0.045, 0)) * CFrame.Angles(0, 0, rad(90))
+				pl.p.Transparency = 0.15 + 0.85 * znika
+			end
+			e.Enabled = znika < 0.5
+			return wiek < czas + 0.3
+		end,
+		zniszcz = function()
+			dysk:Destroy()
+			srodek:Destroy()
+			for _, pl in plamy do
+				pl.p:Destroy()
+			end
+			nosnik:Destroy()
 		end,
 	})
 end

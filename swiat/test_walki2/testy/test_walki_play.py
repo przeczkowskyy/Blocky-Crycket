@@ -229,8 +229,12 @@ def main():
         pomiar("%s/%s/%d ×1" % (p1["klasa"], p1["przeciwnik"], p1["poziom"]), s2, ocz)
         sprawdz("1e. po pełnej walce JESZCZE RAZ od razu dostępne", s2.get("_jeszczeZablokowany") is False, "(%s)" % s2.get("_jeszczeTekst"))
         t.klik(GUI_WALKA + "Wynik.Karta.Zamknij.Przycisk")
+        # bez wywołań execute_luau w trakcie zamykania: narzędzie przywraca typ kamery, jaki zastało na początku
+        # wywołania (Scriptable z panelu wyniku), więc odpytywanie zaraz po kliknięciu dawało fałszywy błąd 1f
+        # (2 z 2 pierwszych przebiegów 15.11) — najpierw czekamy, aż sprzątanie skończy się na pewno
+        time.sleep(2.0)
         t.czekaj(("zamknieto",), 5)
-        time.sleep(1.0)
+        time.sleep(0.5)
         stan_po_walce("1f. po ZAMKNIJ", t.stan())
         droga = t.klawisz_w()
         sprawdz("1g. po ZAMKNIJ postać chodzi (W 0,9 s)", droga > 5, "(%.1f studa)" % droga)
@@ -281,7 +285,8 @@ def main():
         s, dt = t.czekaj(("wynik",), 60)
         ocz = oczekiwana(p4)
         ocen_walke("3d. najdłuższa walka %d tur przy ×4" % ocz["tury"], s, p4, ocz)
-        sprawdz("3e. ×4 skraca odtwarzanie (≈ 2 s + reszta/4)", (s.get("OstatniCzasTrwania") or 99) < 2.5 + ocz["czas"] / 4 + 3,
+        # od 15.11 finał (cios kończący, ujęcie pokonanego, radość) gra zawsze w ×1 — ok. 3–4 s ponad resztę/4
+        sprawdz("3e. ×4 skraca odtwarzanie (≈ 2 s + reszta/4 + finał w ×1)", (s.get("OstatniCzasTrwania") or 99) < 2.5 + ocz["czas"] / 4 + 3 + 4,
                 "(%.1f s, dziennik %.1f s)" % (s.get("OstatniCzasTrwania") or -1, ocz["czas"]))
         t.steruj('"zamknij"')
         t.steruj('"tempo", 1')

@@ -79,12 +79,38 @@ def plan_arkuszy(Z):
             pierwsze(p, lambda z: z["typ"] == "efekt_tick" and z["obrazenia"] > 0, "tykniecie", "tyknięcie efektu", przed=0.2, po=0.3)
         if "utrata_tury" not in plan:
             pierwsze(p, lambda z: z["typ"] == "utrata_tury", "utrata_tury", "utrata tury (ogłuszenie)", przed=0.5, po=0.3)
-    # finał: wygrana i przegrana
-    for nazwa, p in (("final_wygrana", Z["shard"]), ("final_przegrana", Z["krotka"])):
+    # finał (od 15.11: ujęcie pokonanego, potem radość zwycięzcy i objazd) — chwile liczone w Play z czasów odtwarzacza
+    finaly = [("final_wygrana", Z["shard"]), ("final_przegrana", Z["krotka"])]
+    for p in Z["play"]:
+        klucz = "final_%s_%s" % (p["przeciwnik"], p["wynik"])
+        if p["przeciwnik"] in ("lesny_slime", "straznik_lasu", "lesny_troll") and klucz not in dict(finaly):
+            finaly.append((klucz, p))
+    for klucz, uid in (("final_lesny_slime_wygrana", "kwasny_plusk"), ("final_lesny_troll_wygrana", "ogluszajace_uderzenie")):
+        if klucz not in dict(finaly):
+            finaly.append((klucz, Z["umiejetnosci"][uid]))
+    for nazwa, p in finaly:
         w = dziennik(p)
-        ost = w["dziennik"][-1]
-        a, b = ost["t"] - 0.1, w["czas"] - 0.01
-        plan[nazwa] = (p, [a + (b - a) * k / 6 for k in range(7)] + ["wynik"], "finał (%s), ostatnia klatka = panel wyniku" % w["wynik"])
+        plan[nazwa] = (p, {"tryb": "final", "ost": len(w["dziennik"]) - 1},
+                       "finał %s/%s (%s): cios kończący, ujęcie pokonanego, radość i objazd, panel wyniku"
+                       % (p["klasa"], p["przeciwnik"], w["wynik"]))
+    # lot strzały i bańki kwasu (D2): od wypuszczenia do trafienia (bańka: i kałuża po nim)
+    for nazwa, uid, po in (("lot_strzaly", "zatruta_strzala", 0.2), ("lot_banki_kwasu", "kwasny_plusk", 1.2)):
+        p = Z["umiejetnosci"][uid]
+        w = dziennik(p)
+        idx = next(i for i, z in enumerate(w["dziennik"]) if z["umiejetnosc"] == uid and z["typ"] == "umiejetnosc")
+        plan[nazwa] = (p, {"tryb": "lot", "idx": idx, "po": po}, "lot %s (zdarzenie %d): wypuszczenie → trafienie" % (uid, idx + 1))
+    # tura z kilkoma napisami naraz (D3): trafienie, po którym jest nałożenie efektu albo pochłonięcie przez tarczę
+    for nazwa, warunek in (("napisy_krytyk_efekt", lambda d, i: d[i]["typ"] == "krytyk" and i + 1 < len(d) and d[i + 1]["typ"] == "efekt_nalozony"),
+                           ("napisy_tarcza", lambda d, i: d[i]["typ"] in ("cios", "krytyk", "blok") and d[i]["pochloniete"] > 0),
+                           ("napisy_umiejetnosc_efekt", lambda d, i: d[i]["typ"] == "umiejetnosc" and d[i]["kto"] != d[i]["cel"]
+                            and i + 1 < len(d) and d[i + 1]["typ"] == "efekt_nalozony" and d[i]["cel"] == "wrog")):
+        for p in [Z["shard"], Z["dluga"]] + Z["play"] + list(Z["umiejetnosci"].values()):
+            w = dziennik(p)
+            d = w["dziennik"]
+            idx = next((i for i in range(len(d)) if warunek(d, i)), None)
+            if idx is not None:
+                plan[nazwa] = (p, {"tryb": "napisy", "idx": idx}, "napisy kilku zdarzeń (zdarzenie %d %s)" % (idx + 1, d[idx]["typ"]))
+                break
     # pełna walka z Leśnym Slime'em i ze Strażnikiem Gaju (właściwe modele od 15.11): przekrój od startu do panelu wyniku
     for klucz, uid in (("lesny_slime", "kwasny_plusk"), ("straznik_lasu", "uscisk_korzeni")):
         p = Z["umiejetnosci"].get(uid)
@@ -98,6 +124,29 @@ def plan_arkuszy(Z):
     w = dziennik(p)
     plan["dluga_walka"] = (p, [1.0 + (w["czas"] - 3.0) * k / 15 for k in range(16)], "długa walka (%d tur) — przekrój ujęć" % w["tury"])
     return plan
+
+
+def chwile_w_play(s, p, opis):
+    """Chwile arkusza liczone z czasów odtwarzacza (stan po przewinięciu do zdarzenia): finał, lot pocisku, napisy."""
+    w = dziennik(p)
+    d = w["dziennik"]
+    if opis["tryb"] == "final":
+        z = d[opis["ost"]]
+        st = json.loads(s.steruj('"przewinDo", %f' % (z["t"] + 0.01)))
+        hit = st.get("trafienie") or (z["t"] + z["trwa"] * 0.5)
+        tp, tr, kon = st.get("tPokonany") or hit + 0.4, st.get("tRadosc") or z["t"] + z["trwa"], st.get("czasKonca") or w["czas"]
+        return ([hit - 0.15, hit + 0.15] + [tp + 0.05 + (tr - tp - 0.1) * k / 4 for k in range(5)]
+                + [tr + 0.3, tr + 0.9, kon - 0.05, "wynik"])
+    z = d[opis["idx"]]
+    st = json.loads(s.steruj('"przewinDo", %f' % (z["t"] + 0.01)))
+    hit = st.get("trafienie") or (z["t"] + z["trwa"] * 0.5)
+    if opis["tryb"] == "lot":
+        start = st.get("wypuszczenie") or (hit - (st.get("lot") or 0.5))
+        lot = [start - 0.08 + (hit + 0.04 - start + 0.08) * k / 7 for k in range(8)]
+        return lot + [hit + opis["po"] * k / 4 for k in (1, 2, 3, 4)]
+    # napisy: od trafienia przez nałożenie efektu (napisy wchodzą po kolei i układają się w stos)
+    koniec = d[opis["idx"] + 1]["t"] + d[opis["idx"] + 1]["trwa"] if opis["idx"] + 1 < len(d) else z["t"] + z["trwa"]
+    return [hit - 0.05 + (max(koniec, hit + 0.9) + 0.3 - hit + 0.05) * k / 11 for k in range(12)]
 
 
 def kafel(im, podpis):
@@ -187,6 +236,8 @@ def main():
                     raport[nazwa] = "nie wystartowało"
                     continue
                 kafle = []
+                if isinstance(chwile, dict):
+                    chwile = chwile_w_play(s, p, chwile)
                 for t in chwile:
                     if t == "wynik":
                         s.steruj('"przewinDo", 1000')

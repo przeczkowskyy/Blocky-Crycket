@@ -290,6 +290,49 @@ def geometria_ciosu(d):
     return wynik
 
 
+def obwiednia_lezenia(d):
+    """Obwiednia brył w ostatniej klatce klipu „upadek” (układ rigu: przód −Z, prawa +X, ziemia y = 0) — odtwarzacz
+    kadruje z niej ujęcie pokonanego i pilnuje, żeby objazd w finale nie wjeżdżał w leżącego (np. stos głazów).
+    Bez skórowania (galareta slime'a rozlewa się jeszcze siatką, ale jest mała)."""
+    from geometria import Rig, obwiednia
+    r = Rig(d)
+    klip = next((k for k in d["klipy"] if k["n"] == "upadek"), None)
+    if not klip:
+        return None
+    mn, mx = obwiednia(r, r.pozy(r.transformy("upadek", klip["dl"])))
+    return {"mn": [round(v, 2) for v in mn], "mx": [round(v, 2) for v in mx]}
+
+
+def chowane_kosci(d, w):
+    """Wpis „chowane” z tabeli aktorów → [[indeks kości, [kierunek na zewnątrz], próg]] dla modułu Klipy."""
+    indeks = {k[0]: i + 1 for i, k in enumerate(d["kosci"])}
+    wynik = []
+    for nazwa, (kier, prog) in (w.get("chowane") or {}).items():
+        if nazwa not in indeks:
+            sys.exit("%s: kość %s z „chowane” nie istnieje w rigu" % (w["klucz"], nazwa))
+        wynik.append([indeks[nazwa], [float(v) for v in kier], float(prog)])
+    return wynik
+
+
+def wyglad_roblox(d, w):
+    """Wygląd brył na rigu z klocków (wpis „wyglad_roblox”): podmiana materiałów i kolorów tylko w prototypie —
+    plik modelu i dane z Blendera zostają bez zmian. Zwraca nowe listy (materialy, czesci)."""
+    wr = w.get("wyglad_roblox") or {}
+    materialy = [list(m) for m in d["materialy"]]
+    for i, m in enumerate(materialy):
+        if m[0] in (wr.get("materialy") or {}):
+            nowy = wr["materialy"][m[0]]
+            materialy[i] = [nowy[0], float(nowy[1])]
+    kolory = {k.upper(): v.upper() for k, v in (wr.get("kolory") or {}).items()}
+    czesci = []
+    for c in d["czesci"]:
+        c = list(c)
+        if c[12].upper() in kolory:
+            c[12] = kolory[c[12].upper()]
+        czesci.append(c)
+    return materialy, czesci
+
+
 def moduly_danych():
     """(ścieżka, źródło) modułów wygenerowanych z tabeli aktorów i dane/<klucz>.json, plus dane do szablonów."""
     naglowek = "-- Wygenerowane przez swiat/test_walki2/zbuduj.py z %s — nie edytuj ręcznie.\n" + STRAZNIK_MODULU
@@ -313,6 +356,7 @@ def moduly_danych():
             "szerokosc": wym["szerokosc"], "glebokosc": wym["glebokosc"], "pasek": round(wym["wysokosc"] + 0.9, 2),
             "hrp": d["hrp"], "punkty": [p[0] for p in d["punkty"]],
             "liczbaCzesci": len(d["czesci"]),
+            "lezy": obwiednia_lezenia(d) or False,
         }
         tabela["aktorzy"][w["klucz"]].update(geometria_ciosu(d))
         # ręczne zasięgi z tabeli (klip „trafia” dalej niż punkt Bron: kałuża kwasu, środek uścisku korzeni)
@@ -322,9 +366,9 @@ def moduly_danych():
         glowny = (naglowek % ("dane/%s.json" % w["klucz"]) +
                   "local klipy = {}\nfor _, m in script:GetChildren() do\n\tif m:IsA(\"ModuleScript\") then\n"
                   "\t\tklipy[m.Name] = require(m)\n\tend\nend\n" +
-                  "return { klucz = %s, kosci = %s, klipy = klipy, skora = %s, wydluzenia = %s }\n"
+                  "return { klucz = %s, kosci = %s, klipy = klipy, skora = %s, wydluzenia = %s, chowane = %s }\n"
                   % (luau(w["klucz"]), luau([[k[0], k[1], k[11]] for k in d["kosci"]]), luau(d.get("skora", [])),
-                     luau(d.get("wydluzenia", {}))))
+                     luau(d.get("wydluzenia", {})), luau(chowane_kosci(d, w))))
         dane_aktorow.append((sciezka, glowny))
         for k in d["klipy"]:
             klip = {"fps": k["fps"], "petla": k["petla"], "dl": k["dl"], "kosci": k["kosci"], "klatki": k["klatki"]}
@@ -345,10 +389,11 @@ def dane_szablonow(szablony):
         wym = d["wymiary"]
         # aktor patrzy na północ (−Z świata): jego prawa strona (+X rigu) jest na zachodzie, więc szerokość liczymy po X
         x += wym["szerokosc"] / 2.0
+        materialy, czesci = wyglad_roblox(d, w)
         dane = {"klucz": w["klucz"], "nazwa": w["nazwa"], "rola": w["rola"], "zastepczy": w["zastepczy"] or "",
                 "poz": [round(x, 3), start[1] + 0.5, start[2]], "patrz": [0, -1],
-                "hrp": d["hrp"], "kosci": d["kosci"], "czesci": d["czesci"], "grupy": d["grupy"],
-                "materialy": d["materialy"], "zaczepy": d["zaczepy"], "punkty": d["punkty"],
+                "hrp": d["hrp"], "kosci": d["kosci"], "czesci": czesci, "grupy": d["grupy"],
+                "materialy": materialy, "zaczepy": d["zaczepy"], "punkty": d["punkty"],
                 "szer": wym["szerokosc"], "glab": wym["glebokosc"], "przod": wym["przod"]}
         x += wym["szerokosc"] / 2.0 + krok
         wynik.append(dane)
