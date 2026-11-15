@@ -7,6 +7,9 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Bazowe („gołe”) modele Rycerza, Kota-Maga i Zwiadowcy oraz ich dzisiejszy strój jako przedmioty zakładane na model (D-071); potem ubieranie postaci w grze i w walce; do ustalenia: spodnie jako osobny slot czy część zbroi · #wysoki
+- [ ] Biom Las („Bór Pod Ukłonem”): po planie mapy — mapa z klocków (podgląd z Blendera), budowa w Studio, potwory chodzące po strefach, walka po podejściu i E; cztery wybory do decyzji w raporcie „Biom Las — plan mapy” · #wysoki
+- [ ] Wpiąć nowe klipy walki Rycerza i Kota-Maga do prototypu walki v2 (zamiast szkiców) — po zakończeniu dopieszczania walki · #średni
 - [ ] Paweł (i każdy, kto ma własny panel): pobrać kod i zrestartować panel, zanim ktokolwiek oznaczy **decyzję** jako nieaktualną — stary panel bierze `🗃️ nieaktualna` za propozycję i po „Tak” psuje wpis w [[Rejestr decyzji]]; pytania i raporty nie mają tego ryzyka · #wysoki
 - [ ] Karol i Paweł: obejrzeć walkę v2 w Studio (Play → na południe do zielonego słupa → tablica „WALKA v2” → E) i odpowiedzieć na raport „Walka v2 na ekranie — prototyp w Studio”: co poprawić najpierw; do tego decyzja o obrysie postaci (bez / cienki Highlight / gruba czarna „skorupa”) · #wysoki
 - [ ] Walka v2, dalej: dźwięki czarów i strzał, mniej tłoku napisów w turach z wieloma zdarzeniami, pełne klipy walki dla Rycerza i Kota-Maga zamiast szkiców (w modelu Kota-Maga kostur przechodzi przez głowę w klipach „czar” i „wiwat”), pomiar na prawdziwym telefonie · #średni

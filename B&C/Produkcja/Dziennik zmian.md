@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-15 · Claude Code u Karola (ranek: klipy walki bohaterów, plan biomu Las, D-071)
+- **Panel i tunel** uruchomione ponownie po nocnym wyłączeniu komputera; Karol dostał nowy link dla Pawła i własny link z prawem zatwierdzania na telefon. Roblox Studio otwarte przez Claude Code w trybie edycji.
+- **Klipy walki bohaterów** (Blender, wygląd bez zmian): [[Rycerz]] — blok tarczą, unik, trafienie, upadek, Potężne cięcie, Miażdżący cios, Kamienna skóra; [[Kot-Mag]] — atak, kula ognia, lodowy pocisk, bariera, unik, trafienie, upadek, poprawione „czar” i „wiwat” (kostur nie przechodzi przez głowę). Raporty „Klipy walki: …” w panelu.
+- **Biom Las — plan mapy** („Bór Pod Ukłonem”, propozycja): 1000 × 1000 studów, sześć podbiomów, 24 lokacje, ok. 60 chodzących potworów; raport „Biom Las — plan mapy” w panelu, notatka [[Biom Las]]. Mapa z klocków w budowie.
+- **D-071** (decyzja Karola z czatu, czeka na potwierdzenie Pawła): każdy element ekwipunku widoczny na modelu postaci; postacie dostają bazowe modele bez stroju, a dzisiejszy wygląd bohaterów staje się kompletem przedmiotów; tarcza widoczna tylko, gdy wyekwipowana. Przebudowa modeli pod ten system w toku.
+- **W toku w tle:** dopieszczenie walki v2 (finał, pociski, napisy, dźwięk), mapa biomu Las, bazowe modele i ekwipunek.
+- Pliki: `swiat/postacie/rycerz.py`, `kot_mag.py`, `swiat/biom_las/`, [[Rejestr decyzji]], [[Zadania]].
+
 ## 2026-11-15 · Panel (ludzie)
 - Paweł (Telegram): decyzja D-010 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
 
