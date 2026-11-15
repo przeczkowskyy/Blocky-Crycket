@@ -109,4 +109,4 @@ Cecha klasy to własne liczby i nazwy — mechanik S&F nie chroni prawo autorski
 - Czy Chrupki (D-040) kiedykolwiek kupują węzły.
 
 ## Powiązane
-[[System RPG]] · [[Okno ekwipunku]] · [[Selektor bohatera]] · [[Rycerz]] · [[Kot-Mag]] · [[Pety]] · [[Twierdza (Tycoon)]] · [[Karczma (Questy)]] · [[HUD]] · [[Shakes & Fidget — rozbiór mechanik]] · [[Retencja i monetyzacja — co wolno i co działa]] · [[Sesja główna 2026-11-14 — zapis ustaleń]] · [[Rejestr decyzji]] · [[Pytania otwarte]] · [[00 Start]]
+[[System RPG]] · [[Okno drzewka umiejętności]] · [[Okno ekwipunku]] · [[Selektor bohatera]] · [[Rycerz]] · [[Kot-Mag]] · [[Pety]] · [[Twierdza (Tycoon)]] · [[Karczma (Questy)]] · [[HUD]] · [[Shakes & Fidget — rozbiór mechanik]] · [[Retencja i monetyzacja — co wolno i co działa]] · [[Sesja główna 2026-11-14 — zapis ustaleń]] · [[Rejestr decyzji]] · [[Pytania otwarte]] · [[00 Start]]

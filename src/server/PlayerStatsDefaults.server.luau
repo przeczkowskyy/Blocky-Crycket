@@ -2,7 +2,8 @@
 local Players = game:GetService("Players")
 
 local DEFAULTS = {
-	Level = 1, XP = 0, XPMax = 100, Gold = 0, Gems = 0,
+	Level = 1, XP = 0, XPMax = 100, Gold = 0,
+	Gems = 1000, -- TEST (Paweł 15.11): Diamenty na sprawdzenie drzewka umiejętności; przed premierą wrócić do 0
 	Fish = 0, -- trzecia waluta HUD (Rybki; propozycja Game Directora 2026-11-14, rola do ustalenia)
 	-- statystyki okna ekwipunku (wartości testowe z projektu graficznego; system RPG: B&C/Gra/System RPG.md)
 	Strength = 20, Constitution = 16, Intelligence = 18, Dexterity = 12, Luck = 7, Armor = 57,

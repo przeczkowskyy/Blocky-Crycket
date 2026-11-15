@@ -6,6 +6,18 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-15 · Claude Code u Pawła (drzewko umiejętności w grze)
+- Grafiki: 15 obrazów od Pawła + 1 arkusz dogenerowany (rycerz / twierdza / gniazdo / „?”, Nano Banana 2.1, 1 wariant). `tools/skilltree_assets.py` tnie arkusze (67 ikon), obrabia tła i okno (zakładki jako osobne sprite'y, czysty brzeg ramki, obszar treści do złotej obwódki). 74 grafiki wgrane po „tak” Pawła (ID w `assets/manifest.json`).
+- Figma: strona „Equipment Panel” — sekcja „Skill Tree — Assets” i makieta „SkillTreeWindow — mapa” (33:78); plan Starter nie pozwala na 4. stronę.
+- Roblox: okno `src/gui/SkillTree.model.json` (generator `tools/skilltree_build_gui.py`, ikony `src/shared/SkillTreeIcons.luau`), przycisk drzewa z wykrzyknikiem w [[Okno ekwipunku]] (`tools/eq_build_gui.py`), dane `src/shared/SkillTreeData.luau` (3 zakładki, 70 węzłów, liczby robocze), serwer `src/server/SkillTree.server.luau`, klient `src/client/SkillTreeClient.client.luau` (przesuwana mapa, zoom, animacje). Wdrożenie do miejsca z chmury: `tools/studio/deploy_skilltree.py` (+ `tools/studio/model_to_luau.py`).
+- Poprawki po uwagach Pawła: mniejsze napisy (tytuł 30, zakładki 20, węzły 12 px), napisy zakładek i tytułu wyśrodkowane optycznie (Luckiest Guy rysuje litery wyżej niż środek pola), złote nazwy gałęzi przy kółkach, animacje (wyskakiwanie okna i węzłów od środka, puls po zakupie, pulsujący pierścień, kołyszący się wykrzyknik), osobne tło na zakładkę wczytywane z góry (bez opóźnienia), TEST: 1000 Diamentów na start (`PlayerStatsDefaults`).
+- Układ jako przesuwana mapa węzłów, start od węzła centralnego za 10 Diamentów (polecenie Pawła) — opis w [[Okno drzewka umiejętności]]. Premie z drzewka nic jeszcze nie zmieniają w grze (brak odbiorców), stan bez DataStore.
+
+## 2026-11-15 · Claude Code u Pawła (drzewko umiejętności: układ okna i prompty)
+- Nowa notatka [[Okno drzewka umiejętności]] (propozycja): ikonka drzewa w prawym górnym rogu ramki portretu w [[Okno ekwipunku]], wykrzyknik przy możliwym ulepszeniu, jedna karta „SKILL TREE” z zakładkami Player / Fortress / Pets (otwiera się od razu na Player), gałęzie i tła kart według polecenia Pawła.
+- 15 gotowych promptów Higgsfield w formacie Glossy Ink (Nano Banana 2.1): przycisk + wykrzyknik, okno, 3 tła kart, 10 arkuszy po 6 ikon węzłów. Paweł generuje je sam (oszczędność kredytów); wynik trafia do `assets/raw/<Nazwa>/`.
+- Pytanie [[Pytania otwarte]] #45 (gałąź Timer, premia do Diamentów); zadanie w [[Zadania]]; link w [[Drzewko umiejętności postaci]].
+
 ## 2026-11-14 · Claude Code (okno ekwipunku: hover przycisków)
 - Zgłoszenie Game Directora: po najechaniu przycisk był „źle przycięty, coś wystaje za obrys”. Dwie przyczyny: (1) `UIScale` powiększa względem `AnchorPoint`, a przyciski miały (0, 0), więc zjeżdżały w prawo i w dół na ramkę; (2) maska sprite'ów zakładek (sama dylatacja) łapała tło – beżową listwę pod zakładką i kreski desek nad nią.
 - `tools/eq_build_gui.py`: `AnchorPoint` zakładek (0.5, 1), „+” i X (0.5, 0.5), pozycje przeliczone. `tools/eq_slice.py`: tryb `tight` dla zakładek – obrys to tylko ciemne piksele w odległości grubości obrysu (mierzonej nad korpusem); X i „+” po staremu (obrys asymetryczny). `layout.json` bez zmian.

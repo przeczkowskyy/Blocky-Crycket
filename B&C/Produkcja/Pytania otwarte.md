@@ -361,3 +361,11 @@ Rozstrzyga: D-066
 Dopisek Claude Code z 2026-11-14 (przy scaleniu): na sesjach 14.11 trzecia waluta dostała rolę z D-040 — zdobywana graniem, wydawana na game passy. Nazwę proponuje D-046 („Chrupki”), a D-031 wymieniała „Złote Rybki” jako wariant. Rybki z HUD mogą być tą walutą — do potwierdzenia. Pytanie miało u Pawła numer 29; przy scaleniu dostało numer 44, bo numery 29–43 były już zajęte.
 **Odpowiedź:**
 - Karol Balucki (2026-11-15): Waluta premium skipy/bundle/passy bez wydawania robux
+
+## 45. Drzewko: gałąź Timer w Twierdzy i premia do Diamentów
+- Paweł (15.11) chce w Twierdzy gałęzi **Timer** (krótsza budowa) — D-056 jej nie wymienia.
+- W gałęzi Player → **Income** jest też % do zdobywanych **Diamentów**, a Diamentami (Gemami) kupuje się węzły (D-057).
+- Opcje: przyjąć obie · Timer tak, Diamenty bez premii · obie odłożyć.
+
+Szczegóły: premia do Diamentów przyspiesza kupowanie kolejnych węzłów (pętla) i może zmienić balans z D-035. Układ okna: [[Okno drzewka umiejętności]].
+**Odpowiedź:**

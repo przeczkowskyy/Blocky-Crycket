@@ -130,7 +130,18 @@ def main():
                                          "Image": img, "ScaleType": "Stretch"}, None, attrs))
 
     lb = L["level_badge"]
+    # przycisk drzewka umiejętności: prawy górny róg ramki portretu (polecenie Pawła 15.11),
+    # wykrzyknik „Alert” pokazuje SkillTreeClient, gdy gracza stać na jakiś węzeł
+    px_, py_, pw_, ph_ = L["portrait"]
+    bw = 0.042
+    tree_btn = node("SkillTreeButton", "ImageButton", {
+        "AnchorPoint": [0.5, 0.5], **udim2(px_ + pw_ - 0.004, py_ + 0.014, bw, bw * L["aspect"]),
+        "BackgroundTransparency": 1, "Image": image("SkillTreeButton")[0], "ScaleType": "Fit", "AutoButtonColor": False, "ZIndex": 4,
+    }, [node("UIScale", "UIScale", {"Scale": 1}),
+        node("Alert", "ImageLabel", {"AnchorPoint": [0.5, 0.5], **udim2(0.86, 0.12, 0.5, 0.5), "BackgroundTransparency": 1,
+                                     "Image": image("SkillTreeAlert")[0], "ScaleType": "Fit", "Visible": False, "ZIndex": 5})])
     character = full("Character", [
+        tree_btn,
         node("Portrait", "ViewportFrame", {**rel(L["portrait"]), "BackgroundTransparency": 1}),
         node("LevelBadge", "Frame", {**rel(lb), "BackgroundTransparency": 1}, [
             text("LevelText", L["texts"]["LevelText"][0], "LV 1", "level", lb)]),

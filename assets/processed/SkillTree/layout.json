@@ -1,0 +1,138 @@
+{
+ "frame_px": [
+  974,
+  717
+ ],
+ "aspect": 1.35844,
+ "content": [
+  0.06982,
+  0.29149,
+  0.85832,
+  0.61646
+ ],
+ "tabs": {
+  "TabPlayer": [
+   0.05955,
+   0.14784,
+   0.30595,
+   0.12692
+  ],
+  "TabFortress": [
+   0.34908,
+   0.14365,
+   0.29774,
+   0.11855
+  ],
+  "TabPets": [
+   0.6386,
+   0.14226,
+   0.29774,
+   0.11576
+  ]
+ },
+ "close": [
+  0.85113,
+  0.01116,
+  0.14887,
+  0.12134
+ ],
+ "title": [
+  0.29979,
+  0.00837,
+  0.39938,
+  0.10879
+ ],
+ "icons": {
+  "SkillTreeButtons": [
+   "SkillTreeButton",
+   "SkillTreeAlert"
+  ],
+  "SkillTreeRoots": [
+   "NodeRootPlayer",
+   "NodeRootFortress",
+   "NodeRootPets",
+   "NodeHidden"
+  ],
+  "IconsPlayerStats": [
+   "NodeStatStr",
+   "NodeStatConst",
+   "NodeStatInt",
+   "NodeStatDex",
+   "NodeStatLuck",
+   "NodeStatArmor",
+   "NodeStatAll"
+  ],
+  "IconsPlayerIncome": [
+   "NodeIncGold",
+   "NodeIncExp",
+   "NodeIncGems",
+   "NodeIncPouch",
+   "NodeIncChest",
+   "NodeIncOffline"
+  ],
+  "IconsPlayerSkills": [
+   "NodeSkillPowerSlash",
+   "NodeSkillCrushingBlow",
+   "NodeSkillStoneSkin",
+   "NodeSkillShieldBlock",
+   "NodeSkillWarCry",
+   "NodeSkillSlot"
+  ],
+  "IconsFortressTraining": [
+   "NodeFortTrainDummy",
+   "NodeFortTrainWeights",
+   "NodeFortTrainSwords",
+   "NodeFortTrainTarget",
+   "NodeFortTrainAnvil",
+   "NodeFortTrainGain"
+  ],
+  "IconsFortressIncome": [
+   "NodeFortIncOre",
+   "NodeFortIncWood",
+   "NodeFortIncStone",
+   "NodeFortIncCrystal",
+   "NodeFortIncCart",
+   "NodeFortIncTimed"
+  ],
+  "IconsFortressTimer": [
+   "NodeFortTimeHourglass",
+   "NodeFortTimeHammer",
+   "NodeFortTimeStopwatch",
+   "NodeFortTimeScaffold",
+   "NodeFortTimeCrane",
+   "NodeFortTimeGears"
+  ],
+  "IconsPetsStats": [
+   "NodePetStatAtk",
+   "NodePetStatHp",
+   "NodePetStatDef",
+   "NodePetStatSpeed",
+   "NodePetStatLuck",
+   "NodePetStatAll"
+  ],
+  "IconsPetsEggs": [
+   "NodePetEggFast",
+   "NodePetEggMulti",
+   "NodePetEggTimer",
+   "NodePetEggCrack",
+   "NodePetEggIncubator",
+   "NodePetEggBasket"
+  ],
+  "IconsPetsLuck": [
+   "NodePetLuckGolden",
+   "NodePetLuckRainbow",
+   "NodePetLuckClover",
+   "NodePetLuckDice",
+   "NodePetLuckStar",
+   "NodePetLuckCrown"
+  ],
+  "IconsPetsCapacity": [
+   "NodePetCapSlots",
+   "NodePetCapCollar",
+   "NodePetCapBed",
+   "NodePetCapBackpack",
+   "NodePetCapCrates",
+   "NodePetCapHouse"
+  ]
+ }
+}

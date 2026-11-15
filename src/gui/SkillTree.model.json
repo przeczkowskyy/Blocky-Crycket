@@ -1,0 +1,1471 @@
+{
+ "ClassName": "ScreenGui",
+ "Properties": {
+  "Enabled": false,
+  "ResetOnSpawn": false,
+  "IgnoreGuiInset": true,
+  "ZIndexBehavior": "Sibling",
+  "DisplayOrder": 25
+ },
+ "Children": [
+  {
+   "Name": "Backdrop",
+   "ClassName": "TextButton",
+   "Properties": {
+    "BorderSizePixel": 0,
+    "Position": {
+     "UDim2": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       0
+      ]
+     ]
+    },
+    "Size": {
+     "UDim2": [
+      [
+       1,
+       0
+      ],
+      [
+       1,
+       0
+      ]
+     ]
+    },
+    "BackgroundColor3": [
+     0,
+     0,
+     0
+    ],
+    "BackgroundTransparency": 0.45,
+    "Text": "",
+    "AutoButtonColor": false
+   }
+  },
+  {
+   "Name": "Panel",
+   "ClassName": "Frame",
+   "Properties": {
+    "BorderSizePixel": 0,
+    "AnchorPoint": [
+     0.5,
+     0.5
+    ],
+    "Position": {
+     "UDim2": [
+      [
+       0.5,
+       0
+      ],
+      [
+       0.5,
+       0
+      ]
+     ]
+    },
+    "Size": {
+     "UDim2": [
+      [
+       0.92,
+       0
+      ],
+      [
+       0.88,
+       0
+      ]
+     ]
+    },
+    "BackgroundTransparency": 1
+   },
+   "Children": [
+    {
+     "Name": "UIAspectRatioConstraint",
+     "ClassName": "UIAspectRatioConstraint",
+     "Properties": {
+      "AspectRatio": 1.35844,
+      "AspectType": "FitWithinMaxSize",
+      "DominantAxis": "Width"
+     }
+    },
+    {
+     "Name": "UIScale",
+     "ClassName": "UIScale",
+     "Properties": {
+      "Scale": 1
+     }
+    },
+    {
+     "Name": "InputBlocker",
+     "ClassName": "TextButton",
+     "Properties": {
+      "BorderSizePixel": 0,
+      "Position": {
+       "UDim2": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ]
+      },
+      "Size": {
+       "UDim2": [
+        [
+         1,
+         0
+        ],
+        [
+         1,
+         0
+        ]
+       ]
+      },
+      "BackgroundTransparency": 1,
+      "Text": "",
+      "AutoButtonColor": false
+     }
+    },
+    {
+     "Name": "FrameArt",
+     "ClassName": "ImageLabel",
+     "Properties": {
+      "BorderSizePixel": 0,
+      "Position": {
+       "UDim2": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ]
+      },
+      "Size": {
+       "UDim2": [
+        [
+         1,
+         0
+        ],
+        [
+         1,
+         0
+        ]
+       ]
+      },
+      "BackgroundTransparency": 1,
+      "Image": "rbxassetid://80863272742655",
+      "ScaleType": "Stretch",
+      "ZIndex": 1
+     }
+    },
+    {
+     "Name": "Content",
+     "ClassName": "Frame",
+     "Properties": {
+      "BorderSizePixel": 0,
+      "Position": {
+       "UDim2": [
+        [
+         0.06982,
+         0
+        ],
+        [
+         0.29149,
+         0
+        ]
+       ]
+      },
+      "Size": {
+       "UDim2": [
+        [
+         0.85832,
+         0
+        ],
+        [
+         0.61646,
+         0
+        ]
+       ]
+      },
+      "BackgroundTransparency": 1,
+      "ClipsDescendants": true,
+      "ZIndex": 2
+     },
+     "Children": [
+      {
+       "Name": "UICorner",
+       "ClassName": "UICorner",
+       "Properties": {
+        "CornerRadius": {
+         "UDim": [
+          0,
+          10
+         ]
+        }
+       }
+      },
+      {
+       "Name": "Bg_Player",
+       "ClassName": "ImageLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1,
+           0
+          ],
+          [
+           1,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "rbxassetid://95275624653844",
+        "ScaleType": "Crop",
+        "ZIndex": 1,
+        "Visible": true
+       }
+      },
+      {
+       "Name": "Bg_Fortress",
+       "ClassName": "ImageLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1,
+           0
+          ],
+          [
+           1,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "rbxassetid://73365138046720",
+        "ScaleType": "Crop",
+        "ZIndex": 1,
+        "Visible": false
+       }
+      },
+      {
+       "Name": "Bg_Pets",
+       "ClassName": "ImageLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1,
+           0
+          ],
+          [
+           1,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "rbxassetid://125437164201260",
+        "ScaleType": "Crop",
+        "ZIndex": 1,
+        "Visible": false
+       }
+      },
+      {
+       "Name": "Shade",
+       "ClassName": "Frame",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1,
+           0
+          ],
+          [
+           1,
+           0
+          ]
+         ]
+        },
+        "BackgroundColor3": [
+         0.0784,
+         0.051,
+         0.0314
+        ],
+        "BackgroundTransparency": 0.75,
+        "ZIndex": 2
+       }
+      },
+      {
+       "Name": "Map",
+       "ClassName": "Frame",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "AnchorPoint": [
+         0,
+         0
+        ],
+        "Position": {
+         "UDim2": [
+          [
+           0.5,
+           0
+          ],
+          [
+           0.42,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "ZIndex": 3
+       },
+       "Children": [
+        {
+         "Name": "UIScale",
+         "ClassName": "UIScale",
+         "Properties": {
+          "Scale": 1
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Hint",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.3,
+           0
+          ],
+          [
+           0.025,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.4,
+           0
+          ],
+          [
+           0.045,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "DRAG TO EXPLORE",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextScaled": true,
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 14,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 3,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "DetailBar",
+       "ClassName": "Frame",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.01,
+           0
+          ],
+          [
+           0.8613,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.98,
+           0
+          ],
+          [
+           0.1267,
+           0
+          ]
+         ]
+        },
+        "BackgroundColor3": [
+         0.102,
+         0.0784,
+         0.0627
+        ],
+        "BackgroundTransparency": 0.25,
+        "Visible": false,
+        "ZIndex": 7
+       },
+       "Children": [
+        {
+         "Name": "UICorner",
+         "ClassName": "UICorner",
+         "Properties": {
+          "CornerRadius": {
+           "UDim": [
+            0,
+            14
+           ]
+          }
+         }
+        },
+        {
+         "Name": "NodeName",
+         "ClassName": "TextLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.025,
+             0
+            ],
+            [
+             0.1,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.6,
+             0
+            ],
+            [
+             0.42,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Text": "",
+          "TextColor3": [
+           1.0,
+           0.8235,
+           0.2471
+          ],
+          "FontFace": {
+           "Font": {
+            "family": "rbxasset://fonts/families/LuckiestGuy.json",
+            "weight": "Regular",
+            "style": "Normal"
+           }
+          },
+          "TextScaled": true,
+          "TextXAlignment": "Left",
+          "TextYAlignment": "Center",
+          "ZIndex": 8
+         },
+         "Children": [
+          {
+           "Name": "UITextSizeConstraint",
+           "ClassName": "UITextSizeConstraint",
+           "Properties": {
+            "MaxTextSize": 18,
+            "MinTextSize": 6
+           }
+          },
+          {
+           "Name": "UIStroke",
+           "ClassName": "UIStroke",
+           "Properties": {
+            "Color": [
+             0.102,
+             0.0784,
+             0.0627
+            ],
+            "Thickness": 3,
+            "LineJoinMode": "Round",
+            "ApplyStrokeMode": "Contextual"
+           }
+          }
+         ]
+        },
+        {
+         "Name": "NodeDesc",
+         "ClassName": "TextLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.025,
+             0
+            ],
+            [
+             0.54,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.66,
+             0
+            ],
+            [
+             0.36,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Text": "",
+          "TextColor3": [
+           1.0,
+           1.0,
+           1.0
+          ],
+          "FontFace": {
+           "Font": {
+            "family": "rbxasset://fonts/families/LuckiestGuy.json",
+            "weight": "Regular",
+            "style": "Normal"
+           }
+          },
+          "TextScaled": true,
+          "TextXAlignment": "Left",
+          "TextYAlignment": "Center",
+          "ZIndex": 8
+         },
+         "Children": [
+          {
+           "Name": "UITextSizeConstraint",
+           "ClassName": "UITextSizeConstraint",
+           "Properties": {
+            "MaxTextSize": 14,
+            "MinTextSize": 6
+           }
+          },
+          {
+           "Name": "UIStroke",
+           "ClassName": "UIStroke",
+           "Properties": {
+            "Color": [
+             0.102,
+             0.0784,
+             0.0627
+            ],
+            "Thickness": 2,
+            "LineJoinMode": "Round",
+            "ApplyStrokeMode": "Contextual"
+           }
+          }
+         ]
+        },
+        {
+         "Name": "BuyButton",
+         "ClassName": "TextButton",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "AnchorPoint": [
+           1,
+           0.5
+          ],
+          "Position": {
+           "UDim2": [
+            [
+             0.985,
+             0
+            ],
+            [
+             0.5,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.25,
+             0
+            ],
+            [
+             0.8,
+             0
+            ]
+           ]
+          },
+          "BackgroundColor3": [
+           0.298,
+           0.702,
+           0.2353
+          ],
+          "Text": "",
+          "AutoButtonColor": false,
+          "ZIndex": 8
+         },
+         "Children": [
+          {
+           "Name": "UICorner",
+           "ClassName": "UICorner",
+           "Properties": {
+            "CornerRadius": {
+             "UDim": [
+              0.25,
+              0
+             ]
+            }
+           }
+          },
+          {
+           "Name": "UIStroke",
+           "ClassName": "UIStroke",
+           "Properties": {
+            "Color": [
+             0.102,
+             0.0784,
+             0.0627
+            ],
+            "Thickness": 3,
+            "LineJoinMode": "Round",
+            "ApplyStrokeMode": "Border"
+           }
+          },
+          {
+           "Name": "UIScale",
+           "ClassName": "UIScale",
+           "Properties": {
+            "Scale": 1
+           }
+          },
+          {
+           "Name": "Action",
+           "ClassName": "TextLabel",
+           "Properties": {
+            "BorderSizePixel": 0,
+            "Position": {
+             "UDim2": [
+              [
+               0.06,
+               0
+              ],
+              [
+               0.18,
+               0
+              ]
+             ]
+            },
+            "Size": {
+             "UDim2": [
+              [
+               0.5,
+               0
+              ],
+              [
+               0.64,
+               0
+              ]
+             ]
+            },
+            "BackgroundTransparency": 1,
+            "Text": "UPGRADE",
+            "TextColor3": [
+             1.0,
+             1.0,
+             1.0
+            ],
+            "FontFace": {
+             "Font": {
+              "family": "rbxasset://fonts/families/LuckiestGuy.json",
+              "weight": "Regular",
+              "style": "Normal"
+             }
+            },
+            "TextScaled": true,
+            "TextXAlignment": "Center",
+            "TextYAlignment": "Center",
+            "ZIndex": 9
+           },
+           "Children": [
+            {
+             "Name": "UITextSizeConstraint",
+             "ClassName": "UITextSizeConstraint",
+             "Properties": {
+              "MaxTextSize": 18,
+              "MinTextSize": 6
+             }
+            },
+            {
+             "Name": "UIStroke",
+             "ClassName": "UIStroke",
+             "Properties": {
+              "Color": [
+               0.102,
+               0.0784,
+               0.0627
+              ],
+              "Thickness": 3,
+              "LineJoinMode": "Round",
+              "ApplyStrokeMode": "Contextual"
+             }
+            }
+           ]
+          },
+          {
+           "Name": "GemIcon",
+           "ClassName": "ImageLabel",
+           "Properties": {
+            "BorderSizePixel": 0,
+            "Position": {
+             "UDim2": [
+              [
+               0.58,
+               0
+              ],
+              [
+               0.18,
+               0
+              ]
+             ]
+            },
+            "Size": {
+             "UDim2": [
+              [
+               0.13,
+               0
+              ],
+              [
+               0.64,
+               0
+              ]
+             ]
+            },
+            "BackgroundTransparency": 1,
+            "Image": "rbxassetid://130974323293639",
+            "ScaleType": "Fit",
+            "ZIndex": 9
+           }
+          },
+          {
+           "Name": "Cost",
+           "ClassName": "TextLabel",
+           "Properties": {
+            "BorderSizePixel": 0,
+            "Position": {
+             "UDim2": [
+              [
+               0.72,
+               0
+              ],
+              [
+               0.18,
+               0
+              ]
+             ]
+            },
+            "Size": {
+             "UDim2": [
+              [
+               0.26,
+               0
+              ],
+              [
+               0.64,
+               0
+              ]
+             ]
+            },
+            "BackgroundTransparency": 1,
+            "Text": "0",
+            "TextColor3": [
+             0.5412,
+             0.9412,
+             1.0
+            ],
+            "FontFace": {
+             "Font": {
+              "family": "rbxasset://fonts/families/LuckiestGuy.json",
+              "weight": "Regular",
+              "style": "Normal"
+             }
+            },
+            "TextScaled": true,
+            "TextXAlignment": "Left",
+            "TextYAlignment": "Center",
+            "ZIndex": 9
+           },
+           "Children": [
+            {
+             "Name": "UITextSizeConstraint",
+             "ClassName": "UITextSizeConstraint",
+             "Properties": {
+              "MaxTextSize": 18,
+              "MinTextSize": 6
+             }
+            },
+            {
+             "Name": "UIStroke",
+             "ClassName": "UIStroke",
+             "Properties": {
+              "Color": [
+               0.102,
+               0.0784,
+               0.0627
+              ],
+              "Thickness": 3,
+              "LineJoinMode": "Round",
+              "ApplyStrokeMode": "Contextual"
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "Name": "Tabs",
+     "ClassName": "Frame",
+     "Properties": {
+      "BorderSizePixel": 0,
+      "Position": {
+       "UDim2": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ]
+      },
+      "Size": {
+       "UDim2": [
+        [
+         1,
+         0
+        ],
+        [
+         1,
+         0
+        ]
+       ]
+      },
+      "BackgroundTransparency": 1,
+      "ZIndex": 3
+     },
+     "Children": [
+      {
+       "Name": "TabPlayer",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "AnchorPoint": [
+         0.5,
+         1
+        ],
+        "Position": {
+         "UDim2": [
+          [
+           0.21252,
+           0
+          ],
+          [
+           0.27476,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.30595,
+           0
+          ],
+          [
+           0.12692,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "rbxassetid://117740132557925",
+        "ScaleType": "Stretch",
+        "AutoButtonColor": false,
+        "LayoutOrder": 1,
+        "ZIndex": 3
+       },
+       "Children": [
+        {
+         "Name": "UIScale",
+         "ClassName": "UIScale",
+         "Properties": {
+          "Scale": 1
+         }
+        },
+        {
+         "Name": "Label",
+         "ClassName": "TextLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.33,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.48,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Text": "PLAYER",
+          "TextColor3": [
+           1.0,
+           1.0,
+           1.0
+          ],
+          "FontFace": {
+           "Font": {
+            "family": "rbxasset://fonts/families/LuckiestGuy.json",
+            "weight": "Regular",
+            "style": "Normal"
+           }
+          },
+          "TextScaled": true,
+          "TextXAlignment": "Center",
+          "TextYAlignment": "Center",
+          "ZIndex": 4
+         },
+         "Children": [
+          {
+           "Name": "UITextSizeConstraint",
+           "ClassName": "UITextSizeConstraint",
+           "Properties": {
+            "MaxTextSize": 20,
+            "MinTextSize": 6
+           }
+          },
+          {
+           "Name": "UIStroke",
+           "ClassName": "UIStroke",
+           "Properties": {
+            "Color": [
+             0.102,
+             0.0784,
+             0.0627
+            ],
+            "Thickness": 3,
+            "LineJoinMode": "Round",
+            "ApplyStrokeMode": "Contextual"
+           }
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "Name": "TabFortress",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "AnchorPoint": [
+         0.5,
+         1
+        ],
+        "Position": {
+         "UDim2": [
+          [
+           0.49795,
+           0
+          ],
+          [
+           0.2622,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.29774,
+           0
+          ],
+          [
+           0.11855,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "rbxassetid://73525900620129",
+        "ScaleType": "Stretch",
+        "AutoButtonColor": false,
+        "LayoutOrder": 2,
+        "ZIndex": 3
+       },
+       "Children": [
+        {
+         "Name": "UIScale",
+         "ClassName": "UIScale",
+         "Properties": {
+          "Scale": 1
+         }
+        },
+        {
+         "Name": "Label",
+         "ClassName": "TextLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.33,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.48,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Text": "FORTRESS",
+          "TextColor3": [
+           1.0,
+           1.0,
+           1.0
+          ],
+          "FontFace": {
+           "Font": {
+            "family": "rbxasset://fonts/families/LuckiestGuy.json",
+            "weight": "Regular",
+            "style": "Normal"
+           }
+          },
+          "TextScaled": true,
+          "TextXAlignment": "Center",
+          "TextYAlignment": "Center",
+          "ZIndex": 4
+         },
+         "Children": [
+          {
+           "Name": "UITextSizeConstraint",
+           "ClassName": "UITextSizeConstraint",
+           "Properties": {
+            "MaxTextSize": 20,
+            "MinTextSize": 6
+           }
+          },
+          {
+           "Name": "UIStroke",
+           "ClassName": "UIStroke",
+           "Properties": {
+            "Color": [
+             0.102,
+             0.0784,
+             0.0627
+            ],
+            "Thickness": 3,
+            "LineJoinMode": "Round",
+            "ApplyStrokeMode": "Contextual"
+           }
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "Name": "TabPets",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "AnchorPoint": [
+         0.5,
+         1
+        ],
+        "Position": {
+         "UDim2": [
+          [
+           0.78747,
+           0
+          ],
+          [
+           0.25802,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.29774,
+           0
+          ],
+          [
+           0.11576,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "rbxassetid://130452128072760",
+        "ScaleType": "Stretch",
+        "AutoButtonColor": false,
+        "LayoutOrder": 3,
+        "ZIndex": 3
+       },
+       "Children": [
+        {
+         "Name": "UIScale",
+         "ClassName": "UIScale",
+         "Properties": {
+          "Scale": 1
+         }
+        },
+        {
+         "Name": "Label",
+         "ClassName": "TextLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.33,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.48,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Text": "PETS",
+          "TextColor3": [
+           1.0,
+           1.0,
+           1.0
+          ],
+          "FontFace": {
+           "Font": {
+            "family": "rbxasset://fonts/families/LuckiestGuy.json",
+            "weight": "Regular",
+            "style": "Normal"
+           }
+          },
+          "TextScaled": true,
+          "TextXAlignment": "Center",
+          "TextYAlignment": "Center",
+          "ZIndex": 4
+         },
+         "Children": [
+          {
+           "Name": "UITextSizeConstraint",
+           "ClassName": "UITextSizeConstraint",
+           "Properties": {
+            "MaxTextSize": 20,
+            "MinTextSize": 6
+           }
+          },
+          {
+           "Name": "UIStroke",
+           "ClassName": "UIStroke",
+           "Properties": {
+            "Color": [
+             0.102,
+             0.0784,
+             0.0627
+            ],
+            "Thickness": 3,
+            "LineJoinMode": "Round",
+            "ApplyStrokeMode": "Contextual"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "Name": "Title",
+     "ClassName": "TextLabel",
+     "Properties": {
+      "BorderSizePixel": 0,
+      "Position": {
+       "UDim2": [
+        [
+         0.33973,
+         0
+        ],
+        [
+         0.034,
+         0
+        ]
+       ]
+      },
+      "Size": {
+       "UDim2": [
+        [
+         0.3195,
+         0
+        ],
+        [
+         0.072,
+         0
+        ]
+       ]
+      },
+      "BackgroundTransparency": 1,
+      "Text": "SKILL TREE",
+      "TextColor3": [
+       0.9882,
+       0.8902,
+       0.6902
+      ],
+      "FontFace": {
+       "Font": {
+        "family": "rbxasset://fonts/families/LuckiestGuy.json",
+        "weight": "Regular",
+        "style": "Normal"
+       }
+      },
+      "TextScaled": true,
+      "TextXAlignment": "Center",
+      "TextYAlignment": "Center",
+      "ZIndex": 4
+     },
+     "Children": [
+      {
+       "Name": "UITextSizeConstraint",
+       "ClassName": "UITextSizeConstraint",
+       "Properties": {
+        "MaxTextSize": 30,
+        "MinTextSize": 6
+       }
+      },
+      {
+       "Name": "UIStroke",
+       "ClassName": "UIStroke",
+       "Properties": {
+        "Color": [
+         0.102,
+         0.0784,
+         0.0627
+        ],
+        "Thickness": 3,
+        "LineJoinMode": "Round",
+        "ApplyStrokeMode": "Contextual"
+       }
+      }
+     ]
+    },
+    {
+     "Name": "CloseButton",
+     "ClassName": "ImageButton",
+     "Properties": {
+      "BorderSizePixel": 0,
+      "AnchorPoint": [
+       0.5,
+       0.5
+      ],
+      "Position": {
+       "UDim2": [
+        [
+         0.95175,
+         0
+        ],
+        [
+         0.07252,
+         0
+        ]
+       ]
+      },
+      "Size": {
+       "UDim2": [
+        [
+         0.09651,
+         0
+        ],
+        [
+         0.12273,
+         0
+        ]
+       ]
+      },
+      "BackgroundTransparency": 1,
+      "Image": "rbxassetid://116146986242036",
+      "ScaleType": "Fit",
+      "AutoButtonColor": false,
+      "ZIndex": 5
+     },
+     "Children": [
+      {
+       "Name": "UIScale",
+       "ClassName": "UIScale",
+       "Properties": {
+        "Scale": 1
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

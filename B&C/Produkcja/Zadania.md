@@ -61,6 +61,9 @@ tags: [produkcja, zadania]
 - [ ] Szary prototyp BONK-a z botem-klikaczem (bramka B1, [[Systemy gry v2]]) — po decyzji z pytania 16 · #wysoki
 
 ## 📥 Backlog
+
+- [x] [[Okno drzewka umiejętności]]: grafiki, Figma, Roblox, okno z przesuwaną mapą, zakup węzłów za Diamenty (2026-11-15)
+- [ ] Drzewko: premie `ST_<stat>` podpiąć pod walkę, karczmę, Twierdzę i pety; zapis w DataStore; balans cen · #średni
 - [ ] [[Okno ekwipunku]]: test na telefonie; potem prawdziwe przedmioty i statystyki z serwera · #wysoki
 - [x] [[HUD]]: Rybki — ikona `Fish` wgrana do Roblox (2026-11-14, po „tak”)
 - [ ] [[HUD]]: ustalić rolę Rybek jako waluty ([[Pytania otwarte]] #44) · #średni
