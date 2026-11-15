@@ -1247,6 +1247,7 @@ def obieg(repo=None, sciezki=None, ustaw=None, teraz=None):
         _zapis_blokada.release()
     if st.get("stan") in ("pobieram", "wysylam"):              # nie powinno zostać — na wszelki wypadek
         _ustaw(st, poprzedni if poprzedni not in ("pobieram", "wysylam", None) else "ok", "Obieg zakończony.")
+    _prace_po_obiegu(repo, ustaw)
     if proba:
         _po_obiegu(repo, st, ustaw)
     return stan_auto(repo)
@@ -1287,6 +1288,7 @@ def _obieg(repo, sciezki, ustaw, teraz, st):
     with _auto_blokada:
         st["bledy_z_rzedu"] = 0
         st["nastepna_proba"] = 0.0
+    _prace_innych(repo, ustaw)
     wynik, _ = _pobierz_bezpiecznie(repo, st)
     if wynik in ("czeka", "konflikt", "blad"):
         return True
@@ -1295,6 +1297,28 @@ def _obieg(repo, sciezki, ustaw, teraz, st):
         p = st.get("pobranie") or {}
         _ustaw(st, "ok", "Pobrano z GitHuba %s." % _odmiana_zmian(p.get("ile") or 0), zgodne=True)
     return True
+
+
+def _prace_innych(repo, ustaw):
+    """Prace w toku obu osób (bc/prace_wymiana.py) po udanym fetch i PRZED pobraniem zmian, pod blokadą gita: tylko
+    odczyt — pliki z nadchodzących commitów a moja praca (nic podczas cudzego scalania — ten krok jest po sprawdzeniu
+    `_cudza_operacja`). Żaden błąd nie zatrzymuje synchronizacji."""
+    try:
+        from . import prace_wymiana
+        prace_wymiana.po_fetchu(repo, ustaw)
+    except Exception as e:                                     # noqa: BLE001
+        rdzen.log("git-auto: prace innych osób: %r" % e)
+
+
+def _prace_po_obiegu(repo, ustaw):
+    """Druga część (po zwolnieniu blokady gita, żeby push stanu i Telegram nie wstrzymywały przycisków Pobierz/Wyślij):
+    odczyt stanu innych z gałęzi stan/prace-*, publikacja własnego, gdy się zmienił, i wiadomość o nowej kolizji.
+    Działa tylko, gdy w tym obiegu był `_prace_innych`."""
+    try:
+        from . import prace_wymiana
+        prace_wymiana.po_obiegu(repo, ustaw)
+    except Exception as e:                                     # noqa: BLE001
+        rdzen.log("git-auto: prace innych osób (po obiegu): %r" % e)
 
 
 def _odmiana_zmian(n):

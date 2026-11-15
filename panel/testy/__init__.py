@@ -21,3 +21,7 @@ if not os.environ.get("BC_PANEL_RUNTIME") or not os.environ.get("BC_PANEL_DANE")
 # tymczasowego (testy/test_gitsync_auto.py), a gitsync ma dodatkowo bezpiecznik na prawdziwe repozytorium.
 os.environ["BC_GIT_AUTO"] = "0"
 os.environ["BC_GIT_BEZ_SIECI"] = "1"
+# Prace obu osób (bc/prace_wymiana.py): narzędzie praca.py i serwery testowe nie łączą się z GitHubem (publikacja stanu
+# prac i odczyt gałęzi stan/prace-*). Testy wymiany zdejmują tę zmienną tylko na czas pracy na repozytoriach próbnych
+# (testy/test_prace_wymiana.py); prawdziwe repozytorium chroni dodatkowo bezpiecznik `prace_wymiana.powod_bez_sieci`.
+os.environ["BC_PRACE_BEZ_SIECI"] = "1"

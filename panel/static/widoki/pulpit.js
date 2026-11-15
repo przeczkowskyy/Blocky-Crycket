@@ -6,7 +6,8 @@
 import { el, dopisz, zamien, ikona, czasTemu, dataKrotka, toast, arkusz, awatar, karta, pusty, stanBledu, ladowanie, odmiana, skroc } from "../wspolne/ui.js";
 import { mdLinia } from "../wspolne/markdown.js";
 import { zbudujKolejke } from "../wspolne/kolejka.js";
-import { pobierzPrace, ostatniePrace, napisKonca, etapPracy, postep as postepPracy, kluczPozycji } from "../wspolne/prace.js";
+import { pobierzPrace, ostatniePrace, napisKonca, etapPracy, postep as postepPracy, kluczPozycji, inni as praceInnych,
+  zMain, kolizjeMojej, kolizjeCudzej, tekstKolizji, dopelniacz } from "../wspolne/prace.js";
 
 const enc = encodeURIComponent;
 
@@ -144,6 +145,47 @@ export default {
       return "decyzja " + d.id;
     }
 
+    // Kolizje z pracami innych osób (bc/prace_wymiana.py): dane z publicznego repozytorium — tylko węzły tekstu (el)
+    let danePrac = null;
+    const nazwaTu = () => (danePrac && danePrac.wymiana && typeof danePrac.wymiana.nazwa === "string" ? danePrac.wymiana.nazwa : "");
+
+    function linieKolizji(lista, o) {
+      return lista.map((k) => el("p", { class: "praca-kolizja" + (k.nieaktualne ? " nieaktualne" : "") },
+        ikona(k.nieaktualne ? "info" : "ostrzezenie"), el("span", null, tekstKolizji(k, o))));
+    }
+
+    function wierszInnej(p) {
+      const n = napisKonca(p);
+      const pod = [etapPracy(p), p.kto].filter(Boolean).join(" · ");
+      return el("li", { class: "praca praca-inna stan-" + p.stan + (p.nieaktualna ? " nieaktualna" : ""), dataset: { praca: p.osoba + "/" + p.id } },
+        el("div", { class: "praca-gora" },
+          el("strong", { class: "praca-tytul" }, p.tytul || p.id),
+          el("span", { class: "praca-koniec" + (p.nieaktualna ? " wstrzymane" : n.klasa ? " " + n.klasa : "") },
+            p.nieaktualna ? "możliwie nieaktualne" : n.tekst)),
+        pod ? el("p", { class: "cichy-tekst praca-pod" }, pod) : null,
+        linieKolizji(kolizjeCudzej(danePrac, p.osoba, p.id), { przyCudzej: true, nazwaTu: nazwaTu() }));
+    }
+
+    function sekcjaInnych(lista) {
+      const osoby = [];
+      for (const p of lista) if (!osoby.includes(p.nazwa || p.osoba)) osoby.push(p.nazwa || p.osoba);
+      return osoby.map((nazwa) => el("div", { class: "prace-osoba" },
+        el("p", { class: "prace-osoba-nazwa" }, ikona("uzytkownik"), el("span", null, String(nazwa || "ktoś").slice(0, 40))),
+        el("ul", { class: "lista prace-lista" }, lista.filter((p) => (p.nazwa || p.osoba) === nazwa).map(wierszInnej))));
+    }
+
+    function linieZMain(lista) {
+      if (!lista.length) return null;
+      const autorzy = [...new Set(lista.flatMap((z) => (Array.isArray(z.autorzy) ? z.autorzy : []).map((a) => String(a).slice(0, 40))))];
+      const pliki = lista.slice(0, 4).map((z) => z.plik.slice(0, 120) + (z.niezapisane ? " (niezapisane zmiany)" : "")).join(", ");
+      const t = Date.parse(typeof lista[0].kiedy === "string" ? lista[0].kiedy : "");
+      const kiedy = isFinite(t) ? " o " + new Date(t).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" }) : "";
+      const gdzie = nazwaTu() ? "na komputerze " + dopelniacz(nazwaTu()) : "na komputerze z panelem";
+      return el("p", { class: "praca-kolizja" }, ikona("ostrzezenie"), el("span", null,
+        (autorzy.join(", ") || "Ktoś") + kiedy + " wysłał(a) na GitHuba zmiany w plikach, nad którymi trwa praca " + gdzie + ": " + pliki +
+        (lista.length > 4 ? " i " + (lista.length - 4) + " więcej" : "") + ". Zanim ktoś zapisze swoje zmiany, umówcie się, czyja wersja zostaje."));
+    }
+
     function wierszPracy(p) {
       const n = napisKonca(p);
       const etap = etapPracy(p);
@@ -159,6 +201,7 @@ export default {
         pp !== null ? el("span", { class: "pasek praca-pasek", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(Math.round(pp * 100)), "aria-label": "Postęp: " + (p.tytul || "") },
           el("span", { class: "pasek-wypelnienie", style: { width: Math.round(pp * 100) + "%", display: "block" } })) : null,
         p.komunikat && p.stan !== "w_toku" ? el("p", { class: "cichy-tekst praca-komunikat" }, p.komunikat) : null,
+        p.stan === "gotowe" || p.stan === "blad" ? null : linieKolizji(kolizjeMojej(danePrac, p.id), {}),
         (p.raport || klucz) ? el("div", { class: "praca-linki" },
           p.raport ? el("button", { type: "button", class: "praca-link", onclick: () => doSprawy("raport-" + p.raport) },
             "Zobacz raport" + (tytulRaportu(p.raport) ? " „" + skroc(tytulRaportu(p.raport), 60) + "”" : "")) : null,
@@ -167,13 +210,16 @@ export default {
 
     function rysujPrace(d) {
       const prace = (d && Array.isArray(d.prace)) ? d.prace : [];
+      const inni = praceInnych(d);                                 // stary serwer bez pól inni/kolizje/z_main: puste
+      const zm = zMain(d);
       const tytuly = prace.map((p) => tytulRaportu(p.raport) + "|" + (p.dotyczy && p.dotyczy.typ === "raport" ? tytulRaportu(p.dotyczy.id) : ""));
-      const podpis = JSON.stringify([prace, tytuly, Math.floor(Date.now() / 60000)]);
+      const podpis = JSON.stringify([prace, tytuly, d && d.inni, d && d.kolizje, d && d.z_main, Math.floor(Date.now() / 60000)]);
       if (podpis === podpisPrac) return;
       podpisPrac = podpis;
-      kPrace.el.hidden = !prace.length;
+      danePrac = d || null;
+      kPrace.el.hidden = !prace.length && !inni.length && !zm.length;
       kPrace.akcje.replaceChildren();
-      if (!prace.length) return kPrace.cialo.replaceChildren();
+      if (kPrace.el.hidden) return kPrace.cialo.replaceChildren();
       const aktywne = prace.filter((p) => p.stan !== "gotowe");
       const gotowe = prace.filter((p) => p.stan === "gotowe");
       const wToku = aktywne.filter((p) => p.stan === "w_toku").length;
@@ -188,9 +234,12 @@ export default {
         det.addEventListener("toggle", () => { if (aktywne.length) zakonczoneOtwarte = det.open; });
       }
       kPrace.cialo.replaceChildren(
+        linieZMain(zm) || "",
+        inni.length ? el("p", { class: "prace-osoba-nazwa" }, ikona("uzytkownik"), el("span", null, nazwaTu() || "Ten komputer")) : "",
         aktywne.length ? el("ul", { class: "lista prace-lista" }, aktywne.map(wierszPracy))
           : el("p", { class: "cichy-tekst" }, "Teraz nic nie trwa."),
-        det || "");
+        det || "",
+        ...(inni.length ? sekcjaInnych(inni) : []));
     }
 
     async function odswiezPrace() {

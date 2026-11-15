@@ -18,6 +18,11 @@ tags: [technika, workflow, git]
 3. [[Zadania]] i [[Pytania otwarte]] → praca z Claude Code → Claude aktualizuje sejf.
 4. **Ctrl+S** w Studio → commit → push.
 
+## Praca równoległa dwóch osób (od 15.11.2026)
+- Przed ciężką pracą (przebudowa modelu, mapa, budowa kontenera w Studio, większa przeróbka) agent zgłasza ją w panelu razem z tym, czego dotyczy: `python panel/narzedzia/praca.py start --id … --tytul "…" --koniec +45m --obszar model:rycerz --stop-przy-kolizji`, a na końcu `praca.py koniec --id …`. Szczegóły: [[Panel zespołu]], `CLAUDE.md`.
+- Jeśli druga osoba pracuje nad tym samym, narzędzie mówi o tym od razu (kod 3) — wtedy agent zatrzymuje się i pyta człowieka. Przebudowa modelu sprawdza to sama i nie ruszy Blendera.
+- Gdy wymiana prac jest włączona (domyślnie wyłączona, włącza ją Karol w `panel/konfiguracja.json`), stan trwających prac każdego komputera leży na osobnej, publicznej gałęzi `stan/prace-<osoba>` (sam plik `prace.json`, wysyła ją narzędzie i panel; historia zostaje na zawsze, więc w tytułach prac nic prywatnego). Tych gałęzi nie scalamy, nie zmieniamy ręcznie i nie usuwamy; `main` zostaje jedyną gałęzią pracy.
+
 ## Testowanie (stosowane w praktyce)
 - `rojo build default.project.json -o <katalog_tymczasowy>/check.rbxlx`: walidacja plików.
 - Podgląd w edytorze: tymczasowa kopia GUI (`_Nazwa`, `Enabled = true`) w StarterGui, zrzut ekranu, usunięcie kopii.

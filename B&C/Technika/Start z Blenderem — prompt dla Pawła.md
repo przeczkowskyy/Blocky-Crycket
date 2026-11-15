@@ -84,7 +84,9 @@ JAKOŚĆ (ten sam tor co u Karola, w wersji oszczędnej)
 - Uczciwie wypisuj, co zostało słabe. Zrzuty i filmy z Roblox Studio rób przy widocznym oknie Studio (zminimalizowane daje czarne zrzuty: python -B tools/studio_okno.py --przywroc).
 
 ŻEBY NIE WEJŚĆ SOBIE W DROGĘ Z KAROLEM
-- Przed każdą większą pracą (przebudowa modelu, mapa, budowa w Studio): git pull, a potem sprawdź, czy Karol nie robi tego samego — polecenie i zasady są w CLAUDE.md (sekcja o pracach w toku). Gdy prace się nakładają, zatrzymaj się i powiedz o tym Pawłowi.
+- Raz na początku: git config bc.osoba "Paweł" (ustawienie tylko w tym folderze; dzięki niemu prace Pawła widać w panelu pod jego imieniem, a nie pod loginem). Potem python panel/narzedzia/praca.py kolizje powinno wypisać „Ja: Paweł (pawel)”.
+- Przed każdą większą pracą (przebudowa modelu, mapa, budowa w Studio): git pull, a potem zgłoś pracę z obszarem i sprawdź, czy Karol nie robi tego samego — dokładne polecenie i zasady są w CLAUDE.md (sekcja „Jobs in progress and overlapping work”). Gdy prace się nakładają (kod wyjścia 3 albo wiersz „UWAGA — nakłada się”), zatrzymaj się i powiedz o tym Pawłowi. Na koniec zamknij pracę.
+- Tytuły prac trafiają na publiczny GitHub: nie wpisuj w nie nic prywatnego.
 - Nie przebudowuj modelu ani mapy, nad którymi właśnie pracuje druga osoba: pliki wynikowe są binarne i nie da się ich scalić.
 
 WOLNO BEZ PYTANIA

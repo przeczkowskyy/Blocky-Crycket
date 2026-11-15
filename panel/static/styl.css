@@ -638,6 +638,18 @@ button.czeka-gora { background: none; border: 0; padding: 0; width: 100%; text-a
   text-align: left; text-decoration: underline; text-decoration-color: rgba(78, 168, 255, 0.4); text-underline-offset: 3px; overflow-wrap: anywhere;
 }
 .prace-zakonczone { margin-top: 4px; border-top: 1px solid var(--obrys); padding-top: 6px; }
+/* prace innych osób i kolizje (bc/prace_wymiana.py) */
+.prace-osoba { margin-top: 8px; border-top: 1px solid var(--obrys); padding-top: 6px; }
+.prace-osoba-nazwa { display: flex; align-items: center; gap: 6px; margin: 4px 0 0; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--przygaszony); }
+.prace-osoba-nazwa .ikona { width: 14px; height: 14px; flex: none; }
+.praca-inna.nieaktualna .praca-tytul { color: var(--przygaszony); }
+.praca-inna .praca-tytul, .praca-inna .praca-pod, .praca-kolizja > span, .prace-osoba-nazwa > span { unicode-bidi: isolate; }
+.praca-kolizja {
+  display: flex; align-items: flex-start; gap: 7px; margin: 4px 0; padding: 7px 9px; border-radius: 9px; font-size: 13px; font-weight: 700;
+  color: var(--zloto); background: rgba(245, 184, 46, 0.1); border: 1.5px solid rgba(245, 184, 46, 0.5); overflow-wrap: anywhere; min-width: 0;
+}
+.praca-kolizja .ikona { width: 15px; height: 15px; flex: none; margin-top: 1px; }
+.praca-kolizja.nieaktualne { color: var(--przygaszony); font-weight: 600; background: rgba(255, 255, 255, 0.03); border-color: var(--obrys); }
 .prace-zakonczone > summary { min-height: 40px; color: var(--przygaszony); font-size: 13px; font-weight: 700; }
 .bok-prace {
   display: flex; align-items: center; gap: 7px; margin: 0 0 8px; padding: 6px 8px; border-radius: 10px; font-size: 12.5px; font-weight: 700;

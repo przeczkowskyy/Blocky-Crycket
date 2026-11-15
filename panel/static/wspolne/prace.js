@@ -10,6 +10,11 @@
 //   napisKonca(p) → {tekst, klasa}   „koniec ok. 12:40 (za 35 min)”, „po czasie o 10 min”, „gotowe 11:52”…
 //   kluczPozycji(p) → klucz karty w zakładce Pytania („raport-<id>”, „pytanie-19”, „D-071”) albo null
 //   znaczekPracy(p, {tytulRaportu?, naRaport?}) → <span class="praca-znaczek"> albo null
+//   inni(d), kolizje(d), zMain(d) → prace innych osób, kolizje i „druga osoba właśnie zmieniła Twoje pliki”
+//       (bc/prace_wymiana.py); stary serwer bez tych pól = puste listy, więc nic nowego się nie pokazuje
+//   kolizjeMojej(d, id), kolizjeCudzej(d, osoba, id), tekstKolizji(k, {przyCudzej?, nazwaTu?}) → napis ostrzeżenia;
+//   dopelniacz(nazwa) („Pawła”), opisObszaru(o) („model rycerz”, „kontener X w Studio”)
+//   Dane innych osób to tekst z publicznego repozytorium — tylko przez el() (węzły tekstu), nigdy jako HTML.
 
 import { el, ikona, dataKrotka } from "./ui.js";
 
@@ -44,7 +49,7 @@ export async function pobierzPrace(ctx, o = {}) {
       const t = Date.parse(d.teraz);
       stan.roznica = isFinite(t) ? t - Date.now() : 0;
       stan.dane = d;
-      const podpis = JSON.stringify(d.prace);
+      const podpis = JSON.stringify([d.prace, d.inni || null, d.kolizje || null, d.z_main || null]);
       if (podpis !== stan.podpis) {
         stan.podpis = podpis;
         window.dispatchEvent(new CustomEvent("bc:prace", { detail: d }));
@@ -181,4 +186,61 @@ export function pracePoKluczu(dane) {
     if (k && !m.has(k)) m.set(k, p);
   }
   return m;
+}
+
+// ------------------------------------------------------------------ prace innych osób i kolizje (bc/prace_wymiana.py)
+const lista = (v) => (Array.isArray(v) ? v.filter((x) => x && typeof x === "object") : []);
+// bez znaków C1, kierunku tekstu i zerowej szerokości (serwer też je usuwa — tu druga warstwa)
+const NIEWIDOCZNE = /[\u0000-\u001f\u007f-\u009f​-‏‪-‮⁠-⁩﻿]/g;
+const tekst = (v, n = 160) => (typeof v === "string" ? v.replace(NIEWIDOCZNE, "").slice(0, n) : "");
+const DOPELNIACZ = { Karol: "Karola", "Paweł": "Pawła" };
+
+/** „Pawła”, „Karola”, a dla innych „osoby <nazwa>” (do „z pracą …”). */
+export function dopelniacz(nazwa) {
+  const n = tekst(nazwa, 40);
+  return DOPELNIACZ[n] || (n ? "osoby " + n : "innej osoby");
+}
+
+/** Obszar zwykłymi słowami: model:rycerz → „model rycerz”, mapa:las → „mapa las”, studio:X → „kontener X w Studio”. */
+export function opisObszaru(o) {
+  const t = tekst(o, 120);
+  const m = /^(model|mapa|studio):(.*)$/.exec(t);
+  if (!m) return t;
+  return m[1] === "studio" ? "kontener " + m[2] + " w Studio" : m[1] + " " + m[2];
+}
+
+const opisWspolnego = (w) => tekst(w, 250).split(" ~ ").map(opisObszaru).filter(Boolean).join(" i ");
+
+/** Aktywne prace innych osób: [{…praca, osoba, nazwa, nieaktualna}] (stary serwer: []). */
+export function inni(d) {
+  return lista(d && d.inni);
+}
+
+/** Kolizje zgłoszone: [{osoba, nazwa, moja:{id,tytul}, ich:{…}, wspolne:[…], nieaktualne, powod?}] (stary serwer: []). */
+export function kolizje(d) {
+  return lista(d && d.kolizje).filter((k) => k.moja && typeof k.moja === "object" && k.ich && typeof k.ich === "object");
+}
+
+/** Pliki z nadchodzących commitów innych osób, nad którymi tu się pracuje: [{plik, autorzy, niezapisane, prace}]. */
+export function zMain(d) {
+  return lista(d && d.z_main).filter((z) => typeof z.plik === "string");
+}
+
+export function kolizjeMojej(d, id) {
+  return kolizje(d).filter((k) => k.moja.id === id);
+}
+
+export function kolizjeCudzej(d, osoba, id) {
+  return kolizje(d).filter((k) => k.osoba === osoba && k.ich.id === id);
+}
+
+/** „Nakłada się z pracą Pawła: „Rycerz — hełm” — wspólne: model rycerz. Poczekaj albo się umówcie.”. Przy cudzej
+ * pracy (o.przyCudzej) napis mówi o pracy z komputera z panelem: „…z pracą Karola: „…””. */
+export function tekstKolizji(k, o = {}) {
+  const wspolne = (Array.isArray(k.wspolne) ? k.wspolne : []).map(opisWspolnego).filter(Boolean).slice(0, 4).join(", ");
+  const kogo = o.przyCudzej
+    ? "z pracą " + (tekst(o.nazwaTu, 40) ? dopelniacz(o.nazwaTu) : "na komputerze z panelem") + ": „" + tekst(k.moja.tytul || k.moja.id, 100) + "”"
+    : "z pracą " + dopelniacz(k.nazwa) + ": „" + tekst(k.ich.tytul || k.ich.id, 100) + "”";
+  const przed = k.nieaktualne ? "Możliwe nakładanie (" + (tekst(k.powod, 80) || "stan może być nieaktualny") + ") " : "Nakłada się ";
+  return przed + kogo + (wspolne ? " — wspólne: " + wspolne : "") + (k.nieaktualne ? "." : ". Poczekaj albo się umówcie.");
 }

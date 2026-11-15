@@ -486,16 +486,47 @@ def main():
     ap.add_argument("--bez-filmow", action="store_true")
     ap.add_argument("--robocze", default="", help="folder roboczy (domyślnie tymczasowy, usuwany na końcu)")
     ap.add_argument("--zostaw-robocze", action="store_true")
+    ap.add_argument("--mimo-kolizji", action="store_true",
+                    help="przebuduj, choć inna osoba ma w panelu aktywną pracę nad tym modelem")
     a = ap.parse_args()
     if hasattr(sys.stdout, "reconfigure"):
         try:
             sys.stdout.reconfigure(encoding="utf-8")
         except Exception:
             pass
-    ok = True
-    for m in a.moduly:
-        ok = przebuduj(m, a) and ok
+    # praca w toku w panelu (tools/praca_auto.py): stop przed Blenderem, gdy model ma w pracy INNA osoba
+    pa, uchwyty = _praca_auto(), []
+    for m in a.moduly if pa else ():
+        uchwyty.append(pa.przed("przebudowa-" + m.lower(), "Przebudowa modelu " + m, ["model:" + m.lower()],
+                                mimo_kolizji=a.mimo_kolizji, koniec="+%dm" % (20 if a.bez_filmow else 45)))
+        if uchwyty[-1].zatrzymaj:
+            log(uchwyty[-1].komunikat)
+            for u in uchwyty[:-1]:
+                pa.po(u, ok=False, komunikat="nie ruszyła: kolizja z pracą innej osoby")
+            return pa.KOD_KOLIZJI
+    ok, skonczone = True, False
+    try:
+        for m in a.moduly:
+            ok = przebuduj(m, a) and ok
+        skonczone = True
+    finally:
+        for u in uchwyty:
+            pa.po(u, ok=skonczone, komunikat=None if skonczone and ok else
+                  ("kontrola eksportów nie wszędzie zgodna" if skonczone else "przerwana błędem"))
     return 0 if ok else 1
+
+
+def _praca_auto():
+    """tools/praca_auto.py albo None (brak pliku albo błąd importu = przebudowa jak dawniej)."""
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("praca_auto", os.path.join(REPO, "tools", "praca_auto.py"))
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+    except Exception as e:
+        print("PRZEBUDUJ | uwaga: bez zgłaszania pracy w panelu (%s)" % type(e).__name__, flush=True)
+        return None
 
 
 if __name__ == "__main__":

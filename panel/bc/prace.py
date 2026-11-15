@@ -22,6 +22,9 @@ Pola pliku:
     dotyczy?           {typ: raport | pytanie | decyzja, id} — pozycja w panelu, której praca dotyczy
     raport?            id raportu z wynikiem
     kto?               kto pracuje (np. „Claude (Karol)”)
+    obszary?           czego praca dotyczy (bc/obszary.py): ścieżki repozytorium albo model:<id>, mapa:<scena>,
+                       studio:<Kontener> — do wykrywania prac, które nakładają się z pracą drugiej osoby
+                       (bc/prace_wymiana.py)
     aktualizacja       ISO — ostatnia zmiana
     zakonczono?        ISO — kiedy praca przeszła w „gotowe” albo „blad”
 
@@ -32,6 +35,7 @@ Funkcje publiczne (dla CLI i testów; `teraz` = datetime ze strefą, domyślnie 
     zakoncz(id, raport=None, komunikat=None), oznacz_blad(id, komunikat), wstrzymaj(id, komunikat=None),
     wznow(id, koniec=None), usun(id)
     lista(teraz=None) -> [praca z polami wyliczanymi]   (kolejność jak w GET /api/prace)
+    aktywne(teraz=None) -> [praca]                       prace w_toku i wstrzymane (te idą do drugiej osoby)
     sprzataj(teraz=None) -> liczba usuniętych plików
 
 Pola wyliczane (w liście i w API): zostalo_min albo po_czasie_min, przeterminowana, postep (0–1 albo null).
@@ -47,11 +51,13 @@ import re
 import threading
 import time
 
+from . import obszary as obszary_mod
 from . import rdzen
 from .rdzen import BladHTTP
 
 STANY = ("w_toku", "gotowe", "wstrzymane", "blad")
 ZAKONCZONE = ("gotowe", "blad")
+AKTYWNE = ("w_toku", "wstrzymane")
 TYPY_DOTYCZY = ("raport", "pytanie", "decyzja")
 WIDOCZNE_PO_KONCU_S = 48 * 3600
 
@@ -63,6 +69,9 @@ RX_ZA = re.compile(r"^\+\s*(?:(\d+)\s*h)?\s*(?:(\d+)\s*(?:m|min)?)?$", re.I)
 # ścieżki z nazwą użytkownika systemu (C:\Users\…, /home/…) nie trafiają do panelu — repozytorium i panel są publiczne
 RX_SCIEZKA = re.compile(r"(?:[A-Za-z]:[\\/]+(?:Users|Użytkownicy|Documents and Settings)[\\/]+[^\\/\s\"']+"
                         r"|/(?:home|Users)/[^/\s\"']+)", re.I)
+# niewidoczne znaki, które w terminalu albo na stronie zmieniają wygląd reszty tekstu: C1 (np. \x9b = CSI), kierunek
+# tekstu (U+202E…), zerowa szerokość — usuwane z tytułów, etapów i „kto” (jak gitsync._RX_STERUJACE)
+RX_NIEWIDOCZNE = re.compile("[\x7f-\x9f​-‏‪-‮⁠-⁩﻿]")
 
 MAX_TYTUL = 120
 MAX_OPIS = 300
@@ -191,7 +200,7 @@ def _tekst(v, nazwa, maks, wymagane=False):
         return None
     if not isinstance(v, str):
         raise BladHTTP(400, "Pole „%s” musi być tekstem" % nazwa)
-    v = re.sub(r"[\x00-\x08\x0b-\x1f\x7f]", "", v.replace("\r\n", "\n").replace("\n", " ")).strip()
+    v = RX_NIEWIDOCZNE.sub("", re.sub(r"[\x00-\x08\x0b-\x1f\x7f]", "", v.replace("\r\n", "\n").replace("\n", " "))).strip()
     if wymagane and not v:
         raise BladHTTP(400, "Pole „%s” nie może być puste" % nazwa)
     if len(v) > maks:
@@ -244,7 +253,7 @@ def parsuj_dotyczy(spec):
 
 
 def _kto(kto):
-    kto = _bez_sciezek(re.sub(r"[\x00-\x1f\x7f]", "", str(kto or "")).strip())[:MAX_KTO].strip()
+    kto = _bez_sciezek(RX_NIEWIDOCZNE.sub("", re.sub(r"[\x00-\x1f\x7f]", "", str(kto or ""))).strip())[:MAX_KTO].strip()
     return kto or None
 
 
@@ -270,7 +279,7 @@ def _tekst_z_pliku(v, maks):
     """Pole tekstowe odczytane z pliku: tekst bez ścieżek i znaków sterujących albo None (inny typ = brak pola)."""
     if not isinstance(v, str):
         return None
-    v = _bez_sciezek(re.sub(r"[\x00-\x1f\x7f]", " ", v).strip())[:maks].strip()
+    v = _bez_sciezek(RX_NIEWIDOCZNE.sub("", re.sub(r"[\x00-\x1f\x7f]", " ", v)).strip())[:maks].strip()
     return v or None
 
 
@@ -296,6 +305,7 @@ def _oczysc(dane):
         p["dotyczy"] = None
     raport = dane.get("raport")
     p["raport"] = raport if isinstance(raport, str) and RX_RAPORT.match(raport) else None
+    p["obszary"] = obszary_mod.lista_bez_bledow(dane.get("obszary")) or None
     return {k: v for k, v in p.items() if v is not None}
 
 
@@ -392,8 +402,9 @@ def _pod_blokada(fn):
 
 @_pod_blokada
 def rozpocznij(pid, tytul, opis=None, etap=None, etapy=None, numer=None, koniec=None, dotyczy=None, kto=None,
-               teraz=None):
-    """Nowa praca (ten sam id = zaczyna się od nowa). `koniec` = tekst jak w parsuj_koniec albo None."""
+               obszary=None, teraz=None):
+    """Nowa praca (ten sam id = zaczyna się od nowa). `koniec` = tekst jak w parsuj_koniec albo None;
+    `obszary` = lista wpisów jak w bc/obszary.py (zły wpis = BladHTTP 400)."""
     pid = sprawdz_id(pid)
     t = _teraz(teraz)
     etapy = _etapy(etapy)
@@ -406,7 +417,7 @@ def rozpocznij(pid, tytul, opis=None, etap=None, etapy=None, numer=None, koniec=
     p = {"id": pid, "tytul": _tekst(tytul, "tytuł", MAX_TYTUL, wymagane=True),
          "opis": _tekst(opis, "opis", MAX_OPIS), "etap": etap, "etapy": etapy, "numer": numer,
          "start": _iso(t), "koniec_szacowany": parsuj_koniec(koniec, t) if koniec else None, "stan": "w_toku",
-         "dotyczy": parsuj_dotyczy(dotyczy), "kto": _kto(kto)}
+         "dotyczy": parsuj_dotyczy(dotyczy), "kto": _kto(kto), "obszary": obszary_mod.lista(obszary) or None}
     p = _zapisz(p, t)
     rdzen.log("prace: start %s (%s)" % (pid, p["tytul"][:60]))
     return p
@@ -511,7 +522,7 @@ def _zakonczona_dawno(p, t):
 
 
 POLA = ("id", "tytul", "opis", "etap", "etapy", "numer", "start", "koniec_szacowany", "stan", "komunikat", "dotyczy",
-        "raport", "kto", "aktualizacja", "zakonczono")
+        "raport", "kto", "obszary", "aktualizacja", "zakonczono")
 
 
 def _wylicz(p, t):
@@ -590,6 +601,11 @@ def lista(teraz=None):
     return [w for _, w in gotowe]
 
 
+def aktywne(teraz=None):
+    """Prace w toku i wstrzymane (z polami wyliczanymi) — to idzie do drugiej osoby (bc/prace_wymiana.py)."""
+    return [p for p in lista(teraz) if p.get("stan") in AKTYWNE]
+
+
 def sprzataj(teraz=None):
     """Usuwa pliki prac zakończonych dawniej niż 48 h (i stare pliki tymczasowe). → liczba usuniętych."""
     t = _teraz(teraz)
@@ -621,8 +637,15 @@ def _get_prace(z):
     w_toku = [p for p in prace if p.get("stan") == "w_toku"]
     konce = [(_czas(p.get("koniec_szacowany")), p["koniec_szacowany"]) for p in w_toku if p.get("koniec_szacowany")]
     konce = [(d.timestamp(), k) for d, k in konce if d]
-    return {"prace": prace, "teraz": _iso(t), "w_toku": len(w_toku),
-            "najblizszy_koniec": min(konce)[1] if konce else None}
+    wynik = {"prace": prace, "teraz": _iso(t), "w_toku": len(w_toku),
+             "najblizszy_koniec": min(konce)[1] if konce else None}
+    try:                                                       # prace innych osób i kolizje (bc/prace_wymiana.py)
+        from . import prace_wymiana
+        wynik.update(prace_wymiana.dla_api([p for p in prace if p.get("stan") in AKTYWNE], t))
+    except Exception as e:                                     # noqa: BLE001 — własne prace zawsze się pokazują
+        rdzen.log("prace: nie udało się odczytać prac innych osób: %r" % e)
+        wynik.update(inni=[], kolizje=[], z_main=[], wymiana=None)
+    return wynik
 
 
 def zarejestruj(app):
