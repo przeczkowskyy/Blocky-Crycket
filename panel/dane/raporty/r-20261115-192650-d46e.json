@@ -1,0 +1,25 @@
+{
+ "id": "r-20261115-192650-d46e",
+ "tytul": "Import modeli lasu: Zwiadowca i Troll w Robloxie, stop po Trollu",
+ "opis_md": "Wgrałem na Twoje konto 2 z 6 modeli lasu. Po Trollu zatrzymałem się, tak jak każe lista kroków.\n\n**Co wgrane** (stoją w Studio w `TestPostaci` na rynku)\n- Zwiadowca: zasób 108959205720843. Szkielet R15 jak u Rycerza, kontrola przeszła (wzrost 5,76, 15 stawów, 18 zaczepów, stoi przodem).\n- Leśny Troll: zasób 105984421059465. Szkielet z kości (Bone), jak w pliku. Kontrola dała NIEZGODNY, ale to błąd kontroli, nie modelu (niżej).\n\n**Co wygląda dobrze**\n- Kształty obu modeli, przód, strony bez lustra, maczuga w prawej dłoni trolla.\n- Skala w pliku jest dobra (1:1), obie moderacje zatwierdziły od razu.\n\n**Co jest nie tak**\n- W Studio oba modele są szare. Rycerz z 13.11 też jest teraz szary. Tekstura jest na miejscu i zatwierdzona: ta sama tekstura na próbnej kopii głowy rysuje się w kolorach (drugi obrazek). Studio w tej sesji nie rysuje „SurfaceAppearance” — przyczyny jeszcze nie znam.\n- Troll: import dodał niewidzialną część pod stopami. Kontrola wliczyła ją do wzrostu, więc zmniejszyła trolla o 9%, a teraz wisi on ok. 0,9 studa nad brukiem. Do poprawy w narzędziu.\n\n**Czego import nie przeniósł**\n- Łuku i sztyletu Zwiadowcy (są osobnymi przedmiotami, nie było ich w pliku). Świecenia (tych dwóch modeli i tak nie dotyczy).\n\n**Czego jeszcze nie ma**\n- Wilk, Muchomornik, Strażnik Gaju i Slime czekają.\n- Animacje na tych modelach to osobny krok. Prototyp walki nadal używa modeli z klocków.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T19:26:50+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Zwiadowca (import FBX)",
+   "etykieta": "Zwiadowca (import)"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestPostaci/Leśny Troll (import FBX)",
+   "etykieta": "Leśny Troll (import)"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg"
+ ],
+ "pytanie": "Czy kształty Zwiadowcy i Trolla wyglądają dobrze, czy mam poprawić kontrolę trolla i wgrać pozostałe cztery modele, i który model ma pierwszy zastąpić wersję z klocków?"
+}
