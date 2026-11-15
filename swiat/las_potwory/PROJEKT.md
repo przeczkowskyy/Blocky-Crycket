@@ -1060,7 +1060,49 @@ telefonu: stuknięcie podpowiedzi i panel bohatera. Do filmów walki jest `swiat
 
 ### 9.3 Wyniki Studio
 
-*(dopisuje osoba wdrażająca: data, wersja, które punkty 9.2 przeszły, pomiary, co poprawiono)*
+**15.11.2026, godz. 19:32–19:46, wspólne miejsce, Play solo, Skrot danych `3f657732d08e`.** Jedna długa sesja
+skryptem `testy/kontrola_play.py` i trzy krótkie sesje uzupełniające (dokładny czas odrodzenia z dziennika zdarzeń
+`Stan` po stronie serwera, prawdziwe naciśnięcie E). Studio było w trybie Edit przed każdą sesją (bez czekania) i
+po każdej do niego wróciło. Liczby: zmierzone obok oczekiwanych.
+
+| Punkt 9.2 | Oczekiwane | Zmierzone | Wynik |
+|---|---|---|---|
+| P1 atrybuty | true ok 36 1 OK 70/70, `Stan` 36 | true ok 36 1 „OK 70/70”, `Stan` 36 | tak |
+| 1 Output | dwie linie „gotowy”, bez błędów | obie linie, zero błędów i `warn` z `[LasPotwory]` | tak |
+| 3 z01 | aktorzy, 3 widoki, ok. 345 części | aktorzy, 3 widoki, 3 animowane, 345 części, 0 błędów | tak |
+| 4 odstępy | `minLuka ≥ 25` | 25,0 i więcej w każdej strefie (po skalowaniu z01: 24,9 — haczyk zaokrągla w dół do 0,1) | tak |
+| 5 podpowiedź E | E zaczyna walkę | prawdziwe naciśnięcie E przy Strażniku i przy slime'ie zaczyna walkę; dymek „Prompt” jest w `PlayerGui/ProximityPrompts`, teksty „Leśny Slime · poz. 1” / „Strażnik Gaju · poz. 10”, „Walcz” | tak, ale zob. uwagę 2 |
+| 6 walka i ZAMKNIJ | arena → wynik → ZAMKNIJ → kamera w lesie | wojownik poz. 10 kontra slime poz. 2: wygrana, 11,0 s; ZAMKNIJ kliknięte myszą; potem kamera `Custom` na humanoidzie, 12 st od postaci, W przez 0,9 s = 15 st; postać w lesie | tak |
+| 7 odrodzenie | widok znika od razu; nowy po 15 s, wychodzi z domu i wchodzi na pętlę | widok zniknął od razu; `zajetyDo` = start + 9,4 s; nowy `z01-4` 15,5 s po usunięciu (dziennik serwera), start w stanie `wychodzi` przy domu w stawie, po ok. 10 s `chodzi`; wilk z08: 25,7 s (oczekiwane 25) | tak |
+| 10 Strażnik | `StraznikWraca` ≈ teraz + 120; wraca także, gdy stoisz obok | `StraznikWraca` = chwila zabicia + 120,7 s; wrócił po 121,8 s, postać cały czas obok; potem podpowiedź włączona i 1 widok | tak (zabity haczykiem „zabij”; baneru po wygranej nie sprawdzano) |
+| 11 skalowanie | 8 graczy → 65, 20 → 87, z powrotem 1 → 87 zostaje | 64 + Strażnik = 65, 86 + Strażnik = 87, po zmianie na 1: 87; cel każdej strefy równy kolumnom G = 1 / 8 / 20 z dodatku A; kolejki puste po 40–45 s | tak |
+| 13 koszt (Ostępy, 87 potworów) | widoki ≤ 12, części ≤ 4000, klient < 1 ms, serwer < 1 ms | widoki 7, części 3808, animowane 7; **klient 2,0 ms na klatkę średnio (maks. 4,2)**, z tego przestawianie korzeni 0,38 ms na wywołanie (ok. 112 ms na sekundę gry), klipy 0,02 ms; serwer: tyknięcie ruchu 0,51 ms średnio (maks. 1,1), odradzanie 0,04 ms | klient **nie**, serwer tak |
+| wilki i Muchomorniki | widoki stoją na ziemi, animują się, walka rusza | z08: 7 widoków wilków, spód modelu 0,09–0,10 przy gruncie 0,10–0,11, 7/7 animowanych; walka z `z08-3` (poz. 6) wygrana, 11,2 s. z04: 8 widoków, spód 0,08–0,25 przy gruncie 0,10–0,27; 12 z 13 widoków w kadrze animowanych (dalszy widok liczony rzadziej); walka z `z04-8` (poz. 3) wygrana, 18,3 s | tak |
+| 14 telefon | panel czytelny i w kadrze 844 × 390 i 667 × 375 | emulacja prototypu działa tylko dla jego interfejsu, więc zmierzono nasz panel: 360 × 220 pkt (mieści się w obu ekranach), najmniejszy napis 16 pkt (próg 12), przycisk u góry 250 × 34 pkt; wycinek ekranu o rozmiarze telefonu w `klatki/kontrola_telefon.jpg` | tak (stuknięcia palcem nie sprawdzono) |
+| 15 po Stop | tryb Edit | tryb Edit po każdej z czterech sesji | tak |
+
+Nie sprawdzono: 8 (przegrana i rewanż), 9 (czerwone tabliczki przy poziomie „1”), 12 (dwóch graczy), baner Strażnika
+po wygranej, prawdziwy dotyk na telefonie, MicroProfiler (koszt mierzony haczykami „koszt”).
+
+**Poprawione przy kontroli:** nagłówki „KLASA” i „POZIOM BOHATERA” w panelu bohatera miały szary kolor na kremowym
+tle i na wycinku telefonu były ledwo widoczne; mają teraz kolor tuszu (`KlientPotworow.client.luau`, przebudowa
+`zbuduj.py --skrypty`: 12 skryptów, 0 części). Skrypt `testy/kontrola_play.py` dostał dziennik zdarzeń `Stan` (dokładny
+czas odrodzenia) i nie wkleja już zrzutów z Ostępów do filmu.
+
+**Uwagi:**
+1. Koszt klienta przy watasze wilków jest dwa razy wyższy od celu (2,0 ms zamiast 1 ms na klatkę, na komputerze).
+   Prawie cały to przestawianie modelu wilka z 1154 elementami; łagodzenie z 15.11 (rzadsze klatki dla dalszych)
+   nie pomaga, gdy gracz stoi w środku watahy. Na telefonie będzie gorzej. To sprawa lżejszych modeli albo mocniejszego
+   cięcia klatek, nie drobnej poprawki.
+2. Zrzut ekranu z narzędzia MCP nie pokazuje dymka podpowiedzi (ani nad slime'em, ani przy Strażniku), choć dymek
+   istnieje i E działa. Tabliczki poziomu, które są w świecie, na zrzutach widać. Wygląd dymka trzeba raz ocenić okiem.
+3. Po pominięciu walki (przewinięcie, POMIŃ) blokada prototypu liczy się w czasie rzeczywistym, więc przez resztę
+   długości walki E przy następnym potworze nic nie zaczyna (podpowiedź pokazuje „Walcz (za N s)”). Zgodnie z
+   kontraktem, ale gracz, który pomija walki, odczuje to jako przerwę.
+
+Film: `klatki/film_las_potwory.mp4` (35 s, 1280 × 720, H.264): slime'y w lesie, gracz przy slime'ie, walka na arenie,
+okno wyniku, powrót do lasu, nowy slime wychodzi z domu w stawie. Zrzuty: `klatki/kontrola_*.jpg`, przebieg kontroli:
+`klatki/kontrola_postep.txt`.
 
 ---
 

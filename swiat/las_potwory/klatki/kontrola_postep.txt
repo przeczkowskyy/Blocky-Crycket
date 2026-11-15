@@ -1,0 +1,16 @@
+19:29 start kontroli: przeczytane README, PROJEKT 9.2, proba_play.py; plan jednej sesji Play
+19:32 las z01: 3 widokow, 3 animowanych, podpowiedz E jest
+19:33 krok 1: walka z01-2 wygrana, okno: klik, kamera Custom, krok W 15.0 st, nowy z01-4 po 0.6 s od usuniecia
+19:35 krok 2: Straznik straznik-1 wrocil po 121.8 s (postac obok), podpowiedz True, widok 1
+19:35 krok 3: Potworow start 35, 8 graczy 64, 20 graczy 86, z powrotem 1 87
+19:36 krok 6: koszt w Ostepach zapisany (widoki 7, czesci 3808)
+19:37 krok 4: wilk z08-3, muchomornik z04-8, widokow wilkow 7, muchomornikow 8
+19:37 krok 5: panel bohatera [True, 360, 220], najmniejszy napis 16 pkt
+19:37 sesja Play zakonczona, Studio w Edit: True
+19:39 kroki 1-6 (sesja 1): walka ze slime'em wygrana, ZAMKNIJ dziala, Straznik wraca po 121,8 s, skalowanie 35/64/86 (+Straznik) zgodne z dodatkiem A, wilki i muchomorniki na gruncie, koszt klienta 2,0 ms/klatke przy 7 wilkach
+19:45 sesje 2-4 (krotkie): odrodzenie wg dziennika serwera slime 15,5 s, wilk 25,7 s; StraznikWraca = zabicie + 120,7 s; E przy Strazniku i przy slime'ie zaczyna walke (prawdziwe nacisniecie klawisza); dymek podpowiedzi istnieje, ale zrzut ekranu MCP go nie pokazuje
+19:45 krok 7: drobnych bledow w kodzie gry nie znaleziono, przebudowa niepotrzebna; poprawiony tylko skrypt testy/kontrola_play.py; testy offline zielone
+19:45 krok 8: film klatki/film_las_potwory.mp4 (35 s, 1280x720, H.264 yuv420p, 1,9 MB), arkusz klatek obejrzany
+19:46 krok 7 (c.d.): naglowki panelu bohatera z szarych na kolor tuszu (czytelnosc na telefonie), zbuduj.py --skrypty: 12 skryptow, 0 czesci, Skrot 3f657732d08e; sprawdz_luau i test_styku OK
+19:47 krok 9: PROJEKT.md rozdz. 9.3 i README „Stan w Studio” uzupelnione
+19:48 krok 10: raport r-20261115-194758-65f4 w panelu (3 zrzuty, film jako komponent, pytanie co najpierw); Studio w Edit

@@ -72,7 +72,7 @@ Pełna lista z poleceniami i oczekiwanymi liczbami jest w PROJEKT.md, rozdz. 9.2
 
 Pakiet działa w Roblox Studio w kontenerze `Workspace/LasPotwory` (zbudowany z tych źródeł, skrót danych `3f657732d08e`).
 Pierwsze uruchomienie i poprawki błędów zrobił agent wdrożeniowy; jego praca urwała się na pomiarach kosztu (limit
-użycia), więc lista kontrolna z `PROJEKT.md` rozdz. 9.2 **nie jest przejdzona w całości**. Krótką próbę końcową zrobiono
+użycia), więc lista kontrolna z `PROJEKT.md` rozdz. 9.2 nie była wtedy przejdzona w całości. Krótką próbę końcową zrobiono
 skryptem `testy/proba_play.py` (Play, zrzuty w `klatki/`):
 
 - serwer: „gotowy: 35 potworów w 16 strefach + Strażnik Gaju”, zgodność logiki 70/70, 36 wpisów w `Stan`;
@@ -85,8 +85,20 @@ skryptem `testy/proba_play.py` (Play, zrzuty w `klatki/`):
   „jeszcze raz” (łata P2);
 - prośba o walkę z potworem, który odszedł dalej niż 8 studów: serwer odmawia (potwór zostaje wolny) — zgodnie z D-016.
 
-Czego ta próba NIE sprawdziła: zamknięcia okna wyniku i powrotu sterowania, zniknięcia pokonanego potwora i odrodzenia,
-powrotu Strażnika po 120 s, skalowania liczby potworów, widoku na telefonie, kosztu na klatkę, wilków i Muchomorników.
+**Kontrola tego samego dnia wieczorem (19:32–19:46)** przeszła resztę listy skryptem `testy/kontrola_play.py`; pełne
+liczby są w `PROJEKT.md` rozdz. 9.3, a film w `klatki/film_las_potwory.mp4` (35 s). W skrócie:
+
+- po wygranej i kliknięciu ZAMKNIJ kamera i sterowanie wracają, postać stoi w lesie, pokonany potwór znika od razu;
+- nowy slime pojawia się 15,5 s po zniknięciu pokonanego (wilk po 25,7 s), wychodzi z domu i wchodzi na pętlę;
+- Strażnik Gaju wraca po 121,8 s, także gdy gracz stoi obok;
+- liczba potworów rośnie z liczbą graczy: 36 przy 1 graczu, 65 przy 8, 87 przy 20 (z Strażnikiem); gdy graczy ubywa,
+  nikt nie znika sam;
+- wilki i Muchomorniki stoją na ziemi, ruszają się, walka z nimi rusza; E naprawdę zaczyna walkę;
+- panel bohatera mieści się na ekranie telefonu, najmniejszy napis 16 punktów (poprawiony kolor nagłówków);
+- **słabe miejsce:** koszt klienta w środku watahy wilków to 2,0 ms na klatkę przy celu 1 ms (komputer; telefon gorzej).
+
+Nadal niesprawdzone: przegrana i rewanż, czerwone tabliczki przy niskim poziomie bohatera, dwóch graczy naraz,
+prawdziwy dotyk na telefonie, wygląd dymka podpowiedzi okiem (zrzut ekranu MCP go nie pokazuje).
 
 Uwagi z próby:
 - Slime idzie 6 studów na sekundę, więc trzeba do niego podbiec; podpowiedź gaśnie, gdy odejdzie dalej niż 8 studów.

@@ -853,9 +853,11 @@ local function zbudujPanel()
 	obrys(okno, 4)
 	nowy("TextLabel", { Name = "Tytul", BackgroundTransparency = 1, Position = UDim2.fromOffset(12, 6), Size = UDim2.new(1, -24, 0, 28),
 		Font = KOMIKS, TextScaled = true, Text = "TWÓJ BOHATER (TEST)", TextColor3 = K.tusz, ZIndex = 3 }, okno)
+	-- Poprawka kontroli (15.11, wycinek ekranu telefonu): szare nagłówki na kremowym tle były ledwo widoczne,
+	-- więc nagłówki mają kolor tuszu jak tytuł; od tytułu różnią się wielkością.
 	local function naglowek(tekst: string, y: number)
 		nowy("TextLabel", { Name = "Naglowek", BackgroundTransparency = 1, Position = UDim2.fromOffset(12, y), Size = UDim2.new(1, -24, 0, 16),
-			Font = KOMIKS, TextScaled = true, Text = tekst, TextColor3 = K.szary, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3 }, okno)
+			Font = KOMIKS, TextScaled = true, Text = tekst, TextColor3 = K.tusz, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3 }, okno)
 	end
 	local function opcja(nazwa: string, tekst: string, x: number, y: number, szer: number)
 		local b = nowy("TextButton", { Name = nazwa, Position = UDim2.fromOffset(x, y), Size = UDim2.fromOffset(szer, 40),
