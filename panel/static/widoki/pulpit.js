@@ -6,6 +6,7 @@
 import { el, dopisz, zamien, ikona, czasTemu, dataKrotka, toast, arkusz, awatar, karta, pusty, stanBledu, ladowanie, odmiana, skroc } from "../wspolne/ui.js";
 import { mdLinia } from "../wspolne/markdown.js";
 import { zbudujKolejke } from "../wspolne/kolejka.js";
+import { pobierzPrace, ostatniePrace, napisKonca, etapPracy, postep as postepPracy, kluczPozycji } from "../wspolne/prace.js";
 
 const enc = encodeURIComponent;
 
@@ -66,6 +67,9 @@ export default {
       el("div", { class: "pulpit-gora-tekst" }, powitanie),
       faza);
 
+    // Prace w toku (bc/prace.py): na samej górze, widoczna tylko, gdy są jakieś prace; stary serwer — wcale
+    const kPrace = karta("Prace w toku", "zegar", { klasa: "karta-prace" });
+    kPrace.el.hidden = true;
     const kCzeka = karta("Czeka na Ciebie", "pytanie", { klasa: "karta-czeka" });
     const kRozmowa = karta("Rozmowa", "mikrofon", { klasa: "karta-rozmowa" });
     const kNowe = karta("Co nowego", "zegar", { klasa: "karta-nowe" });
@@ -103,11 +107,14 @@ export default {
     // Najważniejsze na górze (telefon: jedna kolumna w tej kolejności); niżej reszta w siatce.
     const glowne = el("div", { class: "pulpit-glowne" }, kCzeka.el, kRozmowa.el, kNowe.el, kSync.el);
     const reszta = el("div", { class: "pulpit-reszta" }, kTeraz.el, kKto.el, ctx.statyczny ? null : kAgent.el, kMigawka.el);
-    const korzen = el("div", { class: "widok pulpit" }, gora, glowne,
+    const korzen = el("div", { class: "widok pulpit" }, gora, kPrace.el, glowne,
       el("h2", { class: "pulpit-naglowek" }, "Reszta"), reszta);
 
     let stop = null;
+    let stopPrac = null;
     let ostatnieDane = {};
+    let zakonczoneOtwarte = false;
+    let raportyPulpitu = [];            // do tytułów raportów przy pracach
 
     // ------------------------------------------------------------------ rysowanie kart
     function rysujGore(plan, blad) {
@@ -124,6 +131,75 @@ export default {
         el("span", { class: "pasek", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(p) },
           el("span", { class: "pasek-wypelnienie", style: { width: p + "%", display: "block" } })),
         el("strong", { class: "pulpit-faza-procent" }, p + "%")));
+    }
+
+    // ------------------------------------------------------------------ prace w toku
+    let podpisPrac = "";
+    const tytulRaportu = (id) => ((raportyPulpitu.find((r) => r.id === id) || {}).tytul || "");
+
+    function opisDotyczy(p) {
+      const d = p.dotyczy;
+      if (d.typ === "raport") return "raport" + (tytulRaportu(d.id) ? " „" + skroc(tytulRaportu(d.id), 60) + "”" : "");
+      if (d.typ === "pytanie") return "pytanie #" + d.id;
+      return "decyzja " + d.id;
+    }
+
+    function wierszPracy(p) {
+      const n = napisKonca(p);
+      const etap = etapPracy(p);
+      const pp = p.stan === "gotowe" ? null : postepPracy(p);
+      const klucz = kluczPozycji(p);
+      const pod = [etap, p.kto].filter(Boolean).join(" · ");
+      return el("li", { class: "praca stan-" + p.stan + (n.klasa ? " " + n.klasa : ""), dataset: { praca: p.id } },
+        el("div", { class: "praca-gora" },
+          el("strong", { class: "praca-tytul" }, p.tytul || p.id),
+          el("span", { class: "praca-koniec" + (n.klasa ? " " + n.klasa : "") }, n.tekst)),
+        p.opis && p.stan !== "gotowe" ? el("p", { class: "cichy-tekst praca-opis" }, p.opis) : null,
+        pod ? el("p", { class: "cichy-tekst praca-pod" }, pod) : null,
+        pp !== null ? el("span", { class: "pasek praca-pasek", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(Math.round(pp * 100)), "aria-label": "Postęp: " + (p.tytul || "") },
+          el("span", { class: "pasek-wypelnienie", style: { width: Math.round(pp * 100) + "%", display: "block" } })) : null,
+        p.komunikat && p.stan !== "w_toku" ? el("p", { class: "cichy-tekst praca-komunikat" }, p.komunikat) : null,
+        (p.raport || klucz) ? el("div", { class: "praca-linki" },
+          p.raport ? el("button", { type: "button", class: "praca-link", onclick: () => doSprawy("raport-" + p.raport) },
+            "Zobacz raport" + (tytulRaportu(p.raport) ? " „" + skroc(tytulRaportu(p.raport), 60) + "”" : "")) : null,
+          klucz && !(p.raport && klucz === "raport-" + p.raport) ? el("button", { type: "button", class: "praca-link", onclick: () => doSprawy(klucz) }, "Dotyczy: " + opisDotyczy(p)) : null) : null);
+    }
+
+    function rysujPrace(d) {
+      const prace = (d && Array.isArray(d.prace)) ? d.prace : [];
+      const tytuly = prace.map((p) => tytulRaportu(p.raport) + "|" + (p.dotyczy && p.dotyczy.typ === "raport" ? tytulRaportu(p.dotyczy.id) : ""));
+      const podpis = JSON.stringify([prace, tytuly, Math.floor(Date.now() / 60000)]);
+      if (podpis === podpisPrac) return;
+      podpisPrac = podpis;
+      kPrace.el.hidden = !prace.length;
+      kPrace.akcje.replaceChildren();
+      if (!prace.length) return kPrace.cialo.replaceChildren();
+      const aktywne = prace.filter((p) => p.stan !== "gotowe");
+      const gotowe = prace.filter((p) => p.stan === "gotowe");
+      const wToku = aktywne.filter((p) => p.stan === "w_toku").length;
+      if (wToku) kPrace.akcje.append(el("span", { class: "cichy-tekst" }, String(wToku) + " " + odmiana(wToku, ["trwa", "trwają", "trwa"])));
+      const dzis = new Date().toDateString();
+      const wszystkieDzis = gotowe.every((p) => new Date(p.zakonczono || p.aktualizacja).toDateString() === dzis);
+      let det = null;
+      if (gotowe.length) {
+        det = el("details", { class: "zwijane prace-zakonczone", open: zakonczoneOtwarte || !aktywne.length },
+          el("summary", null, ikona("dol"), el("span", null, (wszystkieDzis ? "Zakończone dziś" : "Zakończone ostatnio") + " (" + gotowe.length + ")")),
+          el("ul", { class: "lista prace-lista" }, gotowe.map(wierszPracy)));
+        det.addEventListener("toggle", () => { if (aktywne.length) zakonczoneOtwarte = det.open; });
+      }
+      kPrace.cialo.replaceChildren(
+        aktywne.length ? el("ul", { class: "lista prace-lista" }, aktywne.map(wierszPracy))
+          : el("p", { class: "cichy-tekst" }, "Teraz nic nie trwa."),
+        det || "");
+    }
+
+    async function odswiezPrace() {
+      const d = await pobierzPrace(ctx);
+      try {
+        rysujPrace(d);
+      } catch (e) {
+        console.warn("pulpit: prace", e);
+      }
     }
 
     /** Wiersz „Czeka na Ciebie”: każda sprawa jako pytanie (tytuł karty z zakładki Pytania), z małą etykietą pochodzenia. */
@@ -473,6 +549,8 @@ export default {
         plan: wart(plan), raporty: rap.status === "fulfilled" ? (rap.value && rap.value.raporty) || [] : null,
         agenda: wart(ag), bladPlanu: blad(plan), bladRaportow: blad(rap),
       };
+      if (dane.raporty) raportyPulpitu = dane.raporty;
+      rysuj("prace-tytuly", JSON.stringify((dane.raporty || []).map((r) => [r.id, r.tytul])), () => rysujPrace(ostatniePrace()));   // tytuły raportów przy pracach
       const sPlan = sygn(plan);
       const sRap = sygn(rap);
       rysuj("gora", sPlan, () => rysujGore(dane.plan, dane.bladPlanu));
@@ -491,16 +569,29 @@ export default {
     });
     // panel sam pobrał zmiany z GitHuba (powłoka, app.js) — od razu nowe dane, bez czekania na odpytywanie
     window.addEventListener("bc:git-pobrano", () => odswiez());
+    // prace w toku: nowa treść z dowolnego miejsca panelu (powłoka pyta co 30 s) i moduły znane po starcie
+    window.addEventListener("bc:prace", (e) => {
+      try {
+        rysujPrace(e.detail);
+      } catch (err) {
+        console.warn("pulpit: prace", err);
+      }
+    });
+    window.addEventListener("bc:moduly", () => odswiezPrace());
 
     return {
       el: korzen,
       pokaz() {
         odswiez();
+        odswiezPrace();
         if (!stop) stop = ctx.odpytuj(odswiez, 15000);
+        if (!stopPrac) stopPrac = ctx.odpytuj(odswiezPrace, 30000);   // także przy powrocie do karty
       },
       ukryj() {
         if (stop) stop();
         stop = null;
+        if (stopPrac) stopPrac();
+        stopPrac = null;
       },
     };
   },

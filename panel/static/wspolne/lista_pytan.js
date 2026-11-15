@@ -36,6 +36,7 @@ import {
   zbudujPytania, numerDecyzji, OTWARTE_DECYZJE, pytaniaZamknieteDecyzjami, pasuje, zwykly,
   pytanieDecyzji, kanoniczne, podzielPytanie, skrotOpisu,
 } from "./kolejka.js";
+import { pobierzPrace, ostatniePrace, pracePoKluczu, znaczekPracy } from "./prace.js";
 
 const ARKUSZ_STYLOW = new URL("./lista_pytan.css", import.meta.url).href;
 const ODSWIEZANIE_MS = 15000;
@@ -1235,8 +1236,58 @@ export function listaPytan(ctx, opcje = {}) {
       if (nowe.filter((k) => wKolejnosci.includes(k)).some((k, i) => k !== wKolejnosci[i])) odlozono = true;
     }
     ustawDzieci(kontener, nowe.length ? nowe : (pustyEl ? [pustyEl] : []));
+    kontenery.add(kontener);
+    ustawZnaczki(kontener, kluczeZnaczkow());
     return odlozono;
   }
+
+  // ------------------------------------------------------------------ znaczek „w pracy” (wspolne/prace.js)
+  // Karta raportu, pytania albo decyzji, której dotyczy praca w toku, ma w górnym wierszu mały znaczek „w pracy —
+  // koniec ok. 12:40”; po końcu pracy z raportem przez 48 h „poprawione — zobacz raport „…””. Znaczek nie wchodzi
+  // do podpisu karty, więc zmiana pracy nie przerysowuje karty (ani pola, w którym ktoś pisze). Stary serwer — brak.
+  const kontenery = new Set();        // kontenery kart (lista, odłożone, historia w zakładce Pytania)
+  const tytulRaportu = (id) => ((raporty || []).find((r) => r.id === id) || {}).tytul || "";
+  const doRaportu = (id) => {
+    const klucz = "raport-" + id;
+    if (typeof opcje.pokazSprawe === "function") opcje.pokazSprawe(klucz);
+    else ctx.idz("pytania", { sprawa: klucz });
+  };
+
+  function kluczeZnaczkow() {
+    const m = new Map();
+    for (const [k, p] of pracePoKluczu(ostatniePrace())) {
+      const nr = numerDecyzji(k);                              // decyzja może stać w karcie pytania (Rozstrzyga:)
+      const klucz = nr !== null && gdzieDecyzja.has(nr) ? gdzieDecyzja.get(nr) : k;
+      if (!m.has(klucz)) m.set(klucz, p);
+    }
+    return m;
+  }
+
+  function ustawZnaczki(kontener, mapa) {
+    for (const k of kontener.children) {
+      if (!k._sprawa) continue;
+      const gora = k.querySelector(":scope > .sprawa-gora");
+      if (!gora) continue;
+      const p = mapa.get(String(k._sprawa.klucz || "").replace(/~\d+$/, ""));
+      const nowy = p ? znaczekPracy(p, { tytulRaportu, naRaport: doRaportu }) : null;
+      const stary = gora.querySelector(":scope > .praca-znaczek");
+      if ((stary && stary.dataset.tekst) === (nowy && nowy.dataset.tekst)) continue;
+      if (stary) stary.remove();
+      if (nowy) gora.append(nowy);
+    }
+  }
+
+  function odswiezZnaczki() {
+    const mapa = kluczeZnaczkow();
+    for (const kontener of [...kontenery]) {
+      if (!kontener.isConnected) {
+        if (kontener !== listaEl) kontenery.delete(kontener);
+        continue;
+      }
+      ustawZnaczki(kontener, mapa);
+    }
+  }
+  window.addEventListener("bc:prace", () => odswiezZnaczki());
 
   // ------------------------------------------------------------------ wyszukiwanie
   /** Ukrywa karty, które nie pasują do zapytania. → liczba pasujących (czekające + odłożone). */
@@ -1367,6 +1418,8 @@ export function listaPytan(ctx, opcje = {}) {
     stan.obietnica = (async () => {
       try {
         const bierz = (sciezka, modul) => (ctx.jest(modul) ? ctx.api(sciezka) : Promise.reject(Object.assign(new Error("Ta część panelu jest wyłączona."), { status: 404 })));
+        // znaczki prac w toku: osobno i bez czekania (stary serwer bez prac = null, nic się nie dzieje)
+        pobierzPrace(ctx).then(() => odswiezZnaczki()).catch(() => {});
         const [p, r, a] = await Promise.allSettled([
           bierz("/api/sejf/plan", "sejf"), bierz("/api/raporty", "raporty"), bierz("/api/sesje/agenda", "sesje"),
         ]);

@@ -43,6 +43,19 @@
 .sprawa-kiedy, .sprawa-meta { font-size: 12px; color: var(--przygaszony); }
 .sprawa-gora > * + *::before { content: "·"; margin: 0 6px; color: var(--obrys-jasny); font-weight: 400; }
 .sprawa-meta.wazne { color: var(--tekst); font-weight: 700; }
+/* znaczek pracy w toku (wspolne/prace.js): mały napis z ikoną zegara na końcu górnego wiersza karty */
+.sprawa-gora > .praca-znaczek::before { content: none; }
+.praca-znaczek {
+  display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; padding: 1px 8px; border-radius: 999px;
+  font-size: 12px; font-weight: 700; color: var(--tekst); background: rgba(255, 255, 255, 0.05); max-width: 100%;
+}
+.praca-znaczek > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.praca-znaczek .ikona { width: 13px; height: 13px; flex: none; color: var(--zloto); }
+.praca-znaczek.po-czasie { color: var(--zloto); }
+.praca-znaczek.gotowe .ikona { color: var(--zielen); }
+.praca-znaczek.blad { color: #ff9b9b; }
+.praca-znaczek.wstrzymane { color: var(--przygaszony); }
+button.praca-znaczek { border: 0; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; min-height: 24px; text-decoration: underline; text-decoration-color: var(--obrys-jasny); text-underline-offset: 3px; }
 button.sprawa-meta-klik {
   background: none; border: 0; padding: 0; font: inherit; color: var(--przygaszony); cursor: pointer;
   text-decoration: underline; text-decoration-color: var(--obrys-jasny); text-underline-offset: 3px; min-height: 24px;

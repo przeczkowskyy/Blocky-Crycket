@@ -28,6 +28,19 @@ Narzędzia działają bez uruchomionego serwera (piszą pliki do `panel/dane/`).
    - Obrazy do 3 MB; obejrzyj każdy przed załączeniem.
 3. **Sejf**: raport nie zastępuje zasad z `CLAUDE.md` — zaktualizuj notatki, `Zadania.md` i `Dziennik zmian.md`.
 
+## Prace w toku: zawsze z szacowanym końcem (od 15.11)
+**ZASADA:** każdą dłuższą pracę (dłuższą niż kilka minut: mapa, modele, poprawki po raporcie, render) zgłaszasz w panelu **na starcie** z szacowanym końcem, aktualizujesz **przy zmianie etapu** (i gdy koniec się przesuwa) i **zamykasz na końcu** z id raportu. Karol pracuje zdalnie z telefonu i z Pulpitu ma wiedzieć, co powstaje i o której się skończy.
+```
+python panel/narzedzia/praca.py start --id biom-las --tytul "Biom Las — mapa z klocków" --etapy "Plan,Budowa,Kontrola,Raport" --koniec +90m --kto "Claude (Karol)"
+python panel/narzedzia/praca.py etap --id biom-las --etap Kontrola --koniec 12:40
+python panel/narzedzia/praca.py koniec --id biom-las --raport <id raportu z raport.py dodaj>
+```
+- `--koniec`: `12:40` (najbliższa taka godzina), `+90m`, `+2h`, `+1h30m` albo ISO (od wczoraj do dwóch tygodni naprzód). Szacuj uczciwie; gdy widzisz, że nie zdążysz, od razu podaj nowy koniec (`etap --koniec …`), zamiast zostawiać „po czasie”.
+- Poprawki po raporcie „Do poprawy”, odpowiedź na pytanie albo decyzję: dodaj `--dotyczy raport:<id>` (albo `pytanie:<nr>`, `decyzja:D-071`) — przy tej pozycji w panelu pojawi się znaczek „w pracy — koniec ok. 12:40”.
+- Przerwa: `wstrzymaj --id … --komunikat "czeka na decyzję"` / `wznow --id … --koniec +30m`; błąd: `blad --id … --komunikat "…"`; podgląd: `lista`.
+- Pliki prac leżą w danych lokalnych panelu (nie w repozytorium) — nie commitujesz ich i nie podajesz ich ścieżki ludziom.
+- **W każdej wiadomości do ludzi o pracy w toku podawaj szacowany koniec** („skończę ok. 12:40, za ok. 35 min”), także na Telegramie i w zakładce Agent.
+
 ## Przed kontynuacją: przeczytaj odpowiedzi
 ```
 python panel/narzedzia/raport.py odpowiedzi --od 2026-11-12T20:00      # decyzje i komentarze ludzi od tego czasu

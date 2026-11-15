@@ -3,6 +3,7 @@
 import { api, apiSurowe, sse, STATYCZNY, plik } from "./wspolne/api.js";
 import { el, ikona, maIkone, toast, arkusz, awatar } from "./wspolne/ui.js";
 import { pobierzKolejke } from "./wspolne/kolejka.js";
+import { pobierzPrace, godzina as godzinaPracy } from "./wspolne/prace.js";
 
 // Kolejność i opisy na wypadek, gdyby moduł widoku nie wstał (wtedy pokazujemy komunikat zamiast niego).
 // Zakładka Pytania łączy dawne Plan, Raporty i Decyzje; stare adresy (#/decyzje, #/plan, #/raporty,
@@ -99,6 +100,8 @@ const ctx = {
   odpytuj,
   /** Czy moduł serwera działa (true, gdy jeszcze nie wiadomo). */
   jest: (nazwa) => !stan.moduly || !stan.moduly[nazwa] || stan.moduly[nazwa].ok !== false,
+  /** Czy serwer NA PEWNO ma działający moduł (wymieniony w /api/zdrowie) — dla nowych tras, których stary serwer nie zna. */
+  znaModul: (nazwa) => !!(stan.moduly && stan.moduly[nazwa] && stan.moduly[nazwa].ok === true),
   /** Czy panel ma taką zakładkę. */
   maWidok: (id) => stan.widoki.has(id),
   nazwaWidoku: (id) => (stan.widoki.get(id) ? stan.widoki.get(id).meta.tytul : DAWNE_WIDOKI[id] || id),
@@ -154,6 +157,9 @@ function zbudujPowloke() {
   elementy.nazwaGry = el("span", { class: "marka-nazwa" }, ctx.konfiguracja.gra.nazwa || "BLOCKY & CRYCKET");
   elementy.obecniBok = el("div", { class: "bok-obecni", hidden: true, "aria-label": "Kto jest teraz na panelu" });
   elementy.obecniGora = el("button", { type: "button", class: "gora-obecni", hidden: true, "aria-haspopup": "dialog", onclick: otworzObecnych });
+  // prace w toku (wspolne/prace.js): mały napis „Prace: 3 · najbliższy koniec 11:45”, klik = Pulpit
+  elementy.praceBok = el("a", { class: "bok-prace", href: "#/pulpit", hidden: true });
+  elementy.praceGora = el("a", { class: "gora-prace", href: "#/pulpit", hidden: true });
 
   const marka = () => el("a", { class: "marka", href: "#/pulpit", "aria-label": "Pulpit" },
     el("span", { class: "logo-znak", "aria-hidden": "true" }, "B&C"));
@@ -161,10 +167,10 @@ function zbudujPowloke() {
   const bok = el("aside", { class: "bok" },
     el("div", { class: "bok-marka" }, marka(), el("div", { class: "bok-marka-tekst" }, elementy.nazwaGry, el("span", { class: "marka-pod" }, "Panel zespołu"))),
     navBok,
-    el("div", { class: "bok-stopka" }, elementy.obecniBok, elementy.ktoBok));
+    el("div", { class: "bok-stopka" }, elementy.praceBok, elementy.obecniBok, elementy.ktoBok));
 
   const gora = el("header", { class: "gora" }, marka(), el("div", { class: "gora-tytuly" },
-    el("span", { class: "gora-gra" }, ctx.konfiguracja.gra.nazwa || "BLOCKY & CRYCKET"), elementy.tytulGora), elementy.obecniGora, elementy.ktoGora);
+    el("span", { class: "gora-gra" }, ctx.konfiguracja.gra.nazwa || "BLOCKY & CRYCKET"), elementy.tytulGora), elementy.praceGora, elementy.obecniGora, elementy.ktoGora);
 
   elementy.tresc = el("main", { class: "tresc", id: "tresc", tabindex: "-1" });
   const korzen = el("div", { class: "powloka" + (STATYCZNY ? " statyczna" : "") },
@@ -494,6 +500,62 @@ async function sprawdzSynchronizacje() {
   sync.ostatnie = id;
 }
 
+// --------------------------------------------------------------------------- prace w toku (plakietka)
+// „Prace: 3 · najbliższy koniec 11:45” na dole bocznego paska (komputer) i krótko „3 · 11:45” w górnym pasku
+// (telefon); klik = Pulpit z kartą „Prace w toku”. Stary serwer i lustro: bez plakietki i bez żądań.
+function odswiezPlakietkePrac(d) {
+  if (!elementy.praceBok) return;
+  const wToku = ((d && d.prace) || []).filter((p) => p.stan === "w_toku");
+  const n = wToku.length;
+  elementy.praceBok.hidden = !n;
+  elementy.praceGora.hidden = !n;
+  if (!n) return;
+  const konce = wToku.map((p) => Date.parse(p.koniec_szacowany)).filter(isFinite);
+  const najblizszy = konce.length ? godzinaPracy(new Date(Math.min(...konce)).toISOString()) : "";
+  const opis = "Prace: " + n + (najblizszy ? " · najbliższy koniec " + najblizszy : "");
+  elementy.praceBok.replaceChildren(ikona("zegar"), el("span", null, opis));
+  elementy.praceBok.setAttribute("aria-label", opis + " — Pulpit");
+  elementy.praceGora.replaceChildren(ikona("zegar"), el("span", null, String(n) + (najblizszy ? " · " + najblizszy : "")));
+  elementy.praceGora.setAttribute("aria-label", opis + " — Pulpit");
+}
+
+async function sprawdzPrace() {
+  odswiezPlakietkePrac(await pobierzPrace(ctx));
+}
+
+// --------------------------------------------------------------------------- moduły serwera (/api/zdrowie)
+// Lista modułów z /api/zdrowie mówi, o które nowe trasy wolno pytać (ctx.znaModul). Gdy serwer nie zna jeszcze prac
+// (strona otwarta przed restartem panelu albo pierwsze /api/zdrowie bez odpowiedzi), co 3 min lekki GET /api/ping:
+// inny numer procesu (pid) = panel po restarcie — wtedy znowu /api/zdrowie i zdarzenie bc:moduly, więc karta „Prace
+// w toku”, plakietka i znaczki pojawiają się bez przeładowania strony. Testy przeglądarkowe skracają przerwę
+// (window.BC_TEST_MODULY_MS).
+const modulySerwera = { pid: null, ostatnio: 0, trwa: false };
+const CO_ILE_MODULY_MS = Math.max(500, Number(window.BC_TEST_MODULY_MS) || 3 * 60000);
+
+function ustawModuly(z, pid) {
+  if (!z || !z.moduly) return false;
+  stan.moduly = z.moduly;
+  if (pid !== undefined) modulySerwera.pid = pid;
+  window.dispatchEvent(new CustomEvent("bc:moduly"));          // widoki mogą już pytać o nowe trasy (np. /api/prace)
+  return true;
+}
+
+async function sprawdzModuly() {
+  if (STATYCZNY || ctx.znaModul("prace") || modulySerwera.trwa) return;
+  if (Date.now() - modulySerwera.ostatnio < CO_ILE_MODULY_MS) return;
+  modulySerwera.trwa = true;
+  modulySerwera.ostatnio = Date.now();
+  try {
+    const p = await api("/api/ping", { czas: 8000 }).catch(() => null);
+    if (!p || p.pid === undefined) return;                     // panel nie odpowiada — spróbujemy za 3 min
+    if (stan.moduly && p.pid === modulySerwera.pid) return;    // ten sam serwer — nic nowego
+    const z = await api("/api/zdrowie", { czas: 30000 }).catch(() => null);
+    ustawModuly(z, p.pid);
+  } finally {
+    modulySerwera.trwa = false;
+  }
+}
+
 // --------------------------------------------------------------------------- imię
 function ustawKto(imie) {
   imie = String(imie || "").replace(/[\u0000-\u001f\u007f]/g, "").trim().slice(0, 40);
@@ -551,6 +613,8 @@ async function zaCzas(obietnica, ms) {
 
 async function start() {
   const zdrowie = STATYCZNY ? Promise.resolve(null) : api("/api/zdrowie", { czas: 20000 }).catch(() => null);
+  const ping = STATYCZNY ? Promise.resolve(null) : api("/api/ping", { czas: 10000 }).catch(() => null);
+  modulySerwera.ostatnio = Date.now();
   const [ja, cfg, ...moduly] = await Promise.all([
     api("/api/ja", { czas: 10000 }).catch(() => null),
     api("/api/konfiguracja", { czas: 10000 }).catch(() => null),
@@ -587,11 +651,9 @@ async function start() {
   naZmianeAdresu();
 
   const d = await zaCzas(zdrowie, 1500);
-  const ustawModuly = (z) => {
-    if (z && z.moduly) stan.moduly = z.moduly;
-  };
-  if (d !== undefined) ustawModuly(d);
-  else zdrowie.then(ustawModuly);
+  const naZdrowie = (z) => ping.then((p) => ustawModuly(z, p && p.pid !== undefined ? p.pid : null));
+  if (d !== undefined) naZdrowie(d);
+  else zdrowie.then(naZdrowie);
 
   zapytajOImie();
   if (!STATYCZNY) {
@@ -606,6 +668,11 @@ async function start() {
   if (!STATYCZNY) {
     sprawdzSynchronizacje();
     odpytuj(sprawdzSynchronizacje, 30000);
+    window.addEventListener("bc:prace", (e) => odswiezPlakietkePrac(e.detail));
+    window.addEventListener("bc:moduly", () => sprawdzPrace());
+    sprawdzPrace();
+    odpytuj(sprawdzPrace, 30000);
+    odpytuj(sprawdzModuly, Math.min(60000, CO_ILE_MODULY_MS));
   }
 }
 

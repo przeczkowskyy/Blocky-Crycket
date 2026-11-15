@@ -617,6 +617,39 @@ button.czeka-gora { background: none; border: 0; padding: 0; width: 100%; text-a
 .sync-pobranie { display: flex; align-items: flex-start; gap: 4px; overflow-wrap: anywhere; }
 .sync-pobranie .ikona { width: 14px; height: 14px; flex: none; margin-top: 2px; }
 .sync-szczegoly code { overflow-wrap: anywhere; }
+/* prace w toku (wspolne/prace.js): lekkie wiersze oddzielone cienką linią, bez pudełek i kolorowych pasków z lewej */
+.karta-prace .karta-cialo { gap: 0; }
+.prace-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.praca { display: flex; flex-direction: column; gap: 4px; padding: 10px 0; min-width: 0; }
+.praca + .praca { border-top: 1px solid var(--obrys); }
+.praca-gora { display: flex; align-items: baseline; justify-content: space-between; gap: 4px 12px; flex-wrap: wrap; }
+.praca-tytul { font-size: 15px; font-weight: 800; min-width: 0; overflow-wrap: anywhere; }
+.praca-koniec { font-size: 13px; font-weight: 700; color: var(--tekst); white-space: nowrap; }
+.praca-koniec.po-czasie { color: var(--zloto); }
+.praca-koniec.gotowe { color: var(--zielen); }
+.praca-koniec.blad { color: #ff9b9b; }
+.praca-koniec.wstrzymane { color: var(--przygaszony); }
+.praca-opis, .praca-pod, .praca-komunikat { margin: 0; font-size: 13px; overflow-wrap: anywhere; }
+.praca-pasek { display: block; height: 6px; border-width: 0; margin-top: 2px; }
+.praca.po-czasie .praca-pasek .pasek-wypelnienie { background: var(--zloto); }
+.praca-linki { display: flex; flex-wrap: wrap; gap: 0 14px; }
+.praca-link {
+  background: none; border: 0; padding: 0; font: inherit; font-size: 13px; color: var(--niebieski); cursor: pointer; min-height: 32px;
+  text-align: left; text-decoration: underline; text-decoration-color: rgba(78, 168, 255, 0.4); text-underline-offset: 3px; overflow-wrap: anywhere;
+}
+.prace-zakonczone { margin-top: 4px; border-top: 1px solid var(--obrys); padding-top: 6px; }
+.prace-zakonczone > summary { min-height: 40px; color: var(--przygaszony); font-size: 13px; font-weight: 700; }
+.bok-prace {
+  display: flex; align-items: center; gap: 7px; margin: 0 0 8px; padding: 6px 8px; border-radius: 10px; font-size: 12.5px; font-weight: 700;
+  color: var(--tekst); text-decoration: none !important; background: rgba(255, 255, 255, 0.03);
+}
+.bok-prace:hover { background: rgba(255, 255, 255, 0.06); }
+.bok-prace .ikona, .gora-prace .ikona { width: 15px; height: 15px; flex: none; color: var(--zloto); }
+.gora-prace {
+  display: inline-flex; align-items: center; gap: 4px; min-height: 36px; padding: 0 8px; border-radius: 999px; flex: none;
+  border: 2px solid var(--obrys-jasny); background: var(--karta2); color: var(--tekst); font-weight: 800; font-size: 12.5px;
+  text-decoration: none !important; white-space: nowrap;
+}
 .kropka-nagrywania { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--czerwien); flex: none; animation: nagrywanieKropka 1.4s ease-in-out infinite; }
 @keyframes nagrywanieKropka { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 90, 90, 0.6); } 50% { box-shadow: 0 0 0 6px rgba(239, 90, 90, 0); } }
 
