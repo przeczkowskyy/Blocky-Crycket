@@ -359,3 +359,4 @@ Rozstrzyga: D-066
 14.11 Game Director kazał dodać do panelu gracza trzeci licznik z ikoną złotej rybki (pod Złotem i Diamentami; atrybut gracza `Fish`). Kanon zna dwie waluty (pytanie 6). Do czego służą Rybki: waluta z łowienia, karma dla petów czy coś innego? Jak się je zdobywa i na co wydaje?
 Dopisek Claude Code z 2026-11-14 (przy scaleniu): na sesjach 14.11 trzecia waluta dostała rolę z D-040 — zdobywana graniem, wydawana na game passy. Nazwę proponuje D-046 („Chrupki”), a D-031 wymieniała „Złote Rybki” jako wariant. Rybki z HUD mogą być tą walutą — do potwierdzenia. Pytanie miało u Pawła numer 29; przy scaleniu dostało numer 44, bo numery 29–43 były już zajęte.
 **Odpowiedź:**
+- Karol Balucki (2026-11-15): Waluta premium skipy/bundle/passy bez wydawania robux

@@ -16,6 +16,7 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 
 ## 2026-11-15 · Panel (ludzie)
 - Paweł (Telegram): decyzja D-010 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-14), przez Telegram ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 44 ([[Pytania otwarte]])
 
 ## 2026-11-15 · Claude Code u Karola (prototyp walki v2: właściwe modele; jedna nazwa strażnika)
 - Prototyp `Workspace/TestWalki2` gra właściwymi modelami zamiast zastępczych: sześciennym [[Leśny Slime|Leśnym Slime'em]] (galareta zgniata się i rozlewa w kałużę, miny działają) i [[Strażnik Gaju|Strażnikiem Gaju]] (korzenie wyrastają pod celem, po upadku zostaje stos głazów). Bańka kwasu i korzenie są częścią klipów modeli — bez osobnych pocisków. Kamera dopasowana do 14,5-studowego strażnika.
