@@ -1,0 +1,19 @@
+{
+ "id": "r-20261115-201105-391e",
+ "tytul": "Las: wszystkie 6 modeli wgrane do Roblox i obejrzane w Studio",
+ "opis_md": "Wszystkie sześć modeli lasu jest wgranych do Roblox na Twoje konto i stoi w Studio, w kontenerze `TestPostaci` na rynku. Na arkuszu po lewej jest każdy model w Studio, a po prawej jego plansza z Blendera.\n\n**Co jest wgrane (wszystkie zatwierdzone przez moderację, ocena ZGODNY)**\n- Zwiadowca (zasób 108959205720843): szkielet R15, jak u gracza.\n- Leśny Troll (105984421059465): szkielet z kości. Po poprawce narzędzia ma znowu prawdziwą wielkość i stoi stopami na bruku. Wgrałem go tylko raz.\n- Cierniowy Wilk (84587733751677), Muchomornik (138339651650034), Strażnik Gaju (127674054809040): szkielety z kości.\n- Leśny Slime (111553372294249): szkielet z kości. Galareta ma skórę: sprawdzian wyszedł TAK, więc może się ugniatać.\n\n**Co wygląda dobrze**\n- Kształty, kolory i proporcje zgadzają się z planszami. Każdy model patrzy w stronę wejścia na rynek i stoi na ziemi.\n- Troll trzyma maczugę. Muchomornik ma kapelusz w kropki i laskę. Strażnik ma zielony kryształ i zielone oczy.\n\n**Czego nie przeniesiono**\n- Świecenie (zarodniki, kryształ, oczy) nie świeci jak Neon. Siatki do świecenia są na miejscu, więc da się to dołożyć później.\n- Zwiadowca nie ma łuku ani sztyletu, bo nie ma ich w pliku.\n- Troll i Strażnik wyglądają ciemniej niż na planszy, bo stoją w cieniu straganu. Slime ma mocniejszą zieleń niż jasna plansza.\n\n**Co nie jest zrobione**\n- Zaimportowane modele nie mają jeszcze animacji. To osobny krok.\n- Prototyp walki i las nadal używają modeli zbudowanych z klocków.\n- Miejsce w Studio nie jest zapisane ani opublikowane.\n\n**Po drodze poprawiłem narzędzie:** kontrola liczyła niewidoczną część pod stopami Trolla, przez co zmniejszyła go o 9%. Teraz mierzy same siatki. Muchomornik stanął najpierw na oparciu ławki, więc dostał wolne miejsce. Testy narzędzia przechodzą.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T20:11:05+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace.TestPostaci",
+   "etykieta": "Modele w Studio"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg"
+ ],
+ "pytanie": "Czy zaimportowane modele wyglądają dobrze i który z nich ma jako pierwszy zastąpić swoją wersję z klocków?"
+}
