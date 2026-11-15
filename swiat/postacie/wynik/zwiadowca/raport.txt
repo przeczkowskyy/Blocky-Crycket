@@ -2,24 +2,29 @@ RAPORT — zwiadowca
 ZWIADOWCA — druga klasa gracza (obok Wojownika-Rycerza i Maga): zwinny leśny zwiadowca z łukiem i sztyletem.
 
 Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
-Źródło: swiat/postacie/zwiadowca.py · wygenerowano 14.11.2026 poleceniem:
+Źródło: swiat/postacie/zwiadowca.py · wygenerowano 15.11.2026 poleceniem:
   python -B swiat/postacie/przebuduj.py zwiadowca
 Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
 
 PODSUMOWANIE
 - modele z kośćmi: zwiadowca
 - przedmioty (akcesoria): 2
-- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 15 plików, zgodnych 15
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 58 plików, zgodnych 58
 - ostrzeżenia z raportu: 0; uwagi podglądu: 0
 
 ZNANE SŁABOŚCI
-- Łuk i sztylet są osobnymi przedmiotami (przedmioty/zwiadowca_luk.fbx, zwiadowca_sztylet.fbx) — w FBX postaci ich nie ma; w grze trzeba je dać jako Tool albo akcesoria na LeftGripAttachment i RightGripAttachment.
+- D-071: model główny (zwiadowca.fbx, plansza, filmy) to pełny strój kanoniczny — wygląd bez zmian. Strój jest wtapiany w bryły kości (te same siatki <Kosc>_Geo), więc w zwiadowca.fbx nadal jest częścią ciała. Ubieranie w grze ma iść przez gołe ciało (ekwipunek/zwiadowca_cialo.fbx z zaczepami Ekw<Kosc>Attachment) i segmenty z ekwipunek/przedmioty/ — ta droga nie była sprawdzana w Studio (przezroczystość gołych brył pod powłoką, AddAccessory z własnymi nazwami zaczepów).
+- Łuk i sztylet są osobnymi przedmiotami (przedmioty/zwiadowca_luk.fbx, zwiadowca_sztylet.fbx) — w FBX postaci ich nie ma; w grze trzeba je dać jako Tool albo akcesoria na LeftGripAttachment i RightGripAttachment. Przedmiot „Łuk z kołczanem” ma jeszcze segment kołczanu z pasem na skos (ekwipunek/przedmioty/zwiadowca_luk_tulow) — w grze zakłada się oba razem (slot OffHand to propozycja, EKWIPUNEK.md pkt 8).
+- Goły Zwiadowca (ciało bazowe): rozczochrana czupryna (osobne akcesorium zwiadowca_wlosy, kaptur ją chowa), lniana koszula z podwiniętymi rękawami, sznurowanym dekoltem i wyszytym listkiem, zielone spodenki z troczkami i bose stopy — propozycja do oceny (plansza ekwipunek/zwiadowca_ekwipunek_plansza.jpg). Grzywka (trzy kosmyki) jest częścią twarzy jak dawniej, więc w każdym stroju wygląda tak samo; bez kaptura wisi spod opaski czupryny.
+- Kaptur z peleryną to jeden przedmiot (Helmet): bez kaptura nie ma też peleryny, a kołczan (część łuku) leży wtedy wprost na kirysie. Bez kirysu pas kołczanu leży na lnianej koszuli (0,025 studa nad jej ścianą; nad kirysem, jak dawniej, tylko 0,005).
+- Upadek w różnych strojach (klip wspólny, liczony na pełnym stroju): Zwiadowca leży na brzuchu oparty na dłoniach i przedramionach, więc w każdym stroju leży na ziemi (ostatnia klatka: pełny strój i strój bez kaptura 0,000; goły, „lekki” i „kaptur_i_sztylet” −0,025 — gołe dłonie są o 0,02 grubsze niż dłonie w rękawicach). Tułów jest nad ziemią: w kirysie 0,26 studa, w samej koszuli 0,30–0,35 (jak dawniej: leży na rękach, nie na piersi). Najgłębiej pod ziemią w trakcie klipów: goły −0,056 (upadek kl. 21), pełny −0,033 (dawny model tak samo).
+- zwiadowca_cialo.fbx/.glb ma tylko klip idle (reszta klipów: zwiadowca__<klip>.fbx, te same kości i nazwy).
 - Strzał z łuku to sam ruch: łuk się nie ugina, cięciwa jest sztywna i nie dochodzi do dłoni, strzały ani zielonej smugi trucizny nie ma (efekt do dorobienia w grze). Z boku i z tyłu (kamera gracza) strzał czyta się dobrze; w kadrze 3/4 z przodu widać łuk wyciągnięty do kamery, a dłoń naciągającą zasłania tułów; od przodu pięść z łukiem jest przed dolną częścią twarzy (postać celuje w widza — tylko zasłanianie, bez przenikania).
 - Sztylet zostaje w prawej dłoni także przy strzale — cięciwę „naciąga” pięść ze sztyletem ostrzem w dół i na zewnątrz. Barki R15 są szerokie (3,15 studa), a ręka krótka (1,45 studa do nadgarstka), więc dłoń nie sięga twarzy ani linii strzały: naciąg to pięść wysoko przy prawym barku z łokciem cofniętym w tył.
-- Bryły są sztywno przypięte do kości: kaptur, peleryna i chusta nie falują; poły tuniki siedzą na udach (idą z nogą, nie przebijają jej). Upadek kończy się leżeniem na brzuchu (na plecach ciało wisiało na kołczanie); głowa w kapturze jest najniższym punktem, więc pierś jest ok. 0,15 studa nad ziemią.
+- Bryły są sztywno przypięte do kości: kaptur, peleryna i chusta nie falują; poły tuniki siedzą na udach (idą z nogą, nie przebijają jej). Upadek kończy się leżeniem na brzuchu (na plecach ciało wisiało na kołczanie).
 - Twarz nie ma mimiki — ten sam pogodny uśmiech przy trafieniu i upadku.
 - Unik i uderzenie z góry przesuwają postać w samym klipie (kość LowerTorso): salto ok. 3,25 studa w bok i odskok z powrotem, wypad ok. 0,5 studa do przodu; klip kończy się w punkcie startu. W salcie biodra obracają się o −360° (ostatnia klatka ma kąt −360 = ta sama orientacja co 0) — do sprawdzenia przy imporcie klipu do Roblox.
-- Kolizje sprawdzone w przybliżeniu skryptem poza repozytorium (punkty skrzynek brył łuku, sztyletu, dłoni i przedramion w każdej klatce kontra skrzynki głowy z kapturem, tułowia i bioder; najniższy punkt ciała i broni): bez przecięć, najniżej −0,03 studa (chwila przy padaniu na kolana). Nie sprawdzano broni względem nóg ani łuku względem własnego przedramienia.
+- Kontrola przenikania (python -B swiat/postacie/zwiadowca.py --kontrola) liczy każdą bryłę głowy (z kapturem i włosami), tułowia (z peleryną i kołczanem) i bioder jako skrzynkę (ostrosłupy jak skrzynki, czyli ostrożnie), margines 0,06 studa; ruchome: łuk, sztylet, przedramiona i dłonie. Działa na każdym stroju z STROJE. Wynik 15.11: w żadnym z pięciu strojów nic nie przenika (dawny model też nie). Nie sprawdza broni względem nóg ani łuku względem własnego przedramienia.
 - Wspólny kadr filmów obejmuje salto w bok, więc w filmach i arkuszach klatek postać jest mniejsza niż na planszy.
 - Klipy to szkice (0,67–2 s), nie gotowa animacja. Bieg jest w miejscu (stopy ślizgają się względem ziemi).
 - LowerTorso i Root nie są w 0,0,0 (biodra na wysokości 1,9) — tak jak u Rycerza; dla postaci w grze bez znaczenia, ciało awatara może tego wymagać (sprawdzić przy pierwszym imporcie).
@@ -41,6 +46,22 @@ attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce za
 importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
 
 
+EKWIPUNEK (D-071: ciało bazowe + strój z przedmiotów; pliki w ekwipunek/)
+- strój golas (goły (ciało bazowe)): bez przedmiotów
+- strój pelny (pełny strój): zwiadowca_kaptur, zwiadowca_kurtka, zwiadowca_spodnie, zwiadowca_pas, zwiadowca_rekawice, zwiadowca_buty, zwiadowca_luk, zwiadowca_sztylet
+- strój bez_kaptura (bez kaptura i peleryny): zwiadowca_kurtka, zwiadowca_spodnie, zwiadowca_pas, zwiadowca_rekawice, zwiadowca_buty, zwiadowca_luk, zwiadowca_sztylet
+- strój lekki (kirys, buty i łuk): zwiadowca_kurtka, zwiadowca_spodnie, zwiadowca_buty, zwiadowca_luk
+- strój kaptur_i_sztylet (sam kaptur i sztylet): zwiadowca_kaptur, zwiadowca_sztylet
+- zwiadowca_kaptur „Kaptur z peleryną” [Helmet]: zwiadowca_kaptur_glowa Head 450 tr.; zwiadowca_kaptur_tulow UpperTorso 316 tr.
+- zwiadowca_kurtka „Skórzany kirys z tuniką” [Chest]: zwiadowca_kurtka_tulow UpperTorso (powłoka) 268 tr.; zwiadowca_kurtka_ramie_l LeftUpperArm (powłoka) 132 tr.; zwiadowca_kurtka_przedramie_l LeftLowerArm (powłoka) 112 tr.; zwiadowca_kurtka_ramie_p RightUpperArm (powłoka) 132 tr.; zwiadowca_kurtka_przedramie_p RightLowerArm (powłoka) 112 tr.; zwiadowca_kurtka_udo_l LeftUpperLeg 68 tr.; zwiadowca_kurtka_udo_p RightUpperLeg 68 tr.
+- zwiadowca_spodnie „Spodnie Zwiadowcy” [Chest, część zwiadowca_kurtka]: zwiadowca_spodnie_biodra LowerTorso (powłoka) 44 tr.; zwiadowca_spodnie_udo_l LeftUpperLeg (powłoka) 44 tr.; zwiadowca_spodnie_udo_p RightUpperLeg (powłoka) 44 tr.
+- zwiadowca_pas „Pas z sakwą” [Belt]: zwiadowca_pas_biodra LowerTorso 156 tr.
+- zwiadowca_rekawice „Rękawice bez palców” [Gloves]: zwiadowca_rekawice_dlon_l LeftHand (powłoka) 88 tr.; zwiadowca_rekawice_dlon_p RightHand (powłoka) 88 tr.
+- zwiadowca_buty „Buty z wywiniętą cholewą” [Boots]: zwiadowca_buty_golen_l LeftLowerLeg (powłoka) 100 tr.; zwiadowca_buty_stopa_l LeftFoot (powłoka) 100 tr.; zwiadowca_buty_golen_p RightLowerLeg (powłoka) 100 tr.; zwiadowca_buty_stopa_p RightFoot (powłoka) 100 tr.
+- zwiadowca_luk „Łuk z kołczanem” [OffHand]: zwiadowca_luk_tulow UpperTorso 288 tr.; zwiadowca_luk na LeftGripAttachment
+- zwiadowca_sztylet „Sztylet Zwiadowcy” [Weapon]: zwiadowca_sztylet na RightGripAttachment
+- filmy w strojach: zwiadowca_golas idle, zwiadowca_golas atak, zwiadowca_golas upadek, zwiadowca_lekki umiejetnosc, zwiadowca_kaptur_i_sztylet unik, zwiadowca_bez_kaptura uderzenie_z_gory
+
 KONTROLA EKSPORTÓW
 - zwiadowca.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje brak -> ZGODNE
 - zwiadowca__idle.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje zwiadowca|Scene 1-61 -> ZGODNE
@@ -57,6 +78,49 @@ KONTROLA EKSPORTÓW
 - zwiadowca_luk.glb: siatki 1, kości 0, trójkąty 468, wzrost 3.32 st., akcje brak -> ZGODNE
 - zwiadowca_sztylet.fbx: siatki 1, kości 0, trójkąty 356, wzrost 2.42 st., akcje brak -> ZGODNE
 - zwiadowca_sztylet.glb: siatki 1, kości 0, trójkąty 356, wzrost 2.42 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_cialo.fbx: siatki 50, kości 17, trójkąty 2502, wzrost 5.76 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_cialo__idle.fbx: siatki 50, kości 17, trójkąty 2502, wzrost 5.76 st., akcje zwiadowca_cialo|Scene 1-61 -> ZGODNE
+- ekwipunek: zwiadowca_cialo.glb: siatki 50, kości 17, trójkąty 2502, wzrost 5.76 st., akcje idle 0-60 -> ZGODNE
+- ekwipunek: zwiadowca_kaptur_glowa.fbx: siatki 1, kości 0, trójkąty 450, wzrost 1.99 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kaptur_glowa.glb: siatki 1, kości 0, trójkąty 450, wzrost 1.99 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kaptur_tulow.fbx: siatki 1, kości 0, trójkąty 316, wzrost 2.10 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kaptur_tulow.glb: siatki 1, kości 0, trójkąty 316, wzrost 2.10 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_tulow.fbx: siatki 1, kości 0, trójkąty 268, wzrost 1.68 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_tulow.glb: siatki 1, kości 0, trójkąty 268, wzrost 1.68 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_ramie_l.fbx: siatki 1, kości 0, trójkąty 132, wzrost 1.02 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_ramie_l.glb: siatki 1, kości 0, trójkąty 132, wzrost 1.02 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_przedramie_l.fbx: siatki 1, kości 0, trójkąty 112, wzrost 0.75 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_przedramie_l.glb: siatki 1, kości 0, trójkąty 112, wzrost 0.75 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_ramie_p.fbx: siatki 1, kości 0, trójkąty 132, wzrost 1.02 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_ramie_p.glb: siatki 1, kości 0, trójkąty 132, wzrost 1.02 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_przedramie_p.fbx: siatki 1, kości 0, trójkąty 112, wzrost 0.75 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_przedramie_p.glb: siatki 1, kości 0, trójkąty 112, wzrost 0.75 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_udo_l.fbx: siatki 1, kości 0, trójkąty 68, wzrost 0.64 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_udo_l.glb: siatki 1, kości 0, trójkąty 68, wzrost 0.64 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_udo_p.fbx: siatki 1, kości 0, trójkąty 68, wzrost 0.64 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_kurtka_udo_p.glb: siatki 1, kości 0, trójkąty 68, wzrost 0.64 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_spodnie_biodra.fbx: siatki 1, kości 0, trójkąty 44, wzrost 0.40 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_spodnie_biodra.glb: siatki 1, kości 0, trójkąty 44, wzrost 0.40 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_spodnie_udo_l.fbx: siatki 1, kości 0, trójkąty 44, wzrost 0.80 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_spodnie_udo_l.glb: siatki 1, kości 0, trójkąty 44, wzrost 0.80 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_spodnie_udo_p.fbx: siatki 1, kości 0, trójkąty 44, wzrost 0.80 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_spodnie_udo_p.glb: siatki 1, kości 0, trójkąty 44, wzrost 0.80 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_pas_biodra.fbx: siatki 1, kości 0, trójkąty 156, wzrost 0.51 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_pas_biodra.glb: siatki 1, kości 0, trójkąty 156, wzrost 0.51 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_rekawice_dlon_l.fbx: siatki 1, kości 0, trójkąty 88, wzrost 0.36 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_rekawice_dlon_l.glb: siatki 1, kości 0, trójkąty 88, wzrost 0.36 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_rekawice_dlon_p.fbx: siatki 1, kości 0, trójkąty 88, wzrost 0.36 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_rekawice_dlon_p.glb: siatki 1, kości 0, trójkąty 88, wzrost 0.36 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_buty_golen_l.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.75 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_buty_golen_l.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.75 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_buty_stopa_l.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_buty_stopa_l.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_buty_golen_p.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.75 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_buty_golen_p.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.75 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_buty_stopa_p.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_buty_stopa_p.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_luk_tulow.fbx: siatki 1, kości 0, trójkąty 288, wzrost 2.27 st., akcje brak -> ZGODNE
+- ekwipunek: zwiadowca_luk_tulow.glb: siatki 1, kości 0, trójkąty 288, wzrost 2.27 st., akcje brak -> ZGODNE
 
 PLIKI
 - zwiadowca.blend
@@ -111,5 +175,107 @@ PLIKI
 - przedmioty/zwiadowca_sztylet_tekstury/
 - ikony/zwiadowca_sztylet_ikona.png
 - zwiadowca_ikony_arkusz.jpg
+- ekwipunek/zwiadowca_golas_plansza.jpg
+- ekwipunek/zwiadowca_golas_bohater.jpg
+- ekwipunek/zwiadowca_pelny_plansza.jpg
+- ekwipunek/zwiadowca_pelny_bohater.jpg
+- ekwipunek/zwiadowca_bez_kaptura_plansza.jpg
+- ekwipunek/zwiadowca_bez_kaptura_bohater.jpg
+- ekwipunek/zwiadowca_lekki_plansza.jpg
+- ekwipunek/zwiadowca_lekki_bohater.jpg
+- ekwipunek/zwiadowca_kaptur_i_sztylet_plansza.jpg
+- ekwipunek/zwiadowca_kaptur_i_sztylet_bohater.jpg
+- ekwipunek/zwiadowca_ekwipunek_plansza.jpg
+- ekwipunek/zwiadowca_golas_idle.mp4
+- ekwipunek/zwiadowca_golas_idle_klatki.jpg
+- ekwipunek/zwiadowca_golas_idle_z_filmu.jpg
+- ekwipunek/zwiadowca_golas_atak.mp4
+- ekwipunek/zwiadowca_golas_atak_klatki.jpg
+- ekwipunek/zwiadowca_golas_atak_z_filmu.jpg
+- ekwipunek/zwiadowca_golas_upadek.mp4
+- ekwipunek/zwiadowca_golas_upadek_klatki.jpg
+- ekwipunek/zwiadowca_golas_upadek_z_filmu.jpg
+- ekwipunek/zwiadowca_lekki_umiejetnosc.mp4
+- ekwipunek/zwiadowca_lekki_umiejetnosc_klatki.jpg
+- ekwipunek/zwiadowca_lekki_umiejetnosc_z_filmu.jpg
+- ekwipunek/zwiadowca_kaptur_i_sztylet_unik.mp4
+- ekwipunek/zwiadowca_kaptur_i_sztylet_unik_klatki.jpg
+- ekwipunek/zwiadowca_kaptur_i_sztylet_unik_z_filmu.jpg
+- ekwipunek/zwiadowca_bez_kaptura_uderzenie_z_gory.mp4
+- ekwipunek/zwiadowca_bez_kaptura_uderzenie_z_gory_klatki.jpg
+- ekwipunek/zwiadowca_bez_kaptura_uderzenie_z_gory_z_filmu.jpg
+- ekwipunek/zwiadowca_cialo.fbx
+- ekwipunek/zwiadowca_cialo.glb
+- ekwipunek/zwiadowca_cialo_tekstury/
+- ekwipunek/przedmioty/zwiadowca_kaptur_glowa.fbx
+- ekwipunek/przedmioty/zwiadowca_kaptur_glowa.glb
+- ekwipunek/przedmioty/zwiadowca_kaptur_glowa_tekstury/
+- ekwipunek/przedmioty/zwiadowca_kaptur_tulow.fbx
+- ekwipunek/przedmioty/zwiadowca_kaptur_tulow.glb
+- ekwipunek/przedmioty/zwiadowca_kaptur_tulow_tekstury/
+- ekwipunek/ikony/zwiadowca_kaptur_ikona.png
+- ekwipunek/przedmioty/zwiadowca_kurtka_tulow.fbx
+- ekwipunek/przedmioty/zwiadowca_kurtka_tulow.glb
+- ekwipunek/przedmioty/zwiadowca_kurtka_tulow_tekstury/
+- ekwipunek/przedmioty/zwiadowca_kurtka_ramie_l.fbx
+- ekwipunek/przedmioty/zwiadowca_kurtka_ramie_l.glb
+- ekwipunek/przedmioty/zwiadowca_kurtka_ramie_l_tekstury/
+- ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_l.fbx
+- ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_l.glb
+- ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_l_tekstury/
+- ekwipunek/przedmioty/zwiadowca_kurtka_ramie_p.fbx
+- ekwipunek/przedmioty/zwiadowca_kurtka_ramie_p.glb
+- ekwipunek/przedmioty/zwiadowca_kurtka_ramie_p_tekstury/
+- ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_p.fbx
+- ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_p.glb
+- ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_p_tekstury/
+- ekwipunek/przedmioty/zwiadowca_kurtka_udo_l.fbx
+- ekwipunek/przedmioty/zwiadowca_kurtka_udo_l.glb
+- ekwipunek/przedmioty/zwiadowca_kurtka_udo_l_tekstury/
+- ekwipunek/przedmioty/zwiadowca_kurtka_udo_p.fbx
+- ekwipunek/przedmioty/zwiadowca_kurtka_udo_p.glb
+- ekwipunek/przedmioty/zwiadowca_kurtka_udo_p_tekstury/
+- ekwipunek/ikony/zwiadowca_kurtka_ikona.png
+- ekwipunek/przedmioty/zwiadowca_spodnie_biodra.fbx
+- ekwipunek/przedmioty/zwiadowca_spodnie_biodra.glb
+- ekwipunek/przedmioty/zwiadowca_spodnie_biodra_tekstury/
+- ekwipunek/przedmioty/zwiadowca_spodnie_udo_l.fbx
+- ekwipunek/przedmioty/zwiadowca_spodnie_udo_l.glb
+- ekwipunek/przedmioty/zwiadowca_spodnie_udo_l_tekstury/
+- ekwipunek/przedmioty/zwiadowca_spodnie_udo_p.fbx
+- ekwipunek/przedmioty/zwiadowca_spodnie_udo_p.glb
+- ekwipunek/przedmioty/zwiadowca_spodnie_udo_p_tekstury/
+- ekwipunek/ikony/zwiadowca_spodnie_ikona.png
+- ekwipunek/przedmioty/zwiadowca_pas_biodra.fbx
+- ekwipunek/przedmioty/zwiadowca_pas_biodra.glb
+- ekwipunek/przedmioty/zwiadowca_pas_biodra_tekstury/
+- ekwipunek/ikony/zwiadowca_pas_ikona.png
+- ekwipunek/przedmioty/zwiadowca_rekawice_dlon_l.fbx
+- ekwipunek/przedmioty/zwiadowca_rekawice_dlon_l.glb
+- ekwipunek/przedmioty/zwiadowca_rekawice_dlon_l_tekstury/
+- ekwipunek/przedmioty/zwiadowca_rekawice_dlon_p.fbx
+- ekwipunek/przedmioty/zwiadowca_rekawice_dlon_p.glb
+- ekwipunek/przedmioty/zwiadowca_rekawice_dlon_p_tekstury/
+- ekwipunek/ikony/zwiadowca_rekawice_ikona.png
+- ekwipunek/przedmioty/zwiadowca_buty_golen_l.fbx
+- ekwipunek/przedmioty/zwiadowca_buty_golen_l.glb
+- ekwipunek/przedmioty/zwiadowca_buty_golen_l_tekstury/
+- ekwipunek/przedmioty/zwiadowca_buty_stopa_l.fbx
+- ekwipunek/przedmioty/zwiadowca_buty_stopa_l.glb
+- ekwipunek/przedmioty/zwiadowca_buty_stopa_l_tekstury/
+- ekwipunek/przedmioty/zwiadowca_buty_golen_p.fbx
+- ekwipunek/przedmioty/zwiadowca_buty_golen_p.glb
+- ekwipunek/przedmioty/zwiadowca_buty_golen_p_tekstury/
+- ekwipunek/przedmioty/zwiadowca_buty_stopa_p.fbx
+- ekwipunek/przedmioty/zwiadowca_buty_stopa_p.glb
+- ekwipunek/przedmioty/zwiadowca_buty_stopa_p_tekstury/
+- ekwipunek/ikony/zwiadowca_buty_ikona.png
+- ekwipunek/przedmioty/zwiadowca_luk_tulow.fbx
+- ekwipunek/przedmioty/zwiadowca_luk_tulow.glb
+- ekwipunek/przedmioty/zwiadowca_luk_tulow_tekstury/
+- ekwipunek/ikony/zwiadowca_luk_ikona.png
+- ekwipunek/ikony/zwiadowca_sztylet_ikona.png
+- ekwipunek/zwiadowca_ekwipunek_ikony_arkusz.jpg
+- ekwipunek/ekwipunek.json
 - raport.json
 - raport.txt

@@ -82,6 +82,15 @@ Wspólne uwagi z przeglądów (szczegóły i klatki trafień w notatkach modeli)
 - Efekty do dorobienia w grze: lecąca strzała i smuga trucizny, fala uderzenia maczugi, chmura zarodników, rozprysk kwasu.
 - Nazwa strażnika biomu jest od 15.11.2026 jedna — „Strażnik Gaju” — w modelu, notatce, silniku walki i prototypie (identyfikator w danych został `straznik_lasu`).
 
+## Ciało bazowe i strój z przedmiotów (15.11.2026)
+Propozycja — realizacja [[Rejestr decyzji|D-071]] dla [[Rycerz|Rycerza]], [[Kot-Mag|Kota-Maga]] i [[Zwiadowca|Zwiadowcy]]. Pełny opis i umowa dla kodu: `swiat/postacie/EKWIPUNEK.md`.
+- **Goły model + przedmioty.** Każdy bohater ma ciało bazowe (człowiek w lnianej koszuli i krótkich spodenkach, kot w futrze), a dzisiejszy wygląd to komplet przedmiotów. Przedmiot z kilku kości (zbroja, rękawice, buty) dzieli się na sztywne kawałki, po jednym na kość; broń, tarcza i kapelusz kota wiszą na punktach zaczepienia.
+- **Powłoka zastępuje ciało.** Zbroja, szata, spodnie, rękawice i buty chowają gołe bryły swojej kości (na jednej kości najwyżej jedna powłoka); hełm i kaptur chowają włosy. Pas, poły i peleryna leżą nad ciałem.
+- **Ruch wspólny dla każdego stroju.** Klipy liczy się raz, na pełnym stroju (u Rycerza z tarczą), i kopiuje bez zmian — tak jak w grze: jedna animacja na klasę.
+- **Zgodność wstecz.** Funkcja `zbuduj()` każdego bohatera daje ten sam model w pełnym stroju co przedtem (te same kości, punkty zaczepienia i klipy); jedyna zmiana: Rycerz bez założonej tarczy. Rycerz i Zwiadowca mają to samo ciało, więc ich przedmioty pasują na obu; broń w dłoni pasuje do każdego ciała.
+
+W grze i w walce ubieranie jeszcze nie działa — to następny krok (Studio i prototyp walki).
+
 ## Kontrola jakości kodu (13.11.2026)
 Niezależny przegląd dzisiejszego kodu znalazł dziewięć usterek w ścieżkach błędów (m.in. możliwość dwukrotnego wgrania zasobu przy ponownym uruchomieniu, postać zostająca w pozie po nieudanym zrzucie, brak kodu błędu przy odmowie). Wszystkie poprawiono; każdą grupę poprawek sprawdził osobny, wrogo nastawiony weryfikator, a potem przeszły próby w Studio (odmowy, usuwanie i odbudowa kontenera, powrót do spoczynku po błędzie, prawdziwe klawisze). Osobna kontrola twierdzeń poprawiła osiem nieścisłości w opisach.
 

@@ -1,0 +1,356 @@
+{
+ "bohater": "kot_mag",
+ "cialo": "kot",
+ "klasy": [
+  "mag"
+ ],
+ "kanon": [
+  "kot_mag_kapelusz",
+  "kot_mag_szata",
+  "kot_mag_pas",
+  "kot_mag_kostur"
+ ],
+ "odniesienie_klipow": [
+  "kot_mag_kapelusz",
+  "kot_mag_szata",
+  "kot_mag_pas",
+  "kot_mag_kostur"
+ ],
+ "stroje": {
+  "golas": [],
+  "pelny": [
+   "kot_mag_kapelusz",
+   "kot_mag_szata",
+   "kot_mag_pas",
+   "kot_mag_kostur"
+  ],
+  "bez_kapelusza": [
+   "kot_mag_szata",
+   "kot_mag_pas",
+   "kot_mag_kostur"
+  ],
+  "kapelusz_i_kostur": [
+   "kot_mag_kapelusz",
+   "kot_mag_kostur"
+  ],
+  "sama_szata": [
+   "kot_mag_szata",
+   "kot_mag_pas"
+  ]
+ },
+ "wlosy": null,
+ "korekty_chwytu": {
+  "HatAttachment": {
+   "zaczep": "KapeluszAttachment",
+   "pos": [
+    0,
+    0.02,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  "RightGripAttachment": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0,
+    0
+   ],
+   "rot": [
+    -90,
+    0,
+    0
+   ]
+  }
+ },
+ "przedmioty": [
+  {
+   "id": "kot_mag_kapelusz",
+   "nazwa": "Kapelusz Kota-Maga",
+   "slot": "Helmet",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag",
+   "czesci": [
+    {
+     "id": "kot_mag_kapelusz",
+     "kosc": "HatPivot",
+     "zakrywa": false,
+     "zaczep": "KapeluszAttachment",
+     "pos": [
+      0,
+      0.02,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/kot_mag/przedmioty/kot_mag_kapelusz.fbx",
+     "glb": "wynik/kot_mag/przedmioty/kot_mag_kapelusz.glb",
+     "trojkaty": 258,
+     "attachment_pos": [
+      0.0,
+      -0.878,
+      0.0
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/kot_mag/ekwipunek/ikony/kot_mag_kapelusz_ikona.png"
+  },
+  {
+   "id": "kot_mag_szata",
+   "nazwa": "Szata Kota-Maga",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag",
+   "czesci": [
+    {
+     "id": "kot_mag_szata_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_tulow.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_tulow.glb",
+     "trojkaty": 332,
+     "attachment_pos": [
+      0.0,
+      -0.06,
+      0.045
+     ]
+    },
+    {
+     "id": "kot_mag_szata_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_ramie_l.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_ramie_l.glb",
+     "trojkaty": 44,
+     "attachment_pos": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "id": "kot_mag_szata_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_przedramie_l.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_przedramie_l.glb",
+     "trojkaty": 100,
+     "attachment_pos": [
+      0.0,
+      0.068,
+      0.0
+     ]
+    },
+    {
+     "id": "kot_mag_szata_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_ramie_p.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_ramie_p.glb",
+     "trojkaty": 44,
+     "attachment_pos": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "id": "kot_mag_szata_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_przedramie_p.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_przedramie_p.glb",
+     "trojkaty": 100,
+     "attachment_pos": [
+      0.0,
+      0.068,
+      0.0
+     ]
+    },
+    {
+     "id": "kot_mag_szata_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_biodra.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_biodra.glb",
+     "trojkaty": 160,
+     "attachment_pos": [
+      0.0,
+      0.37,
+      0.291
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/kot_mag/ekwipunek/ikony/kot_mag_szata_ikona.png"
+  },
+  {
+   "id": "kot_mag_pas",
+   "nazwa": "Szarfa z klamrą",
+   "slot": "Belt",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag",
+   "czesci": [
+    {
+     "id": "kot_mag_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_pas_biodra.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_pas_biodra.glb",
+     "trojkaty": 88,
+     "attachment_pos": [
+      0.0,
+      -0.005,
+      -0.025
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/kot_mag/ekwipunek/ikony/kot_mag_pas_ikona.png"
+  },
+  {
+   "id": "kot_mag_kostur",
+   "nazwa": "Kostur Kota-Maga",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag",
+   "czesci": [
+    {
+     "id": "kot_mag_kostur",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0,
+      0
+     ],
+     "rot": [
+      -90,
+      0,
+      0
+     ],
+     "fbx": "wynik/kot_mag/przedmioty/kot_mag_kostur.fbx",
+     "glb": "wynik/kot_mag/przedmioty/kot_mag_kostur.glb",
+     "trojkaty": 384,
+     "attachment_pos": [
+      0.0,
+      -0.835,
+      0.0
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/kot_mag/ekwipunek/ikony/kot_mag_kostur_ikona.png"
+  }
+ ],
+ "cialo_pliki": {
+  "fbx": "wynik/kot_mag/ekwipunek/kot_mag_cialo.fbx",
+  "glb": "wynik/kot_mag/ekwipunek/kot_mag_cialo.glb"
+ }
+}

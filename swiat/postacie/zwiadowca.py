@@ -1,12 +1,32 @@
 # -*- coding: utf-8 -*-
 """ZWIADOWCA — druga klasa gracza (obok Wojownika-Rycerza i Maga): zwinny leśny zwiadowca z łukiem i sztyletem.
 
-    python -B swiat/postacie/biblioteka/podglad_postaci.py --modul swiat/postacie/zwiadowca.py --wyj <folder> --klip unik
-
 Opis klasy (tools/walka/dane_walki.json, id „zwiadowca”): styl „unik i krytyk”, umiejętności: uderzenie z góry,
 zatruta strzała, skupienie. Wygląd to własny projekt (propozycja, nie kanon).
 
-Bryła: szkielet R15 w tych samych wymiarach klocków co Rycerz (te same zaczepy ekwipunku), ok. 5,8 studa z kapturem.
+CIAŁO BAZOWE + STRÓJ Z PRZEDMIOTÓW (D-071, kontrakt swiat/postacie/EKWIPUNEK.md):
+  cialo()      goły Zwiadowca („zwiadowca_cialo”): te same klocki, kości, zaczepy i klipy; twarz Zwiadowcy z piegami
+               i grzywką (trzy kosmyki są częścią twarzy), rozczochrana ciemnobrązowa czupryna (osobne akcesorium
+               zwiadowca_wlosy na HairAttachment, kaptur ją chowa), lniana koszula z podwiniętymi rękawami,
+               sznurowanym dekoltem i wyszytym listkiem, zielone krótkie spodenki z troczkami, bose stopy;
+  przedmioty() kaptur z krótką peleryną (Helmet), skórzany kirys z tuniką, chustą, naramiennikami, karwaszami
+               i połami tuniki (Chest), spodnie (część kirysu), pas z sakwą (Belt), rękawice bez palców (Gloves),
+               buty z wywiniętą cholewą (Boots), sztylet (Weapon), łuk z kołczanem na plecach (OffHand: łuk w lewej
+               dłoni + kołczan z pasem na skos na tułowiu) — segmenty kostne w układzie środka klocka kości albo
+               akcesorium na zaczepie (broń);
+  ubierz()     zakłada przedmioty na ciało (powłoka zastępuje gołe bryły kości, kaptur chowa włosy);
+  zbuduj()     jak dotąd: [Zwiadowca w pełnym stroju kanonicznym (KANON), łuk, sztylet];
+  warianty()   stroje z STROJE, segmenty i ikony całych przedmiotów dla przebuduj.py (wynik/zwiadowca/ekwipunek/).
+Klipy liczą się RAZ na postaci odniesienia (ODNIESIENIE_KLIPOW = pełny strój = dawny model: stopy płasko na ziemi,
+nic pod ziemią, leżenie na brzuchu) i są kopiowane bez zmian na ciało i każdy strój — ten sam ruch niezależnie
+od ubrania.
+
+    python -B swiat/postacie/biblioteka/podglad_postaci.py --modul swiat/postacie/zwiadowca.py --wyj <folder> --klip unik
+    python -B swiat/postacie/zwiadowca.py --kontrola             # kontrola przenikania we wszystkich strojach (bez Blendera)
+    python -B swiat/postacie/zwiadowca.py --kontrola --stroj golas upadek    # jeden strój, wybrane klipy
+
+Bryła: szkielet R15 w tych samych wymiarach klocków co Rycerz (ciało „czlowiek”: te same zaczepy, kości i klocki,
+więc przedmioty obu bohaterów pasują na oba ciała), ok. 5,8 studa z kapturem.
 Sylwetka do rozpoznania z daleka: spiczasty kaptur z końcem odchylonym do tyłu, krótka peleryna z brzegiem ciętym
 w liście, kołczan na plecach z pomarańczowymi lotkami nad prawym barkiem, wysoki łuk w lewej dłoni, sztylet w prawej.
 Lekki skórzany pancerz z pasem kołczanu na skos, tunika (jej poły siedzą na udach, więc nie przebijają nóg w biegu),
@@ -14,11 +34,14 @@ wysokie buty z wywiniętą cholewą. Twarz pogodna i bystra: duże oczy, jedna b
 w górę, piegi.
 
 Paleta (6 rodzin + akcent): zieleń lasu (kaptur, peleryna, tunika — dwa odcienie), skóra pancerza (trzy brązy),
-drewno łuku, karnacja, tusz (oczy, usta), AKCENT: jasnopomarańczowa chusta i lotki strzał.
+drewno łuku, karnacja, tusz (oczy, usta), AKCENT: jasnopomarańczowa chusta i lotki strzał; goły Zwiadowca: len
+koszuli (jak u Rycerza), spodenki w zieleni spodni (lisc_ciemny), ciemnobrązowe włosy.
 
 Broń: dwa osobne przedmioty, jak miecz Rycerza (w FBX postaci ich nie ma, w renderach i filmach są w dłoniach):
   zwiadowca_luk     — na LeftGripAttachment (uchwyt w (0,0,0), ramiona łuku wzdłuż ±Y, brzuch łuku +Z, cięciwa −Z),
   zwiadowca_sztylet — na RightGripAttachment (rękojeść w (0,0,0), ostrze w +Y, płaz do przodu +Z).
+Przedmiot „Łuk z kołczanem” (zwiadowca_luk) ma dwa segmenty: łuk na LeftGripAttachment i kołczan z pasem na skos
+wtapiany w tułów (wierzchnia warstwa) — bez łuku nie ma też kołczanu.
 
 Klipy (30 kl./s; postać patrzy w +Z i w tę stronę atakuje):
   idle (pętla), ruch (lekki bieg, pętla), atak (pchnięcie sztyletem z wypadem), umiejetnosc (zatruta strzała:
@@ -28,13 +51,26 @@ Klipy (30 kl./s; postać patrzy w +Z i w tę stronę atakuje):
   (pętla: łuk w górę, podskoki).
 Klipy są zapisane jako pozy kluczowe (funkcja _sekwencja zamienia je na klucz w każdej klatce): stopy stoją płasko
 na ziemi, w powietrzu nic nie schodzi pod ziemię. Zmiany rób w pozach kluczowych w tym pliku, nie w Blenderze.
+Bez łuku lewa ręka robi ten sam ruch pustą dłonią, bez sztyletu prawa — pustą pięścią.
 Status: propozycja (nie kanon) — do oceny przez Game Directora.
 """
 import math
+import os
+import sys
 
-from swiat.postacie.biblioteka.postac import Akcesorium, Postac, katy_z_macierzy, macierz_obrotu, mnoz, razy_wektor
+if __name__ == "__main__":                                       # uruchomienie wprost: korzeń repozytorium na ścieżce
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from swiat.postacie.biblioteka.postac import (I3, R15_KOSCI, Akcesorium, Postac, katy_z_macierzy, macierz_obrotu,
+                                              mnoz, razy_wektor)
+try:                                    # wspólny kod ekwipunku (EKWIPUNEK.md pkt 4): docelowo ekwipunek.py,
+    from swiat.postacie.ekwipunek import Przedmiot, kopiuj_klipy, ubierz, zaczep_ekwipunku
+except ModuleNotFoundError as e:        # na razie w sekcji „ekwipunek: wspólne” w rycerz.py
+    if e.name != "swiat.postacie.ekwipunek":
+        raise
+    from swiat.postacie.rycerz import Przedmiot, kopiuj_klipy, ubierz, zaczep_ekwipunku
 
 ID = "zwiadowca"
+NAZWA = "Zwiadowca"
 
 PALETA = {
     "lisc": "3F9B4A", "lisc_ciemny": "26633A",                       # kaptur, peleryna, tunika / podszewka, spodnie
@@ -43,6 +79,8 @@ PALETA = {
     "drewno": "A8692E",
     "akcent": "FF9F1C",                                               # chusta, lotki strzał
     "stal": "B9C3D0", "stal_cien": "7F8A9A",
+    # goły Zwiadowca (ciało bazowe): len koszuli, cień lnu, ściągacz spodenek, ciemne pasma włosów
+    "len": "EDE3CC", "len_cien": "D3C4A2", "lisc_cien": "1C4A2B", "wlosy_ciemne": "34200F",
 }
 
 # te same klocki co Rycerz (te same zaczepy ekwipunku, ten sam wzrost ciała)
@@ -100,51 +138,36 @@ def sztylet():
     return a
 
 
-# --------------------------------------------------------------------------- zwiadowca
-def zbuduj():
-    p = Postac(ID, "Zwiadowca", typ="r15", faza=0.05, paleta=PALETA, wymiary=WYMIARY)
-    _glowa(p)
-    _tulow(p)
-    _rece(p)
-    _nogi(p)
-    lk, sz = luk(), sztylet()
-    p.zaloz(lk, eksport=False)
-    p.zaloz(sz, eksport=False)
-    _klipy(p)
-    p.ustaw_poze_renderu("idle", 0)
-    return [p, lk, sz]
+# --------------------------------------------------------------------------- ciało bazowe („goły” Zwiadowca)
+CIALO_TYP = "czlowiek"
+KLASY = ("zwiadowca",)
+# przedmioty pełnego stroju kanonicznego (zbuduj()) = dawny model; łuk przed sztyletem (kolejność założonych jak dawniej)
+KANON = ("zwiadowca_kaptur", "zwiadowca_kurtka", "zwiadowca_spodnie", "zwiadowca_pas", "zwiadowca_rekawice",
+         "zwiadowca_buty", "zwiadowca_luk", "zwiadowca_sztylet")
+ODNIESIENIE_KLIPOW = KANON                     # geometria, na której liczą się klipy (= dawny model z łukiem i sztyletem)
+# stroje do plansz i kontroli (przebuduj.py -> wynik/zwiadowca/ekwipunek/); nazwa stroju nie może dać id przedmiotu
+STROJE = {"golas": (),
+          "pelny": KANON,
+          "bez_kaptura": ("zwiadowca_kurtka", "zwiadowca_spodnie", "zwiadowca_pas", "zwiadowca_rekawice",
+                          "zwiadowca_buty", "zwiadowca_luk", "zwiadowca_sztylet"),
+          "lekki": ("zwiadowca_kurtka", "zwiadowca_spodnie", "zwiadowca_buty", "zwiadowca_luk"),
+          "kaptur_i_sztylet": ("zwiadowca_kaptur", "zwiadowca_sztylet")}
+NAZWY_STROJOW = {"golas": "goły (ciało bazowe)", "pelny": "pełny strój", "bez_kaptura": "bez kaptura i peleryny",
+                 "lekki": "kirys, buty i łuk", "kaptur_i_sztylet": "sam kaptur i sztylet"}
+PLANSZA_ZBIORCZA = ("golas", "pelny", "lekki", "kaptur_i_sztylet")      # goły | pełny | dwa częściowe
+# filmy w stroju (strój, klip): dowód, że przedmioty idą za kośćmi, a goły Zwiadowca rusza się dobrze bez stroju
+FILMY_EKWIPUNKU = (("golas", "idle"), ("golas", "atak"), ("golas", "upadek"), ("lekki", "umiejetnosc"),
+                   ("kaptur_i_sztylet", "unik"), ("bez_kaptura", "uderzenie_z_gory"))
 
 
-SLABOSCI = [
-    "Łuk i sztylet są osobnymi przedmiotami (przedmioty/zwiadowca_luk.fbx, zwiadowca_sztylet.fbx) — w FBX postaci ich "
-    "nie ma; w grze trzeba je dać jako Tool albo akcesoria na LeftGripAttachment i RightGripAttachment.",
-    "Strzał z łuku to sam ruch: łuk się nie ugina, cięciwa jest sztywna i nie dochodzi do dłoni, strzały ani zielonej "
-    "smugi trucizny nie ma (efekt do dorobienia w grze). Z boku i z tyłu (kamera gracza) strzał czyta się dobrze; "
-    "w kadrze 3/4 z przodu widać łuk wyciągnięty do kamery, a dłoń naciągającą zasłania tułów; od przodu pięść z łukiem "
-    "jest przed dolną częścią twarzy (postać celuje w widza — tylko zasłanianie, bez przenikania).",
-    "Sztylet zostaje w prawej dłoni także przy strzale — cięciwę „naciąga” pięść ze sztyletem ostrzem w dół i na "
-    "zewnątrz. Barki R15 są szerokie (3,15 studa), a ręka krótka (1,45 studa do nadgarstka), więc dłoń nie sięga "
-    "twarzy ani linii strzały: naciąg to pięść wysoko przy prawym barku z łokciem cofniętym w tył.",
-    "Bryły są sztywno przypięte do kości: kaptur, peleryna i chusta nie falują; poły tuniki siedzą na udach (idą z "
-    "nogą, nie przebijają jej). Upadek kończy się leżeniem na brzuchu (na plecach ciało wisiało na kołczanie); "
-    "głowa w kapturze jest najniższym punktem, więc pierś jest ok. 0,15 studa nad ziemią.",
-    "Twarz nie ma mimiki — ten sam pogodny uśmiech przy trafieniu i upadku.",
-    "Unik i uderzenie z góry przesuwają postać w samym klipie (kość LowerTorso): salto ok. 3,25 studa w bok i odskok "
-    "z powrotem, wypad ok. 0,5 studa do przodu; klip kończy się w punkcie startu. W salcie biodra obracają się o "
-    "−360° (ostatnia klatka ma kąt −360 = ta sama orientacja co 0) — do sprawdzenia przy imporcie klipu do Roblox.",
-    "Kolizje sprawdzone w przybliżeniu skryptem poza repozytorium (punkty skrzynek brył łuku, sztyletu, dłoni "
-    "i przedramion w każdej klatce kontra skrzynki głowy z kapturem, tułowia i bioder; najniższy punkt ciała "
-    "i broni): bez przecięć, najniżej −0,03 studa (chwila przy padaniu na kolana). Nie sprawdzano broni względem nóg "
-    "ani łuku względem własnego przedramienia.",
-    "Wspólny kadr filmów obejmuje salto w bok, więc w filmach i arkuszach klatek postać jest mniejsza niż na planszy.",
-    "Klipy to szkice (0,67–2 s), nie gotowa animacja. Bieg jest w miejscu (stopy ślizgają się względem ziemi).",
-    "LowerTorso i Root nie są w 0,0,0 (biodra na wysokości 1,9) — tak jak u Rycerza; dla postaci w grze bez "
-    "znaczenia, ciało awatara może tego wymagać (sprawdzić przy pierwszym imporcie).",
-]
+def _postac(id, nazwa):
+    """Postać R15 o klockach Zwiadowcy (kości, stawy, 18 zaczepów R15), jeszcze bez brył."""
+    return Postac(id, nazwa, typ="r15", faza=0.05, paleta=PALETA, wymiary=WYMIARY)
 
 
-# --------------------------------------------------------------------------- bryły
-def _glowa(p):
+def _twarz(p):
+    """Klocek głowy („Twarz”) z oczami, piegami, brwiami, uśmiechem i grzywką spod kaptura (zostaje w każdym
+    stroju; bryły jak w dawnym modelu)."""
     with p.na("Head", od="srodek"):
         w, h, d = p.wymiary("Head")
         z = d / 2
@@ -170,151 +193,422 @@ def _glowa(p):
         p.blok("Zeby", (0.02, -0.305, z + 0.05), (0.44, 0.06, 0.03), "bialy", faza=0.0)
         p.blok("Jezyk", (0.02, -0.43, z + 0.05), (0.18, 0.05, 0.03), "D9534A", "matowy", faza=0.0)
         p.blok("Kacik L", (0.3, -0.29, z + 0.02), (0.07, 0.13, 0.05), "tusz", rot=(0, 0, 35), faza=0.0)
-        # grzywka spod kaptura: trzy kanciaste kosmyki
+        # grzywka spod kaptura: trzy kanciaste kosmyki (część twarzy — bez kaptura wiszą z czupryny)
         for i, (x, kat, dl) in enumerate(((-0.42, -14, 0.24), (-0.12, 8, 0.3), (0.2, -6, 0.22))):
             p.blok("Kosmyk %d" % i, (x, 0.58, z + 0.04), (0.32, dl, 0.08), "wlosy", "matowy", rot=(0, 0, kat),
                    faza=0.02)
 
-        # kaptur: płaszcz wokół głowy (boki, tył, wierzch), ciemniejsza podszewka wokół twarzy, spiczasty koniec
-        kd = d + 0.26                                   # głębokość kaptura
-        kz = -0.08                                      # środek kaptura (przód 0,05 przed twarzą)
-        kw = w + 0.24                                   # szerokość kaptura
-        for zn, s in ((1, "L"), (-1, "P")):
-            p.blok("Kaptur bok " + s, (zn * (w / 2 + 0.06), -0.02, kz), (0.12, h + 0.02, kd), "lisc", "matowy",
-                   faza=0.1)
-            p.blok("Podszewka " + s, (zn * (w / 2 - 0.01), -0.08, z + 0.035), (0.1, h - 0.2, 0.08), "lisc_ciemny",
-                   "matowy", faza=0.02)
-        p.blok("Kaptur tyl", (0, -0.02, kz - kd / 2 + 0.06), (kw, h + 0.02, 0.12), "lisc", "matowy", faza=0.1)
-        p.blok("Kaptur tyl szew", (0, 0.0, kz - kd / 2 - 0.015), (0.1, h - 0.1, 0.04), "lisc_ciemny", "matowy",
+
+def wlosy():
+    """Rozczochrana ciemnobrązowa czupryna gołego Zwiadowcy (akcesorium Hair na HairAttachment = środek górnej
+    ściany głowy): czapa na czubku, tył do karku zakończony trzema szpicami, boki nad uszami, opaska grzywki nad
+    czołem (spod niej wiszą trzy kosmyki twarzy), trzy kosmyki sterczące na czubku do tyłu i jeden nad lewym uchem.
+    Kaptur ją chowa (znacznik „Wlosy”)."""
+    a = Akcesorium("zwiadowca_wlosy", "Włosy Zwiadowcy", zaczep="HairAttachment", typ="Hair", paleta=PALETA,
+                   przymierz=False)
+    a.znacznik = "Wlosy"
+    w, h, d = WYMIARY["Head"]
+    x, z = w / 2, d / 2                                       # boki i przód głowy względem zaczepu
+    a.blok("Czupryna", (0, 0.09, -0.03), (w + 0.1, 0.22, d + 0.1), "wlosy", "matowy", faza=0.06)
+    a.blok("Tyl", (0, -0.44, -z - 0.04), (w + 0.1, 0.92, 0.1), "wlosy", "matowy", faza=0.04)
+    for i, xk in enumerate((-0.5, 0.0, 0.5)):                 # kark: trzy szpice w dół
+        a.ostroslup("Kark %d" % i, (xk, -0.98, -z - 0.04), (0.5, 0.16, 0.1), "wlosy", "matowy", rot=(180, 0, 0),
+                    gora=(0.0, 0.08), faza=0.0)
+    for zn, s in ((1, "L"), (-1, "P")):
+        a.blok("Bok " + s, (zn * (x + 0.025), -0.26, -0.16), (0.06, 0.56, d - 0.42), "wlosy", "matowy", faza=0.02)
+        a.blok("Bok pasmo " + s, (zn * (x + 0.035), -0.2, -0.36), (0.04, 0.4, 0.12), "wlosy_ciemne", "matowy",
                faza=0.0)
-        # czubek: ścięty ostrosłup zwężający się ku górze i cofnięty do tyłu, z niego wyrasta długi szpic
-        p.ostroslup("Kaptur czubek", (0, h / 2 + 0.17, kz - 0.06), (kw, 0.38, kd + 0.1), "lisc", "matowy",
-                    gora=(kw * 0.5, kd * 0.5), przes_gory=(0.0, -0.24))
-        p.blok("Podszewka gora", (0, h / 2 - 0.06, z + 0.05), (w + 0.12, 0.2, 0.12), "lisc_ciemny", "matowy",
-               faza=0.03)
-        p.blok("Daszek", (0, h / 2 + 0.06, z + 0.06), (kw + 0.02, 0.16, 0.14), "lisc", "matowy", faza=0.05)
-        # szpic daszka nad czołem (kaptur od przodu czyta się jak kaptur, a nie hełm)
-        p.blok("Daszek szpic", (0, h / 2 - 0.02, z + 0.1), (0.34, 0.34, 0.08), "lisc", "matowy", rot=(0, 0, 45),
-               faza=0.03)
-        # spiczasty koniec kaptura: sterczy do tyłu, lekko w górę (znak sylwetki z boku i w kadrze 3/4); głowa
-        # z kapturem mieści się w 2 studach wysokości (limit części ciała awatara)
-        with p.uklad(pos=(0, h / 2 + 0.14, kz - 0.46), obrot=(-76, 0, 0)):
-            p.ostroslup("Kaptur szpic", (0, 0.3, 0), (0.84, 0.64, 0.6), "lisc", "matowy", gora=(0.5, 0.36))
-            with p.uklad(pos=(0, 0.6, -0.02), obrot=(4, 0, 0)):
-                p.ostroslup("Kaptur szpic koniec", (0, 0.32, 0), (0.52, 0.66, 0.38), "lisc", "matowy",
-                            gora=(0.0, 0.0), przes_gory=(0.0, -0.06))
+    a.blok("Grzywka", (0, -0.06, z + 0.02), (w + 0.06, 0.14, 0.06), "wlosy", "matowy", faza=0.02)
+    # sterczące kosmyki: ostrosłupy szpicem w górę i do tyłu (zwiadowca czesze się wiatrem)
+    for i, (xk, zk, kat, kz, wys) in enumerate(((-0.42, 0.25, -34, 10, 0.3), (0.05, 0.05, -42, -6, 0.36),
+                                                (0.45, -0.2, -30, -14, 0.28))):
+        a.ostroslup("Czub %d" % i, (xk, 0.19 + wys / 2 - 0.04, zk), (0.4, wys, 0.36),
+                    "wlosy_ciemne" if i == 1 else "wlosy", "matowy", rot=(kat, 0, kz), gora=(0.0, 0.0), faza=0.0)
+    a.ostroslup("Kosmyk bok", (x + 0.1, -0.12, 0.05), (0.18, 0.26, 0.2), "wlosy", "matowy", rot=(0, 0, -70),
+                gora=(0.0, 0.04), faza=0.0)
+    return a
 
 
-def _tulow(p):
-    with p.na("UpperTorso", od="srodek"):
+def _golas(id, nazwa, zaczepy_ekwipunku=False):
+    """Goły Zwiadowca bez klipów: twarz z grzywką, lniana koszula z podwiniętymi rękawami, zielone krótkie spodenki,
+    bose stopy, włosy. Klocki pełnego rozmiaru, ubranie wystaje 0,02–0,03 studa, spodenki 0,01 (bez wcięć i szpar)."""
+    p = _postac(id, nazwa)
+    p.typ_ciala = CIALO_TYP
+    _twarz(p)
+    p.klocek("UpperTorso", "len")
+    p.klocek("LowerTorso", "lisc_ciemny")
+    for strona in ("Left", "Right"):
+        for kosc in ("UpperArm", "LowerArm", "Hand", "UpperLeg", "LowerLeg", "Foot"):
+            p.klocek(strona + kosc, "skora")
+    with p.na("UpperTorso", od="srodek"):                         # koszula: sznurowany dekolt, listek, rąbek
         w, h, d = p.wymiary("UpperTorso")
         z = d / 2
-        p.blok("Tunika", (0, 0, 0), (w - 0.06, h, d - 0.06), "lisc")
-        # lekki skórzany pancerz: kirys z przeszyciem i sznurowaniem
-        p.blok("Kirys", (0, -0.14, 0), (w + 0.02, h - 0.3, d + 0.04), "skorzany", "matowy")
-        p.blok("Kirys brzeg", (0, -h / 2 + 0.2, 0), (w + 0.06, 0.1, d + 0.08), "skorzany_ciemny", "matowy", faza=0.02)
-        p.blok("Przeszycie", (0.42, -0.1, z + 0.035), (0.05, 0.8, 0.04), "skorzany_ciemny", "matowy", faza=0.0)
-        for i, y in enumerate((0.05, -0.2)):
-            p.blok("Sznurowanie %d" % i, (0.42, y, z + 0.055), (0.22, 0.05, 0.03), "skorzany_jasny", "matowy",
-                   rot=(0, 0, 25), faza=0.0)
-        # pas kołczanu na skos: z prawego barku (−X) do lewego biodra (+X), z przodu i z tyłu
-        for zk, s in ((1, ""), (-1, " tyl")):
-            p.blok("Pas kolczanu" + s, (-0.05, -0.02, zk * (z + 0.05)), (2.0, 0.2, 0.05), "skorzany_ciemny", "matowy",
-                   rot=(0, 0, -42), faza=0.0)
-        p.blok("Sprzaczka pasa", (-0.32, 0.27, z + 0.085), (0.2, 0.2, 0.04), "skorzany_jasny", "matowy",
-               rot=(0, 0, -42), faza=0.0)
-        # chusta (akcent) wokół szyi z węzłem i końcem na piersi
-        p.blok("Chusta", (0, h / 2 + 0.04, 0.1), (1.3, 0.28, 1.06), "akcent", "matowy", faza=0.06)
-        p.blok("Chusta wezel", (0.3, h / 2 - 0.14, z + 0.07), (0.3, 0.24, 0.14), "akcent", "matowy", faza=0.05)
-        with p.uklad(pos=(0.36, h / 2 - 0.24, z + 0.07), obrot=(0, 0, 14)):
-            p.ostroslup("Chusta koniec", (0, -0.24, 0), (0.28, 0.5, 0.06), "akcent", "matowy", rot=(180, 0, 0),
-                        gora=(0.08, 0.06), faza=0.0)
-        # kołnierz kaptura: opada z karku na barki (kaptur „siedzi” na pelerynie, a nie na szyi jak hełm)
-        p.ostroslup("Kaptur kolnierz", (0, h / 2 + 0.1, -0.04), (1.98, 0.3, 1.34), "lisc", "matowy",
-                    gora=(1.62, 1.16))
-        # krótka peleryna: na barkach, z tyłu do pasa, brzeg cięty w trzy liście
-        p.blok("Peleryna barki", (0, h / 2 - 0.04, -0.04), (w + 0.1, 0.18, d + 0.14), "lisc", "matowy", faza=0.06)
-        for zn in (1, -1):
-            p.blok("Peleryna przod", (zn * 0.82, h / 2 - 0.3, z + 0.07), (0.44, 0.44, 0.06), "lisc", "matowy",
-                   faza=0.02)
-            p.blok("Peleryna przod lisc", (zn * 0.82, h / 2 - 0.52, z + 0.065), (0.31, 0.31, 0.05), "lisc", "matowy",
-                   rot=(0, 0, 45), faza=0.0)
-        p.blok("Peleryna plecy", (0, -0.05, -z - 0.06), (w + 0.04, h - 0.1, 0.08), "lisc", "matowy", faza=0.02)
-        for i, x in enumerate((-0.72, 0.0, 0.72)):
-            p.blok("Peleryna lisc %d" % i, (x, -h / 2 + 0.02, -z - 0.06), (0.52, 0.52, 0.08), "lisc", "matowy",
-                   rot=(0, 0, 45), faza=0.0)
-            p.blok("Peleryna zylka %d" % i, (x, -h / 2 + 0.06, -z - 0.11), (0.05, 0.4, 0.03), "lisc_ciemny",
-                   "matowy", faza=0.0)
-        # kołczan na plecach (na skos: dno przy lewym biodrze, wylot za prawym barkiem) i lotki strzał
-        with p.uklad(pos=(-0.16, 0.08, -z - 0.36), obrot=(0, 0, 50)):
-            p.blok("Kolczan", (0, 0, 0), (0.56, 1.8, 0.46), "skorzany", "matowy", faza=0.08)
-            p.blok("Kolczan dno", (0, -0.86, 0), (0.6, 0.14, 0.5), "skorzany_ciemny", "matowy", faza=0.04)
-            p.blok("Kolczan wylot", (0, 0.86, 0), (0.62, 0.14, 0.52), "skorzany_ciemny", "matowy", faza=0.04)
-            p.blok("Kolczan pas", (0, 0.2, -0.24), (0.6, 0.12, 0.04), "skorzany_ciemny", "matowy", faza=0.0)
-            for i, (x, zz, dl, kat) in enumerate(((-0.13, 0.08, 0.8, 8), (0.1, -0.08, 0.95, -6), (0.0, 0.12, 0.68, 0))):
-                with p.uklad(pos=(x, 0.9, zz), obrot=(0, 0, kat)):
-                    p.blok("Drzewce %d" % i, (0, dl / 2, 0), (0.06, dl, 0.06), "skorzany_jasny", "matowy", faza=0.0)
-                    p.blok("Lotka %d" % i, (0, dl - 0.12, 0), (0.2, 0.3, 0.04), "akcent", "matowy", faza=0.0)
-                    p.blok("Lotka %d b" % i, (0, dl - 0.12, 0), (0.04, 0.3, 0.2), "akcent", "matowy", faza=0.0)
-
-    with p.na("LowerTorso", od="srodek"):
+        p.ostroslup("Dekolt", (0, h / 2 - 0.2, z + 0.015), (0.36, 0.4, 0.03), "skora", "matowy",
+                    rot=(0, 0, 180), gora=(0.06, 0.03), faza=0.0)
+        for i, y in enumerate((h / 2 - 0.12, h / 2 - 0.26)):
+            for zn in (1, -1):
+                p.blok("Sznurowanie %d" % i, (0, y, z + 0.03), (0.3, 0.035, 0.03), "skorzany", "matowy",
+                       rot=(0, 0, zn * 24), faza=0.0)
+        # wyszyty listek na lewej piersi (znak zwiadowcy, bez napisów)
+        p.blok("Listek", (0.58, 0.12, z + 0.015), (0.2, 0.2, 0.03), "lisc", "matowy", rot=(0, 0, 45), faza=0.0)
+        p.blok("Listek zylka", (0.58, 0.1, z + 0.03), (0.03, 0.22, 0.03), "lisc_ciemny", "matowy", rot=(0, 0, 10),
+               faza=0.0)
+        p.blok("Rabek koszuli", (0, -h / 2 + 0.07, 0), (w + 0.04, 0.12, d + 0.04), "len_cien", "matowy", faza=0.02)
+    # spodenki wystają tylko 0,01 studa (ściągacz, nogawka): pas z sakwą i poły tuniki leżą o 0,02 nad klockiem —
+    # w tej samej odległości ściany migotałyby, gdy kirys albo pas są założone bez spodni
+    with p.na("LowerTorso", od="srodek"):                         # spodenki: ściągacz i troczki
         w, h, d = p.wymiary("LowerTorso")
         z = d / 2
-        p.blok("Biodra", (0, 0, 0), (w - 0.06, h, d - 0.06), "lisc_ciemny")
-        p.blok("Pas", (0, 0.04, 0), (w + 0.04, 0.26, d + 0.04), "skorzany_ciemny", "matowy", faza=0.03)
-        p.blok("Klamra", (0, 0.04, z + 0.04), (0.34, 0.28, 0.06), "skorzany_jasny", "matowy", faza=0.03)
-        p.blok("Klamra srodek", (0, 0.04, z + 0.075), (0.16, 0.12, 0.03), "skorzany_ciemny", faza=0.0)
-        p.blok("Sakwa", (0.78, -0.12, -z - 0.12), (0.46, 0.42, 0.26), "skorzany", "matowy", faza=0.06)
-        p.blok("Sakwa klapka", (0.78, 0.02, -z - 0.26), (0.48, 0.18, 0.04), "skorzany_ciemny", "matowy", faza=0.0)
-
-
-def _rece(p):
-    for strona, zn in (("Left", 1), ("Right", -1)):
-        with p.na(strona + "UpperArm", od="srodek"):
+        p.blok("Sciagacz", (0, h / 2 - 0.08, 0), (w + 0.02, 0.14, d + 0.02), "lisc_cien", "matowy", faza=0.02)
+        for zn in (1, -1):
+            p.blok("Troczek", (zn * 0.08, h / 2 - 0.2, z + 0.03), (0.06, 0.2, 0.03), "len", "matowy",
+                   rot=(0, 0, zn * 10), faza=0.0)
+    for strona in ("Left", "Right"):
+        with p.na(strona + "UpperArm", od="srodek"):              # krótki rękaw z podwinięciem
             w, h, d = p.wymiary(strona + "UpperArm")
-            p.blok("Rekaw", (0, -0.02, 0), (w - 0.06, h - 0.04, d - 0.06), "lisc")
-            # mały skórzany naramiennik, lekko opadający na zewnątrz (nie „półka”)
-            p.blok("Naramiennik", (zn * 0.05, h / 2 - 0.12, 0), (w + 0.02, 0.26, d + 0.06), "skorzany", "matowy",
-                   rot=(0, 0, -zn * 8), faza=0.1)
-            p.blok("Naramiennik brzeg", (zn * 0.08, h / 2 - 0.27, 0), (w - 0.04, 0.1, d + 0.02), "skorzany_ciemny",
-                   "matowy", rot=(0, 0, -zn * 8), faza=0.03)
-        with p.na(strona + "LowerArm", od="srodek"):
-            w, h, d = p.wymiary(strona + "LowerArm")
-            p.blok("Karwasz", (0, 0, 0), (w - 0.04, h, d - 0.04), "skorzany", "matowy")
-            p.blok("Karwasz brzeg", (0, h / 2 - 0.06, 0), (w + 0.02, 0.12, d + 0.02), "skorzany_ciemny", "matowy",
+            p.blok("Rekaw", (0, h / 2 - 0.22, 0), (w + 0.04, 0.48, d + 0.04), "len", "matowy", faza=0.04)
+            p.blok("Rekaw podwiniecie", (0, h / 2 - 0.5, 0), (w + 0.06, 0.14, d + 0.06), "len_cien", "matowy",
                    faza=0.03)
-            for i, y in enumerate((0.12, -0.12)):
-                p.blok("Karwasz sznur %d" % i, (zn * (w / 2 - 0.0), y, 0), (0.04, 0.06, 0.5), "skorzany_jasny",
-                       "matowy", faza=0.0)
-        with p.na(strona + "Hand", od="srodek"):
-            w, h, d = p.wymiary(strona + "Hand")
-            p.blok("Dlon", (0, 0, 0), (w - 0.04, h, d - 0.04), "skora")
-            p.blok("Rekawica", (0, h / 2 - 0.05, 0), (w, 0.12, d), "skorzany_ciemny", "matowy", faza=0.02)
-
-
-def _nogi(p):
-    for strona, zn in (("Left", 1), ("Right", -1)):
-        with p.na(strona + "UpperLeg", od="srodek"):
+        with p.na(strona + "UpperLeg", od="srodek"):              # nogawka spodenek, rąbek nad kolanem
             w, h, d = p.wymiary(strona + "UpperLeg")
-            p.blok("Udo", (0, 0, 0), (w - 0.06, h, d - 0.06), "lisc_ciemny")
-            # poła tuniki siedzą na udzie (idą z nogą — nie przebijają jej w biegu ani w wypadzie)
-            p.blok("Pola", (0, h / 2 - 0.2, 0), (w + 0.04, 0.42, d + 0.04), "lisc", "matowy", faza=0.03)
-            p.blok("Pola lisc", (zn * 0.12, h / 2 - 0.42, d / 2 + 0.01), (0.3, 0.3, 0.04), "lisc", "matowy",
-                   rot=(0, 0, 45), faza=0.0)
-            p.blok("Pola lisc tyl", (zn * 0.12, h / 2 - 0.42, -d / 2 - 0.01), (0.3, 0.3, 0.04), "lisc", "matowy",
-                   rot=(0, 0, 45), faza=0.0)
-        with p.na(strona + "LowerLeg", od="srodek"):
-            w, h, d = p.wymiary(strona + "LowerLeg")
-            p.blok("Cholewa", (0, -0.04, 0), (w - 0.06, h - 0.08, d - 0.06), "skorzany", "matowy")
-            p.blok("Cholewa wywiniecie", (0, h / 2 - 0.1, 0), (w + 0.06, 0.2, d + 0.06), "skorzany_jasny", "matowy",
-                   faza=0.04)
-            p.blok("Cholewa pasek", (0, -0.12, d / 2 - 0.01), (w - 0.2, 0.08, 0.06), "skorzany_ciemny", "matowy",
-                   faza=0.0)
-        with p.na(strona + "Foot", od="srodek"):
+            # góra nogawki 0,02 nad klockiem (poły tuniki kończą się 0,01 nad nim — bez wspólnej ściany)
+            p.blok("Nogawka", (0, h / 2 - 0.235, 0), (w + 0.02, 0.51, d + 0.02), "lisc_ciemny", "matowy", faza=0.04)
+            p.blok("Nogawka rabek", (0, h / 2 - 0.5, 0), (w + 0.04, 0.08, d + 0.04), "lisc_cien", "matowy",
+                   faza=0.02)
+        with p.na(strona + "Foot", od="srodek"):                  # bosa stopa: zarys palców
             w, h, d = p.wymiary(strona + "Foot")
-            p.blok("But", (0, 0.02, 0), (w - 0.06, h - 0.04, d), "skorzany_ciemny")
-            p.blok("Podeszwa", (0, -h / 2 + 0.04, 0.02), (w, 0.08, d + 0.04), "skorzany", "matowy", faza=0.0)
-            p.blok("Czubek", (0, -0.02, d / 2 + 0.02), (w - 0.24, 0.24, 0.1), "skorzany_ciemny", "matowy", faza=0.03)
+            for i in (-1, 0, 1):
+                p.blok("Palec", (i * 0.3, -h / 2 + 0.075, d / 2 + 0.01), (0.035, 0.13, 0.03), "skora_cien",
+                       "matowy", faza=0.0)
+    for c in p.czesci:
+        c["golas"] = True                                         # gołe bryły (zdejmuje je powłoka na tej kości)
+    p.zaloz(wlosy())                                              # osobna siatka (w FBX ciała), kaptur ją chowa
+    if zaczepy_ekwipunku:
+        for kosc in R15_KOSCI:
+            p.zaczep(zaczep_ekwipunku(kosc), kosc, p.srodek(kosc))
+    return p
+
+
+# --------------------------------------------------------------------------- przedmioty stroju
+class _Przedmiot(Przedmiot):
+    """Przedmiot Zwiadowcy. Różnica tylko w ikonie przedmiotu z segmentem kostnym I segmentem na zaczepie (łuk
+    z kołczanem): wspólna ikona bierze same segmenty kostne, więc łuk dokładamy obok kołczanu, pionowo (cięciwą
+    do kołczanu), a ikonę pokazujemy od tyłu (kołczan nosi się na plecach)."""
+
+    IKONA_ZACZEPIONYCH = {"zwiadowca_luk": ((1.3, 3.05, -0.8), (0, 90, 0), (0, 213, 0))}   # (pos, obrot, ikona_obrot)
+
+    def ikona(self):
+        kostne = [s for s in self.segmenty if s["kosc"]]
+        zacz = [s for s in self.segmenty if s["kosc"] is None]
+        if not (kostne and zacz and self.id in self.IKONA_ZACZEPIONYCH):
+            return Przedmiot.ikona(self)
+        a = Przedmiot.ikona(self)                                 # segmenty kostne w pozie spoczynku
+        pos, obrot, io = self.IKONA_ZACZEPIONYCH[self.id]
+        R = macierz_obrotu(*obrot)
+        for s in zacz:
+            a.czesci.extend(Akcesorium._czesc_w(c, R, pos) for c in s["akc"].czesci)
+        a.ikona_obrot = tuple(float(v) for v in io)
+        return a
+
+
+def przedmioty():
+    """Wszystkie przedmioty Zwiadowcy — rozbiór dawnego modelu z EKWIPUNEK.md pkt 3. Bryły są te same co w dawnym
+    zbuduj() (te same liczby), tylko pogrupowane w segmenty po kościach (układ segmentu = środek klocka kości,
+    jak dawne `with p.na(kosc, od="srodek")`)."""
+    m = _postac(ID + "_miara", NAZWA)
+    W = m.wymiary
+
+    def nowy(id, nazwa, slot, kategoria, **k):
+        return _Przedmiot(id, nazwa, slot, kategoria, m, cialo=CIALO_TYP, klasy=KLASY, zestaw=ID, paleta=PALETA, **k)
+
+    # --- kaptur z krótką peleryną (Helmet): kaptur na głowie (nakładka, chowa włosy, grzywka twarzy zostaje)
+    #     i peleryna z kołnierzem kaptura na tułowiu (wierzchnia)
+    kap = nowy("zwiadowca_kaptur", "Kaptur z peleryną", "Helmet", "Armor", ukrywa=("Wlosy",))
+    a = kap.segment("Head")
+    w, h, d = W("Head")
+    z = d / 2
+    # kaptur: płaszcz wokół głowy (boki, tył, wierzch), ciemniejsza podszewka wokół twarzy, spiczasty koniec
+    kd = d + 0.26                                   # głębokość kaptura
+    kz = -0.08                                      # środek kaptura (przód 0,05 przed twarzą)
+    kw = w + 0.24                                   # szerokość kaptura
+    for zn, s in ((1, "L"), (-1, "P")):
+        a.blok("Kaptur bok " + s, (zn * (w / 2 + 0.06), -0.02, kz), (0.12, h + 0.02, kd), "lisc", "matowy",
+               faza=0.1)
+        a.blok("Podszewka " + s, (zn * (w / 2 - 0.01), -0.08, z + 0.035), (0.1, h - 0.2, 0.08), "lisc_ciemny",
+               "matowy", faza=0.02)
+    a.blok("Kaptur tyl", (0, -0.02, kz - kd / 2 + 0.06), (kw, h + 0.02, 0.12), "lisc", "matowy", faza=0.1)
+    a.blok("Kaptur tyl szew", (0, 0.0, kz - kd / 2 - 0.015), (0.1, h - 0.1, 0.04), "lisc_ciemny", "matowy",
+           faza=0.0)
+    # czubek: ścięty ostrosłup zwężający się ku górze i cofnięty do tyłu, z niego wyrasta długi szpic
+    a.ostroslup("Kaptur czubek", (0, h / 2 + 0.17, kz - 0.06), (kw, 0.38, kd + 0.1), "lisc", "matowy",
+                gora=(kw * 0.5, kd * 0.5), przes_gory=(0.0, -0.24))
+    a.blok("Podszewka gora", (0, h / 2 - 0.06, z + 0.05), (w + 0.12, 0.2, 0.12), "lisc_ciemny", "matowy",
+           faza=0.03)
+    a.blok("Daszek", (0, h / 2 + 0.06, z + 0.06), (kw + 0.02, 0.16, 0.14), "lisc", "matowy", faza=0.05)
+    # szpic daszka nad czołem (kaptur od przodu czyta się jak kaptur, a nie hełm)
+    a.blok("Daszek szpic", (0, h / 2 - 0.02, z + 0.1), (0.34, 0.34, 0.08), "lisc", "matowy", rot=(0, 0, 45),
+           faza=0.03)
+    # spiczasty koniec kaptura: sterczy do tyłu, lekko w górę (znak sylwetki z boku i w kadrze 3/4); głowa
+    # z kapturem mieści się w 2 studach wysokości (limit części ciała awatara)
+    with a.uklad(pos=(0, h / 2 + 0.14, kz - 0.46), obrot=(-76, 0, 0)):
+        a.ostroslup("Kaptur szpic", (0, 0.3, 0), (0.84, 0.64, 0.6), "lisc", "matowy", gora=(0.5, 0.36))
+        with a.uklad(pos=(0, 0.6, -0.02), obrot=(4, 0, 0)):
+            a.ostroslup("Kaptur szpic koniec", (0, 0.32, 0), (0.52, 0.66, 0.38), "lisc", "matowy",
+                        gora=(0.0, 0.0), przes_gory=(0.0, -0.06))
+    a = kap.segment("UpperTorso")
+    w, h, d = W("UpperTorso")
+    z = d / 2
+    # kołnierz kaptura: opada z karku na barki (kaptur „siedzi” na pelerynie, a nie na szyi jak hełm)
+    a.ostroslup("Kaptur kolnierz", (0, h / 2 + 0.1, -0.04), (1.98, 0.3, 1.34), "lisc", "matowy",
+                gora=(1.62, 1.16))
+    # krótka peleryna: na barkach, z tyłu do pasa, brzeg cięty w trzy liście
+    a.blok("Peleryna barki", (0, h / 2 - 0.04, -0.04), (w + 0.1, 0.18, d + 0.14), "lisc", "matowy", faza=0.06)
+    for zn in (1, -1):
+        a.blok("Peleryna przod", (zn * 0.82, h / 2 - 0.3, z + 0.07), (0.44, 0.44, 0.06), "lisc", "matowy",
+               faza=0.02)
+        a.blok("Peleryna przod lisc", (zn * 0.82, h / 2 - 0.52, z + 0.065), (0.31, 0.31, 0.05), "lisc", "matowy",
+               rot=(0, 0, 45), faza=0.0)
+    a.blok("Peleryna plecy", (0, -0.05, -z - 0.06), (w + 0.04, h - 0.1, 0.08), "lisc", "matowy", faza=0.02)
+    for i, x in enumerate((-0.72, 0.0, 0.72)):
+        a.blok("Peleryna lisc %d" % i, (x, -h / 2 + 0.02, -z - 0.06), (0.52, 0.52, 0.08), "lisc", "matowy",
+               rot=(0, 0, 45), faza=0.0)
+        a.blok("Peleryna zylka %d" % i, (x, -h / 2 + 0.06, -z - 0.11), (0.05, 0.4, 0.03), "lisc_ciemny",
+               "matowy", faza=0.0)
+
+    # --- skórzany kirys z tuniką (Chest): tułów, ramiona, przedramiona (powłoka) i poły tuniki na udach (nakładka)
+    kur = nowy("zwiadowca_kurtka", "Skórzany kirys z tuniką", "Chest", "Armor")
+    a = kur.segment("UpperTorso", zakrywa=True)
+    w, h, d = W("UpperTorso")
+    z = d / 2
+    a.blok("Tunika", (0, 0, 0), (w - 0.06, h, d - 0.06), "lisc")
+    # lekki skórzany pancerz: kirys z przeszyciem i sznurowaniem
+    a.blok("Kirys", (0, -0.14, 0), (w + 0.02, h - 0.3, d + 0.04), "skorzany", "matowy")
+    a.blok("Kirys brzeg", (0, -h / 2 + 0.2, 0), (w + 0.06, 0.1, d + 0.08), "skorzany_ciemny", "matowy", faza=0.02)
+    a.blok("Przeszycie", (0.42, -0.1, z + 0.035), (0.05, 0.8, 0.04), "skorzany_ciemny", "matowy", faza=0.0)
+    for i, y in enumerate((0.05, -0.2)):
+        a.blok("Sznurowanie %d" % i, (0.42, y, z + 0.055), (0.22, 0.05, 0.03), "skorzany_jasny", "matowy",
+               rot=(0, 0, 25), faza=0.0)
+    # chusta (akcent) wokół szyi z węzłem i końcem na piersi
+    a.blok("Chusta", (0, h / 2 + 0.04, 0.1), (1.3, 0.28, 1.06), "akcent", "matowy", faza=0.06)
+    a.blok("Chusta wezel", (0.3, h / 2 - 0.14, z + 0.07), (0.3, 0.24, 0.14), "akcent", "matowy", faza=0.05)
+    with a.uklad(pos=(0.36, h / 2 - 0.24, z + 0.07), obrot=(0, 0, 14)):
+        a.ostroslup("Chusta koniec", (0, -0.24, 0), (0.28, 0.5, 0.06), "akcent", "matowy", rot=(180, 0, 0),
+                    gora=(0.08, 0.06), faza=0.0)
+    for strona, zn in (("Left", 1), ("Right", -1)):
+        a = kur.segment(strona + "UpperArm", zakrywa=True)
+        w, h, d = W(strona + "UpperArm")
+        a.blok("Rekaw", (0, -0.02, 0), (w - 0.06, h - 0.04, d - 0.06), "lisc")
+        # mały skórzany naramiennik, lekko opadający na zewnątrz (nie „półka”)
+        a.blok("Naramiennik", (zn * 0.05, h / 2 - 0.12, 0), (w + 0.02, 0.26, d + 0.06), "skorzany", "matowy",
+               rot=(0, 0, -zn * 8), faza=0.1)
+        a.blok("Naramiennik brzeg", (zn * 0.08, h / 2 - 0.27, 0), (w - 0.04, 0.1, d + 0.02), "skorzany_ciemny",
+               "matowy", rot=(0, 0, -zn * 8), faza=0.03)
+        a = kur.segment(strona + "LowerArm", zakrywa=True)
+        w, h, d = W(strona + "LowerArm")
+        a.blok("Karwasz", (0, 0, 0), (w - 0.04, h, d - 0.04), "skorzany", "matowy")
+        a.blok("Karwasz brzeg", (0, h / 2 - 0.06, 0), (w + 0.02, 0.12, d + 0.02), "skorzany_ciemny", "matowy",
+               faza=0.03)
+        for i, y in enumerate((0.12, -0.12)):
+            a.blok("Karwasz sznur %d" % i, (zn * (w / 2 - 0.0), y, 0), (0.04, 0.06, 0.5), "skorzany_jasny",
+                   "matowy", faza=0.0)
+    for strona, zn in (("Left", 1), ("Right", -1)):
+        # poły tuniki siedzą na udzie (idą z nogą — nie przebijają jej w biegu ani w wypadzie)
+        a = kur.segment(strona + "UpperLeg")
+        w, h, d = W(strona + "UpperLeg")
+        a.blok("Pola", (0, h / 2 - 0.2, 0), (w + 0.04, 0.42, d + 0.04), "lisc", "matowy", faza=0.03)
+        a.blok("Pola lisc", (zn * 0.12, h / 2 - 0.42, d / 2 + 0.01), (0.3, 0.3, 0.04), "lisc", "matowy",
+               rot=(0, 0, 45), faza=0.0)
+        a.blok("Pola lisc tyl", (zn * 0.12, h / 2 - 0.42, -d / 2 - 0.01), (0.3, 0.3, 0.04), "lisc", "matowy",
+               rot=(0, 0, 45), faza=0.0)
+
+    # --- spodnie (część kirysu): biodra i uda
+    spo = nowy("zwiadowca_spodnie", "Spodnie Zwiadowcy", "Chest", "Armor", czesc_od="zwiadowca_kurtka")
+    a = spo.segment("LowerTorso", zakrywa=True)
+    w, h, d = W("LowerTorso")
+    a.blok("Biodra", (0, 0, 0), (w - 0.06, h, d - 0.06), "lisc_ciemny")
+    for strona in ("Left", "Right"):
+        a = spo.segment(strona + "UpperLeg", zakrywa=True)
+        w, h, d = W(strona + "UpperLeg")
+        a.blok("Udo", (0, 0, 0), (w - 0.06, h, d - 0.06), "lisc_ciemny")
+
+    # --- pas z sakwą (Belt): nakładka na biodrach
+    pas = nowy("zwiadowca_pas", "Pas z sakwą", "Belt", "Armor")
+    a = pas.segment("LowerTorso")
+    w, h, d = W("LowerTorso")
+    z = d / 2
+    a.blok("Pas", (0, 0.04, 0), (w + 0.04, 0.26, d + 0.04), "skorzany_ciemny", "matowy", faza=0.03)
+    a.blok("Klamra", (0, 0.04, z + 0.04), (0.34, 0.28, 0.06), "skorzany_jasny", "matowy", faza=0.03)
+    a.blok("Klamra srodek", (0, 0.04, z + 0.075), (0.16, 0.12, 0.03), "skorzany_ciemny", faza=0.0)
+    a.blok("Sakwa", (0.78, -0.12, -z - 0.12), (0.46, 0.42, 0.26), "skorzany", "matowy", faza=0.06)
+    a.blok("Sakwa klapka", (0.78, 0.02, -z - 0.26), (0.48, 0.18, 0.04), "skorzany_ciemny", "matowy", faza=0.0)
+
+    # --- rękawice bez palców (Gloves): dłoń w kolorze skóry z mankietem rękawicy
+    rek = nowy("zwiadowca_rekawice", "Rękawice bez palców", "Gloves", "Armor")
+    for strona in ("Left", "Right"):
+        a = rek.segment(strona + "Hand", zakrywa=True)
+        w, h, d = W(strona + "Hand")
+        a.blok("Dlon", (0, 0, 0), (w - 0.04, h, d - 0.04), "skora")
+        a.blok("Rekawica", (0, h / 2 - 0.05, 0), (w, 0.12, d), "skorzany_ciemny", "matowy", faza=0.02)
+
+    # --- buty z wywiniętą cholewą (Boots): golenie i stopy
+    but = nowy("zwiadowca_buty", "Buty z wywiniętą cholewą", "Boots", "Armor")
+    for strona in ("Left", "Right"):
+        a = but.segment(strona + "LowerLeg", zakrywa=True)
+        w, h, d = W(strona + "LowerLeg")
+        a.blok("Cholewa", (0, -0.04, 0), (w - 0.06, h - 0.08, d - 0.06), "skorzany", "matowy")
+        a.blok("Cholewa wywiniecie", (0, h / 2 - 0.1, 0), (w + 0.06, 0.2, d + 0.06), "skorzany_jasny", "matowy",
+               faza=0.04)
+        a.blok("Cholewa pasek", (0, -0.12, d / 2 - 0.01), (w - 0.2, 0.08, 0.06), "skorzany_ciemny", "matowy",
+               faza=0.0)
+        a = but.segment(strona + "Foot", zakrywa=True)
+        w, h, d = W(strona + "Foot")
+        a.blok("But", (0, 0.02, 0), (w - 0.06, h - 0.04, d), "skorzany_ciemny")
+        a.blok("Podeszwa", (0, -h / 2 + 0.04, 0.02), (w, 0.08, d + 0.04), "skorzany", "matowy", faza=0.0)
+        a.blok("Czubek", (0, -0.02, d / 2 + 0.02), (w - 0.24, 0.24, 0.1), "skorzany_ciemny", "matowy", faza=0.03)
+
+    # --- łuk z kołczanem (druga ręka): kołczan z pasem na skos na tułowiu (wierzchnia) + łuk na LeftGripAttachment
+    lu = nowy("zwiadowca_luk", "Łuk z kołczanem", "OffHand", "Weapons")
+    a = lu.segment("UpperTorso")
+    w, h, d = W("UpperTorso")
+    z = d / 2
+    # pas kołczanu na skos: z prawego barku (−X) do lewego biodra (+X), z przodu i z tyłu
+    for zk, s in ((1, ""), (-1, " tyl")):
+        a.blok("Pas kolczanu" + s, (-0.05, -0.02, zk * (z + 0.05)), (2.0, 0.2, 0.05), "skorzany_ciemny", "matowy",
+               rot=(0, 0, -42), faza=0.0)
+    a.blok("Sprzaczka pasa", (-0.32, 0.27, z + 0.085), (0.2, 0.2, 0.04), "skorzany_jasny", "matowy",
+           rot=(0, 0, -42), faza=0.0)
+    # kołczan na plecach (na skos: dno przy lewym biodrze, wylot za prawym barkiem) i lotki strzał
+    with a.uklad(pos=(-0.16, 0.08, -z - 0.36), obrot=(0, 0, 50)):
+        a.blok("Kolczan", (0, 0, 0), (0.56, 1.8, 0.46), "skorzany", "matowy", faza=0.08)
+        a.blok("Kolczan dno", (0, -0.86, 0), (0.6, 0.14, 0.5), "skorzany_ciemny", "matowy", faza=0.04)
+        a.blok("Kolczan wylot", (0, 0.86, 0), (0.62, 0.14, 0.52), "skorzany_ciemny", "matowy", faza=0.04)
+        a.blok("Kolczan pas", (0, 0.2, -0.24), (0.6, 0.12, 0.04), "skorzany_ciemny", "matowy", faza=0.0)
+        for i, (x, zz, dl, kat) in enumerate(((-0.13, 0.08, 0.8, 8), (0.1, -0.08, 0.95, -6), (0.0, 0.12, 0.68, 0))):
+            with a.uklad(pos=(x, 0.9, zz), obrot=(0, 0, kat)):
+                a.blok("Drzewce %d" % i, (0, dl / 2, 0), (0.06, dl, 0.06), "skorzany_jasny", "matowy", faza=0.0)
+                a.blok("Lotka %d" % i, (0, dl - 0.12, 0), (0.2, 0.3, 0.04), "akcent", "matowy", faza=0.0)
+                a.blok("Lotka %d b" % i, (0, dl - 0.12, 0), (0.04, 0.3, 0.2), "akcent", "matowy", faza=0.0)
+    lu.na_zaczepie(luk())
+
+    # --- sztylet (Weapon)
+    sz = nowy("zwiadowca_sztylet", "Sztylet Zwiadowcy", "Weapon", "Weapons")
+    sz.na_zaczepie(sztylet())
+    return [kap, kur, spo, pas, rek, but, lu, sz]
+
+
+def wybierz(ids, wszystkie=None):
+    """Przedmioty o podanych id (w tej kolejności) z listy `wszystkie` (domyślnie świeże przedmioty())."""
+    wszystkie = {x.id: x for x in (wszystkie or przedmioty())}
+    return [wszystkie[i] for i in ids]
+
+
+# --------------------------------------------------------------------------- klipy, ciało, stroje
+_ODNIESIENIE = []
+
+
+def postac_odniesienia():
+    """Dawny model (pełny strój z łukiem i sztyletem) z klipami policzonymi tak jak przed D-071 — źródło klipów
+    każdego stroju. Liczona raz na proces (klipy zależą od geometrii: stopy płasko na ziemi, nic pod ziemią)."""
+    if not _ODNIESIENIE:
+        p = ubierz(_golas(ID, NAZWA), wybierz(ODNIESIENIE_KLIPOW), id=ID, nazwa=NAZWA)
+        _klipy(p)
+        p.ustaw_poze_renderu("idle", 0)
+        _ODNIESIENIE.append(p)
+    return _ODNIESIENIE[0]
+
+
+def cialo(zaczepy_ekwipunku=False):
+    """Goły Zwiadowca „zwiadowca_cialo” z klipami postaci odniesienia. zaczepy_ekwipunku=True — dodatkowo 15 zaczepów
+    Ekw<Kosc>Attachment (środek klocka kości) dla eksportu ciała do gry; w zbuduj() ich nie ma."""
+    return kopiuj_klipy(postac_odniesienia(), _golas(ID + "_cialo", NAZWA + " (ciało bazowe)", zaczepy_ekwipunku))
+
+
+def stroj(nazwa, wszystkie=None):
+    """Zwiadowca w stroju z STROJE: postać „zwiadowca_<nazwa>”."""
+    return ubierz(cialo(), wybierz(STROJE[nazwa], wszystkie), id="%s_%s" % (ID, nazwa),
+                  nazwa="%s — %s" % (NAZWA, NAZWY_STROJOW[nazwa]))
+
+
+def zbuduj():
+    """[Zwiadowca w pełnym stroju kanonicznym (id „zwiadowca”), łuk, sztylet] — jak przed D-071."""
+    prz = przedmioty()
+    p = ubierz(cialo(), wybierz(KANON, prz), id=ID, nazwa=NAZWA)
+    po_id = {x.id: x for x in prz}
+    # łuk i sztylet: osobne przedmioty (przedmioty/zwiadowca_luk.fbx, zwiadowca_sztylet.fbx); w FBX postaci ich nie
+    # ma (eksport=False), w renderach i filmach są w dłoniach; kołczan jest wtopiony w tułów jak dawniej
+    luk_akc = next(s["akc"] for s in po_id["zwiadowca_luk"].segmenty if s["kosc"] is None)
+    return [p, luk_akc, po_id["zwiadowca_sztylet"].segmenty[0]["akc"]]
+
+
+def warianty(rodzaj="plansze"):
+    """Modele dla przebuduj.py (wynik/zwiadowca/ekwipunek/): „plansze” — postacie ze STROJE (id zwiadowca_<strój>)
+    i ikony całych przedmiotów; „eksport” — gołe ciało z zaczepami Ekw… (tylko klip idle: pozostałe klipy są
+    w zwiadowca__<klip>.fbx, te same kości) i każdy segment kostny osobno."""
+    prz = przedmioty()
+    if rodzaj == "plansze":
+        return [stroj(n, prz) for n in STROJE] + [x.ikona() for x in prz]
+    if rodzaj == "eksport":
+        c = cialo(zaczepy_ekwipunku=True)
+        c.klipy = [k for k in c.klipy if k.nazwa == "idle"]
+        return [c] + [s["akc"] for x in prz for s in x.segmenty if s["kosc"]]
+    raise ValueError("rodzaj: plansze albo eksport")
+
+
+def ekwipunek_json():
+    """Dane ekwipunku bohatera (EKWIPUNEK.md pkt 5); ścieżki plików i trójkąty dopisuje przebuduj.py."""
+    return {"bohater": ID, "cialo": CIALO_TYP, "klasy": list(KLASY), "kanon": list(KANON),
+            "odniesienie_klipow": list(ODNIESIENIE_KLIPOW), "stroje": {k: list(v) for k, v in STROJE.items()},
+            "wlosy": {"id": "zwiadowca_wlosy", "zaczep": "HairAttachment", "znacznik": "Wlosy"},
+            "przedmioty": [x.opis() for x in przedmioty()]}
+
+
+SLABOSCI = [
+    "D-071: model główny (zwiadowca.fbx, plansza, filmy) to pełny strój kanoniczny — wygląd bez zmian. Strój jest "
+    "wtapiany w bryły kości (te same siatki <Kosc>_Geo), więc w zwiadowca.fbx nadal jest częścią ciała. Ubieranie "
+    "w grze ma iść przez gołe ciało (ekwipunek/zwiadowca_cialo.fbx z zaczepami Ekw<Kosc>Attachment) i segmenty "
+    "z ekwipunek/przedmioty/ — ta droga nie była sprawdzana w Studio (przezroczystość gołych brył pod powłoką, "
+    "AddAccessory z własnymi nazwami zaczepów).",
+    "Łuk i sztylet są osobnymi przedmiotami (przedmioty/zwiadowca_luk.fbx, zwiadowca_sztylet.fbx) — w FBX postaci ich "
+    "nie ma; w grze trzeba je dać jako Tool albo akcesoria na LeftGripAttachment i RightGripAttachment. Przedmiot "
+    "„Łuk z kołczanem” ma jeszcze segment kołczanu z pasem na skos (ekwipunek/przedmioty/zwiadowca_luk_tulow) — "
+    "w grze zakłada się oba razem (slot OffHand to propozycja, EKWIPUNEK.md pkt 8).",
+    "Goły Zwiadowca (ciało bazowe): rozczochrana czupryna (osobne akcesorium zwiadowca_wlosy, kaptur ją chowa), "
+    "lniana koszula z podwiniętymi rękawami, sznurowanym dekoltem i wyszytym listkiem, zielone spodenki z troczkami "
+    "i bose stopy — propozycja do oceny (plansza ekwipunek/zwiadowca_ekwipunek_plansza.jpg). Grzywka (trzy kosmyki) "
+    "jest częścią twarzy jak dawniej, więc w każdym stroju wygląda tak samo; bez kaptura wisi spod opaski czupryny.",
+    "Kaptur z peleryną to jeden przedmiot (Helmet): bez kaptura nie ma też peleryny, a kołczan (część łuku) leży "
+    "wtedy wprost na kirysie. Bez kirysu pas kołczanu leży na lnianej koszuli (0,025 studa nad jej ścianą; nad "
+    "kirysem, jak dawniej, tylko 0,005).",
+    "Upadek w różnych strojach (klip wspólny, liczony na pełnym stroju): Zwiadowca leży na brzuchu oparty na "
+    "dłoniach i przedramionach, więc w każdym stroju leży na ziemi (ostatnia klatka: pełny strój i strój bez "
+    "kaptura 0,000; goły, „lekki” i „kaptur_i_sztylet” −0,025 — gołe dłonie są o 0,02 grubsze niż dłonie "
+    "w rękawicach). Tułów jest nad ziemią: w kirysie 0,26 studa, w samej koszuli 0,30–0,35 (jak dawniej: leży na "
+    "rękach, nie na piersi). Najgłębiej pod ziemią w trakcie klipów: goły −0,056 (upadek kl. 21), pełny −0,033 "
+    "(dawny model tak samo).",
+    "zwiadowca_cialo.fbx/.glb ma tylko klip idle (reszta klipów: zwiadowca__<klip>.fbx, te same kości i nazwy).",
+    "Strzał z łuku to sam ruch: łuk się nie ugina, cięciwa jest sztywna i nie dochodzi do dłoni, strzały ani zielonej "
+    "smugi trucizny nie ma (efekt do dorobienia w grze). Z boku i z tyłu (kamera gracza) strzał czyta się dobrze; "
+    "w kadrze 3/4 z przodu widać łuk wyciągnięty do kamery, a dłoń naciągającą zasłania tułów; od przodu pięść z łukiem "
+    "jest przed dolną częścią twarzy (postać celuje w widza — tylko zasłanianie, bez przenikania).",
+    "Sztylet zostaje w prawej dłoni także przy strzale — cięciwę „naciąga” pięść ze sztyletem ostrzem w dół i na "
+    "zewnątrz. Barki R15 są szerokie (3,15 studa), a ręka krótka (1,45 studa do nadgarstka), więc dłoń nie sięga "
+    "twarzy ani linii strzały: naciąg to pięść wysoko przy prawym barku z łokciem cofniętym w tył.",
+    "Bryły są sztywno przypięte do kości: kaptur, peleryna i chusta nie falują; poły tuniki siedzą na udach (idą z "
+    "nogą, nie przebijają jej). Upadek kończy się leżeniem na brzuchu (na plecach ciało wisiało na kołczanie).",
+    "Twarz nie ma mimiki — ten sam pogodny uśmiech przy trafieniu i upadku.",
+    "Unik i uderzenie z góry przesuwają postać w samym klipie (kość LowerTorso): salto ok. 3,25 studa w bok i odskok "
+    "z powrotem, wypad ok. 0,5 studa do przodu; klip kończy się w punkcie startu. W salcie biodra obracają się o "
+    "−360° (ostatnia klatka ma kąt −360 = ta sama orientacja co 0) — do sprawdzenia przy imporcie klipu do Roblox.",
+    "Kontrola przenikania (python -B swiat/postacie/zwiadowca.py --kontrola) liczy każdą bryłę głowy (z kapturem "
+    "i włosami), tułowia (z peleryną i kołczanem) i bioder jako skrzynkę (ostrosłupy jak skrzynki, czyli ostrożnie), "
+    "margines 0,06 studa; ruchome: łuk, sztylet, przedramiona i dłonie. Działa na każdym stroju z STROJE. Wynik "
+    "15.11: w żadnym z pięciu strojów nic nie przenika (dawny model też nie). Nie sprawdza broni względem nóg ani "
+    "łuku względem własnego przedramienia.",
+    "Wspólny kadr filmów obejmuje salto w bok, więc w filmach i arkuszach klatek postać jest mniejsza niż na planszy.",
+    "Klipy to szkice (0,67–2 s), nie gotowa animacja. Bieg jest w miejscu (stopy ślizgają się względem ziemi).",
+    "LowerTorso i Root nie są w 0,0,0 (biodra na wysokości 1,9) — tak jak u Rycerza; dla postaci w grze bez "
+    "znaczenia, ciało awatara może tego wymagać (sprawdzić przy pierwszym imporcie).",
+]
 
 
 # ---------------------------------------------------------------------------------------------------- animacje
@@ -831,3 +1125,164 @@ def wiwat(p, dl=48):
     _reka(p, gora, "Right", cel=(-0.85, 1.12, 0.3), biegun=(-1, -0.2, 0), os=(-0.35, 1, 0.2), przod=(0, 0, 1))
     _sekwencja(k, (0, 12, 24, 36, dl), (dol, gora, dol, gora, dol))
     return k
+
+
+# ---------------------------------------------------------------------------------------------------- kontrola
+CIALO = ("Head", "UpperTorso", "LowerTorso")                    # tu broń, przedramię ani dłoń nie może wejść
+KONCZYNY = ("LeftLowerArm", "LeftHand", "RightLowerArm", "RightHand")
+BRON = ("zwiadowca_luk", "zwiadowca_sztylet")
+
+
+def _bryly_kontroli(p):
+    """Bryły ciała i założonych akcesoriów w układzie stawu swojej kości: {kosc, c, R, h, n, zrodlo ("cialo" albo
+    id akcesorium)}. Ostrosłupy liczą się jak ich skrzynki (ostrożnie)."""
+    d = p.json()
+    wynik = []
+
+    def dodaj(c, zrodlo):
+        st = p.kosci[c["kosc"]]["staw"]
+        wynik.append({"kosc": c["kosc"], "c": tuple(c["p"][i] - st[i] for i in range(3)), "R": macierz_obrotu(*c["r"]),
+                      "h": tuple(v / 2.0 for v in c["s"]), "n": c["n"], "zrodlo": zrodlo})
+    for c in d["czesci"]:
+        dodaj(c, "cialo")
+    for a in d["akcesoria"]:
+        for c in a["czesci"]:
+            dodaj(c, a["id"])
+    return wynik
+
+
+def _siatka_bryly(b, krok):
+    """Punkty skrzynki bryły w układzie stawu: co najwyżej `krok` studa (w tym narożniki i ściany)."""
+    osie = []
+    for i in range(3):
+        n = max(2, int(math.ceil(2 * b["h"][i] / krok)))
+        osie.append([(-1 + 2.0 * j / n) * b["h"][i] for j in range(n + 1)])
+    pk = []
+    for x in osie[0]:
+        for y in osie[1]:
+            for z in osie[2]:
+                lok = razy_wektor(b["R"], (x, y, z))
+                pk.append(tuple(b["c"][i] + lok[i] for i in range(3)))
+    return pk
+
+
+def kontrola(p, margines=0.06, krok_broni=0.1, krok_ciala=0.25, klipy_=None):
+    """Liczbowa kontrola klipów postaci (dowolny strój): czy łuk albo sztylet (punkty co krok_broni) albo przedramię
+    i dłoń (punkty co krok_ciala) wchodzą w którąś bryłę głowy (z kapturem i włosami), tułowia (z peleryną, pasem
+    i kołczanem) albo bioder (z pasem i sakwą) głębiej niż `margines` (każda bryła jako skrzynka); najniższy punkt
+    ciała (bez broni) i z bronią w każdej klatce; w ostatniej klatce każdego klipu jednorazowego najniższy punkt ciała
+    (upadek: na jakiej wysokości leży). Wartości kluczy modułu: klipy walki mają klucz w każdej klatce.
+    Zwraca {klip: {"klatki", "bron": [(kl., co, kość, bryła, punkty, głębokość)], "konczyny": [...],
+    "najnizej": (y, kl.), "najnizej_cialo": (y, kl.), "koniec": y}}."""
+    br = _bryly_kontroli(p)
+    cele = [b for b in br if b["kosc"] in CIALO]
+    for b in cele:
+        b["Rt"] = _tr(b["R"])
+    ruchome = []
+    for b in br:
+        if b["zrodlo"] in BRON:
+            ruchome.append((b["zrodlo"], b["kosc"], _siatka_bryly(b, krok_broni)))
+        elif b["zrodlo"] == "cialo" and b["kosc"] in KONCZYNY:
+            ruchome.append((b["kosc"], b["kosc"], _siatka_bryly(b, krok_ciala)))
+    pudla = {}                                    # wstępny odsiew: skrzynka brył-celów kości (układ jej stawu)
+    for b in cele:
+        mn, mx = pudla.setdefault(b["kosc"], ([1e9] * 3, [-1e9] * 3))
+        for i in range(3):
+            pol = sum(abs(b["R"][i][j]) * b["h"][j] for j in range(3))
+            mn[i], mx[i] = min(mn[i], b["c"][i] - pol), max(mx[i], b["c"][i] + pol)
+    ciala = [(b["kosc"], _siatka_bryly(b, 10.0)) for b in br if b["zrodlo"] == "cialo"]
+    wynik = {}
+    for kl in p.klipy:
+        if klipy_ and kl.nazwa not in klipy_:
+            continue
+        w = {"klatki": kl.dlugosc + 1, "bron": [], "konczyny": [], "najnizej": (1e9, -1),
+             "najnizej_cialo": (1e9, -1), "koniec": None}
+        for f in range(kl.dlugosc + 1):
+            poza = {}
+            for n in p.kosci:
+                for kanal in ("obrot", "przes"):
+                    v = kl.wartosc(n, kanal, f)
+                    if v is not None:
+                        poza.setdefault(n, {})[kanal] = tuple(v)
+            W = _fk(p, poza)
+            odw = {n: (_tr(W[n][0]), W[n][1]) for n in pudla}
+            licz = {}
+            for co, kosc, pkt in ruchome:
+                R, t = W[kosc]
+                for q in pkt:
+                    s = razy_wektor(R, q)
+                    s = (s[0] + t[0], s[1] + t[1], s[2] + t[2])
+                    if s[1] < w["najnizej"][0]:
+                        w["najnizej"] = (round(s[1], 3), f)
+                    for n, (mn, mx) in pudla.items():
+                        Rt, tn = odw[n]
+                        l = razy_wektor(Rt, (s[0] - tn[0], s[1] - tn[1], s[2] - tn[2]))
+                        if any(l[i] < mn[i] + margines or l[i] > mx[i] - margines for i in range(3)):
+                            continue
+                        for b in cele:
+                            if b["kosc"] != n:
+                                continue
+                            u = razy_wektor(b["Rt"], (l[0] - b["c"][0], l[1] - b["c"][1], l[2] - b["c"][2]))
+                            g = min(b["h"][i] - abs(u[i]) for i in range(3))
+                            if g > margines:
+                                cel = b["n"] if b["zrodlo"] == "cialo" else b["zrodlo"]
+                                ile, gm = licz.get((co, n, cel), (0, 0.0))
+                                licz[(co, n, cel)] = (ile + 1, max(gm, g))
+            for (co, n, cel), (ile, gm) in sorted(licz.items()):
+                w["bron" if co in BRON else "konczyny"].append((f, co, n, cel, ile, round(gm, 3)))
+            dno = 1e9
+            for kosc, pkt in ciala:                           # najniższy punkt samego ciała (stopy, leżenie)
+                R, t = W[kosc]
+                for q in pkt:
+                    dno = min(dno, R[1][0] * q[0] + R[1][1] * q[1] + R[1][2] * q[2] + t[1])
+            if dno < w["najnizej_cialo"][0]:
+                w["najnizej_cialo"] = (round(dno, 3), f)
+            if dno < w["najnizej"][0]:
+                w["najnizej"] = (round(dno, 3), f)
+            if f == kl.dlugosc:
+                w["koniec"] = round(dno, 3)
+        wynik[kl.nazwa] = w
+    return wynik
+
+
+def _wypisz_kontrole(wynik):
+    """Wypisuje wynik kontroli; zwraca liczbę klatek z błędem (broń albo dłoń/przedramię w głowie; przedramię i dłoń
+    przy tułowiu i biodrach to uwaga — tak liczy się też dawny model)."""
+    zle = 0
+    for nazwa, w in wynik.items():
+        kb = sorted({x[0] for x in w["bron"]})
+        glowa = [x for x in w["konczyny"] if x[2] == "Head"]
+        kg = sorted({x[0] for x in glowa})
+        zle += len(set(kb) | set(kg))
+        print("%-17s %3d kl.  broń w głowie, tułowiu, biodrach: %s" % (
+            nazwa, w["klatki"], "BRAK" if not kb else "%d kl., najgłębiej %.2f studa, np. %s" % (
+                len(kb), max(x[5] for x in w["bron"]), w["bron"][:3])))
+        print("%-17s          dłoń / przedramię w głowie: %s" % ("", "BRAK" if not kg else "%d kl., najgłębiej %.2f, "
+                                                                 "np. %s" % (len(kg), max(x[5] for x in glowa), glowa[:3])))
+        tul = [x for x in w["konczyny"] if x[2] != "Head"]
+        print("%-17s          dłoń / przedramię w tułowiu i biodrach (uwaga): %s" % ("", "BRAK" if not tul else
+              "%d kl., najgłębiej %.2f, np. %s" % (len({x[0] for x in tul}), max(x[5] for x in tul), tul[:3])))
+        print("%-17s          najniższy punkt: ciało y = %.3f (kl. %d), z bronią y = %.3f (kl. %d); ostatnia klatka: "
+              "ciało y = %.3f" % ("", w["najnizej_cialo"][0], w["najnizej_cialo"][1], w["najnizej"][0],
+                                  w["najnizej"][1], w["koniec"]))
+    return zle
+
+
+if __name__ == "__main__":
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+    if "--kontrola" in sys.argv:
+        # --stroj <nazwa> — jeden strój z STROJE (domyślnie wszystkie); pozostałe argumenty bez „--” — wybrane klipy
+        argumenty = sys.argv[1:]
+        stroje = list(STROJE)
+        if "--stroj" in argumenty:
+            i = argumenty.index("--stroj")
+            stroje = [argumenty[i + 1]]
+            del argumenty[i:i + 2]
+        wybrane = [a for a in argumenty if not a.startswith("--")]
+        zle = 0
+        for s in stroje:
+            print("=== strój „%s” (%s): %s" % (s, NAZWY_STROJOW[s], ", ".join(STROJE[s]) or "bez przedmiotów"))
+            zle += _wypisz_kontrole(kontrola(stroj(s), klipy_=wybrane or None))
+        sys.exit(1 if zle else 0)
+    zbuduj()

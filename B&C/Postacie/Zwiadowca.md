@@ -41,6 +41,13 @@ Druga klasa gracza obok [[Rycerz|Rycerza]] i maga ([[Kot-Mag]]): zwinny leśny z
 - Kaptur i peleryna nie falują, twarz bez mimiki; w filmach postać jest mała w kadrze (kadr obejmuje salto).
 - Pełna lista: `raport.txt` w folderze wyniku.
 
+## Model bazowy i strój
+Propozycja (15.11.2026) — realizacja [[Rejestr decyzji|D-071]]: strój Zwiadowcy to przedmioty zakładane na goły model, a w pełnym stroju wygląda tak jak dotąd.
+- **Bez stroju:** ta sama twarz z piegami i grzywką, rozczochrana ciemnobrązowa czupryna (kaptur ją chowa), lniana koszula z podwiniętymi rękawami i wyszytym listkiem, zielone krótkie spodenki, bose stopy. To samo ciało co u Rycerza, więc ich przedmioty pasują na obu.
+- **Komplet (slot):** kaptur z peleryną (Helmet) · skórzany kirys z tuniką (Chest) · spodnie — część kirysu (Chest; osobny slot spodni do decyzji) · pas z sakwą (Belt) · rękawice bez palców (Gloves) · buty z wywiniętą cholewą (Boots) · sztylet (Weapon) · łuk z kołczanem na plecach (druga ręka — do decyzji, bo dziś drugą rękę ma tylko Wojownik).
+- Ruchy są wspólne dla każdego stroju; każdy strój leży w `upadek` na ziemi.
+- Pliki: `swiat/postacie/wynik/zwiadowca/ekwipunek/`; zasady: `swiat/postacie/EKWIPUNEK.md`.
+
 ## Powiązane
 - [[Kierunek artystyczny]]
 - [[Postacie 3D — Blender i Roblox]]

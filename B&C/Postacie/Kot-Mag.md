@@ -23,3 +23,11 @@ To propozycja animacji modelu 3D (15.11.2026) — wygląd kota się nie zmienił
 - Uszy i ogon żyją w klipach walki (uszy dostały własne kości, kapelusz i kostur — kości nośne do upadku).
 - Pliki: moduł `swiat/postacie/kot_mag.py` (klatki w słowniku `CHWILE`, kontrola: `python -B swiat/postacie/kot_mag.py --kontrola`), filmy, arkusze klatek i FBX w `swiat/postacie/wynik/kot_mag/`.
 - Znane słabości: łapy są tak krótkie, że nie sięgają nad głowę ani do siebie nawzajem — w lodowym pocisku drzewce trzyma tylko prawa łapa, a bariera wygląda podobnie jak `czar`; w chwili wypuszczenia atak, kula i lodowy pocisk mają podobną sylwetkę (różnią się zamachem), a z kamery zza pleców kostur skierowany do przodu chowa się za głową; czary bez efektów (do zrobienia w grze); stary `chod` ma palce łap pod ziemią. Pełna lista: `raport.txt` w folderze wyniku.
+
+## Model bazowy i strój
+Propozycja modelu 3D (15.11.2026) — realizacja [[Rejestr decyzji|D-071]]: strój kota to przedmioty zakładane na goły model, a w pełnym stroju wygląda tak jak dotąd.
+- **Bez stroju:** pomarańczowy kot w samym futrze — jasny brzuszek, ciemne pręgi na plecach i łapkach, ta sama głowa z mordką i wąsami, całe uszy, ogon w paski.
+- **Komplet (slot):** kapelusz (Helmet) · szata z kapturem i rękawami (Chest) · szarfa z klamrą (Belt; w pełnym stroju prawie schowana pod szatą) · kostur (Weapon).
+- Kapelusz i broń siedzą na kościach nośnych kota, więc w `upadek` każde nakrycie głowy się zsuwa, a broń wypada z łapy.
+- Ruchy są wspólne dla każdego stroju. Bez szaty kot w ostatniej klatce `upadek` leży ok. 0,2 studa nad ziemią (do poprawy w grze).
+- Pliki: `swiat/postacie/wynik/kot_mag/ekwipunek/`; zasady: `swiat/postacie/EKWIPUNEK.md`.

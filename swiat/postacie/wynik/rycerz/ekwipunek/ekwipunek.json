@@ -1,0 +1,655 @@
+{
+ "bohater": "rycerz",
+ "cialo": "czlowiek",
+ "klasy": [
+  "wojownik"
+ ],
+ "kanon": [
+  "rycerz_helm",
+  "rycerz_zbroja",
+  "rycerz_nogawice",
+  "rycerz_pas",
+  "rycerz_rekawice",
+  "rycerz_buty",
+  "rycerz_miecz"
+ ],
+ "odniesienie_klipow": [
+  "rycerz_helm",
+  "rycerz_zbroja",
+  "rycerz_nogawice",
+  "rycerz_pas",
+  "rycerz_rekawice",
+  "rycerz_buty",
+  "rycerz_miecz",
+  "rycerz_tarcza"
+ ],
+ "stroje": {
+  "golas": [],
+  "pelny": [
+   "rycerz_helm",
+   "rycerz_zbroja",
+   "rycerz_nogawice",
+   "rycerz_pas",
+   "rycerz_rekawice",
+   "rycerz_buty",
+   "rycerz_miecz"
+  ],
+  "bojowy": [
+   "rycerz_helm",
+   "rycerz_zbroja",
+   "rycerz_nogawice",
+   "rycerz_pas",
+   "rycerz_rekawice",
+   "rycerz_buty",
+   "rycerz_miecz",
+   "rycerz_tarcza"
+  ],
+  "lekki": [
+   "rycerz_zbroja",
+   "rycerz_nogawice",
+   "rycerz_buty",
+   "rycerz_miecz"
+  ],
+  "helm_i_miecz": [
+   "rycerz_helm",
+   "rycerz_miecz"
+  ]
+ },
+ "wlosy": {
+  "id": "rycerz_wlosy",
+  "zaczep": "HairAttachment",
+  "znacznik": "Wlosy"
+ },
+ "przedmioty": [
+  {
+   "id": "rycerz_helm",
+   "nazwa": "Hełm Rycerza",
+   "slot": "Helmet",
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [
+    "Wlosy"
+   ],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_helm_glowa",
+     "kosc": "Head",
+     "zakrywa": false,
+     "zaczep": "EkwHeadAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_helm_glowa.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_helm_glowa.glb",
+     "trojkaty": 528,
+     "attachment_pos": [
+      0.0,
+      -0.18,
+      0.0
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_helm_ikona.png"
+  },
+  {
+   "id": "rycerz_zbroja",
+   "nazwa": "Zbroja Rycerza z tabardem",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_zbroja_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_tulow.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_tulow.glb",
+     "trojkaty": 184,
+     "attachment_pos": [
+      0.0,
+      -0.04,
+      -0.022
+     ]
+    },
+    {
+     "id": "rycerz_zbroja_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_ramie_l.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_ramie_l.glb",
+     "trojkaty": 200,
+     "attachment_pos": [
+      -0.125,
+      -0.06,
+      0.0
+     ]
+    },
+    {
+     "id": "rycerz_zbroja_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_przedramie_l.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_przedramie_l.glb",
+     "trojkaty": 88,
+     "attachment_pos": [
+      -0.03,
+      -0.04,
+      0.028
+     ]
+    },
+    {
+     "id": "rycerz_zbroja_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_ramie_p.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_ramie_p.glb",
+     "trojkaty": 200,
+     "attachment_pos": [
+      0.125,
+      -0.06,
+      0.0
+     ]
+    },
+    {
+     "id": "rycerz_zbroja_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_przedramie_p.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_przedramie_p.glb",
+     "trojkaty": 88,
+     "attachment_pos": [
+      0.03,
+      -0.04,
+      0.028
+     ]
+    },
+    {
+     "id": "rycerz_zbroja_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_biodra.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_biodra.glb",
+     "trojkaty": 144,
+     "attachment_pos": [
+      0.0,
+      0.765,
+      0.0
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_zbroja_ikona.png"
+  },
+  {
+   "id": "rycerz_nogawice",
+   "nazwa": "Nogawice Rycerza",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": "rycerz_zbroja",
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_nogawice_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_biodra.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_biodra.glb",
+     "trojkaty": 44,
+     "attachment_pos": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "id": "rycerz_nogawice_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_udo_l.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_udo_l.glb",
+     "trojkaty": 88,
+     "attachment_pos": [
+      0.0,
+      0.0,
+      -0.03
+     ]
+    },
+    {
+     "id": "rycerz_nogawice_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_udo_p.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_udo_p.glb",
+     "trojkaty": 88,
+     "attachment_pos": [
+      0.0,
+      0.0,
+      -0.03
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_nogawice_ikona.png"
+  },
+  {
+   "id": "rycerz_pas",
+   "nazwa": "Pas Rycerza",
+   "slot": "Belt",
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_pas_biodra.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_pas_biodra.glb",
+     "trojkaty": 56,
+     "attachment_pos": [
+      0.0,
+      0.0,
+      -0.65
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_pas_ikona.png"
+  },
+  {
+   "id": "rycerz_rekawice",
+   "nazwa": "Rękawice Rycerza",
+   "slot": "Gloves",
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_rekawice_dlon_l",
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "zaczep": "EkwLeftHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_l.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_l.glb",
+     "trojkaty": 88,
+     "attachment_pos": [
+      0.0,
+      -0.06,
+      0.0
+     ]
+    },
+    {
+     "id": "rycerz_rekawice_dlon_p",
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "zaczep": "EkwRightHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_p.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_p.glb",
+     "trojkaty": 88,
+     "attachment_pos": [
+      0.0,
+      -0.06,
+      0.0
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_rekawice_ikona.png"
+  },
+  {
+   "id": "rycerz_buty",
+   "nazwa": "Trzewiki z nagolennikami",
+   "slot": "Boots",
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_buty_golen_l",
+     "kosc": "LeftLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_l.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_l.glb",
+     "trojkaty": 132,
+     "attachment_pos": [
+      0.0,
+      -0.05,
+      -0.08
+     ]
+    },
+    {
+     "id": "rycerz_buty_stopa_l",
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "zaczep": "EkwLeftFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_stopa_l.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_stopa_l.glb",
+     "trojkaty": 100,
+     "attachment_pos": [
+      0.0,
+      0.0,
+      -0.03
+     ]
+    },
+    {
+     "id": "rycerz_buty_golen_p",
+     "kosc": "RightLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_p.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_p.glb",
+     "trojkaty": 132,
+     "attachment_pos": [
+      0.0,
+      -0.05,
+      -0.08
+     ]
+    },
+    {
+     "id": "rycerz_buty_stopa_p",
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "zaczep": "EkwRightFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_stopa_p.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_stopa_p.glb",
+     "trojkaty": 100,
+     "attachment_pos": [
+      0.0,
+      0.0,
+      -0.03
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_buty_ikona.png"
+  },
+  {
+   "id": "rycerz_miecz",
+   "nazwa": "Wielki miecz Rycerza",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_miecz",
+     "kosc": "RightHand",
+     "zakrywa": false,
+     "zaczep": "RightGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/przedmioty/rycerz_miecz.fbx",
+     "glb": "wynik/rycerz/przedmioty/rycerz_miecz.glb",
+     "trojkaty": 520,
+     "attachment_pos": [
+      0.0,
+      -1.659,
+      0.0
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_miecz_ikona.png"
+  },
+  {
+   "id": "rycerz_tarcza",
+   "nazwa": "Tarcza Rycerza",
+   "slot": "OffHand",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_tarcza",
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "zaczep": "LeftGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/rycerz/przedmioty/rycerz_tarcza.fbx",
+     "glb": "wynik/rycerz/przedmioty/rycerz_tarcza.glb",
+     "trojkaty": 200,
+     "attachment_pos": [
+      -0.746,
+      0.0,
+      0.3
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_tarcza_ikona.png"
+  }
+ ],
+ "cialo_pliki": {
+  "fbx": "wynik/rycerz/ekwipunek/rycerz_cialo.fbx",
+  "glb": "wynik/rycerz/ekwipunek/rycerz_cialo.glb"
+ }
+}

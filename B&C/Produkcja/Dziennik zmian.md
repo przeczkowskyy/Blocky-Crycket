@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-15 · Claude Code u Karola (południe: gołe modele i strój, lista „Prace w toku”, akceptacje Karola)
+- **Gołe modele i strój jako przedmioty (D-071):** [[Rycerz]], [[Kot-Mag]] i [[Zwiadowca]] mają ciała bazowe (ludzie w lnianej koszuli i krótkich spodenkach, kot w samym futrze), a dzisiejszy wygląd to komplet przedmiotów zakładanych na model: Rycerz 8 (tarcza poza pełnym strojem — widać ją tylko, gdy jest założona), Zwiadowca 8, Kot-Mag 4. Zasady w `swiat/postacie/EKWIPUNEK.md`; plansze, filmy w strojach, gołe ciała i części przedmiotów w `swiat/postacie/wynik/<id>/ekwipunek/`. Zgodność wstecz sprawdzona (te same kości, klipy i bryły; pełny strój wygląda jak dotąd). Niezależny przegląd usunął migotanie spodenek pod pasem i połami. Raport „Gołe modele i strój jako przedmioty (D-071)” czeka w panelu. W Roblox Studio jeszcze niesprawdzone.
+- **Do decyzji ludzi:** spodnie jako część zbroi czy osobny slot; łuk Zwiadowcy z kołczanem w drugiej ręce i peleryna razem z kapturem; goły Rycerz i kot po upadku leżą ok. 0,2 studa nad ziemią (osobny klip czy przesunięcie w grze).
+- **Panel — „Prace w toku”** (prośba Karola: zawsze szacowany koniec pracy): lista na Pulpicie z etapem i szacowaną godziną zakończenia każdej trwającej pracy; wpisy dodaje `panel/narzedzia/praca.py` ([[Panel zespołu]]).
+- **Akceptacje Karola w panelu:** sześć modeli lasu, klipy walki Rycerza i Kota-Maga, plan mapy biomu Las, prototyp walki v2. Mapa biomu z klocków (13 353 części): „logistycznie bardzo dobra”, do poprawy faktury i detale — wersja 2 w budowie ([[Biom Las]]).
+- **Mgła w lesie:** Karol zgodził się 15.11 na lekką mgłę (oświetlenie jest wspólne dla całego miejsca); zostanie dodana po zbudowaniu lasu w Studio, a stare wartości oświetlenia będą zapisane do cofnięcia.
+- Pliki: `swiat/postacie/rycerz.py`, `kot_mag.py`, `zwiadowca.py`, `przebuduj.py`, `swiat/postacie/EKWIPUNEK.md`, `panel/bc/prace.py`, [[Postacie 3D — Blender i Roblox]], [[Zadania]].
+
 ## 2026-11-15 · Claude Code u Karola (ranek: klipy walki bohaterów, plan biomu Las, D-071)
 - **Panel i tunel** uruchomione ponownie po nocnym wyłączeniu komputera; Karol dostał nowy link dla Pawła i własny link z prawem zatwierdzania na telefon. Roblox Studio otwarte przez Claude Code w trybie edycji.
 - **Klipy walki bohaterów** (Blender, wygląd bez zmian): [[Rycerz]] — blok tarczą, unik, trafienie, upadek, Potężne cięcie, Miażdżący cios, Kamienna skóra; [[Kot-Mag]] — atak, kula ognia, lodowy pocisk, bariera, unik, trafienie, upadek, poprawione „czar” i „wiwat” (kostur nie przechodzi przez głowę). Raporty „Klipy walki: …” w panelu.

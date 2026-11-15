@@ -711,6 +711,1706 @@
   "zwiadowca_luk.fbx: siatki 1, kości 0, trójkąty 468, wzrost 3.32 st., akcje brak -> ZGODNE",
   "zwiadowca_luk.glb: siatki 1, kości 0, trójkąty 468, wzrost 3.32 st., akcje brak -> ZGODNE",
   "zwiadowca_sztylet.fbx: siatki 1, kości 0, trójkąty 356, wzrost 2.42 st., akcje brak -> ZGODNE",
-  "zwiadowca_sztylet.glb: siatki 1, kości 0, trójkąty 356, wzrost 2.42 st., akcje brak -> ZGODNE"
- ]
+  "zwiadowca_sztylet.glb: siatki 1, kości 0, trójkąty 356, wzrost 2.42 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_cialo.fbx: siatki 50, kości 17, trójkąty 2502, wzrost 5.76 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_cialo__idle.fbx: siatki 50, kości 17, trójkąty 2502, wzrost 5.76 st., akcje zwiadowca_cialo|Scene 1-61 -> ZGODNE",
+  "ekwipunek: zwiadowca_cialo.glb: siatki 50, kości 17, trójkąty 2502, wzrost 5.76 st., akcje idle 0-60 -> ZGODNE",
+  "ekwipunek: zwiadowca_kaptur_glowa.fbx: siatki 1, kości 0, trójkąty 450, wzrost 1.99 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kaptur_glowa.glb: siatki 1, kości 0, trójkąty 450, wzrost 1.99 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kaptur_tulow.fbx: siatki 1, kości 0, trójkąty 316, wzrost 2.10 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kaptur_tulow.glb: siatki 1, kości 0, trójkąty 316, wzrost 2.10 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_tulow.fbx: siatki 1, kości 0, trójkąty 268, wzrost 1.68 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_tulow.glb: siatki 1, kości 0, trójkąty 268, wzrost 1.68 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_ramie_l.fbx: siatki 1, kości 0, trójkąty 132, wzrost 1.02 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_ramie_l.glb: siatki 1, kości 0, trójkąty 132, wzrost 1.02 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_przedramie_l.fbx: siatki 1, kości 0, trójkąty 112, wzrost 0.75 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_przedramie_l.glb: siatki 1, kości 0, trójkąty 112, wzrost 0.75 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_ramie_p.fbx: siatki 1, kości 0, trójkąty 132, wzrost 1.02 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_ramie_p.glb: siatki 1, kości 0, trójkąty 132, wzrost 1.02 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_przedramie_p.fbx: siatki 1, kości 0, trójkąty 112, wzrost 0.75 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_przedramie_p.glb: siatki 1, kości 0, trójkąty 112, wzrost 0.75 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_udo_l.fbx: siatki 1, kości 0, trójkąty 68, wzrost 0.64 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_udo_l.glb: siatki 1, kości 0, trójkąty 68, wzrost 0.64 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_udo_p.fbx: siatki 1, kości 0, trójkąty 68, wzrost 0.64 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_kurtka_udo_p.glb: siatki 1, kości 0, trójkąty 68, wzrost 0.64 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_spodnie_biodra.fbx: siatki 1, kości 0, trójkąty 44, wzrost 0.40 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_spodnie_biodra.glb: siatki 1, kości 0, trójkąty 44, wzrost 0.40 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_spodnie_udo_l.fbx: siatki 1, kości 0, trójkąty 44, wzrost 0.80 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_spodnie_udo_l.glb: siatki 1, kości 0, trójkąty 44, wzrost 0.80 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_spodnie_udo_p.fbx: siatki 1, kości 0, trójkąty 44, wzrost 0.80 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_spodnie_udo_p.glb: siatki 1, kości 0, trójkąty 44, wzrost 0.80 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_pas_biodra.fbx: siatki 1, kości 0, trójkąty 156, wzrost 0.51 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_pas_biodra.glb: siatki 1, kości 0, trójkąty 156, wzrost 0.51 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_rekawice_dlon_l.fbx: siatki 1, kości 0, trójkąty 88, wzrost 0.36 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_rekawice_dlon_l.glb: siatki 1, kości 0, trójkąty 88, wzrost 0.36 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_rekawice_dlon_p.fbx: siatki 1, kości 0, trójkąty 88, wzrost 0.36 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_rekawice_dlon_p.glb: siatki 1, kości 0, trójkąty 88, wzrost 0.36 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_buty_golen_l.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.75 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_buty_golen_l.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.75 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_buty_stopa_l.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_buty_stopa_l.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_buty_golen_p.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.75 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_buty_golen_p.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.75 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_buty_stopa_p.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_buty_stopa_p.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_luk_tulow.fbx: siatki 1, kości 0, trójkąty 288, wzrost 2.27 st., akcje brak -> ZGODNE",
+  "ekwipunek: zwiadowca_luk_tulow.glb: siatki 1, kości 0, trójkąty 288, wzrost 2.27 st., akcje brak -> ZGODNE"
+ ],
+ "ekwipunek": {
+  "stroje": {
+   "golas": [],
+   "pelny": [
+    "zwiadowca_kaptur",
+    "zwiadowca_kurtka",
+    "zwiadowca_spodnie",
+    "zwiadowca_pas",
+    "zwiadowca_rekawice",
+    "zwiadowca_buty",
+    "zwiadowca_luk",
+    "zwiadowca_sztylet"
+   ],
+   "bez_kaptura": [
+    "zwiadowca_kurtka",
+    "zwiadowca_spodnie",
+    "zwiadowca_pas",
+    "zwiadowca_rekawice",
+    "zwiadowca_buty",
+    "zwiadowca_luk",
+    "zwiadowca_sztylet"
+   ],
+   "lekki": [
+    "zwiadowca_kurtka",
+    "zwiadowca_spodnie",
+    "zwiadowca_buty",
+    "zwiadowca_luk"
+   ],
+   "kaptur_i_sztylet": [
+    "zwiadowca_kaptur",
+    "zwiadowca_sztylet"
+   ]
+  },
+  "filmy": [
+   [
+    "zwiadowca_golas",
+    "idle"
+   ],
+   [
+    "zwiadowca_golas",
+    "atak"
+   ],
+   [
+    "zwiadowca_golas",
+    "upadek"
+   ],
+   [
+    "zwiadowca_lekki",
+    "umiejetnosc"
+   ],
+   [
+    "zwiadowca_kaptur_i_sztylet",
+    "unik"
+   ],
+   [
+    "zwiadowca_bez_kaptura",
+    "uderzenie_z_gory"
+   ]
+  ],
+  "modele": [
+   {
+    "id": "zwiadowca_buty_golen_l",
+    "nazwa": "Buty z wywiniętą cholewą (golen_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_buty_golen_l",
+      "kosc": null,
+      "trojkaty": 100,
+      "wierzcholki": 56,
+      "wymiary": [
+       1.11,
+       0.75,
+       1.11
+      ],
+      "min": [
+       -0.555,
+       -0.375,
+       -0.555
+      ],
+      "max": [
+       0.555,
+       0.375,
+       0.555
+      ]
+     }
+    ],
+    "trojkaty_razem": 100,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLeftLowerLegAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.555,
+      -0.375,
+      -0.555
+     ],
+     [
+      0.555,
+      0.375,
+      0.555
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_buty_golen_p",
+    "nazwa": "Buty z wywiniętą cholewą (golen_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_buty_golen_p",
+      "kosc": null,
+      "trojkaty": 100,
+      "wierzcholki": 56,
+      "wymiary": [
+       1.11,
+       0.75,
+       1.11
+      ],
+      "min": [
+       -0.555,
+       -0.375,
+       -0.555
+      ],
+      "max": [
+       0.555,
+       0.375,
+       0.555
+      ]
+     }
+    ],
+    "trojkaty_razem": 100,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwRightLowerLegAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.555,
+      -0.375,
+      -0.555
+     ],
+     [
+      0.555,
+      0.375,
+      0.555
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_buty_stopa_l",
+    "nazwa": "Buty z wywiniętą cholewą (stopa_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_buty_stopa_l",
+      "kosc": null,
+      "trojkaty": 100,
+      "wierzcholki": 56,
+      "wymiary": [
+       1.05,
+       0.35,
+       1.42
+      ],
+      "min": [
+       -0.525,
+       -0.175,
+       -0.675
+      ],
+      "max": [
+       0.525,
+       0.175,
+       0.745
+      ]
+     }
+    ],
+    "trojkaty_razem": 100,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLeftFootAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.525,
+      -0.175,
+      -0.675
+     ],
+     [
+      0.525,
+      0.175,
+      0.745
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.0,
+     0.035
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_buty_stopa_p",
+    "nazwa": "Buty z wywiniętą cholewą (stopa_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_buty_stopa_p",
+      "kosc": null,
+      "trojkaty": 100,
+      "wierzcholki": 56,
+      "wymiary": [
+       1.05,
+       0.35,
+       1.42
+      ],
+      "min": [
+       -0.525,
+       -0.175,
+       -0.675
+      ],
+      "max": [
+       0.525,
+       0.175,
+       0.745
+      ]
+     }
+    ],
+    "trojkaty_razem": 100,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwRightFootAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.525,
+      -0.175,
+      -0.675
+     ],
+     [
+      0.525,
+      0.175,
+      0.745
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.0,
+     0.035
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_cialo",
+    "nazwa": "Zwiadowca (ciało bazowe)",
+    "rodzaj": "postac",
+    "siatki": [
+     {
+      "nazwa": "LowerTorso_Geo",
+      "kosc": "LowerTorso",
+      "trojkaty": 112,
+      "wierzcholki": 64,
+      "wymiary": [
+       2.22,
+       0.4,
+       1.255
+      ],
+      "min": [
+       -1.11,
+       1.9,
+       -0.61
+      ],
+      "max": [
+       1.11,
+       2.3,
+       0.645
+      ]
+     },
+     {
+      "nazwa": "UpperTorso_Geo",
+      "kosc": "UpperTorso",
+      "trojkaty": 172,
+      "wierzcholki": 104,
+      "wymiary": [
+       2.24,
+       1.5,
+       1.265
+      ],
+      "min": [
+       -1.12,
+       2.3,
+       -0.62
+      ],
+      "max": [
+       1.12,
+       3.8,
+       0.645
+      ]
+     },
+     {
+      "nazwa": "Head_Geo",
+      "kosc": "Head",
+      "trojkaty": 564,
+      "wierzcholki": 328,
+      "wymiary": [
+       1.6,
+       1.5,
+       1.55
+      ],
+      "min": [
+       -0.8,
+       3.8,
+       -0.725
+      ],
+      "max": [
+       0.8,
+       5.3,
+       0.825
+      ]
+     },
+     {
+      "nazwa": "LeftUpperArm_Geo",
+      "kosc": "LeftUpperArm",
+      "trojkaty": 132,
+      "wierzcholki": 72,
+      "wymiary": [
+       1.01,
+       0.97,
+       1.01
+      ],
+      "min": [
+       1.07,
+       2.85,
+       -0.505
+      ],
+      "max": [
+       2.08,
+       3.82,
+       0.505
+      ]
+     },
+     {
+      "nazwa": "LeftLowerArm_Geo",
+      "kosc": "LeftLowerArm",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.95,
+       0.75,
+       0.95
+      ],
+      "min": [
+       1.1,
+       2.1,
+       -0.475
+      ],
+      "max": [
+       2.05,
+       2.85,
+       0.475
+      ]
+     },
+     {
+      "nazwa": "LeftHand_Geo",
+      "kosc": "LeftHand",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.9,
+       0.35,
+       0.9
+      ],
+      "min": [
+       1.125,
+       1.75,
+       -0.45
+      ],
+      "max": [
+       2.025,
+       2.1,
+       0.45
+      ]
+     },
+     {
+      "nazwa": "LeftUpperLeg_Geo",
+      "kosc": "LeftUpperLeg",
+      "trojkaty": 132,
+      "wierzcholki": 72,
+      "wymiary": [
+       1.09,
+       0.82,
+       1.09
+      ],
+      "min": [
+       0.005,
+       1.1,
+       -0.545
+      ],
+      "max": [
+       1.095,
+       1.92,
+       0.545
+      ]
+     },
+     {
+      "nazwa": "LeftLowerLeg_Geo",
+      "kosc": "LeftLowerLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       1.05,
+       0.75,
+       1.05
+      ],
+      "min": [
+       0.025,
+       0.35,
+       -0.525
+      ],
+      "max": [
+       1.075,
+       1.1,
+       0.525
+      ]
+     },
+     {
+      "nazwa": "LeftFoot_Geo",
+      "kosc": "LeftFoot",
+      "trojkaty": 80,
+      "wierzcholki": 48,
+      "wymiary": [
+       1.05,
+       0.35,
+       1.375
+      ],
+      "min": [
+       0.025,
+       0.0,
+       -0.525
+      ],
+      "max": [
+       1.075,
+       0.35,
+       0.85
+      ]
+     },
+     {
+      "nazwa": "RightUpperArm_Geo",
+      "kosc": "RightUpperArm",
+      "trojkaty": 132,
+      "wierzcholki": 72,
+      "wymiary": [
+       1.01,
+       0.97,
+       1.01
+      ],
+      "min": [
+       -2.08,
+       2.85,
+       -0.505
+      ],
+      "max": [
+       -1.07,
+       3.82,
+       0.505
+      ]
+     },
+     {
+      "nazwa": "RightLowerArm_Geo",
+      "kosc": "RightLowerArm",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.95,
+       0.75,
+       0.95
+      ],
+      "min": [
+       -2.05,
+       2.1,
+       -0.475
+      ],
+      "max": [
+       -1.1,
+       2.85,
+       0.475
+      ]
+     },
+     {
+      "nazwa": "RightHand_Geo",
+      "kosc": "RightHand",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.9,
+       0.35,
+       0.9
+      ],
+      "min": [
+       -2.025,
+       1.75,
+       -0.45
+      ],
+      "max": [
+       -1.125,
+       2.1,
+       0.45
+      ]
+     },
+     {
+      "nazwa": "RightUpperLeg_Geo",
+      "kosc": "RightUpperLeg",
+      "trojkaty": 132,
+      "wierzcholki": 72,
+      "wymiary": [
+       1.09,
+       0.82,
+       1.09
+      ],
+      "min": [
+       -1.095,
+       1.1,
+       -0.545
+      ],
+      "max": [
+       -0.005,
+       1.92,
+       0.545
+      ]
+     },
+     {
+      "nazwa": "RightLowerLeg_Geo",
+      "kosc": "RightLowerLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       1.05,
+       0.75,
+       1.05
+      ],
+      "min": [
+       -1.075,
+       0.35,
+       -0.525
+      ],
+      "max": [
+       -0.025,
+       1.1,
+       0.525
+      ]
+     },
+     {
+      "nazwa": "RightFoot_Geo",
+      "kosc": "RightFoot",
+      "trojkaty": 80,
+      "wierzcholki": 48,
+      "wymiary": [
+       1.05,
+       0.35,
+       1.375
+      ],
+      "min": [
+       -1.075,
+       0.0,
+       -0.525
+      ],
+      "max": [
+       -0.025,
+       0.35,
+       0.85
+      ]
+     },
+     {
+      "nazwa": "zwiadowca_wlosy_Akc",
+      "kosc": "Head",
+      "trojkaty": 294,
+      "wierzcholki": 175,
+      "wymiary": [
+       1.877,
+       1.523,
+       1.59
+      ],
+      "min": [
+       -0.855,
+       4.24,
+       -0.815
+      ],
+      "max": [
+       1.022,
+       5.763,
+       0.775
+      ]
+     }
+    ],
+    "trojkaty_razem": 2094,
+    "tekstury": {
+     "rozmiar_px": 64,
+     "kolory_materialy": 19
+    },
+    "typ": "r15",
+    "skala": 1.0,
+    "wymiary_ciala": [
+     4.16,
+     5.3,
+     1.575
+    ],
+    "wymiary_z_akcesoriami": [
+     4.16,
+     5.763,
+     1.665
+    ],
+    "zakres_z_akcesoriami": [
+     [
+      -2.08,
+      0.0,
+      -0.815
+     ],
+     [
+      2.08,
+      5.763,
+      0.85
+     ]
+    ],
+    "kosci": [
+     "Root",
+     "HumanoidRootNode",
+     "LowerTorso",
+     "UpperTorso",
+     "Head",
+     "LeftUpperArm",
+     "LeftLowerArm",
+     "LeftHand",
+     "LeftUpperLeg",
+     "LeftLowerLeg",
+     "LeftFoot",
+     "RightUpperArm",
+     "RightLowerArm",
+     "RightHand",
+     "RightUpperLeg",
+     "RightLowerLeg",
+     "RightFoot"
+    ],
+    "zaczepy": [
+     "FaceCenterAttachment",
+     "FaceFrontAttachment",
+     "HatAttachment",
+     "HairAttachment",
+     "NeckAttachment",
+     "BodyFrontAttachment",
+     "BodyBackAttachment",
+     "LeftCollarAttachment",
+     "RightCollarAttachment",
+     "WaistCenterAttachment",
+     "WaistFrontAttachment",
+     "WaistBackAttachment",
+     "LeftShoulderAttachment",
+     "LeftGripAttachment",
+     "LeftFootAttachment",
+     "RightShoulderAttachment",
+     "RightGripAttachment",
+     "RightFootAttachment",
+     "EkwLowerTorsoAttachment",
+     "EkwUpperTorsoAttachment",
+     "EkwHeadAttachment",
+     "EkwLeftUpperArmAttachment",
+     "EkwLeftLowerArmAttachment",
+     "EkwLeftHandAttachment",
+     "EkwRightUpperArmAttachment",
+     "EkwRightLowerArmAttachment",
+     "EkwRightHandAttachment",
+     "EkwLeftUpperLegAttachment",
+     "EkwLeftLowerLegAttachment",
+     "EkwLeftFootAttachment",
+     "EkwRightUpperLegAttachment",
+     "EkwRightLowerLegAttachment",
+     "EkwRightFootAttachment"
+    ],
+    "znaczniki_att": [
+     "FaceCenter_Att",
+     "FaceFront_Att",
+     "Hat_Att",
+     "Hair_Att",
+     "Neck_Att",
+     "BodyFront_Att",
+     "BodyBack_Att",
+     "LeftCollar_Att",
+     "RightCollar_Att",
+     "WaistCenter_Att",
+     "WaistFront_Att",
+     "WaistBack_Att",
+     "LeftShoulder_Att",
+     "LeftGrip_Att",
+     "LeftFoot_Att",
+     "RightShoulder_Att",
+     "RightGrip_Att",
+     "RightFoot_Att",
+     "EkwLowerTorso_Att",
+     "EkwUpperTorso_Att",
+     "EkwHead_Att",
+     "EkwLeftUpperArm_Att",
+     "EkwLeftLowerArm_Att",
+     "EkwLeftHand_Att",
+     "EkwRightUpperArm_Att",
+     "EkwRightLowerArm_Att",
+     "EkwRightHand_Att",
+     "EkwLeftUpperLeg_Att",
+     "EkwLeftLowerLeg_Att",
+     "EkwLeftFoot_Att",
+     "EkwRightUpperLeg_Att",
+     "EkwRightLowerLeg_Att",
+     "EkwRightFoot_Att",
+     "Root_Att"
+    ],
+    "klipy": [
+     {
+      "n": "idle",
+      "dlugosc": 60,
+      "fps": 30,
+      "sekundy": 2.0,
+      "petla": true
+     }
+    ],
+    "akcesoria": [
+     {
+      "id": "zwiadowca_wlosy",
+      "zaczep": "HairAttachment",
+      "eksport": true
+     }
+    ],
+    "grupy_ciala": {
+     "Head": {
+      "trojkaty": 564,
+      "limit": 4000,
+      "wymiary": [
+       1.6,
+       1.5,
+       1.55
+      ]
+     },
+     "Torso": {
+      "trojkaty": 284,
+      "limit": 1750,
+      "wymiary": [
+       2.24,
+       1.9,
+       1.265
+      ]
+     },
+     "LeftArm": {
+      "trojkaty": 220,
+      "limit": 1248,
+      "wymiary": [
+       1.01,
+       2.07,
+       1.01
+      ]
+     },
+     "RightArm": {
+      "trojkaty": 220,
+      "limit": 1248,
+      "wymiary": [
+       1.01,
+       2.07,
+       1.01
+      ]
+     },
+     "LeftLeg": {
+      "trojkaty": 256,
+      "limit": 1248,
+      "wymiary": [
+       1.09,
+       1.92,
+       1.395
+      ]
+     },
+     "RightLeg": {
+      "trojkaty": 256,
+      "limit": 1248,
+      "wymiary": [
+       1.09,
+       1.92,
+       1.395
+      ]
+     }
+    },
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_kaptur_glowa",
+    "nazwa": "Kaptur z peleryną (glowa)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_kaptur_glowa",
+      "kosc": null,
+      "trojkaty": 450,
+      "wierzcholki": 249,
+      "wymiary": [
+       1.86,
+       1.992,
+       2.629
+      ],
+      "min": [
+       -0.93,
+       -0.78,
+       -1.764
+      ],
+      "max": [
+       0.93,
+       1.212,
+       0.865
+      ]
+     }
+    ],
+    "trojkaty_razem": 450,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 2
+    },
+    "zaczep": "EkwHeadAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.93,
+      -0.78,
+      -1.764
+     ],
+     [
+      0.93,
+      1.212,
+      0.865
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.216,
+     -0.45
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_kaptur_tulow",
+    "nazwa": "Kaptur z peleryną (tulow)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_kaptur_tulow",
+      "kosc": null,
+      "trojkaty": 316,
+      "wierzcholki": 184,
+      "wymiary": [
+       2.3,
+       2.098,
+       1.425
+      ],
+      "min": [
+       -1.15,
+       -1.098,
+       -0.725
+      ],
+      "max": [
+       1.15,
+       1.0,
+       0.7
+      ]
+     }
+    ],
+    "trojkaty_razem": 316,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 2
+    },
+    "zaczep": "EkwUpperTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -1.15,
+      -1.098,
+      -0.725
+     ],
+     [
+      1.15,
+      1.0,
+      0.7
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.049,
+     -0.013
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_kurtka_przedramie_l",
+    "nazwa": "Skórzany kirys z tuniką (przedramie_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_kurtka_przedramie_l",
+      "kosc": null,
+      "trojkaty": 112,
+      "wierzcholki": 64,
+      "wymiary": [
+       0.98,
+       0.75,
+       0.97
+      ],
+      "min": [
+       -0.485,
+       -0.375,
+       -0.485
+      ],
+      "max": [
+       0.495,
+       0.375,
+       0.485
+      ]
+     }
+    ],
+    "trojkaty_razem": 112,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLeftLowerArmAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.485,
+      -0.375,
+      -0.485
+     ],
+     [
+      0.495,
+      0.375,
+      0.485
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.005,
+     0.0,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_kurtka_przedramie_p",
+    "nazwa": "Skórzany kirys z tuniką (przedramie_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_kurtka_przedramie_p",
+      "kosc": null,
+      "trojkaty": 112,
+      "wierzcholki": 64,
+      "wymiary": [
+       0.98,
+       0.75,
+       0.97
+      ],
+      "min": [
+       -0.495,
+       -0.375,
+       -0.485
+      ],
+      "max": [
+       0.485,
+       0.375,
+       0.485
+      ]
+     }
+    ],
+    "trojkaty_razem": 112,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwRightLowerArmAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.495,
+      -0.375,
+      -0.485
+     ],
+     [
+      0.485,
+      0.375,
+      0.485
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     -0.005,
+     0.0,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_kurtka_ramie_l",
+    "nazwa": "Skórzany kirys z tuniką (ramie_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_kurtka_ramie_l",
+      "kosc": null,
+      "trojkaty": 132,
+      "wierzcholki": 72,
+      "wymiary": [
+       0.985,
+       1.018,
+       1.01
+      ],
+      "min": [
+       -0.445,
+       -0.475,
+       -0.505
+      ],
+      "max": [
+       0.54,
+       0.543,
+       0.505
+      ]
+     }
+    ],
+    "trojkaty_razem": 132,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLeftUpperArmAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.445,
+      -0.475,
+      -0.505
+     ],
+     [
+      0.54,
+      0.543,
+      0.505
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.048,
+     0.034,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_kurtka_ramie_p",
+    "nazwa": "Skórzany kirys z tuniką (ramie_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_kurtka_ramie_p",
+      "kosc": null,
+      "trojkaty": 132,
+      "wierzcholki": 72,
+      "wymiary": [
+       0.985,
+       1.018,
+       1.01
+      ],
+      "min": [
+       -0.54,
+       -0.475,
+       -0.505
+      ],
+      "max": [
+       0.445,
+       0.543,
+       0.505
+      ]
+     }
+    ],
+    "trojkaty_razem": 132,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwRightUpperArmAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.54,
+      -0.475,
+      -0.505
+     ],
+     [
+      0.445,
+      0.543,
+      0.505
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     -0.048,
+     0.034,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_kurtka_tulow",
+    "nazwa": "Skórzany kirys z tuniką (tulow)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_kurtka_tulow",
+      "kosc": null,
+      "trojkaty": 268,
+      "wierzcholki": 152,
+      "wymiary": [
+       2.26,
+       1.68,
+       1.38
+      ],
+      "min": [
+       -1.13,
+       -0.75,
+       -0.64
+      ],
+      "max": [
+       1.13,
+       0.93,
+       0.74
+      ]
+     }
+    ],
+    "trojkaty_razem": 268,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 5
+    },
+    "zaczep": "EkwUpperTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -1.13,
+      -0.75,
+      -0.64
+     ],
+     [
+      1.13,
+      0.93,
+      0.74
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.09,
+     0.05
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_kurtka_udo_l",
+    "nazwa": "Skórzany kirys z tuniką (udo_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_kurtka_udo_l",
+      "kosc": null,
+      "trojkaty": 68,
+      "wierzcholki": 40,
+      "wymiary": [
+       1.09,
+       0.642,
+       1.11
+      ],
+      "min": [
+       -0.545,
+       -0.232,
+       -0.555
+      ],
+      "max": [
+       0.545,
+       0.41,
+       0.555
+      ]
+     }
+    ],
+    "trojkaty_razem": 68,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 1
+    },
+    "zaczep": "EkwLeftUpperLegAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.545,
+      -0.232,
+      -0.555
+     ],
+     [
+      0.545,
+      0.41,
+      0.555
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.089,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_kurtka_udo_p",
+    "nazwa": "Skórzany kirys z tuniką (udo_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_kurtka_udo_p",
+      "kosc": null,
+      "trojkaty": 68,
+      "wierzcholki": 40,
+      "wymiary": [
+       1.09,
+       0.642,
+       1.11
+      ],
+      "min": [
+       -0.545,
+       -0.232,
+       -0.555
+      ],
+      "max": [
+       0.545,
+       0.41,
+       0.555
+      ]
+     }
+    ],
+    "trojkaty_razem": 68,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 1
+    },
+    "zaczep": "EkwRightUpperLegAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.545,
+      -0.232,
+      -0.555
+     ],
+     [
+      0.545,
+      0.41,
+      0.555
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.089,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_luk_tulow",
+    "nazwa": "Łuk z kołczanem (tulow)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_luk_tulow",
+      "kosc": null,
+      "trojkaty": 288,
+      "wierzcholki": 176,
+      "wymiary": [
+       2.45,
+       2.273,
+       1.925
+      ],
+      "min": [
+       -1.69,
+       -0.763,
+       -1.22
+      ],
+      "max": [
+       0.76,
+       1.51,
+       0.705
+      ]
+     }
+    ],
+    "trojkaty_razem": 288,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 4
+    },
+    "zaczep": "EkwUpperTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -1.69,
+      -0.763,
+      -1.22
+     ],
+     [
+      0.76,
+      1.51,
+      0.705
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     -0.465,
+     0.373,
+     -0.258
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_pas_biodra",
+    "nazwa": "Pas z sakwą (biodra)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_pas_biodra",
+      "kosc": null,
+      "trojkaty": 156,
+      "wierzcholki": 88,
+      "wymiary": [
+       2.24,
+       0.51,
+       1.57
+      ],
+      "min": [
+       -1.12,
+       -0.33,
+       -0.88
+      ],
+      "max": [
+       1.12,
+       0.18,
+       0.69
+      ]
+     }
+    ],
+    "trojkaty_razem": 156,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 4
+    },
+    "zaczep": "EkwLowerTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -1.12,
+      -0.33,
+      -0.88
+     ],
+     [
+      1.12,
+      0.18,
+      0.69
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.075,
+     -0.095
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_rekawice_dlon_l",
+    "nazwa": "Rękawice bez palców (dlon_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_rekawice_dlon_l",
+      "kosc": null,
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.9,
+       0.36,
+       0.9
+      ],
+      "min": [
+       -0.45,
+       -0.175,
+       -0.45
+      ],
+      "max": [
+       0.45,
+       0.185,
+       0.45
+      ]
+     }
+    ],
+    "trojkaty_razem": 88,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 2
+    },
+    "zaczep": "EkwLeftHandAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.45,
+      -0.175,
+      -0.45
+     ],
+     [
+      0.45,
+      0.185,
+      0.45
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.005,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_rekawice_dlon_p",
+    "nazwa": "Rękawice bez palców (dlon_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_rekawice_dlon_p",
+      "kosc": null,
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.9,
+       0.36,
+       0.9
+      ],
+      "min": [
+       -0.45,
+       -0.175,
+       -0.45
+      ],
+      "max": [
+       0.45,
+       0.185,
+       0.45
+      ]
+     }
+    ],
+    "trojkaty_razem": 88,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 2
+    },
+    "zaczep": "EkwRightHandAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.45,
+      -0.175,
+      -0.45
+     ],
+     [
+      0.45,
+      0.185,
+      0.45
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.005,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_spodnie_biodra",
+    "nazwa": "Spodnie Zwiadowcy (biodra)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_spodnie_biodra",
+      "kosc": null,
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       2.14,
+       0.4,
+       1.14
+      ],
+      "min": [
+       -1.07,
+       -0.2,
+       -0.57
+      ],
+      "max": [
+       1.07,
+       0.2,
+       0.57
+      ]
+     }
+    ],
+    "trojkaty_razem": 44,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 1
+    },
+    "zaczep": "EkwLowerTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -1.07,
+      -0.2,
+      -0.57
+     ],
+     [
+      1.07,
+      0.2,
+      0.57
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_spodnie_udo_l",
+    "nazwa": "Spodnie Zwiadowcy (udo_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_spodnie_udo_l",
+      "kosc": null,
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.99,
+       0.8,
+       0.99
+      ],
+      "min": [
+       -0.495,
+       -0.4,
+       -0.495
+      ],
+      "max": [
+       0.495,
+       0.4,
+       0.495
+      ]
+     }
+    ],
+    "trojkaty_razem": 44,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 1
+    },
+    "zaczep": "EkwLeftUpperLegAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.495,
+      -0.4,
+      -0.495
+     ],
+     [
+      0.495,
+      0.4,
+      0.495
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "zwiadowca_spodnie_udo_p",
+    "nazwa": "Spodnie Zwiadowcy (udo_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "zwiadowca_spodnie_udo_p",
+      "kosc": null,
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.99,
+       0.8,
+       0.99
+      ],
+      "min": [
+       -0.495,
+       -0.4,
+       -0.495
+      ],
+      "max": [
+       0.495,
+       0.4,
+       0.495
+      ]
+     }
+    ],
+    "trojkaty_razem": 44,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 1
+    },
+    "zaczep": "EkwRightUpperLegAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.495,
+      -0.4,
+      -0.495
+     ],
+     [
+      0.495,
+      0.4,
+      0.495
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "ostrzezenia": []
+   }
+  ]
+ }
 }

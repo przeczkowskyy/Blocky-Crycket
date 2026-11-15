@@ -9,12 +9,16 @@ Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, 
 PODSUMOWANIE
 - modele z kośćmi: kot_mag
 - przedmioty (akcesoria): 2
-- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 17 plików, zgodnych 17
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 34 plików, zgodnych 34
 - ostrzeżenia z raportu: 1; uwagi podglądu: 1
 
 ZNANE SŁABOŚCI
 - Rig NPC, nie ciało awatara: kości Tail, TailTip, LeftEar, RightEar, HatPivot i StaffPivot spoza R15, wzrost ok. 3,7 studa z kapeluszem.
-- Kapelusz i kostur są osobnymi przedmiotami (przedmioty/kot_mag_*.fbx); w FBX kota ich nie ma. W renderach i klipach siedzą na kościach HatPivot i StaffPivot (te same ramki co HatAttachment i RightGripAttachment). W grze, gdy kostur jest Toolem na RightGripAttachment, a kapelusz akcesorium na HatAttachment, upadek ich nie zrzuci — trzeba je wtedy przypiąć do części HatPivot / StaffPivot albo zrzucić skryptem.
+- D-071: zbuduj() (kot_mag.fbx, plansza, filmy) to pełny strój kanoniczny — wygląd bez zmian. Szata i szarfa są wtapiane w bryły kości (te same siatki <Kosc>_Geo), więc w kot_mag.fbx strój nadal jest częścią ciała. Ubieranie w grze ma iść przez gołe ciało (ekwipunek/kot_mag_cialo.fbx z zaczepami Ekw<Kosc>Attachment) i segmenty z ekwipunek/przedmioty/ — ta droga nie była sprawdzana w Studio (przezroczystość gołego futra pod szatą, AddAccessory z własnymi nazwami zaczepów, przedmioty na częściach HatPivot / StaffPivot).
+- Kapelusz i kostur są osobnymi przedmiotami (przedmioty/kot_mag_*.fbx); w FBX kota ich nie ma. W renderach i klipach siedzą na kościach HatPivot i StaffPivot (te same ramki co HatAttachment i RightGripAttachment; korekty chwytu kota w KOREKTY_CHWYTU dostaje każde nakrycie głowy i każda broń w prawej łapie). W grze, gdy kostur jest Toolem na RightGripAttachment, a kapelusz akcesorium na HatAttachment, upadek ich nie zrzuci — trzeba je wtedy przypiąć do części HatPivot / StaffPivot albo zrzucić skryptem.
+- Goły kot (ciało bazowe): futro, pręgi, jasny brzuszek z kępką pod brodą i kolory to propozycja do oceny (plansza ekwipunek/kot_mag_ekwipunek_plansza.jpg). Ogon wychodzi nisko (staw na wysokości łydek, pod dawną szatą), więc goły kot ma u nasady ogona pas futra schodzący z tyłu bioder do stawu ogona (bryła bioder, znika pod szatą). Nogi pod szatą były cienkie (udo 0,42, łydka 0,40 przy klockach 0,5 i 0,45) — bez szaty widać krótkie, cienkie nóżki na dużych łapach; zostały bez zmian, bo w pełnym stroju są te same.
+- Upadek bez szaty: klip liczony na postaci odniesienia kładzie kota na lewym boku dzwonu szaty i na lewym rękawie (pełny strój i każdy strój z szatą: najniższy punkt w ostatniej klatce 0,000, tułów 0,28 nad ziemią). Goły kot i strój „kapelusz_i_kostur” leżą ok. 0,20 studa nad ziemią (najniżej lewa łapka 0,198, tułów 0,73), bo dzwon szaty jest szerszy niż goły tułów; kapelusz i kostur leżą na ziemi. Klipy są wspólne (kontrakt), więc poprawka wymaga decyzji: osobny upadek dla ciała albo przesunięcie korzenia w grze zależne od stroju.
+- Szarfa (kot_mag_pas) w pełnym stroju jest prawie cała schowana w górnej części dzwonu szaty (tak jak dotąd); widać ją dopiero na samym futrze albo przy innej szacie.
 - Łapy są bardzo krótkie (bark → nadgarstek 0,64 studa, bark poniżej spodu głowy): łapa nie sięga nad głowę ani do drugiej łapy. „Zamach nad głową” w kuli ognia to kostur uniesiony w górę i w tył z prawej strony głowy, kryształ ponad rondem kapelusza (ok. 3,8 studa; rondo 3,2), za głową; w lodowym pocisku drzewce trzyma tylko prawa łapa — lewa pcha powietrze obok (nie sięga).
 - Rękawy są długie (mankiet zakrywa łapkę), więc drzewce zawsze wychodzi z mankietu, a przy kosturze trzymanym poprzecznie przechodzi przez brzeg rękawa — to chwyt w rękawie, nie przenikanie przez głowę czy tułów.
 - Dzwon szaty jest sztywny (idzie za biodrami): w chodzie nogi są schowane, ruch widać po łapach i kołysaniu; w upadku na bok dzwon leży jak sztywny stożek.
@@ -25,7 +29,8 @@ ZNANE SŁABOŚCI
 - Atak, kula ognia i lodowy pocisk w chwili wypuszczenia mają podobną sylwetkę (kostur do przodu); różnią się zamachem (krótki w tył / wysoko za głowę / poziomo przy boku jak lanca) i dobiciem (kula kończy nisko). Z kamery zza pleców kostur skierowany do przodu chowa się za głową i kapeluszem — czytelność da efekt czaru.
 - Klip chod (sprzed 15.11, nieruszany): palce łap schodzą w nim do 0,22 studa pod ziemię (kl. 8), a lewy rękaw zachodzi na dzwon szaty na 0,23 studa (w spoczynku 0,17) — do poprawy, jeśli chod ma zostać.
 - Unik i lodowy pocisk przesuwają kota w samym klipie (kość LowerTorso): odskok ok. 1,6 studa w tył i w bok, wypad ok. 0,35 studa do przodu; oba klipy kończą się w punkcie startu.
-- Kontrola przenikania (python -B swiat/postacie/kot_mag.py --kontrola) liczy bryły jako skrzynki, stożki i ostrosłupy (dzwon szaty, uszy, kapelusz zwężają się jak w modelu); wąsy (cienkie kreski) i ramię z rękawem przy barku nie są liczone. Rękaw ramienia (UpperArm) i kostur względem własnej łapy — tylko na arkuszach.
+- Kontrola przenikania (python -B swiat/postacie/kot_mag.py --kontrola) liczy bryły jako skrzynki, stożki i ostrosłupy (dzwon szaty, uszy, kapelusz zwężają się jak w modelu); wąsy (cienkie kreski) i ramię z rękawem przy barku nie są liczone. Rękaw ramienia (UpperArm) i kostur względem własnej łapy — tylko na arkuszach. Działa na każdym stroju z STROJE.
+- kot_mag_cialo.fbx/.glb ma tylko klip idle (reszta klipów: kot_mag__<klip>.fbx, te same kości i nazwy).
 
 MODEL kot_mag „Kot-Mag Crycket” (r15)
   wymiary ciała: 2,51 × 3,82 × 2,30; z akcesoriami: 2,64 × 4,94 × 2,47
@@ -44,6 +49,18 @@ kot_mag_kostur         RightGripAttachment        Bron         384  0,90 × 3,45
 attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
 importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
 
+
+EKWIPUNEK (D-071: ciało bazowe + strój z przedmiotów; pliki w ekwipunek/)
+- strój golas (goły (ciało bazowe)): bez przedmiotów
+- strój pelny (pełny strój): kot_mag_kapelusz, kot_mag_szata, kot_mag_pas, kot_mag_kostur
+- strój bez_kapelusza (bez kapelusza): kot_mag_szata, kot_mag_pas, kot_mag_kostur
+- strój kapelusz_i_kostur (sam kapelusz i kostur): kot_mag_kapelusz, kot_mag_kostur
+- strój sama_szata (sama szata z szarfą): kot_mag_szata, kot_mag_pas
+- kot_mag_kapelusz „Kapelusz Kota-Maga” [Helmet]: kot_mag_kapelusz na KapeluszAttachment
+- kot_mag_szata „Szata Kota-Maga” [Chest]: kot_mag_szata_tulow UpperTorso (powłoka) 332 tr.; kot_mag_szata_ramie_l LeftUpperArm (powłoka) 44 tr.; kot_mag_szata_przedramie_l LeftLowerArm (powłoka) 100 tr.; kot_mag_szata_ramie_p RightUpperArm (powłoka) 44 tr.; kot_mag_szata_przedramie_p RightLowerArm (powłoka) 100 tr.; kot_mag_szata_biodra LowerTorso (powłoka) 160 tr.
+- kot_mag_pas „Szarfa z klamrą” [Belt]: kot_mag_pas_biodra LowerTorso 88 tr.
+- kot_mag_kostur „Kostur Kota-Maga” [Weapon]: kot_mag_kostur na KosturAttachment
+- filmy w strojach: kot_mag_golas idle, kot_mag_golas chod, kot_mag_golas kula_ognia, kot_mag_golas upadek, kot_mag_kapelusz_i_kostur upadek, kot_mag_sama_szata bariera, kot_mag_bez_kapelusza atak
 
 UWAGI PODGLĄDU
 - kot_mag: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
@@ -66,6 +83,23 @@ KONTROLA EKSPORTÓW
 - kot_mag_kapelusz.glb: siatki 1, kości 0, trójkąty 258, wzrost 1.78 st., akcje brak -> ZGODNE
 - kot_mag_kostur.fbx: siatki 1, kości 0, trójkąty 384, wzrost 3.45 st., akcje brak -> ZGODNE
 - kot_mag_kostur.glb: siatki 1, kości 0, trójkąty 384, wzrost 3.45 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_cialo__idle.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje kot_mag_cialo|Scene 1-61 -> ZGODNE
+- ekwipunek: kot_mag_cialo.glb: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- ekwipunek: kot_mag_szata_tulow.fbx: siatki 1, kości 0, trójkąty 332, wzrost 0.99 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_szata_tulow.glb: siatki 1, kości 0, trójkąty 332, wzrost 0.99 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_szata_ramie_l.fbx: siatki 1, kości 0, trójkąty 44, wzrost 0.48 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_szata_ramie_l.glb: siatki 1, kości 0, trójkąty 44, wzrost 0.48 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_szata_przedramie_l.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.49 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_szata_przedramie_l.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.49 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_szata_ramie_p.fbx: siatki 1, kości 0, trójkąty 44, wzrost 0.48 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_szata_ramie_p.glb: siatki 1, kości 0, trójkąty 44, wzrost 0.48 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_szata_przedramie_p.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.49 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_szata_przedramie_p.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.49 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_szata_biodra.fbx: siatki 1, kości 0, trójkąty 160, wzrost 0.99 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_szata_biodra.glb: siatki 1, kości 0, trójkąty 160, wzrost 0.99 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_pas_biodra.fbx: siatki 1, kości 0, trójkąty 88, wzrost 0.22 st., akcje brak -> ZGODNE
+- ekwipunek: kot_mag_pas_biodra.glb: siatki 1, kości 0, trójkąty 88, wzrost 0.22 st., akcje brak -> ZGODNE
 
 PLIKI
 - kot_mag.blend
@@ -128,5 +162,67 @@ PLIKI
 - przedmioty/kot_mag_kostur_tekstury/
 - ikony/kot_mag_kostur_ikona.png
 - kot_mag_ikony_arkusz.jpg
+- ekwipunek/kot_mag_golas_plansza.jpg
+- ekwipunek/kot_mag_golas_bohater.jpg
+- ekwipunek/kot_mag_pelny_plansza.jpg
+- ekwipunek/kot_mag_pelny_bohater.jpg
+- ekwipunek/kot_mag_bez_kapelusza_plansza.jpg
+- ekwipunek/kot_mag_bez_kapelusza_bohater.jpg
+- ekwipunek/kot_mag_kapelusz_i_kostur_plansza.jpg
+- ekwipunek/kot_mag_kapelusz_i_kostur_bohater.jpg
+- ekwipunek/kot_mag_sama_szata_plansza.jpg
+- ekwipunek/kot_mag_sama_szata_bohater.jpg
+- ekwipunek/kot_mag_ekwipunek_plansza.jpg
+- ekwipunek/kot_mag_golas_idle.mp4
+- ekwipunek/kot_mag_golas_idle_klatki.jpg
+- ekwipunek/kot_mag_golas_idle_z_filmu.jpg
+- ekwipunek/kot_mag_golas_chod.mp4
+- ekwipunek/kot_mag_golas_chod_klatki.jpg
+- ekwipunek/kot_mag_golas_chod_z_filmu.jpg
+- ekwipunek/kot_mag_golas_kula_ognia.mp4
+- ekwipunek/kot_mag_golas_kula_ognia_klatki.jpg
+- ekwipunek/kot_mag_golas_kula_ognia_z_filmu.jpg
+- ekwipunek/kot_mag_golas_upadek.mp4
+- ekwipunek/kot_mag_golas_upadek_klatki.jpg
+- ekwipunek/kot_mag_golas_upadek_z_filmu.jpg
+- ekwipunek/kot_mag_kapelusz_i_kostur_upadek.mp4
+- ekwipunek/kot_mag_kapelusz_i_kostur_upadek_klatki.jpg
+- ekwipunek/kot_mag_kapelusz_i_kostur_upadek_z_filmu.jpg
+- ekwipunek/kot_mag_sama_szata_bariera.mp4
+- ekwipunek/kot_mag_sama_szata_bariera_klatki.jpg
+- ekwipunek/kot_mag_sama_szata_bariera_z_filmu.jpg
+- ekwipunek/kot_mag_bez_kapelusza_atak.mp4
+- ekwipunek/kot_mag_bez_kapelusza_atak_klatki.jpg
+- ekwipunek/kot_mag_bez_kapelusza_atak_z_filmu.jpg
+- ekwipunek/kot_mag_cialo.fbx
+- ekwipunek/kot_mag_cialo.glb
+- ekwipunek/kot_mag_cialo_tekstury/
+- ekwipunek/ikony/kot_mag_kapelusz_ikona.png
+- ekwipunek/przedmioty/kot_mag_szata_tulow.fbx
+- ekwipunek/przedmioty/kot_mag_szata_tulow.glb
+- ekwipunek/przedmioty/kot_mag_szata_tulow_tekstury/
+- ekwipunek/przedmioty/kot_mag_szata_ramie_l.fbx
+- ekwipunek/przedmioty/kot_mag_szata_ramie_l.glb
+- ekwipunek/przedmioty/kot_mag_szata_ramie_l_tekstury/
+- ekwipunek/przedmioty/kot_mag_szata_przedramie_l.fbx
+- ekwipunek/przedmioty/kot_mag_szata_przedramie_l.glb
+- ekwipunek/przedmioty/kot_mag_szata_przedramie_l_tekstury/
+- ekwipunek/przedmioty/kot_mag_szata_ramie_p.fbx
+- ekwipunek/przedmioty/kot_mag_szata_ramie_p.glb
+- ekwipunek/przedmioty/kot_mag_szata_ramie_p_tekstury/
+- ekwipunek/przedmioty/kot_mag_szata_przedramie_p.fbx
+- ekwipunek/przedmioty/kot_mag_szata_przedramie_p.glb
+- ekwipunek/przedmioty/kot_mag_szata_przedramie_p_tekstury/
+- ekwipunek/przedmioty/kot_mag_szata_biodra.fbx
+- ekwipunek/przedmioty/kot_mag_szata_biodra.glb
+- ekwipunek/przedmioty/kot_mag_szata_biodra_tekstury/
+- ekwipunek/ikony/kot_mag_szata_ikona.png
+- ekwipunek/przedmioty/kot_mag_pas_biodra.fbx
+- ekwipunek/przedmioty/kot_mag_pas_biodra.glb
+- ekwipunek/przedmioty/kot_mag_pas_biodra_tekstury/
+- ekwipunek/ikony/kot_mag_pas_ikona.png
+- ekwipunek/ikony/kot_mag_kostur_ikona.png
+- ekwipunek/kot_mag_ekwipunek_ikony_arkusz.jpg
+- ekwipunek/ekwipunek.json
 - raport.json
 - raport.txt

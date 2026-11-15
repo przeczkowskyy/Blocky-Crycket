@@ -1,11 +1,27 @@
 # -*- coding: utf-8 -*-
 """KOT-MAG „Crycket” — drugi bohater-maskotka: mały kanciasty pomarańczowy kot w za dużej fioletowej szacie,
 z kosturem zakończonym fioletowym kryształem i spiczastym kapeluszem (kapelusz i kryształ to w kanonie wciąż
-propozycja — dlatego kapelusz jest OSOBNYM akcesorium i można go zdjąć).
+propozycja — dlatego kapelusz jest OSOBNYM przedmiotem i można go zdjąć).
+
+CIAŁO BAZOWE + STRÓJ Z PRZEDMIOTÓW (D-071, kontrakt swiat/postacie/EKWIPUNEK.md):
+  cialo()      goły kot („kot_mag_cialo”): te same klocki, kości, zaczepy i klipy; pomarańczowe futro z ciemnymi
+               pręgami (dwie na plecach i bokach, po jednej na ramieniu i przedramieniu), jasny brzuszek z kępką
+               futra pod brodą, cała dzisiejsza głowa z mordką i wąsami, uszy, łapki, ogon (u nasady ogona futro
+               schodzi z bioder do stawu ogona, bo ogon wychodzi nisko, spod dawnej szaty);
+  przedmioty() kapelusz (Helmet, na KapeluszAttachment), szata z kołnierzem, rękawami i dzwonem (Chest, powłoka
+               na tułowiu, ramionach, przedramionach i biodrach), szarfa z klamrą (Belt), kostur (Weapon, na
+               KosturAttachment) — segmenty kostne w układzie środka klocka kości albo akcesorium na zaczepie;
+  ubierz()     zakłada przedmioty na ciało (powłoka zastępuje gołe futro kości); nakrycie głowy i broń w prawej łapie
+               idą przez KOREKTY_CHWYTU na kości nośne HatPivot / StaffPivot (w upadku spadają);
+  zbuduj()     jak dotąd: [Kot-Mag w pełnym stroju kanonicznym (KANON), kapelusz, kostur];
+  warianty()   stroje z STROJE, segmenty i ikony całych przedmiotów dla przebuduj.py (wynik/kot_mag/ekwipunek/).
+Klipy liczą się RAZ na postaci odniesienia (ODNIESIENIE_KLIPOW = pełny strój = dawny model: stopy na ziemi, tor
+upadku kapelusza i kostura) i są kopiowane bez zmian na ciało i każdy strój — ten sam ruch niezależnie od ubrania.
 
     python -B swiat/postacie/biblioteka/podglad_postaci.py --modul swiat/postacie/kot_mag.py --wyj <folder> --klip idle
-    python -B swiat/postacie/kot_mag.py --kontrola             # liczbowa kontrola przenikania kostura i łap (bez Blendera)
-    python -B swiat/postacie/kot_mag.py --kontrola --blender   # to samo na próbkach krzywych z Blendera (wszystkie klipy)
+    python -B swiat/postacie/kot_mag.py --kontrola             # kontrola przenikania we wszystkich strojach (bez Blendera)
+    python -B swiat/postacie/kot_mag.py --kontrola --stroj golas upadek    # jeden strój, wybrane klipy
+    python -B swiat/postacie/kot_mag.py --kontrola --blender   # to samo na próbkach krzywych z Blendera
 
 Status: propozycja (kanon wyglądu: B&C/Postacie/Kot-Mag.md, obraz referencyjny assets/processed/KeyArt.png).
 
@@ -14,10 +30,10 @@ Budowa:
   ok. 3,45 z uszami, bez kapelusza;
 - kości spoza standardu R15: `Tail` (dziecko LowerTorso) i `TailTip` (dziecko Tail) — ogon; `LeftEar` i `RightEar`
   (dzieci Head) — uszy strzygą i kładą się po sobie; `HatPivot` (dziecko Head, w HatAttachment) i `StaffPivot`
-  (dziecko RightHand, w RightGripAttachment) — bez własnych brył, niosą kapelusz i kostur, żeby w upadku kapelusz
-  mógł zsunąć się z głowy, a kostur wypaść z łapy. W spoczynku wszystko leży dokładnie tam, gdzie wcześniej
-  (wygląd bez zmian). W Roblox to już nie „czysty” R15 — do NPC i postaci w grze wystarczy; klipy kości
-  standardowych działają tak samo;
+  (dziecko RightHand, w RightGripAttachment) — bez własnych brył, niosą kapelusz i kostur (i każde inne nakrycie
+  głowy i broń kota), żeby w upadku kapelusz mógł zsunąć się z głowy, a kostur wypaść z łapy. W spoczynku wszystko
+  leży dokładnie tam, gdzie wcześniej (wygląd bez zmian). W Roblox to już nie „czysty” R15 — do NPC i postaci
+  w grze wystarczy; klipy kości standardowych działają tak samo;
 - dół szaty to jeden ośmiokątny dzwon na LowerTorso do samej ziemi (za duża szata) z trenem leżącym z tyłu;
   nogi chodzą w środku (wymach uda ≤ 15°), spod rąbka wystają łapy;
 - akcesoria: `kot_mag_kapelusz` (Hat; na kocie na `KapeluszAttachment` kości HatPivot = ta sama ramka co
@@ -47,7 +63,8 @@ Klipy (30 kl./s; kot patrzy w +Z i w tę stronę rzuca czary):
                    przed nim, kapelusz zsuwa się z głowy (kl. 30) i staje obok; kończy się leżeniem (ostatnia klatka
                    do zatrzymania).
   Klatki trafienia / wypuszczenia są też w słowniku CHWILE. Każdy klip walki zaczyna się i kończy w pozie z klatki 0
-  klipu idle (płynne przejście do spoczynku).
+  klipu idle (płynne przejście do spoczynku). Bez kostura prawa łapa robi ten sam ruch pustą łapką, bez kapelusza
+  widać całe uszy.
 """
 import math
 import os
@@ -55,9 +72,17 @@ import sys
 
 if __name__ == "__main__":                                       # uruchomienie wprost: korzeń repozytorium na ścieżce
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from swiat.postacie.biblioteka.postac import Akcesorium, Postac, katy_z_macierzy, macierz_obrotu, mnoz, razy_wektor
+from swiat.postacie.biblioteka.postac import (R15_KOSCI, Akcesorium, Postac, katy_z_macierzy, macierz_obrotu, mnoz,
+                                              razy_wektor)
+try:                                    # wspólny kod ekwipunku (EKWIPUNEK.md pkt 4): docelowo ekwipunek.py,
+    from swiat.postacie.ekwipunek import Przedmiot, kopiuj_klipy, ubierz, zaczep_ekwipunku
+except ModuleNotFoundError as e:        # na razie w sekcji „ekwipunek: wspólne” w rycerz.py
+    if e.name != "swiat.postacie.ekwipunek":
+        raise
+    from swiat.postacie.rycerz import Przedmiot, kopiuj_klipy, ubierz, zaczep_ekwipunku
 
 ID = "kot_mag"
+NAZWA = "Kot-Mag Crycket"
 
 # klatki trafienia / wypuszczenia pocisku / chwili efektu w klipach walki (dla odtwarzacza walki; 30 kl./s)
 CHWILE = {"atak": 9, "kula_ognia": 27, "lodowy_pocisk": 21, "bariera": 10, "trafienie": 4}
@@ -65,10 +90,28 @@ CHWILE = {"atak": 9, "kula_ognia": 27, "lodowy_pocisk": 21, "bariera": 10, "traf
 SLABOSCI = [
     "Rig NPC, nie ciało awatara: kości Tail, TailTip, LeftEar, RightEar, HatPivot i StaffPivot spoza R15, wzrost "
     "ok. 3,7 studa z kapeluszem.",
+    "D-071: zbuduj() (kot_mag.fbx, plansza, filmy) to pełny strój kanoniczny — wygląd bez zmian. Szata i szarfa są "
+    "wtapiane w bryły kości (te same siatki <Kosc>_Geo), więc w kot_mag.fbx strój nadal jest częścią ciała. "
+    "Ubieranie w grze ma iść przez gołe ciało (ekwipunek/kot_mag_cialo.fbx z zaczepami Ekw<Kosc>Attachment) "
+    "i segmenty z ekwipunek/przedmioty/ — ta droga nie była sprawdzana w Studio (przezroczystość gołego futra pod "
+    "szatą, AddAccessory z własnymi nazwami zaczepów, przedmioty na częściach HatPivot / StaffPivot).",
     "Kapelusz i kostur są osobnymi przedmiotami (przedmioty/kot_mag_*.fbx); w FBX kota ich nie ma. W renderach i "
-    "klipach siedzą na kościach HatPivot i StaffPivot (te same ramki co HatAttachment i RightGripAttachment). W grze, "
-    "gdy kostur jest Toolem na RightGripAttachment, a kapelusz akcesorium na HatAttachment, upadek ich nie zrzuci — "
+    "klipach siedzą na kościach HatPivot i StaffPivot (te same ramki co HatAttachment i RightGripAttachment; "
+    "korekty chwytu kota w KOREKTY_CHWYTU dostaje każde nakrycie głowy i każda broń w prawej łapie). W grze, gdy "
+    "kostur jest Toolem na RightGripAttachment, a kapelusz akcesorium na HatAttachment, upadek ich nie zrzuci — "
     "trzeba je wtedy przypiąć do części HatPivot / StaffPivot albo zrzucić skryptem.",
+    "Goły kot (ciało bazowe): futro, pręgi, jasny brzuszek z kępką pod brodą i kolory to propozycja do oceny "
+    "(plansza ekwipunek/kot_mag_ekwipunek_plansza.jpg). Ogon wychodzi nisko (staw na wysokości łydek, pod dawną "
+    "szatą), więc goły kot ma u nasady ogona pas futra schodzący z tyłu bioder do stawu ogona (bryła bioder, znika "
+    "pod szatą). Nogi pod szatą były cienkie (udo 0,42, łydka 0,40 przy klockach 0,5 i 0,45) — bez szaty widać "
+    "krótkie, cienkie nóżki na dużych łapach; zostały bez zmian, bo w pełnym stroju są te same.",
+    "Upadek bez szaty: klip liczony na postaci odniesienia kładzie kota na lewym boku dzwonu szaty i na lewym "
+    "rękawie (pełny strój i każdy strój z szatą: najniższy punkt w ostatniej klatce 0,000, tułów 0,28 nad ziemią). "
+    "Goły kot i strój „kapelusz_i_kostur” leżą ok. 0,20 studa nad ziemią (najniżej lewa łapka 0,198, tułów 0,73), "
+    "bo dzwon szaty jest szerszy niż goły tułów; kapelusz i kostur leżą na ziemi. Klipy są wspólne (kontrakt), więc "
+    "poprawka wymaga decyzji: osobny upadek dla ciała albo przesunięcie korzenia w grze zależne od stroju.",
+    "Szarfa (kot_mag_pas) w pełnym stroju jest prawie cała schowana w górnej części dzwonu szaty (tak jak dotąd); "
+    "widać ją dopiero na samym futrze albo przy innej szacie.",
     "Łapy są bardzo krótkie (bark → nadgarstek 0,64 studa, bark poniżej spodu głowy): łapa nie sięga nad głowę ani do "
     "drugiej łapy. „Zamach nad głową” w kuli ognia to kostur uniesiony w górę i w tył z prawej strony głowy, "
     "kryształ ponad rondem kapelusza (ok. 3,8 studa; rondo 3,2), za głową; w lodowym pocisku drzewce trzyma tylko "
@@ -94,7 +137,9 @@ SLABOSCI = [
     "wypad ok. 0,35 studa do przodu; oba klipy kończą się w punkcie startu.",
     "Kontrola przenikania (python -B swiat/postacie/kot_mag.py --kontrola) liczy bryły jako skrzynki, stożki i "
     "ostrosłupy (dzwon szaty, uszy, kapelusz zwężają się jak w modelu); wąsy (cienkie kreski) i ramię z rękawem przy "
-    "barku nie są liczone. Rękaw ramienia (UpperArm) i kostur względem własnej łapy — tylko na arkuszach.",
+    "barku nie są liczone. Rękaw ramienia (UpperArm) i kostur względem własnej łapy — tylko na arkuszach. Działa na "
+    "każdym stroju z STROJE.",
+    "kot_mag_cialo.fbx/.glb ma tylko klip idle (reszta klipów: kot_mag__<klip>.fbx, te same kości i nazwy).",
 ]
 
 PALETA = {
@@ -151,17 +196,64 @@ def kostur():
     return a
 
 
-# --------------------------------------------------------------------------- postać
-def zbuduj():
-    p = Postac(ID, "Kot-Mag Crycket", typ="r15", skala=1.0, faza=0.05, paleta=PALETA, rozstaw_nog=0.3,
-               wymiary={"Head": (1.65, 1.3, 1.4),
-                        "UpperTorso": (1.3, 0.85, 0.95), "LowerTorso": (1.3, 0.25, 0.95),
-                        "UpperArm": (0.42, 0.42, 0.42), "LowerArm": (0.42, 0.36, 0.42), "Hand": (0.4, 0.22, 0.4),
-                        "UpperLeg": (0.5, 0.3, 0.5), "LowerLeg": (0.45, 0.27, 0.45), "Foot": (0.5, 0.18, 0.62)})
+# --------------------------------------------------------------------------- ciało bazowe („goły” kot)
+CIALO_TYP = "kot"
+KLASY = ("mag",)
+WYMIARY = {"Head": (1.65, 1.3, 1.4),
+           "UpperTorso": (1.3, 0.85, 0.95), "LowerTorso": (1.3, 0.25, 0.95),
+           "UpperArm": (0.42, 0.42, 0.42), "LowerArm": (0.42, 0.36, 0.42), "Hand": (0.4, 0.22, 0.4),
+           "UpperLeg": (0.5, 0.3, 0.5), "LowerLeg": (0.45, 0.27, 0.45), "Foot": (0.5, 0.18, 0.62)}
+# korekty chwytu kota (dane bohatera, nie przedmiotu): nakrycie głowy na kości nośnej HatPivot, broń w prawej łapie
+# na StaffPivot — {zaczep przedmiotu: (zaczep kota, pos, obrot)}; dzięki temu w upadku przedmiot spada
+KOREKTY_CHWYTU = {"HatAttachment": ("KapeluszAttachment", (0, 0.02, 0), (0, 0, 0)),
+                  "RightGripAttachment": ("KosturAttachment", (-0.08, 0, 0), (-90, 0, 0))}
+# przedmioty pełnego stroju kanonicznego (zbuduj()) — dawny model
+KANON = ("kot_mag_kapelusz", "kot_mag_szata", "kot_mag_pas", "kot_mag_kostur")
+ODNIESIENIE_KLIPOW = KANON                     # geometria, na której liczą się klipy (= dawny model)
+# stroje do plansz i kontroli (przebuduj.py -> wynik/kot_mag/ekwipunek/)
+STROJE = {"golas": (),
+          "pelny": KANON,
+          "bez_kapelusza": ("kot_mag_szata", "kot_mag_pas", "kot_mag_kostur"),
+          "kapelusz_i_kostur": ("kot_mag_kapelusz", "kot_mag_kostur"),
+          "sama_szata": ("kot_mag_szata", "kot_mag_pas")}     # nie „szata”: id kot_mag_szata ma przedmiot
+NAZWY_STROJOW = {"golas": "goły (ciało bazowe)", "pelny": "pełny strój", "bez_kapelusza": "bez kapelusza",
+                 "kapelusz_i_kostur": "sam kapelusz i kostur", "sama_szata": "sama szata z szarfą"}
+PLANSZA_ZBIORCZA = ("golas", "pelny", "kapelusz_i_kostur", "sama_szata")      # goły | pełny | dwa częściowe
+# filmy w stroju (strój, klip): dowód, że przedmioty idą za kośćmi, a goły kot rusza się dobrze bez szaty
+FILMY_EKWIPUNKU = (("golas", "idle"), ("golas", "chod"), ("golas", "kula_ognia"), ("golas", "upadek"),
+                   ("kapelusz_i_kostur", "upadek"), ("sama_szata", "bariera"), ("bez_kapelusza", "atak"))
 
-    # ---------------- głowa (układ: środek klocka głowy)
+
+def _postac(id, nazwa):
+    """Postać R15 o klockach kota z kośćmi uszu, ogona i kośćmi nośnymi kapelusza i kostura (20 zaczepów), bez
+    brył. Kolejność kości i zaczepów jak w dawnym zbuduj()."""
+    p = Postac(id, nazwa, typ="r15", skala=1.0, faza=0.05, paleta=PALETA, rozstaw_nog=0.3, wymiary=WYMIARY)
     w, h, d = p.wymiary("Head")
     srodek_glowy = tuple(p.staw("Head")[i] + p.srodek("Head")[i] for i in range(3))
+    # uszy na własnych kościach LeftEar / RightEar ze stawem u nasady ucha
+    for zn, kosc in ((1, "LeftEar"), (-1, "RightEar")):
+        nasada = (srodek_glowy[0] + zn * 0.6, srodek_glowy[1] + h / 2 + 0.09, srodek_glowy[2] - 0.05)
+        p.kosc(kosc, "Head", staw=nasada, czesc=(0.56, 0.72, 0.32), srodek=(zn * 0.17, 0.32, 0.0))
+    # ogon: nasada idzie spod szaty do tyłu i w lewo (+X), końcówka wznosi się obok szaty
+    p.kosc("Tail", "LowerTorso", staw=(0.1, 0.3, -0.5), czesc=(0.28, 0.28, 0.86), srodek=(0.33, -0.06, -0.28))
+    p.kosc("TailTip", "Tail", staw=(0.75, 0.24, -1.05), czesc=(0.28, 1.15, 0.28), srodek=(0, 0.52, 0))
+    # kości nośne kapelusza i kostura (bez brył): w spoczynku w ramkach HatAttachment i RightGripAttachment
+    zh, zg = p.zaczepy["HatAttachment"], p.zaczepy["RightGripAttachment"]
+    p.kosc("HatPivot", "Head", staw=tuple(p.staw("Head")[i] + zh["p"][i] for i in range(3)))
+    p.kosc("StaffPivot", "RightHand", staw=tuple(p.staw("RightHand")[i] + zg["p"][i] for i in range(3)))
+    p.zaczep("KapeluszAttachment", "HatPivot", (0, 0, 0), zh["r"])
+    p.zaczep("KosturAttachment", "StaffPivot", (0, 0, 0), zg["r"])
+    return p
+
+
+def _golas(id, nazwa, zaczepy_ekwipunku=False):
+    """Goły kot bez klipów: głowa, uszy, nogi, łapy i ogon jak w dawnym modelu, a tam, gdzie dawniej była szata —
+    pomarańczowe futro w pełnym rozmiarze klocka z pręgami i jasnym brzuszkiem (detale wystają 0,02–0,04)."""
+    p = _postac(id, nazwa)
+    p.typ_ciala = CIALO_TYP
+
+    # ---------------- głowa (układ: środek klocka głowy) — bez zmian
+    w, h, d = p.wymiary("Head")
     with p.na("Head", od="srodek"):
         z = d / 2
         p.blok("Glowa", (0, 0, 0), (w, h, d), "kot")
@@ -200,50 +292,42 @@ def zbuduj():
             p.blok("Usta b", (zn * 0.165, -0.37, z + 0.075), (0.12, 0.035, 0.04), "tusz", rot=(0, 0, zn * 30),
                    faza=0.0)
 
-    # uszy (trójkątne, odchylone na zewnątrz; wyżej i szerzej — przebijają rondo kapelusza z obu stron) — na własnych
-    # kościach LeftEar / RightEar ze stawem u nasady ucha: w spoczynku dokładnie tam, gdzie wcześniej na głowie
+    # uszy (trójkątne, odchylone na zewnątrz; przebijają rondo kapelusza z obu stron) — bez zmian
     for zn, s, kosc in ((1, "L", "LeftEar"), (-1, "P", "RightEar")):
-        nasada = (srodek_glowy[0] + zn * 0.6, srodek_glowy[1] + h / 2 + 0.09, srodek_glowy[2] - 0.05)
-        p.kosc(kosc, "Head", staw=nasada, czesc=(0.56, 0.72, 0.32), srodek=(zn * 0.17, 0.32, 0.0))
         with p.na(kosc, obrot=(0, 0, -zn * 28)):
             p.ostroslup("Ucho " + s, (0, 0.36, 0), (0.56, 0.72, 0.32), "kot", gora=(0.0, 0.12),
                         przes_gory=(zn * 0.05, 0))
             p.ostroslup("Ucho srodek " + s, (0, 0.3, 0.17), (0.32, 0.5, 0.04), "nos", "matowy",
                         gora=(0.0, 0.03), przes_gory=(zn * 0.03, 0), faza=0.0)
 
-    # ---------------- tułów: szata, kołnierz w szpic, zapinka z klejnotem, kaptur na plecach
+    # ---------------- tułów: futro, jasny brzuszek z kępką pod brodą, pręgi na plecach i bokach (dawniej szata)
     with p.na("UpperTorso", od="srodek"):
         w, h, d = p.wymiary("UpperTorso")
-        z = d / 2 + 0.05
-        p.blok("Szata gora", (0, 0, 0), (w + 0.1, h + 0.02, d + 0.1), "szata", "matowy")
-        p.blok("Piers", (0, h / 2 - 0.2, z + 0.012), (0.36, 0.36, 0.04), "kot_jasny", "matowy", faza=0.0)
-        for zn in (1, -1):
-            p.blok("Kolnierz", (zn * 0.17, h / 2 - 0.2, z + 0.03), (0.15, 0.52, 0.06), "szata_ciemna", "matowy",
-                   rot=(0, 0, zn * 28), faza=0.02)
-        p.blok("Listwa", (0, -0.12, z + 0.02), (0.16, 0.6, 0.05), "szata_ciemna", "matowy", faza=0.0)
-        p.blok("Zapinka", (0, 0.04, z + 0.05), (0.26, 0.26, 0.06), "zloto", "metal", rot=(0, 0, 45), faza=0.03)
-        p.blok("Klejnot", (0, 0.04, z + 0.09), (0.13, 0.13, 0.04), "krysztal", "swiecacy", rot=(0, 0, 45), faza=0.0)
-        p.blok("Ramiona", (0, h / 2 - 0.03, 0), (w + 0.26, 0.16, d + 0.22), "szata_ciemna", "matowy")
-        p.blok("Kaptur", (0, h / 2 - 0.12, -d / 2 - 0.12), (1.0, 0.5, 0.26), "szata_ciemna", "matowy")
-        p.klin("Kaptur szpic", (0, h / 2 - 0.5, -d / 2 - 0.14), (0.5, 0.3, 0.2), "szata_ciemna", "matowy",
-               rot=(180, 180, 0))
+        z = d / 2
+        p.blok("Futro tulow", (0, 0, 0), (w, h, d), "kot")
+        p.blok("Brzuszek", (0, -0.13, z), (0.8, 0.56, 0.04), "kot_jasny", "matowy", faza=0.03)
+        p.blok("Brzuszek gora", (0, 0.22, z), (0.56, 0.16, 0.04), "kot_jasny", "matowy", faza=0.03)
+        for i, x in enumerate((-0.15, 0.0, 0.15)):                # kępka futra pod brodą: trzy ząbki
+            p.ostroslup("Kepka piersi %d" % i, (x, 0.35, z), (0.17, 0.13 + (0.02 if x == 0 else 0), 0.04),
+                        "kot_jasny", "matowy", gora=(0.0, 0.04), faza=0.0)
+        for i, (y, szer, bok) in enumerate(((0.2, 0.9, 0.5), (-0.1, 0.7, 0.36))):
+            p.blok("Prega plecy %d" % i, (0, y, -z - 0.005), (szer, 0.1, 0.05), "kot_ciemny", "matowy", faza=0.0)
+            for zn, s in ((1, "L"), (-1, "P")):
+                p.blok("Prega bok %s%d" % (s, i), (zn * (w / 2 + 0.005), y, -z + bok / 2), (0.05, 0.1, bok),
+                       "kot_ciemny", "matowy", faza=0.0)
 
-    # ---------------- pas + rdzeń dzwonu szaty (sztywno na LowerTorso)
-    with p.na("LowerTorso"):                                   # (0,0,0) = staw bioder (y = 0,75 w modelu)
-        p.blok("Pas", (0, 0.13, 0), (1.44, 0.2, 1.1), "szata_ciemna", "matowy")
-        p.blok("Pas klamra", (0, 0.13, 0.57), (0.26, 0.22, 0.06), "wstazka", "metal", faza=0.02)
-        # za duża szata: jeden ośmiokątny dzwon od pasa (y ≈ 1,0) do ziemi (y ≈ 0,1), szerszy u dołu o 0,25 z każdej
-        # strony; nogi chodzą w środku, spod rąbka wystają tylko łapy. Z tyłu tren leżący na ziemi.
-        p.stozek("Szata dzwon", (0, -0.2, -0.04), (2.1, 0.9, 1.75), "szata", "matowy", gora=0.72, segm=8)
-        p.stozek("Szata rabek", (0, -0.61, -0.04), (2.16, 0.1, 1.8), "szata_ciemna", "matowy", gora=0.97, segm=8,
-                 faza=0.0)
-        p.stozek("Szata lamowka", (0, -0.53, -0.04), (2.07, 0.05, 1.73), "wstazka", "matowy", gora=0.99, segm=8,
-                 faza=0.0)
-        p.blok("Szata pola", (0, -0.2, 0.62), (0.16, 0.8, 0.06), "szata_ciemna", "matowy", rot=(-14, 0, 0), faza=0.0)
-        # tren: klin 1,6 × 0,15 × 0,7 leży na ziemi za piętami (wysoka ściana przy szacie, skos ku tyłowi)
-        p.klin("Tren", (0, -0.665, -1.12), (1.6, 0.15, 0.7), "szata", "matowy", faza=0.03)
+    # ---------------- biodra: futro, dół brzuszka, futro u nasady ogona (ogon wychodzi nisko, spod dawnej szaty)
+    with p.na("LowerTorso", od="srodek"):
+        w, h, d = p.wymiary("LowerTorso")
+        z = d / 2
+        sr = p.staw("LowerTorso")[1] + p.srodek("LowerTorso")[1]      # wysokość środka klocka bioder w modelu
+        p.blok("Futro biodra", (0, 0, 0), (w, h, d), "kot")
+        p.blok("Brzuszek dol", (0, 0.015, z), (0.66, 0.2, 0.04), "kot_jasny", "matowy", faza=0.03)
+        # pas futra od tyłu bioder (y = 0,84) do stawu ogona (0,1; 0,3; −0,5), z jedną pręgą
+        p.blok("Ogon u nasady", (0.1, 0.48 - sr, -0.5), (0.28, 0.72, 0.28), "kot", faza=0.04)
+        p.blok("Ogon u nasady pasek", (0.1, 0.52 - sr, -0.5), (0.32, 0.08, 0.32), "kot_ciemny", "matowy", faza=0.02)
 
-    # ---------------- nogi: w środku dzwonu; łapki z jasnymi palcami wystają spod rąbka
+    # ---------------- nogi i łapy — bez zmian (dawniej w środku dzwonu szaty)
     for s, zn in (("Left", 1), ("Right", -1)):
         with p.na(s + "UpperLeg"):                             # staw biodra (x = ±0,3, y = 0,75)
             p.blok("Udo", (0, -0.15, 0), (0.42, 0.3, 0.42), "kot", faza=0.03)
@@ -258,23 +342,21 @@ def zbuduj():
             for i, x in enumerate((-0.12, 0.12)):
                 p.blok("Szpara %d" % i, (x, 0.02, d / 2 + 0.442), (0.03, 0.1, 0.04), "kot_ciemny", faza=0.0)
 
-    # ---------------- ręce: za długie rękawy z szerokim mankietem, łapka ledwo wystaje
+    # ---------------- ręce: futro z pręgą na ramieniu i przedramieniu (dawniej rękawy), łapki bez zmian
     for s, zn in (("Left", 1), ("Right", -1)):
         with p.na(s + "UpperArm", od="srodek"):
-            p.blok("Rekaw", (0, 0, 0), (0.5, 0.48, 0.5), "szata", "matowy")
-        with p.na(s + "LowerArm"):                             # staw łokcia
-            p.ostroslup("Mankiet", (0, -0.24, 0), (0.76, 0.48, 0.76), "szata", "matowy", rot=(180, 0, 0),
-                        gora=(0.5, 0.5))
-            p.blok("Obszycie rekawa", (0, -0.43, 0), (0.79, 0.1, 0.79), "szata_ciemna", "matowy", faza=0.03)
-            p.blok("Wnetrze rekawa", (0, -0.485, 0), (0.62, 0.02, 0.62), "tusz", "matowy", faza=0.0)
+            w, h, d = p.wymiary(s + "UpperArm")
+            p.blok("Futro ramie", (0, 0, 0), (w, h, d), "kot")
+            p.blok("Prega ramie", (0, -0.05, 0), (w + 0.04, 0.07, d + 0.04), "kot_ciemny", "matowy", faza=0.02)
+        with p.na(s + "LowerArm", od="srodek"):
+            w, h, d = p.wymiary(s + "LowerArm")
+            p.blok("Futro przedramie", (0, 0, 0), (w, h, d), "kot")
+            p.blok("Prega przedramie", (0, 0.04, 0), (w + 0.04, 0.07, d + 0.04), "kot_ciemny", "matowy", faza=0.02)
         with p.na(s + "Hand"):                                 # staw nadgarstka
             p.blok("Lapka", (0, -0.19, 0), (0.38, 0.32, 0.38), "kot", faza=0.05)
             p.blok("Lapka palce", (0, -0.31, 0.13), (0.3, 0.08, 0.14), "kot_jasny", "matowy", faza=0.02)
 
-    # ---------------- ogon: dwie dodatkowe kości (kołysanie)
-    # nasada idzie spod szaty do tyłu i w lewo (+X), końcówka wznosi się obok szaty — widać ją też z przodu
-    p.kosc("Tail", "LowerTorso", staw=(0.1, 0.3, -0.5), czesc=(0.28, 0.28, 0.86), srodek=(0.33, -0.06, -0.28))
-    p.kosc("TailTip", "Tail", staw=(0.75, 0.24, -1.05), czesc=(0.28, 1.15, 0.28), srodek=(0, 0.52, 0))
+    # ---------------- ogon: dwie dodatkowe kości (kołysanie) — bez zmian
     with p.na("Tail", obrot=(0, -50, 0)):
         p.blok("Ogon nasada", (0, -0.06, -0.47), (0.28, 0.28, 1.0), "kot", faza=0.04)     # zachodzi na końcówkę
         p.blok("Ogon pasek", (0, -0.06, -0.62), (0.32, 0.32, 0.08), "kot_ciemny", "matowy", faza=0.02)
@@ -285,23 +367,152 @@ def zbuduj():
         for k, y in enumerate((0.2, 0.5, 0.8)):
             p.blok("Ogon pasek %d" % k, (0, y, 0), (0.32, 0.08, 0.32), "kot_ciemny", "matowy", faza=0.02)
 
-    # ---------------- kości nośne kapelusza i kostura (bez brył): w spoczynku w ramkach HatAttachment
-    # i RightGripAttachment, więc kapelusz i kostur są tam, gdzie były; w upadku zsuwają się / wypadają
-    zh, zg = p.zaczepy["HatAttachment"], p.zaczepy["RightGripAttachment"]
-    p.kosc("HatPivot", "Head", staw=tuple(p.staw("Head")[i] + zh["p"][i] for i in range(3)))
-    p.kosc("StaffPivot", "RightHand", staw=tuple(p.staw("RightHand")[i] + zg["p"][i] for i in range(3)))
-    p.zaczep("KapeluszAttachment", "HatPivot", (0, 0, 0), zh["r"])
-    p.zaczep("KosturAttachment", "StaffPivot", (0, 0, 0), zg["r"])
+    for c in p.czesci:
+        c["golas"] = True                                     # gołe bryły (zdejmuje je powłoka na tej kości)
+    if zaczepy_ekwipunku:
+        for kosc in R15_KOSCI:
+            p.zaczep(zaczep_ekwipunku(kosc), kosc, p.srodek(kosc))
+    return p
 
-    # ---------------- akcesoria
-    # kapelusz i kostur: osobne przedmioty (przedmioty/kot_mag_*.fbx); w FBX kota ich nie ma, w renderach są
-    kap, kos = kapelusz(), kostur()
-    p.zaloz(kap, zaczep="KapeluszAttachment", pos=(0, 0.02, 0), eksport=False)
-    p.zaloz(kos, zaczep="KosturAttachment", pos=(-0.08, 0, 0), obrot=(-90, 0, 0), eksport=False)
 
-    klipy(p)
-    p.ustaw_poze_renderu("idle", 0)
-    return [p, kap, kos]
+# --------------------------------------------------------------------------- przedmioty stroju
+def przedmioty():
+    """Wszystkie przedmioty Kota-Maga — rozbiór dawnego modelu z EKWIPUNEK.md pkt 3. Bryły są te same co w dawnym
+    zbuduj() (te same liczby), tylko pogrupowane w segmenty po kościach; bryły modelowane dawniej od stawu kości
+    (biodra, przedramiona) są przesunięte o środek klocka (układ segmentu = środek klocka)."""
+    m = _postac(ID + "_miara", NAZWA)
+    W = m.wymiary
+
+    def nowy(id, nazwa, slot, kategoria, **k):
+        return Przedmiot(id, nazwa, slot, kategoria, m, cialo=CIALO_TYP, klasy=KLASY, zestaw=ID, paleta=PALETA, **k)
+
+    def od_stawu(kosc):                       # układ stawu kości w segmencie (środek klocka): przesunięcie −środek
+        return tuple(-v for v in m.srodek(kosc))
+
+    # --- kapelusz (Helmet): na zaczepie; korekta na HatPivot w KOREKTY_CHWYTU; uszy przechodzą przez rondo
+    kap = nowy("kot_mag_kapelusz", "Kapelusz Kota-Maga", "Helmet", "Armor")
+    kap.na_zaczepie(kapelusz())
+
+    # --- szata (Chest): kołnierz w szpic, zapinka z klejnotem, kaptur na plecach, za długie rękawy, dzwon z trenem
+    sz = nowy("kot_mag_szata", "Szata Kota-Maga", "Chest", "Armor")
+    a = sz.segment("UpperTorso", zakrywa=True)
+    w, h, d = W("UpperTorso")
+    z = d / 2 + 0.05
+    a.blok("Szata gora", (0, 0, 0), (w + 0.1, h + 0.02, d + 0.1), "szata", "matowy")
+    a.blok("Piers", (0, h / 2 - 0.2, z + 0.012), (0.36, 0.36, 0.04), "kot_jasny", "matowy", faza=0.0)
+    for zn in (1, -1):
+        a.blok("Kolnierz", (zn * 0.17, h / 2 - 0.2, z + 0.03), (0.15, 0.52, 0.06), "szata_ciemna", "matowy",
+               rot=(0, 0, zn * 28), faza=0.02)
+    a.blok("Listwa", (0, -0.12, z + 0.02), (0.16, 0.6, 0.05), "szata_ciemna", "matowy", faza=0.0)
+    a.blok("Zapinka", (0, 0.04, z + 0.05), (0.26, 0.26, 0.06), "zloto", "metal", rot=(0, 0, 45), faza=0.03)
+    a.blok("Klejnot", (0, 0.04, z + 0.09), (0.13, 0.13, 0.04), "krysztal", "swiecacy", rot=(0, 0, 45), faza=0.0)
+    a.blok("Ramiona", (0, h / 2 - 0.03, 0), (w + 0.26, 0.16, d + 0.22), "szata_ciemna", "matowy")
+    a.blok("Kaptur", (0, h / 2 - 0.12, -d / 2 - 0.12), (1.0, 0.5, 0.26), "szata_ciemna", "matowy")
+    a.klin("Kaptur szpic", (0, h / 2 - 0.5, -d / 2 - 0.14), (0.5, 0.3, 0.2), "szata_ciemna", "matowy",
+           rot=(180, 180, 0))
+    for s in ("Left", "Right"):
+        a = sz.segment(s + "UpperArm", zakrywa=True)
+        a.blok("Rekaw", (0, 0, 0), (0.5, 0.48, 0.5), "szata", "matowy")
+        a = sz.segment(s + "LowerArm", zakrywa=True)
+        with a.uklad(pos=od_stawu(s + "LowerArm")):          # staw łokcia
+            a.ostroslup("Mankiet", (0, -0.24, 0), (0.76, 0.48, 0.76), "szata", "matowy", rot=(180, 0, 0),
+                        gora=(0.5, 0.5))
+            a.blok("Obszycie rekawa", (0, -0.43, 0), (0.79, 0.1, 0.79), "szata_ciemna", "matowy", faza=0.03)
+            a.blok("Wnetrze rekawa", (0, -0.485, 0), (0.62, 0.02, 0.62), "tusz", "matowy", faza=0.0)
+    # za duża szata: jeden ośmiokątny dzwon od pasa (y ≈ 1,0) do ziemi (y ≈ 0,1), szerszy u dołu o 0,25 z każdej
+    # strony; nogi chodzą w środku, spod rąbka wystają tylko łapy. Z tyłu tren leżący na ziemi.
+    a = sz.segment("LowerTorso", zakrywa=True)
+    with a.uklad(pos=od_stawu("LowerTorso")):                 # (0,0,0) = staw bioder (y = 0,75 w modelu)
+        a.stozek("Szata dzwon", (0, -0.2, -0.04), (2.1, 0.9, 1.75), "szata", "matowy", gora=0.72, segm=8)
+        a.stozek("Szata rabek", (0, -0.61, -0.04), (2.16, 0.1, 1.8), "szata_ciemna", "matowy", gora=0.97, segm=8,
+                 faza=0.0)
+        a.stozek("Szata lamowka", (0, -0.53, -0.04), (2.07, 0.05, 1.73), "wstazka", "matowy", gora=0.99, segm=8,
+                 faza=0.0)
+        a.blok("Szata pola", (0, -0.2, 0.62), (0.16, 0.8, 0.06), "szata_ciemna", "matowy", rot=(-14, 0, 0), faza=0.0)
+        # tren: klin 1,6 × 0,15 × 0,7 leży na ziemi za piętami (wysoka ściana przy szacie, skos ku tyłowi)
+        a.klin("Tren", (0, -0.665, -1.12), (1.6, 0.15, 0.7), "szata", "matowy", faza=0.03)
+
+    # --- szarfa z klamrą (Belt): nakładka na biodrach (na gołym futrze +0,07 z boku, w pełnym stroju w dzwonie)
+    pas = nowy("kot_mag_pas", "Szarfa z klamrą", "Belt", "Armor")
+    a = pas.segment("LowerTorso")
+    with a.uklad(pos=od_stawu("LowerTorso")):
+        a.blok("Pas", (0, 0.13, 0), (1.44, 0.2, 1.1), "szata_ciemna", "matowy")
+        a.blok("Pas klamra", (0, 0.13, 0.57), (0.26, 0.22, 0.06), "wstazka", "metal", faza=0.02)
+
+    # --- kostur (Weapon): na zaczepie; korekta chwytu kota (StaffPivot) w KOREKTY_CHWYTU
+    kos = nowy("kot_mag_kostur", "Kostur Kota-Maga", "Weapon", "Weapons")
+    kos.na_zaczepie(kostur())
+    return [kap, sz, pas, kos]
+
+
+def wybierz(ids, wszystkie=None):
+    """Przedmioty o podanych id (w tej kolejności) z listy `wszystkie` (domyślnie świeże przedmioty())."""
+    wszystkie = {x.id: x for x in (wszystkie or przedmioty())}
+    return [wszystkie[i] for i in ids]
+
+
+# --------------------------------------------------------------------------- klipy, ciało, stroje
+_ODNIESIENIE = []
+
+
+def postac_odniesienia():
+    """Dawny model (pełny strój z kapeluszem i kosturem) z klipami policzonymi tak jak przed D-071 — źródło klipów
+    każdego stroju. Liczona raz na proces (klipy zależą od geometrii: stopy na ziemi, tor upadku kapelusza
+    i kostura)."""
+    if not _ODNIESIENIE:
+        p = ubierz(_golas(ID, NAZWA), wybierz(ODNIESIENIE_KLIPOW), id=ID, nazwa=NAZWA, korekty=KOREKTY_CHWYTU)
+        klipy(p)
+        p.ustaw_poze_renderu("idle", 0)
+        _ODNIESIENIE.append(p)
+    return _ODNIESIENIE[0]
+
+
+def cialo(zaczepy_ekwipunku=False):
+    """Goły kot „kot_mag_cialo” z klipami postaci odniesienia. zaczepy_ekwipunku=True — dodatkowo 15 zaczepów
+    Ekw<Kosc>Attachment (środek klocka kości) dla eksportu ciała do gry; w zbuduj() ich nie ma."""
+    return kopiuj_klipy(postac_odniesienia(), _golas(ID + "_cialo", NAZWA + " (ciało bazowe)", zaczepy_ekwipunku))
+
+
+def stroj(nazwa, wszystkie=None):
+    """Kot-Mag w stroju z STROJE: postać „kot_mag_<nazwa>”."""
+    return ubierz(cialo(), wybierz(STROJE[nazwa], wszystkie), id="%s_%s" % (ID, nazwa),
+                  nazwa="%s — %s" % (NAZWA, NAZWY_STROJOW[nazwa]), korekty=KOREKTY_CHWYTU)
+
+
+def zbuduj():
+    """[Kot-Mag w pełnym stroju kanonicznym (id „kot_mag”), kapelusz, kostur] — jak przed D-071."""
+    prz = przedmioty()
+    p = ubierz(cialo(), wybierz(KANON, prz), id=ID, nazwa=NAZWA, korekty=KOREKTY_CHWYTU)
+    po_id = {x.id: x for x in prz}
+    # kapelusz i kostur: osobne przedmioty (przedmioty/kot_mag_*.fbx); w FBX kota ich nie ma (eksport=False),
+    # w renderach i klipach są na kościach HatPivot / StaffPivot
+    return [p, po_id["kot_mag_kapelusz"].segmenty[0]["akc"], po_id["kot_mag_kostur"].segmenty[0]["akc"]]
+
+
+def warianty(rodzaj="plansze"):
+    """Modele dla przebuduj.py (wynik/kot_mag/ekwipunek/): „plansze” — postacie ze STROJE (id kot_mag_<strój>)
+    i ikony całych przedmiotów; „eksport” — gołe ciało z zaczepami Ekw… (tylko klip idle: pozostałe klipy są
+    w kot_mag__<klip>.fbx, te same kości) i każdy segment kostny osobno."""
+    prz = przedmioty()
+    if rodzaj == "plansze":
+        return [stroj(n, prz) for n in STROJE] + [x.ikona() for x in prz]
+    if rodzaj == "eksport":
+        c = cialo(zaczepy_ekwipunku=True)
+        c.klipy = [k for k in c.klipy if k.nazwa == "idle"]
+        return [c] + [s["akc"] for x in prz for s in x.segmenty if s["kosc"]]
+    raise ValueError("rodzaj: plansze albo eksport")
+
+
+def ekwipunek_json():
+    """Dane ekwipunku bohatera (EKWIPUNEK.md pkt 5); ścieżki plików i trójkąty dopisuje przebuduj.py. Przedmioty na
+    zaczepie mają już korektę chwytu kota (zaczep KapeluszAttachment / KosturAttachment, kość HatPivot /
+    StaffPivot)."""
+    return {"bohater": ID, "cialo": CIALO_TYP, "klasy": list(KLASY), "kanon": list(KANON),
+            "odniesienie_klipow": list(ODNIESIENIE_KLIPOW), "stroje": {k: list(v) for k, v in STROJE.items()},
+            "wlosy": None,
+            "korekty_chwytu": {z: {"zaczep": zz, "pos": list(pos), "rot": list(ob)}
+                               for z, (zz, pos, ob) in KOREKTY_CHWYTU.items()},
+            "przedmioty": [x.opis(KOREKTY_CHWYTU) for x in przedmioty()]}
 
 
 # --------------------------------------------------------------------------- klipy-szkice (klucze co kilka klatek)
@@ -1188,11 +1399,23 @@ def _wypisz_kontrole(wynik):
 if __name__ == "__main__":
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    postac = zbuduj()[0]
     if "--kontrola" in sys.argv:
-        probki = None
-        if "--blender" in sys.argv:
-            from swiat.postacie.roblox_postac import probki_z_blendera
-            probki = probki_z_blendera([postac])[postac.id]
-        wybrane = [a for a in sys.argv[1:] if not a.startswith("--")]
-        sys.exit(1 if _wypisz_kontrole(kontrola(postac, probki, klipy_=wybrane or None)) else 0)
+        # --stroj <nazwa> — jeden strój z STROJE (domyślnie wszystkie); pozostałe argumenty bez „--” — wybrane klipy
+        argumenty = sys.argv[1:]
+        stroje = list(STROJE)
+        if "--stroj" in argumenty:
+            i = argumenty.index("--stroj")
+            stroje = [argumenty[i + 1]]
+            del argumenty[i:i + 2]
+        wybrane = [a for a in argumenty if not a.startswith("--")]
+        zle = 0
+        for s in stroje:
+            postac = stroj(s)
+            print("=== strój „%s” (%s): %s" % (s, NAZWY_STROJOW[s], ", ".join(STROJE[s]) or "bez przedmiotów"))
+            probki = None
+            if "--blender" in argumenty:
+                from swiat.postacie.roblox_postac import probki_z_blendera
+                probki = probki_z_blendera([postac])[postac.id]
+            zle += _wypisz_kontrole(kontrola(postac, probki, klipy_=wybrane or None))
+        sys.exit(1 if zle else 0)
+    zbuduj()

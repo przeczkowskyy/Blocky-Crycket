@@ -21,6 +21,17 @@ Układ wynik/<moduł>/ (taki sam dla postaci, petów i zestawów):
   przedmioty/<id>.fbx, przedmioty/<id>.glb, przedmioty/<id>_tekstury/              każde akcesorium osobno
   ikony/<id>_ikona.png, <moduł>_ikony_arkusz.jpg                                   ikony przedmiotów
   raport.json (dane z Blendera), raport.txt (to samo dla człowieka + znane słabości z listy SLABOSCI modułu)
+
+Opcjonalnie — bohater z ciałem bazowym i ekwipunkiem (D-071, EKWIPUNEK.md): gdy moduł ma cialo(), przedmioty(),
+warianty() i STROJE, ten sam przebieg robi dodatkowo wynik/<moduł>/ekwipunek/:
+  <id>_<strój>_plansza.jpg, <id>_<strój>_bohater.jpg     każdy strój z STROJE (golas = ciało bazowe)
+  <id>_ekwipunek_plansza.jpg                             goły | pełny | dwa częściowe (PLANSZA_ZBIORCZA)
+  <id>_<strój>_<klip>.mp4, …_klatki.jpg, …_z_filmu.jpg   filmy z FILMY_EKWIPUNKU (strój, klip)
+  <id>_cialo.fbx, <id>_cialo.glb, <id>_cialo_tekstury/   gołe ciało z włosami i zaczepami Ekw<Kosc>Attachment
+  przedmioty/<segment>.fbx/.glb/_tekstury/              każdy segment kostny osobno (broń: przedmioty/ wyżej)
+  ikony/<przedmiot>_ikona.png, <id>_ekwipunek_ikony_arkusz.jpg   ikony całych przedmiotów
+  ekwipunek.json                                         dane przedmiotów dla gry (moduł ekwipunek_json())
+Inne moduły przebudowują się jak dotąd.
 """
 import argparse
 import datetime
@@ -147,7 +158,7 @@ def wek(v):
     return "(" + "; ".join(f2(x) for x in v) + ")"
 
 
-def raport_txt(mod_nazwa, modul, rap, pliki, uwagi, kontrola):
+def raport_txt(mod_nazwa, modul, rap, pliki, uwagi, kontrola, ekwipunek=None):
     L = []
     data = datetime.date.today().strftime("%d.%m.%Y")
     opis = (modul.__doc__ or "").strip().splitlines()[0] if modul.__doc__ else mod_nazwa
@@ -202,11 +213,177 @@ def raport_txt(mod_nazwa, modul, rap, pliki, uwagi, kontrola):
             for o in r.get("ostrzezenia", []):
                 L.append("OSTRZEŻENIE %s: %s" % (r["id"], o))
         L.append("")
+    if ekwipunek:
+        L += ekwipunek
     if uwagi:
         L += ["UWAGI PODGLĄDU"] + ["- " + u for u in uwagi] + [""]
     L += ["KONTROLA EKSPORTÓW"] + ["- " + k for k in kontrola] + [""]
     L += ["PLIKI"] + ["- " + p for p in pliki] + [""]
     return "\n".join(L)
+
+
+# --------------------------------------------------------------------------- opcjonalnie: ekwipunek bohatera (D-071)
+OPAKOWANIE = '''# -*- coding: utf-8 -*-
+# Plik roboczy przebuduj.py (katalog tymczasowy): zbuduj() = warianty(%(rodzaj)r) modułu bohatera.
+import importlib.util, sys
+if %(repo)r not in sys.path:
+    sys.path.insert(0, %(repo)r)
+_s = importlib.util.spec_from_file_location("bohater_%(nazwa)s", %(sciezka)r)
+_m = importlib.util.module_from_spec(_s)
+_s.loader.exec_module(_m)
+
+
+def zbuduj():
+    return _m.warianty(%(rodzaj)r)
+'''
+
+
+def ma_ekwipunek(modul):
+    return all(hasattr(modul, n) for n in ("cialo", "przedmioty", "warianty", "STROJE"))
+
+
+def ekwipunek_blender(mod_nazwa, modul, sciezka, robocze, a):
+    """Rendery i eksporty wariantów (przed czyszczeniem wynik/<moduł>/): plansze strojów i ikony, filmy w strojach,
+    eksport gołego ciała i segmentów. Zwraca słownik folderów roboczych."""
+    r = {"plansze": os.path.join(robocze, "ekw_plansze"), "eksport": os.path.join(robocze, "ekw_eksport"),
+         "filmy": []}
+    opak = {}
+    for rodzaj in ("plansze", "eksport"):
+        opak[rodzaj] = os.path.join(robocze, "%s_ekw_%s.py" % (mod_nazwa, rodzaj))
+        with open(opak[rodzaj], "w", encoding="utf-8", newline="\n") as f:
+            f.write(OPAKOWANIE % {"rodzaj": rodzaj, "repo": REPO, "nazwa": mod_nazwa, "sciezka": sciezka})
+    r["tekst_plansze"] = podglad(opak["plansze"], r["plansze"])
+    r["tekst_eksport"] = podglad(opak["eksport"], r["eksport"], "--eksport", "--bez-renderu")
+    if not a.bez_filmow:
+        wybrane = a.filmy.split(",") if a.filmy else None
+        for stroj, klip in getattr(modul, "FILMY_EKWIPUNKU", ()):
+            if wybrane is None or klip in wybrane:
+                pid = "%s_%s" % (modul.ID, stroj)
+                wyj = os.path.join(robocze, "ekw_film_%s_%s" % (pid, klip))
+                podglad(opak["plansze"], wyj, "--klip", klip, "--tylko", pid)
+                r["filmy"].append((pid, klip, wyj))
+    return r
+
+
+def plansza_zbiorcza(obrazy, cel, tytul):
+    """Kadry bohaterskie strojów obok siebie, podpisy pod spodem (na arkuszu, nie na modelach)."""
+    from PIL import Image, ImageDraw, ImageFont
+    if not obrazy:
+        return False
+    try:
+        fn = ImageFont.truetype(r"C:\Windows\Fonts\segoeui.ttf", 20)
+        fb = ImageFont.truetype(r"C:\Windows\Fonts\segoeuib.ttf", 26)
+    except OSError:
+        fn = fb = ImageFont.load_default()
+    K = 450
+    im = Image.new("RGB", (len(obrazy) * K, K + 100), "#1d1729")
+    dr = ImageDraw.Draw(im)
+    dr.text((14, 12), tytul, font=fb, fill="#ffffff")
+    for i, (podpis, p) in enumerate(obrazy):
+        ob = Image.open(p).convert("RGB")
+        ob.thumbnail((K - 10, K - 10), Image.LANCZOS)
+        x = i * K + (K - ob.width) // 2
+        im.paste(ob, (x, 52))
+        dr.text((i * K + (K - dr.textlength(podpis, font=fn)) // 2, K + 56), podpis, font=fn, fill="#d9d0ee")
+    im.save(cel, quality=88)
+    return True
+
+
+def ekwipunek_uloz(mod_nazwa, modul, r, cel, rap_glowny=()):
+    """Układa wynik/<moduł>/ekwipunek/ i pisze ekwipunek.json (rap_glowny: raporty głównego przebiegu — broń).
+    Zwraca (pliki, kontrola, raport)."""
+    from swiat.postacie.biblioteka.postac import Akcesorium as Akc
+    ID = modul.ID
+    ekw = os.path.join(cel, "ekwipunek")
+    os.makedirs(ekw, exist_ok=True)
+    pliki = []
+
+    def wez(zrodlo, nazwa_cel):
+        if kopiuj(zrodlo, os.path.join(ekw, nazwa_cel)):
+            pliki.append("ekwipunek/" + nazwa_cel + ("/" if os.path.isdir(zrodlo) else ""))
+            return True
+        return False
+    for s in modul.STROJE:
+        for kon in ("_plansza.jpg", "_bohater.jpg"):
+            wez(os.path.join(r["plansze"], "%s_%s%s" % (ID, s, kon)), "%s_%s%s" % (ID, s, kon))
+    nazwy = getattr(modul, "NAZWY_STROJOW", {})
+    zb = [(nazwy.get(s, s), os.path.join(ekw, "%s_%s_bohater.jpg" % (ID, s)))
+          for s in getattr(modul, "PLANSZA_ZBIORCZA", list(modul.STROJE)[:4])]
+    if plansza_zbiorcza([x for x in zb if os.path.isfile(x[1])], os.path.join(ekw, ID + "_ekwipunek_plansza.jpg"),
+                        "%s — ciało bazowe i stroje z przedmiotów" % getattr(modul, "NAZWA", ID)):
+        pliki.append("ekwipunek/%s_ekwipunek_plansza.jpg" % ID)
+    for pid, klip, wyj in r["filmy"]:
+        for kon in (".mp4", "_klatki.jpg", "_z_filmu.jpg"):
+            n = "%s_%s%s" % (pid, klip, kon)
+            wez(os.path.join(wyj, n), n)
+    cid = ID + "_cialo"
+    for kon in (".fbx", ".glb", "_tekstury"):
+        wez(os.path.join(r["eksport"], cid + kon), cid + kon)
+    raporty = {}
+    for f in os.listdir(r["eksport"]):
+        if f.endswith("_raport.json"):
+            with open(os.path.join(r["eksport"], f), encoding="utf-8") as fh:
+                d = json.load(fh)
+            raporty[d["id"]] = d
+    glowne = {d["id"]: d for d in rap_glowny if d.get("rodzaj") == "akcesorium" and d["id"] not in raporty}
+    prz = modul.przedmioty()
+    ikony = []
+    for x in prz:
+        for s in x.segmenty:
+            if s["kosc"]:
+                for kon in (".fbx", ".glb", "_tekstury"):
+                    wez(os.path.join(r["eksport"], s["akc"].id + kon), "przedmioty/" + s["akc"].id + kon)
+        ik = x.ikona()
+        if isinstance(ik, Akc) and wez(os.path.join(r["plansze"], ik.id + "_ikona.png"), "ikony/%s_ikona.png" % x.id):
+            ikony.append((x.nazwa, os.path.join(ekw, "ikony", "%s_ikona.png" % x.id)))
+    if ikony:
+        arkusz_ikon(ikony, os.path.join(ekw, ID + "_ekwipunek_ikony_arkusz.jpg"), "Przedmioty stroju — " + ID)
+        pliki.append("ekwipunek/%s_ekwipunek_ikony_arkusz.jpg" % ID)
+    # ekwipunek.json: dane modułu + pliki, trójkąty i attachment (minus środek skrzynki siatki od zaczepu)
+    dane = modul.ekwipunek_json() if hasattr(modul, "ekwipunek_json") else {"przedmioty": [x.opis() for x in prz]}
+    for wpis in dane["przedmioty"]:
+        wpis["plik_ikony"] = "wynik/%s/ekwipunek/ikony/%s_ikona.png" % (mod_nazwa, wpis["id"])
+        for c in wpis["czesci"]:
+            folder = "ekwipunek/przedmioty" if c["zaczep"].startswith("Ekw") else "przedmioty"
+            for kon in ("fbx", "glb"):
+                c[kon] = "wynik/%s/%s/%s.%s" % (mod_nazwa, folder, c["id"], kon)
+            rp = raporty.get(c["id"]) or glowne.get(c["id"])
+            if rp:
+                c["trojkaty"] = rp.get("trojkaty_razem")
+                c["attachment_pos"] = [round(-v, 4) + 0.0 for v in (rp.get("srodek_skrzynki_od_zaczepu") or [0, 0, 0])]
+    dane["cialo_pliki"] = {"fbx": "wynik/%s/ekwipunek/%s.fbx" % (mod_nazwa, cid),
+                           "glb": "wynik/%s/ekwipunek/%s.glb" % (mod_nazwa, cid)}
+    with open(os.path.join(ekw, "ekwipunek.json"), "w", encoding="utf-8", newline="\n") as f:
+        json.dump(dane, f, ensure_ascii=False, indent=1)
+    pliki.append("ekwipunek/ekwipunek.json")
+    kontrola = ["ekwipunek: " + l.split("KONTROLA ", 1)[1].strip() for l in r["tekst_eksport"].splitlines()
+                if "POSTAC | KONTROLA " in l]
+    rap = {"stroje": {k: list(v) for k, v in modul.STROJE.items()}, "filmy": [[p, k] for p, k, _ in r["filmy"]],
+           "modele": list(raporty.values())}
+    return pliki, kontrola, rap
+
+
+def raport_ekwipunku(modul, rap):
+    """Sekcja raport.txt: stroje, przedmioty z segmentami i trójkątami."""
+    L = ["EKWIPUNEK (D-071: ciało bazowe + strój z przedmiotów; pliki w ekwipunek/)"]
+    nazwy = getattr(modul, "NAZWY_STROJOW", {})
+    for s, ids in rap["stroje"].items():
+        L.append("- strój %s (%s): %s" % (s, nazwy.get(s, s), ", ".join(ids) or "bez przedmiotów"))
+    tr = {m["id"]: m.get("trojkaty_razem") for m in rap["modele"]}
+    korekty = getattr(modul, "KOREKTY_CHWYTU", {})       # opcjonalnie: korekty chwytu bohatera (kot: kości nośne)
+    for x in modul.przedmioty():
+        seg = []
+        for s in x.segmenty:
+            if s["kosc"]:
+                seg.append("%s %s%s %s tr." % (s["akc"].id, s["kosc"], " (powłoka)" if s["zakrywa"] else "",
+                                               tr.get(s["akc"].id, "?")))
+            else:
+                seg.append("%s na %s" % (s["akc"].id, korekty.get(s["zaczep"], (s["zaczep"],))[0]))
+        L.append("- %s „%s” [%s%s]: %s" % (x.id, x.nazwa, x.slot, ", część " + x.czesc_od if x.czesc_od else "",
+                                          "; ".join(seg)))
+    if rap["filmy"]:
+        L.append("- filmy w strojach: " + ", ".join("%s %s" % (p, k) for p, k in rap["filmy"]))
+    return L + [""]
 
 
 def przebuduj(mod_nazwa, a):
@@ -233,6 +410,7 @@ def przebuduj(mod_nazwa, a):
                     wyj = os.path.join(robocze, "film_%s_%s" % (p.id, k.nazwa))
                     podglad(sciezka, wyj, "--klip", k.nazwa, "--tylko", p.id)
                     filmy.setdefault(p.id, []).append((k.nazwa, wyj))
+    ekw_r = ekwipunek_blender(mod_nazwa, modul, sciezka, robocze, a) if ma_ekwipunek(modul) else None
     # --- układanie wyniku
     cel = os.path.join(WYNIK, mod_nazwa)
     if os.path.isdir(cel):
@@ -273,6 +451,11 @@ def przebuduj(mod_nazwa, a):
     if ikony:
         arkusz_ikon(ikony, os.path.join(cel, mod_nazwa + "_ikony_arkusz.jpg"), "Ikony przedmiotów — " + mod_nazwa)
         pliki.append(mod_nazwa + "_ikony_arkusz.jpg")
+    rap_ekw = None
+    if ekw_r:
+        p_e, k_e, rap_ekw = ekwipunek_uloz(mod_nazwa, modul, ekw_r, cel, rap)
+        pliki += p_e
+        kontrola = kontrola + k_e
     naprawione = 0
     for dp, _, fs in os.walk(cel):
         for f in fs:
@@ -280,10 +463,13 @@ def przebuduj(mod_nazwa, a):
                 naprawione += napraw_fbx(os.path.join(dp, f))
     pliki += ["raport.json", "raport.txt"]
     with open(os.path.join(cel, "raport.json"), "w", encoding="utf-8", newline="\n") as f:
-        json.dump({"modul": mod_nazwa, "modele": rap, "uwagi_podgladu": uwagi, "kontrola": kontrola}, f,
-                  ensure_ascii=False, indent=1)
+        dane = {"modul": mod_nazwa, "modele": rap, "uwagi_podgladu": uwagi, "kontrola": kontrola}
+        if rap_ekw:
+            dane["ekwipunek"] = rap_ekw
+        json.dump(dane, f, ensure_ascii=False, indent=1)
     with open(os.path.join(cel, "raport.txt"), "w", encoding="utf-8", newline="\n") as f:
-        f.write(raport_txt(mod_nazwa, modul, rap, pliki, uwagi, kontrola))
+        f.write(raport_txt(mod_nazwa, modul, rap, pliki, uwagi, kontrola,
+                           raport_ekwipunku(modul, rap_ekw) if rap_ekw else None))
     zle = slady_dysku(cel)
     log("%s: %d plików, %d ścieżek w FBX zamienionych, kontrola %d/%d zgodnych%s"
         % (mod_nazwa, len(pliki), naprawione, sum(k.endswith("ZGODNE") for k in kontrola), len(kontrola),

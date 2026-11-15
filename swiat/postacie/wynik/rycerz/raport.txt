@@ -9,10 +9,16 @@ Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, 
 PODSUMOWANIE
 - modele z kośćmi: rycerz
 - przedmioty (akcesoria): 2
-- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 17 plików, zgodnych 17
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 54 plików, zgodnych 54
 - ostrzeżenia z raportu: 0; uwagi podglądu: 0
 
 ZNANE SŁABOŚCI
+- D-071: model główny (rycerz.fbx, plansza, filmy) to pełny strój kanoniczny BEZ tarczy — tarcza jest przedmiotem drugiej ręki, widać ją tylko w stroju „bojowy” (ekwipunek/rycerz_bojowy_*). Klipy liczy postać odniesienia z tarczą (dawny model) i kopiuje bez zmian, więc w blok i kamienna_skora bez tarczy lewa ręka robi zasłonę samym przedramieniem w rękawicy (nadgarstek zgięty ok. 90° — bez tarczy to zgięcie widać).
+- Ciało bazowe i stroje: zbroja jest wtapiana w bryły kości (te same siatki <Kosc>_Geo), więc w rycerz.fbx strój nadal jest częścią ciała. Ubieranie w grze ma iść przez gołe ciało (ekwipunek/rycerz_cialo.fbx z zaczepami Ekw<Kosc>Attachment) i segmenty z ekwipunek/przedmioty/ — ta droga nie była sprawdzana w Studio (przezroczystość gołych brył pod powłoką, AddAccessory z własnymi nazwami zaczepów).
+- Upadek bez zbroi i bez hełmu (goły): klip liczony na postaci odniesienia kładzie ciało na tylnej pole tabardu i na hełmie, więc goły Rycerz leży ok. 0,25 studa nad ziemią (najniżej głowa 0,247; w stroju pełnym 0,000). Z samym hełmem albo z samą zbroją leży na ziemi. Poprawka wymaga decyzji: osobny klip upadku dla ciała albo przesunięcie korzenia w grze zależne od stroju (kontrakt: klipy są wspólne).
+- rycerz_cialo.fbx/.glb ma tylko klip idle (reszta klipów: rycerz__<klip>.fbx, te same kości i nazwy).
+- Pas Rycerza po rozbiorze to sama klamra (brązowy pas biodrowy to klocek nogawic); szerszy pas jako nakładka zmieniłby wygląd kanonu — do decyzji właściciela. Nogawice są częścią zbroi (slot Chest, czesc_od) do decyzji o slocie Legs (EKWIPUNEK.md pkt 8).
+- Goły Rycerz: fryzura, len koszuli (EDE3CC), niebieskie spodenki w kolorze tabardu i bose stopy z zarysem palców to propozycja do oceny. Włosy siedzą na HairAttachment (osobna siatka), hełm je chowa; w stroju bez hełmu („lekki”) widać włosy przy naramiennikach — naramienniki stykają się z bokami włosów jak dotąd z hełmem.
 - Miecz i tarcza są osobnymi przedmiotami (przedmioty/rycerz_miecz.fbx, rycerz_tarcza.fbx) — w FBX postaci ich nie ma; w grze trzeba je dać jako Tool albo akcesoria na RightGripAttachment i LeftGripAttachment.
 - Tarczy nie ma na obrazie KeyArt ani w notatce kanonu — dodana jako przedmiot dla klasy Wojownik (blok tarczą); do oceny Game Directora. Jest przypięta do dłoni, nie do przedramienia: w bloku i w kamiennej skórze nadgarstek jest zgięty ok. 90°, żeby lico patrzyło przed siebie (zgięcie zasłania sama tarcza). Lico jest skręcone o 25° ku prawej stronie rycerza (SKOS_TARCZY), żeby z kamery walki (z prawego boku) było widać tarczę, nie krawędź; w kadrze 3/4 od lewej tarcza jest przez to trochę węższa i częściowo za lewym ramieniem.
 - Bryły sztywno przypięte do kości: naramienniki stykają się z bokami hełmu już w spoczynku, a przy uniesionej ręce albo skręcie głowy wchodzą w hełm do 0,18 studa (atak_miecz, ciecie; blok 0,15 po zmniejszeniu skrętu głowy, reszta klipów 0,08–0,15). To bryły ramienia, nie broń; poprawka wymagałaby zmiany brył naramienników albo hełmu (kanon wyglądu).
@@ -22,17 +28,17 @@ ZNANE SŁABOŚCI
 - Głębokie przysiady (miazdzacy_cios kl. 7, upadek kl. 19): tylna krawędź klocka goleni schodzi do 0,035 studa pod ziemię przy płaskiej stopie (sama bryła nogi). Chód (stary klip) do 0,064.
 - Tabard i poły są sztywne (nie falują w chodzie); w atak_miecz poła tnie uda. Twarz bez mimiki (ten sam uśmiech przy trafieniu i upadku).
 - Klipy to szkice (0,67–2 s), nie gotowa animacja; ciosy nie mają efektu cięcia (smugi), uderzenia w tarczę i tupnięcie — iskier ani fali (efekty w grze).
-- Kontrola przenikania (python -B swiat/postacie/rycerz.py --kontrola) liczy skrzynki brył (ostrosłupy jak skrzynki), margines 0,06 studa; hełm z głową, tułów i pas to po jednej skrzynce na kość (pas bez poł). Nie sprawdza rąk z nogami; broń z nogami i miecz z tarczą sprawdzone osobnym skryptem (bez przecięć).
+- Kontrola przenikania (python -B swiat/postacie/rycerz.py --kontrola) liczy skrzynki brył (ostrosłupy jak skrzynki), margines 0,06 studa; hełm z głową, tułów i pas to po jednej skrzynce na kość (pas bez poł, włosy w skrzynce głowy). Działa na każdym stroju z STROJE: „bojowy” daje dokładnie dawny wynik, w pozostałych przenika tylko stary atak_miecz (goły i sam hełm 0,12, lekki 0,10, pełny 0,15 studa). Nie sprawdza rąk z nogami; broń z nogami i miecz z tarczą sprawdzone osobnym skryptem (bez przecięć).
 - LowerTorso i Root nie są w 0,0,0 (biodra na wysokości 1,9) — dla NPC bez znaczenia, ciało awatara może tego wymagać (sprawdzić przy pierwszym imporcie).
 
 MODEL rycerz „Rycerz Blocky” (r15)
-  wymiary ciała: 4,77 × 5,71 × 1,98; z akcesoriami: 4,97 × 5,71 × 5,12
-  trójkąty: 3484 (siatek: 17)
+  wymiary ciała: 4,77 × 5,71 × 1,98; z akcesoriami: 4,77 × 5,71 × 5,12
+  trójkąty: 3284 (siatek: 16)
   budżety ciała R15: Head 944/4000, Torso 428/1750, LeftArm 376/1248, RightArm 376/1248, LeftLeg 320/1248, RightLeg 320/1248
   kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
   klipy: idle 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, atak_miecz 32 kl. 1,07 s jednorazowy, wiwat 36 kl. 1,20 s pętla, blok 30 kl. 1,00 s jednorazowy, unik 30 kl. 1,00 s jednorazowy, trafienie 20 kl. 0,67 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, ciecie 48 kl. 1,60 s jednorazowy, miazdzacy_cios 50 kl. 1,67 s jednorazowy, kamienna_skora 44 kl. 1,47 s jednorazowy
   punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
-  założone: rycerz_miecz na RightGripAttachment (tylko podgląd, bez eksportu), rycerz_tarcza na LeftGripAttachment (tylko podgląd, bez eksportu)
+  założone: rycerz_miecz na RightGripAttachment (tylko podgląd, bez eksportu)
 
 PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
 id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
@@ -41,6 +47,22 @@ rycerz_tarcza          LeftGripAttachment         Bron         200  0,53 × 1,50
 attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
 importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
 
+
+EKWIPUNEK (D-071: ciało bazowe + strój z przedmiotów; pliki w ekwipunek/)
+- strój golas (goły (ciało bazowe)): bez przedmiotów
+- strój pelny (pełny strój): rycerz_helm, rycerz_zbroja, rycerz_nogawice, rycerz_pas, rycerz_rekawice, rycerz_buty, rycerz_miecz
+- strój bojowy (pełny strój z tarczą): rycerz_helm, rycerz_zbroja, rycerz_nogawice, rycerz_pas, rycerz_rekawice, rycerz_buty, rycerz_miecz, rycerz_tarcza
+- strój lekki (zbroja bez hełmu i rękawic): rycerz_zbroja, rycerz_nogawice, rycerz_buty, rycerz_miecz
+- strój helm_i_miecz (sam hełm i miecz): rycerz_helm, rycerz_miecz
+- rycerz_helm „Hełm Rycerza” [Helmet]: rycerz_helm_glowa Head 528 tr.
+- rycerz_zbroja „Zbroja Rycerza z tabardem” [Chest]: rycerz_zbroja_tulow UpperTorso (powłoka) 184 tr.; rycerz_zbroja_ramie_l LeftUpperArm (powłoka) 200 tr.; rycerz_zbroja_przedramie_l LeftLowerArm (powłoka) 88 tr.; rycerz_zbroja_ramie_p RightUpperArm (powłoka) 200 tr.; rycerz_zbroja_przedramie_p RightLowerArm (powłoka) 88 tr.; rycerz_zbroja_biodra LowerTorso 144 tr.
+- rycerz_nogawice „Nogawice Rycerza” [Chest, część rycerz_zbroja]: rycerz_nogawice_biodra LowerTorso (powłoka) 44 tr.; rycerz_nogawice_udo_l LeftUpperLeg (powłoka) 88 tr.; rycerz_nogawice_udo_p RightUpperLeg (powłoka) 88 tr.
+- rycerz_pas „Pas Rycerza” [Belt]: rycerz_pas_biodra LowerTorso 56 tr.
+- rycerz_rekawice „Rękawice Rycerza” [Gloves]: rycerz_rekawice_dlon_l LeftHand (powłoka) 88 tr.; rycerz_rekawice_dlon_p RightHand (powłoka) 88 tr.
+- rycerz_buty „Trzewiki z nagolennikami” [Boots]: rycerz_buty_golen_l LeftLowerLeg (powłoka) 132 tr.; rycerz_buty_stopa_l LeftFoot (powłoka) 100 tr.; rycerz_buty_golen_p RightLowerLeg (powłoka) 132 tr.; rycerz_buty_stopa_p RightFoot (powłoka) 100 tr.
+- rycerz_miecz „Wielki miecz Rycerza” [Weapon]: rycerz_miecz na RightGripAttachment
+- rycerz_tarcza „Tarcza Rycerza” [OffHand]: rycerz_tarcza na LeftGripAttachment
+- filmy w strojach: rycerz_golas idle, rycerz_golas ciecie, rycerz_golas upadek, rycerz_bojowy blok, rycerz_bojowy kamienna_skora, rycerz_pelny blok, rycerz_lekki miazdzacy_cios, rycerz_helm_i_miecz unik
 
 KONTROLA EKSPORTÓW
 - rycerz.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje brak -> ZGODNE
@@ -60,6 +82,43 @@ KONTROLA EKSPORTÓW
 - rycerz_miecz.glb: siatki 1, kości 0, trójkąty 520, wzrost 4.94 st., akcje brak -> ZGODNE
 - rycerz_tarcza.fbx: siatki 1, kości 0, trójkąty 200, wzrost 1.50 st., akcje brak -> ZGODNE
 - rycerz_tarcza.glb: siatki 1, kości 0, trójkąty 200, wzrost 1.50 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_cialo.fbx: siatki 50, kości 17, trójkąty 2310, wzrost 5.68 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_cialo__idle.fbx: siatki 50, kości 17, trójkąty 2310, wzrost 5.68 st., akcje rycerz_cialo|Scene 1-61 -> ZGODNE
+- ekwipunek: rycerz_cialo.glb: siatki 50, kości 17, trójkąty 2310, wzrost 5.68 st., akcje idle 0-60 -> ZGODNE
+- ekwipunek: rycerz_helm_glowa.fbx: siatki 1, kości 0, trójkąty 528, wzrost 1.96 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_helm_glowa.glb: siatki 1, kości 0, trójkąty 528, wzrost 1.96 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_zbroja_tulow.fbx: siatki 1, kości 0, trójkąty 184, wzrost 1.58 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_zbroja_tulow.glb: siatki 1, kości 0, trójkąty 184, wzrost 1.58 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_zbroja_ramie_l.fbx: siatki 1, kości 0, trójkąty 200, wzrost 1.07 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_zbroja_ramie_l.glb: siatki 1, kości 0, trójkąty 200, wzrost 1.07 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_zbroja_przedramie_l.fbx: siatki 1, kości 0, trójkąty 88, wzrost 0.83 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_zbroja_przedramie_l.glb: siatki 1, kości 0, trójkąty 88, wzrost 0.83 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_zbroja_ramie_p.fbx: siatki 1, kości 0, trójkąty 200, wzrost 1.07 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_zbroja_ramie_p.glb: siatki 1, kości 0, trójkąty 200, wzrost 1.07 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_zbroja_przedramie_p.fbx: siatki 1, kości 0, trójkąty 88, wzrost 0.83 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_zbroja_przedramie_p.glb: siatki 1, kości 0, trójkąty 88, wzrost 0.83 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_zbroja_biodra.fbx: siatki 1, kości 0, trójkąty 144, wzrost 1.20 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_zbroja_biodra.glb: siatki 1, kości 0, trójkąty 144, wzrost 1.20 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_nogawice_biodra.fbx: siatki 1, kości 0, trójkąty 44, wzrost 0.40 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_nogawice_biodra.glb: siatki 1, kości 0, trójkąty 44, wzrost 0.40 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_nogawice_udo_l.fbx: siatki 1, kości 0, trójkąty 88, wzrost 0.80 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_nogawice_udo_l.glb: siatki 1, kości 0, trójkąty 88, wzrost 0.80 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_nogawice_udo_p.fbx: siatki 1, kości 0, trójkąty 88, wzrost 0.80 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_nogawice_udo_p.glb: siatki 1, kości 0, trójkąty 88, wzrost 0.80 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_pas_biodra.fbx: siatki 1, kości 0, trójkąty 56, wzrost 0.34 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_pas_biodra.glb: siatki 1, kości 0, trójkąty 56, wzrost 0.34 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_rekawice_dlon_l.fbx: siatki 1, kości 0, trójkąty 88, wzrost 0.47 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_rekawice_dlon_l.glb: siatki 1, kości 0, trójkąty 88, wzrost 0.47 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_rekawice_dlon_p.fbx: siatki 1, kości 0, trójkąty 88, wzrost 0.47 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_rekawice_dlon_p.glb: siatki 1, kości 0, trójkąty 88, wzrost 0.47 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_buty_golen_l.fbx: siatki 1, kości 0, trójkąty 132, wzrost 0.85 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_buty_golen_l.glb: siatki 1, kości 0, trójkąty 132, wzrost 0.85 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_buty_stopa_l.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_buty_stopa_l.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_buty_golen_p.fbx: siatki 1, kości 0, trójkąty 132, wzrost 0.85 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_buty_golen_p.glb: siatki 1, kości 0, trójkąty 132, wzrost 0.85 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_buty_stopa_p.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE
+- ekwipunek: rycerz_buty_stopa_p.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE
 
 PLIKI
 - rycerz.blend
@@ -122,5 +181,104 @@ PLIKI
 - przedmioty/rycerz_tarcza_tekstury/
 - ikony/rycerz_tarcza_ikona.png
 - rycerz_ikony_arkusz.jpg
+- ekwipunek/rycerz_golas_plansza.jpg
+- ekwipunek/rycerz_golas_bohater.jpg
+- ekwipunek/rycerz_pelny_plansza.jpg
+- ekwipunek/rycerz_pelny_bohater.jpg
+- ekwipunek/rycerz_bojowy_plansza.jpg
+- ekwipunek/rycerz_bojowy_bohater.jpg
+- ekwipunek/rycerz_lekki_plansza.jpg
+- ekwipunek/rycerz_lekki_bohater.jpg
+- ekwipunek/rycerz_helm_i_miecz_plansza.jpg
+- ekwipunek/rycerz_helm_i_miecz_bohater.jpg
+- ekwipunek/rycerz_ekwipunek_plansza.jpg
+- ekwipunek/rycerz_golas_idle.mp4
+- ekwipunek/rycerz_golas_idle_klatki.jpg
+- ekwipunek/rycerz_golas_idle_z_filmu.jpg
+- ekwipunek/rycerz_golas_ciecie.mp4
+- ekwipunek/rycerz_golas_ciecie_klatki.jpg
+- ekwipunek/rycerz_golas_ciecie_z_filmu.jpg
+- ekwipunek/rycerz_golas_upadek.mp4
+- ekwipunek/rycerz_golas_upadek_klatki.jpg
+- ekwipunek/rycerz_golas_upadek_z_filmu.jpg
+- ekwipunek/rycerz_bojowy_blok.mp4
+- ekwipunek/rycerz_bojowy_blok_klatki.jpg
+- ekwipunek/rycerz_bojowy_blok_z_filmu.jpg
+- ekwipunek/rycerz_bojowy_kamienna_skora.mp4
+- ekwipunek/rycerz_bojowy_kamienna_skora_klatki.jpg
+- ekwipunek/rycerz_bojowy_kamienna_skora_z_filmu.jpg
+- ekwipunek/rycerz_pelny_blok.mp4
+- ekwipunek/rycerz_pelny_blok_klatki.jpg
+- ekwipunek/rycerz_pelny_blok_z_filmu.jpg
+- ekwipunek/rycerz_lekki_miazdzacy_cios.mp4
+- ekwipunek/rycerz_lekki_miazdzacy_cios_klatki.jpg
+- ekwipunek/rycerz_lekki_miazdzacy_cios_z_filmu.jpg
+- ekwipunek/rycerz_helm_i_miecz_unik.mp4
+- ekwipunek/rycerz_helm_i_miecz_unik_klatki.jpg
+- ekwipunek/rycerz_helm_i_miecz_unik_z_filmu.jpg
+- ekwipunek/rycerz_cialo.fbx
+- ekwipunek/rycerz_cialo.glb
+- ekwipunek/rycerz_cialo_tekstury/
+- ekwipunek/przedmioty/rycerz_helm_glowa.fbx
+- ekwipunek/przedmioty/rycerz_helm_glowa.glb
+- ekwipunek/przedmioty/rycerz_helm_glowa_tekstury/
+- ekwipunek/ikony/rycerz_helm_ikona.png
+- ekwipunek/przedmioty/rycerz_zbroja_tulow.fbx
+- ekwipunek/przedmioty/rycerz_zbroja_tulow.glb
+- ekwipunek/przedmioty/rycerz_zbroja_tulow_tekstury/
+- ekwipunek/przedmioty/rycerz_zbroja_ramie_l.fbx
+- ekwipunek/przedmioty/rycerz_zbroja_ramie_l.glb
+- ekwipunek/przedmioty/rycerz_zbroja_ramie_l_tekstury/
+- ekwipunek/przedmioty/rycerz_zbroja_przedramie_l.fbx
+- ekwipunek/przedmioty/rycerz_zbroja_przedramie_l.glb
+- ekwipunek/przedmioty/rycerz_zbroja_przedramie_l_tekstury/
+- ekwipunek/przedmioty/rycerz_zbroja_ramie_p.fbx
+- ekwipunek/przedmioty/rycerz_zbroja_ramie_p.glb
+- ekwipunek/przedmioty/rycerz_zbroja_ramie_p_tekstury/
+- ekwipunek/przedmioty/rycerz_zbroja_przedramie_p.fbx
+- ekwipunek/przedmioty/rycerz_zbroja_przedramie_p.glb
+- ekwipunek/przedmioty/rycerz_zbroja_przedramie_p_tekstury/
+- ekwipunek/przedmioty/rycerz_zbroja_biodra.fbx
+- ekwipunek/przedmioty/rycerz_zbroja_biodra.glb
+- ekwipunek/przedmioty/rycerz_zbroja_biodra_tekstury/
+- ekwipunek/ikony/rycerz_zbroja_ikona.png
+- ekwipunek/przedmioty/rycerz_nogawice_biodra.fbx
+- ekwipunek/przedmioty/rycerz_nogawice_biodra.glb
+- ekwipunek/przedmioty/rycerz_nogawice_biodra_tekstury/
+- ekwipunek/przedmioty/rycerz_nogawice_udo_l.fbx
+- ekwipunek/przedmioty/rycerz_nogawice_udo_l.glb
+- ekwipunek/przedmioty/rycerz_nogawice_udo_l_tekstury/
+- ekwipunek/przedmioty/rycerz_nogawice_udo_p.fbx
+- ekwipunek/przedmioty/rycerz_nogawice_udo_p.glb
+- ekwipunek/przedmioty/rycerz_nogawice_udo_p_tekstury/
+- ekwipunek/ikony/rycerz_nogawice_ikona.png
+- ekwipunek/przedmioty/rycerz_pas_biodra.fbx
+- ekwipunek/przedmioty/rycerz_pas_biodra.glb
+- ekwipunek/przedmioty/rycerz_pas_biodra_tekstury/
+- ekwipunek/ikony/rycerz_pas_ikona.png
+- ekwipunek/przedmioty/rycerz_rekawice_dlon_l.fbx
+- ekwipunek/przedmioty/rycerz_rekawice_dlon_l.glb
+- ekwipunek/przedmioty/rycerz_rekawice_dlon_l_tekstury/
+- ekwipunek/przedmioty/rycerz_rekawice_dlon_p.fbx
+- ekwipunek/przedmioty/rycerz_rekawice_dlon_p.glb
+- ekwipunek/przedmioty/rycerz_rekawice_dlon_p_tekstury/
+- ekwipunek/ikony/rycerz_rekawice_ikona.png
+- ekwipunek/przedmioty/rycerz_buty_golen_l.fbx
+- ekwipunek/przedmioty/rycerz_buty_golen_l.glb
+- ekwipunek/przedmioty/rycerz_buty_golen_l_tekstury/
+- ekwipunek/przedmioty/rycerz_buty_stopa_l.fbx
+- ekwipunek/przedmioty/rycerz_buty_stopa_l.glb
+- ekwipunek/przedmioty/rycerz_buty_stopa_l_tekstury/
+- ekwipunek/przedmioty/rycerz_buty_golen_p.fbx
+- ekwipunek/przedmioty/rycerz_buty_golen_p.glb
+- ekwipunek/przedmioty/rycerz_buty_golen_p_tekstury/
+- ekwipunek/przedmioty/rycerz_buty_stopa_p.fbx
+- ekwipunek/przedmioty/rycerz_buty_stopa_p.glb
+- ekwipunek/przedmioty/rycerz_buty_stopa_p_tekstury/
+- ekwipunek/ikony/rycerz_buty_ikona.png
+- ekwipunek/ikony/rycerz_miecz_ikona.png
+- ekwipunek/ikony/rycerz_tarcza_ikona.png
+- ekwipunek/rycerz_ekwipunek_ikony_arkusz.jpg
+- ekwipunek/ekwipunek.json
 - raport.json
 - raport.txt

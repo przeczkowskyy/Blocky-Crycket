@@ -825,6 +825,1054 @@
   "kot_mag_kapelusz.fbx: siatki 1, kości 0, trójkąty 258, wzrost 1.78 st., akcje brak -> ZGODNE",
   "kot_mag_kapelusz.glb: siatki 1, kości 0, trójkąty 258, wzrost 1.78 st., akcje brak -> ZGODNE",
   "kot_mag_kostur.fbx: siatki 1, kości 0, trójkąty 384, wzrost 3.45 st., akcje brak -> ZGODNE",
-  "kot_mag_kostur.glb: siatki 1, kości 0, trójkąty 384, wzrost 3.45 st., akcje brak -> ZGODNE"
- ]
+  "kot_mag_kostur.glb: siatki 1, kości 0, trójkąty 384, wzrost 3.45 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_cialo__idle.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje kot_mag_cialo|Scene 1-61 -> ZGODNE",
+  "ekwipunek: kot_mag_cialo.glb: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "ekwipunek: kot_mag_szata_tulow.fbx: siatki 1, kości 0, trójkąty 332, wzrost 0.99 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_szata_tulow.glb: siatki 1, kości 0, trójkąty 332, wzrost 0.99 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_szata_ramie_l.fbx: siatki 1, kości 0, trójkąty 44, wzrost 0.48 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_szata_ramie_l.glb: siatki 1, kości 0, trójkąty 44, wzrost 0.48 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_szata_przedramie_l.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.49 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_szata_przedramie_l.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.49 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_szata_ramie_p.fbx: siatki 1, kości 0, trójkąty 44, wzrost 0.48 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_szata_ramie_p.glb: siatki 1, kości 0, trójkąty 44, wzrost 0.48 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_szata_przedramie_p.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.49 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_szata_przedramie_p.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.49 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_szata_biodra.fbx: siatki 1, kości 0, trójkąty 160, wzrost 0.99 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_szata_biodra.glb: siatki 1, kości 0, trójkąty 160, wzrost 0.99 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_pas_biodra.fbx: siatki 1, kości 0, trójkąty 88, wzrost 0.22 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_mag_pas_biodra.glb: siatki 1, kości 0, trójkąty 88, wzrost 0.22 st., akcje brak -> ZGODNE"
+ ],
+ "ekwipunek": {
+  "stroje": {
+   "golas": [],
+   "pelny": [
+    "kot_mag_kapelusz",
+    "kot_mag_szata",
+    "kot_mag_pas",
+    "kot_mag_kostur"
+   ],
+   "bez_kapelusza": [
+    "kot_mag_szata",
+    "kot_mag_pas",
+    "kot_mag_kostur"
+   ],
+   "kapelusz_i_kostur": [
+    "kot_mag_kapelusz",
+    "kot_mag_kostur"
+   ],
+   "sama_szata": [
+    "kot_mag_szata",
+    "kot_mag_pas"
+   ]
+  },
+  "filmy": [
+   [
+    "kot_mag_golas",
+    "idle"
+   ],
+   [
+    "kot_mag_golas",
+    "chod"
+   ],
+   [
+    "kot_mag_golas",
+    "kula_ognia"
+   ],
+   [
+    "kot_mag_golas",
+    "upadek"
+   ],
+   [
+    "kot_mag_kapelusz_i_kostur",
+    "upadek"
+   ],
+   [
+    "kot_mag_sama_szata",
+    "bariera"
+   ],
+   [
+    "kot_mag_bez_kapelusza",
+    "atak"
+   ]
+  ],
+  "modele": [
+   {
+    "id": "kot_mag_cialo",
+    "nazwa": "Kot-Mag Crycket (ciało bazowe)",
+    "rodzaj": "postac",
+    "siatki": [
+     {
+      "nazwa": "LowerTorso_Geo",
+      "kosc": "LowerTorso",
+      "trojkaty": 176,
+      "wierzcholki": 96,
+      "wymiary": [
+       1.3,
+       0.88,
+       1.155
+      ],
+      "min": [
+       -0.65,
+       0.12,
+       -0.66
+      ],
+      "max": [
+       0.65,
+       1.0,
+       0.495
+      ]
+     },
+     {
+      "nazwa": "UpperTorso_Geo",
+      "kosc": "UpperTorso",
+      "trojkaty": 228,
+      "wierzcholki": 138,
+      "wymiary": [
+       1.36,
+       0.85,
+       1.0
+      ],
+      "min": [
+       -0.68,
+       1.0,
+       -0.505
+      ],
+      "max": [
+       0.68,
+       1.85,
+       0.495
+      ]
+     },
+     {
+      "nazwa": "Head_Geo",
+      "kosc": "Head",
+      "trojkaty": 680,
+      "wierzcholki": 400,
+      "wymiary": [
+       2.16,
+       1.3,
+       1.565
+      ],
+      "min": [
+       -1.08,
+       1.85,
+       -0.74
+      ],
+      "max": [
+       1.08,
+       3.15,
+       0.825
+      ]
+     },
+     {
+      "nazwa": "LeftUpperArm_Geo",
+      "kosc": "LeftUpperArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.42,
+       0.46
+      ],
+      "min": [
+       0.63,
+       1.43,
+       -0.23
+      ],
+      "max": [
+       1.09,
+       1.85,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "LeftLowerArm_Geo",
+      "kosc": "LeftLowerArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.36,
+       0.46
+      ],
+      "min": [
+       0.63,
+       1.07,
+       -0.23
+      ],
+      "max": [
+       1.09,
+       1.43,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "LeftHand_Geo",
+      "kosc": "LeftHand",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.38,
+       0.32,
+       0.39
+      ],
+      "min": [
+       0.67,
+       0.72,
+       -0.19
+      ],
+      "max": [
+       1.05,
+       1.04,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "LeftUpperLeg_Geo",
+      "kosc": "LeftUpperLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.42,
+       0.3,
+       0.42
+      ],
+      "min": [
+       0.09,
+       0.45,
+       -0.21
+      ],
+      "max": [
+       0.51,
+       0.75,
+       0.21
+      ]
+     },
+     {
+      "nazwa": "LeftLowerLeg_Geo",
+      "kosc": "LeftLowerLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.4,
+       0.3,
+       0.4
+      ],
+      "min": [
+       0.1,
+       0.165,
+       -0.2
+      ],
+      "max": [
+       0.5,
+       0.465,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "LeftFoot_Geo",
+      "kosc": "LeftFoot",
+      "trojkaty": 156,
+      "wierzcholki": 88,
+      "wymiary": [
+       0.54,
+       0.18,
+       1.082
+      ],
+      "min": [
+       0.03,
+       0.0,
+       -0.225
+      ],
+      "max": [
+       0.57,
+       0.18,
+       0.857
+      ]
+     },
+     {
+      "nazwa": "RightUpperArm_Geo",
+      "kosc": "RightUpperArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.42,
+       0.46
+      ],
+      "min": [
+       -1.09,
+       1.43,
+       -0.23
+      ],
+      "max": [
+       -0.63,
+       1.85,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "RightLowerArm_Geo",
+      "kosc": "RightLowerArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.36,
+       0.46
+      ],
+      "min": [
+       -1.09,
+       1.07,
+       -0.23
+      ],
+      "max": [
+       -0.63,
+       1.43,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "RightHand_Geo",
+      "kosc": "RightHand",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.38,
+       0.32,
+       0.39
+      ],
+      "min": [
+       -1.05,
+       0.72,
+       -0.19
+      ],
+      "max": [
+       -0.67,
+       1.04,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "RightUpperLeg_Geo",
+      "kosc": "RightUpperLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.42,
+       0.3,
+       0.42
+      ],
+      "min": [
+       -0.51,
+       0.45,
+       -0.21
+      ],
+      "max": [
+       -0.09,
+       0.75,
+       0.21
+      ]
+     },
+     {
+      "nazwa": "RightLowerLeg_Geo",
+      "kosc": "RightLowerLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.4,
+       0.3,
+       0.4
+      ],
+      "min": [
+       -0.5,
+       0.165,
+       -0.2
+      ],
+      "max": [
+       -0.1,
+       0.465,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "RightFoot_Geo",
+      "kosc": "RightFoot",
+      "trojkaty": 156,
+      "wierzcholki": 88,
+      "wymiary": [
+       0.54,
+       0.18,
+       1.082
+      ],
+      "min": [
+       -0.57,
+       0.0,
+       -0.225
+      ],
+      "max": [
+       -0.03,
+       0.18,
+       0.857
+      ]
+     },
+     {
+      "nazwa": "LeftEar_Geo",
+      "kosc": "LeftEar",
+      "trojkaty": 40,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.581,
+       0.69,
+       0.343
+      ],
+      "min": [
+       0.392,
+       3.132,
+       -0.203
+      ],
+      "max": [
+       0.973,
+       3.822,
+       0.14
+      ]
+     },
+     {
+      "nazwa": "RightEar_Geo",
+      "kosc": "RightEar",
+      "trojkaty": 40,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.581,
+       0.69,
+       0.343
+      ],
+      "min": [
+       -0.973,
+       3.132,
+       -0.203
+      ],
+      "max": [
+       -0.392,
+       3.822,
+       0.14
+      ]
+     },
+     {
+      "nazwa": "Tail_Geo",
+      "kosc": "Tail",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.894,
+       0.32,
+       0.806
+      ],
+      "min": [
+       0.013,
+       0.08,
+       -1.205
+      ],
+      "max": [
+       0.907,
+       0.4,
+       -0.399
+      ]
+     },
+     {
+      "nazwa": "TailTip_Geo",
+      "kosc": "TailTip",
+      "trojkaty": 264,
+      "wierzcholki": 144,
+      "wymiary": [
+       0.627,
+       1.433,
+       0.728
+      ],
+      "min": [
+       0.429,
+       0.055,
+       -1.239
+      ],
+      "max": [
+       1.056,
+       1.488,
+       -0.511
+      ]
+     }
+    ],
+    "trojkaty_razem": 2532,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 11
+    },
+    "typ": "r15",
+    "skala": 1.0,
+    "wymiary_ciala": [
+     2.18,
+     3.822,
+     2.096
+    ],
+    "wymiary_z_akcesoriami": [
+     2.18,
+     3.822,
+     2.096
+    ],
+    "zakres_z_akcesoriami": [
+     [
+      -1.09,
+      0.0,
+      -1.239
+     ],
+     [
+      1.09,
+      3.822,
+      0.857
+     ]
+    ],
+    "kosci": [
+     "Root",
+     "HumanoidRootNode",
+     "LowerTorso",
+     "UpperTorso",
+     "Head",
+     "LeftUpperArm",
+     "LeftLowerArm",
+     "LeftHand",
+     "LeftUpperLeg",
+     "LeftLowerLeg",
+     "LeftFoot",
+     "RightUpperArm",
+     "RightLowerArm",
+     "RightHand",
+     "RightUpperLeg",
+     "RightLowerLeg",
+     "RightFoot",
+     "LeftEar",
+     "RightEar",
+     "Tail",
+     "TailTip",
+     "HatPivot",
+     "StaffPivot"
+    ],
+    "zaczepy": [
+     "FaceCenterAttachment",
+     "FaceFrontAttachment",
+     "HatAttachment",
+     "HairAttachment",
+     "NeckAttachment",
+     "BodyFrontAttachment",
+     "BodyBackAttachment",
+     "LeftCollarAttachment",
+     "RightCollarAttachment",
+     "WaistCenterAttachment",
+     "WaistFrontAttachment",
+     "WaistBackAttachment",
+     "LeftShoulderAttachment",
+     "LeftGripAttachment",
+     "LeftFootAttachment",
+     "RightShoulderAttachment",
+     "RightGripAttachment",
+     "RightFootAttachment",
+     "KapeluszAttachment",
+     "KosturAttachment",
+     "EkwLowerTorsoAttachment",
+     "EkwUpperTorsoAttachment",
+     "EkwHeadAttachment",
+     "EkwLeftUpperArmAttachment",
+     "EkwLeftLowerArmAttachment",
+     "EkwLeftHandAttachment",
+     "EkwRightUpperArmAttachment",
+     "EkwRightLowerArmAttachment",
+     "EkwRightHandAttachment",
+     "EkwLeftUpperLegAttachment",
+     "EkwLeftLowerLegAttachment",
+     "EkwLeftFootAttachment",
+     "EkwRightUpperLegAttachment",
+     "EkwRightLowerLegAttachment",
+     "EkwRightFootAttachment"
+    ],
+    "znaczniki_att": [
+     "FaceCenter_Att",
+     "FaceFront_Att",
+     "Hat_Att",
+     "Hair_Att",
+     "Neck_Att",
+     "BodyFront_Att",
+     "BodyBack_Att",
+     "LeftCollar_Att",
+     "RightCollar_Att",
+     "WaistCenter_Att",
+     "WaistFront_Att",
+     "WaistBack_Att",
+     "LeftShoulder_Att",
+     "LeftGrip_Att",
+     "LeftFoot_Att",
+     "RightShoulder_Att",
+     "RightGrip_Att",
+     "RightFoot_Att",
+     "Kapelusz_Att",
+     "Kostur_Att",
+     "EkwLowerTorso_Att",
+     "EkwUpperTorso_Att",
+     "EkwHead_Att",
+     "EkwLeftUpperArm_Att",
+     "EkwLeftLowerArm_Att",
+     "EkwLeftHand_Att",
+     "EkwRightUpperArm_Att",
+     "EkwRightLowerArm_Att",
+     "EkwRightHand_Att",
+     "EkwLeftUpperLeg_Att",
+     "EkwLeftLowerLeg_Att",
+     "EkwLeftFoot_Att",
+     "EkwRightUpperLeg_Att",
+     "EkwRightLowerLeg_Att",
+     "EkwRightFoot_Att",
+     "Root_Att"
+    ],
+    "klipy": [
+     {
+      "n": "idle",
+      "dlugosc": 60,
+      "fps": 30,
+      "sekundy": 2.0,
+      "petla": true
+     }
+    ],
+    "akcesoria": [],
+    "grupy_ciala": {
+     "Head": {
+      "trojkaty": 680,
+      "limit": 4000,
+      "wymiary": [
+       2.16,
+       1.3,
+       1.565
+      ]
+     },
+     "Torso": {
+      "trojkaty": 404,
+      "limit": 1750,
+      "wymiary": [
+       1.36,
+       1.73,
+       1.155
+      ]
+     },
+     "LeftArm": {
+      "trojkaty": 264,
+      "limit": 1248,
+      "wymiary": [
+       0.46,
+       1.13,
+       0.46
+      ]
+     },
+     "RightArm": {
+      "trojkaty": 264,
+      "limit": 1248,
+      "wymiary": [
+       0.46,
+       1.13,
+       0.46
+      ]
+     },
+     "LeftLeg": {
+      "trojkaty": 244,
+      "limit": 1248,
+      "wymiary": [
+       0.54,
+       0.75,
+       1.082
+      ]
+     },
+     "RightLeg": {
+      "trojkaty": 244,
+      "limit": 1248,
+      "wymiary": [
+       0.54,
+       0.75,
+       1.082
+      ]
+     }
+    },
+    "ostrzezenia": [
+     "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+    ]
+   },
+   {
+    "id": "kot_mag_pas_biodra",
+    "nazwa": "Szarfa z klamrą (biodra)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_mag_pas_biodra",
+      "kosc": null,
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       1.44,
+       0.22,
+       1.15
+      ],
+      "min": [
+       -0.72,
+       -0.105,
+       -0.55
+      ],
+      "max": [
+       0.72,
+       0.115,
+       0.6
+      ]
+     }
+    ],
+    "trojkaty_razem": 88,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 2
+    },
+    "zaczep": "EkwLowerTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.72,
+      -0.105,
+      -0.55
+     ],
+     [
+      0.72,
+      0.115,
+      0.6
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.005,
+     0.025
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_mag_szata_biodra",
+    "nazwa": "Szata Kota-Maga (biodra)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_mag_szata_biodra",
+      "kosc": null,
+      "trojkaty": 160,
+      "wierzcholki": 90,
+      "wymiary": [
+       2.16,
+       0.99,
+       2.301
+      ],
+      "min": [
+       -1.08,
+       -0.865,
+       -1.441
+      ],
+      "max": [
+       1.08,
+       0.125,
+       0.86
+      ]
+     }
+    ],
+    "trojkaty_razem": 160,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLowerTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -1.08,
+      -0.865,
+      -1.441
+     ],
+     [
+      1.08,
+      0.125,
+      0.86
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.37,
+     -0.291
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_mag_szata_przedramie_l",
+    "nazwa": "Szata Kota-Maga (przedramie_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_mag_szata_przedramie_l",
+      "kosc": null,
+      "trojkaty": 100,
+      "wierzcholki": 56,
+      "wymiary": [
+       0.79,
+       0.495,
+       0.79
+      ],
+      "min": [
+       -0.395,
+       -0.315,
+       -0.395
+      ],
+      "max": [
+       0.395,
+       0.18,
+       0.395
+      ]
+     }
+    ],
+    "trojkaty_razem": 100,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLeftLowerArmAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.395,
+      -0.315,
+      -0.395
+     ],
+     [
+      0.395,
+      0.18,
+      0.395
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.068,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_mag_szata_przedramie_p",
+    "nazwa": "Szata Kota-Maga (przedramie_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_mag_szata_przedramie_p",
+      "kosc": null,
+      "trojkaty": 100,
+      "wierzcholki": 56,
+      "wymiary": [
+       0.79,
+       0.495,
+       0.79
+      ],
+      "min": [
+       -0.395,
+       -0.315,
+       -0.395
+      ],
+      "max": [
+       0.395,
+       0.18,
+       0.395
+      ]
+     }
+    ],
+    "trojkaty_razem": 100,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwRightLowerArmAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.395,
+      -0.315,
+      -0.395
+     ],
+     [
+      0.395,
+      0.18,
+      0.395
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.068,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_mag_szata_ramie_l",
+    "nazwa": "Szata Kota-Maga (ramie_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_mag_szata_ramie_l",
+      "kosc": null,
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.5,
+       0.48,
+       0.5
+      ],
+      "min": [
+       -0.25,
+       -0.24,
+       -0.25
+      ],
+      "max": [
+       0.25,
+       0.24,
+       0.25
+      ]
+     }
+    ],
+    "trojkaty_razem": 44,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 1
+    },
+    "zaczep": "EkwLeftUpperArmAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.25,
+      -0.24,
+      -0.25
+     ],
+     [
+      0.25,
+      0.24,
+      0.25
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_mag_szata_ramie_p",
+    "nazwa": "Szata Kota-Maga (ramie_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_mag_szata_ramie_p",
+      "kosc": null,
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.5,
+       0.48,
+       0.5
+      ],
+      "min": [
+       -0.25,
+       -0.24,
+       -0.25
+      ],
+      "max": [
+       0.25,
+       0.24,
+       0.25
+      ]
+     }
+    ],
+    "trojkaty_razem": 44,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 1
+    },
+    "zaczep": "EkwRightUpperArmAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.25,
+      -0.24,
+      -0.25
+     ],
+     [
+      0.25,
+      0.24,
+      0.25
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_mag_szata_tulow",
+    "nazwa": "Szata Kota-Maga (tulow)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_mag_szata_tulow",
+      "kosc": null,
+      "trojkaty": 332,
+      "wierzcholki": 186,
+      "wymiary": [
+       1.56,
+       0.99,
+       1.36
+      ],
+      "min": [
+       -0.78,
+       -0.435,
+       -0.725
+      ],
+      "max": [
+       0.78,
+       0.555,
+       0.635
+      ]
+     }
+    ],
+    "trojkaty_razem": 332,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 5
+    },
+    "zaczep": "EkwUpperTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.78,
+      -0.435,
+      -0.725
+     ],
+     [
+      0.78,
+      0.555,
+      0.635
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.06,
+     -0.045
+    ],
+    "ostrzezenia": []
+   }
+  ]
+ }
 }

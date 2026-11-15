@@ -3,11 +3,25 @@
 
 Kanciasty ludzik R15 w stalowej zbroi płytowej (naramienniki, napierśnik z obojczykiem, nałokcice, nakolanniki,
 nagolenniki), stalowy hełm z otwartą twarzą (zadziorny uśmiech, grube brwi), niebieski tabard ze złotą lamówką,
-brązowy pas ze stalową klamrą i wielki miecz w prawej dłoni (akcesorium na RightGripAttachment). Do walki
-(klasa Wojownik: wytrzymałość i blok tarczą) nosi tarczę na lewej ręce (akcesorium na LeftGripAttachment).
+brązowy pas ze stalową klamrą i wielki miecz w prawej dłoni (akcesorium na RightGripAttachment). Tarcza
+(klasa Wojownik: blok tarczą) jest przedmiotem drugiej ręki: widać ją tylko wtedy, gdy jest założona (D-071).
+
+CIAŁO BAZOWE + STRÓJ Z PRZEDMIOTÓW (D-071, kontrakt swiat/postacie/EKWIPUNEK.md):
+  cialo()      goły Rycerz („rycerz_cialo”): te same klocki, kości, zaczepy i klipy; twarz Rycerza, krótka brązowa
+               czupryna (osobne akcesorium rycerz_wlosy na HairAttachment, hełm ją chowa), lniana koszula
+               z krótkim rękawem i dekoltem, niebieskie krótkie spodenki, bose stopy;
+  przedmioty() hełm, zbroja z tabardem, nogawice (część zbroi), pas, rękawice, trzewiki z nagolennikami, miecz,
+               tarcza — każdy przedmiot to segmenty (sztywne akcesoria, po jednym na kość, w układzie środka
+               klocka kości) albo akcesorium na zaczepie (broń);
+  ubierz()     zakłada przedmioty na ciało (powłoka zastępuje gołe bryły kości, hełm chowa włosy);
+  zbuduj()     jak dotąd: [Rycerz w pełnym stroju kanonicznym (KANON, bez tarczy), miecz, tarcza];
+  warianty()   stroje z STROJE, segmenty i ikony całych przedmiotów dla przebuduj.py (wynik/rycerz/ekwipunek/).
+Klipy liczą się RAZ na postaci odniesienia (ODNIESIENIE_KLIPOW = pełny strój z tarczą, czyli dawny model) i są
+kopiowane bez zmian na ciało i każdy strój — ten sam ruch niezależnie od ubrania.
 
     python -B swiat/postacie/biblioteka/podglad_postaci.py --modul swiat/postacie/rycerz.py --wyj <folder> --klip idle
-    python -B swiat/postacie/rycerz.py --kontrola          # liczbowa kontrola przenikania broni i rąk (bez Blendera)
+    python -B swiat/postacie/rycerz.py --kontrola          # kontrola przenikania we wszystkich strojach (bez Blendera)
+    python -B swiat/postacie/rycerz.py --kontrola --stroj bojowy
 
 Klipy (30 kl./s; postać patrzy w +Z i w tę stronę atakuje):
   idle (oddech, miecz w gotowości, pętla), chod (pętla), atak_miecz (zamach znad głowy, trafienie kl. 15),
@@ -21,21 +35,28 @@ Klipy (30 kl./s; postać patrzy w +Z i w tę stronę atakuje):
     miazdzacy_cios  wyskok i cios z góry: klinga na wysokości piersi celu kl. 22 (trafienie), sztych w ziemi kl. 23;
     kamienna_skora  tupnięcie kl. 14 i poza obronna (tarcza przed siebie, miecz nad tarczą) trzymana do kl. 34.
   Klatki trafienia są też w słowniku CHWILE. Każdy klip walki zaczyna się i kończy w pozie z klatki 0 klipu idle
-  (płynne przejście do spoczynku).
+  (płynne przejście do spoczynku). Opisy z tarczą dotyczą stroju „bojowy”; bez tarczy (pełny strój kanoniczny,
+  goły) lewa ręka robi ten sam ruch: zasłona przedramieniem w rękawicy.
 Proporcje przerysowane: duża głowa w hełmie (ok. 1/3 wzrostu), szeroka klatka, krótkie masywne nogi.
 Status: propozycja (nie kanon) — do oceny przez Game Directora.
 """
+import copy
 import math
 import os
+import re
 import sys
 
 if __name__ == "__main__":                                       # uruchomienie wprost: korzeń repozytorium na ścieżce
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from swiat.postacie.biblioteka.postac import Akcesorium, Postac, katy_z_macierzy, macierz_obrotu, mnoz, razy_wektor
+from swiat.postacie.biblioteka.postac import (I3, R15_KOSCI, Akcesorium, Postac, katy_z_macierzy, macierz_obrotu,
+                                              mnoz, razy_wektor)
 
 ID = "rycerz"
-# stal zbroi trochę ciemniejsza i chłodniejsza niż w palecie biblioteki (jak na obrazie referencyjnym)
-PALETA = {"stal": "A8B4C8", "stal_cien": "75839C", "stal_ciemna": "4D576D", "niebieski": "2C6BE0"}
+NAZWA = "Rycerz Blocky"
+# stal zbroi trochę ciemniejsza i chłodniejsza niż w palecie biblioteki (jak na obrazie referencyjnym);
+# len, spodenki i włosy — goły Rycerz (ciało bazowe)
+PALETA = {"stal": "A8B4C8", "stal_cien": "75839C", "stal_ciemna": "4D576D", "niebieski": "2C6BE0",
+          "len": "EDE3CC", "len_cien": "D3C4A2", "wlosy": "7A4A24", "wlosy_ciemne": "5A3519"}
 
 # klatki trafienia / chwili efektu w klipach walki (dla odtwarzacza walki; 30 kl./s)
 CHWILE = {"atak_miecz": 15, "blok": 11, "trafienie": 4, "ciecie": 18, "miazdzacy_cios": 22, "kamienna_skora": 14}
@@ -94,18 +115,183 @@ def tarcza():
     return a
 
 
-# --------------------------------------------------------------------------- rycerz
-def zbuduj():
-    p = Postac(ID, "Rycerz Blocky", typ="r15", faza=0.05, paleta=PALETA,
-               wymiary={"Head": (1.6, 1.5, 1.45),
-                        "UpperTorso": (2.2, 1.5, 1.2), "LowerTorso": (2.2, 0.4, 1.2),
-                        "UpperArm": (0.95, 0.95, 0.95), "LowerArm": (0.95, 0.75, 0.95), "Hand": (0.9, 0.35, 0.9),
-                        "UpperLeg": (1.05, 0.8, 1.05), "LowerLeg": (1.05, 0.75, 1.05), "Foot": (1.05, 0.35, 1.35)})
-    p.cialo({"glowa": "skora", "tulow": "stal", "pas": "brazowy", "ramiona": "stal",
-             "LeftUpperArm": "stal_ciemna", "RightUpperArm": "stal_ciemna",
-             "dlonie": "stal_ciemna", "nogi": "stal", "stopy": "stal_ciemna"})
+# --------------------------------------------------------------------------- ekwipunek: wspólne (EKWIPUNEK.md pkt 4)
+# Ta część nie zależy od Rycerza — przy Zwiadowcy i Kocie przenieść ją do swiat/postacie/ekwipunek.py.
+SKROTY_KOSCI = {"Head": "glowa", "UpperTorso": "tulow", "LowerTorso": "biodra",
+                "LeftUpperArm": "ramie_l", "RightUpperArm": "ramie_p", "LeftLowerArm": "przedramie_l",
+                "RightLowerArm": "przedramie_p", "LeftHand": "dlon_l", "RightHand": "dlon_p",
+                "LeftUpperLeg": "udo_l", "RightUpperLeg": "udo_p", "LeftLowerLeg": "golen_l", "RightLowerLeg": "golen_p",
+                "LeftFoot": "stopa_l", "RightFoot": "stopa_p"}
+_ID_OK = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+ZACZEPY_CHWYTU = ("RightGripAttachment", "LeftGripAttachment")
 
-    # --- głowa: twarz + hełm z otwartą twarzą
+
+def zaczep_ekwipunku(kosc):
+    """Nazwa zaczepu segmentu kostnego: Ekw<Kosc>Attachment (środek klocka kości, obrót 0)."""
+    return "Ekw%sAttachment" % kosc
+
+
+class Przedmiot:
+    """Przedmiot ekwipunku widoczny na postaci: lista segmentów. Segment kostny = sztywne Akcesorium modelowane
+    w układzie ŚRODKA KLOCKA swojej kości (jak `with p.na(kosc, od="srodek")`); zakrywa=True — powłoka: zdejmuje
+    gołe bryły tej kości. Segment na zaczepie = zwykłe akcesorium (broń) zakładane przez Postac.zaloz.
+    miara = postać z klockami ciała (wymiary i środki kości)."""
+
+    def __init__(self, id, nazwa, slot, kategoria, miara, cialo="czlowiek", klasy=(), czesc_od=None, ukrywa=(),
+                 zestaw=None, paleta=None):
+        if not _ID_OK.match(id) or "__" in id:
+            raise ValueError("Id przedmiotu %r: litery ASCII, cyfry i „_” (bez „__”)" % id)
+        self.id, self.nazwa, self.slot, self.kategoria = id, nazwa, slot, kategoria
+        self.miara, self.cialo, self.klasy = miara, cialo, tuple(klasy)
+        self.czesc_od, self.ukrywa, self.zestaw = czesc_od, tuple(ukrywa), zestaw
+        self.paleta = paleta
+        self.segmenty = []
+
+    def segment(self, kosc, zakrywa=False, klocek=None):
+        """Nowy segment na kości (Akcesorium w układzie środka klocka). klocek = kolor — powłoka zaczyna się od
+        bryły o rozmiarze klocka kości (nazwa bryły = nazwa kości, jak Postac.klocek)."""
+        if kosc not in SKROTY_KOSCI:
+            raise ValueError("Przedmiot %s: nieznana kość %r" % (self.id, kosc))
+        a = Akcesorium("%s_%s" % (self.id, SKROTY_KOSCI[kosc]), "%s (%s)" % (self.nazwa, SKROTY_KOSCI[kosc]),
+                       zaczep=zaczep_ekwipunku(kosc), typ="Inne", paleta=self.paleta, przymierz=False)
+        if klocek is not None:
+            a.blok(kosc, (0, 0, 0), self.miara.wymiary(kosc), klocek, "zwykly")
+        self.segmenty.append({"akc": a, "kosc": kosc, "zakrywa": bool(zakrywa), "zaczep": None,
+                              "pos": (0.0, 0.0, 0.0), "obrot": (0.0, 0.0, 0.0)})
+        return a
+
+    def na_zaczepie(self, akc, zaczep=None, pos=(0, 0, 0), obrot=(0, 0, 0)):
+        """Segment = gotowe akcesorium na punkcie zaczepienia (broń, kapelusz kota)."""
+        self.segmenty.append({"akc": akc, "kosc": None, "zakrywa": False, "zaczep": zaczep or akc.zaczep,
+                              "pos": tuple(pos), "obrot": tuple(obrot)})
+        return akc
+
+    def opis(self, korekty=None):
+        """Wpis danych przedmiotu (EKWIPUNEK.md pkt 5; pliki, trójkąty i ikonę dopisuje przebuduj.py)."""
+        czesci = []
+        for s in self.segmenty:
+            if s["kosc"]:
+                czesci.append({"id": s["akc"].id, "kosc": s["kosc"], "zakrywa": s["zakrywa"],
+                               "zaczep": zaczep_ekwipunku(s["kosc"]), "pos": [0, 0, 0], "rot": [0, 0, 0]})
+            else:
+                z, pos, obrot = (korekty or {}).get(s["zaczep"], (s["zaczep"], s["pos"], s["obrot"]))
+                czesci.append({"id": s["akc"].id, "kosc": self.miara.zaczepy[z]["kosc"], "zakrywa": False,
+                               "zaczep": z, "pos": [round(v, 4) for v in pos], "rot": [round(v, 3) for v in obrot]})
+        # broń trzymana w dłoni (same segmenty na zaczepach chwytu) pasuje do każdego ciała (EKWIPUNEK.md pkt 1)
+        w_dloni = all(s["kosc"] is None and s["zaczep"] in ZACZEPY_CHWYTU for s in self.segmenty)
+        return {"id": self.id, "nazwa": self.nazwa, "slot": self.slot, "kategoria": self.kategoria,
+                "cialo": "dowolne" if w_dloni else self.cialo, "klasy": list(self.klasy), "czesc_od": self.czesc_od,
+                "ukrywa": list(self.ukrywa), "zestaw": self.zestaw, "czesci": czesci}
+
+    def ikona(self):
+        """Cały przedmiot jako jedno akcesorium do ikony (segmenty w pozie spoczynku, w układzie modelu);
+        przedmiot z jednym segmentem na zaczepie — samo to akcesorium."""
+        if len(self.segmenty) == 1 and self.segmenty[0]["kosc"] is None:
+            return self.segmenty[0]["akc"]
+        a = Akcesorium(self.id, self.nazwa, zaczep=zaczep_ekwipunku(self.segmenty[0]["kosc"] or "Ikona"), typ="Inne",
+                       paleta=self.paleta, przymierz=False)
+        # para rękawic: na postaci dłonie są ok. 3 studa od siebie, w ikonie wychodziły maleńkie — tylko w ikonie
+        # kładziemy je obok siebie (odstęp 0,2 studa); dane segmentów i ubieranie bez zmian
+        para_dloni = {s["kosc"] for s in self.segmenty} == {"LeftHand", "RightHand"}
+        for s in self.segmenty:
+            if s["kosc"]:
+                st, sr = self.miara.staw(s["kosc"]), self.miara.srodek(s["kosc"])
+                t0 = [st[i] + sr[i] for i in range(3)]
+                if para_dloni:
+                    t0[0] = (1 if t0[0] > 0 else -1) * (self.miara.wymiary(s["kosc"])[0] / 2 + 0.1)
+                a.czesci.extend(Akcesorium._czesc_w(c, I3, tuple(t0)) for c in s["akc"].czesci)
+        return a
+
+
+def ubierz(cialo, przedmioty, id=None, nazwa=None, korekty=None):
+    """Kopia ciała z założonymi przedmiotami (klipy ciała zostają bez zmian):
+    1. hełm (ukrywa) zdejmuje akcesoria ciała o tym znaczniku (włosy);
+    2. segment z zakrywa=True zdejmuje gołe bryły swojej kości (najwyżej jedna powłoka na kość — inaczej ValueError);
+    3. bryły segmentów kostnych są wtapiane do brył kości (te same siatki <Kosc>_Geo co w dawnym modelu);
+    4. segment na zaczepie — Postac.zaloz(..., eksport=False) z korektą chwytu bohatera (korekty = {zaczep:
+       (zaczep, pos, obrot)});
+    5. kasuje pamięć podręczną geometrii (_bryly, _pkt)."""
+    p = copy.deepcopy(cialo)
+    if id is not None:
+        if not _ID_OK.match(id):
+            raise ValueError("Id postaci %r: tylko ASCII" % id)
+        p.id = id
+    if nazwa is not None:
+        p.nazwa = nazwa
+    typ_ciala = getattr(p, "typ_ciala", None)
+    wlasciciel = {}
+    for prz in przedmioty:
+        for s in prz.segmenty:
+            if s["kosc"] and prz.cialo != typ_ciala:
+                raise ValueError("Przedmiot %s jest dla ciała %r, a postać %s ma ciało %r"
+                                 % (prz.id, prz.cialo, p.id, typ_ciala))
+            if s["zakrywa"]:
+                if s["kosc"] in wlasciciel:
+                    raise ValueError("Dwie powłoki na kości %s: %s i %s" % (s["kosc"], wlasciciel[s["kosc"]], prz.id))
+                wlasciciel[s["kosc"]] = prz.id
+    ukryj = {u for prz in przedmioty for u in prz.ukrywa}
+    p.zalozone = [z for z in p.zalozone if getattr(z[0], "znacznik", None) not in ukryj]
+    p.czesci = [c for c in p.czesci if not (c.get("golas") and c["kosc"] in wlasciciel)]
+    for prz in przedmioty:
+        for s in prz.segmenty:
+            if s["kosc"]:
+                sr = p.srodek(s["kosc"])
+                for c in s["akc"].czesci:
+                    d = dict(c)
+                    d["kosc"] = s["kosc"]
+                    d["p"] = (sr[0] + c["p"][0], sr[1] + c["p"][1], sr[2] + c["p"][2])
+                    p.czesci.append(d)
+            else:
+                z, pos, obrot = (korekty or {}).get(s["zaczep"], (s["zaczep"], s["pos"], s["obrot"]))
+                p.zaloz(s["akc"], z, pos, obrot, eksport=False)
+    p._bryly = None
+    p._pkt = None
+    p.przedmioty = [prz.id for prz in przedmioty]
+    return p
+
+
+def kopiuj_klipy(zrodlo, cel):
+    """Klipy źródła na postać `cel` (nowe obiekty Klip, kanały = deepcopy, ta sama kolejność) i poza renderu."""
+    for k in zrodlo.klipy:
+        n = cel.klip(k.nazwa, k.dlugosc, k.fps, k.petla, k.probki)
+        n.kanaly = copy.deepcopy(k.kanaly)
+    cel.poza_renderu = zrodlo.poza_renderu
+    return cel
+
+
+# --------------------------------------------------------------------------- Rycerz: ciało bazowe („goły”)
+CIALO_TYP = "czlowiek"
+KLASY = ("wojownik",)
+WYMIARY = {"Head": (1.6, 1.5, 1.45),
+           "UpperTorso": (2.2, 1.5, 1.2), "LowerTorso": (2.2, 0.4, 1.2),
+           "UpperArm": (0.95, 0.95, 0.95), "LowerArm": (0.95, 0.75, 0.95), "Hand": (0.9, 0.35, 0.9),
+           "UpperLeg": (1.05, 0.8, 1.05), "LowerLeg": (1.05, 0.75, 1.05), "Foot": (1.05, 0.35, 1.35)}
+# przedmioty pełnego stroju kanonicznego (zbuduj()); tarcza poza kanonem — widać ją tylko po założeniu (D-071)
+KANON = ("rycerz_helm", "rycerz_zbroja", "rycerz_nogawice", "rycerz_pas", "rycerz_rekawice", "rycerz_buty",
+         "rycerz_miecz")
+ODNIESIENIE_KLIPOW = KANON + ("rycerz_tarcza",)      # geometria, na której liczą się klipy (= dawny model z tarczą)
+# stroje do plansz i kontroli (przebuduj.py -> wynik/rycerz/ekwipunek/)
+STROJE = {"golas": (),
+          "pelny": KANON,
+          "bojowy": KANON + ("rycerz_tarcza",),
+          "lekki": ("rycerz_zbroja", "rycerz_nogawice", "rycerz_buty", "rycerz_miecz"),
+          "helm_i_miecz": ("rycerz_helm", "rycerz_miecz")}
+NAZWY_STROJOW = {"golas": "goły (ciało bazowe)", "pelny": "pełny strój", "bojowy": "pełny strój z tarczą",
+                 "lekki": "zbroja bez hełmu i rękawic", "helm_i_miecz": "sam hełm i miecz"}
+PLANSZA_ZBIORCZA = ("golas", "pelny", "lekki", "helm_i_miecz")      # goły | pełny | dwa częściowe
+# filmy w stroju (strój, klip): dowód, że przedmioty idą za kośćmi; blok i kamienna skóra z tarczą i bez niej
+FILMY_EKWIPUNKU = (("golas", "idle"), ("golas", "ciecie"), ("golas", "upadek"), ("bojowy", "blok"),
+                   ("bojowy", "kamienna_skora"), ("pelny", "blok"), ("lekki", "miazdzacy_cios"),
+                   ("helm_i_miecz", "unik"))
+
+
+def _postac(id, nazwa):
+    """Postać R15 o klockach Rycerza (kości, stawy, 18 zaczepów R15), jeszcze bez brył."""
+    return Postac(id, nazwa, typ="r15", faza=0.05, paleta=PALETA, wymiary=WYMIARY)
+
+
+def _twarz(p):
+    """Twarz Rycerza na klocku głowy (zostaje w każdym stroju)."""
     with p.na("Head", od="srodek"):
         w, h, d = p.wymiary("Head")
         z = d / 2                                                   # przednia ściana głowy (skóra)
@@ -127,118 +313,300 @@ def zbuduj():
                    rot=(0, 0, zn * 35))
         p.blok("Podbrodek", (0.0, -0.58, z + 0.02), (0.3, 0.06, 0.04), "skora_cien", "matowy", faza=0.0)
 
-        # hełm: kubeł z zaokrągloną kopułą, szeroki otwór na twarz, obręcz dookoła
-        hw, hd, hh = w + 0.32, d + 0.32, h + 0.1
-        for zn, s in ((1, "L"), (-1, "P")):
-            p.blok("Helm bok " + s, (zn * (w / 2 + 0.08), -0.0, 0), (0.16, hh, hd), "stal", "metal")
-            p.blok("Policzek " + s, (zn * 0.72, -0.07, z + 0.08), (0.24, 0.86, 0.16), "stal", "metal")
-            p.blok("Nit " + s, (zn * 0.72, 0.22, z + 0.18), (0.09, 0.09, 0.05), "stal_ciemna", "metal", faza=0.0)
-            p.blok("Obrecz bok " + s, (zn * (w / 2 + 0.18), h / 2 - 0.12, 0), (0.06, 0.18, hd + 0.04),
-                   "stal_cien", "metal", faza=0.0)
-            for zz in (-0.45, 0.0):
-                p.blok("Nit bok " + s, (zn * (w / 2 + 0.18), -0.25, zz), (0.05, 0.1, 0.1), "stal_ciemna", "metal",
-                       faza=0.0)
-        p.blok("Helm tyl", (0, 0, -z - 0.08), (hw, hh, 0.16), "stal", "metal")
-        p.blok("Obrecz tyl", (0, h / 2 - 0.12, -z - 0.18), (hw + 0.04, 0.18, 0.06), "stal_cien", "metal", faza=0.0)
-        p.blok("Helm tyl listwa", (0, -0.12, -z - 0.18), (0.22, h - 0.5, 0.06), "stal_cien", "metal", faza=0.0)
-        p.blok("Helm kopula", (0, h / 2 + 0.1, 0), (hw, 0.3, hd), "stal", "metal", faza=0.12)
-        p.blok("Helm czubek", (0, h / 2 + 0.28, 0), (w - 0.2, 0.14, d - 0.2), "stal", "metal", faza=0.06)
-        p.blok("Grzebien", (0, h / 2 + 0.34, -0.02), (0.22, 0.14, d + 0.08), "stal_cien", "metal", faza=0.05)
-        p.blok("Czolo", (0, h / 2 - 0.1, z + 0.08), (hw, 0.24, 0.16), "stal", "metal")
-        p.blok("Czolo obrecz", (0, h / 2 - 0.12, z + 0.18), (hw + 0.04, 0.18, 0.06), "stal_cien", "metal",
-               faza=0.0)
 
-    # --- tułów: obojczyk (gorget), tabard ze złotą lamówką
-    with p.na("UpperTorso", od="srodek"):
+def wlosy():
+    """Krótka brązowa czupryna gołego Rycerza (akcesorium Hair na HairAttachment = środek górnej ściany głowy):
+    czapa na czubku, tył do połowy głowy, boki nad uszami z bakami, grzywka z trójkątnych kosmyków nad brwiami
+    (kosmyki kończą się ok. 0,05 studa nad brwią) i sterczący kosmyk na czubku. Hełm ją chowa (znacznik „Wlosy”)."""
+    a = Akcesorium("rycerz_wlosy", "Włosy Rycerza", zaczep="HairAttachment", typ="Hair", paleta=PALETA,
+                   przymierz=False)
+    a.znacznik = "Wlosy"
+    w, h, d = WYMIARY["Head"]
+    x, z = w / 2, d / 2                                       # boki i przód głowy względem zaczepu
+    a.blok("Czupryna", (0, 0.08, -0.035), (w + 0.1, 0.2, d + 0.11), "wlosy", "matowy", faza=0.06)
+    a.blok("Tyl", (0, -0.42, -z - 0.04), (w + 0.1, 0.86, 0.1), "wlosy", "matowy", faza=0.04)
+    for zn, s in ((1, "L"), (-1, "P")):
+        a.blok("Bok " + s, (zn * (x + 0.025), -0.3, -0.12), (0.06, 0.62, d - 0.33), "wlosy", "matowy", faza=0.02)
+        a.blok("Baczek " + s, (zn * (x + 0.025), -0.66, z - 0.36), (0.06, 0.3, 0.16), "wlosy_ciemne", "matowy",
+               faza=0.0)
+    a.blok("Grzywka", (0, -0.08, z + 0.02), (w + 0.06, 0.16, 0.06), "wlosy", "matowy", faza=0.02)
+    # kosmyki grzywki: trójkąty szpicem w dół, lekko zaczesane w prawo rycerza
+    for xk, wys, szer in ((0.58, 0.2, 0.36), (0.2, 0.24, 0.42), (-0.2, 0.22, 0.4), (-0.58, 0.18, 0.34)):
+        a.ostroslup("Kosmyk", (xk, -0.06 - wys / 2, z + 0.03), (szer, wys, 0.06), "wlosy", "matowy",
+                    rot=(0, 0, 180 + 10), gora=(0.0, 0.06), faza=0.0)
+    a.ostroslup("Czub", (-0.2, 0.26, 0.25), (0.34, 0.26, 0.34), "wlosy_ciemne", "matowy", rot=(-18, 0, 14),
+                gora=(0.0, 0.0), faza=0.0)
+    return a
+
+
+def _golas(id, nazwa, zaczepy_ekwipunku=False):
+    """Goły Rycerz bez klipów: twarz, lniana koszula z krótkim rękawem, krótkie spodenki, bose stopy, włosy.
+    Klocki pełnego rozmiaru (jak w zbroi), ubranie wystaje 0,02–0,035 studa, spodenki 0,01 (bez wcięć i szpar)."""
+    p = _postac(id, nazwa)
+    p.typ_ciala = CIALO_TYP
+    p.cialo({"glowa": "skora", "tulow": "len", "pas": "niebieski", "ramiona": "skora", "dlonie": "skora",
+             "nogi": "skora", "stopy": "skora"})
+    _twarz(p)
+    with p.na("UpperTorso", od="srodek"):                         # lniana koszula: dekolt w szpic, łata, rąbek
         w, h, d = p.wymiary("UpperTorso")
         z = d / 2
-        p.blok("Obojczyk", (0, h / 2 - 0.06, 0), (1.5, 0.28, d + 0.12), "stal_cien", "metal")
-        p.blok("Tabard", (0, -0.08, z + 0.03), (1.3, h - 0.16, 0.06), "niebieski", "matowy", faza=0.0)
-        p.blok("Tabard tyl", (0, -0.08, -z - 0.03), (1.3, h - 0.16, 0.06), "niebieski", "matowy", faza=0.0)
+        p.ostroslup("Dekolt obszycie", (0, h / 2 - 0.22, z + 0.01), (0.62, 0.44, 0.03), "len_cien", "matowy",
+                    rot=(0, 0, 180), gora=(0.0, 0.03), faza=0.0)
+        p.ostroslup("Dekolt", (0, h / 2 - 0.17, z + 0.02), (0.44, 0.34, 0.03), "skora", "matowy",
+                    rot=(0, 0, 180), gora=(0.0, 0.03), faza=0.0)
         for zn in (1, -1):
-            p.blok("Lamowka", (zn * 0.68, -0.08, z + 0.045), (0.1, h - 0.16, 0.06), "zloto", "metal", faza=0.0)
-            p.blok("Lamowka tyl", (zn * 0.68, -0.08, -z - 0.045), (0.1, h - 0.16, 0.06), "zloto", "metal", faza=0.0)
-        p.blok("Godlo", (0, 0.05, z + 0.07), (0.34, 0.34, 0.05), "zloto", "metal", rot=(0, 0, 45), faza=0.0)
-        p.blok("Godlo srodek", (0, 0.05, z + 0.1), (0.16, 0.16, 0.04), "niebieski_ciemny", "polysk", rot=(0, 0, 45),
-               faza=0.0)
-
-    # --- pas z klamrą i poła tabardu (przód i tył)
-    with p.na("LowerTorso", od="srodek"):
+            p.blok("Sznurek", (0, h / 2 - 0.36, z + 0.035), (0.2, 0.04, 0.03), "brazowy", "matowy",
+                   rot=(0, 0, zn * 28), faza=0.0)
+        p.blok("Lata", (0.58, -0.3, z + 0.015), (0.32, 0.3, 0.03), "len_cien", "matowy", rot=(0, 0, 8), faza=0.0)
+        p.blok("Rabek koszuli", (0, -h / 2 + 0.07, 0), (w + 0.04, 0.12, d + 0.04), "len_cien", "matowy", faza=0.02)
+    # spodenki wystają tylko 0,01 studa (ściągacz, nogawka): pas i poły przedmiotów leżą o 0,02 nad klockiem —
+    # w tej samej odległości ściany migotałyby (np. pas Zwiadowcy albo poły jego tuniki założone bez spodni)
+    with p.na("LowerTorso", od="srodek"):                         # spodenki: ściągacz i troczki
         w, h, d = p.wymiary("LowerTorso")
         z = d / 2
-        p.blok("Klamra", (0, 0, z + 0.04), (0.42, 0.34, 0.08), "stal", "metal", faza=0.03)
-        p.blok("Klamra srodek", (0, 0, z + 0.08), (0.2, 0.16, 0.04), "brazowy_ciemny", faza=0.0)
-        # poła tabardu: sztywna, lekko odchylona od nóg (przy kroku noga nie przebija materiału)
-        for zk, s, kat in ((1, "", -15), (-1, " tyl", 15)):
-            with p.uklad(pos=(0, -h / 2 + 0.02, zk * (z + 0.07)), obrot=(kat, 0, 0)):
-                p.blok("Pola" + s, (0, -0.32, 0), (1.24, 0.64, 0.08), "niebieski", "matowy", faza=0.0)
-                for zn in (1, -1):
-                    p.blok("Pola lamowka" + s, (zn * 0.62, -0.32, 0), (0.1, 0.64, 0.12), "zloto", "metal", faza=0.0)
-                # dolny szpic (romb do połowy schowany pod połą) i złoty rąbek tuż za nim
-                p.blok("Pola szpic" + s, (0, -0.64, -zk * 0.012), (0.62, 0.62, 0.06), "niebieski", "matowy",
-                       rot=(0, 0, 45), faza=0.0)
-                p.blok("Pola rabek" + s, (0, -0.69, -zk * 0.025), (0.74, 0.74, 0.06), "zloto", "metal",
-                       rot=(0, 0, 45), faza=0.0)
-                p.blok("Pola rabek poziom" + s, (0, -0.64, -zk * 0.025), (1.34, 0.1, 0.06), "zloto", "metal",
-                       faza=0.0)
-
-    # --- ręce: naramienniki, nałokcice, mankiety rękawic
-    for strona, zn in (("Left", 1), ("Right", -1)):
-        with p.na(strona + "UpperArm", od="srodek"):
+        p.blok("Sciagacz", (0, h / 2 - 0.08, 0), (w + 0.02, 0.14, d + 0.02), "niebieski_ciemny", "matowy", faza=0.02)
+        for zn in (1, -1):
+            p.blok("Troczek", (zn * 0.08, h / 2 - 0.2, z + 0.03), (0.06, 0.2, 0.03), "len", "matowy",
+                   rot=(0, 0, zn * 10), faza=0.0)
+    for strona in ("Left", "Right"):
+        with p.na(strona + "UpperArm", od="srodek"):              # krótki rękaw (do połowy ramienia)
             w, h, d = p.wymiary(strona + "UpperArm")
-            p.blok("Naramiennik", (zn * 0.1, h / 2 - 0.06, 0), (1.32, 0.36, 1.32), "stal", "metal", faza=0.12)
-            p.blok("Naramiennik lama 1", (zn * 0.16, h / 2 - 0.3, 0), (1.22, 0.2, 1.24), "stal_cien", "metal",
-                   faza=0.06)
-            p.blok("Naramiennik lama 2", (zn * 0.2, h / 2 - 0.48, 0), (1.1, 0.18, 1.14), "stal", "metal", faza=0.05)
-            p.blok("Naramiennik nit", (zn * 0.78, h / 2 - 0.06, 0.3), (0.06, 0.1, 0.1), "zloto", "metal", faza=0.0)
-            p.blok("Naramiennik nit 2", (zn * 0.78, h / 2 - 0.06, -0.3), (0.06, 0.1, 0.1), "zloto", "metal", faza=0.0)
-        with p.na(strona + "LowerArm", od="srodek"):
-            w, h, d = p.wymiary(strona + "LowerArm")
-            p.blok("Nalokcica", (zn * 0.06, h / 2 - 0.05, -0.08), (0.95, 0.26, 0.9), "stal_cien", "metal", faza=0.06)
-        with p.na(strona + "Hand", od="srodek"):
-            w, h, d = p.wymiary(strona + "Hand")
-            p.blok("Mankiet", (0, h / 2 + 0.02, 0), (1.04, 0.2, 1.04), "stal", "metal", faza=0.05)
-
-    # --- nogi: nakolanniki, nagolenniki, trzewiki
-    for strona, zn in (("Left", 1), ("Right", -1)):
-        with p.na(strona + "UpperLeg", od="srodek"):
+            p.blok("Rekaw", (0, h / 2 - 0.24, 0), (w + 0.04, 0.52, d + 0.04), "len", "matowy", faza=0.04)
+            p.blok("Rekaw rabek", (0, h / 2 - 0.55, 0), (w + 0.04, 0.1, d + 0.04), "len_cien", "matowy", faza=0.02)
+        with p.na(strona + "UpperLeg", od="srodek"):              # nogawka spodenek, rąbek nad kolanem
             w, h, d = p.wymiary(strona + "UpperLeg")
-            p.blok("Udo plyta", (0, 0.05, d / 2 + 0.03), (0.8, 0.6, 0.06), "stal_cien", "metal", faza=0.02)
-        with p.na(strona + "LowerLeg", od="srodek"):
-            w, h, d = p.wymiary(strona + "LowerLeg")
-            p.blok("Nakolannik", (0, h / 2 - 0.08, d / 2 + 0.06), (0.72, 0.36, 0.2), "stal_cien", "metal", faza=0.07)
-            p.blok("Nagolennik", (0, -0.12, d / 2 + 0.03), (0.62, 0.42, 0.06), "stal", "metal", faza=0.02)
-        with p.na(strona + "Foot", od="srodek"):
+            p.blok("Nogawka", (0, h / 2 - 0.22, 0), (w + 0.02, 0.48, d + 0.02), "niebieski", "matowy", faza=0.04)
+            p.blok("Nogawka rabek", (0, h / 2 - 0.5, 0), (w + 0.04, 0.08, d + 0.04), "niebieski_ciemny", "matowy",
+                   faza=0.02)
+        with p.na(strona + "Foot", od="srodek"):                  # bosa stopa: zarys palców
             w, h, d = p.wymiary(strona + "Foot")
-            p.blok("Czubek", (0, -0.02, d / 2 + 0.03), (w - 0.1, 0.28, 0.1), "stal_cien", "metal", faza=0.03)
-            p.blok("Podeszwa", (0, -h / 2 + 0.04, 0), (w + 0.04, 0.08, d + 0.04), "brazowy_ciemny", "matowy",
+            for i in (-1, 0, 1):
+                p.blok("Palec", (i * 0.3, -h / 2 + 0.075, d / 2 + 0.01), (0.035, 0.13, 0.03), "skora_cien",
+                       "matowy", faza=0.0)
+    for c in p.czesci:
+        c["golas"] = True                                         # gołe bryły (zdejmuje je powłoka na tej kości)
+    p.zaloz(wlosy())                                              # osobna siatka (w FBX ciała), hełm ją chowa
+    if zaczepy_ekwipunku:
+        for kosc in R15_KOSCI:
+            p.zaczep(zaczep_ekwipunku(kosc), kosc, p.srodek(kosc))
+    return p
+
+
+# --------------------------------------------------------------------------- Rycerz: przedmioty stroju
+def przedmioty():
+    """Wszystkie przedmioty Rycerza (z tarczą) — rozbiór dawnego modelu z EKWIPUNEK.md pkt 3. Bryły są te same co
+    w dawnym zbuduj() (te same liczby), tylko pogrupowane w segmenty po kościach."""
+    m = _postac(ID + "_miara", NAZWA)
+    W = m.wymiary
+
+    def nowy(id, nazwa, slot, kategoria, **k):
+        return Przedmiot(id, nazwa, slot, kategoria, m, cialo=CIALO_TYP, klasy=KLASY, zestaw=ID, paleta=PALETA, **k)
+
+    # --- hełm z otwartą twarzą: kubeł z zaokrągloną kopułą, szeroki otwór na twarz, obręcz dookoła
+    helm = nowy("rycerz_helm", "Hełm Rycerza", "Helmet", "Armor", ukrywa=("Wlosy",))
+    a = helm.segment("Head")
+    w, h, d = W("Head")
+    z = d / 2
+    hw, hd, hh = w + 0.32, d + 0.32, h + 0.1
+    for zn, s in ((1, "L"), (-1, "P")):
+        a.blok("Helm bok " + s, (zn * (w / 2 + 0.08), -0.0, 0), (0.16, hh, hd), "stal", "metal")
+        a.blok("Policzek " + s, (zn * 0.72, -0.07, z + 0.08), (0.24, 0.86, 0.16), "stal", "metal")
+        a.blok("Nit " + s, (zn * 0.72, 0.22, z + 0.18), (0.09, 0.09, 0.05), "stal_ciemna", "metal", faza=0.0)
+        a.blok("Obrecz bok " + s, (zn * (w / 2 + 0.18), h / 2 - 0.12, 0), (0.06, 0.18, hd + 0.04),
+               "stal_cien", "metal", faza=0.0)
+        for zz in (-0.45, 0.0):
+            a.blok("Nit bok " + s, (zn * (w / 2 + 0.18), -0.25, zz), (0.05, 0.1, 0.1), "stal_ciemna", "metal",
+                   faza=0.0)
+    a.blok("Helm tyl", (0, 0, -z - 0.08), (hw, hh, 0.16), "stal", "metal")
+    a.blok("Obrecz tyl", (0, h / 2 - 0.12, -z - 0.18), (hw + 0.04, 0.18, 0.06), "stal_cien", "metal", faza=0.0)
+    a.blok("Helm tyl listwa", (0, -0.12, -z - 0.18), (0.22, h - 0.5, 0.06), "stal_cien", "metal", faza=0.0)
+    a.blok("Helm kopula", (0, h / 2 + 0.1, 0), (hw, 0.3, hd), "stal", "metal", faza=0.12)
+    a.blok("Helm czubek", (0, h / 2 + 0.28, 0), (w - 0.2, 0.14, d - 0.2), "stal", "metal", faza=0.06)
+    a.blok("Grzebien", (0, h / 2 + 0.34, -0.02), (0.22, 0.14, d + 0.08), "stal_cien", "metal", faza=0.05)
+    a.blok("Czolo", (0, h / 2 - 0.1, z + 0.08), (hw, 0.24, 0.16), "stal", "metal")
+    a.blok("Czolo obrecz", (0, h / 2 - 0.12, z + 0.18), (hw + 0.04, 0.18, 0.06), "stal_cien", "metal", faza=0.0)
+
+    # --- zbroja: napierśnik z obojczykiem (gorget) i tabardem, naramienniki, nałokcice, poły tabardu
+    zbr = nowy("rycerz_zbroja", "Zbroja Rycerza z tabardem", "Chest", "Armor")
+    a = zbr.segment("UpperTorso", zakrywa=True, klocek="stal")
+    w, h, d = W("UpperTorso")
+    z = d / 2
+    a.blok("Obojczyk", (0, h / 2 - 0.06, 0), (1.5, 0.28, d + 0.12), "stal_cien", "metal")
+    a.blok("Tabard", (0, -0.08, z + 0.03), (1.3, h - 0.16, 0.06), "niebieski", "matowy", faza=0.0)
+    a.blok("Tabard tyl", (0, -0.08, -z - 0.03), (1.3, h - 0.16, 0.06), "niebieski", "matowy", faza=0.0)
+    for zn in (1, -1):
+        a.blok("Lamowka", (zn * 0.68, -0.08, z + 0.045), (0.1, h - 0.16, 0.06), "zloto", "metal", faza=0.0)
+        a.blok("Lamowka tyl", (zn * 0.68, -0.08, -z - 0.045), (0.1, h - 0.16, 0.06), "zloto", "metal", faza=0.0)
+    a.blok("Godlo", (0, 0.05, z + 0.07), (0.34, 0.34, 0.05), "zloto", "metal", rot=(0, 0, 45), faza=0.0)
+    a.blok("Godlo srodek", (0, 0.05, z + 0.1), (0.16, 0.16, 0.04), "niebieski_ciemny", "polysk", rot=(0, 0, 45),
+           faza=0.0)
+    for strona, zn in (("Left", 1), ("Right", -1)):
+        a = zbr.segment(strona + "UpperArm", zakrywa=True, klocek="stal_ciemna")
+        w, h, d = W(strona + "UpperArm")
+        a.blok("Naramiennik", (zn * 0.1, h / 2 - 0.06, 0), (1.32, 0.36, 1.32), "stal", "metal", faza=0.12)
+        a.blok("Naramiennik lama 1", (zn * 0.16, h / 2 - 0.3, 0), (1.22, 0.2, 1.24), "stal_cien", "metal",
+               faza=0.06)
+        a.blok("Naramiennik lama 2", (zn * 0.2, h / 2 - 0.48, 0), (1.1, 0.18, 1.14), "stal", "metal", faza=0.05)
+        a.blok("Naramiennik nit", (zn * 0.78, h / 2 - 0.06, 0.3), (0.06, 0.1, 0.1), "zloto", "metal", faza=0.0)
+        a.blok("Naramiennik nit 2", (zn * 0.78, h / 2 - 0.06, -0.3), (0.06, 0.1, 0.1), "zloto", "metal", faza=0.0)
+        a = zbr.segment(strona + "LowerArm", zakrywa=True, klocek="stal")
+        w, h, d = W(strona + "LowerArm")
+        a.blok("Nalokcica", (zn * 0.06, h / 2 - 0.05, -0.08), (0.95, 0.26, 0.9), "stal_cien", "metal", faza=0.06)
+    # poła tabardu (przód i tył): sztywna, lekko odchylona od nóg (przy kroku noga nie przebija materiału)
+    a = zbr.segment("LowerTorso")
+    w, h, d = W("LowerTorso")
+    z = d / 2
+    for zk, s, kat in ((1, "", -15), (-1, " tyl", 15)):
+        with a.uklad(pos=(0, -h / 2 + 0.02, zk * (z + 0.07)), obrot=(kat, 0, 0)):
+            a.blok("Pola" + s, (0, -0.32, 0), (1.24, 0.64, 0.08), "niebieski", "matowy", faza=0.0)
+            for zn in (1, -1):
+                a.blok("Pola lamowka" + s, (zn * 0.62, -0.32, 0), (0.1, 0.64, 0.12), "zloto", "metal", faza=0.0)
+            # dolny szpic (romb do połowy schowany pod połą) i złoty rąbek tuż za nim
+            a.blok("Pola szpic" + s, (0, -0.64, -zk * 0.012), (0.62, 0.62, 0.06), "niebieski", "matowy",
+                   rot=(0, 0, 45), faza=0.0)
+            a.blok("Pola rabek" + s, (0, -0.69, -zk * 0.025), (0.74, 0.74, 0.06), "zloto", "metal",
+                   rot=(0, 0, 45), faza=0.0)
+            a.blok("Pola rabek poziom" + s, (0, -0.64, -zk * 0.025), (1.34, 0.1, 0.06), "zloto", "metal",
                    faza=0.0)
 
-    # miecz: osobny przedmiot (rycerz_miecz.fbx, np. jako Tool); w FBX postaci go nie ma (eksport=False),
-    # w renderach i filmach jest w dłoni
-    m = miecz()
-    p.zaloz(m, eksport=False)
-    # tarcza: tak samo osobny przedmiot (przedmioty/rycerz_tarcza.fbx) na LeftGripAttachment
-    t = tarcza()
-    p.zaloz(t, eksport=False)
+    # --- nogawice (część zbroi): brązowe biodra i stalowe uda z płytą
+    nog = nowy("rycerz_nogawice", "Nogawice Rycerza", "Chest", "Armor", czesc_od="rycerz_zbroja")
+    nog.segment("LowerTorso", zakrywa=True, klocek="brazowy")
+    for strona in ("Left", "Right"):
+        a = nog.segment(strona + "UpperLeg", zakrywa=True, klocek="stal")
+        w, h, d = W(strona + "UpperLeg")
+        a.blok("Udo plyta", (0, 0.05, d / 2 + 0.03), (0.8, 0.6, 0.06), "stal_cien", "metal", faza=0.02)
 
-    # --- klipy
-    idle(p)
-    chod(p)
-    atak_miecz(p)
-    wiwat(p)
-    blok(p)
-    unik(p)
-    trafienie(p)
-    upadek(p)
-    ciecie(p)
-    miazdzacy_cios(p)
-    kamienna_skora(p)
-    p.ustaw_poze_renderu("idle", 0)
-    return [p, m, t]
+    # --- pas: stalowa klamra (brązowy pas biodrowy to klocek nogawic)
+    pas = nowy("rycerz_pas", "Pas Rycerza", "Belt", "Armor")
+    a = pas.segment("LowerTorso")
+    w, h, d = W("LowerTorso")
+    z = d / 2
+    a.blok("Klamra", (0, 0, z + 0.04), (0.42, 0.34, 0.08), "stal", "metal", faza=0.03)
+    a.blok("Klamra srodek", (0, 0, z + 0.08), (0.2, 0.16, 0.04), "brazowy_ciemny", faza=0.0)
+
+    # --- rękawice: stalowe dłonie z mankietem
+    rek = nowy("rycerz_rekawice", "Rękawice Rycerza", "Gloves", "Armor")
+    for strona in ("Left", "Right"):
+        a = rek.segment(strona + "Hand", zakrywa=True, klocek="stal_ciemna")
+        w, h, d = W(strona + "Hand")
+        a.blok("Mankiet", (0, h / 2 + 0.02, 0), (1.04, 0.2, 1.04), "stal", "metal", faza=0.05)
+
+    # --- trzewiki z nagolennikami i nakolannikami
+    but = nowy("rycerz_buty", "Trzewiki z nagolennikami", "Boots", "Armor")
+    for strona in ("Left", "Right"):
+        a = but.segment(strona + "LowerLeg", zakrywa=True, klocek="stal")
+        w, h, d = W(strona + "LowerLeg")
+        a.blok("Nakolannik", (0, h / 2 - 0.08, d / 2 + 0.06), (0.72, 0.36, 0.2), "stal_cien", "metal", faza=0.07)
+        a.blok("Nagolennik", (0, -0.12, d / 2 + 0.03), (0.62, 0.42, 0.06), "stal", "metal", faza=0.02)
+        a = but.segment(strona + "Foot", zakrywa=True, klocek="stal_ciemna")
+        w, h, d = W(strona + "Foot")
+        a.blok("Czubek", (0, -0.02, d / 2 + 0.03), (w - 0.1, 0.28, 0.1), "stal_cien", "metal", faza=0.03)
+        a.blok("Podeszwa", (0, -h / 2 + 0.04, 0), (w + 0.04, 0.08, d + 0.04), "brazowy_ciemny", "matowy", faza=0.0)
+
+    # --- broń: miecz (Weapon) i tarcza (druga ręka, tylko Wojownik — D-062)
+    mie = nowy("rycerz_miecz", "Wielki miecz Rycerza", "Weapon", "Weapons")
+    mie.na_zaczepie(miecz())
+    tar = nowy("rycerz_tarcza", "Tarcza Rycerza", "OffHand", "Weapons")
+    tar.na_zaczepie(tarcza())
+    return [helm, zbr, nog, pas, rek, but, mie, tar]
+
+
+def wybierz(ids, wszystkie=None):
+    """Przedmioty o podanych id (w tej kolejności) z listy `wszystkie` (domyślnie świeże przedmioty())."""
+    wszystkie = {x.id: x for x in (wszystkie or przedmioty())}
+    return [wszystkie[i] for i in ids]
+
+
+# --------------------------------------------------------------------------- Rycerz: klipy, ciało, stroje
+_ODNIESIENIE = []
+
+
+def postac_odniesienia():
+    """Dawny model (pełny strój z tarczą) z klipami policzonymi tak jak przed D-071 — źródło klipów każdego stroju.
+    Liczona raz na proces (klipy zależą od geometrii: stopy na ziemi, nic pod ziemią)."""
+    if not _ODNIESIENIE:
+        p = ubierz(_golas(ID, NAZWA), wybierz(ODNIESIENIE_KLIPOW), id=ID, nazwa=NAZWA)
+        idle(p)
+        chod(p)
+        atak_miecz(p)
+        wiwat(p)
+        blok(p)
+        unik(p)
+        trafienie(p)
+        upadek(p)
+        ciecie(p)
+        miazdzacy_cios(p)
+        kamienna_skora(p)
+        p.ustaw_poze_renderu("idle", 0)
+        _ODNIESIENIE.append(p)
+    return _ODNIESIENIE[0]
+
+
+def cialo(zaczepy_ekwipunku=False):
+    """Goły Rycerz „rycerz_cialo” z klipami postaci odniesienia. zaczepy_ekwipunku=True — dodatkowo 15 zaczepów
+    Ekw<Kosc>Attachment (środek klocka kości) dla eksportu ciała do gry; w zbuduj() ich nie ma."""
+    return kopiuj_klipy(postac_odniesienia(), _golas(ID + "_cialo", NAZWA + " (ciało bazowe)", zaczepy_ekwipunku))
+
+
+def stroj(nazwa, wszystkie=None):
+    """Rycerz w stroju z STROJE: postać „rycerz_<nazwa>”."""
+    return ubierz(cialo(), wybierz(STROJE[nazwa], wszystkie), id="%s_%s" % (ID, nazwa),
+                  nazwa="%s — %s" % (NAZWA, NAZWY_STROJOW[nazwa]))
+
+
+def zbuduj():
+    """[Rycerz w pełnym stroju kanonicznym (id „rycerz”, bez tarczy), miecz, tarcza] — jak przed D-071."""
+    prz = przedmioty()
+    p = ubierz(cialo(), wybierz(KANON, prz), id=ID, nazwa=NAZWA)
+    po_id = {x.id: x for x in prz}
+    # miecz i tarcza: osobne przedmioty (przedmioty/rycerz_miecz.fbx, rycerz_tarcza.fbx); w FBX postaci ich nie ma
+    # (eksport=False), w renderach i filmach miecz jest w dłoni, tarczy nie ma (zakłada ją tylko strój „bojowy”)
+    return [p, po_id["rycerz_miecz"].segmenty[0]["akc"], po_id["rycerz_tarcza"].segmenty[0]["akc"]]
+
+
+def warianty(rodzaj="plansze"):
+    """Modele dla przebuduj.py (wynik/rycerz/ekwipunek/): „plansze” — postacie ze STROJE (id rycerz_<strój>)
+    i ikony całych przedmiotów; „eksport” — gołe ciało z zaczepami Ekw… (tylko klip idle: pozostałe klipy są
+    w rycerz__<klip>.fbx, te same kości) i każdy segment kostny osobno."""
+    prz = przedmioty()
+    if rodzaj == "plansze":
+        return [stroj(n, prz) for n in STROJE] + [x.ikona() for x in prz]
+    if rodzaj == "eksport":
+        c = cialo(zaczepy_ekwipunku=True)
+        c.klipy = [k for k in c.klipy if k.nazwa == "idle"]
+        return [c] + [s["akc"] for x in prz for s in x.segmenty if s["kosc"]]
+    raise ValueError("rodzaj: plansze albo eksport")
+
+
+def ekwipunek_json():
+    """Dane ekwipunku bohatera (EKWIPUNEK.md pkt 5); ścieżki plików i trójkąty dopisuje przebuduj.py."""
+    return {"bohater": ID, "cialo": CIALO_TYP, "klasy": list(KLASY), "kanon": list(KANON),
+            "odniesienie_klipow": list(ODNIESIENIE_KLIPOW), "stroje": {k: list(v) for k, v in STROJE.items()},
+            "wlosy": {"id": "rycerz_wlosy", "zaczep": "HairAttachment", "znacznik": "Wlosy"},
+            "przedmioty": [x.opis() for x in przedmioty()]}
 
 
 SLABOSCI = [
+    "D-071: model główny (rycerz.fbx, plansza, filmy) to pełny strój kanoniczny BEZ tarczy — tarcza jest "
+    "przedmiotem drugiej ręki, widać ją tylko w stroju „bojowy” (ekwipunek/rycerz_bojowy_*). Klipy liczy postać "
+    "odniesienia z tarczą (dawny model) i kopiuje bez zmian, więc w blok i kamienna_skora bez tarczy lewa ręka "
+    "robi zasłonę samym przedramieniem w rękawicy (nadgarstek zgięty ok. 90° — bez tarczy to zgięcie widać).",
+    "Ciało bazowe i stroje: zbroja jest wtapiana w bryły kości (te same siatki <Kosc>_Geo), więc w rycerz.fbx strój "
+    "nadal jest częścią ciała. Ubieranie w grze ma iść przez gołe ciało (ekwipunek/rycerz_cialo.fbx z zaczepami "
+    "Ekw<Kosc>Attachment) i segmenty z ekwipunek/przedmioty/ — ta droga nie była sprawdzana w Studio "
+    "(przezroczystość gołych brył pod powłoką, AddAccessory z własnymi nazwami zaczepów).",
+    "Upadek bez zbroi i bez hełmu (goły): klip liczony na postaci odniesienia kładzie ciało na tylnej pole tabardu "
+    "i na hełmie, więc goły Rycerz leży ok. 0,25 studa nad ziemią (najniżej głowa 0,247; w stroju pełnym 0,000). "
+    "Z samym hełmem albo z samą zbroją leży na ziemi. Poprawka wymaga decyzji: osobny klip upadku dla ciała albo "
+    "przesunięcie korzenia w grze zależne od stroju (kontrakt: klipy są wspólne).",
+    "rycerz_cialo.fbx/.glb ma tylko klip idle (reszta klipów: rycerz__<klip>.fbx, te same kości i nazwy).",
+    "Pas Rycerza po rozbiorze to sama klamra (brązowy pas biodrowy to klocek nogawic); szerszy pas jako nakładka "
+    "zmieniłby wygląd kanonu — do decyzji właściciela. Nogawice są częścią zbroi (slot Chest, czesc_od) do decyzji "
+    "o slocie Legs (EKWIPUNEK.md pkt 8).",
+    "Goły Rycerz: fryzura, len koszuli (EDE3CC), niebieskie spodenki w kolorze tabardu i bose stopy z zarysem palców "
+    "to propozycja do oceny. Włosy siedzą na HairAttachment (osobna siatka), hełm je chowa; w stroju bez hełmu "
+    "(„lekki”) widać włosy przy naramiennikach — naramienniki stykają się z bokami włosów jak dotąd z hełmem.",
     "Miecz i tarcza są osobnymi przedmiotami (przedmioty/rycerz_miecz.fbx, rycerz_tarcza.fbx) — w FBX postaci ich "
     "nie ma; w grze trzeba je dać jako Tool albo akcesoria na RightGripAttachment i LeftGripAttachment.",
     "Tarczy nie ma na obrazie KeyArt ani w notatce kanonu — dodana jako przedmiot dla klasy Wojownik (blok tarczą); "
@@ -266,8 +634,10 @@ SLABOSCI = [
     "Klipy to szkice (0,67–2 s), nie gotowa animacja; ciosy nie mają efektu cięcia (smugi), uderzenia w tarczę "
     "i tupnięcie — iskier ani fali (efekty w grze).",
     "Kontrola przenikania (python -B swiat/postacie/rycerz.py --kontrola) liczy skrzynki brył (ostrosłupy jak "
-    "skrzynki), margines 0,06 studa; hełm z głową, tułów i pas to po jednej skrzynce na kość (pas bez poł). Nie "
-    "sprawdza rąk z nogami; broń z nogami i miecz z tarczą sprawdzone osobnym skryptem (bez przecięć).",
+    "skrzynki), margines 0,06 studa; hełm z głową, tułów i pas to po jednej skrzynce na kość (pas bez poł, włosy "
+    "w skrzynce głowy). Działa na każdym stroju z STROJE: „bojowy” daje dokładnie dawny wynik, w pozostałych "
+    "przenika tylko stary atak_miecz (goły i sam hełm 0,12, lekki 0,10, pełny 0,15 studa). Nie sprawdza rąk "
+    "z nogami; broń z nogami i miecz z tarczą sprawdzone osobnym skryptem (bez przecięć).",
     "LowerTorso i Root nie są w 0,0,0 (biodra na wysokości 1,9) — dla NPC bez znaczenia, ciało awatara może tego "
     "wymagać (sprawdzić przy pierwszym imporcie).",
 ]
@@ -920,7 +1290,8 @@ def kontrola(p, probki=None, margines=0.06, krok=0.25):
     br = _bryly(p)
     pudla = {}
     for b in br:
-        if b["zrodlo"] == "cialo" and b["kosc"] in CIALO and not b["n"].startswith("Pola"):
+        # akcesoria na hełmie / tułowiu / pasie (włosy gołego Rycerza) liczą się do skrzynki swojej kości
+        if b["kosc"] in CIALO and not (b["zrodlo"] == "cialo" and b["n"].startswith("Pola")):
             mn, mx = pudla.setdefault(b["kosc"], ([1e9] * 3, [-1e9] * 3))
             for q in b["pkt"]:
                 for i in range(3):
@@ -928,7 +1299,7 @@ def kontrola(p, probki=None, margines=0.06, krok=0.25):
     pola = [b for b in br if b["zrodlo"] == "cialo" and b["n"].startswith("Pola")]
     ruchome = []
     for b in br:
-        if b["zrodlo"] != "cialo":
+        if b["zrodlo"] != "cialo" and b["kosc"] not in CIALO:
             ruchome.append((b["zrodlo"], b["kosc"], _siatka(b, krok)))
         elif b["kosc"] in KONCZYNY:
             ruchome.append((b["kosc"], b["kosc"], _siatka(b, krok)))
@@ -1021,7 +1392,8 @@ def _wypisz_kontrole(wynik):
             print("%-15s          broń przez poły tabardu: %d kl., np. %s" % ("", len({f for f, *_ in w["pola"]}),
                                                                              w["pola"][:3]))
         if w["naramiennik"]:
-            print("%-15s          naramiennik w hełmie (bryła ramienia, nie broń): %d kl., najgłębiej %.2f studa"
+            print("%-15s          naramiennik/rękaw w hełmie albo głowie (bryła ramienia, nie broń): %d kl., "
+                  "najgłębiej %.2f studa"
                   % ("", len(w["naramiennik"]), max(x[2] for x in w["naramiennik"])))
     return zle
 
@@ -1030,5 +1402,9 @@ if __name__ == "__main__":
     if "--kontrola" in sys.argv:
         if hasattr(sys.stdout, "reconfigure"):
             sys.stdout.reconfigure(encoding="utf-8")
-        postac = zbuduj()[0]
-        sys.exit(1 if _wypisz_kontrole(kontrola(postac)) else 0)
+        stroje = [sys.argv[sys.argv.index("--stroj") + 1]] if "--stroj" in sys.argv else list(STROJE)
+        zle = 0
+        for s in stroje:
+            print("=== strój „%s” (%s): %s" % (s, NAZWY_STROJOW[s], ", ".join(STROJE[s]) or "bez przedmiotów"))
+            zle += _wypisz_kontrole(kontrola(stroj(s)))
+        sys.exit(1 if zle else 0)
