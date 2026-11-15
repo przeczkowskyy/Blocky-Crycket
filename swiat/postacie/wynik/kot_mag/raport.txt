@@ -2,31 +2,39 @@ RAPORT — kot_mag
 KOT-MAG „Crycket” — drugi bohater-maskotka: mały kanciasty pomarańczowy kot w za dużej fioletowej szacie,
 
 Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
-Źródło: swiat/postacie/kot_mag.py · wygenerowano 13.11.2026 poleceniem:
+Źródło: swiat/postacie/kot_mag.py · wygenerowano 15.11.2026 poleceniem:
   python -B swiat/postacie/przebuduj.py kot_mag
 Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
 
 PODSUMOWANIE
 - modele z kośćmi: kot_mag
 - przedmioty (akcesoria): 2
-- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 17 plików, zgodnych 17
 - ostrzeżenia z raportu: 1; uwagi podglądu: 1
 
 ZNANE SŁABOŚCI
-- Rig NPC, nie ciało awatara: kości Tail i TailTip spoza R15, wzrost ok. 3,7 studa z kapeluszem.
-- Kapelusz i kostur są osobnymi przedmiotami (przedmioty/kot_mag_*.fbx); w FBX kota ich nie ma.
-- Dzwon szaty jest sztywny (idzie za biodrami): w chodzie nogi są schowane, ruch widać po łapach i kołysaniu.
-- Tren leży na ziemi tylko w spoczynku; przy podskoku w wiwacie unosi się razem z biodrami.
-- Czar i zianie nie mają efektów cząsteczkowych; kryształ świeci tylko w renderze.
+- Rig NPC, nie ciało awatara: kości Tail, TailTip, LeftEar, RightEar, HatPivot i StaffPivot spoza R15, wzrost ok. 3,7 studa z kapeluszem.
+- Kapelusz i kostur są osobnymi przedmiotami (przedmioty/kot_mag_*.fbx); w FBX kota ich nie ma. W renderach i klipach siedzą na kościach HatPivot i StaffPivot (te same ramki co HatAttachment i RightGripAttachment). W grze, gdy kostur jest Toolem na RightGripAttachment, a kapelusz akcesorium na HatAttachment, upadek ich nie zrzuci — trzeba je wtedy przypiąć do części HatPivot / StaffPivot albo zrzucić skryptem.
+- Łapy są bardzo krótkie (bark → nadgarstek 0,64 studa, bark poniżej spodu głowy): łapa nie sięga nad głowę ani do drugiej łapy. „Zamach nad głową” w kuli ognia to kostur uniesiony w górę i w tył z prawej strony głowy, kryształ ponad rondem kapelusza (ok. 3,8 studa; rondo 3,2), za głową; w lodowym pocisku drzewce trzyma tylko prawa łapa — lewa pcha powietrze obok (nie sięga).
+- Rękawy są długie (mankiet zakrywa łapkę), więc drzewce zawsze wychodzi z mankietu, a przy kosturze trzymanym poprzecznie przechodzi przez brzeg rękawa — to chwyt w rękawie, nie przenikanie przez głowę czy tułów.
+- Dzwon szaty jest sztywny (idzie za biodrami): w chodzie nogi są schowane, ruch widać po łapach i kołysaniu; w upadku na bok dzwon leży jak sztywny stożek.
+- Tren leży na ziemi tylko w spoczynku; przy podskokach (wiwat, unik) unosi się razem z biodrami.
+- Czary nie mają efektów cząsteczkowych (kula ognia, lodowy pocisk, krąg bariery, błysk ataku — do zrobienia w grze w klatkach z CHWILE); kryształ świeci tylko w renderze.
+- Twarz nie ma mimiki — ten sam uśmiech przy trafieniu i upadku; emocje grają uszy (po sobie) i ogon. Uszy żyją w klipach walki, w czarze i wiwacie; idle i chod są sprzed kości uszu i zostały bez zmian (uszy stoją).
+- Bariera: kostur wzniesiony pionowo z prawej strony głowy (łapa nie sięga nad głowę ani do ziemi, więc nie ma ani kostura nad środkiem głowy, ani stuknięcia okuciem w ziemię); poza bliska klipowi czar. Krąg bariery to efekt w grze (kl. 10).
+- Atak, kula ognia i lodowy pocisk w chwili wypuszczenia mają podobną sylwetkę (kostur do przodu); różnią się zamachem (krótki w tył / wysoko za głowę / poziomo przy boku jak lanca) i dobiciem (kula kończy nisko). Z kamery zza pleców kostur skierowany do przodu chowa się za głową i kapeluszem — czytelność da efekt czaru.
+- Klip chod (sprzed 15.11, nieruszany): palce łap schodzą w nim do 0,22 studa pod ziemię (kl. 8), a lewy rękaw zachodzi na dzwon szaty na 0,23 studa (w spoczynku 0,17) — do poprawy, jeśli chod ma zostać.
+- Unik i lodowy pocisk przesuwają kota w samym klipie (kość LowerTorso): odskok ok. 1,6 studa w tył i w bok, wypad ok. 0,35 studa do przodu; oba klipy kończą się w punkcie startu.
+- Kontrola przenikania (python -B swiat/postacie/kot_mag.py --kontrola) liczy bryły jako skrzynki, stożki i ostrosłupy (dzwon szaty, uszy, kapelusz zwężają się jak w modelu); wąsy (cienkie kreski) i ramię z rękawem przy barku nie są liczone. Rękaw ramienia (UpperArm) i kostur względem własnej łapy — tylko na arkuszach.
 
 MODEL kot_mag „Kot-Mag Crycket” (r15)
   wymiary ciała: 2,51 × 3,82 × 2,30; z akcesoriami: 2,64 × 4,94 × 2,47
-  trójkąty: 3286 (siatek: 19)
-  budżety ciała R15: Head 760/4000, Torso 580/1750, LeftArm 232/1248, RightArm 232/1248, LeftLeg 244/1248, RightLeg 244/1248
-  kości (19): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, Tail, TailTip
-  klipy: idle 60 kl. 2,00 s pętla, chod 20 kl. 0,67 s pętla, czar 54 kl. 1,80 s jednorazowy, wiwat 30 kl. 1,00 s pętla
-  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
-  założone: kot_mag_kapelusz na HatAttachment (tylko podgląd, bez eksportu), kot_mag_kostur na RightGripAttachment (tylko podgląd, bez eksportu)
+  trójkąty: 3286 (siatek: 21)
+  budżety ciała R15: Head 680/4000, Torso 580/1750, LeftArm 232/1248, RightArm 232/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla, chod 20 kl. 0,67 s pętla, czar 54 kl. 1,80 s jednorazowy, wiwat 30 kl. 1,00 s pętla, atak 26 kl. 0,87 s jednorazowy, kula_ognia 54 kl. 1,80 s jednorazowy, lodowy_pocisk 46 kl. 1,53 s jednorazowy, bariera 42 kl. 1,40 s jednorazowy, unik 28 kl. 0,93 s jednorazowy, trafienie 20 kl. 0,67 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_mag_kapelusz na KapeluszAttachment (tylko podgląd, bez eksportu), kot_mag_kostur na KosturAttachment (tylko podgląd, bez eksportu)
   OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
 
 PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
@@ -38,15 +46,22 @@ importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić A
 
 
 UWAGI PODGLĄDU
-- kot_mag: kości spoza standardu R15 (Tail, TailTip) — w Roblox to już nie zwykły R15
+- kot_mag: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
 
 KONTROLA EKSPORTÓW
-- kot_mag.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje brak -> ZGODNE
-- kot_mag__idle.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje kot_mag|Scene 1-61 -> ZGODNE
-- kot_mag__chod.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje kot_mag|Scene 1-21 -> ZGODNE
-- kot_mag__czar.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje kot_mag|Scene 1-55 -> ZGODNE
-- kot_mag__wiwat.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje kot_mag|Scene 1-31 -> ZGODNE
-- kot_mag.glb: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje chod 0-20, czar 0-54, idle 0-60, wiwat 0-30 -> ZGODNE
+- kot_mag.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje brak -> ZGODNE
+- kot_mag__idle.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-61 -> ZGODNE
+- kot_mag__chod.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-21 -> ZGODNE
+- kot_mag__czar.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-55 -> ZGODNE
+- kot_mag__wiwat.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-31 -> ZGODNE
+- kot_mag__atak.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-27 -> ZGODNE
+- kot_mag__kula_ognia.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-55 -> ZGODNE
+- kot_mag__lodowy_pocisk.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-47 -> ZGODNE
+- kot_mag__bariera.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-43 -> ZGODNE
+- kot_mag__unik.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-29 -> ZGODNE
+- kot_mag__trafienie.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-21 -> ZGODNE
+- kot_mag__upadek.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-61 -> ZGODNE
+- kot_mag.glb: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje atak 0-26, bariera 0-42, chod 0-20, czar 0-54, idle 0-60, kula_ognia 0-54, lodowy_pocisk 0-46, trafienie 0-20, unik 0-28, upadek 0-60, wiwat 0-30 -> ZGODNE
 - kot_mag_kapelusz.fbx: siatki 1, kości 0, trójkąty 258, wzrost 1.78 st., akcje brak -> ZGODNE
 - kot_mag_kapelusz.glb: siatki 1, kości 0, trójkąty 258, wzrost 1.78 st., akcje brak -> ZGODNE
 - kot_mag_kostur.fbx: siatki 1, kości 0, trójkąty 384, wzrost 3.45 st., akcje brak -> ZGODNE
@@ -56,9 +71,16 @@ PLIKI
 - kot_mag.blend
 - kot_mag.fbx
 - kot_mag.glb
+- kot_mag__atak.fbx
+- kot_mag__bariera.fbx
 - kot_mag__chod.fbx
 - kot_mag__czar.fbx
 - kot_mag__idle.fbx
+- kot_mag__kula_ognia.fbx
+- kot_mag__lodowy_pocisk.fbx
+- kot_mag__trafienie.fbx
+- kot_mag__unik.fbx
+- kot_mag__upadek.fbx
 - kot_mag__wiwat.fbx
 - kot_mag_bohater.jpg
 - kot_mag_ikona.png
@@ -76,6 +98,27 @@ PLIKI
 - kot_mag_wiwat.mp4
 - kot_mag_wiwat_klatki.jpg
 - kot_mag_wiwat_z_filmu.jpg
+- kot_mag_atak.mp4
+- kot_mag_atak_klatki.jpg
+- kot_mag_atak_z_filmu.jpg
+- kot_mag_kula_ognia.mp4
+- kot_mag_kula_ognia_klatki.jpg
+- kot_mag_kula_ognia_z_filmu.jpg
+- kot_mag_lodowy_pocisk.mp4
+- kot_mag_lodowy_pocisk_klatki.jpg
+- kot_mag_lodowy_pocisk_z_filmu.jpg
+- kot_mag_bariera.mp4
+- kot_mag_bariera_klatki.jpg
+- kot_mag_bariera_z_filmu.jpg
+- kot_mag_unik.mp4
+- kot_mag_unik_klatki.jpg
+- kot_mag_unik_z_filmu.jpg
+- kot_mag_trafienie.mp4
+- kot_mag_trafienie_klatki.jpg
+- kot_mag_trafienie_z_filmu.jpg
+- kot_mag_upadek.mp4
+- kot_mag_upadek_klatki.jpg
+- kot_mag_upadek_z_filmu.jpg
 - przedmioty/kot_mag_kapelusz.fbx
 - przedmioty/kot_mag_kapelusz.glb
 - przedmioty/kot_mag_kapelusz_tekstury/

@@ -51,11 +51,11 @@
     {
      "nazwa": "Head_Geo",
      "kosc": "Head",
-     "trojkaty": 760,
-     "wierzcholki": 448,
+     "trojkaty": 680,
+     "wierzcholki": 400,
      "wymiary": [
       2.16,
-      1.972,
+      1.3,
       1.565
      ],
      "min": [
@@ -65,7 +65,7 @@
      ],
      "max": [
       1.08,
-      3.822,
+      3.15,
       0.825
      ]
     },
@@ -322,6 +322,48 @@
      ]
     },
     {
+     "nazwa": "LeftEar_Geo",
+     "kosc": "LeftEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      0.392,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      0.973,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "RightEar_Geo",
+     "kosc": "RightEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      -0.973,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      -0.392,
+      3.822,
+      0.14
+     ]
+    },
+    {
      "nazwa": "Tail_Geo",
      "kosc": "Tail",
      "trojkaty": 88,
@@ -365,7 +407,7 @@
     },
     {
      "nazwa": "kot_mag_kapelusz_Akc",
-     "kosc": "Head",
+     "kosc": "HatPivot",
      "trojkaty": 258,
      "wierzcholki": 145,
      "wymiary": [
@@ -386,7 +428,7 @@
     },
     {
      "nazwa": "kot_mag_kostur_Akc",
-     "kosc": "RightHand",
+     "kosc": "StaffPivot",
      "trojkaty": 384,
      "wierzcholki": 226,
      "wymiary": [
@@ -453,8 +495,12 @@
     "RightUpperLeg",
     "RightLowerLeg",
     "RightFoot",
+    "LeftEar",
+    "RightEar",
     "Tail",
-    "TailTip"
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
    ],
    "zaczepy": [
     "FaceCenterAttachment",
@@ -474,7 +520,9 @@
     "LeftFootAttachment",
     "RightShoulderAttachment",
     "RightGripAttachment",
-    "RightFootAttachment"
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
    ],
    "znaczniki_att": [
     "FaceCenter_Att",
@@ -495,6 +543,8 @@
     "RightShoulder_Att",
     "RightGrip_Att",
     "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
     "Root_Att"
    ],
    "klipy": [
@@ -525,27 +575,76 @@
      "fps": 30,
      "sekundy": 1.0,
      "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 26,
+     "fps": 30,
+     "sekundy": 0.87,
+     "petla": false
+    },
+    {
+     "n": "kula_ognia",
+     "dlugosc": 54,
+     "fps": 30,
+     "sekundy": 1.8,
+     "petla": false
+    },
+    {
+     "n": "lodowy_pocisk",
+     "dlugosc": 46,
+     "fps": 30,
+     "sekundy": 1.53,
+     "petla": false
+    },
+    {
+     "n": "bariera",
+     "dlugosc": 42,
+     "fps": 30,
+     "sekundy": 1.4,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 28,
+     "fps": 30,
+     "sekundy": 0.93,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 20,
+     "fps": 30,
+     "sekundy": 0.67,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
     }
    ],
    "akcesoria": [
     {
      "id": "kot_mag_kapelusz",
-     "zaczep": "HatAttachment",
+     "zaczep": "KapeluszAttachment",
      "eksport": false
     },
     {
      "id": "kot_mag_kostur",
-     "zaczep": "RightGripAttachment",
+     "zaczep": "KosturAttachment",
      "eksport": false
     }
    ],
    "grupy_ciala": {
     "Head": {
-     "trojkaty": 760,
+     "trojkaty": 680,
      "limit": 4000,
      "wymiary": [
       2.16,
-      1.972,
+      1.3,
       1.565
      ]
     },
@@ -707,15 +806,22 @@
   }
  ],
  "uwagi_podgladu": [
-  "kot_mag: kości spoza standardu R15 (Tail, TailTip) — w Roblox to już nie zwykły R15"
+  "kot_mag: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15"
  ],
  "kontrola": [
-  "kot_mag.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje brak -> ZGODNE",
-  "kot_mag__idle.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje kot_mag|Scene 1-61 -> ZGODNE",
-  "kot_mag__chod.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje kot_mag|Scene 1-21 -> ZGODNE",
-  "kot_mag__czar.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje kot_mag|Scene 1-55 -> ZGODNE",
-  "kot_mag__wiwat.fbx: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje kot_mag|Scene 1-31 -> ZGODNE",
-  "kot_mag.glb: siatki 36, kości 19, trójkąty 2872, wzrost 3.82 st., akcje chod 0-20, czar 0-54, idle 0-60, wiwat 0-30 -> ZGODNE",
+  "kot_mag.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "kot_mag__idle.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-61 -> ZGODNE",
+  "kot_mag__chod.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-21 -> ZGODNE",
+  "kot_mag__czar.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-55 -> ZGODNE",
+  "kot_mag__wiwat.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-31 -> ZGODNE",
+  "kot_mag__atak.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-27 -> ZGODNE",
+  "kot_mag__kula_ognia.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-55 -> ZGODNE",
+  "kot_mag__lodowy_pocisk.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-47 -> ZGODNE",
+  "kot_mag__bariera.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-43 -> ZGODNE",
+  "kot_mag__unik.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-29 -> ZGODNE",
+  "kot_mag__trafienie.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-21 -> ZGODNE",
+  "kot_mag__upadek.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje kot_mag|Scene 1-61 -> ZGODNE",
+  "kot_mag.glb: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje atak 0-26, bariera 0-42, chod 0-20, czar 0-54, idle 0-60, kula_ognia 0-54, lodowy_pocisk 0-46, trafienie 0-20, unik 0-28, upadek 0-60, wiwat 0-30 -> ZGODNE",
   "kot_mag_kapelusz.fbx: siatki 1, kości 0, trójkąty 258, wzrost 1.78 st., akcje brak -> ZGODNE",
   "kot_mag_kapelusz.glb: siatki 1, kości 0, trójkąty 258, wzrost 1.78 st., akcje brak -> ZGODNE",
   "kot_mag_kostur.fbx: siatki 1, kości 0, trójkąty 384, wzrost 3.45 st., akcje brak -> ZGODNE",

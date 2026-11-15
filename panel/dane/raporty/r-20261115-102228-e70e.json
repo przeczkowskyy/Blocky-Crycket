@@ -1,0 +1,23 @@
+{
+ "id": "r-20261115-102228-e70e",
+ "tytul": "Klipy walki: Kot-Mag Crycket",
+ "opis_md": "Kot-Mag Crycket ma nowe ruchy do walki (propozycja animacji, 30 klatek na sekundę).\n\n- **Nowe ruchy:** szybki atak kosturem (iskra w klatce 9), kula ognia z zamachem zza głowy (klatka 27), lodowy pocisk pchnięty kosturem jak lancą (klatka 21), bariera z kosturem wzniesionym w górę (krąg w klatce 10), koci odskok, trafienie (klatka 4) i upadek: kot pada na bok, kostur wypada z łapy, a kapelusz zsuwa się i staje obok głowy.\n- **Poprawione:** w ruchach „czar” i „wiwat” kostur przechodził przez głowę i kapelusz. Teraz w żadnej klatce żadnego ruchu nic nie przechodzi przez głowę ani tułów (sprawdziłem to dwoma niezależnymi skryptami).\n- **Przy przeglądzie:** bariera dostała wyraźniejszą pozę, bo wcześniej wyglądała prawie jak stanie w miejscu. Kula ognia kończy się teraz rzutem w dół, więc łatwiej odróżnić ją od zwykłego ataku. Poprawiłem też łapę, która w upadku ocierała się o głowę.\n- **Co jest jeszcze słabe:** łapki są bardzo krótkie, więc kostur nie wejdzie nad środek głowy, a bariera wygląda podobnie jak „czar”. W chwili strzału atak, kula i lodowy pocisk wyglądają podobnie; rozróżnia je zamach i dopiero efekty czarów w grze (na razie ich nie ma). Stary ruch „chód” ma palce łap trochę pod ziemią.\n- **Wygląd kota się nie zmienił** (plansza jest taka sama jak przed zmianą). Doszły tylko kości dla uszu, kapelusza i kostura, żeby mogły się ruszać.\n- Ruchy trafią do prototypu walki w **osobnym kroku**. Na zrzutach są arkusze klatek: bariera, kula ognia, lodowy pocisk, unik i upadek.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T10:22:28+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Postacie/Kot-Mag.md",
+   "etykieta": "Notatka"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg"
+ ],
+ "pytanie": "Czy ruchy pasują do postaci? Co poprawić?"
+}
