@@ -1,0 +1,48 @@
+{
+ "wersja": 1,
+ "osoba": "karol",
+ "nazwa": "Karol",
+ "aktualizacja": "2026-11-15T16:09:55+01:00",
+ "prace": [
+  {
+   "id": "klipy-bohaterow-walka",
+   "tytul": "Walka v2: właściwe ruchy Rycerza i Kota-Maga w walce",
+   "stan": "w_toku",
+   "etap": "Przebudowa i testy w Studio",
+   "start": "2026-11-15T13:14:40+01:00",
+   "koniec_szacowany": "2026-11-15T16:30:00+01:00",
+   "obszary": [],
+   "kto": "Claude (Karol)"
+  },
+  {
+   "id": "nakladanie-prac",
+   "tytul": "Panel: ostrzeganie, gdy prace Karola i Pawła się nakładają",
+   "stan": "w_toku",
+   "etap": "Budowa",
+   "start": "2026-11-15T15:36:18+01:00",
+   "koniec_szacowany": "2026-11-15T17:30:00+01:00",
+   "obszary": [],
+   "kto": "Claude (Karol)"
+  },
+  {
+   "id": "import-modeli",
+   "tytul": "Wgranie sześciu modeli lasu do Robloxa",
+   "stan": "w_toku",
+   "etap": "Plan i narzędzie gotowe; wgrywanie, gdy Studio będzie wolne",
+   "start": "2026-11-15T12:09:19+01:00",
+   "koniec_szacowany": "2026-11-15T20:30:00+01:00",
+   "obszary": [],
+   "kto": "Claude (Karol)"
+  },
+  {
+   "id": "las-potwory",
+   "tytul": "Las w Studio: chodzące potwory i walka po podejściu",
+   "stan": "wstrzymane",
+   "etap": "Kod gotowy; wdrożenie w Studio po ruchach bohaterów (16:30)",
+   "start": "2026-11-15T12:09:19+01:00",
+   "koniec_szacowany": "2026-11-15T18:45:00+01:00",
+   "obszary": [],
+   "kto": "Claude (Karol)"
+  }
+ ]
+}
