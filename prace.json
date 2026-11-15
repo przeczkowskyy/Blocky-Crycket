@@ -2,18 +2,8 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-15T16:11:28+01:00",
+ "aktualizacja": "2026-11-15T16:20:02+01:00",
  "prace": [
-  {
-   "id": "klipy-bohaterow-walka",
-   "tytul": "Walka v2: właściwe ruchy Rycerza i Kota-Maga w walce",
-   "stan": "w_toku",
-   "etap": "Przebudowa i testy w Studio",
-   "start": "2026-11-15T13:14:40+01:00",
-   "koniec_szacowany": "2026-11-15T16:30:00+01:00",
-   "obszary": [],
-   "kto": "Claude (Karol)"
-  },
   {
    "id": "nakladanie-prac",
    "tytul": "Panel: ostrzeganie, gdy prace Karola i Pawła się nakładają",
