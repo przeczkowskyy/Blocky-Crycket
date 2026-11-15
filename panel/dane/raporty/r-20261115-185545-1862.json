@@ -1,0 +1,22 @@
+{
+ "id": "r-20261115-185545-1862",
+ "tytul": "Potwory chodzą po lesie — można podejść i walczyć",
+ "opis_md": "**Co to jest.** Potwory chodzą już po lesie w Roblox Studio i można z nimi walczyć po podejściu.\n\n- **Co działa:** po lesie chodzi 35 potworów w 16 strefach, a w Kamiennym Kręgu stoi Strażnik Gaju. Każdy ma nad głową tabliczkę z poziomem (zdjęcia 1 i 2).\n- **Walka z lasu:** podchodzisz do potwora, pojawia się podpowiedź E (na telefonie przycisk), naciskasz i zaczyna się walka. Serwer sam sprawdza, czy stoisz blisko, i sam liczy walkę (zdjęcie 3). Na końcu jest okno wyniku z łupem (zdjęcie 4).\n- **Oszukać się nie da:** prośbę o walkę z potworem, który jest za daleko, serwer odrzuca.\n- **Jak spróbować w Studio:** 1) naciśnij Play, 2) przejdź albo przeleć do lasu (ok. 500 studów za miasteczkiem), 3) podejdź do potwora i naciśnij E.\n- **Uproszczenia na czas testów:** klasę i poziom bohatera wybierasz w małym panelu u góry ekranu; walka pokazuje się na arenie, a nie w miejscu spotkania; łup nie jest nigdzie zapisywany.\n- **Co jest jeszcze słabe albo niesprawdzone:** slime chodzi dość szybko, więc trzeba do niego podbiec. Nie sprawdziłem jeszcze do końca odradzania potworów, powrotu Strażnika, widoku na telefonie ani płynności. Filmu nie ma — praca agenta urwała się na limicie użycia, a końcową próbę zrobiłem sam, oszczędnie.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T18:55:45+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/LasPotwory",
+   "etykieta": "Potwory w lesie"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ],
+ "pytanie": "Czy podchodzenie do potworów i walka z lasu są w porządku? Co poprawić najpierw?"
+}
