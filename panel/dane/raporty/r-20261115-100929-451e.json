@@ -1,0 +1,19 @@
+{
+ "id": "r-20261115-100929-451e",
+ "tytul": "Biom Las — plan mapy",
+ "opis_md": "Plan lasu na obrazku poniżej (numery lokacji są w legendzie).\n\n- **Rozmiar:** 1000 × 1000 studów, ok. 3,4 raza szerzej niż miasteczko. Od bramy do wielkiego drzewa w środku biegnie się 26 s, do strażnika 63 s. Sześć pinów teleportu skraca powroty.\n- **Łąka Galaretek (poz. 1–3):** wejście z miasteczka, jasno i otwarto. Pierwsze slime'y przy stawie, 5 s od bramy.\n- **Kapeluszowo (3–5)** to wioska olbrzymich grzybów z muchomornikami. **Serce Boru** to polana bez potworów pod Starym Ukłonem: jajka petów, walki petów, wejście do lochu.\n- **Cierniste Ostępy (5–7):** ciemny bór, wilki w watahach, Wilcza Skała, labirynt z jeżyn i wodospad z sekretnym tunelem. **Suchy Wąwóz (6–9)** to kamienny jar z tamą i legowiskiem trolla. **Korona Gaju (8–10)** to wzgórze z kręgiem kamieni i Strażnikiem Gaju.\n- **Najciekawsze miejsca:** Stary Ukłon (drzewo 95 wys., które kłania się jak domy w miasteczku, a w jego czubku jest sekretne gniazdo), Trollowa Tama, Wielki Kapelusz, Szumiący Próg, Ławka z Widokiem na miasteczko i Wrota Bagna, czyli zapowiedź następnego biomu.\n- **Potwory:** ok. 60 chodzi po swoich terenach i wychodzi z domów: slime ze stawu, muchomornik z chatki, wilki z jeżyn. Same nie atakują: podchodzisz, E, walka. Troll co ~10 min budzi się z rykiem i idzie przez las do stawu, żeby się napić.\n- **Do wyboru (w notatce):** strażnik osobny dla gracza czy wspólny dla serwera; jajka w lesie czy w mieście; czy loch ma wejście w lesie; przejście z miasta z zaciemnieniem czy prawdziwa droga.\n- **Co dalej:** mapa z klocków powstaje od razu, bez czekania na odpowiedź, a Twoje uwagi wejdą w następnej wersji.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T10:09:29+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Gra/Biom Las.md",
+   "etykieta": "Notatka o biomie"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg"
+ ],
+ "pytanie": "Czy taki układ lasu pasuje? Co zmienić, dodać albo wyrzucić?"
+}
