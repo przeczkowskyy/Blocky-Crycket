@@ -1,0 +1,26 @@
+{
+ "id": "r-20261115-194758-65f4",
+ "tytul": "Potwory w lesie: kontrola w Studio zakończona, film",
+ "opis_md": "Sprawdziłem w Studio resztę listy dla potworów w lesie. Nagrałem też film (35 s): slime'y w lesie, walka, wynik i powrót do lasu.\n\n**Co działa (liczby, które odczuje gracz):**\n- Po wygranej i kliknięciu ZAMKNIJ gracz od razu stoi w lesie i może chodzić. Pokonany potwór znika.\n- Nowy slime przychodzi po **15 s**, a wilk po **25 s**. Wychodzi z domku i dołącza do reszty.\n- Strażnik Gaju wraca po **2 minutach**, także gdy gracz czeka tuż obok.\n- Potworów jest więcej, gdy przybywa graczy: **36 przy 1 graczu, 65 przy 8, 87 przy 20**. Gdy gracze wychodzą, żaden potwór nie znika w trakcie.\n- Wilki i Muchomorniki stoją na ziemi, ruszają się i można z nimi walczyć. Klawisz E naprawdę zaczyna walkę.\n- Panel wyboru bohatera mieści się na ekranie telefonu. Poprawiłem w nim szare, słabo widoczne nagłówki.\n\n**Co jest jeszcze słabe:**\n- Gdy gracz stoi w środku watahy wilków, las zabiera komputerowi **2 ms na klatkę zamiast 1 ms**. Na telefonie będzie gorzej, a szybka poprawka tu nie wystarczy.\n- Po pominięciu walki trzeba odczekać resztę jej długości, zanim zacznie się następną.\n- Nie sprawdziłem jeszcze: przegranej i rewanżu, dwóch graczy naraz ani prawdziwego dotyku na telefonie. Dymek „E” trzeba raz obejrzeć na ekranie, bo narzędzie do zrzutów go nie łapie.\n\nSzczegóły są w `swiat/las_potwory/PROJEKT.md` rozdz. 9.3.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T19:47:58+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/las_potwory/klatki/film_las_potwory.mp4",
+   "etykieta": "Film kontroli (35 s)"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/LasPotwory",
+   "etykieta": "Potwory w lesie"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "pytanie": "Co poprawić najpierw: koszt wilków (lżejsze modele albo rzadsze klatki), czy najpierw sprawdzić przegraną i grę we dwóch?"
+}
