@@ -1,0 +1,26 @@
+{
+ "id": "r-20261115-140507-3bb3",
+ "tytul": "Rybki w HUD i czystsze zakładki okna ekwipunku",
+ "opis_md": "Dwie zmiany od Pawła z 14.11, obie już działają w grze na serwerze (Team Create).\n\n**1. Rybki — trzecia waluta w HUD (zdjęcie 1)**\n- W lewym górnym rogu, pod Złotem i Diamentami, jest trzeci licznik z ikoną złotej rybki.\n- Ta sama ramka co przy złocie i diamentach, liczba w kolorze pomarańczowym.\n- Liczba rośnie z animacją, tak jak złoto. Na razie zawsze 0, bo nic jeszcze nie daje Rybek.\n- Do czego służą Rybki — jeszcze nie ustalone (pytanie otwarte).\n\n**2. Okno ekwipunku — zakładki po najechaniu myszką (zdjęcia 2 i 3)**\n- Wcześniej zakładka (WEAPONS, OTHERS…) po najechaniu przesuwała się w prawo i w dół, a spod niej wystawał jasny pasek i kreski desek.\n- Teraz rośnie w górę, a jej dół zostaje przy oknie. Przycisk X i „+” rosną od środka.\n- Zdjęcie 3: po lewej stara wersja, po prawej nowa.\n\n**Co ocenić:** czy Rybki dobrze wyglądają pod Złotem i Diamentami.",
+ "kto": "Claude (Paweł)",
+ "czas": "2026-11-15T14:05:07+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/UI/HUD.md",
+   "etykieta": "HUD"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/UI/Okno ekwipunku.md",
+   "etykieta": "Okno ekwipunku"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "pytanie": "Czy Rybki dobrze wyglądają pod Złotem i Diamentami?"
+}
