@@ -1,0 +1,21 @@
+{
+ "id": "r-20261115-125940-e075",
+ "tytul": "Gołe modele i strój jako przedmioty (D-071)",
+ "opis_md": "**Co to jest.** Realizacja Twojej decyzji D-071: Rycerz, Kot-Mag i Zwiadowca mają teraz gołe modele, a ich dzisiejszy wygląd to komplet przedmiotów zakładanych na te modele. Zakładasz zbroję, miecz albo kapelusz — widać go na postaci, także w ruchach walki. Na obrazkach: bez stroju, część stroju i pełny strój.\n\n- **Bez stroju:** Rycerz i Zwiadowca to ta sama rodzina — lniana koszula, krótkie spodenki (niebieskie albo zielone), bose stopy, własne fryzury i te same miny co dotąd. Kot jest w samym futrze, z jasnym brzuszkiem i pręgami.\n- **Rycerz:** hełm, zbroja z tabardem, nogawice, pas, rękawice, trzewiki, miecz i tarcza.\n- **Kot-Mag:** kapelusz, szata, szarfa i kostur.\n- **Zwiadowca:** kaptur z peleryną, kirys z tuniką, spodnie, pas z sakwą, rękawice, buty, sztylet oraz łuk z kołczanem.\n- **Tarcza tylko po założeniu.** Główny model Rycerza jest już bez tarczy, a bez niej blok to zasłona przedramieniem.\n- **W pełnym stroju bohaterowie wyglądają jak dotąd.** Sprawdziłem to na danych i na obrazach. Ruchy, kości i punkty zaczepienia też są bez zmian.\n- **Do Twojej decyzji — spodnie.** Proponuję, żeby spodnie były częścią zbroi: w oknie ekwipunku jest jeden przedmiot. Druga możliwość to osobny slot „Spodnie”, który trzeba dodać do okna.\n- **Co jeszcze słabe:**\n  - goły Rycerz i goły kot po upadku leżą trochę nad ziemią (ok. 0,2 studa);\n  - pas Rycerza to sama klamra;\n  - nie sprawdzaliśmy jeszcze, jak to działa w Roblox.\n- **Następny krok:** ubieranie w grze i w walce (Roblox Studio i prototyp walki).\n\nPoprawki z przeglądu: dwa miejsca, gdzie spodenki migotałyby pod pasem i pod połami tuniki, oraz większa ikona rękawic.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T12:59:40+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/EKWIPUNEK.md",
+   "etykieta": "Zasady systemu"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "pytanie": "Czy gołe modele i podział stroju na przedmioty pasują? Co zmienić?"
+}
