@@ -89,6 +89,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-15: Teleport do lasu w Studio (`Workspace/LasTeleport`): brama przy miejscu startu, Brama Miejska → las, Kamień Powrotu → miasteczko; sprawdzony w grze w obie strony (`swiat/biom_las/teleport.py`)
 - [x] 2026-11-15: Potwory chodzą po lesie w Studio (`Workspace/LasPotwory`): 35 potworów i Strażnik Gaju, tabliczki poziomu, podpowiedź E, walka zaczynana z lasu i liczona na serwerze, okno wyniku; krótka próba w Play ze zrzutami, raport w panelu (pełna lista kontrolna jeszcze nie przejdzona)
 - [x] 2026-11-15: [[Panel zespołu|Panel]]: ostrzeganie, gdy prace Karola i Pawła się nakładają — prace w toku mają obszary (model, mapa, kontener w Studio, ścieżka), oba komputery wymieniają się stanem przez gałęzie `stan/prace-<osoba>`, kolizję pokazuje Pulpit, narzędzie `praca.py` i Telegram, a przebudowa modelu zatrzymuje się przed Blenderem, gdy ten sam model robi druga osoba; prośba Karola z 15.11
 - [x] 2026-11-15: Wojownik i Mag walczą w prototypie własnymi ruchami zamiast szkiców (`swiat/test_walki2/`): tarcza z modelu Rycerza łapie cios na godle, Miażdżący cios trafia po obrocie o 21°, czary wylatują z kryształu kostura, kapelusz i kostur spadają przy upadku; wszystkie testy w Studio przeszły (112/112, 38/38); dwa filmy i raport w panelu
