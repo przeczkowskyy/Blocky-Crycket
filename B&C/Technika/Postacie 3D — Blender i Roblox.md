@@ -48,7 +48,7 @@ Co zmierzono:
 - Stawy to nowy typ Robloxa (`AnimationConstraint`), a nie `Motor6D` jak w postaci z klocków.
 
 Czego import nie przeniósł i czego jeszcze nie wiemy:
-- Miecza nie ma — import bierze tylko części ciała. Broń trzeba dopiąć osobno.
+- Miecza nie ma, bo nie było go w pliku `rycerz.fbx` (eksport zawierał tylko ciało). Import bierze wszystko, co jest w pliku; broń trzymaną osobno trzeba dopiąć osobno.
 - Animacje nie wchodzą razem z modelem. Czy klipy z postaci z klocków odtworzą się na tej postaci, jest w sprawdzaniu.
 - Nie importowano pozostałych postaci. Pety mają własne szkielety, więc ich wynik może być inny.
 - Zasób należy do konta Karola. Żeby wczytał się w opublikowanej grze właściciela, trzeba go udostępnić w Creator Dashboard — tego nie sprawdzano.
@@ -61,7 +61,7 @@ Czego import nie przeniósł i czego jeszcze nie wiemy:
 - **„W grze” znaczy tu wszędzie: po naciśnięciu Play w Roblox Studio.** Kontener `TestPostaci` ma skrypty pokazu, przymierzalni i petów działające tylko w Studio, a klipy nie są jeszcze zasobami. Przed publikacją gry trzeba go usunąć, tak jak `TestWalki`.
 
 ## Modele lasu (14.11.2026) — co wiedzieć przy imporcie
-Sześć modeli do walki (każdy `propozycja`, raport do akceptacji w panelu, pliki w `swiat/postacie/wynik/<id>/`). Żaden nie jest jeszcze w Roblox.
+Sześć modeli do walki (każdy `propozycja`, raport do akceptacji w panelu, pliki w `swiat/postacie/wynik/<id>/`). Od 15.11.2026 w Roblox są Zwiadowca i Leśny Troll (zob. „Import modeli lasu” niżej); pozostałe cztery jeszcze nie.
 
 | Model | Rola | Szkielet | Broń | Wzrost (gracz 5,7) | Klipy |
 |---|---|---|---|---|---|
@@ -81,6 +81,24 @@ Wspólne uwagi z przeglądów (szczegóły i klatki trafień w notatkach modeli)
 - Świecenie (oczy wilka, kryształ strażnika, zarodniki, kwas) jest tylko w teksturze emisji — w Studio trzeba dać Neon albo światło. Czarny obrys jest tylko w renderach z Blendera.
 - Efekty do dorobienia w grze: lecąca strzała i smuga trucizny, fala uderzenia maczugi, chmura zarodników, rozprysk kwasu.
 - Nazwa strażnika biomu jest od 15.11.2026 jedna — „Strażnik Gaju” — w modelu, notatce, silniku walki i prototypie (identyfikator w danych został `straznik_lasu`).
+
+## Import modeli lasu (15.11.2026)
+Wgrywał Claude Code na konto Karola (zalogowane w Studio), narzędziem `swiat/postacie/roblox_import_lasu.py` według listy kroków w `swiat/postacie/IMPORT_LASU.md`. Wynik: `swiat/postacie/wynik/_roblox/import_lasu.txt`. Modele stoją w `Workspace/TestPostaci`.
+
+| Model | Zasób | Kiedy | Szkielet po imporcie | Werdykt |
+|---|---|---|---|---|
+| [[Zwiadowca]] | 108959205720843 | 15.11.2026, 19:15 | R15 (`Humanoid`, 15 stawów `AnimationConstraint`, 18 zaczepów) | ZGODNY w danych; na zrzucie kształt i przód dobre, ale szary (niżej) |
+| [[Leśny Troll]] | 105984421059465 | 15.11.2026, 19:24 | kości (`Bone` 17 + `AnimationController`), drzewo kości jak w GLB | NIEZGODNY — błąd kontroli, nie modelu (niżej) |
+
+Pozostałe cztery modele (Wilk, Muchomornik, Strażnik Gaju, Slime) nie zostały wgrane: lista każe stanąć po Trollu, a Troll nie dostał werdyktu „zgodny”. Sonda skóry slime'a też czeka.
+
+Co ustalono:
+- **Szaro w Studio.** Oba modele, a teraz także Rycerz z 13.11, rysują się w Studio szaro. Tekstura-paleta jest na miejscu i zatwierdzona przez moderację. Ta sama tekstura podana jako `TextureID` na próbnej kopii głowy rysuje się w kolorach, a `SurfaceAppearance` (także nowo utworzony) — szaro. Wniosek: w tej sesji Studio nie rysuje `SurfaceAppearance`; danych modelu to nie dotyczy. Przyczyny nie ustalono.
+- **Troll: kontrola liczy niewidzialny `RootPart`.** Import dodał część `RootPart` (1,82 studa), której środek jest na wysokości stóp, więc wystaje pod model. Wzrost z nią wyszedł 10,94 zamiast 9,94, a naprawa zmniejszyła trolla do ×0,909 i postawiła na ziemi `RootPart` zamiast stóp. Siatki mają naprawdę skalę 1:1, a obrys w układzie modelu jest dokładnie jak w pliku (12,71 × 6,23). Teraz troll jest o 9% za mały i wisi ok. 0,9 studa nad brukiem. Poprawka należy do `roblox_import.py` (kontrola i naprawa mają pomijać `RootPart`).
+- **Czego import nie przeniósł:** świecenia (tylko w teksturze emisji; Zwiadowca i Troll go nie mają), broni trzymanej osobno (łuk i sztylet Zwiadowcy są poza plikiem; maczuga trolla jest kością modelu i przyszła), znaczników zaczepów `_Att` (zamieniły się w zaczepy albo zniknęły zgodnie z oczekiwaniem), skóry (nie dotyczy tych dwóch modeli; sprawdzian jest przy slimie).
+- Animacje na zaimportowanych rigach to osobny krok; prototyp walki nadal używa modeli z klocków.
+
+**Kolory po imporcie (ustalone 15.11 wieczorem).** Zaimportowane modele były szare, bo importer dokłada każdej części SurfaceAppearance z błędnym odwołaniem emisji (`rbxassetid://5`) i Studio nie składa paczki tekstur. Pomaga ustawienie mapy koloru jako `TextureID` części i usunięcie SurfaceAppearance — robi to `python -B swiat/postacie/roblox_import_kolory.py` (uruchamiać po każdym imporcie). Zwiadowca, Leśny Troll i Rycerz z 13.11 mają po tej poprawce właściwe kolory.
 
 ## Ciało bazowe i strój z przedmiotów (15.11.2026)
 Propozycja — realizacja [[Rejestr decyzji|D-071]] dla [[Rycerz|Rycerza]], [[Kot-Mag|Kota-Maga]] i [[Zwiadowca|Zwiadowcy]]. Pełny opis i umowa dla kodu: `swiat/postacie/EKWIPUNEK.md`.

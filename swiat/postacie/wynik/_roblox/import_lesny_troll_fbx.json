@@ -1,0 +1,1076 @@
+{
+ "modul": "lesny_troll",
+ "format": "fbx",
+ "oczekiwane": {
+  "nazwa": "Leśny Troll",
+  "wymiary": [
+   12.71,
+   9.944,
+   6.234
+  ],
+  "siatek_ciala": 17,
+  "kosci": 18,
+  "znacznikow_att": 4,
+  "trojkaty": 7778
+ },
+ "nazwa": "Leśny Troll (import FBX)",
+ "asset": "105984421059465",
+ "moderacja": "Approved",
+ "wstawianie": "{\"insertGuid\":\"9f49cdf2-e6e5-4214-b2af-4585affe7ad1\",\"insertedInstances\":[{\"fullPath\":\"game.Workspace.TestPostaci.Leśny Troll (import FBX)\",\"name\":\"Leśny Troll (import FBX)\",\"className\":\"Model\"}],\"sandboxed\":false,\"assetType\":\"Model\",\"assetId\":\"105984421059465\",\"assetName\":\"Leśny Troll (import FBX)\",\"status\":\"success\",\"isPackage\":true,\"tag\":\"Assistant:9f49cdf2-e6e5-4214-b2af-4585affe7ad1\"}",
+ "model": {
+  "nazwa": "Leśny Troll (import FBX)",
+  "sciezka": "Workspace.TestPostaci.Leśny Troll (import FBX)",
+  "klasa": "Model",
+  "znaleziony": {
+   "rodzic": "kontener",
+   "n": "Leśny Troll (import FBX)",
+   "k": "Model",
+   "id": "0_59697225"
+  },
+  "kroki": []
+ },
+ "kontrola_przed": {
+  "klasy": {
+   "AnimationController": 1,
+   "SurfaceAppearance": 17,
+   "MeshPart": 17,
+   "Folder": 1,
+   "Part": 1,
+   "Bone": 18,
+   "Attachment": 4,
+   "CFrameValue": 120,
+   "Motor6D": 17,
+   "PackageLink": 1
+  },
+  "stawy": [
+   {
+    "a": "RootPart",
+    "b": "Biodra_Geo",
+    "k": "Motor6D",
+    "n": "Biodra_GeoMotor6D"
+   },
+   {
+    "a": "PrzedramieL_Geo",
+    "b": "DlonL_Geo",
+    "k": "Motor6D",
+    "n": "DlonL_GeoMotor6D"
+   },
+   {
+    "a": "PrzedramieP_Geo",
+    "b": "DlonP_Geo",
+    "k": "Motor6D",
+    "n": "DlonP_GeoMotor6D"
+   },
+   {
+    "a": "Tulow_Geo",
+    "b": "Glowa_Geo",
+    "k": "Motor6D",
+    "n": "Glowa_GeoMotor6D"
+   },
+   {
+    "a": "UdoL_Geo",
+    "b": "GolenL_Geo",
+    "k": "Motor6D",
+    "n": "GolenL_GeoMotor6D"
+   },
+   {
+    "a": "UdoP_Geo",
+    "b": "GolenP_Geo",
+    "k": "Motor6D",
+    "n": "GolenP_GeoMotor6D"
+   },
+   {
+    "a": "DlonP_Geo",
+    "b": "Maczuga_Geo",
+    "k": "Motor6D",
+    "n": "Maczuga_GeoMotor6D"
+   },
+   {
+    "a": "RamieL_Geo",
+    "b": "PrzedramieL_Geo",
+    "k": "Motor6D",
+    "n": "PrzedramieL_GeoMotor6D"
+   },
+   {
+    "a": "RamieP_Geo",
+    "b": "PrzedramieP_Geo",
+    "k": "Motor6D",
+    "n": "PrzedramieP_GeoMotor6D"
+   },
+   {
+    "a": "Tulow_Geo",
+    "b": "RamieL_Geo",
+    "k": "Motor6D",
+    "n": "RamieL_GeoMotor6D"
+   },
+   {
+    "a": "Tulow_Geo",
+    "b": "RamieP_Geo",
+    "k": "Motor6D",
+    "n": "RamieP_GeoMotor6D"
+   },
+   {
+    "a": "GolenL_Geo",
+    "b": "StopaL_Geo",
+    "k": "Motor6D",
+    "n": "StopaL_GeoMotor6D"
+   },
+   {
+    "a": "GolenP_Geo",
+    "b": "StopaP_Geo",
+    "k": "Motor6D",
+    "n": "StopaP_GeoMotor6D"
+   },
+   {
+    "a": "Glowa_Geo",
+    "b": "Szczeka_Geo",
+    "k": "Motor6D",
+    "n": "Szczeka_GeoMotor6D"
+   },
+   {
+    "a": "Biodra_Geo",
+    "b": "Tulow_Geo",
+    "k": "Motor6D",
+    "n": "Tulow_GeoMotor6D"
+   },
+   {
+    "a": "Biodra_Geo",
+    "b": "UdoL_Geo",
+    "k": "Motor6D",
+    "n": "UdoL_GeoMotor6D"
+   },
+   {
+    "a": "Biodra_Geo",
+    "b": "UdoP_Geo",
+    "k": "Motor6D",
+    "n": "UdoP_GeoMotor6D"
+   }
+  ],
+  "primary": "RootPart",
+  "skala": 1,
+  "klasa": "Model",
+  "siatki": [
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://127333561297983",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     4.337134838104248,
+     2.0931971073150635,
+     3.243471384048462
+    ],
+    "n": "Biodra_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://107729299545998",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.9199999570846558,
+     1.1500004529953003,
+     1.7699998617172241
+    ],
+    "n": "DlonL_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://74708817860739",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.9199999570846558,
+     1.1500004529953003,
+     1.7699998617172241
+    ],
+    "n": "DlonP_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://81459660162104",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.7296462059020996,
+     1.9890494346618652,
+     2.0200002193450928
+    ],
+    "n": "Glowa_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://122886448239416",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.5,
+     1.4250001907348633,
+     1.5700002908706665
+    ],
+    "n": "GolenL_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://89769051799775",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.5,
+     1.4250001907348633,
+     1.5700002908706665
+    ],
+    "n": "GolenP_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://107301516787501",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     6.991053104400635,
+     2.7197647094726562,
+     2.576018810272217
+    ],
+    "n": "Maczuga_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://96221976634662",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.8499999046325684,
+     2.049999952316284,
+     1.8899997472763062
+    ],
+    "n": "PrzedramieL_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://122500815997770",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.8499999046325684,
+     2.049999952316284,
+     1.8899997472763062
+    ],
+    "n": "PrzedramieP_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://73061444555240",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.5,
+     2.739999771118164,
+     1.5500000715255737
+    ],
+    "n": "RamieL_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://71147374143682",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.5,
+     2.739999771118164,
+     1.5500000715255737
+    ],
+    "n": "RamieP_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://89232106315335",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.002448081970215,
+     0.7850003242492676,
+     2.6402599811553955
+    ],
+    "n": "StopaL_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://83745941923241",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.002448081970215,
+     0.7850003838539124,
+     2.6402599811553955
+    ],
+    "n": "StopaP_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://127001975841575",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.0799999237060547,
+     1.0300006866455078,
+     1.9699997901916504
+    ],
+    "n": "Szczeka_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://88590191254587",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     4.460000038146973,
+     6.350460052490234,
+     4.2746195793151855
+    ],
+    "n": "Tulow_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://99079369397108",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.75,
+     1.5500000715255737,
+     1.7850000858306885
+    ],
+    "n": "UdoL_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://94078439566303",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.75,
+     1.5500001907348633,
+     1.7850000858306885
+    ],
+    "n": "UdoP_Geo"
+   }
+  ],
+  "zaczepy": [
+   "Root@RootPart",
+   "Glowa@RootPart",
+   "Pysk@RootPart",
+   "Maczuga@RootPart"
+  ],
+  "wymiary": [
+   11.024096012115479,
+   10.943949818611145,
+   10.17510986328125
+  ],
+  "kosci_drzewo": [
+   {
+    "kr": false,
+    "r": "RootPart",
+    "g": 0,
+    "n": "Root"
+   },
+   {
+    "kr": true,
+    "r": "Root",
+    "g": 1,
+    "n": "Biodra"
+   },
+   {
+    "kr": true,
+    "r": "Biodra",
+    "g": 2,
+    "n": "Tulow"
+   },
+   {
+    "kr": true,
+    "r": "Tulow",
+    "g": 3,
+    "n": "RamieL"
+   },
+   {
+    "kr": true,
+    "r": "RamieL",
+    "g": 4,
+    "n": "PrzedramieL"
+   },
+   {
+    "kr": true,
+    "r": "PrzedramieL",
+    "g": 5,
+    "n": "DlonL"
+   },
+   {
+    "kr": true,
+    "r": "Tulow",
+    "g": 3,
+    "n": "RamieP"
+   },
+   {
+    "kr": true,
+    "r": "RamieP",
+    "g": 4,
+    "n": "PrzedramieP"
+   },
+   {
+    "kr": true,
+    "r": "PrzedramieP",
+    "g": 5,
+    "n": "DlonP"
+   },
+   {
+    "kr": true,
+    "r": "DlonP",
+    "g": 6,
+    "n": "Maczuga"
+   },
+   {
+    "kr": true,
+    "r": "Tulow",
+    "g": 3,
+    "n": "Glowa"
+   },
+   {
+    "kr": true,
+    "r": "Glowa",
+    "g": 4,
+    "n": "Szczeka"
+   },
+   {
+    "kr": true,
+    "r": "Biodra",
+    "g": 2,
+    "n": "UdoL"
+   },
+   {
+    "kr": true,
+    "r": "UdoL",
+    "g": 3,
+    "n": "GolenL"
+   },
+   {
+    "kr": true,
+    "r": "GolenL",
+    "g": 4,
+    "n": "StopaL"
+   },
+   {
+    "kr": true,
+    "r": "Biodra",
+    "g": 2,
+    "n": "UdoP"
+   },
+   {
+    "kr": true,
+    "r": "UdoP",
+    "g": 3,
+    "n": "GolenP"
+   },
+   {
+    "kr": true,
+    "r": "GolenP",
+    "g": 4,
+    "n": "StopaP"
+   }
+  ],
+  "skrzynka_max": [
+   2.7529854774475098,
+   10.943948745727539,
+   -731.5540161132812
+  ],
+  "kosci": [
+   "Root",
+   "Biodra",
+   "Tulow",
+   "RamieL",
+   "PrzedramieL",
+   "DlonL",
+   "RamieP",
+   "PrzedramieP",
+   "DlonP",
+   "Maczuga",
+   "Glowa",
+   "Szczeka",
+   "UdoL",
+   "GolenL",
+   "StopaL",
+   "UdoP",
+   "GolenP",
+   "StopaP"
+  ],
+  "lewa_po_lewej": true,
+  "nazwa": "Leśny Troll (import FBX)",
+  "skrzynka_min": [
+   -8.271110534667969,
+   -1.0728836059570312e-06,
+   -741.7291259765625
+  ],
+  "przod": [
+   -0.6481460928916931,
+   0.7615160346031189
+  ]
+ },
+ "naprawa": {
+  "kroki": [
+   "zakotwiczono części: 18",
+   "skala ×0.9086 (wzrost 10.94 → 9.94 studa)",
+   "obrót wokół pionu o 66.4°",
+   "postawiono w (13.0; 0.61; -714.0)"
+  ]
+ },
+ "kontrola_po": {
+  "klasy": {
+   "AnimationController": 1,
+   "SurfaceAppearance": 17,
+   "MeshPart": 17,
+   "Folder": 1,
+   "Part": 1,
+   "Bone": 18,
+   "Attachment": 4,
+   "CFrameValue": 120,
+   "Motor6D": 17,
+   "PackageLink": 1
+  },
+  "stawy": [
+   {
+    "a": "RootPart",
+    "b": "Biodra_Geo",
+    "k": "Motor6D",
+    "n": "Biodra_GeoMotor6D"
+   },
+   {
+    "a": "PrzedramieL_Geo",
+    "b": "DlonL_Geo",
+    "k": "Motor6D",
+    "n": "DlonL_GeoMotor6D"
+   },
+   {
+    "a": "PrzedramieP_Geo",
+    "b": "DlonP_Geo",
+    "k": "Motor6D",
+    "n": "DlonP_GeoMotor6D"
+   },
+   {
+    "a": "Tulow_Geo",
+    "b": "Glowa_Geo",
+    "k": "Motor6D",
+    "n": "Glowa_GeoMotor6D"
+   },
+   {
+    "a": "UdoL_Geo",
+    "b": "GolenL_Geo",
+    "k": "Motor6D",
+    "n": "GolenL_GeoMotor6D"
+   },
+   {
+    "a": "UdoP_Geo",
+    "b": "GolenP_Geo",
+    "k": "Motor6D",
+    "n": "GolenP_GeoMotor6D"
+   },
+   {
+    "a": "DlonP_Geo",
+    "b": "Maczuga_Geo",
+    "k": "Motor6D",
+    "n": "Maczuga_GeoMotor6D"
+   },
+   {
+    "a": "RamieL_Geo",
+    "b": "PrzedramieL_Geo",
+    "k": "Motor6D",
+    "n": "PrzedramieL_GeoMotor6D"
+   },
+   {
+    "a": "RamieP_Geo",
+    "b": "PrzedramieP_Geo",
+    "k": "Motor6D",
+    "n": "PrzedramieP_GeoMotor6D"
+   },
+   {
+    "a": "Tulow_Geo",
+    "b": "RamieL_Geo",
+    "k": "Motor6D",
+    "n": "RamieL_GeoMotor6D"
+   },
+   {
+    "a": "Tulow_Geo",
+    "b": "RamieP_Geo",
+    "k": "Motor6D",
+    "n": "RamieP_GeoMotor6D"
+   },
+   {
+    "a": "GolenL_Geo",
+    "b": "StopaL_Geo",
+    "k": "Motor6D",
+    "n": "StopaL_GeoMotor6D"
+   },
+   {
+    "a": "GolenP_Geo",
+    "b": "StopaP_Geo",
+    "k": "Motor6D",
+    "n": "StopaP_GeoMotor6D"
+   },
+   {
+    "a": "Glowa_Geo",
+    "b": "Szczeka_Geo",
+    "k": "Motor6D",
+    "n": "Szczeka_GeoMotor6D"
+   },
+   {
+    "a": "Biodra_Geo",
+    "b": "Tulow_Geo",
+    "k": "Motor6D",
+    "n": "Tulow_GeoMotor6D"
+   },
+   {
+    "a": "Biodra_Geo",
+    "b": "UdoL_Geo",
+    "k": "Motor6D",
+    "n": "UdoL_GeoMotor6D"
+   },
+   {
+    "a": "Biodra_Geo",
+    "b": "UdoP_Geo",
+    "k": "Motor6D",
+    "n": "UdoP_GeoMotor6D"
+   }
+  ],
+  "primary": "RootPart",
+  "skala": 0.9086298942565918,
+  "klasa": "Model",
+  "siatki": [
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://127333561297983",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     3.940850257873535,
+     1.9019414186477661,
+     2.947114944458008
+    ],
+    "n": "Biodra_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://107729299545998",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.7445693016052246,
+     1.0449247360229492,
+     1.6082748174667358
+    ],
+    "n": "DlonL_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://74708817860739",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.7445693016052246,
+     1.0449247360229492,
+     1.6082748174667358
+    ],
+    "n": "DlonP_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://81459660162104",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.480238199234009,
+     1.8073097467422485,
+     1.835432529449463
+    ],
+    "n": "Glowa_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://122886448239416",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.3629448413848877,
+     1.2947977781295776,
+     1.4265491962432861
+    ],
+    "n": "GolenL_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://89769051799775",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.3629448413848877,
+     1.2947977781295776,
+     1.4265491962432861
+    ],
+    "n": "GolenP_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://107301516787501",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     6.3522796630859375,
+     2.471259593963623,
+     2.3406476974487305
+    ],
+    "n": "Maczuga_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://96221976634662",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.6809651851654053,
+     1.8626912832260132,
+     1.7173103094100952
+    ],
+    "n": "PrzedramieL_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://122500815997770",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.6809651851654053,
+     1.8626912832260132,
+     1.7173103094100952
+    ],
+    "n": "PrzedramieP_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://73061444555240",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.3629448413848877,
+     2.4896457195281982,
+     1.4083764553070068
+    ],
+    "n": "RamieL_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://71147374143682",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.3629448413848877,
+     2.4896457195281982,
+     1.4083764553070068
+    ],
+    "n": "RamieP_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://89232106315335",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.8194842338562012,
+     0.7132747769355774,
+     2.399019241333008
+    ],
+    "n": "StopaL_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://83745941923241",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.8194842338562012,
+     0.7132748365402222,
+     2.399019241333008
+    ],
+    "n": "StopaP_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://127001975841575",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.889950156211853,
+     0.9358894228935242,
+     1.7900006771087646
+    ],
+    "n": "Szczeka_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://88590191254587",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     4.052489280700684,
+     5.7702178955078125,
+     3.884047031402588
+    ],
+    "n": "Tulow_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://99079369397108",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.5901023149490356,
+     1.4083764553070068,
+     1.6219044923782349
+    ],
+    "n": "UdoL_Geo"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://113624159355844",
+    "mesh": "rbxassetid://94078439566303",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.5901023149490356,
+     1.4083764553070068,
+     1.6219044923782349
+    ],
+    "n": "UdoP_Geo"
+   }
+  ],
+  "zaczepy": [
+   "Root@RootPart",
+   "Glowa@RootPart",
+   "Pysk@RootPart",
+   "Maczuga@RootPart"
+  ],
+  "wymiary": [
+   11.349321842193604,
+   9.944016873836517,
+   7.72021484375
+  ],
+  "kosci_drzewo": [
+   {
+    "kr": false,
+    "r": "RootPart",
+    "g": 0,
+    "n": "Root"
+   },
+   {
+    "kr": true,
+    "r": "Root",
+    "g": 1,
+    "n": "Biodra"
+   },
+   {
+    "kr": true,
+    "r": "Biodra",
+    "g": 2,
+    "n": "Tulow"
+   },
+   {
+    "kr": true,
+    "r": "Tulow",
+    "g": 3,
+    "n": "RamieL"
+   },
+   {
+    "kr": true,
+    "r": "RamieL",
+    "g": 4,
+    "n": "PrzedramieL"
+   },
+   {
+    "kr": true,
+    "r": "PrzedramieL",
+    "g": 5,
+    "n": "DlonL"
+   },
+   {
+    "kr": true,
+    "r": "Tulow",
+    "g": 3,
+    "n": "RamieP"
+   },
+   {
+    "kr": true,
+    "r": "RamieP",
+    "g": 4,
+    "n": "PrzedramieP"
+   },
+   {
+    "kr": true,
+    "r": "PrzedramieP",
+    "g": 5,
+    "n": "DlonP"
+   },
+   {
+    "kr": true,
+    "r": "DlonP",
+    "g": 6,
+    "n": "Maczuga"
+   },
+   {
+    "kr": true,
+    "r": "Tulow",
+    "g": 3,
+    "n": "Glowa"
+   },
+   {
+    "kr": true,
+    "r": "Glowa",
+    "g": 4,
+    "n": "Szczeka"
+   },
+   {
+    "kr": true,
+    "r": "Biodra",
+    "g": 2,
+    "n": "UdoL"
+   },
+   {
+    "kr": true,
+    "r": "UdoL",
+    "g": 3,
+    "n": "GolenL"
+   },
+   {
+    "kr": true,
+    "r": "GolenL",
+    "g": 4,
+    "n": "StopaL"
+   },
+   {
+    "kr": true,
+    "r": "Biodra",
+    "g": 2,
+    "n": "UdoP"
+   },
+   {
+    "kr": true,
+    "r": "UdoP",
+    "g": 3,
+    "n": "GolenP"
+   },
+   {
+    "kr": true,
+    "r": "GolenP",
+    "g": 4,
+    "n": "StopaP"
+   }
+  ],
+  "skrzynka_max": [
+   18.67469024658203,
+   10.554220199584961,
+   -710.139892578125
+  ],
+  "kosci": [
+   "Root",
+   "Biodra",
+   "Tulow",
+   "RamieL",
+   "PrzedramieL",
+   "DlonL",
+   "RamieP",
+   "PrzedramieP",
+   "DlonP",
+   "Maczuga",
+   "Glowa",
+   "Szczeka",
+   "UdoL",
+   "GolenL",
+   "StopaL",
+   "UdoP",
+   "GolenP",
+   "StopaP"
+  ],
+  "lewa_po_lewej": true,
+  "nazwa": "Leśny Troll (import FBX)",
+  "skrzynka_min": [
+   7.325368404388428,
+   0.6102033257484436,
+   -717.860107421875
+  ],
+  "przod": [
+   0.43897658586502075,
+   0.8984984755516052
+  ]
+ }
+}

@@ -1,0 +1,178 @@
+{
+ "zwiadowca": {
+  "werdykt": "zgodny",
+  "asset": "108959205720843",
+  "model": "Zwiadowca (import FBX)",
+  "rodzaj": "R15",
+  "sprawdzenia": [
+   {
+    "n": "siatki MeshPart (bez znaczników _Att)",
+    "oczekiwane": 15,
+    "jest": 15,
+    "wynik": "tak"
+   },
+   {
+    "n": "kolor (tekstura albo SurfaceAppearance)",
+    "oczekiwane": "0 siatek bez koloru",
+    "jest": "0: ",
+    "wynik": "tak"
+   },
+   {
+    "n": "wzrost przed naprawą (skala 1:1)",
+    "oczekiwane": "5.76 ±2%",
+    "jest": 5.762,
+    "wynik": "tak"
+   },
+   {
+    "n": "szerokość i głębokość",
+    "oczekiwane": "2.66 × 4.23",
+    "jest": "2.90 × 4.33",
+    "wynik": "tak"
+   },
+   {
+    "n": "Humanoid",
+    "oczekiwane": 1,
+    "jest": 1,
+    "wynik": "tak"
+   },
+   {
+    "n": "stawy R15 (Motor6D + AnimationConstraint)",
+    "oczekiwane": 15,
+    "jest": 15,
+    "wynik": "tak"
+   },
+   {
+    "n": "zaczepy (RootAttachment może zniknąć)",
+    "oczekiwane": 18,
+    "jest": "brak: -; nazwy: nazwa",
+    "wynik": "tak"
+   },
+   {
+    "n": "przód po naprawie (pomiar i obrót zadziałały)",
+    "oczekiwane": "≤ 10° od kierunku na punkt wejścia",
+    "jest": "0.0°",
+    "wynik": "tak"
+   },
+   {
+    "n": "lewa strona po lewej (brak lustra)",
+    "oczekiwane": true,
+    "jest": true,
+    "wynik": "tak"
+   },
+   {
+    "n": "podłoże pod modelem (y)",
+    "oczekiwane": "-0.4 … 0.8",
+    "jest": 0.55,
+    "wynik": "tak"
+   },
+   {
+    "n": "obrót przy naprawie (informacja)",
+    "oczekiwane": "dowolny; ok. ±180° = FBX patrzył tyłem",
+    "jest": "208.6°",
+    "wynik": "tak"
+   },
+   {
+    "n": "zrzuty",
+    "oczekiwane": "2 pliki do obejrzenia",
+    "jest": "-",
+    "wynik": "obejrzyj"
+   }
+  ],
+  "czas": "2026-11-15 19:15:25",
+  "sha256": "2e46f26f2af037aaecb16fadbc28e159a5780712dbd76eadf483754802a27624"
+ },
+ "lesny_troll": {
+  "werdykt": "niezgodny",
+  "asset": "105984421059465",
+  "model": "Leśny Troll (import FBX)",
+  "rodzaj": "kości (Bone)",
+  "sprawdzenia": [
+   {
+    "n": "siatki MeshPart (bez znaczników _Att)",
+    "oczekiwane": 17,
+    "jest": 17,
+    "wynik": "tak"
+   },
+   {
+    "n": "kolor (tekstura albo SurfaceAppearance)",
+    "oczekiwane": "0 siatek bez koloru",
+    "jest": "0: ",
+    "wynik": "tak"
+   },
+   {
+    "n": "wzrost przed naprawą (skala 1:1)",
+    "oczekiwane": "9.94 ±2%",
+    "jest": 10.944,
+    "wynik": "nie"
+   },
+   {
+    "n": "szerokość i głębokość",
+    "oczekiwane": "6.23 × 12.71",
+    "jest": "10.18 × 11.02",
+    "wynik": "nie"
+   },
+   {
+    "n": "kości Bone (bez Root)",
+    "oczekiwane": 17,
+    "jest": "17, brak: -",
+    "wynik": "tak"
+   },
+   {
+    "n": "rodzice kości jak w GLB",
+    "oczekiwane": "0 różnic",
+    "jest": "0: ",
+    "wynik": "tak"
+   },
+   {
+    "n": "głębokość drzewa kości",
+    "oczekiwane": "5 … 7",
+    "jest": 6,
+    "wynik": "tak"
+   },
+   {
+    "n": "zaczepy (RootAttachment może zniknąć)",
+    "oczekiwane": 3,
+    "jest": "brak: -; nazwy: rdzeń",
+    "wynik": "tak"
+   },
+   {
+    "n": "przód po naprawie (pomiar i obrót zadziałały)",
+    "oczekiwane": "≤ 10° od kierunku na punkt wejścia",
+    "jest": "0.0°",
+    "wynik": "tak"
+   },
+   {
+    "n": "lewa strona po lewej (brak lustra)",
+    "oczekiwane": true,
+    "jest": true,
+    "wynik": "tak"
+   },
+   {
+    "n": "podłoże pod modelem (y)",
+    "oczekiwane": "-0.4 … 0.8",
+    "jest": 0.61,
+    "wynik": "tak"
+   },
+   {
+    "n": "obrót przy naprawie (informacja)",
+    "oczekiwane": "dowolny; ok. ±180° = FBX patrzył tyłem",
+    "jest": "66.4°",
+    "wynik": "tak"
+   },
+   {
+    "n": "skala przy naprawie",
+    "oczekiwane": "bez zmian",
+    "jest": "×0.9086",
+    "wynik": "nie"
+   },
+   {
+    "n": "zrzuty",
+    "oczekiwane": "2 pliki do obejrzenia",
+    "jest": "-",
+    "wynik": "obejrzyj"
+   }
+  ],
+  "czas": "2026-11-15 19:24:47",
+  "sha256": "9a7d7c3d894e5da8742e24da501b530384f52cb8f08f86178297ff47652c67f1"
+ }
+}

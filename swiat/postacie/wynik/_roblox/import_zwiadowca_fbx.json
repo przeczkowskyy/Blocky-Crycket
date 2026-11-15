@@ -1,0 +1,846 @@
+{
+ "modul": "zwiadowca",
+ "format": "fbx",
+ "oczekiwane": {
+  "nazwa": "Zwiadowca",
+  "wymiary": [
+   4.23,
+   5.762,
+   2.659
+  ],
+  "siatek_ciala": 17,
+  "kosci": 17,
+  "znacznikow_att": 19,
+  "trojkaty": 4198
+ },
+ "nazwa": "Zwiadowca (import FBX)",
+ "asset": "108959205720843",
+ "moderacja": "Approved",
+ "wstawianie": "{\"insertGuid\":\"77b4d919-2e72-443b-9dd5-3dfc65ede46f\",\"insertedInstances\":[{\"fullPath\":\"game.Workspace.TestPostaci.Zwiadowca (import FBX)\",\"name\":\"Zwiadowca (import FBX)\",\"className\":\"Model\"}],\"sandboxed\":false,\"assetType\":\"Model\",\"assetId\":\"108959205720843\",\"assetName\":\"Zwiadowca (import FBX)\",\"status\":\"success\",\"isPackage\":true,\"tag\":\"Assistant:77b4d919-2e72-443b-9dd5-3dfc65ede46f\"}",
+ "model": {
+  "nazwa": "Zwiadowca (import FBX)",
+  "sciezka": "Workspace.TestPostaci.Zwiadowca (import FBX)",
+  "klasa": "Model",
+  "znaleziony": {
+   "rodzic": "kontener",
+   "n": "Zwiadowca (import FBX)",
+   "k": "Model",
+   "id": "0_58591840"
+  },
+  "kroki": []
+ },
+ "kontrola_przed": {
+  "klasy": {
+   "Vector3Value": 68,
+   "NoCollisionConstraint": 19,
+   "AnimationConstraint": 15,
+   "SurfaceAppearance": 15,
+   "MeshPart": 15,
+   "CFrameValue": 48,
+   "NumberValue": 6,
+   "StringValue": 15,
+   "Humanoid": 1,
+   "BallSocketConstraint": 14,
+   "Part": 1,
+   "Status": 1,
+   "Attachment": 52,
+   "Folder": 1,
+   "PackageLink": 1
+  },
+  "stawy": [
+   {
+    "a": "UpperTorso",
+    "b": "Head",
+    "k": "AnimationConstraint",
+    "n": "Neck"
+   },
+   {
+    "a": "LeftLowerLeg",
+    "b": "LeftFoot",
+    "k": "AnimationConstraint",
+    "n": "LeftAnkle"
+   },
+   {
+    "a": "LeftLowerArm",
+    "b": "LeftHand",
+    "k": "AnimationConstraint",
+    "n": "LeftWrist"
+   },
+   {
+    "a": "LeftUpperArm",
+    "b": "LeftLowerArm",
+    "k": "AnimationConstraint",
+    "n": "LeftElbow"
+   },
+   {
+    "a": "LeftUpperLeg",
+    "b": "LeftLowerLeg",
+    "k": "AnimationConstraint",
+    "n": "LeftKnee"
+   },
+   {
+    "a": "UpperTorso",
+    "b": "LeftUpperArm",
+    "k": "AnimationConstraint",
+    "n": "LeftShoulder"
+   },
+   {
+    "a": "LowerTorso",
+    "b": "LeftUpperLeg",
+    "k": "AnimationConstraint",
+    "n": "LeftHip"
+   },
+   {
+    "a": "HumanoidRootPart",
+    "b": "LowerTorso",
+    "k": "AnimationConstraint",
+    "n": "Root"
+   },
+   {
+    "a": "RightLowerLeg",
+    "b": "RightFoot",
+    "k": "AnimationConstraint",
+    "n": "RightAnkle"
+   },
+   {
+    "a": "RightLowerArm",
+    "b": "RightHand",
+    "k": "AnimationConstraint",
+    "n": "RightWrist"
+   },
+   {
+    "a": "RightUpperArm",
+    "b": "RightLowerArm",
+    "k": "AnimationConstraint",
+    "n": "RightElbow"
+   },
+   {
+    "a": "RightUpperLeg",
+    "b": "RightLowerLeg",
+    "k": "AnimationConstraint",
+    "n": "RightKnee"
+   },
+   {
+    "a": "UpperTorso",
+    "b": "RightUpperArm",
+    "k": "AnimationConstraint",
+    "n": "RightShoulder"
+   },
+   {
+    "a": "LowerTorso",
+    "b": "RightUpperLeg",
+    "k": "AnimationConstraint",
+    "n": "RightHip"
+   },
+   {
+    "a": "LowerTorso",
+    "b": "UpperTorso",
+    "k": "AnimationConstraint",
+    "n": "Waist"
+   }
+  ],
+  "primary": "HumanoidRootPart",
+  "skala": 1,
+  "klasa": "Model",
+  "siatki": [
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://99035699447132",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.8600000143051147,
+     1.991720199584961,
+     2.6287896633148193
+    ],
+    "n": "Head"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://105251090063349",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0499999523162842,
+     0.3500002920627594,
+     1.4200000762939453
+    ],
+    "n": "LeftFoot"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://138701522781497",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     0.9000002145767212,
+     0.3600001335144043,
+     0.8999999761581421
+    ],
+    "n": "LeftHand"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://73748807526833",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     0.9799998998641968,
+     0.7500002384185791,
+     0.9700000286102295
+    ],
+    "n": "LeftLowerArm"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://126653329902848",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.1100001335144043,
+     0.7500002980232239,
+     1.1100000143051147
+    ],
+    "n": "LeftLowerLeg"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://124308810801962",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     0.9854116439819336,
+     1.0182733535766602,
+     1.0099999904632568
+    ],
+    "n": "LeftUpperArm"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://118157962354197",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.090000033378601,
+     0.8100003004074097,
+     1.1100001335144043
+    ],
+    "n": "LeftUpperLeg"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://98137629941306",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.2400002479553223,
+     0.5300002098083496,
+     1.5699999332427979
+    ],
+    "n": "LowerTorso"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://123871681093297",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0499999523162842,
+     0.3500003218650818,
+     1.4200000762939453
+    ],
+    "n": "RightFoot"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://113598239901742",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     0.9000000953674316,
+     0.3600001335144043,
+     0.8999999761581421
+    ],
+    "n": "RightHand"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://97966376668107",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     0.9799998998641968,
+     0.7500002384185791,
+     0.9700000286102295
+    ],
+    "n": "RightLowerArm"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://133771472803525",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.1100000143051147,
+     0.7500002384185791,
+     1.1100000143051147
+    ],
+    "n": "RightLowerLeg"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://96671214733805",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     0.9854117631912231,
+     1.0182733535766602,
+     1.0099999904632568
+    ],
+    "n": "RightUpperArm"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://84705131259863",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0900001525878906,
+     0.8100003004074097,
+     1.1100001335144043
+    ],
+    "n": "RightUpperLeg"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://137050037747659",
+    "zakotwiczona": false,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.8398990631103516,
+     2.60726261138916,
+     1.9600001573562622
+    ],
+    "n": "UpperTorso"
+   }
+  ],
+  "zaczepy": [
+   "FaceCenterAttachment@Head",
+   "FaceFrontAttachment@Head",
+   "HairAttachment@Head",
+   "HatAttachment@Head",
+   "NeckRigAttachment@Head",
+   "LeftFootAttachment@LeftFoot",
+   "LeftAnkleRigAttachment@LeftFoot",
+   "LeftGripAttachment@LeftHand",
+   "LeftWristRigAttachment@LeftHand",
+   "LeftWristRigAttachment@LeftLowerArm",
+   "LeftElbowRigAttachment@LeftLowerArm",
+   "LeftAnkleRigAttachment@LeftLowerLeg",
+   "LeftKneeRigAttachment@LeftLowerLeg",
+   "LeftShoulderAttachment@LeftUpperArm",
+   "LeftElbowRigAttachment@LeftUpperArm",
+   "LeftShoulderRigAttachment@LeftUpperArm",
+   "JointRotation@LeftShoulderRigAttachment",
+   "LeftKneeRigAttachment@LeftUpperLeg",
+   "LeftHipRigAttachment@LeftUpperLeg",
+   "WaistBackAttachment@LowerTorso",
+   "WaistCenterAttachment@LowerTorso",
+   "WaistFrontAttachment@LowerTorso",
+   "WaistRigAttachment@LowerTorso",
+   "LeftHipRigAttachment@LowerTorso",
+   "RightHipRigAttachment@LowerTorso",
+   "RootRigAttachment@LowerTorso",
+   "RightFootAttachment@RightFoot",
+   "RightAnkleRigAttachment@RightFoot",
+   "RightGripAttachment@RightHand",
+   "RightWristRigAttachment@RightHand",
+   "RightWristRigAttachment@RightLowerArm",
+   "RightElbowRigAttachment@RightLowerArm",
+   "RightAnkleRigAttachment@RightLowerLeg",
+   "RightKneeRigAttachment@RightLowerLeg",
+   "RightShoulderAttachment@RightUpperArm",
+   "RightElbowRigAttachment@RightUpperArm",
+   "RightShoulderRigAttachment@RightUpperArm",
+   "JointRotation@RightShoulderRigAttachment",
+   "RightKneeRigAttachment@RightUpperLeg",
+   "RightHipRigAttachment@RightUpperLeg",
+   "BodyBackAttachment@UpperTorso",
+   "BodyFrontAttachment@UpperTorso",
+   "LeftCollarAttachment@UpperTorso",
+   "NeckAttachment@UpperTorso",
+   "RightCollarAttachment@UpperTorso",
+   "NeckRigAttachment@UpperTorso",
+   "LeftShoulderRigAttachment@UpperTorso",
+   "JointRotation@LeftShoulderRigAttachment",
+   "RightShoulderRigAttachment@UpperTorso",
+   "JointRotation@RightShoulderRigAttachment",
+   "WaistRigAttachment@UpperTorso",
+   "RootRigAttachment@HumanoidRootPart"
+  ],
+  "wymiary": [
+   4.328090190887451,
+   5.761720895767212,
+   2.90386962890625
+  ],
+  "kosci_drzewo": [],
+  "skrzynka_max": [
+   9.951627731323242,
+   3.861720085144043,
+   -911.5721435546875
+  ],
+  "kosci": [],
+  "lewa_po_lewej": true,
+  "nazwa": "Zwiadowca (import FBX)",
+  "skrzynka_min": [
+   5.623537540435791,
+   -1.900000810623169,
+   -914.4760131835938
+  ],
+  "przod": [
+   -0.1341707855463028,
+   -0.9909582734107971
+  ]
+ },
+ "naprawa": {
+  "kroki": [
+   "zakotwiczono części: 16",
+   "skala bez zmian (wzrost 5.76 studa)",
+   "obrót wokół pionu o 208.6°",
+   "postawiono w (3.0; 0.55; -718.0)"
+  ]
+ },
+ "kontrola_po": {
+  "klasy": {
+   "Vector3Value": 68,
+   "NoCollisionConstraint": 19,
+   "AnimationConstraint": 15,
+   "SurfaceAppearance": 15,
+   "MeshPart": 15,
+   "CFrameValue": 48,
+   "NumberValue": 6,
+   "StringValue": 15,
+   "Humanoid": 1,
+   "BallSocketConstraint": 14,
+   "Part": 1,
+   "Status": 1,
+   "Attachment": 52,
+   "Folder": 1,
+   "PackageLink": 1
+  },
+  "stawy": [
+   {
+    "a": "UpperTorso",
+    "b": "Head",
+    "k": "AnimationConstraint",
+    "n": "Neck"
+   },
+   {
+    "a": "LeftLowerLeg",
+    "b": "LeftFoot",
+    "k": "AnimationConstraint",
+    "n": "LeftAnkle"
+   },
+   {
+    "a": "LeftLowerArm",
+    "b": "LeftHand",
+    "k": "AnimationConstraint",
+    "n": "LeftWrist"
+   },
+   {
+    "a": "LeftUpperArm",
+    "b": "LeftLowerArm",
+    "k": "AnimationConstraint",
+    "n": "LeftElbow"
+   },
+   {
+    "a": "LeftUpperLeg",
+    "b": "LeftLowerLeg",
+    "k": "AnimationConstraint",
+    "n": "LeftKnee"
+   },
+   {
+    "a": "UpperTorso",
+    "b": "LeftUpperArm",
+    "k": "AnimationConstraint",
+    "n": "LeftShoulder"
+   },
+   {
+    "a": "LowerTorso",
+    "b": "LeftUpperLeg",
+    "k": "AnimationConstraint",
+    "n": "LeftHip"
+   },
+   {
+    "a": "HumanoidRootPart",
+    "b": "LowerTorso",
+    "k": "AnimationConstraint",
+    "n": "Root"
+   },
+   {
+    "a": "RightLowerLeg",
+    "b": "RightFoot",
+    "k": "AnimationConstraint",
+    "n": "RightAnkle"
+   },
+   {
+    "a": "RightLowerArm",
+    "b": "RightHand",
+    "k": "AnimationConstraint",
+    "n": "RightWrist"
+   },
+   {
+    "a": "RightUpperArm",
+    "b": "RightLowerArm",
+    "k": "AnimationConstraint",
+    "n": "RightElbow"
+   },
+   {
+    "a": "RightUpperLeg",
+    "b": "RightLowerLeg",
+    "k": "AnimationConstraint",
+    "n": "RightKnee"
+   },
+   {
+    "a": "UpperTorso",
+    "b": "RightUpperArm",
+    "k": "AnimationConstraint",
+    "n": "RightShoulder"
+   },
+   {
+    "a": "LowerTorso",
+    "b": "RightUpperLeg",
+    "k": "AnimationConstraint",
+    "n": "RightHip"
+   },
+   {
+    "a": "LowerTorso",
+    "b": "UpperTorso",
+    "k": "AnimationConstraint",
+    "n": "Waist"
+   }
+  ],
+  "primary": "HumanoidRootPart",
+  "skala": 1,
+  "klasa": "Model",
+  "siatki": [
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://99035699447132",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.8600000143051147,
+     1.991720199584961,
+     2.6287896633148193
+    ],
+    "n": "Head"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://105251090063349",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0499999523162842,
+     0.3500002920627594,
+     1.4200000762939453
+    ],
+    "n": "LeftFoot"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://138701522781497",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     0.9000002145767212,
+     0.3600001335144043,
+     0.8999999761581421
+    ],
+    "n": "LeftHand"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://73748807526833",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     0.9799998998641968,
+     0.7500002384185791,
+     0.9700000286102295
+    ],
+    "n": "LeftLowerArm"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://126653329902848",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.1100001335144043,
+     0.7500002980232239,
+     1.1100000143051147
+    ],
+    "n": "LeftLowerLeg"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://124308810801962",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     0.9854116439819336,
+     1.0182733535766602,
+     1.0099999904632568
+    ],
+    "n": "LeftUpperArm"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://118157962354197",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.090000033378601,
+     0.8100003004074097,
+     1.1100001335144043
+    ],
+    "n": "LeftUpperLeg"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://98137629941306",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.2400002479553223,
+     0.5300002098083496,
+     1.5699999332427979
+    ],
+    "n": "LowerTorso"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://123871681093297",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0499999523162842,
+     0.3500003218650818,
+     1.4200000762939453
+    ],
+    "n": "RightFoot"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://113598239901742",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     0.9000000953674316,
+     0.3600001335144043,
+     0.8999999761581421
+    ],
+    "n": "RightHand"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://97966376668107",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     0.9799998998641968,
+     0.7500002384185791,
+     0.9700000286102295
+    ],
+    "n": "RightLowerArm"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://133771472803525",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.1100000143051147,
+     0.7500002384185791,
+     1.1100000143051147
+    ],
+    "n": "RightLowerLeg"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://96671214733805",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     0.9854117631912231,
+     1.0182733535766602,
+     1.0099999904632568
+    ],
+    "n": "RightUpperArm"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://84705131259863",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     1.0900001525878906,
+     0.8100003004074097,
+     1.1100001335144043
+    ],
+    "n": "RightUpperLeg"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "rbxassetid://84510254787948",
+    "mesh": "rbxassetid://137050037747659",
+    "zakotwiczona": true,
+    "tekstura": "",
+    "kolor": "a3a2a5",
+    "rozmiar": [
+     2.8398990631103516,
+     2.60726261138916,
+     1.9600001573562622
+    ],
+    "n": "UpperTorso"
+   }
+  ],
+  "zaczepy": [
+   "FaceCenterAttachment@Head",
+   "FaceFrontAttachment@Head",
+   "HairAttachment@Head",
+   "HatAttachment@Head",
+   "NeckRigAttachment@Head",
+   "LeftFootAttachment@LeftFoot",
+   "LeftAnkleRigAttachment@LeftFoot",
+   "LeftGripAttachment@LeftHand",
+   "LeftWristRigAttachment@LeftHand",
+   "LeftWristRigAttachment@LeftLowerArm",
+   "LeftElbowRigAttachment@LeftLowerArm",
+   "LeftAnkleRigAttachment@LeftLowerLeg",
+   "LeftKneeRigAttachment@LeftLowerLeg",
+   "LeftShoulderAttachment@LeftUpperArm",
+   "LeftElbowRigAttachment@LeftUpperArm",
+   "LeftShoulderRigAttachment@LeftUpperArm",
+   "JointRotation@LeftShoulderRigAttachment",
+   "LeftKneeRigAttachment@LeftUpperLeg",
+   "LeftHipRigAttachment@LeftUpperLeg",
+   "WaistBackAttachment@LowerTorso",
+   "WaistCenterAttachment@LowerTorso",
+   "WaistFrontAttachment@LowerTorso",
+   "WaistRigAttachment@LowerTorso",
+   "LeftHipRigAttachment@LowerTorso",
+   "RightHipRigAttachment@LowerTorso",
+   "RootRigAttachment@LowerTorso",
+   "RightFootAttachment@RightFoot",
+   "RightAnkleRigAttachment@RightFoot",
+   "RightGripAttachment@RightHand",
+   "RightWristRigAttachment@RightHand",
+   "RightWristRigAttachment@RightLowerArm",
+   "RightElbowRigAttachment@RightLowerArm",
+   "RightAnkleRigAttachment@RightLowerLeg",
+   "RightKneeRigAttachment@RightLowerLeg",
+   "RightShoulderAttachment@RightUpperArm",
+   "RightElbowRigAttachment@RightUpperArm",
+   "RightShoulderRigAttachment@RightUpperArm",
+   "JointRotation@RightShoulderRigAttachment",
+   "RightKneeRigAttachment@RightUpperLeg",
+   "RightHipRigAttachment@RightUpperLeg",
+   "BodyBackAttachment@UpperTorso",
+   "BodyFrontAttachment@UpperTorso",
+   "LeftCollarAttachment@UpperTorso",
+   "NeckAttachment@UpperTorso",
+   "RightCollarAttachment@UpperTorso",
+   "NeckRigAttachment@UpperTorso",
+   "LeftShoulderRigAttachment@UpperTorso",
+   "JointRotation@LeftShoulderRigAttachment",
+   "RightShoulderRigAttachment@UpperTorso",
+   "JointRotation@RightShoulderRigAttachment",
+   "WaistRigAttachment@UpperTorso",
+   "RootRigAttachment@HumanoidRootPart"
+  ],
+  "wymiary": [
+   4.087663888931274,
+   5.761723816394806,
+   3.63189697265625
+  ],
+  "kosci_drzewo": [],
+  "skrzynka_max": [
+   5.043864727020264,
+   6.311958312988281,
+   -716.1840209960938
+  ],
+  "kosci": [],
+  "lewa_po_lewej": true,
+  "nazwa": "Zwiadowca (import FBX)",
+  "skrzynka_min": [
+   0.9562008380889893,
+   0.5502344965934753,
+   -719.81591796875
+  ],
+  "przod": [
+   0.5923730134963989,
+   0.8056638240814209
+  ]
+ }
+}

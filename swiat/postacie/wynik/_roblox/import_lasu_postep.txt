@@ -1,0 +1,11 @@
+2026-11-15 19:12 start importu lasu (S0-S9)
+2026-11-15 19:13 S0: Studio w trybie Play (nie moja sesja) - czekam na Edit; odczyt Open Cloud (asset:read) dziala
+2026-11-15 19:14 S0: Studio w Edit od 19:13 (czekalem ok. 1 min), miejsce 129485428021967, jeden TestPostaci z Wygenerowane=true; Open Cloud z zakresami asset:read i asset:write odpowiada (GET 200); folder zatwierdzony sprawdzi dopiero wgranie (narzedzie staje z kodem 3 bez wysylania)
+2026-11-15 19:14 S1: plan 6 modeli, 6x wersja przyjeta 15.11, 6x pierwsze wgranie, brakow 0, kod 0
+2026-11-15 19:14 S2: test_roblox_import ZGODNE, test_roblox_import_lasu ZGODNE
+2026-11-15 19:15 S3: Zwiadowca wgrany, zasob 108959205720843, moderacja Approved, WERDYKT ZGODNY (szkielet R15), obrot 208.6 st., postawiony y 0.55
+2026-11-15 19:18 S3 zrzuty: Zwiadowca ksztalt dobry, przodem, ale SZARY; Rycerz z 13.11 tez szary; ta sama tekstura jako TextureID na probce renderuje kolory (probka usunieta). Studio przeszlo w Play (nie moje) - czekam
+2026-11-15 19:19 diagnoza: kopie glowy z SurfaceAppearance (tez nowo utworzonym, czerwony kolor czesci, bez map metalu, bez emisji) renderuja sie szaro; TextureID z ta sama tekstura - kolorowo. Probki usuniete. Wniosek: Studio w tej sesji nie rysuje SurfaceAppearance; dane modelu poprawne (obraz Approved)
+2026-11-15 19:25 S4: Lesny Troll wgrany, zasob 105984421059465, Approved, WERDYKT NIEZGODNY (szkielet: kosci Bone); wzrost przed naprawa 10.94 zamiast 9.94, obrys 11.02x10.18 zamiast 12.71x6.23, naprawa zmniejszyla x0.9086. STOP po Trollu (regula orkiestratora)
+2026-11-15 19:26 S5-S8 nie robione (stop po Trollu). S9: import_lasu.txt przejrzany; arkusz zrzutow 2 modeli zrobiony
+2026-11-15 19:26 notatka Sejfu i README uzupelnione, sejf_lint 0 bledow; raport r-20261115-192650-d46e opublikowany; koniec pracy (Studio w Edit, nic nie zapisano ani nie opublikowano)
