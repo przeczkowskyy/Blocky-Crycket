@@ -1,0 +1,25 @@
+{
+ "id": "r-20261115-145637-783c",
+ "tytul": "Biom Las — wersja 2: faktury i detale (zrzuty ze Studio)",
+ "opis_md": "Poprawki po Twojej uwadze z 15.11 („lepsze tekstury i detale”). Obejrzałem las na 38 zrzutach ze Studio i poprawiłem najsłabsze miejsca.\n\n- **Układ bez zmian.** Podbiomy, lokacje, ścieżki i strefy potworów są takie same (sprawdzone).\n- **Faktury tylko z wbudowanych materiałów Roblox.** Trawa, ściółka, ziemia, bruk, piaskowiec, łupek, skała i drewno. Liście, grzyby, woda i kolory-kody zostały gładkie, żeby las nadal wyglądał komiksowo.\n- **Detale tam, gdzie chodzi gracz:** kamyki, kępki, kwiaty i grzybki przy ścieżkach, kłody, warstwy na ścianach skalnych, rekwizyty przy lokacjach.\n- **Co poprawiłem teraz:**\n  - jezioro ma jasny brzeg i ciemne plamy głębi, nie ma już szwów;\n  - labirynt ma postrzępione zwisy liści zamiast zielonych prostokątów;\n  - na rancie półek Wąwozu jest trawa zamiast gołych płyt;\n  - kwiaty nie wyglądają już jak klocki.\n- **22 419 części** z 25 000 (wcześniej 22 366).\n- **Las stoi w Studio.** W Explorerze otwórz Workspace → BiomLas, zaznacz i naciśnij F. Las jest ok. 500 studów za miasteczkiem.\n- **Nadal słabe:** labirynt z bliska to płaskie bryły. Z daleka las wygląda trochę jak makieta, bo nie ma mgły. Proponuję lekką mgłę tylko w lesie, ale to zmienia ustawienie wspólne miejsca, więc **potrzebuję Twojej zgody**.\n- **Następny krok:** dodam chodzące potwory.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T14:56:37+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/biom_las/PROJEKT.md",
+   "etykieta": "Projekt biomu"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ],
+ "migawka": "20261115-145610-6df0",
+ "pytanie": "Czy faktury i detale są teraz dobre? Co jeszcze poprawić?"
+}

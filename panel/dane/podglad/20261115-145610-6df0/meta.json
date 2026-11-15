@@ -1,0 +1,644 @@
+{
+ "id": "20261115-145610-6df0",
+ "tytul": "Biom Las w Studio",
+ "opis": "Biom Las, wersja 2 po przeglądzie na zrzutach ze Studio: faktury z materiałów Roblox i detale; 22 419 części w kontenerze Workspace/BiomLas.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T14:56:12+01:00",
+ "zrodlo": "studio",
+ "czesci": 22406,
+ "grupy": [
+  {
+   "sciezka": "Workspace/BiomLas/Chmury",
+   "czesci": 60
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Detale",
+   "czesci": 1034
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_0_4",
+   "czesci": 8
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_0_5",
+   "czesci": 42
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_0_6",
+   "czesci": 77
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_0_7",
+   "czesci": 41
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_1_4",
+   "czesci": 40
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_1_5",
+   "czesci": 140
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_1_6",
+   "czesci": 109
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_1_7",
+   "czesci": 69
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_2_4",
+   "czesci": 48
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_2_5",
+   "czesci": 143
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_2_6",
+   "czesci": 222
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_2_7",
+   "czesci": 130
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_3_4",
+   "czesci": 14
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_3_5",
+   "czesci": 83
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_3_6",
+   "czesci": 107
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Las_3_7",
+   "czesci": 43
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Lokacje",
+   "czesci": 198
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Kapeluszowo/Strefy",
+   "czesci": 374
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Detale",
+   "czesci": 624
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Las_2_0",
+   "czesci": 38
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Las_2_1",
+   "czesci": 80
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Las_2_2",
+   "czesci": 36
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Las_3_0",
+   "czesci": 186
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Las_3_1",
+   "czesci": 248
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Las_3_2",
+   "czesci": 108
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Las_4_0",
+   "czesci": 76
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Las_4_1",
+   "czesci": 283
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Las_4_2",
+   "czesci": 217
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Las_5_0",
+   "czesci": 61
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Las_5_1",
+   "czesci": 68
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Las_5_2",
+   "czesci": 26
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Lokacje",
+   "czesci": 88
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Strefy",
+   "czesci": 160
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Korona/Urwiska",
+   "czesci": 729
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Detale",
+   "czesci": 1412
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_3_5",
+   "czesci": 55
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_3_6",
+   "czesci": 84
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_3_7",
+   "czesci": 64
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_4_5",
+   "czesci": 194
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_4_6",
+   "czesci": 143
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_4_7",
+   "czesci": 95
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_5_5",
+   "czesci": 131
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_5_6",
+   "czesci": 166
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_5_7",
+   "czesci": 78
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_6_5",
+   "czesci": 97
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_6_6",
+   "czesci": 119
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_6_7",
+   "czesci": 92
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_7_5",
+   "czesci": 24
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_7_6",
+   "czesci": 60
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Las_7_7",
+   "czesci": 27
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Lokacje",
+   "czesci": 195
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Laka/Strefy",
+   "czesci": 422
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Mur/Drzewa",
+   "czesci": 846
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Mur/Skaly",
+   "czesci": 310
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Detale",
+   "czesci": 1053
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_0_0",
+   "czesci": 54
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_0_1",
+   "czesci": 121
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_0_2",
+   "czesci": 168
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_0_3",
+   "czesci": 170
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_0_4",
+   "czesci": 115
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_1_0",
+   "czesci": 82
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_1_1",
+   "czesci": 223
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_1_2",
+   "czesci": 303
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_1_3",
+   "czesci": 234
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_1_4",
+   "czesci": 228
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_2_0",
+   "czesci": 73
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_2_1",
+   "czesci": 182
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_2_2",
+   "czesci": 206
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_2_3",
+   "czesci": 204
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_2_4",
+   "czesci": 243
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_3_2",
+   "czesci": 24
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_3_3",
+   "czesci": 59
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Las_3_4",
+   "czesci": 9
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Lokacje",
+   "czesci": 465
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Strefy",
+   "czesci": 502
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Ostepy/Urwiska",
+   "czesci": 129
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Piny/Ogniska",
+   "czesci": 60
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Punkty/BramaPniakow",
+   "czesci": 14
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Punkty/KamiennyKrag",
+   "czesci": 35
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Punkty/PagorekKlocka",
+   "czesci": 4
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Punkty/StaryUklon",
+   "czesci": 27
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Punkty/SzumiacyProg",
+   "czesci": 8
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Punkty/TrollowaTama",
+   "czesci": 22
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Punkty/WielkiKapelusz",
+   "czesci": 22
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Punkty/WilczaSkala",
+   "czesci": 9
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/brzeg_jeziora",
+   "czesci": 2
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/brzeg_oczka",
+   "czesci": 59
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/Drogowskazy",
+   "czesci": 136
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_bagienna",
+   "czesci": 5
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_chatek",
+   "czesci": 5
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_dziupli",
+   "czesci": 7
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_galaretek",
+   "czesci": 14
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_gardzieli",
+   "czesci": 10
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_kapeluszowa",
+   "czesci": 23
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_kepek",
+   "czesci": 33
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_lawki",
+   "czesci": 3
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_pagorka",
+   "czesci": 8
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_paproci",
+   "czesci": 58
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_sloneczna",
+   "czesci": 28
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_sowia",
+   "czesci": 7
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_ujscia",
+   "czesci": 38
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_wozu",
+   "czesci": 10
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/drozka_zarodnikow",
+   "czesci": 4
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/gran",
+   "czesci": 36
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/korytarz_labiryntu",
+   "czesci": 13
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/odnoga_oczka",
+   "czesci": 20
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/pierscien_polany",
+   "czesci": 16
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/polka_wschodnia",
+   "czesci": 13
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/sciezka_polki",
+   "czesci": 7
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/szlak_uklonu_pld",
+   "czesci": 100
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/szlak_uklonu_pln",
+   "czesci": 156
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/trakt_progu",
+   "czesci": 5
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/trakt_wawozem",
+   "czesci": 224
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Sciezki/wilczy_trakt",
+   "czesci": 116
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Serce/Detale",
+   "czesci": 442
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Serce/Las_3_2",
+   "czesci": 12
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Serce/Las_3_3",
+   "czesci": 104
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Serce/Las_3_4",
+   "czesci": 58
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Serce/Las_3_5",
+   "czesci": 23
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Serce/Las_4_2",
+   "czesci": 16
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Serce/Las_4_3",
+   "czesci": 163
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Serce/Las_4_4",
+   "czesci": 127
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Serce/Las_4_5",
+   "czesci": 52
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Serce/Las_5_4",
+   "czesci": 6
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Serce/Lokacje",
+   "czesci": 192
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Teren/Grunt",
+   "czesci": 49
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Teren/Kopce",
+   "czesci": 48
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Teren/Poziomy",
+   "czesci": 292
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Teren/Rampy",
+   "czesci": 21
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Tlo/Las",
+   "czesci": 468
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Tlo/Miasteczko",
+   "czesci": 17
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Tlo/Wzgorza",
+   "czesci": 60
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Detale",
+   "czesci": 776
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Las_5_2",
+   "czesci": 79
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Las_5_3",
+   "czesci": 81
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Las_5_4",
+   "czesci": 149
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Las_5_5",
+   "czesci": 52
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Las_6_2",
+   "czesci": 71
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Las_6_3",
+   "czesci": 91
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Las_6_4",
+   "czesci": 85
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Las_6_5",
+   "czesci": 45
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Las_7_2",
+   "czesci": 50
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Las_7_3",
+   "czesci": 72
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Las_7_4",
+   "czesci": 73
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Las_7_5",
+   "czesci": 30
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Lokacje",
+   "czesci": 119
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Strefy",
+   "czesci": 136
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Wawoz/Urwiska",
+   "czesci": 896
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Woda/Jezioro",
+   "czesci": 302
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Woda/Stawy",
+   "czesci": 44
+  },
+  {
+   "sciezka": "Workspace/BiomLas/Woda/Struga",
+   "czesci": 277
+  }
+ ],
+ "zrzuty": [],
+ "zakres": {
+  "min": [
+   -700.005,
+   -4.272,
+   -2702.34
+  ],
+  "max": [
+   700.005,
+   183.835,
+   -1270.101
+  ]
+ },
+ "miejsce": {
+  "placeId": 129485428021967,
+  "nazwa": "Blocky&Crycket (placeId: 129485428021967)"
+ },
+ "korzen": "Workspace/BiomLas",
+ "uwagi": [
+  "Studio oddało puste zrzuty (3 z 3) — okno Studio jest pewnie zminimalizowane albo zamiast widoku 3D jest otwarta karta skryptu."
+ ]
+}
