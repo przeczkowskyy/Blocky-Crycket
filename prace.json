@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-15T16:09:55+01:00",
+ "aktualizacja": "2026-11-15T16:09:58+01:00",
  "prace": [
   {
    "id": "klipy-bohaterow-walka",
@@ -27,7 +27,7 @@
   {
    "id": "import-modeli",
    "tytul": "Wgranie sześciu modeli lasu do Robloxa",
-   "stan": "w_toku",
+   "stan": "wstrzymane",
    "etap": "Plan i narzędzie gotowe; wgrywanie, gdy Studio będzie wolne",
    "start": "2026-11-15T12:09:19+01:00",
    "koniec_szacowany": "2026-11-15T20:30:00+01:00",
