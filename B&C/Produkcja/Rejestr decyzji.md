@@ -298,8 +298,9 @@ Paweł: „Blender, zdecydowanie — ładniejszy był ten ludek”; Karol: proje
 Uzasadnienie — Karol Balucki, 2026-11-14: Tak to ja (Karol) Pomyliłem twoją próbkę z Blendera vs Rolbox - Blender wyglądał bardziej dopracowany
 
 ### D-066 Sklep za Robuxy: paczki jajek i skrzynki z jawnymi szansami, game passy, darmowy pet
-💡 propozycja · monetyzacja / zgodność · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 5)
+❌ odrzucona · monetyzacja / zgodność · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 5) · zdecydował: Karol Balucki 2026-11-15
 Karol: sklep za Robuxy „takim samym modelem”, jak w dochodowych grach Roblox, które pokazał Paweł. Paweł wylicza: paczki jajek (np. 10 jajek za ok. 800 Robuxów z jawną szansą, np. 10%, na najlepszego peta), waluta, lepsze przedmioty, game passy (podwójna waluta, podwójna moc treningu), darmowy pet do odebrania; możliwa skrzynka (lootbox) z jawnymi szansami. Obaj uznali losowania z jawnymi szansami za dopuszczalne, powołując się na wyjaśnienie agenta (pytanie 30). **Konflikt z zatwierdzoną D-031** („nigdy koła, jajek ani odświeżenia sklepu” za walutę premium; losowania tylko za Złoto i tokeny) — zatwierdzenie oznacza nową decyzję zastępującą ten punkt D-031; spójne z D-036 (game passy, paczki) i D-037 (bilety za Robuxy). Warunki Roblox dla płatnych przedmiotów losowych (lista nagród i dokładne szanse przed zakupem, `PolicyService`, zmienione szanse przy ulepszeniach szczęścia) z pytania 30 obowiązują. Karol: „zostajemy przy koncepcji” złożonej gry mimo sukcesu prostych; Paweł: po premierze ocena, ewentualnie drugi, prostszy projekt. Zob. [[Retencja i monetyzacja — co wolno i co działa]], [[Pytania otwarte]] #43, #12.
+Uzasadnienie — Karol Balucki, 2026-11-15: Za Robuxy waluta oraz bundle oraz Pass startowe
 
 ### D-067 Gildie i wojny gildii po premierze
 💡 propozycja · roadmapa · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 7)

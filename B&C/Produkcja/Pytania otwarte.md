@@ -354,6 +354,7 @@ Rozstrzyga: D-060
 Szczegóły: Zasady Roblox z pytania 30: losowe nagrody kupowane za Robuxy albo za walutę kupioną za Robuxy są dozwolone, jeśli lista nagród i dokładne szanse są widoczne przed zakupem, gra sprawdza uprawnienia gracza (`PolicyService`) i pokazuje zmienione szanse przy ulepszeniach szczęścia; stawianie waluty na wynik losowy jest zakazane. Ponieważ Złoto da się kupić przez Diamenty (D-038), już dzisiejsze jajka za Złoto podpadają pod te zasady (D-052). D-066 zbiera też resztę sklepu z sesji: waluta, lepsze przedmioty, game passy (podwójna waluta, podwójna moc treningu), darmowy pet. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]], [[Retencja i monetyzacja — co wolno i co działa]].
 Rozstrzyga: D-066
 **Odpowiedź:**
+- Karol Balucki (2026-11-15): rozstrzygnięte decyzjami: D-066 odrzucona („Za Robuxy waluta oraz bundle oraz Pass startowe”)
 
 ## 44. Rybki — trzecia waluta w HUD
 14.11 Game Director kazał dodać do panelu gracza trzeci licznik z ikoną złotej rybki (pod Złotem i Diamentami; atrybut gracza `Fish`). Kanon zna dwie waluty (pytanie 6). Do czego służą Rybki: waluta z łowienia, karma dla petów czy coś innego? Jak się je zdobywa i na co wydaje?
