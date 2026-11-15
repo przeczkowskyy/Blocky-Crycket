@@ -2,16 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-15T19:19:57+01:00",
+ "aktualizacja": "2026-11-15T19:26:59+01:00",
  "prace": [
   {
    "id": "import-modeli",
    "tytul": "Wgranie sześciu modeli lasu do Robloxa",
    "stan": "w_toku",
-   "etap": "S4: wgrywam Leśnego Trolla",
+   "etap": "Stop po Trollu: 2 z 6 wgrane, czekam na decyzję Karola (raport w panelu)",
    "start": "2026-11-15T16:48:20+01:00",
-   "koniec_szacowany": "2026-11-15T20:50:00+01:00",
-   "aktualizacja": "2026-11-15T19:19:57+01:00",
+   "koniec_szacowany": "2026-11-15T19:28:00+01:00",
+   "aktualizacja": "2026-11-15T19:26:59+01:00",
    "obszary": [
     "studio:TestPostaci",
     "swiat/postacie/wynik/_roblox/**"
