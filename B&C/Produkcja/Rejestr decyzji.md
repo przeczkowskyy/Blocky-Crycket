@@ -52,7 +52,7 @@ Trzy misje: Łatwa / Średnia / Epicki Boss. Misje zużywają Energię odnawian�
 Uzasadnienie — Karol Balucki, 2026-11-13: Nie - będzie to duzo bardziej rozwinięte. Zostawiamy ten temat i dajemy go do omówienia na sesji długiej
 
 ### D-010 Fazy roadmapy 2–6
-✅ zatwierdzona · roadmapa · źródło: master prompt · zdecydował: Karol Balucki 2026-11-14
+✅ zatwierdzona · roadmapa · źródło: master prompt · zdecydował: Karol Balucki 2026-11-14 · potwierdził: Paweł 2026-11-15
 Zob. [[Roadmapa]].
 
 ### D-011 Pipeline assetów `/asset` i moduł `AssetIds`
