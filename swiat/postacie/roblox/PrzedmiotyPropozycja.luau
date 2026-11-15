@@ -3,6 +3,9 @@
 -- Układ jak w ReplicatedStorage.Shared.Items (name, slot, category, icon). Ikon nie ma jeszcze na koncie Roblox,
 -- więc icon jest puste; iconFile wskazuje plik ikony w repozytorium, set — zestaw, z którego pochodzi przedmiot.
 -- Sloty spoza kodu gry (do decyzji, pytanie 24 w sejfie): OffHand.
+-- Przedmioty bohaterów (D-071, swiat/postacie/EKWIPUNEK.md pkt 5) mają pola spoza Items: body, classes,
+-- hides, parent, meshes (segmenty na kościach; attachment Ekw<Kosc>Attachment = środek klocka kości
+-- w gołym ciele bohatera) i onBody (korekta zaczepu na ciele kota). Spodnie: parent = zbroja (brak slotu Legs).
 return {
 	-- bronie
 	chochla_mistrza = { name = "Wielka chochla mistrza", slot = "Weapon", category = "Weapons", icon = "", iconFile = "swiat/postacie/wynik/bronie/ikony/chochla_mistrza_ikona.png", set = "bronie" },
@@ -16,10 +19,95 @@ return {
 	-- karczmarz
 	karczmarz_chochla = { name = "Chochla karczmarza", slot = "Weapon", category = "Weapons", icon = "", iconFile = "swiat/postacie/wynik/karczmarz/ikony/karczmarz_chochla_ikona.png", set = "karczmarz" },
 	-- kot_mag
-	kot_mag_kapelusz = { name = "Kapelusz Kota-Maga", slot = "Helmet", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/kot_mag/ikony/kot_mag_kapelusz_ikona.png", set = "kot_mag" },
-	kot_mag_kostur = { name = "Kostur Kota-Maga", slot = "Weapon", category = "Weapons", icon = "", iconFile = "swiat/postacie/wynik/kot_mag/ikony/kot_mag_kostur_ikona.png", set = "kot_mag" },
+	kot_mag_kapelusz = { name = "Kapelusz Kota-Maga", slot = "Helmet", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/kot_mag/ikony/kot_mag_kapelusz_ikona.png", set = "kot_mag",
+		body = "kot", classes = { "mag" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "kot_mag_kapelusz", bone = "Head", covers = false, attachment = "HatAttachment", fbx = "swiat/postacie/wynik/kot_mag/przedmioty/kot_mag_kapelusz.fbx", glb = "swiat/postacie/wynik/kot_mag/przedmioty/kot_mag_kapelusz.glb", onBody = { kot = { attachment = "KapeluszAttachment", bone = "HatPivot", pos = { 0, 0.02, 0 }, rot = { 0, 0, 0 } } } },
+		},
+	},
+	kot_mag_szata = { name = "Szata Kota-Maga", slot = "Chest", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/kot_mag/ekwipunek/ikony/kot_mag_szata_ikona.png", set = "kot_mag",
+		body = "kot", classes = { "mag" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "kot_mag_szata_tulow", bone = "UpperTorso", covers = true, attachment = "EkwUpperTorsoAttachment", fbx = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_tulow.fbx", glb = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_tulow.glb" },
+			{ id = "kot_mag_szata_ramie_l", bone = "LeftUpperArm", covers = true, attachment = "EkwLeftUpperArmAttachment", fbx = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_ramie_l.fbx", glb = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_ramie_l.glb" },
+			{ id = "kot_mag_szata_przedramie_l", bone = "LeftLowerArm", covers = true, attachment = "EkwLeftLowerArmAttachment", fbx = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_przedramie_l.fbx", glb = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_przedramie_l.glb" },
+			{ id = "kot_mag_szata_ramie_p", bone = "RightUpperArm", covers = true, attachment = "EkwRightUpperArmAttachment", fbx = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_ramie_p.fbx", glb = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_ramie_p.glb" },
+			{ id = "kot_mag_szata_przedramie_p", bone = "RightLowerArm", covers = true, attachment = "EkwRightLowerArmAttachment", fbx = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_przedramie_p.fbx", glb = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_przedramie_p.glb" },
+			{ id = "kot_mag_szata_biodra", bone = "LowerTorso", covers = true, attachment = "EkwLowerTorsoAttachment", fbx = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_biodra.fbx", glb = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_biodra.glb" },
+		},
+	},
+	kot_mag_pas = { name = "Szarfa z klamrą", slot = "Belt", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/kot_mag/ekwipunek/ikony/kot_mag_pas_ikona.png", set = "kot_mag",
+		body = "kot", classes = { "mag" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "kot_mag_pas_biodra", bone = "LowerTorso", covers = false, attachment = "EkwLowerTorsoAttachment", fbx = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_pas_biodra.fbx", glb = "swiat/postacie/wynik/kot_mag/ekwipunek/przedmioty/kot_mag_pas_biodra.glb" },
+		},
+	},
+	kot_mag_kostur = { name = "Kostur Kota-Maga", slot = "Weapon", category = "Weapons", icon = "", iconFile = "swiat/postacie/wynik/kot_mag/ikony/kot_mag_kostur_ikona.png", set = "kot_mag",
+		body = "dowolne", classes = { "mag" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "kot_mag_kostur", bone = "RightHand", covers = false, attachment = "RightGripAttachment", fbx = "swiat/postacie/wynik/kot_mag/przedmioty/kot_mag_kostur.fbx", glb = "swiat/postacie/wynik/kot_mag/przedmioty/kot_mag_kostur.glb", onBody = { kot = { attachment = "KosturAttachment", bone = "StaffPivot", pos = { -0.08, 0, 0 }, rot = { -90, 0, 0 } } } },
+		},
+	},
 	-- rycerz
-	rycerz_miecz = { name = "Wielki miecz Rycerza", slot = "Weapon", category = "Weapons", icon = "", iconFile = "swiat/postacie/wynik/rycerz/ikony/rycerz_miecz_ikona.png", set = "rycerz" },
+	rycerz_helm = { name = "Hełm Rycerza", slot = "Helmet", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/rycerz/ekwipunek/ikony/rycerz_helm_ikona.png", set = "rycerz",
+		body = "czlowiek", classes = { "wojownik" }, hides = { "Wlosy" }, parent = nil,
+		meshes = {
+			{ id = "rycerz_helm_glowa", bone = "Head", covers = false, attachment = "EkwHeadAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_helm_glowa.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_helm_glowa.glb" },
+		},
+	},
+	rycerz_nogawice = { name = "Nogawice Rycerza", slot = "Chest", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/rycerz/ekwipunek/ikony/rycerz_nogawice_ikona.png", set = "rycerz",
+		body = "czlowiek", classes = { "wojownik" }, hides = {}, parent = "rycerz_zbroja",
+		meshes = {
+			{ id = "rycerz_nogawice_biodra", bone = "LowerTorso", covers = true, attachment = "EkwLowerTorsoAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_biodra.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_biodra.glb" },
+			{ id = "rycerz_nogawice_udo_l", bone = "LeftUpperLeg", covers = true, attachment = "EkwLeftUpperLegAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_udo_l.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_udo_l.glb" },
+			{ id = "rycerz_nogawice_udo_p", bone = "RightUpperLeg", covers = true, attachment = "EkwRightUpperLegAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_udo_p.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_udo_p.glb" },
+		},
+	},
+	rycerz_zbroja = { name = "Zbroja Rycerza z tabardem", slot = "Chest", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/rycerz/ekwipunek/ikony/rycerz_zbroja_ikona.png", set = "rycerz",
+		body = "czlowiek", classes = { "wojownik" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "rycerz_zbroja_tulow", bone = "UpperTorso", covers = true, attachment = "EkwUpperTorsoAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_tulow.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_tulow.glb" },
+			{ id = "rycerz_zbroja_ramie_l", bone = "LeftUpperArm", covers = true, attachment = "EkwLeftUpperArmAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_ramie_l.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_ramie_l.glb" },
+			{ id = "rycerz_zbroja_przedramie_l", bone = "LeftLowerArm", covers = true, attachment = "EkwLeftLowerArmAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_przedramie_l.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_przedramie_l.glb" },
+			{ id = "rycerz_zbroja_ramie_p", bone = "RightUpperArm", covers = true, attachment = "EkwRightUpperArmAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_ramie_p.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_ramie_p.glb" },
+			{ id = "rycerz_zbroja_przedramie_p", bone = "RightLowerArm", covers = true, attachment = "EkwRightLowerArmAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_przedramie_p.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_przedramie_p.glb" },
+			{ id = "rycerz_zbroja_biodra", bone = "LowerTorso", covers = false, attachment = "EkwLowerTorsoAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_biodra.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_biodra.glb" },
+		},
+	},
+	rycerz_rekawice = { name = "Rękawice Rycerza", slot = "Gloves", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/rycerz/ekwipunek/ikony/rycerz_rekawice_ikona.png", set = "rycerz",
+		body = "czlowiek", classes = { "wojownik" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "rycerz_rekawice_dlon_l", bone = "LeftHand", covers = true, attachment = "EkwLeftHandAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_l.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_l.glb" },
+			{ id = "rycerz_rekawice_dlon_p", bone = "RightHand", covers = true, attachment = "EkwRightHandAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_p.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_p.glb" },
+		},
+	},
+	rycerz_buty = { name = "Trzewiki z nagolennikami", slot = "Boots", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/rycerz/ekwipunek/ikony/rycerz_buty_ikona.png", set = "rycerz",
+		body = "czlowiek", classes = { "wojownik" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "rycerz_buty_golen_l", bone = "LeftLowerLeg", covers = true, attachment = "EkwLeftLowerLegAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_l.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_l.glb" },
+			{ id = "rycerz_buty_stopa_l", bone = "LeftFoot", covers = true, attachment = "EkwLeftFootAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_stopa_l.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_stopa_l.glb" },
+			{ id = "rycerz_buty_golen_p", bone = "RightLowerLeg", covers = true, attachment = "EkwRightLowerLegAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_p.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_p.glb" },
+			{ id = "rycerz_buty_stopa_p", bone = "RightFoot", covers = true, attachment = "EkwRightFootAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_stopa_p.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_stopa_p.glb" },
+		},
+	},
+	rycerz_pas = { name = "Pas Rycerza", slot = "Belt", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/rycerz/ekwipunek/ikony/rycerz_pas_ikona.png", set = "rycerz",
+		body = "czlowiek", classes = { "wojownik" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "rycerz_pas_biodra", bone = "LowerTorso", covers = false, attachment = "EkwLowerTorsoAttachment", fbx = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_pas_biodra.fbx", glb = "swiat/postacie/wynik/rycerz/ekwipunek/przedmioty/rycerz_pas_biodra.glb" },
+		},
+	},
+	rycerz_miecz = { name = "Wielki miecz Rycerza", slot = "Weapon", category = "Weapons", icon = "", iconFile = "swiat/postacie/wynik/rycerz/ikony/rycerz_miecz_ikona.png", set = "rycerz",
+		body = "dowolne", classes = { "wojownik" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "rycerz_miecz", bone = "RightHand", covers = false, attachment = "RightGripAttachment", fbx = "swiat/postacie/wynik/rycerz/przedmioty/rycerz_miecz.fbx", glb = "swiat/postacie/wynik/rycerz/przedmioty/rycerz_miecz.glb" },
+		},
+	},
+	rycerz_tarcza = { name = "Tarcza Rycerza", slot = "OffHand", category = "Weapons", icon = "", iconFile = "swiat/postacie/wynik/rycerz/ikony/rycerz_tarcza_ikona.png", set = "rycerz",
+		body = "dowolne", classes = { "wojownik" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "rycerz_tarcza", bone = "LeftHand", covers = false, attachment = "LeftGripAttachment", fbx = "swiat/postacie/wynik/rycerz/przedmioty/rycerz_tarcza.fbx", glb = "swiat/postacie/wynik/rycerz/przedmioty/rycerz_tarcza.glb" },
+		},
+	},
 	-- zestaw_mag
 	mag_kapelusz = { name = "Kapelusz maga", slot = "Helmet", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/zestaw_mag/ikony/mag_kapelusz_ikona.png", set = "zestaw_mag" },
 	mag_szata = { name = "Szata maga", slot = "Chest", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/zestaw_mag/ikony/mag_szata_cala_ikona.png", set = "zestaw_mag" },
@@ -52,4 +140,67 @@ return {
 	zr_ostroga = { name = "Złota ostroga", slot = "Trinket", category = "Others", icon = "", iconFile = "swiat/postacie/wynik/zestaw_rycerz/ikony/zr_ostroga_ikona.png", set = "zestaw_rycerz" },
 	zr_miecz = { name = "Wielki miecz Rycerza", slot = "Weapon", category = "Weapons", icon = "", iconFile = "swiat/postacie/wynik/zestaw_rycerz/ikony/zr_miecz_ikona.png", set = "zestaw_rycerz" },
 	zr_tarcza = { name = "Tarcza z herbem", slot = "OffHand", category = "Weapons", icon = "", iconFile = "swiat/postacie/wynik/zestaw_rycerz/ikony/zr_tarcza_ikona.png", set = "zestaw_rycerz" },
+	-- zwiadowca
+	zwiadowca_kaptur = { name = "Kaptur z peleryną", slot = "Helmet", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/zwiadowca/ekwipunek/ikony/zwiadowca_kaptur_ikona.png", set = "zwiadowca",
+		body = "czlowiek", classes = { "zwiadowca" }, hides = { "Wlosy" }, parent = nil,
+		meshes = {
+			{ id = "zwiadowca_kaptur_glowa", bone = "Head", covers = false, attachment = "EkwHeadAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kaptur_glowa.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kaptur_glowa.glb" },
+			{ id = "zwiadowca_kaptur_tulow", bone = "UpperTorso", covers = false, attachment = "EkwUpperTorsoAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kaptur_tulow.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kaptur_tulow.glb" },
+		},
+	},
+	zwiadowca_kurtka = { name = "Skórzany kirys z tuniką", slot = "Chest", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/zwiadowca/ekwipunek/ikony/zwiadowca_kurtka_ikona.png", set = "zwiadowca",
+		body = "czlowiek", classes = { "zwiadowca" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "zwiadowca_kurtka_tulow", bone = "UpperTorso", covers = true, attachment = "EkwUpperTorsoAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_tulow.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_tulow.glb" },
+			{ id = "zwiadowca_kurtka_ramie_l", bone = "LeftUpperArm", covers = true, attachment = "EkwLeftUpperArmAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_ramie_l.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_ramie_l.glb" },
+			{ id = "zwiadowca_kurtka_przedramie_l", bone = "LeftLowerArm", covers = true, attachment = "EkwLeftLowerArmAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_l.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_l.glb" },
+			{ id = "zwiadowca_kurtka_ramie_p", bone = "RightUpperArm", covers = true, attachment = "EkwRightUpperArmAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_ramie_p.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_ramie_p.glb" },
+			{ id = "zwiadowca_kurtka_przedramie_p", bone = "RightLowerArm", covers = true, attachment = "EkwRightLowerArmAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_p.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_p.glb" },
+			{ id = "zwiadowca_kurtka_udo_l", bone = "LeftUpperLeg", covers = false, attachment = "EkwLeftUpperLegAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_udo_l.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_udo_l.glb" },
+			{ id = "zwiadowca_kurtka_udo_p", bone = "RightUpperLeg", covers = false, attachment = "EkwRightUpperLegAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_udo_p.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_udo_p.glb" },
+		},
+	},
+	zwiadowca_spodnie = { name = "Spodnie Zwiadowcy", slot = "Chest", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/zwiadowca/ekwipunek/ikony/zwiadowca_spodnie_ikona.png", set = "zwiadowca",
+		body = "czlowiek", classes = { "zwiadowca" }, hides = {}, parent = "zwiadowca_kurtka",
+		meshes = {
+			{ id = "zwiadowca_spodnie_biodra", bone = "LowerTorso", covers = true, attachment = "EkwLowerTorsoAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_biodra.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_biodra.glb" },
+			{ id = "zwiadowca_spodnie_udo_l", bone = "LeftUpperLeg", covers = true, attachment = "EkwLeftUpperLegAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_udo_l.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_udo_l.glb" },
+			{ id = "zwiadowca_spodnie_udo_p", bone = "RightUpperLeg", covers = true, attachment = "EkwRightUpperLegAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_udo_p.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_udo_p.glb" },
+		},
+	},
+	zwiadowca_rekawice = { name = "Rękawice bez palców", slot = "Gloves", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/zwiadowca/ekwipunek/ikony/zwiadowca_rekawice_ikona.png", set = "zwiadowca",
+		body = "czlowiek", classes = { "zwiadowca" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "zwiadowca_rekawice_dlon_l", bone = "LeftHand", covers = true, attachment = "EkwLeftHandAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_rekawice_dlon_l.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_rekawice_dlon_l.glb" },
+			{ id = "zwiadowca_rekawice_dlon_p", bone = "RightHand", covers = true, attachment = "EkwRightHandAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_rekawice_dlon_p.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_rekawice_dlon_p.glb" },
+		},
+	},
+	zwiadowca_buty = { name = "Buty z wywiniętą cholewą", slot = "Boots", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/zwiadowca/ekwipunek/ikony/zwiadowca_buty_ikona.png", set = "zwiadowca",
+		body = "czlowiek", classes = { "zwiadowca" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "zwiadowca_buty_golen_l", bone = "LeftLowerLeg", covers = true, attachment = "EkwLeftLowerLegAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_golen_l.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_golen_l.glb" },
+			{ id = "zwiadowca_buty_stopa_l", bone = "LeftFoot", covers = true, attachment = "EkwLeftFootAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_stopa_l.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_stopa_l.glb" },
+			{ id = "zwiadowca_buty_golen_p", bone = "RightLowerLeg", covers = true, attachment = "EkwRightLowerLegAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_golen_p.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_golen_p.glb" },
+			{ id = "zwiadowca_buty_stopa_p", bone = "RightFoot", covers = true, attachment = "EkwRightFootAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_stopa_p.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_stopa_p.glb" },
+		},
+	},
+	zwiadowca_pas = { name = "Pas z sakwą", slot = "Belt", category = "Armor", icon = "", iconFile = "swiat/postacie/wynik/zwiadowca/ekwipunek/ikony/zwiadowca_pas_ikona.png", set = "zwiadowca",
+		body = "czlowiek", classes = { "zwiadowca" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "zwiadowca_pas_biodra", bone = "LowerTorso", covers = false, attachment = "EkwLowerTorsoAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_pas_biodra.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_pas_biodra.glb" },
+		},
+	},
+	zwiadowca_sztylet = { name = "Sztylet Zwiadowcy", slot = "Weapon", category = "Weapons", icon = "", iconFile = "swiat/postacie/wynik/zwiadowca/ikony/zwiadowca_sztylet_ikona.png", set = "zwiadowca",
+		body = "dowolne", classes = { "zwiadowca" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "zwiadowca_sztylet", bone = "RightHand", covers = false, attachment = "RightGripAttachment", fbx = "swiat/postacie/wynik/zwiadowca/przedmioty/zwiadowca_sztylet.fbx", glb = "swiat/postacie/wynik/zwiadowca/przedmioty/zwiadowca_sztylet.glb" },
+		},
+	},
+	zwiadowca_luk = { name = "Łuk z kołczanem", slot = "OffHand", category = "Weapons", icon = "", iconFile = "swiat/postacie/wynik/zwiadowca/ekwipunek/ikony/zwiadowca_luk_ikona.png", set = "zwiadowca",
+		body = "czlowiek", classes = { "zwiadowca" }, hides = {}, parent = nil,
+		meshes = {
+			{ id = "zwiadowca_luk_tulow", bone = "UpperTorso", covers = false, attachment = "EkwUpperTorsoAttachment", fbx = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_luk_tulow.fbx", glb = "swiat/postacie/wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_luk_tulow.glb" },
+			{ id = "zwiadowca_luk", bone = "LeftHand", covers = false, attachment = "LeftGripAttachment", fbx = "swiat/postacie/wynik/zwiadowca/przedmioty/zwiadowca_luk.fbx", glb = "swiat/postacie/wynik/zwiadowca/przedmioty/zwiadowca_luk.glb" },
+		},
+	},
 }

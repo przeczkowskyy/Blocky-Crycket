@@ -25,8 +25,11 @@
   "zestaw_rycerz": "Rycerz",
   "zestaw_mag": "Mag",
   "bronie": "Zbrojownia",
-  "kot_mag": "Rekwizyty Kota-Maga"
+  "kot_mag": "Kot-Mag Crycket — strój bohatera",
+  "rycerz": "Rycerz Blocky — strój bohatera",
+  "zwiadowca": "Zwiadowca — strój bohatera"
  },
+ "bohaterowie": "Przedmioty bohaterów (zestaw rycerz, kot_mag, zwiadowca; D-071, swiat/postacie/EKWIPUNEK.md pkt 5) mają dodatkowe pola: cialo (typ ciała: czlowiek, kot albo dowolne — broń w dłoni), klasy (klasy postaci), czesc_od (przedmiot nadrzędny: spodnie są częścią zbroi), ukrywa (znaczniki akcesoriów ciała chowanych pod przedmiotem: Wlosy). Ich części to segmenty na kościach: kosc, zakrywa (powłoka — gołe bryły tej kości znikają), zaczep Ekw<Kosc>Attachment (środek klocka kości w gołym ciele wynik/<bohater>/ekwipunek/<bohater>_cialo.fbx), pos/rot (ramka segmentu względem środka klocka), trojkaty; broń i kapelusz kota mają zaczep standardowy, a korekta = zaczep, kość i przesunięcie na ciele kota (KapeluszAttachment na HatPivot, KosturAttachment na StaffPivot). Ikony: przedmiot na zaczepie — wynik/<bohater>/ikony/, pozostałe — wynik/<bohater>/ekwipunek/ikony/. Nie sprawdzone w Studio.",
  "przedmioty": [
   {
    "id": "rekrut_czapka",
@@ -2068,23 +2071,23 @@
    "plik_ikony": "wynik/bronie/ikony/chochla_mistrza_ikona.png"
   },
   {
-   "id": "kot_mag_kapelusz",
-   "nazwa": "Kapelusz Kota-Maga",
+   "id": "rycerz_helm",
+   "nazwa": "Hełm Rycerza",
    "slot": "Helmet",
    "kategoria": "Armor",
-   "zestaw": "kot_mag",
-   "plik_modelu": "wynik/kot_mag/przedmioty/kot_mag_kapelusz.fbx",
+   "zestaw": "rycerz",
+   "plik_modelu": "wynik/rycerz/ekwipunek/przedmioty/rycerz_helm_glowa.fbx",
    "czesci": [
     {
-     "id": "kot_mag_kapelusz",
-     "zaczep": "HatAttachment",
-     "fbx": "wynik/kot_mag/przedmioty/kot_mag_kapelusz.fbx",
-     "glb": "wynik/kot_mag/przedmioty/kot_mag_kapelusz.glb",
+     "id": "rycerz_helm_glowa",
+     "zaczep": "EkwHeadAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_helm_glowa.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_helm_glowa.glb",
      "attachment": {
       "glb": {
        "pos": [
         -0.0,
-        -0.878,
+        -0.18,
         -0.0
        ],
        "rot": [
@@ -2096,7 +2099,7 @@
       "fbx": {
        "pos": [
         0.0,
-        -0.878,
+        -0.18,
         0.0
        ],
        "rot": [
@@ -2105,29 +2108,275 @@
         0
        ]
       }
-     }
+     },
+     "kosc": "Head",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 528
     }
    ],
-   "plik_ikony": "wynik/kot_mag/ikony/kot_mag_kapelusz_ikona.png"
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_helm_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [
+    "Wlosy"
+   ]
   },
   {
-   "id": "kot_mag_kostur",
-   "nazwa": "Kostur Kota-Maga",
-   "slot": "Weapon",
-   "kategoria": "Weapons",
-   "zestaw": "kot_mag",
-   "plik_modelu": "wynik/kot_mag/przedmioty/kot_mag_kostur.fbx",
+   "id": "rycerz_zbroja",
+   "nazwa": "Zbroja Rycerza z tabardem",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "zestaw": "rycerz",
+   "plik_modelu": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_tulow.fbx",
    "czesci": [
     {
-     "id": "kot_mag_kostur",
-     "zaczep": "RightGripAttachment",
-     "fbx": "wynik/kot_mag/przedmioty/kot_mag_kostur.fbx",
-     "glb": "wynik/kot_mag/przedmioty/kot_mag_kostur.glb",
+     "id": "rycerz_zbroja_tulow",
+     "zaczep": "EkwUpperTorsoAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_tulow.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_tulow.glb",
      "attachment": {
       "glb": {
        "pos": [
         -0.0,
-        -0.835,
+        -0.04,
+        -0.022
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.04,
+        0.022
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 184
+    },
+    {
+     "id": "rycerz_zbroja_ramie_l",
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_ramie_l.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_ramie_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.125,
+        -0.06,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.125,
+        -0.06,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 200
+    },
+    {
+     "id": "rycerz_zbroja_przedramie_l",
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_przedramie_l.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_przedramie_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.03,
+        -0.04,
+        0.028
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.03,
+        -0.04,
+        -0.028
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 88
+    },
+    {
+     "id": "rycerz_zbroja_ramie_p",
+     "zaczep": "EkwRightUpperArmAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_ramie_p.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_ramie_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.125,
+        -0.06,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.125,
+        -0.06,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 200
+    },
+    {
+     "id": "rycerz_zbroja_przedramie_p",
+     "zaczep": "EkwRightLowerArmAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_przedramie_p.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_przedramie_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.03,
+        -0.04,
+        0.028
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.03,
+        -0.04,
+        -0.028
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 88
+    },
+    {
+     "id": "rycerz_zbroja_biodra",
+     "zaczep": "EkwLowerTorsoAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_biodra.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_zbroja_biodra.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.765,
         -0.0
        ],
        "rot": [
@@ -2139,7 +2388,7 @@
       "fbx": {
        "pos": [
         0.0,
-        -0.835,
+        0.765,
         0.0
        ],
        "rot": [
@@ -2148,10 +2397,547 @@
         0
        ]
       }
-     }
+     },
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 144
     }
    ],
-   "plik_ikony": "wynik/kot_mag/ikony/kot_mag_kostur_ikona.png"
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_zbroja_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "rycerz_nogawice",
+   "nazwa": "Nogawice Rycerza",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "zestaw": "rycerz",
+   "plik_modelu": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_biodra.fbx",
+   "czesci": [
+    {
+     "id": "rycerz_nogawice_biodra",
+     "zaczep": "EkwLowerTorsoAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_biodra.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_biodra.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 44
+    },
+    {
+     "id": "rycerz_nogawice_udo_l",
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_udo_l.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_udo_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.03
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.03
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftUpperLeg",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 88
+    },
+    {
+     "id": "rycerz_nogawice_udo_p",
+     "zaczep": "EkwRightUpperLegAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_udo_p.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_nogawice_udo_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.03
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.03
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightUpperLeg",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 88
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_nogawice_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": "rycerz_zbroja",
+   "ukrywa": []
+  },
+  {
+   "id": "rycerz_pas",
+   "nazwa": "Pas Rycerza",
+   "slot": "Belt",
+   "kategoria": "Armor",
+   "zestaw": "rycerz",
+   "plik_modelu": "wynik/rycerz/ekwipunek/przedmioty/rycerz_pas_biodra.fbx",
+   "czesci": [
+    {
+     "id": "rycerz_pas_biodra",
+     "zaczep": "EkwLowerTorsoAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_pas_biodra.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_pas_biodra.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.65
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.65
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 56
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_pas_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "rycerz_rekawice",
+   "nazwa": "Rękawice Rycerza",
+   "slot": "Gloves",
+   "kategoria": "Armor",
+   "zestaw": "rycerz",
+   "plik_modelu": "wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_l.fbx",
+   "czesci": [
+    {
+     "id": "rycerz_rekawice_dlon_l",
+     "zaczep": "EkwLeftHandAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_l.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.06,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.06,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 88
+    },
+    {
+     "id": "rycerz_rekawice_dlon_p",
+     "zaczep": "EkwRightHandAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_p.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_rekawice_dlon_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.06,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.06,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 88
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_rekawice_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "rycerz_buty",
+   "nazwa": "Trzewiki z nagolennikami",
+   "slot": "Boots",
+   "kategoria": "Armor",
+   "zestaw": "rycerz",
+   "plik_modelu": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_l.fbx",
+   "czesci": [
+    {
+     "id": "rycerz_buty_golen_l",
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_l.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.05,
+        -0.08
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.05,
+        0.08
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftLowerLeg",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 132
+    },
+    {
+     "id": "rycerz_buty_stopa_l",
+     "zaczep": "EkwLeftFootAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_stopa_l.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_stopa_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.03
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.03
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 100
+    },
+    {
+     "id": "rycerz_buty_golen_p",
+     "zaczep": "EkwRightLowerLegAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_p.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_golen_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.05,
+        -0.08
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.05,
+        0.08
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightLowerLeg",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 132
+    },
+    {
+     "id": "rycerz_buty_stopa_p",
+     "zaczep": "EkwRightFootAttachment",
+     "fbx": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_stopa_p.fbx",
+     "glb": "wynik/rycerz/ekwipunek/przedmioty/rycerz_buty_stopa_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.03
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.03
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 100
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ekwipunek/ikony/rycerz_buty_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
   },
   {
    "id": "rycerz_miecz",
@@ -2191,10 +2977,1722 @@
         0
        ]
       }
+     },
+     "kosc": "RightHand",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 520
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ikony/rycerz_miecz_ikona.png",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "rycerz_tarcza",
+   "nazwa": "Tarcza Rycerza",
+   "slot": "OffHand",
+   "kategoria": "Weapons",
+   "zestaw": "rycerz",
+   "plik_modelu": "wynik/rycerz/przedmioty/rycerz_tarcza.fbx",
+   "czesci": [
+    {
+     "id": "rycerz_tarcza",
+     "zaczep": "LeftGripAttachment",
+     "fbx": "wynik/rycerz/przedmioty/rycerz_tarcza.fbx",
+     "glb": "wynik/rycerz/przedmioty/rycerz_tarcza.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.746,
+        -0.0,
+        0.3
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.746,
+        -0.0,
+        -0.3
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 200
+    }
+   ],
+   "plik_ikony": "wynik/rycerz/ikony/rycerz_tarcza_ikona.png",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "kot_mag_kapelusz",
+   "nazwa": "Kapelusz Kota-Maga",
+   "slot": "Helmet",
+   "kategoria": "Armor",
+   "zestaw": "kot_mag",
+   "plik_modelu": "wynik/kot_mag/przedmioty/kot_mag_kapelusz.fbx",
+   "czesci": [
+    {
+     "id": "kot_mag_kapelusz",
+     "zaczep": "HatAttachment",
+     "fbx": "wynik/kot_mag/przedmioty/kot_mag_kapelusz.fbx",
+     "glb": "wynik/kot_mag/przedmioty/kot_mag_kapelusz.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.878,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.878,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "Head",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 258,
+     "korekta": {
+      "cialo": "kot",
+      "zaczep": "KapeluszAttachment",
+      "kosc": "HatPivot",
+      "pos": [
+       0,
+       0.02,
+       0
+      ],
+      "rot": [
+       0,
+       0,
+       0
+      ]
      }
     }
    ],
-   "plik_ikony": "wynik/rycerz/ikony/rycerz_miecz_ikona.png"
+   "plik_ikony": "wynik/kot_mag/ikony/kot_mag_kapelusz_ikona.png",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "kot_mag_szata",
+   "nazwa": "Szata Kota-Maga",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "zestaw": "kot_mag",
+   "plik_modelu": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_tulow.fbx",
+   "czesci": [
+    {
+     "id": "kot_mag_szata_tulow",
+     "zaczep": "EkwUpperTorsoAttachment",
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_tulow.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_tulow.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.06,
+        0.045
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.06,
+        -0.045
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 332
+    },
+    {
+     "id": "kot_mag_szata_ramie_l",
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_ramie_l.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_ramie_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 44
+    },
+    {
+     "id": "kot_mag_szata_przedramie_l",
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_przedramie_l.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_przedramie_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.068,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.068,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 100
+    },
+    {
+     "id": "kot_mag_szata_ramie_p",
+     "zaczep": "EkwRightUpperArmAttachment",
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_ramie_p.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_ramie_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 44
+    },
+    {
+     "id": "kot_mag_szata_przedramie_p",
+     "zaczep": "EkwRightLowerArmAttachment",
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_przedramie_p.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_przedramie_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.068,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.068,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 100
+    },
+    {
+     "id": "kot_mag_szata_biodra",
+     "zaczep": "EkwLowerTorsoAttachment",
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_biodra.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_szata_biodra.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.37,
+        0.291
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.37,
+        -0.291
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 160
+    }
+   ],
+   "plik_ikony": "wynik/kot_mag/ekwipunek/ikony/kot_mag_szata_ikona.png",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "kot_mag_pas",
+   "nazwa": "Szarfa z klamrą",
+   "slot": "Belt",
+   "kategoria": "Armor",
+   "zestaw": "kot_mag",
+   "plik_modelu": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_pas_biodra.fbx",
+   "czesci": [
+    {
+     "id": "kot_mag_pas_biodra",
+     "zaczep": "EkwLowerTorsoAttachment",
+     "fbx": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_pas_biodra.fbx",
+     "glb": "wynik/kot_mag/ekwipunek/przedmioty/kot_mag_pas_biodra.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.005,
+        -0.025
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.005,
+        0.025
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 88
+    }
+   ],
+   "plik_ikony": "wynik/kot_mag/ekwipunek/ikony/kot_mag_pas_ikona.png",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "kot_mag_kostur",
+   "nazwa": "Kostur Kota-Maga",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "kot_mag",
+   "plik_modelu": "wynik/kot_mag/przedmioty/kot_mag_kostur.fbx",
+   "czesci": [
+    {
+     "id": "kot_mag_kostur",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/kot_mag/przedmioty/kot_mag_kostur.fbx",
+     "glb": "wynik/kot_mag/przedmioty/kot_mag_kostur.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.835,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.835,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightHand",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 384,
+     "korekta": {
+      "cialo": "kot",
+      "zaczep": "KosturAttachment",
+      "kosc": "StaffPivot",
+      "pos": [
+       -0.08,
+       0,
+       0
+      ],
+      "rot": [
+       -90,
+       0,
+       0
+      ]
+     }
+    }
+   ],
+   "plik_ikony": "wynik/kot_mag/ikony/kot_mag_kostur_ikona.png",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "zwiadowca_kaptur",
+   "nazwa": "Kaptur z peleryną",
+   "slot": "Helmet",
+   "kategoria": "Armor",
+   "zestaw": "zwiadowca",
+   "plik_modelu": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kaptur_glowa.fbx",
+   "czesci": [
+    {
+     "id": "zwiadowca_kaptur_glowa",
+     "zaczep": "EkwHeadAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kaptur_glowa.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kaptur_glowa.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.216,
+        0.45
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.216,
+        -0.45
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "Head",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 450
+    },
+    {
+     "id": "zwiadowca_kaptur_tulow",
+     "zaczep": "EkwUpperTorsoAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kaptur_tulow.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kaptur_tulow.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.049,
+        0.013
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.049,
+        -0.013
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "UpperTorso",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 316
+    }
+   ],
+   "plik_ikony": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_kaptur_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [
+    "Wlosy"
+   ]
+  },
+  {
+   "id": "zwiadowca_kurtka",
+   "nazwa": "Skórzany kirys z tuniką",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "zestaw": "zwiadowca",
+   "plik_modelu": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_tulow.fbx",
+   "czesci": [
+    {
+     "id": "zwiadowca_kurtka_tulow",
+     "zaczep": "EkwUpperTorsoAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_tulow.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_tulow.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.09,
+        -0.05
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.09,
+        0.05
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 268
+    },
+    {
+     "id": "zwiadowca_kurtka_ramie_l",
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_ramie_l.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_ramie_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.048,
+        -0.034,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.048,
+        -0.034,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 132
+    },
+    {
+     "id": "zwiadowca_kurtka_przedramie_l",
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_l.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.005,
+        -0.0,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.005,
+        -0.0,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 112
+    },
+    {
+     "id": "zwiadowca_kurtka_ramie_p",
+     "zaczep": "EkwRightUpperArmAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_ramie_p.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_ramie_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.048,
+        -0.034,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.048,
+        -0.034,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 132
+    },
+    {
+     "id": "zwiadowca_kurtka_przedramie_p",
+     "zaczep": "EkwRightLowerArmAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_p.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_przedramie_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.005,
+        -0.0,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.005,
+        -0.0,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 112
+    },
+    {
+     "id": "zwiadowca_kurtka_udo_l",
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_udo_l.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_udo_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.089,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.089,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftUpperLeg",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 68
+    },
+    {
+     "id": "zwiadowca_kurtka_udo_p",
+     "zaczep": "EkwRightUpperLegAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_udo_p.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_kurtka_udo_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.089,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.089,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightUpperLeg",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 68
+    }
+   ],
+   "plik_ikony": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_kurtka_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "zwiadowca_spodnie",
+   "nazwa": "Spodnie Zwiadowcy",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "zestaw": "zwiadowca",
+   "plik_modelu": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_biodra.fbx",
+   "czesci": [
+    {
+     "id": "zwiadowca_spodnie_biodra",
+     "zaczep": "EkwLowerTorsoAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_biodra.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_biodra.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 44
+    },
+    {
+     "id": "zwiadowca_spodnie_udo_l",
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_udo_l.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_udo_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftUpperLeg",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 44
+    },
+    {
+     "id": "zwiadowca_spodnie_udo_p",
+     "zaczep": "EkwRightUpperLegAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_udo_p.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_spodnie_udo_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightUpperLeg",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 44
+    }
+   ],
+   "plik_ikony": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_spodnie_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": "zwiadowca_kurtka",
+   "ukrywa": []
+  },
+  {
+   "id": "zwiadowca_pas",
+   "nazwa": "Pas z sakwą",
+   "slot": "Belt",
+   "kategoria": "Armor",
+   "zestaw": "zwiadowca",
+   "plik_modelu": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_pas_biodra.fbx",
+   "czesci": [
+    {
+     "id": "zwiadowca_pas_biodra",
+     "zaczep": "EkwLowerTorsoAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_pas_biodra.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_pas_biodra.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        0.075,
+        0.095
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        0.075,
+        -0.095
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 156
+    }
+   ],
+   "plik_ikony": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_pas_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "zwiadowca_rekawice",
+   "nazwa": "Rękawice bez palców",
+   "slot": "Gloves",
+   "kategoria": "Armor",
+   "zestaw": "zwiadowca",
+   "plik_modelu": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_rekawice_dlon_l.fbx",
+   "czesci": [
+    {
+     "id": "zwiadowca_rekawice_dlon_l",
+     "zaczep": "EkwLeftHandAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_rekawice_dlon_l.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_rekawice_dlon_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.005,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.005,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 88
+    },
+    {
+     "id": "zwiadowca_rekawice_dlon_p",
+     "zaczep": "EkwRightHandAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_rekawice_dlon_p.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_rekawice_dlon_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.005,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.005,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 88
+    }
+   ],
+   "plik_ikony": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_rekawice_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "zwiadowca_buty",
+   "nazwa": "Buty z wywiniętą cholewą",
+   "slot": "Boots",
+   "kategoria": "Armor",
+   "zestaw": "zwiadowca",
+   "plik_modelu": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_golen_l.fbx",
+   "czesci": [
+    {
+     "id": "zwiadowca_buty_golen_l",
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_golen_l.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_golen_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftLowerLeg",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 100
+    },
+    {
+     "id": "zwiadowca_buty_stopa_l",
+     "zaczep": "EkwLeftFootAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_stopa_l.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_stopa_l.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.035
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.035
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 100
+    },
+    {
+     "id": "zwiadowca_buty_golen_p",
+     "zaczep": "EkwRightLowerLegAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_golen_p.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_golen_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.0
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.0
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightLowerLeg",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 100
+    },
+    {
+     "id": "zwiadowca_buty_stopa_p",
+     "zaczep": "EkwRightFootAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_stopa_p.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_buty_stopa_p.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        -0.035
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        0.035
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 100
+    }
+   ],
+   "plik_ikony": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_buty_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "zwiadowca_luk",
+   "nazwa": "Łuk z kołczanem",
+   "slot": "OffHand",
+   "kategoria": "Weapons",
+   "zestaw": "zwiadowca",
+   "plik_modelu": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_luk_tulow.fbx",
+   "czesci": [
+    {
+     "id": "zwiadowca_luk_tulow",
+     "zaczep": "EkwUpperTorsoAttachment",
+     "fbx": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_luk_tulow.fbx",
+     "glb": "wynik/zwiadowca/ekwipunek/przedmioty/zwiadowca_luk_tulow.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        0.465,
+        -0.373,
+        0.258
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        -0.465,
+        -0.373,
+        -0.258
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "UpperTorso",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 288
+    },
+    {
+     "id": "zwiadowca_luk",
+     "zaczep": "LeftGripAttachment",
+     "fbx": "wynik/zwiadowca/przedmioty/zwiadowca_luk.fbx",
+     "glb": "wynik/zwiadowca/przedmioty/zwiadowca_luk.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.0,
+        0.177
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.0,
+        -0.177
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 468
+    }
+   ],
+   "plik_ikony": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_luk_ikona.png",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
+  },
+  {
+   "id": "zwiadowca_sztylet",
+   "nazwa": "Sztylet Zwiadowcy",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "zestaw": "zwiadowca",
+   "plik_modelu": "wynik/zwiadowca/przedmioty/zwiadowca_sztylet.fbx",
+   "czesci": [
+    {
+     "id": "zwiadowca_sztylet",
+     "zaczep": "RightGripAttachment",
+     "fbx": "wynik/zwiadowca/przedmioty/zwiadowca_sztylet.fbx",
+     "glb": "wynik/zwiadowca/przedmioty/zwiadowca_sztylet.glb",
+     "attachment": {
+      "glb": {
+       "pos": [
+        -0.0,
+        -0.54,
+        -0.015
+       ],
+       "rot": [
+        0,
+        0,
+        0
+       ]
+      },
+      "fbx": {
+       "pos": [
+        0.0,
+        -0.54,
+        0.015
+       ],
+       "rot": [
+        0,
+        180,
+        0
+       ]
+      }
+     },
+     "kosc": "RightHand",
+     "zakrywa": false,
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "trojkaty": 356
+    }
+   ],
+   "plik_ikony": "wynik/zwiadowca/ikony/zwiadowca_sztylet_ikona.png",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": []
   },
   {
    "id": "karczmarz_chochla",

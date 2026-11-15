@@ -52,7 +52,7 @@ Pełna lista 24 lokacji z pomysłem, funkcją i współrzędnymi: rozdz. 4 kontr
 4. **Droga z miasta:** krótkie przejście z zaciemnieniem z Bramy Miejskiej (propozycja) czy prawdziwa droga przez pusty teren?
 5. **Wrota Bagna:** tylko zapowiedź (do bagna teleportem po odblokowaniu, D-064) czy prawdziwe przejście — czyli czy biomy sąsiadują ze sobą?
 6. **Nowe warianty i zachowania potworów:** Bursztynowy Slime w Wąwozie, karawana slime’ów, muchomorniki z koszami, wataha zeskakująca z półki — to dodatkowe kolory i animacje do zamówienia.
-7. **Lekka mgła** w lesie (oświetlenie jest wspólne dla całego miejsca).
+7. **Lekka mgła** w lesie — Karol zgodził się 15.11.2026; dodana tego samego dnia jako skrypt klienta w `Workspace/LasMgla`, który zmienia mgłę tylko u gracza będącego w lesie, więc wspólne ustawienia światła i miasteczko zostają bez zmian (`swiat/biom_las/mgla.py`; raport „Lekka mgła w lesie” czeka na ocenę siły i koloru).
 
 ## Powiązane
 [[Rejestr decyzji]] · [[Pytania otwarte]] · [[Koncepcja i Core Loop]] · [[Karczma (Questy)]] · [[Pety]] · [[Mapa teleportacji]] · [[Klocki — Blender i Roblox]] · [[Sesja główna 2026-11-14 (3) — zapis ustaleń]]

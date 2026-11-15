@@ -12,7 +12,8 @@ Wyniki (folder swiat/postacie/wynik/_zestawienie/ i swiat/postacie/przedmioty.js
                         manekin gracza R15 (5,25 studa) z lewej; kamera ortogonalna, każdy model przodem 3/4
   pokaz_animacji.mp4  — po kolei klipy każdej postaci (H.264 yuv420p, ok. 25 s), pokaz_animacji_klatki.jpg — arkusz
   katalog_ekwipunku.jpg — ikony przedmiotów w wierszach slotów + trzy przymiarki zestawów na manekinie
-  przedmioty.json + zaczepy_akcesoriow.luau — lista przedmiotów z gotowymi Attachmentami (dane z wynik/*/raport.json)
+  przedmioty.json + zaczepy_akcesoriow.luau — lista przedmiotów z gotowymi Attachmentami (dane z wynik/*/raport.json;
+                        przedmioty bohaterów z wynik/<bohater>/ekwipunek/ekwipunek.json — pola D-071, EKWIPUNEK.md pkt 5)
   przymiarki_zestawow.jpg — same przymiarki (większe)
 Blender działa pod wspólną blokadą (zajmij_blender / zwolnij_blender), jedno wywołanie na krótkie zadanie.
 Pliki robocze idą do folderu tymczasowego systemu (usuwany na końcu).
@@ -189,14 +190,20 @@ def film(tmp):
 
 # --------------------------------------------------------------------------- 3. przedmioty i katalog
 def _raporty():
-    """{id modelu: raport z Blendera} ze wszystkich wynik/<moduł>/raport.json (pisze je przebuduj.py)."""
-    r = {}
+    """{id modelu: raport z Blendera} ze wszystkich wynik/<moduł>/raport.json (pisze je przebuduj.py); także
+    segmenty ekwipunku bohaterów (sekcja „ekwipunek” raportu) — bez nadpisywania modeli z głównego przebiegu."""
+    r, segmenty = {}, {}
     for nazwa in sorted(os.listdir(WYNIK)):
         p = os.path.join(WYNIK, nazwa, "raport.json")
         if os.path.isfile(p):
             with open(p, encoding="utf-8") as f:
-                for m in json.load(f)["modele"]:
-                    r[m["id"]] = m
+                dane = json.load(f)
+            for m in dane["modele"]:
+                r[m["id"]] = m
+            for m in (dane.get("ekwipunek") or {}).get("modele", []):
+                segmenty.setdefault(m["id"], m)
+    for k, m in segmenty.items():
+        r.setdefault(k, m)
     return r
 
 
@@ -217,7 +224,67 @@ def _ikona(zestaw, iid):
 
 
 # rekwizyty postaci eksportowane osobno (w FBX postaci ich nie ma): slot i kategoria z punktu zaczepienia
-REKWIZYTY = ("kot_mag", "rycerz", "karczmarz")
+# (Rycerz i Kot-Mag od 15.11 w BOHATEROWIE: ich miecz, kapelusz i kostur to przedmioty stroju)
+REKWIZYTY = ("karczmarz",)
+# bohaterowie z ciałem bazowym i strojem z przedmiotów (D-071, EKWIPUNEK.md): przedmioty z
+# wynik/<bohater>/ekwipunek/ekwipunek.json (pisze go przebuduj.py), bez Blendera
+BOHATEROWIE = (("rycerz", "Rycerz Blocky — strój bohatera"), ("kot_mag", "Kot-Mag Crycket — strój bohatera"),
+               ("zwiadowca", "Zwiadowca — strój bohatera"))
+# kość standardowego zaczepu przedmiotu na zaczepie (ciało R15) — korekta ciała kota idzie osobno (pole korekta)
+KOSCI_ZACZEPOW = {"HatAttachment": "Head", "HairAttachment": "Head", "RightGripAttachment": "RightHand",
+                  "LeftGripAttachment": "LeftHand"}
+
+
+def _ekwipunek_bohatera(mid):
+    """Dane ekwipunku bohatera z wynik/<mid>/ekwipunek/ekwipunek.json. Porównuje pola modułu z ekwipunek_json()
+    (czysty Python) i ostrzega, gdy plik jest nieaktualny (trzeba przebudować bohatera w Blenderze)."""
+    p = os.path.join(WYNIK, mid, "ekwipunek", "ekwipunek.json")
+    with open(p, encoding="utf-8") as f:
+        dane = json.load(f)
+    m = json.loads(json.dumps(modul(mid).ekwipunek_json()))      # krotki -> listy, jak w pliku
+    dop_p, dop_c = {"plik_ikony"}, {"fbx", "glb", "trojkaty", "attachment_pos"}
+    plik = [({k: v for k, v in w.items() if k not in dop_p | {"czesci"}},
+             [{k: v for k, v in c.items() if k not in dop_c} for c in w["czesci"]]) for w in dane["przedmioty"]]
+    swiezy = [({k: v for k, v in w.items() if k != "czesci"}, w["czesci"]) for w in m["przedmioty"]]
+    if plik != swiezy or any(dane.get(k) != v for k, v in m.items() if k != "przedmioty"):
+        log("UWAGA: %s jest nieaktualny względem %s.ekwipunek_json() — przebuduj: python -B swiat/postacie/"
+            "przebuduj.py %s" % (wzgl(p), mid, mid))
+    return dane
+
+
+def _przedmiot_bohatera(mid, w, dane, raporty):
+    """Wpis przedmiotu bohatera: pola jak w zestawach (id, nazwa, slot, kategoria, zestaw, plik_modelu, czesci
+    z attachment, plik_ikony) + pola D-071 (EKWIPUNEK.md pkt 5): cialo, klasy, czesc_od, ukrywa, a w częściach
+    kosc, zakrywa, pos, rot, trojkaty. Część na zaczepie ma zaczep standardowy przedmiotu (np. RightGripAttachment);
+    korekta chwytu ciała kota (KosturAttachment na StaffPivot itd.) jest w polu „korekta”, bo to dane bohatera
+    (dane = ekwipunek.json bohatera: typ ciała i korekty_chwytu)."""
+    odwrotne = {v["zaczep"]: (z, v) for z, v in (dane.get("korekty_chwytu") or {}).items()}
+    czesci = []
+    for c in w["czesci"]:
+        zaczep, korekta = c["zaczep"], None
+        if zaczep in odwrotne:                                # przedmiot zapisany z korektą ciała bohatera
+            zaczep, k = odwrotne[zaczep]
+            korekta = {"cialo": dane["cialo"], "zaczep": k["zaczep"], "kosc": c["kosc"],
+                       "pos": list(k["pos"]), "rot": list(k["rot"])}
+        cz = _czesc(mid, c["id"], zaczep, raporty)
+        cz["fbx"], cz["glb"] = c["fbx"], c["glb"]             # segmenty kostne leżą w wynik/<mid>/ekwipunek/przedmioty/
+        kosc = c["kosc"] if korekta is None else KOSCI_ZACZEPOW.get(zaczep, c["kosc"])
+        cz.update({"kosc": kosc, "zakrywa": c["zakrywa"],
+                   "pos": [0, 0, 0] if korekta else c["pos"], "rot": [0, 0, 0] if korekta else c["rot"],
+                   "trojkaty": c.get("trojkaty")})
+        if korekta:
+            cz["korekta"] = korekta
+        czesci.append(cz)
+    # przedmiot z jednym segmentem na zaczepie (miecz, tarcza, kapelusz, kostur, sztylet) to ten sam model co
+    # w głównym przebiegu: ikona wynik/<mid>/ikony/ jest co do piksela taka sama jak ta z ekwipunek/ikony/, a dawne
+    # wpisy katalogu wskazywały właśnie ją — zostaje, żeby dawne wpisy się nie zmieniały
+    ikona = w["plik_ikony"]
+    if len(w["czesci"]) == 1 and not w["czesci"][0]["zaczep"].startswith("Ekw") and \
+            os.path.isfile(os.path.join(TU, _ikona(mid, w["id"]))):
+        ikona = _ikona(mid, w["id"])
+    return {"id": w["id"], "nazwa": w["nazwa"], "slot": w["slot"], "kategoria": w["kategoria"], "zestaw": mid,
+            "plik_modelu": czesci[0]["fbx"], "czesci": czesci, "plik_ikony": ikona,
+            "cialo": w["cialo"], "klasy": w["klasy"], "czesc_od": w["czesc_od"], "ukrywa": w["ukrywa"]}
 
 
 def przedmioty():
@@ -263,7 +330,13 @@ def przedmioty():
     # Zbrojownia
     for z in sorted(modul("bronie").PRZEDMIOTY, key=lambda z: z["ranga"]):
         dodaj(z["id"], z["nazwa"], z, "bronie", [(z["id"], z["zaczep"])], z["id"])
-    # Rekwizyty postaci (kapelusz i kostur Kota-Maga, miecz Rycerza, chochla Karczmarza)
+    # Bohaterowie (D-071): cały strój z przedmiotów — Rycerz 8, Kot-Mag 4, Zwiadowca 8 (z mieczem, tarczą,
+    # kapeluszem, kosturem, łukiem i sztyletem)
+    for mid, _ in BOHATEROWIE:
+        dane = _ekwipunek_bohatera(mid)
+        for w in dane["przedmioty"]:
+            wynik.append(_przedmiot_bohatera(mid, w, dane, raporty))
+    # Rekwizyty postaci bez stroju z przedmiotów (chochla Karczmarza)
     for mid in REKWIZYTY:
         for o in lista(modul(mid).zbuduj()):
             if isinstance(o, Akcesorium):
@@ -293,7 +366,18 @@ def zapisz_przedmioty(lista_p):
                           "w Studio. Skrypt: swiat/postacie/zaczepy_akcesoriow.luau.",
             "sloty": [s for s, _ in SLOTY],
             "kategorie": ["Weapons", "Armor", "Amulets", "Others"],
-            "zestawy": {z: n for z, n, _ in ZESTAWY},
+            "zestawy": dict({z: n for z, n, _ in ZESTAWY}, **dict(BOHATEROWIE)),
+            "bohaterowie": "Przedmioty bohaterów (zestaw rycerz, kot_mag, zwiadowca; D-071, swiat/postacie/EKWIPUNEK.md "
+                           "pkt 5) mają dodatkowe pola: cialo (typ ciała: czlowiek, kot albo dowolne — broń w dłoni), "
+                           "klasy (klasy postaci), czesc_od (przedmiot nadrzędny: spodnie są częścią zbroi), ukrywa "
+                           "(znaczniki akcesoriów ciała chowanych pod przedmiotem: Wlosy). Ich części to segmenty "
+                           "na kościach: kosc, zakrywa (powłoka — gołe bryły tej kości znikają), zaczep "
+                           "Ekw<Kosc>Attachment (środek klocka kości w gołym ciele wynik/<bohater>/ekwipunek/"
+                           "<bohater>_cialo.fbx), pos/rot (ramka segmentu względem środka klocka), trojkaty; broń "
+                           "i kapelusz kota mają zaczep standardowy, a korekta = zaczep, kość i przesunięcie na ciele "
+                           "kota (KapeluszAttachment na HatPivot, KosturAttachment na StaffPivot). Ikony: przedmiot "
+                           "na zaczepie — wynik/<bohater>/ikony/, pozostałe — wynik/<bohater>/ekwipunek/ikony/. "
+                           "Nie sprawdzone w Studio.",
             "przedmioty": lista_p}
     p = os.path.join(TU, "przedmioty.json")
     with open(p, "w", encoding="utf-8", newline="\n") as f:

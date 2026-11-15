@@ -1,8 +1,9 @@
 # Kontrakt: ciało bazowe + zakładany ekwipunek (D-071)
 
 **Status: propozycja (etap 1, projekt systemu); etap 2 — Rycerz, Kot-Mag i Zwiadowca zbudowani według kontraktu
-(doprecyzowania z budowy: pkt 9, 10 i 11); etap 3 — przegląd i poprawki (pkt 12).** Wspólny kod wciąż w `rycerz.py`
-(pkt 9). Ten plik wiąże budowniczych
+(doprecyzowania z budowy: pkt 9, 10 i 11); etap 3 — przegląd i poprawki (pkt 12); etap 4 — porządki: wspólny kod
+w `swiat/postacie/ekwipunek.py`, 20 przedmiotów bohaterów w katalogu `przedmioty.json` i w propozycji Luau
+(pkt 13).** Ten plik wiąże budowniczych
 modułów `rycerz.py`, `zwiadowca.py`, `kot_mag.py` i wspólnego modułu ekwipunku. Decyzja właściciela: każdy
 element ekwipunku (zbroja, miecz, spodnie, kapelusz, szata, tarcza) widać na modelu 3D, także w walce. Postacie
 dostają gołe modele bazowe, a dzisiejszy wygląd staje się kompletem przedmiotów. **Tarczę widać tylko wtedy, gdy jest
@@ -166,18 +167,22 @@ gołego ciała przebije ubranie.
   Tak już opisuje to `SLABOSCI` kota.
 
 ## 4. API modułu bohatera
-Wspólny kod trafia do nowego modułu `swiat/postacie/ekwipunek.py`, nie do biblioteki. Biblioteka wystarcza:
+Wspólny kod jest w module `swiat/postacie/ekwipunek.py` (od 15.11, pkt 13), nie w bibliotece. Biblioteka wystarcza:
 segment to zwykłe `Akcesorium`, wtopienie dopisuje bryły do `Postac.czesci`, a przedmiot na zaczepie to
 `Postac.zaloz`. Nie trzeba nowych zaczepów w `zbuduj()`.
 
 ```python
 # swiat/postacie/ekwipunek.py (wspólne)
-class Przedmiot:      # id, nazwa, slot, kategoria, cialo ("czlowiek"/"kot"), klasy=(), czesc_od=None, ukrywa=()
-    def segment(self, kosc, zakrywa=False) -> Akcesorium   # bryły w układzie ŚRODKA KLOCKA kości (paleta bohatera)
-    def na_zaczepie(self, akcesorium, zaczep=None, pos=(0,0,0), obrot=(0,0,0))  # broń, kapelusz
-    def opis(self) -> dict                                  # wpis PRZEDMIOTY / format z pkt 5
-def ubierz(cialo, przedmioty, korekty=None, id=None, nazwa=None) -> Postac
+class Przedmiot:      # (id, nazwa, slot, kategoria, miara, cialo="czlowiek", klasy=(), czesc_od=None, ukrywa=(),
+                      #  zestaw=None, paleta=None); miara = postać z klockami ciała (wymiary i środki kości)
+    def segment(self, kosc, zakrywa=False, klocek=None) -> Akcesorium   # bryły w układzie ŚRODKA KLOCKA kości
+    def na_zaczepie(self, akc, zaczep=None, pos=(0,0,0), obrot=(0,0,0))  # broń, kapelusz
+    def opis(self, korekty=None) -> dict                    # wpis PRZEDMIOTY / format z pkt 5
+    def ikona(self) -> Akcesorium                           # cały przedmiot do ikony (poza spoczynku)
+def ubierz(cialo, przedmioty, id=None, nazwa=None, korekty=None) -> Postac
 def kopiuj_klipy(zrodlo, cel)                               # nowe Klip na `cel`, kanaly = deepcopy, ta sama kolejność
+def zaczep_ekwipunku(kosc) -> str                           # "Ekw<Kosc>Attachment"
+SKROTY_KOSCI, ZACZEPY_CHWYTU                                # kość -> skrót w id segmentu; zaczepy broni w dłoni
 
 # moduł bohatera (rycerz.py itd.)
 KANON = ("rycerz_helm", "rycerz_zbroja", "rycerz_nogawice", "rycerz_pas", "rycerz_rekawice", "rycerz_buty",
@@ -264,6 +269,7 @@ dziś) i z polami `Items.luau` (`name`, `slot`, `category`, `icon`). Dochodzą p
   `rycerz_zbroja = { name = "…", slot = "Chest", category = "Armor", icon = "", iconFile = "…", set = "rycerz",
   body = "czlowiek", classes = { "wojownik" }, hides = {}, parent = nil, meshes = { { bone = "UpperTorso",
   covers = true, attachment = "EkwUpperTorsoAttachment" }, … } }`.
+- Jak to wyszło w katalogu (`przedmioty.json`, `roblox/PrzedmiotyPropozycja.luau`): pkt 13.
 
 ## 6. Istniejące zestawy (`zestaw_rycerz/mag/rekrut.py`, `bronie.py`, `wzor_ekwipunku.py`)
 **Zostają bez zmian i bez dopasowania teraz** (najtańsza sensowna droga):
@@ -308,7 +314,8 @@ części).
    - przebudowa i obejrzenie plansz: gołego, pełnego, „bojowy”, „lekki” i dzisiejszej `rycerz_plansza.jpg`.
 4. **Zwiadowca**, to samo ciało `czlowiek`. Dodatkowa plansza krzyżowa: zbroja Rycerza na Zwiadowcy.
 5. **Kot.**
-6. `zestawienie.py` → `przedmioty.json` z przedmiotami bohaterów, potem `przedmioty_luau.py`.
+6. `zestawienie.py` → `przedmioty.json` z przedmiotami bohaterów, potem `przedmioty_luau.py` (zrobione 15.11,
+   pkt 13).
 7. Roblox: ubieranie na rigu z części, dopiero po zwolnieniu Studio.
 
 ## 8. Wybory do decyzji ludzi
@@ -321,7 +328,7 @@ części).
 
 ## 9. Doprecyzowania z budowy Rycerza (etap 2, 15.11)
 Co praktyka pokazała i dlaczego kontrakt trzeba było dopowiedzieć:
-- **Wspólny kod chwilowo w `rycerz.py`.** Etap Rycerza nie obejmował nowego pliku, więc `Przedmiot`, `ubierz`,
+- **Wspólny kod chwilowo w `rycerz.py`** (przeniesiony 15.11, pkt 13). Etap Rycerza nie obejmował nowego pliku, więc `Przedmiot`, `ubierz`,
   `kopiuj_klipy`, `SKROTY_KOSCI` i `zaczep_ekwipunku` są w sekcji „ekwipunek: wspólne” na górze `rycerz.py`
   (nic tam nie zależy od Rycerza). Przy Zwiadowcy przenieść je 1:1 do `swiat/postacie/ekwipunek.py`, a w
   `rycerz.py` zostawić import — bez zmiany zachowania.
@@ -353,9 +360,9 @@ Co praktyka pokazała i dlaczego kontrakt trzeba było dopowiedzieć:
 
 ## 10. Doprecyzowania z budowy Kota-Maga (etap 2, 15.11)
 Co praktyka pokazała przy kocie i dlaczego trzeba to dopisać:
-- **Wspólny kod dalej w `rycerz.py`.** `kot_mag.py` importuje `Przedmiot`, `ubierz`, `kopiuj_klipy` i
-  `zaczep_ekwipunku` najpierw z `swiat/postacie/ekwipunek.py`, a gdy tego pliku jeszcze nie ma — z `rycerz.py`.
-  Przeniesienie do `ekwipunek.py` (pkt 9) nie wymaga więc zmiany w kocie.
+- **Wspólny kod dalej w `rycerz.py`** (stan z etapu 2; przeniesiony 15.11, pkt 13 — zapasowego importu z
+  `rycerz.py` już nie ma). Na etapie 2 `kot_mag.py` importował `Przedmiot`, `ubierz`, `kopiuj_klipy` i
+  `zaczep_ekwipunku` najpierw z `swiat/postacie/ekwipunek.py`, a gdy tego pliku jeszcze nie było — z `rycerz.py`.
 - **Bryły modelowane od stawu.** Dawny kot modelował biodra (dzwon szaty, szarfa) i przedramiona (mankiet) od
   STAWU kości (`with p.na(kosc)`), a nie od środka klocka. W segmencie wystarczy `with a.uklad(pos=−srodek(kosc))`
   i dawny kod bez zmian. Wynik zostaje co do bitu: multizbiór 85 brył postaci odniesienia = dawny `zbuduj()[0]`.
@@ -382,9 +389,9 @@ Co praktyka pokazała przy kocie i dlaczego trzeba to dopisać:
 
 ## 11. Doprecyzowania z budowy Zwiadowcy (etap 2, 15.11)
 Co praktyka pokazała przy Zwiadowcy i dlaczego trzeba to dopisać:
-- **Wspólny kod dalej w `rycerz.py`.** Etap Zwiadowcy obejmował tylko `zwiadowca.py` (i opcjonalnie
-  `przebuduj.py`), więc `ekwipunek.py` nadal nie powstał. `zwiadowca.py` importuje wspólny kod tak jak kot: najpierw
-  z `ekwipunek.py`, a gdy go nie ma — z `rycerz.py`. Przeniesienie (pkt 9) zostaje jako osobny, mały krok.
+- **Wspólny kod dalej w `rycerz.py`** (stan z etapu 2; przeniesiony 15.11, pkt 13). Etap Zwiadowcy obejmował tylko
+  `zwiadowca.py` (i opcjonalnie `przebuduj.py`), więc `ekwipunek.py` jeszcze nie powstał. `zwiadowca.py` importował
+  wspólny kod tak jak kot: najpierw z `ekwipunek.py`, a gdy go nie było — z `rycerz.py`.
 - **Przedmiot mieszany: segment kostny + segment na zaczepie.** „Łuk z kołczanem” ma kołczan z pasem na skos
   (segment `zwiadowca_luk_tulow` wtapiany w UpperTorso, wierzchnia warstwa) i łuk na `LeftGripAttachment` (segment
   o id samego przedmiotu, `zwiadowca_luk`). `ubierz`, `opis()` i `przebuduj.py` obsługują to bez zmian. Wspólna
@@ -452,4 +459,118 @@ Co sprawdził przegląd i co z tego wynikło:
   - goły Rycerz leży w ostatniej klatce `upadek` 0,25 studa nad ziemią, a goły kot 0,20 (klip kładzie ich na zbroi
     albo szacie); Zwiadowca leży na dłoniach, więc u niego tego nie ma;
   - pas Rycerza to sama klamra (ikona wygląda jak ramka);
-  - wspólny kod dalej siedzi w `rycerz.py` (pkt 9).
+  - ~~wspólny kod dalej siedzi w `rycerz.py` (pkt 9)~~ — przeniesiony do `ekwipunek.py` (pkt 13).
+
+## 13. Porządki i katalog przedmiotów (etap 4, 15.11)
+Bez Blendera i bez Studio. Wygląd, klipy i dane postaci się nie zmieniły.
+
+**Wspólny kod w `swiat/postacie/ekwipunek.py`.**
+- Sekcja „ekwipunek: wspólne” z `rycerz.py` przeszła do `ekwipunek.py` 1:1: `Przedmiot`, `ubierz`, `kopiuj_klipy`,
+  `zaczep_ekwipunku`, `SKROTY_KOSCI`, `ZACZEPY_CHWYTU` i prywatne `_ID_OK`. Nazwy są te same, kod ten sam.
+- Trzej bohaterowie importują wspólny kod z `ekwipunek.py`. Zapasowy import z `rycerz.py` w `kot_mag.py`
+  i `zwiadowca.py` jest usunięty.
+- `rycerz.py` dalej udostępnia `rycerz.Przedmiot`, `rycerz.ubierz`, `rycerz.kopiuj_klipy`,
+  `rycerz.zaczep_ekwipunku`, `rycerz.SKROTY_KOSCI` i `rycerz.ZACZEPY_CHWYTU` (import z `ekwipunek.py`).
+  W repozytorium (`swiat/`, `tools/`, `panel/`) nikt poza dwoma bohaterami nie importował ich z `rycerz.py`.
+- Z przestrzeni nazw `rycerz` zniknęły tylko nazwy, których `rycerz.py` już nie używa: `I3` (stała biblioteki),
+  `_ID_OK` oraz moduły `copy` i `re`. Klasy i funkcje mają teraz `__module__ == "swiat.postacie.ekwipunek"`
+  (dawniej `swiat.postacie.rycerz`); nic w repozytorium z tego nie korzysta.
+
+**Regresja.** Zrzut przed zmianą i po niej, w czystym Pythonie, dla każdego bohatera:
+- `pakiet(...)` dla Blendera z `zbuduj()`, `warianty("plansze")` i `warianty("eksport")`;
+- pełny stan obiektów `zbuduj()`, `warianty()`, `przedmioty()`, ikon, `cialo()`, każdego stroju i postaci
+  odniesienia, z surowymi liczbami;
+- `ekwipunek_json()`, stałe modułu (`KANON`, `STROJE`, `CHWILE`, `KOREKTY_CHWYTU`…) i wynik `--kontrola`
+  (kod wyjścia i tekst).
+
+Wszystko wyszło identyczne co do bajtu, także postacie aktorów prototypu walki (`aktorzy.postac_aktora`).
+Niezależna kontrola (moduły z ostatniego commitu uruchomione z kopii w katalogu tymczasowym, obok dzisiejszych):
+- stan obiektów (kości, zaczepy, klipy z każdym kluczem, `CHWILE`, bryły z surowymi liczbami, akcesoria z zaczepem,
+  `pos` i `rot`) i pakiety JSON są identyczne dla `zbuduj()`, obu `warianty()`, `cialo()` z zaczepami `Ekw…`
+  i bez nich, każdego stroju (5/5/5) i postaci odniesienia;
+- `--kontrola`: ten sam tekst i kod wyjścia (Rycerz 1, kot 1 — dawne `atak_miecz` i `chod`; Zwiadowca 0);
+- dane aktorów `wojownik`, `zwiadowca`, `mag` z `aktorzy.przygotuj(..., liniowo=True)` (zapis do katalogu
+  tymczasowego) są identyczne co do bajtu;
+- ścieżka `przebuduj.py` bez Blendera: opakowanie `OPAKOWANIE` daje ten sam pakiet co `warianty()`, a
+  `raport_ekwipunku()` tę samą sekcję co w dzisiejszym `wynik/<bohater>/raport.txt`.
+
+**`cialo: "dowolne"` dla broni w dłoni** liczy wspólne `Przedmiot.opis()`, czyli moduły, a nie ręczna poprawka
+pliku. `ekwipunek_json()` trzech bohaterów zgadza się z `wynik/<id>/ekwipunek/ekwipunek.json` we wszystkich polach
+modułu. Przebudowa nie cofnie więc przeglądu, a żadnego pliku JSON nie trzeba było przepisywać.
+`zestawienie.py --tylko json` porównuje to przy każdym przebiegu i ostrzega, gdy plik jest nieaktualny.
+
+**Katalog: `przedmioty.json`** (`zestawienie.py --tylko json`, dane z `wynik/<bohater>/ekwipunek/ekwipunek.json`
+i z raportów Blendera).
+- 58 przedmiotów: 41 dawnych − 3 rekwizyty bohaterów + 20 przedmiotów bohaterów (Rycerz 8, Kot-Mag 4,
+  Zwiadowca 8).
+- Wpisy zestawów (Rekrut, Rycerz, Mag), Zbrojowni i chochla Karczmarza zostały bez zmian (38 wpisów, ta sama
+  kolejność).
+- Dawne rekwizyty `kot_mag_kapelusz`, `kot_mag_kostur` i `rycerz_miecz` to teraz przedmioty bohaterów.
+  Dawne pola zostały bez zmian: id, nazwa, slot, kategoria, zestaw, plik modelu, części z zaczepem i `attachment`
+  oraz plik ikony. Doszły tylko pola D-071.
+- Ikony: przedmiot z jednym segmentem na zaczepie (miecz, tarcza, kapelusz, kostur, sztylet) wskazuje ikonę
+  z głównego przebiegu, `wynik/<bohater>/ikony/` — to ten sam model i obraz co do piksela jak w
+  `wynik/<bohater>/ekwipunek/ikony/`, a dawne wpisy wskazywały właśnie ją. Pozostałe przedmioty bohaterów
+  (także łuk z kołczanem) mają ikonę z `wynik/<bohater>/ekwipunek/ikony/`.
+
+Pola przedmiotu bohatera (oprócz dawnych):
+
+| Pole | Znaczenie |
+|---|---|
+| `cialo` | typ ciała: `czlowiek`, `kot` albo `dowolne` (broń w dłoni) |
+| `klasy` | lista klas postaci, np. `["wojownik"]` |
+| `czesc_od` | przedmiot nadrzędny: nogawice → zbroja, spodnie → kirys |
+| `ukrywa` | znaczniki akcesoriów ciała chowanych pod przedmiotem (`["Wlosy"]` dla hełmu i kaptura) |
+
+Pola części (segmentu):
+
+| Pole | Znaczenie |
+|---|---|
+| `kosc` | kość segmentu |
+| `zakrywa` | powłoka: gołe bryły tej kości znikają |
+| `zaczep` | `Ekw<Kosc>Attachment` dla segmentu kostnego; dla przedmiotu na zaczepie zaczep standardowy |
+| `pos`, `rot` | ramka segmentu względem środka klocka kości |
+| `trojkaty` | liczba trójkątów siatki |
+| `fbx`, `glb` | segmenty kostne w `wynik/<bohater>/ekwipunek/przedmioty/`, broń w `wynik/<bohater>/przedmioty/` |
+| `attachment` | gotowe ustawienie Attachmentu w Handle, liczone tak jak dla zestawów (minus środek skrzynki siatki od zaczepu) |
+| `korekta` | `{cialo, zaczep, kosc, pos, rot}`: zaczep na ciele kota |
+
+O zaczepie przedmiotu na zaczepie:
+- Zaczep standardowy to `HatAttachment` (kość Head) albo `RightGripAttachment` / `LeftGripAttachment` (kość dłoni).
+- Korekta chwytu to dane bohatera, nie przedmiotu (pkt 3). Kostur na człowieku siada więc na `RightGripAttachment`,
+  a na kocie według `korekta` (`KosturAttachment` na `StaffPivot`, −0,08 / −90°).
+- Kapelusz kota ma `korekta` z `KapeluszAttachment` na `HatPivot`.
+- W `ekwipunek.json` bohatera te przedmioty dalej mają zaczep po korekcie (pkt 10). Katalog przelicza go z powrotem
+  na zaczep standardowy (`korekty_chwytu` z tego samego pliku). Dzięki temu dawne wpisy kapelusza i kostura mają
+  ten sam `zaczep` i `attachment` co przed zmianą.
+- Nowe pole główne `bohaterowie` opisuje te pola. `zestawy` mają nazwy trzech bohaterów (`kot_mag` zamiast
+  „Rekwizyty Kota-Maga” ma „Kot-Mag Crycket — strój bohatera”).
+- Ten sam przebieg pisze `zaczepy_akcesoriow.luau` (102 części: 55 dawnych wierszy bez zmian, tylko
+  `rycerz_miecz` stoi teraz w grupie Rycerza, + 47 nowych części bohaterów: 44 segmenty kostne, tarcza Rycerza,
+  łuk i sztylet Zwiadowcy). Przedmioty bohaterów mają razem 50 części.
+
+**Propozycja Luau** (`przedmioty_luau.py` → `roblox/PrzedmiotyPropozycja.luau`).
+- Wpisy zestawów i broni są jednolinijkowe, bez zmian.
+- Przedmiot bohatera ma dawne pola (`name`, `slot`, `category`, `icon`, `iconFile`, `set`) i w kolejnych wierszach
+  `body`, `classes`, `hides`, `parent` (`nil` albo id) oraz `meshes = { { id, bone, covers, attachment, fbx, glb[,
+  onBody = { kot = { attachment, bone, pos, rot } }] }, … }`. Ustawienia Attachmentu w Handle (pos/rot dla glb
+  i fbx) w `meshes` nie ma — są w `zaczepy_akcesoriow.luau` i w `przedmioty.json` pod tym samym id części.
+- Narzędzie wypisuje, czego moduł gry `Items` nie zna:
+  - slot `OffHand` (`rycerz_tarcza`, `zwiadowca_luk`, `zr_tarcza`, `mag_ksiega`);
+  - pola spoza `name`/`slot`/`category`/`icon`;
+  - typy ciała i klasy;
+  - przedmioty z `parent` (brak slotu `Legs`);
+  - 15 zaczepów `Ekw<Kosc>Attachment`, które istnieją tylko w gołym ciele bohatera.
+- Kategorie są wszystkie znane grze.
+
+**Zostaje otwarte:**
+- decyzje z pkt 8: spodnie (`parent`) czy slot `Legs`; slot `OffHand` dla łuku i tarczy; drobne przedmioty;
+- czy gra przyjmie pola `body`, `classes`, `hides`, `parent`, `meshes` i `onBody` — to decyzja Game Directora,
+  bo `src/shared/Items.luau` ich nie ma;
+- pliki siatek (FBX/GLB) są w `.gitignore`, więc są tylko lokalnie; ikony są w repozytorium. Na koncie Roblox
+  nie ma ani jednych, ani drugich;
+- droga przez gołe ciało z zaczepami `Ekw…` i `AddAccessory` dalej nie była sprawdzana w Studio;
+- testu jednostkowego samego `ekwipunek.py` (pkt 7, kolejność 2) w repozytorium nie ma — wspólny kod sprawdzają
+  `--kontrola` bohaterów i regresja z tego etapu (poza repozytorium);
+- `katalog_ekwipunku.jpg` (tryb Blendera w `zestawienie.py`) nie pokazuje jeszcze przedmiotów bohaterów:
+  `ikony_katalogu()` i `ZESTAWY` (podpis „Rekwizyty Kota-Maga”) są sprzed tego etapu.

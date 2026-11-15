@@ -17,6 +17,8 @@ CIAŁO BAZOWE + STRÓJ Z PRZEDMIOTÓW (D-071, kontrakt swiat/postacie/EKWIPUNEK.
   ubierz()     zakłada przedmioty na ciało (powłoka zastępuje gołe bryły kości, kaptur chowa włosy);
   zbuduj()     jak dotąd: [Zwiadowca w pełnym stroju kanonicznym (KANON), łuk, sztylet];
   warianty()   stroje z STROJE, segmenty i ikony całych przedmiotów dla przebuduj.py (wynik/zwiadowca/ekwipunek/).
+Wspólny kod ekwipunku (Przedmiot, ubierz, kopiuj_klipy, zaczep_ekwipunku) jest w swiat/postacie/ekwipunek.py
+(do 15.11 w sekcji „ekwipunek: wspólne” w rycerz.py).
 Klipy liczą się RAZ na postaci odniesienia (ODNIESIENIE_KLIPOW = pełny strój = dawny model: stopy płasko na ziemi,
 nic pod ziemią, leżenie na brzuchu) i są kopiowane bez zmian na ciało i każdy strój — ten sam ruch niezależnie
 od ubrania.
@@ -62,12 +64,8 @@ if __name__ == "__main__":                                       # uruchomienie 
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from swiat.postacie.biblioteka.postac import (I3, R15_KOSCI, Akcesorium, Postac, katy_z_macierzy, macierz_obrotu,
                                               mnoz, razy_wektor)
-try:                                    # wspólny kod ekwipunku (EKWIPUNEK.md pkt 4): docelowo ekwipunek.py,
-    from swiat.postacie.ekwipunek import Przedmiot, kopiuj_klipy, ubierz, zaczep_ekwipunku
-except ModuleNotFoundError as e:        # na razie w sekcji „ekwipunek: wspólne” w rycerz.py
-    if e.name != "swiat.postacie.ekwipunek":
-        raise
-    from swiat.postacie.rycerz import Przedmiot, kopiuj_klipy, ubierz, zaczep_ekwipunku
+# wspólny kod ekwipunku (EKWIPUNEK.md pkt 4)
+from swiat.postacie.ekwipunek import Przedmiot, kopiuj_klipy, ubierz, zaczep_ekwipunku
 
 ID = "zwiadowca"
 NAZWA = "Zwiadowca"
