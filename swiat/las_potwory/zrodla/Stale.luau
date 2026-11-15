@@ -31,6 +31,11 @@ S.PROG_KIERUNKU = math.rad(2)
 S.KLASY = { "wojownik", "zwiadowca", "mag" }
 S.POZIOMY_BOHATERA = { "auto", "1", "5", "10" }
 S.ARENA_PROTOTYPU = Vector3.new(0, 1, 250)  -- = Ustawienia.scena().Position w swiat/test_walki2
+-- wdrożenie 15.11: miejsce ma StreamOutBehavior = Opportunistic, więc arena prototypu wypadała u klienta zaraz po
+-- prośbie (postać stoi 2000+ studów dalej) i walka szła na gołej płycie. Serwer ponawia prośbę co sekundę przez
+-- walka.czas + tyle sekund (wejście, wynik, okno łupu).
+S.PODTRZYMANIE_ARENY = 45     -- s ponad walka.czas
+S.PODTRZYMANIE_CO = 1.0       -- s między prośbami o arenę
 
 ------------------------------------------------------------------ klient
 S.PROMIEN_WIDOKU = 120
@@ -46,6 +51,12 @@ S.OBROT_NA_S = 8              -- rad/s
 S.CZERWONA_OD = 3             -- poziomów ponad poziom bohatera
 S.TABLICZKA_ZASIEG = 80
 S.BANER_S = 5
+-- wdrożenie 15.11 (pomiar w Studio, rozdz. 9.3): dalsze widoki przestawiamy i animujemy rzadziej, z sumą dt
+S.KLATKA_PELNA_RANGA = 3      -- tylu najbliższych kamerze widoków zawsze co klatkę
+S.KLATKA_PELNA_DO = 25        -- studs od kamery: bliżej zawsze co klatkę
+S.KLATKA_POLOWA_DO = 70       -- do tej odległości co KLATKA_CO_DALEJ klatek, dalej co KLATKA_CO_DALEKO
+S.KLATKA_CO_DALEJ = 2
+S.KLATKA_CO_DALEKO = 3
 
 ------------------------------------------------------------------ kolory (jak Ustawienia.KOLORY prototypu)
 local function hex(h: string): Color3

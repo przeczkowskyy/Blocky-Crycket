@@ -535,7 +535,9 @@ local function zbudujWidok(cfg: Instance)
 	local poz = grunt(pozA)
 	local cf = cfZiemi(poz, yaw)
 	local w = { id = id, cfg = cfg, gatunek = klucz, poz = poz, cel = poz, predkosc = Vector3.zero, zostalo = 0,
-		ostatniaPozycja = pozA, yaw = yaw, akcja = nil, stan = nil, animowany = false, koszt = 0 }
+		ostatniaPozycja = pozA, yaw = yaw, akcja = nil, stan = nil, animowany = false, koszt = 0,
+		-- rozłożenie rzadszych klipów dalekich widoków na różne klatki (patrz krokWidoku)
+		odl = (poz - workspace.CurrentCamera.CFrame.Position).Magnitude, dtKlipow = 0, klatkiKlipow = math.random(0, 2) }
 	local gotowe = false
 	if tryb == "aktorzy" and not zepsute[klucz] and Tabela and Tabela.aktorzy[klucz] and daneAktorow[klucz] then
 		local ok, blad = pcall(budujAktora, w, cfg, cf)
@@ -615,6 +617,7 @@ local function wybierzWidoki()
 		if w then
 			n += 1
 			w.animowany = n <= Stale.MAKS_WIDOKOW
+			w.odl, w.ranga = e.d, n
 		end
 	end
 	liczbaAnimowanych = math.min(n, Stale.MAKS_WIDOKOW)
@@ -698,16 +701,23 @@ local function wybierzKandydata(): string?
 	return najlepszy
 end
 
--- punkt nad głową kandydata: głowa widoku albo Pozycja + pół wysokości
+-- punkt nad głową kandydata: głowa widoku albo Pozycja + pół wysokości.
+-- Poprawka wdrożenia (15.11, Studio): ProximityPrompt działa tylko wtedy, gdy jego kotwica jest na ekranie. Punkt
+-- „Pasek” Strażnika jest ok. 15,6 studa nad posadzką, więc gracz stojący przy nim miał kotwicę nad górną krawędzią
+-- kadru — podpowiedź była włączona, ale niewidoczna, i E nic nie robiło. Kotwica stoi więc najwyżej
+-- KOTWICA_MAKS_WYS nad ziemią (slime, muchomornik i wilk są niżsi, więc u nich nic się nie zmienia).
+local KOTWICA_MAKS_WYS = 5.5
 local function punktKotwicy(id: string): Vector3?
 	local w = widoki[id]
 	if w and w.glowa and w.glowa.Parent then
-		return w.glowa.WorldPosition
+		local p = w.glowa.WorldPosition
+		local sufit = w.poz.Y + KOTWICA_MAKS_WYS
+		return if p.Y > sufit then Vector3.new(p.X, sufit, p.Z) else p
 	end
 	local cfg = folderStanu:FindFirstChild(id)
 	local poz = cfg and cfg:GetAttribute("Pozycja")
 	if typeof(poz) == "Vector3" then
-		return poz + Vector3.new(0, wymiary(cfg:GetAttribute("Gatunek"))[2] / 2, 0)
+		return poz + Vector3.new(0, math.min(wymiary(cfg:GetAttribute("Gatunek"))[2] / 2, KOTWICA_MAKS_WYS), 0)
 	end
 	return nil
 end
@@ -791,8 +801,12 @@ function poWalce()
 	local wynik = kontener:GetAttribute("OstatniWynik")
 	kontener:SetAttribute("KlientOstatniaWalka", walka.id .. "/" .. tostring(wynik))
 	if wynik == "wygrana" then
-		-- widok znika od razu; serwer usunie potwora po zajetyDo (inni widzą do tego czasu miecze)
-		ukryte[walka.id] = true
+		-- widok znika od razu; serwer usunie potwora po zajetyDo (inni widzą do tego czasu miecze).
+		-- Poprawka wdrożenia: odtwarzanie trwa dłużej niż walka.czas (wejście i okno wyniku), więc serwer zwykle usunął
+		-- już Configuration — wtedy nie wpisujemy id na listę ukrytych (ChildRemoved już przeszło i nie wyczyściłoby go).
+		if folderStanu:FindFirstChild(walka.id) then
+			ukryte[walka.id] = true
+		end
 		zniszczWidok(walka.id)
 		if walka.straznik then
 			pokazBaner("STRAŻNIK GAJU POKONANY!", "Wróci za 2 min", Stale.BANER_S)
@@ -822,7 +836,10 @@ local function zbudujPanel()
 	local gui = nowy("ScreenGui", { Name = "LasPotworyBohater", ResetOnSpawn = false, IgnoreGuiInset = false, DisplayOrder = 5,
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling }, nil)
 	gui:SetAttribute("Wygenerowane", true)
-	local przycisk = nowy("TextButton", { Name = "Przycisk", Position = UDim2.fromOffset(12, 12), Size = UDim2.fromOffset(250, 34),
+	-- wdrożenie 15.11: kontrakt mówi „lewy górny róg”, ale tam stoi HUD gry (portret gracza) i przycisk na niego
+	-- nachodził — przycisk stoi więc u góry na środku, gdzie ekran jest wolny (także w emulatorze telefonu)
+	local przycisk = nowy("TextButton", { Name = "Przycisk", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 8),
+		Size = UDim2.fromOffset(250, 34),
 		BackgroundColor3 = K.krem, TextColor3 = K.tusz, Font = KOMIKS, TextScaled = true, AutoButtonColor = false,
 		BorderSizePixel = 0, Text = "" }, gui)
 	rog(przycisk, 0.3)
@@ -905,7 +922,45 @@ local function zbudujPanel()
 	return gui
 end
 
+-- pomiar kosztu (wdrożenie 15.11; tylko do testów): koszt[nazwa] = { suma, n, maks } w sekundach
+local koszt: { [string]: { number } } = {}
+local kosztOd = os.clock()
+local function zmierz(nazwa: string, s: number)
+	local k = koszt[nazwa]
+	if not k then
+		k = { 0, 0, 0 }
+		koszt[nazwa] = k
+	end
+	k[1] += s
+	k[2] += 1
+	if s > k[3] then
+		k[3] = s
+	end
+end
+
+local function opisKosztu(zeruj: any)
+	local okno = os.clock() - kosztOd
+	local wynik = { okno = okno }
+	for nazwa, k in koszt do
+		-- sr i maks w ms na wywołanie; naSekunde = ms pracy na sekundę gry
+		wynik[nazwa] = { sr = if k[2] > 0 then k[1] / k[2] * 1000 else 0, maks = k[3] * 1000, n = k[2],
+			naSekunde = if okno > 0 then k[1] * 1000 / okno else 0 }
+	end
+	if zeruj == true then
+		table.clear(koszt)
+		kosztOd = os.clock()
+	end
+	return wynik
+end
+
 ------------------------------------------------------------------ klatka (wygładzanie, grunt, obrót, klipy — rozdz. 4.2)
+-- Poprawka wdrożenia (15.11, pomiar w Studio): 7 wilków w Ostępach kosztowało 2,2 ms na klatkę (cel: < 1 ms). Prawie
+-- cały koszt to przestawienie korzenia (hrp.CFrame) modelu z 544 bryłami na spawach — ok. 0,31 ms na wilka na klatkę;
+-- klipy (Klipy:krok + zastosuj) to tylko ok. 0,02 ms. Dlatego (1) widok spoza KLATKA_PELNA_RANGA najbliższych i dalej
+-- niż KLATKA_PELNA_DO od kamery przestawiamy i animujemy co KLATKA_CO_DALEJ klatek (dalej niż KLATKA_POLOWA_DO — co
+-- KLATKA_CO_DALEKO), z sumą dt, więc tempo ruchu i klipów się nie zmienia (rozdz. 10, łagodniejsza wersja cięcia 3);
+-- (2) korzenia nie przestawiamy, gdy położenie i obrót się nie zmieniły (stojący potwór).
+local lodKlipow = true -- haczyk „lod”, false → każdy widok co klatkę (do porównań)
 local function krokWidoku(w, dt: number, liczKlipy: boolean)
 	local cfg = w.cfg
 	local pa = cfg:GetAttribute("Pozycja")
@@ -935,11 +990,31 @@ local function krokWidoku(w, dt: number, liczKlipy: boolean)
 		local maks = Stale.OBROT_NA_S * dt
 		w.yaw = (w.yaw + math.clamp(roznica, -maks, maks)) % (2 * math.pi)
 	end
-	w.hrp.CFrame = cfZiemi(w.poz, w.yaw) * w.przes
 	local stan = cfg:GetAttribute("Stan")
 	if stan ~= w.stan and w.miecze then
 		w.stan = stan
 		w.miecze.Visible = stan == "zajety"
+	end
+	-- co ile klatek przestawiamy model i liczymy klipy (położenie w pamięci i tak idzie co klatkę)
+	w.dtKlipow += dt
+	w.klatkiKlipow += 1
+	local co = 1
+	if lodKlipow then
+		local odl, ranga = w.odl or 0, w.ranga or 1
+		if ranga > Stale.KLATKA_PELNA_RANGA and odl > Stale.KLATKA_PELNA_DO then
+			co = if odl <= Stale.KLATKA_POLOWA_DO then Stale.KLATKA_CO_DALEJ else Stale.KLATKA_CO_DALEKO
+		end
+	end
+	if w.klatkiKlipow < co then
+		return
+	end
+	local dtk = w.dtKlipow
+	w.dtKlipow, w.klatkiKlipow = 0, 0
+	if w.poz ~= w.zapisanaPoz or w.yaw ~= w.zapisanyYaw then
+		w.zapisanaPoz, w.zapisanyYaw = w.poz, w.yaw
+		local t0 = os.clock()
+		w.hrp.CFrame = cfZiemi(w.poz, w.yaw) * w.przes
+		zmierz("korzen", os.clock() - t0)
 	end
 	if w.klipy and w.animowany and liczKlipy then
 		local akcja = if stan == "idzie" then "ruch" else "spoczynek"
@@ -950,8 +1025,10 @@ local function krokWidoku(w, dt: number, liczKlipy: boolean)
 				w.klipy:graj(nazwa, { petla = true, przejscie = 0.2 })
 			end
 		end
-		w.klipy:krok(dt)
+		local t0 = os.clock()
+		w.klipy:krok(dtk)
 		w.klipy:zastosuj()
+		zmierz("klipy", os.clock() - t0)
 	end
 end
 
@@ -963,6 +1040,7 @@ polaczenieKlatki = RunService.PreSimulation:Connect(function(dt: number)
 		end
 		return
 	end
+	local t0 = os.clock()
 	local ok, blad = xpcall(function()
 		local liczKlipy = not walkaTrwa()
 		for _, w in widoki do
@@ -977,6 +1055,7 @@ polaczenieKlatki = RunService.PreSimulation:Connect(function(dt: number)
 			end
 		end
 	end, debug.traceback)
+	zmierz("klatka", os.clock() - t0)
 	if not ok then
 		zglosBlad("klatka", blad)
 	end
@@ -986,7 +1065,9 @@ end)
 local function petla(nazwa: string, okres: number, f: () -> ())
 	task.spawn(function()
 		while kontener.Parent do
+			local t0 = os.clock()
 			local ok, blad = xpcall(f, debug.traceback)
+			zmierz(nazwa, os.clock() - t0)
 			if not ok then
 				zglosBlad(nazwa, blad)
 			end
@@ -1054,6 +1135,11 @@ if sterowanie and sterowanie:IsA("BindableFunction") then
 			return zacznijWalke(a)
 		elseif polecenie == "bohater" then
 			return ustawBohatera(a, b)
+		elseif polecenie == "koszt" then
+			return opisKosztu(a)
+		elseif polecenie == "lod" then
+			lodKlipow = a ~= false
+			return lodKlipow
 		end
 		return false
 	end

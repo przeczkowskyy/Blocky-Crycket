@@ -39,6 +39,9 @@ Pełna lista 24 lokacji z pomysłem, funkcją i współrzędnymi: rozdz. 4 kontr
 - **Leśny Troll** budzi się co 8–12 min i idzie z legowiska pod tamą do stawu na łące, żeby się napić; walczyć z nim można tylko w wąwozie.
 - **Strażnik Gaju**: kryształ świeci po ok. 10 wygranych z potworami nie słabszymi niż (poziom gracza − 2); propozycja: walka w osobnej przestrzeni. Statystyki: [[Walka v2 — silnik, klasy i umiejętności]].
 
+### Potwory w ruchu — stan w Studio (15.11.2026)
+W Studio (`Workspace/LasPotwory`) potwory chodzą już po strefach: przy jednym graczu 35 potworów w 16 strefach i Strażnik Gaju w Kamiennym Kręgu, każdy z tabliczką poziomu. Gracz podchodzi, dostaje podpowiedź E, a serwer sam sprawdza odległość i liczy walkę silnikiem v2; walkę pokazuje odtwarzacz prototypu na arenie, potem jest okno wyniku z łupem. Uproszczenia na czas testów: klasę i poziom bohatera wybiera się w małym panelu („auto” = poziom potwora), walka jest pokazywana na arenie, a nie w miejscu spotkania, łup nie jest zapisywany. Niesprawdzone jeszcze w całości: odradzanie, powrót Strażnika, telefon, koszt (`swiat/las_potwory/README.md`).
+
 ## Co to zmienia albo doprecyzowuje względem D-061
 - D-061 (💡 propozycja) mówi tylko, że każdy biom ma własnych przeciwników, strażnika i inkubatory. Ta notatka dodaje do tego **układ lasu**: rozmiar, podbiomy, lokacje, strefy potworów, poziomy 1–10 i miejsce strażnika na 10. poziomie.
 - Doprecyzowuje D-034 dla lasu: gęstość, odradzanie, zachowanie potworów; w lesie **nie ma tablicy zadań** (jedna karczma) — są cztery miejsca, do których zadania z karczmy wysyłają gracza.

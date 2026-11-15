@@ -665,6 +665,29 @@ end
 
 local ostatniaProsba: { [Player]: number } = {}
 local walkaDo: { [Player]: number } = {}
+local arenaDo: { [Player]: number } = {}
+
+-- Poprawka wdrożenia (15.11, Studio): miejsce ma StreamOutBehavior = Opportunistic, więc jedna prośba
+-- RequestStreamAroundAsync wczytuje arenę prototypu tylko na chwilę — postać stoi 2000+ studów dalej i silnik
+-- zaraz ją wypycha; odtwarzacz pokazywał wtedy walkę na gołej płycie Baseplate (bez podestu, polany i lasu areny).
+-- Dlatego serwer ponawia prośbę co PODTRZYMANIE_CO s, dopóki trwa odtwarzanie (walka.czas + PODTRZYMANIE_ARENY).
+-- Jeden wątek na gracza; kolejna walka tylko przesuwa koniec.
+local function podtrzymajArene(gracz: Player, doKiedy: number)
+	local trwa = arenaDo[gracz] ~= nil
+	arenaDo[gracz] = math.max(arenaDo[gracz] or 0, doKiedy)
+	if trwa then
+		return
+	end
+	task.spawn(function()
+		while gracz.Parent and arenaDo[gracz] and teraz() < arenaDo[gracz] do
+			task.wait(Stale.PODTRZYMANIE_CO)
+			pcall(function()
+				gracz:RequestStreamAroundAsync(Stale.ARENA_PROTOTYPU, 2)
+			end)
+		end
+		arenaDo[gracz] = nil
+	end)
+end
 
 local function wybierzZiarno(): number
 	local wymuszone = kontener:GetAttribute("ZiarnoTestowe")
@@ -785,6 +808,7 @@ zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
 	pcall(function()
 		gracz:RequestStreamAroundAsync(Stale.ARENA_PROTOTYPU, 3)
 	end)
+	podtrzymajArene(gracz, czas + walka.czas + Stale.PODTRZYMANIE_ARENY)
 
 	-- 11. odpowiedź (jedyne liczby to te, które prototyp już przyjmuje)
 	return { ok = true, walka = walka, nastepnaOd = walkaDo[gracz] }
@@ -794,6 +818,7 @@ end
 Players.PlayerRemoving:Connect(function(gracz: Player)
 	ostatniaProsba[gracz] = nil
 	walkaDo[gracz] = nil
+	arenaDo[gracz] = nil
 	local jego = {}
 	for _, p in potwory do
 		if p.zajety and p.zajety.gracz == gracz then
@@ -809,6 +834,35 @@ Players.PlayerRemoving:Connect(function(gracz: Player)
 		end
 	end
 end)
+
+------------------------------------------------------------------ pomiar kosztu pętli (wdrożenie 15.11; tylko do testów)
+-- koszt[nazwa] = { suma, n, maks } w sekundach; haczyk „koszt” zwraca średnią i maksimum w ms, „koszt”, true zeruje
+local koszt: { [string]: { number } } = {}
+local kosztOd = os.clock()
+local function zmierz(nazwa: string, s: number)
+	local k = koszt[nazwa]
+	if not k then
+		k = { 0, 0, 0 }
+		koszt[nazwa] = k
+	end
+	k[1] += s
+	k[2] += 1
+	if s > k[3] then
+		k[3] = s
+	end
+end
+
+local function opisKosztu(zeruj: any)
+	local wynik = { okno = os.clock() - kosztOd }
+	for nazwa, k in koszt do
+		wynik[nazwa] = { sr = if k[2] > 0 then k[1] / k[2] * 1000 else 0, maks = k[3] * 1000, n = k[2] }
+	end
+	if zeruj == true then
+		table.clear(koszt)
+		kosztOd = os.clock()
+	end
+	return wynik
+end
 
 ------------------------------------------------------------------ haczyk testowy (rozdz. 8.6)
 local function opisStref()
@@ -889,6 +943,8 @@ sterowanie.OnInvoke = function(polecenie: string, a: any)
 	elseif polecenie == "zgodnosc" then
 		local ok, n, bledy = sprawdzLogike()
 		return { ok = ok, n = n, bledy = bledy }
+	elseif polecenie == "koszt" then
+		return opisKosztu(a)
 	end
 	warn(P .. "SterowanieSerwera: nieznane polecenie " .. tostring(polecenie))
 	return nil
@@ -900,9 +956,11 @@ local function petla(nazwa: string, okres: number, krok: (number) -> ())
 		local bledyZRzedu = 0
 		while kontener.Parent do
 			local dt = math.min(task.wait(okres), 0.5)
+			local t0 = os.clock()
 			local udalo, blad = xpcall(function()
 				krok(dt)
 			end, debug.traceback)
+			zmierz(nazwa, os.clock() - t0)
 			if udalo then
 				bledyZRzedu = 0
 			else

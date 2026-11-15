@@ -67,3 +67,30 @@ Pełna lista z poleceniami i oczekiwanymi liczbami jest w PROJEKT.md, rozdz. 9.2
 | `testy/test_logiki.py`, `testy/test_styku.py` | testy offline: logika, symulacja serwera, brzegi; punkty styku |
 | `sprawdz_luau.py`, `zbuduj.py` | tania kontrola statyczna Luau; budowa w Studio |
 | `UWAGI_S.md`, `UWAGI_K.md` | odczytania kontraktu programistów serwera i klienta |
+
+## Stan w Studio (15.11.2026)
+
+Pakiet działa w Roblox Studio w kontenerze `Workspace/LasPotwory` (zbudowany z tych źródeł, skrót danych `3f657732d08e`).
+Pierwsze uruchomienie i poprawki błędów zrobił agent wdrożeniowy; jego praca urwała się na pomiarach kosztu (limit
+użycia), więc lista kontrolna z `PROJEKT.md` rozdz. 9.2 **nie jest przejdzona w całości**. Krótką próbę końcową zrobiono
+skryptem `testy/proba_play.py` (Play, zrzuty w `klatki/`):
+
+- serwer: „gotowy: 35 potworów w 16 strefach + Strażnik Gaju”, zgodność logiki 70/70, 36 wpisów w `Stan`;
+- klient: tryb „aktorzy”, po 14 s przy bramie lasu 4 widoki slime'ów (460 części), wszystkie animowane, 0 błędów;
+  przy Strażniku 3 widoki (2216 części);
+- tabliczki poziomu nad potworami („POZ. 1”, „POZ. 10”), plakietka wybranego bohatera u góry ekranu;
+- podpowiedź przy Strażniku Gaju: włączona, gdy postać stoi obok;
+- walka zaczęta z lasu: serwer przyjął prośbę, policzył walkę (Zwiadowca poz. 10 kontra Strażnik Gaju poz. 10, przegrana
+  w 18 turach, 30,6 s), odtwarzacz pokazał ją na arenie prototypu z podestem (łata P1) i oknem wyniku bez przycisku
+  „jeszcze raz” (łata P2);
+- prośba o walkę z potworem, który odszedł dalej niż 8 studów: serwer odmawia (potwór zostaje wolny) — zgodnie z D-016.
+
+Czego ta próba NIE sprawdziła: zamknięcia okna wyniku i powrotu sterowania, zniknięcia pokonanego potwora i odrodzenia,
+powrotu Strażnika po 120 s, skalowania liczby potworów, widoku na telefonie, kosztu na klatkę, wilków i Muchomorników.
+
+Uwagi z próby:
+- Slime idzie 6 studów na sekundę, więc trzeba do niego podbiec; podpowiedź gaśnie, gdy odejdzie dalej niż 8 studów.
+- Okno wyniku trzyma walkę otwartą, dopóki gracz nie kliknie ZAMKNIJ; po dłuższej chwili tło areny znika zza okna
+  (arena leży ponad 2000 studów od lasu i wypada ze streamingu).
+- Zrzuty i filmy wymagają włączonego ekranu: przy wygaszonym monitorze Studio nie rysuje obrazu i `screen_capture`
+  wisi. `testy/proba_play.py` budzi ekran przed każdym zrzutem (`swiat/test_walki2/testy/czuwanie.py`).
