@@ -7,6 +7,7 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Paweł: po `git pull` ustawić raz `git config bc.osoba "Paweł"` (inaczej jego prace widać pod loginem) i sprawdzić `python panel/narzedzia/praca.py kolizje`; potem próba kolizji z Karolem na obszarze testowym ([[Panel zespołu]], [[Start z Blenderem — prompt dla Pawła]]) · #wysoki
 - [ ] Ubieranie postaci w grze i w walce z gołych modeli i przedmiotów (D-071): pierwsza próba w Roblox Studio (części albo siatki z punktami zaczepienia), strój gracza w prototypie walki; wspólny kod jest już w `swiat/postacie/ekwipunek.py`, a 20 przedmiotów bohaterów w katalogu (`przedmioty.json`, propozycja `roblox/PrzedmiotyPropozycja.luau` dla Pawła — moduł gry Items nie zna slotu drugiej ręki ani nowych pól); do ustalenia: spodnie jako osobny slot czy część zbroi, łuk Zwiadowcy z kołczanem w drugiej ręce, upadek postaci bez zbroi (`swiat/postacie/EKWIPUNEK.md`) · #wysoki
 - [ ] Biom Las („Bór Pod Ukłonem”): las w wersji 2 stoi w Studio (`Workspace/BiomLas`) z lekką mgłą; teraz potwory chodzące po strefach i walka po podejściu i E — kod gotowy w `swiat/las_potwory/`, jeszcze nieuruchomiony w Studio; potem pomiar na telefonie i kolizje; cztery wybory do decyzji w raporcie „Biom Las — plan mapy”; raporty „Biom Las — wersja 2” i „Lekka mgła w lesie” czekają na decyzję · #wysoki
 - [ ] Paweł (i każdy, kto ma własny panel): pobrać kod i zrestartować panel, zanim ktokolwiek oznaczy **decyzję** jako nieaktualną — stary panel bierze `🗃️ nieaktualna` za propozycję i po „Tak” psuje wpis w [[Rejestr decyzji]]; pytania i raporty nie mają tego ryzyka · #wysoki
@@ -88,6 +89,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-15: [[Panel zespołu|Panel]]: ostrzeganie, gdy prace Karola i Pawła się nakładają — prace w toku mają obszary (model, mapa, kontener w Studio, ścieżka), oba komputery wymieniają się stanem przez gałęzie `stan/prace-<osoba>`, kolizję pokazuje Pulpit, narzędzie `praca.py` i Telegram, a przebudowa modelu zatrzymuje się przed Blenderem, gdy ten sam model robi druga osoba; prośba Karola z 15.11
 - [x] 2026-11-15: Wojownik i Mag walczą w prototypie własnymi ruchami zamiast szkiców (`swiat/test_walki2/`): tarcza z modelu Rycerza łapie cios na godle, Miażdżący cios trafia po obrocie o 21°, czary wylatują z kryształu kostura, kapelusz i kostur spadają przy upadku; wszystkie testy w Studio przeszły (112/112, 38/38); dwa filmy i raport w panelu
 - [x] 2026-11-15: Instrukcja i prompt startowy dla Pawła do robienia modeli w Blenderze, w trybie oszczędnym dla niższego planu Claude ([[Start z Blenderem — prompt dla Pawła]])
 - [x] 2026-11-15: Karol zaakceptował w panelu raporty „Biom Las — wersja 2”, „Lekka mgła w lesie” i „Rybki w HUD” Pawła
