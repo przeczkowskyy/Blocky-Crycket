@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-15T19:10:53+01:00",
+ "aktualizacja": "2026-11-15T19:10:56+01:00",
  "prace": [
   {
    "id": "import-modeli",
@@ -22,10 +22,10 @@
   {
    "id": "las-potwory-kontrola",
    "tytul": "Potwory w lesie: reszta kontroli i film",
-   "stan": "w_toku",
+   "stan": "wstrzymane",
    "start": "2026-11-15T19:10:53+01:00",
    "koniec_szacowany": "2026-11-15T21:30:00+01:00",
-   "aktualizacja": "2026-11-15T19:10:53+01:00",
+   "aktualizacja": "2026-11-15T19:10:56+01:00",
    "obszary": [
     "studio:LasPotwory",
     "swiat/las_potwory/**"
