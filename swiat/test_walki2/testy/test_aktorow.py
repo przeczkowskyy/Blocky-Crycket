@@ -12,9 +12,16 @@ Pilnuje, żeby:
 - dane/<klucz>.json były kompletne: klatki 0…dl, szerokość wiersza = 6 × liczba kości, pętle domknięte, punkty;
 - broń (miecz, tarcza, łuk, sztylet, kostur, maczuga, laska) nie wchodziła w głowę ani tułów w żadnej klatce
   KLIPÓW ZASTĘPCZYCH (przerobki.py); w klipach modeli z swiat/postacie/ to samo jest liczone i wypisywane
-  (tych modeli ten prototyp nie zmienia — wynik idzie do raportu).
+  (tych modeli ten prototyp nie zmienia — wynik idzie do raportu);
+- (etap 8) Wojownik i Mag grali WŁASNE klipy modułów (bez klipów zastępczych), z chwilami z CHWILE modułów, każda
+  chwila leżała ściśle wewnątrz swojego klipu; Wojownik miał dokładnie jedną tarczę (przedmiot modułu na lewej dłoni,
+  D-071), a punkt Tarcza leżał na jej godle; punkt Bron/Pocisk Maga szedł za kryształem kostura w każdej klatce (także
+  w upadku), a kapelusz i kostur siedziały na kościach HatPivot / StaffPivot i po upadku leżały na ziemi z dala od głowy
+  i łapy; ręczna chwila uniku była klatką największego odskoku; klipy z „ruch_w_klipie” naprawdę przesuwały postać;
+- (etap 9) cios wręcz Wojownika z bronią daleko z boku osi (miażdżący cios) był w „celowanie” z kątem 10–35°.
 """
 import json
+import math
 import os
 import sys
 import unittest
@@ -27,7 +34,7 @@ for _s in (KATALOG, REPO):
     if _s not in sys.path:
         sys.path.insert(0, _s)
 import aktorzy as A  # noqa: E402
-from geometria import Rig, punkty_probne, w_pudle  # noqa: E402
+from geometria import Rig, punkt, punkty_probne, w_pudle  # noqa: E402
 
 with open(os.path.join(REPO, "tools", "walka", "dane_walki.json"), encoding="utf-8") as _f:
     SILNIK = json.load(_f)
@@ -137,6 +144,155 @@ class Bron(unittest.TestCase):
             for kl in sorted(zast):
                 zle = przenikanie(klucz, kl)
                 self.assertFalse(zle, "%s/%s: broń w ciele w klatkach %s" % (klucz, kl, zle[:6]))
+
+
+def _punkt(r, d, nazwa, pozy):
+    p = next(p for p in d["punkty"] if p[0] == nazwa)
+    return punkt(pozy[p[1]], tuple(p[2:5]))
+
+
+def _bryla(r, d, grupa, nazwa, pozy):
+    gi = d["grupy"].index(grupa)
+    c = next(c for c in d["czesci"] if c[14] == gi and c[2] == nazwa)
+    return r.czesc_cf(c, pozy)[1]
+
+
+class Bohaterowie(unittest.TestCase):
+    """Etap 8: Wojownik i Mag na własnych klipach modułów rycerz.py / kot_mag.py."""
+
+    def test_bez_klipow_zastepczych(self):
+        for k in ("wojownik", "mag"):
+            w = A.PO_KLUCZU[k]
+            self.assertIsNone(w["przerobka"], "%s: szkice z przerobki.py nie są już potrzebne" % k)
+            self.assertEqual(w["zastepcze_klipy"], [])
+
+    def test_chwile_z_modulu_i_w_klipie(self):
+        from swiat.postacie.roblox_postac import wczytaj_modul
+        for k in ("wojownik", "mag"):
+            w = A.PO_KLUCZU[k]
+            d = A.wczytaj(k)
+            dl = {c["n"]: c["dl"] / float(c["fps"]) for c in d["klipy"]}
+            modul = wczytaj_modul(os.path.join(REPO, "swiat", "postacie", w["model"] + ".py"))
+            for klip, klatka in modul.CHWILE.items():
+                self.assertAlmostEqual(d["chwile"][klip], klatka / 30.0, places=3, msg="%s/%s: chwila ≠ CHWILE modułu" % (k, klip))
+            # każdy klip ataku i umiejętności ma chwilę z modułu, a każda chwila leży w swoim klipie
+            for klip in [w["klipy"]["atak"], w["klipy"]["krytyk"]] + list(w["umiejetnosci"].values()):
+                self.assertIn(klip, modul.CHWILE, "%s/%s: brak chwili w CHWILE modułu" % (k, klip))
+            for klip, s in d["chwile"].items():
+                self.assertTrue(0 < s < dl[klip], "%s/%s: chwila %.3f nie leży wewnątrz klipu (%.3f s)" % (k, klip, s, dl[klip]))
+
+    def test_chwila_uniku_w_najwiekszym_odskoku(self):
+        # ręczna chwila „unik” (aktorzy.py) = klatka największego odskoku bioder w poziomie — odtwarzacz kładzie ją
+        # w chwili trafienia; gdy moduł zmieni klip uniku, ta liczba ma się zmienić razem z nim
+        for k in ("wojownik", "mag"):
+            d = A.wczytaj(k)
+            r = Rig(d)
+            lt = r.indeks["LowerTorso"]
+            spocz = r.pozy()[lt][1]
+            kl = r.klipy["unik"]
+            odl = [math.hypot(r.pozy(r.transformy("unik", f))[lt][1][0] - spocz[0],
+                              r.pozy(r.transformy("unik", f))[lt][1][2] - spocz[2]) for f in range(kl["dl"] + 1)]
+            szczyt = max(range(len(odl)), key=lambda f: odl[f])
+            f = d["chwile"]["unik"] * kl["fps"]
+            self.assertLessEqual(abs(f - szczyt), 1.01, "%s: chwila uniku kl. %.1f, największy odskok kl. %d" % (k, f, szczyt))
+            self.assertGreater(odl[szczyt], 1.0, "%s: unik bez odskoku (%.2f studa)" % (k, odl[szczyt]))
+
+    def test_kapelusz_i_kostur_maga_leza_na_ziemi_po_upadku(self):
+        # ostatnia klatka upadku (odtwarzacz ją trzyma): kapelusz i kostur leżą na ziemi, z dala od łapy i głowy
+        from geometria import narozniki
+        d = A.wczytaj("mag")
+        r = Rig(d)
+        pozy = r.pozy(r.transformy("upadek", r.klipy["upadek"]["dl"]))
+        for grupa, kosc, odstep in (("kot_mag_kapelusz", "Head", 1.0), ("kot_mag_kostur", "RightHand", 1.5)):
+            gi = d["grupy"].index(grupa)
+            rogi = [q for c in d["czesci"] if c[14] == gi for q in narozniki(r.czesc_cf(c, pozy), c[9:12])]
+            spod = min(q[1] for q in rogi)
+            sr = [sum(q[i] for q in rogi) / len(rogi) for i in range(3)]
+            self.assertLess(abs(spod), 0.05, "%s po upadku nie leży na ziemi (spód %.2f)" % (grupa, spod))
+            od_kosci = math.dist(sr, pozy[r.indeks[kosc]][1])
+            self.assertGreater(od_kosci, odstep, "%s po upadku %.2f studa od %s — nie spadł" % (grupa, od_kosci, kosc))
+
+    def test_jedna_tarcza_wojownika_i_punkt_na_godle(self):
+        d = A.wczytaj("wojownik")
+        r = Rig(d)
+        self.assertEqual(d["grupy"].count("rycerz_tarcza"), 1, "D-071: dokładnie jedna tarcza")
+        gi = d["grupy"].index("rycerz_tarcza")
+        kosci = {d["kosci"][c[0] - 1][0] for c in d["czesci"] if c[14] == gi}
+        self.assertEqual(kosci, {"LeftHand"}, "tarcza modułu siedzi na LeftGripAttachment (kość LeftHand)")
+        self.assertNotIn("TarczaAttachment", [z[0] for z in d["zaczepy"]], "dawna tarcza prototypu wróciła")
+        kl = next(c for c in d["klipy"] if c["n"] == "blok")
+        for f in range(kl["dl"] + 1):
+            pozy = r.pozy(r.transformy("blok", f))
+            odl = math.dist(_punkt(r, d, "Tarcza", pozy), _bryla(r, d, "rycerz_tarcza", "Godlo", pozy))
+            self.assertLess(odl, 0.1, "blok kl. %d: punkt Tarcza %.2f studa od godła tarczy" % (f, odl))
+        # w chwili ciosu w tarczę godło jest przed Rycerzem (przód rigu = −Z), na wysokości tułowia
+        pozy = r.pozy(r.transformy("blok", int(round(d["chwile"]["blok"] * 30))))
+        q = _punkt(r, d, "Tarcza", pozy)
+        self.assertGreater(-q[2], 1.0)
+        self.assertTrue(1.5 < q[1] < 4.5, "tarcza na wysokości %.2f" % q[1])
+        self.assertNotIn("rycerz_tarcza", A.wczytaj("mag")["grupy"])
+
+    def test_krysztal_maga_idzie_za_kosturem_i_kosci_nosne(self):
+        d = A.wczytaj("mag")
+        r = Rig(d)
+        kosci = [k[0] for k in d["kosci"]]
+        for grupa, kosc in (("kot_mag_kapelusz", "HatPivot"), ("kot_mag_kostur", "StaffPivot")):
+            gi = d["grupy"].index(grupa)
+            self.assertEqual({kosci[c[0] - 1] for c in d["czesci"] if c[14] == gi}, {kosc},
+                             "%s ma siedzieć na kości %s (spada w upadku)" % (grupa, kosc))
+        for nazwa in ("Bron", "Pocisk"):
+            p = next(p for p in d["punkty"] if p[0] == nazwa)
+            self.assertEqual(kosci[p[1] - 1], "StaffPivot", "punkt %s Maga ma iść za kosturem" % nazwa)
+        for kl in d["klipy"]:
+            for f in range(0, kl["dl"] + 1, 2):
+                pozy = r.pozy(r.transformy(kl["n"], f))
+                odl = math.dist(_punkt(r, d, "Pocisk", pozy), _bryla(r, d, "kot_mag_kostur", "Krysztal gora", pozy))
+                self.assertLess(odl, 0.35, "%s kl. %d: punkt Pocisk %.2f studa od kryształu" % (kl["n"], f, odl))
+
+    def test_punkt_w_chwili_trafienia_przed_aktorem(self):
+        # punkt broni (Wojownik) i wylot pocisku (Mag) w chwili trafienia / wypuszczenia: przed aktorem, nad ziemią
+        for k, nazwa in (("wojownik", "Bron"), ("mag", "Pocisk")):
+            w = A.PO_KLUCZU[k]
+            d = A.wczytaj(k)
+            r = Rig(d)
+            for akcja, klip in list(w["umiejetnosci"].items()) + [("atak", w["klipy"]["atak"])]:
+                if akcja in ("kamienna_skora", "bariera"):
+                    continue                                     # na siebie: bez trafienia
+                f = int(round(d["chwile"][klip] * 30))
+                q = _punkt(r, d, nazwa, r.pozy(r.transformy(klip, f)))
+                self.assertGreater(-q[2], 2.0, "%s/%s: punkt %s %.2f studa przed aktorem" % (k, klip, nazwa, -q[2]))
+                self.assertTrue(1.0 < q[1] < 4.0, "%s/%s: punkt %s na wysokości %.2f" % (k, klip, nazwa, q[1]))
+
+    def test_celowanie_ciosu_z_boku(self):
+        # etap 9 (Studio): klinga miażdżącego ciosu spadała 1,4–3,3 studa w prawo od osi i mijała wąskie cele — klip
+        # ciosu wręcz Wojownika z punktem Bron ponad 1,5 studa z boku w chwili trafienia musi być w „celowanie”, a kąt
+        # obrotu (atan(bok / przód), liczy zbuduj.py) ma być rozsądny: 10–35°
+        w = A.PO_KLUCZU["wojownik"]
+        d = A.wczytaj("wojownik")
+        r = Rig(d)
+        for klip in [w["klipy"]["atak"], "ciecie", "miazdzacy_cios"]:
+            f = int(round(d["chwile"][klip] * 30))
+            q = _punkt(r, d, "Bron", r.pozy(r.transformy(klip, f)))
+            kat = math.degrees(math.atan2(q[0], -q[2]))
+            if klip in w.get("celowanie", []):
+                self.assertTrue(10 < abs(kat) < 35, "%s: kąt celowania %.1f°" % (klip, kat))
+            else:
+                self.assertLess(abs(q[0]), 1.5, "%s: broń %.2f studa z boku osi, a klipu nie ma w „celowanie”" % (klip, q[0]))
+        self.assertIn("miazdzacy_cios", w.get("celowanie", []))
+
+    def test_ruch_w_klipie_naprawde_rusza_postac(self):
+        # flaga „ruch_w_klipie” wyłącza ruch proceduralny odtwarzacza — klip musi więc sam przesuwać biodra
+        for w in A.AKTORZY:
+            if not w.get("ruch_w_klipie"):
+                continue
+            d = A.wczytaj(w["klucz"])
+            r = Rig(d)
+            lt = r.indeks["LowerTorso"]
+            for klip in w["ruch_w_klipie"]:
+                kl = r.klipy[klip]
+                j = kl["kosci"].index(lt)
+                maks = max(max(math.hypot(x[j * 6], x[j * 6 + 2]), abs(x[j * 6 + 1])) for x in kl["klatki"])
+                self.assertGreater(maks, 0.1, "%s/%s: klip nie przesuwa postaci (%.2f studa)" % (w["klucz"], klip, maks))
 
 
 def raport_przenikania():

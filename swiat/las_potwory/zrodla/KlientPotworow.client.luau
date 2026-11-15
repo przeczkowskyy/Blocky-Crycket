@@ -747,8 +747,8 @@ local function odswiezPodpowiedz()
 end
 
 ------------------------------------------------------------------ walka (rozdz. 4.6, 5.1)
--- Po poprawce P2 w odtwarzaczu (rozdz. 6) tu będzie { bezPowtorki = true }; bez P2 — nil (jak w kontrakcie).
-local OPCJE_WALKI = nil
+-- Poprawka P2 w odtwarzaczu (rozdz. 6) jest wgrana: panel wyniku bez JESZCZE RAZ (rewanż po przegranej = ponowne E).
+local OPCJE_WALKI = { bezPowtorki = true }
 local mojaWalka: { id: string, gatunek: string, straznik: boolean }? = nil
 local poWalce: () -> () -- niżej
 

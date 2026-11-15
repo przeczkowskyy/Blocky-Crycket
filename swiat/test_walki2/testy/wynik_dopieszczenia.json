@@ -1,5 +1,5 @@
 {
- "data": "2026-11-15 12:52",
+ "data": "2026-11-15 15:44",
  "czesci": [
   "final",
   "lot",
@@ -18,7 +18,7 @@
   {
    "nazwa": "D1 finał przegrana, Muchomornik (mag/muchomornik/5 ziarno 823742)",
    "ok": true,
-   "opis": "ujęcie pokonanego 1.25 s, upadek skończony w ujęciu, objazd: 18 klatek, szczątki ≥ 1.16 odległości zwycięzcy, twarz zwycięzcy 35–35°"
+   "opis": "ujęcie pokonanego 1.80 s, upadek skończony w ujęciu, objazd: 17 klatek, szczątki ≥ 1.21 odległości zwycięzcy, twarz zwycięzcy 35–35°"
   },
   {
    "nazwa": "D1 finał wygrana, Slime (wojownik/lesny_slime/1 ziarno 451425)",
@@ -28,7 +28,7 @@
   {
    "nazwa": "D1 finał przegrana, Strażnik (wojownik/straznik_lasu/10 ziarno 515058)",
    "ok": true,
-   "opis": "ujęcie pokonanego 1.25 s, upadek skończony w ujęciu, objazd: 18 klatek, szczątki ≥ 1.04 odległości zwycięzcy, twarz zwycięzcy 35–35°"
+   "opis": "ujęcie pokonanego 1.80 s, upadek skończony w ujęciu, objazd: 17 klatek, szczątki ≥ 1.01 odległości zwycięzcy, twarz zwycięzcy 35–35°"
   },
   {
    "nazwa": "D1 finał przegrana, Troll (zwiadowca/lesny_troll/10 ziarno 950601)",
@@ -43,7 +43,7 @@
   {
    "nazwa": "D1 finał przegrana, Strażnik (mag/straznik_lasu/1 ziarno 158424)",
    "ok": true,
-   "opis": "ujęcie pokonanego 1.25 s, upadek skończony w ujęciu, objazd: 18 klatek, szczątki ≥ 1.00 odległości zwycięzcy, twarz zwycięzcy 35–35°"
+   "opis": "ujęcie pokonanego 1.80 s, upadek skończony w ujęciu, objazd: 17 klatek, szczątki ≥ 0.98 odległości zwycięzcy, twarz zwycięzcy 35–35°"
   },
   {
    "nazwa": "D1 finał wygrana, Troll (mag/lesny_troll/5 ziarno 150627)",
@@ -73,7 +73,7 @@
   {
    "nazwa": "D2 lot: lodowy pocisk przy Slimie (mag/lesny_slime/5 ziarno 63518, zd. 10, krytyk)",
    "ok": true,
-   "opis": "lot 0.47 s (τ 11.20 → 11.66 przy powierzchni celu), pasek τ=11.754 (dziennik 11.75); od dolotu do paska 0.12 s czasu rzeczywistego; strzała zasłonięta w 0/0 klatek; światło przy dolocie 0.00"
+   "opis": "lot 0.45 s (τ 11.20 → 11.65 przy powierzchni celu), pasek τ=11.754 (dziennik 11.75); od dolotu do paska 0.13 s czasu rzeczywistego; strzała zasłonięta w 0/0 klatek; światło przy dolocie 0.00"
   },
   {
    "nazwa": "D2 lot bańki kwasu i kałuża (wojownik/lesny_slime/1, zd. 6)",
@@ -103,7 +103,7 @@
   {
    "nazwa": "D3 napisy: cała walka, Wojownik z wilkiem (wojownik/cierniowy_wilk/5 ziarno 277334)",
    "ok": true,
-   "opis": "728 klatek co 1/30 s: 0 nakładań, najwyżej 3 przy postaci, 0 na swojej małej postaci, głowa dużego celu przykryta najwyżej 1%, na drugiej (małej) postaci 0 klatek; napisy: BLOK!, KRYTYK!, SPOWOLNIENIE!, TRACI TURĘ!, UNIK!, ZDARTY PANCERZ!, −11, −28, −33, −40, −7, −77, −84, −90"
+   "opis": "728 klatek co 1/30 s: 0 nakładań, najwyżej 3 przy postaci, 0 na swojej małej postaci, głowa dużego celu przykryta najwyżej 0%, na drugiej (małej) postaci 0 klatek; napisy: BLOK!, KRYTYK!, SPOWOLNIENIE!, TRACI TURĘ!, UNIK!, ZDARTY PANCERZ!, −11, −28, −33, −40, −7, −77, −84, −90"
   },
   {
    "nazwa": "D3 napisy: cała walka, Mag z wilkiem (mag/cierniowy_wilk/5 ziarno 910854)",
@@ -133,7 +133,7 @@
   {
    "nazwa": "D5 twarz potwora: lesny_slime (wojownik/1 ziarno 198017), 12 trafień",
    "ok": true,
-   "opis": "kąt średnio 57°, najwięcej 59° (ogolny); gracz w kadrze najmniej 100% (gdy obrywa od potwora 100%)"
+   "opis": "kąt średnio 57°, najwięcej 60° (krytyk); gracz w kadrze najmniej 99% (gdy obrywa od potwora 99%)"
   },
   {
    "nazwa": "D5 twarz potwora: lesny_troll (zwiadowca/10 ziarno 950601), 10 trafień",
@@ -143,12 +143,12 @@
   {
    "nazwa": "D5 twarz potwora: muchomornik (wojownik/5 ziarno 71437), 10 trafień",
    "ok": true,
-   "opis": "kąt średnio 56°, najwięcej 59° (ogolny); gracz w kadrze najmniej 100% (gdy obrywa od potwora 100%)"
+   "opis": "kąt średnio 56°, najwięcej 60° (krytyk); gracz w kadrze najmniej 100% (gdy obrywa od potwora 100%)"
   },
   {
    "nazwa": "D5 twarz potwora: straznik_lasu (wojownik/10 ziarno 515058), 10 trafień",
    "ok": true,
-   "opis": "kąt średnio 55°, najwięcej 55° (ogolny); gracz w kadrze najmniej 100% (gdy obrywa od potwora 100%)"
+   "opis": "kąt średnio 55°, najwięcej 56° (ogolny); gracz w kadrze najmniej 100% (gdy obrywa od potwora 100%)"
   },
   {
    "nazwa": "D4 dźwięki wbudowane wczytują się (13 nazw, 7 plików)",
@@ -173,27 +173,27 @@
   {
    "nazwa": "D7 pełna walka finał Strażnika ×4 (zwiadowca/straznik_lasu/10, 13 tur)",
    "ok": true,
-   "opis": "trwała 13.3 s (dziennik 23.6 s), zdarzenia 19/19, braki 0, błędy 0, niezgodności pasków 0; ujęcie pokonanego 2.13 s, upadek w ujęciu True; napisy: pokazane 21, najwyżej 3 przy postaci, nakładania 0, na małym celu 0 (na drugiej postaci 0, głowa dużego celu 0); dźwięki: zagrane 24, pominięte 0, najwyżej 3 naraz; kąt twarzy przy trafieniach: maks. 72°, śr. 55°"
+   "opis": "trwała 13.5 s (dziennik 23.6 s), zdarzenia 19/19, braki 0, błędy 0, niezgodności pasków 0; ujęcie pokonanego 2.13 s, upadek w ujęciu True; napisy: pokazane 21, najwyżej 3 przy postaci, nakładania 0, na małym celu 0 (na drugiej postaci 0, głowa dużego celu 0); dźwięki: zagrane 24, pominięte 0, najwyżej 3 naraz; kąt twarzy przy trafieniach: maks. 72°, śr. 55°"
   },
   {
    "nazwa": "D7 pełna walka przegrana ×4 (mag/muchomornik/5, 3 tur)",
    "ok": true,
-   "opis": "trwała 7.6 s (dziennik 7.3 s), zdarzenia 3/3, braki 0, błędy 0, niezgodności pasków 0; ujęcie pokonanego 1.53 s, upadek w ujęciu True; napisy: pokazane 5, najwyżej 2 przy postaci, nakładania 0, na małym celu 0 (na drugiej postaci 0, głowa dużego celu 0); dźwięki: zagrane 10, pominięte 0, najwyżej 3 naraz; kąt twarzy przy trafieniach: maks. 56°, śr. 56°"
+   "opis": "trwała 8.2 s (dziennik 7.3 s), zdarzenia 3/3, braki 0, błędy 0, niezgodności pasków 0; ujęcie pokonanego 2.07 s, upadek w ujęciu True; napisy: pokazane 5, najwyżej 2 przy postaci, nakładania 0, na małym celu 0 (na drugiej postaci 0, głowa dużego celu 0); dźwięki: zagrane 10, pominięte 0, najwyżej 3 naraz; kąt twarzy przy trafieniach: maks. 56°, śr. 55°"
   },
   {
    "nazwa": "D7 pełna walka slime ×4 (wojownik/lesny_slime/1, 7 tur)",
    "ok": true,
-   "opis": "trwała 9.6 s (dziennik 13.1 s), zdarzenia 8/8, braki 0, błędy 0, niezgodności pasków 0; ujęcie pokonanego 2.13 s, upadek w ujęciu True; napisy: pokazane 11, najwyżej 2 przy postaci, nakładania 0, na małym celu 0 (na drugiej postaci 0, głowa dużego celu 0); dźwięki: zagrane 14, pominięte 1, najwyżej 3 naraz; kąt twarzy przy trafieniach: maks. 60°, śr. 58°"
+   "opis": "trwała 9.6 s (dziennik 13.1 s), zdarzenia 8/8, braki 0, błędy 0, niezgodności pasków 0; ujęcie pokonanego 2.13 s, upadek w ujęciu True; napisy: pokazane 11, najwyżej 2 przy postaci, nakładania 0, na małym celu 0 (na drugiej postaci 0, głowa dużego celu 0); dźwięki: zagrane 14, pominięte 1, najwyżej 3 naraz; kąt twarzy przy trafieniach: maks. 58°, śr. 58°"
   },
   {
    "nazwa": "D7 pełna walka Wojownik z wilkiem ×4 (wojownik/cierniowy_wilk/5, 10 tur)",
    "ok": true,
-   "opis": "trwała 10.4 s (dziennik 17.6 s), zdarzenia 13/13, braki 0, błędy 0, niezgodności pasków 0; ujęcie pokonanego 2.07 s, upadek w ujęciu True; napisy: pokazane 16, najwyżej 3 przy postaci, nakładania 0, na małym celu 0 (na drugiej postaci 0, głowa dużego celu 0.08); dźwięki: zagrane 16, pominięte 0, najwyżej 3 naraz; kąt twarzy przy trafieniach: maks. 60°, śr. 51°"
+   "opis": "trwała 10.9 s (dziennik 17.6 s), zdarzenia 13/13, braki 0, błędy 0, niezgodności pasków 0; ujęcie pokonanego 2.07 s, upadek w ujęciu True; napisy: pokazane 16, najwyżej 3 przy postaci, nakładania 0, na małym celu 0 (na drugiej postaci 0, głowa dużego celu 0.09); dźwięki: zagrane 16, pominięte 0, najwyżej 3 naraz; kąt twarzy przy trafieniach: maks. 60°, śr. 51°"
   },
   {
    "nazwa": "D7 pełna walka Mag z wilkiem ×4 (mag/cierniowy_wilk/5, 9 tur)",
    "ok": true,
-   "opis": "trwała 9.7 s (dziennik 17.3 s), zdarzenia 14/14, braki 0, błędy 0, niezgodności pasków 0; ujęcie pokonanego 2.13 s, upadek w ujęciu True; napisy: pokazane 15, najwyżej 3 przy postaci, nakładania 0, na małym celu 0 (na drugiej postaci 0, głowa dużego celu 0); dźwięki: zagrane 21, pominięte 1, najwyżej 3 naraz; kąt twarzy przy trafieniach: maks. 59°, śr. 56°"
+   "opis": "trwała 9.6 s (dziennik 17.3 s), zdarzenia 14/14, braki 0, błędy 0, niezgodności pasków 0; ujęcie pokonanego 2.07 s, upadek w ujęciu True; napisy: pokazane 15, najwyżej 3 przy postaci, nakładania 0, na małym celu 0 (na drugiej postaci 0, głowa dużego celu 0); dźwięki: zagrane 21, pominięte 1, najwyżej 3 naraz; kąt twarzy przy trafieniach: maks. 60°, śr. 56°"
   },
   {
    "nazwa": "konsola bez komunikatów z TestWalki2",

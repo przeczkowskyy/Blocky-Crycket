@@ -21,7 +21,8 @@
 
 	API:  uruchom(kontener, wybor, opcje?) → boolean | pomin() | zamknij() | jeszczeRaz() | ustawTempo(t) | czyTrwa()
 	      wolnaZa() → s | stan() → tabela (do testów) | przewin(s) (tylko opcje.reczny)
-	opcje (testy): tempo (startowe), reczny (czas stoi; przesuwa go przewin), etykietaCzasu, pominPo, zamknijPo, obrys.
+	opcje (testy): tempo (startowe), reczny (czas stoi; przesuwa go przewin), etykietaCzasu, pominPo, zamknijPo, obrys;
+	      bezPowtorki (las_potwory, P2: panel wyniku bez JESZCZE RAZ).
 	Wynik ostatniego odtworzenia → atrybuty kontenera (u klienta): Ostatni* (patrz Sesja:pokazWynik).
 ]]
 if not game:GetService("RunService"):IsStudio() then
@@ -384,11 +385,15 @@ function Sesja:schowajObcych()
 	end
 	self:polacz(CollectionService:GetInstanceAddedSignal(U.TAG_UKRYJ), schowajCalosc)
 	-- obce części w pudle sceny (nasza arena, galeria, szablony i scena lokalna nie są obce)
+	-- P1 (las_potwory/PROJEKT.md, rozdz. 6): arena, szablony i galeria prototypu są „nasze” także wtedy, gdy walkę
+	-- uruchamia inny kontener (moduly.Parent = Workspace/TestWalki2; przy tablicy prototypu to ten sam kontener)
 	local wyklucz = { self.scena }
-	for _, n in { "Arena", "Aktorzy", "Galeria" } do
-		local d = self.kontener:FindFirstChild(n)
-		if d then
-			table.insert(wyklucz, d)
+	for _, korzen in { self.kontener, moduly.Parent } do
+		for _, n in { "Arena", "Aktorzy", "Galeria" } do
+			local d = korzen:FindFirstChild(n)
+			if d and not table.find(wyklucz, d) then
+				table.insert(wyklucz, d)
+			end
 		end
 	end
 	local plyta = workspace:FindFirstChild("Baseplate")
@@ -479,7 +484,7 @@ function Sesja:przygotujScene()
 		self.scena:Destroy()
 	end)
 	-- szablony aktorów w galerii chowamy tylko u tego klienta
-	local szablony = self.kontener:FindFirstChild("Aktorzy")
+	local szablony = moduly.Parent:FindFirstChild("Aktorzy") -- P1: szablony zawsze z kontenera modułu (TestWalki2)
 	local schowane = {}
 	if szablony then
 		for _, d in szablony:GetDescendants() do
@@ -668,11 +673,25 @@ function Sesja:odlegloscCiosu(atakujacy, broniacy, akcja: string): number
 	local wa, wb = atakujacy.wpis, broniacy.wpis
 	local klip = atakujacy:maKlip(akcja) or atakujacy:maKlip("atak")
 	local zasieg = (wa.zasiegi and klip and wa.zasiegi[klip]) or wa.przod
+	-- celowanie (etap 9): atakujący obrócony o kąt obrotCiosu sięga bronią dalej wzdłuż osi (przód / cos(kąt))
+	local obrot = wa.obrotCiosu and klip and wa.obrotCiosu[klip]
+	if obrot then
+		zasieg /= math.cos(obrot)
+	end
 	-- przód tułowia: pierś albo ok. ¼ głębokości bryły (brzuch Trolla wystaje dalej niż punkt piersi)
 	local piersB = math.max(0.5, wb.piersPrzod or 0.6, (wb.glebokosc or 0) * 0.28)
 	local piersA = math.max(0.5, wa.piersPrzod or 0.6, (wa.glebokosc or 0) * 0.22)
 	local d = zasieg + piersB - 0.15
 	return math.max(d, piersA + piersB + 0.5)
+end
+
+-- czy klip akcji sam przesuwa całą postać (wpis.ruchWKlipie z aktorzy.py „ruch_w_klipie”: odskok w uniku, odepchnięcie
+-- na tarczy, wypad przy czarze, wyskok, tupnięcie) — wtedy odtwarzacz nie dokłada swojego ślizgu, odrzutu ani podskoku
+-- (etap 8: własne klipy Wojownika i Maga; doskok do celu i odrzut po trafieniu zostają)
+local function ruchWKlipie(aktor, akcja: string?): boolean
+	local r = aktor and aktor.wpis.ruchWKlipie
+	local k = r and akcja and aktor:maKlip(akcja)
+	return k ~= nil and r[k] == true
 end
 
 ------------------------------------------------------------------ plan: zdarzenia, tury, efekty, ujęcia, zwolnienia
@@ -883,6 +902,8 @@ function Sesja:policzCzasy(ev)
 	if styl == "wrecz" or styl == "skok" then
 		local d = self:odlegloscCiosu(A, D, akcja)
 		ev.doskok = math.max(0, self.geo.S - d)
+		-- celowanie: obrót na czas doskoku (+ = w lewo), żeby broń z boku osi spadła na cel (miażdżący cios Rycerza)
+		ev.obrot = (A.wpis.obrotCiosu and klip and A.wpis.obrotCiosu[klip]) or 0
 		ev.tDoskoku = math.clamp(eHit - 0.04 - eStart * 0.3, 0.22, 0.42)
 		if styl == "skok" then
 			ev.tDoskoku = math.clamp(eHit * 0.75, 0.35, 0.8)
@@ -1243,12 +1264,15 @@ local function zaplanujAtak(self, ev, f_wypuszczenie)
 	if z.typ == "unik" then
 		local dl = (D:maKlip("unik") and D.klipy:dlugoscKlipu(D:maKlip("unik"))) or 0.8
 		local pr = 1.2
-		self:zaplanujAkcje(t0 + math.max(0, ev.eHit - dl * 0.4 / pr), function(sp)
+		-- największy odskok w chwili trafienia: chwila uniku z tabeli (Wojownik, Mag), inaczej 40% klipu
+		local szczyt = D:chwila("unik") or dl * 0.4
+		self:zaplanujAkcje(t0 + math.max(0, ev.eHit - szczyt / pr), function(sp)
 			self:klip(D, "unik", { predkosc = pr }, sp)
 		end)
 	elseif z.typ == "blok" then
 		if D:maKlip("blok") then
-			self:zaplanujAkcje(t0 + math.max(0, ev.eHit - 0.38), function(sp)
+			-- cios w tarczę klipu (rycerz.CHWILE: kl. 11 = 0,367 s) w chwili trafienia
+			self:zaplanujAkcje(t0 + math.max(0, ev.eHit - (D:chwila("blok") or 0.38)), function(sp)
 				self:klip(D, "blok", { predkosc = 1 }, sp)
 			end)
 		end
@@ -1559,7 +1583,7 @@ end
 function Sesja:aktualizujPozy(tau: number)
 	local pozy = {}
 	for strona in self.aktorzy do
-		pozy[strona] = { przod = 0, bok = 0, gora = 0, pochyl = 0, przechyl = 0 }
+		pozy[strona] = { przod = 0, bok = 0, gora = 0, pochyl = 0, przechyl = 0, obrot = 0 }
 	end
 	local n = #self.plan
 	local od = math.max(1, (self.biezace or 1) - 6)
@@ -1571,18 +1595,23 @@ function Sesja:aktualizujPozy(tau: number)
 		if e > -0.01 and not poza then
 			local z = ev.z
 			local pa, pd = pozy[z.kto], pozy[z.cel]
+			local A, D = self.aktorzy[z.kto], self.aktorzy[z.cel]
 			if ev.atak then
+				-- klip ataku sam przesuwa atakującego (wyskok i wypad miażdżącego ciosu, wypad Maga przy czarze)
+				local wlasnyRuch = ruchWKlipie(A, ev.akcja)
 				-- doskok i powrót (wręcz / skok)
 				if ev.doskok > 0 then
 					local h = ev.eHit
-					pa.przod += ev.doskok * okno(e, h - ev.tDoskoku, h - 0.03, h + 0.16, h + 0.16 + ev.tPowrotu)
+					local w = okno(e, h - ev.tDoskoku, h - 0.03, h + 0.16, h + 0.16 + ev.tPowrotu)
+					pa.przod += ev.doskok * w
+					pa.obrot += (ev.obrot or 0) * w
 					if ev.styl == "skok" then
 						pa.gora += (ev.choreo.wysokosc or 4) * luk(e, h - ev.tDoskoku, h)
-					elseif z.krytyk then
+					elseif z.krytyk and not wlasnyRuch then
 						pa.gora += 0.9 * luk(e, h - ev.tDoskoku, h)
 					end
 					pa.pochyl += rad(10) * okno(e, h - 0.15, h - 0.02, h + 0.1, h + 0.35)
-				elseif ev.styl == "pocisk" or ev.styl == "chmura" then
+				elseif (ev.styl == "pocisk" or ev.styl == "chmura") and not wlasnyRuch then
 					pa.przod -= 0.35 * odrzut(e - ev.eRel, 0.06, 0.35)
 					pa.pochyl -= rad(5) * odrzut(e - ev.eRel, 0.06, 0.35)
 				elseif ev.styl == "korzenie" then
@@ -1592,11 +1621,22 @@ function Sesja:aktualizujPozy(tau: number)
 				local u = e - ev.eHit
 				if z.typ == "unik" then
 					local zej = okno(e, ev.eHit - 0.28, ev.eHit - 0.05, ev.eHit + 0.2, ev.eHit + 0.55)
-					pd.bok -= 1.7 * zej
-					pd.przod -= 0.9 * zej
-					pd.przechyl += rad(12) * zej
+					if not ruchWKlipie(D, "unik") then
+						pd.bok -= 1.7 * zej
+						pd.przod -= 0.9 * zej
+						pd.przechyl += rad(12) * zej
+					else
+						-- klip uniku z własnym odskokiem (Wojownik 1,7 studa w lewo, Mag ok. 1,6 w tył i w lewo): bez bocznego
+						-- ślizgu i przechyłu, ale z zejściem w tył (etap 9, Studio: sam odskok z klipu zostawiał prawe ramię
+						-- i nogę Wojownika na osi ciosu — wilk i maczuga trolla przechodziły przez niego; ślizg wypada
+						-- w podskokach klipu, więc stopy nie jadą po ziemi)
+						pd.przod -= 0.9 * zej
+					end
 				elseif z.typ == "blok" then
-					pd.przod -= 0.6 * odrzut(u, 0.07, 0.42)
+					-- klip bloku sam cofa Wojownika o 0,41 studa przy ciosie w tarczę
+					if not ruchWKlipie(D, "blok") then
+						pd.przod -= 0.6 * odrzut(u, 0.07, 0.42)
+					end
 				elseif u >= 0 then
 					local sila = if z.krytyk then 2.3 else 1.1
 					-- efekt z klipu trzyma cel (korzenie strażnika): bez odrzutu, uniesiony, póki klip go nie puści
@@ -1614,7 +1654,10 @@ function Sesja:aktualizujPozy(tau: number)
 					end
 				end
 			elseif ev.naSiebie then
-				pozy[z.kto].gora += 0.35 * luk(e, ev.eRel - 0.25, ev.eRel + 0.2)
+				-- podskok przy rzuceniu — nie, gdy klip ma własny ruch (tupnięcie kamiennej skóry, biodra w górę przy kręgu bariery)
+				if not ruchWKlipie(A, ev.akcja) then
+					pozy[z.kto].gora += 0.35 * luk(e, ev.eRel - 0.25, ev.eRel + 0.2)
+				end
 			elseif z.typ == "utrata_tury" then
 				pozy[z.kto].przechyl += rad(9) * math.sin(e * 11) * okno(e, 0, 0.12, ev.trwa - 0.15, ev.trwa)
 			elseif z.typ == "efekt_tick" then
@@ -1631,7 +1674,8 @@ function Sesja:aktualizujPozy(tau: number)
 		local p = pozy[strona]
 		local kier = self.geo.kier[strona]
 		local x = self.geo.x[strona] + kier * p.przod
-		local yaw = if strona == self.zwyciezca then obrotZw else 0
+		-- obrót w lewo aktora (celowanie): u gracza (kier 1) kąt ujemny, u wroga dodatni (ten sam wzór co obrót zwycięzcy)
+		local yaw = (if strona == self.zwyciezca then obrotZw else 0) - kier * p.obrot
 		local cf = self.cfSceny * CFrame.lookAt(Vector3.new(x, p.gora, p.bok),
 			Vector3.new(x + kier * math.cos(yaw), p.gora, p.bok + math.sin(yaw)))
 		cf = cf * CFrame.Angles(-p.pochyl, 0, p.przechyl)
@@ -2734,6 +2778,13 @@ function Sesja:pokazWynik()
 	end, function()
 		self:zakoncz("zamknieto")
 	end)
+	-- P2 (las_potwory/PROJEKT.md, rozdz. 6): opcja bezPowtorki chowa JESZCZE RAZ (walka z potworem w lesie: rewanż = E)
+	if self.opcje.bezPowtorki then
+		local przycisk = ui.wynik and ui.wynik.jeszcze -- TextButton „Przycisk”; jego rodzic to ramka „JeszczeRaz” z cieniem
+		if przycisk and przycisk.Parent then
+			przycisk.Parent.Visible = false
+		end
+	end
 	if self.opcje.zamknijPo then
 		local walka = self.walka
 		task.delay(self.opcje.zamknijPo, function()
@@ -2745,7 +2796,7 @@ function Sesja:pokazWynik()
 end
 
 function Sesja:jeszczeRaz()
-	if self.faza ~= "wynik" or wolnaZa() > 0 then
+	if self.faza ~= "wynik" or wolnaZa() > 0 or self.opcje.bezPowtorki then
 		return
 	end
 	self.faza = "prosba"

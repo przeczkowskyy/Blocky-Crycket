@@ -1,11 +1,11 @@
 {
  "wojownik": {
   "klon": {
-   "czesci": 139,
-   "ms": 20.259699987946078,
+   "czesci": 143,
+   "ms": 30.730300000868738,
    "skorupy": 0,
-   "instancje": 303,
-   "widoczne": 123
+   "instancje": 310,
+   "widoczne": 127
   },
   "odchylka_stawow": 0.0
  },
@@ -21,10 +21,10 @@
  },
  "mag": {
   "klon": {
-   "czesci": 184,
-   "ms": 25.27439998812042,
+   "czesci": 188,
+   "ms": 36.404499998752726,
    "skorupy": 0,
-   "instancje": 399,
+   "instancje": 409,
    "widoczne": 166
   },
   "odchylka_stawow": 0.0

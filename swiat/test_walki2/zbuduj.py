@@ -33,6 +33,7 @@ Zasady bezpieczeństwa (wspólne miejsce Team Create) — jak w swiat/test_walki
   sprawdzany jeszcze raz w Studio przez game.PlaceId).
 """
 import argparse
+import math
 import os
 import re
 import sys
@@ -274,7 +275,7 @@ def geometria_ciosu(d):
     from geometria import Rig, punkt
     r = Rig(d)
     pk = {p[0]: p for p in d["punkty"]}
-    wynik = {"zasiegi": {}, "piersPrzod": 0.6}
+    wynik = {"zasiegi": {}, "boki": {}, "piersPrzod": 0.6}
     if "Piers" in pk:
         p = pk["Piers"]
         wynik["piersPrzod"] = round(max(0.3, -punkt(r.pozy()[p[1]], tuple(p[2:5]))[2]), 3)
@@ -287,6 +288,19 @@ def geometria_ciosu(d):
             f = max(0, min(kl["dl"], int(round(s * kl["fps"]))))
             q = punkt(r.pozy(r.transformy(klip, f))[b[1]], tuple(b[2:5]))
             wynik["zasiegi"][klip] = round(max(0.5, -q[2]), 3)
+            wynik["boki"][klip] = round(q[0], 3)  # w prawo od osi aktora (rig: prawa +X) — do celowania (etap 9)
+    return wynik
+
+
+def celowanie(w, geo):
+    """Wpis „celowanie” z tabeli aktorów → {klip: kąt w radianach, + = obrót w lewo}: o tyle odtwarzacz obraca atakującego
+    na czas doskoku, żeby punkt Bron w chwili trafienia leżał na osi celu (atan(bok / przód); zasięg rośnie wtedy do
+    przód / cos(kąt), co liczy odtwarzacz w `odlegloscCiosu`)."""
+    wynik = {}
+    for klip in w.get("celowanie", []):
+        if klip not in geo["zasiegi"]:
+            sys.exit("%s: klip %s z „celowanie” nie ma chwili trafienia ani punktu Bron" % (w["klucz"], klip))
+        wynik[klip] = round(math.atan2(geo["boki"][klip], geo["zasiegi"][klip]), 4)
     return wynik
 
 
@@ -352,13 +366,18 @@ def moduly_danych():
             "dlugosci": {k["n"]: round(k["dl"] / float(k["fps"]), 3) for k in d["klipy"]},
             "proceduralne": proceduralne,
             "zastepczeKlipy": w.get("zastepcze_klipy", []),
+            # klipy z własnym ruchem całej postaci: odtwarzacz nie dokłada ślizgu / odrzutu / podskoku (aktorzy.py)
+            "ruchWKlipie": {k: True for k in w.get("ruch_w_klipie", [])},
             "wysokosc": wym["wysokosc"], "promien": wym["promien"], "przod": wym["przod"],
             "szerokosc": wym["szerokosc"], "glebokosc": wym["glebokosc"], "pasek": round(wym["wysokosc"] + 0.9, 2),
             "hrp": d["hrp"], "punkty": [p[0] for p in d["punkty"]],
             "liczbaCzesci": len(d["czesci"]),
             "lezy": obwiednia_lezenia(d) or False,
         }
-        tabela["aktorzy"][w["klucz"]].update(geometria_ciosu(d))
+        geo = geometria_ciosu(d)
+        tabela["aktorzy"][w["klucz"]].update(geo)
+        # celowanie (etap 9): obrót atakującego na czas doskoku, żeby broń spadła na oś celu (miażdżący cios)
+        tabela["aktorzy"][w["klucz"]]["obrotCiosu"] = celowanie(w, geo)
         # ręczne zasięgi z tabeli (klip „trafia” dalej niż punkt Bron: kałuża kwasu, środek uścisku korzeni)
         tabela["aktorzy"][w["klucz"]]["zasiegi"].update({k: float(v) for k, v in (w.get("zasiegi") or {}).items()})
         # moduł aktora: kości + klipy z modułów-dzieci (jeden klip = jeden moduł: Source ma limit 200 000 znaków)

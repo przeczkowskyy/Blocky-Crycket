@@ -17,6 +17,8 @@ Pola wpisu:
   rola        "klasa" albo "przeciwnik"
   nazwa       nazwa na ekranie
   model       moduł postaci w swiat/postacie/<model>.py
+  stroj       (opcjonalnie) strój z modułu (`<model>.stroj(nazwa)`, D-071: ekwipunek widać na modelu); brak = pierwsza
+              postać z `zbuduj()` (pełny strój kanoniczny)
   przerobka   nazwa funkcji w przerobki.py (dodatki i klipy zastępcze) albo None
   zastepczy   None albo opis, czym model zastępuje docelowy (pokazywane w galerii i w README)
   kolory      {"RRGGBB": "RRGGBB"} — przemalowanie brył (tylko w prototypie; dziś nikt go nie używa)
@@ -26,6 +28,16 @@ Pola wpisu:
               Bron = czubek broni / pysk, Pocisk = skąd wylatuje pocisk lub czar, Piers = cel trafienia
   chwile      {klip: sekundy} — ręczna chwila trafienia / wypuszczenia pocisku; reszta liczy się sama (klatka, w której
               punkt Bron najdalej wysuwa się do przodu)
+  chwile_modulu  (opcjonalnie) True = chwile ze słownika CHWILE modułu modelu ({klip: klatka}, przeliczone na sekundy
+              z kl./s klipu) — ważniejsze od policzonych, słabsze od ręcznych `chwile`; tak autorzy klipów podają
+              trafienie, wypuszczenie pocisku, uderzenie w tarczę i szarpnięcie przy trafieniu
+  ruch_w_klipie  (opcjonalnie) klipy, które same przesuwają całą postać (kość LowerTorso: odskok, odepchnięcie na
+              tarczy, wypad przy czarze, tupnięcie, wyskok) — odtwarzacz nie dokłada wtedy swojego ruchu proceduralnego
+              (ślizg uniku, odrzut bloku, odrzut po wypuszczeniu pocisku, podskok przy krytyku i przy umiejętności na
+              siebie); doskok do celu i odrzut po trafieniu zostają (to odległość i reakcja na cios, nie ruch klipu)
+  celowanie   (opcjonalnie) klipy ciosu wręcz, w których broń w chwili trafienia jest daleko z boku osi aktora (np.
+              miażdżący cios Rycerza: sztych 2,6 studa w prawo) — na czas doskoku odtwarzacz obraca atakującego o kąt
+              atan(bok / przód) w stronę broni, więc sztych spada na oś celu (kąt i zasięg liczy zbuduj.py z punktu Bron)
   skala       (opcjonalnie) skala modelu w prototypie; brak = skala z modułu modelu
   zasiegi     (opcjonalnie) {klip: studs} — ręczny zasięg w chwili trafienia (zamiast punktu Bron): jak daleko przed
               aktorem klip „trafia” (np. kałuża kwasu, środek uścisku korzeni)
@@ -33,6 +45,11 @@ Pola wpisu:
               odtwarzacz przesuwa w biegu do przodu (układ aktora), żeby efekt z klipu (bańka, kałuża, korzenie) trafił
               w cel stojący dalej niż w klipie; ułamek liniowo między klatkami, luk = dodatkowe uniesienie w połowie
   zastepcze_klipy  klipy dorobione w przerobki.py (szkice), dla porządku i README
+
+Bohaterowie (15.11, etap 8): Wojownik i Mag grają WŁASNE klipy walki z modułów rycerz.py i kot_mag.py (klipy
+zaakceptowane przez właściciela, chwile z CHWILE modułów) — szkice z przerobki.py dla nich usunięte. Wojownik to strój
+„bojowy” (pełny strój z tarczą rycerz_tarcza na LeftGripAttachment): postać wzorcowa silnika nosi tarczę (D-071).
+Mag to pełny strój z zbuduj(): kapelusz na kości HatPivot, kostur na StaffPivot (w upadku spadają).
 
 Skórowanie (`Postac.skoruj`, np. galareta Leśnego Slime'a na kościach Dol/Gora): klocki go nie oddają, więc dane
 dostają opis skóry (`skora`) i numer skóry przy każdej bryle tej kości (kolumna 17 w `czesci`). W Studio bryły skóry
@@ -59,15 +76,31 @@ AKCJE = ["spoczynek", "ruch", "atak", "krytyk", "blok", "unik", "trafienie", "up
 
 AKTORZY = [
     # ------------------------------------------------------------------ klasy gracza
-    {"klucz": "wojownik", "rola": "klasa", "nazwa": "Wojownik", "model": "rycerz", "przerobka": "rycerz",
+    # Wojownik: Rycerz w stroju „bojowy” (pełny strój + tarcza rycerz_tarcza na LeftGripAttachment) — postać wzorcowa
+    # silnika nosi tarczę (tools/walka/wzorcowe.py: tarcza = {blok: BLOK_TARCZY}), więc tarczę widać (D-071); jedna
+    # tarcza: ta z modułu (dawna tarcza prototypu na TarczaAttachment usunięta). Wszystkie klipy z modułu, chwile z
+    # rycerz.CHWILE: atak_miecz kl. 15, blok kl. 11 (cios w tarczę), trafienie kl. 4, ciecie kl. 18, miazdzacy_cios
+    # kl. 22, kamienna_skora kl. 14 (tupnięcie; wcześniej ręczne 0,35 s).
+    {"klucz": "wojownik", "rola": "klasa", "nazwa": "Wojownik", "model": "rycerz", "stroj": "bojowy", "przerobka": None,
      "zastepczy": None, "kolory": {},
      "klipy": {"spoczynek": "idle", "ruch": "chod", "atak": "atak_miecz", "krytyk": "atak_miecz", "blok": "blok",
                "unik": "unik", "trafienie": "trafienie", "upadek": "upadek", "radosc": "wiwat"},
      "umiejetnosci": {"ciecie": "ciecie", "miazdzacy_cios": "miazdzacy_cios", "kamienna_skora": "kamienna_skora"},
+     # Bron = sztych miecza; Tarcza = godło na licu tarczy. Przesunięcie w układzie zaczepu RIGU ROBLOX (przód −Z):
+     # w układzie modułu (przód +Z) to (0,89, 0,02, −0,42) — x i z mają odwrotny znak (sprawdzone na danych: punkt
+     # leży na bryle „Godlo” w spoczynku i w bloku)
      "punkty": {"Bron": ("RightGripAttachment", (0, 3.9, 0)), "Pocisk": ("RightGripAttachment", (0, 2.4, 0)),
-                "Piers": ("BodyFrontAttachment", (0, 0, 0)), "Tarcza": ("TarczaAttachment", (0, 0, 0))},
-     "chwile": {"kamienna_skora": 0.35},
-     "zastepcze_klipy": ["blok", "unik", "trafienie", "upadek", "ciecie", "miazdzacy_cios", "kamienna_skora"]},
+                "Piers": ("BodyFrontAttachment", (0, 0, 0)), "Tarcza": ("LeftGripAttachment", (-0.89, 0.02, 0.42))},
+     "chwile_modulu": True,
+     "chwile": {"unik": round(14 / 30.0, 3)},  # największy odskok w klipie unik (kl. 14, 1,7 studa w lewo)
+     # klipy z własnym ruchem całej postaci: unik (odskok 1,7 studa w lewo i powrót), blok (0,41 studa w tył przy ciosie
+     # w tarczę), miazdzacy_cios (wyskok 1,2 studa i wypad 0,9), kamienna_skora (tupnięcie kl. 14: biodra −0,11 studa —
+     # podskok odtwarzacza unosiłby Rycerza w powietrze dokładnie w chwili tupnięcia)
+     "ruch_w_klipie": ["unik", "blok", "miazdzacy_cios", "kamienna_skora"],
+     # miażdżący cios: klinga w kl. 20–24 jest 1,4–3,3 studa w prawo od osi Rycerza — w Studio (15.11) mijała Cierniowego
+     # Wilka i Muchomornika z boku i spadała obok nich; obrót o ok. 21° w lewo na czas doskoku kładzie sztych na osi celu
+     "celowanie": ["miazdzacy_cios"],
+     "zastepcze_klipy": []},
     {"klucz": "zwiadowca", "rola": "klasa", "nazwa": "Zwiadowca", "model": "zwiadowca", "przerobka": "zwiadowca",
      "zastepczy": None, "kolory": {},
      "klipy": {"spoczynek": "idle", "ruch": "ruch", "atak": "atak", "krytyk": "atak", "blok": None, "unik": "unik",
@@ -77,15 +110,27 @@ AKTORZY = [
                 "Piers": ("BodyFrontAttachment", (0, 0, 0))},
      "chwile": {"umiejetnosc": 1.03, "skupienie": 0.4},
      "zastepcze_klipy": ["skupienie"]},
-    {"klucz": "mag", "rola": "klasa", "nazwa": "Mag", "model": "kot_mag", "przerobka": "kot_mag",
+    # Mag: Kot-Mag w pełnym stroju z zbuduj() — kapelusz na kości HatPivot (KapeluszAttachment), kostur na StaffPivot
+    # (KosturAttachment), więc w klipie upadek spadają. Wszystkie klipy z modułu, chwile z kot_mag.CHWILE: atak kl. 9,
+    # kula_ognia kl. 27, lodowy_pocisk kl. 21 (wypuszczenie), bariera kl. 10 (krąg), trafienie kl. 4. Bez chwil z modułu
+    # _chwile wybrałby klatkę z kryształem najdalej z przodu = dobicie po wypuszczeniu (dawne 1,23 s kuli ognia było złe).
+    # Bloku nie ma (Mag nie nosi tarczy; silnik nie daje mu zdarzenia blok).
+    {"klucz": "mag", "rola": "klasa", "nazwa": "Mag", "model": "kot_mag", "przerobka": None,
      "zastepczy": None, "kolory": {},
      "klipy": {"spoczynek": "idle", "ruch": "chod", "atak": "atak", "krytyk": "atak", "blok": None, "unik": "unik",
-               "trafienie": "trafienie", "upadek": "upadek", "radosc": "radosc"},
+               "trafienie": "trafienie", "upadek": "upadek", "radosc": "wiwat"},
      "umiejetnosci": {"kula_ognia": "kula_ognia", "lodowy_pocisk": "lodowy_pocisk", "bariera": "bariera"},
-     "punkty": {"Bron": ("RightGripAttachment", (0.08, 0.0, 2.15)), "Pocisk": ("RightGripAttachment", (0.08, 0.0, 2.15)),
+     # Bron i Pocisk = kryształ kostura na KosturAttachment (kość StaffPivot): idzie za kosturem także w upadku
+     # (na RightGripAttachment zostawałby w łapie, gdy kostur wypada — 4,3 studa od kryształu)
+     "punkty": {"Bron": ("KosturAttachment", (0.08, 0.0, 2.15)), "Pocisk": ("KosturAttachment", (0.08, 0.0, 2.15)),
                 "Piers": ("BodyFrontAttachment", (0, 0, 0))},
-     "chwile": {"kula_ognia": 1.23, "bariera": 0.35},
-     "zastepcze_klipy": ["atak", "kula_ognia", "lodowy_pocisk", "bariera", "trafienie", "unik", "upadek", "radosc"]},
+     "chwile_modulu": True,
+     "chwile": {"unik": round(11 / 30.0, 3)},  # największy odskok w klipie unik (kl. 11, ok. 1,6 studa w tył i w lewo)
+     # klipy z własnym ruchem całej postaci: unik (odskok i powrót), atak / kula_ognia / lodowy_pocisk (wypad 0,20 /
+     # 0,30 / 0,38 studa do przodu wokół wypuszczenia — odrzut odtwarzacza 0,35 w tył ciągnąłby stopy po ziemi),
+     # bariera (biodra w górę o 0,20 studa dokładnie w chwili kręgu, kl. 10)
+     "ruch_w_klipie": ["unik", "atak", "kula_ognia", "lodowy_pocisk", "bariera"],
+     "zastepcze_klipy": []},
     # ------------------------------------------------------------------ przeciwnicy lasu
     # Leśny Slime: właściwy model (swiat/postacie/lesny_slime.py, wersja 3 — sześcian 2,7 studa z kiełkiem).
     # Kwaśny plusk: bańka (kość Kula) i kałuża (kość Plusk) są w klipie — odtwarzacz nie puszcza osobnego pocisku,
@@ -163,11 +208,19 @@ PO_KLUCZU = {a["klucz"]: a for a in AKTORZY}
 
 
 # --------------------------------------------------------------------------- przygotowanie danych
+def _modul(wpis):
+    from swiat.postacie.roblox_postac import wczytaj_modul
+    return wczytaj_modul(os.path.join(REPO, "swiat", "postacie", wpis["model"] + ".py"))
+
+
 def postac_aktora(wpis):
-    """Postać z modułu modelu + przeróbka prototypu (w pamięci)."""
+    """Postać z modułu modelu (strój `stroj` albo pierwsza postać z zbuduj()) + przeróbka prototypu (w pamięci)."""
     from swiat.postacie.roblox_postac import postacie_z_modulu
     import przerobki
-    p = postacie_z_modulu(os.path.join(REPO, "swiat", "postacie", wpis["model"] + ".py"))[0]
+    if wpis.get("stroj"):
+        p = _modul(wpis).stroj(wpis["stroj"])
+    else:
+        p = postacie_z_modulu(os.path.join(REPO, "swiat", "postacie", wpis["model"] + ".py"))[0]
     if wpis.get("skala"):
         p.skala = float(wpis["skala"])
     if wpis.get("przerobka"):
@@ -220,6 +273,23 @@ def _chwile(rig, dane, wpis):
             if p[2] < z_min - 1e-6:
                 najlepsza, z_min = f, p[2]
         wynik[nazwa] = round(najlepsza / float(kl["fps"]), 3)
+    return wynik
+
+
+def _chwile_modulu(dane, wpis):
+    """CHWILE modułu modelu ({klip: klatka}) -> {klip: sekundy} (kl./s klipu z danych). Klip spoza danych = błąd."""
+    if not wpis.get("chwile_modulu"):
+        return {}
+    klipy = {k["n"]: k for k in dane["klipy"]}
+    wynik = {}
+    for klip, klatka in sorted(getattr(_modul(wpis), "CHWILE", {}).items()):
+        if klip not in klipy:
+            raise ValueError("%s: CHWILE modułu %s wskazuje klip %s, którego nie ma" % (wpis["klucz"], wpis["model"], klip))
+        # ściśle wewnątrz klipu: chwila w klatce 0 albo w ostatniej to błąd w module (klip ma zamach i powrót)
+        if not 0 < klatka < klipy[klip]["dl"]:
+            raise ValueError("%s/%s: chwila kl. %s nie leży wewnątrz klipu (1…%d)"
+                             % (wpis["klucz"], klip, klatka, klipy[klip]["dl"] - 1))
+        wynik[klip] = round(klatka / float(klipy[klip]["fps"]), 3)
     return wynik
 
 
@@ -286,7 +356,9 @@ def przygotuj(wpisy, liniowo=False):
         for c in d["czesci"]:
             c[12] = _hex(w["kolory"].get(_hex(c[12]), c[12]))
         nazwy_klipow = {k["n"] for k in d["klipy"]}
-        brak = [v for v in list(w["klipy"].values()) + list(w["umiejetnosci"].values()) if v and v not in nazwy_klipow]
+        brak = [v for v in list(w["klipy"].values()) + list(w["umiejetnosci"].values()) + w.get("ruch_w_klipie", [])
+                + w.get("celowanie", [])
+                if v and v not in nazwy_klipow]
         if brak:
             sys.exit("%s: tabela wskazuje klipy, których nie ma: %s (są: %s)"
                      % (w["klucz"], ", ".join(sorted(set(brak))), ", ".join(sorted(nazwy_klipow))))
@@ -302,7 +374,8 @@ def przygotuj(wpisy, liniowo=False):
                 promien = max(promien, math.hypot(q[0], q[2]))
         d["wymiary"] = {"wysokosc": round(mx[1], 3), "spod": round(mn[1], 3), "szerokosc": round(mx[0] - mn[0], 3),
                         "glebokosc": round(mx[2] - mn[2], 3), "przod": round(-mn[2], 3), "promien": round(promien, 3)}
-        d["chwile"] = dict(_chwile(r, d, w), **w.get("chwile", {}))
+        d["chwile"] = dict(_chwile(r, d, w), **_chwile_modulu(d, w))
+        d["chwile"].update(w.get("chwile", {}))
         d["klucz"] = w["klucz"]
         d["model_modulu"] = w["model"]
         d["zrodlo_probek"] = "liniowo" if liniowo else "blender"
@@ -312,6 +385,7 @@ def przygotuj(wpisy, liniowo=False):
         print("%-15s %3d części, %2d kości, wzrost %.2f, zasięg %.2f, klipy: %s"
               % (w["klucz"], len(d["czesci"]), len(d["kosci"]), d["wymiary"]["wysokosc"], d["wymiary"]["promien"],
                  ", ".join(k["n"] for k in d["klipy"])))
+        print("                chwile: %s" % ", ".join("%s %.3f" % kv for kv in sorted(d["chwile"].items())))
         if d["uwagi"]:
             for u in d["uwagi"]:
                 print("                uwaga:", u)

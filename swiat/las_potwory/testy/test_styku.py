@@ -174,9 +174,10 @@ class TestPrototypu(unittest.TestCase):
                           'self:atrybut("OstatniWynik", self.walka.wynik)', "local moduly = script.Parent"):
             self.assertIn(sygnatura, ODTW, sygnatura)
         self.assertIn("task.spawn(Odtwarzacz.uruchom, kontener,", KLIENT)
-        # P1: dziś chowanie obcych i szablonów patrzy na PODANY kontener (stąd usterka sceny bez P1)
-        self.assertIn('for _, n in { "Arena", "Aktorzy", "Galeria" } do', ODTW)
-        self.assertIn('local szablony = self.kontener:FindFirstChild("Aktorzy")', ODTW)
+        # P1 wgrana: chowanie obcych wyklucza arenę, szablony i galerię z podanego kontenera I z TestWalki2, a szablony
+        # do schowania są zawsze z kontenera modułu (TestWalki2)
+        self.assertIn('for _, korzen in { self.kontener, moduly.Parent } do', ODTW)
+        self.assertIn('local szablony = moduly.Parent:FindFirstChild("Aktorzy")', ODTW)
 
     def test_api_klipow_i_aktorow(self):
         klipy = czytaj(PROTO, "zrodla", "Klipy.luau")

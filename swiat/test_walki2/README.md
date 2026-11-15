@@ -25,6 +25,15 @@ narysowanego rozmiaru (także w wejściu i wygaszaniu) i z prawdziwej szerokośc
 kandydatów (nigdy na małej postaci ani na głowie dużej), zwycięzca w radości obraca się do widza, gracz po obrocie do
 twarzy potwora nie jest już „wielki na pierwszym planie”, płaty kałuży slime'a dopiero przy rozlanej galarecie, test 1f
 bez fałszywego błędu — patrz „Poprawki po przeglądzie etapu 6 (etap 7)”.
+**Etap 8** (15.11, praca bez Studio): Wojownik i Mag grają **własne klipy walki z modułów** `swiat/postacie/rycerz.py`
+i `kot_mag.py` (przyjęte przez właściciela) z chwilami trafień z `CHWILE` modułów — szkice z `przerobki.py` usunięte.
+Wojownik jest w stroju „bojowy” z tarczą modułu (jedna tarcza, D-071), kapelusz i kostur Maga siedzą na kościach
+HatPivot / StaffPivot (spadają w upadku), a odtwarzacz nie dokłada ślizgu, odrzutu ani podskoku tam, gdzie klip sam
+przesuwa postać — patrz „Własne klipy bohaterów (etap 8)”.
+**Etap 9** (15.11, Studio): etap 8 obejrzany i sprawdzony w Play — Miażdżący cios celuje w oś celu (obrót ok. 21° na
+czas doskoku; wcześniej klinga mijała wilka i muchomornika z boku), unik bohaterów dostał z powrotem zejście w tył
+0,9 studa (sam odskok z klipu zostawiał Wojownika na drodze wilka), do tego łatka P1/P2 dla pakietu
+`swiat/las_potwory/` — patrz „Etap 9 — bohaterowie w Studio”.
 
 ## Jak obejrzeć (krok po kroku)
 
@@ -82,7 +91,7 @@ liczą się w czasie sceny, więc tempo i zwolnienie działają na wszystko nara
 
 | Typ zdarzenia | Co widać |
 |---|---|
-| `cios` / `krytyk` / `blok` / `unik` | doskok (z zasięgu broni w chwili trafienia i głębokości piersi celu), klip ataku dopasowany prędkością tak, by trafienie wypadło w chwili z dziennika; odrzut, klip trafienia, iskry, liczba; krytyk: zwolnienie, „wjazd” kamery, gwiazda „KRYTYK!”; blok: klip bloku Wojownika z tarczą, niebieskie iskry; unik: klip uniku i ślizg w bok, pocisk mija cel |
+| `cios` / `krytyk` / `blok` / `unik` | doskok (z zasięgu broni w chwili trafienia i głębokości piersi celu), klip ataku dopasowany prędkością tak, by trafienie wypadło w chwili z dziennika; odrzut, klip trafienia, iskry, liczba; krytyk: zwolnienie, „wjazd” kamery, gwiazda „KRYTYK!”; blok: klip bloku Wojownika z tarczą (cios w tarczę klipu w chwili trafienia), niebieskie iskry przy godle tarczy; unik: klip uniku (największy odskok w chwili trafienia) i ślizg w bok — u Wojownika i Maga, których klipy same odskakują, bez bocznego ślizgu i przechyłu, tylko zejście 0,9 w tył (etap 9); pocisk mija cel; Miażdżący cios: Wojownik na czas doskoku obraca się o ok. 21° w lewo (`celowanie`, etap 9), żeby klinga spadła na oś celu |
 | `umiejetnosc` | wstęga z nazwą (z danych silnika) i choreografia stylu z `Choreografie.luau` (tabela niżej) |
 | `efekt_nalozony` | napis = nazwa efektu z danych silnika („SPOWOLNIENIE!”, „ZDARTY PANCERZ!”), ikona z licznikiem tur pod paskiem, ozdoba na postaci do końca efektu; tarcza: zapas na pasku |
 | `efekt_tick` | liczba w kolorze efektu, puls ozdoby, drgnięcie; tarcza pochłaniająca: „TARCZA −n” |
@@ -211,8 +220,10 @@ budowie (i `Moduly/Dziennik` z `src/shared/Walka`) — źródło prawdy zostaje 
 
 ## Jak dodać aktora, umiejętność albo choreografię
 
-- **Aktor** (wzór: Leśny Slime i Strażnik Gaju z etapu 5): wpis w `AKTORZY` w `aktorzy.py` (model, klipy na akcje,
-  umiejętności, punkty, `chwile` z notatki modelu, `zastepczy = None`) → `aktorzy.py --tylko <klucz>` → `zbuduj.py`
+- **Aktor** (wzór: Leśny Slime i Strażnik Gaju z etapu 5, bohaterowie z etapu 8): wpis w `AKTORZY` w `aktorzy.py`
+  (model, opcjonalnie `stroj` z modułu, klipy na akcje, umiejętności, punkty, `chwile` z notatki modelu albo
+  `chwile_modulu = True`, gdy moduł ma słownik `CHWILE`, `ruch_w_klipie` dla klipów, które same przesuwają postać,
+  `zastepczy = None`) → `aktorzy.py --tylko <klucz>` → `zbuduj.py`
   (nowy aktor: pełna budowa, żeby galeria się przesunęła). Zasięg broni i pierś do doskoku liczy `zbuduj.py` sam
   z danych; gdy klip „trafia” dalej niż punkt `Bron` (kałuża, korzenie), wpisz `zasiegi`. Efekt, który jest w klipie
   (bańka, korzenie), a ma sięgnąć celu stojącego dalej: `wydluzenia` (kości i klatki) + styl `w_klipie` w choreografii.
@@ -246,7 +257,7 @@ budowie (i `Moduly/Dziennik` z `src/shared/Walka`) — źródło prawdy zostaje 
 | `zrodla/KlientWalki2.client.luau` | podpowiedź → panel → odtwarzacz; komunikat odmowy serwera; haczyki testowe `Sygnaly/PokazAktora`, `Sygnaly/Sterowanie` (m.in. „kadr”, „napisy”) |
 | `zrodla/Ustawienia.luau`, `Klipy.luau`, `Aktorzy.luau` | z etapu 1 (stałe, odtwarzacz klipów z danych, lokalne klony aktorów); etap 5: `Klipy` udaje skórowanie siatką (galareta slime'a) i wydłuża efekt z klipu (`graj(…, { wydluz = studs })`); etap 6: `Klipy` gra odcinki klipu z własną prędkością (`odcinki`, lot bańki) i chowa bryły schowane w klipie (`chowane`), `Ustawienia` ma listę dźwięków i melodie, `Aktorzy` nie daje skorupy bryłom skóry |
 | `zbuduj.py` | odtwarza kontener w Studio (`--skrypty`, `--tylko-aktorzy`, `--sucho`, `--usun`) |
-| `aktorzy.py`, `przerobki.py`, `geometria.py`, `dane/` | tabela aktorów (etap 5: skóra, `zasiegi`, `wydluzenia`; etap 6 u slime'a: `chowane`, `wyglad_roblox` — materiał i kolory tylko na rigu z klocków, bez Blendera), klipy dorobione Rycerzowi, Kotu-Magowi i Zwiadowcy, kinematyka, dane rigów |
+| `aktorzy.py`, `przerobki.py`, `geometria.py`, `dane/` | tabela aktorów (etap 5: skóra, `zasiegi`, `wydluzenia`; etap 6 u slime'a: `chowane`, `wyglad_roblox` — materiał i kolory tylko na rigu z klocków, bez Blendera; etap 8: `stroj`, `chwile_modulu`, `ruch_w_klipie`; etap 9: `celowanie`), klip dorobiony Zwiadowcy (skupienie; od etapu 8 jedyna przeróbka), kinematyka, dane rigów |
 | `testy/test_odtwarzacza.py` | testy bez Studio (pokrycie choreografii, dzienniki z portu, tury, efekty, paski) + `--ziarna` |
 | `testy/sprawdz_edit.py` | tryb Edit, tylko odczyt: moduły się wczytują, serwerowa postać wzorcowa + kopia silnika = Python |
 | `testy/test_walki_play.py` | pełny test w trybie Play (wynik w `testy/wynik_play.json`) |
@@ -263,7 +274,7 @@ W kontenerze: `Moduly/` (moduły wyżej, `TabelaAktorow`, `DaneAktorow/<klucz>/<
 `Dziennik`), `Aktorzy/` (szablony), `Galeria/`, `Arena/`, `Zdalne/RozpocznijWalke2`, `Sygnaly/PokazAktora`,
 `Sygnaly/Sterowanie`, `SerwerWalki2`, `KlientWalki2`.
 
-## Testy (ostatni pełny przebieg 15.11.2026, Studio na PC, na końcowym kodzie)
+## Testy (ostatni pełny przebieg 15.11.2026, etap 9, Studio na PC, na końcowym kodzie)
 
 ```
 python -B swiat/test_walki2/testy/test_odtwarzacza.py            # bez Studio, ok. 1 s
@@ -278,6 +289,27 @@ python -B swiat/test_walki2/testy/zrzuty_raportu.py              # tryb Play: du
 python -B swiat/test_walki2/testy/test_dopieszczenia_play.py      # tryb Play, ok. 3 min (etap 6–7; --tylko final,lot,napisy,twarz,dzwiek,slime,tempo)
 python -B swiat/test_walki2/testy/film_walki.py [--klasa … --przeciwnik … --poziom … --ziarno …]   # film MP4, 4–7 min
 ```
+
+**Etap 9 (15.11, bohaterowie w Studio + łatka P1/P2, końcowy kod, Studio na PC, każdy zestaw raz):**
+`test_odtwarzacza.py` **9/9** (2700 dzienników, 9/9 typów, 14/14 umiejętności), `test_aktorow.py` **15/15** (nowy:
+`test_celowanie_ciosu_z_boku`), `zbuduj.py --sucho` OK i pełna budowa (6725 instancji, 99 skryptów, wszystkie
+skrypty skompilowane), `sprawdz_edit.py` **OK** (10/10 modułów, 45/45 walk = Python), `test_klipow_play.py` **24/24**,
+`test_walki_play.py` **112/112** (w pierwszym przebiegu), `test_poprawek_play.py` **29/29**,
+`test_dopieszczenia_play.py` **38/38**, `telefon.py` **0 napisów poniżej 12 punktów**; konsola bez komunikatów z
+`TestWalki2` (są komunikaty samego Studio, np. „Failed to upload TexturePack”). Pakiet lasu po łatce:
+`swiat/las_potwory/testy/test_styku.py` **15/15**, `swiat/las_potwory/sprawdz_luau.py` **OK** (5 plików). Żaden test
+nie kodował zachowania szkiców, więc żadnego nie trzeba było zmieniać (zmienione asercje są tylko w
+`las_potwory/testy/test_styku.py` — wymaga tego P1). Odświeżone i obejrzane: arkusze klipów Wojownika i Maga z boku
+i z przodu (`--wszystkie`, `--przod`; 21 + 21, doszły `chod`, `wiwat`; usunięty nieaktualny `mag_radosc.jpg`),
+punkty jako kulki (do obejrzenia, nie zapisane w `klatki/`) i 24 arkusze walk z Wojownikiem lub Magiem
+(`klatki_walki.py --tylko …`: umiejętności obu klas, krytyk, blok, unik, utrata tury, finały, lot bańki, napisy,
+pełne walki, długa walka). Filmy — następny etap. Studio po każdym teście w trybie Edit.
+
+**Etap 8 (15.11, własne klipy bohaterów, tylko bez Studio):** `test_odtwarzacza.py` **9/9** (2700 dzienników),
+`test_aktorow.py` **14/14** (8 nowych testów bohaterów; 2 z nich dołożyła niezależna kontrola), `zbuduj.py --sucho`
+przechodzi. Testy w Edit i Play,
+arkusze i filmy **nie były powtórzone** (Studio zajęte) — lista kroków w „Własne klipy bohaterów (etap 8)”; wyniki
+etapu 7 niżej dotyczą jeszcze szkiców z `przerobki.py`.
 
 **Etap 7 (15.11, poprawki po przeglądzie etapu 6, końcowy kod, Studio na PC):** `test_odtwarzacza.py` **9/9** (2700
 dzienników), `test_aktorow.py` **6/6**, `sprawdz_edit.py` **OK** (10/10 modułów, 45/45 walk = Python),
@@ -415,6 +447,269 @@ starzeją się tylko przy przewijaniu, w czasie przeliczonym na ×1 (`przewin` =
 zrzutów, więc w filmie napis znikał po 1–2 klatkach, a przejścia kamery były cięciami. `film_walki.py` przesuwa teraz
 czas przez `przewin` (zwolnienie przy krytyku i finał w ×1 są w filmie jak w grze).
 
+## Własne klipy bohaterów (etap 8, 15.11.2026) — bez Studio
+
+Od rana moduły bohaterów mają własne klipy walki przyjęte przez właściciela, a `przerobki.py` przestało działać dla
+Rycerza i Kota-Maga („Klip 'trafienie' już istnieje”). Ta praca była robiona **bez Studio** (Studio zajęte przy lesie):
+dane, tabela, odtwarzacz i testy offline — Edit, Play, arkusze klatek i filmy czekają (lista kroków na końcu sekcji).
+
+**Co zmienione**
+- `przerobki.py`: usunięte funkcje `rycerz` i `kot_mag` — tarcza prototypu na `TarczaAttachment` i 15 klipów-szkiców
+  (Rycerz: blok, unik, trafienie, upadek, ciecie, miazdzacy_cios, kamienna_skora; Kot-Mag: atak, kula_ognia,
+  lodowy_pocisk, bariera, trafienie, unik, upadek, radosc) oraz ich wspólne klipy R15. Każdy z nich ma odpowiednik
+  w module (radość Maga = klip `wiwat`, przepisany 15.11 tak, że kostur nie wchodzi w głowę), więc nic nie zostało
+  bez klipu. Zostało tylko `skupienie` Zwiadowcy (tego klipu model nie ma).
+- `aktorzy.py`: nowe pola wpisu `stroj`, `chwile_modulu`, `ruch_w_klipie` (opis w nagłówku pliku). Wojownik =
+  `rycerz.stroj("bojowy")`, Mag = `kot_mag.zbuduj()[0]`; chwile z `CHWILE` modułów; nowe punkty Tarcza i Bron/Pocisk Maga.
+- `zbuduj.py`: tabela aktorów dostaje `ruchWKlipie` (słownik klipów z `ruch_w_klipie`).
+- `zrodla/OdtwarzaczWalki2.luau`: funkcja `ruchWKlipie(aktor, akcja)`; ruch proceduralny pomijany tam, gdzie klip ma
+  własny (tabela niżej); klip uniku broniącego startuje tak, żeby jego największy odskok (chwila `unik`) wypadł
+  w chwili trafienia (wcześniej 40% długości klipu), klip bloku tak, żeby cios w tarczę (chwila `blok`) wypadł
+  w chwili trafienia (wcześniej stałe 0,38 s). U aktorów bez tych chwil (Zwiadowca, potwory) wszystko po staremu.
+- `dane/wojownik.json`, `dane/mag.json` przeliczone (`aktorzy.py`, próbki z Blendera); pozostałe sześć plików
+  `dane/` bajt w bajt bez zmian (przeliczone dla kontroli: `lesny_slime` i `straznik_lasu` wyszły identyczne;
+  `zwiadowca`, `cierniowy_wilk`, `muchomornik`, `lesny_troll` różniły się tylko polami dodanymi w etapie 5 —
+  17. kolumna `czesci` = 0, `skora: []`, `wydluzenia: {}` — bo w repozytorium leżą w wersji sprzed etapu 5, więc
+  zostały w wersji z repozytorium; klipy i bryły identyczne).
+- `testy/test_aktorow.py`: nowa klasa `Bohaterowie` (8 testów, niżej).
+
+**Tarcza (D-071) — przypadek „z tarczą”.** Postać wzorcowa silnika ZAWSZE nosi tarczę: `tools/walka/wzorcowe.py`
+`postac(..., tarcza=True)` → `p["tarcza"] = {"blok": BLOK_TARCZY}` (0,2828), port `zrodla/Wzorcowe.luau`
+(`if klasa == "wojownik" then p.tarcza = …`), w `dane_walki.json` klasa ma `tarcza: true`, a silnik daje zdarzenie
+`blok` (w 2700 walkach testu: 1448 bloków Wojownika). Dlatego aktor jest w stroju `bojowy`: tarcza `rycerz_tarcza`
+(14 brył) to przedmiot modułu na `LeftGripAttachment` (kość LeftHand); dawna tarcza prototypu (10 brył na
+`TarczaAttachment` przy LeftLowerArm) usunięta — w danych jest dokładnie jedna grupa tarczy (pilnuje test). Gdyby
+kiedyś Wojownik walczył bez tarczy, aktor ma być w stroju `pelny`, a silnik nie może dawać mu bloków.
+
+**Kapelusz i kostur Maga.** `kot_mag.zbuduj()` zakłada je z `KOREKTY_CHWYTU` na `KapeluszAttachment` (kość
+`HatPivot`) i `KosturAttachment` (kość `StaffPivot`); rig z klocków bierze kości modelu bez wyjątków (21 kości, było
+17), szablon robi każdej Motor6D, a bryły przedmiotu są przyspawane do części swojej kości — w danych 19 brył kapelusza
+na HatPivot i 23 kostura na StaffPivot (pilnuje test), więc klip `upadek` zrzuca je jak w module (po upadku kapelusz
+leży 4,3 studa w lewo od Maga, kostur 2,1 przed nim i 2,8 w lewo).
+
+**Klipy (akcja → klip; długość; w nawiasie szkic sprzed etapu 8)**
+
+| Akcja | Wojownik (`rycerz`, strój `bojowy`) | Mag (`kot_mag`, pełny strój) |
+|---|---|---|
+| spoczynek / ruch | `idle` 2,00 s / `chod` 0,80 s | `idle` 2,00 s / `chod` 0,67 s |
+| atak, krytyk | `atak_miecz` 1,07 s | `atak` 0,87 s (szkic 1,00) |
+| blok | `blok` 1,00 s (0,87) | brak — Mag nie nosi tarczy, silnik nie daje mu bloku |
+| unik | `unik` 1,00 s (0,80) | `unik` 0,93 s (0,80) |
+| trafienie | `trafienie` 0,67 s (0,60) | `trafienie` 0,67 s (0,60) |
+| upadek | `upadek` 2,00 s (1,33), ostatnia klatka zostaje | `upadek` 2,00 s (1,33), ostatnia klatka zostaje |
+| radość | `wiwat` 1,20 s, pętla | `wiwat` 1,00 s, pętla (szkic `radosc` usunięty) |
+| umiejętności | `ciecie` 1,60 s (1,40), `miazdzacy_cios` 1,67 s (1,53), `kamienna_skora` 1,47 s (1,47) | `kula_ognia` 1,80 s (1,80), `lodowy_pocisk` 1,53 s (1,33), `bariera` 1,40 s (1,33) |
+
+Upadek klipów modułów leży na ziemi (najniżej 0,00); szkice schodziły pod ziemię (−0,47 i −0,97 studa).
+
+**Chwile (30 kl./s; `CHWILE` modułów, unik — klatka największego odskoku)**
+
+| Aktor | Klip | Klatka | Chwila | Było | Co to |
+|---|---|---|---|---|---|
+| Wojownik | `atak_miecz` | 15 | 0,500 s | 0,500 (policzona) | trafienie mieczem |
+| | `ciecie` | 18 | 0,600 s | 0,833 | trafienie zamachu |
+| | `miazdzacy_cios` | 22 | 0,733 s | 0,667 | klinga na wysokości piersi celu (sztych w ziemi kl. 23 = 0,767 s; fala w chwili trafienia, 0,03 s wcześniej) |
+| | `kamienna_skora` | 14 | 0,467 s | 0,35 (ręcznie) | tupnięcie = rozbłysk aury |
+| | `blok` | 11 | 0,367 s | stałe 0,38 w odtwarzaczu | cios w tarczę |
+| | `trafienie` | 4 | 0,133 s | — | szarpnięcie (klip gra od chwili trafienia, ×1,15, więc szarpnięcie wypada 0,12 s po niej — jak przy szkicu) |
+| | `unik` | 14 | 0,467 s | 40% klipu | największy odskok (1,70 studa w lewo) |
+| Mag | `atak` | 9 | 0,300 s | 0,367 | wypuszczenie iskry |
+| | `kula_ognia` | 27 | 0,900 s | 1,23 (dobicie — złe) | wypuszczenie kuli |
+| | `lodowy_pocisk` | 21 | 0,700 s | 0,567 | wypuszczenie kryształu |
+| | `bariera` | 10 | 0,333 s | 0,35 | krąg bariery = rozbłysk aury |
+| | `trafienie` | 4 | 0,133 s | — | szarpnięcie |
+| | `unik` | 11 | 0,367 s | 40% klipu | największy odskok (1,63 studa w tył i w lewo) |
+
+Bez chwil z modułu `_chwile` bierze klatkę z punktem Bron najdalej z przodu — u Maga to dobicie po wypuszczeniu.
+
+**Punkty** (przesunięcie w układzie zaczepu **rigu Roblox**, przód −Z)
+
+| Aktor | Punkt | Zaczep + przesunięcie | Uwagi |
+|---|---|---|---|
+| Wojownik | Bron | `RightGripAttachment` + (0, 3,9, 0) | sztych miecza (bez zmian; 0,15 studa od bryły „Sztych”) |
+| | Pocisk | `RightGripAttachment` + (0, 2,4, 0) | bez zmian (Wojownik nie strzela) |
+| | Piers | `BodyFrontAttachment` | bez zmian |
+| | Tarcza | `LeftGripAttachment` + (−0,89, 0,02, 0,42) | godło tarczy modułu (0,002 studa od bryły „Godlo” w każdej klatce bloku). Notatka autorów klipów podaje (0,89, 0,02, −0,42) — to układ modułu (przód +Z); w układzie rigu x i z mają odwrotny znak, a wartość z notatki wpisana wprost leżała 1,97 studa od tarczy. Było: `TarczaAttachment` (tarcza prototypu) |
+| Mag | Bron, Pocisk | `KosturAttachment` + (0,08, 0, 2,15) | kryształ kostura (kość StaffPivot): 0,20 studa od bryły kryształu w każdej klatce każdego klipu, także w upadku. Było: `RightGripAttachment` — w upadku zostawał w łapie, 4,3 studa od wypadłego kostura |
+| | Piers | `BodyFrontAttachment` | bez zmian |
+
+**Ruch odtwarzacza na klipach (decyzje)** — `ruch_w_klipie` w `aktorzy.py`: Wojownik `unik`, `blok`,
+`miazdzacy_cios`, `kamienna_skora`; Mag `unik`, `atak`, `kula_ognia`, `lodowy_pocisk`, `bariera`. Ruch korzenia
+klipu = przesunięcie kości LowerTorso w klipie (z danych).
+
+| Ruch odtwarzacza | Klip | Co klip ma sam | Decyzja |
+|---|---|---|---|
+| ślizg uniku (1,7 w bok, 0,9 w tył, przechył 12°) | Wojownik `unik` | odskok 1,70 w lewo (kl. 14) i powrót | **bok i przechył usunięte** — razem byłoby 3,4 studa w bok; **zejście 0,9 w tył wróciło w etapie 9** (Studio: bez niego wilk przechodził przez prawe ramię i nogę Wojownika) |
+| | Mag `unik` | odskok 1,63 w tył i w lewo (kl. 11), uniesienie 0,75 | jak u Wojownika (etap 9) |
+| odrzut na tarczy 0,6 w tył | Wojownik `blok` | 0,41 w tył przy ciosie (kl. 12–18) | **usunięty** |
+| podskok 0,9 przy krytyku wręcz | `miazdzacy_cios` | wyskok 1,20 (kl. 16) i wypad 0,9 | **usunięty** (krytyk umiejętności jest możliwy); `atak_miecz` i `ciecie` nie mają wyskoku — **zostaje** |
+| odrzut 0,35 w tył i odchylenie 5° po wypuszczeniu pocisku | Mag `atak`, `kula_ognia`, `lodowy_pocisk` | wypad 0,20 / 0,30 / 0,38 do przodu wokół wypuszczenia | **usunięty** — odrzut ciągnąłby stopy w tył, gdy klip pcha ciało do przodu; strzała Zwiadowcy bez zmian |
+| podskok 0,35 przy umiejętności na siebie | `kamienna_skora` | tupnięcie kl. 14 (biodra −0,11) | **usunięty** — podskok wypadał dokładnie w chwili tupnięcia |
+| | `bariera` | biodra +0,20 w kl. 10 (krąg) | **usunięty** |
+| doskok do celu | `ciecie` (wypad 0,45), `miazdzacy_cios` (0,9) | wypad wliczony w zasięg | **zostaje** — zasięg = punkt Bron w chwili trafienia razem z wypadem klipu (6,98 i 6,86 studa), więc doskok jest o wypad krótszy; nic się nie dubluje |
+| odrzut po trafieniu 1,1 (krytyk 2,3) i pochylenie | `trafienie` obu | szarpnięcie 0,40 / 0,30 w tył (kl. 4) i powrót | **zostaje** (szkic miał 0,35) — reakcja na cios, wspólna dla wszystkich aktorów |
+| odrzut przy ciosie kończącym 1,43 (krytyk 2,99) | `upadek` obu | Wojownik leży 1,30 za startem, Mag 1,03 w tył i w lewo (szkice 0,4) | **zostaje** — pchnięcie ciosu, a nie ruch klipu; ujęcie pokonanego liczy się z obwiedni ostatniej klatki (`lezy`), więc kadr się zgadza. Do obejrzenia w Studio: przy krytyku biodra Wojownika lądują ok. 4,3 studa za punktem stania (1,30 klipu + 2,99), a głowa leżącego do ok. 8,1 (obwiednia leżenia sięga 5,13 za punkt stania) — najdalej ok. 14 studów od środka podestu o promieniu 22, więc na podeście |
+| pochylenie 10° przy ciosie wręcz | wszystkie | — | **zostaje** |
+
+**Sprawdzenie liczbami (bez Studio).** Ta sama kinematyka co prototyp (`geometria.py`, jak `zbuduj.geometria_ciosu`):
+punkt w chwili trafienia względem aktora (ziemia pod aktorem; przód > 0 = przed nim, bok > 0 = w prawo).
+
+| Aktor / akcja | Klip, klatka | Punkt | Przód | Wysokość | Bok |
+|---|---|---|---|---|---|
+| Wojownik atak, krytyk | `atak_miecz` 15 | Bron | 5,31 | 1,57 | −0,55 |
+| Wojownik Potężne cięcie | `ciecie` 18 | Bron | 6,98 | 3,36 | 0,38 |
+| Wojownik Miażdżący cios | `miazdzacy_cios` 22 | Bron | 6,86 | 2,99 | 2,59 |
+| Wojownik blok | `blok` 11 | Tarcza | 2,31 | 3,39 | −0,35 |
+| Wojownik Kamienna skóra | `kamienna_skora` 14 | Piers | 0,79 | 2,75 | 0,24 |
+| Mag atak, krytyk | `atak` 9 | Pocisk | 3,16 | 2,45 | 0,94 |
+| Mag Kula ognia | `kula_ognia` 27 | Pocisk | 3,44 | 2,04 | 0,86 |
+| Mag Lodowy pocisk | `lodowy_pocisk` 21 | Pocisk | 3,35 | 1,70 | 0,85 |
+| Mag Bariera | `bariera` 10 | Piers | 0,42 | 1,67 | −0,06 |
+
+Wszystkie punkty ataku są przed aktorem i na wysokości ciała (1,6–3,4 studa; Wojownik ma 5,7 studa z mieczem, Mag
+5,2 z kapeluszem). Czasy z portu `Sesja:policzCzasy` na 2700 dziennikach testu (prędkość klipu = ile razy szybciej
+gra klip, żeby jego chwila wypadła w chwili z dziennika; granice 0,75–2,6): ciosy, krytyki i umiejętności Wojownika
+×1,00 (chwila klipu = chwila dziennika); Mag: atak ×1,00 (wypuszczenie 0,30 s przed lotem), kula ognia ×2,09,
+lodowy pocisk ×1,78, bariera ×1,00; gdy cel unika (zdarzenie `unik` ma trafienie w połowie, nie w 56%): atak ×1,33
+(200 zdarzeń), lodowy pocisk ×2,33 (35), kula ognia ×2,60 — to już granica, więc wypuszczenie wypada 0,03 s po
+chwili z dziennika (75 zdarzeń w 2700 walkach). Klip bloku (1448 bloków) i uniku (409 Wojownika, 687 Maga) zawsze
+zaczyna się w swoim zdarzeniu. Żadna chwila nie wypada poza klipem (`aktorzy.py` odrzuca chwilę z `CHWILE` w klatce 0
+albo w ostatniej klatce klipu).
+
+**Niezależna kontrola (15.11, bez Studio).** Wszystko wyżej policzone drugi raz własnymi skryptami na danych (nie
+z raportu): chwile = `CHWILE` / 30 kl./s; punkt Tarcza 0,002 studa od bryły „Godlo” w każdej klatce bloku (wartość
+z notatki autorów wpisana wprost: 1,967 studa), godło w chwili ciosu zwrócone do przodu; Pocisk Maga najwyżej
+0,204 studa od bryły kryształu w każdej klatce każdego klipu (stary punkt na RightGripAttachment w ostatniej klatce
+upadku zostawał w łapie, 4,3 studa od kryształu); po upadku kapelusz (spód 0,00, środek 2,1 studa od głowy) i kostur
+(0,00–0,59 nad ziemią, środek 3,4 studa od łapy) leżą na ziemi; jedna grupa tarczy (14 brył na LeftHand), bez
+powtórzonych zaczepów, kości i grup; Mag nigdy nie dostaje zdarzenia `blok` (2700 walk). `aktorzy.py --tylko
+wojownik,mag` dwa razy: dane bajt w bajt te same.
+Jedno, czego liczby nie załatwią — **klinga Miażdżącego ciosu przechodzi z boku wąskiego celu**: w klatkach 20–24
+(trafienie kl. 22, sztych w ziemi kl. 23) cała klinga jest 1,4–3,3 studa w prawo od osi Wojownika. Przy celu
+ustawionym tak, jak ustawia go odtwarzacz (doskok do odległości ciosu), żaden z 11 punktów klingi nie wchodzi w
+obwiednię **Cierniowego Wilka** (szerokość 2,25) w żadnej z tych klatek; u Leśnego Slime'a i Muchomornika wchodzą
+1–2 punkty dopiero po trafieniu (kl. 23–24), u Trolla 4–9 w każdej. Dla porównania zwykły atak i Potężne cięcie
+wchodzą w wilka 4–7 punktami. Jeśli w Studio cios mija wilka, poprawka w odtwarzaczu (bez zmiany klipu): na czas
+doskoku obrócić Wojownika o ok. 21° w lewo (atan(2,59 / 6,86); sztych trafia wtedy w oś, zasięg rośnie do 7,33)
+albo przesunąć go o ok. 2,6 studa w lewo — do decyzji po obejrzeniu, nie zrobione na ślepo.
+
+**Testy (bez Studio, 15.11):** `test_odtwarzacza.py` **9/9** (2700 dzienników, 9/9 typów, 14/14 umiejętności),
+`test_aktorow.py` **14/14** (było 6; nowa klasa `Bohaterowie`: bez klipów zastępczych u bohaterów; chwile = `CHWILE`
+modułów i każda ściśle wewnątrz swojego klipu; dokładnie jedna tarcza na LeftHand i punkt Tarcza na godle w każdej
+klatce bloku; kryształ Maga ≤ 0,35 studa od punktu Pocisk w każdej klatce każdego klipu, kapelusz na HatPivot, kostur
+na StaffPivot; po upadku kapelusz i kostur leżą na ziemi z dala od głowy i łapy; ręczna chwila uniku = klatka
+największego odskoku bioder (± 1 klatka); punkt broni / wylotu w chwili trafienia > 2 studa przed aktorem na
+wysokości 1–4; każdy klip z `ruch_w_klipie` naprawdę przesuwa biodra). Test przenikania broni dla bohaterów nie ma już czego sprawdzać (brak
+klipów zastępczych); `test_aktorow.py --raport` liczy też klipy modeli: Wojownik i Mag — **brak** przenikania broni
+w głowę i tułów w żadnym klipie. `zbuduj.py --sucho` przechodzi (strażniki, 8 aktorów, `OdtwarzaczWalki2` 114 975 znaków).
+
+**Do zrobienia w Studio (po zwolnieniu Studia, w tej kolejności)** — kroki 1–6 i 8 zrobione w etapie 9 (niżej), zostały
+filmy (krok 7).
+1. `python -B swiat/test_walki2/zbuduj.py --sucho`, potem pełna budowa `python -B swiat/test_walki2/zbuduj.py`
+   (nowe szablony Wojownika i Maga, tabela z `ruchWKlipie`, nowy odtwarzacz; galeria przesuwa się o 0,12 studa,
+   bo Wojownik z tarczą jest szerszy).
+2. `testy/sprawdz_edit.py` (moduły się wczytują, 45/45 walk = Python).
+3. `testy/test_klipow_play.py` (klony Wojownika i Maga grają spoczynek, mają punkty Bron, Pocisk, Piers, Tarcza).
+4. `testy/klatki_aktorow.py --tylko wojownik,mag --wszystkie` i to samo z `--przod` (bez `--wszystkie` narzędzie
+   bierze tylko atak, umiejętności i klipy zastępcze, a bohaterowie nie mają już zastępczych) i `--punkty` (punkty
+   Bron / Tarcza / Pocisk jako kulki) — obejrzeć każdy klip z boku i z przodu: tarcza modułu
+   przy lewej dłoni (jedna), blok z godłem do celu, kapelusz i kostur spadają w upadku, wiwat Maga bez kostura w głowie.
+5. `testy/test_walki_play.py`, `testy/test_poprawek_play.py` (część `kadr` — Potężne cięcie i Miażdżący cios mają inne
+   chwile i zasięg), `testy/test_dopieszczenia_play.py` (`final` — leżący Wojownik i Mag, rozrzucony kapelusz i kostur
+   w obwiedni ujęcia pokonanego; `lot` — iskra i lodowy pocisk Maga z nowym wylotem z kryształu), `testy/telefon.py`.
+6. `testy/klatki_walki.py` — przede wszystkim `walka_umiejetnosc_{ciecie,miazdzacy_cios,kamienna_skora,kula_ognia,
+   lodowy_pocisk,bariera}.jpg`, `walka_blok.jpg`, `walka_unik.jpg`, `walka_krytyk.jpg`, finały, `walka_dluga_walka.jpg`.
+7. Filmy `testy/film_walki.py`: Wojownik z wilkiem (277334), Mag ze Slime'em (63518), Wojownik ze Strażnikiem
+   (348759), Mag z wilkiem (910854).
+8. Na co patrzeć: blok — iskry na godle tarczy w chwili ciosu, Wojownik cofa się raz (0,41), nie dwa razy; unik
+   Wojownika i Maga — odskok tylko z klipu (bez dodatkowego ślizgu), cios / pocisk mija; Kamienna skóra i Bariera —
+   rozbłysk aury w tupnięciu / kręgu, postać nie odrywa się od ziemi; Miażdżący cios przy krytyku — bez podwójnego
+   wyskoku; Mag przy czarach — stopy nie jadą w tył; kula ognia gra zamach ×2,1 (czy jest czytelny); Potężne cięcie
+   przy Leśnym Slimie — klinga w chwili trafienia na wysokości 3,36, a slime ma 3,41 (może przejść nad nim);
+   **Miażdżący cios przy Cierniowym Wilku** — liczby mówią, że klinga mija wilka z boku (patrz „Niezależna
+   kontrola” wyżej); w filmie wojownik / cierniowy_wilk / 5 / 277334 to zdarzenie 8 (t = 10,4 s); jeśli mija —
+   zdecydować o obrocie ok. 21° w lewo na czas doskoku; upadek po krytyku — biodra Wojownika do ok. 4,3 studa,
+   głowa do ok. 8,1 za punktem stania (podest ma promień 22).
+
+## Etap 9 — bohaterowie w Studio (15.11.2026)
+
+Etap 8 pierwszy raz w Studio: pełna budowa, kompilacja, wszystkie testy Play, arkusze klatek — i oględziny sześciu
+ryzyk z niezależnej kontroli **na obrazie**, nie tylko liczbami. Do oglądania służył roboczy skrypt (poza
+repozytorium): walka w trybie `reczny`, przewinięcie do chwil wokół trafienia, zrzut z kamery odtwarzacza **i z góry**
+(kamera z góry przez własne `BindToRenderStep` po kamerze odtwarzacza), a w każdej klatce pomiar: ile punktów klingi
+(Klinga, Zbrocze, Sztych, po 7 punktów) leży w bryłach celu i ile punktów brył jednego aktora leży w bryłach drugiego.
+
+**Co zmienione**
+- `aktorzy.py`: pole `celowanie` (opis w nagłówku pliku), Wojownik `"celowanie": ["miazdzacy_cios"]`.
+- `zbuduj.py`: `geometria_ciosu` liczy też `boki` (punkt Bron w chwili trafienia w prawo od osi), nowa funkcja
+  `celowanie` → w tabeli aktora `obrotCiosu = {klip: atan(bok / przód)}` (miażdżący cios: 0,3613 rad = 20,7°).
+- `zrodla/OdtwarzaczWalki2.luau`: `odlegloscCiosu` bierze zasięg `przód / cos(kąt)` (6,86 → 7,33), `policzCzasy`
+  zapisuje `ev.obrot`, `aktualizujPozy` ma nowe pole pozy `obrot` (+ = w lewo), które rośnie i wraca **tym samym oknem
+  co doskok**, i składa je z obrotem zwycięzcy w finale (`yaw = obrótZwycięzcy − kier · obrot`). Unik aktora z
+  `ruch_w_klipie` dostaje z powrotem zejście 0,9 w tył (bez bocznego ślizgu i przechyłu). Łatka P1/P2 (niżej).
+- `testy/test_aktorow.py`: `test_celowanie_ciosu_z_boku` (cios wręcz Wojownika z bronią > 1,5 studa z boku musi być
+  w `celowanie`, kąt 10–35°). Żaden test Play nie kodował zachowania szkiców — nic w nich nie zmieniane.
+
+**Sześć ryzyk — co widać i co postanowione**
+
+1. **Miażdżący cios — poprawione (obrót, nie przesunięcie).** Z góry widać to wyraźnie: klinga spadała do ziemi obok
+   prawego boku wilka (1,4–3,3 studa w prawo od osi). Pomiar w Play: wilk 0 punktów klingi w bryłach (także z
+   zapasem 0,3), Muchomornik 0, Leśny Slime 0 (12 w zapasie 0,3 — muska przód), Strażnik Gaju 0 (7 w zapasie), Troll
+   6 w każdej chwili. Po obrocie o 20,7° na czas doskoku sztych spada na oś celu: wilk **14 punktów w bryłach** (klinga
+   przechodzi przez głowę, 0,035 s przed trafieniem), Slime 10, Troll 5–6 (nadal trafia — szeroki cel nie ucierpiał),
+   Muchomornik 13 w zapasie 0,3, Strażnik Gaju 0 / 1 (sztych spada ok. 0,3 studa przed jego stopy — tak samo jak
+   przed zmianą; fala uderzeniowa jest pod nim). Przesunięcia o 2,6 studa nie wybrałem: Rycerz stałby wtedy obok celu
+   i wyglądało to jak krok w bok, a obrót wygląda jak skośne cięcie z zamachu. Krytyk Miażdżącego ciosu (Troll,
+   ziarno 2) — jeden wyskok z klipu, bez podwójnego.
+2. **Kompilacja — OK.** Zmieniony odtwarzacz i tabela kompilują się (`zbuduj.py`: wszystkie skrypty OK), `sprawdz_edit.py`
+   OK, pierwsza walka w Play bez błędów, konsola bez komunikatów z `TestWalki2`.
+3. **Zamach kuli ognia ×2,09 / ×2,60, lodowy pocisk ×2,33 — czytelne, bez zmian.** W arkuszach (Mag / wilk 5,
+   ziarno 1 i 13; lodowy pocisk z unikiem, ziarno 5) widać po kolei: obrót i uniesienie kostura (0,1–0,4 s), kulę
+   rosnącą przy krysztale (0,4–0,6 s) i rzut; przy uniku kula przelatuje nad odskakującym wilkiem. Spóźnienie
+   wypuszczenia o 0,03 s w 75 z 2700 walk jest niewidoczne.
+4. **Unik bez ślizgu odtwarzacza — poprawione (zejście w tył wróciło).** Pomiar styku brył w chwili trafienia, wilk
+   skacze na unikającego Wojownika: **225 punktów wilka w bryłach Wojownika** (przy zwykłym trafieniu 7) — odskok 1,7
+   studa w lewo zostawiał prawe ramię z mieczem i prawą nogę na osi skoku. Po dodaniu zejścia 0,9 w tył: 0 przed i po
+   trafieniu, 7 w samej chwili trafienia (muśnięcie miecza o pysk), na obrazie wilk przelatuje obok. Mag i wilk: 0
+   przed i po zmianie. Troll (szeroka maczuga, opada przed Wojownikiem): w chwili trafienia było 30 + 7
+   punktów styku (Wojownik w Trollu + Troll w Wojowniku), jest 11 + 0; ale 0,03 s wcześniej maczuga przechodzi przez
+   przód Wojownika — było 182 + 45, jest 198 + 524 (zejście w tył wchodzi pod opadającą maczugę). To ta sama geometria
+   co przy dawnym ślizgu odtwarzacza (1,7 w bok + 0,9 w tył), trwa jedną–dwie klatki i zostaje jako znana słabość
+   (otwarte). Ślizg w tył wypada w podskokach klipu (stopy 0,3–0,7 nad ziemią), więc stopy
+   nie jadą po ziemi.
+5. **Finał — OK, bez zmian.** Pokonany Wojownik po krytyku (Muchomornik ziarno 14, wilk ziarno 47; Strażnik 515058)
+   leży cały w ujęciu pokonanego, na podeście; pokonany Mag (wilk ziarno 35, Troll ziarno 3, Muchomornik 823742) —
+   kapelusz przy głowie i kostur obok w kadrze.
+6. **Blok, Kamienna skóra, Bariera, stopy Maga — OK, bez zmian.** Blok: niebieskie iskry przy godle w chwili ciosu,
+   biodra cofają się raz o 0,37–0,40 studa i wracają po 0,5 s. Kamienna skóra: prawa stopa unosi się 0,32 i opada przed
+   tupnięciem, rozbłysk w chwili tupnięcia, stopy na ziemi (0,00–0,07). Bariera: rozbłysk przy kręgu; **Mag unosi się
+   w klipie o 0,19 studa na ok. 0,5 s** (biodra +0,20 w kl. 10 — to ruch klipu modułu, nie odtwarzacza; zostaje).
+   Stopy Maga przy czarach nie jadą w tył: prawa stopa robi krok 0,35 do przodu i wraca, lewa stoi (±0,05).
+   Potężne cięcie przy Leśnym Slimie trafia (klinga na wysokości 2,1–2,4, slime ma 3,3; 15 punktów w bryłach).
+
+**Łatka P1/P2 dla `swiat/las_potwory/` (z `PROJEKT.md`, rozdz. 6)** — wgrana dokładnie wg „było / ma być”:
+P1a `Sesja:schowajObcych` wyklucza `Arena`, `Aktorzy`, `Galeria` z podanego kontenera **i** z `moduly.Parent`
+(TestWalki2); P1b `Sesja:przygotujScene` chowa szablony z `moduly.Parent`; P2 opcja `bezPowtorki` chowa ramkę
+JESZCZE RAZ w panelu wyniku i blokuje `jeszczeRaz()`. Przy tablicy prototypu `self.kontener == moduly.Parent`
+i `KlientWalki2` nie podaje `bezPowtorki`, więc zachowanie się nie zmienia (`test_walki_play.py` 112/112 z „JESZCZE
+RAZ” i obcymi w pudle sceny). W pakiecie lasu: dwie asercje w `testy/test_styku.py` na nowy tekst i
+`OPCJE_WALKI = { bezPowtorki = true }` w `zrodla/KlientPotworow.client.luau`.
+
+**Ziarna warte filmu:** wojownik / cierniowy_wilk / 5 / **3** (Miażdżący cios, zd. 8, t = 9,9 s — klinga przez głowę
+wilka, cios kończący), wojownik / cierniowy_wilk / 5 / **4** (unik Wojownika, zd. 2, t = 2,2 s), wojownik / lesny_troll
+/ 5 / **2** (krytyk Miażdżącego ciosu, zd. 8), mag / cierniowy_wilk / 5 / **13** (kula ognia z unikiem, zd. 5),
+wojownik / cierniowy_wilk / 5 / 277334 (blok, krytyk, unik — jak w kroku 7).
+
+**Filmy z własnymi klipami bohaterów (kontrola po etapie 9, 15.11.2026):** `klatki/film_wojownik_cierniowy_wilk_5.mp4`
+(ziarno 277334: dwa bloki tarczą, dwa krytyki, Potężne cięcie z unikiem wilka, Miażdżący cios, finał; 27,3 s) i
+`klatki/film_mag_lesny_slime_5.mp4` (ziarno 63518: krytyk, kula ognia z podpaleniem, lodowy pocisk jako cios
+kończący, finał; 22,1 s — w tej walce nie ma Bariery ani uniku). Obejrzane klatka po klatce (co 0,3 s, przy
+umiejętnościach, blokach i finale co 0,1 s); bez zmian w kodzie. Zauważone, nie poprawiane: przy krytyku Wojownika
+błysk trafienia wypada ok. 0,1 s czasu sceny po tym, jak klinga minie głowę wilka (chwila trafienia klipu jest przy
+ziemi); ujęcie `zaAtakujacym` Miażdżącego ciosu pokazuje Wojownika z bliska i przy zamachu ucina mu głowę; smuga
+krytyka (`fx:smuga` na `Punkt_Bron`) przy 10 kl./s wygląda jak płaska półprzezroczysta tafla — u Maga przy krysztale
+kostura (tak było już przed etapem 8, punkt `Bron` Maga się nie zmienił).
+
 ## Właściwe modele (etap 5, 15.11.2026)
 
 Dwa modele zastępcze (przemalowany slime-pet i powiększony troll) zastąpiły modele z `swiat/postacie/` — pliki modeli
@@ -536,8 +831,12 @@ napisy tak, jak gra; przy dużych skokach między klatkami arkusza napis może w
 
 ## Ograniczenia i słabe strony (uczciwie)
 
-- **Klipy zastępcze z etapu 1** (Rycerz, Kot-Mag) to szkice: „Potężne cięcie” to obrót z mieczem — w ujęciu krytyka
-  Wojownik obraca się ku kamerze i wypełnia lewą część kadru; garda Rycerza odwraca go przodem do kamery.
+- **Klipy bohaterów (etap 8–9)** — obejrzane w Studio w etapie 9. Zostały: Miażdżący cios przy Strażniku Gaju spada
+  sztychem ok. 0,3 studa przed jego stopy (nie dotyka brył; fala uderzeniowa jest pod nim — tak samo jak przed
+  celowaniem); przy uniku Wojownika przed Trollem maczuga na 1–2 klatki przed trafieniem przechodzi przez przód
+  Wojownika (ta sama geometria co przy dawnym ślizgu odtwarzacza); Mag przy Barierze unosi się w klipie o 0,19 studa;
+  kula ognia gra zamach ×2,1 (×2,6 przy uniku celu) — czytelny, ale szybki. Filmy z klipami bohaterów jeszcze nie
+  nagrane (następny etap). Szkic „Potężnego cięcia” (obrót z mieczem) zniknął razem z `przerobki.rycerz`.
 - **Duże modele** (Troll 10, Strażnik Gaju 14,6 studa) — kamera trzyma koronę pod tabliczkami, ale Wojownik czy Mag
   są przy Strażniku małe (1/2,5 jego wzrostu); w krytyku przy Strażniku nie ma już „wjazdu” (kadr musi objąć
   kolosa). Na niektórych kadrach korona dotyka tabliczki z rangą. Objazd po upadku Strażnika nie wjeżdża już w stos

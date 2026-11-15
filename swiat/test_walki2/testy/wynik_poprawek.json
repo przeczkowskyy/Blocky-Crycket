@@ -1,5 +1,5 @@
 {
- "data": "2026-11-15 12:04",
+ "data": "2026-11-15 15:41",
  "wynik": "29/29",
  "testy": [
   {
@@ -10,7 +10,7 @@
   {
    "test": "kadr miazdzacy_cios (wojownik/lesny_slime/5, zd. 8, wrecz)",
    "ok": true,
-   "opis": "krytyk: atak w kadrze 0.98 odsł. 0.98 | cel w kadrze 1.00 odsł. 1.00"
+   "opis": "krytyk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
    "test": "kadr uderzenie_z_gory (zwiadowca/cierniowy_wilk/1, zd. 8, skok)",
@@ -40,7 +40,7 @@
   {
    "test": "kadr rozszarpanie (wojownik/cierniowy_wilk/1, zd. 5, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 0.70 odsł. 0.70"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.72 | cel w kadrze 0.66 odsł. 0.66"
   },
   {
    "test": "kadr chmura_zarodnikow (wojownik/muchomornik/1, zd. 5, chmura)",
@@ -50,12 +50,12 @@
   {
    "test": "kadr ogluszajace_uderzenie (mag/lesny_troll/5, zd. 9, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.83 | cel w kadrze 1.00 odsł. 1.00"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.76 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
    "test": "kadr uscisk_korzeni (wojownik/straznik_lasu/5, zd. 9, w_klipie)",
    "ok": true,
-   "opis": "krytyk: atak w kadrze 1.00 odsł. 0.90 | cel w kadrze 1.00 odsł. 0.79"
+   "opis": "krytyk: atak w kadrze 1.00 odsł. 0.89 | cel w kadrze 1.00 odsł. 0.80"
   },
   {
    "test": "kadr dluga: 21 trafień (wojownik/straznik_lasu/10)",
