@@ -1,0 +1,2739 @@
+{
+ "opis": "Biom Las „Bór Pod Ukłonem” — układ (propozycja 15.11.2026). Źródło: swiat/biom_las/PROJEKT.md. Układ lasu: środek Starego Ukłonu (0;0), północ lasu = −Z, wysokości y względem łąki (0). Sprawdzanie: python -B swiat/biom_las/sprawdz.py; plan: python -B swiat/biom_las/plan.py.",
+ "swiat": {
+  "kontener": "Workspace/BiomLas",
+  "srodek": [
+   0,
+   0,
+   -2000
+  ],
+  "obrot_y": 180,
+  "wzor": "swiat = (Sx − x, y, Sz − z): kontener obrócony o 180° wokół pionu",
+  "dlaczego": "słońce miejsca świeci z pn.-zach. świata; po obrocie w lesie świeci z pd.-wsch., więc gracz idzie na północ lasu plecami do słońca, a fronty lokacji są oświetlone",
+  "slonce_w_ukladzie_lasu": [
+   0.558,
+   0.728,
+   0.399
+  ]
+ },
+ "obrys": {
+  "plyta": [
+   -500,
+   -500,
+   500,
+   500
+  ],
+  "gra": [
+   -430,
+   -430,
+   430,
+   430
+  ],
+  "mur_pni": {
+   "od": 430,
+   "do": 470,
+   "opis": "gęste pnie z kolizją i skały; niewidzialna ściana na 470; przerwy: Brama Pniaków (pd), Wrota Bagna (zach.), urwisko pod Ławką (pn)"
+  },
+  "niewidzialna_sciana": 470,
+  "tlo_pierscien": [
+   520,
+   640
+  ]
+ },
+ "wejscie": {
+  "punkt": [
+   200,
+   400
+  ],
+  "y": 0,
+  "patrz_na": [
+   0,
+   0
+  ],
+  "z_miasteczka": "E przy Bramie Miejskiej → zaciemnienie 1–2 s → Brama Pniaków; albo pin na mapie",
+  "powrot": "Kamień Powrotu przy Bramie Pniaków (E) albo mapa teleportacji"
+ },
+ "odrodzenie_po_przegranej": [
+  0,
+  50
+ ],
+ "podbiomy": [
+  {
+   "id": "laka",
+   "nazwa": "Łąka Galaretek",
+   "kolor_planu": "CFE89A",
+   "kod": "zloto",
+   "poziomy": [
+    1,
+    3
+   ],
+   "y": 0,
+   "wielokat": [
+    [
+     -60,
+     135
+    ],
+    [
+     30,
+     150
+    ],
+    [
+     115,
+     115
+    ],
+    [
+     160,
+     170
+    ],
+    [
+     430,
+     170
+    ],
+    [
+     430,
+     430
+    ],
+    [
+     -90,
+     430
+    ],
+    [
+     -75,
+     260
+    ]
+   ]
+  },
+  {
+   "id": "kapeluszowo",
+   "nazwa": "Kapeluszowo",
+   "kolor_planu": "EDB3A6",
+   "kod": "czerwien",
+   "poziomy": [
+    3,
+    5
+   ],
+   "y": 0,
+   "wielokat": [
+    [
+     -430,
+     100
+    ],
+    [
+     -150,
+     100
+    ],
+    [
+     -95,
+     70
+    ],
+    [
+     -60,
+     135
+    ],
+    [
+     -75,
+     260
+    ],
+    [
+     -90,
+     430
+    ],
+    [
+     -430,
+     430
+    ]
+   ]
+  },
+  {
+   "id": "serce",
+   "nazwa": "Serce Boru",
+   "kolor_planu": "F5CF8A",
+   "kod": "pomarancz",
+   "poziomy": null,
+   "y": 4,
+   "wielokat": [
+    [
+     -95,
+     -125
+    ],
+    [
+     40,
+     -135
+    ],
+    [
+     125,
+     -95
+    ],
+    [
+     135,
+     10
+    ],
+    [
+     115,
+     115
+    ],
+    [
+     30,
+     150
+    ],
+    [
+     -60,
+     135
+    ],
+    [
+     -95,
+     70
+    ],
+    [
+     -110,
+     -10
+    ]
+   ]
+  },
+  {
+   "id": "ostepy",
+   "nazwa": "Cierniste Ostępy",
+   "kolor_planu": "BDB2DE",
+   "kod": "dach_sklep",
+   "poziomy": [
+    5,
+    7
+   ],
+   "y": [
+    2,
+    8
+   ],
+   "wielokat": [
+    [
+     -430,
+     -430
+    ],
+    [
+     -150,
+     -430
+    ],
+    [
+     -150,
+     -200
+    ],
+    [
+     -95,
+     -125
+    ],
+    [
+     -110,
+     -10
+    ],
+    [
+     -95,
+     70
+    ],
+    [
+     -150,
+     100
+    ],
+    [
+     -430,
+     100
+    ]
+   ]
+  },
+  {
+   "id": "wawoz",
+   "nazwa": "Suchy Wąwóz",
+   "kolor_planu": "E8D2AE",
+   "kod": "dach_brama",
+   "poziomy": [
+    6,
+    9
+   ],
+   "y": {
+    "krawedz": 4,
+    "dno": -8,
+    "jezioro": 12
+   },
+   "wielokat": [
+    [
+     125,
+     -95
+    ],
+    [
+     150,
+     -215
+    ],
+    [
+     165,
+     -300
+    ],
+    [
+     170,
+     -430
+    ],
+    [
+     430,
+     -430
+    ],
+    [
+     430,
+     170
+    ],
+    [
+     160,
+     170
+    ],
+    [
+     115,
+     115
+    ],
+    [
+     135,
+     10
+    ]
+   ]
+  },
+  {
+   "id": "korona",
+   "nazwa": "Korona Gaju",
+   "kolor_planu": "DCE0E6",
+   "kod": "biel",
+   "poziomy": [
+    8,
+    10
+   ],
+   "y": {
+    "rozstaj": 4,
+    "taras_1": 12,
+    "taras_2": 22,
+    "plaskowyz": 30
+   },
+   "wielokat": [
+    [
+     -150,
+     -430
+    ],
+    [
+     170,
+     -430
+    ],
+    [
+     165,
+     -300
+    ],
+    [
+     150,
+     -215
+    ],
+    [
+     125,
+     -95
+    ],
+    [
+     40,
+     -135
+    ],
+    [
+     -95,
+     -125
+    ],
+    [
+     -150,
+     -200
+    ]
+   ]
+  }
+ ],
+ "lokacje": [
+  {
+   "id": "brama_pniakow",
+   "nr": 1,
+   "nazwa": "Brama Pniaków",
+   "podbiom": "laka",
+   "x": 200,
+   "z": 418,
+   "r": 20,
+   "y": 0,
+   "wys": 24,
+   "orientacyjny": true,
+   "znak": "łuk z dwóch pni kłaniających się sobie nad drogą, lampion, chorągiewki duetu",
+   "funkcja": "wejście z miasteczka i powrót (Kamień Powrotu, E)",
+   "pin": "od_poczatku",
+   "strefa_spokoju_r": 45,
+   "systemy": [
+    "wejscie",
+    "powrot_do_miasta",
+    "pin"
+   ],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": true,
+   "rdzen": 12
+  },
+  {
+   "id": "oczko_galaretek",
+   "nr": 2,
+   "nazwa": "Oczko Galaretek",
+   "podbiom": "laka",
+   "x": 250,
+   "z": 290,
+   "r": 40,
+   "y": 0,
+   "wys": 6,
+   "orientacyjny": false,
+   "znak": "okrągły staw z grzybieniami i pomostem, na końcu przechylona wędka z galaretowym spławikiem",
+   "funkcja": "pierwsze walki (samouczek E); slime'y wyskakują z wody; tu pije troll",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [],
+   "walka_w_obrysie": true,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 0
+  },
+  {
+   "id": "most_rechotek",
+   "nr": 3,
+   "nazwa": "Most Rechotek",
+   "podbiom": "laka",
+   "x": 60,
+   "z": 215,
+   "r": 15,
+   "y": 0,
+   "wys": 12,
+   "orientacyjny": false,
+   "znak": "garbaty most i kamienna żaba wielkości chatki z otwartym pyskiem",
+   "funkcja": "główna przeprawa przez Krętą Strugę; stąd pierwszy raz widać cały pień Ukłonu",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 14
+  },
+  {
+   "id": "przewrocony_woz",
+   "nr": 4,
+   "nazwa": "Przewrócony Wóz",
+   "podbiom": "laka",
+   "x": 110,
+   "z": 345,
+   "r": 15,
+   "y": 0,
+   "wys": 7,
+   "orientacyjny": false,
+   "znak": "wóz na boku z rozsypanymi skrzyniami, z koła wyrasta słonecznik",
+   "funkcja": "miejsce zadań z karczmy (łatwe): osobisty przeciwnik zadania",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [
+    "miejsce_zadan"
+   ],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 10
+  },
+  {
+   "id": "pagorek_klocka",
+   "nr": 5,
+   "nazwa": "Pagórek Wypadniętego Klocka",
+   "podbiom": "laka",
+   "x": 370,
+   "z": 240,
+   "r": 30,
+   "y": 6,
+   "wys": 18,
+   "orientacyjny": true,
+   "znak": "pagórek +6, na szczycie złoty klocek 12 × 6 × 6 wbity pod kątem 25°, obok strzałka w niebo",
+   "funkcja": "punkt widokowy samouczka: widać Ukłon, Tamę i filar Korony",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [],
+   "walka_w_obrysie": true,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 8
+  },
+  {
+   "id": "kladka_z_pnia",
+   "nr": 6,
+   "nazwa": "Kładka z Pnia",
+   "podbiom": "kapeluszowo",
+   "x": -98,
+   "z": 95,
+   "r": 12,
+   "y": 0,
+   "wys": 3,
+   "orientacyjny": false,
+   "znak": "omszały pień w czerwone kropki przerzucony nad strugą, z grzybkami na boku",
+   "funkcja": "skrót z Serca Boru do Kapeluszowa",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 12
+  },
+  {
+   "id": "wielki_kapelusz",
+   "nr": 7,
+   "nazwa": "Wielki Kapelusz",
+   "podbiom": "kapeluszowo",
+   "x": -290,
+   "z": 270,
+   "r": 50,
+   "y": 0,
+   "wys": 45,
+   "orientacyjny": true,
+   "znak": "muchomor 45 z kapeluszem przekrzywionym na bok, drabinki do mniejszych chatek-grzybów",
+   "funkcja": "wioska muchomorników, pin; skrzynia na ratuszu (wejście po kapeluszach)",
+   "pin": "pierwsza_wizyta",
+   "strefa_spokoju_r": null,
+   "systemy": [],
+   "walka_w_obrysie": true,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 24
+  },
+  {
+   "id": "krag_zarodnikow",
+   "nr": 8,
+   "nazwa": "Krąg Zarodników",
+   "podbiom": "kapeluszowo",
+   "x": -370,
+   "z": 160,
+   "r": 25,
+   "y": 0,
+   "wys": 4,
+   "orientacyjny": false,
+   "znak": "idealne koło z grzybów i mgiełka świecących zarodników wokół omszałego kamienia",
+   "funkcja": "najtrudniejsze muchomorniki Kapeluszowa; miejsce zadań (średnie)",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [
+    "miejsce_zadan"
+   ],
+   "walka_w_obrysie": true,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 20
+  },
+  {
+   "id": "stary_uklon",
+   "nr": 9,
+   "nazwa": "Stary Ukłon",
+   "podbiom": "serce",
+   "x": 0,
+   "z": 0,
+   "r": 45,
+   "y": 4,
+   "wys": 100,
+   "orientacyjny": true,
+   "znak": "olbrzymie drzewo pochylone 12° na wschód, rdzawo-miodowa czapa 70 szer., złote owoce-klocki",
+   "funkcja": "środek mapy, strefa spokoju, odrodzenie po przegranej, pin",
+   "pin": "od_poczatku",
+   "strefa_spokoju_r": null,
+   "systemy": [
+    "odrodzenie",
+    "pin"
+   ],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 45
+  },
+  {
+   "id": "bocianie_gniazdo",
+   "nr": 10,
+   "nazwa": "Bocianie Gniazdo",
+   "podbiom": "serce",
+   "x": 15,
+   "z": -5,
+   "r": 8,
+   "y": 97,
+   "wys": 4,
+   "orientacyjny": false,
+   "znak": "gniazdo z belek w czubku Ukłonu, a w nim złote jajo-klocek",
+   "funkcja": "sekret: wejście po konarach; widok na cały las, piny biomu pokazują się jako „do odkrycia”",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [],
+   "walka_w_obrysie": false,
+   "wewnatrz": "stary_uklon",
+   "w_murze": false,
+   "rdzen": 0
+  },
+  {
+   "id": "gniazdo_w_korzeniach",
+   "nr": 11,
+   "nazwa": "Gniazdo w Korzeniach",
+   "podbiom": "serce",
+   "x": -62,
+   "z": 15,
+   "r": 15,
+   "y": 4,
+   "wys": 8,
+   "orientacyjny": false,
+   "znak": "dwa wielkie jaja w gniazdach z korzeni (zielone w liście i brązowe w kropki) ze świecącym kapslem",
+   "funkcja": "inkubatory petów lasu (D-060): dwa jajka po 5–6 petów",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [
+    "inkubatory"
+   ],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 15
+  },
+  {
+   "id": "dziupla_turniejowa",
+   "nr": 12,
+   "nazwa": "Dziupla Turniejowa",
+   "podbiom": "serce",
+   "x": 85,
+   "z": 55,
+   "r": 30,
+   "y": 1,
+   "wys": 18,
+   "orientacyjny": false,
+   "znak": "leżący, wydrążony pień 60 × 18 z girlandą chorągiewek i tronem z szyszki na dachu",
+   "funkcja": "wejście do walk petów lasu (D-059)",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [
+    "walki_petow"
+   ],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 32
+  },
+  {
+   "id": "korzenna_gardziel",
+   "nr": 13,
+   "nazwa": "Korzenna Gardziel",
+   "podbiom": "serce",
+   "x": 75,
+   "z": -80,
+   "r": 18,
+   "y": 0,
+   "wys": 14,
+   "orientacyjny": false,
+   "znak": "ciemna paszcza pod korzeniami zwalonego olbrzyma, zielony blask w głębi, wrota z kłódką",
+   "funkcja": "wejście do lochu lasu, kłódka do 5. poziomu (wzór D-042)",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [
+    "loch"
+   ],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 18
+  },
+  {
+   "id": "wilcza_skala",
+   "nr": 14,
+   "nazwa": "Wilcza Skała",
+   "podbiom": "ostepy",
+   "x": -300,
+   "z": -50,
+   "r": 25,
+   "y": 0,
+   "wys": 50,
+   "orientacyjny": true,
+   "znak": "przechylona łupkowa iglica jak wilcze ucho, dwie bursztynowe szczeliny-oczy",
+   "funkcja": "legowisko watah, pin; ścieżka po półkach na szczyt",
+   "pin": "pierwsza_wizyta",
+   "strefa_spokoju_r": null,
+   "systemy": [],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 16
+  },
+  {
+   "id": "jezynowy_labirynt",
+   "nr": 15,
+   "nazwa": "Jeżynowy Labirynt",
+   "podbiom": "ostepy",
+   "x": -200,
+   "z": -262,
+   "r": 45,
+   "y": 0,
+   "wys": 10,
+   "orientacyjny": false,
+   "znak": "ściany jeżyn 10 wys. z jasnymi kolcami, w środku pogryziona skrzynia i stos kości-klocków",
+   "funkcja": "sekretna skrzynia raz na dobę; miejsce zadań (trudne w Ostępach)",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [
+    "miejsce_zadan"
+   ],
+   "walka_w_obrysie": true,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 48
+  },
+  {
+   "id": "szumiacy_prog",
+   "nr": 16,
+   "nazwa": "Szumiący Próg",
+   "podbiom": "ostepy",
+   "x": -345,
+   "z": -388,
+   "r": 28,
+   "y": 0,
+   "wys": 40,
+   "orientacyjny": true,
+   "znak": "biały wodospad 28 z północnej skały nad okrągłą misą i tęczowy łuk z trzech klinów",
+   "funkcja": "źródło Krętej Strugi; sekret: tunel za wodospadem na Grań",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 22
+  },
+  {
+   "id": "wrota_bagna",
+   "nr": 17,
+   "nazwa": "Wrota Bagna",
+   "podbiom": "ostepy",
+   "x": -418,
+   "z": -180,
+   "r": 12,
+   "y": 0,
+   "wys": 16,
+   "orientacyjny": false,
+   "znak": "brama z omszałych pali spiętych łańcuchem z kłódką, za nią mgła z białych kul",
+   "funkcja": "zapowiedź drugiego biomu (D-061); kłódka poziomu",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [
+    "wrota_biomu"
+   ],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": true,
+   "rdzen": 12
+  },
+  {
+   "id": "schody_glazow",
+   "nr": 18,
+   "nazwa": "Schody Głazów",
+   "podbiom": "wawoz",
+   "x": 266,
+   "z": -150,
+   "r": 16,
+   "y": 0,
+   "wys": 10,
+   "orientacyjny": false,
+   "znak": "rampa z płaskich głazów wzdłuż zachodniej ściany na koronę tamy, na dnie ciemna bruzda po maczudze",
+   "funkcja": "strefa wilków; trasa trolla; miejsce zadań (Wąwóz)",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [
+    "miejsce_zadan"
+   ],
+   "walka_w_obrysie": true,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 0
+  },
+  {
+   "id": "wyschnieta_kaluza",
+   "nr": 19,
+   "nazwa": "Wyschnięta Kałuża",
+   "podbiom": "wawoz",
+   "x": 342,
+   "z": 105,
+   "r": 22,
+   "y": 0,
+   "wys": 3,
+   "orientacyjny": false,
+   "znak": "jedyna kałuża w popękanym korycie, obok wyblakły szkielet łódki",
+   "funkcja": "slime'y Wąwozu; przy niej łagodne Ujście Wąwozu na łąkę",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [],
+   "walka_w_obrysie": true,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 8
+  },
+  {
+   "id": "trollowa_tama",
+   "nr": 20,
+   "nazwa": "Trollowa Tama",
+   "podbiom": "wawoz",
+   "x": 248,
+   "z": -196,
+   "r": 22,
+   "y": 12,
+   "wys": 25,
+   "orientacyjny": true,
+   "znak": "ściana nierównych głazów 25 z cienką strużką wody; pod nią legowisko z kotłem i ukradzionym szyldem",
+   "funkcja": "dom Leśnego Trolla, pin na koronie tamy; Skarbczyk Trolla po wygranej",
+   "pin": "pierwsza_wizyta",
+   "strefa_spokoju_r": null,
+   "systemy": [],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 28
+  },
+  {
+   "id": "jezioro_za_tama",
+   "nr": 21,
+   "nazwa": "Jezioro za Tamą",
+   "podbiom": "wawoz",
+   "x": 330,
+   "z": -345,
+   "r": 100,
+   "y": 11,
+   "wys": 0,
+   "orientacyjny": false,
+   "znak": "tafla jeziora otoczona trzciną, na środku wysepka z jedną krzywą sosną",
+   "funkcja": "tło i widok z Korony; brzeg dostępny z korony tamy i z półek (woda po kolana, bez pływania)",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 0
+  },
+  {
+   "id": "rozstaj_pod_sowa",
+   "nr": 22,
+   "nazwa": "Rozstaj pod Sową",
+   "podbiom": "korona",
+   "x": 0,
+   "z": -150,
+   "r": 15,
+   "y": 0,
+   "wys": 12,
+   "orientacyjny": false,
+   "znak": "słup z drewnianą sową i pięcioma ramionami-rekwizytami (galareta, kapelusz, wilcze ucho, maczuga, kryształ)",
+   "funkcja": "ostatni bezpieczny punkt przed serpentyną",
+   "pin": null,
+   "strefa_spokoju_r": 30,
+   "systemy": [],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 8
+  },
+  {
+   "id": "kamienny_krag",
+   "nr": 23,
+   "nazwa": "Kamienny Krąg Korony",
+   "podbiom": "korona",
+   "x": 0,
+   "z": -385,
+   "r": 30,
+   "y": 32,
+   "wys": 30,
+   "orientacyjny": true,
+   "znak": "siedem pochylonych menhirów wokół zielonego kryształowego filara; słup światła, gdy strażnik czeka",
+   "funkcja": "arena Strażnika Gaju (D-061), pin po pierwszym dojściu",
+   "pin": "pierwsza_wizyta",
+   "strefa_spokoju_r": 30,
+   "systemy": [
+    "straznik",
+    "pin"
+   ],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 30
+  },
+  {
+   "id": "lawka_z_widokiem",
+   "nr": 24,
+   "nazwa": "Ławka z Widokiem",
+   "podbiom": "korona",
+   "x": 62,
+   "z": -424,
+   "r": 8,
+   "y": 32,
+   "wys": 3,
+   "orientacyjny": false,
+   "znak": "krzywa ławka z dwóch pniaków i luneta na trójnogu na krawędzi urwiska",
+   "funkcja": "punkt widokowy: z jednej strony cały las, z drugiej sylwetka miasteczka na horyzoncie",
+   "pin": null,
+   "strefa_spokoju_r": null,
+   "systemy": [],
+   "walka_w_obrysie": false,
+   "wewnatrz": null,
+   "w_murze": false,
+   "rdzen": 6
+  }
+ ],
+ "sciezki": [
+  {
+   "id": "szlak_uklonu_pld",
+   "nazwa": "Szlak Ukłonu (południe)",
+   "rodzaj": "glowna",
+   "szer": 12,
+   "pts": [
+    [
+     200,
+     400
+    ],
+    [
+     170,
+     335
+    ],
+    [
+     110,
+     262
+    ],
+    [
+     60,
+     215
+    ],
+    [
+     35,
+     140
+    ],
+    [
+     15,
+     95
+    ],
+    [
+     0,
+     50
+    ]
+   ],
+   "opis": "Brama Pniaków → Most Rechotek → polana Ukłonu; cały czas pod górę i ku drzewu"
+  },
+  {
+   "id": "pierscien_polany",
+   "nazwa": "Pierścień polany",
+   "rodzaj": "polana",
+   "szer": 10,
+   "pts": [
+    [
+     0,
+     50
+    ],
+    [
+     35.4,
+     35.4
+    ],
+    [
+     50,
+     0
+    ],
+    [
+     35.4,
+     -35.4
+    ],
+    [
+     0,
+     -50
+    ],
+    [
+     -35.4,
+     -35.4
+    ],
+    [
+     -50,
+     0
+    ],
+    [
+     -35.4,
+     35.4
+    ],
+    [
+     0,
+     50
+    ]
+   ],
+   "opis": "ubita ziemia wokół korzeni Ukłonu; z pierścienia wychodzi pięć dróg"
+  },
+  {
+   "id": "szlak_uklonu_pln",
+   "nazwa": "Szlak Ukłonu (północ) i serpentyna",
+   "rodzaj": "glowna",
+   "szer": 12,
+   "pts": [
+    [
+     0,
+     -50
+    ],
+    [
+     0,
+     -150
+    ],
+    [
+     25,
+     -152
+    ],
+    [
+     25,
+     -201.4
+    ],
+    [
+     25,
+     -208
+    ],
+    [
+     50,
+     -226
+    ],
+    [
+     50,
+     -233
+    ],
+    [
+     50,
+     -283
+    ],
+    [
+     50,
+     -290
+    ],
+    [
+     -75,
+     -305
+    ],
+    [
+     -75,
+     -311.3
+    ],
+    [
+     -75,
+     -363.3
+    ],
+    [
+     -75,
+     -368
+    ],
+    [
+     -20,
+     -368
+    ]
+   ],
+   "opis": "polana → Rozstaj pod Sową → trzy rampy serpentyny (0 → 12 → 22 → 32) → Kamienny Krąg"
+  },
+  {
+   "id": "drozka_kapeluszowa",
+   "nazwa": "Dróżka Kapeluszowa",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     -35.4,
+     35.4
+    ],
+    [
+     -98,
+     95
+    ],
+    [
+     -180,
+     180
+    ],
+    [
+     -240,
+     232
+    ],
+    [
+     -290,
+     270
+    ]
+   ],
+   "opis": "polana → Kładka z Pnia → wioska muchomorników"
+  },
+  {
+   "id": "drozka_paproci",
+   "nazwa": "Dróżka Paproci",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     -290,
+     270
+    ],
+    [
+     -230,
+     350
+    ],
+    [
+     -120,
+     385
+    ],
+    [
+     0,
+     395
+    ],
+    [
+     110,
+     398
+    ],
+    [
+     200,
+     400
+    ]
+   ],
+   "opis": "Kapeluszowo → wzdłuż południowego skraju → Brama Pniaków (południowa pętla poziomów 1–5)"
+  },
+  {
+   "id": "drozka_zarodnikow",
+   "nazwa": "Dróżka do Kręgu Zarodników",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     -290,
+     270
+    ],
+    [
+     -340,
+     215
+    ],
+    [
+     -362,
+     182
+    ]
+   ],
+   "opis": ""
+  },
+  {
+   "id": "wilczy_trakt",
+   "nazwa": "Wilczy Trakt",
+   "rodzaj": "glowna",
+   "szer": 12,
+   "pts": [
+    [
+     -35.4,
+     -35.4
+    ],
+    [
+     -90,
+     -60
+    ],
+    [
+     -150,
+     -85
+    ],
+    [
+     -230,
+     -65
+    ],
+    [
+     -272,
+     -62
+    ],
+    [
+     -290,
+     -130
+    ],
+    [
+     -260,
+     -200
+    ],
+    [
+     -216,
+     -212
+    ]
+   ],
+   "opis": "polana → Brodzik → Wilcza Skała → wejście do Jeżynowego Labiryntu"
+  },
+  {
+   "id": "korytarz_labiryntu",
+   "nazwa": "Korytarz Jeżynowego Labiryntu",
+   "rodzaj": "labirynt",
+   "szer": 14,
+   "pts": [
+    [
+     -216,
+     -212
+    ],
+    [
+     -180,
+     -228
+    ],
+    [
+     -222,
+     -244
+    ],
+    [
+     -200,
+     -262
+    ],
+    [
+     -174,
+     -282
+    ],
+    [
+     -214,
+     -296
+    ],
+    [
+     -234,
+     -306
+    ]
+   ],
+   "opis": "kręty korytarz (ściany jeżyn 10 wys.); w środku polanka r 16 ze skrzynią — jedyne miejsce walki w labiryncie"
+  },
+  {
+   "id": "trakt_progu",
+   "nazwa": "Trakt do Progu",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     -234,
+     -306
+    ],
+    [
+     -300,
+     -340
+    ],
+    [
+     -332,
+     -366
+    ]
+   ],
+   "opis": ""
+  },
+  {
+   "id": "drozka_sowia",
+   "nazwa": "Dróżka Sowia",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     -260,
+     -200
+    ],
+    [
+     -170,
+     -185
+    ],
+    [
+     -90,
+     -165
+    ],
+    [
+     0,
+     -150
+    ]
+   ],
+   "opis": "skrót z Ostępów do Rozstaju pod Sową, omija labirynt"
+  },
+  {
+   "id": "drozka_bagienna",
+   "nazwa": "Dróżka do Wrót Bagna",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     -290,
+     -130
+    ],
+    [
+     -350,
+     -160
+    ],
+    [
+     -405,
+     -180
+    ]
+   ],
+   "opis": ""
+  },
+  {
+   "id": "gran",
+   "nazwa": "Grań",
+   "rodzaj": "sekretna",
+   "szer": 4,
+   "pts": [
+    [
+     -332,
+     -366
+    ],
+    [
+     -345,
+     -393
+    ],
+    [
+     -345,
+     -396
+    ],
+    [
+     -400,
+     -452
+    ],
+    [
+     -406,
+     -458
+    ],
+    [
+     -380,
+     -462
+    ],
+    [
+     -330,
+     -452
+    ],
+    [
+     -250,
+     -440
+    ],
+    [
+     -180,
+     -432
+    ],
+    [
+     -130,
+     -420
+    ],
+    [
+     -80,
+     -405
+    ],
+    [
+     -40,
+     -396
+    ],
+    [
+     -26,
+     -392
+    ]
+   ],
+   "opis": "sekret: szczelina za wodospadem z rampą 0 → 32, potem grań (y 32) nad Ostępami do zachodniego boku Kręgu"
+  },
+  {
+   "id": "trakt_wawozem",
+   "nazwa": "Trakt Wąwozem",
+   "rodzaj": "glowna",
+   "szer": 12,
+   "pts": [
+    [
+     50,
+     0
+    ],
+    [
+     95,
+     10
+    ],
+    [
+     150,
+     22
+    ],
+    [
+     205,
+     28
+    ],
+    [
+     262,
+     16
+    ],
+    [
+     296,
+     -6
+    ],
+    [
+     306,
+     -60
+    ],
+    [
+     286,
+     -118
+    ],
+    [
+     260,
+     -138.3
+    ],
+    [
+     232.2,
+     -179.9
+    ],
+    [
+     236,
+     -186
+    ],
+    [
+     214,
+     -186
+    ],
+    [
+     150,
+     -236
+    ],
+    [
+     140,
+     -240.5
+    ],
+    [
+     140,
+     -290.5
+    ],
+    [
+     140,
+     -316.4
+    ],
+    [
+     140,
+     -368.4
+    ],
+    [
+     100,
+     -378
+    ],
+    [
+     28,
+     -385
+    ]
+   ],
+   "opis": "polana → ujście rynny → dno wąwozu → Schody Głazów na koronę tamy → taras dolny → dwie rampy → Krąg"
+  },
+  {
+   "id": "drozka_dziupli",
+   "nazwa": "Dróżka do Dziupli",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     35.4,
+     35.4
+    ],
+    [
+     57,
+     47
+    ]
+   ],
+   "opis": ""
+  },
+  {
+   "id": "drozka_gardzieli",
+   "nazwa": "Dróżka do Gardzieli",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     35.4,
+     -35.4
+    ],
+    [
+     68,
+     -64
+    ]
+   ],
+   "opis": ""
+  },
+  {
+   "id": "drozka_lawki",
+   "nazwa": "Dróżka do Ławki",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     100,
+     -378
+    ],
+    [
+     64,
+     -418
+    ]
+   ],
+   "opis": ""
+  },
+  {
+   "id": "odnoga_oczka",
+   "nazwa": "Odnoga do Oczka",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     110,
+     262
+    ],
+    [
+     170,
+     280
+    ],
+    [
+     210,
+     290
+    ]
+   ],
+   "opis": ""
+  },
+  {
+   "id": "brzeg_oczka",
+   "nazwa": "Brzeg Oczka",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     210,
+     290
+    ],
+    [
+     222,
+     255
+    ],
+    [
+     250,
+     246
+    ],
+    [
+     278,
+     255
+    ],
+    [
+     290,
+     290
+    ],
+    [
+     283,
+     326
+    ],
+    [
+     250,
+     337
+    ],
+    [
+     224,
+     330
+    ],
+    [
+     210,
+     290
+    ]
+   ],
+   "opis": "ścieżka dookoła stawu, pomost od zachodu"
+  },
+  {
+   "id": "drozka_ujscia",
+   "nazwa": "Dróżka Ujścia",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     296,
+     -6
+    ],
+    [
+     326,
+     45
+    ],
+    [
+     344,
+     100
+    ],
+    [
+     348,
+     150
+    ],
+    [
+     350,
+     200
+    ],
+    [
+     318,
+     255
+    ],
+    [
+     290,
+     290
+    ]
+   ],
+   "opis": "dnem rynny Ujścia na południe; rynna kończy się na łące (dno 0 = łąka), dalej do Oczka"
+  },
+  {
+   "id": "drozka_pagorka",
+   "nazwa": "Dróżka na Pagórek",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     350,
+     200
+    ],
+    [
+     362,
+     224
+    ]
+   ],
+   "opis": ""
+  },
+  {
+   "id": "drozka_galaretek",
+   "nazwa": "Dróżka Galaretek",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     200,
+     400
+    ],
+    [
+     216,
+     352
+    ],
+    [
+     224,
+     330
+    ]
+   ],
+   "opis": "z bramy prosto do Oczka: pierwsza walka 5 s od wejścia"
+  },
+  {
+   "id": "drozka_wozu",
+   "nazwa": "Dróżka do Wozu",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     170,
+     335
+    ],
+    [
+     126,
+     345
+    ]
+   ],
+   "opis": ""
+  },
+  {
+   "id": "sciezka_polki",
+   "nazwa": "Ścieżka Półki Zachodniej",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     214,
+     -186
+    ],
+    [
+     200,
+     -150
+    ],
+    [
+     196,
+     -95
+    ],
+    [
+     186,
+     -35
+    ]
+   ],
+   "opis": "po półce (y 12) nad rynną: wilki 8. poziomu i Wartownia nad ujściem"
+  },
+  {
+   "id": "polka_wschodnia",
+   "nazwa": "Półka Wschodnia",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     236,
+     -186
+    ],
+    [
+     262,
+     -212
+    ],
+    [
+     300,
+     -214
+    ],
+    [
+     335,
+     -175
+    ],
+    [
+     362,
+     -110
+    ],
+    [
+     365,
+     -40
+    ],
+    [
+     362,
+     20
+    ]
+   ],
+   "opis": "z korony tamy na wschodnią półkę (y 12): patrol wilków, które zeskakują do rynny"
+  },
+  {
+   "id": "drozka_sloneczna",
+   "nazwa": "Dróżka Słoneczna",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     283,
+     326
+    ],
+    [
+     330,
+     338
+    ],
+    [
+     376,
+     336
+    ],
+    [
+     400,
+     318
+    ]
+   ],
+   "opis": "od Oczka na wschód do slime'ów 2.–3. poziomu (z03)"
+  },
+  {
+   "id": "drozka_kepek",
+   "nazwa": "Dróżka Kępek",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     110,
+     262
+    ],
+    [
+     70,
+     298
+    ],
+    [
+     30,
+     345
+    ],
+    [
+     0,
+     395
+    ]
+   ],
+   "opis": "skrót Szlak Ukłonu → Dróżka Paproci przez kępki slime'ów (z16)"
+  },
+  {
+   "id": "brzeg_jeziora",
+   "nazwa": "Brzeg Jeziora",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     300,
+     -214
+    ],
+    [
+     335,
+     -235
+    ]
+   ],
+   "opis": "z półki do trzciny nad jeziorem (widok na wysepkę)"
+  },
+  {
+   "id": "drozka_chatek",
+   "nazwa": "Dróżka Chatek",
+   "rodzaj": "boczna",
+   "szer": 8,
+   "pts": [
+    [
+     25,
+     -208
+    ],
+    [
+     -40,
+     -222
+    ],
+    [
+     -62,
+     -232
+    ]
+   ],
+   "opis": "po tarasie dolnym do chatek muchomorników 8.–9. poziomu"
+  }
+ ],
+ "woda": [
+  {
+   "id": "kreta_struga",
+   "nazwa": "Kręta Struga",
+   "rodzaj": "struga",
+   "szer": [
+    10,
+    16
+   ],
+   "glebokosc": 0,
+   "pts": [
+    [
+     -343,
+     -368
+    ],
+    [
+     -330,
+     -320
+    ],
+    [
+     -300,
+     -270
+    ],
+    [
+     -262,
+     -197
+    ],
+    [
+     -215,
+     -150
+    ],
+    [
+     -150,
+     -85
+    ],
+    [
+     -125,
+     -10
+    ],
+    [
+     -108,
+     50
+    ],
+    [
+     -98,
+     95
+    ],
+    [
+     -70,
+     150
+    ],
+    [
+     -20,
+     195
+    ],
+    [
+     60,
+     215
+    ],
+    [
+     130,
+     240
+    ],
+    [
+     205,
+     275
+    ],
+    [
+     250,
+     290
+    ]
+   ],
+   "opis": "od misy Szumiącego Progu do Oczka Galaretek; cienka tafla na gruncie (bez wycinania koryta), brzeg z kamieni i trzciny — da się ją przejść wszędzie, przeprawy to wygoda i punkty orientacyjne"
+  },
+  {
+   "id": "oczko",
+   "nazwa": "Oczko Galaretek",
+   "rodzaj": "staw",
+   "srodek": [
+    250,
+    300
+   ],
+   "r": 28,
+   "y": 0,
+   "opis": "tafla na gruncie z ciemniejszym środkiem; slime'y „wyskakują z wody”"
+  },
+  {
+   "id": "misa_progu",
+   "nazwa": "Misa Szumiącego Progu",
+   "rodzaj": "staw",
+   "srodek": [
+    -345,
+    -380
+   ],
+   "r": 14,
+   "y": 0
+  },
+  {
+   "id": "jezioro",
+   "nazwa": "Jezioro za Tamą",
+   "rodzaj": "jezioro",
+   "y": 11,
+   "opis": "za tamą, od czoła tamy do muru lasu; brzeg = ściany półek i tarasów (1–21 nad lustrem), trzcina",
+   "wielokat": [
+    [
+     219.8,
+     -188.7
+    ],
+    [
+     264.7,
+     -218.6
+    ],
+    [
+     305,
+     -232
+    ],
+    [
+     350,
+     -250
+    ],
+    [
+     400,
+     -258
+    ],
+    [
+     440,
+     -280
+    ],
+    [
+     470,
+     -290
+    ],
+    [
+     470,
+     -470
+    ],
+    [
+     170,
+     -470
+    ],
+    [
+     172,
+     -320
+    ],
+    [
+     180,
+     -275
+    ],
+    [
+     196,
+     -246
+    ]
+   ],
+   "dno": 9.5
+  },
+  {
+   "id": "struzka_tamy",
+   "nazwa": "Strużka z tamy",
+   "rodzaj": "struga",
+   "szer": [
+    3,
+    4
+   ],
+   "glebokosc": 0.3,
+   "pts": [
+    [
+     250,
+     -190
+    ],
+    [
+     262,
+     -168
+    ],
+    [
+     282,
+     -130
+    ],
+    [
+     298,
+     -95
+    ]
+   ]
+  }
+ ],
+ "przeprawy": [
+  {
+   "id": "most_rechotek",
+   "nazwa": "Most Rechotek",
+   "x": 60,
+   "z": 215,
+   "rodzaj": "most"
+  },
+  {
+   "id": "kladka_z_pnia",
+   "nazwa": "Kładka z Pnia",
+   "x": -98,
+   "z": 95,
+   "rodzaj": "kladka"
+  },
+  {
+   "id": "brodzik",
+   "nazwa": "Brodzik z kamieni",
+   "x": -150,
+   "z": -85,
+   "rodzaj": "brod"
+  },
+  {
+   "id": "wilczy_brod",
+   "nazwa": "Wilczy Bród",
+   "x": -262,
+   "z": -197,
+   "rodzaj": "brod"
+  },
+  {
+   "id": "ujscie_oczka",
+   "nazwa": "Kamienie przy ujściu",
+   "x": 214,
+   "z": 279,
+   "rodzaj": "brod"
+  }
+ ],
+ "teren": [
+  {
+   "id": "plyta",
+   "rodzaj": "plyta",
+   "y": 0,
+   "opis": "płyta 1400 × 1400 z wierzchem na 0 (łąka, Kapeluszowo, Ostępy, dno wąwozu, Rozstaj)"
+  },
+  {
+   "id": "polana_uklonu",
+   "rodzaj": "kopiec",
+   "srodek": [
+    0,
+    0
+   ],
+   "r": 70,
+   "r_stopy": 110,
+   "y": 4,
+   "opis": "polana Serca Boru: walec r 70 na 4 i pierścień zbocza 1:10"
+  },
+  {
+   "id": "pagorek",
+   "rodzaj": "kopiec",
+   "srodek": [
+    370,
+    240
+   ],
+   "r": 20,
+   "r_stopy": 44,
+   "y": 6,
+   "opis": "Pagórek Wypadniętego Klocka: zbocze 1:4"
+  },
+  {
+   "id": "polka_zach",
+   "rodzaj": "poziom",
+   "nazwa": "Półka Zachodnia Wąwozu",
+   "y": 12,
+   "podbiom": "wawoz",
+   "wielokat": [
+    [
+     128,
+     3.0
+    ],
+    [
+     160.9,
+     3.0
+    ],
+    [
+     211.1,
+     1.1
+    ],
+    [
+     251.0,
+     -9.1
+    ],
+    [
+     271.6,
+     -22.4
+    ],
+    [
+     278.5,
+     -59.6
+    ],
+    [
+     266.6,
+     -114.9
+    ],
+    [
+     243.2,
+     -153.5
+    ],
+    [
+     227.5,
+     -177.0
+    ],
+    [
+     219.8,
+     -188.7
+    ],
+    [
+     150,
+     -215
+    ],
+    [
+     125,
+     -95
+    ],
+    [
+     130,
+     -7.0
+    ]
+   ]
+  },
+  {
+   "id": "polka_pd",
+   "rodzaj": "poziom",
+   "nazwa": "Wyspa Sosen (niedostępna)",
+   "y": 12,
+   "podbiom": "wawoz",
+   "wielokat": [
+    [
+     128,
+     63.0
+    ],
+    [
+     159.1,
+     57.0
+    ],
+    [
+     218.9,
+     54.9
+    ],
+    [
+     273.0,
+     41.1
+    ],
+    [
+     287.9,
+     31.4
+    ],
+    [
+     302.2,
+     55.8
+    ],
+    [
+     318.3,
+     105.2
+    ],
+    [
+     322.0,
+     151.4
+    ],
+    [
+     322.6,
+     170
+    ],
+    [
+     160,
+     170
+    ],
+    [
+     118,
+     112
+    ],
+    [
+     128,
+     60
+    ]
+   ]
+  },
+  {
+   "id": "polka_wsch",
+   "rodzaj": "poziom",
+   "nazwa": "Półka Wschodnia Wąwozu",
+   "y": 12,
+   "podbiom": "wawoz",
+   "wielokat": [
+    [
+     374.6,
+     170
+    ],
+    [
+     374.0,
+     148.6
+    ],
+    [
+     369.7,
+     94.8
+    ],
+    [
+     349.8,
+     34.2
+    ],
+    [
+     324.1,
+     -9.5
+    ],
+    [
+     333.5,
+     -60.4
+    ],
+    [
+     317.4,
+     -135.1
+    ],
+    [
+     288.8,
+     -182.5
+    ],
+    [
+     272.5,
+     -207.0
+    ],
+    [
+     264.7,
+     -218.6
+    ],
+    [
+     305,
+     -232
+    ],
+    [
+     350,
+     -250
+    ],
+    [
+     400,
+     -258
+    ],
+    [
+     440,
+     -280
+    ],
+    [
+     470,
+     -290
+    ],
+    [
+     470,
+     170
+    ]
+   ]
+  },
+  {
+   "id": "tama",
+   "rodzaj": "poziom",
+   "nazwa": "Trollowa Tama (korona)",
+   "y": 12,
+   "podbiom": "wawoz",
+   "wielokat": [
+    [
+     227.5,
+     -177.0
+    ],
+    [
+     272.5,
+     -207.0
+    ],
+    [
+     264.7,
+     -218.6
+    ],
+    [
+     219.8,
+     -188.7
+    ]
+   ]
+  },
+  {
+   "id": "jezioro_dno",
+   "rodzaj": "poziom",
+   "nazwa": "dno Jeziora za Tamą",
+   "y": 9.5,
+   "podbiom": "wawoz",
+   "wielokat": [
+    [
+     219.8,
+     -188.7
+    ],
+    [
+     264.7,
+     -218.6
+    ],
+    [
+     305,
+     -232
+    ],
+    [
+     350,
+     -250
+    ],
+    [
+     400,
+     -258
+    ],
+    [
+     440,
+     -280
+    ],
+    [
+     470,
+     -290
+    ],
+    [
+     470,
+     -470
+    ],
+    [
+     170,
+     -470
+    ],
+    [
+     172,
+     -320
+    ],
+    [
+     180,
+     -275
+    ],
+    [
+     196,
+     -246
+    ]
+   ]
+  },
+  {
+   "id": "korona_t1",
+   "rodzaj": "poziom",
+   "nazwa": "Korona — taras dolny",
+   "y": 12,
+   "podbiom": "korona",
+   "wielokat": [
+    [
+     -150,
+     -200
+    ],
+    [
+     -90,
+     -195
+    ],
+    [
+     0,
+     -200
+    ],
+    [
+     90,
+     -205
+    ],
+    [
+     150,
+     -215
+    ],
+    [
+     219.8,
+     -188.7
+    ],
+    [
+     196,
+     -246
+    ],
+    [
+     180,
+     -275
+    ],
+    [
+     172,
+     -320
+    ],
+    [
+     170,
+     -470
+    ],
+    [
+     -150,
+     -470
+    ]
+   ]
+  },
+  {
+   "id": "korona_t2",
+   "rodzaj": "poziom",
+   "nazwa": "Korona — taras górny",
+   "y": 22,
+   "podbiom": "korona",
+   "wielokat": [
+    [
+     -150,
+     -283
+    ],
+    [
+     -40,
+     -283
+    ],
+    [
+     60,
+     -283
+    ],
+    [
+     120,
+     -288
+    ],
+    [
+     160,
+     -293
+    ],
+    [
+     171,
+     -300
+    ],
+    [
+     170,
+     -470
+    ],
+    [
+     -150,
+     -470
+    ]
+   ]
+  },
+  {
+   "id": "korona_p",
+   "rodzaj": "poziom",
+   "nazwa": "Korona — płaskowyż Kręgu",
+   "y": 32,
+   "podbiom": "korona",
+   "wielokat": [
+    [
+     -150,
+     -383
+    ],
+    [
+     -70,
+     -362
+    ],
+    [
+     10,
+     -352
+    ],
+    [
+     80,
+     -355
+    ],
+    [
+     120,
+     -366
+    ],
+    [
+     170,
+     -372
+    ],
+    [
+     170,
+     -470
+    ],
+    [
+     -150,
+     -470
+    ]
+   ]
+  },
+  {
+   "id": "gran",
+   "rodzaj": "poziom",
+   "nazwa": "Grań nad Ostępami",
+   "y": 32,
+   "podbiom": "ostepy",
+   "wielokat": [
+    [
+     -470,
+     -392
+    ],
+    [
+     -420,
+     -396
+    ],
+    [
+     -380,
+     -398
+    ],
+    [
+     -348.2,
+     -394.8
+    ],
+    [
+     -403.2,
+     -448.8
+    ],
+    [
+     -396.8,
+     -455.2
+    ],
+    [
+     -341.8,
+     -401.2
+    ],
+    [
+     -300,
+     -400
+    ],
+    [
+     -230,
+     -399
+    ],
+    [
+     -180,
+     -395
+    ],
+    [
+     -150,
+     -390
+    ],
+    [
+     -150,
+     -470
+    ],
+    [
+     -470,
+     -470
+    ]
+   ]
+  },
+  {
+   "id": "rampa_skarpy",
+   "rodzaj": "rampa",
+   "nazwa": "Serpentyna: Rozstaj → taras dolny",
+   "od": [
+    25,
+    -152,
+    0
+   ],
+   "do": [
+    25,
+    -201.4,
+    12
+   ],
+   "szer": 10
+  },
+  {
+   "id": "rampa_t2",
+   "rodzaj": "rampa",
+   "nazwa": "Serpentyna: taras dolny → górny",
+   "od": [
+    50,
+    -233.0,
+    12
+   ],
+   "do": [
+    50,
+    -283.0,
+    22
+   ],
+   "szer": 10
+  },
+  {
+   "id": "rampa_p",
+   "rodzaj": "rampa",
+   "nazwa": "Serpentyna: taras górny → płaskowyż",
+   "od": [
+    -75,
+    -311.3,
+    22
+   ],
+   "do": [
+    -75,
+    -363.3,
+    32
+   ],
+   "szer": 10
+  },
+  {
+   "id": "rampa_traktu_t2",
+   "rodzaj": "rampa",
+   "nazwa": "Trakt: taras dolny → górny",
+   "od": [
+    140,
+    -240.5,
+    12
+   ],
+   "do": [
+    140,
+    -290.5,
+    22
+   ],
+   "szer": 10
+  },
+  {
+   "id": "rampa_traktu_p",
+   "rodzaj": "rampa",
+   "nazwa": "Trakt: taras górny → płaskowyż",
+   "od": [
+    140,
+    -316.4,
+    22
+   ],
+   "do": [
+    140,
+    -368.4,
+    32
+   ],
+   "szer": 10
+  },
+  {
+   "id": "schody_glazow",
+   "rodzaj": "rampa",
+   "nazwa": "Schody Głazów: dno wąwozu → korona tamy",
+   "od": [
+    260.0,
+    -138.3,
+    0
+   ],
+   "do": [
+    232.2,
+    -179.9,
+    12
+   ],
+   "szer": 10
+  },
+  {
+   "id": "tunel_progu",
+   "rodzaj": "rampa",
+   "nazwa": "Sekretna rampa za wodospadem",
+   "od": [
+    -345.0,
+    -396.0,
+    0
+   ],
+   "do": [
+    -400.0,
+    -452.0,
+    32
+   ],
+   "szer": 7
+  }
+ ],
+ "strefy_spokoju": [
+  {
+   "id": "serce",
+   "rodzaj": "podbiom",
+   "podbiom": "serce",
+   "opis": "cały wielokąt Serca Boru"
+  },
+  {
+   "id": "brama_pniakow",
+   "srodek": [
+    200,
+    410
+   ],
+   "r": 45
+  },
+  {
+   "id": "rozstaj",
+   "srodek": [
+    0,
+    -150
+   ],
+   "r": 30
+  },
+  {
+   "id": "krag",
+   "srodek": [
+    0,
+    -385
+   ],
+   "r": 30,
+   "opis": "tylko Strażnik Gaju"
+  },
+  {
+   "id": "pin_kapelusz",
+   "srodek": [
+    -240,
+    232
+   ],
+   "r": 12
+  },
+  {
+   "id": "pin_skala",
+   "srodek": [
+    -252,
+    -45
+   ],
+   "r": 12
+  },
+  {
+   "id": "pin_tama",
+   "srodek": [
+    205,
+    -212
+   ],
+   "r": 12
+  }
+ ],
+ "piny": [
+  {
+   "id": "pin_brama",
+   "lokacja": "brama_pniakow",
+   "punkt": [
+    200,
+    400
+   ],
+   "odblokowanie": "od_poczatku"
+  },
+  {
+   "id": "pin_uklon",
+   "lokacja": "stary_uklon",
+   "punkt": [
+    0,
+    50
+   ],
+   "odblokowanie": "od_poczatku"
+  },
+  {
+   "id": "pin_kapelusz",
+   "lokacja": "wielki_kapelusz",
+   "punkt": [
+    -240,
+    232
+   ],
+   "odblokowanie": "pierwsza_wizyta"
+  },
+  {
+   "id": "pin_skala",
+   "lokacja": "wilcza_skala",
+   "punkt": [
+    -252,
+    -45
+   ],
+   "odblokowanie": "pierwsza_wizyta"
+  },
+  {
+   "id": "pin_tama",
+   "lokacja": "trollowa_tama",
+   "punkt": [
+    205,
+    -212
+   ],
+   "odblokowanie": "pierwsza_wizyta"
+  },
+  {
+   "id": "pin_krag",
+   "lokacja": "kamienny_krag",
+   "punkt": [
+    -8,
+    -364
+   ],
+   "odblokowanie": "pierwsza_wizyta"
+  }
+ ],
+ "miasteczko_na_horyzoncie": {
+  "kierunek_w_ukladzie_lasu": [
+   0,
+   -1300
+  ],
+  "atrapa": {
+   "srodek": [
+    40,
+    -600
+   ],
+   "opis": "sylwetka karczmy z czerwonym dachem i fioletowego kapelusza sklepu, ok. 60 części"
+  }
+ },
+ "budzet": {
+  "limit": 25000,
+  "wspolne": {
+   "grunt_i_rzezba": 900,
+   "woda_i_przeprawy": 700,
+   "sciezki_krawezniki_kody": 1800,
+   "mur_pni": 900,
+   "sylwetki_i_wzgorza_tla": 1000,
+   "sylwetka_miasteczka": 60,
+   "chmury": 60,
+   "znaczniki_niewidoczne": 200
+  },
+  "laka": 3000,
+  "kapeluszowo": 3000,
+  "serce": 2200,
+  "ostepy": 3400,
+  "wawoz": 2600,
+  "korona": 2200,
+  "opis": "plan z wersji 1 (górna granica podziału); zbudowane w v2: 12 854 części — PROJEKT.md rozdz. 10"
+ }
+}

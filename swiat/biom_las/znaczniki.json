@@ -1,0 +1,1654 @@
+{
+ "opis": "Znaczniki dla kroku „potwory w Studio”: strefy, węzły walki, domy, patrole, troll, strażnik, punkty E, piny. Współrzędne w UKŁADZIE LASU; świat Studio = (−x; y; −2000 − z) (kontener obrócony o 180°). Generuje generuj.py.",
+ "kontener": {
+  "nazwa": "Workspace/BiomLas",
+  "srodek_swiata": [
+   0.0,
+   0.0,
+   -2000.0
+  ],
+  "obrot_y": 180.0,
+  "wzor": "swiat = (−x, y, −2000 − z)"
+ },
+ "wejscie": [
+  200,
+  0.0,
+  400
+ ],
+ "patrz_na": [
+  0,
+  0
+ ],
+ "odrodzenie_po_przegranej": [
+  0,
+  4.0,
+  50
+ ],
+ "piny": [
+  {
+   "id": "pin_brama",
+   "lokacja": "brama_pniakow",
+   "punkt": [
+    200,
+    0.0,
+    400
+   ],
+   "odblokowanie": "od_poczatku"
+  },
+  {
+   "id": "pin_uklon",
+   "lokacja": "stary_uklon",
+   "punkt": [
+    0,
+    4.0,
+    50
+   ],
+   "odblokowanie": "od_poczatku"
+  },
+  {
+   "id": "pin_kapelusz",
+   "lokacja": "wielki_kapelusz",
+   "punkt": [
+    -240,
+    0.0,
+    232
+   ],
+   "odblokowanie": "pierwsza_wizyta"
+  },
+  {
+   "id": "pin_skala",
+   "lokacja": "wilcza_skala",
+   "punkt": [
+    -252,
+    0.0,
+    -45
+   ],
+   "odblokowanie": "pierwsza_wizyta"
+  },
+  {
+   "id": "pin_tama",
+   "lokacja": "trollowa_tama",
+   "punkt": [
+    205,
+    12.0,
+    -212
+   ],
+   "odblokowanie": "pierwsza_wizyta"
+  },
+  {
+   "id": "pin_krag",
+   "lokacja": "kamienny_krag",
+   "punkt": [
+    -8,
+    32.0,
+    -364
+   ],
+   "odblokowanie": "pierwsza_wizyta"
+  }
+ ],
+ "strefy_spokoju": [
+  {
+   "id": "serce",
+   "rodzaj": "podbiom",
+   "podbiom": "serce",
+   "opis": "cały wielokąt Serca Boru"
+  },
+  {
+   "id": "brama_pniakow",
+   "srodek": [
+    200,
+    410
+   ],
+   "r": 45
+  },
+  {
+   "id": "rozstaj",
+   "srodek": [
+    0,
+    -150
+   ],
+   "r": 30
+  },
+  {
+   "id": "krag",
+   "srodek": [
+    0,
+    -385
+   ],
+   "r": 30,
+   "opis": "tylko Strażnik Gaju"
+  },
+  {
+   "id": "pin_kapelusz",
+   "srodek": [
+    -240,
+    232
+   ],
+   "r": 12
+  },
+  {
+   "id": "pin_skala",
+   "srodek": [
+    -252,
+    -45
+   ],
+   "r": 12
+  },
+  {
+   "id": "pin_tama",
+   "srodek": [
+    205,
+    -212
+   ],
+   "r": 12
+  }
+ ],
+ "strefy": [
+  {
+   "id": "z01",
+   "podbiom": "laka",
+   "potwor": "Leśny Slime",
+   "wariant": null,
+   "poziomy": [
+    1,
+    2
+   ],
+   "naraz": 6,
+   "max": 9,
+   "srodek": [
+    250,
+    0,
+    300
+   ],
+   "r": 50,
+   "wezly": [
+    [
+     206.3,
+     0,
+     294.5
+    ],
+    [
+     227.1,
+     0,
+     262.5
+    ],
+    [
+     265.0,
+     0,
+     258.7
+    ],
+    [
+     291.7,
+     0,
+     286.0
+    ],
+    [
+     287.0,
+     0,
+     323.9
+    ],
+    [
+     254.4,
+     0,
+     343.8
+    ],
+    [
+     218.5,
+     0,
+     330.7
+    ]
+   ],
+   "domy": [
+    [
+     250,
+     0,
+     300
+    ],
+    [
+     247,
+     0,
+     304
+    ],
+    [
+     253,
+     0,
+     296
+    ]
+   ],
+   "odrodzenie_s": 15,
+   "grupa": null,
+   "zachowanie": "ciekawski: w promieniu 18 odwraca się, podskakuje do gracza na 6 studów i buja się zaczepnie"
+  },
+  {
+   "id": "z02",
+   "podbiom": "laka",
+   "potwor": "Leśny Slime",
+   "wariant": null,
+   "poziomy": [
+    1,
+    3
+   ],
+   "naraz": 5,
+   "max": 7,
+   "srodek": [
+    -10,
+    0,
+    355
+   ],
+   "r": 36,
+   "wezly": [
+    [
+     -24.8,
+     0,
+     329.4
+    ],
+    [
+     4.8,
+     0,
+     329.4
+    ],
+    [
+     19.5,
+     0,
+     355.0
+    ],
+    [
+     4.8,
+     0,
+     380.6
+    ],
+    [
+     -24.8,
+     0,
+     380.6
+    ],
+    [
+     -39.5,
+     0,
+     355.0
+    ]
+   ],
+   "domy": [
+    [
+     39.1,
+     0,
+     320.6
+    ],
+    [
+     -60.1,
+     0,
+     414.8
+    ],
+    [
+     -67.5,
+     0,
+     306.8
+    ]
+   ],
+   "odrodzenie_s": 15,
+   "grupa": null,
+   "zachowanie": "ciekawski: w promieniu 18 odwraca się, podskakuje do gracza na 6 studów i buja się zaczepnie"
+  },
+  {
+   "id": "z16",
+   "podbiom": "laka",
+   "potwor": "Leśny Slime",
+   "wariant": null,
+   "poziomy": [
+    1,
+    2
+   ],
+   "naraz": 4,
+   "max": 5,
+   "srodek": [
+    75,
+    0,
+    305
+   ],
+   "r": 30,
+   "wezly": [
+    [
+     55.1,
+     0,
+     290.5
+    ],
+    [
+     82.6,
+     0,
+     281.6
+    ],
+    [
+     99.6,
+     0,
+     305.0
+    ],
+    [
+     82.6,
+     0,
+     328.4
+    ],
+    [
+     55.1,
+     0,
+     319.5
+    ]
+   ],
+   "domy": [
+    [
+     61.0,
+     0,
+     252.8
+    ],
+    [
+     93.6,
+     0,
+     374.5
+    ],
+    [
+     7.3,
+     0,
+     329.6
+    ]
+   ],
+   "odrodzenie_s": 15,
+   "grupa": null,
+   "zachowanie": "ciekawski: w promieniu 18 odwraca się, podskakuje do gracza na 6 studów i buja się zaczepnie"
+  },
+  {
+   "id": "z03",
+   "podbiom": "laka",
+   "potwor": "Leśny Slime",
+   "wariant": null,
+   "poziomy": [
+    2,
+    3
+   ],
+   "naraz": 4,
+   "max": 5,
+   "srodek": [
+    376,
+    0,
+    336
+   ],
+   "r": 30,
+   "wezly": [
+    [
+     356.1,
+     0,
+     321.5
+    ],
+    [
+     383.6,
+     0,
+     312.6
+    ],
+    [
+     400.6,
+     0,
+     336.0
+    ],
+    [
+     383.6,
+     0,
+     359.4
+    ],
+    [
+     356.1,
+     0,
+     350.5
+    ]
+   ],
+   "domy": [
+    [
+     362.0,
+     0,
+     388.2
+    ],
+    [
+     406.4,
+     0,
+     270.7
+    ],
+    [
+     313.6,
+     0,
+     300.0
+    ]
+   ],
+   "odrodzenie_s": 15,
+   "grupa": null,
+   "zachowanie": "ciekawski: w promieniu 18 odwraca się, podskakuje do gracza na 6 studów i buja się zaczepnie"
+  },
+  {
+   "id": "z04",
+   "podbiom": "kapeluszowo",
+   "potwor": "Muchomornik",
+   "wariant": null,
+   "poziomy": [
+    3,
+    4
+   ],
+   "naraz": 6,
+   "max": 8,
+   "srodek": [
+    -300,
+    0,
+    280
+   ],
+   "r": 46,
+   "wezly": [
+    [
+     -328.3,
+     0,
+     251.0
+    ],
+    [
+     -311.0,
+     0,
+     239.8
+    ],
+    [
+     -262.0,
+     0,
+     293.8
+    ],
+    [
+     -287.1,
+     0,
+     318.4
+    ],
+    [
+     -322.0,
+     0,
+     314.0
+    ],
+    [
+     -340.3,
+     0,
+     284.0
+    ]
+   ],
+   "domy": [
+    [
+     -274.0,
+     0,
+     235.0
+    ],
+    [
+     -344.0,
+     0,
+     356.2
+    ],
+    [
+     -382.1,
+     0,
+     258.0
+    ]
+   ],
+   "odrodzenie_s": 20,
+   "grupa": null,
+   "zachowanie": "złośliwy: w promieniu 18 cofa się pod chatkę, gra „wiwat”, stroi miny; po odejściu gracza wraca do spaceru"
+  },
+  {
+   "id": "z05",
+   "podbiom": "kapeluszowo",
+   "potwor": "Muchomornik",
+   "wariant": null,
+   "poziomy": [
+    4,
+    5
+   ],
+   "naraz": 4,
+   "max": 5,
+   "srodek": [
+    -370,
+    0,
+    160
+   ],
+   "r": 40,
+   "wezly": [
+    [
+     -396.5,
+     0,
+     140.7
+    ],
+    [
+     -359.9,
+     0,
+     128.8
+    ],
+    [
+     -337.2,
+     0,
+     160.0
+    ],
+    [
+     -359.9,
+     0,
+     191.2
+    ],
+    [
+     -396.5,
+     0,
+     179.3
+    ]
+   ],
+   "domy": [
+    [
+     -389.8,
+     0,
+     214.5
+    ],
+    [
+     -321.1,
+     0,
+     101.8
+    ],
+    [
+     -419.5,
+     0,
+     110.5
+    ]
+   ],
+   "odrodzenie_s": 20,
+   "grupa": null,
+   "zachowanie": "złośliwy: w promieniu 18 cofa się pod chatkę, gra „wiwat”, stroi miny; po odejściu gracza wraca do spaceru"
+  },
+  {
+   "id": "z06",
+   "podbiom": "kapeluszowo",
+   "potwor": "Leśny Slime",
+   "wariant": null,
+   "poziomy": [
+    3,
+    4
+   ],
+   "naraz": 4,
+   "max": 5,
+   "srodek": [
+    -170,
+    0,
+    232
+   ],
+   "r": 30,
+   "wezly": [
+    [
+     -189.9,
+     0,
+     217.5
+    ],
+    [
+     -162.4,
+     0,
+     208.6
+    ],
+    [
+     -145.4,
+     0,
+     232.0
+    ],
+    [
+     -162.4,
+     0,
+     255.4
+    ],
+    [
+     -189.9,
+     0,
+     246.5
+    ]
+   ],
+   "domy": [
+    [
+     -184.0,
+     0,
+     284.2
+    ],
+    [
+     -151.4,
+     0,
+     162.5
+    ],
+    [
+     -99.1,
+     0,
+     244.5
+    ]
+   ],
+   "odrodzenie_s": 15,
+   "grupa": null,
+   "zachowanie": "ciekawski: w promieniu 18 odwraca się, podskakuje do gracza na 6 studów i buja się zaczepnie"
+  },
+  {
+   "id": "z07",
+   "podbiom": "ostepy",
+   "potwor": "Cierniowy Wilk",
+   "wariant": null,
+   "poziomy": [
+    5,
+    5
+   ],
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    -195,
+    0,
+    -25
+   ],
+   "r": 40,
+   "wezly": [
+    [
+     -221.5,
+     0,
+     -44.3
+    ],
+    [
+     -184.9,
+     0,
+     -56.2
+    ],
+    [
+     -162.2,
+     0,
+     -25.0
+    ],
+    [
+     -184.9,
+     0,
+     6.2
+    ],
+    [
+     -221.5,
+     0,
+     -5.7
+    ]
+   ],
+   "domy": [
+    [
+     -214.8,
+     0,
+     -79.5
+    ],
+    [
+     -167.0,
+     0,
+     52.1
+    ],
+    [
+     -266.0,
+     0,
+     16.0
+    ]
+   ],
+   "odrodzenie_s": 25,
+   "grupa": {
+    "watahy": 1,
+    "w_watasze": 3
+   },
+   "zachowanie": "wataha gęsiego za przewodnikiem (odstęp 4–6); w promieniu 20 przewodnik staje i warczy, pozostałe okrążają gracza łukiem 10; podczas walki z jednym reszta siada i patrzy z odległości ≥ 14"
+  },
+  {
+   "id": "z08",
+   "podbiom": "ostepy",
+   "potwor": "Cierniowy Wilk",
+   "wariant": null,
+   "poziomy": [
+    5,
+    6
+   ],
+   "naraz": 6,
+   "max": 9,
+   "srodek": [
+    -325,
+    0,
+    -105
+   ],
+   "r": 38,
+   "wezly": [
+    [
+     -340.6,
+     0,
+     -132.0
+    ],
+    [
+     -309.4,
+     0,
+     -132.0
+    ],
+    [
+     -293.8,
+     0,
+     -105.0
+    ],
+    [
+     -309.4,
+     0,
+     -78.0
+    ],
+    [
+     -340.6,
+     0,
+     -78.0
+    ],
+    [
+     -356.2,
+     0,
+     -105.0
+    ]
+   ],
+   "domy": [
+    [
+     -325.0,
+     0,
+     -46.0
+    ],
+    [
+     -352.4,
+     0,
+     -180.2
+    ],
+    [
+     -252.6,
+     0,
+     -131.3
+    ]
+   ],
+   "odrodzenie_s": 25,
+   "grupa": {
+    "watahy": 2,
+    "w_watasze": 3
+   },
+   "zachowanie": "wataha gęsiego za przewodnikiem (odstęp 4–6); w promieniu 20 przewodnik staje i warczy, pozostałe okrążają gracza łukiem 10; podczas walki z jednym reszta siada i patrzy z odległości ≥ 14"
+  },
+  {
+   "id": "z09",
+   "podbiom": "ostepy",
+   "potwor": "Cierniowy Wilk",
+   "wariant": null,
+   "poziomy": [
+    6,
+    7
+   ],
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    -212,
+    0,
+    -256
+   ],
+   "r": 68,
+   "wezly": [
+    [
+     -226,
+     0,
+     -197
+    ],
+    [
+     -200,
+     0,
+     -262
+    ],
+    [
+     -240,
+     0,
+     -313
+    ]
+   ],
+   "domy": [
+    [
+     -276.1,
+     0,
+     -293.0
+    ],
+    [
+     -195.0,
+     0,
+     -159.5
+    ],
+    [
+     -204.0,
+     0,
+     -347.6
+    ]
+   ],
+   "odrodzenie_s": 25,
+   "grupa": {
+    "watahy": 1,
+    "w_watasze": 3
+   },
+   "zachowanie": "wataha gęsiego za przewodnikiem (odstęp 4–6); w promieniu 20 przewodnik staje i warczy, pozostałe okrążają gracza łukiem 10; podczas walki z jednym reszta siada i patrzy z odległości ≥ 14"
+  },
+  {
+   "id": "z10",
+   "podbiom": "ostepy",
+   "potwor": "Cierniowy Wilk",
+   "wariant": null,
+   "poziomy": [
+    7,
+    7
+   ],
+   "naraz": 2,
+   "max": 3,
+   "srodek": [
+    -320,
+    0,
+    -320
+   ],
+   "r": 34,
+   "wezly": [
+    [
+     -314.8,
+     0,
+     -349.5
+    ],
+    [
+     -290.5,
+     0,
+     -314.8
+    ],
+    [
+     -338.5,
+     0,
+     -294.9
+    ],
+    [
+     -351.2,
+     0,
+     -317.4
+    ]
+   ],
+   "domy": [
+    [
+     -352.5,
+     0,
+     -352.5
+    ],
+    [
+     -245.8,
+     0,
+     -293.0
+    ],
+    [
+     -347.0,
+     0,
+     -245.8
+    ]
+   ],
+   "odrodzenie_s": 25,
+   "grupa": {
+    "watahy": 0,
+    "samotniki": 2
+   },
+   "zachowanie": "samotnik: w promieniu 20 staje bokiem i warczy, nie okrąża"
+  },
+  {
+   "id": "z11",
+   "podbiom": "wawoz",
+   "potwor": "Cierniowy Wilk",
+   "wariant": null,
+   "poziomy": [
+    7,
+    8
+   ],
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    302,
+    0,
+    -70
+   ],
+   "r": 40,
+   "wezly": [
+    [
+     289.0,
+     0,
+     -83.5
+    ],
+    [
+     311.8,
+     0,
+     -88.4
+    ],
+    [
+     317.3,
+     0,
+     -63.4
+    ],
+    [
+     304.9,
+     0,
+     -49.4
+    ],
+    [
+     292.5,
+     0,
+     -64.7
+    ]
+   ],
+   "domy": [
+    [
+     277.5,
+     0,
+     -27.6
+    ],
+    [
+     307.8,
+     0,
+     -136.7
+    ],
+    [
+     320.1,
+     0,
+     -2.4
+    ]
+   ],
+   "odrodzenie_s": 25,
+   "grupa": {
+    "watahy": 1,
+    "w_watasze": 3
+   },
+   "zachowanie": "wataha gęsiego za przewodnikiem (odstęp 4–6); w promieniu 20 przewodnik staje i warczy, pozostałe okrążają gracza łukiem 10; podczas walki z jednym reszta siada i patrzy z odległości ≥ 14"
+  },
+  {
+   "id": "z12",
+   "podbiom": "wawoz",
+   "potwor": "Leśny Slime",
+   "wariant": "Bursztynowy Slime (kolor zloto; ten sam model)",
+   "poziomy": [
+    6,
+    7
+   ],
+   "naraz": 4,
+   "max": 5,
+   "srodek": [
+    340,
+    0,
+    100
+   ],
+   "r": 34,
+   "wezly": [
+    [
+     329.5,
+     0,
+     85.9
+    ],
+    [
+     340.0,
+     0,
+     70.1
+    ],
+    [
+     350.5,
+     0,
+     85.9
+    ],
+    [
+     340.0,
+     0,
+     129.9
+    ]
+   ],
+   "domy": [
+    [
+     369.0,
+     0,
+     150.2
+    ],
+    [
+     326.3,
+     0,
+     22.2
+    ],
+    [
+     327.8,
+     0,
+     168.9
+    ]
+   ],
+   "odrodzenie_s": 15,
+   "grupa": null,
+   "zachowanie": "ciekawski: w promieniu 18 odwraca się, podskakuje do gracza na 6 studów i buja się zaczepnie"
+  },
+  {
+   "id": "z13",
+   "podbiom": "wawoz",
+   "potwor": "Cierniowy Wilk",
+   "wariant": null,
+   "poziomy": [
+    8,
+    8
+   ],
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    196,
+    12,
+    -95
+   ],
+   "r": 32,
+   "wezly": [
+    [
+     174.8,
+     12,
+     -110.4
+    ],
+    [
+     204.1,
+     12,
+     -120.0
+    ],
+    [
+     222.2,
+     12,
+     -95.0
+    ],
+    [
+     204.1,
+     12,
+     -70.0
+    ],
+    [
+     174.8,
+     12,
+     -79.6
+    ]
+   ],
+   "domy": [
+    [
+     143.0,
+     12,
+     -95.0
+    ],
+    [
+     268.9,
+     12,
+     -82.2
+    ],
+    [
+     215.2,
+     12,
+     -166.5
+    ]
+   ],
+   "odrodzenie_s": 25,
+   "grupa": {
+    "watahy": 1,
+    "w_watasze": 3
+   },
+   "zachowanie": "wataha gęsiego za przewodnikiem (odstęp 4–6); w promieniu 20 przewodnik staje i warczy, pozostałe okrążają gracza łukiem 10; podczas walki z jednym reszta siada i patrzy z odległości ≥ 14"
+  },
+  {
+   "id": "z14",
+   "podbiom": "korona",
+   "potwor": "Muchomornik",
+   "wariant": null,
+   "poziomy": [
+    8,
+    9
+   ],
+   "naraz": 4,
+   "max": 5,
+   "srodek": [
+    -90,
+    12,
+    -243
+   ],
+   "r": 32,
+   "wezly": [
+    [
+     -111.2,
+     12,
+     -258.4
+    ],
+    [
+     -81.9,
+     12,
+     -268.0
+    ],
+    [
+     -63.8,
+     12,
+     -243.0
+    ],
+    [
+     -81.9,
+     12,
+     -218.0
+    ],
+    [
+     -111.2,
+     12,
+     -227.6
+    ]
+   ],
+   "domy": [
+    [
+     -143.0,
+     12,
+     -243.0
+    ],
+    [
+     -16.0,
+     12,
+     -243.0
+    ],
+    [
+     -42.5,
+     12,
+     -203.1
+    ]
+   ],
+   "odrodzenie_s": 20,
+   "grupa": null,
+   "zachowanie": "złośliwy: w promieniu 18 cofa się pod chatkę, gra „wiwat”, stroi miny; po odejściu gracza wraca do spaceru"
+  },
+  {
+   "id": "z15",
+   "podbiom": "korona",
+   "potwor": "Cierniowy Wilk",
+   "wariant": null,
+   "poziomy": [
+    9,
+    10
+   ],
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    10,
+    22,
+    -320
+   ],
+   "r": 28,
+   "wezly": [
+    [
+     -4.6,
+     22,
+     -335.1
+    ],
+    [
+     19.9,
+     22,
+     -338.5
+    ],
+    [
+     30.7,
+     22,
+     -316.4
+    ],
+    [
+     12.9,
+     22,
+     -299.2
+    ],
+    [
+     -8.9,
+     22,
+     -310.8
+    ]
+   ],
+   "domy": [
+    [
+     58.9,
+     22,
+     -337.8
+    ],
+    [
+     -53.4,
+     22,
+     -290.4
+    ],
+    [
+     -37.5,
+     22,
+     -353.3
+    ]
+   ],
+   "odrodzenie_s": 25,
+   "grupa": {
+    "watahy": 1,
+    "w_watasze": 3
+   },
+   "zachowanie": "wataha gęsiego za przewodnikiem (odstęp 4–6); w promieniu 20 przewodnik staje i warczy, pozostałe okrążają gracza łukiem 10; podczas walki z jednym reszta siada i patrzy z odległości ≥ 14"
+  }
+ ],
+ "patrole": [
+  {
+   "id": "p1",
+   "podbiom": "ostepy",
+   "potwor": "Cierniowy Wilk",
+   "poziomy": [
+    5,
+    6
+   ],
+   "grupa": {
+    "watahy": 1,
+    "w_watasze": 3
+   },
+   "trasa": [
+    [
+     -150,
+     0.0,
+     -85
+    ],
+    [
+     -230,
+     0.0,
+     -65
+    ],
+    [
+     -272,
+     0.0,
+     -62
+    ]
+   ],
+   "sciezka": "wilczy_trakt",
+   "tam_i_z_powrotem": true,
+   "zachowanie": "wataha wędruje Wilczym Traktem między Brodzikiem a Wilczą Skałą"
+  },
+  {
+   "id": "p2",
+   "podbiom": "laka",
+   "potwor": "Leśny Slime",
+   "poziomy": [
+    2,
+    3
+   ],
+   "grupa": {
+    "karawana": 3
+   },
+   "trasa": [
+    [
+     -80,
+     0.0,
+     388
+    ],
+    [
+     0,
+     0.0,
+     395
+    ],
+    [
+     110,
+     0.0,
+     398
+    ]
+   ],
+   "sciezka": "drozka_paproci",
+   "tam_i_z_powrotem": true,
+   "zachowanie": "karawana trzech slime'ów skacze gęsiego Dróżką Paproci"
+  },
+  {
+   "id": "p3",
+   "podbiom": "kapeluszowo",
+   "potwor": "Muchomornik",
+   "poziomy": [
+    3,
+    4
+   ],
+   "grupa": {
+    "z_koszami": 2
+   },
+   "trasa": [
+    [
+     -120,
+     0.0,
+     116
+    ],
+    [
+     -180,
+     0.0,
+     180
+    ],
+    [
+     -228,
+     0.0,
+     222
+    ]
+   ],
+   "sciezka": "drozka_kapeluszowa",
+   "tam_i_z_powrotem": true,
+   "zachowanie": "dwa muchomorniki z koszami grzybów chodzą Dróżką Kapeluszową do wioski"
+  },
+  {
+   "id": "p4",
+   "podbiom": "wawoz",
+   "potwor": "Cierniowy Wilk",
+   "poziomy": [
+    7,
+    8
+   ],
+   "grupa": {
+    "watahy": 1,
+    "w_watasze": 3
+   },
+   "trasa": [
+    [
+     300,
+     12.0,
+     -214
+    ],
+    [
+     335,
+     12.0,
+     -175
+    ],
+    [
+     362,
+     12.0,
+     -110
+    ],
+    [
+     365,
+     12.0,
+     -40
+    ]
+   ],
+   "sciezka": "polka_wschodnia",
+   "tam_i_z_powrotem": true,
+   "zachowanie": "wataha z półki: gdy gracz idzie dnem rynny pod nimi, zeskakuje mu na drogę (wyróżnik Wąwozu)"
+  }
+ ],
+ "troll": {
+  "potwor": "Leśny Troll",
+  "poziomy": [
+   8,
+   9
+  ],
+  "naraz": 1,
+  "dom": [
+   256,
+   -182
+  ],
+  "y_domu": 0,
+  "przebudzenie_min": [
+   8,
+   12
+  ],
+  "trasa": [
+   [
+    256,
+    0.0,
+    -182
+   ],
+   [
+    272,
+    0.0,
+    -160
+   ],
+   [
+    292,
+    0.0,
+    -125
+   ],
+   [
+    306,
+    0.0,
+    -60
+   ],
+   [
+    296,
+    0.0,
+    -6
+   ],
+   [
+    326,
+    0.0,
+    45
+   ],
+   [
+    344,
+    0.0,
+    100
+   ],
+   [
+    348,
+    0.0,
+    150
+   ],
+   [
+    350,
+    0.0,
+    200
+   ],
+   [
+    318,
+    0.0,
+    255
+   ],
+   [
+    298,
+    0.0,
+    285
+   ]
+  ],
+  "postoj_przy_oczku_s": 30,
+  "walka": "E tylko w Wąwozie (do wylotu rynny Ujścia, z ≤ 168); na łące troll „w drodze”: przystaje, ryczy, idzie dalej, bez E. Gdy schodzi do Oczka, slime'y z01 chowają się do wody",
+  "zapowiedz": "ryk słyszany w całym lesie i pin trolla na mapie, gdy się budzi",
+  "po_przegranej_trolla": "wraca spać, licznik przebudzenia od nowa; Skarbczyk Trolla otwarty dla zwycięzcy",
+  "zachowanie": "w promieniu 25 przystaje i ryczy, wlecze maczugę po bruździe"
+ },
+ "straznik": {
+  "potwor": "Strażnik Gaju",
+  "poziom": 10,
+  "miejsce": [
+   0,
+   -385
+  ],
+  "y": 32,
+  "tryb": "osobny dla każdego gracza (domyślnie; wybór dla ludzi: wspólne wydarzenie serwera)",
+  "warunek": "roboczo 10 wygranych w lesie z potworami nie niższymi niż (poziom gracza − 2) od ostatniej wygranej ze strażnikiem — wygrane ze slime'ami na łące nie liczą się graczom wysokiego poziomu",
+  "sygnal": "kryształ filara świeci i nad Kręgiem stoi słup światła widoczny tylko dla tego gracza",
+  "zachowanie": "kopiec menhirów; składa się z głazów, gdy uprawniony gracz wejdzie w promień 20",
+  "lup": "D-058: Złoto, doświadczenie, tokeny krainy, Shard Ewolucji z szansą 10%",
+  "arena": "propozycja: walka w osobnej przestrzeni (jak wnętrze Dziupli) — w Kręgu stoi tylko kopiec menhirów i portal; wariant bez osobnej przestrzeni: jeden Krąg naraz i kolejka (wybór dla ludzi nr 1)"
+ },
+ "zasady": {
+  "walke_zaczyna": "gracz: podpowiedź E w promieniu 8 (na telefonie przycisk); potwór nigdy nie atakuje sam",
+  "zajety": "potwór w walce ma ikonkę skrzyżowanych mieczy; inni gracze nie mogą go wziąć",
+  "smycz": 10,
+  "odstep_min": 25,
+  "plaski_grunt": "każdy węzeł trasy to miejsce walki: grunt ±0,5 w promieniu 12, nic wyższego niż 1,5 w promieniu 12, żadnej korony niżej niż 18 w promieniu 14, woda ≥ 6 od węzła; sprawdza wezly.py, sprawdz.py i generuj.py (na prawdziwych częściach)",
+  "strefy_spokoju": "potwory zawracają na granicy stref spokoju z uklad.json",
+  "odrodzenie": "w jednym z 2–3 domów strefy (35–50 st od węzłów walki, za krzakiem albo głazem); dom jest wolny, gdy żaden gracz nie stoi bliżej niż 18; nowy potwór idzie z domu do najbliższego węzła",
+  "skracanie": "czas = baza / (1 + 0,15 × (gracze w strefie − 1)), najmniej 10 s",
+  "skalowanie": "naraz to liczba przy ok. 8 graczach; mniej graczy → mniej (najmniej połowa), więcej → do max",
+  "tabliczka": "nad głową poziom; czerwona, gdy potwór ma o 3+ poziomy więcej niż gracz",
+  "ruch": "serwer przesuwa punkt bazowy po węzłach 4 razy na sekundę (bez PathfindingService); klient wygładza i gra klipy idle/ruch/wiwat tylko w promieniu 120 od kamery, najwyżej 12 najbliższych",
+  "predkosc": {
+   "Leśny Slime": 6,
+   "Muchomornik": 5,
+   "Cierniowy Wilk": 10,
+   "Leśny Troll": 7
+  },
+  "blokada_domu": 18,
+  "dom_od_wezlow": [
+   35,
+   50
+  ],
+  "pojemnosc": "max ≤ obwód trasy / 25; wataha liczy się jako jeden potwór w odstępie",
+  "kolejnosc": "węzły trasy w kolejności obchodu (zamknięta pętla); wyliczone przez wezly.py z maski terenu"
+ },
+ "punkty_e": [
+  {
+   "grupa": "Laka/Lokacje/BramaPniakow",
+   "punkt": [
+    220.0,
+    0.1,
+    419.5
+   ]
+  },
+  {
+   "grupa": "Laka/Lokacje/PrzewroconyWoz",
+   "punkt": [
+    113.4,
+    0.1,
+    352.2
+   ]
+  },
+  {
+   "grupa": "Punkty/WielkiKapelusz",
+   "punkt": [
+    -286.4,
+    44.9,
+    272.7
+   ]
+  },
+  {
+   "grupa": "Kapeluszowo/Lokacje/KragZarodnikow",
+   "punkt": [
+    -370.0,
+    0.1,
+    166.0
+   ]
+  },
+  {
+   "grupa": "Serce/Lokacje/GniazdoWKorzeniach",
+   "punkt": [
+    -55.5,
+    4.1,
+    20.6
+   ]
+  },
+  {
+   "grupa": "Serce/Lokacje/GniazdoWKorzeniach",
+   "punkt": [
+    -58.8,
+    4.1,
+    7.0
+   ]
+  },
+  {
+   "grupa": "Serce/Lokacje/DziuplaTurniejowa",
+   "punkt": [
+    99.9,
+    0.7,
+    31.9
+   ]
+  },
+  {
+   "grupa": "Serce/Lokacje/KorzennaGardziel",
+   "punkt": [
+    70.9,
+    0.1,
+    -75.6
+   ]
+  },
+  {
+   "grupa": "Ostepy/Lokacje/JezynowyLabirynt",
+   "punkt": [
+    -200.0,
+    0.1,
+    -273.5
+   ]
+  }
+ ],
+ "grupy_stale_wczytane": {
+  "ModelStreamingMode": "Persistent",
+  "grupy": [
+   "Punkty/BramaPniakow",
+   "Punkty/KamiennyKrag",
+   "Punkty/PagorekKlocka",
+   "Punkty/StaryUklon",
+   "Punkty/SzumiacyProg",
+   "Punkty/TrollowaTama",
+   "Punkty/WielkiKapelusz",
+   "Punkty/WilczaSkala"
+  ],
+  "dlaczego": "sylwetki punktów orientacyjnych nie znikają z daleka przy streamingu"
+ },
+ "grupy_niski_detal": {
+  "LevelOfDetail": "StreamingMesh",
+  "grupy": [
+   "Kapeluszowo/Las_0_4",
+   "Kapeluszowo/Las_0_5",
+   "Kapeluszowo/Las_0_6",
+   "Kapeluszowo/Las_0_7",
+   "Kapeluszowo/Las_1_4",
+   "Kapeluszowo/Las_1_5",
+   "Kapeluszowo/Las_1_6",
+   "Kapeluszowo/Las_1_7",
+   "Kapeluszowo/Las_2_4",
+   "Kapeluszowo/Las_2_5",
+   "Kapeluszowo/Las_2_6",
+   "Kapeluszowo/Las_2_7",
+   "Kapeluszowo/Las_3_4",
+   "Kapeluszowo/Las_3_5",
+   "Kapeluszowo/Las_3_6",
+   "Kapeluszowo/Las_3_7",
+   "Korona/Las_2_0",
+   "Korona/Las_2_1",
+   "Korona/Las_2_2",
+   "Korona/Las_3_0",
+   "Korona/Las_3_1",
+   "Korona/Las_3_2",
+   "Korona/Las_4_0",
+   "Korona/Las_4_1",
+   "Korona/Las_4_2",
+   "Korona/Las_4_3",
+   "Korona/Las_5_0",
+   "Korona/Las_5_1",
+   "Korona/Las_5_2",
+   "Laka/Las_3_5",
+   "Laka/Las_3_6",
+   "Laka/Las_3_7",
+   "Laka/Las_4_5",
+   "Laka/Las_4_6",
+   "Laka/Las_4_7",
+   "Laka/Las_5_5",
+   "Laka/Las_5_6",
+   "Laka/Las_5_7",
+   "Laka/Las_6_5",
+   "Laka/Las_6_6",
+   "Laka/Las_6_7",
+   "Laka/Las_7_5",
+   "Laka/Las_7_6",
+   "Laka/Las_7_7",
+   "Mur/Drzewa",
+   "Mur/Sciana",
+   "Mur/Skaly",
+   "Ostepy/Las_0_0",
+   "Ostepy/Las_0_1",
+   "Ostepy/Las_0_2",
+   "Ostepy/Las_0_3",
+   "Ostepy/Las_0_4",
+   "Ostepy/Las_1_0",
+   "Ostepy/Las_1_1",
+   "Ostepy/Las_1_2",
+   "Ostepy/Las_1_3",
+   "Ostepy/Las_1_4",
+   "Ostepy/Las_2_0",
+   "Ostepy/Las_2_1",
+   "Ostepy/Las_2_2",
+   "Ostepy/Las_2_3",
+   "Ostepy/Las_2_4",
+   "Ostepy/Las_3_2",
+   "Ostepy/Las_3_3",
+   "Ostepy/Las_3_4",
+   "Serce/Las_3_2",
+   "Serce/Las_3_3",
+   "Serce/Las_3_4",
+   "Serce/Las_3_5",
+   "Serce/Las_4_2",
+   "Serce/Las_4_3",
+   "Serce/Las_4_4",
+   "Serce/Las_4_5",
+   "Tlo/Las",
+   "Tlo/Miasteczko",
+   "Tlo/Wzgorza",
+   "Wawoz/Las_5_1",
+   "Wawoz/Las_5_2",
+   "Wawoz/Las_5_3",
+   "Wawoz/Las_5_4",
+   "Wawoz/Las_5_5",
+   "Wawoz/Las_6_2",
+   "Wawoz/Las_6_3",
+   "Wawoz/Las_6_4",
+   "Wawoz/Las_6_5",
+   "Wawoz/Las_7_2",
+   "Wawoz/Las_7_3",
+   "Wawoz/Las_7_4",
+   "Wawoz/Las_7_5"
+  ],
+  "dlaczego": "kępy lasu, mur i tło widać z daleka jako uproszczoną bryłę, gdy wyjdą poza promień streamingu"
+ }
+}
