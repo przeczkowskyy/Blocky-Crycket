@@ -1508,7 +1508,35 @@
       "approved_at": "2026-11-15T14:09:35+00:00",
       "approved_sha256": "78964e8d4d172e561b7d14d838ac727462fb315d52ca74a46c4d6696b556aa7e",
       "roblox_image": "129780571302185"
+    },
+    "NodePetStatInt": {
+      "created_at": "2026-11-15T14:45:46+00:00",
+      "history": [],
+      "category": "icon",
+      "status": "in_roblox",
+      "processed": "assets/processed/SkillTree/NodePetStatInt.png",
+      "usage": "Okno drzewka umiejętności — Pets: PET INTELLIGENCE",
+      "updated_at": "2026-11-15T14:46:53+00:00",
+      "figma_node": "34:74",
+      "approved_by_user": true,
+      "approved_at": "2026-11-15T14:46:39+00:00",
+      "approved_sha256": "b09ae775a73486b190bc1bf7144258c535939df481e7162b541c3271173ed42d",
+      "roblox_image": "95490234999865"
+    },
+    "NodePetStatDex": {
+      "created_at": "2026-11-15T14:45:46+00:00",
+      "history": [],
+      "category": "icon",
+      "status": "in_roblox",
+      "processed": "assets/processed/SkillTree/NodePetStatDex.png",
+      "usage": "Okno drzewka umiejętności — Pets: PET DEXTERITY",
+      "updated_at": "2026-11-15T14:46:53+00:00",
+      "figma_node": "34:75",
+      "approved_by_user": true,
+      "approved_at": "2026-11-15T14:46:40+00:00",
+      "approved_sha256": "8f80d3172b4444000015eb23a2f6d5c955a091fc0c48044aad52ed5152fc7da3",
+      "roblox_image": "138644394624772"
     }
   },
-  "updated_at": "2026-11-15T14:13:55+00:00"
+  "updated_at": "2026-11-15T14:46:53+00:00"
 }

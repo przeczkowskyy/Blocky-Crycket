@@ -137,9 +137,9 @@ local TABS = {
 					{ "NodePetStatAtk", "PET ATTACK", "PetAttack", 3, 5 },
 					{ "NodePetStatHp", "PET HEALTH", "PetHealth", 3, 5 },
 					{ "NodePetStatDef", "PET DEFENSE", "PetDefense", 3, 5 },
-					{ "NodePetStatSpeed", "PET SPEED", "PetSpeed", 3, 5 },
+					{ "NodePetStatDex", "PET DEXTERITY", "PetDexterity", 3, 5 }, -- Paweł 15.11: zamiast PET SPEED
 					{ "NodePetStatLuck", "PET LUCK", "PetLuck", 3, 5 },
-					{ "NodePetStatAll", "PET POWER", "PetAll", 2, 5 },
+					{ "NodePetStatInt", "PET INTELLIGENCE", "PetIntelligence", 3, 5 }, -- Paweł 15.11: zamiast PET POWER
 				},
 			},
 			{
@@ -185,7 +185,7 @@ local LABELS = {
 	Luck = "Luck", Intelligence = "Intelligence", AllStats = "all stats", Gold = "Gold", Exp = "EXP",
 	Loot = "loot drops", QuestGold = "quest Gold", Gems = "Gems", Offline = "offline Gold",
 	PetAttack = "pet attack", PetHealth = "pet health", PetDefense = "pet defense", PetSpeed = "pet speed",
-	PetLuck = "pet luck", PetAll = "all pet stats",
+	PetLuck = "pet luck", PetAll = "all pet stats", PetDexterity = "pet dexterity", PetIntelligence = "pet intelligence",
 }
 
 SkillTreeData.ROOT_COST = 10 -- Diamenty za węzeł startowy zakładki (polecenie Pawła: „niewielka ilość”)

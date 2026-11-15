@@ -17,7 +17,7 @@ Okno drzewek z D-055/D-056 według polecenia Pawła z 15.11. To **propozycja uk�
 |---|---|---|
 | **Player** (domyślna) | Roblox-rycerz | **Stats** — % do statystyk (na start klasa Wojownik) · **Income** — % do zdobywanego Złota, EXP i Diamentów · **Skills** — umiejętności walki aktywne i pasywne, sloty (D-055) |
 | **Fortress** | mały kanciasty zamek | **Training Center** — szybsze zdobywanie statystyk w budynku · **Income** — więcej surowców, czasowe gainy · **Timer** — krótszy czas budowy |
-| **Pets** | gniazdo z kolorowymi jajkami | **Pet Stats** — % do statystyk petów · **Eggs** — szybsze jajka, kilka naraz · **Luck** — lepsze szanse w jajkach · **Capacity** — więcej petów przy graczu i większy ekwipunek petów |
+| **Pets** | gniazdo z kolorowymi jajkami | **Pet Stats** — % do statystyk petów (m.in. PET INTELLIGENCE i PET DEXTERITY — Paweł 15.11) · **Eggs** — szybsze jajka, kilka naraz · **Luck** — lepsze szanse w jajkach · **Capacity** — więcej petów przy graczu i większy ekwipunek petów |
 
 Ikony węzłów to okrągłe medaliony, po 6 na gałąź. Wartości („+5% Gold”) są tekstem natywnym, nie w grafice.
 
