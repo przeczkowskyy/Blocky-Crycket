@@ -89,6 +89,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-15: Karol zaakceptował w panelu (wieczorem, bez uwag) raporty „Las: wszystkie 6 modeli wgrane do Roblox”, „Potwory w lesie: kontrola w Studio zakończona” i „Import modeli lasu: Zwiadowca i Troll”; wybór modelu do pierwszej podmiany wersji z klocków i kolejność poprawek w lesie pozostają otwarte
 - [x] 2026-11-15: Potwory w lesie — pełna kontrola w Studio (odradzanie, Strażnik, skalowanie, wilki, Muchomorniki, telefon, koszt); raport w panelu
 - [x] 2026-11-15: Sześć modeli lasu wgranych do Robloxa jako siatki ze szkieletami i sprawdzonych w Studio (`Workspace/TestPostaci`); narzędzia `roblox_import_lasu.py` i `roblox_import_kolory.py`; raport w panelu
 - [x] 2026-11-15: Teleport do lasu w Studio (`Workspace/LasTeleport`): brama przy miejscu startu, Brama Miejska → las, Kamień Powrotu → miasteczko; sprawdzony w grze w obie strony (`swiat/biom_las/teleport.py`)
