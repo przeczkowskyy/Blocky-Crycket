@@ -12,9 +12,11 @@ gdzie ma stanąć w Studio: kontener Workspace/BiomLas, środek (0; 0; −2000),
 piny, grupy stale wczytane i z niskim detalem) jest w układzie lasu — następny krok (potwory w Studio) przelicza tym
 samym wzorem. Wynik deterministyczny (random.Random(ziarno)).
 
-Kolejność: teren (płyta, plamy, poziomy, urwiska, kopce, rampy) → woda → ścieżki → lokacje → domy potworów
-i podkładki stref → drogowskazy → rozsiew roślin i kamieni (z maską: ścieżki, woda, place walki r 12 + korona,
-trasy potworów, rampy, urwiska) → mur → tło → kontrola placów walki NA PRAWDZIWYCH CZĘŚCIACH → zapis i raport.
+Kolejność: teren (płyta, plamy, poziomy, urwiska z warstwami i piargiem, kopce, rampy) → woda → ścieżki → lokacje →
+domy potworów i podkładki stref → drogowskazy → rekwizyty przy lokacjach (detale.py) → rozsiew roślin i kamieni
+(z maską: ścieżki, woda, place walki r 12 + korona, trasy potworów, rampy, urwiska) → garby, brzegi ścieżek, runo
+i kłody (detale.py) → mur → tło → FAKTURY (faktury.naloz: materiał według roli każdej części) → kontrola placów walki
+NA PRAWDZIWYCH CZĘŚCIACH → zapis i raport (części, sufity, udział materiałów, detale na 100 st ścieżki).
 """
 import argparse
 import json
@@ -31,7 +33,7 @@ if REPO not in sys.path:
     sys.path.insert(0, REPO)
 
 from swiat.biblioteka.scena import Scena, macierz_obrotu, KULA, WALEC  # noqa: E402
-from swiat.biom_las import geo, rosliny, skaly, teren  # noqa: E402
+from swiat.biom_las import detale, faktury, geo, rosliny, skaly, teren  # noqa: E402
 from swiat.biom_las.lokacje import REJESTR, wspolne  # noqa: E402
 from swiat.biom_las.lokacje.serce import lampiony_polany  # noqa: E402
 from swiat.biom_las.lokacje.wawoz import prog_ujscia  # noqa: E402
@@ -59,8 +61,8 @@ class Kontekst:
         self.pod = {b["id"]: b for b in self.U["podbiomy"]}
         self.GRUPA_PODBIOMU = GRUPA_PODBIOMU
         r = random.Random(ziarno)
-        for nazwa in ("teren", "woda", "sciezki", "mur", "tlo", "lokacje", "domy", "rozsiew"):
-            setattr(self, "rnd_" + nazwa, random.Random(r.randint(0, 10 ** 9)))
+        for nazwa in ("teren", "woda", "sciezki", "mur", "tlo", "lokacje", "domy", "rozsiew", "detale"):   # nowe strumienie
+            setattr(self, "rnd_" + nazwa, random.Random(r.randint(0, 10 ** 9)))                          # tylko na końcu
         k = self.KROK
         self.xs = np.arange(-500 + k / 2, 500, k)
         X, Z = np.meshgrid(self.xs, self.xs)
@@ -105,6 +107,17 @@ class Kontekst:
         mn = np.min([hp[2 + di:2 + di + n, 2 + dj:2 + dj + n] for di in (-2, 0, 2) for dj in (-2, 0, 2)], axis=0)
         self.nierownosc = mx - mn
         self.zajete = np.zeros(X.shape, dtype=bool)
+        # wersja 2: osobne maski dla detali — rdzenie lokacji i rekwizyty (kopia `zajete` przed rozsiewem), pnie drzew
+        # i głazów (detal nie wchodzi w pień, ale może leżeć pod koroną), kępy runa i garby (odstęp między nimi)
+        self.lokacje_maska = np.zeros(X.shape, dtype=bool)
+        self.pnie = np.zeros(X.shape, dtype=bool)
+        self.detale_maska = np.zeros(X.shape, dtype=bool)
+        self.garby_maska = np.zeros(X.shape, dtype=bool)
+        self.pb_ids = list(self.pod.keys())
+        pbg = np.full(X.shape, -1, dtype=int)
+        for i, k in enumerate(self.pb_ids):
+            pbg[geo.w_wielokacie_np(X, Z, self.pod[k]["wielokat"])] = i
+        self.pb_siatka = pbg
         self.spokoj = [s for s in self.U["strefy_spokoju"] if "srodek" in s]
 
     # --- dostęp do siatek
@@ -118,17 +131,28 @@ class Kontekst:
         i, j = self._ij(x, z)
         return float(getattr(self, nazwa)[i, j])
 
-    def zajmij(self, x, z, r):
+    def zajmij_w(self, maska, x, z, r):
         i0, j0 = self._ij(x - r, z - r)
         i1, j1 = self._ij(x + r, z + r)
         sub = (self.X[i0:i1 + 1, j0:j1 + 1] - x) ** 2 + (self.Z[i0:i1 + 1, j0:j1 + 1] - z) ** 2 <= r * r
-        self.zajete[i0:i1 + 1, j0:j1 + 1] |= sub
+        maska[i0:i1 + 1, j0:j1 + 1] |= sub
+
+    def wolne_w(self, maska, x, z, r):
+        i0, j0 = self._ij(x - r, z - r)
+        i1, j1 = self._ij(x + r, z + r)
+        sub = (self.X[i0:i1 + 1, j0:j1 + 1] - x) ** 2 + (self.Z[i0:i1 + 1, j0:j1 + 1] - z) ** 2 <= r * r
+        return not bool((maska[i0:i1 + 1, j0:j1 + 1] & sub).any())
+
+    def zajmij(self, x, z, r):
+        self.zajmij_w(self.zajete, x, z, r)
 
     def wolne(self, x, z, r):
-        i0, j0 = self._ij(x - r, z - r)
-        i1, j1 = self._ij(x + r, z + r)
-        sub = (self.X[i0:i1 + 1, j0:j1 + 1] - x) ** 2 + (self.Z[i0:i1 + 1, j0:j1 + 1] - z) ** 2 <= r * r
-        return not bool((self.zajete[i0:i1 + 1, j0:j1 + 1] & sub).any())
+        return self.wolne_w(self.zajete, x, z, r)
+
+    def podbiom_szybko(self, x, z):
+        i, j = self._ij(x, z)
+        v = int(self.pb_siatka[i, j])
+        return None if v < 0 else self.pb_ids[v]
 
     # --- pytania używane przez teren.py i lokacje
     def na_sciezce(self, x, z, zapas=0.0, pomin=None):
@@ -154,7 +178,9 @@ class Kontekst:
 
 # =========================================================================== domy potworów, podkładki, drogowskazy
 PODKLADKI = {"z01": "runo", "z02": "runo", "z16": "runo", "z03": "runo", "z06": "runo", "z04": "mech", "z05": "mech",
-             "z14": "mech", "z12": "kamien_cokol"}
+             "z14": "mech", "z12": "kamien_cokol",
+             # wersja 2: Ostępy mają ciemne runo boru — place wilków to jaśniejsze polanki `runo` (ΔL* 26 jak w wersji 1)
+             "z07": "runo", "z08": "runo", "z09": "runo", "z10": "runo"}
 
 
 def potwory_na_mapie(s, G, widoczne):
@@ -247,47 +273,79 @@ def drogowskazy(s, G):
 # =========================================================================== rozsiew roślin i kamieni
 # (podbiom, warunek wysokości, rodzina, liczba, skala, odstęp, waga pasa przy ścieżkach)
 ROZSIEW = [
-    ("laka", (0, 0), "okraglak", 85, (0.85, 1.35), 13, 0.85),
-    ("laka", (0, 0), "dab", 10, (0.8, 1.0), 16, 0.6),
+    # wersja 2: w każdym podbiomie 3–4 sylwetki drzew (rosliny.py G–L), różna skala i odcień korony
+    ("laka", (0, 0), "okraglak", 70, (0.8, 1.4), 13, 0.85),
+    ("laka", (0, 0), "smukly", 18, (0.85, 1.2), 11, 0.8),
+    ("laka", (0, 0), "dab", 10, (0.8, 1.05), 16, 0.6),
     ("laka", (0, 0), "krzak", 110, (0.8, 1.3), 5, 0.8),
     ("laka", (0, 0), "kwiaty", 70, None, 4, 0.8),
     ("laka", (0, 0), "kanciak", 40, (0.8, 1.4), 4, 0.6),
     ("kapeluszowo", (0, 0), "grzyb", 75, (0.8, 2.2), 11, 0.8),
-    ("kapeluszowo", (0, 0), "dab", 45, (0.85, 1.25), 15, 0.7),
+    ("kapeluszowo", (0, 0), "dab", 36, (0.85, 1.3), 15, 0.7),
+    ("kapeluszowo", (0, 0), "jarzebina", 12, (0.9, 1.2), 10, 0.7),
+    ("kapeluszowo", (0, 0), "sosna_smukla", 6, (0.9, 1.1), 11, 0.6),
     ("kapeluszowo", (0, 0), "paproc", 90, (0.8, 1.3), 3, 0.6),
     ("kapeluszowo", (0, 0), "krzak", 40, (0.8, 1.2), 5, 0.7),
     ("kapeluszowo", (0, 0), "kwiaty_biale", 30, None, 4, 0.7),
-    ("serce", (0, 4.5), "dab", 26, (0.9, 1.3), 15, 0.6),
+    ("serce", (0, 4.5), "dab", 20, (0.9, 1.35), 15, 0.6),
+    ("serce", (0, 4.5), "smukly", 8, (0.9, 1.2), 11, 0.6),
+    ("serce", (0, 4.5), "jarzebina", 6, (0.9, 1.15), 10, 0.6),
     ("serce", (0, 4.5), "krzak", 45, (0.8, 1.2), 5, 0.7),
     ("serce", (0, 4.5), "kwiaty", 25, None, 4, 0.7),
     ("serce", (0, 4.5), "paproc", 25, (0.8, 1.2), 3, 0.6),
-    ("ostepy", (0, 0), "sosna", 300, (1.05, 1.75), 10, 0.75),
+    ("ostepy", (0, 0), "sosna", 215, (1.0, 1.8), 10, 0.75),
+    ("ostepy", (0, 0), "swierk", 60, (0.9, 1.4), 10, 0.75),
+    ("ostepy", (0, 0), "sosna_smukla", 30, (0.95, 1.25), 10, 0.7),
+    ("ostepy", (0, 0), "suchy", 14, (0.9, 1.2), 10, 0.6),
     ("ostepy", (0, 0), "jezyna", 90, (0.8, 1.2), 5, 0.7),
     ("ostepy", (0, 0), "paproc", 80, (0.8, 1.3), 3, 0.6),
     ("ostepy", (0, 0), "glaz", 35, (0.8, 1.4), 7, 0.5),
     ("ostepy", (32, 32), "sosna", 28, (0.9, 1.3), 12, 0.0),
-    ("wawoz", (12, 12), "sosna", 120, (0.9, 1.5), 11, 0.5),
+    ("wawoz", (12, 12), "sosna", 85, (0.9, 1.55), 11, 0.5),
+    ("wawoz", (12, 12), "sosna_smukla", 25, (0.9, 1.2), 11, 0.5),
+    ("wawoz", (12, 12), "suchy", 6, (0.8, 1.1), 10, 0.5),
     ("wawoz", (12, 12), "jezyna", 30, (0.8, 1.1), 6, 0.5),
     ("wawoz", (0, 0), "glaz", 28, (0.9, 1.5), 8, 0.5),
     ("wawoz", (0, 0), "kanciak", 30, (0.8, 1.4), 4, 0.5),
-    ("korona", (12, 32), "brzozka", 150, (0.9, 1.35), 10, 0.6),
+    ("korona", (12, 32), "brzozka", 120, (0.85, 1.4), 10, 0.6),
+    ("korona", (12, 32), "brzozka_podwojna", 18, (0.9, 1.2), 11, 0.6),
+    ("korona", (12, 32), "jarzebina", 14, (0.85, 1.15), 10, 0.6),
     ("korona", (12, 32), "glaz", 50, (0.8, 1.4), 7, 0.4),
     ("korona", (12, 32), "kwiaty_biale", 30, None, 4, 0.6),
     ("korona", (0, 0), "dab", 8, (0.8, 1.0), 15, 0.5),
     ("korona", (0, 0), "krzak", 25, (0.8, 1.2), 5, 0.6),
 ]
-KORONA = {"okraglak": 9.0, "dab": 15.0, "sosna": 9.0, "brzozka": 6.5, "grzyb": 8.0, "glaz": 3.6}   # pół przekątnej korony + przechył
-WYSOKIE = {"okraglak", "dab", "sosna", "brzozka", "grzyb", "glaz"}
+KORONA = {"okraglak": 9.0, "dab": 15.0, "sosna": 9.0, "brzozka": 6.5, "grzyb": 8.0, "glaz": 3.6,   # pół przekątnej korony
+          "smukly": 5.0, "sosna_smukla": 6.0, "swierk": 7.0, "suchy": 5.5, "brzozka_podwojna": 7.5, "jarzebina": 5.5}
+WYSOKIE = set(KORONA)
+PIEN = {"okraglak": 1.6, "dab": 2.4, "sosna": 1.2, "brzozka": 1.0, "grzyb": 1.4, "glaz": 3.0, "smukly": 1.2, "sosna_smukla": 1.1,
+        "swierk": 1.1, "suchy": 1.3, "brzozka_podwojna": 1.6, "jarzebina": 1.0, "krzak": 2.0, "jezyna": 2.4, "kanciak": 1.6}
+ODCIEN = (0.9, 0.96, 1.0, 1.0, 1.05)                         # odcień korony jednego drzewa (las nie z jednej formy)
 
 
 def _postaw(s, G, rnd, rodzina, x, y, z, k, pb):
     ry = 15.0 * rnd.randint(0, 23)
+    f = rnd.choice(ODCIEN)
+    kor = tuple(rosliny.odcien(s, c, f) for c in rosliny.KORONY[pb])
     if rodzina == "okraglak":
-        rosliny.okraglak(s, rnd, (x, y, z), k, ry, rosliny.KORONY[pb])
+        rosliny.okraglak(s, rnd, (x, y, z), k, ry, kor)
     elif rodzina == "dab":
-        rosliny.dab(s, rnd, (x, y, z), k, ry, rosliny.KORONY[pb])
+        rosliny.dab(s, rnd, (x, y, z), k, ry, kor)
     elif rodzina == "sosna":
-        rosliny.sosna(s, rnd, (x, y, z), k, ry, ciemna=pb == "ostepy")
+        rosliny.sosna(s, rnd, (x, y, z), k, ry, ciemna=pb == "ostepy", f=f)
+    elif rodzina == "smukly":
+        rosliny.smukly(s, rnd, (x, y, z), k, ry, kor)
+    elif rodzina == "sosna_smukla":
+        rosliny.sosna_smukla(s, rnd, (x, y, z), k, ry, ciemna=pb == "ostepy", f=f,
+                             przechyl=rnd.uniform(4, 9) if pb == "wawoz" else rnd.uniform(0, 4))
+    elif rodzina == "swierk":
+        rosliny.swierk(s, rnd, (x, y, z), k, ry, f=f)
+    elif rodzina == "suchy":
+        rosliny.suchy(s, rnd, (x, y, z), k, ry)
+    elif rodzina == "brzozka_podwojna":
+        rosliny.brzozka_podwojna(s, rnd, (x, y, z), k, ry)
+    elif rodzina == "jarzebina":
+        rosliny.jarzebina(s, rnd, (x, y, z), k, ry, kolory=tuple(rosliny.odcien(s, c, f) for c in ("lisc_ciemny", "lisc")))
     elif rodzina == "brzozka":
         rosliny.brzozka(s, rnd, (x, y, z), k, ry)
     elif rodzina == "grzyb":
@@ -296,6 +354,12 @@ def _postaw(s, G, rnd, rodzina, x, y, z, k, pb):
                       trzon="biel" if kap != "tynk_krem" else "drewno_jasne")
     elif rodzina == "krzak":
         rosliny.krzak(s, rnd, (x, y, z), k, jagoda=rnd.choice((None, "czerwien", "zloto")))
+        if pb == "laka" and rnd.random() < 0.5:               # wersja 2: krzaki Łąki w kępach (mniej „parkowo”)
+            a = rnd.uniform(0, 2 * math.pi)
+            px, pz = x + 3.2 * k * math.cos(a), z + 3.2 * k * math.sin(a)
+            if (G.siatka("d_sciezka", px, pz) > 2.5 and G.siatka("d_walka", px, pz) > 17.0 and G.siatka("d_trasa", px, pz) > 3.0
+                    and G.siatka("d_woda", px, pz) > 1.5 and G.siatka("nierownosc", px, pz) <= 0.05):
+                rosliny.krzak(s, rnd, (px, y, pz), k * rnd.uniform(0.6, 0.8))
     elif rodzina == "kwiaty":
         rosliny.kwiaty(s, rnd, (x, y, z), rnd.choice((("zloto", "biel"), ("czerwien", "zloto"), ("biel", "dach_sklep"))))
     elif rodzina == "kwiaty_biale":
@@ -357,12 +421,16 @@ def rozsiew(s, G):
                 # po przeglądzie: z oczu gracza bór miał jasne runo jak Łąka. Pod sosnami Ostępów ciemne igliwie
                 # (płaty runo_ciemne na 0,12, między plamą 0,06 a brzegiem wody 0,14; Ostępy nie mają podkładek stref),
                 # więc place walki na jaśniejszym runie wyglądają jak polanki, a wilk na nich zostaje widoczny (ΔL* 26).
-                if pb == "ostepy" and rodzina == "sosna" and h0 == 0 and G.siatka("d_woda", x, z) > 10.0:
-                    with s.cechy(kolizja=False, cien=False):
-                        a = rnd.uniform(8.0, 11.0) * k
-                        s.blok("Igliwie", (x, h + 0.02, z), (a, 0.2, a * rnd.uniform(0.75, 0.95)), "runo_ciemne",
-                               rot=(0, rnd.uniform(0, 90), 0))
+                # wersja 2: płat igliwia (Ground) także pod świerkami; nie sięga bliżej niż 13 od węzła walki (podkładka
+                # placu zostaje jasna), leży na 0,115–0,13 (różne wysokości: nachodzące faktury nie migoczą)
+                if pb == "ostepy" and rodzina in ("sosna", "swierk") and h0 == 0 and G.siatka("d_woda", x, z) > 10.0:
+                    a = min(rnd.uniform(8.0, 11.0) * k, (G.siatka("d_walka", x, z) - 13.0) * 1.3)
+                    if a > 4.0:
+                        with s.cechy(kolizja=False, cien=False):
+                            s.blok("Igliwie", (x, h + 0.015 + rnd.uniform(0.0, 0.015), z), (a, 0.2, a * rnd.uniform(0.75, 0.95)),
+                                   "runo_ciemne", rot=(0, rnd.uniform(0, 90), 0))
             G.zajmij(x, z, odstep * 0.5 if wys else odstep * 0.4)
+            G.zajmij_w(G.pnie, x, z, PIEN.get(rodzina, 0.0) * k if rodzina in PIEN else 0.0)
             postawione += 1
         stat["%s %s" % (pb, rodzina)] = (postawione, n)
     return stat
@@ -470,13 +538,16 @@ def ujecia_swiata(plik_wej, plik_wyj):
         f.write("[\n" + ",\n".join(" " + json.dumps(u, ensure_ascii=False) for u in wyn) + "\n]\n")
 
 
+PRZEZROCZYSTE_MAX = 40       # wersja 2: tafle jezior i stawów (ok. 24 części) + mgła — PROJEKT.md rozdz. 14
+
+
 def raport(s):
     pref = len(s.korzen) + 1
     gl = {}
     for c in s.czesci:
         g = s.grupy[c[1]][pref:].split("/")[0]
         gl[g] = gl.get(g, 0) + 1
-    print("CZĘŚCI: %d (limit %d)" % (len(s.czesci), LIMIT))
+    print("CZĘŚCI: %d (limit %d, cel wersji 2 ok. 22 000)" % (len(s.czesci), LIMIT))
     for g in sorted(gl, key=lambda k: -gl[k]):
         print("  %-14s %6d" % (g, gl[g]))
     mats = s.materialy
@@ -487,11 +558,15 @@ def raport(s):
     przezr = sum(1 for c in s.czesci if 0 < c[13] < 1)
     bez_kol = sum(1 for c in s.czesci if len(c) > 15 and c[15] & 1)
     bez_cien = sum(1 for c in s.czesci if len(c) > 15 and c[15] & 2)
-    smooth = sum(1 for c in s.czesci if mats[c[12]] == "SmoothPlastic")
-    wood = sum(1 for c in s.czesci if mats[c[12]] == "Wood")
-    print("SUFITY: Neon %d (≤300), kule %d (≤300), walce %d (≤3000), przezroczyste %d (≤20), z kolizją %.0f%% (≤25%%), "
-          "bez cienia %.0f%% (≥50%%), SmoothPlastic %.0f%% (≥85%%), Wood %.0f%% (≤10%%)" % (
-              neon, kule, walce, przezr, 100 * (n - bez_kol) / n, 100 * bez_cien / n, 100 * smooth / n, 100 * wood / n))
+    print("SUFITY: Neon %d (≤300), kule %d (≤300), walce %d (≤3000), przezroczyste %d (≤%d), z kolizją %.0f%% (≤25%%), "
+          "bez cienia %.0f%% (≥50%%)" % (neon, kule, walce, przezr, PRZEZROCZYSTE_MAX, 100 * (n - bez_kol) / n, 100 * bez_cien / n))
+    ud = faktury.udzialy(s)
+    razem = ud["razem"]
+    print("MATERIAŁY (udział w częściach): " + ", ".join("%s %.1f%%" % (m, 100 * v / n) for m, v in
+                                                         sorted(razem.items(), key=lambda kv: -kv[1])))
+    for g in sorted(gl, key=lambda k: -gl[k]):
+        m = ud[g]
+        print("  %-12s %s" % (g, ", ".join("%s %d" % (k, v) for k, v in sorted(m.items(), key=lambda kv: -kv[1]))))
     return gl
 
 
@@ -515,9 +590,15 @@ def generuj(ziarno=7, widoczne=False):
             G.zajmij(62 - 0.35 * t, -418 + t, 14 + 0.25 * t)
         G.zajmij(258, -100, 12)                                # Wartownia: widok z półki w rynnę (ujęcie l17)
         prog_ujscia(s, G, G.rnd_lokacje)
+        G.zajmij(349, 168, 14)
         potwory_na_mapie(s, G, widoczne)
         drogowskazy(s, G)
-        stat = rozsiew(s, G)
+        G.lokacje_maska |= G.zajete                            # wersja 2: rdzenie lokacji, domy, drogowskazy — bez detali
+        stat = {"rekwizyty": detale.rekwizyty_lokacji(s, G)}
+        stat["rozsiew"] = rozsiew(s, G)
+        stat["garby"] = detale.garby(s, G)
+        stat["sciezki"] = detale.brzegi_sciezek(s, G)
+        stat["runo"] = detale.runo(s, G)
         teren.mur(s, G)
         teren.tlo(s, G)
     return s, G, stat
@@ -532,14 +613,24 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     s, G, stat = generuj(a.ziarno, a.znaczniki_widoczne)
+    brak_roli = faktury.naloz(s)
     s.zapisz(a.wyj)
     katalog = os.path.dirname(os.path.abspath(a.wyj))
     if not a.znaczniki_widoczne:
         znaczniki(s, G, os.path.join(TU, "znaczniki.json"))
     ujecia_swiata(os.path.join(TU, "ujecia.json"), os.path.join(katalog, "ujecia_swiat.json"))
     raport(s)
-    niepelne = ["%s %d/%d" % (k, v[0], v[1]) for k, v in stat.items() if v[0] < v[1]]
-    print("ROZSIEW: %d rodzin%s" % (len(stat), ("; niepełne: " + ", ".join(niepelne)) if niepelne else ", wszystkie pełne"))
+    roz = stat["rozsiew"]
+    niepelne = ["%s %d/%d" % (k, v[0], v[1]) for k, v in roz.items() if v[0] < v[1]]
+    print("ROZSIEW: %d rodzin%s" % (len(roz), ("; niepełne: " + ", ".join(niepelne)) if niepelne else ", wszystkie pełne"))
+    n_rek, braki = stat["rekwizyty"]
+    print("DETALE: rekwizyty przy lokacjach %d%s" % (n_rek, ("; bez miejsca: " + ", ".join(braki)) if braki else ""))
+    st_sc, dlug = stat["sciezki"]
+    print("  brzegi ścieżek (sztuk / 100 st): " + ", ".join("%s %d (%.1f)" % (k, st_sc.get(k, 0), 100.0 * st_sc.get(k, 0) / v)
+                                                         for k, v in sorted(dlug.items())))
+    print("  kępy runa i kłody: " + ", ".join("%s %d/%d + %d/%d" % ((k,) + v) for k, v in stat["runo"].items()))
+    print("  garby: " + ", ".join("%s %d/%d" % ((k,) + v) for k, v in stat["garby"].items()))
+    print("FAKTURY: %s" % ("każda część ma rolę" if not brak_roli else "BEZ ROLI: " + ", ".join(brak_roli)))
     bl = kontrola_placow(s, G)
     print("PLACE WALKI (na częściach, r 12, 1,5–18 nad gruntem): %s" % ("czyste" if not bl else "%d problemów" % len(bl)))
     for b in bl[:40]:
@@ -549,7 +640,7 @@ def main():
     for u in uwagi[:40]:
         print("  UWAGA:", u)
     print("ZAPISANO:", a.wyj)
-    return 1 if bl else 0
+    return 1 if bl or brak_roli else 0
 
 
 if __name__ == "__main__":

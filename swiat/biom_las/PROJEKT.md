@@ -2,9 +2,9 @@
 
 *Status: **propozycja** (15.11.2026), nie kanon — kanonem może go uczynić tylko Karol albo Paweł. Wzór formy: `swiat/krzywe_miasteczko/PROJEKT.md`. Ustalenia, których się trzymamy: D-061 (osiem biomów, las pierwszy; strażnik biomu i inkubatory), D-032 (trudność lokalna, las od początku), D-034 (strefy z odradzającymi się potworami, E, walka), D-035, D-059 i D-060 (walki petów, inkubatory), D-064 (mapa teleportacji z pinami), D-068 (animacja przy każdej walce), D-041 i D-042 (styl Krzywego Miasteczka, wrota z kłódką). Notatka w sejfie: `B&C/Gra/Biom Las.md`.*
 
-> **W skrócie.** Las ma 1000 × 1000 studów (gra w 860 × 860, ok. 3,4 raza szerzej niż miasteczko). Pośrodku rośnie **Stary Ukłon** — drzewo wysokie na ok. 100, które kłania się na wschód i widać je z całego lasu. Sześć podbiomów: **na południu nisko, jasno i łatwo, na północy wysoko i trudno**. Kręta Struga płynie od wodospadu do stawu przy wejściu. 24 lokacje rozpoznaje się po wielkim rekwizycie. Po lesie chodzi 64 zwykłych potworów w 16 strefach (do 86 przy tłoku), 4 patrole wędrowne, rzadki troll i strażnik biomu; walkę zawsze zaczyna gracz klawiszem E. Od bramy do Ukłonu biegnie się 26 s, do Kręgu strażnika 66 s. **Mapa jest zbudowana z klocków** (`generuj.py` → `czesci.json`, 13 353 części z 25 000) i obejrzana w Blenderze (`podglad/`); w Studio jeszcze jej nie ma.
+> **W skrócie.** Las ma 1000 × 1000 studów (gra w 860 × 860, ok. 3,4 raza szerzej niż miasteczko). Pośrodku rośnie **Stary Ukłon** — drzewo wysokie na ok. 100, które kłania się na wschód i widać je z całego lasu. Sześć podbiomów: **na południu nisko, jasno i łatwo, na północy wysoko i trudno**. Kręta Struga płynie od wodospadu do stawu przy wejściu. 24 lokacje rozpoznaje się po wielkim rekwizycie. Po lesie chodzi 64 zwykłych potworów w 16 strefach (do 86 przy tłoku), 4 patrole wędrowne, rzadki troll i strażnik biomu; walkę zawsze zaczyna gracz klawiszem E. Od bramy do Ukłonu biegnie się 26 s, do Kręgu strażnika 66 s. **Mapa jest zbudowana z klocków** (`generuj.py` → `czesci.json`, **22 419 części z 25 000** — wersja 2 mapy: faktury z wbudowanych materiałów Roblox i detale, rozdz. 14–15; układ, podbiomy, lokacje, ścieżki i strefy bez zmian) i obejrzana w Blenderze (`podglad/`) oraz **zbudowana w Studio** (`Workspace/BiomLas`, 15.11; faktury poprawione po 3 rundach zrzutów ze Studio, rozdz. 16; przegląd świeżym okiem na zrzutach ze Studio i poprawki jeziora, labiryntu, rantu półek i drobiazgów, rozdz. 17).
 
-**Pliki:** `uklad.json` (obrys, podbiomy, lokacje, ścieżki, woda, **teren**, strefy spokoju, piny), `potwory.json` (strefy, węzły walki, domy, patrole, troll, strażnik), `ujecia.json` (ujęcia kontrolne w układzie lasu), `paleta.py`, `geo.py` (geometria i model wysokości — wspólny dla wszystkiego), `wezly.py` (węzły walki i domy z maski terenu), `sprawdz.py` (kontrola), `generuj.py` + `teren.py`, `rosliny.py`, `skaly.py`, `lokacje/*.py` (budowa), wyniki `czesci.json`, `znaczniki.json`, `ujecia_swiat.json`, `plan.py` → `podglad/plan.png` i `plan_telefon.png`. Jak tego używać: `README.md`.
+**Pliki:** `uklad.json` (obrys, podbiomy, lokacje, ścieżki, woda, **teren**, strefy spokoju, piny), `potwory.json` (strefy, węzły walki, domy, patrole, troll, strażnik), `ujecia.json` (ujęcia kontrolne w układzie lasu), `paleta.py`, `geo.py` (geometria i model wysokości — wspólny dla wszystkiego), `wezly.py` (węzły walki i domy z maski terenu), `sprawdz.py` (kontrola), `generuj.py` + `teren.py`, `rosliny.py`, `skaly.py`, `lokacje/*.py`, `detale.py` (drobiazgi, garby, rekwizyty), `faktury.py` (rola części → materiał) (budowa), wyniki `czesci.json`, `znaczniki.json`, `ujecia_swiat.json`, `plan.py` → `podglad/plan.png` i `plan_telefon.png`. Jak tego używać: `README.md`.
 
 **Sprawdzone skryptem** (`python -B swiat/biom_las/sprawdz.py`: 0 błędów, 2 ostrzeżenia, rozdz. 13) i generatorem (`generuj.py`: place walki czyste na prawdziwych częściach, kontrola biblioteki 0 ostrzeżeń).
 
@@ -54,6 +54,7 @@ planu, miasteczka i KeyArtu; 3 rundy poprawek z podglądem. Co poprawione:
 
 Nadal słabe (nie poprawione w tym przeglądzie): jasne gładkie ściany rynien Wąwozu i rant półki (mało faktury), duże płaskie
 lica labiryntu z bliska, jasne runo Ostępów między pniami, płaskie jezioro, podkładki stref jak koła z kół, brak mgły.
+**Wersja 2 mapy (15.11, po uwadze Karola „lepsze tekstury i detale”) poprawia wszystkie poza mgłą — rozdz. 14–15.**
 
 ---
 
@@ -223,7 +224,7 @@ Dane: `potwory.json` (projekt) i `znaczniki.json` (wynik generatora: węzły z w
 
 ## 8. Przykazania stylu natury
 
-Przykazania miasteczka obowiązują dalej (tusz, kontra, zakaz kątów 1–3°, rekwizyt zamiast napisu, SmoothPlastic, Neon tylko jako światło).
+Przykazania miasteczka obowiązują dalej (tusz, kontra, zakaz kątów 1–3°, rekwizyt zamiast napisu, Neon tylko jako światło); zamiast „wszystko SmoothPlastic” las ma od wersji 2 mapy **faktury według roli części** (przykazanie 12, rozdz. 14).
 
 | # | Przykazanie | Liczby (jak w kodzie) |
 |---|---|---|
@@ -236,44 +237,45 @@ Przykazania miasteczka obowiązują dalej (tusz, kontra, zakaz kątów 1–3°, 
 | 7 | Korytarze kamery | pień ≥ pół szerokości ścieżki + 0,9 promienia korony od osi; place walki r 12 + korona wolne |
 | 8 | Kadr ma oddech | polany, ścieżki, niebo; Ukłon widać z bramy |
 | 9 | Gęsto tam, gdzie gracz | ok. 85% roślin w pasie 45 od ścieżek |
-| 10 | Woda z klocków | cienka tafla 0,18 bez kolizji, ciemny brzeg, kamienie i trzcina; stawy z ciemniejszym środkiem |
-| 11 | Neon tylko jako światło | 78 części (≤ 300) |
-| 12 | Materiały | SmoothPlastic 89%, Wood 9% (pnie), Slate (Grań, Wilcza Skała, menhiry), Fabric (chorągiewki), Neon |
-| **13** | **Potwór widoczny na swoim gruncie** | **ΔL* ≥ 20 albo podkładka strefy** (test w `sprawdz.py`) |
-| **14** | **Rant urwiska ≤ 1,5 nad poziomem** | skały krawędzi wystają ≤ 1 poza krawędź i ≤ 1,1 ponad wierzch |
+| 10 | Woda z klocków | struga: cienka tafla 0,18 bez kolizji, ciemny brzeg, kamienie, trzcina, łachy żwiru, lilie; **stawy i jezioro: półprzezroczysta tafla (0,4), pod nią jasna płycizna przy brzegu i ciemniejąca głębia** |
+| 11 | Neon tylko jako światło | 85 części (≤ 300) |
+| 12 | Materiały | **faktura według roli części** (`faktury.py`, rozdz. 14): grunt, ścieżki, skały i drewno z fakturą; liście, grzyby, woda, tusz, kody i tło gładkie; jeżyny Fabric. SmoothPlastic 60% części (głównie liście), Grass 9,3%, Wood 8,4%, Rock 6,4%, LeafyGrass 2,6%, reszta ≤ 2,5%. Kolory kamienia dobrane na zrzutach ze Studio (rozdz. 16) |
+| **13** | **Potwór widoczny na swoim gruncie** | **ΔL* ≥ 20 albo podkładka strefy** (test w `sprawdz.py`); od wersji 2 podkładki mają też wilki Ostępów |
+| **14** | **Rant urwiska ≤ 1,5 nad poziomem** | skały krawędzi wystają ≤ 1 poza krawędź i ≤ 1,1 ponad wierzch; kępka na rancie razem z rantem ≤ 1,2; warstwy na licu wystają 0,35 |
+| **15** | **Detal nie na drodze** | drobiazg ≥ zasięg + 0,3 od krawędzi ścieżki, ≥ 13 + zasięg od węzła walki, nie w wodzie, na rampie ani na urwisku; kłody i rekwizyty ≥ 5–6 od tras potworów (rozdz. 15) |
+| **16** | **Faktury nie migoczą** | nachodzące płaszczyzny tej samej barwy z fakturą leżą na różnych wysokościach (≥ 0,006) |
 
-**Rodziny** (`rosliny.py`, `skaly.py`, części na sztukę): Okrąglak 6, Krzywy Dąb 9, Sosna 5, Brzózka 6, Grzyb-olbrzym 4–8, Pniak 2, Kulisa 2, Krzak 3–4, Kwiaty 3, Paproć 2, Jeżyna 3, Trzcina 2; Głaz-pięść 3–5, Kanciak 2, Menhir 3, Skała urwiska 1–2.
+**Rodziny** (`rosliny.py`, `skaly.py`, `detale.py`, części na sztukę): Okrąglak 6, Krzywy Dąb 9, Sosna 5, Brzózka 6, Grzyb-olbrzym 4–8, **Smukła topólka 6, Sosna smukła 7, Świerk 7, Suche drzewo 6, Brzózka podwójna 9, Jarzębina 7**, Pniak 2, Kulisa 2, Krzak 3–4, Kwiaty 3, Paproć 2, Jeżyna 3, Trzcina 2; Głaz-pięść 3–5, Kanciak 2, Menhir 3, Skała urwiska 1–2 (+ warstwy, szczelina, zwis, kępka: do +6); drobiazgi: kamyki 2–3, kępka 3, kwiatek 2, łan kwiatów 6–7, wysoka trawa 4, grzybki 4–6, korzeń 2, gałązka 1–2, pnącze 4–5, kretowisko 3, kość 3, kłoda 3–5, garb 4; rekwizyty: płotek 5–10, skrzynka 3, beczka 5–7, kosz 3–4, stos drewna 3, kopczyk kamieni 3, tabliczka bez napisu 3, pal z czaszką 4, lampion 3.
 
-**Cechy części:** z kolizją 24%, bez cienia 52% (cel ≥ 50%), przezroczyste 11 (mgła), kule 59, walce 887, Neon 79.
+**Cechy części (wersja 2):** z kolizją 16%, bez cienia 66% (cel ≥ 50%), przezroczyste 33 (≤ 40: tafle stawów i jeziora + mgła), kule 59, walce 1 279, Neon 85.
 
 ---
 
 ## 9. Paleta
 
-`paleta.py`: paleta miasteczka bez zmian + 15 kolorów lasu (tabela w wersji 1 bez zmian: `runo`, `runo_ciemne`, `mech`, `galareta`, `lisc_rudy/miodowy/rdza`, `jezyna`, `jezyna_kolec`, `trzcina`, `sylweta_1–3`, `neon_zarodnik`, `neon_swietlik`). Użycie w v2: płyta `runo`, Łąka `trawa`, Kapeluszowo `runo_ciemne`, dno rynien `ziemia`, półki `bruk_ciemny`, ściany poziomów `kamien_cieply` (Grań `kamien_lochu`), tarasy Korony `runo_ciemne` / `trawa` / `runo_ciemne`, podkładki stref `runo` / `mech` / `kamien_cokol`. Kolorów nie sprawdzono w prawdziwym Studio — pierwszy krok budowy to próbka.
+`paleta.py`: paleta miasteczka bez zmian + 19 kolorów lasu (tabela w wersji 1 bez zmian: `runo`, `runo_ciemne`, `mech`, `galareta`, `lisc_rudy/miodowy/rdza`, `jezyna`, `jezyna_kolec`, `trzcina`, `sylweta_1–3`, `neon_zarodnik`, `neon_swietlik`; **wersja 2 mapy: `runo_boru` 3B7A35 — ciemne runo Ostępów, `piasek_dna` D2BC84 — płycizna pod wodą, `trawa_sucha` B9B45A — kępki i zwisy Wąwozu; etap 3: `woda_plytka` 5FBCE6 — jasny pas płycizny na tafli jeziora**). Użycie: płyta `runo`, Łąka `trawa`, Kapeluszowo `runo_ciemne`, **Ostępy `runo_boru`**, dno rynien `ziemia`, półki `bruk_ciemny`, ściany poziomów `kamien_cieply` (Grań `kamien_lochu`), tarasy Korony `runo_ciemne` / `trawa` / `runo_ciemne`, podkładki stref `runo` / `mech` / `kamien_cokol`. Materiał z fakturą mnoży kolor przez korektę jasności z rozdz. 14 (np. Grass × 1,06). Kolorów nie sprawdzono w prawdziwym Studio — pierwszy krok budowy to próbka.
 
 ---
 
-## 10. Budżet części (zbudowane)
+## 10. Budżet części (zbudowane, wersja 2 mapy)
 
-| Grupa | Części | Uwagi |
-|---|---|---|
-| Ostepy | 2 759 | ok. 300 sosen z igliwiem, jeżyny, labirynt z garbatym wierzchem, Wilcza Skała, Próg, Wrota, urwiska Grani |
-| Korona | 1 644 | 150 brzózek, głazy, uskoki, Rozstaj, Krąg, Ławka |
-| Kapeluszowo | 1 578 | 75 grzybów, 45 dębów, chatki, Kapelusz, Krąg Zarodników |
-| Laka | 1 545 | 85 okrąglaków, krzaki, kwiaty, Brama, Oczko, Most, Wóz, Pagórek |
-| Wawoz | 1 169 | sosny na półkach, urwiska rynien, tama, kałuża, jezioro |
-| Mur | 1 160 | skały-kulisy, dwa rzędy kulis, niewidzialna ściana |
-| Sciezki | 1 156 | wstęgi, okrągłe końce, krawężniki, kamienie-kody, drogowskazy |
-| Serce | 688 | Ukłon (detal), gniazdo, Dziupla, Gardziel, lampiony |
-| Tlo | 545 | kulisy, wzgórza, atrapa miasteczka |
-| Woda | 449 | struga, stawy, jezioro, trzcina |
-| Teren | 398 | płyta, plamy, pryzmaty poziomów, kopce, rampy |
-| Punkty | 142 | sylwetki 7 punktów orientacyjnych (stale wczytane) |
-| Piny, Chmury | 60 + 60 | ogniska pinów, chmury |
-| **Razem** | **13 353** | limit 25 000 — **rezerwa ok. 11,6 tys.** na zagęszczenie po pomiarze na telefonie |
+| Grupa | v1 | v2 | v2 po etapie 3 | Co doszło w wersji 2 |
+|---|---|---|---|---|
+| Ostepy | 2 759 | 4 919 | 4 848 | detale 1 195, podkładki placów wilków 394, lica labiryntu ok. 214, świerki, smukłe i suche drzewa, igliwie pod świerkami, warstwy Grani |
+| Laka | 1 545 | 3 458 | 3 460 | detale 1 475 (łany kwiatów, wysoka trawa, kretowiska, kłody, rekwizyty Bramy, Oczka i Wozu), nieregularne podkładki, topólki, krzaki w kępach |
+| Korona | 1 644 | 3 092 | 3 028 | warstwy, zwisy i kępki na uskokach (+536), detale 706, brzózki podwójne, jarzębiny |
+| Kapeluszowo | 1 578 | 2 955 | 2 923 | detale 1 113 (grzybki, paprocie, pnącza, kłody, rekwizyty wioski), polanki mchu jako plamy, jarzębiny |
+| Wawoz | 1 169 | 2 542 | 2 805 | warstwy, szczeliny, zwisy, piarg na ścianach rynien (+591), detale 674, sosny smukłe przechylone nad urwiskiem |
+| Serce | 688 | 1 300 | 1 199 | detale 575 (także na łagodnym zboczu polany), topólki, jarzębiny, rekwizyty Gniazda i Dziupli |
+| Mur | 1 160 | 1 160 | 1 160 | bez zmian (faktura Rock na skałach) |
+| Sciezki | 1 156 | 1 156 | 1 156 | bez zmian w liczbie (faktura: Cobblestone, Ground, Pebble) |
+| Woda | 449 | 567 | 623 | płycizny i głębie stawów, płycizna jeziora, lilie, kamienie brzegu, zmarszczki, łachy żwiru |
+| Tlo | 545 | 545 | 545 | bez zmian (gładkie) |
+| Teren | 398 | 410 | 410 | plama runa boru Ostępów |
+| Punkty, Piny, Chmury | 262 | 262 | 262 | bez zmian w liczbie |
+| **Razem** | **13 353** | **22 366** | **22 419** | limit 25 000 — **rezerwa ok. 2,6 tys.** na poprawki po pomiarze na telefonie. Etap 3 (rozdz. 17): o połowę mniej garbów (−444), więcej detalu w Wąwozie, darń na rantach półek (+125), jezioro z pasem płycizny i plamami głębi (+56), odrost labiryntu (+46) |
 
-Plan budżetu z wersji 1 (22 020) zostaje w `uklad.json` jako górna granica podziału na podbiomy.
+Plan budżetu z wersji 1 (22 020) zostaje w `uklad.json` jako górna granica podziału na podbiomy; wersja 2 mapy mieści się w nim prawie co do części.
 
 ---
 
@@ -292,6 +294,14 @@ Plan budżetu z wersji 1 (22 020) zostaje w `uklad.json` jako górna granica pod
 | `l11_rozstaj`, `l12_krag`, `l13_lawka_las` | sowa i rampa serpentyny; menhiry i kryształ; widok z Ławki |
 | `l14_plac_walki_oczko`, `l16_slime_z_60` | plac walki; strefa slime’ów z 60 st |
 | `l15_pod_slonce`, `l19_labirynt`, `l20_bor_ostepy` | przegląd pod słońce; korytarz jeżyn; Wilczy Trakt w borze |
+| `l21`–`l25` (`_detal_laka`, `_kapeluszowo`, `_ostepy`, `_wawoz_polka`, `_korona`) | wersja 2: z oczu gracza wzdłuż ścieżki — faktury nawierzchni i gruntu, drobiazgi przy krawędzi |
+| `l26_detal_labirynt_lico`, `l27_detal_jezioro`, `l28_detal_oczko` | wersja 2: lico żywopłotu z bliska; jezioro z korony tamy; staw z pomostu |
+
+**Ujęcia przeglądu (etap 3)** — `ujecia_przeglad.json` (już w układzie świata, `--przesun 0,0,0`): 10 kadrów z oczu gracza
+w miejscach, których ujęcia kontrolne nie pokazują: środek Łąki przy Dróżce Kępek (`x01`), środek Kapeluszowa (`x02`), las
+Serca przy polanie (`x03`), środek Ostępów przy Dróżce Bagiennej (`x04`), ściana rynny Wąwozu (`x05`), środek labiryntu
+(`x06`), nad jeziorem z Brzegu Jeziora (`x07`), przejścia Serce → Ostępy (`x08`) i Serce → Wąwóz (`x09`), dolny taras
+Korony (`x10`).
 
 ---
 
@@ -299,9 +309,10 @@ Plan budżetu z wersji 1 (22 020) zostaje w `uklad.json` jako górna granica pod
 
 1. ~~Układ, teren, potwory~~ — **zrobione** (v2, `sprawdz.py` 0 błędów).
 2. ~~Generator z klocków, rodziny, lokacje, podglądy w Blenderze~~ — **zrobione** (`generuj.py`, 4 rundy podglądów).
-3. **Studio, krok 1 (następny):** sprawdzić, że pudło (−700…700; −1300…−2700) jest puste; `python tools/studio_buduj.py swiat/biom_las/czesci.json`; ustawić atrybuty grup z `znaczniki.json` (Persistent, StreamingMesh); zrzuty `python tools/studio_zrzuty.py swiat/biom_las/ujecia_swiat.json --przesun 0,0,0 --wyj <folder>`; próbka kolorów; **pomiar na telefonie** (667 × 375 i 844 × 390): klatki, pamięć, dalekie widoki z Ławki i z bramy przy streamingu; kontrola kolizji (rampy, krawędzie, korona tamy).
-4. **Pętla gry na zastępczych bryłach** z `znaczniki.json`: strefy, węzły, domy, patrole, troll, strażnik, E, walka v2, łup, odradzanie; potem modele z Blendera.
-5. Zagęszczenie (rezerwa ok. 11,6 tys. części) tam, gdzie zrzuty pokażą pustki.
+3. ~~Wersja 2 mapy: faktury i detale (rozdz. 14–15)~~ — **zrobione w generatorze** (15.11; podglądy geometrii w Blenderze, który faktur Roblox nie pokazuje).
+4. ~~Studio, krok 1: budowa, atrybuty streamingu, zrzuty, próbka faktur i kolorów~~ — **zrobione 15.11** (rozdz. 16). **Zostaje z tego kroku:** pomiar na telefonie (667 × 375 i 844 × 390): klatki, pamięć, dalekie widoki z Ławki i z bramy przy streamingu; kontrola kolizji (rampy, krawędzie, korona tamy, kłody) — wymaga trybu Play.
+5. **Pętla gry na zastępczych bryłach** z `znaczniki.json`: strefy, węzły, domy, patrole, troll, strażnik, E, walka v2, łup, odradzanie; potem modele z Blendera.
+6. ~~Przegląd świeżym okiem na zrzutach ze Studio i poprawki~~ — **zrobione 15.11** (etap 3, rozdz. 17). Dalsze poprawki po pomiarze na telefonie (rezerwa ok. 2,6 tys. części).
 
 **Biblioteka:** nie zmieniałem. Rzeczy, których nie umie, są w plikach lasu: triangulacja i pryzmaty wielokątów, wstęgi ścieżek i wody (`teren.py`, `geo.py`), rozsiew z maską (`generuj.py`), przeliczenie ujęć z obrotem (`generuj.py` → `ujecia_swiat.json`), atrybuty grup (lista w `znaczniki.json`, bo `czesci.json` ich nie przenosi). Do przeniesienia do biblioteki przy drugim biomie.
 
@@ -309,11 +320,165 @@ Plan budżetu z wersji 1 (22 020) zostaje w `uklad.json` jako górna granica pod
 
 ## 13. Ryzyka i znane słabości
 
-- **Telefon:** 13,4 tys. części + ok. 80 potworów — niezmierzone. Pierwszy pomiar w Studio.
+- **Telefon:** 22,4 tys. części + ok. 80 potworów — niezmierzone. Pierwszy pomiar w Studio. Ok. 5,6 tys. to drobiazgi, prawie wszystkie bez kolizji i cienia; jeśli telefon nie da rady, pierwsze do zdjęcia: garby (336), kępy runa (ok. 2 600), potem brzegi ścieżek.
 - **Streaming:** bez ustawienia grup z `znaczniki.json` punkty orientacyjne znikną z daleka.
-- **Wygląd z bliska** (podglądy): lica ścian labiryntu to duże płaskie fioletowe płaszczyzny (wierzch już garbaty); ściany rynien Wąwozu gładkie; teren wszędzie płaski poza kopcami i poziomami (Ostępy bez progów); plamy-podkładki stref widać z góry jako koła; niebo bez mgły — las daleko wygląda jak makieta.
+- **Faktury sprawdzone w Studio w trybie Edit** (rozdz. 16): materiały istnieją na częściach, kolory kamienia poprawione tonami; migotania na zrzutach nie widać (zrzut to jedna klatka — w ruchu kamery nie sprawdzone); na stykach odcinków ścieżek widać cienką kreskę (przesunięcie 0,01); jezioro od etapu 3 jest nieprzezroczyste (bez szwów, rozdz. 17); przezroczystych części zostało 13 (tafle stawów i mgła).
+- **Wygląd z bliska** (podglądy wersji 2): drobiazgi to proste bryły (kwiat-kostka na kępce) — komiksowe, ale z bliska kanciaste; garby są tylko wyglądem (bez kolizji, model wysokości bez zmian); 7 drobiazgów wchodzi skrzynką otaczającą ≤ 0,8 na krawędź nawierzchni; niebo bez mgły — z daleka las nadal trochę makietą (mgła to wybór dla ludzi nr 7).
 - **Rampy:** 1 : 2,5 (sekretna) do 1 : 5; sprawdzić w Studio, czy postać nie ślizga się na klinach i czy krawędź rampy z poziomem nie ma szczeliny.
 - **Kamera walki** w rynnie (szer. 54, węzły ≤ 12 od osi) i w labiryncie — sprawdzić na zrzutach z kamery walki v2.
 - **Ostrzeżenia `sprawdz.py`:** strefa z06 ma brzeg 16 st od ścieżki (1 st ponad próg); ujęcie `l20_bor_ostepy` ma w kadrze 1 punkt orientacyjny (kadr lokacji, Ukłon zasłania bór).
-- **Kolory w Studio** (nasycenie) — tylko założenie.
+- **Kolory w Studio** — sprawdzone na zrzutach w trybie Edit przy obecnym oświetleniu miejsca (ClockTime 14,5, Atmosphere); przy innym oświetleniu lub mgle trzeba je obejrzeć ponownie.
 - **Grzyby** to teren jednego podbiomu i dom kanonicznego Muchomornika, bez ikonowego użycia.
+
+---
+
+## 14. Faktury (wersja 2 mapy)
+
+**Zasada.** Faktura tam, gdzie się chodzi i o co opiera się wzrok z bliska — grunt, ścieżki, skały, drewno; gładko zostaje to, co ma się czytać jak komiksowa plama koloru. Tylko **wbudowane materiały Roblox** (`Enum.Material`) i kolor — nic wgrywanego. Jedno miejsce: `faktury.py` (tabela `ROLE` i nazwy części → rola); `generuj.py` po zbudowaniu mapy nadaje każdej części materiał według roli, mnoży kolor przez korektę jasności i wypisuje udział materiałów. **Część bez roli = błąd generatora** (dziś: każda część ma rolę). Jawne `Slate` w kodzie zostaje łupkiem, Neon zostaje Neonem, części półprzezroczyste zostają gładkie.
+
+| Rola | Części | Materiał Roblox | Kolor z palety | Korekta (po Studio) |
+|---|---|---|---|---|
+| trawa | Łąka (plama), wydeptane podkładki stref, taras górny Korony, wysepka | Grass | `trawa`, `runo` (podkładki) | × 1,06 |
+| runo | płyta, plamy Kapeluszowa i Ostępów, tarasy Korony, Grań, polana, garby | LeafyGrass („ściółka z listkami”) | `runo`, `runo_ciemne`, `runo_boru` | × 1,08 |
+| igliwie | płaty pod sosnami i świerkami Ostępów | Ground | `runo_ciemne` | × 1,05 |
+| mech | czapy mchu, zwisy na uskokach Korony, polanki muchomorników | Grass | `mech` | × 1,0 |
+| ziemia | dróżki, pierścień polany, korytarz labiryntu, dno rynien, kretowiska | Ground | `ziemia` | × 1,05 |
+| bruk | szlaki główne, posadzka Kręgu | Cobblestone | `bruk`, `kamien_cieply` | × 1,06 |
+| **półka** | **wierzch półek Wąwozu, garby na nim i darń na skałach rantu (etap 3)** | **Grass** (sucha trawa) | `bruk_ciemny` | **ton (0,90; 1,02; 0,72)** — był Sand: w Studio plaża z falkami |
+| piasek | płycizny pod wodą stawów, łachy, wysepka | Sand | `piasek_dna`, `bruk_ciemny` | × 1,0 |
+| piaskowiec | ściany i pryzmaty półek Wąwozu (z warstwami), rampy, tama, głazy-stopnie | Sandstone | `kamien_cieply` (warstwy × 0,78 i × 1,1) | **jasne: ton (0,88; 0,80; 0,62) → ochra**, ciemne × 1,0 |
+| wapień | uskoki tarasów Korony (z warstwami) | Limestone | `kamien_cieply` | **jasne: ton (0,84; 0,81; 0,74)**, ciemne × 1,0 |
+| łupek | Grań, Wilcza Skała, menhiry, filar, kamienie i głazy Ostępów | Slate | `kamien_lochu`, `dach_dom_lupek` | **× 1,0** (było 1,1: za lawendowe) |
+| skała | głazy, kamyki, piarg, kamienie brzegu, skały muru | Rock | `kamien_cieply`, `kamien_cokol` | **jasne: ton (0,80; 0,75; 0,68), ciemne × 1,12** |
+| żwir | sekretna ścieżka, łachy w strudze | Pebble | `kamien_cieply` | jasne: ton (0,84; 0,80; 0,72), ciemne × 1,05 |
+| błoto | Wyschnięta Kałuża (podkładka z12) | Mud | `kamien_cokol` | × 1,15 (Mud bardzo przyciemnia) |
+| drewno | pnie, konary, korzenie, kłody, słupy, płotki, pale | Wood | `drewno`, `drewno_ciemne`; suche drzewa `kamien_cokol` | × 1,0 |
+| deski | pomosty, skrzynie, beczki, ramiona drogowskazów, tabliczki, drzwi | WoodPlanks | `drewno`, `drewno_jasne` | × 1,0 |
+| metal | łańcuchy, kocioł, luneta, obręcze | Metal | `metal_ciemny` | × 1,0 |
+| tkanina | chorągiewki, lina bramy, siedzisko tronu | Fabric | kody, `dach_karczma` | × 1,0 |
+| **jeżyny** | ściany labiryntu, kępy jeżyn, garby na licach, ciemny odrost u stopy lica (etap 3), kopce jam | **Fabric** (drobny splot) | `jezyna` (× 0,82–1,22) | × 1,0 — był LeafyGrass („granit z rudymi liśćmi”), potem Grass (fioletowy dywan w białe kropki) |
+| gładkie | liście i korony, igły, krzaki, paprocie, kwiaty, kępki, grzyby, woda, tusz, kody, rekwizyty-zabawki, pnie brzóz, kulisy, tło, chmury; **zielone zwisy liści na licach labiryntu** (etap 3: kliny ostrzem w dół, `Jeżyna zwis`); **tafla, płycizna i plamy głębi jeziora** | SmoothPlastic | bez zmian | — |
+
+**Korekta** w `faktury.ROLE` to liczba (jasność), trójka mnożników R, G, B (ton) albo `{"jasne": …, "ciemne": …}` — osobno dla
+kolorów o L* > 60 i ciemniejszych (np. jasny `kamien_cieply` dostaje ton ochry, a ciemny `kamien_cokol` tylko lekkie
+rozjaśnienie). Paleta zostaje bez zmian (klucze miasteczka znaczą to samo co w miasteczku).
+
+**Gładkie zostają, bo:** walor trzech tonów korony (przykazanie 3) czyta się tylko na gładkiej bryle, a faktura na dużych bryłach liści i na dalekich sylwetkach migocze i robi szum; kapelusze grzybów, kody podbiomów, kłódki, złoty klocek i galareta to ikony — kolor musi być czysty; tusz to komiksowa kreska; biała brzoza z paskami tuszu przestałaby być białą brzozą; woda — `Glass` i `Ice` zależą od jakości grafiki telefonu, więc tafla jest gładka (stawy półprzezroczyste, jezioro od etapu 3 nieprzezroczyste z warstwami koloru na wierzchu).
+
+**Kolor z materiałem (zmierzone w Studio 15.11, próbka 40 płytek tego samego koloru w różnych materiałach).** Wszystko w Studio jest bardziej szare niż w palecie (atmosfera miejsca), a faktura dodatkowo: Sandstone, Limestone i Slate zachowują ok. 95% jasności, ale zjadają ciepło — jasny `kamien_cieply` robi się różowobiały jak marmur; Rock ok. 85% i mocne czarne żyłki; Grass ok. 92%; LeafyGrass ok. 80% i rude listki na każdym kolorze (na fiolecie wygląda jak granit); Basalt i Mud ciemnieją najmocniej. Stąd tony ochry dla jasnego kamienia zamiast samej jasności. Kontrast potworów z gruntem (przykazanie 13) dalej liczony z kluczy palety — na zrzutach `l14`, `l16`, `l23` place walki na podkładkach odróżniają się od runa.
+
+**Woda.** Stawy (Oczko, misa Progu): jasna płycizna `piasek_dna` (r + 1,4, widać ją też jako jasny brzeg), głębia `woda` (0,84 r) i `woda_gleboka` (0,52 r), na wierzchu tafla Transparency **0,5** (po Studio; 0,4 zakrywała głębię), białe zmarszczki. Jezioro (**etap 3**, rozdz. 17): **nieprzezroczysta** tafla `woda` na 11 (dno 9,5 zostaje pod spodem jako grunt do brodzenia), na niej 0,05 wyżej jasny pas płycizny `woda_plytka` (wielokąt wcięty o 8) i cztery nieregularne plamy głębi `woda_gleboka` (siedmiokąty r 16–26 wokół wysepki), lilie, trzcina w kępach po 2–3 (nie co 7 st jak płot), kamienie brzegu wystające z wody, ok. 25 zmarszczek. Wcześniej: tafla 0,62 w kolorze `woda_gleboka` — szwy klinów i jednolita granatowa płachta (rozdz. 16). Struga zostaje nieprzezroczysta (ok. 100 odcinków) — dostała łachy żwiru i lilie. Przezroczystych części 13 (tafle stawów i mgła; sufit 40).
+
+**Migotanie faktur.** Nachodzące płaszczyzny tej samej barwy migoczą, gdy mają fakturę (wzór się nie pokrywa). Dlatego: odcinki tej samej ścieżki na przemian + 0,01, okrągłe czapki − 0,012; płaty podkładek 0,100–0,112; igliwie 0,115–0,13; plamy podbiomów 0,06 nad płytą (przykazanie 16).
+
+**Udział materiałów** (części, po etapie 3): SmoothPlastic 61,6%, Grass 9,0%, Wood 8,4%, Rock 6,4%, Ground 2,5%, Sandstone 2,4%, Limestone 2,1%, Fabric 2,0%, Slate 1,5%, LeafyGrass 1,4%, Cobblestone 0,9%, WoodPlanks 0,9%, Neon 0,4%, Mud 0,3%, Pebble 0,2%, Metal 0,1%, Sand < 0,1%. Liczone w częściach — powierzchniowo przewaga faktur jest dużo większa (płyta, plamy, ścieżki, ściany to wielkie części, a gładkie są głównie drobne bryły liści).
+
+---
+
+## 15. Detale (wersja 2 mapy)
+
+**Gdzie i jak.** `detale.py` (brzegi ścieżek, runo, kłody, garby, rekwizyty) oraz `teren.py` (piarg, woda), `skaly.py` (warstwy na urwiskach), `rosliny.py` (nowe sylwetki drzew), `lokacje/ostepy.py` (lica labiryntu), `lokacje/wspolne.py` (podkładki). Miejsce drobiazgu (przykazanie 15): ≥ zasięg + 0,3 od krawędzi ścieżki, ≥ 13 + zasięg od węzła walki, nie w wodzie, na rampie ani na urwisku, nie w rdzeniu lokacji ani w pniu drzewa, łagodne zbocze (polana 1 : 10) dozwolone; kłody i rekwizyty ≥ 5–6 od tras potworów, patroli i trolla. Drobiazgi bez kolizji i cienia; kolizję mają kłody, korpusy rekwizytów i pnie nowych drzew. Losowość z ziarna (`rnd_detale` — nowy strumień dodany na końcu, więc układ lokacji i stref się nie zmienia).
+
+| Podbiom | Brzegi ścieżek: rodziny | Na 100 st ścieżki: cel / wyszło (długość) | Runo: kępy + kłody | Garby | Części detali (ścieżki + runo + garby + rekwizyty) |
+|---|---|---|---|---|---|
+| Łąka | kępki, kwiatki, kamyki, wysoka trawa, kretowiska | 14 / 12,6 (1 595 st) | 60 (łany kwiatów, wysoka trawa, kretowiska, kamyki) + 8 | 45 | 579 + 651 + 180 + 65 = **1 475** |
+| Kapeluszowo | grzybki, paprocie, kępki, korzenie, kamyki, pnącza | 14 / 15,3 (654 st) | 70 (grzybki, paprocie, pnącza, kwiatki) + 12 | 35 | 319 + 607 + 140 + 47 = **1 113** |
+| Serce | kwiatki, kępki, korzenie, grzybki | 10 / 12,0 (825 st) | 30 + 4 | 15 | 280 + 203 + 60 + 32 = **575** |
+| Ostępy | paprocie, korzenie, pnącza, kamyki (łupek), grzybki, gałązki | 14 / 12,3 (984 st) | 80 (paprocie, pnącza, grzybki, gałązki) + 18 | 45 | 328 + 660 + 180 + 27 = **1 195** |
+| Wąwóz | kamyki, suche kępki, gałązki, kości | 10 / 8,8 (1 227 st) | 40 (suche kępki, kamyki) + 4 | 25 | 280 + 258 + 100 + 36 = **674** |
+| Korona | kamyki, kwiatki, kępki, korzenie | 12 / 10,3 (1 000 st) | 55 + 6 | 30 | 245 + 323 + 120 + 18 = **706** |
+| **Razem** | | **11,6 średnio** (732 drobiazgi na 6 285 st, bez sekretnej) | 335 + 52 kłody | 195 | **5 738** |
+
+Tabela to stan wersji 2 przed etapem 3. **Etap 3** (rozdz. 17): Wąwóz przy ścieżkach 12 / 12,7 (dodane krzaczki i oliwkowe kępki), runo Wąwozu 50 kęp, garbów o połowę mniej (84 zamiast 195); części detali razem 5 566 (Łąka 1 477, Kapeluszowo 1 081, Ostępy 1 080, Wąwóz 812, Korona 642, Serce 474).
+
+„Wyszło” jest niższe od celu tam, gdzie ścieżka biegnie przez place walki, rdzenie lokacji albo wzdłuż urwisk (Wąwóz) — tam detalu celowo nie ma.
+
+**Poprawki znanych słabości (poza tabelą):**
+- **Ściany rynien i uskoki** (Wąwóz, Korona, Grań; + 1 222 części): na każdej skale urwiska ≥ 5 dwie warstwy (ciemniejsza na 1/4–1/3, jaśniejsza na 2/3 wysokości, wystają 0,35, sąsiednie skały prawie na tej samej wysokości), w co trzeciej pionowa szczelina tuszu, w co drugiej zwisy mchu albo suchej trawy przez rant, kępka na rancie (≤ 1,2 nad poziomem), u stopy co trzeciej piarg kamyków; materiał Sandstone / Limestone / Slate.
+- **Labirynt** (ok. 214 części): każde lico od strony korytarza ma szeroki garb pędów (fiolet jaśniejszy albo ciemniejszy, wystaje 0,5), zielony zwis liści spływający z wierzchu, ciemny pionowy pęd i jasne kolce wbite w lico; czoła rzędów też; faktura LeafyGrass.
+- **Ostępy**: ciemna plama runa boru (`runo_boru`, LeafyGrass), igliwie (Ground) także pod świerkami, place wilków na jaśniejszych podkładkach `runo` (ΔL* 26).
+- **Podkładki stref** (+ 1 114): zamiast kół nieregularne plamy-wielokąty (8 wierzchołków, promień faluje 13,6–20, koło r 12 placu zawsze w środku), łączniki między dalekimi węzłami, strzępy na zewnątrz.
+- **Jezioro i stawy** (+ 118): półprzezroczysta tafla, jasna płycizna przy brzegu, ciemna głębia, lilie, kamienie, zmarszczki (rozdz. 14).
+- **Drzewa** (+ ok. 600): w każdym podbiomie 3–4 sylwetki — Łąka: okrąglak, topólka, dąb; Kapeluszowo: grzyb, dąb, jarzębina, sosna smukła; Serce: dąb, topólka, jarzębina; Ostępy: sosna, świerk, sosna smukła, suche drzewo; Wąwóz: sosna, sosna smukła przechylona 4–9° nad urwiskiem, suche drzewo; Korona: brzózka, brzózka podwójna, jarzębina, dąb. Skala 0,8–1,8, odcień korony × 0,9–1,05 na drzewo.
+- **Łąka mniej parkowa**: krzaki w kępach po 2, łany kwiatów, wysoka trawa, kretowiska, kłody, rekwizyty.
+- **Garby** (195): niskie ostrosłupy 8–16 × 8–14, wysokie 0,5–1,1 (spadek ≤ 1 : 4), w kolorze i fakturze gruntu, bez kolizji — tylko wygląd; model wysokości `geo.Teren` i wszystkie testy bez zmian.
+- **Rekwizyty przy lokacjach** (62, lista `detale.REKWIZYTY`): płotki, lampiony, skrzynki, beczki, kosze, stosy drewna, kopczyki kamieni, tabliczki ze znakiem podbiomu **bez napisów**, pale z czaszką; jeden lampion Gardzieli nie znalazł miejsca (zbocze polany i plac walki obok).
+
+**Kontrola (15.11):** `sprawdz.py` 0 błędów (te same 2 ostrzeżenia co w v1); `generuj.py`: place walki czyste na prawdziwych częściach, biblioteka 0 ostrzeżeń, każda część ma rolę; osobny skrypt kontrolny na 5 941 częściach drobiazgów: 0 na placach walki, 0 w wodzie, 0 wiszących, 0 zapadniętych; 7 wchodzi skrzynką otaczającą ≤ 0,8 na krawędź nawierzchni (liść paproci, kapelusz grzybka, kamyk, korzeń) — zostawione. Podglądy w Blenderze: `podglad/01`–`20` (13–20 to nowe kadry detali); Blender nie pokazuje faktur Roblox — je sprawdza krok Studio.
+
+---
+
+## 16. Studio: budowa, zrzuty i poprawki faktur (15.11)
+
+**Budowa.** Kontener `Workspace/BiomLas` (atrybut `Wygenerowane`), `tools/studio_buduj.py --paczka 300` (ok. 75 paczek),
+potem `studio_atrybuty.py` (8 grup Persistent, 88 grup StreamingMesh; `Workspace.StreamingEnabled` jest włączone).
+Przed budową pudło x −700…700, z −1300…−2700 było puste (test skrzynek otaczających wszystkich części Workspace),
+PlaceId 129485428021967; nic poza kontenerem nie było zmieniane; Lighting tylko odczytany (ClockTime 14,5,
+Brightness 3, Ambient i OutdoorAmbient 70/70/70, FogEnd 100 000; w Lighting są już Sky, Atmosphere, SunRays, Bloom,
+DepthOfField). Każda budowa: punkt historii przed i po. W Studio po etapie 2: 22 366 części, 22 625 instancji; **po etapie 3: 22 419 części, 22 678 instancji** w kontenerze.
+
+**Jak patrzyłem.** Próbka 40 płytek 7 × 7 (ten sam kolor w różnych materiałach, w powietrzu nad płytą, w naszym
+kontenerze, usuwana przy przebudowie) i 4 rundy po 28 zrzutów z `ujecia_swiat.json` (te same kadry co podglądy Blendera)
+plus zrzuty kontrolne jeziora. Wnioski z próbki — rozdz. 14 „Kolor z materiałem”.
+
+| Runda | Co było źle na zrzucie ze Studio | Poprawka |
+|---|---|---|
+| 1 | Ściany rynien, tama, rampy (Sandstone na `kamien_cieply`): prawie biały, różowawy marmur — ciepło znika | ton ochry (0,88; 0,80; 0,62) tylko dla jasnych kolorów; warstwy zostają czytelne (ciemna i jasna) |
+| 1 | Wierzch półek Wąwozu (Sand): plaża z falkami, za jasno | rola „półka”: Grass w tonie słomy — sucha murawa, ścieżka z ziemi odcina się kolorem |
+| 1 | Jeżyny (LeafyGrass na fiolecie): granit z rudymi liśćmi | Grass (runda 2: fioletowy dywan w białe kropki) → Fabric (runda 3: drobny splot, czysty komiksowy fiolet) |
+| 1 | Głazy i kamyki (Rock): biało-czarne żyłki, za jasne | ton (0,80; 0,75; 0,68) dla jasnych, ciemne × 1,12 |
+| 1 | Uskoki Korony (Limestone): biały pas | ton (0,84; 0,81; 0,74) |
+| 1 | Menhiry i Grań (Slate × 1,1): lawendowe | × 1,0 |
+| 2–4 | Jezioro: jednolita jasna tafla (dno 1,5 niżej prawie nie prześwituje — sprawdzone promieniem: tafla 0,62 na 11, ciemne dno na 9,5) | stawy 0,5; jezioro 0,62 i tafla w kolorze `woda_gleboka`: głębokie jezioro ciemnoniebieskie, struga jasna; nadal jednolite, z cienkimi szwami klinów (słabość) |
+| 2 | Zielone zwisy liści na licach labiryntu z fakturą: naklejki | gładkie jak inne liście |
+| 3–4 | Kwiaty-kostki przy ścieżkach i przed Ławką: kostki do gry | płaskie talerzyki obrócone o 45° (`detale.kwiatek`, `detale.lan_kwiatow`, `rosliny.kwiaty`; te same liczby części) |
+
+**Porównanie z miasteczkiem** (zrzut `u01_oczy_spawn`): miasteczko jest prawie całe gładkie, z mocnym tuszem i nasyconymi kolorami, faktury ma tylko na deskach i schodach. Las ma więcej faktur na ziemi i skałach — komiksowość trzymają gładkie korony, tusz krawężników i pierścieni oraz kolory-kody; grunt z fakturą jest od miasteczka „poważniejszy”. Jeśli ma być bliżej miasteczka, pierwsza do zmiany jest rola `runo` (LeafyGrass → Grass albo gładkie).
+
+**Co wyszło dobrze (bez zmian):** szlaki Cobblestone (czytelne, ciepłe, z tuszem krawężnika), dróżki Ground, trawa Łąki
+(Grass), podkładki stref jako ciemniejsze plamy, drewno pni i desek, pomost Oczka, kępki i rekwizyty, komiksowe gładkie
+korony (trzy tony czytają się dalej), kryształ Kręgu i tęcza Progu.
+
+**Propozycja dla właściciela (nie wprowadzona — wspólne ustawienia miejsca):** las z daleka nadal wygląda jak makieta,
+bo widać całą płytę i kulisy ostro aż po horyzont. Dwa warianty:
+- *lokalnie w lesie* (zalecany): skrypt klienta po wejściu do lasu płynnie zmienia `Lighting.Atmosphere` u tego gracza
+  (np. Density 0,38, Offset 0,2, Haze 1,8, Color zielonkawo-szary C9D8CC, Decay 5E7A62, Glare 0) i przywraca ustawienia
+  miasteczka przy powrocie — miasteczko nic nie traci;
+- *globalnie*: ta sama Atmosphere dla całego miejsca (prościej, ale zmienia też wygląd miasteczka).
+W obu wariantach `FogEnd` zostaje bez zmian (mgła Atmosphere nie ucina kadru tak ostro jak klasyczna mgła).
+
+---
+
+## 17. Przegląd świeżym okiem na zrzutach ze Studio (etap 3, 15.11)
+
+**Jak patrzyłem.** Zrzuty ze Studio w trybie Edit: 28 ujęć kontrolnych i 10 ujęć przeglądu z oczu gracza
+(`ujecia_przeglad.json`, rozdz. 11), w trzech rundach (stan po etapie 2, potem dwie rundy poprawek). Oprócz oka: skrypt
+kontrolny na `czesci.json` (najdłuższy łysy odcinek każdej ścieżki, drobiazgi na nawierzchni, części na placach walki),
+`sprawdz.py`, porównanie `uklad.json` i `potwory.json` z git HEAD (identyczne).
+
+**Ocena dyrektora artystycznego (przed poprawkami).** Z oczu gracza to już miejsce z gry, nie makieta: szlaki z bruku
+z tuszem krawężnika, ściany rynien z warstwami, runo z fakturą i drobiazgi przy każdej ścieżce. Najsłabsze były miejsca,
+które pokazała dopiero kamera w nowych punktach:
+
+| Gdzie | Co było źle | Poprawka |
+|---|---|---|
+| Jezioro (`l27`, `x07`) | półprzezroczysta tafla z 20 klinów: szwy, płaska granatowa płachta; trzcina co 7 st jak płot | tafla nieprzezroczysta `woda`, pas płycizny `woda_plytka` i 4 plamy głębi `woda_gleboka` na tafli (jak Oczko), trzcina w kępach 2–3 różnej wysokości, więcej zmarszczek; przezroczystych części 33 → 13 |
+| Labirynt (`l26`, `x06`) | zielone zwisy-prostokąty jak naklejki, czoła rzędów z ciemnozielonymi płytami, ściany stały „pudłem” na trawie; kości-klocki leżały na korytarzu i na placu walki | zwis to klin ostrzem w dół (postrzępiony skraj liści, ta sama liczba części), czoła w odcieniach fioletu, ciemny odrost u stopy każdego lica (+46), kości pod ścianą polanki, poza korytarzem i placem (5 z 7 znalazło miejsce) |
+| Rant półek Wąwozu (`l17`) | wierzchy skał rantu to duże gładkie jasne płyty nad murawą | darń na każdej skale rantu półek (kolor i faktura wierzchu półki, cofnięta 0,9 od lica): trawiasta warga z kamiennym brzegiem (+125) |
+| Wierzch półek (`l24`) | słomiana murawa prawie pusta, słomiane kępki na słomie niewidoczne | kępki oliwkowo-zielone, nowa rodzina „krzaczek” (mały krzak, 3 części), gęstość przy ścieżkach 10 → 12, runo 40 → 50 kęp |
+| Kwiaty (`l13`, `l25`) | zielona cegiełka z kolorowym kafelkiem — klocek, nie kwiat | kępka kwiatka to klin (liść), łan kwiatów to grzbiet z dwóch klinów (ciemny i jasny); `rosliny.kwiaty` też klin |
+| Garby | prawie niewidoczne (ten sam kolor i faktura co grunt), a kosztowały 780 części | o połowę mniej (336 części); oszczędność poszła w poprawki wyżej |
+
+**Bez zmian, bo dobre albo poza zakresem:** szlaki, dróżki, ściany rynien, uskoki Korony, Kapeluszowo, Ostępy (ciemne
+runo boru i jaśniejsze place wilków czytają się dobrze), Oczko, Łąka (krzaki-bryły są trochę parkowe, ale komiksowe —
+zostają), kamienie-kody (pomarańczowe „cegiełki” przy Trakcie Wąwozem to celowy kod szlaku), polana Ukłonu (otwarta
+celowo; widać na niej cienkie ciemne linie styków klinów zbocza kopca).
+
+**Kontrola po poprawkach:** `sprawdz.py` 0 błędów, te same 2 ostrzeżenia; `generuj.py` kod 0, place walki czyste, każda
+część ma rolę, determinizm (dwa przebiegi, ta sama suma md5); najdłuższy odcinek ścieżki bez detalu 52 st (rampy, gdzie
+detali celowo nie ma), 0 drobiazgów na nawierzchni; w Studio 22 419 części, 22 678 instancji, streaming grup ustawiony.
+
+**Zostaje słabe:** labirynt z bliska nadal jest z płaskich fioletowych brył (lepszy rytm, ale nie żywopłot z prawdziwego
+zdarzenia); jezioro jest jasne i nasycone jak w komiksie, a z brzegu plamy głębi widać dopiero dalej; na stykach odcinków
+ścieżek cienka kreska; chmury-balony; z daleka las nadal trochę makietą — brak mgły (propozycja w rozdz. 16, decyzja
+właściciela, bo zmienia ustawienie wspólne miejsca).

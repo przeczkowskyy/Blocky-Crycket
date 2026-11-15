@@ -28,7 +28,9 @@ import geo  # noqa: E402
 import wezly as W  # noqa: E402
 from geo import BIEG, w_wielokacie, odl_lamana, dlugosc, przeciecie, okrag  # noqa: E402
 
-KADRY_LOKACJI = {"l02", "l07", "l08", "l09", "l11", "l12", "l14", "l16", "l17"}
+KADRY_LOKACJI = {"l02", "l07", "l08", "l09", "l11", "l12", "l14", "l16", "l17",
+                 # wersja 2: kadry detali z bliska (faktury i drobiazgi przy ścieżce) — punkt orientacyjny niepotrzebny
+                 "l21", "l22", "l23", "l24", "l25", "l26", "l27", "l28"}
 KOLOR_POTWORA = {"Leśny Slime": "7EDB57", "Bursztynowy Slime": "zloto", "Muchomornik": "czerwien",
                  "Cierniowy Wilk": "kamien_lochu"}
 
@@ -290,7 +292,8 @@ def main():
     # ------------------------------------------------------------------ 6. kontrast potworów z gruntem
     import paleta as PAL
     grunt = {"laka": ("runo", "podkładka strefy: wydeptana ciemniejsza trawa"), "kapeluszowo": ("mech", "polanka mchu"),
-             "ostepy": ("runo", "runo boru"), "wawoz": ("kamien_cokol", "ciemne błoto Wyschniętej Kałuży"),
+             "ostepy": ("runo", "podkładka: polanka runa w ciemnym runie boru"),
+             "wawoz": ("kamien_cokol", "ciemne błoto Wyschniętej Kałuży"),
              "korona": ("runo_ciemne", "taras")}
     print("KONTRAST potworów z gruntem strefy (ΔL*, wymagane ≥ 20):")
     for st in zs:

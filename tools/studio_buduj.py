@@ -164,6 +164,8 @@ def main():
     ap.add_argument("--usun", action="store_true")
     ap.add_argument("--obrysy", action="store_true",
                     help="dodaj komiksowy obrys sylwetki (Highlight) grupom z listy „obrysy” w pliku; limit silnika: 31 naraz")
+    ap.add_argument("--czekaj", type=float, default=0,
+                    help="opcjonalnie: gdy ktoś inny ma Studio w trybie Play, czekaj do N minut i ponawiaj paczkę (domyślnie 0 = przerwij)")
     a = ap.parse_args()
     with open(a.plik, encoding="utf-8") as f:
         d = json.load(f)
@@ -185,10 +187,16 @@ def main():
                 sys.exit("Roblox Studio nie jest podłączone (Assistant → Manage MCP Servers → Enable Studio as MCP server).")
 
             def wykonaj(kod):
-                r = s.call("execute_luau", {"code": kod, "datamodel_type": "Edit", "studio_id": sid}, timeout=180)
-                if r["is_error"]:
-                    raise StudioError(r["text"])
-                return r["text"].strip()
+                koniec = time.time() + 60 * a.czekaj
+                while True:
+                    r = s.call("execute_luau", {"code": kod, "datamodel_type": "Edit", "studio_id": sid}, timeout=180)
+                    if r["is_error"] and a.czekaj > 0 and "Play mode" in r["text"] and time.time() < koniec:
+                        print("  (Studio w trybie Play — czekam 30 s i ponawiam tę samą paczkę)", flush=True)
+                        time.sleep(30)                 # paczka w Play nie wykonała się wcale, więc ponowienie jest bezpieczne
+                        continue
+                    if r["is_error"]:
+                        raise StudioError(r["text"])
+                    return r["text"].strip()
 
             kod = (START.replace("__KORZEN__", korzen).replace("__USUN__", "true" if a.usun else "false")
                    .replace("__ZRODLO__", zrodlo).replace("__CZAS__", time.strftime("%Y-%m-%dT%H:%M:%S")))

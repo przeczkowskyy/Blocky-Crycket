@@ -30,6 +30,10 @@ def main():
     ap.add_argument("--przesun", default="0,0,0", help="przesunięcie mapy w świecie Studio: x,y,z")
     ap.add_argument("--tylko", default="")
     ap.add_argument("--jakosc", type=int, default=88)
+    ap.add_argument("--czekaj", type=float, default=0,
+                    help="opcjonalnie: przed każdym zrzutem czekaj do N minut, aż Studio wróci z trybu Play do Edit")
+    ap.add_argument("--rozmiar", default="",
+                    help="opcjonalnie: zmniejsz zrzut do szerokości w pikselach (np. 1600), żeby JPG był mniejszy")
     a = ap.parse_args()
     dx, dy, dz = (float(v) for v in a.przesun.split(","))
     with open(a.ujecia, encoding="utf-8") as f:
@@ -53,6 +57,14 @@ def main():
                     continue
                 if orto:                                       # rzut z góry: perspektywa z wysokości dobranej do skali kadru
                     pos = [cel[0], cel[1] + float(orto) * 1.25, cel[2] + 0.5]
+                if a.czekaj > 0:                               # ktoś inny testuje w Play: zrzut w Edit dopiero po powrocie
+                    import time
+                    koniec = time.time() + 60 * a.czekaj
+                    while time.time() < koniec:
+                        tryby = [x.get("mode") for x in s.studios() if isinstance(x, dict) and x.get("mode")]
+                        if not tryby or all(t == "Edit" for t in tryby):
+                            break
+                        time.sleep(20)
                 r = s.call("screen_capture", {"studio_id": sid, "capture_id": "ujecie_" + nazwa,
                                               "camera_position": [pos[0] + dx, pos[1] + dy, pos[2] + dz],
                                               "look_at_position": [cel[0] + dx, cel[1] + dy, cel[2] + dz]}, timeout=120)
@@ -65,7 +77,10 @@ def main():
                 wynik = png
                 if Image is not None:
                     jpg = os.path.join(a.wyj, nazwa + ".jpg")
-                    Image.open(png).convert("RGB").save(jpg, "JPEG", quality=a.jakosc)
+                    im = Image.open(png).convert("RGB")
+                    if a.rozmiar and im.width > int(a.rozmiar):
+                        im = im.resize((int(a.rozmiar), round(im.height * int(a.rozmiar) / im.width)), Image.LANCZOS)
+                    im.save(jpg, "JPEG", quality=a.jakosc)
                     os.remove(png)
                     wynik = jpg
                 zrobione += 1

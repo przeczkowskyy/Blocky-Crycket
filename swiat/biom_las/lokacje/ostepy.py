@@ -3,6 +3,7 @@
 Wrota Bagna."""
 import math
 import os
+import random
 import sys
 
 _TU = os.path.dirname(os.path.abspath(__file__))
@@ -65,6 +66,7 @@ def jezynowy_labirynt(s, G, rnd, L):
             if geo.odl_lamana((px, pz), kor) < 7.0 + kom * 0.5 or math.hypot(px - cx, pz - cz) < 17.0 + kom * 0.5:
                 continue
             siatka[(i, j)] = (px, pz)
+    r2 = random.Random(77)                                      # etap 3: własne ziarno dla dodatków (reszta bez zmian)
     with s.grupa("Ostepy/Lokacje/JezynowyLabirynt"):
         uzyte = set()
         for j in range(n):
@@ -100,6 +102,49 @@ def jezynowy_labirynt(s, G, rnd, L):
                     if (i + j) % 2 == 0:
                         s.naroznik("Kolec", ((x0 + x1) / 2.0 + rnd.uniform(-2, 2), h + 0.6, pz + kom / 2.0 + 0.2), (1.0, 1.8, 1.0),
                                    "jezyna_kolec", rot=(0, rnd.choice((0, 90, 180, 270)), 90))
+                    # wersja 2 (przegląd: „z bliska płaskie fioletowe lica”): na każdym licu od strony korytarza garby
+                    # liści i pędów (wystają ≤ 0,5), ciemne pionowe pędy i jasne kolce wbite w lico (≤ 0,6) — korytarz
+                    # 14 zostaje szerszy niż 12,8, a lico ma rytm co 6 st
+                    for q in range(i, k + 1):
+                        qx = cx - R + (q + 0.5) * kom
+                        for zn in (-1, 1):
+                            if (q, j + zn) in siatka:
+                                continue                       # lico styka się z sąsiednim rzędem ściany
+                            fz = pz + zn * kom / 2.0
+                            # duży garb pędów (fiolet jaśniejszy albo ciemniejszy od lica, szerszy niż komórka — garby
+                            # sąsiadów zachodzą na siebie) i zwis liści spływający z zielonego wierzchu
+                            gh = rnd.uniform(3.8, 6.0)
+                            s.blok("Jeżyna garb", (qx + rnd.uniform(-1.0, 1.0), rnd.uniform(1.8, h - 4.0) + gh / 2.0 - 1.0, fz - zn * 0.2),
+                                   (rnd.uniform(5.2, 7.0), gh, 1.4), rnd.choice((cien(s, "jezyna", 1.22), cien(s, "jezyna", 0.82), cien(s, "jezyna", 1.1))),
+                                   rot=(rnd.uniform(-5, 5), rnd.uniform(-8, 8), rnd.uniform(-10, 10)))
+                            # etap 3 (Studio: zielone zwisy-prostokąty wyglądały jak naklejki): zwis liści to klin
+                            # ostrzem w dół — trójkąt z poziomym brzegiem przy zielonym wierzchu, na przemian w lewo i
+                            # w prawo, więc lico ma postrzępiony skraj liści (ta sama liczba części)
+                            zl = rnd.uniform(2.0, 4.2) * 1.25
+                            zx = qx + rnd.uniform(-1.5, 1.5)
+                            zw = rnd.uniform(3.0, 5.0)
+                            zk = rnd.choice(("lisc_ciemny", "runo_ciemne"))
+                            zr = (rnd.uniform(-6, 6), rnd.uniform(-6, 6))
+                            with s.uklad(pos=(zx, h - zl / 2.0 + 0.5, fz - zn * 0.1), obrot=(0, (90 if zn > 0 else -90) + zr[0], zr[1])):
+                                s.klin("Jeżyna zwis", (0, 0, 0), (1.2, zl, zw), zk, rot=(180, 0, 0) if r2.random() < 0.5 else (180, 180, 0))
+                            # ciemny pas pędów u stopy lica (odrost), wystaje 0,3 — ściana nie stoi już „pudłem” na trawie
+                            s.blok("Jeżyna odrost", (qx + r2.uniform(-0.2, 0.2), r2.uniform(0.6, 1.0), fz + zn * 0.1),
+                                   (kom * 0.96, r2.uniform(1.6, 2.4), 0.8), cien(s, "jezyna", r2.choice((0.62, 0.7))),
+                                   rot=(0, r2.uniform(-4, 4), r2.uniform(-5, 5)))
+                            s.blok("Jeżyna pęd", (qx + rnd.choice((-2.2, 2.2)), h * 0.45, fz + zn * 0.08), (0.45, h * rnd.uniform(0.5, 0.75), 0.3),
+                                   cien(s, "jezyna", 0.7), rot=(0, 0, rnd.uniform(-14, 14)))
+                            if (q + j) % 2 == 0:
+                                with s.uklad(pos=(qx + rnd.uniform(-2.0, 2.0), rnd.uniform(1.6, h - 1.5), fz), obrot=(0, 0 if zn > 0 else 180, 0)):
+                                    s.naroznik("Kolec", (0, 0, 0.1), (0.7, 0.7, 1.0), "jezyna_kolec", rot=(-90, rnd.choice((0, 90)), 0))
+                    for q, zx in ((i, -1), (k, 1)):          # czoła rzędu od strony korytarza
+                        if (q + zx, j) in siatka:
+                            continue
+                        fx = (x0 if zx < 0 else x1)
+                        # etap 3: czoło rzędu bez ciemnozielonej „naklejki” (runo_ciemne) — garb w odcieniu fioletu
+                        s.blok("Jeżyna garb", (fx + zx * (0.5 - 0.7), rnd.uniform(2.4, h - 2.4), pz + rnd.uniform(-1.0, 1.0)),
+                               (1.4, rnd.uniform(3.0, 5.0), rnd.uniform(3.2, 4.6)),
+                               {"jezyna": "jezyna", "runo_ciemne": cien(s, "jezyna", 1.18)}[rnd.choice(("jezyna", "runo_ciemne"))],
+                               rot=(rnd.uniform(-8, 8), rnd.uniform(-8, 8), rnd.uniform(-6, 6)))
                 i = k + 1
         # środek: pogryziona skrzynia (≥ 13 od środka, żeby plac walki r 12 został czysty) i kości
         with s.uklad(pos=(cx, 0, cz)):
@@ -107,8 +152,16 @@ def jezynowy_labirynt(s, G, rnd, L):
             wspolne.punkt_e(s, "Ostepy/Lokacje/JezynowyLabirynt", (0.0, 0, -11.5))
             with s.cechy(kolizja=False, cien=False):
                 for k in range(7):
+                    # etap 3: kości poza placem walki (r 12 od środka) — pod ścianą polanki, z dala od skrzyni (−Z)
                     a = rnd.uniform(0, 2 * math.pi)
                     r = rnd.uniform(4, 9)
+                    for _ in range(40):                       # poza korytarzem (kości nie leżą na ścieżce)
+                        a = math.radians(-50 + 280 * (k + r2.uniform(0.0, 1.0)) / 7.0)
+                        r = r2.uniform(13.2, 15.6)
+                        if geo.odl_lamana((cx + r * math.cos(a), cz + r * math.sin(a)), kor) > 8.6:
+                            break
+                    else:
+                        continue
                     s.blok("Kość-klocek", (r * math.cos(a), 0.35, r * math.sin(a)), (2.2, 0.5, 0.6), "biel", rot=(0, rnd.uniform(0, 180), 0))
     G.zajmij(cx, cz, R + 2)
 

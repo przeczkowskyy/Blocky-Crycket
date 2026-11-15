@@ -34,6 +34,14 @@ def _kontra(rnd, a, b):
     return rnd.choice((-1, 1)) * rnd.uniform(a, b)
 
 
+def odcien(s, kolor, f):
+    """Kolor (klucz palety albo RRGGBB) × f z obcięciem do 255 — odcień korony jednego drzewa (las nie z jednej formy)."""
+    h = s.paleta.get(kolor, kolor)
+    if abs(f - 1.0) < 1e-6:
+        return kolor
+    return "%02X%02X%02X" % tuple(max(0, min(255, int(int(h[i:i + 2], 16) * f))) for i in (0, 2, 4))
+
+
 def okraglak(s, rnd, pos, k=1.0, ry=0.0, kolory=KORONY["laka"]):
     """A Okrąglak łąkowy: pień z 2 segmentów (+6…9° / −10…14°), korona z 3 czap, tuszowy pierścień. Wys. ok. 15·k. 6 części."""
     x, y, z = pos
@@ -74,21 +82,138 @@ def dab(s, rnd, pos, k=1.0, ry=0.0, kolory=KORONY["serce"]):
     return 21.0 * k, 7.0 * k
 
 
-def sosna(s, rnd, pos, k=1.0, ry=0.0, ciemna=True):
+def sosna(s, rnd, pos, k=1.0, ry=0.0, ciemna=True, f=1.0):
     """C Sosna stożkowa: pień, trzy piętra igieł skręcone o 45° (dół ciemniejszy), krzywy czubek z klina narożnego.
-    Wys. ok. 19·k. 5 części."""
+    Wys. ok. 19·k. 5 części. f = odcień igieł (0,9–1,08)."""
     x, y, z = pos
     with s.uklad(pos=(x, y, z), obrot=(rnd.uniform(-3, 3), ry, _kontra(rnd, 4, 6))):
         with s.cechy(kolizja=True):
             s.blok("Pień", (0, 2.0 * k - 0.4, 0), (1.7 * k, 4.0 * k + 0.8, 1.7 * k), "drewno_ciemne", "Wood")
         kol = (cien(s, "igla", 0.8), "igla", "lisc_ciemny") if ciemna else (cien(s, "igla", 0.9), "igla", "lisc")
+        kol = tuple(odcien(s, c, f) for c in kol)
         with s.cechy(kolizja=False):
             for i, (a, h) in enumerate(((10.0, 5.2), (7.6, 4.6), (5.2, 4.0))):
                 s.blok("Igły", (0.25 * i * k, (4.0 + 2.6 + 4.1 * i) * k, 0), (a * k, h * k, a * k), kol[i],
                        rot=(0, 45 * i + rnd.uniform(-8, 8), _kontra(rnd, 3, 6)))
-            s.naroznik("Czubek", (0.6 * k, 19.0 * k - 2.2 * k, 0), (3.4 * k, 4.4 * k, 3.4 * k), "lisc_ciemny",
+            s.naroznik("Czubek", (0.6 * k, 19.0 * k - 2.2 * k, 0), (3.4 * k, 4.4 * k, 3.4 * k), odcien(s, "lisc_ciemny", f),
                        rot=(0, rnd.uniform(0, 360), 0))
     return 19.0 * k, 5.0 * k
+
+
+# --------------------------------------------------------------------------- wersja 2: więcej sylwetek w podbiomie
+def smukly(s, rnd, pos, k=1.0, ry=0.0, kolory=KORONY["laka"]):
+    """G Smukła topólka (Łąka, Serce): wysoki pień z 2 segmentów w kontrze, wąska wieża z trzech czap. Wys. ok. 23·k.
+    6 części."""
+    x, y, z = pos
+    zn = rnd.choice((-1, 1))
+    with s.uklad(pos=(x, y, z), obrot=(0, ry, 0)):
+        with s.cechy(kolizja=True):
+            xe, ye, _ = lamana(s, "Pień", [(6.5 * k, 1.4 * k, zn * rnd.uniform(5, 8)), (5.0 * k, 1.1 * k, -zn * rnd.uniform(8, 12))],
+                               "drewno", "Wood", start=(0.0, -0.4))
+        with s.cechy(kolizja=False, cien=False):
+            s.blok("Pień tusz", (0, 0.1, 0), (2.2 * k, 0.4, 2.2 * k), "tusz")
+        with s.cechy(kolizja=False):
+            with s.uklad(pos=(xe, ye, 0), obrot=(rnd.uniform(-3, 3), rnd.uniform(0, 90), -zn * rnd.uniform(3, 6))):
+                s.blok("Korona spód", (0, 2.8 * k, 0), (6.0 * k, 6.4 * k, 5.6 * k), kolory[0])
+                s.blok("Korona", (0.3 * zn * k, 7.4 * k, 0.2 * k), (4.8 * k, 5.0 * k, 4.6 * k), kolory[1], rot=(0, 30, 0))
+                s.blok("Korona wierzch", (-0.2 * zn * k, 11.0 * k, 0), (3.0 * k, 3.2 * k, 3.0 * k), kolory[2], rot=(0, 55, zn * 6))
+    return 23.0 * k, 3.6 * k
+
+
+def sosna_smukla(s, rnd, pos, k=1.0, ry=0.0, ciemna=True, f=1.0, przechyl=0.0):
+    """H Sosna smukła (Ostępy, półki Wąwozu): goły pień z 2 segmentów w kontrze, trzy małe piętra igieł wysoko, czubek.
+    przechyl = dodatkowe pochylenie całości (sosny nad urwiskiem). Wys. ok. 26·k. 7 części."""
+    x, y, z = pos
+    zn = rnd.choice((-1, 1))
+    kol = tuple(odcien(s, c, f) for c in ((cien(s, "igla", 0.8), "igla", "lisc_ciemny") if ciemna else ("igla", "lisc_ciemny", "lisc")))
+    with s.uklad(pos=(x, y, z), obrot=(0, ry, 0)), s.uklad(obrot=(0, 0, zn * przechyl)):
+        with s.cechy(kolizja=True):
+            xe, ye, _ = lamana(s, "Pień", [(9.0 * k, 1.3 * k, zn * rnd.uniform(4, 7)), (8.0 * k, 1.0 * k, -zn * rnd.uniform(7, 11))],
+                               "drewno_ciemne", "Wood", start=(0.0, -0.4))
+        with s.cechy(kolizja=False):
+            s.belka("Konar", (xe * 0.4, 9.5 * k, 0), (xe * 0.4 - zn * 2.6 * k, 11.0 * k, 0.4 * k), 0.45 * k, "drewno_ciemne", "Wood")
+            with s.uklad(pos=(xe, ye - 3.0 * k, 0), obrot=(0, rnd.uniform(0, 90), -zn * rnd.uniform(3, 6))):
+                for i, (a, h) in enumerate(((7.0, 3.6), (5.4, 3.2), (3.8, 2.8))):
+                    s.blok("Igły", (0.2 * i * k * zn, (1.4 + 3.0 * i) * k, 0), (a * k, h * k, a * k), kol[i],
+                           rot=(0, 40 * i + rnd.uniform(-8, 8), _kontra(rnd, 3, 6)))
+                s.naroznik("Czubek", (0.4 * k, 10.8 * k, 0), (2.6 * k, 3.4 * k, 2.6 * k), kol[2], rot=(0, rnd.uniform(0, 360), 0))
+    return 26.0 * k, 3.8 * k
+
+
+def swierk(s, rnd, pos, k=1.0, ry=0.0, f=1.0):
+    """I Świerk-stożek (Ostępy): krótki pień, pięć pięter igieł zwężających się ku górze, na przemian skręconych; ciemny
+    dół. Wys. ok. 21·k. 7 części."""
+    x, y, z = pos
+    kol = [odcien(s, c, f) for c in (cien(s, "igla", 0.72), cien(s, "igla", 0.82), "igla", "igla", "lisc_ciemny")]
+    with s.uklad(pos=(x, y, z), obrot=(rnd.uniform(-3, 3), ry, _kontra(rnd, 3, 6))):
+        with s.cechy(kolizja=True):
+            s.blok("Pień", (0, 1.5 * k - 0.4, 0), (1.5 * k, 3.0 * k + 0.8, 1.5 * k), "drewno_ciemne", "Wood")
+        with s.cechy(kolizja=False):
+            for i, a in enumerate((9.0, 7.6, 6.0, 4.6, 3.0)):
+                s.blok("Igły", (0.15 * i * k, (4.2 + 3.1 * i) * k, 0), (a * k, 3.4 * k, a * k), kol[i],
+                       rot=(0, 45 * (i % 2) + rnd.uniform(-6, 6), _kontra(rnd, 2, 5)))
+            s.naroznik("Czubek", (0.5 * k, 20.0 * k, 0), (2.2 * k, 3.0 * k, 2.2 * k), kol[4], rot=(0, rnd.uniform(0, 360), 0))
+    return 21.0 * k, 4.8 * k
+
+
+def suchy(s, rnd, pos, k=1.0, ry=0.0):
+    """J Suche drzewo (Ostępy, Wąwóz): szary pień z 3 segmentów w kontrze i trzy gołe konary — groźna sylwetka bez korony.
+    Wys. ok. 17·k. 6 części."""
+    x, y, z = pos
+    zn = rnd.choice((-1, 1))
+    with s.uklad(pos=(x, y, z), obrot=(0, ry, 0)):
+        with s.cechy(kolizja=True):
+            xe, ye, _ = lamana(s, "Pień suchy", [(6.0 * k, 1.6 * k, zn * rnd.uniform(6, 9)), (5.0 * k, 1.2 * k, -zn * rnd.uniform(12, 16)),
+                                                 (4.0 * k, 0.8 * k, zn * rnd.uniform(8, 12))], "kamien_cokol", "Wood", start=(0.0, -0.4))
+        with s.cechy(kolizja=False):
+            for i, (t, dx, dy, dz) in enumerate(((0.45, 3.6, 2.4, 0.6), (0.62, -3.0, 2.8, -0.8), (0.8, 2.4, 3.2, -1.4))):
+                s.belka("Konar suchy", (xe * t, ye * t, 0), (xe * t + dx * k, ye * t + dy * k, dz * k), (0.6 - 0.12 * i) * k,
+                        "kamien_cokol", "Wood")
+            with s.cechy(cien=False):
+                s.blok("Pień tusz", (0, 0.1, 0), (2.4 * k, 0.4, 2.4 * k), "tusz")
+    return 17.0 * k, 3.0 * k
+
+
+def brzozka_podwojna(s, rnd, pos, k=1.0, ry=0.0):
+    """K Brzózka podwójna (Korona): dwa białe pnie z jednej stopy rozchylone w V, każdy z paskiem tuszu i czapą.
+    Wys. ok. 15·k. 9 części."""
+    x, y, z = pos
+    with s.uklad(pos=(x, y, z), obrot=(0, ry, 0)):
+        for zn in (-1, 1):
+            with s.uklad(pos=(zn * 0.5 * k, 0, 0), obrot=(0, 0, zn * rnd.uniform(9, 14))):
+                with s.cechy(kolizja=True):
+                    xe, ye, _ = lamana(s, "Pień", [(5.0 * k, 0.95 * k, -zn * rnd.uniform(4, 7)), (4.0 * k, 0.8 * k, zn * rnd.uniform(6, 9))],
+                                       "biel", start=(0.0, -0.3))
+                with s.cechy(kolizja=False, cien=False):
+                    s.blok("Pasek", (0, 3.0 * k, 0), (1.05 * k, 0.4 * k, 1.05 * k), "tusz", rot=(0, 0, zn * 5))
+                with s.cechy(kolizja=False):
+                    with s.uklad(pos=(xe, ye, 0), obrot=(0, rnd.uniform(0, 90), zn * rnd.uniform(3, 7))):
+                        s.blok("Korona", (0, 1.6 * k, 0), (5.6 * k, 3.6 * k, 5.2 * k), "lisc")
+                        s.blok("Korona wierzch", (0.3 * k, 3.9 * k, 0), (3.6 * k, 2.4 * k, 3.4 * k), "lisc_jasny", rot=(0, 30, 0))
+        with s.cechy(kolizja=False, cien=False):
+            s.blok("Pień tusz", (0, 0.1, 0), (2.2 * k, 0.4, 1.4 * k), "tusz")
+    return 15.0 * k, 4.6 * k
+
+
+def jarzebina(s, rnd, pos, k=1.0, ry=0.0, kolory=("lisc_ciemny", "lisc")):
+    """L Jarzębina (Kapeluszowo, Serce, Korona): niski krzywy pień, okrągława korona z 2 brył, trzy kiście czerwonych
+    owoców. Wys. ok. 12·k. 7 części."""
+    x, y, z = pos
+    zn = rnd.choice((-1, 1))
+    with s.uklad(pos=(x, y, z), obrot=(0, ry, 0)):
+        with s.cechy(kolizja=True):
+            xe, ye, _ = lamana(s, "Pień", [(3.4 * k, 1.1 * k, zn * rnd.uniform(8, 12)), (2.6 * k, 0.9 * k, -zn * rnd.uniform(12, 16))],
+                               "drewno", "Wood", start=(0.0, -0.3))
+        with s.cechy(kolizja=False):
+            with s.uklad(pos=(xe, ye, 0), obrot=(rnd.uniform(-4, 4), rnd.uniform(0, 90), -zn * rnd.uniform(4, 8))):
+                s.blok("Korona spód", (0, 1.8 * k, 0), (7.0 * k, 3.8 * k, 6.4 * k), kolory[0])
+                s.blok("Korona wierzch", (0.4 * zn * k, 4.4 * k, 0.2 * k), (4.8 * k, 2.8 * k, 4.4 * k), kolory[1], rot=(0, 35, 0))
+                with s.cechy(cien=False):
+                    for a in (30, 150, 260):
+                        r = 3.3 * k
+                        s.blok("Jarzębina owoc", (r * math.cos(math.radians(a)), 0.7 * k, r * math.sin(math.radians(a))),
+                               (1.0 * k, 0.9 * k, 1.0 * k), "czerwien", rot=(15, a, 10))
+    return 12.0 * k, 3.6 * k
 
 
 def brzozka(s, rnd, pos, k=1.0, ry=0.0):
@@ -168,12 +293,13 @@ def krzak(s, rnd, pos, k=1.0, kolory=("lisc_ciemny", "lisc", "lisc_jasny"), jago
 
 
 def kwiaty(s, rnd, pos, kolory=("zloto", "biel")):
-    """Kępa kwiatów: kępka liści i dwa kwiaty-kostki. Bez kolizji i cienia. 3 części."""
+    """Kępa kwiatów: kępka liści i dwa płaskie kwiaty-talerzyki. Bez kolizji i cienia. 3 części.
+    (Wersja 2 po zrzutach ze Studio: kwiat-kostka 0,9 wyglądał jak kostka do gry; talerzyk obrócony o 45° jak kielich.)"""
     x, y, z = pos
     with s.uklad(pos=(x, y, z), obrot=(0, rnd.uniform(0, 90), 0)), s.cechy(kolizja=False, cien=False):
-        s.blok("Kępka", (0, 0.45, 0), (2.4, 0.9, 1.8), "lisc_ciemny", rot=(0, 0, 6))
-        s.blok("Kwiat", (-0.5, 1.35, 0.2), (0.9, 0.9, 0.9), kolory[0], rot=(15, 30, 10))
-        s.blok("Kwiat", (0.7, 1.1, -0.3), (0.8, 0.8, 0.8), kolory[-1], rot=(10, 60, -12))
+        s.klin("Kępka", (0, 0.5, 0), (2.4, 1.0, 1.8), "lisc_ciemny", rot=(0, 0, 6))   # etap 3: klin, nie kostka
+        s.blok("Kwiat", (-0.5, 1.02, 0.2), (1.2, 0.32, 1.2), kolory[0], rot=(12, 75, 8))
+        s.blok("Kwiat", (0.7, 0.92, -0.3), (1.05, 0.3, 1.05), kolory[-1], rot=(8, 105, -10))
 
 
 def paproc(s, rnd, pos, k=1.0):

@@ -149,19 +149,40 @@ def szpara(s, rnd, pos, ry=0.0, kolor="kamien_cieply"):
             s.blok("Szpara", (0, 1.6, 1.0), (1.4, 3.0, 0.4), "tusz")
 
 
+def plama(rnd, cx, cz, r0, r1, n, rozrzut=0.06):
+    """Nieregularny gwiaździsty wielokąt (x, z): promień płynnie faluje między r0 i r1 (dwie harmoniczne o losowej fazie),
+    kąty wierzchołków lekko rozrzucone. Wielokąt jest prosty (kąty rosną), więc triangulacja ma n − 2 trójkątów."""
+    f1, f2 = rnd.uniform(0, 2 * math.pi), rnd.uniform(0, 2 * math.pi)
+    pts = []
+    for k in range(n):
+        a = 2 * math.pi * k / n + rnd.uniform(-rozrzut, rozrzut)
+        t = 0.5 + 0.3 * math.sin(2 * a + f1) + 0.2 * math.sin(3 * a + f2)
+        r = r0 + (r1 - r0) * t
+        pts.append((cx + r * math.cos(a), cz + r * math.sin(a)))
+    return pts
+
+
 def podkladka(s, rnd, nazwa, x, y, z, r, kolor, wezly=()):
-    """Podkładka strefy walki (ΔL* ≥ 20 pod potworem): nieregularna plama z dysków — po jednym pod każdym węzłem walki
-    (r 13) i kilka mniejszych między nimi, żeby z góry nie było widać idealnego koła. 1 część na dysk."""
+    """Podkładka strefy walki (ΔL* ≥ 20 pod potworem). Wersja 2: zamiast „kół z kół” nieregularne plamy-wielokąty:
+    pod każdym węzłem walki plama r 13,6–20 (promień faluje, więc z góry nie widać wielokąta foremnego), między dalekimi
+    węzłami łącznik, przy co trzecim węźle strzęp na zewnątrz. Plamy leżą na wysokościach różniących się o 0,006
+    (wierzch 0,100–0,112 nad gruntem), żeby nachodzące na siebie faktury nie migotały. Plama węzła ma 8 wierzchołków
+    (6 trójkątów = 12 klinów); r 13,6 × cos(π/8 + 0,08) = 12,1 > 12, więc plac walki jest cały na podkładce.
+    ok. 12–20 części na węzeł."""
+    from swiat.biom_las.teren import wielokat
     with s.cechy(kolizja=False, cien=False):
-        for wx, wz in wezly:
-            s.walec(nazwa, (wx + rnd.uniform(-2, 2), y, wz + rnd.uniform(-2, 2)), rnd.uniform(11.0, 13.5), 0.2, kolor, os="y")
-            for k in range(2):
-                a = rnd.uniform(0, 2 * math.pi)
-                s.walec(nazwa, (wx + 10 * math.cos(a), y, wz + 10 * math.sin(a)), rnd.uniform(4.0, 7.0), 0.2, kolor, os="y")
-        for k in range(2):
-            a = rnd.uniform(0, 2 * math.pi)
-            q = rnd.uniform(0.0, 0.3) * r
-            s.walec(nazwa, (x + q * math.cos(a), y, z + q * math.sin(a)), rnd.uniform(0.3, 0.45) * r, 0.2, kolor, os="y")
+        n = len(wezly)
+        for i, (wx, wz) in enumerate(wezly):
+            wielokat(s, nazwa, plama(rnd, wx, wz, 13.6, 20.0, 8, 0.08), y + 0.10 + 0.006 * (i % 3), 0.2, kolor)
+            if i % 3 == 0:
+                a = math.atan2(wz - z, wx - x) + rnd.uniform(-0.9, 0.9)
+                wielokat(s, nazwa, plama(rnd, wx + 14.5 * math.cos(a), wz + 14.5 * math.sin(a), 3.5, 6.0, 5, 0.15),
+                         y + 0.103 + 0.006 * (i % 2), 0.2, kolor)
+            if n > 1:
+                bx, bz = wezly[(i + 1) % n]
+                if math.hypot(bx - wx, bz - wz) > 30:
+                    wielokat(s, nazwa, plama(rnd, (wx + bx) / 2.0, (wz + bz) / 2.0, 6.0, 9.0, 6, 0.12),
+                             y + 0.109 - 0.006 * (i % 2), 0.2, kolor)
 
 
 def zastepczy_potwor(s, nazwa, pos, rodzaj):

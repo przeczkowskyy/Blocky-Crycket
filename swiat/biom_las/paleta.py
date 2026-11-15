@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Paleta biomu Las „Bór Pod Ukłonem” — paleta miasteczka bez zmian plus 15 kolorów lasu.
+"""Paleta biomu Las „Bór Pod Ukłonem” — paleta miasteczka bez zmian plus 19 kolorów lasu (15 z wersji 1, 4 z wersji 2 mapy).
 
 Kontrakt: swiat/biom_las/PROJEKT.md, rozdz. 9. Kolory wpisujesz kluczem (s.blok(..., "runo")).
 Klucze miasteczka (tusz, trawa, lisc, bruk, woda, neon_* …) znaczą to samo co w miasteczku — nie zmieniamy ich.
@@ -38,6 +38,12 @@ KOLORY_LASU = {
     # światło (tylko materiał Neon)
     "neon_zarodnik": "C8FF3A",   # zarodniki Kapeluszowa
     "neon_swietlik": "FFE36A",   # świetliki w koronie Ukłonu
+    # wersja 2 mapy (faktury i detale)
+    "runo_boru": "3B7A35",       # ciemne runo między sosnami Ostępów (L* ok. 46); place walki na jaśniejszym `runo`
+    "piasek_dna": "D2BC84",      # jasna płycizna na dnie stawów i jeziora, widoczna przez półprzezroczystą taflę
+    "trawa_sucha": "B9B45A",     # suche kępki w Wąwozie i na rantach półek
+    # etap 3 (przegląd na zrzutach ze Studio): nieprzezroczyste jezioro jak Oczko — jasny pas płycizny przy brzegu
+    "woda_plytka": "5FBCE6",     # płycizna jeziora (na tafli, gładka); między `woda` 2389D0 a bielą
 }
 
 PALETA = dict(PALETA_MIASTECZKA)
