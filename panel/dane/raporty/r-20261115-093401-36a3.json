@@ -1,0 +1,24 @@
+{
+ "id": "r-20261115-093401-36a3",
+ "tytul": "Klipy walki: Rycerz Blocky",
+ "opis_md": "- **Nowe ruchy Rycerza Blocky'ego do walki:** blok tarczą, unik (ciężki odskok w bok), trafienie, upadek oraz trzy umiejętności Wojownika: Potężne cięcie (szeroki zamach z obrotem), Miażdżący cios (wyskok i uderzenie z góry) i Kamienna skóra (tupnięcie i postawa obronna).\n- **Po przeglądzie poprawione:** upadek leży teraz w poprzek kadru walki (wcześniej z obu kamer wyglądał jak kupka klocków); tarcza w bloku jest lekko skręcona, więc z kamery walki widać jej przód, a nie samą krawędź; miecz nie obraca się już w dłoni na początku uniku i bloku; uderzenie w tarczę wypada w tej samej chwili, w której prototyp walki pokazuje cios.\n- **Sprawdzone liczbowo i na klatkach:** miecz, tarcza i dłonie nie wchodzą w hełm ani w tułów w żadnej klatce nowych ruchów.\n- **Wciąż słabe:** naramienniki lekko ocierają się o hełm przy uniesionej ręce, bo tak jest zbudowany model; pancerz i twarz są sztywne; stary ruch ataku ma dłoń wchodzącą w tułów (nie zmieniałem go). Smug, iskier i fali musi jeszcze dodać gra.\n- **Wygląd bohatera się nie zmienił.** Doszła tylko tarcza jako osobny przedmiot. Kanon jej nie wymienia, więc to do Waszej decyzji.\n- Do prototypu walki te ruchy trafią w **osobnym kroku**. Na obrazkach jest po 8 klatek każdego ruchu, czytaj wierszami.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T09:34:01+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Postacie/Rycerz.md",
+   "etykieta": "Notatka"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ],
+ "pytanie": "Czy ruchy pasują do postaci? Co poprawić?"
+}

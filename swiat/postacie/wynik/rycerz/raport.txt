@@ -2,35 +2,42 @@ RAPORT — rycerz
 RYCERZ „Blocky” — jeden z dwóch bohaterów-maskotek (kanon: B&C/Postacie/Rycerz.md, obraz KeyArt.png).
 
 Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
-Źródło: swiat/postacie/rycerz.py · wygenerowano 13.11.2026 poleceniem:
+Źródło: swiat/postacie/rycerz.py · wygenerowano 15.11.2026 poleceniem:
   python -B swiat/postacie/przebuduj.py rycerz
 Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
 
 PODSUMOWANIE
 - modele z kośćmi: rycerz
-- przedmioty (akcesoria): 1
-- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 8 plików, zgodnych 8
+- przedmioty (akcesoria): 2
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 17 plików, zgodnych 17
 - ostrzeżenia z raportu: 0; uwagi podglądu: 0
 
 ZNANE SŁABOŚCI
-- Miecz jest osobnym przedmiotem (przedmioty/rycerz_miecz.fbx) — w FBX postaci go nie ma; w grze trzeba go dać jako Tool albo akcesorium na RightGripAttachment.
-- Bryły sztywno przypięte do kości: przy dużych zamachach naramienniki przenikają hełm i tułów.
-- Tabard i poły są sztywne (nie falują w chodzie); w ataku poła tnie uda.
-- Klipy to szkice (1–2 s), nie gotowa animacja; atak nie ma efektu cięcia (smugi).
+- Miecz i tarcza są osobnymi przedmiotami (przedmioty/rycerz_miecz.fbx, rycerz_tarcza.fbx) — w FBX postaci ich nie ma; w grze trzeba je dać jako Tool albo akcesoria na RightGripAttachment i LeftGripAttachment.
+- Tarczy nie ma na obrazie KeyArt ani w notatce kanonu — dodana jako przedmiot dla klasy Wojownik (blok tarczą); do oceny Game Directora. Jest przypięta do dłoni, nie do przedramienia: w bloku i w kamiennej skórze nadgarstek jest zgięty ok. 90°, żeby lico patrzyło przed siebie (zgięcie zasłania sama tarcza). Lico jest skręcone o 25° ku prawej stronie rycerza (SKOS_TARCZY), żeby z kamery walki (z prawego boku) było widać tarczę, nie krawędź; w kadrze 3/4 od lewej tarcza jest przez to trochę węższa i częściowo za lewym ramieniem.
+- Bryły sztywno przypięte do kości: naramienniki stykają się z bokami hełmu już w spoczynku, a przy uniesionej ręce albo skręcie głowy wchodzą w hełm do 0,18 studa (atak_miecz, ciecie; blok 0,15 po zmniejszeniu skrętu głowy, reszta klipów 0,08–0,15). To bryły ramienia, nie broń; poprawka wymagałaby zmiany brył naramienników albo hełmu (kanon wyglądu).
+- atak_miecz (stary szkic, bez zmian): w kl. 16–26 prawa dłoń i przedramię wchodzą w tułów do 0,15 studa (miecz nie przenika), a stopy schodzą do −0,14 studa pod ziemię. Zgodnie z zasadą stary klip zmienia się tylko, gdy przenika broń — do decyzji, czy go przerobić na wzór klipów walki.
+- Klipy walki przesuwają postać w samym klipie (kość LowerTorso): blok do 0,42 studa w tył, unik 1,7 studa w lewo, ciecie i miazdzacy_cios wypad 0,45 i 0,9 studa w przód — wszystkie kończą w punkcie startu. Upadek kończy się leżeniem 1,3 studa za punktem startu, ciałem lekko na ukos (−25°): z kamery walki leży w poprzek kadru, z kadru 3/4 od lewej widać go od strony nóg pod kątem (twarz słabo widoczna).
+- Upadek: hełm jest głębszy niż tułów, więc leżący rycerz opiera się na hełmie i tylnej pole tabardu, a plecy są ok. 0,3 studa nad ziemią; tarcza leży licem w dół (widać jej spód), miecz leży na sztorc obok prawej ręki.
+- Głębokie przysiady (miazdzacy_cios kl. 7, upadek kl. 19): tylna krawędź klocka goleni schodzi do 0,035 studa pod ziemię przy płaskiej stopie (sama bryła nogi). Chód (stary klip) do 0,064.
+- Tabard i poły są sztywne (nie falują w chodzie); w atak_miecz poła tnie uda. Twarz bez mimiki (ten sam uśmiech przy trafieniu i upadku).
+- Klipy to szkice (0,67–2 s), nie gotowa animacja; ciosy nie mają efektu cięcia (smugi), uderzenia w tarczę i tupnięcie — iskier ani fali (efekty w grze).
+- Kontrola przenikania (python -B swiat/postacie/rycerz.py --kontrola) liczy skrzynki brył (ostrosłupy jak skrzynki), margines 0,06 studa; hełm z głową, tułów i pas to po jednej skrzynce na kość (pas bez poł). Nie sprawdza rąk z nogami; broń z nogami i miecz z tarczą sprawdzone osobnym skryptem (bez przecięć).
 - LowerTorso i Root nie są w 0,0,0 (biodra na wysokości 1,9) — dla NPC bez znaczenia, ciało awatara może tego wymagać (sprawdzić przy pierwszym imporcie).
 
 MODEL rycerz „Rycerz Blocky” (r15)
-  wymiary ciała: 4,77 × 5,71 × 1,98; z akcesoriami: 4,77 × 5,71 × 5,12
-  trójkąty: 3284 (siatek: 16)
+  wymiary ciała: 4,77 × 5,71 × 1,98; z akcesoriami: 4,97 × 5,71 × 5,12
+  trójkąty: 3484 (siatek: 17)
   budżety ciała R15: Head 944/4000, Torso 428/1750, LeftArm 376/1248, RightArm 376/1248, LeftLeg 320/1248, RightLeg 320/1248
   kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
-  klipy: idle 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, atak_miecz 32 kl. 1,07 s jednorazowy, wiwat 36 kl. 1,20 s pętla
+  klipy: idle 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, atak_miecz 32 kl. 1,07 s jednorazowy, wiwat 36 kl. 1,20 s pętla, blok 30 kl. 1,00 s jednorazowy, unik 30 kl. 1,00 s jednorazowy, trafienie 20 kl. 0,67 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, ciecie 48 kl. 1,60 s jednorazowy, miazdzacy_cios 50 kl. 1,67 s jednorazowy, kamienna_skora 44 kl. 1,47 s jednorazowy
   punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
-  założone: rycerz_miecz na RightGripAttachment (tylko podgląd, bez eksportu)
+  założone: rycerz_miecz na RightGripAttachment (tylko podgląd, bez eksportu), rycerz_tarcza na LeftGripAttachment (tylko podgląd, bez eksportu)
 
 PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
 id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
 rycerz_miecz           RightGripAttachment        Bron         520  1,40 × 4,94 × 0,53   (-0,00; -1,66; -0,00) 
+rycerz_tarcza          LeftGripAttachment         Bron         200  0,53 × 1,50 × 1,80   (-0,75; -0,00; 0,30)  
 attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
 importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
 
@@ -41,17 +48,33 @@ KONTROLA EKSPORTÓW
 - rycerz__chod.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-25 -> ZGODNE
 - rycerz__atak_miecz.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-33 -> ZGODNE
 - rycerz__wiwat.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-37 -> ZGODNE
-- rycerz.glb: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje atak_miecz 0-32, chod 0-24, idle 0-60, wiwat 0-36 -> ZGODNE
+- rycerz__blok.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-31 -> ZGODNE
+- rycerz__unik.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-31 -> ZGODNE
+- rycerz__trafienie.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-21 -> ZGODNE
+- rycerz__upadek.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-61 -> ZGODNE
+- rycerz__ciecie.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-49 -> ZGODNE
+- rycerz__miazdzacy_cios.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-51 -> ZGODNE
+- rycerz__kamienna_skora.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-45 -> ZGODNE
+- rycerz.glb: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje atak_miecz 0-32, blok 0-30, chod 0-24, ciecie 0-48, idle 0-60, kamienna_skora 0-44, miazdzacy_cios 0-50, trafienie 0-20, unik 0-30, upadek 0-60, wiwat 0-36 -> ZGODNE
 - rycerz_miecz.fbx: siatki 1, kości 0, trójkąty 520, wzrost 4.94 st., akcje brak -> ZGODNE
 - rycerz_miecz.glb: siatki 1, kości 0, trójkąty 520, wzrost 4.94 st., akcje brak -> ZGODNE
+- rycerz_tarcza.fbx: siatki 1, kości 0, trójkąty 200, wzrost 1.50 st., akcje brak -> ZGODNE
+- rycerz_tarcza.glb: siatki 1, kości 0, trójkąty 200, wzrost 1.50 st., akcje brak -> ZGODNE
 
 PLIKI
 - rycerz.blend
 - rycerz.fbx
 - rycerz.glb
 - rycerz__atak_miecz.fbx
+- rycerz__blok.fbx
 - rycerz__chod.fbx
+- rycerz__ciecie.fbx
 - rycerz__idle.fbx
+- rycerz__kamienna_skora.fbx
+- rycerz__miazdzacy_cios.fbx
+- rycerz__trafienie.fbx
+- rycerz__unik.fbx
+- rycerz__upadek.fbx
 - rycerz__wiwat.fbx
 - rycerz_bohater.jpg
 - rycerz_ikona.png
@@ -69,10 +92,35 @@ PLIKI
 - rycerz_wiwat.mp4
 - rycerz_wiwat_klatki.jpg
 - rycerz_wiwat_z_filmu.jpg
+- rycerz_blok.mp4
+- rycerz_blok_klatki.jpg
+- rycerz_blok_z_filmu.jpg
+- rycerz_unik.mp4
+- rycerz_unik_klatki.jpg
+- rycerz_unik_z_filmu.jpg
+- rycerz_trafienie.mp4
+- rycerz_trafienie_klatki.jpg
+- rycerz_trafienie_z_filmu.jpg
+- rycerz_upadek.mp4
+- rycerz_upadek_klatki.jpg
+- rycerz_upadek_z_filmu.jpg
+- rycerz_ciecie.mp4
+- rycerz_ciecie_klatki.jpg
+- rycerz_ciecie_z_filmu.jpg
+- rycerz_miazdzacy_cios.mp4
+- rycerz_miazdzacy_cios_klatki.jpg
+- rycerz_miazdzacy_cios_z_filmu.jpg
+- rycerz_kamienna_skora.mp4
+- rycerz_kamienna_skora_klatki.jpg
+- rycerz_kamienna_skora_z_filmu.jpg
 - przedmioty/rycerz_miecz.fbx
 - przedmioty/rycerz_miecz.glb
 - przedmioty/rycerz_miecz_tekstury/
 - ikony/rycerz_miecz_ikona.png
+- przedmioty/rycerz_tarcza.fbx
+- przedmioty/rycerz_tarcza.glb
+- przedmioty/rycerz_tarcza_tekstury/
+- ikony/rycerz_tarcza_ikona.png
 - rycerz_ikony_arkusz.jpg
 - raport.json
 - raport.txt

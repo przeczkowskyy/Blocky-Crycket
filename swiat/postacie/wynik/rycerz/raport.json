@@ -341,9 +341,30 @@
       2.19,
       4.129
      ]
+    },
+    {
+     "nazwa": "rycerz_tarcza_Akc",
+     "kosc": "LeftHand",
+     "trojkaty": 200,
+     "wierzcholki": 124,
+     "wymiary": [
+      0.532,
+      1.8,
+      1.498
+     ],
+     "min": [
+      2.055,
+      1.325,
+      -0.749
+     ],
+     "max": [
+      2.587,
+      3.125,
+      0.749
+     ]
     }
    ],
-   "trojkaty_razem": 3284,
+   "trojkaty_razem": 3484,
    "tekstury": {
     "rozmiar_px": 64,
     "kolory_materialy": 21
@@ -356,7 +377,7 @@
     1.978
    ],
    "wymiary_z_akcesoriami": [
-    4.77,
+    4.972,
     5.71,
     5.118
    ],
@@ -367,7 +388,7 @@
      -0.989
     ],
     [
-     2.385,
+     2.587,
      5.71,
      4.129
     ]
@@ -460,12 +481,66 @@
      "fps": 30,
      "sekundy": 1.2,
      "petla": true
+    },
+    {
+     "n": "blok",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 20,
+     "fps": 30,
+     "sekundy": 0.67,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "ciecie",
+     "dlugosc": 48,
+     "fps": 30,
+     "sekundy": 1.6,
+     "petla": false
+    },
+    {
+     "n": "miazdzacy_cios",
+     "dlugosc": 50,
+     "fps": 30,
+     "sekundy": 1.67,
+     "petla": false
+    },
+    {
+     "n": "kamienna_skora",
+     "dlugosc": 44,
+     "fps": 30,
+     "sekundy": 1.47,
+     "petla": false
     }
    ],
    "akcesoria": [
     {
      "id": "rycerz_miecz",
      "zaczep": "RightGripAttachment",
+     "eksport": false
+    },
+    {
+     "id": "rycerz_tarcza",
+     "zaczep": "LeftGripAttachment",
      "eksport": false
     }
    ],
@@ -579,6 +654,59 @@
     0.0
    ],
    "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_tarcza",
+   "nazwa": "Tarcza Rycerza",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_tarcza",
+     "kosc": null,
+     "trojkaty": 200,
+     "wierzcholki": 124,
+     "wymiary": [
+      0.532,
+      1.498,
+      1.8
+     ],
+     "min": [
+      0.48,
+      -0.749,
+      -1.2
+     ],
+     "max": [
+      1.012,
+      0.749,
+      0.6
+     ]
+    }
+   ],
+   "trojkaty_razem": 200,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "LeftGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     0.48,
+     -0.749,
+     -1.2
+    ],
+    [
+     1.012,
+     0.749,
+     0.6
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.746,
+    0.0,
+    -0.3
+   ],
+   "ostrzezenia": []
   }
  ],
  "uwagi_podgladu": [],
@@ -588,8 +716,17 @@
   "rycerz__chod.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-25 -> ZGODNE",
   "rycerz__atak_miecz.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-33 -> ZGODNE",
   "rycerz__wiwat.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-37 -> ZGODNE",
-  "rycerz.glb: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje atak_miecz 0-32, chod 0-24, idle 0-60, wiwat 0-36 -> ZGODNE",
+  "rycerz__blok.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-31 -> ZGODNE",
+  "rycerz__unik.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-31 -> ZGODNE",
+  "rycerz__trafienie.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-21 -> ZGODNE",
+  "rycerz__upadek.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-61 -> ZGODNE",
+  "rycerz__ciecie.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-49 -> ZGODNE",
+  "rycerz__miazdzacy_cios.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-51 -> ZGODNE",
+  "rycerz__kamienna_skora.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje rycerz|Scene 1-45 -> ZGODNE",
+  "rycerz.glb: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje atak_miecz 0-32, blok 0-30, chod 0-24, ciecie 0-48, idle 0-60, kamienna_skora 0-44, miazdzacy_cios 0-50, trafienie 0-20, unik 0-30, upadek 0-60, wiwat 0-36 -> ZGODNE",
   "rycerz_miecz.fbx: siatki 1, kości 0, trójkąty 520, wzrost 4.94 st., akcje brak -> ZGODNE",
-  "rycerz_miecz.glb: siatki 1, kości 0, trójkąty 520, wzrost 4.94 st., akcje brak -> ZGODNE"
+  "rycerz_miecz.glb: siatki 1, kości 0, trójkąty 520, wzrost 4.94 st., akcje brak -> ZGODNE",
+  "rycerz_tarcza.fbx: siatki 1, kości 0, trójkąty 200, wzrost 1.50 st., akcje brak -> ZGODNE",
+  "rycerz_tarcza.glb: siatki 1, kości 0, trójkąty 200, wzrost 1.50 st., akcje brak -> ZGODNE"
  ]
 }
