@@ -168,6 +168,32 @@ Plan sprawdzono pod strażnikiem, który blokuje gniazda sieciowe, uruchamianie 
 Studio był ustawiony na polecenie, które zostawiłoby ślad. Wynik: kod 0, zero zablokowanych prób, brak śladu mostka,
 katalog `wynik/_roblox` bez zmian.
 
+### 2.7 Czego nauczył import (15.11.2026, wszystkie sześć modeli wgrane i ZGODNE)
+
+- **Kolory.** Importer dokłada każdej części `SurfaceAppearance` z błędnym odwołaniem emisji (`rbxassetid://5`), Studio
+  nie składa wtedy paczki tekstur i model jest szary. Po każdym imporcie, zanim ktoś oceni zrzuty, trzeba uruchomić
+  `python -B swiat/postacie/roblox_import_kolory.py --tylko "<nazwa modelu>"`: mapa koloru trafia do `TextureID`
+  części, a `SurfaceAppearance` znika (adresy map zostają w atrybutach części).
+- **RootPart rigu z kości.** Rig z kości dostaje po imporcie niewidoczną część `RootPart` (1,82 studa) ze środkiem na
+  wysokości stóp. Pierwsza kontrola liczyła ją do wzrostu, a obrys mierzyła w osiach świata, więc Troll wyszedł
+  NIEZGODNY, choć siatki są 1:1, a naprawa zmniejszyła go ×0,909 i postawiła na ziemi `RootPart` zamiast stóp. Od
+  15.11 `roblox_import.py` mierzy wymiary i spód z samych siatek (niewidoczne części bez siatki, czyli `RootPart`
+  i `HumanoidRootPart`, pomija) w układzie modelu wyznaczonym przez jego przód (funkcja `pomiar`), naprawa skaluje
+  i stawia model według siatek, a ocena ma punkt „stopy na podłożu”. Droga R15 działa jak dawniej (Zwiadowca po
+  ponownej kontroli: te same kroki naprawy i to samo miejsce).
+- **Ponowna kontrola bez drugiego wgrania.** `python -B swiat/postacie/roblox_import_lasu.py --tylko <id>
+  --sprawdz-ponownie` bierze numer zasobu z pliku stanu i nazwę modelu z pliku wyniku, przywraca skalę 1:1 i robi
+  kontrolę, naprawę i zrzuty modelu, który już stoi w kontenerze (`roblox_import.py --sprawdz <nazwa> --napraw`).
+  Plik wyniku zachowuje numer zasobu, a tabela dostaje nowy werdykt. Tak naprawiono Trolla i Muchomornika.
+- **Miejsca.** Rekwizyty miasta (ławki, latarnie) nie są w `uklad.json`. Muchomornik stanął najpierw na oparciu ławki
+  (podłoże y 3,8), a miejsce Slime'a wypadało pod latarnią. Miejsca Muchomornika, Strażnika i Slime'a przestawiono
+  na wolne (przegląd w Studio), a naprawa wypisuje części miasta w skrzynce modelu (punkt „obejrzyj”, bo skrzynka
+  w osiach świata bywa większa od obróconego modelu).
+- **Wynik.** Szkielety: Zwiadowca R15, pozostałe kości `Bone` z drzewem jak w GLB. Sonda skóry slime'a: TAK (0,972
+  wierzchołków na dwóch kościach, jak w GLB), więc próba pozy S8 nie była potrzebna. Nie przeszło świecenie jako Neon
+  (siatki do świecenia są na miejscu) ani łuk i sztylet Zwiadowcy (są poza plikiem). Numery zasobów i ocena zrzutów
+  są w notatce Sejfu „Postacie 3D — Blender i Roblox” i w `wynik/_roblox/import_lasu.txt`.
+
 ## 3. Decyzje
 
 ### 3.1 Co wgrywamy (a)

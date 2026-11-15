@@ -14,34 +14,23 @@
   "trojkaty": 4198
  },
  "nazwa": "Zwiadowca (import FBX)",
- "asset": "108959205720843",
- "moderacja": "Approved",
- "wstawianie": "{\"insertGuid\":\"77b4d919-2e72-443b-9dd5-3dfc65ede46f\",\"insertedInstances\":[{\"fullPath\":\"game.Workspace.TestPostaci.Zwiadowca (import FBX)\",\"name\":\"Zwiadowca (import FBX)\",\"className\":\"Model\"}],\"sandboxed\":false,\"assetType\":\"Model\",\"assetId\":\"108959205720843\",\"assetName\":\"Zwiadowca (import FBX)\",\"status\":\"success\",\"isPackage\":true,\"tag\":\"Assistant:77b4d919-2e72-443b-9dd5-3dfc65ede46f\"}",
- "model": {
-  "nazwa": "Zwiadowca (import FBX)",
-  "sciezka": "Workspace.TestPostaci.Zwiadowca (import FBX)",
-  "klasa": "Model",
-  "znaleziony": {
-   "rodzic": "kontener",
-   "n": "Zwiadowca (import FBX)",
-   "k": "Model",
-   "id": "0_58591840"
-  },
-  "kroki": []
+ "przywrocenie_skali": {
+  "przed": 1,
+  "po": 1
  },
  "kontrola_przed": {
+  "primary": "HumanoidRootPart",
   "klasy": {
    "Vector3Value": 68,
    "NoCollisionConstraint": 19,
-   "AnimationConstraint": 15,
-   "SurfaceAppearance": 15,
-   "MeshPart": 15,
-   "CFrameValue": 48,
-   "NumberValue": 6,
-   "StringValue": 15,
-   "Humanoid": 1,
-   "BallSocketConstraint": 14,
    "Part": 1,
+   "MeshPart": 15,
+   "AnimationConstraint": 15,
+   "CFrameValue": 48,
+   "StringValue": 15,
+   "NumberValue": 6,
+   "BallSocketConstraint": 14,
+   "Humanoid": 1,
    "Status": 1,
    "Attachment": 52,
    "Folder": 1,
@@ -139,18 +128,25 @@
     "n": "Waist"
    }
   ],
-  "primary": "HumanoidRootPart",
-  "skala": 1,
-  "klasa": "Model",
-  "siatki": [
+  "czesci_cf": [
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://99035699447132",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     2.7741804122924805,
+     5.316097736358643,
+     -718.2060546875,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      1.8600000143051147,
      1.991720199584961,
      2.6287896633148193
@@ -158,13 +154,23 @@
     "n": "Head"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://105251090063349",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     3.593132972717285,
+     0.7252347469329834,
+     -718.0206909179688,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      1.0499999523162842,
      0.3500002920627594,
      1.4200000762939453
@@ -172,13 +178,23 @@
     "n": "LeftFoot"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://138701522781497",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     4.309320449829102,
+     2.4802358150482178,
+     -718.7769775390625,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      0.9000002145767212,
      0.3600001335144043,
      0.8999999761581421
@@ -186,13 +202,23 @@
     "n": "LeftHand"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://73748807526833",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     4.313352584838867,
+     3.025236129760742,
+     -718.7799072265625,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      0.9799998998641968,
      0.7500002384185791,
      0.9700000286102295
@@ -200,13 +226,23 @@
     "n": "LeftLowerArm"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://126653329902848",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     3.483499050140381,
+     1.2752354145050049,
+     -718.1697998046875,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      1.1100001335144043,
      0.7500002980232239,
      1.1100000143051147
@@ -214,13 +250,23 @@
     "n": "LeftLowerLeg"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://124308810801962",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     4.347762584686279,
+     3.9093732833862305,
+     -718.8052368164062,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      0.9854116439819336,
      1.0182733535766602,
      1.0099999904632568
@@ -228,13 +274,23 @@
     "n": "LeftUpperArm"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://118157962354197",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     3.483499050140381,
+     2.0552358627319336,
+     -718.1697998046875,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      1.090000033378601,
      0.8100003004074097,
      1.1100001335144043
@@ -242,13 +298,23 @@
     "n": "LeftUpperLeg"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://98137629941306",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     2.9841320514678955,
+     2.585236072540283,
+     -717.9205322265625,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      2.2400002479553223,
      0.5300002098083496,
      1.5699999332427979
@@ -256,13 +322,23 @@
     "n": "LowerTorso"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://123871681093297",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     2.706888437271118,
+     0.7252349853515625,
+     -717.3690795898438,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      1.0499999523162842,
      0.3500003218650818,
      1.4200000762939453
@@ -270,13 +346,23 @@
     "n": "RightFoot"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://113598239901742",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     1.771457552909851,
+     2.480236053466797,
+     -716.9110107421875,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      0.9000000953674316,
      0.3600001335144043,
      0.8999999761581421
@@ -284,13 +370,23 @@
     "n": "RightHand"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://97966376668107",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     1.767425298690796,
+     3.025236129760742,
+     -716.9080810546875,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      0.9799998998641968,
      0.7500002384185791,
      0.9700000286102295
@@ -298,13 +394,23 @@
     "n": "RightLowerArm"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://133771472803525",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     2.5973029136657715,
+     1.2752354145050049,
+     -717.5181274414062,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      1.1100000143051147,
      0.7500002384185791,
      1.1100000143051147
@@ -312,13 +418,23 @@
     "n": "RightLowerLeg"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://96671214733805",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     1.733015537261963,
+     3.9093735218048096,
+     -716.8827514648438,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      0.9854117631912231,
      1.0182733535766602,
      1.0099999904632568
@@ -326,13 +442,23 @@
     "n": "RightUpperArm"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://84705131259863",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     2.5973029136657715,
+     2.0552358627319336,
+     -717.5181274414062,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      1.0900001525878906,
      0.8100003004074097,
      1.1100001335144043
@@ -340,227 +466,64 @@
     "n": "RightUpperLeg"
    },
    {
-    "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
-    "mesh": "rbxassetid://137050037747659",
-    "zakotwiczona": false,
-    "tekstura": "",
-    "kolor": "a3a2a5",
-    "rozmiar": [
+    "cf": [
+     2.680729866027832,
+     3.8061723709106445,
+     -717.87744140625,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
      2.8398990631103516,
      2.60726261138916,
      1.9600001573562622
     ],
     "n": "UpperTorso"
+   },
+   {
+    "cf": [
+     3.040389060974121,
+     3.4502365589141846,
+     -717.843994140625,
+     -0.8056725263595581,
+     0,
+     -0.5923618078231812,
+     0,
+     1.0000005960464478,
+     0,
+     0.5923622250556946,
+     0,
+     -0.8056719303131104
+    ],
+    "k": "Part",
+    "t": 1,
+    "s": [
+     2,
+     2,
+     1
+    ],
+    "n": "HumanoidRootPart"
    }
   ],
-  "zaczepy": [
-   "FaceCenterAttachment@Head",
-   "FaceFrontAttachment@Head",
-   "HairAttachment@Head",
-   "HatAttachment@Head",
-   "NeckRigAttachment@Head",
-   "LeftFootAttachment@LeftFoot",
-   "LeftAnkleRigAttachment@LeftFoot",
-   "LeftGripAttachment@LeftHand",
-   "LeftWristRigAttachment@LeftHand",
-   "LeftWristRigAttachment@LeftLowerArm",
-   "LeftElbowRigAttachment@LeftLowerArm",
-   "LeftAnkleRigAttachment@LeftLowerLeg",
-   "LeftKneeRigAttachment@LeftLowerLeg",
-   "LeftShoulderAttachment@LeftUpperArm",
-   "LeftElbowRigAttachment@LeftUpperArm",
-   "LeftShoulderRigAttachment@LeftUpperArm",
-   "JointRotation@LeftShoulderRigAttachment",
-   "LeftKneeRigAttachment@LeftUpperLeg",
-   "LeftHipRigAttachment@LeftUpperLeg",
-   "WaistBackAttachment@LowerTorso",
-   "WaistCenterAttachment@LowerTorso",
-   "WaistFrontAttachment@LowerTorso",
-   "WaistRigAttachment@LowerTorso",
-   "LeftHipRigAttachment@LowerTorso",
-   "RightHipRigAttachment@LowerTorso",
-   "RootRigAttachment@LowerTorso",
-   "RightFootAttachment@RightFoot",
-   "RightAnkleRigAttachment@RightFoot",
-   "RightGripAttachment@RightHand",
-   "RightWristRigAttachment@RightHand",
-   "RightWristRigAttachment@RightLowerArm",
-   "RightElbowRigAttachment@RightLowerArm",
-   "RightAnkleRigAttachment@RightLowerLeg",
-   "RightKneeRigAttachment@RightLowerLeg",
-   "RightShoulderAttachment@RightUpperArm",
-   "RightElbowRigAttachment@RightUpperArm",
-   "RightShoulderRigAttachment@RightUpperArm",
-   "JointRotation@RightShoulderRigAttachment",
-   "RightKneeRigAttachment@RightUpperLeg",
-   "RightHipRigAttachment@RightUpperLeg",
-   "BodyBackAttachment@UpperTorso",
-   "BodyFrontAttachment@UpperTorso",
-   "LeftCollarAttachment@UpperTorso",
-   "NeckAttachment@UpperTorso",
-   "RightCollarAttachment@UpperTorso",
-   "NeckRigAttachment@UpperTorso",
-   "LeftShoulderRigAttachment@UpperTorso",
-   "JointRotation@LeftShoulderRigAttachment",
-   "RightShoulderRigAttachment@UpperTorso",
-   "JointRotation@RightShoulderRigAttachment",
-   "WaistRigAttachment@UpperTorso",
-   "RootRigAttachment@HumanoidRootPart"
-  ],
-  "wymiary": [
-   4.328090190887451,
-   5.761720895767212,
-   2.90386962890625
-  ],
-  "kosci_drzewo": [],
-  "skrzynka_max": [
-   9.951627731323242,
-   3.861720085144043,
-   -911.5721435546875
-  ],
-  "kosci": [],
-  "lewa_po_lewej": true,
-  "nazwa": "Zwiadowca (import FBX)",
-  "skrzynka_min": [
-   5.623537540435791,
-   -1.900000810623169,
-   -914.4760131835938
-  ],
-  "przod": [
-   -0.1341707855463028,
-   -0.9909582734107971
-  ]
- },
- "naprawa": {
-  "kroki": [
-   "zakotwiczono części: 16",
-   "skala bez zmian (wzrost 5.76 studa)",
-   "obrót wokół pionu o 208.6°",
-   "postawiono w (3.0; 0.55; -718.0)"
-  ]
- },
- "kontrola_po": {
-  "klasy": {
-   "Vector3Value": 68,
-   "NoCollisionConstraint": 19,
-   "AnimationConstraint": 15,
-   "SurfaceAppearance": 15,
-   "MeshPart": 15,
-   "CFrameValue": 48,
-   "NumberValue": 6,
-   "StringValue": 15,
-   "Humanoid": 1,
-   "BallSocketConstraint": 14,
-   "Part": 1,
-   "Status": 1,
-   "Attachment": 52,
-   "Folder": 1,
-   "PackageLink": 1
-  },
-  "stawy": [
-   {
-    "a": "UpperTorso",
-    "b": "Head",
-    "k": "AnimationConstraint",
-    "n": "Neck"
-   },
-   {
-    "a": "LeftLowerLeg",
-    "b": "LeftFoot",
-    "k": "AnimationConstraint",
-    "n": "LeftAnkle"
-   },
-   {
-    "a": "LeftLowerArm",
-    "b": "LeftHand",
-    "k": "AnimationConstraint",
-    "n": "LeftWrist"
-   },
-   {
-    "a": "LeftUpperArm",
-    "b": "LeftLowerArm",
-    "k": "AnimationConstraint",
-    "n": "LeftElbow"
-   },
-   {
-    "a": "LeftUpperLeg",
-    "b": "LeftLowerLeg",
-    "k": "AnimationConstraint",
-    "n": "LeftKnee"
-   },
-   {
-    "a": "UpperTorso",
-    "b": "LeftUpperArm",
-    "k": "AnimationConstraint",
-    "n": "LeftShoulder"
-   },
-   {
-    "a": "LowerTorso",
-    "b": "LeftUpperLeg",
-    "k": "AnimationConstraint",
-    "n": "LeftHip"
-   },
-   {
-    "a": "HumanoidRootPart",
-    "b": "LowerTorso",
-    "k": "AnimationConstraint",
-    "n": "Root"
-   },
-   {
-    "a": "RightLowerLeg",
-    "b": "RightFoot",
-    "k": "AnimationConstraint",
-    "n": "RightAnkle"
-   },
-   {
-    "a": "RightLowerArm",
-    "b": "RightHand",
-    "k": "AnimationConstraint",
-    "n": "RightWrist"
-   },
-   {
-    "a": "RightUpperArm",
-    "b": "RightLowerArm",
-    "k": "AnimationConstraint",
-    "n": "RightElbow"
-   },
-   {
-    "a": "RightUpperLeg",
-    "b": "RightLowerLeg",
-    "k": "AnimationConstraint",
-    "n": "RightKnee"
-   },
-   {
-    "a": "UpperTorso",
-    "b": "RightUpperArm",
-    "k": "AnimationConstraint",
-    "n": "RightShoulder"
-   },
-   {
-    "a": "LowerTorso",
-    "b": "RightUpperLeg",
-    "k": "AnimationConstraint",
-    "n": "RightHip"
-   },
-   {
-    "a": "LowerTorso",
-    "b": "UpperTorso",
-    "k": "AnimationConstraint",
-    "n": "Waist"
-   }
-  ],
-  "primary": "HumanoidRootPart",
   "skala": 1,
   "klasa": "Model",
   "siatki": [
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://99035699447132",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      1.8600000143051147,
      1.991720199584961,
@@ -570,11 +533,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://105251090063349",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      1.0499999523162842,
      0.3500002920627594,
@@ -584,11 +547,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://138701522781497",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      0.9000002145767212,
      0.3600001335144043,
@@ -598,11 +561,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://73748807526833",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      0.9799998998641968,
      0.7500002384185791,
@@ -612,11 +575,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://126653329902848",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      1.1100001335144043,
      0.7500002980232239,
@@ -626,11 +589,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://124308810801962",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      0.9854116439819336,
      1.0182733535766602,
@@ -640,11 +603,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://118157962354197",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      1.090000033378601,
      0.8100003004074097,
@@ -654,11 +617,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://98137629941306",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      2.2400002479553223,
      0.5300002098083496,
@@ -668,11 +631,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://123871681093297",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      1.0499999523162842,
      0.3500003218650818,
@@ -682,11 +645,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://113598239901742",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      0.9000000953674316,
      0.3600001335144043,
@@ -696,11 +659,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://97966376668107",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      0.9799998998641968,
      0.7500002384185791,
@@ -710,11 +673,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://133771472803525",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      1.1100000143051147,
      0.7500002384185791,
@@ -724,11 +687,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://96671214733805",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      0.9854117631912231,
      1.0182733535766602,
@@ -738,11 +701,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://84705131259863",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      1.0900001525878906,
      0.8100003004074097,
@@ -752,11 +715,11 @@
    },
    {
     "mat": "Plastic",
-    "colormap": "rbxassetid://84510254787948",
+    "colormap": "",
     "mesh": "rbxassetid://137050037747659",
     "zakotwiczona": true,
-    "tekstura": "",
-    "kolor": "a3a2a5",
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
     "rozmiar": [
      2.8398990631103516,
      2.60726261138916,
@@ -841,6 +804,869 @@
   "przod": [
    0.5923730134963989,
    0.8056638240814209
+  ],
+  "pomiar": {
+   "wymiary": [
+    4.23086184688151,
+    5.76172393313661,
+    2.6588810690805076
+   ],
+   "min_y": 0.5502344965933883,
+   "max_y": 6.311958429729998,
+   "uklad": "przód modelu",
+   "czesci": 15,
+   "pominiete": [
+    "HumanoidRootPart"
+   ]
+  }
+ },
+ "naprawa": {
+  "kroki": [
+   "zakotwiczono części: 0",
+   "skala bez zmian (wzrost 5.76 studa)",
+   "postawiono w (3.0; 0.55; -718.0)"
+  ],
+  "kolizje": [
+   "Workspace.KrzyweMiasteczko.Rekwizyty.Ławka siedzisko",
+   "Workspace.KrzyweMiasteczko.Rekwizyty.Ławka oparcie",
+   "Workspace.KrzyweMiasteczko.Rekwizyty.Ławka noga"
   ]
+ },
+ "kontrola_po": {
+  "primary": "HumanoidRootPart",
+  "klasy": {
+   "Vector3Value": 68,
+   "NoCollisionConstraint": 19,
+   "Part": 1,
+   "MeshPart": 15,
+   "AnimationConstraint": 15,
+   "CFrameValue": 48,
+   "StringValue": 15,
+   "NumberValue": 6,
+   "BallSocketConstraint": 14,
+   "Humanoid": 1,
+   "Status": 1,
+   "Attachment": 52,
+   "Folder": 1,
+   "PackageLink": 1
+  },
+  "stawy": [
+   {
+    "a": "UpperTorso",
+    "b": "Head",
+    "k": "AnimationConstraint",
+    "n": "Neck"
+   },
+   {
+    "a": "LeftLowerLeg",
+    "b": "LeftFoot",
+    "k": "AnimationConstraint",
+    "n": "LeftAnkle"
+   },
+   {
+    "a": "LeftLowerArm",
+    "b": "LeftHand",
+    "k": "AnimationConstraint",
+    "n": "LeftWrist"
+   },
+   {
+    "a": "LeftUpperArm",
+    "b": "LeftLowerArm",
+    "k": "AnimationConstraint",
+    "n": "LeftElbow"
+   },
+   {
+    "a": "LeftUpperLeg",
+    "b": "LeftLowerLeg",
+    "k": "AnimationConstraint",
+    "n": "LeftKnee"
+   },
+   {
+    "a": "UpperTorso",
+    "b": "LeftUpperArm",
+    "k": "AnimationConstraint",
+    "n": "LeftShoulder"
+   },
+   {
+    "a": "LowerTorso",
+    "b": "LeftUpperLeg",
+    "k": "AnimationConstraint",
+    "n": "LeftHip"
+   },
+   {
+    "a": "HumanoidRootPart",
+    "b": "LowerTorso",
+    "k": "AnimationConstraint",
+    "n": "Root"
+   },
+   {
+    "a": "RightLowerLeg",
+    "b": "RightFoot",
+    "k": "AnimationConstraint",
+    "n": "RightAnkle"
+   },
+   {
+    "a": "RightLowerArm",
+    "b": "RightHand",
+    "k": "AnimationConstraint",
+    "n": "RightWrist"
+   },
+   {
+    "a": "RightUpperArm",
+    "b": "RightLowerArm",
+    "k": "AnimationConstraint",
+    "n": "RightElbow"
+   },
+   {
+    "a": "RightUpperLeg",
+    "b": "RightLowerLeg",
+    "k": "AnimationConstraint",
+    "n": "RightKnee"
+   },
+   {
+    "a": "UpperTorso",
+    "b": "RightUpperArm",
+    "k": "AnimationConstraint",
+    "n": "RightShoulder"
+   },
+   {
+    "a": "LowerTorso",
+    "b": "RightUpperLeg",
+    "k": "AnimationConstraint",
+    "n": "RightHip"
+   },
+   {
+    "a": "LowerTorso",
+    "b": "UpperTorso",
+    "k": "AnimationConstraint",
+    "n": "Waist"
+   }
+  ],
+  "czesci_cf": [
+   {
+    "cf": [
+     2.7741804122924805,
+     5.316098690032959,
+     -718.2059936523438,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     1.8600000143051147,
+     1.991720199584961,
+     2.6287896633148193
+    ],
+    "n": "Head"
+   },
+   {
+    "cf": [
+     3.593132972717285,
+     0.7252347469329834,
+     -718.0206298828125,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     1.0499999523162842,
+     0.3500002920627594,
+     1.4200000762939453
+    ],
+    "n": "LeftFoot"
+   },
+   {
+    "cf": [
+     4.309320449829102,
+     2.480236291885376,
+     -718.7769165039062,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     0.9000002145767212,
+     0.3600001335144043,
+     0.8999999761581421
+    ],
+    "n": "LeftHand"
+   },
+   {
+    "cf": [
+     4.313353061676025,
+     3.0252368450164795,
+     -718.7798461914062,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     0.9799998998641968,
+     0.7500002384185791,
+     0.9700000286102295
+    ],
+    "n": "LeftLowerArm"
+   },
+   {
+    "cf": [
+     3.4834988117218018,
+     1.275235652923584,
+     -718.1697387695312,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     1.1100001335144043,
+     0.7500002980232239,
+     1.1100000143051147
+    ],
+    "n": "LeftLowerLeg"
+   },
+   {
+    "cf": [
+     4.347762584686279,
+     3.909374237060547,
+     -718.80517578125,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     0.9854116439819336,
+     1.0182733535766602,
+     1.0099999904632568
+    ],
+    "n": "LeftUpperArm"
+   },
+   {
+    "cf": [
+     3.4834988117218018,
+     2.055236339569092,
+     -718.1697387695312,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     1.090000033378601,
+     0.8100003004074097,
+     1.1100001335144043
+    ],
+    "n": "LeftUpperLeg"
+   },
+   {
+    "cf": [
+     2.9841318130493164,
+     2.5852365493774414,
+     -717.9204711914062,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     2.2400002479553223,
+     0.5300002098083496,
+     1.5699999332427979
+    ],
+    "n": "LowerTorso"
+   },
+   {
+    "cf": [
+     2.706888198852539,
+     0.7252349853515625,
+     -717.3690185546875,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     1.0499999523162842,
+     0.3500003218650818,
+     1.4200000762939453
+    ],
+    "n": "RightFoot"
+   },
+   {
+    "cf": [
+     1.7714570760726929,
+     2.480236530303955,
+     -716.9109497070312,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     0.9000000953674316,
+     0.3600001335144043,
+     0.8999999761581421
+    ],
+    "n": "RightHand"
+   },
+   {
+    "cf": [
+     1.7674247026443481,
+     3.0252368450164795,
+     -716.9080200195312,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     0.9799998998641968,
+     0.7500002384185791,
+     0.9700000286102295
+    ],
+    "n": "RightLowerArm"
+   },
+   {
+    "cf": [
+     2.5973026752471924,
+     1.275235652923584,
+     -717.51806640625,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     1.1100000143051147,
+     0.7500002384185791,
+     1.1100000143051147
+    ],
+    "n": "RightLowerLeg"
+   },
+   {
+    "cf": [
+     1.7330150604248047,
+     3.909374475479126,
+     -716.8826904296875,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     0.9854117631912231,
+     1.0182733535766602,
+     1.0099999904632568
+    ],
+    "n": "RightUpperArm"
+   },
+   {
+    "cf": [
+     2.5973026752471924,
+     2.055236339569092,
+     -717.51806640625,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     1.0900001525878906,
+     0.8100003004074097,
+     1.1100001335144043
+    ],
+    "n": "RightUpperLeg"
+   },
+   {
+    "cf": [
+     2.680729627609253,
+     3.806173086166382,
+     -717.8773803710938,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "MeshPart",
+    "t": 0,
+    "s": [
+     2.8398990631103516,
+     2.60726261138916,
+     1.9600001573562622
+    ],
+    "n": "UpperTorso"
+   },
+   {
+    "cf": [
+     3.040388822555542,
+     3.450237274169922,
+     -717.8439331054688,
+     -0.8056727051734924,
+     0,
+     -0.5923617482185364,
+     0,
+     1.0000008344650269,
+     0,
+     0.5923623442649841,
+     0,
+     -0.8056718707084656
+    ],
+    "k": "Part",
+    "t": 1,
+    "s": [
+     2,
+     2,
+     1
+    ],
+    "n": "HumanoidRootPart"
+   }
+  ],
+  "skala": 1,
+  "klasa": "Model",
+  "siatki": [
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://99035699447132",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     1.8600000143051147,
+     1.991720199584961,
+     2.6287896633148193
+    ],
+    "n": "Head"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://105251090063349",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     1.0499999523162842,
+     0.3500002920627594,
+     1.4200000762939453
+    ],
+    "n": "LeftFoot"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://138701522781497",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     0.9000002145767212,
+     0.3600001335144043,
+     0.8999999761581421
+    ],
+    "n": "LeftHand"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://73748807526833",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     0.9799998998641968,
+     0.7500002384185791,
+     0.9700000286102295
+    ],
+    "n": "LeftLowerArm"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://126653329902848",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     1.1100001335144043,
+     0.7500002980232239,
+     1.1100000143051147
+    ],
+    "n": "LeftLowerLeg"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://124308810801962",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     0.9854116439819336,
+     1.0182733535766602,
+     1.0099999904632568
+    ],
+    "n": "LeftUpperArm"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://118157962354197",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     1.090000033378601,
+     0.8100003004074097,
+     1.1100001335144043
+    ],
+    "n": "LeftUpperLeg"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://98137629941306",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     2.2400002479553223,
+     0.5300002098083496,
+     1.5699999332427979
+    ],
+    "n": "LowerTorso"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://123871681093297",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     1.0499999523162842,
+     0.3500003218650818,
+     1.4200000762939453
+    ],
+    "n": "RightFoot"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://113598239901742",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     0.9000000953674316,
+     0.3600001335144043,
+     0.8999999761581421
+    ],
+    "n": "RightHand"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://97966376668107",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     0.9799998998641968,
+     0.7500002384185791,
+     0.9700000286102295
+    ],
+    "n": "RightLowerArm"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://133771472803525",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     1.1100000143051147,
+     0.7500002384185791,
+     1.1100000143051147
+    ],
+    "n": "RightLowerLeg"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://96671214733805",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     0.9854117631912231,
+     1.0182733535766602,
+     1.0099999904632568
+    ],
+    "n": "RightUpperArm"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://84705131259863",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     1.0900001525878906,
+     0.8100003004074097,
+     1.1100001335144043
+    ],
+    "n": "RightUpperLeg"
+   },
+   {
+    "mat": "Plastic",
+    "colormap": "",
+    "mesh": "rbxassetid://137050037747659",
+    "zakotwiczona": true,
+    "tekstura": "rbxassetid://84510254787948",
+    "kolor": "ffffff",
+    "rozmiar": [
+     2.8398990631103516,
+     2.60726261138916,
+     1.9600001573562622
+    ],
+    "n": "UpperTorso"
+   }
+  ],
+  "zaczepy": [
+   "FaceCenterAttachment@Head",
+   "FaceFrontAttachment@Head",
+   "HairAttachment@Head",
+   "HatAttachment@Head",
+   "NeckRigAttachment@Head",
+   "LeftFootAttachment@LeftFoot",
+   "LeftAnkleRigAttachment@LeftFoot",
+   "LeftGripAttachment@LeftHand",
+   "LeftWristRigAttachment@LeftHand",
+   "LeftWristRigAttachment@LeftLowerArm",
+   "LeftElbowRigAttachment@LeftLowerArm",
+   "LeftAnkleRigAttachment@LeftLowerLeg",
+   "LeftKneeRigAttachment@LeftLowerLeg",
+   "LeftShoulderAttachment@LeftUpperArm",
+   "LeftElbowRigAttachment@LeftUpperArm",
+   "LeftShoulderRigAttachment@LeftUpperArm",
+   "JointRotation@LeftShoulderRigAttachment",
+   "LeftKneeRigAttachment@LeftUpperLeg",
+   "LeftHipRigAttachment@LeftUpperLeg",
+   "WaistBackAttachment@LowerTorso",
+   "WaistCenterAttachment@LowerTorso",
+   "WaistFrontAttachment@LowerTorso",
+   "WaistRigAttachment@LowerTorso",
+   "LeftHipRigAttachment@LowerTorso",
+   "RightHipRigAttachment@LowerTorso",
+   "RootRigAttachment@LowerTorso",
+   "RightFootAttachment@RightFoot",
+   "RightAnkleRigAttachment@RightFoot",
+   "RightGripAttachment@RightHand",
+   "RightWristRigAttachment@RightHand",
+   "RightWristRigAttachment@RightLowerArm",
+   "RightElbowRigAttachment@RightLowerArm",
+   "RightAnkleRigAttachment@RightLowerLeg",
+   "RightKneeRigAttachment@RightLowerLeg",
+   "RightShoulderAttachment@RightUpperArm",
+   "RightElbowRigAttachment@RightUpperArm",
+   "RightShoulderRigAttachment@RightUpperArm",
+   "JointRotation@RightShoulderRigAttachment",
+   "RightKneeRigAttachment@RightUpperLeg",
+   "RightHipRigAttachment@RightUpperLeg",
+   "BodyBackAttachment@UpperTorso",
+   "BodyFrontAttachment@UpperTorso",
+   "LeftCollarAttachment@UpperTorso",
+   "NeckAttachment@UpperTorso",
+   "RightCollarAttachment@UpperTorso",
+   "NeckRigAttachment@UpperTorso",
+   "LeftShoulderRigAttachment@UpperTorso",
+   "JointRotation@LeftShoulderRigAttachment",
+   "RightShoulderRigAttachment@UpperTorso",
+   "JointRotation@RightShoulderRigAttachment",
+   "WaistRigAttachment@UpperTorso",
+   "RootRigAttachment@HumanoidRootPart"
+  ],
+  "wymiary": [
+   4.087664246559143,
+   5.761725306510925,
+   3.63189697265625
+  ],
+  "kosci_drzewo": [],
+  "skrzynka_max": [
+   5.043864727020264,
+   6.311959743499756,
+   -716.1839599609375
+  ],
+  "kosci": [],
+  "lewa_po_lewej": true,
+  "nazwa": "Zwiadowca (import FBX)",
+  "skrzynka_min": [
+   0.9562004804611206,
+   0.5502344369888306,
+   -719.8158569335938
+  ],
+  "przod": [
+   0.5923739075660706,
+   0.8056632280349731
+  ],
+  "pomiar": {
+   "wymiary": [
+    4.230863539527604,
+    5.761725165965762,
+    2.6588830669019217
+   ],
+   "min_y": 0.5502344548701021,
+   "max_y": 6.311959620835864,
+   "uklad": "przód modelu",
+   "czesci": 15,
+   "pominiete": [
+    "HumanoidRootPart"
+   ]
+  }
+ },
+ "asset": "108959205720843",
+ "moderacja": "Approved",
+ "model": {
+  "nazwa": "Zwiadowca (import FBX)",
+  "sciezka": "Workspace.TestPostaci.Zwiadowca (import FBX)",
+  "klasa": "Model",
+  "znaleziony": {
+   "rodzic": "kontener",
+   "n": "Zwiadowca (import FBX)",
+   "k": "Model",
+   "id": "0_58591840"
+  },
+  "kroki": []
+ },
+ "wstawianie": "{\"insertGuid\":\"77b4d919-2e72-443b-9dd5-3dfc65ede46f\",\"insertedInstances\":[{\"fullPath\":\"game.Workspace.TestPostaci.Zwiadowca (import FBX)\",\"name\":\"Zwiadowca (import FBX)\",\"className\":\"Model\"}],\"sandboxed\":false,\"assetType\":\"Model\",\"assetId\":\"108959205720843\",\"assetName\":\"Zwiadowca (import FBX)\",\"status\":\"success\",\"isPackage\":true,\"tag\":\"Assistant:77b4d919-2e72-443b-9dd5-3dfc65ede46f\"}",
+ "poprzednio": {
+  "naprawa": {
+   "kroki": [
+    "zakotwiczono części: 16",
+    "skala bez zmian (wzrost 5.76 studa)",
+    "obrót wokół pionu o 208.6°",
+    "postawiono w (3.0; 0.55; -718.0)"
+   ]
+  },
+  "wymiary_przed": [
+   4.328090190887451,
+   5.761720895767212,
+   2.90386962890625
+  ],
+  "skala_po": 1
+ },
+ "sprawdzenie_ponowne": {
+  "czas": "2026-11-15 20:08:47",
+  "napraw": true
  }
 }

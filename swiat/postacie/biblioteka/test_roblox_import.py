@@ -15,10 +15,14 @@ od wgrania i komunikat po nieudanym wstawieniu przy --asset.
 Od 15.11.2026 także `profil` (parametry_profilu): bez profilu punkty przodu R15, kamera zrzutów i brak naprawy dla
 modułu spoza ROZMIESZCZENIE są takie same jak wcześniej (R, S), a z profilem — własne punkty przodu w kodzie KONTROLA,
 miejsce, naprawa i kamera przeskalowana (S); kość (Bone dziedziczy po Attachment) jest sprawdzana przed zaczepem.
+Od 15.11.2026 wieczorem: pomiar rigu z kości z niewidocznym RootPart pod stopami, obróconego wokół pionu (same siatki,
+układ modelu; R15 jak skrzynka wszystkich części), wzrost z siatek w parametrach naprawy oraz --sprawdz --napraw
+(przywrócenie skali, naprawa bez wgrywania i wstawiania, numer zasobu zostaje w pliku wyniku) — scenariusz U.
 """
 import contextlib
 import io
 import json
+import math
 import os
 import re
 import shutil
@@ -43,6 +47,25 @@ def sprawdz(warunek, opis):
 
 
 # ---------------------------------------------------------------- część 1: czyste funkcje
+
+def rig_z_kosci(kat=0.0, przesun=(0.0, 0.0, 0.0), root=True, hrp=False):
+    """Dane części z KONTROLA (czesci_cf) dla rigu z kości jak Leśny Troll po imporcie: siatki od y 0 do 10 (stopy na 0),
+    maczuga w bok, przód modelu +Z; niewidoczny RootPart 1,82 studa środkiem na wysokości stóp (wystaje 0,91 pod stopy).
+    Całość obrócona wokół pionu o `kat` (radiany) i przesunięta. W układzie modelu: 8 × 10 × 3 studa."""
+    czesci = [("Nogi_Geo", "MeshPart", (0, 2, 0), (3, 4, 2), 0), ("Tulow_Geo", "MeshPart", (0, 7, 0), (4, 6, 3), 0),
+              ("Maczuga_Geo", "MeshPart", (3, 6, 0), (6, 1, 1), 0)]
+    if root:
+        czesci.append(("RootPart", "Part", (0, 0, 0), (1.82, 1.82, 1.82), 1))
+    if hrp:
+        czesci.append(("HumanoidRootPart", "Part", (0, 6, 0), (2, 2, 1), 1))
+    c, s = math.cos(kat), math.sin(kat)
+    obrot = [c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c]           # CFrame.Angles(0, kat, 0)
+    wynik = []
+    for n, k, (x, y, z), rozm, t in czesci:
+        poz = [c * x + s * z + przesun[0], y + przesun[1], -s * x + c * z + przesun[2]]
+        wynik.append({"n": n, "k": k, "cf": poz + obrot, "s": list(rozm), "t": t})
+    return {"czesci_cf": wynik, "przod": [s, c]}
+
 
 def test_czystych():
     kod, dane = ri.rozbierz_odpowiedz('POST https://apis.roblox.com/assets/v1/assets -> 200 OK\n\n{"operationId": "abc-1", "done": false}')
@@ -191,6 +214,27 @@ def test_czystych():
     sprawdz(k.index('d:IsA("Bone")') < k.index('d:IsA("Attachment")'), "KONTROLA: Bone przed Attachment")
     sprawdz("__PRZOD__" in k and "czesci.LeftFoot" not in k, "KONTROLA: punkty przodu z parametru, nie na stałe")
 
+    # pomiar (15.11.2026): rig z kości z niewidocznym RootPart pod stopami, obrócony o 40° wokół pionu. Wymiary mają wyjść
+    # z samych siatek w układzie modelu (8 × 10 × 3), spód na stopach (y 0), RootPart pominięty.
+    pm = ri.pomiar(rig_z_kosci(math.radians(40)))
+    sprawdz(pm and all(abs(a - b) < 1e-6 for a, b in zip(pm["wymiary"], [8.0, 10.0, 3.0])) and abs(pm["min_y"]) < 1e-6
+            and pm["pominiete"] == ["RootPart"] and pm["uklad"] == "przód modelu", "pomiar rigu z kości i RootPart: %r" % pm)
+    widoczny = rig_z_kosci(math.radians(40))
+    widoczny["czesci_cf"][-1]["t"] = 0
+    pm = ri.pomiar(widoczny)
+    sprawdz(pm and abs(pm["wymiary"][1] - 10.91) < 1e-6 and not pm["pominiete"], "pomiar: widoczna zwykła część się liczy: %r" % pm)
+    # R15: HumanoidRootPart w środku tułowia, bez zmierzonego przodu — tak samo jak skrzynka ze wszystkich części w osiach świata
+    r15 = rig_z_kosci(0.0, root=False, hrp=True)
+    del r15["przod"]
+    wszystkie = {"czesci_cf": [dict(c, k="MeshPart", t=0) for c in r15["czesci_cf"]]}
+    pm, pw = ri.pomiar(r15), ri.pomiar(wszystkie)
+    sprawdz(pm and pw and pm["wymiary"] == pw["wymiary"] and pm["min_y"] == pw["min_y"] and pm["uklad"] == "osie świata"
+            and pm["pominiete"] == ["HumanoidRootPart"], "pomiar R15: inny niż skrzynka wszystkich części: %r %r" % (pm, pw))
+    sprawdz(ri.pomiar({}) is None and ri.pomiar({"wymiary": [1, 2, 3]}) is None, "pomiar bez danych części ma dać None")
+    sprawdz("czesci_cf" in ri.KONTROLA and "GetComponents" in ri.KONTROLA, "KONTROLA: brak danych części do pomiaru")
+    sprawdz("d.Transparency < 0.99" in ri.NAPRAWA and "P.wzrost_teraz" in ri.NAPRAWA, "NAPRAWA: skrzynka nie pomija RootPart")
+    sprawdz("ScaleTo(1)" in ri.SKALA and "SetWaypoint" in ri.SKALA and "Save" not in ri.SKALA, "SKALA: przywrócenie 1:1")
+
     tmp = tempfile.mkdtemp(prefix="test_roblox_import_")
     try:
         p = ri.sciezka_stanu("m", "fbx", tmp)
@@ -227,6 +271,8 @@ class Udawane:
         self.cudze_przy_wstawieniu = None          # nazwa rzeczy, którą „współpracownik” dodaje do kontenera w tej chwili
         self.kontrolowane, self.naprawiane = [], []
         self.kody_kontroli = []                    # pełny kod KONTROLA wysłany do Studio (sprawdzian punktów przodu)
+        self.kody_naprawy, self.skalowane = [], []
+        self.kontrola_dodatki = {}                 # pola dołożone do odpowiedzi KONTROLA (np. czesci_cf i przod rigu)
 
     def _nowy(self, n, k="Model"):
         self._id += 1
@@ -287,17 +333,21 @@ class Udawane:
             if len(self._jedyny(P["cel"])) != 1:
                 return self._odp({"blad": "duplikat"})
             return self._odp({"kroki": kroki, "nazwa": m["n"], "klasa": m["k"], "sciezka": "Workspace.%s.%s" % (ri.KONTENER, m["n"])})
-        if "-- roblox_import: KONTROLA" in kod or "-- roblox_import: NAPRAWA" in kod:
+        if "-- roblox_import: KONTROLA" in kod or "-- roblox_import: NAPRAWA" in kod or "-- roblox_import: SKALA" in kod:
             nazwa = json.loads(re.search(r"if c\.Name == (\".*?\") then", kod).group(1))
             z = self._jedyny(nazwa)
             if len(z) != 1:
                 return self._odp({"blad": "instancji: %d" % len(z)})
+            if "-- roblox_import: SKALA" in kod:
+                self.skalowane.append(z[0]["id"])
+                return self._odp({"przed": 0.9086, "po": 1})
             if "KONTROLA" in kod:
                 self.kontrolowane.append(z[0]["id"])
                 self.kody_kontroli.append(kod)
-                return self._odp({"nazwa": nazwa, "klasa": "Model", "klasy": {"MeshPart": 2, "Bone": 3}, "siatki": [],
-                                  "wymiary": [2.0, 5.0, 1.0]})
+                return self._odp(dict({"nazwa": nazwa, "klasa": "Model", "klasy": {"MeshPart": 2, "Bone": 3}, "siatki": [],
+                                       "wymiary": [2.0, 5.0, 1.0]}, **self.kontrola_dodatki))
             self.naprawiane.append(z[0]["id"])
+            self.kody_naprawy.append(kod)
             return self._odp({"kroki": ["zakotwiczono części: 2"]})
         raise AssertionError("nieznany kod Luau: %s" % kod[:80])
 
@@ -646,6 +696,53 @@ def test_przebiegu():
         s = Udawane()
         s.kto_dodatki = {"kontenerow": 1, "wygenerowane": True}
         sprawdz(uruchom(s, "--asset", "999")[0] == 0, "T: własny kontener z polami KTO nie przechodzi")
+
+        # U) rig z kości z niewidocznym RootPart pod stopami (Leśny Troll, 15.11.2026): naprawa dostaje wzrost z samych
+        #    siatek (10, a nie 10,91 z RootPart); --sprawdz --napraw przywraca skalę 1:1, naprawia bez wgrywania i bez
+        #    wstawiania, a plik wyniku zachowuje numer zasobu; samo --sprawdz działa jak dawniej (bez skali i naprawy)
+        os.makedirs(os.path.join(ri.WYNIK, "kostny"))
+        with open(os.path.join(ri.WYNIK, "kostny", "kostny.fbx"), "wb") as f:
+            f.write(b"FBX" * 50)
+        with open(os.path.join(ri.WYNIK, "kostny", "raport.json"), "w", encoding="utf-8") as f:
+            json.dump({"modele": [{"rodzaj": "postac", "nazwa": "Kostny", "wymiary_ciala": [8.0, 10.0, 3.0],
+                                   "siatki": [1, 2, 3], "kosci": [1, 2], "trojkaty_razem": 5}]}, f)
+        profil = {"przod": {"przod": ["Glowa_Geo"], "tyl": ["Tulow_Geo"]},
+                  "rozmieszczenie": {"poz": (0.0, 0.0), "patrz": (0.0, 1.0)}, "zrzut_skala": 1.0}
+        rig = rig_z_kosci(math.radians(40), przesun=(5.0, 0.91, -3.0))
+        rig["wymiary"] = [11.02, 10.91, 10.18]             # stara skrzynka: wszystkie części, osie świata
+        s = Udawane()
+        s.kontrola_dodatki = rig
+        zw = []
+        kod, out = uruchom(s, "--asset", "997", modul="kostny", profil=profil, zwrot=zw)
+        wz = [float(m.group(1)) for x in s.kody_naprawy for m in [re.search(r'"wzrost_teraz": ([-\d.e+]+)', x)] if m]
+        sprawdz(kod == 0 and wz and abs(wz[0] - 10.0) < 1e-6 and zw and abs(zw[0]["kontrola_przed"]["pomiar"]["min_y"] - 0.91) < 1e-6,
+                "U: naprawa bez wzrostu z siatek: kod %s, %r: %s" % (kod, wz, out[-400:]))
+        sprawdz(not s.skalowane, "U: zwykły import nie może przywracać skali")
+        nazwa_k = "Kostny (import FBX)"
+        plik_k = os.path.join(ri.STAN_DIR, "import_kostny_fbx.json")
+        with open(plik_k, encoding="utf-8") as f:
+            zap = json.load(f)
+        with open(plik_k, "w", encoding="utf-8") as f:     # jak po wgraniu z --tak-wgraj: numer zasobu w pliku wyniku
+            json.dump(dict(zap, asset="997", moderacja="Approved"), f)
+        s = Udawane(starsze=(nazwa_k,))
+        s.kontrola_dodatki = rig
+        zw = []
+        kod, out = uruchom(s, "--sprawdz", nazwa_k, "--napraw", modul="kostny", profil=profil, zwrot=zw)
+        with open(os.path.join(ri.STAN_DIR, "import_kostny_fbx.json"), encoding="utf-8") as f:
+            zap = json.load(f)
+        sprawdz(kod == 0 and len(s.skalowane) == 1 and len(s.naprawiane) == 1 and ile_post(s) == 0
+                and not [n for n, a in s.wywolania if n == "insert_asset"] and zap.get("asset") == "997"
+                and zap.get("model", {}).get("nazwa") == nazwa_k and zap.get("przywrocenie_skali", {}).get("po") == 1
+                and zap.get("sprawdzenie_ponowne", {}).get("napraw") is True,
+                "U: --sprawdz --napraw: kod %s, skala %r, naprawa %r, plik %r: %s"
+                % (kod, s.skalowane, s.naprawiane, {k: zap.get(k) for k in ("asset", "model")}, out[-400:]))
+        s = Udawane(starsze=(nazwa_k,))
+        kod, out = uruchom(s, "--sprawdz", nazwa_k, modul="kostny", profil=profil)
+        sprawdz(kod == 0 and not s.skalowane and not s.naprawiane, "U: samo --sprawdz zmieniło model: %s" % out[-300:])
+        for argv in (("--napraw",), ("--sprawdz", nazwa_k, "--napraw", "--bez-naprawy")):
+            s = Udawane(starsze=(nazwa_k,))
+            kod, out = uruchom(s, *argv, modul="kostny", profil=profil)
+            sprawdz(kod != 0 and not s.wywolania, "U: %r powinno odmówić bez łączenia ze Studio" % (argv,))
     finally:
         (ri.WYNIK, ri.STAN_DIR, ri.OPERACJA_MAX, ri.OPERACJA_CO, ri.MODERACJA_MAX, ri.MODERACJA_CO) = stare
         shutil.rmtree(tmp, ignore_errors=True)

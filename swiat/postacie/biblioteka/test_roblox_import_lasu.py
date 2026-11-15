@@ -11,12 +11,17 @@
    Gora — niezgodny; sztywne części ze stawami — troll zgodny, slime niezgodny (Cialo i Gora nie mają siatki).
 4. Przebieg z --tak-wgraj na udawanym roblox_import.main (katalog stanu w folderze tymczasowym): model „zgodny” jest
    pomijany bez wywołania, model z gotowym plikiem wyniku jest oceniany z pliku bez wstawiania, przerwanie zatrzymuje
-   całość z kodem błędu i zapisuje tabelę.
+   całość z kodem błędu i zapisuje tabelę. --sprawdz-ponownie woła roblox_import z --sprawdz <nazwa> --napraw (bez
+   --tak-wgraj), a bez numeru zasobu staje bez wywołania.
+5. RootPart rigu z kości (Troll 15.11.2026): stary pomiar (z RootPart, osie świata) — niezgodny; pomiar siatek w układzie
+   modelu — zgodny; stopy 0,91 nad ziemią, skala nieprzywrócona albo model na oparciu ławki — niezgodny; części miasta
+   w obrysie — do obejrzenia.
 """
 import contextlib
 import copy
 import io
 import json
+import math
 import os
 import shutil
 import sys
@@ -160,6 +165,52 @@ def wynik_kosci(e, bez=(), rodzic_zly=None):
             "kontrola_po": copy.deepcopy(kontrola), "naprawa": {"kroki": ["postawiono w (1.0; 0.25; 2.0)"]}}
 
 
+def czesci_rigu(wym, kat, y_stop):
+    """Dane części (czesci_cf) rigu z kości: jedna siatka o wymiarach wym = [szer., wzrost, głęb.] stopami na y_stop,
+    obrócona wokół pionu o kat, i niewidoczny RootPart 1,82 studa środkiem na wysokości stóp (jak Troll 15.11.2026)."""
+    c, s = math.cos(kat), math.sin(kat)
+    obrot = [c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c]
+    return {"czesci_cf": [{"n": "Tulow_Geo", "k": "MeshPart", "cf": [0.0, y_stop + wym[1] / 2, 0.0] + obrot, "s": list(wym), "t": 0},
+                          {"n": "RootPart", "k": "Part", "cf": [0.0, y_stop, 0.0] + obrot, "s": [1.82] * 3, "t": 1}],
+            "przod": [s, c]}
+
+
+def test_rootpart():
+    """Leśny Troll 15.11.2026: RootPart pod stopami i skrzynka w osiach świata dały NIEZGODNY, choć siatki są 1:1."""
+    tr = rl.oczekiwania("lesny_troll")
+    w = wynik_kosci(tr)
+    stara = [11.02, 10.94, 10.18]                         # tak zmierzyła stara kontrola (wszystkie części, osie świata)
+    w["kontrola_przed"]["wymiary"] = stara
+    sprawdz(rl.ocen(tr, w)[0] == "niezgodny", "troll ze starym pomiarem (z RootPart) wyszedł zgodny")
+    kc = tr["kierunek_celu"]
+    w["kontrola_przed"].update(czesci_rigu(tr["wymiary"], math.radians(40), 0.91))
+    w["kontrola_po"].update(czesci_rigu(tr["wymiary"], math.atan2(kc[0], kc[1]), 0.25))
+    werdykt, spr, rodzaj = rl.ocen(tr, w)
+    po_n = {x["n"]: x for x in spr}
+    sprawdz(werdykt == "zgodny" and rodzaj == "kości (Bone)" and po_n["stopy na podłożu (spód siatek po naprawie)"]["wynik"] == "tak",
+            "troll z pomiarem siatek: %s %r" % (werdykt, [x for x in spr if x["wynik"] == "nie"]))
+    # stara naprawa postawiła RootPart na podłożu: stopy 0,91 nad ziemią -> niezgodny
+    w["kontrola_po"].update(czesci_rigu(tr["wymiary"], math.atan2(kc[0], kc[1]), 0.25 + 0.91))
+    sprawdz(rl.ocen(tr, w)[0] == "niezgodny", "troll ze stopami nad ziemią wyszedł zgodny")
+    # skala przywrócona do 1:1 to tylko informacja; skala inna niż 1 po przywróceniu -> niezgodny
+    w["kontrola_po"].update(czesci_rigu(tr["wymiary"], math.atan2(kc[0], kc[1]), 0.25))
+    w["przywrocenie_skali"] = {"przed": 0.9086, "po": 1}
+    sprawdz(rl.ocen(tr, w)[0] == "zgodny", "troll po przywróceniu skali")
+    w["przywrocenie_skali"] = {"przed": 0.9086, "po": 0.9086}
+    sprawdz(rl.ocen(tr, w)[0] == "niezgodny", "troll z nieprzywróconą skalą wyszedł zgodny")
+    del w["przywrocenie_skali"]
+    # Muchomornik 15.11.2026: postawiony na oparciu ławki (podłoże y 3,8) -> niezgodny; części miasta w obrysie: obejrzyj
+    w["naprawa"]["kolizje"] = ["Workspace.KrzyweMiasteczko.Rekwizyty.Ławka oparcie"]
+    werdykt, spr, _r = rl.ocen(tr, w)
+    po_n = {x["n"]: x["wynik"] for x in spr}
+    sprawdz(werdykt == "zgodny" and po_n.get("części miasta w obrysie modelu") == "obejrzyj", "kolizje: %r" % po_n)
+    w["naprawa"]["kolizje"] = []
+    sprawdz({x["n"]: x["wynik"] for x in rl.ocen(tr, w)[1]}.get("części miasta w obrysie modelu") == "tak", "kolizje puste")
+    w["naprawa"]["kroki"] = ["postawiono w (1.0; 3.80; 2.0)"]
+    w["kontrola_po"].update(czesci_rigu(tr["wymiary"], math.atan2(kc[0], kc[1]), 3.8))
+    sprawdz(rl.ocen(tr, w)[0] == "niezgodny", "model na oparciu ławki (y 3,8) wyszedł zgodny")
+
+
 def test_wariantow():
     sl = rl.oczekiwania("lesny_slime")
     tr = rl.oczekiwania("lesny_troll")
@@ -274,6 +325,29 @@ def test_przebiegu():
         sprawdz(kod != 0 and wywolania == [] and "STOP przed wgraniem" in out, "kolejność: troll przed Zwiadowcą: %r" % wywolania)
         kod, out = uruchom("--tylko", "lesny_troll", "--tak-wgraj", "--mimo-kolejnosci")
         sprawdz(wywolania == ["lesny_troll"], "--mimo-kolejnosci: wywołania %r" % wywolania)
+        # --sprawdz-ponownie (15.11.2026): model już wstawiony -> roblox_import --sprawdz <nazwa> --napraw, bez --tak-wgraj;
+        # bez numeru zasobu w pliku stanu -> stop bez wywołania
+        argumenty = []
+
+        def ponowny(argv, profil=None):
+            argumenty.append(list(argv))
+            w = wynik_kosci(gotowe["lesny_troll"])
+            return dict(w, asset="88", przywrocenie_skali={"przed": 0.9086, "po": 1})
+        ri.main = ponowny
+        del wywolania[:]
+        kod, out = uruchom("--tylko", "lesny_troll", "--sprawdz-ponownie")
+        sprawdz(kod != 0 and not argumenty and "STOP" in out, "ponownie bez zasobu: kod %s, %r" % (kod, argumenty))
+        ri.zapisz_stan(ri.sciezka_stanu("lesny_troll", "fbx"), {"etap": "zasob", "asset": "88", "moderacja": "Approved"})
+        with open(os.path.join(tmp, "import_lesny_troll_fbx.json"), "w", encoding="utf-8") as f:
+            json.dump({"asset": "88", "model": {"nazwa": "Leśny Troll (import FBX)"}}, f)
+        kod, out = uruchom("--tylko", "lesny_troll", "--sprawdz-ponownie")
+        t = rl.wczytaj_tabele()
+        sprawdz(kod == 0 and len(argumenty) == 1 and "--napraw" in argumenty[0] and "--tak-wgraj" not in argumenty[0]
+                and argumenty[0][argumenty[0].index("--sprawdz") + 1] == "Leśny Troll (import FBX)"
+                and t.get("lesny_troll", {}).get("werdykt") == "zgodny" and t["lesny_troll"].get("asset") == "88",
+                "ponownie: kod %s, %r, tabela %r\n%s" % (kod, argumenty, t.get("lesny_troll", {}).get("werdykt"), out[-500:]))
+        kod, out = uruchom("--tylko", "lesny_troll", "--sprawdz-ponownie", "--tak-wgraj")
+        sprawdz(kod != 0 and len(argumenty) == 1, "ponownie z --tak-wgraj powinno odmówić")
     finally:
         ri.STAN_DIR, ri.main, rl.oczekiwania = stare
         shutil.rmtree(tmp, ignore_errors=True)
@@ -283,7 +357,7 @@ if __name__ == "__main__":
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     for nazwa, fn in (("plan", test_planu), ("ocena Rycerza", test_oceny_rycerza), ("warianty szkieletu", test_wariantow),
-                      ("przebieg na udawanym imporcie", test_przebiegu)):
+                      ("RootPart rigu z kości", test_rootpart), ("przebieg na udawanym imporcie", test_przebiegu)):
         n = len(ZLE)
         fn()
         print("%s: %s" % (nazwa, "zgodne" if len(ZLE) == n else "%d niezgodności" % (len(ZLE) - n)))

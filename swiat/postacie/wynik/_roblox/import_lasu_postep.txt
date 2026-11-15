@@ -9,3 +9,14 @@
 2026-11-15 19:25 S4: Lesny Troll wgrany, zasob 105984421059465, Approved, WERDYKT NIEZGODNY (szkielet: kosci Bone); wzrost przed naprawa 10.94 zamiast 9.94, obrys 11.02x10.18 zamiast 12.71x6.23, naprawa zmniejszyla x0.9086. STOP po Trollu (regula orkiestratora)
 2026-11-15 19:26 S5-S8 nie robione (stop po Trollu). S9: import_lasu.txt przejrzany; arkusz zrzutow 2 modeli zrobiony
 2026-11-15 19:26 notatka Sejfu i README uzupelnione, sejf_lint 0 bledow; raport r-20261115-192650-d46e opublikowany; koniec pracy (Studio w Edit, nic nie zapisano ani nie opublikowano)
+2026-11-15 19:52 druga sesja: start (poprawka pomiaru RootPart, naprawa Trolla, S5-S9)
+2026-11-15 19:59 A: poprawka pomiaru (same siatki, uklad modelu, stopy na podlozu, --sprawdz --napraw, --sprawdz-ponownie); oba testy WYNIK: ZGODNE
+2026-11-15 19:59 B: Troll ponownie sprawdzony bez wgrania: skala 0.9086 -> 1, pomiar siatek 12.71x9.94x6.23 (RootPart pominiety), stopy na y 0.61, WERDYKT ZGODNY (kosci Bone)
+2026-11-15 20:00 S5: Cierniowy Wilk wgrany, zasob 84587733751677, Approved, WERDYKT ZGODNY (kosci Bone), pomiar 2.17x4.35x7.67, obrot 82.3 st., stopy y 0.00; kolory: 21 siatek
+2026-11-15 20:04 S5: Muchomornik wgrany, zasob 138339651650034, Approved, NIEZGODNY tylko przez miejsce: stanal na oparciu lawki (podloze y 3.8); model 1:1 (pomiar 2.95x3.6x2.67). Poprawka narzedzia: nowe wolne miejsca (muchomornik -5;-22, straznik 27;-15, slime 42;-2) i kontrola kolizji w naprawie; testy ZGODNE
+2026-11-15 20:05 S5: ponowna kontrola bez wgrania: Muchomornik przestawiony na (-5;-22), stopy y 0.55, ZGODNY; Troll i Wilk nadal ZGODNE (kolizje do obejrzenia: lawka w skrzynce Trolla, krawedz bruku przy Wilku)
+2026-11-15 20:05 S5: Straznik Gaju wgrany, zasob 127674054809040, Approved, WERDYKT ZGODNY (kosci Bone), pomiar 8.9x14.54x4.94, stopy y 0.55; kolory: Muchomornik 28, Straznik 36 siatek
+2026-11-15 20:06 S6: Lesny Slime wgrany, zasob 111553372294249, Approved, WERDYKT ZGODNY (kosci Bone, 27 kosci z Cialo i Gora); kolory 25 siatek. S7: sonda skory TAK (0.972, kosci Dol i Gora), kod 0; S8 niepotrzebny
+2026-11-15 20:08 S9: import_lasu.txt szesc razy ZGODNY; wlasne zrzuty z bliska szesciu modeli i arkusz z planszami (wynik/_roblox/import_lasu_arkusz.jpg); ocena: ksztalty, kolory, przod i stanie na ziemi dobre; bez Neon, bez luku i sztyletu Zwiadowcy; Straznik i Troll ciemniejsi w cieniu straganu
+2026-11-15 20:08 kontrola drogi R15: Zwiadowca ponownie sprawdzony bez wgrania - skala bez zmian, postawiony jak wczesniej (y 0.55), pomiar 4.23x5.76x2.66 (HumanoidRootPart pominiety), ZGODNY
+2026-11-15 20:11 E/F: notatka Sejfu i IMPORT_LASU.md uzupelnione, sejf_lint 0 bledow; raport r-20261115-201105-391e opublikowany; koniec pracy (Studio w Edit, nic nie zapisano ani nie opublikowano)

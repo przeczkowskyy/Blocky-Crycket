@@ -1,23 +1,26 @@
-Import modeli lasu do Roblox Studio (roblox_import_lasu.py), stan na 2026-11-15 19:24:47.
+Import modeli lasu do Roblox Studio (roblox_import_lasu.py), stan na 2026-11-15 20:08:47.
 
-zwiadowca       ZGODNY — zasób 108959205720843, model „Zwiadowca (import FBX)”, szkielet: R15 (2026-11-15 19:15:25)
+zwiadowca       ZGODNY — zasób 108959205720843, model „Zwiadowca (import FBX)”, szkielet: R15 (2026-11-15 20:08:47)
     [tak    ] siatki MeshPart (bez znaczników _Att): oczekiwane 15, jest 15
     [tak    ] kolor (tekstura albo SurfaceAppearance): oczekiwane 0 siatek bez koloru, jest 0: 
     [tak    ] wzrost przed naprawą (skala 1:1): oczekiwane 5.76 ±2%, jest 5.762
-    [tak    ] szerokość i głębokość: oczekiwane 2.66 × 4.23, jest 2.90 × 4.33
+    [tak    ] szerokość i głębokość: oczekiwane 2.66 × 4.23, jest 2.66 × 4.23
     [tak    ] Humanoid: oczekiwane 1, jest 1
     [tak    ] stawy R15 (Motor6D + AnimationConstraint): oczekiwane 15, jest 15
     [tak    ] zaczepy (RootAttachment może zniknąć): oczekiwane 18, jest brak: -; nazwy: nazwa
     [tak    ] przód po naprawie (pomiar i obrót zadziałały): oczekiwane ≤ 10° od kierunku na punkt wejścia, jest 0.0°
     [tak    ] lewa strona po lewej (brak lustra): oczekiwane True, jest True
     [tak    ] podłoże pod modelem (y): oczekiwane -0.4 … 0.8, jest 0.55
-    [tak    ] obrót przy naprawie (informacja): oczekiwane dowolny; ok. ±180° = FBX patrzył tyłem, jest 208.6°
+    [tak    ] stopy na podłożu (spód siatek po naprawie): oczekiwane y 0.55 ±0.05, jest 0.55
+    [obejrzyj] części miasta w obrysie modelu: oczekiwane brak, jest 3: Workspace.KrzyweMiasteczko.Rekwizyty.Ławka siedzisko; Workspace.KrzyweMiasteczko.Rekwizyty.Ławka oparcie; Workspace.KrzyweMiasteczko.Rekwizyty.Ławka noga
+    [tak    ] skala przywrócona do 1:1 przed kontrolą (informacja): oczekiwane 1, jest 1.0000 → 1.0000
+    [tak    ] obrót przy naprawie (informacja): oczekiwane dowolny; ok. ±180° = FBX patrzył tyłem, jest 0°
     [obejrzyj] zrzuty: oczekiwane 2 pliki do obejrzenia, jest -
-lesny_troll     NIEZGODNY — zasób 105984421059465, model „Leśny Troll (import FBX)”, szkielet: kości (Bone) (2026-11-15 19:24:47)
+lesny_troll     ZGODNY — zasób 105984421059465, model „Leśny Troll (import FBX)”, szkielet: kości (Bone) (2026-11-15 20:04:35)
     [tak    ] siatki MeshPart (bez znaczników _Att): oczekiwane 17, jest 17
     [tak    ] kolor (tekstura albo SurfaceAppearance): oczekiwane 0 siatek bez koloru, jest 0: 
-    [nie    ] wzrost przed naprawą (skala 1:1): oczekiwane 9.94 ±2%, jest 10.944
-    [nie    ] szerokość i głębokość: oczekiwane 6.23 × 12.71, jest 10.18 × 11.02
+    [tak    ] wzrost przed naprawą (skala 1:1): oczekiwane 9.94 ±2%, jest 9.944
+    [tak    ] szerokość i głębokość: oczekiwane 6.23 × 12.71, jest 6.23 × 12.71
     [tak    ] kości Bone (bez Root): oczekiwane 17, jest 17, brak: -
     [tak    ] rodzice kości jak w GLB: oczekiwane 0 różnic, jest 0: 
     [tak    ] głębokość drzewa kości: oczekiwane 5 … 7, jest 6
@@ -25,10 +28,78 @@ lesny_troll     NIEZGODNY — zasób 105984421059465, model „Leśny Troll (imp
     [tak    ] przód po naprawie (pomiar i obrót zadziałały): oczekiwane ≤ 10° od kierunku na punkt wejścia, jest 0.0°
     [tak    ] lewa strona po lewej (brak lustra): oczekiwane True, jest True
     [tak    ] podłoże pod modelem (y): oczekiwane -0.4 … 0.8, jest 0.61
-    [tak    ] obrót przy naprawie (informacja): oczekiwane dowolny; ok. ±180° = FBX patrzył tyłem, jest 66.4°
-    [nie    ] skala przy naprawie: oczekiwane bez zmian, jest ×0.9086
+    [tak    ] stopy na podłożu (spód siatek po naprawie): oczekiwane y 0.61 ±0.05, jest 0.61
+    [obejrzyj] części miasta w obrysie modelu: oczekiwane brak, jest 3: Workspace.KrzyweMiasteczko.Rekwizyty.Ławka siedzisko; Workspace.KrzyweMiasteczko.Rekwizyty.Ławka oparcie; Workspace.KrzyweMiasteczko.Rekwizyty.Ławka noga
+    [tak    ] skala przywrócona do 1:1 przed kontrolą (informacja): oczekiwane 1, jest 1.0000 → 1.0000
+    [tak    ] obrót przy naprawie (informacja): oczekiwane dowolny; ok. ±180° = FBX patrzył tyłem, jest 0°
     [obejrzyj] zrzuty: oczekiwane 2 pliki do obejrzenia, jest -
-cierniowy_wilk  nie zaczęty
-muchomornik     nie zaczęty
-straznik_gaju   nie zaczęty
-lesny_slime     nie zaczęty
+cierniowy_wilk  ZGODNY — zasób 84587733751677, model „Cierniowy Wilk (import FBX)”, szkielet: kości (Bone) (2026-11-15 20:04:42)
+    [tak    ] siatki MeshPart (bez znaczników _Att): oczekiwane 21, jest 21
+    [tak    ] kolor (tekstura albo SurfaceAppearance): oczekiwane 0 siatek bez koloru, jest 0: 
+    [tak    ] wzrost przed naprawą (skala 1:1): oczekiwane 4.36 ±2%, jest 4.355
+    [tak    ] szerokość i głębokość: oczekiwane 2.17 × 7.67, jest 2.17 × 7.67
+    [tak    ] kości Bone (bez Root): oczekiwane 21, jest 21, brak: -
+    [tak    ] rodzice kości jak w GLB: oczekiwane 0 różnic, jest 0: 
+    [tak    ] głębokość drzewa kości: oczekiwane 4 … 6, jest 5
+    [tak    ] zaczepy (RootAttachment może zniknąć): oczekiwane 2, jest brak: -; nazwy: rdzeń
+    [tak    ] przód po naprawie (pomiar i obrót zadziałały): oczekiwane ≤ 10° od kierunku na punkt wejścia, jest 0.0°
+    [tak    ] lewa strona po lewej (brak lustra): oczekiwane True, jest True
+    [tak    ] podłoże pod modelem (y): oczekiwane -0.4 … 0.8, jest 0.0
+    [tak    ] stopy na podłożu (spód siatek po naprawie): oczekiwane y 0.00 ±0.05, jest 0.0
+    [obejrzyj] części miasta w obrysie modelu: oczekiwane brak, jest 2: Workspace.KrzyweMiasteczko.Rynek.Bruk; Workspace.KrzyweMiasteczko.Rynek.Bruk
+    [tak    ] skala przywrócona do 1:1 przed kontrolą (informacja): oczekiwane 1, jest 1.0000 → 1.0000
+    [tak    ] obrót przy naprawie (informacja): oczekiwane dowolny; ok. ±180° = FBX patrzył tyłem, jest 0°
+    [obejrzyj] zrzuty: oczekiwane 2 pliki do obejrzenia, jest -
+muchomornik     ZGODNY — zasób 138339651650034, model „Muchomornik (import FBX)”, szkielet: kości (Bone) (2026-11-15 20:04:45)
+    [tak    ] siatki MeshPart (bez znaczników _Att): oczekiwane 28, jest 28
+    [tak    ] kolor (tekstura albo SurfaceAppearance): oczekiwane 0 siatek bez koloru, jest 0: 
+    [tak    ] wzrost przed naprawą (skala 1:1): oczekiwane 3.60 ±2%, jest 3.605
+    [tak    ] szerokość i głębokość: oczekiwane 2.67 × 2.95, jest 2.67 × 2.95
+    [tak    ] kości Bone (bez Root): oczekiwane 28, jest 28, brak: -
+    [tak    ] rodzice kości jak w GLB: oczekiwane 0 różnic, jest 0: 
+    [tak    ] głębokość drzewa kości: oczekiwane 5 … 7, jest 6
+    [tak    ] zaczepy (RootAttachment może zniknąć): oczekiwane 3, jest brak: -; nazwy: rdzeń
+    [tak    ] przód po naprawie (pomiar i obrót zadziałały): oczekiwane ≤ 10° od kierunku na punkt wejścia, jest 0.0°
+    [tak    ] lewa strona po lewej (brak lustra): oczekiwane True, jest True
+    [tak    ] podłoże pod modelem (y): oczekiwane -0.4 … 0.8, jest 0.55
+    [tak    ] stopy na podłożu (spód siatek po naprawie): oczekiwane y 0.55 ±0.05, jest 0.55
+    [tak    ] części miasta w obrysie modelu: oczekiwane brak, jest brak
+    [tak    ] skala przywrócona do 1:1 przed kontrolą (informacja): oczekiwane 1, jest 1.0000 → 1.0000
+    [tak    ] obrót przy naprawie (informacja): oczekiwane dowolny; ok. ±180° = FBX patrzył tyłem, jest -4.3°
+    [tak    ] siatki do świecenia odnalezione: oczekiwane 13, jest 13
+    [obejrzyj] zrzuty: oczekiwane 2 pliki do obejrzenia, jest -
+straznik_gaju   ZGODNY — zasób 127674054809040, model „Strażnik Gaju (import FBX)”, szkielet: kości (Bone) (2026-11-15 20:05:25)
+    [tak    ] siatki MeshPart (bez znaczników _Att): oczekiwane 36, jest 36
+    [tak    ] kolor (tekstura albo SurfaceAppearance): oczekiwane 0 siatek bez koloru, jest 0: 
+    [tak    ] wzrost przed naprawą (skala 1:1): oczekiwane 14.54 ±2%, jest 14.536
+    [tak    ] szerokość i głębokość: oczekiwane 4.94 × 8.90, jest 4.94 × 8.90
+    [tak    ] kości Bone (bez Root): oczekiwane 36, jest 36, brak: -
+    [tak    ] rodzice kości jak w GLB: oczekiwane 0 różnic, jest 0: 
+    [tak    ] głębokość drzewa kości: oczekiwane 4 … 6, jest 5
+    [tak    ] zaczepy (RootAttachment może zniknąć): oczekiwane 5, jest brak: -; nazwy: rdzeń
+    [tak    ] przód po naprawie (pomiar i obrót zadziałały): oczekiwane ≤ 10° od kierunku na punkt wejścia, jest 0.0°
+    [tak    ] lewa strona po lewej (brak lustra): oczekiwane True, jest True
+    [tak    ] podłoże pod modelem (y): oczekiwane -0.4 … 0.8, jest 0.55
+    [tak    ] stopy na podłożu (spód siatek po naprawie): oczekiwane y 0.55 ±0.05, jest 0.55
+    [tak    ] części miasta w obrysie modelu: oczekiwane brak, jest brak
+    [tak    ] obrót przy naprawie (informacja): oczekiwane dowolny; ok. ±180° = FBX patrzył tyłem, jest 43.1°
+    [tak    ] siatki do świecenia odnalezione: oczekiwane 2, jest 2
+    [obejrzyj] zrzuty: oczekiwane 2 pliki do obejrzenia, jest -
+lesny_slime     ZGODNY — zasób 111553372294249, model „Leśny Slime (import FBX)”, szkielet: kości (Bone) (2026-11-15 20:05:58)
+    [tak    ] siatki MeshPart (bez znaczników _Att): oczekiwane 25, jest 25
+    [tak    ] kolor (tekstura albo SurfaceAppearance): oczekiwane 0 siatek bez koloru, jest 0: 
+    [tak    ] wzrost przed naprawą (skala 1:1): oczekiwane 3.38 ±2%, jest 3.377
+    [tak    ] szerokość i głębokość: oczekiwane 3.29 × 3.82, jest 3.29 × 3.82
+    [tak    ] kości Bone (bez Root): oczekiwane 27, jest 27, brak: -
+    [tak    ] rodzice kości jak w GLB: oczekiwane 0 różnic, jest 0: 
+    [tak    ] głębokość drzewa kości: oczekiwane 3 … 5, jest 4
+    [tak    ] zaczepy (RootAttachment może zniknąć): oczekiwane 3, jest brak: -; nazwy: rdzeń
+    [tak    ] przód po naprawie (pomiar i obrót zadziałały): oczekiwane ≤ 10° od kierunku na punkt wejścia, jest 0.0°
+    [tak    ] lewa strona po lewej (brak lustra): oczekiwane True, jest True
+    [tak    ] podłoże pod modelem (y): oczekiwane -0.4 … 0.8, jest 0.55
+    [tak    ] stopy na podłożu (spód siatek po naprawie): oczekiwane y 0.55 ±0.05, jest 0.55
+    [obejrzyj] części miasta w obrysie modelu: oczekiwane brak, jest 1: Workspace.KrzyweMiasteczko.Rynek.Ścieżka-kod
+    [tak    ] obrót przy naprawie (informacja): oczekiwane dowolny; ok. ±180° = FBX patrzył tyłem, jest -16.3°
+    [tak    ] siatki do świecenia odnalezione: oczekiwane 9, jest 9
+    [obejrzyj] skóra na dwóch kościach: oczekiwane sonda --sonda-skory i zrzut pozy (IMPORT_LASU.md, krok S8), jest -
+    [obejrzyj] zrzuty: oczekiwane 2 pliki do obejrzenia, jest -

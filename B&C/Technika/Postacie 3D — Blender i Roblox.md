@@ -83,22 +83,25 @@ Wspólne uwagi z przeglądów (szczegóły i klatki trafień w notatkach modeli)
 - Nazwa strażnika biomu jest od 15.11.2026 jedna — „Strażnik Gaju” — w modelu, notatce, silniku walki i prototypie (identyfikator w danych został `straznik_lasu`).
 
 ## Import modeli lasu (15.11.2026)
-Wgrywał Claude Code na konto Karola (zalogowane w Studio), narzędziem `swiat/postacie/roblox_import_lasu.py` według listy kroków w `swiat/postacie/IMPORT_LASU.md`. Wynik: `swiat/postacie/wynik/_roblox/import_lasu.txt`. Modele stoją w `Workspace/TestPostaci`.
+Wszystkie sześć modeli wgrał Claude Code na konto Karola (zalogowane w Studio), narzędziem `swiat/postacie/roblox_import_lasu.py` według listy kroków w `swiat/postacie/IMPORT_LASU.md`. Moderacja zatwierdziła każdy zasób od razu. Wynik: `swiat/postacie/wynik/_roblox/import_lasu.txt`, dziennik kroków: `import_lasu_postep.txt`, arkusz zrzutów z planszami: `import_lasu_arkusz.jpg` (ten sam folder). Modele stoją w `Workspace/TestPostaci`; miejsca nie zapisano ani nie opublikowano.
 
-| Model | Zasób | Kiedy | Szkielet po imporcie | Werdykt |
-|---|---|---|---|---|
-| [[Zwiadowca]] | 108959205720843 | 15.11.2026, 19:15 | R15 (`Humanoid`, 15 stawów `AnimationConstraint`, 18 zaczepów) | ZGODNY w danych; na zrzucie kształt i przód dobre, ale szary (niżej) |
-| [[Leśny Troll]] | 105984421059465 | 15.11.2026, 19:24 | kości (`Bone` 17 + `AnimationController`), drzewo kości jak w GLB | NIEZGODNY — błąd kontroli, nie modelu (niżej) |
+| Model | Zasób | Wgrany | Szkielet po imporcie | Werdykt | Czego nie przeniósł |
+|---|---|---|---|---|---|
+| [[Zwiadowca]] | 108959205720843 | 15.11, 19:15 | R15 (`Humanoid`, 15 stawów `AnimationConstraint`, 18 zaczepów) | ZGODNY | łuku i sztyletu (są poza plikiem) |
+| [[Leśny Troll]] | 105984421059465 | 15.11, 19:24 | kości `Bone` (17 bez Root) + `AnimationController` | ZGODNY po ponownej kontroli bez drugiego wgrania (19:59) | nic istotnego; maczuga jest kością modelu i przyszła |
+| [[Cierniowy Wilk]] | 84587733751677 | 15.11, 19:59 | kości `Bone` | ZGODNY | nic istotnego |
+| [[Muchomornik]] | 138339651650034 | 15.11, 20:00 | kości `Bone` | ZGODNY po przestawieniu (pierwsze miejsce było na ławce) | świecenia zarodników jako Neon (13 siatek do świecenia jest na miejscu) |
+| [[Strażnik Gaju]] | 127674054809040 | 15.11, 20:05 | kości `Bone` | ZGODNY | świecenia kryształu i oczu jako Neon (2 siatki) |
+| [[Leśny Slime]] | 111553372294249 | 15.11, 20:05 | kości `Bone` (27, są `Cialo` i `Gora`), skóra na dwóch kościach | ZGODNY; sonda skóry TAK (0,972 jak w GLB) | świecenia jako Neon (9 siatek) |
 
-Pozostałe cztery modele (Wilk, Muchomornik, Strażnik Gaju, Slime) nie zostały wgrane: lista każe stanąć po Trollu, a Troll nie dostał werdyktu „zgodny”. Sonda skóry slime'a też czeka.
+Znaczniki zaczepów `_Att` zamieniły się w zaczepy (u wszystkich zaczepy są na miejscu). Świecenie siedzi tylko w teksturze emisji, więc Neon trzeba dołożyć osobno (decyzja). Animacje na zaimportowanych rigach to osobny krok; prototyp walki i las nadal używają modeli z klocków.
+
+Ocena z bliskich zrzutów w Studio (S9): kształty, kolory, przód (twarzą do punktu wejścia) i stanie na bruku zgadzają się z planszami. Troll i Strażnik wyglądają ciemniej niż na planszy, bo stoją w cieniu straganu; slime jest bardziej nasycony zielenią niż pastelowa plansza.
 
 Co ustalono:
-- **Szaro w Studio.** Oba modele, a teraz także Rycerz z 13.11, rysują się w Studio szaro. Tekstura-paleta jest na miejscu i zatwierdzona przez moderację. Ta sama tekstura podana jako `TextureID` na próbnej kopii głowy rysuje się w kolorach, a `SurfaceAppearance` (także nowo utworzony) — szaro. Wniosek: w tej sesji Studio nie rysuje `SurfaceAppearance`; danych modelu to nie dotyczy. Przyczyny nie ustalono.
-- **Troll: kontrola liczy niewidzialny `RootPart`.** Import dodał część `RootPart` (1,82 studa), której środek jest na wysokości stóp, więc wystaje pod model. Wzrost z nią wyszedł 10,94 zamiast 9,94, a naprawa zmniejszyła trolla do ×0,909 i postawiła na ziemi `RootPart` zamiast stóp. Siatki mają naprawdę skalę 1:1, a obrys w układzie modelu jest dokładnie jak w pliku (12,71 × 6,23). Teraz troll jest o 9% za mały i wisi ok. 0,9 studa nad brukiem. Poprawka należy do `roblox_import.py` (kontrola i naprawa mają pomijać `RootPart`).
-- **Czego import nie przeniósł:** świecenia (tylko w teksturze emisji; Zwiadowca i Troll go nie mają), broni trzymanej osobno (łuk i sztylet Zwiadowcy są poza plikiem; maczuga trolla jest kością modelu i przyszła), znaczników zaczepów `_Att` (zamieniły się w zaczepy albo zniknęły zgodnie z oczekiwaniem), skóry (nie dotyczy tych dwóch modeli; sprawdzian jest przy slimie).
-- Animacje na zaimportowanych rigach to osobny krok; prototyp walki nadal używa modeli z klocków.
-
-**Kolory po imporcie (ustalone 15.11 wieczorem).** Zaimportowane modele były szare, bo importer dokłada każdej części SurfaceAppearance z błędnym odwołaniem emisji (`rbxassetid://5`) i Studio nie składa paczki tekstur. Pomaga ustawienie mapy koloru jako `TextureID` części i usunięcie SurfaceAppearance — robi to `python -B swiat/postacie/roblox_import_kolory.py` (uruchamiać po każdym imporcie). Zwiadowca, Leśny Troll i Rycerz z 13.11 mają po tej poprawce właściwe kolory.
+- **Szaro w Studio.** Importer dokłada każdej części SurfaceAppearance z błędnym odwołaniem emisji (`rbxassetid://5`) i Studio nie składa paczki tekstur, więc model jest szary. Pomaga ustawienie mapy koloru jako `TextureID` części i usunięcie SurfaceAppearance — robi to `python -B swiat/postacie/roblox_import_kolory.py` (uruchamiać po każdym imporcie, przed oceną zrzutów). Wszystkie sześć modeli i Rycerz z 13.11 mają po tej poprawce właściwe kolory.
+- **RootPart rigu z kości.** Import rigu z kości dodaje niewidoczną część `RootPart` (1,82 studa) ze środkiem na wysokości stóp. Stara kontrola liczyła ją do wzrostu (Troll 10,94 zamiast 9,94), naprawa zmniejszyła trolla ×0,909 i postawiła na ziemi `RootPart` zamiast stóp, a obrys w osiach świata obróconego modelu wyszedł za głęboki. Od 15.11 `roblox_import.py` mierzy wzrost, szerokość, głębokość i spód z samych siatek w układzie modelu (niewidoczne części bez siatki pomija), a ocena sprawdza, że spód siatek leży na podłożu. Troll wrócił do skali 1:1 przez `roblox_import_lasu.py --tylko lesny_troll --sprawdz-ponownie` (bez wgrywania i wstawiania). Droga R15 działa jak dawniej: ponowna kontrola Zwiadowcy dała te same kroki naprawy i to samo miejsce.
+- **Miejsca modeli.** Rekwizyty miasta (ławki, latarnie) nie są w `uklad.json`, więc pierwsze miejsce Muchomornika wypadło na oparciu ławki (podłoże y 3,8). Miejsca Muchomornika, Strażnika i Slime'a przestawiono na wolne (przegląd w Studio), a naprawa wypisuje teraz części miasta w obrysie modelu do obejrzenia.
 
 ## Ciało bazowe i strój z przedmiotów (15.11.2026)
 Propozycja — realizacja [[Rejestr decyzji|D-071]] dla [[Rycerz|Rycerza]], [[Kot-Mag|Kota-Maga]] i [[Zwiadowca|Zwiadowcy]]. Pełny opis i umowa dla kodu: `swiat/postacie/EKWIPUNEK.md`.

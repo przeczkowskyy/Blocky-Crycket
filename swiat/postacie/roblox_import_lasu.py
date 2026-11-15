@@ -86,12 +86,17 @@ PROFILE = {
     "zwiadowca": {"miejsce": (3.0, -18.0), "przod": None},          # None = punkty R15 z roblox_import.PRZOD_R15
     "lesny_troll": {"miejsce": (13.0, -14.0), "przod": ("Szczeka", "Tulow", "RamieL", "RamieP")},
     "cierniowy_wilk": {"miejsce": (-14.0, -15.0), "przod": ("Glowa", "Zad", "LapaPrzodL_Gora", "LapaPrzodP_Gora")},
-    "muchomornik": {"miejsce": (-5.0, -17.0), "przod": ("Broda", "Glowa", "RamieL", "RamieP")},
-    "straznik_gaju": {"miejsce": (28.0, -15.0), "przod": ("Krysztal", "Tulow", "RamieL", "RamieP")},
-    "lesny_slime": {"miejsce": (36.0, -8.0), "przod": ("Przod", "Tyl", "BokL", "BokP")},
+    "muchomornik": {"miejsce": (-5.0, -22.0), "przod": ("Broda", "Glowa", "RamieL", "RamieP")},
+    "straznik_gaju": {"miejsce": (27.0, -15.0), "przod": ("Krysztal", "Tulow", "RamieL", "RamieP")},
+    "lesny_slime": {"miejsce": (42.0, -2.0), "przod": ("Przod", "Tyl", "BokL", "BokP")},
 }
+# Przesunięte 15.11.2026 po imporcie Muchomornika: w (−5; −17) stoi ławka (rekwizyty miasta nie są w uklad.json),
+# a w (36; −8) latarnia. Nowe miejsca wybrał przegląd w Studio (tylko odczyt): w obrysie modelu z zapasem 2 studiów
+# (Strażnik 1 stud) i w całej jego wysokości nie ma żadnej części, a bruk pod środkiem i czterema brzegami leży na
+# wysokości −0,4 … 0,8; slime stoi co najmniej 8,6 studa od Strażnika.
 ODSUNIECIE = 6.5                    # roblox_import stawia import 6,5 studa w lewo od „poz” (obok postaci z klocków)
 TOL_WZROST = 0.02                   # ułamek: wzrost przed naprawą kontra raport.json (skala 1:1)
+TOL_STOPY = 0.05                    # studa: spód siatek po naprawie kontra podłoże w miejscu modelu
 TOL_POZIOM = (0.05, 0.25)           # szerokość i głębokość: ułamek albo studa (większe z dwóch; HumanoidRootPart R15)
 TOL_PRZOD = 10.0                    # stopnie: przód po naprawie kontra kierunek na punkt wejścia
 PODLOZE = (-0.4, 0.8)               # y spodu po naprawie (bruk rynku ma wierzch 0,2)
@@ -419,8 +424,13 @@ def ocen(e, wynik):
     bez = [x["n"] for x in po.get("siatki", []) if not x.get("tekstura") and not x.get("colormap")
            and not x.get("n", "").endswith("_Att")]
     dodaj("kolor (tekstura albo SurfaceAppearance)", "0 siatek bez koloru", "%d: %s" % (len(bez), ", ".join(bez[:6])), not bez)
-    # skala 1:1 przed naprawą (naprawa i tak wyrównuje wzrost, więc liczy się wynik PRZED nią)
-    wym = przed.get("wymiary")
+    # skala 1:1 przed naprawą (naprawa i tak wyrównuje wzrost, więc liczy się wynik PRZED nią). Od 15.11.2026 wymiary
+    # pochodzą z pomiaru samych siatek w układzie modelu (ri.pomiar): niewidoczny RootPart rigu z kości stoi środkiem
+    # na wysokości stóp i zawyżał wzrost, a skrzynka w osiach świata obróconego modelu zawyżała głębokość. Stare wyniki
+    # bez danych części (Rycerz z 13.11) ocenia się jak dawniej, ze skrzynki z KONTROLA.
+    pm_przed = przed.get("pomiar") or ri.pomiar(przed)
+    pm_po = po.get("pomiar") or ri.pomiar(po)
+    wym = pm_przed["wymiary"] if pm_przed else przed.get("wymiary")
     if wym:
         wz = e["wymiary"][1]
         dodaj("wzrost przed naprawą (skala 1:1)", "%.2f ±%d%%" % (wz, TOL_WZROST * 100), round(wym[1], 3),
@@ -493,8 +503,22 @@ def ocen(e, wynik):
     pos = _liczba(r"postawiono w \(([-\d.]+); ([-\d.]+); ([-\d.]+)\)", kroki)
     if pos:
         dodaj("podłoże pod modelem (y)", "%.1f … %.1f" % PODLOZE, pos[1], PODLOZE[0] <= pos[1] <= PODLOZE[1])
+        if pm_po:
+            # spód siatek po naprawie ma leżeć na podłożu (a nie spód niewidocznego RootPart)
+            dodaj("stopy na podłożu (spód siatek po naprawie)", "y %.2f ±%.2f" % (pos[1], TOL_STOPY), round(pm_po["min_y"], 3),
+                  abs(pm_po["min_y"] - pos[1]) <= TOL_STOPY)
     else:
         dodaj("podłoże pod modelem (y)", "naprawa ustawiła model", "brak kroku naprawy", False)
+    kol = (wynik.get("naprawa") or {}).get("kolizje")
+    if kol is not None:
+        # od 15.11.2026: Muchomornik stanął na oparciu ławki (podłoże y 3,8). Części miasta w skrzynce modelu pokazują,
+        # że miejsce jest zajęte; skrzynka jest w osiach świata, więc to sygnał do obejrzenia, nie werdykt.
+        dodaj("części miasta w obrysie modelu", "brak", "%d: %s" % (len(kol), "; ".join(kol[:4])) if kol else "brak",
+              "obejrzyj" if kol else "tak")
+    if wynik.get("przywrocenie_skali"):
+        ps = wynik["przywrocenie_skali"]
+        dodaj("skala przywrócona do 1:1 przed kontrolą (informacja)", "1", "%.4f → %.4f" % (ps.get("przed", 0), ps.get("po", 0)),
+              abs(float(ps.get("po") or 0) - 1) <= 1e-3)
     obrot = _liczba(r"obrót wokół pionu o ([-\d.]+)°", kroki)
     dodaj("obrót przy naprawie (informacja)", "dowolny; ok. ±180° = FBX patrzył tyłem", "%.1f°" % obrot[0] if obrot else "0°", "tak")
     skala = _liczba(r"skala ×([\d.]+)", kroki)
@@ -760,6 +784,45 @@ def ocen_sonde(e, w):
 
 # ---------------------------------------------------------------- przebieg
 
+def sprawdz_ponownie(wybrane):
+    """Nowa ocena modeli, które już stoją w kontenerze, bez drugiego wgrania i bez drugiego wstawienia -> kod wyjścia.
+
+    Dla każdego modelu: numer zasobu z pliku stanu wgrania, nazwa modelu z pliku wyniku importu, potem roblox_import
+    --sprawdz <nazwa> --napraw (skala 1:1, kontrola, naprawa, zrzuty; plik wyniku zachowuje numer zasobu), nowy werdykt
+    w tabeli import_lasu. Powód (15.11.2026): stara kontrola liczyła RootPart do wzrostu i zmniejszyła Trolla ×0,909."""
+    tabela = wczytaj_tabele()
+    kod = 0
+    for mid in wybrane:
+        e = oczekiwania(mid)
+        _p, st, _akcja, _kom = stan_wgrania(mid)
+        asset = str((st or {}).get("asset") or "")
+        wyn_p = os.path.join(ri.STAN_DIR, "import_%s_%s.json" % (mid, FORMAT))
+        try:
+            with open(wyn_p, encoding="utf-8") as f:
+                poprzedni = json.load(f)
+        except (OSError, ValueError):
+            poprzedni = {}
+        nazwa = (poprzedni.get("model") or {}).get("nazwa")
+        if not asset or not nazwa or str(poprzedni.get("asset")) != asset:
+            sys.exit("STOP (%s): brak wstawionego modelu do ponownej kontroli (zasób %s, model %s w %s). Nic nie zmieniono."
+                     % (mid, asset or "-", nazwa or "-", os.path.basename(wyn_p)))
+        print("ponownie:    %s — zasób %s, model „%s” (bez wgrywania i wstawiania)" % (mid, asset, nazwa))
+        try:
+            wynik = ri.main(["--modul", mid, "--format", FORMAT, "--sprawdz", nazwa, "--napraw"], profil=e["profil"])
+        except SystemExit as ex:
+            sys.exit("STOP na %s: %s" % (mid, ex.code))
+        werdykt, spr, rodzaj = ocen(e, wynik)
+        tabela[mid] = {"werdykt": werdykt, "asset": str(wynik.get("asset") or asset), "model": nazwa, "rodzaj": rodzaj,
+                       "sprawdzenia": spr, "czas": ri.teraz(), "sha256": e.get("sha256"), "ponowna_kontrola": True}
+        zapisz_tabele(tabela)
+        for x in spr:
+            print("  [%-7s] %s: oczekiwane %s, jest %s" % (x["wynik"], x["n"], x["oczekiwane"], x["jest"]))
+        print("WERDYKT %s: %s (szkielet: %s)" % (mid, werdykt.upper(), rodzaj))
+        if werdykt != "zgodny":
+            kod = 1
+    return kod
+
+
 def main(argv=None):
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -773,7 +836,12 @@ def main(argv=None):
                     help="z --tak-wgraj: wgraj, choć wcześniejszy model z KOLEJNOSC nie ma werdyktu „zgodny” (decyzja właściciela)")
     ap.add_argument("--sonda-skory", action="store_true",
                     help="po imporcie Leśnego Slime'a: odczytaj w Studio wagi skóry siatki Dol (nic nie wgrywa i nie zmienia)")
+    ap.add_argument("--sprawdz-ponownie", action="store_true",
+                    help="model już wstawiony (z --tylko): skala 1:1, kontrola i naprawa jeszcze raz, nowy werdykt — "
+                         "NIC nie wgrywa i nie wstawia (roblox_import.py --sprawdz --napraw)")
     a = ap.parse_args(argv)
+    if a.sprawdz_ponownie and (a.tak_wgraj or a.sonda_skory or not a.tylko.strip()):
+        ap.error("--sprawdz-ponownie działa osobno (bez --tak-wgraj i --sonda-skory) i wymaga --tylko <id>")
     if a.tak_wgraj and a.sonda_skory:
         ap.error("--sonda-skory uruchamia się osobno, bez --tak-wgraj")
     if a.mimo_kolejnosci and not a.tak_wgraj:
@@ -788,6 +856,8 @@ def main(argv=None):
 
     if a.sonda_skory:
         return sonda_skory()
+    if a.sprawdz_ponownie:
+        return sprawdz_ponownie(wybrane)
 
     if a.tak_wgraj:
         # kolejność: każdy wcześniejszy model musi być już „zgodny” albo iść wcześniej w tym samym poleceniu

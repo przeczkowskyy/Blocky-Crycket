@@ -37,6 +37,10 @@ Uwaga: bez --tak-wgraj skrypt niczego nie wgrywa, ale ŁĄCZY SIĘ ze Studio (sp
 kamery zrzutów) i zwraca słownik wyniku; KONTROLA zapisuje też drzewo kości (`kosci_drzewo`), stawy (`stawy`)
 i materiał każdej siatki. Bez profilu przebieg jest taki sam jak wcześniej. KTO liczy też obiekty o nazwie kontenera
 i czyta atrybut Wygenerowane: inny niż jeden własny kontener zatrzymuje skrypt przed wgraniem (scenariusz T sprawdzianu).
+Od 15.11.2026 wieczorem wymiary i spód modelu liczy `pomiar` z samych siatek w układzie modelu (niewidoczny RootPart
+rigu z kości i HumanoidRootPart się nie liczą), naprawa skaluje i stawia model według siatek i wypisuje części miasta
+w jego skrzynce (`kolizje`), a `--sprawdz <nazwa> --napraw` przywraca skalę 1:1 i naprawia model, który już stoi
+w kontenerze, bez wgrywania i wstawiania (plik wyniku zachowuje numer zasobu). Scenariusz U sprawdzianu.
 """
 import argparse
 import hashlib
@@ -177,7 +181,7 @@ if not model then
 	return HS:JSONEncode({ blad = "brak modelu w kontenerze" })
 end
 local w = { nazwa = model.Name, klasa = model.ClassName, klasy = {}, siatki = {}, zaczepy = {}, kosci = {},
-	kosci_drzewo = {}, stawy = {} }
+	kosci_drzewo = {}, stawy = {}, czesci_cf = {} }
 local minV, maxV = Vector3.new(math.huge, math.huge, math.huge), Vector3.new(-math.huge, -math.huge, -math.huge)
 local czesci, kosciMapa = {}, {}
 local function dodaj(d)
@@ -200,6 +204,12 @@ local function dodaj(d)
 			Vector3.new(-1, -1, 1), Vector3.new(-1, 1, -1), Vector3.new(1, -1, -1), Vector3.new(-1, -1, -1) } do
 			local p = d.CFrame:PointToWorldSpace(h * zn)
 			minV, maxV = minV:Min(p), maxV:Max(p)
+		end
+		-- położenie, obrót, rozmiar i przezroczystość każdej części: z nich Python (pomiar) liczy wymiary z samych
+		-- siatek w układzie modelu, bez niewidocznych części pomocniczych (RootPart, HumanoidRootPart)
+		if #w.czesci_cf < 200 then
+			table.insert(w.czesci_cf, { n = d.Name, k = d.ClassName, cf = { d.CFrame:GetComponents() },
+				s = { d.Size.X, d.Size.Y, d.Size.Z }, t = d.Transparency })
 		end
 	end
 	if d:IsA("MeshPart") and #w.siatki < 60 then
@@ -310,19 +320,26 @@ end
 local P = __PARAMETRY__
 local w = { kroki = {} }
 CH:SetWaypoint("Postacie: przed naprawą importu " .. model.Name)
+-- skrzynka z części widocznych: siatek (MeshPart) i widocznych zwykłych części. Niewidoczne części pomocnicze bez
+-- siatki (RootPart rigu z kości, HumanoidRootPart) się nie liczą — inaczej RootPart pod stopami zawyża wzrost, a model
+-- staje na RootPart zamiast na stopach. Gdy nie ma żadnej widocznej części, liczą się wszystkie (jak w pierwszej wersji).
 local function skrzynka()
-	local minV, maxV = Vector3.new(math.huge, math.huge, math.huge), Vector3.new(-math.huge, -math.huge, -math.huge)
-	for _, d in model:GetDescendants() do
-		if d:IsA("BasePart") then
-			local h = d.Size / 2
-			for _, zn in { Vector3.new(1, 1, 1), Vector3.new(-1, 1, 1), Vector3.new(1, -1, 1), Vector3.new(1, 1, -1),
-				Vector3.new(-1, -1, 1), Vector3.new(-1, 1, -1), Vector3.new(1, -1, -1), Vector3.new(-1, -1, -1) } do
-				local p = d.CFrame:PointToWorldSpace(h * zn)
-				minV, maxV = minV:Min(p), maxV:Max(p)
+	for _, tylkoWidoczne in { true, false } do
+		local minV, maxV = Vector3.new(math.huge, math.huge, math.huge), Vector3.new(-math.huge, -math.huge, -math.huge)
+		for _, d in model:GetDescendants() do
+			if d:IsA("BasePart") and (not tylkoWidoczne or d:IsA("MeshPart") or d.Transparency < 0.99) then
+				local h = d.Size / 2
+				for _, zn in { Vector3.new(1, 1, 1), Vector3.new(-1, 1, 1), Vector3.new(1, -1, 1), Vector3.new(1, 1, -1),
+					Vector3.new(-1, -1, 1), Vector3.new(-1, 1, -1), Vector3.new(1, -1, -1), Vector3.new(-1, -1, -1) } do
+					local p = d.CFrame:PointToWorldSpace(h * zn)
+					minV, maxV = minV:Min(p), maxV:Max(p)
+				end
 			end
 		end
+		if maxV.X >= minV.X or not tylkoWidoczne then
+			return minV, maxV
+		end
 	end
-	return minV, maxV
 end
 -- 1) kotwiczenie: wszystkie części (figura do oglądania; rig do animacji wymaga potem odkotwiczenia poza korzeniem)
 local n = 0
@@ -336,6 +353,9 @@ table.insert(w.kroki, "zakotwiczono części: " .. n)
 -- 2) skala do oczekiwanego wzrostu
 local minV, maxV = skrzynka()
 local wzrost = maxV.Y - minV.Y
+if P.wzrost_teraz and P.wzrost_teraz > 0 then
+	wzrost = P.wzrost_teraz                         -- wzrost z samych siatek, zmierzony przez pomiar() w Pythonie
+end
 if wzrost > 0 and P.wzrost > 0 then
 	local czynnik = P.wzrost / wzrost
 	if math.abs(czynnik - 1) > 0.02 then
@@ -366,11 +386,93 @@ local srodek = (minV + maxV) / 2
 local przesun = Vector3.new(P.cel[1] - srodek.X, y - minV.Y, P.cel[2] - srodek.Z)
 model:PivotTo(model:GetPivot() + przesun)
 table.insert(w.kroki, string.format("postawiono w (%.1f; %.2f; %.1f)", P.cel[1], y, P.cel[2]))
+-- 5) kolizje (tylko odczyt): części spoza kontenera w skrzynce siatek; spód skrzynki podniesiony o 0,1 studa, żeby nie
+-- liczyć podłoża. Skrzynka jest w osiach świata, więc przy obróconym modelu bywa większa od niego — ogląda człowiek.
+minV, maxV = skrzynka()
+local dol = minV + Vector3.new(0, 0.1, 0)
+w.kolizje = {}
+if maxV.Y > dol.Y and maxV.X >= minV.X then
+	local op = OverlapParams.new()
+	op.FilterType = Enum.RaycastFilterType.Exclude
+	op.FilterDescendantsInstances = { kont }
+	for i, c in workspace:GetPartBoundsInBox(CFrame.new((dol + maxV) / 2), maxV - dol, op) do
+		if i > 12 then
+			break
+		end
+		table.insert(w.kolizje, c:GetFullName())
+	end
+end
 model:SetAttribute("Wygenerowane", true)
 model:SetAttribute("ImportSiatki", P.zrodlo)
 CH:SetWaypoint("Postacie: naprawa importu " .. model.Name)
 return HS:JSONEncode(w)
 '''
+
+# --sprawdz --napraw: model wstawiony wcześniej (np. Troll z 15.11.2026, którego stara naprawa zmniejszyła ×0,909)
+# wraca najpierw do skali 1:1, czyli takiej, jaką dał importer; dopiero potem idzie kontrola i naprawa.
+SKALA = r'''
+-- roblox_import: SKALA
+local HS = game:GetService("HttpService")
+local CH = game:GetService("ChangeHistoryService")
+local kont = workspace:FindFirstChild("__KONTENER__")
+local model, ile = nil, 0
+if kont then
+	for _, c in kont:GetChildren() do
+		if c.Name == __MODEL__ then
+			model, ile = c, ile + 1
+		end
+	end
+end
+if ile ~= 1 or not model:IsA("Model") then
+	return HS:JSONEncode({ blad = string.format("modeli o tej nazwie w kontenerze: %d (albo to nie Model)", ile) })
+end
+local przed = model:GetScale()
+if math.abs(przed - 1) > 1e-4 then
+	CH:SetWaypoint("Postacie: przed przywróceniem skali " .. model.Name)
+	model:ScaleTo(1)
+	CH:SetWaypoint("Postacie: skala 1:1 " .. model.Name)
+end
+return HS:JSONEncode({ przed = przed, po = model:GetScale() })
+'''
+
+_ROGI = [(sx, sy, sz) for sx in (1, -1) for sy in (1, -1) for sz in (1, -1)]
+
+
+def pomiar(k):
+    """Wymiary modelu z samych widocznych części, w układzie modelu -> słownik albo None (stara kontrola bez czesci_cf).
+
+    Liczą się siatki (MeshPart) i widoczne zwykłe części; niewidoczne części bez siatki (RootPart rigu z kości,
+    HumanoidRootPart R15) się nie liczą. Gdy nie ma żadnej widocznej części, liczą się wszystkie. Układ modelu: oś
+    pionowa świata, przód = zmierzony przód modelu (k["przod"]), prawo = przód × góra; bez zmierzonego przodu osie świata
+    (wtedy wynik jest taki sam jak skrzynka z KONTROLA policzona z tych samych części). Wynik: wymiary [szerokość
+    (wzdłuż prawa), wzrost, głębokość (wzdłuż przodu)], min_y i max_y (świat), uklad, czesci, pominiete."""
+    cz = [c for c in (k or {}).get("czesci_cf") or [] if len(c.get("cf") or []) == 12 and len(c.get("s") or []) == 3]
+    if not cz:
+        return None
+    uzyte = [c for c in cz if c.get("k") == "MeshPart" or float(c.get("t") or 0) < 0.99] or cz
+    f = k.get("przod")
+    if f and len(f) == 2 and (f[0] or f[1]):
+        import math
+        d = math.hypot(f[0], f[1])
+        fx, fz = f[0] / d, f[1] / d
+        uklad = "przód modelu"
+    else:
+        fx, fz = 0.0, 1.0
+        uklad = "osie świata"
+    px, pz = -fz, fx                                   # prawo = przód × góra (Roblox), w płaszczyźnie XZ
+    mn, mx = [float("inf")] * 3, [float("-inf")] * 3
+    for c in uzyte:
+        x, y, z, r00, r01, r02, r10, r11, r12, r20, r21, r22 = c["cf"]
+        hx, hy, hz = c["s"][0] / 2, c["s"][1] / 2, c["s"][2] / 2
+        for sx, sy, sz in _ROGI:
+            lx, ly, lz = hx * sx, hy * sy, hz * sz
+            wx = x + r00 * lx + r01 * ly + r02 * lz
+            wy = y + r10 * lx + r11 * ly + r12 * lz
+            wz = z + r20 * lx + r21 * ly + r22 * lz
+            for i, v in enumerate((wx * px + wz * pz, wy, wx * fx + wz * fz)):
+                mn[i], mx[i] = min(mn[i], v), max(mx[i], v)
+    return {"wymiary": [mx[i] - mn[i] for i in range(3)], "min_y": mn[1], "max_y": mx[1], "uklad": uklad,
+            "czesci": len(uzyte), "pominiete": sorted(c["n"] for c in cz if c not in uzyte)}
 
 
 # ---------------------------------------------------------------- logika bez Studio (sprawdzian: test_roblox_import.py)
@@ -685,6 +787,9 @@ def main(argv=None, profil=None):
                     help="z --tak-wgraj: wgraj mimo zapisanego wcześniejszego wgrania — tworzy KOLEJNY trwały zasób")
     ap.add_argument("--asset", default="", help="pomiń wgrywanie: wstaw istniejący zasób o tym numerze")
     ap.add_argument("--sprawdz", default="", help="sama kontrola modelu o tej nazwie w kontenerze (bez wgrywania i wstawiania)")
+    ap.add_argument("--napraw", action="store_true",
+                    help="z --sprawdz: przywróć skalę 1:1, napraw (obróć, postaw na stopach) i zrób zrzuty modelu, który już "
+                         "stoi w kontenerze — bez wgrywania i bez wstawiania")
     ap.add_argument("--bez-naprawy", action="store_true")
     ap.add_argument("--wyj", default=os.path.join(WYNIK, "_roblox"))
     a = ap.parse_args(argv)
@@ -692,6 +797,8 @@ def main(argv=None, profil=None):
         ap.error("--asset to numer zasobu (same cyfry)")
     if a.nowy_mimo and (not a.tak_wgraj or a.asset or a.sprawdz):
         ap.error("%s działa tylko razem z --tak-wgraj (bez --asset i --sprawdz)" % NOWY_MIMO)
+    if a.napraw and (not a.sprawdz or a.bez_naprawy):
+        ap.error("--napraw działa tylko razem z --sprawdz (i bez --bez-naprawy)")
 
     from studio_mcp import StudioMCP, StudioError, first_studio_id
     from swiat.postacie.roblox_postac import ROZMIESZCZENIE, PRZESUNIECIE, luau as literal
@@ -780,8 +887,12 @@ def main(argv=None, profil=None):
                 return kod, dane, tekst, bool(r["is_error"])
 
             def kontrola(model):
-                return luau(KONTROLA.replace("__KONTENER__", KONTENER).replace("__PRZOD__", literal(przod_luau))
-                            .replace("__MODEL__", json.dumps(model, ensure_ascii=False)))
+                w = luau(KONTROLA.replace("__KONTENER__", KONTENER).replace("__PRZOD__", literal(przod_luau))
+                         .replace("__MODEL__", json.dumps(model, ensure_ascii=False)))
+                pm = None if w.get("blad") else pomiar(w)
+                if pm:
+                    w["pomiar"] = pm
+                return w
 
             def spis():
                 return luau(SPIS.replace("__KONTENER__", KONTENER))
@@ -941,6 +1052,12 @@ def main(argv=None, profil=None):
 
             bledy = []
             try:
+                if a.napraw:
+                    sk = luau(SKALA.replace("__KONTENER__", KONTENER).replace("__MODEL__", json.dumps(model, ensure_ascii=False)))
+                    if sk.get("blad"):
+                        sys.exit("Skala: %s („%s”)" % (sk["blad"], model))
+                    wynik["przywrocenie_skali"] = sk
+                    print("skala:       %.4f → %.4f (1:1, jak dał importer)" % (sk.get("przed", 0), sk.get("po", 0)))
                 k = kontrola(model)
                 if k.get("blad"):
                     sys.exit("Kontrola: %s („%s”)" % (k["blad"], model))
@@ -948,11 +1065,16 @@ def main(argv=None, profil=None):
                 kl = k.get("klasy", {})
                 print("klasy:       %s" % ", ".join("%s %d" % (n, kl[n]) for n in sorted(kl)))
                 print("wymiary:     %s (oczekiwane %s)" % ([round(v, 2) for v in k.get("wymiary", [])], oczek.get("wymiary")))
+                pm = k.get("pomiar")
+                if pm:
+                    print("pomiar:      %s z %d części, układ: %s, spód y %.2f; pominięte: %s"
+                          % ([round(v, 2) for v in pm["wymiary"]], pm["czesci"], pm["uklad"], pm["min_y"],
+                             ", ".join(pm["pominiete"]) or "-"))
                 bez_koloru = [x["n"] for x in k.get("siatki", []) if not x["tekstura"] and not x["colormap"]]
                 print("siatki:      %d MeshPart, bez tekstury i bez ColorMap: %d" % (kl.get("MeshPart", 0), len(bez_koloru)))
                 print("kości/stawy: Bone %d, Motor6D %d, Attachment %d; przód (świat): %s; lewa ręka po lewej: %s"
                       % (kl.get("Bone", 0), kl.get("Motor6D", 0), kl.get("Attachment", 0), k.get("przod"), k.get("lewa_po_lewej")))
-                if not a.bez_naprawy and not a.sprawdz and roz and oczek:
+                if not a.bez_naprawy and (not a.sprawdz or a.napraw) and roz and oczek:
                     import math
                     px, pz = roz["poz"][0] + PRZESUNIECIE[0], roz["poz"][1] + PRZESUNIECIE[1]
                     fx, fz = roz["patrz"][0] - roz["poz"][0], roz["patrz"][1] - roz["poz"][1]
@@ -963,6 +1085,8 @@ def main(argv=None, profil=None):
                     par = {"wzrost": oczek["wymiary"][1], "cel": cel_xz, "zrodlo": "%s.%s" % (a.modul, a.format)}
                     if k.get("przod"):
                         par["przod_teraz"], par["przod_cel"] = k["przod"], [fx, fz]
+                    if pm and pm["wymiary"][1] > 0:
+                        par["wzrost_teraz"] = pm["wymiary"][1]             # wzrost z samych siatek (bez RootPart)
                     n = luau(NAPRAWA.replace("__KONTENER__", KONTENER).replace("__MODEL__", json.dumps(model, ensure_ascii=False))
                              .replace("__PARAMETRY__", literal(par)))
                     wynik["naprawa"] = n
@@ -996,6 +1120,24 @@ def main(argv=None, profil=None):
             if bledy:
                 wynik["bledy"] = bledy
             sciezka = os.path.join(a.wyj, "import_%s_%s.json" % (a.modul, a.format))
+            if a.sprawdz and os.path.isfile(sciezka):
+                # ponowna kontrola modelu wstawionego wcześniej: numer zasobu, moderacja i opis wstawienia zostają z pliku
+                # wyniku tego wstawienia. Gdy plik opisuje INNY model, wynik idzie do osobnego pliku, żeby go nie zgubić.
+                try:
+                    with open(sciezka, encoding="utf-8") as f:
+                        poprz = json.load(f)
+                except (OSError, ValueError):
+                    poprz = {}
+                if (poprz.get("model") or {}).get("nazwa") == a.sprawdz:
+                    for klucz in ("asset", "moderacja", "model", "wstawianie", "plik_zmieniony_od_wgrania"):
+                        if klucz in poprz and klucz not in wynik:
+                            wynik[klucz] = poprz[klucz]
+                    wynik["poprzednio"] = {"naprawa": poprz.get("naprawa"),
+                                           "wymiary_przed": (poprz.get("kontrola_przed") or {}).get("wymiary"),
+                                           "skala_po": (poprz.get("kontrola_po") or {}).get("skala")}
+                    wynik["sprawdzenie_ponowne"] = {"czas": teraz(), "napraw": bool(a.napraw)}
+                elif poprz.get("asset"):
+                    sciezka = os.path.join(a.wyj, "import_%s_%s_sprawdz.json" % (a.modul, a.format))
             with open(sciezka, "w", encoding="utf-8", newline="\n") as f:
                 json.dump(wynik, f, ensure_ascii=False, indent=1)
             print("zapisano:    %s" % sciezka)

@@ -26,7 +26,7 @@
    {
     "n": "szerokość i głębokość",
     "oczekiwane": "2.66 × 4.23",
-    "jest": "2.90 × 4.33",
+    "jest": "2.66 × 4.23",
     "wynik": "tak"
    },
    {
@@ -66,9 +66,27 @@
     "wynik": "tak"
    },
    {
+    "n": "stopy na podłożu (spód siatek po naprawie)",
+    "oczekiwane": "y 0.55 ±0.05",
+    "jest": 0.55,
+    "wynik": "tak"
+   },
+   {
+    "n": "części miasta w obrysie modelu",
+    "oczekiwane": "brak",
+    "jest": "3: Workspace.KrzyweMiasteczko.Rekwizyty.Ławka siedzisko; Workspace.KrzyweMiasteczko.Rekwizyty.Ławka oparcie; Workspace.KrzyweMiasteczko.Rekwizyty.Ławka noga",
+    "wynik": "obejrzyj"
+   },
+   {
+    "n": "skala przywrócona do 1:1 przed kontrolą (informacja)",
+    "oczekiwane": "1",
+    "jest": "1.0000 → 1.0000",
+    "wynik": "tak"
+   },
+   {
     "n": "obrót przy naprawie (informacja)",
     "oczekiwane": "dowolny; ok. ±180° = FBX patrzył tyłem",
-    "jest": "208.6°",
+    "jest": "0°",
     "wynik": "tak"
    },
    {
@@ -78,11 +96,12 @@
     "wynik": "obejrzyj"
    }
   ],
-  "czas": "2026-11-15 19:15:25",
-  "sha256": "2e46f26f2af037aaecb16fadbc28e159a5780712dbd76eadf483754802a27624"
+  "czas": "2026-11-15 20:08:47",
+  "sha256": "2e46f26f2af037aaecb16fadbc28e159a5780712dbd76eadf483754802a27624",
+  "ponowna_kontrola": true
  },
  "lesny_troll": {
-  "werdykt": "niezgodny",
+  "werdykt": "zgodny",
   "asset": "105984421059465",
   "model": "Leśny Troll (import FBX)",
   "rodzaj": "kości (Bone)",
@@ -102,14 +121,14 @@
    {
     "n": "wzrost przed naprawą (skala 1:1)",
     "oczekiwane": "9.94 ±2%",
-    "jest": 10.944,
-    "wynik": "nie"
+    "jest": 9.944,
+    "wynik": "tak"
    },
    {
     "n": "szerokość i głębokość",
     "oczekiwane": "6.23 × 12.71",
-    "jest": "10.18 × 11.02",
-    "wynik": "nie"
+    "jest": "6.23 × 12.71",
+    "wynik": "tak"
    },
    {
     "n": "kości Bone (bez Root)",
@@ -154,16 +173,28 @@
     "wynik": "tak"
    },
    {
-    "n": "obrót przy naprawie (informacja)",
-    "oczekiwane": "dowolny; ok. ±180° = FBX patrzył tyłem",
-    "jest": "66.4°",
+    "n": "stopy na podłożu (spód siatek po naprawie)",
+    "oczekiwane": "y 0.61 ±0.05",
+    "jest": 0.61,
     "wynik": "tak"
    },
    {
-    "n": "skala przy naprawie",
-    "oczekiwane": "bez zmian",
-    "jest": "×0.9086",
-    "wynik": "nie"
+    "n": "części miasta w obrysie modelu",
+    "oczekiwane": "brak",
+    "jest": "3: Workspace.KrzyweMiasteczko.Rekwizyty.Ławka siedzisko; Workspace.KrzyweMiasteczko.Rekwizyty.Ławka oparcie; Workspace.KrzyweMiasteczko.Rekwizyty.Ławka noga",
+    "wynik": "obejrzyj"
+   },
+   {
+    "n": "skala przywrócona do 1:1 przed kontrolą (informacja)",
+    "oczekiwane": "1",
+    "jest": "1.0000 → 1.0000",
+    "wynik": "tak"
+   },
+   {
+    "n": "obrót przy naprawie (informacja)",
+    "oczekiwane": "dowolny; ok. ±180° = FBX patrzył tyłem",
+    "jest": "0°",
+    "wynik": "tak"
    },
    {
     "n": "zrzuty",
@@ -172,7 +203,446 @@
     "wynik": "obejrzyj"
    }
   ],
-  "czas": "2026-11-15 19:24:47",
-  "sha256": "9a7d7c3d894e5da8742e24da501b530384f52cb8f08f86178297ff47652c67f1"
+  "czas": "2026-11-15 20:04:35",
+  "sha256": "9a7d7c3d894e5da8742e24da501b530384f52cb8f08f86178297ff47652c67f1",
+  "ponowna_kontrola": true
+ },
+ "cierniowy_wilk": {
+  "werdykt": "zgodny",
+  "asset": "84587733751677",
+  "model": "Cierniowy Wilk (import FBX)",
+  "rodzaj": "kości (Bone)",
+  "sprawdzenia": [
+   {
+    "n": "siatki MeshPart (bez znaczników _Att)",
+    "oczekiwane": 21,
+    "jest": 21,
+    "wynik": "tak"
+   },
+   {
+    "n": "kolor (tekstura albo SurfaceAppearance)",
+    "oczekiwane": "0 siatek bez koloru",
+    "jest": "0: ",
+    "wynik": "tak"
+   },
+   {
+    "n": "wzrost przed naprawą (skala 1:1)",
+    "oczekiwane": "4.36 ±2%",
+    "jest": 4.355,
+    "wynik": "tak"
+   },
+   {
+    "n": "szerokość i głębokość",
+    "oczekiwane": "2.17 × 7.67",
+    "jest": "2.17 × 7.67",
+    "wynik": "tak"
+   },
+   {
+    "n": "kości Bone (bez Root)",
+    "oczekiwane": 21,
+    "jest": "21, brak: -",
+    "wynik": "tak"
+   },
+   {
+    "n": "rodzice kości jak w GLB",
+    "oczekiwane": "0 różnic",
+    "jest": "0: ",
+    "wynik": "tak"
+   },
+   {
+    "n": "głębokość drzewa kości",
+    "oczekiwane": "4 … 6",
+    "jest": 5,
+    "wynik": "tak"
+   },
+   {
+    "n": "zaczepy (RootAttachment może zniknąć)",
+    "oczekiwane": 2,
+    "jest": "brak: -; nazwy: rdzeń",
+    "wynik": "tak"
+   },
+   {
+    "n": "przód po naprawie (pomiar i obrót zadziałały)",
+    "oczekiwane": "≤ 10° od kierunku na punkt wejścia",
+    "jest": "0.0°",
+    "wynik": "tak"
+   },
+   {
+    "n": "lewa strona po lewej (brak lustra)",
+    "oczekiwane": true,
+    "jest": true,
+    "wynik": "tak"
+   },
+   {
+    "n": "podłoże pod modelem (y)",
+    "oczekiwane": "-0.4 … 0.8",
+    "jest": 0.0,
+    "wynik": "tak"
+   },
+   {
+    "n": "stopy na podłożu (spód siatek po naprawie)",
+    "oczekiwane": "y 0.00 ±0.05",
+    "jest": 0.0,
+    "wynik": "tak"
+   },
+   {
+    "n": "części miasta w obrysie modelu",
+    "oczekiwane": "brak",
+    "jest": "2: Workspace.KrzyweMiasteczko.Rynek.Bruk; Workspace.KrzyweMiasteczko.Rynek.Bruk",
+    "wynik": "obejrzyj"
+   },
+   {
+    "n": "skala przywrócona do 1:1 przed kontrolą (informacja)",
+    "oczekiwane": "1",
+    "jest": "1.0000 → 1.0000",
+    "wynik": "tak"
+   },
+   {
+    "n": "obrót przy naprawie (informacja)",
+    "oczekiwane": "dowolny; ok. ±180° = FBX patrzył tyłem",
+    "jest": "0°",
+    "wynik": "tak"
+   },
+   {
+    "n": "zrzuty",
+    "oczekiwane": "2 pliki do obejrzenia",
+    "jest": "-",
+    "wynik": "obejrzyj"
+   }
+  ],
+  "czas": "2026-11-15 20:04:42",
+  "sha256": "b3b8845eb2d7c664cb9fb1ef11143fb273d04fa94cce935c480797f30b7dd72c",
+  "ponowna_kontrola": true
+ },
+ "muchomornik": {
+  "werdykt": "zgodny",
+  "asset": "138339651650034",
+  "model": "Muchomornik (import FBX)",
+  "rodzaj": "kości (Bone)",
+  "sprawdzenia": [
+   {
+    "n": "siatki MeshPart (bez znaczników _Att)",
+    "oczekiwane": 28,
+    "jest": 28,
+    "wynik": "tak"
+   },
+   {
+    "n": "kolor (tekstura albo SurfaceAppearance)",
+    "oczekiwane": "0 siatek bez koloru",
+    "jest": "0: ",
+    "wynik": "tak"
+   },
+   {
+    "n": "wzrost przed naprawą (skala 1:1)",
+    "oczekiwane": "3.60 ±2%",
+    "jest": 3.605,
+    "wynik": "tak"
+   },
+   {
+    "n": "szerokość i głębokość",
+    "oczekiwane": "2.67 × 2.95",
+    "jest": "2.67 × 2.95",
+    "wynik": "tak"
+   },
+   {
+    "n": "kości Bone (bez Root)",
+    "oczekiwane": 28,
+    "jest": "28, brak: -",
+    "wynik": "tak"
+   },
+   {
+    "n": "rodzice kości jak w GLB",
+    "oczekiwane": "0 różnic",
+    "jest": "0: ",
+    "wynik": "tak"
+   },
+   {
+    "n": "głębokość drzewa kości",
+    "oczekiwane": "5 … 7",
+    "jest": 6,
+    "wynik": "tak"
+   },
+   {
+    "n": "zaczepy (RootAttachment może zniknąć)",
+    "oczekiwane": 3,
+    "jest": "brak: -; nazwy: rdzeń",
+    "wynik": "tak"
+   },
+   {
+    "n": "przód po naprawie (pomiar i obrót zadziałały)",
+    "oczekiwane": "≤ 10° od kierunku na punkt wejścia",
+    "jest": "0.0°",
+    "wynik": "tak"
+   },
+   {
+    "n": "lewa strona po lewej (brak lustra)",
+    "oczekiwane": true,
+    "jest": true,
+    "wynik": "tak"
+   },
+   {
+    "n": "podłoże pod modelem (y)",
+    "oczekiwane": "-0.4 … 0.8",
+    "jest": 0.55,
+    "wynik": "tak"
+   },
+   {
+    "n": "stopy na podłożu (spód siatek po naprawie)",
+    "oczekiwane": "y 0.55 ±0.05",
+    "jest": 0.55,
+    "wynik": "tak"
+   },
+   {
+    "n": "części miasta w obrysie modelu",
+    "oczekiwane": "brak",
+    "jest": "brak",
+    "wynik": "tak"
+   },
+   {
+    "n": "skala przywrócona do 1:1 przed kontrolą (informacja)",
+    "oczekiwane": "1",
+    "jest": "1.0000 → 1.0000",
+    "wynik": "tak"
+   },
+   {
+    "n": "obrót przy naprawie (informacja)",
+    "oczekiwane": "dowolny; ok. ±180° = FBX patrzył tyłem",
+    "jest": "-4.3°",
+    "wynik": "tak"
+   },
+   {
+    "n": "siatki do świecenia odnalezione",
+    "oczekiwane": 13,
+    "jest": 13,
+    "wynik": "tak"
+   },
+   {
+    "n": "zrzuty",
+    "oczekiwane": "2 pliki do obejrzenia",
+    "jest": "-",
+    "wynik": "obejrzyj"
+   }
+  ],
+  "czas": "2026-11-15 20:04:45",
+  "sha256": "e8d7dd6c8d673b14ce9a52a00e781d1b05e62e0125f566055503ace69a80db18",
+  "ponowna_kontrola": true
+ },
+ "straznik_gaju": {
+  "werdykt": "zgodny",
+  "asset": "127674054809040",
+  "model": "Strażnik Gaju (import FBX)",
+  "rodzaj": "kości (Bone)",
+  "sprawdzenia": [
+   {
+    "n": "siatki MeshPart (bez znaczników _Att)",
+    "oczekiwane": 36,
+    "jest": 36,
+    "wynik": "tak"
+   },
+   {
+    "n": "kolor (tekstura albo SurfaceAppearance)",
+    "oczekiwane": "0 siatek bez koloru",
+    "jest": "0: ",
+    "wynik": "tak"
+   },
+   {
+    "n": "wzrost przed naprawą (skala 1:1)",
+    "oczekiwane": "14.54 ±2%",
+    "jest": 14.536,
+    "wynik": "tak"
+   },
+   {
+    "n": "szerokość i głębokość",
+    "oczekiwane": "4.94 × 8.90",
+    "jest": "4.94 × 8.90",
+    "wynik": "tak"
+   },
+   {
+    "n": "kości Bone (bez Root)",
+    "oczekiwane": 36,
+    "jest": "36, brak: -",
+    "wynik": "tak"
+   },
+   {
+    "n": "rodzice kości jak w GLB",
+    "oczekiwane": "0 różnic",
+    "jest": "0: ",
+    "wynik": "tak"
+   },
+   {
+    "n": "głębokość drzewa kości",
+    "oczekiwane": "4 … 6",
+    "jest": 5,
+    "wynik": "tak"
+   },
+   {
+    "n": "zaczepy (RootAttachment może zniknąć)",
+    "oczekiwane": 5,
+    "jest": "brak: -; nazwy: rdzeń",
+    "wynik": "tak"
+   },
+   {
+    "n": "przód po naprawie (pomiar i obrót zadziałały)",
+    "oczekiwane": "≤ 10° od kierunku na punkt wejścia",
+    "jest": "0.0°",
+    "wynik": "tak"
+   },
+   {
+    "n": "lewa strona po lewej (brak lustra)",
+    "oczekiwane": true,
+    "jest": true,
+    "wynik": "tak"
+   },
+   {
+    "n": "podłoże pod modelem (y)",
+    "oczekiwane": "-0.4 … 0.8",
+    "jest": 0.55,
+    "wynik": "tak"
+   },
+   {
+    "n": "stopy na podłożu (spód siatek po naprawie)",
+    "oczekiwane": "y 0.55 ±0.05",
+    "jest": 0.55,
+    "wynik": "tak"
+   },
+   {
+    "n": "części miasta w obrysie modelu",
+    "oczekiwane": "brak",
+    "jest": "brak",
+    "wynik": "tak"
+   },
+   {
+    "n": "obrót przy naprawie (informacja)",
+    "oczekiwane": "dowolny; ok. ±180° = FBX patrzył tyłem",
+    "jest": "43.1°",
+    "wynik": "tak"
+   },
+   {
+    "n": "siatki do świecenia odnalezione",
+    "oczekiwane": 2,
+    "jest": 2,
+    "wynik": "tak"
+   },
+   {
+    "n": "zrzuty",
+    "oczekiwane": "2 pliki do obejrzenia",
+    "jest": "-",
+    "wynik": "obejrzyj"
+   }
+  ],
+  "czas": "2026-11-15 20:05:25",
+  "sha256": "f7dc8f428fb3b8dd57157f85a561fe563aef6f57431f26d1ed4d14c23a1947c2"
+ },
+ "lesny_slime": {
+  "werdykt": "zgodny",
+  "asset": "111553372294249",
+  "model": "Leśny Slime (import FBX)",
+  "rodzaj": "kości (Bone)",
+  "sprawdzenia": [
+   {
+    "n": "siatki MeshPart (bez znaczników _Att)",
+    "oczekiwane": 25,
+    "jest": 25,
+    "wynik": "tak"
+   },
+   {
+    "n": "kolor (tekstura albo SurfaceAppearance)",
+    "oczekiwane": "0 siatek bez koloru",
+    "jest": "0: ",
+    "wynik": "tak"
+   },
+   {
+    "n": "wzrost przed naprawą (skala 1:1)",
+    "oczekiwane": "3.38 ±2%",
+    "jest": 3.377,
+    "wynik": "tak"
+   },
+   {
+    "n": "szerokość i głębokość",
+    "oczekiwane": "3.29 × 3.82",
+    "jest": "3.29 × 3.82",
+    "wynik": "tak"
+   },
+   {
+    "n": "kości Bone (bez Root)",
+    "oczekiwane": 27,
+    "jest": "27, brak: -",
+    "wynik": "tak"
+   },
+   {
+    "n": "rodzice kości jak w GLB",
+    "oczekiwane": "0 różnic",
+    "jest": "0: ",
+    "wynik": "tak"
+   },
+   {
+    "n": "głębokość drzewa kości",
+    "oczekiwane": "3 … 5",
+    "jest": 4,
+    "wynik": "tak"
+   },
+   {
+    "n": "zaczepy (RootAttachment może zniknąć)",
+    "oczekiwane": 3,
+    "jest": "brak: -; nazwy: rdzeń",
+    "wynik": "tak"
+   },
+   {
+    "n": "przód po naprawie (pomiar i obrót zadziałały)",
+    "oczekiwane": "≤ 10° od kierunku na punkt wejścia",
+    "jest": "0.0°",
+    "wynik": "tak"
+   },
+   {
+    "n": "lewa strona po lewej (brak lustra)",
+    "oczekiwane": true,
+    "jest": true,
+    "wynik": "tak"
+   },
+   {
+    "n": "podłoże pod modelem (y)",
+    "oczekiwane": "-0.4 … 0.8",
+    "jest": 0.55,
+    "wynik": "tak"
+   },
+   {
+    "n": "stopy na podłożu (spód siatek po naprawie)",
+    "oczekiwane": "y 0.55 ±0.05",
+    "jest": 0.55,
+    "wynik": "tak"
+   },
+   {
+    "n": "części miasta w obrysie modelu",
+    "oczekiwane": "brak",
+    "jest": "1: Workspace.KrzyweMiasteczko.Rynek.Ścieżka-kod",
+    "wynik": "obejrzyj"
+   },
+   {
+    "n": "obrót przy naprawie (informacja)",
+    "oczekiwane": "dowolny; ok. ±180° = FBX patrzył tyłem",
+    "jest": "-16.3°",
+    "wynik": "tak"
+   },
+   {
+    "n": "siatki do świecenia odnalezione",
+    "oczekiwane": 9,
+    "jest": 9,
+    "wynik": "tak"
+   },
+   {
+    "n": "skóra na dwóch kościach",
+    "oczekiwane": "sonda --sonda-skory i zrzut pozy (IMPORT_LASU.md, krok S8)",
+    "jest": "-",
+    "wynik": "obejrzyj"
+   },
+   {
+    "n": "zrzuty",
+    "oczekiwane": "2 pliki do obejrzenia",
+    "jest": "-",
+    "wynik": "obejrzyj"
+   }
+  ],
+  "czas": "2026-11-15 20:05:58",
+  "sha256": "e57cb1df744dd1908e573f71145e684e76304596d08dfc5d2ce077305e72e1a4"
  }
 }
