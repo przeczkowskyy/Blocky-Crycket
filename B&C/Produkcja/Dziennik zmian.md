@@ -29,6 +29,7 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 
 ## 2026-11-15 · Claude Code u Karola (wieczór: potwory chodzą po lesie; limit użycia)
 - **Potwory chodzą po lesie w Studio** (`Workspace/LasPotwory`, źródła `swiat/las_potwory/`): 35 potworów w 16 strefach i Strażnik Gaju, tabliczki poziomu, podpowiedź E, walka zaczynana z lasu (serwer sprawdza odległość i liczy ją silnikiem v2), pokaz na arenie prototypu, okno wyniku. Agent wdrożeniowy poprawił błędy pierwszego uruchomienia, ale jego pracę przerwał tygodniowy limit użycia Claude'a (16:49), więc pełna lista kontrolna nie jest przejdzona; krótką próbę końcową i zrzuty zrobiono ręcznie (`swiat/las_potwory/testy/proba_play.py`, `klatki/`). Raport „Potwory chodzą po lesie” czeka w panelu ([[Biom Las]]).
+- **Akceptacje Karola w panelu (wieczór):** „Walka v2: Wojownik i Mag walczą własnymi ruchami” oraz „Potwory chodzą po lesie — można podejść i walczyć” (oba bez uwag).
 - **Limit użycia:** dzisiejsza praca wieloma agentami (ok. 10 mln tokenów) wyczerpała tygodniowy limit; odnowi się 19.11 o 2:00. Do tego czasu praca idzie jednym agentem i oszczędnie. Wgranie sześciu modeli lasu jest przygotowane, ale nie zaczęte.
 - **Uwaga techniczna:** monitor gaśnie po 15 minutach bez ruchu, a wtedy Roblox Studio nie rysuje obrazu i zrzuty ekranu wiszą; narzędzia zrzutów muszą budzić ekran (`swiat/test_walki2/testy/czuwanie.py`).
 - Pliki: `swiat/las_potwory/`, [[Biom Las]], [[Zadania]].
