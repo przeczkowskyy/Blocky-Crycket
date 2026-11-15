@@ -80,7 +80,7 @@ Wspólne uwagi z przeglądów (szczegóły i klatki trafień w notatkach modeli)
 - Leśny Slime: galareta jest skórowana na dwóch kościach — najpierw sprawdzić, czy importer Roblox zachowa wagi.
 - Świecenie (oczy wilka, kryształ strażnika, zarodniki, kwas) jest tylko w teksturze emisji — w Studio trzeba dać Neon albo światło. Czarny obrys jest tylko w renderach z Blendera.
 - Efekty do dorobienia w grze: lecąca strzała i smuga trucizny, fala uderzenia maczugi, chmura zarodników, rozprysk kwasu.
-- Nazwa do ujednolicenia: w danych silnika walki strażnik nazywa się „Strażnik Lasu”, model i notatka — „Strażnik Gaju”.
+- Nazwa strażnika biomu jest od 15.11.2026 jedna — „Strażnik Gaju” — w modelu, notatce, silniku walki i prototypie (identyfikator w danych został `straznik_lasu`).
 
 ## Kontrola jakości kodu (13.11.2026)
 Niezależny przegląd dzisiejszego kodu znalazł dziewięć usterek w ścieżkach błędów (m.in. możliwość dwukrotnego wgrania zasobu przy ponownym uruchomieniu, postać zostająca w pozie po nieudanym zrzucie, brak kodu błędu przy odmowie). Wszystkie poprawiono; każdą grupę poprawek sprawdził osobny, wrogo nastawiony weryfikator, a potem przeszły próby w Studio (odmowy, usuwanie i odbudowa kontenera, powrót do spoczynku po błędzie, prawdziwe klawisze). Osobna kontrola twierdzeń poprawiła osiem nieścisłości w opisach.

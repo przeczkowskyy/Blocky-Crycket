@@ -759,6 +759,21 @@ function Sesja:policzCzasy(ev)
 	else
 		ev.doskok = 0
 	end
+	-- efekt w klipie (bańka i kałuża slime'a, korzenie strażnika): atakujący stoi, a kości efektu sięgają do celu —
+	-- klip trafia na odległość wpis.zasiegi[klip], cel stoi w S (celPrzod: efekt ma trafić w przód celu, nie w środek)
+	if styl == "w_klipie" then
+		local wa = A.wpis
+		local zasieg = (wa.zasiegi and klip and wa.zasiegi[klip]) or wa.przod
+		local cel = self.geo.S
+		if ev.choreo.celPrzod then
+			local wb = D.wpis
+			cel -= math.max(0.5, wb.piersPrzod or 0.6, (wb.glebokosc or 0) * 0.28) - 0.15
+		end
+		ev.wydluz = math.max(0, cel - zasieg)
+		ev.zasiegEfektu = zasieg + ev.wydluz -- gdzie przed atakującym ląduje efekt (kałuża) w chwili trafienia
+		-- cel trzymany przez efekt (korzenie) do chwili, gdy klip go puszcza (sekundy klipu po trafieniu przy prędkości 1)
+		ev.trzymaDo = (ev.choreo.puszcza or 0) / predkosc
+	end
 end
 
 ------------------------------------------------------------------ harmonogram (akcje w czasie sceny)
@@ -968,7 +983,10 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 			local t, st = self:liczba(z, z.cel)
 			self.ui:napis(glowa, t, st, Vector2.new(0, -0.02), los:NextNumber(-8, 8))
 		end
-		self.fx:wybuch(if ev.choreo and ev.choreo.wybuch and ev.styl ~= "pocisk" then ev.choreo.wybuch else "cios", piers, s)
+		-- pocisk i efekt w klipie mają własny rozbłysk w miejscu trafienia (Choreo) — tu bez drugiego na piersi
+		if not (ev.styl == "w_klipie" and ev.choreo.wybuch) then
+			self.fx:wybuch(if ev.choreo and ev.choreo.wybuch and ev.styl ~= "pocisk" then ev.choreo.wybuch else "cios", piers, s)
+		end
 		self:dzwiek("cios", los:NextNumber(0.9, 1.1))
 		self:wstrzas(math.max(0.22, ev.choreo and ev.choreo.wstrzas or 0.24))
 	end
@@ -1013,7 +1031,7 @@ local function zaplanujAtak(self, ev, f_wypuszczenie)
 	local A, D = self.aktorzy[z.kto], self.aktorzy[z.cel]
 	local t0 = ev.t
 	self:zaplanujAkcje(t0 + ev.eStart, function(sp)
-		self:klip(A, ev.akcja, { predkosc = ev.predkosc }, sp)
+		self:klip(A, ev.akcja, { predkosc = ev.predkosc, wydluz = ev.wydluz }, sp)
 	end)
 	if ev.choreo and ev.choreo.smuga or z.krytyk then
 		local kolor = Color3.fromHex(if type(ev.choreo.smuga) == "string" then ev.choreo.smuga else "#FFF3B0")
@@ -1105,6 +1123,26 @@ Choreo.korzenie = function(self, ev)
 			ev.trwa - ev.eRel + 0.2, math.max(2.2, w.wysokosc * 0.75))
 		self:wstrzas(0.2)
 	end)
+end
+
+-- efekt jest w klipie aktora (bańka i kałuża Leśnego Slime'a, korzenie Strażnika Gaju): bez osobnego pocisku i bez
+-- korzeni z Efekty3D; klip gra z wydłużeniem (ev.wydluz), a rozbłysk — w punkcie efektu (np. kałuża) w chwili trafienia
+Choreo.w_klipie = function(self, ev)
+	local z = ev.z
+	local A, D = self.aktorzy[z.kto], self.aktorzy[z.cel]
+	zaplanujAtak(self, ev, nil)
+	local c = ev.choreo
+	if c.wybuch and z.typ ~= "unik" then
+		self:zaplanujAkcje(ev.t + ev.eHit, function()
+			-- miejsce liczone, nie czytane z punktu: WorldCFrame punktu jest o klatkę za Transform, a kałuża w klipie
+			-- przeskakuje ze schowka przed slime'a w jednej klatce (kl. 30 → 31) — rozprysk wypadał przy atakującym
+			local s = math.clamp(D.wpis.wysokosc / 5.5, 0.8, 1.8)
+			local cf = A:cfZiemi()
+			local p = if ev.zasiegEfektu then cf.Position + cf.LookVector * ev.zasiegEfektu + Vector3.new(0, 0.3, 0)
+				else self:piers(z.cel)
+			self.fx:wybuch(c.wybuch, p, s)
+		end)
+	end
 end
 
 Choreo.na_siebie = function(self, ev)
@@ -1333,13 +1371,17 @@ function Sesja:aktualizujPozy(tau: number)
 					pd.przod -= 0.6 * odrzut(u, 0.07, 0.42)
 				elseif u >= 0 then
 					local sila = if z.krytyk then 2.3 else 1.1
+					-- efekt z klipu trzyma cel (korzenie strażnika): bez odrzutu, uniesiony, póki klip go nie puści
+					local trzyma = (ev.trzymaDo or 0) > 0 and not ev.smiertelny
 					if ev.smiertelny then
 						pd.przod -= sila * 1.3 * wyjscie(u / 0.35)
-					else
+					elseif not trzyma then
 						pd.przod -= sila * odrzut(u, 0.09, 0.5)
 						pd.pochyl -= (if z.krytyk then rad(22) else rad(12)) * odrzut(u, 0.08, 0.45)
 					end
-					if ev.styl == "korzenie" and not ev.smiertelny then
+					if trzyma then
+						pd.gora += 0.35 * okno(u, 0, 0.12, ev.trzymaDo, ev.trzymaDo + 0.25)
+					elseif ev.styl == "korzenie" and not ev.smiertelny then
 						pd.gora += 0.35 * okno(u, 0, 0.12, ev.trwa - ev.eHit - 0.2, ev.trwa - ev.eHit + 0.1)
 					end
 				end
@@ -1398,6 +1440,15 @@ local function odlDlaPary(lo: number, hi: number, gora: number, kat: number, zap
 	local pw = (hi - lo) * 0.5 + 1.0 * z
 	local ph = gora * 0.5 * (1 + 0.32 * z) + 0.8 * z
 	return math.max(ph / t, pw / (t * 16 / 9))
+end
+
+--[[ Duży aktor (Troll, Strażnik Gaju 14,5 studa): u góry kadru tabliczki z paskami i wstęga zasłaniają ok. 22%
+	wysokości, u dołu przyciski ok. 10% — głowa i korona mają stać pod tabliczkami. Odległość, z której szczyt `gora`
+	mieści się w odkrytej części kadru, gdy kamera patrzy na wysokość srodekY przy pionowym kącie kat. ]]
+local ODKRYTE_U_GORY = 0.56 -- odkryta część górnej połowy kadru (1 − 2 · 0,22)
+local DUZY = 8 -- od tej wysokości pary (studs) kadr pilnuje tabliczek
+local function odlDlaGory(gora: number, srodekY: number, kat: number): number
+	return (gora + 0.4 - srodekY) / (ODKRYTE_U_GORY * math.tan(rad(kat / 2)))
 end
 
 -- bieżące położenie aktora w układzie sceny (ziemia pod nim: X wzdłuż walki, Y = wysokość skoku, Z w bok)
@@ -1482,6 +1533,11 @@ function Sesja:ujecie(uj, tau: number): (Vector3, Vector3, number)
 		or ((typ == "zaAtakujacym" or typ == "zaBroniacym") and roznica > 1.8) then
 		typ = "boczny"
 	end
+	-- zbliżenie małego celu pod dużo większym atakującym (Strażnik Gaju nad Zwiadowcą) nie pokazuje ciosu — z boku
+	local olbrzym = hA > 1.8 * hD + 0.5
+	if typ == "zblizenie" and olbrzym then
+		typ = "boczny"
+	end
 	if typ == "ogolny" then
 		local k = wyjscie(lt / 2.5)
 		local dryf = math.sin(lt * 0.22) * g.S * 0.06
@@ -1491,9 +1547,30 @@ function Sesja:ujecie(uj, tau: number): (Vector3, Vector3, number)
 		local k = gladko(lt / 1.6)
 		local lo, hi, gora = self:obrysPary(A, D, true)
 		local d = math.max(odlDlaWys(g.H, 42) * 1.02, g.S * 1.05, odlDlaPary(lo, hi, gora, 42) + 0.4 * math.max(wA, wD))
+		if gora > DUZY then
+			d = math.max(d, odlDlaGory(gora, gora * 0.5, 42))
+		end
 		local srodek = (lo + hi) / 2
-		return Vector3.new(srodek - dir * (g.S * 0.32 + 0.6 * k), gora * 0.4 + 1.2, d - 0.8 * k),
-			Vector3.new(srodek + dir * g.S * 0.08, gora * 0.5, 0), 42
+		-- skos od strony atakującego; gdy atakujący jest olbrzymem, od strony celu (inaczej jego bryła zasłania cel)
+		local strona = if olbrzym then -1 else 1
+		local xKam, xCel = srodek - dir * strona * (g.S * 0.32 + 0.6 * k), srodek + dir * strona * g.S * 0.08
+		-- kamera stoi w skosie: oba brzegi pary (np. szeroki slime z brzegu kadru) muszą zmieścić się w poziomie
+		local tanPol = math.tan(rad(21)) * 16 / 9 * 0.86
+		for _ = 1, 10 do
+			local z = d - 0.8 * k
+			local skret = math.atan2(xCel - xKam, z)
+			local miesci = true
+			for _, x in { lo, hi } do
+				if math.abs(math.tan(math.atan2(x - xKam, z) - skret)) > tanPol then
+					miesci = false
+				end
+			end
+			if miesci then
+				break
+			end
+			d *= 1.07
+		end
+		return Vector3.new(xKam, gora * 0.4 + 1.2, d - 0.8 * k), Vector3.new(xCel, gora * 0.5, 0), 42
 	elseif typ == "zaAtakujacym" then
 		local k = gladko(lt / 1.4)
 		return Vector3.new(xA - dir * (2.4 + 0.4 * hA) + dir * 0.6 * k, 0.5 * hA + 0.25 * hD + 1.0, 3.0 + 0.65 * hA + 0.3 * hD + 0.4 * wA - 0.3 * k),
@@ -1505,6 +1582,9 @@ function Sesja:ujecie(uj, tau: number): (Vector3, Vector3, number)
 	elseif typ == "zblizenie" then
 		local k = gladko(lt / 1.2)
 		local d = odlDlaWys(hD, 44, wD) * 0.95
+		if hD > DUZY then
+			d = math.max(d, odlDlaGory(hD, 0.5 * hD, 44) / 0.94)
+		end
 		return Vector3.new(xD - dir * d * 0.35, 0.55 * hD + 0.6, d * 0.94 - 0.5 * k),
 			Vector3.new(xD - dir * 0.6, 0.5 * hD, 0), 44
 	elseif typ == "krytyk" then
@@ -1520,9 +1600,17 @@ function Sesja:ujecie(uj, tau: number): (Vector3, Vector3, number)
 		local srodek = (lo + hi) / 2
 		-- „wjazd” optyczny (zawężenie kąta) tylko do kadru, w którym obaj jeszcze się mieszczą (mniejszy zapas)
 		local t = math.max(((hi - lo) * 0.5 + 1.0) / (d * 16 / 9), (gora * 0.5 * 1.2 + 0.55) / d)
+		local yCel = 0.46 * gora
+		if gora > DUZY then
+			-- duży aktor: kamera patrzy na połowę wzrostu, stoi tak daleko, żeby korona była pod tabliczkami,
+			-- a „wjazd” kończy się na tej granicy
+			yCel = 0.5 * gora
+			d = math.max(d, odlDlaGory(gora, yCel, 52))
+			t = math.max(t, (gora + 0.4 - yCel) / (ODKRYTE_U_GORY * d))
+		end
 		local katMin = math.deg(2 * math.atan(t))
 		return Vector3.new(srodek - dir * 0.4 * k, 0.28 * gora + 0.8, d),
-			Vector3.new(srodek + dir * 0.04 * (hi - lo) * k, 0.46 * gora, 0), 52 - (52 - math.clamp(katMin, 40, 52)) * k
+			Vector3.new(srodek + dir * 0.04 * (hi - lo) * k, yCel, 0), 52 - (52 - math.clamp(katMin, 40, 52)) * k
 	elseif typ == "pocisk" then
 		local ev = uj.ev
 		local s = uj.strona or 1
@@ -1554,11 +1642,17 @@ function Sesja:ujecie(uj, tau: number): (Vector3, Vector3, number)
 		local k = gladko(lt / 1.4)
 		local f = g.kier[A]
 		local d = odlDlaWys(hA, 42, wA) * 1.05
+		if hA > DUZY then
+			d = math.max(d, odlDlaGory(hA, 0.5 * hA, 42) / 0.88)
+		end
 		return Vector3.new(xA + f * d * 0.45, 0.55 * hA + 0.5, d * 0.88 - 0.6 * k), Vector3.new(xA + f * 0.3, 0.5 * hA, 0), 42
 	elseif typ == "efekt" then
 		local k = gladko(lt / 1.4)
 		local f = g.kier[A]
 		local d = odlDlaWys(hA, 44, wA) * 1.15
+		if hA > DUZY then
+			d = math.max(d, odlDlaGory(hA, 0.48 * hA, 44) / 0.9)
+		end
 		return Vector3.new(xA + f * d * 0.4, 0.6 * hA + 0.8, d * 0.9 - 0.5 * k), Vector3.new(xA + f * 0.4, 0.48 * hA, 0), 44
 	end
 	-- objazd wokół zwycięzcy (finał); kończy się ze zwycięzcą w jednej ćwiartce, panel wyniku w drugiej połowie
@@ -1570,6 +1664,9 @@ function Sesja:ujecie(uj, tau: number): (Vector3, Vector3, number)
 	local dryf = math.min(math.max(0, czas - 2.6) * 1.2, 12)
 	local kat = rad(62 - 22 * k - dryf)
 	local R = 1.25 * hZ + 6.5
+	if hZ > DUZY then
+		R = math.max(R, odlDlaGory(hZ, 0.5 * hZ, 44))
+	end
 	local W = Vector3.new(g.x[zw], 0, 0)
 	local cel = W + Vector3.new(znak * R * 0.32, hZ * 0.5, 0)
 	return W + Vector3.new(znak * R * math.cos(kat), hZ * 0.55 + 1.6, R * math.sin(kat)), cel, 44

@@ -19,14 +19,25 @@ Pola wpisu:
   model       moduł postaci w swiat/postacie/<model>.py
   przerobka   nazwa funkcji w przerobki.py (dodatki i klipy zastępcze) albo None
   zastepczy   None albo opis, czym model zastępuje docelowy (pokazywane w galerii i w README)
-  kolory      {"RRGGBB": "RRGGBB"} — przemalowanie brył (np. zastępczy slime na zielono)
+  kolory      {"RRGGBB": "RRGGBB"} — przemalowanie brył (tylko w prototypie; dziś nikt go nie używa)
   klipy       akcja -> nazwa klipu (albo None = brak klipu, odtwarzacz robi ruch proceduralny); akcje: AKCJE niżej
   umiejetnosci  id umiejętności z silnika -> nazwa klipu (None = proceduralnie)
   punkty      nazwa -> (zaczep, przesunięcie w układzie zaczepu, studs) — powstają jako Attachment „Punkt_<nazwa>”;
               Bron = czubek broni / pysk, Pocisk = skąd wylatuje pocisk lub czar, Piers = cel trafienia
   chwile      {klip: sekundy} — ręczna chwila trafienia / wypuszczenia pocisku; reszta liczy się sama (klatka, w której
               punkt Bron najdalej wysuwa się do przodu)
+  skala       (opcjonalnie) skala modelu w prototypie; brak = skala z modułu modelu
+  zasiegi     (opcjonalnie) {klip: studs} — ręczny zasięg w chwili trafienia (zamiast punktu Bron): jak daleko przed
+              aktorem klip „trafia” (np. kałuża kwasu, środek uścisku korzeni)
+  wydluzenia  (opcjonalnie) {klip: [{"kosci": [...], "klatki": [[klatka, ułamek], ...], "luk": studs}]} — kości, które
+              odtwarzacz przesuwa w biegu do przodu (układ aktora), żeby efekt z klipu (bańka, kałuża, korzenie) trafił
+              w cel stojący dalej niż w klipie; ułamek liniowo między klatkami, luk = dodatkowe uniesienie w połowie
   zastepcze_klipy  klipy dorobione w przerobki.py (szkice), dla porządku i README
+
+Skórowanie (`Postac.skoruj`, np. galareta Leśnego Slime'a na kościach Dol/Gora): klocki go nie oddają, więc dane
+dostają opis skóry (`skora`) i numer skóry przy każdej bryle tej kości (kolumna 17 w `czesci`). W Studio bryły skóry
+mają SpecialMesh, a moduł Klipy co klatkę przesuwa i rozciąga ich siatkę w pionie wg przesunięcia kości górnej
+(to samo, co liniowe wagi Blendera dla brył w całości między y0 i y1).
 """
 import argparse
 import json
@@ -76,15 +87,27 @@ AKTORZY = [
      "chwile": {"kula_ognia": 1.23, "bariera": 0.35},
      "zastepcze_klipy": ["atak", "kula_ognia", "lodowy_pocisk", "bariera", "trafienie", "unik", "upadek", "radosc"]},
     # ------------------------------------------------------------------ przeciwnicy lasu
-    {"klucz": "lesny_slime", "rola": "przeciwnik", "nazwa": "Leśny Slime", "model": "slime", "przerobka": "lesny_slime",
-     "zastepczy": "ZASTĘPCZY: slime-pet przemalowany na zielono i powiększony ×1,5 (docelowy model Leśnego Slime'a powstaje)",
-     "kolory": {"6FF3FF": "A8F07A", "1FB8C9": "4CB443", "1597AE": "37913A", "F2FFFF": "F4FFE8"},
-     "klipy": {"spoczynek": "idle", "ruch": "skok", "atak": "atak", "krytyk": "atak", "blok": None, "unik": "unik",
-               "trafienie": "trafienie", "upadek": "upadek", "radosc": "skok"},
-     "umiejetnosci": {"kwasny_plusk": "atak"},
-     "punkty": {"Bron": ("PyskAttachment", (0, 0, 0)), "Pocisk": ("PyskAttachment", (0, 0, -0.2)),
-                "Piers": ("GlowaAttachment", (0, -1.2, -1.2))},
-     "zastepcze_klipy": ["trafienie", "unik", "upadek"]},
+    # Leśny Slime: właściwy model (swiat/postacie/lesny_slime.py, wersja 3 — sześcian 2,7 studa z kiełkiem).
+    # Kwaśny plusk: bańka (kość Kula) i kałuża (kość Plusk) są w klipie — odtwarzacz nie puszcza osobnego pocisku,
+    # tylko wydłuża w biegu tor bańki i miejsce kałuży do celu (WYDLUZENIA). Chwile z notatki modelu: pacnięcie
+    # brzuszkiem kl. 13, plusk kałuży kl. 31.
+    {"klucz": "lesny_slime", "rola": "przeciwnik", "nazwa": "Leśny Slime", "model": "lesny_slime", "przerobka": None,
+     "zastepczy": None, "kolory": {}, "skala": 1.0,
+     "klipy": {"spoczynek": "idle", "ruch": "ruch", "atak": "atak", "krytyk": "atak", "blok": None, "unik": "unik",
+               "trafienie": "trafienie", "upadek": "upadek", "radosc": "wiwat"},
+     "umiejetnosci": {"kwasny_plusk": "umiejetnosc"},
+     # przód kostki (rig Roblox: przód = −Z): Bron = dolna połowa przedniej ściany (pacnięcie brzuszkiem),
+     # Piers = środek przedniej ściany, Pocisk = buzia (start bańki), Plusk = środek kałuży
+     "punkty": {"Bron": ("RootAttachment", (0, 1.0, -1.35)), "Pocisk": ("PyskAttachment", (0, 0, 0)),
+                "Piers": ("RootAttachment", (0, 1.35, -1.35)), "Plusk": ("PluskAttachment", (0, 0, 0))},
+     "chwile": {"atak": round(13 / 30.0, 3), "umiejetnosc": round(31 / 30.0, 3)},
+     "zasiegi": {"umiejetnosc": 4.3},           # kałuża ok. 4,3 studa przed slime'em (PLUSK_Z w module modelu)
+     "wydluzenia": {"umiejetnosc": [
+         # bańka leci kl. 21–31 (ułamek wydłużenia rośnie z lotem, łuk wyżej), w kl. 32 wraca do schowka
+         {"kosci": ["Kula"], "klatki": [[21, 0.0], [31, 1.0], [32, 0.0]], "luk": 1.2},
+         # kałuża stoi kl. 31–65 (w kl. 30 i 66 jest w schowku w podstawie)
+         {"kosci": ["Plusk"], "klatki": [[30, 0.0], [31, 1.0], [65, 1.0], [66, 0.0]]}]},
+     "zastepcze_klipy": []},
     {"klucz": "cierniowy_wilk", "rola": "przeciwnik", "nazwa": "Cierniowy Wilk", "model": "cierniowy_wilk", "przerobka": None,
      "zastepczy": None, "kolory": {},
      "klipy": {"spoczynek": "idle", "ruch": "ruch", "atak": "atak", "krytyk": "atak", "blok": None, "unik": "unik",
@@ -109,15 +132,22 @@ AKTORZY = [
      "punkty": {"Bron": ("MaczugaAttachment", (0, 0, 0)), "Pocisk": ("PyskAttachment", (0, 0, 0)),
                 "Piers": ("GlowaAttachment", (0, -2.0, 0.4))},
      "zastepcze_klipy": []},
-    {"klucz": "straznik_lasu", "rola": "przeciwnik", "nazwa": "Strażnik Lasu", "model": "lesny_troll",
-     "przerobka": "straznik_lasu",
-     "zastepczy": "ZASTĘPCZY: Leśny Troll ×1,2 w kamiennych barwach z kryształem w piersi (docelowy model Strażnika powstaje)",
-     "kolory": {"86704F": "8E949B", "52402C": "5D636B", "B49B72": "B9BEC4"},
+    # Strażnik Gaju (id silnika straznik_lasu): właściwy model (swiat/postacie/straznik_gaju.py, kolos 14,5 studa).
+    # Uścisk korzeni: pięć korzeni (kości K1A…K5C) jest w klipie — odtwarzacz nie dokłada własnych, tylko przesuwa
+    # w biegu korzenie pod cel (WYDLUZENIA). Chwile z notatki modelu: pięść kl. 17, zaciśnięcie korzeni kl. 50.
+    {"klucz": "straznik_lasu", "rola": "przeciwnik", "nazwa": "Strażnik Gaju", "model": "straznik_gaju",
+     "przerobka": None, "zastepczy": None, "kolory": {}, "skala": 1.0,
      "klipy": {"spoczynek": "idle", "ruch": "ruch", "atak": "atak", "krytyk": "atak", "blok": None, "unik": "unik",
                "trafienie": "trafienie", "upadek": "upadek", "radosc": "ryk"},
      "umiejetnosci": {"uscisk_korzeni": "umiejetnosc"},
-     "punkty": {"Bron": ("MaczugaAttachment", (0, 0, 0)), "Pocisk": ("PiersAttachment", (0, 0, -0.4)),
-                "Piers": ("PiersAttachment", (0, 0, 0))},
+     # Bron = prawa pięść (cios młotem z prawego barku), Piers = kryształ, Korzenie = środek uścisku na ziemi
+     "punkty": {"Bron": ("PiescPAttachment", (0, 0, 0)), "Pocisk": ("KrysztalAttachment", (0, 0, 0)),
+                "Piers": ("KrysztalAttachment", (0, 0, 0)), "Korzenie": ("KorzenieAttachment", (0, 0, 0))},
+     "chwile": {"atak": round(17 / 30.0, 3), "umiejetnosc": round(50 / 30.0, 3)},
+     "zasiegi": {"umiejetnosc": 6.6},           # środek uścisku 6,6 studa przed strażnikiem (UCISK w module modelu)
+     "wydluzenia": {"umiejetnosc": [
+         # korzenie są pod ziemią przed strażnikiem w kl. 31–79 (poza tym schowane w tułowiu)
+         {"kosci": ["K1A", "K2A", "K3A", "K4A", "K5A"], "klatki": [[30, 0.0], [31, 1.0], [79, 1.0], [80, 0.0]]}]},
      "zastepcze_klipy": []},
 ]
 
@@ -130,6 +160,8 @@ def postac_aktora(wpis):
     from swiat.postacie.roblox_postac import postacie_z_modulu
     import przerobki
     p = postacie_z_modulu(os.path.join(REPO, "swiat", "postacie", wpis["model"] + ".py"))[0]
+    if wpis.get("skala"):
+        p.skala = float(wpis["skala"])
     if wpis.get("przerobka"):
         przerobki.PRZEROBKI[wpis["przerobka"]](p)
     return p
@@ -183,6 +215,46 @@ def _chwile(rig, dane, wpis):
     return wynik
 
 
+def _skora(p, d):
+    """Skórowanie z modelu (p.skora: kość -> (kość górna, y0, y1)) -> d["skora"] = [{kosc, gora, y0, y1}] (indeksy kości
+    rigu, wysokości w studach) i numer skóry (1, 2, …; 0 = brak) jako 17. kolumna każdej bryły."""
+    indeks = {k[0]: i + 1 for i, k in enumerate(d["kosci"])}
+    d["skora"] = []
+    nr_kosci = {}
+    for kosc, (gora, y0, y1) in sorted(getattr(p, "skora", {}).items()):
+        if kosc not in indeks or gora not in indeks:
+            raise ValueError("%s: skóra na kościach %s/%s, których nie ma w rigu" % (p.id, kosc, gora))
+        d["skora"].append({"kosc": indeks[kosc], "gora": indeks[gora], "y0": round(y0 * p.skala, 4),
+                           "y1": round(y1 * p.skala, 4)})
+        nr_kosci[indeks[kosc]] = len(d["skora"])
+    for c in d["czesci"]:
+        c.append(nr_kosci.get(c[0], 0))
+    if d["skora"]:
+        d["uwagi"] = [u for u in d["uwagi"] if not u.startswith("skórowanie na dwóch kościach")]
+        d["uwagi"].append("skórowanie (%s): w Studio siatki brył skóry przesuwa i rozciąga w pionie moduł Klipy"
+                          % ", ".join(sorted(getattr(p, "skora", {}))))
+
+
+def _wydluzenia(d, w):
+    """Tabela WYDLUZENIA wpisu -> d["wydluzenia"] = {klip: [{kosci: [indeksy], klatki: [[f, ułamek]], luk}]}."""
+    indeks = {k[0]: i + 1 for i, k in enumerate(d["kosci"])}
+    klipy = {k["n"]: k for k in d["klipy"]}
+    d["wydluzenia"] = {}
+    for klip, lista in (w.get("wydluzenia") or {}).items():
+        if klip not in klipy:
+            raise ValueError("%s: wydłużenie dla klipu %s, którego nie ma" % (w["klucz"], klip))
+        wyn = []
+        for s in lista:
+            brak = [n for n in s["kosci"] if n not in indeks or indeks[n] not in klipy[klip]["kosci"]]
+            if brak:
+                raise ValueError("%s/%s: wydłużenie kości %s, których nie ma w rigu albo w klipie" % (w["klucz"], klip, brak))
+            klatki = [[float(f), float(u)] for f, u in s["klatki"]]
+            if any(klatki[i][0] >= klatki[i + 1][0] for i in range(len(klatki) - 1)):
+                raise ValueError("%s/%s: klatki wydłużenia nie rosną" % (w["klucz"], klip))
+            wyn.append({"kosci": [indeks[n] for n in s["kosci"]], "klatki": klatki, "luk": float(s.get("luk", 0.0))})
+        d["wydluzenia"][klip] = wyn
+
+
 def przygotuj(wpisy, liniowo=False):
     from swiat.postacie.biblioteka.roblox_klocki import probki_liniowe, rig
     from swiat.postacie.roblox_postac import probki_z_blendera
@@ -211,6 +283,8 @@ def przygotuj(wpisy, liniowo=False):
             sys.exit("%s: tabela wskazuje klipy, których nie ma: %s (są: %s)"
                      % (w["klucz"], ", ".join(sorted(set(brak))), ", ".join(sorted(nazwy_klipow))))
         d["punkty"] = _punkty(d, w)
+        _skora(p, d)
+        _wydluzenia(d, w)
         r = Rig(d)
         mn, mx = obwiednia(r)
         promien = 0.0

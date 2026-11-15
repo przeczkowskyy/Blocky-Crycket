@@ -7,6 +7,9 @@
 	opublikowanej grze (nic nie zależy od KeyframeSequenceProvider). Nie działa w trybie Edit: tam silnik fizyki nie
 	przelicza stawów, więc części stoją (zrzuty klatek robimy w Play — testy/klatki_aktorow.py).
 
+	Skóra (dane.skora): bryły skórowane na dwóch kościach (galareta Leśnego Slime'a) mają SpecialMesh, który odtwarzacz
+	co klatkę przesuwa i rozciąga w pionie (opis przy przygotujSkory) — inaczej galareta nie zgniatałaby się wcale.
+
 	Model musi mieć: zakotwiczony korzeń (HumanoidRootPart), części kości jako bezpośrednie dzieci modelu
 	(nazwy jak w danych) i w każdej z nich jej Motor6D do rodzica. NIE może mieć Animatora, który grałby swoje ścieżki
 	(nadpisałby Transform). Tak buduje szablony budowa/szablon.luau.
@@ -24,6 +27,8 @@
 			opcje.odCzasu    s — zacznij od tej chwili klipu
 			opcje.potem      nazwa klipu, który zagra po końcu (np. "idle"); bez tego zostaje ostatnia klatka
 			opcje.przejsciePotem  s przejścia do „potem” (domyślnie jak przejscie)
+			opcje.wydluz     studs — kości z dane.wydluzenia[nazwa] (bańka, kałuża, korzenie) sięgają o tyle dalej
+			                 do przodu (efekt z klipu trafia w cel, który stoi dalej niż w klipie)
 		o:zatrzymaj(przejscie?)        wszystkie tory wygasają do pozy zerowej (spoczynek klocków)
 		o:poza(nazwa, czas)            natychmiastowa poza: klip zatrzymany w chwili czas (do zrzutów klatek)
 		o:ustawNakladke(kosc, cf|nil)  dodatkowy obrót/przesunięcie kości PO klipie (ruch proceduralny: garda,
@@ -113,6 +118,118 @@ local function odepnij(o)
 	end
 end
 
+------------------------------------------------------------------ skóra (bryły skórowane na dwóch kościach)
+--[[ Klocki nie mają wag skóry, więc skórę udajemy siatką: bryła skóry (atrybut Skora = numer opisu w dane.skora,
+	SkoraY = wysokość jej środka w spoczynku) ma SpecialMesh, a co klatkę przesuwamy siatkę o waga · t i rozciągamy ją
+	w pionie o (1 + t.Y / (y1 − y0)), gdzie t = przesunięcie kości górnej (Transform jej stawu, układ kości dolnej),
+	waga = (SkoraY − y0) / (y1 − y0). Dla bryły w całości między y0 i y1 to dokładnie liniowe wagi Blendera. ]]
+local function przygotujSkory(model: Model, dane)
+	local opisy = dane.skora or {}
+	if #opisy == 0 then
+		return {}
+	end
+	local wynik = {}
+	for nr, s in opisy do
+		local dol = model:FindFirstChild(dane.kosci[s.kosc][1])
+		wynik[nr] = { gora = s.gora, y0 = s.y0, y1 = s.y1, bryly = {} }
+		for _, c in model:GetDescendants() do
+			if c:IsA("BasePart") and c:GetAttribute("Skora") == nr then
+				local sm = c:FindFirstChildOfClass("SpecialMesh")
+				if sm and dol then
+					local rel = (dol :: BasePart).CFrame:ToObjectSpace(c.CFrame).Rotation
+					local pion = rel:VectorToObjectSpace(Vector3.yAxis)
+					local h = math.max(1e-3, s.y1 - s.y0)
+					table.insert(wynik[nr].bryly, {
+						siatka = sm, rel = rel, osPionu = Vector3.new(math.abs(pion.X), math.abs(pion.Y), math.abs(pion.Z)),
+						waga = math.clamp(((c:GetAttribute("SkoraY") or 0) - s.y0) / h, 0, 1),
+						skala = sm.Scale, przesuniecie = sm.Offset,
+					})
+				end
+			end
+		end
+	end
+	return wynik
+end
+
+local function zastosujSkory(skory, pozy: { [number]: CFrame })
+	for _, s in skory do
+		local cf = pozy[s.gora]
+		local t = if cf then cf.Position else Vector3.zero
+		local rozciag = t.Y / math.max(1e-3, s.y1 - s.y0)
+		for _, b in s.bryly do
+			b.siatka.Offset = b.przesuniecie + b.rel:VectorToObjectSpace(t * b.waga)
+			b.siatka.Scale = b.skala * (Vector3.one + b.osPionu * rozciag)
+		end
+	end
+end
+
+local function zerujSkory(skory)
+	for _, s in skory do
+		for _, b in s.bryly do
+			if b.siatka.Parent then
+				b.siatka.Offset = b.przesuniecie
+				b.siatka.Scale = b.skala
+			end
+		end
+	end
+end
+
+------------------------------------------------------------------ wydłużenie (efekt z klipu sięga dalej)
+-- ułamek wydłużenia w klatce f klipu: liniowo między klatkami opisu, poza nimi pierwsza / ostatnia wartość
+local function ulamek(klatki, f: number): number
+	if f <= klatki[1][1] then
+		return klatki[1][2]
+	end
+	for i = 1, #klatki - 1 do
+		local a, b = klatki[i], klatki[i + 1]
+		if f <= b[1] then
+			return a[2] + (b[2] - a[2]) * (f - a[1]) / (b[1] - a[1])
+		end
+	end
+	return klatki[#klatki][2]
+end
+
+-- obrót części kości względem HumanoidRootPart (stawy mają C0/C1 bez obrotu, więc to iloczyn obrotów Transform)
+local function obrotKosci(self, pozy, idx: number, pamiec): CFrame
+	if idx == 0 then
+		return ID
+	end
+	local r = pamiec[idx]
+	if r then
+		return r
+	end
+	r = obrotKosci(self, pozy, self.rodzice[idx] or 0, pamiec) * (pozy[idx] or ID).Rotation
+	pamiec[idx] = r
+	return r
+end
+
+--[[ Wydłużenie: kości z dane.wydluzenia[klip] przesuwamy w układzie aktora o (0, luk·4u(1−u), −ile·u) — do przodu
+	(przód rigu = −Z) — gdzie u = ułamek z opisu w bieżącej klatce, a ile = tor.wydluz (studs, ustawia odtwarzacz:
+	o tyle cel stoi dalej, niż sięga efekt w klipie). Transform' = przesunięcie(Rrodzica⁻¹ · Δ) · Transform. ]]
+local function zastosujWydluzenia(self, pozy: { [number]: CFrame })
+	local pamiec = nil
+	for _, t in self.tory do
+		local opis = t.wydluz and t.waga > 0 and self.wydluzenia[t.nazwa]
+		if opis then
+			pamiec = pamiec or {}
+			local f = t.czas * t.klip.fps
+			for _, s in opis do
+				local u = ulamek(s.klatki, f)
+				if u ~= 0 then
+					local d = Vector3.new(0, (s.luk or 0) * 4 * u * (1 - u), -t.wydluz * u) * t.waga
+					for _, idx in s.kosci do
+						local cf = pozy[idx]
+						if cf then
+							local rp = obrotKosci(self, pozy, self.rodzice[idx] or 0, pamiec)
+							pozy[idx] = CFrame.new(rp:VectorToObjectSpace(d)) * cf
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
 ------------------------------------------------------------------ odtwarzacz
 function Klipy.nowy(model: Model, dane, opcje: any?)
 	opcje = opcje or {}
@@ -130,6 +247,12 @@ function Klipy.nowy(model: Model, dane, opcje: any?)
 		self.stawy[idx] = staw
 		self.nazwyKosci[k[1]] = idx
 	end
+	self.rodzice = {} -- indeks kości -> indeks rodzica (0 = HumanoidRootPart)
+	for idx, k in dane.kosci do
+		self.rodzice[idx] = k[2]
+	end
+	self.wydluzenia = dane.wydluzenia or {}
+	self.skory = przygotujSkory(model, dane)
 	self.tory = {} -- najstarszy pierwszy
 	self.nakladki = {} -- indeks kości -> CFrame
 	self.tempo = 1
@@ -172,6 +295,7 @@ local function nowyTor(klip, opcje)
 	t.konce = {}
 	t.potem = opcje.potem
 	t.przejsciePotem = opcje.przejsciePotem
+	t.wydluz = if type(opcje.wydluz) == "number" and opcje.wydluz ~= 0 then opcje.wydluz else nil
 	return t
 end
 
@@ -357,7 +481,8 @@ function Klipy:zastosuj()
 			end
 		end
 	end
-	for idx, staw in self.stawy do
+	local koncowe = {}
+	for idx in self.stawy do
 		local cf = pozy[idx] or ID
 		local s = wagi[idx] or 0
 		if s < 1 then
@@ -367,7 +492,16 @@ function Klipy:zastosuj()
 		if n then
 			cf = cf * n
 		end
-		staw.Transform = cf
+		koncowe[idx] = cf
+	end
+	if next(self.wydluzenia) ~= nil then
+		zastosujWydluzenia(self, koncowe)
+	end
+	for idx, staw in self.stawy do
+		staw.Transform = koncowe[idx]
+	end
+	if #self.skory > 0 then
+		zastosujSkory(self.skory, koncowe)
 	end
 end
 
@@ -379,6 +513,7 @@ function Klipy:zniszcz()
 			staw.Transform = ID
 		end
 	end
+	zerujSkory(self.skory)
 end
 
 return Klipy

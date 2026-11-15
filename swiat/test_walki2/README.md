@@ -13,6 +13,9 @@
 odtwarzacz całego dziennika v2 z choreografią każdej umiejętności, efektami na postaciach, kamerą i finałem,
 interfejs walki i panel wyboru przy tablicy, testy bez Studio i w trybie Play, arkusze klatek i pomiary.
 **Etap 3** to niezależny przegląd (8 uwag). **Etap 4** (15.11) je poprawił — patrz „Poprawki po przeglądzie”.
+**Etap 5** (15.11) podmienił dwa modele zastępcze na właściwe: **Leśny Slime** (`swiat/postacie/lesny_slime.py`,
+wersja 3 — sześcian) i **Strażnik Gaju** (`swiat/postacie/straznik_gaju.py`), a nazwa strażnika w danych walki to teraz
+„Strażnik Gaju” (identyfikator `straznik_lasu` bez zmian) — patrz „Właściwe modele (etap 5)”. Zastępczych aktorów już nie ma.
 
 ## Jak obejrzeć (krok po kroku)
 
@@ -22,7 +25,7 @@ interfejs walki i panel wyboru przy tablicy, testy bez Studio i w trybie Play, a
    (ok. 220 studów; tablica stoi w `(16, 0, 220)`).
 3. Podejdź do tablicy: podpowiedź „Walka v2 (prototyp) · Wybierz walkę”. Naciśnij **E** (telefon: dotknij).
 4. Panel wyboru: **klasa** (Wojownik / Zwiadowca / Mag), **przeciwnik** (Leśny Slime, Cierniowy Wilk, Muchomornik —
-   zwykli; Leśny Troll — rzadki; Strażnik Lasu — strażnik; „model zastępczy” przy Slime'ie i Strażniku), **poziom**
+   zwykli; Leśny Troll — rzadki; Strażnik Gaju — strażnik), **poziom**
    (1 / 5 / 10 — obu stron) i **WALCZ!**. Panel zamyka krzyżyk albo odejście od tablicy. Gdy serwer odmówi walki
    (np. za daleko od tablicy), gracz dostaje komunikat z powodem: przy tablicy w panelu, dalej w dymku na ekranie.
 5. Walka: paski życia z nazwą, poziomem i rangą, ikony efektów z licznikiem tur, licznik tury, wstęga z nazwą
@@ -91,20 +94,24 @@ zgadza się z poprzednim zdarzeniem (licznik `OstatniaNiezgodnoscPaskow`, w test
 | Lodowy pocisk | pocisk | lodowy kryształ z rdzeniem, lodowy rozprysk; przy spowolnieniu „SPOWOLNIENIE!”, lodowe kryształy przy nogach, szron i lód pod stopami |
 | Bariera | na siebie | niebieska bańka (ForceField) wokół Maga, pulsuje przy pochłanianiu |
 | Zwykły atak Maga | pocisk | mała fioletowa iskra z kostura (atak Maga jest magiczny) |
-| Kwaśny plusk (Slime) | pocisk | zielona kula łukiem, kwaśny rozprysk, zdarty pancerz |
+| Kwaśny plusk (Slime) | w klipie | klip modelu: nadyma policzki, pluje świecącą bańką, kałuża kwasu — bańka i kałuża sięgają do celu (wydłużenie w biegu), rozprysk na kałuży, zdarty pancerz |
 | Rozszarpanie (Wilk) | wręcz | skok z klipu, trzy czerwone ślady pazurów, potem krople krwawienia |
 | Chmura zarodników (Muchomornik) | chmura | fioletowa chmura płynie z kapelusza i otula cel, potem trucizna |
 | Ogłuszające uderzenie (Troll) | wręcz | fala uderzeniowa, często spowolnienie (gwiazdki nad głową, utrata tury) |
-| Uścisk korzeni (Strażnik) | korzenie | korzenie (kliny z liśćmi) wyrastają wokół celu i trzymają go do końca zdarzenia, zielona poświata; spowolnienie = pnącza wokół nóg |
+| Uścisk korzeni (Strażnik Gaju) | w klipie | klip modelu: ryk, pięści w ziemię, pięć korzeni z klipu wyrasta pod celem (przesunięte w biegu pod cel) i zaciska się; cel bez odrzutu, uniesiony, póki korzenie trzymają; spowolnienie = pnącza wokół nóg |
 
 **Kamera** — ujęcia planowane na zdarzenia (deterministycznie z ziarna, więc ta sama walka ma te same ujęcia):
 plan ogólny (co piąty zwykły cios i na start), z boku 3/4, zza atakującego, zza broniącego, zbliżenie celu, krytyk
 (niska kamera, zwolnienie, „wjazd”), lot pocisku, umiejętność na siebie, efekt / utrata tury, objazd zwycięzcy w finale.
-Odległości liczone z wysokości i szerokości aktorów (Muchomornik 3,6 – Strażnik 12 studów). Przeciw nudzie
+Odległości liczone z wysokości i szerokości aktorów (Leśny Slime 3,4 – Strażnik Gaju 14,6 studa). Przeciw nudzie
 i szarpaniu: zwykłe ujęcie trwa co najmniej 0,9 s czasu rzeczywistego (×1,6 przy tempie ×2/×4, ×1,5 po 12. turze),
 po 12. turze kamera zmienia ujęcie tylko co drugie zdarzenie, a przy ×2/×4, w długiej walce i przy tym samym typie
 ujęcia przechodzi płynnie (0,45 s) zamiast ciąć. Zza pleców dużo większego aktora (ponad 1,3×) albo przy różnicy
-wzrostu ponad 1,8× kamera bierze ujęcie boczne.
+wzrostu ponad 1,8× kamera bierze ujęcie boczne. Etap 5: przy parze wyższej niż 8 studów (Troll, Strażnik Gaju) ujęcia
+boczne, krytyk, zbliżenie, efekt i objazd stoją tak daleko, żeby korona była pod tabliczkami z paskami (zasłaniają ok.
+22% kadru u góry), a „wjazd” przy krytyku kończy się na tej granicy; gdy atakujący jest olbrzymem (ponad 1,8× wyższy),
+zbliżenie celu zamienia się w ujęcie boczne, a skos boczny idzie od strony celu (inaczej bryła Strażnika zasłania
+Zwiadowcę); ujęcie boczne poszerza kadr, aż oba brzegi pary mieszczą się mimo skosu (szeroki slime bywał ucięty).
 
 Kadr liczony z **bieżących** położeń aktorów (poprawka po przeglądzie): ujęcia krytyk i boczne obejmują obu aktorów
 tam, gdzie są teraz — po doskoku, w powietrzu i po odrzucie — a „wjazd” przy krytyku zwęża kąt tylko do kadru,
@@ -152,15 +159,20 @@ budowie (i `Moduly/Dziennik` z `src/shared/Walka`) — źródło prawdy zostaje 
 
 ## Jak dodać aktora, umiejętność albo choreografię
 
-- **Aktor** (np. docelowy Leśny Slime albo Strażnik Gaju): wpis w `AKTORZY` w `aktorzy.py` (model, klipy na akcje,
-  umiejętności, punkty, `zastepczy = None`) → `aktorzy.py --tylko <klucz>` → `zbuduj.py` (nowy aktor: pełna budowa,
-  żeby galeria się przesunęła). Zasięg broni i pierś do doskoku liczy `zbuduj.py` sam z danych. Portret w interfejsie:
-  ikona 8×8 o tym kluczu w `IKONY` w `InterfejsWalki2.luau` (test pilnuje, że jest).
+- **Aktor** (wzór: Leśny Slime i Strażnik Gaju z etapu 5): wpis w `AKTORZY` w `aktorzy.py` (model, klipy na akcje,
+  umiejętności, punkty, `chwile` z notatki modelu, `zastepczy = None`) → `aktorzy.py --tylko <klucz>` → `zbuduj.py`
+  (nowy aktor: pełna budowa, żeby galeria się przesunęła). Zasięg broni i pierś do doskoku liczy `zbuduj.py` sam
+  z danych; gdy klip „trafia” dalej niż punkt `Bron` (kałuża, korzenie), wpisz `zasiegi`. Efekt, który jest w klipie
+  (bańka, korzenie), a ma sięgnąć celu stojącego dalej: `wydluzenia` (kości i klatki) + styl `w_klipie` w choreografii.
+  Skórowanie modelu (`p.skoruj`) przechodzi samo (opis w `aktorzy.py` i `Klipy.luau`). Portret w interfejsie: ikona
+  8×8 o tym kluczu w `IKONY` w `InterfejsWalki2.luau` (test pilnuje, że jest).
 - **Umiejętność:** po dopisaniu do `tools/walka/dane_walki.json` dopisz wpis w `Choreografie.UMIEJETNOSCI` (styl i
   dodatki: `pocisk`, `wybuch`, `smuga`, `fala`, `pazury`, `aura`, `kamera`) oraz klip w tabeli aktorów.
   `testy/test_odtwarzacza.py` i `testy/test_aktorow.py` nie przejdą, dopóki umiejętność nie ma wpisu — nie zostanie
   po cichu bez animacji. Gdyby w grze trafiło się coś bez wpisu, odtwarzacz gra styl zastępczy i liczy to
   w `OstatnieBrakiChoreografii`.
+- **Efekt w klipie modelu** (bańka, korzenie, fala z klipu): styl `w_klipie` (`Choreo.w_klipie`) — bez pocisku
+  i ozdób z `Efekty3D`; pola `punkt` (gdzie rozbłysk), `celPrzod`, `puszcza` opisuje `Choreografie.luau`.
 - **Nowa choreografia** (nowy styl): funkcja `Choreo.<styl>` w `OdtwarzaczWalki2.luau` (wzór: `Choreo.pocisk` —
   `zaplanujAtak` z funkcją „wypuszczenia”), nazwa w `Choreografie.STYLE`; nowy pocisk / rozbłysk / ozdoba efektu to
   funkcja `Pocisk.<x>` / `Wybuch.<x>` / `Wyglad.<x>` w `Efekty3D.luau`. Nowy typ zdarzenia: `Choreografie.ZDARZENIA` +
@@ -178,18 +190,18 @@ budowie (i `Moduly/Dziennik` z `src/shared/Walka`) — źródło prawdy zostaje 
 | `zrodla/InterfejsWalki2.luau` | interfejs walki (paski, rangi, ikony efektów, tura, nazwa umiejętności, tempo, POMIŃ, napisy, panel wyniku) |
 | `zrodla/WyborWalki2.luau` | panel wyboru przy tablicy |
 | `zrodla/KlientWalki2.client.luau` | podpowiedź → panel → odtwarzacz; komunikat odmowy serwera; haczyki testowe `Sygnaly/PokazAktora`, `Sygnaly/Sterowanie` (m.in. „kadr”, „napisy”) |
-| `zrodla/Ustawienia.luau`, `Klipy.luau`, `Aktorzy.luau` | z etapu 1 (stałe, odtwarzacz klipów z danych, lokalne klony aktorów) |
+| `zrodla/Ustawienia.luau`, `Klipy.luau`, `Aktorzy.luau` | z etapu 1 (stałe, odtwarzacz klipów z danych, lokalne klony aktorów); etap 5: `Klipy` udaje skórowanie siatką (galareta slime'a) i wydłuża efekt z klipu (`graj(…, { wydluz = studs })`) |
 | `zbuduj.py` | odtwarza kontener w Studio (`--skrypty`, `--tylko-aktorzy`, `--sucho`, `--usun`) |
-| `aktorzy.py`, `przerobki.py`, `geometria.py`, `dane/` | z etapu 1: tabela aktorów, klipy zastępcze, kinematyka, dane rigów |
+| `aktorzy.py`, `przerobki.py`, `geometria.py`, `dane/` | tabela aktorów (etap 5: skóra, `zasiegi`, `wydluzenia`), klipy dorobione Rycerzowi, Kotu-Magowi i Zwiadowcy, kinematyka, dane rigów |
 | `testy/test_odtwarzacza.py` | testy bez Studio (pokrycie choreografii, dzienniki z portu, tury, efekty, paski) + `--ziarna` |
 | `testy/sprawdz_edit.py` | tryb Edit, tylko odczyt: moduły się wczytują, serwerowa postać wzorcowa + kopia silnika = Python |
 | `testy/test_walki_play.py` | pełny test w trybie Play (wynik w `testy/wynik_play.json`) |
 | `testy/test_poprawek_play.py` | test Play poprawek po przeglądzie: kadr kamery w chwili trafienia, „−0”, napis i wygląd spowolnienia, odmiana w panelu wyniku, komunikat odmowy, paski / tura / ikony efektów na ekranie = stan silnika (wynik w `testy/wynik_poprawek.json`) |
 | `testy/telefon.py` | emulacja ekranu telefonu w poziomie: zrzuty `klatki/telefon_*.jpg` i wysokość napisów w punktach (`klatki/raport_telefonu.json`) |
-| `testy/klatki_walki.py` | arkusze klatek z prawdziwego odtwarzania → `klatki/walka_*.jpg` |
+| `testy/klatki_walki.py` | arkusze klatek z prawdziwego odtwarzania → `klatki/walka_*.jpg` (etap 5: też pełna walka ze Slime'em i ze Strażnikiem) |
 | `testy/sesja_play.py`, `testy/proba_play.py` | wspólna obsługa sesji Play; próba jednej walki (arkusz albo odtworzenie na żywo) |
 | `testy/ziarna.json` | ziarna pokazowe i testowe (z `test_odtwarzacza.py --ziarna`) |
-| `testy/test_aktorow.py`, `test_klipow_play.py`, `klatki_aktorow.py`, `zrzut_edit.py`, `czuwanie.py` | z etapu 1 |
+| `testy/test_aktorow.py`, `test_klipow_play.py`, `klatki_aktorow.py`, `zrzut_edit.py`, `czuwanie.py` | z etapu 1 (`klatki_aktorow.py --przod`: klipy z przodu 3/4 — twarz i miny) |
 
 W kontenerze: `Moduly/` (moduły wyżej, `TabelaAktorow`, `DaneAktorow/<klucz>/<klip>`, `Walka/` — kopia silnika,
 `Dziennik`), `Aktorzy/` (szablony), `Galeria/`, `Arena/`, `Zdalne/RozpocznijWalke2`, `Sygnaly/PokazAktora`,
@@ -209,7 +221,17 @@ python -B swiat/test_walki2/testy/klatki_walki.py                # tryb Play, ok
 python -B swiat/test_walki2/testy/zrzuty_raportu.py              # tryb Play: duże kadry do raportu → klatki/raport_*.jpg
 ```
 
-Wyniki 15.11: `test_odtwarzacza.py` **9/9**, `test_aktorow.py` **6/6**, `sprawdz_edit.py` **OK** (10/10 modułów,
+**Etap 5 (15.11, po podmianie modeli, pełna przebudowa kontenera, końcowy kod):** `test_odtwarzacza.py` **9/9**
+(2700 dzienników), `test_aktorow.py` **6/6**, `sprawdz_edit.py` **OK** (10/10 modułów, 45/45 walk = Python),
+`test_klipow_play.py` **24/24** (klony obu nowych aktorów grają spoczynek, mają punkty), `test_walki_play.py`
+**112/112**, `test_poprawek_play.py` **29/29** (kadr: kwaśny plusk i uścisk korzeni w stylu `w_klipie`, każde
+trafienie 24- i 33-turowej walki ze Strażnikiem Gaju — pierwszy przebieg dał 28/29: zbliżenie celu pod olbrzymem
+i unik zasłonięty przez Strażnika, poprawione regułą „olbrzym” w kamerze), `telefon.py` **0 napisów poniżej
+12 punktów**; silnik: `tools/walka` 41/41, `zgodnosc_studio.py` 496/496 i 38/38 (po zmianie nazwy strażnika). Klatki
+odświeżone i obejrzane (14 umiejętności, finały, pełna walka z każdym nowym aktorem, arkusze aktorów z boku i slime'a
+z przodu). Studio po każdym teście w trybie Edit.
+
+Wyniki 15.11 (etap 4): `test_odtwarzacza.py` **9/9**, `test_aktorow.py` **6/6**, `sprawdz_edit.py` **OK** (10/10 modułów,
 45/45 walk = Python, funkcje pomocnicze), `test_klipow_play.py` **24/24**, `test_walki_play.py` **112/112**,
 `test_poprawek_play.py` **29/29**, `telefon.py` **0 napisów poniżej 12 punktów**; klatki odświeżone i obejrzane.
 Studio po każdym teście w trybie Edit.
@@ -278,20 +300,60 @@ sesji testują osobno punkty 3f–3k i 5d bez tego atrybutu.
 | odmowa serwera bez komunikatu | `Odtwarzacz.naOdmowe` → KlientWalki2: przy tablicy panel wyboru z polem Status, dalej dymek na 3,5 s | część `odmowa` (za daleko → dymek; zły wybór przy tablicy → panel z komunikatem) |
 | test pasków prawie tautologiczny | nowy test na EKRANIE: po każdym zdarzeniu napis paska, „TURA n” i ikony efektów z licznikami kontra migawka stanu silnika (port Pythona z podglądem stanu przy każdym zdarzeniu) | część `paski`: 5 walk, w tym 24-turowa |
 
+## Właściwe modele (etap 5, 15.11.2026)
+
+Dwa modele zastępcze (przemalowany slime-pet i powiększony troll) zastąpiły modele z `swiat/postacie/` — pliki modeli
+nie są zmieniane, prototyp tylko je czyta (`przerobki.py` nie ma już dla nich funkcji).
+
+| Aktor | Model | Klipy (akcja → klip) | Chwile trafienia (z notatek modelu) | Punkty |
+|---|---|---|---|---|
+| Leśny Slime (`lesny_slime`) | `lesny_slime.py` w. 3: sześcian 2,7 studa, z kiełkiem 3,4 studa; 115 brył, 27 kości | spoczynek `idle`, ruch `ruch`, atak i krytyk `atak`, unik `unik`, trafienie `trafienie`, upadek `upadek`, radość `wiwat`, kwaśny plusk `umiejetnosc` (blok: brak) | pacnięcie kl. 13 (0,43 s), plusk kałuży kl. 31 (1,03 s) | Bron = dół przedniej ściany, Piers = środek przedniej ściany, Pocisk = buzia, Plusk = kałuża |
+| Strażnik Gaju (`straznik_lasu`) | `straznik_gaju.py`: kolos 14,6 studa z koroną; 1128 brył, 36 kości | spoczynek `idle`, ruch `ruch`, atak i krytyk `atak`, unik `unik`, trafienie `trafienie`, upadek `upadek`, radość `ryk`, uścisk korzeni `umiejetnosc` (blok: brak) | pięść kl. 17 (0,57 s), zaciśnięcie korzeni kl. 50 (1,67 s) | Bron = prawa pięść, Piers i Pocisk = kryształ, Korzenie = środek uścisku |
+
+Skala 1,0 (wymiary jak w modelach). Napisy nad głową i „Pasek” liczą się z wysokości modelu (`pasek` = wzrost + 0,9).
+
+**Efekt w klipie zamiast osobnego pocisku (styl `w_klipie`).** Bańka kwasu (kość `Kula`), kałuża (`Plusk`) i pięć
+korzeni (`K1A…K5A` z członami) są w klipach modeli. Odtwarzacz nie puszcza już zielonej kuli ani korzeni z
+`Efekty3D` (nic się nie dubluje): atakujący stoi na miejscu, a moduł Klipy przesuwa w biegu te kości do przodu
+(`wydluzenia` w `aktorzy.py`, opcja `wydluz` klipu) o tyle, o ile cel stoi dalej niż w klipie — bańka leci dłuższym
+łukiem i rozpryskuje się kałużą przy przodzie celu (rozprysk `kwas` na kałuży), korzenie wyrastają pod celem
+(przesunięcie = odstęp aktorów − 6,6 studa). Cel w korzeniach nie dostaje odrzutu, jest lekko uniesiony, póki klip
+go trzyma (do kl. 66). Chwila trafienia = chwila z notatki modelu, klip jest dopasowany do niej prędkością.
+
+**Upadek** obu modeli kończy się leżeniem (kałuża z oczkami / stos głazów): klip upadku gra bez „potem”, więc stoi
+ostatnia klatka (także po POMIŃ). **Unik slime'a** ma pełny piruet (0° → 360°): klatki są przeliczane na CFrame
+i mieszane obrotem (Lerp), a ostatnia klatka 360° = 0°, więc slime nie odkręca się z powrotem (sprawdzone na danych:
+kąt rośnie co klatkę o ≤ 47°, kończy na 360°, i na arkuszu `lesny_slime_unik.jpg`).
+
+**Skórowanie galarety slime'a.** Droga klockowa nie ma wag skóry (galareta szłaby sztywno za kością `Dol`, więc slime
+by się nie zgniatał, a w upadku oczy chowałyby się w nierozlanym sześcianie). Teraz 23 bryły skóry (galareta,
+rumieńce, odblask, rzuty liścia i grzybka) mają `SpecialMesh`, a `Klipy` co klatkę przesuwa i rozciąga ich siatkę
+w pionie wg przesunięcia kości `Gora` — to samo, co liniowe wagi Blendera dla brył w całości między y0 i y1.
+Działa: przysiady, rozciąganie przy plusku i rozlanie w kałużę 0,5 studa (`lesny_slime_upadek_przod.jpg`).
+**Miny** (pięć wersji oczu, cztery ust, nadęte policzki) to podmiana brył na własnych kościach — działa na rigu
+z części bez zmian (`lesny_slime_*_przod.jpg`: oczy „> <”, łuki, wielkie oczy, buzia „o”, oczka na kałuży).
+
+**Kamera przy dużym aktorze** (opis w „Kamera” wyżej): korona Strażnika ma stać pod tabliczkami z paskami, olbrzym
+nie zasłania małego celu w ujęciu bocznym, a szeroki slime nie jest ucinany z brzegu kadru.
+
 ## Pomiary (PC ze Studio — **nie telefon**)
 
-Z przebiegu `test_walki_play.py` (walki przy ×1; kolejny przebieg na końcowym kodzie dał te same wartości w granicach
-±0,1 ms, maks. klatki 36–94 ms — `testy/wynik_play.json`):
+Z przebiegu `test_walki_play.py` na końcowym kodzie etapu 5 (walki przy ×1; `testy/wynik_play.json`; Leśny Slime
+i Strażnik Gaju to już właściwe modele):
 
 | Walka | Czas odtworzenia (dziennik) | Klatka śr. / p95 / maks. | Nasz kod na klatkę śr. / p95 / maks. | Instancji lokalnie | Ujęć |
 |---|---|---|---|---|---|
-| wojownik / lesny_slime / 1, 12 tur | 27,8 s (19,8 s) | 16,67 / 17,94 / 45 ms | 0,21 / 0,42 / 1,9 ms | 1108 | 13 |
-| zwiadowca / cierniowy_wilk / 5, 12 tur | 28,9 s (23,6 s) | 16,70 / 17,79 / 95 ms | 0,30 / 0,63 / 1,7 ms | 2301 | 16 |
-| mag / muchomornik / 10, 10 tur | 24,8 s (21,0 s) | 16,68 / 18,01 / 54 ms | 0,24 / 0,50 / 2,4 ms | 1768 | 14 |
-| długa: wojownik / straznik_lasu / 10, 24 tury | 42,8 s (39,1 s) | 16,67 / 17,83 / 37 ms | 0,24 / 0,48 / 2,2 ms | 2310 | 22 |
-| krótka: mag / muchomornik / 5, 3 tury | 12,6 s (7,3 s) | 16,67 / 18,03 / 31 ms | 0,24 / 0,50 / 1,6 ms | 1257 | 4 |
+| wojownik / lesny_slime / 1, 12 tur | 27,8 s (19,8 s) | 16,69 / 17,99 / 84 ms | 0,27 / 0,50 / 1,6 ms | 1329 | 13 |
+| zwiadowca / cierniowy_wilk / 5, 12 tur | 28,9 s (23,6 s) | 16,70 / 17,93 / 95 ms | 0,30 / 0,60 / 1,7 ms | 2301 | 18 |
+| mag / muchomornik / 10, 10 tur | 24,7 s (21,0 s) | 16,68 / 17,92 / 50 ms | 0,24 / 0,48 / 2,1 ms | 1768 | 14 |
+| długa: wojownik / straznik_lasu / 10, 24 tury | 42,8 s (39,1 s) | 16,68 / 17,92 / 58 ms | 0,37 / 0,84 / 1,9 ms | 3785 | 22 |
+| krótka: mag / muchomornik / 5, 3 tury | 12,6 s (7,3 s) | 16,66 / 18,00 / 31 ms | 0,24 / 0,48 / 1,5 ms | 1257 | 4 |
 
-- Od WALCZ do pierwszej klatki walki: 152–170 ms (w tym prośba do serwera 57–91 ms i zaciemnienie).
+Etap 5 względem etapu 4: walka ze Strażnikiem Gaju ma 3785 instancji lokalnie (było 2310 z trollem zastępczym),
+a nasz kod na klatkę 0,37 ms średnio (było 0,24) — więcej kości w klipach; walka ze Slime'em 1329 instancji (było
+1108; skóra liczy 23 siatki co klatkę). Klatka dalej trzyma limit 60 FPS Studia.
+
+- Od WALCZ do pierwszej klatki walki: 154–171 ms (w tym prośba do serwera 57–78 ms i zaciemnienie).
 - „Nasz kod na klatkę” = czas procesora całej funkcji klatki odtwarzacza (oś czasu, pozy, klipy, efekty, kamera,
   interfejs, chowanie obcych), bez renderowania. Średni czas klatki = limit 60 FPS Studia; pojedyncze długie klatki
   (do 95 ms) przypadają na start walki (klonowanie aktorów; Wilk ma 1138 instancji).
@@ -309,11 +371,13 @@ Z przebiegu `test_walki_play.py` (walki przy ×1; kolejny przebieg na końcowym 
 | `walka_krytyk.jpg`, `walka_blok.jpg`, `walka_unik.jpg` | krytyk wręcz (zwolnienie, wjazd), blok tarczą Wojownika, unik |
 | `walka_tykniecie.jpg`, `walka_utrata_tury.jpg` | tyknięcie trucizny, ogłuszenie i utrata tury |
 | `walka_final_wygrana.jpg`, `walka_final_przegrana.jpg` | finał (upadek, radość, baner, łup, objazd) i panel wyniku — z Shardem Ewolucji i po przegranej |
-| `walka_dluga_walka.jpg` | przekrój 24-turowej walki co ok. 2,4 s — zróżnicowanie ujęć |
+| `walka_dluga_walka.jpg` | przekrój 24-turowej walki co ok. 2,4 s — zróżnicowanie ujęć (Wojownik ze Strażnikiem Gaju) |
+| `walka_pelna_walka_lesny_slime.jpg`, `walka_pelna_walka_straznik_lasu.jpg` | etap 5: pełna walka z każdym z właściwych modeli, 15 kadrów od startu do końca i panel wyniku |
 | `walka_panel_wyboru.jpg` | panel wyboru przy tablicy |
 | `telefon_<szer>x<wys>_{panel,walka,wynik}.jpg` | emulacja telefonu w poziomie (844 × 390, 667 × 375): panel wyboru, walka z umiejętnością i efektami, panel wyniku; `raport_telefonu.json` — wysokość każdego napisu w punktach |
 | `raport_1..5_*.jpg` | duże pojedyncze kadry do raportu w panelu (panel wyboru, krytyk, kula ognia w locie, spowolnienie z lodem i utratą tury, panel wyniku z łupem) |
 | `raport_klatek_walki.json` | które walki i ziarna są na arkuszach |
+| `lesny_slime_*.jpg`, `straznik_lasu_*.jpg` | etap 5: spoczynek z czterech stron (bok, przód 3/4, przód, tył 3/4) i każdy klip z boku (8 klatek); `lesny_slime_<klip>_przod.jpg` — te same klipy z przodu 3/4 (twarz, miny, kałuża z oczkami) |
 | reszta (`<aktor>_*.jpg`, `obrys_*.jpg`) | z etapu 1: klipy aktorów i porównanie obrysu |
 
 Uwaga do arkuszy: zdjęcia robione są przy zatrzymanym czasie sceny (narzędzie przesuwa go skokami), a napisy nad
@@ -339,16 +403,28 @@ przy zwykłym oglądaniu. Pierwsze klatki tuż po starcie Play zasłaniał ekran
 
 - **Klipy zastępcze z etapu 1** (Rycerz, Kot-Mag) to szkice: „Potężne cięcie” to obrót z mieczem — w ujęciu krytyka
   Wojownik obraca się ku kamerze i wypełnia lewą część kadru; garda Rycerza odwraca go przodem do kamery.
-- **Szerokie i duże modele** (Slime 4,9 studa szerokości, Troll 10 i Strażnik 12 wysokości) czasem wchodzą częściowo
-  poza kadr albo zasłaniają część sceny w ujęciach z bliska; reguły kadrowania to ograniczają, ale nie zawsze.
+- **Duże modele** (Troll 10, Strażnik Gaju 14,6 studa) — kamera trzyma koronę pod tabliczkami, ale Wojownik czy Mag
+  są przy Strażniku małe (1/2,5 jego wzrostu); w krytyku przy Strażniku nie ma już „wjazdu” (kadr musi objąć
+  kolosa). Na niektórych kadrach korona dotyka tabliczki z rangą. W objeździe po upadku Strażnika gałęzie korony ze
+  stosu głazów wchodzą czasem na pierwszy plan.
 - **Strzały i iskry są szybkie** — w zwykłym tempie lot strzały trwa ok. 0,25 s; na arkuszach rzadko widać ją w locie.
 - **Dużo napisów naraz** w turach z kilkoma zdarzeniami (cios + nałożenie + tarcza) — układają się pod sobą, ale
   bywa tłoczno, zwłaszcza na małym ekranie.
 - **Na prawdziwym telefonie interfejsu nie oglądałem.** Sprawdzona jest emulacja proporcji i rozmiaru w punktach
   (844 × 390, 667 × 375; `testy/telefon.py`) — to nie mierzy dotyku, gęstości pikseli ani wydajności telefonu.
   Okno Studio miało 761 × 675 px, więc emulacja 844 × 390 jest pomniejszona do 0,9.
-- Leśny Slime i Strażnik Lasu są **zastępcze** (etap 1). Wojownik nie ma w próbie walki ze wszystkimi 9 rodzajami
-  zdarzeń naraz (brak tyknięcia w tej samej walce co blok i utrata tury).
+- **Modeli zastępczych już nie ma** (etap 5). Słabe strony właściwych modeli na rigu z części Roblox (uczciwie):
+  - Leśny Slime: klocki nie mają fazowania, więc to ostry sześcian (w Blenderze krawędzie są mocno ścięte); galareta
+    ma materiał `Glass` i z przodu jest ciemniejsza niż na renderach; „brzuszki” wysuwane przy przysiadzie i płaty
+    kałuży czytają się jako osobne soczewki na ścianie; nadęte policzki prawie niewidoczne. Skórowanie jest
+    przybliżone siatką (tylko pion; przesunięcie w bok przesuwa bryłę bez ścinania). Kałuża po upadku ma prostokątny
+    środek (jak w modelu). Bańka przy wydłużonym locie leci ok. 7 studów w 0,33 s klipu — szybko.
+  - Strażnik Gaju: 1128 brył (Troll 390) — klon 2346 instancji (Troll 825), klonowanie ok. 70 ms; świecenie kryształu
+    i oczu to tylko materiał `Neon` (bez PointLight); stos głazów po upadku z daleka czyta się słabo, głazy się
+    przenikają (jak w modelu); chód jest w miejscu. Korzenie w biegu przesuwają się pod ziemią pod cel — w klatce
+    przejścia (z tułowia pod ziemię) mogą mignąć w bryle strażnika (jedna klatka, jak w modelu).
+- Wojownik nie ma w próbie walki ze wszystkimi 9 rodzajami zdarzeń naraz (brak tyknięcia w tej samej walce co blok
+  i utrata tury).
 - Dźwięki: tylko cztery wbudowane z v1 (cios, krytyk, upadek, przycisk); pociski i czary są ciche.
 - Arena stoi w świecie wspólnym — obcy są chowani lokalnie jak w v1 (te same ograniczenia: części z `CanQuery = false`
   bez tagu, dźwięki innych graczy).
@@ -374,3 +450,12 @@ przy zwykłym oglądaniu. Pierwsze klatki tuż po starcie Play zasłaniał ekran
   napisy starzeją się w czasie rzeczywistym.
 - `string.upper` w Luau nie zmienia polskich liter („STRAżNIK”); w czcionkach komiksowych prototypu (same wersaliki)
   wygląda to dobrze, ale napisy porównywane w testach (napisy efektów) są w danych od razu wielkimi literami.
+- Etap 5: skórowanie modelu (`p.skoruj`) droga klockowa gubi — bryła jedzie sztywno za jedną kością. Zgniatanie
+  robimy siatką (`SpecialMesh.Scale` i `Offset` co klatkę), bo zmiana `Size` części przyspawanej `WeldConstraint`
+  ruszałaby fizykę złożenia. Siatka wbudowana (`Brick`, `Sphere`…) skaluje się względem rozmiaru części.
+- Etap 5: przesunięcie kości „w świecie aktora” (wydłużenie efektu z klipu) liczy się z obrotów `Transform` łańcucha
+  rodziców — stawy prototypu mają `C0`/`C1` bez obrotu, więc obrót części kości = iloczyn obrotów `Transform`.
+- Etap 5 (kontrola): `Attachment.WorldCFrame` punktu na kości jest **o klatkę za** `Transform` ustawionym w tej
+  klatce. Kałuża slime'a przeskakuje ze schowka przed niego w jednej klatce klipu (kl. 30 → 31), więc rozprysk kwasu
+  czytany z `Punkt_Plusk` w chwili trafienia wypadał przy slimie albo w pół drogi. Rozbłysk stylu `w_klipie` stoi
+  teraz w miejscu policzonym z zasięgu klipu i wydłużenia (`ev.zasiegEfektu`), nie z punktu.

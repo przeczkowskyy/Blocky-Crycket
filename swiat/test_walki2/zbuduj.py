@@ -315,13 +315,16 @@ def moduly_danych():
             "liczbaCzesci": len(d["czesci"]),
         }
         tabela["aktorzy"][w["klucz"]].update(geometria_ciosu(d))
+        # ręczne zasięgi z tabeli (klip „trafia” dalej niż punkt Bron: kałuża kwasu, środek uścisku korzeni)
+        tabela["aktorzy"][w["klucz"]]["zasiegi"].update({k: float(v) for k, v in (w.get("zasiegi") or {}).items()})
         # moduł aktora: kości + klipy z modułów-dzieci (jeden klip = jeden moduł: Source ma limit 200 000 znaków)
         sciezka = "Moduly/DaneAktorow/" + w["klucz"]
         glowny = (naglowek % ("dane/%s.json" % w["klucz"]) +
                   "local klipy = {}\nfor _, m in script:GetChildren() do\n\tif m:IsA(\"ModuleScript\") then\n"
                   "\t\tklipy[m.Name] = require(m)\n\tend\nend\n" +
-                  "return { klucz = %s, kosci = %s, klipy = klipy }\n"
-                  % (luau(w["klucz"]), luau([[k[0], k[1], k[11]] for k in d["kosci"]])))
+                  "return { klucz = %s, kosci = %s, klipy = klipy, skora = %s, wydluzenia = %s }\n"
+                  % (luau(w["klucz"]), luau([[k[0], k[1], k[11]] for k in d["kosci"]]), luau(d.get("skora", [])),
+                     luau(d.get("wydluzenia", {}))))
         dane_aktorow.append((sciezka, glowny))
         for k in d["klipy"]:
             klip = {"fps": k["fps"], "petla": k["petla"], "dl": k["dl"], "kosci": k["kosci"], "klatki": k["klatki"]}

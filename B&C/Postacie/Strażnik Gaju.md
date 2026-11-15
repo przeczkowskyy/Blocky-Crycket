@@ -5,7 +5,7 @@ tags: [postacie, potwor, model-3d]
 ---
 # Strażnik Gaju
 
-Strażnik biomu lasu, czyli najważniejszy przeciwnik lasu w walce. Ma najwięcej życia, a jego umiejętność to uścisk korzeni, który unieruchamia (statystyki: [[Walka v2 — silnik, klasy i umiejętności]], w danych walki pod id `straznik_lasu` i nazwą „Strażnik Lasu” — która nazwa obowiązuje, jest jeszcze do decyzji). W tym samym lesie walczą [[Leśny Troll]], [[Cierniowy Wilk]] i [[Muchomornik]]. Model 3D jest **propozycją** do oceny i nie ma go jeszcze w Roblox.
+Strażnik biomu lasu, czyli najważniejszy przeciwnik lasu w walce. Ma najwięcej życia, a jego umiejętność to uścisk korzeni, który unieruchamia (statystyki: [[Walka v2 — silnik, klasy i umiejętności]], w danych walki pod id `straznik_lasu`; nazwa od 15.11.2026 wszędzie jedna: „Strażnik Gaju”). W tym samym lesie walczą [[Leśny Troll]], [[Cierniowy Wilk]] i [[Muchomornik]]. Model 3D jest **propozycją** do oceny i nie ma go jeszcze w Roblox.
 
 ## Wygląd
 - Wysoki, dostojny kolos z ciepłoszarego kamienia i plecionego drewna. Tułów w kształcie odwróconego klina, wielkie głazy z mchem na barkach, długie ręce z kamiennymi pięściami.

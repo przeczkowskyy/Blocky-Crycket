@@ -115,5 +115,15 @@
    761,
    675
   ]
+ },
+ "pelna_walka_lesny_slime": {
+  "wybor": "wojownik/lesny_slime/1",
+  "ziarno": 451425,
+  "opis": "pełna walka z aktorem lesny_slime (7 tur, wygrana) — przekrój i panel wyniku"
+ },
+ "pelna_walka_straznik_lasu": {
+  "wybor": "wojownik/straznik_lasu/5",
+  "ziarno": 689121,
+  "opis": "pełna walka z aktorem straznik_lasu (13 tur, wygrana) — przekrój i panel wyniku"
  }
 }

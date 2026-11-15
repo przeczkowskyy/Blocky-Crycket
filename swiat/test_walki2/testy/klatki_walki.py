@@ -85,6 +85,14 @@ def plan_arkuszy(Z):
         ost = w["dziennik"][-1]
         a, b = ost["t"] - 0.1, w["czas"] - 0.01
         plan[nazwa] = (p, [a + (b - a) * k / 6 for k in range(7)] + ["wynik"], "finał (%s), ostatnia klatka = panel wyniku" % w["wynik"])
+    # pełna walka z Leśnym Slime'em i ze Strażnikiem Gaju (właściwe modele od 15.11): przekrój od startu do panelu wyniku
+    for klucz, uid in (("lesny_slime", "kwasny_plusk"), ("straznik_lasu", "uscisk_korzeni")):
+        p = Z["umiejetnosci"].get(uid)
+        if p and p["przeciwnik"] == klucz:
+            w = dziennik(p)
+            plan["pelna_walka_" + klucz] = (p, [0.6 + (w["czas"] - 0.6) * k / 14 for k in range(15)] + ["wynik"],
+                                            "pełna walka z aktorem %s (%d tur, %s) — przekrój i panel wyniku"
+                                            % (klucz, w["tury"], w["wynik"]))
     # długa walka: przekrój co kilka sekund (zróżnicowanie ujęć)
     p = Z["dluga"]
     w = dziennik(p)

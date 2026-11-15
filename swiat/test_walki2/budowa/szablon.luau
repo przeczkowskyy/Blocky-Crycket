@@ -118,10 +118,21 @@ for _, c in D.czesci do
 	p.Reflectance = mat[2]
 	p.Anchored = false
 	bezFizyki(p)
+	local skora = c[17] or 0
 	if c[16] ~= "" then
 		local sm = Instance.new("SpecialMesh")
 		sm.MeshType = Enum.MeshType[c[16]]
 		sm.Parent = p
+	elseif skora > 0 then
+		-- bryła skóry (np. galareta slime'a): siatka tego samego kształtu, którą moduł Klipy przesuwa i rozciąga
+		local sm = Instance.new("SpecialMesh")
+		sm.MeshType = if ks == 1 then Enum.MeshType.Sphere elseif ks == 2 then Enum.MeshType.Cylinder
+			elseif ks == 3 then Enum.MeshType.Wedge elseif ks == 4 then Enum.MeshType.CornerWedge else Enum.MeshType.Brick
+		sm.Parent = p
+	end
+	if skora > 0 then
+		p:SetAttribute("Skora", skora)
+		p:SetAttribute("SkoraY", c[5]) -- wysokość środka bryły nad ziemią (układ rigu) — z niej waga skóry
 	end
 	local kosc = kosci[c[1]]
 	local w = Instance.new("WeldConstraint")

@@ -5,9 +5,9 @@ Każda funkcja dostaje gotową postać (Postac z modułu modelu) i dokłada to, 
 - Rycerz (Wojownik): tarcza na lewym przedramieniu (Wojownik blokuje tylko tarczą) i klipy, których model nie ma:
   blok, unik, trafienie, upadek oraz trzy umiejętności (cięcie, miażdżący cios, kamienna skóra);
 - Kot-Mag (Mag): zwykły atak kosturem, lodowy pocisk, bariera, trafienie, unik, upadek (kula ognia = istniejący „czar”);
-- Zwiadowca: skupienie (jedyna umiejętność bez klipu w modelu);
-- Leśny Slime (ZASTĘPCZY: slime-pet ×1,5, zielony): trafienie, unik, upadek;
-- Strażnik Lasu (ZASTĘPCZY: Leśny Troll ×1,2, kamienne barwy, zielony kryształ w piersi).
+- Zwiadowca: skupienie (jedyna umiejętność bez klipu w modelu).
+Leśny Slime i Strażnik Gaju (15.11) grają właściwe modele z własnymi klipami — bez przeróbek (wcześniejsze modele
+zastępcze: przemalowany slime-pet i powiększony troll, usunięte).
 Klipy zastępcze są szkicami (kilka póz kluczowych), oznaczone w tabeli aktorów polem „zastepcze_klipy”.
 
 Konwencje biblioteki (swiat/postacie/biblioteka/README.md): postać patrzy w +Z, lewa strona +X; rx < 0 unosi rękę
@@ -285,42 +285,4 @@ def zwiadowca(p):
     k.poza(44, start)
 
 
-# --------------------------------------------------------------------------- Leśny Slime (zastępczy: slime-pet)
-def lesny_slime(p):
-    p.skala = 1.5
-    # trafienie: galareta odskakuje w tył i przechyla się
-    k = p.klip("trafienie", 16, petla=False)
-    k.klucz(0, "Cialo", przes=(0, 0, 0), obrot=(0, 0, 0))
-    k.klucz(3, "Cialo", przes=(0, 0.25, -0.55), obrot=(-16, 0, 6))
-    k.klucz(8, "Cialo", przes=(0, 0, -0.45), obrot=(4, 0, -2))
-    k.klucz(16, "Cialo", przes=(0, 0, 0), obrot=(0, 0, 0))
-    # unik: podskok w bok i powrót
-    k = p.klip("unik", 22, petla=False)
-    k.klucz(0, "Cialo", przes=(0, 0, 0), obrot=(0, 0, 0))
-    k.klucz(6, "Cialo", przes=(1.1, 0.9, -0.4), obrot=(0, 0, 16))
-    k.klucz(11, "Cialo", przes=(1.4, 0, -0.5), obrot=(0, 0, 0))
-    k.klucz(14, "Cialo", przes=(1.4, 0, -0.5), obrot=(0, 0, 0))
-    k.klucz(22, "Cialo", przes=(0, 0, 0), obrot=(0, 0, 0))
-    # upadek: przewraca się na plecy (oczy do góry) i zostaje
-    k = p.klip("upadek", 30, petla=False)
-    k.klucz(0, "Cialo", przes=(0, 0, 0), obrot=(0, 0, 0))
-    k.klucz(6, "Cialo", przes=(0, 0.35, -0.2), obrot=(-25, 0, 8))
-    k.klucz(14, "Cialo", przes=(0, 1.175, -0.1), obrot=(-90, 0, 0))
-    k.klucz(18, "Cialo", przes=(0, 1.4, -0.1), obrot=(-84, 0, 0))
-    k.klucz(22, "Cialo", przes=(0, 1.175, -0.1), obrot=(-90, 0, 0))
-    k.klucz(30, "Cialo", przes=(0, 1.175, -0.1), obrot=(-90, 0, 0))
-
-
-# --------------------------------------------------------------------------- Strażnik Lasu (zastępczy: troll)
-def straznik_lasu(p):
-    p.skala = 1.2
-    a = Akcesorium("straznik_krysztal", "Kryształ Strażnika (dodatek prototypu)", zaczep="PiersAttachment", typ="Bron")
-    a.blok("Krysztal", (0, 0, 0.15), (1.0, 1.0, 0.5), "52F07A", "swiecacy", rot=(0, 0, 45), faza=0.05)
-    a.blok("Oprawa", (0, 0, -0.05), (1.45, 1.45, 0.4), "5D636B", "matowy", rot=(0, 0, 45), faza=0.05)
-    # przód tułowia trolla na wysokości piersi: ok. 3,1 studa przed stawem Tulow (zmierzone z danych rigu)
-    p.zaczep("PiersAttachment", "Tulow", (0, 2.2, 3.05))
-    p.zaloz(a, eksport=False)
-
-
-PRZEROBKI = {"rycerz": rycerz, "kot_mag": kot_mag, "zwiadowca": zwiadowca, "lesny_slime": lesny_slime,
-             "straznik_lasu": straznik_lasu}
+PRZEROBKI = {"rycerz": rycerz, "kot_mag": kot_mag, "zwiadowca": zwiadowca}

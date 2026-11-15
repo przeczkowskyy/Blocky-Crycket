@@ -82,7 +82,7 @@ Własne projekty (żadnych postaci z cudzych gier). Wartości na 5. poziomie; ka
 | **Cierniowy Wilk** | zwykły | 282 życia, 23% uniku, krytyk × 2,1 | Rozszarpanie: 127% + krwawienie | Chudy, kanciasty wilk o futrze z ciemnej sierści przetykanej kolcami jeżyny, z bursztynowymi świecącymi oczami i ogonem jak zarośla. |
 | **Muchomornik** | zwykły | 329 życia, bije laską (62) | Chmura zarodników: 74% magiczne + trucizna | Niski grzybowy ludek z czerwonym kapeluszem w białe kropki, bródką z mchu i krzywą laską z korzenia, z której sypią się świecące zarodniki. |
 | **Leśny Troll** | rzadki, ciężki | 597 życia, gruby Pancerz (15) | Ogłuszające uderzenie: 166% + 60% szans na spowolnienie | Ogromny, przygarbiony troll o skórze jak kora, z poduchami mchu i grzybami na plecach; wlecze maczugę z wyrwanego pnia z korzeniami. |
-| **Strażnik Lasu** | strażnik biomu | 772 życia, Pancerz 15 | Uścisk korzeni: 140% magiczne + spowolnienie (jedyna, własna) | Wysoki kolos z kamienia i splecionego drewna, z koroną z gałęzi, korzeniami zamiast stóp i świecącym zielonym kryształem w piersi. |
+| **Strażnik Gaju** | strażnik biomu | 772 życia, Pancerz 15 | Uścisk korzeni: 140% magiczne + spowolnienie (jedyna, własna) | Wysoki kolos z kamienia i splecionego drewna, z koroną z gałęzi, korzeniami zamiast stóp i świecącym zielonym kryształem w piersi. |
 
 Pancerz i odporność na magię każdego potwora są strojone osobno (odporność to ok. 0,1–0,6 Pancerza), żeby Mag (magia omija Pancerz) nie był ani silniejszy, ani słabszy od klas fizycznych przy żadnym potworze. Trudność: średnia postać tego samego poziomu wygrywa ok. 80–87% walk ze zwykłymi, ok. 50–57% z trollem i ok. 30–39% ze strażnikiem; na poziomach 1–4 (jeden slot) rozrzut jest większy: 65–91%, 37–66% i 18–46%.
 
@@ -102,7 +102,7 @@ Największa różnica procentu wygranych między klasami (pp) — ziarna testu 1
 | Cierniowy Wilk | 6,2 / 6,4 | 4,7 / 3,3 | 6,9 / 6,7 |
 | Muchomornik | 4,3 / 3,5 | 2,4 / 1,8 | 3,6 / 5,3 |
 | Leśny Troll (rzadki) | 4,5 / 6,9 | 5,1 / 2,6 | 2,5 / 4,6 |
-| Strażnik Lasu | 4,9 / 7,6 | 2,7 / 5,1 | 2,9 / 4,9 |
+| Strażnik Gaju | 4,9 / 7,6 | 2,7 / 5,1 | 2,9 / 4,9 |
 
 Procent wygranych Wojownik / Zwiadowca / Mag z potworem tego samego poziomu (ziarna testu):
 
@@ -112,7 +112,7 @@ Procent wygranych Wojownik / Zwiadowca / Mag z potworem tego samego poziomu (zia
 | Cierniowy Wilk | 89 / 83 / 82 | 81 / 76 / 77 | 86 / 83 / 83 | 87 / 80 / 81 | 5–8–23 | 16 s |
 | Muchomornik | 83 / 80 / 81 | 76 / 75 / 73 | 86 / 84 / 85 | 85 / 81 / 84 | 3–8–18 | 15 s |
 | Leśny Troll (rzadki) | 66 / 63 / 64 | 41 / 38 / 37 | 57 / 55 / 57 | 56 / 56 / 57 | 5–13–27 | 23 s |
-| Strażnik Lasu | 46 / 42 / 45 | 22 / 21 / 18 | 36 / 36 / 39 | 38 / 37 / 36 | 5–16–32 | 29 s |
+| Strażnik Gaju | 46 / 42 / 45 | 22 / 21 / 18 | 36 / 36 / 39 | 38 / 37 / 36 | 5–16–32 | 29 s |
 
 **Klasa na klasę** (ziarna testu, wszystkie 13 poziomów): Wojownik–Zwiadowca 49,3–52,9%, Wojownik–Mag 45,5–51,2%, Zwiadowca–Mag 48,9–54,5%. Żadna klasa nie kontruje innej. Na ziarnach kontrolnych wszystko w 45–55% poza Wojownik–Mag na **2. poziomie: 43,7–44,6%** (Mag lekko silniejszy tylko na tym jednym poziomie).
 

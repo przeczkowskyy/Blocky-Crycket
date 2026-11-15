@@ -14,6 +14,10 @@
 	Pola wpisu umiejętności:
 	  styl     "wrecz" (doskok i cios), "skok" (wyskok i cios z góry), "pocisk" (coś leci od aktor:punkt("Pocisk") do
 	           piersi celu), "chmura" (chmura płynie i otula cel), "korzenie" (korzenie wyrastają spod celu),
+	           "w_klipie" (efekt jest w klipie aktora — bańka i kałuża Leśnego Slime'a, korzenie Strażnika Gaju: atakujący
+	           stoi, a kości efektu sięgają do celu, patrz Klipy „wydluz”; punkt = punkt efektu w modelu (opis; rozbłysk
+	           `wybuch` stoi tam, gdzie efekt ląduje: zasięg klipu + wydłużenie), celPrzod = efekt trafia w przód celu,
+	           puszcza = ile sekund klipu po trafieniu efekt trzyma cel — bez odrzutu),
 	           "na_siebie" (aura wokół rzucającego; efekt pokazuje zdarzenie efekt_nalozony)
 	  pocisk   rodzaj pocisku (Efekty3D: Pocisk.<nazwa>); predkosc w studach na sekundę, luk = wysokość łuku lotu
 	  wybuch   rozbłysk przy trafieniu (Efekty3D: Wybuch.<nazwa>)
@@ -43,7 +47,7 @@ Ch.ZDARZENIA = {
 }
 
 -- style choreografii (Choreo.<styl> w odtwarzaczu)
-Ch.STYLE = { "wrecz", "skok", "pocisk", "chmura", "korzenie", "na_siebie" }
+Ch.STYLE = { "wrecz", "skok", "pocisk", "chmura", "korzenie", "w_klipie", "na_siebie" }
 
 -- zwykły cios aktora: klucz aktora → wpis jak u umiejętności; brak wpisu = ZWYKLY_CIOS
 Ch.ZWYKLY_CIOS = { styl = "wrecz", smuga = false }
@@ -72,11 +76,11 @@ Ch.UMIEJETNOSCI = {
 	lodowy_pocisk = { styl = "pocisk", pocisk = "lod", wybuch = "lod", predkosc = 34, wstrzas = 0.3 },
 	bariera = { styl = "na_siebie", aura = "bariera" },
 	-- potwory lasu
-	kwasny_plusk = { styl = "pocisk", pocisk = "kwas", wybuch = "kwas", predkosc = 20, luk = 3.5, kamera = "boczny" }, -- szeroki slime zasłaniał kadr zza pleców
+	kwasny_plusk = { styl = "w_klipie", punkt = "Plusk", wybuch = "kwas", celPrzod = true, wstrzas = 0.3, kamera = "boczny" }, -- bańka i kałuża z klipu modelu
 	rozszarpanie = { styl = "wrecz", pazury = "#FF3B4F", wstrzas = 0.4, kamera = "zaBroniacym" },
 	chmura_zarodnikow = { styl = "chmura", kolor = "#B07CFF", wybuch = "zarodniki" },
 	ogluszajace_uderzenie = { styl = "wrecz", fala = "#8B6A43", wstrzas = 0.7, kamera = "zaBroniacym" },
-	uscisk_korzeni = { styl = "korzenie", kolor = "#5A3A22", wstrzas = 0.4, kamera = "boczny" },
+	uscisk_korzeni = { styl = "w_klipie", punkt = "Korzenie", puszcza = 0.53, wstrzas = 0.4, kamera = "boczny" }, -- korzenie z klipu: zaciśnięte kl. 50–66
 }
 
 --[[ Efekty na postaci: widoczne od efekt_nalozony do efekt_koniec (albo końca walki).

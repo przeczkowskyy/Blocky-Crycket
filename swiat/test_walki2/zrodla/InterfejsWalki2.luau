@@ -57,9 +57,10 @@ local IKONY = {
 		paleta = { P = "#7B4DFF", Y = "#FFD23F", O = "#FF9A2E", K = "#17121F", W = "#FFFFFF" },
 		mapa = { "...PP...", "..PYPP..", ".PPPPPP.", "PPPPPPPP", ".OOOOOO.", ".OKOOKO.", ".OOWWOO.", "..OOOO.." },
 	},
+	-- Leśny Slime: kostka galarety z kiełkiem, duże oczy z błyskiem, rumieńce (swiat/postacie/lesny_slime.py)
 	lesny_slime = {
-		paleta = { G = "#7BE04A", g = "#4CB443", K = "#17121F", L = "#DFFF9A" },
-		mapa = { "........", ".GGGGGG.", "GgGGGGgG", "GGKGGKGG", "GGGGGGGG", "GGGLLGGG", "GgGGGGgG", ".GGGGGG." },
+		paleta = { G = "#7EDB57", g = "#5CB842", K = "#17121F", W = "#FAFFF0", R = "#FF8DA1", L = "#A6E34F" },
+		mapa = { "...LL...", "GGGGGGGG", "GGGGGGGG", "GKWGGKWG", "GKKGGKKG", "RGGGGGGR", "GGGKKGGG", "gggggggg" },
 	},
 	cierniowy_wilk = {
 		paleta = { D = "#4A4252", A = "#FFB52E", B = "#17121F", W = "#FFFFFF", G = "#4CB443" },
@@ -73,9 +74,10 @@ local IKONY = {
 		paleta = { g = "#4E9E3C", B = "#86704F", Y = "#FFE14A", K = "#17121F", T = "#FFFFFF" },
 		mapa = { "..gggg..", ".BBBBBB.", "BBBBBBBB", "BBYBBYBB", "BBBBBBBB", "BTBBBBTB", "BBKKKKBB", ".BBBBBB." },
 	},
+	-- Strażnik Gaju: kamienna głowa, korona z gałęzi, zielone oczy, broda z korzonków (swiat/postacie/straznik_gaju.py)
 	straznik_lasu = {
-		paleta = { g = "#4E9E3C", S = "#8E949B", G = "#7CFF9B", C = "#3FD46A" },
-		mapa = { "g.g..g.g", "SSSSSSSS", "SSGSSGSS", "SSSSSSSS", "SSSCCSSS", "SSCCCCSS", "SSSCCSSS", ".SSSSSS." },
+		paleta = { M = "#7DAE3C", B = "#8E5B32", S = "#858074", s = "#57524C", G = "#36EE4E", K = "#2B2428" },
+		mapa = { "M.B..B.M", ".BMBBMB.", "SSSSSSSS", "SsGSSGsS", "SSSSSSSS", "SSsKKsSS", "SBSBBSBS", ".B.BB.B." },
 	},
 	-- efekty
 	trucizna = {

@@ -228,7 +228,7 @@ return {
 			},
 			mnoznik_krytyka = 1.944,
 			moc = 1,
-			nazwa = "Strażnik Lasu",
+			nazwa = "Strażnik Gaju",
 			odpornosc = { 1.65, 0.9042 },
 			pancerz = { 7.517, 1.963 },
 			ranga = "straznik",

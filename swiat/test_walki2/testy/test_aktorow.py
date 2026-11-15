@@ -38,7 +38,7 @@ BRON = {
     "zwiadowca": {"grupy": ["zwiadowca_luk", "zwiadowca_sztylet"], "cialo": ["Head", "UpperTorso", "LowerTorso"]},
     "mag": {"grupy": ["kot_mag_kostur"], "cialo": ["Head", "UpperTorso", "LowerTorso"]},
     "lesny_troll": {"kosci": ["Maczuga"], "cialo": ["Glowa", "Tulow"]},
-    "straznik_lasu": {"kosci": ["Maczuga"], "cialo": ["Glowa", "Tulow"]},
+    "straznik_lasu": {"kosci": ["DlonL", "DlonP"], "cialo": ["Glowa"]},
     "muchomornik": {"kosci": ["Laska"], "cialo": ["Glowa", "Tulow"]},
 }
 MARGINES = 0.06       # studa: płytkie muśnięcie krawędzi bryły ciała nie liczy się jako przenikanie

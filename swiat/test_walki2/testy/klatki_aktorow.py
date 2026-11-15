@@ -162,6 +162,7 @@ def main():
     ap.add_argument("--obrys", action="store_true", help="tylko porównanie obrysu na Leśnym Trollu")
     ap.add_argument("--punkty", action="store_true", help="pokaż punkty Punkt_* jako świecące kulki")
     ap.add_argument("--bez-klipow", action="store_true", help="tylko spoczynek")
+    ap.add_argument("--przod", action="store_true", help="klipy z przodu 3/4 (twarz, miny) zamiast z boku; pliki *_przod.jpg")
     ap.add_argument("--wyj", default=os.path.join(KATALOG, "klatki"))
     ap.add_argument("--studio", default=None)
     a = ap.parse_args()
@@ -250,6 +251,7 @@ def main():
                 h = max(d["wymiary"]["wysokosc"], 2.5)
                 zasieg = max(d["wymiary"]["promien"], h * 0.6)
                 odl = max(9.0, min(zasieg * 2.0, h * 0.8 + 4.0) + h * 1.4)   # maczuga leżąca na ziemi zawyża zasięg
+                odl = min(odl, 27.0)   # Strażnik Gaju (14,5 studa): z dalszej kamery kadr zasłaniała tablica areny
                 if bok:   # widok z boku sceny (jak w walce), lekko z góry
                     return "%.2f, %.2f, %.2f" % (odl * 0.18, h * 0.62, odl), "0, %.2f, 0" % (h * 0.45)
                 import math
@@ -293,7 +295,7 @@ def main():
                         continue
                     for klip, dlug in klipy_do_zdjec(w, d, a.wszystkie):
                         kafle = []
-                        kam, cel = kamera(d)
+                        kam, cel = kamera(d, bok=False, kat=math.radians(30), kier=kier) if a.przod else kamera(d)
                         for i in range(a.klatki):
                             t = dlug * i / float(a.klatki - 1)
                             wynik = pozuj(klip, "%.4f" % t, kam, cel)
@@ -301,7 +303,7 @@ def main():
                             chw = d["chwile"].get(klip)
                             znak = " *TRAF" if chw is not None and abs(t - chw) < dlug / (2.0 * (a.klatki - 1)) else ""
                             kafle.append(zrzut("%s %s t=%.2f s%s" % (klucz, klip, t, znak)))
-                        arkusz(kafle, os.path.join(a.wyj, "%s_%s.jpg" % (klucz, klip)))
+                        arkusz(kafle, os.path.join(a.wyj, "%s_%s%s.jpg" % (klucz, klip, "_przod" if a.przod else "")))
             luau(SPRZATAJ)
         finally:
             print("Stop:", call("start_stop_play", {"is_start": False})["text"][:80], flush=True)

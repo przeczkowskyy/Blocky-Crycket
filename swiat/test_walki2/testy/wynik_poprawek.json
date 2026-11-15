@@ -1,5 +1,5 @@
 {
- "data": "2026-11-15 00:49",
+ "data": "2026-11-15 02:01",
  "wynik": "29/29",
  "testy": [
   {
@@ -33,14 +33,14 @@
    "opis": "pocisk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
-   "test": "kadr kwasny_plusk (wojownik/lesny_slime/1, zd. 6, pocisk)",
+   "test": "kadr kwasny_plusk (wojownik/lesny_slime/1, zd. 6, w_klipie)",
    "ok": true,
    "opis": "boczny: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
    "test": "kadr rozszarpanie (wojownik/cierniowy_wilk/1, zd. 5, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 0.37 odsł. 0.37"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 0.34 odsł. 0.34"
   },
   {
    "test": "kadr chmura_zarodnikow (wojownik/muchomornik/1, zd. 5, chmura)",
@@ -50,12 +50,12 @@
   {
    "test": "kadr ogluszajace_uderzenie (mag/lesny_troll/5, zd. 9, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.99 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
-   "test": "kadr uscisk_korzeni (wojownik/straznik_lasu/5, zd. 9, korzenie)",
+   "test": "kadr uscisk_korzeni (wojownik/straznik_lasu/5, zd. 9, w_klipie)",
    "ok": true,
-   "opis": "krytyk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+   "opis": "krytyk: atak w kadrze 1.00 odsł. 0.90 | cel w kadrze 1.00 odsł. 0.93"
   },
   {
    "test": "kadr dluga: 21 trafień (wojownik/straznik_lasu/10)",
@@ -85,7 +85,7 @@
   {
    "test": "spowolnienie od uscisk_korzeni (wojownik/straznik_lasu/5 ziarno 104736, zd. 8)",
    "ok": true,
-   "opis": "napisy ['−27', 'KRYTYK!', '−77', '−22', 'KRYTYK!', '−75', 'BLOK!', '−6', '−129', '−59', 'SPOWOLNIENIE!']; ozdoba Pnacze: 4 szt."
+   "opis": "napisy ['−27', 'KRYTYK!', '−77', '−22', 'KRYTYK!', '−75', 'BLOK!', '−6', '−129', '−59', 'SPOWOLNIENIE!']; ozdoba Pnacze: 3 szt."
   },
   {
    "test": "spowolnienie od lodowy_pocisk (mag/lesny_slime/5 ziarno 209465, zd. 12)",
@@ -100,7 +100,7 @@
   {
    "test": "odmiana w panelu wyniku (tury: 24, zdarzenia: 33, wygrana)",
    "ok": true,
-   "opis": "Strażnik Lasu (poz. 10) pokonany w 24 turach | dziennik policzył serwer  •  ziarno 348759  •  24 tury  •  33 zdarzenia  •  39.1 s"
+   "opis": "Strażnik Gaju (poz. 10) pokonany w 24 turach | dziennik policzył serwer  •  ziarno 348759  •  24 tury  •  33 zdarzenia  •  39.1 s"
   },
   {
    "test": "paski, tura i efekty = silnik (wojownik/cierniowy_wilk/1 ziarno 53484, 14 zdarzeń)",

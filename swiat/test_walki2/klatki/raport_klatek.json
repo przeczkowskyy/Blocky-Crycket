@@ -31,11 +31,11 @@
  },
  "lesny_slime": {
   "klon": {
-   "czesci": 55,
-   "ms": 7.4235999782104045,
+   "czesci": 143,
+   "ms": 37.97199999098666,
    "skorupy": 0,
-   "instancje": 122,
-   "widoczne": 42
+   "instancje": 352,
+   "widoczne": 115
   },
   "odchylka_stawow": 0.0
  },
@@ -71,11 +71,11 @@
  },
  "straznik_lasu": {
   "klon": {
-   "czesci": 410,
-   "ms": 29.500800010282546,
+   "czesci": 1165,
+   "ms": 68.40920000104234,
    "skorupy": 0,
-   "instancje": 831,
-   "widoczne": 392
+   "instancje": 2346,
+   "widoczne": 1128
   },
   "odchylka_stawow": 0.0
  }
