@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-15T20:11:12+01:00",
+ "aktualizacja": "2026-11-15T20:11:18+01:00",
  "prace": [
   {
    "id": "import-modeli",
@@ -10,8 +10,8 @@
    "stan": "w_toku",
    "etap": "Import lasu skonczony: 6 modeli wgranych i ZGODNYCH, raport w panelu",
    "start": "2026-11-15T16:48:20+01:00",
-   "koniec_szacowany": "2026-11-16T20:11:00+01:00",
-   "aktualizacja": "2026-11-15T20:11:11+01:00",
+   "koniec_szacowany": "2026-11-15T20:12:00+01:00",
+   "aktualizacja": "2026-11-15T20:11:18+01:00",
    "obszary": [
     "studio:TestPostaci",
     "swiat/postacie/wynik/_roblox/**"
