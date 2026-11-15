@@ -1,0 +1,29 @@
+{
+ "id": "r-20261115-114720-f4ee",
+ "tytul": "Biom Las — mapa z klocków (podgląd z Blendera)",
+ "opis_md": "**Biom Las „Bór Pod Ukłonem” — mapa z klocków, podgląd z Blendera.** To nie jest jeszcze Roblox Studio: budowa w Studio i chodzące potwory będą w kolejnym kroku.\n\n- **Co widać:** las 1000 × 1000 studów (ok. 3,4 raza szerzej niż Krzywe Miasteczko), 13 353 części przy limicie 25 000. Od bramy do Starego Ukłonu biegnie się 26 s, do Kamiennego Kręgu 66 s.\n- **Sześć podbiomów różni się kolorem i kształtem:** jasna Łąka Galaretek z okrągłymi drzewami, czerwone grzyby-olbrzymy Kapeluszowa, ciemny bór sosnowy Ostępów, piaskowy Wąwóz z rynnami i tamą, Korona z brzózkami na tarasach i spokojne Serce wokół Ukłonu.\n- **24 lokacje** i 7 znaków widocznych z daleka: rdzawy Stary Ukłon (ok. 100), Wielki Kapelusz, Wilcza Skała, wodospad z tęczą, Trollowa Tama, zielony kryształ Kręgu i złoty klocek na Pagórku.\n- **Potwory:** 16 stref (64 naraz, do 86 przy tłoku), 4 patrole na ścieżkach, troll i strażnik. Place walki są puste (sprawdzone skryptem na prawdziwych częściach). Na drugim zrzucie z góry place są zaznaczone na czerwono.\n- **Poprawione w tym przeglądzie:** kryształ Kręgu urósł do ok. 95 (wcześniej nie było go widać), menhiry są z łupku z mchem, ściany labiryntu mają garby liści i jagody, pod sosnami jest ciemne igliwie, pień Ukłonu ma przypory i korę, końce ścieżek są zaokrąglone, a przed Ławką rosną kwiaty.\n- **Nadal słabe:** gładkie, jasne ściany wąwozu; płaskie fioletowe ściany labiryntu z bliska; jasna trawa między sosnami; płaskie jezioro; koła pod strefami potworów; brak mgły (z daleka las wygląda jak makieta).\n- **Niesprawdzone:** kolory w Studio, płynność na telefonie, kolizje na rampach.\n- **Do oceny:** czy las jest dość duży i różnorodny, czy wiadomo, gdzie się jest, i co poprawić przed budową w Studio.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-15T11:47:20+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/biom_las/PROJEKT.md",
+   "etykieta": "Projekt biomu"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Gra/Biom Las.md",
+   "etykieta": "Notatka"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ],
+ "pytanie": "Czy las wygląda i układa się dobrze? Co poprawić przed budową w Studio?"
+}
