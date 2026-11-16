@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (sesja nocna: las-pas w Studio, teleport przez chmury)
+- **Las-pas w Studio:** mapa zbudowana jako `Workspace/LasPas` (8601 części), atrybuty strumieniowania ustawione, 7 zrzutów w `swiat/las_pas/klatki/`, migawka 3D i raport w panelu. Stary las nietknięty.
+- **Skrypty lasu-pasa** (`swiat/las_pas_gra/`, bez Studio): dane potworów z planu, brama do Bagna, teleport, mgła, przelot kamery (D-077); kod potworów wspólny ze starym lasem — w `swiat/las_potwory` doszły stałe i atrybuty kontenera, zgodnie wstecz. Testy: pas 43/43, stary las 17/17 i 15/15. Narzędzia budujące dostały opcję `BC_SILNIK_KORZEN` (kopia silnika zgodna z odtwarzaczem na czas zmian silnika).
+- **Teleport przez chmury** (`swiat/teleport_chmury/`, `Workspace/TeleportChmury`): przejście bez okna mapy i bez HUD według doprecyzowania Karola do D-075; 6 z 6 prób w grze, ok. 4,8 s na przejście; przycisk TELEPORT w HUD działa przez istniejący sygnał. Raport ze zrzutami w panelu. Niesprawdzone: prawdziwy telefon, pad, kilku graczy.
+- Pliki: `swiat/las_pas/klatki/`, `swiat/las_pas_gra/`, `swiat/las_potwory/` (zrodla, zbuduj.py, test), `swiat/teleport_chmury/`; notatki [[Biom Las]], [[Zadania]].
+
 ## 2026-11-16 · Claude Code u Karola (sesja nocna: start, las-pas z klocków, zaciemnienie ekranu)
 - Karol zlecił sesję nocną („podnieś wydajność”, pełne wdrożenie zatwierdzonych prac do rana, raporty na telefon). Kolejka w Studio: teleport przez chmury → budowa lasu-pasa → potwory, brama, teleport, mgła i przelot kamery → nowy silnik na ekranie walki → miasteczko-bazar; równolegle bez Studio: kontrola silnika, skrypty lasu, plan i generator miasteczka.
 - Las-pas: generator `swiat/las_pas/` (import modułów starego lasu, osobne zasady i kontrola) — 8601 części, 0 błędów kontroli, znaczniki i ujęcia dla Studio, podglądy robocze. Nic jeszcze nie zbudowano w Studio.

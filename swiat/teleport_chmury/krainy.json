@@ -1,0 +1,188 @@
+{
+  "opis": "Teleport przez chmury i makieta pasa krain — JEDYNE źródło liczb dla zbuduj.py, makieta.py i obu skryptów Luau (zrodla/Dane.luau jest z tego pliku generowany). Wymaganie Karola z 16.11.2026 (D-075, doprecyzowanie): pod przyciskiem Teleport nie ma okna mapy ani HUD — kamera wchodzi w chmury, z chmur wyłania się widziany z góry pas krain, po wyborze znów chmury i kamera opada na gracza w nowym miejscu. Położenia krain i punktów przybycia: swiat/biom_las/pas/plan_pasa.json (świat = (1100 + u; y; −700 + v)).",
+  "wersja": 1,
+  "status": "propozycja",
+  "kontener": "TeleportChmury",
+  "krainy": [
+    {
+      "id": "miasteczko",
+      "nazwa": "Krzywe Miasteczko",
+      "napis": "MIASTECZKO",
+      "od_poczatku": true,
+      "kolor_gruntu": "E0C48E",
+      "kolor_podloza": "6B5848",
+      "kolor_drogi": "C9A66A",
+      "obszary_xz": [[-293, 392, -954, -442]],
+      "przybycie": [
+        {"atrybut": ["LasTeleport", "PunktMiasteczka", "PatrzMiasteczko"]},
+        {"xyz": [-63.6, 3.37, -771.9], "patrz_xyz": [0.3, 3.37, -698.7]}
+      ]
+    },
+    {
+      "id": "las",
+      "nazwa": "Las",
+      "napis": "LAS",
+      "od_poczatku": true,
+      "kolor_gruntu": "6DB33F",
+      "kolor_podloza": "8B5A2E",
+      "kolor_drogi": "C08A55",
+      "obszary_xz": [[1076, 2040, -790, -610], [-700, 700, -2700, -1300]],
+      "przybycie": [
+        {"gdy_jest": "LasPas", "xz": [1114, -700], "patrz_xz": [1160, -700]},
+        {"atrybut": ["LasTeleport", "PunktLas", "PatrzLas"]},
+        {"xyz": [-200, 3.51, -2400], "patrz_xyz": [0, 3.51, -2000]}
+      ]
+    },
+    {
+      "id": "bagno",
+      "nazwa": "Bagno",
+      "napis": "BAGNO",
+      "od_poczatku": false,
+      "kolor_gruntu": "7E8C3E",
+      "kolor_podloza": "4A3F2A",
+      "kolor_drogi": "9C7A4A",
+      "obszary_xz": [[2040, 2980, -790, -610]],
+      "przybycie": [{"xz": [2054, -700], "patrz_xz": [2100, -700]}]
+    },
+    {
+      "id": "dzungla",
+      "nazwa": "Dżungla",
+      "napis": "DŻUNGLA",
+      "od_poczatku": false,
+      "kolor_gruntu": "2FA34A",
+      "kolor_podloza": "5C3A22",
+      "kolor_drogi": "B07A44",
+      "obszary_xz": [[2980, 3920, -790, -610]],
+      "przybycie": [{"xz": [2994, -700], "patrz_xz": [3040, -700]}]
+    },
+    {
+      "id": "pustynia",
+      "nazwa": "Pustynia",
+      "napis": "PUSTYNIA",
+      "od_poczatku": false,
+      "kolor_gruntu": "F2CC7E",
+      "kolor_podloza": "C08A55",
+      "kolor_drogi": "D9A85E",
+      "obszary_xz": [[3920, 4860, -790, -610]],
+      "przybycie": [{"xz": [3934, -700], "patrz_xz": [3980, -700]}]
+    },
+    {
+      "id": "gory",
+      "nazwa": "Góry z tundrą",
+      "napis": "GÓRY",
+      "od_poczatku": false,
+      "kolor_gruntu": "A9BC86",
+      "kolor_podloza": "6B6F7A",
+      "kolor_drogi": "8E8A80",
+      "obszary_xz": [[4860, 5800, -790, -610]],
+      "przybycie": [{"xz": [4874, -700], "patrz_xz": [4920, -700]}]
+    },
+    {
+      "id": "lodowiec",
+      "nazwa": "Lodowiec",
+      "napis": "LODOWIEC",
+      "od_poczatku": false,
+      "kolor_gruntu": "E8F4FF",
+      "kolor_podloza": "7FA8D8",
+      "kolor_drogi": "B8D4F0",
+      "obszary_xz": [[5800, 6740, -790, -610]],
+      "przybycie": [{"xz": [5814, -700], "patrz_xz": [5860, -700]}]
+    },
+    {
+      "id": "wulkan",
+      "nazwa": "Wulkaniczny",
+      "napis": "WULKAN",
+      "od_poczatku": false,
+      "kolor_gruntu": "4E3C3A",
+      "kolor_podloza": "2E2424",
+      "kolor_drogi": "6E5450",
+      "obszary_xz": [[6740, 7680, -790, -610]],
+      "przybycie": [{"xz": [6754, -700], "patrz_xz": [6800, -700]}]
+    },
+    {
+      "id": "krysztal",
+      "nazwa": "Kryształowy",
+      "napis": "KRYSZTAŁY",
+      "od_poczatku": false,
+      "kolor_gruntu": "8E6BD8",
+      "kolor_podloza": "4A3A78",
+      "kolor_drogi": "B49AE8",
+      "obszary_xz": [[7680, 8620, -790, -610]],
+      "przybycie": [{"xz": [7694, -700], "patrz_xz": [7740, -700]}]
+    }
+  ],
+  "makieta": {
+    "opis": "Makieta pasa w odległym miejscu nieba (kontener TeleportChmury/Makieta, strumieniowanie Persistent, bez kolizji). Układ lokalny: x wzdłuż pasa (miasteczko z lewej), y w górę (0 = wierzch płytek), z ku kamerze. Obrót wokół pionu liczy budowa ze słońca miejsca, tak żeby słońce świeciło zza kamery, z przesunięciem slonce_obrot_stopnie.",
+    "srodek": [-5000, 300, 5000],
+    "slonce_obrot_stopnie": 25,
+    "plytka": [30, 24],
+    "przerwa": 6,
+    "grubosc": 6.4,
+    "tabliczka": [27, 6.6],
+    "klodka_y": 9,
+    "wskaznik_y": 27,
+    "chmury_ziarno": 16112026,
+    "chmury_morze_y": -16,
+    "przyciemnienie": {"jasnosc": 0.48, "nasycenie": 0.5},
+    "napis_kolor": "FFF6E0",
+    "napis_kolor_zamkniety": "A7A29A",
+    "podniesienie": 1.4
+  },
+  "kamera": {
+    "fov_makiety": 50,
+    "nachylenie_stopnie": 52,
+    "cel": [0, 0, 3],
+    "margines": 0.07,
+    "min_odleglosc": 150,
+    "max_odleglosc": 900,
+    "wejscie_wysokosc": 80,
+    "opadanie_wysokosc": 75,
+    "nurkowanie": [0, 30, 26],
+    "odlot": [0.25, 0.35],
+    "wylonienie_od": [0.3, 0.3],
+    "kolysanie_stopnie": 0.6
+  },
+  "czasy": {
+    "wejscie_s": 1.1,
+    "wylonienie_s": 1.0,
+    "zanurzenie_s": 0.9,
+    "opadanie_s": 1.4,
+    "biel_min_s": 0.12,
+    "pokaz_wyboru_s": 0.3,
+    "odmowa_s": 0.45,
+    "limit_serwera_s": 8,
+    "limit_przybycia_s": 2.5,
+    "limit_wyboru_s": 60,
+    "dotyk_max_s": 0.6,
+    "dotyk_max_px": 25,
+    "gamepad_powtorka_s": 0.28
+  },
+  "chmury": {
+    "kolor": "FFFFFF",
+    "kolor_cienia": "EEF2FB",
+    "zaslona_kolumny": 5,
+    "zaslona_wiersze": 3,
+    "zaslona_glebokosc": [7, 10],
+    "zaslona_promien": 1.05,
+    "kolumna_liczba": 18,
+    "kolumna_wysokosc": [22, 70],
+    "kolumna_odleglosc": [9, 34],
+    "kolumna_rozmiar": [10, 24],
+    "kolumna_przezroczystosc": 0.15
+  },
+  "serwer": {
+    "odstep_s": 3,
+    "limit_wczytania_s": 6,
+    "prosby_okno_s": 5,
+    "prosby_max": 12,
+    "rzut_od_y": 80,
+    "rzut_dlugosc": 200,
+    "zapas_nad_gruntem": 0.15
+  },
+  "sterowanie": {
+    "sluchaj_hud": true,
+    "nazwa_przycisku_hud": "Teleport",
+    "ukryj_gui": true,
+    "klawisz_testowy": "T"
+  }
+}

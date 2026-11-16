@@ -110,6 +110,8 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-17: Teleport przez chmury (D-075) działa w Studio (`Workspace/TeleportChmury`, `swiat/teleport_chmury/`): wejście w chmury, pas dziewięciu krain z góry, wybór dotknięciem, opadanie kamery na gracza; przenosi serwer, zamknięte krainy z kłódką; 6 z 6 prób w grze; przycisk TELEPORT z HUD Pawła działa bez zmian w jego plikach; raport w panelu
+- [x] 2026-11-17: Las-pas zbudowany w Studio (`Workspace/LasPas`, 8601 części) ze zrzutami i podglądem 3D w panelu; skrypty gry (`swiat/las_pas_gra/`: potwory w przegrodach, brama po Strażniku, teleport, mgła, przelot kamery) gotowe bez Studio, 43 testy; wdrożenie do gry w toku
 - [x] 2026-11-16: Las jako pas — generator mapy z klocków (`swiat/las_pas/`, 8601 części, kontrola bez błędów, podglądy); budowa w Studio w kolejce nocnej
 - [x] 2026-11-16: [[Panel zespołu|Panel]]: zakładka Assety odświeża się sama (znaczek „nowe”, godzina zmiany, pasek o niepobranych zmianach), a stała synchronizacja pobiera cudze zmiany średnio po ok. 20 s — usunięty zastój, przez który grafiki Pawła czekały 10 minut (zgłoszenie Karola); 621 testów panelu
 - [x] 2026-11-16: Pierwsza partia muzyki i dźwięków z Higgsfield do odsłuchu (D-082, D-083; zgoda Karola na kredyty): 12 utworów po 90 s z wersjami do pętli, drugie wersje menu i lasu, 22 efekty walki w dwóch wariantach; koszt 229,5 kredytu; zaakceptowane przez Karola 16.11 i wypchnięte do repo (`assets/audio/`); nic nie wgrane do Roblox

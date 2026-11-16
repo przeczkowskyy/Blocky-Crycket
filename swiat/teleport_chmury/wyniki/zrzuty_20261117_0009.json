@@ -1,0 +1,44 @@
+{
+ "stan": {
+  "wynik": "wybrano las",
+  "blad": null,
+  "czasy": {
+   "poWyborze": 5.8822877000202425,
+   "C": 0.9318431999708991,
+   "przeskok": 0.0001866999955382198,
+   "D": 1.4666183000081219,
+   "blokady": 0.0004523000097833574,
+   "B": 1.0004256000102032,
+   "doMakiety": 3.9837731000152417,
+   "wybor": 4.5336424999986775,
+   "calosc": 14.732917699991958,
+   "czekanie": 0.13373699999647215,
+   "A": 1.1156384000205435
+  },
+  "klatki": {
+   "fps": 14.916882403633002,
+   "p95_ms": 68.09239834547043,
+   "max_ms": 127.9710978269577,
+   "srednia_ms": 67.03813658519223,
+   "n": 220
+  },
+  "odpowiedz": {
+   "zrodlo": "LasPas, rzut promienia",
+   "ok": true,
+   "wczytanie": 0.015379899996332824
+  },
+  "obecna": "miasteczko",
+  "wybor": {
+   "id": "las"
+  },
+  "odmowy": 1,
+  "pozycja": [
+   1114,
+   3.358025074005127,
+   -700
+  ],
+  "przeniesiony": true,
+  "uwaga": null,
+  "sterowanieWylaczone": false
+ }
+}

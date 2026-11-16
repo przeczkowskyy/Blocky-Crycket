@@ -54,6 +54,7 @@ Po sesji głównej 16.11 mapa ma być wąskim, długim pasem biomów (D-075, D-0
 - **Przelot kamery (D-077):** 13,4 s, kończy się rykiem Strażnika.
 - **Pliki:** `swiat/biom_las/pas/` — `PLAN_PASA.md` (opis i dziesięć wyborów), `plan_pasa.json`, `plan_pasa.png`, `rysuj_plan.py`, `sprawdz_plan.py` (0 błędów). Dzisiejsza wersja 2 lasu zostaje do porównania, dopóki ludzie nie zdecydują inaczej.
 - **Mapa z klocków (noc 16/17.11):** generator `swiat/las_pas/` zrobił z planu mapę z 8601 części (stary las: 22 419); kontrola `sprawdz.py` bez błędów; kontener w Studio będzie się nazywał `Workspace/LasPas`. Podglądy w `swiat/las_pas/podglad/` to rysunek roboczy, nie wygląd z Roblox. Karol zaakceptował plan w panelu 16.11 o 21:50.
+- **W Studio (noc 16/17.11):** mapa stoi jako `Workspace/LasPas` (zrzuty w `swiat/las_pas/klatki/`, podgląd 3D w panelu). Skrypty gry w `swiat/las_pas_gra/` (kontener `Workspace/LasPasGra`): potwory w przegrodach na wspólnym kodzie ze starym lasem, brama do Bagna otwierana graczowi po pokonaniu Strażnika, teleport na Polanę Przybycia i Kamień Powrotu, lokalna mgła pasa, przelot kamery przy pierwszym wejściu. Do lasu prowadzi też przejście przez chmury (`Workspace/TeleportChmury`, `swiat/teleport_chmury/`).
 
 ## Co to zmienia albo doprecyzowuje względem D-061
 - D-061 (💡 propozycja) mówi tylko, że każdy biom ma własnych przeciwników, strażnika i inkubatory. Ta notatka dodaje do tego **układ lasu**: rozmiar, podbiomy, lokacje, strefy potworów, poziomy 1–10 i miejsce strażnika na 10. poziomie.
