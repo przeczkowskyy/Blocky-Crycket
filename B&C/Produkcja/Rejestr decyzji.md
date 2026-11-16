@@ -338,6 +338,7 @@ Każda z sześciu statystyk, także Pancerz, ma własną mini-grę w Training Ce
 ### D-075 Mapa jako wąski, długi pas biomów; Teleport w HUD przenosi między strefami
 💡 propozycja · świat / UI · 2026-11-16 · źródło: [[Sesja główna 2026-11-16 — zapis ustaleń]] (temat 3)
 Logikę mapy i teleportu przebudowujemy od zera (Karol: „robimy w 100% rebuild logiki mapy i teleportu”). Mapa to prostokąt: bardzo wąski (ok. 4–5 sekund biegu postaci) i bardzo długi. Biomy leżą jeden za drugim w kolejności odblokowania (D-061), a Krzywe Miasteczko jest pierwszym blokiem. Przycisk Teleport w [[HUD]] otwiera mapę stref ułożonych w linii, trochę z lotu ptaka. Strzałką gracz wybiera strefę i się teleportuje, a po teleporcie kamera opada z góry na gracza (pomysł Pawła). Karol: miasto, potem las, potem kolejne biomy. Biomy są małe, żeby gracz nie musiał długo chodzić (Karol: chodzenie nudzi, „maksymalizujemy dopaminę”). Zastępuje zdjętą D-064 (widok miasta z pinami), którą Karol oznaczył jako nieaktualną, bo „lepiej sobie to opowiedzieliśmy”. Zastępuje też dzisiejsze teleporty zastępcze (Karol: „mały placeholder”), w tym teleport do lasu z 15.11 (`Workspace/LasTeleport`), z którym przycisk HUD nie jest połączony. Zmienia [[Mapa teleportacji]] i układ [[Biom Las]] (las z 15.11 to szeroka mapa z 16 strefami). Lista lokacji z pytania 28 w tym układzie to miasto i biomy. Robi Karol (D-093). Do sprawdzenia: płynność na telefonie przy długiej mapie (wczytywanie fragmentów). Zob. D-076, D-077.
+Doprecyzowanie Karola (2026-11-16, po sesji, w rozmowie z Claude Code): pod przyciskiem Teleport nie ma okna mapy ani żadnego HUD. Jest przejście „przez chmury”, jak przy zmianie postaci w grach z otwartym światem: kamera wchodzi w chmury, a z chmur wyłania się widziany z góry pas naszych map. Chmury zakrywają to, że lokacje leżą daleko od siebie, więc nie ma płynnego przelotu. Jak gracz wskazuje strefę bez HUD — do ustalenia przy prototypie. Robi agent Karola.
 
 ### D-076 Biom: inkubator przy wejściu, zagrody coraz silniejszych potworów, strażnik otwiera następny biom; ok. 15 minut na biom
 💡 propozycja · game design / świat · 2026-11-16 · źródło: [[Sesja główna 2026-11-16 — zapis ustaleń]] (temat 3)
@@ -355,6 +356,7 @@ Pierwszą walkę z danym typem potwora gracz ogląda w całości: bez pomijania,
 ### D-079 Rasy postaci: sześć ras z pasywną cechą, wybór rasy po klasie
 💡 propozycja · game design / UI · 2026-11-16 · źródło: [[Sesja główna 2026-11-16 — zapis ustaleń]] (temat 6)
 Pomysł Pawła (jego sesja robi już logikę ras): po wyborze klasy gracz przechodzi do ekranu ras z sześcioma przyciskami: **człowiek, demon, mroczny elf, elf, ork, goblin**. Każda rasa ma pasywną cechę, np. demon ma większe premie do Życia i Siły, a mniejsze do Inteligencji, więc demon-Mag mniej się opłaca. Karol: to może być kompromis, bo ktoś zechce w ten sposób balansować buildy. Model 3D w selektorze zmienia się z rasą. Podstawowy strój to przepaska albo koszulka i spodenki, zgodnie z „gołymi” modelami z D-071. Rozwija propozycję [[Selektor bohatera]] (rasa i klasa). Rasy ze statystykami muszą zachować D-069: żadna para rasa–klasa nie może być obowiązkowa. Ekran ras robi Paweł (2D, D-093), a modele ras: pytanie 49. Zob. D-080, D-081.
+Doprecyzowanie Karola (2026-11-16, po sesji, w rozmowie z Claude Code; prośba Pawła przekazana przez Karola): modele ras robi Paweł. Po jego wypchnięciu agent Karola ma lekko poprawić modele i halę wyboru oraz dać im kreskówkowe faktury takie jak w Krzywym Miasteczku, żeby pasowały do postaci.
 
 ### D-080 Półbóg: płatna rasa premium z lepszymi statystykami
 💡 propozycja · monetyzacja / game design · 2026-11-16 · źródło: [[Sesja główna 2026-11-16 — zapis ustaleń]] (temat 6)
@@ -371,6 +373,7 @@ Walki „na razie wyglądają dobrze”, ale potrzebują więcej nagrody: wyskak
 ### D-083 Muzyka: własna dla każdego biomu, miasta i menu głównego
 💡 propozycja · dźwięk · 2026-11-16 · źródło: [[Sesja główna 2026-11-16 — zapis ustaleń]] (temat 7)
 Muzykę generujemy w Higgsfield. Każdy biom ma własną, Krzywe Miasteczko 2–3 utwory grające w tle, a menu główne własną (Karol). Osobne zadanie, robi Karol (D-093). Przed wgraniem do Roblox trzeba sprawdzić zasady dla audio i prawa do muzyki z generatora. Zob. [[Pipeline assetów]].
+Zgoda Karola (2026-11-16, po sesji, w rozmowie z Claude Code): dźwięki (D-082) i muzykę wolno generować w Higgsfield bez pytania o kredyty („mamy na tyle kredytów”). Nie dotyczy to wgrania audio do Roblox — zasady i prawa do muzyki z generatora nadal do sprawdzenia.
 
 ### D-084 Sklepy: do budynku się wchodzi, E na sprzedawcy otwiera okno 2D
 💡 propozycja · świat / UI · 2026-11-16 · źródło: [[Sesja główna 2026-11-16 — zapis ustaleń]] (temat 8)

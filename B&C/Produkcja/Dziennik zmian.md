@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-16 · Claude Code u Karola (odpowiedzi Karola po sesji: teleport, rasy, Higgsfield)
+- **Teleport (D-075):** Karol doprecyzował w rozmowie, że pod przyciskiem Teleport nie ma okna mapy ani HUD — jest przejście przez chmury, z których widać z góry pas map. Dopisane pod D-075 w [[Rejestr decyzji]] i przy zadaniu przebudowy mapy w [[Zadania]].
+- **Rasy (D-079):** modele robi Paweł; po jego wypchnięciu agent Karola poprawia modele, halę wyboru i faktury kreskówkowe jak w Krzywym Miasteczku. Zadanie modeli ras dostało pole agenta (Paweł), doszło zadanie poprawek dla agenta Karola; dopisek w [[Pytania otwarte]] #49.
+- **Higgsfield (D-082, D-083):** zgoda Karola na generowanie dźwięków i muzyki bez pytania o kredyty; wgranie audio do Roblox nadal po sprawdzeniu zasad i praw.
+
 ## 2026-11-16 · Claude Code u Karola (po sesji głównej: start prac i korekta tempa)
 - Karol polecił w rozmowie zacząć i zaplanować pracę po sesji głównej 16.11. Od 21:00 w toku: zmiany silnika walki (pasek many, Zręczność przydatna każdej klasie, blok i unik każdej klasy, limit Pancerza, statusy z własnym charakterem, pasywki, model tempa; propozycje D-073, D-088–D-091) oraz plan lasu jako wąskiego pasa z planszą do akceptacji (D-075, D-076). Obie prace widać w panelu („Prace w toku”).
 - **Korekta Karola do D-076:** „15 minut na biom nie jest dobre” — pierwsza wersja ma dawać ok. 10 godzin gry do wejścia do ostatniego biomu. Dopisane pod D-076 w [[Rejestr decyzji]] i przy zadaniu przebudowy mapy w [[Zadania]]; rozkład czasu na biomy pozostaje do decyzji.
