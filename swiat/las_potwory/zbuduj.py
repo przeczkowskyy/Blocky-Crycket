@@ -260,8 +260,11 @@ def zrodla_pakietu():
             braki.append("%s (pisze: %s)" % (plik, kto))
             continue
         wynik.append((sciezka, klasa, kontekst, wczytaj(pelna), plik))
+    # BC_SILNIK_KORZEN: skąd brać kopię silnika walki (domyślnie repozytorium). Pozwala wgrać do Studio wersję
+    # zgodną z odtwarzaczem, gdy silnik w repo jest właśnie zmieniany (17.11.2026: silnik v3 czeka na odtwarzacz).
+    korzen_silnika = os.environ.get("BC_SILNIK_KORZEN") or REPO
     for plik, sciezka in SILNIK:
-        pelna = os.path.join(REPO, plik)
+        pelna = os.path.join(korzen_silnika, plik)
         if not os.path.isfile(pelna):
             braki.append(plik)
             continue
