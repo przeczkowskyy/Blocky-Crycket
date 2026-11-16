@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Niezmienniki dziennika walki v2 — port src/shared/Walka/Dziennik.luau (ta sama funkcja sprawdz)."""
+"""Niezmienniki dziennika walki v3 — port src/shared/Walka/Dziennik.luau (ta sama funkcja sprawdz)."""
 import math
 
-WERSJA = 2
-TYPY = ["cios", "krytyk", "blok", "unik", "umiejetnosc", "efekt_tick", "efekt_nalozony", "efekt_koniec", "utrata_tury"]
+WERSJA = 3
+TYPY = ["cios", "krytyk", "blok", "unik", "umiejetnosc", "efekt_tick", "efekt_nalozony", "efekt_koniec", "utrata_tury",
+        "wskrzeszenie"]
 RANGI = ["gracz", "zwykly", "rzadki", "straznik"]
 POLA_LUPU = ["zloto", "doswiadczenie", "tokeny_krainy", "gemy", "shard_ewolucji"]
 
@@ -31,23 +32,32 @@ def sprawdz(walka):
     if not isinstance(walka.get("strony"), dict) or not isinstance(walka.get("dziennik"), list) \
             or not isinstance(walka.get("lup"), dict):
         return False, "brak stron, dziennika albo lupu"
-    hp = {}
+    hp, mana, mana_maks = {}, {}, {}
     for strona in ("gracz", "wrog"):
         s = walka["strony"].get(strona)
         if not isinstance(s, dict) or not _calkowita(s.get("zycie")) or s["zycie"] < 1:
             return False, "zla strona " + strona
         if s.get("ranga") not in RANGI or s.get("rodzaj") not in ("postac", "potwor"):
             return False, "zla ranga albo rodzaj strony " + strona
+        if not _calkowita(s.get("mana_maks")) or s["mana_maks"] < 1 or not _calkowita(s.get("mana")) \
+                or s["mana"] < 0 or s["mana"] > s["mana_maks"]:
+            return False, "zla mana strony " + strona
         hp[strona] = s["zycie"]
+        mana[strona] = s["mana"]
+        mana_maks[strona] = s["mana_maks"]
     if walka["strony"]["gracz"]["rodzaj"] != "postac":
         return False, "gracz musi byc postacia"
     if not all(_liczba(walka.get(k)) for k in ("czas_wstepu", "czas_finalu", "czas")):
         return False, "brak czasow"
+    blok_przepuszcza = walka.get("czesc_przez_blok")
+    if not _liczba(blok_przepuszcza) or blok_przepuszcza < 0 or blok_przepuszcza > 1:
+        return False, "brak czesci przechodzacej przez blok"
     d = walka["dziennik"]
     n = len(d)
     if n < 1:
         return False, "pusty dziennik"
     aktywne = {"gracz": {}, "wrog": {}}
+    wskrzeszony = {"gracz": False, "wrog": False}
     t = _setne(walka["czas_wstepu"])
     for i in range(1, n + 1):
         z = d[i - 1]
@@ -62,8 +72,8 @@ def sprawdz(walka):
         if not all(isinstance(z.get(k), str) for k in ("rodzaj", "umiejetnosc", "efekt")):
             return False, gdzie + "brak pol opisu"
         if not isinstance(z.get("krytyk"), bool) or not _liczba(z.get("wartosc")) or z["wartosc"] < 0 \
-                or not _calkowita(z.get("tury")) or z["tury"] < 0:
-            return False, gdzie + "zle pola krytyk / wartosc / tury"
+                or not _calkowita(z.get("tury")) or z["tury"] < 0 or not _calkowita(z.get("stosy")) or z["stosy"] < 0:
+            return False, gdzie + "zle pola krytyk / wartosc / tury / stosy"
         typ = z["typ"]
         zwykly = typ in ("cios", "krytyk", "blok", "unik")
         if zwykly and z["cel"] != _inna(z["kto"]):
@@ -74,12 +84,20 @@ def sprawdz(walka):
             return False, gdzie + "unik z obrazeniami"
         if typ in ("cios", "krytyk") and z["umiejetnosc"] != "":
             return False, gdzie + "cios i krytyk nie niosa umiejetnosci (krytyczna umiejetnosc ma typ umiejetnosc)"
-        if typ in ("cios", "krytyk", "blok") and z["obrazenia"] + z["pochloniete"] < 1:
+        if typ in ("cios", "krytyk") and z["obrazenia"] < 1:
             return False, gdzie + "trafienie bez obrazen (dolna granica to 1)"
-        if typ in ("efekt_nalozony", "efekt_koniec", "utrata_tury") and (z["obrazenia"] != 0 or z["pochloniete"] != 0):
+        if typ == "blok":
+            if blok_przepuszcza > 0 and z["obrazenia"] < 1:
+                return False, gdzie + "blok przepuszcza czesc ciosu, a obrazen nie ma"
+            if blok_przepuszcza == 0 and (z["obrazenia"] != 0 or z["pochloniete"] != 0):
+                return False, gdzie + "blok zatrzymuje caly cios, a sa obrazenia"
+        if typ in ("efekt_nalozony", "efekt_koniec", "utrata_tury", "wskrzeszenie") \
+                and (z["obrazenia"] != 0 or z["pochloniete"] != 0):
             return False, gdzie + "zdarzenie bez obrazen ma obrazenia"
-        if typ in ("efekt_tick", "efekt_koniec", "utrata_tury") and z["kto"] != z["cel"]:
+        if typ in ("efekt_tick", "efekt_koniec", "utrata_tury", "wskrzeszenie") and z["kto"] != z["cel"]:
             return False, gdzie + "tykniecie, koniec efektu i utrata tury dotycza nosiciela"
+        if typ == "efekt_tick" and (z["obrazenia"] < 1 or z["pochloniete"] != 0 or z["stosy"] < 1):
+            return False, gdzie + "tykniecie: obrazenia >= 1, bez tarczy, co najmniej jeden stos"
         if z["obrazenia"] + z["pochloniete"] > 0 and z["rodzaj"] not in ("fizyczne", "magiczne"):
             return False, gdzie + "obrazenia bez rodzaju"
         if typ == "umiejetnosc" and z["umiejetnosc"] == "":
@@ -100,11 +118,36 @@ def sprawdz(walka):
         if not _liczba(z.get("trwa")) or _setne(z["trwa"]) <= 0:
             return False, gdzie + "zly czas trwania"
         t = t + _setne(z["trwa"])
-        hp[z["cel"]] = max(0, hp[z["cel"]] - z["obrazenia"])
+        if typ == "wskrzeszenie":
+            # raz na walke, tylko zaraz po smiertelnej stracie zycia; wartosc = zycie po powrocie
+            if hp[z["kto"]] != 0 or wskrzeszony[z["kto"]]:
+                return False, gdzie + "wskrzeszenie bez nokautu albo drugi raz"
+            if not _calkowita(z["wartosc"]) or z["wartosc"] < 1 or z["wartosc"] > walka["strony"][z["kto"]]["zycie"]:
+                return False, gdzie + "wskrzeszenie: zle zycie po powrocie"
+            hp[z["kto"]] = z["wartosc"]
+            wskrzeszony[z["kto"]] = True
+        else:
+            hp[z["cel"]] = max(0, hp[z["cel"]] - z["obrazenia"])
         if z.get("hp_gracz") != hp["gracz"] or z.get("hp_wrog") != hp["wrog"]:
             return False, gdzie + "zycie po zdarzeniu niezgodne (oczekiwano %s / %s)" % (hp["gracz"], hp["wrog"])
+        # mana: maleje TYLKO przy uzyciu umiejetnosci (o jej koszt w polu wartosc), poza tym tylko rosnie, do limitu
+        uzycie = z["umiejetnosc"] != "" and typ in ("umiejetnosc", "unik", "blok")
+        for strona in ("gracz", "wrog"):
+            m = z.get("mana_" + strona)
+            if not _calkowita(m) or m < 0 or m > mana_maks[strona]:
+                return False, gdzie + "zla mana strony " + strona
+            if uzycie and strona == z["kto"]:
+                if not _calkowita(z["wartosc"]) or z["wartosc"] < 1 or m != mana[strona] - z["wartosc"]:
+                    return False, gdzie + "uzycie umiejetnosci: mana musi spasc dokladnie o koszt"
+            elif m < mana[strona]:
+                return False, gdzie + "mana spadla bez uzycia umiejetnosci"
+            mana[strona] = m
         if (hp["gracz"] == 0 or hp["wrog"] == 0) and i != n:
-            return False, gdzie + "walka trwa po nokaucie"
+            nast = d[i]
+            padl = "gracz" if hp["gracz"] == 0 else "wrog"
+            if not (isinstance(nast, dict) and nast.get("typ") == "wskrzeszenie" and nast.get("kto") == padl
+                    and hp[_inna(padl)] > 0):
+                return False, gdzie + "walka trwa po nokaucie"
     if _setne(walka["czas"]) != t + _setne(walka["czas_finalu"]):
         return False, "czas calosci rozny od sumy czasow zdarzen"
     if not _calkowita(walka.get("tury")) or walka["tury"] < 1:
@@ -113,7 +156,8 @@ def sprawdz(walka):
     if walka.get("bezpiecznik") is True:
         if hp["gracz"] == 0 or hp["wrog"] == 0:
             return False, "bezpiecznik przy walce zakonczonej nokautem"
-        oczekiwany = "wygrana" if hp["gracz"] * W >= hp["wrog"] * G else "przegrana"
+        # float(): tak jak w Luau (liczby double) — dokladne int Pythona daloby przy ogromnym zyciu inny znak
+        oczekiwany = "wygrana" if float(hp["gracz"]) * W >= float(hp["wrog"]) * G else "przegrana"
         if walka.get("wynik") != oczekiwany:
             return False, "wynik po bezpieczniku niezgodny z procentem zycia"
     elif walka.get("bezpiecznik") is False:

@@ -29,7 +29,8 @@ NAGLOWEK = """--[[
 \tDane — WYGENEROWANE z tools/walka/dane_walki.json przez tools/walka/generuj_dane.py. NIE EDYTUJ RECZNIE:
 \tzmien plik JSON i uruchom: python -B tools/walka/generuj_dane.py (test sprawdza, czy ten plik jest aktualny).
 
-\tKlasy, umiejetnosci, efekty, zaklecia broni, przeciwnicy lasu z lupem i stale wzorow silnika walki v2.
+\tKlasy (gracza i potworow), modyfikatory, umiejetnosci aktywne i pasywne, pasywki broni, efekty, zaklecia broni,
+\tprzeciwnicy lasu z lupem i stale wzorow silnika walki v3.
 \tTe same dane czyta port w Pythonie (tools/walka/silnik.py), wiec obie strony licza na identycznych liczbach.
 ]]
 """

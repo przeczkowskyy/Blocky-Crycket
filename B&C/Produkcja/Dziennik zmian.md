@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (sesja nocna: silnik walki v3, miasteczko-bazar z klocków)
+- **Silnik walki v3** (`tools/walka/`, `src/server/Walka/`, `src/shared/Walka/Dziennik.luau`): zmiany z sesji 16.11 — mana, statystyki, blok, limit Pancerza, statusy, sloty z pasywkami, wskrzeszenie (propozycja D-094), potwory z klasami, dziennik w wersji 3, model tempa `tempo.py`, mały interpreter Luau `luau_mini.py` do sprawdzania zgodności bez Studio. Wykonanie, a potem niezależna kontrola z poprawkami (m.in. osłabione pasywki many, ścisła walidacja wejścia, mocniejsze testy). Wyniki: testy 73/73, zgodność 592/592, złe wejścia 60/60. W Studio jeszcze nieuruchomiony. Opis i wybory: `tools/walka/ZMIANY_SESJA_1611.md`; nowa sekcja w [[Walka v2 — silnik, klasy i umiejętności]].
+- **Do decyzji z silnika:** Strażnik na 1. poziomie przekracza granicę 7 pp różnicy klas (7,9 pp na innych ziarnach); wskrzeszenie z 25% życia jest wyraźnie za mocne; nowe liczby pasywek many; zasada rotacji slotów. Raport „Silnik walki v3 — wyniki i wybory” w panelu.
+- **Miasteczko-bazar** (`swiat/miasteczko_bazar/`, D-084, D-085): plan, generator i podglądy — 4388 części, kontrola 0 błędów; budowa w Studio i skrypty (podpowiedzi E, uchwyt dla okien Pawła, portal, przejścia) w toku.
+
 ## 2026-11-17 · Claude Code u Karola (sesja nocna: las-pas w Studio, teleport przez chmury)
 - **Las-pas w Studio:** mapa zbudowana jako `Workspace/LasPas` (8601 części), atrybuty strumieniowania ustawione, 7 zrzutów w `swiat/las_pas/klatki/`, migawka 3D i raport w panelu. Stary las nietknięty.
 - **Skrypty lasu-pasa** (`swiat/las_pas_gra/`, bez Studio): dane potworów z planu, brama do Bagna, teleport, mgła, przelot kamery (D-077); kod potworów wspólny ze starym lasem — w `swiat/las_potwory` doszły stałe i atrybuty kontenera, zgodnie wstecz. Testy: pas 43/43, stary las 17/17 i 15/15. Narzędzia budujące dostały opcję `BC_SILNIK_KORZEN` (kopia silnika zgodna z odtwarzaczem na czas zmian silnika).

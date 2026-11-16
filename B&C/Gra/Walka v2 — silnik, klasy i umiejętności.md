@@ -8,6 +8,20 @@ tags: [gra, mechanika, walka, balans]
 > [!info] W skrócie
 > Nowy silnik walki liczy całą walkę na serwerze i oddaje dziennik zdarzeń do odtworzenia (D-016). **Walka trwa, aż życie jednej strony spadnie do zera** — bez minimalnej liczby wymian, „ostatniego dechu” i ściskania czasu. Zwykły potwór może się ciągnąć, a strażnik paść od jednego ciosu, jeśli tak wypadnie. Są trzy klasy (D-054), sześć statystyk w modelu z D-062, 0–3 sloty umiejętności (D-055), zaklęcia broni (D-051), pet tylko jako mnożnik statystyk (D-059) i pięciu przeciwników lasu z łupem bez jajek (D-058, D-060). Klasy mają **inny styl, ale tę samą siłę** — tabela balansu niżej pokazuje, na ile to się udało (prawie wszędzie w celu; jedno znane odstępstwo przy Leśnym Slimie na poziomach 1–4). Wszystkie liczby są robocze; nic tu nie jest kanonem. Kod Luau silnika działa w Roblox Studio od 14.11.2026 (zgodność z symulacją 496/496), a od 15.11 walkę widać na ekranie w prototypie `Workspace/TestWalki2` — z prawdziwymi ruchami Wojownika i Maga.
 
+## Silnik v3 — zmiany po sesji głównej 16.11 (noc 16/17.11.2026)
+> [!warning] Ta sekcja jest nowsza niż reszta notatki
+> Niżej opisany jest silnik v2. Tam, gdzie v3 mówi co innego (umiejętności, obrona, statusy, tabele balansu), obowiązuje ta sekcja i dokument `tools/walka/ZMIANY_SESJA_1611.md` (pełne zasady, liczby, tabele, 20 wyborów). Wszystko nadal jest propozycją liczb; zatwierdzone są kierunki z D-073 i D-088–D-091, a wskrzeszenie (D-094) czeka na podpisy.
+
+- **Mana zamiast odnowień (D-089):** każda strona, także potwór, ma pasek 0–100; +40 za własny zwykły cios i +1,3 za każdy 1% utraconego życia; pełny pasek odpala następną aktywną umiejętność w rotacji slotów zamiast ciosu. Mana nie jest statystyką i nie zależy od Inteligencji — zmieniają ją przedmioty, drzewko, pasywki w slotach i pasywki broni. Pierwsza umiejętność pada zwykle w 3. akcji.
+- **Statystyki:** Zręczność daje też mnożnik krytyka (przydaje się Wojownikowi), Inteligencja to moc umiejętności i odporność na magię. Punkt każdej statystyki pomaga każdej klasie.
+- **Obrona (D-073, D-091, odpowiedź Karola na pytanie 46):** blok ma każda klasa (5%), tarcza dodaje Wojownikowi 28,3%; blok zmniejsza obrażenia (przechodzi 25% ciosu). Pancerz ma jawny limit redukcji 75%, a Wojownik ma najlepszy przelicznik.
+- **Statusy (D-090):** trucizna w stosach, podpalenie liczone z życia celu, krwawienie z ciosu, spowolnienie (unik i zysk many, bez utraty tury), ogłuszenie (utrata tury), zdarcie Pancerza, wzmocnienie, tarcza z umiejętności −% obrażeń przez 3 tury. Obrażenia w czasie omijają obronę.
+- **Sloty (D-088):** trzy sloty z dowolną mieszanką aktywnych i pasywnych, pasywki broni i premie z przedmiotów jako dane. **Wskrzeszenie (propozycja D-094):** legendarna pasywka w slocie, raz na walkę, powrót z 25% życia.
+- **Potwory mają klasy** i przechodzą przez ten sam wzór co postać.
+- **Wyniki:** pojedynki klas 46–55%; różnica klas przy tym samym potworze do 6,8 pp na ziarnach testu, ale **7,9 pp przy Strażniku na 1. poziomie na innych ziarnach** (granica 7 pp przekroczona — do decyzji). Wskrzeszenie z 25% życia daje 74–76% wygranych z taką samą postacią bez niego, a z dobrymi slotami do 90% — za mocne, do decyzji. Build pod manę używa umiejętności 1,2–1,7 raza częściej, nie 2 razy.
+- **Tempo (korekta Karola do D-076):** krzywa doświadczenia 11,71 × L^1,6 daje Las w ok. 30 minut (Strażnik na 11. poziomie, ok. 8 przegranych po drodze) i wejście do ósmego biomu po ok. 10 godzinach na ok. 65. poziomie — model w `tools/walka/tempo.py`, propozycja.
+- **Sprawdzone:** testy silnika 73/73, zgodność Pythona z kodem Luau bez Studio 592/592 dzienników (własny mały interpreter `tools/walka/luau_mini.py`), 60/60 złych wejść odrzuconych; niezależna kontrola znalazła i naprawiła cztery ważne błędy (za mocne pasywki many, pasywka trucizny podbijająca każde zaklęcie, słabe testy, ciche przyjmowanie nieznanych pól). **Niesprawdzone:** prawdziwy Luau w Roblox Studio i ekran walki — odtwarzacz prototypu jest właśnie przerabiany pod dziennik w wersji 3.
+
 ## Co jest zrobione i gdzie
 
 | Co | Gdzie |

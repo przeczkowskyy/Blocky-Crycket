@@ -1,6 +1,6 @@
 --[[
-	Los — wspólne narzędzia silnika walki v2: własny generator liczb, zaokrąglanie, premia z malejącym przyrostem
-	i sprawdzanie liczb. Czysty moduł: nie dotyka świata gry, zegara ani Random.
+	Los — wspólne narzędzia silnika walki: własny generator liczb, zaokrąglanie, premia z malejącym przyrostem,
+	przycinanie do przedziału i sprawdzanie liczb. Czysty moduł: nie dotyka świata gry, zegara ani Random.
 
 	Generator Park–Miller (minstd) liczy wyłącznie na liczbach całkowitych mniejszych niż 2^53, więc daje identyczne
 	wyniki na każdej platformie — w Luau i w porcie w Pythonie (tools/walka/silnik.py, sekcja Los.luau).
@@ -34,6 +34,11 @@ end
 -- rośnie od 0 do 1 coraz wolniej; przy x == polowa daje 0,5 — każdy punkt coś daje, ale nic nie przekracza limitu
 function Los.premia(x: number, polowa: number): number
 	return x / (x + polowa)
+end
+
+-- x przycięte do przedziału [dol, gora] (port: miedzy w tools/walka/silnik.py)
+function Los.miedzy(x: number, dol: number, gora: number): number
+	return math.min(gora, math.max(dol, x))
 end
 
 function Los.blad(tekst: string)

@@ -1,26 +1,29 @@
 --[[
-	Silnik — walka v2: opis gracza + przeciwnik + ziarno → dziennik zdarzeń, wynik i łup. Czysta funkcja.
+	Silnik — walka v3: opis gracza + przeciwnik + ziarno → dziennik zdarzeń, wynik i łup. Czysta funkcja.
 
 	Nie dotyka świata gry, nie używa zegara ani Random: te same dane dają zawsze ten sam dziennik (własny generator,
 	stała kolejność rzutów, te same zaokrąglenia). Serwer liczy walkę RAZ i wysyła dziennik, klient go tylko odtwarza
 	(D-016); klient nie przysyła żadnych liczb. Sam moduł niczego nie uruchamia — działa dopiero wywołany.
 	Port w Pythonie: tools/walka/silnik.py (sekcja Silnik.luau). Niezmienniki dziennika: ReplicatedStorage.Shared.Walka.Dziennik.
+	Zasady v3 (mana, statusy, tarcza procentowa, blok każdej klasy, limit Pancerza, pasywki): tools/walka/ZMIANY_SESJA_1611.md.
 
 	DŁUGOŚĆ WALKI WYNIKA WYŁĄCZNIE ZE STATYSTYK I LOSOWOŚCI: strony działają na zmianę, aż życie jednej spadnie do
 	zera. Nie ma minimalnej ani docelowej liczby tur, „ostatniego dechu”, ciosu rozstrzygającego, narastających
 	obrażeń, ściskania czasu ani osobnych zasad dla bossów. Czas całości = wstęp + suma naturalnych czasów zdarzeń
 	+ finał. Jedyny bezpiecznik to techniczny limit tur (Dane.stale.maks_tur), w praktyce nieosiągalny.
 
-	Tura strony: (1) tyknięcia jej efektów; (2) jeśli jest spowolniona — traci turę; inaczej akcja (umiejętność albo
-	zwykły cios, Umiejetnosci.akcja); (3) koniec tury — jej efekty tracą 1. Pierwszy ruch: rzut 50/50.
+	Tura strony: (1) tyknięcia jej efektów; (2) jeśli jest ogłuszona — traci turę; inaczej akcja (umiejętność z many
+	albo zwykły cios, Umiejetnosci.akcja); (3) koniec tury — jej efekty tracą 1. Pierwszy ruch: rzut 50/50.
+	Przed pierwszą turą: pasywki „na starcie” działające na przeciwnika (zdarcie części jego Pancerza na całą walkę).
 
 	Silnik.symuluj(gracz, przeciwnik, ziarno) → {
-		wersja = 2, ziarno,
-		strony = { gracz = { nazwa, rodzaj, id, ranga, poziom, zycie }, wrog = { ... } },
+		wersja = 3, ziarno,
+		strony = { gracz = { nazwa, rodzaj, id, ranga, poziom, zycie, mana, mana_maks }, wrog = { ... } },
 		dziennik = { zdarzenie, ... },     -- format: ReplicatedStorage.Shared.Walka.Dziennik
 		wynik = "wygrana" | "przegrana",   -- z punktu widzenia gracza
 		tury, bezpiecznik,                 -- liczba tur obu stron razem; true tylko po limicie tur
 		lup = { zloto, doswiadczenie, tokeny_krainy, gemy, shard_ewolucji, kraina },
+		czesc_przez_blok,                  -- ile ciosu przechodzi przez blok (0 = blok zatrzymuje cały cios)
 		czas_wstepu, czas_finalu, czas,    -- sekundy
 	}
 	gracz: opis postaci (Statystyki); przeciwnik: { potwor = id, poziom = n } albo { postac = opis postaci }.
@@ -35,15 +38,11 @@ local Umiejetnosci = require(script.Parent.Umiejetnosci)
 
 local Silnik = {}
 
-Silnik.WERSJA = 2
+Silnik.WERSJA = 3
 local STALE = Dane.stale
 
 local function nowyStan(walczacy)
-	local liczniki = {}
-	for _, u in walczacy.umiejetnosci do
-		table.insert(liczniki, Dane.umiejetnosci[u].odnowienie)
-	end
-	return { hp = walczacy.zycie, efekty = {}, liczniki = liczniki }
+	return { hp = walczacy.zycie, efekty = {}, mana = walczacy.mana_start, nastepna = 1, wskrzeszenie = walczacy.wskrzeszenie }
 end
 
 local function opisStrony(walczacy)
@@ -54,6 +53,8 @@ local function opisStrony(walczacy)
 		ranga = walczacy.ranga,
 		poziom = walczacy.poziom,
 		zycie = walczacy.zycie,
+		mana = walczacy.mana_start,
+		mana_maks = STALE.mana_maks,
 	}
 end
 
@@ -66,6 +67,10 @@ function Silnik.symuluj(gracz: any, przeciwnik: any, ziarno: any)
 	if not Los.calkowita(ziarno) or ziarno < 0 or ziarno >= Los.ZIARNO_GRANICA then
 		Los.blad("ziarno musi być liczbą całkowitą od 0 do " .. string.format("%d", Los.ZIARNO_GRANICA - 1))
 	end
+	-- pasywki „na starcie walki” działające na przeciwnika: zdarcie części jego Pancerza na całą walkę
+	local pa, pb = A.pancerz, B.pancerz
+	A.pancerz = pa * (1 + B.mod.pancerz_wroga)
+	B.pancerz = pb * (1 + A.mod.pancerz_wroga)
 	local los = Los.nowyLos(ziarno)
 	local w = {
 		strony = { gracz = A, wrog = B },
@@ -98,7 +103,7 @@ function Silnik.symuluj(gracz: any, przeciwnik: any, ziarno: any)
 			zwyciezca = cel
 			break
 		end
-		if Umiejetnosci.maEfekt(w.stan[kto], "spowolnienie") then
+		if Umiejetnosci.maEfekt(w.stan[kto], "ogluszenie") then
 			Umiejetnosci.zdarzenie(w, "utrata_tury", kto, kto, STALE.czasy.utrata_tury, {})
 		else
 			Umiejetnosci.akcja(w, kto, cel)
@@ -122,6 +127,7 @@ function Silnik.symuluj(gracz: any, przeciwnik: any, ziarno: any)
 		tury = w.tura,
 		bezpiecznik = bezpiecznik,
 		lup = lup,
+		czesc_przez_blok = STALE.czesc_przez_blok,
 		czas_wstepu = STALE.czas_wstepu / 100,
 		czas_finalu = STALE.czas_finalu / 100,
 		czas = czas / 100,
@@ -132,7 +138,7 @@ end
 function Silnik.przeciwnicy()
 	local lista = {}
 	for _, d in Dane.przeciwnicy do
-		table.insert(lista, { id = d.id, nazwa = d.nazwa, ranga = d.ranga, kraina = d.kraina, wyglad = d.wyglad })
+		table.insert(lista, { id = d.id, nazwa = d.nazwa, ranga = d.ranga, kraina = d.kraina, klasa = d.klasa, wyglad = d.wyglad })
 	end
 	return lista
 end

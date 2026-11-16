@@ -1,10 +1,13 @@
 --[[
-	Przeciwnicy — potwory biomów (na razie las) skalowane poziomem i łup po walce (silnik walki v2). Czysty moduł.
+	Przeciwnicy — potwory biomów (na razie las) skalowane poziomem i łup po walce (silnik walki v3). Czysty moduł.
 	Port w Pythonie: tools/walka/silnik.py, sekcja Przeciwnicy.luau. Dane potworów: Dane.przeciwnicy.
 
-	Wartość potwora na poziomie L = baza + na_poziom × (L − 1) (pary [baza, na_poziom] w danych).
-	Ranga ("zwykly", "rzadki", "straznik") to WYŁĄCZNIE informacja dla interfejsu i łupu: nie zmienia zasad walki
-	ani jej długości. Potwór przechodzi przez te same wzory ataku i obrony co postać gracza.
+	Potwór jest opisany jak postać: ma KLASĘ (klasę gracza — zwiadowca, mag, wojownik — albo klasę tylko dla potworów
+	z Dane.klasy_potworow, np. strażnik biomu), punkty sześciu statystyk, broń i Pancerz z przedmiotów (pary
+	[baza, na_poziom]: wartość na poziomie L = baza + na_poziom × (L − 1)), szansę bloku tarczy, modyfikatory
+	(np. więcej życia, słabsze ciosy) i umiejętności w slotach. Przechodzi przez TEN SAM wzór (Statystyki.bojowe),
+	ataki, obronę i manę co postać gracza.
+	Ranga ("zwykly", "rzadki", "straznik") to WYŁĄCZNIE informacja dla interfejsu i łupu: nie zmienia zasad walki.
 
 	Łup (D-058, D-060, D-057): Złoto, doświadczenie, tokeny krainy, rzadko Gemy; Shard Ewolucji WYŁĄCZNIE ze strażnika
 	biomu i z szansą. JAJEK Z POTWORÓW NIE MA (D-060) — łup nie ma nawet takiego pola.
@@ -30,31 +33,38 @@ local function skala(para, poziom: number): number
 end
 Przeciwnicy.skala = skala
 
+-- potwór ma klasę gracza (zwiadowca, mag, wojownik) albo klasę tylko dla potworów (np. strażnik biomu)
+local function klasaPotwora(d)
+	local k = Dane.klasy[d.klasa]
+	if k == nil then
+		k = Dane.klasy_potworow[d.klasa]
+	end
+	return k
+end
+
 function Przeciwnicy.wartosciPotwora(identyfikator: string, poziom: number)
 	local d = PO_ID[identyfikator]
-	local umiejetnosci = {}
-	for _, u in d.umiejetnosci do
-		table.insert(umiejetnosci, u)
+	local e = {}
+	for _, nazwa in Dane.statystyki do
+		e[nazwa] = math.max(0, Los.zaokraglij(skala(d.statystyki[nazwa], poziom)))
 	end
-	return {
-		nazwa = d.nazwa,
-		rodzaj = "potwor",
-		id = d.id,
-		ranga = d.ranga,
-		poziom = poziom,
-		zycie = math.max(1, Los.zaokraglij(skala(d.zycie, poziom))),
-		cios = skala(d.cios, poziom),
-		rodzaj_ciosu = d.rodzaj_ciosu,
-		pancerz = skala(d.pancerz, poziom),
-		odpornosc = skala(d.odpornosc, poziom),
-		unik = d.unik,
-		krytyk = d.krytyk,
-		mnoznik_krytyka = d.mnoznik_krytyka,
-		blok = d.blok,
-		moc = d.moc,
-		umiejetnosci = umiejetnosci,
-		zaklecie = "",
-	}
+	local w = Statystyki.bojowe(
+		klasaPotwora(d),
+		poziom,
+		e,
+		skala(d.bron, poziom),
+		"",
+		skala(d.pancerz_przedmiotow, poziom),
+		d.tarcza,
+		{ d.modyfikatory },
+		d.umiejetnosci
+	)
+	w.nazwa = d.nazwa
+	w.rodzaj = "potwor"
+	w.id = d.id
+	w.ranga = d.ranga
+	w.poziom = poziom
+	return w
 end
 
 -- przeciwnik = { potwor = id, poziom = n } ALBO { postac = opis postaci } (Arena PvP, test lustrzany)
@@ -62,6 +72,7 @@ function Przeciwnicy.wartosciPrzeciwnika(przeciwnik: any)
 	if type(przeciwnik) ~= "table" then
 		Los.blad("brak opisu przeciwnika")
 	end
+	Statystyki.sprawdzKlucze(przeciwnik, Statystyki.POLA_PRZECIWNIKA, "opisie przeciwnika", "wrog")
 	local potwor = przeciwnik.potwor
 	local postac = przeciwnik.postac
 	if potwor ~= nil and postac ~= nil then

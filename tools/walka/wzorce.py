@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Wzorce zgodnosci Luau-Python: dzienniki z portu w Pythonie dla ustalonego zestawu wejsc i ziaren.
+"""Wzorce zgodnosci Luau-Python (silnik v3): dzienniki z portu w Pythonie dla ustalonego zestawu wejsc i ziaren.
 
     python -B tools/walka/wzorce.py            # zapisuje tools/walka/wzorce.json
     python -B tools/walka/wzorce.py --sprawdz  # sprawdza, czy wzorce.json zgadza sie z obecnym silnikiem
@@ -33,15 +33,16 @@ def setne(x):
 def podpis(w):
     czesci = []
     for z in w["dziennik"]:
-        czesci.append("%s:%s>%s:%d/%d:%d/%d@%d+%d:%s:%s:%s:%d:%d:%d" % (
+        czesci.append("%s:%s>%s:%d/%d:%d/%d@%d+%d:%s:%s:%s:%d:%d:%d:%d:%d/%d" % (
             z["typ"], z["kto"], z["cel"], z["obrazenia"], z["pochloniete"], z["hp_gracz"], z["hp_wrog"],
             setne(z["t"]), setne(z["trwa"]), z["umiejetnosc"], z["efekt"], z["rodzaj"], 1 if z["krytyk"] else 0,
-            z["wartosc"], z["tury"]))
+            z["wartosc"], z["tury"], z["stosy"], z["mana_gracz"], z["mana_wrog"]))
     L = w["lup"]
-    return "%s|%s|%d|%d|%d/%d/%d/%d/%d/%s|%d|%d/%d" % (
+    return "%s|%s|%d|%d|%d/%d/%d/%d/%d/%s|%d|%d/%d|%d/%d" % (
         ",".join(czesci), w["wynik"], w["tury"], 1 if w["bezpiecznik"] else 0,
         L["zloto"], L["doswiadczenie"], L["tokeny_krainy"], L["gemy"], L["shard_ewolucji"], L["kraina"],
-        setne(w["czas"]), w["strony"]["gracz"]["zycie"], w["strony"]["wrog"]["zycie"])
+        setne(w["czas"]), w["strony"]["gracz"]["zycie"], w["strony"]["wrog"]["zycie"],
+        w["strony"]["gracz"]["mana"], w["strony"]["wrog"]["mana"])
 
 
 def skrot(napis):
@@ -62,6 +63,19 @@ def postacie_i_przeciwnicy():
     postacie.append(wzorcowe.postac("mag", 5, zaklecie="podpalenie", pet={"inteligencja": 0.06}))
     postacie.append(wzorcowe.postac("zwiadowca", 5, ile_slotow=0, zaklecie="trucizna"))
     postacie.append(wzorcowe.postac("wojownik", 10, tarcza=False, ile_slotow=3, dodatkowe={"zrecznosc": 40}))
+    # v3: pasywne umiejetnosci w slotach, premie z przedmiotow (mana), pasywki broni, 3 pasywne bez aktywnych
+    postacie.append(wzorcowe.postac("mag", 5, umiejetnosci=["kula_ognia", "kumulowanie_trucizny"], zaklecie="trucizna",
+                                    pasywka_broni="jadowity_kostur"))
+    postacie.append(wzorcowe.postac("zwiadowca", 5, umiejetnosci=["zatruta_strzala", "skupienie"],
+                                    premie={"zysk_many": 0.4, "koszt_many": 0.2, "mana_startowa": 30}))
+    postacie.append(wzorcowe.postac("wojownik", 10, umiejetnosci=["kolos", "mur_tarczy", "rozdzieracz"],
+                                    pasywka_broni="topor_rzeznika"))
+    # wskrzeszenie (propozycja D-094): legendarna pasywka w slocie
+    postacie.append(wzorcowe.postac("zwiadowca", 5, umiejetnosci=["uderzenie_z_gory", "wskrzeszenie"], zaklecie="trucizna"))
+    postacie.append(wzorcowe.postac("wojownik", 10, umiejetnosci=["wskrzeszenie", "ciecie", "kolos"]))
+    postacie.append(wzorcowe.postac("mag", 10, umiejetnosci=["bariera", "lodowy_pocisk", "przeplyw_many"],
+                                    zaklecie="podpalenie", pasywka_broni="ognista_rozdzka",
+                                    premie={"unik": 0.03, "blok": 0.02, "krytyk": 0.04, "pancerz": 0.1}))
     for L in POZIOMY:
         for p in silnik.PRZECIWNICY_LISTA:
             przeciwnicy.append({"potwor": p["id"], "poziom": L})
@@ -134,6 +148,45 @@ ZLE_WEJSCIA = [
      "sciezka": ["umiejetnosci"], "wartosc": {"x": "nieznana"}},
     {"opis": "umiejetnosci z dziura (klucze 1 i 3)", "baza": "mag", "strona": "gracz",
      "sciezka": ["umiejetnosci"], "wartosc": "UMIEJETNOSCI_Z_DZIURA"},
+    # v3: pasywki w slotach, premie (modyfikatory z przedmiotow i drzewka), pasywki broni
+    {"opis": "pasywka innej klasy w slocie", "baza": "wojownik", "strona": "gracz", "sciezka": ["umiejetnosci"],
+     "wartosc": ["ciecie", "kumulowanie_trucizny"]},
+    {"opis": "ta sama pasywka dwa razy", "baza": "mag", "strona": "gracz", "sciezka": ["umiejetnosci"],
+     "wartosc": ["przeplyw_many", "przeplyw_many"]},
+    {"opis": "cztery sloty z pasywkami", "baza": "mag", "strona": "gracz", "sciezka": ["umiejetnosci"],
+     "wartosc": ["kula_ognia", "przeplyw_many", "skupiona_magia", "kumulowanie_trucizny"]},
+    {"opis": "premie jako liczba", "baza": "wojownik", "strona": "gracz", "sciezka": ["premie"], "wartosc": 5},
+    {"opis": "premie: nieznany modyfikator", "baza": "wojownik", "strona": "gracz", "sciezka": ["premie"],
+     "wartosc": {"mana": 0.2}},
+    {"opis": "premie: zysk many za duzy", "baza": "zwiadowca", "strona": "gracz", "sciezka": ["premie"],
+     "wartosc": {"zysk_many": 50}},
+    {"opis": "premie: ujemna znizka kosztu", "baza": "mag", "strona": "gracz", "sciezka": ["premie"],
+     "wartosc": {"koszt_many": -0.2}},
+    {"opis": "premie: unik jako napis", "baza": "zwiadowca", "strona": "gracz", "sciezka": ["premie"],
+     "wartosc": {"unik": "0.1"}},
+    {"opis": "nieznana pasywka broni", "baza": "mag", "strona": "gracz", "sciezka": ["bron", "pasywka"],
+     "wartosc": "miecz_swietlny"},
+    {"opis": "pasywka broni innej klasy", "baza": "zwiadowca", "strona": "gracz", "sciezka": ["bron", "pasywka"],
+     "wartosc": "ognista_rozdzka"},
+    {"opis": "pasywka broni jako liczba", "baza": "wojownik", "strona": "gracz", "sciezka": ["bron", "pasywka"], "wartosc": 3},
+    {"opis": "wskrzeszenie jako premia (tylko slot)", "baza": "mag", "strona": "gracz", "sciezka": ["premie"],
+     "wartosc": {"wskrzeszenie": 0.25}},
+    {"opis": "wskrzeszenie jako pasywka broni", "baza": "wojownik", "strona": "gracz", "sciezka": ["bron", "pasywka"],
+     "wartosc": "wskrzeszenie"},
+    {"opis": "wskrzeszenie dwa razy w slotach", "baza": "zwiadowca", "strona": "gracz", "sciezka": ["umiejetnosci"],
+     "wartosc": ["wskrzeszenie", "wskrzeszenie"]},
+    # kontrola 16/17.11: zamkniete listy pol — literowka nie moze przejsc po cichu (dawniej silnik ja pomijal)
+    {"opis": "literowka: premia zamiast premie", "baza": "wojownik", "strona": "gracz", "sciezka": ["premia"],
+     "wartosc": {"cios": 0.5}},
+    {"opis": "mana jako pole postaci", "baza": "zwiadowca", "strona": "gracz", "sciezka": ["mana"], "wartosc": 100},
+    {"opis": "nieznane pole broni (pasywki zamiast pasywka)", "baza": "mag", "strona": "gracz", "sciezka": ["bron", "pasywki"],
+     "wartosc": "kostur_many"},
+    {"opis": "nieznane pole tarczy", "baza": "wojownik", "strona": "gracz", "sciezka": ["tarcza", "pancerz"], "wartosc": 5},
+    {"opis": "nieznane pole przeciwnika (premie potwora)", "baza": "wojownik", "strona": "przeciwnik", "sciezka": ["premie"],
+     "wartosc": {"cios": 0.5}},
+    {"opis": "premie: NaN", "baza": "mag", "strona": "gracz", "sciezka": ["premie"], "wartosc": {"specjalna": "nan_w_premii"}},
+    {"opis": "umiejetnosci jako liczba", "baza": "mag", "strona": "gracz", "sciezka": ["umiejetnosci"], "wartosc": 3},
+    {"opis": "nazwa jako liczba", "baza": "zwiadowca", "strona": "gracz", "sciezka": ["nazwa"], "wartosc": 7},
 ]
 
 
@@ -160,6 +213,8 @@ def zle_wejscie(spec):
     specjalna = v.get("specjalna") if isinstance(v, dict) else None
     if specjalna == "nan":
         v = float("nan")
+    elif specjalna == "nan_w_premii":
+        v = {"cios": float("nan")}
     elif specjalna == "inf":
         v = float("inf")
     elif specjalna != "brak":
@@ -187,8 +242,8 @@ def zbuduj():
         w = silnik.symuluj(postacie[ip], przeciwnicy[jp], z)
         podpisy.append(podpis(w))
     return {
-        "_opis": "Wzorce zgodnosci silnika walki v2: wejscia, ziarna i podpisy dziennikow z portu w Pythonie. "
-                 "Generuje: python -B tools/walka/wzorce.py. Sprawdza w Studio: python -B tools/walka/zgodnosc_studio.py.",
+        "_opis": "Wzorce zgodnosci silnika walki v3: wejscia, ziarna i podpisy dziennikow z portu w Pythonie. "
+                 "Generuje: python -B tools/walka/wzorce.py. Sprawdza w Studio: python -B tools/walka/zgodnosc_studio.py (bez Studio: --offline).",
         "wzorcowa_mag": wzorcowe.postac("mag", 5),
         "postacie": postacie,
         "przeciwnicy": przeciwnicy,

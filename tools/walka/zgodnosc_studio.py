@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Zgodnosc silnika walki v2: moduly Luau w Roblox Studio kontra wzorce z portu w Pythonie.
+"""Zgodnosc silnika walki v3: moduly Luau w Roblox Studio kontra wzorce z portu w Pythonie.
 
     python -B tools/walka/zgodnosc_studio.py [--studio <studio_id>]   # Studio w trybie Edit, TYLKO ODCZYT
     python -B tools/walka/zgodnosc_studio.py --sucho [--zapisz plik.luau]  # bez Studio: sklada kod i pokazuje rozmiar
+    python -B tools/walka/zgodnosc_studio.py --offline                # bez Studio: te same sprawdzenia malym
+                                                                      # interpreterem Luau (tools/walka/luau_mini.py)
+
+Tryb --offline NIE zastepuje Studio (to podzbior Luau napisany w Pythonie, patrz luau_mini.py), ale lapie bledy
+portu (inna kolejnosc rzutow, literowki w nazwach pol, zle indeksy) bez uruchamiania Roblox Studio.
 
 Co robi:
   1. czyta ZRODLA modulow jako tekst z repozytorium (src/server/Walka/*.luau, src/shared/Walka/Dziennik.luau) —
@@ -80,16 +85,16 @@ end
 local function podpis(w)
 	local czesci = {}
 	for _, z in w.dziennik do
-		table.insert(czesci, string.format("%s:%s>%s:%d/%d:%d/%d@%d+%d:%s:%s:%s:%d:%d:%d",
+		table.insert(czesci, string.format("%s:%s>%s:%d/%d:%d/%d@%d+%d:%s:%s:%s:%d:%d:%d:%d:%d/%d",
 			z.typ, z.kto, z.cel, z.obrazenia, z.pochloniete, z.hp_gracz, z.hp_wrog,
 			setne(z.t), setne(z.trwa), z.umiejetnosc, z.efekt, z.rodzaj, if z.krytyk then 1 else 0,
-			z.wartosc, z.tury))
+			z.wartosc, z.tury, z.stosy, z.mana_gracz, z.mana_wrog))
 	end
 	local L = w.lup
-	return string.format("%s|%s|%d|%d|%d/%d/%d/%d/%d/%s|%d|%d/%d",
+	return string.format("%s|%s|%d|%d|%d/%d/%d/%d/%d/%s|%d|%d/%d|%d/%d",
 		table.concat(czesci, ","), w.wynik, w.tury, if w.bezpiecznik then 1 else 0,
 		L.zloto, L.doswiadczenie, L.tokeny_krainy, L.gemy, L.shard_ewolucji, L.kraina,
-		setne(w.czas), w.strony.gracz.zycie, w.strony.wrog.zycie)
+		setne(w.czas), w.strony.gracz.zycie, w.strony.wrog.zycie, w.strony.gracz.mana, w.strony.wrog.mana)
 end
 
 local function skrot(napis)
@@ -151,6 +156,8 @@ for _, spec in W.zle_wejscia do
 	local specjalna = if type(v) == "table" then v.specjalna else nil
 	if specjalna == "nan" then
 		v = 0 / 0
+	elseif specjalna == "nan_w_premii" then
+		v = { cios = 0 / 0 }
 	elseif specjalna == "inf" then
 		v = math.huge
 	elseif specjalna == "brak" then
@@ -221,16 +228,73 @@ def zloz_kod(wz):
             .replace("__ZRODLA__", zloz_zrodla()))
 
 
+def uruchom_offline(kod):
+    """Uruchamia ZLOZONY kod (ten sam, ktory poszedlby do Studio) w interpreterze luau_mini; game.PlaceId,
+    HttpService (JSONDecode / JSONEncode) i task.wait sa podstawione. Zwraca odpowiedz jak ze Studio (slownik)."""
+    sys.path.insert(0, TU)
+    sys.path.insert(0, os.path.join(REPO, "swiat", "test_walki_roblox"))
+    import luau_mini as LM  # noqa: E402
+    from cel_studio import MIEJSCE  # noqa: E402
+    interp = LM.Interpreter()
+    http = LM.Tabela()
+    http.set("JSONDecode", lambda _self, tekst: LM.do_luau(json.loads(tekst)))
+    http.set("JSONEncode", lambda _self, v: json.dumps(LM.z_luau(v, pusta_jako_lista=True), ensure_ascii=False))
+    game = LM.Tabela()
+    game.set("PlaceId", float(MIEJSCE))
+    game.set("GetService", lambda _self, _nazwa: http)
+    task = LM.Tabela()
+    task.set("wait", lambda *_: None)
+    interp.globalne.z["game"] = game
+    interp.globalne.z["task"] = task
+    return json.loads(interp.wykonaj(kod, "zlozony")[0])
+
+
+def ocen_odpowiedz(d, wz, wypisz=print):
+    """Wspolne dla Studio i --offline: 4 punkty OK/BLAD. Zwraca True, gdy wszystko OK."""
+    n = len(wz["przypadki"])
+    rozne = [i for i in range(n) if d["skroty"][i] != wz["skroty"][i]]
+    ok = True
+    wypisz("1. powtarzalnosc:                %s" % ("OK" if d["powtarzalne"] else "BLAD"))
+    ok &= bool(d["powtarzalne"])
+    zle = d["zle"] + d["bledy"]
+    wypisz("2. niezmienniki (%d walk):      %s" % (n, "OK" if not zle else "BLAD %s" % zle[:5]))
+    ok &= not zle
+    wypisz("3. zgodnosc z portem w Pythonie: %s" % ("OK (%d/%d identycznych dziennikow)" % (n, n) if not rozne
+                                                  else "BLAD: %d roznic na %d" % (len(rozne), n)))
+    ok &= not rozne
+    for x in d["niezgodne"]:
+        i = x["nr"] - 1
+        wypisz("   przypadek %d %s\n   Luau:   %s\n   Python: %s" % (x["nr"], wz["przypadki"][i], x["podpis"][:600],
+                                                                    wz["podpisy"][i][:600]))
+    m = len(wz["zle_wejscia"])
+    wypisz("4. odrzucanie zlych wejsc:       %s" % ("OK (%d/%d)" % (d["odrzucone"], m) if d["odrzucone"] == m
+                                                  else "BLAD (%d/%d), przepuszczone: %s" % (d["odrzucone"], m, d["nieodrzucone"])))
+    ok &= d["odrzucone"] == m
+    return ok, {"przypadki": n, "rozne": len(rozne), "zle": len(zle), "odrzucone": d["odrzucone"], "zle_wejscia": m,
+                "powtarzalne": bool(d["powtarzalne"])}
+
+
+def sprawdz_offline(wz, wypisz=print):
+    """Te same cztery sprawdzenia co w Studio, na tym samym zlozonym kodzie, ale w interpreterze luau_mini."""
+    d = uruchom_offline(zloz_kod(wz))
+    wypisz("tryb --offline (zlozony kod w interpreterze tools/walka/luau_mini.py, NIE Roblox Studio)")
+    return ocen_odpowiedz(d, wz, wypisz)
+
+
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    ap = argparse.ArgumentParser(description="Zgodnosc silnika walki v2: Luau w Studio kontra wzorce z Pythona")
+    ap = argparse.ArgumentParser(description="Zgodnosc silnika walki v3: Luau w Studio kontra wzorce z Pythona")
     ap.add_argument("--studio", default=None, help="id okna Studio (python -B tools/studio_mcp.py studios)")
     ap.add_argument("--sucho", action="store_true", help="tylko zloz kod, bez laczenia ze Studio")
     ap.add_argument("--zapisz", default=None, help="z --sucho: zapisz zlozony kod do pliku")
+    ap.add_argument("--offline", action="store_true", help="bez Studio: sprawdz modulami w interpreterze luau_mini")
     a = ap.parse_args()
     with open(WZORCE, encoding="utf-8") as f:
         wz = json.load(f)
+    if a.offline:
+        ok, _ = sprawdz_offline(wz)
+        sys.exit(0 if ok else 1)
     kod = zloz_kod(wz)
     if a.sucho:
         print("zlozony kod: %d znakow, %d przypadkow, %d zlych wejsc" % (len(kod), len(wz["przypadki"]), len(wz["zle_wejscia"])))
@@ -254,25 +318,7 @@ def main():
     d = json.loads(r["text"])
     if d.get("blad"):
         sys.exit(d["blad"])
-    n = len(wz["przypadki"])
-    rozne = [i for i in range(n) if d["skroty"][i] != wz["skroty"][i]]
-    ok = True
-    print("1. powtarzalnosc:                %s" % ("OK" if d["powtarzalne"] else "BLAD"))
-    ok &= bool(d["powtarzalne"])
-    zle = d["zle"] + d["bledy"]
-    print("2. niezmienniki (%d walk):      %s" % (n, "OK" if not zle else "BLAD %s" % zle[:5]))
-    ok &= not zle
-    print("3. zgodnosc z portem w Pythonie: %s" % ("OK (%d/%d identycznych dziennikow)" % (n, n) if not rozne
-                                                 else "BLAD: %d roznic na %d" % (len(rozne), n)))
-    ok &= not rozne
-    for x in d["niezgodne"]:
-        i = x["nr"] - 1
-        print("   przypadek %d %s\n   Luau:   %s\n   Python: %s" % (x["nr"], wz["przypadki"][i], x["podpis"][:600],
-                                                                  wz["podpisy"][i][:600]))
-    m = len(wz["zle_wejscia"])
-    print("4. odrzucanie zlych wejsc:       %s" % ("OK (%d/%d)" % (d["odrzucone"], m) if d["odrzucone"] == m
-                                                 else "BLAD (%d/%d), przepuszczone: %s" % (d["odrzucone"], m, d["nieodrzucone"])))
-    ok &= d["odrzucone"] == m
+    ok, _ = ocen_odpowiedz(d, wz)
     sys.exit(0 if ok else 1)
 
 
