@@ -410,3 +410,4 @@ Szczegóły: Modele ras: Karol najpierw powiedział, że robi je Paweł w Blende
 Dopisek z 2026-11-16 (Claude Code u Karola, 21:00): Karol polecił w rozmowie zacząć pracę po sesji. Agent Karola robi od 21:00 balans i zmiany silnika walki (praca „silnik-mana-balans”) oraz plan lasu jako pasa (praca „las-pas-plan”). Modele ras, miasto, okno zagrody petów z tablicą i pomijanie walk czekają na odpowiedź.
 Dopisek z 2026-11-16 (Claude Code u Karola, 21:18, z rozmowy z Karolem): modele ras robi Paweł, a agent Karola po jego wypchnięciu poprawia modele, halę wyboru i faktury. Przejście teleportu przez chmury (D-075) robi agent Karola. Bez przydziału zostają: miasto, okno zagrody petów z tablicą i pomijanie walk.
 **Odpowiedź:**
+- Karol Balucki (2026-11-16): Te wszystkie rzeczy na mnie "Karol"
