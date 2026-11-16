@@ -14,6 +14,25 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Test Play: sala, strzałka → Mag, PLAY → `Class`, światło gry przywrócone, HUD. Notatka: [[Selektor bohatera]] (propozycja).
 - Uwaga Pawła: na ekranie wyboru było widać podpowiedź portalu „Leć do lasu” (postać stoi przy nim). Podpowiedzi „E” są teraz wyłączone u gracza na czas ekranu i wracają po PLAY (test Play OK).
 
+## 2026-11-16 · Claude Code u Karola (odpowiedzi Karola po sesji: teleport, rasy, Higgsfield)
+- **Teleport (D-075):** Karol doprecyzował w rozmowie, że pod przyciskiem Teleport nie ma okna mapy ani HUD — jest przejście przez chmury, z których widać z góry pas map. Dopisane pod D-075 w [[Rejestr decyzji]] i przy zadaniu przebudowy mapy w [[Zadania]].
+- **Rasy (D-079):** modele robi Paweł; po jego wypchnięciu agent Karola poprawia modele, halę wyboru i faktury kreskówkowe jak w Krzywym Miasteczku. Zadanie modeli ras dostało pole agenta (Paweł), doszło zadanie poprawek dla agenta Karola; dopisek w [[Pytania otwarte]] #49.
+- **Higgsfield (D-082, D-083):** zgoda Karola na generowanie dźwięków i muzyki bez pytania o kredyty; wgranie audio do Roblox nadal po sprawdzeniu zasad i praw.
+
+## 2026-11-16 · Claude Code u Karola (po sesji głównej: start prac i korekta tempa)
+- Karol polecił w rozmowie zacząć i zaplanować pracę po sesji głównej 16.11. Od 21:00 w toku: zmiany silnika walki (pasek many, Zręczność przydatna każdej klasie, blok i unik każdej klasy, limit Pancerza, statusy z własnym charakterem, pasywki, model tempa; propozycje D-073, D-088–D-091) oraz plan lasu jako wąskiego pasa z planszą do akceptacji (D-075, D-076). Obie prace widać w panelu („Prace w toku”).
+- **Korekta Karola do D-076:** „15 minut na biom nie jest dobre” — pierwsza wersja ma dawać ok. 10 godzin gry do wejścia do ostatniego biomu. Dopisane pod D-076 w [[Rejestr decyzji]] i przy zadaniu przebudowy mapy w [[Zadania]]; rozkład czasu na biomy pozostaje do decyzji.
+- [[Pytania otwarte]] #49: dopisek, które zadania bez przydziału agent Karola już robi; reszta czeka na odpowiedź.
+- Zapis ustaleń z sesji ([[Sesja główna 2026-11-16 — zapis ustaleń]], propozycje D-073–D-093, pytania 46–49) spisał agent panelu; ten wpis go nie zmienia.
+
+## 2026-11-16 · Claude Code u Karola (spisanie sesji głównej 16.11)
+- Sesja główna 16.11 (20:05–20:53, zapis pełny) spisana w [[Sesja główna 2026-11-16 — zapis ustaleń]] (status propozycja).
+- [[Rejestr decyzji]]: 💡 propozycje D-073–D-093. Wśród nich: blok i unik dla każdej klasy (zmienia D-062), Pancerz z mini-grą na próbę, mapa jako wąski pas biomów z teleportem między strefami, układ biomu i ok. 15 minut na biom, cutscenka biomu, pomijanie walk z poznanym potworem, rasy i Półbóg, start gry i podest wyboru, pop-upy i dźwięki w walce, muzyka, sklepy z wnętrzem, ciasne miasto, jajka tylko za Złoto i Rybki, Timer i premia do Diamentów, trzy dowolne sloty (zmienia D-055), pasek many, statusy, limit Pancerza, przyciski HUD z Figmy, podział pracy. Niczego nie zatwierdzono. D-061 nadal czeka na podpis Pawła.
+- [[Pytania otwarte]]: nowe pytania 46–49 (blok bez tarczy, Półbóg za Robuxy, wskrzeszenie, przydział zadań bez osoby). Pod istniejącymi pytaniami nie dopisano odpowiedzi: omówione pytania 5, 27, 39 i 45 Karol zamknął w trakcie sesji jako nieaktualne, a pozostałe mają już odpowiedzi.
+- [[Zadania]]: zadania z sesji z polem agenta. Karol: mapa i biomy, cutscenka biomu, podest, dźwięki, muzyka. Paweł: wzór podestu i hala, ekran ras, okna sklepów, menu główne, pop-upy, drzewko. Pięć zadań bez przydziału czeka na pytanie 49. Pięć wyborów silnika v2 i propozycje z trzeciej sesji 14.11 przeniesione do Zrobionych.
+- [[Sesje główne]]: wynik i link przy czterech tematach omówionych 16.11.
+- Raport „Sesja główna 2026-11-16 — do zatwierdzenia” w panelu.
+
 ## 2026-11-16 · Claude Code u Pawła (ekran wyboru klasy w 3D)
 - Polecenie Pawła: po ekranie ładowania ekran wyboru klasy (Wojownik / Zwiadowca / Mag) ze sceną 3D zamiast tła 2D, modele Karola na kole na podeście, przełączanie strzałkami, bez emblematów po prawej, na czas wyboru schowane wszystko inne. Opis: [[Selektor bohatera]] (propozycja).
 - Grafiki Higgsfield (1 wariant): arkusz 8 elementów UI i tło (tło zastąpione salą 3D). Makieta w Figmie (35:115).
@@ -41,6 +60,19 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Paweł (Telegram): decyzja D-066 potwierdzona: zgoda (odrzucona przez Karol Balucki 2026-11-15), przez Telegram ([[Rejestr decyzji]])
 - Paweł (Telegram): decyzja D-062 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-16), przez Telegram ([[Rejestr decyzji]])
 - Paweł (Telegram): decyzja D-067 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-16), przez Telegram ([[Rejestr decyzji]])
+- Karol Balucki: omówiony temat sesji: Pancerz i model statystyk: dokończenie (D-062, D-063, pytania 39 i 40) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Paweł przegląda decyzje Karola z 13–14.11 (pytanie 27) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Lista lokacji mapy teleportacji i przyciski HUD (pytania 5 i 28) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Sklep za Robuxy: jajka i skrzynki z jawnymi szansami a D-031 (D-066, pytanie 43) ([[Sesje główne]])
+- Karol Balucki: odpowiedź na pytanie 45 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 39 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 27 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 5 ([[Pytania otwarte]])
+- Karol Balucki: decyzja D-064 oznaczona jako nieaktualna ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-063 zatwierdzona ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-072 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-16), przez Telegram ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-061 zatwierdzona ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-063 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-16), przez Telegram ([[Rejestr decyzji]])
 
 ## 2026-11-15 · Claude Code u Pawła (drzewko: PET INTELLIGENCE i PET DEXTERITY)
 - Na prośbę Pawła w gałęzi Pets → Pet Stats węzły PET POWER (łapa + gwiazdka) i PET SPEED (łapa + piorun) zastąpione przez **PET INTELLIGENCE** (łapa + książka z ikony INT) i **PET DEXTERITY** (łapa + but z ikony DEX), +3% za poziom.

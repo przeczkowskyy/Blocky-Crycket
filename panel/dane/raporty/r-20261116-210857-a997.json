@@ -1,0 +1,32 @@
+{
+ "id": "r-20261116-210857-a997",
+ "tytul": "Sesja główna 2026-11-16 — do zatwierdzenia",
+ "opis_md": "Sesja z 16.11 (20:05–20:53) jest spisana. Zapis był pełny. Nic nie jest zatwierdzone. Każdą propozycję klikacie w zakładce **Pytania**: „Czy zatwierdzamy…?” → Tak / Nie.\n\n**Do potwierdzenia od razu**\n- **D-061 (osiem biomów)**: Paweł powiedział na sesji „tak”, ale w rejestrze jest tylko podpis Karola. Paweł, potwierdź na Telegramie albo w panelu.\n\n**Walka i statystyki**\n- D-073: blok i unik ma każda klasa, tarcza daje Wojownikowi większą szansę. *Zmienia D-062.*\n- D-074: Pancerz ma mini-grę w Training Center, na próbę.\n- D-088: trzy dowolne sloty (aktywne albo pasywne), bez płatnego czwartego; bronie mają pasywki. *Zmienia D-055.*\n- D-089: pasek many odpala umiejętności; buildy pod manę; bez nowego okna statystyk.\n- D-090: każdy status działa inaczej; trucizna i podpalenie nieblokowalne; tarcza to czar na kilka tur.\n- D-091: Pancerz zawsze przepuszcza co najmniej 25% ciosu; Wojownik szybciej dochodzi do limitu.\n- D-078: z nowym potworem walki nie da się pominąć (tylko przyspieszyć), z poznanym już tak.\n- D-082: w walce wyskakujące efekty i dźwięki.\n\n**Mapa, biomy, miasto**\n- D-075: mapa jako wąski, długi pas biomów; Teleport w HUD przenosi między strefami.\n- D-076: biom ma inkubator przy wejściu, zagrody coraz silniejszych potworów i strażnika, który otwiera kolejny biom; ok. 15 min na biom.\n- D-077: cutscenka przelotu przez biom przy pierwszym wejściu.\n- D-084: do sklepu się wchodzi, E na sprzedawcy otwiera okno 2D.\n- D-085: Krzywe Miasteczko ciasne jak bazar: portale, działka, zagroda petów, tablica z rankingiem.\n- D-092: przyciski HUD według Figmy (sześć, z Teleportem).\n\n**Postać, start gry, sklep**\n- D-079: sześć ras z pasywną cechą, wybór rasy po klasie.\n- D-080: Półbóg jako płatna rasa z lepszymi statystykami. **Sporne** (Paweł: pay-to-win).\n- D-081: ładowanie → menu główne → podest z tłem klasy → gra.\n- D-083: muzyka dla każdego biomu, miasta i menu.\n- D-086: jajka tylko za Złoto; Rybki na game passy, bundle i startery.\n- D-087: gałąź Timer w drzewku zostaje; premia do Diamentów tylko z łupu potworów.\n- D-093: podział pracy: Paweł 2D, Karol 3D, dźwięk i muzyka; gdy przydział jest niejasny, agent pyta.\n\n**Nowe pytania**\n- #46 Blok bez tarczy: ile zatrzymuje?\n- #47 Półbóg za Robuxy: z przewagą czy bez? (rozstrzyga D-080)\n- #48 Wskrzeszenie w walce: legendarne czy wcale?\n- #49 Czyj agent robi zadania bez przydziału: balans, modele ras, miasto, okna zagrody i tablicy, pomijanie walk.\n\n**Odpowiedzi pod starymi pytaniami:** nie dopisałem żadnej. Pytania omówione na sesji (5, 27, 39, 45) Karol zamknął w trakcie jako „nieaktualne”, a pozostałe miały już odpowiedzi. Treść tych odpowiedzi jest w propozycjach wyżej.\n\n**Zadania** mają już osobę (pole agenta):\n- **Karol**: przebudowa mapy i lasu, cutscenka biomu, podest, dźwięki, muzyka.\n- **Paweł**: wzór podestu i próba hali, ekran ras, okna sklepów, menu główne, pop-upy, drzewko.\n\nNic nie ruszy samo, chyba że ktoś włączył u siebie samo uruchamianie zadań.\n\nSzczegóły: notatka „Sesja główna 2026-11-16 — zapis ustaleń”.",
+ "kto": "Claude (sesja)",
+ "czas": "2026-11-16T21:08:57+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesja główna 2026-11-16 — zapis ustaleń.md",
+   "etykieta": "Zapis ustaleń"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Rejestr decyzji.md",
+   "etykieta": "Rejestr decyzji"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytania otwarte"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Zadania.md",
+   "etykieta": "Zadania"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Które propozycje z sesji 16.11 zatwierdzacie?"
+}
