@@ -2,22 +2,8 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-16T23:21:34+01:00",
+ "aktualizacja": "2026-11-16T23:25:22+01:00",
  "prace": [
-  {
-   "id": "las-pas-generator",
-   "tytul": "Las jako pas: generator mapy i podgląd (bez Studio)",
-   "stan": "w_toku",
-   "start": "2026-11-16T22:38:21+01:00",
-   "koniec_szacowany": "2026-11-16T23:53:21+01:00",
-   "aktualizacja": "2026-11-16T22:38:21+01:00",
-   "obszary": [
-    "mapa:las_pas",
-    "swiat/las_pas/**"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
   {
    "id": "las-pas-skrypty",
    "tytul": "Las-pas: potwory w przegrodach, brama, teleport, mgła, przelot kamery",
