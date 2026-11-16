@@ -26,6 +26,8 @@ tags: [ui, klasy, wybór]
 - Wygenerowane 16.11 w Higgsfield (Nano Banana 2.1, Glossy Ink, po 1 wariancie): arkusz 8 elementów (strzałki, PLAY, tabliczka, karta statystyk, 3 emblematy) i tło 2D. Tło 2D zastąpiła sala 3D (kafelki `CsBg1–4` odrzucone). Cięcie: `tools/classselect_assets.py`, GUI: `tools/classselect_build_gui.py`.
 - Makieta: Figma, strona z HUD, ramka „ClassSelect” (node 35:115).
 
+- **Tekstury sali (16.11):** paczka 16 tekstur Glossy Ink dla Karola — [[Tekstury sali wyboru klasy]].
+
 ## Do ustalenia
 - Czy wybór klasy jest raz na zawsze, czy można go zmienić (i za ile).
 - Rasa z wcześniejszej wersji tej notatki (lewy panel z rasą) — na razie pominięta.
