@@ -9,9 +9,9 @@ Sesja główna to długa rozmowa głosowa Karola i Pawła (zakładka „Sesja”
 Format wiersza: `- [ ] Temat — kontekst · dodał: imię data`.
 
 ## Do omówienia
-- [ ] Sklep za Robuxy: jajka i skrzynki z jawnymi szansami a D-031 (D-066, pytanie 43) — trzecia sesja 14.11 uznała losowania z jawnymi szansami za dopuszczalne, a zatwierdzona D-031 wyklucza jajka za walutę premium; do rozstrzygnięcia razem z nazwą waluty (pytanie 6) · propozycja agenta 2026-11-14
 
 ## Omówione
+- [x] Sklep za Robuxy: jajka i skrzynki z jawnymi szansami a D-031 (D-066, pytanie 43) — trzecia sesja 14.11 uznała losowania z jawnymi szansami za dopuszczalne, a zatwierdzona D-031 wyklucza jajka za walutę premium; do rozstrzygnięcia razem z nazwą waluty (pytanie 6) · propozycja agenta 2026-11-14 · omówione: 2026-11-16, Karol Balucki
 - [x] Lista lokacji mapy teleportacji i przyciski HUD (pytania 5 i 28) — po D-064 (widok z lotu ptaka) trzeba wskazać piny: które budynki miasteczka i czy osiem biomów (D-061); 5 czy 6 przycisków HUD nadal otwarte, „Guilds” bez treści przy D-067 · propozycja agenta 2026-11-14 · omówione: 2026-11-16, Karol Balucki
 - [x] Paweł przegląda decyzje Karola z 13–14.11 (pytanie 27) — 14.11 odhaczone bez przeglądu („Telegram jest gotowy”); Paweł potwierdził przez Telegram tylko D-047, D-050, D-052, D-054 i D-055, reszta czeka na `/czeka` · propozycja agenta 2026-11-14 · omówione: 2026-11-16, Karol Balucki
 - [x] Pancerz i model statystyk: dokończenie (D-062, D-063, pytania 39 i 40) — na trzeciej sesji 14.11 nie zgodzono się, czy Pancerz ma własną mini-grę (Karol: sześć, Paweł: pięć) ani jak ograniczyć Wojownika z tarczą i unikiem; otwarte też Pancerz a Obrona, Przebicie i Odporność magiczna · propozycja agenta 2026-11-14 · omówione: 2026-11-16, Karol Balucki

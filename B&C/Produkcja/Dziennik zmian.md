@@ -25,6 +25,7 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: omówiony temat sesji: Pancerz i model statystyk: dokończenie (D-062, D-063, pytania 39 i 40) ([[Sesje główne]])
 - Karol Balucki: omówiony temat sesji: Paweł przegląda decyzje Karola z 13–14.11 (pytanie 27) ([[Sesje główne]])
 - Karol Balucki: omówiony temat sesji: Lista lokacji mapy teleportacji i przyciski HUD (pytania 5 i 28) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Sklep za Robuxy: jajka i skrzynki z jawnymi szansami a D-031 (D-066, pytanie 43) ([[Sesje główne]])
 
 ## 2026-11-15 · Claude Code u Pawła (drzewko: PET INTELLIGENCE i PET DEXTERITY)
 - Na prośbę Pawła w gałęzi Pets → Pet Stats węzły PET POWER (łapa + gwiazdka) i PET SPEED (łapa + piorun) zastąpione przez **PET INTELLIGENCE** (łapa + książka z ikony INT) i **PET DEXTERITY** (łapa + but z ikony DEX), +3% za poziom.
