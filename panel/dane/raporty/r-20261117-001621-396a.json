@@ -1,0 +1,26 @@
+{
+ "id": "r-20261117-001621-396a",
+ "tytul": "Teleport przez chmury — działa w Studio",
+ "opis_md": "**Co to jest:** teleport bez okna mapy i bez HUD (D-075, doprecyzowanie Karola z 16.11). Po naciśnięciu przycisku Teleport kamera wchodzi w chmury, a z chmur wyłania się widziany z góry pas dziewięciu krain. Dotknięcie krainy przenosi gracza: znów chmury i kamera opada z góry na postać w nowym miejscu.\n\n**Jak działa teraz:**\n- Miasteczko i Las są otwarte, pozostałe krainy przyciemnione i z kłódką; zamknięta kraina po dotknięciu trzęsie się i odmawia;\n- wybór dotknięciem, kliknięciem, strzałkami albo padem; dotknięcie obok pasa to rezygnacja;\n- gracza przenosi wyłącznie serwer i tylko do odblokowanej krainy;\n- Las ląduje na Polanie Przybycia nowego pasa;\n- przycisk TELEPORT w HUD Pawła działa od razu, bez zmian w jego plikach; w Studio jest też klawisz T.\n\n**Sprawdzone w grze (6 z 6 prób):** miasteczko → Las, Las → miasteczko, rezygnacja, zamknięta kraina, dwa szybkie żądania, błąd w połowie przejścia (kamera i sterowanie zawsze wracają). Całe przejście trwa ok. 4,8 s bez czasu wyboru i nie obniża płynności.\n\n**Nie sprawdzono:** prawdziwego telefonu (także ekranu pionowego), pada, kilku graczy naraz. Prototyp działa tylko w Studio, jak dotychczasowy teleport.\n\n**Znane słabości:** napisy krain będą na telefonie małe; chmury to gładkie kule; HUD znika na czas przejścia; odblokowania krain giną po wyjściu z gry.\n\n**Do decyzji (szczegóły w `swiat/teleport_chmury/README.md`):** jedno dotknięcie czy potwierdzenie wyboru; długość przejścia (4,8 s czy ok. 3 s); czy usunąć stare teleporty z klawiszem E.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T00:16:21+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TeleportChmury",
+   "etykieta": "Teleport przez chmury"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/teleport_chmury/README.md",
+   "etykieta": "Opis, testy i wybory"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "pytanie": "Czy przejście przez chmury jest takie, jak chciałeś?"
+}
