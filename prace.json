@@ -2,6 +2,22 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-16T19:52:41+01:00",
- "prace": []
+ "aktualizacja": "2026-11-16T21:00:29+01:00",
+ "prace": [
+  {
+   "id": "silnik-mana-balans",
+   "tytul": "Silnik walki: mana, statystyki, statusy, limit Pancerza",
+   "stan": "w_toku",
+   "start": "2026-11-16T21:00:29+01:00",
+   "koniec_szacowany": "2026-11-16T23:45:00+01:00",
+   "aktualizacja": "2026-11-16T21:00:29+01:00",
+   "obszary": [
+    "tools/walka/**",
+    "src/server/Walka/**",
+    "src/shared/Walka/**"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  }
+ ]
 }
