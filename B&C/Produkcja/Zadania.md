@@ -78,6 +78,7 @@ tags: [produkcja, zadania]
 - [ ] Szary prototyp BONK-a z botem-klikaczem (bramka B1, [[Systemy gry v2]]) — po decyzji z pytania 16 · #wysoki
 
 ## 📥 Backlog
+- [ ] [[Tekstury sali wyboru klasy]]: nałożyć 16 tekstur na obiekty sali `Workspace/WyborKlasy` (Texture albo MaterialVariant); wgranie do Roblox po „tak” · agent: Karol · #sredni
 
 - [ ] [[Selektor bohatera]]: upload grafik 2D ekranu wyboru klasy (po „tak”), udostępnienie siatki Zwiadowcy grze (D-044), zapis klasy w DataStore · #wysoki
 

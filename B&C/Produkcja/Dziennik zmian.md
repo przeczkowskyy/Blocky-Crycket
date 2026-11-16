@@ -6,6 +6,9 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-16 · Claude Code u Pawła (tekstury sali wyboru klasy dla Karola)
+- Paweł wygenerował w Higgsfield arkusz 16 tekstur Glossy Ink (prompt od Claude) i poprosił o przekazanie go Karolowi jako tekstur do sali wyboru bohatera. Pocięte na kafelki 1024 px: `assets/processed/ClassSelectTextures/CsTex01–16` + podgląd `_arkusz_v1.jpg`. Opis, tabela „co na co” i uwagi o szwach: [[Tekstury sali wyboru klasy]] (propozycja). Bez wgrywania do Roblox.
+
 ## 2026-11-16 · Claude Code u Pawła (ekran wyboru klasy: sala wersja 2)
 - Polecenie Pawła (z referencjami wnętrza karczmy): „zedytuj model tła sali wyboru klasy, wzbogać kreskę, dopracuj całość”. Potem w trakcie: „zmniejszmy jeszcze naświetlenie”.
 - Sala przebudowana od nowa w `swiat/wybor_klasy/generuj.py`: obrócona o 22° względem kamery, niższy strop z więźbą, mury z kamieni na ciemnej fudze, wnęka z łukiem i beczkami, potrójne okno z księżycem, kominek z tarczą i mieczami, regał z eliksirami i lada ze stołkami, latarnie, dwa żyrandole, dywan, stół ze świecą. Kreska: podkładki tuszu pod belkami i blatami + obrys sylwetki (Highlight) dla 17 grup. 1160 części, kontrola jakości bez uwag.
