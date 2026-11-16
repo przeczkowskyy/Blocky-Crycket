@@ -1,0 +1,4655 @@
+{
+  "opis": "Pierwsza partia muzyki i efektów dźwiękowych z Higgsfield do odsłuchu. Same pliki audio nie są w repo (.gitignore) do czasu wyboru i sprawdzenia praw.",
+  "wersja": 1,
+  "utworzono": "2026-11-16",
+  "status_partii": "do odsłuchu",
+  "kredyty": {
+    "limit_paczki": 280.0,
+    "saldo_przed": 434.5,
+    "saldo_po": 205.01,
+    "wydano": 229.49,
+    "suma_kosztow_zlecen": 229.49
+  },
+  "zasady_obrobki": {
+    "muzyka": "Wzmocnienie stałe do -16 LUFS (zintegrowana), true peak co najmniej 1,3 dB poniżej 0 (gdy szczyt nie pozwala, głośność zostaje nieco niższa). Pełna wersja: MP3 VBR V0. Pętla: OGG Vorbis q6 — miejsce cięcia wybrane automatycznie (rytm, harmonia, barwa), na szwie 1 s przenikania końca w początek; pierwsze ok. 1–3 s oryginału słychać tylko w przenikaniu.",
+    "dzwieki": "Cisza przycięta (początek: próg -50 dBFS, 10 ms zapasu, 3 ms narastania; koniec: próg -55 dBFS, 30 ms zapasu, wygaszenie 30 ms albo 120 ms przy możliwym ucięciu). Głośność: maksymalna głośność chwilowa (okno 400 ms) -14 LUFS, szczyt nie wyżej niż -1 dBFS. Wynik: WAV PCM 16 bit, częstotliwość i liczba kanałów jak w oryginale.",
+    "pomiary": "ffprobe (format), ffmpeg ebur128 (LUFS, LRA, true peak), numpy (szczyt, RMS, cisza przy progu -50 dBFS, głośność chwilowa z filtrem K wg BS.1770). Dla efektów krótszych niż 0,4 s zintegrowana LUFS z ebur128 jest niemiarodajna — patrz glosnosc_chwilowa_max_lufs."
+  },
+  "muzyka": [
+    {
+      "id": "muzyka_01_menu_a",
+      "przeznaczenie": "Menu główne — motyw przewodni (wersja A)",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Main menu theme: inviting and uplifting but light, a memorable signature melody on flute and glockenspiel over bouncy pizzicato strings and soft horn swells, around 110 BPM, the feeling of a fun journey about to begin. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "adf15b90-5145-433c-96fb-7fb74d05ac69",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_01_menu_a.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_01_menu_a.mp3",
+        "petla": "muzyka/muzyka_01_menu_a_petla.ogg"
+      },
+      "wzmocnienie_db": 0.8,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -17.3,
+          "lra_lu": 3.1,
+          "true_peak_dbtp": -2.1,
+          "szczyt_dbfs": -2.15,
+          "srednia_rms_dbfs": -19.14,
+          "glosnosc_chwilowa_max_lufs": -13.1,
+          "cisza_poczatek_s": 0.014,
+          "cisza_koniec_s": 1.23,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.6,
+            "rms_ostatnie_2s_db": -51.1,
+            "roznica_rms_db": -31.5,
+            "podobienstwo_widma_poczatek_koniec": 0.97,
+            "centroid_poczatek_hz": 1632,
+            "centroid_koniec_hz": 1931,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -61.7,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 3.2
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 242,
+          "lufs_zintegrowana": -16.5,
+          "lra_lu": 3.1,
+          "true_peak_dbtp": -1.3,
+          "szczyt_dbfs": -1.34,
+          "srednia_rms_dbfs": -18.35,
+          "glosnosc_chwilowa_max_lufs": -12.3,
+          "cisza_poczatek_s": 0.014,
+          "cisza_koniec_s": 1.166,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.8,
+            "rms_ostatnie_2s_db": -50.3,
+            "roznica_rms_db": -31.5,
+            "podobienstwo_widma_poczatek_koniec": 0.97,
+            "centroid_poczatek_hz": 1631,
+            "centroid_koniec_hz": 1919,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -61.7,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 3.2
+          }
+        },
+        "petla": {
+          "dlugosc_s": 69.833,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 184,
+          "lufs_zintegrowana": -16.4,
+          "lra_lu": 3.0,
+          "true_peak_dbtp": -1.3,
+          "szczyt_dbfs": -1.28,
+          "srednia_rms_dbfs": -18.16,
+          "glosnosc_chwilowa_max_lufs": -12.28,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.0,
+            "rms_ostatnie_2s_db": -17.7,
+            "roznica_rms_db": 1.3,
+            "podobienstwo_widma_poczatek_koniec": 0.958,
+            "centroid_poczatek_hz": 1424,
+            "centroid_koniec_hz": 1480,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -0.9,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -6.2
+          },
+          "skok_probki_na_szwie": 0.0041,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.91,
+            "rytm": 0.921,
+            "harmonia": 0.87,
+            "barwa": 0.969,
+            "start_s": 1.014,
+            "koniec_s": 70.832,
+            "koniec_zywej_muzyki_s": 88.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "liniowe",
+            "korelacja_fali_w_przenikaniu": 0.565,
+            "przesuniecie_probki": 655,
+            "dlugosc_petli_s": 69.833
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_01_menu_b",
+      "przeznaczenie": "Menu główne — motyw przewodni (wersja B, inna aranżacja)",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Main menu theme, alternative arrangement: warm and welcoming, the signature melody carried by clarinet and ukulele with a light marching snare and pizzicato strings, glockenspiel answers, around 104 BPM, hopeful and adventurous. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "f53ecfcf-13ff-4353-aaf2-864d31f93201",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_01_menu_b.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_01_menu_b.mp3",
+        "petla": "muzyka/muzyka_01_menu_b_petla.ogg"
+      },
+      "wzmocnienie_db": -3.0,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -13.0,
+          "lra_lu": 3.2,
+          "true_peak_dbtp": -0.5,
+          "szczyt_dbfs": -0.52,
+          "srednia_rms_dbfs": -15.55,
+          "glosnosc_chwilowa_max_lufs": -9.77,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.013,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -17.4,
+            "rms_ostatnie_2s_db": -15.2,
+            "roznica_rms_db": 2.3,
+            "podobienstwo_widma_poczatek_koniec": 0.914,
+            "centroid_poczatek_hz": 2242,
+            "centroid_koniec_hz": 2416,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -0.7,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -1.6
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 244,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 3.2,
+          "true_peak_dbtp": -3.6,
+          "szczyt_dbfs": -3.57,
+          "srednia_rms_dbfs": -18.55,
+          "glosnosc_chwilowa_max_lufs": -12.78,
+          "cisza_poczatek_s": 0.012,
+          "cisza_koniec_s": 0.014,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -20.4,
+            "rms_ostatnie_2s_db": -18.2,
+            "roznica_rms_db": 2.3,
+            "podobienstwo_widma_poczatek_koniec": 0.914,
+            "centroid_poczatek_hz": 2236,
+            "centroid_koniec_hz": 2419,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -0.7,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -1.6
+          }
+        },
+        "petla": {
+          "dlugosc_s": 80.776,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 170,
+          "lufs_zintegrowana": -16.1,
+          "lra_lu": 3.2,
+          "true_peak_dbtp": -3.7,
+          "szczyt_dbfs": -3.74,
+          "srednia_rms_dbfs": -18.58,
+          "glosnosc_chwilowa_max_lufs": -12.75,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -20.3,
+            "rms_ostatnie_2s_db": -17.9,
+            "roznica_rms_db": 2.4,
+            "podobienstwo_widma_poczatek_koniec": 0.89,
+            "centroid_poczatek_hz": 2315,
+            "centroid_koniec_hz": 2363,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -0.3,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -2.8
+          },
+          "skok_probki_na_szwie": 0.0038,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.849,
+            "rytm": 0.945,
+            "harmonia": 0.708,
+            "barwa": 0.937,
+            "start_s": 1.01,
+            "koniec_s": 81.781,
+            "koniec_zywej_muzyki_s": 90.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "stala_moc",
+            "korelacja_fali_w_przenikaniu": 0.222,
+            "przesuniecie_probki": 231,
+            "dlugosc_petli_s": 80.776
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_02_bazar_targ",
+      "przeznaczenie": "Miasteczko-bazar — tło dzienne, targ",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Busy friendly village marketplace during the day: bouncy and cheerful, ukulele and pizzicato strings with a clarinet melody, woodblock and tambourine, around 112 BPM, bustling stalls and friendly traders. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "a7568da0-006e-458c-b1c6-7f440ccb06cc",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_02_bazar_targ.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_02_bazar_targ.mp3",
+        "petla": "muzyka/muzyka_02_bazar_targ_petla.ogg"
+      },
+      "wzmocnienie_db": -2.4,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -13.6,
+          "lra_lu": 1.7,
+          "true_peak_dbtp": -0.8,
+          "szczyt_dbfs": -0.8,
+          "srednia_rms_dbfs": -15.51,
+          "glosnosc_chwilowa_max_lufs": -11.15,
+          "cisza_poczatek_s": 0.008,
+          "cisza_koniec_s": 0.014,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -15.6,
+            "rms_ostatnie_2s_db": -16.2,
+            "roznica_rms_db": -0.6,
+            "podobienstwo_widma_poczatek_koniec": 0.977,
+            "centroid_poczatek_hz": 2430,
+            "centroid_koniec_hz": 2971,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -1.7,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -0.4
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 254,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 1.7,
+          "true_peak_dbtp": -3.2,
+          "szczyt_dbfs": -3.22,
+          "srednia_rms_dbfs": -17.9,
+          "glosnosc_chwilowa_max_lufs": -13.55,
+          "cisza_poczatek_s": 0.008,
+          "cisza_koniec_s": 0.014,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.0,
+            "rms_ostatnie_2s_db": -18.6,
+            "roznica_rms_db": -0.6,
+            "podobienstwo_widma_poczatek_koniec": 0.976,
+            "centroid_poczatek_hz": 2431,
+            "centroid_koniec_hz": 2970,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -1.7,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -0.4
+          }
+        },
+        "petla": {
+          "dlugosc_s": 85.719,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 191,
+          "lufs_zintegrowana": -15.9,
+          "lra_lu": 1.7,
+          "true_peak_dbtp": -3.1,
+          "szczyt_dbfs": -3.06,
+          "srednia_rms_dbfs": -17.86,
+          "glosnosc_chwilowa_max_lufs": -13.56,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.6,
+            "rms_ostatnie_2s_db": -17.1,
+            "roznica_rms_db": 1.5,
+            "podobienstwo_widma_poczatek_koniec": 0.986,
+            "centroid_poczatek_hz": 2708,
+            "centroid_koniec_hz": 2820,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": 0.5,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -0.1
+          },
+          "skok_probki_na_szwie": 0.0054,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.908,
+            "rytm": 0.897,
+            "harmonia": 0.886,
+            "barwa": 0.975,
+            "start_s": 1.508,
+            "koniec_s": 87.214,
+            "koniec_zywej_muzyki_s": 90.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "stala_moc",
+            "korelacja_fali_w_przenikaniu": 0.45,
+            "przesuniecie_probki": 587,
+            "dlugosc_petli_s": 85.719
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_03_bazar_rzemieslnicy",
+      "przeznaczenie": "Miasteczko-bazar — tło, uliczka rzemieślników",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Cozy craftsmen street with small workshops: relaxed and warm, playful bassoon and marimba melody, gentle wooden percussion like soft hammer taps in rhythm, acoustic plucked strings, around 96 BPM, content and busy. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "23337c10-298f-4851-b7b5-73f019cd93b2",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_03_bazar_rzemieslnicy.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_03_bazar_rzemieslnicy.mp3",
+        "petla": "muzyka/muzyka_03_bazar_rzemieslnicy_petla.ogg"
+      },
+      "wzmocnienie_db": -1.2,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -14.8,
+          "lra_lu": 4.0,
+          "true_peak_dbtp": -1.4,
+          "szczyt_dbfs": -1.45,
+          "srednia_rms_dbfs": -16.62,
+          "glosnosc_chwilowa_max_lufs": -11.24,
+          "cisza_poczatek_s": 0.022,
+          "cisza_koniec_s": 0.018,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.2,
+            "rms_ostatnie_2s_db": -16.3,
+            "roznica_rms_db": 2.0,
+            "podobienstwo_widma_poczatek_koniec": 0.966,
+            "centroid_poczatek_hz": 539,
+            "centroid_koniec_hz": 938,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -3.9,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -2.6
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 239,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 4.0,
+          "true_peak_dbtp": -2.7,
+          "szczyt_dbfs": -2.66,
+          "srednia_rms_dbfs": -17.82,
+          "glosnosc_chwilowa_max_lufs": -12.44,
+          "cisza_poczatek_s": 0.023,
+          "cisza_koniec_s": 0.019,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.4,
+            "rms_ostatnie_2s_db": -17.5,
+            "roznica_rms_db": 2.0,
+            "podobienstwo_widma_poczatek_koniec": 0.966,
+            "centroid_poczatek_hz": 538,
+            "centroid_koniec_hz": 938,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -3.9,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -2.6
+          }
+        },
+        "petla": {
+          "dlugosc_s": 75.012,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 159,
+          "lufs_zintegrowana": -16.2,
+          "lra_lu": 4.1,
+          "true_peak_dbtp": -2.5,
+          "szczyt_dbfs": -2.54,
+          "srednia_rms_dbfs": -17.97,
+          "glosnosc_chwilowa_max_lufs": -12.41,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.6,
+            "rms_ostatnie_2s_db": -18.8,
+            "roznica_rms_db": 0.8,
+            "podobienstwo_widma_poczatek_koniec": 0.973,
+            "centroid_poczatek_hz": 546,
+            "centroid_koniec_hz": 899,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": 0.3,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.0
+          },
+          "skok_probki_na_szwie": 0.0152,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.864,
+            "rytm": 0.895,
+            "harmonia": 0.787,
+            "barwa": 0.956,
+            "start_s": 1.022,
+            "koniec_s": 76.022,
+            "koniec_zywej_muzyki_s": 90.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "stala_moc",
+            "korelacja_fali_w_przenikaniu": 0.498,
+            "przesuniecie_probki": 527,
+            "dlugosc_petli_s": 75.012
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_04_bazar_wieczor",
+      "przeznaczenie": "Miasteczko-bazar — tło wieczorne",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Calm village square in the evening: gentle, warm and cozy waltz in 3/4, celesta and harp-like plucked strings, soft flute melody, quiet strings, around 80 BPM, peaceful as lanterns light up. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "c7a15a02-8751-4a48-be14-e064016eb3d0",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_04_bazar_wieczor.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_04_bazar_wieczor.mp3",
+        "petla": "muzyka/muzyka_04_bazar_wieczor_petla.ogg"
+      },
+      "wzmocnienie_db": 0.1,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -16.3,
+          "lra_lu": 2.2,
+          "true_peak_dbtp": -1.4,
+          "szczyt_dbfs": -1.42,
+          "srednia_rms_dbfs": -18.39,
+          "glosnosc_chwilowa_max_lufs": -12.98,
+          "cisza_poczatek_s": 0.013,
+          "cisza_koniec_s": 0.014,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -20.1,
+            "rms_ostatnie_2s_db": -18.1,
+            "roznica_rms_db": 2.0,
+            "podobienstwo_widma_poczatek_koniec": 0.958,
+            "centroid_poczatek_hz": 1811,
+            "centroid_koniec_hz": 1417,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": 2.5,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.4
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 245,
+          "lufs_zintegrowana": -16.2,
+          "lra_lu": 2.2,
+          "true_peak_dbtp": -1.3,
+          "szczyt_dbfs": -1.33,
+          "srednia_rms_dbfs": -18.29,
+          "glosnosc_chwilowa_max_lufs": -12.89,
+          "cisza_poczatek_s": 0.013,
+          "cisza_koniec_s": 0.012,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -20.0,
+            "rms_ostatnie_2s_db": -18.0,
+            "roznica_rms_db": 2.0,
+            "podobienstwo_widma_poczatek_koniec": 0.958,
+            "centroid_poczatek_hz": 1816,
+            "centroid_koniec_hz": 1415,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": 2.5,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.4
+          }
+        },
+        "petla": {
+          "dlugosc_s": 80.993,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 174,
+          "lufs_zintegrowana": -16.2,
+          "lra_lu": 2.1,
+          "true_peak_dbtp": -1.2,
+          "szczyt_dbfs": -1.2,
+          "srednia_rms_dbfs": -18.23,
+          "glosnosc_chwilowa_max_lufs": -12.87,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -21.4,
+            "rms_ostatnie_2s_db": -18.3,
+            "roznica_rms_db": 3.1,
+            "podobienstwo_widma_poczatek_koniec": 0.957,
+            "centroid_poczatek_hz": 1919,
+            "centroid_koniec_hz": 1467,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": 1.1,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -2.7
+          },
+          "skok_probki_na_szwie": 0.0035,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.877,
+            "rytm": 0.914,
+            "harmonia": 0.795,
+            "barwa": 0.968,
+            "start_s": 1.513,
+            "koniec_s": 82.512,
+            "koniec_zywej_muzyki_s": 90.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "stala_moc",
+            "korelacja_fali_w_przenikaniu": 0.323,
+            "przesuniecie_probki": -245,
+            "dlugosc_petli_s": 80.993
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_05_las_a",
+      "przeznaczenie": "Kraina: las (wersja A)",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Bright fairytale forest: light and magical with a gentle hint of mystery, flute melody over shimmering legato strings, harp arpeggios, soft glockenspiel sparkles, bird-like flute trills, around 92 BPM, wonder and curiosity. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "261888a7-f02f-43a0-b677-416afd7da712",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_05_las_a.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_05_las_a.mp3",
+        "petla": "muzyka/muzyka_05_las_a_petla.ogg"
+      },
+      "wzmocnienie_db": -2.3,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -13.7,
+          "lra_lu": 4.1,
+          "true_peak_dbtp": -1.3,
+          "szczyt_dbfs": -1.32,
+          "srednia_rms_dbfs": -15.95,
+          "glosnosc_chwilowa_max_lufs": -9.97,
+          "cisza_poczatek_s": 0.018,
+          "cisza_koniec_s": 0.832,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -17.8,
+            "rms_ostatnie_2s_db": -34.7,
+            "roznica_rms_db": -16.8,
+            "podobienstwo_widma_poczatek_koniec": 0.948,
+            "centroid_poczatek_hz": 1373,
+            "centroid_koniec_hz": 1624,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -62.2,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -1.1
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 242,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 4.1,
+          "true_peak_dbtp": -3.6,
+          "szczyt_dbfs": -3.63,
+          "srednia_rms_dbfs": -18.25,
+          "glosnosc_chwilowa_max_lufs": -12.27,
+          "cisza_poczatek_s": 0.019,
+          "cisza_koniec_s": 0.832,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -20.1,
+            "rms_ostatnie_2s_db": -37.0,
+            "roznica_rms_db": -16.8,
+            "podobienstwo_widma_poczatek_koniec": 0.949,
+            "centroid_poczatek_hz": 1373,
+            "centroid_koniec_hz": 1608,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -62.2,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -1.1
+          }
+        },
+        "petla": {
+          "dlugosc_s": 78.249,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 180,
+          "lufs_zintegrowana": -15.9,
+          "lra_lu": 3.7,
+          "true_peak_dbtp": -3.4,
+          "szczyt_dbfs": -3.44,
+          "srednia_rms_dbfs": -18.08,
+          "glosnosc_chwilowa_max_lufs": -12.24,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -20.7,
+            "rms_ostatnie_2s_db": -17.7,
+            "roznica_rms_db": 2.9,
+            "podobienstwo_widma_poczatek_koniec": 0.969,
+            "centroid_poczatek_hz": 1473,
+            "centroid_koniec_hz": 1468,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -1.5,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -2.2
+          },
+          "skok_probki_na_szwie": 0.012,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.888,
+            "rytm": 0.913,
+            "harmonia": 0.813,
+            "barwa": 0.988,
+            "start_s": 3.018,
+            "koniec_s": 81.27,
+            "koniec_zywej_muzyki_s": 88.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "stala_moc",
+            "korelacja_fali_w_przenikaniu": 0.312,
+            "przesuniecie_probki": -149,
+            "dlugosc_petli_s": 78.249
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_05_las_b",
+      "przeznaczenie": "Kraina: las (wersja B)",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Bright fairytale forest, alternative take: sunlit and curious, clarinet and flute duet over plucked strings and soft marimba, light shaker, a few mysterious harp chords, around 98 BPM, a friendly walk among tall trees. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "80fcab4b-c392-4073-8b44-5cdea4eff54a",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_05_las_b.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_05_las_b.mp3",
+        "petla": "muzyka/muzyka_05_las_b_petla.ogg"
+      },
+      "wzmocnienie_db": -1.0,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -15.0,
+          "lra_lu": 3.0,
+          "true_peak_dbtp": -1.8,
+          "szczyt_dbfs": -1.8,
+          "srednia_rms_dbfs": -17.39,
+          "glosnosc_chwilowa_max_lufs": -11.97,
+          "cisza_poczatek_s": 0.021,
+          "cisza_koniec_s": 0.459,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.7,
+            "rms_ostatnie_2s_db": -22.9,
+            "roznica_rms_db": -4.2,
+            "podobienstwo_widma_poczatek_koniec": 0.95,
+            "centroid_poczatek_hz": 1692,
+            "centroid_koniec_hz": 656,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -48.9,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.5
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 249,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 3.0,
+          "true_peak_dbtp": -2.8,
+          "szczyt_dbfs": -2.8,
+          "srednia_rms_dbfs": -18.39,
+          "glosnosc_chwilowa_max_lufs": -12.97,
+          "cisza_poczatek_s": 0.022,
+          "cisza_koniec_s": 0.489,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.7,
+            "rms_ostatnie_2s_db": -23.9,
+            "roznica_rms_db": -4.2,
+            "podobienstwo_widma_poczatek_koniec": 0.949,
+            "centroid_poczatek_hz": 1692,
+            "centroid_koniec_hz": 653,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -48.9,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.5
+          }
+        },
+        "petla": {
+          "dlugosc_s": 78.345,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 180,
+          "lufs_zintegrowana": -15.7,
+          "lra_lu": 2.6,
+          "true_peak_dbtp": -2.8,
+          "szczyt_dbfs": -2.81,
+          "srednia_rms_dbfs": -18.15,
+          "glosnosc_chwilowa_max_lufs": -12.94,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.4,
+            "rms_ostatnie_2s_db": -19.0,
+            "roznica_rms_db": 0.4,
+            "podobienstwo_widma_poczatek_koniec": 0.968,
+            "centroid_poczatek_hz": 1623,
+            "centroid_koniec_hz": 1365,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -3.7,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -2.4
+          },
+          "skok_probki_na_szwie": 0.0092,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.911,
+            "rytm": 0.841,
+            "harmonia": 0.949,
+            "barwa": 0.977,
+            "start_s": 1.021,
+            "koniec_s": 79.377,
+            "koniec_zywej_muzyki_s": 88.5
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "liniowe",
+            "korelacja_fali_w_przenikaniu": 0.535,
+            "przesuniecie_probki": -465,
+            "dlugosc_petli_s": 78.345
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_06_bagno",
+      "przeznaczenie": "Kraina: bagno",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Silly swamp: lazy and slightly spooky in a funny cartoon way, bassoon melody and plucked double bass walking line, muted clarinet, guiro and woodblock rhythm like croaking frogs keeping the beat, slow swing around 84 BPM, playful and goofy, not scary. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "b27364c0-7a5d-4622-818a-c0061e0019a1",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_06_bagno.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_06_bagno.mp3",
+        "petla": "muzyka/muzyka_06_bagno_petla.ogg"
+      },
+      "wzmocnienie_db": 0.1,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 89.966,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -16.1,
+          "lra_lu": 4.9,
+          "true_peak_dbtp": -1.5,
+          "szczyt_dbfs": -1.54,
+          "srednia_rms_dbfs": -18.29,
+          "glosnosc_chwilowa_max_lufs": -11.25,
+          "cisza_poczatek_s": 0.025,
+          "cisza_koniec_s": 0.021,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.9,
+            "rms_ostatnie_2s_db": -19.6,
+            "roznica_rms_db": 0.3,
+            "podobienstwo_widma_poczatek_koniec": 0.947,
+            "centroid_poczatek_hz": 732,
+            "centroid_koniec_hz": 1286,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -23.2,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.4
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 89.966,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 237,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 4.9,
+          "true_peak_dbtp": -1.5,
+          "szczyt_dbfs": -1.47,
+          "srednia_rms_dbfs": -18.19,
+          "glosnosc_chwilowa_max_lufs": -11.14,
+          "cisza_poczatek_s": 0.025,
+          "cisza_koniec_s": 0.021,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.8,
+            "rms_ostatnie_2s_db": -19.5,
+            "roznica_rms_db": 0.3,
+            "podobienstwo_widma_poczatek_koniec": 0.947,
+            "centroid_poczatek_hz": 730,
+            "centroid_koniec_hz": 1285,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -23.2,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.4
+          }
+        },
+        "petla": {
+          "dlugosc_s": 68.563,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 164,
+          "lufs_zintegrowana": -16.1,
+          "lra_lu": 5.0,
+          "true_peak_dbtp": -1.4,
+          "szczyt_dbfs": -1.41,
+          "srednia_rms_dbfs": -18.2,
+          "glosnosc_chwilowa_max_lufs": -11.12,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.3,
+            "rms_ostatnie_2s_db": -17.7,
+            "roznica_rms_db": 1.6,
+            "podobienstwo_widma_poczatek_koniec": 0.967,
+            "centroid_poczatek_hz": 747,
+            "centroid_koniec_hz": 1148,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -4.7,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.0
+          },
+          "skok_probki_na_szwie": 0.001,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.806,
+            "rytm": 0.783,
+            "harmonia": 0.746,
+            "barwa": 0.972,
+            "start_s": 2.525,
+            "koniec_s": 71.088,
+            "koniec_zywej_muzyki_s": 89.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "liniowe",
+            "korelacja_fali_w_przenikaniu": 0.646,
+            "przesuniecie_probki": -13,
+            "dlugosc_petli_s": 68.563
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_07_dzungla",
+      "przeznaczenie": "Kraina: dżungla",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Energetic jungle: lively hand drums, congas and shakers, marimba and xylophone ostinato, bright flute melody, pizzicato strings, around 120 BPM, adventurous, bouncy and fun. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "5c2bdf5a-bec1-43d1-a96f-2d4c4a03dc65",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_07_dzungla.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_07_dzungla.mp3",
+        "petla": "muzyka/muzyka_07_dzungla_petla.ogg"
+      },
+      "wzmocnienie_db": 0.2,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -16.2,
+          "lra_lu": 2.9,
+          "true_peak_dbtp": -1.5,
+          "szczyt_dbfs": -1.45,
+          "srednia_rms_dbfs": -18.31,
+          "glosnosc_chwilowa_max_lufs": -13.24,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.015,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.0,
+            "rms_ostatnie_2s_db": -18.7,
+            "roznica_rms_db": 0.3,
+            "podobienstwo_widma_poczatek_koniec": 0.966,
+            "centroid_poczatek_hz": 2557,
+            "centroid_koniec_hz": 2262,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": 1.4,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 1.3
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 253,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 2.9,
+          "true_peak_dbtp": -1.2,
+          "szczyt_dbfs": -1.22,
+          "srednia_rms_dbfs": -18.11,
+          "glosnosc_chwilowa_max_lufs": -13.04,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.014,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.8,
+            "rms_ostatnie_2s_db": -18.5,
+            "roznica_rms_db": 0.3,
+            "podobienstwo_widma_poczatek_koniec": 0.966,
+            "centroid_poczatek_hz": 2552,
+            "centroid_koniec_hz": 2264,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": 1.4,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 1.3
+          }
+        },
+        "petla": {
+          "dlugosc_s": 80.009,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 195,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 2.9,
+          "true_peak_dbtp": -1.2,
+          "szczyt_dbfs": -1.24,
+          "srednia_rms_dbfs": -18.06,
+          "glosnosc_chwilowa_max_lufs": -13.02,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.2,
+            "rms_ostatnie_2s_db": -17.7,
+            "roznica_rms_db": 1.5,
+            "podobienstwo_widma_poczatek_koniec": 0.975,
+            "centroid_poczatek_hz": 2197,
+            "centroid_koniec_hz": 2009,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": 0.9,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -5.1
+          },
+          "skok_probki_na_szwie": 0.0002,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.899,
+            "rytm": 0.903,
+            "harmonia": 0.855,
+            "barwa": 0.979,
+            "start_s": 3.01,
+            "koniec_s": 83.011,
+            "koniec_zywej_muzyki_s": 90.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "stala_moc",
+            "korelacja_fali_w_przenikaniu": 0.264,
+            "przesuniecie_probki": 343,
+            "dlugosc_petli_s": 80.009
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_08_pustynia",
+      "przeznaczenie": "Kraina: pustynia",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Warm sunny desert journey: plucked lute-like and acoustic strings, frame drum and finger cymbals, clarinet melody using a light exotic scale with a lowered second degree, around 100 BPM, a friendly caravan wandering across dunes, not dramatic. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "f91163f0-9ae2-4fab-847b-f1272234e18e",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_08_pustynia.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_08_pustynia.mp3",
+        "petla": "muzyka/muzyka_08_pustynia_petla.ogg"
+      },
+      "wzmocnienie_db": -0.7,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -15.3,
+          "lra_lu": 3.8,
+          "true_peak_dbtp": -1.2,
+          "szczyt_dbfs": -1.17,
+          "srednia_rms_dbfs": -17.49,
+          "glosnosc_chwilowa_max_lufs": -11.51,
+          "cisza_poczatek_s": 0.011,
+          "cisza_koniec_s": 0.018,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.0,
+            "rms_ostatnie_2s_db": -19.1,
+            "roznica_rms_db": -0.1,
+            "podobienstwo_widma_poczatek_koniec": 0.966,
+            "centroid_poczatek_hz": 928,
+            "centroid_koniec_hz": 952,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -2.7,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.8
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 239,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 3.8,
+          "true_peak_dbtp": -1.9,
+          "szczyt_dbfs": -1.86,
+          "srednia_rms_dbfs": -18.19,
+          "glosnosc_chwilowa_max_lufs": -12.21,
+          "cisza_poczatek_s": 0.012,
+          "cisza_koniec_s": 0.017,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.7,
+            "rms_ostatnie_2s_db": -19.8,
+            "roznica_rms_db": -0.1,
+            "podobienstwo_widma_poczatek_koniec": 0.966,
+            "centroid_poczatek_hz": 930,
+            "centroid_koniec_hz": 952,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -2.7,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.8
+          }
+        },
+        "petla": {
+          "dlugosc_s": 86.394,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 172,
+          "lufs_zintegrowana": -15.9,
+          "lra_lu": 3.8,
+          "true_peak_dbtp": -1.8,
+          "szczyt_dbfs": -1.81,
+          "srednia_rms_dbfs": -18.12,
+          "glosnosc_chwilowa_max_lufs": -12.19,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.8,
+            "rms_ostatnie_2s_db": -18.3,
+            "roznica_rms_db": 1.5,
+            "podobienstwo_widma_poczatek_koniec": 0.961,
+            "centroid_poczatek_hz": 934,
+            "centroid_koniec_hz": 2769,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -4.4,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -0.9
+          },
+          "skok_probki_na_szwie": 0.0125,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.955,
+            "rytm": 0.944,
+            "harmonia": 0.945,
+            "barwa": 0.996,
+            "start_s": 1.011,
+            "koniec_s": 87.412,
+            "koniec_zywej_muzyki_s": 90.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "stala_moc",
+            "korelacja_fali_w_przenikaniu": 0.428,
+            "przesuniecie_probki": -305,
+            "dlugosc_petli_s": 86.394
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_09_gory_tundra",
+      "przeznaczenie": "Kraina: góry z tundrą",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Wide open mountains and snowy tundra: spacious and airy, French horn melody, sleigh bells and small chimes, soft wind-like sustained strings, flute, steady around 90 BPM, fresh cold air and hopeful exploration. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "3f1d2b53-6932-470a-a658-2543e8ddc1fa",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_09_gory_tundra.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_09_gory_tundra.mp3",
+        "petla": "muzyka/muzyka_09_gory_tundra_petla.ogg"
+      },
+      "wzmocnienie_db": -1.9,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -14.1,
+          "lra_lu": 4.1,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -0.98,
+          "srednia_rms_dbfs": -16.25,
+          "glosnosc_chwilowa_max_lufs": -10.77,
+          "cisza_poczatek_s": 0.012,
+          "cisza_koniec_s": 0.303,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -16.6,
+            "rms_ostatnie_2s_db": -26.7,
+            "roznica_rms_db": -10.1,
+            "podobienstwo_widma_poczatek_koniec": 0.96,
+            "centroid_poczatek_hz": 785,
+            "centroid_koniec_hz": 1208,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -40.3,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 2.0
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 228,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 4.1,
+          "true_peak_dbtp": -2.9,
+          "szczyt_dbfs": -2.89,
+          "srednia_rms_dbfs": -18.15,
+          "glosnosc_chwilowa_max_lufs": -12.66,
+          "cisza_poczatek_s": 0.012,
+          "cisza_koniec_s": 0.323,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.5,
+            "rms_ostatnie_2s_db": -28.6,
+            "roznica_rms_db": -10.1,
+            "podobienstwo_widma_poczatek_koniec": 0.96,
+            "centroid_poczatek_hz": 785,
+            "centroid_koniec_hz": 1182,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -40.3,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 2.0
+          }
+        },
+        "petla": {
+          "dlugosc_s": 84.0,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 178,
+          "lufs_zintegrowana": -15.9,
+          "lra_lu": 4.0,
+          "true_peak_dbtp": -2.7,
+          "szczyt_dbfs": -2.69,
+          "srednia_rms_dbfs": -18.0,
+          "glosnosc_chwilowa_max_lufs": -12.66,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.8,
+            "rms_ostatnie_2s_db": -19.1,
+            "roznica_rms_db": -0.3,
+            "podobienstwo_widma_poczatek_koniec": 0.968,
+            "centroid_poczatek_hz": 797,
+            "centroid_koniec_hz": 2181,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": 0.2,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -0.9
+          },
+          "skok_probki_na_szwie": 0.0054,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.833,
+            "rytm": 0.87,
+            "harmonia": 0.717,
+            "barwa": 0.993,
+            "start_s": 1.512,
+            "koniec_s": 85.519,
+            "koniec_zywej_muzyki_s": 88.5
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "stala_moc",
+            "korelacja_fali_w_przenikaniu": 0.372,
+            "przesuniecie_probki": -289,
+            "dlugosc_petli_s": 84.0
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_10_lodowiec",
+      "przeznaczenie": "Kraina: lodowiec",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Glacier of blue ice: calm and cool, crystalline celesta and glockenspiel melody, music box tones, soft high string pad, light pizzicato, slow around 76 BPM, serene and gently magical, cold but friendly. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "a7500ace-19b5-4a77-a0ba-e69fa116e6b0",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_10_lodowiec.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_10_lodowiec.mp3",
+        "petla": "muzyka/muzyka_10_lodowiec_petla.ogg"
+      },
+      "wzmocnienie_db": -2.7,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -13.3,
+          "lra_lu": 7.1,
+          "true_peak_dbtp": -0.8,
+          "szczyt_dbfs": -0.84,
+          "srednia_rms_dbfs": -15.79,
+          "glosnosc_chwilowa_max_lufs": -8.75,
+          "cisza_poczatek_s": 0.025,
+          "cisza_koniec_s": 0.194,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -20.6,
+            "rms_ostatnie_2s_db": -25.4,
+            "roznica_rms_db": -4.8,
+            "podobienstwo_widma_poczatek_koniec": 0.918,
+            "centroid_poczatek_hz": 953,
+            "centroid_koniec_hz": 1688,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -38.9,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -3.5
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 240,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 7.1,
+          "true_peak_dbtp": -3.5,
+          "szczyt_dbfs": -3.57,
+          "srednia_rms_dbfs": -18.49,
+          "glosnosc_chwilowa_max_lufs": -11.45,
+          "cisza_poczatek_s": 0.025,
+          "cisza_koniec_s": 0.225,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -23.3,
+            "rms_ostatnie_2s_db": -28.1,
+            "roznica_rms_db": -4.8,
+            "podobienstwo_widma_poczatek_koniec": 0.919,
+            "centroid_poczatek_hz": 951,
+            "centroid_koniec_hz": 1687,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -38.9,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -3.5
+          }
+        },
+        "petla": {
+          "dlugosc_s": 75.263,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 171,
+          "lufs_zintegrowana": -16.2,
+          "lra_lu": 7.1,
+          "true_peak_dbtp": -3.6,
+          "szczyt_dbfs": -3.59,
+          "srednia_rms_dbfs": -18.54,
+          "glosnosc_chwilowa_max_lufs": -12.09,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -23.1,
+            "rms_ostatnie_2s_db": -16.4,
+            "roznica_rms_db": 6.8,
+            "podobienstwo_widma_poczatek_koniec": 0.938,
+            "centroid_poczatek_hz": 767,
+            "centroid_koniec_hz": 2259,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -1.1,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -6.9
+          },
+          "skok_probki_na_szwie": 0.0082,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.793,
+            "rytm": 0.736,
+            "harmonia": 0.765,
+            "barwa": 0.961,
+            "start_s": 2.525,
+            "koniec_s": 77.798,
+            "koniec_zywej_muzyki_s": 88.5
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "stala_moc",
+            "korelacja_fali_w_przenikaniu": 0.419,
+            "przesuniecie_probki": -441,
+            "dlugosc_petli_s": 75.263
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_11_wulkan",
+      "przeznaczenie": "Kraina: wulkaniczna",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Volcanic land: low toms and big drums, driving low pizzicato and bassoon ostinato, short brass accents, some tension and urgency but still a fun cartoon adventure, minor key but playful, around 116 BPM, not horror, not dark. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "593da1ec-211d-490d-9cb1-54ed1a1ea2a5",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_11_wulkan.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_11_wulkan.mp3",
+        "petla": "muzyka/muzyka_11_wulkan_petla.ogg"
+      },
+      "wzmocnienie_db": -1.3,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -14.7,
+          "lra_lu": 1.7,
+          "true_peak_dbtp": -1.4,
+          "szczyt_dbfs": -1.42,
+          "srednia_rms_dbfs": -16.78,
+          "glosnosc_chwilowa_max_lufs": -12.72,
+          "cisza_poczatek_s": 0.023,
+          "cisza_koniec_s": 0.18,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -17.6,
+            "rms_ostatnie_2s_db": -18.6,
+            "roznica_rms_db": -1.0,
+            "podobienstwo_widma_poczatek_koniec": 0.978,
+            "centroid_poczatek_hz": 801,
+            "centroid_koniec_hz": 1340,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -30.8,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -0.8
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 234,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 1.7,
+          "true_peak_dbtp": -2.7,
+          "szczyt_dbfs": -2.7,
+          "srednia_rms_dbfs": -18.08,
+          "glosnosc_chwilowa_max_lufs": -14.02,
+          "cisza_poczatek_s": 0.023,
+          "cisza_koniec_s": 0.186,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.9,
+            "rms_ostatnie_2s_db": -19.9,
+            "roznica_rms_db": -1.0,
+            "podobienstwo_widma_poczatek_koniec": 0.978,
+            "centroid_poczatek_hz": 801,
+            "centroid_koniec_hz": 1347,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -30.8,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -0.8
+          }
+        },
+        "petla": {
+          "dlugosc_s": 74.491,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 160,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 1.7,
+          "true_peak_dbtp": -2.6,
+          "szczyt_dbfs": -2.69,
+          "srednia_rms_dbfs": -18.03,
+          "glosnosc_chwilowa_max_lufs": -13.98,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.6,
+            "rms_ostatnie_2s_db": -17.7,
+            "roznica_rms_db": 0.9,
+            "podobienstwo_widma_poczatek_koniec": 0.97,
+            "centroid_poczatek_hz": 783,
+            "centroid_koniec_hz": 1466,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": 1.0,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -0.4
+          },
+          "skok_probki_na_szwie": 0.0055,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.831,
+            "rytm": 0.816,
+            "harmonia": 0.766,
+            "barwa": 0.989,
+            "start_s": 1.523,
+            "koniec_s": 76.011,
+            "koniec_zywej_muzyki_s": 89.5
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "stala_moc",
+            "korelacja_fali_w_przenikaniu": 0.309,
+            "przesuniecie_probki": 131,
+            "dlugosc_petli_s": 74.491
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "muzyka_12_krysztaly",
+      "przeznaczenie": "Kraina: kryształowa (finałowa)",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Crystal realm, the final land: magical and sparkling, glockenspiel, celesta, harp glissandi and shimmering strings, a heroic but light flute and horn melody, around 108 BPM, triumphant wonder and joy. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "5714108f-af7e-402f-a06b-9f569b22afaa",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_12_krysztaly.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_12_krysztaly.mp3",
+        "petla": "muzyka/muzyka_12_krysztaly_petla.ogg"
+      },
+      "wzmocnienie_db": -1.2,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -14.8,
+          "lra_lu": 3.1,
+          "true_peak_dbtp": -1.2,
+          "szczyt_dbfs": -1.23,
+          "srednia_rms_dbfs": -16.89,
+          "glosnosc_chwilowa_max_lufs": -11.11,
+          "cisza_poczatek_s": 0.022,
+          "cisza_koniec_s": 0.019,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.3,
+            "rms_ostatnie_2s_db": -21.5,
+            "roznica_rms_db": -3.2,
+            "podobienstwo_widma_poczatek_koniec": 0.86,
+            "centroid_poczatek_hz": 1559,
+            "centroid_koniec_hz": 1738,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -28.6,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -0.6
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 245,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 3.0,
+          "true_peak_dbtp": -2.4,
+          "szczyt_dbfs": -2.39,
+          "srednia_rms_dbfs": -18.09,
+          "glosnosc_chwilowa_max_lufs": -12.31,
+          "cisza_poczatek_s": 0.024,
+          "cisza_koniec_s": 0.019,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.5,
+            "rms_ostatnie_2s_db": -22.7,
+            "roznica_rms_db": -3.2,
+            "podobienstwo_widma_poczatek_koniec": 0.86,
+            "centroid_poczatek_hz": 1564,
+            "centroid_koniec_hz": 1737,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -28.6,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -0.6
+          }
+        },
+        "petla": {
+          "dlugosc_s": 80.001,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 175,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 3.1,
+          "true_peak_dbtp": -2.4,
+          "szczyt_dbfs": -2.41,
+          "srednia_rms_dbfs": -18.05,
+          "glosnosc_chwilowa_max_lufs": -12.29,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.2,
+            "rms_ostatnie_2s_db": -17.7,
+            "roznica_rms_db": 1.5,
+            "podobienstwo_widma_poczatek_koniec": 0.952,
+            "centroid_poczatek_hz": 1391,
+            "centroid_koniec_hz": 1395,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -0.7,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -1.7
+          },
+          "skok_probki_na_szwie": 0.0024,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.876,
+            "rytm": 0.899,
+            "harmonia": 0.827,
+            "barwa": 0.928,
+            "start_s": 1.022,
+            "koniec_s": 81.026,
+            "koniec_zywej_muzyki_s": 89.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "stala_moc",
+            "korelacja_fali_w_przenikaniu": 0.347,
+            "przesuniecie_probki": -145,
+            "dlugosc_petli_s": 80.001
+          }
+        }
+      },
+      "status": "do odsłuchu"
+    }
+  ],
+  "dzwieki": [
+    {
+      "id": "sfx_awans_poziom_b",
+      "efekt": "sfx_awans_poziom",
+      "wariant": "B",
+      "przeznaczenie": "Postęp: awans na poziom",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A cartoon level up sound: quick rising sparkling arpeggio with a happy chime at the top. Clean cartoon video game sound effect, about 2 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 2.3
+      },
+      "zlecenie_higgsfield": "71e2272b-ed2d-4a21-914b-d1e139f1510f",
+      "koszt_kredyty": 0.58,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_awans_poziom_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_awans_poziom_b.wav"
+      },
+      "docelowa_dlugosc_s": 2.0,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 8.72,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -8.2,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 2.3,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 171,
+          "lufs_zintegrowana": -30.9,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -9.7,
+          "szczyt_dbfs": -9.72,
+          "srednia_rms_dbfs": -34.68,
+          "glosnosc_chwilowa_max_lufs": -28.62,
+          "cisza_poczatek_s": 0.004,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 2.3,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -22.2,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -26.14,
+          "glosnosc_chwilowa_max_lufs": -19.9,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.005
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_awans_poziom",
+      "efekt": "sfx_awans_poziom",
+      "wariant": "A",
+      "przeznaczenie": "Postęp: awans na poziom",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A cartoon level up sound: quick rising sparkling arpeggio with a happy chime at the top. Clean cartoon video game sound effect, about 2 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "6d6da72a-aa1d-4416-9d40-801dec511d07",
+      "koszt_kredyty": 1.6,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_awans_poziom_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_awans_poziom.wav"
+      },
+      "docelowa_dlugosc_s": 2.0,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.118,
+        "przyciecie_koniec_s": 1.005,
+        "wzmocnienie_db": 5.85,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -40.6,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 3.5,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -22.8,
+          "lra_lu": 0.5,
+          "true_peak_dbtp": -13.3,
+          "szczyt_dbfs": -13.34,
+          "srednia_rms_dbfs": -29.75,
+          "glosnosc_chwilowa_max_lufs": -19.85,
+          "cisza_poczatek_s": 0.128,
+          "cisza_koniec_s": 1.138
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 2.377,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -16.7,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -7.5,
+          "szczyt_dbfs": -7.49,
+          "srednia_rms_dbfs": -22.22,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.03
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_blok_tarcza_b",
+      "efekt": "sfx_blok_tarcza",
+      "wariant": "B",
+      "przeznaczenie": "Walka: blok tarczą",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A cartoon shield block: a sword clanging against a sturdy wooden and metal shield, solid clang with short ring. Clean cartoon video game sound effect, about 1.2 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.5
+      },
+      "zlecenie_higgsfield": "c3d7acbd-1327-4bb9-bd1c-9210c017fb63",
+      "koszt_kredyty": 0.38,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_blok_tarcza_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_blok_tarcza_b.wav"
+      },
+      "docelowa_dlugosc_s": 1.2,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.007,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 4.21,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -41.3,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.5,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 199,
+          "lufs_zintegrowana": -27.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -5.2,
+          "szczyt_dbfs": -5.21,
+          "srednia_rms_dbfs": -30.78,
+          "glosnosc_chwilowa_max_lufs": -22.42,
+          "cisza_poczatek_s": 0.017,
+          "cisza_koniec_s": 0.089
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.493,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -23.7,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.9,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -26.55,
+          "glosnosc_chwilowa_max_lufs": -18.21,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.026
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_blok_tarcza",
+      "efekt": "sfx_blok_tarcza",
+      "wariant": "A",
+      "przeznaczenie": "Walka: blok tarczą",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A cartoon shield block: a sword clanging against a sturdy wooden and metal shield, solid clang with short ring. Clean cartoon video game sound effect, about 1.2 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "5a37adb2-1464-4c6b-bf4e-9f0976c01ca3",
+      "koszt_kredyty": 1.8,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_blok_tarcza_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_blok_tarcza.wav"
+      },
+      "docelowa_dlugosc_s": 1.2,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.16,
+        "przyciecie_koniec_s": 0.045,
+        "wzmocnienie_db": -1.01,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -49.6,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 2.7,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -15.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -2.2,
+          "szczyt_dbfs": -2.22,
+          "srednia_rms_dbfs": -24.32,
+          "glosnosc_chwilowa_max_lufs": -12.99,
+          "cisza_poczatek_s": 0.17,
+          "cisza_koniec_s": 0.801
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 2.495,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -16.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -3.2,
+          "szczyt_dbfs": -3.23,
+          "srednia_rms_dbfs": -24.99,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.013,
+          "cisza_koniec_s": 0.756
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_cios_krytyczny_b",
+      "efekt": "sfx_cios_krytyczny",
+      "wariant": "B",
+      "przeznaczenie": "Walka: cios krytyczny (mocniejszy, z błyskiem)",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A powerful cartoon critical sword hit: sharp whoosh, heavy punchy impact with a bright metallic sparkle shine on top. Clean cartoon video game sound effect, about 1.6 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.9
+      },
+      "zlecenie_higgsfield": "3c634718-2089-4dd2-972b-f4d5cba82939",
+      "koszt_kredyty": 0.48,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_cios_krytyczny_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_cios_krytyczny_b.wav"
+      },
+      "docelowa_dlugosc_s": 1.6,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 3.56,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -4.5,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.9,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 177,
+          "lufs_zintegrowana": -21.9,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -4.5,
+          "szczyt_dbfs": -4.56,
+          "srednia_rms_dbfs": -16.33,
+          "glosnosc_chwilowa_max_lufs": -19.96,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.9,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -18.4,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.9,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -12.99,
+          "glosnosc_chwilowa_max_lufs": -16.59,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.003
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_cios_krytyczny",
+      "efekt": "sfx_cios_krytyczny",
+      "wariant": "A",
+      "przeznaczenie": "Walka: cios krytyczny (mocniejszy, z błyskiem)",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A powerful cartoon critical sword hit: sharp whoosh, heavy punchy impact with a bright metallic sparkle shine on top. Clean cartoon video game sound effect, about 1.6 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "529b09a4-62b8-4478-a04d-6361ba22bb68",
+      "koszt_kredyty": 1.8,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_cios_krytyczny_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_cios_krytyczny.wav"
+      },
+      "docelowa_dlugosc_s": 1.6,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.09,
+        "przyciecie_koniec_s": 0.294,
+        "wzmocnienie_db": -3.19,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -54.3,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 3.08,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -15.9,
+          "lra_lu": 20.0,
+          "true_peak_dbtp": -1.3,
+          "szczyt_dbfs": -1.33,
+          "srednia_rms_dbfs": -20.52,
+          "glosnosc_chwilowa_max_lufs": -10.81,
+          "cisza_poczatek_s": 0.1,
+          "cisza_koniec_s": 0.414
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 2.696,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -18.5,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -4.5,
+          "szczyt_dbfs": -4.52,
+          "srednia_rms_dbfs": -23.13,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.152
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_cios_trafiony_b",
+      "efekt": "sfx_cios_trafiony",
+      "wariant": "B",
+      "przeznaczenie": "Walka: cios mieczem trafiony",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A cartoon sword slash hitting a target: quick whoosh then a solid punchy thwack impact. Clean cartoon video game sound effect, short and punchy, no speech, no voice, no music, no background noise.",
+      "parametry": {
+        "duration": 2
+      },
+      "zlecenie_higgsfield": "ec04ef53-631a-44f0-bba0-982c6b940d17",
+      "koszt_kredyty": 0.5,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_cios_trafiony_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_cios_trafiony_b.wav"
+      },
+      "docelowa_dlugosc_s": 1.2,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.002,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": -1.18,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -24.3,
+        "probki_przesterowane_w_oryginale": 1
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 2.0,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 177,
+          "lufs_zintegrowana": -14.5,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": 0.3,
+          "szczyt_dbfs": 0.14,
+          "srednia_rms_dbfs": -19.32,
+          "glosnosc_chwilowa_max_lufs": -12.82,
+          "cisza_poczatek_s": 0.012,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.998,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -15.9,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.9,
+          "szczyt_dbfs": -1.03,
+          "srednia_rms_dbfs": -20.5,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.011
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_cios_trafiony",
+      "efekt": "sfx_cios_trafiony",
+      "wariant": "A",
+      "przeznaczenie": "Walka: cios mieczem trafiony",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A cartoon sword slash hitting a target: quick whoosh then a solid punchy thwack impact. Clean cartoon video game sound effect, short and punchy, no speech, no voice, no music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "2bf10c41-d869-4c1c-a66f-38f30cf4e3ed",
+      "koszt_kredyty": 1.4,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_cios_trafiony_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_cios_trafiony.wav"
+      },
+      "docelowa_dlugosc_s": 1.2,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.348,
+        "przyciecie_koniec_s": 0.821,
+        "wzmocnienie_db": 15.21,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -48.2,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 3.5,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -32.9,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -15.9,
+          "szczyt_dbfs": -16.46,
+          "srednia_rms_dbfs": -39.56,
+          "glosnosc_chwilowa_max_lufs": -29.21,
+          "cisza_poczatek_s": 0.358,
+          "cisza_koniec_s": 1.18
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 2.331,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -17.3,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.7,
+          "szczyt_dbfs": -1.25,
+          "srednia_rms_dbfs": -22.59,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.002,
+          "cisza_koniec_s": 0.027
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_fanfara_zwyciestwa_b",
+      "efekt": "sfx_fanfara_zwyciestwa",
+      "wariant": "B",
+      "przeznaczenie": "Wynik walki: fanfara zwycięstwa",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A short cheerful cartoon victory fanfare jingle with bright brass and glockenspiel, triumphant and happy. Clean cartoon video game sound effect, about 2.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 3.1
+      },
+      "zlecenie_higgsfield": "fae4fe27-6fb2-4a8e-84ff-7802314e9962",
+      "koszt_kredyty": 0.78,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_fanfara_zwyciestwa_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_fanfara_zwyciestwa_b.wav"
+      },
+      "docelowa_dlugosc_s": 2.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.006,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 3.25,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -30.7,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 3.1,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 160,
+          "lufs_zintegrowana": -25.0,
+          "lra_lu": 20.5,
+          "true_peak_dbtp": -4.2,
+          "szczyt_dbfs": -4.25,
+          "srednia_rms_dbfs": -28.32,
+          "glosnosc_chwilowa_max_lufs": -22.86,
+          "cisza_poczatek_s": 0.016,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 3.094,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -21.4,
+          "lra_lu": 20.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -25.06,
+          "glosnosc_chwilowa_max_lufs": -19.61,
+          "cisza_poczatek_s": 0.006,
+          "cisza_koniec_s": 0.01
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_fanfara_zwyciestwa",
+      "efekt": "sfx_fanfara_zwyciestwa",
+      "wariant": "A",
+      "przeznaczenie": "Wynik walki: fanfara zwycięstwa",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A short cheerful cartoon victory fanfare jingle with bright brass and glockenspiel, triumphant and happy. Clean cartoon video game sound effect, about 2.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "33298e02-3b74-4611-a0ba-e19eaf5b2bf6",
+      "koszt_kredyty": 1.8,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_fanfara_zwyciestwa_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_fanfara_zwyciestwa.wav"
+      },
+      "docelowa_dlugosc_s": 2.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.059,
+        "przyciecie_koniec_s": 1.098,
+        "wzmocnienie_db": -3.11,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -51.0,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 4.3,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -13.4,
+          "lra_lu": 8.9,
+          "true_peak_dbtp": -1.8,
+          "szczyt_dbfs": -1.87,
+          "srednia_rms_dbfs": -21.79,
+          "glosnosc_chwilowa_max_lufs": -10.89,
+          "cisza_poczatek_s": 0.069,
+          "cisza_koniec_s": 1.331
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 3.143,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -16.5,
+          "lra_lu": 20.0,
+          "true_peak_dbtp": -4.9,
+          "szczyt_dbfs": -4.98,
+          "srednia_rms_dbfs": -23.53,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.392
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_galareta_plusk_b",
+      "efekt": "sfx_galareta_plusk",
+      "wariant": "B",
+      "przeznaczenie": "Przeciwnik: plusk galarety",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A cartoon jelly slime splat: wet bouncy squishy plop. Clean cartoon video game sound effect, about 0.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.1
+      },
+      "zlecenie_higgsfield": "b679864c-bdc9-43c2-acc6-31fa630a200d",
+      "koszt_kredyty": 0.28,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_galareta_plusk_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_galareta_plusk_b.wav"
+      },
+      "docelowa_dlugosc_s": 0.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 12.45,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -27.4,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.1,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 239,
+          "lufs_zintegrowana": -47.1,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -12.8,
+          "szczyt_dbfs": -13.45,
+          "srednia_rms_dbfs": -44.27,
+          "glosnosc_chwilowa_max_lufs": -42.16,
+          "cisza_poczatek_s": 0.001,
+          "cisza_koniec_s": 0.072
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.1,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -34.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.3,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -31.96,
+          "glosnosc_chwilowa_max_lufs": -29.71,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.05
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_galareta_plusk",
+      "efekt": "sfx_galareta_plusk",
+      "wariant": "A",
+      "przeznaczenie": "Przeciwnik: plusk galarety",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A cartoon jelly slime splat: wet bouncy squishy plop. Clean cartoon video game sound effect, about 0.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "7d21a854-d0c6-4d39-84f3-5fc1847599e8",
+      "koszt_kredyty": 1.4,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_galareta_plusk_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_galareta_plusk.wav"
+      },
+      "docelowa_dlugosc_s": 0.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.09,
+        "przyciecie_koniec_s": 0.335,
+        "wzmocnienie_db": 7.19,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -36.7,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 0.8,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -23.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -8.2,
+          "szczyt_dbfs": -8.19,
+          "srednia_rms_dbfs": -28.06,
+          "glosnosc_chwilowa_max_lufs": -22.59,
+          "cisza_poczatek_s": 0.1,
+          "cisza_koniec_s": 0.366
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 0.375,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1537,
+          "lufs_zintegrowana": -70.0,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -17.57,
+          "glosnosc_chwilowa_max_lufs": -15.12,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.03
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_klik_przycisk_b",
+      "efekt": "sfx_klik_przycisk",
+      "wariant": "B",
+      "przeznaczenie": "Interfejs: kliknięcie przycisku",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A soft cartoon user interface button click: short clean wooden pop tick. Clean cartoon video game sound effect, about 0.3 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.0
+      },
+      "zlecenie_higgsfield": "1c2cf82b-cc9f-403a-adf2-b7be54a95381",
+      "koszt_kredyty": 0.25,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_klik_przycisk_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_klik_przycisk_b.wav"
+      },
+      "docelowa_dlugosc_s": 0.3,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 9.44,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -30.8,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.0,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 234,
+          "lufs_zintegrowana": -32.9,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -10.4,
+          "szczyt_dbfs": -10.44,
+          "srednia_rms_dbfs": -39.81,
+          "glosnosc_chwilowa_max_lufs": -33.16,
+          "cisza_poczatek_s": 0.004,
+          "cisza_koniec_s": 0.004
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.0,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -23.5,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -30.37,
+          "glosnosc_chwilowa_max_lufs": -23.72,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.017
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_klik_przycisk",
+      "efekt": "sfx_klik_przycisk",
+      "wariant": "A",
+      "przeznaczenie": "Interfejs: kliknięcie przycisku",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A soft cartoon user interface button click: short clean wooden pop tick. Clean cartoon video game sound effect, about 0.3 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "64dd689c-7f36-41f9-a558-2117809012f8",
+      "koszt_kredyty": 1.5,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_klik_przycisk_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_klik_przycisk.wav"
+      },
+      "docelowa_dlugosc_s": 0.3,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.565,
+        "przyciecie_koniec_s": 1.694,
+        "wzmocnienie_db": 26.73,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -14.7,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 2.5,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -44.9,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -27.7,
+          "szczyt_dbfs": -27.73,
+          "srednia_rms_dbfs": -53.15,
+          "glosnosc_chwilowa_max_lufs": -43.21,
+          "cisza_poczatek_s": 0.575,
+          "cisza_koniec_s": 1.727
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 0.241,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1537,
+          "lufs_zintegrowana": -70.0,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -16.26,
+          "glosnosc_chwilowa_max_lufs": -14.28,
+          "cisza_poczatek_s": 0.004,
+          "cisza_koniec_s": 0.014
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_kula_ognia_b",
+      "efekt": "sfx_kula_ognia",
+      "wariant": "B",
+      "przeznaczenie": "Walka: kula ognia",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A cartoon fireball: whooshing flame launch and a soft fiery puff explosion. Clean cartoon video game sound effect, about 1.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 2.1
+      },
+      "zlecenie_higgsfield": "06bff58c-a396-461e-b10a-484c80a469a7",
+      "koszt_kredyty": 0.53,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_kula_ognia_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_kula_ognia_b.wav"
+      },
+      "docelowa_dlugosc_s": 1.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 16.77,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -12.1,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 2.1,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 169,
+          "lufs_zintegrowana": -35.4,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -17.8,
+          "szczyt_dbfs": -17.77,
+          "srednia_rms_dbfs": -32.61,
+          "glosnosc_chwilowa_max_lufs": -31.61,
+          "cisza_poczatek_s": 0.001,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 2.1,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -18.7,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -15.89,
+          "glosnosc_chwilowa_max_lufs": -14.84,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.004
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_kula_ognia",
+      "efekt": "sfx_kula_ognia",
+      "wariant": "A",
+      "przeznaczenie": "Walka: kula ognia",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A cartoon fireball: whooshing flame launch and a soft fiery puff explosion. Clean cartoon video game sound effect, about 1.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "86f638d8-54b0-4bbb-8fe8-e910383c05bb",
+      "koszt_kredyty": 1.6,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_kula_ognia_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_kula_ognia.wav"
+      },
+      "docelowa_dlugosc_s": 1.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.127,
+        "przyciecie_koniec_s": 0.155,
+        "wzmocnienie_db": 1.49,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -44.1,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 3.28,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -19.2,
+          "lra_lu": 20.0,
+          "true_peak_dbtp": -5.6,
+          "szczyt_dbfs": -5.63,
+          "srednia_rms_dbfs": -20.99,
+          "glosnosc_chwilowa_max_lufs": -15.49,
+          "cisza_poczatek_s": 0.137,
+          "cisza_koniec_s": 0.187
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 2.998,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -17.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -4.1,
+          "szczyt_dbfs": -4.13,
+          "srednia_rms_dbfs": -19.11,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.031
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_lodowy_pocisk_b",
+      "efekt": "sfx_lodowy_pocisk",
+      "wariant": "B",
+      "przeznaczenie": "Walka: lodowy pocisk",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A cartoon ice shard projectile: icy crystalline whoosh and a glassy frosty crack on impact. Clean cartoon video game sound effect, about 1.5 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.8
+      },
+      "zlecenie_higgsfield": "e1930ea2-6de9-43cb-bb76-9702284d10df",
+      "koszt_kredyty": 0.45,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_lodowy_pocisk_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_lodowy_pocisk_b.wav"
+      },
+      "docelowa_dlugosc_s": 1.5,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 8.62,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -7.9,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.8,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 179,
+          "lufs_zintegrowana": -27.3,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -9.2,
+          "szczyt_dbfs": -9.62,
+          "srednia_rms_dbfs": -30.13,
+          "glosnosc_chwilowa_max_lufs": -22.62,
+          "cisza_poczatek_s": 0.005,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.8,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -18.4,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.6,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -21.66,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.004
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_lodowy_pocisk",
+      "efekt": "sfx_lodowy_pocisk",
+      "wariant": "A",
+      "przeznaczenie": "Walka: lodowy pocisk",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A cartoon ice shard projectile: icy crystalline whoosh and a glassy frosty crack on impact. Clean cartoon video game sound effect, about 1.5 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "0583869e-58a8-47a4-8212-2933a42f83aa",
+      "koszt_kredyty": 1.7,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_lodowy_pocisk_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_lodowy_pocisk.wav"
+      },
+      "docelowa_dlugosc_s": 1.5,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.1,
+        "przyciecie_koniec_s": 0.088,
+        "wzmocnienie_db": 4.86,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -32.0,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.5,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -22.3,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -7.7,
+          "szczyt_dbfs": -7.75,
+          "srednia_rms_dbfs": -26.95,
+          "glosnosc_chwilowa_max_lufs": -18.86,
+          "cisza_poczatek_s": 0.11,
+          "cisza_koniec_s": 0.118
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.312,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -17.4,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -2.9,
+          "szczyt_dbfs": -2.88,
+          "srednia_rms_dbfs": -21.51,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.009,
+          "cisza_koniec_s": 0.03
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_monety_b",
+      "efekt": "sfx_monety",
+      "wariant": "B",
+      "przeznaczenie": "Postęp: zebranie monet",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "Picking up a few gold coins in a cartoon game: bright cheerful coin clinks jingle. Clean cartoon video game sound effect, about 0.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.1
+      },
+      "zlecenie_higgsfield": "d8fe0f05-9419-4ac8-bb31-8672b24c0472",
+      "koszt_kredyty": 0.28,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_monety_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_monety_b.wav"
+      },
+      "docelowa_dlugosc_s": 0.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.01,
+        "przyciecie_koniec_s": 0.165,
+        "wzmocnienie_db": 22.51,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -21.6,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.1,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 234,
+          "lufs_zintegrowana": -50.5,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -23.1,
+          "szczyt_dbfs": -23.15,
+          "srednia_rms_dbfs": -53.79,
+          "glosnosc_chwilowa_max_lufs": -48.22,
+          "cisza_poczatek_s": 0.02,
+          "cisza_koniec_s": 0.243
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 0.925,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -30.3,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.9,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -31.77,
+          "glosnosc_chwilowa_max_lufs": -27.77,
+          "cisza_poczatek_s": 0.002,
+          "cisza_koniec_s": 0.022
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_monety",
+      "efekt": "sfx_monety",
+      "wariant": "A",
+      "przeznaczenie": "Postęp: zebranie monet",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "Picking up a few gold coins in a cartoon game: bright cheerful coin clinks jingle. Clean cartoon video game sound effect, about 0.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "166b8a02-fe1b-4cab-9d9d-e8a0871cff54",
+      "koszt_kredyty": 1.6,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_monety_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_monety.wav"
+      },
+      "docelowa_dlugosc_s": 0.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.122,
+        "przyciecie_koniec_s": 0.479,
+        "wzmocnienie_db": 9.41,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -35.2,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 2.28,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -26.4,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -16.0,
+          "szczyt_dbfs": -16.28,
+          "srednia_rms_dbfs": -35.85,
+          "glosnosc_chwilowa_max_lufs": -23.41,
+          "cisza_poczatek_s": 0.132,
+          "cisza_koniec_s": 0.666
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.68,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -16.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -6.6,
+          "szczyt_dbfs": -6.88,
+          "srednia_rms_dbfs": -25.12,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.004,
+          "cisza_koniec_s": 0.022
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_ogluszenie_b",
+      "efekt": "sfx_ogluszenie",
+      "wariant": "B",
+      "przeznaczenie": "Walka: ogłuszenie (gwiazdki)",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "Cartoon stun effect: little twinkling stars circling a dizzy head, light tinkling chimes. Clean cartoon video game sound effect, about 1.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 2.1
+      },
+      "zlecenie_higgsfield": "99175bfc-1f5e-4c9d-8cf5-8c8fc62a60d1",
+      "koszt_kredyty": 0.53,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_ogluszenie_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_ogluszenie_b.wav"
+      },
+      "docelowa_dlugosc_s": 1.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.005,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": -2.14,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -8.9,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 2.1,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 181,
+          "lufs_zintegrowana": -14.5,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.6,
+          "szczyt_dbfs": -0.62,
+          "srednia_rms_dbfs": -19.4,
+          "glosnosc_chwilowa_max_lufs": -11.77,
+          "cisza_poczatek_s": 0.015,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 2.095,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -17.0,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -2.7,
+          "szczyt_dbfs": -2.76,
+          "srednia_rms_dbfs": -21.74,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.005
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_ogluszenie",
+      "efekt": "sfx_ogluszenie",
+      "wariant": "A",
+      "przeznaczenie": "Walka: ogłuszenie (gwiazdki)",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "Cartoon stun effect: little twinkling stars circling a dizzy head, light tinkling chimes. Clean cartoon video game sound effect, about 1.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "f06af0a9-a112-4196-a79e-c7e7500cb143",
+      "koszt_kredyty": 1.7,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_ogluszenie_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_ogluszenie.wav"
+      },
+      "docelowa_dlugosc_s": 1.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.109,
+        "przyciecie_koniec_s": 0.805,
+        "wzmocnienie_db": 12.24,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -35.0,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.78,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -28.4,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -16.3,
+          "szczyt_dbfs": -16.32,
+          "srednia_rms_dbfs": -36.67,
+          "glosnosc_chwilowa_max_lufs": -26.24,
+          "cisza_poczatek_s": 0.119,
+          "cisza_koniec_s": 0.901
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 0.866,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -15.7,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -4.0,
+          "szczyt_dbfs": -4.08,
+          "srednia_rms_dbfs": -21.3,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.004,
+          "cisza_koniec_s": 0.02
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_podpalenie_tik_b",
+      "efekt": "sfx_podpalenie_tik",
+      "wariant": "B",
+      "przeznaczenie": "Walka: tyknięcie podpalenia (syk)",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A single cartoon burn tick: a short fiery sizzle hiss. Clean cartoon video game sound effect, about 0.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.1
+      },
+      "zlecenie_higgsfield": "46e6df12-bd85-4d38-99ad-af9d3cd7aee7",
+      "koszt_kredyty": 0.28,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_podpalenie_tik_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_podpalenie_tik_b.wav"
+      },
+      "docelowa_dlugosc_s": 0.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 0.89,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -3.2,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.1,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 218,
+          "lufs_zintegrowana": -18.2,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.8,
+          "szczyt_dbfs": -1.89,
+          "srednia_rms_dbfs": -19.0,
+          "glosnosc_chwilowa_max_lufs": -15.88,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.1,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -18.2,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -19.05,
+          "glosnosc_chwilowa_max_lufs": -14.99,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.001
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_podpalenie_tik",
+      "efekt": "sfx_podpalenie_tik",
+      "wariant": "A",
+      "przeznaczenie": "Walka: tyknięcie podpalenia (syk)",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A single cartoon burn tick: a short fiery sizzle hiss. Clean cartoon video game sound effect, about 0.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "afe7cb06-3bc9-4d44-b08c-1167a4ab89ed",
+      "koszt_kredyty": 1.4,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_podpalenie_tik_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_podpalenie_tik.wav"
+      },
+      "docelowa_dlugosc_s": 0.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.092,
+        "przyciecie_koniec_s": 1.266,
+        "wzmocnienie_db": 14.51,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -31.9,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 2.28,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -30.7,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -20.6,
+          "szczyt_dbfs": -20.62,
+          "srednia_rms_dbfs": -41.55,
+          "glosnosc_chwilowa_max_lufs": -28.51,
+          "cisza_poczatek_s": 0.102,
+          "cisza_koniec_s": 1.332
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 0.921,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -16.3,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -6.1,
+          "szczyt_dbfs": -6.11,
+          "srednia_rms_dbfs": -23.11,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.009,
+          "cisza_koniec_s": 0.014
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_porazka_b",
+      "efekt": "sfx_porazka",
+      "wariant": "B",
+      "przeznaczenie": "Wynik walki: dżingiel porażki",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A short gentle cartoon defeat jingle: a descending sad-trombone-like tune, funny and soft, not depressing. Clean cartoon video game sound effect, about 2.6 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 2.9
+      },
+      "zlecenie_higgsfield": "6538433b-ef90-44c8-a234-9c8d103b1d2e",
+      "koszt_kredyty": 0.73,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_porazka_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_porazka_b.wav"
+      },
+      "docelowa_dlugosc_s": 2.6,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 13.29,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -14.4,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 2.901,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 166,
+          "lufs_zintegrowana": -33.0,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -14.3,
+          "szczyt_dbfs": -14.29,
+          "srednia_rms_dbfs": -34.35,
+          "glosnosc_chwilowa_max_lufs": -29.69,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.001
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 2.901,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -19.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -21.11,
+          "glosnosc_chwilowa_max_lufs": -16.4,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.006
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_porazka",
+      "efekt": "sfx_porazka",
+      "wariant": "A",
+      "przeznaczenie": "Wynik walki: dżingiel porażki",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A short gentle cartoon game over jingle: three soft descending notes on muted trumpet and xylophone ending on a funny low wobble, playful, not depressing. Clean cartoon video game sound effect, about 2.6 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "5f550507-8a60-4448-8bd2-fe262f1aff14",
+      "koszt_kredyty": 2.1,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_porazka_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_porazka.wav"
+      },
+      "docelowa_dlugosc_s": 2.6,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.143,
+        "przyciecie_koniec_s": 0.496,
+        "wzmocnienie_db": -1.76,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -49.5,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 4.08,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -18.6,
+          "lra_lu": 0.4,
+          "true_peak_dbtp": -3.4,
+          "szczyt_dbfs": -3.4,
+          "srednia_rms_dbfs": -21.47,
+          "glosnosc_chwilowa_max_lufs": -12.24,
+          "cisza_poczatek_s": 0.153,
+          "cisza_koniec_s": 0.541
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 3.442,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -20.1,
+          "lra_lu": 0.2,
+          "true_peak_dbtp": -5.2,
+          "szczyt_dbfs": -5.16,
+          "srednia_rms_dbfs": -22.5,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.109
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_przejscie_chmury_b",
+      "efekt": "sfx_przejscie_chmury",
+      "wariant": "B",
+      "przeznaczenie": "Podróż: przejście przez chmury",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "Flying through fluffy clouds: a long soft airy whoosh rising and falling, gentle and magical. Clean cartoon video game sound effect, about 3 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 3.3
+      },
+      "zlecenie_higgsfield": "834d149c-a667-464a-b9ba-b5c05ef03ada",
+      "koszt_kredyty": 0.83,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_przejscie_chmury_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_przejscie_chmury_b.wav"
+      },
+      "docelowa_dlugosc_s": 3.0,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": -1.74,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -30.1,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 3.3,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 152,
+          "lufs_zintegrowana": -14.1,
+          "lra_lu": 20.4,
+          "true_peak_dbtp": -0.3,
+          "szczyt_dbfs": -0.33,
+          "srednia_rms_dbfs": -13.47,
+          "glosnosc_chwilowa_max_lufs": -12.26,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 3.3,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -15.8,
+          "lra_lu": 20.3,
+          "true_peak_dbtp": -2.1,
+          "szczyt_dbfs": -2.08,
+          "srednia_rms_dbfs": -15.22,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.005
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_przejscie_chmury",
+      "efekt": "sfx_przejscie_chmury",
+      "wariant": "A",
+      "przeznaczenie": "Podróż: przejście przez chmury",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "Flying through fluffy clouds: a long soft airy whoosh rising and falling, gentle and magical. Clean cartoon video game sound effect, about 3 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "1c60f7a5-c796-4acc-bc62-9e47ba9a2733",
+      "koszt_kredyty": 1.7,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_przejscie_chmury_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_przejscie_chmury.wav"
+      },
+      "docelowa_dlugosc_s": 3.0,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.761,
+        "przyciecie_koniec_s": 0.521,
+        "wzmocnienie_db": 16.49,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -31.9,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 4.5,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -33.8,
+          "lra_lu": 0.8,
+          "true_peak_dbtp": -21.9,
+          "szczyt_dbfs": -21.9,
+          "srednia_rms_dbfs": -41.05,
+          "glosnosc_chwilowa_max_lufs": -30.49,
+          "cisza_poczatek_s": 0.771,
+          "cisza_koniec_s": 0.793
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 3.218,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -17.1,
+          "lra_lu": 20.0,
+          "true_peak_dbtp": -5.4,
+          "szczyt_dbfs": -5.41,
+          "srednia_rms_dbfs": -23.1,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.001,
+          "cisza_koniec_s": 0.011
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_ryk_kolos_b",
+      "efekt": "sfx_ryk_kolos",
+      "wariant": "B",
+      "przeznaczenie": "Przeciwnik: ryk dużego strażnika-kolosa",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A big friendly-but-mighty cartoon stone giant guardian roar: deep rumbling growl with rocky crunch, powerful but not scary for kids. Clean cartoon video game sound effect, about 2.5 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 2.8
+      },
+      "zlecenie_higgsfield": "731399be-04d9-4f19-acdf-bc3d61042d13",
+      "koszt_kredyty": 0.7,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_ryk_kolos_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_ryk_kolos_b.wav"
+      },
+      "docelowa_dlugosc_s": 2.5,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": -1.01,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -23.9,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 2.8,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 157,
+          "lufs_zintegrowana": -15.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.8,
+          "szczyt_dbfs": -0.76,
+          "srednia_rms_dbfs": -14.0,
+          "glosnosc_chwilowa_max_lufs": -12.99,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 2.8,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -16.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.8,
+          "szczyt_dbfs": -1.77,
+          "srednia_rms_dbfs": -15.01,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.015
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_ryk_kolos",
+      "efekt": "sfx_ryk_kolos",
+      "wariant": "A",
+      "przeznaczenie": "Przeciwnik: ryk dużego strażnika-kolosa",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A big friendly-but-mighty cartoon stone giant guardian roar: deep rumbling growl with rocky crunch, powerful but not scary for kids. Clean cartoon video game sound effect, about 2.5 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "b6eb9a21-d37c-4023-b805-6f788ea0c1e9",
+      "koszt_kredyty": 1.9,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_ryk_kolos_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_ryk_kolos.wav"
+      },
+      "docelowa_dlugosc_s": 2.5,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.114,
+        "przyciecie_koniec_s": 0.352,
+        "wzmocnienie_db": -3.65,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -56.7,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 4.0,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -15.5,
+          "lra_lu": 4.3,
+          "true_peak_dbtp": -1.9,
+          "szczyt_dbfs": -1.95,
+          "srednia_rms_dbfs": -19.34,
+          "glosnosc_chwilowa_max_lufs": -10.35,
+          "cisza_poczatek_s": 0.124,
+          "cisza_koniec_s": 0.474
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 3.534,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -19.0,
+          "lra_lu": 0.9,
+          "true_peak_dbtp": -5.6,
+          "szczyt_dbfs": -5.6,
+          "srednia_rms_dbfs": -22.45,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.011,
+          "cisza_koniec_s": 0.125
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_tarcza_magiczna_b",
+      "efekt": "sfx_tarcza_magiczna",
+      "wariant": "B",
+      "przeznaczenie": "Walka: tarcza magiczna włączona",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A cartoon magic shield turning on: soft rising hum and a shimmering protective bubble chime. Clean cartoon video game sound effect, about 1.5 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.8
+      },
+      "zlecenie_higgsfield": "fc0b6e64-64af-4907-a8b1-c1f280d315ac",
+      "koszt_kredyty": 0.45,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_tarcza_magiczna_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_tarcza_magiczna_b.wav"
+      },
+      "docelowa_dlugosc_s": 1.5,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.007,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": -0.62,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -5.0,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.8,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 171,
+          "lufs_zintegrowana": -16.7,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.3,
+          "szczyt_dbfs": -0.38,
+          "srednia_rms_dbfs": -15.02,
+          "glosnosc_chwilowa_max_lufs": -14.56,
+          "cisza_poczatek_s": 0.017,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.793,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -17.4,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -15.85,
+          "glosnosc_chwilowa_max_lufs": -15.18,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.001
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_tarcza_magiczna",
+      "efekt": "sfx_tarcza_magiczna",
+      "wariant": "A",
+      "przeznaczenie": "Walka: tarcza magiczna włączona",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A cartoon magic shield turning on: soft rising hum and a shimmering protective bubble chime. Clean cartoon video game sound effect, about 1.5 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "93f544c4-067a-4926-97d7-80822e08cdbe",
+      "koszt_kredyty": 1.7,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_tarcza_magiczna_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_tarcza_magiczna.wav"
+      },
+      "docelowa_dlugosc_s": 1.5,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.372,
+        "przyciecie_koniec_s": 0.545,
+        "wzmocnienie_db": 19.24,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -29.3,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 3.5,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -38.2,
+          "lra_lu": 0.1,
+          "true_peak_dbtp": -25.6,
+          "szczyt_dbfs": -25.73,
+          "srednia_rms_dbfs": -45.01,
+          "glosnosc_chwilowa_max_lufs": -33.24,
+          "cisza_poczatek_s": 0.382,
+          "cisza_koniec_s": 0.781
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 2.583,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -18.4,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -6.4,
+          "szczyt_dbfs": -6.49,
+          "srednia_rms_dbfs": -24.46,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.001,
+          "cisza_koniec_s": 0.03
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_troll_chrzakniecie_b",
+      "efekt": "sfx_troll_chrzakniecie",
+      "wariant": "B",
+      "przeznaczenie": "Przeciwnik: chrząknięcie trolla",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A short cartoon troll grunt: a low goofy throaty huh grunt, non-verbal, no words. Clean cartoon video game sound effect, about 0.9 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.2
+      },
+      "zlecenie_higgsfield": "fb24b7f5-62f0-40ce-aede-d42492241194",
+      "koszt_kredyty": 0.3,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_troll_chrzakniecie_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_troll_chrzakniecie_b.wav"
+      },
+      "docelowa_dlugosc_s": 0.9,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 2.61,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -1.3,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.2,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 227,
+          "lufs_zintegrowana": -22.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -2.9,
+          "szczyt_dbfs": -2.91,
+          "srednia_rms_dbfs": -21.78,
+          "glosnosc_chwilowa_max_lufs": -18.81,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.2,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -20.9,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.9,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -20.4,
+          "glosnosc_chwilowa_max_lufs": -16.2,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.001
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_troll_chrzakniecie",
+      "efekt": "sfx_troll_chrzakniecie",
+      "wariant": "A",
+      "przeznaczenie": "Przeciwnik: chrząknięcie trolla",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A short cartoon troll grunt: a low goofy throaty huh grunt, non-verbal, no words. Clean cartoon video game sound effect, about 0.9 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "38ca9f01-5700-4834-b81c-9caf5498fa62",
+      "koszt_kredyty": 1.6,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_troll_chrzakniecie_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_troll_chrzakniecie.wav"
+      },
+      "docelowa_dlugosc_s": 0.9,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.152,
+        "przyciecie_koniec_s": 0.537,
+        "wzmocnienie_db": 19.05,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -22.6,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 2.4,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -39.0,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -20.0,
+          "szczyt_dbfs": -20.05,
+          "srednia_rms_dbfs": -43.33,
+          "glosnosc_chwilowa_max_lufs": -35.88,
+          "cisza_poczatek_s": 0.162,
+          "cisza_koniec_s": 0.585
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.711,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -19.2,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -22.83,
+          "glosnosc_chwilowa_max_lufs": -16.84,
+          "cisza_poczatek_s": 0.001,
+          "cisza_koniec_s": 0.028
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_trucizna_tik_b",
+      "efekt": "sfx_trucizna_tik",
+      "wariant": "B",
+      "przeznaczenie": "Walka: tyknięcie trucizny (bulgot)",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A single cartoon poison tick: a short gooey bubbling blop, slightly gross but funny. Clean cartoon video game sound effect, about 0.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.1
+      },
+      "zlecenie_higgsfield": "f09f410a-faf7-49e6-91dc-754cd3bdf3da",
+      "koszt_kredyty": 0.28,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_trucizna_tik_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_trucizna_tik_b.wav"
+      },
+      "docelowa_dlugosc_s": 0.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.007,
+        "przyciecie_koniec_s": 0.357,
+        "wzmocnienie_db": 1.96,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -54.2,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.1,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 221,
+          "lufs_zintegrowana": -18.3,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -2.9,
+          "szczyt_dbfs": -2.96,
+          "srednia_rms_dbfs": -20.64,
+          "glosnosc_chwilowa_max_lufs": -16.69,
+          "cisza_poczatek_s": 0.017,
+          "cisza_koniec_s": 0.791
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 0.737,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -16.4,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -16.94,
+          "glosnosc_chwilowa_max_lufs": -14.73,
+          "cisza_poczatek_s": 0.008,
+          "cisza_koniec_s": 0.36
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_trucizna_tik",
+      "efekt": "sfx_trucizna_tik",
+      "wariant": "A",
+      "przeznaczenie": "Walka: tyknięcie trucizny (bulgot)",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A single cartoon poison tick: a short gooey bubbling blop, slightly gross but funny. Clean cartoon video game sound effect, about 0.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "e9c5b1bc-ca18-4b3d-8d01-403b0ef3fe72",
+      "koszt_kredyty": 1.6,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_trucizna_tik_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_trucizna_tik.wav"
+      },
+      "docelowa_dlugosc_s": 0.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.124,
+        "przyciecie_koniec_s": 0.345,
+        "wzmocnienie_db": 10.95,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -40.8,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.5,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -27.4,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -11.9,
+          "szczyt_dbfs": -11.95,
+          "srednia_rms_dbfs": -34.03,
+          "glosnosc_chwilowa_max_lufs": -26.11,
+          "cisza_poczatek_s": 0.134,
+          "cisza_koniec_s": 0.476
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.031,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -18.0,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -21.45,
+          "glosnosc_chwilowa_max_lufs": -15.16,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.018
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_umiejetnosc_rzut_b",
+      "efekt": "sfx_umiejetnosc_rzut",
+      "wariant": "B",
+      "przeznaczenie": "Walka: rzucenie umiejętności (magiczny rozbłysk)",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "Casting a magic spell in a cartoon game: rising magical shimmer ending in a bright sparkly burst. Clean cartoon video game sound effect, about 1.5 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.8
+      },
+      "zlecenie_higgsfield": "6049ff06-131f-45d0-9115-2ccfe4d2bd9b",
+      "koszt_kredyty": 0.45,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_umiejetnosc_rzut_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_umiejetnosc_rzut_b.wav"
+      },
+      "docelowa_dlugosc_s": 1.5,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.01,
+        "przyciecie_koniec_s": 0.446,
+        "wzmocnienie_db": -3.62,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -54.9,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.8,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 185,
+          "lufs_zintegrowana": -14.5,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.0,
+          "szczyt_dbfs": -0.04,
+          "srednia_rms_dbfs": -19.19,
+          "glosnosc_chwilowa_max_lufs": -10.38,
+          "cisza_poczatek_s": 0.02,
+          "cisza_koniec_s": 0.534
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.344,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -17.6,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -3.7,
+          "szczyt_dbfs": -3.66,
+          "srednia_rms_dbfs": -21.55,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.18
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_umiejetnosc_rzut",
+      "efekt": "sfx_umiejetnosc_rzut",
+      "wariant": "A",
+      "przeznaczenie": "Walka: rzucenie umiejętności (magiczny rozbłysk)",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "Casting a magic spell in a cartoon game: rising magical shimmer ending in a bright sparkly burst. Clean cartoon video game sound effect, about 1.5 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "ea703563-d728-4993-ad9a-cefe6050b0ad",
+      "koszt_kredyty": 1.7,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_umiejetnosc_rzut_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_umiejetnosc_rzut.wav"
+      },
+      "docelowa_dlugosc_s": 1.5,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.09,
+        "przyciecie_koniec_s": 0.084,
+        "wzmocnienie_db": 7.2,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -20.5,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.5,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -24.4,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -13.7,
+          "szczyt_dbfs": -13.67,
+          "srednia_rms_dbfs": -31.26,
+          "glosnosc_chwilowa_max_lufs": -21.2,
+          "cisza_poczatek_s": 0.1,
+          "cisza_koniec_s": 0.115
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.326,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -16.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -6.5,
+          "szczyt_dbfs": -6.46,
+          "srednia_rms_dbfs": -23.53,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.031
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_unik_b",
+      "efekt": "sfx_unik",
+      "wariant": "B",
+      "przeznaczenie": "Walka: unik (świst)",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A quick cartoon dodge: fast airy whoosh swish, light and agile. Clean cartoon video game sound effect, about 0.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.1
+      },
+      "zlecenie_higgsfield": "1ec47384-8c6a-4ee7-8053-ce979d023e0e",
+      "koszt_kredyty": 0.28,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_unik_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_unik_b.wav"
+      },
+      "docelowa_dlugosc_s": 0.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 0.46,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -1.4,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.1,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 219,
+          "lufs_zintegrowana": -15.6,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.4,
+          "szczyt_dbfs": -1.46,
+          "srednia_rms_dbfs": -16.44,
+          "glosnosc_chwilowa_max_lufs": -14.76,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.1,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -15.3,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -16.38,
+          "glosnosc_chwilowa_max_lufs": -14.3,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.001
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_unik",
+      "efekt": "sfx_unik",
+      "wariant": "A",
+      "przeznaczenie": "Walka: unik (świst)",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A quick cartoon dodge: fast airy whoosh swish, light and agile. Clean cartoon video game sound effect, about 0.8 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "0d1e0fea-1f3c-4b4b-b45f-e3f8b3467136",
+      "koszt_kredyty": 1.5,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_unik_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_unik.wav"
+      },
+      "docelowa_dlugosc_s": 0.8,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.092,
+        "przyciecie_koniec_s": 0.052,
+        "wzmocnienie_db": 19.47,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -35.2,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 0.8,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -35.3,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -20.8,
+          "szczyt_dbfs": -20.84,
+          "srednia_rms_dbfs": -39.16,
+          "glosnosc_chwilowa_max_lufs": -33.47,
+          "cisza_poczatek_s": 0.102,
+          "cisza_koniec_s": 0.109
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 0.656,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1537,
+          "lufs_zintegrowana": -15.2,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.3,
+          "szczyt_dbfs": -1.37,
+          "srednia_rms_dbfs": -18.83,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.008,
+          "cisza_koniec_s": 0.024
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_wilk_warkniecie_b",
+      "efekt": "sfx_wilk_warkniecie",
+      "wariant": "B",
+      "przeznaczenie": "Przeciwnik: warknięcie wilka",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A short cartoon wolf growl snarl, playful and not too scary. Clean cartoon video game sound effect, about 1.2 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.5
+      },
+      "zlecenie_higgsfield": "9c52451d-8f13-4681-8185-6944836edd16",
+      "koszt_kredyty": 0.38,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_wilk_warkniecie_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_wilk_warkniecie_b.wav"
+      },
+      "docelowa_dlugosc_s": 1.2,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 5.98,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -5.9,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.5,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 193,
+          "lufs_zintegrowana": -32.8,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -6.8,
+          "szczyt_dbfs": -6.98,
+          "srednia_rms_dbfs": -33.62,
+          "glosnosc_chwilowa_max_lufs": -27.62,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.5,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -27.4,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.8,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -28.52,
+          "glosnosc_chwilowa_max_lufs": -21.63,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.004
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_wilk_warkniecie",
+      "efekt": "sfx_wilk_warkniecie",
+      "wariant": "A",
+      "przeznaczenie": "Przeciwnik: warknięcie wilka",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A short cartoon wolf growl snarl, playful and not too scary. Clean cartoon video game sound effect, about 1.2 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "cc03401f-51aa-462b-b0c4-08777f28f9e7",
+      "koszt_kredyty": 1.5,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_wilk_warkniecie_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_wilk_warkniecie.wav"
+      },
+      "docelowa_dlugosc_s": 1.2,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.083,
+        "przyciecie_koniec_s": 0.544,
+        "wzmocnienie_db": -1.72,
+        "ograniczone_szczytem": false,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -46.9,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 2.7,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -14.2,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -5.2,
+          "szczyt_dbfs": -5.23,
+          "srednia_rms_dbfs": -19.45,
+          "glosnosc_chwilowa_max_lufs": -12.28,
+          "cisza_poczatek_s": 0.093,
+          "cisza_koniec_s": 0.639
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 2.073,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -15.9,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -6.9,
+          "szczyt_dbfs": -6.95,
+          "srednia_rms_dbfs": -20.03,
+          "glosnosc_chwilowa_max_lufs": -14.0,
+          "cisza_poczatek_s": 0.01,
+          "cisza_koniec_s": 0.137
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_zarodniki_b",
+      "efekt": "sfx_zarodniki",
+      "wariant": "B",
+      "przeznaczenie": "Przeciwnik: rozsypanie zarodników",
+      "model": "mirelo_text_to_audio",
+      "model_nazwa": "Mirelo Text to Audio",
+      "prompt": "A cartoon mushroom releasing a cloud of spores: soft puff and airy sparkly dust scatter. Clean cartoon video game sound effect, about 1.5 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "duration": 1.8
+      },
+      "zlecenie_higgsfield": "b271f93a-4c8f-47c7-8084-a1118750e355",
+      "koszt_kredyty": 0.45,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_zarodniki_mirelo.mp3",
+        "przyciety_wyrownany": "dzwieki/sfx_zarodniki_b.wav"
+      },
+      "docelowa_dlugosc_s": 1.5,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.0,
+        "przyciecie_koniec_s": 0.0,
+        "wzmocnienie_db": 10.9,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 120
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": true,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -22.8,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.8,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 192,
+          "lufs_zintegrowana": -33.1,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -11.8,
+          "szczyt_dbfs": -11.9,
+          "srednia_rms_dbfs": -36.96,
+          "glosnosc_chwilowa_max_lufs": -30.08,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.8,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 1,
+          "bitrate_kbps": 706,
+          "lufs_zintegrowana": -22.2,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -0.9,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -26.07,
+          "glosnosc_chwilowa_max_lufs": -19.19,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.008
+        }
+      },
+      "status": "do odsłuchu"
+    },
+    {
+      "id": "sfx_zarodniki",
+      "efekt": "sfx_zarodniki",
+      "wariant": "A",
+      "przeznaczenie": "Przeciwnik: rozsypanie zarodników",
+      "model": "seed_audio",
+      "model_nazwa": "Seed Audio 1.0",
+      "prompt": "A cartoon mushroom releasing a cloud of spores: soft puff and airy sparkly dust scatter. Clean cartoon video game sound effect, about 1.5 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "parametry": {
+        "format": "wav",
+        "sample_rate": 48000
+      },
+      "zlecenie_higgsfield": "dd2c9fa1-146a-4ca6-81d0-e340adde90eb",
+      "koszt_kredyty": 1.6,
+      "data": "2026-11-16",
+      "pliki": {
+        "oryginal": "dzwieki/oryginaly/sfx_zarodniki_seed.wav",
+        "przyciety_wyrownany": "dzwieki/sfx_zarodniki.wav"
+      },
+      "docelowa_dlugosc_s": 1.5,
+      "obrobka": {
+        "przyciecie_poczatek_s": 0.118,
+        "przyciecie_koniec_s": 0.197,
+        "wzmocnienie_db": 16.57,
+        "ograniczone_szczytem": true,
+        "wygaszenie_konca_ms": 30
+      },
+      "uwagi_techniczne": {
+        "mozliwe_uciecie_konca": false,
+        "koniec_przed_wygaszeniem_wzgl_maks_db": -37.4,
+        "probki_przesterowane_w_oryginale": 0
+      },
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 1.5,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -36.3,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -17.6,
+          "szczyt_dbfs": -17.57,
+          "srednia_rms_dbfs": -42.44,
+          "glosnosc_chwilowa_max_lufs": -33.0,
+          "cisza_poczatek_s": 0.128,
+          "cisza_koniec_s": 0.252
+        },
+        "przyciety_wyrownany": {
+          "dlugosc_s": 1.185,
+          "format": "wav",
+          "kodek": "pcm_s16le",
+          "czestotliwosc_hz": 48000,
+          "kanaly": 2,
+          "bitrate_kbps": 1536,
+          "lufs_zintegrowana": -20.9,
+          "lra_lu": 0.0,
+          "true_peak_dbtp": -1.0,
+          "szczyt_dbfs": -1.0,
+          "srednia_rms_dbfs": -24.85,
+          "glosnosc_chwilowa_max_lufs": -16.43,
+          "cisza_poczatek_s": 0.002,
+          "cisza_koniec_s": 0.022
+        }
+      },
+      "status": "do odsłuchu"
+    }
+  ],
+  "odrzucone_zlecenia": [
+    {
+      "efekt": "sfx_porazka",
+      "model": "seed_audio",
+      "prompt": "A short gentle cartoon defeat jingle: a descending sad-trombone-like tune, funny and soft, not depressing. Clean cartoon video game sound effect, about 2.6 seconds long, a single event, no speech, no voice, no words, no background music, no background noise.",
+      "zlecenie_higgsfield": "bd7e91ac-d412-4b2b-bbfd-5ade431d5210",
+      "status_uslugi": "nsfw",
+      "koszt_kredyty": 0,
+      "uwaga": "Usługa oznaczyła wynik jako niedozwolony (nsfw) przy niewinnym opisie; kredyty nie zostały pobrane. Ponowiono z innym opisem."
+    }
+  ]
+}

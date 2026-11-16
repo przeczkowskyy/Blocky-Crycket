@@ -6,9 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-16 · Claude Code u Karola (muzyka i dźwięki: pierwsza partia)
+- Pierwsza partia audio z Higgsfield do odsłuchu (D-082, D-083, zgoda Karola na kredyty z 16.11): 12 utworów po 90 s z wersjami do pętli, drugie wersje menu i lasu, 22 efekty walki w dwóch wariantach. Koszt 229,5 kredytu z limitu 280.
+- Same pliki zostają lokalnie w `assets/audio/` (nowe wiersze w `.gitignore`); do repo trafił manifest i opis. Nic nie wgrano do Roblox. Karol dostał na telefon trzy utwory w całości oraz przegląd pozostałych utworów i wszystkich efektów.
+- Prawa i zasady Roblox streszczone w `assets/audio/README.md` i w [[Pipeline assetów]]; niejasność co do warunków ElevenLabs Music przez Higgsfield zapisana jako zadanie dla człowieka w [[Zadania]].
+
 ## 2026-11-16 · Claude Code u Karola (las jako wąski pas: plan)
 - Plan nowego lasu po sesji 16.11 (D-075, D-076, D-077): pas 72 × 964 study, sześć przegród od Polany Przybycia do Areny Strażnika, brama do Bagna zamknięta do pokonania Strażnika, 20 / 36 / 46 potworów przy 1 / 8 / 20 graczach, ok. 29 minut gry przy oglądaniu walk, przelot kamery 13,4 s. Kontrola liczb: 0 błędów. W Studio nic nie zbudowano.
-- Raport ze planszą w panelu („Las jako wąski pas — plan układu do akceptacji”) z listą ustawień, które agent przyjmie przy budowie, jeśli ludzie nie napiszą inaczej. Rozkład 10 godzin gry na biomy pozostaje do decyzji.
+- Raport z planszą w panelu („Las jako wąski pas — plan układu do akceptacji”) z listą ustawień, które agent przyjmie przy budowie, jeśli ludzie nie napiszą inaczej. Rozkład 10 godzin gry na biomy pozostaje do decyzji.
 - Pliki: `swiat/biom_las/pas/` (nowy katalog); notatki [[Biom Las]], [[Zadania]].
 
 ## 2026-11-16 · Claude Code u Pawła (tekstury sali wyboru klasy dla Karola)
