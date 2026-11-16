@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-16 · Claude Code u Karola (muzyka i dźwięki w repo)
+- Karol przesłuchał pierwszą partię audio, zaakceptował raport w panelu (21:51; „jest bardzo dobre”, dalsze poprawki możliwe) i poprosił o wypchnięcie plików. Gotowe pliki są w repo: `assets/audio/muzyka/` (14 utworów z wersjami do pętli) i `assets/audio/dzwieki/` (22 efekty w dwóch wariantach). Oryginały sprzed obróbki zostają lokalnie (`.gitignore`).
+- Do Roblox nic nie jest wgrane; wyjaśnienie praw przed publikacją gry zostaje zadaniem w [[Zadania]]. Zaktualizowane: `assets/audio/README.md`, `manifest_audio.json`, [[Pipeline assetów]].
+
 ## 2026-11-16 · Claude Code u Karola (muzyka i dźwięki: pierwsza partia)
 - Pierwsza partia audio z Higgsfield do odsłuchu (D-082, D-083, zgoda Karola na kredyty z 16.11): 12 utworów po 90 s z wersjami do pętli, drugie wersje menu i lasu, 22 efekty walki w dwóch wariantach. Koszt 229,5 kredytu z limitu 280.
 - Same pliki zostają lokalnie w `assets/audio/` (nowe wiersze w `.gitignore`); do repo trafił manifest i opis. Nic nie wgrano do Roblox. Karol dostał na telefon trzy utwory w całości oraz przegląd pozostałych utworów i wszystkich efektów.

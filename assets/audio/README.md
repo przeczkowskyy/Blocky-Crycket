@@ -1,7 +1,7 @@
 # Muzyka i dźwięki — pierwsza partia (do odsłuchu)
 
 Wygenerowane 16.11.2026 w Higgsfield (zgoda Karola z 16.11.2026). **Status wszystkich plików: do odsłuchu** — nic nie jest wybrane ani wgrane do Roblox.
-Same pliki audio są tylko na komputerze, na którym powstały (`.gitignore` je pomija do czasu wyboru i sprawdzenia praw). W repo są tylko ten opis i `manifest_audio.json` (prompty, identyfikatory zleceń, koszty, pomiary).
+**Stan na 16.11.2026 wieczorem:** Karol przesłuchał partię, zaakceptował ją w panelu („jest bardzo dobre”; dalsze poprawki możliwe) i poprosił o wypchnięcie plików. Gotowe pliki są więc w repo: `muzyka/` (pełne wersje `.mp3` i wersje do pętli `_petla.ogg`) oraz `dzwieki/` (warianty A i B). Lokalnie zostają tylko oryginały sprzed obróbki (`oryginaly/`) i składanki do odsłuchu (`przeglad/`). `manifest_audio.json` ma prompty, identyfikatory zleceń, koszty i pomiary. Sekcja „Zanim wgramy do Roblox” niżej pozostaje aktualna — do Roblox nic nie jest wgrane, a prawa do użycia w opublikowanej grze są do wyjaśnienia.
 
 ## Najpierw przesłuchaj
 

@@ -1,8 +1,8 @@
 {
-  "opis": "Pierwsza partia muzyki i efektów dźwiękowych z Higgsfield do odsłuchu. Same pliki audio nie są w repo (.gitignore) do czasu wyboru i sprawdzenia praw.",
+  "opis": "Pierwsza partia muzyki i efektów dźwiękowych z Higgsfield. Gotowe pliki są w repo od 2026-11-16 (prośba Karola); oryginały sprzed obróbki zostają lokalnie. Prawa do użycia w opublikowanej grze nadal do wyjaśnienia — zob. README.md.",
   "wersja": 1,
   "utworzono": "2026-11-16",
-  "status_partii": "do odsłuchu",
+  "status_partii": "zaakceptowana przez Karola 2026-11-16 (raport w panelu); możliwe dalsze poprawki",
   "kredyty": {
     "limit_paczki": 280.0,
     "saldo_przed": 434.5,
@@ -132,7 +132,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_01_menu_b",
@@ -250,7 +250,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_02_bazar_targ",
@@ -368,7 +368,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_03_bazar_rzemieslnicy",
@@ -486,7 +486,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_04_bazar_wieczor",
@@ -604,7 +604,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_05_las_a",
@@ -722,7 +722,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_05_las_b",
@@ -840,7 +840,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_06_bagno",
@@ -958,7 +958,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_07_dzungla",
@@ -1076,7 +1076,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_08_pustynia",
@@ -1194,7 +1194,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_09_gory_tundra",
@@ -1312,7 +1312,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_10_lodowiec",
@@ -1430,7 +1430,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_11_wulkan",
@@ -1548,7 +1548,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "muzyka_12_krysztaly",
@@ -1666,7 +1666,7 @@
           }
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     }
   ],
   "dzwieki": [
@@ -1735,7 +1735,7 @@
           "cisza_koniec_s": 0.005
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_awans_poziom",
@@ -1803,7 +1803,7 @@
           "cisza_koniec_s": 0.03
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_blok_tarcza_b",
@@ -1870,7 +1870,7 @@
           "cisza_koniec_s": 0.026
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_blok_tarcza",
@@ -1938,7 +1938,7 @@
           "cisza_koniec_s": 0.756
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_cios_krytyczny_b",
@@ -2005,7 +2005,7 @@
           "cisza_koniec_s": 0.003
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_cios_krytyczny",
@@ -2073,7 +2073,7 @@
           "cisza_koniec_s": 0.152
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_cios_trafiony_b",
@@ -2140,7 +2140,7 @@
           "cisza_koniec_s": 0.011
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_cios_trafiony",
@@ -2208,7 +2208,7 @@
           "cisza_koniec_s": 0.027
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_fanfara_zwyciestwa_b",
@@ -2275,7 +2275,7 @@
           "cisza_koniec_s": 0.01
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_fanfara_zwyciestwa",
@@ -2343,7 +2343,7 @@
           "cisza_koniec_s": 0.392
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_galareta_plusk_b",
@@ -2410,7 +2410,7 @@
           "cisza_koniec_s": 0.05
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_galareta_plusk",
@@ -2478,7 +2478,7 @@
           "cisza_koniec_s": 0.03
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_klik_przycisk_b",
@@ -2545,7 +2545,7 @@
           "cisza_koniec_s": 0.017
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_klik_przycisk",
@@ -2613,7 +2613,7 @@
           "cisza_koniec_s": 0.014
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_kula_ognia_b",
@@ -2680,7 +2680,7 @@
           "cisza_koniec_s": 0.004
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_kula_ognia",
@@ -2748,7 +2748,7 @@
           "cisza_koniec_s": 0.031
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_lodowy_pocisk_b",
@@ -2815,7 +2815,7 @@
           "cisza_koniec_s": 0.004
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_lodowy_pocisk",
@@ -2883,7 +2883,7 @@
           "cisza_koniec_s": 0.03
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_monety_b",
@@ -2950,7 +2950,7 @@
           "cisza_koniec_s": 0.022
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_monety",
@@ -3018,7 +3018,7 @@
           "cisza_koniec_s": 0.022
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_ogluszenie_b",
@@ -3085,7 +3085,7 @@
           "cisza_koniec_s": 0.005
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_ogluszenie",
@@ -3153,7 +3153,7 @@
           "cisza_koniec_s": 0.02
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_podpalenie_tik_b",
@@ -3220,7 +3220,7 @@
           "cisza_koniec_s": 0.001
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_podpalenie_tik",
@@ -3288,7 +3288,7 @@
           "cisza_koniec_s": 0.014
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_porazka_b",
@@ -3355,7 +3355,7 @@
           "cisza_koniec_s": 0.006
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_porazka",
@@ -3423,7 +3423,7 @@
           "cisza_koniec_s": 0.109
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_przejscie_chmury_b",
@@ -3490,7 +3490,7 @@
           "cisza_koniec_s": 0.005
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_przejscie_chmury",
@@ -3558,7 +3558,7 @@
           "cisza_koniec_s": 0.011
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_ryk_kolos_b",
@@ -3625,7 +3625,7 @@
           "cisza_koniec_s": 0.015
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_ryk_kolos",
@@ -3693,7 +3693,7 @@
           "cisza_koniec_s": 0.125
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_tarcza_magiczna_b",
@@ -3760,7 +3760,7 @@
           "cisza_koniec_s": 0.001
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_tarcza_magiczna",
@@ -3828,7 +3828,7 @@
           "cisza_koniec_s": 0.03
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_troll_chrzakniecie_b",
@@ -3895,7 +3895,7 @@
           "cisza_koniec_s": 0.001
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_troll_chrzakniecie",
@@ -3963,7 +3963,7 @@
           "cisza_koniec_s": 0.028
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_trucizna_tik_b",
@@ -4030,7 +4030,7 @@
           "cisza_koniec_s": 0.36
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_trucizna_tik",
@@ -4098,7 +4098,7 @@
           "cisza_koniec_s": 0.018
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_umiejetnosc_rzut_b",
@@ -4165,7 +4165,7 @@
           "cisza_koniec_s": 0.18
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_umiejetnosc_rzut",
@@ -4233,7 +4233,7 @@
           "cisza_koniec_s": 0.031
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_unik_b",
@@ -4300,7 +4300,7 @@
           "cisza_koniec_s": 0.001
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_unik",
@@ -4368,7 +4368,7 @@
           "cisza_koniec_s": 0.024
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_wilk_warkniecie_b",
@@ -4435,7 +4435,7 @@
           "cisza_koniec_s": 0.004
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_wilk_warkniecie",
@@ -4503,7 +4503,7 @@
           "cisza_koniec_s": 0.137
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_zarodniki_b",
@@ -4570,7 +4570,7 @@
           "cisza_koniec_s": 0.008
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     },
     {
       "id": "sfx_zarodniki",
@@ -4638,7 +4638,7 @@
           "cisza_koniec_s": 0.022
         }
       },
-      "status": "do odsłuchu"
+      "status": "zaakceptowane w partii (Karol 2026-11-16)"
     }
   ],
   "odrzucone_zlecenia": [

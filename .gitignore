@@ -45,9 +45,7 @@ panel/dane/**/*.tmp
 # pliki tymczasowe zapisu do sejfu z panelu (po przerwanym zapisie)
 B&C/**/*.md.*.tmp
 
-# Audio z Higgsfield: same pliki zostają lokalnie, dopóki człowiek nie wybierze
-# i nie sprawdzimy praw; do repo trafia tylko manifest_audio.json i README.md
-assets/audio/**/*.mp3
-assets/audio/**/*.wav
-assets/audio/**/*.ogg
-assets/audio/**/*.flac
+# Audio z Higgsfield: gotowe pliki (muzyka, dźwięki) są w repo od 16.11.2026 na prośbę Karola;
+# lokalnie zostają oryginały sprzed obróbki i składanki do odsłuchu
+assets/audio/**/oryginaly/
+assets/audio/przeglad/
