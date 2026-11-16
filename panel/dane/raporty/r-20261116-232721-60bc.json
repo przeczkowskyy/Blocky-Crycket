@@ -1,0 +1,22 @@
+{
+ "id": "r-20261116-232721-60bc",
+ "tytul": "Las-pas zbudowany w Studio — mapa (bez potworów)",
+ "opis_md": "**Co to jest:** nowy las w układzie wąskiego pasa stoi w Roblox Studio jako osobny kontener `Workspace/LasPas`. Stary las (`Workspace/BiomLas`) został nietknięty, do porównania.\n\n**Co widać na zrzutach:** Polana Przybycia ze stanowiskiem jajka i Zagroda Slime'ów z kojcami; widok z poziomu gracza zaraz po przybyciu; Arena Strażnika z kręgiem menhirów, filarem z kryształem i bramą do Bagna.\n\n**Liczby:** 8601 części (stary las: 22 419), pole gry 72 study szerokości, 964 study długości. Kontrola przed budową: 0 błędów (wolne place walki, ścieżka, pętle potworów, przejścia, trasa kamery).\n\n**Czego jeszcze nie ma:** potworów w przegrodach, bramy otwieranej po pokonaniu Strażnika, teleportu do nowego lasu, mgły i przelotu kamery — to następny etap tej nocy. Nie sprawdzono chodzenia po mapie w grze, kolizji, telefonu ani płynności.\n\n**Jak obejrzeć:** w Studio kontener `Workspace/LasPas` leży na wschód od miasteczka; w panelu jest też podgląd 3D („Las-pas w Studio”).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-16T23:27:21+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/LasPas",
+   "etykieta": "Las-pas w Studio"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "migawka": "20261116-232701-ce6d",
+ "pytanie": "Czy wygląd lasu-pasa pasuje?"
+}

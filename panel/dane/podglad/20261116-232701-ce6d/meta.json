@@ -1,0 +1,313 @@
+{
+ "id": "20261116-232701-ce6d",
+ "tytul": "Las-pas w Studio",
+ "opis": "",
+ "kto": "Karol Balucki",
+ "czas": "2026-11-16T23:27:04+01:00",
+ "zrodlo": "studio",
+ "czesci": 8595,
+ "grupy": [
+  {
+   "sciezka": "Workspace/LasPas/Arena/Krag",
+   "czesci": 34
+  },
+  {
+   "sciezka": "Workspace/LasPas/Arena/Odlamki",
+   "czesci": 14
+  },
+  {
+   "sciezka": "Workspace/LasPas/BramaBagna/Palisada",
+   "czesci": 67
+  },
+  {
+   "sciezka": "Workspace/LasPas/BramaBagna/Wrota",
+   "czesci": 17
+  },
+  {
+   "sciezka": "Workspace/LasPas/Detale/Arena",
+   "czesci": 148
+  },
+  {
+   "sciezka": "Workspace/LasPas/Detale/Bagno",
+   "czesci": 4
+  },
+  {
+   "sciezka": "Workspace/LasPas/Detale/Jezynowe_zwezenie",
+   "czesci": 4
+  },
+  {
+   "sciezka": "Workspace/LasPas/Detale/Lasek",
+   "czesci": 347
+  },
+  {
+   "sciezka": "Workspace/LasPas/Detale/Leze",
+   "czesci": 157
+  },
+  {
+   "sciezka": "Workspace/LasPas/Detale/Plot_z_furtka",
+   "czesci": 4
+  },
+  {
+   "sciezka": "Workspace/LasPas/Detale/Wejscie",
+   "czesci": 240
+  },
+  {
+   "sciezka": "Workspace/LasPas/Detale/Zagroda",
+   "czesci": 259
+  },
+  {
+   "sciezka": "Workspace/LasPas/Detale/Zarosla",
+   "czesci": 305
+  },
+  {
+   "sciezka": "Workspace/LasPas/Domy/m1",
+   "czesci": 18
+  },
+  {
+   "sciezka": "Workspace/LasPas/Domy/m2",
+   "czesci": 18
+  },
+  {
+   "sciezka": "Workspace/LasPas/Domy/m3",
+   "czesci": 18
+  },
+  {
+   "sciezka": "Workspace/LasPas/Domy/s1",
+   "czesci": 8
+  },
+  {
+   "sciezka": "Workspace/LasPas/Domy/s2",
+   "czesci": 8
+  },
+  {
+   "sciezka": "Workspace/LasPas/Domy/s3",
+   "czesci": 8
+  },
+  {
+   "sciezka": "Workspace/LasPas/Domy/t1",
+   "czesci": 10
+  },
+  {
+   "sciezka": "Workspace/LasPas/Domy/w1",
+   "czesci": 18
+  },
+  {
+   "sciezka": "Workspace/LasPas/Domy/w2",
+   "czesci": 18
+  },
+  {
+   "sciezka": "Workspace/LasPas/Domy/w3",
+   "czesci": 14
+  },
+  {
+   "sciezka": "Workspace/LasPas/Kulisy/Lewa",
+   "czesci": 2278
+  },
+  {
+   "sciezka": "Workspace/LasPas/Kulisy/Prawa",
+   "czesci": 2226
+  },
+  {
+   "sciezka": "Workspace/LasPas/Kulisy/ScianaZamykajaca",
+   "czesci": 89
+  },
+  {
+   "sciezka": "Workspace/LasPas/Lasek/Grzybki",
+   "czesci": 58
+  },
+  {
+   "sciezka": "Workspace/LasPas/Lasek/Grzyby",
+   "czesci": 28
+  },
+  {
+   "sciezka": "Workspace/LasPas/Lasek/Lampiony",
+   "czesci": 12
+  },
+  {
+   "sciezka": "Workspace/LasPas/Lasek/WielkiKapelusz",
+   "czesci": 6
+  },
+  {
+   "sciezka": "Workspace/LasPas/Lasek/Zarodniki",
+   "czesci": 23
+  },
+  {
+   "sciezka": "Workspace/LasPas/Leze/Glazy",
+   "czesci": 28
+  },
+  {
+   "sciezka": "Workspace/LasPas/Leze/Kosci",
+   "czesci": 11
+  },
+  {
+   "sciezka": "Workspace/LasPas/Leze/Lupy",
+   "czesci": 26
+  },
+  {
+   "sciezka": "Workspace/LasPas/Leze/Pniaki",
+   "czesci": 14
+  },
+  {
+   "sciezka": "Workspace/LasPas/Piny/Ogniska",
+   "czesci": 10
+  },
+  {
+   "sciezka": "Workspace/LasPas/Polana/KragPrzybycia",
+   "czesci": 33
+  },
+  {
+   "sciezka": "Workspace/LasPas/Polana/Rekwizyty",
+   "czesci": 45
+  },
+  {
+   "sciezka": "Workspace/LasPas/Przedbramie",
+   "czesci": 27
+  },
+  {
+   "sciezka": "Workspace/LasPas/Przejscia/BramaMenhirow",
+   "czesci": 22
+  },
+  {
+   "sciezka": "Workspace/LasPas/Przejscia/JezynoweZwezenie",
+   "czesci": 42
+  },
+  {
+   "sciezka": "Workspace/LasPas/Przejscia/KamiennyProg",
+   "czesci": 37
+  },
+  {
+   "sciezka": "Workspace/LasPas/Przejscia/PlotZFurtka",
+   "czesci": 58
+  },
+  {
+   "sciezka": "Workspace/LasPas/Przejscia/Strumyk",
+   "czesci": 143
+  },
+  {
+   "sciezka": "Workspace/LasPas/Punkty/BramaMenhirow",
+   "czesci": 8
+  },
+  {
+   "sciezka": "Workspace/LasPas/Punkty/BramaPniakow",
+   "czesci": 29
+  },
+  {
+   "sciezka": "Workspace/LasPas/Punkty/FilarKrysztal",
+   "czesci": 7
+  },
+  {
+   "sciezka": "Workspace/LasPas/Punkty/GlazyLegowiska",
+   "czesci": 20
+  },
+  {
+   "sciezka": "Workspace/LasPas/Punkty/KamienPowrotu",
+   "czesci": 5
+  },
+  {
+   "sciezka": "Workspace/LasPas/Punkty/Pasnik",
+   "czesci": 25
+  },
+  {
+   "sciezka": "Workspace/LasPas/Punkty/StanowiskoJajka",
+   "czesci": 19
+  },
+  {
+   "sciezka": "Workspace/LasPas/Punkty/WielkiKapelusz",
+   "czesci": 15
+  },
+  {
+   "sciezka": "Workspace/LasPas/Punkty/WilczaSkala",
+   "czesci": 9
+  },
+  {
+   "sciezka": "Workspace/LasPas/Sciezka",
+   "czesci": 157
+  },
+  {
+   "sciezka": "Workspace/LasPas/Teren/Grunt",
+   "czesci": 1
+  },
+  {
+   "sciezka": "Workspace/LasPas/Teren/Plamy",
+   "czesci": 133
+  },
+  {
+   "sciezka": "Workspace/LasPas/Teren/Polanki",
+   "czesci": 168
+  },
+  {
+   "sciezka": "Workspace/LasPas/Teren/Tropy",
+   "czesci": 156
+  },
+  {
+   "sciezka": "Workspace/LasPas/Tlo/Lewa",
+   "czesci": 264
+  },
+  {
+   "sciezka": "Workspace/LasPas/Tlo/Prawa",
+   "czesci": 256
+  },
+  {
+   "sciezka": "Workspace/LasPas/Zagroda/Kaluze",
+   "czesci": 48
+  },
+  {
+   "sciezka": "Workspace/LasPas/Zagroda/Koryta",
+   "czesci": 15
+  },
+  {
+   "sciezka": "Workspace/LasPas/Zagroda/Plot",
+   "czesci": 158
+  },
+  {
+   "sciezka": "Workspace/LasPas/Zagroda/Przegrodki",
+   "czesci": 36
+  },
+  {
+   "sciezka": "Workspace/LasPas/Zagroda/Rekwizyty",
+   "czesci": 6
+  },
+  {
+   "sciezka": "Workspace/LasPas/ZapowiedzBagna",
+   "czesci": 48
+  },
+  {
+   "sciezka": "Workspace/LasPas/Zarosla/Igliwie",
+   "czesci": 14
+  },
+  {
+   "sciezka": "Workspace/LasPas/Zarosla/Jezyny",
+   "czesci": 6
+  },
+  {
+   "sciezka": "Workspace/LasPas/Zarosla/Ostrzezenia",
+   "czesci": 8
+  },
+  {
+   "sciezka": "Workspace/LasPas/Zarosla/Wykroty",
+   "czesci": 30
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "zakres": {
+  "min": [
+   1066.0,
+   -3.053,
+   -789.945
+  ],
+  "max": [
+   2066.0,
+   47.663,
+   -610.103
+  ]
+ },
+ "miejsce": {
+  "placeId": 129485428021967,
+  "nazwa": "Blocky&Crycket (placeId: 129485428021967)"
+ },
+ "korzen": "Workspace/LasPas"
+}
