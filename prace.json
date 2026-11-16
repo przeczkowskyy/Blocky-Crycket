@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-16T21:00:33+01:00",
+ "aktualizacja": "2026-11-16T21:20:00+01:00",
  "prace": [
   {
    "id": "las-pas-plan",
@@ -14,6 +14,19 @@
    "obszary": [
     "mapa:biom_las",
     "swiat/biom_las/pas/**"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "muzyka-dzwieki",
+   "tytul": "Muzyka i dźwięki do gry: pierwsza partia",
+   "stan": "w_toku",
+   "start": "2026-11-16T21:20:00+01:00",
+   "koniec_szacowany": "2026-11-16T22:35:00+01:00",
+   "aktualizacja": "2026-11-16T21:20:00+01:00",
+   "obszary": [
+    "assets/audio/**"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
