@@ -373,3 +373,38 @@ Dopisek Claude Code z 2026-11-14 (przy scaleniu): na sesjach 14.11 trzecia walut
 Szczegóły: premia do Diamentów przyspiesza kupowanie kolejnych węzłów (pętla) i może zmienić balans z D-035. Układ okna: [[Okno drzewka umiejętności]].
 **Odpowiedź:**
 - Karol Balucki (2026-11-16): nieaktualne
+
+## 46. Blok bez tarczy: ile zatrzymuje i kto go ma?
+- Propozycja D-073: blok i unik ma każda klasa, a tarcza daje Wojownikowi większą szansę na blok.
+- Paweł wolał blok tylko z tarczą i Maga bez uniku. Rzucił też: tarcza zatrzymuje cały cios, Zwiadowca np. połowę.
+- Do wyboru: (a) blok zawsze zatrzymuje cały cios, klasy różnią się tylko szansą; (b) blok z tarczą cały, bez tarczy część (np. 50%); (c) liczby dobiera agent w balansie.
+
+Szczegóły: Sesja główna 16.11, 20:05–20:07 ([[Sesja główna 2026-11-16 — zapis ustaleń]], temat 1). Zatwierdzona D-062 mówi, że blok to cecha tarczy, a slot tarczy ma tylko Wojownik. Karol w odpowiedzi na pytanie 40 zostawił balans Wojownika agentowi.
+**Odpowiedź:**
+
+## 47. Półbóg za Robuxy: z lepszymi statystykami czy bez przewagi?
+- Karol: rasa premium Półbóg za Robuxy, z lepszymi statystykami.
+- Paweł: „pay to win”.
+- Do wyboru: (a) za Robuxy, z lepszymi statystykami (D-080); (b) za Robuxy, ale tylko wygląd albo inna, nie mocniejsza cecha; (c) do zdobycia w grze, np. za Rybki.
+
+Szczegóły: Sesja główna 16.11, 20:18–20:19 ([[Sesja główna 2026-11-16 — zapis ustaleń]], temat 6). Na tej samej sesji Karol odrzucił czwarty slot umiejętności za Robuxy jako „za bardzo pay-to-win” (D-088). Przy odrzuceniu D-080 wpiszcie w uzasadnieniu wariant (b) albo (c). Rasy: D-079.
+Rozstrzyga: D-080
+**Odpowiedź:**
+
+## 48. Wskrzeszenie w walce: legendarna umiejętność czy wcale?
+- Paweł: raz na walkę powrót ze 100% HP albo szansa na powrót z malejącym HP (50%, potem 25%…).
+- Karol: za mocne, najwyżej jako umiejętność legendarna.
+- Do wyboru: (a) nie ma wskrzeszenia; (b) legendarne, raz na walkę, z niskim HP (np. 25%); (c) wersja Pawła z malejącą szansą.
+
+Szczegóły: Sesja główna 16.11, 20:31–20:32 ([[Sesja główna 2026-11-16 — zapis ustaleń]], temat 10). Zatwierdzona D-068 mówi, że walka trwa, aż życie jednej strony spadnie do zera. W [[Zadania]] czeka już węzeł drzewka „Jeszcze stoję” (ostatni dech) jako sprzeczny z D-068, więc oba rozstrzygnąć razem. Sloty umiejętności: D-088.
+**Odpowiedź:**
+
+## 49. Czyj agent robi zadania bez przydziału z sesji 16.11?
+- Karol: gdy z rozmowy nie wynika, czyj Claude robi zadanie, agent ma zapytać (D-093).
+- Bez przydziału: balans (mana, statusy, Pancerz, blok); modele ras z Półbogiem; przebudowa Krzywego Miasteczka z wnętrzami sklepów; okno zagrody petów i tablica ogłoszeń; pomijanie walk.
+- Podział z D-093 podpowiada: modele i miasto (3D) — Karol, okna 2D — Paweł, kod walki — agent Karola, który zrobił silnik v2.
+- Odpowiedz tutaj albo ustaw agenta przy zadaniu (Pytania → Plan → Zadania).
+
+Szczegóły: Modele ras: Karol najpierw powiedział, że robi je Paweł w Blenderze (20:24), a minutę później duże modele i sceny przeszły na Karola. Zadania stoją w [[Zadania]] bez pola `agent:`. Źródło: [[Sesja główna 2026-11-16 — zapis ustaleń]], temat 5.
+Dopisek z 2026-11-16 (Claude Code u Karola, 21:00): Karol polecił w rozmowie zacząć pracę po sesji. Agent Karola robi od 21:00 balans i zmiany silnika walki (praca „silnik-mana-balans”) oraz plan lasu jako pasa (praca „las-pas-plan”). Modele ras, miasto, okno zagrody petów z tablicą i pomijanie walk czekają na odpowiedź.
+**Odpowiedź:**

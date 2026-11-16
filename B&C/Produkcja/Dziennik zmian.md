@@ -6,6 +6,20 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-16 · Claude Code u Karola (po sesji głównej: start prac i korekta tempa)
+- Karol polecił w rozmowie zacząć i zaplanować pracę po sesji głównej 16.11. Od 21:00 w toku: zmiany silnika walki (pasek many, Zręczność przydatna każdej klasie, blok i unik każdej klasy, limit Pancerza, statusy z własnym charakterem, pasywki, model tempa; propozycje D-073, D-088–D-091) oraz plan lasu jako wąskiego pasa z planszą do akceptacji (D-075, D-076). Obie prace widać w panelu („Prace w toku”).
+- **Korekta Karola do D-076:** „15 minut na biom nie jest dobre” — pierwsza wersja ma dawać ok. 10 godzin gry do wejścia do ostatniego biomu. Dopisane pod D-076 w [[Rejestr decyzji]] i przy zadaniu przebudowy mapy w [[Zadania]]; rozkład czasu na biomy pozostaje do decyzji.
+- [[Pytania otwarte]] #49: dopisek, które zadania bez przydziału agent Karola już robi; reszta czeka na odpowiedź.
+- Zapis ustaleń z sesji ([[Sesja główna 2026-11-16 — zapis ustaleń]], propozycje D-073–D-093, pytania 46–49) spisał agent panelu; ten wpis go nie zmienia.
+
+## 2026-11-16 · Claude Code u Karola (spisanie sesji głównej 16.11)
+- Sesja główna 16.11 (20:05–20:53, zapis pełny) spisana w [[Sesja główna 2026-11-16 — zapis ustaleń]] (status propozycja).
+- [[Rejestr decyzji]]: 💡 propozycje D-073–D-093. Wśród nich: blok i unik dla każdej klasy (zmienia D-062), Pancerz z mini-grą na próbę, mapa jako wąski pas biomów z teleportem między strefami, układ biomu i ok. 15 minut na biom, cutscenka biomu, pomijanie walk z poznanym potworem, rasy i Półbóg, start gry i podest wyboru, pop-upy i dźwięki w walce, muzyka, sklepy z wnętrzem, ciasne miasto, jajka tylko za Złoto i Rybki, Timer i premia do Diamentów, trzy dowolne sloty (zmienia D-055), pasek many, statusy, limit Pancerza, przyciski HUD z Figmy, podział pracy. Niczego nie zatwierdzono. D-061 nadal czeka na podpis Pawła.
+- [[Pytania otwarte]]: nowe pytania 46–49 (blok bez tarczy, Półbóg za Robuxy, wskrzeszenie, przydział zadań bez osoby). Pod istniejącymi pytaniami nie dopisano odpowiedzi: omówione pytania 5, 27, 39 i 45 Karol zamknął w trakcie sesji jako nieaktualne, a pozostałe mają już odpowiedzi.
+- [[Zadania]]: zadania z sesji z polem agenta. Karol: mapa i biomy, cutscenka biomu, podest, dźwięki, muzyka. Paweł: wzór podestu i hala, ekran ras, okna sklepów, menu główne, pop-upy, drzewko. Pięć zadań bez przydziału czeka na pytanie 49. Pięć wyborów silnika v2 i propozycje z trzeciej sesji 14.11 przeniesione do Zrobionych.
+- [[Sesje główne]]: wynik i link przy czterech tematach omówionych 16.11.
+- Raport „Sesja główna 2026-11-16 — do zatwierdzenia” w panelu.
+
 ## 2026-11-16 · Claude Code u Karola (instrukcja dla Claude Code Pawła)
 - Na prośbę Karola: notatka [[Zadania z panelu — instrukcja dla Claude Code Pawła]] — jak zadanie z „agent: Paweł” samo dochodzi do komputera Pawła (panel Karola wysyła, panel Pawła pobiera i uruchamia agenta, zwykle ok. 5 minut), prompt do wklejenia, siedem kroków do ustawienia raz (samo uruchamianie i start panelu z Windowsem tylko za zgodą Pawła) i zasady dla jego Claude Code (cudzych zadań nie robi, bez potwierdzenia D-070 nie wysyła wyników).
 - Panel: szacowany koniec pracy agenta przy zadaniu = limit czasu przebiegu (30 min) zamiast 60 min. Pliki: `panel/bc/zadania_agenta.py`, `panel/static/widoki/pytania.js`, `panel/README.md`; notatki [[Panel zespołu]], [[Zadania]].
