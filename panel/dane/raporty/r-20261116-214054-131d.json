@@ -1,0 +1,24 @@
+{
+ "id": "r-20261116-214054-131d",
+ "tytul": "Las jako wąski pas — plan układu do akceptacji",
+ "opis_md": "**Co to jest:** plan lasu w nowym układzie z sesji 16.11 (D-075, D-076) — wąski pas zamiast dużej mapy. Na razie tylko plansza i liczby; w Studio nic nie jest zbudowane.\n\n**Układ (od wejścia):** Polana Przybycia ze stanowiskiem jajka → Zagroda Slime'ów (3 kojce, poziomy 1–3) → Lasek Muchomorowy (poziomy 3–5) → Wilcze Zarośla (poziomy 6–8) → Leże Trolla (8–9) → Arena Strażnika Gaju (poziom 10) → brama do Bagna, zamknięta do pokonania Strażnika.\n\n**Liczby:**\n- pas ma 72 study szerokości (4,5 s biegu) i 964 study długości; bieg od wejścia do bramy trwa 57,5 s;\n- potworów ze Strażnikiem: 20 / 36 / 46 przy 1 / 8 / 20 graczach; odradzanie 12–18 s, Troll 150 s, Strażnik 120 s;\n- las to ok. 29 minut przy oglądaniu walk (49 walk), z tego chodzenie ok. 9%; z pomijaniem znanych walk ok. 17,5 minuty — pełne 30 minut wymaga wtedy więcej walk, co ustawi krzywa doświadczenia (liczy ją praca nad silnikiem);\n- przelot kamery przy pierwszym wejściu: 13,4 s, kończy się rykiem Strażnika;\n- pas leży na wschód od miasteczka, a kolejne biomy mają miejsce w tej samej linii.\n\n**Przyjmę przy budowie, jeśli nie napiszecie inaczej:**\n1. szerokość 72 study (do wyboru było 64, 72, 80);\n2. położenie na wschód od miasteczka; stary las zostaje do porównania i zniknie dopiero po Waszej zgodzie;\n3. Strażnik i Troll wspólni dla serwera, jak dziś;\n4. walka nadal na arenie prototypu, jak dziś;\n5. teleport prowadzi tylko do wejścia biomu;\n6. przelotu kamery przy pierwszym wejściu nie da się pominąć;\n7. po pominięciu walki gracz i potwór są wolni od razu.\n\n**Do decyzji osobno:** rozkład 10 godzin gry na biomy — rosnący (30 / 45 / 60 / 75 / 95 / 125 / 170 minut) czy równy (ok. 85 minut na biom). Poziomy potworów na planszy to propozycja do uzgodnienia z krzywą doświadczenia.\n\n**Nie sprawdzono:** wyglądu, kolizji, telefonu i płynności przelotu — to wyjdzie dopiero po budowie w Studio (ok. 4–5 godzin pracy). Liczba części to szacunek: ok. 9 tysięcy (stary las ma 22 tysiące).\n\nSzczegóły: `swiat/biom_las/pas/PLAN_PASA.md` (dziesięć wyborów z opcjami), dane `plan_pasa.json`, kontrola `sprawdz_plan.py` (0 błędów).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-16T21:40:54+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/biom_las/pas/PLAN_PASA.md",
+   "etykieta": "Opis planu i wybory"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/biom_las/pas/plan_pasa.png",
+   "etykieta": "Plansza w pełnej rozdzielczości"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg"
+ ],
+ "pytanie": "Czy budować las według tej planszy?"
+}
