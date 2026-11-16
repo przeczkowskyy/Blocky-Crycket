@@ -1,0 +1,17 @@
+{
+ "id": "r-20261116-214636-2f59",
+ "tytul": "Muzyka i dźwięki — pierwsza partia do odsłuchu",
+ "opis_md": "**Co to jest:** pierwsza partia muzyki i dźwięków do gry (D-082, D-083), wygenerowana w Higgsfield. To materiał do odsłuchu — nic nie jest wybrane ani wgrane do Roblox.\n\n**Co powstało:**\n- 12 utworów instrumentalnych po 90 s: menu główne, trzy do Krzywego Miasteczka (targ, rzemieślnicy, wieczór) i osiem biomów (las, bagno, dżungla, pustynia, góry z tundrą, lodowiec, wulkaniczny, kryształowy); menu i las mają po dwie wersje;\n- każdy utwór ma też wersję do grania w pętli;\n- 22 efekty walki, każdy w dwóch wariantach: cios, krytyk, blok, unik, rzut umiejętności, kula ognia, lodowy pocisk, trucizna, podpalenie, ogłuszenie, tarcza, fanfara zwycięstwa, porażka, awans, monety, klik, przejście przez chmury, ryk Strażnika, galareta, wilk, troll, zarodniki.\n\n**Gdzie słuchać:** Karol dostał pliki na telefon (trzy utwory w całości i dwa przeglądy). Wszystkie pliki leżą na komputerze Karola w `assets/audio/`; nie ma ich na GitHubie, więc Paweł dostanie je od Karola.\n\n**Koszt:** 229,5 kredytu Higgsfield, na koncie zostało ok. 205.\n\n**Czego nie wiadomo:**\n- nikt nie ocenił tego uchem — jakość melodii, brak wokalu i płynność pętli ocenia człowiek;\n- lodowiec ma w miejscu zapętlenia słyszalny spadek głośności;\n- przed publikacją trzeba zapytać pomoc Higgsfield na piśmie, czy muzykę z modelu ElevenLabs Music wolno dać do komercyjnej gry (szczegóły i źródła w `assets/audio/README.md`).\n\n**Co dalej:** po wyborze dogeneruję zamienniki dla odrzuconych utworów; dźwięki pod wyskakujące efekty zrobię po projekcie Pawła.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-16T21:46:36+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "assets/audio/README.md",
+   "etykieta": "Lista plików, pomiary i prawa"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Które utwory i efekty zostają, a które wymienić?"
+}
