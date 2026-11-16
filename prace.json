@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-16T23:10:47+01:00",
+ "aktualizacja": "2026-11-16T23:18:33+01:00",
  "prace": [
   {
    "id": "las-pas-generator",
@@ -50,10 +50,10 @@
    "id": "silnik-mana-balans",
    "tytul": "Silnik walki: mana, statystyki, statusy, limit Pancerza",
    "stan": "w_toku",
-   "etap": "Wykonanie (1 z 3): zasady, Python, Luau",
+   "etap": "Wykonanie (1 z 3); potem kontrola i poprawki",
    "start": "2026-11-16T21:00:29+01:00",
-   "koniec_szacowany": "2026-11-16T23:45:00+01:00",
-   "aktualizacja": "2026-11-16T21:00:32+01:00",
+   "koniec_szacowany": "2026-11-17T01:45:00+01:00",
+   "aktualizacja": "2026-11-16T23:18:33+01:00",
    "obszary": [
     "tools/walka/**",
     "src/server/Walka/**",
