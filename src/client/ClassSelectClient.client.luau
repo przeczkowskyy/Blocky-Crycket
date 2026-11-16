@@ -1,0 +1,446 @@
+--[[
+	ClassSelectClient — ekran wyboru klasy po ekranie ładowania (ScreenGui „ClassSelect”, src/gui/ClassSelect.model.json).
+	Projekt: B&C/UI/Selektor bohatera.md (propozycja). Dane: ReplicatedStorage.Shared.ClassData.
+
+	- Kamera stoi w sali Workspace/WyborKlasy (swiat/wybor_klasy) i patrzy na podest.
+	- Trzy modele (kopie z ReplicatedStorage.WyborKlasyModele, tylko u tego gracza) stoją na kole na podeście;
+	  strzałki / klawisze ←→ (A/D) obracają koło o jedną klasę, wybrana stoi z przodu.
+	- Karta statystyk po lewej pokazuje wybraną klasę. PLAY (albo Enter) → serwer ustawia atrybut "Class",
+	  ekran znika, kamera wraca do gracza, HUD się pokazuje.
+	- Nastrój: na czas ekranu gracz ma u siebie nocne światło sali (ClassData.Scene.mood), ognie migoczą, bohaterowie
+	  mają komiksowy obrys, kamera lekko podąża za myszką. Po PLAY wszystko wraca do ustawień miejsca.
+]]
+
+local Players = game:GetService("Players")
+local RS = game:GetService("ReplicatedStorage")
+local UIS = game:GetService("UserInputService")
+local TS = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local Lighting = game:GetService("Lighting")
+
+local ClassData = require(RS:WaitForChild("Shared"):WaitForChild("ClassData"))
+local Icons = require(RS:WaitForChild("Shared"):WaitForChild("ClassSelectIcons"))
+local chooseEvent = RS:WaitForChild("ChooseClass")
+
+local player = Players.LocalPlayer
+local gui = player:WaitForChild("PlayerGui"):WaitForChild("ClassSelect")
+local card = gui:WaitForChild("StatsCard")
+local vignette = gui:WaitForChild("Vignette")
+local SC = ClassData.Scene
+local CLASSES = ClassData.Classes
+local N = #CLASSES
+local QUICK = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local POP = TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+local LOADING_TIMEOUT = 25
+
+------------------------------------------------------------ klasa już wybrana?
+-- Scenę (kamera, modele, nocne światło) skrypt ustawia od razu, jeszcze POD ekranem ładowania — światła sali zdążą się
+-- rozjaśnić, zanim gracz ją zobaczy. Sam ekran pokazuje się dopiero po sygnale "LoadingDone".
+if player:GetAttribute("Class") then
+	return -- klasa już wybrana (np. po odrodzeniu skryptu)
+end
+
+local modelsFolder = RS:WaitForChild("WyborKlasyModele", 20)
+if not modelsFolder then
+	warn("[ClassSelect] brak ReplicatedStorage.WyborKlasyModele — wybieram klasę domyślną")
+	chooseEvent:FireServer(CLASSES[1].id)
+	return
+end
+
+------------------------------------------------------------ sala daleko od gracza: przy streamingu trzeba ją wczytać
+if workspace.StreamingEnabled then
+	pcall(function()
+		player:RequestStreamAroundAsync(SC.center, 10)
+	end)
+	local tw = os.clock()
+	while not workspace:FindFirstChild("WyborKlasy") and os.clock() - tw < 10 do
+		task.wait(0.1)
+	end
+end
+
+------------------------------------------------------------ nastrój sali: noc i ogień (tylko u gracza, do PLAY)
+local MOOD = SC.mood
+local savedLighting: { [any]: any } = {}
+local moodEffects: { Instance } = {}
+local function applyMood()
+	if not MOOD then
+		return
+	end
+	for _, k in ipairs({ "Ambient", "OutdoorAmbient", "EnvironmentDiffuseScale", "EnvironmentSpecularScale", "ExposureCompensation" }) do
+		savedLighting[k] = (Lighting :: any)[k]
+	end
+	Lighting.Ambient = MOOD.ambient
+	Lighting.OutdoorAmbient = MOOD.ambient
+	Lighting.EnvironmentDiffuseScale = MOOD.envDiffuse
+	Lighting.EnvironmentSpecularScale = MOOD.envSpecular
+	Lighting.ExposureCompensation = savedLighting.ExposureCompensation + (MOOD.exposure or 0)
+	for _, a in ipairs(Lighting:GetChildren()) do
+		if a:IsA("Atmosphere") then -- mgła miejsca zszarzałaby głąb sali
+			savedLighting[a] = a.Density
+			a.Density = 0
+		end
+	end
+	local cc = Instance.new("ColorCorrectionEffect")
+	cc.Name = "ClassSelectKolor"
+	cc.TintColor, cc.Contrast, cc.Saturation = MOOD.tint, MOOD.contrast, MOOD.saturation
+	cc.Parent = Lighting
+	local bloom = Instance.new("BloomEffect")
+	bloom.Name = "ClassSelectBlask"
+	bloom.Intensity, bloom.Size, bloom.Threshold = MOOD.bloomIntensity, MOOD.bloomSize, MOOD.bloomThreshold
+	bloom.Parent = Lighting
+	moodEffects = { cc, bloom }
+end
+local function restoreMood()
+	for k, v in pairs(savedLighting) do
+		if typeof(k) == "string" then
+			(Lighting :: any)[k] = v
+		elseif k.Parent then
+			k.Density = v
+		end
+	end
+	for _, e in ipairs(moodEffects) do
+		e:Destroy()
+	end
+end
+
+-- ognie w sali migoczą: światła z atrybutem "Migot" (Workspace/WyborKlasy/Efekty, tools/studio/deploy_classselect.py)
+type Flicker = { light: Light, base: number, amp: number, seed: number }
+local flicker: { Flicker } = {}
+do
+	local sala = workspace:FindFirstChild("WyborKlasy")
+	local efekty = sala and sala:FindFirstChild("Efekty")
+	if efekty then
+		for _, d in ipairs(efekty:GetDescendants()) do
+			local amp = d:IsA("Light") and d:GetAttribute("Migot")
+			if amp then
+				table.insert(flicker, { light = d :: Light, base = (d :: Light).Brightness, amp = amp, seed = #flicker * 7.31 })
+			end
+		end
+	end
+end
+
+------------------------------------------------------------ na czas wyboru: tylko ten ekran (polecenie Pawła 16.11)
+-- inne ScreenGui gracza są wyłączane i trzymane wyłączone (także te, które ktoś włączy w trakcie), elementy Robloxa
+-- (czat, lista graczy, plecak, pasek u góry) schowane; po PLAY wszystko wraca
+local StarterGui = game:GetService("StarterGui")
+local pg = player:WaitForChild("PlayerGui")
+local hidden: { [ScreenGui]: boolean } = {}
+local watchers = {}
+local function hideGui(g: Instance)
+	if not g:IsA("ScreenGui") or g == gui then
+		return
+	end
+	if g.Enabled then
+		hidden[g] = true
+		g.Enabled = false
+	end
+	table.insert(watchers, g:GetPropertyChangedSignal("Enabled"):Connect(function()
+		if g.Enabled then
+			hidden[g] = true
+			g.Enabled = false
+		end
+	end))
+end
+local function setCore(on: boolean)
+	pcall(function()
+		StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, on)
+	end)
+	pcall(function()
+		StarterGui:SetCore("TopbarEnabled", on)
+	end)
+end
+-- podpowiedzi „E” (ProximityPrompt) przy postaci gracza — np. portal obok spawnu — też chowamy do PLAY
+local PPS = game:GetService("ProximityPromptService")
+local promptsWereEnabled = PPS.Enabled
+local function hideOthers()
+	promptsWereEnabled = PPS.Enabled
+	PPS.Enabled = false
+	for _, g in ipairs(pg:GetChildren()) do
+		hideGui(g)
+	end
+	table.insert(watchers, pg.ChildAdded:Connect(hideGui))
+	setCore(false)
+end
+local function restoreOthers()
+	PPS.Enabled = promptsWereEnabled
+	for _, c in ipairs(watchers) do
+		c:Disconnect()
+	end
+	for g in pairs(hidden) do
+		if g.Parent then
+			g.Enabled = true
+		end
+	end
+	setCore(true)
+end
+
+------------------------------------------------------------ modele na kole
+local stage = Instance.new("Folder")
+stage.Name = "WyborKlasyLokalne"
+stage.Parent = workspace
+
+type Hero = { model: Model, base: CFrame, frontYaw: number, offsetY: number, angle: number }
+local heroes: { Hero } = {}
+
+local function yawOf(v: Vector3): number
+	return math.atan2(v.X, v.Z)
+end
+
+for i, c in ipairs(CLASSES) do
+	local src = modelsFolder:FindFirstChild(c.model)
+	if src and src:IsA("Model") then
+		local m = src:Clone()
+		for _, d in ipairs(m:GetDescendants()) do
+			if d:IsA("BasePart") then
+				d.Anchored = true
+				d.CanCollide = false
+			elseif d:IsA("Script") or d:IsA("LocalScript") then
+				d:Destroy()
+			end
+		end
+		m.Parent = stage
+		local hl = Instance.new("Highlight") -- komiksowy obrys sylwetki, jak rekwizyty sali
+		hl.Name = "ObrysKomiksowy"
+		hl.FillTransparency = 1
+		hl.OutlineColor = Color3.fromRGB(24, 20, 18)
+		hl.OutlineTransparency = 0
+		hl.DepthMode = Enum.HighlightDepthMode.Occluded
+		hl.Adornee = m
+		hl.Parent = m
+		local pivot = m:GetPivot()
+		local cf, size = m:GetBoundingBox()
+		local hrp = m:FindFirstChild("HumanoidRootPart", true)
+		local front = (hrp and hrp:IsA("BasePart") and hrp.CFrame.LookVector) or pivot.LookVector
+		-- atrybut na modelu może odwrócić przód (gdy import ma przód na plecach)
+		if m:GetAttribute("FrontFlip") then
+			front = -front
+		end
+		table.insert(heroes, {
+			model = m,
+			base = pivot - pivot.Position,
+			frontYaw = yawOf(Vector3.new(front.X, 0, front.Z)),
+			offsetY = pivot.Position.Y - (cf.Position.Y - size.Y / 2),
+			angle = -(i - 1) * 2 * math.pi / N, -- 2. klasa (Zwiadowca) po lewej, 3. (Mag) po prawej
+		})
+	end
+end
+
+local rot, rotTarget, index = 0, 0, 1
+local hopAt = -10 -- chwila ostatniej zmiany klasy: wybrany bohater lekko podskakuje
+local function place(dt: number?)
+	rot += (rotTarget - rot) * math.clamp((dt or 1) * 9, 0, 1)
+	local now = os.clock()
+	for k, h in ipairs(heroes) do
+		local a = h.angle - rot
+		a = math.atan2(math.sin(a), math.cos(a)) -- do zakresu ±180° (inaczej po obrocie koła postać staje tyłem)
+		local hop = (k == index) and math.sin(math.clamp((now - hopAt) / 0.34, 0, 1) * math.pi) * 0.45 or 0
+		local pos = SC.center + Vector3.new(SC.ringRadius * math.sin(a), h.offsetY + hop, SC.ringRadius * math.cos(a))
+		local front = math.abs(math.atan2(math.sin(a), math.cos(a))) < 0.3
+		local sway = front and math.sin(now * 1.6) * 0.1 or 0
+		-- przód modelu patrzy w stronę kamery (+Z), boczni lekko ku środkowi
+		local wantYaw = a * SC.sideTurn + sway
+		local delta = wantYaw - h.frontYaw
+		h.model:PivotTo(CFrame.new(pos) * CFrame.Angles(0, delta, 0) * h.base)
+	end
+end
+
+------------------------------------------------------------ karta statystyk
+local function showClass(animate: boolean)
+	local c = CLASSES[index]
+	card.ClassTitle.Text = c.name
+	card.Subtitle.Text = c.subtitle
+	card.Emblem.Image = Icons[c.emblem] or ""
+	for s = 1, 6 do
+		local fill = card["Bar" .. s].Fill
+		local goal = UDim2.fromScale(math.clamp(c.stats[s] / ClassData.BAR_FULL, 0.04, 1), 1)
+		if animate then
+			TS:Create(fill, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = goal }):Play()
+		else
+			fill.Size = goal
+		end
+	end
+	if animate then
+		local sc = card:FindFirstChildWhichIsA("UIScale")
+		if sc then
+			sc.Scale = 0.96
+			TS:Create(sc, POP, { Scale = 1 }):Play()
+		end
+	end
+end
+
+-- dir = +1 (strzałka w prawo): na przód wychodzi postać stojąca po prawej
+local function step(dir: number)
+	index = (index - 1 - dir) % N + 1
+	rotTarget += dir * 2 * math.pi / N
+	hopAt = os.clock() + 0.12
+	showClass(true)
+end
+
+------------------------------------------------------------ przyciski
+local function bounce(btn: GuiButton, onClick: () -> ())
+	local sc = btn:FindFirstChildWhichIsA("UIScale")
+	btn.MouseEnter:Connect(function()
+		if sc then
+			TS:Create(sc, QUICK, { Scale = 1.08 }):Play()
+		end
+	end)
+	btn.MouseLeave:Connect(function()
+		if sc then
+			TS:Create(sc, QUICK, { Scale = 1 }):Play()
+		end
+	end)
+	btn.MouseButton1Down:Connect(function()
+		if sc then
+			TS:Create(sc, QUICK, { Scale = 0.92 }):Play()
+		end
+	end)
+	btn.Activated:Connect(function()
+		if sc then
+			TS:Create(sc, POP, { Scale = 1 }):Play()
+		end
+		onClick()
+	end)
+end
+
+local cam = workspace.CurrentCamera
+local oldFov = cam.FieldOfView
+local renderConn
+local finished = false
+
+local function finish()
+	if finished then
+		return
+	end
+	finished = true
+	chooseEvent:FireServer(CLASSES[index].id)
+	-- krótkie zaciemnienie, powrót kamery do gracza, sprzątanie
+	vignette.BackgroundTransparency = 1
+	local t = TS:Create(vignette, TweenInfo.new(0.25), { BackgroundTransparency = 0 })
+	t:Play()
+	t.Completed:Wait()
+	if renderConn then
+		renderConn:Disconnect()
+	end
+	stage:Destroy()
+	restoreMood()
+	for _, f in ipairs(flicker) do
+		f.light.Brightness = f.base
+	end
+	cam.FieldOfView = oldFov
+	cam.CameraType = Enum.CameraType.Custom
+	local char = player.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if hum then
+		cam.CameraSubject = hum
+	end
+	gui.Enabled = false
+	restoreOthers()
+	-- odsłonięcie świata: winieta jest częścią tego ekranu, więc krótki czarny ekran robi osobna warstwa
+	local fade = Instance.new("ScreenGui")
+	fade.Name = "ClassSelectFade"
+	fade.IgnoreGuiInset, fade.DisplayOrder = true, 100
+	local f = Instance.new("Frame")
+	f.Size = UDim2.fromScale(1, 1)
+	f.BackgroundColor3 = Color3.new(0, 0, 0)
+	f.BorderSizePixel = 0
+	f.Parent = fade
+	fade.Parent = pg
+	TS:Create(f, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
+	task.delay(0.45, function()
+		fade:Destroy()
+	end)
+end
+
+bounce(gui:WaitForChild("ArrowLeft"), function()
+	step(-1)
+end)
+bounce(gui:WaitForChild("ArrowRight"), function()
+	step(1)
+end)
+bounce(gui:WaitForChild("PlayButton"), finish)
+
+UIS.InputBegan:Connect(function(input, processed)
+	if processed or finished or not gui.Enabled then
+		return
+	end
+	local k = input.KeyCode
+	if k == Enum.KeyCode.Left or k == Enum.KeyCode.A then
+		step(-1)
+	elseif k == Enum.KeyCode.Right or k == Enum.KeyCode.D then
+		step(1)
+	elseif k == Enum.KeyCode.Return or k == Enum.KeyCode.KeypadEnter then
+		finish()
+	end
+end)
+
+------------------------------------------------------------ start
+cam.CameraType = Enum.CameraType.Scriptable
+cam.CFrame = CFrame.lookAt(SC.camPos, SC.camLook)
+cam.Focus = CFrame.new(SC.center)
+cam.FieldOfView = SC.fov
+applyMood()
+place()
+showClass(false)
+-- po CameraModule (priorytet Camera + 1): kamera i punkt skupienia na podeście — Roblox rysuje detale i światła
+-- wokół Camera.Focus, więc bez tego sala daleko od postaci się nie pokazuje
+local FOCUS = CFrame.new(SC.center)
+local BASE = CFrame.lookAt(SC.camPos, SC.camLook)
+local PARALLAX = SC.parallax or 0
+local par = Vector2.zero
+RunService:BindToRenderStep("ClassSelectCam", Enum.RenderPriority.Camera.Value + 1, function(dt)
+	local now = os.clock()
+	-- kamera: stałe ujęcie + lekkie odsunięcie za myszką i powolne kołysanie (widać głębię sali)
+	local want = Vector2.zero
+	if PARALLAX > 0 and UIS.MouseEnabled then
+		local m, vp = UIS:GetMouseLocation(), cam.ViewportSize
+		if vp.X > 0 and vp.Y > 0 then
+			want = Vector2.new(math.clamp(m.X / vp.X - 0.5, -0.5, 0.5), math.clamp(m.Y / vp.Y - 0.5, -0.5, 0.5)) * 2
+		end
+	end
+	par = par:Lerp(want, math.clamp(dt * 3, 0, 1))
+	local off = BASE.RightVector * (par.X * PARALLAX + math.sin(now * 0.35) * 0.1)
+		+ BASE.UpVector * (-par.Y * PARALLAX * 0.5 + math.sin(now * 0.27) * 0.05)
+	cam.CameraType = Enum.CameraType.Scriptable
+	cam.CFrame = CFrame.lookAt(SC.camPos + off, SC.camLook)
+	cam.Focus = FOCUS
+	for _, f in ipairs(flicker) do
+		local n = math.noise(now * 6, f.seed) + 0.5 * math.noise(now * 17, f.seed + 3.1)
+		f.light.Brightness = f.base * (1 + f.amp * n * 1.5)
+	end
+	place(dt)
+end)
+renderConn = { Disconnect = function()
+	RunService:UnbindFromRenderStep("ClassSelectCam")
+end }
+
+------------------------------------------------------------ pokaż ekran po ekranie ładowania
+local t0 = os.clock()
+while not player:GetAttribute("LoadingDone") and os.clock() - t0 < LOADING_TIMEOUT do
+	task.wait(0.1)
+end
+hideOthers()
+vignette.BackgroundTransparency = 0
+gui.Enabled = true
+TS:Create(vignette, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0.35), { BackgroundTransparency = 1 }):Play()
+
+-- wejście elementów: tabliczka z góry, karta z lewej, przyciski wyskakują po kolei
+do
+	local BACK = Enum.EasingStyle.Back
+	local plank = gui:FindFirstChild("TitlePlank")
+	if plank and plank:IsA("GuiObject") then
+		local home = plank.Position
+		plank.Position = home - UDim2.fromScale(0, 0.4)
+		TS:Create(plank, TweenInfo.new(0.6, BACK, Enum.EasingDirection.Out, 0, false, 0.15), { Position = home }):Play()
+	end
+	local homeCard = card.Position
+	card.Position = homeCard - UDim2.fromScale(0.4, 0)
+	TS:Create(card, TweenInfo.new(0.55, BACK, Enum.EasingDirection.Out, 0, false, 0.25), { Position = homeCard }):Play()
+	for i, name in ipairs({ "ArrowLeft", "ArrowRight", "PlayButton" }) do
+		local b = gui:FindFirstChild(name)
+		local sc = b and b:FindFirstChildWhichIsA("UIScale")
+		if sc then
+			sc.Scale = 0
+			TS:Create(sc, TweenInfo.new(0.4, BACK, Enum.EasingDirection.Out, 0, false, 0.4 + 0.08 * i), { Scale = 1 }):Play()
+		end
+	end
+end

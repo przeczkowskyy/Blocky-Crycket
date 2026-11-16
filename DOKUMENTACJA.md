@@ -122,7 +122,7 @@ Dawny prefiks Style Lock (D-001, z nazwą gry-inspiracji) jest zastąpiony i zos
 | Ekran ładowania | ✅ kanon | ✅ gotowy (`ReplicatedFirst`) | [Ekran ładowania](B%26C/UI/Ekran%20%C5%82adowania.md) |
 | HUD | ✅ kanon (specyfikacja) + wersja z Figmy ❓ | ✅ wersja z Figmy: panel gracza + 6 przycisków | [HUD](B%26C/UI/HUD.md) |
 | Okno Karczmy | ❓ do decyzji | ⬜ nie rozpoczęte | [Okno Karczmy](B%26C/UI/Okno%20Karczmy.md) |
-| Selektor bohatera | 💡 propozycja | ⬜ nie rozpoczęty | [Selektor bohatera](B%26C/UI/Selektor%20bohatera.md) |
+| Selektor bohatera | 💡 propozycja | 🟡 działa w Studio (ekran wyboru klasy ze sceną 3D; bez zapisu w DataStore) | [Selektor bohatera](B%26C/UI/Selektor%20bohatera.md) |
 | Mapa teleportacji | 💡 propozycja (specyfikacja + prompty) | ⬜ nie rozpoczęta | [Mapa teleportacji](B%26C/UI/Mapa%20teleportacji.md) |
 | Okno ekwipunku | 💡 propozycja (grafika od Game Directora) | 🟡 GUI + skrypt gotowe, grafiki czekają na upload | [Okno ekwipunku](B%26C/UI/Okno%20ekwipunku.md) |
 | Menu główne | w roadmapie Fazy 1 | ⬜ nie rozpoczęte | — |
@@ -209,7 +209,7 @@ TavernQuestGui (ScreenGui)
 ```
 
 ### 5.4 Selektor bohatera 💡
-Nie ma go w kanonie. Pomysł: centralny ViewportFrame z postacią (na beczce w karczmie), po lewej wybór **rasy** (zmienia model), po prawej wybór **klasy** (zabawne animacje idle), wielki przycisk „Wyrusz na szlak!”.
+Nie ma go w kanonie (propozycja Pawła z 16.11.2026). Po ekranie ładowania gracz wybiera klasę (Wojownik, Zwiadowca, Mag): trzy modele 3D stoją na kole na podeście w sali karczmy-zamku z klocków (`swiat/wybor_klasy/generuj.py` → `Workspace/WyborKlasy`), strzałki obracają koło, po lewej karta statystyk, na dole PLAY. Na czas ekranu gracz ma u siebie nocne światło sali, a inne okna są schowane; po PLAY serwer ustawia atrybut `Class` i pokazuje się HUD. Kod: `ClassSelectClient`, `ClassSelect.server`, `ClassData`; wdrożenie: `tools/studio/deploy_classselect.py`. Wybór nie jest jeszcze zapisywany.
 
 ### 5.5 Mapa teleportacji 💡
 Przycisk Teleport w HUD otwiera okno z mapą miasteczka 2D (16:9) w drewniano-złotej ramce z X w prawym górnym rogu. Nad budynkami są piny lokacji (`ImageButton` pozycjonowane w Scale względem mapy), a kliknięcie pinu teleportuje gracza przez RemoteEvent. Napisy i stany pinów (hover, blokada) są natywne. Prompty Higgsfield na mapę i piny są w notatce.

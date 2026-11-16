@@ -63,6 +63,8 @@ tags: [produkcja, zadania]
 
 ## 📥 Backlog
 
+- [ ] [[Selektor bohatera]]: upload grafik 2D ekranu wyboru klasy (po „tak”), udostępnienie siatki Zwiadowcy grze (D-044), zapis klasy w DataStore · #wysoki
+
 - [x] [[Okno drzewka umiejętności]]: grafiki, Figma, Roblox, okno z przesuwaną mapą, zakup węzłów za Diamenty (2026-11-15)
 - [ ] Drzewko: premie `ST_<stat>` podpiąć pod walkę, karczmę, Twierdzę i pety; zapis w DataStore; balans cen · #średni
 - [ ] [[Okno ekwipunku]]: test na telefonie; potem prawdziwe przedmioty i statystyki z serwera · #wysoki
@@ -90,6 +92,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-16: [[Selektor bohatera]]: sala wyboru klasy w wersji 2 — bogatszy wystrój wg referencji karczmy, mocniejsza kreska (tusz i obrysy), nocne światło z migotaniem ogni, animacje wejścia; wdrożone w Studio, test Play OK (polecenie Pawła)
 - [x] 2026-11-16: [[Panel zespołu|Panel]]: zadania przypisane do agenta osoby — pole agenta („agent: Imię”) w Zadaniach, wybór w panelu (Karol albo Paweł), dopisywanie ze słownej decyzji na koniec sesji, „Uruchom” tylko u przypisanej osoby i samo uruchamianie włączane przez nią; 18 nowych testów (prośba Karola, propozycja D-072)
 - [x] 2026-11-15: Karol zaakceptował w panelu (wieczorem, bez uwag) raporty „Las: wszystkie 6 modeli wgrane do Roblox”, „Potwory w lesie: kontrola w Studio zakończona” i „Import modeli lasu: Zwiadowca i Troll”; wybór modelu do pierwszej podmiany wersji z klocków i kolejność poprawek w lesie pozostają otwarte
 - [x] 2026-11-15: Potwory w lesie — pełna kontrola w Studio (odradzanie, Strażnik, skalowanie, wilki, Muchomorniki, telefon, koszt); raport w panelu
