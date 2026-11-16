@@ -2,25 +2,8 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-16T22:29:47+01:00",
+ "aktualizacja": "2026-11-16T22:37:27+01:00",
  "prace": [
-  {
-   "id": "panel-assety-na-biezaco",
-   "tytul": "Panel: Assety na bieżąco (szybsze pobieranie z GitHuba, samo odświeżanie)",
-   "stan": "w_toku",
-   "etap": "Przegląd i testy przed restartem panelu",
-   "start": "2026-11-16T21:37:48+01:00",
-   "koniec_szacowany": "2026-11-16T22:50:00+01:00",
-   "aktualizacja": "2026-11-16T22:29:47+01:00",
-   "obszary": [
-    "panel/bc/gitsync.py",
-    "panel/bc/assety.py",
-    "panel/static/widoki/assety.*",
-    "panel/testy/**"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
   {
    "id": "silnik-mana-balans",
    "tytul": "Silnik walki: mana, statystyki, statusy, limit Pancerza",
