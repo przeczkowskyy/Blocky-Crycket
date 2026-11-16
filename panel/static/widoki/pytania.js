@@ -69,6 +69,9 @@ export default {
     let limitHistorii = HISTORIA_NA_START;
     let D = null;                                              // ostatnie dane listy (plan, raporty, agenda, sprawy)
     let wersjeZadan = "";                                      // wersja Zadań z chwili narysowania części Plan
+    let ZA = null;                                             // GET /api/zadania-agenta (kto to, stany uruchomień)
+    let zaPobrano = 0;
+    let zaWToku = false;
     let planOdlozony = false;
     let historiaOdlozona = false;
     const oczekujace = new Map();       // id zadania -> {p, zegar, toast} — odhaczenie czeka 5 s na „Cofnij”
@@ -230,11 +233,127 @@ export default {
         pole = el("span", { class: "pole-wyboru" + (zrobione ? " zaznaczone" : ""), "aria-label": zrobione ? "zrobione" : "do zrobienia", role: "img" },
           zrobione ? ikona("ok") : null);
       }
-      return el("li", { class: "wiersz zadanie-wiersz" + (zrobione ? " zrobione" : "") + (czeka ? " oczekuje" : "") },
+      const agentowe = zadanieAgenta(p, zrobione);
+      return el("li", { class: "wiersz zadanie-wiersz" + (zrobione ? " zrobione" : "") + (czeka ? " oczekuje" : "")
+        + (agentowe && agentowe.classList.contains("pelne") ? " z-agentem" : "") },
         pole,
         linia(p.tekst_md, "wiersz-tekst"),
         p.data ? el("span", { class: "cichy-tekst data-zadania" }, dataKrotka(p.data)) : null,
-        p.priorytet ? el("span", { class: "chip " + (PRIORYTETY[p.priorytet] || "") }, p.priorytet) : null);
+        p.priorytet ? el("span", { class: "chip " + (PRIORYTETY[p.priorytet] || "") }, p.priorytet) : null,
+        agentowe);
+    }
+
+    // ------------------------------------------------------------------ plan: czyj agent robi zadanie (16.11.2026)
+    // Pole „· agent: Imię” w Zadaniach: zadanie robi agent tej osoby, na jej koncie Claude, tylko na jej komputerze.
+    // Przypisuje Karol albo Paweł (decydent); „Uruchom” widzi tylko osoba, do której zadanie jest przypisane.
+    function decydent() {
+      return !!(D && D.mozeZapisywac && ("decydent" in ctx.ja ? ctx.ja.decydent : ctx.ja.game_director));
+    }
+
+    async function odswiezZadaniaAgenta(wymus) {
+      if (ctx.statyczny || !ctx.jest("zadania_agenta") || zaWToku) return;
+      if (!wymus && Date.now() - zaPobrano < 15000) return;
+      zaWToku = true;
+      try {
+        const nowe = await ctx.api("/api/zadania-agenta");
+        const zmiana = JSON.stringify(nowe) !== JSON.stringify(ZA);
+        ZA = nowe;
+        zaPobrano = Date.now();
+        if (zmiana && czescPlanu === "zadania") rysujPlan();
+      } catch (e) {
+        zaPobrano = Date.now();                                // stary serwer albo brak modułu — bez przycisków
+      } finally {
+        zaWToku = false;
+      }
+    }
+
+    function godzina(iso) {
+      return iso && iso.length >= 16 ? iso.slice(11, 16) : "";
+    }
+
+    function zadanieAgenta(p, zrobione) {
+      const czesci = [];
+      if (p.agent) {
+        czesci.push(el("span", {
+          class: "chip niebieski zadanie-agent",
+          title: zrobione ? "Zadanie robił agent osoby: " + p.agent
+            : "Robi agent osoby: " + p.agent + " — na jej koncie Claude, uruchamia się tylko na jej komputerze.",
+        }, ikona("agent"), el("span", null, "agent: " + p.agent)));
+      }
+      if (zrobione) return czesci.length ? el("span", { class: "zadanie-agent-akcje pelne" }, czesci) : null;
+      const st = ZA && ZA.stany ? ZA.stany[p.id] : null;
+      if (p.agent && ZA && ZA.ja && p.agent === ZA.ja) {
+        if (st && (st.stan === "w_toku" || st.stan === "konczy")) {
+          czesci.push(st.watek
+            ? el("a", { class: "chip zloto", href: "#/agent?watek=" + encodeURIComponent(st.watek), title: "Otwórz rozmowę agenta" },
+              el("span", { class: "kropka-pulsujaca" }), el("span", null, "w pracy od " + godzina(st.start)))
+            : el("span", { class: "chip zloto" }, "w pracy od " + godzina(st.start)));
+        } else {
+          if (st && st.stan === "gotowe") czesci.push(el("span", { class: "chip zielen", title: "Agent skończył — sprawdź odpowiedź w zakładce Agent" }, "agent skończył " + godzina(st.koniec)));
+          if (st && st.stan === "blad") czesci.push(el("span", { class: "chip czerwien", title: st.blad || "" }, "błąd agenta"));
+          if (ZA.mozna_uruchomic) {
+            czesci.push(el("button", { type: "button", class: "przycisk maly", title: "Uruchom agenta na Twoim koncie Claude",
+              onclick: () => potwierdzUruchomienie(p, !!st) }, ikona("agent"), el("span", null, st ? "Uruchom ponownie" : "Uruchom")));
+          }
+        }
+      }
+      const pelne = czesci.length > 0;                         // znaczek albo „Uruchom” — na telefonie pod tekstem
+      if (decydent()) {
+        czesci.push(el("button", { type: "button", class: "przycisk cichy ikonowy maly", "aria-label": "Czyj agent robi to zadanie?",
+          title: "Czyj agent robi to zadanie?", onclick: () => oknoAgenta(p) }, ikona("agent")));
+      }
+      return czesci.length ? el("span", { class: "zadanie-agent-akcje" + (pelne ? " pelne" : "") }, czesci) : null;
+    }
+
+    function oknoAgenta(p) {
+      let wybor = p.agent || "";
+      const zespol = (ZA && ZA.zespol) || ["Karol", "Paweł"];
+      const seg = przelacznik([{ id: "", tekst: "nikt" }].concat(zespol.map((o) => ({ id: o, tekst: o }))), wybor,
+        (id) => { wybor = id; }, "Czyj agent");
+      const zapisz = el("button", { class: "przycisk glowny szeroki", type: "submit" }, el("span", null, "Zapisz"));
+      const form = el("form", { class: "formularz" },
+        el("p", null, linia(p.tekst_md)),
+        el("span", { class: "etykieta" }, "Czyj agent robi to zadanie"), seg,
+        el("p", { class: "cichy-tekst" }, "Zadanie wykona agent (Claude Code) wybranej osoby — na jej koncie Claude i tylko na jej komputerze, "
+          + "niezależnie od tego, kto otwiera panel. W Zadaniach pojawi się „· agent: Imię”, z wpisem w Dzienniku zmian."),
+        zapisz);
+      const ark = arkusz({ tytul: "Czyj agent?", tresc: form });
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (wybor === (p.agent || "")) return ark.zamknij();
+        zapisz.disabled = true;
+        const w = await lista.zapiszDoSejfu("/api/sejf/zadania/agent", { id: p.id, agent: wybor }, wersjeZadan);
+        if (w) {
+          ark.zamknij();
+          toast(wybor ? "Zadanie dla agenta osoby: " + wybor + (ZA && ZA.ja && ZA.ja !== wybor ? " — uruchomi się na jej komputerze." : ".")
+            : "Zadanie bez przypisanego agenta.", "ok");
+          odswiezZadaniaAgenta(true);
+        } else {
+          zapisz.disabled = false;
+        }
+      });
+    }
+
+    function potwierdzUruchomienie(p, ponownie) {
+      const start = el("button", { class: "przycisk glowny szeroki", type: "button" }, ikona("agent"), el("span", null, ponownie ? "Uruchom ponownie" : "Uruchom"));
+      const tresc = el("div", { class: "formularz" },
+        el("p", null, linia(p.tekst_md)),
+        el("p", { class: "cichy-tekst" }, "Agent zrobi to zadanie na Twoim koncie Claude (" + (ZA && ZA.ja) + "), w trybie Praca. "
+          + "Postęp zobaczysz w Pracach w toku na Pulpicie, a rozmowę w zakładce Agent. Jeden przebieg agenta trwa najwyżej pół godziny."),
+        start);
+      const ark = arkusz({ tytul: "Uruchomić agenta?", tresc });
+      start.addEventListener("click", async () => {
+        start.disabled = true;
+        try {
+          await ctx.api("/api/zadania-agenta/uruchom", { metoda: "POST", cialo: { id: p.id } });
+          ark.zamknij();
+          toast("Agent zaczął zadanie: " + skroc(zwykly(p.tekst_md), 60), "ok");
+        } catch (e) {
+          toast(e.message || "Nie udało się uruchomić agenta.", "blad", { czas: 8000 });
+          start.disabled = false;
+        }
+        odswiezZadaniaAgenta(true);
+      });
     }
 
     function odhaczZOpoznieniem(p) {
@@ -320,11 +439,17 @@ export default {
         priorytet, (id) => { priorytet = id; }, "Priorytet");
       segSekcja.classList.add("maly");
       segPriorytet.classList.add("maly");
+      let agentZadania = "";
+      const zespol = (ZA && ZA.zespol) || ["Karol", "Paweł"];
+      const segAgent = decydent() ? przelacznik([{ id: "", tekst: "nikt" }].concat(zespol.map((o) => ({ id: o, tekst: o }))),
+        agentZadania, (id) => { agentZadania = id; }, "Czyj agent") : null;
+      if (segAgent) segAgent.classList.add("maly");
       const zapisz = el("button", { class: "przycisk glowny szeroki", type: "submit" }, ikona("plus"), el("span", null, "Dodaj do Zadań"));
       const form = el("form", { class: "formularz" },
         el("label", { class: "etykieta" }, "Zadanie"), pole,
         el("span", { class: "etykieta" }, "Sekcja"), segSekcja,
         el("span", { class: "etykieta" }, "Priorytet"), segPriorytet,
+        segAgent ? el("span", { class: "etykieta" }, "Czyj agent robi (na czyim koncie Claude)") : null, segAgent,
         el("p", { class: "cichy-tekst" }, "Trafi na koniec wybranej sekcji w B&C/Produkcja/Zadania.md jako „- [ ] … · #priorytet”, z wpisem w Dzienniku zmian."),
         zapisz);
       const ark = arkusz({ tytul: "Nowe zadanie", tresc: form });
@@ -346,7 +471,9 @@ export default {
         wToku = true;
         zapisz.disabled = true;
         try {
-          const w = await lista.zapiszDoSejfu("/api/sejf/zadania/dodaj", { tekst, sekcja: sekcjaZadania, priorytet }, wersjeZadan);
+          const cialo = { tekst, sekcja: sekcjaZadania, priorytet };
+          if (agentZadania) cialo.agent = agentZadania;
+          const w = await lista.zapiszDoSejfu("/api/sejf/zadania/dodaj", cialo, wersjeZadan);
           if (w) {
             ark.zamknij();
             toast("Dodano zadanie (" + (sekcjaZadania === "teraz" ? "Teraz" : "Backlog") + ").", "ok");
@@ -360,6 +487,7 @@ export default {
     }
 
     function czescZadan(plan) {
+      odswiezZadaniaAgenta();                                  // w tle; po odpowiedzi przerysuje, gdy coś się zmieniło
       const z = plan.zadania || {};
       const sekcje = z.sekcje || [];
       const moze = D && D.mozeZapisywac;

@@ -52,7 +52,7 @@ from bc.http import Aplikacja, Odp, Strumien, Zadanie, mime_pliku  # noqa: E402
 from bc.rdzen import BladHTTP  # noqa: E402
 
 MODULY = ["sejf", "zapis", "gitsync", "obecnosc", "studio", "podglad", "analityka", "telemetria", "assety", "raporty",
-          "prace", "agent", "glos", "sesje", "telegram", "statyczny"]
+          "prace", "agent", "zadania_agenta", "glos", "sesje", "telegram", "statyczny"]
 ROZSZERZENIA_STATIC = {".html", ".js", ".mjs", ".css", ".json", ".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico",
                        ".woff2", ".glb", ".md", ".txt", ".map"}
 LIMIT_JSON = 4 * 1024 * 1024

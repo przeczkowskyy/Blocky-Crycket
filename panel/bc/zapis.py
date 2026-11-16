@@ -904,28 +904,86 @@ def _przenies_do_zrobionych(dok, sekcje, i, tekst_zadania):
     return "odhaczone zadanie: %s" % skrot(tekst_zadania)
 
 
-def dodaj_zadanie(tekst, sekcja, priorytet, wersja, kto, znacznik=None):
+_RX_AGENT_W_TEKSCIE = re.compile(r"·\s*agent\s*:", re.IGNORECASE)
+
+
+def osoba_agenta(agent):
+    """Imię z zespołu dla pola „agent” (Karol, Paweł), None dla pustego; 400 dla kogoś spoza zespołu."""
+    if agent is None or (isinstance(agent, str) and not agent.strip()):
+        return None
+    if not isinstance(agent, str):
+        raise BladHTTP(400, "Pole „agent” musi być imieniem (Karol albo Paweł) albo puste")
+    osoba = sejf.osoba_zespolu(agent, sejf.ZESPOL)
+    if not osoba:
+        raise BladHTTP(400, "Agenta wybierz z zespołu: %s" % " albo ".join(sejf.ZESPOL), kod="nieznany_agent")
+    return osoba
+
+
+def dodaj_zadanie(tekst, sekcja, priorytet, wersja, kto, znacznik=None, agent=None):
     tekst = czysty_tekst(tekst, LIMIT_ZADANIA, "tekst")
     if sejf._RX_PRIORYTET.search(tekst):
         raise BladHTTP(400, "Priorytet wybierz w polu „priorytet”, nie w treści zadania")
+    if _RX_AGENT_W_TEKSCIE.search(tekst):                     # przypisanie tylko polem „agent” (z uprawnieniem)
+        raise BladHTTP(400, "Czyj agent robi zadanie, wybierz w polu „agent”, nie w treści zadania")
     if sekcja not in SEKCJE_DODAWANIA:
         raise BladHTTP(400, "Pole „sekcja” musi mieć wartość „teraz” albo „backlog”")
     if priorytet not in PRIORYTETY:
         raise BladHTTP(400, "Pole „priorytet” musi mieć wartość „wysoki”, „średni” albo „niski”")
-    wiersz = "- [ ] %s · #%s" % (tekst, PRIORYTETY[priorytet])
+    agent = osoba_agenta(agent)
+    wiersz = "- [ ] %s%s · #%s" % (tekst, " · agent: %s" % agent if agent else "", PRIORYTETY[priorytet])
 
     def zmiana(dok):
         sekcje = _sekcje_h2(dok)
         for start, koniec, nazwa in sekcje:                    # bez dubli: identyczne otwarte zadanie już jest
             for i in range(start + 1, koniec):
                 for zrobione, pole in sejf._pola_wyboru(dok.tresc(i)):
-                    if not zrobione and _bez_priorytetu(pole) == tekst:
+                    if not zrobione and sejf.agent_zadania(_bez_priorytetu(pole))[0] == tekst:
                         raise BladHTTP(409, "Takie zadanie już jest na liście.", kod="juz_zapisane")
         cel = _sekcja_rodzaju(sekcje, sekcja)
         if cel is None:
             raise BladHTTP(404, "W pliku zadań nie ma sekcji „%s”" % NAZWY_SEKCJI[sekcja])
         dok.wstaw(dok.za_trescia(cel[0], cel[1]), [wiersz])
-        return "dodane zadanie: %s (%s)" % (skrot(tekst), NAZWY_SEKCJI[sekcja])
+        return "dodane zadanie: %s (%s%s)" % (skrot(tekst), NAZWY_SEKCJI[sekcja],
+                                              ", agent: %s" % agent if agent else "")
+
+    return _wykonaj("zadania", wersja, zmiana, kto, znacznik)
+
+
+def przypisz_agenta(id_zadania, agent, wersja, kto, znacznik=None):
+    """Ustawia, zmienia albo zdejmuje pole „· agent: Imię” otwartego zadania (czyj agent je robi — na czyim koncie
+    Claude). Zmienia tylko tekst pola w tej linii; priorytet i reszta linii zostają."""
+    if not isinstance(id_zadania, str) or not re.match(r"^z[0-9a-f]{10}$", id_zadania):
+        raise BladHTTP(400, "Niepoprawny identyfikator zadania (pole „id”)")
+    agent = osoba_agenta(agent)
+
+    def zmiana(dok):
+        for start, koniec, nazwa in _sekcje_h2(dok):
+            for i in range(start + 1, koniec):
+                linia = dok.tresc(i)
+                pola = sejf._pola_wyboru(linia)
+                for zrobione, pole in pola:
+                    if sejf.id_zadania(pole) != id_zadania:
+                        continue
+                    if zrobione:
+                        raise BladHTTP(409, "To zadanie jest już odhaczone.")
+                    if len(pola) > 1:
+                        raise BladHTTP(409, "W tej linii jest kilka pól wyboru — przypisz agenta w Obsidianie.")
+                    mp = sejf._RX_PRIORYTET.search(pole)
+                    glowny, ogon = (pole[:mp.start()], pole[mp.start():]) if mp else (pole.rstrip(), "")
+                    bez, stary = sejf.agent_zadania(glowny.rstrip())
+                    if (stary or None) == agent:
+                        raise BladHTTP(409, "To zadanie ma już tego agenta." if agent else "To zadanie nie ma agenta.",
+                                       kod="bez_zmian")
+                    nowe_pole = bez.rstrip() + (" · agent: %s" % agent if agent else "") + ogon
+                    poczatek = linia.rfind(pole)
+                    if poczatek < 0:
+                        raise BladHTTP(409, "Nie rozumiem budowy tej linii zadań — przypisz agenta w Obsidianie.")
+                    dok.zamien(i, linia[:poczatek] + nowe_pole + linia[poczatek + len(pole):])
+                    tekst = skrot(sejf._RX_DATA_ZADANIA.sub(r"\2", bez.strip()))
+                    if agent:
+                        return "zadanie dla agenta %s: %s" % (agent, tekst)
+                    return "zadanie bez przypisanego agenta (było: %s): %s" % (stary, tekst)
+        raise BladHTTP(404, "Nie ma takiego otwartego zadania — może ktoś je już zmienił. Odśwież plan.")
 
     return _wykonaj("zadania", wersja, zmiana, kto, znacznik)
 
@@ -1414,10 +1472,28 @@ def _t_odhacz(z):
     return odhacz(d.get("id"), d.get("tekst"), d.get("wersja"), kto, znacznik)
 
 
+BRAK_PRAWA_AGENTA = ("Czyj agent robi zadanie (na czyim koncie Claude), wybiera Karol albo Paweł: przy komputerze "
+                     "z panelem albo w przeglądarce z kluczem zatwierdzania.")
+
+
 def _t_dodaj(z):
-    d = _dane(z, ("tekst", "sekcja", "priorytet", "wersja"))
+    d = _dane(z, ("tekst", "sekcja", "priorytet", "wersja", "agent"))
+    if d.get("agent") and not decydent(z):
+        raise BladHTTP(403, BRAK_PRAWA_AGENTA, kod="brak_klucza_zatwierdzania")
     kto, znacznik = podpis(z)
-    return dodaj_zadanie(d.get("tekst"), d.get("sekcja"), d.get("priorytet"), d.get("wersja"), kto, znacznik)
+    return dodaj_zadanie(d.get("tekst"), d.get("sekcja"), d.get("priorytet"), d.get("wersja"), kto, znacznik,
+                         agent=d.get("agent"))
+
+
+def _t_agent(z):
+    """Przypisanie zadania do agenta osoby (16.11.2026): decyduje o tym, na czyim koncie Claude zadanie się wykona."""
+    if not decydent(z):
+        if not dostepny():
+            raise BladHTTP(403, "Zapis do sejfu z panelu jest wyłączony (ustawienie „zapis_sejfu” w konfiguracji).")
+        raise BladHTTP(403, BRAK_PRAWA_AGENTA, kod="brak_klucza_zatwierdzania")
+    d = _dane(z, ("id", "agent", "wersja"))
+    kto, znacznik = podpis(z)
+    return przypisz_agenta(d.get("id"), d.get("agent"), d.get("wersja"), kto, znacznik)
 
 
 def _t_status(z):
@@ -1464,6 +1540,7 @@ def zarejestruj(app):
     app.dodaj("POST", "/api/sejf/pytania/<nr>/odpowiedz", _t_odpowiedz)
     app.dodaj("POST", "/api/sejf/zadania/odhacz", _t_odhacz)
     app.dodaj("POST", "/api/sejf/zadania/dodaj", _t_dodaj)
+    app.dodaj("POST", "/api/sejf/zadania/agent", _t_agent)
     app.dodaj("POST", "/api/sejf/decyzje/<id>/status", _t_status)
     app.dodaj("POST", "/api/sejf/decyzje/<id>/potwierdzenie", _t_potwierdzenie)
 

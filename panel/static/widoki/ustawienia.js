@@ -160,7 +160,46 @@ export default {
             ? "Każdy, kto ma kod dostępu, może z telefonu zlecać agentowi pracę na tym komputerze (najwyżej w trybie Praca)."
             : "Dla bezpieczeństwa z agentem rozmawia się tylko przy tym komputerze. Po włączeniu każdy, kto ma kod dostępu, będzie mógł zlecać mu pracę z telefonu.")),
         przelacz));
+      const zadania = await wierszZadanAgenta();
+      if (zadania) czesci.push(zadania);
       c.replaceChildren(...czesci);
+    }
+
+    // Zadania przypisane do agenta tej osoby (16.11.2026): samo uruchamianie wydaje JEJ tokeny Claude, więc włącza
+    // je tylko osoba przy swoim komputerze (konfiguracja lokalna, domyślnie wyłączone).
+    async function wierszZadanAgenta() {
+      if (!ctx.jest("zadania_agenta")) return null;
+      let za;
+      try {
+        za = await ctx.api("/api/zadania-agenta");
+      } catch (e) {
+        return null;
+      }
+      const auto = !!za.auto;
+      const przelacz = el("button", { type: "button", class: "przycisk maly" + (auto ? "" : " glowny"), disabled: !za.ja },
+        el("span", null, auto ? "Wyłącz" : "Włącz"));
+      przelacz.addEventListener("click", async () => {
+        przelacz.disabled = true;
+        try {
+          const o = await ctx.api("/api/zadania-agenta/auto", { metoda: "POST", cialo: { auto: !auto } });
+          toast(o.auto ? "Zadania Twojego agenta będą się uruchamiać same." : "Zadania Twojego agenta uruchamiasz przyciskiem.", "ok");
+        } catch (e) {
+          toast(e.message || "Nie udało się zmienić ustawienia.", "blad");
+        }
+        rysujTelefon();
+      });
+      const kto = za.ja
+        ? "Ten komputer należy do: " + za.ja + ". Zadania z „agent: " + za.ja + "” idą na jego koncie Claude."
+        : "Panel nie wie, czyj to komputer (git podaje: „" + (za.ja_nazwa || "brak imienia") + "”). Ustaw raz: git config bc.osoba \"Imię\" i zrestartuj panel.";
+      return el("div", { class: "wiersz telefon-agent" },
+        el("span", { class: "znacznik " + (auto ? "ok" : "uwaga") }, ikona("agent")),
+        el("span", { class: "wiersz-tekst" },
+          el("strong", null, auto ? "Zadania mojego agenta: uruchamiają się same" : "Zadania mojego agenta: uruchamiam przyciskiem"),
+          el("span", { class: "cichy-tekst" }, kto + (auto
+            ? " Panel sam bierze kolejne zadanie przypisane do Ciebie (po jednym naraz), gdy jest włączony."
+            : " Po włączeniu panel sam weźmie kolejne zadanie przypisane do Ciebie — to wydaje Twoje tokeny.")),
+          za.auto_blad ? el("span", { class: "naprawa" }, za.auto_blad) : null),
+        przelacz);
     }
 
     // ------------------------------------------------------------------ stan systemu

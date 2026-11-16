@@ -191,7 +191,10 @@ DOMYSLNA = {
 # Zakładka Sesja (bc/sesje.py): serwer TURN z hasłem i zostawianie nagrań rozmowy na dysku — też tylko lokalnie.
 TYLKO_LOKALNE_GLOWNE = ("dozwolone_hosty",)
 TYLKO_LOKALNE_SEKCJE = {"agent": ("zdalnie", "sciezka", "dozwolone_narzedzia"), "glos": ("katalog_modeli",),
-                        "analityka": ("klucz_open_cloud", "adres_open_cloud"), "sesje": ("turn", "zostaw_dzwiek")}
+                        "analityka": ("klucz_open_cloud", "adres_open_cloud"), "sesje": ("turn", "zostaw_dzwiek"),
+                        # samo uruchamianie zadań przypisanych do agenta tej osoby (bc/zadania_agenta.py) wydaje JEJ
+                        # tokeny — włącza je tylko ona na swoim komputerze, nie wspólny plik z repozytorium
+                        "zadania_agenta": ("auto",)}
 
 
 def _bezpieczna_wspolna(cfg):

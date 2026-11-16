@@ -875,8 +875,8 @@ def polecenie_konca(s, brakujace=0):
             "1. Utwórz notatkę „B&C/Produkcja/Sesja główna %s — zapis ustaleń.md” ze statusem propozycja, na wzór "
             "„B&C/Produkcja/Rozmowa 2026-11-12 — zapis ustaleń.md”.\n"
             "2. Ustalenia dopisz do Rejestru decyzji jako 💡 propozycje, pytania bez odpowiedzi do Pytań otwartych, "
-            "zadania do Zadań.\n"
-            "3. %s" % (data, polecenie_odpowiedzi(pytania, data)) +
+            "zadania do Zadań. %s\n"
+            "3. %s" % (data, POLECENIE_AGENTA_ZADANIA, polecenie_odpowiedzi(pytania, data)) +
             "4. W %s przenieś omówione tematy do sekcji „Omówione” (data, krótki wynik, link do notatki ustaleń).\n"
             "5. Dopisz wpis do Dziennika zmian.\n"
             "6. Opublikuj raport: python panel/narzedzia/raport.py dodaj --rodzaj pytanie --tytul \"Sesja główna %s — "
@@ -884,6 +884,15 @@ def polecenie_konca(s, brakujace=0):
             "Nigdy nie ustawiaj statusu zatwierdzona ani kanon — zatwierdza Karol albo Paweł w panelu. "
             "Nie wpisuj do repozytorium ścieżek z danych lokalnych (repozytorium jest publiczne). "
             "Nie commituj." % (agenda, data))
+
+
+# Czyj agent robi zadanie (16.11.2026, prośba Karola): przypisanie ze słownej decyzji w rozmowie — pole w linii zadania
+# czyta bc/sejf.py (`agent_zadania`), a zadanie uruchamia się tylko na komputerze tej osoby (bc/zadania_agenta.py).
+POLECENIE_AGENTA_ZADANIA = (
+    "Gdy w rozmowie ktoś WYRAŹNIE powiedział, czyj agent (Claude) ma zrobić zadanie — np. „to zrobi mój Claude”, "
+    "„niech to weźmie agent Pawła”, „na moim koncie” — dopisz w linii tego zadania przed priorytetem pole "
+    "„· agent: Imię” (Karol albo Paweł), np. „- [ ] Opis zadania · agent: Paweł · #średni”; to zadanie wykona się "
+    "wtedy na koncie Claude tej osoby. Bez takiej wypowiedzi pola nie dopisuj i nie zgaduj.")
 
 
 def polecenie_odpowiedzi(pytania, data):

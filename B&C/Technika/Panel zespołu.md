@@ -103,6 +103,15 @@ Na prośbę Karola z 14.11.2026 zakładka Agent ma **pięć okien** zamiast jedn
 - **Układ.** Na komputerze z lewej okna (z jednym zdaniem opisu), pod wybranym oknem jego rozmowy, z prawej rozmowa. Na telefonie najpierw wybór okna, potem lista rozmów, potem rozmowa — z przyciskiem powrotu.
 - To zmiana narzędzia (panelu), nie kanonu gry.
 
+## Zadania dla agenta osoby (od 16.11.2026, propozycja D-072)
+Na prośbę Karola z 16.11.2026: to, na czyim koncie Claude wykona się zadanie, wynika z przypisania, a nie z tego, kto otworzył panel.
+- **Przypisanie** to pole na końcu linii w [[Zadania]], przed priorytetem: `- [ ] Opis · agent: Paweł · #średni`. Ustawia je Karol albo Paweł (przy komputerze z panelem albo z kluczem zatwierdzania) w zakładce **Pytania → Plan → Zadania**: ikona agenta przy zadaniu (nikt / Karol / Paweł) albo wybór w „Dodaj zadanie”. Gość z samym kodem dostępu nie przypisuje.
+- **Słownie:** na koniec sesji głównej agent dopisuje pole, gdy w rozmowie ktoś wyraźnie powiedział, czyj agent ma zrobić zadanie („to zrobi Claude Pawła”, „na moim koncie”). Bez takiej wypowiedzi pola nie dopisuje.
+- **Uruchamianie:** zadanie z „agent: Paweł” rusza tylko na komputerze Pawła — przyciskiem **Uruchom** albo samo, jeśli Paweł włączy u siebie Ustawienia → Telefon → „Zadania mojego agenta: uruchamiają się same” (domyślnie wyłączone; po jednym zadaniu naraz; raz uruchomione nie wraca samo). Na komputerze Karola przy takim zadaniu widać tylko znaczek „agent: Paweł”. Agent robi zadanie w trybie Praca według `CLAUDE.md` i sejfu, a postęp widać w „Prace w toku” (przy włączonej wymianie prac — także u drugiej osoby).
+- **Warunki:** panel musi wiedzieć, czyj jest komputer — raz `git config bc.osoba "Paweł"` (albo „Karol”) w repozytorium. Żeby zadania Pawła się wykonywały, Paweł uruchamia własny panel (albo prosi swojego Claude Code o zadania z „agent: Paweł”).
+- **Dla Pawła:** co ustawić raz (własny panel, samo uruchamianie, start z Windowsem) i jak ma się zachowywać jego Claude Code — [[Zadania z panelu — instrukcja dla Claude Code Pawła]].
+- Szczegóły techniczne i API: `panel/README.md` (część „Zadania dla agenta osoby”).
+
 ## Sesja — długa rozmowa głosowa z agentem
 Zakładka **Sesja** (dodana 13.11.2026 na prośbę Karola, czeka na zgodę jak cały panel) służy do „sesji głównych”, czyli długich rozmów Karola i Pawła. Obaj wchodzą na ten sam panel (gospodarz przy komputerze, druga osoba przez link tunelu), klikają **Dołącz** i rozmawiają w przeglądarce — głos idzie wprost między nimi.
 - **Układ (od 14.11.2026, uwagi Karola)**: u góry wąski pasek pokoju (kto jest, Dołącz / Rozłącz, Wycisz, „Agent słucha” z czerwonym znacznikiem). Pod nim na komputerze, bez przewijania, dwie kolumny obok siebie: **Transkrypcja na żywo** i **Notatki agenta**; Agenda i Pytania są niżej (skróty do nich w pasku pokoju). Na telefonie pod paskiem jest przełącznik **Transkrypcja / Notatki / Agenda / Pytania** — na start Transkrypcja.

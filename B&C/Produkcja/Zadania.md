@@ -7,6 +7,7 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Zadania dla agenta osoby (D-072): Karol — zrestartować panel (nowy kod), zatwierdzić albo odrzucić D-072; Paweł — po `git pull` wkleić swojemu Claude Code prompt z [[Zadania z panelu — instrukcja dla Claude Code Pawła]] (własny panel, `git config bc.osoba "Paweł"`, samo uruchamianie i start z Windowsem za jego zgodą), potwierdzić D-070, żeby wyniki jego agenta same wracały na GitHuba · #wysoki
 - [ ] Paweł: po `git pull` ustawić raz `git config bc.osoba "Paweł"` (inaczej jego prace widać pod loginem) i sprawdzić `python panel/narzedzia/praca.py kolizje`; potem próba kolizji z Karolem na obszarze testowym ([[Panel zespołu]], [[Start z Blenderem — prompt dla Pawła]]) · #wysoki
 - [ ] Ubieranie postaci w grze i w walce z gołych modeli i przedmiotów (D-071): pierwsza próba w Roblox Studio (części albo siatki z punktami zaczepienia), strój gracza w prototypie walki; wspólny kod jest już w `swiat/postacie/ekwipunek.py`, a 20 przedmiotów bohaterów w katalogu (`przedmioty.json`, propozycja `roblox/PrzedmiotyPropozycja.luau` dla Pawła — moduł gry Items nie zna slotu drugiej ręki ani nowych pól); do ustalenia: spodnie jako osobny slot czy część zbroi, łuk Zwiadowcy z kołczanem w drugiej ręce, upadek postaci bez zbroi (`swiat/postacie/EKWIPUNEK.md`) · #wysoki
 - [ ] Biom Las („Bór Pod Ukłonem”): las w wersji 2 z mgłą i chodzącymi potworami stoi w Studio (`Workspace/BiomLas`, `Workspace/LasPotwory`); do zrobienia: przejść całą listę kontrolną potworów (odradzanie, powrót Strażnika, skalowanie, telefon, koszt — `swiat/las_potwory/PROJEKT.md` rozdz. 9.2), nagrać film, kolizje i pomiar lasu na telefonie; cztery wybory do decyzji w raporcie „Biom Las — plan mapy”; do decyzji także: walka w miejscu spotkania czy na arenie · #wysoki
@@ -89,6 +90,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-16: [[Panel zespołu|Panel]]: zadania przypisane do agenta osoby — pole agenta („agent: Imię”) w Zadaniach, wybór w panelu (Karol albo Paweł), dopisywanie ze słownej decyzji na koniec sesji, „Uruchom” tylko u przypisanej osoby i samo uruchamianie włączane przez nią; 18 nowych testów (prośba Karola, propozycja D-072)
 - [x] 2026-11-15: Karol zaakceptował w panelu (wieczorem, bez uwag) raporty „Las: wszystkie 6 modeli wgrane do Roblox”, „Potwory w lesie: kontrola w Studio zakończona” i „Import modeli lasu: Zwiadowca i Troll”; wybór modelu do pierwszej podmiany wersji z klocków i kolejność poprawek w lesie pozostają otwarte
 - [x] 2026-11-15: Potwory w lesie — pełna kontrola w Studio (odradzanie, Strażnik, skalowanie, wilki, Muchomorniki, telefon, koszt); raport w panelu
 - [x] 2026-11-15: Sześć modeli lasu wgranych do Robloxa jako siatki ze szkieletami i sprawdzonych w Studio (`Workspace/TestPostaci`); narzędzia `roblox_import_lasu.py` i `roblox_import_kolory.py`; raport w panelu

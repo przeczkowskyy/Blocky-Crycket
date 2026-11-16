@@ -29,3 +29,14 @@
 .pytania-plan-wnetrze { display: flex; flex-direction: column; gap: 12px; padding: 6px 0 14px; }
 .pytania-plan-wnetrze .przelacznik-przewijany { margin-bottom: 0; }
 .pytania-plan .sekcja-zadan .karta-tytul { font-size: 15px; }
+
+/* Zadania: czyj agent robi zadanie (16.11.2026) — znaczek „agent: Paweł”, Uruchom, wybór agenta */
+.zadanie-agent-akcje { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.zadanie-agent-akcje .chip { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; text-decoration: none; }
+.zadanie-agent-akcje .chip svg { width: 13px; height: 13px; }
+.zadanie-agent-akcje .przycisk.maly { padding-top: 2px; padding-bottom: 2px; }
+.zadanie-wiersz.zrobione .zadanie-agent-akcje .chip { opacity: 0.7; }
+@media (max-width: 640px) {                     /* telefon: znaczki i „Uruchom” pod tekstem, nie obok */
+  .zadanie-wiersz.z-agentem { flex-wrap: wrap; row-gap: 6px; }
+  .zadanie-wiersz.z-agentem .zadanie-agent-akcje { flex: 1 0 100%; padding-left: 36px; }
+}

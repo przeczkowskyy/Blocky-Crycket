@@ -6,9 +6,22 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-16 · Claude Code u Karola (instrukcja dla Claude Code Pawła)
+- Na prośbę Karola: notatka [[Zadania z panelu — instrukcja dla Claude Code Pawła]] — jak zadanie z „agent: Paweł” samo dochodzi do komputera Pawła (panel Karola wysyła, panel Pawła pobiera i uruchamia agenta, zwykle ok. 5 minut), prompt do wklejenia, siedem kroków do ustawienia raz (samo uruchamianie i start panelu z Windowsem tylko za zgodą Pawła) i zasady dla jego Claude Code (cudzych zadań nie robi, bez potwierdzenia D-070 nie wysyła wyników).
+- Panel: szacowany koniec pracy agenta przy zadaniu = limit czasu przebiegu (30 min) zamiast 60 min. Pliki: `panel/bc/zadania_agenta.py`, `panel/static/widoki/pytania.js`, `panel/README.md`; notatki [[Panel zespołu]], [[Zadania]].
+
+## 2026-11-16 · Claude Code u Karola (panel: zadania dla agenta osoby)
+- **Zadania przypisane do agenta osoby** (prośba Karola z panelu: „nie chcę, żeby to było zależne od osoby, która otwiera panel, tylko od decyzji słownej lub wyboru w panelu”): pole `· agent: Imię` w [[Zadania]] mówi, czyj agent (na czyim koncie Claude) robi zadanie. Przypisuje Karol albo Paweł w panelu (Pytania → Plan → Zadania, ikona agenta albo „Dodaj zadanie”) albo agent na koniec sesji głównej po wyraźnej wypowiedzi. Zadanie rusza tylko na komputerze przypisanej osoby: przycisk „Uruchom” albo samo uruchamianie, które ta osoba włącza u siebie (domyślnie wyłączone). Opis: [[Panel zespołu]]; propozycja **D-072** w [[Rejestr decyzji]] (zmienia zdanie z D-070, że Paweł nie musi uruchamiać własnego panelu).
+- Sprawdzone: 19 nowych testów (`panel/testy/test_zadania_agenta.py`) i dotychczasowe testy panelu; próba w przeglądarce na panelu testowym z kopią sejfu (znaczki, okno wyboru, „Uruchom” z atrapą agenta, telefon) bez błędów w konsoli. Działający panel Karola ma jeszcze stary kod — nowy ruszy po restarcie panelu.
+- Pliki: `panel/bc/zadania_agenta.py` (nowy), `panel/bc/sejf.py`, `panel/bc/zapis.py`, `panel/bc/rdzen.py`, `panel/bc/sesje.py`, `panel/serwer.py`, `panel/static/widoki/pytania.js`, `pytania.css`, `ustawienia.js`, `panel/testy/test_zadania_agenta.py`, `panel/README.md`, `panel/INSTALACJA.md`; notatki [[Panel zespołu]], [[Rejestr decyzji]], [[Zadania]].
+
 ## 2026-11-16 · Panel (ludzie)
 - Karol Balucki: decyzja D-067 zatwierdzona ([[Rejestr decyzji]])
 - Karol Balucki: decyzja D-062 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-072 zatwierdzona ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-066 potwierdzona: zgoda (odrzucona przez Karol Balucki 2026-11-15), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-062 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-16), przez Telegram ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-067 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-16), przez Telegram ([[Rejestr decyzji]])
 
 ## 2026-11-15 · Claude Code u Pawła (drzewko: PET INTELLIGENCE i PET DEXTERITY)
 - Na prośbę Pawła w gałęzi Pets → Pet Stats węzły PET POWER (łapa + gwiazdka) i PET SPEED (łapa + piorun) zastąpione przez **PET INTELLIGENCE** (łapa + książka z ikony INT) i **PET DEXTERITY** (łapa + but z ikony DEX), +3% za poziom.

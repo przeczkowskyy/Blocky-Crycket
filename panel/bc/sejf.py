@@ -537,6 +537,19 @@ _RX_POLE = re.compile(r"^\s*[-*+]\s+\[([^\[\]])\]\s?(.*)$")
 _RX_PODZIAL_POL = re.compile(r"\s+·\s+(?=\[[^\[\]]\]\s)")
 _RX_PRIORYTET = re.compile(r"(?:\s*·\s*|\s+|^)#(wysoki|średni|sredni|niski)\s*$", re.IGNORECASE)
 _RX_DATA_ZADANIA = re.compile(r"^(\d{4}-\d{2}-\d{2})\s*[:—–-]\s*(.*)$")
+# Czyj agent (konto Claude) robi zadanie (16.11.2026, prośba Karola): „- [ ] tekst · agent: Paweł · #wysoki”.
+# Pole stoi na końcu tekstu, przed priorytetem; ustawia je człowiek w panelu albo agent z wypowiedzi w rozmowie.
+# Tylko samo imię (jedno albo dwa słowa) na samym końcu — „· agent: …” w środku zdania nie jest przypisaniem.
+_RX_AGENT_ZADANIA = re.compile(r"\s*·\s*agent\s*:\s*([^\W\d_][\w-]*(?:\s+[^\W\d_][\w-]*)?)\s*$", re.IGNORECASE)
+
+
+def agent_zadania(tekst_bez_priorytetu):
+    """(tekst bez pola agenta, imię z zespołu albo surowe imię albo None) — pole „· agent: Imię” na końcu tekstu."""
+    m = _RX_AGENT_ZADANIA.search(tekst_bez_priorytetu or "")
+    if not m:
+        return tekst_bez_priorytetu, None
+    imie = m.group(1).strip()
+    return tekst_bez_priorytetu[:m.start()].rstrip(" ·"), (osoba_zespolu(imie) or imie)
 _RX_LINIA_POZIOMA = re.compile(r"^\s{0,3}([-*_])(\s*\1){2,}\s*$")
 
 
@@ -658,6 +671,9 @@ def parsuj_zadania(tekst):
                     p = mp.group(1).lower()
                     poz["priorytet"] = "średni" if p == "sredni" else p
                     t = t[:mp.start()].rstrip(" ·")
+                t, agent = agent_zadania(t)
+                if agent:
+                    poz["agent"] = agent
                 md = _RX_DATA_ZADANIA.match(t)
                 if md:
                     poz["data"] = md.group(1)

@@ -107,6 +107,8 @@ Tryby: **Plan** (tylko czyta i planuje), **Praca** (edytuje pliki i używa dozwo
 
 Agent zawsze działa na subskrypcji osoby zalogowanej w Claude Code **na komputerze z panelem** — także gdy pisze do niego ktoś z telefonu albo przez tunel (np. Paweł do panelu Karola). Na liście rozmów w zakładce **Agent** widać przy każdym wątku, kto go założył i czy zdalnie, oraz kto jeszcze w nim pisał. Jeśli druga osoba ma pracować na własnej subskrypcji, musi uruchomić agenta (Claude Code albo własny panel) na swoim komputerze.
 
+**Zadania dla agenta osoby (od 16.11.2026).** Zadanie w `Zadania.md` z polem `· agent: Paweł` wykonuje agent Pawła — na jego koncie Claude i tylko na jego komputerze, bez względu na to, kto otworzył panel. Przypisujesz w zakładce **Pytania → Plan → Zadania** (ikona agenta przy zadaniu albo wybór w „Dodaj zadanie”; Karol albo Paweł) albo mówiąc to w sesji głównej („to zrobi Claude Pawła”). Żeby panel wiedział, czyj jest komputer, ustaw raz w repozytorium `git config bc.osoba "Paweł"` (albo „Karol”) i zrestartuj panel. U osoby przypisanej przy zadaniu jest przycisk **Uruchom**; w **Ustawienia → Telefon** może ona włączyć „Zadania mojego agenta: uruchamiają się same” — wtedy jej panel sam bierze kolejne jej zadanie (po jednym naraz). To ustawienie zmienia się tylko przy własnym komputerze, bo wydaje Twoje tokeny.
+
 ### Telefon
 1. Uruchom `panel\start_lan.bat` (albo `python panel/serwer.py --lan`). Windows może zapytać o zgodę zapory — zezwól dla sieci prywatnej.
 2. W panelu: **Ustawienia → Telefon** — skopiuj adres z kodem i otwórz go w telefonie podłączonym do tej samej sieci Wi-Fi.
