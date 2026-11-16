@@ -2,6 +2,21 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-16T20:17:34+01:00",
- "prace": []
+ "aktualizacja": "2026-11-16T20:33:42+01:00",
+ "prace": [
+  {
+   "id": "sala-wyboru-klasy-wystroj",
+   "tytul": "Sala wyboru klasy: bogatszy wystroj i kreska",
+   "stan": "w_toku",
+   "start": "2026-11-16T20:33:42+01:00",
+   "koniec_szacowany": "2026-11-16T22:33:42+01:00",
+   "aktualizacja": "2026-11-16T20:33:42+01:00",
+   "obszary": [
+    "mapa:wybor_klasy",
+    "studio:WyborKlasy"
+   ],
+   "kto": "Claude (przeczkowskyy)",
+   "komputer": "0c03c4ec"
+  }
+ ]
 }
