@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-16T23:10:39+01:00",
+ "aktualizacja": "2026-11-16T23:10:43+01:00",
  "prace": [
   {
    "id": "las-pas-generator",
@@ -14,6 +14,20 @@
    "obszary": [
     "mapa:las_pas",
     "swiat/las_pas/**"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "miasteczko-bazar",
+   "tytul": "Krzywe Miasteczko jako ciasny bazar: plan i generator",
+   "stan": "w_toku",
+   "start": "2026-11-16T23:10:43+01:00",
+   "koniec_szacowany": "2026-11-17T02:30:00+01:00",
+   "aktualizacja": "2026-11-16T23:10:43+01:00",
+   "obszary": [
+    "mapa:miasteczko_bazar",
+    "swiat/miasteczko_bazar/**"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
