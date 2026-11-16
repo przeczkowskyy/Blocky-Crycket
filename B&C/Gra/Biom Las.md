@@ -53,6 +53,7 @@ Po sesji głównej 16.11 mapa ma być wąskim, długim pasem biomów (D-075, D-0
 - **Czas:** ok. 29 minut przy oglądaniu walk (49 walk, chodzenie ok. 9%); cel ok. 30 minut wynika z korekty Karola do D-076 (ok. 10 godzin gry do ostatniego biomu) i roboczego rozkładu rosnącego — rozkład jest do decyzji.
 - **Przelot kamery (D-077):** 13,4 s, kończy się rykiem Strażnika.
 - **Pliki:** `swiat/biom_las/pas/` — `PLAN_PASA.md` (opis i dziesięć wyborów), `plan_pasa.json`, `plan_pasa.png`, `rysuj_plan.py`, `sprawdz_plan.py` (0 błędów). Dzisiejsza wersja 2 lasu zostaje do porównania, dopóki ludzie nie zdecydują inaczej.
+- **Mapa z klocków (noc 16/17.11):** generator `swiat/las_pas/` zrobił z planu mapę z 8601 części (stary las: 22 419); kontrola `sprawdz.py` bez błędów; kontener w Studio będzie się nazywał `Workspace/LasPas`. Podglądy w `swiat/las_pas/podglad/` to rysunek roboczy, nie wygląd z Roblox. Karol zaakceptował plan w panelu 16.11 o 21:50.
 
 ## Co to zmienia albo doprecyzowuje względem D-061
 - D-061 (💡 propozycja) mówi tylko, że każdy biom ma własnych przeciwników, strażnika i inkubatory. Ta notatka dodaje do tego **układ lasu**: rozmiar, podbiomy, lokacje, strefy potworów, poziomy 1–10 i miejsce strażnika na 10. poziomie.

@@ -110,6 +110,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-16: Las jako pas — generator mapy z klocków (`swiat/las_pas/`, 8601 części, kontrola bez błędów, podglądy); budowa w Studio w kolejce nocnej
 - [x] 2026-11-16: [[Panel zespołu|Panel]]: zakładka Assety odświeża się sama (znaczek „nowe”, godzina zmiany, pasek o niepobranych zmianach), a stała synchronizacja pobiera cudze zmiany średnio po ok. 20 s — usunięty zastój, przez który grafiki Pawła czekały 10 minut (zgłoszenie Karola); 621 testów panelu
 - [x] 2026-11-16: Pierwsza partia muzyki i dźwięków z Higgsfield do odsłuchu (D-082, D-083; zgoda Karola na kredyty): 12 utworów po 90 s z wersjami do pętli, drugie wersje menu i lasu, 22 efekty walki w dwóch wariantach; koszt 229,5 kredytu; zaakceptowane przez Karola 16.11 i wypchnięte do repo (`assets/audio/`); nic nie wgrane do Roblox
 - [x] 2026-11-16: Plan lasu jako wąskiego pasa (D-075, D-076): układ przegród, potwory, czas gry, przelot kamery, plansza i kontrola liczb (`swiat/biom_las/pas/`); raport „Las jako wąski pas — plan układu do akceptacji” czeka w panelu; budowa w Studio po akceptacji

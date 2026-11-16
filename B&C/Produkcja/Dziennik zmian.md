@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-16 · Claude Code u Karola (sesja nocna: start, las-pas z klocków, zaciemnienie ekranu)
+- Karol zlecił sesję nocną („podnieś wydajność”, pełne wdrożenie zatwierdzonych prac do rana, raporty na telefon). Kolejka w Studio: teleport przez chmury → budowa lasu-pasa → potwory, brama, teleport, mgła i przelot kamery → nowy silnik na ekranie walki → miasteczko-bazar; równolegle bez Studio: kontrola silnika, skrypty lasu, plan i generator miasteczka.
+- Las-pas: generator `swiat/las_pas/` (import modułów starego lasu, osobne zasady i kontrola) — 8601 części, 0 błędów kontroli, znaczniki i ujęcia dla Studio, podglądy robocze. Nic jeszcze nie zbudowano w Studio.
+- Nowe narzędzie `tools/ekran_zaciemnienie.py`: czarne okno na wszystkie monitory zamiast usypiania ekranu (uśpiony monitor zatrzymuje rysowanie w Studio); sprawdzone — zrzut ze Studio bez zmian, ekran świeci najwyżej 4/255.
+- Silnik walki: wykonanie skończone (mana, statusy, blok, limit Pancerza, pasywki, wskrzeszenie D-094, model tempa), trwa niezależna kontrola; kod jeszcze niezacommitowany.
+
 ## 2026-11-16 · Claude Code u Karola (przydział z pytania 49, akceptacja planu lasu)
 - Karol odpowiedział w panelu na pytanie 49 („te wszystkie rzeczy na mnie”): balans i silnik walki, przebudowa Krzywego Miasteczka, okno zagrody petów z tablicą i pomijanie walk dostały w [[Zadania]] pole agenta Karola. Modele ras robi Paweł (wcześniejsze doprecyzowanie Karola).
 - Karol zaakceptował w panelu raport „Las jako wąski pas — plan układu do akceptacji” (21:50) — rusza budowa pasa w Studio z ustawieniami opisanymi w raporcie.
