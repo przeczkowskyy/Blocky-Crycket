@@ -9,6 +9,7 @@
 | `biblioteka/` | wspólny kręgosłup generatorów v2: `scena.py` (układy lokalne do krzywych, pochylonych brył, prymitywy, obrys „tuszem”, cechy części, kontrola jakości) i `podglad.py` (podgląd budynku albo całej mapy w Blenderze w tle) |
 | `krzywe_miasteczko/` | mapa v2 „Krzywe Miasteczko” w stylu komiksowym: `PROJEKT.md` (przykazania stylu, paleta, układ, karty budynków), `paleta.py`, `zestaw.py`, `budynki/*.py` (jeden plik na budynek), `generuj.py` → `czesci.json`, `ujecia.json`, `podglad/` |
 | `las_pas/` | Las jako wąski pas (propozycja, plan z `biom_las/pas/`): `generuj.py` → `czesci.json` (8601 części, kontener `Workspace/LasPas`), `znaczniki.json`, `sprawdz.py` (kontrola offline), `podglad.py` → `podglad/` (rysunek w Pillow, bez Blendera); w Studio jeszcze niezbudowany — README |
+| `miasteczko_bazar/` | Miasteczko jako ciasny bazar (propozycja, D-084, D-085): pierwszy blok pasa przed Lasem, sklepy z wnętrzami i sprzedawcami, portal do krain, działka, zagroda petów, tablica; `uklad.json` → `generuj.py` → `czesci.json` (4388 części, kontener `Workspace/MiasteczkoBazar`) + `znaczniki.json`, `sprawdz.py`, `podglad.py` → `podglad/` (Pillow); w Studio jeszcze niezbudowany — README |
 | `test_walki_roblox/` | test cutscenki auto-walki w samym Roblox (kontener `Workspace/TestWalki`): źródła Luau, `zbuduj.py`, testy, klatki, README z pomiarami |
 
 ## Polecenia (z głównego folderu repozytorium)

@@ -1,0 +1,122 @@
+{
+ "opis": "Miasteczko jako ciasny bazar — układ (propozycja 16.11.2026, BEZ budowy w Studio). Jedno źródło dla generuj.py, sprawdz.py i podglad.py. Układ bazaru: x wzdłuż pasa (+x = na wschód, ku Lasowi), z w poprzek (+z = południe = prawa ręka gracza patrzącego ku Lasowi), y w górę. Budynek: (x, z) = środek obrysu, ry = obrót (front +Z modułu → kierunek (sin ry, cos ry)); rząd północny patrzy na +z (ry ≈ 0), południowy na −z (ry ≈ 180).",
+ "status": "propozycja",
+ "wersja": 1,
+ "ziarno": 16,
+ "swiat": {
+  "X0": 994.0,
+  "Z0": -700.0,
+  "obrot_y": 0,
+  "wzor": "świat Studio = (X0 + x; y; Z0 + z), bez obrotu — tak jak pas Lasu (X0 = 1100, Z0 = −700)",
+  "kontener": "Workspace/MiasteczkoBazar",
+  "las_od_X": 1066.0,
+  "las_plan": "swiat/biom_las/pas/plan_pasa.json (pas z kulisami i tłem: X ≥ 1066, |Z + 700| ≤ 90)",
+  "uwaga_baseplate": "bazar stoi na wschodnim końcu płyty Baseplate (X ≤ 1024, założone ±1024 — do sprawdzenia w Studio); grunt bazaru ma wierzch 0,1 nad płytą, więc nic nie migocze; inaczej nie da się przyłożyć bazaru do początku Lasu (między X 1024 a 1066 jest tylko 42 st)"
+ },
+ "bieg_st_s": 16,
+ "granice": {
+  "czesci_x": [-112.0, 72.0],
+  "czesci_z": [-90.0, 90.0],
+  "czesci_y": [-1.0, 120.0],
+  "pole_gry_x": [-95.0, 68.0],
+  "pole_gry_z": [-36.0, 36.0],
+  "opis": "czesci_* = skrzynka na wszystkie części (x 72 = świat X 1066 = początek pasa Lasu); pole_gry = tam, gdzie chodzi gracz (niewidzialne ściany na brzegach)"
+ },
+ "poziomy": {"grunt": 0.1, "fuga": 0.2, "bruk": 0.3, "kody": 0.38, "posadzka": 0.5, "budynki_y0": 0.3, "stare_y0": 0.27},
+ "uliczka": {"x": [-70.0, 61.0], "z": [-14.0, 14.0], "szer": 28},
+ "plac": {"x": [-17.0, 17.0], "z": [-22.0, 18.0]},
+ "placyk_studni": {"x": [-95.0, -70.0], "z": [-20.0, 20.0]},
+ "start": {"x": -4.0, "z": 3.0, "patrz_deg": 90.0, "opis": "gracz patrzy wzdłuż uliczki ku Lasowi (+x): po lewej portal do krain, po prawej Brama Twierdzy"},
+ "budynki": [
+  {"id": "training_center", "modul": "training_center", "x": -58.5, "z": -24.0, "ry": 3, "rzad": "północ"},
+  {"id": "karczma", "modul": "karczma", "x": -32.0, "z": -25.0, "ry": -2, "rzad": "północ"},
+  {"id": "portal_krain", "modul": "portal_krain", "x": 0.0, "z": -28.0, "ry": 0, "rzad": "północ (plac)"},
+  {"id": "tablica", "modul": "tablica", "x": -14.6, "z": -19.0, "ry": 8, "rzad": "północ (plac, przy starcie)"},
+  {"id": "sklep_magiczny", "modul": "sklep_magiczny", "x": 28.8, "z": -24.0, "ry": -4, "rzad": "północ"},
+  {"id": "zbrojownia", "modul": "zbrojownia", "x": 50.4, "z": -24.0, "ry": 3, "rzad": "północ"},
+  {"id": "zagroda_petow", "modul": "zagroda_petow", "x": -32.0, "z": 24.0, "ry": 182, "rzad": "południe"},
+  {"id": "brama_twierdzy", "modul": "stare:brama_twierdzy", "x": 0.0, "z": 27.0, "ry": 180, "rzad": "południe (plac)",
+   "interakcja": [0.0, 13.0], "wejscie": {"szer": 10.0, "wys": 12.0}, "typ": "dzialka",
+   "nazwa": "Brama Twierdzy — przejście na działkę gracza (Twierdza z kopalniami, D-049, D-063)"},
+  {"id": "brama_lochow", "modul": "stare:brama_lochow", "x": 44.5, "z": 24.0, "ry": 180, "rzad": "południe",
+   "interakcja": [0.0, 14.0], "wejscie": {"szer": 12.0, "wys": 14.0}, "typ": "lochy",
+   "nazwa": "Wrota lochów z kłódką → hala portali do dungeonów (D-042)"},
+  {"id": "studnia_pomnik", "modul": "stare:studnia_pomnik", "x": -81.0, "z": 0.0, "ry": 90, "rzad": "placyk studni",
+   "interakcja": [0.0, 13.0], "typ": "ozdoba", "nazwa": "Studnia-pomnik Pierwszego Klocka (punkt orientacyjny)"},
+  {"id": "brama_lesna", "modul": "brama_lesna", "x": 64.5, "z": 0.0, "ry": -90, "rzad": "koniec wschodni"}
+ ],
+ "stragany": [
+  {"x": -63.0, "z": 20.5, "ry": 182, "kolory": ["dach_gildia", "biel"], "towar": "chleby"},
+  {"x": -52.0, "z": 20.8, "ry": 177, "kolory": ["dach_karczma", "biel"], "towar": "jablka"},
+  {"x": 23.0, "z": 19.6, "ry": 184, "kolory": ["dach_stajnia", "biel"], "towar": "klocki"}
+ ],
+ "domy": [
+  {"id": "dom_placyk_pn", "x": -81.0, "z": -27.0, "ry": 0, "szer": 16, "gl": 14, "wys": 22, "wariant": "a", "sciana": "tynk_blekit", "dach": "dach_dom_ceglasty", "pochyl": 1},
+  {"id": "dom_placyk_pd", "x": -81.0, "z": 27.0, "ry": 180, "szer": 16, "gl": 14, "wys": 23, "wariant": "c", "sciana": "tynk_brzoskwinia", "dach": "dach_dom_lupek", "pochyl": -1},
+  {"id": "dom_zachod_pn", "x": -102.0, "z": -15.0, "ry": 90, "szer": 16, "gl": 14, "wys": 24, "wariant": "b", "sciana": "tynk_mieta", "dach": "dach_dom_ceglasty", "pochyl": -1},
+  {"id": "dom_zachod_pd", "x": -102.0, "z": 15.0, "ry": 90, "szer": 16, "gl": 14, "wys": 21, "wariant": "d", "sciana": "tynk_krem", "dach": "drewno", "pochyl": 1}
+ ],
+ "kulisy_domy": [
+  {"x": -100.0, "z": -47.0, "ry": 175, "wariant": "d", "sciana": "tynk_krem", "dach": "dach_dom_lupek", "wys": 20},
+  {"x": -76.0, "z": -46.0, "ry": 184, "wariant": "a", "sciana": "tynk_lawenda", "dach": "dach_dom_ceglasty", "wys": 22},
+  {"x": -52.0, "z": -46.5, "ry": 178, "wariant": "d", "sciana": "tynk_brzoskwinia", "dach": "drewno", "wys": 19},
+  {"x": -24.0, "z": -46.0, "ry": 186, "wariant": "b", "sciana": "tynk_mieta", "dach": "dach_dom_lupek", "wys": 23},
+  {"x": 22.0, "z": -46.5, "ry": 176, "wariant": "d", "sciana": "tynk_blekit", "dach": "dach_dom_ceglasty", "wys": 20},
+  {"x": 48.0, "z": -46.0, "ry": 182, "wariant": "a", "sciana": "tynk_krem", "dach": "drewno", "wys": 21},
+  {"x": -100.0, "z": 47.0, "ry": 4, "wariant": "d", "sciana": "tynk_brzoskwinia", "dach": "dach_dom_ceglasty", "wys": 19},
+  {"x": -74.0, "z": 46.0, "ry": -5, "wariant": "b", "sciana": "tynk_krem", "dach": "dach_dom_lupek", "wys": 22},
+  {"x": -48.0, "z": 46.5, "ry": 3, "wariant": "d", "sciana": "tynk_lawenda", "dach": "drewno", "wys": 20},
+  {"x": 28.0, "z": 46.0, "ry": -3, "wariant": "a", "sciana": "tynk_mieta", "dach": "dach_dom_ceglasty", "wys": 21},
+  {"x": 52.0, "z": 46.5, "ry": 5, "wariant": "d", "sciana": "tynk_krem", "dach": "dach_dom_lupek", "wys": 19}
+ ],
+ "kulisy_domy_2": [
+  {"x": -88.0, "z": -63.0, "ry": 172, "wariant": "b", "sciana": "tynk_mieta", "dach": "dach_dom_lupek", "wys": 24},
+  {"x": -40.0, "z": -63.5, "ry": 185, "wariant": "c", "sciana": "tynk_krem", "dach": "dach_dom_ceglasty", "wys": 25},
+  {"x": 4.0, "z": -63.0, "ry": 178, "wariant": "a", "sciana": "tynk_brzoskwinia", "dach": "dach_dom_lupek", "wys": 24},
+  {"x": 36.0, "z": -63.5, "ry": 186, "wariant": "c", "sciana": "tynk_lawenda", "dach": "drewno", "wys": 25},
+  {"x": -88.0, "z": 63.0, "ry": -6, "wariant": "a", "sciana": "tynk_blekit", "dach": "drewno", "wys": 23},
+  {"x": -60.0, "z": 63.5, "ry": 4, "wariant": "c", "sciana": "tynk_mieta", "dach": "dach_dom_ceglasty", "wys": 25},
+  {"x": 40.0, "z": 63.0, "ry": -4, "wariant": "b", "sciana": "tynk_krem", "dach": "dach_dom_lupek", "wys": 24}
+ ],
+ "laczniki": [
+  {"x": -46.25, "z": -14.6, "dl": 3.0, "opis": "Training Center | karczma"},
+  {"x": 39.0, "z": -14.6, "dl": 3.4, "opis": "sklep magiczny | zbrojownia"},
+  {"x": -17.5, "z": 14.6, "dl": 3.6, "opis": "zagroda | Brama Twierdzy"},
+  {"x": 17.0, "z": 14.6, "dl": 2.6, "opis": "Brama Twierdzy | stragan"},
+  {"x": -71.3, "z": -14.6, "dl": 3.6, "opis": "Training Center | dom placyku"},
+  {"x": -71.3, "z": 14.6, "dl": 3.6, "opis": "stragany | dom placyku"}
+ ],
+ "mury": [
+  {"a": [-19.0, -34.6], "b": [-11.2, -34.6], "wys": 11, "opis": "za tablicą (plac, pn.-zach.)"},
+  {"a": [10.8, -34.6], "b": [19.4, -34.6], "wys": 11, "opis": "za kątem z beczkami (plac, pn.-wsch.)"},
+  {"a": [-69.5, 34.6], "b": [-45.2, 34.6], "wys": 10, "opis": "za straganami"},
+  {"a": [16.2, 34.6], "b": [29.4, 34.6], "wys": 10, "opis": "za kioskiem"},
+  {"a": [64.5, -36.0], "b": [64.5, -12.6], "wys": 12, "opis": "wschód: od Bramy Leśnej na północ"},
+  {"a": [64.5, 12.6], "b": [64.5, 36.0], "wys": 12, "opis": "wschód: od Bramy Leśnej na południe"},
+  {"a": [-101.5, -7.0], "b": [-101.5, 7.0], "wys": 11, "opis": "zachód: między domami placyku"},
+  {"a": [-95.5, -35.0], "b": [-95.5, -23.2], "wys": 10, "opis": "róg pn.-zach. placyku"},
+  {"a": [-95.5, 23.2], "b": [-95.5, 35.0], "wys": 10, "opis": "róg pd.-zach. placyku"}
+ ],
+ "latarnie": [
+  {"x": -46.25, "z": -16.4, "strona": "pn"}, {"x": -17.6, "z": -16.0, "strona": "pn"}, {"x": 18.6, "z": -15.8, "strona": "pn"},
+  {"x": 39.0, "z": -16.4, "strona": "pn"}, {"x": -71.3, "z": -16.4, "strona": "pn"},
+  {"x": -46.6, "z": 16.2, "strona": "pd"}, {"x": -17.5, "z": 16.4, "strona": "pd"}, {"x": 16.8, "z": 16.4, "strona": "pd"},
+  {"x": 61.6, "z": 15.6, "strona": "pd"}, {"x": -71.3, "z": 16.4, "strona": "pd"}
+ ],
+ "girlandy": [
+  {"a": [-3.0, 19.2, -26.4], "b": [-3.0, 19.0, 25.4], "kolory": ["dach_twierdza", "zloto", "dach_brama"]},
+  {"a": [28.6, 16.8, -12.0], "b": [31.5, 17.0, 17.4], "kolory": ["dach_sklep", "biel", "zloto"]},
+  {"a": [50.0, 16.6, -11.8], "b": [50.0, 17.0, 17.6], "kolory": ["dach_lochy", "zloto", "dach_zbrojownia"]}
+ ],
+ "kody": [
+  {"do": "portal_krain", "kolor": "dach_brama"},
+  {"do": "brama_twierdzy", "kolor": "dach_twierdza"},
+  {"do": "karczma", "kolor": "dach_karczma"},
+  {"do": "sklep_magiczny", "kolor": "dach_sklep"},
+  {"do": "zbrojownia", "kolor": "dach_zbrojownia"},
+  {"do": "zagroda_petow", "kolor": "dach_wylegarnia"},
+  {"do": "training_center", "kolor": "dach_kolo"},
+  {"do": "brama_lochow", "kolor": "dach_lochy"}
+ ],
+ "cele_czasu": {"sklep_s": 5.0, "portal_s": 6.0, "opis": "z miejsca startu: do każdego sklepu ≤ 5 s, do portalu krain ≤ 6 s (sesja 16.11)"}
+}

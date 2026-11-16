@@ -1,0 +1,1817 @@
+{
+ "opis": "Znaczniki bazaru dla następnego etapu (SpawnLocation, ProximityPrompt „E” na sprzedawcach i uchwyt dla okien 2D Pawła, portal krain → teleport, przejście na działkę, zagroda petów, tablica z rankingiem, Training Center, Wrota lochów, połączenie z Lasem). Punkty `swiat` = świat Studio [X, Y, Z]; `bazar` = układ bazaru (swiat − (X0; 0; Z0)). Każdy punkt E to dwie niewidzialne części w grupie `grupa_zaczepu`: `czesc_stoiska` (gdzie staje gracz) i `czesc_podpowiedzi` (gdzie wstawić ProximityPrompt). Generuje swiat/miasteczko_bazar/generuj.py z uklad.json.",
+ "status": "propozycja",
+ "kontener": {
+  "nazwa": "Workspace/MiasteczkoBazar",
+  "X0": 994.0,
+  "Z0": -700.0,
+  "obrot_y": 0,
+  "wzor": "świat Studio = (X0 + x; y; Z0 + z), bez obrotu — tak jak pas Lasu (X0 = 1100, Z0 = −700)"
+ },
+ "uklad": "swiat/miasteczko_bazar/uklad.json",
+ "bieg_st_s": 16,
+ "start": {
+  "typ": "start",
+  "id": "start",
+  "swiat": [
+   990.0,
+   0.3,
+   -697.0
+  ],
+  "kier": [
+   1.0,
+   0.0,
+   0.0
+  ],
+  "opis": "miejsce startu gracza (SpawnLocation w następnym etapie); patrzy wzdłuż uliczki ku Lasowi",
+  "czesc": "Punkt startu",
+  "grupa": "Workspace/MiasteczkoBazar/Start",
+  "bazar": [
+   -4.0,
+   0.3,
+   3.0
+  ]
+ },
+ "sklepy": [
+  {
+   "typ": "sklep",
+   "id": "karczma",
+   "swiat": [
+    957.517,
+    0.5,
+    -725.557
+   ],
+   "stoisko": [
+    957.517,
+    0.5,
+    -725.557
+   ],
+   "podpowiedz": [
+    957.726,
+    5.1,
+    -731.553
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/Karczma/_Interakcja",
+   "czesc_stoiska": "Punkt E karczma",
+   "czesc_podpowiedzi": "Podpowiedź E karczma",
+   "sklep": "karczma",
+   "nazwa": "Karczma — zadania (Karczmarz)",
+   "okno": "Okno Karczmy (Paweł)",
+   "postac": "barman",
+   "model": "Workspace/MiasteczkoBazar/Karczma/Barman",
+   "kier": [
+    -0.0349,
+    0.0,
+    0.9994
+   ],
+   "bazar": [
+    -36.483,
+    0.5,
+    -25.557
+   ],
+   "stoisko_bazar": [
+    -36.483,
+    0.5,
+    -25.557
+   ],
+   "podpowiedz_bazar": [
+    -36.274,
+    5.1,
+    -31.553
+   ]
+  },
+  {
+   "typ": "sklep",
+   "id": "mistrz_gier",
+   "swiat": [
+    967.927,
+    0.5,
+    -722.792
+   ],
+   "stoisko": [
+    967.927,
+    0.5,
+    -722.792
+   ],
+   "podpowiedz": [
+    968.192,
+    4.9,
+    -730.387
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/Karczma/_Interakcja",
+   "czesc_stoiska": "Punkt E mistrz_gier",
+   "czesc_podpowiedzi": "Podpowiedź E mistrz_gier",
+   "sklep": "mistrz_gier",
+   "nazwa": "Mistrz gier planszowych (D-053)",
+   "okno": "Okno planszy (Paweł)",
+   "postac": "mistrz_gier",
+   "model": "Workspace/MiasteczkoBazar/Karczma/MistrzGier",
+   "kier": [
+    -0.0349,
+    0.0,
+    0.9994
+   ],
+   "bazar": [
+    -26.073,
+    0.5,
+    -22.792
+   ],
+   "stoisko_bazar": [
+    -26.073,
+    0.5,
+    -22.792
+   ],
+   "podpowiedz_bazar": [
+    -25.808,
+    4.9,
+    -30.387
+   ]
+  },
+  {
+   "typ": "sklep",
+   "id": "sklep_magiczny",
+   "swiat": [
+    1022.301,
+    0.5,
+    -724.035
+   ],
+   "stoisko": [
+    1022.301,
+    0.5,
+    -724.035
+   ],
+   "podpowiedz": [
+    1022.72,
+    5.1,
+    -730.02
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/SklepMagiczny/_Interakcja",
+   "czesc_stoiska": "Punkt E sklep_magiczny",
+   "czesc_podpowiedzi": "Podpowiedź E sklep_magiczny",
+   "sklep": "sklep_magiczny",
+   "nazwa": "Sklep magiczny",
+   "okno": "Okno sklepu (Paweł)",
+   "postac": "mag",
+   "model": "Workspace/MiasteczkoBazar/SklepMagiczny/Mag",
+   "kier": [
+    -0.0698,
+    0.0,
+    0.9976
+   ],
+   "bazar": [
+    28.301,
+    0.5,
+    -24.035
+   ],
+   "stoisko_bazar": [
+    28.301,
+    0.5,
+    -24.035
+   ],
+   "podpowiedz_bazar": [
+    28.72,
+    5.1,
+    -30.02
+   ]
+  },
+  {
+   "typ": "sklep",
+   "id": "zbrojownia",
+   "swiat": [
+    1044.899,
+    0.5,
+    -724.026
+   ],
+   "stoisko": [
+    1044.899,
+    0.5,
+    -724.026
+   ],
+   "podpowiedz": [
+    1044.585,
+    5.1,
+    -730.018
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/Zbrojownia/_Interakcja",
+   "czesc_stoiska": "Punkt E zbrojownia",
+   "czesc_podpowiedzi": "Podpowiedź E zbrojownia",
+   "sklep": "zbrojownia",
+   "nazwa": "Zbrojownia — broń i pancerz",
+   "okno": "Okno sklepu (Paweł)",
+   "postac": "zbrojmistrz",
+   "model": "Workspace/MiasteczkoBazar/Zbrojownia/Zbrojmistrz",
+   "kier": [
+    0.0523,
+    0.0,
+    0.9986
+   ],
+   "bazar": [
+    50.899,
+    0.5,
+    -24.026
+   ],
+   "stoisko_bazar": [
+    50.899,
+    0.5,
+    -24.026
+   ],
+   "podpowiedz_bazar": [
+    50.585,
+    5.1,
+    -30.018
+   ]
+  }
+ ],
+ "training_center": {
+  "typ": "training_center",
+  "id": "training_center",
+  "swiat": [
+   938.013,
+   0.5,
+   -725.734
+  ],
+  "stoisko": [
+   938.013,
+   0.5,
+   -725.734
+  ],
+  "podpowiedz": [
+   942.323,
+   5.1,
+   -729.465
+  ],
+  "grupa_zaczepu": "Workspace/MiasteczkoBazar/TrainingCenter/_Interakcja",
+  "czesc_stoiska": "Punkt E training_center",
+  "czesc_podpowiedzi": "Podpowiedź E training_center",
+  "sklep": "training_center",
+  "nazwa": "Training Center — wybór mini-gry",
+  "okno": "Okno wyboru mini-gry (Paweł)",
+  "postac": "trener",
+  "model": "Workspace/MiasteczkoBazar/TrainingCenter/Trener",
+  "statystyki": [
+   "sila",
+   "kondycja",
+   "inteligencja",
+   "zrecznosc",
+   "szczescie",
+   "pancerz"
+  ],
+  "kier": [
+   0.0523,
+   0.0,
+   0.9986
+  ],
+  "bazar": [
+   -55.987,
+   0.5,
+   -25.734
+  ],
+  "stoisko_bazar": [
+   -55.987,
+   0.5,
+   -25.734
+  ],
+  "podpowiedz_bazar": [
+   -51.677,
+   5.1,
+   -29.465
+  ]
+ },
+ "zagroda": {
+  "punkt_e": {
+   "typ": "zagroda",
+   "id": "zagroda_petow",
+   "swiat": [
+    959.994,
+    0.5,
+    -676.13
+   ],
+   "stoisko": [
+    959.994,
+    0.5,
+    -676.13
+   ],
+   "podpowiedz": [
+    959.669,
+    5.1,
+    -671.116
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/ZagrodaPetow/_Interakcja",
+   "czesc_stoiska": "Punkt E zagroda_petow",
+   "czesc_podpowiedzi": "Podpowiedź E zagroda_petow",
+   "sklep": "zagroda_petow",
+   "nazwa": "Zagroda petów (opiekunka)",
+   "okno": "Okno zagrody petów (Paweł)",
+   "postac": "opiekunka",
+   "model": "Workspace/MiasteczkoBazar/ZagrodaPetow/Opiekunka",
+   "kier": [
+    -0.0349,
+    0.0,
+    -0.9994
+   ],
+   "bazar": [
+    -34.006,
+    0.5,
+    23.87
+   ],
+   "stoisko_bazar": [
+    -34.006,
+    0.5,
+    23.87
+   ],
+   "podpowiedz_bazar": [
+    -34.331,
+    5.1,
+    28.884
+   ]
+  },
+  "miejsca_petow": [
+   {
+    "typ": "miejsce_peta",
+    "id": "zagroda_miejsce_1",
+    "swiat": [
+     971.547,
+     0.5,
+     -674.832
+    ],
+    "opis": "miejsce na odstawionego peta (Zagroda petów)",
+    "bazar": [
+     -22.453,
+     0.5,
+     25.168
+    ]
+   },
+   {
+    "typ": "miejsce_peta",
+    "id": "zagroda_miejsce_2",
+    "swiat": [
+     970.785,
+     0.5,
+     -682.31
+    ],
+    "opis": "miejsce na odstawionego peta (Zagroda petów)",
+    "bazar": [
+     -23.215,
+     0.5,
+     17.69
+    ]
+   },
+   {
+    "typ": "miejsce_peta",
+    "id": "zagroda_miejsce_3",
+    "swiat": [
+     966.753,
+     0.5,
+     -683.17
+    ],
+    "opis": "miejsce na odstawionego peta (Zagroda petów)",
+    "bazar": [
+     -27.247,
+     0.5,
+     16.83
+    ]
+   },
+   {
+    "typ": "miejsce_peta",
+    "id": "zagroda_miejsce_4",
+    "swiat": [
+     955.26,
+     0.5,
+     -682.769
+    ],
+    "opis": "miejsce na odstawionego peta (Zagroda petów)",
+    "bazar": [
+     -38.74,
+     0.5,
+     17.231
+    ]
+   },
+   {
+    "typ": "miejsce_peta",
+    "id": "zagroda_miejsce_5",
+    "swiat": [
+     951.936,
+     0.5,
+     -677.65
+    ],
+    "opis": "miejsce na odstawionego peta (Zagroda petów)",
+    "bazar": [
+     -42.064,
+     0.5,
+     22.35
+    ]
+   },
+   {
+    "typ": "miejsce_peta",
+    "id": "zagroda_miejsce_6",
+    "swiat": [
+     952.663,
+     0.5,
+     -671.171
+    ],
+    "opis": "miejsce na odstawionego peta (Zagroda petów)",
+    "bazar": [
+     -41.337,
+     0.5,
+     28.829
+    ]
+   }
+  ]
+ },
+ "portal_krain": [
+  {
+   "typ": "portal",
+   "id": "portal_krain",
+   "swiat": [
+    994.0,
+    0.5,
+    -720.5
+   ],
+   "stoisko": [
+    994.0,
+    0.5,
+    -720.5
+   ],
+   "podpowiedz": [
+    994.0,
+    5.1,
+    -726.0
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/PortalKrain/_Interakcja",
+   "czesc_stoiska": "Punkt E portal_krain",
+   "czesc_podpowiedzi": "Podpowiedź E portal_krain",
+   "nazwa": "Portal do krain",
+   "cel": "przejście przez chmury → wybór krainy (D-075); dziś: Las — Polana Przybycia",
+   "kier": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "bazar": [
+    0.0,
+    0.5,
+    -20.5
+   ],
+   "stoisko_bazar": [
+    0.0,
+    0.5,
+    -20.5
+   ],
+   "podpowiedz_bazar": [
+    0.0,
+    5.1,
+    -26.0
+   ]
+  },
+  {
+   "typ": "portal_srodek",
+   "id": "portal_krain_wir",
+   "swiat": [
+    994.0,
+    8.9,
+    -728.8
+   ],
+   "kier": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "promien": 5.6,
+   "opis": "środek wiru (strefa wejścia, jeśli portal ma działać przez dotyk)",
+   "bazar": [
+    0.0,
+    8.9,
+    -28.8
+   ]
+  }
+ ],
+ "dzialka": {
+  "typ": "dzialka",
+  "id": "brama_twierdzy",
+  "swiat": [
+   994.0,
+   0.27,
+   -686.0
+  ],
+  "stoisko": [
+   994.0,
+   0.27,
+   -686.0
+  ],
+  "podpowiedz": [
+   994.0,
+   4.87,
+   -685.0
+  ],
+  "grupa_zaczepu": "Workspace/MiasteczkoBazar/BramaTwierdzy/_Interakcja",
+  "czesc_stoiska": "Punkt interakcji",
+  "nazwa": "Brama Twierdzy — przejście na działkę gracza (Twierdza z kopalniami, D-049, D-063)",
+  "kier": [
+   0.0,
+   0.0,
+   -1.0
+  ],
+  "bazar": [
+   0.0,
+   0.27,
+   14.0
+  ],
+  "stoisko_bazar": [
+   0.0,
+   0.27,
+   14.0
+  ],
+  "podpowiedz_bazar": [
+   0.0,
+   4.87,
+   15.0
+  ]
+ },
+ "lochy": {
+  "punkt_e": {
+   "typ": "lochy",
+   "id": "brama_lochow",
+   "swiat": [
+    1038.5,
+    0.27,
+    -690.0
+   ],
+   "stoisko": [
+    1038.5,
+    0.27,
+    -690.0
+   ],
+   "podpowiedz": [
+    1038.5,
+    4.87,
+    -689.0
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/BramaLochow/_Interakcja",
+   "czesc_stoiska": "Punkt interakcji",
+   "nazwa": "Wrota lochów z kłódką → hala portali do dungeonów (D-042)",
+   "kier": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "bazar": [
+    44.5,
+    0.27,
+    10.0
+   ],
+   "stoisko_bazar": [
+    44.5,
+    0.27,
+    10.0
+   ],
+   "podpowiedz_bazar": [
+    44.5,
+    4.87,
+    11.0
+   ]
+  },
+  "blokada": {
+   "typ": "blokada",
+   "id": "lochy_klodka",
+   "swiat": [
+    1038.5,
+    6.87,
+    -683.9
+   ],
+   "grupa": "Workspace/MiasteczkoBazar/BramaLochow/Blokada",
+   "opis": "kłódka i łańcuchy (D-042): widoczne osobno dla każdego gracza, znikają po odblokowaniu",
+   "bazar": [
+    44.5,
+    6.87,
+    16.1
+   ]
+  }
+ },
+ "tablica": [
+  {
+   "typ": "tablica",
+   "id": "tablica_ranking",
+   "swiat": [
+    979.518,
+    5.9,
+    -718.158
+   ],
+   "normalna": [
+    0.1392,
+    0.0,
+    0.9903
+   ],
+   "rozmiar": [
+    6.4,
+    4.8
+   ],
+   "opis": "powierzchnia na SurfaceGui z rankingiem serwera (najwyższy poziom, największe zdolności); po premierze panel gildii (D-067)",
+   "bazar": [
+    -14.482,
+    5.9,
+    -18.158
+   ]
+  },
+  {
+   "typ": "tablica",
+   "id": "tablica",
+   "swiat": [
+    980.096,
+    0.5,
+    -714.049
+   ],
+   "stoisko": [
+    980.096,
+    0.5,
+    -714.049
+   ],
+   "podpowiedz": [
+    979.539,
+    4.3,
+    -718.01
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/Tablica/_Interakcja",
+   "czesc_stoiska": "Punkt E tablica",
+   "czesc_podpowiedzi": "Podpowiedź E tablica",
+   "nazwa": "Tablica ogłoszeń (ranking)",
+   "okno": "Pełny ranking / panel gildii (opcjonalnie)",
+   "kier": [
+    0.1392,
+    0.0,
+    0.9903
+   ],
+   "bazar": [
+    -13.904,
+    0.5,
+    -14.049
+   ],
+   "stoisko_bazar": [
+    -13.904,
+    0.5,
+    -14.049
+   ],
+   "podpowiedz_bazar": [
+    -14.461,
+    4.3,
+    -18.01
+   ]
+  }
+ ],
+ "las": {
+  "brama_lesna": {
+   "typ": "las",
+   "id": "brama_lesna",
+   "swiat": [
+    1052.5,
+    0.5,
+    -700.0
+   ],
+   "stoisko": [
+    1052.5,
+    0.5,
+    -700.0
+   ],
+   "podpowiedz": [
+    1057.3,
+    4.9,
+    -700.0
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/BramaLesna/_Interakcja",
+   "czesc_stoiska": "Punkt E brama_lesna",
+   "czesc_podpowiedzi": "Podpowiedź E brama_lesna",
+   "nazwa": "Brama Leśna — do Lasu",
+   "cel": "pas Lasu: Polana Przybycia (swiat/las_pas, punkt przybycia u 14)",
+   "kier": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "bazar": [
+    58.5,
+    0.5,
+    0.0
+   ],
+   "stoisko_bazar": [
+    58.5,
+    0.5,
+    0.0
+   ],
+   "podpowiedz_bazar": [
+    63.3,
+    4.9,
+    0.0
+   ]
+  },
+  "polaczenie": {
+   "typ": "polaczenie_las",
+   "id": "polaczenie_las",
+   "swiat": [
+    1066.0,
+    0.3,
+    -700.0
+   ],
+   "kier": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "las_od_X": 1066.0,
+   "opis": "wschodni brzeg bazaru = początek pasa Lasu (u −34, ściana zamykająca Lasu); Brama Leśna stoi 7,5 st przed nim",
+   "bazar": [
+    72.0,
+    0.3,
+    0.0
+   ]
+  }
+ },
+ "wejscia": [
+  {
+   "typ": "wejscie",
+   "id": "wejscie_TrainingCenter",
+   "swiat": [
+    937.022,
+    0.3,
+    -714.066
+   ],
+   "kier": [
+    0.0523,
+    0.0,
+    0.9986
+   ],
+   "szer": 13.8,
+   "wys": 12.3,
+   "budynek": "TrainingCenter",
+   "opis": "światło wejścia (szerokość × wysokość nad posadzką) — jedno wejście do budynku",
+   "bazar": [
+    -56.978,
+    0.3,
+    -14.066
+   ]
+  },
+  {
+   "typ": "wejscie",
+   "id": "wejscie_Karczma",
+   "swiat": [
+    960.117,
+    0.3,
+    -714.059
+   ],
+   "kier": [
+    -0.0349,
+    0.0,
+    0.9994
+   ],
+   "szer": 14.8,
+   "wys": 12.7,
+   "budynek": "Karczma",
+   "opis": "światło wejścia (szerokość × wysokość nad posadzką) — jedno wejście do budynku",
+   "bazar": [
+    -33.883,
+    0.3,
+    -14.059
+   ]
+  },
+  {
+   "typ": "wejscie",
+   "id": "wejscie_SklepMagiczny",
+   "swiat": [
+    1021.604,
+    0.3,
+    -714.059
+   ],
+   "kier": [
+    -0.0698,
+    0.0,
+    0.9976
+   ],
+   "szer": 11.8,
+   "wys": 12.3,
+   "budynek": "SklepMagiczny",
+   "opis": "światło wejścia (szerokość × wysokość nad posadzką) — jedno wejście do budynku",
+   "bazar": [
+    27.604,
+    0.3,
+    -14.059
+   ]
+  },
+  {
+   "typ": "wejscie",
+   "id": "wejscie_Zbrojownia",
+   "swiat": [
+    1045.423,
+    0.3,
+    -714.04
+   ],
+   "kier": [
+    0.0523,
+    0.0,
+    0.9986
+   ],
+   "szer": 12.8,
+   "wys": 12.3,
+   "budynek": "Zbrojownia",
+   "opis": "światło wejścia (szerokość × wysokość nad posadzką) — jedno wejście do budynku",
+   "bazar": [
+    51.423,
+    0.3,
+    -14.04
+   ]
+  },
+  {
+   "typ": "wejscie",
+   "id": "wejscie_BramaTwierdzy",
+   "swiat": [
+    994.0,
+    0.27,
+    -678.0
+   ],
+   "kier": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "szer": 10.0,
+   "wys": 12.0,
+   "budynek": "BramaTwierdzy",
+   "opis": "przejście bramy (karta budynku w swiat/krzywe_miasteczko/PROJEKT.md)",
+   "bazar": [
+    0.0,
+    0.27,
+    22.0
+   ]
+  },
+  {
+   "typ": "wejscie",
+   "id": "wejscie_BramaLochow",
+   "swiat": [
+    1038.5,
+    0.27,
+    -682.0
+   ],
+   "kier": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "szer": 12.0,
+   "wys": 14.0,
+   "budynek": "BramaLochow",
+   "opis": "przejście bramy (karta budynku w swiat/krzywe_miasteczko/PROJEKT.md)",
+   "bazar": [
+    44.5,
+    0.27,
+    18.0
+   ]
+  }
+ ],
+ "ozdoby": [
+  {
+   "typ": "ozdoba",
+   "id": "studnia_pomnik",
+   "swiat": [
+    926.0,
+    0.27,
+    -700.0
+   ],
+   "stoisko": [
+    926.0,
+    0.27,
+    -700.0
+   ],
+   "podpowiedz": [
+    925.0,
+    4.87,
+    -700.0
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/StudniaPomnik/_Interakcja",
+   "czesc_stoiska": "Punkt interakcji",
+   "nazwa": "Studnia-pomnik Pierwszego Klocka (punkt orientacyjny)",
+   "kier": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "bazar": [
+    -68.0,
+    0.27,
+    0.0
+   ],
+   "stoisko_bazar": [
+    -68.0,
+    0.27,
+    0.0
+   ],
+   "podpowiedz_bazar": [
+    -69.0,
+    4.87,
+    0.0
+   ]
+  }
+ ],
+ "czesci_na_budynek": {
+  "Teren": 2,
+  "TrainingCenter": 213,
+  "Karczma": 296,
+  "PortalKrain": 54,
+  "Tablica": 41,
+  "SklepMagiczny": 237,
+  "Zbrojownia": 212,
+  "ZagrodaPetow": 219,
+  "BramaTwierdzy": 229,
+  "BramaLochow": 271,
+  "StudniaPomnik": 77,
+  "BramaLesna": 39,
+  "Domy": 259,
+  "Kulisy/Domy": 1149,
+  "Stragany": 75,
+  "Mury": 88,
+  "Rekwizyty": 296,
+  "Kulisy i tło": 271,
+  "Niewidzialne": 4,
+  "Uliczka (bruk)": 292,
+  "Start": 7,
+  "Uliczka (kody)": 57
+ },
+ "wszystkie": [
+  {
+   "typ": "wejscie",
+   "id": "wejscie_TrainingCenter",
+   "swiat": [
+    937.022,
+    0.3,
+    -714.066
+   ],
+   "kier": [
+    0.0523,
+    0.0,
+    0.9986
+   ],
+   "szer": 13.8,
+   "wys": 12.3,
+   "budynek": "TrainingCenter",
+   "opis": "światło wejścia (szerokość × wysokość nad posadzką) — jedno wejście do budynku",
+   "bazar": [
+    -56.978,
+    0.3,
+    -14.066
+   ]
+  },
+  {
+   "typ": "training_center",
+   "id": "training_center",
+   "swiat": [
+    938.013,
+    0.5,
+    -725.734
+   ],
+   "stoisko": [
+    938.013,
+    0.5,
+    -725.734
+   ],
+   "podpowiedz": [
+    942.323,
+    5.1,
+    -729.465
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/TrainingCenter/_Interakcja",
+   "czesc_stoiska": "Punkt E training_center",
+   "czesc_podpowiedzi": "Podpowiedź E training_center",
+   "sklep": "training_center",
+   "nazwa": "Training Center — wybór mini-gry",
+   "okno": "Okno wyboru mini-gry (Paweł)",
+   "postac": "trener",
+   "model": "Workspace/MiasteczkoBazar/TrainingCenter/Trener",
+   "statystyki": [
+    "sila",
+    "kondycja",
+    "inteligencja",
+    "zrecznosc",
+    "szczescie",
+    "pancerz"
+   ],
+   "kier": [
+    0.0523,
+    0.0,
+    0.9986
+   ],
+   "bazar": [
+    -55.987,
+    0.5,
+    -25.734
+   ],
+   "stoisko_bazar": [
+    -55.987,
+    0.5,
+    -25.734
+   ],
+   "podpowiedz_bazar": [
+    -51.677,
+    5.1,
+    -29.465
+   ]
+  },
+  {
+   "typ": "wejscie",
+   "id": "wejscie_Karczma",
+   "swiat": [
+    960.117,
+    0.3,
+    -714.059
+   ],
+   "kier": [
+    -0.0349,
+    0.0,
+    0.9994
+   ],
+   "szer": 14.8,
+   "wys": 12.7,
+   "budynek": "Karczma",
+   "opis": "światło wejścia (szerokość × wysokość nad posadzką) — jedno wejście do budynku",
+   "bazar": [
+    -33.883,
+    0.3,
+    -14.059
+   ]
+  },
+  {
+   "typ": "sklep",
+   "id": "karczma",
+   "swiat": [
+    957.517,
+    0.5,
+    -725.557
+   ],
+   "stoisko": [
+    957.517,
+    0.5,
+    -725.557
+   ],
+   "podpowiedz": [
+    957.726,
+    5.1,
+    -731.553
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/Karczma/_Interakcja",
+   "czesc_stoiska": "Punkt E karczma",
+   "czesc_podpowiedzi": "Podpowiedź E karczma",
+   "sklep": "karczma",
+   "nazwa": "Karczma — zadania (Karczmarz)",
+   "okno": "Okno Karczmy (Paweł)",
+   "postac": "barman",
+   "model": "Workspace/MiasteczkoBazar/Karczma/Barman",
+   "kier": [
+    -0.0349,
+    0.0,
+    0.9994
+   ],
+   "bazar": [
+    -36.483,
+    0.5,
+    -25.557
+   ],
+   "stoisko_bazar": [
+    -36.483,
+    0.5,
+    -25.557
+   ],
+   "podpowiedz_bazar": [
+    -36.274,
+    5.1,
+    -31.553
+   ]
+  },
+  {
+   "typ": "sklep",
+   "id": "mistrz_gier",
+   "swiat": [
+    967.927,
+    0.5,
+    -722.792
+   ],
+   "stoisko": [
+    967.927,
+    0.5,
+    -722.792
+   ],
+   "podpowiedz": [
+    968.192,
+    4.9,
+    -730.387
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/Karczma/_Interakcja",
+   "czesc_stoiska": "Punkt E mistrz_gier",
+   "czesc_podpowiedzi": "Podpowiedź E mistrz_gier",
+   "sklep": "mistrz_gier",
+   "nazwa": "Mistrz gier planszowych (D-053)",
+   "okno": "Okno planszy (Paweł)",
+   "postac": "mistrz_gier",
+   "model": "Workspace/MiasteczkoBazar/Karczma/MistrzGier",
+   "kier": [
+    -0.0349,
+    0.0,
+    0.9994
+   ],
+   "bazar": [
+    -26.073,
+    0.5,
+    -22.792
+   ],
+   "stoisko_bazar": [
+    -26.073,
+    0.5,
+    -22.792
+   ],
+   "podpowiedz_bazar": [
+    -25.808,
+    4.9,
+    -30.387
+   ]
+  },
+  {
+   "typ": "portal",
+   "id": "portal_krain",
+   "swiat": [
+    994.0,
+    0.5,
+    -720.5
+   ],
+   "stoisko": [
+    994.0,
+    0.5,
+    -720.5
+   ],
+   "podpowiedz": [
+    994.0,
+    5.1,
+    -726.0
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/PortalKrain/_Interakcja",
+   "czesc_stoiska": "Punkt E portal_krain",
+   "czesc_podpowiedzi": "Podpowiedź E portal_krain",
+   "nazwa": "Portal do krain",
+   "cel": "przejście przez chmury → wybór krainy (D-075); dziś: Las — Polana Przybycia",
+   "kier": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "bazar": [
+    0.0,
+    0.5,
+    -20.5
+   ],
+   "stoisko_bazar": [
+    0.0,
+    0.5,
+    -20.5
+   ],
+   "podpowiedz_bazar": [
+    0.0,
+    5.1,
+    -26.0
+   ]
+  },
+  {
+   "typ": "portal_srodek",
+   "id": "portal_krain_wir",
+   "swiat": [
+    994.0,
+    8.9,
+    -728.8
+   ],
+   "kier": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "promien": 5.6,
+   "opis": "środek wiru (strefa wejścia, jeśli portal ma działać przez dotyk)",
+   "bazar": [
+    0.0,
+    8.9,
+    -28.8
+   ]
+  },
+  {
+   "typ": "tablica",
+   "id": "tablica_ranking",
+   "swiat": [
+    979.518,
+    5.9,
+    -718.158
+   ],
+   "normalna": [
+    0.1392,
+    0.0,
+    0.9903
+   ],
+   "rozmiar": [
+    6.4,
+    4.8
+   ],
+   "opis": "powierzchnia na SurfaceGui z rankingiem serwera (najwyższy poziom, największe zdolności); po premierze panel gildii (D-067)",
+   "bazar": [
+    -14.482,
+    5.9,
+    -18.158
+   ]
+  },
+  {
+   "typ": "tablica",
+   "id": "tablica",
+   "swiat": [
+    980.096,
+    0.5,
+    -714.049
+   ],
+   "stoisko": [
+    980.096,
+    0.5,
+    -714.049
+   ],
+   "podpowiedz": [
+    979.539,
+    4.3,
+    -718.01
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/Tablica/_Interakcja",
+   "czesc_stoiska": "Punkt E tablica",
+   "czesc_podpowiedzi": "Podpowiedź E tablica",
+   "nazwa": "Tablica ogłoszeń (ranking)",
+   "okno": "Pełny ranking / panel gildii (opcjonalnie)",
+   "kier": [
+    0.1392,
+    0.0,
+    0.9903
+   ],
+   "bazar": [
+    -13.904,
+    0.5,
+    -14.049
+   ],
+   "stoisko_bazar": [
+    -13.904,
+    0.5,
+    -14.049
+   ],
+   "podpowiedz_bazar": [
+    -14.461,
+    4.3,
+    -18.01
+   ]
+  },
+  {
+   "typ": "wejscie",
+   "id": "wejscie_SklepMagiczny",
+   "swiat": [
+    1021.604,
+    0.3,
+    -714.059
+   ],
+   "kier": [
+    -0.0698,
+    0.0,
+    0.9976
+   ],
+   "szer": 11.8,
+   "wys": 12.3,
+   "budynek": "SklepMagiczny",
+   "opis": "światło wejścia (szerokość × wysokość nad posadzką) — jedno wejście do budynku",
+   "bazar": [
+    27.604,
+    0.3,
+    -14.059
+   ]
+  },
+  {
+   "typ": "sklep",
+   "id": "sklep_magiczny",
+   "swiat": [
+    1022.301,
+    0.5,
+    -724.035
+   ],
+   "stoisko": [
+    1022.301,
+    0.5,
+    -724.035
+   ],
+   "podpowiedz": [
+    1022.72,
+    5.1,
+    -730.02
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/SklepMagiczny/_Interakcja",
+   "czesc_stoiska": "Punkt E sklep_magiczny",
+   "czesc_podpowiedzi": "Podpowiedź E sklep_magiczny",
+   "sklep": "sklep_magiczny",
+   "nazwa": "Sklep magiczny",
+   "okno": "Okno sklepu (Paweł)",
+   "postac": "mag",
+   "model": "Workspace/MiasteczkoBazar/SklepMagiczny/Mag",
+   "kier": [
+    -0.0698,
+    0.0,
+    0.9976
+   ],
+   "bazar": [
+    28.301,
+    0.5,
+    -24.035
+   ],
+   "stoisko_bazar": [
+    28.301,
+    0.5,
+    -24.035
+   ],
+   "podpowiedz_bazar": [
+    28.72,
+    5.1,
+    -30.02
+   ]
+  },
+  {
+   "typ": "wejscie",
+   "id": "wejscie_Zbrojownia",
+   "swiat": [
+    1045.423,
+    0.3,
+    -714.04
+   ],
+   "kier": [
+    0.0523,
+    0.0,
+    0.9986
+   ],
+   "szer": 12.8,
+   "wys": 12.3,
+   "budynek": "Zbrojownia",
+   "opis": "światło wejścia (szerokość × wysokość nad posadzką) — jedno wejście do budynku",
+   "bazar": [
+    51.423,
+    0.3,
+    -14.04
+   ]
+  },
+  {
+   "typ": "sklep",
+   "id": "zbrojownia",
+   "swiat": [
+    1044.899,
+    0.5,
+    -724.026
+   ],
+   "stoisko": [
+    1044.899,
+    0.5,
+    -724.026
+   ],
+   "podpowiedz": [
+    1044.585,
+    5.1,
+    -730.018
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/Zbrojownia/_Interakcja",
+   "czesc_stoiska": "Punkt E zbrojownia",
+   "czesc_podpowiedzi": "Podpowiedź E zbrojownia",
+   "sklep": "zbrojownia",
+   "nazwa": "Zbrojownia — broń i pancerz",
+   "okno": "Okno sklepu (Paweł)",
+   "postac": "zbrojmistrz",
+   "model": "Workspace/MiasteczkoBazar/Zbrojownia/Zbrojmistrz",
+   "kier": [
+    0.0523,
+    0.0,
+    0.9986
+   ],
+   "bazar": [
+    50.899,
+    0.5,
+    -24.026
+   ],
+   "stoisko_bazar": [
+    50.899,
+    0.5,
+    -24.026
+   ],
+   "podpowiedz_bazar": [
+    50.585,
+    5.1,
+    -30.018
+   ]
+  },
+  {
+   "typ": "zagroda",
+   "id": "zagroda_petow",
+   "swiat": [
+    959.994,
+    0.5,
+    -676.13
+   ],
+   "stoisko": [
+    959.994,
+    0.5,
+    -676.13
+   ],
+   "podpowiedz": [
+    959.669,
+    5.1,
+    -671.116
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/ZagrodaPetow/_Interakcja",
+   "czesc_stoiska": "Punkt E zagroda_petow",
+   "czesc_podpowiedzi": "Podpowiedź E zagroda_petow",
+   "sklep": "zagroda_petow",
+   "nazwa": "Zagroda petów (opiekunka)",
+   "okno": "Okno zagrody petów (Paweł)",
+   "postac": "opiekunka",
+   "model": "Workspace/MiasteczkoBazar/ZagrodaPetow/Opiekunka",
+   "kier": [
+    -0.0349,
+    0.0,
+    -0.9994
+   ],
+   "bazar": [
+    -34.006,
+    0.5,
+    23.87
+   ],
+   "stoisko_bazar": [
+    -34.006,
+    0.5,
+    23.87
+   ],
+   "podpowiedz_bazar": [
+    -34.331,
+    5.1,
+    28.884
+   ]
+  },
+  {
+   "typ": "miejsce_peta",
+   "id": "zagroda_miejsce_1",
+   "swiat": [
+    971.547,
+    0.5,
+    -674.832
+   ],
+   "opis": "miejsce na odstawionego peta (Zagroda petów)",
+   "bazar": [
+    -22.453,
+    0.5,
+    25.168
+   ]
+  },
+  {
+   "typ": "miejsce_peta",
+   "id": "zagroda_miejsce_2",
+   "swiat": [
+    970.785,
+    0.5,
+    -682.31
+   ],
+   "opis": "miejsce na odstawionego peta (Zagroda petów)",
+   "bazar": [
+    -23.215,
+    0.5,
+    17.69
+   ]
+  },
+  {
+   "typ": "miejsce_peta",
+   "id": "zagroda_miejsce_3",
+   "swiat": [
+    966.753,
+    0.5,
+    -683.17
+   ],
+   "opis": "miejsce na odstawionego peta (Zagroda petów)",
+   "bazar": [
+    -27.247,
+    0.5,
+    16.83
+   ]
+  },
+  {
+   "typ": "miejsce_peta",
+   "id": "zagroda_miejsce_4",
+   "swiat": [
+    955.26,
+    0.5,
+    -682.769
+   ],
+   "opis": "miejsce na odstawionego peta (Zagroda petów)",
+   "bazar": [
+    -38.74,
+    0.5,
+    17.231
+   ]
+  },
+  {
+   "typ": "miejsce_peta",
+   "id": "zagroda_miejsce_5",
+   "swiat": [
+    951.936,
+    0.5,
+    -677.65
+   ],
+   "opis": "miejsce na odstawionego peta (Zagroda petów)",
+   "bazar": [
+    -42.064,
+    0.5,
+    22.35
+   ]
+  },
+  {
+   "typ": "miejsce_peta",
+   "id": "zagroda_miejsce_6",
+   "swiat": [
+    952.663,
+    0.5,
+    -671.171
+   ],
+   "opis": "miejsce na odstawionego peta (Zagroda petów)",
+   "bazar": [
+    -41.337,
+    0.5,
+    28.829
+   ]
+  },
+  {
+   "typ": "dzialka",
+   "id": "brama_twierdzy",
+   "swiat": [
+    994.0,
+    0.27,
+    -686.0
+   ],
+   "stoisko": [
+    994.0,
+    0.27,
+    -686.0
+   ],
+   "podpowiedz": [
+    994.0,
+    4.87,
+    -685.0
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/BramaTwierdzy/_Interakcja",
+   "czesc_stoiska": "Punkt interakcji",
+   "nazwa": "Brama Twierdzy — przejście na działkę gracza (Twierdza z kopalniami, D-049, D-063)",
+   "kier": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "bazar": [
+    0.0,
+    0.27,
+    14.0
+   ],
+   "stoisko_bazar": [
+    0.0,
+    0.27,
+    14.0
+   ],
+   "podpowiedz_bazar": [
+    0.0,
+    4.87,
+    15.0
+   ]
+  },
+  {
+   "typ": "wejscie",
+   "id": "wejscie_BramaTwierdzy",
+   "swiat": [
+    994.0,
+    0.27,
+    -678.0
+   ],
+   "kier": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "szer": 10.0,
+   "wys": 12.0,
+   "budynek": "BramaTwierdzy",
+   "opis": "przejście bramy (karta budynku w swiat/krzywe_miasteczko/PROJEKT.md)",
+   "bazar": [
+    0.0,
+    0.27,
+    22.0
+   ]
+  },
+  {
+   "typ": "lochy",
+   "id": "brama_lochow",
+   "swiat": [
+    1038.5,
+    0.27,
+    -690.0
+   ],
+   "stoisko": [
+    1038.5,
+    0.27,
+    -690.0
+   ],
+   "podpowiedz": [
+    1038.5,
+    4.87,
+    -689.0
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/BramaLochow/_Interakcja",
+   "czesc_stoiska": "Punkt interakcji",
+   "nazwa": "Wrota lochów z kłódką → hala portali do dungeonów (D-042)",
+   "kier": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "bazar": [
+    44.5,
+    0.27,
+    10.0
+   ],
+   "stoisko_bazar": [
+    44.5,
+    0.27,
+    10.0
+   ],
+   "podpowiedz_bazar": [
+    44.5,
+    4.87,
+    11.0
+   ]
+  },
+  {
+   "typ": "wejscie",
+   "id": "wejscie_BramaLochow",
+   "swiat": [
+    1038.5,
+    0.27,
+    -682.0
+   ],
+   "kier": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "szer": 12.0,
+   "wys": 14.0,
+   "budynek": "BramaLochow",
+   "opis": "przejście bramy (karta budynku w swiat/krzywe_miasteczko/PROJEKT.md)",
+   "bazar": [
+    44.5,
+    0.27,
+    18.0
+   ]
+  },
+  {
+   "typ": "blokada",
+   "id": "lochy_klodka",
+   "swiat": [
+    1038.5,
+    6.87,
+    -683.9
+   ],
+   "grupa": "Workspace/MiasteczkoBazar/BramaLochow/Blokada",
+   "opis": "kłódka i łańcuchy (D-042): widoczne osobno dla każdego gracza, znikają po odblokowaniu",
+   "bazar": [
+    44.5,
+    6.87,
+    16.1
+   ]
+  },
+  {
+   "typ": "ozdoba",
+   "id": "studnia_pomnik",
+   "swiat": [
+    926.0,
+    0.27,
+    -700.0
+   ],
+   "stoisko": [
+    926.0,
+    0.27,
+    -700.0
+   ],
+   "podpowiedz": [
+    925.0,
+    4.87,
+    -700.0
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/StudniaPomnik/_Interakcja",
+   "czesc_stoiska": "Punkt interakcji",
+   "nazwa": "Studnia-pomnik Pierwszego Klocka (punkt orientacyjny)",
+   "kier": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "bazar": [
+    -68.0,
+    0.27,
+    0.0
+   ],
+   "stoisko_bazar": [
+    -68.0,
+    0.27,
+    0.0
+   ],
+   "podpowiedz_bazar": [
+    -69.0,
+    4.87,
+    0.0
+   ]
+  },
+  {
+   "typ": "las",
+   "id": "brama_lesna",
+   "swiat": [
+    1052.5,
+    0.5,
+    -700.0
+   ],
+   "stoisko": [
+    1052.5,
+    0.5,
+    -700.0
+   ],
+   "podpowiedz": [
+    1057.3,
+    4.9,
+    -700.0
+   ],
+   "grupa_zaczepu": "Workspace/MiasteczkoBazar/BramaLesna/_Interakcja",
+   "czesc_stoiska": "Punkt E brama_lesna",
+   "czesc_podpowiedzi": "Podpowiedź E brama_lesna",
+   "nazwa": "Brama Leśna — do Lasu",
+   "cel": "pas Lasu: Polana Przybycia (swiat/las_pas, punkt przybycia u 14)",
+   "kier": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "bazar": [
+    58.5,
+    0.5,
+    0.0
+   ],
+   "stoisko_bazar": [
+    58.5,
+    0.5,
+    0.0
+   ],
+   "podpowiedz_bazar": [
+    63.3,
+    4.9,
+    0.0
+   ]
+  },
+  {
+   "typ": "start",
+   "id": "start",
+   "swiat": [
+    990.0,
+    0.3,
+    -697.0
+   ],
+   "kier": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "opis": "miejsce startu gracza (SpawnLocation w następnym etapie); patrzy wzdłuż uliczki ku Lasowi",
+   "czesc": "Punkt startu",
+   "grupa": "Workspace/MiasteczkoBazar/Start",
+   "bazar": [
+    -4.0,
+    0.3,
+    3.0
+   ]
+  },
+  {
+   "typ": "polaczenie_las",
+   "id": "polaczenie_las",
+   "swiat": [
+    1066.0,
+    0.3,
+    -700.0
+   ],
+   "kier": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "las_od_X": 1066.0,
+   "opis": "wschodni brzeg bazaru = początek pasa Lasu (u −34, ściana zamykająca Lasu); Brama Leśna stoi 7,5 st przed nim",
+   "bazar": [
+    72.0,
+    0.3,
+    0.0
+   ]
+  }
+ ]
+}
