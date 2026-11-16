@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-16 · Claude Code u Karola (las jako wąski pas: plan)
+- Plan nowego lasu po sesji 16.11 (D-075, D-076, D-077): pas 72 × 964 study, sześć przegród od Polany Przybycia do Areny Strażnika, brama do Bagna zamknięta do pokonania Strażnika, 20 / 36 / 46 potworów przy 1 / 8 / 20 graczach, ok. 29 minut gry przy oglądaniu walk, przelot kamery 13,4 s. Kontrola liczb: 0 błędów. W Studio nic nie zbudowano.
+- Raport ze planszą w panelu („Las jako wąski pas — plan układu do akceptacji”) z listą ustawień, które agent przyjmie przy budowie, jeśli ludzie nie napiszą inaczej. Rozkład 10 godzin gry na biomy pozostaje do decyzji.
+- Pliki: `swiat/biom_las/pas/` (nowy katalog); notatki [[Biom Las]], [[Zadania]].
+
 ## 2026-11-16 · Claude Code u Pawła (tekstury sali wyboru klasy dla Karola)
 - Paweł wygenerował w Higgsfield arkusz 16 tekstur Glossy Ink (prompt od Claude) i poprosił o przekazanie go Karolowi jako tekstur do sali wyboru bohatera. Pocięte na kafelki 1024 px: `assets/processed/ClassSelectTextures/CsTex01–16` + podgląd `_arkusz_v1.jpg`. Opis, tabela „co na co” i uwagi o szwach: [[Tekstury sali wyboru klasy]] (propozycja). Bez wgrywania do Roblox.
 

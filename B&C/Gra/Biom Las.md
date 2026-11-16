@@ -45,6 +45,15 @@ Do lasu prowadzą dwa przejścia z podpowiedzią E: brama „LAS (E)” przy mie
 ### Potwory w ruchu — stan w Studio (15.11.2026)
 W Studio (`Workspace/LasPotwory`) potwory chodzą już po strefach: przy jednym graczu 35 potworów w 16 strefach i Strażnik Gaju w Kamiennym Kręgu, każdy z tabliczką poziomu. Gracz podchodzi, dostaje podpowiedź E, a serwer sam sprawdza odległość i liczy walkę silnikiem v2; walkę pokazuje odtwarzacz prototypu na arenie, potem jest okno wyniku z łupem. Uproszczenia na czas testów: klasę i poziom bohatera wybiera się w małym panelu („auto” = poziom potwora), walka jest pokazywana na arenie, a nie w miejscu spotkania, łup nie jest zapisywany. Niesprawdzone jeszcze w całości: odradzanie, powrót Strażnika, telefon, koszt (`swiat/las_potwory/README.md`).
 
+## Las jako wąski pas — plan (16.11.2026)
+Po sesji głównej 16.11 mapa ma być wąskim, długim pasem biomów (D-075, D-076). Plan nowego lasu jest gotowy, **w Studio nic jeszcze nie jest zbudowane**; raport „Las jako wąski pas — plan układu do akceptacji” czeka w panelu.
+- **Układ od wejścia:** Polana Przybycia ze stanowiskiem jajka → Zagroda Slime'ów (3 kojce, poziomy 1–3) → Lasek Muchomorowy (3–5) → Wilcze Zarośla (6–8) → Leże Trolla (8–9) → Arena Strażnika Gaju (10) → brama do Bagna, zamknięta do pokonania Strażnika. Poziomy to propozycja do uzgodnienia z krzywą doświadczenia.
+- **Wymiary:** pole gry 72 study szerokości (4,5 s biegu), 964 study długości, bieg od wejścia do bramy 57,5 s. Pas leży na wschód od miasteczka; kolejne biomy mają miejsce w tej samej linii.
+- **Potwory:** 20 / 36 / 46 ze Strażnikiem przy 1 / 8 / 20 graczach; odradzanie 12–18 s, Troll 150 s, Strażnik 120 s.
+- **Czas:** ok. 29 minut przy oglądaniu walk (49 walk, chodzenie ok. 9%); cel ok. 30 minut wynika z korekty Karola do D-076 (ok. 10 godzin gry do ostatniego biomu) i roboczego rozkładu rosnącego — rozkład jest do decyzji.
+- **Przelot kamery (D-077):** 13,4 s, kończy się rykiem Strażnika.
+- **Pliki:** `swiat/biom_las/pas/` — `PLAN_PASA.md` (opis i dziesięć wyborów), `plan_pasa.json`, `plan_pasa.png`, `rysuj_plan.py`, `sprawdz_plan.py` (0 błędów). Dzisiejsza wersja 2 lasu zostaje do porównania, dopóki ludzie nie zdecydują inaczej.
+
 ## Co to zmienia albo doprecyzowuje względem D-061
 - D-061 (💡 propozycja) mówi tylko, że każdy biom ma własnych przeciwników, strażnika i inkubatory. Ta notatka dodaje do tego **układ lasu**: rozmiar, podbiomy, lokacje, strefy potworów, poziomy 1–10 i miejsce strażnika na 10. poziomie.
 - Doprecyzowuje D-034 dla lasu: gęstość, odradzanie, zachowanie potworów; w lesie **nie ma tablicy zadań** (jedna karczma) — są cztery miejsca, do których zadania z karczmy wysyłają gracza.

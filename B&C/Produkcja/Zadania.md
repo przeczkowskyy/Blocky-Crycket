@@ -109,6 +109,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-16: Plan lasu jako wąskiego pasa (D-075, D-076): układ przegród, potwory, czas gry, przelot kamery, plansza i kontrola liczb (`swiat/biom_las/pas/`); raport „Las jako wąski pas — plan układu do akceptacji” czeka w panelu; budowa w Studio po akceptacji
 - [x] 2026-11-16: [[Selektor bohatera]]: sala wyboru klasy w wersji 2 — bogatszy wystrój wg referencji karczmy, mocniejsza kreska (tusz i obrysy), nocne światło z migotaniem ogni, animacje wejścia; wdrożone w Studio, test Play OK (polecenie Pawła)
 - [x] 2026-11-16: Sesja główna 16.11 (20:05–20:53) spisana: [[Sesja główna 2026-11-16 — zapis ustaleń]], propozycje D-073–D-093, pytania 46–49, zadania z polem agenta, raport „Sesja główna 2026-11-16 — do zatwierdzenia” w panelu; zapis pełny (bez brakujących odcinków)
 - [x] 2026-11-16: Pięć wyborów w silniku walki v2 omówione na sesji głównej (propozycje D-088–D-091); Karol oznaczył raport „Silnik walki v2 — wyniki i wybory” jako nieaktualny
