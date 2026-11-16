@@ -1,0 +1,17 @@
+{
+ "id": "r-20261117-004548-cc8b",
+ "tytul": "Silnik walki v3 — wyniki i wybory",
+ "opis_md": "**Co to jest:** silnik walki po zmianach z sesji 16.11 (D-073, D-088–D-091, propozycja D-094). Zrobiony i sprawdzony bez Studio; w grze jeszcze nie działa — tej nocy wchodzi na ekran walki.\n\n**Co się zmieniło:**\n- **mana:** pasek 0–100 u każdej strony, rośnie za własny cios i za utracone życie; pełny pasek odpala umiejętność zamiast ciosu (zwykle w 3. akcji); nie jest statystyką;\n- **statystyki:** Zręczność daje też mnożnik krytyka, więc przydaje się Wojownikowi;\n- **blok:** ma każda klasa (5%), tarcza dodaje Wojownikowi 28%; blok zmniejsza obrażenia — przechodzi 25% ciosu;\n- **Pancerz:** limit 75%, Wojownik dochodzi do niego najszybciej;\n- **statusy:** trucizna w stosach, podpalenie z życia celu, krwawienie z ciosu, spowolnienie, ogłuszenie, tarcza na 3 tury;\n- **sloty:** trzy, dowolna mieszanka aktywnych i pasywnych; pasywki broni;\n- **wskrzeszenie:** legendarna pasywka w slocie, raz na walkę, powrót z 25% życia;\n- **tempo:** las w ok. 30 minut (Strażnik na 11. poziomie, po drodze ok. 8 przegranych), ósma kraina po ok. 10 godzinach na ok. 65. poziomie.\n\n**Sprawdzone:** testy 73 z 73; kod gry daje te same walki co wzorzec w 592 z 592 przypadków (bez Studio); niezależna kontrola znalazła i naprawiła cztery ważne błędy.\n\n**Do decyzji:**\n1. **Wskrzeszenie jest za mocne.** Z 25% życia wygrywa 74–76% z taką samą postacią bez niego, a z dobrymi slotami do 90%. Uczciwa wymiana za slot wychodzi przy powrocie z 1–5% życia. Opcje: zostawić 25%, obniżyć do ok. 5%, albo zostawić 1 punkt życia.\n2. **Strażnik na niskich poziomach faworyzuje Wojownika.** Na 1. poziomie różnica klas to 7,9 punktu procentowego (granica 7). Opcje: liczyć granicę od poziomu, na którym gracz naprawdę go spotyka (ok. 10., tam 3,5), albo przestroić Strażnika.\n3. **Pasywki many osłabione przy kontroli** do +10% zysku i +15 many na start, bo wcześniej sam wybór slotów dawał 63–67% wygranych. Do zatwierdzenia.\n4. **Jedna najlepsza umiejętność z pasywkami bije trzy aktywne** (ok. 60%). Opcje: zostawić albo zmienić zasadę kolejności slotów.\n5. **Build pod manę używa umiejętności 1,2–1,7 raza częściej, nie 2 razy.** Opcje: przyjąć albo podnieść górną granicę paska.\n\n**Nie wyszło:** tylko 3–4 z 18 buildów mają w lesie potwora wyraźnie „swojego” i „nie swojego” — potwory lasu są do siebie zbyt podobne.\n\nPełne zasady, liczby i 20 wyborów: `tools/walka/ZMIANY_SESJA_1611.md`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T00:45:48+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "tools/walka/ZMIANY_SESJA_1611.md",
+   "etykieta": "Pełne zasady, liczby i wybory"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Co z wskrzeszeniem i Strażnikiem na niskich poziomach?"
+}
