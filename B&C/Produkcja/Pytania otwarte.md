@@ -41,6 +41,7 @@ Szczegóły: [[HUD]] (kanon) przewiduje 5 zakładek na krawędziach: Karczma, Pe
 Dopisek z 2026-11-14 (sesja główna): język — angielski z tłumaczeniami (propozycja D-045); zestaw przycisków oraz miejsce Tycoona i Areny nie padły. Zob. [[Sesja główna 2026-11-14 — zapis ustaleń]].
 Dopisek z 2026-11-14 (trzecia sesja): Teleport ma otwierać widok miasta z lotu ptaka z pinami dostępnych lokacji (propozycja D-064); gildie dopiero po premierze (D-067), więc przycisk „Guilds” nie ma treści na start. Zestaw przycisków nadal nie padł. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
 **Odpowiedź:**
+- Karol Balucki (2026-11-16): nieaktualne
 
 ## 6. Diamenty (Gems) a Magiczne Kryształy
 Kanon ([[Twierdza (Tycoon)]], [[HUD]]) zna dwie waluty: **Złoto** i **Magiczne Kryształy**, które pasywnie generują droppery. HUD z Figmy pokazuje **Złoto** i **Diamenty (Gems)**, opisane w specyfikacji HUD jako waluta premium. Czy Diamenty to Magiczne Kryształy pod inną nazwą? Czy waluta jest płatna (Robux), czy zdobywana w grze?
@@ -204,6 +205,7 @@ Szczegóły: 13.11.2026 Karol zdecydował, że obaj macie takie same prawa do za
 Dopisek z 2026-11-14 (sesja główna): Paweł na głos — jedna osoba nie powinna zatwierdzać bez wiedzy drugiej. Ustnie przyjęty model „decyzja plus potwierdzenie drugiej osoby po alercie na telefon” to propozycja D-043; D-030 obowiązuje do jej zatwierdzenia. Decyzji Karola z 13.11 Paweł nie przejrzał. Zob. [[Sesja główna 2026-11-14 — zapis ustaleń]], pytanie 29.
 Dopisek z 2026-11-14 (trzecia sesja): Karol odhaczył temat w agendzie bez przeglądu („nie doszło do przeglądu, Telegram jest gotowy”) — przegląd ma iść przez alerty na Telegramie. Tego popołudnia Paweł potwierdził przez Telegram D-050, D-052, D-054, D-055 i odrzucenie D-047; wcześniejsze decyzje Karola z 13–14.11 nadal czekają. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
 **Odpowiedź:**
+- Karol Balucki (2026-11-16): nieaktualne
 
 ## 28. Mapa teleportacji: lokacje i prefiks stylu
 - Propozycja 7 lokacji: Karczma, Arena, Twierdza, Zagroda petów, Targ, Gildia, Portal do lochów.
@@ -320,6 +322,7 @@ Rozstrzyga: D-052
 - Do wyboru: (a) sześć mini-gier; (b) pięć, Pancerz z przedmiotów; (c) sześć, ale trening Pancerza z niskim limitem.
 Szczegóły: Na trzeciej sesji 14.11 obaj zgodzili się, że Pancerz jest wartością punktową odejmowaną od zwykłego ciosu, nie procentem (propozycja D-062), i że Training Center to jeden budynek z wyborem mini-gry (D-063). Nie zgodzili się, czy Pancerz ma własną mini-grę. Paweł rzucił też rozdzielenie Pancerza i Obrony, a Karol pełniejszy zestaw (Pancerz, Obrona, Unik, Przebicie magiczne, Odporność magiczna) i sam zwątpił, bo prowadzi to do kontrowania klas — jeśli chcecie więcej statystyk obronnych, napiszcie które. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]], [[System RPG]].
 **Odpowiedź:**
+- Karol Balucki (2026-11-16): nieaktualne
 
 ## 40. Wojownik z tarczą i unikiem: jak ograniczyć Zręczność?
 - Paweł: blok z tarczy plus unik ze Zręczności u Wojownika to za dużo.
