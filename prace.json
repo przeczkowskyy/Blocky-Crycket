@@ -2,21 +2,8 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-16T21:41:17+01:00",
+ "aktualizacja": "2026-11-16T21:46:36+01:00",
  "prace": [
-  {
-   "id": "muzyka-dzwieki",
-   "tytul": "Muzyka i dźwięki do gry: pierwsza partia",
-   "stan": "w_toku",
-   "start": "2026-11-16T21:20:00+01:00",
-   "koniec_szacowany": "2026-11-16T22:35:00+01:00",
-   "aktualizacja": "2026-11-16T21:20:00+01:00",
-   "obszary": [
-    "assets/audio/**"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
   {
    "id": "panel-assety-na-biezaco",
    "tytul": "Panel: Assety na bieżąco (szybsze pobieranie z GitHuba, samo odświeżanie)",
