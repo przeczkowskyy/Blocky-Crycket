@@ -33,6 +33,8 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: decyzja D-064 oznaczona jako nieaktualna ([[Rejestr decyzji]])
 - Karol Balucki: decyzja D-063 zatwierdzona ([[Rejestr decyzji]])
 - Paweł (Telegram): decyzja D-072 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-16), przez Telegram ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-061 zatwierdzona ([[Rejestr decyzji]])
+- Paweł (Telegram): decyzja D-063 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-16), przez Telegram ([[Rejestr decyzji]])
 
 ## 2026-11-15 · Claude Code u Pawła (drzewko: PET INTELLIGENCE i PET DEXTERITY)
 - Na prośbę Pawła w gałęzi Pets → Pet Stats węzły PET POWER (łapa + gwiazdka) i PET SPEED (łapa + piorun) zastąpione przez **PET INTELLIGENCE** (łapa + książka z ikony INT) i **PET DEXTERITY** (łapa + but z ikony DEX), +3% za poziom.
