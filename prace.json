@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T00:21:45+01:00",
+ "aktualizacja": "2026-11-17T00:45:48+01:00",
  "prace": [
   {
    "id": "las-pas-gra",
@@ -28,22 +28,6 @@
    "obszary": [
     "swiat/miasteczko_bazar_gra/**",
     "studio:MiasteczkoBazarGra"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "silnik-mana-balans",
-   "tytul": "Silnik walki: mana, statystyki, statusy, limit Pancerza",
-   "stan": "w_toku",
-   "etap": "Niezależna kontrola i poprawki (2 z 2)",
-   "start": "2026-11-16T21:00:29+01:00",
-   "koniec_szacowany": "2026-11-17T01:15:00+01:00",
-   "aktualizacja": "2026-11-16T23:21:34+01:00",
-   "obszary": [
-    "tools/walka/**",
-    "src/server/Walka/**",
-    "src/shared/Walka/**"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
