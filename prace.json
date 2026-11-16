@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-16T23:26:23+01:00",
+ "aktualizacja": "2026-11-16T23:27:21+01:00",
  "prace": [
   {
    "id": "las-pas-skrypty",
@@ -14,20 +14,6 @@
    "obszary": [
     "swiat/las_pas_gra/**",
     "studio:LasPasGra"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "las-pas-studio",
-   "tytul": "Las-pas w Studio: budowa mapy i zrzuty",
-   "stan": "w_toku",
-   "start": "2026-11-16T23:26:23+01:00",
-   "koniec_szacowany": "2026-11-16T23:55:00+01:00",
-   "aktualizacja": "2026-11-16T23:26:23+01:00",
-   "obszary": [
-    "studio:LasPas",
-    "mapa:las_pas"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
