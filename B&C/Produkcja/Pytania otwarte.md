@@ -381,6 +381,7 @@ Szczegóły: premia do Diamentów przyspiesza kupowanie kolejnych węzłów (pę
 
 Szczegóły: Sesja główna 16.11, 20:05–20:07 ([[Sesja główna 2026-11-16 — zapis ustaleń]], temat 1). Zatwierdzona D-062 mówi, że blok to cecha tarczy, a slot tarczy ma tylko Wojownik. Karol w odpowiedzi na pytanie 40 zostawił balans Wojownika agentowi.
 **Odpowiedź:**
+- Karol Balucki (2026-11-16): a tarcza daje Wojownikowi większą szansę na blok,a blok po porstu zmniejsza otrzymany DMG
 
 ## 47. Półbóg za Robuxy: z lepszymi statystykami czy bez przewagi?
 - Karol: rasa premium Półbóg za Robuxy, z lepszymi statystykami.
