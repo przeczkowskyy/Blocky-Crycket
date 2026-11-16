@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T00:11:05+01:00",
+ "aktualizacja": "2026-11-17T00:16:21+01:00",
  "prace": [
   {
    "id": "miasteczko-bazar",
@@ -30,20 +30,6 @@
     "tools/walka/**",
     "src/server/Walka/**",
     "src/shared/Walka/**"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "teleport-chmury",
-   "tytul": "Teleport: przejście przez chmury i widok pasa krain",
-   "stan": "w_toku",
-   "start": "2026-11-16T23:10:39+01:00",
-   "koniec_szacowany": "2026-11-17T01:00:00+01:00",
-   "aktualizacja": "2026-11-16T23:10:39+01:00",
-   "obszary": [
-    "studio:TeleportChmury",
-    "swiat/teleport_chmury/**"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
