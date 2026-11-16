@@ -2,6 +2,21 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-15T20:13:03+01:00",
- "prace": []
+ "aktualizacja": "2026-11-16T19:35:14+01:00",
+ "prace": [
+  {
+   "id": "zadania-agent-osoby",
+   "tytul": "Panel: zadania przypisane do agenta osoby",
+   "stan": "w_toku",
+   "start": "2026-11-16T19:35:14+01:00",
+   "koniec_szacowany": "2026-11-16T21:15:00+01:00",
+   "aktualizacja": "2026-11-16T19:35:14+01:00",
+   "obszary": [
+    "panel/**",
+    "B&C/Produkcja/Zadania.md"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  }
+ ]
 }
