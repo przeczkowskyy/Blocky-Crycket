@@ -369,3 +369,4 @@ Dopisek Claude Code z 2026-11-14 (przy scaleniu): na sesjach 14.11 trzecia walut
 
 Szczegóły: premia do Diamentów przyspiesza kupowanie kolejnych węzłów (pętla) i może zmienić balans z D-035. Układ okna: [[Okno drzewka umiejętności]].
 **Odpowiedź:**
+- Karol Balucki (2026-11-16): nieaktualne
