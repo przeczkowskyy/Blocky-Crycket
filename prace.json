@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T00:10:53+01:00",
+ "aktualizacja": "2026-11-17T00:11:05+01:00",
  "prace": [
   {
    "id": "miasteczko-bazar",
@@ -44,6 +44,19 @@
    "obszary": [
     "studio:TeleportChmury",
     "swiat/teleport_chmury/**"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "walka-ekran-v3",
+   "tytul": "Walka na ekranie: mana, statusy, wskrzeszenie, pomijanie walk (bez Studio)",
+   "stan": "w_toku",
+   "start": "2026-11-17T00:11:05+01:00",
+   "koniec_szacowany": "2026-11-17T02:15:00+01:00",
+   "aktualizacja": "2026-11-17T00:11:05+01:00",
+   "obszary": [
+    "swiat/test_walki2/**"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
