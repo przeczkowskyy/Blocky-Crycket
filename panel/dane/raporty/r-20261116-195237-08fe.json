@@ -1,0 +1,25 @@
+{
+ "id": "r-20261116-195237-08fe",
+ "tytul": "Panel: zadania przypisane do agenta osoby",
+ "opis_md": "Zadanie z polem **agent: Paweł** robi agent Pawła — na jego koncie Claude i tylko na jego komputerze, bez względu na to, kto otworzył panel.\n\n- **Przypisanie:** Pytania → Plan → Zadania, ikona agenta przy zadaniu (nikt / Karol / Paweł) albo wybór w „Dodaj zadanie”; tylko Karol albo Paweł.\n- **Słownie:** na koniec sesji głównej agent dopisuje pole po wyraźnej wypowiedzi („to zrobi Claude Pawła”).\n- **Uruchamianie:** przycisk „Uruchom” tylko u przypisanej osoby; samo uruchamianie ta osoba włącza u siebie (Ustawienia → Telefon), domyślnie wyłączone.\n- **Warunek:** Paweł raz ustawia `git config bc.osoba \"Paweł\"` i uruchamia własny panel.\n- Sprawdzone: 601 testów panelu (19 nowych), próba w przeglądarce na kopii sejfu. Zrzuty z panelu testowego (dwa zadania przypisane na próbę).\n- Twój panel ma jeszcze stary kod — zadziała po restarcie panelu. Do zatwierdzenia: propozycja D-072.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-16T19:52:37+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Technika/Panel zespołu.md",
+   "etykieta": "Panel zespołu"
+  },
+  {
+   "typ": "plik",
+   "cel": "panel/bc/zadania_agenta.py",
+   "etykieta": "Moduł zadań agenta"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ]
+}
