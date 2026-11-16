@@ -22,6 +22,8 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Paweł (Telegram): decyzja D-066 potwierdzona: zgoda (odrzucona przez Karol Balucki 2026-11-15), przez Telegram ([[Rejestr decyzji]])
 - Paweł (Telegram): decyzja D-062 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-16), przez Telegram ([[Rejestr decyzji]])
 - Paweł (Telegram): decyzja D-067 potwierdzona: zgoda (zatwierdzona przez Karol Balucki 2026-11-16), przez Telegram ([[Rejestr decyzji]])
+- Karol Balucki: omówiony temat sesji: Pancerz i model statystyk: dokończenie (D-062, D-063, pytania 39 i 40) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Paweł przegląda decyzje Karola z 13–14.11 (pytanie 27) ([[Sesje główne]])
 
 ## 2026-11-15 · Claude Code u Pawła (drzewko: PET INTELLIGENCE i PET DEXTERITY)
 - Na prośbę Pawła w gałęzi Pets → Pet Stats węzły PET POWER (łapa + gwiazdka) i PET SPEED (łapa + piorun) zastąpione przez **PET INTELLIGENCE** (łapa + książka z ikony INT) i **PET DEXTERITY** (łapa + but z ikony DEX), +3% za poziom.
