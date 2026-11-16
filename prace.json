@@ -2,15 +2,30 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-16T21:00:29+01:00",
+ "aktualizacja": "2026-11-16T21:00:33+01:00",
  "prace": [
+  {
+   "id": "las-pas-plan",
+   "tytul": "Las jako wąski pas: plan układu i plansza",
+   "stan": "w_toku",
+   "start": "2026-11-16T21:00:33+01:00",
+   "koniec_szacowany": "2026-11-16T22:05:00+01:00",
+   "aktualizacja": "2026-11-16T21:00:33+01:00",
+   "obszary": [
+    "mapa:biom_las",
+    "swiat/biom_las/pas/**"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
   {
    "id": "silnik-mana-balans",
    "tytul": "Silnik walki: mana, statystyki, statusy, limit Pancerza",
    "stan": "w_toku",
+   "etap": "Wykonanie (1 z 3): zasady, Python, Luau",
    "start": "2026-11-16T21:00:29+01:00",
    "koniec_szacowany": "2026-11-16T23:45:00+01:00",
-   "aktualizacja": "2026-11-16T21:00:29+01:00",
+   "aktualizacja": "2026-11-16T21:00:32+01:00",
    "obszary": [
     "tools/walka/**",
     "src/server/Walka/**",
