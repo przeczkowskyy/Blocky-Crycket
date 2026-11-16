@@ -6,6 +6,9 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-16 · Panel (ludzie)
+- Karol Balucki: decyzja D-067 zatwierdzona ([[Rejestr decyzji]])
+
 ## 2026-11-15 · Claude Code u Pawła (drzewko: PET INTELLIGENCE i PET DEXTERITY)
 - Na prośbę Pawła w gałęzi Pets → Pet Stats węzły PET POWER (łapa + gwiazdka) i PET SPEED (łapa + piorun) zastąpione przez **PET INTELLIGENCE** (łapa + książka z ikony INT) i **PET DEXTERITY** (łapa + but z ikony DEX), +3% za poziom.
 - Ikony złożone bez generowania: `tools/skilltree_pet_badges.py` (znaczek zamalowany kolorem otoczenia, symbol wycięty z ikony gracza). Wgrane po „tak” Pawła (`NodePetStatInt`, `NodePetStatDex` w manifeście), Figma: sekcja „Skill Tree — Assets”. Dane: `src/shared/SkillTreeData.luau`. Test Play: węzły widoczne na końcu gałęzi.

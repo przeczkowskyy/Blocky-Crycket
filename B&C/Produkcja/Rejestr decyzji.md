@@ -303,7 +303,7 @@ Karol: sklep za Robuxy „takim samym modelem”, jak w dochodowych grach Roblox
 Uzasadnienie — Karol Balucki, 2026-11-15: Za Robuxy waluta oraz bundle oraz Pass startowe
 
 ### D-067 Gildie i wojny gildii po premierze
-💡 propozycja · roadmapa · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 7)
+✅ zatwierdzona · roadmapa · 2026-11-14 · źródło: [[Sesja główna 2026-11-14 (3) — zapis ustaleń]] (temat 7) · zdecydował: Karol Balucki 2026-11-16
 Gildii nie ma w pierwszej wersji (Karol: „na razie gildii nie będziemy robić”; Paweł: zostawić na później, nie w podstawowej implementacji). Wojny gildii między światami z rozmowy 12.11 i napady na twierdze (odrzucone na drugiej sesji) — nie na premierę. Doprecyzowuje zatwierdzoną D-035 („gildie nie padły”) i zamyka drugą część pytania 32. Skutek: budynek gildyjny z listy D-049 „do wersji początkowej” też po premierze, a przycisk „Guilds” w wdrożonym [[HUD]] (pytanie 5) nie ma na start treści. Zob. [[Roadmapa]], [[Pytania otwarte]] #32.
 
 ### D-068 Walka: długość wyłącznie ze statystyk i losowości
