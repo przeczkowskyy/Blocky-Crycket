@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-16T19:35:14+01:00",
+ "aktualizacja": "2026-11-16T19:47:09+01:00",
  "prace": [
   {
    "id": "zadania-agent-osoby",
    "tytul": "Panel: zadania przypisane do agenta osoby",
    "stan": "w_toku",
+   "etap": "opis w sejfie i raport",
    "start": "2026-11-16T19:35:14+01:00",
-   "koniec_szacowany": "2026-11-16T21:15:00+01:00",
-   "aktualizacja": "2026-11-16T19:35:14+01:00",
+   "koniec_szacowany": "2026-11-16T20:45:00+01:00",
+   "aktualizacja": "2026-11-16T19:47:09+01:00",
    "obszary": [
     "panel/**",
     "B&C/Produkcja/Zadania.md"
