@@ -399,7 +399,9 @@ Rozstrzyga: D-080
 - Do wyboru: (a) nie ma wskrzeszenia; (b) legendarne, raz na walkę, z niskim HP (np. 25%); (c) wersja Pawła z malejącą szansą.
 
 Szczegóły: Sesja główna 16.11, 20:31–20:32 ([[Sesja główna 2026-11-16 — zapis ustaleń]], temat 10). Zatwierdzona D-068 mówi, że walka trwa, aż życie jednej strony spadnie do zera. W [[Zadania]] czeka już węzeł drzewka „Jeszcze stoję” (ostatni dech) jako sprzeczny z D-068, więc oba rozstrzygnąć razem. Sloty umiejętności: D-088.
+Rozstrzyga: D-094
 **Odpowiedź:**
+- Claude Code (2026-11-16, okno Balans w panelu, na polecenie Karola): Karol przyjął wariant (b) („Ok przyjmuję to”) — legendarna umiejętność w slocie, raz na walkę, powrót z 25% HP, zastępuje węzeł „Jeszcze stoję”. Zapisane jako propozycja D-094: czeka na podpis Karola w panelu i potwierdzenie Pawła.
 
 ## 49. Czyj agent robi zadania bez przydziału z sesji 16.11?
 - Karol: gdy z rozmowy nie wynika, czyj Claude robi zadanie, agent ma zapytać (D-093).

@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-16 · Claude Code u Karola (przydział z pytania 49, akceptacja planu lasu)
+- Karol odpowiedział w panelu na pytanie 49 („te wszystkie rzeczy na mnie”): balans i silnik walki, przebudowa Krzywego Miasteczka, okno zagrody petów z tablicą i pomijanie walk dostały w [[Zadania]] pole agenta Karola. Modele ras robi Paweł (wcześniejsze doprecyzowanie Karola).
+- Karol zaakceptował w panelu raport „Las jako wąski pas — plan układu do akceptacji” (21:50) — rusza budowa pasa w Studio z ustawieniami opisanymi w raporcie.
+- Odpowiedź Karola na pytanie 46 (blok zmniejsza obrażenia, tarcza daje Wojownikowi większą szansę) i propozycja D-094 z okna Balans (wskrzeszenie jako legendarna umiejętność w slocie, raz na walkę, 25% HP) przekazane do trwającej pracy nad silnikiem walki. D-094 czeka na podpisy.
+
 ## 2026-11-16 · Claude Code u Karola (panel: Assety na bieżąco)
 - Zgłoszenie Karola: zakładka Assety nie jest aktualna na bieżąco. Przyczyna opóźnienia z tego wieczoru (grafiki Pawła z 21:24 widoczne o 21:35): zastój stałej synchronizacji, gdy cudzy commit zmienia plik sejfu z niezapisanymi zmianami panelu.
 - Poprawki: panel zapisuje własne kolidujące zmiany commitem lokalnym i od razu pobiera; lekkie sprawdzenie GitHuba co 30 s; stany „czeka” trafiają do logu. Zakładka Assety odświeża się sama, pokazuje godzinę zmiany rejestru, znaczek „nowe” i pasek o niepobranych zmianach.

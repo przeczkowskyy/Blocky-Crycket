@@ -438,5 +438,9 @@ Rozwija zatwierdzoną D-072. Paweł robi interfejs 2D (przyciski, menu, okna skl
 
 Zob. [[Zadania]], [[Panel zespołu]].
 
+### D-094 Wskrzeszenie: legendarna umiejętność w slocie, raz na walkę, powrót z 25% HP
+💡 propozycja · game design / balans · 2026-11-16 · źródło: okno Balans w panelu 16.11, odpowiedź na pytanie 48 (Karol: „Ok przyjmuję to”) · zaproponował: Claude Code (okno Balans, u Karola)
+Wskrzeszenie jest tylko legendarną umiejętnością pasywną, która zajmuje jeden z trzech slotów (D-088). Nie może być pasywką broni ani węzłem drzewka. Raz na walkę cios, który zbiłby życie do zera, kończy się powrotem z **25% maks. HP**. Szacunek okna Balans (do sprawdzenia symulacją `tools/walka/balans.py`): +40% HP daje dziś +20–25 pp wygranych (Kondycja w [[Walka v2 — silnik, klasy i umiejętności]]). Powrót z 25% HP to więc ok. +10–15 pp, czyli tyle, ile wart jest jeden slot (10–15 pp), i wymiana jest uczciwa. Powrót ze 100% HP to ok. +35–45 pp, czyli umiejętność obowiązkowa. Wariant z malejącą szansą (50%, 25%…) odpada, bo ratuje życie losowo, a D-089 odrzuca losowe odpalanie umiejętności. Węzeł „Jeszcze stoję” (1 HP raz na walkę) w [[Drzewko umiejętności postaci]] znika, bo zastępuje go ta umiejętność. **Dotyka zatwierdzonej D-068** („walka trwa, aż życie jednej strony spadnie do zera”): zatwierdzenie dopisuje wyjątek dla wskrzeszenia z buildu gracza. To cecha postaci, nie reguła sztucznie wydłużająca walkę. Robocze założenia: efekty na postaci (trucizna, podpalenie) zostają po powrocie, a w Arenie wskrzeszenie działa tak samo (D-069). Paweł proponował 100% HP albo malejącą szansę (sesja 16.11, 20:31–20:32), więc po podpisie Karola potrzebne jest jego potwierdzenie (D-043). Zob. [[Pytania otwarte]] #48.
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*
