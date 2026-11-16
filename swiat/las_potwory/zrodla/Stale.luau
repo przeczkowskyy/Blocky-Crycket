@@ -1,6 +1,10 @@
 --[[
 	Stale — wspólne stałe pakietu „potwory w ruchu” (serwer i klient czytają je z jednego miejsca).
 	Liczby zasad (odstęp, smycz, blokada domu, prędkości) są w DanePotworow (z potwory.json), nie tutaj.
+
+	Drugi kontener (16.11.2026): ten sam kod potworów działa też w Workspace/LasPasGra (las-pas, swiat/las_pas_gra).
+	Kontener może nadpisać wybrane stałe atrybutem „Stale_<NAZWA>” ustawionym przy budowie — patrz koniec pliku.
+	Stary las (Workspace/LasPotwory) takich atrybutów nie ma, więc u niego wszystko zostaje jak niżej.
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -67,5 +71,40 @@ S.KOLORY = {
 	czerwony = hex("#E8364F"), zielony = hex("#52D273"), fiolet = hex("#7B4DFF"), szary = hex("#8D93A6"),
 }
 S.KOLOR_BURSZTYNOWY = hex("#F2B030")
+
+------------------------------------------------------------------ drugi kontener (16.11.2026, swiat/las_pas_gra)
+S.GUI_BOHATERA = "LasPotworyBohater"   -- ScreenGui panelu bohatera (dwa kontenery = dwie nazwy)
+S.GUI_BANERA = "LasPotworyBaner"       -- ScreenGui banera po Strażniku
+S.PANEL_Y = 8                          -- px od góry: przycisk panelu bohatera (drugi kontener stawia go niżej)
+S.PANEL_PREFIKS = ""                   -- przed napisem „Bohater: …” (drugi kontener: skąd jest panel)
+S.SYGNAL_WYNIKU = "WynikWalki"         -- opcjonalny BindableEvent w Sygnaly: serwer strzela nim po przyjęciu walki
+S.ATRYBUT_BLOKADY = "BlokadaWalki"     -- atrybut gracza (ustawia inny skrypt serwera, np. przelot kamery): bez walk
+
+------------------------------------------------------------------ nadpisania z atrybutów kontenera
+-- Atrybut kontenera „Stale_<NAZWA>” (ustawia zbuduj.py drugiego kontenera) zastępuje istniejącą stałą tego samego
+-- typu: napis, liczbę albo wartość logiczną; listę napisów (np. SZABLONY) podaje się jako napis z przecinkami.
+-- Inne typy i nieznane nazwy są pomijane z ostrzeżeniem. Bez atrybutów (stary las) nic się nie zmienia.
+local kontenerStalych = script.Parent and script.Parent.Parent
+if kontenerStalych then
+	for nazwa, stara in S do
+		local nowa = kontenerStalych:GetAttribute("Stale_" .. nazwa)
+		if nowa ~= nil then
+			if type(stara) == "table" and type(stara[1]) == "string" and type(nowa) == "string" then
+				local lista = {}
+				for _, kawalek in string.split(nowa, ",") do
+					local x = string.match(kawalek, "^%s*(.-)%s*$")
+					if x and x ~= "" then
+						table.insert(lista, x)
+					end
+				end
+				S[nazwa] = lista
+			elseif type(stara) == type(nowa) and type(stara) ~= "table" then
+				S[nazwa] = nowa
+			else
+				warn("[Stale] atrybut Stale_" .. nazwa .. " ma typ " .. type(nowa) .. ", a stała " .. type(stara) .. " — pomijam")
+			end
+		end
+	end
+end
 
 return S

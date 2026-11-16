@@ -38,6 +38,14 @@
 
 	Atrybuty kontenera tylko do testów (ustawia człowiek w Edit albo z paska poleceń serwera): ZiarnoTestowe,
 	TestBezSesji, TestGraczy, TestBezBiomu. Zmiana atrybutu u klienta się nie replikuje, więc klient ich nie nadużyje.
+
+	Drugi kontener (16.11.2026, Workspace/LasPasGra — las-pas, swiat/las_pas_gra; stary las działa jak dotąd):
+		• DanePotworow.biom.plyta może być false — wtedy sprawdzamy tylko, czy mapa jest i ma Wygenerowane;
+		• strefa z odrodzenieStale = true (Leśny Troll) wraca po odrodzenieS bez skracania, jak Strażnik (ale ma dom
+		  i blokadę domu jak zwykła strefa);
+		• gracz z atrybutem Stale.ATRYBUT_BLOKADY = true (np. w czasie przelotu kamery) dostaje odmowę „brak_postaci”;
+		• gdy w Sygnaly jest BindableEvent Stale.SYGNAL_WYNIKU, po przyjęciu walki serwer strzela nim
+		  (gracz, { id, strefa, gatunek, straznik, wynik, poziom, koniec }) — np. brama do Bagna po Strażniku.
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	-- Pakiet działa wyłącznie w Studio (testy). Poza Studio (opublikowane miejsce) serwer usuwa CAŁY kontener —
@@ -59,6 +67,8 @@ local Silnik = require(moduly:WaitForChild("Walka"):WaitForChild("Silnik"))
 local folderStanu = kontener:WaitForChild("Stan")
 local zdalna = kontener:WaitForChild("Zdalne"):WaitForChild("RozpocznijWalke2") :: RemoteFunction
 local sterowanie = kontener:WaitForChild("Sygnaly"):WaitForChild("SterowanieSerwera") :: BindableFunction
+-- opcjonalny sygnał wyniku walki (jest tylko w kontenerach, które go zbudowały — stary las go nie ma)
+local sygnalWyniku = kontener:WaitForChild("Sygnaly"):FindFirstChild(Stale.SYGNAL_WYNIKU)
 
 local P = Stale.PREFIKS
 local ODSTEP = DanePotworow.zasady.odstep
@@ -458,7 +468,7 @@ local function odradzaj()
 		st.cel = if st.d.straznik then 1 else Logika.cel(st.d.naraz, st.d.max, G)
 		local brak = st.cel - #st.potwory - #st.kolejka
 		if brak > 0 then
-			local zaIle = if st.d.straznik
+			local zaIle = if st.d.straznik or st.d.odrodzenieStale == true
 				then st.d.odrodzenieS
 				else Logika.czasOdrodzenia(st.d.odrodzenieS, graczeWStrefie(st, gracze))
 			for _ = 1, brak do
@@ -568,6 +578,9 @@ local function kontrolaBiomu(): (string, string)
 	end
 	if biom:GetAttribute("Wygenerowane") ~= true then
 		return "brak_biomu", b.nazwa .. " nie ma atrybutu Wygenerowane = true — potwory nie wystartują"
+	end
+	if not b.plyta then
+		return "ok", b.nazwa .. " na miejscu (dane bez Płyty — położenia nie sprawdzam)"
 	end
 	local plyta: Instance? = biom
 	for _, nazwa in string.split(b.plyta.sciezka, "/") do
@@ -751,6 +764,10 @@ zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
 	if not hrp or not hrp:IsA("BasePart") or not hum or hum.Health <= 0 then
 		return odmowa("brak_postaci")
 	end
+	-- postać zablokowana przez inny skrypt serwera (np. przelot kamery lasu-pasa) — bez walk
+	if gracz:GetAttribute(Stale.ATRYBUT_BLOKADY) == true then
+		return odmowa("brak_postaci")
+	end
 
 	-- 4. poprzednia walka gracza skończyła się (pełny czas ×1)
 	local czas = teraz()
@@ -803,6 +820,16 @@ zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
 	local sekundy = string.gsub(string.format("%.1f", walka.czas), "%.", ",")
 	print(string.format("%swalka %s %s/%s→%d %s %d → %s, %s s", P, p.id, klasa, poziomNapis, poziomBohatera, p.gatunek,
 		p.poziom, walka.wynik, sekundy))
+	if sygnalWyniku and sygnalWyniku:IsA("BindableEvent") then
+		local info = { id = p.id, strefa = p.strefa.d.id, gatunek = p.gatunek, straznik = p.strefa.d.straznik == true,
+			wynik = walka.wynik, poziom = p.poziom, koniec = p.zajety.koniec }
+		local udaloSie, bladSygnalu = pcall(function()
+			sygnalWyniku:Fire(gracz, info)
+		end)
+		if not udaloSie then
+			warn(P .. "sygnał wyniku walki zgłosił błąd: " .. tostring(bladSygnalu))
+		end
+	end
 
 	-- 10. arena prototypu musi być wczytana u klienta, zanim odtwarzacz ruszy (gracz stoi 2000+ studów dalej)
 	pcall(function()

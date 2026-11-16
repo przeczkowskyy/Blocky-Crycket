@@ -297,7 +297,8 @@ class Symulacja:
             self.cel = 1 if st["straznik"] else Lg.cel(st["naraz"], st["max"], G)
         brak = self.cel - len(self.potwory) - len(self.kolejka)
         if brak > 0:
-            za_ile = (st["odrodzenieS"] if st["straznik"]
+            # odrodzenieStale (16.11, las-pas: Leśny Troll) jak w serwerze: stały czas bez skracania; stary las go nie ma
+            za_ile = (st["odrodzenieS"] if st["straznik"] or st.get("odrodzenieStale") is True
                       else Lg.czas_odrodzenia(st["odrodzenieS"], self.gracze_w_strefie(gracze)))
             for _ in range(brak):
                 self.kolejka.append(teraz + za_ile)

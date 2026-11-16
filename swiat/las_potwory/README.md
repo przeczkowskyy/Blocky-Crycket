@@ -55,6 +55,15 @@ Haczyki testowe wołasz z paska poleceń:
 
 Pełna lista z poleceniami i oczekiwanymi liczbami jest w PROJEKT.md, rozdz. 9.2, a miejsce na wyniki w rozdz. 9.3.
 
+## Drugi kontener: las-pas (16.11.2026)
+
+Ten sam kod (Stale, Logika, SerwerPotworow, KlientPotworow) działa też w `Workspace/LasPasGra` na danych pasa —
+buduje go `swiat/las_pas_gra/zbuduj.py`. Różnice ustawia tamten kontener sam: atrybuty `Stale_<NAZWA>` (osobne
+szablony w ReplicatedStorage, osobne GUI, mapa `LasPas`), dane z `odrodzenieStale` (troll) i `biom.plyta = false`
+(gdy mapa nie ma Płyty), opcjonalny `Sygnaly/WynikWalki` i atrybut gracza `BlokadaWalki` (przelot kamery). Klient ma
+dwa nowe haczyki: `"wymus", id` i `"klip", id, nazwa`. Ten kontener (`LasPotwory`) nie ma żadnego z nich, więc działa
+jak dotąd. Szczegóły: `swiat/las_pas_gra/README.md`.
+
 ## Pliki
 
 | Plik | Co to jest |

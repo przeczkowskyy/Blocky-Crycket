@@ -37,6 +37,8 @@
 		                              bohater = { klasa, poziom }, walka = bool, ukryte = liczba, bledy = liczba }
 		"walcz", id               → zaczyna walkę z tym potworem jak po E (serwer i tak sprawdza odległość) → bool
 		"bohater", klasa, poziom  → ustawia wybór z panelu → bool
+		"wymus", id | nil         → (16.11, przelot lasu-pasa) ten widok zawsze budowany i przed innymi → true
+		"klip", id, nazwa         → (16.11) jednorazowy klip na widoku (ryk Strażnika), potem spoczynek → bool
 	Atrybuty lokalne kontenera (tylko u tego klienta, do testów): KlientGotowy, KlientTryb, KlientKlasa, KlientPoziom,
 	KlientWidoki, KlientBledy, KlientOstatniaWalka ("<id>/<wynik>").
 ]]
@@ -136,11 +138,11 @@ local function pokazBaner(tytul: string, podpis: string?, sekundy: number)
 	if not playerGui then
 		return
 	end
-	local stary = playerGui:FindFirstChild("LasPotworyBaner")
+	local stary = playerGui:FindFirstChild(Stale.GUI_BANERA)
 	if stary then
 		stary:Destroy()
 	end
-	local gui = nowy("ScreenGui", { Name = "LasPotworyBaner", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 6,
+	local gui = nowy("ScreenGui", { Name = Stale.GUI_BANERA, ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 6,
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling }, nil)
 	gui:SetAttribute("Wygenerowane", true)
 	local ramka = nowy("Frame", { Name = "Ramka", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.26),
@@ -335,6 +337,8 @@ local zepsute: { [string]: boolean } = {} -- gatunki, których model nie zbudowa
 local sumaCzesci = 0
 local liczbaAnimowanych = 0
 local kolejkaBudowy: { string } = {}
+-- widok wymuszony haczykiem „wymus” (przelot kamery lasu-pasa, 16.11: Strażnik budowany zawczasu, przed innymi)
+local wymuszony: string? = nil
 
 local biom: Instance? = workspace:FindFirstChild(Stale.NAZWA_BIOMU)
 local promien = RaycastParams.new()
@@ -589,6 +593,15 @@ local function wybierzWidoki()
 	table.sort(lista, function(a, b)
 		return a.d < b.d
 	end)
+	if wymuszony then
+		for i, e in lista do
+			if e.cfg.Name == wymuszony then
+				table.remove(lista, i)
+				table.insert(lista, 1, e)
+				break
+			end
+		end
+	end
 	local ranga: { [string]: number } = {}
 	local odleglosc: { [string]: number } = {}
 	for i, e in lista do
@@ -598,7 +611,7 @@ local function wybierzWidoki()
 	-- niszczenie: poza 14 najbliższymi, dalej niż 135, ukryty albo zniknął
 	for id in widoki do
 		local r = ranga[id]
-		if not r or r > Stale.MAKS_WIDOKOW_TWARDO or odleglosc[id] > Stale.PROMIEN_USUNIECIA then
+		if not r or r > Stale.MAKS_WIDOKOW_TWARDO or (odleglosc[id] > Stale.PROMIEN_USUNIECIA and id ~= wymuszony) then
 			zniszczWidok(id)
 		end
 	end
@@ -606,7 +619,7 @@ local function wybierzWidoki()
 	table.clear(kolejkaBudowy)
 	for i = 1, math.min(#lista, Stale.MAKS_WIDOKOW) do
 		local e = lista[i]
-		if e.d <= Stale.PROMIEN_WIDOKU and not widoki[e.cfg.Name] then
+		if (e.d <= Stale.PROMIEN_WIDOKU or e.cfg.Name == wymuszony) and not widoki[e.cfg.Name] then
 			table.insert(kolejkaBudowy, e.cfg.Name)
 		end
 	end
@@ -829,16 +842,16 @@ end
 ------------------------------------------------------------------ panel bohatera (rozdz. 4.6)
 local function zbudujPanel()
 	local playerGui = gracz:WaitForChild("PlayerGui")
-	local stary = playerGui:FindFirstChild("LasPotworyBohater")
+	local stary = playerGui:FindFirstChild(Stale.GUI_BOHATERA)
 	if stary then
 		stary:Destroy()
 	end
-	local gui = nowy("ScreenGui", { Name = "LasPotworyBohater", ResetOnSpawn = false, IgnoreGuiInset = false, DisplayOrder = 5,
+	local gui = nowy("ScreenGui", { Name = Stale.GUI_BOHATERA, ResetOnSpawn = false, IgnoreGuiInset = false, DisplayOrder = 5,
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling }, nil)
 	gui:SetAttribute("Wygenerowane", true)
 	-- wdrożenie 15.11: kontrakt mówi „lewy górny róg”, ale tam stoi HUD gry (portret gracza) i przycisk na niego
 	-- nachodził — przycisk stoi więc u góry na środku, gdzie ekran jest wolny (także w emulatorze telefonu)
-	local przycisk = nowy("TextButton", { Name = "Przycisk", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 8),
+	local przycisk = nowy("TextButton", { Name = "Przycisk", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, Stale.PANEL_Y),
 		Size = UDim2.fromOffset(250, 34),
 		BackgroundColor3 = K.krem, TextColor3 = K.tusz, Font = KOMIKS, TextScaled = true, AutoButtonColor = false,
 		BorderSizePixel = 0, Text = "" }, gui)
@@ -897,7 +910,7 @@ local function zbudujPanel()
 	nowy("UIPadding", { PaddingTop = UDim.new(0, 6), PaddingBottom = UDim.new(0, 6) }, gotowe)
 
 	local function odswiez()
-		przycisk.Text = string.format("Bohater: %s · poz. %s", NAZWY_KLAS[bohater.klasa] or bohater.klasa, bohater.poziom)
+		przycisk.Text = Stale.PANEL_PREFIKS .. string.format("Bohater: %s · poz. %s", NAZWY_KLAS[bohater.klasa] or bohater.klasa, bohater.poziom)
 		for klasa, b in przyciskiKlas do
 			b.BackgroundColor3 = if klasa == bohater.klasa then K.zolty else K.bialy
 			b:SetAttribute("Wybrany", klasa == bohater.klasa)
@@ -1106,7 +1119,7 @@ kontener.AncestryChanged:Connect(function()
 			guiBohatera:Destroy()
 		end
 		local playerGui = gracz:FindFirstChildOfClass("PlayerGui")
-		local baner = playerGui and playerGui:FindFirstChild("LasPotworyBaner")
+		local baner = playerGui and playerGui:FindFirstChild(Stale.GUI_BANERA)
 		if baner then
 			baner:Destroy()
 		end
@@ -1142,6 +1155,21 @@ if sterowanie and sterowanie:IsA("BindableFunction") then
 		elseif polecenie == "lod" then
 			lodKlipow = a ~= false
 			return lodKlipow
+		elseif polecenie == "wymus" then
+			-- (16.11, przelot kamery lasu-pasa) ten widok budujemy zawsze i przed innymi; nil = koniec wymuszenia
+			wymuszony = if type(a) == "string" then a else nil
+			return true
+		elseif polecenie == "klip" then
+			-- (16.11) jednorazowy klip b na widoku a (np. ryk Strażnika w przelocie), potem spoczynek → bool
+			local w = if type(a) == "string" then widoki[a] else nil
+			if not w or not w.klipy or type(b) ~= "string" or not w.klipy:maKlip(b) then
+				return false
+			end
+			local spoczynek = w.wpis and w.wpis.klipy and w.wpis.klipy.spoczynek
+			w.klipy:graj(b, { petla = false, przejscie = 0.15, potem = if type(spoczynek) == "string" then spoczynek else nil })
+			-- bieżąca akcja zostaje „ta sama”, więc krokWidoku nie przerwie klipu własnym spoczynkiem / ruchem
+			w.akcja = if w.cfg:GetAttribute("Stan") == "idzie" then "ruch" else "spoczynek"
+			return true
 		end
 		return false
 	end
