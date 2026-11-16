@@ -2,22 +2,8 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-16T23:27:21+01:00",
+ "aktualizacja": "2026-11-17T00:10:53+01:00",
  "prace": [
-  {
-   "id": "las-pas-skrypty",
-   "tytul": "Las-pas: potwory w przegrodach, brama, teleport, mgła, przelot kamery",
-   "stan": "w_toku",
-   "start": "2026-11-16T23:10:47+01:00",
-   "koniec_szacowany": "2026-11-17T01:30:00+01:00",
-   "aktualizacja": "2026-11-16T23:10:47+01:00",
-   "obszary": [
-    "swiat/las_pas_gra/**",
-    "studio:LasPasGra"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
   {
    "id": "miasteczko-bazar",
    "tytul": "Krzywe Miasteczko jako ciasny bazar: plan i generator",
