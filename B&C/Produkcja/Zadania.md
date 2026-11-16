@@ -79,6 +79,8 @@ tags: [produkcja, zadania]
 
 ## 📥 Backlog
 
+- [ ] [[Selektor bohatera]]: upload grafik 2D ekranu wyboru klasy (po „tak”), udostępnienie siatki Zwiadowcy grze (D-044), zapis klasy w DataStore · #wysoki
+
 - [x] [[Okno drzewka umiejętności]]: grafiki, Figma, Roblox, okno z przesuwaną mapą, zakup węzłów za Diamenty (2026-11-15)
 - [ ] Drzewko: premie `ST_<stat>` podpiąć pod walkę, karczmę, Twierdzę i pety; zapis w DataStore; balans cen · #średni
 - [ ] [[Okno ekwipunku]]: test na telefonie; potem prawdziwe przedmioty i statystyki z serwera · #wysoki
@@ -106,6 +108,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-16: [[Selektor bohatera]]: sala wyboru klasy w wersji 2 — bogatszy wystrój wg referencji karczmy, mocniejsza kreska (tusz i obrysy), nocne światło z migotaniem ogni, animacje wejścia; wdrożone w Studio, test Play OK (polecenie Pawła)
 - [x] 2026-11-16: Sesja główna 16.11 (20:05–20:53) spisana: [[Sesja główna 2026-11-16 — zapis ustaleń]], propozycje D-073–D-093, pytania 46–49, zadania z polem agenta, raport „Sesja główna 2026-11-16 — do zatwierdzenia” w panelu; zapis pełny (bez brakujących odcinków)
 - [x] 2026-11-16: Pięć wyborów w silniku walki v2 omówione na sesji głównej (propozycje D-088–D-091); Karol oznaczył raport „Silnik walki v2 — wyniki i wybory” jako nieaktualny
 - [x] 2026-11-16: Propozycje z trzeciej sesji 14.11 rozstrzygnięte w panelu: D-056–D-060, D-062, D-063, D-065 i D-067 zatwierdzone z dwoma podpisami, D-066 odrzucona, D-064 nieaktualna, pytania 39–43 zamknięte; D-061 czeka na potwierdzenie Pawła (w zadaniu z sesji 16.11)

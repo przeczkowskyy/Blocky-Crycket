@@ -168,6 +168,15 @@ if not player:GetAttribute("LoadingDone") then
 end
 task.wait(AFTER_LOADING_FADE)
 
+-- ekran wyboru klasy (ClassSelectClient): HUD dopiero po wyborze (atrybut "Class"); bez ekranu — po 10 min mimo to
+if game:GetService("ReplicatedStorage"):FindFirstChild("WyborKlasyModele") then
+	local tc = os.clock()
+	while not player:GetAttribute("Class") and os.clock() - tc < 600 do
+		task.wait(0.1)
+	end
+	task.wait(0.5)
+end
+
 -- stan początkowy bez animacji
 updateXP(true)
 updateLevel(false)

@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-16 · Claude Code u Pawła (ekran wyboru klasy: sala wersja 2)
+- Polecenie Pawła (z referencjami wnętrza karczmy): „zedytuj model tła sali wyboru klasy, wzbogać kreskę, dopracuj całość”. Potem w trakcie: „zmniejszmy jeszcze naświetlenie”.
+- Sala przebudowana od nowa w `swiat/wybor_klasy/generuj.py`: obrócona o 22° względem kamery, niższy strop z więźbą, mury z kamieni na ciemnej fudze, wnęka z łukiem i beczkami, potrójne okno z księżycem, kominek z tarczą i mieczami, regał z eliksirami i lada ze stołkami, latarnie, dwa żyrandole, dywan, stół ze świecą. Kreska: podkładki tuszu pod belkami i blatami + obrys sylwetki (Highlight) dla 17 grup. 1160 części, kontrola jakości bez uwag.
+- Światła i efekty z nowego pliku `swiat/wybor_klasy/efekty.json` (18 świateł, snop światła, pyłki) stawia `tools/studio/deploy_classselect.py` w `Workspace/WyborKlasy/Efekty`.
+- `src/client/ClassSelectClient.client.luau`: nocne światło tylko u gracza i tylko na czas ekranu (`ClassData.Scene.mood`, po PLAY wraca światło miejsca; `Lighting` miejsca nietknięte), migotanie ogni, obrys bohaterów, lekki ruch kamery za myszką, wejście elementów 2D, podskok wybranego bohatera, rozgrzanie świateł pod ekranem ładowania. `src/shared/ClassData.luau`: `mood`, `parallax`.
+- Test Play: sala, strzałka → Mag, PLAY → `Class`, światło gry przywrócone, HUD. Notatka: [[Selektor bohatera]] (propozycja).
+- Uwaga Pawła: na ekranie wyboru było widać podpowiedź portalu „Leć do lasu” (postać stoi przy nim). Podpowiedzi „E” są teraz wyłączone u gracza na czas ekranu i wracają po PLAY (test Play OK).
+
 ## 2026-11-16 · Claude Code u Karola (odpowiedzi Karola po sesji: teleport, rasy, Higgsfield)
 - **Teleport (D-075):** Karol doprecyzował w rozmowie, że pod przyciskiem Teleport nie ma okna mapy ani HUD — jest przejście przez chmury, z których widać z góry pas map. Dopisane pod D-075 w [[Rejestr decyzji]] i przy zadaniu przebudowy mapy w [[Zadania]].
 - **Rasy (D-079):** modele robi Paweł; po jego wypchnięciu agent Karola poprawia modele, halę wyboru i faktury kreskówkowe jak w Krzywym Miasteczku. Zadanie modeli ras dostało pole agenta (Paweł), doszło zadanie poprawek dla agenta Karola; dopisek w [[Pytania otwarte]] #49.
@@ -25,6 +33,13 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - [[Sesje główne]]: wynik i link przy czterech tematach omówionych 16.11.
 - Raport „Sesja główna 2026-11-16 — do zatwierdzenia” w panelu.
 
+## 2026-11-16 · Claude Code u Pawła (ekran wyboru klasy w 3D)
+- Polecenie Pawła: po ekranie ładowania ekran wyboru klasy (Wojownik / Zwiadowca / Mag) ze sceną 3D zamiast tła 2D, modele Karola na kole na podeście, przełączanie strzałkami, bez emblematów po prawej, na czas wyboru schowane wszystko inne. Opis: [[Selektor bohatera]] (propozycja).
+- Grafiki Higgsfield (1 wariant): arkusz 8 elementów UI i tło (tło zastąpione salą 3D). Makieta w Figmie (35:115).
+- Scena: `swiat/wybor_klasy/` (`generuj.py` → `czesci.json`, `render.py` + `blender_scena.py` — render z bohaterami w Blenderze), w Studio `Workspace/WyborKlasy` (`tools/studio_buduj.py`) + światła i kopie modeli (`tools/studio/deploy_classselect.py`).
+- Kod: `src/gui/ClassSelect.model.json` (`tools/classselect_build_gui.py`), `src/shared/ClassData.luau`, `src/shared/ClassSelectIcons.luau`, `src/server/ClassSelect.server.luau` (atrybut `Class`), `src/client/ClassSelectClient.client.luau`, `src/client/HUDClient.client.luau` (HUD po wyborze klasy). Test Play: koło, strzałki, PLAY → `Class`, HUD.
+- Po „tak” Pawła wgrane: `CsArrowLeft`, `CsArrowRight`, `CsPlayButton`, `CsTitlePlank` (ID w manifeście), podpięte w Studio. Potem na prośbę Pawła: `CsStatsPanel` (tło karty) i `CsEmblemWarrior/Scout/Mage` (emblemat przed nazwą klasy). Czeka: siatka Zwiadowcy z konta Karola (D-044).
+
 ## 2026-11-16 · Claude Code u Karola (instrukcja dla Claude Code Pawła)
 - Na prośbę Karola: notatka [[Zadania z panelu — instrukcja dla Claude Code Pawła]] — jak zadanie z „agent: Paweł” samo dochodzi do komputera Pawła (panel Karola wysyła, panel Pawła pobiera i uruchamia agenta, zwykle ok. 5 minut), prompt do wklejenia, siedem kroków do ustawienia raz (samo uruchamianie i start panelu z Windowsem tylko za zgodą Pawła) i zasady dla jego Claude Code (cudzych zadań nie robi, bez potwierdzenia D-070 nie wysyła wyników).
 - Panel: szacowany koniec pracy agenta przy zadaniu = limit czasu przebiegu (30 min) zamiast 60 min. Pliki: `panel/bc/zadania_agenta.py`, `panel/static/widoki/pytania.js`, `panel/README.md`; notatki [[Panel zespołu]], [[Zadania]].
@@ -33,6 +48,10 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - **Zadania przypisane do agenta osoby** (prośba Karola z panelu: „nie chcę, żeby to było zależne od osoby, która otwiera panel, tylko od decyzji słownej lub wyboru w panelu”): pole `· agent: Imię` w [[Zadania]] mówi, czyj agent (na czyim koncie Claude) robi zadanie. Przypisuje Karol albo Paweł w panelu (Pytania → Plan → Zadania, ikona agenta albo „Dodaj zadanie”) albo agent na koniec sesji głównej po wyraźnej wypowiedzi. Zadanie rusza tylko na komputerze przypisanej osoby: przycisk „Uruchom” albo samo uruchamianie, które ta osoba włącza u siebie (domyślnie wyłączone). Opis: [[Panel zespołu]]; propozycja **D-072** w [[Rejestr decyzji]] (zmienia zdanie z D-070, że Paweł nie musi uruchamiać własnego panelu).
 - Sprawdzone: 19 nowych testów (`panel/testy/test_zadania_agenta.py`) i dotychczasowe testy panelu; próba w przeglądarce na panelu testowym z kopią sejfu (znaczki, okno wyboru, „Uruchom” z atrapą agenta, telefon) bez błędów w konsoli. Działający panel Karola ma jeszcze stary kod — nowy ruszy po restarcie panelu.
 - Pliki: `panel/bc/zadania_agenta.py` (nowy), `panel/bc/sejf.py`, `panel/bc/zapis.py`, `panel/bc/rdzen.py`, `panel/bc/sesje.py`, `panel/serwer.py`, `panel/static/widoki/pytania.js`, `pytania.css`, `ustawienia.js`, `panel/testy/test_zadania_agenta.py`, `panel/README.md`, `panel/INSTALACJA.md`; notatki [[Panel zespołu]], [[Rejestr decyzji]], [[Zadania]].
+
+## 2026-11-16 · Claude Code u Pawła (drzewko: zakładki bez prześwitu)
+- Uwaga Pawła: po najechaniu na zakładkę okna Skill Tree „widać coś pod nią” — zakładki są też wypalone w grafice ramki i prześwitywały spod przyciemnionego albo powiększonego przycisku.
+- Pod każdą zakładką natywna zasłonka w kolorze ciemnego drewna ramki (`#674130`), bez nowych grafik: `tools/skilltree_build_gui.py` → `src/gui/SkillTree.model.json`, wdrożone do miejsca z chmury. Test Play: hover i nieaktywne zakładki czyste.
 
 ## 2026-11-16 · Panel (ludzie)
 - Karol Balucki: decyzja D-067 zatwierdzona ([[Rejestr decyzji]])

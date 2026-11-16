@@ -973,6 +973,57 @@
      },
      "Children": [
       {
+       "Name": "CoverTabPlayer",
+       "ClassName": "Frame",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.05955,
+           0
+          ],
+          [
+           0.14784,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.30595,
+           0
+          ],
+          [
+           0.12692,
+           0
+          ]
+         ]
+        },
+        "BackgroundColor3": [
+         0.4039,
+         0.2549,
+         0.1882
+        ],
+        "ZIndex": 1
+       },
+       "Children": [
+        {
+         "Name": "UICorner",
+         "ClassName": "UICorner",
+         "Properties": {
+          "CornerRadius": {
+           "UDim": [
+            0.18,
+            0
+           ]
+          }
+         }
+        }
+       ]
+      },
+      {
        "Name": "TabPlayer",
        "ClassName": "ImageButton",
        "Properties": {
@@ -1096,6 +1147,57 @@
        ]
       },
       {
+       "Name": "CoverTabFortress",
+       "ClassName": "Frame",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.34908,
+           0
+          ],
+          [
+           0.14365,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.29774,
+           0
+          ],
+          [
+           0.11855,
+           0
+          ]
+         ]
+        },
+        "BackgroundColor3": [
+         0.4039,
+         0.2549,
+         0.1882
+        ],
+        "ZIndex": 1
+       },
+       "Children": [
+        {
+         "Name": "UICorner",
+         "ClassName": "UICorner",
+         "Properties": {
+          "CornerRadius": {
+           "UDim": [
+            0.18,
+            0
+           ]
+          }
+         }
+        }
+       ]
+      },
+      {
        "Name": "TabFortress",
        "ClassName": "ImageButton",
        "Properties": {
@@ -1215,6 +1317,57 @@
            }
           }
          ]
+        }
+       ]
+      },
+      {
+       "Name": "CoverTabPets",
+       "ClassName": "Frame",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.6386,
+           0
+          ],
+          [
+           0.14226,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.29774,
+           0
+          ],
+          [
+           0.11576,
+           0
+          ]
+         ]
+        },
+        "BackgroundColor3": [
+         0.4039,
+         0.2549,
+         0.1882
+        ],
+        "ZIndex": 1
+       },
+       "Children": [
+        {
+         "Name": "UICorner",
+         "ClassName": "UICorner",
+         "Properties": {
+          "CornerRadius": {
+           "UDim": [
+            0.18,
+            0
+           ]
+          }
+         }
         }
        ]
       },

@@ -1,0 +1,117 @@
+{
+ "id": "20261116-210801-eb81",
+ "tytul": "Sala wyboru klasy, wersja 2",
+ "opis": "Bogatszy wystroj, mocniejsza kreska",
+ "kto": "Claude (Paweł)",
+ "czas": "2026-11-16T21:08:01+01:00",
+ "zrodlo": "studio",
+ "czesci": 1160,
+ "grupy": [
+  {
+   "sciezka": "Workspace/WyborKlasy/Beczki",
+   "czesci": 37
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Choragwie",
+   "czesci": 66
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Dach",
+   "czesci": 8
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Dywan",
+   "czesci": 21
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Kominek",
+   "czesci": 64
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Lada",
+   "czesci": 24
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Latarnie",
+   "czesci": 20
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Mury",
+   "czesci": 157
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Okno",
+   "czesci": 36
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Plomienie",
+   "czesci": 78
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Pochodnie",
+   "czesci": 24
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Podest",
+   "czesci": 24
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Podloga",
+   "czesci": 118
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Regal",
+   "czesci": 77
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Skrzynie",
+   "czesci": 27
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Stol",
+   "czesci": 26
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Stolki",
+   "czesci": 15
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Szkielet",
+   "czesci": 137
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Tarcza",
+   "czesci": 13
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Wiezba",
+   "czesci": 53
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Wneka",
+   "czesci": 69
+  },
+  {
+   "sciezka": "Workspace/WyborKlasy/Zyrandole",
+   "czesci": 66
+  }
+ ],
+ "zrzuty": [],
+ "zakres": {
+  "min": [
+   -33.491,
+   398.8,
+   3964.164
+  ],
+  "max": [
+   33.491,
+   429.463,
+   4035.836
+  ]
+ },
+ "miejsce": {
+  "placeId": 129485428021967,
+  "nazwa": "Blocky&Crycket (placeId: 129485428021967)"
+ },
+ "korzen": "Workspace/WyborKlasy"
+}

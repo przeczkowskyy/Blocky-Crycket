@@ -1,0 +1,26 @@
+{
+ "id": "r-20261116-210821-d6c3",
+ "tytul": "Sala wyboru klasy: bogatszy wystrój i kreska",
+ "opis_md": "**Co zrobiłem (polecenie Pawła):** sala ekranu wyboru klasy została zbudowana od nowa — bogatszy wystrój według referencji wnętrza karczmy i mocniejsza komiksowa kreska.\n\n**Co widać:**\n- sala jest obrócona względem kamery, więc widać ją „w narożnik”: po prawej kominek z tarczą i mieczami, regał z eliksirami i lada ze stołkami, w głębi okno z księżycem i wnęka z beczkami, na pierwszym planie stół ze świecą;\n- kreska: kamienie murów na ciemnej fudze, ciemne podkładki pod belkami i blatami, obrys wokół rekwizytów i bohaterów;\n- światło: noc rozświetlona ogniem (pochodnie, kominek, żyrandole migoczą), snop światła z iskierkami nad podestem. Paweł poprosił w trakcie o ciemniejszy obraz — ekspozycja jest obniżona;\n- przyciski i karta wjeżdżają po kolei, wybrany bohater lekko podskakuje przy zmianie klasy.\n\n**Czego nie zmieniałem:** oświetlenia gry (nocny nastrój ma tylko gracz i tylko na tym ekranie, po PLAY wraca zwykłe światło), modeli bohaterów Karola ani grafik 2D.\n\n**Czego nie ma:** zapisu wybranej klasy (znika po wyjściu z gry) i animacji bohaterów. Na półkach nie ma butelek ani liter — są eliksiry, słoje, kufle, chleb i jabłka.\n\nZrzuty: pierwszy „po”, drugi „przed”. Migawka 3D nie ma zrzutów (robiona bez nich) i nie pokazuje świateł.",
+ "kto": "Claude (Paweł)",
+ "czas": "2026-11-16T21:08:21+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/WyborKlasy",
+   "etykieta": "Sala wyboru klasy"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/UI/Selektor bohatera.md",
+   "etykieta": "Notatka o ekranie wyboru klasy"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg"
+ ],
+ "migawka": "20261116-210801-eb81",
+ "pytanie": "Czy nowa sala wyboru klasy pasuje do stylu gry?"
+}

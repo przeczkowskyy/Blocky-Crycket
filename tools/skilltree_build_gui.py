@@ -71,6 +71,10 @@ def main():
     tabs = []
     for i, (key, label) in enumerate([("TabPlayer", "PLAYER"), ("TabFortress", "FORTRESS"), ("TabPets", "PETS")]):
         x, y, w, h = L["tabs"][key]
+        # zasłonka w kolorze ciemnego drewna ramki: zakładki są też wypalone w grafice ramki i prześwitywały
+        # spod przyciemnionego / powiększonego przycisku (uwaga Pawła 16.11)
+        tabs.append(node("Cover" + key, "Frame", {**ud(x, y, w, h), "BackgroundColor3": c3("674130"), "ZIndex": 1},
+                         [corner(0.18)]))
         # kotwica = środek dolnej krawędzi: przy hoverze zakładka rośnie w górę, podstawa zostaje przy oknie
         tabs.append(node(key, "ImageButton", {
             "AnchorPoint": [0.5, 1], **ud(x + w / 2, y + h, w, h), "BackgroundTransparency": 1,
