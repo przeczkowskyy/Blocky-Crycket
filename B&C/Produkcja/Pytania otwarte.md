@@ -390,6 +390,7 @@ Szczegóły: Sesja główna 16.11, 20:05–20:07 ([[Sesja główna 2026-11-16 �
 Szczegóły: Sesja główna 16.11, 20:18–20:19 ([[Sesja główna 2026-11-16 — zapis ustaleń]], temat 6). Na tej samej sesji Karol odrzucił czwarty slot umiejętności za Robuxy jako „za bardzo pay-to-win” (D-088). Przy odrzuceniu D-080 wpiszcie w uzasadnieniu wariant (b) albo (c). Rasy: D-079.
 Rozstrzyga: D-080
 **Odpowiedź:**
+- Karol Balucki (2026-11-16): rozstrzygnięte decyzjami: D-080 zatwierdzona („Tak. Moduluje Pawłek, a jak skończą mu się tokeny to ja.”)
 
 ## 48. Wskrzeszenie w walce: legendarna umiejętność czy wcale?
 - Paweł: raz na walkę powrót ze 100% HP albo szansa na powrót z malejącym HP (50%, potem 25%…).
