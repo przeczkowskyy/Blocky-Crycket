@@ -2,23 +2,6 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-16T20:05:27+01:00",
- "prace": [
-  {
-   "id": "wybor-klasy-3d",
-   "tytul": "Scena wyboru klasy w 3D (Blender i Studio)",
-   "stan": "w_toku",
-   "etap": "budowa sali w Studio",
-   "start": "2026-11-16T19:52:53+01:00",
-   "koniec_szacowany": "2026-11-16T21:05:26+01:00",
-   "aktualizacja": "2026-11-16T20:05:26+01:00",
-   "obszary": [
-    "mapa:wybor_klasy",
-    "studio:WyborKlasy",
-    "swiat/wybor_klasy/**"
-   ],
-   "kto": "Claude (przeczkowskyy)",
-   "komputer": "0c03c4ec"
-  }
- ]
+ "aktualizacja": "2026-11-16T20:17:34+01:00",
+ "prace": []
 }
