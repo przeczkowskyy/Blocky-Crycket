@@ -5,7 +5,8 @@
   hasło (GIT_TERMINAL_PROMPT=0, GCM_INTERACTIVE=never, ssh w trybie wsadowym) i pisze komunikaty po angielsku
   (LC_ALL=C), żeby dało się je rozpoznać i przetłumaczyć na zrozumiały polski.
 - Stan pamiętany 5 s. `git fetch` w tle (osobny wątek) najwyżej raz na 5 minut, wyzwalany leniwie przez
-  GET /api/git/stan — żądanie nigdy na niego nie czeka.
+  GET /api/git/stan — żądanie nigdy na niego nie czeka. Tylko wtedy, gdy NIE działa stała synchronizacja (niżej): ona
+  robi fetch w każdym obiegu i po każdym lekkim sprawdzeniu, które zobaczy nowy commit (`FETCH_CO_S` jej nie dotyczy).
 - „Wyślij” dodaje i commituje WYŁĄCZNIE ścieżki z `git.sciezki_panelu` (domyślnie `panel/dane`) oraz te pliki planu
   sejfu (Pytania otwarte, Zadania, Rejestr decyzji, Dziennik zmian), które naprawdę zmienił panel i w których nie ma
   cudzych niezatwierdzonych zmian (bc/zapis.py: `do_wyslania`; ślad w danych lokalnych). Opis commita: „panel: …”.
@@ -575,10 +576,24 @@ def zdrowie():
 #      commitach commit scalający „panel: scalenie zmian z GitHuba” powstaje POZA katalogiem roboczym (`merge-tree` →
 #      `commit-tree`), a gałąź przechodzi na niego tym samym przewinięciem. Zwykłego `git merge` nie ma (przy odmowie
 #      strategia ort sama robi reset --hard i stash apply), nie ma też rebase, reset, stash ani usuwania plików;
+#      2b. ZAPIS PRZED POBRANIEM (od 16.11, `git.auto_commit_przed_pobraniem`, domyślnie tak): gdy WSZYSTKIE kolizje
+#      to własne, niewysłane zmiany panelu (pliki z `git.sciezki_panelu` albo pliki sejfu zmienione w panelu bez cudzych
+#      zmian — dokładnie to, co commituje „Wyślij”), panel zapisuje je commitem TYLKO LOKALNIE i pobiera od razu (krok 2
+#      drugi raz, już drogą commita scalającego). Wcześniej to był zastój: pobieranie czekało na commit zmian panelu,
+#      a krok 3 nie commituje, dopóki na GitHubie są niepobrane zmiany — każdy agent dopisuje się do Dziennika zmian,
+#      każde kliknięcie w panelu też, więc pobieranie stało, aż ktoś kliknął „Wyślij” (16.11: 10 minut). Cudza praca
+#      w toku dalej = „czeka”;
 #   3. SAMO WYSYŁANIE: dokładnie to, co przycisk „Wyślij” (`_zatwierdz`: ścieżki panelu i pliki sejfu zmienione w
 #      panelu bez cudzych zmian), gdy od ostatniej zmiany minęło `git.auto_wyslij_po_s` s (domyślnie 60) albo od
-#      pierwszej czekającej 5 min; lokalne commity — gdy najnowszy ma co najmniej tyle samo lat. Push (nigdy --force);
-#      odrzucony, bo ktoś wysłał wcześniej — krok 2 i push jeszcze raz (jeden raz).
+#      pierwszej czekającej 5 min; lokalne commity — gdy najnowszy ma co najmniej tyle samo lat. Commit z kroku 2b idzie
+#      tą samą regułą co zmiany, które zapisał (pierwsza zmiana i spokój liczone dalej) — nic nie wychodzi wcześniej
+#      tylko dlatego, że trzeba było pobrać. Push (nigdy --force); odrzucony, bo ktoś wysłał wcześniej — krok 2 (bez
+#      2b) i push jeszcze raz (jeden raz).
+# Między obiegami, co `git.auto_sprawdz_co_s` s (domyślnie 30; 0 = wyłączone), lekkie sprawdzenie bez fetch, bez
+# `git status` i bez blokady (`sprawdz_lekko`: `git ls-remote` gałęzi na GitHubie, a gdy pobieranie czeka — HEAD).
+# Nowy commit = od razu obieg „samo pobieranie” (kroki 0–2b; bez kroku 3, bez publikacji prac i bez przesuwania
+# zwykłego rytmu), więc cudze zmiany są tu średnio po ok. 20 s (najdłużej ok. 40 s), a wysyłanie dalej tylko
+# w zwykłych obiegach.
 # Błąd sieci: rosnący odstęp (2×, 4×, … `auto_co_s`, najwyżej 15 min); brak logowania: od razu co 15 min.
 # Telegram (bc/telegram.py, wyłącznik `git.auto_telegram`): cudze commity po samym pobraniu; konflikt / błąd / brak
 # logowania dłużej niż dwa obiegi — jedna wiadomość na incydent i jedna po powrocie do normy.
@@ -586,6 +601,8 @@ STANY_AUTO = ("ok", "pobieram", "wysylam", "czeka", "konflikt", "blad", "brak_lo
 STANY_PROBLEMU = ("konflikt", "blad", "brak_logowania")
 ZMIENNA_WYLACZNIKA = "BC_GIT_AUTO"                             # "0" = wyłączone, "1" = włączone także na danych zastępczych
 ZBIERAJ_NAJWYZEJ_S = 300                                       # najdłużej czekająca zmiana panelu idzie po 5 min
+SPRAWDZ_CO_S = 30.0                                            # lekkie sprawdzenie GitHuba między obiegami (domyślnie)
+ZDALNA_PAMIEC_S = 600                                          # nazwa zdalnego i gałęzi do `ls-remote` — pamiętana 10 min
 MAKS_ODSTEP_S = 900                                            # przy błędach najwyżej co 15 min
 START_PO_S = 15                                                # pierwszy obieg chwilę po starcie panelu
 POMINIEC_DO_UWAGI = 10                                         # tyle obiegów z index.lock = uwaga dla człowieka
@@ -609,13 +626,18 @@ def _liczba(wartosc, domyslnie, od, do):
 
 
 def ustawienia_auto():
-    """{auto, co_s, wyslij_po_s, telegram} z `git.*` konfiguracji (domyślnie: włączone, 90 s, 60 s, Telegram tak).
-    Liczby przycięte do rozsądnych granic — wspólna konfiguracja jest w repozytorium, więc nie może wymusić fetch co
-    sekundę."""
+    """{auto, co_s, wyslij_po_s, sprawdz_co_s, commit_przed_pobraniem, telegram} z `git.*` konfiguracji (domyślnie:
+    włączone, 90 s, 60 s, 30 s, tak, Telegram tak). Liczby przycięte do rozsądnych granic — wspólna konfiguracja jest
+    w repozytorium, więc nie może wymusić fetch co sekundę. `auto_sprawdz_co_s` = 0 (albo false) wyłącza lekkie
+    sprawdzanie między obiegami."""
     g = rdzen.konfiguracja().get("git") or {}
+    sprawdz = g.get("auto_sprawdz_co_s")
+    wylaczone = sprawdz is False or (not isinstance(sprawdz, bool) and _liczba(sprawdz, 1.0, -1e9, 1e9) <= 0)
     return {"auto": g.get("auto", True) is not False,
             "co_s": _liczba(g.get("auto_co_s"), 90.0, 30.0, 3600.0),
             "wyslij_po_s": _liczba(g.get("auto_wyslij_po_s"), 60.0, 10.0, 3600.0),
+            "sprawdz_co_s": 0.0 if wylaczone else _liczba(sprawdz, SPRAWDZ_CO_S, 15.0, 600.0),
+            "commit_przed_pobraniem": g.get("auto_commit_przed_pobraniem", True) is not False,
             "telegram": g.get("auto_telegram", True) is not False}
 
 
@@ -651,7 +673,8 @@ def _nowy_stan():
             "co_zrobic": None, "pliki": [], "plikow": 0, "zgodne": None, "ostatni_obieg": None, "nastepna_proba": 0.0,
             "bledy_z_rzedu": 0, "pominiete": 0, "konflikt_klucz": None, "pierwsza_zmiana": None,
             "czeka_na_wyslanie": 0, "pobranie": None, "wyslanie": None, "licznik_pobran": 0, "obiegi_problemu": 0,
-            "incydent": None, "do_powiadomienia": None}
+            "incydent": None, "do_powiadomienia": None, "wczesny_commit": None, "do_pobrania": 0,
+            "do_pobrania_od": None, "do_pobrania_assety": False, "head_po_obiegu": None, "zdalna": None}
 
 
 def _st(repo):
@@ -696,7 +719,10 @@ def stan_auto(repo=None):
     ustaw = ustawienia_auto()
     with _auto_blokada:
         wynik = {k: st.get(k) for k in ("wlaczona", "stan", "opis", "krotko", "co_zrobic", "pliki", "plikow", "zgodne",
-                                        "ostatni_obieg", "czeka_na_wyslanie", "pobranie", "wyslanie")}
+                                        "ostatni_obieg", "czeka_na_wyslanie", "pobranie", "wyslanie", "do_pobrania",
+                                        "do_pobrania_od", "do_pobrania_assety")}
+        wynik["do_pobrania"] = int(wynik.get("do_pobrania") or 0)
+        wynik["do_pobrania_assety"] = bool(wynik["do_pobrania"] and wynik.get("do_pobrania_assety"))
         wynik["pobranie"] = dict(st["pobranie"]) if st.get("pobranie") else None
         wynik["wyslanie"] = dict(st["wyslanie"]) if st.get("wyslanie") else None
         wynik["pliki"] = list(st.get("pliki") or [])
@@ -709,8 +735,22 @@ def stan_auto(repo=None):
                      opis=powod_wylaczenia() or "Samo pobieranie i wysyłanie nie działa w tym procesie panelu.")
     if wynik.get("stan") == "wylaczona":
         wynik["wlaczona"] = False
-    wynik.update(co_s=int(ustaw["co_s"]), wyslij_po_s=int(ustaw["wyslij_po_s"]))
+        wynik.update(do_pobrania=0, do_pobrania_od=None, do_pobrania_assety=False)
+    wynik.update(co_s=int(ustaw["co_s"]), wyslij_po_s=int(ustaw["wyslij_po_s"]),
+                 sprawdz_co_s=int(ustaw["sprawdz_co_s"]))
     return wynik
+
+
+def czeka_z_githuba(repo=None):
+    """Dla innych modułów (zakładka Assety, co 2 s): czy na GitHubie leżą zmiany, których panel jeszcze nie pobrał —
+    {ile, od, assety (czy dotyczą assets/), stan, krotko} albo None. Bez gita i bez czytania konfiguracji."""
+    repo = _repo(repo)
+    with _auto_blokada:
+        st = _auto.get(repo)
+        if not st or not st.get("do_pobrania") or st.get("stan") == "wylaczona":
+            return None
+        return {"ile": int(st["do_pobrania"]), "od": st.get("do_pobrania_od"), "assety": bool(st.get("do_pobrania_assety")),
+                "stan": st.get("stan"), "krotko": st.get("krotko")}
 
 
 # --------------------------------------------------------------------------- pomocnicze polecenia (tylko odczyt)
@@ -910,14 +950,36 @@ def _zapisz_pobranie(repo, st, commity):
         st["do_powiadomienia"] = obce or None
 
 
-def _pobierz_bezpiecznie(repo, st, reczne=False):
+def _do_pobrania(st, ile, assety=None):
+    """Ile commitów z GitHuba czeka na pobranie (po ostatnim fetch) — dla pola `auto` i zakładki Assety."""
+    with _auto_blokada:
+        if not ile:
+            st.update(do_pobrania=0, do_pobrania_od=None, do_pobrania_assety=False)
+            return
+        st["do_pobrania"] = int(ile)
+        st["do_pobrania_od"] = st.get("do_pobrania_od") or rdzen.teraz()
+        if assety is not None:
+            st["do_pobrania_assety"] = bool(assety)
+
+
+def _dotyczy_assetow(pliki):
+    return any(p == "assets/manifest.json" or p.startswith("assets/processed/") for p in pliki or [])
+
+
+def _pobierz_bezpiecznie(repo, st, reczne=False, sciezki=None, ustaw=None, teraz=None, wczesny=True):
     """Krok S2. Zwraca (wynik, szczegóły): "aktualne", "pobrano", "czeka", "konflikt", "blad". Ustawia stan.
-    Niczego nie nadpisuje: każda kolizja z lokalną pracą = „czeka” bez dotykania plików."""
+    Niczego nie nadpisuje: każda kolizja z lokalną pracą = „czeka” bez dotykania plików. Wyjątek (krok 2b): kolizje,
+    które są WYŁĄCZNIE własnymi zmianami panelu, idą najpierw do lokalnego commita (`_zapisz_przed_pobraniem`), a
+    pobieranie rusza od razu drogą commita scalającego. `wczesny=False` — bez kroku 2b (ponowienie po odrzuconym
+    wysłaniu: wtedy push idzie zaraz potem, a zmiany panelu mają czekać na swój spokój)."""
     przod, tyl = _przod_tyl(repo)
     if tyl == 0:
         with _auto_blokada:
             st["konflikt_klucz"] = None
+        _do_pobrania(st, 0)
         return "aktualne", {"przod": przod}
+    kod, out, _ = git(["diff", "--name-only", "-z", "--no-renames", "HEAD...@{u}", "--"], repo, timeout=60)
+    _do_pobrania(st, tyl, _dotyczy_assetow(_lista_z(out)) if kod == 0 else None)
     head, gora = _rev(repo, "HEAD"), _rev(repo, "@{u}")
     if not head or not gora:
         _ustaw(st, "blad", "Nie udało się odczytać commitów (HEAD albo gałęzi na GitHubie).", krotko="błąd gita",
@@ -966,6 +1028,19 @@ def _pobierz_bezpiecznie(repo, st, reczne=False):
     kolizje = [p for p in zmienione if os.path.normcase(p) in lokalne]
     kolizje += [p for p in _ignorowane_na_drodze(repo, [p for p in zmienione if p not in kolizje]) if p not in kolizje]
     if kolizje:
+        ustaw = dict(ustawienia_auto(), **(ustaw or {}))
+        if wczesny and ustaw.get("commit_przed_pobraniem", True):
+            try:
+                # Blokada zapisu sejfu od sprawdzenia plików do końca pobierania: kliknięcie w panelu w tym czasie
+                # poczeka (najwyżej 15 s), zamiast zmienić plik między lokalnym commitem a przewinięciem.
+                with _blokada_sejfu(True):
+                    if _zapisz_przed_pobraniem(repo, st, kolizje, lokalne,
+                                               sciezki if sciezki is not None else sciezki_panelu(),
+                                               time.time() if teraz is None else teraz):
+                        return _pobierz_bezpiecznie(repo, st, reczne=reczne, sciezki=sciezki, ustaw=ustaw,
+                                                    teraz=teraz, wczesny=False)
+            except BladHTTP as e:                              # zapis z panelu trwa dłużej — następny obieg
+                rdzen.log("git-auto: zapis przed pobraniem odłożony: %s" % e.komunikat)
         _ustaw_czeka_na_pliki(st, kolizje, ile)
         return "czeka", {"pliki": kolizje}
     dodane = _dodane_do_indeksu(repo)                         # ktoś jest w trakcie commita (git add, commit jeszcze nie)
@@ -1002,6 +1077,7 @@ def _pobierz_bezpiecznie(repo, st, reczne=False):
     if kod == 0:
         with _auto_blokada:
             st["konflikt_klucz"] = None
+        _do_pobrania(st, 0)
         _sprawdz_po_scaleniu(repo, przed, zmienione)
         _zapisz_pobranie(repo, st, commity or [{"hash": gora[:12], "autor": "ktoś", "temat": "(scalenie)"}])
         rdzen.log("git-auto: pobrano %s (%s)" % (nazwy, "scalenie" if przod else "przewinięcie"))
@@ -1041,6 +1117,45 @@ def _ustaw_czeka_na_dodane(st, pliki, ile):
            krotko="pliki dodane do commita (git add) — dokończ commit", pliki=pliki,
            co_zrobic="Dokończ commit (albo poproś agenta, który dodał %s) — panel pobierze zmiany sam w kolejnym "
                      "obiegu." % ("ten plik" if n == 1 else "te pliki"))
+
+
+def _zapisz_przed_pobraniem(repo, st, kolizje, lokalne, sciezki, teraz):
+    """Krok 2b (pod blokadą gita i blokadą zapisu sejfu). Gdy KAŻDA kolizja to własna, niewysłana zmiana panelu —
+    plik z `sciezki` zmieniony lokalnie albo plik sejfu, który zmienił panel i w którym nie ma cudzych zmian (te same
+    warunki co przycisk „Wyślij”, bc/zapis.py: `do_wyslania`) — zapisuje je commitem tylko lokalnie (`_zatwierdz`, bez
+    push). Cudza praca w toku, plik ignorowany na drodze albo pliki dodane do commita przez kogoś innego = nic (False).
+    Zwraca True, gdy powstał commit. Wysłanie: krok S3, tą samą regułą spokoju co zapisane zmiany (`wczesny_commit`)."""
+    sejf_sciezki, _, _ = sejf_do_wyslania(repo)
+    sejf = {os.path.normcase(s) for s in sejf_sciezki}
+    panelu, sejfu = [], []
+    for p in kolizje:
+        k = os.path.normcase(p)
+        if k in sejf:
+            sejfu.append(p)
+        elif k in lokalne and _w_sciezkach(p, sciezki):
+            panelu.append(p)
+        else:
+            return False                                       # cudza praca w toku — czekamy jak dotąd
+    dodane = _dodane_do_indeksu(repo)
+    if dodane is None or dodane:                               # ktoś jest w trakcie commita — nie wchodzimy mu w drogę
+        return False
+    with _auto_blokada:
+        pierwsza = st.get("pierwsza_zmiana") or (st.get("wczesny_commit") or {}).get("pierwsza") or teraz
+    try:
+        commit, _, dodatki = _zatwierdz(repo, None if sejfu else _opis_danych(panelu), panelu, bool(sejfu))
+    except BladHTTP as e:
+        rdzen.log("git-auto: nie udało się zapisać zmian panelu przed pobraniem: %s" % e.komunikat)
+        return False
+    if dodatki.get("uwaga"):
+        rdzen.log("git-auto: %s" % dodatki["uwaga"])
+    if not commit:
+        return False
+    with _auto_blokada:
+        st["wczesny_commit"] = {"kiedy": teraz, "pierwsza": min(pierwsza, teraz), "commit": commit}
+    rdzen.log("git-auto: zmiany panelu w %d %s, które zmieniono też na GitHubie (%s), zapisane commitem %s tylko "
+              "lokalnie — pobieram od razu, wysłanie po zwykłym spokoju" % (
+                  len(kolizje), "pliku" if len(kolizje) == 1 else "plikach", ", ".join(kolizje[:3]), commit))
+    return True
 
 
 def _sprawdz_po_scaleniu(repo, przed, zmienione):
@@ -1137,8 +1252,12 @@ def _wyslij_bezpiecznie(repo, sciezki, ustaw, teraz, st):
     czekajace, ostatnia, z_sejfu = _czekajace(repo, sciezki, brudne)
     przod, tyl = _przod_tyl(repo)
     with _auto_blokada:
+        if przod == 0:
+            st["wczesny_commit"] = None                        # commit z kroku 2b już jest na GitHubie
+        wczesny = st.get("wczesny_commit")
         if czekajace:
-            st["pierwsza_zmiana"] = st.get("pierwsza_zmiana") or teraz
+            # pierwsza czekająca zmiana liczy się od zmian zapisanych już w kroku 2b — limit 5 min się nie przesuwa
+            st["pierwsza_zmiana"] = st.get("pierwsza_zmiana") or (wczesny or {}).get("pierwsza") or teraz
         else:
             st["pierwsza_zmiana"] = None
         st["czeka_na_wyslanie"] = len(czekajace)
@@ -1147,7 +1266,12 @@ def _wyslij_bezpiecznie(repo, sciezki, ustaw, teraz, st):
     if czekajace:
         spokoj = teraz - min(teraz, ostatnia if ostatnia is not None else pierwsza)
         gotowe_zmiany = spokoj >= ustaw["wyslij_po_s"] or teraz - pierwsza >= ZBIERAJ_NAJWYZEJ_S
-    gotowe_commity = przod > 0 and _lokalne_gotowe(repo, teraz, ustaw["wyslij_po_s"])
+    gotowe_commity = przod > 0 and (_lokalne_gotowe(repo, teraz, ustaw["wyslij_po_s"]) or bool(
+        wczesny and teraz - wczesny["pierwsza"] >= ZBIERAJ_NAJWYZEJ_S))
+    if wczesny and czekajace and not gotowe_zmiany:
+        # Commit z kroku 2b to zmiany panelu zapisane wcześniej tylko po to, żeby pobrać — idzie razem z resztą
+        # zmian panelu, gdy te będą gotowe (spokój albo 5 min od pierwszej), nie wcześniej.
+        gotowe_commity = False
     if tyl or (not gotowe_zmiany and not gotowe_commity):
         if czekajace or przod:
             n = len(czekajace)
@@ -1189,6 +1313,8 @@ def _wypchnij_auto(repo, ustaw, teraz, st, commit, ponow):
     kod, out, err = git(["push"], repo, timeout=180)
     tekst = out + "\n" + err
     if kod == 0:
+        with _auto_blokada:
+            st["wczesny_commit"] = None
         _zapisz_wyslanie(repo, st, commit, ile=przod)
         _ustaw(st, "ok", "Wysłano na GitHuba.", zgodne=True)
         rdzen.log("git-auto: wysłano %d commit(ów)" % przod)
@@ -1198,7 +1324,7 @@ def _wypchnij_auto(repo, ustaw, teraz, st, commit, ponow):
         if kod_f != 0:
             _blad_sieci(st, err_f, teraz, ustaw, "pobieranie po odrzuconym wysłaniu")
             return "blad"
-        wynik, _ = _pobierz_bezpiecznie(repo, st)
+        wynik, _ = _pobierz_bezpiecznie(repo, st, ustaw=ustaw, teraz=teraz, wczesny=False)
         if wynik not in ("aktualne", "pobrano"):
             return wynik
         return _wypchnij_auto(repo, ustaw, teraz, st, commit, ponow=False)
@@ -1212,9 +1338,11 @@ def _wypchnij_auto(repo, ustaw, teraz, st, commit, ponow):
 
 
 # --------------------------------------------------------------------------- jeden obieg i pętla
-def obieg(repo=None, sciezki=None, ustaw=None, teraz=None):
+def obieg(repo=None, sciezki=None, ustaw=None, teraz=None, tylko_pobieranie=False):
     """Jeden obieg stałej synchronizacji (S1–S3). Nie rzuca — błąd trafia do stanu. Zwraca `stan_auto(repo)`.
-    Testy podają repo= z katalogu tymczasowego (bezpiecznik `_pilnuj`), `ustaw` i `teraz`."""
+    `tylko_pobieranie=True` (po lekkim sprawdzeniu między obiegami): kroki 0–2b bez wysyłania (S3) i bez publikacji
+    prac — wysyłanie zostaje w zwykłym rytmie. Testy podają repo= z katalogu tymczasowego (bezpiecznik `_pilnuj`),
+    `ustaw` i `teraz`."""
     repo = _repo(repo)
     _pilnuj(repo)
     ustaw = dict(ustawienia_auto(), **(ustaw or {}))
@@ -1234,8 +1362,9 @@ def obieg(repo=None, sciezki=None, ustaw=None, teraz=None):
         return stan_auto(repo)
     proba = False
     poprzedni = st.get("stan")
+    przed = (st.get("stan"), st.get("krotko"), st.get("opis"))
     try:
-        proba = _obieg(repo, sciezki, ustaw, teraz, st)
+        proba = _obieg(repo, sciezki, ustaw, teraz, st, tylko_pobieranie)
     except Exception as e:                                     # pętla nigdy nie pada
         rdzen.log("git-auto: nieoczekiwany błąd obiegu: %r" % e)
         _ustaw(st, "blad", "Nieoczekiwany błąd synchronizacji: %s" % _czysty(str(e) or e.__class__.__name__, 200),
@@ -1247,13 +1376,28 @@ def obieg(repo=None, sciezki=None, ustaw=None, teraz=None):
         _zapis_blokada.release()
     if st.get("stan") in ("pobieram", "wysylam"):              # nie powinno zostać — na wszelki wypadek
         _ustaw(st, poprzedni if poprzedni not in ("pobieram", "wysylam", None) else "ok", "Obieg zakończony.")
-    _prace_po_obiegu(repo, ustaw)
+    _zapisz_zmiane_stanu(st, przed)
+    if not tylko_pobieranie:                                   # publikacja prac tylko w zwykłym rytmie
+        _prace_po_obiegu(repo, ustaw)
     if proba:
         _po_obiegu(repo, st, ustaw)
     return stan_auto(repo)
 
 
-def _obieg(repo, sciezki, ustaw, teraz, st):
+def _zapisz_zmiane_stanu(st, przed):
+    """Przejście do „czeka” / problemu (albo między nimi) — jeden wpis w logu. Dotąd log milczał, gdy pobieranie stało
+    (16.11: 10 minut bez śladu)."""
+    with _auto_blokada:
+        po = (st.get("stan"), st.get("krotko"), st.get("opis"))
+        pliki = list(st.get("pliki") or [])[:3]
+    if po[0] in ("czeka",) + STANY_PROBLEMU and po != przed:
+        rdzen.log("git-auto: stan „%s”%s — %s%s" % (po[0], (" (%s)" % po[1]) if po[1] else "", _czysty(po[2], 200),
+                                                    (" Pliki: " + ", ".join(pliki)) if pliki else ""))
+    elif przed[0] in ("czeka",) + STANY_PROBLEMU and po[0] not in ("czeka",) + STANY_PROBLEMU:
+        rdzen.log("git-auto: stan „%s” — %s" % (po[0], _czysty(po[2], 200)))
+
+
+def _obieg(repo, sciezki, ustaw, teraz, st, tylko_pobieranie=False):
     """Zwraca True, gdy obieg naprawdę próbował (do liczenia obiegów incydentu), False — gdy pominięty."""
     with _auto_blokada:
         st["ostatni_obieg"] = rdzen.teraz()
@@ -1289,8 +1433,19 @@ def _obieg(repo, sciezki, ustaw, teraz, st):
         st["bledy_z_rzedu"] = 0
         st["nastepna_proba"] = 0.0
     _prace_innych(repo, ustaw)
-    wynik, _ = _pobierz_bezpiecznie(repo, st)
+    wynik, sz = _pobierz_bezpiecznie(repo, st, sciezki=sciezki, ustaw=ustaw, teraz=teraz)
+    head = _rev(repo, "HEAD")
+    with _auto_blokada:
+        st["head_po_obiegu"] = head                             # lekkie sprawdzenie: czy ktoś potem zrobił commit
     if wynik in ("czeka", "konflikt", "blad"):
+        return True
+    if tylko_pobieranie:                                       # wysyłanie zostaje w zwykłym rytmie obiegów
+        if wynik == "pobrano":
+            p = st.get("pobranie") or {}
+            _ustaw(st, "ok", "Pobrano z GitHuba %s." % _odmiana_zmian(p.get("ile") or 0),
+                   zgodne=not sz.get("scalenie") and not st.get("czeka_na_wyslanie"))
+        elif st.get("stan") in ("czeka", "konflikt"):          # ktoś pobrał albo scalił sam — stan sprzed obiegu nieaktualny
+            _ustaw(st, "ok", "Zmiany z GitHuba są pobrane.")
         return True
     _wyslij_bezpiecznie(repo, sciezki, ustaw, teraz, st)
     if wynik == "pobrano" and st.get("stan") == "ok" and st.get("opis") == "Wszystko zgodne z GitHubem.":
@@ -1379,6 +1534,58 @@ def _po_obiegu(repo, st, ustaw):
             _telegram(w)
 
 
+def _zdalna_galaz(repo, st):
+    """(nazwa zdalnego, gałąź na zdalnym) gałęzi śledzącej, np. ("origin", "refs/heads/main") — do `git ls-remote`.
+    Pamiętane `ZDALNA_PAMIEC_S` s (zmiana gałęzi też unieważnia). None, gdy gałąź nie śledzi niczego."""
+    kod, out, _ = git(["rev-parse", "--symbolic-full-name", "HEAD"], repo, timeout=10)
+    ref = out.strip() if kod == 0 else ""
+    if not ref.startswith("refs/heads/"):
+        return None
+    with _auto_blokada:
+        z = st.get("zdalna")
+    if z and z["ref"] == ref and time.time() - z["kiedy"] < ZDALNA_PAMIEC_S:
+        return z["zdalne"], z["galaz"]
+    kod, out, _ = git(["for-each-ref", "--format=%(upstream:remotename)%09%(upstream:remoteref)", ref], repo,
+                      timeout=10)
+    cz = out.strip().split("\t") if kod == 0 else []
+    if len(cz) != 2 or not cz[0] or cz[0].startswith("-") or not cz[1].startswith("refs/"):
+        return None
+    with _auto_blokada:
+        st["zdalna"] = {"ref": ref, "zdalne": cz[0], "galaz": cz[1], "kiedy": time.time()}
+    return cz[0], cz[1]
+
+
+def sprawdz_lekko(repo=None, teraz=None):
+    """Lekkie sprawdzenie między obiegami (pętla, co `git.auto_sprawdz_co_s` s): bez fetch, bez `git status`, bez
+    blokady i bez zapisu w .git. True, gdy warto od razu zrobić samo pobieranie — gałąź na GitHubie wskazuje inny
+    commit niż ostatnio pobrany (`git ls-remote`), albo pobieranie czeka (kolizja, `git add`, konflikt), a od obiegu
+    na tym komputerze powstał commit (HEAD). Błąd sieci = False: opisze go zwykły obieg (z rosnącym odstępem)."""
+    repo = _repo(repo)
+    _pilnuj(repo)
+    st = _st(repo)
+    teraz = time.time() if teraz is None else float(teraz)
+    with _auto_blokada:
+        if teraz < (st.get("nastepna_proba") or 0) or st.get("stan") == "wylaczona" or not st.get("ostatni_obieg"):
+            return False
+        czeka = st.get("stan") in ("czeka", "konflikt") and bool(st.get("do_pobrania"))
+        head_po = st.get("head_po_obiegu")
+    if _cudza_operacja(repo):
+        return False
+    if czeka:
+        head = _rev(repo, "HEAD")
+        if head and head_po and head != head_po:
+            return True
+    zd = _zdalna_galaz(repo, st)
+    if not zd:
+        return False
+    kod, out, _ = git(["ls-remote", zd[0], zd[1]], repo, timeout=30)
+    if kod != 0:
+        return False
+    zdalny = next((l.split("\t")[0].strip() for l in out.splitlines()
+                   if "\t" in l and l.split("\t", 1)[1].strip() == zd[1]), None)
+    return bool(zdalny) and zdalny != _rev(repo, "@{u}")
+
+
 def _petla_watek(repo, stop):
     if stop.wait(START_PO_S):
         return
@@ -1388,10 +1595,26 @@ def _petla_watek(repo, stop):
         except Exception as e:                                 # obieg sam łapie błędy; to tylko ostatnia siatka
             rdzen.log("git-auto: błąd pętli: %r" % e)
         try:
-            co_s = ustawienia_auto()["co_s"]
+            u = ustawienia_auto()
+            co_s, sprawdz_s = u["co_s"], u["sprawdz_co_s"]
         except Exception:
-            co_s = 90.0
-        stop.wait(co_s)
+            co_s, sprawdz_s = 90.0, 0.0
+        # do następnego zwykłego obiegu: lekkie sprawdzenie co `sprawdz_s` s; nowy commit = samo pobieranie od razu
+        # (zwykły rytm — i wysyłanie — się nie przesuwa)
+        nastepny = time.monotonic() + co_s
+        while not stop.is_set():
+            zostalo = nastepny - time.monotonic()
+            if zostalo <= 0:
+                break
+            if stop.wait(min(zostalo, sprawdz_s) if sprawdz_s > 0 else zostalo):
+                return
+            if sprawdz_s <= 0 or nastepny - time.monotonic() < 5:   # zwykły obieg za chwilę i tak
+                continue
+            try:
+                if sprawdz_lekko(repo):
+                    obieg(repo, tylko_pobieranie=True)
+            except Exception as e:
+                rdzen.log("git-auto: błąd lekkiego sprawdzenia: %r" % e)
 
 
 def uruchom_w_tle():
@@ -1417,7 +1640,9 @@ def uruchom_w_tle():
     _petla.update(watek=w, stop=stop, repo=repo)
     w.start()
     u = ustawienia_auto()
-    rdzen.log("git-auto: stała synchronizacja włączona (co %d s, wysyłanie po %d s spokoju)" % (u["co_s"], u["wyslij_po_s"]))
+    rdzen.log("git-auto: stała synchronizacja włączona (co %d s, wysyłanie po %d s spokoju, %s)" % (
+        u["co_s"], u["wyslij_po_s"], ("lekkie sprawdzenie GitHuba co %d s" % u["sprawdz_co_s"]) if u["sprawdz_co_s"]
+        else "bez lekkiego sprawdzania"))
 
 
 def zatrzymaj_w_tle(czekaj_s=20.0):

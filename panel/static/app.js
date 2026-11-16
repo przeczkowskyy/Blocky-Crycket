@@ -475,8 +475,9 @@ async function odswiezLicznikSpraw() {
 }
 
 // --------------------------------------------------------------------------- stała synchronizacja z GitHubem (D-070)
-// Co 30 s GET /api/git/auto (sam stan, serwer nie uruchamia gita). Gdy panel sam pobrał nowe zmiany — krótka informacja
-// „kto i co” (zwykły tekst) i zdarzenie bc:git-pobrano dla widoków. Pierwsze sprawdzenie tylko zapamiętuje stan.
+// Co 30 s GET /api/git/auto (sam stan, serwer nie uruchamia gita) — każda odpowiedź idzie do widoków zdarzeniem
+// bc:git-auto. Gdy panel sam pobrał nowe zmiany — krótka informacja „kto i co” (zwykły tekst) i zdarzenie
+// bc:git-pobrano dla widoków. Pierwsze sprawdzenie tylko zapamiętuje stan.
 // Stary serwer bez tej trasy (404) — nic się nie zmienia; kolejna próba za 5 min (po restarcie panelu ruszy sama).
 const sync = { ostatnie: null, przerwaDo: 0 };
 async function sprawdzSynchronizacje() {
@@ -488,6 +489,7 @@ async function sprawdzSynchronizacje() {
     if (e && (e.status === 404 || e.status === 405)) sync.przerwaDo = Date.now() + 5 * 60000;
     return;
   }
+  if (a && typeof a === "object") window.dispatchEvent(new CustomEvent("bc:git-auto", { detail: a }));   // np. pasek w Assetach
   const p = a && typeof a === "object" ? a.pobranie : null;
   const id = p && p.id ? String(p.id) : "";
   if (sync.ostatnie !== null && id && id !== sync.ostatnie) {

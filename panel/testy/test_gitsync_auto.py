@@ -644,6 +644,278 @@ class TestSamoWysylanie(Baza):
         self.assertTrue(a["zgodne"])
 
 
+# =========================================================================== bez zastoju: zmiany panelu a pobieranie (16.11)
+LISTA = "".join("wiersz %d\n" % i for i in range(1, 11))
+SEJF = "sejf/Dziennik zmian.md"
+
+
+class TestPobieranieBezZastoju(Baza):
+    """16.11: commit drugiej osoby zmieniał Dziennik zmian, a panel na tym komputerze miał w nim własne, niewysłane
+    zmiany (każde kliknięcie dopisuje wiersz). Pobieranie czekało na commit tych zmian, a samo wysyłanie nie commituje,
+    dopóki na GitHubie leżą niepobrane zmiany — zastój do ręcznego „Wyślij” (10 minut). Teraz: własne zmiany panelu
+    idą do commita tylko lokalnie, pobieranie od razu, wysłanie dalej po spokoju."""
+
+    def setUp(self):
+        super().setUp()
+        for rel, tekst in (("panel/dane/lista.md", LISTA), (SEJF, LISTA)):
+            self.pisz(self.karol, rel, tekst)
+        self.g(["add", "-A"], self.karol)
+        self.g(["commit", "-q", "-m", "lista i dziennik"], self.karol)
+        self.g(["push", "-q"], self.karol)
+        self.g(["pull", "-q", "--no-rebase"], self.pawel)
+
+    def zdalny(self):
+        return self.g(["rev-parse", "main"], self.zdalne).strip()
+
+    def commit_pawla_wiele(self, pliki, temat):
+        self.g(["pull", "-q", "--no-rebase"], self.pawel)
+        for rel, tekst in pliki.items():
+            self.pisz(self.pawel, rel, tekst)
+        self.g(["add", "-A"], self.pawel)
+        self.g(["commit", "-q", "-m", temat], self.pawel)
+        self.g(["push", "-q"], self.pawel)
+
+    def test_wlasna_zmiana_panelu_nie_blokuje_pobierania(self):
+        t0 = time.time()
+        self.pisz(self.karol, "panel/dane/lista.md", "wiersz 0 — panel Karola\n" + LISTA)     # niewysłana zmiana panelu
+        self.pisz(self.karol, "src/kod.lua", "print('agent pracuje')\n")                     # cudza praca w toku obok
+        self.pisz(self.karol, "README.md", "repo próbne — agent zmienia\n")
+        przed = self.odcisk(self.karol, ["src/kod.lua", "README.md"])
+        manifest = '{"assets": {"CsBg1": {"status": "processed"}}}\n'
+        self.commit_pawla_wiele({"panel/dane/lista.md": LISTA + "wiersz 11 — Paweł\n",
+                                 "assets/manifest.json": manifest}, "Paweł: grafiki sali wyboru klasy")
+        zdalny = self.zdalny()
+
+        a = self.obieg(teraz=t0)
+        self.assertEqual(a["stan"], "ok", a)
+        self.assertEqual(self.czytaj(self.karol, "assets/manifest.json"), manifest.encode("utf-8"))   # grafiki są tu
+        lista = self.czytaj(self.karol, "panel/dane/lista.md").decode("utf-8")
+        self.assertIn("wiersz 0 — panel Karola", lista)
+        self.assertIn("wiersz 11 — Paweł", lista)
+        self.assertEqual(self.zdalny(), zdalny)                                     # nic nie wyszło na GitHuba
+        rodzice = self.g(["log", "-1", "--format=%P"], self.karol).split()
+        self.assertEqual(len(rodzice), 2)
+        self.assertEqual(self.g(["log", "-1", "--format=%s"], self.karol).strip(), "panel: scalenie zmian z GitHuba")
+        self.assertTrue(self.g(["log", "-1", "--format=%s", "HEAD^1"], self.karol).startswith("panel: "))
+        self.assertEqual(sorted(self.g(["show", "--name-only", "--format=", "HEAD^1"], self.karol).split()),
+                         ["panel/dane/lista.md"])                                    # tylko plik panelu
+        self.assertEqual(self.odcisk(self.karol, list(przed)), przed)               # cudza praca co do bajta
+        status = self.g(["status", "--porcelain", "-uall"], self.karol)
+        self.assertIn("src/kod.lua", status)
+        self.assertIn("README.md", status)
+        self.assertNotIn("lista.md", status)
+        self.assertEqual(self.g(["stash", "list"], self.karol), "")
+        self.assertEqual(a["do_pobrania"], 0)
+        self.assertTrue(any("tylko lokalnie" in l for l in self.logi), self.logi)
+
+        self.obieg(teraz=time.time() + 30)                     # commit świeży — dalej nic nie wychodzi
+        self.assertEqual(self.zdalny(), zdalny)
+        a = self.obieg(teraz=time.time() + 120)                # po minucie spokoju idzie na GitHuba
+        self.assertEqual(self.zdalny(), self.head(self.karol), a)
+
+    def test_wczesny_commit_czeka_na_spokoj_reszty_zmian(self):
+        t0 = time.time()
+        self.pisz(self.karol, "panel/dane/lista.md", "wiersz 0 — panel\n" + LISTA)
+        self.commit_pawla_wiele({"panel/dane/lista.md": LISTA + "wiersz 11 — Paweł\n"}, "Paweł: lista")
+        zdalny = self.zdalny()
+        self.obieg(teraz=t0)                                   # zapis przed pobraniem + scalenie
+        head = self.head(self.karol)
+        self.assertNotEqual(head, zdalny)
+        p = self.pisz(self.karol, "panel/dane/komentarze/k1.json", "{}\n")                   # człowiek dalej klika
+        os.utime(p, (t0 + 100, t0 + 100))
+        self.obieg(teraz=t0 + 110)                             # wczesny commit ma 110 s, ale ostatnia zmiana 10 s temu
+        self.assertEqual(self.zdalny(), zdalny)
+        self.assertEqual(self.head(self.karol), head)
+        a = self.obieg(teraz=t0 + 170)                         # 70 s spokoju — commit reszty i jedno wysłanie
+        self.assertEqual(self.zdalny(), self.head(self.karol), a)
+        drzewo = self.g(["ls-tree", "-r", "--name-only", "HEAD"], self.karol).split()
+        self.assertIn("panel/dane/komentarze/k1.json", drzewo)
+
+    def test_wczesny_commit_najdluzej_piec_minut(self):
+        t0 = time.time()
+        self.pisz(self.karol, "panel/dane/lista.md", "wiersz 0 — panel\n" + LISTA)
+        self.commit_pawla_wiele({"panel/dane/lista.md": LISTA + "wiersz 11 — Paweł\n"}, "Paweł: lista")
+        zdalny = self.zdalny()
+        self.obieg(teraz=t0)
+        p = self.pisz(self.karol, "panel/dane/komentarze/k1.json", "{}\n")
+        os.utime(p, (t0 + 290, t0 + 290))                      # ktoś ciągle klika
+        self.obieg(teraz=t0 + 200)
+        self.assertEqual(self.zdalny(), zdalny)
+        self.obieg(teraz=t0 + 301)                             # 5 min od pierwszej zmiany (tej z wczesnego commita)
+        self.assertEqual(self.zdalny(), self.head(self.karol))
+
+    def test_cudza_praca_w_kolizji_dalej_czeka_bez_commita(self):
+        self.pisz(self.karol, "panel/dane/lista.md", "wiersz 0 — panel\n" + LISTA)
+        self.pisz(self.karol, "a.txt", "wiersz 1\nwiersz 2 — agent Karola\nwiersz 3\n")    # nie panel
+        przed = self.odcisk(self.karol, ["panel/dane/lista.md", "a.txt"])
+        head = self.head(self.karol)
+        self.commit_pawla_wiele({"panel/dane/lista.md": LISTA + "wiersz 11\n",
+                                 "a.txt": "wiersz 1\nwiersz 2\nwiersz 3\nwiersz 4 Pawła\n"}, "Paweł")
+        a = self.obieg()
+        self.assertEqual(a["stan"], "czeka", a)
+        self.assertEqual(sorted(a["pliki"]), ["a.txt", "panel/dane/lista.md"])
+        self.assertEqual(self.head(self.karol), head)                               # żadnego commita
+        self.assertEqual(self.odcisk(self.karol, list(przed)), przed)
+        self.assertEqual(a["do_pobrania"], 1)
+
+    def test_plik_sejfu_zmieniony_w_panelu(self):
+        """Jak 16.11: commit drugiej osoby zmienia Dziennik zmian, panel ma w nim własny dopisek (bc/zapis.py:
+        `do_wyslania` — treść dokładnie ta, którą zapisał panel)."""
+        self.pisz(self.karol, SEJF, "wiersz 0 — Karol Balucki: decyzja D-080 zatwierdzona\n" + LISTA)
+        self.commit_pawla_wiele({SEJF: LISTA + "wiersz 11 — Claude Code u Pawła\n",
+                                 "assets/manifest.json": "{}\n"}, "Paweł: ekran wyboru klasy")
+
+        def sejf(repo=None):
+            zmieniony = self.g(["status", "--porcelain", "--", SEJF], self.karol).strip()
+            return ([SEJF], ["decyzja D-080 zatwierdzona"], []) if zmieniony else ([], [], [])
+        with mock.patch.object(gitsync, "sejf_do_wyslania", sejf):
+            a = self.obieg()
+        self.assertEqual(a["stan"], "ok", a)
+        self.assertTrue(os.path.isfile(os.path.join(self.karol, "assets", "manifest.json")))
+        tekst = self.czytaj(self.karol, SEJF).decode("utf-8")
+        self.assertIn("decyzja D-080", tekst)
+        self.assertIn("Claude Code u Pawła", tekst)
+        self.assertEqual(self.g(["log", "-1", "--format=%s", "HEAD^1"], self.karol).strip(),
+                         "panel: decyzja D-080 zatwierdzona")
+
+    def test_konflikt_po_zapisie_przed_pobraniem_to_stan_dla_czlowieka(self):
+        self.pisz(self.karol, "panel/dane/lista.md", LISTA.replace("wiersz 5\n", "wiersz 5 — KAROL\n"))
+        przed = self.odcisk(self.karol, ["panel/dane/lista.md"])
+        self.commit_pawla_wiele({"panel/dane/lista.md": LISTA.replace("wiersz 5\n", "wiersz 5 — PAWEŁ\n")}, "Paweł")
+        zdalny = self.zdalny()
+        a = self.obieg()
+        self.assertEqual(a["stan"], "konflikt", a)
+        self.assertIn("panel/dane/lista.md", a["pliki"])
+        self.assertEqual(self.czytaj(self.karol, "panel/dane/lista.md"), przed["panel/dane/lista.md"][0])
+        self.assertFalse(os.path.exists(os.path.join(self.karol, ".git", "MERGE_HEAD")))
+        self.assertEqual(self.g(["stash", "list"], self.karol), "")
+        self.assertEqual(self.zdalny(), zdalny)
+        self.assertTrue(self.g(["log", "-1", "--format=%s"], self.karol).startswith("panel: "))   # zapis tylko lokalny
+        latka, polecenia = self.git_z_zapisem()
+        with latka:
+            a = self.obieg()                                    # ten sam konflikt — bez nowej próby i bez commitów
+        self.assertEqual(a["stan"], "konflikt")
+        self.assertFalse([p for p in polecenia if p[0] in ("merge", "merge-tree", "commit", "push")], polecenia)
+
+    def test_wylacznik_zapisu_przed_pobraniem(self):
+        self.pisz(self.karol, "panel/dane/lista.md", "wiersz 0\n" + LISTA)
+        head = self.head(self.karol)
+        self.commit_pawla_wiele({"panel/dane/lista.md": LISTA + "wiersz 11\n"}, "Paweł")
+        a = self.obieg(commit_przed_pobraniem=False)            # git.auto_commit_przed_pobraniem = false: jak dawniej
+        self.assertEqual(a["stan"], "czeka", a)
+        self.assertEqual(self.head(self.karol), head)
+
+    def test_pliki_dodane_przez_kogos_to_bez_zapisu(self):
+        self.pisz(self.karol, "panel/dane/lista.md", "wiersz 0\n" + LISTA)
+        self.pisz(self.karol, "notatki.md", "agent dodał\n")
+        self.g(["add", "notatki.md"], self.karol)                                  # ktoś w trakcie commita
+        head = self.head(self.karol)
+        self.commit_pawla_wiele({"panel/dane/lista.md": LISTA + "wiersz 11\n"}, "Paweł")
+        a = self.obieg()
+        self.assertEqual(a["stan"], "czeka", a)
+        self.assertEqual(self.head(self.karol), head)
+        self.assertIn("A  notatki.md", self.g(["status", "--porcelain"], self.karol))   # dalej dodany, nietknięty
+
+    def test_stan_do_pobrania_i_assety(self):
+        self.pisz(self.karol, "a.txt", "lokalnie\n")
+        self.commit_pawla_wiele({"a.txt": "Paweł\n", "assets/processed/ClassSelect/CsBg1.png": "png"}, "Paweł")
+        a = self.obieg()
+        self.assertEqual((a["stan"], a["do_pobrania"], a["do_pobrania_assety"]), ("czeka", 1, True), a)
+        self.assertTrue(a["do_pobrania_od"])
+        with mock.patch.object(rdzen, "REPO", self.karol):
+            c = gitsync.czeka_z_githuba()
+        self.assertEqual((c["ile"], c["assety"], c["stan"]), (1, True, "czeka"))
+        self.pisz(self.karol, "a.txt", "wiersz 1\nwiersz 2\nwiersz 3\n")             # praca skończona
+        a = self.obieg()
+        self.assertEqual((a["stan"], a["do_pobrania"], a["do_pobrania_assety"]), ("ok", 0, False), a)
+        with mock.patch.object(rdzen, "REPO", self.karol):
+            self.assertIsNone(gitsync.czeka_z_githuba())
+
+
+# =========================================================================== lekkie sprawdzenie między obiegami
+class TestLekkieSprawdzenie(Baza):
+    def test_nowy_commit_na_githubie_bez_fetch_i_status(self):
+        self.obieg()
+        latka, polecenia = self.git_z_zapisem()
+        with latka:
+            self.assertFalse(gitsync.sprawdz_lekko(self.karol))
+        self.assertTrue([p for p in polecenia if p[0] == "ls-remote"], polecenia)
+        self.assertFalse([p for p in polecenia if p[0] in ("fetch", "status", "merge", "commit", "push", "add")],
+                         polecenia)
+        self.commit_pawla("b.txt", "Pawła\n", "Paweł: b.txt")
+        self.assertTrue(gitsync.sprawdz_lekko(self.karol))
+
+        # samo pobieranie: pobiera od razu, ale czekających zmian panelu nie wysyła, choć „minęło” 10 min
+        self.pisz(self.karol, "panel/dane/raporty/r1.json", "{}\n")
+        zdalny = self.g(["rev-parse", "main"], self.zdalne).strip()
+        latka, polecenia = self.git_z_zapisem()
+        with latka:
+            a = gitsync.obieg(self.karol, SC, dict(USTAW), time.time() + 600, tylko_pobieranie=True)
+        self.assertEqual(self.head(self.karol), self.head(self.pawel))
+        self.assertFalse([p for p in polecenia if p[0] in ("push", "commit", "add")], polecenia)
+        self.assertEqual(self.g(["rev-parse", "main"], self.zdalne).strip(), zdalny)
+        self.assertEqual(a["pobranie"]["ile"], 1)
+        self.assertFalse(gitsync.sprawdz_lekko(self.karol))
+        self.obieg(teraz=time.time() + 600)                    # zwykły obieg wysyła jak dotąd
+        self.assertEqual(self.g(["rev-parse", "main"], self.zdalne).strip(), self.head(self.karol))
+
+    def test_commit_lokalny_przy_czekaniu_budzi(self):
+        self.pisz(self.karol, "a.txt", "wiersz 1\nwiersz 2 — agent\nwiersz 3\n")
+        self.commit_pawla("a.txt", "wiersz 1\nwiersz 2\nwiersz 3\nwiersz 4 Pawła\n", "Paweł: a.txt")
+        self.assertEqual(self.obieg()["stan"], "czeka")
+        self.assertFalse(gitsync.sprawdz_lekko(self.karol))     # na GitHubie nic nowego, HEAD ten sam
+        self.g(["commit", "-q", "-am", "agent: a.txt"], self.karol)                  # agent skończył i zapisał
+        self.assertTrue(gitsync.sprawdz_lekko(self.karol))
+        a = gitsync.obieg(self.karol, SC, dict(USTAW), tylko_pobieranie=True)
+        self.assertNotEqual(a["stan"], "czeka", a)
+
+    def test_w_odstepie_po_bledzie_nic(self):
+        self.obieg()
+        st = gitsync._st(self.karol)
+        st["nastepna_proba"] = time.time() + 600
+        self.commit_pawla("b.txt", "Pawła\n", "Paweł")
+        latka, polecenia = self.git_z_zapisem()
+        with latka:
+            self.assertFalse(gitsync.sprawdz_lekko(self.karol))
+        self.assertEqual(polecenia, [])
+
+    def test_ustawienia(self):
+        def z(git):
+            with mock.patch.object(rdzen, "konfiguracja", lambda: {"git": git}):
+                return gitsync.ustawienia_auto()
+        self.assertEqual(z({})["sprawdz_co_s"], 30.0)
+        self.assertTrue(z({})["commit_przed_pobraniem"])
+        self.assertEqual(z({"auto_sprawdz_co_s": 5})["sprawdz_co_s"], 15.0)            # wspólna konfiguracja: nie częściej
+        self.assertEqual(z({"auto_sprawdz_co_s": 10000})["sprawdz_co_s"], 600.0)
+        self.assertEqual(z({"auto_sprawdz_co_s": 0})["sprawdz_co_s"], 0.0)            # 0 = wyłączone
+        self.assertEqual(z({"auto_sprawdz_co_s": False})["sprawdz_co_s"], 0.0)
+        self.assertEqual(z({"auto_sprawdz_co_s": "nie wiem"})["sprawdz_co_s"], 30.0)
+        self.assertFalse(z({"auto_commit_przed_pobraniem": False})["commit_przed_pobraniem"])
+
+    def test_petla_pobiera_po_lekkim_sprawdzeniu(self):
+        """Pętla z rzadkim zwykłym obiegiem (1 h) i lekkim sprawdzeniem co 0,2 s: cudzy commit jest tu po chwili."""
+        ustaw = {"auto": True, "co_s": 3600.0, "wyslij_po_s": 60.0, "sprawdz_co_s": 0.2,
+                 "commit_przed_pobraniem": True, "telegram": False}
+        with mock.patch.object(rdzen, "REPO", self.karol), mock.patch.dict(os.environ, {"BC_GIT_AUTO": "1"}), \
+                mock.patch.object(gitsync, "START_PO_S", 0), mock.patch.object(gitsync, "sciezki_panelu", lambda: SC), \
+                mock.patch.object(gitsync, "ustawienia_auto", lambda: dict(ustaw)):
+            try:
+                gitsync.uruchom_w_tle()
+                koniec = time.time() + 30
+                while time.time() < koniec and not gitsync._st(self.karol).get("ostatni_obieg"):
+                    time.sleep(0.1)
+                self.commit_pawla("b.txt", "1\n", "Paweł: b")
+                koniec = time.time() + 30
+                while time.time() < koniec and self.head(self.karol) != self.head(self.pawel):
+                    time.sleep(0.2)
+                self.assertEqual(self.head(self.karol), self.head(self.pawel))
+            finally:
+                gitsync.zatrzymaj_w_tle(czekaj_s=30)
+                w = gitsync._petla["watek"]
+                gitsync._petla.update(watek=None, stop=None, repo=None)
+        self.assertFalse(w.is_alive())
+
+
 # =========================================================================== błędy, odstępy, brak zdalnego
 class TestBledy(Baza):
     def test_brak_zdalnego(self):

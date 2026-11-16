@@ -8,9 +8,15 @@ Zgodę na upload do Roblox daje wyłącznie człowiek w rozmowie z agentem (agen
 `python tools/manifest.py approve <Nazwa>` dopiero po wyraźnym „tak”) — panel pokazuje tylko, co na nią czeka.
 
 Trasy (same GET):
-    /api/assety                      rejestr: assety, liczniki statusów, etapy pipeline'u
+    /api/assety                      rejestr: assety, liczniki statusów, etapy pipeline'u, `wersja` rejestru
+    /api/assety/zdarzenia            strumień zdarzeń (SSE): nowa `wersja` rejestru i stan pobierania z GitHuba
     /api/assety/plik/<nazwa>         gotowy obraz assetu (plik z pola `processed` manifestu)
     /api/assety/miniatura/<nazwa>    pomniejszony obraz do siatki kart (z biblioteką Pillow; bez niej pełny plik)
+
+Na żywo (od 16.11): `sygnatura()` to krótki znacznik wersji rejestru z samych metadanych plików — czas zmiany
+i rozmiar assets/manifest.json oraz każdego pliku w assets/processed/ (os.scandir, bez otwierania plików), pamiętany
+1,5 s. Strumień sprawdza go co 2 s i wysyła zdarzenie przy zmianie (pipeline dopisał wpis, podmienił obraz, git pobrał
+cudze grafiki); widok wtedy sam pobiera /api/assety.
 
 Bezpieczeństwo plików: adres zawiera tylko NAZWĘ assetu, nigdy ścieżkę. Ścieżkę bierzemy z manifestu i sprawdzamy,
 że po rozwiązaniu („..”, dowiązania, litery dysków) leży w assets/processed/ w repozytorium i ma rozszerzenie obrazu.
@@ -25,10 +31,11 @@ import re
 import stat
 import struct
 import threading
+import time
 import urllib.parse
 
 from . import rdzen
-from .http import Odp
+from .http import Odp, Strumien
 from .rdzen import BladHTTP
 
 ZRODLO = "assets/manifest.json"
@@ -41,6 +48,12 @@ LIMIT_PLIKU_MINIATURY = 64 * 1024 * 1024
 LIMIT_PIKSELI_MINIATURY = 40 * 1000 * 1000                     # ponad 40 Mpx (ok. 160 MB w RGBA) — bez miniatury
 LIMIT_PAMIECI_MINIATUR = 400                                   # tyle miniatur trzymamy w pamięci naraz
 MAKS_TEKST = 4000
+PAMIEC_SYGNATURY_S = 1.5                                       # znacznik wersji rejestru wspólny dla wszystkich kart
+MAKS_WPISOW_SYGNATURY = 20000                                  # tyle plików z assets/processed/ liczy się do znacznika
+CO_ILE_SPRAWDZAC_S = 2.0                                       # strumień: co ile sekund patrzy na znacznik
+PULS_S = 15.0                                                  # strumień: „puls”, gdy nic się nie dzieje (łącze żyje)
+CZAS_STRUMIENIA_S = 600.0                                      # po 10 min „koniec” — przeglądarka łączy się od nowa
+MAKS_STRUMIENI = 8                                             # każdy strumień to wątek serwera; więcej = odpytywanie
 
 # Etapy pipeline'u w kolejności. `etap` assetu to indeks na tej liście.
 ETAPY = (
@@ -96,6 +109,8 @@ _pamiec = {"klucz": None, "dane": None, "blad": None, "indeks": None, "indeks_dl
 _obrazy = {}                                                   # pełna ścieżka -> informacje o pliku obrazu
 _miniatury = {}                                                # (ścieżka, mtime_ns, rozmiar) -> (bajty, mime) | None
 _pil = {"sprawdzono": False, "format": None}
+_sygnatura = {"kiedy": 0.0, "wartosc": None}                   # pod _blokada
+_strumienie = {"n": 0}                                         # otwarte strumienie zdarzeń (pod _blokada)
 
 
 # --------------------------------------------------------------------------- manifest
@@ -203,6 +218,45 @@ def _indeks():
 def _katalog_obrazow():
     """Rozwiązana ścieżka assets/processed/ albo None, gdy sam katalog prowadzi poza repozytorium."""
     return rdzen.w_katalogu(rdzen.REPO, KATALOG_OBRAZOW)
+
+
+def sygnatura(swieza=False):
+    """Krótki znacznik wersji rejestru (16 znaków hex): czas zmiany i rozmiar assets/manifest.json oraz każdego pliku
+    w assets/processed/ (także w podkatalogach; dowiązań nie śledzimy). Same metadane z katalogu — żaden plik nie jest
+    otwierany. Pamiętany `PAMIEC_SYGNATURY_S` s (wiele kart = jedno przejrzenie katalogu); `swieza=True` liczy od nowa."""
+    teraz = time.monotonic()
+    with _blokada:
+        if not swieza and _sygnatura["wartosc"] is not None and teraz - _sygnatura["kiedy"] < PAMIEC_SYGNATURY_S:
+            return _sygnatura["wartosc"]
+    h = hashlib.sha1()
+    try:
+        st = os.stat(plik_manifestu())
+        h.update(b"manifest:%d:%d\n" % (st.st_mtime_ns, st.st_size))
+    except OSError:
+        h.update(b"manifest:-\n")
+    baza = _katalog_obrazow()
+    wpisy, stos = [], [baza] if baza else []
+    while stos and len(wpisy) < MAKS_WPISOW_SYGNATURY:
+        katalog = stos.pop()
+        try:
+            with os.scandir(katalog) as it:
+                for e in it:
+                    try:
+                        if e.is_dir(follow_symlinks=False):
+                            stos.append(e.path)
+                        elif e.is_file(follow_symlinks=False):
+                            s = e.stat(follow_symlinks=False)
+                            wpisy.append((os.path.relpath(e.path, baza), s.st_mtime_ns, s.st_size))
+                    except OSError:
+                        continue
+        except OSError:                                        # brak katalogu albo chwilowo niedostępny
+            continue
+    for w in sorted(wpisy):
+        h.update(("%s\0%d\0%d\n" % w).encode("utf-8", "replace"))
+    wartosc = h.hexdigest()[:16]
+    with _blokada:
+        _sygnatura.update(kiedy=teraz, wartosc=wartosc)
+    return wartosc
 
 
 def sciezka_obrazu(zapis, baza=None):
@@ -529,14 +583,28 @@ def _asset(nazwa, wpis, figma, baza, fmt):
     if not cel or len(cel) > 300:
         cel = ("%s/%s.png" % (KATALOG_OBRAZOW, nazwa)) if RX_NAZWA_PLIKU.match(nazwa) else "%s#%s" % (ZRODLO, nazwa)
     a["cel_komentarzy"] = cel
+    a["wersja"] = _wersja_wpisu(wpis, info)
     return a
+
+
+def _wersja_wpisu(wpis, info):
+    """Znacznik wersji jednego assetu (12 znaków hex): cały wpis manifestu + czas zmiany i rozmiar jego obrazu.
+    Przeglądarka porównuje go z zapamiętanym, żeby oznaczyć assety „nowe” od ostatniego obejrzenia."""
+    try:
+        surowy = json.dumps(wpis, sort_keys=True, ensure_ascii=False, default=str)
+    except (TypeError, ValueError, RecursionError):
+        surowy = repr(sorted(str(k) for k in wpis))
+    obraz = "%d:%d" % info["klucz"] if info else "-"
+    return hashlib.sha1((surowy + "|" + obraz).encode("utf-8", "replace")).hexdigest()[:12]
 
 
 # --------------------------------------------------------------------------- rejestr
 def rejestr():
-    """Odpowiedź GET /api/assety. Nie rzuca: brak manifestu opisuje pole `brak_manifestu`, uszkodzony — pole `blad`."""
+    """Odpowiedź GET /api/assety. Nie rzuca: brak manifestu opisuje pole `brak_manifestu`, uszkodzony — pole `blad`.
+    `wersja` liczona PRZED odczytem manifestu: zmiana w trakcie odczytu da w strumieniu nowszą wersję i ponowne
+    pobranie, a nie przeoczenie."""
+    wynik = {"zrodlo": ZRODLO, "wersja": sygnatura(swieza=True)}
     dane, blad = manifest()
-    wynik = {"zrodlo": ZRODLO}
     assety = []
     if dane is None:
         if blad:
@@ -548,15 +616,16 @@ def rejestr():
         figma = figma if isinstance(figma, str) and RX_FIGMA_PLIK.match(figma) else None
         if figma:
             wynik["figma_plik"] = figma
-        zaktualizowano = _czas(dane.get("updated_at"))
-        if not zaktualizowano:
-            try:
-                zaktualizowano = datetime.datetime.fromtimestamp(
-                    os.path.getmtime(plik_manifestu())).astimezone().isoformat(timespec="seconds")
-            except OSError:
-                zaktualizowano = None
+        try:                                                   # kiedy plik trafił na ten komputer (zapis, git pull)
+            na_dysku = datetime.datetime.fromtimestamp(
+                os.path.getmtime(plik_manifestu())).astimezone().isoformat(timespec="seconds")
+        except OSError:
+            na_dysku = None
+        zaktualizowano = _czas(dane.get("updated_at")) or na_dysku   # kiedy pipeline ostatnio zmienił rejestr
         if zaktualizowano:
             wynik["zaktualizowano"] = zaktualizowano
+        if na_dysku:
+            wynik["na_dysku"] = na_dysku
         baza = _katalog_obrazow()
         fmt = format_miniatur()
         assety = [_asset(nazwa, wpis, figma, baza, fmt) for nazwa, wpis in _wpisy(dane)]
@@ -612,6 +681,58 @@ def _get_rejestr(z):
     return rejestr()
 
 
+def _stan_gita():
+    """Czy na GitHubie czekają zmiany, których panel jeszcze nie pobrał (bc/gitsync.py, bez uruchamiania gita)."""
+    try:
+        from . import gitsync
+        return gitsync.czeka_z_githuba()
+    except Exception:                                          # bez modułu gita zakładka działa dalej
+        return None
+
+
+def zdarzenia(co_ile_s=None, puls_s=None, czas_s=None):
+    """Generator zdarzeń strumienia /api/assety/zdarzenia (słowniki dla bc.http.Strumien):
+    - {"typ": "assety", "wersja", "git"} — na początku i przy każdej zmianie znacznika rejestru albo stanu pobierania;
+    - {"typ": "puls"} — gdy przez `PULS_S` s nic się nie zmieniło (przeglądarka wie, że łącze żyje, a serwer szybko
+      zauważa zamkniętą kartę);
+    - {"typ": "koniec", "powod": "czas"|"limit"} — po `CZAS_STRUMIENIA_S` albo gdy otwartych strumieni jest już
+      `MAKS_STRUMIENI` (przeglądarka łączy się od nowa albo przechodzi na odpytywanie).
+    Każde sprawdzenie to tylko `sygnatura()` (metadane plików, wspólna pamięć 1,5 s) i odczyt stanu synchronizacji."""
+    co_ile_s = CO_ILE_SPRAWDZAC_S if co_ile_s is None else co_ile_s
+    puls_s = PULS_S if puls_s is None else puls_s
+    czas_s = CZAS_STRUMIENIA_S if czas_s is None else czas_s
+    with _blokada:
+        pelno = _strumienie["n"] >= MAKS_STRUMIENI
+        if not pelno:
+            _strumienie["n"] += 1
+    if pelno:
+        yield {"typ": "koniec", "powod": "limit"}
+        return
+    try:
+        start = time.monotonic()
+        ostatni, ostatnio = None, start
+        while True:
+            teraz = time.monotonic()
+            biezacy = {"wersja": sygnatura(), "git": _stan_gita()}
+            if biezacy != ostatni:
+                ostatni, ostatnio = biezacy, teraz
+                yield dict(biezacy, typ="assety")
+            elif teraz - ostatnio >= puls_s:
+                ostatnio = teraz
+                yield {"typ": "puls"}
+            if teraz - start >= czas_s:
+                yield {"typ": "koniec", "powod": "czas"}
+                return
+            time.sleep(co_ile_s)
+    finally:
+        with _blokada:
+            _strumienie["n"] = max(0, _strumienie["n"] - 1)
+
+
+def _get_zdarzenia(z):
+    return Strumien(zdarzenia())
+
+
 def _get_plik(z):
     return Odp.plik(plik_assetu(z.params.get("nazwa")), pamiec_s=86400)   # adres w rejestrze ma wersję pliku (?v=)
 
@@ -626,6 +747,7 @@ def _get_miniatura(z):
 
 def zarejestruj(app):
     app.dodaj("GET", "/api/assety", _get_rejestr)
+    app.dodaj("GET", "/api/assety/zdarzenia", _get_zdarzenia)
     app.dodaj("GET", "/api/assety/plik/<nazwa>", _get_plik)
     app.dodaj("GET", "/api/assety/miniatura/<nazwa>", _get_miniatura)
 
@@ -634,6 +756,9 @@ def zdrowie():
     r = rejestr()
     wynik = {"manifest": not r.get("brak_manifestu"), "assety": len(r["assety"]),
              "bez_obrazu": sum(1 for a in r["assety"] if not a.get("obraz")), "czeka_na_zgode": r["czeka"]}
+    with _blokada:
+        if _strumienie["n"]:
+            wynik["strumienie"] = _strumienie["n"]
     if r.get("blad"):
         wynik["blad"] = r["blad"]
     return wynik

@@ -1,12 +1,22 @@
 // Assety — okno na rejestr grafik gry (assets/manifest.json): siatka kart, pasek etapów pipeline'u, filtry, szczegóły.
 // Tylko do odczytu: widok niczego nie zmienia, nie wgrywa i nie zatwierdza. Zgodę na upload do Roblox daje człowiek
 // w rozmowie z agentem — tu widać jedynie, co na nią czeka.
+//
+// Na żywo (od 16.11): strumień GET /api/assety/zdarzenia (ctx.sse) mówi, kiedy zmienił się rejestr albo obrazy —
+// widok sam pobiera /api/assety i przerysowuje się z zachowaniem filtrów, szukania, przewinięcia, fokusu i otwartych
+// szczegółów. Zapas, gdy strumień nie działa (lustro, stary serwer, zerwane łącze): odpytywanie co 30 s, tylko przy
+// widocznej karcie, i ponowna próba połączenia. Znaczek „nowe” = asset dodany albo zmieniony od ostatniego obejrzenia
+// zakładki w tej przeglądarce (localStorage, bez niego po prostu bez znaczków). Pasek „Na GitHubie są nowsze zmiany”
+// z pola `git` zdarzeń (albo z bc:git-auto powłoki).
 
 import { el, zamien, ikona, toast, arkusz, pusty, stanBledu, ladowanie, kopiuj, czasTemu, dataKrotka, odmiana, powiekszenie } from "../wspolne/ui.js";
 import { komentarze } from "../wspolne/komentarze.js";
 
 const CSS = new URL("./assety.css", import.meta.url).href;
-const ODSWIEZ_MS = 30000;
+const ODSWIEZ_MS = 30000;              // zapas bez strumienia zdarzeń
+const KOMENTARZE_MS = 60000;           // liczniki komentarzy, gdy rejestr przychodzi strumieniem
+const CISZA_MS = 45000;                // serwer daje „puls” co 15 s — dłuższa cisza = łącze martwe, łączymy od nowa
+const KLUCZ_WIDZIANE = "bc.assety.widziane";
 const DUZY_PLIK = 700 * 1024;          // większe obrazy w arkuszu pokazujemy z miniatury (pełny plik dopiero w powiększeniu)
 
 // Wygląd statusów: kolor znacznika (klasy .chip ze styl.css) i ikona. Nazwy i opisy przychodzą z serwera.
@@ -72,6 +82,41 @@ function ranga(a) {
   return NA_MECIE.has(a.status) ? 2 : 1;
 }
 
+/** Wersje assetów z ostatniego obejrzenia zakładki w tej przeglądarce: nazwa → wersja (słownik bez prototypu) albo
+ * null, gdy jeszcze nic nie zapamiętano albo przeglądarka nie daje localStorage. */
+function czytajWidziane() {
+  try {
+    const v = JSON.parse(localStorage.getItem(KLUCZ_WIDZIANE) || "null");
+    if (!v || typeof v !== "object" || !v.assety || typeof v.assety !== "object") return null;
+    const mapa = Object.create(null);
+    for (const [k, w] of Object.entries(v.assety)) if (typeof w === "string") mapa[k] = w;
+    return mapa;
+  } catch (e) {
+    return null;
+  }
+}
+
+function zapiszWidziane(mapa) {
+  try {
+    localStorage.setItem(KLUCZ_WIDZIANE, JSON.stringify({ wersja: 1, assety: mapa }));
+  } catch (e) { /* tryb prywatny albo pełna pamięć — bez znaczków „nowe” */ }
+}
+
+/** „21:35” dla dzisiejszej daty, inaczej „12 lis, 21:40”. */
+function godzinaLubData(iso) {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  const dzis = new Date();
+  if (d.toDateString() === dzis.toDateString()) return d.toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" });
+  return dataKrotka(iso);
+}
+
+/** Stan „na GitHubie czekają niepobrane zmiany” z pola `git` zdarzenia albo z GET /api/git/auto → {ile, assety, od, stan, krotko} | null. */
+function stanGita(g) {
+  if (!g || typeof g !== "object" || !(Number(g.ile) > 0)) return null;
+  return { ile: Math.floor(Number(g.ile)), assety: !!g.assety, od: typeof g.od === "string" ? g.od : "", stan: String(g.stan || ""), krotko: typeof g.krotko === "string" ? g.krotko : "" };
+}
+
 export default {
   id: "assety",
   tytul: "Assety",
@@ -83,16 +128,26 @@ export default {
       blad: null,                 // błąd połączenia (obiekt Error) — gdy nie ma czego pokazać
       uwaga: "",                  // ostrzeżenie nad siatką (np. manifest chwilowo nieczytelny)
       sygnatura: "",
-      filtr: { q: "", kategoria: "", status: "", etap: null, czeka: false },
+      sygnaturaWyborow: "",
+      filtr: { q: "", kategoria: "", status: "", etap: null, czeka: false, nowe: false },
       komentarzy: {},             // ścieżka obrazu -> liczba komentarzy
       przyciskiEtapow: [],
       narysowano: false,
       trwa: false,
+      znowu: false,               // w trakcie pobierania przyszła wiadomość o nowszej wersji — pobierz jeszcze raz
+      widziane: undefined,        // nazwa -> wersja z ostatniego obejrzenia (localStorage); null = nic nie zapamiętano
+      nowe: new Set(),            // nazwy assetów dodanych albo zmienionych od ostatniego obejrzenia
+      git: null,                  // {ile, assety, od, stan, krotko}: na GitHubie czekają zmiany, których panel nie pobrał
+      widoczny: false,            // zakładka otwarta (między pokaz() a ukryj())
     };
+    // strumień zdarzeń: połączenie, czy działa, ponowne próby, strażnik ciszy, odpytywanie zapasowe
+    const zywo = { strumien: null, ok: false, proby: 0, ponow: null, straznik: null, ostatnie: 0, stopZapasu: null, stopKomentarzy: null };
 
     // ------------------------------------------------------------------ szkielet widoku
     const odswiezBtn = el("button", { class: "przycisk cichy ikonowy", type: "button", title: "Odśwież z manifestu", "aria-label": "Odśwież z manifestu", onclick: () => pobierz(true) }, ikona("odswiez"));
+    const aktualizacjaEl = el("span", { class: "as-aktualizacja", hidden: true });
     const baner = el("div", { class: "as-baner", hidden: true });
+    const syncEl = el("div", { class: "as-sync", role: "status", hidden: true });
     const etapyEl = el("div", { class: "as-etapy", role: "group", "aria-label": "Etapy pipeline'u grafik — kliknij, żeby filtrować" });
     const zasada = el("div", { class: "as-zasada", role: "note" }, ikona("klodka"),
       el("p", null, el("strong", null, "Tylko do odczytu. "),
@@ -114,9 +169,10 @@ export default {
     const korzen = el("div", { class: "widok assety as" },
       el("header", { class: "nagl-widoku" },
         el("div", null, el("h1", null, "Assety"), el("p", { class: "cichy-tekst" },
-          ctx.statyczny ? "Rejestr grafik z chwili eksportu (assets/manifest.json)." : "Na żywo z rejestru grafik (assets/manifest.json).")),
+          ctx.statyczny ? "Rejestr grafik z chwili eksportu (assets/manifest.json)." : "Na żywo z rejestru grafik (assets/manifest.json).",
+          " ", aktualizacjaEl)),
         odswiezBtn),
-      baner, etapyEl, zasada, narzedzia, podsumowanie, uwagaEl, tresc);
+      syncEl, baner, etapyEl, zasada, narzedzia, podsumowanie, uwagaEl, tresc);
     korzen.style.visibility = "hidden";                      // bez mignięcia nieostylowanej treści
     dolaczCss(CSS).then(() => { korzen.style.visibility = ""; });
 
@@ -171,9 +227,10 @@ export default {
       const liczbaKom = S.komentarzy[a.cel_komentarzy] || 0;
       const uwagi = a.uwagi || [];
       const opisKom = liczbaKom ? liczbaKom + " " + odmiana(liczbaKom, ["komentarz", "komentarze", "komentarzy"]) : "";
+      const nowy = S.nowe.has(a.nazwa);
       const glowny = el("button", {
-        type: "button", class: "as-otworz", "aria-haspopup": "dialog",
-        "aria-label": a.nazwa + " — " + (a.kategoria_opis || "") + ", " + (a.status_opis || "") + (opisKom ? ", " + opisKom : "")
+        type: "button", class: "as-otworz", "aria-haspopup": "dialog", dataset: { klucz: "karta:" + a.nazwa },
+        "aria-label": a.nazwa + (nowy ? " (nowe od ostatniego obejrzenia)" : "") + " — " + (a.kategoria_opis || "") + ", " + (a.status_opis || "") + (opisKom ? ", " + opisKom : "")
           + (uwagi.length ? ", uwaga: " + uwagi[0] : "") + ". Pokaż szczegóły",
         onclick: () => otworz(a),
       },
@@ -185,7 +242,9 @@ export default {
         el("span", { class: "as-opis" },
           el("strong", { class: "as-nazwa", title: a.nazwa }, a.nazwa),
           tor(a),
-          el("span", { class: "as-meta" }, chipStatusu(a), el("span", { class: "chip" }, a.kategoria_opis || "bez kategorii")),
+          el("span", { class: "as-meta" },
+            nowy ? el("span", { class: "chip niebieski as-nowy", title: "Dodany albo zmieniony od Twojego ostatniego obejrzenia tej zakładki" }, "nowe") : null,
+            chipStatusu(a), el("span", { class: "chip" }, a.kategoria_opis || "bez kategorii")),
           el("span", { class: "as-uzycie" + (a.uzycie ? "" : " brak") }, a.uzycie || "Nie zapisano, gdzie jest użyty.")));
       const stopka = el("div", { class: "as-stopka" },
         a.roblox_id
@@ -197,7 +256,7 @@ export default {
             a.roblox_decal ? "tylko decal" : "bez numeru Roblox"),
         figma ? el("a", { class: "przycisk cichy maly as-figma", href: figma, target: "_blank", rel: "noopener noreferrer", title: "Otwórz w Figmie (nowa karta)" },
           ikona("zewnetrzny"), el("span", null, "Figma")) : null);
-      return el("article", { class: ["karta", "as-karta", a.czeka_na_zgode && "czeka"], style: { "--i": Math.min(i, 10) } }, glowny, stopka);
+      return el("article", { class: ["karta", "as-karta", a.czeka_na_zgode && "czeka", nowy && "nowy"], style: { "--i": Math.min(i, 10) } }, glowny, stopka);
     }
 
     // ------------------------------------------------------------------ arkusz szczegółów
@@ -346,10 +405,19 @@ export default {
         el("section", { class: "as-sekcja" }, el("h3", { class: "etykieta" }, ikona("komentarz"), "Komentarze"), miejsceKom));
 
       const liczbaPrzed = S.komentarzy[cel.cel] || 0;
+      const byloNowe = S.nowe.has(a.nazwa);
+      if (byloNowe) oznaczWidziane(new Set([a.nazwa]));      // obejrzany — znaczek „nowe” znika po zamknięciu
       ark = arkusz({
         tytul: a.nazwa, tresc: korzenArkusza, szeroki: true,
         naZamkniecie: () => {
-          if ((S.komentarzy[cel.cel] || 0) !== liczbaPrzed) rysujSiatke();   // licznik komentarzy na karcie
+          // karta mogła zostać przerysowana, gdy arkusz był otwarty — fokus wraca na kartę o tej samej nazwie
+          const doKarty = () => {
+            if (document.activeElement && document.activeElement !== document.body && korzen.contains(document.activeElement)) return;
+            const k = korzen.querySelector('[data-klucz="' + window.CSS.escape("karta:" + a.nazwa) + '"]');
+            if (k) k.focus({ preventScroll: true });
+          };
+          if ((S.komentarzy[cel.cel] || 0) !== liczbaPrzed || byloNowe) zachowujac(rysujSiatke);   // licznik komentarzy, znaczek
+          doKarty();
         },
       });
       // Wątek dokładamy po otwarciu arkusza: jego pole tekstowe nie przechwyci wtedy fokusu i arkusz nie zjedzie na dół.
@@ -366,11 +434,12 @@ export default {
     // ------------------------------------------------------------------ filtry
     function aktywneFiltry() {
       const f = S.filtr;
-      return !!(f.q.trim() || f.kategoria || f.status || f.etap != null || f.czeka);
+      return !!(f.q.trim() || f.kategoria || f.status || f.etap != null || f.czeka || f.nowe);
     }
 
     function pasuje(a) {
       const f = S.filtr;
+      if (f.nowe && !S.nowe.has(a.nazwa)) return false;
       if (f.czeka && !a.czeka_na_zgode) return false;
       if (f.etap != null && a.etap !== f.etap) return false;
       if (f.status && a.status !== f.status) return false;
@@ -392,7 +461,42 @@ export default {
 
     function wyczyscFiltry() {
       szukaj.value = "";
-      ustawFiltr({ q: "", kategoria: "", status: "", etap: null, czeka: false });
+      ustawFiltr({ q: "", kategoria: "", status: "", etap: null, czeka: false, nowe: false });
+    }
+
+    // ------------------------------------------------------------------ „nowe” od ostatniego obejrzenia
+    /** Które assety są nowe albo zmienione względem wersji zapamiętanych w tej przeglądarce. Przy pierwszym otwarciu
+     * zakładki (nic nie zapamiętano) wszystko liczy się jako obejrzane — bez zalewu znaczków. */
+    function policzNowe() {
+      const assety = (S.dane && !S.dane.blad && S.dane.assety) || [];
+      S.nowe = new Set();
+      if (!assety.length) return;
+      if (S.widziane === undefined) S.widziane = czytajWidziane();
+      if (S.widziane === null) {
+        oznaczWidziane();
+        return;
+      }
+      for (const a of assety) {
+        if (typeof a.wersja === "string" && S.widziane[a.nazwa] !== a.wersja) S.nowe.add(a.nazwa);
+      }
+    }
+
+    /** Zapamiętuje bieżące wersje jako obejrzane — wszystkie albo tylko `tylko` (Set nazw). Nazwy, których nie ma już
+     * w rejestrze, wypadają z pamięci. */
+    function oznaczWidziane(tylko) {
+      const assety = (S.dane && !S.dane.blad && S.dane.assety) || [];
+      if (!assety.length) return;
+      const stare = S.widziane || null;
+      const mapa = Object.create(null);
+      for (const a of assety) {
+        if (typeof a.wersja !== "string") continue;
+        if (!tylko || !stare || tylko.has(a.nazwa)) mapa[a.nazwa] = a.wersja;
+        else if (typeof stare[a.nazwa] === "string") mapa[a.nazwa] = stare[a.nazwa];
+      }
+      S.widziane = mapa;
+      zapiszWidziane(mapa);
+      if (tylko) for (const n of tylko) S.nowe.delete(n);
+      else S.nowe = new Set();
     }
 
     /** Ustawia pola filtrów i wciśnięcie kafli etapów według S.filtr (bez przebudowy — fokus zostaje na miejscu). */
@@ -414,7 +518,7 @@ export default {
         const liczba = e.liczba || 0;
         return el("button", {
           type: "button", class: ["as-etap", e.bramka && "bramka", !liczba && "zero", czekaTu && "czeka"], "aria-pressed": "false",
-          title: e.opis || "",
+          dataset: { klucz: "etap:" + i }, title: e.opis || "",
           "aria-label": e.nazwa + ": " + liczba + " " + odmiana(liczba, ["asset", "assety", "assetów"]) + (czekaTu ? ", w tym " + czekaTu + " czeka na zgodę" : "") + ". " + (e.opis || ""),
           onclick: () => ustawFiltr({ etap: S.filtr.etap === i ? null : i, status: "", czeka: false }),
         },
@@ -433,7 +537,7 @@ export default {
       if (!czeka) return;
       zamien(baner, ikona("klodka"),
         el("p", null, czeka + " " + odmiana(czeka, ["asset czeka", "assety czekają", "assetów czeka"]) + " na zgodę człowieka przed Roblox."),
-        el("button", { type: "button", class: "przycisk maly glowny", onclick: () => ustawFiltr({ czeka: true, etap: null, status: "" }) }, "Pokaż"));
+        el("button", { type: "button", class: "przycisk maly glowny", dataset: { klucz: "baner" }, onclick: () => ustawFiltr({ czeka: true, etap: null, status: "" }) }, "Pokaż"));
     }
 
     function rysujWybory(d) {
@@ -445,15 +549,21 @@ export default {
         w.n++;
         kategorie.set(k, w);
       }
-      zamien(wyborKategorii, el("option", { value: "" }, "Każda kategoria"),
-        [...kategorie.entries()].sort((x, y) => x[1].nazwa.localeCompare(y[1].nazwa, "pl")).map(([id, w]) => el("option", { value: id }, w.nazwa + " (" + w.n + ")")));
-      zamien(wyborStatusu, el("option", { value: "" }, "Każdy status"),
-        (d.statusy || []).filter((s) => s.liczba).map((s) => el("option", { value: s.id }, s.nazwa + " (" + s.liczba + ")")));
+      const opcjeKategorii = [...kategorie.entries()].sort((x, y) => x[1].nazwa.localeCompare(y[1].nazwa, "pl")).map(([id, w]) => [id, w.nazwa + " (" + w.n + ")"]);
+      const opcjeStatusow = (d.statusy || []).filter((s) => s.liczba).map((s) => [s.id, s.nazwa + " (" + s.liczba + ")"]);
+      // listy przebudowujemy tylko przy zmianie opcji — otwarta lista nie zamyka się przy odświeżeniu w tle
+      const sygn = JSON.stringify([opcjeKategorii, opcjeStatusow]);
+      if (sygn !== S.sygnaturaWyborow) {
+        S.sygnaturaWyborow = sygn;
+        zamien(wyborKategorii, el("option", { value: "" }, "Każda kategoria"), opcjeKategorii.map(([id, t]) => el("option", { value: id }, t)));
+        zamien(wyborStatusu, el("option", { value: "" }, "Każdy status"), opcjeStatusow.map(([id, t]) => el("option", { value: id }, t)));
+      }
       // filtr, którego wartość zniknęła z rejestru, przestaje obowiązywać
       if (S.filtr.kategoria && !kategorie.has(S.filtr.kategoria)) S.filtr.kategoria = "";
       if (S.filtr.status && !(d.liczniki || {})[S.filtr.status]) S.filtr.status = "";
       if (S.filtr.etap != null && S.filtr.etap >= (d.etapy || []).length) S.filtr.etap = null;
       if (S.filtr.czeka && !d.czeka) S.filtr.czeka = false;
+      if (S.filtr.nowe && !S.nowe.size) S.filtr.nowe = false;
       odswiezKontrolki();
     }
 
@@ -466,6 +576,7 @@ export default {
         const etap = f.etap != null ? (d.etapy || [])[f.etap] : null;
         const status = f.status ? (d.statusy || []).find((s) => s.id === f.status) : null;
         const opisy = [
+          f.nowe ? "nowe od ostatniego obejrzenia" : null,
           f.czeka ? "czekają na zgodę" : null,
           etap ? "etap: " + etap.nazwa : null,
           status ? "status: " + status.nazwa : null,
@@ -473,9 +584,26 @@ export default {
           f.q.trim() ? "szukane: „" + f.q.trim() + "”" : null,
         ].filter(Boolean);
         czesci.push(el("span", null, opisy.join(" · ")));
-        czesci.push(el("button", { type: "button", class: "przycisk cichy maly as-wyczysc", onclick: wyczyscFiltry }, ikona("zamknij"), el("span", null, "Wyczyść filtry")));
+        czesci.push(el("button", { type: "button", class: "przycisk cichy maly as-wyczysc", dataset: { klucz: "wyczysc" }, onclick: wyczyscFiltry }, ikona("zamknij"), el("span", null, "Wyczyść filtry")));
       } else if (wszystkie) {
         czesci.push(el("span", { class: "as-ile" }, wszystkie + " " + odmiana(wszystkie, ["asset", "assety", "assetów"])));
+      }
+      const n = S.nowe.size;
+      if (n) {
+        // nowe grafiki (np. drugiej osoby) od ostatniego obejrzenia: pokaż tylko je albo uznaj za obejrzane
+        czesci.push(el("span", { class: "as-nowe" },
+          el("button", {
+            type: "button", class: ["przycisk", "cichy", "maly", "as-nowe-pokaz", f.nowe && "wybrany"], "aria-pressed": f.nowe ? "true" : "false",
+            title: "Dodane albo zmienione od Twojego ostatniego obejrzenia tej zakładki", dataset: { klucz: "nowe" },
+            onclick: () => ustawFiltr({ nowe: !S.filtr.nowe }),
+          }, el("span", { class: "chip niebieski as-nowy" }, String(n)), el("span", null, odmiana(n, ["nowy", "nowe", "nowych"]))),
+          el("button", {
+            type: "button", class: "przycisk cichy maly as-nowe-obejrzane",
+            onclick: () => {
+              oznaczWidziane();
+              ustawFiltr({ nowe: false });
+            },
+          }, ikona("ok"), el("span", null, "Oznacz jako obejrzane"))));
       }
       if (d.zaktualizowano) czesci.push(el("span", { class: "as-kiedy", title: dataKrotka(d.zaktualizowano) }, "manifest zmieniony " + czasTemu(d.zaktualizowano)));
       zamien(podsumowanie, czesci);
@@ -484,6 +612,7 @@ export default {
     function rysujSiatke() {
       const d = S.dane;
       if (!d) return;
+      if (S.filtr.nowe && !S.nowe.size) S.filtr.nowe = false;  // ostatni nowy obejrzany — filtr „nowe” znika sam
       const wszystkie = d.assety || [];
       if (!wszystkie.length) {
         rysujPodsumowanie(0, 0);
@@ -509,7 +638,60 @@ export default {
       S.narysowano = true;
     }
 
+    /** „Zaktualizowano 21:35.” w nagłówku: kiedy pipeline ostatnio zmienił rejestr (pole updated_at manifestu, bez
+     * niego — czas zmiany pliku); w podpowiedzi także, od kiedy plik jest na tym komputerze (np. pobrany z GitHuba). */
+    function rysujAktualizacje() {
+      const d = S.dane;
+      const iso = d && !d.blad ? d.zaktualizowano : "";
+      const kiedy = iso ? godzinaLubData(iso) : "";
+      aktualizacjaEl.hidden = !kiedy;
+      if (!kiedy) return;
+      aktualizacjaEl.textContent = "Zaktualizowano " + kiedy + ".";
+      const naDysku = d.na_dysku && Math.abs(Date.parse(d.na_dysku) - Date.parse(iso)) > 120000
+        ? " Na tym komputerze od " + dataKrotka(d.na_dysku) + " (np. pobrany z GitHuba)." : "";
+      aktualizacjaEl.title = "Rejestr grafik zmieniony " + dataKrotka(iso) + "." + naDysku;
+    }
+
+    /** Pasek „Na GitHubie są nowsze zmiany”: panel jeszcze ich nie pobrał (stan stałej synchronizacji). */
+    function rysujSync() {
+      const g = ctx.statyczny ? null : S.git;
+      syncEl.hidden = !g;
+      if (!g) {
+        syncEl.replaceChildren();
+        return;
+      }
+      let dalej = "Panel pobierze je za chwilę.";
+      if (g.stan === "konflikt") dalej = "Panel nie pobierze ich sam: tutaj i na GitHubie zmieniono te same miejsca — potrzebny człowiek.";
+      else if (g.stan === "czeka") dalej = "Panel pobierze je, gdy na tym komputerze skończy się praca nad tymi samymi plikami" + (g.krotko ? " (" + g.krotko + ")" : "") + ".";
+      else if (g.stan === "blad" || g.stan === "brak_logowania") dalej = "Synchronizacja ma kłopot" + (g.krotko ? ": " + g.krotko : "") + " — panel spróbuje sam.";
+      zamien(syncEl, ikona("git"),
+        el("p", null, el("strong", null, "Na GitHubie są nowsze zmiany (" + g.ile + ")" + (g.assety ? ", także w rejestrze grafik" : "") + ". "), dalej),
+        el("button", { type: "button", class: "przycisk cichy maly", dataset: { klucz: "sync" }, onclick: () => ctx.idz("pulpit") }, "Szczegóły"));
+    }
+
+    function ustawGit(g) {
+      const nowy = stanGita(g);
+      if (JSON.stringify(nowy) === JSON.stringify(S.git)) return;
+      S.git = nowy;
+      rysujSync();
+    }
+
+    /** Przerysowanie w tle bez gubienia miejsca: fokus wraca na element o tym samym `data-klucz` (karta, kafel etapu,
+     * przycisk), a przewinięcie strony zostaje tam, gdzie było. Filtry i pole szukania żyją poza przerysowaniem. */
+    function zachowujac(fn) {
+      const aktywny = document.activeElement;
+      const klucz = aktywny && korzen.contains(aktywny) && aktywny.dataset ? aktywny.dataset.klucz : "";
+      const y = window.scrollY;
+      fn();
+      if (klucz && !aktywny.isConnected) {
+        const nowy = korzen.querySelector('[data-klucz="' + window.CSS.escape(klucz) + '"]');
+        if (nowy) nowy.focus({ preventScroll: true });
+      }
+      if (Math.abs(window.scrollY - y) > 1) window.scrollTo(0, y);
+    }
+
     function rysuj() {
+      rysujAktualizacje();
       const d = S.dane;
       const jestTresc = !!d && !d.blad;
       for (const e of [etapyEl, zasada, podsumowanie]) e.hidden = !jestTresc;
@@ -552,8 +734,12 @@ export default {
     }
 
     async function pobierz(recznie) {
-      if (S.trwa) return;
+      if (S.trwa) {
+        S.znowu = true;                                      // wynik w drodze może być sprzed zmiany — pobierz jeszcze raz
+        return;
+      }
       S.trwa = true;
+      S.znowu = false;
       if (recznie) odswiezBtn.disabled = true;
       try {
         const d = (await ctx.api("/api/assety")) || {};
@@ -564,12 +750,13 @@ export default {
           S.uwaga = d.blad + " Pokazuję poprzedni odczyt.";
           if (zmiana) rysuj();
         } else {
-          const s = JSON.stringify(d);
+          const s = JSON.stringify(Object.assign({}, d, { wersja: undefined }));   // sam znacznik wersji to nie zmiana treści
           const zmiana = s !== S.sygnatura || !!S.uwaga;
           S.sygnatura = s;
           S.uwaga = "";
           S.dane = d;
-          if (zmiana || recznie) rysuj();
+          if (zmiana) policzNowe();
+          if (zmiana || recznie) zachowujac(rysuj);
           ctx.licznik("assety", d.czeka || 0);
         }
       } catch (e) {
@@ -585,14 +772,132 @@ export default {
         S.trwa = false;
         odswiezBtn.disabled = false;
       }
+      if (S.znowu) return pobierz(false);
       if (S.dane && !S.dane.blad && (S.dane.assety || []).length) pobierzLicznikiKomentarzy();
     }
 
-    let stop = null;
+    // ------------------------------------------------------------------ na żywo: strumień zdarzeń i zapas
+    function trybZapasowy() {
+      if (zywo.stopKomentarzy) {
+        zywo.stopKomentarzy();
+        zywo.stopKomentarzy = null;
+      }
+      if (!zywo.stopZapasu && S.widoczny) zywo.stopZapasu = ctx.odpytuj(() => pobierz(false), ODSWIEZ_MS);
+    }
+
+    function trybNaZywo() {
+      if (zywo.stopZapasu) {
+        zywo.stopZapasu();
+        zywo.stopZapasu = null;
+      }
+      if (!zywo.stopKomentarzy && S.widoczny) zywo.stopKomentarzy = ctx.odpytuj(pobierzLicznikiKomentarzy, KOMENTARZE_MS);
+    }
+
+    function zatrzymajOdpytywanie() {
+      for (const k of ["stopZapasu", "stopKomentarzy"]) {
+        if (zywo[k]) zywo[k]();
+        zywo[k] = null;
+      }
+    }
+
+    function zaplanuj(ms) {
+      if (zywo.ponow) clearTimeout(zywo.ponow);
+      zywo.ponow = setTimeout(() => {
+        zywo.ponow = null;
+        polacz();
+      }, ms);
+    }
+
+    function zamknijStrumien() {
+      const s = zywo.strumien;
+      zywo.strumien = null;
+      if (s) s.zamknij();
+    }
+
+    function rozlacz() {
+      zamknijStrumien();
+      if (zywo.straznik) clearInterval(zywo.straznik);
+      zywo.straznik = null;
+      zywo.ok = false;
+    }
+
+    /** Strumień padł albo serwer go nie zna: odpytywanie co 30 s i ponowna próba (stary serwer — co 5 min, inaczej
+     * 5 s, 10 s, 20 s… najwyżej co 5 min). */
+    function poZerwaniu(b) {
+      zywo.strumien = null;
+      zywo.ok = false;
+      trybZapasowy();
+      if (!S.widoczny || ctx.statyczny) return;
+      const staryserwer = !!(b && (b.status === 404 || b.status === 405));
+      zaplanuj(staryserwer ? 5 * 60000 : Math.min(5 * 60000, 5000 * Math.pow(2, Math.min(zywo.proby, 6))));
+      zywo.proby++;
+    }
+
+    function naZdarzenie(z) {
+      zywo.ostatnie = Date.now();
+      if (!z || typeof z !== "object") return;
+      if (z.typ === "koniec") {                               // serwer zamyka strumień co 10 min albo ma ich za dużo
+        zamknijStrumien();
+        if (z.powod === "limit") {
+          zywo.ok = false;
+          trybZapasowy();
+          zaplanuj(60000);
+        } else zaplanuj(300);
+        return;
+      }
+      if (z.typ !== "assety") return;                        // „puls” — tylko znak, że łącze żyje
+      if (!zywo.ok) {
+        zywo.ok = true;
+        zywo.proby = 0;
+        trybNaZywo();
+      }
+      ustawGit(z.git);
+      if (typeof z.wersja === "string" && (!S.dane || z.wersja !== S.dane.wersja)) pobierz(false);
+    }
+
+    function polacz() {
+      if (ctx.statyczny || !S.widoczny || zywo.strumien || zywo.ponow || document.visibilityState !== "visible") return;
+      zywo.ostatnie = Date.now();
+      zywo.strumien = ctx.sse("/api/assety/zdarzenia", naZdarzenie, { naKoniec: poZerwaniu });
+      if (!zywo.straznik) {
+        zywo.straznik = setInterval(() => {
+          if (zywo.strumien && Date.now() - zywo.ostatnie > CISZA_MS) {
+            zamknijStrumien();
+            poZerwaniu(null);
+          }
+        }, 15000);
+      }
+    }
+
+    const naWidocznosc = () => {
+      if (!S.widoczny || ctx.statyczny) return;
+      if (document.visibilityState === "visible") polacz();
+      else rozlacz();                                         // ukryta karta: bez otwartego połączenia (telefon, wątek serwera)
+    };
+    const naPagehide = () => {
+      if (S.widoczny) oznaczWidziane();                       // zamknięcie strony na tej zakładce = obejrzane
+    };
+    const naPobrano = () => {
+      if (S.widoczny) pobierz(false);                         // panel właśnie pobrał zmiany z GitHuba
+    };
+    const naGitAuto = (e) => {
+      const a = e && e.detail;                                // GET /api/git/auto z powłoki (co 30 s) — gdy strumień nie działa
+      if (!S.widoczny || zywo.ok || !a || typeof a !== "object") return;
+      ustawGit(a.wlaczona === false ? null : { ile: a.do_pobrania, assety: a.do_pobrania_assety, od: a.do_pobrania_od, stan: a.stan, krotko: a.krotko });
+    };
+
     return {
       el: korzen,
       async pokaz(p) {
-        if (!stop) stop = ctx.odpytuj(() => pobierz(false), ODSWIEZ_MS);
+        if (!S.widoczny) {
+          S.widoczny = true;
+          document.addEventListener("visibilitychange", naWidocznosc);
+          window.addEventListener("pagehide", naPagehide);
+          window.addEventListener("bc:git-pobrano", naPobrano);
+          window.addEventListener("bc:git-auto", naGitAuto);
+          if (ctx.statyczny) trybZapasowy();                 // lustro: bez strumienia, samo odpytywanie plików
+          else polacz();
+        }
         await pobierz(false);
         const nazwa = p && p.asset;
         if (!nazwa || !S.dane) return;
@@ -601,8 +906,21 @@ export default {
         else toast("W rejestrze nie ma assetu „" + nazwa + "”.", "info");
       },
       ukryj() {
-        if (stop) stop();
-        stop = null;
+        if (!S.widoczny) return;
+        S.widoczny = false;
+        document.removeEventListener("visibilitychange", naWidocznosc);
+        window.removeEventListener("pagehide", naPagehide);
+        window.removeEventListener("bc:git-pobrano", naPobrano);
+        window.removeEventListener("bc:git-auto", naGitAuto);
+        rozlacz();
+        if (zywo.ponow) clearTimeout(zywo.ponow);
+        zywo.ponow = null;
+        zywo.proby = 0;
+        zatrzymajOdpytywanie();
+        if (S.nowe.size) {                                    // wyjście z zakładki = wszystko obejrzane
+          oznaczWidziane();
+          if (S.dane && !S.dane.blad) rysuj();                // następne wejście bez starych znaczków
+        }
       },
     };
   },

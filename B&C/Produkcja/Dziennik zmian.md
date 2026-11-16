@@ -6,6 +6,17 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-16 · Claude Code u Karola (panel: Assety na bieżąco)
+- Zgłoszenie Karola: zakładka Assety nie jest aktualna na bieżąco. Przyczyna opóźnienia z tego wieczoru (grafiki Pawła z 21:24 widoczne o 21:35): zastój stałej synchronizacji, gdy cudzy commit zmienia plik sejfu z niezapisanymi zmianami panelu.
+- Poprawki: panel zapisuje własne kolidujące zmiany commitem lokalnym i od razu pobiera; lekkie sprawdzenie GitHuba co 30 s; stany „czeka” trafiają do logu. Zakładka Assety odświeża się sama, pokazuje godzinę zmiany rejestru, znaczek „nowe” i pasek o niepobranych zmianach.
+- Testy: cały zestaw panelu 621 (19 nowych), próba w przeglądarce bez okna 29 kroków; ponowne uruchomienie testów synchronizacji i Assetów w sesji głównej: 77 z 77. Panel wymaga restartu, żeby zmiany w Pythonie zaczęły działać.
+- Pliki: `panel/bc/gitsync.py`, `panel/bc/assety.py`, `panel/static/app.js`, `panel/static/widoki/assety.js`, `assety.css`, `panel/testy/` (dwa pliki zmienione, dwa nowe), `panel/README.md`; notatki [[Panel zespołu]], [[Zadania]].
+
+## 2026-11-16 · Claude Code u Karola (okno Balans w panelu: wskrzeszenie)
+- Karol przyjął w oknie Balans wariant (b) z pytania 48: wskrzeszenie to legendarna umiejętność w slocie, raz na walkę, z powrotem z 25% HP. Zastępuje ona węzeł „Jeszcze stoję”.
+- Nowa propozycja D-094 w [[Rejestr decyzji]]. Czeka na podpis Karola w panelu i potwierdzenie Pawła. Dotyka D-068 i D-088.
+- [[Pytania otwarte]] #48: wiersz „Rozstrzyga: D-094” i odpowiedź z poleceniem Karola. [[Zadania]]: zaktualizowane zadanie węzła „Jeszcze stoję”.
+
 ## 2026-11-16 · Claude Code u Karola (muzyka i dźwięki w repo)
 - Karol przesłuchał pierwszą partię audio, zaakceptował raport w panelu (21:51; „jest bardzo dobre”, dalsze poprawki możliwe) i poprosił o wypchnięcie plików. Gotowe pliki są w repo: `assets/audio/muzyka/` (14 utworów z wersjami do pętli) i `assets/audio/dzwieki/` (22 efekty w dwóch wariantach). Oryginały sprzed obróbki zostają lokalnie (`.gitignore`).
 - Do Roblox nic nie jest wgrane; wyjaśnienie praw przed publikacją gry zostaje zadaniem w [[Zadania]]. Zaktualizowane: `assets/audio/README.md`, `manifest_audio.json`, [[Pipeline assetów]].

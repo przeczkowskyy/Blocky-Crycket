@@ -10,6 +10,7 @@ import io
 import json
 import os
 import random
+import re
 import shutil
 import struct
 import sys
@@ -17,6 +18,7 @@ import tempfile
 import unittest
 import urllib.parse
 import zlib
+from unittest import mock
 
 sys.dont_write_bytecode = True
 PANEL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +26,7 @@ if PANEL not in sys.path:
     sys.path.insert(0, PANEL)
 
 from bc import assety, raporty, rdzen, statyczny  # noqa: E402
-from bc.http import Aplikacja, Odp, Zadanie  # noqa: E402
+from bc.http import Aplikacja, Odp, Strumien, Zadanie  # noqa: E402
 from bc.rdzen import BladHTTP  # noqa: E402
 
 try:
@@ -79,6 +81,7 @@ class Baza(unittest.TestCase):
         assety._pamiec.update(klucz=None, dane=None, blad=None, indeks=None, indeks_dla=None)
         assety._obrazy.clear()
         assety._miniatury.clear()
+        assety._sygnatura.update(wartosc=None, kiedy=0.0)
 
     def plik(self, wzgledna, dane=PNG):
         pelna = os.path.join(self.repo, *wzgledna.split("/"))
@@ -616,6 +619,121 @@ class TestPliki(Baza):
                 self.assertIsNone(self.trasa("/api/assety/miniatura/Maly.webp").plik_sciezka)
         finally:
             assety.LIMIT_PIKSELI_MINIATURY = stary
+
+
+# --------------------------------------------------------------------------- na żywo: znacznik wersji i strumień zdarzeń
+class TestNaZywo(Baza):
+    def przesun(self, pelna, s=5):
+        st = os.stat(pelna)
+        os.utime(pelna, ns=(st.st_atime_ns, st.st_mtime_ns + s * 1_000_000_000))
+
+    def test_sygnatura_z_samych_metadanych(self):
+        self.manifest({"A": {"status": "planned"}})
+        s1 = assety.sygnatura(swieza=True)
+        self.assertRegex(s1, r"^[0-9a-f]{16}$")
+        self.assertEqual(assety.sygnatura(swieza=True), s1)                     # bez zmian — ten sam znacznik
+        obraz = self.plik("assets/processed/ClassSelect/CsBg1.png")               # nowa grafika w podkatalogu
+        s2 = assety.sygnatura(swieza=True)
+        self.assertNotEqual(s2, s1)
+        self.plik("assets/processed/ClassSelect/CsBg1.png", _png(4, 3))          # podmiana: ten sam rozmiar…
+        self.przesun(obraz)                                                       # …inny czas zmiany
+        s3 = assety.sygnatura(swieza=True)
+        self.assertNotEqual(s3, s2)
+        self.przesun(self.manifest({"A": {"status": "planned"}, "B": {"status": "done"}}))
+        s4 = assety.sygnatura(swieza=True)
+        self.assertNotEqual(s4, s3)
+        self.plik("assets/raw/CsBg1/v1.png")                                     # surowe warianty się nie liczą
+        self.assertEqual(assety.sygnatura(swieza=True), s4)
+        with mock.patch("builtins.open", side_effect=AssertionError("znacznik nie może czytać plików")):
+            self.assertEqual(assety.sygnatura(swieza=True), s4)
+        self.przesun(self.manifest({"C": {"status": "planned"}}), 9)
+        self.assertEqual(assety.sygnatura(), s4)                                   # wspólna pamięć 1,5 s
+        self.assertNotEqual(assety.sygnatura(swieza=True), s4)
+        os.remove(os.path.join(self.repo, "assets", "manifest.json"))
+        shutil.rmtree(os.path.join(self.repo, "assets", "processed"))
+        self.assertRegex(assety.sygnatura(swieza=True), r"^[0-9a-f]{16}$")      # brak plików to nie błąd
+
+    def test_wersja_rejestru_i_wersje_assetow(self):
+        obraz = self.plik("assets/processed/A.png")
+        self.manifest({"A": {"status": "processed", "processed": "assets/processed/A.png"}, "B": {"status": "planned"}},
+                      updated_at="2026-11-16T19:23:14+00:00")
+        r1 = assety.rejestr()
+        self.assertEqual(r1["wersja"], assety.sygnatura(swieza=True))
+        self.assertEqual(r1["zaktualizowano"], "2026-11-16T19:23:14+00:00")        # czas z rejestru, nie z dysku
+        self.assertTrue(r1["na_dysku"])
+        w1 = {a["nazwa"]: a["wersja"] for a in r1["assety"]}
+        self.assertTrue(all(re.fullmatch(r"[0-9a-f]{12}", w) for w in w1.values()), w1)
+        self.przesun(self.manifest({"A": {"status": "processed", "processed": "assets/processed/A.png"},
+                                    "B": {"status": "generated"}}))
+        r2 = assety.rejestr()
+        w2 = {a["nazwa"]: a["wersja"] for a in r2["assety"]}
+        self.assertNotEqual(r2["wersja"], r1["wersja"])
+        self.assertEqual(w2["A"], w1["A"])                                        # wpis A bez zmian
+        self.assertNotEqual(w2["B"], w1["B"])
+        self.plik("assets/processed/A.png", _png(6, 6))                          # obraz podmieniony bez zmiany wpisu
+        self.przesun(obraz)
+        w3 = {a["nazwa"]: a["wersja"] for a in assety.rejestr()["assety"]}
+        self.assertNotEqual(w3["A"], w2["A"])
+        self.assertEqual(w3["B"], w2["B"])
+
+    def test_strumien_zmiana_puls_i_stan_gita(self):
+        self.manifest({"A": {"status": "planned"}})
+        gen = assety.zdarzenia(co_ile_s=0.01, puls_s=0.05, czas_s=30)
+        try:
+            z1 = next(gen)
+            self.assertEqual((z1["typ"], z1["git"]), ("assety", None))
+            self.assertEqual(z1["wersja"], assety.sygnatura(swieza=True))
+            self.assertEqual(assety._strumienie["n"], 1)
+            self.przesun(self.manifest({"A": {"status": "planned"}, "B": {"status": "planned"}}))
+            assety._sygnatura.update(wartosc=None)                               # bez czekania 1,5 s na pamięć
+            z2 = next(gen)
+            self.assertEqual(z2["typ"], "assety")
+            self.assertNotEqual(z2["wersja"], z1["wersja"])
+            self.assertEqual(next(gen), {"typ": "puls"})                          # cisza — znak, że łącze żyje
+            g = {"ile": 2, "od": "2026-11-16T21:25:40+01:00", "assety": True, "stan": "czeka", "krotko": "lokalne zmiany w 1 pliku"}
+            with mock.patch.object(assety, "_stan_gita", lambda: dict(g)):
+                z3 = next(gen)
+            self.assertEqual((z3["typ"], z3["git"], z3["wersja"]), ("assety", g, z2["wersja"]))
+            self.assertEqual(next(gen)["git"], None)                             # pobrane — pasek znika
+        finally:
+            gen.close()
+        self.assertEqual(assety._strumienie["n"], 0)
+
+    def test_strumien_konczy_sie_po_czasie_i_przy_limicie(self):
+        self.manifest({"A": {"status": "planned"}})
+        zdarzenia = list(assety.zdarzenia(co_ile_s=0.01, puls_s=60, czas_s=0.05))
+        self.assertEqual(zdarzenia[0]["typ"], "assety")
+        self.assertEqual(zdarzenia[-1], {"typ": "koniec", "powod": "czas"})
+        self.assertEqual(assety._strumienie["n"], 0)
+        with mock.patch.object(assety, "MAKS_STRUMIENI", 1):
+            g1 = assety.zdarzenia(co_ile_s=0.01)
+            self.assertEqual(next(g1)["typ"], "assety")
+            self.assertEqual(list(assety.zdarzenia(co_ile_s=0.01)), [{"typ": "koniec", "powod": "limit"}])
+            g1.close()
+            g3 = assety.zdarzenia(co_ile_s=0.01)
+            self.assertEqual(next(g3)["typ"], "assety")                           # miejsce się zwolniło
+            g3.close()
+        self.assertEqual(assety._strumienie["n"], 0)
+
+    def test_trasa_zdarzen_i_stan_gita_z_synchronizacji(self):
+        app = Aplikacja()
+        assety.zarejestruj(app)
+        fn, _ = app.znajdz("GET", "/api/assety/zdarzenia")
+        wynik = fn(zadanie(sciezka="/api/assety/zdarzenia"))
+        self.assertIsInstance(wynik, Strumien)
+        wynik.generator.close()                                                  # nieuruchomiony — nic nie zajmuje
+        self.assertEqual(assety._strumienie["n"], 0)
+        from bc import gitsync
+        klucz = os.path.normpath(self.repo)
+        gitsync._auto[klucz] = dict(gitsync._nowy_stan(), stan="czeka", krotko="lokalne zmiany w 1 pliku",
+                                    do_pobrania=3, do_pobrania_od="2026-11-16T21:25:40+01:00", do_pobrania_assety=True)
+        try:
+            self.assertEqual(assety._stan_gita(), {"ile": 3, "od": "2026-11-16T21:25:40+01:00", "assety": True,
+                                                   "stan": "czeka", "krotko": "lokalne zmiany w 1 pliku"})
+            gitsync._auto[klucz]["do_pobrania"] = 0
+            self.assertIsNone(assety._stan_gita())
+        finally:
+            gitsync._auto.pop(klucz, None)
 
 
 # --------------------------------------------------------------------------- lustro tylko do odczytu i komentarze

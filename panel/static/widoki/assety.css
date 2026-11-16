@@ -12,6 +12,22 @@
 .as-baner > .ikona { color: var(--zloto); }
 .as-baner p { flex: 1; min-width: 0; font-weight: 700; }
 
+/* ------------------------------------------------------------------ na żywo: kiedy zmienił się rejestr, zmiany czekające na GitHubie */
+.as-aktualizacja { white-space: nowrap; }
+.as-sync { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 12px; border: 2px solid rgba(78, 168, 255, 0.45); background: rgba(78, 168, 255, 0.08); font-size: 13.5px; line-height: 1.4; }
+.as-sync > .ikona { flex: none; color: var(--niebieski); }
+.as-sync p { flex: 1; min-width: 0; }
+.as-sync .przycisk { flex: none; }
+
+/* ------------------------------------------------------------------ „nowe” od ostatniego obejrzenia */
+.as-nowy { font-weight: 800; letter-spacing: 0.02em; }
+.as-karta.nowy { border-color: rgba(78, 168, 255, 0.6); }
+.as-nowe { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.as-nowe-pokaz { gap: 6px; }
+.as-nowe-pokaz .as-nowy { min-height: 20px; padding: 0 7px; }
+.as-nowe-pokaz.wybrany { color: var(--niebieski); box-shadow: inset 0 0 0 1.5px rgba(78, 168, 255, 0.6); }
+.as-nowe-obejrzane .ikona { width: 14px; height: 14px; }
+
 /* ------------------------------------------------------------------ pasek etapów pipeline'u */
 .as-etapy { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 10px; }
 .as-etap {

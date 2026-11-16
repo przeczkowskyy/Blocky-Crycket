@@ -112,6 +112,14 @@ Na prośbę Karola z 16.11.2026: to, na czyim koncie Claude wykona się zadanie,
 - **Dla Pawła:** co ustawić raz (własny panel, samo uruchamianie, start z Windowsem) i jak ma się zachowywać jego Claude Code — [[Zadania z panelu — instrukcja dla Claude Code Pawła]].
 - Szczegóły techniczne i API: `panel/README.md` (część „Zadania dla agenta osoby”).
 
+## Assety na żywo i szybsze pobieranie z GitHuba (od 16.11.2026)
+Zgłoszenie Karola z 16.11: zakładka Assety nie była aktualna na bieżąco. Tego wieczoru nowe grafiki Pawła, wypchnięte o 21:24, pojawiły się u Karola dopiero o 21:35 i dopiero po ręcznym odświeżeniu.
+- **Przyczyna opóźnienia:** zastój w stałej synchronizacji. Przychodzący commit zmieniał też Dziennik zmian, w którym leżały niezapisane zmiany z kliknięć w panelu; pobieranie czekało na ich zapis, a zapis czekał na pobranie. Zastój przerywało dopiero ręczne „Wyślij”.
+- **Pobieranie teraz:** gdy z cudzymi zmianami kolidują wyłącznie własne, niewysłane zmiany panelu, panel zapisuje je commitem tylko lokalnie i od razu pobiera; wysyłanie idzie dalej dotychczasową regułą spokoju. Co 30 s panel lekko sprawdza, czy na GitHubie jest nowy commit, i wtedy pobiera od razu. Cudza praca w toku nadal nie jest dotykana — wtedy panel czeka jak dotąd, a stan trafia do logu.
+- **Zakładka Assety:** odświeża się sama (kilka sekund po zmianie rejestru albo obrazu), bez gubienia filtrów i otwartych szczegółów; pokazuje godzinę ostatniej zmiany, znaczek „nowe” przy grafikach dodanych od ostatniego oglądania i pasek, gdy na GitHubie czekają niepobrane zmiany.
+- **Sprawdzone:** cały zestaw testów panelu (621, w tym 19 nowych) i próba w przeglądarce bez okna (29 kroków). **Niesprawdzone:** telefon przez tunel i pełny obieg z drugą osobą na żywo.
+- Ustawienia i szczegóły: `panel/README.md` (stała synchronizacja, Assety).
+
 ## Sesja — długa rozmowa głosowa z agentem
 Zakładka **Sesja** (dodana 13.11.2026 na prośbę Karola, czeka na zgodę jak cały panel) służy do „sesji głównych”, czyli długich rozmów Karola i Pawła. Obaj wchodzą na ten sam panel (gospodarz przy komputerze, druga osoba przez link tunelu), klikają **Dołącz** i rozmawiają w przeglądarce — głos idzie wprost między nimi.
 - **Układ (od 14.11.2026, uwagi Karola)**: u góry wąski pasek pokoju (kto jest, Dołącz / Rozłącz, Wycisz, „Agent słucha” z czerwonym znacznikiem). Pod nim na komputerze, bez przewijania, dwie kolumny obok siebie: **Transkrypcja na żywo** i **Notatki agenta**; Agenda i Pytania są niżej (skróty do nich w pasku pokoju). Na telefonie pod paskiem jest przełącznik **Transkrypcja / Notatki / Agenda / Pytania** — na start Transkrypcja.
