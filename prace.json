@@ -2,8 +2,21 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T21:54:17+01:00",
+ "aktualizacja": "2026-11-17T23:01:49+01:00",
  "prace": [
+  {
+   "id": "noc-balans",
+   "tytul": "Noc: punkty statystyk za poziom, tempo, Rebirth, wspólne modyfikatory bohatera",
+   "stan": "w_toku",
+   "start": "2026-11-17T23:01:49+01:00",
+   "koniec_szacowany": "2026-11-18T02:21:49+01:00",
+   "aktualizacja": "2026-11-17T23:01:49+01:00",
+   "obszary": [
+    "swiat/stan_gracza"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
   {
    "id": "pas-krotszy",
    "tytul": "Krótszy i węższy pas biomów (D-096): przebudowa lasu i Bagna",
