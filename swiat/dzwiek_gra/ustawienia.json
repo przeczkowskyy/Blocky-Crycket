@@ -1,0 +1,91 @@
+{
+ "opis": "Ustawienia dźwięku gry (pakiet swiat/dzwiek_gra): głośności efektów, które efekt gra przy którym zdarzeniu walki, odgłosy potworów i muzyka stref. Odcinki arkusza (początek, koniec, atak, szczyt) NIE są tutaj — budowniczy bierze je z pliku arkusza. Identyfikatory zasobów są w identyfikatory.json. Po zmianie: python -B swiat/dzwiek_gra/zbuduj.py --sucho (odświeża zrodla/KatalogDzwiekow.luau), potem --skrypty w Studio.",
+ "status": "propozycja (17.11.2026) — przyjęte, do zmiany: mapowanie zdarzeń, głośności i czasy przejść ustawił agent; nikt jeszcze nie słyszał tych plików w grze",
+ "arkusz": {
+  "mapa": "assets/audio/arkusz/sfx_arkusz_a.json",
+  "glosnosc": 0.6,
+  "naraz": 6
+ },
+ "glosnosci": {
+  "sfx_awans_poziom": 0.8,
+  "sfx_blok_tarcza": 0.9,
+  "sfx_cios_krytyczny": 1.0,
+  "sfx_cios_trafiony": 0.9,
+  "sfx_fanfara_zwyciestwa": 0.8,
+  "sfx_galareta_plusk": 1.0,
+  "sfx_klik_przycisk": 0.6,
+  "sfx_kula_ognia": 0.9,
+  "sfx_lodowy_pocisk": 0.9,
+  "sfx_monety": 0.7,
+  "sfx_ogluszenie": 0.8,
+  "sfx_podpalenie_tik": 0.6,
+  "sfx_porazka": 0.8,
+  "sfx_przejscie_chmury": 0.8,
+  "sfx_ryk_kolos": 0.8,
+  "sfx_tarcza_magiczna": 0.8,
+  "sfx_troll_chrzakniecie": 0.8,
+  "sfx_trucizna_tik": 0.6,
+  "sfx_umiejetnosc_rzut": 0.8,
+  "sfx_unik": 0.8,
+  "sfx_wilk_warkniecie": 0.8,
+  "sfx_zarodniki": 0.8
+ },
+ "zdarzenia_opis": "zdarzenie odtwarzacza walki → efekt z arkusza; uderzenie = true: szczyt efektu wypada na klatkę trafienia (odtwarzanie zaczyna się wcześniej, a gdy się nie da — od chwili tuż przed atakiem efektu)",
+ "zdarzenia": {
+  "cios": {"efekt": "sfx_cios_trafiony", "uderzenie": true},
+  "krytyk": {"efekt": "sfx_cios_krytyczny", "uderzenie": true},
+  "blok": {"efekt": "sfx_blok_tarcza", "uderzenie": true},
+  "unik": {"efekt": "sfx_unik", "uderzenie": true},
+  "kula_ognia": {"efekt": "sfx_kula_ognia", "uderzenie": true},
+  "lodowy_pocisk": {"efekt": "sfx_lodowy_pocisk", "uderzenie": true},
+  "rzut": {"efekt": "sfx_umiejetnosc_rzut", "uderzenie": false},
+  "tarcza": {"efekt": "sfx_tarcza_magiczna", "uderzenie": false},
+  "tik_trucizna": {"efekt": "sfx_trucizna_tik", "uderzenie": false},
+  "tik_podpalenie": {"efekt": "sfx_podpalenie_tik", "uderzenie": false},
+  "ogluszenie": {"efekt": "sfx_ogluszenie", "uderzenie": false},
+  "zwyciestwo": {"efekt": "sfx_fanfara_zwyciestwa", "uderzenie": false},
+  "porazka": {"efekt": "sfx_porazka", "uderzenie": false},
+  "awans": {"efekt": "sfx_awans_poziom", "uderzenie": false},
+  "monety": {"efekt": "sfx_monety", "uderzenie": false},
+  "przycisk": {"efekt": "sfx_klik_przycisk", "uderzenie": false},
+  "galareta": {"efekt": "sfx_galareta_plusk", "uderzenie": true},
+  "wilk": {"efekt": "sfx_wilk_warkniecie", "uderzenie": false},
+  "troll": {"efekt": "sfx_troll_chrzakniecie", "uderzenie": false},
+  "zarodniki": {"efekt": "sfx_zarodniki", "uderzenie": false},
+  "ryk_straznika": {"efekt": "sfx_ryk_kolos", "uderzenie": false},
+  "chmury": {"efekt": "sfx_przejscie_chmury", "uderzenie": false}
+ },
+ "glosy_potworow_opis": "aktor walki → zdarzenie z odgłosem: gra na początku umiejętności potwora i w jego radości po wygranej",
+ "glosy_potworow": {
+  "lesny_slime": "galareta",
+  "cierniowy_wilk": "wilk",
+  "lesny_troll": "troll",
+  "muchomornik": "zarodniki",
+  "straznik_lasu": "ryk_straznika"
+ },
+ "muzyka": {
+  "przejscie_s": 2.5,
+  "przyciszenie_walki": 0.25,
+  "przyciszenie_s": 0.8,
+  "strefy": {
+   "bazar": {
+    "glosnosc": 0.35,
+    "mapy": ["swiat/miasteczko_bazar/czesci.json"],
+    "kontener": "MiasteczkoBazar",
+    "utwory": ["muzyka_02_bazar_targ_petla", "muzyka_03_bazar_rzemieslnicy_petla", "muzyka_04_bazar_wieczor_petla"]
+   },
+   "las": {
+    "glosnosc": 0.35,
+    "mapy": ["swiat/las_pas/czesci.json"],
+    "kontener": "LasPas",
+    "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]
+   },
+   "menu": {
+    "glosnosc": 0.35,
+    "podpiete": false,
+    "uwaga": "menu główne to ekran Pawła — tylko pozycja w katalogu, skrypt muzyki stref go nie gra",
+    "utwory": ["muzyka_01_menu_a_petla", "muzyka_01_menu_b_petla"]
+   }
+  }
+ }
+}

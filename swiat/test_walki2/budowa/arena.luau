@@ -219,13 +219,13 @@ local function napis(tekst: string, y: number, wys: number, czcionka: Enum.Font,
 	licznik += 2
 	return t
 end
-napis("WALKA v2", 0.06, 0.46, Enum.Font.LuckiestGuy, "#7ED957", 5)
+napis("PRÓBA WALKI", 0.06, 0.46, Enum.Font.LuckiestGuy, "#7ED957", 5)
 napis("klasa, przeciwnik, poziom  •  podejdź i naciśnij E", 0.58, 0.2, Enum.Font.Bangers, "#2F6FE0", 0)
 napis("prototyp: serwer liczy, klient odtwarza", 0.8, 0.13, Enum.Font.Bangers, "#6C727A", 0)
 
 local podpowiedz = Instance.new("ProximityPrompt")
 podpowiedz.Name = "PodpowiedzWalki2"
-podpowiedz.ObjectText = "Walka v2 (prototyp)"
+podpowiedz.ObjectText = "Próba walki (prototyp)"
 podpowiedz.ActionText = "Wybierz walkę"
 podpowiedz.KeyboardKeyCode = Enum.KeyCode.E
 podpowiedz.HoldDuration = 0

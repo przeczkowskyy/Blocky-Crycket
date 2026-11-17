@@ -1,0 +1,91 @@
+{
+ "L1": {
+  "serwer": {
+   "potworow": 36,
+   "zgodnosc": "OK 70/70",
+   "zwolnij": true,
+   "wynik": true,
+   "serwer": true
+  },
+  "klient": {
+   "tryb": "aktorzy",
+   "widoki": 0,
+   "walka": false
+  },
+  "wybor_klasy": {
+   "ekran": false,
+   "kamera": "Custom"
+  }
+ },
+ "L2": {
+  "id": "z01-3",
+  "walka": true,
+  "v3": {
+   "mana": [
+    40,
+    37
+   ],
+   "pomijanie": false,
+   "powod": "pierwsza_walka",
+   "przycisk": false,
+   "faza": "odtwarzanie"
+  },
+  "kontrola": {
+   "OstatniaNiezgodnoscPaskow": 0,
+   "OstatniaNiezgodnoscMany": 0,
+   "OstatnieBledyObslugi": 0,
+   "OstatniWynik": "wygrana"
+  },
+  "kamera": "Custom"
+ },
+ "L3": {
+  "id": "straznik-1",
+  "walka": true,
+  "v3": {
+   "mana": [
+    100,
+    82
+   ],
+   "pomijanie": false,
+   "powod": "pierwsza_walka",
+   "przycisk": false,
+   "faza": "odtwarzanie"
+  },
+  "kontrola": {
+   "OstatniaNiezgodnoscPaskow": 0,
+   "OstatniaNiezgodnoscMany": 0,
+   "OstatnieBledyObslugi": 0,
+   "OstatniWynik": "przegrana"
+  }
+ },
+ "L4": {
+  "id": "z01-4",
+  "walka": true,
+  "zgoda": true,
+  "przed": {
+   "mana": [
+    0,
+    0
+   ],
+   "pomijanie": true,
+   "powod": "ok",
+   "przycisk": true,
+   "faza": "odtwarzanie"
+  },
+  "po": {
+   "odpowiedz": "ok",
+   "pominieto": true,
+   "wolna_za_s": -1.47,
+   "potwor": {
+    "jest": false,
+    "stan": ""
+   }
+  },
+  "nastepna": {
+   "id": "z01-1",
+   "walka": true,
+   "odmowa": "nil"
+  }
+ },
+ "L5": []
+}

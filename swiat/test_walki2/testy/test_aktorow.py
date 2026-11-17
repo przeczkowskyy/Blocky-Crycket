@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Testy aktorów walki v2 BEZ Studio (unittest): tabela aktorów kontra dane silnika, dane klipów, punkty, przenikanie broni.
+"""Testy aktorów próby walki BEZ Studio (unittest): tabela aktorów kontra dane silnika, dane klipów, punkty, przenikanie broni.
 
     python -B swiat/test_walki2/testy/test_aktorow.py            # wszystkie testy
     python -B swiat/test_walki2/testy/test_aktorow.py -v

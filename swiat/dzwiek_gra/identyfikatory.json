@@ -1,0 +1,13 @@
+{
+ "opis": "Identyfikatory zasobów audio w Roblox (0 = jeszcze nie wgrane → cisza muzyki i wbudowane dźwięki walki). Wpisuje je: python -B swiat/dzwiek_gra/zbuduj.py --identyfikatory <plik.json>",
+ "arkusz": 0,
+ "muzyka": {
+  "muzyka_01_menu_a_petla": 0,
+  "muzyka_01_menu_b_petla": 0,
+  "muzyka_02_bazar_targ_petla": 0,
+  "muzyka_03_bazar_rzemieslnicy_petla": 0,
+  "muzyka_04_bazar_wieczor_petla": 0,
+  "muzyka_05_las_a_petla": 0,
+  "muzyka_05_las_b_petla": 0
+ }
+}

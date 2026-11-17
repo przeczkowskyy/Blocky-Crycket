@@ -194,6 +194,26 @@ s.Parent = rodzic
 return "OK " .. s:GetFullName() .. " (" .. #s.Source .. " znaków)"
 '''
 
+# --skrypty: napisy tablicy prototypu jak w budowa/arena.luau (bez przebudowy areny) — 17.11.2026 „PRÓBA WALKI”
+# zamiast „WALKA v2”; tylko teksty istniejących obiektów w Arena/Tablica naszego kontenera
+NAPISY_TABLICY = r'''
+local f = workspace:FindFirstChild("__KONTENER__")
+if not f or f:GetAttribute("Wygenerowane") ~= true then return "STOP: brak kontenera" end
+local tablica = f:FindFirstChild("Tablica", true)
+local deska = tablica and tablica:FindFirstChild("Deska")
+if not deska then return "brak Tablica/Deska — bez zmian" end
+local zmiany = 0
+local sg = deska:FindFirstChild("Napis")
+if sg then
+	for _, t in sg:GetChildren() do
+		if t:IsA("TextLabel") and t.Text == "WALKA v2" then t.Text = "PRÓBA WALKI" zmiany += 1 end
+	end
+end
+local p = deska:FindFirstChild("PodpowiedzWalki2")
+if p and p.ObjectText == "Walka v2 (prototyp)" then p.ObjectText = "Próba walki (prototyp)" zmiany += 1 end
+return "OK (" .. zmiany .. " napisów)"
+'''
+
 KONIEC = r'''
 local f = workspace:FindFirstChild("__KONTENER__")
 if not f then return "STOP: brak kontenera" end
@@ -281,7 +301,7 @@ def geometria_ciosu(d):
     from geometria import Rig, punkt
     r = Rig(d)
     pk = {p[0]: p for p in d["punkty"]}
-    wynik = {"zasiegi": {}, "boki": {}, "piersPrzod": 0.6}
+    wynik = {"zasiegi": {}, "boki": {}, "piersPrzod": 0.6, "torBroni": {}}
     if "Piers" in pk:
         p = pk["Piers"]
         wynik["piersPrzod"] = round(max(0.3, -punkt(r.pozy()[p[1]], tuple(p[2:5]))[2]), 3)
@@ -295,6 +315,13 @@ def geometria_ciosu(d):
             q = punkt(r.pozy(r.transformy(klip, f))[b[1]], tuple(b[2:5]))
             wynik["zasiegi"][klip] = round(max(0.5, -q[2]), 3)
             wynik["boki"][klip] = round(q[0], 3)  # w prawo od osi aktora (rig: prawa +X) — do celowania (etap 9)
+            # tor broni (17.11.2026): wysokość punktu Bron nad ziemią w 8 klatkach przed chwilą trafienia i w niej —
+            # odtwarzacz wręcz przesuwa trafienie na chwilę, w której broń schodzi do wierzchu NISKIEGO celu (krytyk
+            # Wojownika przy wilku: miecz w chwili z modułu jest już przy ziemi, błysk spóźniał się o ok. 0,05 s sceny)
+            ys = []
+            for g in range(max(0, f - 8), f + 1):
+                ys.append(round(punkt(r.pozy(r.transformy(klip, g))[b[1]], tuple(b[2:5]))[1], 3))
+            wynik["torBroni"][klip] = {"od": max(0, f - 8), "fps": kl["fps"], "y": ys}
     return wynik
 
 
@@ -508,6 +535,7 @@ def main():
                         'then return "STOP: brak kontenera — zbuduj całość" end '
                         'game:GetService("ChangeHistoryService"):SetWaypoint("TestWalki2: przed wymianą skryptów") return "OK"' % KONTENER)
                 print("  zdalne i haczyki:", wykonaj(inne_kod))
+                print("  napisy tablicy:", wykonaj(NAPISY_TABLICY.replace("__KONTENER__", KONTENER)))
                 for sciezka, klasa, kontekst, tekst, plik in zrodla:
                     if not sciezka.startswith("Moduly/DaneAktorow/"):
                         print("  skrypt:", wyslij_skrypt(sciezka, klasa, kontekst, tekst))

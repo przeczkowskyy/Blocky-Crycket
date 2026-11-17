@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Próba jednej walki v2 w trybie Play (narzędzie robocze do oglądania; sam wraca do trybu Edit).
+"""Jedna walka z próby walki w trybie Play (narzędzie robocze do oglądania; sam wraca do trybu Edit).
 
     python -B swiat/test_walki2/testy/proba_play.py --wybor wojownik/lesny_troll/5 --ziarno 7
     python -B swiat/test_walki2/testy/proba_play.py --wybor mag/lesny_slime/10 --ziarno 31997 --klatki 0.25 --od 1 --do 9

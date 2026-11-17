@@ -1,4 +1,7 @@
-# Walka v2 — prototyp w Roblox Studio (aktorzy, serwer, odtwarzacz, interfejs, poprawki po przeglądzie)
+# Próba walki — prototyp w Roblox Studio (aktorzy, serwer, odtwarzacz, interfejs, poprawki po przeglądzie)
+
+> Nazwa na ekranie od 17.11.2026: **„PRÓBA WALKI”** (tablica, podpowiedź, tytuł panelu) — bez numeru wersji silnika.
+> Folder, kontener (`Workspace/TestWalki2`) i nazwy plików zostają; „walka v2” w opisach niżej to historia etapów.
 
 > **Status: prototyp, nie kanon i nie kod gry.** Działa wyłącznie w Roblox Studio (każdy skrypt i moduł zaczyna się
 > od strażnika `RunService:IsStudio()`; poza Studio serwer usuwa cały kontener przy starcie — patrz „Bezpieczeństwo”).
@@ -220,8 +223,10 @@ zachowanie zdalnej funkcji i mostka w Play, kompilator Luau i typy (interpreter 
 
 ### Wdrożenie v3 w Studio (17.11.2026, noc)
 
-*Agent w nocnej sesji Karola; Studio na wyłączność, tryb Edit, ekran przykryty czarnym oknem (Studio rysuje ok.
-15 kl./s — klatka 66,7 ms to ograniczenie Studia). Niczego nie zapisano w miejscu ani nie opublikowano.*
+*Agent w nocnej sesji Karola; Studio na wyłączność, tryb Edit. Studio rysowało 15 kl./s (klatka 66,7 ms) — jak
+ustalił pomiar 17.11.2026 rano, dlatego, że jego okno było w tle (za innym oknem), a nie przez zaciemnienie ekranu.
+Wyniki czasowe tej nocy zastępują dzisiejsze przebiegi przy oknie na wierzchu — „Poprawki po wdrożeniu (17.11.2026,
+dzień)” niżej. Niczego nie zapisano w miejscu ani nie opublikowano.*
 
 **Kolejność i wyniki.**
 1. Bez Studio, przed wdrożeniem: `tools/walka/test_walki.py` 73/73, `test_odtwarzacza.py` 18/18 (4644 dzienniki),
@@ -248,14 +253,14 @@ zachowanie zdalnej funkcji i mostka w Play, kompilator Luau i typy (interpreter 
    spowolnienie bez utraty tury, ogłuszenie z gwiazdkami i pnączami + „TRACI TURĘ!”, zdarcie, skupienie, tarcze −70%
    i −71%); blok 8/8 (Wojownik z tarczą bez parady, reszta z łukiem parady) + blok umiejętności bez efektu;
    wskrzeszenie gracza, przeciwnika i obu 3/3; pasywki 3/3; telefon — walka v3 2/2; koszt 3/3 (skrypt klienta śr.
-   0,55–0,63 ms, p95 1,1–1,3 ms, maks. 1,8–2,9 ms na klatkę, 1816–2357 instancji; p95 klatki 68 ms = zaciemnienie,
+   0,55–0,63 ms, p95 1,1–1,3 ms, maks. 1,8–2,9 ms na klatkę, 1816–2357 instancji; p95 klatki 68 ms = okno Studio w tle,
    „?” do oceny człowieka); konsola bez `[TestWalki2]`. **BŁĄD: panel wyboru na telefonie** — 844 × 390:
    „MUCHOMORNIK” 11 pkt; 667 × 375: „MUCHOMORNIK” 10 pkt, „CIERNIOWY WILK” i „STRAŻNIK GAJU” 11 pkt, podpis
    Wojownika 11 pkt (ryzyko z listy wyżej potwierdzone; zrzut `klatki/v3_telefon_667x375_panel.jpg`; wybór niżej).
 6. `testy/test_walki_play.py --szybko` (`testy/wynik_play.json`): **110/111**. Jedyny BŁĄD: 3e (×4 skraca
    odtwarzanie) — 31,2 s przy progu 29,75 s dla najdłuższej walki (54 tury, 69 zdarzeń, 81 s dziennika; w v2 było 33
-   tury). Prawdopodobnie klatka 66,7 ms pod zaciemnieniem (ok. 1 klatka narzutu na zdarzenie) — „?” do sprawdzenia
-   przy zwykłym ekranie. Pierwszy przebieg miał też BŁĄD 1a (E przy tablicy) — błąd próby (kamera po ekranie wyboru
+   tury). Rano 17.11 okazało się, że to nie klatka (przy 60 kl./s też 32,3 s) —
+   przyczyna i poprawka w „Poprawki po wdrożeniu (17.11.2026, dzień)”, p. 10. Pierwszy przebieg miał też BŁĄD 1a (E przy tablicy) — błąd próby (kamera po ekranie wyboru
    klasy patrzyła obok tablicy), poprawione w `sesja_play.py`.
 7. `testy/test_poprawek_play.py` (`testy/wynik_poprawek.json`): **24/27**, po poprawce kadru z 04:00 **25/27**
    (długa walka: 24 trafienia w kadrze; zostają dwa pierwsze punkty z listy niżej). Część „zero” (−0 przy pełnej tarczy) nie
@@ -322,8 +327,9 @@ przeciwników) / `_walka`. Pozostałe zrzuty `test_v3_play.py` (statusy, bloki p
 z repozytorium — skrypt robi je przy każdym przebiegu.
 
 **Niesprawdzone / słabe miejsca:** prawdziwy telefon i dotyk; dwóch graczy; koszt klatki przy normalnym ekranie
-(wszystkie progi czasowe liczone przy 15 kl./s); panel wyboru na telefonie (p. 5, 8); dwa graniczne kadry z p. 7
-(uderzenie z góry, uścisk korzeni); podpowiedź na tablicy i tytuł panelu mają dalej napis „Walka v2”.
+(nocne progi czasowe liczone przy 15 kl./s — okno Studio w tle; dzień: niżej); panel wyboru na telefonie (p. 5, 8); dwa graniczne kadry z p. 7
+(uderzenie z góry, uścisk korzeni); podpowiedź na tablicy i tytuł panelu mają dalej napis „Walka v2” (wszystko
+poprawione 17.11 w dzień — niżej).
 
 **Wybory do decyzji z wdrożenia:**
 1. **Panel wyboru prototypu na telefonie: jak zmieścić 6 przeciwników?**
@@ -332,13 +338,80 @@ z repozytorium — skrypt robi je przy każdym przebiegu.
    - Opcja B: zostawić (panel to narzędzie prób, nie ekran gry).
 2. ~~Unik w zbliżeniu~~ — naprawione o 04:00 („Poprawione po Studio”, p. 3), bez decyzji.
 
+### Poprawki po wdrożeniu (17.11.2026, dzień)
+
+*Zadania „Walka v3, dalej” i „Walka v2, dalej”. Studio z oknem na wierzchu (`tools/studio_okno.py --na-wierzch`):
+klatka śr. 16,7 ms, p95 ok. 18 ms. Nie zmieniane (czekają na ludzi): panel prób na telefonie, „po pominięciu gracz
+wolny od razu”, liczby silnika. Pomiary robocze (skrypty poza repozytorium) — liczby niżej.*
+
+1. **Napisy „PRÓBA WALKI”** zamiast „Walka v2”: tablica (`budowa/arena.luau`; przy `--skrypty` napisy istniejącej
+   tablicy zmienia krok `NAPISY_TABLICY` w `zbuduj.py`, bez przebudowy areny), podpowiedź „Próba walki (prototyp)”,
+   tytuł panelu „PRÓBA WALKI — WYBIERZ!” (`WyborWalki2`), opisy w testach i ten README.
+2. **Błysk krytyka Wojownika przy niskim celu** (`policzCzasy`, `Sesja.chwilaKontaktu`, `zbuduj.py`: `torBroni`):
+   chwila trafienia z modułu to miecz przy ziemi, a niski cel miecz mija wcześniej. Tabela aktorów ma teraz tor broni
+   (wysokość punktu `Bron` w 8 klatkach przed chwilą trafienia), a cios wręcz trafia w chwili, gdy broń schodzi do
+   wierzchu celu (najwyżej 0,2 s klipu wcześniej; wysoki cel bez zmian). Pomiar w Play (krytyk, wilk, ziarno 1):
+   przed — klinga w bryłach wilka 0,033 s sceny PRZED błyskiem (przy zwolnieniu krytyka ok. 0,15 s na ekranie), po —
+   pierwszy styk dokładnie w klatce błysku; slime: styk 0,017 s przed błyskiem (i w nim).
+3. **Kamera zwykłego Miażdżącego ciosu** (`Choreografie`: `kamera = "boczny"`, `zamach = 3.5`; ujęcie boczne liczy
+   kadr z wysokością zamachu): z boku, jak uderzenie z góry — zza Wojownika stała za blisko i ucinała głowę przy
+   zamachu. Pomiar (wilk poz. 5, ziarno 12, zd. 11): czubek głowy na wysokości 42–49% ekranu od góry w całym zamachu
+   (tabliczki kończą się ok. 20%).
+4. **Unik Wojownika przed Trollem** (`policzCzasy`, `aktualizujPozy`, `UNIK_PRZED_SZEROKIM = 2,5`): atakujący dużo
+   szerszy od celu skraca doskok, a resztę dystansu robi unikający (dalsze zejście w tył). Styk brył Trolla z
+   Wojownikiem (troll poz. 5, ziarno 3, zd. 20; pary nachodzących części co 1/60 s): przed 49 / 233 / 31 w trzech
+   klatkach wokół trafienia, po 0 we wszystkich (−0,33…+0,1 s).
+5. **Bariera „unosi Maga o 0,19 studa” — sprawdzone, bez zmian w kodzie.** W Play najniższy punkt WIDOCZNYCH brył Maga
+   stoi przez całą Barierę na ziemi (1,000 ± 0,011); w górę idą biodra (+0,20) i kości stóp (do +0,105), bo Mag w klipie
+   modułu staje na palcach. Dawne 0,19 to wzniesienie bioder, nie oderwanie od ziemi. Próba „przyciśnięcia” bioder
+   wpychała palce 0,09 studa w ziemię — cofnięta; klip modułu (przyjęty przez właściciela) bez zmian.
+6. **Dwa ujęcia na granicy progu**: uderzenie z góry przy krytyku — kamera wyżej, ponad lądującym Zwiadowcą (slime
+   odsłonięty 0,38 → 0,47 przy progu 0,45; na granicy, ale z przodu); uścisk korzeni — pomiar kadru
+   (`Odtwarzacz.kadr`) nie liczy jako zasłony efektu z klipu, który trzyma cel (kości z wydłużeniem bieżącego klipu
+   z dziećmi: korzenie Strażnika, kałuża i bańka slime'a) — Mag odsłonięty 0,37 → 1,00. Kamera uścisku bez zmian.
+7. **Próba `wskrzeszenie_przeciwnika` rano nie przeszła** — wina próby, nie odtwarzacza: atrybuty wyniku
+   (`OstatnieWskrzeszenia`, `OstatniePaskiKoniec`) ustawia `pokazWynik` w NASTĘPNEJ klatce po pominięciu, a próba czytała
+   je zaraz po „pomin” — przy 15 kl./s bywało, że klatki między dwoma wywołaniami narzędzia nie było i próba widziała
+   wynik poprzedniej walki („1/0” zamiast „0/1”). `test_v3_play.py`: `pomin_do_wyniku` czeka na `OstatniStan =
+   wynik` (mana, wskrzeszenia, pasywki), a przy błędzie wypisuje odczytane wartości.
+8. **Tempo ×4 (próba 3e)** — przy ×4 nie przyspieszały: zwolnienia krytyków (0,22 × 4 = 0,88: każdy krytyk ok. 0,8 s
+   zamiast 0,18 s, w najdłuższej walce 7 krytyków) i — z założenia — finał w ×1 (z krytykiem kończącym ok. 7 s).
+   Ujęcia kamery, napisy, karteczki pasywek i wskrzeszenie czasu sceny nie wstrzymują (pomiar τ co 0,15 s przez całą
+   walkę ×4: poza zwolnieniami i finałem scena biegła równo ×4,0). Poprawka: `Sesja:tempoSceny` — przy ×2 / ×4
+   zwolnienie w trakcie walki słabsze (wykładnik 1 / tempo: krytyk 0,47 przy ×2, 0,69 przy ×4), finał bez zmian.
+   Próg testu był błędny (pomijał zwolnienia i zakładał finał 3 s) — teraz liczony z planu odtwarzacza
+   (`Odtwarzacz.stan`: `zwolnienia`, `tempoFinaluOd`, `czasKonca`; ta sama reguła w `test_walki_play.py`,
+   `czas_odtwarzania`) + 1,5 s zapasu, i dodatkowo plan ×4 ≤ 45% planu ×1.
+9. **Własne dźwięki** — odcinki arkusza z `Workspace/DzwiekGra` (pakiet `swiat/dzwiek_gra`, README tam): nagłówek
+   `OdtwarzaczWalki2`, `Sesja:grajOdcinek` / `dzwiekZdarzenia` / `zaplanujUderzenie` / `glosPotwora`. Bez arkusza
+   (dziś: identyfikator 0) wszystko jak dotąd.
+10. **Walka zamknięta w czasie prośby do serwera** (znalezione przy próbie lasu-pasa): `Sesja:start` po odpowiedzi
+   serwera nie sprawdzał, czy sesję w międzyczasie zamknięto — scena, kamera skryptowa i chowanie obcych powstawały po
+   sprzątaniu i zostawały na stałe (potem E przy Kamieniu Powrotu nic nie robiło, a widoki starego lasu były
+   schowane). Teraz po prośbie: zamknięta sesja = przerwanie bez śladów. Gracz trafia na to rzadko (śmierć postaci albo
+   reset w ułamku sekundy po E), próby — często (haczyk „zamknij” zaraz po starcie).
+
+**Wyniki (pełne przebiegi na końcowym kodzie, okno Studio na wierzchu, 09:37–09:43):** `test_v3_play.py
+--bez-zrzutow` **44/46** (`testy/wynik_v3.json`; nie przechodzą tylko dwa punkty panelu prób na telefonie — czekają na
+decyzję; wskrzeszenia 3/3; koszt skryptu śr. 0,37–0,41 ms, p95 0,68–0,81 ms, maks. 1,5–1,7 ms, p95 klatki 18,0 ms);
+`test_poprawek_play.py` **27/27** (`testy/wynik_poprawek.json`; kadr 15/15: uderzenie z góry i uścisk korzeni
+przechodzą); `test_walki_play.py --szybko` **111/111** (`testy/wynik_play.json`; 3e: 28,8 s przy planie ×4 28,8 s,
+cała walka ×1 wg planu 100,8 s, dziennik 81,0 s; klatka śr. 16,7 ms, p95 17,9 ms); bez Studio:
+`test_odtwarzacza.py` 18/18, `test_aktorow.py` 15/15, `zbuduj.py --sucho` kod 0.
+
+**Zrzuty** (`klatki/v3b_*.jpg`, 1280 px): `krytyk_wilk` (miecz wchodzi w wilka w klatce błysku), `unik_troll`
+(maczuga opada przed Wojownikiem, który zszedł w tył), `miazdzacy_boczny` (Miażdżący cios z boku, głowa i miecz w
+kadrze), `uderzenie_z_gory` (wyższa kamera krytyka), `uscisk_korzeni` (Mag w klatce korzeni), `panel_proba_walki`
+(tytuł „PRÓBA WALKI — WYBIERZ!”), `las_pas_rewanz_pomin` (rewanż z wilkiem: POMIŃ przy przegranej), `las_pas_jeden_panel`
+(w lesie-pasie jeden panel bohatera).
+
 ## Jak obejrzeć (krok po kroku)
 
 1. Studio, miejsce gry (Team Create). W `Workspace` jest folder **`TestWalki2`** (atrybut `Wygenerowane = true`).
    Jeśli go nie ma — odbuduj (niżej).
-2. Naciśnij **Play** (F5). Ze spawnu idź **na południe** — zobaczysz zielony świecący słup i tablicę „WALKA v2”
+2. Naciśnij **Play** (F5). Ze spawnu idź **na południe** — zobaczysz zielony świecący słup i tablicę „PRÓBA WALKI”
    (ok. 220 studów; tablica stoi w `(16, 0, 220)`).
-3. Podejdź do tablicy: podpowiedź „Walka v2 (prototyp) · Wybierz walkę”. Naciśnij **E** (telefon: dotknij).
+3. Podejdź do tablicy: podpowiedź „Próba walki (prototyp) · Wybierz walkę”. Naciśnij **E** (telefon: dotknij).
 4. Panel wyboru: **klasa** (Wojownik / Zwiadowca / Mag), **przeciwnik** (Leśny Slime, Cierniowy Wilk, Muchomornik —
    zwykli; Leśny Troll — rzadki; Strażnik Gaju — strażnik; v3: **Lustro** — pojedynek z postacią tej samej klasy),
    **zestaw postaci** (v3: wzorcowa / pod manę / pasywki / wskrzeszenie), **poziom**
@@ -1197,6 +1270,8 @@ napisy tak, jak gra; przy dużych skokach między klatkami arkusza napis może w
   z czterech nut). **To za mało na dobry efekt:** strzała, kula ognia, lód i czar brzmią tak samo jak świst skoku albo
   wybuch w innej wysokości, a „oof” przy upadku potwora jest śmieszny, nie straszny. Do dobrego dźwięku potrzebne są
   własne pliki (upload — poza tą paczką). Dźwięków nie odsłuchiwałem; test sprawdza tylko, że się wczytują i ile gra naraz.
+  **Od 17.11.2026** odtwarzacz umie grać własne efekty z arkusza (`swiat/dzwiek_gra`) — czekają na wgranie plików
+  (zgoda człowieka); do tego czasu zestaw wbudowany.
   W filmach (`film_walki.py`) dźwięku nie ma.
 - Arena stoi w świecie wspólnym — obcy są chowani lokalnie jak w v1 (te same ograniczenia: części z `CanQuery = false`
   bez tagu, dźwięki innych graczy).

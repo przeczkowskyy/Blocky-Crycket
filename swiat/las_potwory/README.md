@@ -94,6 +94,23 @@ wyniki `wyniki/proba_play_20261117_0312.json`, `…_lista.txt`): **5/5 OK**.
 Niesprawdzone w tej próbie: przegrana i rewanż z pominięciem, dwóch graczy, telefon, koszt klienta (bez zmian w kodzie
 klienta potworów).
 
+## Jeden komplet na ekranie (17.11.2026, dzień)
+
+Gdy w miejscu stoją oba kontenery potworów (stary las i las-pas), każdy klient potworów budował swój panel bohatera
+i po Strażniku dawał baner — w lesie-pasie widać było dwa panele i dwa banery. Zmiany we wspólnym kodzie
+(`zrodla/KlientPotworow.client.luau`, `zrodla/Stale.luau`):
+- **panel bohatera tylko w swoim lesie**: `Stale.PANEL_TYLKO_W_LESIE = true`, prostokąt = płyta biomu z
+  `DanePotworow.biom.plyta` + `PANEL_ZAPAS` 40 studów (stary las: X −740…740, Z −2740…−1260; las-pas: X 1026…2106,
+  Z −828…−572). Chowany jest przycisk i okno, a `ScreenGui.Enabled` zostaje dla odtwarzacza walki (on chowa GUI na
+  czas walki). Lokalny atrybut kontenera `KlientPanelWidoczny` (do prób). Poza lasami panelu nie ma;
+- **jeden baner po Strażniku**: podpis banera „STRAŻNIK GAJU POKONANY!” może podmienić inny skrypt kontenera lokalnym
+  atrybutem `PodpisBaneraStraznika` (las-pas: „Brama do Bagna otwarta — idź za arenę”); klient potworów go zużywa
+  (`BanerStraznikaZPodpisem`). Domyślny podpis: `Stale.PODPIS_STRAZNIKA` („Wróci za 2 min”, jak dotąd).
+Test offline `test_styku.py` 16/16 (podpis z lasu-pasa dopisany do atrybutów, które klient może czytać). Próba starego
+lasu w Play (`testy/proba_play.py`, okno Studio na wierzchu, kod końcowy; `wyniki/proba_play_20261117_0944.json`,
+`…_lista.txt`): **5/5 OK** (L1–L5 jak w nocy). Panel w Borze sprawdza próba lasu-pasa (P15: widoczny tylko panel
+starego lasu), w pasie — P08j. W lesie-pasie: `swiat/las_pas_gra/README.md` (P08j, P11j, P15).
+
 ## Pliki
 
 | Plik | Co to jest |

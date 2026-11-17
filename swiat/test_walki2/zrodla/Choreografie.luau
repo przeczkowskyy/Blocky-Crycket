@@ -24,6 +24,8 @@
 	  smuga    kolor smugi za bronią w czasie ciosu;  fala = kolor fali uderzeniowej na ziemi;  pazury = kolor śladów
 	  aura     błysk przy rzuceniu umiejętności na siebie (Efekty3D: Wybuch.<nazwa>)
 	  kamera   ujęcie umiejętności (patrz Kamera w OdtwarzaczWalki2); stronaKamery = -1 → kamera od strony lasu
+	  zamach   (ujęcie boczne) studs ponad głowę atakującego, na które sięga broń w zamachu z wyskokiem — kadr liczony
+	           z tą wysokością (Miażdżący cios)
 	           (np. Zwiadowca przy strzale stoi bokiem, piersią od kamery planu ogólnego)
 	  wstrzas  siła drżenia kamery przy trafieniu
 ]]
@@ -68,7 +70,9 @@ Ch.ZASTEPCZY = {
 Ch.UMIEJETNOSCI = {
 	-- Wojownik
 	ciecie = { styl = "wrecz", smuga = "#FFFFFF", wstrzas = 0.35, kamera = "zaBroniacym" },
-	miazdzacy_cios = { styl = "wrecz", smuga = "#FFC94A", fala = "#B08A58", wstrzas = 0.55, kamera = "zaAtakujacym" },
+	-- 17.11.2026: kamera z boku (jak przy uderzeniu z góry) zamiast zza Wojownika — tam stał za blisko i zamach ucinał mu
+	-- głowę; zamach = ile studów nad głową sięga miecz z wyskokiem z klipu (9,2 studa nad ziemią przy wzroście 5,7)
+	miazdzacy_cios = { styl = "wrecz", smuga = "#FFC94A", fala = "#B08A58", wstrzas = 0.55, kamera = "boczny", zamach = 3.5 },
 	kamienna_skora = { styl = "na_siebie", aura = "kamien" },
 	-- Zwiadowca
 	uderzenie_z_gory = { styl = "skok", smuga = "#FFFFFF", fala = "#B08A58", wysokosc = 4.5, wstrzas = 0.45 },

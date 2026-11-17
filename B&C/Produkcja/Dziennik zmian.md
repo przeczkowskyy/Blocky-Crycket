@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (poprawki walki, podpięcie własnych dźwięków)
+- **Poprawki walki** wdrożone w Studio (`Workspace/TestWalki2`, `LasPotwory`, `LasPasGra`): jeden panel bohatera i jeden baner po Strażniku w lesie-pasie; przegrana i rewanż z pominięciem; napisy „PRÓBA WALKI” zamiast „Walka v2”; błysk krytyka Wojownika w chwili styku miecza z celem; kamera Miażdżącego ciosu z boku; unik przed Trollem bez przenikania maczugi; tempo ×4 (zwolnienia krytyków teraz przyspieszają — najdłuższa walka 28,8 s zamiast 32,3 s); zamknięcie walki w trakcie startu nie zostawia już sceny i kamery. Bariera Maga sprawdzona — bez zmian (Mag staje na palcach, nie odrywa się od ziemi).
+- **Próby w grze przy 60 klatkach na sekundę:** 44 z 46 (nie przechodzą tylko dwa punkty panelu prób na telefonie, które czekają na decyzję), 27 z 27, 111 z 111; las-pas 20 punktów w porządku; stary las 5 z 5.
+- **Dźwięk:** nowy pakiet `swiat/dzwiek_gra/` (kontener `Workspace/DzwiekGra`): katalog dźwięków i muzyka stref. Walka gra odcinki jednego arkusza z 22 efektami, uderzenia trafiają w klatkę trafienia; muzyka gra na bazarze i w lesie-pasie, w walce cichnie. Pliki nie są wgrane do Roblox — do tego czasu grają dźwięki wbudowane.
+- Karol 17.11 ok. 09:05 zgodził się na wgranie dźwięku („Tak wgrywaj. Potem najwyżej się zmieni”). Studio odrzuciło plik z folderu `assets/audio`, bo zatwierdzony do wgrywania jest tylko folder wyników postaci — wgranie czeka na potwierdzenie Karola, którą drogą iść.
+- Agent zgłosił jedną odmowę narzędzia (próba cofnięcia pliku poleceniem git) — nie obchodził jej, plik przywrócił ręcznie.
+- Pliki: `swiat/test_walki2/`, `swiat/las_potwory/`, `swiat/las_pas_gra/`, `swiat/dzwiek_gra/`, `swiat/README.md`, `DOKUMENTACJA.md`; notatki [[Walka v2 — silnik, klasy i umiejętności]], [[Biom Las]], [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (panel: podgląd prac i akceptacja kilku rzeczy naraz)
 - Zaległe zlecenia Karola z 13–14.11. Połączenie zakładek Plan i Raporty w Pytania, krótkie karty i aktywne osoby w lewym dolnym rogu były zrobione już 14.11, tylko nieodhaczone — potwierdzone próbą w przeglądarce.
 - **Nowe:** zakładka Podgląd ma siatkę „Do przejrzenia” (raporty czekające na decyzję; kilka naraz albo po kolei) i część „Powstaje teraz”; przy pracy w toku miniatura tego, co powstaje (`praca.py zrzut`, `--podglad-z`, `--migawka`); w zakładce Sesja podpowiedź „Na sesji padło” z przyciskiem „Wpisz do odpowiedzi” (wysyła człowiek).

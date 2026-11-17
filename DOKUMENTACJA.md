@@ -246,6 +246,8 @@ Blocky&Crycket/
 │   ├── biom_las/  las_potwory/  💡 pierwszy las (Workspace/BiomLas), jego potwory w ruchu (Workspace/LasPotwory) i plan lasu jako pasa (biom_las/pas/)
 │   ├── las_pas/  las_pas_gra/   💡 las jako wąski pas: mapa (Workspace/LasPas) i skrypty gry (Workspace/LasPasGra)
 │   ├── bagno_pas/  biomy/       💡 plan Bagna jako odcinka pasa (generator, kontrola, podglądy; niezbudowane w Studio) i zarys biomów 2–8 — do akceptacji
+│   ├── dzwiek_gra/              💡 katalog dźwięków i muzyka stref (Workspace/DzwiekGra); identyfikatory puste do czasu wgrania plików
+│   ├── trening_proba/           💡 Training Center: projekt sześciu mini-gier i dwie na próbę (Workspace/TreningProba)
 │   ├── miasteczko_bazar/  miasteczko_bazar_gra/  💡 miasteczko jako ciasny bazar: mapa (Workspace/MiasteczkoBazar) i skrypty gry (Workspace/MiasteczkoBazarGra)
 │   ├── teleport_chmury/       💡 przejście przez chmury zamiast okna mapy (Workspace/TeleportChmury)
 │   └── postacie/              💡 postacie, pety i ekwipunek z kodu: Blender (siatki, animacje) i postacie z klocków w Studio

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Film MP4 z JEDNEJ całej walki v2 (tryb Play; sam wraca do trybu Edit) — do pokazania walki komuś bez Studio.
+"""Film MP4 z JEDNEJ całej walki z próby walki (tryb Play; sam wraca do trybu Edit) — do pokazania walki komuś bez Studio.
 
     python -B swiat/test_walki2/testy/film_walki.py                                   # walka pokazowa z ziarna.json („shard”)
     python -B swiat/test_walki2/testy/film_walki.py --klasa mag --przeciwnik cierniowy_wilk --poziom 5 --ziarno 910854

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Arkusze klatek aktorów walki v2 — w trybie PLAY, na lokalnym klonie u klienta, przez prawdziwy moduł Klipy.
+"""Arkusze klatek aktorów próby walki — w trybie PLAY, na lokalnym klonie u klienta, przez prawdziwy moduł Klipy.
 
     python -B swiat/test_walki2/testy/klatki_aktorow.py                       # wszyscy aktorzy, domyślne klipy
     python -B swiat/test_walki2/testy/klatki_aktorow.py --tylko wojownik,mag --klatki 8

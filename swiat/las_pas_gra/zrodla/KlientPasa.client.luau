@@ -13,7 +13,9 @@
 		  (lista sprzątania wykonywana od końca, każdy krok w pcall).
 		• BRAMA DO BAGNA: gdy atrybut gracza PokonalStraznikaLasu = true (ustawia serwer), części grupy wrót mapy
 		  (DanePasa.mapa.grupaWrot) i niewidzialna Brama/Zapora tracą kolizję i zapytania TYLKO u tego klienta, wrota
-		  płynnie znikają (LocalTransparencyModifier), napis „ZAMKNIĘTE” gaśnie; po walce baner „BRAMA DO BAGNA OTWARTA”.
+		  płynnie znikają (LocalTransparencyModifier), napis „ZAMKNIĘTE” gaśnie; po walce JEDEN baner — „STRAŻNIK GAJU
+	  POKONANY!” klienta potworów z podpisem „Brama do Bagna otwarta…” (lokalny atrybut PodpisBaneraStraznika), własny
+	  „BRAMA DO BAGNA OTWARTA!” tylko wtedy, gdy klient potworów podpisu nie wziął.
 		  Nieuprawnionego i tak cofa serwer.
 		• KOMUNIKAT: krótki napis u góry ekranu na polecenie serwera („komunikat”, tekst).
 	Lokalne atrybuty kontenera (tylko u tego klienta): KlientPrzelot (true w czasie przelotu — MglaPasa rozrzedza mgłę),
@@ -185,6 +187,7 @@ local function idStraznika(): string?
 end
 
 ------------------------------------------------------------------ brama do Bagna (tylko u tego klienta)
+local PODPIS_BRAMY = "Brama do Bagna otwarta — idź za arenę"
 local wrota: Instance? = nil
 local brama: Instance? = nil
 local otwarta = false
@@ -292,15 +295,27 @@ gracz:GetAttributeChangedSignal("PokonalStraznikaLasu"):Connect(function()
 	end
 	ustawBrame(teraz, teraz)
 	if teraz then
-		-- baner dopiero po walce (odtwarzacz chowa inne ScreenGui) i po banerze KlientPotworow
+		-- JEDEN baner po wygranej ze Strażnikiem (17.11.2026; wcześniej dwa: „STRAŻNIK GAJU POKONANY!” z KlientPotworow
+		-- i zaraz potem „BRAMA DO BAGNA OTWARTA!” stąd): podpis banera klienta potworów podmieniamy lokalnym atrybutem
+		-- kontenera, a on go zużywa (i ustawia BanerStraznikaZPodpisem). Własny baner tylko wtedy, gdy nikt podpisu nie
+		-- wziął — brama otwarta bez walki (haczyk testowy) albo klient potworów nie działa.
+		kontener:SetAttribute("PodpisBaneraStraznika", PODPIS_BRAMY)
 		task.spawn(function()
-			local t0 = os.clock()
-			while walkaTrwa() and os.clock() - t0 < 300 do
+			-- czekamy, aż klient potworów weźmie podpis (koniec walki ze Strażnikiem); własny baner dopiero po 8 s BEZ
+			-- walki (brama otwarta bez walki albo klient potworów nie działa) — nie zależy od chwili startu odtwarzacza
+			local t0, bezWalki = os.clock(), 0
+			while os.clock() - t0 < 300 and kontener:GetAttribute("PodpisBaneraStraznika") == PODPIS_BRAMY do
+				bezWalki = if walkaTrwa() then 0 else bezWalki + 0.25
+				if bezWalki >= 8 then
+					break
+				end
 				task.wait(0.25)
 			end
-			task.wait(1.5)
-			if otwarta then
-				pokazBaner("BRAMA DO BAGNA OTWARTA!", "Idź za arenę — dalej Bagno (wkrótce)", 5)
+			if kontener:GetAttribute("PodpisBaneraStraznika") == PODPIS_BRAMY then
+				kontener:SetAttribute("PodpisBaneraStraznika", nil)
+				if otwarta then
+					pokazBaner("BRAMA DO BAGNA OTWARTA!", "Idź za arenę — dalej Bagno (wkrótce)", 5)
+				end
 			end
 		end)
 	end

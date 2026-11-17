@@ -104,6 +104,18 @@ def przewin(s, tau):
     return json.loads(s.steruj('"przewinDo", %f' % max(0.0, tau)))
 
 
+def pomin_do_wyniku(s, limit=6):
+    """Wymuszone pominięcie pokazu i stan PO panelu wyniku.
+
+    Atrybuty wyniku (OstatnieWskrzeszenia, OstatniePaskiKoniec, OstatniePasywki…) ustawia Sesja:pokazWynik w NASTĘPNEJ
+    klatce po pominięciu. Odczyt zaraz po "pomin" bywał z poprzedniej walki, gdy między dwoma wywołaniami narzędzia nie
+    było klatki (okno Studio w tle: 15 kl./s) — 17.11.2026 rano fałszywy BŁĄD „wskrzeszenie_przeciwnika” (stan „1/0” z
+    walki gracza zamiast „0/1”). Czekamy więc na OstatniStan = „wynik” (ustawiany na końcu pokazWynik)."""
+    s.steruj('"pomin", true')
+    st, _ = s.czekaj(("wynik",), limit)
+    return st
+
+
 def napisy(s):
     d = json.loads(s.steruj('"napisy"'))
     return [n["tekst"] for n in (d.get("napisy") or []) + (d.get("czekajace") or [])]
@@ -295,8 +307,7 @@ def test_mana(s, Z):
             if (st.get("manaGotowa") or {}).get("gracz") and not gotowa_zrzut:
                 zrzut(s, "mana_gotowa")      # pierwsza chwila, gdy pasek gracza świeci (mana ≥ próg)
                 gotowa_zrzut = True
-        s.steruj('"pomin", true')
-        st = s.stan()
+        st = pomin_do_wyniku(s)
         wynik("mana %s (%s): %d zdarzeń, %d użyć — paski = dziennik" % (nazwa, ZE.NAZWY[o["zestaw"]], len(d), uzycia),
               not zle and (st.get("OstatniaNiezgodnoscMany") or 0) == 0, "; ".join(zle[:5]))
 
@@ -431,12 +442,14 @@ def test_wskrzeszenie(s, Z):
                          % ("TabliczkaGracza" if z["kto"] == "gracz" else "TabliczkaWroga")).strip()
             if leg != "true true":
                 zle.append("zd. %d: pióro legendy %s" % (i + 1, leg))
-        s.steruj('"pomin", true')
-        st = s.stan()
+        st = pomin_do_wyniku(s)
         g = sum(1 for z in d if z["typ"] == "wskrzeszenie" and z["kto"] == "gracz")
         wr = sum(1 for z in d if z["typ"] == "wskrzeszenie" and z["kto"] == "wrog")
-        wynik("%s (%s)" % (pokaz, opis_o(o)), not zle and st.get("OstatnieWskrzeszenia") == "%d/%d" % (g, wr)
-              and st.get("OstatniePaskiKoniec") == "%d/%d" % (d[-1]["hp_gracz"], d[-1]["hp_wrog"]), "; ".join(zle[:4]))
+        oczek_w, oczek_p = "%d/%d" % (g, wr), "%d/%d" % (d[-1]["hp_gracz"], d[-1]["hp_wrog"])
+        if st.get("OstatnieWskrzeszenia") != oczek_w or st.get("OstatniePaskiKoniec") != oczek_p:
+            zle.append("wynik: wskrzeszenia %s (oczek. %s), paski %s (oczek. %s), stan %s"
+                       % (st.get("OstatnieWskrzeszenia"), oczek_w, st.get("OstatniePaskiKoniec"), oczek_p, st.get("OstatniStan")))
+        wynik("%s (%s)" % (pokaz, opis_o(o)), not zle, "; ".join(zle[:4]))
 
 
 def test_pasywki(s, Z):
@@ -455,8 +468,7 @@ def test_pasywki(s, Z):
             if k == 1:
                 zrzut(s, "pasywki_%s" % klasa)
         oczek = [S.PASYWNE[p]["nazwa"] for p in ZE.PASYWKI_ZESTAWU[klasa]] + [S.PASYWKI_BRONI[ZE.BRON_ZESTAWU[klasa]]["nazwa"]]
-        s.steruj('"pomin", true')
-        st = s.stan()
+        st = pomin_do_wyniku(s)
         sloty = ["gracz:%s" % p for p in ZE.PASYWKI_ZESTAWU[klasa]] + ["gracz:%s" % ZE.BRON_ZESTAWU[klasa]]
         wynik("pasywki %s: zapowiedź %s" % (klasa, oczek), widziane == oczek and all(x in (st.get("OstatniePasywki") or "") for x in sloty),
               "(widziane %s, atrybut %s)" % (widziane, st.get("OstatniePasywki")))

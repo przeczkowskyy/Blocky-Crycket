@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Test w trybie PLAY poprawek po niezależnym przeglądzie prototypu walki v2 (sam wraca do trybu Edit).
+"""Test w trybie PLAY poprawek po niezależnym przeglądzie prototypu próby walki (sam wraca do trybu Edit).
 
     python -B swiat/test_walki2/testy/test_poprawek_play.py              # wszystko → testy/wynik_poprawek.json
     python -B swiat/test_walki2/testy/test_poprawek_play.py --tylko kadr,paski

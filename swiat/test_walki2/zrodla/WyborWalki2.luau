@@ -214,7 +214,7 @@ function Wybor.pokaz(playerGui: Instance, opcje)
 	self:_nowy("UICorner", { CornerRadius = UDim.new(0.2, 0) }, wstega)
 	self:_obrys(wstega, 5)
 	self:_tekst(wstega, { Name = "Tytul", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromScale(0.92, 0.78),
-		Font = NAGLOWKI, Text = "WALKA v2 — WYBIERZ!", TextColor3 = K.bialy, ZIndex = 4 }, 5)
+		Font = NAGLOWKI, Text = "PRÓBA WALKI — WYBIERZ!", TextColor3 = K.bialy, ZIndex = 4 }, 5)
 
 	-- zamknij (krzyżyk)
 	local x = self:_nowy("TextButton", { Name = "Zamknij", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.975, 0.03),

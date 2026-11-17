@@ -1,0 +1,732 @@
+{
+ "edit": {
+  "kontener": true,
+  "stary": true,
+  "gestosc": 0.30000001192092896,
+  "mapa": true
+ },
+ "P01": {
+  "pas": {
+   "SerwerGotowy": true,
+   "StanMapy": "ok",
+   "LicznikPrzelotow": 0,
+   "PunktPrzybyciaLasu": [
+    1114,
+    3.559999942779541,
+    -700
+   ],
+   "StanBiomu": "ok",
+   "Potworow": 20,
+   "ZgodnoscLogikiPasa": "OK 39/39",
+   "Przekierowanie": "tak",
+   "ZgodnoscLogiki": "OK 70/70",
+   "SzablonyGotowe": true,
+   "SerwerPasaGotowy": true
+  },
+  "stary": {
+   "Potworow": 36,
+   "SerwerGotowy": true
+  }
+ },
+ "P02": {
+  "KlientGotowy": true,
+  "KlientTryb": "aktorzy",
+  "KlientPasaGotowy": true
+ },
+ "wybor_klasy": {
+  "ekran": false,
+  "kamera": "Custom",
+  "podpowiedzi": true
+ },
+ "P03": {
+  "steruj": "true",
+  "pozycja": [
+   1114.00048828125,
+   3.3583896160125732,
+   -700.0003051757812
+  ],
+  "cel": [
+   1114,
+   3.559999942779541,
+   -700
+  ],
+  "odleglosc": 0.0005758045124546267
+ },
+ "P04": {
+  "fazy": [
+   [
+    "trwa",
+    0.1,
+    true,
+    true
+   ],
+   [
+    "brak",
+    13.4,
+    false,
+    false
+   ]
+  ],
+  "czas_lotu": 13.333555221557617,
+  "gracz": {
+   "blokadaWalki": false,
+   "pamiec": {
+    "widzialPrzelotLasu": true,
+    "pokonalStraznikaLasu": false
+   },
+   "id": 1,
+   "wPasie": true,
+   "zablokowany": false,
+   "pozycja": [
+    1114.00048828125,
+    3.3584001064300537,
+    -700.0003051757812
+   ],
+   "zaBrama": false,
+   "gotowy": true,
+   "faza": "brak"
+  },
+  "klient": {
+   "zaslona": false,
+   "kamera": "Custom",
+   "mgla": 1,
+   "bledy": 0,
+   "wrota": true,
+   "brama": false,
+   "ostatniPrzelot": {
+    "ok": true,
+    "ryk": true,
+    "id": 1,
+    "straznik": "straznik-1",
+    "powod": "",
+    "czas": 13.917952999996487
+   },
+   "przelot": false
+  },
+  "proba_walki": "true",
+  "liczniki": {
+   "LicznikPrzelotow": 1,
+   "SerwerLicznikWalk": 0
+  },
+  "ruch_postaci": 0.0
+ },
+ "P05": {
+  "fazy": [
+   "brak",
+   "brak",
+   "brak",
+   "brak",
+   "brak",
+   "brak",
+   "brak",
+   "brak",
+   "brak",
+   "brak",
+   "brak",
+   "brak"
+  ],
+  "licznik": [
+   1,
+   1
+  ]
+ },
+ "P13": {
+  "pas": {
+   "waga": 1,
+   "gestosc": 0.36000001430511475
+  },
+  "serwer": {
+   "gestosc": 0.30000001192092896
+  },
+  "miasteczko": 0,
+  "edit": 0.30000001192092896
+ },
+ "P06": {
+  "fazy": [
+   [
+    "brak",
+    0.1,
+    false,
+    false
+   ],
+   [
+    "uspokaja",
+    0.4,
+    false,
+    false
+   ],
+   [
+    "laduje",
+    0.8,
+    true,
+    true
+   ],
+   [
+    "trwa",
+    1.2,
+    true,
+    true
+   ],
+   [
+    "brak",
+    15.2,
+    false,
+    false
+   ]
+  ],
+  "czas": 13.998364925384521,
+  "gracz": {
+   "blokadaWalki": false,
+   "pamiec": {
+    "widzialPrzelotLasu": true,
+    "pokonalStraznikaLasu": false
+   },
+   "id": 2,
+   "wPasie": true,
+   "zablokowany": false,
+   "pozycja": [
+    1114.00048828125,
+    3.3584001064300537,
+    -700.0003051757812
+   ],
+   "zaBrama": false,
+   "gotowy": true,
+   "faza": "brak"
+  },
+  "licznik": 2
+ },
+ "P07": {
+  "przyklady": [],
+  "poza": 0,
+  "potworow": 20,
+  "probki": 400
+ },
+ "P08": {
+  "s1": {
+   "id": "s1-1",
+   "E": true,
+   "jak": "E (za 2. razem; odmowy ['nil'])",
+   "walka": true,
+   "kamera": "Custom",
+   "w_pasie": true,
+   "walk": [
+    0,
+    1
+   ],
+   "ostatnia": "s1-1/zwiadowca/auto→1/wygrana",
+   "v3": {
+    "mana": [
+     84,
+     92
+    ],
+    "pomijanie": false,
+    "powod": "pierwsza_walka",
+    "przycisk": false
+   },
+   "kontrola": {
+    "OstatniaNiezgodnoscPaskow": 0,
+    "OstatniaNiezgodnoscMany": 0,
+    "OstatnieBledyObslugi": 0
+   }
+  },
+  "m1": {
+   "id": "m1-1",
+   "E": true,
+   "jak": "E",
+   "walka": true,
+   "kamera": "Custom",
+   "w_pasie": true,
+   "walk": [
+    1,
+    2
+   ],
+   "ostatnia": "m1-1/zwiadowca/auto→3/wygrana",
+   "v3": {
+    "mana": [
+     40,
+     9
+    ],
+    "pomijanie": false,
+    "powod": "pierwsza_walka",
+    "przycisk": false
+   },
+   "kontrola": {
+    "OstatniaNiezgodnoscPaskow": 0,
+    "OstatniaNiezgodnoscMany": 0,
+    "OstatnieBledyObslugi": 0
+   }
+  },
+  "w1": {
+   "id": "w1-1",
+   "E": true,
+   "jak": "E",
+   "walka": true,
+   "kamera": "Custom",
+   "w_pasie": true,
+   "walk": [
+    2,
+    3
+   ],
+   "ostatnia": "w1-1/zwiadowca/auto→6/wygrana",
+   "v3": {
+    "mana": [
+     0,
+     0
+    ],
+    "pomijanie": false,
+    "powod": "pierwsza_walka",
+    "przycisk": false
+   },
+   "kontrola": {
+    "OstatniaNiezgodnoscPaskow": 0,
+    "OstatniaNiezgodnoscMany": 0,
+    "OstatnieBledyObslugi": 0
+   }
+  },
+  "t1": {
+   "id": "t1-1",
+   "E": true,
+   "jak": "E",
+   "walka": true,
+   "kamera": "Custom",
+   "w_pasie": true,
+   "walk": [
+    3,
+    4
+   ],
+   "ostatnia": "t1-1/zwiadowca/auto→9/wygrana",
+   "v3": {
+    "mana": [
+     10,
+     40
+    ],
+    "pomijanie": false,
+    "powod": "pierwsza_walka",
+    "przycisk": false
+   },
+   "kontrola": {
+    "OstatniaNiezgodnoscPaskow": 0,
+    "OstatniaNiezgodnoscMany": 0,
+    "OstatnieBledyObslugi": 0
+   }
+  }
+ },
+ "P08p": {
+  "cel": "s1-2",
+  "walka": true,
+  "przed": {
+   "pomijanie": true,
+   "przycisk": true,
+   "powod": "ok",
+   "faza": "odtwarzanie"
+  },
+  "po": {
+   "odpowiedz": "ok",
+   "pominieto": true,
+   "wolna_za_s": -1.47,
+   "potwor": {
+    "jest": true,
+    "stan": "idzie"
+   },
+   "zgoda": true
+  },
+  "nastepna": true,
+  "odmowa": "nil",
+  "walk": [
+   5,
+   6
+  ]
+ },
+ "P08r": {
+  "wilk": {
+   "id": "w1-2",
+   "strefa": "w1"
+  },
+  "pierwsza": {
+   "id": "w1-2",
+   "E": true,
+   "odmowy": [
+    "nil"
+   ],
+   "bez_podpowiedzi": [
+    "w1-3",
+    "w1-3"
+   ],
+   "walka": true,
+   "zgoda": true,
+   "przycisk": true,
+   "serwer": "w1-2/wojownik/1→1/przegrana",
+   "odpowiedz": "ok",
+   "pominieto": true,
+   "wynik": "przegrana",
+   "wolna_za_s": -1.25,
+   "potwor": {
+    "jest": true,
+    "stan": "idzie"
+   },
+   "kamera": "Custom"
+  },
+  "rewanz": {
+   "id": "w1-2",
+   "E": true,
+   "walka": true,
+   "zgoda": true,
+   "przycisk": true,
+   "serwer": "w1-2/wojownik/1→1/przegrana",
+   "odpowiedz": "ok",
+   "pominieto": true,
+   "wynik": "przegrana",
+   "wolna_za_s": -1.27,
+   "potwor": {
+    "jest": true,
+    "stan": "idzie"
+   },
+   "kamera": "Custom"
+  }
+ },
+ "P08j": {
+  "pas": true,
+  "starySa": true,
+  "stary": false
+ },
+ "P09": {
+  "czas": 12.449447199993301,
+  "zaraz": 1,
+  "przed": 2,
+  "wrocil": true
+ },
+ "P10": {
+  "pozycja": [
+   2024,
+   3.3076188564300537,
+   -700.0003051757812
+  ],
+  "komunikat": {
+   "widoczny": true,
+   "tekst": "Brama do Bagna jest zamknięta — pokonaj Strażnika Gaju."
+  },
+  "wrota_klient": {
+   "czesci": 17,
+   "kolizja": 2
+  },
+  "cofniecia": [
+   0,
+   1
+  ]
+ },
+ "P11j": {
+  "podpisy": [
+   "Brama do Bagna otwarta — idź za arenę"
+  ],
+  "potworow": true,
+  "pasa": false,
+  "maksNaraz": 1,
+  "zuzyty": "Brama do Bagna otwarta — idź za arenę"
+ },
+ "P11": {
+  "proby": [
+   [
+    11,
+    "straznik-1/zwiadowca/10→10/przegrana"
+   ],
+   [
+    23,
+    "straznik-1/zwiadowca/10→10/wygrana"
+   ]
+  ],
+  "jak": "wygrana",
+  "wrota_klient": {
+   "czesci": 17,
+   "zapora": false,
+   "niewidoczne": 17,
+   "kolizja": 0
+  },
+  "wrota_serwer": {
+   "kolizja": 2,
+   "zapora": true
+  },
+  "za_brama": [
+   2047.220703125,
+   3.3076188564300537,
+   -700.0003051757812
+  ],
+  "cofniecia": [
+   1,
+   1
+  ],
+  "ratunek": {
+   "pozycja": [
+    2046,
+    3.3076188564300537,
+    -700.0003051757812
+   ],
+   "licznik": [
+    0,
+    1
+   ]
+  }
+ },
+ "P12": {
+  "podpowiedz": {
+   "wlaczona": true
+  },
+  "jak": "E",
+  "pozycja": [
+   989.9994506835938,
+   3.2969253063201904,
+   -696.9949951171875
+  ],
+  "cel": "bazar"
+ },
+ "P14": {
+  "przybycie": {
+   "serwer_potworow": {
+    "odradzania": {
+     "maks": 0.014199991710484028,
+     "n": 8,
+     "sr": 0.011312498827464879
+    },
+    "ruchu": {
+     "maks": 0.2232000115327537,
+     "n": 32,
+     "sr": 0.13334999857761431
+    },
+    "okno": 8.215388300013728
+   },
+   "serwer_pasa": {
+    "okno": 8.282120199990459,
+    "maks": 0.025599991204217076,
+    "naSekunde": 0.06796570331727511,
+    "n": 32,
+    "sr": 0.017590628885955084
+   },
+   "klient_potworow": {
+    "koniec walki": {
+     "maks": 0.001700012944638729,
+     "naSekunde": 0.004117074703984456,
+     "n": 31,
+     "sr": 0.0010999999264435423
+    },
+    "podpowiedź": {
+     "maks": 0.06329998723231256,
+     "naSekunde": 0.2845852714470458,
+     "n": 75,
+     "sr": 0.03142800104493896
+    },
+    "okno": 8.282579299993813,
+    "klatka": {
+     "maks": 0.00999998883344233,
+     "naSekunde": 0.04592778012226629,
+     "n": 497,
+     "sr": 0.0007653933218015092
+    },
+    "panel bohatera": {
+     "maks": 0.010299991117790341,
+     "naSekunde": 0.01433128114063177,
+     "n": 16,
+     "sr": 0.007418748282361776
+    },
+    "budowa widoków": {
+     "maks": 0.0032999960239976645,
+     "naSekunde": 0.009803710194055458,
+     "n": 75,
+     "sr": 0.001082666761552294
+    },
+    "wybór widoków": {
+     "maks": 0.06230000872164965,
+     "naSekunde": 0.10371164974958505,
+     "n": 16,
+     "sr": 0.053687497711507604
+    }
+   },
+   "klatki": {
+    "p95_ms": 18.043000251054764,
+    "sr_ms": 16.66486976707044,
+    "n": 480
+   }
+  },
+  "zarosla_w1": {
+   "serwer_potworow": {
+    "odradzania": {
+     "maks": 0.03640001523308456,
+     "n": 8,
+     "sr": 0.030212500860216096
+    },
+    "ruchu": {
+     "maks": 0.1779999874997884,
+     "n": 31,
+     "sr": 0.1283419372949509
+    },
+    "okno": 8.216689300024882
+   },
+   "serwer_pasa": {
+    "okno": 8.283918999979505,
+    "maks": 0.0281000102404505,
+    "naSekunde": 0.07125853421979561,
+    "n": 32,
+    "sr": 0.018446872672939207
+   },
+   "klient_potworow": {
+    "koniec walki": {
+     "maks": 0.001800013706088066,
+     "naSekunde": 0.0043333818324928705,
+     "n": 32,
+     "sr": 0.0011218753570574336
+    },
+    "podpowiedź": {
+     "maks": 0.07479998748749495,
+     "naSekunde": 0.3555303164280025,
+     "n": 75,
+     "sr": 0.039271998684853315
+    },
+    "wybór widoków": {
+     "maks": 0.09590000263415277,
+     "naSekunde": 0.11290931181857208,
+     "n": 16,
+     "sr": 0.058462503147893585
+    },
+    "klatka": {
+     "maks": 0.49649999709799886,
+     "naSekunde": 16.595133138934415,
+     "n": 497,
+     "sr": 0.2766253528095242
+    },
+    "korzen": {
+     "maks": 0.4555000050459057,
+     "naSekunde": 14.56831814560343,
+     "n": 475,
+     "sr": 0.25408757948561717
+    },
+    "budowa widoków": {
+     "maks": 0.001300009898841381,
+     "naSekunde": 0.008956445049099862,
+     "n": 75,
+     "sr": 0.0009893319414307675
+    },
+    "okno": 8.284525299997767,
+    "klipy": {
+     "maks": 0.1531000016257167,
+     "naSekunde": 1.3059771087622953,
+     "n": 482,
+     "sr": 0.022446888794106164
+    },
+    "panel bohatera": {
+     "maks": 0.008000002708286047,
+     "naSekunde": 0.012819076628100981,
+     "n": 16,
+     "sr": 0.006637497790507041
+    }
+   },
+   "klatki": {
+    "p95_ms": 17.944900318980217,
+    "sr_ms": 16.666450004170958,
+    "n": 480
+   }
+  },
+  "straznik": {
+   "serwer_potworow": {
+    "odradzania": {
+     "maks": 0.03739999374374747,
+     "n": 8,
+     "sr": 0.03154999285470694
+    },
+    "ruchu": {
+     "maks": 0.3107000084128231,
+     "n": 31,
+     "sr": 0.14255161213147785
+    },
+    "okno": 8.198575600021286
+   },
+   "serwer_pasa": {
+    "okno": 8.266039100009948,
+    "maks": 0.030399998649954796,
+    "naSekunde": 0.0688116783474006,
+    "n": 31,
+    "sr": 0.01834838786312649
+   },
+   "klient_potworow": {
+    "koniec walki": {
+     "maks": 0.001500011421740055,
+     "naSekunde": 0.003520462959105416,
+     "n": 31,
+     "sr": 0.0009387093145520456
+    },
+    "podpowiedź": {
+     "maks": 0.07069998537190259,
+     "naSekunde": 0.4477522342194499,
+     "n": 75,
+     "sr": 0.049347998186325036
+    },
+    "wybór widoków": {
+     "maks": 0.09310001041740179,
+     "naSekunde": 0.11531636493744163,
+     "n": 16,
+     "sr": 0.059574993429123424
+    },
+    "klatka": {
+     "maks": 0.46629999997094274,
+     "naSekunde": 4.342994866083282,
+     "n": 496,
+     "sr": 0.07237701726309399
+    },
+    "korzen": {
+     "maks": 0.4532999882940203,
+     "naSekunde": 3.8540736704239897,
+     "n": 120,
+     "sr": 0.26547999926454696
+    },
+    "budowa widoków": {
+     "maks": 9.324000013293698,
+     "naSekunde": 1.1355856430638789,
+     "n": 75,
+     "sr": 0.1251559991699954
+    },
+    "okno": 8.265955099981511,
+    "klipy": {
+     "maks": 0.031200004741549492,
+     "naSekunde": 0.26982968307457605,
+     "n": 100,
+     "sr": 0.022304000449366868
+    },
+    "panel bohatera": {
+     "maks": 0.008599978173151612,
+     "naSekunde": 0.013368085847778354,
+     "n": 16,
+     "sr": 0.006906249836902134
+    }
+   },
+   "klatki": {
+    "p95_ms": 17.918400466442108,
+    "sr_ms": 16.667207942143985,
+    "n": 479
+   }
+  }
+ },
+ "P15": {
+  "tryb": "aktorzy",
+  "panelPasa": false,
+  "mgla": 1,
+  "panelStary": true,
+  "widoki": 1,
+  "odtwarzacz": "brak",
+  "kamera": "Custom",
+  "kamera_przed": "Scriptable"
+ },
+ "P16": [
+  "[LasPasGra] gotowy: 19 potworów w 10 strefach + Strażnik Gaju; zgodność logiki 70/70",
+  "[LasPasGra] serwer pasa gotowy: mapa ok, przekierowanie bramy miasteczka: tak, przybycie (1114.0, 3.6, -700.0), zgodność logiki 39/39",
+  "[LasPasGra] klient pasa gotowy",
+  "[LasPasGra] klient gotowy: tryb aktorzy, potworów w Stan: 20",
+  "[LasPasGra] walka s1-1 zwiadowca/auto→1 lesny_slime 1 → wygrana, 41,4 s",
+  "[LasPasGra] walka m1-1 zwiadowca/auto→3 muchomornik 3 → wygrana, 33,4 s",
+  "[LasPasGra] walka w1-1 zwiadowca/auto→6 cierniowy_wilk 6 → wygrana, 11,2 s",
+  "[LasPasGra] walka t1-1 zwiadowca/auto→9 lesny_troll 9 → wygrana, 29,7 s",
+  "[LasPasGra] walka s1-2 zwiadowca/auto→1 lesny_slime 1 → przegrana, 40,5 s",
+  "[LasPasGra] walka m1-2 zwiadowca/auto→3 muchomornik 3 → wygrana, 19,0 s",
+  "[LasPasGra] walka w1-2 wojownik/1→1 cierniowy_wilk 6 → przegrana, 14,1 s",
+  "[LasPasGra] walka w1-2 wojownik/1→1 cierniowy_wilk 6 → przegrana, 14,1 s",
+  "[LasPasGra] walka straznik-1 zwiadowca/10→10 straznik_lasu 10 → przegrana, 49,8 s",
+  "[LasPasGra] walka straznik-1 zwiadowca/10→10 straznik_lasu 10 → wygrana, 38,9 s",
+  "[LasPasGra] <gracz> pokonał Strażnika Gaju — brama do Bagna otwarta dla niego"
+ ]
+}

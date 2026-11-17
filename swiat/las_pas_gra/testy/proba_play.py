@@ -27,15 +27,22 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
   P07 potwory w swoich przegrodach: 40 s próbkowania pozycji wszystkich potworów — 0 poza polem strefy
   P08 walka z każdym gatunkiem (s1 slime, m1 muchomornik, w1 wilk, t1 troll): podpowiedź E przy potworze, prawdziwe E
       zaczyna walkę, po walce kamera i postać wracają do pasa
+  P08r przegrana i rewanż z pominięciem (17.11.2026): wojownik poz. 1 przeciw wilkowi (gatunek poznany w P08) —
+      przegrana, przycisk POMIŃ, spacja → wynik „przegrana”, serwer „ok”, gracz wolny od razu, ten sam wilk żyje i
+      nie jest zajęty; rewanż = ponowne E przy TYM SAMYM wilku → walka z POMIŃ, spacja → wynik, znów wolni
+  P08j jeden komplet: w pasie widać tylko panel bohatera pasa (LasPasGraBohater), panel starego lasu schowany
   P09 odradzanie: zabity slime s2 wraca w 12–16 s
   P10 brama zamknięta: nieuprawniony za bramą → cofnięty przed bramę w < 1 s, komunikat; wrota z kolizją u klienta
   P11 Strażnik: walka (do 6 prób z różnym ziarnem) aż do wygranej → PokonalStraznikaLasu = true; wrota u klienta
       bez kolizji i niewidoczne, NA SERWERZE nadal z kolizją (otwarcie tylko dla zwycięzcy); przejście za bramę bez
       cofnięcia; tabliczka „Bagno — wkrótce”; spadek w pustkę za bramą → ratunek
+  P11j jeden baner po wygranej ze Strażnikiem: „STRAŻNIK GAJU POKONANY!” z podpisem o otwartej bramie, bez drugiego
+      banera „BRAMA DO BAGNA OTWARTA!” (KlientPasa)
   P12 Kamień Powrotu: podpowiedź E przy kamieniu, prawdziwe E → miasteczko
   P13 mgła: waga 1 w pasie, 0 w miasteczku; Atmosphere u klienta zmieniona, NA SERWERZE taka jak w miejscu
   P14 koszt: serwer potworów, serwer pasa, klient potworów (ms) i klatki klienta w trzech miejscach pasa
-  P15 stary las działa: widoki potworów starego lasu i jego mgła po przeniesieniu do Boru
+  P15 stary las działa: widoki potworów starego lasu i jego mgła po przeniesieniu do Boru; w Borze widać tylko
+      panel bohatera starego lasu
   P16 konsola: bez błędów [LasPasGra]
   (ręcznie, poza skryptem: telefon w emulatorze Studio — przelot, przycisk E, Kamień Powrotu, panel bohatera;
    dwóch graczy (Test → Clients and Servers, 2) — brama otwarta tylko dla zwycięzcy, drugi cofany)
@@ -496,6 +503,92 @@ def main():
                   "druga walka ze slime'em: przycisk POMIŃ, spacja → wynik, serwer ok, gracz i potwór wolni od razu, "
                   "następna walka przyjęta: %s" % p08p)
 
+            # ---------------------------------------------------------------- P08r przegrana i rewanż z pominięciem
+            # 17.11.2026 (zadanie „Walka v3, dalej”): po pominięciu PRZEGRANEJ gracz ma być wolny od razu, wilk zostaje
+            # (wygrywa) i nie jest zajęty, a rewanż to ponowne E przy tym samym wilku — też z pominięciem
+            p08r = {}
+
+            def walka_z_pominieciem(id_potwora, etykieta):
+                w = {"id": id_potwora}
+                for _ in range(8):  # wilki chodzą: E przy oddalającym się potworze bywa odrzucone
+                    p = js('local c = k.Stan:FindFirstChild("%s") return H:JSONEncode(J(c and c:GetAttribute("Pozycja") or Vector3.zero))'
+                           % id_potwora, "Server")
+                    if p == [0, 0, 0]:
+                        w["brak_potwora"] = True  # potwór zniknął (wygrana) — nie przenosimy gracza na środek świata
+                        break
+                    przestaw(p[0] - 5, p[1] + 3.2, p[2], 1)
+                    time.sleep(0.6)
+                    kpot = klient_potworow()
+                    if kpot.get("podpowiedz") and kpot.get("najblizszy") == id_potwora:
+                        w["E"] = True
+                        luau(KP + 'k:SetAttribute("OstatniaOdmowa", nil) return "ok"', "Client")
+                        nacisnij("E")
+                        if czekaj_na(lambda: klient_potworow().get("walka"), 6, 0.4):
+                            break
+                        w.setdefault("odmowy", []).append(luau(KP + 'return tostring(k:GetAttribute("OstatniaOdmowa"))', "Client"))
+                    else:
+                        w.setdefault("bez_podpowiedzi", []).append(kpot.get("najblizszy"))
+                w["walka"] = bool(czekaj_na(lambda: klient_potworow().get("walka"), 2, 0.4))
+                if not w["walka"]:
+                    return w
+                w["zgoda"] = bool(czekaj_na(lambda: odtw('"stan"').get("pomijanie"), 8, 0.4))
+                so = odtw('"stan"')
+                w["przycisk"] = so.get("pomijanieNaEkranie")
+                w["serwer"] = atrybuty("LasPasGra", ["SerwerOstatniaWalka"]).get("SerwerOstatniaWalka")
+                zrzut("11c_%s" % etykieta)
+                nacisnij("Space")
+                czekaj_na(lambda: odtw('"stan"').get("faza") in ("wynik", "brak", "koniec"), 8, 0.4)
+                time.sleep(1.0)
+                kl = atrybuty("LasPasGra", ["OstatniaOdpowiedzPominiecia", "OstatnioPominieto", "NastepnaWalkaOd", "OstatniWynik"], "Client")
+                teraz_s = float(luau('return tostring(workspace:GetServerTimeNow())', "Server"))
+                w["odpowiedz"] = kl.get("OstatniaOdpowiedzPominiecia")
+                w["pominieto"] = kl.get("OstatnioPominieto")
+                w["wynik"] = kl.get("OstatniWynik")
+                w["wolna_za_s"] = round((kl.get("NastepnaWalkaOd") or 0) - teraz_s, 2)
+                odtw('"zamknij"')
+                czekaj_na(lambda: not klient_potworow().get("walka"), 20, 0.5)
+                time.sleep(0.8)
+                w["potwor"] = js('local c = k.Stan:FindFirstChild("%s") return H:JSONEncode({ jest = c ~= nil, stan = c and c:GetAttribute("Stan") or "" })'
+                                 % id_potwora, "Server")
+                w["kamera"] = js('local c = workspace.CurrentCamera return H:JSONEncode({ typ = c.CameraType.Name })', "Client")["typ"]
+                return w
+
+            try:
+                luau(KP + 'return tostring(k.Sygnaly.SterowanieKlienta:Invoke("bohater", "wojownik", "1"))', "Client")
+                # ziarno 1: Wojownik poz. 1 przegrywa z wilkiem poz. 6 (port silnika: 192 ze 199 ziaren to przegrana,
+                # ale bez stałego ziarna raz na ~30 prób wygrywał i wilk znikał — rewanżu nie było)
+                luau(KP + 'k:SetAttribute("ZiarnoTestowe", 1) return "ok"', "Server")
+                wilk = js('for _, c in k.Stan:GetChildren() do local s = c:GetAttribute("Strefa") if (s == "w2" or s == "w3" or s == "w1") '
+                          'and c:GetAttribute("Stan") ~= "zajety" then return H:JSONEncode({ id = c.Name, strefa = s }) end end '
+                          'return H:JSONEncode({})', "Server")
+                p08r["wilk"] = wilk
+                if wilk.get("id"):
+                    p08r["pierwsza"] = walka_z_pominieciem(wilk["id"], "przegrana")
+                    p08r["rewanz"] = walka_z_pominieciem(wilk["id"], "rewanz")
+            except Exception as e:  # noqa: BLE001
+                p08r["wyjatek"] = str(e)[:300]
+            luau(KP + 'k:SetAttribute("ZiarnoTestowe", nil) return "ok"', "Server")
+            luau(KP + 'return tostring(k.Sygnaly.SterowanieKlienta:Invoke("bohater", "zwiadowca", "auto"))', "Client")
+            zapisz("P08r", p08r)
+
+            def dobra_przegrana(w):
+                return bool(isinstance(w, dict) and w.get("walka") and w.get("zgoda") and w.get("przycisk") is True
+                            and w.get("odpowiedz") == "ok" and w.get("pominieto") is True and w.get("wynik") == "przegrana"
+                            and w.get("wolna_za_s", 99) <= 0.5 and (w.get("potwor") or {}).get("jest")
+                            and (w.get("potwor") or {}).get("stan") != "zajety" and w.get("kamera") == "Custom")
+            punkt("P08r", dobra_przegrana(p08r.get("pierwsza")) and dobra_przegrana(p08r.get("rewanz"))
+                  and (p08r.get("rewanz") or {}).get("E") is True,
+                  "przegrana z pominięciem i rewanż E przy tym samym wilku: %s" % p08r)
+
+            # ---------------------------------------------------------------- P08j jeden panel bohatera w pasie
+            panele = js('local g = game:GetService("Players").LocalPlayer.PlayerGui local function w(n) local s = g:FindFirstChild(n) '
+                        'local b = s and s:FindFirstChild("Przycisk") return b ~= nil and s.Enabled and b.Visible end '
+                        'return H:JSONEncode({ pas = w("LasPasGraBohater"), stary = w("LasPotworyBohater"), '
+                        'starySa = g:FindFirstChild("LasPotworyBohater") ~= nil })', "Client")
+            zapisz("P08j", panele)
+            punkt("P08j", panele.get("pas") is True and not panele.get("stary"),
+                  "w pasie panel bohatera pasa widoczny, starego lasu schowany: %s" % panele)
+
             # ---------------------------------------------------------------- P09 odradzanie
             p09 = js('local S = k.Sygnaly.SterowanieSerwera local function ile() local n = 0 for _, c in k.Stan:GetChildren() do '
                      'if c:GetAttribute("Strefa") == "s2" then n += 1 end end return n end local przed = ile() local id = nil '
@@ -530,7 +623,7 @@ def main():
             # ---------------------------------------------------------------- P11 Strażnik i brama dla zwycięzcy
             luau(KP + 'return tostring(k.Sygnaly.SterowanieKlienta:Invoke("bohater", "zwiadowca", "10"))', "Client")
             luau(KP + 'k:SetAttribute("TestBezSesji", true) return "ok"', "Server")
-            proby, wygrana = [], False
+            proby, wygrana, banery = [], False, {}
             for ziarno in (11, 23, 37, 41, 59, 73):
                 if wygrana:
                     break
@@ -544,14 +637,33 @@ def main():
                 time.sleep(1.5)
                 luau(KP + 'return tostring(k.Sygnaly.SterowanieKlienta:Invoke("walcz", "%s"))' % sid_str, "Client")
                 if czekaj_na(lambda: klient_potworow().get("walka"), 10, 0.5):
+                    # przewijać można dopiero odtwarzanie (w czasie prośby do serwera przewinięcie nic nie robi, a „zamknij”
+                    # kończyło walkę przed wynikiem — klient nie widział wygranej, P11j)
+                    czekaj_na(lambda: odtw('"stan"').get("faza") == "odtwarzanie", 10, 0.3)
                     odtw('"przewinDo", 1000')
                     time.sleep(2.5)
                     odtw('"zamknij"')
+                    # P11j: banery od razu po zamknięciu walki — przez 10 s co 0,25 s (baner klienta potworów żyje 5 s,
+                    # zapasowy baner KlientPasa pokazałby się po 8 s bez walki)
+                    banery = js('local g = game:GetService("Players").LocalPlayer.PlayerGui local wid, maks, podpisy = {}, 0, {} '
+                                'local t0 = os.clock() while os.clock() - t0 < 10 do local n = 0 '
+                                'local b1 = g:FindFirstChild("LasPasGraBaner") if b1 then n += 1 wid.potworow = true '
+                                'local p = b1:FindFirstChild("Podpis", true) if p then podpisy[p.Text] = true end end '
+                                'local e = g:FindFirstChild("LasPasGraEkran") if e and e:FindFirstChild("Baner") then n += 1 wid.pasa = true end '
+                                'maks = math.max(maks, n) task.wait(0.25) end '
+                                'local l = {} for k2 in podpisy do table.insert(l, k2) end '
+                                'return H:JSONEncode({ potworow = wid.potworow == true, pasa = wid.pasa == true, maksNaraz = maks, podpisy = l, '
+                                'zuzyty = k:GetAttribute("BanerStraznikaZPodpisem") })', "Client")
                 czekaj_na(lambda: not klient_potworow().get("walka"), 30, 1.0)
                 wynik = atrybuty("LasPasGra", ["SerwerOstatniaWalka"]).get("SerwerOstatniaWalka")
                 wygrana = gracz_serwer()["pamiec"]["pokonalStraznikaLasu"]
                 proby.append((ziarno, wynik))
             luau(KP + 'k:SetAttribute("TestBezSesji", nil) k:SetAttribute("ZiarnoTestowe", nil) return "ok"', "Server")
+            # P11j — jeden baner po wygranej (pomiar z ostatniej, wygranej próby — w pętli wyżej)
+            zapisz("P11j", banery)
+            punkt("P11j", None if not wygrana else (banery.get("potworow") is True and banery.get("pasa") is False
+                  and banery.get("maksNaraz") == 1 and any("Brama do Bagna" in x for x in banery.get("podpisy") or [])),
+                  "po wygranej ze Strażnikiem jeden baner z podpisem o bramie: %s" % banery)
             jak_otwarta = "wygrana"
             if not wygrana:
                 pasa("otworzBrame")
@@ -597,17 +709,28 @@ def main():
                 if bazar12:
                     return 882 <= p[0] <= 1066 and -790 <= p[2] <= -610
                 return abs(p[0]) < 400 and -900 < p[2] < -600
-            nacisnij("E")
-            time.sleep(4)
-            p12 = poz()
             jak12 = "E"
+            for proba12 in range(3):
+                # przy kamieniu bywa slime z podpowiedzią „Walcz” na tym samym klawiszu — wtedy inne miejsce przy kamieniu
+                if proba12:
+                    przestaw(kam[0] + (4, -4, 3)[proba12], kam[1] + 1, kam[2] + (3, 3, -4)[proba12], -1)
+                    time.sleep(1.5)
+                    jak12 = "E (za %d. razem)" % (proba12 + 1)
+                nacisnij("E")
+                time.sleep(4)
+                p12 = poz()
+                if w_miasteczku(p12):
+                    break
+                if klient_potworow().get("walka"):
+                    odtw('"zamknij"')
+                    czekaj_na(lambda: not klient_potworow().get("walka"), 20, 0.5)
             if not w_miasteczku(p12):
                 pasa("przenies", None, "miasteczko")
                 jak12 = "haczyk (E nie przeniosło)"
                 time.sleep(2)
                 p12 = poz()
             zapisz("P12", {"podpowiedz": pp, "jak": jak12, "pozycja": p12, "cel": "bazar" if bazar12 else "stare"})
-            punkt("P12", pp.get("wlaczona") and jak12 == "E" and w_miasteczku(p12), "podpowiedź %s, %s → %s (%.0f; %.0f; %.0f)"
+            punkt("P12", pp.get("wlaczona") and jak12.startswith("E") and w_miasteczku(p12), "podpowiedź %s, %s → %s (%.0f; %.0f; %.0f)"
                   % (pp, jak12, "nowe miasteczko" if bazar12 else "stare miasteczko", p12[0], p12[1], p12[2]))
 
             # ---------------------------------------------------------------- P14 koszt
@@ -633,12 +756,28 @@ def main():
             # ---------------------------------------------------------------- P15 stary las
             if edit["stary"]:
                 przestaw(-200, 6, -2400)
-                time.sleep(12)
+                # narzędzie zrzutu ekranu w Play zostawia kamerę skryptową (17.11.2026: P15 — kamera „Scriptable” gdzie
+                # indziej, więc stary las nie budował widoków i mgła 0; to nie gra) — kamera postaci jak u gracza
+                kamera_przed = js('return H:JSONEncode({ t = workspace.CurrentCamera.CameraType.Name })', "Client").get("t")
+                luau('local p = game:GetService("Players").LocalPlayer task.delay(0.1, function() local c = workspace.CurrentCamera '
+                     'c.CameraType = Enum.CameraType.Custom local h = p.Character and p.Character:FindFirstChildOfClass("Humanoid") '
+                     'if h then c.CameraSubject = h end end) return "ok"', "Client")
+                time.sleep(4)
+                czekaj_na(lambda: js('local s = workspace.LasPotwory.Sygnaly.SterowanieKlienta:Invoke("stan") '
+                                     'return H:JSONEncode({ w = s.widoki })', "Client").get("w", 0) > 0, 25, 1.0)
                 st = js('local s = workspace.LasPotwory.Sygnaly.SterowanieKlienta:Invoke("stan") local m = workspace:FindFirstChild("LasMgla") '
-                        'return H:JSONEncode({ tryb = s.tryb, widoki = s.widoki, mgla = m and m:GetAttribute("WagaMgly") })', "Client")
+                        'local g = game:GetService("Players").LocalPlayer.PlayerGui local function w(n) local s2 = g:FindFirstChild(n) '
+                        'local b = s2 and s2:FindFirstChild("Przycisk") return b ~= nil and s2.Enabled and b.Visible end '
+                        'return H:JSONEncode({ tryb = s.tryb, widoki = s.widoki, mgla = m and m:GetAttribute("WagaMgly"), '
+                        'panelStary = w("LasPotworyBohater"), panelPasa = w("LasPasGraBohater") })', "Client")
                 zrzut("20_stary_las")
+                # diagnoza (17.11.2026): stary las nie buduje widoków, gdy odtwarzacz prototypu ma otwartą sesję walki
+                st["odtwarzacz"] = odtw('"stan"').get("faza")
+                st["kamera"] = js('return H:JSONEncode({ t = workspace.CurrentCamera.CameraType.Name })', "Client").get("t")
+                st["kamera_przed"] = kamera_przed
                 zapisz("P15", st)
-                punkt("P15", st.get("widoki", 0) > 0 and st.get("tryb") == "aktorzy", "stary las: %s" % st)
+                punkt("P15", st.get("widoki", 0) > 0 and st.get("tryb") == "aktorzy" and st.get("panelStary") is True
+                      and not st.get("panelPasa"), "stary las: %s" % st)
             else:
                 punkt("P15", None, "nie ma Workspace/LasPotwory — pominięte")
 

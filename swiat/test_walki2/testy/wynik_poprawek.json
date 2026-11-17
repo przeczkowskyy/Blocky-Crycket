@@ -1,6 +1,6 @@
 {
- "data": "2026-11-17 04:06",
- "wynik": "25/27",
+ "data": "2026-11-17 09:38",
+ "wynik": "27/27",
  "testy": [
   {
    "test": "kadr ciecie (wojownik/lesny_slime/1, zd. 7, wrecz)",
@@ -14,8 +14,8 @@
   },
   {
    "test": "kadr uderzenie_z_gory (zwiadowca/lesny_slime/1, zd. 7, skok)",
-   "ok": false,
-   "opis": "τ=trafienie+0.00 krytyk: atak w kadrze 1.00 odsł. 0.95 | cel w kadrze 1.00 odsł. 0.38"
+   "ok": true,
+   "opis": "krytyk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
    "test": "kadr zatruta_strzala (zwiadowca/lesny_slime/5, zd. 10, pocisk)",
@@ -40,7 +40,7 @@
   {
    "test": "kadr rozszarpanie (wojownik/cierniowy_wilk/1, zd. 5, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.73 | cel w kadrze 0.66 odsł. 0.66"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.72 | cel w kadrze 0.70 odsł. 0.70"
   },
   {
    "test": "kadr chmura_zarodnikow (wojownik/muchomornik/1, zd. 5, chmura)",
@@ -54,8 +54,8 @@
   },
   {
    "test": "kadr uscisk_korzeni (mag/straznik_lasu/1, zd. 8, w_klipie)",
-   "ok": false,
-   "opis": "τ=trafienie+0.00 boczny: atak w kadrze 1.00 odsł. 0.97 | cel w kadrze 1.00 odsł. 0.42"
+   "ok": true,
+   "opis": "boczny: atak w kadrze 1.00 odsł. 0.90 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
    "test": "kadr dluga: 24 trafień (wojownik/lesny_slime/1)",

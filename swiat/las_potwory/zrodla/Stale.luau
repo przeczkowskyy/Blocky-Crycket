@@ -79,6 +79,12 @@ S.PANEL_Y = 8                          -- px od góry: przycisk panelu bohatera 
 S.PANEL_PREFIKS = ""                   -- przed napisem „Bohater: …” (drugi kontener: skąd jest panel)
 S.SYGNAL_WYNIKU = "WynikWalki"         -- opcjonalny BindableEvent w Sygnaly: serwer strzela nim po przyjęciu walki
 S.ATRYBUT_BLOKADY = "BlokadaWalki"     -- atrybut gracza (ustawia inny skrypt serwera, np. przelot kamery): bez walk
+-- jeden komplet na ekranie (17.11.2026): gdy w miejscu stoją dwa kontenery potworów (stary las i las-pas), panel
+-- bohatera każdego z nich widać tylko w jego lesie (prostokąt płyty biomu z DanePotworow + zapas), więc nigdy dwa naraz
+S.PANEL_TYLKO_W_LESIE = true
+S.PANEL_ZAPAS = 40                     -- studs wokół płyty biomu, w których panel jeszcze widać
+S.PODPIS_STRAZNIKA = "Wróci za 2 min"  -- podpis banera po Strażniku; inny skrypt kontenera może go podmienić lokalnym
+                                       -- atrybutem kontenera PodpisBaneraStraznika (las-pas: „brama otwarta”) — jeden baner
 
 ------------------------------------------------------------------ nadpisania z atrybutów kontenera
 -- Atrybut kontenera „Stale_<NAZWA>” (ustawia zbuduj.py drugiego kontenera) zastępuje istniejącą stałą tego samego

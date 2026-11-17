@@ -69,7 +69,9 @@ STALE = {
     "PREFIKS": "[LasPasGra] ",
     "GUI_BOHATERA": "LasPasGraBohater",
     "GUI_BANERA": "LasPasGraBaner",
-    "PANEL_Y": 48,
+    # 17.11.2026: panel bohatera każdego lasu widać tylko w jego lesie (Stale.PANEL_TYLKO_W_LESIE) — na tym samym
+    # miejscu co panel starego lasu (wcześniej 48 px, pod nim, bo widać było dwa naraz)
+    "PANEL_Y": 8,
     "PANEL_PREFIKS": "Las-pas · ",
 }
 

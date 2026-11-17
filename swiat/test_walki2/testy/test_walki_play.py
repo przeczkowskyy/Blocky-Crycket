@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Test prototypu walki v2 w trybie PLAY (Roblox Studio). Na końcu ZAWSZE wraca do trybu Edit.
+"""Test prototypu próby walki w trybie PLAY (Roblox Studio). Na końcu ZAWSZE wraca do trybu Edit.
 
     python -B swiat/test_walki2/testy/test_walki_play.py [--studio <id>] [--szybko]
 
@@ -57,6 +57,42 @@ def oczekiwana(p):
     return {"wynik": w["wynik"], "tury": w["tury"], "zdarzen": len(w["dziennik"]), "czas": w["czas"],
             "paski": "%d/%d" % (ost["hp_gracz"], ost["hp_wrog"]),
             "lup": [lup["zloto"], lup["doswiadczenie"], lup["tokeny_krainy"], lup["gemy"], lup["shard_ewolucji"]]}
+
+
+def _gladko(x):
+    x = min(1.0, max(0.0, x))
+    return x * x * (3 - 2 * x)
+
+
+def czas_odtwarzania(plan, od_tau, tempo):
+    """Oczekiwany czas rzeczywisty (s) od chwili sceny od_tau do końca sceny przy tempie gracza `tempo` — ta sama reguła
+    co Sesja:tempoSceny / Sesja:zwolnienie w odtwarzaczu (zwolnienia z rampą, finał od tempoFinaluOd zawsze ×1 z pełnym
+    zwolnieniem, przy ×2 / ×4 zwolnienie w trakcie walki z wykładnikiem 1 / tempo). plan = Odtwarzacz.stan()."""
+    zw, fin, koniec = plan.get("zwolnienia") or [], plan.get("tempoFinaluOd"), plan["czasKonca"]
+
+    def zwolnienie(tau):
+        t = 1.0
+        for w in zw:
+            r = w.get("rampa") or 0.08
+            if w["od"] - r < tau < w["do"] + 0.08:
+                if tau < w["od"]:
+                    k = _gladko((tau - (w["od"] - r)) / r)
+                elif tau > w["do"]:
+                    k = 1 - _gladko((tau - w["do"]) / 0.08)
+                else:
+                    k = 1
+                t = min(t, 1 + (w["tempo"] - 1) * k)
+        return t
+    real, tau, krok = 0.0, od_tau, 1 / 120
+    while tau < koniec:
+        tt = 1 if (fin is not None and tau >= fin) else tempo
+        z = zwolnienie(tau)
+        if tt > 1 and z < 1:
+            z = z ** (1.0 / tt)
+        d = min(krok, koniec - tau)
+        real += d / max(tt * z, 0.05)
+        tau += d
+    return real
 
 
 def ocen_walke(nazwa, s, p, ocz, pelna=True):
@@ -209,7 +245,7 @@ def main():
         p1 = Z["play"][0]
         t.ziarno(p1["ziarno"])
         s = {}
-        for _ in range(3):           # Studio pod zaciemnieniem rysuje ok. 15 kl./s — podpowiedź pojawia się z opóźnieniem
+        for _ in range(3):           # okno Studio w tle rysuje tylko 15 kl./s — podpowiedź pojawia się z opóźnieniem
             t.klawisz("E")
             time.sleep(1.0)
             s = t.stan()
@@ -290,13 +326,25 @@ def main():
         t.klik(GUI_WALKA + "Tempo.Tempo4.Przycisk")
         time.sleep(0.5)
         s = t.stan()
-        sprawdz("3c. klik ×4 w trakcie walki zmienia tempo", (s.get("_odtw") or {}).get("tempo") == 4, "(%s)" % (s.get("_odtw") or {}).get("tempo"))
+        plan4 = s.get("_odtw") or {}
+        sprawdz("3c. klik ×4 w trakcie walki zmienia tempo", plan4.get("tempo") == 4, "(%s)" % plan4.get("tempo"))
         s, dt = t.czekaj(("wynik",), 60)
         ocz = oczekiwana(p4)
         ocen_walke("3d. najdłuższa walka %d tur przy ×4" % ocz["tury"], s, p4, ocz)
-        # od 15.11 finał (cios kończący, ujęcie pokonanego, radość) gra zawsze w ×1 — ok. 3–4 s ponad resztę/4
-        sprawdz("3e. ×4 skraca odtwarzanie (≈ 2 s + reszta/4 + finał w ×1)", (s.get("OstatniCzasTrwania") or 99) < 2.5 + ocz["czas"] / 4 + 3 + 4,
-                "(%.1f s, dziennik %.1f s)" % (s.get("OstatniCzasTrwania") or -1, ocz["czas"]))
+        # 17.11.2026: próg z planu odtwarzacza zamiast „2,5 + czas/4 + 3 + 4” — tamten wzór pomijał zwolnienia przy krytykach
+        # (przy ×4 każdy krytyk grał 0,8 s zamiast 0,18 s, w najdłuższej walce jest ich 7) i zakładał finał 3 s, a finał
+        # z krytykiem kończącym trwa ok. 7 s w ×1. Teraz: czas od kliknięcia ×4 do końca sceny liczony tą samą regułą co
+        # odtwarzacz (Sesja:tempoSceny) + czas do kliknięcia; zapas 1,5 s na klatki i wywołania narzędzia. Dodatkowo ×4
+        # musi skracać: oczekiwany czas przy ×4 ≤ 45% czasu przy ×1.
+        if plan4.get("czasKonca") and plan4.get("tau") is not None:
+            ocz4 = (plan4.get("zegar") or 0) + czas_odtwarzania(plan4, plan4["tau"], 4)
+            ocz1 = czas_odtwarzania(plan4, 0.0, 1)
+            sprawdz("3e. ×4 skraca odtwarzanie (czas z planu odtwarzacza, finał w ×1)",
+                    (s.get("OstatniCzasTrwania") or 99) <= ocz4 + 1.5 and ocz4 <= 0.45 * ocz1,
+                    "(%.1f s; plan: ×4 od kliknięcia %.1f s, cała walka ×1 %.1f s; dziennik %.1f s)"
+                    % (s.get("OstatniCzasTrwania") or -1, ocz4, ocz1, ocz["czas"]))
+        else:
+            sprawdz("3e. ×4 skraca odtwarzanie", False, "brak planu odtwarzacza w stanie (%s)" % sorted(plan4)[:8])
         t.steruj('"zamknij"')
         t.steruj('"tempo", 1')
         # POMIŃ (gatunek poznany w p. 2, zgoda serwera) → wynik od razu, gracz wolny od razu (D-078), JESZCZE RAZ

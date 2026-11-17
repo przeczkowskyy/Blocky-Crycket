@@ -132,8 +132,9 @@ swiat/las_potwory/testy/test_styku.py`,
 
 ## Co sprawdzone w grze (17.11.2026, Studio, tryb Play)
 
-**Warunki.** Miejsce gry w Studio (Team Create), jeden gracz na komputerze, okno gry 2041 × 1153. Ekran był przykryty
-czarnym oknem — Studio rysuje wtedy ok. 15 kl./s, więc czas klatki 66,7 ms to ograniczenie Studia, nie gry. Silnik
+**Warunki.** Miejsce gry w Studio (Team Create), jeden gracz na komputerze, okno gry 2041 × 1153. Okno Studio było w
+tle (za innym oknem) — Studio rysuje wtedy równo 15 kl./s, więc czas klatki 66,7 ms to ograniczenie Studia, nie gry
+(przyczynę ustalił pomiar 17.11.2026 rano; wcześniej przypisywaliśmy ją zaciemnieniu ekranu). Silnik
 walki: kopia zatwierdzonej wersji v2 (ta sama co w `TestWalki2`; przy budowie zmienna `BC_SILNIK_KORZEN`), **nie**
 wersja 3 z drzewa roboczego `src/server/Walka`. Kontener zbudowany 17.11 o 00:17 (Skrot `e8762ea11804`, 59 instancji,
 18 skryptów, 7 części) i od tej pory bez zmian w kodzie gry pasa. Zapisy: `wyniki/*.json`, zrzuty: `klatki/`.
@@ -178,7 +179,7 @@ przelot 13,4 s przy pierwszym wejściu i **bez drugiego przelotu** (P05: faza �
 | Strażnik: przegrana (wojownik poz. 1) | brama zamknięta; wejście za bramę → cofnięcie przed bramę |
 | Strażnik: wygrana (zwiadowca poz. 10, drugie ziarno) | baner „BRAMA DO BAGNA OTWARTA!”, wrota u klienta 17/17 niewidoczne i bez kolizji (na serwerze z kolizją — P11), przejście za bramę piechotą 1,9 s bez cofnięcia; tabliczka „BAGNO — WKRÓTCE / tu zaczyna się następny biom” czytelna (`klatki/09`) |
 | Mgła (P13) | waga 1 w pasie (gęstość 0,36), 0 w miasteczku; na serwerze `Atmosphere` bez zmian (0,30) |
-| Przelot: płynność | 212 klatek przelotu, śr. 66,8 ms, p95 69–70 ms, najdłuższa 85–106 ms (0–1 klatka > 100 ms) przy limicie Studia 15 kl./s; widać potwory w przegrodach (`klatki/02`), ryk na końcu (`klatki/03`) |
+| Przelot: płynność | 212 klatek przelotu, śr. 66,8 ms, p95 69–70 ms, najdłuższa 85–106 ms (0–1 klatka > 100 ms) przy limicie Studia 15 kl./s (okno w tle); widać potwory w przegrodach (`klatki/02`), ryk na końcu (`klatki/03`) |
 | Konsola | bez błędów i bez ostrzeżeń `[LasPasGra]` we wszystkich przebiegach |
 
 **Koszt** (1 gracz; zestaw na 1 gracza = 19–20 potworów, „pełny zestaw” = `TestGraczy = 20` → 45 potworów, bo Strażnik
@@ -220,7 +221,7 @@ usunąć tę linię z `INNE`, wtedy pominięcie skraca tylko pokaz, a odpowiedź
 `test_pasa.py` (test 8d) pilnuje uchwytu i nazwy po obu stronach; 45/45.
 
 **Próba w Play** (`testy/proba_play.py`, przebieg o 03:11, `wyniki/proba_play_20261117_0311.json`, `…_lista.txt`):
-**17 × OK, P14 „?”** (koszt ocenia człowiek; klatka 66,7 ms = zaciemniony ekran, klient potworów 0,39 ms na klatkę
+**17 × OK, P14 „?”** (koszt ocenia człowiek; klatka 66,7 ms = okno Studio w tle, klient potworów 0,39 ms na klatkę
 przy przybyciu — jak przed v3). Nowe punkty:
 - **P08v3** — każda z czterech walk pasa (s1 slime, m1 muchomornik, w1 wilk, t1 troll; prawdziwe E) idzie z dziennika
   v3: mana obu stron na paskach (np. slime 86/85 w 3. turze), pierwsza walka z gatunkiem bez przycisku POMIŃ
@@ -238,6 +239,39 @@ przy przybyciu — jak przed v3). Nowe punkty:
 próby). Banery po Strażniku: „STRAŻNIK GAJU POKONANY!” pokazuje `KlientPotworow` (`poWalce`, wspólny kod lasów), a
 „BRAMA DO BAGNA OTWARTA!” — `KlientPasa`. Odtwarzacz walki chowa na czas walki wszystkie te GUI i nic nie dokłada.
 Naprawa należy do pakietów lasu (np. panel starego lasu tylko w Borze, jeden baner w pasie) — do decyzji, nie ruszałem.
+*Poprawione 17.11.2026 w dzień — „Poprawki 17.11.2026 (dzień)” niżej.*
+
+## Poprawki 17.11.2026 (dzień): jeden komplet, przegrana i rewanż z pominięciem
+
+- **Jeden panel bohatera i jeden baner** (wybór 5 i ryzyko „dwa panele” niżej — zrobione z listy zadań „Walka v3,
+  dalej”): panel każdego lasu tylko w jego lesie (wspólny `KlientPotworow`, opis w `swiat/las_potwory/README.md`,
+  „Jeden komplet na ekranie”), więc panel pasa stoi teraz w tym samym miejscu co panel starego lasu (`PANEL_Y` 48 → 8
+  w `zbuduj.py`). Po wygranej ze Strażnikiem jeden baner: „STRAŻNIK GAJU POKONANY!” z podpisem „Brama do Bagna
+  otwarta — idź za arenę” (`KlientPasa` ustawia lokalny atrybut `PodpisBaneraStraznika`, klient potworów go zużywa).
+  Własny baner „BRAMA DO BAGNA OTWARTA!” `KlientPasa` pokazuje tylko wtedy, gdy podpisu nikt nie wziął (brama
+  otwarta haczykiem bez walki albo klient potworów nie działa).
+- **Przegrana i rewanż z pominięciem** — nowy punkt próby **P08r** (`testy/proba_play.py`): Wojownik poz. 1 przeciw
+  wilkowi (gatunek poznany w P08) przegrywa, POMIŃ → wynik „przegrana”, serwer „ok”, gracz wolny od razu, wilk żyje
+  i nie jest zajęty; rewanż = prawdziwe E przy TYM SAMYM wilku → walka z POMIŃ → spacja → znów wolni. Do tego **P08j**
+  (w pasie widać tylko panel pasa), **P11j** (po wygranej ze Strażnikiem jeden baner z podpisem o bramie) i w **P15**
+  panel w Borze (tylko starego lasu). Kod lasu dla przegranej i rewanżu nie wymagał zmian — wynik niżej.
+- **Znalezione przy próbie i poprawione**: „zamknij” w czasie prośby do serwera zostawiał w odtwarzaczu prototypu
+  połowę sesji (scena, kamera skryptowa, chowanie obcych) — potem E przy Kamieniu nie przenosiło (P12) — poprawka w
+  `swiat/test_walki2/zrodla/OdtwarzaczWalki2.luau` (`Sesja:start`). W próbie: P11 przewija walkę Strażnika dopiero w
+  fazie odtwarzania (wcześniej zamykała ją przed wynikiem, więc klient nie widział wygranej i baneru), P12 do 3 prób E
+  (przy kamieniu bywa slime z podpowiedzią „Walcz” na tym samym klawiszu), P15 przywraca kamerę postaci (narzędzie
+  zrzutu ekranu w Play zostawiało kamerę skryptową gdzie indziej — stary las nie budował widoków, mgła 0) i czeka na
+  widoki do 25 s, P08r gra na stałym ziarnie 1 (bez niego Wojownik poz. 1 raz na kilkadziesiąt prób wygrywał i wilka
+  do rewanżu nie było). Zapasowy baner `KlientPasa` pokazuje się dopiero po 8 s bez walki (nie zależy od chwili startu
+  odtwarzacza).
+
+**Próba w Play** (`testy/proba_play.py`, okno Studio na wierzchu, pełny przebieg na końcowym kodzie o 10:01,
+`wyniki/proba_play_20261117_1001.json`, `…_lista.txt`): **20 × OK, P14 „?”** (koszt ocenia człowiek). Nowe punkty:
+P08r OK (przegrana Wojownika poz. 1 z wilkiem poz. 6, POMIŃ → „przegrana”, serwer „ok”, gracz wolny 1,3 s przed
+„teraz”, wilk żyje i chodzi; rewanż prawdziwym E przy tym samym wilku — znów z POMIŃ i znów wolni), P08j OK (w pasie
+widać tylko panel pasa), P11j OK (po wygranej ze Strażnikiem jeden baner: „STRAŻNIK GAJU POKONANY!” z podpisem „Brama
+do Bagna otwarta — idź za arenę”, bez drugiego), P15 OK (w Borze tylko panel starego lasu). Koszt przy oknie na
+wierzchu: klatka klienta śr. 16,7 ms, p95 17,9–18,0 ms w trzech miejscach pasa (w nocy 66,7 ms — okno w tle).
 
 ## Czego nie sprawdzono (także po próbach w Studio)
 
@@ -245,7 +279,8 @@ Naprawa należy do pakietów lasu (np. panel starego lasu tylko w Borze, jeden b
   ekranie, koszt klienta na słabym sprzęcie (na komputerze klient potworów przy wilkach 1,4–1,6 ms na klatkę).
 - **Dwóch graczy** (Test → Clients and Servers, 2): brama otwarta tylko u zwycięzcy, drugi cofany, wspólny Strażnik
   i troll. Logika tylko u jednego gracza (P10, P11) i offline.
-- **Pad** i prawdziwy czas klatki (Studio pod zaciemnieniem rysuje 15 kl./s).
+- **Pad**. Czas klatki z nocy (66,7 ms) to okno Studio w tle (15 kl./s); dzisiejsze pomiary przy oknie na wierzchu —
+  „Poprawki 17.11.2026 (dzień)” niżej.
 - **Odrodzenie trolla** po wygranej (150 s) — w grze niezmierzone; sprawdzone offline (testy 2a–2e).
 - **Podpowiedzi E na zrzutach**: narzędzie zrzutu ekranu nie rysuje `BillboardGui` z `AlwaysOnTop` (sprawdzone:
   etykieta „MIASTECZKO (E)” po włączeniu `AlwaysOnTop` też znika ze zrzutu). Podpowiedzi w grze są (`PlayerGui.
@@ -333,8 +368,7 @@ Gdy przejście przez chmury przejmie bramę miasteczka, ustaw w Edit `Przekieruj
   (544 każdy). Na telefonie może być za dużo (stary las: 2,0 ms na klatkę w watasze na komputerze).
 - **Przelot korzysta z haczyka testowego** `SterowanieKlienta` klienta potworów (`"wymus"`, `"klip"`); gdy Strażnik
   jest akurat pokonany (120 s), przelot leci bez ryku. Przed przelotem do 4 s czarnej zasłony (wczytywanie mapy).
-- **Dwa panele bohatera** (stary las i pas, jeden pod drugim) i dwa banery po Strażniku („STRAŻNIK GAJU POKONANY!”
-  z pakietu potworów, „BRAMA DO BAGNA OTWARTA!” z pasa) — reguła testowa T1 pakietu potworów.
+- ~~Dwa panele bohatera i dwa banery po Strażniku~~ — poprawione 17.11.2026 (jeden komplet, „Poprawki 17.11.2026”).
 - **Brama otwiera się przy przyjęciu walki**, nie po obejrzeniu (serwer zna wynik od razu; klient i tak dostaje go
   w dzienniku walki). Wybór do decyzji 2.
 - **Pamięć tylko w serwerze**: restart serwera = przelot jeszcze raz i brama znów zamknięta (miejsce na zapis w
@@ -361,9 +395,8 @@ Gdy przejście przez chmury przejmie bramę miasteczka, ustaw w Edit `Przekieruj
 - Przelot bez ryku (dziś).
 - Osobna kopia Strażnika tylko do przelotu (zawsze ryczy, więcej kodu).
 
-**5. Panel bohatera: dwa (stary las i pas) czy jeden?**
-- Dwa, jeden pod drugim (dziś, bez zmian w zachowaniu starego lasu).
-- Jeden wspólny — zmiana w kliencie potworów; w grze i tak zastąpi go postać gracza.
+**5. Panel bohatera: dwa (stary las i pas) czy jeden?** — *zrobione 17.11.2026 z listy zadań: jeden komplet (panel
+każdego lasu tylko w jego lesie, jeden baner po Strażniku). Do zmiany: wspólny panel dla obu lasów.*
 
 **6. Mgła w czasie przelotu: rzadsza czy pełna?**
 - Rzadsza o połowę (dziś) — widać więcej przegród.

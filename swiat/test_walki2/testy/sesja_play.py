@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Wspólna obsługa sesji PLAY w Studio dla testów walki v2 (test_walki_play.py, klatki_walki.py, proba_play.py).
+"""Wspólna obsługa sesji PLAY w Studio dla testów próby walki (test_walki_play.py, klatki_walki.py, proba_play.py).
 
 Zasady (jak w testach v1 i etapu 1): okno wybiera cel_studio.py (placeId gry); Play tylko na czas testu — `with
 SesjaPlay(...)` ZAWSZE zatrzymuje Play w `finally` (także po błędzie i Ctrl+C) i sprawdza, że Studio wróciło do Edit.

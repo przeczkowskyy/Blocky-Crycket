@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Arkusze klatek z PRAWDZIWEGO odtwarzania walki v2 (tryb Play; sam wraca do trybu Edit).
+"""Arkusze klatek z PRAWDZIWEGO odtwarzania walki w próbie walki (tryb Play; sam wraca do trybu Edit).
 
     python -B swiat/test_walki2/testy/klatki_walki.py                    # wszystkie arkusze → swiat/test_walki2/klatki/
     python -B swiat/test_walki2/testy/klatki_walki.py --tylko kula_ognia,final_wygrana

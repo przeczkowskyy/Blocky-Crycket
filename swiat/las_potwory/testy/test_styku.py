@@ -125,7 +125,10 @@ class TestAtrybutow(unittest.TestCase):
         serwer = napisy(SERWER, "SetAttribute")
         odtwarzacz = set(re.findall(r'self:atrybut\("(\w+)"', ODTW))
         szablon = napisy(czytaj(PROTO, "budowa", "szablon.luau"), "SetAttribute")
-        brak = napisy(KLIENT, "GetAttribute") - serwer - odtwarzacz - szablon
+        # 17.11.2026: podpis banera po Strażniku może podmienić klient lasu-pasa (lokalny atrybut kontenera LasPasGra)
+        pas = czytaj(REPO, "swiat", "las_pas_gra", "zrodla", "KlientPasa.client.luau")
+        self.assertIn('kontener:SetAttribute("PodpisBaneraStraznika", PODPIS_BRAMY)', pas)
+        brak = napisy(KLIENT, "GetAttribute") - serwer - odtwarzacz - szablon - {"PodpisBaneraStraznika"}
         self.assertEqual(sorted(brak), [])
         self.assertIn("OstatniWynik", odtwarzacz)
         self.assertIn("Skora", szablon)

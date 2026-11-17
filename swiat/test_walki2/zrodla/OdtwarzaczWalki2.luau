@@ -40,6 +40,13 @@
 		• pomijanie (D-078): przycisk POMIŃ i spacja TYLKO, gdy serwer dał zgodę (odpowiedź z walką: pomijanie = true,
 		  albo — dla walk z lasu — zapytanie Zdalne/PominiecieWalki2 prototypu); pominięcie zgłaszamy serwerowi,
 		  który zwalnia sesję (tablica prototypu) albo odmawia. Klient sam zgody nie wyda.
+
+		Własne dźwięki (17.11.2026, pakiet swiat/dzwiek_gra): gdy jest Workspace/DzwiekGra/Moduly/KatalogDzwiekow i arkusz
+		ma identyfikator ≠ 0, zdarzenia walki grają ODCINKI jednego pliku-arkusza (Sound.PlaybackRegion) wg katalogu;
+		uderzenia tak, żeby szczyt efektu wypadł na klatkę trafienia (start wcześniej; gdy się nie da — od chwili tuż przed
+		atakiem efektu). Zdarzenie bez wpisu w katalogu i walka bez arkusza = dzisiejsze dźwięki wbudowane (U.DZWIEKI).
+		Próba bez wgranych plików (tylko Play, lokalne atrybuty Workspace/DzwiekGra): TestArkuszId = dowolny dźwięk
+		(np. "rbxasset://sounds/action_falling.mp3"), TestArkuszSkala = mnożnik czasów odcinków (krótszy plik).
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	local function nic()
@@ -86,6 +93,33 @@ local zapamietaneWyciszenie = false -- przycisk dźwięku: wybór gracza zostaje
 
 local function wolnaZa(): number
 	return math.max(0, wolnaOd - workspace:GetServerTimeNow())
+end
+
+-- katalog dźwięków gry (Workspace/DzwiekGra, swiat/dzwiek_gra) → { kat, adres, skala } albo nil (dźwięki wbudowane)
+local function katalogArkusza()
+	local k = workspace:FindFirstChild("DzwiekGra")
+	local m = k and k:FindFirstChild("Moduly")
+	m = m and m:FindFirstChild("KatalogDzwiekow")
+	if not m or not m:IsA("ModuleScript") then
+		return nil
+	end
+	local ok, kat = pcall(require, m)
+	if not ok or type(kat) ~= "table" or type(kat.arkusz) ~= "table" or type(kat.efekty) ~= "table"
+		or type(kat.zdarzenia) ~= "table" then
+		return nil
+	end
+	local id = k:GetAttribute("TestArkuszId")
+	if id == nil then
+		id = kat.arkusz.id
+	end
+	local adres = if type(id) == "number" and id > 0 then "rbxassetid://" .. tostring(math.floor(id))
+		elseif type(id) == "string" and id ~= "" then id
+		else nil
+	if not adres then
+		return nil
+	end
+	local skala = k:GetAttribute("TestArkuszSkala")
+	return { kat = kat, adres = adres, skala = if type(skala) == "number" and skala > 0 then skala else 1 }
 end
 
 local KROK = "TestWalki2Cutscenka"
@@ -560,6 +594,169 @@ function Sesja:przygotujScene()
 		end
 	end
 	self.statDzwiekow = { zagrane = 0, pominiete = 0, maksNaraz = 0 }
+	-- arkusz własnych dźwięków (Workspace/DzwiekGra): pula Sound z jednym plikiem, odcinki przez PlaybackRegion
+	self.arkusz = nil
+	local ark = U.DZWIEKI_WLACZONE and katalogArkusza()
+	if ark then
+		ark.pula = {}
+		ark.nastepny = 1
+		ark.log = {}
+		ark.regiony = true
+		for i = 1, math.clamp(ark.kat.arkusz.naraz or 6, 1, 12) do
+			local s = self:nowa("Sound", { Name = "Arkusz" .. i, SoundId = ark.adres, Volume = 0 }, self.ui.gui)
+			local ok = pcall(function()
+				s.PlaybackRegionsEnabled = true
+			end)
+			ark.regiony = ark.regiony and ok
+			table.insert(ark.pula, s)
+		end
+		self.arkusz = ark
+	end
+	self:atrybut("OstatniZestawDzwiekow", if self.arkusz then "arkusz" else "wbudowany")
+end
+
+------------------------------------------------------------------ odcinki arkusza (własne dźwięki, swiat/dzwiek_gra)
+--[[ Odcinek efektu z arkusza od miejsca `od` (s od początku odcinka, czas katalogu). info = { nr = zdarzenie } do
+	pomiaru zgodności szczytu z trafieniem. Zwraca true, gdy efekt jest w katalogu (zagrany albo świadomie cicho). ]]
+function Sesja:grajOdcinek(efekt: string, od: number?, info: any?): boolean
+	local ark = self.arkusz
+	local e = ark and ark.kat.efekty[efekt]
+	if not e then
+		return false
+	end
+	if zapamietaneWyciszenie or self.zakonczona or (self.pominieto and efekt ~= (ark.kat.zdarzenia.przycisk or {}).efekt) then
+		return true
+	end
+	local k = ark.skala
+	local o = math.max(0, od or 0)
+	local p0, p1 = (e.poczatek + o) * k, e.koniec * k
+	if p1 - p0 < 0.02 then
+		return true
+	end
+	-- wolny dźwięk z puli; gdy wszystkie grają — najstarszy (kolejno)
+	local s = nil
+	for _, kand in ark.pula do
+		if not kand.IsPlaying then
+			s = kand
+			break
+		end
+	end
+	if not s then
+		s = ark.pula[ark.nastepny]
+		ark.nastepny = (ark.nastepny % #ark.pula) + 1
+		self.statDzwiekow.pominiete += 1
+	end
+	s:Stop()
+	s.PlaybackSpeed = 1
+	s.Volume = (e.glosnosc or 1) * (ark.kat.arkusz.glosnosc or 1)
+	if ark.regiony then
+		local ok = pcall(function()
+			s.PlaybackRegion = NumberRange.new(p0, p1)
+		end)
+		ark.regiony = ok
+	end
+	s.TimePosition = p0
+	s:Play()
+	-- zabezpieczenie (i jedyny koniec, gdy PlaybackRegion nie działa): stop po długości odcinka
+	local nr = (s:GetAttribute("Nr") or 0) + 1
+	s:SetAttribute("Nr", nr)
+	task.delay(p1 - p0 + 0.05, function()
+		if s.Parent and s:GetAttribute("Nr") == nr and s.IsPlaying then
+			s:Stop()
+		end
+	end)
+	self.statDzwiekow.zagrane += 1
+	if #ark.log < 60 then
+		local teraz = os.clock()
+		table.insert(ark.log, { e = efekt, od = math.floor(o * 1000 + 0.5) / 1000, p0 = math.floor(p0 * 1000 + 0.5) / 1000,
+			p1 = math.floor(p1 * 1000 + 0.5) / 1000, t = teraz, szczyt = teraz + math.max(0, e.szczyt - o) * k,
+			nr = info and info.nr, tau = self.tau })
+	end
+	return true
+end
+
+-- zdarzenie dźwięku: odcinek z katalogu, gdy jest; inaczej wbudowany dźwięk `wbudowany` (dzisiejszy zestaw)
+function Sesja:dzwiekZdarzenia(zdarzenie: string, wbudowany: string?, szybkosc: number?)
+	local ark = self.arkusz
+	local w = ark and ark.kat.zdarzenia[zdarzenie]
+	if w and self:grajOdcinek(w.efekt, 0) then
+		return
+	end
+	if wbudowany then
+		self:dzwiek(wbudowany, szybkosc)
+	end
+end
+
+-- jak dzwiekZdarzenia, ale bez wbudowanego zastępstwa: true = odcinek z katalogu (wtedy pomijamy melodię z tonu)
+function Sesja:odcinekZdarzenia(zdarzenie: string): boolean
+	local ark = self.arkusz
+	local w = ark and ark.kat.zdarzenia[zdarzenie]
+	return w ~= nil and self:grajOdcinek(w.efekt, 0)
+end
+
+-- zdarzenie uderzenia z katalogu dla ataku (szczyt efektu na klatkę trafienia) albo nil
+function Sesja:zdarzenieUderzenia(ev): string?
+	local ark = self.arkusz
+	if not ark then
+		return nil
+	end
+	local z = ev.z
+	local kand
+	if z.typ == "unik" then
+		kand = "unik"
+	elseif z.typ == "blok" then
+		kand = "blok"
+	elseif z.umiejetnosc == "kula_ognia" or z.umiejetnosc == "lodowy_pocisk" then
+		kand = z.umiejetnosc
+	elseif ev.choreo and ev.choreo.wybuch == "kwas" then
+		kand = "galareta"
+	elseif z.krytyk then
+		kand = "krytyk"
+	elseif ev.styl == "wrecz" or ev.styl == "skok" or ev.styl == "w_klipie" or ev.styl == "korzenie" then
+		kand = "cios"
+	end
+	local w = kand and ark.kat.zdarzenia[kand]
+	if w and w.uderzenie and ark.kat.efekty[w.efekt] then
+		return kand
+	end
+	return nil
+end
+
+--[[ Dźwięk uderzenia z arkusza: start w chwili sceny, od której do trafienia zostaje `szczyt` sekund RZECZYWISTYCH
+	(przy bieżącym tempie gracza i zwolnieniach — Sesja:tempoSceny); gdy zdarzenie zaczyna się za późno, odcinek gra od
+	razu z pominiętym wstępem, ale najwyżej do chwili tuż przed atakiem efektu (wtedy szczyt wypada trochę po trafieniu). ]]
+function Sesja:zaplanujUderzenie(ev, zdarzenie: string)
+	local ark = self.arkusz
+	local w = ark.kat.zdarzenia[zdarzenie]
+	local e = ark.kat.efekty[w.efekt]
+	local k = ark.skala
+	local szczyt = e.szczyt * k
+	local tHit = ev.t + ev.eHit
+	local tau, real = tHit, 0
+	local krok = 1 / 120
+	while tau > ev.t + 1e-6 and real < szczyt do
+		local t1 = math.max(ev.t, tau - krok)
+		real += (tau - t1) / math.max(self:tempoSceny(t1), 0.05)
+		tau = t1
+	end
+	local od = 0
+	if real < szczyt then
+		od = math.min(szczyt - real, math.max(0, e.atak * k - 0.03)) / k
+	end
+	ev.dzwiekArkusza = zdarzenie
+	self:zaplanujAkcje(tau, function()
+		self:grajOdcinek(w.efekt, od, { nr = ev.nr })
+	end)
+end
+
+-- odgłos potwora (galareta, wilk, troll, zarodniki, ryk strażnika) z katalogu: przy jego umiejętności i w radości
+function Sesja:glosPotwora(strona: string, inny: string?)
+	local ark = self.arkusz
+	local a = self.aktorzy and self.aktorzy[strona]
+	local zd = ark and a and ark.kat.glosyPotworow and ark.kat.glosyPotworow[a.klucz]
+	if zd and zd ~= inny then
+		self:odcinekZdarzenia(zd)
+	end
 end
 
 -- ile dźwięków walki gra teraz
@@ -654,8 +851,11 @@ function Sesja:przelaczDzwiek()
 				s:Stop()
 			end
 		end
+		for _, s in (self.arkusz and self.arkusz.pula) or {} do
+			s:Stop()
+		end
 	else
-		self:dzwiek("przycisk")
+		self:dzwiekZdarzenia("przycisk", "przycisk")
 	end
 	self.ui:ustawDzwiek(zapamietaneWyciszenie)
 	self:atrybut("OstatnieWyciszenie", zapamietaneWyciszenie)
@@ -892,6 +1092,30 @@ function Sesja:zaplanuj(walka)
 	self.ujeciaPlan = ujecia
 end
 
+local UNIK_PRZED_SZEROKIM = 2.5 -- studs: o tyle krótszy doskok szerokiego atakującego (i dalsze zejście celu) przy uniku
+
+-- chwila klipu (s), w której punkt Bron schodzi z góry do wysokości wierzchu celu `wys` — z toru broni z tabeli aktorów
+-- (8 klatek przed chwilą trafienia); gdy broń w chwili trafienia jest jeszcze nad celem albo przez cały tor w jego
+-- wysokości (wysoki cel), zostaje chwila z modułu. Najwyżej 0,2 s klipu wcześniej.
+function Sesja.chwilaKontaktu(wpis, klip: string, chw: number, wys: number): number
+	local tor = wpis.torBroni and wpis.torBroni[klip]
+	if not tor or type(tor.y) ~= "table" or #tor.y < 2 then
+		return chw
+	end
+	local ys, n = tor.y, #tor.y
+	if ys[n] >= wys then
+		return chw
+	end
+	for i = n - 1, 1, -1 do
+		if ys[i] >= wys then
+			local u = (ys[i] - wys) / math.max(ys[i] - ys[i + 1], 1e-3)
+			local t = (tor.od + (i - 1) + u) / tor.fps
+			return math.max(t, chw - 0.2)
+		end
+	end
+	return chw
+end
+
 -- czasy ataku / umiejętności w zdarzeniu (sekundy od jego początku, w czasie sceny)
 local LOT_MIN, LOT_MAKS = 0.45, 0.7 -- s czasu sceny: lot pocisku (i bańki z klipu) ma być widać
 function Sesja:policzCzasy(ev)
@@ -909,6 +1133,12 @@ function Sesja:policzCzasy(ev)
 	local dl = (klip and A.klipy:dlugoscKlipu(klip)) or 1
 	local chw = A:chwila(akcja) or dl * 0.5
 	local styl = ev.styl
+	-- cios wręcz w NISKI cel (17.11.2026): chwila trafienia z modułu to broń przy ziemi, a niski cel (wilk, slime)
+	-- broń mija wcześniej — trafienie (błysk, liczba, reakcja) w chwili, gdy broń schodzi do wierzchu celu
+	if styl == "wrecz" and klip then
+		ev.chwilaKlipu = chw
+		chw = Sesja.chwilaKontaktu(A.wpis, klip, chw, D.wpis.wysokosc)
+	end
 	local lot = 0
 	local wyrownanie = eHit
 	if styl == "pocisk" then
@@ -954,6 +1184,14 @@ function Sesja:policzCzasy(ev)
 			ev.tDoskoku = math.clamp(eHit * 0.75, 0.35, 0.8)
 		end
 		ev.tPowrotu = math.clamp(trwa - eHit - 0.3, 0.2, 0.5)
+		-- unik przed szeroką bronią (17.11.2026, Studio: maczuga Trolla przez 2–3 klatki przechodziła przez Wojownika mimo
+		-- odskoku z klipu i zejścia 0,9 w tył): atakujący dużo szerszy od celu kończy doskok wcześniej, a resztę dystansu
+		-- (gdy doskoku jest mniej) robi unikający, schodząc dalej w tył — broń opada przed nim
+		if z.typ == "unik" and A.wpis.szerokosc >= 2 * D.wpis.szerokosc then
+			local skrot = math.min(ev.doskok, UNIK_PRZED_SZEROKIM)
+			ev.doskok -= skrot
+			ev.zejscieUniku = UNIK_PRZED_SZEROKIM - skrot
+		end
 	else
 		ev.doskok = 0
 	end
@@ -1200,6 +1438,11 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 		return
 	end
 	self.pomiarTwarzy = ev.nr
+	if ev.dzwiekArkusza and self.arkusz then
+		self.arkusz.trafienia = self.arkusz.trafienia or {}
+		self.arkusz.trafienia[ev.nr] = os.clock()
+	end
+	local wbud = ev.dzwiekArkusza == nil -- uderzenie gra odcinek arkusza (zaplanowany wcześniej) — bez wbudowanego
 	local D = self.aktorzy[z.cel]
 	local glowa = self:glowa(z.cel)
 	local piers = self:piers(z.cel)
@@ -1211,7 +1454,9 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 	local cel = z.cel
 	if z.typ == "unik" then
 		self.ui:napis(glowa, "UNIK!", "unik", nil, los:NextNumber(-7, 7), nil, cel)
-		self:dzwiek("unik", los:NextNumber(0.95, 1.05))
+		if wbud then
+			self:dzwiek("unik", los:NextNumber(0.95, 1.05))
+		end
 	elseif z.typ == "blok" then
 		-- v3: blok zmniejsza cios (przechodzi czesc_przez_blok) — „BLOK −75%” i liczba tego, co przeszło
 		local zatrzymal = PlanWalki.blokZatrzymuje(self.walka)
@@ -1235,7 +1480,9 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 			self.fx:wybuch("blok", punkt, s)
 			ev.parada = true
 		end
-		self:dzwiek("blok", los:NextNumber(0.95, 1.05))
+		if wbud then
+			self:dzwiek("blok", los:NextNumber(0.95, 1.05))
+		end
 		self:wstrzas(0.15)
 	elseif z.krytyk then
 		self.ui:napis(glowa, "KRYTYK!", "krytyk", nil, -6, nil, cel)
@@ -1243,7 +1490,9 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 			self.ui:napis(glowa, "−" .. tostring(z.obrazenia), "krytykLiczba", nil, 4, kolorLiczby, cel)
 		end
 		self.fx:wybuch("krytyk", piers, s)
-		self:dzwiek("krytyk", 1.0)
+		if wbud then
+			self:dzwiek("krytyk", 1.0)
+		end
 		self:wstrzas(0.6)
 	else
 		if liczbaWidoczna then
@@ -1255,7 +1504,9 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 			self.fx:wybuch(if ev.choreo and ev.choreo.wybuch and ev.styl ~= "pocisk" then ev.choreo.wybuch else "cios", piers, s)
 		end
 		local c = ev.choreo
-		if c and c.wybuch == "kwas" then
+		if not wbud then
+			-- odcinek arkusza już gra (szczyt na tę klatkę)
+		elseif c and c.wybuch == "kwas" then
 			self:dzwiek("plusk", los:NextNumber(0.95, 1.05))
 		elseif ev.styl == "pocisk" or ev.styl == "chmura" then
 			self:dzwiek("wybuch", los:NextNumber(0.9, 1.1))
@@ -1322,6 +1573,19 @@ local function zaplanujAtak(self, ev, f_wypuszczenie)
 	local z = ev.z
 	local A, D = self.aktorzy[z.kto], self.aktorzy[z.cel]
 	local t0 = ev.t
+	-- własne dźwięki (arkusz): uderzenie ze szczytem na trafieniu; potwór przy umiejętności daje głos (gdy jego
+	-- odgłos nie jest już dźwiękiem tej umiejętności — galareta przy kwaśnym plusku, zarodniki przy chmurze)
+	if self.arkusz then
+		local zd = self:zdarzenieUderzenia(ev)
+		if zd then
+			self:zaplanujUderzenie(ev, zd)
+		end
+		if z.kto == "wrog" and z.umiejetnosc ~= "" then
+			self:zaplanujAkcje(t0 + (ev.eStart or 0), function()
+				self:glosPotwora("wrog", zd or (if ev.styl == "chmura" then "zarodniki" else nil))
+			end)
+		end
+	end
 	self:zaplanujAkcje(t0 + ev.eStart, function(sp)
 		self:klip(A, ev.akcja, { predkosc = ev.predkosc, wydluz = ev.wydluz, odcinki = ev.odcinki }, sp)
 	end)
@@ -1401,7 +1665,11 @@ Choreo.pocisk = function(self, ev)
 				self.fx:wybuch(c.wybuch, pow:Lerp(self:piers(z.cel), 0.3), s)
 			end)
 		end
-		self:dzwiek(if c.pocisk == "strzala" then "strzal" else "czar", 1.0)
+		if c.pocisk == "strzala" then
+			self:dzwiek("strzal", 1.0)
+		elseif not ev.dzwiekArkusza then
+			self:dzwiekZdarzenia("rzut", "czar", 1.0) -- kula ognia i lodowy pocisk: wystrzał jest we własnym odcinku
+		end
 	end)
 end
 
@@ -1413,6 +1681,7 @@ Choreo.chmura = function(self, ev)
 		local start = if od then od.Position else self:piers(z.kto)
 		local cel = self:piers(z.cel)
 		self.fx:chmura(start, cel, math.max(0.05, ev.lot - sp), Color3.fromHex(ev.choreo.kolor or "#B07CFF"))
+		self:odcinekZdarzenia("zarodniki")
 	end)
 	if ev.choreo.wybuch and z.typ ~= "unik" then
 		self:zaplanujAkcje(ev.t + ev.eHit, function()
@@ -1479,7 +1748,7 @@ Choreo.na_siebie = function(self, ev)
 	self:zaplanujAkcje(ev.t + ev.eRel, function()
 		local s = math.clamp(A.wpis.wysokosc / 5, 0.8, 2)
 		self.fx:wybuch(ev.choreo.aura or "blask", self:piers(z.kto), s)
-		self:dzwiek("czar", 1.0)
+		self:dzwiekZdarzenia(if z.umiejetnosc == "bariera" then "tarcza" else "rzut", "czar", 1.0)
 	end)
 end
 Sesja.Choreo = Choreo
@@ -1539,7 +1808,8 @@ Obsluga.tykniecie = function(self, ev)
 			self:upadek(z.kto, true)
 		else
 			self:klip(A, "trafienie", { predkosc = 1.5 })
-			self:dzwiek("cios", 1.3)
+			self:dzwiekZdarzenia(if z.efekt == "trucizna" then "tik_trucizna" elseif z.efekt == "podpalenie" then "tik_podpalenie"
+				else "", "cios", 1.3)
 		end
 	end)
 end
@@ -1562,6 +1832,9 @@ Obsluga.nalozenie = function(self, ev)
 		tekst = string.sub(tekst, 1, #tekst - 1) .. " ×" .. tostring(nowy.stosy)
 	end
 	self.ui:napis(self:glowa(z.cel), tekst, "efekt", nil, los:NextNumber(-4, 4), Color3.fromHex(ch.kolor), z.cel)
+	if z.efekt == "ogluszenie" then
+		self:odcinekZdarzenia("ogluszenie")
+	end
 end
 
 Obsluga.koniec = function(self, ev)
@@ -1622,7 +1895,9 @@ Obsluga.wskrzeszenie = function(self, ev)
 			return
 		end
 		self.ui:blaskZycia(z.kto)
-		self:melodia("wskrzeszenie")
+		if not self:odcinekZdarzenia("awans") then -- arkusz: wznoszący się pasaż „awansu” zamiast melodii z tonu
+			self:melodia("wskrzeszenie")
+		end
 	end)
 	self:zaplanujAkcje(ev.t + ev.trwa * w.napis, function()
 		if self.pominieto then
@@ -1757,14 +2032,14 @@ function Sesja:aktualizujPozy(tau: number)
 					local zej = okno(e, ev.eHit - 0.28, ev.eHit - 0.05, ev.eHit + 0.2, ev.eHit + 0.55)
 					if not ruchWKlipie(D, "unik") then
 						pd.bok -= 1.7 * zej
-						pd.przod -= 0.9 * zej
+						pd.przod -= (0.9 + (ev.zejscieUniku or 0)) * zej
 						pd.przechyl += rad(12) * zej
 					else
 						-- klip uniku z własnym odskokiem (Wojownik 1,7 studa w lewo, Mag ok. 1,6 w tył i w lewo): bez bocznego
 						-- ślizgu i przechyłu, ale z zejściem w tył (etap 9, Studio: sam odskok z klipu zostawiał prawe ramię
 						-- i nogę Wojownika na osi ciosu — wilk i maczuga trolla przechodziły przez niego; ślizg wypada
 						-- w podskokach klipu, więc stopy nie jadą po ziemi)
-						pd.przod -= 0.9 * zej
+						pd.przod -= (0.9 + (ev.zejscieUniku or 0)) * zej
 					end
 				elseif z.typ == "blok" then
 					if not D:maKlip("blok") then
@@ -2252,6 +2527,11 @@ function Sesja:ujecieSurowe(uj, tau: number): (Vector3, Vector3, number)
 		-- skos 3/4 od strony atakującego; kadr z miejsc stania i z bieżących położeń (wyskok, doskok, odrzut)
 		local k = gladko(lt / 1.6)
 		local lo, hi, gora = self:obrysPary(A, D, true)
+		-- zamach nad głową (Choreografie: zamach — Miażdżący cios, 17.11.2026): wyskok i miecz z klipu w kadrze
+		local zamach = uj.ev and uj.ev.choreo and uj.ev.choreo.zamach
+		if type(zamach) == "number" then
+			gora = math.max(gora, hA + zamach)
+		end
 		local d = math.max(odlDlaWys(g.H, 42) * 1.02, g.S * 1.05, odlDlaPary(lo, hi, gora, 42) + 0.4 * math.max(wA, wD))
 		if gora > DUZY then
 			d = math.max(d, odlDlaGory(gora, gora * 0.5, 42))
@@ -2316,7 +2596,13 @@ function Sesja:ujecieSurowe(uj, tau: number): (Vector3, Vector3, number)
 			t = math.max(t, (gora + 0.4 - yCel) / (ODKRYTE_U_GORY * d))
 		end
 		local katMin = math.deg(2 * math.atan(t))
-		return Vector3.new(srodek - dir * 0.4 * k, 0.28 * gora + 0.8, d),
+		local yKam = 0.28 * gora + 0.8
+		if ev.styl == "skok" then
+			-- uderzenie z góry (17.11.2026, Studio: przykucnięty po lądowaniu Zwiadowca zasłaniał 62% slime'a z niskiej
+			-- kamery): kamera wyżej, ponad lądującym — cel widać zza jego pleców, a cel kadru zostaje
+			yKam = math.max(yKam, math.max(hA, hD) + 1.6)
+		end
+		return Vector3.new(srodek - dir * 0.4 * k, yKam, d),
 			Vector3.new(srodek + dir * 0.04 * (hi - lo) * k, yCel, 0), 52 - (52 - math.clamp(katMin, 40, 52)) * k
 	elseif typ == "pocisk" then
 		local ev = uj.ev
@@ -2644,7 +2930,7 @@ function Sesja:rozpocznij(walka)
 	self.ui:ukryjInfoPominiecia()
 	self.ui:pokazTempo(self.tempo, function(t)
 		self:ustawTempo(t)
-		self:dzwiek("przycisk", 1.2)
+		self:dzwiekZdarzenia("przycisk", "przycisk", 1.2)
 	end)
 	self.ui.skalaZycia = if self.tempo >= 4 then 0.7 elseif self.tempo >= 2 then 0.85 else 1
 	self.ui:pokazDzwiek(zapamietaneWyciszenie, function()
@@ -2745,10 +3031,15 @@ function Sesja:krokSceny(d: number, dt: number)
 		self.ui:ukryjUmiejetnosc()
 		if self.zwyciezca == "gracz" then
 			self.ui:pokazBaner("ZWYCIĘSTWO!", K.zolty, K.czerwony, 0.83)
-			self:melodia("zwyciestwo")
+			if not self:odcinekZdarzenia("zwyciestwo") then
+				self:melodia("zwyciestwo")
+			end
 		else
 			self.ui:pokazBaner("PORAŻKA!", K.bialy, K.fiolet, 0.83)
-			self:melodia("porazka")
+			if not self:odcinekZdarzenia("porazka") then
+				self:melodia("porazka")
+			end
+			self:glosPotwora("wrog") -- zwycięski potwór ryczy / warczy w radości (arkusz; bez arkusza nic)
 		end
 	end
 	if f >= 0.3 and not self.final.lup then
@@ -2773,7 +3064,7 @@ function Sesja:wyrzucLup(natychmiast: boolean)
 	local cel = P:cfZiemi().Position:Lerp(w:cfZiemi().Position, 0.35)
 	local podloga = self.cfSceny.Position.Y + 0.02
 	self.liczbaLupu = self.fx:lup(zrodlo, cel, self.walka.lup, natychmiast, podloga)
-	self:dzwiek("lup", 1)
+	self:dzwiekZdarzenia("monety", "lup", 1)
 end
 
 ------------------------------------------------------------------ pętla klatki
@@ -2805,7 +3096,7 @@ function Sesja:krok(dt: number)
 		table.insert(self.klatki, dt)
 		local d = 0
 		if not self.opcje.reczny then
-			d = dt * self:tempoTeraz() * self:zwolnienie(self.tau)
+			d = dt * self:tempoSceny(self.tau)
 		end
 		self:krokSceny(d, if reczny then 0 else dt)
 		self:mierzTwarz()
@@ -2831,6 +3122,19 @@ function Sesja:krok(dt: number)
 	if self.faza == "odtwarzanie" and self.tau >= self.czasKonca then
 		self:pokazWynik()
 	end
+end
+
+--[[ Prędkość czasu sceny w chwili τ: tempo gracza × zwolnienie (krytyk, nokaut, powalenie). Od chwili tuż przed ciosem
+	kończącym (finał) zawsze ×1 z pełnym zwolnieniem. Przy ×2 / ×4 zwolnienie w trakcie walki jest słabsze (wykładnik
+	1 / tempo: krytyk 0,22 → 0,47 przy ×2, 0,69 przy ×4) — 17.11.2026, próba 3e: przy ×4 każdy krytyk grał prawie w czasie
+	rzeczywistym (0,22 × 4 = 0,88), siedem krytyków najdłuższej walki dokładało ok. 4 s ponad czas dziennika / 4. ]]
+function Sesja:tempoSceny(tau: number): number
+	local t = if tau >= (self.tempoFinaluOd or math.huge) then 1 else self.tempo
+	local z = self:zwolnienie(tau)
+	if t > 1 and z < 1 then
+		z = z ^ (1 / t)
+	end
+	return t * z
 end
 
 -- tempo sceny teraz: wybór gracza, a od chwili tuż przed ciosem kończącym (finał) zawsze ×1
@@ -2906,7 +3210,7 @@ function Sesja:przewin(sekundy: number)
 		local d = math.min(zostalo, 1 / 60)
 		zostalo -= d
 		self.zegar += d
-		self:krokSceny(d * self:tempoTeraz() * self:zwolnienie(self.tau), d)
+		self:krokSceny(d * self:tempoSceny(self.tau), d)
 		self:mierzTwarz()
 		self:ustawKotwice()
 		self.ui:aktualizuj(d, self.kamera, d)
@@ -2920,7 +3224,7 @@ end
 function Sesja:przewinDo(cel: number)
 	while self.faza == "odtwarzanie" and self.tau < cel - 1e-6 do
 		local d = math.min(cel - self.tau, 1 / 60)
-		local dr = d / math.max(self:tempoTeraz() * self:zwolnienie(self.tau), 0.05)
+		local dr = d / math.max(self:tempoSceny(self.tau), 0.05)
 		self.zegar += dr
 		self:krokSceny(d, dr)
 		self:mierzTwarz()
@@ -2948,7 +3252,7 @@ function Sesja:pomin(wymus: boolean?)
 		return
 	end
 	self:zglosPominiecie()
-	self:dzwiek("przycisk")
+	self:dzwiekZdarzenia("przycisk", "przycisk")
 	self.pominieto = true
 	self.ui:usunNapisy()
 	self.ui:ukryjBaner(true)
@@ -3031,6 +3335,20 @@ function Sesja:pokazWynik()
 	self:atrybut("OstatnieDzwiekiZagrane", sd.zagrane or 0)
 	self:atrybut("OstatnieDzwiekiPominiete", sd.pominiete or 0)
 	self:atrybut("OstatnieDzwiekiMaksNaraz", sd.maksNaraz or 0)
+	-- własne dźwięki: odcinki arkusza (efekt, region w pliku, odchylenie szczytu od trafienia w s czasu rzeczywistego)
+	if self.arkusz then
+		local ark = self.arkusz
+		local lista = {}
+		for _, w in ark.log do
+			local traf = w.nr and ark.trafienia and ark.trafienia[w.nr]
+			table.insert(lista, { e = w.e, od = w.od, p0 = w.p0, p1 = w.p1, nr = w.nr,
+				dSzczyt = if traf then math.floor((w.szczyt - traf) * 1000 + 0.5) / 1000 else nil })
+		end
+		self:atrybut("OstatnieOdcinkiArkusza", game:GetService("HttpService"):JSONEncode(lista))
+		self:atrybut("OstatnieRegionyArkusza", ark.regiony == true)
+	else
+		self:atrybut("OstatnieOdcinkiArkusza", "")
+	end
 	local katy = {}
 	for _, k in self.katyTwarzy or {} do
 		table.insert(katy, string.format("%d:%s:%d:%d:%d", k.nr, k.typ, k.kat, k.uG or -1, k.uW or -1))
@@ -3195,6 +3513,12 @@ function Sesja:start()
 			error("przerwano")
 		end
 	end
+	-- sesję zamknięto w czasie prośby do serwera (17.11.2026, próba lasu-pasa: „zamknij” zaraz po E) — bez tej kontroli
+	-- scena, kamera skryptowa i chowanie obcych powstawały PO sprzątaniu i zostawały (E przy Kamieniu nie działało,
+	-- widoki starego lasu schowane)
+	if self.zakonczona then
+		error("przerwano")
+	end
 	self:przygotujScene()
 	self:posprzataj(function()
 		self:usunAktorow()
@@ -3356,13 +3680,56 @@ function Odtwarzacz.kadr()
 	local r = s.ui.kadrPx
 	local o = kam.CFrame.Position
 	local wynik = {}
+	-- efekt z klipu, który TRZYMA albo trafia cel (korzenie Strażnika wokół celu, kałuża i bańka slime'a — kości z
+	-- wydłużeniem w bieżącym klipie atakującego) nie zasłania celu w sensie kadru: to treść ujęcia (17.11.2026)
+	local efektowe: { [string]: boolean } = {}
+	local ev = s.plan and s.biezace and s.plan[s.biezace]
+	if ev and ev.styl == "w_klipie" and ev.akcja then
+		local A = s.aktorzy[ev.z.kto]
+		local klip = A and A:maKlip(ev.akcja)
+		local K = A and A.klipy
+		local wybrane: { [number]: boolean } = {}
+		for _, w in (klip and K.wydluzenia and K.wydluzenia[klip]) or {} do
+			for _, idx in w.kosci or {} do
+				wybrane[idx] = true -- indeksy kości (dane klipów); razem z dziećmi (korzeń K1A → K1B → K1C)
+			end
+		end
+		if next(wybrane) ~= nil then
+			for nazwa, idx in K.nazwyKosci do
+				local i = idx
+				while i and i ~= 0 do
+					if wybrane[i] then
+						efektowe[nazwa] = true
+						break
+					end
+					i = K.rodzice[i]
+				end
+			end
+		end
+	end
+	local function czescEfektu(c: BasePart): boolean
+		if next(efektowe) == nil then
+			return false
+		end
+		local sp = c:FindFirstChildOfClass("WeldConstraint")
+		local kosc = if sp and sp.Part0 then sp.Part0.Name else c.Name
+		return efektowe[kosc] == true
+	end
 	for strona, a in s.aktorzy do
 		local inny = s.aktorzy[inna(strona)]
 		local zmienione = {}
+		local wylaczone = {}
 		for _, c in inny.model:GetDescendants() do
-			if c:IsA("BasePart") and not c.CanQuery then
-				c.CanQuery = true
-				table.insert(zmienione, c)
+			if c:IsA("BasePart") then
+				if czescEfektu(c) then
+					if c.CanQuery then
+						c.CanQuery = false
+						table.insert(wylaczone, c)
+					end
+				elseif not c.CanQuery then
+					c.CanQuery = true
+					table.insert(zmienione, c)
+				end
 			end
 		end
 		local params = RaycastParams.new()
@@ -3384,6 +3751,9 @@ function Odtwarzacz.kadr()
 		end
 		for _, c in zmienione do
 			c.CanQuery = false
+		end
+		for _, c in wylaczone do
+			c.CanQuery = true
 		end
 		wynik[strona] = { czesci = n, wKadrze = if n > 0 then wKadrze / n else 0, odsloniete = if n > 0 then odsloniete / n else 0 }
 	end
@@ -3452,6 +3822,8 @@ function Odtwarzacz.stan()
 			(kam.CFrame.Position + kam.CFrame.LookVector * 10).Z },
 		fov = kam.FieldOfView,
 		czasKonca = s.czasKonca, tPokonany = s.tPokonany, tRadosc = s.tRadosc, tempoTeraz = s.walka and s:tempoTeraz(),
+		-- plan prędkości sceny (testy: oczekiwany czas odtwarzania przy danym tempie — testy/test_walki_play.py, 3e)
+		zwolnienia = s.zwolnienia, tempoFinaluOd = if s.tempoFinaluOd and s.tempoFinaluOd < math.huge then s.tempoFinaluOd else nil,
 		zegar = s.zegar, pokonany = s.pokonany, zwyciezca = s.zwyciezca,
 		-- v3: mana na paskach, ikony efektów (tury, znaczek), pomijanie, wskrzeszenia
 		manaGracz = s.ui and s.ui:mana("gracz"), manaWrog = s.ui and s.ui:mana("wrog"),

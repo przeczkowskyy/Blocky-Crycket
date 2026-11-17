@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Test Play poprawek „dopieszczenia” walki v2 (15.11.2026, lista D1–D8). Sam wraca do trybu Edit.
+"""Test Play poprawek „dopieszczenia” próby walki (15.11.2026, lista D1–D8). Sam wraca do trybu Edit.
 
     python -B swiat/test_walki2/testy/test_dopieszczenia_play.py                 # wszystko (ok. 6 min)
     python -B swiat/test_walki2/testy/test_dopieszczenia_play.py --tylko final,lot,napisy,twarz,dzwiek,slime,tempo

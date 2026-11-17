@@ -69,6 +69,8 @@ local GATUNKI_ZAPASOWE = {
 	straznik_lasu = { nazwa = "Strażnik Gaju", predkosc = 0, promien = 4.45, wymiary = { 8.9, 14.5, 5.0 } },
 }
 local gatunki: { [string]: any } = GATUNKI_ZAPASOWE
+-- prostokąt lasu (płyta biomu z danych + zapas) — panel bohatera widać tylko w nim (Stale.PANEL_TYLKO_W_LESIE)
+local obszarLasu: { x1: number, x2: number, z1: number, z2: number }? = nil
 do
 	local modul = moduly:WaitForChild("DanePotworow", 15)
 	local ok, dane = false, nil
@@ -77,6 +79,13 @@ do
 	end
 	if ok and type(dane) == "table" and type(dane.gatunki) == "table" then
 		gatunki = dane.gatunki
+		local plyta = type(dane.biom) == "table" and dane.biom.plyta
+		if type(plyta) == "table" and type(plyta.pozycja) == "table" and type(plyta.rozmiar) == "table" then
+			local z = Stale.PANEL_ZAPAS or 0
+			local px, pz = plyta.pozycja[1], plyta.pozycja[3]
+			local rx, rz = plyta.rozmiar[1] / 2 + z, plyta.rozmiar[3] / 2 + z
+			obszarLasu = { x1 = px - rx, x2 = px + rx, z1 = pz - rz, z2 = pz + rz }
+		end
 	else
 		warn(P .. "brak modułu DanePotworow albo pola gatunki — klient używa wymiarów zapasowych (" .. tostring(dane) .. ")")
 	end
@@ -822,7 +831,16 @@ function poWalce()
 		end
 		zniszczWidok(walka.id)
 		if walka.straznik then
-			pokazBaner("STRAŻNIK GAJU POKONANY!", "Wróci za 2 min", Stale.BANER_S)
+			-- jeden baner (17.11.2026): podpis może podmienić inny skrypt kontenera (las-pas: brama do Bagna otwarta);
+			-- atrybut jest lokalny i zużywany tutaj — skrypt, który go ustawił, nie pokazuje już własnego banera
+			local podpis = kontener:GetAttribute("PodpisBaneraStraznika")
+			if type(podpis) == "string" and podpis ~= "" then
+				kontener:SetAttribute("PodpisBaneraStraznika", nil)
+				kontener:SetAttribute("BanerStraznikaZPodpisem", podpis)
+			else
+				podpis = Stale.PODPIS_STRAZNIKA
+			end
+			pokazBaner("STRAŻNIK GAJU POKONANY!", podpis, Stale.BANER_S)
 		end
 	end
 	-- zabezpieczenie: odtwarzacz przywraca kamerę sam; gdyby jednak została skryptowa — zwykła kamera postaci
@@ -840,6 +858,41 @@ function poWalce()
 end
 
 ------------------------------------------------------------------ panel bohatera (rozdz. 4.6)
+local panelPrzycisk: GuiObject? = nil
+local panelOkno: GuiObject? = nil
+local panelWidoczny: boolean? = nil
+
+-- czy postać stoi w lesie tego kontenera (płyta biomu z zapasem); bez danych o płycie — zawsze (jak dawniej)
+local function wLesie(): boolean
+	if not Stale.PANEL_TYLKO_W_LESIE or not obszarLasu then
+		return true
+	end
+	local postac = gracz.Character
+	local hrp = postac and postac:FindFirstChild("HumanoidRootPart")
+	if not hrp or not hrp:IsA("BasePart") then
+		return false
+	end
+	local p = hrp.Position
+	local o = obszarLasu :: any
+	return p.X >= o.x1 and p.X <= o.x2 and p.Z >= o.z1 and p.Z <= o.z2
+end
+
+-- jeden panel na ekranie (17.11.2026): przycisk i okno tylko w lesie tego kontenera; ScreenGui zostaje włączony
+-- (Enabled przełącza odtwarzacz walki, gdy chowa GUI na czas walki — tu go nie ruszamy)
+local function odswiezWidocznoscPanelu()
+	local widac = wLesie()
+	if panelPrzycisk and panelPrzycisk.Visible ~= widac then
+		panelPrzycisk.Visible = widac
+	end
+	if not widac and panelOkno and panelOkno.Visible then
+		panelOkno.Visible = false
+	end
+	if panelWidoczny ~= widac then
+		panelWidoczny = widac
+		kontener:SetAttribute("KlientPanelWidoczny", widac) -- lokalnie, do testów
+	end
+end
+
 local function zbudujPanel()
 	local playerGui = gracz:WaitForChild("PlayerGui")
 	local stary = playerGui:FindFirstChild(Stale.GUI_BOHATERA)
@@ -933,6 +986,8 @@ local function zbudujPanel()
 		end
 	end
 	odswiez()
+	panelPrzycisk, panelOkno = przycisk, okno
+	odswiezWidocznoscPanelu()
 	gui.Parent = playerGui
 	return gui
 end
@@ -1099,6 +1154,7 @@ petla("koniec walki", 0.25, function()
 		poWalce()
 	end
 end)
+petla("panel bohatera", 0.5, odswiezWidocznoscPanelu)
 
 local guiBohatera: Instance? = nil
 do
