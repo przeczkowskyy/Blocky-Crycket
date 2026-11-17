@@ -493,6 +493,7 @@ Szczegóły: Zob. pytania 17, 36 i 50 (trening jako trzecie źródło statystyk)
 
 Szczegóły: Wcześniejsze liczby (wzorcowe, z [[Walka v2 — silnik, klasy i umiejętności]]): Wojownik 26/30/12/8/10/14, Zwiadowca 27/27/10/14/13/9, Mag 24/22/24/10/10/10. Powiązane: pytanie 53. Zmienił Claude Code u Pawła 17.11 na jego polecenie (karta wyboru klasy).
 Dopisek z 2026-11-17 (symulacja lasu, 200 graczy na klasę i profil; las po skróceniu D-096): z profilem Pawła wszystkie klasy są słabsze niż z wzorcowym — Wojownik wygrywa ze Strażnikiem Gaju w 20% walk zamiast w 37% i przechodzi las w 32,5 minuty zamiast 27,4; Zwiadowca na trollu 30% zamiast 43%; Mag w pierwszej zagrodzie 54% zamiast 68%. Przegranych w lesie jest 11–13 zamiast 8, a rozrzut między klasami rośnie (na trollu 13 punktów procentowych zamiast 4), co dotyka D-069. Do decyzji gra czyta profil Pawła, czyli to, co gracz widzi na karcie klasy. Jeśli zostaje wariant (a), balans potworów trzeba przeliczyć pod ten profil.
+Dopisek z 2026-11-18 (po odpowiedzi Karola „b”): wariant (b) jest w grze od 18.11 ok. 00:46 jako ustawienie z wyłącznikiem w pakiecie stanu gracza — w walce rozkład wzorcowy, karta wyboru klasy i `src/shared/ClassData.luau` bez zmian. Symulacja lasu po D-096 (wzorcowy / profil z karty): Wojownik ze Strażnikiem Gaju za pierwszym razem 33–39% / 24–26%, las 27,5 / 32–33 min; Zwiadowca 34–39% / 33–35%, 28 / 30–31 min; Mag 36–37% / 24–29%, 25 / 29 min; przegranych 7–9 zamiast 10–13. To robocze ustalenie z jednym podpisem — czeka na potwierdzenie Pawła (D-043); powrót do profilu z karty to jedna wartość (`ROZKLADY_KLAS` albo atrybut kontenera `RozkladyKlas`).
 **Odpowiedź:**
 - Karol Balucki (2026-11-17): b
 
@@ -530,4 +531,13 @@ Szczegóły: Jedna liczba (`SZCZESCIE_POCZATKUJACEGO` w `swiat/stan_gracza/dane.
 - Do wyboru: (a) włączyć po zmianach po stronie Pawła (lista niżej); (b) włączyć już teraz na próbę tylko w Studio; (c) zostawić wyłączony do czasu przeniesienia pakietu do `src/`.
 
 Szczegóły: Włączenie wymaga dostępu Studio do usług danych (ustawienie gry, zmienia właściciel) i zmian w plikach Pawła: ekran wyboru klasy czeka na wczytanie profilu; klasa wybierana tylko raz (D-081); zakupy drzewka zapisywane razem z profilem; wartości testowe (1000 Gemów) usunięte. Nowy gracz przy włączonym zapisie zaczyna z 0 Złota i 0 Gemów. Dziś pakiet działa tylko w Studio, więc na serwerze gry zapisu sprawdzić się nie da. Pełny opis: `swiat/stan_gracza/README.md`, rozdział „Zapis postępu”. Zob. pytanie 53.
+**Odpowiedź:**
+
+## 61. Kowal: czy robocze zasady z próby zostają?
+- Kowal na próbę stoi w Studio (D-102): łup przedmiotów z walk, rozbieranie zapasów na materiały, ulepszenia +1…+5.
+- Przyjęte roboczo: kuźnia w bazarze (D-049 i D-051 mówią o Twierdzy); przedmioty tylko własnej klasy, szansa 10% / 30% / 50% (zwykły / rzadki / strażnik); nowy przedmiot zakłada się sam.
+- Przyjęte roboczo: podstawowy zestaw liczy się jak dziś, a przedmioty i ulepszenia dodają ponad to (pełny zestaw +5: średnia szansa wygranej z ok. 52% na ok. 84%); Wojownik bez tarczy traci blok.
+- Do wyboru: (a) zostaje jak w próbie; (b) zostaje, ale z innymi liczbami — jakimi; (c) przedmioty zastępują wzór poziomu (trzeba ulepszać, żeby nadążyć za potworami).
+
+Szczegóły: Projekt i tabele: `swiat/kowal_proba/PROJEKT.md`; raport w panelu „Kowal w bazarze: rozbieranie i ulepszanie przedmiotów (D-102)”. Koszty: 150 / 300 / 450 / 650 / 900 Złota i 1 / 2 / 3 / 4 / 6 materiałów; w symulacji pierwsze ulepszenie po ok. 8 minutach lasu, las się nie skraca, Bagno skraca się o ok. 13%. Okno jest tymczasowe; docelowe robi Paweł (pytanie 57). Bez tierów przedmiotów (D-051: „nie teraz”).
 **Odpowiedź:**
