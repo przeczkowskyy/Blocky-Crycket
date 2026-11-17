@@ -1,0 +1,51 @@
+{
+ "id": "r-20261117-175848-3925",
+ "tytul": "Jajka i pety: pięć leśnych petów do oceny",
+ "opis_md": "**Co to jest:** pierwsze ujście Złota w grze — jajko z petami, według Waszych zatwierdzonych decyzji (D-052, D-058, D-060, D-086). To projekt i modele z Blendera; wdrożenie w Studio trwa i dostanie osobny raport ze zrzutami z gry.\n\n**Pięć petów leśnego jajka** (własne projekty, modele 3D do obracania w panelu):\n\n| Pet | Rzadkość | Szansa | Co daje |\n|---|---|---|---|\n| Żołędziak | pospolity | 50% | +5% Złota z walk |\n| Mchowy Ślimak | zwykły | 25% | +8% doświadczenia |\n| Liściolis | rzadki | 15% | +12% Złota |\n| Świetlikówka | epicki | 8% | +15% doświadczenia |\n| Jelonek Gaju | legendarny | 2% | +20% Złota i doświadczenia |\n\n**Jak to ma działać:** inkubator stoi przy wejściu do lasu. E → serwer zabiera Złoto i losuje → jajko trzęsie się, pęka w kolorze rzadkości, pet wyskakuje. Pierwszy pet idzie za graczem; kolejne trafiają do zagrody w bazarze, gdzie wybiera się aktywnego. Szanse są wypisane na tablicy przy jajku. Jajka tylko za Złoto z gry.\n\n**Cena — propozycja inna niż w kalkulatorze:** stałe 1000 Złota dawałoby pierwsze jajko dopiero po ok. 14 minutach. Proponuję cenę rosnącą: 300, 700, 1100, 1500, 1900, potem 2000 — pierwsze jajko po ok. 7 minutach gry, kolejne co 7–9 minut. Obie wersje są w ustawieniach, przełącza je jedno słowo.\n\n**Przyjęte roboczo, do Waszej decyzji:**\n1. cena rosnąca zamiast stałej;\n2. legendarny 2% (D-052 mówi o ok. 1%);\n3. pet daje premię do łupu, a nie walczy (silnika walki nie zmieniałem; mnożnik statystyk i pet w walce to następny krok);\n4. wyklucie samo, ok. 4 sekund, bez klikania w jajko;\n5. pety od początku gry (pytanie 38 jest otwarte).\n\n**Do oceny na obrazach:** czy pety się podobają i czy są dość różne; jajko jest schodkowe i z daleka może przypominać ul — do poprawy, jeśli Ci przeszkadza.\n\n**Sprawdzone bez Studio:** 34 testy (100 000 losowań daje podane szanse; serwer odrzuca zakup bez Złota, podwójne kliknięcie i nieznane jajko; Złoto nie schodzi poniżej zera).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T17:58:48+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/zoledziak/zoledziak.glb",
+   "etykieta": "Żołędziak 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/mchowy_slimak/mchowy_slimak.glb",
+   "etykieta": "Mchowy Ślimak 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/lisciolis/lisciolis.glb",
+   "etykieta": "Liściolis 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/swietlikowka/swietlikowka.glb",
+   "etykieta": "Świetlikówka 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/jelonek_gaju/jelonek_gaju.glb",
+   "etykieta": "Jelonek Gaju 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/pety_proba/PROJEKT.md",
+   "etykieta": "Projekt"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ],
+ "pytanie": "Czy te pety i zasady jajka są dobre — co zmienić w wyglądzie, cenie albo szansach, zanim powstaną jajka kolejnych biomów?"
+}
