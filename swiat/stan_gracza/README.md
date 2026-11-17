@@ -231,12 +231,31 @@ liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyK
 7. **Przed wyborem klasy** statystyki to rozkład Wojownika; zmiana klasy w trakcie gry (ChooseClass na to pozwala)
    przelicza rozkład, trening i „+” zostają.
 8. **Gemy z łupu** dopisują się do testowych 1000 z `PlayerStatsDefaults`.
-9. **Rozkłady klas** czytane z `ReplicatedStorage.Shared.ClassData` (paski ekranu wyboru Pawła). Od 17.11.2026
-   (commit Pawła `bf5c933`) są inne niż wzorcowe — pytanie 56 czeka na ludzi; do decyzji gra czyta ClassData, serwer
-   ostrzega o różnicy, a testy pilnują tylko warunków każdego profilu (trzy klasy, sześć liczb, suma 100, pula bez
-   zgubionego punktu) i liczą oczekiwane statystyki z aktualnego ClassData. Porównanie w lesie:
-   `python -B swiat/stan_gracza/porownaj_profile.py` — z profilem Pawła każda klasa przegrywa częściej (11–13 zamiast 8
-   przegranych do Strażnika, las dłuższy o 3–5 min), a różnice między klasami rosną (na trollu 13 pp zamiast 4).
+9. **Rozkłady klas (18.11.2026: robocza decyzja Karola z pytania 56 — odpowiedź „b”, czeka na potwierdzenie Pawła):**
+   walka i punkty statystyk według rozkładów **wzorcowych** (`tools/walka/wzorcowe.py`). Profil z
+   `src/shared/ClassData.luau` (Paweł, plik nietknięty) zostaje tylko na karcie wyboru klasy.
+   - Ustawienie: `ROZKLADY_KLAS = "wzorcowe"` w `dane.py` albo `"classdata"`, czyli zachowanie sprzed 18.11 (punkty
+     według ClassData).
+   - Atrybut kontenera `RozkladyKlas` (`"wzorcowe"` / `"classdata"`) przełącza w Studio bez przebudowy. Przechodzi na
+     odbudowany kontener. Przy przełączeniu w czasie gry trening, rozdane punkty i „+” zostają.
+   - `RozkladyZ` mówi, skąd są rozkłady, np. „wzorcowe (tools/walka); karta klasy pokazuje profil ClassData — inny dla:
+     …”. Ostrzeżenie „(balans!)” pojawia się tylko w trybie `classdata`.
+   - Testy liczą oczekiwania z wybranego trybu. Cała paczka scenariuszy w drugim trybie:
+     `STAN_ROZKLADY=classdata python -B swiat/stan_gracza/testy/test_stanu.py`.
+
+   Las po D-096, punkty 5 + 5, rozdane jak klasa (150 graczy na klasę):
+
+   | Klasa | Tryb | 1. walka (bez / ze szczęściem) | Strażnik Gaju za 1. razem | Las | Przegrane |
+   |---|---|---|---|---|---|
+   | Wojownik | wzorcowe | 85% / 100% | ok. 33–39% | 27,5 min | 7–8 |
+   | Wojownik | classdata | 79% / 99% | ok. 24–26% | 32–33 min | 10–11 |
+   | Zwiadowca | wzorcowe | 84% / 100% | ok. 34–39% | 28 min | 8–9 |
+   | Zwiadowca | classdata | 76% / 98% | ok. 33–35% | 30–31 min | 11–12 |
+   | Mag | wzorcowe | 84% / 99% | ok. 36–37% | 25 min | 7–8 |
+   | Mag | classdata | 75% / 94–95% | ok. 24–29% | 29 min | 12–13 |
+
+   Szczęście początkującego (×1,75) przy rozkładach wzorcowych wystarczyłoby mniejsze: ×1,4 daje już 97–98%. Nie
+   zmieniam go, bo działa tylko do pierwszej wygranej.
 10. **Baner „POZIOM N”** to tymczasowe GUI pakietu; docelowe pop-upy projektuje Paweł (D-093).
 11. **Bez zapisu:** profil w pamięci serwera; po wyjściu z gry wszystko znika (jak dziś). Miejsce na zapis: profil
     (`L.nowyProfil`, pole `wersja`), `swiat/las_pas_gra/zrodla/PamiecGracza.luau`.

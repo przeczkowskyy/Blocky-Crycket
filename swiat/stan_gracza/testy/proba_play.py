@@ -13,9 +13,9 @@ folder nie może leżeć w repozytorium. Zrzuty (bez nazwy konta: lista graczy i
 
 LISTA KONTROLNA (OK / BŁĄD / ?):
   S00 w Edit: kontenery na miejscu; script_grep po innych piszących Gold / XP / DataStore / leaderstats (i)
-  S01 gotowość: SerwerStanuGotowy, ZgodnoscLogikiStanu „OK n/n”, RozkladyZ z ClassData (także „INNE NIŻ WZORCOWE” —
-      pytanie 56), KlientStanuGotowy, las-pas gotowy
-  S02 wybór klasy prawdziwym Enterem → Class = Warrior, sześć statystyk = 30 pkt rozkładu klasy z ClassData, XPMax z krzywej
+  S01 gotowość: SerwerStanuGotowy, ZgodnoscLogikiStanu „OK n/n”, RozkladyZ „wzorcowe…” albo „ClassData…” (pytanie 56:
+      tryb RozkladyKlas; dalsze oczekiwania liczone z tego trybu), KlientStanuGotowy, las-pas gotowy
+  S02 wybór klasy prawdziwym Enterem → Class = Warrior, sześć statystyk = 30 pkt rozkładu klasy (tryb z S01), XPMax z krzywej
   S03 (a) każda z trzech klas (Warrior z ekranu, Scout i Mage przez ChooseClass jak ekran wyboru): walka ze slime'em
       przegrody s1 → serwer walczy tą klasą na poziomie gracza (SerwerOstatniaWalka), panel „Twój bohater: …”
   S04 (b) łup po walce: w trakcie walki Gold / XP / Level bez zmian, po walce = wynik z OstatniLup i krzywej; HUD (Gold,
@@ -62,7 +62,9 @@ import logika_stanu as LS  # noqa: E402
 
 KLATKI = os.path.join(PAKIET, "klatki")
 _, D = DANE.dane_z_przypadkami()
-ROZKLADY_GRY = PPF.rozklady_pawla(D)  # src/shared/ClassData.luau — to, co czyta SerwerStanu w grze
+# rozkłady, według których serwer stanu rozdaje punkty (pytanie 56): tryb z danych; S01 poprawia go według RozkladyZ
+ROZKLADY_CD = PPF.rozklady_pawla(D)  # src/shared/ClassData.luau
+ROZKLADY_GRY = dict(ROZKLADY_CD) if D["rozklady_klas"]["tryb"] == "classdata" else {k: dict(D["rozklady"][k]) for k in D["klasy"]}
 ID_KLASY = {v: k for k, v in D["klasy_gracza"].items()}  # klasa silnika → Class
 REAKCJA_M6 = 1.5  # s od stanięcia przy potworze do E w pomiarze M6 (gracz-człowiek; potwory chodzą)
 ZNANE_W_KONSOLI = ("Requester does not have permission for Asset",)
@@ -487,8 +489,13 @@ def main():
                 kont_atr("LasPasGra", ["SerwerGotowy", "SerwerPasaGotowy"])), 60, 1.0) or {}
             n_przyp = sum(len(v) for v in D["przypadki"].values())
             zapisz("S01", {"stan": st_atr, "klient": kl_atr, "pas": pas_atr})
+            # tryb rozkładów w Studio (atrybut RozkladyKlas albo dane): „wzorcowe…” albo „ClassData…”
+            ROZKLADY_GRY.clear()
+            ROZKLADY_GRY.update(ROZKLADY_CD if str(st_atr.get("RozkladyZ", "")).startswith("ClassData")
+                                else {k: dict(D["rozklady"][k]) for k in D["klasy"]})
             punkt("S01", st_atr.get("ZgodnoscLogikiStanu") == "OK %d/%d" % (n_przyp, n_przyp)
-                  and str(st_atr.get("RozkladyZ", "")).startswith("ClassData (3 klas") and kl_atr.get("KlientStanuGotowy") is True
+                  and (str(st_atr.get("RozkladyZ", "")).startswith("ClassData (3 klas")
+                       or str(st_atr.get("RozkladyZ", "")).startswith("wzorcowe")) and kl_atr.get("KlientStanuGotowy") is True
                   and bool(pas_atr), "stan %s | klient %s | las-pas %s" % (st_atr, kl_atr, pas_atr))
 
             # ================================================================ S02 wybór klasy Enterem

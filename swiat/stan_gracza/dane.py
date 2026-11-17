@@ -68,6 +68,11 @@ GEMY_ZA_POZIOM = 10
 GEMY_ZA_STRAZNIKA = 100
 PREFIKS_STRAZNIKA = "straznik_"
 
+# rozkłady statystyk klas (pytanie 56, odpowiedź Karola 17.11: „b” — czeka na potwierdzenie Pawła): "wzorcowe" =
+# walka i punkty według tools/walka/wzorcowe.py, profil z src/shared/ClassData.luau tylko na karcie wyboru klasy;
+# "classdata" = jak przed 18.11 (punkty według ClassData). Atrybut kontenera RozkladyKlas przełącza w Studio.
+ROZKLADY_KLAS = "wzorcowe"
+
 # kara za przegraną (propozycja D-098): ułamek posiadanego Złota; 0 = wyłączona. Liczby: kara_przegranej.py, README.
 KARA_PROCENT = 0.05
 ZWYKLY_POTWOR = "cierniowy_wilk"   # łup zwykłego potwora (limit kary); zwykłe potwory Bagna mają ten sam łup
@@ -245,6 +250,7 @@ def podstawa():
                   "co_s": 120, "rozrzut_s": 30, "zamkniecie_s": 25, "budzet_min": 2,
                   # nowy gracz z włączonym zapisem: wartości startowe zamiast testowych z PlayerStatsDefaults (Paweł)
                   "start": {"gemy": 0, "zloto": 0}},
+        "rozklady_klas": {"tryb": ROZKLADY_KLAS, "atrybut": "RozkladyKlas", "tryby": ["wzorcowe", "classdata"]},
         "klasy_pawla": {"folder": "Shared", "modul": "ClassData", "czekaj_s": 10},
         "trening": {"kontener": "TreningProba", "sygnal": "PrzyrostStatystyki"},
         "hud": {"gui": "HUD", "czekaj_s": 60},

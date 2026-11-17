@@ -199,6 +199,7 @@ return {
 		budzet_min = 2,
 		start = { gemy = 0, zloto = 0 },
 	},
+	rozklady_klas = { tryb = "wzorcowe", atrybut = "RozkladyKlas", tryby = { "wzorcowe", "classdata" } },
 	klasy_pawla = { folder = "Shared", modul = "ClassData", czekaj_s = 10 },
 	trening = { kontener = "TreningProba", sygnal = "PrzyrostStatystyki" },
 	hud = { gui = "HUD", czekaj_s = 60 },
@@ -2234,5 +2235,5 @@ return {
 			{ znana = 9999, nowa = 10000, pula = 5, wynik = { 9999, 5, "ok" } },
 		},
 	},
-	skrot = "79847fc3013c",
+	skrot = "5999cc207651",
 }

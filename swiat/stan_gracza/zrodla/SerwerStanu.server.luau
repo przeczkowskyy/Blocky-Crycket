@@ -10,7 +10,7 @@
 		2. awans: XP ≥ XPMax → Level + 1, nowe XPMax z krzywej (D.krzywa = tools/walka/tempo.py), komunikat "awans"
 		   do klienta (baner „POZIOM N”);
 		3. statystyki: po wyborze klasy i przy każdej zmianie Level sześć atrybutów dostaje rozkład klasy dla puli
-		   poziomu (30 + 10 na poziom; rozkłady z ReplicatedStorage.Shared.ClassData Pawła, zapas: D.rozklady).
+		   poziomu (30 + 10 na poziom; rozkłady wzorcowe D.rozklady albo — D.rozklady_klas — z ClassData Pawła).
 		   Pierwszy raz wpisuje cel + trening (zastępuje wartości testowe PlayerStatsDefaults), potem tylko różnicę —
 		   to, co dopisał ktoś inny (darmowy „+” w oknie ekwipunku), zostaje. Atrybut kontenera StatystykiKlasy = false
 		   wyłącza ten punkt (zostają wartości testowe Pawła, trening dalej dopisuje);
@@ -180,10 +180,40 @@ local function zgodnosc(): string
 end
 zgodnosc()
 
------------------------------------------------------------------- rozkłady klas (ClassData Pawła — tylko odczyt)
-local rozklady = {}
+------------------------------------------------------------------ rozkłady klas: wzorcowe albo ClassData Pawła (tylko odczyt)
+-- 18.11.2026 (pytanie 56, odpowiedź Karola „b”, czeka na Pawła): D.rozklady_klas.tryb = "wzorcowe" — walka i punkty
+-- według D.rozklady (tools/walka/wzorcowe.py), profil z ClassData tylko na karcie wyboru klasy; "classdata" — jak
+-- dotąd, punkty według ClassData. Atrybut kontenera D.rozklady_klas.atrybut przełącza w czasie gry.
+local rozkladyCD = {}
 for _, k in D.klasy do
-	rozklady[k] = D.rozklady[k]
+	rozkladyCD[k] = D.rozklady[k]
+end
+local inneWClassData = {} -- klasy, których profil z ClassData różni się od wzorcowego
+local opisClassData = "dane (ClassData jeszcze nie wczytany)"
+
+local function trybRozkladow(): string
+	local v = kontener:GetAttribute(D.rozklady_klas.atrybut)
+	if v == "wzorcowe" or v == "classdata" then
+		return v
+	end
+	return D.rozklady_klas.tryb
+end
+
+local function rozkladKlasy(klasa: string)
+	if trybRozkladow() == "classdata" then
+		return rozkladyCD[klasa]
+	end
+	return D.rozklady[klasa]
+end
+
+local function opisRozkladow(): string
+	if trybRozkladow() == "classdata" then
+		return opisClassData
+	end
+	if #inneWClassData > 0 then
+		return "wzorcowe (tools/walka); karta klasy pokazuje profil ClassData — inny dla: " .. table.concat(inneWClassData, ", ")
+	end
+	return "wzorcowe (tools/walka)"
 end
 
 local function wczytajRozklady(): string
@@ -202,7 +232,7 @@ local function wczytajRozklady(): string
 		if klasa then
 			local r, powod = L.rozkladZClassData(D, c.stats)
 			if r then
-				rozklady[klasa] = r
+				rozkladyCD[klasa] = r
 				n += 1
 				if not L.rowne(r, D.rozklady[klasa]) then
 					table.insert(rozne, klasa)
@@ -212,13 +242,22 @@ local function wczytajRozklady(): string
 			end
 		end
 	end
+	inneWClassData = rozne
 	if #rozne > 0 then
-		warn(P .. "rozkłady z ClassData różne od wzorcowych (balans!): " .. table.concat(rozne, ", "))
 		return "ClassData (" .. n .. " klas; INNE NIŻ WZORCOWE: " .. table.concat(rozne, ", ") .. ")"
 	end
 	return "ClassData (" .. n .. " klas)"
 end
-kontener:SetAttribute("RozkladyZ", wczytajRozklady())
+opisClassData = wczytajRozklady()
+
+-- ostrzeżenie „balans!” tylko wtedy, gdy walka naprawdę idzie według ClassData różnego od wzorca
+local function ogloscRozklady()
+	kontener:SetAttribute("RozkladyZ", opisRozkladow())
+	if trybRozkladow() == "classdata" and #inneWClassData > 0 then
+		warn(P .. "rozkłady z ClassData różne od wzorcowych (balans!): " .. table.concat(inneWClassData, ", "))
+	end
+end
+ogloscRozklady()
 
 ------------------------------------------------------------------ profil i atrybuty
 local profile: { [Player]: any } = {}
@@ -306,12 +345,13 @@ local function zastosujBaze(gracz: Player)
 	local klasa = klasaGracza(gracz)
 	local poziom = poziomGracza(gracz)
 	local tryb = punktyWlaczone()
-	if p.baza and p.baza.klasa == klasa and p.baza.poziom == poziom and p.baza.tryb == tryb then
+	local trybR = trybRozkladow()
+	if p.baza and p.baza.klasa == klasa and p.baza.poziom == poziom and p.baza.tryb == tryb and p.baza.rozklady == trybR then
 		return
 	end
 	-- samo rozdzielana część puli (z punktami do rozdania: 30 + 5 na poziom; bez: 30 + 10); rozdane punkty i trening
 	-- są w obecnych atrybutach i zostają (noweStatystyki dopisuje tylko różnicę celu)
-	local cel = L.rozdziel(D, rozklady[klasa], L.pulaSama(D, poziom, tryb))
+	local cel = L.rozdziel(D, rozkladKlasy(klasa), L.pulaSama(D, poziom, tryb))
 	local obecne = {}
 	for _, s in D.statystyki do
 		obecne[s] = gracz:GetAttribute(D.atrybuty_statystyk[s])
@@ -321,7 +361,7 @@ local function zastosujBaze(gracz: Player)
 		dodatki[s] = p.wytrenowane[s] + p.punkty.rozdane[s]
 	end
 	local nowe = L.noweStatystyki(D, obecne, if p.baza then p.baza.st else nil, cel, dodatki)
-	p.baza = { klasa = klasa, poziom = poziom, st = cel, tryb = tryb }
+	p.baza = { klasa = klasa, poziom = poziom, st = cel, tryb = tryb, rozklady = trybR }
 	for _, s in D.statystyki do
 		ustawStatystyke(gracz, s, nowe[s])
 	end
@@ -912,7 +952,7 @@ local function bohater(gracz: any)
 	end
 	local klasa = klasaGracza(gracz)
 	local poziom = poziomGracza(gracz)
-	local zapas = L.rozdziel(D, rozklady[klasa], L.pulaSama(D, poziom, punktyWlaczone()))
+	local zapas = L.rozdziel(D, rozkladKlasy(klasa), L.pulaSama(D, poziom, punktyWlaczone()))
 	local st = {}
 	for _, s in D.statystyki do
 		st[s] = L.statystykaZ(D, gracz:GetAttribute(D.atrybuty_statystyk[s]))
@@ -1228,6 +1268,14 @@ game:BindToClose(function()
 end)
 
 -- włączenie StatystykiKlasy w czasie gry: rozkład klasy od razu (wyłączenie zostawia atrybuty, jakie są)
+-- przełączenie rozkładów klas w czasie gry: nowy cel, a trening, rozdane punkty i „+” zostają (różnica celów)
+kontener:GetAttributeChangedSignal(D.rozklady_klas.atrybut):Connect(function()
+	ogloscRozklady()
+	for _, g in Players:GetPlayers() do
+		zastosujBaze(g)
+	end
+end)
+
 kontener:GetAttributeChangedSignal("StatystykiKlasy"):Connect(function()
 	for _, g in Players:GetPlayers() do
 		zastosujBaze(g)

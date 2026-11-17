@@ -64,7 +64,12 @@ def bohater(D, klasa, L):
             dod = {s: (pkt if s == cel else 0) for s in D["statystyki"]}
         for s in D["statystyki"]:
             st[s] += dod[s]
-    return LS.opis_bohatera(D, klasa, L, st)
+    o = LS.opis_bohatera(D, klasa, L, st)
+    # „szczęście początkującego” (18.11.2026): do pierwszej wygranej gracza (zapis walk KP.ZAPIS w tej pętli)
+    sz = USTAWIENIE.get("szczescie", 0)
+    if sz > 0 and not USTAWIENIE.get("po_lesie") and not any(f["wygrana"] for f in KP.ZAPIS):
+        o["pet"] = {s: sz for s in D["statystyki"]}
+    return o
 
 
 def pierwsze_podejscie(walki, gatunek):
@@ -84,8 +89,10 @@ def licz(D, graczy, ziarno):
         los = random.Random("punkty-%s-%d" % (k, ziarno))
         for _ in range(graczy):
             stan = {}
+            USTAWIENIE["po_lesie"] = False
             walki, wyg = KP.walki_gracza(EJ.gracz, D, P, k, los, x0, przelot, po_strazniku=False, limit_min=SL.LIMIT_MIN,
                                          koniec=stan)
+            USTAWIENIE["po_lesie"] = True
             if wyg is None:
                 continue
             w["las_czas"].append(wyg / 60)
@@ -110,6 +117,8 @@ def szansa_pierwszej(D, ziaren=600):
     for k in D["klasy"]:
         los = random.Random("pierwsza-%s" % k)
         g = _BOHATER(D, k, 1)
+        if USTAWIENIE.get("szczescie", 0) > 0:
+            g["pet"] = {s: USTAWIENIE["szczescie"] for s in D["statystyki"]}
         wyg = sum(silnik.symuluj(g, {"potwor": "lesny_slime", "poziom": 1}, los.randrange(1, 2 ** 31 - 1))["wynik"] == "wygrana"
                   for _ in range(ziaren))
         w[k] = 100.0 * wyg / ziaren
@@ -137,7 +146,10 @@ def main():
     ap.add_argument("--graczy", type=int, default=50, help="graczy na klasę w każdej komórce")
     ap.add_argument("--ziarno", type=int, default=1)
     ap.add_argument("--md", default=None)
+    ap.add_argument("--szczescie", type=float, default=0.0, help="„szczęście początkującego”: mnożnik −1 do 1. wygranej")
+    ap.add_argument("--tylko-b", action="store_true", help="tylko wariant b (5 samo + 5 do rozdania) i rozdanie jak klasa")
     a = ap.parse_args()
+    USTAWIENIE["szczescie"] = a.szczescie
     t0 = time.time()
     _, D0 = DANE.dane_z_przypadkami()
     if EJ.BAGNO not in sys.path:
@@ -165,7 +177,9 @@ def main():
                        "Bagno: czas | Bagno: przegrane | Topiel: 1. podejście | Nie skończyło Bagna |")
             out.append("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|")
             for nazwa_w, auto, reka in WARIANTY:
-                for strategia in (STRATEGIE if reka > 0 else ["—"]):
+                if a.tylko_b and not nazwa_w.startswith("b:"):
+                    continue
+                for strategia in ((["klasa"] if a.tylko_b else STRATEGIE) if reka > 0 else ["—"]):
                     USTAWIENIE.update(auto=auto, reka=reka, strategia=strategia)
                     r = licz(D, a.graczy, a.ziarno)
                     out.append("| %s | %s | %s | %s | %s%% | %s | %s | %s | %s%% | %d |" % (
@@ -178,8 +192,8 @@ def main():
     finally:
         SL.bohater = _BOHATER
         silnik.symuluj = silnik_symuluj
-    out.append("_python -B swiat/stan_gracza/punkty_statystyk.py --graczy %d --ziarno %d (%.0f s)_" % (
-        a.graczy, a.ziarno, time.time() - t0))
+    out.append("_python -B swiat/stan_gracza/punkty_statystyk.py --graczy %d --ziarno %d --szczescie %s%s (%.0f s)_" % (
+        a.graczy, a.ziarno, a.szczescie, " --tylko-b" if a.tylko_b else "", time.time() - t0))
     tekst = "\n".join(out) + "\n"
     print(tekst)
     if a.md:

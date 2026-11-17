@@ -77,8 +77,25 @@ ROZNE_OD_WZORCA = [D["klasy_gracza"][i] for i, _s in klasy_pawla()
 OSTRZEZENIE_ROZKLADOW = "rozkłady z ClassData różne od wzorcowych"
 
 
-def rozklady_z(n=3):
-    """Atrybut RozkladyZ, jaki serwer stanu wpisze przy tym ClassData."""
+# 18.11.2026 (pytanie 56, odpowiedź Karola „b”): tryb rozkładów z danych — "wzorcowe" (walka według wzorca, ClassData
+# tylko na karcie) albo "classdata"; scenariusze serwera liczą oczekiwania z rozkładów wybranego trybu (ROZKLADY_GRY)
+# (zmienna środowiska STAN_ROZKLADY=classdata albo =wzorcowe: cała paczka scenariuszy w drugim trybie)
+TRYB = os.environ.get("STAN_ROZKLADY") or D["rozklady_klas"]["tryb"]
+
+
+def rozklady_trybu(tryb):
+    return ROZKLADY_CD if tryb == "classdata" else {k: dict(D["rozklady"][k]) for k in D["klasy"]}
+
+
+ROZKLADY_GRY = rozklady_trybu(TRYB)
+
+
+def rozklady_z(n=3, tryb=None):
+    """Atrybut RozkladyZ, jaki serwer stanu wpisze przy tym ClassData i trybie rozkładów."""
+    if (tryb or TRYB) == "wzorcowe":
+        if ROZNE_OD_WZORCA:
+            return "wzorcowe (tools/walka); karta klasy pokazuje profil ClassData — inny dla: " + ", ".join(ROZNE_OD_WZORCA)
+        return "wzorcowe (tools/walka)"
     if ROZNE_OD_WZORCA:
         return "ClassData (%d klas; INNE NIŻ WZORCOWE: %s)" % (n, ", ".join(ROZNE_OD_WZORCA))
     return "ClassData (%d klas)" % n
@@ -579,7 +596,7 @@ class TestSerweraOffline(unittest.TestCase):
              "Intelligence": 18, "Dexterity": 12, "Luck": 7, "Armor": 57}
     LUP = {"zloto": 21, "doswiadczenie": 12, "tokeny_krainy": 1, "gemy": 0, "shard_ewolucji": 0, "kraina": "las"}
 
-    def uruchom(self, statystyki_klasy=True, trening=True, procent_kary=None, poczatek=False):
+    def uruchom(self, statystyki_klasy=True, trening=True, procent_kary=None, poczatek=False, rozklady=None):
         if TU not in sys.path:
             sys.path.insert(0, TU)
         import atrapa_roblox as AR  # noqa: E402
@@ -591,6 +608,10 @@ class TestSerweraOffline(unittest.TestCase):
             dane = dane.replace(wzor, "procent = %s," % procent_kary, 1)
         k, inne = AR.kontener_stanu(sw, {"DaneStanu": dane, "LogikaStanu": LOGIKA}, ZB.INNE)
         k.ustaw("StatystykiKlasy", statystyki_klasy)
+        if rozklady is None and TRYB != D["rozklady_klas"]["tryb"]:
+            rozklady = TRYB
+        if rozklady is not None:
+            k.ustaw(D["rozklady_klas"]["atrybut"], rozklady)
         # „szczęście początkującego” zmienia opis bohatera do pierwszej wygranej — scenariusze bez niego, chyba że o nim
         if not poczatek:
             k.ustaw(D["poczatek"]["atrybut_wylacznika"], False)
@@ -721,20 +742,21 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual(self.k.atrybuty["RozkladyZ"], rozklady_z())
         self.assertEqual(self.k.atrybuty["TreningPodlaczony"], True)
         self.assertEqual(self.ostrzezenia(), [])
-        self.assertEqual(any(OSTRZEZENIE_ROZKLADOW in o for o in self.sw.ostrzezenia), bool(ROZNE_OD_WZORCA))
+        self.assertEqual(any(OSTRZEZENIE_ROZKLADOW in o for o in self.sw.ostrzezenia),
+                         bool(ROZNE_OD_WZORCA) and TRYB == "classdata", "„balans!” tylko w trybie classdata")
         # XPMax z krzywej (nie 100 Pawła); bez klasy — rozkład klasy domyślnej (z ClassData) zamiast wartości testowych
         self.assertEqual(self.atr("XPMax"), LS.xp_do_nastepnego(D, 1))
-        self.assertEqual(self.staty(), LS.rozdziel(D, ROZKLADY_CD["wojownik"], 30))
+        self.assertEqual(self.staty(), LS.rozdziel(D, ROZKLADY_GRY["wojownik"], 30))
         self.assertEqual(self.atr("Gems"), 1000)
 
     def test_8b_klasa_lup_awans_i_plus_pawla(self):
         self.uruchom()
         self.g.ustaw("Class", "Mage")
-        self.assertEqual(self.staty(), LS.rozdziel(D, ROZKLADY_CD["mag"], 30))
+        self.assertEqual(self.staty(), LS.rozdziel(D, ROZKLADY_GRY["mag"], 30))
         self.assertEqual(self.atr("PunktyDoRozdania"), 0)
         # „+” w oknie ekwipunku (StatPoints Pawła) bez punktów — cofnięty, komunikat (D-097)
         self.g.ustaw("Luck", self.atr("Luck") + 1)
-        self.assertEqual(self.staty(), LS.rozdziel(D, ROZKLADY_CD["mag"], 30))
+        self.assertEqual(self.staty(), LS.rozdziel(D, ROZKLADY_GRY["mag"], 30))
         self.assertIn(["brak_punktow"], [x[1] for x in self.sw.do_klienta])
         opis = self.wywolaj("Bohater", self.g.t)
         self.assertEqual(norm(opis), norm(LS.opis_bohatera(D, "mag", 1, self.staty())))
@@ -746,7 +768,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual(self.atr("TokenyKrainy_las"), 1)
         self.assertEqual(self.sw.do_klienta[-1][1], ["awans", 2, 1])
         # awans: 5 samo (rozkład klasy) + 5 do rozdania; „+” zdejmuje punkt i zostaje przy kolejnym awansie
-        oczek = LS.rozdziel(D, ROZKLADY_CD["mag"], LS.pula_sama(D, 2))
+        oczek = LS.rozdziel(D, ROZKLADY_GRY["mag"], LS.pula_sama(D, 2))
         self.assertEqual(self.staty(), oczek)
         self.assertEqual(self.atr("PunktyDoRozdania"), D["punkty"]["na_poziom"])
         self.g.ustaw("Luck", self.atr("Luck") + 1)
@@ -754,7 +776,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual(self.staty(), oczek, "„+” z punktem przyjęty")
         self.assertEqual(self.atr("PunktyDoRozdania"), D["punkty"]["na_poziom"] - 1)
         self.g.ustaw("Level", 3)
-        oczek3 = LS.rozdziel(D, ROZKLADY_CD["mag"], LS.pula_sama(D, 3))
+        oczek3 = LS.rozdziel(D, ROZKLADY_GRY["mag"], LS.pula_sama(D, 3))
         oczek3["szczescie"] += 1
         self.assertEqual(self.staty(), oczek3, "awans dopisał różnicę, rozdany punkt został")
         self.assertEqual(self.atr("PunktyDoRozdania"), 2 * D["punkty"]["na_poziom"] - 1)
@@ -804,7 +826,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.przyrost.odpal(self.g.t, LM.do_luau({"atrybut": "Mana", "przyrost": 5}))  # nieznana — pominięta
         self.assertEqual(self.atr("Strength"), przed["sila"] + 2)
         self.g.ustaw("Level", 5)  # np. tester w pasku poleceń
-        cel = LS.rozdziel(D, ROZKLADY_CD["wojownik"], LS.pula_sama(D, 5))
+        cel = LS.rozdziel(D, ROZKLADY_GRY["wojownik"], LS.pula_sama(D, 5))
         self.assertEqual(self.atr("Strength"), cel["sila"] + 2)
         self.assertEqual(self.atr("PunktyDoRozdania"), 4 * D["punkty"]["na_poziom"], "trening nie zdejmuje punktów")
         self.assertEqual(self.atr("XPMax"), LS.xp_do_nastepnego(D, 5))
@@ -815,7 +837,7 @@ class TestSerweraOffline(unittest.TestCase):
         if not ROZNE_OD_WZORCA:  # profil wzorcowy i rozdane po rozkładzie klasy = postać wzorcowa silnika
             dodatkowe = {s: 0 for s in D["statystyki"]}
             dodatkowe["sila"] = 2
-            st2 = LS.rozdziel(D, ROZKLADY_CD["wojownik"], LS.pula(D, 5))
+            st2 = LS.rozdziel(D, ROZKLADY_GRY["wojownik"], LS.pula(D, 5))
             st2["sila"] += 2
             self.assertEqual(LS.opis_bohatera(D, "wojownik", 5, st2), wzorcowe.postac("wojownik", 5, dodatkowe=dodatkowe))
         self.assertEqual(self.k.atrybuty["LicznikTreningu"], 1)
@@ -833,7 +855,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual((opis["klasa"], opis["poziom"], opis["statystyki"]["pancerz"]), ("zwiadowca", 3, 58))
         # włączenie w czasie gry: od razu rozkład klasy (cel + trening)
         self.k.ustaw("StatystykiKlasy", True)
-        cel = LS.rozdziel(D, ROZKLADY_CD["zwiadowca"], LS.pula_sama(D, 3))
+        cel = LS.rozdziel(D, ROZKLADY_GRY["zwiadowca"], LS.pula_sama(D, 3))
         self.assertEqual(self.atr("Armor"), cel["pancerz"] + 1)
         self.assertEqual(self.atr("PunktyDoRozdania"), 0, "punkty za poziomy z czasu wyłączenia nie dochodzą")
 
@@ -1141,12 +1163,38 @@ class TestSerweraOffline(unittest.TestCase):
         # skuteczność: profil z ClassData, 1. poziom, Leśny Slime 1. poziomu — każda klasa ≥ 95% (600 walk, ziarna stałe)
         los = random.Random(41)
         for k in D["klasy"]:
-            st = LS.rozdziel(D, ROZKLADY_CD[k], 30)
+            st = LS.rozdziel(D, ROZKLADY_GRY[k], 30)
             o = LS.opis_bohatera(D, k, 1, st)
             o["pet"] = {s: p for s in D["statystyki"]}
             wyg = sum(silnik.symuluj(o, {"potwor": "lesny_slime", "poziom": 1}, los.randrange(1, 2 ** 31 - 1))["wynik"]
                       == "wygrana" for _ in range(600))
             self.assertGreaterEqual(wyg / 600, 0.93, k)  # 95% z zapasem na rozrzut 600 walk
+
+    def test_8s_tryby_rozkladow_klas(self):
+        # pytanie 56: oba tryby od startu i przełączenie w czasie gry (trening i rozdane punkty zostają)
+        for tryb in ("wzorcowe", "classdata"):
+            self.uruchom(rozklady=tryb)
+            R = rozklady_trybu(tryb)
+            self.assertEqual(self.k.atrybuty["RozkladyZ"], rozklady_z(tryb=tryb), tryb)
+            self.assertEqual(any(OSTRZEZENIE_ROZKLADOW in o for o in self.sw.ostrzezenia),
+                             bool(ROZNE_OD_WZORCA) and tryb == "classdata", tryb)
+            self.g.ustaw("Class", "Mage")
+            self.assertEqual(self.staty(), LS.rozdziel(D, R["mag"], 30), tryb)
+            opis = self.wywolaj("Bohater", self.g.t)
+            self.assertEqual(norm(opis), norm(LS.opis_bohatera(D, "mag", 1, LS.rozdziel(D, R["mag"], 30))), tryb)
+        # przełączenie w czasie gry: classdata → wzorcowe, z treningiem i rozdanym punktem
+        self.uruchom(rozklady="classdata")
+        self.g.ustaw("Class", "Mage")
+        self.g.ustaw("Level", 2)
+        self.przyrost.odpal(self.g.t, LM.do_luau({"atrybut": "Strength", "przyrost": 3}))
+        self.g.ustaw("Luck", self.atr("Luck") + 1)
+        self.k.ustaw(D["rozklady_klas"]["atrybut"], "wzorcowe")
+        oczek = LS.rozdziel(D, D["rozklady"]["mag"], LS.pula_sama(D, 2))
+        oczek["sila"] += 3
+        oczek["szczescie"] += 1
+        self.assertEqual(self.staty(), oczek)
+        self.assertEqual(self.k.atrybuty["RozkladyZ"], rozklady_z(tryb="wzorcowe"))
+        self.assertEqual(self.ostrzezenia(), [])
 
     def test_8h_bez_treningu_i_wyjscie_gracza(self):
         self.uruchom(trening=False)
