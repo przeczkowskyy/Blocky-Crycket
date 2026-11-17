@@ -139,6 +139,7 @@ KOD = {
                      'return tostring(g ~= nil and g.Enabled)'),
     "wskazowka": ('local w = workspace:FindFirstChild("WskazowkiGry") if not w then return H:JSONEncode({ brak = true }) end '
                   'return H:JSONEncode(J(w.Sygnaly.SterowanieKlienta:Invoke("stan")))'),
+    "otworz_brame": 'return tostring(workspace.LasPasGra.Sygnaly.SterowaniePasa:Invoke("otworzBrame"))',
     "przewin_okno": ('local g = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PetyProbaOkno") '
                      'local l = g and g.Ramka:FindFirstChild("Lista") if l then l.CanvasPosition = Vector2.new(0, %d) end '
                      'return tostring(l ~= nil)'),
@@ -372,6 +373,9 @@ def main():
                   and eb.get("inkubator") is True, "jajek lokalnych %s, ceny %s, Bagno w miejscu %s"
                   % (kl.get("jajekLokalnych"), st.get("ceny"), eb))
             # ============================================================ B02 inkubator Bagna, brak Złota
+            # wejście do Bagna wymaga pokonanego Strażnika lasu (serwer pasa cofa przed bramę) — haczyk jak w próbach
+            # swiat/bagno_pas_gra/testy (otworzBrame); potem przelot kamery Bagna (podpowiedzi E w tym czasie nie działają)
+            zapisz("B_brama", luau(KOD["otworz_brame"], "Server"))
             luau(KOD["ustaw_atr"] % ("Gold", "0"), "Server")
             do_inkubatora_bagna()
             czekaj_na(lambda: luau(KOD["przelot"] % "BagnoPasGra", "Client") == "true", 6, 0.4)
@@ -385,7 +389,7 @@ def main():
             pp = swiat_stanowiska(JB, papier[3], papier[4], papier[5])
             kamera((pp[0] + kier_b[0] * 5.5 + bok_b[0] * 1.0, pp[1] + 0.4, pp[2] + kier_b[1] * 5.5 + bok_b[1] * 1.0), pp)
             zrzut("b02_tablica_szans_bagna")
-            kamera(*oko_inkubatora(gn=gn_b, kr=kier_b, dy=dy_b))
+            kamera(*oko_inkubatora(dal=10.0, wys=9.0, gn=gn_b, kr=kier_b, dy=dy_b))
             przytrzymaj_e()
             time.sleep(0.8)
             kl = klient('"stan"')
@@ -408,7 +412,7 @@ def main():
             # ============================================================ B04 kupno prawdziwym E + wyklucie
             luau(KOD["ustaw_atr"] % ("Gold", "3000"), "Server")
             do_inkubatora_bagna()
-            kamera(*oko_inkubatora(gn=gn_b, kr=kier_b, dy=dy_b))
+            kamera(*oko_inkubatora(dal=10.0, wys=9.0, gn=gn_b, kr=kier_b, dy=dy_b))
             time.sleep(0.6)
             kl0 = klient('"stan"')
             przytrzymaj_e()
@@ -461,7 +465,7 @@ def main():
                 serwer('"wybierz", nil, "%s", true' % pid)    # haczyk: wybór bez podchodzenia do zagrody
                 do_inkubatora_bagna()
                 p0 = js(KOD["pozycja"], "Server")
-                cel = (p0[0] - kier_b[0] * 8.0 + bok_b[0] * (6.0 - 3.0 * i), p0[1], p0[2] - kier_b[1] * 8.0 + bok_b[1] * (6.0 - 3.0 * i))
+                cel = (p0[0] + kier_b[0] * 8.0 + bok_b[0] * (6.0 - 3.0 * i), p0[1], p0[2] + kier_b[1] * 8.0 + bok_b[1] * (6.0 - 3.0 * i))
                 call("character_navigation", {"datamodel_type": "Client", "x": cel[0], "y": cel[1], "z": cel[2]}, timeout=60)
                 time.sleep(0.8)
                 za_graczem()
@@ -475,7 +479,7 @@ def main():
                       "%s %s st %s" % (k, v["odleglosc"] and round(v["odleglosc"], 1), v["klip"]) for k, v in idzie.items()))
             # ============================================================ B07 wyklucie każdego peta Bagna
             do_inkubatora_bagna()
-            kamera(*oko_inkubatora(dal=12.0, wys=5.0, gn=gn_b, kr=kier_b, dy=dy_b))
+            kamera(*oko_inkubatora(dal=11.0, wys=8.5, gn=gn_b, kr=kier_b, dy=dy_b))
             for pid in pety_b:
                 klient('"wyklucie", "%s", true, "%s"' % (pid, JB["id"]))
                 time.sleep(3.9)
@@ -494,7 +498,9 @@ def main():
             ez, kz = G["zagroda_e"], G["zagroda_kier"]
             stoi_z = (ez[0] + kz[0] * 1.5, ez[1] + 3.0, ez[2] + kz[2] * 1.5)
             przestaw(stoi_z, (ez[0] - kz[0] * 5, 0, ez[2] - kz[2] * 5))
-            k8 = czekaj_na(lambda: (lambda k: k if (k.get("wiersze") or 0) >= 10 else None)(klient('"stan"')), 15, 0.5) or {}
+            # lista mogła przyjść wcześniej (wybór peta) — czekamy też, aż pety staną na miejscach zagrody
+            k8 = czekaj_na(lambda: (lambda k: k if (k.get("wiersze") or 0) >= 10 and (k.get("petyWZagrodzie") or 0) >= 5
+                                    else None)(klient('"stan"')), 15, 0.5) or klient('"stan"')
             kamera((ez[0] + kz[0] * 14.0, ez[1] + 9.0, ez[2] + kz[2] * 14.0), (ez[0] - kz[0] * 3.0, ez[1], ez[2] - kz[2] * 3.0))
             zrzut("b13_zagroda_dziesiec")
             tb = G["zagroda_tablica"]

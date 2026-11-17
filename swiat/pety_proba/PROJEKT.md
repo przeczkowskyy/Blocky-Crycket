@@ -115,7 +115,10 @@ biomów; testy `5e2b` i `5e3` na prawdziwym serwerze), a liczba kupionych jajek 
 ## Jak działa zakup i gdzie żyje stan
 
 1. Gracz przytrzymuje E przy jajku (`ProximityPrompt` na niewidzialnej części w punkcie E mapy, 0,5 s; jeden punkt E
-   na jajko: „E inkubator” w lesie, „E inkubator Bagna” w Bagnie).
+   na jajko: „E inkubator” w lesie, „E inkubator Bagna” w Bagnie). Jajko wynika z podpowiedzi, którą odpalono, a serwer
+   sam sprawdza, że gracz stoi przy inkubatorze TEGO jajka (promień E 10 + zapas 4 studa w poziomie; inaczej
+   „Podejdź bliżej inkubatora”, test `5c1`). Przy pierwszym wejściu do Bagna trwa przelot kamery — w tym czasie
+   podpowiedzi E nie działają (jak w lesie).
 2. **Serwer** (`SerwerPetow`): blokada na czas wyklucia (4,6 s, ustawiona *przed* jakimkolwiek wywołaniem — drugi E
    dostaje „Jajko jeszcze się wykluwa…”), cena jajka (stała; przy przełączniku „rosnaca” — z licznika kupionych jajek
    w profilu), los `Random:NextNumber()` →
@@ -207,7 +210,7 @@ a zagroda pokazuje ten sam napis — bez błędów.
 | `podglad.py` → `podglad/pety_lesne.jpg`, `podglad/pety_bagna.jpg` | pięć portretów petów jajka z rzadkością, szansą i skillem + inkubator i jajko (do raportu); `podglad/jajko_lesne_przed_po.jpg` — para przed / po |
 | `sprawdz_luau_petow.py` | kontrola statyczna Luau (m.in. bez Robuxów, bez zapisu Złota w pakiecie, klient bez liczb) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
-| `testy/test_petow.py` | 40 testów offline (w tym prawdziwe SerwerPetow + SerwerStanu w `luau_mini`, oba jajka, cena stała i przełączniki) |
+| `testy/test_petow.py` | 41 testów offline (w tym prawdziwe SerwerPetow + SerwerStanu w `luau_mini`, oba jajka, cena stała i przełączniki) |
 | `testy/proba_play.py` | próba w Play P00–P15 (+ P07b: każdy pet za graczem); `--bagno`: B00–B09 (jajko Bagna); zrzuty do `klatki/`; `--sprawdz` bez Studio. Atrybut klienta `TestKameraProby` na kontenerze: kamera do zrzutów nie chowa petów (tylko próby) |
 | `testy/proba_ludzka.py` | przejście „po ludzku”: walki do Złota na jajko (liczba walk i minut), wskazówka, E, wyklucie, pet, premia, zagroda (L01–L09) |
 | `swiat/postacie/zoledziak.py`, `mchowy_slimak.py`, `lisciolis.py`, `swietlikowka.py`, `jelonek_gaju.py`, `jajko_lesne.py`, `pety_lesne.py` | modele lasu (Blender i klocki); `pety_lesne.py` — wspólne klipy, oczy, gładkie jajko, tablica szans |
@@ -217,7 +220,7 @@ a zagroda pokazuje ten sam napis — bez błędów.
 
 ```
 python -B swiat/pety_proba/dane_petow.py                 # po zmianie ustawień albo modeli
-python -B swiat/pety_proba/testy/test_petow.py           # 40 testów, ok. 13 s
+python -B swiat/pety_proba/testy/test_petow.py           # 41 testów, ok. 13 s
 python -B swiat/pety_proba/zbuduj.py --sucho             # bez Studio
 python -B swiat/pety_proba/ekonomia_jajek.py --biom bagno  # cena jajka Bagna
 python -B swiat/pety_proba/podglad.py                    # podglad/pety_lesne.jpg, pety_bagna.jpg
@@ -270,9 +273,17 @@ ceny — E nie działało przy pierwszym podejściu); pet po wykluciu ląduje ob
 pęknięciu (cały kadr był różowy); napis „NOWY PET!” bez AlwaysOnTop (inaczej nie było go na zrzutach); okno zagrody
 wyższe (5. wiersz był ucięty); poroże Jelonka świeci tylko na kryształach (z bliska zlewało się w cyjanową plamę).
 
-**Jajko Bagna i cena stała (17.11 wieczór) — jeszcze nie w Studio:** testy offline (40), kontrola Luau
-i `zbuduj.py --sucho`;
-próba w grze to `proba_play.py --bagno` (część B).
+**Jajko Bagna i cena stała (17.11 wieczór, pas skrócony — D-096) — `proba_play.py --bagno`: 14 z 14 OK**
+(B05, B07 — zrzuty do obejrzenia): dwa jajka u klienta, ceny 300 / 750; brama lasu otwarta haczykiem
+(`otworzBrame`, jak próby Bagna), przelot kamery Bagna przeczekany; przy inkubatorze Bagna bez Złota → „Brakuje ci 750
+Złota (masz 0, jajko kosztuje 750)”; wskazówka „Masz dość Złota na jajko Bagna — inkubator przy pomoście”; kupno
+prawdziwym E → Złoto −750, cena Bagna 750, cena lasu 300 bez zmian; każdy z pięciu petów Bagna idzie za graczem
+(5,0–5,1 st; wybór haczykiem); zagroda z dziesięcioma petami (6 na miejscach), tablica w dwóch kolumnach, okno
+przewinięte; wybór Perłowej Wydry z okna. **Regresja lasu: 17 z 17 OK** (kupno za 300, następna cena 300).
+Pierwsza próba `--bagno` innego agenta: B02–B04 bez otwartej bramy (gracz cofany przed bramę lasu), a ręczne E
+w Bagnie bez zakupu — najpewniej w trakcie przelotu kamery (podpowiedzi wtedy nie działają); odtworzone po przelocie
+kupno działa. Mylący był też haczyk klienta: `akcjaE` pokazywało zawsze jajko leśne — teraz jajko najbliższego
+inkubatora (`jajkoPrzy`). Serwer od teraz sam sprawdza zasięg inkubatora (test `5c1`).
 
 ## Czego nie sprawdzono
 

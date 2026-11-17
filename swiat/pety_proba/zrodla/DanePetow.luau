@@ -233,6 +233,7 @@ return {
 	inkubator = {
 		e_wyzej = 1.6,
 		promien_e = 10,
+		zapas_e = 4,
 		przytrzymaj_s = 0.5,
 		napis_akcja = "Kup jajko",
 		napis_akcja_cena = "Kup za %d Złota",
@@ -286,6 +287,7 @@ return {
 		nieznane = "Tego jajka nie ma w ofercie",
 		blad = "Coś poszło nie tak — spróbuj jeszcze raz",
 		za_daleko = "Podejdź do zagrody, żeby wybrać peta",
+		za_daleko_jajko = "Podejdź bliżej inkubatora",
 		nie_masz = "Nie masz tego peta",
 		premia = "+%d %s od peta: %s",
 		wybrany = "Za tobą idzie: %s",
@@ -832,5 +834,5 @@ return {
 			{},
 		},
 	},
-	skrot = "bf5894958b70",
+	skrot = "7af80e671fc0",
 }

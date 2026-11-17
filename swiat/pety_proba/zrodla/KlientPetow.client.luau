@@ -1178,8 +1178,20 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 			akcje[j.id] = pp and pp.ActionText
 			lokalneJajka += if lok then 1 else 0
 		end
-		local pierwsze = D.jajka[1].id
+		-- akcjaE / napisCeny: jajko inkubatora najbliżej gracza (wcześniej zawsze pierwsze — leśne — co myliło próbę
+		-- przy inkubatorze Bagna); serwer i tak sam sprawdza, przy którym inkubatorze stoi gracz
+		local pierwsze, najblizej = D.jajka[1].id, math.huge
+		if hrp then
+			for _, j in D.jajka do
+				local e = j.polozenie.e
+				local d = Vector3.new(hrp.Position.X - e[1], 0, hrp.Position.Z - e[3]).Magnitude
+				if d < najblizej then
+					pierwsze, najblizej = j.id, d
+				end
+			end
+		end
 		return {
+			jajkoPrzy = pierwsze, odlegloscOdE = if najblizej < math.huge then najblizej else nil,
 			towarzysze = n, mojPet = t and t.pet, klip = t and t.u.klip,
 			odleglosc = if t and hrp then (t.pos - hrp.Position).Magnitude else nil,
 			wylegaSie = wylegaSie, ukryte = ukryteLokalnie(), okno = okno.Enabled, petyWZagrodzie = wZagrodzie,

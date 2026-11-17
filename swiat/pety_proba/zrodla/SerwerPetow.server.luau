@@ -4,7 +4,8 @@
 
 	Decyduje WYŁĄCZNIE serwer (klient nie losuje i nie podaje ceny):
 		1. E przy inkubatorze każdego jajka (D.jajka: las-pas, Bagno; ProximityPrompt Punkty/<jajko.punkt_e>/Podpowiedz)
-		   → kup(gracz, jajko): blokada na czas wyklucia (D.wyklucie.blokada_s) USTAWIONA PRZED wywołaniem stanu
+		   → kup(gracz, jajko tej podpowiedzi): serwer sprawdza, że gracz stoi przy inkubatorze TEGO jajka (promień E +
+		   zapas, inaczej odmowa „za_daleko_jajko”); blokada na czas wyklucia (D.wyklucie.blokada_s) USTAWIONA PRZED wywołaniem stanu
 		   gracza — drugi E w tym czasie (przy którymkolwiek inkubatorze) dostaje odmowę „trwa wyklucie”;
 		   cena = LogikaPetow.cena(…) — od 17.11 stała dla każdego jajka (decyzja Karola; licznik kupionych z profilu
 		   liczy się tylko w trybie „rosnaca”, osobny albo wspólny — D.licznik_ceny);
@@ -133,9 +134,32 @@ local function odmowa(gracz: Player, powod: string, tekst: string)
 	return { ok = false, powod = powod, tekst = tekst }
 end
 
-local function kup(gracz: any, idJajka: any, wymuszoneR: any)
+local function polozenie(gracz: Player): Vector3?
+	local postac = gracz.Character
+	local hrp = postac and postac:FindFirstChild("HumanoidRootPart")
+	return if hrp and hrp:IsA("BasePart") then hrp.Position else nil
+end
+
+-- serwer sam sprawdza, przy którym inkubatorze stoi gracz (podpowiedź E odpala klient — nie wierzymy jej na słowo):
+-- w poziomie najwyżej promien_e + zapas_e od punktu E tego jajka
+local function przyInkubatorze(gracz: Player, j): boolean
+	local p = polozenie(gracz)
+	if not p or not j then
+		return false
+	end
+	local e = j.polozenie.e
+	local r = D.inkubator.promien_e + D.inkubator.zapas_e
+	local dx, dz = p.X - e[1], p.Z - e[3]
+	return dx * dx + dz * dz <= r * r
+end
+
+-- zZasiegiem: zakup z podpowiedzi E (gracz musi stać przy inkubatorze TEGO jajka); haczyk testowy go nie wymaga
+local function kup(gracz: any, idJajka: any, wymuszoneR: any, zZasiegiem: boolean?)
 	if not graczOk(gracz) then
 		return { ok = false, powod = "zly_gracz" }
+	end
+	if zZasiegiem and not przyInkubatorze(gracz, L.jajko(D, idJajka)) then
+		return odmowa(gracz, "za_daleko_jajko", D.teksty.za_daleko_jajko)
 	end
 	local t = teraz()
 	local d = L.decyzja(D, { stan_gracza = sygnalPetow() ~= nil, jajko = idJajka,
@@ -180,12 +204,6 @@ local function kup(gracz: any, idJajka: any, wymuszoneR: any)
 end
 
 ------------------------------------------------------------------ zagroda: lista, wybór, odstawienie
-local function polozenie(gracz: Player): Vector3?
-	local postac = gracz.Character
-	local hrp = postac and postac:FindFirstChild("HumanoidRootPart")
-	return if hrp and hrp:IsA("BasePart") then hrp.Position else nil
-end
-
 local function przyZagrodzie(gracz: Player): boolean
 	local p = polozenie(gracz)
 	if not p then
@@ -284,7 +302,7 @@ for _, j in D.jajka do
 		promptJajka.Enabled = true
 		local id = j.id
 		promptJajka.Triggered:Connect(function(gracz: Player)
-			local ok, blad = pcall(kup, gracz, id)
+			local ok, blad = pcall(kup, gracz, id, nil, true)
 			if not ok then
 				zajety[gracz] = nil
 				warn(P .. "kup: " .. tostring(blad))

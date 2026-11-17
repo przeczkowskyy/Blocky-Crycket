@@ -508,7 +508,11 @@ class TestSerweraOffline(unittest.TestCase):
     def od_serwera(self, polecenie):
         return [a for gr, a in self.sw.do_klienta if a and a[0] == polecenie]
 
-    def e_jajka(self, nr=0):
+    def e_jajka(self, nr=0, stoi_przy=None):
+        """Prawdziwe E przy inkubatorze jajka nr (gracz stoi przy nim — serwer sprawdza zasięg; stoi_przy = nr innego
+        inkubatora, przy którym gracz naprawdę stoi — podpowiedź odpalona „z daleka”)."""
+        e = D["jajka"][nr if stoi_przy is None else stoi_przy]["polozenie"]["e"]
+        self.postaw(e[0] + 1.5, e[2] - 1.0)
         self.prompty[D["jajka"][nr]["punkt_e"]][1].odpal(self.gracz.t)
 
     def hak(self, *argi):
@@ -562,6 +566,32 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual(odm[1:], ["Brakuje ci %d Złota (masz %d, jajko kosztuje %d)" % (3 * c - 700, 700 - 2 * c, c),
                                    "za_malo"])
         self.assertEqual((self.atr("PetyLiczba"), self.atr(D["jajka"][0]["atrybuty"]["kupione"])), (2, 2))
+        self.assertEqual(self.sw.ostrzezenia, [])
+
+    def test_5c1_dwa_inkubatory_gracz_przy_drugim(self):
+        # 17.11 (próba w Studio): E przy inkubatorze Bagna — serwer kupuje jajko TEJ podpowiedzi i sam sprawdza, że
+        # gracz przy niej stoi; podpowiedź odpalona spod drugiego inkubatora (albo bez postaci) → odmowa, Złoto bez zmian
+        self.uruchom(zloto=3000)
+        las, bagno = D["jajka"]
+        self.e_jajka(1)
+        info = self.od_serwera("wyklucie")[-1][1]
+        self.assertEqual((info["jajko"], info["cena"]), (bagno["id"], bagno["cena"]["stala"]))
+        self.assertIn(info["pet"], bagno["pula"])
+        self.assertEqual((self.atr(bagno["atrybuty"]["kupione"]), self.atr(las["atrybuty"]["kupione"])), (1, 0))
+        zloto = self.atr("Gold")
+        self.assertEqual(zloto, 3000 - bagno["cena"]["stala"])
+        self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
+        self.e_jajka(1, stoi_przy=0)          # podpowiedź Bagna, gracz w lesie
+        self.assertEqual(self.od_serwera("odmowa")[-1][1:], [U["teksty"]["za_daleko_jajko"], "za_daleko_jajko"])
+        self.e_jajka(0, stoi_przy=1)          # podpowiedź lasu, gracz w Bagnie
+        self.assertEqual(self.od_serwera("odmowa")[-1][2], "za_daleko_jajko")
+        self.gracz.t.set("Character", None)   # bez postaci (np. w trakcie odrodzenia)
+        self.prompty[bagno["punkt_e"]][1].odpal(self.gracz.t)
+        self.assertEqual(self.od_serwera("odmowa")[-1][2], "za_daleko_jajko")
+        self.assertEqual((self.atr("Gold"), self.atr(bagno["atrybuty"]["kupione"]), self.atr(las["atrybuty"]["kupione"])),
+                         (zloto, 1, 0))
+        # haczyk testowy (próby w Play) kupuje bez sprawdzania zasięgu
+        self.assertTrue(self.hak("kup", self.gracz.t, las["id"], 0.1)["ok"])
         self.assertEqual(self.sw.ostrzezenia, [])
 
     def test_5c_kupno_e_podwojne_naraz_i_cena_rosnaca(self):
