@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T17:27:54+01:00",
+ "aktualizacja": "2026-11-17T17:27:58+01:00",
  "prace": [
   {
    "id": "areny-walki",
@@ -29,6 +29,19 @@
    "obszary": [
     "swiat/pety_proba",
     "studio:PetyProba"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "przebudowa-jelonek_gaju",
+   "tytul": "Przebudowa modelu jelonek_gaju",
+   "stan": "w_toku",
+   "start": "2026-11-17T17:27:57+01:00",
+   "koniec_szacowany": "2026-11-17T17:47:57+01:00",
+   "aktualizacja": "2026-11-17T17:27:57+01:00",
+   "obszary": [
+    "model:jelonek_gaju"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
