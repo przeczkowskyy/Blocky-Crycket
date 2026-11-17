@@ -446,6 +446,7 @@ Szczegóły: Liczby z kalkulatora (`tools/walka/BALANS_1711.md`, część 4), ce
 
 Szczegóły: Las-pas w Studio i plan Bagna przyjmują roboczo wariant (a) — brama otwiera się po Strażniku. Sprawa dotyczy też notatek [[System RPG]] (poziom i dostęp do stref) i [[Karczma (Questy)]] (poziomy trudności zadań liczone w biomie).
 **Odpowiedź:**
+- Karol Balucki (2026-11-17): Zabicie strażnioka - bossa danego regionu
 
 ## 53. Stan gracza: czy serwer Karola pisze poziom, złoto i statystyki?
 - Przejście gry 17.11: łup z walk nie trafiał do gracza, klasa ze startu nie była klasą w walce, poziom i trening nic nie zmieniały.
