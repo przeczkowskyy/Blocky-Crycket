@@ -1,0 +1,27 @@
+{
+ "id": "r-20261117-211559-ba14",
+ "tytul": "Sesja główna 2026-11-17 — do zatwierdzenia",
+ "opis_md": "**Sesja główna 17.11 spisana** (20:50–21:06, zapis pełny). Wszystko poniżej to propozycje. Nic nie jest zatwierdzone, dopóki nie klikniecie.\n\n**Do zatwierdzenia** (zakładka Pytania → „Czy zatwierdzamy…?”):\n- **D-097** Statystyki tylko z poziomu (5 punktów do rozdania) i z treningu, Złoto tylko na przedmioty. Zmienia D-050.\n- **D-098** Przegrana: trochę mniej Złota, bez nagrody, z doświadczeniem, bez kary czasowej.\n- **D-099** Gemy za walki, za poziom, z kopalni i za Rebirth.\n- **D-100** Rebirth od 100. poziomu, potem co 100, z pulą Gemów i Złota na start.\n- **D-101** Pety z różnymi premiami i żywiołami, zwykłe tylko z małą pasywką.\n- **D-102** Kowal na premierę. Zmienia D-035.\n- **D-103** Ikony nagród w stylu HUD. Grafiki z Higgsfield wiele w jednym obrazie, w jednej kopii.\n- **D-104** Modele postaci robi agent Karola z rzutów Pawła, a ekran wyboru znowu Paweł.\n\n**Odpowiedzi z rozmowy dopisane pod pytaniami:** 51 (Gemy), 54 (przegrana), 55 (punkty statystyk).\n**Tylko dopiski, bo odpowiedź była niepełna:** 50 i 53, do tego przy zamkniętych 6, 32 i 38.\n**Nowe pytanie 57:** kto robi okno Kowala w Figmie.\n\n**Paweł:** przy manie (D-089) powiedziałeś na głos „potwierdzam”, ale trzeba to jeszcze kliknąć w panelu albo na Telegramie. Na Ciebie czekają też D-094 i D-096.\n\n**Nowe zadania:**\n- agent Karola: balans po sesji, pety z żywiołami, logika Kowala, okno ekwipunku, ikony nagród, modele z rzutów;\n- agent Pawła: ekran wyboru jeszcze raz;\n- Paweł: przesłać rzuty postaci.\n\nSzczegóły: notatka „Sesja główna 2026-11-17 — zapis ustaleń”.",
+ "kto": "Claude (sesja)",
+ "czas": "2026-11-17T21:15:59+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesja główna 2026-11-17 — zapis ustaleń.md",
+   "etykieta": "Zapis ustaleń"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Rejestr decyzji.md",
+   "etykieta": "Rejestr decyzji"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytania otwarte"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Czy zatwierdzacie propozycje D-097–D-104 z sesji 17.11?"
+}
