@@ -82,10 +82,10 @@ RODZINY = {
     "grzybien": (lambda b, s, r, p, k, ry, o: ros_bagna.grzybien(s, r, p, k, kwiat=r.choice((None, None, "bagno_kwiat", "biel"))),
                  lambda k: 0.0, lambda k: k),
     "kepa": (lambda b, s, r, p, k, ry, o: R.kepa(s, r, p, k, r.uniform(0.9, 1.5), _y(b)), lambda k: 0.0, lambda k: k),
-    "kepa_trzciny": (lambda b, s, r, p, k, ry, o: ros_bagna.kepa_trzciny(s, r, p, r.uniform(4.6, 6.4), 4.2, True),
-                     lambda k: 6.6 + -1.8, lambda k: 2.6),
-    "kepa_trzciny_niska": (lambda b, s, r, p, k, ry, o: ros_bagna.kepa_trzciny(s, r, p, r.uniform(2.6, 3.6), 3.0, False),
-                           lambda k: 3.8 - 1.8, lambda k: 2.0),
+    "kepa_trzciny": (lambda b, s, r, p, k, ry, o: R.trzcina_zdzbla(s, r, p, r.uniform(4.6, 6.4), 3.6, True),
+                     lambda k: 7.6 + -1.8, lambda k: 2.2),
+    "kepa_trzciny_niska": (lambda b, s, r, p, k, ry, o: R.trzcina_zdzbla(s, r, p, r.uniform(2.6, 3.6), 2.6, False),
+                           lambda k: 4.8 - 1.8, lambda k: 1.6),
     "korzeniak": (lambda b, s, r, p, k, ry, o: ros_bagna.korzeniak(s, r, p, k, ry), lambda k: 13.0 * k - 1.8, lambda k: 4.4 * k),
     "drzewo_bagna": (lambda b, s, r, p, k, ry, o: _drzewo_bagna(s, r, o["wariant"], p, k, ry), None, None),
     "zatopiony_pien": (lambda b, s, r, p, k, ry, o: R.zatopiony_pien(s, r, p, k, ry, _y(b)), lambda k: 3.6 * k, lambda k: 4.8 * k),
@@ -245,18 +245,19 @@ class Budowa:
         A, s = self.A, self.s
         styl = A["plac"]["styl"]
         k0, k1, k2 = A["plac"]["kolory"]
+        mat = A["plac"].get("material", "Ground")
         y = A["grunt"]["y"]
         Rp = P.R_PLAC
         with s.grupa("Plac"), s.cechy(cien=False):
             if styl in ("ziemia", "piasek"):
                 dol = y - 0.4
-                s.walec("Plac", (0, dol / 2.0, 0), Rp, -dol, k0, "Ground" if styl == "ziemia" else "Sand", os="y")
+                s.walec("Plac", (0, dol / 2.0, 0), Rp, -dol, k0, mat if styl == "ziemia" else "Sand", os="y")
                 s.walec("Plac obrys", (0, (dol + y + 0.32) / 2.0, 0), Rp + 0.55, (y + 0.32) - dol, k2, os="y")
                 if styl == "ziemia":
-                    s.walec("Plac obrzeże", (0, 0.02, 0), Rp - 2.0, 0.04, k1, "Ground", os="y")
-                    s.walec("Plac środek", (0, 0.045, 0), Rp - 3.4, 0.04, k0, "Ground", os="y")
-                    s.walec("Plac środek jasny", (0, 0.07, 0), 6.0, 0.04, k1, "Ground", os="y")
-                    s.walec("Plac środek", (0, 0.095, 0), 4.8, 0.04, k0, "Ground", os="y")
+                    s.walec("Plac obrzeże", (0, 0.02, 0), Rp - 2.0, 0.04, k1, mat, os="y")
+                    s.walec("Plac środek", (0, 0.045, 0), Rp - 3.4, 0.04, k0, mat, os="y")
+                    s.walec("Plac środek jasny", (0, 0.07, 0), 6.0, 0.04, k1, mat, os="y")
+                    s.walec("Plac środek", (0, 0.095, 0), 4.8, 0.04, k0, mat, os="y")
                 else:
                     s.walec("Plac kreda", (0, 0.02, 0), Rp - 2.2, 0.04, k1, "SmoothPlastic", os="y")
                     s.walec("Plac piasek", (0, 0.045, 0), Rp - 2.8, 0.04, k0, "Sand", os="y")

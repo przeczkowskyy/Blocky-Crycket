@@ -1,0 +1,747 @@
+{
+ "proba": {
+  "cel": {
+   "id": "cierniowy_wilk"
+  },
+  "arena": "proba",
+  "powod": "ok",
+  "mgla_start": [
+   0.27000001072883606,
+   0.23999999463558197,
+   1.100000023841858,
+   "eadbc2"
+  ],
+  "detale": 9,
+  "zrzuty": [
+   "swiat/areny_walki/proba/klatki/proba_01_ogolny.jpg",
+   "swiat/areny_walki/proba/klatki/proba_02_ogolny_druga_strona.jpg",
+   "swiat/areny_walki/proba/klatki/proba_03_ogolny.jpg",
+   "swiat/areny_walki/proba/klatki/proba_04_zblizenie.jpg",
+   "swiat/areny_walki/proba/klatki/proba_05_zaBroniacym.jpg",
+   "swiat/areny_walki/proba/klatki/proba_06_krytyk.jpg",
+   "swiat/areny_walki/proba/klatki/proba_07_zaBroniacym.jpg",
+   "swiat/areny_walki/proba/klatki/proba_08_krytyk.jpg",
+   "swiat/areny_walki/proba/klatki/proba_09_zblizenie.jpg",
+   "swiat/areny_walki/proba/klatki/proba_10_efekt.jpg",
+   "swiat/areny_walki/proba/klatki/proba_20_powalenie.jpg",
+   "swiat/areny_walki/proba/klatki/proba_21_objazd_1.jpg",
+   "swiat/areny_walki/proba/klatki/proba_22_objazd_2.jpg",
+   "swiat/areny_walki/proba/klatki/proba_24_objazd_4.jpg",
+   "swiat/areny_walki/proba/klatki/proba_25_wynik.jpg"
+  ],
+  "koniec": {
+   "celMgly": 1,
+   "mgla": [
+    0.27000001072883606,
+    0.23999999463558197,
+    1.100000023841858,
+    "eadbc2"
+   ],
+   "detale": 9,
+   "OstatniaMaksKlatki": 59.58,
+   "OstatniaSredniaKlatki": 16.79,
+   "OstatniaLiczbaInstancji": 2278,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "proba",
+   "OstatniaLiczbaKlatek": 1041,
+   "OstatniKosztSkryptuSredni": 0.26,
+   "OstatniP95Klatki": 18.33,
+   "OstatniaArenaPowod": "ok"
+  }
+ },
+ "po_walce": {
+  "mgla": [
+   0.36529096961021423,
+   0.14382721483707428,
+   1.4705462455749512,
+   "d1ded3"
+  ],
+  "przywrocenia": 35,
+  "detale": 0
+ },
+ "las_slime": {
+  "cel": {
+   "id": "s1-1",
+   "p": [
+    1190.6983642578125,
+    0,
+    -707.1888427734375
+   ],
+   "gatunek": "lesny_slime",
+   "strefa": "s1"
+  },
+  "arena": "las",
+  "powod": "ok",
+  "mgla_start": [
+   0.3400000035762787,
+   0.18000000715255737,
+   1.2999999523162842,
+   "cfe3c9"
+  ],
+  "detale": 17,
+  "zrzuty": [
+   "swiat/areny_walki/las/klatki/las_slime_01_ogolny.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_02_ogolny_druga_strona.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_03_krytyk.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_04_zaBroniacym.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_05_boczny.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_06_boczny.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_07_zaAtakujacym.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_08_zaBroniacym.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_09_ogolny.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_20_powalenie.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_21_objazd_1.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_22_objazd_2.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_24_objazd_4.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_25_wynik.jpg"
+  ],
+  "mgla_1_5s": [
+   0.3400000035762787,
+   0.18000000715255737,
+   1.2999999523162842,
+   "cfe3c9"
+  ],
+  "przywrocenia_mgly": 85,
+  "koniec": {
+   "celMgly": 1,
+   "mgla": [
+    0.3400000035762787,
+    0.18000000715255737,
+    1.2999999523162842,
+    "cfe3c9"
+   ],
+   "detale": 17,
+   "OstatniaMaksKlatki": 71.3,
+   "OstatniaSredniaKlatki": 16.87,
+   "przywrocenia": 85,
+   "OstatniaLiczbaInstancji": 1646,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "las",
+   "OstatniaLiczbaKlatek": 875,
+   "OstatniKosztSkryptuSredni": 0.5,
+   "OstatniP95Klatki": 18.31,
+   "OstatniaArenaPowod": "ok"
+  }
+ },
+ "las_troll": {
+  "cel": {
+   "id": "t1-1",
+   "p": [
+    1871.44140625,
+    0,
+    -708.6724243164062
+   ],
+   "gatunek": "lesny_troll",
+   "strefa": "t1"
+  },
+  "arena": "las",
+  "powod": "ok",
+  "mgla_start": [
+   0.3400000035762787,
+   0.18000000715255737,
+   1.2999999523162842,
+   "cfe3c9"
+  ],
+  "detale": 17,
+  "zrzuty": [
+   "swiat/areny_walki/las/klatki/las_troll_01_ogolny.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_02_ogolny_druga_strona.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_03_pocisk.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_04_pocisk.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_05_zaBroniacym.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_06_zaAtakujacym.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_07_krytyk.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_08_zaBroniacym.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_09_naSiebie.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_10_boczny.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_20_powalenie.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_21_objazd_1.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_22_objazd_2.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_24_objazd_4.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_25_wynik.jpg"
+  ],
+  "koniec": {
+   "celMgly": 1,
+   "mgla": [
+    0.3400000035762787,
+    0.18000000715255737,
+    1.2999999523162842,
+    "cfe3c9"
+   ],
+   "detale": 17,
+   "OstatniaMaksKlatki": 119.39,
+   "OstatniaSredniaKlatki": 17.15,
+   "OstatniaLiczbaInstancji": 2314,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "las",
+   "OstatniaLiczbaKlatek": 782,
+   "OstatniKosztSkryptuSredni": 0.46,
+   "OstatniP95Klatki": 18.59,
+   "OstatniaArenaPowod": "ok"
+  }
+ },
+ "bagno_rechotek": {
+  "cel": {
+   "id": "r1-1",
+   "p": [
+    2165.841796875,
+    0,
+    -698.3706665039062
+   ],
+   "gatunek": "rechotek",
+   "strefa": "r1"
+  },
+  "arena": null,
+  "powod": null,
+  "mgla_start": [
+   0.36000001430511475,
+   0.15000000596046448,
+   1.399999976158142,
+   "d6e4da"
+  ],
+  "detale": 0,
+  "zrzuty": [],
+  "mgla_1_5s": [
+   0.36000001430511475,
+   0.15000000596046448,
+   1.399999976158142,
+   "d6e4da"
+  ],
+  "przywrocenia_mgly": 85,
+  "blad": "walka nie ruszyła"
+ },
+ "bagno_straznik": {
+  "cel": {
+   "id": "straznik-1",
+   "p": [
+    2914,
+    0.30000001192092896,
+    -700
+   ],
+   "gatunek": "straznik_topieli",
+   "strefa": "straznik"
+  },
+  "arena": "bagno",
+  "powod": "ok",
+  "mgla_start": [
+   0.46000000834465027,
+   0.07999999821186066,
+   2.4000000953674316,
+   "a3ae96"
+  ],
+  "detale": 19,
+  "zrzuty": [
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_01_ogolny.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_02_ogolny_druga_strona.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_03_krytyk.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_04_krytyk.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_05_zaBroniacym.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_06_zaBroniacym.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_07_zaAtakujacym.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_08_boczny.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_09_naSiebie.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_10_zaAtakujacym.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_11_zblizenie.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_20_powalenie.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_21_objazd_1.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_22_objazd_2.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_24_objazd_4.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_25_wynik.jpg"
+  ],
+  "mgla_1_5s": [
+   0.46000000834465027,
+   0.07999999821186066,
+   2.4000000953674316,
+   "a3ae96"
+  ],
+  "przywrocenia_mgly": 35,
+  "koniec": {
+   "celMgly": 1,
+   "KlientOstatniaWalka": "straznik-1/nil",
+   "detale": 19,
+   "OstatniaMaksKlatki": 98.29,
+   "przywrocenia": 35,
+   "OstatniaSredniaKlatki": 16.83,
+   "mgla": [
+    0.46000000834465027,
+    0.07999999821186066,
+    2.4000000953674316,
+    "a3ae96"
+   ],
+   "OstatniaLiczbaInstancji": 1852,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "bagno",
+   "OstatniaLiczbaKlatek": 963,
+   "OstatniKosztSkryptuSredni": 0.41,
+   "OstatniP95Klatki": 18.44,
+   "OstatniaArenaPowod": "ok"
+  }
+ },
+ "stary_las": {
+  "cel": {
+   "id": "z01-1",
+   "p": [
+    -241.35809326171875,
+    0,
+    -2339.041015625
+   ],
+   "gatunek": "lesny_slime",
+   "strefa": "z01"
+  },
+  "arena": "las",
+  "powod": "ok",
+  "mgla_start": [
+   0.3400000035762787,
+   0.18000000715255737,
+   1.2999999523162842,
+   "cfe3c9"
+  ],
+  "detale": 17,
+  "zrzuty": [
+   "swiat/areny_walki/las/klatki/stary_las_01_ogolny.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_02_ogolny_druga_strona.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_03_zblizenie.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_04_zaBroniacym.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_05_ogolny.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_06_boczny.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_07_boczny.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_08_krytyk.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_09_krytyk.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_10_zaBroniacym.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_20_powalenie.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_21_objazd_1.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_22_objazd_2.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_24_objazd_4.jpg",
+   "swiat/areny_walki/las/klatki/stary_las_25_wynik.jpg"
+  ],
+  "mgla_1_5s": [
+   0.3400000035762787,
+   0.18000000715255737,
+   1.2999999523162842,
+   "cfe3c9"
+  ],
+  "przywrocenia_mgly": 355,
+  "koniec": {
+   "celMgly": 1,
+   "mgla": [
+    0.3400000035762787,
+    0.18000000715255737,
+    1.2999999523162842,
+    "cfe3c9"
+   ],
+   "detale": 17,
+   "OstatniaMaksKlatki": 97.86,
+   "OstatniaSredniaKlatki": 17.13,
+   "przywrocenia": 355,
+   "OstatniaLiczbaInstancji": 1622,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "las",
+   "OstatniaLiczbaKlatek": 909,
+   "OstatniKosztSkryptuSredni": 0.54,
+   "OstatniP95Klatki": 18.22,
+   "OstatniaArenaPowod": "ok"
+  }
+ },
+ "proba_po": {
+  "cel": {
+   "id": "cierniowy_wilk"
+  },
+  "arena": "proba",
+  "powod": "ok",
+  "mgla_start": [
+   0.27000001072883606,
+   0.23999999463558197,
+   1.100000023841858,
+   "eadbc2"
+  ],
+  "detale": 9,
+  "zrzuty": [
+   "swiat/areny_walki/proba/klatki/proba_01_ogolny_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_02_ogolny_druga_strona_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_03_ogolny_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_04_zblizenie_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_05_zaBroniacym_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_06_krytyk_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_07_zaBroniacym_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_08_krytyk_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_09_zblizenie_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_10_efekt_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_20_powalenie_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_21_objazd_1_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_22_objazd_2_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_24_objazd_4_po.jpg",
+   "swiat/areny_walki/proba/klatki/proba_25_wynik_po.jpg"
+  ],
+  "mgla_1_5s": [
+   0.27000001072883606,
+   0.23999999463558197,
+   1.100000023841858,
+   "eadbc2"
+  ],
+  "przywrocenia_mgly": null,
+  "koniec": {
+   "celMgly": 1,
+   "mgla": [
+    0.27000001072883606,
+    0.23999999463558197,
+    1.100000023841858,
+    "eadbc2"
+   ],
+   "detale": 9,
+   "OstatniaMaksKlatki": 76.99,
+   "OstatniaSredniaKlatki": 16.89,
+   "OstatniaLiczbaInstancji": 2278,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "proba",
+   "OstatniaLiczbaKlatek": 1189,
+   "OstatniKosztSkryptuSredni": 0.25,
+   "OstatniP95Klatki": 18.16,
+   "OstatniaArenaPowod": "ok"
+  }
+ },
+ "las_slime_po": {
+  "cel": {
+   "id": "s1-1",
+   "p": [
+    1202.0604248046875,
+    0,
+    -720.3602294921875
+   ],
+   "gatunek": "lesny_slime",
+   "strefa": "s1"
+  },
+  "arena": "las",
+  "powod": "ok",
+  "mgla_start": [
+   0.3400000035762787,
+   0.18000000715255737,
+   1.2999999523162842,
+   "cfe3c9"
+  ],
+  "detale": 17,
+  "zrzuty": [
+   "swiat/areny_walki/las/klatki/las_slime_01_ogolny_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_02_ogolny_druga_strona_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_03_krytyk_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_04_krytyk_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_05_boczny_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_06_ogolny_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_07_zaBroniacym_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_08_ogolny_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_09_zaAtakujacym_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_10_zaBroniacym_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_11_zaAtakujacym_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_20_powalenie_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_21_objazd_1_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_22_objazd_2_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_24_objazd_4_po.jpg",
+   "swiat/areny_walki/las/klatki/las_slime_25_wynik_po.jpg"
+  ],
+  "mgla_1_5s": [
+   0.3400000035762787,
+   0.18000000715255737,
+   1.2999999523162842,
+   "cfe3c9"
+  ],
+  "przywrocenia_mgly": null,
+  "koniec": {
+   "celMgly": 1,
+   "mgla": [
+    0.3400000035762787,
+    0.18000000715255737,
+    1.2999999523162842,
+    "cfe3c9"
+   ],
+   "detale": 17,
+   "OstatniaMaksKlatki": 89.1,
+   "OstatniaSredniaKlatki": 17.04,
+   "OstatniaLiczbaInstancji": 1709,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "las",
+   "OstatniaLiczbaKlatek": 1007,
+   "OstatniKosztSkryptuSredni": 0.5,
+   "OstatniP95Klatki": 18.3,
+   "OstatniaArenaPowod": "ok"
+  }
+ },
+ "bagno_rechotek_po": {
+  "cel": {
+   "id": "r1-1",
+   "p": [
+    2137.839111328125,
+    0,
+    -719.19482421875
+   ],
+   "gatunek": "rechotek",
+   "strefa": "r1"
+  },
+  "arena": "bagno",
+  "powod": "ok",
+  "mgla_start": [
+   0.4399999976158142,
+   0.10000000149011612,
+   2.200000047683716,
+   "aab68f"
+  ],
+  "detale": 19,
+  "zrzuty": [
+   "swiat/areny_walki/bagno/klatki/bagno_rechotek_01_ogolny_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_rechotek_02_ogolny_druga_strona_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_rechotek_03_krytyk_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_rechotek_04_zaBroniacym_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_rechotek_05_boczny_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_rechotek_06_krytyk_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_rechotek_07_pocisk_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_rechotek_20_powalenie_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_rechotek_21_objazd_1_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_rechotek_22_objazd_2_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_rechotek_24_objazd_4_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_rechotek_25_wynik_po.jpg"
+  ],
+  "mgla_1_5s": [
+   0.4399999976158142,
+   0.10000000149011612,
+   2.200000047683716,
+   "aab68f"
+  ],
+  "przywrocenia_mgly": null,
+  "koniec": {
+   "celMgly": 1,
+   "KlientOstatniaWalka": "r1-1/nil",
+   "detale": 19,
+   "OstatniaMaksKlatki": 68.48,
+   "OstatniaSredniaKlatki": 16.92,
+   "mgla": [
+    0.4399999976158142,
+    0.10000000149011612,
+    2.200000047683716,
+    "aab68f"
+   ],
+   "OstatniaLiczbaInstancji": 1404,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "bagno",
+   "OstatniaLiczbaKlatek": 778,
+   "OstatniKosztSkryptuSredni": 0.46,
+   "OstatniP95Klatki": 18.21,
+   "OstatniaArenaPowod": "ok"
+  }
+ },
+ "bagno_straznik_po": {
+  "cel": {
+   "id": "straznik-1",
+   "p": [
+    2914,
+    0.30000001192092896,
+    -700
+   ],
+   "gatunek": "straznik_topieli",
+   "strefa": "straznik"
+  },
+  "arena": "bagno",
+  "powod": "ok",
+  "mgla_start": [
+   0.4399999976158142,
+   0.10000000149011612,
+   2.200000047683716,
+   "aab68f"
+  ],
+  "detale": 19,
+  "zrzuty": [
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_01_ogolny_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_02_ogolny_druga_strona_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_03_krytyk_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_04_krytyk_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_05_zaBroniacym_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_06_zaBroniacym_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_07_zaAtakujacym_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_08_boczny_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_09_boczny_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_10_zaAtakujacym_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_20_powalenie_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_21_objazd_1_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_22_objazd_2_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_24_objazd_4_po.jpg",
+   "swiat/areny_walki/bagno/klatki/bagno_straznik_25_wynik_po.jpg"
+  ],
+  "mgla_1_5s": [
+   0.4399999976158142,
+   0.10000000149011612,
+   2.200000047683716,
+   "aab68f"
+  ],
+  "przywrocenia_mgly": null,
+  "koniec": {
+   "celMgly": 1,
+   "KlientOstatniaWalka": "straznik-1/nil",
+   "detale": 19,
+   "OstatniaMaksKlatki": 56.33,
+   "OstatniaSredniaKlatki": 16.9,
+   "mgla": [
+    0.4399999976158142,
+    0.10000000149011612,
+    2.200000047683716,
+    "aab68f"
+   ],
+   "OstatniaLiczbaInstancji": 1945,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "bagno",
+   "OstatniaLiczbaKlatek": 941,
+   "OstatniKosztSkryptuSredni": 0.41,
+   "OstatniP95Klatki": 18.28,
+   "OstatniaArenaPowod": "ok"
+  }
+ },
+ "po_walce_po": {
+  "mgla": [
+   0.36000001430511475,
+   0.15000000596046448,
+   1.399999976158142,
+   "d6e4da"
+  ],
+  "przywrocenia": 139,
+  "detale": 0
+ },
+ "las_troll_po": {
+  "cel": {
+   "id": "t1-1",
+   "p": [
+    1849.538330078125,
+    0,
+    -716
+   ],
+   "gatunek": "lesny_troll",
+   "strefa": "t1"
+  },
+  "arena": "las",
+  "powod": "ok",
+  "mgla_start": [
+   0.3400000035762787,
+   0.18000000715255737,
+   1.2999999523162842,
+   "cfe3c9"
+  ],
+  "detale": 17,
+  "zrzuty": [
+   "swiat/areny_walki/las/klatki/las_troll_01_ogolny_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_02_ogolny_druga_strona_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_03_krytyk_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_04_krytyk_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_05_pocisk_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_06_zaBroniacym_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_07_efekt_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_08_ogolny_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_09_zblizenie_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_10_pocisk_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_20_powalenie_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_21_objazd_1_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_22_objazd_2_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_24_objazd_4_po.jpg",
+   "swiat/areny_walki/las/klatki/las_troll_25_wynik_po.jpg"
+  ],
+  "mgla_1_5s": [
+   0.3400000035762787,
+   0.18000000715255737,
+   1.2999999523162842,
+   "cfe3c9"
+  ],
+  "przywrocenia_mgly": 139,
+  "koniec": {
+   "celMgly": 1,
+   "KlientOstatniaWalka": "t1-1/nil",
+   "detale": 17,
+   "OstatniaMaksKlatki": 54.37,
+   "przywrocenia": 139,
+   "OstatniaSredniaKlatki": 16.76,
+   "mgla": [
+    0.3400000035762787,
+    0.18000000715255737,
+    1.2999999523162842,
+    "cfe3c9"
+   ],
+   "OstatniaLiczbaInstancji": 2256,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "las",
+   "OstatniaLiczbaKlatek": 927,
+   "OstatniKosztSkryptuSredni": 0.4,
+   "OstatniP95Klatki": 18.26,
+   "OstatniaArenaPowod": "ok"
+  }
+ },
+ "klatka_proba_stara_po": {
+  "mgla": [
+   0.3000886142253876,
+   0.24985231459140778,
+   0.002067508175969124,
+   "c7c7c7"
+  ],
+  "detale": 0,
+  "OstatniaMaksKlatki": 65.09,
+  "OstatniaSredniaKlatki": 16.72,
+  "OstatniaLiczbaInstancji": 2278,
+  "OstatniStan": "wynik",
+  "OstatniaArena": "stara",
+  "OstatniaLiczbaKlatek": 1867,
+  "OstatniKosztSkryptuSredni": 0.43,
+  "OstatniP95Klatki": 17.96,
+  "OstatniaArenaPowod": "wylaczone"
+ },
+ "klatka_proba_po": {
+  "celMgly": 1,
+  "mgla": [
+   0.27000001072883606,
+   0.23999999463558197,
+   1.100000023841858,
+   "eadbc2"
+  ],
+  "detale": 9,
+  "OstatniaMaksKlatki": 52.46,
+  "OstatniaSredniaKlatki": 16.68,
+  "OstatniaLiczbaInstancji": 2278,
+  "OstatniStan": "wynik",
+  "OstatniaArena": "proba",
+  "OstatniaLiczbaKlatek": 1871,
+  "OstatniKosztSkryptuSredni": 0.51,
+  "OstatniP95Klatki": 17.92,
+  "OstatniaArenaPowod": "ok"
+ },
+ "klatka_las_slime_po": {
+  "celMgly": 1,
+  "KlientOstatniaWalka": "t1-1/nil",
+  "detale": 17,
+  "OstatniaMaksKlatki": 60.06,
+  "OstatniaSredniaKlatki": 16.7,
+  "mgla": [
+   0.3400000035762787,
+   0.18000000715255737,
+   1.2999999523162842,
+   "cfe3c9"
+  ],
+  "OstatniaLiczbaInstancji": 1598,
+  "OstatniStan": "wynik",
+  "OstatniaArena": "las",
+  "OstatniaLiczbaKlatek": 1965,
+  "OstatniKosztSkryptuSredni": 0.5,
+  "OstatniP95Klatki": 17.88,
+  "OstatniaArenaPowod": "ok"
+ },
+ "klatka_bagno_rechotek_po": {
+  "celMgly": 1,
+  "KlientOstatniaWalka": "r1-1/nil",
+  "detale": 19,
+  "OstatniaMaksKlatki": 61.96,
+  "OstatniaSredniaKlatki": 16.69,
+  "mgla": [
+   0.4399999976158142,
+   0.10000000149011612,
+   2.200000047683716,
+   "aab68f"
+  ],
+  "OstatniaLiczbaInstancji": 1371,
+  "OstatniStan": "wynik",
+  "OstatniaArena": "bagno",
+  "OstatniaLiczbaKlatek": 1322,
+  "OstatniKosztSkryptuSredni": 0.43,
+  "OstatniP95Klatki": 17.87,
+  "OstatniaArenaPowod": "ok"
+ }
+}

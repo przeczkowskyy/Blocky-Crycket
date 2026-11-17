@@ -77,18 +77,18 @@ return {
 			nazwa = "Pomost Nad Topielą",
 			model = "Bagno",
 			biom = "bagno",
-			czesci = 1197,
+			czesci = 1194,
 			yGruntu = -1.8,
 			scena = { -3000.0, 0.0, 1800.0 },
 			pudloSrodek = { -3000.0, 60.0, 1800.0 },
 			pudloRozmiar = { 500.0, 220.0, 500.0 },
 			nastroj = {
-				Density = 0.46,
-				Offset = 0.08,
-				Haze = 2.4,
+				Density = 0.44,
+				Offset = 0.1,
+				Haze = 2.2,
 				Glare = 0.0,
-				Color = "A3AE96",
-				Decay = "56664A",
+				Color = "AAB68F",
+				Decay = "5B7046",
 			},
 			detale = {
 				{
@@ -109,12 +109,12 @@ return {
 			kotwice = {
 				Kulisy = {
 					{ 39.81, 2.09, 12.0 },
-					{ 26.85, -2.82, 4.8 },
-					{ 44.52, 7.05, 4.8 },
+					{ 26.85, -2.82, 5.8 },
+					{ 44.23, 7.01, 5.8 },
 					{ 29.5, 0.0, 6.0 },
 					{ -44.15, 2.31, 13.3 },
-					{ -26.85, -2.82, 4.8 },
-					{ -28.64, 4.54, 4.8 },
+					{ -26.85, -2.82, 5.8 },
+					{ -28.64, 4.54, 5.8 },
 					{ -29.5, 0.0, 6.0 },
 				},
 				Chaty = {

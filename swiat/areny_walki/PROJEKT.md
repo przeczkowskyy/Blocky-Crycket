@@ -113,17 +113,38 @@ Kod odtwarzacza i modułu się nie zmienia.
 | `zrodla/ArenyWalki.luau`, `LogikaAren.luau`, `DaneAren.luau` | moduły klienta (Workspace/ArenyWalki/Moduly) |
 | `zbuduj.py` | budowa w Studio (`--sucho`, `--tylko`, `--moduly`, `--usun`) |
 | `testy/test_aren.py` | testy bez Studio (logika interpreterem luau_mini, dane, areny, wywołania w odtwarzaczu) |
+| `testy/zrzuty_aren_play.py`, `klatki_wyniki.json` | Play: walki z każdego źródła, zrzuty każdego ujęcia → `<arena>/klatki/`, `--klatka` czas klatki (też na starej arenie) |
 
 ## Do zmiany (ustawienia przyjęte bez decyzji)
 
-Położenia aren w świecie; budżet 1200; nastrój (las Density 0,34 Color CFE3C9, Bagno 0,46 A3AE96, plac 0,27 EADBC2);
+Położenia aren w świecie; budżet 1200; nastrój (las Density 0,34 Color CFE3C9, Bagno 0,44 AAB68F, plac 0,27 EADBC2);
 gęstość ogników, liści i ptaków; kąty i odległości kulis; mapowanie stary las → arena leśna; plac ćwiczeń dla tablicy
 prototypu (tablica nie ma biomu — mógłby to być też las); koronę nad polaną od wysokości 31.
 
 ## Ryzyka
 
-- Mgła starego lasu (`MglaLasu`) nie zna umowy `CelMglyPasa` — przez ok. 1,2 s po wejściu w walkę jej wygaszanie może
-  nadpisywać mgłę areny (moduł co klatkę przywraca swoją; kolejność skryptów w klatce nieznana bez Studio).
+- Mgła starego lasu (`MglaLasu`) nie zna umowy `CelMglyPasa` — zmierzone w Studio 17.11: bez poprawki pierwsza sekunda
+  walki miała mgłę pośrednią (Haze 0,91 zamiast 1,3, kolor D1DAD3); moduł oddaje teraz wartość areny zaraz po cudzym
+  zapisie (`Atmosphere.Changed`) — w próbie 355 przywróceń w 1,5 s, od pierwszej klatki dokładnie mgła areny.
 - Persistent to stałe kilka MB na kliencie i trzy areny rysowane z daleka na wysokiej jakości grafiki (PC).
 - Kamery giganta (odjazd 1,8) wypychają ścianę daleko — przy zwykłych parach arena wydaje się przestronna.
 - Podglądy (Pillow, Blender) nie pokazują faktur, Neonu ani mgły Roblox; prawdziwy wygląd ocenią zrzuty z części B.
+
+## Część B — Studio (17.11.2026)
+
+- Stoi `Workspace/ArenyWalki` (Wygenerowane): Las 1126, Bagno 1194, Proba 1108 części + znaczniki `Scena`, modele
+  Persistent, moduły ArenyWalki / LogikaAren / DaneAren; odtwarzacz z pięcioma podmianami wysłany (`zbuduj.py --skrypty`).
+- Walki z każdego źródła w Play (`testy/zrzuty_aren_play.py`): tablica → `proba`, las-pas → `las`, stary las → `las`,
+  Bagno → `bagno` (`OstatniaArenaPowod = ok`); z `Wylaczone = true` → `stara` (zapas działa). Mgła areny od startu walki,
+  detale 9–19 instancji, po walce mgła i detale posprzątane.
+- Czas klatki (Studio na wierzchu, walka ×1): stara arena 16,72 ms śr. / 17,96 p95; plac 16,68 / 17,92; las 16,70 /
+  17,88; Bagno 16,69 / 17,87 — bez zmian (ograniczenie 60 kl./s; to PC ze Studio, nie telefon).
+- Poprawki po zrzutach (pary „przed” bez przyrostka i „po” z `_po` w `<arena>/klatki/`): trzcina Bagna z wąskich źdźbeł
+  z pałkami zamiast płaskich snopów (czytały się jak deski), mgła Bagna zieleńsza (AAB68F / 5B7046, Density 0,44),
+  plac polany z ciepłej, jasnej, ubitej ziemi (Sand, BE9363) zamiast szarego Ground, smugi światła mocniejsze (0,8),
+  mgła starego lasu (wyżej), pierwszy kadr bez baneru „WALKA!”, plan ogólny z drugiej strony (kamera po odtwarzaczu).
+- Stare próby walki na nowej arenie placu: `test_walki_play.py --szybko` 111/111 (po dopasowaniu próby 6: intruz stoi
+  w pudle sceny, w której toczy się walka — przy arenie biomu, jako Model Persistent, bo inaczej nie dochodzi do
+  klienta), `test_poprawek_play.py` 27/27. Kontrola `sprawdz.py` po poprawkach: zero naruszeń, horyzont ≥ 2°, budżet.
+- Do sprawdzenia dalej: telefon (czas klatki i pamięć z trzema arenami Persistent), walka gracza bez trybu testowego
+  bohatera w Bagnie (próby szły z `TestBohater`), dźwięk otoczenia areny (brak — tylko nastrój wizualny).

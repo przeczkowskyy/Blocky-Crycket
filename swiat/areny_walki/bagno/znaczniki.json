@@ -36,59 +36,58 @@
    500.0
   ]
  },
- "czesci": 1197,
+ "czesci": 1194,
  "budzet": 1200,
  "budzet_twardy": 1500,
  "grupy": {
-  "Bliskie": 106,
+  "Bliskie": 111,
   "Chaty": 159,
-  "Dal": 417,
+  "Dal": 402,
   "Grunt": 16,
-  "Kulisy": 48,
-  "Mgla": 20,
+  "Kulisy": 56,
+  "Mgla": 16,
   "Obrecz": 32,
   "Plac": 32,
-  "Sciana": 367
+  "Sciana": 370
  },
  "zakres_swiat": {
   "min": [
-   -3240.5,
+   -3237.9,
    -2.4,
    1568.0
   ],
   "max": [
-   -2767.2,
-   46.9,
+   -2768.0,
+   46.8,
    2032.0
   ]
  },
  "postawione": {
   "korzeniak": 2,
-  "kepa_trzciny": 18,
+  "kepa_trzciny": 14,
   "latarnia_pal": 4,
   "chata_na_palach": 4,
   "wieza_obserwacyjna": 1,
   "lodka": 1,
   "drzewo_bagna": 34,
   "kepa": 10,
-  "grzybien": 16,
+  "grzybien": 10,
   "kepa_z_trzcina": 9,
   "zatopiony_pien": 3
  },
  "pominiete": {
   "pal_obreczy": 5,
-  "drzewo_bagna": 5,
-  "kepa_z_trzcina": 5,
-  "zatopiony_pien": 1
+  "drzewo_bagna": 3,
+  "kepa_z_trzcina": 1
  },
- "dosuniete": 20,
+ "dosuniete": 23,
  "nastroj": {
-  "Density": 0.46,
-  "Offset": 0.08,
-  "Haze": 2.4,
+  "Density": 0.44,
+  "Offset": 0.1,
+  "Haze": 2.2,
   "Glare": 0.0,
-  "Color": "A3AE96",
-  "Decay": "56664A"
+  "Color": "AAB68F",
+  "Decay": "5B7046"
  },
  "detale": [
   {
@@ -129,16 +128,16 @@
     "rodzina": "kepa_trzciny",
     "x": 26.85,
     "z": -2.82,
-    "h": 4.8,
+    "h": 5.8,
     "ry": 181.1,
     "opcje": {}
    },
    {
     "rodzina": "kepa_trzciny",
-    "x": 44.52,
-    "z": 7.05,
-    "h": 4.8,
-    "ry": 4.7,
+    "x": 44.23,
+    "z": 7.01,
+    "h": 5.8,
+    "ry": 264.1,
     "opcje": {}
    },
    {
@@ -163,16 +162,16 @@
     "rodzina": "kepa_trzciny",
     "x": -26.85,
     "z": -2.82,
-    "h": 4.8,
-    "ry": 65.9,
+    "h": 5.8,
+    "ry": 117.3,
     "opcje": {}
    },
    {
     "rodzina": "kepa_trzciny",
     "x": -28.64,
     "z": 4.54,
-    "h": 4.8,
-    "ry": 230.4,
+    "h": 5.8,
+    "ry": 8.6,
     "opcje": {}
    },
    {

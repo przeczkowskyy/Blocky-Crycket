@@ -116,7 +116,32 @@ function Uchwyt:nastroj(n: any)
 	end)
 	zastosuj()
 	self.mgla = { atm = atm, cel = cel, zastosuj = zastosuj }
+	-- inny skrypt (gasnąca mgła starego lasu, MglaLasu, przez ok. 1,2 s po wejściu w walkę) zmienia Atmosphere w tej
+	-- samej klatce po nas — oddajemy wartość areny od razu po jego zapisie (Studio 17.11.2026: bez tego pierwsza sekunda
+	-- walki w starym lesie miała mgłę pośrednią, np. Haze 0,91 zamiast 1,3)
+	local wlasnyZapis = false
+	local straz = atm.Changed:Connect(function(pole: string)
+		if wlasnyZapis or self.mgla == nil then
+			return
+		end
+		local c = cel[pole]
+		if c == nil then
+			return
+		end
+		local teraz = (atm :: any)[pole]
+		local inna = if typeof(c) == "Color3" then teraz:ToHex() ~= c:ToHex() else math.abs(teraz - c) > 1e-4
+		if inna then
+			wlasnyZapis = true
+			(atm :: any)[pole] = c
+			wlasnyZapis = false
+			self.przywrocenMgly = (self.przywrocenMgly or 0) + 1
+			pcall(function()
+				kontener:SetAttribute("PrzywroceniaMgly", self.przywrocenMgly) -- lokalnie, do pomiaru
+			end)
+		end
+	end)
 	self:posprzataj(function()
+		straz:Disconnect()
 		self.mgla = nil
 		pcall(function()
 			kontener:SetAttribute("CelMglyPasa", nil)

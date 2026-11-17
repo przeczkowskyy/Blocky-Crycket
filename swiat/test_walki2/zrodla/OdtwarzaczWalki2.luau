@@ -122,6 +122,18 @@ local function katalogArkusza()
 	return { kat = kat, adres = adres, skala = if type(skala) == "number" and skala > 0 then skala else 1 }
 end
 
+-- arena walki biomu źródła (D-095, pakiet swiat/areny_walki): Workspace/ArenyWalki/Moduly/ArenyWalki; nil = stara arena
+local function modulAren(): any
+	local k = workspace:FindFirstChild("ArenyWalki")
+	local m = if k and k:GetAttribute("Wygenerowane") == true then k:FindFirstChild("Moduly") else nil
+	m = m and m:FindFirstChild("ArenyWalki")
+	if not m or not m:IsA("ModuleScript") then
+		return nil
+	end
+	local ok, mod = pcall(require, m)
+	return if ok and type(mod) == "table" and type(mod.przygotuj) == "function" then mod else nil
+end
+
 local KROK = "TestWalki2Cutscenka"
 local AKCJA_BLOKADY = "TestWalki2BlokadaSterowania"
 local AKCJA_POMIN = "TestWalki2Pomin"
@@ -460,12 +472,16 @@ function Sesja:schowajObcych()
 		table.insert(wyklucz, plyta)
 	end
 	table.insert(wyklucz, workspace.Terrain)
+	if self.arena and self.arena.model then
+		table.insert(wyklucz, self.arena.model) -- arena biomu (D-095) jest „nasza”
+	end
 	local filtr = OverlapParams.new()
 	filtr.FilterType = Enum.RaycastFilterType.Exclude
 	filtr.FilterDescendantsInstances = wyklucz
-	local pudlo = CFrame.new(U.OBSZAR_SRODEK)
+	local pudlo = CFrame.new(if self.arena then self.arena.pudloSrodek else U.OBSZAR_SRODEK)
+	local rozmiarPudla = if self.arena then self.arena.pudloRozmiar else U.OBSZAR_ROZMIAR
 	self.skanujObcych = function()
-		for _, czesc in workspace:GetPartBoundsInBox(pudlo, U.OBSZAR_ROZMIAR, filtr) do
+		for _, czesc in workspace:GetPartBoundsInBox(pudlo, rozmiarPudla, filtr) do
 			if not czesci[czesc] then
 				schowajCalosc(korzenCzesci(czesc))
 			end
@@ -560,6 +576,31 @@ function Sesja:poprosSerwer()
 end
 
 ------------------------------------------------------------------ scena
+-- arena biomu (D-095): scena walki staje na arenie biomu źródła walki; bez kontenera ArenyWalki, bez areny dla źródła
+-- albo przy błędzie — stara arena (U.scena()), jak dotąd. Nastrój i detale sprząta moduł (uchwyt:zakoncz) z sesją.
+function Sesja:wybierzArene()
+	self.arena = nil
+	local A = modulAren()
+	local powod = "brak_modulu"
+	if A then
+		local ok, uchwyt, p = pcall(A.przygotuj, { zrodlo = self.kontener.Name, kontener = self.kontener, folder = self.scena })
+		if ok and type(uchwyt) == "table" and typeof(uchwyt.scena) == "CFrame" then
+			self.arena = uchwyt
+			self:posprzataj(function()
+				pcall(uchwyt.zakoncz, uchwyt)
+			end)
+			powod = "ok"
+		elseif ok then
+			powod = tostring(p or "brak")
+		else
+			powod = "blad"
+			warn("[TestWalki2] Arena biomu — zostaje stara arena: " .. tostring(uchwyt))
+		end
+	end
+	self:atrybut("OstatniaArena", if self.arena then self.arena.nazwa else "stara")
+	self:atrybut("OstatniaArenaPowod", powod)
+end
+
 function Sesja:przygotujScene()
 	self.scena = self:nowa("Folder", { Name = "ScenaLokalna" }, self.kontener)
 	self:posprzataj(function()
@@ -581,6 +622,7 @@ function Sesja:przygotujScene()
 			d.LocalTransparencyModifier = 0
 		end
 	end)
+	self:wybierzArene()
 	self:schowajObcych()
 	-- dźwięki: po dwa (nuty po cztery) obiekty Sound na nazwę — wbudowane w klienta (rbxasset://), bez uploadu
 	self.dzwieki = {}
@@ -906,7 +948,7 @@ function Sesja:ustawAktorow(walka)
 		error("brak aktora dla " .. tostring(kG) .. " / " .. tostring(kW))
 	end
 	local S = math.max(9.5, wG.przod + wW.przod + 3.2)
-	self.cfSceny = U.scena()
+	self.cfSceny = if self.arena then self.arena.scena else U.scena() -- arena biomu (D-095) albo stara arena
 	local geo = { S = S, x = { gracz = -S / 2, wrog = S / 2 }, kier = { gracz = 1, wrog = -1 },
 		h = { gracz = wG.wysokosc, wrog = wW.wysokosc },
 		w = { gracz = math.max(wG.szerokosc, wG.glebokosc * 0.6), wrog = math.max(wW.szerokosc, wW.glebokosc * 0.6) } }

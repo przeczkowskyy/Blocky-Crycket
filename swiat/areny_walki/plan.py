@@ -36,7 +36,7 @@ ARENY = {
         "grunt": {"y": -0.6, "kolor": "runo_ciemne", "mat": "Grass",
                   "laty": [{"r": 54.0, "kolor": "runo", "mat": "Grass"}, {"r": 34.0, "kolor": "arena_slonce", "mat": "Grass"}],
                   "plamy": {"n": 10, "r": (62, 190), "rozmiar": (10, 24), "kolory": ["runo_boru", "lisc_ciemny"]}},
-        "plac": {"styl": "ziemia", "kolory": ["arena_ziemia", "arena_ziemia_jasna", "tusz"]},
+        "plac": {"styl": "ziemia", "kolory": ["arena_ziemia", "arena_ziemia_jasna", "tusz"], "material": "Sand"},
         "obrecz": {"rodzina": "kamien_obreczy", "r": 23.6, "n": 24, "k": (0.75, 1.1)},
         "warstwy": [
             {"grupa": "Bliskie", "rodzina": "wysepka_lasu", "luki": [(205, 335)], "r": (31, 50), "n": 6, "k": (0.9, 1.15),
@@ -108,7 +108,7 @@ ARENY = {
         "plac": {"styl": "pomost", "kolory": ["bagno_deska", "bagno_deska_ciemna", "tusz"]},
         "obrecz": {"rodzina": "pal_obreczy", "r": 22.9, "n": 16, "k": (0.9, 1.0), "przerwy": [(262, 278)]},
         "warstwy": [
-            {"grupa": "Bliskie", "rodzina": "grzybien", "luki": [(0, 360)], "r": (24, 60), "n": 16, "k": (0.9, 1.4)},
+            {"grupa": "Bliskie", "rodzina": "grzybien", "luki": [(0, 360)], "r": (24, 60), "n": 10, "k": (0.9, 1.4)},
             {"grupa": "Bliskie", "rodzina": "kepa_z_trzcina", "luki": [(200, 255), (285, 340)], "r": (34, 56), "n": 5, "k": (0.9, 1.2),
              "dosun": True, "min_odstep": 10.0},
             {"grupa": "Bliskie", "rodzina": "kepa_z_trzcina", "luki": [(30, 150)], "r": (40, 84), "n": 4, "k": (0.9, 1.2),
@@ -116,7 +116,7 @@ ARENY = {
             {"grupa": "Bliskie", "rodzina": "zatopiony_pien", "luki": [(205, 335)], "r": (46, 60), "n": 3, "k": (0.9, 1.2),
              "dosun": True, "min_odstep": 10.0},
             # ściana Bagna: trzcina, cypryśniki z brodą, wierzby, suche drzewa
-            {"grupa": "Sciana", "rodzina": "kepa_trzciny", "luki": [(0, 360)], "r": (60, 94), "n": 14, "k": (1.0, 1.0), "dosun": True},
+            {"grupa": "Sciana", "rodzina": "kepa_trzciny", "luki": [(0, 360)], "r": (60, 94), "n": 10, "k": (1.0, 1.0), "dosun": True},
             {"grupa": "Sciana", "rodzina": "drzewo_bagna", "warianty": ["cyprys", "cyprys", "wierzba", "korzeniak", "suchy_omszaly"],
              "luki": [(0, 360)], "r": (66, 102), "n": 20, "k": (1.15, 1.6), "dosun": True, "min_odstep": 13.0},
             {"grupa": "Sciana", "rodzina": "drzewo_bagna", "warianty": ["cyprys", "wierzba", "cyprys"],
@@ -145,14 +145,14 @@ ARENY = {
             {"grupa": "Chaty", "rodzina": "chata_na_palach", "kat": 112, "r": 98, "k": 1.05, "ry": 180, "h0": 5.0},
         ],
         "sylwety": [
-            {"rodzina": "sylweta_cyprysu", "r": (136, 165), "krok_kata": 8.0, "k": (1.3, 1.8), "kolor": "bagno_sylweta_1"},
+            {"rodzina": "sylweta_cyprysu", "r": (136, 165), "krok_kata": 9.0, "k": (1.3, 1.8), "kolor": "bagno_sylweta_1"},
             {"rodzina": "sylweta_cyprysu", "r": (170, 200), "krok_kata": 10.5, "k": (1.6, 2.2), "kolor": "bagno_sylweta_2"},
             {"rodzina": "wzgorze", "r": (206, 224), "krok_kata": 15.0, "szer": (90, 130), "wys": (34, 48), "kolor": "arena_wzgorze_bagno"},
             {"rodzina": "sylweta_cyprysu", "r": (200, 222), "krok_kata": 13.0, "k": (2.0, 2.6), "kolor": "bagno_sylweta_3"},
             {"rodzina": "wal", "r": 232.0, "wys": 24.0, "kolor": "arena_mgla_bagno", "n": 24},
         ],
-        "mgla_platy": {"n": 10, "r": (46, 130), "dl": (22, 40), "szer": (12, 22), "y": -1.45, "alfa": 0.8},
-        "nastroj": {"Density": 0.46, "Offset": 0.08, "Haze": 2.4, "Glare": 0.0, "Color": "A3AE96", "Decay": "56664A"},
+        "mgla_platy": {"n": 8, "r": (46, 130), "dl": (22, 40), "szer": (12, 22), "y": -1.45, "alfa": 0.8},
+        "nastroj": {"Density": 0.44, "Offset": 0.1, "Haze": 2.2, "Glare": 0.0, "Color": "AAB68F", "Decay": "5B7046"},
         "detale": [
             {"typ": "ogniki", "n": 9, "r": [30, 84], "y": [0.5, 6.0], "kolor": "C8E05A", "swiatla": 3},
             {"typ": "babelki", "n": 10, "r": [25, 70], "kolor": "8FB548"},

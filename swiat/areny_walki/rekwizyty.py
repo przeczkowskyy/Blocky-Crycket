@@ -33,8 +33,8 @@ from swiat.krzywe_miasteczko.zestaw import lamana  # noqa: E402
 
 # paleta aren: paleta lasu (z miasteczkiem) + Bagno + kilka kolorów aren (tylko nowe klucze)
 KOLORY_AREN = {
-    "arena_ziemia": "A9805A",       # ubita ziemia polany (plac lasu)
-    "arena_ziemia_jasna": "C79D6C",
+    "arena_ziemia": "BE9363",       # ubita, nasłoneczniona ziemia polany (plac lasu; Studio 17.11: było A9805A — szaro)
+    "arena_ziemia_jasna": "D9B27E",
     "arena_slonce": "8FC04A",       # nasłoneczniona trawa wokół placu
     "arena_promien": "FFF1B8",      # smuga światła (Neon, półprzezroczysta)
     "arena_piasek": "E6C489",       # piasek placu ćwiczeń
@@ -118,7 +118,7 @@ def promien_swiatla(s, rnd, pos, h=30.0, szer=4.0, ry=0.0, pochyl=18.0):
     """Smuga światła z prześwitu w koronach: wysoki, cienki, półprzezroczysty klocek Neon pochylony od słońca. 1 część."""
     x, y, z = pos
     with s.uklad(pos=(x, y, z), obrot=(0, ry, pochyl)), s.cechy(cien=False):
-        s.blok("Smuga światła", (0, h / 2.0, 0), (szer, h, szer * 0.5), "arena_promien", "Neon", alfa=0.86)
+        s.blok("Smuga światła", (0, h / 2.0, 0), (szer, h, szer * 0.5), "arena_promien", "Neon", alfa=0.8)
     return h, szer
 
 
@@ -154,7 +154,7 @@ def kepa_z_trzcina(s, rnd, pos, k=1.0, ry=0.0, y_wody=-1.8):
     x, _, z = pos
     kepa(s, rnd, (x, 0, z), 2.6 * k, rnd.uniform(0.8, 1.2), y_wody)
     top = y_wody + 0.9
-    ros_bagna.kepa_trzciny(s, rnd, (x + rnd.uniform(-0.8, 0.8), top, z + rnd.uniform(-0.8, 0.8)), rnd.uniform(2.4, 3.2), 2.8, False)
+    trzcina_zdzbla(s, rnd, (x + rnd.uniform(-0.8, 0.8), top, z + rnd.uniform(-0.8, 0.8)), rnd.uniform(2.6, 3.4), 2.8, False)
     for _ in range(2):
         a = rnd.uniform(0, 2 * math.pi)
         ros_bagna.grzybien(s, rnd, (x + 3.6 * k * math.cos(a), y_wody, z + 3.6 * k * math.sin(a)), rnd.uniform(0.8, 1.2),
@@ -277,6 +277,25 @@ def kepa(s, rnd, pos, r=3.0, wys=1.2, y_wody=-1.8):
         s.walec("Kępa wierzch", (x + rnd.uniform(-0.4, 0.4), y_wody + wys + 0.02, z + rnd.uniform(-0.4, 0.4)), r * 0.72, 0.16,
                 "bagno_trawa_jasna", os="y")
     return y_wody + wys, r
+
+
+def trzcina_zdzbla(s, rnd, pos, wys=5.0, szer=3.0, pelna=True):
+    """Kępa trzciny z wąskich źdźbeł (poprawka po zrzutach ze Studio 17.11: płaskie snopy z map Bagna czytały się z kamer
+    walki jak deski): 5 albo 3 źdźbła 0,32 × wys różnie pochylone, w trzech odcieniach, i 2 albo 1 pałka. 7 / 4 części."""
+    x, y, z = pos
+    n = 5 if pelna else 3
+    kolory = ("bagno_trzcina", "trzcina", cien(s, "bagno_trzcina", 0.8), "trzcina", "bagno_trzcina")
+    with s.uklad(pos=(x, y, z), obrot=(0, rnd.uniform(0, 180), 0)), s.cechy(cien=False):
+        for i in range(n):
+            a = 2 * math.pi * i / n + rnd.uniform(-0.4, 0.4)
+            r = szer * rnd.uniform(0.12, 0.4)
+            h = wys * rnd.uniform(0.7, 1.0)
+            px, pz = r * math.cos(a), r * math.sin(a)
+            with s.uklad(pos=(px, 0, pz), obrot=(rnd.uniform(-12, 12), rnd.uniform(0, 90), rnd.uniform(-12, 12))):
+                s.blok("Trzcina źdźbło", (0, h / 2.0, 0), (0.34, h, 0.24), kolory[i])
+                if i < (2 if pelna else 1):
+                    s.blok("Pałka", (0, h + 0.5, 0), (0.6, 1.4, 0.6), "bagno_palka")
+    return wys + 1.2, szer / 2.0
 
 
 def chata_na_palach(s, rnd, pos, k=1.0, ry=0.0, h0=5.0, y_wody=-1.8, swiatlo=True):

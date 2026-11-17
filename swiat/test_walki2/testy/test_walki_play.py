@@ -165,7 +165,9 @@ return HS:JSONEncode(w)
 OBCY = r'''
 local CS = game:GetService("CollectionService")
 local k = workspace.TestWalki2
-local f = Instance.new("Folder")
+-- Model Persistent: intruz przy arenie biomu stoi tysiące studów od gracza — bez tego nie dochodzi do klienta (streaming)
+local f = Instance.new("Model")
+f.ModelStreamingMode = Enum.ModelStreamingMode.Persistent
 f.Name = "TestowyIntruz"
 local m = Instance.new("Part")
 m.Name = "WPudle"
@@ -173,7 +175,10 @@ m.Size = Vector3.new(3, 6, 3)
 m.Anchored = true
 m.Color = Color3.fromRGB(0, 255, 0)
 m.Material = Enum.Material.Neon
-m.CFrame = CFrame.new(0, 4, 252)
+-- w pudle sceny, w której toczy się walka tablicy: arena biomu (swiat/areny_walki, plac ćwiczeń) albo stara arena
+local ar = workspace:FindFirstChild("ArenyWalki")
+local sc = ar and ar:GetAttribute("Wylaczone") ~= true and ar:FindFirstChild("Proba") and ar.Proba:FindFirstChild("Scena")
+m.CFrame = CFrame.new(if sc then sc.Position + Vector3.new(0, 4, 2) else Vector3.new(0, 4, 252))
 m.Parent = f
 local t = Instance.new("Part")
 t.Name = "ZTagiem"

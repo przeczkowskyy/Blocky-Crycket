@@ -1,5 +1,5 @@
 {
- "data": "2026-11-17 15:14",
+ "data": "2026-11-17 17:40",
  "wynik": "27/27",
  "testy": [
   {
@@ -40,7 +40,7 @@
   {
    "test": "kadr rozszarpanie (wojownik/cierniowy_wilk/1, zd. 5, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.72 | cel w kadrze 0.69 odsł. 0.69"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.74 | cel w kadrze 0.66 odsł. 0.66"
   },
   {
    "test": "kadr chmura_zarodnikow (wojownik/muchomornik/1, zd. 5, chmura)",
@@ -50,7 +50,7 @@
   {
    "test": "kadr ogluszajace_uderzenie (wojownik/lesny_troll/1, zd. 6, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.81 | cel w kadrze 0.69 odsł. 0.69"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.82 | cel w kadrze 0.71 odsł. 0.71"
   },
   {
    "test": "kadr uscisk_korzeni (mag/straznik_lasu/1, zd. 8, w_klipie)",
