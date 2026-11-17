@@ -3,7 +3,8 @@
 
 Kolejność: (0) python -B swiat/wybor_klasy/generuj.py  → czesci.json + efekty.json
            (1) sala z klocków: python tools/studio_buduj.py swiat/wybor_klasy/czesci.json --obrysy
-           (2) ten skrypt: światła i efekty sali (z efekty.json), kopie modeli bohaterów, ScreenGui ClassSelect, skrypty.
+           (2) ten skrypt: światła i efekty sali (z efekty.json), tekstury z paczki (tekstury.json + ID z manifestu),
+               kopie modeli bohaterów, ScreenGui ClassSelect, skrypty.
 Użycie: python tools/studio/deploy_classselect.py  [--bez-skryptow]
 
 Własne kontenery: Workspace/WyborKlasy (atrybut Wygenerowane, z tools/studio_buduj.py) — tu dochodzi model „Efekty”
@@ -119,6 +120,86 @@ end
 ef.Parent = sala
 '''
 
+TEKSTURY = r"""
+local sala = workspace:FindFirstChild("WyborKlasy")
+local D = game:GetService("HttpService"):JSONDecode(TEKSTURY_JSON)
+local R, MAT = D.reguly, D.materialy
+local function pasuje(wzor, nazwa)
+	if wzor == "*" then return true end
+	if #wzor > 2 and wzor:sub(1, 1) == "*" and wzor:sub(-1) == "*" then
+		return nazwa:lower():find(wzor:sub(2, -2):lower(), 1, true) ~= nil
+	end
+	if wzor:sub(1, 1) == "*" then return nazwa:sub(-(#wzor - 1)) == wzor:sub(2) end
+	if wzor:sub(-1) == "*" then return nazwa:sub(1, #wzor - 1) == wzor:sub(1, -2) end
+	return nazwa == wzor
+end
+local SCIANY = { all = Enum.NormalId:GetEnumItems(), top = { Enum.NormalId.Top } }
+local function wymiar(p, f)
+	local s = p.Size
+	if f == Enum.NormalId.Front or f == Enum.NormalId.Back then return s.X, s.Y end
+	if f == Enum.NormalId.Left or f == Enum.NormalId.Right then return s.Z, s.Y end
+	return s.X, s.Z
+end
+local function zloty(c: Color3)
+	return c.R > 0.7 and c.G > 0.5 and c.B < 0.45
+end
+local function naloz(p, r)
+	for _, f in ipairs(SCIANY[r.sciany or "all"] or SCIANY.all) do
+		local t = Instance.new("Texture")
+		t.Name = "Tekstura"
+		t.Texture = "rbxassetid://" .. r.id
+		t.Face = f
+		local u, v = wymiar(p, f)
+		if r.studs == "czesc" then
+			t.StudsPerTileU, t.StudsPerTileV = u, v
+		else
+			t.StudsPerTileU, t.StudsPerTileV = r.studs, r.studs
+		end
+		if r.barwa then t.Color3 = p.Color end
+		t.Transparency = r.przezr or 0
+		t.Parent = p
+	end
+end
+local n, czesci, ogolne = 0, 0, 0
+for _, p in ipairs(sala:GetDescendants()) do
+	if p:IsA("BasePart") then
+		for _, old in ipairs(p:GetChildren()) do
+			if old:IsA("Texture") and old.Name == "Tekstura" then old:Destroy() end
+		end
+		-- kule (jabłka, gałki, płomienie) bez tekstur; bloki, kliny i walce — tak
+		local kula = p:IsA("Part") and p.Shape == Enum.PartType.Ball
+		local grupa = p.Parent and p.Parent.Name
+		if p.Transparency < 1 and p.Material ~= Enum.Material.Neon then
+			local trafiona = nil
+			for _, r in ipairs(R) do
+				local ok = (r.grupa == "*" or r.grupa == grupa) and pasuje(r.nazwa, p.Name) and r.id ~= nil
+					and (not kula or r.kula == true)
+				if ok and r.bez then
+					for _, b in ipairs(r.bez) do
+						if p.Name:find(b, 1, true) then ok = false end
+					end
+				end
+				if ok then trafiona = r break end
+			end
+			if not trafiona and MAT and not kula then
+				local m = p.Material.Name
+				if m == "Metal" and zloty(p.Color) then m = "zloto" end
+				local r = MAT[m]
+				if r and r.id then trafiona = r ogolne += 1 end
+			end
+			if trafiona then
+				naloz(p, trafiona)
+				czesci += 1
+			end
+		end
+	end
+end
+for _, p in ipairs(sala:GetDescendants()) do
+	if p:IsA("Texture") and p.Name == "Tekstura" then n += 1 end
+end
+print("[WyborKlasy] tekstury:", czesci, "części (", ogolne, "z reguły materiałów ),", n, "ścian")
+"""
+
 
 def find(node, name):
     if node.get("Name") == name:
@@ -134,9 +215,21 @@ def main():
     gui = json.loads((ROOT / "src/gui/ClassSelect.model.json").read_text(encoding="utf-8"))
     efekty = (ROOT / "swiat/wybor_klasy/efekty.json").read_text(encoding="utf-8")
     assert "]==]" not in efekty
+    # tekstury z paczki: ID z manifestu; reguła bez wgranej tekstury jest pomijana
+    man = json.loads((ROOT / "assets/manifest.json").read_text(encoding="utf-8"))["assets"]
+    reguly = json.loads((ROOT / "swiat/wybor_klasy/tekstury.json").read_text(encoding="utf-8"))["reguly"]
+    dane = json.loads((ROOT / "swiat/wybor_klasy/tekstury.json").read_text(encoding="utf-8"))
+    materialy = dane.get("materialy", {})
+    for r in list(reguly) + list(materialy.values()):
+        r["id"] = man.get(r["tekstura"], {}).get("roblox_image")
+    brak = sorted({r["tekstura"] for r in list(reguly) + list(materialy.values()) if not r["id"]})
+    if brak:
+        print("tekstury bez ID Roblox (pominięte):", ", ".join(brak))
+    tekstury = json.dumps({"reguly": reguly, "materialy": materialy}, ensure_ascii=False)
     out = ['local CHS = game:GetService("ChangeHistoryService")',
            'local rec = CHS:TryBeginRecording("Ekran wyboru klasy")',
            "do", "local EFEKTY_JSON = [==[" + efekty + "]==]", SWIATLA, "end",
+           "do", "local TEKSTURY_JSON = [==[" + tekstury + "]==]", TEKSTURY, "end",
            # kopie modeli bohaterów
            "do",
            'local RS = game:GetService("ReplicatedStorage")',

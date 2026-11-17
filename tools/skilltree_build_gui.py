@@ -104,7 +104,9 @@ def main():
         ]),
     ])
 
-    cx, cy, cw_, ch_ = 880 / W, 8 / H, 94 / W, 88 / H  # przycisk X z ekwipunku przykrywa X wypalony w ramce
+    # X: niewidoczne pole kliknięcia dokładnie nad czerwonym korpusem X wypalonego w ramce (px makiety 974 × 717).
+    # Wcześniej leżał tu X z ekwipunku — inna grafika, spod której wychodził jasny róg (uwaga Pawła 17.11)
+    cx, cy, cw_, ch_ = 891 / W, 11 / H, 81 / W, 84 / H
     gui = {
         "ClassName": "ScreenGui",
         "Properties": {"Enabled": False, "ResetOnSpawn": False, "IgnoreGuiInset": True, "ZIndexBehavior": "Sibling", "DisplayOrder": 25},
@@ -123,7 +125,7 @@ def main():
                 # napis na środku drewnianej tabliczki (deska: y 6–80 px z 717), z zapasem, żeby nie wystawał
                 text("Title", ud(L["title"][0] + L["title"][2] * 0.1, 0.034, L["title"][2] * 0.8, 0.072), "SKILL TREE", "FCE3B0", 30, st=3, z=4),
                 node("CloseButton", "ImageButton", {"AnchorPoint": [0.5, 0.5], **ud(cx + cw_ / 2, cy + ch_ / 2, cw_, ch_),
-                                                    "BackgroundTransparency": 1, "Image": img("EqClose"), "ScaleType": "Fit",
+                                                    "BackgroundTransparency": 1, "Image": "", "ScaleType": "Fit",
                                                     "AutoButtonColor": False, "ZIndex": 5},
                      [node("UIScale", "UIScale", {"Scale": 1})]),
             ]),

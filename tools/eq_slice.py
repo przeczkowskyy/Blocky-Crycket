@@ -174,8 +174,8 @@ def main():
     sprites = {}
     for name, (rect, seed, tol, grow) in SPRITES.items():
         img = segment(sprite_arr, rect, seed, tol, grow, tight=name.startswith("EqTab"))
-        if name.startswith("EqTab") or name == "EqClose":
-            img = utwardz(img, grow=3)  # 3 px w skali źródła ≈ 2,4 px po zmniejszeniu do 2048
+        # bez utwardz(): przycisk ma być identyczny z kopią w tle (leży na niej co do piksela); reakcję na mysz robi
+        # klient nakładką i napisem, bez przesuwania i skalowania (Paweł 17.11)
         img = img.resize((max(1, round(img.width * scale)), max(1, round(img.height * scale))), Image.LANCZOS)
         img.save(OUT / f"{name}.png")
         sprites[name] = norm(rect)

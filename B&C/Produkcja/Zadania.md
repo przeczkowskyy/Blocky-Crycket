@@ -88,7 +88,6 @@ tags: [produkcja, zadania]
 - [ ] Szary prototyp BONK-a z botem-klikaczem (bramka B1, [[Systemy gry v2]]) — po decyzji z pytania 16 · #wysoki
 
 ## 📥 Backlog
-- [ ] [[Tekstury sali wyboru klasy]]: nałożyć 16 tekstur na obiekty sali `Workspace/WyborKlasy` (Texture albo MaterialVariant); wgranie do Roblox po „tak” · agent: Karol · #sredni
 
 - [ ] [[Selektor bohatera]]: upload grafik 2D ekranu wyboru klasy (po „tak”), udostępnienie siatki Zwiadowcy grze (D-044), zapis klasy w DataStore · #wysoki
 
@@ -119,6 +118,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-17: [[Tekstury sali wyboru klasy]]: 16 tekstur z paczki wgranych (po „tak” Pawła) i nałożonych na 254 części sali wyboru klasy (`swiat/wybor_klasy/tekstury.json`, `tools/studio/deploy_classselect.py`); zrobił agent Pawła na jego polecenie
 - [x] 2026-11-17: Karol nadał grze prawa do sześciu wgranych plików audio w Creator Hub; wszystkie sześć wczytuje się w grze, muzyka gra w bazarze, w walce wchodzą własne efekty z arkusza
 - [x] 2026-11-17: Jajka i pety na próbę działają w Studio (`Workspace/PetyProba`, `swiat/pety_proba/`): inkubator przy wejściu do lasu z jawnymi szansami, jajko za Złoto z walk (300, potem drożej), wyklucie z animacją, pięć leśnych petów (modele z klocków i z Blendera), pet idzie za graczem i daje premię do łupu, wybór peta w zagrodzie w bazarze; próba w grze 16 z 17 punktów, przejście prawdziwymi kliknięciami 9 z 9 (pierwsze jajko po 15 walkach), próba dymna 14 z 14
 - [x] 2026-11-17: Areny walki zależne od biomu stoją w Studio (D-095, `Workspace/ArenyWalki`): Polana Pod Koronami dla lasu, Pomost Nad Topielą dla Bagna, Plac Ćwiczeń Pod Murem dla tablicy próby; walka z każdego źródła idzie na swojej arenie, mgła i drobne ruchome detale tylko u gracza; czas klatki bez zmian (16,7 ms), stare próby walki 111 z 111 i 27 z 27; raport w panelu czeka na decyzję

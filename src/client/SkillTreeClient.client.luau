@@ -648,9 +648,95 @@ local function bounce(btn: GuiButton, onClick: () -> ())
 	end)
 end
 
+------------------------------------------------------------ przyciski „wypalone” w tle (zakładki, X): bez skalowania i przesuwania
+-- Przycisk leży co do piksela na swojej kopii w grafice tła — każde powiększenie, zmniejszenie albo przyciemnienie samego
+-- obrazka odsłaniało kopię pod spodem (uwaga Pawła 16–17.11). Reakcja na mysz: nakładka-cień w kształcie przycisku
+-- (ten sam obrazek na czarno; dla pola bez obrazka — zaokrąglony prostokąt) i podskok napisu.
+local SHADE_OFF, SHADE_HOVER_OFF, SHADE_PRESS = 0.5, 0.72, 0.62
+local function flatButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
+	local sc = btn:FindFirstChildWhichIsA("UIScale")
+	if sc then
+		sc.Scale = 1
+	end
+	local shade: GuiObject
+	if btn.Image ~= "" and btn.ImageTransparency < 1 then
+		local img = Instance.new("ImageLabel")
+		img.Image = btn.Image
+		img.ScaleType = btn.ScaleType
+		img.ImageColor3 = Color3.new(0, 0, 0)
+		img.ImageTransparency = 1
+		img.BackgroundTransparency = 1
+		shade = img
+	else
+		local f = Instance.new("Frame")
+		f.BackgroundColor3 = Color3.new(0, 0, 0)
+		f.BackgroundTransparency = 1
+		f.BorderSizePixel = 0
+		local c = Instance.new("UICorner")
+		c.CornerRadius = UDim.new(0.22, 0)
+		c.Parent = f
+		shade = f
+	end
+	shade.Name = "Shade"
+	shade.Size = UDim2.fromScale(1, 1)
+	shade.ZIndex = 1
+	shade.Parent = btn
+	local label = btn:FindFirstChild("Label")
+	local lsc: UIScale? = nil
+	if label and label:IsA("GuiObject") then
+		label.ZIndex = math.max(label.ZIndex, 2)
+		lsc = label:FindFirstChildOfClass("UIScale")
+		if not lsc then
+			lsc = Instance.new("UIScale")
+			lsc.Parent = label
+		end
+	end
+	local base, hovering, pressed = 1, false, false
+	local function apply()
+		local t = base
+		if hovering and t < 1 then
+			t = SHADE_HOVER_OFF
+		end
+		if pressed then
+			t = math.min(t, SHADE_PRESS)
+		end
+		local prop = shade:IsA("ImageLabel") and "ImageTransparency" or "BackgroundTransparency"
+		TS:Create(shade, QUICK, { [prop] = t }):Play()
+		if lsc then
+			TS:Create(lsc, QUICK, { Scale = pressed and 0.95 or (hovering and 1.12 or 1) }):Play()
+		end
+	end
+	btn.MouseEnter:Connect(function()
+		hovering = true
+		apply()
+	end)
+	btn.MouseLeave:Connect(function()
+		hovering, pressed = false, false
+		apply()
+	end)
+	btn.MouseButton1Down:Connect(function()
+		pressed = true
+		apply()
+	end)
+	btn.MouseButton1Up:Connect(function()
+		pressed = false
+		apply()
+	end)
+	btn.Activated:Connect(function()
+		pressed = false
+		apply()
+		onClick()
+	end)
+	return function(active: boolean)
+		base = active and 1 or SHADE_OFF
+		apply()
+	end
+end
+
 -- jedno tło dla wszystkich zakładek (Paweł 17.11) — nic do przełączania
 local function showBackground(_tab: string, _instant: boolean) end
 
+local tabSetters: { [string]: (boolean) -> () } = {}
 local function selectTab(tab: string, instant: boolean?)
 	showBackground(tab, instant == true or currentTab == tab)
 	currentTab = tab
@@ -659,7 +745,9 @@ local function selectTab(tab: string, instant: boolean?)
 		local b = tabs:FindFirstChild(name)
 		if b then
 			local active = t == tab
-			b.ImageColor3 = active and Color3.new(1, 1, 1) or Color3.fromRGB(150, 150, 150)
+			if tabSetters[name] then
+				tabSetters[name](active) -- cień-nakładka zamiast ImageColor3 (bez prześwitu kopii z ramki)
+			end
 			b.Label.TextColor3 = active and Color3.new(1, 1, 1) or Color3.fromRGB(205, 205, 205)
 		end
 	end
@@ -672,7 +760,7 @@ end
 
 for name, tab in pairs(TAB_BY_BUTTON) do
 	local b = tabs:WaitForChild(name)
-	bounce(b, function()
+	tabSetters[name] = flatButton(b, function()
 		if currentTab ~= tab then
 			selectTab(tab)
 		end
@@ -715,7 +803,7 @@ local function close()
 	t:Play()
 end
 
-bounce(panel:WaitForChild("CloseButton"), close)
+flatButton(panel:WaitForChild("CloseButton"), close) -- pole kliknięcia nad X wypalonym w ramce
 backdrop.Activated:Connect(close)
 UIS.InputBegan:Connect(function(input, processed)
 	if not processed and gui.Enabled and input.KeyCode == Enum.KeyCode.Escape then

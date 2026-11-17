@@ -472,3 +472,12 @@ Szczegóły: 20% liczy silnik walki (`src/server/Walka/Przeciwnicy.luau`); od 17
 
 Szczegóły: Zob. pytania 17, 36 i 50 (trening jako trzecie źródło statystyk) oraz 53. Dopóki „+” jest darmowy, liczby balansu z walk w Studio nie są miarodajne, gdy ktoś go używa.
 **Odpowiedź:**
+
+## 56. Rozkład statystyk klas: profil Pawła czy wzorcowy Karola?
+- Paweł 17.11 opisał profile klas na ekranie wyboru: Wojownik STR, CON i ARMOR; Zwiadowca DEX i dużo LUCK (mniej CON i STR niż Wojownik); Mag dużo INT i LUCK, najmniej CON, STR i ARMOR.
+- Te same liczby w `src/shared/ClassData.luau` rozdzielają startowe punkty w pakiecie Karola `swiat/stan_gracza`, więc zmieniają balans, nie tylko wygląd karty.
+- Dziś w grze profil Pawła (sumy 100): Wojownik 25/27/6/9/9/24, Zwiadowca 15/19/9/26/21/10, Mag 9/14/32/13/25/7 (STR/CON/INT/DEX/LUCK/ARMOR). StanGracza ostrzega „inne niż wzorcowe”.
+- Do wyboru: (a) profil Pawła wszędzie; (b) wzorcowy Karola w walce, profil Pawła tylko na karcie; (c) wspólnie ustalić nowe liczby.
+
+Szczegóły: Wcześniejsze liczby (wzorcowe, z [[Walka v2 — silnik, klasy i umiejętności]]): Wojownik 26/30/12/8/10/14, Zwiadowca 27/27/10/14/13/9, Mag 24/22/24/10/10/10. Powiązane: pytanie 53. Zmienił Claude Code u Pawła 17.11 na jego polecenie (karta wyboru klasy).
+**Odpowiedź:**

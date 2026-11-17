@@ -96,6 +96,91 @@ local function bounce(btn, onClick)
 	end)
 end
 
+------------------------------------------------ przyciski „wypalone” w tle (zakładki, X): bez skalowania i przesuwania
+-- Przycisk leży co do piksela na swojej kopii w grafice tła — każde powiększenie, zmniejszenie albo przyciemnienie samego
+-- obrazka odsłaniało kopię pod spodem (uwaga Pawła 16–17.11). Reakcja na mysz: nakładka-cień w kształcie przycisku
+-- (ten sam obrazek na czarno; dla pola bez obrazka — zaokrąglony prostokąt) i podskok napisu.
+local SHADE_OFF, SHADE_HOVER_OFF, SHADE_PRESS = 0.5, 0.72, 0.62
+local function flatButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
+	local sc = btn:FindFirstChildWhichIsA("UIScale")
+	if sc then
+		sc.Scale = 1
+	end
+	local shade: GuiObject
+	if btn.Image ~= "" and btn.ImageTransparency < 1 then
+		local img = Instance.new("ImageLabel")
+		img.Image = btn.Image
+		img.ScaleType = btn.ScaleType
+		img.ImageColor3 = Color3.new(0, 0, 0)
+		img.ImageTransparency = 1
+		img.BackgroundTransparency = 1
+		shade = img
+	else
+		local f = Instance.new("Frame")
+		f.BackgroundColor3 = Color3.new(0, 0, 0)
+		f.BackgroundTransparency = 1
+		f.BorderSizePixel = 0
+		local c = Instance.new("UICorner")
+		c.CornerRadius = UDim.new(0.22, 0)
+		c.Parent = f
+		shade = f
+	end
+	shade.Name = "Shade"
+	shade.Size = UDim2.fromScale(1, 1)
+	shade.ZIndex = 1
+	shade.Parent = btn
+	local label = btn:FindFirstChild("Label")
+	local lsc: UIScale? = nil
+	if label and label:IsA("GuiObject") then
+		label.ZIndex = math.max(label.ZIndex, 2)
+		lsc = label:FindFirstChildOfClass("UIScale")
+		if not lsc then
+			lsc = Instance.new("UIScale")
+			lsc.Parent = label
+		end
+	end
+	local base, hovering, pressed = 1, false, false
+	local function apply()
+		local t = base
+		if hovering and t < 1 then
+			t = SHADE_HOVER_OFF
+		end
+		if pressed then
+			t = math.min(t, SHADE_PRESS)
+		end
+		local prop = shade:IsA("ImageLabel") and "ImageTransparency" or "BackgroundTransparency"
+		TS:Create(shade, QUICK, { [prop] = t }):Play()
+		if lsc then
+			TS:Create(lsc, QUICK, { Scale = pressed and 0.95 or (hovering and 1.12 or 1) }):Play()
+		end
+	end
+	btn.MouseEnter:Connect(function()
+		hovering = true
+		apply()
+	end)
+	btn.MouseLeave:Connect(function()
+		hovering, pressed = false, false
+		apply()
+	end)
+	btn.MouseButton1Down:Connect(function()
+		pressed = true
+		apply()
+	end)
+	btn.MouseButton1Up:Connect(function()
+		pressed = false
+		apply()
+	end)
+	btn.Activated:Connect(function()
+		pressed = false
+		apply()
+		onClick()
+	end)
+	return function(active: boolean)
+		base = active and 1 or SHADE_OFF
+		apply()
+	end
+end
+
 ------------------------------------------------ sloty (hotspoty): niewidoczne, tylko kliknięcie
 local function hotspot(slot, kind, arg)
 	slot.Activated:Connect(function()
@@ -127,10 +212,14 @@ local function tabGroup(folder, default)
 			table.insert(tabs, t)
 		end
 	end
+	local setters = {}
 	local function activate(active)
 		for _, t in ipairs(tabs) do
 			local on = t == active
-			t.ImageColor3 = on and Color3.new(1, 1, 1) or INACTIVE_TAB
+			-- nieaktywna zakładka: cień-nakładka (nie ImageColor3 — przez miękki brzeg prześwitywała jasna kopia z tła)
+			if setters[t] then
+				setters[t](on)
+			end
 			t.ZIndex = on and 2 or 1
 			local label = t:FindFirstChild("Label")
 			if label then
@@ -139,7 +228,7 @@ local function tabGroup(folder, default)
 		end
 	end
 	for _, t in ipairs(tabs) do
-		bounce(t, function()
+		setters[t] = flatButton(t, function()
 			activate(t)
 			action:Fire("Tab", t.Name)
 		end)
@@ -489,7 +578,7 @@ local function close()
 	t:Play()
 end
 
-bounce(panel.CloseButton, close)
+flatButton(panel.CloseButton, close) -- X leży na swojej kopii w tle: bez skalowania
 backdrop.Activated:Connect(close)
 
 hudPressed.Event:Connect(function(name)

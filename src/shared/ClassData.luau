@@ -2,7 +2,8 @@
 -- Klasy postaci i scena wyboru klasy (ReplicatedStorage.Shared.ClassData) — wspólne dla serwera i klienta.
 -- Klasy: D-054 (Wojownik, Zwiadowca, Mag). Paski statystyk na ekranie wyboru = profil klasy wg Pawła (17.11.2026):
 -- Wojownik STR/CON/ARMOR, Zwiadowca DEX + LUCK, Mag INT + LUCK (pasek pełny przy BAR_FULL). To opis klasy na
--- ekranie, nie liczby silnika walki (B&C/Gra/Walka v2 — silnik, klasy i umiejętności.md).
+-- ekranie. UWAGA: pakiet Karola swiat/stan_gracza rozdaje z tych liczb startowe punkty (procent puli) — każda
+-- klasa musi sumować się do 100 (inaczej StanGracza odrzuca rozkład: „suma_nie_100”).
 -- Scena 3D: swiat/wybor_klasy/generuj.py (kontener Workspace/WyborKlasy). Projekt: B&C/UI/Selektor bohatera.md.
 
 local ClassData = {}
@@ -19,14 +20,14 @@ export type Class = {
 
 ClassData.Classes = {
 	{ id = "Warrior", name = "WARRIOR", subtitle = "SHIELD & SWORD", emblem = "CsEmblemWarrior", model = "Warrior",
-		stats = { 27, 29, 7, 10, 10, 26 }, color = { Color3.fromRGB(120, 196, 255), Color3.fromRGB(38, 110, 230) } },
+		stats = { 25, 27, 6, 9, 9, 24 }, color = { Color3.fromRGB(120, 196, 255), Color3.fromRGB(38, 110, 230) } },
 	{ id = "Scout", name = "SCOUT", subtitle = "BOW & DAGGER", emblem = "CsEmblemScout", model = "Scout",
-		stats = { 17, 21, 10, 29, 23, 12 }, color = { Color3.fromRGB(150, 240, 110), Color3.fromRGB(44, 168, 64) } },
+		stats = { 15, 19, 9, 26, 21, 10 }, color = { Color3.fromRGB(150, 240, 110), Color3.fromRGB(44, 168, 64) } },
 	{ id = "Mage", name = "MAGE", subtitle = "STAFF & SPELLS", emblem = "CsEmblemMage", model = "Mage",
-		stats = { 8, 13, 29, 12, 22, 6 }, color = { Color3.fromRGB(214, 150, 255), Color3.fromRGB(128, 58, 214) } },
+		stats = { 9, 14, 32, 13, 25, 7 }, color = { Color3.fromRGB(214, 150, 255), Color3.fromRGB(128, 58, 214) } },
 } :: { Class }
 
-ClassData.BAR_FULL = 30
+ClassData.BAR_FULL = 32 -- najwyższa wartość w profilach (INT Maga) = pełny pasek
 
 function ClassData.byId(id: string): Class?
 	for _, c in ipairs(ClassData.Classes) do

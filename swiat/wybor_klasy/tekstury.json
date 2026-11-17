@@ -1,0 +1,579 @@
+{
+ "_opis": "Tekstury z paczki (assets/processed/ClassSelectTextures, ID w assets/manifest.json) na częściach sali Workspace/WyborKlasy. Nakłada tools/studio/deploy_classselect.py. Reguła: grupa (Model w sali), nazwa części (dokładna albo początek z *), wykluczenia (fragmenty nazwy), tekstura, studs (wielkość jednego powtórzenia; 'czesc' = jedna tekstura na całą ścianę części), sciany (all / top), barwa (true = tekstura zabarwiona kolorem części). Grupa '*' = dowolna. Części bez reguły szczegółowej dostają teksturę według materiału (sekcja materialy). Notatka: B&C/UI/Tekstury sali wyboru klasy.md",
+ "reguly": [
+  {
+   "grupa": "*",
+   "nazwa": "*świeca*",
+   "tekstura": "CsProp01",
+   "studs": 2,
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Świeca*",
+   "tekstura": "CsProp01",
+   "studs": 2,
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "*jabłko*",
+   "tekstura": "CsProp02",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true,
+   "kula": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Jabłko*",
+   "tekstura": "CsProp02",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true,
+   "kula": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Jagoda",
+   "tekstura": "CsProp02",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true,
+   "kula": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Kufel rant",
+   "tekstura": "CsProp04",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Kufel*",
+   "tekstura": "CsProp03",
+   "studs": 2,
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Talerz*",
+   "tekstura": "CsProp04",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Słój wieko",
+   "tekstura": "CsTex05",
+   "studs": 2,
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Słój",
+   "tekstura": "CsProp06",
+   "studs": 2,
+   "sciany": "all",
+   "_drobne": true,
+   "barwa": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Księga",
+   "tekstura": "CsProp05",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true,
+   "barwa": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Chleb*",
+   "tekstura": "CsProp07",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Ser*",
+   "tekstura": "CsProp08",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Liście",
+   "tekstura": "CsProp09",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true,
+   "kula": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Miecz głownia",
+   "tekstura": "CsProp10",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Miecz rękojeść",
+   "tekstura": "CsProp11",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Tarcza pole",
+   "tekstura": "CsProp12",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Eliksir korek",
+   "tekstura": "CsProp13",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Eliksir*",
+   "tekstura": "CsProp15",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true,
+   "barwa": true,
+   "kula": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Wnęka bok",
+   "tekstura": "CsProp14",
+   "studs": 6,
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Wnęka tył",
+   "tekstura": "CsProp14",
+   "studs": 6,
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Wnęka strop",
+   "tekstura": "CsProp14",
+   "studs": 6,
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Kosz",
+   "tekstura": "CsProp16",
+   "studs": 2,
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "*gałka",
+   "tekstura": "CsTex12",
+   "studs": 2,
+   "sciany": "all",
+   "_drobne": true,
+   "kula": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Miecz głowica",
+   "tekstura": "CsTex12",
+   "studs": 2,
+   "sciany": "all",
+   "_drobne": true,
+   "kula": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Tarcza guz",
+   "tekstura": "CsTex12",
+   "studs": 2,
+   "sciany": "all",
+   "_drobne": true,
+   "kula": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "*obręcz",
+   "tekstura": "CsTex15",
+   "studs": 3,
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Miecz jelec",
+   "tekstura": "CsTex12",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Tarcza rant",
+   "tekstura": "CsTex12",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Tarcza pas",
+   "tekstura": "CsTex12",
+   "studs": "czesc",
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Złota obwódka",
+   "tekstura": "CsTex12",
+   "studs": 3,
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Pierścień złoty",
+   "tekstura": "CsTex12",
+   "studs": 3,
+   "sciany": "all",
+   "_drobne": true
+  },
+  {
+   "grupa": "Mury",
+   "nazwa": "Mur tynk",
+   "tekstura": "CsTex03",
+   "studs": 12,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Mury",
+   "nazwa": "Mur nad wnęką",
+   "tekstura": "CsTex03",
+   "studs": 12,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Mury",
+   "nazwa": "Mur kamień",
+   "tekstura": "CsTex01",
+   "studs": 7,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Dach",
+   "nazwa": "Szczyt*",
+   "tekstura": "CsTex03",
+   "studs": 12,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Dach",
+   "nazwa": "Deski dachu",
+   "tekstura": "CsTex07",
+   "studs": 10,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Podloga",
+   "nazwa": "Płyta",
+   "tekstura": "CsTex02",
+   "studs": 11,
+   "sciany": "top"
+  },
+  {
+   "grupa": "Wneka",
+   "nazwa": "Wnęka płyta",
+   "tekstura": "CsTex02",
+   "studs": 11,
+   "sciany": "top"
+  },
+  {
+   "grupa": "Szkielet",
+   "nazwa": "Słup",
+   "tekstura": "CsTex05",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Szkielet",
+   "nazwa": "Rygiel",
+   "tekstura": "CsTex05",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Szkielet",
+   "nazwa": "Oczep",
+   "tekstura": "CsTex05",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Szkielet",
+   "nazwa": "Zastrzał",
+   "tekstura": "CsTex05",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Wiezba",
+   "nazwa": "*",
+   "tekstura": "CsTex05",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Regal",
+   "nazwa": "Regał plecy",
+   "tekstura": "CsTex06",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Regal",
+   "nazwa": "Regał bok",
+   "tekstura": "CsTex05",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Regal",
+   "nazwa": "Regał daszek",
+   "tekstura": "CsTex06",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Regal",
+   "nazwa": "Półka",
+   "tekstura": "CsTex06",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Lada",
+   "nazwa": "Lada korpus",
+   "tekstura": "CsTex06",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Lada",
+   "nazwa": "Lada blat",
+   "tekstura": "CsTex06",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Lada",
+   "nazwa": "Lada płycina*",
+   "tekstura": "CsTex05",
+   "studs": 5,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Kominek",
+   "nazwa": "Kominek filar",
+   "tekstura": "CsTex09",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Kominek",
+   "nazwa": "Kominek nadproże",
+   "tekstura": "CsTex09",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Kominek",
+   "nazwa": "Komin dół",
+   "tekstura": "CsTex09",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Kominek",
+   "nazwa": "Komin góra",
+   "tekstura": "CsTex09",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Kominek",
+   "nazwa": "Kominek tył",
+   "tekstura": "CsTex10",
+   "studs": 5,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Kominek",
+   "nazwa": "Palenisko płyta",
+   "tekstura": "CsTex09",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Kominek",
+   "nazwa": "Gzyms",
+   "tekstura": "CsTex06",
+   "studs": 6,
+   "sciany": "all"
+  },
+  {
+   "grupa": "Skrzynie",
+   "nazwa": "Skrzynia*",
+   "bez": [
+    " narożnik",
+    " rama",
+    " ukos"
+   ],
+   "tekstura": "CsTex16",
+   "studs": "czesc",
+   "sciany": "all"
+  },
+  {
+   "grupa": "Wneka",
+   "nazwa": "Skrzynia*",
+   "bez": [
+    " narożnik",
+    " rama",
+    " ukos"
+   ],
+   "tekstura": "CsTex16",
+   "studs": "czesc",
+   "sciany": "all"
+  },
+  {
+   "grupa": "Dywan",
+   "nazwa": "Dywan pole",
+   "tekstura": "CsTex13",
+   "studs": 5,
+   "sciany": "top"
+  },
+  {
+   "grupa": "Choragwie",
+   "nazwa": "Chorągiew*",
+   "bez": [
+    " drążek",
+    " gałka",
+    " lamówka",
+    " znak",
+    " pas",
+    " ząb"
+   ],
+   "tekstura": "CsTex14",
+   "studs": "czesc",
+   "sciany": "all",
+   "barwa": true
+  },
+  {
+   "grupa": "Podest",
+   "nazwa": "Kamień podestu",
+   "tekstura": "CsTex11",
+   "studs": "czesc",
+   "sciany": "all"
+  },
+  {
+   "grupa": "Stol",
+   "nazwa": "Stół stopa",
+   "tekstura": "CsTex05",
+   "studs": 4,
+   "sciany": "all"
+  },
+  {
+   "grupa": "*",
+   "nazwa": "Beczka*",
+   "bez": [
+    " obręcz",
+    " wieko",
+    " dno",
+    " klin",
+    " jabłko"
+   ],
+   "tekstura": "CsTex08",
+   "studs": 4,
+   "sciany": "all"
+  }
+ ],
+ "_opis_materialy": "Reguła ogólna (Paweł 17.11: „tekstury na wszystko”): każda część sali bez reguły szczegółowej dostaje teksturę według materiału; przezroczystość zostawia odcień koloru części. Pomijane: kreska (SmoothPlastic: tusz, fuga), Neon (płomienie, okna), Glass, kule. złoto = Metal w kolorze złota.",
+ "materialy": {
+  "Slate": {
+   "tekstura": "CsTex01",
+   "studs": 9,
+   "przezr": 0.25
+  },
+  "Cobblestone": {
+   "tekstura": "CsTex09",
+   "studs": 7,
+   "przezr": 0.2
+  },
+  "Granite": {
+   "tekstura": "CsTex11",
+   "studs": 8,
+   "przezr": 0.2
+  },
+  "Wood": {
+   "tekstura": "CsTex05",
+   "studs": 5,
+   "przezr": 0.2
+  },
+  "WoodPlanks": {
+   "tekstura": "CsTex06",
+   "studs": 5,
+   "przezr": 0.15
+  },
+  "Plaster": {
+   "tekstura": "CsTex03",
+   "studs": 12,
+   "przezr": 0.1
+  },
+  "Metal": {
+   "tekstura": "CsTex15",
+   "studs": 3,
+   "przezr": 0.25
+  },
+  "Fabric": {
+   "tekstura": "CsTex14",
+   "studs": "czesc",
+   "przezr": 0.0,
+   "barwa": true
+  },
+  "zloto": {
+   "tekstura": "CsTex12",
+   "studs": 3,
+   "przezr": 0.15
+  }
+ },
+ "_opis_drobne": "Drobne rekwizyty (Paweł 17.11): tekstury CsProp01–16 z drugiego arkusza; '*x*' = nazwa zawiera x; kula: true = także kule."
+}

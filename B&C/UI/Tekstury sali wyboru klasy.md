@@ -6,12 +6,17 @@ tags: [ui, klasy, tekstury, swiat]
 # Tekstury sali wyboru klasy
 
 > [!info] W skrócie
-> Paczka 16 komiksowych tekstur (Glossy Ink) **dla sali ekranu wyboru bohatera** ([[Selektor bohatera]]). Wygenerował ją Paweł 16.11 jednym arkuszem w Higgsfield, a Claude pociął ją na osobne pliki. **Dla Karola:** do nałożenia na obiekty sali `Workspace/WyborKlasy` (generator `swiat/wybor_klasy/generuj.py`). Tylko do tego ekranu, nie na mapy gry. Grafik nie wgrano jeszcze do Roblox, bo to wymaga „tak” od Karola albo Pawła.
+> Paczka 16 komiksowych tekstur (Glossy Ink) **dla sali ekranu wyboru bohatera** ([[Selektor bohatera]]). Wygenerował ją Paweł 16.11 jednym arkuszem w Higgsfield, a Claude pociął ją na osobne pliki. **Dla Karola:** do nałożenia na obiekty sali `Workspace/WyborKlasy` (generator `swiat/wybor_klasy/generuj.py`). Tylko do tego ekranu, nie na mapy gry. **Stan 17.11:** wgrane do Roblox po „tak” Pawła (ID w `assets/manifest.json`, `CsTex01`–`CsTex16`) i nałożone na salę. Potem na prośbę Pawła („tekstury na wszystko”) doszła reguła ogólna według materiału (kamień, drewno, deski, tynk, metal, złoto, tkanina) i beczki — razem 726 z 1160 widocznych części, 3881 ścian. Bez tekstur zostają tylko kreska (czarne obrysy i ciemna fuga, SmoothPlastic), drobne rekwizyty z SmoothPlastic (kufle, talerze, świece, księgi, eliksiry) i światła Neon. Reguły „co na co”: `swiat/wybor_klasy/tekstury.json`; nakłada `tools/studio/deploy_classselect.py` (po każdej przebudowie sali przez `tools/studio_buduj.py` trzeba uruchomić go ponownie).
 
 ## Pliki
 - Pocięte kafelki 1024 × 1024 px: `assets/processed/ClassSelectTextures/CsTex01_…png` – `CsTex16_…png`.
 - Podgląd całego arkusza: `assets/processed/ClassSelectTextures/_arkusz_v1.jpg`. Oryginał 4096 px leży lokalnie u Pawła w `assets/raw/ClassSelectTextures/v1.png` (folder `raw` nie trafia do gita).
 - Model i prompt: Nano Banana 2.1, format 1:1, 4k, referencja `assets/refs/KeyArt_ref.jpg`. Części stałe promptu są z [[Instrukcja promptów — Glossy Ink]], środek opisuje siatkę 4 × 4 kafelków bez szwów.
+
+## Drobne rekwizyty (druga paczka, 17.11)
+- Na prośbę Pawła („tekstury na drobnostki w jednej generacji”) drugi arkusz 4 × 4 w Higgsfield (Nano Banana 2.1, 1 wariant): wosk świec, skórka jabłka, kamionka kufli, porcelana talerzy, skóra okładek ksiąg, glina słojów, skórka chleba, ser, liście, stal miecza, owijka rękojeści, malowana tarcza, korek, ciemny kamień wnęki, szkło eliksirów, wiklina kosza.
+- Pocięte narzędziem `tools/tex_sheet.py` (generator dorysował kafelkom czarne ramki — cięcie z wcięciem 40 px): `assets/processed/ClassSelectTextures/CsProp01`–`CsProp16`, podgląd `_arkusz_CsProp.jpg`; oryginał lokalnie w `assets/raw/ClassSelectProps/v1.png`.
+- Reguły w `swiat/wybor_klasy/tekstury.json` (wpisy z `_drobne`). Świecące części (Neon) i kreska zostają bez tekstur. Stan 17.11: wgrane po „tak” Pawła (`CsProp01`–`CsProp16` w manifeście) i nałożone — razem z pierwszą paczką teksturę ma 879 z 1160 widocznych części sali (4799 ścian); bez tekstur tylko 173 ciemne części kreski i 108 świecących.
 
 ## Co na co (propozycja)
 | Plik | Tekstura | Gdzie w sali (grupa / części z `generuj.py`) |
