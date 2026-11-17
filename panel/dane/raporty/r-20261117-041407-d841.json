@@ -1,0 +1,35 @@
+{
+ "id": "r-20261117-041407-d841",
+ "tytul": "Walka: nowy silnik, ekran walki i pomijanie — działa w Studio",
+ "opis_md": "**W skrócie**\n- Nowy silnik walki (mana, statusy, blok, wskrzeszenie, pasywki), nowy ekran walki i pomijanie walk działają w Studio w trzech miejscach: tablica prototypu, stary las i las-pas.\n- Pomijanie: przy pierwszym spotkaniu z gatunkiem przycisku nie ma; od drugiej walki jest POMIŃ (albo spacja). Decyduje serwer.\n- Silnik w grze liczy dokładnie to samo co wzorzec: 592 z 592 walk identycznych.\n- Zostało jedno znane niedociągnięcie: drobne nazwy przeciwników w panelu prób na telefonie (to narzędzie testowe, nie ekran gry).\n\n**Jak obejrzeć:** Play → Enter → przycisk TELEPORT → „Las” → dotknij potwora. Druga walka z tym samym gatunkiem ma przycisk POMIŃ. Wszystkie klasy i przeciwników naraz: tablica „WALKA v2” na południe od startu (ok. 220 studów) → E.\n\nSzczegóły:\n\n**Co sprawdzone w grze (17.11, 02:40–04:12)**\n- Pomijanie: pierwsza walka bez przycisku i z napisem „PIERWSZE SPOTKANIE — BEZ POMIJANIA”; druga z przyciskiem; próba oszustwa z klienta odrzucona przez serwer; inny gatunek znów bez przycisku.\n- Mana: paski zgadzają się z dziennikiem walki zdarzenie po zdarzeniu.\n- Statusy: trucizna do ×3, podpalenie, krwawienie, spowolnienie, ogłuszenie, tarcze — 11 z 11.\n- Blok (8 z 8), wskrzeszenie gracza, przeciwnika i obu (3 z 3), karteczki pasywek (3 z 3).\n- Las-pas: 17 punktów w porządku, koszt klatki do oceny człowieka. Stary las: 5 z 5.\n- Przejście przez chmury 6 z 6 — bez zmian po wdrożeniu.\n- Konsola bez błędów.\n\n**Naprawione po obejrzeniu zrzutów**\n- Przez środek ekranu szły w każdej walce dwa ciemne pasy (cień ukrytej karteczki pasywki).\n- Wielkie litery gubiły polskie znaki („STRAżNIK GAJU”).\n- W długiej walce kamera zostawała w zbliżeniu i cel ataku był poza kadrem.\n- Portret zasłaniał ostatni znak poziomu przeciwnika („POZ. 10” czytało się jak „POZ. 1”). Zrzuty 1, 2 i 8 są po tej poprawce, pozostałe sprzed niej.\n\n**Przyjęte na noc, do zmiany jednym wpisem**\n1. Po pominięciu walki gracz i potwór są wolni od razu (druga możliwość: gracz czeka tyle, ile trwałaby walka).\n2. Stary las też ma pomijanie walk.\n\n**Do decyzji**\n- Panel prób na telefonie: dwa rzędy po trzech przeciwników czy zostawić? Dziś nazwy mają 10–11 punktów przy progu 12.\n\n**Nie sprawdzone**\n- Prawdziwy telefon i dotyk, pad, dwóch graczy naraz.\n- Czas klatki i tempo ×4 — nocą ekran był zaciemniony i Studio rysowało 15 klatek na sekundę. Skrypt walki kosztuje średnio 0,6 ms na klatkę.\n- Przegrana i rewanż z pominięciem w lesie.\n\n**Słabe miejsca**\n- Dwa ujęcia kamery są na granicy progu testu (uderzenie z góry Zwiadowcy, uścisk korzeni Strażnika): cel częściowo zasłonięty, ale widoczny.\n- Po Strażniku w lesie-pasie pokazują się dwa panele bohatera i dwa banery — to dwa osobne skrypty lasu, nie ekran walki. Do poprawki osobno.\n- Tablica i tytuł panelu prób mają dalej napis „Walka v2”.\n- Miasteczko-bazar: punkt „Stare miasteczko (E)” po Bramie Leśnej zawodzi, gdy próba robi w lesie zrzut ekranu; bez zrzutów przechodzi. Znany kłopot narzędzia, nie skutek tej zmiany.\n\nPełne wyniki i lista wyborów: `swiat/test_walki2/README.md`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T04:14:07+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestWalki2",
+   "etykieta": "Prototyp walki"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/LasPasGra",
+   "etykieta": "Las-pas"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/test_walki2/README.md",
+   "etykieta": "Wyniki i wybory"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
