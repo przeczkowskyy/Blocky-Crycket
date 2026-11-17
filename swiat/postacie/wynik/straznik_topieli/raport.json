@@ -1,0 +1,483 @@
+{
+ "modul": "straznik_topieli",
+ "modele": [
+  {
+   "id": "straznik_topieli",
+   "nazwa": "Strażnik Topieli",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Biodra_Geo",
+     "kosc": "Biodra",
+     "trojkaty": 256,
+     "wierzcholki": 160,
+     "wymiary": [
+      5.552,
+      2.596,
+      3.966
+     ],
+     "min": [
+      -2.773,
+      3.479,
+      -1.796
+     ],
+     "max": [
+      2.779,
+      6.075,
+      2.17
+     ]
+    },
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 1428,
+     "wierzcholki": 784,
+     "wymiary": [
+      9.054,
+      8.168,
+      4.588
+     ],
+     "min": [
+      -4.527,
+      5.75,
+      -2.0
+     ],
+     "max": [
+      4.527,
+      13.918,
+      2.588
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 336,
+     "wierzcholki": 192,
+     "wymiary": [
+      3.298,
+      2.4,
+      3.4
+     ],
+     "min": [
+      -1.649,
+      11.25,
+      -0.15
+     ],
+     "max": [
+      1.649,
+      13.65,
+      3.25
+     ]
+    },
+    {
+     "nazwa": "Lodz_Geo",
+     "kosc": "Lodz",
+     "trojkaty": 476,
+     "wierzcholki": 288,
+     "wymiary": [
+      6.547,
+      2.448,
+      6.803
+     ],
+     "min": [
+      -3.279,
+      12.994,
+      -3.575
+     ],
+     "max": [
+      3.268,
+      15.442,
+      3.228
+     ]
+    },
+    {
+     "nazwa": "Broda_Geo",
+     "kosc": "Broda",
+     "trojkaty": 352,
+     "wierzcholki": 192,
+     "wymiary": [
+      2.7,
+      2.734,
+      1.929
+     ],
+     "min": [
+      -1.35,
+      8.991,
+      1.3
+     ],
+     "max": [
+      1.35,
+      11.725,
+      3.229
+     ]
+    },
+    {
+     "nazwa": "Latarnia_Geo",
+     "kosc": "Latarnia",
+     "trojkaty": 172,
+     "wierzcholki": 104,
+     "wymiary": [
+      1.45,
+      2.19,
+      1.0
+     ],
+     "min": [
+      -0.725,
+      7.96,
+      1.8
+     ],
+     "max": [
+      0.725,
+      10.15,
+      2.8
+     ]
+    },
+    {
+     "nazwa": "RamieL_Geo",
+     "kosc": "RamieL",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      2.335,
+      4.641,
+      2.378
+     ],
+     "min": [
+      2.79,
+      6.35,
+      -0.583
+     ],
+     "max": [
+      5.125,
+      10.991,
+      1.795
+     ]
+    },
+    {
+     "nazwa": "PrzedramieL_Geo",
+     "kosc": "PrzedramieL",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      2.054,
+      3.12,
+      2.278
+     ],
+     "min": [
+      3.223,
+      4.087,
+      -0.064
+     ],
+     "max": [
+      5.277,
+      7.207,
+      2.214
+     ]
+    },
+    {
+     "nazwa": "DlonL_Geo",
+     "kosc": "DlonL",
+     "trojkaty": 352,
+     "wierzcholki": 192,
+     "wymiary": [
+      1.971,
+      2.278,
+      2.055
+     ],
+     "min": [
+      3.229,
+      1.697,
+      0.647
+     ],
+     "max": [
+      5.2,
+      3.975,
+      2.702
+     ]
+    },
+    {
+     "nazwa": "NogaL_Geo",
+     "kosc": "NogaL",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      2.49,
+      4.145,
+      2.452
+     ],
+     "min": [
+      0.355,
+      0.867,
+      -1.151
+     ],
+     "max": [
+      2.845,
+      5.012,
+      1.301
+     ]
+    },
+    {
+     "nazwa": "StopaL_Geo",
+     "kosc": "StopaL",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      2.1,
+      0.836,
+      3.835
+     ],
+     "min": [
+      0.7,
+      -0.076,
+      -0.8
+     ],
+     "max": [
+      2.8,
+      0.76,
+      3.035
+     ]
+    },
+    {
+     "nazwa": "RamieP_Geo",
+     "kosc": "RamieP",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      2.335,
+      4.641,
+      2.378
+     ],
+     "min": [
+      -5.125,
+      6.35,
+      -0.583
+     ],
+     "max": [
+      -2.79,
+      10.991,
+      1.795
+     ]
+    },
+    {
+     "nazwa": "PrzedramieP_Geo",
+     "kosc": "PrzedramieP",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      2.054,
+      3.12,
+      2.278
+     ],
+     "min": [
+      -5.277,
+      4.087,
+      -0.064
+     ],
+     "max": [
+      -3.223,
+      7.207,
+      2.214
+     ]
+    },
+    {
+     "nazwa": "DlonP_Geo",
+     "kosc": "DlonP",
+     "trojkaty": 352,
+     "wierzcholki": 192,
+     "wymiary": [
+      1.971,
+      2.278,
+      2.055
+     ],
+     "min": [
+      -5.2,
+      1.697,
+      0.647
+     ],
+     "max": [
+      -3.229,
+      3.975,
+      2.702
+     ]
+    },
+    {
+     "nazwa": "NogaP_Geo",
+     "kosc": "NogaP",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      2.49,
+      4.145,
+      2.452
+     ],
+     "min": [
+      -2.845,
+      0.867,
+      -1.151
+     ],
+     "max": [
+      -0.355,
+      5.012,
+      1.301
+     ]
+    },
+    {
+     "nazwa": "StopaP_Geo",
+     "kosc": "StopaP",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      2.1,
+      0.836,
+      3.835
+     ],
+     "min": [
+      -2.8,
+      -0.076,
+      -0.8
+     ],
+     "max": [
+      -0.7,
+      0.76,
+      3.035
+     ]
+    }
+   ],
+   "trojkaty_razem": 5132,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 23
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    10.554,
+    15.518,
+    6.825
+   ],
+   "wymiary_z_akcesoriami": [
+    10.554,
+    15.518,
+    6.825
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -5.277,
+     -0.076,
+     -3.575
+    ],
+    [
+     5.277,
+     15.442,
+     3.25
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Biodra",
+    "Tulow",
+    "Glowa",
+    "Lodz",
+    "Broda",
+    "Latarnia",
+    "RamieL",
+    "PrzedramieL",
+    "DlonL",
+    "NogaL",
+    "StopaL",
+    "RamieP",
+    "PrzedramieP",
+    "DlonP",
+    "NogaP",
+    "StopaP"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment",
+    "LatarniaAttachment",
+    "PiescAttachment",
+    "PiescLAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att",
+    "Latarnia_Att",
+    "Piesc_Att",
+    "PiescL_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 72,
+     "fps": 30,
+     "sekundy": 2.4,
+     "petla": true
+    },
+    {
+     "n": "ruch",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "umiejetnosc",
+     "dlugosc": 66,
+     "fps": 30,
+     "sekundy": 2.2,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 20,
+     "fps": 30,
+     "sekundy": 0.67,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 66,
+     "fps": 30,
+     "sekundy": 2.2,
+     "petla": false
+    },
+    {
+     "n": "ryk",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "straznik_topieli.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje brak -> ZGODNE",
+  "straznik_topieli__idle.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-73 -> ZGODNE",
+  "straznik_topieli__ruch.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-61 -> ZGODNE",
+  "straznik_topieli__atak.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-37 -> ZGODNE",
+  "straznik_topieli__umiejetnosc.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-67 -> ZGODNE",
+  "straznik_topieli__trafienie.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-21 -> ZGODNE",
+  "straznik_topieli__unik.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-31 -> ZGODNE",
+  "straznik_topieli__upadek.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-67 -> ZGODNE",
+  "straznik_topieli__ryk.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-61 -> ZGODNE",
+  "straznik_topieli.glb: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje atak 0-36, idle 0-72, ruch 0-60, ryk 0-60, trafienie 0-20, umiejetnosc 0-66, unik 0-30, upadek 0-66 -> ZGODNE"
+ ]
+}

@@ -1,0 +1,59 @@
+RAPORT — bulgotnik
+BULGOTNIK — zwykły przeciwnik Bagna (Bulgotne Trzęsawisko): mały błotny szaman, ok. 4,2 studa (gracz ma 5,7).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/bulgotnik.py · wygenerowano 17.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py bulgotnik
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: bulgotnik
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości Bulgotnika nie są R15 (własny szkielet: Root + 12 kości) — import do Roblox Studio nie był testowany.
+- Bańka jest nieprzezroczysta: format rigu nie niesie przezroczystości (w Studio można dać Transparency ok. 0,3 rdzeniowi i płatom). Oczy siedzą na przedniej ściance bańki, więc widać je i bez przezroczystości.
+- Nadymanie bańki to rozsunięcie trzech płatów od rdzenia (bez skali) — z bliska widać, że to cztery bryły.
+- Świecenie ognika: materiał Neon na rigu z klocków; poświaty (PointLight) nie ma.
+- Kij przechodzi przez prawą dłoń (dłoń go „obejmuje”); w ataku i barierze dolny koniec kija może wejść w ziemię.
+- Krąg bariery (aura) robi odtwarzacz (styl „na_siebie”) — klip daje obrót z kijem i uderzenie w ziemię.
+
+MODEL bulgotnik „Bulgotnik” (stwor)
+  wymiary ciała: 2,80 × 4,21 × 2,15; z akcesoriami: 2,80 × 4,21 × 2,15
+  trójkąty: 2948 (siatek: 12)
+  kości (13): Root, Cialo, Glowa, BankaL, BankaP, BankaG, RamieL, NogaL, StopaL, RamieP, NogaP, StopaP, Kij
+  klipy: idle 72 kl. 2,40 s pętla, ruch 24 kl. 0,80 s pętla, atak 27 kl. 0,90 s jednorazowy, umiejetnosc 56 kl. 1,87 s jednorazowy, trafienie 18 kl. 0,60 s jednorazowy, unik 27 kl. 0,90 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, wiwat 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, OgnikAttachment
+
+KONTROLA EKSPORTÓW
+- bulgotnik.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje brak -> ZGODNE
+- bulgotnik__idle.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-73 -> ZGODNE
+- bulgotnik__ruch.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-25 -> ZGODNE
+- bulgotnik__atak.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-28 -> ZGODNE
+- bulgotnik__umiejetnosc.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-57 -> ZGODNE
+- bulgotnik__trafienie.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-19 -> ZGODNE
+- bulgotnik__unik.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-28 -> ZGODNE
+- bulgotnik__upadek.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-61 -> ZGODNE
+- bulgotnik__wiwat.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-61 -> ZGODNE
+- bulgotnik.glb: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje atak 0-27, idle 0-72, ruch 0-24, trafienie 0-18, umiejetnosc 0-56, unik 0-27, upadek 0-60, wiwat 0-60 -> ZGODNE
+
+PLIKI
+- bulgotnik.blend
+- bulgotnik.fbx
+- bulgotnik.glb
+- bulgotnik__atak.fbx
+- bulgotnik__idle.fbx
+- bulgotnik__ruch.fbx
+- bulgotnik__trafienie.fbx
+- bulgotnik__umiejetnosc.fbx
+- bulgotnik__unik.fbx
+- bulgotnik__upadek.fbx
+- bulgotnik__wiwat.fbx
+- bulgotnik_bohater.jpg
+- bulgotnik_ikona.png
+- bulgotnik_plansza.jpg
+- bulgotnik_tekstury/
+- raport.json
+- raport.txt

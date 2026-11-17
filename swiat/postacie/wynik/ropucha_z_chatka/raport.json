@@ -1,0 +1,533 @@
+{
+ "modul": "ropucha_z_chatka",
+ "modele": [
+  {
+   "id": "ropucha_z_chatka",
+   "nazwa": "Ropucha z Chatką",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Cialo_Geo",
+     "kosc": "Cialo",
+     "trojkaty": 936,
+     "wierzcholki": 528,
+     "wymiary": [
+      7.772,
+      4.906,
+      8.123
+     ],
+     "min": [
+      -3.886,
+      0.87,
+      -5.586
+     ],
+     "max": [
+      3.886,
+      5.776,
+      2.537
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 596,
+     "wierzcholki": 348,
+     "wymiary": [
+      8.062,
+      4.397,
+      4.613
+     ],
+     "min": [
+      -4.031,
+      3.317,
+      0.723
+     ],
+     "max": [
+      4.031,
+      7.714,
+      5.336
+     ]
+    },
+    {
+     "nazwa": "Szczeka_Geo",
+     "kosc": "Szczeka",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      7.54,
+      1.363,
+      4.002
+     ],
+     "min": [
+      -3.77,
+      2.32,
+      1.189
+     ],
+     "max": [
+      3.77,
+      3.683,
+      5.191
+     ]
+    },
+    {
+     "nazwa": "Wole_Geo",
+     "kosc": "Wole",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      4.93,
+      1.218,
+      2.827
+     ],
+     "min": [
+      -2.465,
+      1.711,
+      1.378
+     ],
+     "max": [
+      2.465,
+      2.929,
+      4.205
+     ]
+    },
+    {
+     "nazwa": "LapaPL_Geo",
+     "kosc": "LapaPL",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      2.254,
+      3.143,
+      2.549
+     ],
+     "min": [
+      1.918,
+      0.241,
+      0.828
+     ],
+     "max": [
+      4.172,
+      3.384,
+      3.377
+     ]
+    },
+    {
+     "nazwa": "DlonPL_Geo",
+     "kosc": "DlonPL",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      2.176,
+      0.406,
+      2.509
+     ],
+     "min": [
+      2.45,
+      0.0,
+      2.102
+     ],
+     "max": [
+      4.626,
+      0.406,
+      4.611
+     ]
+    },
+    {
+     "nazwa": "UdoL_Geo",
+     "kosc": "UdoL",
+     "trojkaty": 72,
+     "wierzcholki": 42,
+     "wymiary": [
+      3.328,
+      2.688,
+      5.112
+     ],
+     "min": [
+      1.816,
+      1.005,
+      -3.861
+     ],
+     "max": [
+      5.144,
+      3.693,
+      1.251
+     ]
+    },
+    {
+     "nazwa": "GolenL_Geo",
+     "kosc": "GolenL",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.938,
+      2.756,
+      4.46
+     ],
+     "min": [
+      3.381,
+      0.072,
+      -3.39
+     ],
+     "max": [
+      5.319,
+      2.828,
+      1.07
+     ]
+    },
+    {
+     "nazwa": "StopaL_Geo",
+     "kosc": "StopaL",
+     "trojkaty": 220,
+     "wierzcholki": 120,
+     "wymiary": [
+      2.352,
+      0.957,
+      5.765
+     ],
+     "min": [
+      3.7,
+      0.0,
+      -3.451
+     ],
+     "max": [
+      6.052,
+      0.957,
+      2.314
+     ]
+    },
+    {
+     "nazwa": "LapaPP_Geo",
+     "kosc": "LapaPP",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      2.254,
+      3.143,
+      2.549
+     ],
+     "min": [
+      -4.172,
+      0.241,
+      0.828
+     ],
+     "max": [
+      -1.918,
+      3.384,
+      3.377
+     ]
+    },
+    {
+     "nazwa": "DlonPP_Geo",
+     "kosc": "DlonPP",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      2.176,
+      0.406,
+      2.509
+     ],
+     "min": [
+      -4.626,
+      0.0,
+      2.102
+     ],
+     "max": [
+      -2.45,
+      0.406,
+      4.611
+     ]
+    },
+    {
+     "nazwa": "UdoP_Geo",
+     "kosc": "UdoP",
+     "trojkaty": 72,
+     "wierzcholki": 42,
+     "wymiary": [
+      3.328,
+      2.688,
+      5.112
+     ],
+     "min": [
+      -5.144,
+      1.005,
+      -3.861
+     ],
+     "max": [
+      -1.816,
+      3.693,
+      1.251
+     ]
+    },
+    {
+     "nazwa": "GolenP_Geo",
+     "kosc": "GolenP",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.938,
+      2.756,
+      4.46
+     ],
+     "min": [
+      -5.319,
+      0.072,
+      -3.39
+     ],
+     "max": [
+      -3.381,
+      2.828,
+      1.07
+     ]
+    },
+    {
+     "nazwa": "StopaP_Geo",
+     "kosc": "StopaP",
+     "trojkaty": 220,
+     "wierzcholki": 120,
+     "wymiary": [
+      2.352,
+      0.957,
+      5.765
+     ],
+     "min": [
+      -6.052,
+      0.0,
+      -3.451
+     ],
+     "max": [
+      -3.7,
+      0.957,
+      2.314
+     ]
+    },
+    {
+     "nazwa": "Chata_Geo",
+     "kosc": "Chata",
+     "trojkaty": 920,
+     "wierzcholki": 568,
+     "wymiary": [
+      6.052,
+      6.246,
+      5.396
+     ],
+     "min": [
+      -3.092,
+      4.56,
+      -4.647
+     ],
+     "max": [
+      2.96,
+      10.806,
+      0.749
+     ]
+    },
+    {
+     "nazwa": "Dym0_Geo",
+     "kosc": "Dym0",
+     "trojkaty": 192,
+     "wierzcholki": 104,
+     "wymiary": [
+      1.305,
+      1.972,
+      1.218
+     ],
+     "min": [
+      -2.654,
+      8.565,
+      -3.485
+     ],
+     "max": [
+      -1.349,
+      10.537,
+      -2.267
+     ]
+    },
+    {
+     "nazwa": "Dym1_Geo",
+     "kosc": "Dym1",
+     "trojkaty": 192,
+     "wierzcholki": 104,
+     "wymiary": [
+      1.305,
+      1.972,
+      1.218
+     ],
+     "min": [
+      -2.654,
+      8.565,
+      -3.485
+     ],
+     "max": [
+      -1.349,
+      10.537,
+      -2.267
+     ]
+    },
+    {
+     "nazwa": "Dym2_Geo",
+     "kosc": "Dym2",
+     "trojkaty": 192,
+     "wierzcholki": 104,
+     "wymiary": [
+      1.305,
+      1.972,
+      1.218
+     ],
+     "min": [
+      -2.654,
+      8.565,
+      -3.485
+     ],
+     "max": [
+      -1.349,
+      10.537,
+      -2.267
+     ]
+    }
+   ],
+   "trojkaty_razem": 4376,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 27
+   },
+   "typ": "stwor",
+   "skala": 2.9,
+   "wymiary_ciala": [
+    12.104,
+    10.806,
+    10.922
+   ],
+   "wymiary_z_akcesoriami": [
+    12.104,
+    10.806,
+    10.922
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -6.052,
+     0.0,
+     -5.586
+    ],
+    [
+     6.052,
+     10.806,
+     5.336
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Cialo",
+    "Glowa",
+    "Szczeka",
+    "Wole",
+    "LapaPL",
+    "DlonPL",
+    "UdoL",
+    "GolenL",
+    "StopaL",
+    "LapaPP",
+    "DlonPP",
+    "UdoP",
+    "GolenP",
+    "StopaP",
+    "Chata",
+    "Dym0",
+    "Dym1",
+    "Dym2"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment",
+    "KominAttachment",
+    "LapaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att",
+    "Komin_Att",
+    "Lapa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 72,
+     "fps": 30,
+     "sekundy": 2.4,
+     "petla": true
+    },
+    {
+     "n": "ruch",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    },
+    {
+     "n": "umiejetnosc",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "skok",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 20,
+     "fps": 30,
+     "sekundy": 0.67,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "ryk",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "ropucha_z_chatka.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje brak -> ZGODNE",
+  "ropucha_z_chatka__idle.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-73 -> ZGODNE",
+  "ropucha_z_chatka__ruch.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-37 -> ZGODNE",
+  "ropucha_z_chatka__atak.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-31 -> ZGODNE",
+  "ropucha_z_chatka__umiejetnosc.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-61 -> ZGODNE",
+  "ropucha_z_chatka__skok.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-61 -> ZGODNE",
+  "ropucha_z_chatka__trafienie.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-21 -> ZGODNE",
+  "ropucha_z_chatka__unik.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-31 -> ZGODNE",
+  "ropucha_z_chatka__upadek.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-61 -> ZGODNE",
+  "ropucha_z_chatka__ryk.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-61 -> ZGODNE",
+  "ropucha_z_chatka.glb: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje atak 0-30, idle 0-72, ruch 0-36, ryk 0-60, skok 0-60, trafienie 0-20, umiejetnosc 0-60, unik 0-30, upadek 0-60 -> ZGODNE"
+ ]
+}

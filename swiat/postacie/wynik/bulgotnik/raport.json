@@ -1,0 +1,391 @@
+{
+ "modul": "bulgotnik",
+ "modele": [
+  {
+   "id": "bulgotnik",
+   "nazwa": "Bulgotnik",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Cialo_Geo",
+     "kosc": "Cialo",
+     "trojkaty": 1076,
+     "wierzcholki": 602,
+     "wymiary": [
+      2.625,
+      2.607,
+      2.15
+     ],
+     "min": [
+      -1.325,
+      0.625,
+      -1.19
+     ],
+     "max": [
+      1.3,
+      3.232,
+      0.96
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 332,
+     "wierzcholki": 186,
+     "wymiary": [
+      1.45,
+      1.565,
+      1.63
+     ],
+     "min": [
+      -0.725,
+      2.51,
+      -0.675
+     ],
+     "max": [
+      0.725,
+      4.075,
+      0.955
+     ]
+    },
+    {
+     "nazwa": "BankaL_Geo",
+     "kosc": "BankaL",
+     "trojkaty": 132,
+     "wierzcholki": 70,
+     "wymiary": [
+      0.755,
+      1.15,
+      1.1
+     ],
+     "min": [
+      0.125,
+      2.775,
+      -0.57
+     ],
+     "max": [
+      0.88,
+      3.925,
+      0.53
+     ]
+    },
+    {
+     "nazwa": "BankaP_Geo",
+     "kosc": "BankaP",
+     "trojkaty": 132,
+     "wierzcholki": 70,
+     "wymiary": [
+      0.755,
+      1.15,
+      1.1
+     ],
+     "min": [
+      -0.88,
+      2.775,
+      -0.57
+     ],
+     "max": [
+      -0.125,
+      3.925,
+      0.53
+     ]
+    },
+    {
+     "nazwa": "BankaG_Geo",
+     "kosc": "BankaG",
+     "trojkaty": 168,
+     "wierzcholki": 88,
+     "wymiary": [
+      1.05,
+      0.63,
+      1.0
+     ],
+     "min": [
+      -0.525,
+      3.58,
+      -0.52
+     ],
+     "max": [
+      0.525,
+      4.21,
+      0.48
+     ]
+    },
+    {
+     "nazwa": "RamieL_Geo",
+     "kosc": "RamieL",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      0.671,
+      1.242,
+      0.641
+     ],
+     "min": [
+      0.729,
+      0.891,
+      -0.118
+     ],
+     "max": [
+      1.4,
+      2.133,
+      0.523
+     ]
+    },
+    {
+     "nazwa": "NogaL_Geo",
+     "kosc": "NogaL",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.55,
+      0.45
+     ],
+     "min": [
+      0.29,
+      0.125,
+      -0.225
+     ],
+     "max": [
+      0.71,
+      0.675,
+      0.225
+     ]
+    },
+    {
+     "nazwa": "StopaL_Geo",
+     "kosc": "StopaL",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      0.55,
+      0.16,
+      0.915
+     ],
+     "min": [
+      0.245,
+      0.0,
+      -0.23
+     ],
+     "max": [
+      0.795,
+      0.16,
+      0.685
+     ]
+    },
+    {
+     "nazwa": "RamieP_Geo",
+     "kosc": "RamieP",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      0.671,
+      1.242,
+      0.641
+     ],
+     "min": [
+      -1.4,
+      0.891,
+      -0.118
+     ],
+     "max": [
+      -0.729,
+      2.133,
+      0.523
+     ]
+    },
+    {
+     "nazwa": "NogaP_Geo",
+     "kosc": "NogaP",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.55,
+      0.45
+     ],
+     "min": [
+      -0.71,
+      0.125,
+      -0.225
+     ],
+     "max": [
+      -0.29,
+      0.675,
+      0.225
+     ]
+    },
+    {
+     "nazwa": "StopaP_Geo",
+     "kosc": "StopaP",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      0.55,
+      0.16,
+      0.915
+     ],
+     "min": [
+      -0.795,
+      0.0,
+      -0.23
+     ],
+     "max": [
+      -0.245,
+      0.16,
+      0.685
+     ]
+    },
+    {
+     "nazwa": "Kij_Geo",
+     "kosc": "Kij",
+     "trojkaty": 556,
+     "wierzcholki": 306,
+     "wymiary": [
+      0.559,
+      3.937,
+      0.496
+     ],
+     "min": [
+      -1.39,
+      0.075,
+      -0.111
+     ],
+     "max": [
+      -0.831,
+      4.012,
+      0.385
+     ]
+    }
+   ],
+   "trojkaty_razem": 2948,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 16
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.8,
+    4.21,
+    2.15
+   ],
+   "wymiary_z_akcesoriami": [
+    2.8,
+    4.21,
+    2.15
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.4,
+     0.0,
+     -1.19
+    ],
+    [
+     1.4,
+     4.21,
+     0.96
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Cialo",
+    "Glowa",
+    "BankaL",
+    "BankaP",
+    "BankaG",
+    "RamieL",
+    "NogaL",
+    "StopaL",
+    "RamieP",
+    "NogaP",
+    "StopaP",
+    "Kij"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment",
+    "OgnikAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att",
+    "Ognik_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 72,
+     "fps": 30,
+     "sekundy": 2.4,
+     "petla": true
+    },
+    {
+     "n": "ruch",
+     "dlugosc": 24,
+     "fps": 30,
+     "sekundy": 0.8,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 27,
+     "fps": 30,
+     "sekundy": 0.9,
+     "petla": false
+    },
+    {
+     "n": "umiejetnosc",
+     "dlugosc": 56,
+     "fps": 30,
+     "sekundy": 1.87,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 18,
+     "fps": 30,
+     "sekundy": 0.6,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 27,
+     "fps": 30,
+     "sekundy": 0.9,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "wiwat",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "bulgotnik.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje brak -> ZGODNE",
+  "bulgotnik__idle.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-73 -> ZGODNE",
+  "bulgotnik__ruch.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-25 -> ZGODNE",
+  "bulgotnik__atak.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-28 -> ZGODNE",
+  "bulgotnik__umiejetnosc.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-57 -> ZGODNE",
+  "bulgotnik__trafienie.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-19 -> ZGODNE",
+  "bulgotnik__unik.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-28 -> ZGODNE",
+  "bulgotnik__upadek.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-61 -> ZGODNE",
+  "bulgotnik__wiwat.fbx: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje bulgotnik|Scene 1-61 -> ZGODNE",
+  "bulgotnik.glb: siatki 15, kości 13, trójkąty 2984, wzrost 4.21 st., akcje atak 0-27, idle 0-72, ruch 0-24, trafienie 0-18, umiejetnosc 0-56, unik 0-27, upadek 0-60, wiwat 0-60 -> ZGODNE"
+ ]
+}

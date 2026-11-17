@@ -1,0 +1,413 @@
+{
+ "modul": "klodoklap",
+ "modele": [
+  {
+   "id": "klodoklap",
+   "nazwa": "Kłodokłap",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Cialo_Geo",
+     "kosc": "Cialo",
+     "trojkaty": 636,
+     "wierzcholki": 360,
+     "wymiary": [
+      2.91,
+      1.98,
+      5.05
+     ],
+     "min": [
+      -1.455,
+      0.79,
+      -3.6
+     ],
+     "max": [
+      1.455,
+      2.77,
+      1.45
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 872,
+     "wierzcholki": 498,
+     "wymiary": [
+      1.97,
+      1.721,
+      3.027
+     ],
+     "min": [
+      -0.985,
+      1.38,
+      1.3
+     ],
+     "max": [
+      0.985,
+      3.101,
+      4.327
+     ]
+    },
+    {
+     "nazwa": "Szczeka_Geo",
+     "kosc": "Szczeka",
+     "trojkaty": 624,
+     "wierzcholki": 352,
+     "wymiary": [
+      1.97,
+      1.19,
+      2.973
+     ],
+     "min": [
+      -0.985,
+      0.8,
+      1.3
+     ],
+     "max": [
+      0.985,
+      1.99,
+      4.273
+     ]
+    },
+    {
+     "nazwa": "Grzyb_Geo",
+     "kosc": "Grzyb",
+     "trojkaty": 324,
+     "wierzcholki": 176,
+     "wymiary": [
+      0.97,
+      0.53,
+      1.07
+     ],
+     "min": [
+      -0.21,
+      2.71,
+      -2.26
+     ],
+     "max": [
+      0.76,
+      3.24,
+      -1.19
+     ]
+    },
+    {
+     "nazwa": "Ogon_Geo",
+     "kosc": "Ogon",
+     "trojkaty": 204,
+     "wierzcholki": 120,
+     "wymiary": [
+      1.9,
+      2.294,
+      0.826
+     ],
+     "min": [
+      -0.95,
+      0.406,
+      -4.326
+     ],
+     "max": [
+      0.95,
+      2.7,
+      -3.5
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodL_Geo",
+     "kosc": "LapaPrzodL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.278,
+      1.1,
+      0.889
+     ],
+     "min": [
+      0.517,
+      0.435,
+      0.562
+     ],
+     "max": [
+      1.795,
+      1.535,
+      1.451
+     ]
+    },
+    {
+     "nazwa": "StopaPrzodL_Geo",
+     "kosc": "StopaPrzodL",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      0.943,
+      0.876,
+      1.096
+     ],
+     "min": [
+      1.18,
+      -0.031,
+      0.817
+     ],
+     "max": [
+      2.123,
+      0.845,
+      1.913
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodP_Geo",
+     "kosc": "LapaPrzodP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.278,
+      1.1,
+      0.889
+     ],
+     "min": [
+      -1.795,
+      0.435,
+      0.562
+     ],
+     "max": [
+      -0.517,
+      1.535,
+      1.451
+     ]
+    },
+    {
+     "nazwa": "StopaPrzodP_Geo",
+     "kosc": "StopaPrzodP",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      0.943,
+      0.876,
+      1.096
+     ],
+     "min": [
+      -2.123,
+      -0.031,
+      0.817
+     ],
+     "max": [
+      -1.18,
+      0.845,
+      1.913
+     ]
+    },
+    {
+     "nazwa": "LapaTylL_Geo",
+     "kosc": "LapaTylL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.278,
+      1.1,
+      0.889
+     ],
+     "min": [
+      0.517,
+      0.435,
+      -2.938
+     ],
+     "max": [
+      1.795,
+      1.535,
+      -2.049
+     ]
+    },
+    {
+     "nazwa": "StopaTylL_Geo",
+     "kosc": "StopaTylL",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      0.943,
+      0.876,
+      1.096
+     ],
+     "min": [
+      1.18,
+      -0.031,
+      -2.683
+     ],
+     "max": [
+      2.123,
+      0.845,
+      -1.587
+     ]
+    },
+    {
+     "nazwa": "LapaTylP_Geo",
+     "kosc": "LapaTylP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.278,
+      1.1,
+      0.889
+     ],
+     "min": [
+      -1.795,
+      0.435,
+      -2.938
+     ],
+     "max": [
+      -0.517,
+      1.535,
+      -2.049
+     ]
+    },
+    {
+     "nazwa": "StopaTylP_Geo",
+     "kosc": "StopaTylP",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      0.943,
+      0.876,
+      1.096
+     ],
+     "min": [
+      -2.123,
+      -0.031,
+      -2.683
+     ],
+     "max": [
+      -1.18,
+      0.845,
+      -1.587
+     ]
+    }
+   ],
+   "trojkaty_razem": 3716,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 15
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.246,
+    3.271,
+    8.653
+   ],
+   "wymiary_z_akcesoriami": [
+    4.246,
+    3.271,
+    8.653
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.123,
+     -0.031,
+     -4.326
+    ],
+    [
+     2.123,
+     3.24,
+     4.327
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Cialo",
+    "Glowa",
+    "Szczeka",
+    "Grzyb",
+    "Ogon",
+    "LapaPrzodL",
+    "StopaPrzodL",
+    "LapaPrzodP",
+    "StopaPrzodP",
+    "LapaTylL",
+    "StopaTylL",
+    "LapaTylP",
+    "StopaTylP"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment",
+    "PyskAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att",
+    "Pysk_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 72,
+     "fps": 30,
+     "sekundy": 2.4,
+     "petla": true
+    },
+    {
+     "n": "ruch",
+     "dlugosc": 32,
+     "fps": 30,
+     "sekundy": 1.07,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 27,
+     "fps": 30,
+     "sekundy": 0.9,
+     "petla": false
+    },
+    {
+     "n": "umiejetnosc",
+     "dlugosc": 57,
+     "fps": 30,
+     "sekundy": 1.9,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 18,
+     "fps": 30,
+     "sekundy": 0.6,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 27,
+     "fps": 30,
+     "sekundy": 0.9,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "wiwat",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "klodoklap.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje brak -> ZGODNE",
+  "klodoklap__idle.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-73 -> ZGODNE",
+  "klodoklap__ruch.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-33 -> ZGODNE",
+  "klodoklap__atak.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-28 -> ZGODNE",
+  "klodoklap__umiejetnosc.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-58 -> ZGODNE",
+  "klodoklap__trafienie.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-19 -> ZGODNE",
+  "klodoklap__unik.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-28 -> ZGODNE",
+  "klodoklap__upadek.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-61 -> ZGODNE",
+  "klodoklap__wiwat.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-61 -> ZGODNE",
+  "klodoklap.glb: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje atak 0-27, idle 0-72, ruch 0-32, trafienie 0-18, umiejetnosc 0-57, unik 0-27, upadek 0-60, wiwat 0-60 -> ZGODNE"
+ ]
+}

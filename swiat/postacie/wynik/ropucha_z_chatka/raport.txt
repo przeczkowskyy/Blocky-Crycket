@@ -1,0 +1,61 @@
+RAPORT — ropucha_z_chatka
+ROPUCHA Z CHATKĄ — rzadki przeciwnik Bagna (Leże Ropuchy): ogromna stara ropucha z krzywą chatką z desek na
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/ropucha_z_chatka.py · wygenerowano 17.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py ropucha_z_chatka
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: ropucha_z_chatka
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 11 plików, zgodnych 11
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości Ropuchy nie są R15 (własny szkielet: Root + 18 kości) — import do Roblox Studio nie był testowany.
+- Dym to trzy sztywne kłęby (po trzy kule) na własnych kościach: wznoszą się z komina i wracają do niego skokiem (w spoczynku są schowane w kominie); nie rozpraszają się ani nie bledną — w grze warto dołożyć cząsteczki na KominAttachment.
+- Chmurę trucizny do celu robi odtwarzacz (styl „chmura” z punktu Pocisk = KominAttachment); klip daje tylko wyrzut z komina.
+- Łuk skoku w klipie `skok` robi odtwarzacz (styl „skok”); klip podnosi ropuchę najwyżej o ok. 1 stud.
+- Okienko świeci materiałem Neon (bez PointLight). Chatka nie ma wnętrza.
+- Sus (ruch) jest w miejscu — stopy w podporze ślizgają się po ziemi.
+
+MODEL ropucha_z_chatka „Ropucha z Chatką” (stwor)
+  wymiary ciała: 12,10 × 10,81 × 10,92; z akcesoriami: 12,10 × 10,81 × 10,92
+  trójkąty: 4376 (siatek: 18)
+  kości (19): Root, Cialo, Glowa, Szczeka, Wole, LapaPL, DlonPL, UdoL, GolenL, StopaL, LapaPP, DlonPP, UdoP, GolenP, StopaP, Chata, Dym0, Dym1, Dym2
+  klipy: idle 72 kl. 2,40 s pętla, ruch 36 kl. 1,20 s pętla, atak 30 kl. 1,00 s jednorazowy, umiejetnosc 60 kl. 2,00 s jednorazowy, skok 60 kl. 2,00 s jednorazowy, trafienie 20 kl. 0,67 s jednorazowy, unik 30 kl. 1,00 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, ryk 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, KominAttachment, LapaAttachment
+
+KONTROLA EKSPORTÓW
+- ropucha_z_chatka.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje brak -> ZGODNE
+- ropucha_z_chatka__idle.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-73 -> ZGODNE
+- ropucha_z_chatka__ruch.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-37 -> ZGODNE
+- ropucha_z_chatka__atak.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-31 -> ZGODNE
+- ropucha_z_chatka__umiejetnosc.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-61 -> ZGODNE
+- ropucha_z_chatka__skok.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-61 -> ZGODNE
+- ropucha_z_chatka__trafienie.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-21 -> ZGODNE
+- ropucha_z_chatka__unik.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-31 -> ZGODNE
+- ropucha_z_chatka__upadek.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-61 -> ZGODNE
+- ropucha_z_chatka__ryk.fbx: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje ropucha_z_chatka|Scene 1-61 -> ZGODNE
+- ropucha_z_chatka.glb: siatki 22, kości 19, trójkąty 4424, wzrost 10.81 st., akcje atak 0-30, idle 0-72, ruch 0-36, ryk 0-60, skok 0-60, trafienie 0-20, umiejetnosc 0-60, unik 0-30, upadek 0-60 -> ZGODNE
+
+PLIKI
+- ropucha_z_chatka.blend
+- ropucha_z_chatka.fbx
+- ropucha_z_chatka.glb
+- ropucha_z_chatka__atak.fbx
+- ropucha_z_chatka__idle.fbx
+- ropucha_z_chatka__ruch.fbx
+- ropucha_z_chatka__ryk.fbx
+- ropucha_z_chatka__skok.fbx
+- ropucha_z_chatka__trafienie.fbx
+- ropucha_z_chatka__umiejetnosc.fbx
+- ropucha_z_chatka__unik.fbx
+- ropucha_z_chatka__upadek.fbx
+- ropucha_z_chatka_bohater.jpg
+- ropucha_z_chatka_ikona.png
+- ropucha_z_chatka_plansza.jpg
+- ropucha_z_chatka_tekstury/
+- raport.json
+- raport.txt

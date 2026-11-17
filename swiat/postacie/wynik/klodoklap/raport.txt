@@ -1,0 +1,60 @@
+RAPORT — klodoklap
+KŁODOKŁAP — zwykły przeciwnik Bagna (Kłapiące Kępy): żywa omszała kłoda na czterech łapach-korzeniach,
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/klodoklap.py · wygenerowano 17.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py klodoklap
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: klodoklap
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości Kłodokłapa nie są R15 (własny szkielet: Root + 13 kości) — import do Roblox Studio nie był testowany.
+- Pień jest schodkowym ośmiokątem z klocków (bez walców) — z bliska widać stopnie.
+- Kołki-zęby wewnątrz paszczy przy zamkniętej paszczy chowają się w drugiej szczęce; na zewnątrz zostają cztery kły.
+- Chód jest w miejscu — dolne korzenie stoją pionowo i ślizgają się po ziemi w podporze.
+- Miażdżący cios przesuwa kłodę o 1,3 studa do przodu i z powrotem (ruch w klipie).
+- W upadku grzyb na grzbiecie wchodzi w ziemię (kłoda leży na grzbiecie) — z założenia „wbity w błoto”.
+- Świecenie oczu: materiał Neon na rigu z klocków.
+
+MODEL klodoklap „Kłodokłap” (stwor)
+  wymiary ciała: 4,25 × 3,27 × 8,65; z akcesoriami: 4,25 × 3,27 × 8,65
+  trójkąty: 3716 (siatek: 13)
+  kości (14): Root, Cialo, Glowa, Szczeka, Grzyb, Ogon, LapaPrzodL, StopaPrzodL, LapaPrzodP, StopaPrzodP, LapaTylL, StopaTylL, LapaTylP, StopaTylP
+  klipy: idle 72 kl. 2,40 s pętla, ruch 32 kl. 1,07 s pętla, atak 27 kl. 0,90 s jednorazowy, umiejetnosc 57 kl. 1,90 s jednorazowy, trafienie 18 kl. 0,60 s jednorazowy, unik 27 kl. 0,90 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, wiwat 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, PyskAttachment
+
+KONTROLA EKSPORTÓW
+- klodoklap.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje brak -> ZGODNE
+- klodoklap__idle.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-73 -> ZGODNE
+- klodoklap__ruch.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-33 -> ZGODNE
+- klodoklap__atak.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-28 -> ZGODNE
+- klodoklap__umiejetnosc.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-58 -> ZGODNE
+- klodoklap__trafienie.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-19 -> ZGODNE
+- klodoklap__unik.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-28 -> ZGODNE
+- klodoklap__upadek.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-61 -> ZGODNE
+- klodoklap__wiwat.fbx: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje klodoklap|Scene 1-61 -> ZGODNE
+- klodoklap.glb: siatki 16, kości 14, trójkąty 3752, wzrost 3.27 st., akcje atak 0-27, idle 0-72, ruch 0-32, trafienie 0-18, umiejetnosc 0-57, unik 0-27, upadek 0-60, wiwat 0-60 -> ZGODNE
+
+PLIKI
+- klodoklap.blend
+- klodoklap.fbx
+- klodoklap.glb
+- klodoklap__atak.fbx
+- klodoklap__idle.fbx
+- klodoklap__ruch.fbx
+- klodoklap__trafienie.fbx
+- klodoklap__umiejetnosc.fbx
+- klodoklap__unik.fbx
+- klodoklap__upadek.fbx
+- klodoklap__wiwat.fbx
+- klodoklap_bohater.jpg
+- klodoklap_ikona.png
+- klodoklap_plansza.jpg
+- klodoklap_tekstury/
+- raport.json
+- raport.txt

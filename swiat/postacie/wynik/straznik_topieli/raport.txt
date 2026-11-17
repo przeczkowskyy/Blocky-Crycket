@@ -1,0 +1,59 @@
+RAPORT — straznik_topieli
+STRAŻNIK TOPIELI — strażnik Bagna (Topiel Strażnika): olbrzym z błota i korzeni wynurzony z wody, ok. 16 studów
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/straznik_topieli.py · wygenerowano 17.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py straznik_topieli
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: straznik_topieli
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości Strażnika nie są R15 (własny szkielet: Root + 16 kości) — import do Roblox Studio nie był testowany.
+- Nogi są jednoczęściowe (bez kolan): krok to wymach całej nogi i kołysanie bioder; w podporze stopy ślizgają się.
+- Fali na wodzie przy ogłuszającym uderzeniu nie ma w klipie — robi ją odtwarzacz (fala, wstrząs kamery).
+- Świecenie latarni, oczu i gardła: materiał Neon na rigu z klocków; PointLight trzeba dodać w Studio.
+- Bryły są sztywno przypięte do kości: przy mocnym zgięciu tułowia barki i broda lekko wchodzą w siebie.
+- W upadku łódka zsuwa się z głowy i ląduje obok (liczone w przybliżeniu, bez fizyki); olbrzym zapada się do połowy pod poziom ziemi (topiel) — w grze ziemia/woda musi to zasłonić.
+
+MODEL straznik_topieli „Strażnik Topieli” (stwor)
+  wymiary ciała: 10,55 × 15,52 × 6,83; z akcesoriami: 10,55 × 15,52 × 6,83
+  trójkąty: 5132 (siatek: 16)
+  kości (17): Root, Biodra, Tulow, Glowa, Lodz, Broda, Latarnia, RamieL, PrzedramieL, DlonL, NogaL, StopaL, RamieP, PrzedramieP, DlonP, NogaP, StopaP
+  klipy: idle 72 kl. 2,40 s pętla, ruch 60 kl. 2,00 s pętla, atak 36 kl. 1,20 s jednorazowy, umiejetnosc 66 kl. 2,20 s jednorazowy, trafienie 20 kl. 0,67 s jednorazowy, unik 30 kl. 1,00 s jednorazowy, upadek 66 kl. 2,20 s jednorazowy, ryk 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, LatarniaAttachment, PiescAttachment, PiescLAttachment
+
+KONTROLA EKSPORTÓW
+- straznik_topieli.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje brak -> ZGODNE
+- straznik_topieli__idle.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-73 -> ZGODNE
+- straznik_topieli__ruch.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-61 -> ZGODNE
+- straznik_topieli__atak.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-37 -> ZGODNE
+- straznik_topieli__umiejetnosc.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-67 -> ZGODNE
+- straznik_topieli__trafienie.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-21 -> ZGODNE
+- straznik_topieli__unik.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-31 -> ZGODNE
+- straznik_topieli__upadek.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-67 -> ZGODNE
+- straznik_topieli__ryk.fbx: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje straznik_topieli|Scene 1-61 -> ZGODNE
+- straznik_topieli.glb: siatki 21, kości 17, trójkąty 5192, wzrost 15.52 st., akcje atak 0-36, idle 0-72, ruch 0-60, ryk 0-60, trafienie 0-20, umiejetnosc 0-66, unik 0-30, upadek 0-66 -> ZGODNE
+
+PLIKI
+- straznik_topieli.blend
+- straznik_topieli.fbx
+- straznik_topieli.glb
+- straznik_topieli__atak.fbx
+- straznik_topieli__idle.fbx
+- straznik_topieli__ruch.fbx
+- straznik_topieli__ryk.fbx
+- straznik_topieli__trafienie.fbx
+- straznik_topieli__umiejetnosc.fbx
+- straznik_topieli__unik.fbx
+- straznik_topieli__upadek.fbx
+- straznik_topieli_bohater.jpg
+- straznik_topieli_ikona.png
+- straznik_topieli_plansza.jpg
+- straznik_topieli_tekstury/
+- raport.json
+- raport.txt
