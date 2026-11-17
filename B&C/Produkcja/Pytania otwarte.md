@@ -49,6 +49,7 @@ Dopisek z 2026-11-14 (sesja główna): Złoto na przedmioty; Diamenty jako walut
 Dopisek z 2026-11-14 (druga sesja): Twierdza ma mieć kopalnię diamentów (propozycja D-049), czyli produkować walutę premium, a D-031 przewiduje, że droppery dają tylko Złoto albo bardzo mało Kryształów — jedno z nich trzeba zmienić. Zob. [[Sesja główna 2026-11-14 (2) — zapis ustaleń]].
 Dopisek z 2026-11-14 (trzecia sesja): przy drzewkach obaj mówili „Gemy” (słowo z kodu HUD) — węzły drzewek kupuje się za Gemy, bez punktów talentu, a Gemy rzadko wypadają też z potworów (propozycja D-057). Nazwy nikt nie wybierał: Gemy, Diamenty czy Magiczne Kryształy — nadal do decyzji. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
 Dopisek z 2026-11-17 (przy przepisywaniu notatek o grze): nazwy dalej nie są uporządkowane — „Diamenty” (HUD, D-038), „Gemy” (D-057), „Magiczne Kryształy” (D-031), a D-086 nazywa „walutą premium” Rybki. Nie wiadomo też, czy kryształ z kopalni kryształów (D-049, D-061) to ta sama waluta. Notatki piszą na razie „waluta premium (w HUD Diamenty)”.
+Dopisek z 2026-11-17 (sesja główna 20:53): nazwa znowu nie padła (Karol mówił „Gemy”, Paweł „diamenty”). Ustalono tylko, skąd gracz bierze tę walutę bez płacenia: z walk, za poziom, z kopalni i za Rebirth (propozycje D-099, D-100). Zob. [[Sesja główna 2026-11-17 — zapis ustaleń]].
 Rozstrzyga: D-031, D-038
 **Odpowiedź:**
 - Claude Code (2026-11-14): Paweł zapytał w panelu, czym zastąpić grzybki z S&F jako walutę premium. Propozycja D-031: jedna waluta premium — Magiczne Kryształy z ikoną diamentu z HUD, zdobywana w grze i kupowana za Robuxy w stałych paczkach, wydawana tylko na rzeczy pewne (D-015). Temat był na liście [[Sesje główne]] (odhaczony przez Karola 14.11 bez spisanych ustaleń), więc decyzja w panelu zamknie to pytanie.
@@ -260,6 +261,7 @@ Szczegóły: Lista „na premierę” i „później” jest w D-035. Sporne alb
 Dopisek z 2026-11-14 (druga sesja): kowal znalazł się na liście budynków Twierdzy „do wersji początkowej” (propozycje D-049, D-051), choć D-035 odkłada go na po premierze; tiery przedmiotów — Paweł: „nie teraz”. Zob. [[Sesja główna 2026-11-14 (2) — zapis ustaleń]].
 Dopisek z 2026-11-14 (trzecia sesja): (2) gildie — po premierze (obaj zgodni, propozycja D-067; budynek gildyjny z D-049 też); (3) biomy — osiem na start w kolejności las, bagno, dżungla, pustynia, góry z tundrą, lodowiec, wulkaniczny, kryształowy (D-061), obsydian pod znakiem zapytania. (1) ulepszanie na premierę nadal nie padło; zaklinacz miałby stać na pustyni. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
 Dopisek z 2026-11-17 (przy przepisywaniu notatek o grze): kowal i ulepszanie przedmiotów — D-035 (podpis Karola) odkłada je po premierze, a D-049 i D-051 (oba podpisy) wpisują kowala na listę budynków Twierdzy. Karol odpowiedział tutaj „na premierę”; odpowiedzi Pawła nie ma.
+Dopisek z 2026-11-17 (sesja główna 20:57): Karol: „dajemy Kowala” na premierę, logikę robi agent; Paweł: „no można dać” (propozycja D-102, zmienia D-035). Kto robi okno Kowala w Figmie — pytanie 57. Zob. [[Sesja główna 2026-11-17 — zapis ustaleń]].
 **Odpowiedź:**
 - Karol Balucki (2026-11-14): Ulepszanie przedmiotów normalnie na premiere. Gildie później, biomy już zostały odpoiwedziane
 
@@ -317,6 +319,7 @@ Szczegóły: Na drugiej sesji 14.11 obaj opisali planszę bez stawek: kostka sze
 Szczegóły: Stajnia w mieście, zestawy jajek na strefę (pierwsze miasto np. trzy, najdroższe ok. 10 tys. Złota, ok. 1% na legendarnego), rzadkie jajka z potworów i karmienie petów przez rzadkość — D-052. Rozmowa 12.11 mówiła „pety odblokowywane poziomem” i o wylęganiu na czas — na sesji wylęganie nie padło. Drzewka petów i ich waluta: D-039, D-040 (temat Pawła w [[Sesje główne]]). Zob. [[Sesja główna 2026-11-14 (2) — zapis ustaleń]], [[Pety]].
 Dopisek z 2026-11-14 (trzecia sesja): jajka w inkubatorach w każdym biomie, wyklucie od razu, bez jajek z potworów — zmiana wobec D-052, zapisana jako propozycja D-060 i pytanie 42. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
 Dopisek z 2026-11-17 (przy przepisywaniu notatki [[Pety]]): wiersz „Rozstrzyga: D-052” jest na wyrost — D-052 zapisuje tylko stanowiska (Paweł: podstawowe jajka od początku; Karol nie potwierdził wprost). Inkubator przy wejściu do pierwszego biomu (D-076) sugeruje pety od początku, ale nikt tego nie zapisał.
+Dopisek z 2026-11-17 (sesja główna 20:56): pety omówiono tylko od strony premii: różne premie i żywioły, zwykłe pety z małą pasywką (propozycja D-101). Pety od początku gry, cena jajek i szansa na legendarnego nie padły. Zob. [[Sesja główna 2026-11-17 — zapis ustaleń]].
 Rozstrzyga: D-052
 **Odpowiedź:**
 - Karol Balucki (2026-11-14): rozstrzygnięte decyzjami: D-052 zatwierdzona
@@ -429,6 +432,7 @@ Dopisek z 2026-11-16 (Claude Code u Karola, 21:18, z rozmowy z Karolem): modele 
 - Do wyboru: (a) przyjąć wzór; (b) zostać przy +1 za trafienie; (c) inny pomysł.
 
 Szczegóły: Prośba Karola z D-074 („zbalansować przyrosty tak, żeby nie opłacało się nadużywać jednej mini-gry”). Wzór zmienia zapis „+1 za trafienie” z zatwierdzonej D-050, więc potrzebuje decyzji. Liczby i założenia: `tools/walka/BALANS_1711.md`, część 6; ten sam wzór jest roboczo w prototypie mini-gier (`swiat/trening_proba/`). Przy okazji: Kondycja i Inteligencja nie mają węzła w gałęzi Training Center drzewka Twierdzy.
+Dopisek z 2026-11-17 (sesja główna 20:52): trening zostaje jednym z dwóch źródeł statystyk obok poziomu (propozycja D-097; Paweł: trening „na jak największy grind”). Tempo treningu Karol zostawił agentowi. Wzoru z paskiem treningu nie omawiano. Zob. [[Sesja główna 2026-11-17 — zapis ustaleń]].
 **Odpowiedź:**
 
 ## 51. Gemy: skąd ma je brać gracz bez płacenia?
@@ -438,6 +442,7 @@ Szczegóły: Prośba Karola z D-074 („zbalansować przyrosty tak, żeby nie op
 
 Szczegóły: Liczby z kalkulatora (`tools/walka/BALANS_1711.md`, część 4), ceny węzłów z `src/shared/SkillTreeData.luau`. Dotyczy D-057 (węzły za Gemy) oraz D-055 i D-088 (sloty umiejętności). Cel roboczy: żeby gracz bez płacenia kupił w 10 godzin ćwierć drzewka gracza, potrzeba ok. 200 Gemów na godzinę; kamienie milowe z kopalnią diamentów od 25. poziomu dają ok. 200.
 **Odpowiedź:**
+- Claude Code (2026-11-17, z sesji głównej 20:53): Karol i Paweł: Gemy gracz dostaje za walki i za poziom (Karol), z kopalni w Twierdzy (Paweł) i za Rebirth od 100. poziomu (pomysł Pawła, Karol: „podoba mi się”) — propozycje D-099 i D-100; ile, liczy agent, a sloty umiejętności za poziom (wariant b) nie padły. Zapis agenta z rozmowy.
 
 ## 52. Co otwiera następny biom: strażnik, poziom czy oba?
 - D-057 i D-061 (oba podpisy) oraz D-032 (podpis Karola): strefy i biomy otwiera poziom postaci.
@@ -455,6 +460,8 @@ Szczegóły: Las-pas w Studio i plan Bagna przyjmują roboczo wariant (a) — br
 - Do wyboru: (a) zostaje jako wspólny moduł stanu gracza; (b) Paweł przejmuje go i przenosi do `src/`; (c) wyłączamy do czasu decyzji.
 
 Szczegóły: Pakiet `swiat/stan_gracza/` (status: propozycja), raport w panelu „Gra się spina: łup, awans, klasa i poziom w walce”. Przyjęte roboczo, do zmiany: krzywa doświadczenia 11,71 × poziom^1,6 (z kalkulatora tempa); +10 punktów statystyk na poziom rozdzielanych samoczynnie według rozkładu klasy z `ClassData` (pytanie 55); sloty umiejętności 1/2/3 od poziomów 1/5/10, inaczej niż w D-055 i D-088 (pytanie 51); Gemy z łupu dopisują się do testowych 1000; tablica próby walki nie daje nagród; bez zapisu między sesjami. Symulacja lasu na tych liczbach: przejście w ok. 27 minut, ok. 43 walki, ok. 8 przegranych, Strażnik pada zwykle na 11. poziomie. Zadanie „Moduł statystyk gracza” nie miało przydziału (pytanie 49). Do zgłoszenia Pawłowi: darmowy „+” w oknie ekwipunku wzmacnia teraz bohatera bez limitu, wybór klasy da się zmienić w każdej chwili (D-081 mówi o wyborze przy pierwszym wejściu), premie z drzewka dalej nie działają w walce, tokenów krain i shardów HUD nie pokazuje.
+Dopisek z 2026-11-17 (sesja główna 20:54): o module stanu gracza nie rozmawiano, a z tego tematu agendy omówiono tylko przegraną (pytanie 54). Ustalenia z sesji zmieniają za to roboczy pakiet: za poziom 5 punktów do rozdania przez gracza zamiast +10 rozdzielanych samoczynnie, bez statystyk za Złoto (propozycja D-097), a po przegranej trochę mniej Złota (D-098). Zob. [[Sesja główna 2026-11-17 — zapis ustaleń]].
+Dopisek z 2026-11-17 (czat Karola, ok. 21:20, w trakcie sesji głównej): na pytanie, czy spięcie stanu gracza zostaje jako wspólny moduł, Karol odpisał „Paweł potwierdza te zmiany”. Na sesji samo pytanie 53 nie padło ([[Sesja główna 2026-11-17 — zapis ustaleń]], temat 3), więc odpowiedź Pawła w panelu dalej się przyda.
 **Odpowiedź:**
 
 ## 54. Co gracz traci po przegranej walce?
@@ -464,6 +471,7 @@ Szczegóły: Pakiet `swiat/stan_gracza/` (status: propozycja), raport w panelu �
 
 Szczegóły: 20% liczy silnik walki (`src/server/Walka/Przeciwnicy.luau`); od 17.11 przyznaje je pakiet `swiat/stan_gracza/`. Rewanż jest dozwolony od razu. Zob. pytanie 53.
 **Odpowiedź:**
+- Claude Code (2026-11-17, z sesji głównej 20:55): Karol i Paweł: przegrany traci trochę Złota (Gemów nie), nie dostaje nagrody, ale dostaje doświadczenie, a kary czasowej nie ma (Paweł: gracz musi móc grać; Karol: „masz rację”) — wariant (c), propozycja D-098; ile Złota (pewnie procent, Karol rzucił 5%) i ile doświadczenia, policzy agent. Zapis agenta z rozmowy.
 
 ## 55. Punkty statystyk: same z poziomu, do rozdania czy za Złoto?
 - D-050 mówi o statystykach za Złoto, coraz drożej; D-057 o stałym przyroście co poziom i punktach do rozdania. Brakuje reguły, jak to się łączy.
@@ -472,6 +480,7 @@ Szczegóły: 20% liczy silnik walki (`src/server/Walka/Przeciwnicy.luau`); od 17
 
 Szczegóły: Zob. pytania 17, 36 i 50 (trening jako trzecie źródło statystyk) oraz 53. Dopóki „+” jest darmowy, liczby balansu z walk w Studio nie są miarodajne, gdy ktoś go używa.
 **Odpowiedź:**
+- Claude Code (2026-11-17, z sesji głównej 20:52): Karol i Paweł: statystyki tylko z poziomu i z treningu, a Złoto wyłącznie na przedmioty; o 21:02 ustalili 5 punktów za poziom do rozdania przez gracza (wariant c; Karol: „ja dałbym 5”, Paweł: „dobra, możemy dać 5 i zobaczymy”) — propozycja D-097. Zapis agenta z rozmowy.
 
 ## 56. Rozkład statystyk klas: profil Pawła czy wzorcowy Karola?
 - Paweł 17.11 opisał profile klas na ekranie wyboru: Wojownik STR, CON i ARMOR; Zwiadowca DEX i dużo LUCK (mniej CON i STR niż Wojownik); Mag dużo INT i LUCK, najmniej CON, STR i ARMOR.
@@ -480,4 +489,13 @@ Szczegóły: Zob. pytania 17, 36 i 50 (trening jako trzecie źródło statystyk)
 - Do wyboru: (a) profil Pawła wszędzie; (b) wzorcowy Karola w walce, profil Pawła tylko na karcie; (c) wspólnie ustalić nowe liczby.
 
 Szczegóły: Wcześniejsze liczby (wzorcowe, z [[Walka v2 — silnik, klasy i umiejętności]]): Wojownik 26/30/12/8/10/14, Zwiadowca 27/27/10/14/13/9, Mag 24/22/24/10/10/10. Powiązane: pytanie 53. Zmienił Claude Code u Pawła 17.11 na jego polecenie (karta wyboru klasy).
+**Odpowiedź:**
+
+## 57. Kto robi okno Kowala w Figmie?
+- Karol na sesji 17.11 poprosił Pawła o okno Kowala w Figmie (2D to obszar Pawła, D-093).
+- Paweł: „można dać”, ale bez modelu, z którego korzysta Karol, nie zrobi nic fajnego.
+- Karol: „te rzeczy mogą być też na mnie”.
+- Do wyboru: (a) Paweł; (b) agent Karola; (c) agent Karola robi grafiki, Paweł okno i skrypty.
+
+Szczegóły: Sesja główna 17.11, 20:57 ([[Sesja główna 2026-11-17 — zapis ustaleń]], temat 5). Kowal na premierę: propozycja D-102. Logikę Kowala robi agent Karola. Odpowiedz tutaj albo ustaw agenta przy zadaniu (Pytania → Plan → Zadania).
 **Odpowiedź:**

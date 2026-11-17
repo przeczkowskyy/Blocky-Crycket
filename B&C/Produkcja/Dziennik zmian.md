@@ -6,6 +6,23 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (odpowiedzi Karola po sesji: stała cena jajka, Bagno, przegrana)
+- **Odpowiedzi Karola na czacie, 17.11 ok. 21:20** (w trakcie sesji głównej z Pawłem):
+  - „Stała cena jajka, bo opener jajka jest per biom, więc tak czy siak źródło dropienia jajek się zmienia, gdy gracz zmieni biom” — zapisane jako **D-105** (zdecydował: Karol 2026-11-17). Próba przechodzi z ceny rosnącej na stałą: jajko leśne 300 Złota, jajko Bagna 750.
+  - „Bagno — tutaj zostawiam twojej optymalizacji. Strażnik Topieli musi być trudny” — poziomy Bagna zostają 10–16 z kalkulatora, Strażnik Topieli zostaje trudny (20–36% wygranych bez treningu).
+  - „Mówiliśmy w konwersacji o przegranej” — realizuję ustalenie z sesji (propozycja D-098): przegrany traci trochę Złota, nie dostaje nagrody, dostaje doświadczenie, bez kary czasowej; wysokość kary liczy agent.
+  - „Paweł potwierdza te zmiany” (o D-095, D-096 i module stanu gracza z pytania 53) — zapisane jako przekazane przez Karola; podpisu Pawła nie dopisuję, czeka na jego kliknięcie w panelu (D-043).
+- Notatki: [[Rejestr decyzji]], [[Pytania otwarte]], [[Zadania]].
+
+## 2026-11-17 · Claude Code u Karola (spisanie sesji głównej 17.11)
+- Sesja główna 17.11 (20:50–21:06, zapis pełny) spisana w [[Sesja główna 2026-11-17 — zapis ustaleń]] (status propozycja).
+- [[Rejestr decyzji]]: propozycje 💡 D-097–D-104 — statystyki tylko z poziomu (5 punktów do rozdania) i z treningu, Złoto tylko na przedmioty (zmienia D-050); przegrana: trochę mniej Złota, bez nagrody, z doświadczeniem; Gemy za walki, poziom, kopalnię i Rebirth; Rebirth od 100. poziomu z pulą Gemów i Złota na start; pety z różnymi premiami i żywiołami; Kowal na premierę (zmienia D-035); ikony w stylu HUD i grafiki z Higgsfield wiele w jednym obrazie, w jednej kopii (zmienia regułę skilla `asset`); modele postaci z rzutów Pawła robi agent Karola (zmienia doprecyzowanie D-079).
+- [[Pytania otwarte]]: odpowiedzi z rozmowy pod pytaniami 51, 54 i 55; dopiski pod 50 i 53 (odpowiedź niepełna) oraz pod zamkniętymi 6, 32 i 38; nowe pytanie 57 (kto robi okno Kowala). Pytanie 56 dodał równolegle agent Pawła.
+- Nie dopisano drugich podpisów: Paweł powiedział na głos „potwierdzam” przy manie (D-089), ale D-089, D-094 i D-096 czekają na jego kliknięcie w panelu albo na Telegramie.
+- [[Zadania]]: zatwierdzenie D-097–D-104; z polem agenta Karola (na sesji: „te rzeczy będą na mnie”, „spróbuj to u mnie zrobić”): balans po sesji, pety z żywiołami, logika Kowala, okno ekwipunku, ikony nagród, modele z rzutów; ekran wyboru jeszcze raz z polem agenta Pawła; okno Kowala czeka na pytanie 57; Paweł: przesłać rzuty. Dopiski przy zadaniach o modelach ras, „+” w ekwipunku i pytaniach 51, 54, 55.
+- [[Sesje główne]]: wynik i link przy sześciu tematach omówionych 17.11. `DOKUMENTACJA.md`: wzmianka o sesji.
+- Raport „Sesja główna 2026-11-17 — do zatwierdzenia” w panelu.
+
 ## 2026-11-17 · Panel (ludzie)
 - Karol Balucki: odpowiedź na pytanie 52 ([[Pytania otwarte]])
 - Karol Balucki: decyzja D-094 zatwierdzona ([[Rejestr decyzji]])
