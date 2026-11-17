@@ -197,8 +197,9 @@ portal krain → chmury → Las → chmury → „Miasteczko” → start bazaru
 | w czasie przejścia | 66,7–68,5 ms (14,6–15,0 kl./s) | 68–73 ms | 72–177 ms |
 | bez przejścia, ta sama sesja | 66,7 ms (15,0 kl./s) | — | 68 ms |
 
-Przejście nie obniża płynności. Samo 15 kl./s to ograniczenie Studia z oknem przykrytym zaciemnieniem — nie jest
-miarodajne dla telefonu.
+Przejście nie obniża płynności. Samo 15 kl./s to ograniczenie Studia z oknem w tle (bez fokusu) — nie zaciemnienia
+ekranu, jak zapisano w nocy — i nie jest miarodajne dla telefonu; przy oknie Studio na wierzchu (`tools/studio_okno.py
+--na-wierzch`) pomiar trzeba powtórzyć.
 
 **Kontrola bez Studio:** `zbuduj.py --sucho` — dane poprawne, punkty przybycia zgodne z planem pasa, reguły 1–4
 `swiat/las_potwory/sprawdz_luau.py` (bilans bloków i nawiasów, strażnik Studio, zakazane wywołania) bez błędów.

@@ -6,6 +6,15 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (pomiar przy oknie Studio na wierzchu, narzędzia dźwięku)
+- Karol rano: „leć wszystkie pozostałe taski, póki nie wrócę do domu” — zlecenie pracy na dzień; na wybory z nocnych raportów odpowie później. W toku: poprawki walki z podpięciem własnych dźwięków, Training Center (projekt sześciu mini-gier i dwie na próbę), liczby balansu, plan siedmiu biomów i Bagna (do akceptacji, bez budowy w Studio).
+- **Poprawka nocnego wniosku:** 15 klatek na sekundę w nocnych próbach nie brało się z zaciemnienia ekranu, tylko z okna Studio w tle (fokus miało inne okno). Przy oknie na wierzchu: las-pas i bazar 16,7 ms średnio (najgorsze 5% klatek: 17,8–17,9 ms), walka 16,7 ms (ok. 18 ms), koszt skryptu walki 0,4–0,5 ms na klatkę. Punkty „do oceny” P14 (las-pas) i B14 (bazar) są w porządku.
+- **Walka przy 60 klatkach na sekundę:** 44 z 46 i 110 z 111. Tempo ×4 nadal nie mieści się w progu (32,3 s przy progu 29,75 s) — to błąd odtwarzania, nie liczby klatek; trafił do paczki poprawek.
+- **Dźwięk:** `tools/audio_arkusz.py` skleja 22 efekty walki w jeden plik z mapą odcinków (`assets/audio/arkusz/`), a `tools/roblox_upload_audio.py` wgrywa audio tylko po zapisanej zgodzie człowieka na dokładnie ten plik. Nic nie wgrano — czeka na „tak” Karola. Roblox pozwala na 10 wgrań audio miesięcznie bez weryfikacji tożsamości konta (100 z weryfikacją), stąd jeden plik zamiast 22.
+- `tools/studio_okno.py --na-wierzch` wysuwa okno Studio na wierzch przed pomiarem czasu klatki.
+- Zadanie o nazwach walut i koła fortuny: propozycję D-046 ludzie odrzucili 14.11 z dopiskiem Karola (trzecia waluta to Rybki, „Krzywe Koło jest okej”), więc nowej propozycji nie ma — do potwierdzenia, czy zadanie zamknąć.
+- Pliki: `tools/audio_arkusz.py`, `tools/roblox_upload_audio.py`, `tools/studio_okno.py`, `assets/audio/arkusz/`, `swiat/miasteczko_bazar_gra/` (README, komunikaty prób), `swiat/teleport_chmury/README.md`; notatka [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (sesja nocna: walka z silnikiem v3 w Studio)
 - **Silnik walki v3, nowy ekran walki i pomijanie walk (D-078) wdrożone w Studio** w trzech kontenerach: `Workspace/TestWalki2` (prototyp), `Workspace/LasPotwory` (stary las) i `Workspace/LasPasGra` (las-pas). Zgodność silnika w prawdziwym Luau z wzorcem w Pythonie: 592 z 592 dzienników, 60 z 60 złych wejść odrzuconych.
 - **Sprawdzone w trybie Play (02:40–04:12):** pomijanie (pierwsza walka z gatunkiem bez przycisku, od drugiej POMIŃ albo spacja, decyduje serwer, oszustwo z klienta odrzucone), mana, statusy 11 z 11, blok 8 z 8, wskrzeszenie 3 z 3, pasywki 3 z 3. Testy prototypu na ostatecznym kodzie: 44 z 46 i 25 z 27; las-pas 17 punktów w porządku (koszt do oceny człowieka), stary las 5 z 5, przejście przez chmury 6 z 6.

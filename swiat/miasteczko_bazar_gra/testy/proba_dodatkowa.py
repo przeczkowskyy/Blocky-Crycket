@@ -17,8 +17,8 @@ Sygnaly/PrzeniesDoBazaru W SESJI PLAY (po stronie serwera, przywracany w finally
       ≥ 0,8 st pod stropem, po tej stronie ściany co punkt E (dymek ma AlwaysOnTop, więc zasłony nie liczymy)
   D03 stare ↔ nowe miasteczko prawdziwym E w obie strony + licznik odrodzeń (czy to przeniesienie, nie śmierć)
   D04 Kamień Powrotu w lesie-pasie prawdziwym E → start bazaru; bez uchwytu bazaru → stare miasteczko (LasTeleport)
-  D05 koszt u klienta: części i instancje w Workspace na starcie bazaru, czas klatki (Studio pod zaciemnieniem
-      rysuje wolniej — liczby tylko orientacyjne)
+  D05 koszt u klienta: części i instancje w Workspace na starcie bazaru, czas klatki (Studio z oknem w tle rysuje
+      15 kl./s — przed pomiarem: python -B tools/studio_okno.py --na-wierzch)
   Z   zrzuty z gry (bez filmów): start, uliczka, karczma z dymkiem, karczmarz z bliska, zbrojownia, sklep magiczny,
       zagroda, tablica, portal, Brama Leśna, przejście w bazarze, przejście w starym miasteczku
 """
@@ -413,7 +413,7 @@ def main():
                          'fps_studio = workspace:GetRealPhysicsFPS() })', "Client")
                 zapisz("D05", ile)
                 punkt("D05", None, "u klienta na starcie bazaru: części %s (bazar %s z 4410), instancji %s, streaming %s; klatka śr. %.1f ms, "
-                      "p95 %.1f ms (Studio pod zaciemnieniem — orientacyjnie)" % (ile["czesci"], ile["czesci_bazaru"], ile["instancje"],
+                      "p95 %.1f ms (miarodajne tylko przy oknie Studio na wierzchu)" % (ile["czesci"], ile["czesci_bazaru"], ile["instancje"],
                                                                                  ile["streaming"], ile["klatka_sr_ms"], ile["klatka_p95_ms"]))
 
             # ---------------------------------------------------------------- Z zrzuty z gry

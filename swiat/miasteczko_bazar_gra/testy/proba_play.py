@@ -610,7 +610,7 @@ def main():
                 time.sleep(2.0)
                 kl14[nazwa] = klatki()
             zapisz("B14", kl14)
-            punkt("B14", None, "klatka śr./p95 [ms]: %s — ocenia człowiek (Studio z zaciemnionym oknem rysuje wolniej)" % {
+            punkt("B14", None, "klatka śr./p95 [ms]: %s — ocenia człowiek (miarodajne tylko przy oknie Studio na wierzchu: tools/studio_okno.py --na-wierzch)" % {
                 n: (round(w["sr_ms"], 1), round(w["p95_ms"], 1)) for n, w in kl14.items()})
 
             # ---------------------------------------------------------------- B15 konsola

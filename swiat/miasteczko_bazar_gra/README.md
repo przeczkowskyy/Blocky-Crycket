@@ -273,7 +273,7 @@ i odrodziła się przy spawnie, obok celu) i `…_0145_*` (B04 zagroda i B06 prz
 | B11 działka i lochy | OK — „Działka — wkrótce”, „Zamknięte”; po odblokowaniu kłódka niewidoczna u klienta 8/8 części, na serwerze 0/8; E → `OknoMiejsca("lochy")`, dymek „Hala portali — wkrótce”; po zamknięciu kłódka wraca |
 | B12 niewidzialne ściany (marsz 30 st na zewnątrz ze skokami przy 4 brzegach) | OK — zatrzymanie na x ≈ 899 (zachód), x ≈ 1057 (wschód, zamknięta Brama Leśna), z ≈ −735,6 (północ), z ≈ −664,1 (południe); najniżej y ≈ 3,1 — nikt nie spadł |
 | B13 dymek wyłączany atrybutem | OK — `DymkiWylaczone` i `BezDymku` gaszą dymek zbrojowni, po usunięciu wraca |
-| B14 czas klatki | „?” — 66,7 ms śr., p95 ≈ 68 ms w 4 miejscach = limit Studia pod zaciemnieniem (15 kl./s), nie pomiar gry |
+| B14 czas klatki | w porządku — 17.11 rano przy oknie Studio na wierzchu: 16,7 ms śr., p95 17,8–17,9 ms w 4 miejscach (60 kl./s). Nocne 66,7 ms to limit Studia z oknem w tle (15 kl./s) — nie zaciemnienie ekranu i nie pomiar gry |
 | B15 konsola | OK — 0 błędów pakietu |
 
 **Próba dodatkowa** (`testy/proba_dodatkowa.py`; D01, D03–D05 o 01:56, D02 i zrzuty o 02:04):
@@ -284,7 +284,7 @@ i odrodziła się przy spawnie, obok celu) i `…_0145_*` (B04 zagroda i B06 prz
 | D02 dymki 13 miejsc (kamera za plecami) | OK — 13/13 dymków na ekranie gracza, żaden po drugiej stronie ściany ani stropu; miejsca do stropu: karczma 5,8 st, mistrz gier 7,4, sklep magiczny 3,2, zbrojownia 4,0, Training Center 4,3, Brama Leśna 6,7 (pod łukiem); reszta pod gołym niebem. Teksty z `miejsca.json` (np. „Karczmarz: zadania wkrótce!”). Pierwsza wersja D02 (01:56) liczyła zasłonę promieniem i trafiała w głowy sprzedawców — dymek ma `AlwaysOnTop`, więc zasłona nie gra roli; kryterium poprawione |
 | D03 stare ↔ nowe prawdziwym E | OK — 0,0 st od punktu powrotu przy spawnie i 0,0 st od startu bazaru, `…:stare_miasteczko:ok`, `…:nowe_miasteczko:ok`, zero śmierci |
 | D04 Kamień Powrotu w lesie-pasie (prawdziwe E) | OK — z bazarem: start bazaru, 0,0 st; z uchwytem bazaru odpiętym na czas próby: `LasTeleport.PunktMiasteczka` (stare Krzywe Miasteczko), 0,0 st |
-| D05 koszt u klienta (start bazaru) | „?” — w Workspace u klienta 36 256 części i 59 028 instancji (całe miejsce testowe; streaming włączony, bazar 4410 z 4410 wczytany); klatka 66,7 ms = limit Studia pod zaciemnieniem |
+| D05 koszt u klienta (start bazaru) | „?” — w Workspace u klienta 36 256 części i 59 028 instancji (całe miejsce testowe; streaming włączony, bazar 4410 z 4410 wczytany); klatka 66,7 ms = limit Studia z oknem w tle (zob. B14: przy oknie na wierzchu 16,7 ms); D05 nie był powtarzany |
 
 **Przejście przez chmury** (`swiat/teleport_chmury/testy/proba_play.py`, 01:25): **6/6 OK**, test 2 (Las → miasteczko,
 prawdziwe kliknięcie myszą) — start bazaru, odchyłka 0,0. **Las-pas** (`swiat/las_pas_gra/testy/proba_play.py`, 01:49):
@@ -349,8 +349,7 @@ u klienta `AlwaysOnTop = false`; podpowiedzi E na zrzutach nie ma. Nazwa konta n
 - **Telefon i pad** (emulator Studio): przycisk E, czytelność dymków i tabliczek na małym ekranie.
 - **Dwóch graczy** (Test → Clients and Servers): dymki i kłódka lochów tylko u tego, kto nacisnął E; tablica z dwoma
   wierszami; blokady czasu osobno dla graczy (logika sprawdzona offline: 400 przebiegów).
-- **Prawdziwy czas klatki i pamięć** — Studio pod zaciemnieniem rysuje 15 kl./s; potrzebny pomiar przy odsłoniętym
-  oknie i na telefonie (sam bazar ma 4410 części; rozważyć `Persistent` dla huba).
+- **Pamięć i czas klatki na telefonie** — czas klatki na komputerze zmierzony 17.11 przy oknie Studio na wierzchu (B14: 16,7 ms śr.); pamięci i telefonu nie mierzono. Sam bazar ma 4410 części; rozważyć `Persistent` dla huba.
 - **Migotanie w ruchu** — sprawdzone tylko analizą płaszczyzn i nieruchomymi zrzutami.
 - **Wykrywanie „okno się otworzyło”** — żadnego okna Pawła jeszcze nie ma (B05), więc heurystyka nie była sprawdzona na
   prawdziwym oknie.
