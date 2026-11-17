@@ -6,6 +6,15 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (sesja nocna: walka z silnikiem v3 w Studio)
+- **Silnik walki v3, nowy ekran walki i pomijanie walk (D-078) wdrożone w Studio** w trzech kontenerach: `Workspace/TestWalki2` (prototyp), `Workspace/LasPotwory` (stary las) i `Workspace/LasPasGra` (las-pas). Zgodność silnika w prawdziwym Luau z wzorcem w Pythonie: 592 z 592 dzienników, 60 z 60 złych wejść odrzuconych.
+- **Sprawdzone w trybie Play (02:40–04:12):** pomijanie (pierwsza walka z gatunkiem bez przycisku, od drugiej POMIŃ albo spacja, decyduje serwer, oszustwo z klienta odrzucone), mana, statusy 11 z 11, blok 8 z 8, wskrzeszenie 3 z 3, pasywki 3 z 3. Testy prototypu na ostatecznym kodzie: 44 z 46 i 25 z 27; las-pas 17 punktów w porządku (koszt do oceny człowieka), stary las 5 z 5, przejście przez chmury 6 z 6.
+- **Naprawione po obejrzeniu zrzutów:** dwa ciemne pasy przez środek ekranu w każdej walce, wielkie litery bez polskich znaków, cel ataku poza kadrem po zbliżeniu w długiej walce, portret zasłaniający ostatni znak poziomu przeciwnika.
+- **Przyjęte na noc, do zmiany:** po pominięciu walki gracz i potwór są wolni od razu; stary las też ma pomijanie. To robocze ustawienia, nie decyzje — czekają na odpowiedź w raporcie.
+- **Zostaje:** drobne nazwy przeciwników w panelu prób na telefonie (10–11 punktów), dwa panele bohatera i dwa banery po Strażniku w lesie-pasie, dwa ujęcia kamery na granicy progu testu. Niesprawdzone: prawdziwy telefon, pad, dwóch graczy, czas klatki i tempo ×4 przy odsłoniętym ekranie, przegrana i rewanż z pominięciem w lesie.
+- Raport w panelu: „Walka: nowy silnik, ekran walki i pomijanie — działa w Studio” (r-20261117-041407-d841), czeka na decyzję.
+- Pliki: `swiat/test_walki2/`, `swiat/las_potwory/`, `swiat/las_pas_gra/`, `DOKUMENTACJA.md`; notatki [[Walka v2 — silnik, klasy i umiejętności]], [[Biom Las]], [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (sesja nocna: las-pas i miasteczko-bazar w grze, ekran walki bez Studio)
 - **Las-pas w grze** (`Workspace/LasPasGra`, `swiat/las_pas_gra/`): potwory w przegrodach, walka klawiszem E, brama do Bagna po Strażniku, przelot kamery przy pierwszym wejściu (D-077), wejście Bramą Leśną i przez chmury. Lista kontroli w trybie Play: 15 z 16 w porządku (szesnasta to koszt, ocenia człowiek); bieg od wejścia do bramy 57,0 s. Walki liczy jeszcze silnik v2 — v3 wejdzie razem z nowym ekranem walki. Raport w panelu.
 - **Miasteczko-bazar w grze** (D-084, D-085; `Workspace/MiasteczkoBazar` — 4410 części, `Workspace/MiasteczkoBazarGra`, `swiat/miasteczko_bazar_gra/`): 13 miejsc z klawiszem E, zdarzenie `OknoMiejsca` dla okien 2D Pawła, portal krain, Brama Leśna, tablica z rankingiem, zagroda petów, przejścia stare ↔ nowe miasteczko. Lista kontroli w trybie Play: 14 z 15 w porządku (piętnasta to czas klatki). Przejście przez chmury i Kamień Powrotu lądują w bazarze. Dziewięć ustawień przyjętych na noc jest w README pakietu („Wybory do decyzji”). Raport w panelu.
