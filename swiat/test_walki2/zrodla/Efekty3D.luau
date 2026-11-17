@@ -346,6 +346,100 @@ function Efekty:wybuch(nazwa: string, poz: Vector3, skala: number?)
 	f(self, poz, skala or 1)
 end
 
+--[[ Parada bez tarczy (v3: blok ma każda klasa i potwór): łuk „odbicia” z pięciu świecących klinów w poprzek ciosu,
+	w punkcie przed bronią (albo piersią) broniącego, zwrócony do atakującego; rozchyla się i gaśnie w ok. 0,35 s
+	czasu sceny. kier = kierunek od broniącego do atakującego. ]]
+function Efekty:parada(punkt: Vector3, kier: Vector3, kolor: Color3, s: number)
+	local poziomo = Vector3.new(kier.X, 0, kier.Z)
+	if poziomo.Magnitude < 0.01 then
+		poziomo = Vector3.new(0, 0, -1)
+	end
+	local cf = CFrame.lookAt(punkt, punkt + poziomo.Unit)
+	local czesci = {}
+	for i = 1, 5 do
+		local kat = (i - 3) * 0.42
+		local p = self:czesc({ Name = "Parada", Size = Vector3.new(0.12, 0.9, 0.22) * s, Color = kolor, Transparency = 0.1 })
+		table.insert(czesci, { p = p, kat = kat })
+	end
+	local blysk = self:czesc({ Name = "ParadaBlysk", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.08, 1.6, 1.6) * s,
+		Color = Color3.new(1, 1, 1), Transparency = 0.35 })
+	local wiek = 0
+	return self:dodaj({
+		krok = function(_, d)
+			wiek += d
+			local u = wiek / 0.35
+			if u >= 1 then
+				return false
+			end
+			local r = (0.75 + 0.55 * u) * s
+			for _, c in czesci do
+				c.p.CFrame = cf * CFrame.Angles(0, 0, c.kat) * CFrame.new(0, r, 0) * CFrame.Angles(0, 0, -c.kat * 0.2)
+				c.p.Transparency = 0.1 + 0.9 * u * u
+			end
+			blysk.CFrame = cf * CFrame.Angles(0, rad(90), 0)
+			blysk.Size = Vector3.new(0.08, (1.6 + 1.4 * u) * s, (1.6 + 1.4 * u) * s)
+			blysk.Transparency = 0.35 + 0.65 * u
+			return true
+		end,
+		zniszcz = function()
+			for _, c in czesci do
+				c.p:Destroy()
+			end
+			blysk:Destroy()
+		end,
+	})
+end
+
+--[[ Wskrzeszenie (v3): słup złotego światła z góry na powalonego, krąg na ziemi i iskry unoszące się w górę;
+	rośnie w 0,25 s, trzyma się i gaśnie pod koniec zdarzenia (czas = trwanie zdarzenia z dziennika, czas sceny). ]]
+function Efekty:wskrzeszenie(cfZiemi: CFrame, szer: number, wys: number, kolor: Color3, czas: number)
+	local r = math.max(1.4, szer * 0.6)
+	local h = math.max(8, wys * 2.6)
+	local slup = self:czesc({ Name = "Swiatlo", Shape = Enum.PartType.Cylinder, Size = Vector3.new(h, r * 2, r * 2), Color = kolor,
+		Transparency = 1 })
+	local rdzen = self:czesc({ Name = "SwiatloRdzen", Shape = Enum.PartType.Cylinder, Size = Vector3.new(h, r, r),
+		Color = Color3.new(1, 1, 1), Transparency = 1 })
+	local krag = self:czesc({ Name = "SwiatloKrag", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.12, r * 2.6, r * 2.6),
+		Color = kolor, Transparency = 1 })
+	local nosnik = self:czesc({ Name = "SwiatloIskry", Size = Vector3.one * 0.3, Transparency = 1, CFrame = cfZiemi })
+	local e = self:emiter(nosnik, { Color = ColorSequence.new(kolor, Color3.new(1, 1, 1)), Rate = 40,
+		Lifetime = NumberRange.new(0.6, 1.1), Speed = NumberRange.new(3, 6), SpreadAngle = Vector2.new(25, 25),
+		Acceleration = Vector3.new(0, 4, 0), Size = NumberSequence.new(0.35, 0), LightEmission = 1 })
+	e.EmissionDirection = Enum.NormalId.Top
+	local swiatlo = self:nowa("PointLight", { Color = kolor, Range = 14, Brightness = 0, Shadows = false }, nosnik)
+	local wiek = 0
+	local srodek = cfZiemi * CFrame.new(0, h / 2, 0) * CFrame.Angles(0, 0, rad(90))
+	local ziemia = cfZiemi * CFrame.new(0, 0.1, 0) * CFrame.Angles(0, 0, rad(90))
+	return self:dodaj({
+		krok = function(_, d)
+			wiek += d
+			local u = wiek / math.max(czas, 0.5)
+			if u >= 1 then
+				return false
+			end
+			local wej = gladko(u / 0.17)
+			local wyj = 1 - gladko((u - 0.75) / 0.25)
+			local k = wej * wyj
+			slup.CFrame = srodek
+			rdzen.CFrame = srodek
+			slup.Transparency = 1 - 0.55 * k
+			rdzen.Transparency = 1 - 0.75 * k
+			krag.CFrame = ziemia * CFrame.Angles(wiek * 2, 0, 0)
+			krag.Transparency = 1 - 0.7 * k
+			nosnik.CFrame = cfZiemi
+			swiatlo.Brightness = 3 * k
+			e.Rate = if u < 0.8 then 40 else 0
+			return true
+		end,
+		zniszcz = function()
+			slup:Destroy()
+			rdzen:Destroy()
+			krag:Destroy()
+			nosnik:Destroy()
+		end,
+	})
+end
+
 ------------------------------------------------------------------ pociski
 -- wspólny lot: część „glowa” (i doczepione) leci od → do w czasie sceny, po łuku (luk), obrócona wzdłuż lotu
 local function lot(fx, czesci: { { BasePart | CFrame } }, od: Vector3, do_: Vector3, czas: number, opcje)

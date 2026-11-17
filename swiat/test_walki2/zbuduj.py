@@ -12,13 +12,15 @@
 Co powstaje (tylko w Workspace/TestWalki2 z atrybutem Wygenerowane = true):
   Moduly/      Ustawienia, Klipy, Aktorzy, TabelaAktorow (z aktorzy.py + zasięg broni i pierś z geometria.py),
                DaneAktorow/<klucz> (klipy z dane/<klucz>.json); etap 2: Wzorcowe (postać wzorcowa dla serwera),
-               Choreografie, Efekty3D, InterfejsWalki2, WyborWalki2, OdtwarzaczWalki2,
+               Choreografie, Efekty3D, InterfejsWalki2, WyborWalki2, OdtwarzaczWalki2; v3: PlanWalki (czysta logika
+               dziennika v3), PamiecWalk (pamięć pomijania walk — serwer),
                Walka/ — KOPIA silnika z src/server/Walka robiona przy każdej budowie (jedno źródło prawdy zostaje
                w src/), Dziennik — kopia src/shared/Walka/Dziennik.luau; każda kopia dostaje na początku strażnika Studio
   Aktorzy/     szablony aktorów (rigi z klocków, Motor6D, punkty Punkt_*), stoją w galerii na północ od podestu
   Galeria/     cokoły z tabliczkami
   Arena/       leśna polana z podestem, las w tle, tablica z (wyłączoną) podpowiedzią, świecący słup
-  Zdalne/RozpocznijWalke2 (RemoteFunction), Sygnaly/PokazAktora i Sygnaly/Sterowanie (haczyki testowe),
+  Zdalne/RozpocznijWalke2 i Zdalne/PominiecieWalki2 (RemoteFunction; v3: pomijanie walk, D-078),
+  Sygnaly/PokazAktora i Sygnaly/Sterowanie (haczyki testowe),
   SerwerWalki2 (Server), KlientWalki2 (Client)
 Dane aktorów przygotowuje wcześniej aktorzy.py (Blender tylko tam); ta budowa Blendera nie woła.
 
@@ -60,6 +62,9 @@ SKRYPTY = [
     # etap 2: serwer, odtwarzacz, interfejs
     ("zrodla/Wzorcowe.luau", "ModuleScript", "Moduly/Wzorcowe", None),
     ("zrodla/Choreografie.luau", "ModuleScript", "Moduly/Choreografie", None),
+    # v3 (17.11): czysta logika odtwarzacza (dziennik v3) i pamięć pomijania walk (D-078, tylko serwer jej używa)
+    ("zrodla/PlanWalki.luau", "ModuleScript", "Moduly/PlanWalki", None),
+    ("zrodla/PamiecWalk.luau", "ModuleScript", "Moduly/PamiecWalk", None),
     ("zrodla/Efekty3D.luau", "ModuleScript", "Moduly/Efekty3D", None),
     ("zrodla/InterfejsWalki2.luau", "ModuleScript", "Moduly/InterfejsWalki2", None),
     ("zrodla/WyborWalki2.luau", "ModuleScript", "Moduly/WyborWalki2", None),
@@ -74,7 +79,8 @@ SILNIK.append(("src/shared/Walka/Dziennik.luau", "Moduly/Dziennik"))
 FOLDERY = ["Moduly", "Moduly/Walka", "Moduly/DaneAktorow", "Zdalne", "Sygnaly", "Aktorzy", "Galeria"]
 SYGNALY = ["PokazAktora"]
 # (klasa, ścieżka) — zdalna funkcja walki i haczyk testowy klienta (etap 2)
-INNE = [("RemoteFunction", "Zdalne/RozpocznijWalke2"), ("BindableFunction", "Sygnaly/Sterowanie")]
+INNE = [("RemoteFunction", "Zdalne/RozpocznijWalke2"), ("BindableFunction", "Sygnaly/Sterowanie"),
+        ("RemoteFunction", "Zdalne/PominiecieWalki2")]  # v3: pomijanie walk (D-078) — zgoda i zgłoszenie
 
 START = r'''
 local CH = game:GetService("ChangeHistoryService")

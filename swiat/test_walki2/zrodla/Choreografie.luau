@@ -44,7 +44,10 @@ Ch.ZDARZENIA = {
 	efekt_nalozony = "nalozenie",
 	efekt_koniec = "koniec",
 	utrata_tury = "utrata",
+	wskrzeszenie = "wskrzeszenie", -- v3 (propozycja D-094): powalony wstaje z częścią życia, raz na walkę
 }
+-- zdarzenie nieznane odtwarzaczowi (nowszy silnik): ostrzeżenie w konsoli, paski i mana z dziennika, bez animacji
+Ch.NIEZNANE = "nieznane"
 
 -- style choreografii (Choreo.<styl> w odtwarzaczu)
 Ch.STYLE = { "wrecz", "skok", "pocisk", "chmura", "korzenie", "w_klipie", "na_siebie" }
@@ -92,34 +95,85 @@ Ch.UMIEJETNOSCI = {
 	kolor   kolor napisu tyknięcia i ikony
 	ikona   ikona z pikseli w interfejsie (InterfejsWalki2)
 	napis   napis przy nałożeniu = nazwa efektu z danych silnika wielkimi literami i „!” (test tego pilnuje — napis
-	        nie może mówić czego innego niż dziennik) ]]
+	        nie może mówić czego innego niż dziennik)
+	znaczek co pokazuje znaczek w lewym górnym rogu ikony (v3): "stosy" = „×N” (trucizna w stosach, gdy N > 1),
+	        "procent" = „−N%” (tarcza procentowa: wartosc przy nałożeniu); bez pola — tylko licznik tur
+	Statusy v3 mają różny charakter (ZMIANY_SESJA_1611.md): spowolnienie NIE zabiera tury (lód, płatek śniegu),
+	ogłuszenie zabiera najbliższą turę (gwiazdki nad głową, napis „TRACI TURĘ!” przy utrata_tury), tarcza z
+	umiejętności zmniejsza trafienia o procent przez 3 tury (bez „zapasu” pochłaniania). ]]
 Ch.EFEKTY = {
-	trucizna = { wyglad = "babelki", kolor = "#8BEA4E", ikona = "trucizna", napis = "TRUCIZNA!" },
+	trucizna = { wyglad = "babelki", kolor = "#8BEA4E", ikona = "trucizna", napis = "TRUCIZNA!", znaczek = "stosy" },
 	podpalenie = { wyglad = "ogien", kolor = "#FF9A2E", ikona = "ogien", napis = "PODPALENIE!" },
 	krwawienie = { wyglad = "krople", kolor = "#FF4A5E", ikona = "kropla", napis = "KRWAWIENIE!" },
-	spowolnienie = { wyglad = "gwiazdki", kolor = "#7FD8FF", ikona = "gwiazdki", napis = "SPOWOLNIENIE!" },
+	spowolnienie = { wyglad = "lod", kolor = "#7FD8FF", ikona = "sniezynka", napis = "SPOWOLNIENIE!" },
+	ogluszenie = { wyglad = "gwiazdki", kolor = "#FFE14A", ikona = "gwiazdki", napis = "OGŁUSZENIE!" },
 	zdarcie_pancerza = { wyglad = "odlamki", kolor = "#D9A066", ikona = "pancerz", napis = "ZDARTY PANCERZ!" },
-	kamienna_skora = { wyglad = "kamienie", kolor = "#C9CED6", ikona = "kamien", napis = "KAMIENNA SKÓRA!" },
-	bariera = { wyglad = "banka", kolor = "#6FE3FF", ikona = "banka", napis = "BARIERA!" },
+	kamienna_skora = { wyglad = "kamienie", kolor = "#C9CED6", ikona = "kamien", napis = "KAMIENNA SKÓRA!", znaczek = "procent" },
+	bariera = { wyglad = "banka", kolor = "#6FE3FF", ikona = "banka", napis = "BARIERA!", znaczek = "procent" },
 	skupienie = { wyglad = "blask", kolor = "#FFD23F", ikona = "oko", napis = "SKUPIENIE!" },
 }
 -- efekt bez wpisu (gdyby się trafił)
 Ch.EFEKT_ZASTEPCZY = { wyglad = "blask", kolor = "#FFFFFF", ikona = "oko", napis = "EFEKT!" }
 
--- spowolnienie nakładają różne umiejętności: wygląd na postaci zależy od tej, która je nałożyła
--- (umiejętność → Wyglad.<nazwa>; test pilnuje, że każda umiejętność ze spowolnieniem ma tu wpis)
-Ch.WYGLAD_SPOWOLNIENIA = {
-	lodowy_pocisk = "lod",
-	uscisk_korzeni = "pnacza",
-	ogluszajace_uderzenie = "gwiazdki",
-	miazdzacy_cios = "gwiazdki",
+-- ten sam efekt nakładają różne umiejętności: wygląd na postaci zależy od tej, która go nałożyła
+-- (efekt → umiejętność → Wyglad.<nazwa>). Test pilnuje, że KAŻDA umiejętność, która nakłada ogłuszenie albo
+-- spowolnienie, ma tu wpis (lód przy lodowym pocisku, pnącza przy uścisku korzeni, gwiazdki przy ogłuszającym
+-- uderzeniu trolla i Miażdżącym ciosie).
+Ch.WYGLAD_OD_UMIEJETNOSCI = {
+	spowolnienie = { lodowy_pocisk = "lod" },
+	ogluszenie = { uscisk_korzeni = "pnacza", ogluszajace_uderzenie = "gwiazdki", miazdzacy_cios = "gwiazdki" },
 }
+-- efekty, przy których odtwarzacz pulsuje ozdobą w chwili utrata_tury (tylko ogłuszenie zabiera turę)
+Ch.TRACI_TURE = { ogluszenie = true }
+
+--[[ Blok (v3: każda klasa i każdy potwór). Aktor z klipem bloku (Wojownik z tarczą) gra klip i iskry przy punkcie
+	Tarcza; reszta — parada proceduralna: odchylenie i krok w tył, łuk „odbicia” przed bronią (punkt Bron) albo
+	przed piersią, iskry. Napis „BLOK −N%” (N z walka.czesc_przez_blok) i mniejsza liczba = część, która przeszła. ]]
+Ch.BLOK = {
+	kolor = "#7CF3FF", -- łuk parady i napis
+	odchylenie = 14, -- stopnie
+	cofniecie = 0.7, -- studs
+}
+
+--[[ Etykiety premii w zapowiedzi pasywek na starcie walki (tekst UI; liczby zawsze z danych silnika):
+	klucz modyfikatora → { tekst, jednostka } — jednostka "%" (ułamek → procent), "pp" (punkty procentowe),
+	"pkt" (punkty), "tury", "stosy", "x" (dodatek do mnożnika). Test pilnuje, że każdy modyfikator z danych ma tu
+	etykietę (nowy modyfikator silnika bez etykiety = błąd testu). ]]
+Ch.MODYFIKATORY = {
+	kolejnosc = {
+		"zycie", "cios", "cios_zwykly", "moc", "pancerz", "odpornosc", "unik", "blok", "krytyk", "mnoznik_krytyka",
+		"zysk_many", "koszt_many", "mana_startowa", "pancerz_wroga", "szansa_zaklecia", "stosy_trucizny",
+		"sila_trucizny", "trwanie_podpalenia",
+	},
+	zycie = { tekst = "życia", jednostka = "%" },
+	cios = { tekst = "obrażeń", jednostka = "%" },
+	cios_zwykly = { tekst = "zwykłego ciosu", jednostka = "%" },
+	moc = { tekst = "mocy umiejętności", jednostka = "%" },
+	pancerz = { tekst = "Pancerza", jednostka = "%" },
+	odpornosc = { tekst = "odporności na magię", jednostka = "%" },
+	unik = { tekst = "uniku", jednostka = "pp" },
+	blok = { tekst = "bloku", jednostka = "pp" },
+	krytyk = { tekst = "szansy krytyka", jednostka = "pp" },
+	mnoznik_krytyka = { tekst = "do mnożnika krytyka", jednostka = "x" },
+	zysk_many = { tekst = "zysku many", jednostka = "%" },
+	koszt_many = { tekst = "zniżki kosztu many", jednostka = "%" },
+	mana_startowa = { tekst = "many na start", jednostka = "pkt" },
+	pancerz_wroga = { tekst = "Pancerza wroga", jednostka = "%" },
+	szansa_zaklecia = { tekst = "szansy zaklęcia", jednostka = "pp" },
+	stosy_trucizny = { tekst = "trucizny (limit)", jednostka = "stosy" },
+	sila_trucizny = { tekst = "siły trucizny", jednostka = "%" },
+	trwanie_podpalenia = { tekst = "podpalenia", jednostka = "tury" },
+}
+
+-- wskrzeszenie (v3): ile trwa każda faza sceny (ułamek trwania zdarzenia z dziennika — czas jest z silnika)
+Ch.WSKRZESZENIE = { swiatlo = 0.0, wstaje = 0.22, zycie = 0.38, napis = 0.3, kolor = "#FFE58A" }
 
 -- moment trafienia w zdarzeniu (część jego trwania) i zwolnienie
 Ch.TRAFIENIE = { cios = 0.5, blok = 0.5, unik = 0.5, krytyk = 0.5, umiejetnosc = 0.56 }
 Ch.ZWOLNIENIE = {
 	krytyk = { przed = 0.28, po = 0.42, tempo = 0.22 }, -- krytyk: scena zwalnia wokół trafienia (jak w v1)
 	nokaut = { przed = 0.12, po = 0.55, tempo = 0.4 }, -- cios kończący walkę
+	powalenie = { przed = 0.12, po = 0.45, tempo = 0.45 }, -- cios, po którym strona wstaje (wskrzeszenie, v3)
 	-- atak z lotem (pocisk, chmura, bańka z klipu): zwolnienie zaczyna się dopiero w chwili dolotu (przegląd 15.11 —
 	-- przy 0,28 s „przed” pocisk dolatywał 1,1–1,3 s i wyglądał, jakby stał przed celem); rampa = wejście w zwolnienie
 	lot = { przed = 0, rampa = 0.03 },

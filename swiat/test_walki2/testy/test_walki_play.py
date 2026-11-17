@@ -11,14 +11,16 @@ Sprawdza (wzór: swiat/test_walki_roblox/testy/test_play.py):
   2. pełne walki: każda klasa z trzema różnymi przeciwnikami (ziarna z ziarna.json), do panelu wyniku; po każdej:
      wszystkie zdarzenia obsłużone, brak braków choreografii i błędów, paski = dziennik po każdym zdarzeniu i na końcu,
      tury odtwarzacza = tury silnika, łup na panelu = łup z dziennika;
-  3. długa walka (> 20 tur) i krótka (3 tury); tempo ×4 klikiem w trakcie; POMIŃ; JESZCZE RAZ (z odliczaniem po POMIŃ);
+  3. długa walka (> 20 tur) i krótka (3 tury); tempo ×4 klikiem w trakcie; POMIŃ (D-078: przycisk tylko przy gatunku
+     poznanym wcześniej w tej sesji Play — Strażnik Gaju walczył w p. 2; po pominięciu za zgodą serwera gracz wolny od
+     razu, więc JESZCZE RAZ bez odliczania; pierwszą walkę bez przycisku sprawdza testy/test_v3_play.py); JESZCZE RAZ;
      ZAMKNIJ (kamera, GUI gry, lista graczy, czat, podpowiedź, sterowanie wracają; postać chodzi);
   4. reset postaci w trakcie walki → wszystko posprzątane, po odrodzeniu postać chodzi;
   5. bezpieczeństwo: złe wybory i liczby od klienta odrzucone albo zignorowane, limit próśb, sesja walki, odległość;
   6. obcy w kadrze schowani lokalnie i przywróceni; 7. symulacja publikacji (kontener znika poza Studio);
   8. konsola bez komunikatów z naszego kodu; 9. pomiary czasu klatki i kosztu naszego kodu (PC).
 Macierz walk z p. 2 idzie z atrybutem serwera TestBezSesji (bez czekania na koniec sesji między walkami);
-blokadę sesji sprawdzają osobno p. 3 (POMIŃ → odliczanie) i p. 5 (bez tego atrybutu).
+blokadę sesji sprawdza osobno p. 5 (bez tego atrybutu); odliczanie po pominięciu BEZ zgody — test_v3_play.py (P4).
 """
 import argparse
 import json
@@ -290,7 +292,7 @@ def main():
                 "(%.1f s, dziennik %.1f s)" % (s.get("OstatniCzasTrwania") or -1, ocz["czas"]))
         t.steruj('"zamknij"')
         t.steruj('"tempo", 1')
-        # POMIŃ → odliczanie, JESZCZE RAZ (już z blokadą sesji)
+        # POMIŃ (gatunek poznany w p. 2, zgoda serwera) → wynik od razu, gracz wolny od razu (D-078), JESZCZE RAZ
         t.luau('workspace.TestWalki2:SetAttribute("TestBezSesji", nil) return "ok"', "Server")
         pp = Z["shard"]
         t.ziarno(pp["ziarno"])
@@ -305,14 +307,11 @@ def main():
         ocz = oczekiwana(pp)
         sprawdz("3f. POMIŃ → panel wyniku od razu", s.get("OstatniStan") == "wynik" and s.get("OstatnioPominieto") is True, "(%.2f s)" % dt)
         ocen_walke("3g. po POMIŃ", s, pp, ocz, pelna=False)
-        sprawdz("3h. po POMIŃ JESZCZE RAZ zablokowane z odliczaniem", s.get("_jeszczeZablokowany") is True
-                and str(s.get("_jeszczeTekst", "")).startswith("ZA "), "(%s)" % s.get("_jeszczeTekst"))
-        t.klik(GUI_WALKA + "Wynik.Karta.JeszczeRaz.Przycisk")
-        time.sleep(0.6)
-        sprawdz("3i. klik w trakcie blokady nic nie robi", t.stan().get("OstatniStan") == "wynik")
-        zostalo = t.czekaj_wolna(40)
-        time.sleep(0.4)
-        sprawdz("3j. blokada zdjęta po czasie walki", zostalo <= 0 and t.stan().get("_jeszczeZablokowany") is False)
+        sprawdz("3h. po POMIŃ za zgodą serwera JESZCZE RAZ od razu dostępne (D-078: gracz wolny od razu)",
+                s.get("OstatniaOdpowiedzPominiecia") == "ok" and s.get("_jeszczeZablokowany") is False
+                and s.get("_jeszczeTekst") == "JESZCZE RAZ", "(%s, %s)" % (s.get("OstatniaOdpowiedzPominiecia"), s.get("_jeszczeTekst")))
+        zostalo = t.czekaj_wolna(5)
+        sprawdz("3j. serwer zwolnił sesję (NastepnaWalkaOd ≤ teraz)", zostalo <= 0.2, "(%.1f s)" % zostalo)
         t.klik(GUI_WALKA + "Wynik.Karta.JeszczeRaz.Przycisk")
         s, _ = t.czekaj(("odtwarzanie",), 10)
         sprawdz("3k. JESZCZE RAZ → nowa walka (ten sam wybór)", s.get("OstatniStan") == "odtwarzanie" and
@@ -377,7 +376,7 @@ def main():
         t.czekaj(("odtwarzanie",), 10)
         time.sleep(1.0)
         w_trakcie = t.luau(STAN_OBCYCH).strip()
-        t.steruj('"pomin"')
+        t.steruj('"pomin", true')   # wymuszony pokaz (D-078: bez zgody serwera sam przycisk by nie zadziałał)
         time.sleep(0.5)
         t.steruj('"zamknij"')
         time.sleep(1.0)

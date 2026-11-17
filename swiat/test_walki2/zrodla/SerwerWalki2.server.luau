@@ -19,6 +19,21 @@
 	Do testów (tylko po stronie serwera, klient tego nie zmieni): atrybut kontenera „ZiarnoTestowe” (liczba ≥ 1)
 	wymusza ziarno; atrybut „TestBezSesji” = true wyłącza blokadę sesji walki (tylko narzędzie klatek, które ogląda
 	dziesiątki walk pod rząd; zmiana atrybutu u klienta się nie replikuje, więc klient go nie ustawi).
+
+	v3 (17.11.2026):
+		• wybór ma czwarte, OPCJONALNE pole zestaw = "wzorcowa" | "mana" | "pasywki" | "wskrzeszenie" (brak = wzorcowa;
+		  Moduly/Wzorcowe → W.zestaw, wzorzec swiat/test_walki2/zestawy.py) i przeciwnika "lustro" (postać tej samej
+		  klasy i zestawu — wskrzeszenie przeciwnika). Nic z liczb nie przychodzi od klienta.
+		• odpowiedź z walką niesie też pomijanie (D-078, decyzja serwera) i pasywki stron (do zapowiedzi na starcie).
+		• POMIJANIE (D-078): pamięć poznanych gatunków gracza jest TU (Moduly/PamiecWalk, w pamięci serwera, według
+		  UserId — jedna dla tablicy, lasu-pasa i starego lasu). Zdalne/PominiecieWalki2 (RemoteFunction):
+		      "czy", zrodlo  → { ok, powod }      czy bieżącą walkę gracza z tego źródła wolno pominąć
+		      "pomin", zrodlo → { ok, powod, nastepnaOd? }   pominięcie: tablica zwalnia sesję od razu; las — gdy jego
+		                                                      kontener ma Sygnaly/ZwolnijPoPominieciu (README)
+		  zrodlo = nazwa kontenera z zamkniętej listy (TestWalki2, LasPasGra, LasPotwory). Bez zgody → odmowa.
+		• walki z lasów liczy ich własny serwer (SerwerPotworow) — tutaj trafiają przez MOSTEK: serwer słucha
+		  Sygnaly/WynikWalki (BindableEvent) kontenerów LasPasGra i LasPotwory, gdy go mają (las-pas ma; stary las
+		  nie ma — wtedy jego walki są „nieznane” i pomijać ich nie wolno, bezpieczne zachowanie domyślne).
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	-- Prototyp działa wyłącznie w Studio. Poza Studio (opublikowane miejsce) serwer usuwa CAŁY kontener — arenę,
@@ -36,7 +51,9 @@ local Wzorcowe = require(moduly:WaitForChild("Wzorcowe"))
 local folderWalki = moduly:WaitForChild("Walka")
 local Silnik = require(folderWalki:WaitForChild("Silnik"))
 local Dane = require(folderWalki:WaitForChild("Dane"))
+local PamiecWalk = require(moduly:WaitForChild("PamiecWalk"))
 local zdalna = kontener:WaitForChild("Zdalne"):WaitForChild("RozpocznijWalke2") :: RemoteFunction
+local zdalnaPominiecia = kontener:WaitForChild("Zdalne"):WaitForChild("PominiecieWalki2") :: RemoteFunction
 local deska = kontener:WaitForChild("Arena"):WaitForChild("Tablica"):WaitForChild("Deska") :: BasePart
 
 -- podpowiedź jest zbudowana jako wyłączona; włącza ją dopiero serwer w Studio
@@ -54,14 +71,55 @@ for _, k in Wzorcowe.KLASY do
 	KLASY[k] = true
 end
 local PRZECIWNICY = {}
+local DANE_PRZECIWNIKA = {}
 for _, d in Dane.przeciwnicy do
 	PRZECIWNICY[d.id] = true
+	DANE_PRZECIWNIKA[d.id] = d
 end
+PRZECIWNICY[Wzorcowe.LUSTRO] = true
 local POZIOMY = { ["1"] = 1, ["5"] = 5, ["10"] = 10 }
+local ZESTAWY = {}
+for _, z in Wzorcowe.ZESTAWY do
+	ZESTAWY[z] = true
+end
+-- źródła walk dla pamięci pomijania: ten kontener i kontenery lasów (mostek przez Sygnaly/WynikWalki)
+local ZRODLA = { [kontener.Name] = true, LasPasGra = true, LasPotwory = true }
+local ZRODLA_LASU = { LasPasGra = true, LasPotwory = true }
 
 local ostatniaProsba: { [Player]: number } = {}
+local ostatniePominiecie: { [Player]: number } = {}
 local walkaDo: { [Player]: number } = {}
 local generator = Random.new()
+local pamiec = PamiecWalk.nowa()
+
+local function pasywkiOpisu(opis): any
+	-- pasywne umiejętności ze slotów i pasywka broni (do zapowiedzi u klienta; liczby są w dzienniku)
+	local sloty = {}
+	for _, u in opis.umiejetnosci or {} do
+		if Dane.pasywne[u] then
+			table.insert(sloty, u)
+		end
+	end
+	return { sloty = sloty, bron = (opis.bron and opis.bron.pasywka) or "" }
+end
+
+local function pasywkiPotwora(id: string): any
+	local sloty = {}
+	local d = DANE_PRZECIWNIKA[id]
+	for _, u in (d and d.umiejetnosci) or {} do
+		if Dane.pasywne[u] then
+			table.insert(sloty, u)
+		end
+	end
+	return { sloty = sloty, bron = "" }
+end
+
+local function atrybutyPamieci(gracz: Player)
+	pcall(function()
+		local lista = PamiecWalk.poznane(pamiec, gracz.UserId, workspace:GetServerTimeNow())
+		gracz:SetAttribute("PoznaneGatunki", table.concat(lista, ","))
+	end)
+end
 
 local function wybierzZiarno(): number
 	local wymuszone = kontener:GetAttribute("ZiarnoTestowe")
@@ -81,19 +139,27 @@ local function odlegloscOdTablicy(gracz: Player): number?
 	return (hrp.Position - deska.Position).Magnitude
 end
 
--- wybór od klienta → (klasa, przeciwnik, poziom) albo nil; czytamy tylko trzy pola i tylko jako napisy z listy
-local function sprawdzWybor(wybor: any): (string?, string?, number?)
+-- wybór od klienta → (klasa, przeciwnik, poziom, zestaw) albo nil; czytamy tylko te pola i tylko jako napisy z listy
+-- (zestaw opcjonalny: brak = "wzorcowa"; zły zestaw = odmowa)
+local function sprawdzWybor(wybor: any): (string?, string?, number?, string?)
 	if type(wybor) ~= "table" then
 		return nil
 	end
 	local klasa, przeciwnik, poziom = rawget(wybor, "klasa"), rawget(wybor, "przeciwnik"), rawget(wybor, "poziom")
+	local zestaw = rawget(wybor, "zestaw")
 	if type(klasa) ~= "string" or type(przeciwnik) ~= "string" or type(poziom) ~= "string" then
+		return nil
+	end
+	if zestaw == nil then
+		zestaw = "wzorcowa"
+	end
+	if type(zestaw) ~= "string" or not ZESTAWY[zestaw] then
 		return nil
 	end
 	if not KLASY[klasa] or not PRZECIWNICY[przeciwnik] or not POZIOMY[poziom] then
 		return nil
 	end
-	return klasa, przeciwnik, POZIOMY[poziom]
+	return klasa, przeciwnik, POZIOMY[poziom], zestaw
 end
 
 zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
@@ -104,8 +170,8 @@ zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
 	end
 	ostatniaProsba[gracz] = teraz
 
-	local klasa, przeciwnik, poziom = sprawdzWybor(wybor)
-	if not klasa then
+	local klasa, przeciwnik, poziom, zestaw = sprawdzWybor(wybor)
+	if not klasa or not przeciwnik or not poziom or not zestaw then
 		return { ok = false, powod = "zly_wybor" }
 	end
 
@@ -123,8 +189,10 @@ zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
 	end
 
 	local ziarno = wybierzZiarno()
-	local postac = Wzorcowe.postac(klasa :: string, poziom :: number)
-	local udalo, walka = pcall(Silnik.symuluj, postac, { potwor = przeciwnik, poziom = poziom }, ziarno)
+	local postac = Wzorcowe.zestaw(zestaw, klasa, poziom)
+	local lustro = przeciwnik == Wzorcowe.LUSTRO
+	local opisWroga = if lustro then { postac = Wzorcowe.lustro(zestaw, klasa, poziom) } else { potwor = przeciwnik, poziom = poziom }
+	local udalo, walka = pcall(Silnik.symuluj, postac, opisWroga, ziarno)
 	if not udalo then
 		warn("[TestWalki2] Silnik walki zgłosił błąd: " .. tostring(walka))
 		return { ok = false, powod = "blad_silnika" }
@@ -134,21 +202,138 @@ zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
 		walkaDo[gracz] = czasSerwera -- tylko narzędzie klatek (patrz nagłówek)
 	end
 
+	-- D-078: czy wolno pominąć — gatunek przeciwnika poznany w zakończonej walce (pamięć serwera, wszystkie źródła)
+	local gatunek = if lustro then ("postac:" .. klasa) else przeciwnik
+	local pomijanie = PamiecWalk.przyjmij(pamiec, gracz.UserId, kontener.Name, gatunek, czasSerwera, walkaDo[gracz])
+	atrybutyPamieci(gracz)
+
 	-- W prawdziwej grze dokładnie tutaj serwer przyznaje i zapisuje łup; klient dostaje tylko zapis do pokazania.
 	kontener:SetAttribute("SerwerLicznikWalk", (kontener:GetAttribute("SerwerLicznikWalk") or 0) + 1)
 	kontener:SetAttribute("SerwerOstatnieZiarno", ziarno)
-	kontener:SetAttribute("SerwerOstatniWybor", string.format("%s/%s/%d", klasa, przeciwnik, poziom))
+	kontener:SetAttribute("SerwerOstatniWybor", string.format("%s/%s/%d/%s", klasa, przeciwnik, poziom, zestaw))
+	kontener:SetAttribute("SerwerOstatniePominiecie", pomijanie)
 
 	pcall(function()
 		gracz:RequestStreamAroundAsync(Ustawienia.scena().Position, 3)
 	end)
 
-	return { ok = true, walka = walka, nastepnaOd = walkaDo[gracz] }
+	return {
+		ok = true,
+		walka = walka,
+		nastepnaOd = walkaDo[gracz],
+		pomijanie = pomijanie,
+		pasywki = {
+			gracz = pasywkiOpisu(postac),
+			wrog = if lustro then pasywkiOpisu(opisWroga.postac) else pasywkiPotwora(przeciwnik),
+		},
+	}
 end
+
+------------------------------------------------------------------ pomijanie (D-078): zapytanie i zgłoszenie
+local function odmowaPominiecia(powod: string)
+	kontener:SetAttribute("SerwerPominieciaOdrzucone", (kontener:GetAttribute("SerwerPominieciaOdrzucone") or 0) + 1)
+	kontener:SetAttribute("SerwerOstatniaOdmowaPominiecia", powod)
+	return { ok = false, powod = powod }
+end
+
+-- las z Sygnaly/ZwolnijPoPominieciu (BindableFunction; dopisek opisany w README) zwalnia gracza i potwora od razu
+local function zwolnijWLesie(zrodlo: string, gracz: Player): boolean
+	local k = workspace:FindFirstChild(zrodlo)
+	local s = k and k:GetAttribute("Wygenerowane") == true and k:FindFirstChild("Sygnaly")
+	local f = s and s:FindFirstChild("ZwolnijPoPominieciu")
+	if not f or not f:IsA("BindableFunction") then
+		return false
+	end
+	local ok, wynik = pcall(function()
+		return f:Invoke(gracz)
+	end)
+	return ok and wynik == true
+end
+
+zdalnaPominiecia.OnServerInvoke = function(gracz: Player, polecenie: any, zrodlo: any)
+	local teraz = os.clock()
+	local poprzednio = ostatniePominiecie[gracz]
+	if poprzednio and teraz - poprzednio < 0.2 then
+		return odmowaPominiecia("za_szybko")
+	end
+	ostatniePominiecie[gracz] = teraz
+	if (polecenie ~= "czy" and polecenie ~= "pomin") or type(zrodlo) ~= "string" or not ZRODLA[zrodlo] then
+		return odmowaPominiecia("zly_wybor")
+	end
+	local czas = workspace:GetServerTimeNow()
+	if polecenie == "czy" then
+		local ok, powod = PamiecWalk.czyMozna(pamiec, gracz.UserId, zrodlo, czas)
+		return { ok = ok, powod = powod }
+	end
+	local ok, powod = PamiecWalk.pomin(pamiec, gracz.UserId, zrodlo, czas)
+	if not ok then
+		return odmowaPominiecia(powod)
+	end
+	kontener:SetAttribute("SerwerPominieciaPrzyjete", (kontener:GetAttribute("SerwerPominieciaPrzyjete") or 0) + 1)
+	atrybutyPamieci(gracz)
+	if zrodlo == kontener.Name then
+		-- tablica prototypu: po pominięciu gracz jest wolny od razu (ustawienie przyjęte przez właściciela)
+		walkaDo[gracz] = czas
+		return { ok = true, powod = "ok", nastepnaOd = czas }
+	end
+	if zwolnijWLesie(zrodlo, gracz) then
+		return { ok = true, powod = "ok", nastepnaOd = czas }
+	end
+	-- las bez dopisku z README: pokaz skrócony, ale sesję i zajętość potwora trzyma serwer lasu do końca walki
+	return { ok = true, powod = "sesja_zrodla" }
+end
+
+------------------------------------------------------------------ mostek: walki lasów do pamięci pomijania
+--[[ SerwerPotworow (stary las i las-pas) strzela Sygnaly/WynikWalki(gracz, { gatunek, koniec, … }) przy każdej
+	przyjętej walce — o ile jego kontener ma ten BindableEvent (las-pas ma; stary las dziś nie). Tylko słuchamy:
+	niczego w lesie nie zmieniamy. Kontener odbudowany w Play (ChildAdded) podłączamy na nowo. ]]
+local mostki: { [Instance]: RBXScriptConnection } = {}
+local function podlaczMostek(k: Instance)
+	if not ZRODLA_LASU[k.Name] or mostki[k] then
+		return
+	end
+	task.spawn(function()
+		local sygnaly = k:WaitForChild("Sygnaly", 15)
+		local s = sygnaly and sygnaly:WaitForChild("WynikWalki", 15)
+		if not s or not s:IsA("BindableEvent") or mostki[k] or not k.Parent then
+			return
+		end
+		mostki[k] = s.Event:Connect(function(gracz: any, info: any)
+			if typeof(gracz) ~= "Instance" or not gracz:IsA("Player") or type(info) ~= "table" then
+				return
+			end
+			local gatunek, koniec = info.gatunek, info.koniec
+			if type(gatunek) ~= "string" or not DANE_PRZECIWNIKA[gatunek] or type(koniec) ~= "number" or koniec ~= koniec then
+				return
+			end
+			PamiecWalk.przyjmij(pamiec, gracz.UserId, k.Name, gatunek, workspace:GetServerTimeNow(), koniec)
+			atrybutyPamieci(gracz)
+			kontener:SetAttribute("SerwerMostekWalk", (kontener:GetAttribute("SerwerMostekWalk") or 0) + 1)
+		end)
+		k.Destroying:Connect(function()
+			if mostki[k] then
+				mostki[k]:Disconnect()
+				mostki[k] = nil
+			end
+		end)
+	end)
+end
+for _, k in workspace:GetChildren() do
+	podlaczMostek(k)
+end
+workspace.ChildAdded:Connect(podlaczMostek)
+kontener.Destroying:Connect(function()
+	for _, p in mostki do
+		p:Disconnect()
+	end
+	table.clear(mostki)
+end)
 
 Players.PlayerRemoving:Connect(function(gracz)
 	ostatniaProsba[gracz] = nil
+	ostatniePominiecie[gracz] = nil
 	walkaDo[gracz] = nil
+	-- pamięć poznanych gatunków ZOSTAJE (ponowne wejście na ten sam serwer pamięta — jak PamiecGracza lasu-pasa)
 end)
 
 kontener:SetAttribute("SerwerGotowy", true)

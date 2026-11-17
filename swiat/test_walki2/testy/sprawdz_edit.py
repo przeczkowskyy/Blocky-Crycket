@@ -27,7 +27,7 @@ import silnik as S  # noqa: E402
 import wzorcowe as WZ  # noqa: E402
 
 MODULY = ["Ustawienia", "Klipy", "Aktorzy", "Wzorcowe", "Choreografie", "Efekty3D", "InterfejsWalki2", "WyborWalki2",
-          "OdtwarzaczWalki2", "Dziennik"]
+          "OdtwarzaczWalki2", "Dziennik", "PlanWalki", "PamiecWalk"]  # v3: dwa czyste moduły
 
 KOD = r'''
 if game.PlaceId ~= __MIEJSCE__ then return "STOP: inne miejsce" end
@@ -74,10 +74,31 @@ table.insert(w.odmiana, I.wTurach(3))
 table.insert(w.odmiana, I.liczebnik(1, "zdarzenie", "zdarzenia", "zdarzeń"))
 table.insert(w.odmiana, I.liczebnik(23, "zdarzenie", "zdarzenia", "zdarzeń"))
 w.wyglad = {
-	O.wygladEfektu("spowolnienie", "lodowy_pocisk"), O.wygladEfektu("spowolnienie", "uscisk_korzeni"),
-	O.wygladEfektu("spowolnienie", "ogluszajace_uderzenie"), O.wygladEfektu("spowolnienie", ""),
-	O.wygladEfektu("trucizna", "lodowy_pocisk"),
+	-- v3: spowolnienie (lód) i ogłuszenie (gwiazdki / pnącza) to różne statusy
+	O.wygladEfektu("spowolnienie", "lodowy_pocisk"), O.wygladEfektu("ogluszenie", "uscisk_korzeni"),
+	O.wygladEfektu("ogluszenie", "ogluszajace_uderzenie"), O.wygladEfektu("ogluszenie", ""),
+	O.wygladEfektu("trucizna", "lodowy_pocisk"), O.wygladEfektu("spowolnienie", ""),
 }
+-- v3: zestawy postaci tablicy (W.zestaw) przechodzą ścisłą walidację wejścia silnika w Studio (gracz i lustro)
+w.zestawy = {}
+for _, zestaw in W.ZESTAWY do
+	for _, klasa in W.KLASY do
+		for _, poziom in { 1, 5, 10 } do
+			local ok, walka = pcall(Silnik.symuluj, W.zestaw(zestaw, klasa, poziom), { postac = W.lustro(zestaw, klasa, poziom) }, 7)
+			local dobre = ok and (Dziennik.sprawdz(walka))
+			if not dobre then
+				table.insert(w.zestawy, zestaw .. "/" .. klasa .. "/" .. poziom .. ": " .. tostring(if ok then "dziennik" else walka))
+			end
+		end
+	end
+end
+-- v3: czysta logika odtwarzacza i pamięć pomijania wczytują się w Studio
+local PW = require(M.PlanWalki)
+local PM = require(M.PamiecWalk)
+local pam = PM.nowa()
+w.pamiec = { PM.przyjmij(pam, 1, "TestWalki2", "lesny_slime", 0, 10), (PM.pomin(pam, 1, "TestWalki2", 5)),
+	PM.przyjmij(pam, 1, "TestWalki2", "lesny_slime", 11, 20), (PM.pomin(pam, 1, "TestWalki2", 12)) }
+w.plan = #PW.TYPY
 return HS:JSONEncode(w)
 '''
 
@@ -85,7 +106,10 @@ OCZEKIWANE = {
     "liczba": [False, True, True, True],
     "odmiana": ["1 tura", "2 tury", "3 tury", "4 tury", "5 tur", "11 tur", "12 tur", "14 tur", "21 tur", "22 tury",
                 "25 tur", "33 tury", "104 tury", "112 tur", "w 1 turze", "w 3 turach", "1 zdarzenie", "23 zdarzenia"],
-    "wyglad": ["lod", "pnacza", "gwiazdki", "gwiazdki", "babelki"],
+    "wyglad": ["lod", "pnacza", "gwiazdki", "gwiazdki", "babelki", "lod"],
+    "zestawy": [],
+    "pamiec": [False, False, True, True],
+    "plan": 10,
 }
 
 

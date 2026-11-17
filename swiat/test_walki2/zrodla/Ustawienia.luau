@@ -87,6 +87,8 @@ U.DZWIEKI = {
 U.MELODIE = {
 	zwyciestwo = { nuty = { 1.0, 1.26, 1.5, 2.0 }, odstep = 0.11 },
 	porazka = { nuty = { 1.0, 0.84, 0.71, 0.53 }, odstep = 0.17 },
+	-- v3: wskrzeszenie — szybki wznoszący się pasaż (ten sam wbudowany ton)
+	wskrzeszenie = { nuty = { 0.84, 1.0, 1.26, 1.68 }, odstep = 0.08 },
 }
 
 ------------------------------------------------------------------ kolory (kierunek artystyczny: nasycone barwy, ciemny obrys)

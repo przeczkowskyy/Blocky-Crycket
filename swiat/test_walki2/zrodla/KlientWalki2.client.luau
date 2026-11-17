@@ -7,8 +7,9 @@
 		• haczyki testowe (tylko Studio, jak w v1):
 			Sygnaly/PokazAktora (BindableEvent, z etapu 1) — Fire(klucz, akcja?, opcje?) pokaz klonu aktora; Fire() sprząta;
 			Sygnaly/Sterowanie (BindableFunction) — Invoke(polecenie, ...):
-				"start", wybor, opcje   → uruchamia walkę bez panelu (opcje jak w OdtwarzaczWalki2)
-				"pomin" | "zamknij" | "jeszczeRaz" | "tempo", t | "przewin", s | "przewinDo", τ | "stan" | "wybor" (otwiera panel)
+				"start", wybor, opcje   → uruchamia walkę bez panelu (opcje jak w OdtwarzaczWalki2; wybor może mieć zestaw)
+				"pomin" (jak przycisk: tylko ze zgodą serwera) | "pomin", true (wymuszony pokaz — testy)
+				| "zamknij" | "jeszczeRaz" | "tempo", t | "przewin", s | "przewinDo", τ | "stan" | "wybor" (otwiera panel)
 				| "kadr" (czy aktorzy są w kadrze i nie zasłaniają się) | "napisy" (napisy nad postaciami)
 		• odmowa serwera → komunikat z powodem (panel wyboru z polem Status albo dymek); atrybut OstatniKomunikat.
 	Sam nic nie liczy i nie wysyła liczb — prośbę z wyborem z listy wysyła odtwarzacz.
@@ -208,7 +209,8 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 		uruchom(a, b)
 		return true
 	elseif polecenie == "pomin" then
-		Odtwarzacz.pomin()
+		-- a = true: tylko testy — skraca pokaz bez zgody serwera (serwer i tak sam decyduje o sesji, D-078)
+		Odtwarzacz.pomin(a == true)
 	elseif polecenie == "zamknij" then
 		Odtwarzacz.zamknij()
 	elseif polecenie == "jeszczeRaz" then

@@ -11,8 +11,8 @@ Części (--tylko):
           i reszta) oraz dla każdego trafienia w długiej walce. Pomiar: Sygnaly/Sterowanie „kadr” — ułamek części aktora
           w kadrze 16:9 i ułamek niezasłoniętych przez drugiego aktora (promień z kamery).
   zero    „−0”: trafienie w całości na tarczy (blok Wojownika i zwykły cios) pokazuje „TARCZA −n”, a nie „−0”.
-  efekt   napis i wygląd spowolnienia: „SPOWOLNIENIE!” (nazwa z dziennika), lód przy lodowym pocisku, pnącza przy uścisku
-          korzeni, gwiazdki przy ogłuszającym uderzeniu.
+  efekt   napis i wygląd statusu (v3): „SPOWOLNIENIE!” i lód przy lodowym pocisku; „OGŁUSZENIE!” z pnączami przy
+          uścisku korzeni i z gwiazdkami przy ogłuszającym uderzeniu (nazwa z dziennika).
   wynik   odmiana liczebników w panelu wyniku („— 3 tury”, „w 1 turze”, „N zdarzeń / zdarzenia”).
   odmowa  odmowa serwera po WALCZ: komunikat dla gracza (dymek z dala od tablicy; przy tablicy panel z polem Status).
   paski   paski, licznik tury i ikony efektów z licznikami NA EKRANIE po każdym zdarzeniu kilku walk = stan silnika
@@ -179,8 +179,9 @@ def test_zero(s):
 
 
 def test_efekt(s):
-    # walki, w których spowolnienie nakłada lodowy pocisk / uścisk korzeni / ogłuszające uderzenie
+    # v3: lodowy pocisk SPOWALNIA (lód), uścisk korzeni i ogłuszające uderzenie OGŁUSZAJĄ (pnącza, gwiazdki)
     oczek = {"lodowy_pocisk": "Krysztal", "uscisk_korzeni": "Pnacze", "ogluszajace_uderzenie": "Gwiazdka"}
+    efekt_um = {"lodowy_pocisk": "spowolnienie", "uscisk_korzeni": "ogluszenie", "ogluszajace_uderzenie": "ogluszenie"}
     znalezione = {}
     for klasa in WZ.KLASY:
         for wrog in [p["id"] for p in S.PRZECIWNICY_LISTA]:
@@ -189,7 +190,8 @@ def test_efekt(s):
                 w = S.symuluj(WZ.postac(klasa, 5), {"potwor": wrog, "poziom": 5}, ziarno)
                 d = w["dziennik"]
                 for i in range(1, len(d)):
-                    if d[i]["typ"] == "efekt_nalozony" and d[i]["efekt"] == "spowolnienie" and d[i - 1]["umiejetnosc"] in oczek \
+                    if d[i]["typ"] == "efekt_nalozony" and d[i - 1]["umiejetnosc"] in oczek \
+                            and d[i]["efekt"] == efekt_um[d[i - 1]["umiejetnosc"]] \
                             and d[i - 1]["umiejetnosc"] not in znalezione:
                         znalezione[d[i - 1]["umiejetnosc"]] = (klasa, wrog, 5, ziarno, i)
                 if len(znalezione) == len(oczek):
@@ -210,8 +212,9 @@ def test_efekt(s):
             'local k = workspace.TestWalki2:FindFirstChild("ScenaLokalna") local n = {} '
             'if k then for _, d in k:GetDescendants() do if d:IsA("BasePart") then n[d.Name] = (n[d.Name] or 0) + 1 end end end '
             'return game:GetService("HttpService"):JSONEncode(n)'))
-        ok = "SPOWOLNIENIE!" in teksty and "OGŁUSZENIE!" not in teksty and czesci.get(oczek[uid], 0) > 0
-        wynik("spowolnienie od %s (%s/%s/%d ziarno %d, zd. %d)" % (uid, klasa, wrog, poziom, ziarno, i + 1), ok,
+        napis, inny = ("SPOWOLNIENIE!", "OGŁUSZENIE!") if efekt_um[uid] == "spowolnienie" else ("OGŁUSZENIE!", "SPOWOLNIENIE!")
+        ok = napis in teksty and inny not in teksty and czesci.get(oczek[uid], 0) > 0
+        wynik("%s od %s (%s/%s/%d ziarno %d, zd. %d)" % (efekt_um[uid], uid, klasa, wrog, poziom, ziarno, i + 1), ok,
               "napisy %s; ozdoba %s: %d szt." % (teksty, oczek[uid], czesci.get(oczek[uid], 0)))
 
 

@@ -35,6 +35,183 @@ czas doskoku; wcześniej klinga mijała wilka i muchomornika z boku), unik bohat
 0,9 studa (sam odskok z klipu zostawiał Wojownika na drodze wilka), do tego łatka P1/P2 dla pakietu
 `swiat/las_potwory/` — patrz „Etap 9 — bohaterowie w Studio”.
 
+**Etap 10** (17.11, praca bez Studio): odtwarzacz i interfejs pod **dziennik v3** (nowy silnik z
+`tools/walka/ZMIANY_SESJA_1611.md`: mana, statusy z charakterem, blok każdej klasy, tarcza procentowa, wskrzeszenie,
+pasywki), **pomijanie walk (D-078)** z decyzją serwera, **zestawy postaci i lustro** na tablicy, nowe testy bez Studio
+i gotowy skrypt prób w Studio — patrz „Etap 10 — dziennik v3 i pomijanie walk”. **W Studio jeszcze nie uruchomione.**
+
+## Etap 10 — dziennik v3 i pomijanie walk (17.11.2026, bez Studio)
+
+*Status: propozycja (prototyp, nie kanon). Kod przygotowany i sprawdzony bez Studio; w Studio NIE uruchomiony —
+kolejność wdrożenia i próby niżej. Zgodność wstecz z dziennikiem v2 nie jest potrzebna: po wdrożeniu wszystkie trzy
+kontenery (`TestWalki2`, `LasPotwory`, `LasPasGra`) dostają ten sam silnik v3.*
+
+### Co widać na ekranie (v3)
+
+| Nowość silnika | Co robi odtwarzacz |
+|---|---|
+| **mana obu stron** (`mana_gracz`, `mana_wrog` po każdym zdarzeniu; `strony.*.mana`, `mana_maks`) | pasek many pod paskiem życia u obu stron; wartości WYŁĄCZNIE z dziennika (klient niczego nie dolicza): zmiana razem z trafieniem (paski życia też wtedy), przy użyciu umiejętności (`wartosc` = koszt) **błysk i spadek o koszt** na początku zdarzenia. Żółta kreska = koszt NASTĘPNEGO użycia tej strony z dziennika (gdy mniejszy niż pełny pasek, np. build pod manę); gdy mana ≥ próg, pasek świeci jaśniej i na jego końcu pulsuje kryształ — zapowiedź umiejętności. Spowolniona strona ma szarawy, lodowy pasek (spowolnienie obcina zysk many). Kontrola na początku każdego zdarzenia: pasek = mana z poprzedniego zdarzenia (atrybut `OstatniaNiezgodnoscMany`, w testach 0) |
+| **trucizna w stosach** (`stosy`) | ikona z licznikiem tur i znaczkiem „×N”, napis „TRUCIZNA ×N” przy nałożeniu, „−24 ×3” przy tyknięciu |
+| **ogłuszenie** (nowy efekt, zabiera turę) | gwiazdki nad głową (troll, Miażdżący cios), pnącza (Uścisk korzeni) — `Choreografie.WYGLAD_OD_UMIEJETNOSCI`; ikona gwiazdek; „OGŁUSZENIE!”, w turze celu „TRACI TURĘ!” z pulsem ozdoby ogłuszenia (`Choreografie.TRACI_TURE`) |
+| **spowolnienie bez utraty tury** | lód przy nogach (Lodowy pocisk), ikona płatka śniegu (inna niż gwiazdki ogłuszenia), „SPOWOLNIENIE!”, nigdy „TRACI TURĘ!” |
+| **tarcza procentowa** (Kamienna skóra, Bariera: typ `oslona`, `wartosc` = procent, 3 tury) | ikona z licznikiem tur i znaczkiem „−42%”, napis „KAMIENNA SKÓRA −42%”; „TARCZA −n” przy trafieniu (`pochloniete`); bez „zapasu” na pasku i bez „TARCZA PĘKŁA!” (usunięte) |
+| podpalenie (dłuższe z Ognistą różdżką), krwawienie, zdarcie pancerza, wzmocnienie (Skupienie) | jak dotąd: własny wygląd i licznik tur (podpalenie — tyle tur, ile w dzienniku) |
+| **blok każdej klasy i potwora** | napis „BLOK −75%” (procent z `walka.czesc_przez_blok`) i liczba tego, co przeszło. Wojownik z tarczą: klip bloku i iskry przy tarczy (jak dotąd). Bez tarczy (Mag, Zwiadowca, potwory): **parada** — łuk odbicia z pięciu świecących klinów przed bronią (punkt `Bron`) albo piersią, zwrócony do atakującego, iskry, odchylenie, krok w tył i pół obrotu bokiem (`Choreografie.BLOK`). Zablokowana umiejętność: animacja umiejętności + blok, bez efektu |
+| **wskrzeszenie** (nowe zdarzenie, propozycja D-094) | powalenie (zwolnienie `Choreografie.ZWOLNIENIE.powalenie`, szybki klip upadku, ozdoby efektów ZOSTAJĄ) → słup złotego światła z kręgiem i iskrami → wstaje (przejście z upadku do spoczynku, lekkie uniesienie) → pasek życia rośnie **z 0** do życia z dziennika ze złotym blaskiem → „WSKRZESZENIE!” i „+N”, krótki pasaż z wbudowanego tonu. Raz na walkę, dla gracza i przeciwnika; złote pióro przy portrecie (gdy serwer zapowiedział legendę) szarzeje po użyciu. Śmiertelne tyknięcie przed wskrzeszeniem i efekt nałożony PO wskrzeszeniu (cios „zabił”, cel wstał) są obsłużone |
+| **pasywki ze slotów i broni** (bez zdarzeń w dzienniku) | na starcie karteczka pod tabliczką strony, po kolei (ok. 1,25 s każda): „PASYWKA: KOLOS” / „BROŃ: OGNISTA RÓŻDŻKA” / „LEGENDA: WSKRZESZENIE” i premie z danych silnika („+4% życia · +2% obrażeń”, „+2 tury podpalenia”, „raz na walkę: powrót z 25% życia”). Lista pasywek przychodzi od serwera prototypu razem z walką; liczby — tylko z `Dane` (etykiety słów w `Choreografie.MODYFIKATORY`) |
+| **nieznane zdarzenie albo pole** (nowszy silnik) | `PlanWalki.normalizuj`: ostrzeżenie w konsoli raz na nazwę, brakujące pole dostaje wartość domyślną (życie i mana z poprzedniego zdarzenia), zdarzenie nieznanego typu — paski z dziennika bez animacji (`Obsluga.nieznane`), zdarzenie bez strony — pominięte; `Dziennik.sprawdz` to już kontrola (ostrzeżenie), nie bramka |
+
+Układ: tabliczki są wyższe (0,15 kadru), pod paskiem życia pasek many, niżej ikony efektów; wstęga z nazwą umiejętności
+przesunęła się na 0,30, a strefa zakazana napisów obejmuje tabliczki do 0,305 i karteczki pasywek. Tempo ×1/×2/×4 i
+kolejka napisów bez zmian. Przeciwnik-postać (lustro) ma na tabliczce rangę „POJEDYNEK”.
+
+### Pomijanie walk (D-078)
+
+- **Pierwsza walka z gatunkiem**: bez przycisku POMIŃ (w jego miejscu na 2,5 s „PIERWSZE SPOTKANIE — BEZ POMIJANIA”),
+  tempo ×1/×2/×4 działa; spacja i próby pominięcia nic nie robią (licznik `OstatnieOdrzuconePominiecia`).
+- **Gatunek już poznany**: przycisk POMIŃ (telefon) i spacja. Pominięcie zgłaszamy serwerowi; tablica prototypu
+  zwalnia sesję od razu (`nastepnaOd = teraz`, JESZCZE RAZ bez odliczania — ustawienie przyjęte przez właściciela).
+- **Decyduje serwer prototypu**: pamięć poznanych gatunków jest w `zrodla/PamiecWalk.luau` (czysta logika, w pamięci
+  serwera według UserId — jak `PamiecGracza` lasu-pasa; respawn i ponowne wejście na ten sam serwer pamięta, restart
+  serwera i koniec Play — nie). Jedna pamięć dla tablicy, lasu-pasa i starego lasu. Gatunek „poznany” = walka z nim się
+  skończyła (minął jej pełny czas ×1, została pominięta albo z tego źródła przyszła następna walka). Pojedynek z
+  lustrem = gatunek `postac:<klasa>`.
+- Odpowiedź `Zdalne/RozpocznijWalke2` niesie `pomijanie` (true/false). Zdalne `Zdalne/PominiecieWalki2`:
+  `"czy", zrodlo` → `{ ok, powod }`, `"pomin", zrodlo` → `{ ok, powod, nastepnaOd? }`; `zrodlo` z zamkniętej listy
+  (`TestWalki2`, `LasPasGra`, `LasPotwory`), limit 1 wywołanie na 0,2 s. Bez zgody → `{ ok = false, powod =
+  "pierwsza_walka" | "brak_walki" }`. **Klient nie wyda zgody sam**: przycisk pokazuje tylko po zgodzie serwera, a
+  wymuszony pokaz (haczyk testowy) i tak dostaje odmowę serwera — sesja walki zostaje.
+- **Walki z lasów** liczy ich własny serwer (`SerwerPotworow` w `LasPotwory` i `LasPasGra`) i oddaje dziennik prosto
+  klientowi lasu — **nie przechodzą przez serwer prototypu** (sprawdzone w kodzie: `SerwerPotworow.server.luau` woła
+  `Silnik.symuluj` sam i zwraca `{ ok, walka, nastepnaOd }`). Dlatego serwer prototypu ma **mostek**: słucha
+  `Sygnaly/WynikWalki` (BindableEvent) kontenerów lasu — tylko słucha, niczego w lesie nie zmienia. Odtwarzacz przy walce
+  z lasu pyta `"czy", <nazwa kontenera>` (w tle; do odpowiedzi pomijać nie wolno).
+  - **Las-pas** (`LasPasGra`) ma `Sygnaly/WynikWalki` → pomijanie działa bez zmian w pakiecie. Ale **po pominięciu
+    gracz i potwór NIE są wolni od razu**: sesję (`walkaDo`) i zajętość potwora trzyma `SerwerPotworow` do końca walki
+    (odpowiedź `powod = "sesja_zrodla"`; klient lasu pokazuje „Walcz (za N s)”).
+  - **Stary las** (`LasPotwory`) nie ma `Sygnaly/WynikWalki` → jego walki są dla prototypu „nieznane” → **bez
+    pomijania** (bezpieczne zachowanie domyślne).
+
+**Co dopisać w pakietach lasu** (nie zmieniałem ich — zakaz w tej paczce; po dopisaniu działa bez zmian w prototypie):
+
+1. Stary las — pomijanie: `swiat/las_potwory/zbuduj.py`, lista `INNE`, jedna linia:
+   `("BindableEvent", "Sygnaly/WynikWalki"),` (serwer potworów już strzela tym sygnałem, gdy go ma).
+2. Oba lasy — „wolni od razu” po pominięciu: w `swiat/las_potwory/zbuduj.py` (`INNE`) i `swiat/las_pas_gra/zbuduj.py`
+   (`INNE`) linia `("BindableFunction", "Sygnaly/ZwolnijPoPominieciu"),`, a w
+   `swiat/las_potwory/zrodla/SerwerPotworow.server.luau` (wspólny dla obu lasów) po bloku `sterowanie.OnInvoke = …`:
+   ```lua
+   local zwolnij = kontener:WaitForChild("Sygnaly"):FindFirstChild("ZwolnijPoPominieciu")
+   if zwolnij and zwolnij:IsA("BindableFunction") then
+   	zwolnij.OnInvoke = function(gracz: Player)
+   		local czas = teraz()
+   		walkaDo[gracz] = czas
+   		for _, p in potwory do
+   			if p.zajety and p.zajety.gracz == gracz then
+   				p.zajety.koniec = czas -- pętla ruchu zamknie zajętość w ciągu 0,25 s (wygrana: potwór znika)
+   			end
+   		end
+   		return true
+   	end
+   end
+   ```
+   Serwer prototypu woła tę funkcję tylko po przyjętym pominięciu (`zwolnijWLesie` w `SerwerWalki2`) i wtedy oddaje
+   klientowi `nastepnaOd = teraz`. Testy lasu (`test_styku.py`, `test_pasa.py`) trzeba wtedy przejrzeć (nowe instancje).
+
+### Tablica prototypu: zestawy postaci i lustro
+
+Panel wyboru ma rząd **ZESTAW POSTACI**: WZORCOWA / POD MANĘ / PASYWKI / WSKRZESZENIE i przeciwnika **LUSTRO** (postać
+tej samej klasy i zestawu — jedyny sposób, żeby zobaczyć wskrzeszenie PRZECIWNIKA, bo potwory lasu nie mają go w
+danych). Klient wysyła tylko napis `zestaw` z listy; postać buduje serwer (`Wzorcowe.zestaw` / `Wzorcowe.lustro`, port
+`zestawy.py`): pod manę = `wzorcowe.build("mana")`; pasywki = 1 aktywna + 2 pasywne z tabeli (g) dokumentu silnika +
+pasywka broni (`BRON_ZESTAWU`: Topór rzeźnika, Łuk wiatru, Ognista różdżka — wybór prototypu); wskrzeszenie = wzorcowa
+ze wskrzeszeniem w ostatnim slocie (tabela k). Sloty jak u wzorcowej: 1 / 2 / 3 na poziomach 1 / 5 / 10. Wszystkie
+zestawy przechodzą ścisłą walidację wejścia silnika (test). Pokazy nowości: `testy/ziarna.json` → `v3` (np.
+wskrzeszenie obu: mag / lustro / 10 / wskrzeszenie, ziarno 628562; trucizna ×3: wojownik / muchomornik / 1 /
+wzorcowa, ziarno 554372; ogłuszenie z pnączami: mag / straznik_lasu / 1 / pod manę, ziarno 1361511).
+
+### Kolejność wdrożenia w Studio (następny etap)
+
+1. `git pull`; offline: `python -B swiat/test_walki2/testy/test_odtwarzacza.py`, `python -B swiat/test_walki2/testy/test_aktorow.py`,
+   `python -B swiat/las_potwory/testy/test_logiki.py`, `python -B swiat/las_potwory/testy/test_styku.py`,
+   `python -B swiat/las_pas_gra/testy/test_pasa.py`, `python -B swiat/test_walki2/zbuduj.py --sucho`,
+   `python -B swiat/las_potwory/zbuduj.py --sucho`, `python -B swiat/las_pas_gra/zbuduj.py --sucho`. Zgłoś pracę
+   (`python panel/narzedzia/praca.py start --id walka-v3-studio --tytul "Walka v3 na ekranie" --koniec +90m
+   --obszar studio:TestWalki2 --obszar studio:LasPotwory --obszar studio:LasPasGra --stop-przy-kolizji`).
+2. Studio w trybie **Edit**, `python -B tools/studio_mcp.py studios` → `<id>`; zgodność silnika:
+   `python -B tools/walka/zgodnosc_studio.py --studio <id>` (tylko odczyt; oczekiwane 592/592 i 60/60).
+3. **Najpierw prototyp** (oba lasy wczytują jego odtwarzacz i moduły): `python -B swiat/test_walki2/zbuduj.py --studio <id>`
+   (pełna budowa: nowa zdalna `Zdalne/PominiecieWalki2`, moduły `PlanWalki`, `PamiecWalk`, kopia silnika v3;
+   wystarczy też `--skrypty`, bo aktorzy się nie zmienili).
+4. Potem `python -B swiat/las_potwory/zbuduj.py --studio <id>` i `python -B swiat/las_pas_gra/zbuduj.py --studio <id>`
+   (każdy wgrywa swoją kopię silnika v3 i `Wzorcowe.luau` prototypu; wystarczy `--skrypty`).
+5. Edit: `python -B swiat/test_walki2/testy/sprawdz_edit.py --studio <id>` (12 modułów, 45 walk = Python, wyglądy v3,
+   zestawy przez walidację silnika, `PamiecWalk` i `PlanWalki` w Studio).
+6. Play: `python -B swiat/test_walki2/testy/test_v3_play.py --studio <id>` (lista kontrolna v3 i D-078 w nagłówku
+   skryptu, zrzuty `klatki/v3_*.jpg`), potem `test_walki_play.py`, `test_poprawek_play.py`, `telefon.py`, a w lasach
+   ich `testy/proba_play.py` (walka z potworem na arenie prototypu z dziennikiem v3).
+7. Konsola bez `[TestWalki2]`; zapis miejsca (Ctrl+S) tylko na prośbę człowieka; raport w panelu ze zrzutami.
+
+### Sprawdzone bez Studio (17.11.2026, wyniki na bieżącym drzewie — w raporcie z pracy)
+
+- `testy/test_odtwarzacza.py` — **18/18**: pokrycie typów i POLA dziennika v3 (zbiór pól każdego zdarzenia, walki,
+  strony, łupu z silnika = listy w `PlanWalki`; nowe pole albo typ silnika = błąd testu), umiejętności, efekty ze
+  znaczkami, wygląd ogłuszenia i spowolnienia od umiejętności, etykiety wszystkich modyfikatorów i zapowiedzi wszystkich
+  pasywek; **4644 dzienniki** (wzorcowe i zestawy, z lustrem; 10/10 typów, 14/14 umiejętności, 9/9 efektów, 21 162
+  użycia many, wskrzeszenia gracza 330, przeciwnika 82, obu 59) — PRAWDZIWY `PlanWalki.luau` w interpreterze
+  `tools/walka/luau_mini.py`: mana = dziennik, próg = koszt następnego użycia, tury = silnik, powalenie tylko przed
+  wskrzeszeniem, a **liczniki tur i stosy ikon na początku każdej z 77 726 tur = stan efektów silnika**; niezależny
+  port w Pythonie daje to samo; odporność na nieznane typy / pola / braki; `PamiecWalk.luau` w interpreterze (pierwsza
+  walka bez zgody, oszustwo odrzucone, gatunek poznany po końcu); `Wzorcowe.zestaw` = `zestawy.py` (interpreter) i
+  ścisła walidacja silnika; składnia 13 plików (bilans, strażnik, parser luau_mini po zdjęciu rzutowań `::`).
+- 14 celowo zepsutych wersji `PlanWalki` / `Choreografie` / `PamiecWalk`: **13 wykrytych**, 1 równoważna (tyknięcie bez
+  aktualizacji stosów — silnik zmienia stosy tylko przy nałożeniu, więc wynik jest ten sam).
+- `testy/test_aktorow.py` 15/15; `swiat/las_potwory/sprawdz_luau.py swiat/test_walki2/zrodla/*.luau` OK (13 plików);
+  `zbuduj.py --sucho` wszystkich trzech pakietów — kod 0.
+
+### Czego nie da się sprawdzić bez Studio
+
+Wygląd i czytelność (pasek many, znaczki, karteczki pasywek, łuk parady, słup światła, wstawanie z klipu upadku), czy
+napisy na telefonie są ≥ 12 pkt (układ liczony na papierze: tytuły karteczek ok. 15 pkt, premie ok. 13 pkt, znaczki
+ok. 14 pkt, przeciwnicy w panelu — dwa wiersze po ok. 12 pkt, NA GRANICY), kamera w scenie wskrzeszenia, koszt klatki,
+zachowanie zdalnej funkcji i mostka w Play, kompilator Luau i typy (interpreter to podzbiór), prawdziwe wywołania
+`TweenService`, `TextService`, `ContextActionService`. Wszystko to sprawdza `testy/test_v3_play.py`.
+
+### Wybory do decyzji
+
+1. **Pomijanie w lesie: zwalniać gracza i potwora od razu?**
+   - Dziś: tablica zwalnia od razu; las-pas skraca tylko pokaz (sesja lasu do końca walki).
+   - Opcja A: dopisek z README w `SerwerPotworow` (ok. 12 linii, 3 pliki) — wolni od razu wszędzie.
+   - Opcja B: zostawić — mniej zmian w lesie, gracz czeka do końca walki.
+2. **Stary las: czy ma mieć pomijanie?**
+   - Dziś: bez pomijania (brak `Sygnaly/WynikWalki` w kontenerze).
+   - Opcja: jedna linia w `swiat/las_potwory/zbuduj.py` (lista `INNE`).
+3. **Pamięć poznanych gatunków: tylko serwer czy zapis?**
+   - Dziś: pamięć serwera (UserId), ginie przy restarcie — jak `PamiecGracza`.
+   - Opcja: lista gatunków w profilu gracza (skill roblox-data); miejsce opisane w `PamiecWalk.luau`.
+4. **Pojedynek z lustrem: czy „gatunek” pomijania osobno na klasę?**
+   - Dziś: `postac:<klasa>` — pierwszy pojedynek z każdą klasą bez pomijania.
+   - Opcja: Arena (PvP) zawsze bez pomijania albo zawsze z pomijaniem.
+5. **Pasek many: kreska progu i świecenie przy gotowości**
+   - Dziś: kreska = koszt następnej umiejętności z dziennika, świeci, gdy mana ≥ koszt.
+   - Opcja: tylko pełny pasek (prościej, ale build ze zniżką kosztu odpala „przed pełnym”).
+6. **Zapowiedź pasywek: karteczki po kolei czy ikony przy portrecie**
+   - Dziś: karteczki 1,25 s każda na starcie (do 3 na stronę), pióro legendy przy portrecie.
+   - Opcja: stałe ikony pasywek przy portrecie z opisem po dotknięciu (więcej UI, projekt Pawła — D-082).
+7. **Pasywka broni w zestawie „pasywki” na tablicy**
+   - Dziś: Topór rzeźnika, Łuk wiatru, Ognista różdżka (wybór prototypu, tylko do pokazu).
+   - Opcja: inne bronie — jedna linia w `zestawy.py` i `Wzorcowe.luau`.
+
+### Ryzyka
+
+- Kod odtwarzacza, interfejsu i serwera **nie był uruchomiony w Studio**: błąd wykonania (np. literówka w polu instancji
+  GUI) wyjdzie dopiero w Play — test Play łapie go po atrybutach i konsoli.
+- Przejście z klipu upadku do spoczynku przy wskrzeszeniu (0,45 s) może wyglądać sztucznie u dużych aktorów (Strażnik,
+  Troll — potwory nie mają dziś wskrzeszenia, ale lustro ma tylko bohaterów).
+- Panel wyboru ma teraz 6 przeciwników w rzędzie: nazwy w dwóch wierszach na telefonie są na granicy 12 pkt.
+- Mostek opiera się na nazwach kontenerów lasu (`LasPasGra`, `LasPotwory`) i na polu `koniec` sygnału `WynikWalki`;
+  zmiana nazwy albo sygnału w lesie wyłączy pomijanie w lesie (bezpiecznie: bez pomijania).
+- Pasek many w HUD gry (D-048) to osobna rzecz — tu tylko w walce prototypu.
+
 ## Jak obejrzeć (krok po kroku)
 
 1. Studio, miejsce gry (Team Create). W `Workspace` jest folder **`TestWalki2`** (atrybut `Wygenerowane = true`).
@@ -43,12 +220,14 @@ czas doskoku; wcześniej klinga mijała wilka i muchomornika z boku), unik bohat
    (ok. 220 studów; tablica stoi w `(16, 0, 220)`).
 3. Podejdź do tablicy: podpowiedź „Walka v2 (prototyp) · Wybierz walkę”. Naciśnij **E** (telefon: dotknij).
 4. Panel wyboru: **klasa** (Wojownik / Zwiadowca / Mag), **przeciwnik** (Leśny Slime, Cierniowy Wilk, Muchomornik —
-   zwykli; Leśny Troll — rzadki; Strażnik Gaju — strażnik), **poziom**
+   zwykli; Leśny Troll — rzadki; Strażnik Gaju — strażnik; v3: **Lustro** — pojedynek z postacią tej samej klasy),
+   **zestaw postaci** (v3: wzorcowa / pod manę / pasywki / wskrzeszenie), **poziom**
    (1 / 5 / 10 — obu stron) i **WALCZ!**. Panel zamyka krzyżyk albo odejście od tablicy. Gdy serwer odmówi walki
    (np. za daleko od tablicy), gracz dostaje komunikat z powodem: przy tablicy w panelu, dalej w dymku na ekranie.
-5. Walka: paski życia z nazwą, poziomem i rangą, ikony efektów z licznikiem tur, licznik tury, wstęga z nazwą
-   umiejętności. Na dole **×1 / ×2 / ×4** (tempo, wybór gracza), przycisk **dźwięku** (głośnik / wyciszone) i **POMIŃ**
-   (albo spacja). Na końcu panel wyniku
+5. Walka: paski życia z nazwą, poziomem i rangą, pod nimi paski many (v3), ikony efektów z licznikiem tur (i znaczkiem
+   stosów albo procentu tarczy), licznik tury, wstęga z nazwą umiejętności, na starcie karteczki pasywek. Na dole
+   **×1 / ×2 / ×4** (tempo, wybór gracza), przycisk **dźwięku** (głośnik / wyciszone) i **POMIŃ** (albo spacja) —
+   od v3 tylko przy gatunku, z którym gracz już walczył (D-078, decyduje serwer). Na końcu panel wyniku
    z łupem z dziennika i przyciskami **JESZCZE RAZ** (ten sam wybór, nowe ziarno) i **ZAMKNIJ**.
 6. Zatrzymaj Play (Shift+F5).
 
@@ -58,19 +237,30 @@ Najszybciej bez Studio: arkusze klatek `klatki/walka_*.jpg` (opis niżej).
 
 ## Ziarna pokazowe (`testy/ziarna.json`, liczy `testy/test_odtwarzacza.py --ziarna`)
 
+*Od 17.11 (etap 10) ziarna liczone silnikiem v3 — te same wybory dają inne walki niż w v2; poniżej wartości v3.*
+
 | Pokaz | Wybór (klasa / przeciwnik / poziom) | Ziarno | Wynik, tury, czas dziennika |
 |---|---|---|---|
-| długa walka (> 20 tur), wygrana | wojownik / straznik_lasu / 10 | 348759 | wygrana, 24 tury, 33 zdarzenia, 39,1 s |
-| najdłuższa znaleziona | zwiadowca / straznik_lasu / 1 | 158424 | przegrana, 33 tury, 47,7 s |
-| krótka walka | mag / muchomornik / 5 | 823742 | przegrana, 3 tury, 7,3 s |
-| wygrana z Shardem Ewolucji | zwiadowca / straznik_lasu / 10 | 325002 | wygrana, 13 tur (łup: 554 złota, 503 dośw., 5 tokenów, 1 Shard) |
-| wygrana z Gemem | mag / cierniowy_wilk / 1 | 617727 | wygrana, 5 tur |
-| wszystkie rodzaje zdarzeń — Zwiadowca | zwiadowca / lesny_troll / 10 | 950601 | 11 tur: cios, krytyk, unik, umiejętność, tyknięcie, nałożenie, koniec, utrata tury |
-| wszystkie rodzaje zdarzeń — Mag | mag / cierniowy_wilk / 5 | 910854 | 9 tur, 8 rodzajów (bloku Mag nie widzi: blokuje tylko tarcza Wojownika) |
-| prawie wszystkie — Wojownik | wojownik / cierniowy_wilk / 5 | 277334 | 10 tur, 8 rodzajów; brak tyknięcia — w 1800 walkach Wojownika nie trafiła się walka ze wszystkimi 9 naraz |
+| długa walka (> 20 tur), wygrana | wojownik / lesny_slime / 1 | 910727 | wygrana, 24 tury, 26 zdarzeń, 33,1 s |
+| najdłuższa znaleziona | wojownik / straznik_lasu / 10 | 839737 | przegrana, 54 tury, 69 zdarzeń, 81,0 s |
+| krótka walka | mag / cierniowy_wilk / 1 | 879054 | wygrana, 4 tury, 10,2 s |
+| wygrana z Shardem Ewolucji | mag / straznik_lasu / 1 | 855296 | wygrana, 17 tur (łup: 162 złota, 92 dośw., 5 tokenów, 1 Shard) |
+| wygrana z Gemem | wojownik / cierniowy_wilk / 5 | 396119 | wygrana, 5 tur |
+| wszystkie 9 rodzajów zdarzeń v2 — Wojownik | wojownik / cierniowy_wilk / 10 | 839738 | 12 tur (w v3 blok ma każda klasa) |
+| wszystkie 9 rodzajów — Zwiadowca | zwiadowca / lesny_troll / 5 | 404035 | 13 tur |
+| wszystkie 9 rodzajów — Mag | mag / lesny_troll / 1 | 451425 | 11 tur |
+
+Pokazy nowości v3 (`ziarna.json` → `v3`, zestaw w czwartej kolumnie wyboru): wskrzeszenie gracza mag / cierniowy_wilk /
+1 / wskrzeszenie, ziarno 942604; przeciwnika mag / lustro / 10 / wskrzeszenie, 314375; obu mag / lustro / 10 /
+wskrzeszenie, 628562; trucizna ×3 wojownik / muchomornik / 1 / wzorcowa, 554372; ogłuszenie — gwiazdki (troll) mag /
+lesny_troll / 1 / pod manę, 2408799, pnącza mag / straznik_lasu / 1 / pod manę, 1361511, Miażdżący cios wojownik /
+lesny_slime / 10 / pod manę, 419101; spowolnienie mag / lustro / 10 / pod manę, 523825; podpalenie z Ognistą różdżką
+mag / cierniowy_wilk / 5 / pasywki, 1780499; Kamienna skóra wojownik / muchomornik / 10, 301243; Bariera mag /
+muchomornik / 10, 277486; mana — umiejętność w 1. akcji wojownik / lustro / 5 / pod manę, 1675759; pasywki każdej
+klasy na 10. poziomie (np. mag / cierniowy_wilk / 10 / pasywki, 1466397); blok każdej klasy i potwora (`v3.blok`).
 
 Dla każdej umiejętności jest też walka, w której ona trafia (`ziarna.json` → `umiejetnosci`), np. kula ognia:
-mag / cierniowy_wilk / 1, ziarno 47559; uścisk korzeni: wojownik / straznik_lasu / 5, ziarno 689121.
+mag / lesny_slime / 1, ziarno 15880; uścisk korzeni: mag / straznik_lasu / 1, ziarno 776106.
 
 ## Jak to działa
 
@@ -79,8 +269,10 @@ Klient wysyła tylko `{ klasa, przeciwnik, poziom }` jako **napisy** z zamknięt
 nie liczba). Serwer sprawdza je ze swoją listą (klasy z `Wzorcowe`, przeciwnicy z kopii `Dane`), sam buduje postać
 wzorcową (`zrodla/Wzorcowe.luau` = `tools/walka/wzorcowe.py`) i przeciwnika, losuje ziarno, woła `Silnik.symuluj`
 i odsyła dziennik. Zabezpieczenia jak w v1: limit 1 prośby na sekundę, odległość od tablicy (≤ 20 studów), **sesja
-walki** = pełny czas dziennika przy ×1 (tempo ×2/×4 i POMIŃ skracają tylko odtwarzanie; „JESZCZE RAZ” odlicza do jej
+walki** = pełny czas dziennika przy ×1 (tempo ×2/×4 skraca tylko odtwarzanie; „JESZCZE RAZ” odlicza do jej
 końca), łup wyłącznie w odpowiedzi z walką. Złe wybory → `zly_wybor`; dodatkowe pola i argumenty są pomijane.
+**v3:** opcjonalny czwarty napis `zestaw` i przeciwnik `lustro`; odpowiedź niesie też `pomijanie` (D-078) i `pasywki`;
+POMIŃ za zgodą serwera (`Zdalne/PominiecieWalki2`) kończy sesję od razu — szczegóły w „Etap 10”.
 
 **Odtwarzacz** (`zrodla/OdtwarzaczWalki2.luau`) odtwarza **cały** dziennik: każde zdarzenie startuje w swoim `t`
 i trwa swoje `trwa` (D-068 — nic nie jest skracane ani ściskane). Czas sceny τ biegnie z tempem gracza i **zwalnia**
@@ -93,10 +285,12 @@ liczą się w czasie sceny, więc tempo i zwolnienie działają na wszystko nara
 |---|---|
 | `cios` / `krytyk` / `blok` / `unik` | doskok (z zasięgu broni w chwili trafienia i głębokości piersi celu), klip ataku dopasowany prędkością tak, by trafienie wypadło w chwili z dziennika; odrzut, klip trafienia, iskry, liczba; krytyk: zwolnienie, „wjazd” kamery, gwiazda „KRYTYK!”; blok: klip bloku Wojownika z tarczą (cios w tarczę klipu w chwili trafienia), niebieskie iskry przy godle tarczy; unik: klip uniku (największy odskok w chwili trafienia) i ślizg w bok — u Wojownika i Maga, których klipy same odskakują, bez bocznego ślizgu i przechyłu, tylko zejście 0,9 w tył (etap 9); pocisk mija cel; Miażdżący cios: Wojownik na czas doskoku obraca się o ok. 21° w lewo (`celowanie`, etap 9), żeby klinga spadła na oś celu |
 | `umiejetnosc` | wstęga z nazwą (z danych silnika) i choreografia stylu z `Choreografie.luau` (tabela niżej) |
-| `efekt_nalozony` | napis = nazwa efektu z danych silnika („SPOWOLNIENIE!”, „ZDARTY PANCERZ!”), ikona z licznikiem tur pod paskiem, ozdoba na postaci do końca efektu; tarcza: zapas na pasku |
-| `efekt_tick` | liczba w kolorze efektu, puls ozdoby, drgnięcie; tarcza pochłaniająca: „TARCZA −n” |
-| `efekt_koniec` | znika ikona i ozdoba; pęknięta tarcza: „TARCZA PĘKŁA!” |
-| `utrata_tury` | „TRACI TURĘ!”, chwianie się i ozdoba spowolnienia: lód przy lodowym pocisku, pnącza przy uścisku korzeni, gwiazdki przy ogłuszeniu |
+| `efekt_nalozony` | napis = nazwa efektu z danych silnika („OGŁUSZENIE!”, „ZDARTY PANCERZ!”; v3: „TRUCIZNA ×3”, „KAMIENNA SKÓRA −42%”), ikona z licznikiem tur i znaczkiem (stosy, procent tarczy) pod paskiem many, ozdoba na postaci do końca efektu (wygląd zależny od umiejętności) |
+| `efekt_tick` | liczba w kolorze efektu (trucizna: „−24 ×3”), puls ozdoby, drgnięcie; v3: mana z dziennika; „TARCZA −n” przy `pochloniete` |
+| `efekt_koniec` | znika ikona i ozdoba (v3: tarcza procentowa kończy się po 3 turach, nie „pęka”) |
+| `utrata_tury` | v3: tylko przy ogłuszeniu — „TRACI TURĘ!”, chwianie się, puls gwiazdek (troll, Miażdżący cios) albo pnączy (uścisk korzeni) |
+| `wskrzeszenie` (v3) | powalenie → światło → wstaje → pasek życia z 0 do życia z dziennika, „WSKRZESZENIE!” (patrz „Etap 10”) |
+| nieznany typ (nowszy silnik) | ostrzeżenie w konsoli, paski i mana z dziennika, bez animacji (`Obsluga.nieznane`) |
 
 **Napisy (etap 6, D3; etap 7 przebudowane)** idą przez kolejkę w `InterfejsWalki2`: przy jednej postaci najwyżej 3 naraz,
 kolejne wchodzą co 0,12 s (liczba obrażeń przed resztą; gdy czeka dłużej niż 0,3 s, najstarszy inny napis gaśnie
@@ -249,7 +443,10 @@ budowie (i `Moduly/Dziennik` z `src/shared/Walka`) — źródło prawdy zostaje 
 |---|---|
 | `zrodla/SerwerWalki2.server.luau` | serwer: wybór z listy → postać wzorcowa → `Silnik.symuluj` → dziennik; zabezpieczenia; poza Studio usuwa kontener |
 | `zrodla/Wzorcowe.luau` | port `tools/walka/wzorcowe.py` (pula punktów, rozkład klasy, broń, pancerz, sloty, tarcza) |
-| `zrodla/OdtwarzaczWalki2.luau` | cutscenka: sesja, scena lokalna, plan zdarzeń (tury, efekty, czasy trafień, ujęcia, zwolnienia), choreografie, kamera, finał, POMIŃ, JESZCZE RAZ, sprzątanie, pomiary |
+| `zrodla/OdtwarzaczWalki2.luau` | cutscenka: sesja, scena lokalna, plan zdarzeń (tury, efekty, czasy trafień, ujęcia, zwolnienia), choreografie, kamera, finał, POMIŃ (v3: tylko ze zgodą serwera), JESZCZE RAZ, sprzątanie, pomiary; v3: mana, statusy, parada, wskrzeszenie, pasywki |
+| `zrodla/PlanWalki.luau` | v3: CZYSTA logika dziennika v3 (normalizacja z ostrzeżeniami, plan many i tur, powalenia, stan efektów ze stosami, opisy pasywek) — wykonywana w testach interpreterem |
+| `zrodla/PamiecWalk.luau` | v3: pamięć poznanych gatunków i decyzja o pomijaniu (D-078) — czysta logika, używa jej tylko serwer |
+| `zestawy.py` | v3: wzorzec zestawów postaci tablicy (wzorcowa / pod manę / pasywki / wskrzeszenie) i lustra dla `Wzorcowe.luau` |
 | `zrodla/Choreografie.luau` | **dane** choreografii: typ zdarzenia → obsługa, umiejętność → styl i dodatki, efekt → wygląd, ikona, kolor |
 | `zrodla/Efekty3D.luau` | efekty z części i wbudowanych efektów: pociski, rozbłyski, fale, pazury, chmura, korzenie, smugi, ozdoby efektów, łup |
 | `zrodla/InterfejsWalki2.luau` | interfejs walki (paski, rangi, ikony efektów, tura, nazwa umiejętności, tempo, POMIŃ, napisy, panel wyniku) |
@@ -258,7 +455,8 @@ budowie (i `Moduly/Dziennik` z `src/shared/Walka`) — źródło prawdy zostaje 
 | `zrodla/Ustawienia.luau`, `Klipy.luau`, `Aktorzy.luau` | z etapu 1 (stałe, odtwarzacz klipów z danych, lokalne klony aktorów); etap 5: `Klipy` udaje skórowanie siatką (galareta slime'a) i wydłuża efekt z klipu (`graj(…, { wydluz = studs })`); etap 6: `Klipy` gra odcinki klipu z własną prędkością (`odcinki`, lot bańki) i chowa bryły schowane w klipie (`chowane`), `Ustawienia` ma listę dźwięków i melodie, `Aktorzy` nie daje skorupy bryłom skóry |
 | `zbuduj.py` | odtwarza kontener w Studio (`--skrypty`, `--tylko-aktorzy`, `--sucho`, `--usun`) |
 | `aktorzy.py`, `przerobki.py`, `geometria.py`, `dane/` | tabela aktorów (etap 5: skóra, `zasiegi`, `wydluzenia`; etap 6 u slime'a: `chowane`, `wyglad_roblox` — materiał i kolory tylko na rigu z klocków, bez Blendera; etap 8: `stroj`, `chwile_modulu`, `ruch_w_klipie`; etap 9: `celowanie`), klip dorobiony Zwiadowcy (skupienie; od etapu 8 jedyna przeróbka), kinematyka, dane rigów |
-| `testy/test_odtwarzacza.py` | testy bez Studio (pokrycie choreografii, dzienniki z portu, tury, efekty, paski) + `--ziarna` |
+| `testy/test_odtwarzacza.py` | testy bez Studio (v3: pokrycie typów i pól dziennika, PlanWalki i PamiecWalk w interpreterze, stan efektów = silnik, zestawy, składnia) + `--ziarna` |
+| `testy/test_v3_play.py` | v3: próba Play dla następnego etapu (pomijanie D-078, mana, statusy, blok, wskrzeszenie, pasywki, telefon, koszt, konsola; zrzuty `klatki/v3_*.jpg`) — nieuruchomiona |
 | `testy/sprawdz_edit.py` | tryb Edit, tylko odczyt: moduły się wczytują, serwerowa postać wzorcowa + kopia silnika = Python |
 | `testy/test_walki_play.py` | pełny test w trybie Play (wynik w `testy/wynik_play.json`) |
 | `testy/test_poprawek_play.py` | test Play poprawek po przeglądzie: kadr kamery w chwili trafienia, „−0”, napis i wygląd spowolnienia, odmiana w panelu wyniku, komunikat odmowy, paski / tura / ikony efektów na ekranie = stan silnika (wynik w `testy/wynik_poprawek.json`) |
@@ -277,7 +475,8 @@ W kontenerze: `Moduly/` (moduły wyżej, `TabelaAktorow`, `DaneAktorow/<klucz>/<
 ## Testy (ostatni pełny przebieg 15.11.2026, etap 9, Studio na PC, na końcowym kodzie)
 
 ```
-python -B swiat/test_walki2/testy/test_odtwarzacza.py            # bez Studio, ok. 1 s
+python -B swiat/test_walki2/testy/test_odtwarzacza.py            # bez Studio, ok. 40 s (v3: 4644 dzienniki w interpreterze)
+python -B swiat/test_walki2/testy/test_v3_play.py                # tryb Play (v3, D-078) — przygotowany 17.11, nieuruchomiony
 python -B swiat/test_walki2/testy/test_aktorow.py                # bez Studio (etap 1)
 python -B swiat/test_walki2/testy/sprawdz_edit.py                # tryb Edit, tylko odczyt
 python -B swiat/test_walki2/testy/test_klipow_play.py            # tryb Play (etap 1), ok. 1 min

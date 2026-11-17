@@ -19,11 +19,27 @@
 		  rzeczywistym — przy długiej walce i większym tempie mniej cięć i płynne przejścia zamiast cięć;
 		• finał: upadek pokonanego, radość zwycięzcy, łup z dziennika, objazd kamery, panel wyniku (JESZCZE RAZ, ZAMKNIJ).
 
-	API:  uruchom(kontener, wybor, opcje?) → boolean | pomin() | zamknij() | jeszczeRaz() | ustawTempo(t) | czyTrwa()
+	API:  uruchom(kontener, wybor, opcje?) → boolean | pomin(wymus?) | zamknij() | jeszczeRaz() | ustawTempo(t) | czyTrwa()
 	      wolnaZa() → s | stan() → tabela (do testów) | przewin(s) (tylko opcje.reczny)
-	opcje (testy): tempo (startowe), reczny (czas stoi; przesuwa go przewin), etykietaCzasu, pominPo, zamknijPo, obrys;
+	opcje (testy): tempo (startowe), reczny (czas stoi; przesuwa go przewin), etykietaCzasu, pominPo (wymuszone
+	      pominięcie tylko pokazu — serwer i tak sam decyduje o sesji), zamknijPo, obrys;
 	      bezPowtorki (las_potwory, P2: panel wyniku bez JESZCZE RAZ).
 	Wynik ostatniego odtworzenia → atrybuty kontenera (u klienta): Ostatni* (patrz Sesja:pokazWynik).
+
+	Dziennik v3 (17.11.2026, tools/walka/ZMIANY_SESJA_1611.md):
+		• czysta logika w Moduly/PlanWalki (testowana bez Studio tym samym kodem): normalizacja dziennika — nieznane
+		  pole albo typ zdarzenia daje ostrzeżenie w konsoli (raz) i odtwarzanie idzie dalej; plan many, tur, powaleń;
+		• pasek many pod paskiem życia u obu stron — wartości wyłącznie z dziennika (mana_gracz / mana_wrog), próg =
+		  koszt następnej umiejętności z dziennika, gotowa = świeci, użycie = błysk i spadek o koszt (wartosc);
+		• statusy z charakterem: trucizna ×N (stosy), podpalenie, krwawienie, spowolnienie (lód, bez straty tury),
+		  ogłuszenie (gwiazdki / pnącza, „TRACI TURĘ!”), zdarcie pancerza, wzmocnienie, tarcza −N% na 3 tury;
+		• blok każdej klasy i potwora: z tarczą klip i iskry przy tarczy, bez tarczy parada (łuk odbicia, odchylenie),
+		  napis „BLOK −N%” (N z czesc_przez_blok) i liczba tego, co przeszło;
+		• wskrzeszenie: powalenie (zwolnienie, upadek) → słup światła → powrót z życiem z dziennika, „WSKRZESZENIE!”;
+		• zapowiedź pasywek ze slotów i broni na starcie (opis z odpowiedzi serwera; nazwy i premie z danych silnika);
+		• pomijanie (D-078): przycisk POMIŃ i spacja TYLKO, gdy serwer dał zgodę (odpowiedź z walką: pomijanie = true,
+		  albo — dla walk z lasu — zapytanie Zdalne/PominiecieWalki2 prototypu); pominięcie zgłaszamy serwerowi,
+		  który zwalnia sesję (tablica prototypu) albo odmawia. Klient sam zgody nie wyda.
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	local function nic()
@@ -52,6 +68,15 @@ local Efekty3D = require(moduly:WaitForChild("Efekty3D"))
 local Interfejs = require(moduly:WaitForChild("InterfejsWalki2"))
 local Dziennik = require(moduly:WaitForChild("Dziennik"))
 local Dane = require(moduly:WaitForChild("Walka"):WaitForChild("Dane"))
+local PlanWalki = require(moduly:WaitForChild("PlanWalki"))
+local NAZWA_PROTOTYPU = moduly.Parent.Name -- TestWalki2: zdalne pomijania są w kontenerze tego modułu
+
+-- zdalna funkcja pomijania prototypu (D-078): "czy" (walki z lasu) i "pomin"; nil, gdy kontener jej nie ma
+local function zdalnaPominiecia(): RemoteFunction?
+	local z = moduly.Parent:FindFirstChild("Zdalne")
+	local f = z and z:FindFirstChild("PominiecieWalki2")
+	return if f and f:IsA("RemoteFunction") then f else nil
+end
 
 local Odtwarzacz = {}
 local sesja = nil
@@ -440,8 +465,15 @@ function Sesja:poprosSerwer()
 	local zdalna = self.kontener:WaitForChild("Zdalne"):WaitForChild("RozpocznijWalke2") :: RemoteFunction
 	for _ = 1, 3 do
 		local t = os.clock()
-		-- tylko wybór z listy (trzy napisy); żadnych liczb
-		local odpowiedz = zdalna:InvokeServer({ klasa = self.wybor.klasa, przeciwnik = self.wybor.przeciwnik, poziom = self.wybor.poziom })
+		-- tylko wybór z listy (napisy); żadnych liczb. Serwery lasu dostają dokładnie trzy napisy (umowa
+		-- swiat/las_potwory); tablica prototypu (v3) — czwarty napis: zestaw postaci z zamkniętej listy
+		local odpowiedz
+		if type(self.wybor.zestaw) == "string" then
+			odpowiedz = zdalna:InvokeServer({ klasa = self.wybor.klasa, przeciwnik = self.wybor.przeciwnik, poziom = self.wybor.poziom,
+				zestaw = self.wybor.zestaw })
+		else
+			odpowiedz = zdalna:InvokeServer({ klasa = self.wybor.klasa, przeciwnik = self.wybor.przeciwnik, poziom = self.wybor.poziom })
+		end
 		self.czasSerwera = (os.clock() - t) * 1000
 		if self.zakonczona then
 			error("przerwano")
@@ -449,13 +481,29 @@ function Sesja:poprosSerwer()
 		local powod = if type(odpowiedz) == "table" then odpowiedz.powod else nil
 		local ponowZa = if type(odpowiedz) == "table" then tonumber(odpowiedz.ponowZa) else nil
 		if type(odpowiedz) == "table" and odpowiedz.ok and odpowiedz.walka then
+			-- v3: Dziennik.sprawdz to kontrola, nie bramka — zły albo nowszy dziennik daje ostrzeżenie, a odtwarzacz
+			-- gra kopię znormalizowaną przez PlanWalki (nieznane pola i typy nie wywracają odtwarzania)
 			local dobre, opis = Dziennik.sprawdz(odpowiedz.walka)
+			self.bladDziennika = if dobre then nil else tostring(opis)
 			if not dobre then
-				error("serwer przysłał niepoprawny dziennik: " .. tostring(opis))
+				warn("[TestWalki2] Dziennik nie przeszedł Dziennik.sprawdz (gram dalej): " .. tostring(opis))
+			end
+			local walka, ostrzezenia = PlanWalki.normalizuj(odpowiedz.walka)
+			if not walka then
+				error("serwer przysłał dziennik, którego nie da się odtworzyć: " .. tostring(ostrzezenia))
+			end
+			self.ostrzezeniaDziennika = ostrzezenia
+			for _, o in ostrzezenia do
+				warn("[TestWalki2] Dziennik: " .. o)
 			end
 			wolnaOd = tonumber(odpowiedz.nastepnaOd) or 0
 			self:atrybut("NastepnaWalkaOd", wolnaOd)
-			return odpowiedz.walka
+			-- D-078: zgoda na pomijanie od serwera (true / false); nil = serwer źródła o tym nie mówi (walka z lasu) —
+			-- wtedy pytamy serwer prototypu (rozpocznij), a do odpowiedzi pomijać nie wolno
+			self.pomijanie = if odpowiedz.pomijanie == true then true elseif odpowiedz.pomijanie == false then false else nil
+			-- pasywki stron z serwera (tylko do zapowiedzi; liczby i tak są w dzienniku)
+			self.pasywkiStron = if type(odpowiedz.pasywki) == "table" then odpowiedz.pasywki else nil
+			return walka
 		elseif (powod == "za_szybko" or powod == "walka_trwa") and ponowZa and ponowZa <= 3 then
 			task.wait(math.clamp(ponowZa, 0.1, 3) + 0.05)
 			if self.zakonczona then
@@ -695,7 +743,6 @@ local function ruchWKlipie(aktor, akcja: string?): boolean
 end
 
 ------------------------------------------------------------------ plan: zdarzenia, tury, efekty, ujęcia, zwolnienia
-local AKCJE_TURY = { cios = true, krytyk = true, blok = true, unik = true, umiejetnosc = true, utrata_tury = true, efekt_tick = true }
 local ATAKI = { cios = true, krytyk = true, blok = true, unik = true }
 
 function Sesja:wpisChoreo(z, klucz: string)
@@ -717,32 +764,24 @@ end
 function Sesja:zaplanuj(walka)
 	local plan = {}
 	local n = #walka.dziennik
-	local tura, stronaTury = 0, nil
 	local zwolnienia = {}
 	local ujecia = { { start = 0, typ = "ogolny", prio = 3 } }
 	local losU = Random.new(walka.ziarno % 2147483647)
 	local ostatnieTyp = "ogolny"
 	local licznikZwyklych = 0
-	-- zdarzenie, w którym pokonany traci ostatnie życie (cios kończący: upadek, zwolnienie, ujęcie pokonanego)
-	local polePokonanego = if self.pokonany == "gracz" then "hp_gracz" else "hp_wrog"
-	local nrKonczacego = nil
+	-- v3: tury, mana, powalenia przed wskrzeszeniem i cios kończący liczy czysty moduł PlanWalki (testy bez Studio)
+	local pw = PlanWalki.plan(walka)
+	self.planWalki = pw
+	local nrKonczacego = pw.nrKonczacego
 	for i, z in walka.dziennik do
-		if z[polePokonanego] == 0 then
-			nrKonczacego = i
-			break
-		end
-	end
-	for i, z in walka.dziennik do
-		local ev = { nr = i, z = z, typ = z.typ, kto = z.kto, cel = z.cel, t = z.t, trwa = z.trwa, koniec = z.t + z.trwa }
-		if AKCJE_TURY[z.typ] and z.kto ~= stronaTury then
-			tura += 1
-			stronaTury = z.kto
-			ev.nowaTura = true
-		end
-		ev.tura = tura
-		ev.stronaTury = stronaTury
-		ev.obsluga = Ch.ZDARZENIA[z.typ]
-		ev.smiertelny = i == nrKonczacego
+		local pe = pw.zdarzenia[i]
+		local ev = { nr = i, z = z, typ = z.typ, kto = z.kto, cel = z.cel, t = z.t, trwa = z.trwa, koniec = z.t + z.trwa, pw = pe }
+		ev.nowaTura = pe.nowaTura
+		ev.tura = pe.tura
+		ev.stronaTury = pe.stronaTury
+		ev.obsluga = if z.nieznany then Ch.NIEZNANE else Ch.ZDARZENIA[z.typ]
+		ev.smiertelny = pe.smiertelny == true
+		ev.powala = pe.powala -- strona powalona tym zdarzeniem, która zaraz wstaje (wskrzeszenie)
 		ev.atak = ATAKI[z.typ] or (z.typ == "umiejetnosc" and z.kto ~= z.cel)
 		ev.naSiebie = z.typ == "umiejetnosc" and z.kto == z.cel
 		if ev.atak or ev.naSiebie then
@@ -750,7 +789,10 @@ function Sesja:zaplanuj(walka)
 			ev.choreo, ev.znana = self:wpisChoreo(z, klucz)
 			ev.styl = if ev.naSiebie then "na_siebie" else (ev.choreo.styl or "wrecz")
 			self:policzCzasy(ev)
-			local zw = if z.krytyk == true then Ch.ZWOLNIENIE.krytyk elseif ev.smiertelny then Ch.ZWOLNIENIE.nokaut else nil
+			local zw = if z.krytyk == true then Ch.ZWOLNIENIE.krytyk
+				elseif ev.smiertelny then Ch.ZWOLNIENIE.nokaut
+				elseif ev.powala then Ch.ZWOLNIENIE.powalenie
+				else nil
 			if zw then
 				-- atak z lotem: zwolnienie dopiero przy dolocie (inaczej pocisk „stał” przed celem przez ponad sekundę)
 				local zLot = (ev.lot or 0) > 0 and Ch.ZWOLNIENIE.lot or nil
@@ -767,7 +809,7 @@ function Sesja:zaplanuj(walka)
 		local uj = nil
 		local A, D = z.kto, z.cel
 		if ev.atak then
-			if (z.krytyk or ev.smiertelny) and ev.styl ~= "pocisk" and ev.styl ~= "chmura" then
+			if (z.krytyk or ev.smiertelny or ev.powala) and ev.styl ~= "pocisk" and ev.styl ~= "chmura" then
 				uj = { typ = "krytyk", atakujacy = A, broniacy = D, prio = 3 }
 			elseif ev.styl == "pocisk" or ev.styl == "chmura" then
 				uj = { typ = ev.choreo.kamera or "pocisk", atakujacy = A, broniacy = D, strona = ev.choreo.stronaKamery or 1,
@@ -803,8 +845,11 @@ function Sesja:zaplanuj(walka)
 			uj = { typ = "naSiebie", atakujacy = A, broniacy = A, prio = 2 }
 		elseif z.typ == "utrata_tury" then
 			uj = { typ = "efekt", atakujacy = A, broniacy = A, prio = 1 }
-		elseif z.typ == "efekt_tick" and ev.nowaTura then
-			uj = { typ = "efekt", atakujacy = A, broniacy = A, prio = if ev.smiertelny then 3 else 1 }
+		elseif z.typ == "efekt_tick" and (ev.nowaTura or ev.powala) then
+			uj = { typ = "efekt", atakujacy = A, broniacy = A, prio = if ev.smiertelny or ev.powala then 3 else 1 }
+		elseif z.typ == "wskrzeszenie" then
+			-- wskrzeszenie: ujęcie na wstającego (mocne, krótkie — przerywa każde inne)
+			uj = { typ = "efekt", atakujacy = A, broniacy = A, prio = 3 }
 		end
 		if uj then
 			uj.start = ev.t + (if ev.atak then math.max(0, (ev.eStart or 0) - 0.05) else 0)
@@ -988,66 +1033,70 @@ function Sesja:klip(aktor, akcja: string, opcje, spoznienie: number?)
 end
 
 ------------------------------------------------------------------ efekty i stan stron (ikony z licznikiem tur)
+-- ikony efektów strony: licznik tur, a znaczek wg Choreografie.EFEKTY[id].znaczek — „×N” (stosy > 1), „−N%” (tarcza)
 function Sesja:efektyStrony(strona: string)
 	local lista = {}
-	for _, e in self.stanEfektow[strona] do
+	for _, e in PlanWalki.lista(self.stanEfektow, strona) do
 		local ch = Ch.EFEKTY[e.id] or Ch.EFEKT_ZASTEPCZY
-		table.insert(lista, { id = e.id, ikona = ch.ikona, kolor = ch.kolor, tury = math.max(1, e.tury), zapas = e.zapas })
+		local znaczek = nil
+		if ch.znaczek == "stosy" and (e.stosy or 1) > 1 then
+			znaczek = "×" .. tostring(e.stosy)
+		elseif ch.znaczek == "procent" and e.procent then
+			znaczek = "−" .. tostring(math.floor(e.procent + 0.5)) .. "%"
+		end
+		table.insert(lista, { id = e.id, ikona = ch.ikona, kolor = ch.kolor, tury = e.tury, znaczek = znaczek, stosy = e.stosy })
 	end
 	return lista
 end
 
 function Sesja:odswiezEfekty()
-	local zapas = { gracz = 0, wrog = 0 }
-	for strona, lista in self.stanEfektow do
-		for _, e in lista do
-			zapas[strona] += e.zapas or 0
-		end
+	for strona in self.stanEfektow do
 		self.ui:ustawEfekty(strona, self:efektyStrony(strona))
-		self.ui:ustawTarcze(strona, zapas[strona])
 	end
+end
+
+-- czy na stronie trwa efekt danego typu z danych silnika (np. "spowolnienie" — kolor paska many)
+function Sesja:maEfektTypu(strona: string, typ: string): boolean
+	for _, e in self.stanEfektow[strona] do
+		local def = Dane.efekty[e.id]
+		if def and def.typ == typ then
+			return true
+		end
+	end
+	return false
 end
 
 function Sesja:koniecTury(strona: string, tura: number)
-	for _, e in self.stanEfektow[strona] do
-		if e.odTury ~= tura then
-			e.tury -= 1
-		end
-	end
+	PlanWalki.koniecTury(self.stanEfektow, strona, tura)
 end
 
-function Sesja:pochlon(strona: string, ile: number)
-	if ile <= 0 then
-		return
-	end
-	for _, e in self.stanEfektow[strona] do
-		if e.zapas and e.zapas > 0 and ile > 0 then
-			local m = math.min(e.zapas, ile)
-			e.zapas -= m
-			ile -= m
-		end
-	end
-end
-
--- umiejętność, która nałożyła efekt (efekt_nalozony idzie zaraz po swoim ataku albo umiejętności); "" = zwykły cios
+-- umiejętność, która nałożyła efekt (z planu: efekt_nalozony idzie zaraz po swoim ataku); "" = zwykły cios
 function Sesja:zrodloEfektu(ev): string
-	local i = ev.nr - 1
-	while i >= 1 do
-		local p = self.plan[i]
-		if p.typ ~= "efekt_nalozony" then
-			return if p.z.kto == ev.z.kto then p.z.umiejetnosc else ""
-		end
-		i -= 1
-	end
-	return ""
+	return (ev.pw and ev.pw.zrodlo) or ""
 end
 
--- wygląd ozdoby efektu: ten sam efekt może wyglądać inaczej zależnie od umiejętności (spowolnienie: lód przy lodowym
--- pocisku, pnącza przy uścisku korzeni, gwiazdki przy ogłuszeniu) — Choreografie.WYGLAD_SPOWOLNIENIA
+--[[ Mana z dziennika na paskach (v3): wartości po zdarzeniu ev (mana_gracz / mana_wrog), próg i gotowość z planu.
+	strony = "obie" | strona; uzycie = błysk przy spadku o koszt. Klient niczego nie dolicza. ]]
+function Sesja:ustawManeZdarzenia(ev, strony: string?, uzycie: boolean?)
+	local pe = ev.pw
+	for _, s in { "gracz", "wrog" } do
+		if strony == nil or strony == "obie" or strony == s then
+			self.ui:ustawMane(s, ev.z["mana_" .. s], {
+				prog = pe and pe.prog[s], gotowa = pe and pe.gotowa[s], uzycie = uzycie and ev.z.kto == s,
+				spowolniona = self:maEfektTypu(s, "spowolnienie"), natychmiast = self.pominieto,
+			})
+		end
+	end
+end
+
+-- wygląd ozdoby efektu: ten sam efekt może wyglądać inaczej zależnie od umiejętności, która go nałożyła
+-- (ogłuszenie: pnącza przy uścisku korzeni, gwiazdki przy ogłuszającym uderzeniu; spowolnienie: lód) —
+-- Choreografie.WYGLAD_OD_UMIEJETNOSCI
 function Sesja.wygladEfektu(id: string, umiejetnosc: string?): string
 	local ch = Ch.EFEKTY[id] or Ch.EFEKT_ZASTEPCZY
-	if id == "spowolnienie" and umiejetnosc and Ch.WYGLAD_SPOWOLNIENIA[umiejetnosc] then
-		return Ch.WYGLAD_SPOWOLNIENIA[umiejetnosc]
+	local wg = Ch.WYGLAD_OD_UMIEJETNOSCI[id]
+	if wg and umiejetnosc and wg[umiejetnosc] then
+		return wg[umiejetnosc]
 	end
 	return ch.wyglad
 end
@@ -1145,7 +1194,7 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 	local z = ev.z
 	self.ui:ustawZycie("gracz", z.hp_gracz, cicho)
 	self.ui:ustawZycie("wrog", z.hp_wrog, cicho)
-	self:pochlon(z.cel, z.pochloniete)
+	self:ustawManeZdarzenia(ev, "obie", false)
 	self:odswiezEfekty()
 	if cicho then
 		return
@@ -1164,13 +1213,28 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 		self.ui:napis(glowa, "UNIK!", "unik", nil, los:NextNumber(-7, 7), nil, cel)
 		self:dzwiek("unik", los:NextNumber(0.95, 1.05))
 	elseif z.typ == "blok" then
-		self.ui:napis(glowa, "BLOK!", "blok", nil, -5, nil, cel)
+		-- v3: blok zmniejsza cios (przechodzi czesc_przez_blok) — „BLOK −75%” i liczba tego, co przeszło
+		local zatrzymal = PlanWalki.blokZatrzymuje(self.walka)
+		self.ui:napis(glowa, if zatrzymal >= 100 then "BLOK!" else ("BLOK −" .. tostring(zatrzymal) .. "%"), "blok", nil, -5, nil, cel)
 		if liczbaWidoczna then
 			local t, st = self:liczba(z, z.cel)
 			self.ui:napis(glowa, t, st, nil, 4, nil, cel)
 		end
-		local tarcza = D:punkt("Tarcza")
-		self.fx:wybuch("blok", if tarcza then tarcza.Position else piers, s)
+		-- z tarczą (klip bloku i punkt Tarcza — Wojownik): iskry przy godle; bez tarczy: parada bronią albo ręką —
+		-- łuk odbicia przed punktem Bron (albo przed piersią) zwrócony do atakującego, iskry w tym samym miejscu
+		local tarcza = D:maKlip("blok") and D:punkt("Tarcza")
+		if tarcza then
+			self.fx:wybuch("blok", tarcza.Position, s)
+		else
+			local bron = D:punkt("Bron")
+			local miejsce = if bron then bron.Position:Lerp(piers, 0.35) else piers
+			local doAtak = self:piers(z.kto) - miejsce
+			local kier = if doAtak.Magnitude > 0.01 then doAtak.Unit else D:cfZiemi().LookVector
+			local punkt = miejsce + kier * math.max(0.6, D.wpis.przod * 0.5)
+			self.fx:parada(punkt, kier, Color3.fromHex(Ch.BLOK.kolor), s)
+			self.fx:wybuch("blok", punkt, s)
+			ev.parada = true
+		end
 		self:dzwiek("blok", los:NextNumber(0.95, 1.05))
 		self:wstrzas(0.15)
 	elseif z.krytyk then
@@ -1218,16 +1282,27 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 	-- reakcja celu
 	if ev.smiertelny then
 		self:upadek(z.cel)
+	elseif ev.powala == z.cel then
+		self:upadek(z.cel, true)
 	elseif z.typ == "blok" then
-		-- klip bloku gra od wcześniej (garda przed ciosem)
+		-- klip bloku gra od wcześniej (garda przed ciosem); bez klipu — parada w aktualizujPozy (odchylenie)
 	elseif z.typ ~= "unik" then
 		self:klip(D, "trafienie", { predkosc = if z.krytyk then 0.9 else 1.15 })
 	end
 end
 
--- upadek pokonanego (cios albo tyknięcie kończące): klip upadku w prędkości dobranej do ujęcia pokonanego
-function Sesja:upadek(strona: string)
+--[[ Upadek: pokonanego (cios albo tyknięcie kończące) w prędkości dobranej do ujęcia pokonanego; powalonego, który
+	zaraz wstanie (wskrzeszenie, v3) — szybciej (klip kończy się przed światłem), bez zdejmowania ozdób efektów
+	(efekty trwają po powrocie, np. trucizna tyka dalej). ]]
+function Sesja:upadek(strona: string, powala: boolean?)
 	local P = self.aktorzy[strona]
+	if powala then
+		local klip = P:maKlip("upadek")
+		local dl = (klip and P.klipy:dlugoscKlipu(klip)) or 1
+		self:klip(P, "upadek", { przejscie = 0.08, predkosc = math.max(1, dl / 0.85) })
+		self:dzwiek("upadek", if strona == "gracz" then 1.0 else 0.75)
+		return
+	end
 	self.torUpadku = self:klip(P, "upadek", { przejscie = 0.08, predkosc = self.predkoscUpadku or 1 })
 	self:usunOzdobyStrony(strona)
 	self:dzwiek("upadek", if strona == "gracz" then 1.0 else 0.75)
@@ -1433,7 +1508,8 @@ Obsluga.tykniecie = function(self, ev)
 	self:zaplanujAkcje(ev.t + ev.eHit, function()
 		self.ui:ustawZycie("gracz", z.hp_gracz)
 		self.ui:ustawZycie("wrog", z.hp_wrog)
-		self:pochlon(z.cel, z.pochloniete)
+		PlanWalki.tykniecie(self.stanEfektow, z)
+		self:ustawManeZdarzenia(ev, "obie", false)
 		self:odswiezEfekty()
 		if self.pominieto then
 			return
@@ -1443,7 +1519,12 @@ Obsluga.tykniecie = function(self, ev)
 			self.pomiarTwarzy = ev.nr
 		end
 		if z.obrazenia > 0 then
-			self.ui:napis(glowa, "−" .. tostring(z.obrazenia), "tyk", nil, los:NextNumber(-6, 6), Color3.fromHex(ch.kolor), z.kto)
+			-- trucizna w stosach: „−24 ×3” (tyknięcie ze wszystkimi stosami, liczba stosów z dziennika)
+			local tekst = "−" .. tostring(z.obrazenia)
+			if ch.znaczek == "stosy" and z.stosy > 1 then
+				tekst = tekst .. " ×" .. tostring(z.stosy)
+			end
+			self.ui:napis(glowa, tekst, "tyk", nil, los:NextNumber(-6, 6), Color3.fromHex(ch.kolor), z.kto)
 		end
 		if z.pochloniete > 0 then
 			self.ui:napis(glowa, "TARCZA −" .. tostring(z.pochloniete), "efekt", nil, 3, Color3.fromHex("#9FE8FF"), z.kto)
@@ -1454,6 +1535,8 @@ Obsluga.tykniecie = function(self, ev)
 		end
 		if ev.smiertelny then
 			self:upadek(z.kto)
+		elseif ev.powala == z.kto then
+			self:upadek(z.kto, true)
 		else
 			self:klip(A, "trafienie", { predkosc = 1.5 })
 			self:dzwiek("cios", 1.3)
@@ -1463,22 +1546,8 @@ end
 
 Obsluga.nalozenie = function(self, ev)
 	local z = ev.z
-	local lista = self.stanEfektow[z.cel]
-	local nowy = { id = z.efekt, tury = z.tury, odTury = ev.tura, zapas = nil }
-	local def = Dane.efekty[z.efekt]
-	if def and def.typ == "tarcza" then
-		nowy.zapas = z.wartosc
-	end
-	local podmieniony = false
-	for i, e in lista do
-		if e.id == z.efekt then
-			lista[i] = nowy
-			podmieniony = true
-		end
-	end
-	if not podmieniony then
-		table.insert(lista, nowy)
-	end
+	local nowy = PlanWalki.nalozony(self.stanEfektow, z, ev.tura, Dane.efekty)
+	self:ustawManeZdarzenia(ev, "obie", false)
 	self:odswiezEfekty()
 	if self.pominieto then
 		return
@@ -1486,48 +1555,93 @@ Obsluga.nalozenie = function(self, ev)
 	self:ozdobaEfektu(z.cel, z.efekt, self:zrodloEfektu(ev))
 	local ch = Ch.EFEKTY[z.efekt] or Ch.EFEKT_ZASTEPCZY
 	local tekst = ch.napis
-	if nowy.zapas then
-		tekst = tekst .. " " .. tostring(nowy.zapas)
+	if nowy.procent then
+		-- tarcza procentowa (v3): „KAMIENNA SKÓRA −42%” (procent z dziennika), 3 tury na ikonie
+		tekst = string.sub(tekst, 1, #tekst - 1) .. " −" .. tostring(math.floor(nowy.procent + 0.5)) .. "%"
+	elseif ch.znaczek == "stosy" and nowy.stosy > 1 then
+		tekst = string.sub(tekst, 1, #tekst - 1) .. " ×" .. tostring(nowy.stosy)
 	end
 	self.ui:napis(self:glowa(z.cel), tekst, "efekt", nil, los:NextNumber(-4, 4), Color3.fromHex(ch.kolor), z.cel)
 end
 
 Obsluga.koniec = function(self, ev)
 	local z = ev.z
-	local lista = self.stanEfektow[z.cel]
-	local zapas = nil
-	for i = #lista, 1, -1 do
-		if lista[i].id == z.efekt then
-			zapas = lista[i].zapas
-			table.remove(lista, i)
-		end
-	end
+	PlanWalki.koniec(self.stanEfektow, z)
+	self:ustawManeZdarzenia(ev, "obie", false)
 	self:odswiezEfekty()
 	self:usunOzdobe(z.cel, z.efekt)
-	if self.pominieto then
-		return
-	end
-	local nazwa = (Dane.efekty[z.efekt] and Dane.efekty[z.efekt].nazwa) or z.efekt
-	if zapas ~= nil and zapas <= 0 then
-		self.ui:napis(self:glowa(z.cel), "TARCZA PĘKŁA!", "efekt", nil, -4, Color3.fromHex("#9FE8FF"), z.cel)
-		self.fx:wybuch("bariera", self:piers(z.cel), 1)
-	end
-	-- zwykły koniec efektu: znika ikona i ozdoba na postaci; bez napisu (w długiej walce napisów byłoby za dużo)
-	local _ = nazwa
+	-- koniec efektu: znika ikona i ozdoba na postaci; bez napisu (w długiej walce napisów byłoby za dużo). Tarcza v3
+	-- jest procentowa na 3 tury — nie „pęka”, tylko się kończy.
 end
 
+-- utrata tury (v3: tylko ogłuszenie — spowolnienie tury nie zabiera): „TRACI TURĘ!”, puls gwiazdek / pnączy
 Obsluga.utrata = function(self, ev)
 	local z = ev.z
+	self:ustawManeZdarzenia(ev, "obie", false)
 	self:zaplanujAkcje(ev.t + 0.12, function()
 		if self.pominieto then
 			return
 		end
 		self.ui:napis(self:glowa(z.kto), "TRACI TURĘ!", "efekt", nil, -5, Color3.fromHex("#FFE14A"), z.kto)
-		local o = self.ozdoby[z.kto .. ":spowolnienie"]
-		if o then
-			o:puls()
+		for id in Ch.TRACI_TURE do
+			local o = self.ozdoby[z.kto .. ":" .. id]
+			if o then
+				o:puls()
+			end
 		end
+		self:dzwiek("unik", 0.7)
 	end)
+end
+
+--[[ Wskrzeszenie (v3, propozycja D-094): mocna, krótka scena w czasie zdarzenia z dziennika (trwa 1,5 s):
+	światło z góry na powalonego → wstaje (przejście z klipu upadku do spoczynku, lekkie uniesienie) → pasek życia
+	rośnie z 0 do życia po powrocie (wartosc = hp z dziennika) ze złotym blaskiem → „WSKRZESZENIE!”. Legenda przy
+	portrecie szarzeje (raz na walkę). Efekty na postaci zostają (ozdoby nie zniknęły przy powaleniu). ]]
+Obsluga.wskrzeszenie = function(self, ev)
+	local z = ev.z
+	local A = self.aktorzy[z.kto]
+	local w = Ch.WSKRZESZENIE
+	self:ustawManeZdarzenia(ev, "obie", false)
+	self.wskrzeszenia[z.kto] = (self.wskrzeszenia[z.kto] or 0) + 1
+	self:zaplanujAkcje(ev.t + ev.trwa * w.swiatlo, function()
+		if self.pominieto then
+			return
+		end
+		local s = math.clamp(A.wpis.wysokosc / 5, 0.8, 2.2)
+		self.fx:wskrzeszenie(A:cfZiemi(), math.max(A.wpis.szerokosc, A.wpis.glebokosc), A.wpis.wysokosc, Color3.fromHex(w.kolor), ev.trwa)
+		self.fx:wybuch("zloto", self:piers(z.kto), s)
+		self:dzwiek("czar", 0.85)
+	end)
+	self:zaplanujAkcje(ev.t + ev.trwa * w.wstaje, function(sp)
+		self:klip(A, "spoczynek", { przejscie = 0.45, petla = true }, sp)
+	end)
+	self:zaplanujAkcje(ev.t + ev.trwa * w.zycie, function()
+		self.ui:ustawZycie(z.kto, if z.kto == "gracz" then z.hp_gracz else z.hp_wrog)
+		self.ui:ustawLegende(z.kto, self.legendy[z.kto] == true, true)
+		if self.pominieto then
+			return
+		end
+		self.ui:blaskZycia(z.kto)
+		self:melodia("wskrzeszenie")
+	end)
+	self:zaplanujAkcje(ev.t + ev.trwa * w.napis, function()
+		if self.pominieto then
+			return
+		end
+		self.ui:napis(self:glowa(z.kto), "WSKRZESZENIE!", "wskrzeszenie", nil, -4, nil, z.kto)
+		self.ui:napis(self:glowa(z.kto), "+" .. tostring(z.wartosc), "zadane", nil, 4, Color3.fromHex(w.kolor), z.kto)
+		self:wstrzas(0.3)
+	end)
+end
+
+-- zdarzenie, którego odtwarzacz nie zna (nowszy silnik): ostrzeżenie (już przy normalizacji), paski i mana
+-- z dziennika, żadnej animacji — walka gra dalej
+Obsluga.nieznane = function(self, ev)
+	local z = ev.z
+	self.nieznane += 1
+	self.ui:ustawZycie("gracz", z.hp_gracz)
+	self.ui:ustawZycie("wrog", z.hp_wrog)
+	self:ustawManeZdarzenia(ev, "obie", false)
 end
 Sesja.Obsluga = Obsluga
 
@@ -1556,6 +1670,11 @@ function Sesja:startZdarzenia(ev)
 			self.ui:ustawZycie("gracz", poprz.z.hp_gracz)
 			self.ui:ustawZycie("wrog", poprz.z.hp_wrog)
 		end
+		-- v3: mana na paskach = mana z poprzedniego zdarzenia (licznik do testów, w testach zawsze 0)
+		if self.ui:mana("gracz") ~= poprz.z.mana_gracz or self.ui:mana("wrog") ~= poprz.z.mana_wrog then
+			self.niezgodnosciMany += 1
+			self:ustawManeZdarzenia(poprz, "obie", false)
+		end
 	end
 	if ev.nowaTura then
 		if self.turaStrona then
@@ -1564,6 +1683,21 @@ function Sesja:startZdarzenia(ev)
 		self.turaStrona, self.turaNr = ev.stronaTury, ev.tura
 		self.ui:ustawTure(ev.tura)
 		self:odswiezEfekty()
+	end
+	-- mana: użycie umiejętności = błysk i spadek o koszt w chwili rzucenia (początek zdarzenia); reszta zmian many
+	-- przychodzi z trafieniem (skutekAtaku, tykniecie) albo w obsłudze zdarzenia bez trafienia
+	if ev.pw then
+		if ev.atak or ev.z.typ == "efekt_tick" then
+			if ev.pw.uzycie then
+				self:ustawManeZdarzenia(ev, ev.z.kto, true)
+			end
+		else
+			-- bez trafienia (umiejętność na siebie, nałożenie, koniec, utrata tury, wskrzeszenie): obie strony od razu
+			self:ustawManeZdarzenia(ev, "obie", ev.pw.uzycie)
+		end
+		if ev.pw.uzycie then
+			self.uzyciaMany += 1
+		end
 	end
 	self.biezace = ev.nr
 	local f = Obsluga[ev.obsluga]
@@ -1633,8 +1767,15 @@ function Sesja:aktualizujPozy(tau: number)
 						pd.przod -= 0.9 * zej
 					end
 				elseif z.typ == "blok" then
-					-- klip bloku sam cofa Wojownika o 0,41 studa przy ciosie w tarczę
-					if not ruchWKlipie(D, "blok") then
+					if not D:maKlip("blok") then
+						-- parada bez tarczy (v3: blok ma każda klasa i potwór): odchylenie, krok w tył i pół obrotu bokiem
+						-- (broń albo ramię do ciosu) w chwili odbicia; łuk odbicia rysuje Efekty3D (fx:parada)
+						local w = okno(e, ev.eHit - 0.16, ev.eHit - 0.02, ev.eHit + 0.12, ev.eHit + 0.45)
+						pd.przod -= Ch.BLOK.cofniecie * w
+						pd.pochyl -= rad(Ch.BLOK.odchylenie) * w
+						pd.obrot += rad(12) * w
+					elseif not ruchWKlipie(D, "blok") then
+						-- klip bloku sam cofa Wojownika o 0,41 studa przy ciosie w tarczę
 						pd.przod -= 0.6 * odrzut(u, 0.07, 0.42)
 					end
 				elseif u >= 0 then
@@ -1662,6 +1803,10 @@ function Sesja:aktualizujPozy(tau: number)
 				pozy[z.kto].przechyl += rad(9) * math.sin(e * 11) * okno(e, 0, 0.12, ev.trwa - 0.15, ev.trwa)
 			elseif z.typ == "efekt_tick" then
 				pozy[z.kto].przechyl += rad(4) * math.sin(e * 25) * okno(e, ev.eHit, ev.eHit + 0.05, ev.eHit + 0.2, ev.eHit + 0.35)
+			elseif z.typ == "wskrzeszenie" then
+				-- wskrzeszenie: wstający unosi się lekko w świetle i opada na nogi
+				local w = Ch.WSKRZESZENIE
+				pozy[z.kto].gora += 0.55 * luk(e, ev.trwa * w.wstaje, ev.trwa * 0.92)
 			end
 		end
 	end
@@ -2320,13 +2465,130 @@ function Sesja:aktualizujKamere(tau: number, dt: number)
 	self.kamera.FieldOfView = math.clamp(math.deg(pelny), 5, 120)
 end
 
+------------------------------------------------------------------ pasywki i pomijanie (v3, D-078)
+--[[ Zapowiedź pasywek na starcie: lista z odpowiedzi serwera (odpowiedz.pasywki = { gracz = { sloty = { id… },
+	bron = id | "" }, wrog = … }); nazwy i premie z danych silnika (PlanWalki.opisPasywki + Choreografie.MODYFIKATORY).
+	Legendarna pasywka (wskrzeszenie) zapala złote pióro przy portrecie. Walki z lasu tej listy nie niosą — wtedy
+	zapowiedzi nie ma (premie i tak są w liczbach dziennika). ]]
+function Sesja:zapowiedzPasywki()
+	for _, s in { "gracz", "wrog" } do
+		local opisy = {}
+		local ps = self.pasywkiStron and self.pasywkiStron[s]
+		if type(ps) == "table" then
+			if type(ps.sloty) == "table" then
+				for _, id in ps.sloty do
+					local o = if type(id) == "string" then PlanWalki.opisPasywki(Dane, id, "slot", Ch.MODYFIKATORY) else nil
+					if o then
+						table.insert(opisy, o)
+						if o.legendarna then
+							self.legendy[s] = true
+						end
+					end
+				end
+			end
+			if type(ps.bron) == "string" and ps.bron ~= "" then
+				local o = PlanWalki.opisPasywki(Dane, ps.bron, "bron", Ch.MODYFIKATORY)
+				if o then
+					table.insert(opisy, o)
+				end
+			end
+		end
+		self.opisyPasywek[s] = opisy
+		self.ui:ustawLegende(s, self.legendy[s], false)
+		if #opisy > 0 then
+			self:zaplanujAkcje(0.75, function()
+				if not self.pominieto then
+					self.ui:zapowiedzPasywki(s, opisy, 1.25)
+				end
+			end)
+		end
+	end
+end
+
+-- zgoda serwera na pominięcie tej walki (wolno) i powód; przycisk tylko ze zgodą, do baneru finału
+function Sesja:ustawPominiecie(wolno: boolean, powod: string?)
+	self.pomijanie = wolno
+	self.powodPominiecia = powod or (if wolno then "ok" else "pierwsza_walka")
+	self:atrybut("OstatniePominiecieDozwolone", wolno)
+	self:atrybut("OstatniPowodPominiecia", self.powodPominiecia)
+	if wolno and self.faza == "odtwarzanie" and not (self.final and self.final.baner) and not self.pominieto then
+		self.ui:ukryjInfoPominiecia()
+		self.ui:pokazPomin(function()
+			self:pomin()
+		end)
+	else
+		self.ui:ukryjPomin()
+		if not wolno and self.powodPominiecia == "pierwsza_walka" and self.faza == "odtwarzanie" then
+			self.ui:pokazInfoPominiecia("PIERWSZE SPOTKANIE — BEZ POMIJANIA", 2.5)
+		end
+	end
+end
+
+-- walka z lasu: zgoda z pamięci serwera prototypu (mostek SerwerWalki2 ← Sygnaly/WynikWalki kontenera lasu);
+-- do odpowiedzi pomijać nie wolno. „brak_walki” zaraz po starcie = mostek jeszcze nie dostał sygnału: jedna powtórka.
+function Sesja:zapytajOPominiecie()
+	local f = zdalnaPominiecia()
+	if not f then
+		self:ustawPominiecie(false, "brak_zdalnej")
+		return
+	end
+	local walka = self.walka
+	task.spawn(function()
+		for proba = 1, 2 do
+			local ok, odp = pcall(function()
+				return f:InvokeServer("czy", self.zrodlo)
+			end)
+			if self.zakonczona or self.walka ~= walka then
+				return
+			end
+			local tak = ok and type(odp) == "table" and odp.ok == true
+			local powod = if ok and type(odp) == "table" and type(odp.powod) == "string" then odp.powod else "blad"
+			if tak or powod ~= "brak_walki" or proba == 2 then
+				self:ustawPominiecie(tak, powod)
+				return
+			end
+			task.wait(0.6)
+		end
+	end)
+end
+
+-- pominięcie zgłaszamy serwerowi (w tle — pokaz i tak już się skończył): tablica prototypu zwalnia sesję od razu
+-- (nastepnaOd = teraz), lasy — gdy ich serwer ma Sygnaly/ZwolnijPoPominieciu (README); odmowa zostawia sesję
+function Sesja:zglosPominiecie()
+	local f = zdalnaPominiecia()
+	if not f then
+		self:atrybut("OstatniaOdpowiedzPominiecia", "brak_zdalnej")
+		return
+	end
+	local walka = self.walka
+	task.spawn(function()
+		local ok, odp = pcall(function()
+			return f:InvokeServer("pomin", self.zrodlo)
+		end)
+		local powod = if ok and type(odp) == "table" then (if odp.ok == true then "ok" else tostring(odp.powod)) else "blad"
+		self:atrybut("OstatniaOdpowiedzPominiecia", powod)
+		local od = ok and type(odp) == "table" and odp.ok == true and tonumber(odp.nastepnaOd)
+		if od and self.walka == walka then
+			wolnaOd = od
+			self:atrybut("NastepnaWalkaOd", wolnaOd)
+		end
+	end)
+end
+
 ------------------------------------------------------------------ start jednej walki (także „Jeszcze raz”)
 function Sesja:rozpocznij(walka)
 	self.walka = walka
 	self.harmonogram = {}
 	self.ozdoby = {}
-	self.stanEfektow = { gracz = {}, wrog = {} }
+	self.stanEfektow = PlanWalki.nowyStan()
 	self.niezgodnosciPaskow = 0
+	self.niezgodnosciMany = 0
+	self.uzyciaMany = 0
+	self.nieznane = 0
+	self.odrzuconePominiecia = 0
+	self.wskrzeszenia = { gracz = 0, wrog = 0 }
+	self.legendy = { gracz = false, wrog = false }
+	self.opisyPasywek = { gracz = {}, wrog = {} }
 	self.brakiChoreo = 0
 	self.bledyObslugi = 0
 	self.obsluzone = 0
@@ -2364,9 +2626,15 @@ function Sesja:rozpocznij(walka)
 	self.ui:ukryjUmiejetnosc()
 	self.ui:ustawStrony(walka.strony, { gracz = walka.strony.gracz.id, wrog = walka.strony.wrog.id })
 	self.ui:pokazPaski(true)
-	self.ui:pokazPomin(function()
-		self:pomin()
-	end)
+	-- mana na starcie (z dziennika: strony.*.mana) z progiem pierwszej umiejętności z planu
+	local st = self.planWalki.start
+	for _, s in { "gracz", "wrog" } do
+		self.ui:ustawMane(s, st.mana[s], { prog = st.prog[s], gotowa = st.gotowa[s], natychmiast = true })
+	end
+	self.ui:ukryjPasywki() -- karteczki poprzedniej walki („Jeszcze raz”); nowe planuje zapowiedzPasywki
+	self:zapowiedzPasywki()
+	self.ui:ukryjPomin()
+	self.ui:ukryjInfoPominiecia()
 	self.ui:pokazTempo(self.tempo, function(t)
 		self:ustawTempo(t)
 		self:dzwiek("przycisk", 1.2)
@@ -2377,6 +2645,16 @@ function Sesja:rozpocznij(walka)
 	end)
 	self.zaslonaCel = 0
 	self.faza = "odtwarzanie"
+	-- D-078: przycisk POMIŃ tylko ze zgodą serwera (odpowiedź z walką albo — walka z lasu — zapytanie prototypu)
+	self.zrodlo = self.kontener.Name
+	local zgoda = self.pomijanie
+	self.pomijanie = false
+	if zgoda == nil and self.zrodlo ~= NAZWA_PROTOTYPU then
+		self:ustawPominiecie(false, "czekam")
+		self:zapytajOPominiecie()
+	else
+		self:ustawPominiecie(zgoda == true, if zgoda == true then "ok" elseif zgoda == false then "pierwsza_walka" else "brak_zgody")
+	end
 	self:atrybut("OstatniStan", "odtwarzanie")
 	self:atrybut("OstatnieZiarno", walka.ziarno)
 	self:atrybut("OstatniaLiczbaZdarzen", #walka.dziennik)
@@ -2453,6 +2731,8 @@ function Sesja:krokSceny(d: number, dt: number)
 	if f >= 0.2 and not self.final.baner then
 		self.final.baner = true
 		self.ui:ukryjPomin()
+		self.ui:ukryjInfoPominiecia()
+		self.ui:ukryjPasywki()
 		self.ui:ukryjTempo()
 		self.ui:ukryjDzwiek()
 		self.ui:ukryjUmiejetnosc()
@@ -2523,7 +2803,7 @@ function Sesja:krok(dt: number)
 		self:krokSceny(d, if reczny then 0 else dt)
 		self:mierzTwarz()
 		if self.opcje.pominPo and self.tau >= self.opcje.pominPo then
-			self:pomin()
+			self:pomin(true)
 		end
 	else
 		self.tauWyniku += dt
@@ -2646,15 +2926,28 @@ function Sesja:przewinDo(cel: number)
 end
 
 ------------------------------------------------------------------ pomiń, wynik, jeszcze raz
-function Sesja:pomin()
+-- wymus = tylko testy (opcje.pominPo, Sygnaly/Sterowanie "pomin", true): skraca POKAZ bez zgody; serwer i tak
+-- dostaje zgłoszenie i sam decyduje (bez zgody odmawia — sesja walki zostaje)
+function Sesja:pomin(wymus: boolean?)
 	if self.faza ~= "odtwarzanie" or self.pominieto then
 		return
 	end
+	if not self.pomijanie and not wymus then
+		-- D-078: bez zgody serwera (pierwsza walka z gatunkiem) spacja i przycisk nic nie robią — tylko informacja
+		self.odrzuconePominiecia += 1
+		self:atrybut("OstatnieOdrzuconePominiecia", self.odrzuconePominiecia)
+		self.ui:pokazInfoPominiecia(if self.powodPominiecia == "pierwsza_walka" then "PIERWSZE SPOTKANIE — BEZ POMIJANIA"
+			else "TEJ WALKI NIE MOŻNA POMINĄĆ", 2)
+		return
+	end
+	self:zglosPominiecie()
 	self:dzwiek("przycisk")
 	self.pominieto = true
 	self.ui:usunNapisy()
 	self.ui:ukryjBaner(true)
 	self.ui:ukryjUmiejetnosc()
+	self.ui:ukryjPasywki()
+	self.ui:ukryjInfoPominiecia()
 	-- reszta dziennika „po cichu”: stan efektów, tury i paski jak na końcu walki
 	while self.nastepne <= #self.plan do
 		local ev = self.plan[self.nastepne]
@@ -2670,7 +2963,13 @@ function Sesja:pomin()
 	local ost = self.plan[#self.plan].z
 	self.ui:ustawZycie("gracz", ost.hp_gracz, true)
 	self.ui:ustawZycie("wrog", ost.hp_wrog, true)
-	self.stanEfektow = { gracz = {}, wrog = {} }
+	self:ustawManeZdarzenia(self.plan[#self.plan], "obie", false)
+	for _, s in { "gracz", "wrog" } do
+		if self.wskrzeszenia[s] > 0 then
+			self.ui:ustawLegende(s, self.legendy[s], true)
+		end
+	end
+	self.stanEfektow = PlanWalki.nowyStan()
 	self:odswiezEfekty()
 	self.ui:ustawTure(self.turaNr)
 	-- aktorzy na miejsca: pokonany leży, zwycięzca się cieszy
@@ -2706,6 +3005,8 @@ function Sesja:pokazWynik()
 	self.faza = "wynik"
 	local ui = self.ui
 	ui:ukryjPomin()
+	ui:ukryjInfoPominiecia()
+	ui:ukryjPasywki()
 	ui:ukryjTempo()
 	ui:ukryjDzwiek()
 	-- pomiary poprawek z 15.11 (D1, D3, D4, D5)
@@ -2765,6 +3066,21 @@ function Sesja:pokazWynik()
 	self:atrybut("OstatniCzasSerwera", math.floor((self.czasSerwera or 0) * 10 + 0.5) / 10)
 	self:atrybut("OstatniaLiczbaSchowanych", self.liczbaSchowanych or 0)
 	self:atrybut("OstatniaNiezgodnoscPaskow", self.niezgodnosciPaskow)
+	-- v3: mana, wskrzeszenia, pasywki, dziennik, pomijanie (testy w Studio: testy/test_v3_play.py)
+	self:atrybut("OstatniaNiezgodnoscMany", self.niezgodnosciMany)
+	self:atrybut("OstatnieUzyciaMany", self.uzyciaMany)
+	self:atrybut("OstatnieWskrzeszenia", string.format("%d/%d", self.wskrzeszenia.gracz, self.wskrzeszenia.wrog))
+	self:atrybut("OstatnieNieznaneZdarzenia", self.nieznane)
+	self:atrybut("OstatnieOstrzezeniaDziennika", #(self.ostrzezeniaDziennika or {}))
+	self:atrybut("OstatniBladDziennika", self.bladDziennika or "")
+	local nazwyPasywek = {}
+	for _, s in { "gracz", "wrog" } do
+		for _, o in self.opisyPasywek[s] do
+			table.insert(nazwyPasywek, s .. ":" .. o.id)
+		end
+	end
+	self:atrybut("OstatniePasywki", table.concat(nazwyPasywek, ","))
+	self:atrybut("OstatniaManaKoniec", string.format("%s/%s", tostring(ui:mana("gracz")), tostring(ui:mana("wrog"))))
 	self:atrybut("OstatnieBrakiChoreografii", self.brakiChoreo)
 	self:atrybut("OstatnieBledyObslugi", self.bledyObslugi)
 	self:atrybut("OstatniaLiczbaObsluzonych", self.obsluzone)
@@ -2955,7 +3271,8 @@ function Odtwarzacz.uruchom(kontener: Instance, wybor: any, opcje: any?): boolea
 		tempo = 1
 	end
 	local s = setmetatable({
-		kontener = kontener, gracz = gracz, opcje = o, tempo = tempo, wybor = { klasa = w.klasa, przeciwnik = w.przeciwnik, poziom = w.poziom },
+		kontener = kontener, gracz = gracz, opcje = o, tempo = tempo,
+		wybor = { klasa = w.klasa, przeciwnik = w.przeciwnik, poziom = w.poziom, zestaw = if type(w.zestaw) == "string" then w.zestaw else nil },
 		sprzatanie = {}, utworzono = 0, faza = "prosba", zakonczona = false, zaslona = 0, zaslonaCel = 0, tau = 0, tauWyniku = 0,
 		licznikUjec = 0, zegar = 0,
 	}, Sesja)
@@ -2976,9 +3293,9 @@ function Odtwarzacz.uruchom(kontener: Instance, wybor: any, opcje: any?): boolea
 	return ok
 end
 
-function Odtwarzacz.pomin()
+function Odtwarzacz.pomin(wymus: boolean?)
 	if sesja then
-		sesja:pomin()
+		sesja:pomin(wymus == true)
 	end
 end
 function Odtwarzacz.zamknij()
@@ -3129,7 +3446,17 @@ function Odtwarzacz.stan()
 		fov = kam.FieldOfView,
 		czasKonca = s.czasKonca, tPokonany = s.tPokonany, tRadosc = s.tRadosc, tempoTeraz = s.walka and s:tempoTeraz(),
 		zegar = s.zegar, pokonany = s.pokonany, zwyciezca = s.zwyciezca,
+		-- v3: mana na paskach, ikony efektów (tury, znaczek), pomijanie, wskrzeszenia
+		manaGracz = s.ui and s.ui:mana("gracz"), manaWrog = s.ui and s.ui:mana("wrog"),
+		pomijanie = s.pomijanie == true, powodPominiecia = s.powodPominiecia,
+		pomijanieNaEkranie = s.ui ~= nil and s.ui.pomin.Visible, wskrzeszenia = s.wskrzeszenia,
 	}
+	if s.ui and s.stanEfektow then
+		wynik.efekty = { gracz = s:efektyStrony("gracz"), wrog = s:efektyStrony("wrog") }
+		local m = { gracz = s.ui.paski.gracz.mana, wrog = s.ui.paski.wrog.mana }
+		wynik.manaGotowa = { gracz = m.gracz.gotowa, wrog = m.wrog.gotowa }
+		wynik.manaProg = { gracz = m.gracz.progWartosc, wrog = m.wrog.progWartosc }
+	end
 	if s.plan and s.biezace then
 		local ev = s.plan[s.biezace]
 		wynik.typ = ev.typ

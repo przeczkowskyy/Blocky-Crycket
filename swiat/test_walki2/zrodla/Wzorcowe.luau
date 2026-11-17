@@ -77,8 +77,14 @@ function W.rozdziel(rozklad, punkty: number)
 	return st
 end
 
+-- postać wzorcowa (umowa z swiat/las_potwory: ta sygnatura i ten wynik się nie zmieniają)
 function W.postac(klasa: string, poziom: number)
-	local st = W.rozdziel(W.ROZKLADY[klasa], W.pula(poziom))
+	return W.postacZPula(klasa, poziom, W.pula(poziom))
+end
+
+-- to samo z własną pulą punktów (v3: zestaw „pod manę” — pula pomniejszona o koszt przedmiotów many)
+function W.postacZPula(klasa: string, poziom: number, punkty: number)
+	local st = W.rozdziel(W.ROZKLADY[klasa], punkty)
 	local um = {}
 	for i = 1, W.sloty(poziom) do
 		table.insert(um, W.UMIEJETNOSCI[klasa][i])
@@ -94,6 +100,75 @@ function W.postac(klasa: string, poziom: number)
 	}
 	if klasa == "wojownik" then
 		p.tarcza = { blok = W.BLOK_TARCZY }
+	end
+	return p
+end
+
+--[[ Zestawy postaci na tablicy prototypu (v3) — dokładny port swiat/test_walki2/zestawy.py (opis zestawów tam;
+	test bez Studio porównuje W.zestaw z Pythonem dla każdej klasy, poziomu i zestawu). Liczby buildu „pod manę”
+	są z tools/walka/wzorcowe.py (KOSZT_MANY, BRON_MANY, PASYWKA_MANY, PREMIE_MANY). ]]
+W.ZESTAWY = { "wzorcowa", "mana", "pasywki", "wskrzeszenie" }
+W.KOSZT_MANY = { wojownik = 0.225, zwiadowca = 0.20, mag = 0.26 }
+W.BRON_MANY = { wojownik = "miecz_runiczny", zwiadowca = "luk_runiczny", mag = "kostur_many" }
+W.PASYWKA_MANY = { wojownik = "bitewny_rytm", zwiadowca = "przyplyw_adrenaliny", mag = "przeplyw_many" }
+W.PREMIE_MANY = { zysk_many = 0.6, koszt_many = 0.15, mana_startowa = 70 }
+W.PASYWKI_ZESTAWU = { wojownik = { "kolos", "rozdzieracz" }, zwiadowca = { "oko_lowcy", "zwinnosc" }, mag = { "skupiona_magia", "magiczny_pocisk" } }
+W.BRON_ZESTAWU = { wojownik = "topor_rzeznika", zwiadowca = "luk_wiatru", mag = "ognista_rozdzka" }
+W.LUSTRO = "lustro"
+W.NAZWY_LUSTRA = { wojownik = "Lustrzany Wojownik", zwiadowca = "Lustrzany Zwiadowca", mag = "Lustrzany Mag" }
+
+-- round() Pythona (przy równym .5 do parzystej) — build „pod manę” w wzorcowe.py liczy pulę tak
+local function zaokraglijJakPython(x: number): number
+	local f = math.floor(x)
+	local r = x - f
+	if r > 0.5 then
+		return f + 1
+	elseif r < 0.5 then
+		return f
+	end
+	return if f % 2 == 0 then f else f + 1
+end
+
+local function pierwsze(lista, n: number)
+	local wynik = {}
+	for i = 1, math.min(n, #lista) do
+		wynik[i] = lista[i]
+	end
+	return wynik
+end
+
+-- zestaw → opis postaci (wejście silnika) albo nil (nieznany zestaw)
+function W.zestaw(nazwa: string, klasa: string, poziom: number)
+	local akt = W.UMIEJETNOSCI[klasa]
+	local n = W.sloty(poziom)
+	if nazwa == "wzorcowa" then
+		return W.postac(klasa, poziom)
+	elseif nazwa == "mana" then
+		local p = W.postacZPula(klasa, poziom, zaokraglijJakPython(W.pula(poziom) * (1 - W.KOSZT_MANY[klasa])))
+		p.umiejetnosci = pierwsze({ akt[1], W.PASYWKA_MANY[klasa], akt[2] }, n)
+		p.premie = table.clone(W.PREMIE_MANY)
+		p.bron.pasywka = W.BRON_MANY[klasa]
+		return p
+	elseif nazwa == "pasywki" then
+		local p = W.postac(klasa, poziom)
+		p.umiejetnosci = pierwsze({ akt[1], W.PASYWKI_ZESTAWU[klasa][1], W.PASYWKI_ZESTAWU[klasa][2] }, n)
+		p.bron.pasywka = W.BRON_ZESTAWU[klasa]
+		return p
+	elseif nazwa == "wskrzeszenie" then
+		local p = W.postac(klasa, poziom)
+		local um = pierwsze(akt, n - 1)
+		table.insert(um, "wskrzeszenie")
+		p.umiejetnosci = um
+		return p
+	end
+	return nil
+end
+
+-- przeciwnik „lustro”: postać tej samej klasy i zestawu (pojedynek — wskrzeszenie przeciwnika na tablicy)
+function W.lustro(nazwa: string, klasa: string, poziom: number)
+	local p = W.zestaw(nazwa, klasa, poziom)
+	if p then
+		p.nazwa = W.NAZWY_LUSTRA[klasa]
 	end
 	return p
 end

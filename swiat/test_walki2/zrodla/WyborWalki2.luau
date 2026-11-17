@@ -1,21 +1,24 @@
 --[[
 	WyborWalki2 — komiksowy panel wyboru walki przy tablicy (PlayerGui, tworzony w czasie działania).
-	Klasa (Wojownik / Zwiadowca / Mag), przeciwnik (pięć pozycji lasu z rangą), poziom (1 / 5 / 10) i duży przycisk
-	WALCZ. Duże przyciski i kadr trzymający proporcje — czytelny także na telefonie.
+	Klasa (Wojownik / Zwiadowca / Mag), przeciwnik (pięć pozycji lasu z rangą i — v3 — LUSTRO: postać tej samej klasy
+	i zestawu), ZESTAW postaci (v3: wzorcowa / pod manę / pasywki / wskrzeszenie — co który zestaw ma w slotach, wie
+	tylko serwer: Moduly/Wzorcowe → W.zestaw), poziom (1 / 5 / 10) i duży przycisk WALCZ. Duże przyciski i kadr
+	trzymający proporcje — czytelny także na telefonie (każdy napis ≥ 12 pkt przy 844 × 390, testy/telefon.py).
 
-	Panel NIE liczy niczego i nie wysyła liczb: wybór to trzy napisy z zamkniętej listy (klucz klasy, id przeciwnika,
-	poziom jako napis "1" / "5" / "10"), który serwer jeszcze raz sprawdza z własną listą.
+	Panel NIE liczy niczego i nie wysyła liczb: wybór to napisy z zamkniętej listy (klucz klasy, id przeciwnika albo
+	"lustro", poziom jako napis "1" / "5" / "10", zestaw), które serwer jeszcze raz sprawdza z własną listą.
 
 	API:
 		WyborWalki2.pokaz(playerGui, opcje) → panel
-			opcje.naWalcz(wybor)  — WALCZ (wybor = { klasa, przeciwnik, poziom })
+			opcje.naWalcz(wybor)  — WALCZ (wybor = { klasa, przeciwnik, poziom, zestaw })
 			opcje.naZamknij()     — krzyżyk albo odejście od tablicy
 			opcje.wolnaZa()       — ile sekund do następnej walki (odliczanie na przycisku)
 		panel:komunikat(tekst?)  panel:zamknij()   WyborWalki2.otwarty() → panel | nil
 	Emulacja ekranu telefonu do testów: atrybut kontenera EmulacjaEkranu (patrz InterfejsWalki2.ekran).
 	Ostatni wybór jest pamiętany do końca sesji.
 	Nazwy przycisków (dla testów): Ekran.Karta.Klasy.Klasa_<klucz>, Ekran.Karta.Wrogowie.Wrog_<id>,
-	Ekran.Karta.Poziomy.Poziom_<n>, Ekran.Karta.Walcz.Przycisk, Ekran.Karta.Zamknij.
+	Ekran.Karta.Poziomy.Poziom_<n>, Ekran.Karta.Zestawy.Zestaw_<klucz>, Ekran.Karta.Walcz.Przycisk, Ekran.Karta.Zamknij;
+	lustro: Ekran.Karta.Wrogowie.Wrog_lustro.
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -38,10 +41,18 @@ local Panel = {}
 Panel.__index = Panel
 
 local otwarty = nil
-local pamiec = { klasa = "wojownik", przeciwnik = "lesny_slime", poziom = "5" }
+local pamiec = { klasa = "wojownik", przeciwnik = "lesny_slime", poziom = "5", zestaw = "wzorcowa" }
 
-local RANGI = { zwykly = { "ZWYKŁY", "#8D93A6" }, rzadki = { "RZADKI", "#2F6FE0" }, straznik = { "STRAŻNIK", "#E8364F" } }
+local RANGI = { zwykly = { "ZWYKŁY", "#8D93A6" }, rzadki = { "RZADKI", "#2F6FE0" }, straznik = { "STRAŻNIK", "#E8364F" },
+	lustro = { "POJEDYNEK", "#52D273" } }
 local POZIOMY = { "1", "5", "10" }
+-- zestawy postaci (klucze jak w Wzorcowe.ZESTAWY i swiat/test_walki2/zestawy.py) i ich napisy
+local ZESTAWY = { { "wzorcowa", "WZORCOWA" }, { "mana", "POD MANĘ" }, { "pasywki", "PASYWKI" }, { "wskrzeszenie", "WSKRZESZENIE" } }
+local NAZWY_ZESTAWOW = {}
+for _, z in ZESTAWY do
+	NAZWY_ZESTAWOW[z[1]] = z[2]
+end
+local LUSTRO = "lustro"
 
 function Panel:_nowy(klasa: string, w: { [string]: any }, rodzic: Instance?): any
 	local o = Instance.new(klasa)
@@ -126,7 +137,7 @@ function Panel:_opcja(rodzic: Instance, nazwa: string, ikona: string?, tytul: st
 end
 
 function Panel:_naglowekRzedu(rodzic: Instance, tekst: string, y: number)
-	self:_tekst(rodzic, { Name = "Naglowek", Position = UDim2.fromScale(0.035, y), Size = UDim2.fromScale(0.3, 0.06), Font = NAGLOWKI,
+	self:_tekst(rodzic, { Name = "Naglowek", Position = UDim2.fromScale(0.035, y), Size = UDim2.fromScale(0.4, 0.045), Font = NAGLOWKI,
 		Text = tekst, TextColor3 = K.niebieski, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, 0)
 end
 
@@ -143,10 +154,16 @@ function Panel:_odswiez()
 		b.BackgroundColor3 = if p == self.wybor.poziom then K.zolty else K.bialy
 		b:SetAttribute("Wybrany", p == self.wybor.poziom)
 	end
+	for z, b in self.zestawy do
+		b.BackgroundColor3 = if z == self.wybor.zestaw then K.zolty else K.bialy
+		b:SetAttribute("Wybrany", z == self.wybor.zestaw)
+	end
 	local wk = Aktorzy.wpis(self.wybor.klasa)
-	local ww = Aktorzy.wpis(self.wybor.przeciwnik)
-	self.podsumowanie.Text = string.format("%s poz. %s  kontra  %s poz. %s%s", wk and wk.nazwa or "?", self.wybor.poziom,
-		ww and ww.nazwa or "?", self.wybor.poziom, if ww and ww.zastepczy then " (model zastępczy)" else "")
+	local lustro = self.wybor.przeciwnik == LUSTRO
+	local ww = if lustro then wk else Aktorzy.wpis(self.wybor.przeciwnik)
+	self.podsumowanie.Text = string.format("%s (%s) poz. %s  kontra  %s%s poz. %s", wk and wk.nazwa or "?",
+		string.lower(NAZWY_ZESTAWOW[self.wybor.zestaw] or "?"), self.wybor.poziom, if lustro then "lustro: " else "",
+		ww and ww.nazwa or "?", self.wybor.poziom)
 end
 
 function Panel:_przelicz()
@@ -171,7 +188,10 @@ function Wybor.pokaz(playerGui: Instance, opcje)
 	self.obrysy = {}
 	self.polaczenia = {}
 	self.wybor = table.clone(pamiec)
-	self.klasy, self.wrogowie, self.poziomy = {}, {}, {}
+	self.klasy, self.wrogowie, self.poziomy, self.zestawy = {}, {}, {}, {}
+	if not self.wybor.zestaw then
+		self.wybor.zestaw = "wzorcowa"
+	end
 
 	local gui = self:_nowy("ScreenGui", { Name = "TestWalki2Wybor", IgnoreGuiInset = true, ResetOnSpawn = false, DisplayOrder = 102,
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling }, nil)
@@ -212,9 +232,10 @@ function Wybor.pokaz(playerGui: Instance, opcje)
 	-- Układ dobrany do telefonu w poziomie (844 × 390 i 667 × 375 punktów, testy/telefon.py): każdy napis ma co
 	-- najmniej ok. 12 punktów wysokości — podpisy idą pełną szerokością przycisku pod nazwą, nie obok ikony.
 	-- KLASA
-	self:_naglowekRzedu(karta, "TWOJA KLASA", 0.095)
-	local rzadK = self:_nowy("Frame", { Name = "Klasy", BackgroundTransparency = 1, Position = UDim2.fromScale(0.035, 0.155),
-		Size = UDim2.fromScale(0.93, 0.17), ZIndex = 3 }, karta)
+	-- v3: cztery rzędy (klasa, przeciwnik, zestaw, poziom) — nagłówki 0,045 karty (ok. 16 pkt na telefonie)
+	self:_naglowekRzedu(karta, "TWOJA KLASA", 0.075)
+	local rzadK = self:_nowy("Frame", { Name = "Klasy", BackgroundTransparency = 1, Position = UDim2.fromScale(0.035, 0.12),
+		Size = UDim2.fromScale(0.93, 0.13), ZIndex = 3 }, karta)
 	local klasy = {}
 	for _, klucz in Aktorzy.kolejnosc do
 		local w = Aktorzy.wpis(klucz)
@@ -246,14 +267,22 @@ function Wybor.pokaz(playerGui: Instance, opcje)
 	end
 
 	-- PRZECIWNIK
-	self:_naglowekRzedu(karta, "PRZECIWNIK (LAS)", 0.343)
-	local rzadW = self:_nowy("Frame", { Name = "Wrogowie", BackgroundTransparency = 1, Position = UDim2.fromScale(0.035, 0.403),
-		Size = UDim2.fromScale(0.93, 0.25), ZIndex = 3 }, karta)
-	for i, d in Dane.przeciwnicy do
-		local w = Aktorzy.wpis(d.id)
+	self:_naglowekRzedu(karta, "PRZECIWNIK", 0.262)
+	local rzadW = self:_nowy("Frame", { Name = "Wrogowie", BackgroundTransparency = 1, Position = UDim2.fromScale(0.035, 0.307),
+		Size = UDim2.fromScale(0.93, 0.24), ZIndex = 3 }, karta)
+	-- pięciu przeciwników lasu z danych silnika + lustro (postać tej samej klasy i zestawu)
+	local listaWrogow = {}
+	for _, d in Dane.przeciwnicy do
+		table.insert(listaWrogow, { id = d.id, nazwa = d.nazwa, ranga = d.ranga, aktor = true })
+	end
+	table.insert(listaWrogow, { id = LUSTRO, nazwa = "Lustro", ranga = "lustro", aktor = false })
+	local krok = 1 / #listaWrogow
+	for i, d in listaWrogow do
+		local w = if d.aktor then Aktorzy.wpis(d.id) else nil
 		local r = RANGI[d.ranga] or RANGI.zwykly
-		local b = self:_opcja(rzadW, "Wrog_" .. d.id, if w then d.id else nil, string.upper(d.nazwa), r[1], {
-			Position = UDim2.fromScale((i - 1) * 0.2014, 0), Size = UDim2.fromScale(0.19, 1), Rotation = ({ 0.8, -0.8, 0.6, -1, 1 })[i] or 0 })
+		local b = self:_opcja(rzadW, "Wrog_" .. d.id, if w then d.id else (if d.aktor then nil else "gwiazda"), string.upper(d.nazwa), r[1], {
+			Position = UDim2.fromScale((i - 1) * krok, 0), Size = UDim2.fromScale(krok - 0.012, 1),
+			Rotation = ({ 0.8, -0.8, 0.6, -1, 1, -0.6 })[i] or 0 })
 		local pasek = self:_nowy("Frame", { Name = "Ranga", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1),
 			Size = UDim2.fromScale(1, 0.08), BackgroundColor3 = Color3.fromHex(r[2]), BorderSizePixel = 0, ZIndex = 6 }, b)
 		self:_nowy("UICorner", { CornerRadius = UDim.new(0.5, 0) }, pasek)
@@ -288,10 +317,24 @@ function Wybor.pokaz(playerGui: Instance, opcje)
 		end))
 	end
 
+	-- ZESTAW (v3): co postać ma w slotach i w broni — zestawy buduje serwer (Wzorcowe.zestaw)
+	self:_naglowekRzedu(karta, "ZESTAW POSTACI", 0.56)
+	local rzadZ = self:_nowy("Frame", { Name = "Zestawy", BackgroundTransparency = 1, Position = UDim2.fromScale(0.035, 0.605),
+		Size = UDim2.fromScale(0.93, 0.085), ZIndex = 3 }, karta)
+	for i, z in ZESTAWY do
+		local b = self:_opcja(rzadZ, "Zestaw_" .. z[1], nil, z[2], nil, {
+			Position = UDim2.fromScale((i - 1) * 0.25, 0), Size = UDim2.fromScale(0.235, 1), Rotation = ({ -0.8, 0.6, -0.6, 0.8 })[i] })
+		self.zestawy[z[1]] = b
+		table.insert(self.polaczenia, b.Activated:Connect(function()
+			self.wybor.zestaw = z[1]
+			self:_odswiez()
+		end))
+	end
+
 	-- POZIOM
-	self:_naglowekRzedu(karta, "POZIOM (OBU STRON)", 0.672)
-	local rzadP = self:_nowy("Frame", { Name = "Poziomy", BackgroundTransparency = 1, Position = UDim2.fromScale(0.035, 0.732),
-		Size = UDim2.fromScale(0.44, 0.12), ZIndex = 3 }, karta)
+	self:_naglowekRzedu(karta, "POZIOM (OBU STRON)", 0.705)
+	local rzadP = self:_nowy("Frame", { Name = "Poziomy", BackgroundTransparency = 1, Position = UDim2.fromScale(0.035, 0.75),
+		Size = UDim2.fromScale(0.44, 0.085), ZIndex = 3 }, karta)
 	for i, p in POZIOMY do
 		local b = self:_opcja(rzadP, "Poziom_" .. p, nil, p, nil, {
 			Position = UDim2.fromScale((i - 1) * 0.34, 0), Size = UDim2.fromScale(0.3, 1), Rotation = ({ -1.5, 1, -0.8 })[i] })
@@ -301,14 +344,14 @@ function Wybor.pokaz(playerGui: Instance, opcje)
 			self:_odswiez()
 		end))
 	end
-	self.podsumowanie = self:_tekst(karta, { Name = "Podsumowanie", Position = UDim2.fromScale(0.035, 0.865), Size = UDim2.fromScale(0.52, 0.06),
+	self.podsumowanie = self:_tekst(karta, { Name = "Podsumowanie", Position = UDim2.fromScale(0.035, 0.85), Size = UDim2.fromScale(0.545, 0.05),
 		Font = KOMIKS, Text = "", TextColor3 = K.ciemny, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, 0)
-	self.status = self:_tekst(karta, { Name = "Status", Position = UDim2.fromScale(0.035, 0.925), Size = UDim2.fromScale(0.52, 0.055),
+	self.status = self:_tekst(karta, { Name = "Status", Position = UDim2.fromScale(0.035, 0.905), Size = UDim2.fromScale(0.545, 0.05),
 		Font = KOMIKS, Text = "", TextColor3 = K.czerwony, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, 0)
 
 	-- WALCZ
-	local walcz = self:_nowy("Frame", { Name = "Walcz", AnchorPoint = Vector2.new(1, 1), Position = UDim2.fromScale(0.965, 0.95),
-		Size = UDim2.fromScale(0.38, 0.24), BackgroundTransparency = 1, Rotation = -2, ZIndex = 4 }, karta)
+	local walcz = self:_nowy("Frame", { Name = "Walcz", AnchorPoint = Vector2.new(1, 1), Position = UDim2.fromScale(0.965, 0.955),
+		Size = UDim2.fromScale(0.36, 0.2), BackgroundTransparency = 1, Rotation = -2, ZIndex = 4 }, karta)
 	local cien = self:_nowy("Frame", { Name = "Cien", BackgroundColor3 = K.tusz, BorderSizePixel = 0, Position = UDim2.fromScale(0.02, 0.08),
 		Size = UDim2.fromScale(1, 1), ZIndex = 4 }, walcz)
 	self:_nowy("UICorner", { CornerRadius = UDim.new(0.22, 0) }, cien)

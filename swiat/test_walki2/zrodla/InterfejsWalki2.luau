@@ -96,6 +96,24 @@ local IKONY = {
 		paleta = { Y = "#FFE14A", B = "#7FD8FF", W = "#FFFFFF" },
 		mapa = { "...Y....", "..YYY...", "YYYYYYY.", ".YYWYY..", ".YY.YY..", "Y.....B.", "....BBB.", ".....B.." },
 	},
+	-- v3: spowolnienie (płatek śniegu — inne niż gwiazdki ogłuszenia), wskrzeszenie (złote pióro), mana (kryształ)
+	sniezynka = {
+		paleta = { B = "#7FD8FF", W = "#FFFFFF", b = "#2E9BD6" },
+		mapa = { "...W....", ".B.W.B..", "..BWB...", "WWWBWWW.", "..BWB...", ".B.W.B..", "...W....", "..b.b..." },
+	},
+	feniks = {
+		paleta = { Y = "#FFD23F", O = "#FF8A1F", W = "#FFF3B0", R = "#E8364F" },
+		mapa = { ".....WY.", "....WYY.", "...WYYO.", "..WYYO..", ".WYYOR..", ".YYOR...", "YOR.....", "R......." },
+	},
+	mana = {
+		paleta = { B = "#4FA8FF", b = "#1F5FD0", W = "#E6F4FF", D = "#14306E" },
+		mapa = { "...DD...", "..DWBD..", ".DWBBbD.", "DWBBBBbD", "DBBBBBbD", ".DBBBbD.", "..DBbD..", "...DD..." },
+	},
+	-- zapowiedź pasywki broni (v3)
+	bron = {
+		paleta = { S = "#DDE3EA", s = "#8E99AB", B = "#8A5A0A", Y = "#FFD23F" },
+		mapa = { ".......S", "......Ss", ".....Ss.", "....Ss..", "Y..Ss...", ".YBs....", "..BY....", ".B..Y..." },
+	},
 	pancerz = {
 		paleta = { S = "#B9BEC4", s = "#8D949C", K = "#17121F", O = "#D9A066" },
 		mapa = { "SSSSSSSS", "SSSKSSSs", "SSSSKSSs", "SSSKSSSs", ".SSSKSs.", ".SSKSSs.", "..SSSs..", "...OO..." },
@@ -279,6 +297,7 @@ function Interfejs.nowy(playerGui: Instance, Ustawienia: any)
 	self:_zbudujTempo()
 	self:_zbudujDzwiek()
 	self:_zbudujWynik()
+	self:_zbudujPasywki()
 
 	self.zegar = self:_tekst(self.kadr, {
 		Name = "Zegar", Visible = false, AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0.02, 0.83),
@@ -334,6 +353,10 @@ function Interfejs:_przelicz()
 	for strona, p in self.paski do
 		p.tabliczka.Position = UDim2.fromScale(if strona == "gracz" then 0.025 else 0.975, self.gornyMargines)
 	end
+	-- zapowiedzi pasywek: pod ikonami efektów (tabliczka 0,15 + efekty do 1,68 tabliczki)
+	for strona, z in self.pasywki or {} do
+		z.ramka.Position = UDim2.fromScale(if strona == "gracz" then 0.025 else 0.975, self.gornyMargines + 0.27)
+	end
 	if self.vs then
 		self.vs.Position = UDim2.fromScale(0.5, self.gornyMargines + 0.065)
 		self.tura.Position = UDim2.fromScale(0.5, self.gornyMargines + 0.12)
@@ -341,12 +364,13 @@ function Interfejs:_przelicz()
 	-- wstęga z nazwą umiejętności: pod licznikiem tury; gdy pasek Roblox u góry (telefon, okno bez pasów) spycha
 	-- tabliczki w dół, wstęga idzie na dół ekranu między przyciski tempa a POMIŃ — inaczej zasłaniała paski życia
 	if self.umiejetnosc then
+		-- v3: tabliczki są wyższe (pasek many) — wstęga niżej (0,30), żeby nie wchodziła na rangę i ikony efektów
 		self.wstegaNaDole = self.gornyMargines > 0.08
-		self.umiejetnosc.Position = UDim2.fromScale(0.5, if self.wstegaNaDole then 0.905 else 0.272)
-		self.umiejetnosc.Size = UDim2.fromScale(if self.wstegaNaDole then 0.34 else 0.44, if self.wstegaNaDole then 0.08 else 0.07)
+		self.umiejetnosc.Position = UDim2.fromScale(0.5, if self.wstegaNaDole then 0.905 else 0.3)
+		self.umiejetnosc.Size = UDim2.fromScale(if self.wstegaNaDole then 0.34 else 0.4, if self.wstegaNaDole then 0.08 else 0.07)
 	end
 	-- napisy nad postaciami nie wchodzą na tabliczki ani na wstęgę
-	self.gornaGranicaNapisow = math.max(0.33, self.gornyMargines + 0.25)
+	self.gornaGranicaNapisow = math.max(0.35, self.gornyMargines + 0.29)
 	self.skalaObrysu = kadrWys / WYS_ODNIESIENIA
 	for obrys, px in self.obrysy do
 		if obrys.Parent then
@@ -362,16 +386,18 @@ local RANGI = {
 	rzadki = { "RZADKI", "#2F6FE0" },
 	straznik = { "STRAŻNIK", "#E8364F" },
 	gracz = { "GRACZ", "#52D273" },
+	pojedynek = { "POJEDYNEK", "#52D273" },
 }
 
 function Interfejs:_zbudujTabliczke(strona: string)
 	local K = self.K
 	local lewa = strona == "gracz"
 	local ax = if lewa then 0 else 1
+	-- v3: tabliczka wyższa (0,15 kadru) — pod paskiem życia pasek many (0,85–1,04 tabliczki), niżej ikony efektów
 	local t = self:_nowy("Frame", {
 		Name = if lewa then "TabliczkaGracza" else "TabliczkaWroga", BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(ax, 0), Position = UDim2.fromScale(if lewa then 0.025 else 0.975, 0.045),
-		Size = UDim2.fromScale(0.4, 0.13), Rotation = if lewa then -1.5 else 1.5, ZIndex = 10,
+		Size = UDim2.fromScale(0.4, 0.15), Rotation = if lewa then -1.5 else 1.5, ZIndex = 10,
 	}, self.kadr)
 	local portret = self:_ramka(t, {
 		Name = "Portret", AnchorPoint = Vector2.new(ax, 0.5), Position = UDim2.fromScale(ax, 0.5), Size = UDim2.fromScale(1.02, 1.02),
@@ -380,21 +406,21 @@ function Interfejs:_zbudujTabliczke(strona: string)
 	}, 4, 0.16, false)
 	local nazwa = self:_tekst(t, {
 		Name = "Nazwa", AnchorPoint = Vector2.new(ax, 0), Position = UDim2.fromScale(if lewa then 0.2 else 0.8, -0.02),
-		Size = UDim2.fromScale(0.78, 0.44), Font = NAGLOWKI, TextColor3 = K.bialy,
+		Size = UDim2.fromScale(0.78, 0.4), Font = NAGLOWKI, TextColor3 = K.bialy,
 		TextXAlignment = if lewa then Enum.TextXAlignment.Left else Enum.TextXAlignment.Right, Text = "", ZIndex = 13,
 	}, 3.5)
 	local ranga = self:_ramka(t, {
-		-- pod paskiem, od strony środka ekranu (ikony efektów rosną od zewnętrznej krawędzi)
-		Name = "Ranga", AnchorPoint = Vector2.new(1 - ax, 0), Position = UDim2.fromScale(if lewa then 0.86 else 0.14, 1.1),
-		Size = UDim2.fromScale(0.2, 0.36), BackgroundColor3 = K.szary, Rotation = if lewa then 3 else -3, ZIndex = 13,
+		-- pod paskiem many, od strony środka ekranu (ikony efektów rosną od zewnętrznej krawędzi)
+		Name = "Ranga", AnchorPoint = Vector2.new(1 - ax, 0), Position = UDim2.fromScale(if lewa then 0.86 else 0.14, 1.12),
+		Size = UDim2.fromScale(0.2, 0.32), BackgroundColor3 = K.szary, Rotation = if lewa then 3 else -3, ZIndex = 13,
 	}, 3, 0.2, false)
 	local rangaNapis = self:_tekst(ranga, {
 		Name = "Napis", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromScale(0.86, 0.72),
 		Font = KOMIKS, TextColor3 = K.bialy, Text = "", ZIndex = 14,
 	}, 2)
 	local pasek = self:_ramka(t, {
-		Name = "Pasek", AnchorPoint = Vector2.new(ax, 1), Position = UDim2.fromScale(if lewa then 0.14 else 0.86, 0.98),
-		Size = UDim2.fromScale(0.86, 0.5), BackgroundColor3 = K.ciemny, ZIndex = 11,
+		Name = "Pasek", AnchorPoint = Vector2.new(ax, 1), Position = UDim2.fromScale(if lewa then 0.14 else 0.86, 0.82),
+		Size = UDim2.fromScale(0.86, 0.42), BackgroundColor3 = K.ciemny, ZIndex = 11,
 	}, 4, 0.28, false)
 	local wnetrze = self:_nowy("Frame", {
 		Name = "Wnetrze", BackgroundTransparency = 1, Position = UDim2.fromScale(if lewa then 0.05 else 0.012, 0.12),
@@ -420,30 +446,78 @@ function Interfejs:_zbudujTabliczke(strona: string)
 		Position = UDim2.fromScale(0.02, 0.1), Size = UDim2.fromScale(0.96, 0.26), ZIndex = 12,
 	}, wypelnienie)
 	self:_rog(polysk, 0.5)
-	-- zapas tarczy (kamienna skóra, bariera): jasnoniebieska nakładka na pasku
-	local tarcza = self:_nowy("Frame", {
-		Name = "Tarcza", BackgroundColor3 = Color3.fromHex("#9FE8FF"), BackgroundTransparency = 0.15, BorderSizePixel = 0,
-		AnchorPoint = Vector2.new(ax, 0), Position = UDim2.fromScale(ax, 0.55), Size = UDim2.fromScale(0, 0.45), ZIndex = 13, Visible = false,
+	-- blask paska życia przy wskrzeszeniu (v3): złota nakładka, gaśnie sama
+	local blaskZycia = self:_nowy("Frame", {
+		Name = "BlaskZycia", BackgroundColor3 = Color3.fromHex("#FFE58A"), BackgroundTransparency = 1, BorderSizePixel = 0,
+		Size = UDim2.fromScale(1, 1), ZIndex = 13,
 	}, wnetrze)
-	self:_rog(tarcza, 0.3)
+	self:_rog(blaskZycia, 0.3)
 	local liczba = self:_tekst(pasek, {
 		Name = "Liczba", Position = UDim2.fromScale(0.05, 0.08), Size = UDim2.fromScale(0.9, 0.84), Font = KOMIKS,
 		TextColor3 = K.bialy, Text = "", ZIndex = 14,
 	}, 2.5)
-	-- rząd ikon efektów pod tabliczką
+	--[[ Pasek many (v3, D-089): wartości WYŁĄCZNIE z dziennika (mana_gracz / mana_wrog po zdarzeniu). Kreska progu =
+		koszt następnej umiejętności tej strony z dziennika (gdy mniejszy niż pełny pasek). Gotowa (mana ≥ próg): pasek
+		świeci i pulsuje kryształ na jego końcu; przy użyciu umiejętności błysk i spadek o koszt. Bez napisu (pasek
+		ma ok. 11 punktów wysokości na telefonie — tekst byłby za mały). ]]
+	local mana = self:_ramka(t, {
+		Name = "Mana", AnchorPoint = Vector2.new(ax, 0), Position = UDim2.fromScale(if lewa then 0.14 else 0.86, 0.85),
+		Size = UDim2.fromScale(0.86, 0.19), BackgroundColor3 = K.ciemny, ZIndex = 11,
+	}, 3, 0.4, false)
+	local manaWnetrze = self:_nowy("Frame", {
+		Name = "Wnetrze", BackgroundTransparency = 1, Position = UDim2.fromScale(if lewa then 0.05 else 0.012, 0.16),
+		Size = UDim2.fromScale(0.938, 0.68), ZIndex = 11,
+	}, mana)
+	local manaWyp = self:_nowy("Frame", {
+		Name = "Wypelnienie", BackgroundColor3 = K.bialy, BorderSizePixel = 0, AnchorPoint = Vector2.new(ax, 0),
+		Position = UDim2.fromScale(ax, 0), Size = UDim2.fromScale(0, 1), ZIndex = 12, Visible = false,
+	}, manaWnetrze)
+	self:_rog(manaWyp, 0.5)
+	local manaGradient = self:_nowy("UIGradient", {
+		Rotation = 90, Color = ColorSequence.new(Color3.fromHex("#8FD0FF"), Color3.fromHex("#2F6FE0")),
+	}, manaWyp)
+	local manaBlysk = self:_nowy("Frame", {
+		Name = "Blysk", BackgroundColor3 = K.bialy, BackgroundTransparency = 1, BorderSizePixel = 0, Size = UDim2.fromScale(1, 1), ZIndex = 13,
+	}, manaWnetrze)
+	self:_rog(manaBlysk, 0.5)
+	local manaProg = self:_nowy("Frame", {
+		Name = "Prog", BackgroundColor3 = K.zolty, BorderSizePixel = 0, AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(1, 0.5), Size = UDim2.new(0, 3, 1.5, 0), ZIndex = 14, Visible = false,
+	}, manaWnetrze)
+	local manaKrysztal = self:_nowy("Frame", {
+		Name = "Krysztal", BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(if lewa then 1.02 else -0.02, 0.5), Size = UDim2.fromScale(1.9, 1.9),
+		SizeConstraint = Enum.SizeConstraint.RelativeYY, ZIndex = 15, Visible = false,
+	}, mana)
+	self:_ikona(manaKrysztal, "mana", 0)
+	local krysztalSkala = self:_nowy("UIScale", { Scale = 1 }, manaKrysztal)
+	-- rząd ikon efektów pod tabliczką (pod paskiem many)
 	local efekty = self:_nowy("Frame", {
 		Name = "Efekty", BackgroundTransparency = 1, AnchorPoint = Vector2.new(ax, 0),
-		Position = UDim2.fromScale(if lewa then 0.14 else 0.86, 1.08), Size = UDim2.fromScale(0.86, 0.58), ZIndex = 12,
+		Position = UDim2.fromScale(if lewa then 0.14 else 0.86, 1.12), Size = UDim2.fromScale(0.86, 0.56), ZIndex = 12,
 	}, t)
 	self:_nowy("UIListLayout", {
 		FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = if lewa then Enum.HorizontalAlignment.Left else Enum.HorizontalAlignment.Right,
 		Padding = UDim.new(0.015, 0), SortOrder = Enum.SortOrder.LayoutOrder,
 	}, efekty)
 
+	-- legenda gotowa (wskrzeszenie w slocie): złote pióro w rogu portretu; po wskrzeszeniu szare
+	local legenda = self:_nowy("Frame", {
+		Name = "Legenda", BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(if lewa then 0.92 else 0.08, 0.9), Size = UDim2.fromScale(0.42, 0.42), ZIndex = 16, Visible = false,
+	}, portret)
+	self:_ikona(legenda, "feniks", 0)
+
 	self.paski[strona] = {
 		tabliczka = t, nazwa = nazwa, wypelnienie = wypelnienie, duch = duch, liczba = liczba, portret = portret,
-		ranga = ranga, rangaNapis = rangaNapis, tarcza = tarcza, efekty = efekty, podpisEfektow = "",
+		ranga = ranga, rangaNapis = rangaNapis, efekty = efekty, podpisEfektow = "", blaskZycia = blaskZycia,
 		maks = 1, cel = 1, pokazane = 1, duchPokazany = 1, duchCzeka = 0, wstrzas = 0, obrotBazowy = t.Rotation,
+		blaskZyciaCzas = 0, legenda = legenda,
+		mana = {
+			ramka = mana, wyp = manaWyp, gradient = manaGradient, blysk = manaBlysk, prog = manaProg, krysztal = manaKrysztal,
+			krysztalSkala = krysztalSkala, maks = 100, wartosc = 0, pokazane = 0, cel = 0, progWartosc = 100, gotowa = false,
+			blyskCzas = 0, wiek = 0, spowolniona = false,
+		},
 	}
 end
 
@@ -567,6 +641,13 @@ function Interfejs:_zbudujPomin()
 	uchwyt.Visible = false
 	self.pomin = uchwyt
 	self.pominPrzycisk = p
+	-- informacja w miejscu przycisku, gdy pomijać nie wolno (D-078) — nie przycisk, dwa wiersze ok. 16 pkt na telefonie
+	local info = self:_tekst(self.kadr, {
+		Name = "PominInfo", AnchorPoint = Vector2.new(1, 1), Position = UDim2.fromScale(0.975, 0.955), Size = UDim2.fromScale(0.21, 0.1),
+		Font = KOMIKS, Text = "", TextColor3 = self.K.zolty, TextWrapped = true, Rotation = -2, ZIndex = 40, Visible = false,
+	}, 2.5)
+	self.pominInfo = info
+	self.pominInfoCzas = 0
 end
 
 -- przyciski tempa: ×1 / ×2 / ×4 (lewy dolny róg; duże, do kciuka na telefonie)
@@ -627,6 +708,110 @@ end
 
 function Interfejs:ukryjDzwiek()
 	self.dzwiek.Visible = false
+end
+
+--[[ Zapowiedzi pasywek (v3): krótka karteczka pod tabliczką strony na starcie walki — „PASYWKA: KOLOS” i premie
+	z danych silnika („+4% życia · +2% obrażeń”), po kolei, każda ok. 1,2 s. Pasywki działają w liczbach (bez
+	zdarzeń w dzienniku), więc to jedyny ślad, skąd premia. Na telefonie: tytuł ok. 15 pkt, premie ok. 13 pkt. ]]
+local ZRODLA_PASYWEK = {
+	slot = { "PASYWKA", "gwiazda", "#7B4DFF" },
+	bron = { "BROŃ", "bron", "#8A5A0A" },
+	legenda = { "LEGENDA", "feniks", "#E79A12" },
+}
+function Interfejs:_zbudujPasywki()
+	local K = self.K
+	self.pasywki = {}
+	for _, strona in { "gracz", "wrog" } do
+		local lewa = strona == "gracz"
+		local ax = if lewa then 0 else 1
+		local ramka = self:_ramka(self.kadr, {
+			Name = if lewa then "PasywkaGracza" else "PasywkaWroga", AnchorPoint = Vector2.new(ax, 0),
+			Position = UDim2.fromScale(if lewa then 0.025 else 0.975, 0.315), Size = UDim2.fromScale(0.44, 0.088),
+			BackgroundColor3 = K.krem, Rotation = if lewa then -1 else 1, ZIndex = 26, Visible = false,
+		}, 3, 0.18, true)
+		local skala = self:_nowy("UIScale", { Scale = 1 }, ramka)
+		local poleIkony = self:_nowy("Frame", {
+			Name = "PoleIkony", BackgroundTransparency = 1, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.fromScale(0.015, 0.5),
+			Size = UDim2.fromScale(0.78, 0.78), SizeConstraint = Enum.SizeConstraint.RelativeYY, ZIndex = 27,
+		}, ramka)
+		local tytul = self:_tekst(ramka, {
+			Name = "Tytul", Position = UDim2.fromScale(0.15, 0.06), Size = UDim2.fromScale(0.83, 0.46), Font = NAGLOWKI,
+			Text = "", TextColor3 = K.tusz, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 27,
+		}, 0)
+		local linia = self:_tekst(ramka, {
+			Name = "Linia", Position = UDim2.fromScale(0.15, 0.54), Size = UDim2.fromScale(0.83, 0.4), Font = KOMIKS,
+			Text = "", TextColor3 = K.ciemny, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 27,
+		}, 0)
+		self.pasywki[strona] = { ramka = ramka, skala = skala, poleIkony = poleIkony, tytul = tytul, linia = linia,
+			kolejka = {}, czas = 0, pokazane = {} }
+	end
+end
+
+-- opisy: { { nazwa, linia, zrodlo = "slot" | "bron", legendarna } } (PlanWalki.opisPasywki); czas = s na jedną
+function Interfejs:zapowiedzPasywki(strona: string, opisy, czas: number?)
+	local z = self.pasywki and self.pasywki[strona]
+	if not z then
+		return
+	end
+	z.kolejka = table.clone(opisy or {})
+	z.czasNaJedna = czas or 1.25
+	z.czas = 0
+	z.pokazane = {}
+	z.ramka.Visible = false
+end
+
+function Interfejs:ukryjPasywki()
+	for _, z in self.pasywki or {} do
+		table.clear(z.kolejka)
+		z.ramka.Visible = false
+		z.czas = 0
+	end
+end
+
+function Interfejs:_pokazPasywke(z, opis)
+	local zr = ZRODLA_PASYWEK[if opis.legendarna then "legenda" else opis.zrodlo] or ZRODLA_PASYWEK.slot
+	local stara = z.poleIkony:FindFirstChild("Ikona")
+	if stara then
+		stara:Destroy()
+	end
+	self:_ikona(z.poleIkony, zr[2], 0)
+	z.tytul.Text = zr[1] .. ": " .. string.upper(opis.nazwa)
+	z.tytul.TextColor3 = Color3.fromHex(zr[3])
+	z.linia.Text = opis.linia
+	z.ramka.Visible = true
+	z.ramka:SetAttribute("Pasywka", opis.nazwa)
+	z.skala.Scale = 0.5
+	TweenService:Create(z.skala, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	table.insert(z.pokazane, opis.nazwa)
+end
+
+function Interfejs:_aktualizujPasywki(dt: number)
+	for _, z in self.pasywki or {} do
+		if z.ramka.Visible or #z.kolejka > 0 then
+			z.czas -= dt
+			if z.czas <= 0 then
+				if #z.kolejka > 0 then
+					self:_pokazPasywke(z, table.remove(z.kolejka, 1))
+					z.czas = z.czasNaJedna or 1.25
+				else
+					z.ramka.Visible = false
+				end
+			end
+		end
+	end
+end
+
+-- D-078: przy pierwszej walce z gatunkiem nie ma przycisku POMIŃ — w jego miejscu krótka informacja (start walki
+-- i próba pominięcia spacją); czas w sekundach rzeczywistych
+function Interfejs:pokazInfoPominiecia(tekst: string, czas: number)
+	self.pominInfo.Text = tekst
+	self.pominInfo.Visible = true
+	self.pominInfoCzas = czas
+end
+
+function Interfejs:ukryjInfoPominiecia()
+	self.pominInfo.Visible = false
+	self.pominInfoCzas = 0
 end
 
 function Interfejs:_zbudujWynik()
@@ -707,13 +892,20 @@ function Interfejs:ustawStrony(strony, aktorzy)
 			p.wypelnienie.Visible = true
 			p.duch.Size = UDim2.fromScale(1, 1)
 			p.tabliczka.Rotation = p.obrotBazowy
-			p.tarcza.Visible = false
+			p.blaskZycia.BackgroundTransparency = 1
+			p.blaskZyciaCzas = 0
+			p.legenda.Visible = false
+			local m = p.mana
+			m.maks = math.max(1, tonumber(dane.mana_maks) or 100)
+			m.blyskCzas, m.wiek, m.spowolniona, m.gotowa = 0, 0, false, false
+			self:ustawMane(strona, tonumber(dane.mana) or 0, { natychmiast = true })
 			local ikona = p.portret:FindFirstChild("Ikona")
 			if ikona then
 				ikona:Destroy()
 			end
 			self:_ikona(p.portret, aktorzy[strona] or "oko", 0.13)
-			local r = RANGI[dane.ranga] or RANGI.zwykly
+			-- przeciwnik-postać (pojedynek z lustrem, v3) ma w dzienniku rangę „gracz” — na tabliczce „POJEDYNEK”
+			local r = if strona == "wrog" and dane.rodzaj == "postac" then RANGI.pojedynek else (RANGI[dane.ranga] or RANGI.zwykly)
 			p.ranga.Visible = strona == "wrog"
 			p.rangaNapis.Text = r[1]
 			p.ranga.BackgroundColor3 = Color3.fromHex(r[2])
@@ -744,17 +936,83 @@ function Interfejs:ustawZycie(strona: string, hp: number, natychmiast: boolean?)
 	end
 end
 
--- zapas tarczy (pochłanianie) jako ułamek życia maksymalnego
-function Interfejs:ustawTarcze(strona: string, zapas: number)
+-- złoty blask paska życia (wskrzeszenie): pasek rośnie z 0 do życia po powrocie i świeci ok. 1 s
+function Interfejs:blaskZycia(strona: string)
+	local p = self.paski[strona]
+	if p then
+		p.blaskZyciaCzas = 1
+		p.wstrzas = 0.6
+	end
+end
+
+-- legenda (wskrzeszenie w slocie): widoczna = jest; zuzyta = szara (już użyta w tej walce)
+function Interfejs:ustawLegende(strona: string, widoczna: boolean, zuzyta: boolean?)
 	local p = self.paski[strona]
 	if not p then
 		return
 	end
-	p.tarcza.Visible = zapas > 0
-	p.tarcza.Size = UDim2.fromScale(math.clamp(zapas / p.maks, 0.02, 1), 0.45)
+	p.legenda.Visible = widoczna
+	for _, d in p.legenda:GetDescendants() do
+		if d:IsA("Frame") and d.Name ~= "Ikona" then
+			d.BackgroundTransparency = if zuzyta then 0.7 else 0
+		end
+	end
+	p.legenda:SetAttribute("Zuzyta", zuzyta == true)
 end
 
--- lista: { { id, ikona, kolor, tury, zapas } } — przebudowa tylko przy zmianie
+--[[ Pasek many: wartosc z dziennika; opcje = { gotowa, prog, uzycie, natychmiast, spowolniona }.
+	gotowa → świeci i pulsuje kryształ; uzycie → biały błysk (pasek „dobija” i zapala się) i spadek o koszt;
+	prog < maks → żółta kreska w miejscu kosztu następnej umiejętności; spowolniona → lodowy, szarawy kolor
+	(spowolnienie obcina zysk many — widać to w liczbach z dziennika). Wartość do testów: Interfejs:mana(strona). ]]
+local KOLOR_MANY = ColorSequence.new(Color3.fromHex("#8FD0FF"), Color3.fromHex("#2F6FE0"))
+local KOLOR_MANY_GOTOWEJ = ColorSequence.new(Color3.fromHex("#E6F4FF"), Color3.fromHex("#4FA8FF"))
+local KOLOR_MANY_SPOWOLNIONEJ = ColorSequence.new(Color3.fromHex("#D3E6EE"), Color3.fromHex("#7C9AAE"))
+function Interfejs:ustawMane(strona: string, wartosc: number, opcje: any?)
+	local p = self.paski[strona]
+	if not p then
+		return
+	end
+	local o = opcje or {}
+	local m = p.mana
+	m.wartosc = math.max(0, wartosc)
+	m.cel = math.clamp(m.wartosc / m.maks, 0, 1)
+	if o.prog ~= nil then
+		m.progWartosc = o.prog
+	end
+	if o.gotowa ~= nil then
+		m.gotowa = o.gotowa == true
+	end
+	if o.spowolniona ~= nil then
+		m.spowolniona = o.spowolniona == true
+	end
+	if o.uzycie then
+		m.blyskCzas = 0.45
+	end
+	if o.natychmiast then
+		m.pokazane = m.cel
+	end
+	local progUlamek = math.clamp((m.progWartosc or m.maks) / m.maks, 0, 1)
+	m.prog.Visible = progUlamek < 0.995
+	m.prog.Position = UDim2.fromScale(if strona == "gracz" then progUlamek else 1 - progUlamek, 0.5)
+	m.gradient.Color = if m.spowolniona then KOLOR_MANY_SPOWOLNIONEJ elseif m.gotowa then KOLOR_MANY_GOTOWEJ else KOLOR_MANY
+	m.krysztal.Visible = m.gotowa
+	m.ramka:SetAttribute("Wartosc", m.wartosc)
+	m.ramka:SetAttribute("Gotowa", m.gotowa)
+	self:_rysujMane(m)
+end
+
+function Interfejs:_rysujMane(m)
+	m.wyp.Size = UDim2.fromScale(math.max(m.pokazane, 0.001), 1)
+	m.wyp.Visible = m.pokazane > 0.004
+end
+
+function Interfejs:mana(strona: string): number?
+	local p = self.paski[strona]
+	return p and p.mana.wartosc
+end
+
+-- lista: { { id, ikona, kolor, tury, znaczek? } } — znaczek = tekst w lewym górnym rogu („×3”, „−42%”);
+-- przebudowa tylko przy zmianie
 function Interfejs:ustawEfekty(strona: string, lista)
 	local p = self.paski[strona]
 	if not p then
@@ -762,7 +1020,7 @@ function Interfejs:ustawEfekty(strona: string, lista)
 	end
 	local podpis = {}
 	for _, e in lista do
-		table.insert(podpis, e.id .. ":" .. tostring(e.tury) .. ":" .. tostring(e.zapas or 0))
+		table.insert(podpis, e.id .. ":" .. tostring(e.tury) .. ":" .. tostring(e.znaczek or ""))
 	end
 	local s = table.concat(podpis, ",")
 	if s == p.podpisEfektow then
@@ -789,11 +1047,18 @@ function Interfejs:ustawEfekty(strona: string, lista)
 			Name = "Tury", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromScale(0.88, 0.88),
 			Font = NAGLOWKI, Text = tostring(e.tury), TextColor3 = self.K.tusz, ZIndex = 16,
 		}, 0)
-		if e.zapas and e.zapas > 0 then
-			self:_tekst(f, {
-				Name = "Zapas", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, -0.42), Size = UDim2.fromScale(1.3, 0.4),
-				Font = KOMIKS, Text = tostring(e.zapas), TextColor3 = Color3.fromHex("#9FE8FF"), ZIndex = 16,
-			}, 2)
+		f:SetAttribute("Tury", e.tury)
+		f:SetAttribute("Znaczek", e.znaczek or "")
+		if e.znaczek and e.znaczek ~= "" then
+			-- stosy trucizny („×3”) albo procent tarczy („−42%”): pigułka w lewym górnym rogu (ok. 14 pkt na telefonie)
+			local z = self:_ramka(f, {
+				Name = "Znaczek", AnchorPoint = Vector2.new(0, 0), Position = UDim2.fromScale(-0.22, -0.08), Size = UDim2.fromScale(1.3, 0.52),
+				BackgroundColor3 = self.K.tusz, ZIndex = 15,
+			}, 2, 0.5, false)
+			self:_tekst(z, {
+				Name = "Tekst", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromScale(0.9, 0.86),
+				Font = NAGLOWKI, Text = e.znaczek, TextColor3 = Color3.fromHex(e.kolor), ZIndex = 16,
+			}, 0)
 		end
 	end
 end
@@ -841,6 +1106,7 @@ local STYLE = {
 	unik = { kolor = "#B8FF8A", rozmiar = 0.1, zycie = 1.0 },
 	krytyk = { kolor = "#FFE14A", rozmiar = 0.115, zycie = 1.25, gwiazda = true },
 	krytykLiczba = { kolor = "#FFE14A", rozmiar = 0.165, zycie = 1.25 },
+	wskrzeszenie = { kolor = "#FFE58A", rozmiar = 0.13, zycie = 1.5, gwiazda = true }, -- v3: „WSKRZESZENIE!”
 	efekt = { kolor = "#FFFFFF", rozmiar = 0.08, zycie = 1.0 },
 	tyk = { kolor = "#FFFFFF", rozmiar = 0.09, zycie = 0.8 },
 	info = { kolor = "#E3E7EC", rozmiar = 0.06, zycie = 0.9 },
@@ -893,7 +1159,7 @@ function Interfejs:napis(punkt: Vector3, tekst: string, styl: string, _przesunie
 	local lw, lh = rozmiarNapisu(szer, wys, o, def.gwiazda == true)
 	table.insert(self.kolejkaNapisow, {
 		punkt = punkt, tekst = tekst, styl = styl, def = def, obrot = o, kolor = kolor, klucz = klucz or "?",
-		prio = if LICZBY[styl] then 3 elseif styl == "krytyk" or styl == "blok" or styl == "unik" then 2 else 1,
+		prio = if LICZBY[styl] then 3 elseif styl == "krytyk" or styl == "blok" or styl == "unik" or styl == "wskrzeszenie" then 2 else 1,
 		nr = self.licznikNapisow, czeka = 0, zycie = def.zycie * (self.skalaZycia or 1), wys = wys, szer = szer,
 		lw = lw, lh = lh,
 	})
@@ -999,15 +1265,25 @@ function Interfejs:_zakazane()
 	end
 	local g = (self.gornyMargines or 0.045) - 0.045
 	if self.paski.gracz and self.paski.gracz.tabliczka.Visible then
-		dodaj(0, 0, 0.43, 0.27 + g) -- tabliczka gracza z rangą i ikonami efektów
-		dodaj(0.57, 0, 1, 0.27 + g) -- tabliczka przeciwnika
+		-- v3: tabliczka 0,15 z paskiem many, ikony efektów do ok. 0,30 kadru
+		dodaj(0, 0, 0.43, 0.305 + g) -- tabliczka gracza z maną, rangą i ikonami efektów
+		dodaj(0.57, 0, 1, 0.305 + g) -- tabliczka przeciwnika
 		dodaj(0.43, 0, 0.57, 0.225 + g) -- VS i licznik tury
 	end
 	if self.umiejetnosc and self.umiejetnosc.Visible then
 		if self.wstegaNaDole then
 			dodaj(0.31, 0.85, 0.69, 1)
 		else
-			dodaj(0.26, 0.225 + g, 0.74, 0.32 + g)
+			dodaj(0.28, 0.255 + g, 0.72, 0.345 + g)
+		end
+	end
+	for strona, z in self.pasywki or {} do
+		if z.ramka.Visible then
+			if strona == "gracz" then
+				dodaj(0, 0.3 + g, 0.48, 0.415 + g)
+			else
+				dodaj(0.52, 0.3 + g, 1, 0.415 + g)
+			end
 		end
 	end
 	if self.baner and self.baner.Visible then
@@ -1572,6 +1848,39 @@ function Interfejs:aktualizuj(dt: number, kamera: Camera, dtNapisow: number?)
 		if p.wstrzas > 0 then
 			p.wstrzas = math.max(0, p.wstrzas - dt * 5)
 			p.tabliczka.Rotation = p.obrotBazowy + math.sin(p.wstrzas * 40) * 2.2 * p.wstrzas
+		end
+		-- wskrzeszenie: złoty blask paska życia gaśnie w ok. 1 s
+		if p.blaskZyciaCzas > 0 then
+			p.blaskZyciaCzas = math.max(0, p.blaskZyciaCzas - dt)
+			p.blaskZycia.BackgroundTransparency = 1 - 0.75 * p.blaskZyciaCzas
+		end
+		-- mana: płynny ruch do wartości z dziennika, błysk przy użyciu, puls kryształu przy gotowej
+		local m = p.mana
+		m.wiek += dt
+		if m.pokazane ~= m.cel then
+			local szybkosc = if m.cel < m.pokazane then 9 else 6
+			m.pokazane += (m.cel - m.pokazane) * math.min(1, dt * szybkosc)
+			if math.abs(m.pokazane - m.cel) < 0.002 then
+				m.pokazane = m.cel
+			end
+			self:_rysujMane(m)
+		end
+		if m.blyskCzas > 0 then
+			m.blyskCzas = math.max(0, m.blyskCzas - dt)
+			m.blysk.BackgroundTransparency = 1 - math.min(1, m.blyskCzas / 0.45) * 0.85
+		elseif m.blysk.BackgroundTransparency < 1 then
+			m.blysk.BackgroundTransparency = 1
+		end
+		if m.gotowa then
+			m.krysztalSkala.Scale = 1 + 0.18 * (0.5 + 0.5 * math.sin(m.wiek * 9))
+			m.blysk.BackgroundTransparency = math.min(m.blysk.BackgroundTransparency, 0.82 - 0.12 * math.sin(m.wiek * 9))
+		end
+	end
+	self:_aktualizujPasywki(dt)
+	if self.pominInfoCzas > 0 then
+		self.pominInfoCzas -= dt
+		if self.pominInfoCzas <= 0 then
+			self.pominInfo.Visible = false
 		end
 	end
 	if #self.napisy > 0 or #self.kolejkaNapisow > 0 then
