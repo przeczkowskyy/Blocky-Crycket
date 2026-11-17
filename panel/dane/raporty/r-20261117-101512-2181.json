@@ -1,0 +1,40 @@
+{
+ "id": "r-20261117-101512-2181",
+ "tytul": "Walka po nocy: poprawki ekranu i podpięte własne dźwięki",
+ "opis_md": "**W skrócie**\n- Przerobiłem osiem poprawek walki z listy zadań (siedem zmian w kodzie, a Bariera okazała się w porządku) i trzy błędy znalezione po drodze. Wszystkie próby w grze przechodzą poza dwoma punktami panelu na telefonie, który czeka na Waszą decyzję.\n- Własne dźwięki i muzyka są podpięte w kodzie, ale pliki nie są jeszcze wgrane: dziś gra wszystko jak wcześniej. Karol zgodził się na wgranie; czeka ono na jego potwierdzenie, którym folderem wgrywać przez Studio.\n- Do decyzji zostaje: panel prób na telefonie, „po pominięciu gracz wolny od razu” oraz kilka moich ustawień dźwięku i tempa oznaczonych jako „do zmiany”.\n\nSzczegóły:\n\n**Co poprawiłem**\n\n1. **Las-pas: jeden panel i jeden baner.** Panel bohatera każdego lasu widać teraz tylko w jego lesie, więc w lesie-pasie jest jeden panel. Po wygranej ze Strażnikiem pokazuje się jeden baner „STRAŻNIK GAJU POKONANY!” z podpisem „Brama do Bagna otwarta — idź za arenę”.\n2. **Przegrana i rewanż z pominięciem w lesie-pasie.** Dopisałem to do próby w grze: Wojownik poziomu 1 przegrywa z wilkiem, pomija walkę, jest wolny od razu, wilk dalej stoi, a ponowne E przy tym samym wilku daje rewanż, który też można pominąć. Kod lasu nie wymagał zmian, a próba przechodzi.\n3. **Napisy „PRÓBA WALKI”.** Tablica, podpowiedź i tytuł panelu nie mają już „Walka v2”.\n4. **Błysk krytyka Wojownika.** Przy niskim celu (wilk, slime) błysk wypadał po tym, jak miecz już przeszedł przez cel. Teraz trafienie przychodzi w chwili, gdy miecz dotyka wierzchu celu: w pomiarze pierwszy styk miecza z wilkiem wypada dokładnie w klatce błysku.\n5. **Kamera Miażdżącego ciosu.** Zamiast ujęcia zza pleców (za blisko, ucięta głowa) jest ujęcie z boku liczone z wysokością zamachu. Głowa Wojownika jest w całym zamachu w odkrytej części ekranu.\n6. **Unik przed Trollem.** Maczuga przechodziła przez Wojownika przez 2–3 klatki. Teraz Troll kończy doskok wcześniej, a Wojownik schodzi dalej w tył: w pomiarze nie ma ani jednej klatki ze stykiem.\n7. **Bariera Maga.** Sprawdziłem to w grze i niczego nie zmieniłem: Mag nie odrywa się od ziemi, tylko staje na palcach (najniższy punkt stoi na ziemi, biodra idą w górę o 0,2 studa). Tak jest w zatwierdzonym klipie.\n8. **Dwa ujęcia na granicy testu.** Przy uderzeniu z góry kamera stoi wyżej, nad lądującym Zwiadowcą (slime widoczny w 47% przy progu 45%, nadal blisko granicy). Przy uścisku korzeni test nie liczy już korzeni, które trzymają Maga, jako zasłony (wynik 37% → 100%).\n9. **Poranny błąd próby wskrzeszenia.** To był błąd samej próby, nie gry: próba czytała wynik walki, zanim gra zdążyła go zapisać. Próba czeka teraz na panel wyniku.\n10. **Tempo ×4.** Przy ×4 każdy krytyk wciąż grał w zwolnionym tempie prawie jak przy ×1, a w najdłuższej walce jest ich siedem. Teraz przy ×2 i ×4 zwolnienie jest słabsze (finał dalej gra w ×1). Najdłuższa walka przy ×4 trwa 28,8 s przy dzienniku 81 s (przy ×1 ok. 101 s). Próg testu był źle policzony (pomijał zwolnienia), więc teraz test liczy go z planu odtwarzania.\n11. **Walka zamknięta w trakcie startu.** Gdy walkę zamknięto, zanim serwer odpowiedział, gra zostawiała połowę sceny i kamerę walki. Wtedy na przykład E przy Kamieniu Powrotu przestawało działać. Teraz takie zamknięcie niczego nie zostawia.\n\n**Dźwięki i muzyka**\n\n- Nowy pakiet `swiat/dzwiek_gra` (kontener `Workspace/DzwiekGra`): katalog dźwięków i skrypt muzyki.\n- Efekty walki grają kawałki jednego pliku z 22 efektami. Uderzenia są ustawione tak, żeby najgłośniejszy moment wypadał na klatkę trafienia (w próbie odchylenie od −0,03 do +0,004 s).\n- Muzyka gra na bazarze (trzy utwory na zmianę) i w lesie-pasie (dwa), z płynnym przejściem, a w walce cichnie do 25%. Menu główne Pawła nie jest podpięte.\n- Sprawdziłem to w grze bez naszych plików: jako „arkusz” podstawiłem wbudowany dźwięk Robloxa. Grają właściwe kawałki we właściwej chwili, a po zabraniu go wraca dzisiejszy zestaw.\n- Po wgraniu plików wystarczy wpisać ich identyfikatory jednym poleceniem.\n\n**Moje ustawienia do zmiany (przyjęte, możecie zmienić)**\n\n- Mapowanie efektów i głośności (arkusz 0,6, muzyka 0,35), „awans” gra przy wskrzeszeniu, odgłos potwora tylko przy jego umiejętności i w radości po wygranej.\n- Muzyka: każdy utwór raz do końca, potem następny; przejście 2,5 s; w walce 25% głośności; poza bazarem i lasem-pasem cisza.\n- Zwolnienie krytyka przy ×2 i ×4 słabsze niż przy ×1.\n- Unik przed dużo szerszym przeciwnikiem: krótszy doskok przeciwnika i dalsze zejście w tył (2,5 studa razem).\n- Kamera Miażdżącego ciosu z boku.\n\n**Wyniki prób**\n\nWszystkie próby w grze puściłem na końcowym kodzie, z oknem Studio na wierzchu (Studio rysowało 60 klatek na sekundę, klatka średnio 16,7 ms). Nocne 15 klatek na sekundę nie brało się z zaciemnienia ekranu, tylko z okna Studio schowanego za innym oknem.\n\n- Nowy silnik na ekranie (`test_v3_play.py`): 44 z 46. Nie przechodzą tylko dwa punkty panelu prób na telefonie, które czekają na Waszą decyzję.\n- Poprawki po przeglądzie (`test_poprawek_play.py`): 27 z 27 (w nocy 25 z 27).\n- Cała walka (`test_walki_play.py --szybko`): 111 z 111 (w nocy 110 z 111).\n- Las-pas (`proba_play.py`): 20 punktów OK, a koszt (P14) ocenia człowiek. W tym nowe punkty: przegrana i rewanż z pominięciem, jeden panel i jeden baner.\n- Stary las: 5 z 5. Dźwięk bez wgranych plików: 6 z 6.\n- Testy bez Studio: wszystkie przechodzą (18, 15, 45, 17, 16 i 11 testów).\n\n**Czego nie sprawdziłem**\n\nPrawdziwych plików dźwięku (nie są wgrane), telefonu, dwóch graczy i dotyku. Zrzuty: `swiat/test_walki2/klatki/v3b_*.jpg`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T10:15:12+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestWalki2",
+   "etykieta": "Próba walki"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/LasPasGra",
+   "etykieta": "Las-pas"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/DzwiekGra",
+   "etykieta": "Dźwięk"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/dzwiek_gra/README.md",
+   "etykieta": "Dźwięk — opis"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
