@@ -1,0 +1,26 @@
+{
+ "id": "r-20261117-162201-cb3a",
+ "tytul": "Areny walki: trzy projekty do oceny (las, Bagno, plac ćwiczeń)",
+ "opis_md": "**Co to jest:** projekt trzech aren walki po Twojej decyzji D-095 (arena zmienia się z biomem, dopracowane tło). To rendery z Blendera z tych samych miejsc, z których patrzy kamera walki; niebieski i zielony klocek to bohater i potwór w prawdziwej skali. W Studio jeszcze tego nie ma — budowa po Twoim spojrzeniu albo równolegle, jeśli nie zgłosisz uwag.\n\n**Trzy areny:**\n- **Las — „Polana Pod Koronami”:** słoneczna polana, sześć olbrzymich pni z koronami wysoko nad placem, smugi światła, wielkie muchomory i głazy po bokach, dwa rzędy drzew ciemniejące w głąb.\n- **Bagno — „Pomost Nad Topielą”:** okrągły pomost z desek nad ciemną wodą, kładka do krzywej chatki na palach dokładnie między walczącymi, wieża z latarnią, trzciny, cypryśniki we mgle.\n- **Tablica próby — „Plac Ćwiczeń Pod Murem”:** piaszczysty krąg, manekiny, tarcze, chorągwie, mur z bramą i basztami, dachy miasteczka i twierdza na wzgórzu.\n\n**Zasady, których pilnuje kontrola liczbowa:**\n- tło zamknięte dookoła — z każdej kamery, także w objeździe zwycięzcy, nie widać pustego nieba przy ziemi;\n- żadna bryła nie stoi na drodze kamer (sprawdzone 120 900 położeń kamery dla wszystkich par bohater–potwór);\n- tło za postaciami jest ciemniejsze albo spokojniejsze od nich, żeby walka była czytelna;\n- ok. 1100–1200 części na arenę (ósma część mapy biomu), bez kolizji.\n\n**Nastrój tylko u gracza i tylko w walce:** las — spadające liście i pyłki w smugach światła; Bagno — ogniki i bąbelki; plac — łopot chorągwi, kurz, ptaki; każda arena ma własną mgłę.\n\n**Kolejny biom** to nowy wpis w planie aren, bez zmian w kodzie walki.\n\n**Czego rendery nie pokazują:** faktur, świecenia latarni i mgły Roblox — prawdziwy wygląd będzie na zrzutach ze Studio.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T16:22:01+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/areny_walki/PROJEKT.md",
+   "etykieta": "Projekt"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ],
+ "pytanie": "Czy ten kierunek aren jest dobry — co zmienić w lesie, na Bagnie i na placu ćwiczeń, zanim dopracuję je w Studio?"
+}
