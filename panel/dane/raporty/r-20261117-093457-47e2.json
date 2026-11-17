@@ -1,0 +1,27 @@
+{
+ "id": "r-20261117-093457-47e2",
+ "tytul": "Panel: podgląd prac i akceptacja kilku rzeczy naraz",
+ "opis_md": "**W skrócie**\n- Zakładka **Podgląd** ma na górze „Do przejrzenia”: wszystkie raporty z obrazami, które czekają na Twoją decyzję, jako siatka miniatur. Zaznaczasz kilka i klikasz „Akceptuję” albo „Do poprawy” raz dla wszystkich — albo „Przeglądaj po kolei”: duży obraz, Akceptuję / Do poprawy / Pomiń i od razu następny.\n- Przy pracy w toku widać teraz, **jak wygląda to, co powstaje**: mała miniatura na Pulpicie, duży obraz w Podglądzie („Powstaje teraz”). Agent dokłada zrzut jednym poleceniem albo wskazuje folder z klatkami renderu.\n- W zakładce **Sesja**, gdy agent w notatkach zapisze, że na pytanie padła odpowiedź, przy tym pytaniu pojawia się „Na sesji padło: …” z przyciskiem „Wpisz do odpowiedzi”. Wysyłasz sam — nic nie idzie do sejfu bez Twojego kliknięcia.\n- Pozostałe uwagi z 13–14.11 (jedna zakładka Pytania, krótkie karty, aktywne osoby w lewym dolnym rogu) działały już wcześniej; poprawiłem tylko decyzję w karcie pytania — bez ciemnego pudełka w pudełku.\n\nSzczegóły:\n\n**Panel jest już zrestartowany** (17.11, ok. 09:36) — odśwież stronę. Paweł zobaczy zmiany po `git pull` i restarcie swojego panelu.\n\n**Podgląd → Do przejrzenia**\n- Na górze przełącznik „Do przejrzenia” / „Model 3D”. Panel pamięta, którą część oglądałeś ostatnio; link do migawki dalej otwiera model 3D.\n- Miniatura raportu to jego pierwszy zrzut, a gdy raport ma tylko migawkę 3D — zrzut migawki. Raporty bez obrazu są na końcu („bez obrazu”).\n- Zaznaczone raporty: pasek „Zaznaczone: 3 — Akceptuję (3) / Do poprawy”. „Do poprawy” pyta o jeden komentarz (można nagrać głosem), który trafia do każdego zaznaczonego raportu.\n- „Przeglądaj po kolei”: obraz na pół ekranu telefonu (przesuwasz palcem, gdy jest kilka), pytanie i dwa zdania opisu, przyciski pod kciukiem. Pominięty raport zostaje na liście. Na końcu podsumowanie: ile zaakceptowanych, do poprawy i pominiętych.\n- Decyzje zapisują się tak samo jak z karty w zakładce Pytania — tam też od razu znikają z listy.\n\n**Podgląd przy pracy w toku**\n- Agent: `python panel/narzedzia/praca.py zrzut --id <praca> --plik zrzut.png --podpis \"…\"` (albo `--zrzut` przy `start` / `etap`), `--podglad-z swiat/<scena>/klatki` (panel sam pokazuje najnowszą klatkę), `--migawka <id>` (przycisk „W 3D”).\n- Zrzuty prac leżą tylko na komputerze z panelem (6 ostatnich na pracę), nie trafiają do repozytorium ani na publiczną gałąź prac.\n\n**Czego nie sprawdziłem:** prawdziwego telefonu przez tunel, prawdziwej sesji głosowej z agentem (podpowiedź „Na sesji padło” działa tylko wtedy, gdy agent zapisze w notatkach numer pytania w umówionym formacie — sprawdzone na podstawionych notatkach) ani tego, jak wyglądają prawdziwe duże zrzuty ze Studio.\n\n**Do decyzji (opcjonalnie):** czy agenci mają dokładać zrzut przy każdej zmianie etapu dłuższej pracy (wpis do skilla `panel` i `CLAUDE.md` — tych plików nie zmieniałem).\n\n**Sprawdzone:** cały zestaw testów panelu (635, wszystkie przechodzą) i próba w przeglądarce bez okna na szerokości telefonu i komputera (wszystkie kroki zaliczone, decyzje sprawdzone też w plikach).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T09:34:57+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "Panel zespołu",
+   "etykieta": "Notatka w sejfie"
+  },
+  {
+   "typ": "plik",
+   "cel": "panel/README.md",
+   "etykieta": "Opis techniczny"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg"
+ ]
+}
