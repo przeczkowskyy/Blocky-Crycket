@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T23:34:12+01:00",
+ "aktualizacja": "2026-11-17T23:34:26+01:00",
  "prace": [
   {
    "id": "noc-balans",
@@ -71,19 +71,6 @@
    "obszary": [
     "swiat/trening_proba",
     "studio:TreningProba"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "przebudowa-zwijogon",
-   "tytul": "Przebudowa modelu zwijogon",
-   "stan": "w_toku",
-   "start": "2026-11-17T23:34:12+01:00",
-   "koniec_szacowany": "2026-11-17T23:54:12+01:00",
-   "aktualizacja": "2026-11-17T23:34:12+01:00",
-   "obszary": [
-    "model:zwijogon"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
