@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T08:09:20+01:00",
+ "aktualizacja": "2026-11-17T08:09:23+01:00",
  "prace": [
   {
    "id": "balans-1711",
@@ -13,6 +13,21 @@
    "aktualizacja": "2026-11-17T08:09:20+01:00",
    "obszary": [
     "tools/walka/**"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "plan-biomow",
+   "tytul": "Plan siedmiu biomów i plan Bagna do akceptacji",
+   "stan": "w_toku",
+   "start": "2026-11-17T08:09:23+01:00",
+   "koniec_szacowany": "2026-11-17T11:30:00+01:00",
+   "aktualizacja": "2026-11-17T08:09:23+01:00",
+   "obszary": [
+    "swiat/biomy/**",
+    "swiat/bagno_pas/**",
+    "mapa:bagno_pas"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
