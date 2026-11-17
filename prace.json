@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T00:08:22+01:00",
+ "aktualizacja": "2026-11-18T00:08:35+01:00",
  "prace": [
   {
    "id": "noc-dzungla",
@@ -72,19 +72,6 @@
    "aktualizacja": "2026-11-17T23:59:15+01:00",
    "obszary": [
     "swiat/stan_gracza"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "przebudowa-pancernik_ruin",
-   "tytul": "Przebudowa modelu pancernik_ruin",
-   "stan": "w_toku",
-   "start": "2026-11-18T00:08:22+01:00",
-   "koniec_szacowany": "2026-11-18T00:28:22+01:00",
-   "aktualizacja": "2026-11-18T00:08:22+01:00",
-   "obszary": [
-    "model:pancernik_ruin"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
