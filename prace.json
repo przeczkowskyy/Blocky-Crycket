@@ -2,6 +2,22 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T04:15:50+01:00",
- "prace": []
+ "aktualizacja": "2026-11-17T08:00:44+01:00",
+ "prace": [
+  {
+   "id": "pomiar-klatki",
+   "tytul": "Pomiar czasu klatki i tempa walki przy odsłoniętym ekranie",
+   "stan": "w_toku",
+   "start": "2026-11-17T08:00:44+01:00",
+   "koniec_szacowany": "2026-11-17T08:50:44+01:00",
+   "aktualizacja": "2026-11-17T08:00:44+01:00",
+   "obszary": [
+    "studio:TestWalki2",
+    "studio:LasPasGra",
+    "studio:MiasteczkoBazarGra"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  }
+ ]
 }
