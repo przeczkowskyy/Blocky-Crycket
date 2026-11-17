@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T23:12:43+01:00",
+ "aktualizacja": "2026-11-17T23:12:46+01:00",
  "prace": [
   {
    "id": "noc-balans",
@@ -43,6 +43,20 @@
    "obszary": [
     "swiat/kowal_proba",
     "studio:KowalProba"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "noc-pety",
+   "tytul": "Noc: pety z różnymi premiami i żywiołami",
+   "stan": "w_toku",
+   "start": "2026-11-17T23:12:46+01:00",
+   "koniec_szacowany": "2026-11-18T03:12:46+01:00",
+   "aktualizacja": "2026-11-17T23:12:46+01:00",
+   "obszary": [
+    "swiat/pety_proba",
+    "studio:PetyProba"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
