@@ -2,6 +2,25 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T02:37:23+01:00",
- "prace": []
+ "aktualizacja": "2026-11-17T02:37:26+01:00",
+ "prace": [
+  {
+   "id": "walka-v3-studio",
+   "tytul": "Walka: nowy silnik i ekran walki w Studio",
+   "stan": "w_toku",
+   "start": "2026-11-17T02:37:26+01:00",
+   "koniec_szacowany": "2026-11-17T05:00:00+01:00",
+   "aktualizacja": "2026-11-17T02:37:26+01:00",
+   "obszary": [
+    "studio:TestWalki2",
+    "studio:LasPotwory",
+    "studio:LasPasGra",
+    "swiat/test_walki2",
+    "swiat/las_potwory",
+    "swiat/las_pas_gra"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  }
+ ]
 }
