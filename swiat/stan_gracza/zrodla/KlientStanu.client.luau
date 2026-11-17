@@ -1,6 +1,7 @@
 --[[
 	KlientStanu — kliencka połowa „stanu gracza” (Script, RunContext = Client, w kontenerze Workspace/StanGracza).
-	Niczego nie liczy i nie wysyła liczb (D-016). Dwie rzeczy:
+	Niczego nie liczy i nie wysyła liczb (D-016). Trzy rzeczy (trzecia: komunikat "przegrana", kara, doświadczenie →
+	napis „Przegrana: −N Złota, +M doświadczenia” na dole ekranu jak premia peta — 17.11.2026, propozycja D-098):
 		1. gdy HUD Pawła (PlayerGui.HUD) znów jest włączony — a odtwarzacz walki chowa go na czas walki — zgłasza
 		   serwerowi "pokaz": łup z zakończonej walki trafia wtedy do atrybutów i HUD sam go odlicza;
 		2. komunikat serwera "awans", poziom, ile → krótki baner „POZIOM N” (własny ScreenGui D.baner.gui, pokazywany
@@ -169,6 +170,67 @@ local function nastepny()
 	end)
 end
 
+------------------------------------------------------------------ komunikat po przegranej (17.11.2026, propozycja D-098)
+-- napis na dole ekranu jak premia peta (swiat/pety_proba), tuż nad nim; własny ScreenGui na każdy pokaz, niszczony po
+-- czasie; gdy HUD schowany (walka) — czeka na HUD
+local K = D.kara
+local czekajacyKomunikat: string? = nil
+local ostatniKomunikat: ScreenGui? = nil
+
+local function pokazKomunikat(tekst: string)
+	if ostatniKomunikat then
+		ostatniKomunikat.Enabled = false -- nowszy zastępuje (stary i tak zniknie po swoim czasie)
+	end
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "StanGraczaKomunikat"
+	gui.ResetOnSpawn = false
+	gui.DisplayOrder = 26
+	local l = Instance.new("TextLabel")
+	l.Name = "Tekst"
+	l.AnchorPoint = Vector2.new(0.5, 1)
+	l.Position = UDim2.new(0.5, 0, 1, -200)
+	l.Size = UDim2.fromOffset(0, 44)
+	l.AutomaticSize = Enum.AutomaticSize.X
+	l.BackgroundColor3 = Color3.fromHex("1D1916")
+	l.BackgroundTransparency = 0.15
+	l.TextColor3 = Color3.fromHex("FFB4A6")
+	l.Font = Enum.Font.GothamBold
+	l.TextSize = 20
+	l.Text = "  " .. tekst .. "  "
+	local obrys = Instance.new("UIStroke")
+	obrys.Color = Color3.fromHex("FFC94A")
+	obrys.Thickness = 2
+	obrys.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	obrys.Parent = l
+	l.Parent = gui
+	gui.Parent = playerGui
+	ostatniKomunikat = gui
+	kontener:SetAttribute("KlientOstatniKomunikat", tekst) -- lokalnie u klienta (próby w Play)
+	task.delay(K.czas_s, function()
+		gui:Destroy()
+	end)
+end
+
+local function pokazCzekajacy()
+	if czekajacyKomunikat and hudWidac() then
+		local t = czekajacyKomunikat
+		czekajacyKomunikat = nil
+		local ok, blad = pcall(pokazKomunikat, t)
+		if not ok then
+			warn(P .. "komunikat przegranej: " .. tostring(blad))
+		end
+	end
+end
+
+zdarzenia.OnClientEvent:Connect(function(polecenie: any, kara: any, xp: any)
+	if polecenie ~= "przegrana" or type(kara) ~= "number" or type(xp) ~= "number" then
+		return
+	end
+	czekajacyKomunikat = if kara > 0 then string.format(K.komunikat, math.floor(kara), math.floor(xp))
+		else string.format(K.komunikat_bez_zlota, math.floor(xp))
+	pokazCzekajacy()
+end)
+
 zdarzenia.OnClientEvent:Connect(function(polecenie: any, poziom: any, ile: any)
 	if polecenie ~= "awans" or type(poziom) ~= "number" then
 		return
@@ -193,6 +255,7 @@ task.spawn(function()
 			if h.Enabled then
 				zdarzenia:FireServer("pokaz")
 				task.delay(B.opoznienie_po_hud_s, nastepny)
+				task.delay(B.opoznienie_po_hud_s, pokazCzekajacy)
 			end
 		end)
 	else
@@ -203,6 +266,7 @@ task.spawn(function()
 		zdarzenia:FireServer("pokaz")
 	end
 	nastepny()
+	pokazCzekajacy()
 end)
 
 kontener:SetAttribute("KlientStanuGotowy", true)

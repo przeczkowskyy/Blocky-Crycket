@@ -1,0 +1,63 @@
+RAPORT — jajko_bagienne
+JAJKO BAGIENNE i INKUBATOR BAGIENNY — jajko Bagna (próba swiat/pety_proba, 17.11.2026; status: propozycja).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/jajko_bagienne.py · wygenerowano 17.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py jajko_bagienne
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: jajko_bagienne, inkubator_bagienny
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 8 plików, zgodnych 8
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Jajko z trzech elipsoid: na styku skorupki i czubka widać delikatny szew (to też linia pęknięcia).
+- Inkubator to podgląd: pomost, płyta i korzenie stoją na mapie Bagna; gniazdo na palach, latarenka i tablica stawia gra (napisy tablicy w SurfaceGui).
+
+MODEL jajko_bagienne „Jajko bagienne” (stwor)
+  wymiary ciała: 1,86 × 2,92 × 1,85; z akcesoriami: 1,86 × 2,92 × 1,85
+  trójkąty: 2676 (siatek: 2)
+  kości (3): Root, Jajko, Czubek
+  klipy: spoczynek 60 kl. 2,00 s pętla, trzesienie 36 kl. 1,20 s jednorazowy, pekniecie 18 kl. 0,60 s jednorazowy
+  punkty zaczepienia: RootAttachment, GlowaAttachment
+
+MODEL inkubator_bagienny „Inkubator bagienny (podgląd)” (stwor)
+  wymiary ciała: 16,93 × 7,02 × 16,93; z akcesoriami: 16,93 × 7,02 × 16,93
+  trójkąty: 4288 (siatek: 6)
+  kości (7): Root, Podstawa, Gniazdo, Jajko, Czubek, Tablica, Latarnia
+  klipy: spoczynek 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment
+
+KONTROLA EKSPORTÓW
+- jajko_bagienne.fbx: siatki 4, kości 3, trójkąty 2700, wzrost 2.92 st., akcje brak -> ZGODNE
+- jajko_bagienne__spoczynek.fbx: siatki 4, kości 3, trójkąty 2700, wzrost 2.92 st., akcje jajko_bagienne|Scene 1-61 -> ZGODNE
+- jajko_bagienne__trzesienie.fbx: siatki 4, kości 3, trójkąty 2700, wzrost 2.92 st., akcje jajko_bagienne|Scene 1-37 -> ZGODNE
+- jajko_bagienne__pekniecie.fbx: siatki 4, kości 3, trójkąty 2700, wzrost 2.92 st., akcje jajko_bagienne|Scene 1-19 -> ZGODNE
+- jajko_bagienne.glb: siatki 4, kości 3, trójkąty 2700, wzrost 2.92 st., akcje pekniecie 0-18, spoczynek 0-60, trzesienie 0-36 -> ZGODNE
+- inkubator_bagienny.fbx: siatki 8, kości 7, trójkąty 4312, wzrost 7.02 st., akcje brak -> ZGODNE
+- inkubator_bagienny__spoczynek.fbx: siatki 8, kości 7, trójkąty 4312, wzrost 7.02 st., akcje inkubator_bagienny|Scene 1-61 -> ZGODNE
+- inkubator_bagienny.glb: siatki 8, kości 7, trójkąty 4312, wzrost 7.02 st., akcje spoczynek 0-60 -> ZGODNE
+
+PLIKI
+- jajko_bagienne.blend
+- jajko_bagienne.fbx
+- jajko_bagienne.glb
+- jajko_bagienne__pekniecie.fbx
+- jajko_bagienne__spoczynek.fbx
+- jajko_bagienne__trzesienie.fbx
+- jajko_bagienne_bohater.jpg
+- jajko_bagienne_ikona.png
+- jajko_bagienne_plansza.jpg
+- jajko_bagienne_tekstury/
+- inkubator_bagienny.blend
+- inkubator_bagienny.fbx
+- inkubator_bagienny.glb
+- inkubator_bagienny__spoczynek.fbx
+- inkubator_bagienny_bohater.jpg
+- inkubator_bagienny_ikona.png
+- inkubator_bagienny_plansza.jpg
+- inkubator_bagienny_tekstury/
+- raport.json
+- raport.txt

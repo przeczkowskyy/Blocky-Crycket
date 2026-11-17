@@ -7,7 +7,11 @@
 
 	D = DanePetow (wygenerowane przez dane_petow.py). Funkcje:
 		pet(D, id), jajko(D, id), rzadkosc(D, id)  → wpis albo nil
-		cena(D, jajko, kupione)                   → cena NASTĘPNEGO jajka (rośnie z kupionymi, do maks)
+		jajkoPeta(D, idPeta), jajkoKrainy(D, kraina) → jajko albo nil (każdy pet jest w puli jednego jajka)
+		kupione(D, jajko, wydatki, tryb?)         → ile jajek liczy się do ceny (licznik osobny / wspólny)
+		cena(D, jajko, kupione, tryb?)            → cena NASTĘPNEGO jajka: "stala" (domyślnie, decyzja 17.11),
+		                                            "rosnaca" (rośnie z kupionymi do maks) albo "kalkulator"
+		opisCeny(D, jajko, tryb?)                 → „cena: 300 Złota” albo „od 300 Złota · rośnie z każdym jajkiem”
 		losuj(D, jajko, r)                        → id peta (r ∈ [0, 1), jawne szanse po kolei)
 		procent(szansa), opisSkilla(D, pet), premiaPeta(D, id), tekstBraku(D, brakuje, zloto, cena)
 		wierszeSzans(D, jajko), wierszeZagrody(D, kopie, aktywny), decyzja(D, stan), czasWyklucia(D)
@@ -54,13 +58,63 @@ function L.rzadkosc(D, id)
 	return nil
 end
 
-function L.cena(D, j, kupione): number
+function L.jajkoPeta(D, id)
+	for _, j in D.jajka do
+		for _, x in j.pula do
+			if x == id then
+				return j
+			end
+		end
+	end
+	return nil
+end
+
+function L.jajkoKrainy(D, kraina)
+	for _, j in D.jajka do
+		if j.kraina == kraina then
+			return j
+		end
+	end
+	return nil
+end
+
+-- ile jajek liczy się do ceny jajka j: "osobny" — kupione jajka j; "wspolny" — kupione jajka wszystkich biomów
+function L.kupione(D, j, wydatki, tryb): number
+	local t = tryb or D.licznik_ceny.tryb
+	local function n(id): number
+		local v = if type(wydatki) == "table" then wydatki[id] else nil
+		return if calkowitaNieujemna(v) then v else 0
+	end
+	if t == "wspolny" then
+		local s = 0
+		for _, x in D.jajka do
+			s += n(x.id)
+		end
+		return s
+	end
+	return n(j.id)
+end
+
+function L.cena(D, j, kupione, tryb): number
 	local c = j.cena
+	local t = tryb or c.tryb
 	local n = if calkowitaNieujemna(kupione) then kupione else 0
-	if c.tryb == "kalkulator" then
+	if t == "stala" then
+		return c.stala
+	end
+	if t == "kalkulator" then
 		return c.kalkulator
 	end
 	return math.min(c.maks, c.start + c.krok * n)
+end
+
+function L.opisCeny(D, j, tryb): string
+	local T = D.teksty
+	local t = tryb or j.cena.tryb
+	if t == "rosnaca" then
+		return string.format(T.cena_od, L.cena(D, j, 0, t)) .. " · " .. T.rosnie
+	end
+	return string.format(T.cena_tablica, L.cena(D, j, 0, t))
 end
 
 function L.losuj(D, j, r): string
@@ -134,7 +188,7 @@ function L.wierszeZagrody(D, kopie, aktywny)
 		if calkowitaNieujemna(n) and n > 0 then
 			local r = L.rzadkosc(D, p.rzadkosc)
 			table.insert(w, { pet = p.id, nazwa = p.nazwa, rzadkosc = r.nazwa, kolor = r.kolor, kopie = n,
-				skill = L.opisSkilla(D, p), aktywny = p.id == aktywny })
+				skill = L.opisSkilla(D, p), aktywny = p.id == aktywny, jajko = p.jajko })
 		end
 	end
 	return w
@@ -194,7 +248,21 @@ function L.sprawdzPrzypadki(D)
 		end
 	end
 	for i, c in P.cena do
-		sprawdz("cena", i, L.cena(D, L.jajko(D, c.jajko), c.kupione) == c.wynik)
+		sprawdz("cena", i, L.cena(D, L.jajko(D, c.jajko), c.kupione, c.tryb) == c.wynik)
+	end
+	for i, c in P.opis_ceny do
+		sprawdz("opis_ceny", i, L.opisCeny(D, L.jajko(D, c.jajko), c.tryb) == c.wynik)
+	end
+	for i, c in P.kupione do
+		sprawdz("kupione", i, L.kupione(D, L.jajko(D, c.jajko), c.wydatki, c.tryb) == c.wynik)
+	end
+	for i, c in P.jajko_peta do
+		local j = L.jajkoPeta(D, c.pet)
+		sprawdz("jajko_peta", i, j ~= nil and j.id == c.wynik)
+	end
+	for i, c in P.kraina do
+		local j = L.jajkoKrainy(D, c.kraina)
+		sprawdz("kraina", i, (if j then j.id else nil) == c.wynik)
 	end
 	for i, c in P.losuj do
 		sprawdz("losuj", i, L.losuj(D, L.jajko(D, c.jajko), c.r) == c.wynik)

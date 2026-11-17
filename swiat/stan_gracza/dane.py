@@ -38,6 +38,19 @@ STATYSTYKI_LUAU = os.path.join(REPO, "src", "server", "Walka", "Statystyki.luau"
 # atrybut gracza Class (src/server/ClassSelect.server.luau, ClassData.id) → klasa silnika walki
 KLASY_GRACZA = {"Warrior": "wojownik", "Scout": "zwiadowca", "Mage": "mag"}
 
+# kara za przegraną (propozycja D-098): ułamek posiadanego Złota; 0 = wyłączona. Liczby: kara_przegranej.py, README.
+KARA_PROCENT = 0.05
+ZWYKLY_POTWOR = "cierniowy_wilk"   # łup zwykłego potwora (limit kary); zwykłe potwory Bagna mają ten sam łup
+
+
+def limit_lupu_zwyklego():
+    """Złoto zwykłego potwora z silnika (tools/walka/silnik.py, PRZECIWNICY[…].lup.zloto = [baza, przyrost])."""
+    import silnik  # noqa: E402  (tools/walka — tylko odczyt)
+    para = silnik.PRZECIWNICY[ZWYKLY_POTWOR]["lup"]["zloto"]
+    if len(para) != 2 or any(isinstance(x, bool) or not isinstance(x, int) or x < 0 for x in para):
+        raise BladDanych("łup Złota %s w silniku nie jest parą liczb całkowitych: %s" % (ZWYKLY_POTWOR, para))
+    return {"baza": para[0], "na_poziom": para[1]}
+
 
 class BladDanych(Exception):
     pass
@@ -127,6 +140,14 @@ def podstawa():
         # do łupu z walk (wartości premii przysyła pakiet petów — tu tylko granice); atrybuty gracza dla klientów
         "pety": {"rodzajow_maks": 100, "kopii_maks": 1000000, "premia_maks": 0.5,
                  "atrybut_aktywnego": "PetAktywny", "atrybut_liczby": "PetyLiczba"},
+        # kara za przegraną (17.11.2026, realizacja propozycji D-098 — czeka na zatwierdzenie w panelu): `procent`
+        # posiadanego Złota (0 = kara wyłączona; JEDNA liczba do zmiany), najwyżej łup zwykłego potwora na poziomie
+        # przeciwnika (limit_lupu = łup Cierniowego Wilka z silnika, jak zwykłe potwory Bagna); tylko walki z kontenerów
+        # `zrodla` (las-pas, stary las, Bagno — nie tablica próby, nie tryb testowy TestBohater, który łupu nie wysyła);
+        # atrybut kontenera StanGracza `atrybut_wylacznika` = false wyłącza karę w czasie gry (próby, testy)
+        "kara": {"procent": KARA_PROCENT, "limit_lupu": limit_lupu_zwyklego(), "zrodla": ["LasPotwory", "LasPasGra", "BagnoPasGra"],
+                 "atrybut_wylacznika": "KaraPrzegranej", "komunikat": "Przegrana: −%d Złota, +%d doświadczenia",
+                 "komunikat_bez_zlota": "Przegrana: +%d doświadczenia", "czas_s": 3.5},
         "klasy_pawla": {"folder": "Shared", "modul": "ClassData", "czekaj_s": 10},
         "trening": {"kontener": "TreningProba", "sygnal": "PrzyrostStatystyki"},
         "hud": {"gui": "HUD", "czekaj_s": 60},
@@ -215,6 +236,14 @@ def przypadki(D):
         lup = dict(dobry, zloto=lz, doswiadczenie=lx)
         P["premia_lupu"].append({"lup": lup, "premia": {"zloto": pz, "doswiadczenie": px},
                                  "wynik": LS.premia_lupu(D, lup, {"zloto": pz, "doswiadczenie": px})})
+    # kara za przegraną (17.11.2026, propozycja D-098): zero Złota, mało, dużo (limit), wyłącznik, złe dane
+    P["kara"] = []
+    for z, poziom, procent in ((0, 1, 0.05), (19, 1, 0.05), (20, 1, 0.05), (300, 3, 0.05), (299, 9, 0.1),
+                               (100000, 1, 0.05), (100000, 11, 0.05), (2000, 8, 0.05), (500, 1, 0), (500, 1, None),
+                               (500, 1, -0.1), (500, 1, 1.5), (None, 4, 0.05), (-30, 4, 0.05), (12.9, 2, 0.5),
+                               (500, 0, 0.05), (500, 2.7, 0.05), (10 ** 6, 999, 0.05), (777, 5, "0.05")):
+        P["kara"].append({"zloto": nil(z), "poziom": poziom, "procent": nil(procent),
+                          "wynik": LS.kara_przegranej(D, z, poziom, procent)})
     return P
 
 

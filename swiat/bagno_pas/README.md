@@ -6,6 +6,10 @@ akceptacji człowieka. Wymagania: D-061 (las → bagno → …), D-075 (pas biom
 otwiera następny biom; korekta Karola: ok. 10 h do ostatniego biomu), D-077 (przelot kamery), D-069 (wymagany build
 nie może stać się wymaganą klasą). Zarys pozostałych biomów: `swiat/biomy/PLAN_BIOMOW.md`.
 
+> **D-096 (17.11.2026):** ta mapa jest teraz **projektem** (57,5 s × 4,5 s). Gra buduje krótką mapę z `krotki/`
+> (25 s × 4 s), którą robi z niej `swiat/biomy/przycinarka.py` — generator tutaj bez zmian. Plików w `krotki/` nie
+> edytuj ręcznie; po zmianie projektu: `python -B swiat/biomy/przycinarka.py`.
+
 > **W skrócie.** Robocza nazwa **„Moczary Krzywej Kładki”**. Bagno to ten sam pas 72 st co las (4,5 s biegu), za bramą
 > do Bagna lasu-pasa: u 934…1880 (świat X 2034…2980, ta sama oś z = −700). Przez całe Bagno biegnie **Krzywa Kładka**
 > z desek; obok woda bez kolizji (brodzi się), trawiaste kępy, błoto, cypryśniki z brodami mchu, trzcina, niska mgła.

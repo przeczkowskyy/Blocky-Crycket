@@ -17,8 +17,9 @@ Stan gracza (słownik, wszystkie pola opcjonalne):
   trening_wzmacnia (bool) — stan gracza słucha treningu (TreningPodlaczony)
   poziom (int | None)     — atrybut Level
   bagno (bool)            — Bagno stoi w miejscu (kontener BagnoPasGra)
-  jajko (bool)            — stoi inkubator (swiat/pety_proba) i Złoto gracza ≥ jego cena jajka (17.11.2026)
-  pety (int)              — ile petów (kopii) ma gracz; krok o jajku tylko do pierwszego peta
+  jajko (bool)            — stoi inkubator biomu, w którym jest gracz (w mieście: lasu; swiat/pety_proba), i Złoto
+                            gracza ≥ cena jajka tego biomu (17.11.2026)
+  kupione (int)           — ile jajek tego biomu gracz już kupił; krok o jajku tylko do pierwszego jajka biomu
 Wynik: None (nic nie pokazujemy) albo {"id": klucz z D["kroki"], "tekst": gotowy napis, "cel": rodzaj celu | None}.
 """
 
@@ -62,9 +63,12 @@ def krok(D, s):
         return None
     miejsce = s.get("miejsce") or "miasto"
     kraina = s.get("kraina") or ("las" if miejsce in ("las", "za_brama") else None)
-    # pierwsze jajko: gdy Złota wystarcza, a gracz nie ma jeszcze peta (nie w Bagnie i nie za bramą — inkubator daleko)
-    if s.get("jajko") and not s.get("pety") and kraina != "bagno" and miejsce != "za_brama":
-        return _krok(D, "f_jajko_miasto" if (miejsce == "miasto" or kraina is None) else "f_jajko")
+    # pierwsze jajko biomu: gdy Złota wystarcza na jajko biomu, w którym jest gracz (w mieście: lasu), a gracz nie kupił
+    # jeszcze żadnego jajka tego biomu (nie za bramą — inkubator daleko)
+    if s.get("jajko") and not s.get("kupione") and miejsce != "za_brama":
+        if miejsce == "miasto" or kraina is None:
+            return _krok(D, "f_jajko_miasto")
+        return _krok(D, "f_jajko_bagno" if kraina == "bagno" else "f_jajko")
     if miejsce == "miasto" or kraina is None:
         return _miasto(D, s)
     if kraina == "bagno":
@@ -146,13 +150,19 @@ def przypadki(D):
       bagno=True)
     k("za bramą Bagna", kraina="bagno", miejsce="za_brama", straznik=True, straznik_bagna=True, bagno=True)
     k("za bramą Bagna bez Strażnika Topieli (cofany)", kraina="bagno", miejsce="za_brama", straznik=True, bagno=True)
-    k("Złoto na jajko w lesie: inkubator", miejsce="las", kraina="las", wygrane=3, ostatni="wygrana", jajko=True, pety=0)
+    k("Złoto na jajko w lesie: inkubator", miejsce="las", kraina="las", wygrane=3, ostatni="wygrana", jajko=True,
+      kupione=0)
     k("Złoto na jajko w mieście: TELEPORT", wygrane=3, ostatni="wygrana", jajko=True)
     k("Złoto na jajko po przegranej — jajko wygrywa", miejsce="las", przegrane=1, ostatni="przegrana", jajko=True,
       stan_gracza=True, trening_wzmacnia=True)
-    k("Złoto na jajko, ale ma już peta", miejsce="las", wygrane=3, ostatni="wygrana", jajko=True, pety=1)
-    k("Złoto na jajko w Bagnie: bez kroku o jajku", kraina="bagno", miejsce="las", straznik=True, bagno=True, jajko=True)
+    k("Złoto na jajko, ale kupił już jajko lasu", miejsce="las", wygrane=3, ostatni="wygrana", jajko=True, kupione=1)
+    k("Złoto na jajko Bagna w Bagnie: inkubator przy pomoście", kraina="bagno", miejsce="las", straznik=True, bagno=True,
+      jajko=True, kupione=0)
+    k("Złoto na jajko Bagna, ale kupił już jajko Bagna", kraina="bagno", miejsce="las", straznik=True, bagno=True,
+      jajko=True, kupione=2)
     k("Złoto na jajko za bramą: bez kroku o jajku", miejsce="za_brama", straznik=True, jajko=True)
+    k("Złoto na jajko za bramą Bagna: bez kroku o jajku", kraina="bagno", miejsce="za_brama", straznik=True,
+      straznik_bagna=True, bagno=True, jajko=True)
     k("Złoto na jajko, ale ukryte", miejsce="las", jajko=True, ukryte=True)
     pr = {"x1": 1056, "x2": 2076, "z1": -760, "z2": -640}
     for x, z, br in [(1114, -700, 2034), (2034, -700, 2034), (2046, -700, 2034), (990, -697, 2034), (1500, -800, 2034),

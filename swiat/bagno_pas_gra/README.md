@@ -5,6 +5,13 @@
 więc całość da się cofnąć (`--usun`). **17.11.2026 zbudowane w Studio i sprawdzone w trybie Play (jeden gracz, komputer)
 — wyniki w rozdz. „Co sprawdzone w grze”.***
 
+> **Krótki pas (D-096, Karol 17.11.2026).** Gra czyta krótką mapę `swiat/bagno_pas/krotki/` (bieg od przybycia do
+> bramy 25 s, pole gry 4 s = 64 st; było 57,5 s i 4,5 s), zrobioną przez `swiat/biomy/przycinarka.py` z długiej
+> mapy-projektu; Bagno stoi tuż za nową bramą lasu (przybycie X 1534, brama do Dżungli X 1934). Jedna strefa na
+> przegrodę (r1, b1, k1 z poziomami całej przegrody, t1): 8 / 11 / 14 potworów przy 1 / 8 / 20 graczach (było
+> 20 / 35 / 44), przelot 10,2 s. Liczby położeń w opisie niżej pochodzą sprzed D-096. Kontrola:
+> `python -B swiat/biomy/kontrola_krotkich.py`.
+
 > **W skrócie.** Gracz, który pokonał Strażnika Gaju, przechodzi bramą lasu prosto do Bagna (las w Play usuwa swoją
 > tabliczkę „BAGNO — WKRÓTCE”, gdy stoi mapa Bagna) albo wybiera „Bagno” w przejściu przez chmury (kraina otwarta tym
 > samym stanem bramy lasu). W Bagnie: przelot kamery przy pierwszym wejściu z rykiem Strażnika Topieli, pięć gatunków w

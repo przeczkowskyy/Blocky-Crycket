@@ -176,6 +176,7 @@ def sprawdz_strefy(p, przeg, pol):
     dom_od, dom_do = z["dom_od_wezlow"]
     spokoj = p["strefy_spokoju"]
     znaki = p["punkty_orientacyjne"]
+    PLAC_WALKI_R = z.get("plac_walki_r", globals()["PLAC_WALKI_R"])   # krótki pas (D-096) ma własny promień w planie
     poddzialy = {x["id"]: (q["id"], x) for q in p["przegrody"] for x in q.get("pod", [])}
     wszystkie = []
     for st in p["strefy"]:
@@ -388,8 +389,11 @@ def sprawdz_kamere(p, pol):
     T = pts[-1]["t"]
     if abs(T - k["czas_s"]) > 1e-9:
         blad("przelot: czas_s %s ≠ czas ostatniego punktu %s" % (k["czas_s"], T))
-    if not 10 <= T <= 14:
-        blad("przelot trwa %s s — ma 10–14 s" % l1(T))
+    # D-096 (17.11.2026): krótki pas (plan z polem „wymiary”, swiat/biomy/przycinarka.py) ma lot krótszy w proporcji
+    # toru — wtedy 5–14 s; projekt długiego pasa dalej 10–14 s
+    dolna = 5 if p.get("wymiary") else 10
+    if not dolna <= T <= 14:
+        blad("przelot trwa %s s — ma %d–14 s" % (l1(T), dolna))
     s = p["straznik"]
     stop = [x for x in pts if x["t"] >= k["zatrzymanie_od_s"] - 1e-9]
     if len(stop) < 2 or any(x["poz"] != stop[0]["poz"] for x in stop):

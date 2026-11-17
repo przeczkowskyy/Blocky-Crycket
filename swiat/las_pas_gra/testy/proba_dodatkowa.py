@@ -15,7 +15,7 @@ CZĘŚCI (kolejność wykonania):
           klatki), Kamień Powrotu prawdziwym E → miasteczko, brama jeszcze raz → bez przelotu; potem
           „odtwórz ponownie” w miasteczku (gracz znów świeży) i przejście przez chmury → przelot, drugie przejście
           przez chmury → bez przelotu; po każdym przelocie kamera Custom i ruch klawiszem W
-  chod    bieg postaci (Humanoid:MoveTo u klienta) od Polany Przybycia do bramy po osi pasa: czas (plan 57,5 s),
+  chod    bieg postaci (Humanoid:MoveTo u klienta) od Polany Przybycia do bramy po osi pasa: czas (plan: krótki pas D-096, 25 s),
           zatrzymania, wysokości (mostek), cofnięcia
   sciany  niewidzialne ściany: marsz w bok w 7 miejscach pasa i w tył za Polanę; skoki; spadek w pustkę → ratunek
   koszt   (wykonywany przed walkami, żeby Strażnik był żywy) czas klatki klienta i koszt serwera przy 1 graczu
@@ -47,7 +47,19 @@ J = ('local function J(v) local t = typeof(v) if t == "Vector3" then return { v.
 HRP_S = 'local g = game:GetService("Players"):GetPlayers()[1] local hrp = g.Character.HumanoidRootPart '
 HRP_K = 'local g = game:GetService("Players").LocalPlayer local hrp = g.Character.HumanoidRootPart local hum = g.Character.Humanoid '
 ARENA = (-76, 64, 190, 314)  # TestWalki2: x1, x2, z1, z2
-PAS = (1056, 2076, -760, -640)
+# D-096: położenia z projektu (długi pas) → krótka mapa gry, tym samym przekształceniem co mapa
+# (swiat/biomy/przycinarka.py); liczby niżej to dawne położenia projektu w X(…)
+if REPO not in sys.path:
+    sys.path.insert(0, REPO)
+from swiat.biomy.przycinarka import PLIK_WYMIAROW, Przeksztalcenie, _json  # noqa: E402
+P_D096 = Przeksztalcenie(_json(PLIK_WYMIAROW))
+
+
+def X(x):
+    return round(P_D096.x(x), 2)
+
+
+PAS = (1056, X(2076), -760, -640)
 
 # oś czasu klienta (próbki co 0,1 s + statystyka klatek): kamera, czarna zasłona przelotu, przelot, chmury, postać
 OS_KLIENTA = r'''
@@ -480,12 +492,13 @@ def main():
                 pasa("przenies", None, "las")
                 time.sleep(2.5)
                 cof0 = luau(KP + 'return tostring(k:GetAttribute("LicznikCofniec") or 0)', "Server")
-                kod = (HRP_K + r'''
+                kod = (HRP_K + ('local XA, XB, F1, F2, F3, F4 = %.2f, %.2f, %.2f, %.2f, %.2f, %.2f '
+                                % (X(1130), X(1980), X(1986), X(2002), X(2012), X(2024))) + r'''
 -- po osi pasa (z = −700); kryształowy filar Strażnika (mapa: Punkty/FilarKrysztal, 7 × 7 st w (1994; −700))
 -- stoi na osi — gracz obchodzi go bokiem jak dróżka (sprawdzone 17.11: na wprost postać na nim utyka)
 local cele = {}
-for x = 1130, 1980, 12 do table.insert(cele, { x, -700 }) end
-for _, c in { { 1986, -689 }, { 2002, -689 }, { 2012, -700 }, { 2024, -700 } } do table.insert(cele, c) end
+for x = XA, XB, 12 do table.insert(cele, { x, -700 }) end
+for _, c in { { F1, -689 }, { F2, -689 }, { F3, -700 }, { F4, -700 } } do table.insert(cele, c) end
 local t0 = os.clock()
 local stoj, yMin, yMaks, zMaks = {}, math.huge, -math.huge, 0
 local ostatni, tRuchu = hrp.Position, os.clock()
@@ -522,15 +535,15 @@ return game:GetService("HttpService"):JSONEncode({ czas = os.clock() - t0, konie
                 bieg = json.loads(luau(kod, "Client", proby=1, timeout=240))
                 cof1 = luau(KP + 'return tostring(k:GetAttribute("LicznikCofniec") or 0)', "Server")
                 bieg["cofniecia"] = [cof0, cof1]
-                bieg["dystans_st"] = round(bieg["koniec"][0] - 1114, 1)
-                bieg["plan_s"] = 57.5
+                bieg["dystans_st"] = round(bieg["koniec"][0] - X(1114), 1)
+                bieg["plan_s"] = round((X(2034) - X(1114)) / 16.0, 1)
                 bieg["ok"] = bieg["doszedl"] and not bieg["zatrzymania"] and cof0 == cof1
                 zapisz("chod", bieg)
 
             # ================================================================ NIEWIDZIALNE ŚCIANY I RATUNEK
             if "sciany" in tylko:
                 sciany = {"boki": [], "tyl": None, "ratunek": None}
-                for x in (1110, 1210, 1330, 1480, 1630, 1850, 1975):
+                for x in [X(a) for a in (1110, 1210, 1330, 1480, 1630, 1850, 1975)]:
                     przestaw(x, 3.5, -700)
                     time.sleep(0.8)
                     kod = (HRP_K + r'''
@@ -571,12 +584,12 @@ return game:GetService("HttpService"):JSONEncode({ xMin = xMin, koniec = { hrp.P
                 sciany["tyl"] = tyl
                 # spadek w pustkę w środku pasa → ratunek (serwer stawia z powrotem)
                 r0 = luau(KP + 'return tostring(k:GetAttribute("LicznikRatunkow") or 0)', "Server")
-                przestaw(1500, -60, -700)
+                przestaw(X(1500), -60, -700)
                 time.sleep(2.0)
                 pr = poz()
                 r1 = luau(KP + 'return tostring(k:GetAttribute("LicznikRatunkow") or 0)', "Server")
                 sciany["ratunek"] = {"po": pr, "licznik": [r0, r1], "ok": pr[1] > -5 and w_pasie(pr)}
-                sciany["ok"] = (all(b["maksV"] <= 38.5 for b in sciany["boki"]) and tyl["xMin"] >= 1074
+                sciany["ok"] = (all(b["maksV"] <= P_D096.g(38.0) + 0.5 for b in sciany["boki"]) and tyl["xMin"] >= 1074
                                 and sciany["ratunek"]["ok"])
                 zapisz("sciany", sciany)
 
@@ -586,7 +599,7 @@ return game:GetService("HttpService"):JSONEncode({ xMin = xMin, koniec = { hrp.P
                 for zestaw in (1, 20):
                     js('return H:JSONEncode(J(k.Sygnaly.SterowanieSerwera:Invoke("gracze", %s)))' % ("nil" if zestaw == 1 else zestaw), "Server")
                     time.sleep(6)
-                    for nazwa, (x, z) in (("przybycie", (1130, -700)), ("wilki", (1650, -700)), ("straznik", (1945, -700))):
+                    for nazwa, (x, z) in (("przybycie", (X(1130), -700)), ("wilki", (X(1650), -700)), ("straznik", (X(1945), -700))):
                         przestaw(x, 3.5, z, (1, 0))
                         time.sleep(5)
                         luau(KP + 'k.Sygnaly.SterowanieSerwera:Invoke("koszt", true) k.Sygnaly.SterowaniePasa:Invoke("koszt", true) return "ok"', "Server")
@@ -686,14 +699,14 @@ return game:GetService("HttpService"):JSONEncode({ xMin = xMin, koniec = { hrp.P
                     if "przegrana" in str(w.get("wynik")):
                         break
                 g = gracz()
-                przestaw(2024, 3.5, -700, (1, 0))
+                przestaw(X(2024), 3.5, -700, (1, 0))
                 time.sleep(1.0)
-                przestaw(2046, 3.5, -700, (1, 0))
+                przestaw(X(2046), 3.5, -700, (1, 0))
                 time.sleep(1.2)
                 p_po_przeg = poz()
                 walki["straznik_przegrana"] = {"proby": proby_przeg, "pokonal": g["pamiec"].get("pokonalStraznikaLasu"),
                                                "za_brama_po_przegranej": p_po_przeg,
-                                               "ok": not g["pamiec"].get("pokonalStraznikaLasu") and p_po_przeg[0] < 2034}
+                                               "ok": not g["pamiec"].get("pokonalStraznikaLasu") and p_po_przeg[0] < X(2034)}
                 zapisz("walki", walki)
 
                 # Strażnik: wygrana (bohater poz. 10, różne ziarna) — zrzut walki na arenie
@@ -715,13 +728,13 @@ return game:GetService("HttpService"):JSONEncode({ xMin = xMin, koniec = { hrp.P
                                'local b = e and e:FindFirstChild("Baner") return H:JSONEncode({ jest = b ~= nil, '
                                'tekst = b and b:FindFirstChild("Tytul") and b.Tytul.Text })', "Client")
                 # przejście przez otwartą bramę piechotą i tabliczka
-                przestaw(2016, 3.5, -700, (1, 0))
+                przestaw(X(2016), 3.5, -700, (1, 0))
                 time.sleep(1.5)
                 cof0 = luau(KP + 'return tostring(k:GetAttribute("LicznikCofniec") or 0)', "Server")
-                przejscie = json.loads(luau(HRP_K + r'''
+                przejscie = json.loads(luau(HRP_K + ('local XG, XH = %.2f, %.2f ' % (X(2046), X(2047))) + r'''
 local t0 = os.clock()
-while os.clock() - t0 < 6 and hrp.Position.X < 2046 do
-	hum:MoveTo(Vector3.new(2047, hrp.Position.Y, -700))
+while os.clock() - t0 < 6 and hrp.Position.X < XG do
+	hum:MoveTo(Vector3.new(XH, hrp.Position.Y, -700))
 	task.wait(0.1)
 end
 hum:MoveTo(hrp.Position)
@@ -731,7 +744,7 @@ return game:GetService("HttpService"):JSONEncode({ x = hrp.Position.X, y = hrp.P
                 cof1 = luau(KP + 'return tostring(k:GetAttribute("LicznikCofniec") or 0)', "Server")
                 p_za = poz()
                 # ujęcie: brama za plecami? nie — gracz stoi za bramą, kamera patrzy na tabliczkę
-                kamera_na((2022, 9, -713), (2052, 5.5, -700))
+                kamera_na((X(2022), 9, -713), (X(2052), 5.5, -700))
                 time.sleep(1.5)
                 zrzut("w_brama_otwarta_tabliczka")
                 kamera_wroc()
@@ -741,11 +754,11 @@ return game:GetService("HttpService"):JSONEncode({ x = hrp.Position.X, y = hrp.P
                 # za bramą (tylko zwycięzca): marsz w bok, gdzie nie ma ścian kulis — zatrzyma go coś albo spadnie
                 # z Płyty i ratunek postawi go z powrotem za bramą
                 r0 = luau(KP + 'return tostring(k:GetAttribute("LicznikRatunkow") or 0)', "Server")
-                bok = json.loads(luau(HRP_K + r'''
+                bok = json.loads(luau(HRP_K + ('local XB2 = %.2f ' % X(2060)) + r'''
 local t0 = os.clock()
 local yMin, zMin = hrp.Position.Y, hrp.Position.Z
 while os.clock() - t0 < 9 do
-	hum:MoveTo(Vector3.new(2060, hrp.Position.Y, -830))
+	hum:MoveTo(Vector3.new(XB2, hrp.Position.Y, -830))
 	yMin, zMin = math.min(yMin, hrp.Position.Y), math.min(zMin, hrp.Position.Z)
 	task.wait(0.1)
 end
@@ -758,7 +771,7 @@ return game:GetService("HttpService"):JSONEncode({ yMin = yMin, zMin = zMin, kon
                 walki["za_brama_w_bok"] = bok
                 walki["straznik_wygrana"] = {"proby": proby_wyg, "wygrana": wygrana, "baner": baner, "przejscie": przejscie,
                                              "za_brama": p_za, "cofniecia": [cof0, cof1], "wrota_klient": wrota,
-                                             "ok": bool(wygrana) and p_za[0] > 2036 and cof0 == cof1}
+                                             "ok": bool(wygrana) and p_za[0] > X(2036) and cof0 == cof1}
                 zapisz("walki", walki)
                 luau(KP + 'k:SetAttribute("TestBezSesji", nil) k:SetAttribute("ZiarnoTestowe", nil) return "ok"', "Server")
                 pasa("przenies", None, "las")
@@ -791,12 +804,12 @@ return game:GetService("HttpService"):JSONEncode({ yMin = yMin, zMin = zMin, kon
                 # otwarta brama (haczyk otworzBrame, gdy test walk nie wygrał) i tabliczka „Bagno — wkrótce”
                 if not gracz()["pamiec"].get("pokonalStraznikaLasu"):
                     pasa("otworzBrame")
-                przestaw(2046, 3.5, -689, (1, 0))
+                przestaw(X(2046), 3.5, -689, (1, 0))
                 time.sleep(2.5)
-                kamera_na((2010, 7.5, -700), (2052, 6, -700))
+                kamera_na((X(2010), 7.5, -700), (X(2052), 6, -700))
                 time.sleep(2.0)
                 zr["z_brama_otwarta"] = zrzut("z_brama_otwarta")
-                kamera_na((2041, 7, -703.5), (2052, 6.2, -700))
+                kamera_na((X(2041), 7, -703.5), (X(2052), 6.2, -700))
                 time.sleep(1.5)
                 zr["z_tabliczka"] = zrzut("z_tabliczka")
                 kamera_wroc()

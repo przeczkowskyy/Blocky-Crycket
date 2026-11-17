@@ -1,0 +1,293 @@
+{
+ "modul": "perlowa_wydra",
+ "modele": [
+  {
+   "id": "perlowa_wydra",
+   "nazwa": "Perłowa Wydra",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 276,
+     "wierzcholki": 150,
+     "wymiary": [
+      1.0,
+      1.22,
+      0.955
+     ],
+     "min": [
+      -0.5,
+      0.55,
+      -0.45
+     ],
+     "max": [
+      0.5,
+      1.77,
+      0.505
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 604,
+     "wierzcholki": 342,
+     "wymiary": [
+      1.24,
+      1.005,
+      0.97
+     ],
+     "min": [
+      -0.62,
+      1.69,
+      -0.32
+     ],
+     "max": [
+      0.62,
+      2.695,
+      0.65
+     ]
+    },
+    {
+     "nazwa": "LapaL_Geo",
+     "kosc": "LapaL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.379,
+      0.632,
+      0.56
+     ],
+     "min": [
+      0.264,
+      0.912,
+      0.028
+     ],
+     "max": [
+      0.643,
+      1.544,
+      0.588
+     ]
+    },
+    {
+     "nazwa": "NogaL_Geo",
+     "kosc": "NogaL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.34,
+      0.51,
+      0.55
+     ],
+     "min": [
+      0.09,
+      -0.01,
+      -0.14
+     ],
+     "max": [
+      0.43,
+      0.5,
+      0.41
+     ]
+    },
+    {
+     "nazwa": "LapaP_Geo",
+     "kosc": "LapaP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.379,
+      0.632,
+      0.56
+     ],
+     "min": [
+      -0.643,
+      0.912,
+      0.028
+     ],
+     "max": [
+      -0.264,
+      1.544,
+      0.588
+     ]
+    },
+    {
+     "nazwa": "NogaP_Geo",
+     "kosc": "NogaP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.34,
+      0.51,
+      0.55
+     ],
+     "min": [
+      -0.43,
+      -0.01,
+      -0.14
+     ],
+     "max": [
+      -0.09,
+      0.5,
+      0.41
+     ]
+    },
+    {
+     "nazwa": "Ogon_Geo",
+     "kosc": "Ogon",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.36,
+      0.39,
+      0.9
+     ],
+     "min": [
+      -0.18,
+      0.345,
+      -1.19
+     ],
+     "max": [
+      0.18,
+      0.735,
+      -0.29
+     ]
+    },
+    {
+     "nazwa": "Ogon2_Geo",
+     "kosc": "Ogon2",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.46,
+      0.196,
+      0.704
+     ],
+     "min": [
+      -0.23,
+      0.182,
+      -1.832
+     ],
+     "max": [
+      0.23,
+      0.378,
+      -1.128
+     ]
+    },
+    {
+     "nazwa": "Perla_Geo",
+     "kosc": "Perla",
+     "trojkaty": 444,
+     "wierzcholki": 236,
+     "wymiary": [
+      0.62,
+      0.735,
+      0.5
+     ],
+     "min": [
+      -0.31,
+      0.625,
+      0.37
+     ],
+     "max": [
+      0.31,
+      1.36,
+      0.87
+     ]
+    }
+   ],
+   "trojkaty_razem": 1776,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 18
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    1.286,
+    2.705,
+    2.702
+   ],
+   "wymiary_z_akcesoriami": [
+    1.286,
+    2.705,
+    2.702
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -0.643,
+     -0.01,
+     -1.832
+    ],
+    [
+     0.643,
+     2.695,
+     0.87
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Tulow",
+    "Glowa",
+    "LapaL",
+    "NogaL",
+    "LapaP",
+    "NogaP",
+    "Ogon",
+    "Ogon2",
+    "Perla"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "chod",
+     "dlugosc": 20,
+     "fps": 30,
+     "sekundy": 0.67,
+     "petla": true
+    },
+    {
+     "n": "radosc",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "wyklucie",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [
+  "klip spoczynek: Perla.obrot — klatka 0 ≠ klatka 60, pętla skoczy"
+ ],
+ "kontrola": [
+  "perlowa_wydra.fbx: siatki 11, kości 10, trójkąty 1800, wzrost 2.71 st., akcje brak -> ZGODNE",
+  "perlowa_wydra__spoczynek.fbx: siatki 11, kości 10, trójkąty 1800, wzrost 2.71 st., akcje perlowa_wydra|Scene 1-61 -> ZGODNE",
+  "perlowa_wydra__chod.fbx: siatki 11, kości 10, trójkąty 1800, wzrost 2.71 st., akcje perlowa_wydra|Scene 1-21 -> ZGODNE",
+  "perlowa_wydra__radosc.fbx: siatki 11, kości 10, trójkąty 1800, wzrost 2.71 st., akcje perlowa_wydra|Scene 1-37 -> ZGODNE",
+  "perlowa_wydra__wyklucie.fbx: siatki 11, kości 10, trójkąty 1800, wzrost 2.71 st., akcje perlowa_wydra|Scene 1-31 -> ZGODNE",
+  "perlowa_wydra.glb: siatki 11, kości 10, trójkąty 1800, wzrost 2.71 st., akcje chod 0-20, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
+ ]
+}

@@ -17,7 +17,8 @@ Co powstaje (tylko w Workspace/StanGracza z atrybutem Wygenerowane = true; cudzy
   Sygnaly/SterowanieSerwera                    BindableFunction — haczyk testowy
   Sygnaly/WydajZloto, Sygnaly/Pety             BindableFunction — Złoto i pety dla swiat/pety_proba (17.11.2026)
 Atrybuty kontenera: Wygenerowane, Zrodlo, Zbudowano, Skrot, StatystykiKlasy (true; false = zostają wartości testowe
-statystyk z src/server/PlayerStatsDefaults). StatystykiKlasy ustawione ręcznie w Edit przechodzi na odbudowany kontener.
+statystyk z src/server/PlayerStatsDefaults). StatystykiKlasy ustawione ręcznie w Edit przechodzi na odbudowany kontener,
+tak samo KaraPrzegranej (brak = kara z DaneStanu; false = wyłączona; liczba 0..1 = inny ułamek Złota).
 
 Zasady (wspólne miejsce Team Create): okno wybiera swiat/test_walki_roblox/cel_studio.py (jedno okno albo --studio,
 zawsze placeId gry); KAŻDY wysyłany kod sprawdza game.PlaceId i tryb Edit; ruszany jest tylko własny kontener (obiekt
@@ -60,7 +61,7 @@ INNE = [
     ("BindableFunction", "Sygnaly/WydajZloto"),       # 17.11.2026: wydawanie Złota (swiat/pety_proba)
     ("BindableFunction", "Sygnaly/Pety"),             # 17.11.2026: pety w profilu (swiat/pety_proba)
 ]
-ATRYBUTY_TESTOWE = ["StatystykiKlasy"]
+ATRYBUTY_TESTOWE = ["StatystykiKlasy", "KaraPrzegranej"]  # KaraPrzegranej (17.11.2026): false / ułamek kary w Edit
 
 NAGLOWEK_MIEJSCA = ('if game.PlaceId ~= __MIEJSCE__ then return "STOP: inne miejsce (PlaceId " .. tostring(game.PlaceId) .. ")" end\n'
                     'if game:GetService("RunService"):IsRunning() then return "STOP: Studio jest w trybie Play — buduję tylko w trybie Edit" end\n')

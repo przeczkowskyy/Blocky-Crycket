@@ -3,7 +3,8 @@
 
     python -B swiat/bagno_pas_gra/testy/test_bagna.py        (unittest; kod 1 przy błędzie)
 
-1. Dane: generator deterministyczny i aktualny; mapa Bagna i sam plan dają te same strefy; 20 / 35 / 44 potwory;
+1. Dane: generator deterministyczny i aktualny; mapa Bagna i sam plan dają te same strefy; 8 / 11 / 14 potworów
+   (krótki pas D-096: jedna scalona strefa na przegrodę);
    poziomy stref z konfiguracji (kalkulator balansu), Strażnik Topieli na końcu.
 2. Przegrody: gatunek każdej przegrody jak w planie (D-069: trzy klasy), trasy i domy w polu strefy i w pasie, poza
    strefami spokoju; symulacja ruchu (ta sama Symulacja co testy lasu) — odstęp ≥ 25, nikt nie wychodzi z pola.
@@ -120,13 +121,14 @@ class TestDanych(unittest.TestCase):
         for st in DP["strefy"]:
             c = [1, 1, 1] if st["straznik"] else [Lg.cel(st["naraz"], st["max"], G) for G in (1, 8, 20)]
             cele = [x + y for x, y in zip(cele, c)]
-        self.assertEqual(cele, [20, 35, 44])                       # plan Bagna (swiat/bagno_pas/README.md)
+        self.assertEqual(cele, [8, 11, 14])                        # krótki pas (D-096, swiat/biomy/wymiary_pasa.json)
         for sid, (p1, p2) in GEN.POZIOMY_STREF.items():
             self.assertEqual(STREFY[sid]["poziomy"], [p1, p2])
         self.assertEqual(STREFY["straznik"]["poziomy"], [GEN.POZIOM_STRAZNIKA] * 2)
         self.assertEqual(STREFY["straznik"]["gatunek"], "straznik_topieli")
         # poziomy rosną przegroda po przegrodzie; las kończy się na 10, Bagno zaczyna od 10
-        kolejno = [STREFY[s]["poziomy"] for s in ("r1", "r2", "r3", "b1", "b2", "b3", "k1", "k2", "k3", "t1")]
+        kolejno = [STREFY[s["id"]]["poziomy"] for s in PLAN["strefy"]]     # r1, b1, k1, t1 (po scaleniu, D-096)
+        self.assertEqual([s["id"] for s in PLAN["strefy"]], ["r1", "b1", "k1", "t1"])
         self.assertEqual(kolejno, sorted(kolejno))
         self.assertEqual(kolejno[0][0], max(s["poziomy"][1] for s in DP_LASU["strefy"]))
         self.assertEqual(STREFY["t1"]["odrodzenieS"], 150)
@@ -257,8 +259,8 @@ class TestStykuZLasem(unittest.TestCase):
         odX = DPA["biom"]["wymaganie"]["odX"]
         self.assertAlmostEqual(odX, bl["x"] + bl["glebokosc"])
         z = M["Z0"]
-        x = 1950.0
-        while x <= 2400:
+        x = granica - 84.0
+        while x <= granica + 366.0:
             ratuje = [LP.potrzeba_ratunku(x, -40, z, DPA_LASU["ratunek"]) and x < granica,
                       LP.potrzeba_ratunku(x, -40, z, DPA["ratunek"])]
             self.assertEqual(sum(ratuje), 1, "ratunek x=%.2f: %s" % (x, ratuje))
@@ -341,9 +343,11 @@ class TestMgly(unittest.TestCase):
                 {"nazwa": "BagnoPasGra", "prostokat": DPA["mgla"], "pas": DPA["mgla"]["pas"],
                  "tempo": DPA["mgla"]["tempo"], "cel": DPA["mgla"]["cel"]["Density"]}]
         z = M["Z0"]
-        # bieg 16 st/s z lasu (x 1900) przez bramę do Bagna (x 2200), postój, potem z powrotem
-        droga = [(1900 + 16 * t / 60.0, z) for t in range(0, 60 * 19)] + [(2204, z)] * 180
-        droga += [(2204 - 16 * t / 60.0, z) for t in range(0, 60 * 19)] + [(1900, z)] * 180
+        # bieg 16 st/s z lasu (134 st przed bramą lasu) przez bramę do Bagna (170 st za nią), postój, potem z powrotem
+        xa = DPA_LASU["brama"]["x"] - 134.0
+        xb = xa + 16 * 19
+        droga = [(xa + 16 * t / 60.0, z) for t in range(0, 60 * 19)] + [(xb, z)] * 180
+        droga += [(xb - 16 * t / 60.0, z) for t in range(0, 60 * 19)] + [(xa, z)] * 180
         d = symuluj_mgly(mgly, droga)
         las, bagno = mgly[0]["cel"], mgly[1]["cel"]
         self.assertGreater(min(d[60:]), min(las, bagno) - 0.02, "na granicy mgła nie może zgasnąć do bazy")

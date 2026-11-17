@@ -148,12 +148,18 @@ class TestLogiki(unittest.TestCase):
         las = LW.krok(D, s(miejsce="las", kraina="las", wygrane=2, ostatni="wygrana", jajko=True))
         self.assertEqual((las["id"], las["cel"]), ("f_jajko", "jajko"))
         self.assertIn("jajko", las["tekst"])
-        miasto = LW.krok(D, s(wygrane=2, ostatni="wygrana", jajko=True, pety=0))
+        miasto = LW.krok(D, s(wygrane=2, ostatni="wygrana", jajko=True, kupione=0))
         self.assertEqual((miasto["id"], miasto["cel"]), ("f_jajko_miasto", "teleport"))
-        for st in (s(miejsce="las", jajko=True, pety=1), s(miejsce="las", jajko=False), s(miejsce="las"),
-                   s(kraina="bagno", miejsce="las", straznik=True, bagno=True, jajko=True),
-                   s(miejsce="za_brama", straznik=True, jajko=True)):
-            self.assertNotIn(LW.krok(D, st)["id"], {"f_jajko", "f_jajko_miasto"}, st)
+        # 17.11 wieczór: jajko Bagna — w Bagnie znacznik nad inkubatorem Bagna, dopóki gracz nie kupi jajka Bagna
+        bag = LW.krok(D, s(kraina="bagno", miejsce="las", straznik=True, bagno=True, jajko=True, kupione=0))
+        self.assertEqual((bag["id"], bag["cel"]), ("f_jajko_bagno", "jajko"))
+        self.assertIn("Bagna", bag["tekst"])
+        for st in (s(miejsce="las", jajko=True, kupione=1), s(miejsce="las", jajko=False), s(miejsce="las"),
+                   s(kraina="bagno", miejsce="las", straznik=True, bagno=True, jajko=True, kupione=1),
+                   s(kraina="bagno", miejsce="las", straznik=True, bagno=True, jajko=False),
+                   s(miejsce="za_brama", straznik=True, jajko=True),
+                   s(kraina="bagno", miejsce="za_brama", straznik=True, straznik_bagna=True, bagno=True, jajko=True)):
+            self.assertNotIn(LW.krok(D, st)["id"], {"f_jajko", "f_jajko_miasto", "f_jajko_bagno"}, st)
         self.assertIsNone(LW.krok(D, s(miejsce="las", jajko=True, ukryte=True)))
 
     def test_2e_miejsce(self):
@@ -321,14 +327,21 @@ class TestStykow(unittest.TestCase):
             self.skipTest("brak pakietu swiat/pety_proba — krok o jajku się nie pokaże")
         P = json.loads(czytaj(ust))
         self.assertEqual(Z["pety"], P["kontener"])
-        self.assertEqual(Z["atrybut_ceny_jajka"], P["atrybuty_gracza"]["cena"])
-        self.assertEqual(Z["atrybut_petow"], P["stan_gracza"]["atrybut_liczby"])
         self.assertEqual(Z["atrybut_zlota"], P["stan_gracza"]["atrybut_zlota"])
+        # każdy biom wskazówek z inkubatorem: E, cena i licznik kupionych z jajka tego biomu (jajko = wpis w danych petów)
         zb = czytaj(REPO, "swiat", "pety_proba", "zbuduj.py")
-        kontener, punkty, e = Z["inkubator"].split("/")
-        self.assertEqual(kontener, P["kontener"])
-        self.assertIn('"%s"' % punkty, zb)
-        self.assertIn('punktE(f.%s, "%s"' % (punkty, e), zb)
+        jajka = {j["kraina"]: j for j in P["jajka"]}
+        for b in Z["biomy"]:
+            if "inkubator" not in b:
+                continue
+            j = jajka[b["id"]]
+            kontener, punkty, e = b["inkubator"].split("/")
+            self.assertEqual((kontener, e), (P["kontener"], j["punkt_e"]), b["id"])
+            self.assertIn('"%s"' % punkty, zb)
+            self.assertIn("punktE(f.%s, J.punkt_e" % punkty, zb)
+            self.assertEqual(b["atrybut_ceny_jajka"], j["atrybuty"]["cena"], b["id"])
+            self.assertEqual(b["atrybut_kupionych_jajek"], j["atrybuty"]["kupione"], b["id"])
+        self.assertEqual({b["id"] for b in Z["biomy"] if "inkubator" in b}, set(jajka))
 
     def test_5d_stan_gracza_gdy_jest(self):
         Z = D["zrodla"]

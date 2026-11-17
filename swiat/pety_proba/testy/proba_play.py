@@ -3,6 +3,7 @@
 i wyłącza Play, niczego nie zapisuje i nie publikuje.
 
     python -B swiat/pety_proba/testy/proba_play.py <folder wyników POZA repo> [--studio <id>] [--bez-zrzutow] [--bez-walki]
+    python -B swiat/pety_proba/testy/proba_play.py <folder wyników POZA repo> --bagno   # tylko jajko Bagna (B00–B09)
     python -B swiat/pety_proba/testy/proba_play.py --sprawdz      # bez Studio: parsuje każdy kawałek Luau (luau_mini)
 
 Warunki (tryb Edit): Workspace/PetyProba (swiat/pety_proba/zbuduj.py), Workspace/StanGracza (z sygnałami WydajZloto
@@ -36,6 +37,21 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
       łup z premią; zrzut w walce
   P14 bez sygnału StanGracza/Sygnaly/Pety (zmiana nazwy) → E daje „Inkubator nieczynny…”, bez błędów; nazwa wraca
   P15 konsola: bez błędów naszych skryptów ([PetyProba], „Script …PetyProba”)
+
+LISTA --bagno (17.11 wieczór, jajko Bagna; warunki jak wyżej + Workspace/BagnoPas, BagnoPasGra, WskazowkiGry):
+  B00 gładkie jajko leśne przy inkubatorze lasu (zrzut „po” do pary „przed / po”)
+  B01 dwa inkubatory u klienta (jajka lokalne), ceny obu jajek z serwera (Bagno od ceny startowej)
+  B02 inkubator Bagna: zrzut z daleka i tablicy szans z bliska; Gold = 0, prawdziwe E → odmowa z kwotą braku
+  B03 wskazówka celu: Złota tyle co jajko Bagna, gracz przy Pomoście Przybycia → krok „f_jajko_bagno”; zrzut
+  B04 kupno prawdziwym E (Gold = 3000): Złoto − cena, licznik jajek Bagna 1, cena jajka leśnego bez zmian; zrzuty
+      wyklucia: trzęsienie, pęknięcie, wyskok, napis
+  B05 pięć petów Bagna obok siebie przy inkubatorze (haczyk "pokaz"), zrzut całości i każdego z bliska
+  B06 każdy z pięciu petów Bagna IDZIE ZA GRACZEM (kupione haczykiem "kup" z wymuszonym losem, aktywny wybrany
+      haczykiem bez zasięgu — zaznaczone w opisie), zrzut z kamery za plecami
+  B07 wyklucie każdego peta Bagna (haczyk "wyklucie" z jajkiem Bagna), zrzut napisu każdego
+  B08 zagroda z dziesięcioma petami (pięć leśnych dokupionych haczykiem): tablica w dwóch kolumnach, prawdziwe E
+      opiekunki → okno „PRÓBA” podzielone na jajka, przewinięte do końca; zrzuty
+  B09 wybór peta Bagna z okna → PetAktywny, pet za graczem
 """
 import io
 import json
@@ -53,6 +69,7 @@ for _s in (PAKIET, os.path.join(REPO, "tools"), os.path.join(REPO, "tools", "wal
     if _s not in sys.path:
         sys.path.insert(0, _s)
 import dane_petow as DP  # noqa: E402
+import logika_petow as LP  # noqa: E402
 
 KLATKI = os.path.join(PAKIET, "klatki")
 U = DP.ustawienia()
@@ -113,13 +130,23 @@ KOD = {
     "test_bohater": 'local k = workspace:FindFirstChild("%s") if k then k:SetAttribute("TestBohater", %s) end return "ok"',
     "gotowy_klient": 'local p = game:GetService("Players").LocalPlayer return tostring(p ~= nil and p.Character ~= nil)',
     "test_kamera": 'workspace.PetyProba:SetAttribute("TestKameraProby", %s) return "ok"',
-    "przelot": ('local k = workspace:FindFirstChild("LasPasGra") local lp = game:GetService("Players").LocalPlayer '
+    "przelot": ('local k = workspace:FindFirstChild("%s") local lp = game:GetService("Players").LocalPlayer '
                 'local h = lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") '
                 'local p = k and (k.Sygnaly.SterowaniePasaKlienta:Invoke("stan") or {}).przelot '
                 'return tostring((p ~= nil and p ~= false) or (h ~= nil and h.Anchored) or '
                 'workspace.CurrentCamera.CameraType ~= Enum.CameraType.Custom)'),
     "okno_otwarte": ('local g = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PetyProbaOkno") '
                      'return tostring(g ~= nil and g.Enabled)'),
+    "wskazowka": ('local w = workspace:FindFirstChild("WskazowkiGry") if not w then return H:JSONEncode({ brak = true }) end '
+                  'return H:JSONEncode(J(w.Sygnaly.SterowanieKlienta:Invoke("stan")))'),
+    "przewin_okno": ('local g = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PetyProbaOkno") '
+                     'local l = g and g.Ramka:FindFirstChild("Lista") if l then l.CanvasPosition = Vector2.new(0, %d) end '
+                     'return tostring(l ~= nil)'),
+    "edit_bagno": ('local H = game:GetService("HttpService") local function jest(n) local o = workspace:FindFirstChild(n) '
+                   'return o ~= nil and o:GetAttribute("Wygenerowane") == true end '
+                   'return H:JSONEncode({ bagno = jest("BagnoPasGra"), mapa = workspace:FindFirstChild("BagnoPas") ~= nil, '
+                   'wskazowki = jest("WskazowkiGry"), inkubator = workspace:FindFirstChild("PetyProba") ~= nil and '
+                   'workspace.PetyProba:FindFirstChild("%s") ~= nil })'),
 }
 
 
@@ -159,6 +186,7 @@ def main():
     studio = argv[argv.index("--studio") + 1] if "--studio" in argv else None
     bez_zrzutow = "--bez-zrzutow" in argv
     bez_walki = "--bez-walki" in argv
+    tylko_bagno = "--bagno" in argv
     os.makedirs(wyj, exist_ok=True)
     os.makedirs(KLATKI, exist_ok=True)
     D = DP.dane_z_przypadkami()
@@ -286,7 +314,8 @@ def main():
             ujecie[0] = None
             luau(KOD["kamera_zwykla"], "Client")
 
-        gniazdo, e = G["gniazdo"], G["e_inkubatora"]
+        JL = D["jajka"][0]
+        gniazdo, e = JL["polozenie"]["gniazdo"], JL["polozenie"]["e"]
         # stanowisko gracza przy E: krok dalej od gniazda niż punkt E, twarzą do jajka
         kier = (e[0] - gniazdo[0], e[2] - gniazdo[2])
         dl = math.hypot(*kier)
@@ -297,11 +326,203 @@ def main():
             przestaw(stoi, gniazdo)
             time.sleep(1.2)
 
-        def oko_inkubatora(dal=11.0, wys=5.5):
+        def oko_inkubatora(dal=11.0, wys=5.5, gn=None, kr=None, dy=0.0):
             # z boku (po stronie, na którą ląduje pet) — postać przy E nie zasłania jajka
-            bok = (-kier[1], kier[0])
-            return ((gniazdo[0] + kier[0] * dal + bok[0] * 8.0, gniazdo[1] + wys, gniazdo[2] + kier[1] * dal + bok[1] * 8.0),
-                    (gniazdo[0] + kier[0] * 2.0 + bok[0] * 1.5, gniazdo[1] + 2.4, gniazdo[2] + kier[1] * 2.0 + bok[1] * 1.5))
+            gn, kr = gn or gniazdo, kr or kier
+            bok = (-kr[1], kr[0])
+            return ((gn[0] + kr[0] * dal + bok[0] * 8.0, gn[1] + wys + dy, gn[2] + kr[1] * dal + bok[1] * 8.0),
+                    (gn[0] + kr[0] * 2.0 + bok[0] * 1.5, gn[1] + 2.4 + dy, gn[2] + kr[1] * 2.0 + bok[1] * 1.5))
+
+        # ---------------------------------------------------------------- jajko Bagna (--bagno)
+        JB = next(j for j in D["jajka"] if j["kraina"] == "bagno")
+        gn_b, e_b = JB["polozenie"]["gniazdo"], JB["polozenie"]["e"]
+        kier_b = (e_b[0] - gn_b[0], e_b[2] - gn_b[2])
+        dl_b = math.hypot(*kier_b)
+        kier_b = (kier_b[0] / dl_b, kier_b[1] / dl_b)
+        stoi_b = (gn_b[0] + kier_b[0] * 6.0, e_b[1] + 3.0, gn_b[2] + kier_b[1] * 6.0)
+        dy_b = JB["y_jajka"] - JL["y_jajka"]          # jajko Bagna leży wyżej (gniazdo na palach)
+
+        def do_inkubatora_bagna():
+            przestaw(stoi_b, gn_b)
+            time.sleep(1.2)
+
+        def swiat_stanowiska(J, x, y, z):
+            """Punkt z układu stanowiska (rig: przód −Z) w świecie — jak zbuduj.py: CFrame(gniazdo) * obrót Y."""
+            a = math.radians(J["polozenie"]["obrot"])
+            g = J["polozenie"]["gniazdo"]
+            return (g[0] + x * math.cos(a) + z * math.sin(a), g[1] + y, g[2] - x * math.sin(a) + z * math.cos(a))
+
+        def proba_bagna():
+            CB, KB, CL = JB["atrybuty"]["cena"], JB["atrybuty"]["kupione"], JL["atrybuty"]["cena"]
+            eb = json.loads(luau(KOD["edit_bagno"] % JB["folder"], "Server"))
+            zapisz("B_edit", eb)
+            # ============================================================ B00 gładkie jajko leśne (para „przed / po”)
+            do_inkubatora()
+            czekaj_na(lambda: luau(KOD["przelot"] % "LasPasGra", "Client") == "true", 6, 0.4)
+            czekaj_na(lambda: luau(KOD["przelot"] % "LasPasGra", "Client") == "false", 40, 1.0)
+            do_inkubatora()
+            kamera(*oko_inkubatora(dal=6.5, wys=3.2))
+            zrzut("b00_jajko_lesne_gladkie")
+            punkt("B00", None, "gładkie jajko leśne — zrzut b00 (para z klatkami „przed” w raporcie)")
+            # ============================================================ B01 dwa inkubatory, ceny
+            kl = klient('"stan"')
+            st = serwer('"stan"')
+            zapisz("B01", {"klient": kl, "serwer": st, "edit": eb})
+            punkt("B01", kl.get("jajekLokalnych") == len(D["jajka"]) and (st.get("ceny") or {}).get(JB["id"]) == LP.cena(D, JB, 0)
+                  and eb.get("inkubator") is True, "jajek lokalnych %s, ceny %s, Bagno w miejscu %s"
+                  % (kl.get("jajekLokalnych"), st.get("ceny"), eb))
+            # ============================================================ B02 inkubator Bagna, brak Złota
+            luau(KOD["ustaw_atr"] % ("Gold", "0"), "Server")
+            do_inkubatora_bagna()
+            czekaj_na(lambda: luau(KOD["przelot"] % "BagnoPasGra", "Client") == "true", 6, 0.4)
+            czekaj_na(lambda: luau(KOD["przelot"] % "BagnoPasGra", "Client") == "false", 40, 1.0)
+            do_inkubatora_bagna()
+            bok_b = (-kier_b[1], kier_b[0])
+            kamera((gn_b[0] + kier_b[0] * 26.0 + bok_b[0] * 14.0, gn_b[1] + 13.0, gn_b[2] + kier_b[1] * 26.0 + bok_b[1] * 14.0),
+                   (gn_b[0], gn_b[1] + 3.5, gn_b[2]))
+            zrzut("b01_inkubator_bagna_z_daleka")
+            papier = next(c for c in JB["stale"]["czesci"] if c[2] == D["modele"]["papier"])
+            pp = swiat_stanowiska(JB, papier[3], papier[4], papier[5])
+            kamera((pp[0] + kier_b[0] * 5.5 + bok_b[0] * 1.0, pp[1] + 0.4, pp[2] + kier_b[1] * 5.5 + bok_b[1] * 1.0), pp)
+            zrzut("b02_tablica_szans_bagna")
+            kamera(*oko_inkubatora(gn=gn_b, kr=kier_b, dy=dy_b))
+            przytrzymaj_e()
+            time.sleep(0.8)
+            kl = klient('"stan"')
+            odm = kont("PetyProba", ["OstatniaOdmowa"])
+            po = atr("Gold", KB)
+            zrzut("b03_brak_zlota_bagno")
+            zapisz("B02", {"klient": kl, "odmowa": odm, "po": po})
+            punkt("B02", odm.get("OstatniaOdmowa") == "za_malo" and ("kosztuje %d" % LP.cena(D, JB, 0)) in str(kl.get("komunikat"))
+                  and po.get("Gold") == 0, "komunikat %r, Gold %s" % (kl.get("komunikat"), po.get("Gold")))
+            # ============================================================ B03 wskazówka „stać cię na jajko Bagna”
+            luau(KOD["ustaw_atr"] % ("Gold", str(LP.cena(D, JB, 0))), "Server")
+            kamera_zwykla()
+            w3 = czekaj_na(lambda: (lambda w: w if w.get("krok") == "f_jajko_bagno" else None)(js(KOD["wskazowka"], "Client")),
+                           6, 0.5) or js(KOD["wskazowka"], "Client")
+            zrzut("b04_wskazowka_jajko_bagna")
+            zapisz("B03", w3)
+            punkt("B03", w3.get("krok") == "f_jajko_bagno" and w3.get("cel") == "jajko",
+                  "krok %s (%r), kraina %s, jajko %s, kupione %s" % (w3.get("krok"), w3.get("tekst"), w3.get("kraina"),
+                                                                    w3.get("jajko"), w3.get("kupione")))
+            # ============================================================ B04 kupno prawdziwym E + wyklucie
+            luau(KOD["ustaw_atr"] % ("Gold", "3000"), "Server")
+            do_inkubatora_bagna()
+            kamera(*oko_inkubatora(gn=gn_b, kr=kier_b, dy=dy_b))
+            time.sleep(0.6)
+            kl0 = klient('"stan"')
+            przytrzymaj_e()
+            t0 = time.time()
+            for t, nazwa in ((0.8, "b05_wyklucie_trzesienie"), (1.75, "b06_wyklucie_pekniecie"),
+                             (2.45, "b07_wyklucie_wyskok"), (4.0, "b08_wyklucie_napis")):
+                while time.time() - t0 < t:
+                    time.sleep(0.05)
+                zrzut(nazwa)
+            po4 = atr("Gold", "PetyLiczba", "PetAktywny", CB, KB, CL)
+            zapisz("B04", {"przed": kl0, "po": po4})
+            punkt("B04", po4.get("Gold") == 3000 - LP.cena(D, JB, 0) and po4.get(KB) == 1 and po4.get(CB) == LP.cena(D, JB, 1)
+                  and po4.get(CL) == LP.cena(D, JL, 0) and po4.get("PetAktywny") in JB["pula"]
+                  and "Kup za %d" % LP.cena(D, JB, 0) in str((kl0.get("akcjeE") or {}).get(JB["id"])),
+                  "E %r → Gold %s, pet %s, cena Bagna %s, cena lasu %s (bez zmian)" % (
+                      (kl0.get("akcjeE") or {}).get(JB["id"]), po4.get("Gold"), po4.get("PetAktywny"), po4.get(CB),
+                      po4.get(CL)))
+            time.sleep(2.5)
+            kamera_zwykla()
+            # ============================================================ zakupy: komplet petów Bagna (haczyk)
+            pety_b = list(JB["pula"])
+            luau(KOD["ustaw_atr"] % ("Gold", "20000"), "Server")
+            for r in (0.1, 0.6, 0.8, 0.9, 0.995):             # wymuszony los: każdy pet raz (test, nie gra)
+                serwer('"zwolnij"')
+                serwer('"kup", nil, "%s", %f' % (JB["id"], r))
+                time.sleep(4.8)
+            serwer('"zwolnij"')
+            # ============================================================ B05 pięć petów Bagna w świecie
+            baza = (gn_b[0] + kier_b[0] * 9.0, gn_b[1] + 0.6, gn_b[2] + kier_b[1] * 9.0)
+            miejsca = {}
+            for i, pid in enumerate(pety_b):
+                o = (i - 2) * 3.6
+                miejsca[pid] = (baza[0] + bok_b[0] * o, baza[1], baza[2] + bok_b[1] * o)
+                klient('"pokaz", "%s", Vector3.new(%f, %f, %f)' % (pid, miejsca[pid][0], miejsca[pid][1], miejsca[pid][2]))
+            time.sleep(1.0)
+            kamera((baza[0] + kier_b[0] * 11.0, baza[1] + 4.0, baza[2] + kier_b[1] * 11.0), (baza[0], baza[1] + 1.2, baza[2]))
+            zrzut("b09_piec_petow_bagna")
+            for pid in pety_b:
+                m = miejsca[pid]
+                kamera((m[0] + kier_b[0] * 4.6 + bok_b[0] * 1.2, m[1] + 2.0, m[2] + kier_b[1] * 4.6 + bok_b[1] * 1.2),
+                       (m[0], m[1] + 1.0, m[2]))
+                time.sleep(0.4)
+                zrzut("b10_pet_%s" % pid)
+            klient('"pokaz_usun"')
+            punkt("B05", None, "pięć petów Bagna — zrzuty b09_piec_petow_bagna i b10_pet_<id> do obejrzenia")
+            # ============================================================ B06 każdy pet Bagna idzie za graczem
+            kamera_zwykla()
+            idzie = {}
+            for i, pid in enumerate(pety_b):
+                serwer('"wybierz", nil, "%s", true' % pid)    # haczyk: wybór bez podchodzenia do zagrody
+                do_inkubatora_bagna()
+                p0 = js(KOD["pozycja"], "Server")
+                cel = (p0[0] - kier_b[0] * 8.0 + bok_b[0] * (6.0 - 3.0 * i), p0[1], p0[2] - kier_b[1] * 8.0 + bok_b[1] * (6.0 - 3.0 * i))
+                call("character_navigation", {"datamodel_type": "Client", "x": cel[0], "y": cel[1], "z": cel[2]}, timeout=60)
+                time.sleep(0.8)
+                za_graczem()
+                k6 = klient('"stan"')
+                zrzut("b11_idzie_za_graczem_%s" % pid)
+                kamera_zwykla()
+                idzie[pid] = {"mojPet": k6.get("mojPet"), "odleglosc": k6.get("odleglosc"), "klip": k6.get("klip")}
+            zapisz("B06", idzie)
+            punkt("B06", all(v["mojPet"] == k for k, v in idzie.items()),
+                  "za graczem (pet wymuszony haczykiem): %s" % ", ".join(
+                      "%s %s st %s" % (k, v["odleglosc"] and round(v["odleglosc"], 1), v["klip"]) for k, v in idzie.items()))
+            # ============================================================ B07 wyklucie każdego peta Bagna
+            do_inkubatora_bagna()
+            kamera(*oko_inkubatora(dal=12.0, wys=5.0, gn=gn_b, kr=kier_b, dy=dy_b))
+            for pid in pety_b:
+                klient('"wyklucie", "%s", true, "%s"' % (pid, JB["id"]))
+                time.sleep(3.9)
+                zrzut("b12_wyklucie_%s" % pid)
+                czekaj_na(lambda: not klient('"stan"').get("wylegaSie"), 8, 0.5)
+            kamera_zwykla()
+            punkt("B07", None, "wyklucie każdego peta Bagna — zrzuty b12_wyklucie_<id>")
+            # ============================================================ B08 zagroda z dziesięcioma petami
+            luau(KOD["ustaw_atr"] % ("Gold", "20000"), "Server")
+            for r in (0.1, 0.6, 0.8, 0.9, 0.995):             # pięć leśnych (haczyk) — razem dziesięć petów
+                serwer('"zwolnij"')
+                serwer('"kup", nil, "%s", %f' % (JL["id"], r))
+                time.sleep(4.8)
+            serwer('"zwolnij"')
+            serwer('"wybierz", nil, "%s", true' % JB["pula"][0])
+            ez, kz = G["zagroda_e"], G["zagroda_kier"]
+            stoi_z = (ez[0] + kz[0] * 1.5, ez[1] + 3.0, ez[2] + kz[2] * 1.5)
+            przestaw(stoi_z, (ez[0] - kz[0] * 5, 0, ez[2] - kz[2] * 5))
+            k8 = czekaj_na(lambda: (lambda k: k if (k.get("wiersze") or 0) >= 10 else None)(klient('"stan"')), 15, 0.5) or {}
+            kamera((ez[0] + kz[0] * 14.0, ez[1] + 9.0, ez[2] + kz[2] * 14.0), (ez[0] - kz[0] * 3.0, ez[1], ez[2] - kz[2] * 3.0))
+            zrzut("b13_zagroda_dziesiec")
+            tb = G["zagroda_tablica"]
+            kamera((tb[0] + kz[0] * 7.0, tb[1] + 3.6, tb[2] + kz[2] * 7.0), (tb[0], tb[1] + 3.4, tb[2]))
+            zrzut("b14_tablica_zagrody_dwa_jajka")
+            kamera_zwykla()
+            przestaw(stoi_z, (ez[0] - kz[0] * 5, 0, ez[2] - kz[2] * 5))
+            time.sleep(1.0)
+            przytrzymaj_e()                                   # E opiekunki → OknoMiejsca
+            okno = czekaj_na(lambda: luau(KOD["okno_otwarte"], "Client") == "true", 5, 0.4)
+            time.sleep(0.8)
+            zrzut("b15_okno_dziesiec_petow")
+            luau(KOD["przewin_okno"] % 5000, "Client")
+            time.sleep(0.5)
+            zrzut("b16_okno_przewiniete")
+            zapisz("B08", {"klient": k8, "okno": bool(okno)})
+            punkt("B08", bool(okno) and (k8.get("wiersze") or 0) == 10 and (k8.get("petyWZagrodzie") or 0) >= 5,
+                  "wierszy %s, pety na miejscach %s, okno po E %s" % (k8.get("wiersze"), k8.get("petyWZagrodzie"), bool(okno)))
+            # ============================================================ B09 wybór peta Bagna z okna
+            klient('"wybierz", "%s"' % JB["pula"][-1])
+            time.sleep(1.5)
+            a9 = atr("PetAktywny")
+            zrzut("b17_okno_po_wyborze_bagna")
+            klient('"zamknij"')
+            time.sleep(1.5)
+            k9 = klient('"stan"')
+            punkt("B09", a9.get("PetAktywny") == JB["pula"][-1] and k9.get("mojPet") == JB["pula"][-1],
+                  "aktywny %s, za graczem %s" % (a9.get("PetAktywny"), k9.get("mojPet")))
 
         # ================================================================ P00 Edit
         nie_usypiaj()
@@ -351,240 +572,243 @@ def main():
                 time.sleep(2)
                 wk = js(KOD["wybor_klasy"], "Client")
             punkt("P02", bool(wk.get("klasa")) and not wk.get("ekran"), "wybór klasy: %s" % wk)
-            # ================================================================ P03 brak Złota
-            luau(KOD["ustaw_atr"] % ("Gold", "0"), "Server")
-            do_inkubatora()
-            # pierwsze wejście do lasu: przelot kamery (podpowiedzi E w tym czasie nie działają) — czekamy na koniec
-            czekaj_na(lambda: luau(KOD["przelot"], "Client") == "true", 6, 0.4)
-            czekaj_na(lambda: luau(KOD["przelot"], "Client") == "false", 40, 1.0)
-            do_inkubatora()
-            kamera(*oko_inkubatora())
-            przed = atr("Gold", "PetyLiczba", "PetAktywny")
-            przytrzymaj_e()
-            time.sleep(0.8)
-            kl = klient('"stan"')
-            po = atr("Gold", "PetyLiczba", "PetAktywny")
-            odm = kont("PetyProba", ["OstatniaOdmowa", "LicznikOdmow"])
-            zrzut("01_brak_zlota")
-            zapisz("P03", {"przed": przed, "po": po, "klient": kl, "odmowa": odm})
-            punkt("P03", odm.get("OstatniaOdmowa") == "za_malo" and "Brakuje" in str(kl.get("komunikat"))
-                  and po.get("Gold") == 0 and not po.get("PetyLiczba"), "komunikat %r, Gold %s, pety %s"
-                  % (kl.get("komunikat"), po.get("Gold"), po.get("PetyLiczba")))
-            # ================================================================ P04 kupno prawdziwym E + wyklucie
-            luau(KOD["ustaw_atr"] % ("Gold", "2000"), "Server")
-            time.sleep(0.6)
-            kl0 = klient('"stan"')
-            przytrzymaj_e()
-            t0 = time.time()
-            klatki = [(0.8, "02_wyklucie_trzesienie"), (1.75, "03_wyklucie_pekniecie"), (2.45, "04_wyklucie_wyskok"),
-                      (4.0, "05_wyklucie_napis")]
-            # ================================================================ P05 drugi E w trakcie wyklucia
-            przytrzymaj_e()
-            odm5 = kont("PetyProba", ["OstatniaOdmowa"])
-            for t, nazwa in klatki:
-                while time.time() - t0 < t:
-                    time.sleep(0.05)
-                zrzut(nazwa)
-            po4 = atr("Gold", "PetyLiczba", "PetAktywny", D["atrybuty_gracza"]["cena"])
-            zak = kont("PetyProba", ["OstatniZakup", "LicznikZakupow"])
-            cena0 = D["jajka"][0]["cena"]["start"]
-            zapisz("P04", {"akcja_przed": kl0.get("akcjaE"), "napis": kl0.get("napisCeny"), "po": po4, "zakup": zak})
-            punkt("P04", po4.get("Gold") == 2000 - cena0 and po4.get("PetyLiczba") == 1 and bool(po4.get("PetAktywny"))
-                  and "Kup za %d" % cena0 in str(kl0.get("akcjaE")),
-                  "E %r, napis %r → Gold %s, pet %s, następna cena %s" % (kl0.get("akcjaE"), kl0.get("napisCeny"),
-                                                                       po4.get("Gold"), po4.get("PetAktywny"),
-                                                                       po4.get(D["atrybuty_gracza"]["cena"])))
-            punkt("P05", odm5.get("OstatniaOdmowa") == "trwa_wyklucie" and po4.get("Gold") == 2000 - cena0,
-                  "odmowa %s, Gold %s" % (odm5, po4.get("Gold")))
-            time.sleep(2.5)
-            kamera_zwykla()
-            # ================================================================ P06 pet za graczem
-            czekaj_na(lambda: klient('"stan"').get("mojPet"), 10, 0.5)
-            start = js(KOD["pozycja"], "Server")
-            cel = (start[0] + 40.0, start[1], start[2] - 6.0)
-            call("character_navigation", {"datamodel_type": "Client", "x": cel[0], "y": cel[1], "z": cel[2]}, timeout=60)
-            probki = []
-            t1 = time.time()
-            while time.time() - t1 < 5.0:
-                k6 = klient('"stan"')
-                probki.append((round(time.time() - t1, 1), k6.get("odleglosc"), k6.get("klip")))
-                time.sleep(0.4)
-            time.sleep(2.0)
-            za_graczem(11.0, 5.0, 4.0)
-            koniec = klient('"stan"')
-            zrzut("06_pet_za_graczem")
-            kamera_zwykla()
-            odl = [p[1] for p in probki if isinstance(p[1], (int, float))]
-            zapisz("P06", {"probki": probki, "koniec": koniec})
-            punkt("P06", bool(odl) and max(odl) <= 12 and isinstance(koniec.get("odleglosc"), (int, float))
-                  and koniec["odleglosc"] <= 6 and "chod" in [p[2] for p in probki],
-                  "odległość w marszu maks. %s, po zatrzymaniu %s, klipy %s" % (max(odl) if odl else None,
-                                                                              koniec.get("odleglosc"),
-                                                                              sorted({p[2] for p in probki if p[2]})))
-            # ================================================================ zakupy: komplet pięciu petów (haczyk)
-            pety = [p["id"] for p in U["pety"]]
-            luau(KOD["ustaw_atr"] % ("Gold", "20000"), "Server")
-            for r in (0.1, 0.6, 0.8, 0.9, 0.995):             # wymuszony los: każdy pet raz (test, nie gra)
-                serwer('"zwolnij"')
-                serwer('"kup", nil, "jajko_lesne", %f' % r)
-                time.sleep(4.8)                               # klient gra wyklucie (czeka, aż się skończy)
-            serwer('"zwolnij"')
-            zapisz("zakupy", serwer('"stan"'))
-            # ================================================================ P07 każdy pet w świecie
-            baza = (gniazdo[0] + kier[0] * 9.0, gniazdo[1] + 0.5, gniazdo[2] + kier[1] * 9.0)
-            bok = (-kier[1], kier[0])
-            miejsca = {}
-            for i, pid in enumerate(pety):
-                o = (i - 2) * 3.6
-                miejsca[pid] = (baza[0] + bok[0] * o, baza[1], baza[2] + bok[1] * o)
-                klient('"pokaz", "%s", Vector3.new(%f, %f, %f)' % (pid, miejsca[pid][0], miejsca[pid][1], miejsca[pid][2]))
-            time.sleep(1.0)
-            kamera((baza[0] + kier[0] * 11.0, baza[1] + 4.0, baza[2] + kier[1] * 11.0), (baza[0], baza[1] + 1.2, baza[2]))
-            zrzut("07_piec_petow")
-            for pid in pety:
-                m = miejsca[pid]
-                kamera((m[0] + kier[0] * 4.6 + bok[0] * 1.2, m[1] + 2.0, m[2] + kier[1] * 4.6 + bok[1] * 1.2),
-                       (m[0], m[1] + 1.0, m[2]))
-                time.sleep(0.4)
-                zrzut("08_pet_%s" % pid)
-            klient('"pokaz_usun"')
-            punkt("P07", None, "pięć petów w świecie — zrzuty 07_piec_petow i 08_pet_<id> do obejrzenia")
-            # ================================================================ P07b każdy pet idzie za graczem
-            kamera_zwykla()
-            idzie = {}
-            for i, pid in enumerate(pety):
-                serwer('"wybierz", nil, "%s", true' % pid)    # haczyk: wybór bez podchodzenia do zagrody
-                przestaw((stoi[0] + 4, stoi[1], stoi[2] - 14 + i * 0.5), (stoi[0] + 60, 0, stoi[2] - 14))
-                time.sleep(1.5)
-                p0 = js(KOD["pozycja"], "Server")
-                call("character_navigation", {"datamodel_type": "Client", "x": p0[0] + 26, "y": p0[1], "z": p0[2]},
-                     timeout=60)
-                time.sleep(0.5)
-                za_graczem()
-                k7 = klient('"stan"')
-                zrzut("08b_idzie_za_graczem_%s" % pid)
+            if tylko_bagno:
+                proba_bagna()
+            else:
+                # ================================================================ P03 brak Złota
+                luau(KOD["ustaw_atr"] % ("Gold", "0"), "Server")
+                do_inkubatora()
+                # pierwsze wejście do lasu: przelot kamery (podpowiedzi E w tym czasie nie działają) — czekamy na koniec
+                czekaj_na(lambda: luau(KOD["przelot"] % "LasPasGra", "Client") == "true", 6, 0.4)
+                czekaj_na(lambda: luau(KOD["przelot"] % "LasPasGra", "Client") == "false", 40, 1.0)
+                do_inkubatora()
+                kamera(*oko_inkubatora())
+                przed = atr("Gold", "PetyLiczba", "PetAktywny")
+                przytrzymaj_e()
+                time.sleep(0.8)
+                kl = klient('"stan"')
+                po = atr("Gold", "PetyLiczba", "PetAktywny")
+                odm = kont("PetyProba", ["OstatniaOdmowa", "LicznikOdmow"])
+                zrzut("01_brak_zlota")
+                zapisz("P03", {"przed": przed, "po": po, "klient": kl, "odmowa": odm})
+                punkt("P03", odm.get("OstatniaOdmowa") == "za_malo" and "Brakuje" in str(kl.get("komunikat"))
+                      and po.get("Gold") == 0 and not po.get("PetyLiczba"), "komunikat %r, Gold %s, pety %s"
+                      % (kl.get("komunikat"), po.get("Gold"), po.get("PetyLiczba")))
+                # ================================================================ P04 kupno prawdziwym E + wyklucie
+                luau(KOD["ustaw_atr"] % ("Gold", "2000"), "Server")
+                time.sleep(0.6)
+                kl0 = klient('"stan"')
+                przytrzymaj_e()
+                t0 = time.time()
+                klatki = [(0.8, "02_wyklucie_trzesienie"), (1.75, "03_wyklucie_pekniecie"), (2.45, "04_wyklucie_wyskok"),
+                          (4.0, "05_wyklucie_napis")]
+                # ================================================================ P05 drugi E w trakcie wyklucia
+                przytrzymaj_e()
+                odm5 = kont("PetyProba", ["OstatniaOdmowa"])
+                for t, nazwa in klatki:
+                    while time.time() - t0 < t:
+                        time.sleep(0.05)
+                    zrzut(nazwa)
+                po4 = atr("Gold", "PetyLiczba", "PetAktywny", JL["atrybuty"]["cena"])
+                zak = kont("PetyProba", ["OstatniZakup", "LicznikZakupow"])
+                cena0 = LP.cena(D, JL, 0)
+                zapisz("P04", {"akcja_przed": kl0.get("akcjaE"), "napis": kl0.get("napisCeny"), "po": po4, "zakup": zak})
+                punkt("P04", po4.get("Gold") == 2000 - cena0 and po4.get("PetyLiczba") == 1 and bool(po4.get("PetAktywny"))
+                      and "Kup za %d" % cena0 in str(kl0.get("akcjaE")),
+                      "E %r, napis %r → Gold %s, pet %s, następna cena %s" % (kl0.get("akcjaE"), kl0.get("napisCeny"),
+                                                                           po4.get("Gold"), po4.get("PetAktywny"),
+                                                                           po4.get(JL["atrybuty"]["cena"])))
+                punkt("P05", odm5.get("OstatniaOdmowa") == "trwa_wyklucie" and po4.get("Gold") == 2000 - cena0,
+                      "odmowa %s, Gold %s" % (odm5, po4.get("Gold")))
+                time.sleep(2.5)
                 kamera_zwykla()
-                idzie[pid] = {"mojPet": k7.get("mojPet"), "odleglosc": k7.get("odleglosc"), "klip": k7.get("klip")}
-            zapisz("P07b", idzie)
-            punkt("P07b", all(v["mojPet"] == k for k, v in idzie.items()),
-                  "za graczem (pet wymuszony haczykiem): %s" % ", ".join("%s %s st %s" % (k, v["odleglosc"] and round(v["odleglosc"], 1),
-                                                                                      v["klip"]) for k, v in idzie.items()))
-            # ================================================================ P08 wyklucie każdego peta
-            kamera(*oko_inkubatora(dal=12.0, wys=5.0))
-            for pid in pety:
-                klient('"wyklucie", "%s", true' % pid)
-                time.sleep(3.9)
-                zrzut("09_wyklucie_%s" % pid)
-                czekaj_na(lambda: not klient('"stan"').get("wylegaSie"), 8, 0.5)
-            kamera_zwykla()
-            punkt("P08", None, "wyklucie każdego peta — zrzuty 09_wyklucie_<id>")
-            # ================================================================ P09 zagroda
-            serwer('"wybierz", nil, "zoledziak", true')
-            ez = G["zagroda_e"]
-            kz = G["zagroda_kier"]
-            stoi_z = (ez[0] + kz[0] * 1.5, ez[1] + 3.0, ez[2] + kz[2] * 1.5)
-            przestaw(stoi_z, (ez[0] - kz[0] * 5, 0, ez[2] - kz[2] * 5))
-            k9 = czekaj_na(lambda: (lambda k: k if k.get("petyWZagrodzie") else None)(klient('"stan"')), 15, 0.5) or {}
-            kamera((ez[0] + kz[0] * 14.0, ez[1] + 9.0, ez[2] + kz[2] * 14.0), (ez[0] - kz[0] * 3.0, ez[1], ez[2] - kz[2] * 3.0))
-            zrzut("10_zagroda")
-            tb = G["zagroda_tablica"]
-            kamera((tb[0] + kz[0] * 7.0, tb[1] + 3.6, tb[2] + kz[2] * 7.0), (tb[0], tb[1] + 3.4, tb[2]))
-            zrzut("11_tablica_zagrody")
-            kamera_zwykla()
-            przestaw(stoi_z, (ez[0] - kz[0] * 5, 0, ez[2] - kz[2] * 5))
-            time.sleep(1.0)
-            przytrzymaj_e()                                   # E opiekunki (MiasteczkoBazarGra) → OknoMiejsca
-            okno = czekaj_na(lambda: luau(KOD["okno_otwarte"], "Client") == "true", 5, 0.4)
-            time.sleep(0.8)
-            zrzut("12_okno_proba")
-            zapisz("P09", {"klient": k9, "okno": bool(okno)})
-            punkt("P09", bool(okno) and (k9.get("petyWZagrodzie") or 0) >= 3 and (k9.get("wiersze") or 0) >= 4,
-                  "pety na miejscach %s, wierszy %s, okno po E %s" % (k9.get("petyWZagrodzie"), k9.get("wiersze"), bool(okno)))
-            # ================================================================ P10 wybór z okna
-            klient('"wybierz", "lisciolis"')
-            time.sleep(1.5)
-            a10 = atr("PetAktywny")
-            zrzut("13_okno_po_wyborze")
-            klient('"zamknij"')
-            time.sleep(1.5)
-            k10 = klient('"stan"')
-            punkt("P10", a10.get("PetAktywny") == "lisciolis" and k10.get("mojPet") == "lisciolis",
-                  "aktywny %s, za graczem %s" % (a10.get("PetAktywny"), k10.get("mojPet")))
-            # ================================================================ P11 premia przy łupie
-            przed = atr("Gold")
-            w11 = js(KOD["przyznaj"] % (100, 40), "Server")
-            time.sleep(0.4)
-            k11 = klient('"stan"')
-            zrzut("14_premia_przy_lupie")
-            po = atr("Gold")
-            premia = int(math.floor(100 * 0.12 + 0.5))
-            zapisz("P11", {"wynik": w11, "przed": przed, "po": po, "klient": k11})
-            punkt("P11", po.get("Gold") == przed.get("Gold") + 100 + premia and "od peta" in str(k11.get("komunikat")),
-                  "Gold %s → %s (łup 100 + premia %d), napis %r" % (przed.get("Gold"), po.get("Gold"), premia,
-                                                                   k11.get("komunikat")))
-            # ================================================================ P12 reset w trakcie wyklucia
-            do_inkubatora()
-            przed = atr("Gold", "PetyLiczba")
-            przytrzymaj_e()
-            time.sleep(1.0)
-            luau(KOD["reset"], "Server")
-            time.sleep(9.0)
-            czekaj_na(lambda: luau(KOD["gotowy_klient"], "Client") == "true", 20, 1.0)
-            time.sleep(3.0)
-            po = atr("Gold", "PetyLiczba", "PetAktywny")
-            k12 = klient('"stan"')
-            zapisz("P12", {"przed": przed, "po": po, "klient": k12})
-            punkt("P12", po.get("PetyLiczba") == (przed.get("PetyLiczba") or 0) + 1 and not k12.get("wylegaSie")
-                  and k12.get("mojPet") == po.get("PetAktywny"),
-                  "pety %s → %s, wyklucie skończone %s, za graczem %s" % (przed.get("PetyLiczba"), po.get("PetyLiczba"),
-                                                                         not k12.get("wylegaSie"), k12.get("mojPet")))
-            # ================================================================ P13 walka z petem przy boku
-            if not bez_walki:
-                luau(KOD["test_kamera"] % "false", "Client")    # walka: pet ma zniknąć jak u gracza
-                luau(KOD["test_bohater"] % ("LasPasGra", "false"), "Server")
-                pot = js(KOD["potwor_w_strefie"] % "s1", "Server")
-                if pot.get("id"):
-                    p = pot["p"]
-                    przestaw((p[0] - 4.0, p[1] + 3.2, p[2]), p)
-                    time.sleep(1.0)
-                    przed = atr("Gold")
-                    luau(KOD["walcz"] % pot["id"], "Client")
-                    w = czekaj_na(lambda: (lambda k: k if k.get("ukryte") else None)(klient('"stan"')), 10, 0.3) or {}
-                    czeka = atr(D["atrybuty_gracza"]["czeka"])
+                # ================================================================ P06 pet za graczem
+                czekaj_na(lambda: klient('"stan"').get("mojPet"), 10, 0.5)
+                start = js(KOD["pozycja"], "Server")
+                cel = (start[0] + 40.0, start[1], start[2] - 6.0)
+                call("character_navigation", {"datamodel_type": "Client", "x": cel[0], "y": cel[1], "z": cel[2]}, timeout=60)
+                probki = []
+                t1 = time.time()
+                while time.time() - t1 < 5.0:
+                    k6 = klient('"stan"')
+                    probki.append((round(time.time() - t1, 1), k6.get("odleglosc"), k6.get("klip")))
+                    time.sleep(0.4)
+                time.sleep(2.0)
+                za_graczem(11.0, 5.0, 4.0)
+                koniec = klient('"stan"')
+                zrzut("06_pet_za_graczem")
+                kamera_zwykla()
+                odl = [p[1] for p in probki if isinstance(p[1], (int, float))]
+                zapisz("P06", {"probki": probki, "koniec": koniec})
+                punkt("P06", bool(odl) and max(odl) <= 12 and isinstance(koniec.get("odleglosc"), (int, float))
+                      and koniec["odleglosc"] <= 6 and "chod" in [p[2] for p in probki],
+                      "odległość w marszu maks. %s, po zatrzymaniu %s, klipy %s" % (max(odl) if odl else None,
+                                                                                  koniec.get("odleglosc"),
+                                                                                  sorted({p[2] for p in probki if p[2]})))
+                # ================================================================ zakupy: komplet pięciu petów (haczyk)
+                pety = list(JL["pula"])
+                luau(KOD["ustaw_atr"] % ("Gold", "20000"), "Server")
+                for r in (0.1, 0.6, 0.8, 0.9, 0.995):             # wymuszony los: każdy pet raz (test, nie gra)
+                    serwer('"zwolnij"')
+                    serwer('"kup", nil, "jajko_lesne", %f' % r)
+                    time.sleep(4.8)                               # klient gra wyklucie (czeka, aż się skończy)
+                serwer('"zwolnij"')
+                zapisz("zakupy", serwer('"stan"'))
+                # ================================================================ P07 każdy pet w świecie
+                baza = (gniazdo[0] + kier[0] * 9.0, gniazdo[1] + 0.5, gniazdo[2] + kier[1] * 9.0)
+                bok = (-kier[1], kier[0])
+                miejsca = {}
+                for i, pid in enumerate(pety):
+                    o = (i - 2) * 3.6
+                    miejsca[pid] = (baza[0] + bok[0] * o, baza[1], baza[2] + bok[1] * o)
+                    klient('"pokaz", "%s", Vector3.new(%f, %f, %f)' % (pid, miejsca[pid][0], miejsca[pid][1], miejsca[pid][2]))
+                time.sleep(1.0)
+                kamera((baza[0] + kier[0] * 11.0, baza[1] + 4.0, baza[2] + kier[1] * 11.0), (baza[0], baza[1] + 1.2, baza[2]))
+                zrzut("07_piec_petow")
+                for pid in pety:
+                    m = miejsca[pid]
+                    kamera((m[0] + kier[0] * 4.6 + bok[0] * 1.2, m[1] + 2.0, m[2] + kier[1] * 4.6 + bok[1] * 1.2),
+                           (m[0], m[1] + 1.0, m[2]))
+                    time.sleep(0.4)
+                    zrzut("08_pet_%s" % pid)
+                klient('"pokaz_usun"')
+                punkt("P07", None, "pięć petów w świecie — zrzuty 07_piec_petow i 08_pet_<id> do obejrzenia")
+                # ================================================================ P07b każdy pet idzie za graczem
+                kamera_zwykla()
+                idzie = {}
+                for i, pid in enumerate(pety):
+                    serwer('"wybierz", nil, "%s", true' % pid)    # haczyk: wybór bez podchodzenia do zagrody
+                    przestaw((stoi[0] + 4, stoi[1], stoi[2] - 14 + i * 0.5), (stoi[0] + 60, 0, stoi[2] - 14))
                     time.sleep(1.5)
-                    zrzut("15_walka_bez_peta")
-                    czekaj_na(lambda: js(KOD["odtw"] % '"stan"', "Client").get("faza") == "odtwarzanie", 10, 0.4)
-                    js(KOD["odtw"] % '"przewinDo", 1000', "Client")
-                    time.sleep(2.5)
-                    js(KOD["odtw"] % '"zamknij"', "Client")
-                    czekaj_na(lambda: not js(KOD["klient_potworow"], "Client").get("walka"), 30, 1.0)
-                    time.sleep(2.0)
+                    p0 = js(KOD["pozycja"], "Server")
+                    call("character_navigation", {"datamodel_type": "Client", "x": p0[0] + 26, "y": p0[1], "z": p0[2]},
+                         timeout=60)
+                    time.sleep(0.5)
+                    za_graczem()
+                    k7 = klient('"stan"')
+                    zrzut("08b_idzie_za_graczem_%s" % pid)
                     kamera_zwykla()
-                    k13 = czekaj_na(lambda: (lambda k: k if k.get("mojPet") else None)(klient('"stan"')), 10, 0.5) or {}
-                    po = atr("Gold", D["atrybuty_gracza"]["czeka"])
-                    zrzut("16_po_walce_pet_wraca")
-                    zapisz("P13", {"w_walce": w, "czeka": czeka, "po": po, "klient_po": k13, "przed": przed})
-                    punkt("P13", w.get("towarzysze") == 0 and czeka.get(D["atrybuty_gracza"]["czeka"]) is True
-                          and bool(k13.get("mojPet")) and not po.get(D["atrybuty_gracza"]["czeka"]),
-                          "w walce: petów %s, PetCzeka %s; po walce za graczem %s, Gold %s → %s"
-                          % (w.get("towarzysze"), czeka, k13.get("mojPet"), przed.get("Gold"), po.get("Gold")))
-                else:
-                    punkt("P13", None, "brak wolnego slime'a w s1 — pominięte")
-            # ================================================================ P14 bez sygnału StanGracza
-            do_inkubatora()
-            luau(KOD["przemianuj"] % ("Pety", "PetyWylaczone"), "Server")
-            time.sleep(0.3)
-            przed = atr("Gold")
-            serwer('"zwolnij"')
-            przytrzymaj_e()
-            time.sleep(0.8)
-            k14 = klient('"stan"')
-            odm = kont("PetyProba", ["OstatniaOdmowa"])
-            po = atr("Gold")
-            luau(KOD["przemianuj"] % ("PetyWylaczone", "Pety"), "Server")
-            zrzut("17_bez_stanu_gracza")
-            punkt("P14", odm.get("OstatniaOdmowa") == "brak_stanu" and po.get("Gold") == przed.get("Gold")
-                  and "nieczynny" in str(k14.get("komunikat")), "odmowa %s, napis %r" % (odm, k14.get("komunikat")))
+                    idzie[pid] = {"mojPet": k7.get("mojPet"), "odleglosc": k7.get("odleglosc"), "klip": k7.get("klip")}
+                zapisz("P07b", idzie)
+                punkt("P07b", all(v["mojPet"] == k for k, v in idzie.items()),
+                      "za graczem (pet wymuszony haczykiem): %s" % ", ".join("%s %s st %s" % (k, v["odleglosc"] and round(v["odleglosc"], 1),
+                                                                                          v["klip"]) for k, v in idzie.items()))
+                # ================================================================ P08 wyklucie każdego peta
+                kamera(*oko_inkubatora(dal=12.0, wys=5.0))
+                for pid in pety:
+                    klient('"wyklucie", "%s", true' % pid)
+                    time.sleep(3.9)
+                    zrzut("09_wyklucie_%s" % pid)
+                    czekaj_na(lambda: not klient('"stan"').get("wylegaSie"), 8, 0.5)
+                kamera_zwykla()
+                punkt("P08", None, "wyklucie każdego peta — zrzuty 09_wyklucie_<id>")
+                # ================================================================ P09 zagroda
+                serwer('"wybierz", nil, "zoledziak", true')
+                ez = G["zagroda_e"]
+                kz = G["zagroda_kier"]
+                stoi_z = (ez[0] + kz[0] * 1.5, ez[1] + 3.0, ez[2] + kz[2] * 1.5)
+                przestaw(stoi_z, (ez[0] - kz[0] * 5, 0, ez[2] - kz[2] * 5))
+                k9 = czekaj_na(lambda: (lambda k: k if k.get("petyWZagrodzie") else None)(klient('"stan"')), 15, 0.5) or {}
+                kamera((ez[0] + kz[0] * 14.0, ez[1] + 9.0, ez[2] + kz[2] * 14.0), (ez[0] - kz[0] * 3.0, ez[1], ez[2] - kz[2] * 3.0))
+                zrzut("10_zagroda")
+                tb = G["zagroda_tablica"]
+                kamera((tb[0] + kz[0] * 7.0, tb[1] + 3.6, tb[2] + kz[2] * 7.0), (tb[0], tb[1] + 3.4, tb[2]))
+                zrzut("11_tablica_zagrody")
+                kamera_zwykla()
+                przestaw(stoi_z, (ez[0] - kz[0] * 5, 0, ez[2] - kz[2] * 5))
+                time.sleep(1.0)
+                przytrzymaj_e()                                   # E opiekunki (MiasteczkoBazarGra) → OknoMiejsca
+                okno = czekaj_na(lambda: luau(KOD["okno_otwarte"], "Client") == "true", 5, 0.4)
+                time.sleep(0.8)
+                zrzut("12_okno_proba")
+                zapisz("P09", {"klient": k9, "okno": bool(okno)})
+                punkt("P09", bool(okno) and (k9.get("petyWZagrodzie") or 0) >= 3 and (k9.get("wiersze") or 0) >= 4,
+                      "pety na miejscach %s, wierszy %s, okno po E %s" % (k9.get("petyWZagrodzie"), k9.get("wiersze"), bool(okno)))
+                # ================================================================ P10 wybór z okna
+                klient('"wybierz", "lisciolis"')
+                time.sleep(1.5)
+                a10 = atr("PetAktywny")
+                zrzut("13_okno_po_wyborze")
+                klient('"zamknij"')
+                time.sleep(1.5)
+                k10 = klient('"stan"')
+                punkt("P10", a10.get("PetAktywny") == "lisciolis" and k10.get("mojPet") == "lisciolis",
+                      "aktywny %s, za graczem %s" % (a10.get("PetAktywny"), k10.get("mojPet")))
+                # ================================================================ P11 premia przy łupie
+                przed = atr("Gold")
+                w11 = js(KOD["przyznaj"] % (100, 40), "Server")
+                time.sleep(0.4)
+                k11 = klient('"stan"')
+                zrzut("14_premia_przy_lupie")
+                po = atr("Gold")
+                premia = int(math.floor(100 * 0.12 + 0.5))
+                zapisz("P11", {"wynik": w11, "przed": przed, "po": po, "klient": k11})
+                punkt("P11", po.get("Gold") == przed.get("Gold") + 100 + premia and "od peta" in str(k11.get("komunikat")),
+                      "Gold %s → %s (łup 100 + premia %d), napis %r" % (przed.get("Gold"), po.get("Gold"), premia,
+                                                                       k11.get("komunikat")))
+                # ================================================================ P12 reset w trakcie wyklucia
+                do_inkubatora()
+                przed = atr("Gold", "PetyLiczba")
+                przytrzymaj_e()
+                time.sleep(1.0)
+                luau(KOD["reset"], "Server")
+                time.sleep(9.0)
+                czekaj_na(lambda: luau(KOD["gotowy_klient"], "Client") == "true", 20, 1.0)
+                time.sleep(3.0)
+                po = atr("Gold", "PetyLiczba", "PetAktywny")
+                k12 = klient('"stan"')
+                zapisz("P12", {"przed": przed, "po": po, "klient": k12})
+                punkt("P12", po.get("PetyLiczba") == (przed.get("PetyLiczba") or 0) + 1 and not k12.get("wylegaSie")
+                      and k12.get("mojPet") == po.get("PetAktywny"),
+                      "pety %s → %s, wyklucie skończone %s, za graczem %s" % (przed.get("PetyLiczba"), po.get("PetyLiczba"),
+                                                                             not k12.get("wylegaSie"), k12.get("mojPet")))
+                # ================================================================ P13 walka z petem przy boku
+                if not bez_walki:
+                    luau(KOD["test_kamera"] % "false", "Client")    # walka: pet ma zniknąć jak u gracza
+                    luau(KOD["test_bohater"] % ("LasPasGra", "false"), "Server")
+                    pot = js(KOD["potwor_w_strefie"] % "s1", "Server")
+                    if pot.get("id"):
+                        p = pot["p"]
+                        przestaw((p[0] - 4.0, p[1] + 3.2, p[2]), p)
+                        time.sleep(1.0)
+                        przed = atr("Gold")
+                        luau(KOD["walcz"] % pot["id"], "Client")
+                        w = czekaj_na(lambda: (lambda k: k if k.get("ukryte") else None)(klient('"stan"')), 10, 0.3) or {}
+                        czeka = atr(D["atrybuty_gracza"]["czeka"])
+                        time.sleep(1.5)
+                        zrzut("15_walka_bez_peta")
+                        czekaj_na(lambda: js(KOD["odtw"] % '"stan"', "Client").get("faza") == "odtwarzanie", 10, 0.4)
+                        js(KOD["odtw"] % '"przewinDo", 1000', "Client")
+                        time.sleep(2.5)
+                        js(KOD["odtw"] % '"zamknij"', "Client")
+                        czekaj_na(lambda: not js(KOD["klient_potworow"], "Client").get("walka"), 30, 1.0)
+                        time.sleep(2.0)
+                        kamera_zwykla()
+                        k13 = czekaj_na(lambda: (lambda k: k if k.get("mojPet") else None)(klient('"stan"')), 10, 0.5) or {}
+                        po = atr("Gold", D["atrybuty_gracza"]["czeka"])
+                        zrzut("16_po_walce_pet_wraca")
+                        zapisz("P13", {"w_walce": w, "czeka": czeka, "po": po, "klient_po": k13, "przed": przed})
+                        punkt("P13", w.get("towarzysze") == 0 and czeka.get(D["atrybuty_gracza"]["czeka"]) is True
+                              and bool(k13.get("mojPet")) and not po.get(D["atrybuty_gracza"]["czeka"]),
+                              "w walce: petów %s, PetCzeka %s; po walce za graczem %s, Gold %s → %s"
+                              % (w.get("towarzysze"), czeka, k13.get("mojPet"), przed.get("Gold"), po.get("Gold")))
+                    else:
+                        punkt("P13", None, "brak wolnego slime'a w s1 — pominięte")
+                # ================================================================ P14 bez sygnału StanGracza
+                do_inkubatora()
+                luau(KOD["przemianuj"] % ("Pety", "PetyWylaczone"), "Server")
+                time.sleep(0.3)
+                przed = atr("Gold")
+                serwer('"zwolnij"')
+                przytrzymaj_e()
+                time.sleep(0.8)
+                k14 = klient('"stan"')
+                odm = kont("PetyProba", ["OstatniaOdmowa"])
+                po = atr("Gold")
+                luau(KOD["przemianuj"] % ("PetyWylaczone", "Pety"), "Server")
+                zrzut("17_bez_stanu_gracza")
+                punkt("P14", odm.get("OstatniaOdmowa") == "brak_stanu" and po.get("Gold") == przed.get("Gold")
+                      and "nieczynny" in str(k14.get("komunikat")), "odmowa %s, napis %r" % (odm, k14.get("komunikat")))
             # ================================================================ P15 konsola
             out = call("get_console_output")["text"]
             zle = [l for l in out.splitlines() if ("PetyProba" in l and ("Error" in l or "error" in l or "Script '" in l))

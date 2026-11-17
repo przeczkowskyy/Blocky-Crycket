@@ -1,0 +1,297 @@
+{
+ "modul": "ognik",
+ "modele": [
+  {
+   "id": "ognik",
+   "nazwa": "Ognik",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 492,
+     "wierzcholki": 264,
+     "wymiary": [
+      1.2,
+      1.13,
+      1.14
+     ],
+     "min": [
+      -0.6,
+      0.87,
+      -0.55
+     ],
+     "max": [
+      0.6,
+      2.0,
+      0.59
+     ]
+    },
+    {
+     "nazwa": "Plomien_Geo",
+     "kosc": "Plomien",
+     "trojkaty": 18,
+     "wierzcholki": 15,
+     "wymiary": [
+      0.854,
+      1.149,
+      0.7
+     ],
+     "min": [
+      -0.427,
+      1.696,
+      -0.37
+     ],
+     "max": [
+      0.427,
+      2.845,
+      0.33
+     ]
+    },
+    {
+     "nazwa": "Plomyk_Geo",
+     "kosc": "Plomyk",
+     "trojkaty": 6,
+     "wierzcholki": 5,
+     "wymiary": [
+      0.26,
+      0.5,
+      0.26
+     ],
+     "min": [
+      -0.13,
+      2.37,
+      -0.37
+     ],
+     "max": [
+      0.13,
+      2.87,
+      -0.11
+     ]
+    },
+    {
+     "nazwa": "RaczkaL_Geo",
+     "kosc": "RaczkaL",
+     "trojkaty": 54,
+     "wierzcholki": 31,
+     "wymiary": [
+      0.474,
+      0.31,
+      0.22
+     ],
+     "min": [
+      0.56,
+      1.34,
+      -0.06
+     ],
+     "max": [
+      1.034,
+      1.65,
+      0.16
+     ]
+    },
+    {
+     "nazwa": "RaczkaP_Geo",
+     "kosc": "RaczkaP",
+     "trojkaty": 54,
+     "wierzcholki": 31,
+     "wymiary": [
+      0.474,
+      0.31,
+      0.22
+     ],
+     "min": [
+      -1.034,
+      1.34,
+      -0.06
+     ],
+     "max": [
+      -0.56,
+      1.65,
+      0.16
+     ]
+    },
+    {
+     "nazwa": "Smuga_Geo",
+     "kosc": "Smuga",
+     "trojkaty": 6,
+     "wierzcholki": 5,
+     "wymiary": [
+      0.6,
+      0.7,
+      0.6
+     ],
+     "min": [
+      -0.3,
+      0.4,
+      -0.4
+     ],
+     "max": [
+      0.3,
+      1.1,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "Smuga2_Geo",
+     "kosc": "Smuga2",
+     "trojkaty": 48,
+     "wierzcholki": 26,
+     "wymiary": [
+      0.18,
+      0.3,
+      0.18
+     ],
+     "min": [
+      -0.09,
+      0.2,
+      -0.25
+     ],
+     "max": [
+      0.09,
+      0.5,
+      -0.07
+     ]
+    },
+    {
+     "nazwa": "Iskra1_Geo",
+     "kosc": "Iskra1",
+     "trojkaty": 12,
+     "wierzcholki": 8,
+     "wymiary": [
+      0.273,
+      0.226,
+      0.273
+     ],
+     "min": [
+      0.24,
+      1.587,
+      0.897
+     ],
+     "max": [
+      0.513,
+      1.813,
+      1.17
+     ]
+    },
+    {
+     "nazwa": "Iskra2_Geo",
+     "kosc": "Iskra2",
+     "trojkaty": 12,
+     "wierzcholki": 8,
+     "wymiary": [
+      0.274,
+      0.226,
+      0.273
+     ],
+     "min": [
+      -0.479,
+      1.137,
+      -1.076
+     ],
+     "max": [
+      -0.205,
+      1.363,
+      -0.803
+     ]
+    }
+   ],
+   "trojkaty_razem": 702,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 10
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.068,
+    2.67,
+    2.246
+   ],
+   "wymiary_z_akcesoriami": [
+    2.068,
+    2.67,
+    2.246
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.034,
+     0.2,
+     -1.076
+    ],
+    [
+     1.034,
+     2.87,
+     1.17
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Tulow",
+    "Plomien",
+    "Plomyk",
+    "RaczkaL",
+    "RaczkaP",
+    "Smuga",
+    "Smuga2",
+    "Iskra1",
+    "Iskra2"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "chod",
+     "dlugosc": 24,
+     "fps": 30,
+     "sekundy": 0.8,
+     "petla": true
+    },
+    {
+     "n": "radosc",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "wyklucie",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [
+  "klip chod: Iskra1.obrot — klatka 0 ≠ klatka 24, pętla skoczy",
+  "klip chod: Iskra2.obrot — klatka 0 ≠ klatka 24, pętla skoczy",
+  "klip spoczynek: Iskra1.obrot — klatka 0 ≠ klatka 60, pętla skoczy",
+  "klip spoczynek: Iskra2.obrot — klatka 0 ≠ klatka 60, pętla skoczy",
+  "ognik: najniższy punkt na y = 0.20 — postać nie stoi na ziemi (y = 0)"
+ ],
+ "kontrola": [
+  "ognik.fbx: siatki 11, kości 10, trójkąty 726, wzrost 2.67 st., akcje brak -> ZGODNE",
+  "ognik__spoczynek.fbx: siatki 11, kości 10, trójkąty 726, wzrost 2.67 st., akcje ognik|Scene 1-61 -> ZGODNE",
+  "ognik__chod.fbx: siatki 11, kości 10, trójkąty 726, wzrost 2.67 st., akcje ognik|Scene 1-25 -> ZGODNE",
+  "ognik__radosc.fbx: siatki 11, kości 10, trójkąty 726, wzrost 2.67 st., akcje ognik|Scene 1-37 -> ZGODNE",
+  "ognik__wyklucie.fbx: siatki 11, kości 10, trójkąty 726, wzrost 2.67 st., akcje ognik|Scene 1-31 -> ZGODNE",
+  "ognik.glb: siatki 11, kości 10, trójkąty 726, wzrost 2.67 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
+ ]
+}

@@ -1,0 +1,322 @@
+{
+ "modul": "jajko_bagienne",
+ "modele": [
+  {
+   "id": "jajko_bagienne",
+   "nazwa": "Jajko bagienne",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Jajko_Geo",
+     "kosc": "Jajko",
+     "trojkaty": 1968,
+     "wierzcholki": 1006,
+     "wymiary": [
+      1.857,
+      2.565,
+      1.846
+     ],
+     "min": [
+      -0.9,
+      0.0,
+      -0.946
+     ],
+     "max": [
+      0.957,
+      2.565,
+      0.9
+     ]
+    },
+    {
+     "nazwa": "Czubek_Geo",
+     "kosc": "Czubek",
+     "trojkaty": 708,
+     "wierzcholki": 374,
+     "wymiary": [
+      1.257,
+      1.41,
+      1.224
+     ],
+     "min": [
+      -0.612,
+      1.512,
+      -0.612
+     ],
+     "max": [
+      0.645,
+      2.922,
+      0.612
+     ]
+    }
+   ],
+   "trojkaty_razem": 2676,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 8
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    1.857,
+    2.922,
+    1.846
+   ],
+   "wymiary_z_akcesoriami": [
+    1.857,
+    2.922,
+    1.846
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -0.9,
+     0.0,
+     -0.946
+    ],
+    [
+     0.957,
+     2.922,
+     0.9
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Jajko",
+    "Czubek"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "trzesienie",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "pekniecie",
+     "dlugosc": 18,
+     "fps": 30,
+     "sekundy": 0.6,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  },
+  {
+   "id": "inkubator_bagienny",
+   "nazwa": "Inkubator bagienny (podgląd)",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Podstawa_Geo",
+     "kosc": "Podstawa",
+     "trojkaty": 352,
+     "wierzcholki": 192,
+     "wymiary": [
+      16.93,
+      2.023,
+      16.93
+     ],
+     "min": [
+      -8.465,
+      0.0,
+      -8.465
+     ],
+     "max": [
+      8.465,
+      2.023,
+      8.465
+     ]
+    },
+    {
+     "nazwa": "Gniazdo_Geo",
+     "kosc": "Gniazdo",
+     "trojkaty": 628,
+     "wierzcholki": 360,
+     "wymiary": [
+      5.6,
+      4.142,
+      5.6
+     ],
+     "min": [
+      -2.8,
+      0.5,
+      -2.8
+     ],
+     "max": [
+      2.8,
+      4.642,
+      2.8
+     ]
+    },
+    {
+     "nazwa": "Jajko_Geo",
+     "kosc": "Jajko",
+     "trojkaty": 1968,
+     "wierzcholki": 1006,
+     "wymiary": [
+      3.156,
+      4.36,
+      3.139
+     ],
+     "min": [
+      -1.53,
+      2.05,
+      -1.609
+     ],
+     "max": [
+      1.626,
+      6.41,
+      1.53
+     ]
+    },
+    {
+     "nazwa": "Czubek_Geo",
+     "kosc": "Czubek",
+     "trojkaty": 708,
+     "wierzcholki": 374,
+     "wymiary": [
+      2.136,
+      2.397,
+      2.08
+     ],
+     "min": [
+      -1.04,
+      4.62,
+      -1.04
+     ],
+     "max": [
+      1.096,
+      7.017,
+      1.04
+     ]
+    },
+    {
+     "nazwa": "Tablica_Geo",
+     "kosc": "Tablica",
+     "trojkaty": 352,
+     "wierzcholki": 208,
+     "wymiary": [
+      4.494,
+      4.36,
+      2.102
+     ],
+     "min": [
+      2.053,
+      0.5,
+      2.349
+     ],
+     "max": [
+      6.547,
+      4.86,
+      4.451
+     ]
+    },
+    {
+     "nazwa": "Latarnia_Geo",
+     "kosc": "Latarnia",
+     "trojkaty": 280,
+     "wierzcholki": 160,
+     "wymiary": [
+      1.69,
+      5.156,
+      0.8
+     ],
+     "min": [
+      -4.44,
+      0.5,
+      2.8
+     ],
+     "max": [
+      -2.75,
+      5.656,
+      3.6
+     ]
+    }
+   ],
+   "trojkaty_razem": 4288,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 34
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    16.93,
+    7.017,
+    16.93
+   ],
+   "wymiary_z_akcesoriami": [
+    16.93,
+    7.017,
+    16.93
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -8.465,
+     0.0,
+     -8.465
+    ],
+    [
+     8.465,
+     7.017,
+     8.465
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Podstawa",
+    "Gniazdo",
+    "Jajko",
+    "Czubek",
+    "Tablica",
+    "Latarnia"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "jajko_bagienne.fbx: siatki 4, kości 3, trójkąty 2700, wzrost 2.92 st., akcje brak -> ZGODNE",
+  "jajko_bagienne__spoczynek.fbx: siatki 4, kości 3, trójkąty 2700, wzrost 2.92 st., akcje jajko_bagienne|Scene 1-61 -> ZGODNE",
+  "jajko_bagienne__trzesienie.fbx: siatki 4, kości 3, trójkąty 2700, wzrost 2.92 st., akcje jajko_bagienne|Scene 1-37 -> ZGODNE",
+  "jajko_bagienne__pekniecie.fbx: siatki 4, kości 3, trójkąty 2700, wzrost 2.92 st., akcje jajko_bagienne|Scene 1-19 -> ZGODNE",
+  "jajko_bagienne.glb: siatki 4, kości 3, trójkąty 2700, wzrost 2.92 st., akcje pekniecie 0-18, spoczynek 0-60, trzesienie 0-36 -> ZGODNE",
+  "inkubator_bagienny.fbx: siatki 8, kości 7, trójkąty 4312, wzrost 7.02 st., akcje brak -> ZGODNE",
+  "inkubator_bagienny__spoczynek.fbx: siatki 8, kości 7, trójkąty 4312, wzrost 7.02 st., akcje inkubator_bagienny|Scene 1-61 -> ZGODNE",
+  "inkubator_bagienny.glb: siatki 8, kości 7, trójkąty 4312, wzrost 7.02 st., akcje spoczynek 0-60 -> ZGODNE"
+ ]
+}

@@ -245,6 +245,12 @@ def katalog(ustawienia, ident):
         if s.get("kontener"):
             wpis["kontener"] = s["kontener"]
         wpis["prostokaty"] = [prostokat_mapy(p) for p in s.get("mapy", [])]
+        # prostokąty podane wprost (x1, x2, z1, z2) — dla miejsc bez mapy w czesci.json albo o nieprostokątnym gruncie
+        for r in s.get("prostokaty", []):
+            if (not isinstance(r, list) or len(r) != 4 or not all(isinstance(v, (int, float)) for v in r)
+                    or r[0] >= r[1] or r[2] >= r[3]):
+                raise SystemExit("BŁĄD: ustawienia.json — strefa %s: prostokąt %r ma być [x1, x2, z1, z2] z x1 < x2 i z1 < z2" % (nazwa, r))
+            wpis["prostokaty"].append([float(v) for v in r])
         strefy[nazwa] = wpis
     for u in ident["muzyka"]:
         if not any(u == x["nazwa"] for s in strefy.values() for x in s["utwory"]):

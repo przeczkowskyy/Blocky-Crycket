@@ -1,0 +1,45 @@
+{
+  "opis": "Wymiary biomu w pasie (D-096, Karol 17.11.2026: „25 sekund długości i 4 sekundy szerokości”, nieinwazyjnie). Jedyne źródło liczb dla swiat/biomy/przycinarka.py: z długich map-projektów (swiat/las_pas, swiat/bagno_pas — generatory bez zmian) robi krótkie mapy gry w <mapa>/krotki/. Długość = bieg od miejsca przybycia do bramy biomu, szerokość = pole gry między kulisami (dawniej 57,5 s i 4,5 s = 72 st), oba przy biegu bieg_st_s. Zmiana długości albo szerokości = jedna liczba tutaj + python -B swiat/biomy/przycinarka.py. Następny biom: wpis w „biomy” (odcinki do zostawienia z jego projektu).",
+  "status": "D-096 (Karol, 17.11.2026); odcinki i scalenie stref — przyjęte, do zmiany",
+  "bieg_st_s": 16,
+  "dlugosc_s": 25,
+  "szerokosc_s": 4,
+  "dawna_polowa_pola_st": 36,
+  "rdzen_v_st": 8,
+  "zapas_rezerwacji_st": 20,
+  "opis_rezerwacji": "Dalsze biomy bez map (Dżungla…) dostają po dlugosc_s · bieg_st_s + zapas_rezerwacji_st (14 st przed przybyciem + 6 st za bramą, jak w projekcie: 940 − 920) i stoją jeden za drugim od końca Bagna.",
+  "opis_rdzenia": "Środek pasa |v| ≤ rdzen_v_st zostaje bez ściskania w poprzek (furtka i mostki ±8 dalej mają 16 st — gracze w obie strony, troll 12,7); ściskane jest pole od rdzenia do brzegu.",
+  "biomy": [
+    {
+      "id": "las",
+      "plan": "swiat/biom_las/pas/plan_pasa.json",
+      "czesci": "swiat/las_pas/czesci.json",
+      "znaczniki": "swiat/las_pas/znaczniki.json",
+      "wyj": "swiat/las_pas/krotki",
+      "plik_planu": "plan_pasa.json",
+      "kotwica_u": 14,
+      "kotwica_nowa_u": 14,
+      "brama_u": 934,
+      "zostaw": [[-40, 44], [64, 140], [268, 352], [480, 560], [688, 822], [846, 908], [920, 937]],
+      "pomin_grupy": ["ZapowiedzBagna"],
+      "strefy": {"s1": ["s1", "s2", "s3"], "m1": ["m1", "m2", "m3"], "w1": ["w1", "w2", "w3"], "t1": ["t1"]},
+      "opis_odcinkow": "Polana Przybycia bez tylnej połowy (u 44–64), furtka + pierwszy kojec Zagrody Slime'ów, strumyk z mostkiem + pierwsza polanka Lasku, jeżynowe zwężenie + Jeżyny Wilczych Zarośli, kamienny próg + Leże Trolla + brama menhirów, krąg Areny bez dojścia (u 822–846), koniec przedbramia z bramą do Bagna; zapowiedź Bagna odpada (stoi Bagno)"
+    },
+    {
+      "id": "bagno",
+      "plan": "swiat/bagno_pas/plan_bagna.json",
+      "czesci": "swiat/bagno_pas/czesci.json",
+      "znaczniki": "swiat/bagno_pas/znaczniki.json",
+      "wyj": "swiat/bagno_pas/krotki",
+      "plik_planu": "plan_bagna.json",
+      "kotwica_u": 954,
+      "po_biomie": "las",
+      "wejscie_u": 934,
+      "brama_u": 1874,
+      "zostaw": [[934, 984], [1004, 1080], [1208, 1292], [1420, 1500], [1628, 1762], [1788, 1856], [1862, 1906]],
+      "pomin_grupy": [],
+      "strefy": {"r1": ["r1", "r2", "r3"], "b1": ["b1", "b2", "b3"], "k1": ["k1", "k2", "k3"], "t1": ["t1"]},
+      "opis_odcinkow": "Pomost Przybycia bez tylnej części (u 984–1004), rów z kładką + pierwsze oczko, Kładka nad Topielą + pierwsze bąblowisko Trzęsawiska, trzcinowa przesieka + Zatoka Kłód, zatopione pnie + Leże Ropuchy + Latarnie Topieli, Topiel z Wieżą, koniec przedbramia z bramą do Dżungli i zapowiedzią Dżungli"
+    }
+  ]
+}

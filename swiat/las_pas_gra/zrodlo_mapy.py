@@ -19,9 +19,11 @@ import os
 
 TU = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(TU))
-PLIK_PLANU = os.path.join(REPO, "swiat", "biom_las", "pas", "plan_pasa.json")
-PLIK_ZNACZNIKOW = os.path.join(REPO, "swiat", "las_pas", "znaczniki.json")
-PLIK_CZESCI = os.path.join(REPO, "swiat", "las_pas", "czesci.json")
+# D-096 (17.11.2026): gra czyta KRÓTKĄ mapę (swiat/las_pas/krotki — przycięta z projektu przez
+# swiat/biomy/przycinarka.py; długie swiat/biom_las/pas/plan_pasa.json i swiat/las_pas/*.json to projekt)
+PLIK_PLANU = os.path.join(REPO, "swiat", "las_pas", "krotki", "plan_pasa.json")
+PLIK_ZNACZNIKOW = os.path.join(REPO, "swiat", "las_pas", "krotki", "znaczniki.json")
+PLIK_CZESCI = os.path.join(REPO, "swiat", "las_pas", "krotki", "czesci.json")
 
 # zadanie z 16.11 (orkiestrator): mapę z klocków buduje inny agent w kontenerze Workspace/LasPas. Plan pisze jeszcze
 # „Workspace/PasLas” — gdy nie ma znaczników, bierzemy nazwę z zadania, nie z planu (opisane w README, ryzyka).
@@ -40,7 +42,7 @@ LAS = {
     "plik_planu": PLIK_PLANU, "plik_znacznikow": PLIK_ZNACZNIKOW, "plik_czesci": PLIK_CZESCI,
     "kontener": KONTENER_DOMYSLNY, "klucz_bramy": "brama_bagna", "nazwa_bramy": "brama do Bagna",
     "grupa_wrot": GRUPA_WROT, "grupa_palisady": GRUPA_PALISADY, "zapowiedz": GRUPA_ZAPOWIEDZI,
-    "opis_mapy": "swiat/las_pas", "opis_planu": "plan_pasa.json",
+    "opis_mapy": "swiat/las_pas/krotki", "opis_planu": "plan_pasa.json (krótki)",
 }
 
 

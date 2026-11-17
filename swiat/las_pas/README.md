@@ -6,6 +6,10 @@ Strażnik i Troll wspólni, walka na arenie prototypu, teleport do wejścia biom
 **W Studio nic nie jest zbudowane** — ten etap to generator, kontrola i podglądy offline. Następny etap buduje w Studio.
 Status: **propozycja**.
 
+> **D-096 (17.11.2026):** ta mapa jest teraz **projektem** (57,5 s × 4,5 s). Gra buduje krótką mapę z `krotki/`
+> (25 s × 4 s), którą robi z niej `swiat/biomy/przycinarka.py` — generator tutaj bez zmian. Plików w `krotki/` nie
+> edytuj ręcznie; po zmianie projektu: `python -B swiat/biomy/przycinarka.py`.
+
 - Kontener w Studio: **`Workspace/LasPas`** (osobny od starego `Workspace/BiomLas`). Uwaga: `plan_pasa.json` i
   `PLAN_PASA.md` piszą `PasLas` — nazwa z zamówienia tego etapu to `LasPas`; plan nie był zmieniany.
 - Układ pasa: u wzdłuż (0 = początek lasu), v w poprzek (v > 0 po prawej ręce idącego do bramy). Świat Studio =

@@ -277,3 +277,21 @@ def premia_lupu(D, lup, premia):
     """Dodatek do łupu z walki od aktywnego peta: zaokrąglony ułamek Złota i doświadczenia (0,5 w górę)."""
     return {"zloto": int(math.floor(lup["zloto"] * premia["zloto"] + 0.5)),
             "doswiadczenie": int(math.floor(lup["doswiadczenie"] * premia["doswiadczenie"] + 0.5))}
+
+
+# ------------------------------------------------------------------ kara za przegraną (17.11.2026, propozycja D-098)
+def lup_zwyklego(D, poziom):
+    """Złoto za wygraną ze zwykłym potworem na danym poziomie (średnia łupu silnika: baza + przyrost × (L − 1))."""
+    L = D["kara"]["limit_lupu"]
+    return L["baza"] + L["na_poziom"] * (poziom_z(D, poziom) - 1)
+
+
+def kara_przegranej(D, zloto, poziom_potwora, procent):
+    """Kara w Złocie za przegraną: ułamek `procent` posiadanego Złota (w dół do całych), najwyżej łup zwykłego potwora
+    na poziomie przeciwnika i nigdy więcej, niż gracz ma. Złoto nie liczbą / ujemne → 0; procent ≤ 0 albo nie liczba
+    (wyłącznik) → 0; procent > 1 liczony jak 1."""
+    z = wydaj(D, zloto, 0)[0]
+    if isinstance(procent, bool) or not isinstance(procent, (int, float)) or procent != procent or procent <= 0:
+        return 0
+    k = int(math.floor(z * min(procent, 1)))
+    return min(k, lup_zwyklego(D, poziom_potwora), z)

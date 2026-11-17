@@ -24,14 +24,19 @@
     "e_brama_dzungla": {"tekst": "Brama do Dżungli otwarta — Dżungla już wkrótce", "cel": "brama"},
     "e_koniec_bagno": {"tekst": "Dżungla już wkrótce — na dziś to koniec drogi", "cel": null},
     "f_jajko": {"tekst": "Masz dość Złota na jajko — inkubator przy wejściu do lasu", "cel": "jajko"},
-    "f_jajko_miasto": {"tekst": "Masz dość Złota na jajko: TELEPORT → Las (inkubator)", "cel": "teleport"}
+    "f_jajko_miasto": {"tekst": "Masz dość Złota na jajko: TELEPORT → Las (inkubator)", "cel": "teleport"},
+    "f_jajko_bagno": {"tekst": "Masz dość Złota na jajko Bagna — inkubator przy pomoście", "cel": "jajko"}
   },
   "zrodla": {
     "biomy": [
       {"id": "las", "kontener": "LasPasGra", "dane": "LasPasGra/Moduly/DanePasa", "kamien": "LasPasGra/Punkty/KamienPowrotu",
-       "atrybut_straznika": "PokonalStraznikaLasu", "pole_straznika": "straznik"},
+       "atrybut_straznika": "PokonalStraznikaLasu", "pole_straznika": "straznik",
+       "inkubator": "PetyProba/Punkty/E inkubator", "atrybut_ceny_jajka": "PetyCenaJajka",
+       "atrybut_kupionych_jajek": "PetyKupioneJajka"},
       {"id": "bagno", "kontener": "BagnoPasGra", "dane": "BagnoPasGra/Moduly/DanePasa", "kamien": "BagnoPasGra/Punkty/KamienPowrotu",
-       "atrybut_straznika": "PokonalStraznikaBagna", "pole_straznika": "straznik_bagna"}
+       "atrybut_straznika": "PokonalStraznikaBagna", "pole_straznika": "straznik_bagna",
+       "inkubator": "PetyProba/Punkty/E inkubator Bagna", "atrybut_ceny_jajka": "PetyCenaJajkaBagna",
+       "atrybut_kupionych_jajek": "PetyKupioneJajkaBagna"}
     ],
     "walki": {"LasPasGra": "las", "LasPotwory": "las", "BagnoPasGra": "bagno"},
     "stan_potworow": "Stan",
@@ -54,10 +59,7 @@
     "stan_gracza_trening": "TreningPodlaczony",
     "chmury_trwa": "Trwa",
     "pety": "PetyProba",
-    "inkubator": "PetyProba/Punkty/E inkubator",
-    "atrybut_zlota": "Gold",
-    "atrybut_ceny_jajka": "PetyCenaJajka",
-    "atrybut_petow": "PetyLiczba"
+    "atrybut_zlota": "Gold"
   },
   "ui": {
     "y_px": 56,

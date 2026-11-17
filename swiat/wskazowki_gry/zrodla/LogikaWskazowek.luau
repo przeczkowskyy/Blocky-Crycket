@@ -5,7 +5,7 @@
 
 	L.krok(D, s) → nil | { id, tekst, cel }   — który krok pokazać (s: klasa, ukryte, wylaczone, kraina, miejsce, wygrane,
 	                                             przegrane, ostatni, trenowal, straznik, straznik_bagna, stan_gracza, trening_wzmacnia,
-	                                             poziom, bagno, jajko, pety)
+	                                             poziom, bagno, jajko, kupione)
 	L.miejsce(x, z, prostokat, bramaX) → "las" | "za_brama" | "miasto"
 	L.wynikWalki(napis) → "wygrana" | "przegrana" | nil
 ]]
@@ -71,9 +71,13 @@ function L.krok(D, s)
 	if kraina == nil and (miejsce == "las" or miejsce == "za_brama") then
 		kraina = "las"
 	end
-	-- pierwsze jajko (swiat/pety_proba): Złota wystarcza, a gracz nie ma jeszcze peta; nie w Bagnie i nie za bramą
-	if s.jajko and (s.pety or 0) == 0 and kraina ~= "bagno" and miejsce ~= "za_brama" then
-		return zbuduj(D, if miejsce == "miasto" or kraina == nil then "f_jajko_miasto" else "f_jajko")
+	-- pierwsze jajko biomu (swiat/pety_proba): Złota wystarcza na jajko biomu, w którym jest gracz (w mieście: lasu),
+	-- a gracz nie kupił jeszcze jajka tego biomu; nie za bramą
+	if s.jajko and (s.kupione or 0) == 0 and miejsce ~= "za_brama" then
+		if miejsce == "miasto" or kraina == nil then
+			return zbuduj(D, "f_jajko_miasto")
+		end
+		return zbuduj(D, if kraina == "bagno" then "f_jajko_bagno" else "f_jajko")
 	end
 	if miejsce == "miasto" or kraina == nil then
 		return miasto(D, s)

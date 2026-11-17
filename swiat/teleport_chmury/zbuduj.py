@@ -39,7 +39,7 @@ if TU not in sys.path:
 import makieta  # noqa: E402
 
 DANE_JSON = os.path.join(TU, "krainy.json")
-PLAN_PASA = os.path.join(REPO, "swiat", "biom_las", "pas", "plan_pasa.json")
+PLAN_PASA = os.path.join(REPO, "swiat", "las_pas", "krotki", "plan_pasa.json")   # krótki pas gry (D-096)
 ZRODLA = os.path.join(TU, "zrodla")
 DANE_LUAU = os.path.join(ZRODLA, "Dane.luau")
 STRAZNIK = 'if not game:GetService("RunService"):IsStudio() then'
@@ -333,7 +333,7 @@ def sprawdz_dane(dane):
     jedna = cz["wejscie_s"] + cz["wylonienie_s"] + cz["zanurzenie_s"] + cz["opadanie_s"] + cz["biel_min_s"]
     if not 3.0 <= jedna <= 5.5:
         uwagi.append("przejście bez wyboru trwa %.2f s (cel 3–5 s)" % jedna)
-    # zgodność z planem pasa (tylko odczyt swiat/biom_las/pas/plan_pasa.json)
+    # zgodność z planem pasa (tylko odczyt krótkiego planu gry swiat/las_pas/krotki/plan_pasa.json, D-096)
     if os.path.isfile(PLAN_PASA):
         with open(PLAN_PASA, encoding="utf-8") as f:
             plan = json.load(f)
@@ -357,7 +357,7 @@ def sprawdz_dane(dane):
             if k["obszary_xz"][0][:2] != b["swiat_x"]:
                 uwagi.append("%s: obszar x %r, plan pasa %r" % (k["id"], k["obszary_xz"][0][:2], b["swiat_x"]))
     else:
-        uwagi.append("brak swiat/biom_las/pas/plan_pasa.json — bez porównania z planem pasa")
+        uwagi.append("brak swiat/las_pas/krotki/plan_pasa.json — bez porównania z planem pasa")
     return bledy, uwagi, jedna
 
 

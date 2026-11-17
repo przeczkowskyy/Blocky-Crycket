@@ -69,7 +69,11 @@ class TestKatalogu(unittest.TestCase):
     def test_strefy_z_gruntu_map(self):
         k = ZB.katalog(UST, IDENT)
         self.assertEqual(k["muzyka"]["strefy"]["bazar"]["prostokaty"], [[882.0, 1066.0, -790.0, -610.0]])
-        self.assertEqual(k["muzyka"]["strefy"]["las"]["prostokaty"], [[1066.0, 2066.0, -788.0, -612.0]])
+        # krótki pas (D-096, swiat/biomy/wymiary_pasa.json): las od X 1066 do styku z Bagnem, z kulisami |v| ≤ 84
+        las, bagno = k["muzyka"]["strefy"]["las"]["prostokaty"], k["muzyka"]["strefy"]["bagno"]["prostokaty"]
+        self.assertEqual([las[0][0], las[0][2], las[0][3]], [1066.0, -784.0, -616.0])
+        self.assertEqual(las[0][1], bagno[0][0])
+        self.assertGreater(bagno[0][1], bagno[0][0] + 300)
         self.assertEqual(len(k["muzyka"]["strefy"]["bazar"]["utwory"]), 3)
         self.assertEqual(len(k["muzyka"]["strefy"]["las"]["utwory"]), 2)
         self.assertFalse(k["muzyka"]["strefy"]["menu"]["podpiete"])

@@ -1,7 +1,7 @@
 --[[
 	DaneWskazowek — WYGENEROWANE przez swiat/wskazowki_gry/dane.py z ustawienia.json. Nie edytuj
 	ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: 3ff2f3a5d1f2
+	Skrót danych: ae78983d8373
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -32,6 +32,7 @@ return {
 		e_koniec_bagno = { tekst = "Dżungla już wkrótce — na dziś to koniec drogi" },
 		f_jajko = { tekst = "Masz dość Złota na jajko — inkubator przy wejściu do lasu", cel = "jajko" },
 		f_jajko_miasto = { tekst = "Masz dość Złota na jajko: TELEPORT → Las (inkubator)", cel = "teleport" },
+		f_jajko_bagno = { tekst = "Masz dość Złota na jajko Bagna — inkubator przy pomoście", cel = "jajko" },
 	},
 	zrodla = {
 		biomy = {
@@ -42,6 +43,9 @@ return {
 				kamien = "LasPasGra/Punkty/KamienPowrotu",
 				atrybut_straznika = "PokonalStraznikaLasu",
 				pole_straznika = "straznik",
+				inkubator = "PetyProba/Punkty/E inkubator",
+				atrybut_ceny_jajka = "PetyCenaJajka",
+				atrybut_kupionych_jajek = "PetyKupioneJajka",
 			},
 			{
 				id = "bagno",
@@ -50,6 +54,9 @@ return {
 				kamien = "BagnoPasGra/Punkty/KamienPowrotu",
 				atrybut_straznika = "PokonalStraznikaBagna",
 				pole_straznika = "straznik_bagna",
+				inkubator = "PetyProba/Punkty/E inkubator Bagna",
+				atrybut_ceny_jajka = "PetyCenaJajkaBagna",
+				atrybut_kupionych_jajek = "PetyKupioneJajkaBagna",
 			},
 		},
 		walki = { LasPasGra = "las", LasPotwory = "las", BagnoPasGra = "bagno" },
@@ -73,10 +80,7 @@ return {
 		stan_gracza_trening = "TreningPodlaczony",
 		chmury_trwa = "Trwa",
 		pety = "PetyProba",
-		inkubator = "PetyProba/Punkty/E inkubator",
 		atrybut_zlota = "Gold",
-		atrybut_ceny_jajka = "PetyCenaJajka",
-		atrybut_petow = "PetyLiczba",
 	},
 	ui = {
 		y_px = 56,
@@ -430,7 +434,7 @@ return {
 					kraina = "las",
 					ostatni = "wygrana",
 					jajko = true,
-					pety = 0,
+					kupione = 0,
 				},
 				id = "f_jajko",
 				tekst = "Masz dość Złota na jajko — inkubator przy wejściu do lasu",
@@ -460,14 +464,14 @@ return {
 				cel = "jajko",
 			},
 			{
-				opis = "Złoto na jajko, ale ma już peta",
-				stan = { klasa = true, miejsce = "las", wygrane = 3, przegrane = 0, ostatni = "wygrana", jajko = true, pety = 1 },
+				opis = "Złoto na jajko, ale kupił już jajko lasu",
+				stan = { klasa = true, miejsce = "las", wygrane = 3, przegrane = 0, ostatni = "wygrana", jajko = true, kupione = 1 },
 				id = "c_straznik",
 				tekst = "Strażnik Gaju czeka na końcu lasu",
 				cel = "straznik",
 			},
 			{
-				opis = "Złoto na jajko w Bagnie: bez kroku o jajku",
+				opis = "Złoto na jajko Bagna w Bagnie: inkubator przy pomoście",
 				stan = {
 					klasa = true,
 					miejsce = "las",
@@ -477,6 +481,24 @@ return {
 					straznik = true,
 					bagno = true,
 					jajko = true,
+					kupione = 0,
+				},
+				id = "f_jajko_bagno",
+				tekst = "Masz dość Złota na jajko Bagna — inkubator przy pomoście",
+				cel = "jajko",
+			},
+			{
+				opis = "Złoto na jajko Bagna, ale kupił już jajko Bagna",
+				stan = {
+					klasa = true,
+					miejsce = "las",
+					wygrane = 0,
+					przegrane = 0,
+					kraina = "bagno",
+					straznik = true,
+					bagno = true,
+					jajko = true,
+					kupione = 2,
 				},
 				id = "b_potwor",
 				tekst = "Podejdź do potwora i wciśnij E",
@@ -487,6 +509,22 @@ return {
 				stan = { klasa = true, miejsce = "za_brama", wygrane = 0, przegrane = 0, straznik = true, jajko = true },
 				id = "e_koniec",
 				tekst = "Bagno już wkrótce — na dziś to koniec drogi",
+			},
+			{
+				opis = "Złoto na jajko za bramą Bagna: bez kroku o jajku",
+				stan = {
+					klasa = true,
+					miejsce = "za_brama",
+					wygrane = 0,
+					przegrane = 0,
+					kraina = "bagno",
+					straznik = true,
+					straznik_bagna = true,
+					bagno = true,
+					jajko = true,
+				},
+				id = "e_koniec_bagno",
+				tekst = "Dżungla już wkrótce — na dziś to koniec drogi",
 			},
 			{
 				opis = "Złoto na jajko, ale ukryte",
@@ -548,5 +586,5 @@ return {
 			{ x = 1500, z = -700, brama = 2034, wynik = "miasto" },
 		},
 	},
-	skrot = "3ff2f3a5d1f2",
+	skrot = "ae78983d8373",
 }

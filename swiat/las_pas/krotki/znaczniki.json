@@ -1,0 +1,1573 @@
+{
+ "opis": "Znaczniki lasu-pasa dla następnych etapów (potwory w przegrodach, teleport, przelot kamery, brama dla gracza, mgła, streaming). Generuje swiat/las_pas/generuj.py z swiat/biom_las/pas/plan_pasa.json. Punkty w UKŁADZIE PASA [u, y, v]; pola *_swiat = to samo w świecie Studio [X, Y, Z].",
+ "kontener": {
+  "nazwa": "Workspace/LasPas",
+  "uklad": "pas: u wzdłuż, v w poprzek (v > 0 po prawej ręce idącego do bramy), y w górę",
+  "wzor": "swiat = (1100 + u; y; -700 + v), bez obrotu",
+  "X0": 1100.0,
+  "Z0": -700.0,
+  "obrot_y": 0
+ },
+ "plan": "swiat/las_pas/krotki/plan_pasa.json",
+ "pas": {
+  "szerokosc": 64,
+  "kulisy": 24,
+  "u_od": -24.0,
+  "u_do": 420.0,
+  "niewidzialna_sciana_v": 34.0,
+  "zakres_czesci_u": [
+   -34.0,
+   443.92
+  ],
+  "zakres_czesci_v": [
+   -84.0,
+   84.0
+  ]
+ },
+ "przegrody": [
+  {
+   "id": "wejscie",
+   "nazwa": "Polana Przybycia",
+   "u": [
+    0.0,
+    39.0
+   ],
+   "pod": []
+  },
+  {
+   "id": "zagroda",
+   "nazwa": "Zagroda Slime'ów",
+   "u": [
+    49.0,
+    102.33
+   ],
+   "pod": [
+    {
+     "id": "kojec_1",
+     "nazwa": "Kojec 1",
+     "u": [
+      49.0,
+      102.33
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lasek",
+   "nazwa": "Lasek Muchomorowy",
+   "u": [
+    119.0,
+    172.33
+   ],
+   "pod": [
+    {
+     "id": "polanka_1",
+     "nazwa": "Polanka Kropek",
+     "u": [
+      119.0,
+      172.33
+     ]
+    }
+   ]
+  },
+  {
+   "id": "zarosla",
+   "nazwa": "Wilcze Zarośla",
+   "u": [
+    185.67,
+    239.0
+   ],
+   "pod": [
+    {
+     "id": "jezyny",
+     "nazwa": "Jeżyny",
+     "u": [
+      185.67,
+      239.0
+     ]
+    }
+   ]
+  },
+  {
+   "id": "leze",
+   "nazwa": "Leże Trolla",
+   "u": [
+    252.33,
+    335.67
+   ],
+   "pod": []
+  },
+  {
+   "id": "arena",
+   "nazwa": "Arena Strażnika Gaju",
+   "u": [
+    349.0,
+    420.0
+   ],
+   "pod": []
+  }
+ ],
+ "przejscia": [
+  {
+   "id": "plot_z_furtka",
+   "nazwa": "Płot z furtką",
+   "u": [
+    39.0,
+    49.0
+   ],
+   "otwarcie_v": [
+    -8.0,
+    8.0
+   ],
+   "wys_w_otwarciu": 0
+  },
+  {
+   "id": "strumyk_z_mostkiem",
+   "nazwa": "Strumyk z mostkiem",
+   "u": [
+    102.33,
+    119.0
+   ],
+   "otwarcie_v": [
+    -32.0,
+    32.0
+   ],
+   "wys_w_otwarciu": 1.6
+  },
+  {
+   "id": "jezynowe_zwezenie",
+   "nazwa": "Jeżynowe zwężenie",
+   "u": [
+    172.33,
+    185.67
+   ],
+   "otwarcie_v": [
+    -14.86,
+    14.86
+   ],
+   "wys_w_otwarciu": 0
+  },
+  {
+   "id": "kamienny_prog",
+   "nazwa": "Kamienny próg",
+   "u": [
+    239.0,
+    252.33
+   ],
+   "otwarcie_v": [
+    -13.14,
+    13.14
+   ],
+   "wys_w_otwarciu": 0.4
+  },
+  {
+   "id": "brama_menhirow",
+   "nazwa": "Brama menhirów",
+   "u": [
+    335.67,
+    349.0
+   ],
+   "otwarcie_v": [
+    -13.14,
+    13.14
+   ],
+   "wys_w_otwarciu": 0
+  }
+ ],
+ "przybycie": {
+  "punkt": [
+   14.0,
+   0.0,
+   0.0
+  ],
+  "punkt_swiat": [
+   1114.0,
+   0.0,
+   -700.0
+  ],
+  "patrz_na": [
+   39.0,
+   0.0,
+   0.0
+  ],
+  "patrz_na_swiat": [
+   1139.0,
+   0.0,
+   -700.0
+  ]
+ },
+ "miejsca": [
+  {
+   "id": "przybycie",
+   "nazwa": "Przybycie (teleport z miasteczka)",
+   "u": 14.0,
+   "v": 0.0,
+   "y": 0,
+   "patrz": [
+    39.0,
+    0.0
+   ],
+   "opis": "tu staje postać po teleporcie; twarzą wzdłuż pasa",
+   "punkt": [
+    14.0,
+    0,
+    0.0
+   ],
+   "punkt_swiat": [
+    1114.0,
+    0,
+    -700.0
+   ]
+  },
+  {
+   "id": "jajko",
+   "nazwa": "Stanowisko jajka (farbowanie)",
+   "u": 27.33,
+   "v": 20.0,
+   "y": 0,
+   "r": 6,
+   "e": true,
+   "opis": "tylko miejsce: podest 12 × 12 z punktem E na inkubator i farbowanie jajka peta (D-060, D-076, D-086)",
+   "punkt": [
+    27.33,
+    0,
+    20.0
+   ],
+   "punkt_swiat": [
+    1127.33,
+    0,
+    -680.0
+   ]
+  },
+  {
+   "id": "kamien_powrotu",
+   "nazwa": "Kamień Powrotu",
+   "u": 6.0,
+   "v": -21.71,
+   "y": 0,
+   "r": 3,
+   "e": true,
+   "opis": "E → miasteczko (Brama Miejska)",
+   "punkt": [
+    6.0,
+    0,
+    -21.71
+   ],
+   "punkt_swiat": [
+    1106.0,
+    0,
+    -721.71
+   ]
+  },
+  {
+   "id": "brama_pniakow",
+   "nazwa": "Brama Pniaków",
+   "u": 4.0,
+   "v": 0.0,
+   "y": 0,
+   "opis": "dwa pnie 22 kłaniające się sobie za plecami przybywającego (moduł laka.py)",
+   "punkt": [
+    4.0,
+    0,
+    0.0
+   ],
+   "punkt_swiat": [
+    1104.0,
+    0,
+    -700.0
+   ]
+  },
+  {
+   "id": "brama_bagna",
+   "nazwa": "Brama do Bagna",
+   "u": 414.0,
+   "v": 0.0,
+   "y": 0,
+   "otwarcie": [
+    -8.0,
+    8.0
+   ],
+   "e": false,
+   "opis": "palisada 10 wys. przez cały pas, wrota 16 szer.; zamknięte dla gracza, póki nie pokona Strażnika (blokada osobna dla gracza)",
+   "punkt": [
+    414.0,
+    0,
+    0.0
+   ],
+   "punkt_swiat": [
+    1514.0,
+    0,
+    -700.0
+   ]
+  },
+  {
+   "id": "odrodzenie",
+   "nazwa": "Odrodzenie po przegranej",
+   "u": 14.0,
+   "v": 0.0,
+   "y": 0,
+   "opis": "na razie walka wraca gracza w miejsce startu walki; jeśli gra będzie przenosić pokonanych — tu",
+   "punkt": [
+    14.0,
+    0,
+    0.0
+   ],
+   "punkt_swiat": [
+    1114.0,
+    0,
+    -700.0
+   ]
+  }
+ ],
+ "punkty_przybycia": [
+  {
+   "id": "miasteczko",
+   "nazwa": "Krzywe Miasteczko",
+   "swiat_xz": [
+    -63.6,
+    -771.5
+   ],
+   "opis": "jak dziś: 18 st od środka Bramy Miejskiej w stronę rynku (liczy teleport.py w Studio; liczba przybliżona)",
+   "od_poczatku": true
+  },
+  {
+   "id": "las",
+   "nazwa": "Las — Polana Przybycia",
+   "u": 14.0,
+   "v": 0.0,
+   "y": 0,
+   "patrz": [
+    39.0,
+    0.0
+   ],
+   "kamera_opada_z_wys": 60,
+   "od_poczatku": true,
+   "punkt_swiat": [
+    1114.0,
+    0,
+    -700.0
+   ]
+  },
+  {
+   "id": "las_arena",
+   "nazwa": "Las — przed Areną (opcja)",
+   "u": 342.33,
+   "v": 0.0,
+   "y": 0,
+   "patrz": [
+    374.0,
+    0.0
+   ],
+   "kamera_opada_z_wys": 60,
+   "od_poczatku": false,
+   "odblokowanie": "po pierwszym dojściu do areny — wybór do decyzji",
+   "punkt_swiat": [
+    1442.33,
+    0,
+    -700.0
+   ]
+  },
+  {
+   "id": "bagno",
+   "nazwa": "Bagno — przybycie",
+   "u": 434.0,
+   "v": 0.0,
+   "y": 0,
+   "patrz": [
+    458.79,
+    0.0
+   ],
+   "kamera_opada_z_wys": 60,
+   "od_poczatku": false,
+   "odblokowanie": "po pokonaniu Strażnika Gaju",
+   "punkt_swiat": [
+    1534.0,
+    0,
+    -700.0
+   ]
+  }
+ ],
+ "strefy_spokoju": [
+  {
+   "id": "wejscie",
+   "u": [
+    0.0,
+    39.0
+   ],
+   "v": [
+    -32.0,
+    32.0
+   ],
+   "opis": "cała Polana Przybycia",
+   "prostokat_swiat": {
+    "x": [
+     1100.0,
+     1139.0
+    ],
+    "z": [
+     -732.0,
+     -668.0
+    ]
+   }
+  },
+  {
+   "id": "przedbramie",
+   "u": [
+    402.33,
+    420.0
+   ],
+   "v": [
+    -32.0,
+    32.0
+   ],
+   "opis": "za areną, przed bramą",
+   "prostokat_swiat": {
+    "x": [
+     1502.33,
+     1520.0
+    ],
+    "z": [
+     -732.0,
+     -668.0
+    ]
+   }
+  }
+ ],
+ "strefy": [
+  {
+   "id": "s1",
+   "podbiom": "zagroda",
+   "pod": "kojec_1",
+   "potwor": "Leśny Slime",
+   "wariant": null,
+   "poziomy": [
+    1,
+    3
+   ],
+   "poziomy_status": "propozycja do uzgodnienia z krzywą doświadczenia (silnik walki)",
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    75.67,
+    0.0,
+    0.0
+   ],
+   "r": 28,
+   "wezly": [
+    [
+     90.67,
+     0.0,
+     0.0
+    ],
+    [
+     89.25,
+     0.0,
+     16.14
+    ],
+    [
+     75.67,
+     0.0,
+     20.0
+    ],
+    [
+     62.08,
+     0.0,
+     16.14
+    ],
+    [
+     60.67,
+     0.0,
+     0.0
+    ],
+    [
+     62.08,
+     0.0,
+     -16.14
+    ],
+    [
+     75.67,
+     0.0,
+     -20.0
+    ],
+    [
+     89.25,
+     0.0,
+     -16.14
+    ]
+   ],
+   "wezly_swiat": [
+    [
+     1190.67,
+     0.0,
+     -700.0
+    ],
+    [
+     1189.25,
+     0.0,
+     -683.86
+    ],
+    [
+     1175.67,
+     0.0,
+     -680.0
+    ],
+    [
+     1162.08,
+     0.0,
+     -683.86
+    ],
+    [
+     1160.67,
+     0.0,
+     -700.0
+    ],
+    [
+     1162.08,
+     0.0,
+     -716.14
+    ],
+    [
+     1175.67,
+     0.0,
+     -720.0
+    ],
+    [
+     1189.25,
+     0.0,
+     -716.14
+    ]
+   ],
+   "domy": [
+    [
+     70.67,
+     0.0,
+     -30.29
+    ],
+    [
+     80.67,
+     0.0,
+     30.29
+    ]
+   ],
+   "domy_swiat": [
+    [
+     1170.67,
+     0.0,
+     -730.29
+    ],
+    [
+     1180.67,
+     0.0,
+     -669.71
+    ]
+   ],
+   "dom_opis": "kałuże galarety pod płotem",
+   "odrodzenie_s": 12,
+   "odrodzenie_stale": false,
+   "grupa": null,
+   "zachowanie": "skacze w kółko po kojcu; ciekawski: odwraca się do gracza w promieniu 18",
+   "pole": [
+    52.33,
+    99.0,
+    -30.29,
+    30.29
+   ],
+   "scalone_z": [
+    "s1",
+    "s2",
+    "s3"
+   ]
+  },
+  {
+   "id": "m1",
+   "podbiom": "lasek",
+   "pod": "polanka_1",
+   "potwor": "Muchomornik",
+   "wariant": null,
+   "poziomy": [
+    3,
+    5
+   ],
+   "poziomy_status": "propozycja do uzgodnienia z krzywą doświadczenia (silnik walki)",
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    145.67,
+    0.0,
+    0.0
+   ],
+   "r": 28,
+   "wezly": [
+    [
+     160.67,
+     0.0,
+     0.0
+    ],
+    [
+     159.25,
+     0.0,
+     16.14
+    ],
+    [
+     145.67,
+     0.0,
+     20.0
+    ],
+    [
+     132.08,
+     0.0,
+     16.14
+    ],
+    [
+     130.67,
+     0.0,
+     0.0
+    ],
+    [
+     132.08,
+     0.0,
+     -16.14
+    ],
+    [
+     145.67,
+     0.0,
+     -20.0
+    ],
+    [
+     159.25,
+     0.0,
+     -16.14
+    ]
+   ],
+   "wezly_swiat": [
+    [
+     1260.67,
+     0.0,
+     -700.0
+    ],
+    [
+     1259.25,
+     0.0,
+     -683.86
+    ],
+    [
+     1245.67,
+     0.0,
+     -680.0
+    ],
+    [
+     1232.08,
+     0.0,
+     -683.86
+    ],
+    [
+     1230.67,
+     0.0,
+     -700.0
+    ],
+    [
+     1232.08,
+     0.0,
+     -716.14
+    ],
+    [
+     1245.67,
+     0.0,
+     -720.0
+    ],
+    [
+     1259.25,
+     0.0,
+     -716.14
+    ]
+   ],
+   "domy": [
+    [
+     140.67,
+     0.0,
+     -30.29
+    ],
+    [
+     150.67,
+     0.0,
+     30.29
+    ]
+   ],
+   "domy_swiat": [
+    [
+     1240.67,
+     0.0,
+     -730.29
+    ],
+    [
+     1250.67,
+     0.0,
+     -669.71
+    ]
+   ],
+   "dom_opis": "chatki-grzyby przy ścianie",
+   "odrodzenie_s": 15,
+   "odrodzenie_stale": false,
+   "grupa": null,
+   "zachowanie": "drepcze po polance mchu, przystaje przy grzybach",
+   "pole": [
+    122.33,
+    169.0,
+    -30.29,
+    30.29
+   ],
+   "scalone_z": [
+    "m1",
+    "m2",
+    "m3"
+   ]
+  },
+  {
+   "id": "w1",
+   "podbiom": "zarosla",
+   "pod": "jezyny",
+   "potwor": "Cierniowy Wilk",
+   "wariant": null,
+   "poziomy": [
+    6,
+    8
+   ],
+   "poziomy_status": "propozycja do uzgodnienia z krzywą doświadczenia (silnik walki)",
+   "naraz": 4,
+   "max": 6,
+   "srodek": [
+    212.33,
+    0.0,
+    0.0
+   ],
+   "r": 28,
+   "wezly": [
+    [
+     227.33,
+     0.0,
+     0.0
+    ],
+    [
+     225.92,
+     0.0,
+     16.14
+    ],
+    [
+     212.33,
+     0.0,
+     20.0
+    ],
+    [
+     198.75,
+     0.0,
+     16.14
+    ],
+    [
+     197.33,
+     0.0,
+     0.0
+    ],
+    [
+     198.75,
+     0.0,
+     -16.14
+    ],
+    [
+     212.33,
+     0.0,
+     -20.0
+    ],
+    [
+     225.92,
+     0.0,
+     -16.14
+    ]
+   ],
+   "wezly_swiat": [
+    [
+     1327.33,
+     0.0,
+     -700.0
+    ],
+    [
+     1325.92,
+     0.0,
+     -683.86
+    ],
+    [
+     1312.33,
+     0.0,
+     -680.0
+    ],
+    [
+     1298.75,
+     0.0,
+     -683.86
+    ],
+    [
+     1297.33,
+     0.0,
+     -700.0
+    ],
+    [
+     1298.75,
+     0.0,
+     -716.14
+    ],
+    [
+     1312.33,
+     0.0,
+     -720.0
+    ],
+    [
+     1325.92,
+     0.0,
+     -716.14
+    ]
+   ],
+   "domy": [
+    [
+     207.33,
+     0.0,
+     -30.29
+    ],
+    [
+     217.33,
+     0.0,
+     30.29
+    ]
+   ],
+   "domy_swiat": [
+    [
+     1307.33,
+     0.0,
+     -730.29
+    ],
+    [
+     1317.33,
+     0.0,
+     -669.71
+    ]
+   ],
+   "dom_opis": "jamy w jeżynach pod ścianą",
+   "odrodzenie_s": 18,
+   "odrodzenie_stale": false,
+   "grupa": {
+    "watahy": 2,
+    "w_watasze": 3
+   },
+   "zachowanie": "dwie watahy krążą gęsiego",
+   "pole": [
+    189.0,
+    235.67,
+    -30.29,
+    30.29
+   ],
+   "scalone_z": [
+    "w1",
+    "w2",
+    "w3"
+   ]
+  },
+  {
+   "id": "t1",
+   "podbiom": "leze",
+   "pod": null,
+   "potwor": "Leśny Troll",
+   "wariant": null,
+   "poziomy": [
+    8,
+    9
+   ],
+   "poziomy_status": "propozycja do uzgodnienia z krzywą doświadczenia (silnik walki)",
+   "naraz": 1,
+   "max": 1,
+   "srodek": [
+    294.0,
+    0.0,
+    0.0
+   ],
+   "r": 29,
+   "wezly": [
+    [
+     314.0,
+     0.0,
+     0.0
+    ],
+    [
+     303.92,
+     0.0,
+     14.86
+    ],
+    [
+     284.08,
+     0.0,
+     14.86
+    ],
+    [
+     274.0,
+     0.0,
+     0.0
+    ],
+    [
+     284.08,
+     0.0,
+     -14.86
+    ],
+    [
+     303.92,
+     0.0,
+     -14.86
+    ]
+   ],
+   "wezly_swiat": [
+    [
+     1414.0,
+     0.0,
+     -700.0
+    ],
+    [
+     1403.92,
+     0.0,
+     -685.14
+    ],
+    [
+     1384.08,
+     0.0,
+     -685.14
+    ],
+    [
+     1374.0,
+     0.0,
+     -700.0
+    ],
+    [
+     1384.08,
+     0.0,
+     -714.86
+    ],
+    [
+     1403.92,
+     0.0,
+     -714.86
+    ]
+   ],
+   "domy": [
+    [
+     299.0,
+     0.0,
+     -30.29
+    ]
+   ],
+   "domy_swiat": [
+    [
+     1399.0,
+     0.0,
+     -730.29
+    ]
+   ],
+   "dom_opis": "legowisko z kotłem pod lewą ścianą",
+   "odrodzenie_s": 150,
+   "odrodzenie_stale": true,
+   "grupa": null,
+   "zachowanie": "krąży po leżu, wlecze maczugę; przy graczu w promieniu 25 przystaje i ryczy",
+   "pole": [
+    255.67,
+    332.33,
+    -30.29,
+    30.29
+   ]
+  }
+ ],
+ "straznik": {
+  "potwor": "Strażnik Gaju",
+  "poziom": 10,
+  "poziomy_status": "propozycja do uzgodnienia z krzywą doświadczenia (silnik walki)",
+  "miejsce": [
+   374.0,
+   0.0
+  ],
+  "y": 0,
+  "yaw_swiat": 1.5708,
+  "patrzy": "w stronę wejścia (−u, czyli −X świata)",
+  "arena": {
+   "srodek": [
+    379.0,
+    0.0
+   ],
+   "r": 26,
+   "opis": "krąg menhirów r 26, posadzka 0,3, filar z kryształem w (894; 0)"
+  },
+  "odrodzenie_s": 120,
+  "odrodzenie_stale": true,
+  "tryb": "do decyzji: wspólny dla serwera (jak dziś w LasPotwory, 120 s) albo osobny dla gracza",
+  "ryk": {
+   "klip": "ryk",
+   "dl_s": 2.0,
+   "zrodlo": "swiat/test_walki2/dane/straznik_lasu.json (60 klatek, 30 kl./s)"
+  },
+  "otwiera": "brama_bagna (osobno dla gracza)",
+  "miejsce_swiat": [
+   1474.0,
+   0.0,
+   -700.0
+  ],
+  "arena_srodek_swiat": [
+   1479.0,
+   0.3,
+   -700.0
+  ],
+  "uwaga": "Strażnik stoi na posadzce kręgu (wierzch 0,3)"
+ },
+ "zasady": {
+  "walke_zaczyna": "gracz: podpowiedź E w promieniu 8 (na telefonie przycisk); potwór nigdy nie atakuje sam",
+  "smycz": 10,
+  "odstep_min": 25,
+  "blokada_domu": 12,
+  "dom_od_wezlow": [
+   12,
+   20
+  ],
+  "plac_walki_r": 12,
+  "skracanie": "czas = baza / (1 + 0,15 × (gracze w strefie − 1)), najmniej 10 s",
+  "skalowanie": "naraz to liczba przy ok. 8 graczach; mniej graczy → mniej (najmniej połowa), więcej → do max",
+  "predkosc": {
+   "Leśny Slime": 6,
+   "Muchomornik": 5,
+   "Cierniowy Wilk": 10,
+   "Leśny Troll": 7
+  },
+  "pojemnosc": "max ≤ obwód trasy / 25; wataha liczy się jako jeden odcinek (miejsca − 1) × odstęp w grupie + 25",
+  "zmiany_wzgledem_lasu_v2": "domy 12–20 od węzłów zamiast 35–50 i blokada domu 12 zamiast 18 (pas ma 72 szer., domy stoją pod ścianą na |v| = 34); trasa = pętla 8 węzłów w kojcu; odrodzenie krótsze (slime 12, muchomornik 15, wilk 18 s) — żeby gracz nie czekał"
+ },
+ "rozmiary": {
+  "Leśny Slime": {
+   "wys": 2.7,
+   "szer": 2.7
+  },
+  "Cierniowy Wilk": {
+   "wys": 4.4,
+   "dl": 7.7
+  },
+  "Muchomornik": {
+   "wys": 3.6,
+   "szer": 2.95
+  },
+  "Leśny Troll": {
+   "wys": 9.9,
+   "szer": 12.7
+  },
+  "Strażnik Gaju": {
+   "wys": 14.5,
+   "szer": 8.9
+  }
+ },
+ "przelot_kamery": {
+  "kiedy": "pierwsze wejście gracza do biomu (D-077); flaga na gracza; przy kolejnych wejściach brak",
+  "czas_s": 10.17,
+  "punkty": [
+   {
+    "t": 0.0,
+    "poz": [
+     -10.0,
+     0.0,
+     28
+    ],
+    "patrz": [
+     39.0,
+     0.0,
+     4
+    ],
+    "pokazuje": "start nad plecami gracza, ponad Bramą Pniaków"
+   },
+   {
+    "t": 0.83,
+    "poz": [
+     39.0,
+     11.43,
+     30
+    ],
+    "patrz": [
+     102.33,
+     0.0,
+     2
+    ],
+    "pokazuje": "Polana Przybycia: jajko, płot z furtką"
+   },
+   {
+    "t": 1.87,
+    "poz": [
+     102.33,
+     -14.86,
+     26
+    ],
+    "patrz": [
+     102.33,
+     0.0,
+     2
+    ],
+    "pokazuje": "Zagroda: trzy kojce slime'ów"
+   },
+   {
+    "t": 2.98,
+    "poz": [
+     129.0,
+     9.71,
+     26
+    ],
+    "patrz": [
+     172.33,
+     0.0,
+     3
+    ],
+    "pokazuje": "mostek i Lasek Muchomorowy"
+   },
+   {
+    "t": 4.22,
+    "poz": [
+     172.33,
+     -11.43,
+     24
+    ],
+    "patrz": [
+     239.0,
+     0.0,
+     3
+    ],
+    "pokazuje": "jeżynowe zwężenie i watahy"
+   },
+   {
+    "t": 5.61,
+    "poz": [
+     239.0,
+     9.71,
+     22
+    ],
+    "patrz": [
+     294.0,
+     -6.0,
+     6
+    ],
+    "pokazuje": "kamienny próg i Leże Trolla"
+   },
+   {
+    "t": 6.65,
+    "poz": [
+     332.33,
+     0.0,
+     14
+    ],
+    "patrz": [
+     374.0,
+     0.0,
+     11
+    ],
+    "pokazuje": "brama menhirów, kamera zniża się"
+   },
+   {
+    "t": 7.27,
+    "poz": [
+     352.33,
+     0.0,
+     10
+    ],
+    "patrz": [
+     374.0,
+     0.0,
+     10.5
+    ],
+    "pokazuje": "Strażnik w kadrze — zatrzymanie"
+   },
+   {
+    "t": 10.17,
+    "poz": [
+     352.33,
+     0.0,
+     10
+    ],
+    "patrz": [
+     374.0,
+     0.0,
+     10.5
+    ],
+    "pokazuje": "ryk Strażnika, potem cięcie do gracza"
+   }
+  ],
+  "ryk_od_s": 7.47,
+  "zatrzymanie_od_s": 7.27,
+  "potem": "zaciemnienie 0,5 s i powrót kamery za plecy gracza w punkcie przybycia",
+  "ruch": "krzywa Catmull-Rom przez punkty (czas jak w `t`, postój bez łuku); sprawdz_plan.py próbkuje tę samą krzywą co 0,05 s",
+  "streaming": "przed startem serwer prosi o wczytanie okolic u = 102, 172, 249, 374 (RequestStreamAroundAsync); Strażnik budowany przez klienta zawczasu",
+  "streaming_u": [
+   102,
+   172,
+   249,
+   374
+  ],
+  "punkty_swiat": [
+   {
+    "t": 0.0,
+    "poz": [
+     1090.0,
+     28,
+     -700.0
+    ],
+    "patrz": [
+     1139.0,
+     4,
+     -700.0
+    ]
+   },
+   {
+    "t": 0.83,
+    "poz": [
+     1139.0,
+     30,
+     -688.57
+    ],
+    "patrz": [
+     1202.33,
+     2,
+     -700.0
+    ]
+   },
+   {
+    "t": 1.87,
+    "poz": [
+     1202.33,
+     26,
+     -714.86
+    ],
+    "patrz": [
+     1202.33,
+     2,
+     -700.0
+    ]
+   },
+   {
+    "t": 2.98,
+    "poz": [
+     1229.0,
+     26,
+     -690.29
+    ],
+    "patrz": [
+     1272.33,
+     3,
+     -700.0
+    ]
+   },
+   {
+    "t": 4.22,
+    "poz": [
+     1272.33,
+     24,
+     -711.43
+    ],
+    "patrz": [
+     1339.0,
+     3,
+     -700.0
+    ]
+   },
+   {
+    "t": 5.61,
+    "poz": [
+     1339.0,
+     22,
+     -690.29
+    ],
+    "patrz": [
+     1394.0,
+     6,
+     -706.0
+    ]
+   },
+   {
+    "t": 6.65,
+    "poz": [
+     1432.33,
+     14,
+     -700.0
+    ],
+    "patrz": [
+     1474.0,
+     11,
+     -700.0
+    ]
+   },
+   {
+    "t": 7.27,
+    "poz": [
+     1452.33,
+     10,
+     -700.0
+    ],
+    "patrz": [
+     1474.0,
+     10.5,
+     -700.0
+    ]
+   },
+   {
+    "t": 10.17,
+    "poz": [
+     1452.33,
+     10,
+     -700.0
+    ],
+    "patrz": [
+     1474.0,
+     10.5,
+     -700.0
+    ]
+   }
+  ]
+ },
+ "brama_bagna": {
+  "grupa_wrot": "Workspace/LasPas/BramaBagna/Wrota",
+  "grupa_palisady": "Workspace/LasPas/BramaBagna/Palisada",
+  "u": 414.0,
+  "otwarcie_v": [
+   -8.0,
+   8.0
+  ],
+  "jak_otwierac": "u klienta gracza, który pokonał Strażnika: części grupy Wrota CanCollide = false i LocalTransparencyModifier = 1 (albo przesunięcie wrót), serwer pilnuje atrybutu gracza",
+  "za_brama": "ZapowiedzBagna (u 934–966) z niewidzialną ścianą na u 965 — do usunięcia, gdy powstanie Bagno"
+ },
+ "punkty_e": [
+  {
+   "grupa": "Punkty/KamienPowrotu",
+   "punkt": [
+    6.5,
+    0.1,
+    -17.0
+   ],
+   "punkt_swiat": [
+    1106.5,
+    0.1,
+    -717.0
+   ]
+  },
+  {
+   "grupa": "Punkty/StanowiskoJajka",
+   "punkt": [
+    26.84,
+    0.6,
+    16.43
+   ],
+   "punkt_swiat": [
+    1126.85,
+    0.6,
+    -683.56
+   ]
+  }
+ ],
+ "punkty_orientacyjne": [
+  {
+   "id": "pien_lewy",
+   "nazwa": "Brama Pniaków (pień lewy)",
+   "u": 4.0,
+   "v": -9.71,
+   "r": 2,
+   "wys": 22,
+   "punkt_swiat": [
+    1104.0,
+    0.0,
+    -709.71
+   ]
+  },
+  {
+   "id": "pien_prawy",
+   "nazwa": "Brama Pniaków (pień prawy)",
+   "u": 4.0,
+   "v": 9.71,
+   "r": 2,
+   "wys": 22,
+   "punkt_swiat": [
+    1104.0,
+    0.0,
+    -690.29
+   ]
+  },
+  {
+   "id": "glazy_legowiska",
+   "nazwa": "Głazy legowiska z kotłem",
+   "u": 319.0,
+   "v": -26.86,
+   "r": 7,
+   "wys": 20,
+   "opis": "stos głazów, kocioł z dymem (moduł wawoz.py)",
+   "punkt_swiat": [
+    1419.0,
+    0.0,
+    -726.86
+   ]
+  },
+  {
+   "id": "menhir_lewy",
+   "nazwa": "Menhir bramy (lewy)",
+   "u": 342.33,
+   "v": -14.86,
+   "r": 2,
+   "wys": 14,
+   "punkt_swiat": [
+    1442.33,
+    0.0,
+    -714.86
+   ]
+  },
+  {
+   "id": "menhir_prawy",
+   "nazwa": "Menhir bramy (prawy)",
+   "u": 342.33,
+   "v": 14.86,
+   "r": 2,
+   "wys": 14,
+   "punkt_swiat": [
+    1442.33,
+    0.0,
+    -685.14
+   ]
+  },
+  {
+   "id": "filar_krysztal",
+   "nazwa": "Filar z kryształem",
+   "u": 390.67,
+   "v": 0.0,
+   "r": 4,
+   "wys": 40,
+   "opis": "zielony kryształ ok. 40 n.p.m. — cel widoczny wzdłuż całego pasa (moduł korona.py)",
+   "punkt_swiat": [
+    1490.67,
+    0.0,
+    -700.0
+   ]
+  }
+ ],
+ "niewidzialne_sciany": "Kulisy/Niewidzialne (|v| = 38 od u −4 do 964, u −5 w poprzek), ZapowiedzBagna (u 965)",
+ "grupy_stale_wczytane": {
+  "ModelStreamingMode": "Persistent",
+  "grupy": [
+   "BramaBagna/Palisada",
+   "BramaBagna/Wrota",
+   "Punkty/BramaMenhirow",
+   "Punkty/BramaPniakow",
+   "Punkty/FilarKrysztal",
+   "Punkty/GlazyLegowiska",
+   "Punkty/KamienPowrotu",
+   "Punkty/StanowiskoJajka"
+  ],
+  "dlaczego": "punkty orientacyjne widać z daleka; wrota bramy musi znaleźć skrypt gracza"
+ },
+ "grupy_niski_detal": {
+  "LevelOfDetail": "StreamingMesh",
+  "grupy": [
+   "Kulisy/Lewa/O_00",
+   "Kulisy/Lewa/O_01",
+   "Kulisy/Lewa/O_02",
+   "Kulisy/Lewa/O_04",
+   "Kulisy/Lewa/O_05",
+   "Kulisy/Lewa/O_07",
+   "Kulisy/Lewa/O_08",
+   "Kulisy/Lewa/O_09",
+   "Kulisy/Lewa/O_11",
+   "Kulisy/Lewa/O_12",
+   "Kulisy/Lewa/O_13",
+   "Kulisy/Lewa/O_14",
+   "Kulisy/Lewa/O_15",
+   "Kulisy/Prawa/O_00",
+   "Kulisy/Prawa/O_01",
+   "Kulisy/Prawa/O_02",
+   "Kulisy/Prawa/O_04",
+   "Kulisy/Prawa/O_05",
+   "Kulisy/Prawa/O_06",
+   "Kulisy/Prawa/O_08",
+   "Kulisy/Prawa/O_09",
+   "Kulisy/Prawa/O_11",
+   "Kulisy/Prawa/O_12",
+   "Kulisy/Prawa/O_13",
+   "Kulisy/Prawa/O_14",
+   "Kulisy/Prawa/O_15",
+   "Tlo/Lewa/O_00",
+   "Tlo/Lewa/O_01",
+   "Tlo/Lewa/O_02",
+   "Tlo/Lewa/O_04",
+   "Tlo/Lewa/O_05",
+   "Tlo/Lewa/O_08",
+   "Tlo/Lewa/O_09",
+   "Tlo/Lewa/O_11",
+   "Tlo/Lewa/O_12",
+   "Tlo/Lewa/O_13",
+   "Tlo/Lewa/O_14",
+   "Tlo/Lewa/O_15",
+   "Tlo/Prawa/O_00",
+   "Tlo/Prawa/O_01",
+   "Tlo/Prawa/O_02",
+   "Tlo/Prawa/O_04",
+   "Tlo/Prawa/O_05",
+   "Tlo/Prawa/O_08",
+   "Tlo/Prawa/O_09",
+   "Tlo/Prawa/O_11",
+   "Tlo/Prawa/O_12",
+   "Tlo/Prawa/O_13",
+   "Tlo/Prawa/O_14",
+   "Tlo/Prawa/O_15"
+  ],
+  "dlaczego": "kulisy i tło widać z daleka jako uproszczoną bryłę poza promieniem streamingu"
+ },
+ "statystyka": {
+  "czesci": 4858,
+  "uwaga": "mapa przycięta przez swiat/biomy/przycinarka.py (D-096) — liczby na odcinek: projekt"
+ },
+ "wymiary": {
+  "decyzja": "D-096 (Karol, 17.11.2026)",
+  "zrodlo": "swiat/biomy/wymiary_pasa.json",
+  "projekt": "swiat/biom_las/pas/plan_pasa.json",
+  "dlugosc_s": 25,
+  "szerokosc_s": 4,
+  "bieg_st_s": 16,
+  "wspolczynnik_wzdluz": 0.8333,
+  "wspolczynnik_w_poprzek": 0.8571,
+  "rdzen_v_st": 8.0,
+  "zostawione_odcinki_u": [
+   [
+    -40.0,
+    44.0
+   ],
+   [
+    64.0,
+    140.0
+   ],
+   [
+    268.0,
+    352.0
+   ],
+   [
+    480.0,
+    560.0
+   ],
+   [
+    688.0,
+    822.0
+   ],
+   [
+    846.0,
+    908.0
+   ],
+   [
+    920.0,
+    937.0
+   ]
+  ],
+  "uwagi": [
+   "dalsze biomy bez map: po 420 st każdy, pierwszy (dzungla) od u 840.0",
+   "s1: max 5 → 4 (pętla 121.3 st)",
+   "m1: max 5 → 4 (pętla 121.3 st)",
+   "przelot: tor 868 → 387 st, lot 10.5 → 7.3 s, całość 10.2 s",
+   "zasady: plac walki r 10.0, domy 10.0–20 st od węzłów (ściśnięcie 0.833)",
+   "drobiazgi przy placach walki, otwarciach i pętlach: odsunięte 7, usunięte 0 (0 brył)"
+  ],
+  "przybycie_do_bramy_st": 400.0
+ }
+}

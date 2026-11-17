@@ -173,8 +173,9 @@ class TestDanych(unittest.TestCase):
         _, sumy = sp.tabela_potworow(PLAN)
         nasze = [sum(1 if s["straznik"] else Lg.cel(s["naraz"], s["max"], G) for s in DP["strefy"]) for G in (1, 8, 20)]
         self.assertEqual(nasze, sumy)
-        self.assertEqual(nasze, [20, 36, 46])
-        self.assertEqual(len(DP["strefy"]), 11)
+        # D-096 (krótki pas): 8 / 12 / 16 (projekt długiego pasa: 20 / 36 / 46)
+        self.assertEqual(nasze, [8, 12, 16])
+        self.assertEqual(len(DP["strefy"]), len(PLAN["strefy"]) + 1)
         self.assertEqual(DP["strefy"][-1]["id"], "straznik")
 
 
@@ -208,7 +209,8 @@ class TestPrzegrod(unittest.TestCase):
         s = STREFY["straznik"]
         self.assertEqual((s["gatunek"], s["poziomy"], s["odrodzenieS"], s["trasa"]["L"]), ("straznik_lasu", [10, 10], 120, 0))
         self.assertAlmostEqual(s["trasa"]["yaw"], math.pi / 2, delta=0.001)
-        self.assertEqual(s["srodek"], [1974, 0, -700])
+        mu, mv = PLAN["straznik"]["miejsce"]
+        self.assertEqual(s["srodek"], [round(M["X0"] + mu, 2), 0, round(M["Z0"] + mv, 2)])
         self.assertTrue(s["straznik"] and s["odrodzenieStale"])
 
     def test_2b_trasy_i_domy_w_polu_kojcu_i_pasie(self):
@@ -228,7 +230,8 @@ class TestPrzegrod(unittest.TestCase):
                 nx, nz = st["trasa"]["x"][d["wezel"] - 1], st["trasa"]["z"][d["wezel"] - 1]
                 odl = math.hypot(d["x"] - nx, d["z"] - nz)
                 with self.subTest(strefa=st["id"], dom=(d["x"], d["z"])):
-                    self.assertTrue(12 - 1e-6 <= odl <= 20 + 1e-6, "dom %.1f od węzła" % odl)
+                    lo, hi = PLAN["zasady"]["dom_od_wezlow"]   # D-096: krótki pas ściska też odległości (plan)
+                    self.assertTrue(lo - 1e-6 <= odl <= hi + 1e-6, "dom %.1f od węzła" % odl)
                     self.assertAlmostEqual(math.hypot(wx - nx, wz - nz), 6.0, delta=0.02)
             with self.subTest(strefa=st["id"]):
                 for x, z in punkty:
@@ -293,10 +296,10 @@ class TestPrzegrod(unittest.TestCase):
         self.assertAlmostEqual(odrodzenie("s1", kojec), max(10, 12 / (1 + 0.15 * 4)), delta=1e-9)
 
     def test_2e_zasieg_graczy_nie_siega_dalszych_kojcow(self):
-        for a in ("s1", "m1", "w1"):
-            st = STREFY[a]
-            dalszy = STREFY[{"s1": "s3", "m1": "m3", "w1": "w3"}[a]]
-            self.assertLess(st["zasiegGraczy"], abs(dalszy["srodek"][0] - st["srodek"][0]) - 32)
+        # D-096: jedna strefa na przegrodę — zasięg liczenia graczy nie sięga środka następnej strefy
+        zwykle = [s for s in DP["strefy"] if not s["straznik"]]
+        for st, dalszy in zip(zwykle, zwykle[1:]):
+            self.assertLess(st["zasiegGraczy"], abs(dalszy["srodek"][0] - st["srodek"][0]))
 
 
 # ============================================================================================== 3. brama
@@ -352,7 +355,7 @@ class TestBramy(unittest.TestCase):
         zb = DPA["zaBrama"]["punkt"][0]
         sc = DPA["zabezpieczenie"]["sciana"]["srodek"][0]
         tab = DPA["tabliczka"]["punkt"][0]
-        self.assertTrue(B["x"] + B["tolerancja"] < zb < tab < X0 + 965 < sc, "brama < za bramą < tabliczka < ściana mapy < nasza ściana")
+        self.assertTrue(B["x"] + B["tolerancja"] < zb < tab < sc, "brama < za bramą < tabliczka < nasza ściana")
         pod = DPA["zabezpieczenie"]["podloga"]
         self.assertLess(pod["srodek"][1] + pod["rozmiar"][1] / 2, 0, "zapasowa podłoga pod Płytą (wierzch < 0)")
         self.assertLessEqual(pod["srodek"][0] - pod["rozmiar"][0] / 2, B["x"])
@@ -517,7 +520,7 @@ class TestKrzywej(unittest.TestCase):
         sp = sprawdz_plan()
         X0, Z0 = M["X0"], M["Z0"]
         probki = sp.krzywa_kamery(PLAN["przelot_kamery"]["punkty"], 0.05)
-        self.assertGreater(len(probki), 250)
+        self.assertGreater(len(probki), K["czas"] / 0.05 - 2)
         for t, u, v, y in probki:
             x2, y2, z2 = LP.punkt_krzywej(K["punkty"], t)
             self.assertAlmostEqual(x2, X0 + u, delta=1e-6)

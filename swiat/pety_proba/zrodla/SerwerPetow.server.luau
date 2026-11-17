@@ -3,9 +3,11 @@
 	swiat/pety_proba/zbuduj.py; status: propozycja, opis w swiat/pety_proba/PROJEKT.md).
 
 	Decyduje WYŁĄCZNIE serwer (klient nie losuje i nie podaje ceny):
-		1. E przy inkubatorze w lesie-pasie (ProximityPrompt Punkty/"E inkubator"/Podpowiedz) → kup(gracz, jajko):
-		   blokada na czas wyklucia (D.wyklucie.blokada_s) USTAWIONA PRZED wywołaniem stanu gracza — drugi E w tym
-		   czasie dostaje odmowę „trwa wyklucie”; cena = LogikaPetow.cena(licznik kupionych jajek z profilu);
+		1. E przy inkubatorze każdego jajka (D.jajka: las-pas, Bagno; ProximityPrompt Punkty/<jajko.punkt_e>/Podpowiedz)
+		   → kup(gracz, jajko): blokada na czas wyklucia (D.wyklucie.blokada_s) USTAWIONA PRZED wywołaniem stanu
+		   gracza — drugi E w tym czasie (przy którymkolwiek inkubatorze) dostaje odmowę „trwa wyklucie”;
+		   cena = LogikaPetow.cena(…) — od 17.11 stała dla każdego jajka (decyzja Karola; licznik kupionych z profilu
+		   liczy się tylko w trybie „rosnaca”, osobny albo wspólny — D.licznik_ceny);
 		   pet = LogikaPetow.losuj(Random:NextNumber()) z jawnych szans; Złoto i pet — JEDNYM wywołaniem
 		   Workspace/StanGracza/Sygnaly/Pety("kup") (właściciel stanu gracza: wydatek + kopia peta bez przerwy);
 		   za mało Złota → odmowa z kwotą, której brakuje; potem "wyklucie" do klienta (animację gra klient).
@@ -15,8 +17,9 @@
 		3. Zapasowe E przy tablicy zagrody (Zagroda/"E wybor") — włączone tylko, gdy nie ma Workspace/MiasteczkoBazarGra
 		   (wtedy E opiekunki nie istnieje); otwiera okno wyboru u klienta.
 	Stan petów żyje w profilu StanGracza (jeden właściciel, pod przyszły zapis). Bez StanGracza: inkubator odmawia
-	z komunikatem, zagroda pokazuje „brak”, żadnych błędów. Atrybuty gracza tego pakietu: D.atrybuty_gracza.cena
-	(cena następnego jajka — napis przy E i wskazówki celu) i D.atrybuty_gracza.czeka.
+	z komunikatem, zagroda pokazuje „brak”, żadnych błędów. Atrybuty gracza tego pakietu: dla każdego jajka
+	jajko.atrybuty.cena (cena następnego jajka — napis przy E i wskazówki celu) i jajko.atrybuty.kupione (ile takich
+	jajek gracz kupił — wskazówka „stać cię na pierwsze jajko biomu”), oraz D.atrybuty_gracza.czeka.
 	Haczyk testowy: Sygnaly/SterowanieSerwera ("kup", gracz?, jajko, r?) | ("zwolnij", gracz?) | ("stan", gracz?)
 	| ("wybierz", gracz?, pet, bezZasiegu?) | ("zgodnosc").
 	Działa tylko w Roblox Studio: poza Studio usuwa cały kontener, jak pozostałe prototypy.
@@ -38,7 +41,6 @@ local sterowanie: BindableFunction = kontener:WaitForChild("Sygnaly"):WaitForChi
 local P = D.prefiks
 local S = D.stan_gracza
 local AG = D.atrybuty_gracza
-local JAJKO = D.jajka[1]
 local los = Random.new()
 
 local function dolicz(nazwa: string)
@@ -103,14 +105,21 @@ local function wolajPety(polecenie: string, gracz: Player, info: any)
 	return nil
 end
 
-local function kupione(st): number
-	local n = st and type(st.wydatki) == "table" and st.wydatki[JAJKO.id]
-	return if type(n) == "number" then n else 0
+local function wydatki(st)
+	return if st and type(st.wydatki) == "table" then st.wydatki else {}
+end
+
+-- atrybuty każdego jajka: cena następnego (licznik osobny albo wspólny) i ile takich jajek gracz kupił
+local function ustawCeny(gracz: Player, wyd)
+	for _, j in D.jajka do
+		gracz:SetAttribute(j.atrybuty.cena, L.cena(D, j, L.kupione(D, j, wyd)))
+		gracz:SetAttribute(j.atrybuty.kupione, L.kupione(D, j, wyd, "osobny"))
+	end
 end
 
 local function odswiezCene(gracz: Player)
 	if graczOk(gracz) then
-		gracz:SetAttribute(AG.cena, L.cena(D, JAJKO, kupione(wolajPety("stan", gracz))))
+		ustawCeny(gracz, wydatki(wolajPety("stan", gracz)))
 	end
 end
 
@@ -141,7 +150,8 @@ local function kup(gracz: any, idJajka: any, wymuszoneR: any)
 		zajety[gracz] = nil
 		return odmowa(gracz, "brak_stanu", D.teksty.brak_stanu)
 	end
-	local cena = L.cena(D, j, kupione(st))
+	local wyd = wydatki(st)
+	local cena = L.cena(D, j, L.kupione(D, j, wyd))
 	local r = if type(wymuszoneR) == "number" and wymuszoneR >= 0 and wymuszoneR < 1 then wymuszoneR else los:NextNumber()
 	local pet = L.losuj(D, j, r)
 	local w = wolajPety("kup", gracz, { ile = cena, zrodlo = D.kontener, cel = j.id, pet = pet,
@@ -153,8 +163,13 @@ local function kup(gracz: any, idJajka: any, wymuszoneR: any)
 		end
 		return odmowa(gracz, if w then tostring(w.powod) else "brak_stanu", if w then D.teksty.blad else D.teksty.brak_stanu)
 	end
-	local nastepna = L.cena(D, j, w.licznik)
-	gracz:SetAttribute(AG.cena, nastepna)
+	local poZakupie = {}
+	for k, v in wyd do
+		poZakupie[k] = v
+	end
+	poZakupie[j.id] = if type(w.licznik) == "number" then w.licznik else L.kupione(D, j, wyd, "osobny") + 1
+	ustawCeny(gracz, poZakupie)
+	local nastepna = L.cena(D, j, L.kupione(D, j, poZakupie))
 	local info = { jajko = j.id, pet = pet, nowy = w.nowy == true, kopie = w.kopie, aktywny = w.aktywny, cena = cena,
 		nastepna = nastepna, zloto = w.zloto }
 	zdarzenia:FireClient(gracz, "wyklucie", info)
@@ -187,8 +202,7 @@ local function wyslijListe(gracz: Player)
 		zdarzenia:FireClient(gracz, "lista", { brak = true, tekst = D.teksty.brak_stanu })
 		return
 	end
-	zdarzenia:FireClient(gracz, "lista", { wiersze = L.wierszeZagrody(D, st.kopie, st.aktywny), aktywny = st.aktywny,
-		cena = L.cena(D, JAJKO, kupione(st)) })
+	zdarzenia:FireClient(gracz, "lista", { wiersze = L.wierszeZagrody(D, st.kopie, st.aktywny), aktywny = st.aktywny })
 end
 
 local function wybierz(gracz: Player, pet: any, bezZasiegu: boolean?)
@@ -264,18 +278,21 @@ local function podpowiedz(sciezka: { string }): ProximityPrompt?
 	return if o and o:IsA("ProximityPrompt") then o else nil
 end
 
-local promptJajka = podpowiedz({ "Punkty", "E inkubator", "Podpowiedz" })
-if promptJajka then
-	promptJajka.Enabled = true
-	promptJajka.Triggered:Connect(function(gracz: Player)
-		local ok, blad = pcall(kup, gracz, JAJKO.id)
-		if not ok then
-			zajety[gracz] = nil
-			warn(P .. "kup: " .. tostring(blad))
-		end
-	end)
-else
-	warn(P .. "brak podpowiedzi E inkubatora — przebuduj kontener (zbuduj.py)")
+for _, j in D.jajka do
+	local promptJajka = podpowiedz({ "Punkty", j.punkt_e, "Podpowiedz" })
+	if promptJajka then
+		promptJajka.Enabled = true
+		local id = j.id
+		promptJajka.Triggered:Connect(function(gracz: Player)
+			local ok, blad = pcall(kup, gracz, id)
+			if not ok then
+				zajety[gracz] = nil
+				warn(P .. "kup: " .. tostring(blad))
+			end
+		end)
+	else
+		warn(P .. "brak podpowiedzi E inkubatora " .. j.id .. " — przebuduj kontener (zbuduj.py)")
+	end
 end
 
 local promptZagrody = podpowiedz({ "Zagroda", "E wybor", "Podpowiedz" })
@@ -304,7 +321,7 @@ end)
 
 ------------------------------------------------------------------ gracze
 local function nowyGracz(gracz: Player)
-	gracz:SetAttribute(AG.cena, L.cena(D, JAJKO, 0))
+	ustawCeny(gracz, {})
 	-- stan gracza może ruszyć później (kolejność skryptów) — cena z profilu, gdy będzie
 	for _ = 1, 20 do
 		if not graczOk(gracz) then
@@ -343,7 +360,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 		return nil
 	end
 	if polecenie == "kup" then
-		return kup(g, b or JAJKO.id, c)
+		return kup(g, b or D.jajka[1].id, c)
 	elseif polecenie == "zwolnij" then
 		zajety[g] = nil
 		return true
@@ -351,8 +368,13 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 		return wybierz(g, b, c == true)
 	elseif polecenie == "stan" then
 		local st = wolajPety("stan", g)
+		local ceny, kupioneJ = {}, {}
+		for _, j in D.jajka do
+			ceny[j.id] = g:GetAttribute(j.atrybuty.cena)
+			kupioneJ[j.id] = g:GetAttribute(j.atrybuty.kupione)
+		end
 		return { stanGracza = sygnalPetow() ~= nil, zajety = zajety[g] ~= nil and teraz() < zajety[g],
-			cena = g:GetAttribute(AG.cena), czeka = g:GetAttribute(AG.czeka), pety = st,
+			cena = ceny[D.jajka[1].id], ceny = ceny, kupione = kupioneJ, czeka = g:GetAttribute(AG.czeka), pety = st,
 			zapasoweE = kontener:GetAttribute("ZapasoweEZagrody") }
 	end
 	warn(P .. "SterowanieSerwera: nieznane polecenie " .. tostring(polecenie))
@@ -360,6 +382,10 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 end
 
 kontener:SetAttribute("SerwerPetowGotowy", true)
-print(string.format("%sgotowy: logika %s, stan gracza %s, jajko %s (cena od %d)", P,
+local opisJajek = {}
+for _, j in D.jajka do
+	table.insert(opisJajek, string.format("%s od %d", j.id, L.cena(D, j, 0)))
+end
+print(string.format("%sgotowy: logika %s, stan gracza %s, jajka: %s (licznik ceny %s)", P,
 	tostring(kontener:GetAttribute("ZgodnoscLogikiPetow")), if sygnalPetow() then "jest" else "BRAK (inkubator odmawia)",
-	JAJKO.id, L.cena(D, JAJKO, 0)))
+	table.concat(opisJajek, ", "), D.licznik_ceny.tryb))

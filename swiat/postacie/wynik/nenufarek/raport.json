@@ -1,0 +1,269 @@
+{
+ "modul": "nenufarek",
+ "modele": [
+  {
+   "id": "nenufarek",
+   "nazwa": "Nenufarek",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 256,
+     "wierzcholki": 144,
+     "wymiary": [
+      1.99,
+      0.75,
+      1.99
+     ],
+     "min": [
+      -0.995,
+      0.36,
+      -0.995
+     ],
+     "max": [
+      0.995,
+      1.11,
+      0.995
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 192,
+     "wierzcholki": 112,
+     "wymiary": [
+      0.72,
+      0.62,
+      0.75
+     ],
+     "min": [
+      -0.36,
+      0.43,
+      0.59
+     ],
+     "max": [
+      0.36,
+      1.05,
+      1.34
+     ]
+    },
+    {
+     "nazwa": "Kwiat_Geo",
+     "kosc": "Kwiat",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.546,
+      0.227,
+      0.574
+     ],
+     "min": [
+      -0.12,
+      1.013,
+      -0.387
+     ],
+     "max": [
+      0.426,
+      1.24,
+      0.187
+     ]
+    },
+    {
+     "nazwa": "Ogonek_Geo",
+     "kosc": "Ogonek",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.18,
+      0.14,
+      0.3
+     ],
+     "min": [
+      -0.09,
+      0.43,
+      -0.99
+     ],
+     "max": [
+      0.09,
+      0.57,
+      -0.69
+     ]
+    },
+    {
+     "nazwa": "NogaPrzodL_Geo",
+     "kosc": "NogaPrzodL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.36,
+      0.42,
+      0.45
+     ],
+     "min": [
+      0.38,
+      0.0,
+      0.25
+     ],
+     "max": [
+      0.74,
+      0.42,
+      0.7
+     ]
+    },
+    {
+     "nazwa": "NogaTylL_Geo",
+     "kosc": "NogaTylL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.36,
+      0.42,
+      0.45
+     ],
+     "min": [
+      0.38,
+      0.0,
+      -0.59
+     ],
+     "max": [
+      0.74,
+      0.42,
+      -0.14
+     ]
+    },
+    {
+     "nazwa": "NogaPrzodP_Geo",
+     "kosc": "NogaPrzodP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.36,
+      0.42,
+      0.45
+     ],
+     "min": [
+      -0.74,
+      0.0,
+      0.25
+     ],
+     "max": [
+      -0.38,
+      0.42,
+      0.7
+     ]
+    },
+    {
+     "nazwa": "NogaTylP_Geo",
+     "kosc": "NogaTylP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.36,
+      0.42,
+      0.45
+     ],
+     "min": [
+      -0.74,
+      0.0,
+      -0.59
+     ],
+     "max": [
+      -0.38,
+      0.42,
+      -0.14
+     ]
+    }
+   ],
+   "trojkaty_razem": 1108,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 12
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    1.99,
+    1.24,
+    2.335
+   ],
+   "wymiary_z_akcesoriami": [
+    1.99,
+    1.24,
+    2.335
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -0.995,
+     0.0,
+     -0.995
+    ],
+    [
+     0.995,
+     1.24,
+     1.34
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Tulow",
+    "Glowa",
+    "Kwiat",
+    "Ogonek",
+    "NogaPrzodL",
+    "NogaTylL",
+    "NogaPrzodP",
+    "NogaTylP"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "chod",
+     "dlugosc": 24,
+     "fps": 30,
+     "sekundy": 0.8,
+     "petla": true
+    },
+    {
+     "n": "radosc",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "wyklucie",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "nenufarek.fbx: siatki 10, kości 9, trójkąty 1132, wzrost 1.24 st., akcje brak -> ZGODNE",
+  "nenufarek__spoczynek.fbx: siatki 10, kości 9, trójkąty 1132, wzrost 1.24 st., akcje nenufarek|Scene 1-61 -> ZGODNE",
+  "nenufarek__chod.fbx: siatki 10, kości 9, trójkąty 1132, wzrost 1.24 st., akcje nenufarek|Scene 1-25 -> ZGODNE",
+  "nenufarek__radosc.fbx: siatki 10, kości 9, trójkąty 1132, wzrost 1.24 st., akcje nenufarek|Scene 1-37 -> ZGODNE",
+  "nenufarek__wyklucie.fbx: siatki 10, kości 9, trójkąty 1132, wzrost 1.24 st., akcje nenufarek|Scene 1-31 -> ZGODNE",
+  "nenufarek.glb: siatki 10, kości 9, trójkąty 1132, wzrost 1.24 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
+ ]
+}

@@ -3,21 +3,23 @@
 	Workspace/PetyProba). Niczego nie losuje i nie podaje cen (D-016): zakup i wybór peta decyduje SerwerPetow.
 
 	Co robi (wszystko u tego gracza; obiekty w świecie tylko lokalne, w folderze PetyLokalne kontenera):
-		1. Inkubator: jajko z serwera (widać je w Edit) chowa u siebie i stawia lokalną, animowaną kopię (kołysanie);
-		   napis z ceną dla tego gracza (atrybut D.atrybuty_gracza.cena) i tekst podpowiedzi E „Kup za N Złota”.
-		2. "wyklucie" od serwera → jajko się trzęsie, pęka (kolor rzadkości w środku, błysk, iskry, dźwięk), pet
-		   wyskakuje i ląduje przed gniazdem, radość, napis NOWY PET! / KOPIA +1 z nazwą, rzadkością i skillem.
+		1. Inkubatory (jeden na jajko z D.jajka — las-pas, Bagno): jajko z serwera (widać je w Edit) chowa u siebie
+		   i stawia lokalną, animowaną kopię (kołysanie); napis z ceną dla tego gracza (atrybut jajko.atrybuty.cena)
+		   i tekst podpowiedzi E „Kup za N Złota”.
+		2. "wyklucie" od serwera → jajko tego inkubatora trzęsie się, pęka (kolor rzadkości w środku, błysk, iskry,
+		   dźwięk), pet wyskakuje i ląduje przed gniazdem, radość, napis NOWY PET! / KOPIA +1 z nazwą, rzadkością i skillem.
 		   Reset postaci w trakcie nie przerywa animacji (pet jest już u gracza — zdecydował serwer).
 		3. Pet przy graczu: dla KAŻDEGO gracza z atrybutem aktywnego peta (pisze go StanGracza) lokalny model idzie
 		   za nim płynnie (wygładzanie, grunt z promienia w dół, bez kolizji), chód / spoczynek / radość przy skoku.
 		   Znika w walce, przelocie, chmurach, mini-grze i przy wyborze klasy: u siebie od razu (wtedy też wszystkie
 		   cudze — nie wchodzą w kadr walki), a innym przez "czekaj" do serwera (atrybut gracza).
-		4. Zagroda w bazarze: posiadane pety na sześciu miejscach (lokalnie, tylko u tego gracza), tablica „TWOJE PETY
-		   · PRÓBA” z liczbą kopii (= shardy peta, D-058), okno wyboru aktywnego peta „PRÓBA” — otwiera je E opiekunki
+		4. Zagroda w bazarze: posiadane pety na sześciu miejscach (najrzadsze najpierw; lokalnie, tylko u tego gracza),
+		   tablica „TWOJE PETY · PRÓBA” w dwóch kolumnach (jajko po jajku) z liczbą kopii (= shardy peta, D-058), okno
+		   wyboru aktywnego peta „PRÓBA” (przewijane, podzielone na jajka) — otwiera je E opiekunki
 		   (ReplicatedStorage.OknoMiejsca, id zagrody — pakiet swiat/miasteczko_bazar_gra) albo zapasowe E tablicy.
 		5. Premia peta przy łupie: komunikat "premia" od StanGracza → krótki napis „+N Złota od peta: …”.
-	Haczyk testowy: Sygnaly/SterowanieKlienta ("stan" | "okno" | "zamknij" | "wybierz", id | "wyklucie", pet, nowy
-	| "pokaz", pet, Vector3 | "pokaz_usun").
+	Haczyk testowy: Sygnaly/SterowanieKlienta ("stan" | "okno" | "zamknij" | "wybierz", id | "wyklucie", pet, nowy,
+	jajko? | "pokaz", pet, Vector3 | "pokaz_usun").
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return
@@ -46,7 +48,6 @@ local S = D.stan_gracza
 local AG = D.atrybuty_gracza
 local U = D.ukrycie
 local W = D.wyklucie
-local JAJKO = D.jajka[1]
 local CZCIONKA = Enum.Font.GothamBold
 local CZCIONKA_TYTULU = Enum.Font.LuckiestGuy
 
@@ -312,90 +313,96 @@ local function aktualizujTowarzyszy(dt: number, ukryte: boolean)
 	end
 end
 
------------------------------------------------------------------- inkubator: lokalne, animowane jajko i napis z ceną
-local inkubator = kontener:WaitForChild("Inkubator", 30)
-local jajkoLok = nil
-local napisCeny: TextLabel? = nil
-local podpowiedzJajka: ProximityPrompt? = nil
+------------------------------------------------------------------ inkubatory: lokalne, animowane jajka i napisy z ceną
+local jajkaLok = {} -- id jajka → { model, u, podstawa, skala, napis, j }
 
-local function przygotujInkubator()
-	if not inkubator then
+local function przygotujInkubator(j)
+	local folder = kontener:WaitForChild(j.folder, 30)
+	if not folder then
 		return
 	end
-	local wzor = inkubator:FindFirstChild("Jajko")
-	local dane = daneRigu(D.rig_jajka)
-	local podstawa = inkubator:GetAttribute("PodstawaJajka")
-	if wzor and dane and typeof(podstawa) == "CFrame" then
-		for _, d in wzor:GetDescendants() do
-			if d:IsA("BasePart") then
-				d.LocalTransparencyModifier = 1
-			end
+	local wzor = folder:FindFirstChild("Jajko")
+	local dane = daneRigu(j.rig)
+	local podstawa = folder:GetAttribute("PodstawaJajka")
+	if not (wzor and dane and typeof(podstawa) == "CFrame") then
+		return
+	end
+	for _, d in wzor:GetDescendants() do
+		if d:IsA("BasePart") then
+			d.LocalTransparencyModifier = 1
 		end
-		wzor.DescendantAdded:Connect(function(d)
-			if d:IsA("BasePart") then
-				d.LocalTransparencyModifier = 1
-			end
-		end)
-		local skala = inkubator:GetAttribute("SkalaJajka") or D.inkubator.skala_jajka
-		local model, u = Rig.zbuduj(dane, skala, "Jajko lokalne")
-		model.Parent = lokalne
-		Rig.ustaw(u, podstawa)
-		animowane[u] = true
-		Rig.graj(u, "spoczynek")
-		jajkoLok = { model = model, u = u, podstawa = podstawa, skala = skala }
 	end
+	wzor.DescendantAdded:Connect(function(d)
+		if d:IsA("BasePart") then
+			d.LocalTransparencyModifier = 1
+		end
+	end)
+	local skala = folder:GetAttribute("SkalaJajka") or j.skala_jajka
+	local model, u = Rig.zbuduj(dane, skala, "Jajko lokalne " .. j.id)
+	model.Parent = lokalne
+	Rig.ustaw(u, podstawa)
+	animowane[u] = true
+	Rig.graj(u, "spoczynek")
 	-- napis ceny nad lokalnym jajkiem (nie zależy od wczytania części serwera przez streaming)
-	if jajkoLok then
-		local b = Instance.new("BillboardGui")
-		b.Name = "PetyProbaCena"
-		b.Adornee = jajkoLok.u.korzen
-		b.AlwaysOnTop = false
-		b.LightInfluence = 0
-		b.ResetOnSpawn = false
-		b.MaxDistance = 90
-		b.Size = UDim2.fromOffset(300, 54)
-		b.StudsOffsetWorldSpace = Vector3.new(0, (daneRigu(D.rig_jajka).wysokosc or 2.8) * jajkoLok.skala * 0.8 + 0.6, 0)
-		b.Parent = ekrany
-		local t = Instance.new("TextLabel")
-		t.BackgroundTransparency = 1
-		t.Size = UDim2.fromScale(1, 1)
-		t.Font = CZCIONKA
-		t.TextScaled = true
-		t.TextStrokeTransparency = 0.3
-		t.TextColor3 = kolor("FFF6E0")
-		t.Text = ""
-		t.Parent = b
-		napisCeny = t
-	end
+	local b = Instance.new("BillboardGui")
+	b.Name = "PetyProbaCena_" .. j.id
+	b.Adornee = u.korzen
+	b.AlwaysOnTop = false
+	b.LightInfluence = 0
+	b.ResetOnSpawn = false
+	b.MaxDistance = 90
+	b.Size = UDim2.fromOffset(300, 54)
+	b.StudsOffsetWorldSpace = Vector3.new(0, (dane.wysokosc or 2.8) * skala * 0.8 + 0.6, 0)
+	b.Parent = ekrany
+	local t = Instance.new("TextLabel")
+	t.BackgroundTransparency = 1
+	t.Size = UDim2.fromScale(1, 1)
+	t.Font = CZCIONKA
+	t.TextScaled = true
+	t.TextStrokeTransparency = 0.3
+	t.TextColor3 = kolor("FFF6E0")
+	t.Text = ""
+	t.Parent = b
+	jajkaLok[j.id] = { model = model, u = u, podstawa = podstawa, skala = skala, napis = t, j = j }
 end
 
 -- podpowiedź E inkubatora (szukana przy każdym odświeżeniu — część mogła dojść później)
-local function znajdzPodpowiedz(): ProximityPrompt?
+local function znajdzPodpowiedz(j): ProximityPrompt?
 	local e = kontener:FindFirstChild("Punkty")
-	e = e and e:FindFirstChild("E inkubator")
+	e = e and e:FindFirstChild(j.punkt_e)
 	local pp = e and e:FindFirstChild("Podpowiedz")
 	return if pp and pp:IsA("ProximityPrompt") then pp else nil
 end
 
 local function odswiezCene()
-	local cena = gracz:GetAttribute(AG.cena)
 	local zloto = gracz:GetAttribute(S.atrybut_zlota)
-	if type(cena) ~= "number" then
-		return
-	end
-	local stac = type(zloto) == "number" and zloto >= cena
-	if napisCeny then
-		local c = JAJKO.cena
-		local nast = if c.tryb == "rosnaca" then math.min(c.maks, cena + c.krok) else cena
-		napisCeny.Text = string.format(T.twoja_cena, cena) .. (if nast ~= cena then "  ·  " .. string.format(T.nastepna, nast) else "")
-		napisCeny.TextColor3 = if stac then kolor("9CFF8A") else kolor("FFF6E0")
-	end
-	podpowiedzJajka = znajdzPodpowiedz()
-	if podpowiedzJajka then
-		podpowiedzJajka.ActionText = string.format(D.inkubator.napis_akcja_cena, cena) -- tylko u tego gracza
+	for _, j in D.jajka do
+		local cena = gracz:GetAttribute(j.atrybuty.cena)
+		if type(cena) == "number" then
+			local stac = type(zloto) == "number" and zloto >= cena
+			local lok = jajkaLok[j.id]
+			if lok then
+				-- cena stała (domyślna, decyzja 17.11): „Cena: 300 Złota”; rosnąca (przełącznik): twoja i następna
+				local c = j.cena
+				if c.tryb == "rosnaca" then
+					local nast = math.min(c.maks, cena + c.krok)
+					lok.napis.Text = string.format(T.twoja_cena, cena)
+						.. (if nast ~= cena then "  ·  " .. string.format(T.nastepna, nast) else "")
+				else
+					lok.napis.Text = string.format(T.cena, cena)
+				end
+				lok.napis.TextColor3 = if stac then kolor("9CFF8A") else kolor("FFF6E0")
+			end
+			local pp = znajdzPodpowiedz(j)
+			if pp then
+				pp.ActionText = string.format(D.inkubator.napis_akcja_cena, cena) -- tylko u tego gracza
+			end
+		end
 	end
 end
-gracz:GetAttributeChangedSignal(AG.cena):Connect(odswiezCene)
+for _, j in D.jajka do
+	gracz:GetAttributeChangedSignal(j.atrybuty.cena):Connect(odswiezCene)
+end
 gracz:GetAttributeChangedSignal(S.atrybut_zlota):Connect(odswiezCene)
 
 ------------------------------------------------------------------ wyklucie
@@ -492,18 +499,21 @@ local function napisNadPetem(adornee: BasePart, info, kol: Color3, r)
 end
 
 local function sekwencjaWyklucia(info)
+	-- jajko z serwera (info.jajko); haczyk testowy bez jajka → jajko, z którego jest pet
+	local j = L.jajko(D, info.jajko) or L.jajkoPeta(D, info.pet) or D.jajka[1]
 	local dp = danePeta(info.pet)
-	local dj = daneRigu(D.rig_jajka)
+	local dj = daneRigu(j.rig)
 	if not dp or not dj then
 		return
 	end
 	local r, nr = rzadkoscPeta(info.pet)
 	local kol = if r then kolor(r.kolor) else Color3.new(1, 1, 1)
-	local G = D.polozenia
-	local podstawa = if jajkoLok then jajkoLok.podstawa else CFrame.new(v3(G.gniazdo) + Vector3.new(0, D.inkubator.y_mchu, 0))
-	local skala = if jajkoLok then jajkoLok.skala else D.inkubator.skala_jajka
-	if jajkoLok then
-		jajkoLok.model.Parent = nil
+	local G = j.polozenie
+	local lok = jajkaLok[j.id]
+	local podstawa = if lok then lok.podstawa else CFrame.new(v3(G.gniazdo) + Vector3.new(0, j.y_jajka, 0))
+	local skala = if lok then lok.skala else j.skala_jajka
+	if lok then
+		lok.model.Parent = nil
 	end
 	local em, eu = Rig.zbuduj(dj, skala, "Jajko wyklucie")
 	em.Parent = lokalne
@@ -536,14 +546,14 @@ local function sekwencjaWyklucia(info)
 	local pm, pu = Rig.zbuduj(dp, skalaPeta(info.pet), "Pet wyklucie")
 	pm.Parent = lokalne
 	animowane[pu] = true
-	local e = v3(G.e_inkubatora)
+	local e = v3(G.e)
 	local srodek = podstawa.Position
 	local kierunek = Vector3.new(e.X - srodek.X, 0, e.Z - srodek.Z)
 	kierunek = if kierunek.Magnitude > 0.01 then kierunek.Unit else Vector3.new(0, 0, -1)
 	local bok = Vector3.new(-kierunek.Z, 0, kierunek.X)
 	-- ląduje obok gracza stojącego przy E, nie w nim (próba 17.11: pet wylądował w postaci)
 	local cel = srodek + kierunek * W.przed_gniazdem + bok * W.w_bok
-	local yCel = ziemia(cel) or (srodek.Y - D.inkubator.y_mchu)
+	local yCel = ziemia(cel) or (srodek.Y - j.y_jajka)
 	cel = Vector3.new(cel.X, yCel, cel.Z)
 	local start = srodek + Vector3.new(0, 1.5 * skala * 0.75, 0)
 	local yaw = math.atan2(-kierunek.X, -kierunek.Z) -- przodem do gracza (od gniazda na zewnątrz)
@@ -570,9 +580,9 @@ local function sekwencjaWyklucia(info)
 	task.wait(W.radosc_s + 0.8)
 	-- 5. pet dołącza (aktywny idzie za graczem stąd) albo wraca do zagrody
 	poWykluciu = CFrame.new(cel)
-	if jajkoLok then
-		jajkoLok.model.Parent = lokalne
-		Rig.graj(jajkoLok.u, "spoczynek")
+	if lok then
+		lok.model.Parent = lokalne
+		Rig.graj(lok.u, "spoczynek")
 	end
 	task.delay(1.6, function()
 		napis:Destroy()
@@ -633,9 +643,24 @@ local function ustawPetyZagrody()
 	end
 	local miejsca = D.polozenia.miejsca_petow
 	local e = v3(D.polozenia.zagroda_e)
-	local i = 0
+	-- na sześciu miejscach najrzadsze pety (przy dziesięciu petach z dwóch jajek nie wszystkie się zmieszczą)
+	local kolejka = {}
 	for _, w in wierszeZagrody.wiersze do
-		if not w.aktywny and i < #miejsca then
+		if not w.aktywny then
+			table.insert(kolejka, w)
+		end
+	end
+	local nrRz = {}
+	for _, w in kolejka do
+		local _r, nr = rzadkoscPeta(w.pet)
+		nrRz[w.pet] = nr
+	end
+	table.sort(kolejka, function(a, b)
+		return nrRz[a.pet] > nrRz[b.pet]
+	end)
+	local i = 0
+	for _, w in kolejka do
+		if i < #miejsca then
 			i += 1
 			local dane = danePeta(w.pet)
 			if dane then
@@ -672,9 +697,9 @@ local function ustawPetyZagrody()
 	end
 end
 
--- tablica przy zagrodzie: SurfaceGui u tego gracza na części Zagroda/Tablica
+-- tablica przy zagrodzie: SurfaceGui u tego gracza na części Zagroda/Tablica — kolumna na każde jajko
 local tablicaGui: SurfaceGui? = nil
-local tablicaLista: Frame? = nil
+local tablicaKolumny = {} -- id jajka → Frame z wierszami
 local function przygotujTablice()
 	local z = kontener:WaitForChild("Zagroda", 20)
 	local czesc = z and z:WaitForChild("Tablica", 20)
@@ -702,48 +727,82 @@ local function przygotujTablice()
 	naglowek.TextColor3 = kolor("FFC94A")
 	naglowek.Text = D.zagroda.napis_tablicy .. "  ·  " .. D.zagroda.napis_proby
 	naglowek.Parent = tlo
-	local lista = Instance.new("Frame")
-	lista.BackgroundTransparency = 1
-	lista.Position = UDim2.new(0.04, 0, 0.22, 0)
-	lista.Size = UDim2.new(0.92, 0, 0.76, 0)
-	lista.Parent = tlo
-	local ul = Instance.new("UIListLayout")
-	ul.Padding = UDim.new(0.02, 0)
-	ul.Parent = lista
-	tablicaGui, tablicaLista = s, lista
+	local n = #D.jajka
+	for i, j in D.jajka do
+		local kol = Instance.new("Frame")
+		kol.Name = "Kolumna_" .. j.id
+		kol.BackgroundTransparency = 1
+		kol.Position = UDim2.new(0.03 + (i - 1) * 0.95 / n, 0, 0.21, 0)
+		kol.Size = UDim2.new(0.95 / n - 0.02, 0, 0.77, 0)
+		kol.Parent = tlo
+		local tytulKol = Instance.new("TextLabel")
+		tytulKol.Name = "Tytul"
+		tytulKol.BackgroundTransparency = 1
+		tytulKol.Size = UDim2.new(1, 0, 0.14, 0)
+		tytulKol.Font = CZCIONKA_TYTULU
+		tytulKol.TextScaled = true
+		tytulKol.TextXAlignment = Enum.TextXAlignment.Left
+		tytulKol.TextColor3 = kolor(j.kolor_swiatla)
+		tytulKol.Text = j.tytul
+		tytulKol.Parent = kol
+		local lista = Instance.new("Frame")
+		lista.Name = "Lista"
+		lista.BackgroundTransparency = 1
+		lista.Position = UDim2.new(0, 0, 0.16, 0)
+		lista.Size = UDim2.new(1, 0, 0.84, 0)
+		lista.Parent = kol
+		local ul = Instance.new("UIListLayout")
+		ul.Padding = UDim.new(0.02, 0)
+		ul.Parent = lista
+		tablicaKolumny[j.id] = lista
+	end
+	tablicaGui = s
 end
 
 local function rysujTablice()
-	if not tablicaLista then
+	if not tablicaGui then
 		return
 	end
-	for _, d in tablicaLista:GetChildren() do
-		if d:IsA("TextLabel") then
-			d:Destroy()
+	for _, lista in tablicaKolumny do
+		for _, d in lista:GetChildren() do
+			if d:IsA("TextLabel") then
+				d:Destroy()
+			end
 		end
 	end
-	local function wiersz(tekst: string, k: Color3)
+	local function wiersz(lista: Frame?, tekst: string, k: Color3)
+		if not lista then
+			return
+		end
 		local t = Instance.new("TextLabel")
 		t.BackgroundTransparency = 1
-		t.Size = UDim2.new(1, 0, 0.17, 0)
+		t.Size = UDim2.new(1, 0, 0.18, 0)
 		t.Font = CZCIONKA
 		t.TextScaled = true
 		t.TextXAlignment = Enum.TextXAlignment.Left
 		t.TextColor3 = k
 		t.Text = tekst
-		t.Parent = tablicaLista
+		t.Parent = lista
 	end
+	local pierwsza = tablicaKolumny[D.jajka[1].id]
 	if not wierszeZagrody or wierszeZagrody.brak then
-		wiersz(if wierszeZagrody then wierszeZagrody.tekst else "…", kolor("FFF6E0"))
+		wiersz(pierwsza, if wierszeZagrody then wierszeZagrody.tekst else "…", kolor("FFF6E0"))
 		return
 	end
 	if #wierszeZagrody.wiersze == 0 then
-		wiersz(T.brak_petow, kolor("FFF6E0"))
+		wiersz(pierwsza, T.brak_petow, kolor("FFF6E0"))
 		return
 	end
+	local ile = {}
 	for _, w in wierszeZagrody.wiersze do
-		wiersz(string.format("%s ×%d  ·  %s  ·  %s%s", w.nazwa, w.kopie, w.rzadkosc, w.skill,
-			if w.aktywny then "  ·  " .. T.aktywny else ""), kolor(w.kolor))
+		ile[w.jajko] = (ile[w.jajko] or 0) + 1
+		wiersz(tablicaKolumny[w.jajko], string.format("%s%s ×%d · %s", if w.aktywny then "► " else "", w.nazwa, w.kopie,
+			w.skill), kolor(w.kolor))
+	end
+	for _, j in D.jajka do
+		if not ile[j.id] then
+			wiersz(tablicaKolumny[j.id], T.brak_z_jajka, kolor("BFB6A8"))
+		end
 	end
 end
 
@@ -804,7 +863,7 @@ zamknij.TextSize = 30
 zamknij.TextColor3 = kolor("FFC94A")
 zamknij.Text = "×"
 zamknij.Parent = ramka
-local przewijane = Instance.new("ScrollingFrame")
+local przewijane = Instance.new("ScrollingFrame") -- dziesięć petów z dwóch jajek nie mieści się — przewijane
 przewijane.Name = "Lista"
 przewijane.Position = UDim2.new(0, 12, 0, 60)
 przewijane.Size = UDim2.new(1, -24, 1, -128)
@@ -815,6 +874,7 @@ przewijane.CanvasSize = UDim2.new()
 przewijane.Parent = ramka
 local ulOkna = Instance.new("UIListLayout")
 ulOkna.Padding = UDim.new(0, 8)
+ulOkna.SortOrder = Enum.SortOrder.LayoutOrder
 ulOkna.Parent = przewijane
 local odstawBtn = Instance.new("TextButton")
 odstawBtn.Name = "Odstaw"
@@ -852,10 +912,29 @@ local function rysujOkno()
 		return
 	end
 	odstawBtn.Visible = wierszeZagrody.aktywny ~= nil
-	for i, w in wierszeZagrody.wiersze do
+	local kolejnosc = 0
+	local ostatnieJajko = nil
+	for _, w in wierszeZagrody.wiersze do
+		if w.jajko ~= ostatnieJajko then -- nagłówek jajka (lista jest w kolejności katalogu: jajko po jajku)
+			ostatnieJajko = w.jajko
+			local j = L.jajko(D, w.jajko)
+			kolejnosc += 1
+			local h = Instance.new("TextLabel")
+			h.Name = "Naglowek_" .. tostring(w.jajko)
+			h.LayoutOrder = kolejnosc
+			h.BackgroundTransparency = 1
+			h.Size = UDim2.new(1, -10, 0, 30)
+			h.Font = CZCIONKA_TYTULU
+			h.TextScaled = true
+			h.TextXAlignment = Enum.TextXAlignment.Left
+			h.TextColor3 = if j then kolor(j.kolor_swiatla) else kolor("FFC94A")
+			h.Text = if j then j.tytul else tostring(w.jajko)
+			h.Parent = przewijane
+		end
+		kolejnosc += 1
 		local f = Instance.new("Frame")
 		f.Name = "Wiersz_" .. w.pet
-		f.LayoutOrder = i
+		f.LayoutOrder = kolejnosc
 		f.Size = UDim2.new(1, -10, 0, 64)
 		f.BackgroundColor3 = kolor("3A2D21")
 		f.Parent = przewijane
@@ -908,7 +987,7 @@ local function rysujOkno()
 			b.Font = CZCIONKA
 			b.TextScaled = true
 			b.TextColor3 = kolor("FFFFFF")
-			b.Text = "Wybierz"
+			b.Text = T.wybierz
 			b.Parent = f
 			local rb = Instance.new("UICorner")
 			rb.CornerRadius = UDim.new(0, 10)
@@ -1065,7 +1144,12 @@ RunService.RenderStepped:Connect(function(dt: number)
 end)
 
 ------------------------------------------------------------------ start
-przygotujInkubator()
+for _, j in D.jajka do
+	task.spawn(function()
+		przygotujInkubator(j)
+		odswiezCene()
+	end)
+end
 odswiezCene()
 task.spawn(function()
 	przygotujTablice()
@@ -1073,7 +1157,7 @@ task.spawn(function()
 end)
 
 ------------------------------------------------------------------ haczyk testowy
-sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
+sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 	if polecenie == "stan" then
 		local t = towarzysze[gracz]
 		local postac = gracz.Character
@@ -1086,12 +1170,21 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 		for _ in petyZagrody do
 			wZagrodzie += 1
 		end
+		local napisy, akcje, lokalneJajka = {}, {}, 0
+		for _, j in D.jajka do
+			local lok = jajkaLok[j.id]
+			local pp = znajdzPodpowiedz(j)
+			napisy[j.id] = lok and lok.napis.Text
+			akcje[j.id] = pp and pp.ActionText
+			lokalneJajka += if lok then 1 else 0
+		end
+		local pierwsze = D.jajka[1].id
 		return {
 			towarzysze = n, mojPet = t and t.pet, klip = t and t.u.klip,
 			odleglosc = if t and hrp then (t.pos - hrp.Position).Magnitude else nil,
 			wylegaSie = wylegaSie, ukryte = ukryteLokalnie(), okno = okno.Enabled, petyWZagrodzie = wZagrodzie,
-			bliskoZagrody = bliskoZagrody, napisCeny = napisCeny and napisCeny.Text, akcjaE = podpowiedzJajka
-				and podpowiedzJajka.ActionText, jajkoLokalne = jajkoLok ~= nil,
+			bliskoZagrody = bliskoZagrody, napisCeny = napisy[pierwsze], akcjaE = akcje[pierwsze],
+			jajkoLokalne = jajkaLok[pierwsze] ~= nil, napisy = napisy, akcjeE = akcje, jajekLokalnych = lokalneJajka,
 			wiersze = wierszeZagrody and wierszeZagrody.wiersze and #wierszeZagrody.wiersze, komunikat = pasekKom.Visible
 				and pasekKom.Text or nil,
 		}
@@ -1102,7 +1195,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 	elseif polecenie == "wybierz" and type(a) == "string" then
 		zdarzenia:FireServer("wybierz", a)
 	elseif polecenie == "wyklucie" and type(a) == "string" then
-		wyklucie({ pet = a, nowy = b ~= false, kopie = if b == false then 2 else 1 })
+		wyklucie({ pet = a, nowy = b ~= false, kopie = if b == false then 2 else 1, jajko = c })
 	elseif polecenie == "pokaz" and type(a) == "string" and typeof(b) == "Vector3" then
 		local dane = danePeta(a)
 		if not dane then

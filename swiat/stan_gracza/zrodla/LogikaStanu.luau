@@ -21,6 +21,8 @@
 		czystyWydatek(D, info), czystaPremia(D, premia) → kopia albo nil, powód   (17.11.2026, swiat/pety_proba)
 		wydaj(D, zloto, ile)                      → Złoto po, brakuje (nigdy poniżej zera)
 		premiaLupu(D, lup, premia)                → { zloto, doswiadczenie } — dodatek od aktywnego peta
+	lupZwyklego(D, poziom)                    → Złoto za wygraną ze zwykłym potworem na tym poziomie (17.11.2026)
+	karaPrzegranej(D, zloto, poziomPotwora, procent) → Złoto zabrane za przegraną (propozycja D-098)
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -391,6 +393,23 @@ function L.premiaLupu(D, lup, premia)
 	}
 end
 
+------------------------------------------------------------------ kara za przegraną (17.11.2026, propozycja D-098)
+function L.lupZwyklego(D, poziom): number
+	local g = D.kara.limit_lupu
+	return g.baza + g.na_poziom * (L.poziomZ(D, poziom) - 1)
+end
+
+-- ułamek `procent` posiadanego Złota (w dół), najwyżej łup zwykłego potwora na poziomie przeciwnika, nigdy więcej,
+-- niż gracz ma; procent ≤ 0 albo nie liczba = kara wyłączona
+function L.karaPrzegranej(D, zloto, poziomPotwora, procent): number
+	local z = L.wydaj(D, zloto, 0)
+	if not liczba(procent) or procent <= 0 then
+		return 0
+	end
+	local k = math.floor(z * math.min(procent, 1))
+	return math.min(k, L.lupZwyklego(D, poziomPotwora), z)
+end
+
 -- równość głęboka (tabele: te same klucze i wartości; liczby z tolerancją 1e-9)
 function L.rowne(a, b): boolean
 	if type(a) ~= type(b) then
@@ -482,6 +501,11 @@ function L.sprawdzPrzypadki(D)
 	end
 	for i, c in P.premia_lupu do
 		sprawdz("premia_lupu", i, L.rowne(L.premiaLupu(D, c.lup, c.premia), c.wynik))
+	end
+	for i, c in P.kara do
+		local zloto = if c.zloto == false then nil else c.zloto
+		local procent = if c.procent == false then nil else c.procent
+		sprawdz("kara", i, L.karaPrzegranej(D, zloto, c.poziom, procent) == c.wynik)
 	end
 	return #bledy == 0, n, bledy
 end

@@ -1,0 +1,46 @@
+RAPORT — nenufarek
+NENUFAREK — pet zwykły z jajka Bagna (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny projekt).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/nenufarek.py · wygenerowano 17.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py nenufarek
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: nenufarek
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 6 plików, zgodnych 6
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Liść grzybienia to dwa skośne płaskie klocki — z bliska ośmiokąt, nie koło.
+
+MODEL nenufarek „Nenufarek” (stwor)
+  wymiary ciała: 1,99 × 1,24 × 2,33; z akcesoriami: 1,99 × 1,24 × 2,33
+  trójkąty: 1108 (siatek: 8)
+  kości (9): Root, Tulow, Glowa, Kwiat, Ogonek, NogaPrzodL, NogaTylL, NogaPrzodP, NogaTylP
+  klipy: spoczynek 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
+  punkty zaczepienia: RootAttachment, GlowaAttachment
+
+KONTROLA EKSPORTÓW
+- nenufarek.fbx: siatki 10, kości 9, trójkąty 1132, wzrost 1.24 st., akcje brak -> ZGODNE
+- nenufarek__spoczynek.fbx: siatki 10, kości 9, trójkąty 1132, wzrost 1.24 st., akcje nenufarek|Scene 1-61 -> ZGODNE
+- nenufarek__chod.fbx: siatki 10, kości 9, trójkąty 1132, wzrost 1.24 st., akcje nenufarek|Scene 1-25 -> ZGODNE
+- nenufarek__radosc.fbx: siatki 10, kości 9, trójkąty 1132, wzrost 1.24 st., akcje nenufarek|Scene 1-37 -> ZGODNE
+- nenufarek__wyklucie.fbx: siatki 10, kości 9, trójkąty 1132, wzrost 1.24 st., akcje nenufarek|Scene 1-31 -> ZGODNE
+- nenufarek.glb: siatki 10, kości 9, trójkąty 1132, wzrost 1.24 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
+
+PLIKI
+- nenufarek.blend
+- nenufarek.fbx
+- nenufarek.glb
+- nenufarek__chod.fbx
+- nenufarek__radosc.fbx
+- nenufarek__spoczynek.fbx
+- nenufarek__wyklucie.fbx
+- nenufarek_bohater.jpg
+- nenufarek_ikona.png
+- nenufarek_plansza.jpg
+- nenufarek_tekstury/
+- raport.json
+- raport.txt

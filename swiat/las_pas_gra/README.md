@@ -7,6 +7,18 @@ D-076, D-077 (przelot przy pierwszym wejściu, bez pomijania). D-078 (pomijanie 
 Ustawienia przyjęte przez właściciela: Strażnik i Troll wspólni dla serwera, walka na arenie prototypu, teleport do
 wejścia biomu, przelotu nie da się pominąć, stary las zostaje nietknięty i działa dalej.*
 
+> **Krótki pas (D-096, Karol 17.11.2026).** Gra czyta krótką mapę `swiat/las_pas/krotki/` (bieg od przybycia do bramy
+> 25 s, pole gry 4 s = 64 st; było 57,5 s i 4,5 s), którą `swiat/biomy/przycinarka.py` robi z długiej mapy-projektu
+> według `swiat/biomy/wymiary_pasa.json` (zmiana długości = jedna liczba). Z każdej przegrody została jedna strefa
+> z poziomami całej przegrody: 8 / 12 / 16 potworów przy 1 / 8 / 20 graczach (było 20 / 36 / 46), przelot 10,2 s.
+> Kontrola: `python -B swiat/biomy/kontrola_krotkich.py`; podgląd przed / po: `swiat/biomy/podglad/pas_przed_po.jpg`.
+> W scalonych zagrodach (las s1, m1, w1; Bagno r1, b1, k1 — flaga `poziomyPoMiejscach`) poziomy nie są losowe:
+> SerwerPotworow (`poziomNaMiejsce`) rozdaje je po miejscach lo, lo+1, …, hi, lo, … — przy 1 graczu w Zagrodzie
+> chodzą slime'y 1 i 2, przy 8 graczach 1, 2, 3, przy 20 graczach 1, 1, 2, 3; odrodzenie uzupełnia najniższy brakujący.
+> Wskazówka „Podejdź do potwora” wskazuje potwora o poziomie najbliższym poziomowi gracza. Test:
+> `python -B swiat/las_pas_gra/testy/test_poziomow.py` (`--rozklad` — tabela). Bieg i szerokość w Studio:
+> `python -B swiat/biomy/proba_biegu.py <folder poza repo>`.
+
 > **W skrócie.** Jeden kontener `Workspace/LasPasGra` (atrybut `Wygenerowane = true`, osobny od
 > `Workspace/LasPotwory`) obok mapy z klocków `Workspace/LasPas` (robi ją inny agent w `swiat/las_pas/`). W nim:
 > **ten sam kod potworów** co w starym lesie (`swiat/las_potwory`), uruchomiony na nowych danych — 10 stref w

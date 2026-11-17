@@ -1,0 +1,50 @@
+RAPORT — wazeczka
+WAŻECZKA — pet rzadki z jajka Bagna (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny projekt).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/wazeczka.py · wygenerowano 17.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py wazeczka
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: wazeczka
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 6 plików, zgodnych 6
+- ostrzeżenia z raportu: 0; uwagi podglądu: 1
+
+ZNANE SŁABOŚCI
+- Skrzydła to płaskie klocki „polysk” — w Robloksie bez przezroczystości (klocki rigu jej nie niosą).
+- Unosi się stale ok. 1,3 studa nad ziemią: cień pod nią to jedyny ślad podłoża.
+
+MODEL wazeczka „Ważeczka” (stwor)
+  wymiary ciała: 3,08 × 0,84 × 2,82; z akcesoriami: 3,08 × 0,84 × 2,82
+  trójkąty: 1008 (siatek: 8)
+  kości (9): Root, Tulow, Glowa, Odwlok, Ogon, SkrzydloPrzodL, SkrzydloPrzodP, SkrzydloTylL, SkrzydloTylP
+  klipy: spoczynek 60 kl. 2,00 s pętla, chod 20 kl. 0,67 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
+  punkty zaczepienia: RootAttachment, GlowaAttachment
+
+UWAGI PODGLĄDU
+- wazeczka: najniższy punkt na y = 0.87 — postać nie stoi na ziemi (y = 0)
+
+KONTROLA EKSPORTÓW
+- wazeczka.fbx: siatki 10, kości 9, trójkąty 1032, wzrost 0.84 st., akcje brak -> ZGODNE
+- wazeczka__spoczynek.fbx: siatki 10, kości 9, trójkąty 1032, wzrost 0.84 st., akcje wazeczka|Scene 1-61 -> ZGODNE
+- wazeczka__chod.fbx: siatki 10, kości 9, trójkąty 1032, wzrost 0.84 st., akcje wazeczka|Scene 1-21 -> ZGODNE
+- wazeczka__radosc.fbx: siatki 10, kości 9, trójkąty 1032, wzrost 0.84 st., akcje wazeczka|Scene 1-37 -> ZGODNE
+- wazeczka__wyklucie.fbx: siatki 10, kości 9, trójkąty 1032, wzrost 0.84 st., akcje wazeczka|Scene 1-31 -> ZGODNE
+- wazeczka.glb: siatki 10, kości 9, trójkąty 1032, wzrost 0.84 st., akcje chod 0-20, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
+
+PLIKI
+- wazeczka.blend
+- wazeczka.fbx
+- wazeczka.glb
+- wazeczka__chod.fbx
+- wazeczka__radosc.fbx
+- wazeczka__spoczynek.fbx
+- wazeczka__wyklucie.fbx
+- wazeczka_bohater.jpg
+- wazeczka_ikona.png
+- wazeczka_plansza.jpg
+- wazeczka_tekstury/
+- raport.json
+- raport.txt

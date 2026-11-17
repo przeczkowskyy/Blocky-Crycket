@@ -20,7 +20,8 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
   S04 (b) łup po walce: w trakcie walki Gold / XP / Level bez zmian, po walce = wynik z OstatniLup i krzywej; HUD (Gold,
       Level) pokazuje to samo co atrybuty
   S05 (d) awans → baner „POZIOM N” (PlayerGui.StanGraczaBaner), zrzut
-  S06 (c) przegrana (troll albo wilk ponad poziom gracza) → +20% doświadczenia z OstatniLup, Gold i statystyki bez zmian
+  S06 (c) przegrana (troll albo wilk ponad poziom gracza) → +20% doświadczenia z OstatniLup, statystyki bez zmian; Gold
+      przed walką = 400, po walce − kara za przegraną (propozycja D-098: LogikaStanu.karaPrzegranej, ułamek ze stanu)
   S07 (e) trening Siły (haczyki TreningProba: wejdź, runda, autogra, wyjdź) → Strength rośnie o przyrost z treningu →
       opis bohatera (Sygnaly/SterowanieSerwera "bohater") ma tę Siłę → walka
   S08 (f) TestBohater = true na lesie-pasie → dawny panel T1, walka klasą i poziomem z panelu, bez łupu; potem wyłączony
@@ -28,6 +29,9 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
       (TestKotwicaStara = true) i 15 z nową — ile zaczęło walkę; dymek przy odmowie (blokada po walce)
   S10 (g) brak sygnału Sygnaly/Bohater (zmiana nazwy) → dawna walka, bez łupu; nazwa przywrócona
   S11 (g) usunięcie Workspace/StanGracza w czasie gry → dawny panel T1 i dawna walka, bez łupu
+  S13 (17.11.2026, D-098) komunikat po przegranej z S06: „Przegrana: −N Złota, +M doświadczenia” (PlayerGui.
+      StanGraczaKomunikat, atrybut klienta KlientOstatniKomunikat) z N = kara z S06 i M = doświadczenie z OstatniLup;
+      LicznikKar +1; zrzut 11_przegrana_komunikat
   S12 (h) konsola: bez błędów naszych skryptów ([StanGracza], [LasPasGra], [LasPotwory], „Script …StanGracza”);
       znane wiersze „Requester does not have permission for Asset” (dźwięki) pomijane
 """
@@ -77,6 +81,14 @@ KOD = {
     "gracz_atr": GR + 'local o = {} for _, n in { %s } do o[n] = J(gracz:GetAttribute(n)) end return H:JSONEncode(o)',
     "kont_atr": 'local o = {} local f = workspace:FindFirstChild("%s") if not f then return H:JSONEncode({ brak = true }) end '
                 'for _, n in { %s } do o[n] = J(f:GetAttribute(n)) end return H:JSONEncode(o)',
+    # kara za przegraną (17.11.2026, D-098): Złoto gracza wprost (przygotowanie testu) i komunikat u klienta
+    "gracz_ustaw": GR + 'gracz:SetAttribute("%s", %s) return "ok"',
+    "komunikat_stanu": ('local H = game:GetService("HttpService") local s = workspace:FindFirstChild("StanGracza") '
+                        'local pg = game:GetService("Players").LocalPlayer.PlayerGui local g = pg:FindFirstChild("StanGraczaKomunikat") '
+                        'local l = g and g:FindFirstChild("Tekst") return H:JSONEncode({ widac = g ~= nil and g.Enabled, '
+                        'tekst = l and l.Text or false, ostatni = s and s:GetAttribute("KlientOstatniKomunikat") or false })'),
+    "zero_komunikatu_stanu": ('local s = workspace:FindFirstChild("StanGracza") if s then s:SetAttribute("KlientOstatniKomunikat", nil) end '
+                              'return "ok"'),
     "stan_haczyk": KS + 'if not s then return H:JSONEncode({ brak = true }) end '
                         'return H:JSONEncode(J(s.Sygnaly.SterowanieSerwera:Invoke("%s", game:GetService("Players"):GetPlayers()[1])))',
     "klient_potworow": KP + 'return H:JSONEncode(J(k.Sygnaly.SterowanieKlienta:Invoke("stan")))',
@@ -337,15 +349,18 @@ def main():
         def stan_licz():
             return kont_atr("StanGracza", ["LicznikLupow", "LicznikPokazan", "LicznikAwansow", "OstatniLup", "OstatniBohater"])
 
-        def dokoncz_walke(lap_baner=False):
+        def dokoncz_walke(lap_baner=False, lap_komunikat=None):
             """Przewija trwającą walkę do końca i zamyka panel wyniku (jak gracz: POMIŃ niedostępne przy nowym gatunku).
-            lap_baner: zaraz po zamknięciu czeka na baner awansu (2,6 s) i robi zrzut."""
+            lap_baner: zaraz po zamknięciu czeka na baner awansu (2,6 s) i robi zrzut; lap_komunikat: nazwa zrzutu
+            komunikatu po przegranej (PlayerGui.StanGraczaKomunikat, 3,5 s)."""
             czekaj_na(lambda: odtw('"stan"').get("faza") == "odtwarzanie", 10, 0.4)
             odtw('"przewinDo", 1000')
             time.sleep(2.5)
             odtw('"zamknij"')
             if lap_baner and czekaj_na(lambda: js(KOD["hud"], "Client").get("baner"), 3, 0.2):
                 zrzut("03_baner_awansu")
+            if lap_komunikat and czekaj_na(lambda: js(KOD["komunikat_stanu"], "Client").get("widac"), 4, 0.2):
+                zrzut(lap_komunikat)
             czekaj_na(lambda: not klient_potworow().get("walka"), 30, 1.0)
             time.sleep(1.0)
             luau(KOD["kamera_zwykla"], "Client")
@@ -395,7 +410,7 @@ def main():
 
         NIEUDANE = []  # nieudane podejścia ostatniego walka_w_strefie (diagnoza)
 
-        def walka_w_strefie(strefa, kamera="za", proby=3, zrzut_walki=None, lap_baner=False):
+        def walka_w_strefie(strefa, kamera="za", proby=3, zrzut_walki=None, lap_baner=False, lap_komunikat=None):
             """Walka z pierwszym wolnym potworem strefy (prawdziwe E; zapas: haczyk "walcz" z adnotacją)."""
             NIEUDANE.clear()
             for _ in range(proby):
@@ -422,7 +437,7 @@ def main():
                 w_trakcie = {"gracz": gracz_atr(), "hud": js(KOD["hud"], "Client")}
                 if zrzut_walki:
                     zrzut(zrzut_walki)
-                dokoncz_walke(lap_baner)
+                dokoncz_walke(lap_baner, lap_komunikat)
                 time.sleep(2.0)
                 po = {"gracz": gracz_atr(), "walka": ostatnia_walka(), "stan": stan_licz(), "hud": js(KOD["hud"], "Client")}
                 return {"cel": cel, "jak": jak, "e": e, "przed": przed, "w_trakcie": w_trakcie, "po": po}
@@ -508,7 +523,7 @@ def main():
                                         lap_baner=banery == 0)
                     if not w and all("brak_celu" in n for n in NIEUDANE):
                         # s1 wybita (2 slime'y; z graczem w strefie odradzanie trwa dłużej) — drugi slime'owy obszar
-                        w = walka_w_strefie("s2", lap_baner=banery == 0)
+                        w = walka_w_strefie("s1", lap_baner=banery == 0)   # D-096: jedna strefa slime’ów
                     if not w:
                         walki[id_klasy] = {"blad": "walka nie ruszyła", "panel": panel, "nieudane": list(NIEUDANE),
                                            "klasa_przed": a0.get("Class")}
@@ -558,8 +573,13 @@ def main():
 
                 # ================================================================ S06 przegrana
                 prz = None
-                for strefa in ("t1", "w3", "w2"):
-                    prz = walka_w_strefie(strefa, zrzut_walki="05_przegrana")
+                # kara za przegraną (D-098): Złoto przed walką 400, żeby kara była widoczna; ułamek ze stanu serwera
+                luau(KOD["gracz_ustaw"] % ("Gold", "400"), "Server")
+                luau(KOD["zero_komunikatu_stanu"], "Client")
+                procent = stan_hak("stan").get("procentKary") or 0
+                kary0 = kont_atr("StanGracza", ["LicznikKar"]).get("LicznikKar") or 0
+                for strefa in ("t1", "w1", "w3", "w2"):  # po D-096 jedna strefa na przegrodę (t1, w1)
+                    prz = walka_w_strefie(strefa, zrzut_walki="05_przegrana", lap_komunikat="11_przegrana_komunikat")
                     if prz:
                         prz["strefa"] = strefa
                         break
@@ -568,16 +588,30 @@ def main():
                     gp, gpo = prz["przed"]["gracz"], prz["po"]["gracz"]
                     L0 = LS.poziom_z(D, gp.get("Level"))
                     ok6 = False
+                    kara = LS.kara_przegranej(D, gp.get("Gold"), prz["cel"].get("poziom"), procent)
                     if lup and lup[0] == "przegrana":
                         L1, xp1, _ = LS.awans(D, L0, gp.get("XP") or 0, lup[2])
-                        ok6 = (lup[1] == 0 and gpo.get("Gold") == gp.get("Gold") and gpo.get("Level") == L1 and gpo.get("XP") == xp1
-                               and (L1 != L0 or staty(gpo) == staty(gp)))
-                    zapisz("S06", {"strefa": prz["strefa"], "lup": lup, "przed": gp, "po": gpo, "walka": prz["po"]["walka"]})
+                        ok6 = (lup[1] == 0 and gpo.get("Gold") == (gp.get("Gold") or 0) - kara and gpo.get("Level") == L1
+                               and gpo.get("XP") == xp1 and (L1 != L0 or staty(gpo) == staty(gp)))
+                    kom = js(KOD["komunikat_stanu"], "Client")
+                    kary = kont_atr("StanGracza", ["LicznikKar", "OstatniaKara"])
+                    zapisz("S06", {"strefa": prz["strefa"], "lup": lup, "przed": gp, "po": gpo, "walka": prz["po"]["walka"],
+                                   "procent": procent, "kara": kara, "komunikat": kom, "kary": kary})
                     punkt("S06", ok6 if (lup and lup[0] == "przegrana") else None,
-                          "strefa %s, łup %s, Gold %s→%s, XP %s→%s, poziom %s→%s" % (prz["strefa"], lup, gp.get("Gold"), gpo.get("Gold"),
-                                                                                 gp.get("XP"), gpo.get("XP"), gp.get("Level"), gpo.get("Level")))
+                          "strefa %s, łup %s, Gold %s→%s (kara %d przy %s), XP %s→%s, poziom %s→%s" % (
+                              prz["strefa"], lup, gp.get("Gold"), gpo.get("Gold"), kara, procent, gp.get("XP"), gpo.get("XP"),
+                              gp.get("Level"), gpo.get("Level")))
+                    # S13: komunikat po przegranej (tekst z danych, liczby z S06)
+                    if lup and lup[0] == "przegrana":
+                        oczek = (D["kara"]["komunikat"] % (kara, lup[2]) if kara > 0 else D["kara"]["komunikat_bez_zlota"] % lup[2])
+                        ok13 = (kara > 0 and kom.get("ostatni") == oczek and (kary.get("LicznikKar") or 0) == kary0 + 1)
+                        punkt("S13", ok13, "komunikat %r (oczekiwany %r), LicznikKar %s→%s, OstatniaKara %s" % (
+                            kom.get("ostatni"), oczek, kary0, kary.get("LicznikKar"), kary.get("OstatniaKara")))
+                    else:
+                        punkt("S13", None, "walka S06 nie była przegraną — komunikatu nie sprawdzono")
                 else:
                     punkt("S06", False, "walka z trollem / wilkiem nie ruszyła")
+                    punkt("S13", False, "bez walki S06")
 
                 # ================================================================ S07 trening Siły
                 if edit.get("trening"):
@@ -597,7 +631,7 @@ def main():
                     t1 = kont_atr("StanGracza", ["LicznikTreningu"]).get("LicznikTreningu") or 0
                     przyrost_sesji = js(KOD["trening_sila"], "Server").get("s")
                     opis = stan_hak("bohater")
-                    w7 = walka_w_strefie("s2")
+                    w7 = walka_w_strefie("s1")
                     zapisz("S07", {"wejscie": tw, "przed": a0, "po": a1, "sygnaly": [t0, t1], "TreningSila": przyrost_sesji,
                                    "opis": opis, "walka": w7 and w7["po"]["walka"], "stan": w7 and w7["po"]["stan"]})
                     dS = (a1.get("Strength") or 0) - (a0.get("Strength") or 0)
@@ -615,7 +649,7 @@ def main():
                 panel8 = js(KOD["panel"], "Client")
                 zrzut("07_panel_tryb_testowy")
                 luau(KOD["bohater_t1"] % ("mag", "10"), "Client")
-                w8 = walka_w_strefie("s2")
+                w8 = walka_w_strefie("s1")
                 luau(KOD["test_atr"] % ("LasPasGra", "TestBohater", "nil"), "Server")
                 time.sleep(1.5)
                 panel8po = js(KOD["panel"], "Client")
@@ -742,7 +776,7 @@ def main():
             if not tylko_m6:
                 # ================================================================ S10 brak sygnału Bohater
                 js(KOD["przemianuj"] % ("Bohater", "BohaterWylaczony"), "Server")
-                w10 = walka_w_strefie("s2")
+                w10 = walka_w_strefie("s1")
                 js(KOD["przemianuj"] % ("BohaterWylaczony", "Bohater"), "Server")
                 ok10 = False
                 if w10:

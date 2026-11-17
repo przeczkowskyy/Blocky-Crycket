@@ -151,6 +151,37 @@ local function zapiszAtrybuty(p)
 	end
 end
 
+-- D-096: strefa scalona z trzech kojców (poziomyPoMiejscach) — poziomy rozdane po miejscach, nie losowo. Miejsca w
+-- kolejności lo, lo+1, …, hi, lo, lo+1, … (do max); nowy potwór dostaje poziom pierwszego miejsca, którego żywe potwory
+-- nie zajmują — najniższy poziom jest zawsze pierwszy (przy 1 graczu w Zagrodzie: 1 i 2, potem 3, potem drugi 1)
+local function poziomNaMiejsce(lo: number, hi: number, maks: number, zywe: { number }): number
+	local liczba = {}
+	for _, poz in zywe do
+		liczba[poz] = (liczba[poz] or 0) + 1
+	end
+	for i = 0, math.max(maks, 1) - 1 do
+		local poz = lo + i % (hi - lo + 1)
+		if (liczba[poz] or 0) > 0 then
+			liczba[poz] -= 1
+		else
+			return poz
+		end
+	end
+	return lo
+end
+
+local function poziomNowego(st): number
+	local lo, hi = st.d.poziomy[1], st.d.poziomy[2]
+	if not st.d.poziomyPoMiejscach or hi <= lo then
+		return generator:NextInteger(lo, hi)
+	end
+	local zywe = {}
+	for _, q in st.potwory do
+		table.insert(zywe, q.poziom)
+	end
+	return poziomNaMiejsce(lo, hi, st.d.max, zywe)
+end
+
 -- nowy potwór (bez Configuration — tę tworzy opublikuj, gdy położenie jest już policzone)
 local function utworzPotwora(st, stan: string, dom: number)
 	st.licznik += 1
@@ -162,7 +193,7 @@ local function utworzPotwora(st, stan: string, dom: number)
 		gatunek = st.d.gatunek,
 		nazwa = if wariant then wariant.nazwa else st.gatunek.nazwa,
 		wariant = if wariant then wariant.id else "",
-		poziom = generator:NextInteger(st.d.poziomy[1], st.d.poziomy[2]),
+		poziom = poziomNowego(st),
 		stan = stan,
 		dom = dom,
 		x = d.x,

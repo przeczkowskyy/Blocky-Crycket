@@ -7,7 +7,7 @@
 		   do końca sesji (haczyk testowy "wlacz" je przywraca).
 		2. Strzałka obok przycisku TELEPORT w HUD Pawła (tylko czyta jego położenie — HUD-u nie zmienia) albo znacznik
 		   w świecie nad celem: najbliższy potwór, Strażnik Gaju, Kamień Powrotu, trener, brama za Strażnikiem,
-		   inkubator jajek (swiat/pety_proba — gdy Złota wystarcza na pierwsze jajko).
+		   inkubator jajek biomu (swiat/pety_proba — gdy Złota wystarcza na pierwsze jajko lasu albo Bagna).
 		3. Krok wynika ze stanu gracza (LogikaWskazowek.krok): klasa, wynik ostatniej walki w lesie, pokonany Strażnik,
 		   położenie (prostokąty biomów z ich danych: las-pas, Bagno), stan gracza (swiat/stan_gracza: poziomy i trening), a nie ze
 		   sztywnego scenariusza. Bez StanGracza kroki o poziomach i treningu się nie pokazują.
@@ -317,8 +317,11 @@ obrysGrotu.Thickness = 3
 obrysGrotu.Parent = grot
 
 ------------------------------------------------------------------ cele
+-- D-096: w zasięgu najpierw potwór o poziomie najbliższym poziomowi gracza (w scalonych zagrodach chodzą różne
+-- poziomy — nowy gracz ma iść do najsłabszego), dopiero przy równym poziomie najbliższy w studach
 local function najblizszyPotwor(od)
-	local najlepszy, odl = nil, D.czasy.potwor_promien
+	local lv = tonumber(gracz:GetAttribute("Level"))
+	local najlepszy, odl, roznica = nil, math.huge, math.huge
 	for nazwa in Z.walki do
 		local k = workspace:FindFirstChild(nazwa)
 		local stanP = k and k:FindFirstChild(Z.stan_potworow)
@@ -327,8 +330,10 @@ local function najblizszyPotwor(od)
 				local p = c:GetAttribute("Pozycja")
 				if typeof(p) == "Vector3" and c:GetAttribute("Straznik") ~= true then
 					local d = (p - od).Magnitude
-					if d < odl then
-						najlepszy, odl = p, d
+					local poz = tonumber(c:GetAttribute("Poziom"))
+					local r = if lv and poz then math.abs(poz - lv) else 0
+					if d < D.czasy.potwor_promien and (r < roznica or (r == roznica and d < odl)) then
+						najlepszy, odl, roznica = p, d, r
 					end
 				end
 			end
@@ -371,7 +376,7 @@ local function punktCelu(cel, od, kraina)
 	elseif cel == "trener" then
 		return najblizszyTrener(od)
 	elseif cel == "jajko" then
-		return pozycja(sciezka(Z.inkubator))
+		return b and b.inkubator and pozycja(sciezka(b.inkubator)) -- inkubator biomu (swiat/pety_proba)
 	elseif not b then
 		return nil
 	elseif cel == "straznik" then
@@ -408,11 +413,6 @@ local function stanGracza()
 	local sg = workspace:FindFirstChild(Z.stan_gracza)
 	s.stan_gracza = sg ~= nil and sg:GetAttribute(Z.stan_gracza_gotowy) == true
 	s.trening_wzmacnia = s.stan_gracza and sg:GetAttribute(Z.stan_gracza_trening) == true
-	-- jajko (swiat/pety_proba): cena następnego jajka i liczba petów to atrybuty gracza (piszą je serwery pakietów)
-	local cena, zloto = gracz:GetAttribute(Z.atrybut_ceny_jajka), gracz:GetAttribute(Z.atrybut_zlota)
-	s.jajko = workspace:FindFirstChild(Z.pety) ~= nil and type(cena) == "number" and type(zloto) == "number" and zloto >= cena
-	local pety = gracz:GetAttribute(Z.atrybut_petow)
-	s.pety = if type(pety) == "number" then pety else 0
 	local korzen = gracz.Character and gracz.Character:FindFirstChild("HumanoidRootPart")
 	if korzen then
 		-- od ostatniego biomu: początek Bagna leży w prostokącie lasu (za jego bramą) — Bagno ma pierwszeństwo
@@ -430,6 +430,14 @@ local function stanGracza()
 	end
 	local l = if s.kraina then licznik(s.kraina) else sesja.ogolem
 	s.wygrane, s.przegrane, s.ostatni, s.trenowal = l.wygrane, l.przegrane, l.ostatni, l.trenowal
+	-- jajko biomu, w którym stoi gracz (w mieście: lasu; swiat/pety_proba): cena następnego jajka i liczba kupionych
+	-- jajek tego biomu to atrybuty gracza (pisze je serwer pakietu petów)
+	local bj = biom(s.kraina or "las")
+	local cena = bj and bj.atrybut_ceny_jajka and gracz:GetAttribute(bj.atrybut_ceny_jajka)
+	local zloto = gracz:GetAttribute(Z.atrybut_zlota)
+	s.jajko = workspace:FindFirstChild(Z.pety) ~= nil and type(cena) == "number" and type(zloto) == "number" and zloto >= cena
+	local kupione = bj and bj.atrybut_kupionych_jajek and gracz:GetAttribute(bj.atrybut_kupionych_jajek)
+	s.kupione = if type(kupione) == "number" then kupione else 0
 	for pole, w in wymuszone do
 		s[pole] = w
 	end
@@ -535,7 +543,7 @@ sterowanie.OnInvoke = function(polecenie, a, b)
 			ostatni = s.ostatni, trenowal = s.trenowal, wylaczone = sesja.wylaczone, bagno = s.bagno,
 			straznik = s.straznik, straznik_bagna = s.straznik_bagna,
 			stan_gracza = s.stan_gracza, trening_wzmacnia = s.trening_wzmacnia, daneLasu = daneBiomow.las ~= nil,
-			jajko = s.jajko, pety = s.pety,
+			jajko = s.jajko, kupione = s.kupione,
 		}
 	elseif polecenie == "wylacz" then
 		sesja.wylaczone = true

@@ -48,7 +48,8 @@ GEN = _modul("generuj_dane_las_pas_gra_dla_bagna", os.path.join(PAS, "generuj_da
 GD_WALKI = _modul("generuj_dane_walki_dla_bagna", os.path.join(REPO, "tools", "walka", "generuj_dane.py"))
 zrodlo_mapy = GEN.zrodlo_mapy
 
-MAPA_BAGNA = os.path.join(REPO, "swiat", "bagno_pas")
+# D-096 (17.11.2026): gra czyta KRÓTKĄ mapę Bagna (przycięta z projektu swiat/bagno_pas przez swiat/biomy/przycinarka.py)
+MAPA_BAGNA = os.path.join(REPO, "swiat", "bagno_pas", "krotki")
 CEL_POTWOROW = os.path.join(TU, "zrodla", "DanePotworowBagna.luau")
 CEL_PASA = os.path.join(TU, "zrodla", "DaneBagna.luau")
 CEL_WALKI = os.path.join(TU, "silnik", "DaneWalkiBagna.luau")
@@ -65,21 +66,23 @@ GATUNKI = {
 # treningu i z poziomem „auto”. Od 17.11 gracz walczy na swoim prawdziwym poziomie (swiat/stan_gracza), więc bierzemy
 # kalkulator balansu (tools/walka/BALANS_1711.md, część 1, plan rosnący, gracz trenujący 20% czasu): wejście do
 # Bagna na 10. poziomie, wyjście na 17.; rzadki potwór i strażnik o poziom niżej niż gracz na wyjściu.
-POZIOMY_STREF = {
-    "r1": [10, 10], "r2": [10, 11], "r3": [11, 12],
-    "b1": [12, 13], "b2": [13, 13], "b3": [13, 14],
-    "k1": [14, 15], "k2": [15, 15], "k3": [15, 16],
-    "t1": [16, 16],
-}
+# D-096: z każdej przegrody została jedna strefa (pierwszy kojec) z poziomami całej przegrody
+POZIOMY_STREF = {"r1": [10, 12], "b1": [12, 14], "k1": [14, 16], "t1": [16, 16]}
 POZIOM_STRAZNIKA = 16
-# serwer przelotu prosi o wczytanie mapy wokół tych u (tekst planu: przelot_kamery.streaming)
-PUNKTY_STRUMIENIA_U = [1110, 1390, 1640, 1814]
+# serwer przelotu prosi o wczytanie mapy wokół tych u — od D-096 z planu krótkiego (przelot_kamery.streaming_u)
+with open(os.path.join(MAPA_BAGNA, "plan_bagna.json"), encoding="utf-8") as _f:
+    _PLAN_KROTKI = json.load(_f)
+with open(os.path.join(MAPA_BAGNA, "znaczniki.json"), encoding="utf-8") as _f:
+    _ZN_KROTKIE = json.load(_f)
+PUNKTY_STRUMIENIA_U = list(_PLAN_KROTKI["przelot_kamery"]["streaming_u"])
 # mgła Bagna: gęstsza, niższa i szarozielona (plan biomów: FogColor 9AA58E; tu jako Atmosphere, jak w lesie-pasie)
 MGLA_CEL = {"Density": 0.42, "Offset": 0.08, "Haze": 2.2, "Glare": 0, "Color": "9AA58E", "Decay": "5E6B4E"}
 # „gracz jest w Bagnie” (przelot, prawo wejścia) zaczyna się 2 st za bramą lasu (u 934), nie od zakresu części
 # (936 − 10) — inaczej gracz stojący PRZED bramą lasu dostałby przelot Bagna
-WEJSCIE_U = (936, 1916)
-RATUNEK_U = (934, 2056)       # ratunek tylko od bramy lasu w głąb Bagna (las ratuje sam do swojej bramy)
+_U_OD = _PLAN_KROTKI["pas"]["u_od"]                      # brama lasu (krótki pas)
+_U_CZESCI = _ZN_KROTKIE["pas"]["zakres_czesci_u"][1]
+WEJSCIE_U = (round(_U_OD + 2, 2), round(_U_CZESCI + 10, 2))
+RATUNEK_U = (_U_OD, round(_U_CZESCI + 150, 2))  # ratunek tylko od bramy lasu w głąb Bagna (las ratuje sam do swojej bramy)
 
 
 def _wymaganie():
@@ -120,7 +123,7 @@ MAPA.update({
     "plik_czesci": os.path.join(MAPA_BAGNA, "czesci.json"),
     "kontener": "BagnoPas", "klucz_bramy": "brama_dzungli", "nazwa_bramy": "brama do Dżungli",
     "grupa_wrot": "BramaDzungli/Wrota", "grupa_palisady": "BramaDzungli/Palisada", "zapowiedz": "ZapowiedzDzungli",
-    "opis_mapy": "swiat/bagno_pas", "opis_planu": "plan_bagna.json",
+    "opis_mapy": "swiat/bagno_pas/krotki", "opis_planu": "plan_bagna.json (krótki)",
 })
 
 NAGLOWEK_POTWOROW = """--[[

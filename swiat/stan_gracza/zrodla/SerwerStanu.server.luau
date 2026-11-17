@@ -23,7 +23,13 @@
 		7. pety w profilu (Sygnaly/Pety, swiat/pety_proba): "kup" = wydatek + kopia peta w jednym wywołaniu (bez
 		   przerwy między nimi), "aktywny" = pet za graczem i jego premia do łupu (+% Złota / doświadczenia z walk —
 		   doliczana tu, przy przyjęciu łupu; komunikat "premia" do klienta przy pokazaniu), "stan"; atrybuty gracza
-		   D.pety.atrybut_aktywnego i D.pety.atrybut_liczby dla klientów.
+		   D.pety.atrybut_aktywnego i D.pety.atrybut_liczby dla klientów;
+		8. kara za przegraną (17.11.2026, realizacja propozycji D-098, czeka na zatwierdzenie): przegrana w walce
+		   z kontenera D.kara.zrodla (las-pas, stary las, Bagno; tablica próby i tryb testowy TestBohater łupu nie
+		   przysyłają) zabiera przy pokazaniu łupu D.kara.procent posiadanego Złota (w dół), najwyżej łup zwykłego
+		   potwora na poziomie przeciwnika, nigdy poniżej zera; doświadczenie z przegranej (20% z silnika) zostaje;
+		   komunikat "przegrana", kara, doświadczenie do klienta (napis jak premia peta). D.kara.procent = 0 albo
+		   atrybut kontenera D.kara.atrybut_wylacznika = false wyłącza karę (liczba 0..1 w atrybucie = inny ułamek).
 	Stan: JEDNA tabela profilu na gracza (pole wersja) — pod przyszły zapis (DataStore / ProfileStore; dziś tylko
 	pamięć serwera, profil znika przy wyjściu gracza, jak atrybuty).
 
@@ -39,7 +45,8 @@
 		                  + pet, nowy, kopie, aktywny | ("aktywny", gracz, { pet, premia } | { odstaw = true })
 		                  → { ok, aktywny } | ("stan", gracz) → { ok, kopie, aktywny, premia, wydatki, zloto }
 	Zdalne/ZdarzeniaStanu (RemoteEvent): serwer → klient "awans", poziom, ile; "premia", zloto, doswiadczenie, pet
-	(dodatek peta w pokazanym łupie); klient → serwer "pokaz" (bez liczb; najwyżej raz na D.publikacja.odstep_pokaz_s —
+	(dodatek peta w pokazanym łupie); "przegrana", kara, doswiadczenie (kara za przegraną w pokazanym łupie);
+	klient → serwer "pokaz" (bez liczb; najwyżej raz na D.publikacja.odstep_pokaz_s —
 	może tylko przyspieszyć pokazanie łupu, nigdy go zmienić).
 	Działa tylko w Roblox Studio: poza Studio usuwa cały kontener, jak pozostałe prototypy.
 ]]
@@ -69,6 +76,10 @@ local ZRODLA = {}
 for _, z in D.zrodla do
 	ZRODLA[z] = true
 end
+local ZRODLA_KARY = {}
+for _, z in D.kara.zrodla do
+	ZRODLA_KARY[z] = true
+end
 
 local function teraz(): number
 	return workspace:GetServerTimeNow()
@@ -80,7 +91,7 @@ end
 
 kontener:SetAttribute("SerwerStanuGotowy", false)
 for _, n in { "LicznikLupow", "LicznikPokazan", "LicznikAwansow", "LicznikBohaterow", "LicznikTreningu", "LicznikOdmow",
-	"LicznikWydatkow", "LicznikPetow" } do
+	"LicznikWydatkow", "LicznikPetow", "LicznikKar" } do
 	kontener:SetAttribute(n, 0)
 end
 
@@ -223,6 +234,19 @@ local function dopisz(gracz: Player, nazwa: string, ile: number)
 	end
 end
 
+------------------------------------------------------------------ kara za przegraną (17.11.2026, propozycja D-098)
+-- ułamek Złota z D.kara.procent; atrybut kontenera D.kara.atrybut_wylacznika: false = wyłączona, liczba = inny ułamek
+-- (próby w Studio), brak = z danych
+local function procentKary(): number
+	local v = kontener:GetAttribute(D.kara.atrybut_wylacznika)
+	if v == false then
+		return 0
+	elseif type(v) == "number" and v == v and v >= 0 and v <= 1 then
+		return v
+	end
+	return D.kara.procent
+end
+
 ------------------------------------------------------------------ łup: przyjęcie i pokazanie
 -- pokazuje (atrybuty) łupy gotowe do pokazania: po czasie albo — wymus — wszystkie starsze niż minWiek
 local function publikuj(gracz: Player, wymus: boolean, minWiek: number)
@@ -231,7 +255,7 @@ local function publikuj(gracz: Player, wymus: boolean, minWiek: number)
 		return 0
 	end
 	local t = teraz()
-	local gotowe, reszta = {}, {}
+	local gotowe, reszta, przegrane = {}, {}, {}
 	local premiaZ, premiaXp, premiaPet = 0, 0, nil
 	for _, o in p.oczekujace do
 		if t >= o.pokazOd or (wymus and t - o.przyjeto >= minWiek) then
@@ -240,6 +264,9 @@ local function publikuj(gracz: Player, wymus: boolean, minWiek: number)
 				premiaZ += o.premia.zloto
 				premiaXp += o.premia.doswiadczenie
 				premiaPet = o.pet
+			end
+			if o.kara then
+				table.insert(przegrane, o)
 			end
 		else
 			table.insert(reszta, o)
@@ -251,6 +278,21 @@ local function publikuj(gracz: Player, wymus: boolean, minWiek: number)
 	p.oczekujace = reszta
 	local suma = L.sumaLupow(D, gotowe)
 	dopisz(gracz, A.zloto, suma.zloto)
+	-- kara za przegraną: od Złota w chwili pokazania (po łupie z tej samej paczki), nigdy poniżej zera
+	local kara, xpPrzegranych = 0, 0
+	for _, o in przegrane do
+		local k = L.karaPrzegranej(D, gracz:GetAttribute(A.zloto), o.kara.poziom, o.kara.procent)
+		if k > 0 then
+			local po = L.wydaj(D, gracz:GetAttribute(A.zloto), k)
+			gracz:SetAttribute(A.zloto, po)
+			kara += k
+		end
+		xpPrzegranych += o.lup.doswiadczenie
+	end
+	if #przegrane > 0 then
+		kontener:SetAttribute("LicznikKar", (kontener:GetAttribute("LicznikKar") or 0) + #przegrane)
+		kontener:SetAttribute("OstatniaKara", string.format("%s:-%dz:+%dxp", gracz.Name, kara, xpPrzegranych))
+	end
 	dopisz(gracz, A.gemy, suma.gemy)
 	dopisz(gracz, A.shardy, suma.shard_ewolucji)
 	for kraina, n in suma.tokeny do
@@ -273,6 +315,9 @@ local function publikuj(gracz: Player, wymus: boolean, minWiek: number)
 	end
 	if premiaZ + premiaXp > 0 then
 		zdarzenia:FireClient(gracz, "premia", premiaZ, premiaXp, premiaPet)
+	end
+	if #przegrane > 0 then
+		zdarzenia:FireClient(gracz, "przegrana", kara, xpPrzegranych)
 	end
 	kontener:SetAttribute("OstatniePokazanie", string.format("%s:+%dz:+%dxp:poz.%d", gracz.Name, suma.zloto,
 		suma.doswiadczenie, poziom))
@@ -309,8 +354,17 @@ local function przyjmijLup(gracz: any, info: any)
 	lup.zloto += dodatek.zloto
 	lup.doswiadczenie += dodatek.doswiadczenie
 	local t = teraz()
+	-- kara za przegraną (D-098): tylko walki lasu-pasa, starego lasu i Bagna; ułamek ustalony przy przyjęciu, Złoto
+	-- zabierane przy pokazaniu; poziom przeciwnika od serwera potworów (brak → poziom gracza)
+	local kara = nil
+	if info.wynik == "przegrana" and ZRODLA_KARY[info.zrodlo] then
+		local procent = procentKary()
+		if procent > 0 then
+			kara = { procent = procent, poziom = if type(info.poziom) == "number" then info.poziom else poziomGracza(gracz) }
+		end
+	end
 	table.insert(p.oczekujace, { lup = lup, przyjeto = t, pokazOd = t + czas + D.publikacja.zapas_s,
-		premia = if dodatek.zloto + dodatek.doswiadczenie > 0 then dodatek else nil, pet = p.pety.aktywny })
+		premia = if dodatek.zloto + dodatek.doswiadczenie > 0 then dodatek else nil, pet = p.pety.aktywny, kara = kara })
 	if info.wynik == "wygrana" then
 		p.walki.wygrane += 1
 	else
@@ -639,6 +693,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 		p.oczekujace = #p.oczekujace
 		p.rozklady = kontener:GetAttribute("RozkladyZ")
 		p.statystykiKlasy = statystykiWlaczone()
+		p.procentKary = procentKary()
 		return p
 	elseif polecenie == "publikuj" then
 		return publikuj(g, true, 0)
@@ -656,6 +711,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 end
 
 kontener:SetAttribute("SerwerStanuGotowy", true)
-print(string.format("%sgotowy: logika %s, rozkłady %s, statystyki klasy %s", P,
+print(string.format("%sgotowy: logika %s, rozkłady %s, statystyki klasy %s, kara za przegraną %s", P,
 	tostring(kontener:GetAttribute("ZgodnoscLogikiStanu")), tostring(kontener:GetAttribute("RozkladyZ")),
-	if statystykiWlaczone() then "włączone" else "wyłączone (wartości testowe Pawła)"))
+	if statystykiWlaczone() then "włączone" else "wyłączone (wartości testowe Pawła)",
+	if procentKary() > 0 then string.format("%d%% Złota", math.floor(procentKary() * 100 + 0.5)) else "wyłączona"))

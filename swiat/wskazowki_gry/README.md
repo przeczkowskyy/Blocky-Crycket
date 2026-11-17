@@ -26,7 +26,7 @@ w pierwszej minucie”). Teksty i kolejność kroków nie są kanonem — do dec
 | za bramą | Bagno już wkrótce… (albo „Idź dalej — przed tobą Bagno”, gdy stoi `BagnoPasGra`) | — |
 | (e) po Strażniku lasu, gdy stoi Bagno | Brama otwarta — idź do Bagna / w mieście: Bagno otwarte: TELEPORT → Bagno | ▼ za bramą lasu / strzałka |
 | w Bagnie | jak w lesie: potwór → „Zdobywaj poziomy (masz N) — Strażnik Topieli na końcu Bagna” → po Strażniku Topieli „Brama do Dżungli otwarta — Dżungla już wkrótce” | ▼ nad potworem / Strażnikiem Topieli / bramą |
-| (f) Złoto ≥ cena jajka i jeszcze bez peta (17.11.2026, stoi `PetyProba`) — przed innymi krokami, nie w Bagnie i nie za bramą | Masz dość Złota na jajko — inkubator przy wejściu do lasu / w mieście: …: TELEPORT → Las (inkubator) | ▼ nad punktem E inkubatora / strzałka |
+| (f) Złoto ≥ cena jajka biomu, w którym jest gracz (w mieście: lasu), i jeszcze żadnego jajka tego biomu (17.11.2026, stoi `PetyProba`) — przed innymi krokami, nie za bramą | Masz dość Złota na jajko — inkubator przy wejściu do lasu / w Bagnie: Masz dość Złota na jajko Bagna — inkubator przy pomoście / w mieście: …: TELEPORT → Las (inkubator) | ▼ nad punktem E inkubatora biomu / strzałka |
 
 Biomy (las-pas, Bagno) są w `ustawienia.json` → `zrodla.biomy`: kontener, moduł danych (`Moduly/DanePasa`), Kamień
 Powrotu, atrybut pokonanego Strażnika. Biom rozpoznaje się po prostokącie `wejscie` z jego danych (Bagno ma
@@ -42,8 +42,10 @@ liczyć się do (d), gdy gracz wejdzie na stanowisko Training Center albo wygra 
 
 ## Skąd stan (tylko odczyt)
 
-- atrybuty gracza: `Class`, `Level`, `PokonalStraznikaLasu`, `TreningGra` (stanowisko mini-gry); `Gold`,
-  `PetyCenaJajka` (cena następnego jajka — pisze `swiat/pety_proba`) i `PetyLiczba` (pety w profilu — pisze StanGracza);
+- atrybuty gracza: `Class`, `Level`, `PokonalStraznikaLasu`, `TreningGra` (stanowisko mini-gry); `Gold`; dla każdego
+  biomu z inkubatorem (`zrodla.biomy[].atrybut_ceny_jajka` i `atrybut_kupionych_jajek`): `PetyCenaJajka` /
+  `PetyCenaJajkaBagna` (cena następnego jajka) i `PetyKupioneJajka` / `PetyKupioneJajkaBagna` (ile jajek biomu gracz
+  kupił) — pisze je `swiat/pety_proba`;
 - walki w lesie: u klienta na `LasPasGra` / `LasPotwory` odtwarzacz ustawia `OstatnieZiarno`, `OstatniWynik` i
   `OstatniStan = "wynik"` — jedna walka na wejście w stan „wynik” z nowym ziarnem (walka przerwana resetem się nie
   liczy); liczniki tylko w pamięci klienta (sesja);

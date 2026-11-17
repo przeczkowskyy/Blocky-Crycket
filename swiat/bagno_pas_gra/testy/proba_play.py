@@ -14,15 +14,17 @@ w tle Studio rysuje 15 kl./s i pomiar klatki nic nie mówi.
 
 LISTA KONTROLNA (OK / BŁĄD / ?):
   B00 w Edit: mapa i gra Bagna, las-pas, prototyp z 5 aktorami Bagna, teleport; LasPas/ZapowiedzBagna usunięta
-  B01 gotowość: serwer Bagna (StanMapy, StanBiomu ok, SzablonyGotowe, 20 potworów przy 1 graczu, zgodność logiki
+  B01 gotowość: serwer Bagna (StanMapy, StanBiomu ok, SzablonyGotowe, potwory przy 1 graczu jak w danych (krótki pas: 8), zgodność logiki
       70/70 i 39/39, Przekierowanie „nie_ten_biom”), las wie o Bagnie (NastepnyBiomJest, bez ZaBrama), klienci gotowi
       (tryb „aktorzy”)
   B02 bez bramy lasu: uchwyt PrzeniesDoBagna → „zamkniete”, teleport przez chmury nie ma Bagna, gracz postawiony w
       głębi Bagna jest cofnięty przed bramę lasu z komunikatem
   B03 droga bramą lasu (brama otwarta haczykiem lasu, przelot lasu wyłączony): bieg za bramę → pierwszy przelot Bagna
-      (fazy, 13,4 ± 1,5 s, ryk Strażnika Topieli, kamera Custom, WidzialPrzelotBagna), przelot lasu nie ruszył
+      (fazy, czas przelotu krótkiego planu ± 1,5 s, ryk Strażnika Topieli, kamera Custom, WidzialPrzelotBagna), przelot lasu nie ruszył
   B04 droga chmurami: Bagno otwarte w teleporcie (ten sam stan bramy), przeniesienie przez uchwyt PrzeniesDoBagna na
       Pomost, bez drugiego przelotu
+  B04b TELEPORT do krainy, w której gracz już jest (D-096): z głębi Bagna wybór „Bagno” → przybycie (inkubator,
+      Kamień Powrotu), bez odmowy i bez drugiego przelotu
   B05 potwory w przegrodach: 30 s próbkowania — 0 poza polem strefy
   B06 walka z każdym gatunkiem w trybie testowym (TestBohater, poziom „auto”): r1 Rechotek, b1 Bulgotnik, k1 Kłodokłap,
       t1 Ropucha — E (zapas: haczyk walcz), właściwy gatunek, walka do końca, kamera i postać wracają; mostek pomijania
@@ -60,6 +62,37 @@ KLATKI = os.path.join(PAKIET, "klatki")
 GATUNKI = {"r1": "rechotek", "b1": "bulgotnik", "k1": "klodoklap", "t1": "ropucha_z_chatka"}
 AKTORZY = ["rechotek", "bulgotnik", "klodoklap", "ropucha_z_chatka", "straznik_topieli"]
 NASZE = ("BagnoPasGra",)
+
+
+def _geometria():
+    """Położenia i czasy z krótkich map gry (D-096, swiat/biomy/przycinarka.py) — bez liczb pasa wpisanych na sztywno."""
+    import importlib.util
+
+    def wczytaj(sciezka):
+        with open(os.path.join(REPO, *sciezka.split("/")), encoding="utf-8") as f:
+            return json.load(f)
+    zl, zb = wczytaj("swiat/las_pas/krotki/znaczniki.json"), wczytaj("swiat/bagno_pas/krotki/znaczniki.json")
+    x0 = float(wczytaj("swiat/bagno_pas/krotki/plan_bagna.json")["swiat"]["X0"])
+
+    def m(z, i):
+        return next(x for x in z["miejsca"] if x["id"] == i)["punkt_swiat"]
+    spec = importlib.util.spec_from_file_location("logika_potworow_proby", os.path.join(REPO, "swiat", "las_potwory", "logika.py"))
+    lg = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(lg)
+    k = zb["przelot_kamery"]
+    return {"brama_lasu": m(zl, "brama_bagna")[0], "przybycie": m(zb, "przybycie")[0], "brama": m(zb, "brama_dzungli")[0],
+            "las_srodek": (m(zl, "przybycie")[0] + m(zl, "brama_bagna")[0]) / 2.0,
+            "strefy": {s["id"]: x0 + s["srodek"][0] for s in zb["strefy"]},
+            "potworow_1": sum(lg.cel(s["naraz"], s["max"], 1) for s in zb["strefy"]) + 1,
+            "przelot": k["czas_s"], "zatrzymanie": k["zatrzymanie_od_s"]}
+
+
+G = _geometria()
+
+
+def tp(t):
+    """Chwila zrzutu z projektu (lot 10,5 s, postój od 10,5) → ta sama chwila krótkiego przelotu."""
+    return t * G["zatrzymanie"] / 10.5 if t <= 10.5 else G["zatrzymanie"] + (t - 10.5)
 
 KB = 'local k = workspace:FindFirstChild("BagnoPasGra") local H = game:GetService("HttpService") '
 GR = 'local gracz = game:GetService("Players"):GetPlayers()[1] '
@@ -421,7 +454,7 @@ def main():
                 kont("BagnoPasGra", ["KlientGotowy", "KlientTryb", "KlientPasaGotowy"], "Client")), 60, 1.0) or {}
             zapisz("B01", {"bagno": g, "las": lasp, "klient": kl})
             punkt("B01", g.get("StanMapy") == "ok" and g.get("StanBiomu") == "ok" and g.get("SzablonyGotowe") is True
-                  and g.get("Potworow") == 20 and g.get("ZgodnoscLogiki") == "OK 70/70" and g.get("ZgodnoscLogikiPasa") == "OK 39/39"
+                  and g.get("Potworow") == G["potworow_1"] and g.get("ZgodnoscLogiki") == "OK 70/70" and g.get("ZgodnoscLogikiPasa") == "OK 39/39"
                   and g.get("Przekierowanie") == "nie_ten_biom" and lasp.get("nastepny") is True and lasp.get("zaBrama") is False
                   and kl.get("KlientTryb") == "aktorzy" and kl.get("KlientPasaGotowy") is True,
                   "Bagno %s | las %s | klient %s" % (g, lasp, kl))
@@ -443,14 +476,14 @@ def main():
             las("przenies", None, "przed_brama")    # uchwyt lasu prosi o wczytanie okolicy (streaming)
             time.sleep(2.0)
             cof0 = kont("BagnoPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
-            przestaw(2400, 3.2, -700)
+            przestaw(G["strefy"]["t1"], 3.2, -700)       # dalej niż brama lasu + jej głębokość pilnowania (od X)
             time.sleep(2.0)
             p02 = poz()
             kom02 = js(KOD["komunikat"], "Client")
             cof1 = kont("BagnoPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
             zapisz("B02", {"uchwyt": u, "teleport": t, "pozycja": p02, "komunikat": kom02, "cofniecia": [cof0, cof1]})
             punkt("B02", u.get("ok") is False and u.get("powod") == "zamkniete" and "bagno" not in (t.get("odblokowane") or [])
-                  and p02[0] < 2034 and cof1 > cof0 and "Strażnika Gaju" in str(kom02.get("tekst")),
+                  and p02[0] < G["brama_lasu"] and cof1 > cof0 and "Strażnika Gaju" in str(kom02.get("tekst")),
                   "uchwyt %s, teleport %s, cofnięty do X %.1f (cofnięć %s→%s), komunikat %r" % (
                       u, t.get("odblokowane"), p02[0], cof0, cof1, kom02.get("tekst")))
 
@@ -459,9 +492,10 @@ def main():
             las("przenies", None, "przed_brama")
             time.sleep(2.0)
             przel_las = kont("LasPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0
-            call("character_navigation", {"datamodel_type": "Client", "x": 2060, "y": 3, "z": -700})
-            fazy, t_trwa, plan = [], None, [(1.0, "01_przelot_oczka"), (4.0, "02_przelot_trzesawisko"),
-                                            (7.0, "03_przelot_kepy"), (10.4, "04_przelot_straznik"), (11.6, "05_przelot_ryk")]
+            call("character_navigation", {"datamodel_type": "Client", "x": G["przybycie"] + 6, "y": 3, "z": -700})
+            fazy, t_trwa, plan = [], None, [(tp(1.0), "01_przelot_oczka"), (tp(4.0), "02_przelot_trzesawisko"),
+                                            (tp(7.0), "03_przelot_kepy"), (tp(10.4), "04_przelot_straznik"),
+                                            (tp(11.6), "05_przelot_ryk")]
             t0 = time.time()
             while time.time() - t0 < 45:
                 gs = bagno("gracz")
@@ -487,7 +521,7 @@ def main():
             # character_navigation czeka do końca marszu, więc obserwacja faz zaczyna się w trakcie lotu — czas lotu
             # bierzemy z pomiaru klienta (ostatniPrzelot.czas: start lotu → koniec zaciemnienia)
             czas_lotu = ost.get("czas") or czas_lotu
-            punkt("B03", "trwa" in nazwy and nazwy[-1] == "brak" and czas_lotu is not None and abs(czas_lotu - 13.9) < 1.5
+            punkt("B03", "trwa" in nazwy and nazwy[-1] == "brak" and czas_lotu is not None and abs(czas_lotu - (G["przelot"] + 0.5)) < 1.5
                   and ost.get("ok") is True and ost.get("ryk") is True and kp.get("kamera") == "Custom"
                   and (gs.get("pamiec") or {}).get("widzialPrzelotBagna") is True and przel_las2 == przel_las,
                   "fazy %s, lot %.1f s, ryk %s, kamera %s, przeloty lasu %s→%s" % (
@@ -506,10 +540,28 @@ def main():
             przel1 = kont("BagnoPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0
             zapisz("B04", {"teleport": t, "przenies": w04, "pozycja": p04, "faza": gs.get("faza"), "przeloty": [przel0, przel1]})
             punkt("B04", "bagno" in (t.get("odblokowane") or []) and w04.get("ok") is True
-                  and "PrzeniesDoBagna" in str(w04.get("zrodlo")) and abs(p04[0] - 2054) < 4 and abs(p04[2] + 700) < 4
+                  and "PrzeniesDoBagna" in str(w04.get("zrodlo")) and abs(p04[0] - G["przybycie"]) < 4 and abs(p04[2] + 700) < 4
                   and gs.get("faza") == "brak" and przel1 == przel0,
                   "teleport otwarte %s, przeniesienie %s → (%.1f; %.1f), faza %s, przeloty %s→%s" % (
                       t.get("odblokowane"), w04.get("zrodlo"), p04[0], p04[2], gs.get("faza"), przel0, przel1))
+
+            # ================================================================ B04b TELEPORT do krainy, w której gracz jest
+            # D-096 (Karol: „Kliknąć Las jeszcze raz?”): z głębi Bagna wybór „Bagno” stawia przy przybyciu (inkubator,
+            # Kamień Powrotu) — bez odmowy i bez drugiego przelotu (przelot tylko, gdy gracz go nie widział)
+            przestaw(G["strefy"]["k1"], 3.2, -700)
+            time.sleep(3.5)                                  # odstęp przeniesień teleportu (3 s) i pasa (2 s)
+            z04b = poz()
+            przel0 = kont("BagnoPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0
+            w04b = teleport("przenies", '"bagno", gracz')
+            time.sleep(6.0)
+            p04b = poz()
+            gs = bagno("gracz")
+            przel1 = kont("BagnoPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0
+            zapisz("B04b", {"z": z04b, "przenies": w04b, "pozycja": p04b, "faza": gs.get("faza"), "przeloty": [przel0, przel1]})
+            punkt("B04b", w04b.get("ok") is True and abs(p04b[0] - G["przybycie"]) < 4 and abs(p04b[2] + 700) < 4
+                  and gs.get("faza") == "brak" and przel1 == przel0,
+                  "z X %.0f wybór Bagna → %s (%.1f; %.1f), faza %s, przeloty %s→%s" % (
+                      z04b[0], w04b.get("zrodlo") or w04b.get("powod"), p04b[0], p04b[2], gs.get("faza"), przel0, przel1))
 
             # ================================================================ B05 potwory w przegrodach
             probki, poza, przyklad = 0, 0, None
@@ -520,7 +572,7 @@ def main():
                 przyklad = przyklad or w.get("przyklad")
                 time.sleep(1.0)
             zapisz("B05", {"probki": probki, "poza": poza, "przyklad": przyklad})
-            punkt("B05", probki > 300 and poza == 0, "%d próbek pozycji, poza polem strefy: %d (%s)" % (probki, poza, przyklad))
+            punkt("B05", probki >= 25 * G["potworow_1"] and poza == 0, "%d próbek pozycji, poza polem strefy: %d (%s)" % (probki, poza, przyklad))
 
             # ================================================================ B06 walka z każdym gatunkiem (tryb testowy)
             luau(KOD["bohater_t1"] % ("wojownik", "auto"), "Client")
@@ -537,7 +589,7 @@ def main():
                     continue
                 ow = str(w["po"].get("SerwerOstatniaWalka") or "")
                 if (w["cel"].get("gatunek") == gat and ow.startswith(w["cel"]["id"] + "/") and "/auto→" in ow
-                        and w["pozycja"][0] > 2034 and w["kamera"] == "Custom" and not w["walka_po"]):
+                        and w["pozycja"][0] > G["brama_lasu"] and w["kamera"] == "Custom" and not w["walka_po"]):
                     dobre.append(gat)
             punkt("B06", len(dobre) == 4 and most1 - most0 >= 4, "walki z gatunkami %s; mostek pomijania %s→%s" % (
                 dobre, most0, most1))
@@ -546,7 +598,7 @@ def main():
             ustaw("BagnoPasGra", "TestBezSesji", "nil")
             time.sleep(1.0)
             p07 = {}
-            cel = zacznij_walke("r2")
+            cel = zacznij_walke("r1")                # krótki pas: jedna strefa Rechotków (r1)
             if cel:
                 zgoda = czekaj_na(lambda: odtw('"stan"').get("pomijanie"), 8, 0.5)
                 so = odtw('"stan"')
@@ -592,16 +644,16 @@ def main():
 
             # ================================================================ B09 brama do Dżungli zamknięta
             cof0 = kont("BagnoPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
-            przestaw(2990, 3.2, -700)
+            przestaw(G["brama"] + 16, 3.2, -700)
             time.sleep(2.0)
             p09 = poz()
             kom09 = js(KOD["komunikat"], "Client")
             wr09 = js(KOD["wrota"], "Client")
             cof1 = kont("BagnoPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
             zapisz("B09", {"pozycja": p09, "komunikat": kom09, "wrota": wr09, "cofniecia": [cof0, cof1]})
-            punkt("B09", p09[0] < 2974 and cof1 > cof0 and "Dżungli" in str(kom09.get("tekst")) and wr09.get("kolizja", 0) > 0,
-                  "cofnięty do X %.1f (brama 2974), cofnięć %s→%s, komunikat %r, wrota %s" % (
-                      p09[0], cof0, cof1, kom09.get("tekst"), wr09))
+            punkt("B09", p09[0] < G["brama"] and cof1 > cof0 and "Dżungli" in str(kom09.get("tekst")) and wr09.get("kolizja", 0) > 0,
+                  "cofnięty do X %.1f (brama %.0f), cofnięć %s→%s, komunikat %r, wrota %s" % (
+                      p09[0], G["brama"], cof0, cof1, kom09.get("tekst"), wr09))
 
             # ================================================================ B10 Strażnik Topieli: przegrana i wygrana
             luau(KOD["sledz_banery"], "Client")
@@ -626,7 +678,7 @@ def main():
             bagno("przenies", None, "przed_brama")
             time.sleep(1.5)
             zrzut("12_brama_dzungli_otwarta")
-            call("character_navigation", {"datamodel_type": "Client", "x": 2988, "y": 3, "z": -700})
+            call("character_navigation", {"datamodel_type": "Client", "x": G["brama"] + 14, "y": 3, "z": -700})
             time.sleep(6)
             p10 = poz()
             cof1 = kont("BagnoPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
@@ -635,7 +687,7 @@ def main():
             zapisz("B10", {"przegrana": w_prz, "otwarta_po_przegranej": otw_po_prz, "proby": proby, "banery": lista_banerow,
                            "wrota_klient": wr_k, "wrota_serwer": wr_s, "za_brama": p10, "cofniecia": [cof0, cof1]})
             punkt("B10", otw_po_prz is not True and wygrana and wr_k.get("kolizja") == 0 and wr_k.get("zapora") is False
-                  and wr_s.get("kolizja", 0) > 0 and wr_s.get("zapora") is True and p10[0] > 2976 and cof1 == cof0
+                  and wr_s.get("kolizja", 0) > 0 and wr_s.get("zapora") is True and p10[0] > G["brama"] + 2 and cof1 == cof0
                   and len(lista_banerow) == 1 and "STRAŻNIK TOPIELI POKONANY!" in lista_banerow[0]
                   and "Dżungli" in lista_banerow[0],
                   "przegrana: brama %s; próby %s; banery %s; wrota klient %s / serwer %s; za bramą X %.1f (cofnięć %s→%s)" % (
@@ -658,13 +710,13 @@ def main():
             # ================================================================ B12 mgła
             bagno("przenies", None, "las")
             time.sleep(2.0)
-            przestaw(2500, 3.2, -700)
+            przestaw(G["strefy"]["b1"], 3.2, -700)
             time.sleep(4.0)
             m_bagno = js(KOD["atmosfera"], "Client")
             zrzut("14_mgla_bagna")
             las("przenies", None, "las")
             time.sleep(2.0)
-            przestaw(1500, 3.2, -700)
+            przestaw(G["las_srodek"], 3.2, -700)
             time.sleep(4.0)
             m_las = js(KOD["atmosfera"], "Client")
             m_serwer = js(KOD["atmosfera"], "Server")
@@ -679,7 +731,7 @@ def main():
                 subprocess.run([sys.executable, "-B", okno, "--na-wierzch"], cwd=REPO, capture_output=True, timeout=60)
             bagno("przenies", None, "las")
             time.sleep(2.0)
-            przestaw(2600, 3.2, -700)
+            przestaw(G["strefy"]["k1"], 3.2, -700)
             time.sleep(8.0)
             kl13 = json.loads(luau(KOD["klatka"] % 4.0, "Client"))
             kp13 = klient_potworow()

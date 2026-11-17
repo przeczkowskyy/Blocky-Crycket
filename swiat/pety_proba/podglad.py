@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Podgląd do raportu: pięć petów leśnego jajka obok siebie (portrety z Blendera) z rzadkością, szansą i skillem,
-a pod nimi podgląd inkubatora. Tylko składa gotowe obrazy z swiat/postacie/wynik/ (Pillow) — Blender niepotrzebny.
+"""Podgląd do raportu: pięć petów jajka obok siebie (portrety z Blendera) z rzadkością, szansą i skillem, a pod nimi
+podgląd inkubatora i jajka. Ten sam układ dla każdego jajka; przy jajku dalszego biomu pod skillem stoi skill peta tej
+samej rzadkości z jajka leśnego (porównanie). Tylko składa gotowe obrazy z swiat/postacie/wynik/ (Pillow) — Blender
+niepotrzebny.
 
-    python -B swiat/pety_proba/podglad.py        # → swiat/pety_proba/podglad/pety_lesne.jpg
+    python -B swiat/pety_proba/podglad.py        # → swiat/pety_proba/podglad/pety_lesne.jpg, pety_bagna.jpg
 
 Najpierw: python -B swiat/postacie/przebuduj.py <moduły> --bez-filmow (portrety <id>_bohater.jpg).
 """
@@ -19,7 +21,8 @@ import dane_petow as DP  # noqa: E402
 import logika_petow as LP  # noqa: E402
 
 WYNIK = os.path.join(REPO, "swiat", "postacie", "wynik")
-CEL = os.path.join(TU, "podglad", "pety_lesne.jpg")
+PODGLAD = os.path.join(TU, "podglad")
+PLIKI = {"las": "pety_lesne.jpg", "bagno": "pety_bagna.jpg"}   # inne biomy: pety_<kraina>.jpg
 
 
 def czcionka(rozmiar):
@@ -32,22 +35,25 @@ def czcionka(rozmiar):
     return ImageFont.load_default()
 
 
-def main():
+def podglad_jajka(D, U, j, lesne):
     from PIL import Image, ImageDraw
-    D = DP.podstawa()
-    j = D["jajka"][0]
+    ju = next(x for x in U["jajka"] if x["id"] == j["id"])
+    M = ju["model"]
     wiersze = LP.wiersze_szans(D, j)
+    porownanie = lesne is not None and lesne["id"] != j["id"]
     bok = 360
     szer = bok * len(wiersze)
-    wys_opis = 150
-    ink = Image.open(os.path.join(WYNIK, "jajko_lesne", "inkubator_lesny_bohater.jpg")).convert("RGB")
+    wys_opis = 182 if porownanie else 150
+    ink = Image.open(os.path.join(WYNIK, M["modul"], M["inkubator"] + "_bohater.jpg")).convert("RGB")
     ink = ink.resize((520, 520), Image.LANCZOS)
-    jaj = Image.open(os.path.join(WYNIK, "jajko_lesne", "jajko_lesne_bohater.jpg")).convert("RGB").resize((520, 520),
+    jaj = Image.open(os.path.join(WYNIK, M["modul"], M["jajko"] + "_bohater.jpg")).convert("RGB").resize((520, 520),
                                                                                                          Image.LANCZOS)
     obraz = Image.new("RGB", (szer, 70 + bok + wys_opis + 540), (43, 33, 24))
     rys = ImageDraw.Draw(obraz)
-    rys.text((20, 18), "Pety leśnego jajka (próba, propozycja) — szanse jawne, cena od %d Złota" % LP.cena(D, j, 0),
-             fill=(255, 201, 74), font=czcionka(30))
+    # cena stała (decyzja 17.11): „cena 300 Złota”; przy przełączniku „rosnaca”: „cena od 300 Złota”
+    cena = ("cena od %d Złota" if j["cena"]["tryb"] == "rosnaca" else "cena %d Złota") % LP.cena(D, j, 0)
+    rys.text((20, 18), "Pety: %s (próba, propozycja) — szanse jawne, %s, %s" % (
+        j["nazwa"][0].lower() + j["nazwa"][1:], cena, j["opis_miejsca"]), fill=(255, 201, 74), font=czcionka(28))
     for i, w in enumerate(wiersze):
         x = i * bok
         im = Image.open(os.path.join(WYNIK, w["pet"], w["pet"] + "_bohater.jpg")).convert("RGB").resize((bok, bok),
@@ -59,15 +65,28 @@ def main():
         rys.text((x + 14, y + 18), w["nazwa"], fill=kolor, font=czcionka(30))
         rys.text((x + 14, y + 58), "%s · %s" % (w["rzadkosc"], w["szansa"]), fill=(255, 246, 224), font=czcionka(24))
         rys.text((x + 14, y + 94), w["skill"], fill=(220, 210, 190), font=czcionka(20))
+        if porownanie:
+            p_las = LP.pet(D, lesne["pula"][i])
+            skill = LP.opis_skilla(D, p_las).replace(" z walk", "").replace("doświadczenia", "dośw.")
+            rys.text((x + 14, y + 126), "las: %s %s" % (p_las["nazwa"], skill),
+                     fill=(160, 150, 135), font=czcionka(17))
     y = 70 + bok + wys_opis + 10
     obraz.paste(ink, (szer // 2 - 540, y))
     obraz.paste(jaj, (szer // 2 + 20, y))
-    rys.text((szer // 2 - 530, y + 6), "Inkubator (podgląd z Blendera)", fill=(43, 33, 24),
-             font=czcionka(20))
-    rys.text((szer // 2 + 30, y + 6), "Jajko leśne (pęka przy wykluciu)", fill=(43, 33, 24), font=czcionka(20))
-    os.makedirs(os.path.dirname(CEL), exist_ok=True)
-    obraz.save(CEL, "JPEG", quality=88)
-    print("zapisano %s (%d × %d)" % (os.path.relpath(CEL, REPO), obraz.width, obraz.height))
+    rys.text((szer // 2 - 530, y + 6), "Inkubator (podgląd z Blendera)", fill=(43, 33, 24), font=czcionka(20))
+    rys.text((szer // 2 + 30, y + 6), "%s (pęka przy wykluciu)" % j["nazwa"], fill=(43, 33, 24), font=czcionka(20))
+    cel = os.path.join(PODGLAD, PLIKI.get(j["kraina"], "pety_%s.jpg" % j["kraina"]))
+    os.makedirs(PODGLAD, exist_ok=True)
+    obraz.save(cel, "JPEG", quality=88)
+    print("zapisano %s (%d × %d)" % (os.path.relpath(cel, REPO), obraz.width, obraz.height))
+
+
+def main():
+    D = DP.podstawa()
+    U = DP.ustawienia()
+    lesne = LP.jajko_krainy(D, "las")
+    for j in D["jajka"]:
+        podglad_jajka(D, U, j, lesne)
 
 
 if __name__ == "__main__":

@@ -62,6 +62,32 @@ SERWER_LASU = czytaj(REPO, "swiat", "las_potwory", "zrodla", "SerwerPotworow.ser
 KLIENT_LASU = czytaj(REPO, "swiat", "las_potwory", "zrodla", "KlientPotworow.client.luau")
 
 
+def klasy_pawla():
+    """src/shared/ClassData.luau (Paweł, tylko odczyt) → [(id, [sześć liczb])] w kolejności z pliku."""
+    cd = czytaj(REPO, "src", "shared", "ClassData.luau")
+    return [(i, [int(x) for x in s.split(",")]) for i, s in re.findall(r'\{ id = "(\w+)".*?stats = \{ ([\d, ]+) \}', cd, re.S)]
+
+
+# 17.11.2026 (commit Pawła bf5c933): profile klas w ClassData różne od wzorcowych — pytanie 56 czeka na ludzi. Serwer
+# czyta ClassData (to, co gracz widzi na karcie klasy), więc scenariusze liczą oczekiwane statystyki z AKTUALNEGO
+# ClassData; równość z wzorcem nie jest warunkiem (różnicę wypisuje test 2a, a serwer ostrzega — to nie błąd)
+ROZKLADY_CD = {D["klasy_gracza"][i]: LS.rozklad_z_class_data(D, s)[0] for i, s in klasy_pawla()}
+ROZNE_OD_WZORCA = [D["klasy_gracza"][i] for i, _s in klasy_pawla()
+                   if ROZKLADY_CD[D["klasy_gracza"][i]] != wzorcowe.ROZKLADY[D["klasy_gracza"][i]]]
+OSTRZEZENIE_ROZKLADOW = "rozkłady z ClassData różne od wzorcowych"
+
+
+def rozklady_z(n=3):
+    """Atrybut RozkladyZ, jaki serwer stanu wpisze przy tym ClassData."""
+    if ROZNE_OD_WZORCA:
+        return "ClassData (%d klas; INNE NIŻ WZORCOWE: %s)" % (n, ", ".join(ROZNE_OD_WZORCA))
+    return "ClassData (%d klas)" % n
+
+
+def bez_ostrzezenia_rozkladow(ostrzezenia):
+    return [o for o in ostrzezenia if OSTRZEZENIE_ROZKLADOW not in o]
+
+
 # ============================================================================================== 1. dane
 class TestDanych(unittest.TestCase):
     def test_1a_plik_aktualny(self):
@@ -110,16 +136,31 @@ class TestDanych(unittest.TestCase):
 
 # ============================================================================================== 2. klasy Pawła
 class TestKlasPawla(unittest.TestCase):
-    def test_2a_classdata_rowne_wzorcowym(self):
-        cd = czytaj(REPO, "src", "shared", "ClassData.luau")
-        klasy = re.findall(r'\{ id = "(\w+)".*?stats = \{ ([\d, ]+) \}', cd, re.S)
+    def test_2a_classdata_przyjmowany_przez_serwer(self):
+        # warunki przy KAŻDYM profilu: trzy klasy z mapy, sześć liczb całkowitych ≥ 0, suma 100, rozkład przyjęty
+        # i pula rozdana bez zgubionego punktu; różnica od wzorca to informacja (pytanie 56), nie błąd
+        klasy = klasy_pawla()
         self.assertEqual(sorted(k for k, _ in klasy), sorted(D["klasy_gracza"]))
-        for idk, staty in klasy:
-            liczby = [int(x) for x in staty.split(",")]
+        for idk, liczby in klasy:
+            self.assertEqual(len(liczby), len(D["statystyki"]), idk)
+            self.assertTrue(all(x >= 0 for x in liczby), idk)
+            self.assertEqual(sum(liczby), 100, idk)
             r, powod = LS.rozklad_z_class_data(D, liczby)
             self.assertEqual(powod, "ok", idk)
-            self.assertEqual(r, wzorcowe.ROZKLADY[D["klasy_gracza"][idk]],
-                             "%s: paski ClassData ≠ rozkład wzorcowy — balans walki by się zmienił" % idk)
+            for L in (1, 2, 5, 10, 11, 50, 999):
+                st = LS.rozdziel(D, r, LS.pula(D, L))
+                self.assertEqual(sum(st.values()), LS.pula(D, L), (idk, L))
+                self.assertTrue(all(v >= 0 for v in st.values()), (idk, L))
+            poprzednie = None
+            for L in range(1, 201):  # awans nigdy nie zabiera punktu żadnej statystyce
+                st = LS.rozdziel(D, r, LS.pula(D, L))
+                if poprzednie:
+                    self.assertTrue(all(st[s] >= poprzednie[s] for s in D["statystyki"]), (idk, L))
+                poprzednie = st
+            k = D["klasy_gracza"][idk]
+            if r != wzorcowe.ROZKLADY[k]:
+                print("\n  informacja (pytanie 56): %s — ClassData %s, wzorzec %s" % (
+                    idk, liczby, [round(wzorcowe.ROZKLADY[k][s] * 100) for s in D["statystyki"]]))
 
 
 # ============================================================================================== 3. lustro = tools/walka
@@ -290,6 +331,26 @@ class TestLuau(unittest.TestCase):
                 lup = {"zloto": los.randint(0, 500), "doswiadczenie": los.randint(0, 500)}
                 self.assertEqual(self.wolaj("premiaLupu", self.Dl, lup, w)[0], LS.premia_lupu(D, lup, w))
 
+    def test_4g_kara_przegranej_jak_lustro(self):
+        # propozycja D-098: Luau = lustro na losowych danych; nigdy ujemna, nigdy więcej niż Złoto, procent i limit
+        los = random.Random(31)
+        for _ in range(400):
+            z = los.choice([0, 1, 19, 20, 21, 299, 300, 450, 1999, 10 ** 5, 10 ** 13, 12.9, -7, None, "300", True])
+            poziom = los.choice([1, 2, 5, 10, 11, 25, 999, 1000, 0, -3, 2.7, None])
+            procent = los.choice([0.05, 0.02, 0.1, 0, -0.05, 1, 1.5, 0.333, None, "0.05", True])
+            k = LS.kara_przegranej(D, z, poziom, procent)
+            self.assertEqual(self.wolaj("karaPrzegranej", self.Dl, z, poziom, procent)[0], k, (z, poziom, procent))
+            zz = LS.wydaj(D, z, 0)[0]
+            self.assertTrue(0 <= k <= zz, (z, poziom, procent))
+            self.assertLessEqual(k, LS.lup_zwyklego(D, poziom))
+            if isinstance(procent, float) and 0 < procent <= 1:
+                self.assertLessEqual(k, zz * procent + 1e-9)
+            self.assertEqual(self.wolaj("lupZwyklego", self.Dl, poziom)[0], LS.lup_zwyklego(D, poziom))
+        # limit = łup Cierniowego Wilka z silnika (średnia: baza + przyrost × (L − 1))
+        para = silnik.PRZECIWNICY[DANE.ZWYKLY_POTWOR]["lup"]["zloto"]
+        for L in (1, 4, 11):
+            self.assertEqual(LS.lup_zwyklego(D, L), para[0] + para[1] * (L - 1))
+
     def test_4e_suma_lupow_i_profil(self):
         lupy = [{"zloto": 21, "doswiadczenie": 12, "tokeny_krainy": 1, "gemy": 0, "shard_ewolucji": 0, "kraina": "las"},
                 {"zloto": 5, "doswiadczenie": 2, "tokeny_krainy": 2, "gemy": 1, "shard_ewolucji": 1, "kraina": "bagno"},
@@ -396,10 +457,11 @@ class TestStyku(unittest.TestCase):
     def test_6e_wiadomosci_klient_serwer(self):
         do_klienta = set(re.findall(r'zdarzenia:FireClient\(gracz, "(\w+)"', bez_komentarzy(SERWER)))
         do_serwera = set(re.findall(r'zdarzenia:FireServer\("(\w+)"\)', bez_komentarzy(KLIENT)))
-        # "premia" (17.11.2026) czyta klient pakietu petów; KlientStanu go pomija (obsługuje tylko "awans")
-        self.assertEqual(do_klienta, {"awans", "premia"})
+        # "premia" (17.11.2026) czyta klient pakietu petów; KlientStanu obsługuje "awans" i "przegrana" (kara, D-098)
+        self.assertEqual(do_klienta, {"awans", "premia", "przegrana"})
         self.assertEqual(do_serwera, {"pokaz"})
         self.assertIn('polecenie ~= "awans"', KLIENT)
+        self.assertIn('polecenie ~= "przegrana"', KLIENT)
         self.assertIn('polecenie ~= "pokaz"', SERWER)
         # klient nie wysyła liczb: FireServer tylko z jednym napisem
         self.assertEqual(re.findall(r"zdarzenia:FireServer\(([^)]*)\)", bez_komentarzy(KLIENT)), ['"pokaz"', '"pokaz"'])
@@ -414,6 +476,26 @@ class TestStyku(unittest.TestCase):
             i_play = tekst.find('"is_start": True')
             i_test = tekst.find('SetAttribute("TestBohater", true)')
             self.assertTrue(0 < i_play < i_test < i_play + 2500, sciezka)
+
+    def test_6h_kara_tylko_w_walkach_biomow(self):
+        # kara za przegraną (D-098): las-pas, stary las, Bagno; tablica próby (TestWalki2) łupu nie wysyła, a w trybie
+        # testowym TestBohater serwer potworów nie woła PrzyznajLup (sygnalStanu → nil)
+        self.assertEqual(sorted(D["kara"]["zrodla"]), sorted(["LasPotwory", "LasPasGra", "BagnoPasGra"]))
+        self.assertTrue(set(D["kara"]["zrodla"]) <= set(D["zrodla"]))
+        self.assertNotIn("TestWalki2", D["zrodla"])
+        cialo = SERWER_LASU[SERWER_LASU.index("local function sygnalStanu"):SERWER_LASU.index("local function bohaterZeStanu")]
+        self.assertIn("if kontener:GetAttribute(Stale.ATRYBUT_TESTU_BOHATERA) == true then", cialo)
+        self.assertIn("return nil", cialo)
+        nagroda = SERWER_LASU[SERWER_LASU.index("local function nagrodaZaWalke"):]
+        self.assertIn("sygnalStanu(Stale.SYGNAL_LUPU)", nagroda[:200])
+        self.assertIn("wynik = walka.wynik", nagroda[:600])
+        self.assertIn("poziom = p.poziom", nagroda[:600])
+        for sciezka in (("src", "server", "Walka", "Silnik.luau"), ("swiat", "test_walki2", "zrodla", "SerwerWalki2.server.luau")):
+            p = os.path.join(REPO, *sciezka)
+            if os.path.isfile(p):
+                self.assertNotIn("PrzyznajLup", czytaj(p), "/".join(sciezka))
+        self.assertIn("ATRYBUTY_TESTOWE", czytaj(PAKIET, "zbuduj.py"))
+        self.assertIn(D["kara"]["atrybut_wylacznika"], ZB.ATRYBUTY_TESTOWE)
 
     def test_6g_paweł_nietkniety(self):
         # pakiet nie zapisuje do plików Pawła i nie wysyła jego zdarzeń
@@ -433,16 +515,19 @@ class TestSerweraOffline(unittest.TestCase):
              "Intelligence": 18, "Dexterity": 12, "Luck": 7, "Armor": 57}
     LUP = {"zloto": 21, "doswiadczenie": 12, "tokeny_krainy": 1, "gemy": 0, "shard_ewolucji": 0, "kraina": "las"}
 
-    def uruchom(self, statystyki_klasy=True, trening=True):
+    def uruchom(self, statystyki_klasy=True, trening=True, procent_kary=None):
         if TU not in sys.path:
             sys.path.insert(0, TU)
         import atrapa_roblox as AR  # noqa: E402
         sw = AR.Swiat()
-        k, inne = AR.kontener_stanu(sw, {"DaneStanu": czytaj(ZR, "DaneStanu.luau"), "LogikaStanu": LOGIKA}, ZB.INNE)
+        dane = czytaj(ZR, "DaneStanu.luau")
+        if procent_kary is not None:  # inna liczba w danych (np. 0 = kara wyłączona w DaneStanu)
+            wzor = "procent = %s," % repr(D["kara"]["procent"])
+            self.assertIn(wzor, dane)
+            dane = dane.replace(wzor, "procent = %s," % procent_kary, 1)
+        k, inne = AR.kontener_stanu(sw, {"DaneStanu": dane, "LogikaStanu": LOGIKA}, ZB.INNE)
         k.ustaw("StatystykiKlasy", statystyki_klasy)
-        cd = czytaj(REPO, "src", "shared", "ClassData.luau")
-        klasy = [{"id": i, "stats": [int(x) for x in s.split(",")]}
-                 for i, s in re.findall(r'\{ id = "(\w+)".*?stats = \{ ([\d, ]+) \}', cd, re.S)]
+        klasy = [{"id": i, "stats": s} for i, s in klasy_pawla()]
         shared = AR.Inst(sw, "Shared", "Folder", sw.replicated)
         sw.modul(shared, "ClassData", wartosc=LM.do_luau({"Classes": klasy}))
         self.przyrost = None
@@ -461,6 +546,10 @@ class TestSerweraOffline(unittest.TestCase):
         v = self.g.atrybuty.get(n)
         return int(v) if isinstance(v, float) and v == int(v) else v
 
+    def ostrzezenia(self):
+        """Ostrzeżenia serwera bez prawdziwego ostrzeżenia o ClassData różnym od wzorca (pytanie 56)."""
+        return bez_ostrzezenia_rozkladow(self.sw.ostrzezenia)
+
     def staty(self):
         return {s: self.atr(a) for s, a in D["atrybuty_statystyk"].items()}
 
@@ -470,27 +559,111 @@ class TestSerweraOffline(unittest.TestCase):
         w = self.sw.wolaj(fn, *[LM.do_luau(a) if isinstance(a, (dict, list)) else a for a in argi])
         return LM.z_luau(w[0]) if w else None
 
-    def lup(self, czas=20.0, zrodlo="LasPasGra", wynik="wygrana", **zmiany):
+    def lup(self, czas=20.0, zrodlo="LasPasGra", wynik="wygrana", poziom=1, **zmiany):
         return self.wywolaj("PrzyznajLup", self.g.t, {"lup": dict(self.LUP, **zmiany), "wynik": wynik, "czas": czas,
-                                                       "zrodlo": zrodlo, "gatunek": "lesny_slime", "poziom": 1})
+                                                       "zrodlo": zrodlo, "gatunek": "lesny_slime", "poziom": poziom})
+
+    def przegrana(self, poziom=1, xp=2, zrodlo="LasPasGra"):
+        """Przegrana z łupem jak z silnika (bez Złota i tokenów, 20% doświadczenia), pokazana od razu."""
+        w = self.lup(czas=0.0, zrodlo=zrodlo, wynik="przegrana", poziom=poziom, zloto=0, tokeny_krainy=0, doswiadczenie=xp)
+        self.sw.krok(D["publikacja"]["zapas_s"] + 0.5)
+        return w
+
+    def komunikaty_przegranej(self):
+        return [x[1] for x in self.sw.do_klienta if x[1][0] == "przegrana"]
+
+    def test_8k_kara_za_przegrana(self):
+        # propozycja D-098: procent posiadanego Złota (w dół), najwyżej łup zwykłego potwora poziomu przeciwnika
+        p = D["kara"]["procent"]
+        self.assertGreater(p, 0, "kara włączona w danych")
+        self.uruchom()
+        self.assertEqual(self.k.atrybuty["LicznikKar"], 0)
+        # z zerem Złota: nic nie znika, doświadczenie zostaje, komunikat bez Złota
+        self.assertEqual(self.przegrana(xp=2), {"ok": True})
+        self.assertEqual((self.atr("Gold"), self.atr("XP")), (0, 2))
+        self.assertEqual(self.komunikaty_przegranej()[-1], ["przegrana", 0, 2])
+        # mało Złota: ułamek w dół
+        self.g.ustaw("Gold", 30)
+        self.przegrana(xp=3)
+        kara = int(30 * p)
+        self.assertEqual(self.atr("Gold"), 30 - kara)
+        self.assertEqual(self.komunikaty_przegranej()[-1], ["przegrana", kara, 3])
+        # dużo Złota: najwyżej łup zwykłego potwora na poziomie przeciwnika
+        for poziom in (1, 7):
+            self.g.ustaw("Gold", 100000)
+            self.przegrana(poziom=poziom)
+            limit = LS.lup_zwyklego(D, poziom)
+            self.assertLess(limit, 100000 * p)
+            self.assertEqual(self.atr("Gold"), 100000 - limit, poziom)
+        # stary las i Bagno też; wygrana — bez kary i bez komunikatu
+        for zrodlo in ("LasPotwory", "BagnoPasGra"):
+            self.g.ustaw("Gold", 200)
+            self.przegrana(zrodlo=zrodlo)
+            self.assertEqual(self.atr("Gold"), 200 - int(200 * p), zrodlo)
+        n = len(self.komunikaty_przegranej())
+        self.g.ustaw("Gold", 200)
+        self.lup(czas=0.0)
+        self.sw.krok(D["publikacja"]["zapas_s"] + 0.5)
+        self.assertEqual(self.atr("Gold"), 221)
+        self.assertEqual(len(self.komunikaty_przegranej()), n)
+        # łup i przegrana w jednej paczce: najpierw łup, potem kara od Złota po łupie
+        self.g.ustaw("Gold", 100)
+        self.lup(czas=0.0, zloto=100)
+        self.lup(czas=0.0, wynik="przegrana", zloto=0, tokeny_krainy=0, doswiadczenie=1)
+        self.sw.krok(D["publikacja"]["zapas_s"] + 0.5)
+        self.assertEqual(self.atr("Gold"), 200 - int(200 * p))
+        self.assertEqual(self.k.atrybuty["LicznikKar"], 7)
+        stan = self.wywolaj("SterowanieSerwera", "stan", self.g.t)
+        self.assertEqual((stan["wersja"], stan["procentKary"]), (D["wersja_profilu"], p), "profil bez zmian (wersja 2)")
+        self.assertEqual(self.ostrzezenia(), [])
+
+    def test_8l_kara_wylacznik(self):
+        # atrybut kontenera false = wyłączona (jak dawniej: bez kary i bez komunikatu); liczba = inny ułamek
+        self.uruchom()
+        self.k.ustaw(D["kara"]["atrybut_wylacznika"], False)
+        self.g.ustaw("Gold", 500)
+        self.przegrana(xp=4)
+        self.assertEqual((self.atr("Gold"), self.atr("XP")), (500, 4))
+        self.assertEqual(self.komunikaty_przegranej(), [])
+        self.k.ustaw(D["kara"]["atrybut_wylacznika"], 0.1)
+        self.przegrana(poziom=7)  # 10% z 500 = 50 (limit na poziomie 7: łup zwykłego potwora > 50)
+        self.assertEqual(self.atr("Gold"), 450)
+        # ułamek ustalony przy przyjęciu walki — wyłączenie po walce, przed pokazaniem, już jej nie zmienia
+        self.k.ustaw(D["kara"]["atrybut_wylacznika"], None)
+        self.lup(czas=30.0, wynik="przegrana", zloto=0, tokeny_krainy=0, doswiadczenie=1)
+        self.k.ustaw(D["kara"]["atrybut_wylacznika"], False)
+        self.sw.krok(40)
+        self.assertEqual(self.atr("Gold"), 450 - int(450 * D["kara"]["procent"]))
+        # źródło spoza listy kary (np. przyszły biom bez kary) — bez kary
+        self.k.ustaw(D["kara"]["atrybut_wylacznika"], None)
+        self.assertEqual(self.lup(zrodlo="Haker", wynik="przegrana"), {"ok": False, "powod": "zle_zrodlo"})
+        # D.kara.procent = 0 w danych — kara wyłączona
+        self.uruchom(procent_kary=0)
+        self.g.ustaw("Gold", 500)
+        self.przegrana()
+        self.assertEqual(self.atr("Gold"), 500)
+        self.assertEqual(self.komunikaty_przegranej(), [])
+        self.assertEqual(self.wywolaj("SterowanieSerwera", "stan", self.g.t)["procentKary"], 0)
+        self.assertEqual(self.ostrzezenia(), [])
 
     def test_8a_start(self):
         self.uruchom()
         n = sum(len(v) for v in D["przypadki"].values())
         self.assertEqual(self.k.atrybuty["SerwerStanuGotowy"], True)
         self.assertEqual(self.k.atrybuty["ZgodnoscLogikiStanu"], "OK %d/%d" % (n, n))
-        self.assertEqual(self.k.atrybuty["RozkladyZ"], "ClassData (3 klas)")
+        self.assertEqual(self.k.atrybuty["RozkladyZ"], rozklady_z())
         self.assertEqual(self.k.atrybuty["TreningPodlaczony"], True)
-        self.assertEqual(self.sw.ostrzezenia, [])
-        # XPMax z krzywej (nie 100 Pawła); bez klasy — rozkład klasy domyślnej zamiast wartości testowych
+        self.assertEqual(self.ostrzezenia(), [])
+        self.assertEqual(any(OSTRZEZENIE_ROZKLADOW in o for o in self.sw.ostrzezenia), bool(ROZNE_OD_WZORCA))
+        # XPMax z krzywej (nie 100 Pawła); bez klasy — rozkład klasy domyślnej (z ClassData) zamiast wartości testowych
         self.assertEqual(self.atr("XPMax"), LS.xp_do_nastepnego(D, 1))
-        self.assertEqual(self.staty(), LS.rozdziel(D, D["rozklady"]["wojownik"], 30))
+        self.assertEqual(self.staty(), LS.rozdziel(D, ROZKLADY_CD["wojownik"], 30))
         self.assertEqual(self.atr("Gems"), 1000)
 
     def test_8b_klasa_lup_awans_i_plus_pawla(self):
         self.uruchom()
         self.g.ustaw("Class", "Mage")
-        self.assertEqual(self.staty(), LS.rozdziel(D, D["rozklady"]["mag"], 30))
+        self.assertEqual(self.staty(), LS.rozdziel(D, ROZKLADY_CD["mag"], 30))
         self.g.ustaw("Luck", self.atr("Luck") + 1)  # darmowy „+” w oknie ekwipunku (StatPoints Pawła)
         opis = self.wywolaj("Bohater", self.g.t)
         self.assertEqual(norm(opis), norm(LS.opis_bohatera(D, "mag", 1, self.staty())))
@@ -501,7 +674,7 @@ class TestSerweraOffline(unittest.TestCase):
                          (21, 0, 2, LS.xp_do_nastepnego(D, 2)))
         self.assertEqual(self.atr("TokenyKrainy_las"), 1)
         self.assertEqual(self.sw.do_klienta[-1][1], ["awans", 2, 1])
-        oczek = LS.rozdziel(D, D["rozklady"]["mag"], 40)
+        oczek = LS.rozdziel(D, ROZKLADY_CD["mag"], 40)
         oczek["szczescie"] += 1
         self.assertEqual(self.staty(), oczek, "awans dopisał różnicę, „+” Pawła został")
 
@@ -550,13 +723,17 @@ class TestSerweraOffline(unittest.TestCase):
         self.przyrost.odpal(self.g.t, LM.do_luau({"atrybut": "Mana", "przyrost": 5}))  # nieznana — pominięta
         self.assertEqual(self.atr("Strength"), przed["sila"] + 2)
         self.g.ustaw("Level", 5)  # np. tester w pasku poleceń
-        cel = LS.rozdziel(D, D["rozklady"]["wojownik"], LS.pula(D, 5))
+        cel = LS.rozdziel(D, ROZKLADY_CD["wojownik"], LS.pula(D, 5))
         self.assertEqual(self.atr("Strength"), cel["sila"] + 2)
         self.assertEqual(self.atr("XPMax"), LS.xp_do_nastepnego(D, 5))
         opis = self.wywolaj("Bohater", self.g.t)
-        dodatkowe = {s: 0 for s in D["statystyki"]}
-        dodatkowe["sila"] = 2
-        self.assertEqual(norm(opis), norm(wzorcowe.postac("wojownik", 5, dodatkowe=dodatkowe)))
+        st = dict(cel)
+        st["sila"] += 2
+        self.assertEqual(norm(opis), norm(LS.opis_bohatera(D, "wojownik", 5, st)))
+        if not ROZNE_OD_WZORCA:  # przy profilu wzorcowym to dokładnie postać wzorcowa silnika
+            dodatkowe = {s: 0 for s in D["statystyki"]}
+            dodatkowe["sila"] = 2
+            self.assertEqual(norm(opis), norm(wzorcowe.postac("wojownik", 5, dodatkowe=dodatkowe)))
         self.assertEqual(self.k.atrybuty["LicznikTreningu"], 1)
 
     def test_8g_wylacznik_statystyk(self):
@@ -572,7 +749,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual((opis["klasa"], opis["poziom"], opis["statystyki"]["pancerz"]), ("zwiadowca", 3, 58))
         # włączenie w czasie gry: od razu rozkład klasy (cel + trening)
         self.k.ustaw("StatystykiKlasy", True)
-        cel = LS.rozdziel(D, D["rozklady"]["zwiadowca"], LS.pula(D, 3))
+        cel = LS.rozdziel(D, ROZKLADY_CD["zwiadowca"], LS.pula(D, 3))
         self.assertEqual(self.atr("Armor"), cel["pancerz"] + 1)
 
     def wydaj(self, ile, zrodlo="PetyProba", cel="jajko_lesne"):
@@ -603,7 +780,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.sw.krok(D["publikacja"]["min_s"] + 0.1)
         self.assertEqual(self.wydaj(300), {"ok": True, "zloto": 50, "ile": 300, "licznik": 3})
         self.assertEqual(self.k.atrybuty["LicznikWydatkow"], 3)
-        self.assertEqual(self.sw.ostrzezenia, [])
+        self.assertEqual(self.ostrzezenia(), [])
 
     def pety(self, polecenie, info=None):
         return self.wywolaj("Pety", polecenie, self.g.t, info)
@@ -652,7 +829,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual(self.atr("Gold"), 125 + 21, "bez peta — bez premii")
         self.assertFalse(any(x[1][0] == "premia" for x in self.sw.do_klienta[przed:]))
         self.assertEqual(self.wywolaj("SterowanieSerwera", "stan", self.g.t)["wersja"], 2)
-        self.assertEqual(self.sw.ostrzezenia, [])
+        self.assertEqual(self.ostrzezenia(), [])
 
     def test_8h_bez_treningu_i_wyjscie_gracza(self):
         self.uruchom(trening=False)
@@ -661,7 +838,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.sw.wyszedl.odpal(self.g.t)
         self.g.t.set("Parent", None)
         self.sw.krok(60)  # zadanie pokazu po wyjściu gracza nie wybucha
-        self.assertEqual(self.sw.ostrzezenia, [])
+        self.assertEqual(self.ostrzezenia(), [])
 
 
 # ============================================================================================== 9. KlientStanu offline
@@ -720,7 +897,8 @@ class TestKlientaOffline(unittest.TestCase):
                 t.set(p, dowolne)
             g[nazwa] = t
         enum = LM.Tabela()
-        for nazwa, wart in (("EasingStyle", ("Back", "Quad")), ("EasingDirection", ("Out", "In")), ("Font", ("LuckiestGuy",))):
+        for nazwa, wart in (("EasingStyle", ("Back", "Quad")), ("EasingDirection", ("Out", "In")),
+                            ("Font", ("LuckiestGuy", "GothamBold")), ("AutomaticSize", ("X",)), ("ApplyStrokeMode", ("Border",))):
             t = LM.Tabela()
             for w in wart:
                 t.set(w, nazwa + "." + w)
@@ -771,6 +949,28 @@ class TestKlientaOffline(unittest.TestCase):
         self.assertEqual(self.sw.ostrzezenia, [])
         self.assertTrue(any(o.klasa == "Sound" for o in self.nowe), "dźwięk awansu (wbudowany — bez katalogu)")
 
+    def komunikaty(self):
+        return [o for o in self.nowe if o.klasa == "ScreenGui" and o.t.get("Name") == "StanGraczaKomunikat"]
+
+    def test_9d_komunikat_przegranej(self):
+        # propozycja D-098: „Przegrana: −N Złota, +M doświadczenia” dopiero przy widocznym HUD; bez Złota — sam XP
+        self.uruchom(hud_wlaczony=False)
+        self.do_klienta.odpal("przegrana", 12.0, 7.0)
+        self.do_klienta.odpal("przegrana", "x", 7.0)  # złe dane — pominięte
+        self.sw.krok(2)
+        self.assertEqual(self.komunikaty(), [], "HUD schowany (ekran walki) — komunikat czeka")
+        self.wlacz_hud(True)
+        self.sw.krok(D["baner"]["opoznienie_po_hud_s"] + 0.1)
+        self.assertEqual(len(self.komunikaty()), 1)
+        tekst = D["kara"]["komunikat"] % (12, 7)
+        self.assertIn("  %s  " % tekst, self.napisy())
+        self.assertEqual(tekst, "Przegrana: −12 Złota, +7 doświadczenia")
+        self.do_klienta.odpal("przegrana", 0.0, 3.0)
+        self.assertIn("  %s  " % (D["kara"]["komunikat_bez_zlota"] % 3), self.napisy())
+        self.assertEqual(len(self.komunikaty()), 2)
+        self.assertEqual(self.banery(), [], "przegrana bez awansu — bez banera")
+        self.assertEqual(self.sw.ostrzezenia, [])
+
     def test_9c_bez_hud(self):
         self.uruchom(z_hudem=False)
         self.assertEqual(self.wyslane, [["pokaz"]])
@@ -809,6 +1009,12 @@ class TestKontroli(unittest.TestCase):
         r = subprocess.run([sys.executable, "-B", os.path.join(TU, "proba_play.py"), "--sprawdz"], capture_output=True,
                            text=True, encoding="utf-8", timeout=120)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        # skrypty liczb (kara za przegraną, pytanie 56) przynajmniej się kompilują; uruchamia się je ręcznie
+        import py_compile
+        import tempfile
+        for plik in ("kara_przegranej.py", "porownaj_profile.py", "symulacja_lasu.py"):
+            py_compile.compile(os.path.join(PAKIET, plik), doraise=True,
+                               cfile=os.path.join(tempfile.gettempdir(), "stan_" + plik + "c"))
 
     def test_7d_bez_sciezek_lokalnych(self):
         for korzen, _, pliki in os.walk(PAKIET):

@@ -19,10 +19,12 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       stary las: LasPotwory SerwerGotowy, Potworow 36
   P02 klienci gotowi: KlientGotowy i KlientTryb „aktorzy” (potwory pasa), KlientPasaGotowy
   P03 przybycie: z miasteczka przez dzisiejszą bramę (LasTeleport.Steruj „las”, przekierowana) → Polana Przybycia
-  P04 pierwszy przelot: fazy uspokaja → laduje → trwa → brak, kamera skryptowa, czas lotu 13,4 ± 1 s, ryk Strażnika
+  P04 pierwszy przelot: fazy uspokaja → laduje → trwa → brak, kamera skryptowa, czas lotu z krótkiego planu (D-096) ± 1,5 s, ryk Strażnika
       zagrał, postać nie ruszyła się (zakotwiczona), walka w trakcie odrzucona (licznik walk bez zmian), po locie
       kamera Custom, postać i walki odblokowane, WidzialPrzelotLasu = true
   P05 brak drugiego przelotu: miasteczko → brama → las, 6 s — faza „brak”, LicznikPrzelotow bez zmian
+  P05t TELEPORT „Las” z głębi lasu (D-096, „Kliknąć Las jeszcze raz?”): przeniesienie na Polanę Przybycia (inkubator,
+      Kamień Powrotu), bez odmowy i bez drugiego przelotu; bez Workspace/TeleportChmury „?”
   P06 uchwyt „odtwórz ponownie”: przelot jeszcze raz i znów kończy się czysto
   P07 potwory w swoich przegrodach: 40 s próbkowania pozycji wszystkich potworów — 0 poza polem strefy
   P08 walka z każdym gatunkiem (s1 slime, m1 muchomornik, w1 wilk, t1 troll): podpowiedź E przy potworze, prawdziwe E
@@ -31,7 +33,7 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       przegrana, przycisk POMIŃ, spacja → wynik „przegrana”, serwer „ok”, gracz wolny od razu, ten sam wilk żyje i
       nie jest zajęty; rewanż = ponowne E przy TYM SAMYM wilku → walka z POMIŃ, spacja → wynik, znów wolni
   P08j jeden komplet: w pasie widać tylko panel bohatera pasa (LasPasGraBohater), panel starego lasu schowany
-  P09 odradzanie: zabity slime s2 wraca w 12–16 s
+  P09 odradzanie: zabity slime s1 wraca w 12–16 s
   P10 brama zamknięta: nieuprawniony za bramą → cofnięty przed bramę w < 1 s, komunikat; wrota z kolizją u klienta
   P11 Strażnik: walka (do 6 prób z różnym ziarnem) aż do wygranej → PokonalStraznikaLasu = true; wrota u klienta
       bez kolizji i niewidoczne, NA SERWERZE nadal z kolizją (otwarcie tylko dla zwycięzcy); przejście za bramę bez
@@ -75,6 +77,38 @@ J = ('local function J(v) local t = typeof(v) if t == "Vector3" then return { v.
      'elseif t == "number" and (v ~= v or v == math.huge or v == -math.huge) then return tostring(v) '
      'elseif t == "Instance" then return v:GetFullName() end return v end ')
 HRP = 'local hrp = game:GetService("Players"):GetPlayers()[1].Character.HumanoidRootPart '
+
+
+def _geometria():
+    """Położenia i czasy z krótkiej mapy lasu (D-096, swiat/biomy/przycinarka.py) — bez liczb pasa na sztywno."""
+    import json
+
+    def wczytaj(sciezka):
+        with open(os.path.join(REPO, *sciezka.split("/")), encoding="utf-8") as f:
+            return json.load(f)
+    zl = wczytaj("swiat/las_pas/krotki/znaczniki.json")
+    pl = wczytaj("swiat/las_pas/krotki/plan_pasa.json")
+    x0 = float(pl["swiat"]["X0"])
+
+    def m(i):
+        return next(x for x in zl["miejsca"] if x["id"] == i)["punkt_swiat"]
+    k = pl["przelot_kamery"]
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("logika_potworow_proby_lasu", os.path.join(REPO, "swiat", "las_potwory", "logika.py"))
+    lg = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(lg)
+    return {"brama": m("brama_bagna")[0], "przybycie": m("przybycie")[0], "straznik": x0 + pl["straznik"]["miejsce"][0],
+            "potworow_1": sum(lg.cel(s["naraz"], s["max"], 1) for s in pl["strefy"]) + 1,
+            "strefy": {s["id"]: x0 + s["srodek"][0] for s in pl["strefy"]},
+            "przelot": k["czas_s"], "zatrzymanie": k["zatrzymanie_od_s"]}
+
+
+G = _geometria()
+
+
+def tp(t):
+    """Chwila zrzutu z projektu (lot 10,5 s, postój od 10,5) → ta sama chwila krótkiego przelotu."""
+    return t * G["zatrzymanie"] / 10.5 if t <= 10.5 else G["zatrzymanie"] + (t - 10.5)
 WYNIKI = {}
 LISTA = []
 
@@ -204,9 +238,9 @@ def main():
 
         def czekaj_na_przelot_koniec(limit=30):
             fazy, t_trwa, zrzuty = [], None, []
-            plan = [(1.0, "02_przelot_polana"), (3.0, "03_przelot_zagroda"), (5.0, "04_przelot_lasek"),
-                    (7.0, "05_przelot_zarosla"), (8.8, "06_przelot_leze"), (10.4, "07_przelot_straznik"),
-                    (11.6, "08_przelot_ryk")]
+            plan = [(tp(1.0), "02_przelot_polana"), (tp(3.0), "03_przelot_zagroda"), (tp(5.0), "04_przelot_lasek"),
+                    (tp(7.0), "05_przelot_zarosla"), (tp(8.8), "06_przelot_leze"), (tp(10.4), "07_przelot_straznik"),
+                    (tp(11.6), "08_przelot_ryk")]
             t0 = time.time()
             while time.time() - t0 < limit:
                 g = gracz_serwer()
@@ -250,7 +284,7 @@ def main():
             stary = atrybuty("LasPotwory", ["SerwerGotowy", "Potworow"])
             zapisz("P01", {"pas": gotowe, "stary": stary})
             punkt("P01", bool(gotowe) and gotowe.get("StanMapy") == "ok" and gotowe.get("StanBiomu") == "ok"
-                  and gotowe.get("SzablonyGotowe") is True and gotowe.get("Potworow") == 20
+                  and gotowe.get("SzablonyGotowe") is True and gotowe.get("Potworow") == G["potworow_1"]
                   and gotowe.get("ZgodnoscLogiki") == "OK 70/70" and gotowe.get("ZgodnoscLogikiPasa") == "OK 39/39"
                   and gotowe.get("Przekierowanie") == "tak" and (stary.get("brak") or stary.get("Potworow") == 36),
                   "serwery: %s | stary las: %s" % (gotowe, stary))
@@ -305,7 +339,7 @@ def main():
             zapisz("P04", {"fazy": fazy, "czas_lotu": czas_lotu, "gracz": g, "klient": kp, "proba_walki": proba,
                            "liczniki": licznik_po, "ruch_postaci": ruch})
             nazwy_faz = [f[0] for f in fazy]
-            punkt("P04", "trwa" in nazwy_faz and nazwy_faz[-1] == "brak" and czas_lotu is not None and abs(czas_lotu - 13.9) < 1.5
+            punkt("P04", "trwa" in nazwy_faz and nazwy_faz[-1] == "brak" and czas_lotu is not None and abs(czas_lotu - (G["przelot"] + 0.5)) < 1.5
                   and ost.get("ok") is True and ost.get("ryk") is True and kp.get("kamera") == "Custom"
                   and not g["zablokowany"] and not g["blokadaWalki"] and g["pamiec"]["widzialPrzelotLasu"]
                   and (licznik_po.get("SerwerLicznikWalk") or 0) == licznik_walk and ruch < 1.0,
@@ -327,6 +361,28 @@ def main():
             po = atrybuty("LasPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow")
             zapisz("P05", {"fazy": fazy2, "licznik": [przed, po]})
             punkt("P05", set(fazy2) == {"brak"} and po == przed, "po ponownym wejściu fazy %s, przeloty %s→%s" % (set(fazy2), przed, po))
+
+            # ---------------------------------------------------------------- P05t TELEPORT „Las”, gdy gracz jest w lesie
+            # D-096 (Karol: „Kliknąć Las jeszcze raz?”): wybór krainy, w której gracz już jest, stawia go przy przybyciu
+            # (inkubator, Kamień Powrotu) — bez odmowy i bez drugiego przelotu (przelot tylko, gdy go nie widział)
+            time.sleep(3.5)                                  # odstęp przeniesień teleportu (3 s) i pasa (2 s)
+            przestaw(G["strefy"]["w1"], 3.5, -700, 1)
+            time.sleep(1.5)
+            z05t = poz()
+            przed_t = atrybuty("LasPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow")
+            w05t = js('local g = game:GetService("Players"):GetPlayers()[1] local t = workspace:FindFirstChild("TeleportChmury") '
+                      'if not t then return H:JSONEncode({ brak = true }) end '
+                      'return H:JSONEncode(J(t.Sygnaly.SterowanieSerwera:Invoke("przenies", "las", g)))', "Server")
+            time.sleep(6.0)
+            p05t = poz()
+            fazy_t = gracz_serwer()["faza"]
+            po_t = atrybuty("LasPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow")
+            zapisz("P05t", {"z": z05t, "przenies": w05t, "pozycja": p05t, "faza": fazy_t, "przeloty": [przed_t, po_t]})
+            punkt("P05t", None if w05t.get("brak") else (
+                      w05t.get("ok") is True and abs(p05t[0] - G["przybycie"]) < 4 and abs(p05t[2] + 700) < 4
+                      and fazy_t == "brak" and po_t == przed_t),
+                  "z X %.0f wybór Lasu → %s (%.1f; %.1f), faza %s, przeloty %s→%s" % (
+                      z05t[0], w05t.get("zrodlo") or w05t.get("powod") or w05t, p05t[0], p05t[2], fazy_t, przed_t, po_t))
 
             # ---------------------------------------------------------------- P13 mgła (gracz stoi w pasie)
             time.sleep(2)
@@ -359,7 +415,7 @@ def main():
                      'if #przyk < 5 then table.insert(przyk, c.Name) end end end end task.wait(2) end '
                      'return H:JSONEncode({ probki = probki, poza = poza, przyklady = przyk, potworow = #k.Stan:GetChildren() })', "Server")
             zapisz("P07", p07)
-            punkt("P07", p07["probki"] > 300 and p07["poza"] == 0, "%d próbek pozycji w 40 s, poza polem strefy: %d %s"
+            punkt("P07", p07["probki"] >= 15 * max(1, p07.get("potworow", 0)) and p07["poza"] == 0, "%d próbek pozycji w 40 s, poza polem strefy: %d %s"
                   % (p07["probki"], p07["poza"], p07["przyklady"]))
 
             # ---------------------------------------------------------------- P08 walka z każdym gatunkiem
@@ -418,7 +474,7 @@ def main():
                     po_walce = atrybuty("LasPasGra", ["SerwerLicznikWalk", "SerwerOstatniaWalka"])
                     if nr == 0:
                         zrzut("12_po_walce_w_pasie")
-                    w_pasie = 1056 <= pp[0] <= 2076 and -760 <= pp[2] <= -640
+                    w_pasie = 1056 <= pp[0] <= G["brama"] + 42 and -760 <= pp[2] <= -640
                     wyniki_walk[sid_strefy] = {"id": cel["id"], "E": widzial_e, "jak": jak, "walka": bool(trwa), "kamera": kam["typ"],
                                                "w_pasie": w_pasie, "walk": [przed_walka, po_walce.get("SerwerLicznikWalk")],
                                                "ostatnia": po_walce.get("SerwerOstatniaWalka"), "v3": v3,
@@ -597,12 +653,12 @@ def main():
 
             # ---------------------------------------------------------------- P09 odradzanie
             p09 = js('local S = k.Sygnaly.SterowanieSerwera local function ile() local n = 0 for _, c in k.Stan:GetChildren() do '
-                     'if c:GetAttribute("Strefa") == "s2" then n += 1 end end return n end local przed = ile() local id = nil '
-                     'for _, c in k.Stan:GetChildren() do if c:GetAttribute("Strefa") == "s2" then id = c.Name break end end '
+                     'if c:GetAttribute("Strefa") == "s1" then n += 1 end end return n end local przed = ile() local id = nil '
+                     'for _, c in k.Stan:GetChildren() do if c:GetAttribute("Strefa") == "s1" then id = c.Name break end end '
                      'S:Invoke("zabij", id) local t0 = os.clock() local po = ile() while ile() < przed and os.clock() - t0 < 25 do task.wait(0.25) end '
                      'return H:JSONEncode({ przed = przed, zaraz = po, wrocil = ile() >= przed, czas = os.clock() - t0 })', "Server")
             zapisz("P09", p09)
-            punkt("P09", p09["wrocil"] and 11 <= p09["czas"] <= 17, "slime s2: %d → %d, wrócił po %.1f s" % (p09["przed"], p09["zaraz"], p09["czas"]))
+            punkt("P09", p09["wrocil"] and 11 <= p09["czas"] <= 17, "slime s1: %d → %d, wrócił po %.1f s" % (p09["przed"], p09["zaraz"], p09["czas"]))
 
             # ---------------------------------------------------------------- P10 brama zamknięta
             pasa("zamknijBrame")
@@ -622,9 +678,9 @@ def main():
                          'return H:JSONEncode({ czesci = n, kolizja = kol })', "Client")
             po_cof = atrybuty("LasPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
             zapisz("P10", {"pozycja": p10, "komunikat": kom, "wrota_klient": wrota_k, "cofniecia": [cofniecia, po_cof]})
-            punkt("P10", p10[0] < 2034 and po_cof > cofniecia and kom.get("widoczny") and wrota_k["kolizja"] > 0,
-                  "nieuprawniony za bramą → X %.1f (brama 2034), cofnięć %s→%s, komunikat „%s”, wrota u klienta z kolizją: %s"
-                  % (p10[0], cofniecia, po_cof, kom.get("tekst"), wrota_k))
+            punkt("P10", p10[0] < G["brama"] and po_cof > cofniecia and kom.get("widoczny") and wrota_k["kolizja"] > 0,
+                  "nieuprawniony za bramą → X %.1f (brama %.0f), cofnięć %s→%s, komunikat „%s”, wrota u klienta z kolizją: %s"
+                  % (p10[0], G["brama"], cofniecia, po_cof, kom.get("tekst"), wrota_k))
 
             # ---------------------------------------------------------------- P11 Strażnik i brama dla zwycięzcy
             luau(KP + 'return tostring(k.Sygnaly.SterowanieKlienta:Invoke("bohater", "zwiadowca", "10"))', "Client")
@@ -639,7 +695,7 @@ def main():
                 if not sid_str:
                     proby.append((ziarno, "brak Strażnika"))
                     continue
-                przestaw(1974 - 9, 3.5, -700, 1)
+                przestaw(G["straznik"] - 9, 3.5, -700, 1)
                 time.sleep(1.5)
                 luau(KP + 'return tostring(k.Sygnaly.SterowanieKlienta:Invoke("walcz", "%s"))' % sid_str, "Client")
                 if czekaj_na(lambda: klient_potworow().get("walka"), 10, 0.5):
@@ -695,7 +751,7 @@ def main():
             time.sleep(1.5)
             zrzut("15_brama_otwarta")
             cof = atrybuty("LasPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
-            call("character_navigation", {"datamodel_type": "Client", "x": 2048, "y": 3, "z": -700})
+            call("character_navigation", {"datamodel_type": "Client", "x": G["brama"] + 14, "y": 3, "z": -700})
             time.sleep(6)
             p11 = poz()
             cof2 = atrybuty("LasPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
@@ -707,14 +763,14 @@ def main():
                     n += atrybuty("BagnoPasGra", ["LicznikRatunkow"]).get("LicznikRatunkow") or 0
                 return n
             ratunki = licz_ratunki()
-            przestaw(2090, -60, -700)
+            przestaw(G["brama"] + 56, -60, -700)
             time.sleep(2)
             p11b = poz()
             ratunki2 = licz_ratunki()
             zapisz("P11", {"proby": proby, "jak": jak_otwarta, "wrota_klient": wrota_k2, "wrota_serwer": wrota_s,
                            "za_brama": p11, "cofniecia": [cof, cof2], "ratunek": {"pozycja": p11b, "licznik": [ratunki, ratunki2]}})
             punkt("P11", wygrana and wrota_k2["kolizja"] == 0 and wrota_k2["zapora"] is False and wrota_s["kolizja"] > 0
-                  and wrota_s["zapora"] is True and p11[0] > 2036 and cof2 == cof and ratunki2 > ratunki and p11b[1] > -5,
+                  and wrota_s["zapora"] is True and p11[0] > G["brama"] + 2 and cof2 == cof and ratunki2 > ratunki and p11b[1] > -5,
                   "%s; wrota klient %s / serwer %s; za bramą X %.1f (cofnięć %s→%s); ratunek → (%.0f; %.1f; %.0f)"
                   % (jak_otwarta, wrota_k2, wrota_s, p11[0], cof, cof2, p11b[0], p11b[1], p11b[2]))
 
@@ -757,7 +813,8 @@ def main():
 
             # ---------------------------------------------------------------- P14 koszt
             koszt = {}
-            for nazwa, (x, z) in (("przybycie", (1114, -700)), ("zarosla_w1", (1625, -700)), ("straznik", (1955, -700))):
+            for nazwa, (x, z) in (("przybycie", (G["przybycie"], -700)), ("zarosla_w1", (G["strefy"]["w1"], -700)),
+                                  ("straznik", (G["straznik"] - 19, -700))):
                 przestaw(x, 3.5, z, 1)
                 time.sleep(4)
                 luau(KP + 'k.Sygnaly.SterowanieSerwera:Invoke("koszt", true) k.Sygnaly.SterowaniePasa:Invoke("koszt", true) return "ok"', "Server")

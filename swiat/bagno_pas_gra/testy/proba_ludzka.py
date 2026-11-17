@@ -32,7 +32,8 @@ KOD.update({
             'local p = hud and hud:FindFirstChild("PlayerPanel") local function t(n) local l = p and p:FindFirstChild(n) '
             'return l and l.Text or false end return H:JSONEncode({ gold = t("Gold"), level = t("Level") })'),
     "kamera_na_brame": ('local cam = workspace.CurrentCamera cam.CameraType = Enum.CameraType.Scriptable '
-                        'cam.CFrame = CFrame.lookAt(Vector3.new(2010, 9, -688), Vector3.new(2060, 4, -700)) return "ok"'),
+                        'cam.CFrame = CFrame.lookAt(Vector3.new(%.1f, 9, -688), Vector3.new(%.1f, 4, -700)) return "ok"'
+                        % (PP.G["brama_lasu"] - 24, PP.G["brama_lasu"] + 26)),       # brama lasu z krótkiej mapy (D-096)
 })
 
 
@@ -186,8 +187,8 @@ def main():
             punkt("H01", a0.get("PokonalStraznikaLasu") is True and wr.get("kolizja") == 0, "gracz %s, wrota lasu u klienta %s" % (a0, wr))
 
             # H02 chodzenie przez bramę → przelot Bagna
-            call("character_navigation", {"datamodel_type": "Client", "x": 2062, "y": 3, "z": -700})
-            fazy, t_trwa, zrob = [], None, [(2.0, "h02_przelot_bagna_oczka"), (10.6, "h03_przelot_straznik_topieli")]
+            call("character_navigation", {"datamodel_type": "Client", "x": PP.G["przybycie"] + 8, "y": 3, "z": -700})
+            fazy, t_trwa, zrob = [], None, [(PP.tp(2.0), "h02_przelot_bagna_oczka"), (PP.tp(10.6), "h03_przelot_straznik_topieli")]
             t0 = time.time()
             while time.time() - t0 < 45:
                 g = hak("BagnoPasGra", "SterowaniePasa", "gracz")
@@ -205,7 +206,7 @@ def main():
             zrzut("h04_pierwszy_widok_bagna")
             p2 = poz()
             zapisz("H02", {"fazy": fazy, "pozycja": p2})
-            punkt("H02", "trwa" in fazy and fazy[-1] == "brak" and p2[0] > 2036, "fazy %s, gracz w X %.1f" % (fazy, p2[0]))
+            punkt("H02", "trwa" in fazy and fazy[-1] == "brak" and p2[0] > PP.G["brama_lasu"] + 2, "fazy %s, gracz w X %.1f" % (fazy, p2[0]))
 
             # H03 Rechotek prawdziwym E (zwykły tryb: bohater z danych gracza)
             przed = {"gracz": gracz(["Level", "XP", "Gold"]), "stan": js(KOD["kont_atr"] % ("StanGracza", '"LicznikLupow", "OstatniLup"'), "Server")}
@@ -257,7 +258,7 @@ def main():
             time.sleep(9.0)
             p4 = poz()
             zapisz("H04", {"stan": st, "wybor": wyb, "pozycja": p4})
-            punkt("H04", "bagno" not in (st.get("zamkniete") or ["?"]) and wyb.get("ok") is True and abs(p4[0] - 2054) < 6,
+            punkt("H04", "bagno" not in (st.get("zamkniete") or ["?"]) and wyb.get("ok") is True and abs(p4[0] - PP.G["przybycie"]) < 6,
                   "zamknięte na makiecie %s, wybór Bagna %s → gracz (%.1f; %.1f)" % (st.get("zamkniete"), wyb, p4[0], p4[2]))
         finally:
             PP.log("Stop:", call("start_stop_play", {"is_start": False})["text"][:60])

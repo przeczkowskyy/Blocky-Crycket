@@ -6,11 +6,15 @@
     python -B swiat/pety_proba/dane_petow.py --sprawdz     # kod 1, gdy któryś plik w zrodla/ jest nieaktualny
 
 JEDNA PRAWDA (tylko odczyt cudzych plików, nic nie jest przepisane ręcznie):
-  • ustawienia.json (ten pakiet) — pety, skille, rzadkości, cena jajka, teksty, czasy;
-  • tools/walka/progresja.py — szanse jajka (ZALOZENIA["szanse_jajka"]) i cena z kalkulatora (ceny_jajek[0]);
-  • swiat/las_pas/znaczniki.json — stanowisko jajka (miejsce „jajko”, punkt E „Punkty/StanowiskoJajka”);
+  • ustawienia.json (ten pakiet) — pety, skille, rzadkości, jajka (każde jajko = wpis: pula, cena, model, stanowisko),
+    licznik ceny, teksty, czasy;
+  • tools/walka/progresja.py — szanse jajek (ZALOZENIA["szanse_jajka"], te same dla każdego jajka) i cena z kalkulatora
+    (ceny_jajek[0] — tylko jajko lasu; kalkulator nie ma jajek dalszych biomów);
+  • znaczniki map ze „stanowisko.znaczniki” każdego jajka (swiat/las_pas, swiat/bagno_pas) — miejsce „jajko” i punkt
+    E „Punkty/StanowiskoJajka”;
   • swiat/miasteczko_bazar/znaczniki.json — zagroda petów (punkt E, kierunek, sześć miejsc na pety);
-  • swiat/postacie/<pet>.py i jajko_lesne.py — modele z klocków → rigi (roblox_klocki.rig, próbki liniowe co 2. klatkę).
+  • swiat/postacie/<pet>.py, jajko_lesne.py, jajko_bagienne.py — modele z klocków → rigi (roblox_klocki.rig, próbki
+    liniowe co 2. klatkę); z modelu inkubatora: stałe bryły („kosci_stale”: tablica, gniazdo, latarnia) i wysokość jajka.
 Nazwa pliku inna niż „dane.py”, bo pakiet czyta też swiat/stan_gracza (tam jest dane.py).
 """
 import hashlib
@@ -34,7 +38,7 @@ ZRODLA = os.path.join(TU, "zrodla")
 RIGI = os.path.join(ZRODLA, "rigi")
 PLIK_DANYCH = "DanePetow.luau"
 POSTACIE = os.path.join(REPO, "swiat", "postacie")
-NAZWY_RIGOW = {"jajko_lesne": "RigJajka"}       # moduły rigów: Rig_<id> (pet) albo nazwa z tej mapy
+TRYBY_LICZNIKA = ("osobny", "wspolny")
 
 
 class BladDanych(Exception):
@@ -55,16 +59,20 @@ def _r(v, n=3):
     return round(float(v), n)
 
 
-def polozenia(U):
-    """Stanowisko jajka (las-pas) i zagroda (bazar) w układzie świata Studio — z map, tylko odczyt."""
-    I = U["inkubator"]
-    z = _znaczniki(I["znaczniki"])
-    m = next((x for x in z["miejsca"] if x["id"] == I["miejsce"]), None)
-    e = next((x for x in z["punkty_e"] if x["grupa"] == I["grupa_e"]), None)
+def polozenie_jajka(j):
+    """Stanowisko jajka w układzie świata Studio — miejsce „jajko” i punkt E z mapy biomu (tylko odczyt)."""
+    S = j["stanowisko"]
+    z = _znaczniki(S["znaczniki"])
+    m = next((x for x in z["miejsca"] if x["id"] == S["miejsce"]), None)
+    e = next((x for x in z["punkty_e"] if x["grupa"] == S["grupa_e"]), None)
     if not m or not e:
-        raise BladDanych("brak miejsca %r albo punktu E %r w %s" % (I["miejsce"], I["grupa_e"], I["znaczniki"]))
-    gniazdo = [_r(v) for v in m["punkt_swiat"]]
-    pe = [_r(v) for v in e["punkt_swiat"]]
+        raise BladDanych("jajko %s: brak miejsca %r albo punktu E %r w %s" % (j["id"], S["miejsce"], S["grupa_e"],
+                                                                         S["znaczniki"]))
+    return {"gniazdo": [_r(v) for v in m["punkt_swiat"]], "obrot": S["obrot"], "e": [_r(v) for v in e["punkt_swiat"]]}
+
+
+def polozenia(U):
+    """Zagroda (bazar) w układzie świata Studio — z mapy, tylko odczyt (stanowiska jajek: polozenie_jajka)."""
     zg = _znaczniki(U["zagroda"]["znaczniki"])["zagroda"]
     pz = zg["punkt_e"]
     kier = pz["kier"]
@@ -75,9 +83,6 @@ def polozenia(U):
     e0 = pz["swiat"]
     tablica = [e0[0] + a * kx[0] + b * kz[0], e0[1], e0[2] + a * kx[2] + b * kz[2]]
     return {
-        "gniazdo": gniazdo,
-        "obrot_stanowiska": I["obrot_stanowiska"],
-        "e_inkubatora": pe,
         "zagroda_e": [_r(v) for v in e0],
         "zagroda_kier": [_r(v, 4) for v in kz],
         "zagroda_tablica": [_r(v) for v in tablica],
@@ -87,18 +92,52 @@ def polozenia(U):
 
 
 def szanse_i_cena(U):
-    """Szanse jajka z kalkulatora (tools/walka/progresja.py) na pety z puli w kolejności rzadkości."""
+    """Szanse jajek z kalkulatora (tools/walka/progresja.py) na pety z puli w kolejności rzadkości; każdy pet w puli
+    dokładnie jednego jajka; cena kalkulatora sprawdzana tam, gdzie jajko ją ma (dziś tylko las)."""
     szanse = list(progresja.ZALOZENIA["szanse_jajka"])
     kalk = progresja.ZALOZENIA["ceny_jajek"][0]
-    jajka = []
-    for j in U["jajka"]:
-        if len(j["pula"]) != len(szanse):
-            raise BladDanych("jajko %s: %d petów w puli, a kalkulator ma %d szans" % (j["id"], len(j["pula"]), len(szanse)))
-        if j["cena"]["kalkulator"] != kalk:
-            raise BladDanych("jajko %s: cena kalkulatora %s ≠ progresja.py %s" % (j["id"], j["cena"]["kalkulator"], kalk))
-        jajka.append(dict(j, szanse=[{"pet": p, "szansa": s} for p, s in zip(j["pula"], szanse)]))
     if abs(sum(szanse) - 1.0) > 1e-9:
         raise BladDanych("szanse jajka nie sumują się do 1: %s" % szanse)
+    rz = [r["id"] for r in U["rzadkosci"]]
+    pety = {p["id"]: p for p in U["pety"]}
+    gdzie = {}
+    jajka = []
+    for j in U["jajka"]:
+        if not re.match(r"^[A-Za-z0-9_]{1,24}$", j["id"]):
+            raise BladDanych("jajko %s: id spoza liter, cyfr i „_”" % j["id"])
+        if len(j["pula"]) != len(szanse):
+            raise BladDanych("jajko %s: %d petów w puli, a kalkulator ma %d szans" % (j["id"], len(j["pula"]), len(szanse)))
+        for i, pid in enumerate(j["pula"]):
+            if pid not in pety:
+                raise BladDanych("jajko %s: nieznany pet %s" % (j["id"], pid))
+            if pid in gdzie:
+                raise BladDanych("pet %s w dwóch jajkach (%s, %s)" % (pid, gdzie[pid], j["id"]))
+            if pety[pid]["rzadkosc"] != rz[i]:
+                raise BladDanych("jajko %s: %d. pet puli (%s) powinien być %s" % (j["id"], i + 1, pid, rz[i]))
+            gdzie[pid] = j["id"]
+        c = j["cena"]
+        if c.get("kalkulator") is not None and c["kalkulator"] != kalk:
+            raise BladDanych("jajko %s: cena kalkulatora %s ≠ progresja.py %s" % (j["id"], c["kalkulator"], kalk))
+        # tryb ceny: "stala" (domyślny — decyzja Karola 17.11), "rosnaca" i "kalkulator" jako przełącznik
+        potrzebne = {"stala": ("stala",), "rosnaca": ("start", "krok", "maks"), "kalkulator": ("kalkulator",)}
+        if c["tryb"] not in potrzebne or any(c.get(k) is None for k in potrzebne[c["tryb"]]):
+            raise BladDanych("jajko %s: tryb ceny %r bez wartości" % (j["id"], c["tryb"]))
+        if any(not isinstance(c.get(k), int) or c[k] < 1 for k in ("stala", "start", "krok", "maks")):
+            raise BladDanych("jajko %s: ceny (stala, start, krok, maks) muszą być liczbami całkowitymi ≥ 1" % j["id"])
+        cena = {k: v for k, v in c.items() if k in ("tryb", "stala", "start", "krok", "maks", "kalkulator")
+                and v is not None}
+        jajka.append({"id": j["id"], "nazwa": j["nazwa"], "kraina": j["kraina"], "tytul": j["tytul"], "pula": j["pula"],
+                      "cena": cena, "folder": j["folder"], "punkt_e": j["punkt_e"], "atrybuty": j["atrybuty"],
+                      "kolor_swiatla": j["kolor_swiatla"], "opis_miejsca": j["opis_miejsca"],
+                      "skala_jajka": j["stanowisko"]["skala_jajka"], "jajko_na_mchu": j["stanowisko"]["jajko_na_mchu"],
+                      "rig": j["model"]["rig"], "polozenie": polozenie_jajka(j),
+                      "szanse": [{"pet": p, "szansa": s} for p, s in zip(j["pula"], szanse)]})
+    bez = sorted(set(pety) - set(gdzie))
+    if bez:
+        raise BladDanych("pety bez jajka: %s" % ", ".join(bez))
+    for nazwa in ("folder", "punkt_e"):
+        if len({j[nazwa] for j in jajka}) != len(jajka):
+            raise BladDanych("jajka muszą mieć różne „%s”" % nazwa)
     return jajka
 
 
@@ -144,29 +183,42 @@ def rig_modelu(p, skala=1.0):
             "uwagi": d["uwagi"]}
 
 
-def tablica_inkubatora(U):
-    """Bryły tablicy z modelu inkubatora (kość „Tablica”) w układzie stanowiska (środek gniazda na ziemi, przód −Z)."""
-    M = U["modele"]
-    d = rig_modelu(_postac_z_modulu(M["jajko"], M["inkubator"]), 1.0)
-    i_tab = next(i + 1 for i, k in enumerate(d["kosci"]) if k[0] == M["tablica_kosc"])
+def inkubator_jajka(U, j):
+    """Z modelu inkubatora jajka (tylko odczyt): stałe bryły kości z „kosci_stale” (tablica, gniazdo, latarnia) w układzie
+    stanowiska (środek gniazda na ziemi, przód −Z) i wysokość spodu jajka (staw kości „Jajko”)."""
+    M = j["model"]
+    d = rig_modelu(_postac_z_modulu(M["modul"], M["inkubator"]), 1.0)
+    nr = {k[0]: i + 1 for i, k in enumerate(d["kosci"])}
+    brak = [k for k in M["kosci_stale"] + ["Jajko"] if k not in nr]
+    if brak:
+        raise BladDanych("inkubator %s: brak kości %s" % (M["inkubator"], ", ".join(brak)))
+    stale = {nr[k] for k in M["kosci_stale"]}
     # paski szans z modelu są tylko w podglądzie Blendera — w grze rysuje je SurfaceGui (z liczbami i nazwami)
-    czesci = [c for c in d["czesci"] if c[0] == i_tab and not c[2].startswith(("Pasek szansy", "Znak peta"))]
-    if not any(c[2] == M["papier"] for c in czesci):
-        raise BladDanych("tablica inkubatora bez bryły %r (na nią idzie SurfaceGui)" % M["papier"])
-    return {"czesci": [c[1:] for c in czesci], "materialy": d["materialy"]}
+    czesci = [c for c in d["czesci"] if c[0] in stale and not c[2].startswith(("Pasek szansy", "Znak peta"))]
+    papier = U["modele"]["papier"]
+    if U["modele"]["tablica_kosc"] in M["kosci_stale"] and not any(c[2] == papier for c in czesci):
+        raise BladDanych("tablica inkubatora %s bez bryły %r (na nią idzie SurfaceGui)" % (M["inkubator"], papier))
+    y = next(k[3] for k in d["kosci"] if k[0] == "Jajko")
+    # wiersz: nazwa kości, kształt, nazwa bryły, poz xyz, obrót xyz (rad), rozmiar xyz, kolor, materiał, siatka
+    return {"czesci": [[d["kosci"][c[0] - 1][0]] + c[1:] for c in czesci], "materialy": d["materialy"]}, _r(y)
 
 
 def rigi(U):
     w = {}
     for p in U["pety"]:
         w[p["id"]] = rig_modelu(_postac_z_modulu(p["id"], p["id"]), p.get("skala", 1.0))
-    M = U["modele"]
-    w[M["jajko"]] = rig_modelu(_postac_z_modulu(M["jajko"], M["jajko"]), 1.0)
+    for j in U["jajka"]:
+        M = j["model"]
+        w[M["jajko"]] = rig_modelu(_postac_z_modulu(M["modul"], M["jajko"]), 1.0)
     return w
 
 
-def nazwa_rigu(model_id):
-    return NAZWY_RIGOW.get(model_id, "Rig_" + model_id)
+def nazwa_rigu(model_id, U=None):
+    """Moduł rigu: Rig_<id> (pet) albo nazwa z „model.rig” jajka."""
+    for j in (U or ustawienia())["jajka"]:
+        if j["model"]["jajko"] == model_id:
+            return j["model"]["rig"]
+    return "Rig_" + model_id
 
 
 # ------------------------------------------------------------------------------------------------ dane
@@ -178,16 +230,23 @@ def podstawa():
             raise BladDanych("pet %s: nieznana rzadkość %s" % (p["id"], p["rzadkosc"]))
         if not re.match(r"^[A-Za-z0-9_]{1,24}$", p["id"]):
             raise BladDanych("pet %s: id spoza liter, cyfr i „_”" % p["id"])
+    LC = U["licznik_ceny"]
+    if LC["tryb"] not in TRYBY_LICZNIKA:
+        raise BladDanych("licznik_ceny.tryb %r spoza %s" % (LC["tryb"], TRYBY_LICZNIKA))
+    jajka = szanse_i_cena(U)
+    for j, ju in zip(jajka, U["jajka"]):
+        j["stale"], j["y_jajka"] = inkubator_jajka(U, ju)
+    jajko_peta = {pid: j["id"] for j in jajka for pid in j["pula"]}
     D = {
-        "wersja": 1,
+        "wersja": 2,
         "kontener": U["kontener"],
         "prefiks": U["prefiks"],
         "rzadkosci": U["rzadkosci"],
-        "pety": U["pety"],
-        "jajka": szanse_i_cena(U),
+        "pety": [dict(p, jajko=jajko_peta[p["id"]]) for p in U["pety"]],
+        "jajka": jajka,
+        "licznik_ceny": {"tryb": LC["tryb"]},
         "modele": U["modele"],
-        "rigi": {p["id"]: nazwa_rigu(p["id"]) for p in U["pety"]},
-        "rig_jajka": nazwa_rigu(U["modele"]["jajko"]),
+        "rigi": {p["id"]: nazwa_rigu(p["id"], U) for p in U["pety"]},
         "inkubator": U["inkubator"],
         "zagroda": U["zagroda"],
         "wyklucie": U["wyklucie"],
@@ -199,7 +258,6 @@ def podstawa():
         "atrybuty_gracza": U["atrybuty_gracza"],
         "polozenia": polozenia(U),
     }
-    D["tablica_inkubatora"] = tablica_inkubatora(U)
     return D
 
 
@@ -282,7 +340,7 @@ def wszystkie_pliki():
     U = ustawienia()
     w = {PLIK_DANYCH: luau_danych(D)}
     for mid, R in rigi(U).items():
-        w["rigi/%s.luau" % nazwa_rigu(mid)] = luau_rigu(R)
+        w["rigi/%s.luau" % nazwa_rigu(mid, U)] = luau_rigu(R)
     return D, w
 
 

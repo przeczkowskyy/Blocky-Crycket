@@ -1,0 +1,1293 @@
+{
+ "opis": "Bagno jako odcinek wąskiego pasa — PROPOZYCJA (17.11.2026), bez budowy w Studio. Wzór: las-pas (swiat/biom_las/pas/plan_pasa.json, D-075, D-076, D-077). Układ pasa jak w lesie: u wzdłuż (ciągnie się od początku lasu), v w poprzek (v > 0 po prawej ręce idącego do bramy), y w górę. Generuje swiat/bagno_pas/plan.py.",
+ "wersja": 1,
+ "status": "propozycja",
+ "bieg": {
+  "walkspeed": 16,
+  "zrodlo": "src/ i default.project.json nie zmieniają Humanoid.WalkSpeed ani StarterPlayer.CharacterWalkSpeed (przeszukane 16.11.2026) → domyślne 16 st/s Roblox; wierzchowce ze Stajni mogą to kiedyś zmienić"
+ },
+ "pas": {
+  "szerokosc": 64,
+  "szerokosc_s": 4,
+  "kulisy": 24,
+  "kulisy_opis": "pas 24 st z każdej strony: cypryśniki, wierzby, suche drzewa, trzcina; kolizja tylko na pierwszym rzędzie; niewidzialna ściana na |v| = 38",
+  "u_od": 414.0,
+  "u_do": 840.0,
+  "u_tyl_opis": "u 934: palisada bramy lasu za plecami przybywającego (część lasu-pasa)",
+  "y": 0,
+  "teren": "płasko (y = 0); woda to tafla bez kolizji 0,2 nad gruntem (brodzi się), kępy i kładki ≤ 0,45",
+  "sciezka": {
+   "szer": 8,
+   "pts": [
+    [
+     438.96,
+     0.0
+    ],
+    [
+     860.0,
+     0.0
+    ]
+   ],
+   "opis": "Krzywa Kładka: pomost z desek (wierzch 0,45) po osi pasa, mocniej falujący niż ścieżka lasu"
+  }
+ },
+ "swiat": {
+  "X0": 1100,
+  "Z0": -700,
+  "obrot_y": 0,
+  "wzor": "świat = (X0 + u; y; Z0 + v) — bez obrotu: idąc do bramy gracz idzie w +X świata, v > 0 to +Z (południe)",
+  "kontener": "Workspace/BagnoPas",
+  "slonce": "słońce miejsca świeci z pn.-zach. świata (swiat/biom_las/PROJEKT.md rozdz. 2; ujęcie u11 miasteczka „na zachód, pod słońce”) → idąc na wschód gracz ma słońce za plecami, z lewej; fronty lokacji oświetlone",
+  "miasteczko": {
+   "srodek": [
+    0.0,
+    -696.0
+   ],
+   "zajete": [
+    -293,
+    392,
+    -954,
+    -442
+   ],
+   "opis": "Krzywe Miasteczko — pierwszy blok linii; oś pasa z = −700 to oś miasteczka"
+  },
+  "zajete_inne": [
+   {
+    "id": "baseplate",
+    "xz": [
+     -1024,
+     1024,
+     -1024,
+     1024
+    ],
+    "uwaga": "założone 2048 × 2048 wokół (0; 0) — README lasu: kończy się na z −1024; sprawdzić w Studio"
+   },
+   {
+    "id": "BiomLas (stary las v2)",
+    "xz": [
+     -700,
+     700,
+     -2700,
+     -1300
+    ]
+   },
+   {
+    "id": "TestWalki2 (arena walki v2)",
+    "xz": [
+     -76,
+     64,
+     190,
+     314
+    ]
+   },
+   {
+    "id": "TestWalki (stary prototyp)",
+    "xz": [
+     134,
+     246,
+     -52,
+     52
+    ]
+   }
+  ],
+  "polowa_szerokosci_z_tlem": 90,
+  "sasiad_las": "Workspace/LasPas: części do u 966 (kulisy, tło, płyta, ścieżka, palisada u 932–936); grupa ZapowiedzBagna (u 934–966, niewidzialna ściana u 965) do usunięcia przed budową Bagna"
+ },
+ "przegrody": [
+  {
+   "id": "wejscie",
+   "nazwa": "Pomost Przybycia",
+   "u_od": 420.0,
+   "u_do": 458.79,
+   "kolor": "C9C08A",
+   "opis": "przybycie teleportem i z lasu przez bramę; stanowisko jajka, Kamień Powrotu; strefa spokoju; tu startuje przelot",
+   "pod": [],
+   "strefy": []
+  },
+  {
+   "id": "oczka",
+   "nazwa": "Rechotne Oczka",
+   "u_od": 468.71,
+   "u_do": 521.6,
+   "kolor": "A9C47A",
+   "opis": "trzy trawiaste kępy na płytkiej wodzie, między nimi rowy z kładkami; Rechotki poziomów rosnących",
+   "pod": [
+    {
+     "id": "oczko_1",
+     "nazwa": "Oczko Liści",
+     "u_od": 468.71,
+     "u_do": 521.6
+    }
+   ],
+   "strefy": [
+    "r1"
+   ]
+  },
+  {
+   "id": "trzesawisko",
+   "nazwa": "Bulgotne Trzęsawisko",
+   "u_od": 538.13,
+   "u_do": 591.02,
+   "kolor": "B7A27E",
+   "opis": "ciemne błoto z bąblującymi kałużami, niska trzcina dzieli trzy kojce (przerwa 24 na środku); Bulgotniki",
+   "pod": [
+    {
+     "id": "bablowisko",
+     "nazwa": "Bąblowisko",
+     "u_od": 538.13,
+     "u_do": 591.02
+    }
+   ],
+   "strefy": [
+    "b1"
+   ]
+  },
+  {
+   "id": "kepy",
+   "nazwa": "Kłapiące Kępy",
+   "u_od": 604.25,
+   "u_do": 657.14,
+   "kolor": "8FA88E",
+   "opis": "kępy z korzeniami na ciemnej toni, między nimi kładki; Kłodokłapy (ciężkie, mniej naraz)",
+   "pod": [
+    {
+     "id": "zatoka_klod",
+     "nazwa": "Zatoka Kłód",
+     "u_od": 604.25,
+     "u_do": 657.14
+    }
+   ],
+   "strefy": [
+    "k1"
+   ]
+  },
+  {
+   "id": "chatka",
+   "nazwa": "Leże Ropuchy",
+   "u_od": 670.36,
+   "u_do": 753.01,
+   "kolor": "C4AE82",
+   "opis": "błotna łacha z Ropuszą Chatą pod lewą ścianą; jedna Ropucha z Chatką (rzadka, ciężka)",
+   "pod": [],
+   "strefy": [
+    "t1"
+   ]
+  },
+  {
+   "id": "topiel",
+   "nazwa": "Topiel Strażnika",
+   "u_od": 766.23,
+   "u_do": 840.0,
+   "kolor": "9FB4B0",
+   "opis": "okrągły pomost na ciemnej wodzie, krąg pni z latarniami, Latarnia Topieli; Strażnik Topieli; za nim brama do Dżungli",
+   "pod": [],
+   "strefy": []
+  }
+ ],
+ "przejscia": [
+  {
+   "id": "row_z_kladka",
+   "nazwa": "Rów z kładką",
+   "miedzy": [
+    "wejscie",
+    "oczka"
+   ],
+   "u_od": 458.79,
+   "u_do": 468.71,
+   "otwarcie": [
+    -32.0,
+    32.0
+   ],
+   "wys_w_otwarciu": 1.6,
+   "wys_reszty": 0,
+   "blokuje": false,
+   "woda": [
+    460.45,
+    467.06
+   ],
+   "kladka": [
+    -6,
+    6
+   ],
+   "opis": "płytki rów w poprzek pasa (woda bez kolizji, przejdzie się wszędzie), szeroka kładka 12 na osi"
+  },
+  {
+   "id": "kladka_nad_topiela",
+   "nazwa": "Kładka nad Topielą",
+   "miedzy": [
+    "oczka",
+    "trzesawisko"
+   ],
+   "u_od": 521.6,
+   "u_do": 538.13,
+   "otwarcie": [
+    -32.0,
+    32.0
+   ],
+   "wys_w_otwarciu": 1.6,
+   "wys_reszty": 0,
+   "blokuje": false,
+   "woda": [
+    524.08,
+    535.65
+   ],
+   "kladka": [
+    -6,
+    6
+   ],
+   "opis": "ciemna, szersza woda (bez kolizji) i kładka 12 z poręczami do 1,4; przez nią widać brązowe trzęsawisko"
+  },
+  {
+   "id": "trzcinowa_przesieka",
+   "nazwa": "Trzcinowa przesieka",
+   "miedzy": [
+    "trzesawisko",
+    "kepy"
+   ],
+   "u_od": 591.02,
+   "u_do": 604.25,
+   "otwarcie": [
+    -14.86,
+    14.86
+   ],
+   "wys_w_otwarciu": 0,
+   "wys_reszty": 6,
+   "blokuje": false,
+   "opis": "ściany wysokiej trzciny i pałek 6 wys. od obu ścian zwężają przejście do 32"
+  },
+  {
+   "id": "zatopione_pnie",
+   "nazwa": "Zatopione pnie",
+   "miedzy": [
+    "kepy",
+    "chatka"
+   ],
+   "u_od": 657.14,
+   "u_do": 670.36,
+   "otwarcie": [
+    -13.14,
+    13.14
+   ],
+   "wys_w_otwarciu": 0.4,
+   "wys_reszty": 9,
+   "blokuje": false,
+   "opis": "zwalone, omszałe pnie i karpy 6–9 wys. od ścian, przejście 28; wbite pale z czaszką ropuchy (ostrzeżenie)"
+  },
+  {
+   "id": "latarnie_topieli",
+   "nazwa": "Latarnie Topieli",
+   "miedzy": [
+    "chatka",
+    "topiel"
+   ],
+   "u_od": 753.01,
+   "u_do": 766.23,
+   "otwarcie": [
+    -13.14,
+    13.14
+   ],
+   "wys_w_otwarciu": 0,
+   "wys_reszty": 1.2,
+   "blokuje": false,
+   "latarnie": [
+    [
+     1752,
+     -16
+    ],
+    [
+     1752,
+     16
+    ]
+   ],
+   "opis": "dwa wysokie słupy z zielonymi latarniami (14) po bokach osi, reszta to niskie korzenie ≤ 1,2; widać arenę"
+  }
+ ],
+ "miejsca": [
+  {
+   "id": "przybycie",
+   "nazwa": "Przybycie (teleport i wejście z lasu)",
+   "u": 434.0,
+   "v": 0.0,
+   "y": 0,
+   "patrz": [
+    458.79,
+    0.0
+   ],
+   "opis": "punkt przybycia „bagno” z planu lasu; twarzą wzdłuż pasa"
+  },
+  {
+   "id": "jajko",
+   "nazwa": "Stanowisko jajka (inkubator Bagna)",
+   "u": 448.88,
+   "v": 20.0,
+   "y": 0,
+   "r": 6,
+   "e": true,
+   "opis": "to samo stanowisko co w lesie (podest 12 × 12 z punktem E), na drewnianym pomoście — jajka Bagna (D-059, D-060)"
+  },
+  {
+   "id": "kamien_powrotu",
+   "nazwa": "Kamień Powrotu",
+   "u": 428.0,
+   "v": -21.71,
+   "y": 0,
+   "r": 3,
+   "e": true,
+   "opis": "E → miasteczko (jak w lesie)"
+  },
+  {
+   "id": "brama_lasu",
+   "nazwa": "Brama do Bagna (las-pas)",
+   "u": 414.0,
+   "v": 0.0,
+   "y": 0,
+   "otwarcie": [
+    -8.0,
+    8.0
+   ],
+   "e": false,
+   "opis": "palisada lasu-pasa za plecami przybywającego (Workspace/LasPas/BramaBagna) — Bagno jej nie buduje"
+  },
+  {
+   "id": "brama_dzungli",
+   "nazwa": "Brama do Dżungli",
+   "u": 834.0,
+   "v": 0.0,
+   "y": 0,
+   "otwarcie": [
+    -8.0,
+    8.0
+   ],
+   "e": false,
+   "opis": "palisada z pni cypryśnika przez cały pas, wrota 16 szer.; zamknięte dla gracza, póki nie pokona Strażnika Topieli"
+  },
+  {
+   "id": "odrodzenie",
+   "nazwa": "Odrodzenie po przegranej",
+   "u": 434.0,
+   "v": 0.0,
+   "y": 0,
+   "opis": "jak w lesie: na razie walka wraca gracza w miejsce startu walki"
+  }
+ ],
+ "strefy_spokoju": [
+  {
+   "id": "wejscie",
+   "u": [
+    416.0,
+    458.79
+   ],
+   "v": [
+    -32.0,
+    32.0
+   ],
+   "opis": "cały Pomost Przybycia"
+  },
+  {
+   "id": "przedbramie",
+   "u": [
+    817.47,
+    840.0
+   ],
+   "v": [
+    -32.0,
+    32.0
+   ],
+   "opis": "za Topielą, przed bramą do Dżungli"
+  }
+ ],
+ "punkty_orientacyjne": [
+  {
+   "id": "ropusza_chata",
+   "nazwa": "Ropusza Chata",
+   "u": 736.48,
+   "v": -26.86,
+   "r": 7,
+   "wys": 18,
+   "opis": "chata na palach z kominem i kotłem — dom Ropuchy z Chatką"
+  },
+  {
+   "id": "latarnia_lewa",
+   "nazwa": "Latarnia Topieli (lewa)",
+   "u": 759.62,
+   "v": -14.86,
+   "r": 2,
+   "wys": 14
+  },
+  {
+   "id": "latarnia_prawa",
+   "nazwa": "Latarnia Topieli (prawa)",
+   "u": 759.62,
+   "v": 14.86,
+   "r": 2,
+   "wys": 14
+  },
+  {
+   "id": "wieza_topieli",
+   "nazwa": "Wieża Topieli",
+   "u": 817.47,
+   "v": 24.29,
+   "r": 5,
+   "wys": 40,
+   "opis": "krzywa wieża z pali z zielonym światłem na szczycie (ok. 40) — cel widoczny wzdłuż całego Bagna; stoi z boku osi"
+  }
+ ],
+ "zasady": {
+  "walke_zaczyna": "gracz: podpowiedź E w promieniu 8 (na telefonie przycisk); potwór nigdy nie atakuje sam",
+  "smycz": 10,
+  "odstep_min": 25,
+  "blokada_domu": 12,
+  "dom_od_wezlow": [
+   9.9,
+   20
+  ],
+  "plac_walki_r": 9.9,
+  "skracanie": "czas = baza / (1 + 0,15 × (gracze w strefie − 1)), najmniej 10 s",
+  "skalowanie": "naraz to liczba przy ok. 8 graczach; mniej graczy → mniej (najmniej połowa), więcej → do max",
+  "predkosc": {
+   "Rechotek": 8,
+   "Bulgotnik": 5,
+   "Kłodokłap": 6,
+   "Ropucha z Chatką": 4
+  },
+  "pojemnosc": "max ≤ obwód trasy / 25; wataha liczy się jako jeden odcinek (miejsca − 1) × odstęp w grupie + 25",
+  "zmiany_wzgledem_lasu_v2": "domy 12–20 od węzłów zamiast 35–50 i blokada domu 12 zamiast 18 (pas ma 72 szer., domy stoją pod ścianą na |v| = 34); trasa = pętla 8 węzłów w kojcu; odrodzenie krótsze (slime 12, muchomornik 15, wilk 18 s) — żeby gracz nie czekał"
+ },
+ "rozmiary": {
+  "Rechotek": {
+   "wys": 3.0,
+   "dl": 3.6
+  },
+  "Bulgotnik": {
+   "wys": 4.2,
+   "szer": 3.0
+  },
+  "Kłodokłap": {
+   "wys": 3.2,
+   "dl": 8.6
+  },
+  "Ropucha z Chatką": {
+   "wys": 11.0,
+   "szer": 12.0
+  },
+  "Strażnik Topieli": {
+   "wys": 16.0,
+   "szer": 10.0
+  }
+ },
+ "potwory_opis": {
+  "Rechotek": {
+   "klasa": "Zwiadowca",
+   "ranga": "zwykły",
+   "przegroda": "oczka",
+   "wys": 3.0,
+   "dl": 3.6,
+   "ksztalt": "przysadzista ropucha z klocków: szeroki płaski łeb jak skrzynka, oczy-kulki na czubku, krótkie tylne łapy w kolanach (skacze susami), gruby język z rozdwojonym końcem chowany w pysku",
+   "kolor": "oliwkowa zieleń 7E8C3E z ciemnymi plamami 4F5A2A, żółty brzuch E8C85A, pomarańczowe oczy F08A24",
+   "walka": "szybki i zwinny: często unika; „lepki język” spowalnia gracza (efekt Spowolnienie z silnika)",
+   "dom": "oczko wodne z liściem grzybienia i kępą pałek pod ścianą",
+   "predkosc": 8,
+   "odrodzenie_s": 12
+  },
+  "Bulgotnik": {
+   "klasa": "Mag",
+   "ranga": "zwykły",
+   "przegroda": "trzesawisko",
+   "wys": 4.2,
+   "szer": 3.0,
+   "ksztalt": "mały błotny szaman: korpus-kopczyk z błota na dwóch krótkich nóżkach, głowa to bańka gazu (kula) z dwojgiem oczu, w ręce kij z latarenką-ognikiem; z pleców uchodzą bąble",
+   "kolor": "błoto 5B4A34, bańka mlecznozielona B9D49A, ognik żółtozielony C8E05A (Neon), kij ciemne drewno",
+   "walka": "bije kijem słabo, ale „bańka gazu” rani magią i spowalnia; mało życia",
+   "dom": "bąblujący kopiec błota z dziurą",
+   "predkosc": 5,
+   "odrodzenie_s": 15
+  },
+  "Kłodokłap": {
+   "klasa": "Wojownik",
+   "ranga": "zwykły",
+   "przegroda": "kepy",
+   "wys": 3.2,
+   "dl": 8.6,
+   "ksztalt": "żywa kłoda z paszczą: omszały pień leżący poziomo na czterech krótkich łapach-korzeniach, przód rozcięty w paszczę z kołkami-zębami, na grzbiecie kępa mchu i grzybek, ogon z korzeni",
+   "kolor": "kora 6B5A44, mech 6F7A3A, wnętrze paszczy E5392B, zęby kość F3E6C8",
+   "walka": "ciężki i twardy: gruba kora (dużo Pancerza), mocne ugryzienie, czasem ogłusza; nie unika",
+   "dom": "na wpół zatopiona kłoda z korzeniami",
+   "predkosc": 6,
+   "odrodzenie_s": 18
+  },
+  "Ropucha z Chatką": {
+   "klasa": "Mag",
+   "ranga": "rzadki",
+   "przegroda": "chatka",
+   "wys": 11.0,
+   "szer": 12.0,
+   "ksztalt": "ogromna stara ropucha, która nosi na grzbiecie krzywą chatkę na palach z kominem; sapie, a z komina idzie dym",
+   "kolor": "ciało szarozielone 6F7A5A, brzuch B5A46A, chatka z desek 8B5A2E i strzechy B59A52, dym biały",
+   "walka": "rzadka i ciężka: dym z komina truje i spowalnia (magia), skok całym ciałem rani fizycznie",
+   "dom": "Ropusza Chata pod lewą ścianą (stoi pusta, gdy ropucha chodzi po leżu)",
+   "predkosc": 4,
+   "odrodzenie_s": 150
+  },
+  "Strażnik Topieli": {
+   "klasa": "strażnik (obrażenia pół na pół: fizyczne i magiczne)",
+   "ranga": "strażnik",
+   "przegroda": "topiel",
+   "wys": 16.0,
+   "szer": 10.0,
+   "ksztalt": "olbrzym z błota i korzeni cypryśnika, wynurzony do pasa z kręgu wody; na głowie przewrócona łódka jak kapelusz, w piersi latarnia z zielonym światłem (jak kryształ Strażnika Gaju), z ramion zwisa mech",
+   "kolor": "błoto 4A3F2A, korzenie 6B5A44, mech 6F7A3A, światło C8E05A (Neon), łódka 8B5A2E",
+   "walka": "dużo życia i Pancerza; „wciągnięcie w topiel” unieruchamia (jak Uścisk korzeni), uderzenie błotem rani magią",
+   "dom": "krąg wody za pomostem areny",
+   "predkosc": 0,
+   "odrodzenie_s": 120
+  }
+ },
+ "strefy": [
+  {
+   "id": "r1",
+   "podbiom": "oczka",
+   "pod": "oczko_1",
+   "potwor": "Rechotek",
+   "klasa": "Zwiadowca",
+   "wariant": null,
+   "poziomy": [
+    11,
+    13
+   ],
+   "poziomy_rowny": [
+    11,
+    14
+   ],
+   "poziomy_status": "propozycja: `poziomy` = tempo rosnące (Bagno 45 min, poziomy 11–19), `poziomy_rowny` = tempo równe po lesie (Bagno ok. 95 min, poziomy 11–25); model tools/walka/tempo.py, do uzgodnienia z krzywą",
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    495.16,
+    0.0
+   ],
+   "r": 28,
+   "y": 0,
+   "pole": [
+    472.02,
+    518.3,
+    -30.29,
+    30.29
+   ],
+   "dom": {
+    "opis": "oczko wodne z liściem grzybienia i kępą pałek pod ścianą",
+    "pts": [
+     [
+      490.2,
+      -30.29
+     ],
+     [
+      500.12,
+      30.29
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     510.03,
+     0.0
+    ],
+    [
+     508.63,
+     16.14
+    ],
+    [
+     495.16,
+     20.0
+    ],
+    [
+     481.69,
+     16.14
+    ],
+    [
+     480.28,
+     0.0
+    ],
+    [
+     481.69,
+     -16.14
+    ],
+    [
+     495.16,
+     -20.0
+    ],
+    [
+     508.63,
+     -16.14
+    ]
+   ],
+   "liczba_wezlow": 8,
+   "odrodzenie_s": 12,
+   "zachowanie": "skacze susami po kępie, przystaje przy oczkach; odwraca się do gracza w promieniu 18",
+   "grupa": null,
+   "obwod": 120.9,
+   "pojemnosc": 4,
+   "scalone_z": [
+    "r1",
+    "r2",
+    "r3"
+   ]
+  },
+  {
+   "id": "b1",
+   "podbiom": "trzesawisko",
+   "pod": "bablowisko",
+   "potwor": "Bulgotnik",
+   "klasa": "Mag",
+   "wariant": null,
+   "poziomy": [
+    13,
+    15
+   ],
+   "poziomy_rowny": [
+    15,
+    18
+   ],
+   "poziomy_status": "propozycja: `poziomy` = tempo rosnące (Bagno 45 min, poziomy 11–19), `poziomy_rowny` = tempo równe po lesie (Bagno ok. 95 min, poziomy 11–25); model tools/walka/tempo.py, do uzgodnienia z krzywą",
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    564.58,
+    0.0
+   ],
+   "r": 28,
+   "y": 0,
+   "pole": [
+    541.44,
+    587.72,
+    -30.29,
+    30.29
+   ],
+   "dom": {
+    "opis": "bąblujący kopiec błota z dziurą",
+    "pts": [
+     [
+      559.62,
+      -30.29
+     ],
+     [
+      569.54,
+      30.29
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     579.45,
+     0.0
+    ],
+    [
+     578.05,
+     16.14
+    ],
+    [
+     564.58,
+     20.0
+    ],
+    [
+     551.11,
+     16.14
+    ],
+    [
+     549.7,
+     0.0
+    ],
+    [
+     551.11,
+     -16.14
+    ],
+    [
+     564.58,
+     -20.0
+    ],
+    [
+     578.05,
+     -16.14
+    ]
+   ],
+   "liczba_wezlow": 8,
+   "odrodzenie_s": 15,
+   "zachowanie": "drepcze po trzęsawisku, przystaje przy kałużach i puszcza bańki",
+   "grupa": null,
+   "obwod": 120.9,
+   "pojemnosc": 4,
+   "scalone_z": [
+    "b1",
+    "b2",
+    "b3"
+   ]
+  },
+  {
+   "id": "k1",
+   "podbiom": "kepy",
+   "pod": "zatoka_klod",
+   "potwor": "Kłodokłap",
+   "klasa": "Wojownik",
+   "wariant": null,
+   "poziomy": [
+    15,
+    17
+   ],
+   "poziomy_rowny": [
+    19,
+    22
+   ],
+   "poziomy_status": "propozycja: `poziomy` = tempo rosnące (Bagno 45 min, poziomy 11–19), `poziomy_rowny` = tempo równe po lesie (Bagno ok. 95 min, poziomy 11–25); model tools/walka/tempo.py, do uzgodnienia z krzywą",
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    630.69,
+    0.0
+   ],
+   "r": 28,
+   "y": 0,
+   "pole": [
+    607.55,
+    653.83,
+    -30.29,
+    30.29
+   ],
+   "dom": {
+    "opis": "na wpół zatopiona kłoda z korzeniami",
+    "pts": [
+     [
+      625.74,
+      -30.29
+     ],
+     [
+      635.65,
+      30.29
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     645.57,
+     0.0
+    ],
+    [
+     644.17,
+     16.14
+    ],
+    [
+     630.69,
+     20.0
+    ],
+    [
+     617.22,
+     16.14
+    ],
+    [
+     615.82,
+     0.0
+    ],
+    [
+     617.22,
+     -16.14
+    ],
+    [
+     630.69,
+     -20.0
+    ],
+    [
+     644.17,
+     -16.14
+    ]
+   ],
+   "liczba_wezlow": 8,
+   "odrodzenie_s": 18,
+   "zachowanie": "pełznie powoli po kępie, czasem zamiera jak zwykła kłoda",
+   "grupa": null,
+   "obwod": 120.9,
+   "pojemnosc": 4,
+   "scalone_z": [
+    "k1",
+    "k2",
+    "k3"
+   ]
+  },
+  {
+   "id": "t1",
+   "podbiom": "chatka",
+   "pod": null,
+   "potwor": "Ropucha z Chatką",
+   "klasa": "Mag",
+   "wariant": null,
+   "poziomy": [
+    18,
+    18
+   ],
+   "poziomy_rowny": [
+    23,
+    24
+   ],
+   "poziomy_status": "propozycja: `poziomy` = tempo rosnące (Bagno 45 min, poziomy 11–19), `poziomy_rowny` = tempo równe po lesie (Bagno ok. 95 min, poziomy 11–25); model tools/walka/tempo.py, do uzgodnienia z krzywą",
+   "naraz": 1,
+   "max": 1,
+   "srodek": [
+    711.69,
+    0.0
+   ],
+   "r": 29,
+   "y": 0,
+   "pole": [
+    673.67,
+    749.7,
+    -30.29,
+    30.29
+   ],
+   "dom": {
+    "opis": "Ropusza Chata pod lewą ścianą (stoi pusta, gdy ropucha chodzi po leżu)",
+    "pts": [
+     [
+      716.64,
+      -30.29
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     731.52,
+     0.0
+    ],
+    [
+     721.52,
+     14.86
+    ],
+    [
+     701.85,
+     14.86
+    ],
+    [
+     691.85,
+     0.0
+    ],
+    [
+     701.85,
+     -14.86
+    ],
+    [
+     721.52,
+     -14.86
+    ]
+   ],
+   "liczba_wezlow": 6,
+   "odrodzenie_s": 150,
+   "zachowanie": "człapie po łasze, przysiada i sapie dymem; przy graczu w promieniu 25 rechocze",
+   "grupa": null,
+   "obwod": 111.0,
+   "pojemnosc": 4,
+   "odrodzenie_stale": true,
+   "uwaga": "rzadka: jedna naraz, stałe odrodzenie (jak Leśny Troll); wspólna czy osobna — wybór"
+  }
+ ],
+ "straznik": {
+  "potwor": "Strażnik Topieli",
+  "klasa": "strażnik (obrażenia pół na pół: fizyczne i magiczne)",
+  "poziom": 19,
+  "poziom_rowny": 25,
+  "poziomy_status": "propozycja: `poziomy` = tempo rosnące (Bagno 45 min, poziomy 11–19), `poziomy_rowny` = tempo równe po lesie (Bagno ok. 95 min, poziomy 11–25); model tools/walka/tempo.py, do uzgodnienia z krzywą",
+  "miejsce": [
+   789.37,
+   0.0
+  ],
+  "y": 0.3,
+  "yaw_swiat": 1.5708,
+  "patrzy": "w stronę wejścia (−u, czyli −X świata)",
+  "arena": {
+   "srodek": [
+    794.33,
+    0.0
+   ],
+   "r": 26,
+   "opis": "okrągły pomost z desek r 27 (wierzch 0,3), krąg pni z latarniami r 26, Wieża Topieli w (1848; 27), z boku osi"
+  },
+  "odrodzenie_s": 120,
+  "odrodzenie_stale": true,
+  "tryb": "do decyzji: wspólny dla serwera (jak Strażnik Gaju) albo osobny dla gracza",
+  "ryk": {
+   "klip": "ryk",
+   "dl_s": 2.0,
+   "zrodlo": "do zrobienia z modelem Strażnika Topieli (po akceptacji planu)"
+  },
+  "otwiera": "brama_dzungli (osobno dla gracza)"
+ },
+ "przelot_kamery": {
+  "kiedy": "pierwsze wejście gracza do Bagna (D-077); flaga na gracza; przy kolejnych wejściach brak",
+  "czas_s": 10.17,
+  "punkty": [
+   {
+    "t": 0.0,
+    "poz": [
+     426.0,
+     0.0,
+     26
+    ],
+    "patrz": [
+     463.75,
+     0.0,
+     4
+    ],
+    "pokazuje": "start nad plecami gracza, przed palisadą lasu"
+   },
+   {
+    "t": 0.83,
+    "poz": [
+     458.79,
+     11.43,
+     28
+    ],
+    "patrz": [
+     521.6,
+     0.0,
+     2
+    ],
+    "pokazuje": "Pomost Przybycia: jajko, rów z kładką"
+   },
+   {
+    "t": 1.87,
+    "poz": [
+     521.6,
+     -14.86,
+     25
+    ],
+    "patrz": [
+     521.6,
+     0.0,
+     2
+    ],
+    "pokazuje": "Rechotne Oczka i Chata na Palach"
+   },
+   {
+    "t": 2.98,
+    "poz": [
+     548.05,
+     9.71,
+     25
+    ],
+    "patrz": [
+     591.02,
+     0.0,
+     3
+    ],
+    "pokazuje": "Kładka nad Topielą i Bulgotne Trzęsawisko"
+   },
+   {
+    "t": 4.22,
+    "poz": [
+     591.02,
+     -11.43,
+     23
+    ],
+    "patrz": [
+     657.14,
+     0.0,
+     3
+    ],
+    "pokazuje": "trzcinowa przesieka i Kłapiące Kępy"
+   },
+   {
+    "t": 5.61,
+    "poz": [
+     657.14,
+     9.71,
+     21
+    ],
+    "patrz": [
+     711.69,
+     -6.0,
+     6
+    ],
+    "pokazuje": "zatopione pnie i Leże Ropuchy"
+   },
+   {
+    "t": 6.65,
+    "poz": [
+     749.7,
+     0.0,
+     14
+    ],
+    "patrz": [
+     789.37,
+     0.0,
+     11
+    ],
+    "pokazuje": "Latarnie Topieli, kamera zniża się"
+   },
+   {
+    "t": 7.27,
+    "poz": [
+     767.88,
+     0.0,
+     11
+    ],
+    "patrz": [
+     789.37,
+     0.0,
+     11.5
+    ],
+    "pokazuje": "Strażnik Topieli w kadrze — zatrzymanie"
+   },
+   {
+    "t": 10.17,
+    "poz": [
+     767.88,
+     0.0,
+     11
+    ],
+    "patrz": [
+     789.37,
+     0.0,
+     11.5
+    ],
+    "pokazuje": "ryk Strażnika, potem cięcie do gracza"
+   }
+  ],
+  "ryk_od_s": 7.47,
+  "zatrzymanie_od_s": 7.27,
+  "potem": "zaciemnienie 0,5 s i powrót kamery za plecy gracza w punkcie przybycia",
+  "ruch": "krzywa Catmull-Rom jak w lesie (swiat/biom_las/pas/sprawdz_plan.krzywa_kamery)",
+  "streaming": "przed startem serwer prosi o wczytanie okolic u = 522, 591, 667, 789",
+  "streaming_u": [
+   522,
+   591,
+   667,
+   789
+  ]
+ },
+ "punkty_przybycia": [
+  {
+   "id": "miasteczko",
+   "nazwa": "Krzywe Miasteczko",
+   "swiat_xz": [
+    -63.6,
+    -771.5
+   ],
+   "opis": "jak dziś: 18 st od środka Bramy Miejskiej w stronę rynku (liczy teleport.py w Studio; liczba przybliżona)",
+   "od_poczatku": true
+  },
+  {
+   "id": "bagno",
+   "nazwa": "Bagno — Pomost Przybycia",
+   "u": 434.0,
+   "v": 0.0,
+   "y": 0,
+   "patrz": [
+    458.79,
+    0.0
+   ],
+   "kamera_opada_z_wys": 60,
+   "od_poczatku": false,
+   "odblokowanie": "po pokonaniu Strażnika Gaju (jak w planie lasu)"
+  },
+  {
+   "id": "bagno_arena",
+   "nazwa": "Bagno — przed Topielą (opcja)",
+   "u": 759.62,
+   "v": 0.0,
+   "y": 0,
+   "patrz": [
+    789.37,
+    0.0
+   ],
+   "kamera_opada_z_wys": 60,
+   "od_poczatku": false,
+   "odblokowanie": "po pierwszym dojściu do Topieli — wybór do decyzji"
+  },
+  {
+   "id": "dzungla",
+   "nazwa": "Dżungla — przybycie",
+   "u": 854.0,
+   "v": 0.0,
+   "y": 0,
+   "patrz": [
+    900.0,
+    0.0
+   ],
+   "kamera_opada_z_wys": 60,
+   "od_poczatku": false,
+   "odblokowanie": "po pokonaniu Strażnika Topieli"
+  }
+ ],
+ "czas": {
+  "cel_min": 45,
+  "pasmo_min": [
+   35,
+   60
+  ],
+  "cel_rowny_min": 95,
+  "status": "propozycja: rozkład rosnący 30/45/60/75/95/125/170 albo równy (ok. 85, a przy lesie 30 — ok. 95 na resztę)",
+  "zalozenia": {
+   "walka_s": {
+    "Rechotek": 18,
+    "Bulgotnik": 17,
+    "Kłodokłap": 21,
+    "Ropucha z Chatką": 26,
+    "Strażnik Topieli": 32
+   },
+   "walka_s_zrodlo": "SZACUNEK: potwory Bagna nie mają jeszcze danych walki; wzięte z lasu (slime 20, muchomornik 15, wilk 16, troll 23, Strażnik 29) z poprawką na klasę",
+   "narzut_walki_s": 7,
+   "dojscie_s": 2,
+   "pominieta_walka_s": 2,
+   "przelot_s": 13.4,
+   "jajko_s": 45,
+   "trening_i_decyzje_s": 450,
+   "trening_opis": "jak w lesie, przeskalowane do 45 min"
+  },
+  "walki_plan": {
+   "oczka": 25,
+   "trzesawisko": 26,
+   "kepy": 25,
+   "chatka": 3,
+   "arena": 4
+  },
+  "walki_plan_rowny": {
+   "oczka": 52,
+   "trzesawisko": 55,
+   "kepy": 55,
+   "chatka": 6,
+   "arena": 6
+  },
+  "walki_zrodlo": "tools/walka/tempo.py (krzywa 11,71 × L^1,6): Bagno 45 min ≈ 83 walki (poziomy 11–19), 95 min ≈ 174 walki (poziomy 11–25)"
+ },
+ "gatunek_przegrody": {
+  "oczka": "Rechotek",
+  "trzesawisko": "Bulgotnik",
+  "kepy": "Kłodokłap",
+  "chatka": "Ropucha z Chatką",
+  "arena": "Strażnik Topieli"
+ },
+ "budzet_czesci": {
+  "cel": 9000,
+  "limit": 12000,
+  "porownanie": "las-pas 8601"
+ },
+ "kolejne_biomy": [
+  {
+   "id": "dzungla",
+   "nazwa": "Dżungla",
+   "u_od": 840.0,
+   "u_do": 1260.0,
+   "swiat_x": [
+    1940.0,
+    2360.0
+   ],
+   "przybycie_u": 854.0,
+   "status": "rezerwacja miejsca; długość robocza jak las"
+  },
+  {
+   "id": "pustynia",
+   "nazwa": "Pustynia",
+   "u_od": 1260.0,
+   "u_do": 1680.0,
+   "swiat_x": [
+    2360.0,
+    2780.0
+   ],
+   "przybycie_u": 1274.0,
+   "status": "rezerwacja miejsca; długość robocza jak las"
+  },
+  {
+   "id": "gory",
+   "nazwa": "Góry z tundrą",
+   "u_od": 1680.0,
+   "u_do": 2100.0,
+   "swiat_x": [
+    2780.0,
+    3200.0
+   ],
+   "przybycie_u": 1694.0,
+   "status": "rezerwacja miejsca; długość robocza jak las"
+  },
+  {
+   "id": "lodowiec",
+   "nazwa": "Lodowiec",
+   "u_od": 2100.0,
+   "u_do": 2520.0,
+   "swiat_x": [
+    3200.0,
+    3620.0
+   ],
+   "przybycie_u": 2114.0,
+   "status": "rezerwacja miejsca; długość robocza jak las"
+  },
+  {
+   "id": "wulkan",
+   "nazwa": "Wulkaniczny",
+   "u_od": 2520.0,
+   "u_do": 2940.0,
+   "swiat_x": [
+    3620.0,
+    4040.0
+   ],
+   "przybycie_u": 2534.0,
+   "status": "rezerwacja miejsca; długość robocza jak las"
+  },
+  {
+   "id": "krysztal",
+   "nazwa": "Kryształowy",
+   "u_od": 2940.0,
+   "u_do": 3360.0,
+   "swiat_x": [
+    4040.0,
+    4460.0
+   ],
+   "przybycie_u": 2954.0,
+   "status": "rezerwacja miejsca; długość robocza jak las"
+  }
+ ],
+ "wymiary": {
+  "decyzja": "D-096 (Karol, 17.11.2026)",
+  "zrodlo": "swiat/biomy/wymiary_pasa.json",
+  "projekt": "swiat/bagno_pas/plan_bagna.json",
+  "dlugosc_s": 25,
+  "szerokosc_s": 4,
+  "bieg_st_s": 16,
+  "wspolczynnik_wzdluz": 0.8264,
+  "wspolczynnik_w_poprzek": 0.8571,
+  "rdzen_v_st": 8.0,
+  "zostawione_odcinki_u": [
+   [
+    934.0,
+    984.0
+   ],
+   [
+    1004.0,
+    1080.0
+   ],
+   [
+    1208.0,
+    1292.0
+   ],
+   [
+    1420.0,
+    1500.0
+   ],
+   [
+    1628.0,
+    1762.0
+   ],
+   [
+    1788.0,
+    1856.0
+   ],
+   [
+    1862.0,
+    1906.0
+   ]
+  ],
+  "uwagi": [
+   "dalsze biomy bez map: po 420 st każdy, pierwszy (dzungla) od u 840.0",
+   "r1: max 5 → 4 (pętla 120.9 st)",
+   "b1: max 5 → 4 (pętla 120.9 st)",
+   "przelot: tor 851 → 367 st, lot 10.5 → 7.3 s, całość 10.2 s",
+   "zasady: plac walki r 9.9, domy 9.9–20 st od węzłów (ściśnięcie 0.826)",
+   "drobiazgi przy placach walki, otwarciach i pętlach: odsunięte 7, usunięte 0 (0 brył)"
+  ],
+  "przybycie_do_bramy_st": 400.0
+ }
+}

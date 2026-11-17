@@ -2,9 +2,10 @@
 """JAJKO LEŚNE i INKUBATOR LEŚNY — próba „jajka i pety” (swiat/pety_proba, 17.11.2026; status: propozycja).
 
 Dwa modele w jednym module:
-  • jajko_lesne     — kanciaste jajko (ok. 2,85 studa z kiełkiem, 1,7 szerokości) w kremowe i zielone łaty mchu, z kiełkiem na czubku. Czubek to
-                      osobna kość (odskakuje przy pęknięciu); w środku dolnej skorupki leży płytka „Wnetrze” (w grze
-                      klient barwi ją kolorem rzadkości wyklutego peta — widać ją dopiero po odskoczeniu czubka).
+  • jajko_lesne     — gładkie jajko z elipsoid (ok. 2,85 studa z kiełkiem, 1,7 szerokości), kremowe w zielone plamki
+                      mchu, z kiełkiem na czubku. Czubek (kopułka) to osobna kość — odskakuje przy pęknięciu; pod nim
+                      świecąca elipsoida „Wnetrze” (w grze klient barwi ją kolorem rzadkości wyklutego peta — widać ją
+                      dopiero po odskoczeniu czubka).
                       Klipy: spoczynek (lekkie kołysanie, pętla), trzesienie (coraz mocniej, z podskokami),
                       pekniecie (czubek odskakuje i odlatuje).
   • inkubator_lesny — PODGLĄD stanowiska do pokazania ludziom: gniazdo z korzeni i mchu (jak na mapie lasu-pasa,
@@ -20,6 +21,7 @@ swiat/pety_proba/ustawienia.json (test pakietu pilnuje, że paski mają te same 
 import math
 
 from swiat.postacie.biblioteka.postac import Postac
+from swiat.postacie.pety_lesne import jajko_gladkie, klipy_jajka, tablica_szans
 
 ID = "jajko_lesne"
 
@@ -36,77 +38,35 @@ SKALA_INKUBATORA = 1.8
 CZUBEK_Y = 1.5        # wysokość pęknięcia (przy skali 1)
 
 
-WARSTWY_DOLU = (("Spod", 1.0, 0.0, 0.16), ("Dol", 1.42, 0.16, 0.42), ("Brzuch", 1.7, 0.42, 1.1),
-                ("Obrecz", 1.62, 1.1, CZUBEK_Y))
-WARSTWY_CZUBKA = (("Czubek dol", 1.48, 0.0, 0.36), ("Czubek srodek", 1.22, 0.36, 0.66), ("Czubek gora", 0.88, 0.66, 0.9),
-                  ("Szczyt", 0.46, 0.9, 1.04))
-WYS_CZUBKA = 1.04
-# łaty mchu: ("przod" | "tyl", x, y, szer, wys, połowa szerokości warstwy) albo ("bok", znak, z, y, szer, wys, połowa)
-LATY_DOLU = (("przod", 0.3, 0.8, 0.5, 0.34, 0.85), ("przod", -0.42, 0.3, 0.32, 0.2, 0.71), ("bok", 1, -0.25, 0.75, 0.42,
-             0.3, 0.85), ("bok", -1, 0.2, 0.95, 0.3, 0.26, 0.85), ("tyl", 0.1, 0.7, 0.48, 0.32, 0.85))
-LATY_CZUBKA = (("przod", -0.25, 0.18, 0.44, 0.24, 0.74), ("bok", 1, 0.15, 0.22, 0.38, 0.22, 0.74))
-
-
-def _laty(p, laty, k, kolor):
-    for lata in laty:
-        if lata[0] == "bok":
-            _, zn, z, y, sz, sy, pol = lata
-            p.blok("Lata mchu", (k * zn * (pol + 0.025), k * y, k * z), (k * 0.05, k * sy, k * sz), kolor, "matowy",
-                   faza=0.0)
-        else:
-            strona, x, y, sx, sy, pol = lata
-            zn = 1 if strona == "przod" else -1
-            p.blok("Lata mchu", (k * x, k * y, k * zn * (pol + 0.025)), (k * sx, k * sy, k * 0.05), kolor, "matowy",
-                   faza=0.0)
+WYS = 2.54            # wysokość skorupki (bez kiełka)
+SZER = 1.7            # najszersze miejsce
+WYS_CZUBKA = WYS - CZUBEK_Y
+# plamki mchu: (kość, azymut °, y od spodu, średnica, kolor) — wtopione kulki (pety_lesne.jajko_gladkie);
+# na czubku tylko powyżej szwu (ok. 2,1), niżej czubek jest schowany w skorupce
+CETKI = (("dol", 20, 0.85, 0.44, "mech"), ("dol", -35, 0.35, 0.3, "mech"), ("dol", 100, 0.75, 0.4, "mech"),
+         ("dol", -95, 1.0, 0.32, "mech"), ("dol", 180, 0.65, 0.44, "mech"), ("dol", 55, 1.5, 0.3, "mech_ciemny"),
+         ("dol", -150, 1.7, 0.28, "mech"), ("gora", -30, 2.22, 0.28, "mech_ciemny"), ("gora", 140, 2.3, 0.24, "mech"))
 
 
 def _jajko(p, kosc_jajka, kosc_czubka, k=1.0):
-    """Bryły jajka na dwóch kościach (układ: staw kości jajka = środek spodu jajka; skala k). Jajko jest wyższe niż
-    szersze (1,7 × 2,54), warstwy z małą fazą — z daleka czyta się jako jajko, nie jako tort."""
-    with p.na(kosc_jajka, od="staw"):
-        for nazwa, szer, y0, y1 in WARSTWY_DOLU:
-            p.blok(nazwa, (0, k * (y0 + y1) / 2, 0), (k * szer, k * (y1 - y0), k * szer), "skorupka", faza=0.03 * k)
-        p.blok("Wnetrze", (0, k * (CZUBEK_Y - 0.06), 0), (k * 1.3, k * 0.08, k * 1.3), "wnetrze", "swiecacy", faza=0.0)
-        _laty(p, LATY_DOLU, k, "mech")
+    """Bryły jajka na dwóch kościach (staw kości jajka = środek spodu; skala k). Od 17.11 (wieczór) gładkie jajko
+    z elipsoid (pety_lesne.jajko_gladkie) — wcześniej schodki z klocków przypominały ul."""
+    jajko_gladkie(p, kosc_jajka, kosc_czubka, k, CZUBEK_Y, WYS, SZER, "skorupka", cetki=CETKI)
     with p.na(kosc_czubka, od="staw"):
-        for nazwa, szer, y0, y1 in WARSTWY_CZUBKA:
-            p.blok(nazwa, (0, k * (y0 + y1) / 2, 0), (k * szer, k * (y1 - y0), k * szer), "skorupka", faza=0.03 * k)
-        _laty(p, LATY_CZUBKA, k, "mech_ciemny")
-        p.blok("Kielek", (0, k * (WYS_CZUBKA + 0.14), 0), (k * 0.1, k * 0.3, k * 0.1), "kielek", "matowy", faza=0.0)
+        p.blok("Kielek", (0, k * (WYS_CZUBKA + 0.12), 0), (k * 0.1, k * 0.3, k * 0.1), "kielek", "matowy", faza=0.0)
         for zn in (1, -1):
-            p.blok("Kielek listek", (zn * k * 0.16, k * (WYS_CZUBKA + 0.26), 0), (k * 0.32, k * 0.05, k * 0.18), "kielek",
+            p.blok("Kielek listek", (zn * k * 0.16, k * (WYS_CZUBKA + 0.24), 0), (k * 0.32, k * 0.05, k * 0.18), "kielek",
                    "matowy", rot=(0, 0, zn * 25), faza=0.0)
 
 
 def _klipy_jajka(p, kosc_jajka, kosc_czubka, z_peknieciem=True):
-    k = p.klip("spoczynek", 60, petla=True)
-    k.cykl(kosc_jajka, "obrot", (1.5, 0, 2.5), czestosc=1)
-    k.cykl(kosc_czubka, "obrot", (0, 0, 1.2), czestosc=2, faza=0.2)
-    if not z_peknieciem:
-        return
-    k = p.klip("trzesienie", 36, petla=False)
-    for f, kat in ((0, 0), (3, 4), (6, -4), (9, 6), (12, -6), (15, 8), (18, -8), (21, 10), (24, -11), (27, 13),
-                   (30, -13), (33, 6), (36, 0)):
-        k.klucz(f, kosc_jajka, obrot=(0, 0, kat))
-    for f, y in ((0, 0), (13, 0), (15, 0.12), (17, 0), (25, 0), (27, 0.16), (29, 0), (36, 0)):
-        k.klucz(f, kosc_jajka, przes=(0, y, 0))
-    for f, kat in ((0, 0), (20, 0), (22, -5), (24, 4), (26, -6), (28, 5), (30, -4), (36, 0)):
-        k.klucz(f, kosc_czubka, obrot=(kat, 0, 0))
-    k = p.klip("pekniecie", 18, petla=False)
-    k.klucz(0, kosc_czubka, przes=(0, 0, 0), obrot=(0, 0, 0))
-    k.klucz(4, kosc_czubka, przes=(0, 0.18, 0), obrot=(-6, 0, 4))
-    k.klucz(10, kosc_czubka, przes=(0.5, 1.6, 0.25), obrot=(-40, 30, 25), wyg="liniowo")
-    k.klucz(18, kosc_czubka, przes=(1.1, 2.3, 0.5), obrot=(-85, 70, 55))
-    k.klucz(0, kosc_jajka, przes=(0, 0, 0))
-    k.klucz(3, kosc_jajka, przes=(0, -0.06, 0))
-    k.klucz(8, kosc_jajka, przes=(0, 0.03, 0))
-    k.klucz(18, kosc_jajka, przes=(0, 0, 0))
+    klipy_jajka(p, kosc_jajka, kosc_czubka, z_peknieciem)
 
 
 def jajko():
     p = Postac(ID, "Jajko leśne", typ="stwor", skala=1.0, faza=0.06, paleta=PALETA)
     p.kosc("Jajko", "Root", staw=(0, 0, 0), czesc=(1.7, CZUBEK_Y, 1.7), srodek=(0, CZUBEK_Y / 2, 0))
-    p.kosc("Czubek", "Jajko", staw=(0, CZUBEK_Y, 0), czesc=(1.48, WYS_CZUBKA, 1.48), srodek=(0, WYS_CZUBKA / 2, 0))
+    p.kosc("Czubek", "Jajko", staw=(0, CZUBEK_Y, 0), czesc=(1.5, WYS_CZUBKA, 1.5), srodek=(0, WYS_CZUBKA / 2, 0))
     _jajko(p, "Jajko", "Czubek", 1.0)
     p.zaczep("RootAttachment", "Jajko", (0, 0, 0))
     p.zaczep("GlowaAttachment", "Czubek", (0, 1.4, 0))
@@ -139,17 +99,7 @@ def inkubator():
         p.blok("Lampion", (-3.3, 3.85, 4.6), (0.8, 1.2, 0.8), "lampion", "swiecacy", faza=0.06)
     _jajko(p, "Jajko", "Czubek", k)
     # tablica z paskami szans (długość ~ szansa, z minimum, żeby 2% było widać)
-    with p.na("Tablica", od="staw"), p.uklad(obrot=(0, -20, 0)):
-        for zn in (1, -1):
-            p.blok("Slupek", (zn * 1.9, 1.6, 0), (0.3, 3.2, 0.3), "rama", "matowy", faza=0.05)
-        p.blok("Tablica", (0, 2.6, 0), (4.2, 2.8, 0.2), "tablica", "matowy", faza=0.06)
-        p.blok("Papier", (0, 2.55, 0.12), (3.7, 2.4, 0.04), "papier", "matowy", faza=0.0)
-        p.blok("Daszek", (0, 4.12, 0), (4.6, 0.25, 0.6), "rama", faza=0.05)
-        for i, (kolor, szansa) in enumerate(PASKI):
-            dl = 0.35 + 2.6 * szansa / PASKI[0][1]
-            y = 3.35 - i * 0.42
-            p.blok("Pasek szansy", (-1.55 + 0.35 + dl / 2, y, 0.15), (dl, 0.26, 0.04), kolor, "matowy", faza=0.0)
-            p.blok("Znak peta", (-1.55 + 0.12, y, 0.15), (0.24, 0.26, 0.04), kolor, "swiecacy", faza=0.0)
+    tablica_szans(p, "Tablica", [k for k, _ in PASKI], [s for _, s in PASKI], "tablica", "rama", "papier")
     p.zaczep("RootAttachment", "Podstawa", (0, -0.5, 0))
     p.zaczep("GlowaAttachment", "Czubek", (0, 1.4 * k, 0))
     _klipy_jajka(p, "Jajko", "Czubek", z_peknieciem=False)
@@ -162,6 +112,6 @@ def zbuduj():
 
 
 SLABOSCI = [
-    "Jajko jest schodkowe (cztery warstwy + czubek z czterech) — to styl klocków, nie gładka owalna skorupka.",
+    "Jajko z trzech elipsoid: na styku skorupki i czubka widać delikatny szew (to też linia pęknięcia).",
     "Inkubator to podgląd: w grze gniazdo stoi na mapie lasu-pasa, a napisy na tablicy dokłada SurfaceGui.",
 ]

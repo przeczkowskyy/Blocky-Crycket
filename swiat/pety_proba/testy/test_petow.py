@@ -3,16 +3,23 @@
 
     python -B swiat/pety_proba/testy/test_petow.py        (unittest; kod 1 przy błędzie)
 
-1. Dane: zrodla/ aktualne; szanse i cena kalkulatora = tools/walka/progresja.py; położenia = znaczniki map; obrót
-   stanowiska = swiat/las_pas/punkty.py; teksty bez napisów dla twórców; paski podglądu tablicy = szanse.
-2. Modele: pięć petów i jajko budują się (bez błędów), mają klipy spoczynek / chod / radosc / wyklucie (jajko:
-   spoczynek / trzesienie / pekniecie), są tanie w częściach, plansze i portrety z Blendera leżą w wynik/.
-3. Logika: 100 000 losowań daje szanse z danych; cena rośnie do maksimum; Luau w luau_mini = lustro w Pythonie
-   (przypadki wzorcowe, zepsuty przypadek wykryty, losowe wywołania).
-4. Ekonomia: pętla gracza z ekonomia_jajek.py = symulacja_lasu.jeden_gracz; pierwsze jajko po 5–10 min.
+1. Dane: zrodla/ aktualne; szanse każdego jajka i cena kalkulatora = tools/walka/progresja.py; każdy pet w puli
+   jednego jajka; położenia = znaczniki map (las-pas, Bagno); obrót stanowiska = swiat/las_pas/punkty.py; teksty bez
+   napisów dla twórców; paski podglądu tablic = szanse; skille: pet Bagna trochę lepszy od leśnego tej samej
+   rzadkości, ale słabszy od leśnego o stopień rzadszego (leśny legendarny zostaje ważny).
+2. Modele: dziesięć petów i dwa jajka budują się (bez błędów), mają klipy spoczynek / chod / radosc / wyklucie (jajka:
+   spoczynek / trzesienie / pekniecie), są tanie w częściach, plansze i portrety z Blendera leżą w wynik/; stałe bryły
+   inkubatorów (tablica; w Bagnie gniazdo na palach i latarenka).
+3. Logika: 100 000 losowań na jajko daje szanse z danych; cena stała domyślnie (decyzja 17.11), rosnąca do maksimum
+   i kalkulator jako przełącznik; licznik ceny osobny / wspólny (liczy się tylko przy rosnącej);
+   Luau w luau_mini = lustro w Pythonie (przypadki wzorcowe, zepsuty przypadek wykryty, losowe wywołania).
+4. Ekonomia: pętla gracza z ekonomia_jajek.py = symulacja_lasu.jeden_gracz; pierwsze jajko po 5–10 min lasu,
+   pierwsze jajko Bagna po 5–10 min Bagna.
 5. PRAWDZIWY SerwerPetow.server.luau + PRAWDZIWY SerwerStanu.server.luau w luau_mini (atrapa Roblox): zakup bez
-   Złota odrzucony z kwotą braku, zakup prawdziwym E (podpowiedź), podwójny zakup naraz, nieznane jajko, Złoto nigdy
-   poniżej zera, wybór peta (tylko posiadany i przy zagrodzie), odstawienie, „czekaj”, limit zdarzeń, brak StanGracza.
+   Złota odrzucony z kwotą braku, zakup prawdziwym E (podpowiedź) przy obu inkubatorach, podwójny zakup naraz,
+   nieznane jajko, Złoto nigdy poniżej zera, stała cena każdego jajka (rosnąca i wspólny licznik po przełączeniu
+   w danych), wybór peta
+   (tylko posiadany i przy zagrodzie), odstawienie, „czekaj”, limit zdarzeń, brak StanGracza.
 6. Styki: StanGracza (sygnał Pety, atrybuty, lista wydatków), bazar (OknoMiejsca, id zagrody), ukrycie (BlokadaWalki,
    TreningGra, Trwa chmur, ekrany), wiadomości klient–serwer w obie strony, pola danych używane przez klienta.
 7. Kontrola Luau (z wykryciem zepsutego pliku), zbuduj.py --sucho, kod do Studio parsuje się, proba_play --sprawdz,
@@ -77,38 +84,46 @@ class TestDanych(unittest.TestCase):
     def test_1a_aktualne(self):
         zle, _, pliki = DP.aktualny()
         self.assertEqual(zle, [], "uruchom python -B swiat/pety_proba/dane_petow.py")
-        self.assertEqual(len(pliki), 1 + len(U["pety"]) + 1)
+        self.assertEqual(len(pliki), 1 + len(U["pety"]) + len(U["jajka"]))
 
     def test_1b_szanse_i_cena_z_kalkulatora(self):
-        j = D["jajka"][0]
-        self.assertEqual([s["szansa"] for s in j["szanse"]], list(progresja.ZALOZENIA["szanse_jajka"]))
-        self.assertEqual([s["pet"] for s in j["szanse"]], [p["id"] for p in U["pety"]])
-        self.assertAlmostEqual(sum(s["szansa"] for s in j["szanse"]), 1.0, places=12)
-        self.assertEqual(j["cena"]["kalkulator"], progresja.ZALOZENIA["ceny_jajek"][0])
-        # rzadkości w kolejności puli (pospolity … legendarny) — rzadszy pet = mniejsza szansa
         rz = [r["id"] for r in U["rzadkosci"]]
-        self.assertEqual([LP.pet(D, s["pet"])["rzadkosc"] for s in j["szanse"]], rz)
+        w_pulach = []
+        for j in D["jajka"]:
+            self.assertEqual([s["szansa"] for s in j["szanse"]], list(progresja.ZALOZENIA["szanse_jajka"]), j["id"])
+            self.assertAlmostEqual(sum(s["szansa"] for s in j["szanse"]), 1.0, places=12)
+            # rzadkości w kolejności puli (pospolity … legendarny) — rzadszy pet = mniejsza szansa
+            self.assertEqual([LP.pet(D, s["pet"])["rzadkosc"] for s in j["szanse"]], rz, j["id"])
+            w_pulach += [s["pet"] for s in j["szanse"]]
+        self.assertEqual(sorted(w_pulach), sorted(p["id"] for p in U["pety"]), "każdy pet w puli dokładnie jednego jajka")
+        self.assertEqual(D["jajka"][0]["cena"]["kalkulator"], progresja.ZALOZENIA["ceny_jajek"][0])
+        self.assertEqual([j["kraina"] for j in D["jajka"]], ["las", "bagno"])
+        self.assertIn(D["licznik_ceny"]["tryb"], ("osobny", "wspolny"))
+        for p in D["pety"]:
+            self.assertEqual(LP.jajko_peta(D, p["id"])["id"], p["jajko"])
 
     def test_1c_polozenia_ze_znacznikow(self):
-        las = json.loads(czytaj(REPO, "swiat", "las_pas", "znaczniki.json"))
-        m = next(x for x in las["miejsca"] if x["id"] == "jajko")
-        e = next(x for x in las["punkty_e"] if x["grupa"] == "Punkty/StanowiskoJajka")
+        for j, ju in zip(D["jajka"], U["jajka"]):
+            z = json.loads(czytaj(REPO, *ju["stanowisko"]["znaczniki"].split("/")))
+            m = next(x for x in z["miejsca"] if x["id"] == "jajko")
+            e = next(x for x in z["punkty_e"] if x["grupa"] == "Punkty/StanowiskoJajka")
+            G = j["polozenie"]
+            self.assertEqual(G["gniazdo"], [round(v, 3) for v in m["punkt_swiat"]], j["id"])
+            self.assertEqual(G["e"], [round(v, 3) for v in e["punkt_swiat"]], j["id"])
+            # stanowisko przy miejscu przybycia biomu, w prostokącie strefy spokoju „wejscie”
+            przyb = z["przybycie"]["punkt_swiat"]
+            self.assertLess(((G["gniazdo"][0] - przyb[0]) ** 2 + (G["gniazdo"][2] - przyb[2]) ** 2) ** 0.5, 40)
+            wej = next(s for s in z["strefy_spokoju"] if s["id"] == "wejscie")["prostokat_swiat"]
+            self.assertTrue(wej["x"][0] <= G["gniazdo"][0] <= wej["x"][1] and wej["z"][0] <= G["gniazdo"][2] <= wej["z"][1])
+            # obrót stanowiska jak w mapie (swiat/las_pas/punkty.py, stanowisko_jajka — Bagno stawia to samo)
+            punkty = czytaj(REPO, "swiat", "las_pas", "punkty.py")
+            cialo = punkty.split("def stanowisko_jajka", 1)[1].split("\ndef ", 1)[0]
+            self.assertIn("obrot=(0, %d, 0)" % G["obrot"], cialo)
+        self.assertIn("punkty_lasu.stanowisko_jajka(s, K)", czytaj(REPO, "swiat", "bagno_pas", "miejsca.py"))
         G = D["polozenia"]
-        self.assertEqual(G["gniazdo"], [round(v, 3) for v in m["punkt_swiat"]])
-        self.assertEqual(G["e_inkubatora"], [round(v, 3) for v in e["punkt_swiat"]])
-        # stanowisko na Polanie Przybycia: blisko punktu przybycia, w prostokącie strefy spokoju „wejscie”
-        przyb = las["przybycie"]["punkt_swiat"]
-        self.assertLess(((G["gniazdo"][0] - przyb[0]) ** 2 + (G["gniazdo"][2] - przyb[2]) ** 2) ** 0.5, 40)
-        wej = next(s for s in las["strefy_spokoju"] if s["id"] == "wejscie")["prostokat_swiat"]
-        self.assertTrue(wej["x"][0] <= G["gniazdo"][0] <= wej["x"][1] and wej["z"][0] <= G["gniazdo"][2] <= wej["z"][1])
-        # obrót stanowiska jak w mapie (swiat/las_pas/punkty.py, stanowisko_jajka)
-        punkty = czytaj(REPO, "swiat", "las_pas", "punkty.py")
-        cialo = punkty.split("def stanowisko_jajka", 1)[1].split("\ndef ", 1)[0]
-        self.assertIn("obrot=(0, %d, 0)" % G["obrot_stanowiska"], cialo)
         baz = json.loads(czytaj(REPO, "swiat", "miasteczko_bazar", "znaczniki.json"))["zagroda"]
         self.assertEqual(G["zagroda_e"], [round(v, 3) for v in baz["punkt_e"]["swiat"]])
         self.assertEqual(len(G["miejsca_petow"]), 6)
-        self.assertGreaterEqual(len(G["miejsca_petow"]), len(U["pety"]))
 
     def test_1d_teksty_dla_gracza(self):
         tworcy = re.compile(r"D-0\d\d|Paweł|Karol|\btest|placeholder|atrybut|lorem|TODO", re.I)
@@ -123,9 +138,11 @@ class TestDanych(unittest.TestCase):
             self.assertNotIn(p["nazwa"].lower(), obce)
 
     def test_1e_paski_podgladu_tablicy_jak_szanse(self):
-        modul = czytaj(REPO, "swiat", "postacie", "jajko_lesne.py")
-        paski = re.search(r"PASKI = \[(.*?)\]\n", modul, re.S).group(1)
-        self.assertEqual([float(x) for x in re.findall(r", ([\d.]+)\)", paski)], list(progresja.ZALOZENIA["szanse_jajka"]))
+        for j in U["jajka"]:
+            modul = czytaj(REPO, "swiat", "postacie", j["model"]["modul"] + ".py")
+            paski = re.search(r"PASKI = \[(.*?)\]\n", modul, re.S).group(1)
+            self.assertEqual([float(x) for x in re.findall(r", ([\d.]+)\)", paski)],
+                             list(progresja.ZALOZENIA["szanse_jajka"]), j["id"])
 
     def test_1f_skille_w_granicach_stanu_gracza(self):
         DS = _modul_stanu("dane_stanu_test_petow", "dane.py")
@@ -134,9 +151,19 @@ class TestDanych(unittest.TestCase):
             for pole in ("zloto", "doswiadczenie"):
                 self.assertTrue(0 <= p["skill"][pole] <= Ds["pety"]["premia_maks"], p["id"])
             self.assertGreater(p["skill"]["zloto"] + p["skill"]["doswiadczenie"], 0, p["id"])
-        # rzadszy pet = większa premia (suma)
-        sumy = [p["skill"]["zloto"] + p["skill"]["doswiadczenie"] for p in U["pety"]]
-        self.assertEqual(sumy, sorted(sumy))
+        # rzadszy pet = większa premia (suma) w każdym jajku
+        def sumy(j):
+            return [LP.pet(D, x)["skill"]["zloto"] + LP.pet(D, x)["skill"]["doswiadczenie"] for x in j["pula"]]
+        for j in D["jajka"]:
+            self.assertEqual(sumy(j), sorted(sumy(j)), j["id"])
+            self.assertEqual(len(set(sumy(j))), len(sumy(j)), j["id"])
+        # Bagno trochę lepsze od lasu tej samej rzadkości (do +25%), ale słabsze od leśnego o stopień rzadszego —
+        # leśny legendarny (+20% Złota i doświadczenia) wygrywa z epickim Ognikiem, przegrywa tylko z Perłową Wydrą
+        las, bagno = sumy(D["jajka"][0]), sumy(D["jajka"][1])
+        for i in range(5):
+            self.assertTrue(las[i] < bagno[i] <= 1.25 * las[i] + 1e-9, (i, las[i], bagno[i]))
+            if i < 4:
+                self.assertLess(bagno[i], las[i + 1], i)
         self.assertIn(D["kontener"], Ds["wydatki"]["zrodla"])
 
 
@@ -156,68 +183,115 @@ class TestModeli(unittest.TestCase):
             self.assertLessEqual(len(R["kosci"]), 12, p["id"])
             self.assertIsNotNone(R["glowa"], p["id"])
             self.assertTrue(1.4 <= R["wysokosc"] <= 3.4, (p["id"], R["wysokosc"]))
-        J = self.rigi[U["modele"]["jajko"]]
-        self.assertEqual(set(J["klipy"]), {"spoczynek", "trzesienie", "pekniecie"})
-        self.assertTrue(any(c[2] == "Wnetrze" for c in J["czesci"]), "jajko bez płytki Wnetrze (kolor rzadkości)")
+        for j in U["jajka"]:
+            J = self.rigi[j["model"]["jajko"]]
+            self.assertEqual(set(J["klipy"]), {"spoczynek", "trzesienie", "pekniecie"}, j["id"])
+            self.assertTrue(any(c[2] == "Wnetrze" for c in J["czesci"]), "jajko bez świecącego Wnetrza (kolor rzadkości)")
+            self.assertLessEqual(len(J["czesci"]), 30, j["id"])
+            # gładkie jajko (17.11): skorupka i czubek to elipsoidy (SpecialMesh Sphere albo kula Ball), nie schodki
+            kule = [c for c in J["czesci"] if c[14] == "Sphere" or c[1] == 1]
+            self.assertGreaterEqual(len([c for c in kule if c[2] in ("Skorupka", "Skorupka gora", "Czubek")]), 3, j["id"])
 
     def test_2b_rozne_sylwetki_i_efektowniejsze_rzadsze(self):
         wymiary = []
-        neony = []
-        for p in U["pety"]:
-            R = self.rigi[p["id"]]
-            xs = [abs(c[3]) + c[9] / 2 for c in R["czesci"]]
-            zs = [c[5] for c in R["czesci"]]
-            wymiary.append((round(R["wysokosc"], 1), round(2 * max(xs), 1), round(max(zs) - min(zs), 1)))
-            neon = R["materialy"].index(["Neon", 0.0]) if ["Neon", 0.0] in R["materialy"] else -1
-            neony.append(sum(1 for c in R["czesci"] if c[13] == neon and c[2] not in ("Blysk L", "Blysk P")))
+        for j in D["jajka"]:
+            neony = []
+            for pid in j["pula"]:
+                R = self.rigi[pid]
+                xs = [abs(c[3]) + c[9] / 2 for c in R["czesci"]]
+                zs = [c[5] for c in R["czesci"]]
+                wymiary.append((round(R["wysokosc"], 1), round(2 * max(xs), 1), round(max(zs) - min(zs), 1)))
+                neon = R["materialy"].index(["Neon", 0.0]) if ["Neon", 0.0] in R["materialy"] else -1
+                neony.append(sum(1 for c in R["czesci"] if c[13] == neon and c[2] not in ("Blysk L", "Blysk P")))
+            self.assertEqual(neony[:3], [0, 0, 0], "%s: pospolite, zwykłe i rzadkie bez świecenia (poza odblaskiem oczu)"
+                             % j["id"])
+            # epicki i legendarny świecą (Neon); legendarny od 17.11 tylko kryształy i klejnot — cały Neon poroża zlewał
+            # się w grze w plamę; przy wykluciu oba dostają słup światła (KlientPetow, nr rzadkości ≥ 4)
+            self.assertTrue(neony[3] >= 3 and neony[4] >= 3, (j["id"], neony))
         self.assertEqual(len(set(wymiary)), len(wymiary), wymiary)
-        self.assertEqual(neony[:3], [0, 0, 0], "pospolite, zwykłe i rzadkie bez świecenia (poza odblaskiem oczu)")
-        # epicki i legendarny świecą (Neon); legendarny od 17.11 tylko kryształy i klejnot — cały Neon poroża zlewał się
-        # w grze w plamę; przy wykluciu oba dostają słup światła (KlientPetow, nr rzadkości ≥ 4)
-        self.assertTrue(neony[3] >= 3 and neony[4] >= 3, neony)
 
     def test_2c_plansze_i_portrety_z_blendera(self):
-        for mid in [p["id"] for p in U["pety"]] + ["jajko_lesne"]:
+        modele = [(p["id"], p["id"]) for p in U["pety"]]
+        modele += [(j["model"]["modul"], m) for j in U["jajka"] for m in (j["model"]["jajko"], j["model"]["inkubator"])]
+        for folder, mid in modele:
             for przyrostek in ("_plansza.jpg", "_bohater.jpg", "_ikona.png", ".glb", ".fbx"):
-                sciezka = os.path.join(REPO, "swiat", "postacie", "wynik", mid, mid + przyrostek)
+                sciezka = os.path.join(REPO, "swiat", "postacie", "wynik", folder, mid + przyrostek)
                 self.assertTrue(os.path.isfile(sciezka), "brak %s — python -B swiat/postacie/przebuduj.py %s --bez-filmow"
-                                % (os.path.relpath(sciezka, REPO), mid))
-        self.assertTrue(os.path.isfile(os.path.join(REPO, "swiat", "postacie", "wynik", "jajko_lesne",
-                                                    "inkubator_lesny_plansza.jpg")))
+                                % (os.path.relpath(sciezka, REPO), folder))
 
-    def test_2d_tablica_inkubatora(self):
-        T = D["tablica_inkubatora"]
-        nazwy = [c[1] for c in T["czesci"]]
-        self.assertIn(U["modele"]["papier"], nazwy)
-        self.assertFalse(any(n.startswith(("Pasek szansy", "Znak peta")) for n in nazwy), "paski rysuje SurfaceGui")
+    def test_2d_stale_bryly_inkubatorow(self):
+        for j, ju in zip(D["jajka"], U["jajka"]):
+            T = j["stale"]
+            kosci = {c[0] for c in T["czesci"]}
+            nazwy = [c[2] for c in T["czesci"]]
+            self.assertEqual(kosci, set(ju["model"]["kosci_stale"]), j["id"])
+            self.assertIn(U["modele"]["papier"], nazwy, j["id"])
+            self.assertFalse(any(n.startswith(("Pasek szansy", "Znak peta")) for n in nazwy), "paski rysuje SurfaceGui")
+            self.assertLessEqual(len(T["czesci"]), 60, j["id"])
+        las, bagno = D["jajka"]
+        self.assertAlmostEqual(las["y_jajka"], 0.92, places=2)    # jajko na mchu gniazda z mapy lasu
+        self.assertTrue(las["jajko_na_mchu"] and not bagno["jajko_na_mchu"])
+        # Bagno: gniazdo na palach nad korzeniami stanowiska z mapy (wierzch korzeni ok. 1,8) — jajko wyżej
+        self.assertGreater(bagno["y_jajka"], 1.8)
+        for n in ("Pal", "Platforma", "Trzcina", "Ognik", "Tyczka"):
+            self.assertIn(n, [c[2] for c in bagno["stale"]["czesci"]])
 
 
 # ============================================================================================== 3. logika
 class TestLogiki(unittest.TestCase):
     def test_3a_sto_tysiecy_losowan(self):
-        j = D["jajka"][0]
-        los = random.Random(1711)
-        n = 100000
-        licz = {s["pet"]: 0 for s in j["szanse"]}
-        for _ in range(n):
-            licz[LP.losuj(D, j, los.random())] += 1
-        for s in j["szanse"]:
-            p = s["szansa"]
-            sigma = (p * (1 - p) / n) ** 0.5
-            self.assertLess(abs(licz[s["pet"]] / n - p), 4.5 * sigma, (s, licz))
-        self.assertGreater(licz["jelonek_gaju"], 0)
+        for j in D["jajka"]:
+            los = random.Random("1711-" + j["id"])
+            n = 100000
+            licz = {s["pet"]: 0 for s in j["szanse"]}
+            for _ in range(n):
+                licz[LP.losuj(D, j, los.random())] += 1
+            for s in j["szanse"]:
+                p = s["szansa"]
+                sigma = (p * (1 - p) / n) ** 0.5
+                self.assertLess(abs(licz[s["pet"]] / n - p), 4.5 * sigma, (j["id"], s, licz))
+            self.assertGreater(licz[j["pula"][-1]], 0)
+            self.assertEqual(set(licz), set(j["pula"]), "z jajka tylko pety jego puli")
 
     def test_3b_cena(self):
-        j = D["jajka"][0]
-        c = j["cena"]
-        ceny = [LP.cena(D, j, n) for n in range(12)]
-        self.assertEqual(ceny[0], c["start"])
-        self.assertLess(c["start"], c["kalkulator"], "propozycja: tańszy start niż kalkulator")
-        self.assertEqual(ceny, sorted(ceny), "cena nie maleje")
-        self.assertEqual(max(ceny), c["maks"])
-        self.assertEqual(LP.cena(D, dict(j, cena=dict(c, tryb="kalkulator")), 3), c["kalkulator"])
-        for zle in (-1, 2.5, None, "3"):
-            self.assertEqual(LP.cena(D, j, zle), c["start"])
+        # decyzja Karola 17.11: cena stała dla każdego jajka (domyślny tryb), rośnie tylko między biomami
+        for j in D["jajka"]:
+            c = j["cena"]
+            self.assertEqual(c["tryb"], "stala", j["id"])
+            self.assertEqual({LP.cena(D, j, n) for n in list(range(15)) + [-1, 2.5, None, "3"]}, {c["stala"]}, j["id"])
+            # przełącznik „rosnaca” (w danych zostaje): od startu, nie maleje, do maks
+            ceny = [LP.cena(D, j, n, "rosnaca") for n in range(15)]
+            self.assertEqual(ceny[0], c["start"])
+            self.assertEqual(ceny, sorted(ceny), "cena nie maleje")
+            self.assertEqual(max(ceny), c["maks"])
+            self.assertEqual(LP.cena(D, dict(j, cena=dict(c, tryb="rosnaca")), 2), c["start"] + 2 * c["krok"])
+            for zle in (-1, 2.5, None, "3"):
+                self.assertEqual(LP.cena(D, j, zle, "rosnaca"), c["start"])
+        las, bagno = D["jajka"]
+        self.assertEqual((las["cena"]["stala"], bagno["cena"]["stala"]), (300, 750))
+        self.assertLess(las["cena"]["stala"], las["cena"]["kalkulator"], "tańsza niż kalkulator (1000)")
+        self.assertEqual(LP.cena(D, dict(las, cena=dict(las["cena"], tryb="kalkulator")), 3), las["cena"]["kalkulator"])
+        self.assertGreater(bagno["cena"]["stala"], las["cena"]["stala"], "w Bagnie więcej Złota — droższe jajko")
+        # napis ceny na tablicy i nad jajkiem
+        self.assertEqual(LP.opis_ceny(D, las), "cena: 300 Złota")
+        self.assertEqual(LP.opis_ceny(D, bagno), "cena: 750 Złota")
+        self.assertEqual(LP.opis_ceny(D, las, "rosnaca"), "od 300 Złota · rośnie z każdym jajkiem")
+
+    def test_3b2_licznik_osobny_i_wspolny(self):
+        las, bagno = D["jajka"]
+        w = {las["id"]: 4, bagno["id"]: 1, "inny_cel": 9}
+        self.assertEqual((LP.kupione(D, las, w, "osobny"), LP.kupione(D, bagno, w, "osobny")), (4, 1))
+        self.assertEqual((LP.kupione(D, las, w, "wspolny"), LP.kupione(D, bagno, w, "wspolny")), (5, 5))
+        self.assertEqual(LP.kupione(D, las, w), LP.kupione(D, las, w, D["licznik_ceny"]["tryb"]))
+        for zle in (None, "x", {las["id"]: -2}, {las["id"]: 1.5}, {las["id"]: "3"}):
+            self.assertEqual(LP.kupione(D, las, zle, "wspolny"), 0, zle)
+        # przy cenie stałej (domyślnej) licznik nie zmienia ceny; przy rosnącej: osobny — jajka z lasu nie podnoszą
+        # ceny jajka Bagna, wspólny — podnoszą
+        for tryb in ("osobny", "wspolny"):
+            self.assertEqual(LP.cena(D, bagno, LP.kupione(D, bagno, {las["id"]: 5}, tryb)), bagno["cena"]["stala"])
+        self.assertEqual(LP.cena(D, bagno, LP.kupione(D, bagno, {las["id"]: 5}, "osobny"), "rosnaca"), bagno["cena"]["start"])
+        self.assertGreater(LP.cena(D, bagno, LP.kupione(D, bagno, {las["id"]: 5}, "wspolny"), "rosnaca"),
+                           bagno["cena"]["start"])
 
     def test_3c_decyzja_i_teksty(self):
         self.assertEqual(LP.decyzja(D, {"stan_gracza": False, "jajko": "jajko_lesne"})["powod"], "brak_stanu")
@@ -227,6 +301,10 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(LP.tekst_braku(D, 120, 180, 300), "Brakuje ci 120 Złota (masz 180, jajko kosztuje 300)")
         self.assertEqual([LP.procent(x) for x in (0.5, 0.02, 0.005)], ["50%", "2%", "0,5%"])
         self.assertEqual(LP.opis_skilla(D, LP.pet(D, "jelonek_gaju")), "+20% Złota i doświadczenia z walk")
+        self.assertEqual(LP.opis_skilla(D, LP.pet(D, "perlowa_wydra")), "+24% Złota i doświadczenia z walk")
+        self.assertEqual(LP.decyzja(D, {"stan_gracza": True, "jajko": "jajko_bagienne"})["ok"], True)
+        self.assertEqual(LP.jajko_krainy(D, "bagno")["id"], "jajko_bagienne")
+        self.assertIsNone(LP.jajko_krainy(D, "dzungla"))
 
 
 def luau_logika():
@@ -262,14 +340,21 @@ class TestLuau(unittest.TestCase):
         self.assertEqual(LM.z_luau(bledy), ["losuj #1"])
 
     def test_3e_losowanie_luau_jak_python(self):
-        j = self.Dl.get("jajka").get(1.0)
-        jp = D["jajka"][0]
         los = random.Random(3)
-        for _ in range(3000):
-            r = los.random()
-            self.assertEqual(self.wolaj("losuj", self.Dl, j, r)[0], LP.losuj(D, jp, r), r)
-        for n in range(15):
-            self.assertEqual(self.wolaj("cena", self.Dl, j, n)[0], LP.cena(D, jp, n))
+        for i, jp in enumerate(D["jajka"]):
+            j = self.Dl.get("jajka").get(float(i + 1))
+            for _ in range(2000):
+                r = los.random()
+                self.assertEqual(self.wolaj("losuj", self.Dl, j, r)[0], LP.losuj(D, jp, r), r)
+            for n in range(15):
+                for tryb in (None, "stala", "rosnaca"):
+                    self.assertEqual(self.wolaj("cena", self.Dl, j, n, tryb)[0], LP.cena(D, jp, n, tryb), (n, tryb))
+            for tryb in (None, "stala", "rosnaca"):
+                self.assertEqual(self.wolaj("opisCeny", self.Dl, j, tryb)[0], LP.opis_ceny(D, jp, tryb), tryb)
+            for _ in range(200):
+                w = {x["id"]: los.choice([0, 1, 3, 8]) for x in D["jajka"] if los.random() < 0.7}
+                for tryb in ("osobny", "wspolny"):
+                    self.assertEqual(self.wolaj("kupione", self.Dl, j, w, tryb)[0], LP.kupione(D, jp, w, tryb), (w, tryb))
 
     def test_3f_zagroda_jak_python(self):
         los = random.Random(9)
@@ -301,14 +386,34 @@ class TestEkonomii(unittest.TestCase):
                 wzor = SL.jeden_gracz(Ds, P, k, b, A, x0, przelot)
                 self.assertAlmostEqual(wygrana, wzor["czas"], places=6)
                 self.assertEqual(len(os_czasu), wzor["walki"])
-        gracze = EJ.wszyscy_gracze(15, 2)
+        pary = EJ.wszyscy_gracze(15, 2, z_wygrana=True)
+        gracze = [o for o, _w in pary]
         c = U["jajka"][0]["cena"]
-        T = EJ.tabela(gracze, [("p", {"tryb": "rosnaca", "start": c["start"], "krok": c["krok"], "maks": c["maks"]}),
+        stala = {"tryb": "stala", "cena": c["stala"]}
+        T = EJ.tabela(gracze, [("s", stala),
+                               ("p", {"tryb": "rosnaca", "start": c["start"], "krok": c["krok"], "maks": c["maks"]}),
                                ("k", {"tryb": "stala", "cena": c["kalkulator"]})])
-        med = [m for m, _lo, _hi, _n in T["p"]]
-        self.assertTrue(5.0 <= med[0] <= 10.0, "pierwsze jajko: %.1f min (cel 5–10)" % med[0])
-        self.assertGreater(med[2] - med[1], med[1] - med[0] - 1.0, "kolejne nie częściej")
+        med = [m for m, _lo, _hi, _n in T["s"]]
+        self.assertTrue(5.0 <= med[0] <= 10.0, "pierwsze jajko (cena stała): %.1f min (cel 5–10)" % med[0])
+        rosn = [m for m, _lo, _hi, _n in T["p"]]
+        self.assertGreater(rosn[2] - rosn[1], rosn[1] - rosn[0] - 1.0, "przełącznik „rosnaca”: kolejne nie częściej")
         self.assertGreater(T["k"][0][0], 10.0, "cena kalkulatora daje pierwsze jajko później niż 10 min")
+        # do wygranej ze Strażnikiem Gaju gracz kupi kilka jajek po stałej cenie (premie petów poza symulacją)
+        ile = sorted(EJ.jajek_do(o, stala, t) for o, t in pary if t is not None)
+        self.assertTrue(4 <= ile[len(ile) // 2] <= 20, ile)
+
+    def test_4b_pierwsze_jajko_bagna(self):
+        import ekonomia_jajek as EJ
+        gracze, poziomy = EJ.wszyscy_gracze_bagna(12, 2)
+        self.assertGreater(len(gracze), 30)
+        self.assertTrue(9 <= sorted(poziomy)[len(poziomy) // 2] <= 13, "wejście do Bagna ok. 10.–12. poziomu")
+        c = next(j for j in U["jajka"] if j["kraina"] == "bagno")["cena"]
+        T = EJ.tabela(gracze, [("s", {"tryb": "stala", "cena": c["stala"]}),
+                               ("p", {"tryb": "rosnaca", "start": c["start"], "krok": c["krok"], "maks": c["maks"]})])
+        med = [m for m, _lo, _hi, _n in T["s"]]
+        self.assertTrue(5.0 <= med[0] <= 10.0, "pierwsze jajko Bagna (cena stała): %.1f min Bagna (cel 5–10)" % med[0])
+        rosn = [m for m, _lo, _hi, _n in T["p"]]
+        self.assertGreater(rosn[2] - rosn[1], rosn[1] - rosn[0] - 1.5, "przełącznik „rosnaca”: kolejne nie częściej")
 
 
 # ============================================================================================== 5. serwery offline
@@ -330,8 +435,17 @@ class _Wywolanie:
 class TestSerweraOffline(unittest.TestCase):
     """Prawdziwy SerwerPetow i prawdziwy SerwerStanu w jednym interpreterze z atrapą Roblox."""
 
-    def uruchom(self, stan_gracza=True, zloto=0):
+    def uruchom(self, stan_gracza=True, zloto=0, tryb=None, cena=None):
         import atrapa_roblox as AR
+        dane = DANE_LUAU
+        if tryb:   # przełącznik licznika ceny w danych (jak zmiana ustawienia.json → dane_petow.py)
+            stary = 'licznik_ceny = { tryb = "%s" }' % D["licznik_ceny"]["tryb"]
+            self.assertEqual(dane.count(stary), 1)
+            dane = dane.replace(stary, 'licznik_ceny = { tryb = "%s" }' % tryb)
+        if cena:   # przełącznik trybu ceny wszystkich jajek (przypadki wzorcowe podają tryb wprost — zgodność zostaje)
+            stary = 'cena = { tryb = "stala",'
+            self.assertEqual(dane.count(stary), len(D["jajka"]))
+            dane = dane.replace(stary, 'cena = { tryb = "%s",' % cena)
         ZBS = _modul_stanu("zbuduj_stanu_test_petow", "zbuduj.py")
         sw = AR.Swiat()
         g = sw.it.globalne.z
@@ -365,7 +479,7 @@ class TestSerweraOffline(unittest.TestCase):
         kp = AR.Inst(sw, "PetyProba", "Folder", sw.workspace)
         kp.ustaw("Wygenerowane", True)
         f = {n: AR.Inst(sw, n, "Folder", kp) for n in ("Moduly", "Zdalne", "Sygnaly", "Punkty", "Zagroda")}
-        sw.modul(f["Moduly"], "DanePetow", DANE_LUAU)
+        sw.modul(f["Moduly"], "DanePetow", dane)
         sw.modul(f["Moduly"], "LogikaPetow", LOGIKA)
         ev = AR.Inst(sw, "ZdarzeniaPetow", "RemoteEvent", f["Zdalne"])
         ev.na_serwer = AR.Zdarzenie(sw)
@@ -373,7 +487,7 @@ class TestSerweraOffline(unittest.TestCase):
         ev.t.set("FireClient", lambda _s, gracz, *a: sw.do_klienta.append((gracz, [AR.py(x) for x in a])))
         self.ster = AR.Inst(sw, "SterowanieSerwera", "BindableFunction", f["Sygnaly"])
         self.prompty = {}
-        for folder, nazwa in (("Punkty", "E inkubator"), ("Zagroda", "E wybor")):
+        for folder, nazwa in [("Punkty", j["punkt_e"]) for j in D["jajka"]] + [("Zagroda", "E wybor")]:
             cz = AR.Inst(sw, nazwa, "BasePart", f[folder])
             pp = AR.Inst(sw, "Podpowiedz", "ProximityPrompt", cz)
             pp.t.set("Enabled", False)
@@ -394,8 +508,8 @@ class TestSerweraOffline(unittest.TestCase):
     def od_serwera(self, polecenie):
         return [a for gr, a in self.sw.do_klienta if a and a[0] == polecenie]
 
-    def e_jajka(self):
-        self.prompty["E inkubator"][1].odpal(self.gracz.t)
+    def e_jajka(self, nr=0):
+        self.prompty[D["jajka"][nr]["punkt_e"]][1].odpal(self.gracz.t)
 
     def hak(self, *argi):
         w = self.sw.wolaj(self.ster.t.get("OnInvoke"), *[a if isinstance(a, LM.Tabela) else LM.do_luau(a) for a in argi])
@@ -413,9 +527,11 @@ class TestSerweraOffline(unittest.TestCase):
         n = sum(len(v) for v in D["przypadki"].values())
         self.assertEqual(self.kp.atrybuty["SerwerPetowGotowy"], True)
         self.assertEqual(self.kp.atrybuty["ZgodnoscLogikiPetow"], "OK %d/%d" % (n, n))
-        self.assertTrue(self.prompty["E inkubator"][0].t.get("Enabled"))
+        for j in D["jajka"]:
+            self.assertTrue(self.prompty[j["punkt_e"]][0].t.get("Enabled"), j["id"])
+            self.assertEqual(self.atr(j["atrybuty"]["cena"]), j["cena"]["stala"], j["id"])
+            self.assertEqual(self.atr(j["atrybuty"]["kupione"]), 0, j["id"])
         self.assertTrue(self.prompty["E wybor"][0].t.get("Enabled"), "bez MiasteczkoBazarGra — zapasowe E włączone")
-        self.assertEqual(self.atr(U["atrybuty_gracza"]["cena"]), U["jajka"][0]["cena"]["start"])
         self.assertEqual(self.sw.ostrzezenia, [])
 
     def test_5b_bez_zlota_odmowa_z_kwota(self):
@@ -429,8 +545,27 @@ class TestSerweraOffline(unittest.TestCase):
         self.e_jajka()
         self.assertEqual(len(self.od_serwera("odmowa")), 2)
 
+    def test_5c0_cena_stala(self):
+        # domyślnie (decyzja 17.11): każde jajko leśne za 300, cena nie rośnie z zakupami
+        self.uruchom(zloto=700)
+        c = U["jajka"][0]["cena"]["stala"]
+        self.e_jajka()
+        info = self.od_serwera("wyklucie")[-1][1]
+        self.assertEqual((info["cena"], info["nastepna"]), (c, c))
+        self.assertEqual(self.atr(D["jajka"][0]["atrybuty"]["cena"]), c)
+        self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
+        self.e_jajka()
+        self.assertEqual((self.atr("Gold"), self.atr(D["jajka"][0]["atrybuty"]["cena"])), (700 - 2 * c, c))
+        self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
+        self.e_jajka()
+        odm = self.od_serwera("odmowa")[-1]
+        self.assertEqual(odm[1:], ["Brakuje ci %d Złota (masz %d, jajko kosztuje %d)" % (3 * c - 700, 700 - 2 * c, c),
+                                   "za_malo"])
+        self.assertEqual((self.atr("PetyLiczba"), self.atr(D["jajka"][0]["atrybuty"]["kupione"])), (2, 2))
+        self.assertEqual(self.sw.ostrzezenia, [])
+
     def test_5c_kupno_e_podwojne_naraz_i_cena_rosnaca(self):
-        self.uruchom(zloto=1200)
+        self.uruchom(zloto=1200, cena="rosnaca")   # przełącznik „rosnaca” w danych
         c = U["jajka"][0]["cena"]
         self.e_jajka()
         self.e_jajka()  # drugi E w tej samej chwili (w trakcie wyklucia)
@@ -442,7 +577,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual(self.od_serwera("odmowa")[0][2], "trwa_wyklucie")
         self.assertEqual((self.atr("Gold"), self.atr("PetyLiczba"), self.atr("PetAktywny")),
                          (1200 - c["start"], 1, info["pet"]))
-        self.assertEqual(self.atr(U["atrybuty_gracza"]["cena"]), c["start"] + c["krok"])
+        self.assertEqual(self.atr(D["jajka"][0]["atrybuty"]["cena"]), c["start"] + c["krok"])
         # po wykluciu: drugie jajko po nowej cenie, trzecie — za mało Złota
         self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
         self.e_jajka()
@@ -512,6 +647,59 @@ class TestSerweraOffline(unittest.TestCase):
         self.ev.na_serwer.odpal(self.gracz.t, "lista")
         self.assertEqual(len(self.od_serwera("lista")) - przed, 1)
         self.ev.na_serwer.odpal(self.gracz.t, 42.0, 43.0)  # śmieci — pominięte
+        self.assertEqual(self.sw.ostrzezenia, [])
+
+    def test_5e2_jajko_bagna_cena_stala(self):
+        self.uruchom(zloto=1500)
+        las, bagno = D["jajka"]
+        cl, cb = las["cena"]["stala"], bagno["cena"]["stala"]
+        for _ in range(2):                     # dwa jajka leśne: ceny obu jajek bez zmian
+            self.e_jajka(0)
+            self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
+        self.assertEqual((self.atr(las["atrybuty"]["cena"]), self.atr(bagno["atrybuty"]["cena"])), (cl, cb))
+        self.e_jajka(1)                        # E przy inkubatorze Bagna
+        info = self.od_serwera("wyklucie")[-1][1]
+        self.assertEqual((info["jajko"], info["cena"], info["nastepna"]), (bagno["id"], cb, cb))
+        self.assertIn(info["pet"], bagno["pula"])
+        self.assertEqual(self.atr("Gold"), 1500 - 2 * cl - cb)
+        self.assertEqual((self.atr(las["atrybuty"]["kupione"]), self.atr(bagno["atrybuty"]["kupione"])), (2, 1))
+        self.assertEqual((self.atr(las["atrybuty"]["cena"]), self.atr(bagno["atrybuty"]["cena"])), (cl, cb))
+        # drugie jajko Bagna: za mało Złota — odmowa z kwotą braku
+        self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
+        self.assertEqual(self.hak("kup", self.gracz.t, bagno["id"], 0.995)["powod"], "za_malo")
+        self.assertEqual(self.od_serwera("odmowa")[-1][1], "Brakuje ci %d Złota (masz %d, jajko kosztuje %d)" % (
+            cb - self.atr("Gold"), self.atr("Gold"), cb))
+        self.assertEqual(self.sw.ostrzezenia, [])
+
+    def test_5e2b_jajko_bagna_licznik_osobny_przy_rosnacej(self):
+        self.uruchom(zloto=2500, cena="rosnaca")
+        las, bagno = D["jajka"]
+        cl, cb = las["cena"], bagno["cena"]
+        for _ in range(2):                     # dwa jajka leśne: cena leśnego rośnie, Bagna — nie
+            self.e_jajka(0)
+            self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
+        self.assertEqual(self.atr(las["atrybuty"]["cena"]), cl["start"] + 2 * cl["krok"])
+        self.assertEqual(self.atr(bagno["atrybuty"]["cena"]), cb["start"])
+        self.e_jajka(1)
+        info = self.od_serwera("wyklucie")[-1][1]
+        self.assertEqual((info["jajko"], info["cena"], info["nastepna"]), (bagno["id"], cb["start"], cb["start"] + cb["krok"]))
+        self.assertEqual(self.atr(las["atrybuty"]["cena"]), cl["start"] + 2 * cl["krok"], "Bagno nie podnosi ceny lasu")
+        n = sum(len(v) for v in D["przypadki"].values())
+        self.assertEqual(self.kp.atrybuty["ZgodnoscLogikiPetow"], "OK %d/%d" % (n, n), "przełącznik nie psuje zgodności")
+        self.assertEqual(self.sw.ostrzezenia, [])
+
+    def test_5e3_licznik_wspolny_po_przelaczeniu(self):
+        self.uruchom(zloto=5000, tryb="wspolny", cena="rosnaca")
+        las, bagno = D["jajka"]
+        cl, cb = las["cena"], bagno["cena"]
+        self.e_jajka(0)
+        self.assertEqual(self.atr(bagno["atrybuty"]["cena"]), cb["start"] + cb["krok"], "wspólny: las podnosi Bagno")
+        self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
+        w = self.hak("kup", self.gracz.t, bagno["id"], 0.995)
+        self.assertEqual((w["pet"], w["cena"]), ("perlowa_wydra", cb["start"] + cb["krok"]))
+        self.assertEqual(self.atr(las["atrybuty"]["cena"]), cl["start"] + 2 * cl["krok"])
+        self.assertEqual((self.atr(las["atrybuty"]["kupione"]), self.atr(bagno["atrybuty"]["kupione"])), (1, 1))
+        self.assertEqual(self.atr("Gold"), 5000 - cl["start"] - cb["start"] - cb["krok"])
         self.assertEqual(self.sw.ostrzezenia, [])
 
     def test_5f_premia_peta_przy_lupie(self):
@@ -607,13 +795,22 @@ class TestStykow(unittest.TestCase):
                                 ("AG", "atrybuty_gracza"), ("U", "ukrycie")):
             for pole in set(re.findall(r"\b%s\.(\w+)" % przedr, k)):
                 self.assertIn(pole, D[slownik], "%s.%s" % (przedr, pole))
-        for sekcja in ("inkubator", "zagroda", "wyklucie", "limity", "polozenia"):
+        for sekcja in ("inkubator", "zagroda", "wyklucie", "limity", "polozenia", "licznik_ceny", "modele", "teksty"):
             for pole in set(re.findall(r"\bD\.%s\.(\w+)" % sekcja, k)):
                 self.assertIn(pole, D[sekcja], "D.%s.%s" % (sekcja, pole))
         cz = bez_komentarzy(ZB.CZESCI)
         for przedr, slownik in (("G", "polozenia"), ("I", "inkubator"), ("Z", "zagroda")):
             for pole in set(re.findall(r"\b%s\.(\w+)" % przedr, cz)):
                 self.assertIn(pole, D[slownik], "%s.%s (zbuduj.py)" % (przedr, pole))
+        # pola jajka (j. w klientcie i serwerze, J. i PJ. w budowie) — każde jajko ma te same
+        for tekst, przedr in ((k, "j"), (cz, "J")):
+            for pole in set(re.findall(r"\b%s\.(\w+)" % przedr, tekst)):
+                for j in D["jajka"]:
+                    self.assertIn(pole, j, "%s.%s" % (przedr, pole))
+        for pole in set(re.findall(r"\bPJ\.(\w+)", cz)):
+            self.assertIn(pole, D["jajka"][0]["polozenie"], "PJ.%s" % pole)
+        for pole in set(re.findall(r"\b(?:atrybuty)\.(\w+)", k)):
+            self.assertIn(pole, D["jajka"][0]["atrybuty"], "atrybuty.%s" % pole)
 
 
 # ============================================================================================== 7. kontrola i budowa
@@ -622,7 +819,7 @@ class TestKontroli(unittest.TestCase):
         bledy, parser = SLP.sprawdz_pliki(SLP.pliki_pakietu(), wypisz=lambda *_: None)
         self.assertTrue(parser)
         self.assertEqual(bledy, [])
-        self.assertEqual(len(SLP.pliki_pakietu()), 5 + len(U["pety"]) + 1)
+        self.assertEqual(len(SLP.pliki_pakietu()), 5 + len(U["pety"]) + len(U["jajka"]))
 
     def test_7b_kontrola_wykrywa_bledy(self):
         zly = 'if not game:GetService("RunService"):IsStudio() then\n\treturn {}\nend\nlocal L = {}\nlocal x = workspace\nreturn L\n'

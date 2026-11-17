@@ -277,7 +277,7 @@ def main():
             punkt("L04", w.get("krok") == "f_jajko" and bool(w.get("znacznik")), "krok %s „%s”, znacznik %s" % (
                 w.get("krok"), w.get("tekst"), w.get("znacznik")))
             # ---------------------------------------------------------------- inkubator, E, wyklucie
-            gn, e = G["gniazdo"], G["e_inkubatora"]
+            gn, e = D["jajka"][0]["polozenie"]["gniazdo"], D["jajka"][0]["polozenie"]["e"]
             kx, kz = e[0] - gn[0], e[2] - gn[2]
             n = math.hypot(kx, kz)
             stoi = (gn[0] + kx / n * 6.0, e[1] + 3.0, gn[2] + kz / n * 6.0)

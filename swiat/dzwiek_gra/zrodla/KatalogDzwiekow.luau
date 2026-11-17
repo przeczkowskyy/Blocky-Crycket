@@ -13,7 +13,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "cc8214be55ab",
+	skrot = "aad4100250ba",
 	arkusz = {
 		id = 93573204965127,
 		plik = "sfx_arkusz_a.ogg",
@@ -283,11 +283,11 @@ return {
 	},
 	muzyka = {
 		przejscie = 2.5,
-		przyciszenieWalki = 0.25,
+		przyciszenieWalki = 0.6,
 		przyciszenieCzas = 0.8,
 		strefy = {
 			bazar = {
-				glosnosc = 0.35,
+				glosnosc = 0.8,
 				podpiete = true,
 				utwory = {
 					{
@@ -309,7 +309,7 @@ return {
 				},
 			},
 			las = {
-				glosnosc = 0.35,
+				glosnosc = 0.8,
 				podpiete = true,
 				utwory = {
 					{
@@ -323,11 +323,11 @@ return {
 				},
 				kontener = "LasPas",
 				prostokaty = {
-					{ 1066.0, 2066.0, -788.0, -612.0 },
+					{ 1066.0, 1543.92, -784.0, -616.0 },
 				},
 			},
 			bagno = {
-				glosnosc = 0.3,
+				glosnosc = 0.7,
 				podpiete = true,
 				utwory = {
 					{
@@ -341,7 +341,69 @@ return {
 				},
 				kontener = "BagnoPas",
 				prostokaty = {
-					{ 2066.0, 3006.0, -788.0, -612.0 },
+					{ 1543.92, 1966.0, -784.0, -616.0 },
+				},
+			},
+			start = {
+				glosnosc = 0.8,
+				podpiete = true,
+				utwory = {
+					{
+						nazwa = "muzyka_02_bazar_targ_petla",
+						id = 94425435537814,
+					},
+					{
+						nazwa = "muzyka_03_bazar_rzemieslnicy_petla",
+						id = 116217836078354,
+					},
+					{
+						nazwa = "muzyka_04_bazar_wieczor_petla",
+						id = 75722490819761,
+					},
+				},
+				kontener = "DemoLesnaBaza",
+				prostokaty = {
+					{ -125.0, 125.0, -125.0, 125.0 },
+				},
+			},
+			miasteczko = {
+				glosnosc = 0.8,
+				podpiete = true,
+				utwory = {
+					{
+						nazwa = "muzyka_02_bazar_targ_petla",
+						id = 94425435537814,
+					},
+					{
+						nazwa = "muzyka_03_bazar_rzemieslnicy_petla",
+						id = 116217836078354,
+					},
+					{
+						nazwa = "muzyka_04_bazar_wieczor_petla",
+						id = 75722490819761,
+					},
+				},
+				kontener = "KrzyweMiasteczko",
+				prostokaty = {
+					{ -300.0, 400.0, -960.0, -440.0 },
+				},
+			},
+			bor = {
+				glosnosc = 0.8,
+				podpiete = true,
+				utwory = {
+					{
+						nazwa = "muzyka_05_las_a_petla",
+						id = 70497074484606,
+					},
+					{
+						nazwa = "muzyka_05_las_b_petla",
+						id = 106582652985449,
+					},
+				},
+				kontener = "BiomLas",
+				prostokaty = {
+					{ -700.0, 700.0, -2700.0, -1300.0 },
 				},
 			},
 			menu = {

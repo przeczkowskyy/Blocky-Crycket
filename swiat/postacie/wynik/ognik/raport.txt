@@ -1,0 +1,54 @@
+RAPORT — ognik
+OGNIK — pet epicki z jajka Bagna (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny projekt).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/ognik.py · wygenerowano 17.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py ognik
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: ognik
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 6 plików, zgodnych 6
+- ostrzeżenia z raportu: 0; uwagi podglądu: 5
+
+ZNANE SŁABOŚCI
+- Płomień to ostrosłupy Neon (kanciaste języki); poświata dookoła to PointLight w grze.
+- Uwaga raportu „pętla skoczy” przy kościach iskier jest oczekiwana: obrót 0° → 360° to ta sama poza.
+
+MODEL ognik „Ognik” (stwor)
+  wymiary ciała: 2,07 × 2,67 × 2,25; z akcesoriami: 2,07 × 2,67 × 2,25
+  trójkąty: 702 (siatek: 9)
+  kości (10): Root, Tulow, Plomien, Plomyk, RaczkaL, RaczkaP, Smuga, Smuga2, Iskra1, Iskra2
+  klipy: spoczynek 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
+  punkty zaczepienia: RootAttachment, GlowaAttachment
+
+UWAGI PODGLĄDU
+- klip chod: Iskra1.obrot — klatka 0 ≠ klatka 24, pętla skoczy
+- klip chod: Iskra2.obrot — klatka 0 ≠ klatka 24, pętla skoczy
+- klip spoczynek: Iskra1.obrot — klatka 0 ≠ klatka 60, pętla skoczy
+- klip spoczynek: Iskra2.obrot — klatka 0 ≠ klatka 60, pętla skoczy
+- ognik: najniższy punkt na y = 0.20 — postać nie stoi na ziemi (y = 0)
+
+KONTROLA EKSPORTÓW
+- ognik.fbx: siatki 11, kości 10, trójkąty 726, wzrost 2.67 st., akcje brak -> ZGODNE
+- ognik__spoczynek.fbx: siatki 11, kości 10, trójkąty 726, wzrost 2.67 st., akcje ognik|Scene 1-61 -> ZGODNE
+- ognik__chod.fbx: siatki 11, kości 10, trójkąty 726, wzrost 2.67 st., akcje ognik|Scene 1-25 -> ZGODNE
+- ognik__radosc.fbx: siatki 11, kości 10, trójkąty 726, wzrost 2.67 st., akcje ognik|Scene 1-37 -> ZGODNE
+- ognik__wyklucie.fbx: siatki 11, kości 10, trójkąty 726, wzrost 2.67 st., akcje ognik|Scene 1-31 -> ZGODNE
+- ognik.glb: siatki 11, kości 10, trójkąty 726, wzrost 2.67 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
+
+PLIKI
+- ognik.blend
+- ognik.fbx
+- ognik.glb
+- ognik__chod.fbx
+- ognik__radosc.fbx
+- ognik__spoczynek.fbx
+- ognik__wyklucie.fbx
+- ognik_bohater.jpg
+- ognik_ikona.png
+- ognik_plansza.jpg
+- ognik_tekstury/
+- raport.json
+- raport.txt

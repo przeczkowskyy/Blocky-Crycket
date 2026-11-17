@@ -245,6 +245,8 @@ def strefa(m, st, gat, zas, k=None):
         "odrodzenieS": st["odrodzenie_s"], "straznik": False,
         "trasa": trasa, "domy": domy,
         "odrodzenieStale": bool(st.get("odrodzenie_stale")),
+        # D-096: strefa scalona z kilku kojców — poziomy rozdane po miejscach (SerwerPotworow: poziomNaMiejsce)
+        "poziomyPoMiejscach": bool(st.get("scalone_z")) and p2 > p1,
         "pod": st.get("pod") or "", "pole": {"x1": x1, "x2": x2, "z1": z1, "z2": z2},
     }
 
@@ -317,10 +319,15 @@ def dane_potworow(m, k=None):
 
 
 # --------------------------------------------------------------------------------------------- dane pasa (świat)
+def punkty_strumienia(plan, konf):
+    """Punkty wczytywania mapy przed przelotem: z planu (krótka mapa D-096: przelot_kamery.streaming_u), inaczej stałe."""
+    return list(plan["przelot_kamery"].get("streaming_u") or konf["punkty_strumienia_u"])
+
+
 def _sprawdz_teksty(plan, konf=None):
     konf = konf or KONFIG
     k = plan["przelot_kamery"]
-    tekst = "u = " + ", ".join(str(u) for u in konf["punkty_strumienia_u"])
+    tekst = "u = " + ", ".join(str(u) for u in punkty_strumienia(plan, konf))
     if tekst not in k.get("streaming", ""):
         raise Blad("przelot_kamery.streaming nie zawiera „%s” — punkty wczytywania mapy się zmieniły?" % tekst)
     if "zaciemnienie 0,5 s" not in k.get("potem", ""):
@@ -350,7 +357,7 @@ def dane_pasa(m, skrot_danych, konf=None):
     stale.update({"czas": k["czas_s"], "zatrzymanieOd": k["zatrzymanie_od_s"], "rykOd": k["ryk_od_s"],
                   "rykDl": plan["straznik"]["ryk"]["dl_s"], "klip": plan["straznik"]["ryk"]["klip"],
                   "zaciemnienie": 0.5,
-                  "punkty": punkty, "strumien": [sw(m, u, 0, 0) for u in konf["punkty_strumienia_u"]]})
+                  "punkty": punkty, "strumien": [sw(m, u, 0, 0) for u in punkty_strumienia(plan, konf)]})
     # prostokąt „gracz jest w biomie” (pierwsze wejście → przelot) i prostokąt ratunku: domyślnie zakres części
     # mapy ± 10 / ± 150 st; biom za bramą poprzedniego (Bagno) zaczyna je od własnej bramy wejściowej
     wu1, wu2 = konf["wejscie_u"] if konf.get("wejscie_u") else (zu1 - 10, zu2 + 10)

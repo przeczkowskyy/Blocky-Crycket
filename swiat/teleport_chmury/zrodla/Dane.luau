@@ -33,7 +33,7 @@ return {
 			kolor_gruntu = "6DB33F",
 			kolor_podloza = "8B5A2E",
 			kolor_drogi = "C08A55",
-			obszary_xz = { { 1076, 2040, -790, -610 }, { -700, 700, -2700, -1300 } },
+			obszary_xz = { { 1076, 1520, -790, -610 }, { -700, 700, -2700, -1300 } },
 			przybycie = { {
 					gdy_jest = "LasPasGra",
 					uchwyt = "PrzeniesDoLasu",
@@ -57,7 +57,7 @@ return {
 			kolor_gruntu = "7E8C3E",
 			kolor_podloza = "4A3F2A",
 			kolor_drogi = "9C7A4A",
-			obszary_xz = { { 2040, 2980, -790, -610 } },
+			obszary_xz = { { 1520, 1940, -790, -610 } },
 			odblokowanie = {
 				atrybut_gracza = "PokonalStraznikaLasu",
 			},
@@ -68,11 +68,11 @@ return {
 					przelot_po_s = 2.4,
 				}, {
 					gdy_jest = "BagnoPas",
-					xz = { 2054, -700 },
-					patrz_xz = { 2100, -700 },
+					xz = { 1534, -700 },
+					patrz_xz = { 1580, -700 },
 				}, {
-					xz = { 2054, -700 },
-					patrz_xz = { 2100, -700 },
+					xz = { 1534, -700 },
+					patrz_xz = { 1580, -700 },
 				} },
 		}, {
 			id = "dzungla",
@@ -82,10 +82,10 @@ return {
 			kolor_gruntu = "2FA34A",
 			kolor_podloza = "5C3A22",
 			kolor_drogi = "B07A44",
-			obszary_xz = { { 2980, 3920, -790, -610 } },
+			obszary_xz = { { 1940, 2360, -790, -610 } },
 			przybycie = { {
-					xz = { 2994, -700 },
-					patrz_xz = { 3040, -700 },
+					xz = { 1954, -700 },
+					patrz_xz = { 2000, -700 },
 				} },
 		}, {
 			id = "pustynia",
@@ -95,10 +95,10 @@ return {
 			kolor_gruntu = "F2CC7E",
 			kolor_podloza = "C08A55",
 			kolor_drogi = "D9A85E",
-			obszary_xz = { { 3920, 4860, -790, -610 } },
+			obszary_xz = { { 2360, 2780, -790, -610 } },
 			przybycie = { {
-					xz = { 3934, -700 },
-					patrz_xz = { 3980, -700 },
+					xz = { 2374, -700 },
+					patrz_xz = { 2420, -700 },
 				} },
 		}, {
 			id = "gory",
@@ -108,10 +108,10 @@ return {
 			kolor_gruntu = "A9BC86",
 			kolor_podloza = "6B6F7A",
 			kolor_drogi = "8E8A80",
-			obszary_xz = { { 4860, 5800, -790, -610 } },
+			obszary_xz = { { 2780, 3200, -790, -610 } },
 			przybycie = { {
-					xz = { 4874, -700 },
-					patrz_xz = { 4920, -700 },
+					xz = { 2794, -700 },
+					patrz_xz = { 2840, -700 },
 				} },
 		}, {
 			id = "lodowiec",
@@ -121,10 +121,10 @@ return {
 			kolor_gruntu = "E8F4FF",
 			kolor_podloza = "7FA8D8",
 			kolor_drogi = "B8D4F0",
-			obszary_xz = { { 5800, 6740, -790, -610 } },
+			obszary_xz = { { 3200, 3620, -790, -610 } },
 			przybycie = { {
-					xz = { 5814, -700 },
-					patrz_xz = { 5860, -700 },
+					xz = { 3214, -700 },
+					patrz_xz = { 3260, -700 },
 				} },
 		}, {
 			id = "wulkan",
@@ -134,10 +134,10 @@ return {
 			kolor_gruntu = "4E3C3A",
 			kolor_podloza = "2E2424",
 			kolor_drogi = "6E5450",
-			obszary_xz = { { 6740, 7680, -790, -610 } },
+			obszary_xz = { { 3620, 4040, -790, -610 } },
 			przybycie = { {
-					xz = { 6754, -700 },
-					patrz_xz = { 6800, -700 },
+					xz = { 3634, -700 },
+					patrz_xz = { 3680, -700 },
 				} },
 		}, {
 			id = "krysztal",
@@ -147,10 +147,10 @@ return {
 			kolor_gruntu = "8E6BD8",
 			kolor_podloza = "4A3A78",
 			kolor_drogi = "B49AE8",
-			obszary_xz = { { 7680, 8620, -790, -610 } },
+			obszary_xz = { { 4040, 4460, -790, -610 } },
 			przybycie = { {
-					xz = { 7694, -700 },
-					patrz_xz = { 7740, -700 },
+					xz = { 4054, -700 },
+					patrz_xz = { 4100, -700 },
 				} },
 		} },
 	makieta = {
@@ -231,5 +231,5 @@ return {
 		ukryj_gui = true,
 		klawisz_testowy = "T",
 	},
-	skrot = "8bd18fb82e4a",
+	skrot = "172271c512ab",
 }

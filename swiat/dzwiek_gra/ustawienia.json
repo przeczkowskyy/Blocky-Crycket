@@ -70,26 +70,47 @@
  },
  "muzyka": {
   "przejscie_s": 2.5,
-  "przyciszenie_walki": 0.25,
+  "przyciszenie_walki": 0.6,
   "przyciszenie_s": 0.8,
   "strefy": {
    "bazar": {
-    "glosnosc": 0.35,
+    "glosnosc": 0.8,
     "mapy": ["swiat/miasteczko_bazar/czesci.json"],
     "kontener": "MiasteczkoBazar",
     "utwory": ["muzyka_02_bazar_targ_petla", "muzyka_03_bazar_rzemieslnicy_petla", "muzyka_04_bazar_wieczor_petla"]
    },
    "las": {
-    "glosnosc": 0.35,
-    "mapy": ["swiat/las_pas/czesci.json"],
+    "glosnosc": 0.8,
+    "mapy": ["swiat/las_pas/krotki/czesci.json"],
     "kontener": "LasPas",
     "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]
    },
    "bagno": {
-    "glosnosc": 0.3,
+    "glosnosc": 0.7,
     "uwaga": "Bagno (swiat/bagno_pas, propozycja 17.11.2026): na razie te same dwa utwory co las, ciszej — własnej muzyki Bagna jeszcze nie ma",
-    "mapy": ["swiat/bagno_pas/czesci.json"],
+    "mapy": ["swiat/bagno_pas/krotki/czesci.json"],
     "kontener": "BagnoPas",
+    "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]
+   },
+   "start": {
+    "glosnosc": 0.8,
+    "uwaga": "plac startowy (Workspace/DemoLesnaBaza) — utwory miasteczka; granice podane wprost, bo to miejsce nie ma mapy z bryłą gruntu w czesci.json",
+    "kontener": "DemoLesnaBaza",
+    "prostokaty": [[-125, 125, -125, 125]],
+    "utwory": ["muzyka_02_bazar_targ_petla", "muzyka_03_bazar_rzemieslnicy_petla", "muzyka_04_bazar_wieczor_petla"]
+   },
+   "miasteczko": {
+    "glosnosc": 0.8,
+    "uwaga": "stare Krzywe Miasteczko (Workspace/KrzyweMiasteczko) — utwory miasteczka; grunt ma dwie części, więc granice podane wprost",
+    "kontener": "KrzyweMiasteczko",
+    "prostokaty": [[-300, 400, -960, -440]],
+    "utwory": ["muzyka_02_bazar_targ_petla", "muzyka_03_bazar_rzemieslnicy_petla", "muzyka_04_bazar_wieczor_petla"]
+   },
+   "bor": {
+    "glosnosc": 0.8,
+    "uwaga": "stary las (Workspace/BiomLas) — utwory lasu",
+    "mapy": ["swiat/biom_las/czesci.json"],
+    "kontener": "BiomLas",
     "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]
    },
    "menu": {

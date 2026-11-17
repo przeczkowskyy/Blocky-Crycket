@@ -40,7 +40,7 @@ nie jest zmieniony**.
 | `Sygnaly/SterowanieSerwera` (BindableFunction) | testy | `"stan", gracz?` · `"zgodnosc"` · `"publikuj", gracz?` · `"bohater", gracz?` · `"przyznaj", gracz, lup` |
 | `Sygnaly/WydajZloto` (BindableFunction, 17.11) | pakiet → stan | `Invoke(gracz, { ile, zrodlo = kontener z listy D.wydatki.zrodla, cel })` → `{ ok = true, zloto, ile, licznik }` \| `{ ok = false, powod ("za_malo" + brakuje, zloto, ile \| "zla_kwota" \| "zle_zrodlo" \| "zly_cel" \| "zly_gracz") }` — nigdy poniżej zera |
 | `Sygnaly/Pety` (BindableFunction, 17.11) | pety → stan | `"kup", gracz, { ile, zrodlo, cel, pet, premia }` (wydatek + kopia peta w jednym wywołaniu) · `"aktywny", gracz, { pet, premia }` \| `{ odstaw = true }` · `"stan", gracz` |
-| `Zdalne/ZdarzeniaStanu` (RemoteEvent) | serwer → klient | `"awans", poziom, ile` · `"premia", zloto, doswiadczenie, pet` (dodatek peta w pokazanym łupie — czyta go klient `swiat/pety_proba`) |
+| `Zdalne/ZdarzeniaStanu` (RemoteEvent) | serwer → klient | `"awans", poziom, ile` · `"premia", zloto, doswiadczenie, pet` (dodatek peta w pokazanym łupie — czyta go klient `swiat/pety_proba`) · `"przegrana", kara, doswiadczenie` (kara za przegraną w pokazanym łupie — napis `KlientStanu`) |
 | | klient → serwer | `"pokaz"` (bez liczb, najwyżej raz na 0,5 s) |
 | `Workspace/TreningProba/Sygnaly/PrzyrostStatystyki` | trening → stan | tylko słuchamy (z ponownym podłączeniem po przebudowie) |
 
@@ -57,13 +57,16 @@ przysyła pakiet petów; doliczamy ją przy przyjęciu łupu (zaokrąglenie 0,5 
 (dziś `PetyProba`). Stan petów żyje tutaj, nie w pakiecie petów — Złoto i pety zapiszą się razem.
 Atrybuty kontenera do podglądu: `SerwerStanuGotowy`, `ZgodnoscLogikiStanu` („OK 80/80”), `RozkladyZ`,
 `TreningPodlaczony`, `LicznikLupow`, `LicznikPokazan`, `LicznikAwansow`, `LicznikBohaterow`, `LicznikTreningu`,
-`OstatniLup`, `OstatniePokazanie`, `OstatniBohater`.
+`OstatniLup`, `OstatniePokazanie`, `OstatniBohater`, `LicznikKar`, `OstatniaKara` (kara za przegraną, 17.11.2026).
 
 ## Wyłączniki
 - **Cały pakiet:** `python -B swiat/stan_gracza/zbuduj.py --usun` — gra wraca do stanu sprzed pakietu (las walczy
   postacią wzorcową z panelu, łupu nie ma).
 - **Statystyki klasy:** atrybut kontenera `StatystykiKlasy = false` — zostają wartości testowe z `PlayerStatsDefaults`
   (Paweł); trening dalej dopisuje, bohater walki dalej czyta atrybuty (wtedy jest ok. 4× za mocny).
+- **Kara za przegraną (17.11.2026):** `KARA_PROCENT` w `dane.py` (jedna liczba; `0` = wyłączona, potem
+  `python -B swiat/stan_gracza/dane.py`) albo atrybut kontenera `KaraPrzegranej`: `false` = wyłączona w czasie gry, liczba
+  0..1 = inny ułamek (np. do prób); przechodzi na odbudowany kontener jak `StatystykiKlasy`.
 - **Tryb testowy lasu:** atrybut kontenera lasu `TestBohater = true` (`Workspace/LasPotwory` albo `Workspace/LasPasGra`)
   — reguła testowa T1 jak dawniej (klasa i poziom z panelu), walki bez łupu. Ustawiają go próby w Play
   (`swiat/las_potwory/testy/proba_play.py`, `kontrola_play.py`, `swiat/las_pas_gra/testy/proba_play.py`,
@@ -80,15 +83,45 @@ każda nazwa z liter, cyfr i „_”, więc „bagno” działa bez zmian.
    D-057 mówi też o punktach do rozdania przez gracza — ich nie ma.
 3. **Sloty umiejętności** 1 / 2 / 3 od poziomów 1 / 5 / 10 (jak dziś w walce). D-055 i D-088 mówią: sloty z drzewka,
    na start 0; pytanie 51 (Gemy) otwarte.
-4. **Przegrana:** nic nie tracisz, dostajesz 20% doświadczenia (tak liczy silnik). W rejestrze nie ma decyzji.
+4. **Przegrana (17.11.2026: realizacja propozycji D-098, czeka na zatwierdzenie w panelu):** bez łupu, 20% doświadczenia
+   (tak liczy silnik) i **kara: 5% posiadanego Złota (w dół do całych), najwyżej tyle, ile daje wygrana ze zwykłym
+   potworem na poziomie przeciwnika** (łup Cierniowego Wilka z silnika: 22 + 9 × (poziom − 1)), nigdy poniżej zera.
+   Bez kary czasowej, Gemy zostają. Tylko walki lasu-pasa, starego lasu i Bagna (`D.kara.zrodla`); tablica próby
+   i tryb testowy `TestBohater` łupu nie wysyłają, więc kary tam nie ma. Złoto znika przy pokazaniu łupu (koniec
+   ekranu walki), a gracz widzi napis „Przegrana: −N Złota, +M doświadczenia” (na dole ekranu, tuż nad napisem
+   premii peta; bez Złota — sam XP). Profil bez zmian (wersja 2). Liczby z `kara_przegranej.py` (gracze z ekonomii
+   jajek, jajko 300 w lesie i 750 w Bagnie, kupują od razu):
+
+   | Wariant (las do Strażnika; profil wzorcowy, 8 przegranych na 45 walk) | Kara za przegraną (mediana / maks.) | Razem w lesie | 1. jajko później o | Tuż przed zakupem | Oszczędzający: razem / maks. jednej |
+   |---|---|---|---|---|---|
+   | 2% | 2 / 5 | 16 | 0 min | 5 Złota | 158 / 71 |
+   | **5%, najwyżej 1 wygrana (wybrany)** | **6 / 14** | **46** | **0 min (90%: 0,6)** | **13 Złota = 0,2 walki** | **366 / 103** |
+   | 5% bez limitu | 6 / 14 | 46 | 0 min (90%: 0,6) | 13 Złota | 380 / 155 |
+   | 10% (z limitem albo bez) | 12 / 29 | 94 | 0 min (90%: 0,7) | 26 Złota | 470–698 / 103–271 |
+   | stała ½ wygranej zwykłego potwora | 38 / 51 | 255 | 0,5 min (90%: 1,3) | 42 Złota | 278 / 51 |
+
+   Bagno (60 min, 19 przegranych na 78 walk): przy 5% z limitem kara 18 / 37 za przegraną, razem 346, jajko Bagna
+   bez przesunięcia (90%: 1,4 min), oszczędzający traci najwyżej 157 naraz (bez limitu — 615). Z profilem klas
+   z `ClassData` Pawła (pytanie 56: 12 przegranych w lesie, 26 w Bagnie) razem 65 w lesie i 460 w Bagnie.
+   Dlaczego ten wariant: kara rośnie z tym, co gracz ma (biedny nowy gracz prawie nic nie traci, stała kwota zabiera
+   mu za to prawie całe jajko), a limit „jednej wygranej” znaczy, że jedna walka odrabia każdą przegraną. Obejście
+   przez wydanie Złota przed trudną walką (jajko, później przedmioty) jest w porządku — to wydawanie, o które chodzi
+   w ekonomii, a nie zysk. **Doświadczenie 20% zostaje**: w lesie celowa przegrana ze Strażnikiem daje 104 XP/min
+   wobec 136 z wygranych; w Bagnie odwrotnie (190 wobec 161 XP/min), ale każda przegrana kosztuje Złoto, a wygrana je
+   daje. Gdyby chcieć to domknąć (propozycja, nie wdrożona): XP za przegraną najwyżej tyle, co za wygraną ze zwykłym
+   potworem tego poziomu.
 5. **Tablica próby walki (`TestWalki2`) bez nagród** — to piaskownica (dowolna klasa i poziom 1/5/10).
 6. **Broń i pancerz z przedmiotów** ze wzoru dla poziomu; ekwipunek z okna Pawła (dziś tylko po stronie klienta)
    i drzewko (`ST_*`) do walki nie wchodzą.
 7. **Przed wyborem klasy** statystyki to rozkład Wojownika; zmiana klasy w trakcie gry (ChooseClass na to pozwala)
    przelicza rozkład, trening i „+” zostają.
 8. **Gemy z łupu** dopisują się do testowych 1000 z `PlayerStatsDefaults`.
-9. **Rozkłady klas** czytane z `ReplicatedStorage.Shared.ClassData` (paski ekranu wyboru Pawła). Zmiana pasków zmieni
-   balans walki — test pilnuje, że dziś są równe wzorcowym.
+9. **Rozkłady klas** czytane z `ReplicatedStorage.Shared.ClassData` (paski ekranu wyboru Pawła). Od 17.11.2026
+   (commit Pawła `bf5c933`) są inne niż wzorcowe — pytanie 56 czeka na ludzi; do decyzji gra czyta ClassData, serwer
+   ostrzega o różnicy, a testy pilnują tylko warunków każdego profilu (trzy klasy, sześć liczb, suma 100, pula bez
+   zgubionego punktu) i liczą oczekiwane statystyki z aktualnego ClassData. Porównanie w lesie:
+   `python -B swiat/stan_gracza/porownaj_profile.py` — z profilem Pawła każda klasa przegrywa częściej (11–13 zamiast 8
+   przegranych do Strażnika, las dłuższy o 3–5 min), a różnice między klasami rosną (na trollu 13 pp zamiast 4).
 10. **Baner „POZIOM N”** to tymczasowe GUI pakietu; docelowe pop-upy projektuje Paweł (D-093).
 11. **Bez zapisu:** profil w pamięci serwera; po wyjściu z gry wszystko znika (jak dziś). Miejsce na zapis: profil
     (`L.nowyProfil`, pole `wersja`), `swiat/las_pas_gra/zrodla/PamiecGracza.luau`.
@@ -112,19 +145,21 @@ każda nazwa z liter, cyfr i „_”, więc „bagno” działa bez zmian.
 Bez Studio (wszystko pojedynczo, bez wielu procesów):
 ```
 python -B swiat/stan_gracza/dane.py --sprawdz          # DaneStanu.luau aktualny
-python -B swiat/stan_gracza/testy/test_stanu.py        # 42 testy, w tym SerwerStanu i KlientStanu w luau_mini
+python -B swiat/stan_gracza/testy/test_stanu.py        # 47 testów, w tym SerwerStanu i KlientStanu w luau_mini
 python -B swiat/stan_gracza/sprawdz_luau_stanu.py      # kontrola statyczna Luau
 python -B swiat/stan_gracza/zbuduj.py --sucho          # plan budowy
 python -B swiat/stan_gracza/symulacja_lasu.py          # szanse w przegrodach lasu-pasa i czas do Strażnika
+python -B swiat/stan_gracza/kara_przegranej.py         # warianty kary za przegraną (las, Bagno; --profil pawla)
+python -B swiat/stan_gracza/porownaj_profile.py        # profil klas Pawła vs wzorcowy (pytanie 56)
 ```
 W Studio (część B): `zbuduj.py` buduje kontener; potem wymiana skryptów obu lasów
 (`python -B swiat/las_potwory/zbuduj.py --skrypty`, `python -B swiat/las_pas_gra/zbuduj.py --skrypty`) i próba w Play:
 ```
-python -B swiat/stan_gracza/testy/proba_play.py <folder wyników poza repo>   # S00–S12, zrzuty → klatki/
+python -B swiat/stan_gracza/testy/proba_play.py <folder wyników poza repo>   # S00–S13, zrzuty → klatki/
 python -B swiat/stan_gracza/testy/proba_play.py --sprawdz                    # bez Studio: parsuje kawałki Luau próby
 ```
 Próba sprawdza: trzy klasy w walce na poziomie gracza, łup dopiero po walce i HUD = atrybuty, baner awansu,
-przegraną (+20% XP), trening Siły → Strength → opis bohatera, tryb testowy `TestBohater`, brak sygnału i usunięcie
+przegraną (+20% XP, kara Złota i napis — S06, S13; dopisane 17.11, jeszcze nieuruchomione), trening Siły → Strength → opis bohatera, tryb testowy `TestBohater`, brak sygnału i usunięcie
 kontenera (las działa jak dawniej), konsolę, `script_grep` po innych piszących Gold / XP / DataStore / leaderstats,
 oraz pomiar poprawki M6 lasu (15 podejść prawdziwym E z dawną kotwicą i 15 z nową; dymek przy blokadzie po walce).
 Wyniki mogą zawierać nazwę konta, dlatego folder wyników musi być poza repozytorium; zrzuty są bez listy graczy i czatu.
@@ -150,7 +185,9 @@ z ok. 8 przegranymi po drodze. Cel planu rosnącego z `tools/walka/tempo.py`: ok
 - `dane.py` → `zrodla/DaneStanu.luau` (wygenerowany; liczby z `tools/walka/wzorcowe.py`, `tempo.py`,
   `src/server/Walka/Statystyki.luau`), `logika_stanu.py` (lustro `zrodla/LogikaStanu.luau`).
 - `zrodla/SerwerStanu.server.luau`, `zrodla/KlientStanu.client.luau`, `zrodla/LogikaStanu.luau`.
-- `zbuduj.py`, `sprawdz_luau_stanu.py`, `symulacja_lasu.py`, `testy/test_stanu.py`, `testy/atrapa_roblox.py`.
+- `zbuduj.py`, `sprawdz_luau_stanu.py`, `symulacja_lasu.py`, `kara_przegranej.py` (warianty kary; gracze z
+  `swiat/pety_proba/ekonomia_jajek.py`, tylko uruchamiany), `porownaj_profile.py` (pytanie 56), `testy/test_stanu.py`,
+  `testy/atrapa_roblox.py`.
 - Zmiany w innych pakietach (małe, w osobnych funkcjach): `swiat/las_potwory/zrodla/Stale.luau` (stałe stanu gracza),
   `SerwerPotworow.server.luau` (`sygnalStanu`, `bohaterZeStanu`, `nagrodaZaWalke` + dwa wywołania w kontroli 7
   i po przyjęciu walki), `KlientPotworow.client.luau` (`trybTestowyBohatera`, `poziomGracza`,

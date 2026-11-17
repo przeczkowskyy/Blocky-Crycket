@@ -66,7 +66,7 @@ LP = 'local lp = game:GetService("Players").LocalPlayer '
 KONTENERY = ["TeleportChmury", "LasPas", "LasPasGra", "TestWalki2", "MiasteczkoBazar", "MiasteczkoBazarGra",
              "TreningProba"]
 START_BAZARU = (990.0, 3.0, -697.0)
-KAMIEN = ((1106.5, 6.5, -713.0), (1106.5, -718.5))        # stoisko i punkt, na który patrzy postać
+KAMIEN = ((1106.5, 6.5, -712.3), (1106.5, -717.0))        # stoisko i punkt, na który patrzy postać (krótki pas D-096)
 TRENER = ((942.0, 6.5, -724.0), (942.0, -729.0))
 WYNIKI = {}
 LISTA = []

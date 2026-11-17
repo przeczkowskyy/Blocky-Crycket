@@ -13,32 +13,32 @@ PODSUMOWANIE
 - ostrzeżenia z raportu: 0; uwagi podglądu: 0
 
 ZNANE SŁABOŚCI
-- Jajko jest schodkowe (cztery warstwy + czubek z czterech) — to styl klocków, nie gładka owalna skorupka.
+- Jajko z trzech elipsoid: na styku skorupki i czubka widać delikatny szew (to też linia pęknięcia).
 - Inkubator to podgląd: w grze gniazdo stoi na mapie lasu-pasa, a napisy na tablicy dokłada SurfaceGui.
 
 MODEL jajko_lesne „Jajko leśne” (stwor)
-  wymiary ciała: 1,80 × 2,89 × 1,80; z akcesoriami: 1,80 × 2,89 × 1,80
-  trójkąty: 484 (siatek: 2)
+  wymiary ciała: 1,79 × 2,87 × 1,75; z akcesoriami: 1,79 × 2,87 × 1,75
+  trójkąty: 2580 (siatek: 2)
   kości (3): Root, Jajko, Czubek
   klipy: spoczynek 60 kl. 2,00 s pętla, trzesienie 36 kl. 1,20 s jednorazowy, pekniecie 18 kl. 0,60 s jednorazowy
   punkty zaczepienia: RootAttachment, GlowaAttachment
 
 MODEL inkubator_lesny „Inkubator leśny (podgląd)” (stwor)
-  wymiary ciała: 12,55 × 6,12 × 12,00; z akcesoriami: 12,55 × 6,12 × 12,00
-  trójkąty: 1320 (siatek: 4)
+  wymiary ciała: 12,55 × 6,09 × 12,00; z akcesoriami: 12,55 × 6,09 × 12,00
+  trójkąty: 3416 (siatek: 4)
   kości (5): Root, Podstawa, Jajko, Czubek, Tablica
   klipy: spoczynek 60 kl. 2,00 s pętla
   punkty zaczepienia: RootAttachment, GlowaAttachment
 
 KONTROLA EKSPORTÓW
-- jajko_lesne.fbx: siatki 4, kości 3, trójkąty 508, wzrost 2.89 st., akcje brak -> ZGODNE
-- jajko_lesne__spoczynek.fbx: siatki 4, kości 3, trójkąty 508, wzrost 2.89 st., akcje jajko_lesne|Scene 1-61 -> ZGODNE
-- jajko_lesne__trzesienie.fbx: siatki 4, kości 3, trójkąty 508, wzrost 2.89 st., akcje jajko_lesne|Scene 1-37 -> ZGODNE
-- jajko_lesne__pekniecie.fbx: siatki 4, kości 3, trójkąty 508, wzrost 2.89 st., akcje jajko_lesne|Scene 1-19 -> ZGODNE
-- jajko_lesne.glb: siatki 4, kości 3, trójkąty 508, wzrost 2.89 st., akcje pekniecie 0-18, spoczynek 0-60, trzesienie 0-36 -> ZGODNE
-- inkubator_lesny.fbx: siatki 6, kości 5, trójkąty 1344, wzrost 6.12 st., akcje brak -> ZGODNE
-- inkubator_lesny__spoczynek.fbx: siatki 6, kości 5, trójkąty 1344, wzrost 6.12 st., akcje inkubator_lesny|Scene 1-61 -> ZGODNE
-- inkubator_lesny.glb: siatki 6, kości 5, trójkąty 1344, wzrost 6.12 st., akcje spoczynek 0-60 -> ZGODNE
+- jajko_lesne.fbx: siatki 4, kości 3, trójkąty 2604, wzrost 2.87 st., akcje brak -> ZGODNE
+- jajko_lesne__spoczynek.fbx: siatki 4, kości 3, trójkąty 2604, wzrost 2.87 st., akcje jajko_lesne|Scene 1-61 -> ZGODNE
+- jajko_lesne__trzesienie.fbx: siatki 4, kości 3, trójkąty 2604, wzrost 2.87 st., akcje jajko_lesne|Scene 1-37 -> ZGODNE
+- jajko_lesne__pekniecie.fbx: siatki 4, kości 3, trójkąty 2604, wzrost 2.87 st., akcje jajko_lesne|Scene 1-19 -> ZGODNE
+- jajko_lesne.glb: siatki 4, kości 3, trójkąty 2604, wzrost 2.87 st., akcje pekniecie 0-18, spoczynek 0-60, trzesienie 0-36 -> ZGODNE
+- inkubator_lesny.fbx: siatki 6, kości 5, trójkąty 3440, wzrost 6.09 st., akcje brak -> ZGODNE
+- inkubator_lesny__spoczynek.fbx: siatki 6, kości 5, trójkąty 3440, wzrost 6.09 st., akcje inkubator_lesny|Scene 1-61 -> ZGODNE
+- inkubator_lesny.glb: siatki 6, kości 5, trójkąty 3440, wzrost 6.09 st., akcje spoczynek 0-60 -> ZGODNE
 
 PLIKI
 - jajko_lesne.blend
