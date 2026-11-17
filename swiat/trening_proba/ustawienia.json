@@ -1,0 +1,187 @@
+{
+  "opis": "Training Center — próba mini-gier (PROPOZYCJA). Jedyne źródło ustawień pakietu swiat/trening_proba: dane.py → zrodla/DaneTreningu.luau, scena.py → części areny. Liczby oznaczone w PROJEKT.md jako „przyjęte, do zmiany”.",
+  "status": "propozycja",
+  "kontener": "TreningProba",
+  "prefiks": "[TreningProba] ",
+  "zdarzenie_okien": "OknoMiejsca",
+  "id_miejsca_bazaru": "training_center",
+  "bazar": {
+    "kontener": "MiasteczkoBazarGra",
+    "podpowiedz": "Punkty/E training_center"
+  },
+  "arena": {
+    "srodek": [3000, 300, 3000],
+    "rozmiar": [96, 56],
+    "zapas_wArenie": 6,
+    "wysokosc_wArenie": [-20, 40],
+    "przybycie": [0, 0, 14],
+    "patrz_przybycie": [0, 0, -10]
+  },
+  "statystyki": [
+    {"id": "sila", "nazwa": "Siła", "atrybut": "Strength", "atrybut_sesji": "TreningSila", "gra": "Rozbijanie", "stan": "grywalna", "kolor": "E5533D", "opis": "Rozbij mieczem lecące skrzynki"},
+    {"id": "kondycja", "nazwa": "Kondycja", "atrybut": "Constitution", "atrybut_sesji": "TreningKondycja", "gra": "Bieżnia", "stan": "w_projekcie", "kolor": "3DBE5A", "opis": "Biegnij równo w rytmie"},
+    {"id": "inteligencja", "nazwa": "Inteligencja", "atrybut": "Intelligence", "atrybut_sesji": "TreningInteligencja", "gra": "Runy", "stan": "w_projekcie", "kolor": "9B59E5", "opis": "Powtórz świecące runy"},
+    {"id": "zrecznosc", "nazwa": "Zręczność", "atrybut": "Dexterity", "atrybut_sesji": "TreningZrecznosc", "gra": "Kłody", "stan": "w_projekcie", "kolor": "F2B630", "opis": "Przeskocz albo przeczekaj kłodę"},
+    {"id": "szczescie", "nazwa": "Szczęście", "atrybut": "Luck", "atrybut_sesji": "TreningSzczescie", "gra": "Koniczyny", "stan": "w_projekcie", "kolor": "2EC4B6", "opis": "Łap koniczyny, omijaj kamienie"},
+    {"id": "pancerz", "nazwa": "Pancerz", "atrybut": "Armor", "atrybut_sesji": "TreningPancerz", "gra": "Blok", "stan": "grywalna", "kolor": "3D7BE5", "opis": "Zablokuj cios, nie daj się nabrać"}
+  ],
+  "runda": {
+    "dlugosc_s": 45,
+    "odliczanie_s": 3,
+    "pierwsze_s": 1.0,
+    "koniec_zapas_s": 0.5
+  },
+  "przyrost": {
+    "zrodlo": "tools/walka/BALANS_1711.md, część 6 (propozycja innej pracy, nie decyzja). Wariant dosłowny D-050: za_trafienie [1, 2, 3, 4], prog_paska 1, malejacy_zysk false",
+    "progi_serii": [5, 10, 20],
+    "za_trafienie": [4, 5, 6, 8],
+    "prog_paska": 40,
+    "malejacy_zysk": true,
+    "polowa_udzialu": 0.1,
+    "pula_baza": 30,
+    "pula_na_poziom": 10,
+    "mnoznik_centrum": 1
+  },
+  "ochrona": {
+    "pojemnosc": 4,
+    "uzupelnianie_na_s": 4,
+    "max_opoznienie_s": 0.35,
+    "max_wyprzedzenie_s": 0.05,
+    "przypisanie_s": 0.6,
+    "dubel_s": 0.25,
+    "odstep_wejsc_s": 2.0,
+    "odstep_startu_s": 1.0,
+    "zasieg_wejscia": 16,
+    "wiadomosci_pojemnosc": 12,
+    "wiadomosci_na_s": 12,
+    "odstep_podpowiedzi_s": 0.4,
+    "tik_s": 0.1,
+    "limit_wczytania_s": 5
+  },
+  "gry": {
+    "sila": {
+      "typ": "kierunki",
+      "akcje": ["gora", "lewo", "prawo", "dol"],
+      "kierunki": ["lewo", "gora", "prawo", "dol"],
+      "lot_s": 1.1,
+      "rozrzut": 0.15,
+      "poziomy": [
+        {"od_s": 0, "odstep_s": 1.25, "okno_s": 0.30, "kierunki": 3},
+        {"od_s": 12, "odstep_s": 1.05, "okno_s": 0.26, "kierunki": 4},
+        {"od_s": 24, "odstep_s": 0.9, "okno_s": 0.22, "kierunki": 4},
+        {"od_s": 34, "odstep_s": 0.78, "okno_s": 0.19, "kierunki": 4}
+      ]
+    },
+    "pancerz": {
+      "typ": "blok",
+      "akcje": ["blok"],
+      "zamach_s": 1.0,
+      "rozrzut": 0.15,
+      "poziomy": [
+        {"od_s": 0, "odstep_s": 1.3, "okno_s": 0.30, "zmylki": 0.0},
+        {"od_s": 12, "odstep_s": 1.1, "okno_s": 0.26, "zmylki": 0.15},
+        {"od_s": 24, "odstep_s": 0.95, "okno_s": 0.22, "zmylki": 0.2},
+        {"od_s": 34, "odstep_s": 0.82, "okno_s": 0.19, "zmylki": 0.25}
+      ]
+    }
+  },
+  "stanowiska": {
+    "sila": {
+      "podest": [-24, 0, 8],
+      "kamera": {"oko": [3.2, 6.6, 11.5], "cel": [1.6, 3.2, -8]},
+      "miotacz": [0, 0, -16],
+      "reka": [1.6, 4.4, 0.8],
+      "strefy": {"gora": [0, 6.6, -1.6], "lewo": [-3.4, 3.4, -1.6], "prawo": [3.4, 3.4, -1.6], "dol": [0, 0.9, -2.6]},
+      "luki": {"gora": [0, 9, 0], "lewo": [-7, 3, 0], "prawo": [7, 3, 0], "dol": [0, -1.2, 0]},
+      "miecz": [1.7, 3.4, -0.6]
+    },
+    "pancerz": {
+      "podest": [24, 0, 8],
+      "kamera": {"oko": [3.2, 6.6, 11.5], "cel": [1.2, 3.6, -8]},
+      "golem": [0, 0, -9],
+      "piesc_spoczynek": [2.4, 4.6, 1.8],
+      "piesc_zamach": [3.8, 8.2, -1.2],
+      "piesc_cel": [0.5, 3.7, -2.1],
+      "tarcza": [0.9, 3.0, -1.2],
+      "tarcza_blok": [0.4, 3.7, -1.7]
+    }
+  },
+  "tablica_wejscia": {
+    "promienie": [14, 18, 22, 26],
+    "kierunki": 16,
+    "omijaj": [
+      {"atrybut": ["MiasteczkoBazarGra", "PunktStaregoMiasteczka"], "promien": 10},
+      {"sciezka": "Workspace/LasTeleport/PortalStart", "promien": 14}
+    ],
+    "wolne": [7, 8, 7],
+    "roznica_wysokosci": 1.5,
+    "rzut_od": 12,
+    "rzut_dlugosc": 40,
+    "zapas_bez_spawnu": [0, 0, 0]
+  },
+  "podpowiedz": {
+    "klawisz": "E",
+    "pad": "ButtonX",
+    "zasieg": 9,
+    "zapas": 4
+  },
+  "ui": {
+    "baza": [667, 375],
+    "skala_min": 0.85,
+    "skala_max": 1.6,
+    "przycisk_px": 56,
+    "przycisk_maly_px": 52,
+    "blok_px": 96,
+    "odstep_px": 4,
+    "tekst_px": {"maly": 15, "sredni": 18, "duzy": 26, "seria": 40, "wielki": 56},
+    "wymog_przycisk_px": 44,
+    "wymog_tekst_pt": 12,
+    "kolejnosc_wyswietlania": 30,
+    "sterowanie_od_prawej": 0.215,
+    "kolory": {"krem": "FFF6E0", "tusz": "17121F", "dobrze": "3DBE5A", "zle": "E5533D", "zloto": "F2B630", "cios": "3DA5FF", "zmylka": "B04CFF", "szary": "8A7F72"}
+  },
+  "sterowanie": {
+    "gora": {"klawisze": ["Up", "W"], "pad": ["DPadUp", "ButtonY"], "napis": "GÓRA", "skrot": "W"},
+    "lewo": {"klawisze": ["Left", "A"], "pad": ["DPadLeft", "ButtonX"], "napis": "LEWO", "skrot": "A"},
+    "prawo": {"klawisze": ["Right", "D"], "pad": ["DPadRight", "ButtonB"], "napis": "PRAWO", "skrot": "D"},
+    "dol": {"klawisze": ["Down", "S"], "pad": ["DPadDown", "ButtonA"], "napis": "DÓŁ", "skrot": "S"},
+    "blok": {"klawisze": ["Space", "F", "Up", "W"], "pad": ["ButtonA", "ButtonR1", "ButtonR2"], "napis": "BLOK", "skrot": "Spacja"},
+    "start": {"klawisze": ["Space", "Return"], "pad": ["ButtonA"], "napis": "START", "skrot": "Spacja"},
+    "wyjdz": {"klawisze": ["Q"], "pad": ["ButtonSelect"], "napis": "WYJDŹ", "skrot": "Q"},
+    "blokuj_ruch": ["W", "A", "S", "D", "Up", "Down", "Left", "Right", "Space", "Thumbstick1", "ButtonA"]
+  },
+  "dzwieki": {
+    "trafienie": {"plik": "action_jump_land.mp3", "glosnosc": 2.2, "szybkosc": 1.35},
+    "nuta": {"plik": "volume_slider.ogg", "glosnosc": 0.5, "szybkosc": 1.0, "maks": 0.25},
+    "pudlo": {"plik": "action_jump_land.mp3", "glosnosc": 2.0, "szybkosc": 0.55},
+    "swist": {"plik": "action_jump.mp3", "glosnosc": 1.2, "szybkosc": 1.6},
+    "seria": {"plik": "impact_explosion_03.mp3", "glosnosc": 0.3, "szybkosc": 1.4, "maks": 0.7},
+    "przycisk": {"plik": "volume_slider.ogg", "glosnosc": 0.4, "szybkosc": 1.5, "maks": 0.15},
+    "oberwanie": {"plik": "oof.ogg", "glosnosc": 0.35, "szybkosc": 1.15},
+    "skale_nuty": [1.0, 1.12, 1.26, 1.33, 1.5, 1.68, 1.89, 2.0],
+    "melodia_koniec": [1.0, 1.26, 1.5, 2.0],
+    "odstep_melodii_s": 0.11
+  },
+  "teksty": {
+    "tytul_wyboru": "TRAINING CENTER — wybierz mini-grę",
+    "tymczasowy": "TYMCZASOWY WYBÓR (próba). Docelowe okno 2D robi Paweł (D-093).",
+    "graj": "GRAJ",
+    "w_projekcie": "w projekcie",
+    "start_podpowiedz": "Spacja / Enter / A na padzie",
+    "sterowanie_sila": "Strzałka albo WASD w stronę skrzynki, gdy dolatuje do kółka",
+    "sterowanie_pancerz": "BLOK (Spacja), gdy pierścień dojdzie do kółka. Fioletowy = zmyłka, nie blokuj!",
+    "trafienia": ["TRAFIONE!", "ŁUP!", "DOBRZE!", "ŚWIETNIE!", "MOCARZ!"],
+    "trafienia_blok": ["BLOK!", "TWARDY!", "STOI!", "MUR!", "SKAŁA!"],
+    "zmylka_ok": "SPOKÓJ!",
+    "seria": "SERIA %d!",
+    "pudlo": {"za_wczesnie": "ZA WCZEŚNIE", "za_pozno": "ZA PÓŹNO", "zly_kierunek": "ZŁA STRONA", "zmylka": "ZMYŁKA!", "przepuszczone": "PUDŁO", "pusty": "W POWIETRZE"},
+    "odmowa": {"za_daleko": "Podejdź bliżej trenera albo tablicy", "za_szybko": "Chwila…", "nieznana": "Nie ma takiej mini-gry", "w_projekcie": "Ta mini-gra jest jeszcze w projekcie", "trwa_runda": "Najpierw skończ rundę", "brak_gry": "Najpierw wybierz mini-grę", "brak_postaci": "Brak postaci — spróbuj po odrodzeniu", "blad": "Nie udało się — spróbuj jeszcze raz"},
+    "koniec": "KONIEC RUNDY",
+    "jeszcze_raz": "JESZCZE RAZ",
+    "inna_gra": "INNA GRA",
+    "wyjdz": "WYJDŹ",
+    "tablica_wejscia": "TRAINING CENTER\nPRÓBA MINI-GIER (E)",
+    "tablica_wyboru": "WYBÓR MINI-GRY (E)",
+    "wyjscie": "WYJŚCIE (E)"
+  }
+}
