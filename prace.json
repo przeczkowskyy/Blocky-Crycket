@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T16:57:04+01:00",
+ "aktualizacja": "2026-11-17T16:59:50+01:00",
  "prace": [
   {
    "id": "areny-walki",
@@ -15,6 +15,20 @@
    "obszary": [
     "swiat/areny_walki",
     "studio:ArenyWalki"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "pety-proba",
+   "tytul": "Jajka i pety na próbę: inkubator w lesie, wyklucie, pet przy graczu",
+   "stan": "w_toku",
+   "start": "2026-11-17T16:59:50+01:00",
+   "koniec_szacowany": "2026-11-17T20:19:50+01:00",
+   "aktualizacja": "2026-11-17T16:59:50+01:00",
+   "obszary": [
+    "swiat/pety_proba",
+    "studio:PetyProba"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
