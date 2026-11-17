@@ -33,11 +33,11 @@ Własne projekty (modele z klocków w `swiat/postacie/`, plansze i portrety w `s
 
 | Pet | Rzadkość | Szansa | Skill (pasywny, z walk) | Wygląd |
 |---|---|---:|---|---|
-| Żołędziak | Pospolity | 50% | Zbieracz: +5% Złota | pulchny żołądź w czapeczce z listkiem na ogonku, z patyczkowymi rączkami |
-| Mchowy Ślimak | Zwykły | 25% | Cierpliwość: +8% doświadczenia | bladozielony ślimak z oczami na czułkach i muszlą w mchu z czerwonym grzybkiem |
-| Liściolis | Rzadki | 15% | Lisi Spryt: +12% Złota | pomarańczowy lisek z uszami-liśćmi, liściastym kołnierzykiem i liściem na końcu ogona |
-| Świetlikówka | Epicki | 8% | Nocna Nauka: +15% doświadczenia | śliwkowa sówka ze świecącymi oczami i brzuszkiem-latarenką, krążą wokół niej trzy świetliki |
-| Jelonek Gaju | Legendarny | 2% | Błogosławieństwo Gaju: +20% Złota i doświadczenia | cętkowany jelonek ze świecącym kryształowym porożem w kwiatkach i złotymi kopytkami |
+| Żołędziak | Pospolity | 50% | Zbieracz: +2% Złota z walk | pulchny żołądź w czapeczce z listkiem na ogonku, z patyczkowymi rączkami |
+| Mchowy Ślimak | Zwykły | 25% | Muszla: +3% Pancerza | bladozielony ślimak z oczami na czułkach i muszlą w mchu z czerwonym grzybkiem |
+| Liściolis | Rzadki | 15% | Lisi Spryt: +15% Zręczności i Szczęścia | pomarańczowy lisek z uszami-liśćmi, liściastym kołnierzykiem i liściem na końcu ogona |
+| Świetlikówka | Epicki | 8% | Blask Świetlików: Światło (szybsza mana), +20% Inteligencji, +5% doświadczenia | śliwkowa sówka ze świecącymi oczami i brzuszkiem-latarenką, krążą wokół niej trzy świetliki |
+| Jelonek Gaju | Legendarny | 2% | Kryształowe Poroże: Kryształ (ciosy mocniej trafiają), +20% Siły, +5% Złota i doświadczenia | cętkowany jelonek ze świecącym kryształowym porożem w kwiatkach i złotymi kopytkami |
 
 Klipy każdego peta: `spoczynek`, `chod`, `radosc`, `wyklucie`. Jajko: `spoczynek`, `trzesienie`, `pekniecie`.
 Pies, Slime i Smok (pety z kanonu) zostają na inne jajka (np. miejskie).
@@ -45,20 +45,73 @@ Pies, Slime i Smok (pety z kanonu) zostają na inne jajka (np. miejskie).
 ## Pięć petów Jajka Bagna (obok leśnych tej samej rzadkości)
 
 Własne projekty pod klimat Bagna (mokradła, mgła, ogniki, pomosty), sylwetki inne niż pety lasu i niż potwory Bagna
-(ropuchy, błotniak, kłoda) — pety „do kochania”. Te same rzadkości i szanse. Skill Bagna jest **trochę lepszy** niż
-leśny tej samej rzadkości (o 17–25%), ale **słabszy od leśnego o stopień rzadszego** — leśny legendarny (+20% obu)
-wygrywa z epickim Ognikiem, przegrywa tylko z legendarną Perłową Wydrą (test `1f`).
+(ropuchy, błotniak, kłoda) — pety „do kochania”. Te same rzadkości i szanse. Skille od 18.11 według D-101 (sekcja
+„Skille petów” niżej): różne premie i żywioły, zwykłe pety tylko mała pasywka.
 
 | Rzadkość · szansa | Pet Bagna | Skill Bagna | Pet lasu | Skill lasu | Wygląd (Bagno) |
 |---|---|---|---|---|---|
-| Pospolity · 50% | Pałkuś | Szelest Trzcin: +6% Złota | Żołędziak | +5% Złota | brązowa kolba pałki wodnej z buzią na zielonej łodyżce, liście-rączki, puch na czubku |
-| Zwykły · 25% | Nenufarek | Spokojna Toń: +10% doświadczenia | Mchowy Ślimak | +8% doświadczenia | miętowy żółwik z pancerzem z liścia grzybienia i różowym kwiatem nenufaru |
-| Rzadki · 15% | Ważeczka | Bystre Oko: +14% Złota | Liściolis | +12% Złota | turkusowa ważka z oczami-kopułami, odwłokiem w paski i czterema błękitnymi skrzydłami (unosi się) |
-| Epicki · 8% | Ognik | Błędny Blask: +18% doświadczenia | Świetlikówka | +15% doświadczenia | miętowy błędny ognik z buzią i świecącym, zawiniętym płomieniem, dwie krążące iskry (unosi się) |
-| Legendarny · 2% | Perłowa Wydra | Perła Topieli: +24% Złota i doświadczenia | Jelonek Gaju | +20% Złota i doświadczenia | wydra na tylnych łapkach z otwartą muszlą i świecącą perłą, wianek z grzybienia, naszyjnik z pereł |
+| Pospolity · 50% | Pałkuś | Pałka: +3% Siły | Żołędziak | +2% Złota z walk | brązowa kolba pałki wodnej z buzią na zielonej łodyżce, liście-rączki, puch na czubku |
+| Zwykły · 25% | Nenufarek | Spokojna Toń: +3% Kondycji | Mchowy Ślimak | +3% Pancerza | miętowy żółwik z pancerzem z liścia grzybienia i różowym kwiatem nenufaru |
+| Rzadki · 15% | Ważeczka | Jadowite Żądło: Jad (zatruwa wroga przy ciosie, 30%) | Liściolis | +15% Zręczności i Szczęścia | turkusowa ważka z oczami-kopułami, odwłokiem w paski i czterema błękitnymi skrzydłami (unosi się) |
+| Epicki · 8% | Ognik | Błędny Ogień: Ogień (podpala wroga przy ciosie, 25%) | Świetlikówka | Światło, +20% Inteligencji, +5% doświadczenia | miętowy błędny ognik z buzią i świecącym, zawiniętym płomieniem, dwie krążące iskry (unosi się) |
+| Legendarny · 2% | Perłowa Wydra | Perła Topieli: Woda (lepsza obrona), +15% Kondycji, +6% Złota i doświadczenia | Jelonek Gaju | Kryształ, +20% Siły, +5% Złota i doświadczenia | wydra na tylnych łapkach z otwartą muszlą i świecącą perłą, wianek z grzybienia, naszyjnik z pereł |
 
 Podgląd zbiorczy: `podglad/pety_bagna.jpg` (ten sam układ co `podglad/pety_lesne.jpg`, pod skillem — pet lasu tej
 rzadkości). Jajko Bagna: miętowe w ciemnozielone i turkusowe cętki, z liściem grzybienia i kwiatkiem na czubku.
+
+## Skille petów (D-101): różne premie i żywioły (18.11, liczby — propozycja)
+
+**D-101** (zatwierdzona w rejestrze: Karol, potwierdził Paweł, 17.11): pety dają różne premie — doświadczenie, Złoto,
+Siłę, Zręczność…; mają żywioły; zwykłe pety tylko małą pasywkę, mocniejsze dodatki lepsze pety; projekt i liczby robi
+agent („wolna ręka, zrób coś ciekawego”). Pet nie walczy obok gracza (D-059) — żywioł to pasywka w ciosach gracza.
+Jeden stały skill na typ peta (D-058). **Liczby poniżej są propozycją** (do zatwierdzenia).
+
+Skill = jedno krótkie zdanie (tablica szans, okno zagrody, napis po wykluciu; na tablicy zagrody — sam żywioł albo
+pierwsza premia). W grze idzie przez **`StanGracza/Sygnaly/Modyfikatory`** (źródło `"pety"`, bez zmian w silniku
+i w stanie gracza): `procent` → mnożnik statystyk (pole silnika `pet`, D-059), `lup` → premia do łupu, `pasywki` →
+pasywki silnika żywiołu (stan gracza liczy tylko te klasy gracza, dlatego Światło, Kryształ i Woda mają pasywkę dla
+każdej klasy), `zaklecie` → zaklęcie broni bohatera (podpalenie albo trucizna przy niezablokowanym ciosie, każda klasa).
+Serwer petów ustawia modyfikator przy wejściu gracza, po zakupie i wyborze, a zdejmuje przy odstawieniu; pierwsze
+wywołanie przejmuje źródło — dawna premia z `Pety("kup")` już się nie liczy (bez podwójnej premii, test `5i`).
+
+| Żywioł | Gracz widzi | Pasywki silnika (klasa) |
+|---|---|---|
+| Ogień | „podpala wroga przy ciosie (25%)” | zaklęcie `podpalenie` (25% na niezablokowany cios, każda klasa; w walce napis „PODPALENIE!”), Mag dodatkowo `ognista_rozdzka` (podpalenie trwa o 2 tury dłużej) |
+| Jad | „zatruwa wroga przy ciosie (30%)” | zaklęcie `trucizna` (30% na niezablokowany cios, każda klasa), Mag dodatkowo `kumulowanie_trucizny` (więcej stosów, mocniejsza trucizna) |
+| Światło | „szybsza mana” | `bitewny_rytm` / `przyplyw_adrenaliny` / `przeplyw_many` — mana z ciosów +10%, +15 many na start walki |
+| Kryształ | „ciosy mocniej trafiają” | Wojownik `rozdzieracz` (Pancerz wroga −12%), Zwiadowca `oko_lowcy` (krytyk), Mag `skupiona_magia` (moc +2,5%) |
+| Woda | „lepsza obrona” | Wojownik `mur_tarczy` (blok +4,2%, Pancerz +15,7%), Zwiadowca `zwinnosc` (unik +7,1%), Mag `przeplyw_many` (szybsza bariera) |
+
+**Wpływ na walki** (`skille_petow.py`, silnik walki, bohater jak w grze — rozkład klasy z danych gracza, bez treningu;
+600 ziaren; pp = punkty procentowe szansy wygranej przy graczu na poziomie strażnika; W / Z / M = Wojownik /
+Zwiadowca / Mag; czas i Złoto na minutę — przejście gracz po graczu, 15 na klasę, pet od początku — górna granica):
+
+| Pet | Strażnik Gaju (bez peta 36 / 37 / 33%) | Strażnik Topieli (bez peta 11 / 23 / 11%) | Las do Strażnika (28,2 min) | Bagno do Strażnika (49,1 min) | Złoto/min las / Bagno (120 / 166) |
+|---|---|---|---|---|---|
+| Żołędziak (+2% Złota) | +0 / +0 / +0 | +0 / +0 / +0 | +0,0 | +0,0 | +2 / +3 |
+| Mchowy Ślimak (+3% Pancerza) | +0 / +0 / +0 | +1 / +0 / +0 | +0,0 | −0,2 | −1 / +0 |
+| Pałkuś (+3% Siły) | +2 / +1 / +0 | +1 / +1 / +0 | −0,7 | −3,1 | +0 / +1 |
+| Nenufarek (+3% Kondycji) | +0 / +0 / +2 | +2 / +0 / +0 | −1,2 | −3,8 | −0 / −2 |
+| Liściolis (+15% Zręczności i Szczęścia) | +8 / +3 / +4 | +5 / +4 / +3 | −2,4 | −5,4 | +5 / +7 |
+| Ważeczka (Jad: trucizna 30% przy ciosie) | +7 / +5 / +6 | +6 / +6 / +4 | −0,7 | −6,9 | +3 / −2 |
+| Świetlikówka (Światło, +20% Int., +5% dośw.) | +8 / +4 / +5 | +5 / +4 / +3 | −3,7 | −8,3 | +10 / +10 |
+| Ognik (Ogień: podpalenie 25% przy ciosie) | +12 / +7 / +12 | +9 / +6 / +7 | −2,8 | −9,0 | +6 / +14 |
+| Jelonek Gaju (Kryształ, +20% Siły, +5% / +5%) | +13 / +8 / +6 | +9 / +7 / +5 | −5,1 | −9,7 | +19 / +27 |
+| Perłowa Wydra (Woda, +15% Kondycji, +6% / +6%) | +12 / +16 / +6 | +10 / +12 / +4 | −4,7 | −9,5 | +19 / +24 |
+
+Wnioski: pospolite i zwykłe to tylko ozdoba (±2 pp, w granicach szumu); rzadkie i epickie wyraźnie pomagają; legendarne
+są pożądane (−17% czasu lasu, −19% Bagna), ale nie obowiązkowe — bez peta strażnik lasu na swoim poziomie to ok. 35%
+wygranych, a gracz i tak zdobywa poziom wyżej. Klasa ma znaczenie: Wojownikowi najbardziej Jelonek (Siła) i Wydra,
+Zwiadowcy Wydra (unik), Magowi Ognik (Ogień); Zręczność i Inteligencja w silniku działają słabiej niż Siła i Kondycja.
+Po zmianie na prawdziwe zaklęcie (18.11 noc) Ognik jest najmocniejszym epickim (+12 pp Wojownikowi i Magowi — blisko
+legendarnych w walce, ale bez premii do Złota), a Ważeczka pomaga każdej klasie po równo (+5–7 pp, trucizna działa
+z każdą bronią). Czas Bagna przy małych petach (±3 min) i czas lasu Ważeczki to szum 45 graczy na wariant.
+
+**Zaklęcie przy ciosie (18.11 noc):** stan gracza ma już pole `zaklecie` w `Modyfikatorach` (ustawia zaklęcie broni
+bohatera, `bron.zaklecie`; przy kilku źródłach wygrywa pierwsze alfabetycznie). Ognik daje więc prawdziwe podpalenie
+(25% na niezablokowany cios, każda klasa, w walce napis „PODPALENIE!”) zamiast `furii` / `serii` i bez premii do Złota,
+a Ważeczka — trucizna (30%) zamiast +20% Inteligencji (pasuje do wyglądu: ważka z odwłokiem w paski i różowym końcem ogonka jak żądło; model bez zmian).
+Liczby w tabeli wyżej są już po tej zmianie.
 
 ## Gładkie jajka (17.11 wieczór)
 
@@ -151,9 +204,11 @@ a zagroda pokazuje ten sam napis — bez błędów.
   przycisk „Wybierz” i „Odstaw peta”. Wybór sprawdza serwer (tylko posiadany pet, tylko przy zagrodzie). Gdy nie ma
   `MiasteczkoBazarGra`, działa zapasowe E przy tablicy. Przycisku Pets w HUD i plików Pawła pakiet nie rusza
   (docelowe okno robi Paweł).
-- **Premia:** skill peta liczy StanGracza przy przyjęciu łupu (zaokrąglony ułamek Złota / doświadczenia z tej walki,
-  0,5 w górę) i przy pokazaniu łupu wysyła klientowi „premia” → napis „+N Złota od peta: Liściolis”. Silnik walki
-  bez zmian.
+- **Premia i skill (D-101):** skill aktywnego peta trafia do StanGracza przez `Sygnaly/Modyfikatory` (źródło `"pety"`):
+  statystyki, pasywki i zaklęcie żywiołu w bohaterze walki, premię do łupu liczy stan gracza przy przyjęciu łupu (zaokrąglony
+  ułamek Złota / doświadczenia, 0,5 w górę) i przy pokazaniu łupu wysyła klientowi „premia” → napis „+N Złota od peta:
+  Jelonek Gaju” (tylko pety z premią do łupu). Silnik walki bez zmian; bez sygnału `Modyfikatory` (starszy stan
+  gracza) premia do łupu idzie jak dawniej przez `Pety`.
 - **Wskazówka celu** (`swiat/wskazowki_gry`): dla biomu, w którym jest gracz — w lesie „Masz dość Złota na jajko —
   inkubator przy wejściu do lasu”, w Bagnie „Masz dość Złota na jajko Bagna — inkubator przy pomoście” (znacznik nad
   punktem E inkubatora tego biomu), w mieście „…: TELEPORT → Las (inkubator)” ze strzałką — tylko do pierwszego jajka
@@ -182,7 +237,8 @@ a zagroda pokazuje ten sam napis — bez błędów.
 
 1. ~~Cena rosnąca~~ — zdecydowane wyżej (stała).
 2. **Szanse** 50 / 25 / 15 / 8 / 2% z kalkulatora (D-052 mówi o ok. 1% na legendarnego w najdroższym jajku).
-3. **Skille**: premia do Złota albo doświadczenia z walk 5 / 8 / 12 / 15 / 20% (legendarny: oba), poza silnikiem walki.
+3. **Skille (D-101, liczby do zatwierdzenia)**: tabela w „Skille petów” — pospolite i zwykłe +2–3% (Złoto, Pancerz,
+   Siła, Kondycja), rzadkie +15–20% statystyk, epickie i legendarne żywioł + premie; przez `Modyfikatory` stanu gracza.
 4. **Pierwszy pet sam idzie za graczem**; kolejne trafiają do zagrody (zmiana tylko w zagrodzie).
 5. **Wyklucie automatyczne** ok. 4 s (trzęsienie 1,4 s, pęknięcie 0,6 s, wyskok 1 s, radość 1,2 s), bez „klikania kilka
    razy” z D-060 i bez skracania drzewkiem (D-056).
@@ -193,8 +249,14 @@ a zagroda pokazuje ten sam napis — bez błędów.
 10. **Kopie** liczone jako shardy peta (D-058), rozbiórki jeszcze nie ma.
 11. **Napisy „PRÓBA”** na tablicy i w oknie zagrody — okno tymczasowe do czasu okna Pets Pawła.
 12. **Jajko Bagna** za stałe 750 Złota (liczba do doboru); licznik ceny osobny (używany tylko przy cenie rosnącej).
-13. **Skille Bagna** 6 / 10 / 14 / 18 / 24% — o 17–25% lepsze od leśnych tej samej rzadkości, słabsze od leśnych
-    o stopień rzadszych.
+13. **Skille Bagna** — od 18.11 według D-101 (różne premie, nie „trochę lepsze od leśnych”; dawniej 6 / 10 / 14 / 18 /
+    24% Złota albo doświadczenia).
+15. **Żywioły** — Światło, Kryształ i Woda z pasywek silnika; Ogień (Ognik) i Jad (Ważeczka) to prawdziwa szansa na
+    podpalenie (25%) / zatrucie (30%) przy ciosie przez pole `zaklecie` Modyfikatorów stanu gracza (18.11 noc).
+16. **Latarenka i tablica Bagna przestawione, jajko Bagna ciemniejsze** (18.11, po zrzutach z gry): latarenka z boku
+    gniazda za tablicą, tablica bliżej punktu E, skorupka `86C6AB`. 18.11 noc (zrzuty `klatki/d101_*`): tablica krok
+    przed kępą trzcin stanowiska (z bliska zasłaniała prawy brzeg tablicy), napis „Cena: … Złota” nad całym jajkiem
+    (kwiatek na czubku jajka Bagna zasłaniał liczbę).
 14. **Gniazdo Bagna na palach** i latarenka stoją we własnym kontenerze na stanowisku jajka z mapy Bagna (mapa bez
     zmian); jajko w gnieździe, wysokość z modelu inkubatora.
 
@@ -207,10 +269,11 @@ a zagroda pokazuje ten sam napis — bez błędów.
 | `logika_petow.py` | lustro `zrodla/LogikaPetow.luau` (cena, licznik osobny / wspólny, losowanie, jajko peta i biomu, teksty, zagroda, decyzja serwera) |
 | `zrodla/SerwerPetow.server.luau`, `KlientPetow.client.luau`, `RigPetow.luau` | serwer, klient, budowa petów z klocków i klipy przez Motor6D |
 | `ekonomia_jajek.py` | kiedy gracz kupi kolejne jajka (tabele wyżej; `--biom bagno`) |
+| `skille_petow.py` | wpływ skilli petów (D-101) na walki: szansa wygranej ze strażnikami, czas przejścia, Złoto na minutę |
 | `podglad.py` → `podglad/pety_lesne.jpg`, `podglad/pety_bagna.jpg` | pięć portretów petów jajka z rzadkością, szansą i skillem + inkubator i jajko (do raportu); `podglad/jajko_lesne_przed_po.jpg` — para przed / po |
 | `sprawdz_luau_petow.py` | kontrola statyczna Luau (m.in. bez Robuxów, bez zapisu Złota w pakiecie, klient bez liczb) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
-| `testy/test_petow.py` | 41 testów offline (w tym prawdziwe SerwerPetow + SerwerStanu w `luau_mini`, oba jajka, cena stała i przełączniki) |
+| `testy/test_petow.py` | 43 testy offline (w tym prawdziwe SerwerPetow + SerwerStanu w `luau_mini`, oba jajka, cena stała i przełączniki) |
 | `testy/proba_play.py` | próba w Play P00–P15 (+ P07b: każdy pet za graczem); `--bagno`: B00–B09 (jajko Bagna); zrzuty do `klatki/`; `--sprawdz` bez Studio. Atrybut klienta `TestKameraProby` na kontenerze: kamera do zrzutów nie chowa petów (tylko próby) |
 | `testy/proba_ludzka.py` | przejście „po ludzku”: walki do Złota na jajko (liczba walk i minut), wskazówka, E, wyklucie, pet, premia, zagroda (L01–L09) |
 | `swiat/postacie/zoledziak.py`, `mchowy_slimak.py`, `lisciolis.py`, `swietlikowka.py`, `jelonek_gaju.py`, `jajko_lesne.py`, `pety_lesne.py` | modele lasu (Blender i klocki); `pety_lesne.py` — wspólne klipy, oczy, gładkie jajko, tablica szans |
@@ -220,7 +283,7 @@ a zagroda pokazuje ten sam napis — bez błędów.
 
 ```
 python -B swiat/pety_proba/dane_petow.py                 # po zmianie ustawień albo modeli
-python -B swiat/pety_proba/testy/test_petow.py           # 41 testów, ok. 13 s
+python -B swiat/pety_proba/testy/test_petow.py           # 43 testy, ok. 20 s
 python -B swiat/pety_proba/zbuduj.py --sucho             # bez Studio
 python -B swiat/pety_proba/ekonomia_jajek.py --biom bagno  # cena jajka Bagna
 python -B swiat/pety_proba/podglad.py                    # podglad/pety_lesne.jpg, pety_bagna.jpg

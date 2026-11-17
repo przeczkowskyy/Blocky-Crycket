@@ -17,6 +17,9 @@
 		   i mini-gry — atrybut gracza widzą inni klienci). Każde zdarzenie najwyżej co D.limity.odstep_zdarzen_s.
 		3. Zapasowe E przy tablicy zagrody (Zagroda/"E wybor") — włączone tylko, gdy nie ma Workspace/MiasteczkoBazarGra
 		   (wtedy E opiekunki nie istnieje); otwiera okno wyboru u klienta.
+		4. Skill aktywnego peta (D-101) → StanGracza/Sygnaly/Modyfikatory("ustaw", gracz, "pety", LogikaPetow.modPeta):
+		   przy wejściu gracza, po zakupie, wyborze i odstawieniu ("usun"). Stan gracza składa go z innymi źródłami
+		   w bohatera walki (procent statystyk → pole silnika pet, pasywki żywiołu → premie) i w premię do łupu.
 	Stan petów żyje w profilu StanGracza (jeden właściciel, pod przyszły zapis). Bez StanGracza: inkubator odmawia
 	z komunikatem, zagroda pokazuje „brak”, żadnych błędów. Atrybuty gracza tego pakietu: dla każdego jajka
 	jajko.atrybuty.cena (cena następnego jajka — napis przy E i wskazówki celu) i jajko.atrybuty.kupione (ile takich
@@ -49,7 +52,7 @@ local function dolicz(nazwa: string)
 end
 
 kontener:SetAttribute("SerwerPetowGotowy", false)
-for _, n in { "LicznikZakupow", "LicznikOdmow", "LicznikWyborow" } do
+for _, n in { "LicznikZakupow", "LicznikOdmow", "LicznikWyborow", "LicznikModyfikatorow" } do
 	kontener:SetAttribute(n, 0)
 end
 
@@ -76,16 +79,45 @@ local function graczOk(gracz: any): boolean
 end
 
 ------------------------------------------------------------------ stan gracza (Workspace/StanGracza — tylko przez sygnał)
-local function sygnalPetow(): BindableFunction?
+local function sygnalStanu(nazwa: string): BindableFunction?
 	local k = workspace:FindFirstChild(S.kontener)
 	if not k or k:GetAttribute("Wygenerowane") ~= true or k:GetAttribute(S.gotowy) ~= true then
 		return nil
 	end
 	local s = k:FindFirstChild("Sygnaly")
-	local f = s and s:FindFirstChild(S.sygnal_petow)
+	local f = s and s:FindFirstChild(nazwa)
 	if f and f:IsA("BindableFunction") then
 		return f
 	end
+	return nil
+end
+
+local function sygnalPetow(): BindableFunction?
+	return sygnalStanu(S.sygnal_petow)
+end
+
+-- skill aktywnego peta (D-101) jako modyfikator bohatera: StanGracza/Sygnaly/Modyfikatory, źródło "pety" — procent
+-- statystyk, premia do łupu, pasywki żywiołu. Pierwsze "ustaw" / "usun" przejmuje źródło w stanie gracza: od tej chwili
+-- dawna premia z Pety("kup"/"aktywny") się nie liczy (bez podwójnej premii). Bez sygnału (starszy stan gracza) — nic:
+-- premia do łupu idzie wtedy jak dawniej, przez Pety.
+local function ustawModyfikator(gracz: Player, pet: string?)
+	local f = sygnalStanu(S.sygnal_modyfikatorow)
+	if not f or not graczOk(gracz) then
+		return nil
+	end
+	local mod = if pet then L.modPeta(D, pet) else nil
+	local ok, w = pcall(function()
+		if mod then
+			return f:Invoke("ustaw", gracz, S.zrodlo_modyfikatora, mod)
+		end
+		return f:Invoke("usun", gracz, S.zrodlo_modyfikatora)
+	end)
+	if ok and type(w) == "table" and w.ok then
+		dolicz("LicznikModyfikatorow")
+		kontener:SetAttribute("OstatniModyfikator", string.format("%s:%s", gracz.Name, tostring(if mod then pet else "brak")))
+		return w
+	end
+	warn(P .. "StanGracza/Modyfikatory: " .. tostring(if ok and type(w) == "table" then w.powod else w))
 	return nil
 end
 
@@ -118,11 +150,6 @@ local function ustawCeny(gracz: Player, wyd)
 	end
 end
 
-local function odswiezCene(gracz: Player)
-	if graczOk(gracz) then
-		ustawCeny(gracz, wydatki(wolajPety("stan", gracz)))
-	end
-end
 
 ------------------------------------------------------------------ kupno i wyklucie
 local zajety: { [Player]: number } = {}
@@ -197,6 +224,7 @@ local function kup(gracz: any, idJajka: any, wymuszoneR: any, zZasiegiem: boolea
 	local info = { jajko = j.id, pet = pet, nowy = w.nowy == true, kopie = w.kopie, aktywny = w.aktywny, cena = cena,
 		nastepna = nastepna, zloto = w.zloto }
 	zdarzenia:FireClient(gracz, "wyklucie", info)
+	ustawModyfikator(gracz, if type(w.aktywny) == "string" then w.aktywny else nil)
 	dolicz("LicznikZakupow")
 	kontener:SetAttribute("OstatniZakup", string.format("%s:%s:%s:%dz", gracz.Name, j.id, pet, cena))
 	info.ok = true
@@ -238,6 +266,7 @@ local function wybierz(gracz: Player, pet: any, bezZasiegu: boolean?)
 		return odmowa(gracz, tostring(w.powod), D.teksty.nie_masz)
 	end
 	dolicz("LicznikWyborow")
+	ustawModyfikator(gracz, pet)
 	zdarzenia:FireClient(gracz, "wybrany", pet)
 	wyslijListe(gracz)
 	return { ok = true, aktywny = pet }
@@ -251,6 +280,7 @@ local function odstaw(gracz: Player)
 	if not w or not w.ok then
 		return odmowa(gracz, "brak_stanu", D.teksty.brak_stanu)
 	end
+	ustawModyfikator(gracz, nil)
 	zdarzenia:FireClient(gracz, "wybrany", nil)
 	wyslijListe(gracz)
 	return { ok = true }
@@ -346,7 +376,10 @@ local function nowyGracz(gracz: Player)
 			return
 		end
 		if sygnalPetow() then
-			odswiezCene(gracz)
+			local st = wolajPety("stan", gracz)
+			ustawCeny(gracz, wydatki(st))
+			-- modyfikator od razu przy wejściu (przejmuje źródło "pety" w stanie gracza, zanim przyjdzie pierwszy łup)
+			ustawModyfikator(gracz, if st and type(st.aktywny) == "string" then st.aktywny else nil)
 			return
 		end
 		task.wait(1)
@@ -391,7 +424,15 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 			ceny[j.id] = g:GetAttribute(j.atrybuty.cena)
 			kupioneJ[j.id] = g:GetAttribute(j.atrybuty.kupione)
 		end
-		return { stanGracza = sygnalPetow() ~= nil, zajety = zajety[g] ~= nil and teraz() < zajety[g],
+		local fm = sygnalStanu(S.sygnal_modyfikatorow)
+		local mod = nil
+		if fm then
+			local okm, wm = pcall(function()
+				return fm:Invoke("czytaj", g)
+			end)
+			mod = if okm then wm else nil
+		end
+		return { stanGracza = sygnalPetow() ~= nil, modyfikatory = mod, zajety = zajety[g] ~= nil and teraz() < zajety[g],
 			cena = ceny[D.jajka[1].id], ceny = ceny, kupione = kupioneJ, czeka = g:GetAttribute(AG.czeka), pety = st,
 			zapasoweE = kontener:GetAttribute("ZapasoweEZagrody") }
 	end

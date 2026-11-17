@@ -14,6 +14,7 @@
 		opisCeny(D, jajko, tryb?)                 → „cena: 300 Złota” albo „od 300 Złota · rośnie z każdym jajkiem”
 		losuj(D, jajko, r)                        → id peta (r ∈ [0, 1), jawne szanse po kolei)
 		procent(szansa), opisSkilla(D, pet), premiaPeta(D, id), tekstBraku(D, brakuje, zloto, cena)
+		modPeta(D, id)                            → modyfikator bohatera od peta (Sygnaly/Modyfikatory stanu gracza)
 		wierszeSzans(D, jajko), wierszeZagrody(D, kopie, aktywny), decyzja(D, stan), czasWyklucia(D)
 		rowne(a, b), sprawdzPrzypadki(D) → ok, n, bledy
 ]]
@@ -141,29 +142,134 @@ function L.procent(szansa: number): string
 	return string.format("%d,%d%%", math.floor(dz / 10), dz - 10 * math.floor(dz / 10))
 end
 
-function L.opisSkilla(D, p): string
-	local s = p.skill
-	local T = D.teksty
-	local z = math.floor(s.zloto * 100 + 0.5)
-	local x = math.floor(s.doswiadczenie * 100 + 0.5)
-	if z > 0 and x > 0 and z == x then
-		return string.format(T.skill_oba, z)
-	end
-	if z > 0 and x > 0 then
-		return string.format(T.skill_zloto, z) .. ", " .. string.format(T.skill_xp, x)
-	end
-	if z > 0 then
-		return string.format(T.skill_zloto, z)
-	end
-	return string.format(T.skill_xp, x)
+local function proc(v: number): number
+	return math.floor(v * 100 + 0.5)
 end
 
-function L.premiaPeta(D, id)
+local function lista(nazwy): string
+	if #nazwy == 1 then
+		return nazwy[1]
+	end
+	local t = nazwy[1]
+	for i = 2, #nazwy - 1 do
+		t = t .. ", " .. nazwy[i]
+	end
+	return t .. " i " .. nazwy[#nazwy]
+end
+
+-- części opisu skilla (D-101): żywioł, premie do statystyk (równe razem), premia do łupu
+function L.czesciSkilla(D, p)
+	local s = p.skill
+	local T = D.teksty
+	local m = s.mod
+	local czesci = {}
+	if s.zywiol then
+		local Z = D.zywioly[s.zywiol]
+		table.insert(czesci, Z.nazwa .. ": " .. Z.opis)
+	end
+	local pr = m.procent or {}
+	local grupy = {}
+	for _, a in D.kolejnosc_statystyk do
+		local v = pr[a]
+		if v and v ~= 0 then
+			local n = proc(v)
+			local znaleziona = false
+			for _, g in grupy do
+				if g.n == n then
+					table.insert(g.nazwy, D.statystyki[a])
+					znaleziona = true
+					break
+				end
+			end
+			if not znaleziona then
+				table.insert(grupy, { n = n, nazwy = { D.statystyki[a] } })
+			end
+		end
+	end
+	for _, g in grupy do
+		table.insert(czesci, string.format("+%d%% ", g.n) .. lista(g.nazwy))
+	end
+	local lup = m.lup or {}
+	local z, x = proc(lup.zloto or 0), proc(lup.doswiadczenie or 0)
+	if z > 0 and x > 0 and z == x then
+		table.insert(czesci, string.format(T.skill_oba, z))
+	else
+		if z > 0 then
+			table.insert(czesci, string.format(T.skill_zloto, z))
+		end
+		if x > 0 then
+			table.insert(czesci, string.format(T.skill_xp, x))
+		end
+	end
+	return czesci
+end
+
+-- skill jednym krótkim zdaniem (tablica szans, okno zagrody, napis po wykluciu)
+function L.opisSkilla(D, p): string
+	return table.concat(L.czesciSkilla(D, p), ", ")
+end
+
+-- najkrócej (tablica zagrody): nazwa żywiołu albo pierwsza premia
+function L.opisSkillaKrotki(D, p): string
+	if p.skill.zywiol then
+		return D.zywioly[p.skill.zywiol].nazwa
+	end
+	return L.czesciSkilla(D, p)[1]
+end
+
+local function niepusta(t): boolean
+	if type(t) ~= "table" then
+		return false
+	end
+	for _ in t do
+		return true
+	end
+	return false
+end
+
+-- modyfikator bohatera dla StanGracza/Sygnaly/Modyfikatory (źródło "pety"): procent, lup, pasywki żywiołu
+function L.modPeta(D, id)
 	local p = L.pet(D, id)
 	if not p then
-		return { zloto = 0, doswiadczenie = 0 }
+		return nil
 	end
-	return { zloto = p.skill.zloto, doswiadczenie = p.skill.doswiadczenie }
+	local m = p.skill.mod
+	local w = {}
+	if niepusta(m.procent) then
+		local t = {}
+		for k, v in m.procent do
+			t[k] = v
+		end
+		w.procent = t
+	end
+	if niepusta(m.lup) then
+		local t = {}
+		for k, v in m.lup do
+			t[k] = v
+		end
+		w.lup = t
+	end
+	if p.skill.zywiol then
+		local Z = D.zywioly[p.skill.zywiol]
+		local t = {}
+		for _, n in Z.pasywki do
+			table.insert(t, n)
+		end
+		if #t > 0 then
+			w.pasywki = t
+		end
+		if Z.zaklecie then
+			w.zaklecie = Z.zaklecie -- zaklęcie broni silnika: podpalenie / trucizna przy ciosie gracza
+		end
+	end
+	return w
+end
+
+-- premia do łupu {zloto, doswiadczenie} dla Pety("kup" / "aktywny") (zgodność wstecz stanu gracza)
+function L.premiaPeta(D, id)
+	local p = L.pet(D, id)
+	local lup = if p then (p.skill.mod.lup or {}) else {}
+	return { zloto = lup.zloto or 0, doswiadczenie = lup.doswiadczenie or 0 }
 end
 
 function L.tekstBraku(D, brakuje: number, zloto: number, c: number): string
@@ -188,7 +294,7 @@ function L.wierszeZagrody(D, kopie, aktywny)
 		if calkowitaNieujemna(n) and n > 0 then
 			local r = L.rzadkosc(D, p.rzadkosc)
 			table.insert(w, { pet = p.id, nazwa = p.nazwa, rzadkosc = r.nazwa, kolor = r.kolor, kopie = n,
-				skill = L.opisSkilla(D, p), aktywny = p.id == aktywny, jajko = p.jajko })
+				skill = L.opisSkilla(D, p), krotko = L.opisSkillaKrotki(D, p), aktywny = p.id == aktywny, jajko = p.jajko })
 		end
 	end
 	return w
@@ -272,7 +378,8 @@ function L.sprawdzPrzypadki(D)
 	end
 	for i, c in P.skill do
 		local p = L.pet(D, c.pet)
-		sprawdz("skill", i, p ~= nil and L.opisSkilla(D, p) == c.wynik and L.rowne(L.premiaPeta(D, c.pet), c.premia))
+		sprawdz("skill", i, p ~= nil and L.opisSkilla(D, p) == c.wynik and L.opisSkillaKrotki(D, p) == c.krotko
+			and L.rowne(L.premiaPeta(D, c.pet), c.premia) and L.rowne(L.modPeta(D, c.pet), c.mod))
 	end
 	for i, c in P.zagroda do
 		local w = L.wierszeZagrody(D, c.kopie, c.aktywny)

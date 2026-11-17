@@ -352,7 +352,8 @@ local function przygotujInkubator(j)
 	b.ResetOnSpawn = false
 	b.MaxDistance = 90
 	b.Size = UDim2.fromOffset(300, 54)
-	b.StudsOffsetWorldSpace = Vector3.new(0, (dane.wysokosc or 2.8) * skala * 0.8 + 0.6, 0)
+	-- nad całym jajkiem (18.11: kwiatek na czubku jajka Bagna zasłaniał liczbę, gdy napis był na 0,8 wysokości)
+	b.StudsOffsetWorldSpace = Vector3.new(0, (dane.wysokosc or 2.8) * skala + 0.9, 0)
 	b.Parent = ekrany
 	local t = Instance.new("TextLabel")
 	t.BackgroundTransparency = 1
@@ -470,7 +471,7 @@ local function napisNadPetem(adornee: BasePart, info, kol: Color3, r)
 	b.MaxDistance = 120
 	b.LightInfluence = 0
 	b.ResetOnSpawn = false
-	b.Size = UDim2.fromOffset(340, 132)
+	b.Size = UDim2.fromOffset(440, 132)
 	b.StudsOffsetWorldSpace = Vector3.new(0, 3.2, 0)
 	b.Parent = ekrany
 	local lista = Instance.new("UIListLayout")
@@ -494,7 +495,7 @@ local function napisNadPetem(adornee: BasePart, info, kol: Color3, r)
 	if not info.nowy then
 		linia(string.format("×%d", info.kopie or 1), 22, kolor("FFF6E0"))
 	end
-	b.Size = UDim2.fromOffset(340, if info.nowy then 110 else 132)
+	b.Size = UDim2.fromOffset(440, if info.nowy then 110 else 132)
 	return b
 end
 
@@ -797,7 +798,7 @@ local function rysujTablice()
 	for _, w in wierszeZagrody.wiersze do
 		ile[w.jajko] = (ile[w.jajko] or 0) + 1
 		wiersz(tablicaKolumny[w.jajko], string.format("%s%s ×%d · %s", if w.aktywny then "► " else "", w.nazwa, w.kopie,
-			w.skill), kolor(w.kolor))
+			w.krotko or w.skill), kolor(w.kolor))
 	end
 	for _, j in D.jajka do
 		if not ile[j.id] then

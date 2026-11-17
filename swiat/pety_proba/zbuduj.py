@@ -339,9 +339,10 @@ local function inkubator(J)
 			o.Color = Color3.fromHex("3E2A16")
 			o.Thickness = 1
 			o.Parent = kw
-			tekst(s, w.szansa, UDim2.fromScale(0.09, yy), UDim2.fromScale(0.12, 0.11), "2B2118", nil, 22)
-			tekst(s, w.nazwa, UDim2.fromScale(0.21, yy), UDim2.fromScale(0.36, 0.11), "2B2118", nil, 22)
-			tekst(s, w.skill, UDim2.fromScale(0.57, yy + 0.015), UDim2.fromScale(0.41, 0.08), "5E3A22", "Gotham", 14)
+			-- wiersz: szansa i nazwa, pod nimi skill na całą szerokość (skille D-101 są dłuższe: żywioł + premie)
+			tekst(s, w.szansa, UDim2.fromScale(0.09, yy - 0.005), UDim2.fromScale(0.12, 0.075), "2B2118", nil, 22)
+			tekst(s, w.nazwa, UDim2.fromScale(0.21, yy - 0.005), UDim2.fromScale(0.76, 0.075), "2B2118", nil, 22)
+			tekst(s, w.skill, UDim2.fromScale(0.21, yy + 0.068), UDim2.fromScale(0.76, 0.05), "5E3A22", "Gotham", 14)
 		end
 		table.insert(raporty, string.format("%s: %d stałych brył, szanse w SurfaceGui", J.id, #T.czesci))
 	else

@@ -113,25 +113,95 @@ def procent(szansa):
     return "%d,%d%%" % (dz // 10, dz % 10)
 
 
-def opis_skilla(D, p):
+def _proc(v):
+    return int(math.floor(v * 100 + 0.5))
+
+
+def _lista(nazwy):
+    """["Siły"] → „Siły”; ["Siły", "Zręczności", "Inteligencji"] → „Siły, Zręczności i Inteligencji”."""
+    if len(nazwy) == 1:
+        return nazwy[0]
+    return ", ".join(nazwy[:-1]) + " i " + nazwy[-1]
+
+
+def czesci_skilla(D, p):
+    """Części opisu skilla (D-101): żywioł („Ogień: mocniejsze zwykłe ciosy”), premie do statystyk (równe wartości
+    razem, w stałej kolejności statystyk) i premia do łupu — np. „+8% Zręczności”, „+2% Złota z walk”."""
     s = p["skill"]
     T = D["teksty"]
-    z = int(math.floor(s["zloto"] * 100 + 0.5))
-    x = int(math.floor(s["doswiadczenie"] * 100 + 0.5))
+    m = s["mod"]
+    czesci = []
+    if s.get("zywiol"):
+        Z = D["zywioly"][s["zywiol"]]
+        czesci.append(Z["nazwa"] + ": " + Z["opis"])
+    proc = m.get("procent") or {}
+    grupy = []
+    for a in D["kolejnosc_statystyk"]:
+        v = proc.get(a)
+        if v:
+            n = _proc(v)
+            znaleziona = False
+            for g in grupy:
+                if g[0] == n:
+                    g[1].append(D["statystyki"][a])
+                    znaleziona = True
+                    break
+            if not znaleziona:
+                grupy.append((n, [D["statystyki"][a]]))
+    for n, nazwy in grupy:
+        czesci.append("+%d%% %s" % (n, _lista(nazwy)))
+    lup = m.get("lup") or {}
+    z, x = _proc(lup.get("zloto", 0)), _proc(lup.get("doswiadczenie", 0))
     if z > 0 and x > 0 and z == x:
-        return T["skill_oba"] % z
-    if z > 0 and x > 0:
-        return (T["skill_zloto"] % z) + ", " + (T["skill_xp"] % x)
-    if z > 0:
-        return T["skill_zloto"] % z
-    return T["skill_xp"] % x
+        czesci.append(T["skill_oba"] % z)
+    else:
+        if z > 0:
+            czesci.append(T["skill_zloto"] % z)
+        if x > 0:
+            czesci.append(T["skill_xp"] % x)
+    return czesci
+
+
+def opis_skilla(D, p):
+    """Skill peta jednym krótkim zdaniem (tablica szans, okno zagrody, napis po wykluciu)."""
+    return ", ".join(czesci_skilla(D, p))
+
+
+def opis_skilla_krotki(D, p):
+    """Najkrócej (tablica zagrody): nazwa żywiołu albo pierwsza premia — „Ogień”, „+15% Zręczności i Szczęścia”."""
+    if p["skill"].get("zywiol"):
+        return D["zywioly"][p["skill"]["zywiol"]]["nazwa"]
+    return czesci_skilla(D, p)[0]
+
+
+def mod_peta(D, pid):
+    """Modyfikator bohatera od aktywnego peta dla StanGracza/Sygnaly/Modyfikatory (źródło "pety"): procent (mnożnik
+    statystyk, D-059), lup (premia do łupu), pasywki żywiołu (pasywki silnika — liczą się tylko te klasy gracza),
+    zaklecie żywiołu (podpalenie / trucizna przy ciosie gracza — każda klasa).
+    Tylko niepuste pola; nieznany pet → None."""
+    p = pet(D, pid)
+    if not p:
+        return None
+    m = p["skill"]["mod"]
+    w = {}
+    if m.get("procent"):
+        w["procent"] = dict(m["procent"])
+    if m.get("lup"):
+        w["lup"] = dict(m["lup"])
+    if p["skill"].get("zywiol"):
+        Z = D["zywioly"][p["skill"]["zywiol"]]
+        if Z["pasywki"]:
+            w["pasywki"] = list(Z["pasywki"])
+        if Z.get("zaklecie"):
+            w["zaklecie"] = Z["zaklecie"]     # zaklęcie broni silnika: podpalenie / trucizna przy ciosie gracza
+    return w
 
 
 def premia_peta(D, pid):
+    """Premia do łupu peta {zloto, doswiadczenie} — dla Pety("kup" / "aktywny") (zgodność wstecz stanu gracza)."""
     p = pet(D, pid)
-    if not p:
-        return {"zloto": 0, "doswiadczenie": 0}
-    return {"zloto": p["skill"]["zloto"], "doswiadczenie": p["skill"]["doswiadczenie"]}
+    lup = (p["skill"]["mod"].get("lup") or {}) if p else {}
+    return {"zloto": lup.get("zloto", 0), "doswiadczenie": lup.get("doswiadczenie", 0)}
 
 
 def tekst_braku(D, brakuje, zloto, c):
@@ -158,7 +228,8 @@ def wiersze_zagrody(D, kopie, aktywny):
         if _calkowita_nieujemna(n) and n > 0:
             r = rzadkosc(D, p["rzadkosc"])
             w.append({"pet": p["id"], "nazwa": p["nazwa"], "rzadkosc": r["nazwa"], "kolor": r["kolor"],
-                      "kopie": int(n), "skill": opis_skilla(D, p), "aktywny": p["id"] == aktywny, "jajko": p["jajko"]})
+                      "kopie": int(n), "skill": opis_skilla(D, p), "krotko": opis_skilla_krotki(D, p),
+                      "aktywny": p["id"] == aktywny, "jajko": p["jajko"]})
     return w
 
 
@@ -211,7 +282,8 @@ def przypadki(D):
     for s in (0.5, 0.25, 0.15, 0.08, 0.02, 0.005, 0.125, 1.0):
         P["procent"].append({"szansa": s, "wynik": procent(s)})
     for p in D["pety"]:
-        P["skill"].append({"pet": p["id"], "wynik": opis_skilla(D, p), "premia": premia_peta(D, p["id"])})
+        P["skill"].append({"pet": p["id"], "wynik": opis_skilla(D, p), "krotko": opis_skilla_krotki(D, p),
+                           "premia": premia_peta(D, p["id"]), "mod": mod_peta(D, p["id"])})
         P["jajko_peta"].append({"pet": p["id"], "wynik": jajko_peta(D, p["id"])["id"]})
     pierwsze = [j["pula"][0] for j in D["jajka"]]
     ostatnie = [j["pula"][-1] for j in D["jajka"]]

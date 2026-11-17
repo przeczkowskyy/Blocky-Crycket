@@ -25,7 +25,7 @@ from swiat.postacie.pety_lesne import jajko_gladkie, klipy_jajka, tablica_szans
 ID = "jajko_bagienne"
 
 PALETA = {
-    "skorupka": "BFE3D2", "cetka": "3F7A68", "cetka_jasna": "6FB59B", "grzybien": "4E9A3E", "grzybien_jasny": "79C25E",
+    "skorupka": "86C6AB", "cetka": "2F6B57", "cetka_jasna": "5FA88D", "grzybien": "4E9A3E", "grzybien_jasny": "79C25E",
     "kwiat": "F59AC0", "kwiat_srodek": "FFE066", "wnetrze": "E8FFF4",
     "pal": "4A3A2A", "pomost": "6E5638", "bloto": "4B3A26", "bloto_jasne": "6A553A", "trzcina": "8DA65A",
     "trzcina_ciemna": "5E7A3A", "palka": "6A4326", "ognik": "C8FF6A", "klatka": "3A2E22",
@@ -100,7 +100,7 @@ def _gniazdo(p):
 
 def _latarnia(p):
     """Wygięta tyczka z klatką i ognikiem (kość Latarnia, staw = podstawa tyczki)."""
-    with p.na("Latarnia", od="staw"):
+    with p.na("Latarnia", od="staw"), p.uklad(obrot=(0, 180, 0)):   # ramię ku jajku (−X)
         p.blok("Tyczka", (0, 2.4, 0), (0.28, 4.8, 0.28), "pal", "matowy", faza=0.03)
         p.blok("Tyczka luk", (0.55, 4.85, 0), (1.3, 0.24, 0.24), "pal", "matowy", rot=(0, 0, -18), faza=0.03)
         p.blok("Sznur", (1.15, 4.35, 0), (0.05, 0.7, 0.05), "klatka", "matowy", faza=0.0)
@@ -120,9 +120,12 @@ def inkubator():
            srodek=(0, CZUBEK_Y * k / 2, 0))
     p.kosc("Czubek", "Jajko", staw=(0, Y_JAJKA + CZUBEK_Y * k, 0), czesc=(1.6 * k, WYS_CZUBKA * k, 1.6 * k),
            srodek=(0, WYS_CZUBKA * k / 2, 0))
-    p.kosc("Tablica", "Podstawa", staw=(4.3, 0.5, 3.4), czesc=(4.4, 4.4, 0.4), srodek=(0, 2.2, 0))
-    # latarenka z przodu po prawej (naprzeciw tablicy): z tyłu stanowiska stoją lampion i wiaderka z mapy
-    p.kosc("Latarnia", "Podstawa", staw=(-4.3, 0.5, 3.2), czesc=(1.6, 5.0, 0.8), srodek=(0.6, 2.5, 0))
+    # tablica bliżej punktu E (próba 17.11: z daleka zasłaniały ją kępy trzcin z mapy); 18.11: krok przed kępę trzcin
+    # stanowiska (z bliska zasłaniała prawy brzeg tablicy) i trochę na zewnątrz — trzcina zostaje za tablicą
+    p.kosc("Tablica", "Podstawa", staw=(3.8, 0.5, 5.8), czesc=(4.4, 4.4, 0.4), srodek=(0, 2.2, 0))
+    # latarenka z boku gniazda, za tablicą (próba 17.11: z przodu po prawej zasłaniała jajko z boku); ramię ku jajku;
+    # z tyłu stanowiska stoją lampion i wiaderka z mapy
+    p.kosc("Latarnia", "Podstawa", staw=(5.2, 0.5, -0.4), czesc=(1.6, 5.0, 0.8), srodek=(-0.6, 2.5, 0))
     # to, co stoi na mapie Bagna (pomost, płyta, korzenie stanowiska) — tylko podgląd
     with p.na("Podstawa", od="staw"):
         p.blok("Pomost", (0, -0.4, 0), (15.0, 0.2, 15.0), "deska", "matowy", rot=(0, 8, 0), faza=0.05)

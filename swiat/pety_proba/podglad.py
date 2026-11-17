@@ -35,6 +35,21 @@ def czcionka(rozmiar):
     return ImageFont.load_default()
 
 
+def zawin(rys, tekst, font, szer):
+    """Tekst w wiersze nie szersze niż szer px (po słowach)."""
+    wiersze, biezacy = [], ""
+    for slowo in tekst.split(" "):
+        proba = (biezacy + " " + slowo).strip()
+        if biezacy and rys.textlength(proba, font=font) > szer:
+            wiersze.append(biezacy)
+            biezacy = slowo
+        else:
+            biezacy = proba
+    if biezacy:
+        wiersze.append(biezacy)
+    return wiersze
+
+
 def podglad_jajka(D, U, j, lesne):
     from PIL import Image, ImageDraw
     ju = next(x for x in U["jajka"] if x["id"] == j["id"])
@@ -43,7 +58,7 @@ def podglad_jajka(D, U, j, lesne):
     porownanie = lesne is not None and lesne["id"] != j["id"]
     bok = 360
     szer = bok * len(wiersze)
-    wys_opis = 182 if porownanie else 150
+    wys_opis = 250 if porownanie else 190   # skille D-101 bywają dłuższe — zawijane w kolumnie
     ink = Image.open(os.path.join(WYNIK, M["modul"], M["inkubator"] + "_bohater.jpg")).convert("RGB")
     ink = ink.resize((520, 520), Image.LANCZOS)
     jaj = Image.open(os.path.join(WYNIK, M["modul"], M["jajko"] + "_bohater.jpg")).convert("RGB").resize((520, 520),
@@ -64,12 +79,17 @@ def podglad_jajka(D, U, j, lesne):
         rys.rectangle([x, y, x + bok - 1, y + 10], fill=kolor)
         rys.text((x + 14, y + 18), w["nazwa"], fill=kolor, font=czcionka(30))
         rys.text((x + 14, y + 58), "%s · %s" % (w["rzadkosc"], w["szansa"]), fill=(255, 246, 224), font=czcionka(24))
-        rys.text((x + 14, y + 94), w["skill"], fill=(220, 210, 190), font=czcionka(20))
+        yy = y + 94
+        for linia in zawin(rys, w["skill"], czcionka(20), bok - 28):
+            rys.text((x + 14, yy), linia, fill=(220, 210, 190), font=czcionka(20))
+            yy += 25
         if porownanie:
             p_las = LP.pet(D, lesne["pula"][i])
             skill = LP.opis_skilla(D, p_las).replace(" z walk", "").replace("doświadczenia", "dośw.")
-            rys.text((x + 14, y + 126), "las: %s %s" % (p_las["nazwa"], skill),
-                     fill=(160, 150, 135), font=czcionka(17))
+            yy += 6
+            for linia in zawin(rys, "las: %s — %s" % (p_las["nazwa"], skill), czcionka(17), bok - 28):
+                rys.text((x + 14, yy), linia, fill=(160, 150, 135), font=czcionka(17))
+                yy += 21
     y = 70 + bok + wys_opis + 10
     obraz.paste(ink, (szer // 2 - 540, y))
     obraz.paste(jaj, (szer // 2 + 20, y))

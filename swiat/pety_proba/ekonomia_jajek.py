@@ -20,6 +20,7 @@ symulacja_lasu.jeden_gracz). Dwie rzeczy dochodzą:
 Premii petów (+% Złota) tu NIE liczę — to dolna granica tempa.
 """
 import argparse
+import math
 import os
 import random
 import statistics
@@ -42,11 +43,12 @@ JAJEK = 5
 
 
 def gracz(D, P, klasa, los, x0, przelot, po_strazniku=True, limit_min=LIMIT_MIN, L0=1, xp0=0, troll="lesny_troll",
-          dojscie=None, koniec=None):
+          dojscie=None, koniec=None, premia=None):
     """Jeden gracz: lista (czas s, Złoto łącznie z walk) po każdej walce + wynik jak symulacja_lasu.jeden_gracz
     (czas wygranej ze Strażnikiem albo None). Ta sama kolejność losowań co tam. Bagno: L0, xp0 = poziom
     i doświadczenie z lasu, troll = rzadki potwór z odrodzeniem, dojscie = sekundy dojścia per gatunek;
-    koniec (słownik) dostaje L i xp w chwili końca pętli (po wygranej ze Strażnikiem, gdy po_strazniku=False)."""
+    koniec (słownik) dostaje L i xp w chwili końca pętli (po wygranej ze Strażnikiem, gdy po_strazniku=False);
+    premia = {zloto, doswiadczenie} — premia peta do łupu, liczona jak w stanie gracza (ułamek łupu, 0,5 w górę)."""
     dojscie = dojscie or SL.DOJSCIE
     L, xp, czas = L0, xp0, przelot + abs(P[0]["x"] - x0) / SL.PREDKOSC
     i = 0
@@ -64,9 +66,13 @@ def gracz(D, P, klasa, los, x0, przelot, po_strazniku=True, limit_min=LIMIT_MIN,
         pz = los.randint(cel["od"], hi)
         r = silnik.symuluj(SL.bohater(D, klasa, L), {"potwor": cel["gatunek"], "poziom": pz}, los.randrange(1, 2 ** 31 - 1))
         czas += r["czas"] + SL.EKRAN_WYNIKU + dojscie[cel["gatunek"]]
-        zloto += r["lup"]["zloto"]
+        dz, dx = r["lup"]["zloto"], r["lup"]["doswiadczenie"]
+        if premia:
+            dz += int(math.floor(dz * premia.get("zloto", 0) + 0.5))
+            dx += int(math.floor(dx * premia.get("doswiadczenie", 0) + 0.5))
+        zloto += dz
         os_czasu.append((czas, zloto))
-        L, xp, _ = LS.awans(D, L, xp, r["lup"]["doswiadczenie"])
+        L, xp, _ = LS.awans(D, L, xp, dx)
         wygrana = r["wynik"] == "wygrana"
         if wygrana:
             z_rzedu = 0

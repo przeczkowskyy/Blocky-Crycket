@@ -144,27 +144,41 @@ class TestDanych(unittest.TestCase):
             self.assertEqual([float(x) for x in re.findall(r", ([\d.]+)\)", paski)],
                              list(progresja.ZALOZENIA["szanse_jajka"]), j["id"])
 
-    def test_1f_skille_w_granicach_stanu_gracza(self):
+    def test_1f_skille_d101_w_granicach_stanu_gracza(self):
+        # D-101: różne premie i żywioły; pospolite i zwykłe tylko mała pasywka; każdy skill przechodzi
+        # przez Sygnaly/Modyfikatory stanu gracza (czysty_modyfikator) bez odmowy
         DS = _modul_stanu("dane_stanu_test_petow", "dane.py")
+        LS = _modul_stanu("logika_stanu", "logika_stanu.py")
         _, Ds = DS.dane_z_przypadkami()
-        for p in U["pety"]:
-            for pole in ("zloto", "doswiadczenie"):
-                self.assertTrue(0 <= p["skill"][pole] <= Ds["pety"]["premia_maks"], p["id"])
-            self.assertGreater(p["skill"]["zloto"] + p["skill"]["doswiadczenie"], 0, p["id"])
-        # rzadszy pet = większa premia (suma) w każdym jajku
-        def sumy(j):
-            return [LP.pet(D, x)["skill"]["zloto"] + LP.pet(D, x)["skill"]["doswiadczenie"] for x in j["pula"]]
-        for j in D["jajka"]:
-            self.assertEqual(sumy(j), sorted(sumy(j)), j["id"])
-            self.assertEqual(len(set(sumy(j))), len(sumy(j)), j["id"])
-        # Bagno trochę lepsze od lasu tej samej rzadkości (do +25%), ale słabsze od leśnego o stopień rzadszego —
-        # leśny legendarny (+20% Złota i doświadczenia) wygrywa z epickim Ognikiem, przegrywa tylko z Perłową Wydrą
-        las, bagno = sumy(D["jajka"][0]), sumy(D["jajka"][1])
-        for i in range(5):
-            self.assertTrue(las[i] < bagno[i] <= 1.25 * las[i] + 1e-9, (i, las[i], bagno[i]))
-            if i < 4:
-                self.assertLess(bagno[i], las[i + 1], i)
+        rodzaje = set()
+        for p in D["pety"]:
+            mod = LP.mod_peta(D, p["id"])
+            czysty, powod = LS.czysty_modyfikator(Ds, mod)
+            self.assertIsNotNone(czysty, (p["id"], powod, mod))
+            wartosci = list((mod.get("procent") or {}).values()) + list((mod.get("lup") or {}).values())
+            if p["rzadkosc"] in ("pospolity", "zwykly"):
+                self.assertNotIn("pasywki", mod, p["id"])
+                self.assertTrue(wartosci and max(wartosci) <= 0.03, (p["id"], mod))
+            else:
+                self.assertTrue("pasywki" in mod or max(wartosci) >= 0.15, (p["id"], mod))
+            for n in mod.get("pasywki", []):
+                self.assertIn(n, Ds["pasywki_silnika"], (p["id"], n))
+            rodzaje |= {"lup_" + k for k in mod.get("lup", {})} | {"stat_" + k for k in mod.get("procent", {})}
+            if p["skill"].get("zywiol"):
+                rodzaje.add("zywiol_" + p["skill"]["zywiol"])
+            # jedno krótkie zdanie (tablica, okno, napis po wykluciu)
+            self.assertLessEqual(len(LP.opis_skilla(D, p)), 80, p["id"])
+        self.assertTrue({"lup_zloto", "lup_doswiadczenie"} <= rodzaje, rodzaje)
+        self.assertGreaterEqual(len([r for r in rodzaje if r.startswith("stat_")]), 5, rodzaje)
+        self.assertGreaterEqual(len([r for r in rodzaje if r.startswith("zywiol_")]), 3, rodzaje)
+        # każdy żywioł działa dla każdej klasy: zaklęcie broni (podpalenie / trucizna przy ciosie — każda klasa) albo
+        # pasywka dla każdej klasy (stan gracza liczy tylko pasywki klasy gracza)
+        for zid, z in D["zywioly"].items():
+            klasy = {Ds["pasywki_silnika"][n]["klasa"] for n in z["pasywki"]}
+            self.assertTrue(z.get("zaklecie") in Ds["zaklecia_silnika"] if z.get("zaklecie") else klasy == set(Ds["klasy"]),
+                            (zid, klasy))
         self.assertIn(D["kontener"], Ds["wydatki"]["zrodla"])
+        self.assertEqual(Ds["modyfikatory"]["zrodlo_pety"], U["stan_gracza"]["zrodlo_modyfikatora"])
 
 
 # ============================================================================================== 2. modele
@@ -300,8 +314,18 @@ class TestLogiki(unittest.TestCase):
                          "trwa_wyklucie")
         self.assertEqual(LP.tekst_braku(D, 120, 180, 300), "Brakuje ci 120 Złota (masz 180, jajko kosztuje 300)")
         self.assertEqual([LP.procent(x) for x in (0.5, 0.02, 0.005)], ["50%", "2%", "0,5%"])
-        self.assertEqual(LP.opis_skilla(D, LP.pet(D, "jelonek_gaju")), "+20% Złota i doświadczenia z walk")
-        self.assertEqual(LP.opis_skilla(D, LP.pet(D, "perlowa_wydra")), "+24% Złota i doświadczenia z walk")
+        self.assertEqual(LP.opis_skilla(D, LP.pet(D, "zoledziak")), "+2% Złota z walk")
+        self.assertEqual(LP.opis_skilla(D, LP.pet(D, "lisciolis")), "+15% Zręczności i Szczęścia")
+        self.assertEqual(LP.opis_skilla(D, LP.pet(D, "ognik")), "Ogień: podpala wroga przy ciosie (25%)")
+        self.assertEqual(LP.opis_skilla(D, LP.pet(D, "wazeczka")), "Jad: zatruwa wroga przy ciosie (30%)")
+        self.assertEqual(LP.opis_skilla(D, LP.pet(D, "jelonek_gaju")),
+                         "Kryształ: ciosy mocniej trafiają, +20% Siły, +5% Złota i doświadczenia z walk")
+        self.assertEqual((LP.opis_skilla_krotki(D, LP.pet(D, "ognik")), LP.opis_skilla_krotki(D, LP.pet(D, "lisciolis"))),
+                         ("Ogień", "+15% Zręczności i Szczęścia"))
+        self.assertEqual(LP.mod_peta(D, "ognik"), {"pasywki": ["ognista_rozdzka"], "zaklecie": "podpalenie"})
+        self.assertEqual(LP.mod_peta(D, "wazeczka"), {"pasywki": ["kumulowanie_trucizny"], "zaklecie": "trucizna"})
+        self.assertEqual(LP.premia_peta(D, "lisciolis"), {"zloto": 0, "doswiadczenie": 0})
+        self.assertIsNone(LP.mod_peta(D, "obcy"))
         self.assertEqual(LP.decyzja(D, {"stan_gracza": True, "jajko": "jajko_bagienne"})["ok"], True)
         self.assertEqual(LP.jajko_krainy(D, "bagno")["id"], "jajko_bagienne")
         self.assertIsNone(LP.jajko_krainy(D, "dzungla"))
@@ -401,6 +425,26 @@ class TestEkonomii(unittest.TestCase):
         # do wygranej ze Strażnikiem Gaju gracz kupi kilka jajek po stałej cenie (premie petów poza symulacją)
         ile = sorted(EJ.jajek_do(o, stala, t) for o, t in pary if t is not None)
         self.assertTrue(4 <= ile[len(ile) // 2] <= 20, ile)
+
+    def test_4c_skille_w_walce(self):
+        # D-101: liczby z silnika (skille_petow.py) — pospolite i zwykłe prawie nic nie zmieniają, legendarne wyraźnie
+        # pomagają, ale bez peta strażnicy dalej są do pokonania (żaden pet nie jest obowiązkowy)
+        import skille_petow as SK
+        T, Ds = SK.czesc1(D, 120)
+        baza = T["bez peta"]
+
+        def zysk(nazwa, potwor):
+            return sum(T[nazwa][(potwor, k, L)] - baza[(potwor, k, L)] for k in Ds["klasy"]
+                       for L in (dict((x[0], x[1]) for x in SK.STRAZNICY)[potwor] - 1,
+                                 dict((x[0], x[1]) for x in SK.STRAZNICY)[potwor])) / 6.0
+        for p in D["pety"]:
+            z = zysk(p["nazwa"], "straznik_lasu")
+            if p["rzadkosc"] in ("pospolity", "zwykly"):
+                self.assertLess(z, 4.0, (p["id"], z))
+            if p["rzadkosc"] == "legendarny":
+                self.assertGreater(z, 5.0, (p["id"], z))
+        for k in Ds["klasy"]:
+            self.assertGreater(baza[("straznik_lasu", k, 10)], 20.0, k)
 
     def test_4b_pierwsze_jajko_bagna(self):
         import ekonomia_jajek as EJ
@@ -734,13 +778,55 @@ class TestSerweraOffline(unittest.TestCase):
 
     def test_5f_premia_peta_przy_lupie(self):
         self.uruchom(zloto=1000)
-        self.hak("kup", self.gracz.t, "jajko_lesne", 0.9)   # r = 0,9 → epicka Świetlikówka (+15% doświadczenia)
+        self.hak("kup", self.gracz.t, "jajko_lesne", 0.9)   # r = 0,9 → epicka Świetlikówka (+5% doświadczenia)
         self.assertEqual(self.atr("PetAktywny"), "swietlikowka")
         lup = {"zloto": 20, "doswiadczenie": 40, "tokeny_krainy": 0, "gemy": 0, "shard_ewolucji": 0, "kraina": "las"}
         fn = self.inne["PrzyznajLup"].t.get("OnInvoke")
         self.sw.wolaj(fn, self.gracz.t, LM.do_luau({"lup": lup, "wynik": "wygrana", "czas": 0, "zrodlo": "LasPasGra"}))
         self.sw.krok(10)
-        self.assertIn(["premia", 0, 6, "swietlikowka"], [a for _g, a in self.sw.do_klienta])
+        premie = [a for _g, a in self.sw.do_klienta if a and a[0] == "premia"]
+        self.assertEqual(premie, [["premia", 0, 2, "swietlikowka"]], "premia tylko ze skilla (Modyfikatory), bez podwójnej")
+
+    def test_5i_modyfikatory_stanu_gracza(self):
+        # D-101: skill aktywnego peta trafia do StanGracza/Sygnaly/Modyfikatory jako źródło "pety" (przy wejściu
+        # gracza, po zakupie, wyborze, odstawieniu); złożenie = dokładnie modyfikator peta; premia do łupu tylko z niego
+        self.uruchom(zloto=5000)
+        # stan gracza (18.11): „szczęście początkującego” to osobne źródło do pierwszej wygranej — tu sprawdzamy tylko peta
+        self.kstan.ustaw("SzczesciePoczatkujacego", False)
+        zr = U["stan_gracza"]["zrodlo_modyfikatora"]
+        st = self.hak("stan", self.gracz.t)["modyfikatory"]
+        self.assertTrue(st["ok"])
+        self.assertNotIn(zr, st.get("zrodla") or [], "bez peta — źródło zdjęte (i przejęte) już przy wejściu")
+        self.assertEqual(self.kp.atrybuty["LicznikModyfikatorow"], 1)
+        w = self.hak("kup", self.gracz.t, "jajko_bagienne", 0.9)  # r = 0,9 → epicki Ognik: podpalenie przy ciosie
+        self.assertEqual(w["pet"], "ognik")
+        m = self.hak("stan", self.gracz.t)["modyfikatory"]
+        self.assertEqual(m["zrodla"], [zr])
+        self.assertEqual((m["pasywki"], m["zaklecie"]), (LP.mod_peta(D, "ognik")["pasywki"], "podpalenie"))
+        self.assertEqual((m["lup"]["zloto"], m["lup"]["doswiadczenie"]), (0, 0))
+        # bohater walki (stan gracza) dostaje premie żywiołu klasy gracza
+        self.hak("zwolnij", self.gracz.t)
+        self.assertEqual(self.hak("kup", self.gracz.t, "jajko_lesne", 0.995)["pet"], "jelonek_gaju")
+        e = D["polozenia"]["zagroda_e"]
+        self.postaw(e[0] + 2, e[2] - 1)
+        self.sw.krok(1)
+        self.ev.na_serwer.odpal(self.gracz.t, "wybierz", "jelonek_gaju")
+        m = self.hak("stan", self.gracz.t)["modyfikatory"]
+        self.assertEqual((m["procent"], m["pasywki"]), ({"Strength": 0.2}, LP.mod_peta(D, "jelonek_gaju")["pasywki"]))
+        self.assertAlmostEqual(m["lup"]["zloto"], 0.05)
+        self.sw.krok(1)
+        self.ev.na_serwer.odpal(self.gracz.t, "odstaw")
+        m = self.hak("stan", self.gracz.t)["modyfikatory"]
+        self.assertNotIn(zr, m.get("zrodla") or [])
+        self.assertEqual((m["lup"]["zloto"], m["lup"]["doswiadczenie"]), (0, 0))
+        self.assertFalse(m["pasywki"])   # pusta tabela z Luau
+        # łup po odstawieniu: bez premii (dawna premia z profilu już się nie liczy — źródło przejęte)
+        lup = {"zloto": 100, "doswiadczenie": 40, "tokeny_krainy": 0, "gemy": 0, "shard_ewolucji": 0, "kraina": "las"}
+        fn = self.inne["PrzyznajLup"].t.get("OnInvoke")
+        self.sw.wolaj(fn, self.gracz.t, LM.do_luau({"lup": lup, "wynik": "wygrana", "czas": 0, "zrodlo": "LasPasGra"}))
+        self.sw.krok(10)
+        self.assertEqual([a for _g, a in self.sw.do_klienta if a and a[0] == "premia"], [])
+        self.assertEqual(self.sw.ostrzezenia, [])
 
     def test_5g_bez_stanu_gracza(self):
         self.uruchom(stan_gracza=False, zloto=5000)

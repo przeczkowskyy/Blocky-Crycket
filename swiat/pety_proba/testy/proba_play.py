@@ -30,8 +30,9 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
       haczykiem "wybierz" bez zasięgu — zaznaczone w opisie), marsz postacią, zrzut z kamery za plecami
   P08 wyklucie każdego peta (haczyk "wyklucie" — sama animacja u klienta), zrzut napisu każdego
   P09 zagroda: posiadane pety na miejscach i tablica (lista z kopiami), prawdziwe E opiekunki → okno „PRÓBA”; zrzuty
-  P10 wybór aktywnego peta z okna (jak przycisk „Wybierz”) → PetAktywny, pet za graczem zmienia się; zrzut
-  P11 premia peta przy łupie (StanGracza "przyznaj") → Złoto + premia, napis „+N … od peta”; zrzut
+  P10 wybór aktywnego peta z okna (jak przycisk „Wybierz”: Jelonek Gaju) → PetAktywny, pet za graczem zmienia się; zrzut
+  P11 premia peta przy łupie (StanGracza "przyznaj") → Złoto + premia (+5%), napis „+N … od peta”; skill peta
+      w StanGracza/Sygnaly/Modyfikatory (źródło "pety": +20% Siły, pasywki Kryształu) — gdy stan gracza ma sygnał; zrzut
   P12 reset postaci w trakcie wyklucia → pet jest u gracza, po odrodzeniu idzie za nim, konsola czysta
   P13 walka z petem przy boku (las-pas, slime): w walce pet znika (u siebie i PetCzeka dla innych), po walce wraca;
       łup z premią; zrzut w walce
@@ -423,7 +424,8 @@ def main():
                     time.sleep(0.05)
                 zrzut(nazwa)
             po4 = atr("Gold", "PetyLiczba", "PetAktywny", CB, KB, CL)
-            zapisz("B04", {"przed": kl0, "po": po4})
+            mod4 = (serwer('"stan"') or {}).get("modyfikatory") or {}
+            zapisz("B04", {"przed": kl0, "po": po4, "modyfikatory": mod4})
             punkt("B04", po4.get("Gold") == 3000 - LP.cena(D, JB, 0) and po4.get(KB) == 1 and po4.get(CB) == LP.cena(D, JB, 1)
                   and po4.get(CL) == LP.cena(D, JL, 0) and po4.get("PetAktywny") in JB["pula"]
                   and "Kup za %d" % LP.cena(D, JB, 0) in str((kl0.get("akcjeE") or {}).get(JB["id"])),
@@ -731,14 +733,16 @@ def main():
                 punkt("P09", bool(okno) and (k9.get("petyWZagrodzie") or 0) >= 3 and (k9.get("wiersze") or 0) >= 4,
                       "pety na miejscach %s, wierszy %s, okno po E %s" % (k9.get("petyWZagrodzie"), k9.get("wiersze"), bool(okno)))
                 # ================================================================ P10 wybór z okna
-                klient('"wybierz", "lisciolis"')
+                # pet z premią do Złota i statystyką (D-101): Jelonek Gaju — Kryształ, +20% Siły, +5% Złota i dośw.
+                PET10 = "jelonek_gaju"
+                klient('"wybierz", "%s"' % PET10)
                 time.sleep(1.5)
                 a10 = atr("PetAktywny")
                 zrzut("13_okno_po_wyborze")
                 klient('"zamknij"')
                 time.sleep(1.5)
                 k10 = klient('"stan"')
-                punkt("P10", a10.get("PetAktywny") == "lisciolis" and k10.get("mojPet") == "lisciolis",
+                punkt("P10", a10.get("PetAktywny") == PET10 and k10.get("mojPet") == PET10,
                       "aktywny %s, za graczem %s" % (a10.get("PetAktywny"), k10.get("mojPet")))
                 # ================================================================ P11 premia przy łupie
                 przed = atr("Gold")
@@ -747,11 +751,18 @@ def main():
                 k11 = klient('"stan"')
                 zrzut("14_premia_przy_lupie")
                 po = atr("Gold")
-                premia = int(math.floor(100 * 0.12 + 0.5))
-                zapisz("P11", {"wynik": w11, "przed": przed, "po": po, "klient": k11})
-                punkt("P11", po.get("Gold") == przed.get("Gold") + 100 + premia and "od peta" in str(k11.get("komunikat")),
-                      "Gold %s → %s (łup 100 + premia %d), napis %r" % (przed.get("Gold"), po.get("Gold"), premia,
-                                                                       k11.get("komunikat")))
+                premia = int(math.floor(100 * LP.premia_peta(D, PET10)["zloto"] + 0.5))
+                # skill peta w stanie gracza (Sygnaly/Modyfikatory, źródło "pety") — gdy stan gracza ma ten sygnał
+                mod11 = (serwer('"stan"') or {}).get("modyfikatory") or {}
+                oczek = LP.mod_peta(D, PET10)
+                mod_ok = (not mod11) or ("pety" in (mod11.get("zrodla") or []) and mod11.get("procent") == oczek.get("procent")
+                                         and list(mod11.get("pasywki") or []) == oczek.get("pasywki"))
+                zapisz("P11", {"wynik": w11, "przed": przed, "po": po, "klient": k11, "modyfikatory": mod11})
+                punkt("P11", po.get("Gold") == przed.get("Gold") + 100 + premia and "od peta" in str(k11.get("komunikat"))
+                      and mod_ok,
+                      "Gold %s → %s (łup 100 + premia %d), napis %r, modyfikator %s" % (
+                          przed.get("Gold"), po.get("Gold"), premia, k11.get("komunikat"),
+                          {k: mod11.get(k) for k in ("zrodla", "procent", "pasywki", "lup")} if mod11 else "brak sygnału"))
                 # ================================================================ P12 reset w trakcie wyklucia
                 do_inkubatora()
                 przed = atr("Gold", "PetyLiczba")

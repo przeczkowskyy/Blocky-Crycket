@@ -39,6 +39,46 @@ RIGI = os.path.join(ZRODLA, "rigi")
 PLIK_DANYCH = "DanePetow.luau"
 POSTACIE = os.path.join(REPO, "swiat", "postacie")
 TRYBY_LICZNIKA = ("osobny", "wspolny")
+KOLEJNOSC_STATYSTYK = ["Strength", "Dexterity", "Intelligence", "Constitution", "Luck", "Armor"]
+MALE_RZADKOSCI = ("pospolity", "zwykly")   # D-101: zwykłe pety tylko mała pasywka
+MALA_PREMIA_MAKS = 0.03
+
+
+def sprawdz_skille(U):
+    """Skille petów (D-101): jeden stały skill — żywioł (pasywki silnika) i/lub premie do statystyk i łupu; granice
+    Sygnaly/Modyfikatory stanu gracza (procent 0..1, łup 0..0,5, do 6 pasywek); pospolite i zwykłe tylko mała premia."""
+    import silnik  # noqa: E402  (tools/walka — tylko odczyt: pasywki, które silnik zna)
+    znane = {n for n in list(silnik.PASYWNE) + list(silnik.PASYWKI_BRONI) if n != "wskrzeszenie"}
+    if sorted(U["statystyki"]) != sorted(KOLEJNOSC_STATYSTYK):
+        raise BladDanych("statystyki w ustawieniach ≠ sześć atrybutów gracza %s" % KOLEJNOSC_STATYSTYK)
+    for zid, z in U["zywioly"].items():
+        if len(z["pasywki"]) > 6 or any(n not in znane for n in z["pasywki"]):
+            raise BladDanych("żywioł %s: pasywki spoza silnika albo więcej niż 6: %s" % (zid, z["pasywki"]))
+        if z.get("zaklecie") is not None and z["zaklecie"] not in silnik.ZAKLECIA:
+            raise BladDanych("żywioł %s: zaklęcie %r spoza silnika %s" % (zid, z["zaklecie"], sorted(silnik.ZAKLECIA)))
+        if not z["pasywki"] and z.get("zaklecie") is None:
+            raise BladDanych("żywioł %s nic nie daje" % zid)
+    for p in U["pety"]:
+        s = p["skill"]
+        m = s.get("mod") or {}
+        if not isinstance(s.get("nazwa"), str) or set(m) - {"procent", "lup"}:
+            raise BladDanych("pet %s: skill bez nazwy albo nieznane pole modyfikatora %s" % (p["id"], sorted(m)))
+        if s.get("zywiol") is not None and s["zywiol"] not in U["zywioly"]:
+            raise BladDanych("pet %s: nieznany żywioł %s" % (p["id"], s["zywiol"]))
+        wartosci = []
+        for a, v in (m.get("procent") or {}).items():
+            if a not in U["statystyki"] or not 0 < v <= 1:
+                raise BladDanych("pet %s: zła premia %s = %s" % (p["id"], a, v))
+            wartosci.append(v)
+        for k, v in (m.get("lup") or {}).items():
+            if k not in ("zloto", "doswiadczenie") or not 0 < v <= 0.5:
+                raise BladDanych("pet %s: zła premia łupu %s = %s" % (p["id"], k, v))
+            wartosci.append(v)
+        if not wartosci and not s.get("zywiol"):
+            raise BladDanych("pet %s: skill nic nie daje" % p["id"])
+        if p["rzadkosc"] in MALE_RZADKOSCI and (s.get("zywiol") or max(wartosci) > MALA_PREMIA_MAKS + 1e-9):
+            raise BladDanych("pet %s (%s): zwykły pet ma tylko małą premię (≤ %d%%, bez żywiołu) — D-101"
+                             % (p["id"], p["rzadkosc"], round(100 * MALA_PREMIA_MAKS)))
 
 
 class BladDanych(Exception):
@@ -230,6 +270,7 @@ def podstawa():
             raise BladDanych("pet %s: nieznana rzadkość %s" % (p["id"], p["rzadkosc"]))
         if not re.match(r"^[A-Za-z0-9_]{1,24}$", p["id"]):
             raise BladDanych("pet %s: id spoza liter, cyfr i „_”" % p["id"])
+    sprawdz_skille(U)
     LC = U["licznik_ceny"]
     if LC["tryb"] not in TRYBY_LICZNIKA:
         raise BladDanych("licznik_ceny.tryb %r spoza %s" % (LC["tryb"], TRYBY_LICZNIKA))
@@ -245,6 +286,10 @@ def podstawa():
         "pety": [dict(p, jajko=jajko_peta[p["id"]]) for p in U["pety"]],
         "jajka": jajka,
         "licznik_ceny": {"tryb": LC["tryb"]},
+        "zywioly": {k: {kk: z[kk] for kk in ("nazwa", "opis", "pasywki", "zaklecie") if kk in z}
+                    for k, z in U["zywioly"].items()},
+        "statystyki": U["statystyki"],
+        "kolejnosc_statystyk": KOLEJNOSC_STATYSTYK,
         "modele": U["modele"],
         "rigi": {p["id"]: nazwa_rigu(p["id"], U) for p in U["pety"]},
         "inkubator": U["inkubator"],
