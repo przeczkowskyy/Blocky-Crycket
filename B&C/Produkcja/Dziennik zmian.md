@@ -7,7 +7,7 @@ tags: [produkcja, dziennik]
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
 ## 2026-11-17 · Claude Code u Karola (dźwięk wgrany do Roblox)
-- **Wgrane sześć plików audio** na konto osoby zalogowanej w Studio (Karol), 17.11 o 12:43–12:50: arkusz 22 efektów walki, trzy utwory bazaru i dwa lasu. Identyfikatory zasobów są w [[Pipeline assetów]] (rozdział „Dźwięk wgrany do Roblox”), w `assets/audio/wgrane.json` i w `swiat/dzwiek_gra/identyfikatory.json`. Moderacja Roblox była w toku.
+- **Wgrane sześć plików audio** na konto osoby zalogowanej w Studio (Karol), 17.11 o 12:43: arkusz 22 efektów walki, trzy utwory bazaru i dwa lasu. Identyfikatory zasobów są w [[Pipeline assetów]] (rozdział „Dźwięk wgrany do Roblox”), w `assets/audio/wgrane.json` i w `swiat/dzwiek_gra/identyfikatory.json`. Moderacja Roblox była w toku.
 - **Kto zdecydował:** Karol, 17.11 ok. 09:05 na czacie („Tak wgrywaj. Potem najwyżej się zmieni”) i o 12:40 („tak przez folder modeli”) — pliki szły przez zatwierdzony w Studio folder wyników postaci, kopiowane na chwilę i usuwane. Wcześniejszą próbę o 12:20 system uprawnień zatrzymał, bo ogólne „Leć wszystko” nie było zgodą na tę drogę.
 - **Niezrobione:** kontener `Workspace/DzwiekGra` w Studio ma jeszcze stare, puste identyfikatory (okno Studio zajmowała próba przejścia gry) — do tego czasu grają dźwięki wbudowane. Nie sprawdzono, czy gra ma prawo użyć zasobów z konta Karola (gra należy do innego konta). Muzyka menu niewgrana.
 - Limit wgrań audio w listopadzie: wykorzystane 6 z 10 (konto bez weryfikacji tożsamości).

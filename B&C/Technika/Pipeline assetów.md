@@ -68,7 +68,7 @@ Po sesji głównej 16.11 (D-082, D-083) i zgodzie Karola na kredyty powstała pi
 - **Zanim wgramy do Roblox** (źródła i szczegóły w `assets/audio/README.md`): Roblox przyjmuje mp3, ogg, wav i flac do 7 minut i 20 MB, audio przechodzi moderację, a za treść z generatora odpowiada wgrywający. Warunki Higgsfield nie ograniczają użycia komercyjnego na płatnym planie. Warunki ElevenLabs Music dopuszczają gry mieszczące się w definicji „Indie Game”, ale **nie ustalono pewnie**, czy obowiązują przy generowaniu przez Higgsfield — przed publikacją trzeba zapytać pomoc Higgsfield na piśmie (zadanie w [[Zadania]]). Warunków dla efektów z Seed i Mirelo przez Higgsfield nie znaleziono.
 
 ## Dźwięk wgrany do Roblox (17.11.2026)
-Karol zgodził się na wgranie pierwszej partii 17.11 ok. 09:05 („Tak wgrywaj. Potem najwyżej się zmieni”), a o 12:40 potwierdził drogę („tak przez folder modeli”). Wgrał agent Karola 17.11 o 12:43–12:50, na konto osoby zalogowanej w Studio (Karol); właścicielem gry jest inne konto.
+Karol zgodził się na wgranie pierwszej partii 17.11 ok. 09:05 („Tak wgrywaj. Potem najwyżej się zmieni”), a o 12:40 potwierdził drogę („tak przez folder modeli”). Wgrał agent Karola 17.11 o 12:43, na konto osoby zalogowanej w Studio (Karol); właścicielem gry jest inne konto.
 
 | Plik | Identyfikator zasobu |
 |---|---|
