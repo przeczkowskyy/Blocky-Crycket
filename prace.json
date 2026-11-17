@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T13:49:48+01:00",
+ "aktualizacja": "2026-11-17T14:07:32+01:00",
  "prace": [
   {
    "id": "bagno-gra",
@@ -24,10 +24,10 @@
    "id": "bron-przenikanie",
    "tytul": "Liczbowa kontrola przenikania broni w animacjach",
    "stan": "w_toku",
-   "etap": "Wskrzeszenie i obrót zwycięzcy bez przenikania broni (bez Studio)",
+   "etap": "Gotowe bez Studio (0 przenikań), wdrożenie ze wspólną próbą",
    "start": "2026-11-17T12:22:34+01:00",
-   "koniec_szacowany": "2026-11-17T15:15:00+01:00",
-   "aktualizacja": "2026-11-17T13:37:00+01:00",
+   "koniec_szacowany": "2026-11-17T18:30:00+01:00",
+   "aktualizacja": "2026-11-17T14:07:32+01:00",
    "obszary": [
     "swiat/postacie/przenikanie"
    ],
