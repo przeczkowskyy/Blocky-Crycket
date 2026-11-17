@@ -2,16 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T14:07:35+01:00",
+ "aktualizacja": "2026-11-17T14:29:27+01:00",
  "prace": [
   {
    "id": "bagno-gra",
    "tytul": "Bagno jako drugi biom: potwory, walki, wejście z lasu, budowa w Studio",
    "stan": "w_toku",
-   "etap": "Gotowe bez Studio, czeka na okno Studio",
+   "etap": "Budowa mapy i potworów w Studio, próba w grze",
    "start": "2026-11-17T12:22:28+01:00",
-   "koniec_szacowany": "2026-11-17T17:15:00+01:00",
-   "aktualizacja": "2026-11-17T14:07:35+01:00",
+   "koniec_szacowany": "2026-11-17T16:30:00+01:00",
+   "aktualizacja": "2026-11-17T14:29:27+01:00",
    "obszary": [
     "mapa:bagno_pas",
     "studio:BagnoPas",
