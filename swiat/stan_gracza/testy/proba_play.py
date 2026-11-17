@@ -559,6 +559,7 @@ def main():
                 punkt("S15", zr in zrodla0 and zr not in zrodla1 and pierwsza.endswith("/wygrana"),
                       "źródła przed pierwszą walką %s, po %s; pierwsza walka %s" % (zrodla0, zrodla1, pierwsza))
                 dobre_a, dobre_b, opisy = [], [], {}
+                procent_kary = (stan_hak("stan") or {}).get("procentKary") or 0
                 for id_klasy, w in walki.items():
                     if "blad" in w:
                         opisy[id_klasy] = w["blad"]
@@ -574,7 +575,11 @@ def main():
                     if lup:
                         L1, xp1, _ = LS.awans(D, L0, gp.get("XP") or 0, lup[2])
                         bez_zmian = all(gw.get(x) == gp.get(x) for x in ("Gold", "XP", "Level"))
-                        po_ok = (gpo.get("Gold") == (gp.get("Gold") or 0) + lup[1] and gpo.get("Level") == L1 and gpo.get("XP") == xp1
+                        # bohater 1.–2. poziomu przegrywa co kilka walk: wtedy zamiast łupu jest kara za przegraną (D-098)
+                        zmiana_zlota = lup[1]
+                        if lup[0] == "przegrana":
+                            zmiana_zlota = -LS.kara_przegranej(D, gp.get("Gold"), (w.get("cel") or {}).get("poziom"), procent_kary)
+                        po_ok = (gpo.get("Gold") == (gp.get("Gold") or 0) + zmiana_zlota and gpo.get("Level") == L1 and gpo.get("XP") == xp1
                                  and gpo.get("XPMax") == LS.xp_do_nastepnego(D, L1))
                         hud = w["po"]["hud"]
                         hud_ok = (str(hud.get("gold")).replace(" ", "") == str(gpo.get("Gold")) and str(hud.get("level")) == str(gpo.get("Level")))
