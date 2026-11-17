@@ -1,0 +1,23 @@
+{
+ "id": "r-20261117-151910-f027",
+ "tytul": "Broń nie wchodzi już w głowę ani tułów: kontrola wszystkich klipów",
+ "opis_md": "**Co to jest:** odpowiedź na Twoją uwagę z 13.11 („broń trzymana w ręku nie może nachodzić na twarz w żadnej animacji ani po wygranej walce — dodać liczbową kontrolę przenikania broni z głową i tułowiem dla wszystkich klipów”).\n\n**Jak liczę:** narzędzie odtwarza każdą pozę tym samym rachunkiem co gra i mierzy, jak głęboko bryła broni wchodzi w głowę (próg 0,02 studa) i w tułów (próg 0,10 — broń może dotykać ubrania). 133 scenariusze, 20 591 póz: każdy klip trzech bohaterów i przeciwników z bronią oraz każde przejście między klipami.\n\n**Co było źle i jest poprawione:**\n- upadek Maga: kostur przechodził przez głowę (pierwszy zrzut, górny rząd — przed, dolny — po);\n- wskrzeszenie Wojownika i Maga: jelec w biodrach, kostur przez głowę — teraz postać wstaje, cofając upadek;\n- finał walki: miecz Wojownika zasłaniał oczy w 100%, sztylet Zwiadowcy w 60–77% — teraz zwycięzca obraca się do kamery tuż przed radością i twarz jest odsłonięta;\n- kostur Maga obracał się o ok. 150° w jednej klatce (mignięcie kryształu) — teraz o ok. 6°.\n\n**Wynik:** 0 przypadków ponad próg. Nowy test pilnuje każdego klipu, także przyszłych — od razu złapał kij jednego z potworów Bagna.\n\n**Zostaje do Twojej decyzji:** miecz Wojownika w postawie spoczynkowej zasłania prawe oko w ujęciach z ukosa (ostatni zrzut). Poprawka wymaga zmiany postawy, czyli wszystkich klipów Wojownika.\n\n**Stan:** zmiany są w Studio od 14:50; wygląd wskrzeszenia i finału w grze ocenia teraz wspólna próba — dopiszę wynik.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T15:19:10+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/przenikanie/WYNIKI.md",
+   "etykieta": "Wyniki"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ]
+}
