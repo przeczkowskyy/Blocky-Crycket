@@ -505,3 +505,29 @@ Dopisek z 2026-11-17 (symulacja lasu, 200 graczy na klasę i profil; las po skr�
 Szczegóły: Sesja główna 17.11, 20:57 ([[Sesja główna 2026-11-17 — zapis ustaleń]], temat 5). Kowal na premierę: propozycja D-102. Logikę Kowala robi agent Karola. Odpowiedz tutaj albo ustaw agenta przy zadaniu (Pytania → Plan → Zadania).
 **Odpowiedź:**
 - Karol Balucki (2026-11-17): Paweł
+
+## 58. Czy obok 5 punktów do rozdania zostaje stały przyrost?
+- D-097 daje 5 punktów za poziom do rozdania przez gracza; czy zostaje też stały przyrost co poziom (D-057), na sesji nie padło.
+- Dziś w grze roboczo: 5 punktów rozdaje się samo według klasy i 5 rozdaje gracz.
+- Przy samych 5 do rozdania las trwa w symulacji ok. 61 minut zamiast ok. 31, a Strażnik Gaju pada za pierwszym razem w 2% prób zamiast w 29%.
+- Do wyboru: (a) zostaje 5 samo + 5 do rozdania; (b) tylko 5 do rozdania i agent osłabia potwory; (c) inne liczby.
+
+Szczegóły: Jedna liczba w `swiat/stan_gracza/dane.py` (`PUNKTY_SAMO_NA_POZIOM`, 0 = sam wariant z D-097); tabela wariantów w `swiat/stan_gracza/README.md`. Potwory były strojone pod 10 punktów na poziom. Zob. D-097, D-057, pytanie 55.
+**Odpowiedź:**
+
+## 59. Szczęście początkującego: premia do pierwszej wygranej?
+- Po skróceniu pasa (D-096) nowy gracz przegrywał pierwszą walkę w ok. co czwartej próbie (73–79% wygranych zależnie od klasy).
+- Roboczo w grze od 18.11: do pierwszej wygranej statystyki gracza w walce są mnożone ×1,75, bez żadnego napisu; potem premia znika. W symulacji daje to 96–99,6% wygranych z Leśnym Slime'em 1. poziomu.
+- Do wyboru: (a) zostaje bez napisu; (b) zostaje, ale gracz widzi krótki napis; (c) wyłączyć i zamiast tego osłabić slime'y 1. poziomu.
+
+Szczegóły: Jedna liczba (`SZCZESCIE_POCZATKUJACEGO` w `swiat/stan_gracza/dane.py`, 0 = wyłączone) albo atrybut kontenera `SzczesciePoczatkujacego`. Jeśli gracz trafi pierwszy na slime'a 2. poziomu, wygrywa w 73–88% prób. Premia nie dotyczy kolejnych walk, więc nie zmienia tempa lasu. Zob. pytanie 56 (profil klas).
+**Odpowiedź:**
+
+## 60. Zapis postępu gracza: kiedy włączamy?
+- Kod zapisu jest gotowy w pakiecie stanu gracza i domyślnie wyłączony; sprawdzony tylko bez Studio, na atrapie usługi danych.
+- Zapisuje: poziom, doświadczenie, Złoto, Gemy, klasę, trening, punkty, pety, wydatki, pokonanych strażników, obejrzane przeloty i strój.
+- Nie zapisuje drzewka umiejętności Pawła ani przedmiotów z okna ekwipunku — bez tego gracz po powrocie straciłby drzewko, za które zapłacił Gemami.
+- Do wyboru: (a) włączyć po zmianach po stronie Pawła (lista niżej); (b) włączyć już teraz na próbę tylko w Studio; (c) zostawić wyłączony do czasu przeniesienia pakietu do `src/`.
+
+Szczegóły: Włączenie wymaga dostępu Studio do usług danych (ustawienie gry, zmienia właściciel) i zmian w plikach Pawła: ekran wyboru klasy czeka na wczytanie profilu; klasa wybierana tylko raz (D-081); zakupy drzewka zapisywane razem z profilem; wartości testowe (1000 Gemów) usunięte. Nowy gracz przy włączonym zapisie zaczyna z 0 Złota i 0 Gemów. Dziś pakiet działa tylko w Studio, więc na serwerze gry zapisu sprawdzić się nie da. Pełny opis: `swiat/stan_gracza/README.md`, rozdział „Zapis postępu”. Zob. pytanie 53.
+**Odpowiedź:**
