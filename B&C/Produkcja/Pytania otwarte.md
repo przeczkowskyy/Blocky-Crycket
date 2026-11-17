@@ -499,3 +499,4 @@ Szczegóły: Wcześniejsze liczby (wzorcowe, z [[Walka v2 — silnik, klasy i um
 
 Szczegóły: Sesja główna 17.11, 20:57 ([[Sesja główna 2026-11-17 — zapis ustaleń]], temat 5). Kowal na premierę: propozycja D-102. Logikę Kowala robi agent Karola. Odpowiedz tutaj albo ustaw agenta przy zadaniu (Pytania → Plan → Zadania).
 **Odpowiedź:**
+- Karol Balucki (2026-11-17): Paweł

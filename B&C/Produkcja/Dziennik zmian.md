@@ -32,6 +32,7 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: omówiony temat sesji: Jajka i pety po pierwszej próbie w Studio (pytanie 38; D-052, D-060) ([[Sesje główne]])
 - Karol Balucki: omówiony temat sesji: Kowal i ulepszanie przedmiotów: na premierę czy później (pytanie 32; D-035, D-049, D-051) ([[Sesje główne]])
 - Karol Balucki: omówiony temat sesji: Decyzje z samym podpisem Karola: mana, wskrzeszenie, krótszy pas biomów (D-089, D-094, D-096) ([[Sesje główne]])
+- Karol Balucki: odpowiedź na pytanie 57 ([[Pytania otwarte]])
 
 ## 2026-11-17 · Claude Code u Karola (decyzja D-096: krótszy i węższy pas biomów; test Karola w Studio)
 - **Karol zagrał w Studio** to, co powstało dziś, i zmienił decyzję na gorąco (ok. 20:00, na czacie): „Musimy przebudować długość mapy, bo dalej jest ona dużo za długa… zamiast 55 sekund długości tylko 25 sekund długości… 4 sekundy szerokości… gracz musi za dużo biegać i się denerwować.” Zapisane jako **D-096** (zdecydował: Karol 2026-11-17); czeka na potwierdzenie Pawła. Zmiana ma być szybka i nieinwazyjna.
