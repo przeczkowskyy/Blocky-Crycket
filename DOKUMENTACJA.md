@@ -245,6 +245,7 @@ Blocky&Crycket/
 │   ├── test_walki2/           💡 prototyp walki w Studio (Workspace/TestWalki2): nowe modele, umiejętności i efekty; od 17.11 silnik v3, ekran pod dziennik v3 i pomijanie walk — wdrożone w Studio
 │   ├── biom_las/  las_potwory/  💡 pierwszy las (Workspace/BiomLas), jego potwory w ruchu (Workspace/LasPotwory) i plan lasu jako pasa (biom_las/pas/)
 │   ├── las_pas/  las_pas_gra/   💡 las jako wąski pas: mapa (Workspace/LasPas) i skrypty gry (Workspace/LasPasGra)
+│   ├── bagno_pas/  biomy/       💡 plan Bagna jako odcinka pasa (generator, kontrola, podglądy; niezbudowane w Studio) i zarys biomów 2–8 — do akceptacji
 │   ├── miasteczko_bazar/  miasteczko_bazar_gra/  💡 miasteczko jako ciasny bazar: mapa (Workspace/MiasteczkoBazar) i skrypty gry (Workspace/MiasteczkoBazarGra)
 │   ├── teleport_chmury/       💡 przejście przez chmury zamiast okna mapy (Workspace/TeleportChmury)
 │   └── postacie/              💡 postacie, pety i ekwipunek z kodu: Blender (siatki, animacje) i postacie z klocków w Studio

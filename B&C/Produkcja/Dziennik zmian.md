@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (plan Bagna i zarys biomów 2–8)
+- **Plan Bagna jako odcinka pasa** (`swiat/bagno_pas/`): generator na kodzie lasu-pasa, 9017 części, kontrola 0 błędów, osiem podglądów (rysunek z brył, nie zrzuty z Roblox). Bagno zaczyna się za bramą lasu; układ jak w lesie: inkubator, trzy przegrody z potworami trzech klas, rzadki potwór, strażnik i brama do Dżungli. W Studio nic nie jest zbudowane — budowa po akceptacji planu.
+- **Zarys biomów 2–8** (`swiat/biomy/PLAN_BIOMOW.md`, nowa notatka [[Biomy — zarys siedmiu kolejnych]], status propozycja): robocze nazwy, palety, potwory z klasami, strażnicy i poziomy w obu wariantach tempa.
+- Raport w panelu „Bagno jako pas — plan do akceptacji” z wyborami: tempo, nazwy, potwory, woda, mgła.
+- Do wyjaśnienia przy decyzji o tempie: wariant równy liczony jest w dwóch miejscach inaczej (kalkulator balansu: ok. 86 minut na biom razem z lasem; plan biomów: las 30 minut, potem po ok. 95).
+- Pliki: `swiat/bagno_pas/`, `swiat/biomy/`, `swiat/README.md`, `DOKUMENTACJA.md`; notatki [[Biomy — zarys siedmiu kolejnych]], [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (kalkulator balansu)
 - Nowy `tools/walka/progresja.py` liczy na silniku walki v3 sześć zaległych rachunków; wyniki i założenia w `tools/walka/BALANS_1711.md`. To propozycja liczb, nie kanon. Testy: 88 z 88.
 - **Najważniejsze:** z samego łupu wychodzi ok. 7 Gemów w 10 godzin, a sloty umiejętności kosztują 25 / 70 / 125 — gracz bez płacenia nie ma żadnego slotu (pytanie 51). Trening ze stałym +1 za trafienie daje po 10 godzinach ok. 130% puli statystyk; propozycja paska z malejącym zyskiem (pytanie 50, dotyka D-050). Potwory kolejnych biomów ok. 6% mocniejsze na biom. Kopalnia z ostrą krzywą albo pracująca całą dobę zarabia więcej niż walka.
