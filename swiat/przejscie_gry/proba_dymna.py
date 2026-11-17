@@ -374,11 +374,18 @@ def main():
             punkt("D13", (dz.get("zagrane") or 0) > 0 if walka else None,
                   "zagrane %s, zestaw %s (%s)" % (dz.get("zagrane"), dz.get("zestaw"), stan_dz))
             # ze stanem gracza łup dochodzi po zamknięciu ekranu walki (albo najpóźniej czas walki + 6 s)
-            po_lupie = czekaj_na(lambda: (lambda k: k if (k.get("zloto") or 0) > zloto0 else None)(klient()), 10, 0.5)
+            # 18.11.2026: walka może być przegrana (los; ze „szczęściem początkującego” stanu gracza ok. 5%) — wtedy łupu
+            # nie ma (D-098) i D04 nie ocenia pętli łupu („?”), zamiast fałszywego NIE
+            wynik_walki = str(js('local k = workspace:FindFirstChild("LasPasGra") return H:JSONEncode({ w = k and '
+                                 'k:GetAttribute("SerwerOstatniaWalka") or false })', "Client").get("w") or "")
+            przegrana = wynik_walki.endswith("/przegrana")
+            po_lupie = None if przegrana else czekaj_na(
+                lambda: (lambda k: k if (k.get("zloto") or 0) > zloto0 else None)(klient()), 10, 0.5)
             zloto1 = (po_lupie or klient()).get("zloto") or 0
-            zapisz("D04", {"zloto": [zloto0, zloto1], "xp": (po_lupie or po_walce).get("xp")})
-            punkt("D04", zloto1 > zloto0, "złoto gracza %s → %s (karta walki pokazuje łup; NIE = łup nie trafia do gracza)"
-                  % (zloto0, zloto1))
+            zapisz("D04", {"zloto": [zloto0, zloto1], "xp": (po_lupie or po_walce).get("xp"), "walka": wynik_walki})
+            punkt("D04", None if przegrana else zloto1 > zloto0,
+                  "złoto gracza %s → %s (karta walki pokazuje łup; NIE = łup nie trafia do gracza)%s"
+                  % (zloto0, zloto1, " — walka przegrana, łupu nie ma" if przegrana else ""))
 
             # -------------------------------------------------------------- D05 Kamień Powrotu
             przestaw(KAMIEN[0], KAMIEN[1])

@@ -36,6 +36,8 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
   S14 (18.11.2026, D-097) punkty do rozdania: po awansach PunktyDoRozdania = 5 × (poziom − 1) − rozdane; „+” jak okno
       ekwipunku (AddStatPoint:FireServer("Luck") — StatPoints Pawła) zdejmuje punkt; po wydaniu wszystkich kolejny „+”
       jest cofnięty i klient pokazuje „Brak punktów — zdobądź poziom”
+  S15 (18.11.2026) „szczęście początkującego”: przed pierwszą walką S03 źródło modyfikatorów „szczescie_poczatkujacego”
+      jest w stanie gracza, po pierwszej wygranej go nie ma (pierwsza walka Wojownika ze slime'em — wygrana)
   S12 (h) konsola: bez błędów naszych skryptów ([StanGracza], [LasPasGra], [LasPotwory], „Script …StanGracza”);
       znane wiersze „Requester does not have permission for Asset” (dźwięki) pomijane
 """
@@ -516,6 +518,7 @@ def main():
             if not tylko_m6:
                 # ================================================================ S03 + S04 + S05 trzy klasy, łup, awans
                 walki = {}
+                zrodla0 = (stan_hak("stan") or {}).get("zrodlaModyfikatorow") or []
                 luau(KOD["sledz_baner"], "Client")
                 for nr, id_klasy in enumerate(("Warrior", "Scout", "Mage")):
                     if nr > 0:
@@ -542,6 +545,12 @@ def main():
                     w["klasa_przed"] = a0.get("Class")
                     walki[id_klasy] = w
                 zapisz("S03_S04", walki)
+                zrodla1 = (stan_hak("stan") or {}).get("zrodlaModyfikatorow") or []
+                pierwsza = str(((walki.get("Warrior") or {}).get("po") or {}).get("walka", {}).get("SerwerOstatniaWalka") or "")
+                zr = D["poczatek"]["zrodlo"]
+                zapisz("S15", {"przed": zrodla0, "po": zrodla1, "pierwsza": pierwsza})
+                punkt("S15", zr in zrodla0 and zr not in zrodla1 and pierwsza.endswith("/wygrana"),
+                      "źródła przed pierwszą walką %s, po %s; pierwsza walka %s" % (zrodla0, zrodla1, pierwsza))
                 dobre_a, dobre_b, opisy = [], [], {}
                 for id_klasy, w in walki.items():
                     if "blad" in w:

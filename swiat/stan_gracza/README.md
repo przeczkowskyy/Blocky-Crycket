@@ -124,6 +124,9 @@ Atrybuty kontenera do podglądu: `SerwerStanuGotowy`, `ZgodnoscLogikiStanu` („
   `python -B swiat/stan_gracza/dane.py` i `zbuduj.py --skrypty`. Atrybut kontenera `PunktyStatystyk = false` w czasie
   gry — jak przed D-097 (10 samo na poziom, darmowy „+”, bez licznika); przechodzi na odbudowany kontener.
 - **Gemy (D-099):** `GEMY_ZA_POZIOM` (10) i `GEMY_ZA_STRAZNIKA` (100) w `dane.py`; 0 wyłącza.
+- **„Szczęście początkującego” (18.11.2026):** `SZCZESCIE_POCZATKUJACEGO` w `dane.py` (0,75; 0 = wyłączone) albo atrybut
+  kontenera `SzczesciePoczatkujacego = false`.
+- **Zapis postępu:** domyślnie wyłączony — rozdział „Zapis postępu”.
 - **Tryb testowy lasu:** atrybut kontenera lasu `TestBohater = true` (`Workspace/LasPotwory` albo `Workspace/LasPasGra`)
   — reguła testowa T1 jak dawniej (klasa i poziom z panelu), walki bez łupu. Ustawiają go próby w Play
   (`swiat/las_potwory/testy/proba_play.py`, `kontrola_play.py`, `swiat/las_pas_gra/testy/proba_play.py`,
@@ -181,6 +184,13 @@ liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyK
    Strażnik Gaju za pierwszym razem 29% (cel 35–40%): obniżenie jego poziomu z 10 na 9 dałoby 54–64% na 11. poziomie
    gracza, czyli za dużo — poziomy są za grube. Dane potworów zostają; możliwy ruch po stronie bohatera (do decyzji):
    pula startowa 30 → 33 daje pierwszą walkę 79–84%. Strażnik Topieli zostaje trudny (13% za pierwszym razem).
+2b. **Pierwsza walka praktycznie pewna (18.11.2026, „szczęście początkującego”):** dopóki gracz nie ma żadnej wygranej,
+   jego sześć statystyk w walce ×1,75. Działa przez wewnętrzne źródło `szczescie_poczatkujacego` w `Modyfikatory`
+   (pole silnika `pet`), bez napisu dla gracza. Znika po pierwszej wygranej; przegrana go nie zdejmuje.
+   - Pierwsza walka z potworem 1. poziomu przy profilu klas z `ClassData`: Wojownik 79% → 99,6%, Zwiadowca 76% → 98%,
+     Mag 73% → 96%.
+   - Uwaga: po D-096 slime'y pierwszej przegrody mają poziomy 1–3 rozdane po miejscach. Ze slime'em 2. poziomu ta sama
+     premia daje 73–88% (bez niej 26–34%).
 3. **Sloty umiejętności** 1 / 2 / 3 od poziomów 1 / 5 / 10 (jak dziś w walce). D-055 i D-088 mówią: sloty z drzewka,
    na start 0.
    **Gemy bez płacenia (D-099 ✅ 17.11; wdrożenie 18.11.2026, liczby „do zmiany”):** +10 Gemów za każdy awans i +100 za
@@ -233,6 +243,118 @@ liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyK
 12. **Pety (17.11.2026):** premia peta do łupu poza silnikiem walki (D-059 mówi o mnożniku statystyk — następny krok),
     pierwszy kupiony pet od razu aktywny, jedna kwota wydatku najwyżej 1 000 000 Złota.
 
+## Zapis postępu (status: propozycja, DOMYŚLNIE WYŁĄCZONY — 18.11.2026)
+Kod zapisu jest gotowy i przetestowany offline. Włączenie to jedna decyzja ludzi. Zasady: skill projektu
+`roblox-data` (DataStore, blokada sesji, `UpdateAsync`, migracja, cykl życia zapisu).
+
+**Jak działa.** `Moduly/ZapisStanu` + `SerwerStanu`:
+- **Wczytanie przy wejściu, zanim cokolwiek wpisze atrybuty:**
+  - `UpdateAsync` na kluczu `player_<UserId>`; identyfikator w kluczu ułatwia usuwanie danych na żądanie.
+  - W tym samym kroku serwer bierze sesję (blokadę).
+  - Do końca wczytania atrybut gracza `StanGraczaWczytany = false`. W tym czasie odmawiają: łup, wydatki, pety,
+    `Modyfikatory`, `DanePakietu` i bohater walki.
+  - **Pakiety (pety, Kowal…) mają czekać, aż `StanGraczaWczytany ~= false`.**
+  - Potem serwer wpisuje atrybuty z profilu: poziom, doświadczenie, Złoto, Gemy, shardy, tokeny, klasę i zapisane
+    atrybuty. Statystyki liczy od nowa: rozkład klasy dla poziomu + trening + rozdane punkty.
+- **Zapis:**
+  - co ok. 2 min (120 s + rozrzut do 30 s);
+  - przy wyjściu gracza (wcześniej łup z zakończonej walki trafia do profilu);
+  - przy zamknięciu serwera (`BindToClose`, najwyżej 25 s).
+  - Jeden zapis gracza naraz: następny czeka w kolejce, a dane są brane w chwili wywołania.
+- **Blokada sesji** jest w rekordzie (`sesja = { serwer, czas }`):
+  - Świeża cudza sesja (młodsza niż 600 s): 6 prób co 5 s, bo stary serwer zwykle właśnie zapisuje wyjście gracza.
+    Potem gracz gra **bez zapisu** — cudzej sesji nie przejmujemy.
+  - Sesja starsza niż 600 s (serwer padł) jest przejmowana.
+  - Każdy zapis odświeża czas sesji.
+  - Zapis, który zastanie cudzą sesję, nie pisze, a ten serwer przestaje zapisywać gracza.
+- **Błędy:**
+  - Każde wywołanie jest w `pcall`.
+  - Najwyżej 4 próby, z odstępem 1, 2 i 4 s (+ rozrzut).
+  - Przed wywołaniem serwer sprawdza budżet zapytań.
+  - Nieudane wczytanie NIE kończy się pustym profilem nadpisującym rekord. Gracz gra w pamięci bez zapisu, a w dzienniku
+    serwera pojawia się wpis `[StanGracza] zapis: …`.
+- **Sprawdzanie i migracja:**
+  - `LogikaStanu.migrujProfil` obsługuje wersje 1–4. Uzupełnia brakujące pola wzorem i niczego nie nadpisuje. Profil
+    sprzed wersji 4 nie dostaje punktów za dawne poziomy.
+  - `czystyProfil` przepuszcza tylko wartości, które da się zapisać. Sprawdza typy i zakresy pól oraz rozmiar: najwyżej
+    70 000 wartości i ok. 3 MB.
+  - Zepsuty, za duży albo przyszły profil: gracz dostaje świeży profil w pamięci i gra bez zapisu, a rekord zostaje
+    nietknięty.
+  - Za duży profil przy zapisie: nic się nie zapisuje, bez zapisu częściowego.
+- **Studio bez dostępu do usług danych** (to ustawienie gry, którego nie zmieniamy):
+  - Pierwsze wywołanie to wykrywa i zapis wyłącza się do końca sesji serwera.
+  - Gra działa w pamięci, a w dzienniku jest jeden wpis.
+  - Atrybuty kontenera: `ZapisAktywny`, `ZapisStan` oraz liczniki `LicznikWczytan`, `LicznikZapisow`,
+    `LicznikBledowZapisu`, `LicznikBezZapisu`.
+- **Magazyn:** `BC_StanGracza_v1`, a w Studio `BC_StanGracza_v1_Studio`, więc zapisy ze Studio nie trafiają do gry.
+
+**Co obejmuje (profil wersja 4):**
+- Z profilu: poziom, doświadczenie, Złoto, Gemy, shardy, tokeny krain, klasa (atrybut `Class`), trening
+  (`wytrenowane`), punkty do rozdania (pula, rozdane, poziom), walki (wygrane, przegrane), awanse, pety (kopie,
+  aktywny, premia), wydatki (np. kupione jajka), pokonani strażnicy (Gemy za pierwsze pokonanie) i `pakiety` (dane innych
+  pakietów, np. Kowala, przez `Sygnaly/DanePakietu`).
+- Atrybuty gracza o przedrostkach:
+  - `WidzialPrzelot…` i `PokonalStraznika…` — przeloty i brama każdego biomu; z bramy wynika też odblokowanie krainy
+    w teleporcie;
+  - `StrojProba_…` — strój z przymierzalni.
+- `PamiecGracza` lasu-pasa (ta sama kopia kodu w Bagnie i Dżungli) przy aktywnym zapisie czyta stan z tych atrybutów.
+  Przy wyłączonym zapisie działa dokładnie jak dawniej.
+
+**Czego NIE obejmuje i dlaczego:**
+- **Drzewko umiejętności Pawła** (atrybut `SkillTree` z zakupami w JSON oraz `ST_*`): to jego plik, a JSON może
+  przekroczyć limit napisu w profilu. **Bez tego przy włączonym zapisie Gemy wydane na drzewko przepadną razem
+  z drzewkiem.** Drzewko musi trafić do zapisu przed włączeniem (lista niżej).
+- **Przedmioty z okna ekwipunku:** dziś istnieją tylko po stronie klienta.
+- **Pasek treningu** (malejący zysk w `swiat/trening_proba`) i własne dane innych pakietów, dopóki nie użyją `DanePakietu`.
+- **Stan sprzed nagłego padu serwera bez `BindToClose`:** łup walki, który jeszcze nie trafił do profilu, i zmiany od
+  ostatniego zapisu (najwyżej ok. 2,5 min).
+- **Modyfikatory** z `Sygnaly/Modyfikatory`: z założenia żyją w pamięci serwera. Pakiety odtwarzają je ze swoich
+  danych po wejściu gracza.
+
+**Jak włączyć:**
+1. W `dane.py` ustaw `ZAPIS_WLACZONY = True` (dla wszystkich) albo w trybie Edit ustaw atrybut kontenera
+   `StanGracza.ZapisPostepu = true` (przechodzi na odbudowany kontener). Atrybut działa przy starcie serwera, nie w trakcie
+   gry.
+2. W Studio włącz w ustawieniach gry: Security → „Enable Studio Access to API Services”. Robią to ludzie, nie agent.
+3. Wartości startowe nowego gracza są w `D.zapis.start` (dziś 0 Gemów i 0 Złota).
+   - Testowe 1000 Gemów z `PlayerStatsDefaults` nie utrwalą się po cichu: dla nowego gracza serwer stanu nadpisuje je
+     wartościami startowymi.
+   - Do decyzji: ile Gemów na start (D-099).
+
+**Jak sprawdzić:**
+- **Offline:** `python -B swiat/stan_gracza/testy/test_zapisu.py` — 11 scenariuszy na atrapie DataStore.
+- **W Studio** (gdy ludzie włączą dostęp do usług danych):
+  1. Play.
+  2. Zagraj: walka, awans, „+”, jajko, przymierzalnia, Strażnik.
+  3. Stop (zapisuje `BindToClose`).
+  4. Play jeszcze raz: stan wraca, `ZapisStan` = „włączony”, `LicznikWczytan` = 1.
+  5. Blokada: dwa okna Studio (Team Create, ten sam gracz). Drugie okno gra bez zapisu (`StanGraczaZapis` =
+     „bez_zapisu”).
+- **Na testowym serwerze dziś się nie da:** kontener `StanGracza` działa tylko w Studio. Strażnik `IsStudio` na początku
+  skryptów usuwa go poza Studio, jak w pozostałych prototypach. Przeniesienie do gry to osobna decyzja.
+
+**Do włączenia potrzebne po stronie Pawła (co, w którym pliku, po co):**
+1. **`src/client/ClassSelectClient`:** czekać na `StanGraczaWczytany ~= false`, zanim pokaże wybór klasy, i nie
+   pokazywać go, gdy `Class` wróci z zapisu. Inaczej powracający gracz zobaczy ekran klasy i może ją zmienić (wyścig
+   z wczytaniem).
+2. **`src/server/ClassSelect.server.luau`:** przyjmować `ChooseClass` tylko wtedy, gdy `Class` jest pusty (D-081: klasę
+   wybiera się raz). Dziś klasę można zmienić w każdej chwili, a po włączeniu zapisu zmiana byłaby trwała.
+3. **`src/server/SkillTree.server.luau`:** zakupy drzewka (`SkillTree`) zapisywać przez `Sygnaly/DanePakietu` (np. pakiet
+   `drzewko`) po `StanGraczaWczytany`, a `ST_*` przeliczać po wczytaniu i przy każdej zmianie (dziś tylko przy starcie
+   i przy zakupie). Bez tego zapis gubi drzewko, a wydane na nie Gemy są już odjęte.
+4. **`src/server/PlayerStatsDefaults.server.luau`:** wartości testowe (1000 Gemów, statystyki 20/16/18/12/7/57) usunąć
+   albo zostawić tylko w Studio. Stan gracza i tak je nadpisze, ale jedno źródło wartości startowych jest czytelniejsze.
+5. **(później) `src/server/StatPoints.server.luau`:** „+” powinien sam zdejmować `PunktyDoRozdania`, zamiast dodawać
+   punkt za darmo (dziś cofamy go po naszej stronie).
+6. **(później) Okno ekwipunku:** przedmioty po stronie serwera — dopiero wtedy da się je zapisać.
+
+**Decyzje ludzi:**
+- czy i kiedy włączyć zapis;
+- dostęp Studio do usług danych;
+- Gemy i Złoto na start;
+- czy zapis drzewka (punkt 3) jest warunkiem włączenia — rekomendacja: tak;
+- przeniesienie pakietu ze Studio do gry (test na serwerze).
+
 ## Co zgłosić Pawłowi
 - Jego atrybuty `Level`, `XP`, `XPMax`, `Gold`, `Gems` i sześć statystyk pisze teraz serwer pakietu (XPMax z krzywej,
   statystyki 30 pkt według klasy zamiast 20/16/18/12/7/57). Jego pliki są nietknięte; `PlayerStatsDefaults` dalej
@@ -251,7 +373,8 @@ liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyK
 Bez Studio (wszystko pojedynczo, bez wielu procesów):
 ```
 python -B swiat/stan_gracza/dane.py --sprawdz          # DaneStanu.luau aktualny
-python -B swiat/stan_gracza/testy/test_stanu.py        # 55 testów, w tym SerwerStanu i KlientStanu w luau_mini
+python -B swiat/stan_gracza/testy/test_stanu.py        # 56 testów, w tym SerwerStanu i KlientStanu w luau_mini
+python -B swiat/stan_gracza/testy/test_zapisu.py       # 11 scenariuszy zapisu postępu na atrapie DataStore
 python -B swiat/stan_gracza/sprawdz_luau_stanu.py      # kontrola statyczna Luau
 python -B swiat/stan_gracza/zbuduj.py --sucho          # plan budowy
 python -B swiat/stan_gracza/symulacja_lasu.py          # szanse w przegrodach lasu-pasa i czas do Strażnika
@@ -262,7 +385,7 @@ python -B swiat/stan_gracza/punkty_statystyk.py       # punkty do rozdania: wari
 W Studio (część B): `zbuduj.py` buduje kontener; potem wymiana skryptów obu lasów
 (`python -B swiat/las_potwory/zbuduj.py --skrypty`, `python -B swiat/las_pas_gra/zbuduj.py --skrypty`) i próba w Play:
 ```
-python -B swiat/stan_gracza/testy/proba_play.py <folder wyników poza repo>   # S00–S14, zrzuty → klatki/
+python -B swiat/stan_gracza/testy/proba_play.py <folder wyników poza repo>   # S00–S15, zrzuty → klatki/
 python -B swiat/stan_gracza/testy/proba_play.py --sprawdz                    # bez Studio: parsuje kawałki Luau próby
 ```
 Próba sprawdza: trzy klasy w walce na poziomie gracza, łup dopiero po walce i HUD = atrybuty, baner awansu,
@@ -299,7 +422,8 @@ z ok. 8 przegranymi po drodze. Cel planu rosnącego z `tools/walka/tempo.py`: ok
 ## Pliki
 - `dane.py` → `zrodla/DaneStanu.luau` (wygenerowany; liczby z `tools/walka/wzorcowe.py`, `tempo.py`,
   `src/server/Walka/Statystyki.luau`), `logika_stanu.py` (lustro `zrodla/LogikaStanu.luau`).
-- `zrodla/SerwerStanu.server.luau`, `zrodla/KlientStanu.client.luau`, `zrodla/LogikaStanu.luau`.
+- `zrodla/SerwerStanu.server.luau`, `zrodla/KlientStanu.client.luau`, `zrodla/LogikaStanu.luau`, `zrodla/ZapisStanu.luau`
+  (zapis postępu, domyślnie wyłączony), `testy/test_zapisu.py`.
 - `zbuduj.py`, `sprawdz_luau_stanu.py`, `symulacja_lasu.py`, `kara_przegranej.py` (warianty kary; gracze z
   `swiat/pety_proba/ekonomia_jajek.py`, tylko uruchamiany), `porownaj_profile.py` (pytanie 56), `punkty_statystyk.py` (D-097), `testy/test_stanu.py`,
   `testy/atrapa_roblox.py`.

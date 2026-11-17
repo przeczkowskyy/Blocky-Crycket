@@ -43,12 +43,14 @@ SET_ATTRIBUTE = {
     "KlientStanu.client.luau": {"kontener", "gui"},
     "LogikaStanu.luau": set(),
     "DaneStanu.luau": set(),
+    "ZapisStanu.luau": set(),
 }
 DESTROY = {
     "SerwerStanu.server.luau": {"script.Parent"},
     "KlientStanu.client.luau": {"s", "gui"},
     "LogikaStanu.luau": set(),
     "DaneStanu.luau": set(),
+    "ZapisStanu.luau": set(),
 }
 CZYSTA = "LogikaStanu.luau"
 ZAKAZANE_W_CZYSTEJ = ["workspace", "Instance", "task.", "os.", "require", "print(", "warn("]

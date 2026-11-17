@@ -562,7 +562,11 @@ class TestStyku(unittest.TestCase):
         for kod in (SERWER, KLIENT):
             for z in ("AddStatPoint", "ChooseClass", "SkillTreeBuy"):
                 self.assertNotIn(z, bez_komentarzy(kod))
-        self.assertNotIn("SetAttribute(A.klasa", SERWER)
+        # jedyny zapis atrybutu Class: przywrócenie wybranej klasy z zapisu postępu (zastosujProfil, 18.11.2026)
+        kod = bez_komentarzy(SERWER)
+        self.assertEqual(kod.count("SetAttribute(A.klasa"), 1)
+        cialo = kod[kod.index("local function zastosujProfil"):kod.index("local function wykonajZapis")]
+        self.assertIn("gracz:SetAttribute(A.klasa, p.idKlasy)", cialo)
 
 
 # ============================================================================================== 8. SerwerStanu offline
@@ -575,7 +579,7 @@ class TestSerweraOffline(unittest.TestCase):
              "Intelligence": 18, "Dexterity": 12, "Luck": 7, "Armor": 57}
     LUP = {"zloto": 21, "doswiadczenie": 12, "tokeny_krainy": 1, "gemy": 0, "shard_ewolucji": 0, "kraina": "las"}
 
-    def uruchom(self, statystyki_klasy=True, trening=True, procent_kary=None):
+    def uruchom(self, statystyki_klasy=True, trening=True, procent_kary=None, poczatek=False):
         if TU not in sys.path:
             sys.path.insert(0, TU)
         import atrapa_roblox as AR  # noqa: E402
@@ -587,6 +591,9 @@ class TestSerweraOffline(unittest.TestCase):
             dane = dane.replace(wzor, "procent = %s," % procent_kary, 1)
         k, inne = AR.kontener_stanu(sw, {"DaneStanu": dane, "LogikaStanu": LOGIKA}, ZB.INNE)
         k.ustaw("StatystykiKlasy", statystyki_klasy)
+        # „szczęście początkującego” zmienia opis bohatera do pierwszej wygranej — scenariusze bez niego, chyba że o nim
+        if not poczatek:
+            k.ustaw(D["poczatek"]["atrybut_wylacznika"], False)
         klasy = [{"id": i, "stats": s} for i, s in klasy_pawla()]
         shared = AR.Inst(sw, "Shared", "Folder", sw.replicated)
         sw.modul(shared, "ClassData", wartosc=LM.do_luau({"Classes": klasy}))
@@ -1059,7 +1066,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual(self.pakiet("czytaj"), dane)
         stan = self.wywolaj("SterowanieSerwera", "stan", self.g.t)
         self.assertEqual((stan["wersja"], stan["pakiety"]["kowal"]), (D["wersja_profilu"], dane))
-        self.assertEqual(D["wersja_profilu"], 3)
+        self.assertEqual(D["wersja_profilu"], 4)
         for zla, powod in (({"x": "y" * 201}, "za_dlugi_napis"), ("napis", "zly_typ"), (list(range(2001)), "za_duzo")):
             self.assertEqual(self.pakiet("zapisz", tabela=zla), {"ok": False, "powod": powod})
         self.assertEqual(self.pakiet("czytaj"), dane, "zły zapis niczego nie zmienia")
@@ -1104,6 +1111,42 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual(stan["straznicy"], {"straznik_lasu": True, "straznik_topieli": True})
         self.assertEqual(self.k.atrybuty["LicznikGemowStraznika"], 2)
         self.assertEqual(self.ostrzezenia(), [])
+
+    def test_8r_szczescie_poczatkujacego(self):
+        # do pierwszej wygranej sześć statystyk ×(1 + procent) przez źródło w Modyfikatory; po wygranej znika
+        self.uruchom(poczatek=True)
+        self.g.ustaw("Class", "Mage")
+        p = D["poczatek"]["procent"]
+        self.assertGreater(p, 0)
+        opis = self.wywolaj("Bohater", self.g.t)
+        self.assertEqual(opis["pet"], {s: p for s in D["statystyki"]})
+        self.assertIn(D["poczatek"]["zrodlo"], self.mody("czytaj")["zrodla"])
+        silnik.sprawdz_postac(opis, "gracz")
+        # przegrana nie zdejmuje wzmocnienia
+        self.lup(czas=0.0, wynik="przegrana", zloto=0, tokeny_krainy=0, doswiadczenie=2)
+        self.assertIn("pet", self.wywolaj("Bohater", self.g.t))
+        # pierwsza wygrana — koniec
+        self.lup(czas=0.0)
+        opis2 = self.wywolaj("Bohater", self.g.t)
+        self.assertNotIn("pet", opis2)
+        self.assertNotIn(D["poczatek"]["zrodlo"], self.mody("czytaj")["zrodla"])
+        # razem z petem: procenty się sumują (pet z Modyfikatory + początek)
+        self.uruchom(poczatek=True)
+        self.mody("ustaw", "pety", {"procent": {"Luck": 0.1}})
+        self.assertEqual(self.wywolaj("Bohater", self.g.t)["pet"]["szczescie"], p + 0.1)
+        # wyłącznik w czasie gry
+        self.k.ustaw(D["poczatek"]["atrybut_wylacznika"], False)
+        self.assertEqual(self.wywolaj("Bohater", self.g.t)["pet"], {"szczescie": 0.1})
+        self.assertEqual(self.ostrzezenia(), [])
+        # skuteczność: profil z ClassData, 1. poziom, Leśny Slime 1. poziomu — każda klasa ≥ 95% (600 walk, ziarna stałe)
+        los = random.Random(41)
+        for k in D["klasy"]:
+            st = LS.rozdziel(D, ROZKLADY_CD[k], 30)
+            o = LS.opis_bohatera(D, k, 1, st)
+            o["pet"] = {s: p for s in D["statystyki"]}
+            wyg = sum(silnik.symuluj(o, {"potwor": "lesny_slime", "poziom": 1}, los.randrange(1, 2 ** 31 - 1))["wynik"]
+                      == "wygrana" for _ in range(600))
+            self.assertGreaterEqual(wyg / 600, 0.93, k)  # 95% z zapasem na rozrzut 600 walk
 
     def test_8h_bez_treningu_i_wyjscie_gracza(self):
         self.uruchom(trening=False)
@@ -1277,7 +1320,7 @@ class TestKontroli(unittest.TestCase):
         bledy, parser = SLS.sprawdz_pliki(SLS.pliki_pakietu(), wypisz=lambda *_: None)
         self.assertTrue(parser)
         self.assertEqual(bledy, [])
-        self.assertEqual(len(SLS.pliki_pakietu()), 4)
+        self.assertEqual(len(SLS.pliki_pakietu()), 5)
 
     def test_7f_funkcje_przed_uzyciem(self):
         # luau_mini widzi lokalne funkcje zdefiniowane PÓŹNIEJ w pliku, a prawdziwy Luau nie (to globalna nil) —

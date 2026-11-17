@@ -49,6 +49,7 @@ KONTENER = "StanGracza"
 SKRYPTY = [
     ("DaneStanu.luau", "ModuleScript", "Moduly/DaneStanu", None),
     ("LogikaStanu.luau", "ModuleScript", "Moduly/LogikaStanu", None),
+    ("ZapisStanu.luau", "ModuleScript", "Moduly/ZapisStanu", None),       # 18.11.2026: zapis postępu (domyślnie wyłączony)
     ("SerwerStanu.server.luau", "Script", "SerwerStanu", "Server"),
     ("KlientStanu.client.luau", "Script", "KlientStanu", "Client"),
 ]
@@ -63,7 +64,7 @@ INNE = [
     ("BindableFunction", "Sygnaly/Modyfikatory"),     # 18.11.2026: modyfikatory bohatera z pakietów (pety, Kowal)
     ("BindableFunction", "Sygnaly/DanePakietu"),      # 18.11.2026: dane pakietów w profilu
 ]
-ATRYBUTY_TESTOWE = ["StatystykiKlasy", "KaraPrzegranej", "PunktyStatystyk"]  # KaraPrzegranej (17.11.2026): false / ułamek kary w Edit
+ATRYBUTY_TESTOWE = ["StatystykiKlasy", "KaraPrzegranej", "PunktyStatystyk", "SzczesciePoczatkujacego", "ZapisPostepu"]  # KaraPrzegranej (17.11.2026): false / ułamek kary w Edit
 
 NAGLOWEK_MIEJSCA = ('if game.PlaceId ~= __MIEJSCE__ then return "STOP: inne miejsce (PlaceId " .. tostring(game.PlaceId) .. ")" end\n'
                     'if game:GetService("RunService"):IsRunning() then return "STOP: Studio jest w trybie Play — buduję tylko w trybie Edit" end\n')

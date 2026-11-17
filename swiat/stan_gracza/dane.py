@@ -56,6 +56,14 @@ PUNKTY_SAMO_NA_POZIOM = 5
 # Gemy bez płacenia (D-099 ✅ 17.11; liczby „do zmiany”, tools/walka/REBIRTH_1711.md część 1): za każdy awans i za
 # pierwsze pokonanie strażnika każdego biomu (gatunek zaczyna się od PREFIKS_STRAZNIKA); za co dziesiątą wygraną
 # i z kopalni — jeszcze nie (README)
+# zapis postępu między sesjami (18.11.2026): DOMYŚLNIE WYŁĄCZONY — włączenie to decyzja ludzi (README „Zapis postępu”)
+ZAPIS_WLACZONY = False
+
+# „szczęście początkującego” (18.11.2026): dopóki gracz nie ma żadnej wygranej, jego sześć statystyk w walce ×(1 + tyle)
+# (pole silnika pet przez źródło w Modyfikatory) — pierwsza walka z potworem 1. poziomu ≥ 95% dla każdej klasy przy
+# profilu klas z ClassData (Mag 73% → 96%, Wojownik 79% → 99,6%, Zwiadowca 76% → 98%); 0 = wyłączone
+SZCZESCIE_POCZATKUJACEGO = 0.75
+
 GEMY_ZA_POZIOM = 10
 GEMY_ZA_STRAZNIKA = 100
 PREFIKS_STRAZNIKA = "straznik_"
@@ -150,7 +158,8 @@ def podstawa():
         "prefiks": "[StanGracza] ",
         # 2 (17.11.2026): pety i licznik wydatków w profilu (swiat/pety_proba); 3 (18.11.2026): dane pakietów
         # (Sygnaly/DanePakietu — pole pakiety; profil 2 dostaje puste pakiety)
-        "wersja_profilu": 3,
+        # 4 (18.11.2026, zapis postępu): idKlasy i atrybuty innych pakietów (przeloty, strażnicy biomów, strój)
+        "wersja_profilu": 4,
         "krzywa": {"a": tempo.DOMYSLNE_A, "b": 1.6},
         "pula": {"baza": wzorcowe.PUNKTY_START, "na_poziom": wzorcowe.PUNKTY_NA_POZIOM},
         "sloty": progi_slotow(),
@@ -220,8 +229,22 @@ def podstawa():
         "punkty": {"na_poziom": PUNKTY_DO_ROZDANIA, "auto_na_poziom": PUNKTY_SAMO_NA_POZIOM,
                    "atrybut": "PunktyDoRozdania", "atrybut_wylacznika": "PunktyStatystyk",
                    "komunikat_brak": "Brak punktów — zdobądź poziom", "licznik": "Punkty do rozdania: %d"},
+        "poczatek": {"procent": SZCZESCIE_POCZATKUJACEGO, "zrodlo": "szczescie_poczatkujacego",
+                     "atrybut_wylacznika": "SzczesciePoczatkujacego"},
         "gemy": {"za_poziom": GEMY_ZA_POZIOM, "za_straznika": GEMY_ZA_STRAZNIKA, "prefiks_straznika": PREFIKS_STRAZNIKA,
                  "komunikat_straznika": "+%d Gemów za pierwsze pokonanie strażnika!"},
+        # zapis postępu między sesjami (18.11.2026, propozycja; DOMYŚLNIE WYŁĄCZONY — ZAPIS_WLACZONY albo atrybut kontenera
+        # `atrybut` = true): DataStore z blokadą sesji (zapisywana w rekordzie), UpdateAsync z ponawianiem; README
+        "zapis": {"wlaczony": ZAPIS_WLACZONY, "atrybut": "ZapisPostepu", "magazyn": "BC_StanGracza_v1",
+                  "przyrostek_studio": "_Studio", "klucz": "player_",
+                  "pola": ["wersja", "klasa", "idKlasy", "poziom", "xp", "zloto", "gemy", "tokeny", "shardy", "wytrenowane",
+                           "walki", "awanse", "pety", "wydatki", "pakiety", "punkty", "straznicy", "atrybuty"],
+                  "atrybuty_prefiksy": ["WidzialPrzelot", "PokonalStraznika", "StrojProba_"],
+                  "limity": {"wartosci_maks": 70000, "glebokosc_maks": 10, "napis_maks": 200, "bajty_maks": 3000000},
+                  "proby": 4, "odstep_s": 1, "proby_blokady": 6, "czekaj_blokada_s": 5, "blokada_s": 600,
+                  "co_s": 120, "rozrzut_s": 30, "zamkniecie_s": 25, "budzet_min": 2,
+                  # nowy gracz z włączonym zapisem: wartości startowe zamiast testowych z PlayerStatsDefaults (Paweł)
+                  "start": {"gemy": 0, "zloto": 0}},
         "klasy_pawla": {"folder": "Shared", "modul": "ClassData", "czekaj_s": 10},
         "trening": {"kontener": "TreningProba", "sygnal": "PrzyrostStatystyki"},
         "hud": {"gui": "HUD", "czekaj_s": 60},
@@ -350,6 +373,31 @@ def przypadki(D):
               {"a": {"b": {"c": {"d": {"e": {"f": {"g": {"h": {"i": 1}}}}}}}}}, {"tak": True, "n": -3.5}):
         w, powod = LS.czyste_dane_pakietu(D, v)
         P["dane_pakietu"].append({"v": v, "wynik": nil(w), "powod": powod})
+    # zapis postępu (18.11.2026): migracja, sprawdzanie profilu, kopia do zapisu
+    stary1 = {"klasa": "mag", "poziom": 7, "xp": 12, "zloto": 340, "gemy": 5, "tokeny": {"las": 3}, "shardy": 0,
+              "wytrenowane": {s: (2 if s == "sila" else 0) for s in D["statystyki"]}, "walki": {"wygrane": 9, "przegrane": 2},
+              "awanse": 6, "baza": {"klasa": "mag"}}
+    stary2 = dict(stary1, wersja=2, pety={"kopie": {"zoledziak": 1}, "aktywny": "zoledziak",
+                                          "premia": {"zloto": 0.05, "doswiadczenie": 0}}, wydatki={"jajko_lesne": 1})
+    stary3 = dict(stary2, wersja=3, pakiety={"kowal": {"plus": 2}})
+    P["migruj"] = []
+    for dane_ in (None, "x", 7, stary1, stary2, stary3, dict(stary3, wersja=99), dict(stary3, wersja="3"),
+                  dict(stary3, wersja=4, punkty={"pula": 3, "rozdane": {s: 1 for s in D["statystyki"]}, "poziom": 7},
+                       straznicy={"straznik_lasu": True}, idKlasy="Mage", atrybuty={"PokonalStraznikaLasu": True})):
+        w, powod = LS.migruj_profil(D, dane_)
+        P["migruj"].append({"dane": nil(dane_), "wynik": nil(w), "powod": powod})
+    dobry = LS.migruj_profil(D, stary3)[0]
+    P["czysty_profil"] = []
+    for prof in (dobry, dict(dobry, poziom=0), dict(dobry, poziom=2.5), dict(dobry, zloto=-1), dict(dobry, klasa="lucznik"),
+                 dict(dobry, idKlasy="Rogue"), dict(dobry, xp="5"), dict(dobry, tokeny={"las": 1.5}),
+                 dict(dobry, atrybuty={"Haker": True}), dict(dobry, atrybuty={"StrojProba_mag": "a,b"}),
+                 dict(dobry, straznicy={"straznik_lasu": 1}), dict(dobry, wersja=3),
+                 dict(dobry, punkty={"pula": -1, "rozdane": {}, "poziom": 1}), dict(dobry, wytrenowane={"sila": 1}),
+                 dict(dobry, pety={"kopie": {"a": 1}, "premia": {"zloto": 0.9}}), dict(dobry, pakiety={"k": {"x": "y" * 201}})):
+        w, powod = LS.czysty_profil(D, prof)
+        P["czysty_profil"].append({"p": prof, "wynik": nil(w), "powod": powod})
+    P["do_zapisu"] = [{"p": prof, "wynik": LS.profil_do_zapisu(D, prof)}
+                      for prof in (dict(dobry, oczekujace=[1], baza={"klasa": "mag"}), LS.nowy_profil(D))]
     # Gemy za strażnika (18.11.2026, D-099)
     P["straznik"] = [{"gatunek": nil(g), "wynik": LS.czy_straznik(D, g)}
                      for g in ("straznik_lasu", "straznik_topieli", "lesny_slime", "straznik", "", None, 7, "xstraznik_lasu")]

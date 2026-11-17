@@ -44,7 +44,10 @@
 		   D.punkty.atrybut_wylacznika = false: jak przed D-097 (10 samo na poziom, „+” za darmo);
 		12. Gemy bez płacenia (18.11.2026, D-099 ✅, liczby do zmiany): D.gemy.za_poziom za każdy awans i
 		   D.gemy.za_straznika za pierwsze pokonanie strażnika każdego biomu (profil.straznicy; komunikat
-		   "gemy_straznika" do klienta).
+		   "gemy_straznika" do klienta);
+		13. „szczęście początkującego” (18.11.2026): dopóki gracz nie ma żadnej wygranej, wewnętrzne źródło
+		   modyfikatorów D.poczatek.zrodlo mnoży jego sześć statystyk w walce ×(1 + D.poczatek.procent); bez napisu dla
+		   gracza; wyłącznik: procent 0 albo atrybut kontenera D.poczatek.atrybut_wylacznika = false.
 	Stan: JEDNA tabela profilu na gracza (pole wersja) — pod przyszły zapis (DataStore / ProfileStore; dziś tylko
 	pamięć serwera, profil znika przy wyjściu gracza, jak atrybuty).
 
@@ -82,6 +85,7 @@ local kontener = script.Parent
 local moduly = kontener:WaitForChild("Moduly")
 local D = require(moduly:WaitForChild("DaneStanu"))
 local L = require(moduly:WaitForChild("LogikaStanu"))
+local modulZapisu = moduly:FindFirstChild("ZapisStanu")
 local zdarzenia: RemoteEvent = kontener:WaitForChild("Zdalne"):WaitForChild("ZdarzeniaStanu")
 local sygnaly = kontener:WaitForChild("Sygnaly")
 local bohaterF: BindableFunction = sygnaly:WaitForChild("Bohater")
@@ -115,6 +119,49 @@ kontener:SetAttribute("SerwerStanuGotowy", false)
 for _, n in { "LicznikLupow", "LicznikPokazan", "LicznikAwansow", "LicznikBohaterow", "LicznikTreningu", "LicznikOdmow",
 	"LicznikWydatkow", "LicznikPetow", "LicznikKar", "LicznikModyfikatorow", "LicznikDanychPakietow",
 	"LicznikPrzyznanychPunktow", "LicznikRozdanychPunktow", "LicznikCofnietychPunktow", "LicznikGemowStraznika" } do
+	kontener:SetAttribute(n, 0)
+end
+
+------------------------------------------------------------------ zapis postępu: obiekt przy starcie (README „Zapis postępu”)
+local zapis = nil
+do
+	local a = kontener:GetAttribute(D.zapis.atrybut)
+	local wlaczony = a == true or (a ~= false and D.zapis.wlaczony == true)
+	local stan = "wyłączony"
+	if wlaczony and modulZapisu then
+		local ok, magazyn, uslugi = pcall(function()
+			local DSS = game:GetService("DataStoreService")
+			local nazwa = D.zapis.magazyn .. (if game:GetService("RunService"):IsStudio() then D.zapis.przyrostek_studio else "")
+			return DSS:GetDataStore(nazwa), DSS
+		end)
+		if ok and magazyn then
+			local Z = require(modulZapisu)
+			zapis = Z.nowy(D, L, {
+				magazyn = magazyn,
+				zeton = game:GetService("HttpService"):GenerateGUID(false),
+				teraz = os.time,
+				opoznij = task.delay,
+				log = function(tekst: string)
+					warn(P .. "zapis: " .. tekst)
+				end,
+				budzet = function()
+					local okB, b = pcall(function()
+						return uslugi:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.UpdateAsync)
+					end)
+					return if okB then b else nil
+				end,
+				los = if math.random then math.random else nil,
+			})
+			stan = "włączony"
+		else
+			stan = "wyłączony (usługa danych niedostępna: " .. tostring(magazyn) .. ")"
+			warn(P .. "zapis: " .. stan)
+		end
+	end
+	kontener:SetAttribute("ZapisAktywny", zapis ~= nil)
+	kontener:SetAttribute("ZapisStan", stan)
+end
+for _, n in { "LicznikWczytan", "LicznikZapisow", "LicznikBledowZapisu", "LicznikBezZapisu" } do
 	kontener:SetAttribute(n, 0)
 end
 
@@ -245,6 +292,8 @@ local function zbierz(gracz: Player)
 	p.zloto = liczba(gracz, A.zloto, 0)
 	p.gemy = liczba(gracz, A.gemy, 0)
 	p.shardy = liczba(gracz, A.shardy, 0)
+	local id = gracz:GetAttribute(A.klasa)
+	p.idKlasy = if type(id) == "string" and D.klasy_gracza[id] ~= nil then id else nil
 	return p
 end
 
@@ -267,7 +316,11 @@ local function zastosujBaze(gracz: Player)
 	for _, s in D.statystyki do
 		obecne[s] = gracz:GetAttribute(D.atrybuty_statystyk[s])
 	end
-	local nowe = L.noweStatystyki(D, obecne, if p.baza then p.baza.st else nil, cel, p.wytrenowane)
+	local dodatki = {}
+	for _, s in D.statystyki do
+		dodatki[s] = p.wytrenowane[s] + p.punkty.rozdane[s]
+	end
+	local nowe = L.noweStatystyki(D, obecne, if p.baza then p.baza.st else nil, cel, dodatki)
 	p.baza = { klasa = klasa, poziom = poziom, st = cel, tryb = tryb }
 	for _, s in D.statystyki do
 		ustawStatystyke(gracz, s, nowe[s])
@@ -371,11 +424,20 @@ local function listaModow(gracz: Player)
 	for _, w in m.lista do
 		table.insert(pary, w)
 	end
+	local p = profil(gracz)
 	if not m.przejete then
-		local p = profil(gracz)
 		if p.pety.premia.zloto + p.pety.premia.doswiadczenie > 0 then
 			table.insert(pary, { zrodlo = D.modyfikatory.zrodlo_pety, mod = { lup = p.pety.premia } })
 		end
+	end
+	-- „szczęście początkującego”: do pierwszej wygranej sześć statystyk ×(1 + D.poczatek.procent) — pierwsza walka
+	-- praktycznie pewna; atrybut kontenera D.poczatek.atrybut_wylacznika = false albo procent 0 wyłącza
+	if p.walki.wygrane == 0 and D.poczatek.procent > 0 and kontener:GetAttribute(D.poczatek.atrybut_wylacznika) ~= false then
+		local procent = {}
+		for _, s in D.statystyki do
+			procent[D.atrybuty_statystyk[s]] = D.poczatek.procent
+		end
+		table.insert(pary, { zrodlo = D.poczatek.zrodlo, mod = { procent = procent } })
 	end
 	for i = 2, #pary do -- sortowanie przez wstawianie (kilka wpisów)
 		local x = pary[i]
@@ -521,6 +583,9 @@ local function przyjmijLup(gracz: any, info: any)
 	if typeof(gracz) ~= "Instance" or not gracz:IsA("Player") or gracz.Parent ~= Players then
 		return odmowaLupu("zly_gracz")
 	end
+	if gracz:GetAttribute("StanGraczaWczytany") == false then
+		return odmowaLupu("wczytywanie") -- zapis postępu: profil jeszcze się wczytuje (walka bez łupu)
+	end
 	if type(info) ~= "table" or type(info.zrodlo) ~= "string" or not ZRODLA[info.zrodlo] then
 		return odmowaLupu("zle_zrodlo")
 	end
@@ -591,7 +656,10 @@ end
 ------------------------------------------------------------------ wydatki Złota i pety (17.11.2026, swiat/pety_proba)
 -- Bez przerw (żadnego czekania) między sprawdzeniem a zapisem: dwa wywołania naraz nie wydadzą tego samego Złota.
 local function graczOk(gracz: any): boolean
+	-- zapis postępu: do wczytania profilu (atrybut StanGraczaWczytany = false) wydatki, pety, modyfikatory i dane
+	-- pakietów odmawiają — pakiety czekają na StanGraczaWczytany ~= false
 	return typeof(gracz) == "Instance" and gracz:IsA("Player") and gracz.Parent == Players
+		and gracz:GetAttribute("StanGraczaWczytany") ~= false
 end
 
 local function skopiuj(t: any): any
@@ -832,7 +900,8 @@ end
 
 ------------------------------------------------------------------ bohater walki
 local function bohater(gracz: any)
-	if typeof(gracz) ~= "Instance" or not gracz:IsA("Player") or gracz.Parent ~= Players then
+	if typeof(gracz) ~= "Instance" or not gracz:IsA("Player") or gracz.Parent ~= Players
+		or gracz:GetAttribute("StanGraczaWczytany") == false then
 		return nil
 	end
 	-- łup poprzedniej walki przed następną (gracz zaczyna walkę, gdy ekran wyniku już zniknął)
@@ -934,7 +1003,7 @@ zdarzenia.OnServerEvent:Connect(function(gracz: Player, polecenie: any)
 end)
 
 ------------------------------------------------------------------ gracze
-local function nowyGracz(gracz: Player)
+local function przygotujGracza(gracz: Player)
 	profil(gracz)
 	gracz:GetAttributeChangedSignal(A.poziom):Connect(function()
 		ustawXpMax(gracz)
@@ -958,15 +1027,204 @@ local function nowyGracz(gracz: Player)
 	zbierz(gracz)
 	publikujPety(gracz)
 end
+
+------------------------------------------------------------------ zapis postępu (18.11.2026, propozycja; DOMYŚLNIE WYŁĄCZONY)
+-- Moduly/ZapisStanu (DataStore, blokada sesji, ponawianie); tu: kiedy wczytać i zapisać i jak przenieść profil do
+-- atrybutów. Włączony tylko, gdy przy starcie serwera D.zapis.wlaczony albo atrybut kontenera D.zapis.atrybut = true.
+local zapisy: { [Player]: any } = {}
+local wTrakcie = 0 -- zapisy w toku i w kolejce (BindToClose czeka, aż spadnie do zera)
+
+local function atrybutyDoZapisu(gracz: Player)
+	local w = {}
+	for n, v in gracz:GetAttributes() do
+		for _, pre in D.zapis.atrybuty_prefiksy do
+			if string.sub(n, 1, #pre) == pre and (type(v) == "boolean" or type(v) == "string" or type(v) == "number") then
+				w[n] = v
+			end
+		end
+	end
+	return w
+end
+
+-- profil z zapisu → atrybuty gracza (przed podłączeniem słuchaczy; statystyki liczy potem zastosujBaze od nowa:
+-- rozkład klasy dla poziomu + trening + rozdane punkty)
+local function zastosujProfil(gracz: Player, p)
+	gracz:SetAttribute(A.poziom, p.poziom)
+	gracz:SetAttribute(A.xp, p.xp)
+	gracz:SetAttribute(A.zloto, p.zloto)
+	gracz:SetAttribute(A.gemy, p.gemy)
+	gracz:SetAttribute(A.shardy, p.shardy)
+	for kraina, n in p.tokeny do
+		gracz:SetAttribute(A.tokeny_prefiks .. kraina, n)
+	end
+	for n, v in p.atrybuty do
+		gracz:SetAttribute(n, v)
+	end
+	if p.idKlasy ~= nil then
+		-- jedyny zapis atrybutu Class Pawła: przywrócenie wybranej klasy z zapisu (wyścig z ekranem wyboru klasy — README)
+		gracz:SetAttribute(A.klasa, p.idKlasy)
+	end
+	p.baza = nil
+	znane[gracz] = nil
+end
+
+local function wykonajZapis(gracz: Player, z, dane, zwolnij: boolean, potem)
+	if z.stan ~= "aktywny" or not zapis then
+		wTrakcie -= 1
+		if potem then
+			potem(false)
+		end
+		return
+	end
+	z.trwa = true
+	zapis.zapisz(gracz.UserId, dane, zwolnij, function(ok: boolean, powod: string?)
+		z.trwa = false
+		wTrakcie -= 1
+		if ok then
+			dolicz("LicznikZapisow")
+			kontener:SetAttribute("OstatniZapis", string.format("%d:%s", gracz.UserId, if zwolnij then "wyjscie" else "zapis"))
+		else
+			dolicz("LicznikBledowZapisu")
+			if powod == "utracona_blokada" or powod == "przyszla_wersja" or powod == "zly_rekord" then
+				z.stan = "bez_zapisu" -- inny serwer przejął profil albo rekord nie jest nasz: dalej tylko pamięć
+				if gracz.Parent then
+					gracz:SetAttribute("StanGraczaZapis", z.stan)
+				end
+			end
+		end
+		if potem then
+			potem(ok)
+		end
+		local nast = table.remove(z.kolejka, 1)
+		if nast then
+			wykonajZapis(gracz, z, nast.dane, nast.zwolnij, nast.potem)
+		end
+	end)
+end
+
+-- dane bierzemy od razu (atrybuty i profil w tej chwili); zapis w toku → do kolejki (jeden zapis gracza naraz)
+local function zapiszGracza(gracz: Player, zwolnij: boolean, potem)
+	local z = zapisy[gracz]
+	if not z or z.stan ~= "aktywny" or not zapis then
+		if potem then
+			potem(false)
+		end
+		return
+	end
+	if zwolnij then
+		publikuj(gracz, true, 0) -- łup zakończonej walki do profilu przed ostatnim zapisem
+	end
+	local p = zbierz(gracz)
+	p.atrybuty = atrybutyDoZapisu(gracz)
+	local dane = L.profilDoZapisu(D, p)
+	wTrakcie += 1
+	if z.trwa then
+		table.insert(z.kolejka, { dane = dane, zwolnij = zwolnij, potem = potem })
+		return
+	end
+	wykonajZapis(gracz, z, dane, zwolnij, potem)
+end
+
+local function zaplanujZapis(gracz: Player)
+	local los = if math.random then math.random() else 0.5
+	task.delay(D.zapis.co_s + los * D.zapis.rozrzut_s, function()
+		local z = zapisy[gracz]
+		if z and z.stan == "aktywny" and not z.wyszedl then
+			zapiszGracza(gracz, false, nil)
+			zaplanujZapis(gracz)
+		end
+	end)
+end
+
+local function poWczytaniu(gracz: Player, stan: string, dane, powod: string?)
+	local z = zapisy[gracz]
+	if not z or z.wyszedl then
+		-- wyszedł w trakcie wczytywania: oddajemy sesję, profilu nie ruszamy
+		zapisy[gracz] = nil
+		if zapis and (stan == "ok" or stan == "nowy") then
+			zapis.zapisz(gracz.UserId, nil, true, function() end)
+		end
+		return
+	end
+	if stan == "ok" or stan == "nowy" then
+		local p = dane
+		if stan == "nowy" then
+			-- nowy gracz: wartości startowe zamiast testowych z PlayerStatsDefaults (np. 1000 Gemów) — README
+			p = L.nowyProfil(D)
+			p.gemy = D.zapis.start.gemy
+			p.zloto = D.zapis.start.zloto
+		end
+		p.oczekujace = {}
+		profile[gracz] = p
+		zastosujProfil(gracz, p)
+		z.stan = "aktywny"
+		dolicz("LicznikWczytan")
+		zaplanujZapis(gracz)
+	else
+		z.stan = "bez_zapisu"
+		dolicz("LicznikBezZapisu")
+		if zapis and zapis.wylaczony then
+			kontener:SetAttribute("ZapisAktywny", false)
+			kontener:SetAttribute("ZapisStan", "wyłączony: " .. tostring(zapis.powod))
+		end
+		warn(P .. "zapis: gracz " .. tostring(gracz.UserId) .. " gra bez zapisu (" .. stan .. ", " .. tostring(powod) .. ")")
+	end
+	gracz:SetAttribute("StanGraczaZapis", z.stan)
+	przygotujGracza(gracz)
+	gracz:SetAttribute("StanGraczaWczytany", true)
+end
+
+local function nowyGracz(gracz: Player)
+	if zapis and not zapis.wylaczony then
+		zapisy[gracz] = { stan = "wczytywanie", trwa = false, kolejka = {}, wyszedl = false }
+		gracz:SetAttribute("StanGraczaWczytany", false)
+		zapis.wczytaj(gracz.UserId, function(stan: string, dane, powod: string?)
+			poWczytaniu(gracz, stan, dane, powod)
+		end)
+		return
+	end
+	przygotujGracza(gracz)
+end
 Players.PlayerAdded:Connect(nowyGracz)
 for _, g in Players:GetPlayers() do
 	task.spawn(nowyGracz, g)
 end
 Players.PlayerRemoving:Connect(function(gracz: Player)
+	local z = zapisy[gracz]
+	if z then
+		z.wyszedl = true
+		if z.stan == "aktywny" then
+			zapiszGracza(gracz, true, function()
+				zapisy[gracz] = nil
+			end)
+		elseif z.stan ~= "wczytywanie" then
+			zapisy[gracz] = nil
+		end
+	end
 	profile[gracz] = nil
 	modyfikatory[gracz] = nil
 	znane[gracz] = nil
 	ostatniePokaz[gracz] = nil
+end)
+
+-- zamknięcie serwera: ostatni zapis i zwolnienie sesji wszystkich graczy, najwyżej D.zapis.zamkniecie_s
+game:BindToClose(function()
+	if not zapis then
+		return
+	end
+	for g, z in zapisy do
+		if z.stan == "aktywny" and not z.wyszedl then
+			z.wyszedl = true
+			zapiszGracza(g, true, nil)
+		end
+	end
+	local t0 = os.clock()
+	while wTrakcie > 0 and os.clock() - t0 < D.zapis.zamkniecie_s do
+		task.wait(0.5)
+	end
+	if wTrakcie > 0 then
+		warn(P .. string.format("zapis: zamknięcie serwera — nie zdążyło %d zapisów", wTrakcie))
+	end
 end)
 
 -- włączenie StatystykiKlasy w czasie gry: rozkład klasy od razu (wyłączenie zostawia atrybuty, jakie są)
@@ -1031,6 +1289,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 		p.modyfikatory = zl
 		p.zrodlaModyfikatorow = zrodla
 		p.procentKary = procentKary()
+		p.zapis = if zapisy[g] then zapisy[g].stan else "wylaczony"
 		return p
 	elseif polecenie == "publikuj" then
 		return publikuj(g, true, 0)

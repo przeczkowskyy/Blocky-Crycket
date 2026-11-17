@@ -231,6 +231,10 @@ def nowy_profil(D):
         "punkty": {"pula": 0, "rozdane": {s: 0 for s in D["statystyki"]}, "poziom": 1},
         # strażnicy pokonani choć raz (gatunek → True) — Gemy za pierwsze pokonanie (D-099, 18.11.2026)
         "straznicy": {},
+        # wersja 4 (18.11.2026, zapis postępu): wybrana klasa (atrybut Class) i zapisywane atrybuty innych pakietów
+        # (przeloty i strażnicy biomów, strój z przymierzalni — przedrostki D["zapis"]["atrybuty_prefiksy"])
+        "idKlasy": None,
+        "atrybuty": {},
     }
 
 
@@ -448,13 +452,26 @@ def opis_z_modyfikatorami(D, opis, z):
 def czyste_dane_pakietu(D, v):
     """Tabela pakietu → kopia (tylko liczby skończone, napisy, logiczne i tabele z nich; klucze napisy albo liczby
     całkowite; granice D["pakiety"]) albo (None, powód)."""
-    G = D["pakiety"]
+    return zapisywalne(D, v, D["pakiety"])
+
+
+def zapisywalne(D, v, G):
+    """Tabela → kopia z samych wartości, które da się zapisać (granice G: wartosci_maks, glebokosc_maks, napis_maks)
+    albo (None, powód). Wspólne dla danych pakietów i całego profilu (18.11.2026). G["bajty_maks"] (gdy jest):
+    przybliżony rozmiar zapisu — bajty napisów i kluczy + 8 na każdą wartość."""
     licznik = [0]
+    bajty = [0]
+
+    def dolicz(n):
+        bajty[0] += n
+        if G.get("bajty_maks") is not None and bajty[0] > G["bajty_maks"]:
+            raise ValueError("za_duzy")
 
     def kopia(x, glebokosc):
         licznik[0] += 1
         if licznik[0] > G["wartosci_maks"]:
             raise ValueError("za_duzo")
+        dolicz(8)
         if isinstance(x, bool):
             return x
         if isinstance(x, (int, float)):
@@ -464,6 +481,7 @@ def czyste_dane_pakietu(D, v):
         if isinstance(x, str):
             if len(x.encode("utf-8")) > G["napis_maks"]:  # bajty, jak # w Luau
                 raise ValueError("za_dlugi_napis")
+            dolicz(len(x.encode("utf-8")))
             return x
         if isinstance(x, (dict, list)):
             if glebokosc >= G["glebokosc_maks"]:
@@ -476,6 +494,8 @@ def czyste_dane_pakietu(D, v):
                     raise ValueError("zly_klucz")
                 if isinstance(k, str) and len(k.encode("utf-8")) > G["napis_maks"]:
                     raise ValueError("za_dlugi_napis")
+                if isinstance(k, str):
+                    dolicz(len(k.encode("utf-8")))
                 if isinstance(w, dict):
                     w[k] = kopia(y, glebokosc + 1)
                 else:
@@ -523,3 +543,115 @@ def zmiana_statystyki(D, znana, nowa, pula):
     if d > p:
         return z, p, "brak_punktow"
     return n, p - d, "ok"
+
+
+# ------------------------------------------------------------------ zapis postępu (18.11.2026, propozycja; domyślnie wyłączony)
+def _gleboka_kopia(v):
+    if isinstance(v, dict):
+        return {k: _gleboka_kopia(x) for k, x in v.items()}
+    if isinstance(v, list):
+        return [_gleboka_kopia(x) for x in v]
+    return v
+
+
+def profil_do_zapisu(D, p):
+    """Profil w pamięci → kopia samych zapisywanych pól (bez pól pracy serwera: baza, oczekujace…), wersja bieżąca."""
+    w = {}
+    for pole in D["zapis"]["pola"]:
+        v = p.get(pole)
+        if v is not None:
+            w[pole] = _gleboka_kopia(v)
+    w["wersja"] = D["wersja_profilu"]
+    return w
+
+
+def _uzupelnij(w, wzor):
+    for k, d in wzor.items():
+        if d is None:
+            continue
+        if k not in w or w[k] is None:
+            w[k] = _gleboka_kopia(d)
+        elif isinstance(d, dict) and isinstance(w[k], dict):
+            _uzupelnij(w[k], d)
+
+
+def migruj_profil(D, dane):
+    """Zapisany profil (dowolna wersja od 1) → profil bieżącej wersji albo (None, powód): "brak" (nic nie ma),
+    "zly_profil" (nie tabela), "przyszla_wersja" (zapisał go nowszy kod — nie wolno nadpisać). Brakujące pola
+    uzupełnia wzorem nowego profilu, niczego nie nadpisuje; punkty za poziomy sprzed wersji 4 nie dochodzą."""
+    if dane is None:
+        return None, "brak"
+    if not isinstance(dane, dict):
+        return None, "zly_profil"
+    w = _gleboka_kopia(dane)
+    v = w.get("wersja")
+    if not _liczba(v):
+        v = 1
+    if v > D["wersja_profilu"]:
+        return None, "przyszla_wersja"
+    if v < 4 and not isinstance(w.get("punkty"), dict):
+        w["punkty"] = {"pula": 0, "rozdane": {s: 0 for s in D["statystyki"]}, "poziom": poziom_z(D, w.get("poziom"))}
+    for pole in ("baza", "oczekujace"):
+        w.pop(pole, None)
+    _uzupelnij(w, nowy_profil(D))
+    w["wersja"] = D["wersja_profilu"]
+    return w, "ok"
+
+
+def czysty_profil(D, p):
+    """Profil do zapisu albo po wczytaniu → kopia albo (None, powód). Najpierw: same zapisywalne wartości w granicach
+    D["zapis"]["limity"]; potem pola po kolei (typy i zakresy). Zły profil nie może wywrócić gry ani zostać zapisany."""
+    k, powod = zapisywalne(D, p, D["zapis"]["limity"])
+    if k is None:
+        return None, powod
+    if not isinstance(k, dict):
+        return None, "zly_profil"
+    L = D["limity"]
+    if k.get("wersja") != D["wersja_profilu"]:
+        return None, "zla_wersja"
+    if k.get("klasa") not in D["klasy"]:
+        return None, "zla_klasa"
+    if k.get("idKlasy") is not None and k.get("idKlasy") not in D["klasy_gracza"]:
+        return None, "zla_klasa"
+    if not _calkowita(k.get("poziom"), L["poziom_maks"]) or k["poziom"] < 1:
+        return None, "zly_poziom"
+    if not _liczba(k.get("xp")) or k["xp"] < 0:
+        return None, "zle_xp"
+    for pole in ("zloto", "gemy", "shardy", "awanse"):
+        if not _calkowita(k.get(pole), L["waluta_maks"]):
+            return None, "zle_" + pole
+    for pole in ("tokeny", "wydatki", "straznicy", "pakiety", "atrybuty"):
+        if not isinstance(k.get(pole), dict):
+            return None, "zle_" + pole
+    for n, v in k["tokeny"].items():
+        if not isinstance(n, str) or not _calkowita(v, L["waluta_maks"]):
+            return None, "zle_tokeny"
+    for n, v in k["wydatki"].items():
+        if not isinstance(n, str) or not _calkowita(v, L["waluta_maks"]):
+            return None, "zle_wydatki"
+    for n, v in k["straznicy"].items():
+        if not isinstance(n, str) or v is not True:
+            return None, "zle_straznicy"
+    for n, v in k["atrybuty"].items():
+        if not isinstance(n, str) or not any(n[:len(pre)] == pre for pre in D["zapis"]["atrybuty_prefiksy"]):
+            return None, "zle_atrybuty"
+        if not (isinstance(v, (bool, str)) or _liczba(v)):
+            return None, "zle_atrybuty"
+    for pole in ("wytrenowane",):
+        t = k.get(pole)
+        if not isinstance(t, dict) or any(not _calkowita(t.get(s), L["statystyka_maks"]) for s in D["statystyki"]):
+            return None, "zle_" + pole
+    w = k.get("walki")
+    if not isinstance(w, dict) or not _calkowita(w.get("wygrane"), L["waluta_maks"])             or not _calkowita(w.get("przegrane"), L["waluta_maks"]):
+        return None, "zle_walki"
+    pt = k.get("punkty")
+    if not isinstance(pt, dict) or not _calkowita(pt.get("pula"), L["waluta_maks"])             or not _calkowita(pt.get("poziom"), L["poziom_maks"]) or not isinstance(pt.get("rozdane"), dict)             or any(not _calkowita(pt["rozdane"].get(s), L["statystyka_maks"]) for s in D["statystyki"]):
+        return None, "zle_punkty"
+    pe = k.get("pety")
+    if not isinstance(pe, dict) or not isinstance(pe.get("kopie"), dict) or             any(not isinstance(n, str) or not _calkowita(v, D["pety"]["kopii_maks"]) for n, v in pe["kopie"].items()):
+        return None, "zle_pety"
+    if pe.get("aktywny") is not None and not isinstance(pe.get("aktywny"), str):
+        return None, "zle_pety"
+    if czysta_premia(D, pe.get("premia"))[0] is None:
+        return None, "zle_pety"
+    return k, "ok"

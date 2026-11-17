@@ -61,6 +61,7 @@ class Inst:
         t.set("Name", nazwa)
         t.set("ClassName", klasa)
         t.set("GetAttribute", lambda _s, n: self.atrybuty.get(n))
+        t.set("GetAttributes", lambda _s: LM.do_luau(dict(self.atrybuty)) if self.atrybuty else LM.Tabela())
         t.set("SetAttribute", lambda _s, n, v=None: self.ustaw(n, v))
         t.set("GetAttributeChangedSignal", lambda _s, n: self.sygnal(n).t)
         t.set("FindFirstChild", lambda _s, n, *_: self.dziecko(n))
@@ -138,22 +139,34 @@ class Swiat:
         self.replicated = Inst(self, "ReplicatedStorage", "ReplicatedStorage")
         run = Inst(self, "RunService", "RunService")
         run.t.set("IsStudio", lambda _s: True)
-        uslugi = {"Players": self.players, "ReplicatedStorage": self.replicated, "RunService": run}
+        http = Inst(self, "HttpService", "HttpService")
+        self._guid = [0]
+
+        def guid(_s, *_a):
+            self._guid[0] += 1
+            return "serwer-%d-%d" % (id(self) % 10000, self._guid[0])
+        http.t.set("GenerateGUID", guid)
+        self.uslugi = {"Players": self.players, "ReplicatedStorage": self.replicated, "RunService": run, "HttpService": http}
+        self.zamkniecie = []
         game = LM.Tabela()
-        game.set("GetService", lambda _s, n: uslugi[n].t)
+        game.set("GetService", lambda _s, n: self.uslugi[n].t)
+        game.set("BindToClose", lambda _s, fn: self.zamkniecie.append(fn))
         g["game"] = game
         g["workspace"] = self.workspace.t
         task = LM.Tabela()
         task.set("delay", lambda t, fn, *a: self.zadania.append((self.czas + t, fn, a)))
         task.set("spawn", lambda fn, *a: self.wolaj(fn, *a))
+        task.set("wait", lambda s=0.03: self.krok(float(s)) or float(s))  # tylko BindToClose: czas płynie, zadania idą
         g["task"] = task
         os_ = LM.Tabela()
         os_.set("clock", lambda: self.czas)
+        os_.set("time", lambda: float(int(self.czas)))
         g["os"] = os_
         g["warn"] = lambda *a: self.ostrzezenia.append(" ".join(LM.tostring(x) for x in a))
         g["typeof"] = lambda v: "Instance" if isinstance(v, LM.Tabela) and v.get("ClassName") else LM.typ(v)
         g["require"] = self.wymagaj
         g["math"].set("huge", float("inf"))
+        g["string"].set("upper", lambda s: s.upper())  # luau_mini nie ma string.upper (Roblox ma)
         g["table"].set("remove", self._usun_z_listy)  # luau_mini nie ma table.remove (Roblox ma)
 
     @staticmethod
@@ -203,6 +216,48 @@ class Swiat:
         return g
 
 
+class Magazyn:
+    """Atrapa DataStore wspólna dla kilku serwerów (Swiat): UpdateAsync(klucz, przekształcenie) jak w Roblox —
+    przekształcenie dostaje kopię starego rekordu, nil = anuluj; błędy na żądanie (bledy = ile kolejnych wywołań rzuca),
+    zapis wywołań (czas, klucz, serwer, rodzaj) do sprawdzania limitów; podczas = funkcja wołana w trakcie wywołania
+    (np. wyjście gracza w trakcie zapisu)."""
+
+    def __init__(self):
+        self.rekordy = {}
+        self.bledy = 0
+        self.blad_tekst = "502: usługa niedostępna (atrapa)"
+        self.wywolania = []
+        self.podczas = None
+        self.budzet = 100
+
+    def dodaj_do(self, sw):
+        dss = Inst(sw, "DataStoreService", "DataStoreService")
+        magazyn = self
+
+        def update(_s, klucz, fn):
+            magazyn.wywolania.append((sw.czas, klucz, id(sw)))
+            if magazyn.bledy > 0:
+                magazyn.bledy -= 1
+                raise LM.BladLuau(magazyn.blad_tekst)
+            stary = magazyn.rekordy.get(klucz)
+            wynik = sw.wolaj(fn, LM.do_luau(stary) if stary is not None else None)
+            nowy = wynik[0] if wynik else None
+            if magazyn.podczas:
+                h, magazyn.podczas = magazyn.podczas, None
+                h()
+            if nowy is None:
+                return None
+            magazyn.rekordy[klucz] = LM.z_luau(nowy)
+            return LM.do_luau(magazyn.rekordy[klucz])
+        ds = LM.Tabela()
+        ds.set("UpdateAsync", update)
+        dss.t.set("GetDataStore", lambda _s, nazwa, *_: (magazyn.nazwy.append(nazwa), ds)[1])
+        dss.t.set("GetRequestBudgetForRequestType", lambda _s, *_: float(magazyn.budzet))
+        self.nazwy = getattr(self, "nazwy", [])
+        sw.uslugi["DataStoreService"] = dss
+        return dss
+
+
 def kontener_stanu(sw, zrodla, nazwy_inne):
     """Workspace/StanGracza jak po zbuduj.py: moduły, zdalne, sygnały; skrypt serwera trzeba uruchomić osobno."""
     k = Inst(sw, "StanGracza", "Folder", sw.workspace)
@@ -211,6 +266,8 @@ def kontener_stanu(sw, zrodla, nazwy_inne):
     foldery = {n: Inst(sw, n, "Folder", k) for n in ("Moduly", "Zdalne", "Sygnaly")}
     sw.modul(foldery["Moduly"], "DaneStanu", zrodla["DaneStanu"])
     sw.modul(foldery["Moduly"], "LogikaStanu", zrodla["LogikaStanu"])
+    if "ZapisStanu" in zrodla:
+        sw.modul(foldery["Moduly"], "ZapisStanu", zrodla["ZapisStanu"])
     inne = {}
     for klasa, sciezka in nazwy_inne:
         f, n = sciezka.split("/")

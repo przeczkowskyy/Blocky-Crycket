@@ -29,6 +29,8 @@
 	opisZModyfikatorami(D, opis, z)           → opis bohatera dla silnika z modyfikatorami (bez nich — ten sam)
 	pulaSama(D, poziom, punktyWlaczone)       → punkty rozdzielane samo rozkładem klasy (18.11.2026, D-097)
 	czyStraznik(D, gatunek)                   → strażnik biomu (Gemy za pierwsze pokonanie, D-099)
+	zapisywalne(D, v, G), migrujProfil(D, dane), czystyProfil(D, p) → kopia albo nil, powód   (zapis postępu)
+	profilDoZapisu(D, p)                      → kopia samych zapisywanych pól profilu
 	zmianaStatystyki(D, znana, nowa, pula)    → wartość, pula po, "ok" | "brak_punktow" | "cofnieta"
 ]]
 if not game:GetService("RunService"):IsStudio() then
@@ -348,6 +350,9 @@ function L.nowyProfil(D)
 		punkty = { pula = 0, rozdane = wytrenowaneZero(D), poziom = 1 },
 		-- strażnicy pokonani choć raz (gatunek → true) — Gemy za pierwsze pokonanie (D-099, 18.11.2026)
 		straznicy = {},
+		-- wersja 4 (18.11.2026, zapis postępu): wybrana klasa (atrybut Class) i zapisywane atrybuty innych pakietów
+		idKlasy = nil,
+		atrybuty = {},
 	}
 end
 
@@ -660,9 +665,20 @@ end
 
 ------------------------------------------------------------------ dane pakietów w profilu (18.11.2026)
 function L.czysteDanePakietu(D, v)
-	local G = D.pakiety
-	local licznik = 0
+	return L.zapisywalne(D, v, D.pakiety)
+end
+
+-- tabela → kopia z samych zapisywalnych wartości w granicach G (wartosci_maks, glebokosc_maks, napis_maks i — gdy
+-- jest — bajty_maks: bajty napisów i kluczy + 8 na wartość) albo nil, powód; dane pakietów i cały profil
+function L.zapisywalne(D, v, G)
+	local licznik, bajty = 0, 0
 	local blad: string? = nil
+	local function dolicz(n: number)
+		bajty += n
+		if G.bajty_maks ~= nil and bajty > G.bajty_maks then
+			blad = "za_duzy"
+		end
+	end
 	local function kopia(x, glebokosc: number)
 		if blad then
 			return nil
@@ -670,6 +686,10 @@ function L.czysteDanePakietu(D, v)
 		licznik += 1
 		if licznik > G.wartosci_maks then
 			blad = "za_duzo"
+			return nil
+		end
+		dolicz(8)
+		if blad then
 			return nil
 		end
 		local t = type(x)
@@ -684,6 +704,10 @@ function L.czysteDanePakietu(D, v)
 		elseif t == "string" then
 			if #x > G.napis_maks then
 				blad = "za_dlugi_napis"
+				return nil
+			end
+			dolicz(#x)
+			if blad then
 				return nil
 			end
 			return x
@@ -701,6 +725,12 @@ function L.czysteDanePakietu(D, v)
 				if type(k) == "string" and #k > G.napis_maks then
 					blad = "za_dlugi_napis"
 					return nil
+				end
+				if type(k) == "string" then
+					dolicz(#k)
+					if blad then
+						return nil
+					end
 				end
 				w[k] = kopia(y, glebokosc + 1)
 				if blad then
@@ -720,6 +750,177 @@ function L.czysteDanePakietu(D, v)
 		return nil, blad
 	end
 	return w, "ok"
+end
+
+------------------------------------------------------------------ zapis postępu (18.11.2026, propozycja; domyślnie wyłączony)
+local function glebokaKopia(v)
+	if type(v) ~= "table" then
+		return v
+	end
+	local w = {}
+	for k, x in v do
+		w[k] = glebokaKopia(x)
+	end
+	return w
+end
+
+function L.profilDoZapisu(D, p)
+	local w = {}
+	for _, pole in D.zapis.pola do
+		if p[pole] ~= nil then
+			w[pole] = glebokaKopia(p[pole])
+		end
+	end
+	w.wersja = D.wersja_profilu
+	return w
+end
+
+local function uzupelnij(w, wzor)
+	for k, d in wzor do
+		if w[k] == nil then
+			w[k] = glebokaKopia(d)
+		elseif type(d) == "table" and type(w[k]) == "table" then
+			uzupelnij(w[k], d)
+		end
+	end
+end
+
+function L.migrujProfil(D, dane)
+	if dane == nil then
+		return nil, "brak"
+	end
+	if type(dane) ~= "table" then
+		return nil, "zly_profil"
+	end
+	local w = glebokaKopia(dane)
+	local v = w.wersja
+	if not liczba(v) then
+		v = 1
+	end
+	if v > D.wersja_profilu then
+		return nil, "przyszla_wersja"
+	end
+	if v < 4 and type(w.punkty) ~= "table" then
+		local rozdane = {}
+		for _, s in D.statystyki do
+			rozdane[s] = 0
+		end
+		w.punkty = { pula = 0, rozdane = rozdane, poziom = L.poziomZ(D, w.poziom) }
+	end
+	w.baza = nil
+	w.oczekujace = nil
+	uzupelnij(w, L.nowyProfil(D))
+	w.wersja = D.wersja_profilu
+	return w, "ok"
+end
+
+local function zaczynaSie(n: string, przedrostki): boolean
+	for _, pre in przedrostki do
+		if string.sub(n, 1, #pre) == pre then
+			return true
+		end
+	end
+	return false
+end
+
+function L.czystyProfil(D, p)
+	local k, powod = L.zapisywalne(D, p, D.zapis.limity)
+	if k == nil then
+		return nil, powod
+	end
+	local G = D.limity
+	if k.wersja ~= D.wersja_profilu then
+		return nil, "zla_wersja"
+	end
+	local znanaKlasa = false
+	for _, kl in D.klasy do
+		if kl == k.klasa then
+			znanaKlasa = true
+		end
+	end
+	if not znanaKlasa then
+		return nil, "zla_klasa"
+	end
+	if k.idKlasy ~= nil and (type(k.idKlasy) ~= "string" or D.klasy_gracza[k.idKlasy] == nil) then
+		return nil, "zla_klasa"
+	end
+	if not calkowita(k.poziom, G.poziom_maks) or k.poziom < 1 then
+		return nil, "zly_poziom"
+	end
+	if not liczba(k.xp) or k.xp < 0 then
+		return nil, "zle_xp"
+	end
+	for _, pole in { "zloto", "gemy", "shardy", "awanse" } do
+		if not calkowita(k[pole], G.waluta_maks) then
+			return nil, "zle_" .. pole
+		end
+	end
+	for _, pole in { "tokeny", "wydatki", "straznicy", "pakiety", "atrybuty" } do
+		if type(k[pole]) ~= "table" then
+			return nil, "zle_" .. pole
+		end
+	end
+	for n, v in k.tokeny do
+		if type(n) ~= "string" or not calkowita(v, G.waluta_maks) then
+			return nil, "zle_tokeny"
+		end
+	end
+	for n, v in k.wydatki do
+		if type(n) ~= "string" or not calkowita(v, G.waluta_maks) then
+			return nil, "zle_wydatki"
+		end
+	end
+	for n, v in k.straznicy do
+		if type(n) ~= "string" or v ~= true then
+			return nil, "zle_straznicy"
+		end
+	end
+	for n, v in k.atrybuty do
+		if type(n) ~= "string" or not zaczynaSie(n, D.zapis.atrybuty_prefiksy) then
+			return nil, "zle_atrybuty"
+		end
+		if not (type(v) == "boolean" or type(v) == "string" or liczba(v)) then
+			return nil, "zle_atrybuty"
+		end
+	end
+	if type(k.wytrenowane) ~= "table" then
+		return nil, "zle_wytrenowane"
+	end
+	for _, s in D.statystyki do
+		if not calkowita(k.wytrenowane[s], G.statystyka_maks) then
+			return nil, "zle_wytrenowane"
+		end
+	end
+	local w = k.walki
+	if type(w) ~= "table" or not calkowita(w.wygrane, G.waluta_maks) or not calkowita(w.przegrane, G.waluta_maks) then
+		return nil, "zle_walki"
+	end
+	local pt = k.punkty
+	if type(pt) ~= "table" or not calkowita(pt.pula, G.waluta_maks) or not calkowita(pt.poziom, G.poziom_maks)
+		or type(pt.rozdane) ~= "table" then
+		return nil, "zle_punkty"
+	end
+	for _, s in D.statystyki do
+		if not calkowita(pt.rozdane[s], G.statystyka_maks) then
+			return nil, "zle_punkty"
+		end
+	end
+	local pe = k.pety
+	if type(pe) ~= "table" or type(pe.kopie) ~= "table" then
+		return nil, "zle_pety"
+	end
+	for n, v in pe.kopie do
+		if type(n) ~= "string" or not calkowita(v, D.pety.kopii_maks) then
+			return nil, "zle_pety"
+		end
+	end
+	if pe.aktywny ~= nil and type(pe.aktywny) ~= "string" then
+		return nil, "zle_pety"
+	end
+	if L.czystaPremia(D, pe.premia) == nil then
+		return nil, "zle_pety"
+	end
+	return k, "ok"
 end
 
 ------------------------------------------------------------------ Gemy bez płacenia (18.11.2026, D-099)
@@ -864,6 +1065,18 @@ function L.sprawdzPrzypadki(D)
 	for i, c in P.zmiana do
 		local w, pula, wynik = L.zmianaStatystyki(D, c.znana, c.nowa, c.pula)
 		sprawdz("zmiana", i, L.rowne({ w, pula, wynik }, c.wynik))
+	end
+	for i, c in P.migruj do
+		local dane = if c.dane == false then nil else c.dane
+		local w, powod = L.migrujProfil(D, dane)
+		sprawdz("migruj", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
+	end
+	for i, c in P.czysty_profil do
+		local w, powod = L.czystyProfil(D, c.p)
+		sprawdz("czysty_profil", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
+	end
+	for i, c in P.do_zapisu do
+		sprawdz("do_zapisu", i, L.rowne(L.profilDoZapisu(D, c.p), c.wynik))
 	end
 	for i, c in P.straznik do
 		sprawdz("straznik", i, L.czyStraznik(D, c.gatunek) == c.wynik)
