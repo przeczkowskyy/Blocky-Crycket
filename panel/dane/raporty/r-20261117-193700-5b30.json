@@ -1,0 +1,45 @@
+{
+ "id": "r-20261117-193700-5b30",
+ "tytul": "Jajko Bagna: pięć bagiennych petów (jeszcze nie w Studio)",
+ "opis_md": "**Co to jest:** drugie jajko — inkubator ma stać w każdym biomie (D-060). Projekt i modele z Blendera; **w Studio jeszcze tego nie ma** (wdrożenie po teście Karola).\n\n**Pięć petów jajka Bagna** (własne projekty, modele 3D do obracania w panelu), obok leśnych tej samej rzadkości:\n\n| Rzadkość · szansa | Bagno | Co daje | Las | Co daje |\n|---|---|---|---|---|\n| pospolity · 50% | Pałkuś | +6% Złota | Żołędziak | +5% Złota |\n| zwykły · 25% | Nenufarek | +10% doświadczenia | Mchowy Ślimak | +8% doświadczenia |\n| rzadki · 15% | Ważeczka | +14% Złota | Liściolis | +12% Złota |\n| epicki · 8% | Ognik | +18% doświadczenia | Świetlikówka | +15% doświadczenia |\n| legendarny · 2% | Perłowa Wydra | +24% Złota i doświadczenia | Jelonek Gaju | +20% obu |\n\nPet z Bagna jest trochę lepszy od leśnego tej samej rzadkości, ale słabszy od leśnego o stopień rzadszego.\n\n**Cena jajka Bagna:** 750 Złota, każde kolejne +300, do 2500. Pierwsze jajko wypada po ok. 6 minutach gry w Bagnie, kolejne co 9–11 minut. Licznik ceny jest osobny dla każdego jajka (przy wspólnym pierwsze jajko Bagna byłoby od razu drogie); jest przełącznik na wspólny.\n\n**Gładkie jajka:** oba jajka, także leśne, są teraz z gładkich brył zamiast schodków — ostatni obraz pokazuje leśne przed i po.\n\n**Trzeci biom to już tylko wpis w danych:** jajko, pula petów, cena i miejsce są w ustawieniach, bez zmian w kodzie.\n\n**Sprawdzone bez Studio:** 38 testów petów (100 000 losowań na każde jajko, zakupy i odmowy przy obu inkubatorach, oba tryby licznika ceny), wskazówki 24.\n\n**Do oceny:** wygląd petów Bagna i czy premia +24% dla legendarnego nie jest za duża.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T19:37:00+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/palkus/palkus.glb",
+   "etykieta": "Pałkuś 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/nenufarek/nenufarek.glb",
+   "etykieta": "Nenufarek 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/wazeczka/wazeczka.glb",
+   "etykieta": "Ważeczka 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/ognik/ognik.glb",
+   "etykieta": "Ognik 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/perlowa_wydra/perlowa_wydra.glb",
+   "etykieta": "Perłowa Wydra 3D"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
