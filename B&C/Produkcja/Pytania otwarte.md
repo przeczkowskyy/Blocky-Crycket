@@ -490,6 +490,7 @@ Szczegóły: Zob. pytania 17, 36 i 50 (trening jako trzecie źródło statystyk)
 
 Szczegóły: Wcześniejsze liczby (wzorcowe, z [[Walka v2 — silnik, klasy i umiejętności]]): Wojownik 26/30/12/8/10/14, Zwiadowca 27/27/10/14/13/9, Mag 24/22/24/10/10/10. Powiązane: pytanie 53. Zmienił Claude Code u Pawła 17.11 na jego polecenie (karta wyboru klasy).
 **Odpowiedź:**
+- Karol Balucki (2026-11-17): b
 
 ## 57. Kto robi okno Kowala w Figmie?
 - Karol na sesji 17.11 poprosił Pawła o okno Kowala w Figmie (2D to obszar Pawła, D-093).
