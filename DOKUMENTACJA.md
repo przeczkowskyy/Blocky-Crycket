@@ -245,9 +245,16 @@ Blocky&Crycket/
 │   ├── test_walki2/           💡 prototyp walki w Studio (Workspace/TestWalki2): nowe modele, umiejętności i efekty; od 17.11 silnik v3, ekran pod dziennik v3 i pomijanie walk — wdrożone w Studio
 │   ├── biom_las/  las_potwory/  💡 pierwszy las (Workspace/BiomLas), jego potwory w ruchu (Workspace/LasPotwory) i plan lasu jako pasa (biom_las/pas/)
 │   ├── las_pas/  las_pas_gra/   💡 las jako wąski pas: mapa (Workspace/LasPas) i skrypty gry (Workspace/LasPasGra)
-│   ├── bagno_pas/  biomy/       💡 plan Bagna jako odcinka pasa (generator, kontrola, podglądy; niezbudowane w Studio) i zarys biomów 2–8 — do akceptacji
-│   ├── dzwiek_gra/              💡 katalog dźwięków i muzyka stref (Workspace/DzwiekGra); identyfikatory puste do czasu wgrania plików
+│   ├── bagno_pas/  biomy/       💡 mapa Bagna jako odcinka pasa (zbudowana w Studio 17.11: Workspace/BagnoPas) i zarys biomów 2–8 — do akceptacji
+│   ├── dzwiek_gra/              💡 katalog dźwięków i muzyka stref (Workspace/DzwiekGra); identyfikatory wgranych plików, gra czeka na prawo do zasobów
 │   ├── trening_proba/           💡 Training Center: projekt sześciu mini-gier i dwie na próbę (Workspace/TreningProba)
+│   ├── stan_gracza/             💡 jeden właściciel stanu gracza: łup i awans po walce, bohater z klasy i poziomu, pety i wydatki (Workspace/StanGracza)
+│   ├── bagno_pas_gra/           💡 Bagno jako drugi biom na kodzie lasu-pasa: pięć gatunków, Strażnik Topieli (Workspace/BagnoPasGra)
+│   ├── areny_walki/             💡 areny walki zależne od biomu (D-095): las, Bagno, plac ćwiczeń (Workspace/ArenyWalki)
+│   ├── pety_proba/              💡 jajka i pety na próbę: inkubator w lesie, wyklucie, pet przy graczu, zagroda (Workspace/PetyProba)
+│   ├── stroje_proba/            💡 ubieranie postaci (D-071): przymierzalnia i strój w walce (Workspace/StrojeProba)
+│   ├── wskazowki_gry/           💡 linijka celu i znacznik w świecie dla nowego gracza (Workspace/WskazowkiGry)
+│   ├── przejscie_gry/           raport z przejścia gry okiem nowego gracza i próba dymna całej drogi
 │   ├── miasteczko_bazar/  miasteczko_bazar_gra/  💡 miasteczko jako ciasny bazar: mapa (Workspace/MiasteczkoBazar) i skrypty gry (Workspace/MiasteczkoBazarGra)
 │   ├── teleport_chmury/       💡 przejście przez chmury zamiast okna mapy (Workspace/TeleportChmury)
 │   └── postacie/              💡 postacie, pety i ekwipunek z kodu: Blender (siatki, animacje) i postacie z klocków w Studio
