@@ -1,0 +1,164 @@
+{
+  "opis": "Arkusz efektów dźwiękowych: jeden plik, odcinki w sekundach. Buduje tools/audio_arkusz.py.",
+  "wariant": "A",
+  "plik": "sfx_arkusz_a.ogg",
+  "sha256": "7fe60bb9cf95a8de1bc3b102a658e42baa4521a86e5ed3bcf59019f6ac061e15",
+  "dlugosc_s": 50.143,
+  "odstep_s": 0.35,
+  "efekty": {
+    "sfx_awans_poziom": {
+      "poczatek": 0.25,
+      "koniec": 2.627,
+      "atak": 0.02,
+      "szczyt": 0.81,
+      "plik": "sfx_awans_poziom.wav"
+    },
+    "sfx_blok_tarcza": {
+      "poczatek": 2.977,
+      "koniec": 5.472,
+      "atak": 0.13,
+      "szczyt": 0.23,
+      "plik": "sfx_blok_tarcza.wav"
+    },
+    "sfx_cios_krytyczny": {
+      "poczatek": 5.822,
+      "koniec": 8.5178,
+      "atak": 1.36,
+      "szczyt": 1.44,
+      "plik": "sfx_cios_krytyczny.wav"
+    },
+    "sfx_cios_trafiony": {
+      "poczatek": 8.8678,
+      "koniec": 11.1989,
+      "atak": 0.92,
+      "szczyt": 1.08,
+      "plik": "sfx_cios_trafiony.wav"
+    },
+    "sfx_fanfara_zwyciestwa": {
+      "poczatek": 11.5488,
+      "koniec": 14.692,
+      "atak": 0.03,
+      "szczyt": 1.02,
+      "plik": "sfx_fanfara_zwyciestwa.wav"
+    },
+    "sfx_galareta_plusk": {
+      "poczatek": 15.042,
+      "koniec": 15.4167,
+      "atak": 0.02,
+      "szczyt": 0.06,
+      "plik": "sfx_galareta_plusk.wav"
+    },
+    "sfx_klik_przycisk": {
+      "poczatek": 15.7666,
+      "koniec": 16.0076,
+      "atak": 0.01,
+      "szczyt": 0.01,
+      "plik": "sfx_klik_przycisk.wav"
+    },
+    "sfx_kula_ognia": {
+      "poczatek": 16.3576,
+      "koniec": 19.3553,
+      "atak": 0.07,
+      "szczyt": 1.05,
+      "plik": "sfx_kula_ognia.wav"
+    },
+    "sfx_lodowy_pocisk": {
+      "poczatek": 19.7053,
+      "koniec": 21.0173,
+      "atak": 0.35,
+      "szczyt": 0.6,
+      "plik": "sfx_lodowy_pocisk.wav"
+    },
+    "sfx_monety": {
+      "poczatek": 21.3673,
+      "koniec": 23.047,
+      "atak": 0.01,
+      "szczyt": 0.18,
+      "plik": "sfx_monety.wav"
+    },
+    "sfx_ogluszenie": {
+      "poczatek": 23.397,
+      "koniec": 24.2633,
+      "atak": 0.01,
+      "szczyt": 0.16,
+      "plik": "sfx_ogluszenie.wav"
+    },
+    "sfx_podpalenie_tik": {
+      "poczatek": 24.6132,
+      "koniec": 25.5345,
+      "atak": 0.01,
+      "szczyt": 0.22,
+      "plik": "sfx_podpalenie_tik.wav"
+    },
+    "sfx_porazka": {
+      "poczatek": 25.8845,
+      "koniec": 29.326,
+      "atak": 1.86,
+      "szczyt": 2.75,
+      "plik": "sfx_porazka.wav"
+    },
+    "sfx_przejscie_chmury": {
+      "poczatek": 29.676,
+      "koniec": 32.8937,
+      "atak": 0.3,
+      "szczyt": 1.0,
+      "plik": "sfx_przejscie_chmury.wav"
+    },
+    "sfx_ryk_kolos": {
+      "poczatek": 33.2437,
+      "koniec": 36.7778,
+      "atak": 0.1,
+      "szczyt": 0.45,
+      "plik": "sfx_ryk_kolos.wav"
+    },
+    "sfx_tarcza_magiczna": {
+      "poczatek": 37.1278,
+      "koniec": 39.7109,
+      "atak": 0.05,
+      "szczyt": 1.17,
+      "plik": "sfx_tarcza_magiczna.wav"
+    },
+    "sfx_troll_chrzakniecie": {
+      "poczatek": 40.0609,
+      "koniec": 41.7721,
+      "atak": 0.06,
+      "szczyt": 1.27,
+      "plik": "sfx_troll_chrzakniecie.wav"
+    },
+    "sfx_trucizna_tik": {
+      "poczatek": 42.1221,
+      "koniec": 43.1527,
+      "atak": 0.04,
+      "szczyt": 0.08,
+      "plik": "sfx_trucizna_tik.wav"
+    },
+    "sfx_umiejetnosc_rzut": {
+      "poczatek": 43.5027,
+      "koniec": 44.8285,
+      "atak": 0.35,
+      "szczyt": 0.78,
+      "plik": "sfx_umiejetnosc_rzut.wav"
+    },
+    "sfx_unik": {
+      "poczatek": 45.1785,
+      "koniec": 45.8346,
+      "atak": 0.09,
+      "szczyt": 0.18,
+      "plik": "sfx_unik.wav"
+    },
+    "sfx_wilk_warkniecie": {
+      "poczatek": 46.1846,
+      "koniec": 48.2576,
+      "atak": 0.01,
+      "szczyt": 0.35,
+      "plik": "sfx_wilk_warkniecie.wav"
+    },
+    "sfx_zarodniki": {
+      "poczatek": 48.6075,
+      "koniec": 49.7927,
+      "atak": 0.04,
+      "szczyt": 0.1,
+      "plik": "sfx_zarodniki.wav"
+    }
+  }
+}
