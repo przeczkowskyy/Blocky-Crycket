@@ -1,0 +1,35 @@
+{
+ "id": "r-20261117-225246-c3dd",
+ "tytul": "Krótszy pas biomów (D-096) stoi w Studio: 25 sekund na biom",
+ "opis_md": "**Co to jest:** Twoja decyzja D-096 w grze — pas biomów skrócony i lekko zwężony. Zrzuty ze Studio.\n\n**Wymiary zmierzone w grze** (postać biegnie od miejsca przybycia do bramy):\n\n| | Było | Jest |\n|---|---|---|\n| Las, długość | 57 s | 25,0 s |\n| Bagno, długość | 57 s | 24,9 s |\n| Szerokość pola gry | 4,5 s | 4,06 s |\n\n**Jak zobaczyć:** Play → wybierz klasę → TELEPORT → Las. Cały las widać teraz z miejsca przybycia.\n\n**Co się zmieniło w środku:**\n- kolejność przegród, gatunki i poziomy są te same; z trzech zagród każdej przegrody została jedna;\n- potworów jest mniej (w lesie 8 przy jednym graczu, było 20);\n- w zagrodzie zawsze chodzi potwór najniższego poziomu, a znacznik celu prowadzi do potwora na Twoim poziomie;\n- przelot kamery przy pierwszym wejściu trwa ok. 10 s zamiast 13;\n- długość pasa to jedna liczba w ustawieniach, kolejne biomy biorą ją same.\n\n**Szybki powrót do jajka:** TELEPORT → biom, w którym jesteś, przenosi na wejście obok inkubatora, bez ponownego przelotu. Sprawdzone w lesie i w Bagnie.\n\n**Wdrożone przy okazji:** muzyka głośniej i także na starcie; własne efekty w walce; stała cena jajek (las 300, Bagno 750); kara za przegraną z Waszej sesji (5% posiadanego Złota z limitem, w próbie 400 → 380).\n\n**Próby:** las 22 punkty w porządku, Bagno 15, próba dymna całej drogi 14 z 14, klatka 16,7 ms.\n\n**Co nie działa:** kupno jajka Bagna prawdziwym E (klient bierze przy drugim inkubatorze jajko leśne) — poprawka w toku.\n\n**Do Twojej oceny po zagraniu:**\n1. Czy 25 sekund to już dobra długość, czy jeszcze krócej?\n2. Czy potworów w zagrodzie nie jest za mało — przy pomijaniu znanych walk bywa chwila czekania na odrodzenie.\n\n**Niesprawdzone:** wielu graczy naraz, telefon.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T22:52:46+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "LasPas",
+   "etykieta": "Las"
+  },
+  {
+   "typ": "studio",
+   "cel": "BagnoPas",
+   "etykieta": "Bagno"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/biomy/wymiary_pasa.json",
+   "etykieta": "Wymiary pasa"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
