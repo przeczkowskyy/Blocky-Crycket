@@ -1,0 +1,30 @@
+{
+ "id": "r-20261117-155353-45a1",
+ "tytul": "Gra po poprawkach: drugie przejście od startu do Bagna",
+ "opis_md": "**Co to jest:** wynik dnia z punktu widzenia gracza. Rano agent przeszedł grę jak nowy gracz i spisał, co ją psuje; po poprawkach przeszedł ją drugi raz, prawdziwymi kliknięciami i klawiszami, od startu do Bagna.\n\n**Werdykt:** w to, co stoi w Studio, da się dziś grać ok. 20–30 minut z sensem, bez zawieszeń i bez błędów skryptów. Rano było 15–20 minut bez żadnego postępu.\n\n**Co się zmieniło od rana:**\n- cel jest na ekranie od pierwszej sekundy (linijka u góry i znacznik w świecie; krzyżyk ją chowa);\n- wygrana daje złoto i doświadczenie, poziom rośnie, walczysz swoją klasą;\n- trening naprawdę dodaje Siłę (w przejściu 10 → 13);\n- strój z przymierzalni widać w walce;\n- po Strażniku lasu jest dokąd iść: Bagno z pięcioma gatunkami;\n- chmury podpowiadają, jak wybrać krainę i jak wrócić; karta wyniku zamyka się Spacją; na ekranie gracza nie ma już tekstów dla twórców w treningu, bazarze i walce;\n- w bazarze dachy i markizy robią się przezroczyste, gdy zasłaniają kamerę.\n\n**Próby po wszystkich zmianach:** próba dymna całej drogi 13 z 13 (rano 10 z 11), walka 111 z 111, 44 z 46 (te same dwa punkty co rano), 27 z 27, klipy 29 z 29, finał 9 z 9, trening 14 z 14, chmury 6 z 6, dźwięk 6 z 6.\n\n**Co dalej najbardziej przeszkadza:**\n1. złota i Gemów nie ma na co wydać (sklepy to okna Pawła);\n2. za chodzącymi potworami trzeba biegać, żeby wcisnąć E;\n3. droga do Strażnika lasu jest długa (ok. 27 minut według symulacji);\n4. postęp przepada po wyjściu z gry;\n5. własne dźwięki i muzyka czekają na udostępnienie zasobów grze — grają dźwięki wbudowane.\n\n**Bez zmian, bo to pliki Pawła:** przyciski Pets, Quests, Shop i Guilds bez okien, darmowy „+” w ekwipunku, drzewko „WARRIOR” u każdej klasy, wskazówki na ekranie ładowania, pusta ramka awatara.\n\n**Do Waszej decyzji:** język napisów (prototypy po polsku, HUD po angielsku), szara płyta widoczna poza mapą, odradzanie zawsze w starym miasteczku.\n\n**Niesprawdzone:** telefon, pad, dwóch graczy, walka ze Strażnikiem Topieli w tym przejściu, wygląd poprawionych klipów Maga i tempo wskrzeszenia (osobna ocena w toku).\n\nPełna tabela „znalezisko z rana → stan teraz”: `swiat/przejscie_gry/RAPORT_PRZEJSCIA.md`, rozdział „Część 3”.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T15:53:53+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "WskazowkiGry",
+   "etykieta": "Wskazówka celu"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/przejscie_gry/RAPORT_PRZEJSCIA.md",
+   "etykieta": "Raport z przejścia"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}

@@ -1,0 +1,43 @@
+{
+ "id": "r-20261117-155442-5e8f",
+ "tytul": "Potwory Bagna z Blendera: portrety i modele 3D",
+ "opis_md": "**Co to jest:** pięć potworów Bagna zbudowanych w Blenderze — te same kształty co w grze, z obrysem i cieniowaniem jak reszta postaci. Każdy ma model z kośćmi (FBX, GLB), osiem–dziewięć ruchów, planszę, portret i ikonę.\n\n**Gdzie obejrzeć w 3D:** zakładka z modelami w panelu — pliki `swiat/postacie/wynik/<potwór>/<potwór>.glb` (obracanie palcem).\n\n**Liczby:** Rechotek, Bulgotnik i Kłodokłap po 17 plików, Ropucha z Chatką 18, Strażnik Topieli 17; kontrola eksportów (plik wczytany z powrotem do pustego Blendera) zgodna w każdym. Strażnik Topieli: ok. 15,5 studa wysokości, 5132 trójkąty.\n\n**Znane słabości (z raportów modeli):** własne szkielety, nie R15 — import siatek do Roblox Studio nie był testowany (w grze chodzą dziś wersje z klocków); nogi Strażnika bez kolan; świecące oczy i latarnie wymagają światła dodanego w Studio.\n\n**Bez filmów** — zgodnie z ustaleniem, same obrazy.\n\n**Do oceny:** czy wygląd i kolory pasują do Bagna i czy któryś potwór wymaga przeprojektowania, zanim powstaną kolejne biomy.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T15:54:42+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/rechotek/rechotek.glb",
+   "etykieta": "Rechotek 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/bulgotnik/bulgotnik.glb",
+   "etykieta": "Bulgotnik 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/klodoklap/klodoklap.glb",
+   "etykieta": "Kłodokłap 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/ropucha_z_chatka/ropucha_z_chatka.glb",
+   "etykieta": "Ropucha 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/straznik_topieli/straznik_topieli.glb",
+   "etykieta": "Strażnik Topieli 3D"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ]
+}
