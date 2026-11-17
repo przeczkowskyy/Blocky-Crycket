@@ -6,6 +6,15 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Pawła (lista poprawek UI)
+- **Wybór klasy:** karta statystyk = sama ramka (`CsStatsFrame`), pasy i nazwa w kolorze klasy, nowe wartości pasków wg Pawła (`src/shared/ClassData.luau`, `src/client/ClassSelectClient.client.luau`, `tools/classselect_build_gui.py`). [[Selektor bohatera]]
+- **Znaczek klasy przy poziomie** w HUD i w oknie ekwipunku — emblematy klas z ekranu wyboru (bez nowych grafik). `src/gui/HUD.model.json`, `tools/eq_build_gui.py`, `HUDClient`, `EquipmentPanelClient`.
+- **Przyciski „naklejone na teksturę”:** przyczyna = miękki brzeg zakładek i X, przez który prześwitywała ich jasna kopia z tła. Pierwsza próba (wymazanie kopii z tła) zostawiła plamy, m.in. na karcie STR — cofnięta, tła wróciły do oryginałów. Teraz przyciski mają twardy brzeg +2 px tuszu (`utwardz` w `tools/eq_slice.py`, używane też w `tools/skilltree_assets.py`; czekają na wgranie), zasłonki pod zakładkami drzewka usunięte, wciśnięcie nie zmniejsza przycisku. Znaczek klasy w HUD przeniesiony nad pasek poziomu; paski walut z półprzezroczystym tłem.
+- **Drzewko:** jedno tło z gwiazdozbiorami rycerza i kota-maga (Higgsfield, 1 wariant, `SkillTreeBgStars`), bez obwódki zaznaczenia, bez przycisku UNLOCK — ulepszenie przytrzymaniem kółka (lecące Diamenty, napełnianie cieczą). [[Okno drzewka umiejętności]]
+- **HUD:** paski walut bez tła (ikony, liczby i ramka zostają). [[HUD]]
+- **Błąd wdrożenia (poprawiony):** `tools/studio/model_to_luau.py` ustawiał `TextWrapped = false` po `TextScaled = true`, co w Roblox wyłącza skalowanie — napisy okna ekwipunku spadły do wielkości 8. Teraz `TextScaled` idzie na końcu; wszystkie 49 napisów HUD, ekwipunku, drzewka i wyboru klasy znów się skalują (sprawdzone w Studio).
+- Nowe narzędzie `tools/studio/deploy_gui.py` (wdrożenie okien z `src/gui` i skryptów klienta do Studio). Wdrożone w Studio; nowe grafiki (`CsStatsFrame`, `SkillTreeBgStars`, `SkillTreeFrame`, `EqBg2`, `EqBg3`) wgrane po „tak” Pawła (ID w manifeście) i podpięte. Na prośbę Pawła karta klasy dostała pod ramką półprzezroczyste ciemne tło (czytelność).
+
 ## 2026-11-17 · Claude Code u Karola (własne dźwięki i muzyka grają w grze)
 - **Karol nadał grze prawa do sześciu wgranych plików audio** (Creator Hub, 17.11 ok. 19:45). Wcześniej gra dostawała odmowę, bo pliki są na koncie Karola, a gra na innym; bycie współtwórcą gry tego nie załatwia.
 - **Kontrola w grze** (w sesji Play Karola, sam odczyt): wszystkie sześć plików wczytuje się poprawnie; muzyka stref gra w bazarze (utwór targu). W walce odtwarzacz sam przechodzi z dźwięków wbudowanych na odcinki arkusza, gdy tylko arkusz jest wczytany.

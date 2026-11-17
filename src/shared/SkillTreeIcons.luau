@@ -1,7 +1,7 @@
 -- WYGENEROWANE przez tools/skilltree_build_gui.py z assets/manifest.json — nie edytuj ręcznie.
 -- Ikony drzewka umiejętności: nazwa grafiki -> asset id (ReplicatedStorage.Shared.SkillTreeIcons).
 return {
-	EqClose = "rbxassetid://116146986242036",
+	EqClose = "rbxassetid://74578203384319",
 	Gem = "rbxassetid://130974323293639",
 	NodeFortIncCart = "rbxassetid://102859145070098",
 	NodeFortIncCrystal = "rbxassetid://126924977141857",
@@ -74,9 +74,10 @@ return {
 	SkillTreeBgFortress = "rbxassetid://73365138046720",
 	SkillTreeBgPets = "rbxassetid://125437164201260",
 	SkillTreeBgPlayer = "rbxassetid://95275624653844",
+	SkillTreeBgStars = "rbxassetid://82157810923315",
 	SkillTreeButton = "rbxassetid://73952604065514",
 	SkillTreeFrame = "rbxassetid://80863272742655",
-	SkillTreeTabFortress = "rbxassetid://73525900620129",
-	SkillTreeTabPets = "rbxassetid://130452128072760",
-	SkillTreeTabPlayer = "rbxassetid://117740132557925",
+	SkillTreeTabFortress = "rbxassetid://127151103970976",
+	SkillTreeTabPets = "rbxassetid://119323965816860",
+	SkillTreeTabPlayer = "rbxassetid://87214205951086",
 }

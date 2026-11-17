@@ -55,7 +55,10 @@ def build_luau(model: dict, var: str = "root", name: str | None = None) -> str:
         nm = n.get("Name", fallback_name)
         if nm:
             lines.append(f"{v}.Name = {_lua_str(nm)}")
-        for k, val in n.get("Properties", {}).items():
+        # TextScaled na końcu: w Roblox ustawienie TextWrapped = false PO TextScaled = true wyłącza skalowanie
+        # (napisy spadały do wielkości 8 — okno ekwipunku, 17.11)
+        props = sorted(n.get("Properties", {}).items(), key=lambda kv: kv[0] == "TextScaled")
+        for k, val in props:
             lines.append(f"{v}.{k} = {_value(val)}")
         for k, val in n.get("Attributes", {}).items():
             lines.append(f"{v}:SetAttribute({_lua_str(k)}, {_value(val)})")

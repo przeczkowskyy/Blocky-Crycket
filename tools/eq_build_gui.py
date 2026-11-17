@@ -144,7 +144,13 @@ def main():
         tree_btn,
         node("Portrait", "ViewportFrame", {**rel(L["portrait"]), "BackgroundTransparency": 1}),
         node("LevelBadge", "Frame", {**rel(lb), "BackgroundTransparency": 1}, [
-            text("LevelText", L["texts"]["LevelText"][0], "LV 1", "level", lb)]),
+            text("LevelText", L["texts"]["LevelText"][0], "LV 1", "level", lb),
+            # znaczek klasy (emblemat z ekranu wyboru klasy) przy poziomie — Paweł 17.11; obraz ustawia EquipmentPanelClient
+            node("ClassBadge", "ImageLabel", {"AnchorPoint": [0.5, 0.5], **udim2(-0.12, 0.5, 0, 1.45),
+                                              "BackgroundTransparency": 1, "Image": "", "ScaleType": "Fit",
+                                              "Visible": False, "ZIndex": 6},
+                 [node("UIAspectRatioConstraint", "UIAspectRatioConstraint",
+                       {"AspectRatio": 1, "AspectType": "ScaleWithParentSize", "DominantAxis": "Height"})])]),
         full("EquipSlots", [hotspot("Slot_" + k, r, cover_=L["slot_covers"][k]) for k, r in L["slots"].items()]),
     ])
 

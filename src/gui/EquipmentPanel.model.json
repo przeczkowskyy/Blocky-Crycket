@@ -560,6 +560,57 @@
            }
           }
          ]
+        },
+        {
+         "Name": "ClassBadge",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "AnchorPoint": [
+           0.5,
+           0.5
+          ],
+          "Position": {
+           "UDim2": [
+            [
+             -0.12,
+             0
+            ],
+            [
+             0.5,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0,
+             0
+            ],
+            [
+             1.45,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ScaleType": "Fit",
+          "Visible": false,
+          "ZIndex": 6
+         },
+         "Children": [
+          {
+           "Name": "UIAspectRatioConstraint",
+           "ClassName": "UIAspectRatioConstraint",
+           "Properties": {
+            "AspectRatio": 1,
+            "AspectType": "ScaleWithParentSize",
+            "DominantAxis": "Height"
+           }
+          }
+         ]
         }
        ]
       },
@@ -2339,7 +2390,7 @@
          1
         ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://105807701025717",
+        "Image": "rbxassetid://112202378883443",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 1
@@ -2360,7 +2411,7 @@
           "Position": {
            "UDim2": [
             [
-             0.07101,
+             0.08232,
              0
             ],
             [
@@ -2461,7 +2512,7 @@
          1
         ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://82356272484128",
+        "Image": "rbxassetid://78676116138548",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 2
@@ -2482,7 +2533,7 @@
           "Position": {
            "UDim2": [
             [
-             0.06107,
+             0.07431,
              0
             ],
             [
@@ -2583,7 +2634,7 @@
          1
         ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://135885148703992",
+        "Image": "rbxassetid://91370010461834",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 3
@@ -2604,7 +2655,7 @@
           "Position": {
            "UDim2": [
             [
-             0.04394,
+             0.06145,
              0
             ],
             [
@@ -2705,7 +2756,7 @@
          1
         ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://94845610267337",
+        "Image": "rbxassetid://127666118672488",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 4
@@ -2726,7 +2777,7 @@
           "Position": {
            "UDim2": [
             [
-             0.05352,
+             0.03942,
              0
             ],
             [
@@ -2861,7 +2912,7 @@
          1
         ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://119962244091320",
+        "Image": "rbxassetid://124229087658267",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 1
@@ -2983,7 +3034,7 @@
          1
         ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://123440891296586",
+        "Image": "rbxassetid://116059334041200",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 2
@@ -3105,7 +3156,7 @@
          1
         ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://75894078702551",
+        "Image": "rbxassetid://106621656512453",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 3
@@ -3227,7 +3278,7 @@
          1
         ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://110956701948264",
+        "Image": "rbxassetid://99562804159084",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 4
@@ -7697,7 +7748,7 @@
        0.5
       ],
       "BackgroundTransparency": 1,
-      "Image": "rbxassetid://116146986242036",
+      "Image": "rbxassetid://74578203384319",
       "ScaleType": "Stretch",
       "AutoButtonColor": false
      },

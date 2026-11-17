@@ -209,7 +209,7 @@ def do_frame(report):
         g = 10
         rect = (max(0, x0 - g), max(0, y0 - g), min(W, x1 + g), min(H, y1 + 2))
         seed = ((x0 + x1) // 2, (y0 + y1) // 2)
-        sp = eq_slice.segment(arr, rect, seed, 55, 8, tight=True)
+        sp = eq_slice.utwardz(eq_slice.segment(arr, rect, seed, 55, 8, tight=True))  # twardy brzeg (Paweł 17.11)
         sp.save(OUT / f"SkillTree{name}.png")
         report.append(f"SkillTree{name}")
         tabs[name] = frac(*rect)

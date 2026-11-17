@@ -109,6 +109,31 @@ def segment(arr, rect, seed, tol, grow, tight=False):
     return rgba
 
 
+def utwardz(img, ink=(26, 20, 16), grow=2):
+    """Twardy brzeg przycisku: maska bez półprzezroczystych pikseli, poszerzona o `grow` px ciemnego tuszu.
+    Przycisk leży dokładnie na swojej kopii wypalonej w grafice tła. Z miękkim (rozmytym) brzegiem przez skraj
+    przyciemnionej albo powiększonej zakładki prześwitywała jasna kopia spod spodu (uwaga Pawła 16–17.11)."""
+    a = np.array(img.convert("RGBA"))
+    body = a[..., 3] > 40
+    ring = ndimage.binary_dilation(body, iterations=grow) & ~body
+    out = a.copy()
+    out[..., 3] = np.where(body | ring, 255, 0).astype(np.uint8)
+    out[ring, 0], out[ring, 1], out[ring, 2] = ink
+    return Image.fromarray(out)
+
+
+def wymaz(arr, mask):
+    """Usuń z tła wypalony element (zakładkę, X, „+”): piksele maski wypełnij najbliższym tłem i lekko rozmyj.
+    Bez tego pod przyciskiem leży jego kopia z grafiki tła i przy powiększeniu / wciśnięciu widać „drugi” przycisk
+    (uwaga Pawła 17.11: przycisk ma być całością, a nie naklejką na teksturze)."""
+    _, (iy, ix) = ndimage.distance_transform_edt(mask, return_indices=True)
+    rgb = arr[..., :3].copy()
+    filled = rgb[iy, ix]
+    soft = np.stack([ndimage.gaussian_filter(filled[..., c].astype(np.float32), 4) for c in range(3)], -1)
+    rgb[mask] = soft[mask].astype(np.uint8)
+    arr[..., :3] = rgb
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     im = Image.open(SRC).convert("RGBA")
@@ -131,6 +156,9 @@ def main():
         x0, y0, x1, y1 = r
         return [round((x0 - bx0) / PW, 5), round((y0 - by0) / PH, 5), round((x1 - x0) / PW, 5), round((y1 - y0) / PH, 5)]
 
+    # tło zostaje z wypalonymi przyciskami (wymazywanie zostawiało rozmazane plamy, 17.11); zamiast tego przyciski
+    # mają twardy brzeg szerszy o 2 px (utwardz) i zawsze w całości zakrywają swoją kopię w tle
+
     panel = Image.fromarray(arr).crop((bx0, by0, bx1, by1))
     scale = TARGET_W / PW
     TH = round(PH * scale)
@@ -146,6 +174,8 @@ def main():
     sprites = {}
     for name, (rect, seed, tol, grow) in SPRITES.items():
         img = segment(sprite_arr, rect, seed, tol, grow, tight=name.startswith("EqTab"))
+        if name.startswith("EqTab") or name == "EqClose":
+            img = utwardz(img, grow=3)  # 3 px w skali źródła ≈ 2,4 px po zmniejszeniu do 2048
         img = img.resize((max(1, round(img.width * scale)), max(1, round(img.height * scale))), Image.LANCZOS)
         img.save(OUT / f"{name}.png")
         sprites[name] = norm(rect)

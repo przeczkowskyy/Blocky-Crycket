@@ -248,10 +248,18 @@ end
 local function showClass(animate: boolean)
 	local c = CLASSES[index]
 	card.ClassTitle.Text = c.name
+	-- kolor klasy: nazwa i paski (Wojownik niebieski, Zwiadowca zielony, Mag fioletowy)
+	local top, bottom = c.color[1], c.color[2]
+	card.ClassTitle.TextColor3 = top
+	local grad = ColorSequence.new(top, bottom)
 	card.Subtitle.Text = c.subtitle
 	card.Emblem.Image = Icons[c.emblem] or ""
 	for s = 1, 6 do
 		local fill = card["Bar" .. s].Fill
+		local g = fill:FindFirstChildOfClass("UIGradient")
+		if g then
+			g.Color = grad
+		end
 		local goal = UDim2.fromScale(math.clamp(c.stats[s] / ClassData.BAR_FULL, 0.04, 1), 1)
 		if animate then
 			TS:Create(fill, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = goal }):Play()

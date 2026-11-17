@@ -7,7 +7,10 @@
 	- Mapa węzłów: przeciąganie myszką/palcem, kółko myszy = zoom. Stany węzła: kupiony (poziom),
 	  dostępny (cena w Diamentach), zakryty „?” (sąsiad dostępnego), reszta niewidoczna.
 	- Animacje: okno wyskakuje, węzły pojawiają się od środka na zewnątrz, zakup = puls + nowe węzły wyskakują,
-	  zaznaczony węzeł ma pulsujący pierścień, wykrzyknik w ekwipunku się kołysze.
+	  wykrzyknik w ekwipunku się kołysze.
+	- Ulepszenie (Paweł 17.11): bez przycisku UNLOCK — gracz PRZYTRZYMUJE kółko; Diamenty lecą do kółka, a ono
+	  napełnia się jak cieczą. Puszczenie przed końcem cofa ciecz. Kliknięcie pokazuje opis na dole.
+	- Jedno tło dla wszystkich zakładek (gwiazdozbiory rycerza i kota-maga).
 	- Zakup: RemoteEvent ReplicatedStorage.SkillTreeBuy (serwer sprawdza wszystko, src/server/SkillTree.server.luau).
 ]]
 
@@ -15,6 +18,7 @@ local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
 local UIS = game:GetService("UserInputService")
 local TS = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
 
 local Data = require(RS:WaitForChild("Shared"):WaitForChild("SkillTreeData"))
@@ -30,13 +34,15 @@ local content = panel:WaitForChild("Content")
 local map = content:WaitForChild("Map")
 local mapScale = map:WaitForChild("UIScale")
 local bar = content:WaitForChild("DetailBar")
-local buyBtn = bar:WaitForChild("BuyButton")
+local holdHint = bar:WaitForChild("HoldHint")
 local hint = content:WaitForChild("Hint")
-local BG_LABELS = { Player = content:WaitForChild("Bg_Player"), Fortress = content:WaitForChild("Bg_Fortress"), Pets = content:WaitForChild("Bg_Pets") }
+local bgImage = content:WaitForChild("Bg")
 
 local DESIGN_W = 836 -- szerokość obszaru treści w makiecie (px); węzły i linie są w tych jednostkach
 local U, S = 104, 72 -- odstęp siatki i średnica węzła (px makiety)
 local ZOOM_MIN, ZOOM_MAX = 0.6, 1.5
+local HOLD_TIME = 0.85 -- s przytrzymania do ulepszenia
+local LIQUID = Color3.fromRGB(70, 205, 255)
 
 local QUICK = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 local POP = TweenInfo.new(0.32, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
@@ -46,6 +52,8 @@ local NO_MONEY = Color3.fromRGB(255, 120, 110)
 local INK = Color3.fromRGB(26, 20, 16)
 local FONT = Font.new("rbxasset://fonts/families/LuckiestGuy.json")
 
+local cancelHold: (string?) -> ()
+local startHold: (string, Frame, UIScale, string) -> ()
 local currentTab = "Player"
 local selected: string? = nil
 local zoom = 1
@@ -211,6 +219,7 @@ UIS.InputChanged:Connect(function(input)
 		if d.Magnitude > 6 then
 			dragMoved = true
 			hideHint()
+			cancelHold(nil)
 		end
 		if dragMoved then
 			map.Position = UDim2.fromOffset(mapStart.X + d.X, mapStart.Y + d.Y)
@@ -231,6 +240,9 @@ end)
 
 UIS.InputEnded:Connect(function(input)
 	local t = input.UserInputType
+	if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then
+		cancelHold(nil) -- puszczenie poza kółkiem też przerywa napełnianie
+	end
 	if dragging and (t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch) then
 		dragging = false
 		if dragMoved then
@@ -263,14 +275,143 @@ local function showDetail()
 	local l = lvl(node.id)
 	bar.NodeName.Text = node.name .. (node.max > 1 and string.format("  %d/%d", l, node.max) or "")
 	bar.NodeDesc.Text = Data.describe(node, l)
-	local ok, cost = canBuy(node)
+	local ok = canBuy(node)
 	local maxed = l >= node.max
-	buyBtn.Action.Text = maxed and "MAX" or (node.depth == 0 and "UNLOCK" or (l == 0 and "LEARN" or "UPGRADE"))
-	buyBtn.Cost.Text = maxed and "" or tostring(cost)
-	buyBtn.GemIcon.Visible = not maxed
-	buyBtn.Cost.TextColor3 = (ok or maxed) and GEM_BLUE or NO_MONEY
-	buyBtn.BackgroundColor3 = ok and Color3.fromRGB(76, 179, 60) or Color3.fromRGB(110, 104, 96)
-	buyBtn.Active = ok
+	holdHint.Text = maxed and "MAX LEVEL" or (ok and "HOLD TO UPGRADE" or "NOT ENOUGH GEMS")
+	holdHint.TextColor3 = maxed and GOLD or (ok and GEM_BLUE or NO_MONEY)
+end
+
+------------------------------------------------------------ ulepszenie przytrzymaniem: Diamenty lecą, kółko napełnia się cieczą
+local pendingPulse: string? = nil
+local holdDoneFor: string? = nil
+type Hold = { id: string, g: Frame, sc: UIScale, group: CanvasGroup, water: Frame, t0: number, nextGem: number, conn: RBXScriptConnection }
+local hold: Hold? = nil
+
+local function shake(g: GuiObject)
+	TS:Create(g, TweenInfo.new(0.05, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 3, true), { Rotation = 8 }):Play()
+end
+
+local function flyGem(g: Frame)
+	local a = math.random() * math.pi * 2
+	local r = 110 + math.random() * 60
+	local center = g.Position
+	local gem = Instance.new("ImageLabel")
+	gem.BackgroundTransparency = 1
+	gem.Image = Icons.Gem
+	gem.ScaleType = Enum.ScaleType.Fit
+	gem.AnchorPoint = Vector2.new(0.5, 0.5)
+	gem.Size = UDim2.fromOffset(20, 18)
+	gem.Position = center + UDim2.fromOffset(math.cos(a) * r, math.sin(a) * r)
+	gem.Rotation = math.random(-30, 30)
+	gem.ZIndex = 9
+	gem.Parent = map
+	local tw = TS:Create(gem, TweenInfo.new(0.32, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+		{ Position = center, Size = UDim2.fromOffset(8, 7), Rotation = gem.Rotation + 120 })
+	tw.Completed:Connect(function()
+		gem:Destroy()
+	end)
+	tw:Play()
+end
+
+cancelHold = function(id: string?)
+	local h = hold
+	if not h or (id and h.id ~= id) then
+		return
+	end
+	hold = nil
+	h.conn:Disconnect()
+	TS:Create(h.sc, QUICK, { Scale = 1 }):Play()
+	local tw = TS:Create(h.water, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.fromScale(1, 0) })
+	tw.Completed:Connect(function()
+		h.group:Destroy()
+	end)
+	tw:Play()
+end
+
+local function completeHold()
+	local h = hold
+	if not h then
+		return
+	end
+	hold = nil
+	h.conn:Disconnect()
+	holdDoneFor = h.id
+	selected = h.id
+	pendingPulse = h.id
+	h.water.Size = UDim2.fromScale(1, 1)
+	h.sc.Scale = 1.3
+	TS:Create(h.sc, POP, { Scale = 1 }):Play()
+	for _ = 1, 6 do
+		flyGem(h.g)
+	end
+	buyEvent:FireServer(h.id)
+end
+
+startHold = function(id: string, g: Frame, sc: UIScale, st: string)
+	cancelHold(nil)
+	local node = Data.Nodes[id]
+	if st == "hid" or not node or lvl(id) >= node.max then
+		return
+	end
+	local ok = canBuy(node)
+	if not ok then
+		shake(g)
+		return
+	end
+	-- ciecz: okrągła warstwa (CanvasGroup z UICorner przycina do koła) nad ikoną, poziom rośnie od dołu
+	local group = Instance.new("CanvasGroup")
+	group.Name = "Liquid"
+	group.AnchorPoint = Vector2.new(0.5, 0.5)
+	group.Position = UDim2.fromScale(0.5, 0.5)
+	group.Size = UDim2.fromScale(0.82, 0.82)
+	group.BackgroundTransparency = 1
+	group.GroupTransparency = 0.25
+	group.ZIndex = 6
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0.5, 0)
+	corner.Parent = group
+	local water = Instance.new("Frame")
+	water.Name = "Water"
+	water.AnchorPoint = Vector2.new(0.5, 1)
+	water.Position = UDim2.fromScale(0.5, 1)
+	water.Size = UDim2.fromScale(1, 0)
+	water.BackgroundColor3 = LIQUID
+	water.BorderSizePixel = 0
+	water.ZIndex = 6
+	water.Parent = group
+	local grad = Instance.new("UIGradient")
+	grad.Rotation = 90
+	grad.Color = ColorSequence.new(Color3.fromRGB(170, 245, 255), Color3.fromRGB(40, 140, 230))
+	grad.Parent = water
+	local surface = Instance.new("Frame") -- jasna, falująca powierzchnia cieczy
+	surface.Name = "Surface"
+	surface.AnchorPoint = Vector2.new(0.5, 0.5)
+	surface.Position = UDim2.fromScale(0.5, 0)
+	surface.Size = UDim2.new(1.6, 0, 0, 6)
+	surface.BackgroundColor3 = Color3.fromRGB(220, 252, 255)
+	surface.BorderSizePixel = 0
+	surface.ZIndex = 7
+	surface.Parent = water
+	group.Parent = g
+	local h: Hold
+	h = {
+		id = id, g = g, sc = sc, group = group, water = water, t0 = os.clock(), nextGem = 0,
+		conn = RunService.RenderStepped:Connect(function()
+			local now = os.clock()
+			local p = math.clamp((now - h.t0) / HOLD_TIME, 0, 1)
+			water.Size = UDim2.fromScale(1, 0.08 + p * 0.92)
+			surface.Rotation = math.sin(now * 12) * 7
+			sc.Scale = 1.1 + p * 0.08 + math.sin(now * 40) * 0.012 * p
+			if now >= h.nextGem then
+				h.nextGem = now + 0.07
+				flyGem(g)
+			end
+			if p >= 1 then
+				completeHold()
+			end
+		end),
+	}
+	hold = h
 end
 
 ------------------------------------------------------------ rysowanie mapy
@@ -279,6 +420,7 @@ local ringTween: Tween? = nil
 -- animate: "all" = wszystkie węzły wyskakują od środka (otwarcie, zmiana zakładki),
 --          "new" = tylko węzły, których wcześniej nie było (po zakupie); nil = bez animacji
 local function render(animate: string?, pulseId: string?)
+	cancelHold(nil)
 	if ringTween then
 		ringTween:Cancel()
 		ringTween = nil
@@ -356,26 +498,6 @@ local function render(animate: string?, pulseId: string?)
 			b.ZIndex = 5
 			b.Parent = g
 
-			if selected == id then
-				local ring = Instance.new("Frame")
-				ring.Name = "Ring"
-				ring.AnchorPoint = Vector2.new(0.5, 0.5)
-				ring.Position = UDim2.fromScale(0.5, 0.5)
-				ring.Size = UDim2.fromScale(1.14, 1.14)
-				ring.BackgroundTransparency = 1
-				ring.ZIndex = 4
-				local c = Instance.new("UICorner")
-				c.CornerRadius = UDim.new(0.5, 0)
-				c.Parent = ring
-				local s = Instance.new("UIStroke")
-				s.Color = Color3.fromRGB(255, 232, 130)
-				s.Thickness = 3
-				s.Parent = ring
-				ring.Parent = g
-				ringTween = TS:Create(s, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
-					{ Thickness = 5, Transparency = 0.35 })
-				ringTween:Play()
-			end
 
 			if st ~= "hid" then
 				-- nazwa: wyśrodkowana pod ikoną
@@ -417,14 +539,25 @@ local function render(animate: string?, pulseId: string?)
 				end
 			end
 
-			-- hover / klik
+			-- hover / przytrzymanie (ulepszenie) / klik (opis)
 			b.MouseEnter:Connect(function()
 				TS:Create(sc, QUICK, { Scale = 1.1 }):Play()
 			end)
 			b.MouseLeave:Connect(function()
 				TS:Create(sc, QUICK, { Scale = 1 }):Play()
+				cancelHold(id)
+			end)
+			b.MouseButton1Down:Connect(function()
+				startHold(id, g, sc, st)
+			end)
+			b.MouseButton1Up:Connect(function()
+				cancelHold(id)
 			end)
 			b.Activated:Connect(function()
+				if holdDoneFor == id then
+					holdDoneFor = nil
+					return
+				end
 				if dragMoved or os.clock() - lastDragEnd < 0.15 then
 					return
 				end
@@ -504,7 +637,7 @@ local function bounce(btn: GuiButton, onClick: () -> ())
 	end)
 	btn.MouseButton1Down:Connect(function()
 		if sc then
-			TS:Create(sc, QUICK, { Scale = 0.94 }):Play()
+			TS:Create(sc, QUICK, { Scale = 1 }):Play() -- nie mniej niż 1: spod przycisku nic nie wychodzi
 		end
 	end)
 	btn.Activated:Connect(function()
@@ -515,22 +648,8 @@ local function bounce(btn: GuiButton, onClick: () -> ())
 	end)
 end
 
--- tło zakładki: przenikanie między gotowymi (wczytanymi z góry) obrazami
-local function showBackground(tab: string, instant: boolean)
-	for t, img in pairs(BG_LABELS) do
-		if t == tab then
-			img.Visible = true
-			if instant then
-				img.ImageTransparency = 0
-			else
-				img.ImageTransparency = 1
-				TS:Create(img, TweenInfo.new(0.25), { ImageTransparency = 0 }):Play()
-			end
-		else
-			img.Visible = false
-		end
-	end
-end
+-- jedno tło dla wszystkich zakładek (Paweł 17.11) — nic do przełączania
+local function showBackground(_tab: string, _instant: boolean) end
 
 local function selectTab(tab: string, instant: boolean?)
 	showBackground(tab, instant == true or currentTab == tab)
@@ -585,6 +704,7 @@ local function close()
 	end
 	closing = true
 	dragging = false
+	cancelHold(nil)
 	TS:Create(backdrop, TweenInfo.new(0.15), { BackgroundTransparency = 1 }):Play()
 	local t = TS:Create(panelScale, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Scale = 0.85 })
 	t.Completed:Connect(function()
@@ -603,19 +723,6 @@ UIS.InputBegan:Connect(function(input, processed)
 	end
 end)
 
-local pendingPulse: string? = nil
-buyBtn.Activated:Connect(function()
-	local node = selected and Data.Nodes[selected]
-	if node and canBuy(node) then
-		local sc = buyBtn:FindFirstChildWhichIsA("UIScale")
-		if sc then
-			sc.Scale = 0.88
-			TS:Create(sc, POP, { Scale = 1 }):Play()
-		end
-		pendingPulse = node.id
-		buyEvent:FireServer(node.id)
-	end
-end)
 
 ------------------------------------------------------------ zmiany stanu z serwera
 local function refresh()
@@ -654,9 +761,7 @@ task.spawn(function()
 	local holder = Instance.new("Folder")
 	holder.Name = "Preload"
 	local list = {}
-	for _, img in pairs(BG_LABELS) do
-		table.insert(list, img)
-	end
+	table.insert(list, bgImage)
 	for _, id in pairs(Icons) do
 		local l = Instance.new("ImageLabel")
 		l.Image = id

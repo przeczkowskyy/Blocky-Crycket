@@ -171,7 +171,7 @@
   },
   {
    "Name": "StatsCard",
-   "ClassName": "ImageLabel",
+   "ClassName": "Frame",
    "Properties": {
     "BorderSizePixel": 0,
     "AnchorPoint": [
@@ -203,8 +203,6 @@
      ]
     },
     "BackgroundTransparency": 1,
-    "Image": "rbxassetid://115139600303280",
-    "ScaleType": "Fit",
     "ZIndex": 2
    },
    "Children": [
@@ -222,6 +220,93 @@
      "ClassName": "UIScale",
      "Properties": {
       "Scale": 1
+     }
+    },
+    {
+     "Name": "Back",
+     "ClassName": "Frame",
+     "Properties": {
+      "BorderSizePixel": 0,
+      "Position": {
+       "UDim2": [
+        [
+         0.05,
+         0
+        ],
+        [
+         0.033,
+         0
+        ]
+       ]
+      },
+      "Size": {
+       "UDim2": [
+        [
+         0.9,
+         0
+        ],
+        [
+         0.934,
+         0
+        ]
+       ]
+      },
+      "BackgroundColor3": [
+       0.0784,
+       0.102,
+       0.1804
+      ],
+      "BackgroundTransparency": 0.4,
+      "ZIndex": 2
+     },
+     "Children": [
+      {
+       "Name": "UICorner",
+       "ClassName": "UICorner",
+       "Properties": {
+        "CornerRadius": {
+         "UDim": [
+          0.06,
+          0
+         ]
+        }
+       }
+      }
+     ]
+    },
+    {
+     "Name": "FrameArt",
+     "ClassName": "ImageLabel",
+     "Properties": {
+      "BorderSizePixel": 0,
+      "Position": {
+       "UDim2": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ]
+      },
+      "Size": {
+       "UDim2": [
+        [
+         1,
+         0
+        ],
+        [
+         1,
+         0
+        ]
+       ]
+      },
+      "BackgroundTransparency": 1,
+      "Image": "rbxassetid://127667929543221",
+      "ScaleType": "Fit",
+      "ZIndex": 2
      }
     },
     {

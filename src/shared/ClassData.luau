@@ -1,7 +1,8 @@
 --!strict
 -- Klasy postaci i scena wyboru klasy (ReplicatedStorage.Shared.ClassData) — wspólne dla serwera i klienta.
--- Klasy: D-054 (Wojownik, Zwiadowca, Mag). Paski statystyk = wzorcowe rozłożenie punktów z
--- B&C/Gra/Walka v2 — silnik, klasy i umiejętności.md (procent puli; pasek pełny przy 30).
+-- Klasy: D-054 (Wojownik, Zwiadowca, Mag). Paski statystyk na ekranie wyboru = profil klasy wg Pawła (17.11.2026):
+-- Wojownik STR/CON/ARMOR, Zwiadowca DEX + LUCK, Mag INT + LUCK (pasek pełny przy BAR_FULL). To opis klasy na
+-- ekranie, nie liczby silnika walki (B&C/Gra/Walka v2 — silnik, klasy i umiejętności.md).
 -- Scena 3D: swiat/wybor_klasy/generuj.py (kontener Workspace/WyborKlasy). Projekt: B&C/UI/Selektor bohatera.md.
 
 local ClassData = {}
@@ -12,16 +13,17 @@ export type Class = {
 	subtitle: string,
 	emblem: string, -- nazwa grafiki w Shared.ClassSelectIcons
 	model: string, -- nazwa modelu w ReplicatedStorage.WyborKlasyModele
-	stats: { number }, -- STR, CON, INT, DEX, LUCK, ARMOR (procent puli)
+	stats: { number }, -- STR, CON, INT, DEX, LUCK, ARMOR (pasek pełny przy BAR_FULL)
+	color: { Color3 }, -- kolor klasy: góra i dół gradientu pasków, nazwa klasy (Paweł 17.11)
 }
 
 ClassData.Classes = {
 	{ id = "Warrior", name = "WARRIOR", subtitle = "SHIELD & SWORD", emblem = "CsEmblemWarrior", model = "Warrior",
-		stats = { 26, 30, 12, 8, 10, 14 } },
+		stats = { 27, 29, 7, 10, 10, 26 }, color = { Color3.fromRGB(120, 196, 255), Color3.fromRGB(38, 110, 230) } },
 	{ id = "Scout", name = "SCOUT", subtitle = "BOW & DAGGER", emblem = "CsEmblemScout", model = "Scout",
-		stats = { 27, 27, 10, 14, 13, 9 } },
+		stats = { 17, 21, 10, 29, 23, 12 }, color = { Color3.fromRGB(150, 240, 110), Color3.fromRGB(44, 168, 64) } },
 	{ id = "Mage", name = "MAGE", subtitle = "STAFF & SPELLS", emblem = "CsEmblemMage", model = "Mage",
-		stats = { 24, 22, 24, 10, 10, 10 } },
+		stats = { 8, 13, 29, 12, 22, 6 }, color = { Color3.fromRGB(214, 150, 255), Color3.fromRGB(128, 58, 214) } },
 } :: { Class }
 
 ClassData.BAR_FULL = 30

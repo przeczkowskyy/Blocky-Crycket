@@ -42,3 +42,5 @@ implementacja: wersja z Figmy (panel gracza + 6 przycisków) w Roblox, 2026-11-1
 Propozycja techniczna: skalowanie przez Scale z `UIAspectRatioConstraint` (telefony), elementy co najmniej 5% od krawędzi, animacje pasków przez `TweenService`.
 
 Zob. [[Kierunek artystyczny]], [[System RPG]].
+- [x] 2026-11-17 (Paweł): znaczek klasy na dolnym rogu portretu, nad paskiem poziomu (w pierwszej wersji zasłaniał początek paska XP).
+- [x] 2026-11-17 (Paweł): paski Złota, Diamentów i Rybek z półprzezroczystym ciemnym tłem (60% krycia, jak karta wyboru klasy) — ikony, liczby i złota ramka z cienkim tuszem zostają; znaczek klasy (emblemat z ekranu wyboru klasy) przy liczbie poziomu.

@@ -25,7 +25,7 @@ local RS = game:GetService("ReplicatedStorage")
 
 local DESIGN_W = 1376 -- szerokość ramki w Figmie; grubości obrysów w modelu są podane dla tej szerokości
 local QUICK = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-local HOVER_SCALE, PRESS_SCALE = 1.08, 0.92
+local HOVER_SCALE, PRESS_SCALE = 1.08, 1.0 -- wciśnięcie nie zmniejsza poniżej 1 (nic spod przycisku nie wychodzi)
 local INACTIVE_TAB = Color3.fromRGB(150, 150, 150)
 
 local player = Players.LocalPlayer
@@ -433,6 +433,28 @@ local function refreshLevel()
 	levelLbl.Text = "LV " .. tostring(player:GetAttribute("Level") or 1)
 end
 player:GetAttributeChangedSignal("Level"):Connect(refreshLevel)
+
+------------------------------------------------ znaczek klasy przy poziomie (emblemat z ekranu wyboru klasy)
+local function refreshClassBadge(badge: ImageLabel)
+	local ok, ClassData = pcall(function()
+		return require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("ClassData"))
+	end)
+	local ok2, Icons = pcall(function()
+		return require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("ClassSelectIcons"))
+	end)
+	local c = ok and ok2 and ClassData.byId(player:GetAttribute("Class") or "")
+	badge.Image = c and Icons[c.emblem] or ""
+	badge.Visible = c ~= nil
+end
+do
+	local badge = panel.Character.LevelBadge:FindFirstChild("ClassBadge")
+	if badge then
+		refreshClassBadge(badge)
+		player:GetAttributeChangedSignal("Class"):Connect(function()
+			refreshClassBadge(badge)
+		end)
+	end
+end
 refreshLevel()
 
 ------------------------------------------------ otwieranie / zamykanie

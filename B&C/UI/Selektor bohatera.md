@@ -40,6 +40,7 @@ tags: [ui, klasy, wybór]
 - [x] Upload strzałek, PLAY i tabliczki tytułu po „tak” Pawła (2026-11-16; ID w manifeście), test Play OK
 - [x] Tło karty statystyk i 3 emblematy klas przed nazwą klasy, wgrane na prośbę Pawła (2026-11-16), test Play: emblemat zmienia się z klasą
 - [x] Sala wersja 2: bogatszy wystrój wg referencji karczmy, mocniejsza kreska (tusz + obrysy), nocne światło z migotaniem ogni, snop światła z pyłkami, animacje wejścia; po uwadze Pawła obniżona ekspozycja (2026-11-16, test Play: strzałki, PLAY → `Class`, światło gry wraca, HUD)
+- [x] Karta statystyk 17.11 (Paweł): ramka `CsStatsFrame` (wgrana 17.11) z półprzezroczystym ciemnym tłem pod spodem (60% krycia — sama ramka była nieczytelna na scenie), kolor klasy na pasach i nazwie (Wojownik niebieski, Zwiadowca zielony, Mag fioletowy), nowy profil pasków: Wojownik STR/CON/ARMOR, Zwiadowca DEX + LUCK (mniej CON i STR niż Wojownik), Mag INT + LUCK (najmniej CON, STR, ARMOR). To opis na ekranie, nie liczby silnika walki
 - [ ] Zwiadowca to siatka z konta Karola — w opublikowanej grze zasób musi być udostępniony grze (D-044)
 - [ ] Zapis klasy w DataStore; animacje idle na modelach
 

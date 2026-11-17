@@ -474,7 +474,8 @@
                   0
                 ]
               ]
-            }
+            },
+            "BackgroundTransparency": 1
           },
           "Children": [
             {
@@ -488,6 +489,20 @@
                   ]
                 }
               }
+            },
+            {
+              "Name": "UIStroke",
+              "ClassName": "UIStroke",
+              "Properties": {
+                "Color": [
+                  0.102,
+                  0.0784,
+                  0.0627
+                ],
+                "Thickness": 2.5,
+                "LineJoinMode": "Round",
+                "ApplyStrokeMode": "Border"
+              }
             }
           ]
         },
@@ -496,9 +511,9 @@
           "ClassName": "Frame",
           "Properties": {
             "BackgroundColor3": [
-              1,
-              1,
-              1
+              0.0784,
+              0.102,
+              0.1804
             ],
             "BorderSizePixel": 0,
             "ZIndex": 2,
@@ -525,7 +540,8 @@
                   0
                 ]
               ]
-            }
+            },
+            "BackgroundTransparency": 0.4
           },
           "Children": [
             {
@@ -537,35 +553,6 @@
                     0.5,
                     0
                   ]
-                }
-              }
-            },
-            {
-              "Name": "UIGradient",
-              "ClassName": "UIGradient",
-              "Properties": {
-                "Rotation": 90,
-                "Color": {
-                  "ColorSequence": {
-                    "keypoints": [
-                      {
-                        "time": 0,
-                        "color": [
-                          0.1686,
-                          0.2078,
-                          0.3216
-                        ]
-                      },
-                      {
-                        "time": 1,
-                        "color": [
-                          0.102,
-                          0.1255,
-                          0.2039
-                        ]
-                      }
-                    ]
-                  }
                 }
               }
             },
@@ -725,7 +712,8 @@
                   0
                 ]
               ]
-            }
+            },
+            "BackgroundTransparency": 1
           },
           "Children": [
             {
@@ -739,6 +727,20 @@
                   ]
                 }
               }
+            },
+            {
+              "Name": "UIStroke",
+              "ClassName": "UIStroke",
+              "Properties": {
+                "Color": [
+                  0.102,
+                  0.0784,
+                  0.0627
+                ],
+                "Thickness": 2.5,
+                "LineJoinMode": "Round",
+                "ApplyStrokeMode": "Border"
+              }
             }
           ]
         },
@@ -747,9 +749,9 @@
           "ClassName": "Frame",
           "Properties": {
             "BackgroundColor3": [
-              1,
-              1,
-              1
+              0.0784,
+              0.102,
+              0.1804
             ],
             "BorderSizePixel": 0,
             "ZIndex": 2,
@@ -776,7 +778,8 @@
                   0
                 ]
               ]
-            }
+            },
+            "BackgroundTransparency": 0.4
           },
           "Children": [
             {
@@ -788,35 +791,6 @@
                     0.5,
                     0
                   ]
-                }
-              }
-            },
-            {
-              "Name": "UIGradient",
-              "ClassName": "UIGradient",
-              "Properties": {
-                "Rotation": 90,
-                "Color": {
-                  "ColorSequence": {
-                    "keypoints": [
-                      {
-                        "time": 0,
-                        "color": [
-                          0.1686,
-                          0.2078,
-                          0.3216
-                        ]
-                      },
-                      {
-                        "time": 1,
-                        "color": [
-                          0.102,
-                          0.1255,
-                          0.2039
-                        ]
-                      }
-                    ]
-                  }
                 }
               }
             },
@@ -976,7 +950,8 @@
                   0
                 ]
               ]
-            }
+            },
+            "BackgroundTransparency": 1
           },
           "Children": [
             {
@@ -990,6 +965,20 @@
                   ]
                 }
               }
+            },
+            {
+              "Name": "UIStroke",
+              "ClassName": "UIStroke",
+              "Properties": {
+                "Color": [
+                  0.102,
+                  0.0784,
+                  0.0627
+                ],
+                "Thickness": 2.5,
+                "LineJoinMode": "Round",
+                "ApplyStrokeMode": "Border"
+              }
             }
           ]
         },
@@ -998,9 +987,9 @@
           "ClassName": "Frame",
           "Properties": {
             "BackgroundColor3": [
-              1,
-              1,
-              1
+              0.0784,
+              0.102,
+              0.1804
             ],
             "BorderSizePixel": 0,
             "ZIndex": 2,
@@ -1027,7 +1016,8 @@
                   0
                 ]
               ]
-            }
+            },
+            "BackgroundTransparency": 0.4
           },
           "Children": [
             {
@@ -1039,35 +1029,6 @@
                     0.5,
                     0
                   ]
-                }
-              }
-            },
-            {
-              "Name": "UIGradient",
-              "ClassName": "UIGradient",
-              "Properties": {
-                "Rotation": 90,
-                "Color": {
-                  "ColorSequence": {
-                    "keypoints": [
-                      {
-                        "time": 0,
-                        "color": [
-                          0.1686,
-                          0.2078,
-                          0.3216
-                        ]
-                      },
-                      {
-                        "time": 1,
-                        "color": [
-                          0.102,
-                          0.1255,
-                          0.2039
-                        ]
-                      }
-                    ]
-                  }
                 }
               }
             },
@@ -1192,6 +1153,57 @@
               ]
             }
           }
+        },
+        {
+          "Name": "ClassBadge",
+          "ClassName": "ImageLabel",
+          "Properties": {
+            "AnchorPoint": [
+              0.5,
+              0.5
+            ],
+            "BackgroundTransparency": 1,
+            "BorderSizePixel": 0,
+            "Image": "",
+            "ScaleType": "Fit",
+            "Visible": false,
+            "ZIndex": 7,
+            "Position": {
+              "UDim2": [
+                [
+                  0.055,
+                  0
+                ],
+                [
+                  0.69,
+                  0
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0.22,
+                  0
+                ]
+              ]
+            }
+          },
+          "Children": [
+            {
+              "Name": "UIAspectRatioConstraint",
+              "ClassName": "UIAspectRatioConstraint",
+              "Properties": {
+                "AspectRatio": 1,
+                "AspectType": "ScaleWithParentSize",
+                "DominantAxis": "Height"
+              }
+            }
+          ]
         }
       ]
     },

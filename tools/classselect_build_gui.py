@@ -29,6 +29,11 @@ def img(name):
     return f"rbxassetid://{i}" if i else "rbxassetid://0"
 
 
+def img_or(name, fallback):
+    """Nowa grafika, a dopóki nie ma ID w Roblox — poprzednia (żeby wdrożenie nie zostawiło pustego obrazka)."""
+    return img(name) if not img(name).endswith("//0") else img(fallback)
+
+
 def aspect(name):
     w, h = Image.open(D / f"{name}.png").size
     return round(w / h, 4)
@@ -81,9 +86,16 @@ def main():
                     {"time": 0, "color": [1, 0.94, 0.48]}, {"time": 1, "color": [0.95, 0.66, 0.12]}]}}}),
             ]),
         ]))
-    card = node("StatsCard", "ImageLabel", {"AnchorPoint": [0, 0.5], **ud(0.025, 0.53, 0.23, 0), "BackgroundTransparency": 1,
-                                            "Image": img("CsStatsPanel"), "ScaleType": "Fit", "ZIndex": 2}, [
-        ar(aspect("CsStatsPanel")), node("UIScale", "UIScale", {"Scale": 1}),
+    # sama ramka karty, środek przezroczysty (Paweł 17.11): CsStatsFrame = CsStatsPanel bez granatowego wnętrza
+    # karta = kontener: pod ramką półprzezroczyste ciemne tło (Paweł 17.11: sama ramka była nieczytelna na scenie 3D),
+    # na nim ramka CsStatsFrame (środek przezroczysty), na wierzchu napisy i paski
+    card = node("StatsCard", "Frame", {"AnchorPoint": [0, 0.5], **ud(0.025, 0.53, 0.23, 0), "BackgroundTransparency": 1,
+                                       "ZIndex": 2}, [
+        ar(aspect("CsStatsFrame")), node("UIScale", "UIScale", {"Scale": 1}),
+        node("Back", "Frame", {**ud(0.05, 0.033, 0.9, 0.934), "BackgroundColor3": c3("141A2E"), "BackgroundTransparency": 0.4,
+                               "ZIndex": 2}, [node("UICorner", "UICorner", {"CornerRadius": {"UDim": [0.06, 0]}})]),
+        node("FrameArt", "ImageLabel", {**ud(0, 0, 1, 1), "BackgroundTransparency": 1,
+                                        "Image": img_or("CsStatsFrame", "CsStatsPanel"), "ScaleType": "Fit", "ZIndex": 2}),
         node("Emblem", "ImageLabel", {**ud(0.07, 0.045, 0.25, 0), "BackgroundTransparency": 1, "Image": img("CsEmblemWarrior"),
                                       "ScaleType": "Fit", "ZIndex": 3}, [ar(1)]),
         text("ClassTitle", ud(0.36, 0.055, 0.6, 0.085), "WARRIOR", "FFD23F", 40, "Left", 3),
@@ -112,7 +124,7 @@ def main():
     ikony = ["-- WYGENEROWANE przez tools/classselect_build_gui.py z assets/manifest.json — nie edytuj ręcznie.",
              "return {"] + [f'\t{n} = "{img(n)}",' for n in ("CsEmblemWarrior", "CsEmblemScout", "CsEmblemMage")] + ["}"]
     (ROOT / "src/shared/ClassSelectIcons.luau").write_text("\n".join(ikony) + "\n", encoding="utf-8")
-    missing = [n for n in ("CsTitlePlank", "CsStatsPanel", "CsArrowLeft", "CsArrowRight", "CsPlayButton",
+    missing = [n for n in ("CsTitlePlank", "CsStatsFrame", "CsArrowLeft", "CsArrowRight", "CsPlayButton",
                            "CsEmblemWarrior", "CsEmblemScout", "CsEmblemMage") if img(n).endswith("//0")]
     print(f"ok {OUT.relative_to(ROOT)}; bez ID Roblox: {missing or '-'}")
 

@@ -165,7 +165,16 @@
     },
     "EqBg2": {
       "created_at": "2026-11-12T23:12:33+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "117611283650151",
+          "replaced_at": "2026-11-17T19:15:12+00:00"
+        },
+        {
+          "roblox_image": "117392641173966",
+          "replaced_at": "2026-11-17T19:25:31+00:00"
+        }
+      ],
       "category": "frame",
       "status": "in_roblox",
       "processed": "assets/processed/EquipmentPanel/EqBg2.png",
@@ -173,12 +182,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-12T23:16:55+00:00",
+      "updated_at": "2026-11-17T19:25:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-12T23:15:40+00:00",
-      "approved_sha256": "6408c5b0652961d675c251b30d67b0266d8db24b1a913cfafd55b6d96ed013c5",
+      "approved_at": "2026-11-17T19:21:44+00:00",
+      "approved_sha256": "dc52fc41d54b4feb1ce3c8dd71e70155b3129883a52fe7df00bbd9e1a0210587",
       "roblox_image": "117611283650151",
-      "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
+      "notes": "17.11: wrocono do oryginalu (wymazywanie przyciskow cofniete)"
     },
     "EqBg3": {
       "created_at": "2026-11-12T23:12:33+00:00",
@@ -198,6 +207,14 @@
         {
           "roblox_image": "134448521798525",
           "replaced_at": "2026-11-13T00:11:36+00:00"
+        },
+        {
+          "roblox_image": "136695799877394",
+          "replaced_at": "2026-11-17T19:15:12+00:00"
+        },
+        {
+          "roblox_image": "78261838372747",
+          "replaced_at": "2026-11-17T19:22:01+00:00"
         }
       ],
       "category": "frame",
@@ -207,12 +224,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-14T12:03:37+00:00",
+      "updated_at": "2026-11-17T19:25:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-13T00:11:19+00:00",
-      "approved_sha256": "8a61e93d88cd2e22667a213b45a54512c064d4aaa292feee15a46e57806e2407",
+      "approved_at": "2026-11-17T19:21:44+00:00",
+      "approved_sha256": "0f37bf9216b1110eeba8d3fa7a7441116143f360c928476ee75a18e29721bff5",
       "roblox_image": "136695799877394",
-      "notes": "v5 (136695799877394) wyświetla się w grze na serwerze od 14.11",
+      "notes": "17.11: wrocono do oryginalu (wymazywanie przyciskow cofniete)",
       "moderation": "approved"
     },
     "EqBg4": {
@@ -238,6 +255,10 @@
         {
           "roblox_image": "118346147307937",
           "replaced_at": "2026-11-14T14:13:10+00:00"
+        },
+        {
+          "roblox_image": "105807701025717",
+          "replaced_at": "2026-11-17T19:27:31+00:00"
         }
       ],
       "category": "button",
@@ -247,12 +268,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-14T14:13:10+00:00",
+      "updated_at": "2026-11-17T19:27:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-14T14:12:38+00:00",
-      "approved_sha256": "f4f452e7c6b7388026ccb3cdafbe662832eb1a253424263731f3a6eb244af597",
-      "roblox_image": "105807701025717",
-      "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
+      "approved_at": "2026-11-17T19:26:49+00:00",
+      "approved_sha256": "25f49be627de6eb2eb444cd18e4c3605863ed39d51767ab2a7665d73bdcaac16",
+      "roblox_image": "112202378883443",
+      "notes": "17.11: twardy brzeg, wgrane po tak Pawla"
     },
     "EqTabDescription": {
       "created_at": "2026-11-12T23:12:33+00:00",
@@ -260,6 +281,10 @@
         {
           "roblox_image": "103877021344813",
           "replaced_at": "2026-11-14T14:13:09+00:00"
+        },
+        {
+          "roblox_image": "82356272484128",
+          "replaced_at": "2026-11-17T19:27:31+00:00"
         }
       ],
       "category": "button",
@@ -269,12 +294,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-14T14:13:09+00:00",
+      "updated_at": "2026-11-17T19:27:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-14T14:12:38+00:00",
-      "approved_sha256": "e7368a748ad8162eb5c050268a19abf776442be447cc31afa05235bf575184ed",
-      "roblox_image": "82356272484128",
-      "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
+      "approved_at": "2026-11-17T19:26:50+00:00",
+      "approved_sha256": "1b3da2353e1d4a054055160d593172344886a6bf86bbbbd9822037ea28ee6ebf",
+      "roblox_image": "78676116138548",
+      "notes": "17.11: twardy brzeg, wgrane po tak Pawla"
     },
     "EqTabInfo": {
       "created_at": "2026-11-12T23:12:33+00:00",
@@ -282,6 +307,10 @@
         {
           "roblox_image": "109984432002864",
           "replaced_at": "2026-11-14T14:13:09+00:00"
+        },
+        {
+          "roblox_image": "135885148703992",
+          "replaced_at": "2026-11-17T19:27:31+00:00"
         }
       ],
       "category": "button",
@@ -291,12 +320,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-14T14:13:09+00:00",
+      "updated_at": "2026-11-17T19:27:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-14T14:12:38+00:00",
-      "approved_sha256": "ae980d42ee49c0438e3f78bc7a4f94eea4176ae25732a7ebdb25c6f0f438079d",
-      "roblox_image": "135885148703992",
-      "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
+      "approved_at": "2026-11-17T19:26:50+00:00",
+      "approved_sha256": "b9fccf0e249261bf880249f0e15904b4e36a0e3b434289b01912980f3debfcc9",
+      "roblox_image": "91370010461834",
+      "notes": "17.11: twardy brzeg, wgrane po tak Pawla"
     },
     "EqTabInteractions": {
       "created_at": "2026-11-12T23:12:33+00:00",
@@ -304,6 +333,10 @@
         {
           "roblox_image": "105542617391529",
           "replaced_at": "2026-11-14T14:13:10+00:00"
+        },
+        {
+          "roblox_image": "94845610267337",
+          "replaced_at": "2026-11-17T19:27:32+00:00"
         }
       ],
       "category": "button",
@@ -313,12 +346,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-14T14:13:10+00:00",
+      "updated_at": "2026-11-17T19:27:32+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-14T14:12:38+00:00",
-      "approved_sha256": "672730437ff1e46c40d06c06b7886b53053d0e6f55b5fc6beeb54302e5594b6c",
-      "roblox_image": "94845610267337",
-      "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
+      "approved_at": "2026-11-17T19:26:50+00:00",
+      "approved_sha256": "9354b5180c26041f13e0e707acca71cb2794f08bcf529468f9f0df7d94b22deb",
+      "roblox_image": "127666118672488",
+      "notes": "17.11: twardy brzeg, wgrane po tak Pawla"
     },
     "EqTabWeapons": {
       "created_at": "2026-11-12T23:12:34+00:00",
@@ -326,6 +359,10 @@
         {
           "roblox_image": "84370502536750",
           "replaced_at": "2026-11-14T14:13:09+00:00"
+        },
+        {
+          "roblox_image": "119962244091320",
+          "replaced_at": "2026-11-17T19:27:31+00:00"
         }
       ],
       "category": "button",
@@ -335,12 +372,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-14T14:13:09+00:00",
+      "updated_at": "2026-11-17T19:27:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-14T14:12:38+00:00",
-      "approved_sha256": "a9652b52a996134126c9413f3db1c140abdbc1913d0f1688d86476802a729d32",
-      "roblox_image": "119962244091320",
-      "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
+      "approved_at": "2026-11-17T19:26:50+00:00",
+      "approved_sha256": "0305d1dc13f239150be3ac0b58168907234cc4d1ae36417683075155c7d6c29a",
+      "roblox_image": "124229087658267",
+      "notes": "17.11: twardy brzeg, wgrane po tak Pawla"
     },
     "EqTabArmor": {
       "created_at": "2026-11-12T23:12:34+00:00",
@@ -348,6 +385,10 @@
         {
           "roblox_image": "84198321823648",
           "replaced_at": "2026-11-14T14:13:09+00:00"
+        },
+        {
+          "roblox_image": "123440891296586",
+          "replaced_at": "2026-11-17T19:27:31+00:00"
         }
       ],
       "category": "button",
@@ -357,12 +398,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-14T14:13:09+00:00",
+      "updated_at": "2026-11-17T19:27:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-14T14:12:39+00:00",
-      "approved_sha256": "7a7256adf319230e149fa7fa50353c212ae16e2b80d1c29cf07471ea7168f6d7",
-      "roblox_image": "123440891296586",
-      "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
+      "approved_at": "2026-11-17T19:26:50+00:00",
+      "approved_sha256": "12288ba9fef83239d6b0745216e7df4ac7db5a90f847d5695400f32c4d7e4132",
+      "roblox_image": "116059334041200",
+      "notes": "17.11: twardy brzeg, wgrane po tak Pawla"
     },
     "EqTabAmulets": {
       "created_at": "2026-11-12T23:12:34+00:00",
@@ -370,6 +411,10 @@
         {
           "roblox_image": "84360874613826",
           "replaced_at": "2026-11-14T14:13:09+00:00"
+        },
+        {
+          "roblox_image": "75894078702551",
+          "replaced_at": "2026-11-17T19:27:32+00:00"
         }
       ],
       "category": "button",
@@ -379,12 +424,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-14T14:13:09+00:00",
+      "updated_at": "2026-11-17T19:27:32+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-14T14:12:39+00:00",
-      "approved_sha256": "fe33a780f93b175d5d8fe4c0aefa55e9f533e0419726a2cd6d4e8893478c8b9e",
-      "roblox_image": "75894078702551",
-      "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
+      "approved_at": "2026-11-17T19:26:50+00:00",
+      "approved_sha256": "3df5ddaff061cc291c4a50d3cb10f1bc3a2e1d3a0b549fc2d5f302a8a64cd481",
+      "roblox_image": "106621656512453",
+      "notes": "17.11: twardy brzeg, wgrane po tak Pawla"
     },
     "EqTabOthers": {
       "created_at": "2026-11-12T23:12:34+00:00",
@@ -392,6 +437,10 @@
         {
           "roblox_image": "122432945054881",
           "replaced_at": "2026-11-14T14:13:09+00:00"
+        },
+        {
+          "roblox_image": "110956701948264",
+          "replaced_at": "2026-11-17T19:27:31+00:00"
         }
       ],
       "category": "button",
@@ -401,12 +450,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-14T14:13:09+00:00",
+      "updated_at": "2026-11-17T19:27:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-14T14:12:39+00:00",
-      "approved_sha256": "73d9df91470e910e8506f2b23486e3895c804c1876dc88779443144b7fb17194",
-      "roblox_image": "110956701948264",
-      "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
+      "approved_at": "2026-11-17T19:26:50+00:00",
+      "approved_sha256": "f02ddae77724de677696984a82178b703e9b2f19986dcdd500abcdf793d11637",
+      "roblox_image": "99562804159084",
+      "notes": "17.11: twardy brzeg, wgrane po tak Pawla"
     },
     "EqPlus": {
       "created_at": "2026-11-12T23:12:34+00:00",
@@ -427,7 +476,12 @@
     },
     "EqClose": {
       "created_at": "2026-11-12T23:12:34+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "116146986242036",
+          "replaced_at": "2026-11-17T19:27:31+00:00"
+        }
+      ],
       "category": "button",
       "status": "in_roblox",
       "processed": "assets/processed/EquipmentPanel/EqClose.png",
@@ -435,12 +489,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-12T23:16:55+00:00",
+      "updated_at": "2026-11-17T19:27:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-12T23:15:41+00:00",
-      "approved_sha256": "5379607f3ca9640ca0eb38b5cd446659c837693f07fccff25af0f0398971d439",
-      "roblox_image": "116146986242036",
-      "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
+      "approved_at": "2026-11-17T19:26:50+00:00",
+      "approved_sha256": "b15f62784c373e8737242c485d08374a346e98bc72f6d09e4cdd27effcbc5265",
+      "roblox_image": "74578203384319",
+      "notes": "17.11: twardy brzeg, wgrane po tak Pawla"
     },
     "ItemScrap": {
       "created_at": "2026-11-12T23:26:58+00:00",
@@ -475,59 +529,87 @@
     },
     "SkillTreeFrame": {
       "created_at": "2026-11-15T13:56:57+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "80863272742655",
+          "replaced_at": "2026-11-17T19:15:12+00:00"
+        },
+        {
+          "roblox_image": "95033711020175",
+          "replaced_at": "2026-11-17T19:25:31+00:00"
+        }
+      ],
       "category": "frame",
       "status": "in_roblox",
       "processed": "assets/processed/SkillTree/SkillTreeFrame.png",
       "figma_node": "31:75",
       "usage": "Okno drzewka umiejętności",
-      "updated_at": "2026-11-15T14:13:51+00:00",
+      "updated_at": "2026-11-17T19:25:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-15T14:09:30+00:00",
-      "approved_sha256": "58bc7983becaadac7db50083a257239510ee178b6ad9f34b70f3ca01b07575b7",
-      "roblox_image": "80863272742655"
+      "approved_at": "2026-11-17T19:14:26+00:00",
+      "approved_sha256": "79616b449b2b1ae17a8cd312aacd3479a41dea853c3bf8a4f1b35510a00fc529",
+      "roblox_image": "80863272742655",
+      "notes": "17.11: wrocono do oryginalu (wymazywanie przyciskow cofniete)"
     },
     "SkillTreeTabPlayer": {
       "created_at": "2026-11-15T13:56:57+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "117740132557925",
+          "replaced_at": "2026-11-17T19:27:31+00:00"
+        }
+      ],
       "category": "frame",
       "status": "in_roblox",
       "processed": "assets/processed/SkillTree/SkillTreeTabPlayer.png",
       "figma_node": "31:76",
       "usage": "Okno drzewka umiejętności",
-      "updated_at": "2026-11-15T14:13:51+00:00",
+      "updated_at": "2026-11-17T19:27:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-15T14:09:30+00:00",
-      "approved_sha256": "ddf133524fd11e443fe8a6a8946232ba991d268293096da71110580875001d91",
-      "roblox_image": "117740132557925"
+      "approved_at": "2026-11-17T19:26:50+00:00",
+      "approved_sha256": "bd6a1608d771e5bb375162ff71ad96b752f105ee4729e04536c710b7c2634584",
+      "roblox_image": "87214205951086",
+      "notes": "17.11: twardy brzeg, wgrane po tak Pawla"
     },
     "SkillTreeTabFortress": {
       "created_at": "2026-11-15T13:56:57+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "73525900620129",
+          "replaced_at": "2026-11-17T19:27:31+00:00"
+        }
+      ],
       "category": "frame",
       "status": "in_roblox",
       "processed": "assets/processed/SkillTree/SkillTreeTabFortress.png",
       "figma_node": "31:77",
       "usage": "Okno drzewka umiejętności",
-      "updated_at": "2026-11-15T14:13:51+00:00",
+      "updated_at": "2026-11-17T19:27:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-15T14:09:30+00:00",
-      "approved_sha256": "b9a7153160023d67f6753ec6fe3a90253cf594dbcb3ea1943a6f796d866d22a2",
-      "roblox_image": "73525900620129"
+      "approved_at": "2026-11-17T19:26:50+00:00",
+      "approved_sha256": "e7f15756d8b0550224d05ee6c470d0be89fd82fc107fc1b3fa47cc59daf185a7",
+      "roblox_image": "127151103970976",
+      "notes": "17.11: twardy brzeg, wgrane po tak Pawla"
     },
     "SkillTreeTabPets": {
       "created_at": "2026-11-15T13:56:57+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "130452128072760",
+          "replaced_at": "2026-11-17T19:27:31+00:00"
+        }
+      ],
       "category": "frame",
       "status": "in_roblox",
       "processed": "assets/processed/SkillTree/SkillTreeTabPets.png",
       "figma_node": "31:78",
       "usage": "Okno drzewka umiejętności",
-      "updated_at": "2026-11-15T14:13:51+00:00",
+      "updated_at": "2026-11-17T19:27:31+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-15T14:09:31+00:00",
-      "approved_sha256": "a4bbc4797f04e326fc61732c6e2fc079af655f9098ee94fc1575dd0e0ccacdc7",
-      "roblox_image": "130452128072760"
+      "approved_at": "2026-11-17T19:26:50+00:00",
+      "approved_sha256": "e2dcb4c2f60a3b12c81a4f1006e69d0297f139ce9f976e724dc9ded28e913386",
+      "roblox_image": "119323965816860",
+      "notes": "17.11: twardy brzeg, wgrane po tak Pawla"
     },
     "SkillTreeBgPlayer": {
       "created_at": "2026-11-15T13:56:57+00:00",
@@ -1688,7 +1770,35 @@
       "usage": "Ekran wyboru klasy — niepotrzebne: tłem jest sala 3D (Paweł 16.11)",
       "figma_node": "35:116",
       "updated_at": "2026-11-16T19:13:59+00:00"
+    },
+    "CsStatsFrame": {
+      "created_at": "2026-11-17T19:02:00+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/ClassSelect/CsStatsFrame.png",
+      "usage": "17.11 Paweł",
+      "updated_at": "2026-11-17T19:15:12+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-17T19:14:26+00:00",
+      "approved_sha256": "5fb97dccfeafb5e0dcebef8ede86a8a9de154a5318d649b0deb417aea80a8b44",
+      "roblox_image": "127667929543221",
+      "notes": "wgrane 2026-11-17 po tak Pawla"
+    },
+    "SkillTreeBgStars": {
+      "created_at": "2026-11-17T19:02:00+00:00",
+      "history": [],
+      "category": "background",
+      "status": "in_roblox",
+      "processed": "assets/processed/SkillTree/SkillTreeBgStars.png",
+      "usage": "17.11 Paweł",
+      "updated_at": "2026-11-17T19:15:12+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-17T19:14:26+00:00",
+      "approved_sha256": "6fd5b8a354ae48e44b98a771aa50f98677f7828e1ad1c2dec2bf8dc95c4c98cc",
+      "roblox_image": "82157810923315",
+      "notes": "wgrane 2026-11-17 po tak Pawla"
     }
   },
-  "updated_at": "2026-11-16T19:23:14+00:00"
+  "updated_at": "2026-11-17T19:27:32+00:00"
 }

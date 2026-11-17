@@ -71,10 +71,7 @@ def main():
     tabs = []
     for i, (key, label) in enumerate([("TabPlayer", "PLAYER"), ("TabFortress", "FORTRESS"), ("TabPets", "PETS")]):
         x, y, w, h = L["tabs"][key]
-        # zasłonka w kolorze ciemnego drewna ramki: zakładki są też wypalone w grafice ramki i prześwitywały
-        # spod przyciemnionego / powiększonego przycisku (uwaga Pawła 16.11)
-        tabs.append(node("Cover" + key, "Frame", {**ud(x, y, w, h), "BackgroundColor3": c3("674130"), "ZIndex": 1},
-                         [corner(0.18)]))
+        # zakładki i X są wymazane z grafiki ramki (tools/skilltree_assets.py, Paweł 17.11) — pod przyciskiem nic nie leży
         # kotwica = środek dolnej krawędzi: przy hoverze zakładka rośnie w górę, podstawa zostaje przy oknie
         tabs.append(node(key, "ImageButton", {
             "AnchorPoint": [0.5, 1], **ud(x + w / 2, y + h, w, h), "BackgroundTransparency": 1,
@@ -87,28 +84,23 @@ def main():
     bar_h = 56 / ch
     content = node("Content", "Frame", {**ud(*C), "BackgroundTransparency": 1, "ClipsDescendants": True, "ZIndex": 2}, [
         corner(0, 10),
-        # osobne tło na zakładkę (klient wczytuje je z góry i przełącza z przenikaniem — bez czekania na obraz)
-        *[node(f"Bg_{t}", "ImageLabel", {**ud(0, 0, 1, 1), "BackgroundTransparency": 1, "Image": img(f"SkillTreeBg{t}"),
-                                           "ScaleType": "Crop", "ZIndex": 1, "Visible": t == "Player"})
-          for t in ("Player", "Fortress", "Pets")],
-        node("Shade", "Frame", {**ud(0, 0, 1, 1), "BackgroundColor3": c3("140D08"), "BackgroundTransparency": 0.75, "ZIndex": 2}),
+        # jedno tło dla wszystkich zakładek: gwiazdozbiory rycerza i kota-maga (Paweł 17.11)
+        node("Bg", "ImageLabel", {**ud(0, 0, 1, 1), "BackgroundTransparency": 1, "Image": img("SkillTreeBgStars") if not img("SkillTreeBgStars").endswith("//0") else img("SkillTreeBgPlayer"),
+                                  "ScaleType": "Crop", "ZIndex": 1}),
+        node("Shade", "Frame", {**ud(0, 0, 1, 1), "BackgroundColor3": c3("140D08"), "BackgroundTransparency": 0.85, "ZIndex": 2}),
         # mapa: rozmiar 0, węzły jako dzieci z pozycją w px makiety; UIScale = skala ekranu × zoom (klient)
         node("Map", "Frame", {"AnchorPoint": [0, 0], **ud(0.5, 0.42, 0, 0), "BackgroundTransparency": 1, "ZIndex": 3},
              [node("UIScale", "UIScale", {"Scale": 1})]),
+        # krótka podpowiedź w poprzedniej wielkości (dłuższy tekst zmniejszał czcionkę — uwaga Pawła 17.11);
+        # „HOLD TO UPGRADE” pokazuje pasek szczegółów na dole
         text("Hint", ud(0.3, 0.025, 0.4, 0.045), "DRAG TO EXPLORE", "FFFFFF", 14, z=6),
         node("DetailBar", "Frame", {**ud(0.01, 1 - bar_h - 0.012, 0.98, bar_h), "BackgroundColor3": c3("1A1410"),
                                     "BackgroundTransparency": 0.25, "Visible": False, "ZIndex": 7}, [
             corner(0, 14),
             text("NodeName", ud(0.025, 0.1, 0.6, 0.42), "", "FFD23F", 18, "Left", z=8),
-            text("NodeDesc", ud(0.025, 0.54, 0.66, 0.36), "", "FFFFFF", 14, "Left", 2, z=8),
-            node("BuyButton", "TextButton", {"AnchorPoint": [1, 0.5], **ud(0.985, 0.5, 0.25, 0.8), "BackgroundColor3": c3("4CB33C"),
-                                             "Text": "", "AutoButtonColor": False, "ZIndex": 8}, [
-                corner(0.25), stroke(t=3, mode="Border"), node("UIScale", "UIScale", {"Scale": 1}),
-                text("Action", ud(0.06, 0.18, 0.5, 0.64), "UPGRADE", "FFFFFF", 18, z=9),
-                node("GemIcon", "ImageLabel", {**ud(0.58, 0.18, 0.13, 0.64), "BackgroundTransparency": 1, "Image": img("Gem"),
-                                               "ScaleType": "Fit", "ZIndex": 9}),
-                text("Cost", ud(0.72, 0.18, 0.26, 0.64), "0", "8AF0FF", 18, "Left", z=9),
-            ]),
+            text("NodeDesc", ud(0.025, 0.54, 0.7, 0.36), "", "FFFFFF", 14, "Left", 2, z=8),
+            # bez przycisku UNLOCK (Paweł 17.11): ulepszenie = przytrzymanie kółka; tu tylko podpowiedź
+            text("HoldHint", ud(0.74, 0.22, 0.24, 0.56), "HOLD TO UPGRADE", "8AF0FF", 16, "Right", z=8),
         ]),
     ])
 

@@ -56,6 +56,28 @@ local function rescale()
 end
 hud:GetPropertyChangedSignal("AbsoluteSize"):Connect(rescale)
 
+------------------------------------------------ znaczek klasy przy poziomie (emblemat z ekranu wyboru klasy)
+local function refreshClassBadge(badge: ImageLabel)
+	local ok, ClassData = pcall(function()
+		return require(RS:WaitForChild("Shared"):WaitForChild("ClassData"))
+	end)
+	local ok2, Icons = pcall(function()
+		return require(RS:WaitForChild("Shared"):WaitForChild("ClassSelectIcons"))
+	end)
+	local c = ok and ok2 and ClassData.byId(player:GetAttribute("Class") or "")
+	badge.Image = c and Icons[c.emblem] or ""
+	badge.Visible = c ~= nil
+end
+do
+	local badge = panel:FindFirstChild("ClassBadge")
+	if badge then
+		refreshClassBadge(badge)
+		player:GetAttributeChangedSignal("Class"):Connect(function()
+			refreshClassBadge(badge)
+		end)
+	end
+end
+
 ------------------------------------------------ staty
 local function fmt(n)
 	local s = tostring(math.floor(n + 0.5))
