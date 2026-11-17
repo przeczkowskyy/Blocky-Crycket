@@ -1,0 +1,35 @@
+{
+ "id": "r-20261117-103806-7822",
+ "tytul": "Training Center: Siła i Pancerz już grają w Studio",
+ "opis_md": "**W skrócie**\n- Dwie mini-gry działają w grze: Siła „Rozbijanie” i Pancerz „Blok”. Wszystkie 14 punktów próby zaliczone.\n- Wchodzi się przez E przy trenerze w bazarze albo przy tablicy obok startu. Wybór gry jest tymczasowy (okno robi Paweł).\n- Cztery pozostałe mini-gry są na razie tylko w projekcie. Projekt czeka na Waszą akceptację.\n- Najważniejszy wybór: ile daje trafienie — pasek z obliczeń balansu czy dosłownie „+1 za trafienie” z D-050.\n\nSzczegóły:\n\n**Jak obejrzeć:** Play → Enter → tablica „TRAINING CENTER / MINI-GRY” obok startu → E → GRAJ. Albo w bazarze: E przy trenerze.\n\n**Sześć mini-gier z projektu:** Siła — Rozbijanie (gra), Pancerz — Blok (gra), Kondycja — Bieżnia, Zręczność — Kłody, Inteligencja — Runy, Szczęście — Koniczyny (cztery ostatnie tylko opisane).\n\n**Co działa (sprawdzone w Studio 17.11, 60 klatek na sekundę)**\n- E przy tablicy i przy trenerze otwiera wybór. Dymek „Trener: mini-gry w budowie” już nie wyskakuje.\n- GRAJ przenosi na stanowisko: kamera stoi, a postać się nie rusza, nawet gdy wciskasz strzałki.\n- Siła: rozbijasz lecące skrzynki strzałką albo WASD w ich stronę. Pancerz: blokujesz cios golema, a fioletowa zmyłka\n  oszukuje.\n- Każde trafienie daje napis, odłamki, błysk, dźwięk i rosnący licznik serii. Przy serii 10 pojawia się „SERIA 10!”,\n  a za pełny pasek „+1 Siła!”.\n- O nagrodzie decyduje serwer. Klikanie na oślep nic nie daje: z 60 kliknięć naraz serwer odrzucił 56, a pasek nie\n  urósł ani trochę.\n- WYJDŹ wraca dokładnie tam, skąd przyszedłeś.\n\n**Co poprawiłem po zrzutach**\n- Polskie litery (ę, ż, ś) wyświetlały się zastępczą czcionką — teraz cała gra ma czcionkę z pełnymi polskimi znakami.\n- Postać zasłaniała strefę „dół” — w czasie rundy jest półprzezroczysta, a strefa stoi dalej przed nią.\n- Na telefonie przyciski zasłaniały prawą stronę, a „X” wchodził na przycisk Quests. Kamera patrzy teraz bardziej\n  w prawo i gra toczy się w lewej połowie ekranu.\n- Tarcza, okrągły przycisk BLOK, napis na tablicy wejścia, ciemniejsza podłoga areny.\n\n**Do decyzji (pełna lista w PROJEKT.md)**\n- Ile daje trafienie: pasek z obliczeń balansu (dziś, ok. 3 punkty za rundę świeżej statystyki, potem coraz mniej)\n  czy „+1 za trafienie” z D-050 (ok. 70 punktów za rundę).\n- Cztery kierunki w Sile czy trzy z D-050. Zmyłka w Pancerzu z kolorem czy bez. Długość rundy (45 s).\n- HUD w czasie mini-gry: chować czy zostawić (okno 2D — Paweł).\n\n**Czego jeszcze nie sprawdziliśmy:** prawdziwego telefonu (był tylko układ ekranu 667×375 na zrzucie), pada, dźwięku\nna słuch i dwóch graczy naraz. Przede wszystkim trzeba, żebyście sami zagrali — w próbie rundy prowadził automat.\n\nZrzuty: `swiat/trening_proba/klatki/` (8 sztuk). Opis: `swiat/trening_proba/README.md`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T10:38:06+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TreningProba",
+   "etykieta": "Training Center"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/trening_proba/PROJEKT.md",
+   "etykieta": "Projekt sześciu mini-gier"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/trening_proba/README.md",
+   "etykieta": "Opis i wyniki"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
