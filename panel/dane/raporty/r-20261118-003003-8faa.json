@@ -1,0 +1,28 @@
+{
+ "id": "r-20261118-003003-8faa",
+ "tytul": "Pety: Ognik podpala, Ważeczka zatruwa (D-101)",
+ "opis_md": "- Żywioły petów dają teraz prawdziwy skutek w walce (D-101): Ognik podpala wroga przy ciosie (25%), Ważeczka zatruwa (30%).\n- Tablica szans i cena jajka Bagna są czytelne z miejsca, w którym stoi gracz.\n- Do oceny: czy Ognik (epicki, 8%) może być w walce prawie tak mocny jak pety legendarne.\n\nSzczegóły:\n\n**Co widać w grze.** Po wykluciu napis mówi wprost, co pet robi: „Wykluł się: Ognik (Epicki) — Ogień: podpala wroga przy ciosie (25%)”. W oknie zagrody każdy pet ma jedną linijkę skutku. W pierwszej walce z Ognikiem podpalenie pojawiło się w 6. turze (napis „PODPALENIE!” i ikona ognia z licznikiem przy wrogu).\n\n**Liczby (propozycja, do zmiany jedną wartością).** Symulacja 600 walk, zmiana szansy wygranej ze Strażnikiem względem walki bez peta, kolejno Wojownik / Zwiadowca / Mag:\n\n| Pet | Strażnik Gaju | Strażnik Topieli |\n|---|---|---|\n| Ognik (epicki, 8%) | +12 / +7 / +12 | +9 / +6 / +7 |\n| Ważeczka (rzadka, 15%) | +7 / +5 / +6 | +6 / +6 / +4 |\n| Jelonek Gaju (legendarny, 2%) | +13 / +8 / +6 | — |\n| Perłowa Wydra (legendarna, 2%) | — | +12 / +16 / +6 |\n\nOgnik nie daje już premii do Złota — tylko ogień. Ważeczka zmieniła skutek z „+20% Inteligencji” na jad, bo pasuje do jej wyglądu.\n\n**Sprawdzone w grze:** próba lasu 17 punktów bez błędów, próba Bagna 14 punktów bez błędów (obie dwa razy), próba całej drogi 13 punktów w porządku i jeden bez rozstrzygnięcia (pierwsza walka przegrana, więc nie było łupu do sprawdzenia). Premia Jelonka przy łupie liczy się raz: 100 Złota + 5.\n\n**Niesprawdzone w grze:** trucizna Ważeczki i dodatkowe skutki dla Maga — są tylko w symulacji i testach bez Studio. Pliki z Blendera dla inkubatora Bagna pokazują tablicę jeszcze w starym miejscu (gra ich nie używa).\n\n**Drobiazg do poprawy:** w lesie napis z ceną nad jajkiem jest częściowo zasłonięty czubkiem jajka, gdy patrzy się z bliska od tyłu.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T00:30:03+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/PetyProba",
+   "etykieta": "Pety"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/pety_proba/PROJEKT.md",
+   "etykieta": "Projekt"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ]
+}
