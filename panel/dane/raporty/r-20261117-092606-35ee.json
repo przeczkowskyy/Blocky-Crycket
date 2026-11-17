@@ -1,0 +1,36 @@
+{
+ "id": "r-20261117-092606-35ee",
+ "tytul": "Pięć notatek o grze przepisanych według decyzji",
+ "opis_md": "**W skrócie**\n- Pięć notatek o grze — Karczma, Twierdza, Pety, System RPG i Drzewko umiejętności — opisuje teraz to, co ustaliliście na sesjach 14–16.11. Dotąd miały głównie odsyłacze do propozycji.\n- Przy każdym ustaleniu stoi numer decyzji. Tam, gdzie decyzja ma tylko podpis Karola, jest to wyraźnie napisane.\n- Przy okazji wyszło sześć miejsc, w których zatwierdzone decyzje sobie przeczą albo czegoś nie mówią. Jedno jest nowym pytaniem (52), pięć to dopiski pod istniejącymi pytaniami.\n\nSzczegóły:\n\n**Sprzeczności do rozstrzygnięcia**\n1. Następny biom otwiera strażnik (D-076), poziom postaci (D-057, D-061) czy oba? — pytanie 52. Las-pas i plan Bagna przyjmują roboczo samego strażnika.\n2. Czy zadanie z karczmy nadal kończy się mini-dungeonem i klikaniem w beczkę? — dopisek pod pytaniem 8.\n3. Training Center stoi na działce Twierdzy czy w mieście? Skąd surowce na budynki? — dopisek pod pytaniem 9.\n4. Kowal i ulepszanie przedmiotów na premierę czy po niej? Karol odpowiedział „na premierę”, Pawła brak — pytanie 32.\n5. Nazwy walut: Diamenty, Gemy, Magiczne Kryształy; czy kryształ z kopalni to ta sama waluta? — pytanie 6.\n6. Od kiedy gracz ma pety? — pytanie 38.\n\n**Co zniknęło.** Z notatki o drzewku usunąłem całą treść odrzuconej D-047 (trzy gałęzie, piętra, punkty talentu). Energia zniknęła z Karczmy (D-048).\n\n**Do Waszej decyzji.** System RPG i Drzewko mają dalej status „propozycja”, choć opisują już głównie zatwierdzone decyzje. Jeśli chcecie, żeby były kanonem, napiszcie to tutaj.\n\n**Czego nie ruszałem.** Okno Karczmy, HUD, Koncepcja i Core Loop, Okno drzewka umiejętności i Mapa teleportacji też mają nieaktualne fragmenty — jest na to zadanie.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T09:26:06+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "System RPG",
+   "etykieta": "System RPG"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Twierdza (Tycoon)",
+   "etykieta": "Twierdza"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Pety",
+   "etykieta": "Pety"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Karczma (Questy)",
+   "etykieta": "Karczma"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Drzewko umiejętności postaci",
+   "etykieta": "Drzewko"
+  }
+ ],
+ "zrzuty": []
+}
