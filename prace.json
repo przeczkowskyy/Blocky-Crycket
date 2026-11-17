@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T23:01:52+01:00",
+ "aktualizacja": "2026-11-17T23:01:55+01:00",
  "prace": [
   {
    "id": "noc-balans",
@@ -27,6 +27,20 @@
    "obszary": [
     "swiat/kowal_proba",
     "studio:KowalProba"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "noc-trening",
+   "tytul": "Noc: cztery pozostałe mini-gry Training Center",
+   "stan": "w_toku",
+   "start": "2026-11-17T23:01:55+01:00",
+   "koniec_szacowany": "2026-11-18T05:01:55+01:00",
+   "aktualizacja": "2026-11-17T23:01:55+01:00",
+   "obszary": [
+    "swiat/trening_proba",
+    "studio:TreningProba"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
