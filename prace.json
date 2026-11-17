@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T17:19:58+01:00",
+ "aktualizacja": "2026-11-17T17:20:00+01:00",
  "prace": [
   {
    "id": "areny-walki",
@@ -29,19 +29,6 @@
    "obszary": [
     "swiat/pety_proba",
     "studio:PetyProba"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "przebudowa-lisciolis",
-   "tytul": "Przebudowa modelu lisciolis",
-   "stan": "w_toku",
-   "start": "2026-11-17T17:19:33+01:00",
-   "koniec_szacowany": "2026-11-17T17:39:33+01:00",
-   "aktualizacja": "2026-11-17T17:19:33+01:00",
-   "obszary": [
-    "model:lisciolis"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
