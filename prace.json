@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T17:24:36+01:00",
+ "aktualizacja": "2026-11-17T17:24:39+01:00",
  "prace": [
   {
    "id": "areny-walki",
@@ -55,19 +55,6 @@
    "aktualizacja": "2026-11-17T17:23:50+01:00",
    "obszary": [
     "model:jelonek_gaju"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "przebudowa-lisciolis",
-   "tytul": "Przebudowa modelu lisciolis",
-   "stan": "w_toku",
-   "start": "2026-11-17T17:23:43+01:00",
-   "koniec_szacowany": "2026-11-17T17:43:43+01:00",
-   "aktualizacja": "2026-11-17T17:23:43+01:00",
-   "obszary": [
-    "model:lisciolis"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
