@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T20:04:02+01:00",
+ "aktualizacja": "2026-11-17T21:54:14+01:00",
  "prace": [
   {
    "id": "jajko-bagna",
@@ -23,9 +23,10 @@
    "id": "pas-krotszy",
    "tytul": "Krótszy i węższy pas biomów (D-096): przebudowa lasu i Bagna",
    "stan": "w_toku",
+   "etap": "Wdrożenie w Studio: krótkie mapy, przebudowa rozgrywki, próby",
    "start": "2026-11-17T20:04:02+01:00",
-   "koniec_szacowany": "2026-11-17T22:34:02+01:00",
-   "aktualizacja": "2026-11-17T20:04:02+01:00",
+   "koniec_szacowany": "2026-11-17T23:15:00+01:00",
+   "aktualizacja": "2026-11-17T21:54:14+01:00",
    "obszary": [
     "mapa:las_pas",
     "mapa:bagno_pas",
