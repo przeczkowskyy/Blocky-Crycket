@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T08:47:25+01:00",
+ "aktualizacja": "2026-11-17T08:58:34+01:00",
  "prace": [
   {
    "id": "panel-zlecenia",
@@ -21,9 +21,10 @@
    "id": "trening-proba",
    "tytul": "Training Center: projekt sześciu mini-gier i dwie na próbę",
    "stan": "w_toku",
+   "etap": "projekt i kod gotowe, czeka na wolne Studio",
    "start": "2026-11-17T08:09:26+01:00",
-   "koniec_szacowany": "2026-11-17T15:00:00+01:00",
-   "aktualizacja": "2026-11-17T08:09:26+01:00",
+   "koniec_szacowany": "2026-11-17T14:30:00+01:00",
+   "aktualizacja": "2026-11-17T08:58:34+01:00",
    "obszary": [
     "swiat/trening_proba/**",
     "studio:TreningProba"
