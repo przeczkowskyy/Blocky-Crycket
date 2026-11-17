@@ -1,0 +1,30 @@
+{
+ "id": "r-20261117-184023-cfdf",
+ "tytul": "Jajka i pety działają w Studio: inkubator, wyklucie, pet przy graczu",
+ "opis_md": "**Co to jest:** jajka i pety na próbę, już w grze — pierwsze miejsce, w którym Złoto z walk na coś idzie. Zrzuty ze Studio.\n\n**Jak zobaczyć:** Play → wybierz klasę → TELEPORT → Las → walcz, aż będziesz mieć 300 Złota (linijka celu sama podpowie jajko) → inkubator stoi przy miejscu przybycia → przytrzymaj E. Potem Kamień Powrotu → bazar → zagroda petów → E przy opiekunce.\n\n**Co działa:**\n- zakup za Złoto (serwer zabiera i losuje; bez Złota komunikat, ile brakuje);\n- wyklucie: jajko się trzęsie, pęka w kolorze rzadkości, pet wyskakuje, napis „NOWY PET!”;\n- pet idzie za graczem, w walce znika i wraca po niej;\n- premia peta przy łupie („+12 Złota od peta: Liściolis”);\n- zagroda w bazarze: posiadane pety, liczba kopii, tymczasowe okno wyboru aktywnego peta.\n\n**Przejście prawdziwymi kliknięciami (nowy gracz):** 15 walk do pierwszych 300 Złota, czyli ok. 8 minut gry; wykluł się Mchowy Ślimak; następna walka już z premią.\n\n**Próby:** pety 16 z 17 punktów (jeden punkt to próg odległości: pet w marszu zostaje do 7 studów za graczem przy progu 6), próba dymna całej gry 14 z 14, konsola bez błędów.\n\n**Poprawione po obejrzeniu zrzutów:** czytelna tablica szans, pet ląduje obok gracza zamiast w nim, mniejszy błysk przy pęknięciu, cieplejszy kolor jajka, poroże Jelonka świeci tylko na końcach.\n\n**Niesprawdzone:** dwóch graczy naraz (czy inni widzą peta), telefon, Jelonek po poprawce poroża w grze.\n\n**Decyzje do podjęcia** są w raporcie „Jajka i pety: pięć leśnych petów do oceny” (cena, szanse, co daje pet, wyklucie).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T18:40:23+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "PetyProba",
+   "etykieta": "Inkubator i pety"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/pety_proba/PROJEKT.md",
+   "etykieta": "Projekt"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
