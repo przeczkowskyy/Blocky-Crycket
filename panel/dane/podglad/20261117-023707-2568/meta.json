@@ -1,0 +1,193 @@
+{
+ "id": "20261117-023707-2568",
+ "tytul": "Miasteczko-bazar w Studio (17.11, noc)",
+ "opis": "",
+ "kto": "Karol Balucki",
+ "czas": "2026-11-17T02:37:10+01:00",
+ "zrodlo": "studio",
+ "czesci": 4374,
+ "grupy": [
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/BramaLesna",
+   "czesci": 37
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/BramaLochow",
+   "czesci": 262
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/BramaLochow/Blokada",
+   "czesci": 8
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/BramaTwierdzy",
+   "czesci": 228
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Chmury",
+   "czesci": 20
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Domy/dom_placyk_pd",
+   "czesci": 71
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Domy/dom_placyk_pn",
+   "czesci": 66
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Domy/dom_zachod_pd",
+   "czesci": 59
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Domy/dom_zachod_pn",
+   "czesci": 63
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Karczma",
+   "czesci": 221
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Karczma/Barman",
+   "czesci": 47
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Karczma/MistrzGier",
+   "czesci": 44
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Kulisy/Domy",
+   "czesci": 1149
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Kulisy/Drzewa",
+   "czesci": 215
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Mury",
+   "czesci": 88
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/PortalKrain",
+   "czesci": 52
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Rekwizyty/Girlandy",
+   "czesci": 45
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Rekwizyty/Latarnie",
+   "czesci": 80
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Rekwizyty/Plac",
+   "czesci": 49
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Rekwizyty/Placyk",
+   "czesci": 37
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Rekwizyty/Zaulki",
+   "czesci": 85
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/SklepMagiczny",
+   "czesci": 191
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/SklepMagiczny/Mag",
+   "czesci": 43
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Start",
+   "czesci": 6
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Stragany/Stragan1",
+   "czesci": 25
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Stragany/Stragan2",
+   "czesci": 25
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Stragany/Stragan3",
+   "czesci": 25
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/StudniaPomnik",
+   "czesci": 76
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Tablica",
+   "czesci": 39
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Teren",
+   "czesci": 2
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Tlo",
+   "czesci": 36
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/TrainingCenter",
+   "czesci": 177
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/TrainingCenter/Trener",
+   "czesci": 33
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Uliczka/Bruk",
+   "czesci": 292
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Uliczka/Kody",
+   "czesci": 57
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/ZagrodaPetow",
+   "czesci": 131
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/ZagrodaPetow/Opiekunka",
+   "czesci": 41
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/ZagrodaPetow/Pety",
+   "czesci": 40
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Zbrojownia",
+   "czesci": 173
+  },
+  {
+   "sciezka": "Workspace/MiasteczkoBazar/Zbrojownia/Zbrojmistrz",
+   "czesci": 36
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "zakres": {
+  "min": [
+   882.0,
+   -0.61,
+   -790.0
+  ],
+  "max": [
+   1066.0,
+   112.73,
+   -610.0
+  ]
+ },
+ "miejsce": {
+  "placeId": 129485428021967,
+  "nazwa": "Blocky&Crycket (placeId: 129485428021967)"
+ },
+ "korzen": "Workspace/MiasteczkoBazar"
+}
