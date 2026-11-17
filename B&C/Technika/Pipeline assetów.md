@@ -66,3 +66,20 @@ Po sesji głównej 16.11 (D-082, D-083) i zgodzie Karola na kredyty powstała pi
 - **Modele i koszt:** muzyka — ElevenLabs Music v2.5, efekty — Seed Audio 1.0 (A) i Mirelo (B); razem 229,5 kredytu, na koncie zostało ok. 205.
 - **Kontrola techniczna:** głośność wyrównana (muzyka ok. −16 LUFS, efekty ok. −14 LUFS), cisza przycięta, pętle z jednosekundowym przenikaniem. Płynności pętli, braku wokalu i jakości melodii nie da się ocenić bez ucha — ocenia Karol. Lodowiec ma na szwie pętli spadek głośności 6,8 dB.
 - **Zanim wgramy do Roblox** (źródła i szczegóły w `assets/audio/README.md`): Roblox przyjmuje mp3, ogg, wav i flac do 7 minut i 20 MB, audio przechodzi moderację, a za treść z generatora odpowiada wgrywający. Warunki Higgsfield nie ograniczają użycia komercyjnego na płatnym planie. Warunki ElevenLabs Music dopuszczają gry mieszczące się w definicji „Indie Game”, ale **nie ustalono pewnie**, czy obowiązują przy generowaniu przez Higgsfield — przed publikacją trzeba zapytać pomoc Higgsfield na piśmie (zadanie w [[Zadania]]). Warunków dla efektów z Seed i Mirelo przez Higgsfield nie znaleziono.
+
+## Dźwięk wgrany do Roblox (17.11.2026)
+Karol zgodził się na wgranie pierwszej partii 17.11 ok. 09:05 („Tak wgrywaj. Potem najwyżej się zmieni”), a o 12:40 potwierdził drogę („tak przez folder modeli”). Wgrał agent Karola 17.11 o 12:43–12:50, na konto osoby zalogowanej w Studio (Karol); właścicielem gry jest inne konto.
+
+| Plik | Identyfikator zasobu |
+|---|---|
+| `assets/audio/arkusz/sfx_arkusz_a.ogg` (22 efekty walki w jednym pliku) | 93573204965127 |
+| `assets/audio/muzyka/muzyka_02_bazar_targ_petla.ogg` | 94425435537814 |
+| `assets/audio/muzyka/muzyka_03_bazar_rzemieslnicy_petla.ogg` | 116217836078354 |
+| `assets/audio/muzyka/muzyka_04_bazar_wieczor_petla.ogg` | 75722490819761 |
+| `assets/audio/muzyka/muzyka_05_las_a_petla.ogg` | 70497074484606 |
+| `assets/audio/muzyka/muzyka_05_las_b_petla.ogg` | 106582652985449 |
+
+- **Stan:** wszystkie sześć zasobów przyjęte, moderacja Roblox w toku w chwili wgrania. Rejestr: `assets/audio/wgrane.json`, zgoda z sumami kontrolnymi plików: `assets/audio/zgoda_wgrania.json`, identyfikatory w grze: `swiat/dzwiek_gra/identyfikatory.json`.
+- **Jak:** `tools/roblox_upload_audio.py wgraj-studio` — przez Roblox Studio, bo w repo nie ma klucza Open Cloud. Studio przyjmuje pliki tylko z folderów zatwierdzonych ręcznie przez człowieka; folder dźwięku nie jest zatwierdzony, więc każdy plik był na czas wgrania kopiowany do zatwierdzonego folderu wyników postaci i od razu usuwany. Taka droga wymaga wyraźnej zgody człowieka za każdym razem — ogólne „leć” nie wystarcza (system uprawnień odmówił o 12:20, zanim Karol potwierdził drogę).
+- **Limit:** Roblox liczy wgrania audio na miesiąc (10 bez weryfikacji tożsamości konta, 100 z weryfikacją). W listopadzie 2026 wykorzystane 6. Dlatego efekty są w jednym arkuszu granym odcinkami (`tools/audio_arkusz.py`).
+- **Do sprawdzenia:** czy gra ma prawo użyć tych zasobów — należą do konta Karola, a gra do innego konta, więc może być potrzebne udostępnienie każdego zasobu grze w Creator Hub. Muzyka menu nie jest wgrana (Karol nie wybrał wersji A albo B). Pytanie o prawa do muzyki przed publikacją gry zostaje otwarte (wyżej).

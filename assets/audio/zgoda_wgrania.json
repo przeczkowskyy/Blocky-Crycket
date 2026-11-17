@@ -1,0 +1,47 @@
+{
+  "opis": "Zgody ludzi na wgranie plików audio do Roblox. Wpis dotyczy dokładnie jednego pliku (sha256). Dodaje je tools/roblox_upload_audio.py zgoda — tylko po wyraźnym „tak” Karola albo Pawła.",
+  "zgody": [
+    {
+      "plik": "assets/audio/arkusz/sfx_arkusz_a.ogg",
+      "sha256": "7fe60bb9cf95a8de1bc3b102a658e42baa4521a86e5ed3bcf59019f6ac061e15",
+      "kto": "Karol",
+      "kiedy": "2026-11-17 09:08",
+      "dlugosc_s": 50.14
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_02_bazar_targ_petla.ogg",
+      "sha256": "092041bf24a975b15d4bcf39c15ab04b15e42587ace2da3621a92e2650ed9c36",
+      "kto": "Karol",
+      "kiedy": "2026-11-17 09:08",
+      "dlugosc_s": 85.72
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_03_bazar_rzemieslnicy_petla.ogg",
+      "sha256": "ed4765a1a4e7cf895a0a8fbdf7f007abfc3318f70f363b1bcc0616c3beb951f0",
+      "kto": "Karol",
+      "kiedy": "2026-11-17 09:08",
+      "dlugosc_s": 75.01
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_04_bazar_wieczor_petla.ogg",
+      "sha256": "6705e415e77f1652ac4a5bf35935da32d331a1d98ffe32624929ae0af5be18b5",
+      "kto": "Karol",
+      "kiedy": "2026-11-17 09:08",
+      "dlugosc_s": 80.99
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_05_las_a_petla.ogg",
+      "sha256": "700ff3316b3c1191c17917e593f3c5e8bc75407144bd845daaed9734bd313d09",
+      "kto": "Karol",
+      "kiedy": "2026-11-17 09:08",
+      "dlugosc_s": 78.25
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_05_las_b_petla.ogg",
+      "sha256": "3f3686eb999f7536a361af6e960b1fb8d643f5c526b7fa528467c6aea9277192",
+      "kto": "Karol",
+      "kiedy": "2026-11-17 09:08",
+      "dlugosc_s": 78.35
+    }
+  ]
+}

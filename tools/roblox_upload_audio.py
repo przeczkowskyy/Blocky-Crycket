@@ -5,6 +5,7 @@
     python -B tools/roblox_upload_audio.py plan                        # co jest do wgrania i ile zostało z limitu
     python -B tools/roblox_upload_audio.py zgoda --kto "Imię" --plik <plik> [--plik <plik> …]   # zapis zgody człowieka
     python -B tools/roblox_upload_audio.py wgraj <plik> --nazwa "<nazwa w Roblox>"
+    python -B tools/roblox_upload_audio.py wgraj-studio <plik> --nazwa "<nazwa>" [--poczekalnia]   # przez Studio, bez klucza
     python -B tools/roblox_upload_audio.py stan                        # ponowne sprawdzenie wgranych (moderacja)
 
 BEZPIECZNIK: `wgraj` odmawia, jeśli w assets/audio/zgoda_wgrania.json nie ma wpisu dla DOKŁADNIE tego pliku (sha256).
@@ -12,6 +13,8 @@ Wpis powstaje poleceniem `zgoda` dopiero po wyraźnym „tak” Karola albo Paw�
 wgrywanie modeli i materiałów nie obejmuje dźwięku. Wgranie jest nieodwracalne (plik trafia na konto i do moderacji),
 a Roblox liczy wgrania: 10 na miesiąc bez weryfikacji tożsamości konta, 100 z weryfikacją.
 
+Dwie drogi: `wgraj` używa klucza Open Cloud z .env, `wgraj-studio` idzie przez Roblox Studio na konto osoby w nim
+zalogowanej (tak wgrywane są modele; Studio przyjmuje pliki tylko z folderów zatwierdzonych przez człowieka).
 Formaty: mp3, ogg, wav, flac; do 7 minut i 20 MB. Wynik (identyfikator zasobu, stan moderacji) trafia do
 assets/audio/wgrane.json. Klucz i twórca są w .env (ROBLOX_API_KEY, ROBLOX_CREATOR_TYPE, ROBLOX_CREATOR_ID) —
 nigdy ich nie wypisujemy ani nie zapisujemy do plików w repozytorium.
@@ -187,6 +190,156 @@ def cmd_wgraj(a: argparse.Namespace) -> int:
     return 0 if wpis["assetId"] else 1
 
 
+KTO_LUAU = r'''
+local SS = game:GetService("StudioService")
+return game:GetService("HttpService"):JSONEncode({
+	placeId = game.PlaceId,
+	userId = SS:GetUserId(),
+	tenSamTworca = game.CreatorType == Enum.CreatorType.User and game.CreatorId == SS:GetUserId(),
+	tworcaGry = tostring(game.CreatorType),
+})
+'''
+
+
+def bez_liczb(tekst: str) -> str:
+    """Odpowiedź usługi do pokazania na ekranie: bez długich liczb (identyfikatory kont i zasobów)."""
+    import re
+    return re.sub(r"\d{6,}", "<liczba>", str(tekst or ""))[:400]
+
+
+def cmd_wgraj_studio(a: argparse.Namespace) -> int:
+    """Wgranie przez Roblox Studio (narzędzie MCP open_cloud_invoke) — bez klucza w .env, na konto osoby zalogowanej
+    w Studio; tak samo wgrywane są modele (swiat/postacie/roblox_import.py). Studio przyjmuje pliki tylko z folderów
+    zatwierdzonych przez człowieka (Assistant → Settings → MCP Permissions → approved upload directories). Opcja
+    --poczekalnia kopiuje plik na czas wgrania do zatwierdzonego folderu wyników postaci i usuwa kopię po wgraniu —
+    używać jej tylko dla plików, na których wgranie człowiek wyraźnie się zgodził (wpis `zgoda`)."""
+    import shutil
+    p = Path(a.plik)
+    blad = problem_pliku(p) or problem_zgody(p)
+    if blad:
+        print(json.dumps({"blad": "NIE WGRANO", "powod": blad}, ensure_ascii=False, indent=2))
+        return 3
+    rel, suma = wzgledna(p), sha256(p)
+    rejestr = wczytaj(WGRANE, {
+        "opis": "Pliki audio wgrane do Roblox (tools/roblox_upload_audio.py). Identyfikatory zasobów nie są tajne.",
+        "wgrane": []})
+    for w in rejestr["wgrane"]:
+        if w.get("plik") == rel and w.get("sha256") == suma:
+            if w.get("assetId"):
+                print(json.dumps({"juz_wgrany": w}, ensure_ascii=False, indent=2))
+                return 0
+            if w.get("etap") in ("wysylanie", "nieznane", "operacja") and not a.mimo_nieznanego:
+                print(json.dumps({"blad": "NIE WGRANO", "powod": "poprzednia próba wgrania tego pliku skończyła się "
+                                  "w stanie „%s” — nie wiadomo, czy zasób powstał. Sprawdź Creator Dashboard albo "
+                                  "polecenie `stan`; świadome ponowienie: --mimo-nieznanego" % w.get("etap")},
+                                 ensure_ascii=False, indent=2))
+                return 3
+    ile = wgrane_w_tym_miesiacu()
+    if ile >= LIMIT_MIESIAC_BEZ_WERYFIKACJI and not a.mimo_limitu:
+        print(json.dumps({"blad": "NIE WGRANO", "powod": "w tym miesiącu wgrano już %d plików (limit bez weryfikacji "
+                          "tożsamości: 10); jeśli konto jest zweryfikowane, dodaj --mimo-limitu" % ile},
+                         ensure_ascii=False, indent=2))
+        return 3
+
+    sys.path.insert(0, str(ROOT / "swiat" / "postacie"))
+    import roblox_import as RI  # noqa: E402  (rozbiór odpowiedzi Open Cloud, ten sam co przy modelach)
+    from studio_mcp import StudioMCP, StudioError, first_studio_id  # noqa: E402
+
+    def zapisz_wpis(**pola):
+        wpis = {"plik": rel, "sha256": suma, "nazwa": a.nazwa[:50], "droga": "studio",
+                "kiedy": dt.datetime.now().strftime("%Y-%m-%d %H:%M")}
+        wpis.update(pola)
+        rejestr["wgrane"] = [w for w in rejestr["wgrane"] if w.get("plik") != rel] + [wpis]
+        zapisz(WGRANE, rejestr)
+        return wpis
+
+    zrodlo, kopia = p.resolve(), None
+    if a.poczekalnia:
+        folder = ROOT / "swiat" / "postacie" / "wynik" / "_audio"
+        folder.mkdir(parents=True, exist_ok=True)
+        kopia = folder / p.name
+        shutil.copyfile(zrodlo, kopia)
+        zrodlo = kopia
+    try:
+        with StudioMCP() as s:
+            sid = first_studio_id(s)
+            if not sid:
+                sys.exit("Roblox Studio nie jest podłączone.")
+            r = None
+            for model_danych in ("Edit", "Server"):       # w trybie Play model Edit jest niedostępny
+                r = s.call("execute_luau", {"code": KTO_LUAU, "datamodel_type": model_danych, "studio_id": sid},
+                           timeout=120)
+                if not r["is_error"]:
+                    break
+            if r["is_error"]:
+                sys.exit("Studio nie odpowiedziało na pytanie o konto: %s" % bez_liczb(r["text"]))
+            kto = json.loads(r["text"])
+            if kto["placeId"] != RI.PLACE_ID:
+                sys.exit("To nie jest miejsce gry — nic nie wysłano.")
+            print("konto: zasób trafi na konto osoby zalogowanej w Studio; właściciel gry to ta sama osoba: %s (%s)"
+                  % ("tak" if kto["tenSamTworca"] else "NIE", kto["tworcaGry"].replace("Enum.CreatorType.", "")))
+
+            def chmura(metoda, endpoint, body=None, files=None, scopes=("asset:read",)):
+                arg = {"method": metoda, "endpoint": endpoint, "scopes": list(scopes), "studio_id": sid}
+                if body is not None:
+                    arg["body"] = json.dumps(body)
+                if files:
+                    arg["files"] = files
+                wynik = s.call("open_cloud_invoke", arg, timeout=300)
+                tekst = wynik["text"] or ""
+                kod, dane = RI.rozbierz_odpowiedz(tekst)
+                return kod, dane, tekst, bool(wynik["is_error"])
+
+            zapisz_wpis(etap="wysylanie")                      # BEZ tego zapisu nie wysyłamy
+            kod, dane, tekst, blad_post, wyjatek = 0, None, "", False, None
+            try:
+                kod, dane, tekst, blad_post = chmura("POST", "/assets/v1/assets", {"request": {
+                    "assetType": "Audio", "displayName": a.nazwa[:50], "description": a.opis or "Dźwięk do gry.",
+                    "creationContext": {"creator": {"userId": str(kto["userId"])}}}},
+                    files=[{"name": "fileContent", "path": str(zrodlo)}], scopes=("asset:read", "asset:write"))
+            except StudioError as e:
+                wyjatek = e
+            etap, op, opis = RI.ocen_wyslanie(kod, dane, tekst, wyjatek, blad_post)
+            if etap == "nie_wyslano":
+                rejestr["wgrane"] = [w for w in rejestr["wgrane"] if w.get("plik") != rel]
+                zapisz(WGRANE, rejestr)
+                print(json.dumps({"blad": "NIE WGRANO", "powod": "Studio odrzuciło plik: folder nie jest zatwierdzony do "
+                                  "wgrywania (approved upload directories). Nic nie wysłano."}, ensure_ascii=False, indent=2))
+                return 4
+            if etap == "odrzucone_zadanie":
+                zapisz_wpis(etap=etap, kod_http=kod)
+                print(json.dumps({"blad": "ODRZUCONE", "kod_http": kod, "odpowiedz": bez_liczb(tekst)},
+                                 ensure_ascii=False, indent=2))
+                return 1
+            if etap != "operacja":
+                zapisz_wpis(etap="nieznane", kod_http=kod)
+                print(json.dumps({"blad": "STAN NIEZNANY", "opis": opis, "odpowiedz": bez_liczb(tekst or wyjatek)},
+                                 ensure_ascii=False, indent=2))
+                return 2
+            wpis = zapisz_wpis(etap="operacja", operacja=op)
+            koniec = time.time() + a.limit_czasu
+            stan = {"gotowe": False, "asset": "", "moderacja": "", "blad": None}
+            while time.time() < koniec:
+                kod, dane, tekst, _ = chmura("GET", "/assets/v1/operations/%s" % op)
+                stan = RI.wynik_operacji(dane)
+                if stan["gotowe"] or stan["blad"]:
+                    break
+                time.sleep(4)
+            wpis = zapisz_wpis(etap="gotowe" if stan["asset"] else ("blad" if stan["blad"] else "operacja"),
+                               operacja=op, gotowe=bool(stan["gotowe"]), assetId=stan["asset"] or None,
+                               moderacja=stan["moderacja"] or None,
+                               blad=bez_liczb(json.dumps(stan["blad"], ensure_ascii=False)) if stan["blad"] else None)
+            print(json.dumps(wpis, ensure_ascii=False, indent=2))
+            return 0 if wpis.get("assetId") else 1
+    finally:
+        if kopia is not None:
+            try:
+                kopia.unlink()
+                kopia.parent.rmdir()
+            except OSError:
+                pass
+
+
 def cmd_stan(_: argparse.Namespace) -> int:
     rejestr = wczytaj(WGRANE, {"wgrane": []})
     zmiana = False
@@ -219,6 +372,17 @@ def main() -> int:
     w.add_argument("--limit-czasu", type=int, default=180)
     w.add_argument("--mimo-limitu", action="store_true", help="konto ma weryfikację tożsamości (limit 100 na miesiąc)")
     w.set_defaults(fn=cmd_wgraj)
+    ws = sub.add_parser("wgraj-studio", help="wgranie przez Roblox Studio (bez klucza w .env)")
+    ws.add_argument("plik")
+    ws.add_argument("--nazwa", required=True)
+    ws.add_argument("--opis", default="")
+    ws.add_argument("--limit-czasu", type=int, default=240)
+    ws.add_argument("--poczekalnia", action="store_true",
+                    help="skopiuj plik na czas wgrania do zatwierdzonego folderu wyników postaci")
+    ws.add_argument("--mimo-limitu", action="store_true", help="konto ma weryfikację tożsamości (limit 100 na miesiąc)")
+    ws.add_argument("--mimo-nieznanego", action="store_true",
+                    help="ponów mimo poprzedniej próby o nieznanym wyniku (może powstać drugi zasób)")
+    ws.set_defaults(fn=cmd_wgraj_studio)
     sub.add_parser("stan").set_defaults(fn=cmd_stan)
     a = ap.parse_args()
     return a.fn(a)

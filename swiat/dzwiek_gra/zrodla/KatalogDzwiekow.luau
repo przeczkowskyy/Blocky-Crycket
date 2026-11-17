@@ -13,9 +13,9 @@ end
 
 return {
 	wersja = 1,
-	skrot = "fe2ecb4a0c5e",
+	skrot = "8a83f8a1b49d",
 	arkusz = {
-		id = 0,
+		id = 93573204965127,
 		plik = "sfx_arkusz_a.ogg",
 		wariant = "A",
 		sha256 = "7fe60bb9cf95a8de1bc3b102a658e42baa4521a86e5ed3bcf59019f6ac061e15",
@@ -287,15 +287,15 @@ return {
 				utwory = {
 					{
 						nazwa = "muzyka_02_bazar_targ_petla",
-						id = 0,
+						id = 94425435537814,
 					},
 					{
 						nazwa = "muzyka_03_bazar_rzemieslnicy_petla",
-						id = 0,
+						id = 116217836078354,
 					},
 					{
 						nazwa = "muzyka_04_bazar_wieczor_petla",
-						id = 0,
+						id = 75722490819761,
 					},
 				},
 				kontener = "MiasteczkoBazar",
@@ -309,11 +309,11 @@ return {
 				utwory = {
 					{
 						nazwa = "muzyka_05_las_a_petla",
-						id = 0,
+						id = 70497074484606,
 					},
 					{
 						nazwa = "muzyka_05_las_b_petla",
-						id = 0,
+						id = 106582652985449,
 					},
 				},
 				kontener = "LasPas",

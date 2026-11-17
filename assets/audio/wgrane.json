@@ -1,0 +1,83 @@
+{
+  "opis": "Pliki audio wgrane do Roblox (tools/roblox_upload_audio.py). Identyfikatory zasobów nie są tajne.",
+  "wgrane": [
+    {
+      "plik": "assets/audio/arkusz/sfx_arkusz_a.ogg",
+      "sha256": "7fe60bb9cf95a8de1bc3b102a658e42baa4521a86e5ed3bcf59019f6ac061e15",
+      "nazwa": "Arkusz efektow walki A",
+      "droga": "studio",
+      "kiedy": "2026-11-17 12:43",
+      "etap": "gotowe",
+      "operacja": "fa7558e7-6d01-431f-be61-2316fb28b16d",
+      "gotowe": true,
+      "assetId": "93573204965127",
+      "moderacja": "Reviewing",
+      "blad": null
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_02_bazar_targ_petla.ogg",
+      "sha256": "092041bf24a975b15d4bcf39c15ab04b15e42587ace2da3621a92e2650ed9c36",
+      "nazwa": "Muzyka targ petla",
+      "droga": "studio",
+      "kiedy": "2026-11-17 12:43",
+      "etap": "gotowe",
+      "operacja": "9c42e413-76a6-4af3-a772-4cdfe660e477",
+      "gotowe": true,
+      "assetId": "94425435537814",
+      "moderacja": "Reviewing",
+      "blad": null
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_03_bazar_rzemieslnicy_petla.ogg",
+      "sha256": "ed4765a1a4e7cf895a0a8fbdf7f007abfc3318f70f363b1bcc0616c3beb951f0",
+      "nazwa": "Muzyka rzemieslnicy petla",
+      "droga": "studio",
+      "kiedy": "2026-11-17 12:43",
+      "etap": "gotowe",
+      "operacja": "6e52ea60-ed8e-47c9-ba9f-bae73c585b82",
+      "gotowe": true,
+      "assetId": "116217836078354",
+      "moderacja": "Reviewing",
+      "blad": null
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_04_bazar_wieczor_petla.ogg",
+      "sha256": "6705e415e77f1652ac4a5bf35935da32d331a1d98ffe32624929ae0af5be18b5",
+      "nazwa": "Muzyka wieczor petla",
+      "droga": "studio",
+      "kiedy": "2026-11-17 12:43",
+      "etap": "gotowe",
+      "operacja": "44043e7c-f1f2-42d0-8618-daf98e864b95",
+      "gotowe": true,
+      "assetId": "75722490819761",
+      "moderacja": "Reviewing",
+      "blad": null
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_05_las_a_petla.ogg",
+      "sha256": "700ff3316b3c1191c17917e593f3c5e8bc75407144bd845daaed9734bd313d09",
+      "nazwa": "Muzyka las A petla",
+      "droga": "studio",
+      "kiedy": "2026-11-17 12:43",
+      "etap": "gotowe",
+      "operacja": "e32b4821-730e-4287-a278-8201ae5c693a",
+      "gotowe": true,
+      "assetId": "70497074484606",
+      "moderacja": "Reviewing",
+      "blad": null
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_05_las_b_petla.ogg",
+      "sha256": "3f3686eb999f7536a361af6e960b1fb8d643f5c526b7fa528467c6aea9277192",
+      "nazwa": "Muzyka las B petla",
+      "droga": "studio",
+      "kiedy": "2026-11-17 12:43",
+      "etap": "gotowe",
+      "operacja": "e55d18b4-d69d-4c43-a0f6-9970f8cd6c6b",
+      "gotowe": true,
+      "assetId": "106582652985449",
+      "moderacja": "Reviewing",
+      "blad": null
+    }
+  ]
+}

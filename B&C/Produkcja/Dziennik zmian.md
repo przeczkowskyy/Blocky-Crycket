@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (dźwięk wgrany do Roblox)
+- **Wgrane sześć plików audio** na konto osoby zalogowanej w Studio (Karol), 17.11 o 12:43–12:50: arkusz 22 efektów walki, trzy utwory bazaru i dwa lasu. Identyfikatory zasobów są w [[Pipeline assetów]] (rozdział „Dźwięk wgrany do Roblox”), w `assets/audio/wgrane.json` i w `swiat/dzwiek_gra/identyfikatory.json`. Moderacja Roblox była w toku.
+- **Kto zdecydował:** Karol, 17.11 ok. 09:05 na czacie („Tak wgrywaj. Potem najwyżej się zmieni”) i o 12:40 („tak przez folder modeli”) — pliki szły przez zatwierdzony w Studio folder wyników postaci, kopiowane na chwilę i usuwane. Wcześniejszą próbę o 12:20 system uprawnień zatrzymał, bo ogólne „Leć wszystko” nie było zgodą na tę drogę.
+- **Niezrobione:** kontener `Workspace/DzwiekGra` w Studio ma jeszcze stare, puste identyfikatory (okno Studio zajmowała próba przejścia gry) — do tego czasu grają dźwięki wbudowane. Nie sprawdzono, czy gra ma prawo użyć zasobów z konta Karola (gra należy do innego konta). Muzyka menu niewgrana.
+- Limit wgrań audio w listopadzie: wykorzystane 6 z 10 (konto bez weryfikacji tożsamości).
+- Pliki: `tools/roblox_upload_audio.py`, `assets/audio/{wgrane,zgoda_wgrania}.json`, `swiat/dzwiek_gra/identyfikatory.json`, `swiat/dzwiek_gra/zrodla/KatalogDzwiekow.luau`; notatki [[Pipeline assetów]], [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (Training Center w Studio)
 - **Training Center na próbę działa w grze** (`Workspace/TreningProba`, `swiat/trening_proba/`): Siła „Rozbijanie” (rozbijanie lecących skrzynek strzałką w ich stronę — przykład Pawła z D-063) i Pancerz „Blok” (blok w chwili uderzenia golema, ze zmyłką; D-074). Wejście: E przy trenerze w bazarze albo przy tablicy obok startu; wybór mini-gry jest tymczasowy, bo okno 2D robi Paweł (D-093). Cztery pozostałe mini-gry są tylko w projekcie (`PROJEKT.md`, propozycja).
 - **Próba w grze:** 14 z 14 punktów przy 60 klatkach na sekundę (16,7 ms średnio). O przyrostach decyduje serwer: z 60 kliknięć naraz odrzucił 56 i pasek nie urósł. Runda bez pudła daje ok. 3 punkty świeżej statystyki (wzór z kalkulatora balansu, pytanie 50). Przyrost zapisuje się na razie tylko na czas sesji.
