@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (decyzja D-095: arena walki zmienia się z biomem)
+- **Decyzja Karola**, 17.11 ok. 15:10 na czacie, w odpowiedzi na wybór 5 z raportu o Bagnie: „Tak, arena walki musi zmieniać się z biomem. Tak w ogóle to dopracowałbym dużo lepiej tę arenę walki, żeby background też był dopracowany.” Zapisana jako **D-095** (zdecydował: Karol 2026-11-17); czeka na potwierdzenie Pawła.
+- Karol poprosił też o dalszą pracę i o więcej raportów i modeli. W panelu doszły raporty „Pięć potworów Bagna: modele i liczby” i „Broń nie wchodzi już w głowę ani tułów: kontrola wszystkich klipów”; ruszyła budowa aren (`swiat/areny_walki/`).
+- Notatki: [[Rejestr decyzji]], [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (Bagno w Studio; przenikanie broni w animacjach)
 - **Bagno stoi w Studio jako drugi biom** — na zlecenie Karola z 17.11 („Leć wszystko”); plan Bagna zostaje propozycją, a całość jest w osobnych kontenerach `Workspace/BagnoPas` (mapa, 9017 części) i `Workspace/BagnoPasGra`. Usunięto zapowiedź `LasPas/ZapowiedzBagna` (49 części, własnym skryptem z punktami historii).
 - **Ten sam kod co las:** pakiet `swiat/bagno_pas_gra/` daje tylko dane i konfigurację; kod lasu-pasa został uogólniony tak, że las bez Bagna zachowuje się jak dotąd (dane potworów lasu bajt w bajt te same). Brama lasu po Strażniku Gaju prowadzi do Bagna, teleport przez chmury pokazuje Bagno graczowi, który pokonał Strażnika lasu (jedno źródło: stan bramy lasu), przy bramie pilnuje zawsze jeden serwer.
