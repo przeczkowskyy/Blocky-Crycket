@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T19:11:48+01:00",
+ "aktualizacja": "2026-11-17T19:11:52+01:00",
  "prace": [
   {
    "id": "jajko-bagna",
@@ -74,9 +74,9 @@
    "id": "przebudowa-palkus",
    "tytul": "Przebudowa modelu palkus",
    "stan": "w_toku",
-   "start": "2026-11-17T19:11:31+01:00",
-   "koniec_szacowany": "2026-11-17T19:31:31+01:00",
-   "aktualizacja": "2026-11-17T19:11:31+01:00",
+   "start": "2026-11-17T19:11:52+01:00",
+   "koniec_szacowany": "2026-11-17T19:31:52+01:00",
+   "aktualizacja": "2026-11-17T19:11:52+01:00",
    "obszary": [
     "model:palkus"
    ],
