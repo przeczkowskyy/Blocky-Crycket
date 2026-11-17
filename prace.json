@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T19:11:24+01:00",
+ "aktualizacja": "2026-11-17T19:11:28+01:00",
  "prace": [
   {
    "id": "jajko-bagna",
@@ -14,6 +14,19 @@
    "obszary": [
     "swiat/pety_proba",
     "studio:PetyProba"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "przebudowa-jajko_bagienne",
+   "tytul": "Przebudowa modelu jajko_bagienne",
+   "stan": "w_toku",
+   "start": "2026-11-17T19:11:28+01:00",
+   "koniec_szacowany": "2026-11-17T19:31:28+01:00",
+   "aktualizacja": "2026-11-17T19:11:28+01:00",
+   "obszary": [
+    "model:jajko_bagienne"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
