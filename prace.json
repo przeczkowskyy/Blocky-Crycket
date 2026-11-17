@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T08:09:26+01:00",
+ "aktualizacja": "2026-11-17T08:09:29+01:00",
  "prace": [
   {
    "id": "balans-1711",
@@ -57,6 +57,26 @@
    "obszary": [
     "swiat/trening_proba/**",
     "studio:TreningProba"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "walka-poprawki",
+   "tytul": "Walka: poprawki po nocy i podpięcie własnych dźwięków",
+   "stan": "w_toku",
+   "start": "2026-11-17T08:09:29+01:00",
+   "koniec_szacowany": "2026-11-17T11:30:00+01:00",
+   "aktualizacja": "2026-11-17T08:09:29+01:00",
+   "obszary": [
+    "swiat/test_walki2/**",
+    "swiat/las_pas_gra/**",
+    "swiat/las_potwory/**",
+    "swiat/dzwiek_gra/**",
+    "studio:TestWalki2",
+    "studio:LasPasGra",
+    "studio:LasPotwory",
+    "studio:DzwiekGra"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
