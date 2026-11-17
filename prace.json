@@ -2,22 +2,8 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T14:54:57+01:00",
+ "aktualizacja": "2026-11-17T14:55:00+01:00",
  "prace": [
-  {
-   "id": "bron-przenikanie",
-   "tytul": "Liczbowa kontrola przenikania broni w animacjach",
-   "stan": "w_toku",
-   "etap": "Gotowe bez Studio (0 przenikań), wdrożenie ze wspólną próbą",
-   "start": "2026-11-17T12:22:34+01:00",
-   "koniec_szacowany": "2026-11-17T18:30:00+01:00",
-   "aktualizacja": "2026-11-17T14:07:32+01:00",
-   "obszary": [
-    "swiat/postacie/przenikanie"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
   {
    "id": "poprawki-przejscia",
    "tytul": "Poprawki po przejściu gry: wskazówka celu, teksty, chmury, bazar, trening",
