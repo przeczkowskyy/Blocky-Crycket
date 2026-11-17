@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T17:23:43+01:00",
+ "aktualizacja": "2026-11-17T17:23:47+01:00",
  "prace": [
   {
    "id": "areny-walki",
@@ -55,6 +55,19 @@
    "aktualizacja": "2026-11-17T17:23:40+01:00",
    "obszary": [
     "model:mchowy_slimak"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "przebudowa-swietlikowka",
+   "tytul": "Przebudowa modelu swietlikowka",
+   "stan": "w_toku",
+   "start": "2026-11-17T17:23:47+01:00",
+   "koniec_szacowany": "2026-11-17T17:43:47+01:00",
+   "aktualizacja": "2026-11-17T17:23:47+01:00",
+   "obszary": [
+    "model:swietlikowka"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
