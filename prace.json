@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T23:50:33+01:00",
+ "aktualizacja": "2026-11-17T23:50:45+01:00",
  "prace": [
   {
    "id": "noc-balans",
@@ -71,19 +71,6 @@
    "obszary": [
     "swiat/trening_proba",
     "studio:TreningProba"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "przebudowa-pancernik_ruin",
-   "tytul": "Przebudowa modelu pancernik_ruin",
-   "stan": "w_toku",
-   "start": "2026-11-17T23:50:33+01:00",
-   "koniec_szacowany": "2026-11-18T00:10:33+01:00",
-   "aktualizacja": "2026-11-17T23:50:33+01:00",
-   "obszary": [
-    "model:pancernik_ruin"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
