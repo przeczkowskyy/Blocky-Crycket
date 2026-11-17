@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T13:37:00+01:00",
+ "aktualizacja": "2026-11-17T13:37:03+01:00",
  "prace": [
   {
    "id": "bagno-gra",
@@ -52,10 +52,10 @@
    "id": "stan-gracza",
    "tytul": "Mapa stanu gracza między systemami gry (klasa, poziom, złoto, trening)",
    "stan": "w_toku",
-   "etap": "Budowa: łup i awans po walce, bohater z danych gracza (bez Studio)",
+   "etap": "Gotowe do wdrożenia, czeka na Studio",
    "start": "2026-11-17T12:22:25+01:00",
-   "koniec_szacowany": "2026-11-17T15:00:00+01:00",
-   "aktualizacja": "2026-11-17T12:39:42+01:00",
+   "koniec_szacowany": "2026-11-17T16:00:00+01:00",
+   "aktualizacja": "2026-11-17T13:37:03+01:00",
    "obszary": [
     "swiat/stan_gracza"
    ],
