@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T23:59:15+01:00",
+ "aktualizacja": "2026-11-17T23:59:17+01:00",
  "prace": [
   {
    "id": "noc-dzungla",
@@ -38,9 +38,10 @@
    "id": "noc-pety",
    "tytul": "Noc: pety z różnymi premiami i żywiołami",
    "stan": "w_toku",
+   "etap": "Wdrożenie w Studio: skille i żywioły petów",
    "start": "2026-11-17T23:12:46+01:00",
-   "koniec_szacowany": "2026-11-18T03:12:46+01:00",
-   "aktualizacja": "2026-11-17T23:12:46+01:00",
+   "koniec_szacowany": "2026-11-18T00:40:00+01:00",
+   "aktualizacja": "2026-11-17T23:59:17+01:00",
    "obszary": [
     "swiat/pety_proba",
     "studio:PetyProba"
