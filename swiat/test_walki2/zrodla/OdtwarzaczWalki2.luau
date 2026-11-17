@@ -1909,6 +1909,13 @@ function Sesja:proponujUjecie(uj)
 	-- atak po ujęciu jednej postaci (umiejętność na siebie, efekt) nie może zostać w tym ujęciu: atakujący byłby
 	-- poza kadrem — taki atak zawsze dostaje swoje ujęcie (najwyżej z płynnym przejściem)
 	local jednaPostac = self.kam.uj and (self.kam.uj.typ == "naSiebie" or self.kam.uj.typ == "efekt")
+	-- to samo po zbliżeniu na broniącego, gdy teraz bije właśnie on: zbliżenie pokazuje tylko jego miejsce stania,
+	-- więc po doskoku zostawał w kadrze sam atakujący, a cel był poza kadrem (Studio 17.11.2026, długa walka —
+	-- zwykłe ujęcia są tam pomijane co drugie, więc stare zbliżenie zostawało na następny atak)
+	if not jednaPostac and self.kam.uj and self.kam.uj.typ == "zblizenie" and uj.broniacy ~= nil
+		and self.kam.uj.broniacy ~= uj.broniacy then
+		jednaPostac = true
+	end
 	local wymuszone = jednaPostac and uj.ev ~= nil and uj.ev.atak == true
 	if uj.prio < 2 and not wymuszone then
 		local minimum = MIN_UJECIA * (if self.tempo >= 2 then 1.6 else 1) * (if dluga then 1.5 else 1)

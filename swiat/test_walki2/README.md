@@ -238,6 +238,8 @@ zachowanie zdalnej funkcji i mostka w Play, kompilator Luau i typy (interpreter 
 5. Play, `testy/test_v3_play.py`: przebieg ze zrzutami o 02:57 **44/46**; końcowy przebieg o 03:47 na ostatecznym
    kodzie (`--bez-zrzutow`, `testy/wynik_v3.json`) **43/46** — dodatkowy BŁĄD „telefon 844 × 390: walka” to baner
    „WALKA!” zmierzony w połowie animacji wejścia (skala 0,3 → 1 w 0,28 s; 7 pkt) — chwila pomiaru, nie stały napis.
+   Po dwóch poprawkach z 04:00 (kadr po zbliżeniu, nazwa za portretem — niżej) pełny przebieg o 04:05
+   (`--bez-zrzutow`, obecny `testy/wynik_v3.json`): **44/46**, nie przechodzi tylko panel wyboru na telefonie.
    Pomijanie P1–P8 i nowe P8b OK (pierwsza walka
    bez przycisku i z „PIERWSZE SPOTKANIE — BEZ POMIJANIA”, spacja i oszustwo z klienta odrzucone, wymuszony pokaz bez
    zgody = JESZCZE RAZ z odliczaniem, druga walka z przyciskiem i gracz wolny od razu, inny gatunek znów bez
@@ -255,7 +257,8 @@ zachowanie zdalnej funkcji i mostka w Play, kompilator Luau i typy (interpreter 
    tury). Prawdopodobnie klatka 66,7 ms pod zaciemnieniem (ok. 1 klatka narzutu na zdarzenie) — „?” do sprawdzenia
    przy zwykłym ekranie. Pierwszy przebieg miał też BŁĄD 1a (E przy tablicy) — błąd próby (kamera po ekranie wyboru
    klasy patrzyła obok tablicy), poprawione w `sesja_play.py`.
-7. `testy/test_poprawek_play.py` (`testy/wynik_poprawek.json`): **24/27**. Część „zero” (−0 przy pełnej tarczy) nie
+7. `testy/test_poprawek_play.py` (`testy/wynik_poprawek.json`): **24/27**, po poprawce kadru z 04:00 **25/27**
+   (długa walka: 24 trafienia w kadrze; zostają dwa pierwsze punkty z listy niżej). Część „zero” (−0 przy pełnej tarczy) nie
    dotyczy v3 — tarcza procentowa: w 17 955 walkach (3 klasy × 5 potworów × poziomy 1/5/10 × ziarna 1–399) nie ma
    trafienia 0 z pochłonięciem; ziarna z v2 rzucały wyjątkiem (`IndexError`), teraz część to pomija z wpisem w
    konsoli. Trzy BŁĘDY kadru (powtarzalne, kod kamery bez zmian od v2 — inne ziarna v3):
@@ -266,7 +269,7 @@ zachowanie zdalnej funkcji i mostka w Play, kompilator Luau i typy (interpreter 
    - długa walka, zd. 24 (unik slime'a przed Wojownikiem, ujęcie „zbliżenie”): **slime'a nie ma w kadrze** (0%) —
      kamera trzyma zbliżenie na miejscu celu, a Wojownik po doskoku wypełnia kadr. Zrzut
      `klatki/v3_kadr_unik_bez_celu.jpg`. Próba wyłączenia zbliżenia dla zdarzeń „unik” nic nie dała (ujęcie zostaje
-     z poprzedniego zdarzenia) i została cofnięta — do poprawki w choreografii kamery.
+     z poprzedniego zdarzenia) i została cofnięta. **Naprawione o 04:00** — patrz „Poprawione po Studio”, p. 3.
 8. `testy/telefon.py` (zrzuty poza repozytorium): walka i panel wyniku na 844 × 390 i 667 × 375 ≥ 12 pkt (stopka
    wyniku 10 pkt — dozwolona); **panel wyboru: 5 napisów < 12 pkt** (te same co w p. 5).
 9. Lasy na v3 z pomijaniem: las-pas 17 × OK + P14 „?” (`swiat/las_pas_gra/README.md`), stary las 5/5
@@ -285,6 +288,17 @@ zachowanie zdalnej funkcji i mostka w Play, kompilator Luau i typy (interpreter 
 2. `InterfejsWalki2` / `WyborWalki2`: `string.upper` nie zmienia polskich liter („STRAżNIK GAJU” w panelu wyboru,
    tak samo tytuły karteczek pasywek „OGNISTA RóżDżKA” i wstęga „UśCISK KORZENI”; w kadrze walki font komiksowy
    rysuje same wielkie litery, więc było to widać głównie w panelu). Nowa funkcja `Interfejs.wielkie`.
+3. `OdtwarzaczWalki2.proponujUjecie` (04:00): **cel poza kadrem po zbliżeniu**. W długiej walce (tura > 12) zwykłe
+   ujęcia są pomijane co drugie, a krótsze niż `MIN_UJECIA` w ogóle — kamera zostawała więc w zbliżeniu na
+   broniącego także wtedy, gdy następny atak wyprowadzał właśnie on. Zbliżenie pokazuje tylko jego miejsce stania,
+   więc po doskoku kadr wypełniał sam atakujący, a cel był poza kadrem. Teraz atak po zbliżeniu na **inną** postać
+   niż nowy cel zawsze dostaje swoje ujęcie (z płynnym przejściem) — ta sama zasada, która od v2 obowiązuje po
+   ujęciach jednej postaci („naSiebie”, „efekt”). Sprawdzone: `test_poprawek_play.py --tylko kadr` — długa walka
+   24 trafienia i najdłuższa 49 trafień w kadrze.
+4. `InterfejsWalki2._zbudujTabliczke` (04:00): wyższa tabliczka v3 = większy portret, który **zasłaniał ostatni
+   znak nazwy przeciwnika** („POZ. 10” czytało się jak „POZ. 1”). Nazwa zaczyna się teraz za portretem (0,24 / 0,76
+   szerokości tabliczki zamiast 0,2 / 0,8). Zrzuty `v3_pomijanie_*` i `v3_telefon_667x375_*` zrobione po poprawce;
+   pozostałe zrzuty `v3_*` są sprzed niej (poziom przeciwnika częściowo pod portretem).
 
 **Poprawione w testach** (nie w grze): `test_v3_play.py` — P4 dostawał `za_szybko` (limit serwera 0,2 s tuż po P3)
 → przerwa 0,3 s; część „mana” czeka na koniec sesji walki P7 (wcześniej „walka nie wystartowała”); pomiar panelu na
@@ -303,21 +317,20 @@ znaczkiem ×3, „TRUCIZNA ×3”), `blok_wojownik` (tarcza, „BLOK −75%”),
 `wskrzeszenie_obu` (słup złotego światła, „WSKRZESZENIE!”, „+213”, szare pióro gracza i złote przeciwnika),
 `las_pas_walka` (walka ze slime'em z lasu-pasa na arenie prototypu, paski many obu stron), `las_pas_pominiecie`
 (druga walka z gatunkiem: przycisk POMIŃ, baner „WALKA!”), `las_stary_walka` (stary las: Zwiadowca kontra Strażnik
-Gaju, „KRYTYK!”, ranga STRAŻNIK), `kadr_unik_bez_celu` (błąd kadru z p. 7), `telefon_667x375_panel` (drobne nazwy
+Gaju, „KRYTYK!”, ranga STRAŻNIK), `kadr_unik_bez_celu` (błąd kadru z p. 7 — stan sprzed poprawki), `telefon_667x375_panel` (drobne nazwy
 przeciwników) / `_walka`. Pozostałe zrzuty `test_v3_play.py` (statusy, bloki potworów, wskrzeszenia osobno) usunięte
 z repozytorium — skrypt robi je przy każdym przebiegu.
 
 **Niesprawdzone / słabe miejsca:** prawdziwy telefon i dotyk; dwóch graczy; koszt klatki przy normalnym ekranie
-(wszystkie progi czasowe liczone przy 15 kl./s); panel wyboru na telefonie (p. 5, 8); kadr przy uniku (p. 7);
-podpowiedź na tablicy i tytuł panelu mają dalej napis „Walka v2”.
+(wszystkie progi czasowe liczone przy 15 kl./s); panel wyboru na telefonie (p. 5, 8); dwa graniczne kadry z p. 7
+(uderzenie z góry, uścisk korzeni); podpowiedź na tablicy i tytuł panelu mają dalej napis „Walka v2”.
 
 **Wybory do decyzji z wdrożenia:**
 1. **Panel wyboru prototypu na telefonie: jak zmieścić 6 przeciwników?**
    - Dziś: jeden rząd 6 przycisków — nazwy 10–11 pkt na 667 × 375.
    - Opcja A: dwa rzędy po 3 (ikona z lewej, nazwa obok; ok. 2× szerzej).
    - Opcja B: zostawić (panel to narzędzie prób, nie ekran gry).
-2. **Unik w zbliżeniu: kamera ma śledzić cel czy przechodzić na ujęcie boczne?** (p. 7) — do decyzji przy
-   choreografii kamery.
+2. ~~Unik w zbliżeniu~~ — naprawione o 04:00 („Poprawione po Studio”, p. 3), bez decyzji.
 
 ## Jak obejrzeć (krok po kroku)
 

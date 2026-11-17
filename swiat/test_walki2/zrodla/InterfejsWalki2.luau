@@ -428,7 +428,9 @@ function Interfejs:_zbudujTabliczke(strona: string)
 		Rotation = if lewa then -4 else 4, ZIndex = 14,
 	}, 4, 0.16, false)
 	local nazwa = self:_tekst(t, {
-		Name = "Nazwa", AnchorPoint = Vector2.new(ax, 0), Position = UDim2.fromScale(if lewa then 0.2 else 0.8, -0.02),
+		-- v3: wyższa tabliczka = większy portret (0,215 szerokości tabliczki + obrót i obrys); nazwa zaczyna się za nim,
+		-- inaczej portret zasłaniał ostatni znak poziomu przeciwnika („POZ. 10” czytało się jak „POZ. 1”)
+		Name = "Nazwa", AnchorPoint = Vector2.new(ax, 0), Position = UDim2.fromScale(if lewa then 0.24 else 0.76, -0.02),
 		Size = UDim2.fromScale(0.78, 0.4), Font = NAGLOWKI, TextColor3 = K.bialy,
 		TextXAlignment = if lewa then Enum.TextXAlignment.Left else Enum.TextXAlignment.Right, Text = "", ZIndex = 13,
 	}, 3.5)

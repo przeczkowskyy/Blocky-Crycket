@@ -1,6 +1,6 @@
 {
- "data": "2026-11-17 03:40",
- "wynik": "24/27",
+ "data": "2026-11-17 04:06",
+ "wynik": "25/27",
  "testy": [
   {
    "test": "kadr ciecie (wojownik/lesny_slime/1, zd. 7, wrecz)",
@@ -40,7 +40,7 @@
   {
    "test": "kadr rozszarpanie (wojownik/cierniowy_wilk/1, zd. 5, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.72 | cel w kadrze 0.68 odsł. 0.68"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.73 | cel w kadrze 0.66 odsł. 0.66"
   },
   {
    "test": "kadr chmura_zarodnikow (wojownik/muchomornik/1, zd. 5, chmura)",
@@ -50,17 +50,17 @@
   {
    "test": "kadr ogluszajace_uderzenie (wojownik/lesny_troll/1, zd. 6, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.81 | cel w kadrze 0.69 odsł. 0.69"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.82 | cel w kadrze 0.72 odsł. 0.72"
   },
   {
    "test": "kadr uscisk_korzeni (mag/straznik_lasu/1, zd. 8, w_klipie)",
    "ok": false,
-   "opis": "τ=trafienie+0.00 boczny: atak w kadrze 1.00 odsł. 0.97 | cel w kadrze 1.00 odsł. 0.38"
+   "opis": "τ=trafienie+0.00 boczny: atak w kadrze 1.00 odsł. 0.97 | cel w kadrze 1.00 odsł. 0.42"
   },
   {
    "test": "kadr dluga: 24 trafień (wojownik/lesny_slime/1)",
-   "ok": false,
-   "opis": "zd. 24 unik : zblizenie: atak w kadrze 0.98 odsł. 0.98 | cel w kadrze 0.00 odsł. 0.00"
+   "ok": true,
+   "opis": ""
   },
   {
    "test": "kadr najdluzsza: 49 trafień (wojownik/straznik_lasu/10)",
