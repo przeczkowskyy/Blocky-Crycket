@@ -238,7 +238,7 @@ function Okno:pokaz(stan)
 	end
 	-- zestawy i dawny wygląd
 	local z = self:_wiersz("Zestawy", 2 + #stan.oferta)
-	local ile = #D.zestawyOkna + 1
+	local ile = #D.zestawyOkna + (if stan.bezDawnego then 0 else 1) -- bez „Dawny wygląd” przy kowalu (swiat/kowal_proba)
 	for i, id in D.zestawyOkna do
 		local nazwa = T["zestaw_" .. id]
 		for _, x in D.klasy[stan.klasa].zestawy do
@@ -251,9 +251,11 @@ function Okno:pokaz(stan)
 			op.naZestaw(id)
 		end)
 	end
-	self:_przycisk(z, "Dawny", T.dawny, (ile - 1) / ile, 1 / ile, stan.stroj == nil, function()
-		op.naDawny()
-	end)
+	if not stan.bezDawnego then
+		self:_przycisk(z, "Dawny", T.dawny, (ile - 1) / ile, 1 / ile, stan.stroj == nil, function()
+			op.naDawny()
+		end)
+	end
 	-- ruch podglądu: poprzedni, nazwa, następny, zagraj, wszystkie
 	local r = self:_wiersz("Ruch", 3 + #stan.oferta)
 	self:_przycisk(r, "Poprzedni", "<", 0, 0.1, false, function()

@@ -1,0 +1,153 @@
+{
+ "czas": "2026-11-18 00:38",
+ "punkty": [
+  {
+   "punkt": "K00",
+   "wynik": "OK",
+   "opis": "kontenery {'stroje': True, 'kowal': True, 'stan': True, 'las': True, 'mod': True, 'dane': True, 'czesci': 332, 'skrot': '12e477ded67a', 'bazar': True, 'wydaj': True}; skrót 12e477ded67a (lokalnie 12e477ded67a)"
+  },
+  {
+   "punkt": "K01",
+   "wynik": "OK",
+   "opis": "klient {'animowany': True, 'gotowy': True}; serwer {'StanGraczaPodlaczony': True, 'SerwerKowalaGotowy': True, 'SkrotSerwera': '12e477ded67a', 'ZgodnoscLogikiKowala': 'OK 161/161', 'PodpowiedziWlaczone': 1} (przypadków w danych 134)"
+  },
+  {
+   "punkt": "K02",
+   "wynik": "OK",
+   "opis": "klasa wojownik, dostępne rycerz_miecz,rycerz_tarcza,rycerz_zbroja, strój rycerz_zbroja,rycerz_nogawice,rycerz_miecz,rycerz_tarcza, źródła ['kowal', 'szczescie_poczatkujacego'], broń 12 / pancerz 4.5 (wzór L1: 12 / 4.5)"
+  },
+  {
+   "punkt": "K03",
+   "wynik": "OK",
+   "opis": "zrzuty kuźni z 5 stron i kowala przy kowadle → klatki/"
+  },
+  {
+   "punkt": "K04",
+   "wynik": "OK",
+   "opis": "okno True, wierszy 7 (klasa ma 7 przedmiotów)"
+  },
+  {
+   "punkt": "K05",
+   "wynik": "OK",
+   "opis": "haczyk: {'ok': True, 'lup': {'id': 'rycerz_helm', 'nowy': True}}, napis „Nowy przedmiot: Hełm Rycerza! Założony.”; prawdziwa droga: przedmiot po 1 wygranych (przyrost tokenów)"
+  },
+  {
+   "punkt": "K06",
+   "wynik": "?",
+   "opis": "wpis kowala {'ok': True, 'statystyki': {'Constitution': 1}, 'pasywki': [], 'procent': {'Dexterity': 0.75, 'Luck': 0.75, 'Constitution': 0.75, 'Armor': 0.75, 'Strength': 0.75, 'Intelligence': 0.75}, 'lup': {'doswiadczenie': 0, 'zloto': 0}, 'tarcza': 0, 'bron': 0, 'pancerz': 2, 'zrodla': ['kowal', 'szczescie_poczatkujacego']} (oczekiwany {'pancerz': 2, 'statystyki': {'Constitution': 1}}); bohater: broń 12, pancerz 6.5; walka w lesie: None"
+  },
+  {
+   "punkt": "K07",
+   "wynik": "OK",
+   "opis": "materiały 0 → 3 (zapas rycerz_miecz)"
+  },
+  {
+   "punkt": "K08",
+   "wynik": "OK",
+   "opis": "rycerz_miecz +0 → +1; Złoto 50 (oczekiwane 50), materiały 2 (oczekiwane 2), klip radości True"
+  },
+  {
+   "punkt": "K09",
+   "wynik": "OK",
+   "opis": "za mało Złota: Brakuje ci 300 Złota.; za mało materiałów: Brakuje ci 2 materiałów — rozbierz zapasowe przedmioty z walk.; obcy przedmiot: nieznany_przedmiot; daleko: daleko; Złoto 5000"
+  },
+  {
+   "punkt": "K10",
+   "wynik": "OK",
+   "opis": "przedmioty i materiały bez zmian: True; wpis kowala: True; okno: True"
+  },
+  {
+   "punkt": "K11",
+   "wynik": "OK",
+   "opis": "nieposiadany rycerz_rekawice: nie_masz; dawny wygląd: dawny_niedostepny"
+  },
+  {
+   "punkt": "K12",
+   "wynik": "OK",
+   "opis": "tekst 12 pt, okno {'lewo': 0.23988006606749143, 'gora': 0.41917632500813096, 'dol': 0.93138293277049, 'prawo': 0.758620699967081}"
+  },
+  {
+   "punkt": "K13",
+   "wynik": "OK",
+   "opis": "wiersze konsoli o kowalu: 0"
+  }
+ ],
+ "dane": {
+  "K02": {
+   "gracz": {
+    "dostepne": "rycerz_miecz,rycerz_tarcza,rycerz_zbroja",
+    "stroj": "rycerz_zbroja,rycerz_nogawice,rycerz_miecz,rycerz_tarcza",
+    "poziom": 1,
+    "klasa": "wojownik",
+    "materialy": 0,
+    "zloto": 0
+   },
+   "mody": {
+    "bohater": {
+     "statystyki": {
+      "inteligencja": 2,
+      "zrecznosc": 3,
+      "szczescie": 3,
+      "kondycja": 8,
+      "pancerz": 7,
+      "sila": 7
+     },
+     "pancerz_przedmiotow": 4.5,
+     "klasa": "wojownik",
+     "pet": {
+      "inteligencja": 0.75,
+      "zrecznosc": 0.75,
+      "szczescie": 0.75,
+      "kondycja": 0.75,
+      "pancerz": 0.75,
+      "sila": 0.75
+     },
+     "poziom": 1,
+     "umiejetnosci": [
+      "ciecie"
+     ],
+     "tarcza": {
+      "blok": 0.2828
+     },
+     "bron": {
+      "obrazenia": 12
+     },
+     "nazwa": "Wojownik"
+    },
+    "mod": {
+     "ok": true,
+     "statystyki": [],
+     "pasywki": [],
+     "procent": {
+      "Dexterity": 0.75,
+      "Luck": 0.75,
+      "Constitution": 0.75,
+      "Armor": 0.75,
+      "Strength": 0.75,
+      "Intelligence": 0.75
+     },
+     "lup": {
+      "doswiadczenie": 0,
+      "zloto": 0
+     },
+     "tarcza": 0,
+     "bron": 0,
+     "pancerz": 0,
+     "zrodla": [
+      "kowal",
+      "szczescie_poczatkujacego"
+     ]
+    }
+   }
+  },
+  "K06_cel": {
+   "id": "s1-1",
+   "p": [
+    1190.176025390625,
+    0,
+    -694.3854370117188
+   ]
+  },
+  "K06_walcz": "true"
+ }
+}

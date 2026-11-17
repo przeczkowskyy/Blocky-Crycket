@@ -311,14 +311,43 @@ local function ustawKlase(k)
 	end
 end
 
+-- 18.11.2026 (swiat/kowal_proba, D-102): przy działającym kowalu na próbę (kontener KowalProba i atrybut gracza
+-- KowalDostepne od jego serwera) okno pokazuje tylko posiadane przedmioty i chowa „Dawny wygląd” (serwer i tak
+-- sprawdza to samo); bez kowala — pełna oferta jak dawniej
+local function ofertaGracza(klasa)
+	local oferta = L.oferta(D, klasa)
+	local v = gracz:GetAttribute("KowalDostepne")
+	if not workspace:FindFirstChild("KowalProba") or type(v) ~= "string" then
+		return oferta, false
+	end
+	local zb = {}
+	for _, id in L.zNapisu(v) or {} do
+		zb[id] = true
+	end
+	local w = {}
+	for _, s in oferta do
+		local ids = {}
+		for _, id in s.przedmioty do
+			if zb[id] then
+				table.insert(ids, id)
+			end
+		end
+		if #ids > 0 then
+			table.insert(w, { slot = s.slot, nazwa = s.nazwa, przedmioty = ids })
+		end
+	end
+	return w, true
+end
+
 function odswiezOkno()
 	if not stan.okno then
 		return
 	end
 	local lista = ruchy(stan.klasa)
 	stan.ruch = math.clamp(stan.ruch, 1, math.max(1, #lista))
-	stan.okno:pokaz({ klasa = stan.klasa, oferta = L.oferta(D, stan.klasa), stroj = Ubieranie.strojGracza(gracz, stan.klasa),
-		ruch = lista[stan.ruch] and (D.nazwyRuchow[lista[stan.ruch]] or lista[stan.ruch]) })
+	local oferta, tylkoPosiadane = ofertaGracza(stan.klasa)
+	stan.okno:pokaz({ klasa = stan.klasa, oferta = oferta, stroj = Ubieranie.strojGracza(gracz, stan.klasa),
+		ruch = lista[stan.ruch] and (D.nazwyRuchow[lista[stan.ruch]] or lista[stan.ruch]), bezDawnego = tylkoPosiadane })
 end
 
 -- klasa gracza z atrybutu Class (ekran wyboru Pawła; ta sama mapa co swiat/stan_gracza i Stale lasu) albo nil

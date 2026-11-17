@@ -43,6 +43,39 @@ local function odniesienie(klasa)
 	return ids
 end
 
+-- 18.11.2026 (swiat/kowal_proba, D-102): gdy działa kowal na próbę (kontener Workspace/KowalProba i atrybut gracza
+-- KowalDostepne = „id,id,…” — pisze go tylko serwer kowala), gracz zakłada wyłącznie przedmioty, które ma (części
+-- zbroi idą z całością), a „Dawny wygląd” jest niedostępny. Bez kowala → nil: przymierzalnia działa jak dawniej.
+local function dostepne(gracz)
+	local v = gracz:GetAttribute("KowalDostepne")
+	if not workspace:FindFirstChild("KowalProba") or type(v) ~= "string" then
+		return nil
+	end
+	local zb = {}
+	for _, id in L.zNapisu(v) or {} do
+		zb[id] = true
+	end
+	for id, P in D.przedmioty do
+		if P.czescOd ~= nil and zb[P.czescOd] then
+			zb[id] = true
+		end
+	end
+	return zb
+end
+
+local function tylkoDostepne(ids, zb)
+	if zb == nil then
+		return ids
+	end
+	local w = {}
+	for _, id in ids do
+		if zb[id] then
+			table.insert(w, id)
+		end
+	end
+	return w
+end
+
 local function wykonaj(gracz, akcja, klasa, arg)
 	if type(akcja) ~= "string" or not AKCJE[akcja] then
 		return { ok = false, powod = "zla_akcja" }
@@ -58,12 +91,19 @@ local function wykonaj(gracz, akcja, klasa, arg)
 	if akcja == "stan" then
 		return { ok = true, klasa = klasa, stroj = teraz }
 	end
+	local zb = dostepne(gracz)
 	if akcja == "dawny" then
+		if zb then
+			return { ok = false, powod = "dawny_niedostepny", klasa = klasa, stroj = teraz }
+		end
 		gracz:SetAttribute(nazwa, nil)
 		return { ok = true, klasa = klasa }
 	end
+	if akcja == "zaloz" and zb and not zb[arg] then
+		return { ok = false, powod = "nie_masz", klasa = klasa, stroj = teraz }
+	end
 	-- bez atrybutu postać wygląda jak szablon walki = strój odniesienia, więc od niego zaczynamy zmianę
-	local obecny = L.zNapisu(teraz) or odniesienie(klasa)
+	local obecny = tylkoDostepne(L.zNapisu(teraz) or odniesienie(klasa), zb)
 	local ok, wynik
 	if akcja == "zaloz" then
 		ok, wynik = L.zaloz(D, klasa, obecny, arg)
@@ -71,6 +111,9 @@ local function wykonaj(gracz, akcja, klasa, arg)
 		ok, wynik = L.zdejmij(D, klasa, obecny, arg)
 	else
 		ok, wynik = L.zestaw(D, klasa, arg)
+		if ok and zb then
+			ok, wynik = L.normalizuj(D, klasa, tylkoDostepne(wynik, zb))
+		end
 	end
 	if not ok then
 		return { ok = false, powod = wynik, klasa = klasa, stroj = teraz }

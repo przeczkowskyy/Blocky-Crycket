@@ -1,0 +1,507 @@
+{
+ "modul": "kowal",
+ "modele": [
+  {
+   "id": "kowal",
+   "nazwa": "Kowal",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 188,
+     "wierzcholki": 104,
+     "wymiary": [
+      2.58,
+      1.48,
+      1.605
+     ],
+     "min": [
+      -1.29,
+      0.67,
+      -0.74
+     ],
+     "max": [
+      1.29,
+      2.15,
+      0.865
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 256,
+     "wierzcholki": 160,
+     "wymiary": [
+      2.82,
+      1.935,
+      1.76
+     ],
+     "min": [
+      -1.41,
+      2.105,
+      -0.83
+     ],
+     "max": [
+      1.41,
+      4.04,
+      0.93
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 1140,
+     "wierzcholki": 636,
+     "wymiary": [
+      1.92,
+      2.234,
+      2.02
+     ],
+     "min": [
+      -0.96,
+      3.426,
+      -0.985
+     ],
+     "max": [
+      0.96,
+      5.66,
+      1.035
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.15,
+      1.0,
+      1.13
+     ],
+     "min": [
+      1.475,
+      2.95,
+      -0.565
+     ],
+     "max": [
+      2.625,
+      3.95,
+      0.565
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.22,
+      0.85,
+      1.22
+     ],
+     "min": [
+      1.44,
+      2.1,
+      -0.61
+     ],
+     "max": [
+      2.66,
+      2.95,
+      0.61
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 92,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.0,
+      1.86,
+      1.0
+     ],
+     "min": [
+      1.55,
+      0.24,
+      -0.5
+     ],
+     "max": [
+      2.55,
+      2.1,
+      0.5
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      1.1,
+      0.65,
+      1.125
+     ],
+     "min": [
+      0.075,
+      1.0,
+      -0.55
+     ],
+     "max": [
+      1.175,
+      1.65,
+      0.575
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.22,
+      0.61,
+      1.22
+     ],
+     "min": [
+      0.015,
+      0.4,
+      -0.61
+     ],
+     "max": [
+      1.235,
+      1.01,
+      0.61
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.26,
+      0.4,
+      1.56
+     ],
+     "min": [
+      -0.005,
+      0.0,
+      -0.58
+     ],
+     "max": [
+      1.255,
+      0.4,
+      0.98
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.15,
+      1.0,
+      1.13
+     ],
+     "min": [
+      -2.625,
+      2.95,
+      -0.565
+     ],
+     "max": [
+      -1.475,
+      3.95,
+      0.565
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.18,
+      0.85,
+      1.18
+     ],
+     "min": [
+      -2.64,
+      2.1,
+      -0.59
+     ],
+     "max": [
+      -1.46,
+      2.95,
+      0.59
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 212,
+     "wierzcholki": 120,
+     "wymiary": [
+      1.04,
+      1.71,
+      1.15
+     ],
+     "min": [
+      -2.57,
+      0.42,
+      -0.56
+     ],
+     "max": [
+      -1.53,
+      2.13,
+      0.59
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      1.1,
+      0.65,
+      1.125
+     ],
+     "min": [
+      -1.175,
+      1.0,
+      -0.55
+     ],
+     "max": [
+      -0.075,
+      1.65,
+      0.575
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.22,
+      0.61,
+      1.22
+     ],
+     "min": [
+      -1.235,
+      0.4,
+      -0.61
+     ],
+     "max": [
+      -0.015,
+      1.01,
+      0.61
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.26,
+      0.4,
+      1.56
+     ],
+     "min": [
+      -1.255,
+      0.0,
+      -0.58
+     ],
+     "max": [
+      0.005,
+      0.4,
+      0.98
+     ]
+    }
+   ],
+   "trojkaty_razem": 2880,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 29
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    5.3,
+    5.66,
+    2.02
+   ],
+   "wymiary_z_akcesoriami": [
+    5.3,
+    5.66,
+    2.02
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.64,
+     0.0,
+     -0.985
+    ],
+    [
+     2.66,
+     5.66,
+     1.035
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "kucie",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": true
+    },
+    {
+     "n": "radosc",
+     "dlugosc": 40,
+     "fps": 30,
+     "sekundy": 1.33,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 1140,
+     "limit": 4000,
+     "wymiary": [
+      1.92,
+      2.234,
+      2.02
+     ]
+    },
+    "Torso": {
+     "trojkaty": 444,
+     "limit": 1750,
+     "wymiary": [
+      2.82,
+      3.37,
+      1.76
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 312,
+     "limit": 1248,
+     "wymiary": [
+      1.22,
+      3.71,
+      1.22
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 432,
+     "limit": 1248,
+     "wymiary": [
+      1.18,
+      3.53,
+      1.18
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 276,
+     "limit": 1248,
+     "wymiary": [
+      1.26,
+      1.65,
+      1.59
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 276,
+     "limit": 1248,
+     "wymiary": [
+      1.26,
+      1.65,
+      1.59
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało Head: wys 2.23 poza 0.50…2.00 studa (limit części ciała awatara)"
+   ]
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "kowal.fbx: siatki 34, kości 17, trójkąty 3108, wzrost 5.66 st., akcje brak -> ZGODNE",
+  "kowal__spoczynek.fbx: siatki 34, kości 17, trójkąty 3108, wzrost 5.66 st., akcje kowal|Scene 1-61 -> ZGODNE",
+  "kowal__kucie.fbx: siatki 34, kości 17, trójkąty 3108, wzrost 5.66 st., akcje kowal|Scene 1-31 -> ZGODNE",
+  "kowal__radosc.fbx: siatki 34, kości 17, trójkąty 3108, wzrost 5.66 st., akcje kowal|Scene 1-41 -> ZGODNE",
+  "kowal.glb: siatki 34, kości 17, trójkąty 3108, wzrost 5.66 st., akcje kucie 0-30, radosc 0-40, spoczynek 0-60 -> ZGODNE"
+ ]
+}

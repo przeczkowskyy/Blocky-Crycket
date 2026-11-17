@@ -1,0 +1,49 @@
+RAPORT — kowal
+KOWAL — mistrz kuźni w bazarze (NPC, próba D-102; swiat/kowal_proba). Krępy, szeroki klockowy ludzik R15:
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/kowal.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py kowal
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: kowal
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 5 plików, zgodnych 5
+- ostrzeżenia z raportu: 1; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Młot i szczypce to bryły na kościach dłoni (nie osobne akcesoria) — w FBX postaci są częścią dłoni.
+- Uderzenie młotem jest ustawione na kowadło kuźni z swiat/kowal_proba (twarz obucha ok. 2,4 studa przed postacią i 1,45 w prawo, blat ok. 2,8 nad stopami); przy innym kowadle młot może trafiać nad nim albo w nie wchodzić.
+- Broda, fartuch i ręce to sztywne bryły na kościach: przy pełnym zamachu bark lekko wchodzi w chustkę.
+- Klipy to szkice (1–1,3 s), nie gotowa animacja.
+
+MODEL kowal „Kowal” (r15)
+  wymiary ciała: 5,30 × 5,66 × 2,02; z akcesoriami: 5,30 × 5,66 × 2,02
+  trójkąty: 2880 (siatek: 15)
+  budżety ciała R15: Head 1140/4000, Torso 444/1750, LeftArm 312/1248, RightArm 432/1248, LeftLeg 276/1248, RightLeg 276/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, kucie 30 kl. 1,00 s pętla, radosc 40 kl. 1,33 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  OSTRZEŻENIE: ciało Head: wys 2.23 poza 0.50…2.00 studa (limit części ciała awatara)
+
+KONTROLA EKSPORTÓW
+- kowal.fbx: siatki 34, kości 17, trójkąty 3108, wzrost 5.66 st., akcje brak -> ZGODNE
+- kowal__spoczynek.fbx: siatki 34, kości 17, trójkąty 3108, wzrost 5.66 st., akcje kowal|Scene 1-61 -> ZGODNE
+- kowal__kucie.fbx: siatki 34, kości 17, trójkąty 3108, wzrost 5.66 st., akcje kowal|Scene 1-31 -> ZGODNE
+- kowal__radosc.fbx: siatki 34, kości 17, trójkąty 3108, wzrost 5.66 st., akcje kowal|Scene 1-41 -> ZGODNE
+- kowal.glb: siatki 34, kości 17, trójkąty 3108, wzrost 5.66 st., akcje kucie 0-30, radosc 0-40, spoczynek 0-60 -> ZGODNE
+
+PLIKI
+- kowal.blend
+- kowal.fbx
+- kowal.glb
+- kowal__kucie.fbx
+- kowal__radosc.fbx
+- kowal__spoczynek.fbx
+- kowal_bohater.jpg
+- kowal_ikona.png
+- kowal_plansza.jpg
+- kowal_tekstury/
+- raport.json
+- raport.txt
