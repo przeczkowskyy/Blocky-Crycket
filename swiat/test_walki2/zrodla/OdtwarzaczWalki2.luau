@@ -616,10 +616,25 @@ function Sesja:przygotujScene()
 end
 
 ------------------------------------------------------------------ odcinki arkusza (własne dźwięki, swiat/dzwiek_gra)
+--[[ Arkusz do grania: tylko gdy plik się wczytał. Niewczytany (gra nie ma jeszcze prawa do zasobu, moderacja, brak
+	sieci) = nil, czyli dźwięki wbudowane — walka nie może być przez to cicha. Sprawdzane przy każdym dźwięku, więc
+	arkusz wchodzi sam, gdy tylko się wczyta. ]]
+function Sesja:arkuszDoGrania()
+	local ark = self.arkusz
+	local s = ark and ark.pula[1]
+	if s and s.IsLoaded and s.TimeLength > 0 then
+		return ark
+	end
+	if ark then
+		ark.niewczytane = (ark.niewczytane or 0) + 1
+	end
+	return nil
+end
+
 --[[ Odcinek efektu z arkusza od miejsca `od` (s od początku odcinka, czas katalogu). info = { nr = zdarzenie } do
 	pomiaru zgodności szczytu z trafieniem. Zwraca true, gdy efekt jest w katalogu (zagrany albo świadomie cicho). ]]
 function Sesja:grajOdcinek(efekt: string, od: number?, info: any?): boolean
-	local ark = self.arkusz
+	local ark = self:arkuszDoGrania()
 	local e = ark and ark.kat.efekty[efekt]
 	if not e then
 		return false
@@ -677,7 +692,7 @@ end
 
 -- zdarzenie dźwięku: odcinek z katalogu, gdy jest; inaczej wbudowany dźwięk `wbudowany` (dzisiejszy zestaw)
 function Sesja:dzwiekZdarzenia(zdarzenie: string, wbudowany: string?, szybkosc: number?)
-	local ark = self.arkusz
+	local ark = self:arkuszDoGrania()
 	local w = ark and ark.kat.zdarzenia[zdarzenie]
 	if w and self:grajOdcinek(w.efekt, 0) then
 		return
@@ -689,14 +704,14 @@ end
 
 -- jak dzwiekZdarzenia, ale bez wbudowanego zastępstwa: true = odcinek z katalogu (wtedy pomijamy melodię z tonu)
 function Sesja:odcinekZdarzenia(zdarzenie: string): boolean
-	local ark = self.arkusz
+	local ark = self:arkuszDoGrania()
 	local w = ark and ark.kat.zdarzenia[zdarzenie]
 	return w ~= nil and self:grajOdcinek(w.efekt, 0)
 end
 
 -- zdarzenie uderzenia z katalogu dla ataku (szczyt efektu na klatkę trafienia) albo nil
 function Sesja:zdarzenieUderzenia(ev): string?
-	local ark = self.arkusz
+	local ark = self:arkuszDoGrania()
 	if not ark then
 		return nil
 	end
@@ -3338,6 +3353,8 @@ function Sesja:pokazWynik()
 	-- własne dźwięki: odcinki arkusza (efekt, region w pliku, odchylenie szczytu od trafienia w s czasu rzeczywistego)
 	if self.arkusz then
 		local ark = self.arkusz
+		-- ile razy arkusz nie był wczytany i zagrał dźwięk wbudowany (0 = własne dźwięki grały od początku)
+		self:atrybut("OstatniArkuszNiewczytany", ark.niewczytane or 0)
 		local lista = {}
 		for _, w in ark.log do
 			local traf = w.nr and ark.trafienia and ark.trafienia[w.nr]
