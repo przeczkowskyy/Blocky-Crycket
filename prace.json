@@ -2,16 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T03:56:16+01:00",
+ "aktualizacja": "2026-11-17T04:14:21+01:00",
  "prace": [
   {
    "id": "walka-v3-studio",
    "tytul": "Walka: nowy silnik i ekran walki w Studio",
    "stan": "w_toku",
-   "etap": "raport i poprawki ekranu walki",
+   "etap": "wpisy w sejfie",
    "start": "2026-11-17T02:37:26+01:00",
-   "koniec_szacowany": "2026-11-17T05:15:00+01:00",
-   "aktualizacja": "2026-11-17T03:56:16+01:00",
+   "koniec_szacowany": "2026-11-17T04:45:00+01:00",
+   "aktualizacja": "2026-11-17T04:14:21+01:00",
    "obszary": [
     "studio:TestWalki2",
     "studio:LasPotwory",
