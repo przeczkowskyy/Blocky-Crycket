@@ -1,0 +1,21 @@
+{
+ "id": "r-20261117-160735-6783",
+ "tytul": "Klipy po poprawkach obejrzane w grze: upadek Maga, wskrzeszenie, finał",
+ "opis_md": "**Co to jest:** dokończenie raportu o przenikaniu broni — to samo, co wcześniej policzone, teraz obejrzane w grze. Każdy arkusz ma wiersz „PRZED” (rzut brył z błędem) i „W GRZE PO” (zrzuty ze Studio z podpisanym czasem).\n\n**Ocena po obejrzeniu:**\n- **Upadek Maga:** kostur idzie łukiem w górę i za głowę, ląduje przed kotem; nic nie przechodzi przez twarz (sprawdzone z boku i z przodu).\n- **Atak, kula ognia, lodowy pocisk Maga:** ruch kostura płynny w miejscach dawnych przeskoków.\n- **Wskrzeszenie:** postać leży ok. 0,45 s i wstaje w ok. 0,4–0,45 s; broń wraca do ręki przed ciałem, nie przez nie. Wygląda jak przewinięcie upadku, co pasuje do magicznego wskrzeszenia. Słup światła zasłania większość ruchu — dolne wiersze arkusza pokazują ruch ze słupem schowanym tylko do oceny.\n- **Finał:** w pierwszej klatce objazdu twarz Wojownika i Zwiadowcy jest odsłonięta (miecz obok głowy, sztylet z boku).\n\n**Bez zmian w kodzie gry w tej części** — poprawiona tylko próba robiąca arkusze klatek (przegrywała z kamerą ekranu wyboru klasy).\n\n**Nieocenione:** obrót zwycięzcy przy pokonanych, przy których zwycięzca jest w kadrze (Strażnik Gaju, slime, lustro), finał Maga w grze, wskrzeszenie przeciwnika-lustra.\n\n**Do Twojej oceny:** czy tempo wstawania Ci odpowiada (to jedna liczba do zmiany) i czy słup światła nie zasłania za dużo.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T16:07:35+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/przenikanie/WYNIKI.md",
+   "etykieta": "Wyniki"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ]
+}
