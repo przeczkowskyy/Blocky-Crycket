@@ -34,6 +34,16 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: omówiony temat sesji: Decyzje z samym podpisem Karola: mana, wskrzeszenie, krótszy pas biomów (D-089, D-094, D-096) ([[Sesje główne]])
 - Karol Balucki: odpowiedź na pytanie 57 ([[Pytania otwarte]])
 - Karol Balucki: odpowiedź na pytanie 56 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 53 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 50 ([[Pytania otwarte]])
+- Karol Balucki: decyzja D-104 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-103 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-102 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-101 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-100 odrzucona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-099 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-098 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-097 zatwierdzona ([[Rejestr decyzji]])
 
 ## 2026-11-17 · Claude Code u Karola (decyzja D-096: krótszy i węższy pas biomów; test Karola w Studio)
 - **Karol zagrał w Studio** to, co powstało dziś, i zmienił decyzję na gorąco (ok. 20:00, na czacie): „Musimy przebudować długość mapy, bo dalej jest ona dużo za długa… zamiast 55 sekund długości tylko 25 sekund długości… 4 sekundy szerokości… gracz musi za dużo biegać i się denerwować.” Zapisane jako **D-096** (zdecydował: Karol 2026-11-17); czeka na potwierdzenie Pawła. Zmiana ma być szybka i nieinwazyjna.

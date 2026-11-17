@@ -434,6 +434,7 @@ Dopisek z 2026-11-16 (Claude Code u Karola, 21:18, z rozmowy z Karolem): modele 
 Szczegóły: Prośba Karola z D-074 („zbalansować przyrosty tak, żeby nie opłacało się nadużywać jednej mini-gry”). Wzór zmienia zapis „+1 za trafienie” z zatwierdzonej D-050, więc potrzebuje decyzji. Liczby i założenia: `tools/walka/BALANS_1711.md`, część 6; ten sam wzór jest roboczo w prototypie mini-gier (`swiat/trening_proba/`). Przy okazji: Kondycja i Inteligencja nie mają węzła w gałęzi Training Center drzewka Twierdzy.
 Dopisek z 2026-11-17 (sesja główna 20:52): trening zostaje jednym z dwóch źródeł statystyk obok poziomu (propozycja D-097; Paweł: trening „na jak największy grind”). Tempo treningu Karol zostawił agentowi. Wzoru z paskiem treningu nie omawiano. Zob. [[Sesja główna 2026-11-17 — zapis ustaleń]].
 **Odpowiedź:**
+- Karol Balucki (2026-11-17): Odpowiedź (a), ale teraz myślimy również z Pawełem coś na temat AFK grindu w tego typu grach - co myślisz?
 
 ## 51. Gemy: skąd ma je brać gracz bez płacenia?
 - Dziś łup z potworów daje ok. 7 Gemów w 10 godzin gry, a drzewka kosztują razem 20 650.
@@ -463,6 +464,7 @@ Szczegóły: Pakiet `swiat/stan_gracza/` (status: propozycja), raport w panelu �
 Dopisek z 2026-11-17 (sesja główna 20:54): o module stanu gracza nie rozmawiano, a z tego tematu agendy omówiono tylko przegraną (pytanie 54). Ustalenia z sesji zmieniają za to roboczy pakiet: za poziom 5 punktów do rozdania przez gracza zamiast +10 rozdzielanych samoczynnie, bez statystyk za Złoto (propozycja D-097), a po przegranej trochę mniej Złota (D-098). Zob. [[Sesja główna 2026-11-17 — zapis ustaleń]].
 Dopisek z 2026-11-17 (czat Karola, ok. 21:20, w trakcie sesji głównej): na pytanie, czy spięcie stanu gracza zostaje jako wspólny moduł, Karol odpisał „Paweł potwierdza te zmiany”. Na sesji samo pytanie 53 nie padło ([[Sesja główna 2026-11-17 — zapis ustaleń]], temat 3), więc odpowiedź Pawła w panelu dalej się przyda.
 **Odpowiedź:**
+- Karol Balucki (2026-11-17): a
 
 ## 54. Co gracz traci po przegranej walce?
 - Decyzji nie ma; D-076 mówi tylko, że ma się dać przegrać.
