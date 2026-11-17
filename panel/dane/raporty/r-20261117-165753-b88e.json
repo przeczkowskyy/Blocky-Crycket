@@ -1,0 +1,19 @@
+{
+ "id": "r-20261117-165753-b88e",
+ "tytul": "Potwory stają przy graczu: koniec gonienia z klawiszem E",
+ "opis_md": "**Co to jest:** odpowiedź na największą niewygodę z drugiego przejścia gry — za chodzącymi potworami trzeba było biegać, żeby wcisnąć E.\n\n**Co działa od 16:50 w Studio** (las, las-pas i Bagno naraz, bo to ten sam kod):\n- potwór, do którego podejdziesz, staje i obraca się do Ciebie;\n- stoi najwyżej 20 sekund, potem musi przejść kawałek (żeby nie dało się go zamrozić na stałe);\n- Strażnik i potwór zajęty walką zachowują się jak dotąd.\n\n**Pomiar w grze** (15 podejść prawdziwym E, z różnych stron, gracz wciska E po 3 sekundach): walka rusza w 15 z 15 podejść zamiast w 7 z 15; potwór w tym czasie przesuwa się średnio o pół studa zamiast o 13.\n\n**Przy okazji:** krótkie rozmycie ekranu przy bramie do Bagna to była pauza silnika przy wchodzeniu w niewczytany teren — teren za bramą jest teraz wczytywany z wyprzedzeniem (w próbie zero pauz). Przymierzalnia otwiera się na Twojej klasie.\n\n**Regresja:** las-pas 21 punktów, Bagno 14, próba dymna 14 z 14 — wszystko w porządku.\n\n**Niesprawdzone:** kilku graczy naraz (gracz stojący na trasie zatrzymuje też grupy idące za potworem), przymierzalnia w grze, telefon.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T16:57:53+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "LasPasGra",
+   "etykieta": "Las-pas"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg"
+ ]
+}
