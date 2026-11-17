@@ -1,0 +1,192 @@
+-- Wygenerowane przez swiat/areny_walki/generuj.py z plan.py — nie edytuj ręcznie.
+-- Dane aren walki zależnych od biomu (D-095): źródło walki → arena, nastrój i detale. Pozycje kotwic w układzie
+-- SCENY (x w prawo na ekranie, y w górę od płyty placu, z ku kamerze planu ogólnego).
+if not game:GetService("RunService"):IsStudio() then
+	return {}
+end
+
+return {
+	wersja = "2026-11-17",
+	rPlacu = 22.0,
+	zrodla = {
+		LasPotwory = "las",
+		LasPasGra = "las",
+		BagnoPasGra = "bagno",
+		TestWalki2 = "proba",
+	},
+	areny = {
+		las = {
+			nazwa = "Polana Pod Koronami",
+			model = "Las",
+			biom = "las",
+			czesci = 1126,
+			yGruntu = -0.6,
+			scena = { -3000.0, 0.0, 1000.0 },
+			pudloSrodek = { -3000.0, 60.0, 1000.0 },
+			pudloRozmiar = { 500.0, 220.0, 500.0 },
+			nastroj = {
+				Density = 0.34,
+				Offset = 0.18,
+				Haze = 1.3,
+				Glare = 0.0,
+				Color = "CFE3C9",
+				Decay = "86A889",
+			},
+			detale = {
+				{
+					typ = "liscie",
+					n = 14,
+					r = { 26, 60 },
+					y = { 6, 26 },
+					kolory = { "E8782A", "F2B83A", "A8D84E", "72BF3A" },
+				},
+				{
+					typ = "pylki",
+					punkty = "Swiatlo",
+					kolor = "FFE9A0",
+					tempo = 4,
+				},
+			},
+			kotwice = {
+				Kulisy = {
+					{ 46.25, 1.62, 18.38 },
+					{ 51.49, -7.24, 13.12 },
+					{ 32.28, 5.69, 3.91 },
+					{ 25.96, -1.36, 4.56 },
+					{ -48.42, 1.69, 19.95 },
+					{ -55.46, -7.79, 14.18 },
+					{ -29.54, 5.21, 4.37 },
+					{ -25.94, -1.81, 4.18 },
+				},
+				Olbrzymy = {
+					{ -38.96, -62.36, 36.0 },
+					{ 16.38, -70.94, 40.5 },
+					{ 54.05, -42.23, 34.5 },
+					{ 60.88, 12.94, 31.5 },
+					{ -54.78, 11.64, 33.0 },
+					{ -17.14, 97.2, 39.0 },
+				},
+				Swiatlo = {
+					{ -48.72, -62.36, 30.0 },
+					{ 42.48, -54.37, 30.0 },
+					{ -54.72, -36.91, 30.0 },
+				},
+			},
+		},
+		bagno = {
+			nazwa = "Pomost Nad Topielą",
+			model = "Bagno",
+			biom = "bagno",
+			czesci = 1197,
+			yGruntu = -1.8,
+			scena = { -3000.0, 0.0, 1800.0 },
+			pudloSrodek = { -3000.0, 60.0, 1800.0 },
+			pudloRozmiar = { 500.0, 220.0, 500.0 },
+			nastroj = {
+				Density = 0.46,
+				Offset = 0.08,
+				Haze = 2.4,
+				Glare = 0.0,
+				Color = "A3AE96",
+				Decay = "56664A",
+			},
+			detale = {
+				{
+					typ = "ogniki",
+					n = 9,
+					r = { 30, 84 },
+					y = { 0.5, 6.0 },
+					kolor = "C8E05A",
+					swiatla = 3,
+				},
+				{
+					typ = "babelki",
+					n = 10,
+					r = { 25, 70 },
+					kolor = "8FB548",
+				},
+			},
+			kotwice = {
+				Kulisy = {
+					{ 39.81, 2.09, 12.0 },
+					{ 26.85, -2.82, 4.8 },
+					{ 44.52, 7.05, 4.8 },
+					{ 29.5, 0.0, 6.0 },
+					{ -44.15, 2.31, 13.3 },
+					{ -26.85, -2.82, 4.8 },
+					{ -28.64, 4.54, 4.8 },
+					{ -29.5, 0.0, 6.0 },
+				},
+				Chaty = {
+					{ -0.0, -70.36, 18.4 },
+					{ -54.99, -49.52, 16.0 },
+					{ 59.69, -40.26, 15.2 },
+					{ 46.0, -79.67, 30.0 },
+					{ -8.5, -26.15, 0.0 },
+					{ -7.37, -60.05, 6.0 },
+					{ 7.37, -60.05, 6.0 },
+					{ -36.71, 90.86, 16.8 },
+				},
+			},
+		},
+		proba = {
+			nazwa = "Plac Ćwiczeń Pod Murem",
+			model = "Proba",
+			biom = "proba",
+			czesci = 1108,
+			yGruntu = -0.5,
+			scena = { -3000.0, 0.0, 2600.0 },
+			pudloSrodek = { -3000.0, 60.0, 2600.0 },
+			pudloRozmiar = { 500.0, 220.0, 500.0 },
+			nastroj = {
+				Density = 0.27,
+				Offset = 0.24,
+				Haze = 1.1,
+				Glare = 0.25,
+				Color = "EADBC2",
+				Decay = "C9A27A",
+			},
+			detale = {
+				{
+					typ = "choragiewki",
+					grupa = "Tlo",
+				},
+				{
+					typ = "kurz",
+					r = { 24, 40 },
+					kolor = "E6C489",
+				},
+				{
+					typ = "ptaki",
+					n = 3,
+					r = { 70, 120 },
+					y = { 44, 60 },
+				},
+			},
+			kotwice = {
+				Kulisy = {
+					{ 28.34, -2.98, 6.62 },
+					{ 30.2, 4.24, 6.3 },
+					{ 35.49, 0.62, 3.6 },
+					{ 38.52, -6.1, 4.41 },
+					{ -29.93, 2.09, 5.67 },
+					{ -34.22, -4.81, 6.62 },
+					{ -35.99, -0.63, 3.6 },
+					{ -38.41, 6.77, 4.2 },
+				},
+				Tlo = {
+					{ -35.79, -53.06, 9.0 },
+					{ 36.91, -54.72, 12.0 },
+					{ -64.09, -37.0, 12.0 },
+					{ -16.21, -65.01, 15.0 },
+					{ 15.97, -64.04, 15.0 },
+					{ 43.89, 3.07, 15.0 },
+					{ -43.89, 3.07, 15.0 },
+					{ 35.96, 89.01, 10.0 },
+					{ -3.42, 97.94, 10.0 },
+					{ -42.08, 86.28, 10.0 },
+				},
+			},
+		},
+	},
+}

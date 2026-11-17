@@ -1,0 +1,218 @@
+{
+ "las": {
+  "bledy": [],
+  "uwagi": [],
+  "wyniki": {
+   "wolna_przestrzen": {
+    "naruszen": 0,
+    "przyklady": []
+   },
+   "czesci": 1126,
+   "horyzont": {
+    "najnizsze_domkniecie_st": 2.0,
+    "azymut": null,
+    "kamera": [
+     44.1,
+     20.4,
+     35.8
+    ],
+    "kamer": 27
+   },
+   "tlo": [
+    {
+     "para": "wojownik/lesny_slime",
+     "strona": "przod",
+     "L_srednie": 52.9,
+     "jasne": 0.003,
+     "neon": 0.0,
+     "promieni": 6783
+    },
+    {
+     "para": "wojownik/lesny_slime",
+     "strona": "tyl",
+     "L_srednie": 53.3,
+     "jasne": 0.0,
+     "neon": 0.0,
+     "promieni": 6522
+    },
+    {
+     "para": "wojownik/lesny_troll",
+     "strona": "przod",
+     "L_srednie": 52.7,
+     "jasne": 0.026,
+     "neon": 0.023,
+     "promieni": 7658
+    },
+    {
+     "para": "wojownik/lesny_troll",
+     "strona": "tyl",
+     "L_srednie": 52.9,
+     "jasne": 0.001,
+     "neon": 0.0,
+     "promieni": 7366
+    },
+    {
+     "para": "mag/straznik_topieli",
+     "strona": "przod",
+     "L_srednie": 52.0,
+     "jasne": 0.001,
+     "neon": 0.0,
+     "promieni": 4407
+    },
+    {
+     "para": "mag/straznik_topieli",
+     "strona": "tyl",
+     "L_srednie": 52.5,
+     "jasne": 0.0,
+     "neon": 0.0,
+     "promieni": 4275
+    }
+   ],
+   "czas_s": 53.2
+  }
+ },
+ "bagno": {
+  "bledy": [],
+  "uwagi": [],
+  "wyniki": {
+   "wolna_przestrzen": {
+    "naruszen": 0,
+    "przyklady": []
+   },
+   "czesci": 1197,
+   "horyzont": {
+    "najnizsze_domkniecie_st": 2.0,
+    "azymut": null,
+    "kamera": [
+     44.1,
+     20.4,
+     35.8
+    ],
+    "kamer": 27
+   },
+   "tlo": [
+    {
+     "para": "wojownik/lesny_slime",
+     "strona": "przod",
+     "L_srednie": 50.1,
+     "jasne": 0.049,
+     "neon": 0.003,
+     "promieni": 6645
+    },
+    {
+     "para": "wojownik/lesny_slime",
+     "strona": "tyl",
+     "L_srednie": 50.1,
+     "jasne": 0.044,
+     "neon": 0.0,
+     "promieni": 6441
+    },
+    {
+     "para": "wojownik/lesny_troll",
+     "strona": "przod",
+     "L_srednie": 50.3,
+     "jasne": 0.046,
+     "neon": 0.004,
+     "promieni": 7054
+    },
+    {
+     "para": "wojownik/lesny_troll",
+     "strona": "tyl",
+     "L_srednie": 49.9,
+     "jasne": 0.043,
+     "neon": 0.0,
+     "promieni": 6758
+    },
+    {
+     "para": "mag/straznik_topieli",
+     "strona": "przod",
+     "L_srednie": 51.6,
+     "jasne": 0.045,
+     "neon": 0.003,
+     "promieni": 3658
+    },
+    {
+     "para": "mag/straznik_topieli",
+     "strona": "tyl",
+     "L_srednie": 50.7,
+     "jasne": 0.072,
+     "neon": 0.0,
+     "promieni": 3511
+    }
+   ],
+   "czas_s": 58.1
+  }
+ },
+ "proba": {
+  "bledy": [],
+  "uwagi": [],
+  "wyniki": {
+   "wolna_przestrzen": {
+    "naruszen": 0,
+    "przyklady": []
+   },
+   "czesci": 1108,
+   "horyzont": {
+    "najnizsze_domkniecie_st": 2.0,
+    "azymut": null,
+    "kamera": [
+     44.1,
+     20.4,
+     35.8
+    ],
+    "kamer": 27
+   },
+   "tlo": [
+    {
+     "para": "wojownik/lesny_slime",
+     "strona": "przod",
+     "L_srednie": 74.6,
+     "jasne": 0.038,
+     "neon": 0.001,
+     "promieni": 6371
+    },
+    {
+     "para": "wojownik/lesny_slime",
+     "strona": "tyl",
+     "L_srednie": 71.1,
+     "jasne": 0.038,
+     "neon": 0.0,
+     "promieni": 6283
+    },
+    {
+     "para": "wojownik/lesny_troll",
+     "strona": "przod",
+     "L_srednie": 72.9,
+     "jasne": 0.041,
+     "neon": 0.0,
+     "promieni": 7081
+    },
+    {
+     "para": "wojownik/lesny_troll",
+     "strona": "tyl",
+     "L_srednie": 66.6,
+     "jasne": 0.023,
+     "neon": 0.0,
+     "promieni": 6992
+    },
+    {
+     "para": "mag/straznik_topieli",
+     "strona": "przod",
+     "L_srednie": 73.3,
+     "jasne": 0.019,
+     "neon": 0.001,
+     "promieni": 3798
+    },
+    {
+     "para": "mag/straznik_topieli",
+     "strona": "tyl",
+     "L_srednie": 66.0,
+     "jasne": 0.016,
+     "neon": 0.0,
+     "promieni": 3762
+    }
+   ],
+   "czas_s": 49.3
+  }
+ }
+}

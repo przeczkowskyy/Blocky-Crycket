@@ -1,0 +1,289 @@
+{
+ "opis": "Znaczniki areny walki „Polana Pod Koronami” (swiat/areny_walki, generuj.py). Układ SCENY: X w prawo na ekranie, Y w górę od płyty placu, Z ku kamerze planu ogólnego; świat = (Ox − x, Oy + y, Oz − z).",
+ "arena": "las",
+ "nazwa": "Polana Pod Koronami",
+ "model": "Workspace/ArenyWalki/Las",
+ "biom": "las",
+ "zrodla": [
+  "LasPotwory",
+  "LasPasGra"
+ ],
+ "scena": {
+  "pozycja": [
+   -3000.0,
+   0.0,
+   1000.0
+  ],
+  "patrz": [
+   0,
+   0,
+   1
+  ],
+  "uwaga": "CFrame.lookAt(pozycja, pozycja + (0, 0, 1)) = cfSceny odtwarzacza"
+ },
+ "plac": {
+  "r": 22.0,
+  "wierzch_y": 0.0
+ },
+ "pudlo": {
+  "srodek": [
+   -3000.0,
+   60.0,
+   1000.0
+  ],
+  "rozmiar": [
+   500.0,
+   220.0,
+   500.0
+  ]
+ },
+ "czesci": 1126,
+ "budzet": 1200,
+ "budzet_twardy": 1500,
+ "grupy": {
+  "Bliskie": 240,
+  "Dal": 296,
+  "Grunt": 13,
+  "Korony": 40,
+  "Kulisy": 47,
+  "Obrecz": 48,
+  "Olbrzymy": 90,
+  "Plac": 6,
+  "Sciana": 343,
+  "Swiatlo": 3
+ },
+ "zakres_swiat": {
+  "min": [
+   -3234.5,
+   -1.2,
+   761.0
+  ],
+  "max": [
+   -2758.6,
+   53.1,
+   1238.8
+  ]
+ },
+ "postawione": {
+  "grzyb": 4,
+  "glaz": 2,
+  "krzak": 18,
+  "olbrzym": 6,
+  "promien_swiatla": 3,
+  "drzewo_lasu": 43,
+  "wysepka_lasu": 10,
+  "kepa_grzybow": 3,
+  "paproc": 10,
+  "mech_plat": 12
+ },
+ "pominiete": {
+  "drzewo_lasu": 36,
+  "wysepka_lasu": 3,
+  "kepa_grzybow": 1,
+  "paproc": 2,
+  "mech_plat": 4
+ },
+ "dosuniete": 36,
+ "nastroj": {
+  "Density": 0.34,
+  "Offset": 0.18,
+  "Haze": 1.3,
+  "Glare": 0.0,
+  "Color": "CFE3C9",
+  "Decay": "86A889"
+ },
+ "detale": [
+  {
+   "typ": "liscie",
+   "n": 14,
+   "r": [
+    26,
+    60
+   ],
+   "y": [
+    6,
+    26
+   ],
+   "kolory": [
+    "E8782A",
+    "F2B83A",
+    "A8D84E",
+    "72BF3A"
+   ]
+  },
+  {
+   "typ": "pylki",
+   "punkty": "Swiatlo",
+   "kolor": "FFE9A0",
+   "tempo": 4
+  }
+ ],
+ "kotwice": {
+  "Kulisy": [
+   {
+    "rodzina": "grzyb",
+    "x": 46.25,
+    "z": 1.62,
+    "h": 18.38,
+    "ry": 200,
+    "opcje": {}
+   },
+   {
+    "rodzina": "grzyb",
+    "x": 51.49,
+    "z": -7.24,
+    "h": 13.12,
+    "ry": 40,
+    "opcje": {}
+   },
+   {
+    "rodzina": "glaz",
+    "x": 32.28,
+    "z": 5.69,
+    "h": 3.91,
+    "ry": 15,
+    "opcje": {}
+   },
+   {
+    "rodzina": "krzak",
+    "x": 25.96,
+    "z": -1.36,
+    "h": 4.56,
+    "ry": 358.4,
+    "opcje": {}
+   },
+   {
+    "rodzina": "grzyb",
+    "x": -48.42,
+    "z": 1.69,
+    "h": 19.95,
+    "ry": 20,
+    "opcje": {}
+   },
+   {
+    "rodzina": "grzyb",
+    "x": -55.46,
+    "z": -7.79,
+    "h": 14.18,
+    "ry": 110,
+    "opcje": {}
+   },
+   {
+    "rodzina": "glaz",
+    "x": -29.54,
+    "z": 5.21,
+    "h": 4.37,
+    "ry": 200,
+    "opcje": {}
+   },
+   {
+    "rodzina": "krzak",
+    "x": -25.94,
+    "z": -1.81,
+    "h": 4.18,
+    "ry": 299.0,
+    "opcje": {}
+   }
+  ],
+  "Olbrzymy": [
+   {
+    "rodzina": "olbrzym",
+    "x": -38.96,
+    "z": -62.36,
+    "h": 36.0,
+    "ry": 20,
+    "opcje": {
+     "korona_ku": 58
+    }
+   },
+   {
+    "rodzina": "olbrzym",
+    "x": 16.38,
+    "z": -70.94,
+    "h": 40.5,
+    "ry": 75,
+    "opcje": {
+     "korona_ku": 103
+    }
+   },
+   {
+    "rodzina": "olbrzym",
+    "x": 54.05,
+    "z": -42.23,
+    "h": 34.5,
+    "ry": 140,
+    "opcje": {
+     "korona_ku": 142
+    }
+   },
+   {
+    "rodzina": "olbrzym",
+    "x": 60.88,
+    "z": 12.94,
+    "h": 31.5,
+    "ry": 200,
+    "opcje": {
+     "korona_ku": 192
+    }
+   },
+   {
+    "rodzina": "olbrzym",
+    "x": -54.78,
+    "z": 11.64,
+    "h": 33.0,
+    "ry": 300,
+    "opcje": {
+     "korona_ku": 348
+    }
+   },
+   {
+    "rodzina": "olbrzym",
+    "x": -17.14,
+    "z": 97.2,
+    "h": 39.0,
+    "ry": 10,
+    "opcje": {
+     "korona_ku": 280
+    }
+   }
+  ],
+  "Swiatlo": [
+   {
+    "rodzina": "promien_swiatla",
+    "x": -48.72,
+    "z": -62.36,
+    "h": 30.0,
+    "ry": 10,
+    "opcje": {
+     "h": 36,
+     "szer": 4.5,
+     "pochyl": 16
+    }
+   },
+   {
+    "rodzina": "promien_swiatla",
+    "x": 42.48,
+    "z": -54.37,
+    "h": 30.0,
+    "ry": 40,
+    "opcje": {
+     "h": 34,
+     "szer": 3.2,
+     "pochyl": 18
+    }
+   },
+   {
+    "rodzina": "promien_swiatla",
+    "x": -54.72,
+    "z": -36.91,
+    "h": 30.0,
+    "ry": -20,
+    "opcje": {
+     "h": 38,
+     "szer": 3.8,
+     "pochyl": 14
+    }
+   }
+  ]
+ }
+}

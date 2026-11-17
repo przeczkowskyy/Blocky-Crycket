@@ -1,0 +1,268 @@
+{
+ "opis": "Znaczniki areny walki „Pomost Nad Topielą” (swiat/areny_walki, generuj.py). Układ SCENY: X w prawo na ekranie, Y w górę od płyty placu, Z ku kamerze planu ogólnego; świat = (Ox − x, Oy + y, Oz − z).",
+ "arena": "bagno",
+ "nazwa": "Pomost Nad Topielą",
+ "model": "Workspace/ArenyWalki/Bagno",
+ "biom": "bagno",
+ "zrodla": [
+  "BagnoPasGra"
+ ],
+ "scena": {
+  "pozycja": [
+   -3000.0,
+   0.0,
+   1800.0
+  ],
+  "patrz": [
+   0,
+   0,
+   1
+  ],
+  "uwaga": "CFrame.lookAt(pozycja, pozycja + (0, 0, 1)) = cfSceny odtwarzacza"
+ },
+ "plac": {
+  "r": 22.0,
+  "wierzch_y": 0.0
+ },
+ "pudlo": {
+  "srodek": [
+   -3000.0,
+   60.0,
+   1800.0
+  ],
+  "rozmiar": [
+   500.0,
+   220.0,
+   500.0
+  ]
+ },
+ "czesci": 1197,
+ "budzet": 1200,
+ "budzet_twardy": 1500,
+ "grupy": {
+  "Bliskie": 106,
+  "Chaty": 159,
+  "Dal": 417,
+  "Grunt": 16,
+  "Kulisy": 48,
+  "Mgla": 20,
+  "Obrecz": 32,
+  "Plac": 32,
+  "Sciana": 367
+ },
+ "zakres_swiat": {
+  "min": [
+   -3240.5,
+   -2.4,
+   1568.0
+  ],
+  "max": [
+   -2767.2,
+   46.9,
+   2032.0
+  ]
+ },
+ "postawione": {
+  "korzeniak": 2,
+  "kepa_trzciny": 18,
+  "latarnia_pal": 4,
+  "chata_na_palach": 4,
+  "wieza_obserwacyjna": 1,
+  "lodka": 1,
+  "drzewo_bagna": 34,
+  "kepa": 10,
+  "grzybien": 16,
+  "kepa_z_trzcina": 9,
+  "zatopiony_pien": 3
+ },
+ "pominiete": {
+  "pal_obreczy": 5,
+  "drzewo_bagna": 5,
+  "kepa_z_trzcina": 5,
+  "zatopiony_pien": 1
+ },
+ "dosuniete": 20,
+ "nastroj": {
+  "Density": 0.46,
+  "Offset": 0.08,
+  "Haze": 2.4,
+  "Glare": 0.0,
+  "Color": "A3AE96",
+  "Decay": "56664A"
+ },
+ "detale": [
+  {
+   "typ": "ogniki",
+   "n": 9,
+   "r": [
+    30,
+    84
+   ],
+   "y": [
+    0.5,
+    6.0
+   ],
+   "kolor": "C8E05A",
+   "swiatla": 3
+  },
+  {
+   "typ": "babelki",
+   "n": 10,
+   "r": [
+    25,
+    70
+   ],
+   "kolor": "8FB548"
+  }
+ ],
+ "kotwice": {
+  "Kulisy": [
+   {
+    "rodzina": "korzeniak",
+    "x": 39.81,
+    "z": 2.09,
+    "h": 12.0,
+    "ry": 30,
+    "opcje": {}
+   },
+   {
+    "rodzina": "kepa_trzciny",
+    "x": 26.85,
+    "z": -2.82,
+    "h": 4.8,
+    "ry": 181.1,
+    "opcje": {}
+   },
+   {
+    "rodzina": "kepa_trzciny",
+    "x": 44.52,
+    "z": 7.05,
+    "h": 4.8,
+    "ry": 4.7,
+    "opcje": {}
+   },
+   {
+    "rodzina": "latarnia_pal",
+    "x": 29.5,
+    "z": 0.0,
+    "h": 6.0,
+    "ry": 90,
+    "opcje": {
+     "h": 6.0
+    }
+   },
+   {
+    "rodzina": "korzeniak",
+    "x": -44.15,
+    "z": 2.31,
+    "h": 13.3,
+    "ry": 200,
+    "opcje": {}
+   },
+   {
+    "rodzina": "kepa_trzciny",
+    "x": -26.85,
+    "z": -2.82,
+    "h": 4.8,
+    "ry": 65.9,
+    "opcje": {}
+   },
+   {
+    "rodzina": "kepa_trzciny",
+    "x": -28.64,
+    "z": 4.54,
+    "h": 4.8,
+    "ry": 230.4,
+    "opcje": {}
+   },
+   {
+    "rodzina": "latarnia_pal",
+    "x": -29.5,
+    "z": 0.0,
+    "h": 6.0,
+    "ry": 270,
+    "opcje": {
+     "h": 6.0
+    }
+   }
+  ],
+  "Chaty": [
+   {
+    "rodzina": "chata_na_palach",
+    "x": -0.0,
+    "z": -70.36,
+    "h": 18.4,
+    "ry": 0.0,
+    "opcje": {
+     "h0": 4.6
+    }
+   },
+   {
+    "rodzina": "chata_na_palach",
+    "x": -54.99,
+    "z": -49.52,
+    "h": 16.0,
+    "ry": 86.0,
+    "opcje": {
+     "h0": 6.0
+    }
+   },
+   {
+    "rodzina": "chata_na_palach",
+    "x": 59.69,
+    "z": -40.26,
+    "h": 15.2,
+    "ry": -100.0,
+    "opcje": {
+     "h0": 5.4
+    }
+   },
+   {
+    "rodzina": "wieza_obserwacyjna",
+    "x": 46.0,
+    "z": -79.67,
+    "h": 30.0,
+    "ry": 15,
+    "opcje": {}
+   },
+   {
+    "rodzina": "lodka",
+    "x": -8.5,
+    "z": -26.15,
+    "h": 0.0,
+    "ry": 193.0,
+    "opcje": {}
+   },
+   {
+    "rodzina": "latarnia_pal",
+    "x": -7.37,
+    "z": -60.05,
+    "h": 6.0,
+    "ry": 0,
+    "opcje": {
+     "h": 6.5
+    }
+   },
+   {
+    "rodzina": "latarnia_pal",
+    "x": 7.37,
+    "z": -60.05,
+    "h": 6.0,
+    "ry": 180,
+    "opcje": {
+     "h": 6.0
+    }
+   },
+   {
+    "rodzina": "chata_na_palach",
+    "x": -36.71,
+    "z": 90.86,
+    "h": 16.8,
+    "ry": 338.0,
+    "opcje": {
+     "h0": 5.0
+    }
+   }
+  ]
+ }
+}

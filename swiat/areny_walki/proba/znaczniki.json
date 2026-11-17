@@ -1,0 +1,284 @@
+{
+ "opis": "Znaczniki areny walki „Plac Ćwiczeń Pod Murem” (swiat/areny_walki, generuj.py). Układ SCENY: X w prawo na ekranie, Y w górę od płyty placu, Z ku kamerze planu ogólnego; świat = (Ox − x, Oy + y, Oz − z).",
+ "arena": "proba",
+ "nazwa": "Plac Ćwiczeń Pod Murem",
+ "model": "Workspace/ArenyWalki/Proba",
+ "biom": "proba",
+ "zrodla": [
+  "TestWalki2"
+ ],
+ "scena": {
+  "pozycja": [
+   -3000.0,
+   0.0,
+   2600.0
+  ],
+  "patrz": [
+   0,
+   0,
+   1
+  ],
+  "uwaga": "CFrame.lookAt(pozycja, pozycja + (0, 0, 1)) = cfSceny odtwarzacza"
+ },
+ "plac": {
+  "r": 22.0,
+  "wierzch_y": 0.0
+ },
+ "pudlo": {
+  "srodek": [
+   -3000.0,
+   60.0,
+   2600.0
+  ],
+  "rozmiar": [
+   500.0,
+   220.0,
+   500.0
+  ]
+ },
+ "czesci": 1108,
+ "budzet": 1200,
+ "budzet_twardy": 1500,
+ "grupy": {
+  "Bliskie": 53,
+  "Dal": 296,
+  "Grunt": 12,
+  "Kulisy": 71,
+  "Miasto": 245,
+  "Mur": 113,
+  "Obrecz": 72,
+  "Plac": 6,
+  "Sciana": 132,
+  "Tlo": 108
+ },
+ "zakres_swiat": {
+  "min": [
+   -3235.9,
+   -1.1,
+   2368.0
+  ],
+  "max": [
+   -2768.0,
+   72.5,
+   2832.0
+  ]
+ },
+ "postawione": {
+  "manekin": 7,
+  "stojak_broni": 2,
+  "bela_siana_dwie": 2,
+  "tarcza_lucznicza": 1,
+  "trybuna": 1,
+  "namiot": 2,
+  "choragiew": 4,
+  "stragan": 3,
+  "mur": 1,
+  "drzewo_miasta": 16,
+  "bela_siana": 5,
+  "kwiaty": 10,
+  "kanciak": 4,
+  "domek_tla": 14
+ },
+ "pominiete": {
+  "barierka": 2,
+  "drzewo_miasta": 1,
+  "bela_siana": 2,
+  "kwiaty": 2,
+  "kanciak": 1
+ },
+ "dosuniete": 14,
+ "nastroj": {
+  "Density": 0.27,
+  "Offset": 0.24,
+  "Haze": 1.1,
+  "Glare": 0.25,
+  "Color": "EADBC2",
+  "Decay": "C9A27A"
+ },
+ "detale": [
+  {
+   "typ": "choragiewki",
+   "grupa": "Tlo"
+  },
+  {
+   "typ": "kurz",
+   "r": [
+    24,
+    40
+   ],
+   "kolor": "E6C489"
+  },
+  {
+   "typ": "ptaki",
+   "n": 3,
+   "r": [
+    70,
+    120
+   ],
+   "y": [
+    44,
+    60
+   ]
+  }
+ ],
+ "kotwice": {
+  "Kulisy": [
+   {
+    "rodzina": "manekin",
+    "x": 28.34,
+    "z": -2.98,
+    "h": 6.62,
+    "ry": -84.0,
+    "opcje": {}
+   },
+   {
+    "rodzina": "manekin",
+    "x": 30.2,
+    "z": 4.24,
+    "h": 6.3,
+    "ry": -78.0,
+    "opcje": {}
+   },
+   {
+    "rodzina": "stojak_broni",
+    "x": 35.49,
+    "z": 0.62,
+    "h": 3.6,
+    "ry": -91.0,
+    "opcje": {}
+   },
+   {
+    "rodzina": "bela_siana_dwie",
+    "x": 38.52,
+    "z": -6.1,
+    "h": 4.41,
+    "ry": 54.8,
+    "opcje": {}
+   },
+   {
+    "rodzina": "tarcza_lucznicza",
+    "x": -29.93,
+    "z": 2.09,
+    "h": 5.67,
+    "ry": 94.0,
+    "opcje": {}
+   },
+   {
+    "rodzina": "manekin",
+    "x": -34.22,
+    "z": -4.81,
+    "h": 6.62,
+    "ry": 67.0,
+    "opcje": {}
+   },
+   {
+    "rodzina": "stojak_broni",
+    "x": -35.99,
+    "z": -0.63,
+    "h": 3.6,
+    "ry": 89.0,
+    "opcje": {}
+   },
+   {
+    "rodzina": "bela_siana_dwie",
+    "x": -38.41,
+    "z": 6.77,
+    "h": 4.2,
+    "ry": 342.3,
+    "opcje": {}
+   }
+  ],
+  "Tlo": [
+   {
+    "rodzina": "trybuna",
+    "x": -35.79,
+    "z": -53.06,
+    "h": 9.0,
+    "ry": 34.0,
+    "opcje": {
+     "dl": 16.0
+    }
+   },
+   {
+    "rodzina": "namiot",
+    "x": 36.91,
+    "z": -54.72,
+    "h": 12.0,
+    "ry": -34.0,
+    "opcje": {}
+   },
+   {
+    "rodzina": "namiot",
+    "x": -64.09,
+    "z": -37.0,
+    "h": 12.0,
+    "ry": 60.0,
+    "opcje": {}
+   },
+   {
+    "rodzina": "choragiew",
+    "x": -16.21,
+    "z": -65.01,
+    "h": 15.0,
+    "ry": 0,
+    "opcje": {
+     "wys": 15.0
+    }
+   },
+   {
+    "rodzina": "choragiew",
+    "x": 15.97,
+    "z": -64.04,
+    "h": 15.0,
+    "ry": 0,
+    "opcje": {
+     "wys": 15.0
+    }
+   },
+   {
+    "rodzina": "choragiew",
+    "x": 43.89,
+    "z": 3.07,
+    "h": 15.0,
+    "ry": 90,
+    "opcje": {
+     "wys": 13.0
+    }
+   },
+   {
+    "rodzina": "choragiew",
+    "x": -43.89,
+    "z": 3.07,
+    "h": 15.0,
+    "ry": 90,
+    "opcje": {
+     "wys": 13.0
+    }
+   },
+   {
+    "rodzina": "stragan",
+    "x": 35.96,
+    "z": 89.01,
+    "h": 10.0,
+    "ry": -158.0,
+    "opcje": {}
+   },
+   {
+    "rodzina": "stragan",
+    "x": -3.42,
+    "z": 97.94,
+    "h": 10.0,
+    "ry": 178.0,
+    "opcje": {}
+   },
+   {
+    "rodzina": "stragan",
+    "x": -42.08,
+    "z": 86.28,
+    "h": 10.0,
+    "ry": 154.0,
+    "opcje": {}
+   }
+  ]
+ }
+}
