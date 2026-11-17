@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T19:11:55+01:00",
+ "aktualizacja": "2026-11-17T19:11:59+01:00",
  "prace": [
   {
    "id": "jajko-bagna",
@@ -61,9 +61,9 @@
    "id": "przebudowa-ognik",
    "tytul": "Przebudowa modelu ognik",
    "stan": "w_toku",
-   "start": "2026-11-17T19:11:38+01:00",
-   "koniec_szacowany": "2026-11-17T19:31:38+01:00",
-   "aktualizacja": "2026-11-17T19:11:38+01:00",
+   "start": "2026-11-17T19:11:59+01:00",
+   "koniec_szacowany": "2026-11-17T19:31:59+01:00",
+   "aktualizacja": "2026-11-17T19:11:59+01:00",
    "obszary": [
     "model:ognik"
    ],
