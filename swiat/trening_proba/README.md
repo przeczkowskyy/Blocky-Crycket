@@ -256,3 +256,17 @@ zostały poza repozytorium — zawierają nazwę konta.
   stanowisku z zablokowanym ruchem i wychodzi przyciskiem WYJDŹ albo klawiszem Q.
 - **Arena w powietrzu**: gdyby gracz z niej spadł (np. błąd przeniesienia), zginie i odrodzi się na spawnie;
   serwer wtedy kończy rundę i czyści stan.
+
+## Poprawki po przejściu gry (17.11.2026, bez Studio — do wdrożenia)
+
+Raport `swiat/przejscie_gry/RAPORT_PRZEJSCIA.md` (M8, P1, P7). Zmienione: `ustawienia.json` (+ wygenerowany
+`zrodla/DaneTreningu.luau`), `zrodla/KlientTreningu.client.luau`, `zbuduj.py`, `testy/test_treningu.py` (5d).
+- **Bez napisów dla twórców:** okno wyboru pokazuje „Gotowe są dwie mini-gry — cztery kolejne już wkrótce.” zamiast
+  „TYMCZASOWY WYBÓR… robi Paweł (D-093)”; podpowiedź E tablicy „Training Center” (bez „(próba)”); podsumowanie bez
+  „(atrybut …, bez zapisu)”. Test 5d pilnuje tego w danych, w napisach klienta i w podpowiedziach.
+- **Podsumowanie przerwanej rundy:** „Trafienia N · pudła M · celność P%” (z rozstrzygniętych prób), zamiast
+  „Trafienia 2 z 43 (15%)”, gdzie 43 to wszystkie zdarzenia planu.
+- **HUD schowany na stanowisku:** jak ekran walki — wszystkie włączone ScreenGui gracza (poza TouchGui, Freecam,
+  LoadingScreen, ProximityPrompts i własnym) chowane od wejścia na stanowisko do zejścia i oddawane przy zejściu,
+  także po resecie (CharacterAdded → zejście). Haczyk „stan” podaje `schowaneEkrany`.
+- Wdrożenie: `python -B swiat/trening_proba/zbuduj.py` (pełna budowa — zmienia się tekst podpowiedzi tablicy).

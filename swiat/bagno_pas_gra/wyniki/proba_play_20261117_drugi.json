@@ -1,0 +1,523 @@
+{
+ "B00": {
+  "teleport": true,
+  "pas": true,
+  "stan": true,
+  "zapowiedz": false,
+  "las": true,
+  "gestosc": 0.30000001192092896,
+  "mapa": true,
+  "aktorzy": {
+   "bulgotnik": true,
+   "straznik_topieli": true,
+   "ropucha_z_chatka": true,
+   "klodoklap": true,
+   "rechotek": true
+  },
+  "bazar": true,
+  "gra": true
+ },
+ "B01": {
+  "bagno": {
+   "SerwerGotowy": true,
+   "StanMapy": "ok",
+   "LicznikPrzelotow": 0,
+   "PunktPrzybyciaBagna": [
+    2054,
+    3.6500000953674316,
+    -700
+   ],
+   "StanBiomu": "ok",
+   "Potworow": 20,
+   "ZgodnoscLogikiPasa": "OK 39/39",
+   "Przekierowanie": "nie_ten_biom",
+   "ZgodnoscLogiki": "OK 70/70",
+   "SzablonyGotowe": true,
+   "SerwerPasaGotowy": true
+  },
+  "las": {
+   "zaBrama": false,
+   "nastepny": true
+  },
+  "klient": {
+   "KlientGotowy": true,
+   "KlientTryb": "aktorzy",
+   "KlientPasaGotowy": true
+  }
+ },
+ "wybor_klasy": {
+  "ekran": false,
+  "kamera": "Custom",
+  "podpowiedzi": true
+ },
+ "B02": {
+  "uchwyt": {
+   "ok": false,
+   "powod": "zamkniete"
+  },
+  "teleport": {
+   "odOstatniego": 1000055700.4318532,
+   "odblokowane": [
+    "miasteczko",
+    "las"
+   ],
+   "pozycja": [
+    -0.602150559425354,
+    4.160312652587891,
+    -3.925708770751953
+   ],
+   "ok": true,
+   "gracz": "<gracz>",
+   "wTrakcie": false
+  },
+  "pozycja": [
+   2024,
+   3.3076188564300537,
+   -700.0003051757812
+  ],
+  "komunikat": {
+   "widoczny": true,
+   "tekst": "Bagno jest za bramą lasu — najpierw pokonaj Strażnika Gaju."
+  },
+  "cofniecia": [
+   0,
+   1
+  ]
+ },
+ "B03": {
+  "fazy": [
+   [
+    "trwa",
+    0.1
+   ],
+   [
+    "brak",
+    6.9
+   ]
+  ],
+  "czas": 6.848775148391724,
+  "gracz": {
+   "blokadaWalki": false,
+   "pamiec": {
+    "pokonalStraznikaLasu": false,
+    "widzialPrzelotBagna": true,
+    "widzialPrzelotLasu": false,
+    "pokonalStraznikaBagna": false
+   },
+   "id": 1,
+   "wPasie": true,
+   "zablokowany": false,
+   "pozycja": [
+    2050.6416015625,
+    3.4472672939300537,
+    -700.0003051757812
+   ],
+   "zaBrama": false,
+   "gotowy": true,
+   "faza": "brak"
+  },
+  "klient": {
+   "zaslona": false,
+   "kamera": "Custom",
+   "mgla": 1,
+   "bledy": 0,
+   "wrota": true,
+   "brama": false,
+   "ostatniPrzelot": {
+    "ok": true,
+    "ryk": true,
+    "id": 1,
+    "straznik": "straznik-1",
+    "powod": "",
+    "czas": 13.900844399991911
+   },
+   "przelot": false
+  },
+  "przeloty_lasu": [
+   0,
+   0
+  ]
+ },
+ "B04": {
+  "teleport": {
+   "odOstatniego": 1000055726.3974284,
+   "odblokowane": [
+    "miasteczko",
+    "las",
+    "bagno"
+   ],
+   "pozycja": [
+    2050.6416015625,
+    3.4472672939300537,
+    -700.0003051757812
+   ],
+   "ok": true,
+   "gracz": "<gracz>",
+   "wTrakcie": false
+  },
+  "przenies": {
+   "ok": true,
+   "punkt": [
+    2054,
+    3.6500000953674316,
+    -700
+   ],
+   "wczytanie": 0.048397400008980185,
+   "zrodlo": "uchwyt BagnoPasGra.PrzeniesDoBagna",
+   "patrz": [
+    2100,
+    0,
+    -700
+   ]
+  },
+  "pozycja": [
+   2054.0009765625,
+   3.4472672939300537,
+   -700.0003051757812
+  ],
+  "faza": "brak",
+  "przeloty": [
+   1,
+   1
+  ]
+ },
+ "B05": {
+  "probki": 600,
+  "poza": 0,
+  "przyklad": false
+ },
+ "B06": {
+  "walki": {
+   "r1": {
+    "cel": {
+     "id": "r1-1",
+     "p": [
+      2130.01171875,
+      0,
+      -699.8804321289062
+     ],
+     "gatunek": "rechotek",
+     "poziom": 10,
+     "jak": "E"
+    },
+    "przed": {
+     "SerwerLicznikWalk": 0
+    },
+    "po": {
+     "SerwerLicznikWalk": 1,
+     "SerwerOstatniaWalka": "r1-1/wojownik/auto→10/wygrana",
+     "SerwerOstatnieZiarno": 1231444723
+    },
+    "odtw": {
+     "faza": "odtwarzanie",
+     "pomijanie": false,
+     "pomijanieNaEkranie": false,
+     "powodPominiecia": "pierwsza_walka"
+    },
+    "pozycja": [
+     2125.1943359375,
+     3.3984391689300537,
+     -702.0022583007812
+    ],
+    "kamera": "Custom",
+    "walka_po": false
+   },
+   "b1": {
+    "cel": {
+     "id": "b1-1",
+     "p": [
+      2365.667724609375,
+      0,
+      -679.564697265625
+     ],
+     "gatunek": "bulgotnik",
+     "poziom": 13,
+     "jak": "E"
+    },
+    "przed": {
+     "SerwerOstatniaWalka": "r1-1/wojownik/auto→10/wygrana",
+     "SerwerLicznikWalk": 1
+    },
+    "po": {
+     "SerwerLicznikWalk": 2,
+     "SerwerOstatniaWalka": "b1-1/wojownik/auto→13/przegrana",
+     "SerwerOstatnieZiarno": 1170993082
+    },
+    "odtw": {
+     "faza": "odtwarzanie",
+     "pomijanie": false,
+     "pomijanieNaEkranie": false,
+     "powodPominiecia": "pierwsza_walka"
+    },
+    "pozycja": [
+     2360.667236328125,
+     2.9980483055114746,
+     -679.5647583007812
+    ],
+    "kamera": "Custom",
+    "walka_po": false
+   },
+   "k1": {
+    "cel": {
+     "id": "k1-1",
+     "p": [
+      2559.009033203125,
+      0,
+      -680.482177734375
+     ],
+     "gatunek": "klodoklap",
+     "poziom": 15,
+     "jak": "E"
+    },
+    "przed": {
+     "SerwerOstatniaWalka": "b1-1/wojownik/auto→13/przegrana",
+     "SerwerLicznikWalk": 2
+    },
+    "po": {
+     "SerwerLicznikWalk": 3,
+     "SerwerOstatniaWalka": "k1-1/wojownik/auto→15/wygrana",
+     "SerwerOstatnieZiarno": 841845477
+    },
+    "odtw": {
+     "faza": "odtwarzanie",
+     "pomijanie": false,
+     "pomijanieNaEkranie": false,
+     "powodPominiecia": "pierwsza_walka"
+    },
+    "pozycja": [
+     2554.009033203125,
+     2.9980483055114746,
+     -680.4827270507812
+    ],
+    "kamera": "Custom",
+    "walka_po": false
+   },
+   "t1": {
+    "cel": {
+     "id": "t1-1",
+     "p": [
+      2775.033203125,
+      0,
+      -693.3446655273438
+     ],
+     "gatunek": "ropucha_z_chatka",
+     "poziom": 16,
+     "jak": "E"
+    },
+    "przed": {
+     "SerwerOstatniaWalka": "k1-1/wojownik/auto→15/wygrana",
+     "SerwerLicznikWalk": 3
+    },
+    "po": {
+     "SerwerLicznikWalk": 4,
+     "SerwerOstatniaWalka": "t1-1/wojownik/auto→16/przegrana",
+     "SerwerOstatnieZiarno": 1045126138
+    },
+    "odtw": {
+     "faza": "odtwarzanie",
+     "pomijanie": false,
+     "pomijanieNaEkranie": false,
+     "powodPominiecia": "pierwsza_walka"
+    },
+    "pozycja": [
+     2770.032470703125,
+     3.4179704189300537,
+     -693.3440551757812
+    ],
+    "kamera": "Custom",
+    "walka_po": false
+   }
+  },
+  "mostek": [
+   0,
+   4
+  ]
+ },
+ "B07": {
+  "przed": {
+   "pomijanie": true,
+   "przycisk": true,
+   "powod": "ok",
+   "zgoda": true
+  },
+  "po": {
+   "OstatniaOdpowiedzPominiecia": "ok",
+   "OstatnioPominieto": true
+  }
+ },
+ "B08": {
+  "przed": {
+   "Gold": 0,
+   "Class": "Warrior",
+   "XP": 0,
+   "Level": 11
+  },
+  "po": {
+   "Gold": 93,
+   "TokenyKrainy_bagno": 1,
+   "Class": "Warrior",
+   "XP": 69,
+   "Level": 11
+  },
+  "lupy": [
+   {
+    "LicznikLupow": 0
+   },
+   {
+    "OstatniLup": "<gracz>:BagnoPasGra:wygrana:93z:69xp",
+    "LicznikLupow": 1,
+    "OstatniBohater": "<gracz>:wojownik:11"
+   }
+  ],
+  "walka": "r1-2/wojownik/auto→11/wygrana"
+ },
+ "B09": {
+  "pozycja": [
+   2963.99951171875,
+   3.4179704189300537,
+   -700.0003051757812
+  ],
+  "komunikat": {
+   "widoczny": true,
+   "tekst": "Brama do Dżungli jest zamknięta — pokonaj Strażnika Topieli."
+  },
+  "wrota": {
+   "czesci": 17,
+   "zapora": true,
+   "niewidoczne": 0,
+   "kolizja": 2
+  },
+  "cofniecia": [
+   1,
+   2
+  ]
+ },
+ "B10": {
+  "przegrana": {
+   "cel": {
+    "id": "straznik-1",
+    "p": [
+     2914,
+     0.30000001192092896,
+     -700
+    ],
+    "gatunek": "straznik_topieli",
+    "poziom": 16,
+    "jak": "E"
+   },
+   "przed": {
+    "SerwerOstatniaWalka": "r1-2/wojownik/auto→11/wygrana",
+    "SerwerLicznikWalk": 6
+   },
+   "po": {
+    "SerwerLicznikWalk": 7,
+    "SerwerOstatniaWalka": "straznik-1/wojownik/10→10/przegrana",
+    "SerwerOstatnieZiarno": 619956668
+   },
+   "odtw": {
+    "faza": "odtwarzanie",
+    "pomijanie": false,
+    "pomijanieNaEkranie": false,
+    "powodPominiecia": "pierwsza_walka"
+   },
+   "pozycja": [
+    2908.99951171875,
+    3.2988297939300537,
+    -700.0003051757812
+   ],
+   "kamera": "Custom",
+   "walka_po": false
+  },
+  "otwarta_po_przegranej": false,
+  "proby": [
+   [
+    11,
+    "straznik-1/zwiadowca/20→20/wygrana"
+   ]
+  ],
+  "banery": [
+   "STRAŻNIK TOPIELI POKONANY! / Brama do Dżungli otwarta — Dżungla wkrótce"
+  ],
+  "wrota_klient": {
+   "czesci": 17,
+   "zapora": false,
+   "niewidoczne": 17,
+   "kolizja": 0
+  },
+  "wrota_serwer": {
+   "czesci": 17,
+   "zapora": true,
+   "niewidoczne": 0,
+   "kolizja": 2
+  },
+  "za_brama": [
+   2987.16552734375,
+   3.4179704189300537,
+   -700.0003051757812
+  ],
+  "cofniecia": [
+   2,
+   2
+  ]
+ },
+ "B11": {
+  "kamien": [
+   2048.5,
+   2.5999999046325684,
+   -718.5
+  ],
+  "pozycja": [
+   990,
+   3.448025703430176,
+   -697
+  ]
+ },
+ "B12": {
+  "bagno": {
+   "las": 0,
+   "gestosc": 0.41999998688697815,
+   "bagno": 1
+  },
+  "las": {
+   "las": 1,
+   "gestosc": 0.36000001430511475,
+   "bagno": 0
+  },
+  "serwer": {
+   "las": false,
+   "gestosc": 0.30000001192092896,
+   "bagno": false
+  },
+  "edit": 0.30000001192092896
+ },
+ "B13": {
+  "klatka": {
+   "maks": 18.829600885510445,
+   "sr": 16.665938775986433,
+   "p95": 18.160300329327583,
+   "n": 240
+  },
+  "klient_potworow": {
+   "widoki": 7,
+   "animowane": 7,
+   "czesciWidokow": 748,
+   "tryb": "aktorzy"
+  }
+ },
+ "B14": [
+  "[BagnoPasGra] gotowy: 19 potworów w 10 strefach + Strażnik Gaju; zgodność logiki 70/70",
+  "[BagnoPasGra] serwer pasa gotowy: mapa ok, przekierowanie bramy miasteczka: nie_ten_biom, przybycie (2054.0, 3.7, -700.0), zgodność logiki 39/39",
+  "[BagnoPasGra] klient pasa gotowy",
+  "[BagnoPasGra] klient gotowy: tryb aktorzy, potworów w Stan: 20",
+  "[BagnoPasGra] walka r1-1 wojownik/auto→10 rechotek 10 → wygrana, 31,7 s",
+  "[BagnoPasGra] walka b1-1 wojownik/auto→13 bulgotnik 13 → przegrana, 39,7 s",
+  "[BagnoPasGra] walka k1-1 wojownik/auto→15 klodoklap 15 → wygrana, 59,9 s",
+  "[BagnoPasGra] walka t1-1 wojownik/auto→16 ropucha_z_chatka 16 → przegrana, 21,8 s",
+  "[BagnoPasGra] walka r2-1 wojownik/auto→10 rechotek 10 → wygrana, 38,1 s",
+  "[BagnoPasGra] walka r1-2 wojownik/auto→11 rechotek 10 → wygrana, 24,5 s",
+  "[BagnoPasGra] walka straznik-1 wojownik/10→10 straznik_topieli 16 → przegrana, 23,3 s",
+  "[BagnoPasGra] walka straznik-1 zwiadowca/20→20 straznik_topieli 16 → wygrana, 45,3 s",
+  "[BagnoPasGra] <gracz> pokonał Strażnika Topieli — brama otwarta dla niego"
+ ],
+ "_koniec": "2026-11-17 14:42:34"
+}

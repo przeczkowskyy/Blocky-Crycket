@@ -61,7 +61,7 @@ kontenery (`TestWalki2`, `LasPotwory`, `LasPasGra`) dostają ten sam silnik v3.*
 | **tarcza procentowa** (Kamienna skóra, Bariera: typ `oslona`, `wartosc` = procent, 3 tury) | ikona z licznikiem tur i znaczkiem „−42%”, napis „KAMIENNA SKÓRA −42%”; „TARCZA −n” przy trafieniu (`pochloniete`); bez „zapasu” na pasku i bez „TARCZA PĘKŁA!” (usunięte) |
 | podpalenie (dłuższe z Ognistą różdżką), krwawienie, zdarcie pancerza, wzmocnienie (Skupienie) | jak dotąd: własny wygląd i licznik tur (podpalenie — tyle tur, ile w dzienniku) |
 | **blok każdej klasy i potwora** | napis „BLOK −75%” (procent z `walka.czesc_przez_blok`) i liczba tego, co przeszło. Wojownik z tarczą: klip bloku i iskry przy tarczy (jak dotąd). Bez tarczy (Mag, Zwiadowca, potwory): **parada** — łuk odbicia z pięciu świecących klinów przed bronią (punkt `Bron`) albo piersią, zwrócony do atakującego, iskry, odchylenie, krok w tył i pół obrotu bokiem (`Choreografie.BLOK`). Zablokowana umiejętność: animacja umiejętności + blok, bez efektu |
-| **wskrzeszenie** (nowe zdarzenie, propozycja D-094) | powalenie (zwolnienie `Choreografie.ZWOLNIENIE.powalenie`, szybki klip upadku, ozdoby efektów ZOSTAJĄ) → słup złotego światła z kręgiem i iskrami → wstaje (przejście z upadku do spoczynku, lekkie uniesienie) → pasek życia rośnie **z 0** do życia z dziennika ze złotym blaskiem → „WSKRZESZENIE!” i „+N”, krótki pasaż z wbudowanego tonu. Raz na walkę, dla gracza i przeciwnika; złote pióro przy portrecie (gdy serwer zapowiedział legendę) szarzeje po użyciu. Śmiertelne tyknięcie przed wskrzeszeniem i efekt nałożony PO wskrzeszeniu (cios „zabił”, cel wstał) są obsłużone |
+| **wskrzeszenie** (nowe zdarzenie, propozycja D-094) | powalenie (zwolnienie `Choreografie.ZWOLNIENIE.powalenie`, szybki klip upadku, ozdoby efektów ZOSTAJĄ) → słup złotego światła z kręgiem i iskrami → wstaje (od 17.11: klip upadku odegrany wstecz w `Choreografie.WSKRZESZENIE` wstaje → stoi, potem 0,15 s do spoczynku — dawne mieszanie 0,45 s przeciągało broń przez ciało; lekkie uniesienie) → pasek życia rośnie **z 0** do życia z dziennika ze złotym blaskiem → „WSKRZESZENIE!” i „+N”, krótki pasaż z wbudowanego tonu. Raz na walkę, dla gracza i przeciwnika; złote pióro przy portrecie (gdy serwer zapowiedział legendę) szarzeje po użyciu. Śmiertelne tyknięcie przed wskrzeszeniem i efekt nałożony PO wskrzeszeniu (cios „zabił”, cel wstał) są obsłużone |
 | **pasywki ze slotów i broni** (bez zdarzeń w dzienniku) | na starcie karteczka pod tabliczką strony, po kolei (ok. 1,25 s każda): „PASYWKA: KOLOS” / „BROŃ: OGNISTA RÓŻDŻKA” / „LEGENDA: WSKRZESZENIE” i premie z danych silnika („+4% życia · +2% obrażeń”, „+2 tury podpalenia”, „raz na walkę: powrót z 25% życia”). Lista pasywek przychodzi od serwera prototypu razem z walką; liczby — tylko z `Dane` (etykiety słów w `Choreografie.MODYFIKATORY`) |
 | **nieznane zdarzenie albo pole** (nowszy silnik) | `PlanWalki.normalizuj`: ostrzeżenie w konsoli raz na nazwę, brakujące pole dostaje wartość domyślną (życie i mana z poprzedniego zdarzenia), zdarzenie nieznanego typu — paski z dziennika bez animacji (`Obsluga.nieznane`), zdarzenie bez strony — pominięte; `Dziennik.sprawdz` to już kontrola (ostrzeżenie), nie bramka |
 
@@ -214,8 +214,9 @@ zachowanie zdalnej funkcji i mostka w Play, kompilator Luau i typy (interpreter 
 
 - Kod odtwarzacza, interfejsu i serwera **nie był uruchomiony w Studio**: błąd wykonania (np. literówka w polu instancji
   GUI) wyjdzie dopiero w Play — test Play łapie go po atrybutach i konsoli.
-- Przejście z klipu upadku do spoczynku przy wskrzeszeniu (0,45 s) może wyglądać sztucznie u dużych aktorów (Strażnik,
-  Troll — potwory nie mają dziś wskrzeszenia, ale lustro ma tylko bohaterów).
+- Wstawanie przy wskrzeszeniu (od 17.11 upadek odegrany wstecz w 0,84 s, potem 0,15 s do spoczynku; wcześniej
+  przejście 0,45 s) może wyglądać sztucznie u dużych aktorów (Strażnik, Troll — potwory nie mają dziś wskrzeszenia,
+  ale lustro ma tylko bohaterów); do obejrzenia w Play, czy wstawanie „wstecz” czyta się dobrze.
 - Panel wyboru ma teraz 6 przeciwników w rzędzie: nazwy w dwóch wierszach na telefonie są na granicy 12 pkt.
 - Mostek opiera się na nazwach kontenerów lasu (`LasPasGra`, `LasPotwory`) i na polu `koniec` sygnału `WynikWalki`;
   zmiana nazwy albo sygnału w lesie wyłączy pomijanie w lesie (bezpiecznie: bez pomijania).
@@ -563,7 +564,9 @@ trafienia w zwykłej walce oraz ułamek gracza i potwora w kadrze).
 kadr z obwiedni ostatniej klatki upadku — `lezy` w tabeli aktorów, liczone w `zbuduj.py`), w którym kończy się jego klip
 upadku (kałuża z oczkami, stos głazów, leżący troll albo bohater; klip dłuższy niż 1,9 s gra szybciej, Strażnik ×1,4);
 ujęcie trwa 1,25–1,8 s. Dopiero potem radość zwycięzcy (`radosc`) — od etapu 7 zwycięzca w ciągu 0,45 s obraca się
-w stronę kamery objazdu (kąt twarzy ok. 35°; wcześniej, gdy leżący wymuszał duży kąt objazdu, wiwat było widać od
+w stronę kamery objazdu (od 17.11 obrót zaczyna się 0,45 s PRZED radością, w końcówce ujęcia pokonanego —
+`OBROT_ZWYCIEZCY` w odtwarzaczu — więc przy cięciu do objazdu twarz jest już do kamery; wcześniej przez 0,1–0,3 s
+objazdu broń zasłaniała twarz; kąt twarzy ok. 35°; wcześniej, gdy leżący wymuszał duży kąt objazdu, wiwat było widać od
 tyłu, a panel wyniku stał na tle pleców) — objazd kamery, baner z krótką melodią, przy wygranej
 wysypany łup (monety, żetony lasu, Gem, kryształ Shardu) i panel wyniku: Złoto, doświadczenie, tokeny krainy, Gem, Shard
 Ewolucji (zera wyszarzone), podtytuł z liczbą tur, stopka z ziarnem i czasem dziennika. Objazd nie wjeżdża w leżącego:
@@ -660,6 +663,7 @@ budowie (i `Moduly/Dziennik` z `src/shared/Walka`) — źródło prawdy zostaje 
 | `testy/sesja_play.py`, `testy/proba_play.py` | wspólna obsługa sesji Play; próba jednej walki (arkusz albo odtworzenie na żywo) |
 | `testy/ziarna.json` | ziarna pokazowe i testowe (z `test_odtwarzacza.py --ziarna`) |
 | `testy/test_aktorow.py`, `test_klipow_play.py`, `klatki_aktorow.py`, `zrzut_edit.py`, `czuwanie.py` | z etapu 1 (`klatki_aktorow.py --przod`: klipy z przodu 3/4 — twarz i miny) |
+| `testy/test_przenikania.py` | 17.11: liczbowa kontrola przenikania broni w głowę (próg 0,02) i tułów (0,10) w każdym klipie każdego aktora z bronią (120 próbek/s, Lerp jak `Klipy.luau`) i w przejściach odtwarzacza (wskrzeszenie i obrót zwycięzcy czytane z kodu odtwarzacza), zasłonięcie twarzy z kamery finału (także w chwili cięcia do objazdu), skręt broni wokół własnej osi ≤ 70°/klatkę; narzędzie i wyniki: `swiat/postacie/przenikanie/` (`WYNIKI.md`); ok. 2,5 min |
 
 W kontenerze: `Moduly/` (moduły wyżej, `TabelaAktorow`, `DaneAktorow/<klucz>/<klip>`, `Walka/` — kopia silnika,
 `Dziennik`), `Aktorzy/` (szablony), `Galeria/`, `Arena/`, `Zdalne/RozpocznijWalke2`, `Sygnaly/PokazAktora`,

@@ -888,6 +888,12 @@ def _baza(p):
 
 # kierunki w osiach modelu (kot patrzy w +Z, jego lewa strona to +X)
 PRZOD, GORA = (0, 0, 1), (0, 1, 0)
+# przód kryształu w pozach z kosturem wyciągniętym do przodu (atak, kula_ognia, lodowy_pocisk): W DÓŁ, nie w górę.
+# Pozy sąsiednie mają przód kryształu PRZOD przy kosturze w górze — przeniesiony z nimi obrót drzewca daje przód
+# w dół; z GORA wejście i wyjście z pozy ataku wymagało skrętu kostura wokół osi o ok. 175°, który mieszanie osi
+# w _sekwencja robiło w JEDNEJ klatce (kryształ „migał”: 84–156° na klatkę; z DOL 4–6°, pomiar
+# swiat/postacie/przenikanie, 17.11.2026). Oś drzewca bez zmian.
+DOL = (0, -1, 0)
 
 
 def _kostur(p, pz, cel, os, przod=PRZOD, biegun=(-1, -1, 0)):
@@ -995,11 +1001,11 @@ def atak(p, dl=26):
                         Head=(-6, -8, 0), Tail=(-6, 10, 0), TailTip=(-4, 0, 0), LeftEar=(6, 0, 4),
                         RightEar=(6, 0, -4), RightUpperLeg=(-12, 0, 0), RightLowerLeg=(16, 0, 0),
                         LeftUpperLeg=(8, 0, 0)))
-    _kostur(p, blysk, cel=(-0.3, -0.05, 0.55), os=(0.0, 0.35, 1), przod=GORA)
+    _kostur(p, blysk, cel=(-0.3, -0.05, 0.55), os=(0.0, 0.35, 1), przod=DOL)
     _lapka(p, blysk, cel=(0.42, -0.4, -0.15), palce=(0.3, -1, -0.4), wnetrze=(-1, 0, 0))
     dobicie = _poza(p, _bez_stop(blysk, LowerTorso={"obrot": (4, 13, 0), "przes": (0, 0, 0.2)},
                                  UpperTorso=(10, 15, 0)))
-    _kostur(p, dobicie, cel=(-0.3, -0.1, 0.55), os=(0.0, 0.28, 1), przod=GORA)
+    _kostur(p, dobicie, cel=(-0.3, -0.1, 0.55), os=(0.0, 0.28, 1), przod=DOL)
     wraca = _poza(p, _z(B, UpperTorso=(3, 4, 0)))
     _kostur(p, wraca, cel=(-0.4, -0.38, 0.3), os=(-0.12, 1, 0.3))
 
@@ -1036,11 +1042,11 @@ def kula_ognia(p, dl=54):
                        Head=(-8, -10, 0), Tail=(-10, 12, 0), TailTip=(-6, 0, 0), LeftEar=(-4, 0, -2),
                        RightEar=(-4, 0, 2), RightUpperLeg=(-14, 0, 0), RightLowerLeg=(18, 0, 0),
                        LeftUpperLeg=(10, 0, 0)))
-    _kostur(p, rzut, cel=(-0.3, -0.05, 0.55), os=(0.0, 0.12, 1), przod=GORA)
+    _kostur(p, rzut, cel=(-0.3, -0.05, 0.55), os=(0.0, 0.12, 1), przod=DOL)
     _lapka(p, rzut, cel=(0.5, -0.25, 0.36), palce=(0.2, 0.1, 1), wnetrze=(-1, 0, 0))
     dobicie = _poza(p, _bez_stop(rzut, LowerTorso={"obrot": (6, 18, 0), "przes": (0, 0, 0.3)},
                                  UpperTorso=(14, 18, 0)))
-    _kostur(p, dobicie, cel=(-0.32, -0.3, 0.48), os=(0.0, -0.28, 1), przod=GORA)
+    _kostur(p, dobicie, cel=(-0.32, -0.3, 0.48), os=(0.0, -0.28, 1), przod=DOL)
     _lapka(p, dobicie, cel=(0.5, -0.28, 0.35), palce=(0.2, 0.0, 1), wnetrze=(-1, 0, 0))
     wraca = _poza(p, _z(B, UpperTorso=(4, 4, 0), Tail=(10, 0, 0)))
     _kostur(p, wraca, cel=(-0.4, -0.38, 0.3), os=(-0.12, 1, 0.3))
@@ -1066,13 +1072,13 @@ def lodowy_pocisk(p, dl=46):
                        Head=(-4, 10, 0), Tail=(24, 0, 0), TailTip=(30, 0, 0), LeftEar=(-16, 0, -10),
                        RightEar=(-16, 0, 10), LeftUpperLeg=(-20, 0, 0), RightUpperLeg=(-14, 0, 0),
                        LeftLowerLeg=(36, 0, 0), RightLowerLeg=(28, 0, 0)))
-    _kostur(p, cofa, cel=(-0.42, -0.45, -0.1), os=(0.05, 0.05, 1), przod=GORA)
+    _kostur(p, cofa, cel=(-0.42, -0.45, -0.1), os=(0.05, 0.05, 1), przod=DOL)
     _lapka(p, cofa, cel=(0.38, -0.25, 0.45), palce=(0, 1, 0.2), wnetrze=(0, 0, 1))
     pchniecie = _poza(p, _z(B, LowerTorso={"obrot": (5, 10, 0), "przes": (0, 0, 0.35)}, UpperTorso=(8, 12, 0),
                             Head=(-10, -8, 0), Tail=(-12, 0, 0), TailTip=(-8, 0, 0), LeftEar=(-6, 0, -4),
                             RightEar=(-6, 0, 4), RightUpperLeg=(-22, 0, 0), RightLowerLeg=(26, 0, 0),
                             LeftUpperLeg=(12, 0, 0)))
-    _kostur(p, pchniecie, cel=(-0.3, -0.3, 0.5), os=(0.05, 0.05, 1), przod=GORA)
+    _kostur(p, pchniecie, cel=(-0.3, -0.3, 0.5), os=(0.05, 0.05, 1), przod=DOL)
     _lapka(p, pchniecie, cel=(0.4, -0.25, 0.45), palce=(-0.1, 1, 0.2), wnetrze=(0, 0, 1))
     trzyma = _poza(p, _bez_stop(pchniecie, LowerTorso={"obrot": (6, 10, 0), "przes": (0, 0, 0.38)},
                                 UpperTorso=(10, 12, 0)))
@@ -1197,11 +1203,15 @@ def upadek(p, dl=60):
                         LeftLowerLeg=(40, 0, 0), RightLowerLeg=(36, 0, 0)))
     _kostur(p, ugina, cel=(-0.6, -0.1, 0.05), os=(-0.6, 0.5, -0.6))
     _lapka(p, ugina, cel=(0.55, -0.4, 0.1), palce=(0.4, -1, 0), wnetrze=(0, 0, 1))
+    # prawa łapka w locie obrócona (30, −15, 90): osie dłoni są wtedy ≤ 63° od osi z pozy „ugina” i z leżenia, więc
+    # mieszanie osi w _sekwencja nie przechodzi przez zero. Z (0, 0, 0) oś łapy obracała się o 176° między kl. 23
+    # i 24, a gra (Lerp kości co klatkę) przeciągała w połowie tej klatki kostur przez głowę na 0,19 studa
+    # (pomiar: swiat/postacie/przenikanie/, 17.11.2026)
     leci = _poza(p, _z(B, LowerTorso={"obrot": (0, -6, -48), "przes": (0.5, 0, -0.5)}, UpperTorso=(8, -4, -8),
                        Head=(10, 4, -4), Tail=(0, 0, 0), TailTip=(10, 0, 0), LeftEar=(-35, 0, -24),
                        RightEar=(-35, 0, 24), LeftUpperLeg=(-24, 0, 10), RightUpperLeg=(-20, 0, -6),
                        LeftLowerLeg=(44, 0, 0), RightLowerLeg=(40, 0, 0),
-                       RightUpperArm=(-50, 0, -80), RightLowerArm=(-20, 0, 0), RightHand=(0, 0, 0),
+                       RightUpperArm=(-50, 0, -80), RightLowerArm=(-20, 0, 0), RightHand=(30, -15, 90),
                        LeftUpperArm=(-55, 0, 70), LeftLowerArm=(-15, 0, 0)), ziemia=False)
     lezy_d = _z(B, LowerTorso={"obrot": (0, -4, -88), "przes": (0.9, 0, -0.5)}, UpperTorso=(4, 0, 4),
                 Head=(-6, 16, 10), Tail=(-20, 10, 0), TailTip=(-10, 30, 0), LeftEar=(-40, 0, -10),

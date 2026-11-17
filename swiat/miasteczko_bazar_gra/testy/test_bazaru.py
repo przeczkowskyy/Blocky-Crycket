@@ -329,9 +329,20 @@ class TestLogiki(unittest.TestCase):
             with self.subTest(miejsce=mid):
                 self.assertEqual(w["akcja"], oczekiwane[M[mid]["akcja"]])
                 self.assertEqual(w["id"], mid)
-        self.assertEqual(LB.decyzja(D, "lochy", LB.nowy_stan(), 10.0, swiat())["tekst"], "Zamknięte")
-        self.assertEqual(M["dzialka"]["dymek"], "Działka — wkrótce")
-        self.assertEqual(M["zbrojownia"]["dymek"], "Zbrojmistrz: sklep w budowie")
+        self.assertEqual(LB.decyzja(D, "lochy", LB.nowy_stan(), 10.0, swiat())["tekst"], M["lochy"]["dymek"])
+        # dymki dla gracza (raport przejścia gry 17.11.2026, M10): jedno zdanie, co tu będzie i że jeszcze nie działa,
+        # bez słów dla twórców; mieszczą się w dymku (TextScaled, 2 linijki)
+        tworcy = re.compile(r"w budowie|\(|\)|PlayerStatsDefaults|atrybut|D-0\d\d|tymczas|placeholder", re.I)
+        for mid in D["kolejnosc"]:
+            for klucz in ("dymek", "dymek_otwarte"):
+                t = M[mid].get(klucz)
+                if t:
+                    with self.subTest(miejsce=mid, klucz=klucz):
+                        self.assertIsNone(tworcy.search(t), t)
+                        self.assertLessEqual(len(t), 48, t)
+        for klucz, t in D["teksty"].items():
+            self.assertIsNone(tworcy.search(t.replace("%d", "")), (klucz, t))
+        self.assertIsNone(tworcy.search(D["tablica"]["stopka"]), D["tablica"]["stopka"])
 
     def test_3b_odleglosc_i_spam(self):
         z = M["zbrojownia"]["zasieg"] + D["podpowiedz"]["zapas"]

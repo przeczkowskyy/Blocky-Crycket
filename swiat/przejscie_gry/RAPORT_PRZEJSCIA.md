@@ -195,3 +195,19 @@ kamerą po przestawieniu postaci) — poprawione w próbie, nie w grze.
 `19_reset_w_walce`, `20_odrodzenie_tablica_pod_hud`, `21_walka_wojownik_zamiast_maga`,
 `22_walka_kamera_zaslonieta_slime`. Na żadnym nie ma nazwy konta (własna postać nie ma etykiety; zrzutów tablicy
 rankingu w bazarze, gdzie nazwa jest widoczna, nie dołączyłem).
+
+## Część 2 — poprawki w pakietach Karola (17.11.2026, bez Studio — czekają na wdrożenie)
+
+Zakres przydzielony przez sesję główną; B1, M1, M2, M6 i statystyki z M8 robi pakiet `swiat/stan_gracza/` (inny
+agent), M4, M7, M9 i ramka awatara to pliki Pawła (zgłoszenie przez sejf), P2 (język), P4 (płyta) i P5 (odrodzenie)
+to decyzje ludzi.
+
+| Znalezisko | Co zrobione | Pliki |
+|---|---|---|
+| M3 brak celu | nowy pakiet `swiat/wskazowki_gry/` → `Workspace/WskazowkiGry`: linijka celu z krzyżykiem, strzałka przy TELEPORT, znacznik nad celem; kroki (a)–(e) ze stanu gracza; bez StanGracza bez kroków o poziomach i treningu | cały pakiet (README) |
+| M5 chmury | linijka podpowiedzi w fazie wyboru (mysz / klawiatura / dotyk / pad); przerwanie śmiercią albo resetem bez śladu stosu (`print`), prawdziwe błędy dalej `warn` ze śladem | `swiat/teleport_chmury/zrodla/KlientTeleportu.client.luau` |
+| M8 tekst, P1, P7 | podsumowanie „Trafienia · pudła · celność”; bez „D-093”, „(próba)”, „bez zapisu”; HUD i inne ekrany schowane na stanowisku, oddawane przy zejściu i po resecie | `swiat/trening_proba/` (README, „Poprawki po przejściu gry”) |
+| M10, P3 | dymki dla gracza (jedno zdanie); przyczyna kamery w ścianach: części mapy bez kolizji (Poppercam ich nie omija) — półprzezroczyste u gracza, gdy zasłaniają | `swiat/miasteczko_bazar_gra/` (README, „Poprawki po przejściu gry”) |
+| P1 walka, D2 | stopka z ziarnem tylko w trybie próby (z JESZCZE RAZ), spacja / B zamyka kartę wyniku (po 0,6 s) | `swiat/test_walki2/zrodla/InterfejsWalki2.luau` |
+| próba dźwięku | D2, D4, D5 rozpoznają stan (bez identyfikatora / wczytany / niewczytany) i wypisują go | `swiat/dzwiek_gra/testy/proba_play.py` |
+| próba dymna | D11 (wskazówka po starcie), D12 (wskazówka w lesie), D13 (dźwięk w walce), D04 czeka do 10 s na łup | `proba_dymna.py` |

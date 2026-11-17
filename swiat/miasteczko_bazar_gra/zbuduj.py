@@ -72,7 +72,7 @@ INNE = [
     ("BindableFunction", "Sygnaly/SterowanieSerwera"),  # haczyk testowy SerwerBazaru (+ odblokowanie lochów)
     ("BindableFunction", "Sygnaly/SterowanieKlienta"),  # haczyk testowy KlientBazaru
 ]
-ATRYBUTY_TESTOWE = ["DymkiWylaczone", "BezDymku", "RecznyPunktStaregoMiasteczka"]
+ATRYBUTY_TESTOWE = ["DymkiWylaczone", "BezDymku", "RecznyPunktStaregoMiasteczka", "PrzenikanieKamery"]
 
 NAGLOWEK_MIEJSCA = ('if game.PlaceId ~= __MIEJSCE__ then return "STOP: inne miejsce (PlaceId " .. tostring(game.PlaceId) .. ")" end\n'
                     'if game:GetService("RunService"):IsRunning() then return "STOP: Studio jest w trybie Play — buduję tylko w trybie Edit" end\n')

@@ -1,0 +1,15 @@
+B00 OK   w Edit: {'teleport': True, 'pas': True, 'stan': True, 'zapowiedz': False, 'las': True, 'gestosc': 0.30000001192092896, 'mapa': True, 'aktorzy': {'bulgotnik': True, 'straznik_topieli': True, 'ropucha_z_chatka': True, 'klodoklap': True, 'rechotek': True}, 'bazar': True, 'gra': True}
+B01 OK   Bagno {'SerwerGotowy': True, 'StanMapy': 'ok', 'LicznikPrzelotow': 0, 'PunktPrzybyciaBagna': [2054, 3.6500000953674316, -700], 'StanBiomu': 'ok', 'Potworow': 20, 'ZgodnoscLogikiPasa': 'OK 39/39', 'Przekierowanie': 'nie_ten_biom', 'ZgodnoscLogiki': 'OK 70/70', 'SzablonyGotowe': True, 'SerwerPasaGotowy': True} | las {'zaBrama': False, 'nastepny': True} | klient {'KlientGotowy': True, 'KlientTryb': 'aktorzy', 'KlientPasaGotowy': True}
+B02 OK   uchwyt {'ok': False, 'powod': 'zamkniete'}, teleport ['miasteczko', 'las'], cofnięty do X 2024.0 (cofnięć 0→1), komunikat 'Bagno jest za bramą lasu — najpierw pokonaj Strażnika Gaju.'
+B03 OK   fazy ['trwa', 'brak'], lot 13.9 s, ryk True, kamera Custom, przeloty lasu 0→0
+B04 OK   teleport otwarte ['miasteczko', 'las', 'bagno'], przeniesienie uchwyt BagnoPasGra.PrzeniesDoBagna → (2054.0; -700.0), faza brak, przeloty 1→1
+B05 OK   600 próbek pozycji, poza polem strefy: 0 (False)
+B06 OK   walki z gatunkami ['rechotek', 'bulgotnik', 'klodoklap', 'ropucha_z_chatka']; mostek pomijania 0→4
+B07 OK   druga walka z Rechotkiem: {'przed': {'pomijanie': True, 'przycisk': True, 'powod': 'ok', 'zgoda': True}, 'po': {'OstatniaOdpowiedzPominiecia': 'ok', 'OstatnioPominieto': True}}
+B08 OK   walka r1-2/wojownik/auto→11/wygrana, łup ('wygrana', 93, 69), Gold 0→93, XP 0→69, Level 11→11, żetony Bagna None→1
+B09 OK   cofnięty do X 2964.0 (brama 2974), cofnięć 1→2, komunikat 'Brama do Dżungli jest zamknięta — pokonaj Strażnika Topieli.', wrota {'czesci': 17, 'zapora': True, 'niewidoczne': 0, 'kolizja': 2}
+B10 OK   przegrana: brama zamknięta; próby [(11, 'straznik-1/zwiadowca/20→20/wygrana')]; banery ['STRAŻNIK TOPIELI POKONANY! / Brama do Dżungli otwarta — Dżungla wkrótce']; wrota klient {'czesci': 17, 'zapora': False, 'niewidoczne': 17, 'kolizja': 0} / serwer {'czesci': 17, 'zapora': True, 'niewidoczne': 0, 'kolizja': 2}; za bramą X 2987.2 (cofnięć 2→2)
+B11 OK   Kamień Powrotu [2048.5, 2.5999999046325684, -718.5] → [990, 3.448025703430176, -697]
+B12 OK   w Bagnie {'las': 0, 'gestosc': 0.41999998688697815, 'bagno': 1}, w lesie {'las': 1, 'gestosc': 0.36000001430511475, 'bagno': 0}, serwer 0.30000001192092896 (Edit 0.30000001192092896)
+B13 ?    Kępy: klatka śr. 16.7 ms, p95 18.2, maks. 18.8 (240 klatek); widoki 7, bryły widoków 748
+B14 OK   13 wierszy Bagna, błędów: 0 []

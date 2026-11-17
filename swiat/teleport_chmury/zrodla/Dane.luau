@@ -58,7 +58,19 @@ return {
 			kolor_podloza = "4A3F2A",
 			kolor_drogi = "9C7A4A",
 			obszary_xz = { { 2040, 2980, -790, -610 } },
+			odblokowanie = {
+				atrybut_gracza = "PokonalStraznikaLasu",
+			},
 			przybycie = { {
+					gdy_jest = "BagnoPasGra",
+					uchwyt = "PrzeniesDoBagna",
+					punkt = "przybycie",
+					przelot_po_s = 2.4,
+				}, {
+					gdy_jest = "BagnoPas",
+					xz = { 2054, -700 },
+					patrz_xz = { 2100, -700 },
+				}, {
 					xz = { 2054, -700 },
 					patrz_xz = { 2100, -700 },
 				} },
@@ -219,5 +231,5 @@ return {
 		ukryj_gui = true,
 		klawisz_testowy = "T",
 	},
-	skrot = "f1625dfd5047",
+	skrot = "8bd18fb82e4a",
 }

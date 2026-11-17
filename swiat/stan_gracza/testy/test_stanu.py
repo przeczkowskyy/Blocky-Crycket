@@ -336,8 +336,13 @@ class TestStyku(unittest.TestCase):
                   "Stale.SYGNAL_BOHATERA", "Stale.SYGNAL_LUPU", "zrodlo = kontener.Name", "lup = walka.lup",
                   "czas = walka.czas", "wynik = walka.wynik"):
             self.assertIn(k, pomocnicze, k)
-        # zrodlo z lasu jest na liście przyjmowanych źródeł (oba kontenery lasu)
-        self.assertEqual(sorted(D["zrodla"]), ["LasPasGra", "LasPotwory"])
+        # każdy kontener z kodem potworów (stary las, las-pas, Bagno — KONTENER w ich zbuduj.py) jest na liście
+        # przyjmowanych źródeł łupu; nowy biom bez wpisu w dane.py dostałby odmowę „zle_zrodlo”
+        kontenery = set()
+        for pakiet in ("las_potwory", "las_pas_gra", "bagno_pas_gra"):
+            if os.path.isfile(os.path.join(REPO, "swiat", pakiet, "zbuduj.py")):
+                kontenery.add(re.search(r'^KONTENER = "(\w+)"', czytaj(REPO, "swiat", pakiet, "zbuduj.py"), re.M).group(1))
+        self.assertEqual(sorted(D["zrodla"]), sorted(kontenery))
 
     def test_6c_klient_lasu(self):
         kod = bez_komentarzy(KLIENT_LASU)

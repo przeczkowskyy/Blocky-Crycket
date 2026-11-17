@@ -44,7 +44,12 @@
       "kolor_podloza": "4A3F2A",
       "kolor_drogi": "9C7A4A",
       "obszary_xz": [[2040, 2980, -790, -610]],
-      "przybycie": [{"xz": [2054, -700], "patrz_xz": [2100, -700]}]
+      "odblokowanie": {"atrybut_gracza": "PokonalStraznikaLasu", "opis": "otwarta, gdy gracz pokonał Strażnika Gaju (ten sam stan co brama lasu-pasa: atrybut gracza ustawia SerwerPasa lasu)"},
+      "przybycie": [
+        {"gdy_jest": "BagnoPasGra", "uchwyt": "PrzeniesDoBagna", "punkt": "przybycie", "przelot_po_s": 2.4},
+        {"gdy_jest": "BagnoPas", "xz": [2054, -700], "patrz_xz": [2100, -700]},
+        {"xz": [2054, -700], "patrz_xz": [2100, -700]}
+      ]
     },
     {
       "id": "dzungla",

@@ -623,6 +623,50 @@ local function akcjaWyboru(_: string, st: Enum.UserInputState, wej: InputObject)
 	return Enum.ContextActionResult.Sink
 end
 
+-- jedna linijka na dole ekranu w fazie wyboru: jak wybrać krainę i jak wrócić (przejście chowa inne ScreenGui
+-- na starcie, więc ten tworzymy dopiero teraz i usuwamy zaraz po wyborze — także przy rezygnacji, błędzie i śmierci)
+local function pokazPodpowiedzWyboru(): ScreenGui?
+	local ekrany = gracz:FindFirstChildOfClass("PlayerGui")
+	if not ekrany then
+		return nil
+	end
+	local dotyk = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+	local pad = UserInputService.GamepadEnabled and not dotyk
+		and UserInputService:GetLastInputType().Name:find("Gamepad") ~= nil
+	local tekst = "Kliknij krainę albo wybierz strzałkami i Enter · Backspace: wróć"
+	if dotyk then
+		tekst = "Dotknij krainy, żeby tam polecieć · dotknij obok, żeby wrócić"
+	elseif pad then
+		tekst = "Krzyżak: wybierz krainę · A: leć · B: wróć"
+	end
+	local g = Instance.new("ScreenGui")
+	g.Name = "TeleportChmuryPodpowiedz"
+	g.ResetOnSpawn = false
+	g.DisplayOrder = 5
+	local napis = Instance.new("TextLabel")
+	napis.Name = "Podpowiedz"
+	napis.AnchorPoint = Vector2.new(0.5, 1)
+	napis.Position = UDim2.new(0.5, 0, 1, -24)
+	napis.Size = UDim2.fromOffset(0, 40)
+	napis.AutomaticSize = Enum.AutomaticSize.X
+	napis.BackgroundColor3 = kolor("1D1916")
+	napis.BackgroundTransparency = 0.25
+	napis.TextColor3 = kolor("FFF6E0")
+	napis.Font = Enum.Font.GothamBold
+	napis.TextSize = 20
+	napis.Text = tekst
+	local margines = Instance.new("UIPadding")
+	margines.PaddingLeft = UDim.new(0, 18)
+	margines.PaddingRight = UDim.new(0, 18)
+	margines.Parent = napis
+	local rog = Instance.new("UICorner")
+	rog.CornerRadius = UDim.new(0.5, 0)
+	rog.Parent = napis
+	napis.Parent = g
+	g.Parent = ekrany
+	return g
+end
+
 local function wybierzKraine(): any
 	wyborWynik = nil
 	wPozaWyboru = true
@@ -678,6 +722,13 @@ local function wybierzKraine(): any
 	end)
 	stan.faza = "wybor"
 	stan.wyborOd = os.clock()
+	local podpowiedz = pokazPodpowiedzWyboru()
+	poSobie(function()
+		if podpowiedz then
+			podpowiedz:Destroy()
+			podpowiedz = nil
+		end
+	end)
 	local t0 = os.clock()
 	while not wyborWynik do
 		local dt = krok()
@@ -693,6 +744,10 @@ local function wybierzKraine(): any
 	end
 	wPozaWyboru = false
 	ContextActionService:UnbindAction(AKCJA)
+	if podpowiedz then
+		podpowiedz:Destroy()
+		podpowiedz = nil
+	end
 	stan.czasy.wybor = os.clock() - t0
 	if wyborWynik.id then
 		-- chwila na pokazanie wybranej krainy (podniesiona, ze złotą obwódką i strzałką)
@@ -1072,7 +1127,11 @@ local function otworz(zrodlo: string): (boolean, string?)
 	kontener:SetAttribute("Trwa", true)
 	task.spawn(function()
 		local udane, blad = xpcall(przebieg, function(e)
-			return tostring(e) .. "\n" .. debug.traceback()
+			local s = tostring(e)
+			if string.sub(s, 1, 11) == "PRZERWANE: " then
+				return s -- zwykłe przerwanie (śmierć, reset, usunięta postać): bez śladu stosu
+			end
+			return s .. "\n" .. debug.traceback()
 		end, zrodlo)
 		posprzataj()
 		stan.faza = "spoczynek"
@@ -1080,7 +1139,11 @@ local function otworz(zrodlo: string): (boolean, string?)
 		stan.wynik = if udane then (if stan.wybor and stan.wybor.id then "wybrano " .. stan.wybor.id else "rezygnacja") else "błąd"
 		if not udane then
 			stan.blad = string.sub(tostring(blad), 1, 600)
-			warn(PREFIKS .. "przejście przerwane: " .. tostring(blad))
+			if string.sub(tostring(blad), 1, 11) == "PRZERWANE: " then
+				print(PREFIKS .. "przejście przerwane (" .. string.sub(tostring(blad), 12) .. ") — posprzątane")
+			else
+				warn(PREFIKS .. "przejście przerwane: " .. tostring(blad))
+			end
 		end
 		ostatnie = stan
 		trwa = false

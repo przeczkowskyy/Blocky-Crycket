@@ -324,6 +324,10 @@ bajt w bajt ten sam, skrót danych `e8762ea11804` bez zmian):
 - `zbuduj.py`: `ustaw_konfiguracje(k)` podmienia kontener, mapę, skrypty, kopię silnika, uchwyty i Stale_* w kopii
   modułu (tak buduje Bagno); nazwy punktów historii od nazwy kontenera.
 
+**Próba lasu przy stojącym Bagnie** (17.11.2026, skrypty z tego rozdziału wdrożone `--skrypty`;
+`wyniki/proba_play_20261117_z_bagnem.json`, `…_lista.txt`): **21 × OK, P14 „?”** (klatka 16,7 ms) — w tym nowy P11n
+(ZaBrama lasu usunięta, `NastepnyBiomJest`) i P11 z ratunkiem za bramą lasu przez serwer Bagna (Pomost 2054; 3,4; −700).
+
 ## Zmiany w `swiat/las_potwory` (minimalne, zgodne wstecz)
 
 Stary las nie ma żadnego z nowych atrybutów ani instancji, więc jego zachowanie się nie zmienia (testy przed i po: te

@@ -36,7 +36,7 @@ nie jest zmieniony**.
 | Obiekt | Kierunek | Argumenty → wynik |
 |---|---|---|
 | `Sygnaly/Bohater` (BindableFunction) | las → stan | `Invoke(gracz)` → opis postaci dla `Silnik.symuluj` albo `nil` |
-| `Sygnaly/PrzyznajLup` (BindableFunction) | las → stan | `Invoke(gracz, { lup = walka.lup, wynik, czas = walka.czas, zrodlo = "LasPotwory" \| "LasPasGra", gatunek, poziom })` → `{ ok = true }` \| `{ ok = false, powod }` |
+| `Sygnaly/PrzyznajLup` (BindableFunction) | las → stan | `Invoke(gracz, { lup = walka.lup, wynik, czas = walka.czas, zrodlo = "LasPotwory" \| "LasPasGra" \| "BagnoPasGra", gatunek, poziom })` → `{ ok = true }` \| `{ ok = false, powod }` |
 | `Sygnaly/SterowanieSerwera` (BindableFunction) | testy | `"stan", gracz?` · `"zgodnosc"` · `"publikuj", gracz?` · `"bohater", gracz?` · `"przyznaj", gracz, lup` |
 | `Zdalne/ZdarzeniaStanu` (RemoteEvent) | serwer → klient | `"awans", poziom, ile` |
 | | klient → serwer | `"pokaz"` (bez liczb, najwyżej raz na 0,5 s) |
@@ -57,6 +57,11 @@ Atrybuty kontenera do podglądu: `SerwerStanuGotowy`, `ZgodnoscLogikiStanu` („
   — reguła testowa T1 jak dawniej (klasa i poziom z panelu), walki bez łupu. Ustawiają go próby w Play
   (`swiat/las_potwory/testy/proba_play.py`, `kontrola_play.py`, `swiat/las_pas_gra/testy/proba_play.py`,
   `proba_dodatkowa.py`).
+
+**Nowy biom (17.11.2026, Bagno):** łup przyjmujemy tylko z kontenerów z listy `zrodla` w `dane.py` — kontener gry
+każdego nowego biomu (np. `BagnoPasGra`) trzeba tam dopisać, inaczej łup dostaje odmowę `zle_zrodlo` (test `6b`
+porównuje listę z kontenerami pakietów potworów). Krainy tokenów (`TokenyKrainy_<kraina>`) listy nie mają — przechodzi
+każda nazwa z liter, cyfr i „_”, więc „bagno” działa bez zmian.
 
 ## Przyjęte, do zmiany (robocze — do decyzji ludzi)
 1. **Krzywa doświadczenia** 11,71 × L^1,6 (z `tools/walka/tempo.py`; las ok. 30 min) zamiast stałego `XPMax = 100`.

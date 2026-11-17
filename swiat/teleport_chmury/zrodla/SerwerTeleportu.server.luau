@@ -16,6 +16,9 @@
 	Odblokowanie trzyma serwer, osobno dla każdego gracza (na razie tylko w pamięci, bez zapisu): na start krainy
 	z od_poczatku = true (Miasteczko, Las). Później strażnik biomu odblokuje następną krainę jednym wywołaniem:
 		workspace.TeleportChmury.Sygnaly.SterowanieSerwera:Invoke("odblokuj", "bagno", gracz)
+	Od 17.11.2026 kraina może mieć w danych odblokowanie = { atrybut_gracza = "…" }: jest wtedy otwarta, gdy gracz ma
+	ten atrybut = true — Bagno: PokonalStraznikaLasu, który ustawia serwer lasu-pasa po wygranej ze Strażnikiem Gaju
+	(jedno źródło: stan bramy lasu; teleport nie trzyma osobnej flagi). Atrybut ustawia tylko serwer.
 
 	Punkty przybycia (krainy.json → przybycie, pierwszy pasujący):
 		{ gdy_jest = "LasPasGra", uchwyt = "PrzeniesDoLasu", punkt = "las", przelot_po_s = s } — postać przenosi pakiet
@@ -66,10 +69,19 @@ local function wpis(gracz: Player): Wpis
 	return w
 end
 
-local function listaOdblokowanych(w: Wpis): { string }
+-- otwarta dla gracza: od początku / odblokowana haczykiem albo (pole odblokowanie) atrybut gracza z serwera biomu
+local function otwarta(gracz: Player, w: Wpis, k: any): boolean
+	if w.odblokowane[k.id] then
+		return true
+	end
+	local o = k.odblokowanie
+	return type(o) == "table" and type(o.atrybut_gracza) == "string" and gracz:GetAttribute(o.atrybut_gracza) == true
+end
+
+local function listaOdblokowanych(gracz: Player, w: Wpis): { string }
 	local t = {}
 	for _, k in Dane.krainy do
-		if w.odblokowane[k.id] then
+		if otwarta(gracz, w, k) then
 			table.insert(t, k.id)
 		end
 	end
@@ -211,7 +223,7 @@ local function przenies(gracz: Player, id: string): any
 	if not kraina then
 		return { ok = false, powod = "nieznana" }
 	end
-	if not w.odblokowane[id] then
+	if not otwarta(gracz, w, kraina) then
 		return { ok = false, powod = "zamknieta" }
 	end
 	local postac = gracz.Character
@@ -296,7 +308,7 @@ zdalna.OnServerInvoke = function(gracz: Player, polecenie: any, id: any): any
 	if polecenie == "stan" then
 		return {
 			ok = true,
-			odblokowane = listaOdblokowanych(w),
+			odblokowane = listaOdblokowanych(gracz, w),
 			zostalo = math.max(0, w.ostatnio + S.odstep_s - os.clock()),
 			odstep = S.odstep_s,
 		}
@@ -331,7 +343,7 @@ sterowanie.OnInvoke = function(polecenie: any, a: any, b: any): any
 		return {
 			ok = true,
 			gracz = g.Name,
-			odblokowane = listaOdblokowanych(w),
+			odblokowane = listaOdblokowanych(g, w),
 			wTrakcie = w.wTrakcie,
 			odOstatniego = os.clock() - w.ostatnio,
 			ostatni = w.ostatniWynik,
@@ -343,7 +355,7 @@ sterowanie.OnInvoke = function(polecenie: any, a: any, b: any): any
 			return { ok = false, powod = "zle_dane" }
 		end
 		wpis(g).odblokowane[a] = (polecenie == "odblokuj") or nil
-		return { ok = true, odblokowane = listaOdblokowanych(wpis(g)) }
+		return { ok = true, odblokowane = listaOdblokowanych(g, wpis(g)) }
 	elseif polecenie == "przenies" then
 		-- test: przeniesienie bez kamery i bez blokady czasu (np. postawienie gracza w miasteczku przed próbą)
 		local g = ktory(b)

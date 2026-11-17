@@ -1,0 +1,4 @@
+H01 OK   gracz {'Gold': 0, 'PokonalStraznikaLasu': True, 'Class': 'Warrior', 'XP': 0, 'Level': 11}, wrota lasu u klienta {'kolizja': 0}
+H02 OK   fazy ['trwa', 'brak'], gracz w X 2048.5
+H03 OK   walka r1-2/wojownik/auto→11/wygrana; łup <gracz>:BagnoPasGra:wygrana:96z:67xp; Gold 0→96, XP 0→67, Level 11→11; HUD {'level': '11', 'gold': '96'}
+H04 OK   zamknięte na makiecie ['dzungla', 'pustynia', 'gory', 'lodowiec', 'wulkan', 'krysztal'], wybór Bagna {'ok': True, 'zamknieta': False} → gracz (2054.0; -700.0)

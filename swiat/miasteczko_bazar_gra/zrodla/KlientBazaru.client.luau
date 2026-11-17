@@ -9,7 +9,7 @@
 		                              od razu, bez zmian w plikach Pawła;
 		                           3) jeśli po czasy.czekaj_na_okno_s nic się nie otworzyło (żaden ekran nie został
 		                              włączony), okno nie zgłosiło się atrybutem, a dymki nie są wyłączone — dymek nad
-		                              sprzedawcą, np. „Zbrojmistrz: sklep w budowie”;
+		                              sprzedawcą, np. „Zbrojmistrz: broń i zbroje już wkrótce.”;
 		"dymek", id, tekst      → dymek nad miejscem (odmowa, „Zamknięte”);
 		"chmury", id            → Workspace/TeleportChmury/Otworz:Fire() (przejście przez chmury), bez niego dymek;
 		"przeniesiono", id, cel → tylko zapis (haczyk testowy).
@@ -288,6 +288,69 @@ task.spawn(function()
 end)
 lochyLokalnie()
 
+------------------------------------------------------------------ kamera w ciasnych stoiskach (tylko u tego gracza)
+-- Kamera Roblox (Poppercam) przybliża się tylko przed częściami Z KOLIZJĄ i prawie nieprzezroczystymi. W mapie bazaru
+-- szczyty dachów, markizy nad stoiskami, daszki, ramy okien i skrzydła drzwi są bez kolizji (swiat/miasteczko_bazar,
+-- czesci.json), więc kamera za plecami gracza w stoisku wchodzi w nie albo staje za nimi — pół ekranu zasłonięte
+-- (raport przejścia gry 17.11.2026, P3). Tu: części mapy bazaru BEZ kolizji między głową gracza a kamerą robią się
+-- u tego gracza półprzezroczyste (LocalTransparencyModifier — nic nie idzie na serwer, wspólne ustawienia kamery
+-- w StarterPlayer nietknięte) i wracają, gdy przestają zasłaniać. Kłódki lochów nie ruszamy (ma własny stan).
+-- Wyłącznik: atrybut kontenera PrzenikanieKamery = false.
+local PRZENIKANIE = 0.7 -- docelowa przezroczystość zasłaniającej części
+local PRZENIKANIE_CO = 0.1 -- s między sprawdzeniami
+local PRZENIKANIE_CZESCI = 6 -- najwięcej zasłaniających części na jednym promieniu
+local przenikniete = {} -- część → true
+
+local function wObszarzeBazaru(p: Vector3): boolean
+	local B = D.bazar
+	return p.X >= B.czesci_x[1] and p.X <= B.czesci_x[2] and p.Z >= B.czesci_z[1] and p.Z <= B.czesci_z[2]
+end
+
+task.spawn(function()
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	while kontener.Parent do
+		task.wait(PRZENIKANIE_CO)
+		local teraz = {}
+		local kamera = workspace.CurrentCamera
+		local postac = gracz.Character
+		local korzen = postac and postac:FindFirstChild("HumanoidRootPart")
+		local mapa = workspace:FindFirstChild(D.mapa)
+		if kontener:GetAttribute("PrzenikanieKamery") ~= false and kamera and mapa and korzen and korzen:IsA("BasePart")
+			and kamera.CameraType == Enum.CameraType.Custom and wObszarzeBazaru(korzen.Position) then
+			local blokada = sciezka(D.lochy.blokada)
+			local pomin = { postac }
+			local od = korzen.Position + Vector3.new(0, 1.5, 0) -- wysokość głowy, na którą patrzy kamera
+			local kierunek = kamera.CFrame.Position - od
+			for _ = 1, PRZENIKANIE_CZESCI do
+				params.FilterDescendantsInstances = pomin
+				local r = workspace:Raycast(od, kierunek, params)
+				if not r then
+					break
+				end
+				local d = r.Instance
+				table.insert(pomin, d)
+				if d:IsA("BasePart") and not d.CanCollide and d.Transparency < 0.95 and d:IsDescendantOf(mapa)
+					and not (blokada and d:IsDescendantOf(blokada)) then
+					teraz[d] = true
+					if not przenikniete[d] then
+						przenikniete[d] = true
+						d.LocalTransparencyModifier = PRZENIKANIE
+					end
+				end
+			end
+		end
+		for d in przenikniete do
+			if not teraz[d] then
+				przenikniete[d] = nil
+				if d.Parent then
+					d.LocalTransparencyModifier = 0
+				end
+			end
+		end
+	end
+end)
+
 ------------------------------------------------------------------ polecenia serwera
 zdarzenia.OnClientEvent:Connect(function(polecenie: any, id: any, a: any)
 	if type(polecenie) ~= "string" or type(id) ~= "string" or not D.miejsca[id] then
@@ -326,6 +389,13 @@ sterowanie.OnInvoke = function(polecenie: any, a: any, b: any)
 			dymki = widoczne,
 			lochy = lochyOtwarte,
 			zdarzenie = okna ~= nil and okna:GetFullName() or nil,
+			przenikniete = (function()
+				local n = 0
+				for _ in przenikniete do
+					n += 1
+				end
+				return n
+			end)(),
 		}
 	elseif polecenie == "okno" and type(a) == "string" then
 		otworzOkno(a)

@@ -30,7 +30,7 @@
 		      "czy", zrodlo  → { ok, powod }      czy bieżącą walkę gracza z tego źródła wolno pominąć
 		      "pomin", zrodlo → { ok, powod, nastepnaOd? }   pominięcie: tablica zwalnia sesję od razu; las — gdy jego
 		                                                      kontener ma Sygnaly/ZwolnijPoPominieciu (README)
-		  zrodlo = nazwa kontenera z zamkniętej listy (TestWalki2, LasPasGra, LasPotwory). Bez zgody → odmowa.
+		  zrodlo = nazwa kontenera z zamkniętej listy (TestWalki2, LasPasGra, LasPotwory, BagnoPasGra). Bez zgody → odmowa.
 		• walki z lasów liczy ich własny serwer (SerwerPotworow) — tutaj trafiają przez MOSTEK: serwer słucha
 		  Sygnaly/WynikWalki (BindableEvent) kontenerów LasPasGra i LasPotwory, gdy go mają (las-pas ma; stary las
 		  nie ma — wtedy jego walki są „nieznane” i pomijać ich nie wolno, bezpieczne zachowanie domyślne).
@@ -82,9 +82,10 @@ local ZESTAWY = {}
 for _, z in Wzorcowe.ZESTAWY do
 	ZESTAWY[z] = true
 end
--- źródła walk dla pamięci pomijania: ten kontener i kontenery lasów (mostek przez Sygnaly/WynikWalki)
-local ZRODLA = { [kontener.Name] = true, LasPasGra = true, LasPotwory = true }
-local ZRODLA_LASU = { LasPasGra = true, LasPotwory = true }
+-- źródła walk dla pamięci pomijania: ten kontener i kontenery lasów (mostek przez Sygnaly/WynikWalki);
+-- 17.11.2026: też Bagno (BagnoPasGra, swiat/bagno_pas_gra — ten sam kod potworów co las-pas)
+local ZRODLA = { [kontener.Name] = true, LasPasGra = true, LasPotwory = true, BagnoPasGra = true }
+local ZRODLA_LASU = { LasPasGra = true, LasPotwory = true, BagnoPasGra = true }
 
 local ostatniaProsba: { [Player]: number } = {}
 local ostatniePominiecie: { [Player]: number } = {}
@@ -288,6 +289,30 @@ end
 	przyjętej walce — o ile jego kontener ma ten BindableEvent (las-pas ma; stary las dziś nie). Tylko słuchamy:
 	niczego w lesie nie zmieniamy. Kontener odbudowany w Play (ChildAdded) podłączamy na nowo. ]]
 local mostki: { [Instance]: RBXScriptConnection } = {}
+-- gatunki znane ŹRÓDŁU walki: nasza kopia Dane albo kopia Dane w kontenerze źródła (Bagno ma w swojej kopii
+-- dopisanych przeciwników Bagna; tylko odczyt, raz na kontener)
+local gatunkiZrodla: { [Instance]: { [string]: boolean } } = {}
+local function znanyGatunek(k: Instance, gatunek: string): boolean
+	if DANE_PRZECIWNIKA[gatunek] then
+		return true
+	end
+	local znane = gatunkiZrodla[k]
+	if not znane then
+		znane = {}
+		pcall(function()
+			local m = k:FindFirstChild("Moduly")
+			local w = m and m:FindFirstChild("Walka")
+			local d = w and w:FindFirstChild("Dane")
+			if d and d:IsA("ModuleScript") then
+				for _, p in (require(d) :: any).przeciwnicy or {} do
+					znane[p.id] = true
+				end
+			end
+		end)
+		gatunkiZrodla[k] = znane
+	end
+	return znane[gatunek] == true
+end
 local function podlaczMostek(k: Instance)
 	if not ZRODLA_LASU[k.Name] or mostki[k] then
 		return
@@ -303,7 +328,7 @@ local function podlaczMostek(k: Instance)
 				return
 			end
 			local gatunek, koniec = info.gatunek, info.koniec
-			if type(gatunek) ~= "string" or not DANE_PRZECIWNIKA[gatunek] or type(koniec) ~= "number" or koniec ~= koniec then
+			if type(gatunek) ~= "string" or not znanyGatunek(k, gatunek) or type(koniec) ~= "number" or koniec ~= koniec then
 				return
 			end
 			PamiecWalk.przyjmij(pamiec, gracz.UserId, k.Name, gatunek, workspace:GetServerTimeNow(), koniec)
@@ -311,6 +336,7 @@ local function podlaczMostek(k: Instance)
 			kontener:SetAttribute("SerwerMostekWalk", (kontener:GetAttribute("SerwerMostekWalk") or 0) + 1)
 		end)
 		k.Destroying:Connect(function()
+			gatunkiZrodla[k] = nil
 			if mostki[k] then
 				mostki[k]:Disconnect()
 				mostki[k] = nil

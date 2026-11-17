@@ -70,7 +70,7 @@ ATRYBUTY_TESTOWE = ["WyborTymczasowy", "RecznyPunktTablicy"]
 PODPOWIEDZI = [
     ("Arena/Lobby/TablicaWyboru/E", "wybor", "arena", "Wybierz", "Mini-gry"),
     ("Arena/Lobby/Wyjscie/E", "wyjscie", "", "Wyjdź", "Training Center"),
-    ("TablicaWejscia/E", "wybor", "tablica", "Mini-gry", "Training Center (próba)"),
+    ("TablicaWejscia/E", "wybor", "tablica", "Mini-gry", "Training Center"),
 ]
 
 NAGLOWEK_MIEJSCA = ('if game.PlaceId ~= __MIEJSCE__ then return "STOP: inne miejsce (PlaceId " .. tostring(game.PlaceId) .. ")" end\n'
@@ -366,7 +366,7 @@ dodaj("Daszek", { 0, 7.3, 0 }, { 8.4, 0.5, 1.4 }, "E5533D")
 dodaj("Deska", { 0, 4.9, 0 }, { 7.2, 3.8, 0.4 }, "FFF6E0", { tekst = NAPIS, strona = "Front", px = 40, kolor = "17121F" })
 local tyl = dodaj("DeskaTyl", { 0, 4.9, 0.25 }, { 7.2, 3.8, 0.1 }, "FFF6E0", { tekst = NAPIS, strona = "Back", px = 40, kolor = "17121F" })
 local e = dodaj("E", { 0, 3, -0.8 }, { 0.6, 0.6, 0.6 }, "FFF6E0", nil, 1)
-podpowiedz(e, "wybor", "tablica", "Mini-gry", "Training Center (próba)", PD)
+podpowiedz(e, "wybor", "tablica", "Mini-gry", "Training Center", PD)
 f:SetAttribute("PunktTablicy", wybrany)
 return string.format("OK tablica wejścia (%.1f; %.1f; %.1f) — %s | start (%.1f; %.1f; %.1f) z %s | ominięte: %d",
 	wybrany.X, wybrany.Y, wybrany.Z, opis, s.X, s.Y, s.Z, if sp then sp:GetFullName() else "danych (brak SpawnLocation)", #omijaj)

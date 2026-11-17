@@ -425,3 +425,23 @@ u klienta `AlwaysOnTop = false`; podpowiedzi E na zrzutach nie ma. Nazwa konta n
 **8. Tymczasowe przejścia stare ↔ nowe: kiedy usunąć?**
 - Gdy bazar zostanie przyjęty i spawn przeniesiony.
 - Zostawić jako drogę do „zwiedzania” starego miasta (wybór 8 w `swiat/miasteczko_bazar/PROJEKT.md`).
+
+## Poprawki po przejściu gry (17.11.2026, bez Studio — do wdrożenia)
+
+Raport `swiat/przejscie_gry/RAPORT_PRZEJSCIA.md` (M10, P3). Zmienione: `miejsca.json` (+ wygenerowany
+`zrodla/DaneBazaru.luau`), `zrodla/KlientBazaru.client.luau`, `zbuduj.py` (atrybut testowy), `testy/test_bazaru.py`.
+- **Dymki dla gracza:** jedno zdanie, co tu będzie i że jeszcze nie działa (np. „Zbrojmistrz: broń i zbroje już
+  wkrótce.”, „Wrota lochów są jeszcze zamknięte.”), bez „w budowie” i nawiasów dla twórców; odmowy Lasu bez
+  „(nie ma pasa Lasu w miejscu)”; stopka tablicy „ranking graczy na tym serwerze”. Dymek 300 × 76 px (było 270 × 62).
+  Nowy tekst odmowy `zamkniete` („Ta kraina jest jeszcze zamknięta.”) — taki powód zwraca już uchwyt Lasu
+  (zmiany agenta Bagna w `swiat/las_pas_gra`).
+- **Kamera w ścianach — przyczyna:** kamera Roblox (Poppercam) przybliża się tylko przed częściami Z KOLIZJĄ.
+  W mapie bazaru (`swiat/miasteczko_bazar/czesci.json`) bez kolizji są m.in. wszystkie szczyty dachów (104), markizy
+  nad stoiskami (30), daszki, belki stropu, ramy okien i skrzydła drzwi — kamera wchodzi w nie albo staje za nimi.
+  **Poprawka w pakiecie:** klient co 0,1 s puszcza promień głowa → kamera i części mapy bazaru bez kolizji, które go
+  przecinają, robi u siebie półprzezroczyste (`LocalTransparencyModifier` 0,7, nic nie idzie na serwer), a gdy
+  przestają zasłaniać — oddaje 0. Kłódki lochów nie rusza. Wyłącznik: atrybut kontenera `PrzenikanieKamery = false`.
+  Inne drogi (do decyzji, poza pakietem): kolizja dla szczytów dachów i markiz w mapie (przebudowa mapy) albo
+  `DevCameraOcclusionMode = Invisicam` w `StarterPlayer` (wspólne ustawienie gry).
+- Wdrożenie: pełna budowa `python -B swiat/miasteczko_bazar_gra/zbuduj.py` (stopka tablicy powstaje przy budowie;
+  `--skrypty` podmieniłby tylko dymki i kamerę).

@@ -18,8 +18,12 @@ end
 
 local TweenService = game:GetService("TweenService")
 local GuiService = game:GetService("GuiService")
+local ContextActionService = game:GetService("ContextActionService")
 
 local Interfejs = {}
+-- spacja (albo B na padzie) zamyka kartę wyniku; priorytet nad „POMIŃ” odtwarzacza (10001), który w tej fazie nic nie robi
+local AKCJA_ZAMKNIJ_WYNIK = "TestWalki2ZamknijWynik"
+local ZAMKNIJ_WYNIK_PO = 0.6 -- s od pokazania karty: podwójna spacja po POMIŃ nie zamknie jej, zanim gracz zobaczy łup
 Interfejs.__index = Interfejs
 
 local PROPORCJE = 16 / 9
@@ -78,6 +82,33 @@ local IKONY = {
 	straznik_lasu = {
 		paleta = { M = "#7DAE3C", B = "#8E5B32", S = "#858074", s = "#57524C", G = "#36EE4E", K = "#2B2428" },
 		mapa = { "M.B..B.M", ".BMBBMB.", "SSSSSSSS", "SsGSSGsS", "SSSSSSSS", "SSsKKsSS", "SBSBBSBS", ".B.BB.B." },
+	},
+	-- przeciwnicy Bagna (17.11.2026, swiat/bagno_pas_gra; modele swiat/postacie/<klucz>.py)
+	-- Rechotek: oliwkowa ropucha, pomarańczowe oczy na czubku, czarna linia ust, żółty brzuch
+	rechotek = {
+		paleta = { G = "#7E8C3E", g = "#4F5E2A", O = "#F2932E", K = "#17121F", Y = "#E8D27A" },
+		mapa = { ".OO..OO.", "OKOGGOKO", "GGGGGGGG", "GgGGGGgG", "KKKKKKKK", "GYYYYYYG", "GYYYYYYG", ".gggggg." },
+	},
+	-- Bulgotnik: zielona bańka-głowa z oczami, błotny kopczyk, ognik na kiju
+	bulgotnik = {
+		paleta = { B = "#9FD89A", b = "#6FB86A", K = "#17121F", M = "#5B4A34", m = "#3E3122", Y = "#C8E05A" },
+		mapa = { "..bbbb.Y", ".bBBBBbY", ".bKBBKbM", ".bBBBBbM", "..bbbb.M", ".MMMMMMM", "MMmMMmMM", ".mm..mm." },
+	},
+	-- Kłodokłap: kłoda z mchem, bursztynowe oczy, paszcza z kołkami-zębami, korzenie
+	klodoklap = {
+		paleta = { L = "#6B4F33", l = "#4A3624", A = "#A9B48E", W = "#F2E6C8", K = "#17121F", Y = "#FFB52E" },
+		mapa = { "AAAAAAAA", "LLYLLYLL", "LLLLLLLL", "LWLWWLWL", "KKKKKKKK", "LWLWWLWL", "lLLLLLLl", "l.l..l.l" },
+	},
+	-- Ropucha z Chatką: chatka z kominem i świecącym okienkiem na grzbiecie ropuchy
+	ropucha_z_chatka = {
+		paleta = { D = "#9C7A4A", R = "#5E7A3A", S = "#8D949C", W = "#E6E6E6", Y = "#FFD27A", G = "#5E6B2E",
+			O = "#F2932E", K = "#17121F" },
+		mapa = { ".....SW.", "..RRRS..", ".RRRRRR.", "..DYDD..", "GGDDDDGG", "GOGGGGOG", "GKKKKKKG", ".GG..GG." },
+	},
+	-- Strażnik Topieli: przewrócona łódka jak kapelusz, zielone oczy, latarnia w piersi, broda z mchu
+	straznik_topieli = {
+		paleta = { T = "#2EB8A6", B = "#7A5A36", M = "#5B4A34", G = "#C8E05A", E = "#36EE4E", A = "#A9B48E" },
+		mapa = { ".BBBBBB.", "BTTTTTTB", ".MMMMMM.", "MEMMMMEM", "MMMMMMMM", "MAAGGAAM", "MAAGGAAM", ".A.AA.A." },
 	},
 	-- efekty
 	trucizna = {
@@ -1536,6 +1567,24 @@ function Interfejs:pokazWynik(walka, naJeszczeRaz: () -> (), naZamknij: () -> ()
 	end
 	w.czasPokazania = 0
 	w.blokadaPokazana = nil
+	-- JESZCZE RAZ widoczne na starcie; odtwarzacz chowa je zaraz potem w walkach w lesie (opcja bezPowtorki). Stopka
+	-- (ziarno, liczba zdarzeń) to napis dla twórców: widać ją tylko w trybie próby z JESZCZE RAZ (aktualizuj).
+	local ramkaJeszcze = w.jeszcze.Parent
+	if ramkaJeszcze and ramkaJeszcze:IsA("GuiObject") then
+		ramkaJeszcze.Visible = true
+	end
+	w.stopka.Visible = false
+	w.pokazanoO = os.clock()
+	w.naZamknij = naZamknij
+	ContextActionService:BindActionAtPriority(AKCJA_ZAMKNIJ_WYNIK, function(_, stanWejscia)
+		if stanWejscia == Enum.UserInputState.Begin and w.uchwyt.Visible and w.naZamknij
+			and os.clock() - (w.pokazanoO or 0) >= ZAMKNIJ_WYNIK_PO then
+			local f = w.naZamknij
+			w.naZamknij = nil
+			f()
+		end
+		return Enum.ContextActionResult.Sink
+	end, false, 10002, Enum.KeyCode.Space, Enum.KeyCode.ButtonB)
 	w.stopka.Text = string.format("dziennik policzył serwer  •  ziarno %s  •  %s  •  %s  •  %.1f s",
 		tostring(walka.ziarno), Interfejs.liczebnik(walka.tury, "tura", "tury", "tur"),
 		Interfejs.liczebnik(#walka.dziennik, "zdarzenie", "zdarzenia", "zdarzeń"), walka.czas)
@@ -1571,6 +1620,8 @@ end
 function Interfejs:ukryjWynik()
 	self.wynik.uchwyt.Visible = false
 	self.wynik.liczniki = {}
+	self.wynik.naZamknij = nil
+	ContextActionService:UnbindAction(AKCJA_ZAMKNIJ_WYNIK)
 end
 
 function Interfejs:ustawZaslone(krycie: number)
@@ -1912,6 +1963,13 @@ function Interfejs:aktualizuj(dt: number, kamera: Camera, dtNapisow: number?)
 		self:_aktualizujNapisy(if dtNapisow ~= nil then dtNapisow else dt, kamera)
 	end
 	local w = self.wynik
+	if w.uchwyt.Visible then
+		local ramkaJeszcze = w.jeszcze.Parent
+		local proba = ramkaJeszcze ~= nil and ramkaJeszcze:IsA("GuiObject") and ramkaJeszcze.Visible
+		if w.stopka.Visible ~= proba then
+			w.stopka.Visible = proba
+		end
+	end
 	if w.uchwyt.Visible and #w.liczniki > 0 then
 		w.czasPokazania += dt
 		for i = #w.liczniki, 1, -1 do
@@ -1956,6 +2014,8 @@ function Interfejs:zniszcz()
 	if self.wynik.polZamknij then
 		self.wynik.polZamknij:Disconnect()
 	end
+	self.wynik.naZamknij = nil
+	ContextActionService:UnbindAction(AKCJA_ZAMKNIJ_WYNIK)
 	self.gui:Destroy()
 end
 

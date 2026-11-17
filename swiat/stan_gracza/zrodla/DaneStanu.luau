@@ -63,7 +63,7 @@ return {
 		lup = { zloto = 1000000, doswiadczenie = 1000000, tokeny_krainy = 100, gemy = 100, shard_ewolucji = 10 },
 	},
 	publikacja = { zapas_s = 6, min_s = 1.5, odstep_pokaz_s = 0.5 },
-	zrodla = { "LasPotwory", "LasPasGra" },
+	zrodla = { "LasPotwory", "LasPasGra", "BagnoPasGra" },
 	klasy_pawla = { folder = "Shared", modul = "ClassData", czekaj_s = 10 },
 	trening = { kontener = "TreningProba", sygnal = "PrzyrostStatystyki" },
 	hud = { gui = "HUD", czekaj_s = 60 },
@@ -380,5 +380,5 @@ return {
 			{ stats = { 26, 30, 12, 8, -10, 34 }, wynik = false, powod = "zla_liczba" },
 		},
 	},
-	skrot = "cf45368c0dc0",
+	skrot = "54c019023faa",
 }

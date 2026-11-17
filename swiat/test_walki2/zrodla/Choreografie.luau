@@ -169,8 +169,10 @@ Ch.MODYFIKATORY = {
 	trwanie_podpalenia = { tekst = "podpalenia", jednostka = "tury" },
 }
 
--- wskrzeszenie (v3): ile trwa każda faza sceny (ułamek trwania zdarzenia z dziennika — czas jest z silnika)
-Ch.WSKRZESZENIE = { swiatlo = 0.0, wstaje = 0.22, zycie = 0.38, napis = 0.3, kolor = "#FFE58A" }
+-- wskrzeszenie (v3): ile trwa każda faza sceny (ułamek trwania zdarzenia z dziennika — czas jest z silnika).
+-- Wstawanie = klip upadku odegrany WSTECZ od `wstaje` do `stoi` (przy 1,5 s zdarzenia: 0,33 → 1,17 s, czyli 0,84 s —
+-- tyle co szybki upadek przy powaleniu), potem 0,15 s przejścia do spoczynku; całe zdarzenie trwa tyle co dotąd.
+Ch.WSKRZESZENIE = { swiatlo = 0.0, wstaje = 0.22, stoi = 0.78, zycie = 0.38, napis = 0.3, kolor = "#FFE58A" }
 
 -- moment trafienia w zdarzeniu (część jego trwania) i zwolnienie
 Ch.TRAFIENIE = { cios = 0.5, blok = 0.5, unik = 0.5, krytyk = 0.5, umiejetnosc = 0.56 }

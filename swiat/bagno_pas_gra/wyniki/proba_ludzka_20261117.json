@@ -1,0 +1,122 @@
+{
+ "H00": {
+  "Gold": 0,
+  "PokonalStraznikaLasu": true,
+  "Class": "Warrior",
+  "XP": 0,
+  "Level": 11
+ },
+ "H02": {
+  "fazy": [
+   "trwa",
+   "brak"
+  ],
+  "pozycja": [
+   2048.5087890625,
+   3.4199235439300537,
+   -700.0003051757812
+  ]
+ },
+ "H03": {
+  "cel": {
+   "id": "r1-1",
+   "p": [
+    2165.02587890625,
+    0,
+    -689.9718017578125
+   ],
+   "gatunek": "rechotek",
+   "poziom": 10
+  },
+  "walka": true,
+  "przed": {
+   "gracz": {
+    "Level": 11,
+    "XP": 0,
+    "Gold": 0
+   },
+   "stan": {
+    "LicznikLupow": 0
+   }
+  },
+  "po": {
+   "gracz": {
+    "Level": 11,
+    "XP": 67,
+    "Gold": 96
+   },
+   "stan": {
+    "OstatniLup": "<gracz>:BagnoPasGra:wygrana:96z:67xp",
+    "LicznikLupow": 1
+   },
+   "walka": {
+    "SerwerOstatniaWalka": "r1-2/wojownik/auto→11/wygrana"
+   },
+   "hud": {
+    "level": "11",
+    "gold": "96"
+   }
+  }
+ },
+ "H04": {
+  "stan": {
+   "sprzatanie": 12,
+   "kamera": "Custom",
+   "biezacy": {
+    "faza": "wybor",
+    "obecna": "bagno",
+    "wyborOd": 56346.774772200006,
+    "czasy": {
+     "A": 1.1136930999928154,
+     "blokady": 0.0006436999829020351,
+     "doMakiety": 2.148059300001478,
+     "przeskok": 0.0003032999811694026,
+     "B": 1.0156017999979667
+    },
+    "sterowanieWylaczone": true,
+    "ukryteGui": 9,
+    "start": 56344.62642060002,
+    "pokrycie": 0,
+    "kursor": "bagno",
+    "zrodlo": "test"
+   },
+   "wiazanie": true,
+   "gotowa": true,
+   "trwa": true,
+   "zaslona": 23,
+   "lokalne": 23,
+   "zamkniete": [
+    "dzungla",
+    "pustynia",
+    "gory",
+    "lodowiec",
+    "wulkan",
+    "krysztal"
+   ],
+   "ukryteGui": 14,
+   "fov": 50,
+   "pozycja": [
+    2160.200927734375,
+    2.9980251789093018,
+    -690.2081909179688
+   ],
+   "podmiotHumanoid": true,
+   "podpowiedzi": false,
+   "kameraPoz": [
+    -5127.70361328125,
+    462.4152526855469,
+    4976.25439453125
+   ]
+  },
+  "wybor": {
+   "ok": true,
+   "zamknieta": false
+  },
+  "pozycja": [
+   2054.0009765625,
+   3.4472672939300537,
+   -700.0003051757812
+  ]
+ },
+ "_koniec": "2026-11-17 14:50:05"
+}

@@ -13,7 +13,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "8a83f8a1b49d",
+	skrot = "cc8214be55ab",
 	arkusz = {
 		id = 93573204965127,
 		plik = "sfx_arkusz_a.ogg",
@@ -270,11 +270,16 @@ return {
 		},
 	},
 	glosyPotworow = {
+		bulgotnik = "zarodniki",
 		cierniowy_wilk = "wilk",
+		klodoklap = "wilk",
 		lesny_slime = "galareta",
 		lesny_troll = "troll",
 		muchomornik = "zarodniki",
+		rechotek = "galareta",
+		ropucha_z_chatka = "troll",
 		straznik_lasu = "ryk_straznika",
+		straznik_topieli = "ryk_straznika",
 	},
 	muzyka = {
 		przejscie = 2.5,
@@ -319,6 +324,24 @@ return {
 				kontener = "LasPas",
 				prostokaty = {
 					{ 1066.0, 2066.0, -788.0, -612.0 },
+				},
+			},
+			bagno = {
+				glosnosc = 0.3,
+				podpiete = true,
+				utwory = {
+					{
+						nazwa = "muzyka_05_las_a_petla",
+						id = 70497074484606,
+					},
+					{
+						nazwa = "muzyka_05_las_b_petla",
+						id = 106582652985449,
+					},
+				},
+				kontener = "BagnoPas",
+				prostokaty = {
+					{ 2066.0, 3006.0, -788.0, -612.0 },
 				},
 			},
 			menu = {

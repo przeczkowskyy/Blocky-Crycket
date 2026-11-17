@@ -118,7 +118,8 @@ def podstawa():
         # (koniec ekranu walki), albo najpóźniej po czasie walki + zapas_s; zgłoszenie klienta pokazuje tylko łupy
         # starsze niż min_s (żeby spóźnione zgłoszenie nie pokazało łupu kolejnej walki w jej trakcie)
         "publikacja": {"zapas_s": 6, "min_s": 1.5, "odstep_pokaz_s": 0.5},
-        "zrodla": ["LasPotwory", "LasPasGra"],
+        # kontenery z kodem potworów, których łup przyjmujemy (każdy nowy biom: dopisać jego kontener; 17.11.2026 Bagno)
+        "zrodla": ["LasPotwory", "LasPasGra", "BagnoPasGra"],
         "klasy_pawla": {"folder": "Shared", "modul": "ClassData", "czekaj_s": 10},
         "trening": {"kontener": "TreningProba", "sygnal": "PrzyrostStatystyki"},
         "hud": {"gui": "HUD", "czekaj_s": 60},

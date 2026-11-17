@@ -1108,6 +1108,12 @@ function Sesja:zaplanuj(walka)
 end
 
 local UNIK_PRZED_SZEROKIM = 2.5 -- studs: o tyle krótszy doskok szerokiego atakującego (i dalsze zejście celu) przy uniku
+-- finał: zwycięzca obraca się do kamery objazdu przez `czas` s, zaczynając `przed` s przed radością (w końcówce ujęcia
+-- pokonanego), więc przy cięciu do objazdu stoi już twarzą do kamery (kąt twarzy ≤ 35°). Obrót zaczynany razem
+-- z radością zostawiał przez 0,1–0,3 s objazdu twarz bokiem do kamery i broń przed nią (miecz Wojownika w gotowości:
+-- oczy 100%, sztylet Zwiadowcy: 60–77%; pomiar swiat/postacie/przenikanie, 17.11.2026). Test:
+-- testy/test_przenikania.py (Kamera) czyta te liczby stąd.
+local OBROT_ZWYCIEZCY = { przed = 0.45, czas = 0.45 }
 
 -- chwila klipu (s), w której punkt Bron schodzi z góry do wysokości wierzchu celu `wys` — z toru broni z tabeli aktorów
 -- (8 klatek przed chwilą trafienia); gdy broń w chwili trafienia jest jeszcze nad celem albo przez cały tor w jego
@@ -1882,7 +1888,7 @@ Obsluga.utrata = function(self, ev)
 end
 
 --[[ Wskrzeszenie (v3, propozycja D-094): mocna, krótka scena w czasie zdarzenia z dziennika (trwa 1,5 s):
-	światło z góry na powalonego → wstaje (przejście z klipu upadku do spoczynku, lekkie uniesienie) → pasek życia
+	światło z góry na powalonego → wstaje (klip upadku wstecz, potem spoczynek; lekkie uniesienie) → pasek życia
 	rośnie z 0 do życia po powrocie (wartosc = hp z dziennika) ze złotym blaskiem → „WSKRZESZENIE!”. Legenda przy
 	portrecie szarzeje (raz na walkę). Efekty na postaci zostają (ozdoby nie zniknęły przy powaleniu). ]]
 Obsluga.wskrzeszenie = function(self, ev)
@@ -1900,8 +1906,27 @@ Obsluga.wskrzeszenie = function(self, ev)
 		self.fx:wybuch("zloto", self:piers(z.kto), s)
 		self:dzwiek("czar", 0.85)
 	end)
+	-- wstaje: klip upadku odegrany WSTECZ od bieżącej chwili do klatki 0 (w.wstaje → w.stoi; te same pozy co przy
+	-- padaniu — kostur wraca do łapy po swoim torze), potem 0,15 s do spoczynku. Dawne przejście 0,45 s z leżenia
+	-- do spoczynku mieszało kości po kolei i przeciągało kostur Maga przez głowę (0,21 studa), a jelec miecza
+	-- Wojownika przez biodra (0,17; pomiar swiat/postacie/przenikanie, 17.11.2026). Bez klipu upadku, gdy upadek nie
+	-- jest bieżącym klipem albo po pominięciu — jak dawniej.
+	local wstecz = false
 	self:zaplanujAkcje(ev.t + ev.trwa * w.wstaje, function(sp)
-		self:klip(A, "spoczynek", { przejscie = 0.45, petla = true }, sp)
+		local klipUpadku = A:maKlip("upadek")
+		local tor = A.klipy:biezacy()
+		local czas = ev.trwa * (w.stoi - w.wstaje)
+		if not self.pominieto and klipUpadku and tor and tor.nazwa == klipUpadku and tor.czas > 0 and czas > 0 then
+			wstecz = true
+			self:klip(A, "upadek", { przejscie = 0, odCzasu = tor.czas, predkosc = -tor.czas / czas }, sp)
+		else
+			self:klip(A, "spoczynek", { przejscie = 0.45, petla = true }, sp)
+		end
+	end)
+	self:zaplanujAkcje(ev.t + ev.trwa * w.stoi, function(sp)
+		if wstecz then
+			self:klip(A, "spoczynek", { przejscie = 0.15, petla = true }, sp)
+		end
 	end)
 	self:zaplanujAkcje(ev.t + ev.trwa * w.zycie, function()
 		self.ui:ustawZycie(z.kto, if z.kto == "gracz" then z.hp_gracz else z.hp_wrog)
@@ -2102,8 +2127,8 @@ function Sesja:aktualizujPozy(tau: number)
 	end
 	-- finał: zwycięzca w radości obraca się w stronę widza (kamery objazdu), żeby wiwat było widać z przodu (przegląd 15.11)
 	local obrotZw = 0
-	if self.final and self.final.radosc and self.obrotZwyciezcy and self.tRadosc then
-		obrotZw = self.obrotZwyciezcy * gladko((tau - self.tRadosc) / 0.45)
+	if self.final and (self.final.obrot or self.final.radosc) and self.obrotZwyciezcy and self.tRadosc then
+		obrotZw = self.obrotZwyciezcy * gladko((tau - (self.tObrotu or self.tRadosc)) / OBROT_ZWYCIEZCY.czas)
 	end
 	for strona, a in self.aktorzy do
 		local p = pozy[strona]
@@ -2919,6 +2944,7 @@ function Sesja:rozpocznij(walka)
 	self.upadekWUjeciu = nil
 	self.katObjazduMin = nil
 	self.obrotZwyciezcy = nil
+	self.tObrotu = nil
 	self.statDzwiekow = { zagrane = 0, pominiete = 0, maksNaraz = 0 }
 	self.zwyciezca = if walka.wynik == "wygrana" then "gracz" else "wrog"
 	self.pokonany = inna(self.zwyciezca)
@@ -3019,6 +3045,13 @@ function Sesja:krokSceny(d: number, dt: number)
 		self.final.pokonanyZegar = self.zegar
 		self:proponujUjecie({ typ = "pokonany", prio = 3 })
 	end
+	-- obrót zwycięzcy do kamery objazdu zaczyna się OBROT_ZWYCIEZCY.przed s przed radością (tylko po ciosie kończącym:
+	-- wtedy radość jest ≥ 1,48 s po trafieniu, atak zwycięzcy już się skończył, a pokonany leży)
+	if not self.final.obrot and self.tPokonany and tau >= self.tRadosc - OBROT_ZWYCIEZCY.przed then
+		self.final.obrot = true
+		self.tObrotu = self.tRadosc - OBROT_ZWYCIEZCY.przed
+		self:przygotujObjazd() -- kąt objazdu i obrót zwycięzcy do widza (aktualizujPozy)
+	end
 	if not self.final.radosc and tau >= self.tRadosc then
 		self.final.radosc = true
 		if self.final.pokonanyZegar then
@@ -3026,7 +3059,9 @@ function Sesja:krokSceny(d: number, dt: number)
 			local tor = self.torUpadku
 			self.upadekWUjeciu = tor ~= nil and (tor.zakonczony or tor.czas >= tor.dlugosc - 0.02)
 		end
-		self:przygotujObjazd() -- kąt objazdu i obrót zwycięzcy do widza (aktualizujPozy)
+		if not self.final.obrot then
+			self:przygotujObjazd() -- kąt objazdu i obrót zwycięzcy do widza (aktualizujPozy)
+		end
 		self:klip(self.aktorzy[self.zwyciezca], "radosc", { petla = true, przejscie = 0.2 })
 		self.ui:ustawTure(self.turaNr)
 		self:atrybut("OstatniaLiczbaTurOdtworzona", self.turaNr)
@@ -3308,7 +3343,7 @@ function Sesja:pomin(wymus: boolean?)
 		P:graj("upadek", { przejscie = 0, odCzasu = dl })
 	end
 	self.aktorzy[self.zwyciezca]:graj("radosc", { przejscie = 0, petla = true })
-	self.final = { radosc = true, baner = true, lup = true, objazd = true, pokonany = true }
+	self.final = { radosc = true, baner = true, lup = true, objazd = true, pokonany = true, obrot = true }
 	self.tau = self.czasKonca
 	-- objazd i zwycięzca obrócony do widza, jak w zwykłym finale
 	self:przygotujObjazd()

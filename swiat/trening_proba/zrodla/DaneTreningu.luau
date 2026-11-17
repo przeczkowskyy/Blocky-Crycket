@@ -1,7 +1,7 @@
 --[[
 	DaneTreningu — WYGENEROWANE przez swiat/trening_proba/dane.py z ustawienia.json (oraz punktu
 	trenera ze swiat/miasteczko_bazar/znaczniki.json). Nie edytuj ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: b5bab2e3004e
+	Skrót danych: 3311816f1faf
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -233,7 +233,7 @@ return {
 	},
 	teksty = {
 		tytul_wyboru = "TRAINING CENTER — wybierz mini-grę",
-		tymczasowy = "TYMCZASOWY WYBÓR (próba). Docelowe okno 2D robi Paweł (D-093).",
+		tymczasowy = "Gotowe są dwie mini-gry — cztery kolejne już wkrótce.",
 		graj = "GRAJ",
 		w_projekcie = "w projekcie",
 		start_podpowiedz = "Spacja / Enter / A na padzie",
@@ -1231,5 +1231,5 @@ return {
 			{ 1024, 768, 1.535232383808096 },
 		},
 	},
-	skrot = "b5bab2e3004e",
+	skrot = "3311816f1faf",
 }

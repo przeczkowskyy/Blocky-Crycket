@@ -738,13 +738,24 @@ class TestTelefonu(unittest.TestCase):
                         self.assertTrue(x1 <= X0 or X1 <= x0 or y1 <= Y0 or Y1 <= y0, (a, b2, ekran))
         self.assertIn("-8 - (ui.status.Size.X.Offset + 8) * s", KLIENT)
 
-    def test_5d_wybor_opisany_jako_tymczasowy(self):
+    def test_5d_teksty_dla_gracza(self):
+        # wybór jest dalej tymczasowy (WyborTymczasowy / WybierzGre dla okna Pawła), ale na ekranie gracza nie ma
+        # napisów dla twórców (raport przejścia gry 17.11.2026: „Docelowe okno 2D robi Paweł (D-093)”, „bez zapisu”)
         T = D["teksty"]
-        self.assertIn("TYMCZASOWY", T["tymczasowy"])
-        self.assertIn("D-093", T["tymczasowy"])
         self.assertIn("w projekcie", T["w_projekcie"])
         self.assertIn("WyborTymczasowy", KLIENT)
         self.assertIn("WybierzGre", KLIENT)
+        tworcy = re.compile(r"D-0\d\d|Paweł|TYMCZASOW|\(próba\)|bez zapisu|atrybut|PlayerStatsDefaults", re.I)
+        for klucz, tekst in T.items():
+            for t in (tekst if isinstance(tekst, list) else tekst.values() if isinstance(tekst, dict) else [tekst]):
+                self.assertIsNone(tworcy.search(t), (klucz, t))
+        napisy = re.findall(r'string\.format\("([^"]*)"', bez_komentarzy(KLIENT))
+        for t in napisy:
+            self.assertIsNone(tworcy.search(t), t)
+        for p in ZB.PODPOWIEDZI:
+            self.assertIsNone(tworcy.search(p[4]), p)
+        self.assertIn("schowajInneEkrany()", KLIENT)
+        self.assertIn("przywrocInneEkrany()", KLIENT)
 
 
 # ============================================================================================== 6. styki

@@ -1,7 +1,7 @@
 --[[
 	DaneBazaru — WYGENEROWANE przez swiat/miasteczko_bazar_gra/dane.py z miejsca.json, swiat/miasteczko_bazar/
 	znaczniki.json i swiat/krzywe_miasteczko/uklad.json. Nie edytuj ręcznie: zmień źródła i uruchom dane.py.
-	Skrót danych: 47f19de88a6a
+	Skrót danych: 3f610bbf3b94
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -33,20 +33,21 @@ return {
 	teksty = {
 		za_szybko = "Chwila… jeszcze %d s",
 		trwa = "Już cię przenoszę…",
-		brak_lasu = "Las jeszcze niegotowy (nie ma pasa Lasu w miejscu)",
-		brak_mapy = "Las jeszcze niegotowy (nie ma mapy pasa)",
+		brak_lasu = "Las jeszcze niegotowy — wróć później.",
+		brak_mapy = "Las jeszcze niegotowy — wróć później.",
 		przelot_trwa = "Poczekaj, aż skończy się przelot",
 		brak_postaci = "Brak postaci — spróbuj po odrodzeniu",
-		brak_celu = "Tego przejścia jeszcze nie ma (brak punktu)",
+		brak_celu = "Tego przejścia jeszcze nie ma.",
 		nieznany_punkt = "Nie udało się — spróbuj jeszcze raz",
 		zly_gracz = "Nie udało się — spróbuj jeszcze raz",
+		zamkniete = "Ta kraina jest jeszcze zamknięta.",
 		blad = "Nie udało się — spróbuj jeszcze raz",
 	},
 	dymek = {
 		nad_glowa = 1.6,
 		nad_podpowiedzia = 3.4,
-		szer_px = 270,
-		wys_px = 62,
+		szer_px = 300,
+		wys_px = 76,
 		zasieg = 80,
 	},
 	tabliczka = {
@@ -77,7 +78,7 @@ return {
 			obiekt = "Karczmarz",
 			akcja_tekst = "Zadania",
 			postac = "Karczmarz",
-			dymek = "Karczmarz: zadania wkrótce!",
+			dymek = "Karczmarz: zadania będą tu już wkrótce.",
 			zasieg = 10,
 			hud = "Quests",
 			znacznik = "sklepy/karczma",
@@ -94,7 +95,7 @@ return {
 			obiekt = "Mistrz gier",
 			akcja_tekst = "Zagraj",
 			postac = "Mistrz gier",
-			dymek = "Mistrz gier: plansza w budowie",
+			dymek = "Mistrz gier: gra w kostkę ruszy wkrótce.",
 			zasieg = 10,
 			znacznik = "sklepy/mistrz_gier",
 			znacznik_id = "mistrz_gier",
@@ -110,7 +111,7 @@ return {
 			obiekt = "Mag",
 			akcja_tekst = "Sklep",
 			postac = "Mag",
-			dymek = "Mag: sklep w budowie",
+			dymek = "Mag: sklep jeszcze zamknięty.",
 			zasieg = 10,
 			hud = "Shop",
 			znacznik = "sklepy/sklep_magiczny",
@@ -127,7 +128,7 @@ return {
 			obiekt = "Zbrojmistrz",
 			akcja_tekst = "Sklep",
 			postac = "Zbrojmistrz",
-			dymek = "Zbrojmistrz: sklep w budowie",
+			dymek = "Zbrojmistrz: broń i zbroje już wkrótce.",
 			zasieg = 10,
 			hud = "Shop",
 			znacznik = "sklepy/zbrojownia",
@@ -144,7 +145,7 @@ return {
 			obiekt = "Trener",
 			akcja_tekst = "Mini-gry",
 			postac = "Trener",
-			dymek = "Trener: mini-gry w budowie",
+			dymek = "Trener: mini-gry jeszcze nieczynne.",
 			zasieg = 10,
 			znacznik = "training_center",
 			znacznik_id = "training_center",
@@ -160,7 +161,7 @@ return {
 			obiekt = "Opiekunka",
 			akcja_tekst = "Zagroda petów",
 			postac = "Opiekunka",
-			dymek = "Opiekunka: zagroda w budowie",
+			dymek = "Opiekunka: zagroda petów jeszcze zamknięta.",
 			zasieg = 10,
 			hud = "Pets",
 			znacznik = "zagroda/punkt_e",
@@ -177,7 +178,7 @@ return {
 			obiekt = "Tablica ogłoszeń",
 			akcja_tekst = "Ranking",
 			postac = "Tablica",
-			dymek = "Pełny ranking — wkrótce",
+			dymek = "Pełny ranking graczy pojawi się wkrótce.",
 			zasieg = 10,
 			znacznik = "tablica/tablica",
 			znacznik_id = "tablica",
@@ -192,7 +193,7 @@ return {
 			obiekt = "Brama Twierdzy",
 			akcja_tekst = "Na działkę",
 			postac = "Brama Twierdzy",
-			dymek = "Działka — wkrótce",
+			dymek = "Twoja działka za tą bramą — już wkrótce.",
 			zasieg = 10,
 			znacznik = "dzialka",
 			znacznik_id = "brama_twierdzy",
@@ -206,9 +207,9 @@ return {
 			obiekt = "Wrota lochów",
 			akcja_tekst = "Otwórz",
 			postac = "Wrota lochów",
-			dymek = "Zamknięte",
+			dymek = "Wrota lochów są jeszcze zamknięte.",
 			zasieg = 10,
-			dymek_otwarte = "Hala portali — wkrótce",
+			dymek_otwarte = "Hala portali jeszcze się buduje.",
 			znacznik = "lochy/punkt_e",
 			znacznik_id = "brama_lochow",
 			punkt = { 1038.5, 4.87, -689 },
@@ -221,7 +222,7 @@ return {
 			obiekt = "Portal krain",
 			akcja_tekst = "Podróżuj",
 			postac = "Portal krain",
-			dymek = "Portal krain: przejście przez chmury jeszcze nie działa",
+			dymek = "Portal krain jeszcze nie działa.",
 			zasieg = 10,
 			znacznik = "portal_krain/portal_krain",
 			znacznik_id = "portal_krain",
@@ -283,7 +284,7 @@ return {
 		tytul = "RANKING SERWERA",
 		naglowek = "poziom · moc (suma statystyk)",
 		pusto = "(ranking pojawi się w grze)",
-		stopka = "dane tymczasowe: atrybuty gracza (PlayerStatsDefaults), bez zapisu",
+		stopka = "ranking graczy na tym serwerze",
 		statystyki = { "Strength", "Constitution", "Intelligence", "Dexterity", "Luck", "Armor" },
 	},
 	lochy = {
@@ -587,7 +588,7 @@ return {
 			wynik = {
 				akcja = "dymek",
 				id = "lochy",
-				tekst = "Zamknięte",
+				tekst = "Wrota lochów są jeszcze zamknięte.",
 				powod = "zamkniete",
 			},
 			stan_po = {
@@ -996,7 +997,7 @@ return {
 			wynik = {
 				akcja = "dymek",
 				id = "lochy",
-				tekst = "Zamknięte",
+				tekst = "Wrota lochów są jeszcze zamknięte.",
 				powod = "zamkniete",
 			},
 			stan_po = {
@@ -1027,7 +1028,7 @@ return {
 			wynik = {
 				akcja = "dymek",
 				id = "portal_krain",
-				tekst = "Portal krain: przejście przez chmury jeszcze nie działa",
+				tekst = "Portal krain jeszcze nie działa.",
 				powod = "brak_chmur",
 			},
 			stan_po = {
@@ -1058,7 +1059,7 @@ return {
 			wynik = {
 				akcja = "dymek",
 				id = "brama_lesna",
-				tekst = "Las jeszcze niegotowy (nie ma pasa Lasu w miejscu)",
+				tekst = "Las jeszcze niegotowy — wróć później.",
 				powod = "brak_lasu",
 			},
 			stan_po = {
@@ -1243,7 +1244,7 @@ return {
 			wynik = {
 				akcja = "dymek",
 				id = "nowe_miasteczko",
-				tekst = "Tego przejścia jeszcze nie ma (brak punktu)",
+				tekst = "Tego przejścia jeszcze nie ma.",
 				powod = "brak_celu",
 			},
 			stan_po = {
@@ -1409,21 +1410,21 @@ return {
 			opis = "tekst brak_celu",
 			powod = "brak_celu",
 			zostalo = 2.2,
-			wynik = "Tego przejścia jeszcze nie ma (brak punktu)",
+			wynik = "Tego przejścia jeszcze nie ma.",
 		},
 		{
 			f = "tekst",
 			opis = "tekst brak_lasu",
 			powod = "brak_lasu",
 			zostalo = 2.2,
-			wynik = "Las jeszcze niegotowy (nie ma pasa Lasu w miejscu)",
+			wynik = "Las jeszcze niegotowy — wróć później.",
 		},
 		{
 			f = "tekst",
 			opis = "tekst brak_mapy",
 			powod = "brak_mapy",
 			zostalo = 2.2,
-			wynik = "Las jeszcze niegotowy (nie ma mapy pasa)",
+			wynik = "Las jeszcze niegotowy — wróć później.",
 		},
 		{
 			f = "tekst",
@@ -1459,6 +1460,13 @@ return {
 			powod = "za_szybko",
 			zostalo = 2.2,
 			wynik = "Chwila… jeszcze 3 s",
+		},
+		{
+			f = "tekst",
+			opis = "tekst zamkniete",
+			powod = "zamkniete",
+			zostalo = 2.2,
+			wynik = "Ta kraina jest jeszcze zamknięta.",
 		},
 		{
 			f = "tekst",
@@ -2734,5 +2742,5 @@ return {
 			wynik = false,
 		},
 	},
-	skrot = "47f19de88a6a",
+	skrot = "3f610bbf3b94",
 }

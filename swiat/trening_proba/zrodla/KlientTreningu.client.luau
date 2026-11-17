@@ -939,6 +939,55 @@ local function usunModelGracza()
 	end
 end
 
+------------------------------------------------------------------ inne ekrany schowane na stanowisku (jak w walce)
+-- HUD gry i ekrany innych pakietów znikają, gdy gracz stoi na stanowisku (kamera stała, runda, podsumowanie), i wracają
+-- przy zejściu — także po resecie postaci (CharacterAdded → zejdzZeStanowiska). Chowamy tylko to, co było włączone, i
+-- przywracamy tylko to, co sami schowaliśmy; ekran włączony w tym czasie przez inny skrypt też chowamy (i oddajemy).
+local POMIJANE_EKRANY = { TouchGui = true, Freecam = true, LoadingScreen = true, ProximityPrompts = true }
+local schowaneEkrany = nil -- { [ScreenGui]: true } albo nil, gdy nic nie jest schowane
+local polaczeniaEkranow = {}
+
+local function schowajInneEkrany()
+	if schowaneEkrany then
+		return
+	end
+	schowaneEkrany = {}
+	local function sprawdz(g)
+		if schowaneEkrany and g:IsA("ScreenGui") and g ~= gui and not POMIJANE_EKRANY[g.Name] and g.Enabled then
+			schowaneEkrany[g] = true
+			g.Enabled = false
+		end
+	end
+	local function pilnuj(g)
+		if g:IsA("ScreenGui") and g ~= gui then
+			sprawdz(g)
+			table.insert(polaczeniaEkranow, g:GetPropertyChangedSignal("Enabled"):Connect(function()
+				sprawdz(g)
+			end))
+		end
+	end
+	for _, g in ekrany:GetChildren() do
+		pilnuj(g)
+	end
+	table.insert(polaczeniaEkranow, ekrany.ChildAdded:Connect(pilnuj))
+end
+
+local function przywrocInneEkrany()
+	for _, p in polaczeniaEkranow do
+		p:Disconnect()
+	end
+	table.clear(polaczeniaEkranow)
+	local byly = schowaneEkrany
+	schowaneEkrany = nil
+	if byly then
+		for g in byly do
+			if g.Parent then
+				g.Enabled = true
+			end
+		end
+	end
+end
+
 local function wejdzNaStanowisko(gra)
 	usunWizualne()
 	usunModelGracza()
@@ -952,6 +1001,7 @@ local function wejdzNaStanowisko(gra)
 	stan.lokalne = {}
 	stan.wybor = false
 	stan.ekran = "stanowisko"
+	schowajInneEkrany()
 	przypnij(gra)
 	if dotykPrzed == nil then
 		dotykPrzed = GuiService.TouchControlsEnabled
@@ -975,6 +1025,7 @@ local function zejdzZeStanowiska()
 		dotykPrzed = nil
 	end
 	kameraPrzywroc()
+	przywrocInneEkrany()
 	stan.gra = nil
 	stan.runda = nil
 	stan.R = nil
@@ -1213,11 +1264,14 @@ zdalne.OnClientEvent:Connect(function(rodzaj, a, b)
 		przywrocArene()
 		local st = L.statystyka(D, a.gra)
 		ui.kTytul.Text = if a.przerwana then T.koniec .. " (przerwana)" else T.koniec
-		ui.k1.Text = string.format("Trafienia %d z %d (%d%%)", a.trafienia, a.n, a.celnosc)
+		-- liczone z rozstrzygniętych prób (trafienia + pudła + naciśnięcia w powietrze), nie ze wszystkich zdarzeń
+		-- planu — po przerwaniu rundy „2 z 43 (15%)” było sprzeczne (raport przejścia gry 17.11.2026, M8)
+		ui.k1.Text = string.format("Trafienia %d · pudła %d · celność %d%%", a.trafienia or 0, (a.pudla or 0) + (a.puste or 0),
+			a.celnosc or 0)
 		ui.k2.Text = string.format("Najdłuższa seria %d", a.najdluzsza)
 		ui.k3.Text = string.format("%s +%d", st.nazwa, a.suma)
-		ui.k4.Text = string.format("Pasek %d/%d · w tej sesji +%d (atrybut %s, bez zapisu)", math.floor(a.pasek or 0),
-			math.ceil(a.prog or 0), a.sesja, st.atrybut_sesji)
+		ui.k4.Text = string.format("Do następnego punktu: %d/%d · %s łącznie: +%d", math.floor(a.pasek or 0),
+			math.ceil(a.prog or 0), st.nazwa, a.sesja or 0)
 		stan.ekran = "podsumowanie"
 		melodia(D.dzwieki.melodia_koniec)
 		odswiezStatus()
@@ -1329,6 +1383,13 @@ local function stanTestowy()
 	local R = stan.R
 	return {
 		ekran = stan.ekran, wybor = stan.wybor, zrodlo = stan.zrodlo, gra = stan.gra, guiWlaczone = gui.Enabled,
+		schowaneEkrany = (function()
+			local n = 0
+			for _ in schowaneEkrany or {} do
+				n += 1
+			end
+			return n
+		end)(),
 		runda = if stan.runda then { id = stan.runda.id, gra = stan.runda.gra, n = #stan.runda.plan, t0 = stan.runda.t0 } else nil,
 		lokalnie = if R then { trafienia = R.trafienia, pudla = R.pudla, puste = R.puste, spam = R.spam, seria = R.seria, suma = R.suma } else nil,
 		wyniki = stan.wyniki, rozbieznosci = stan.rozbieznosci, podsumowanie = stan.podsumowanie,

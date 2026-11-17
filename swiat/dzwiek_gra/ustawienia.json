@@ -61,7 +61,12 @@
   "cierniowy_wilk": "wilk",
   "lesny_troll": "troll",
   "muchomornik": "zarodniki",
-  "straznik_lasu": "ryk_straznika"
+  "straznik_lasu": "ryk_straznika",
+  "rechotek": "galareta",
+  "bulgotnik": "zarodniki",
+  "klodoklap": "wilk",
+  "ropucha_z_chatka": "troll",
+  "straznik_topieli": "ryk_straznika"
  },
  "muzyka": {
   "przejscie_s": 2.5,
@@ -78,6 +83,13 @@
     "glosnosc": 0.35,
     "mapy": ["swiat/las_pas/czesci.json"],
     "kontener": "LasPas",
+    "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]
+   },
+   "bagno": {
+    "glosnosc": 0.3,
+    "uwaga": "Bagno (swiat/bagno_pas, propozycja 17.11.2026): na razie te same dwa utwory co las, ciszej — własnej muzyki Bagna jeszcze nie ma",
+    "mapy": ["swiat/bagno_pas/czesci.json"],
+    "kontener": "BagnoPas",
     "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]
    },
    "menu": {
