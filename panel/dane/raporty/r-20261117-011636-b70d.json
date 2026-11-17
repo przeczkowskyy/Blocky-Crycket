@@ -1,0 +1,26 @@
+{
+ "id": "r-20261117-011636-b70d",
+ "tytul": "Las-pas w grze: potwory, brama, przelot kamery — działa w Studio",
+ "opis_md": "**Co to jest:** nowy las-pas działa w Roblox Studio od wejścia do Strażnika i bramy do Bagna (D-075, D-076, D-077). To kontenery `Workspace/LasPas` (mapa) i `Workspace/LasPasGra` (potwory, brama, teleport, mgła, przelot). Stary las działa obok bez zmian.\n\n**Jak wejść:** w trybie Play — brama w miasteczku (E) albo przycisk TELEPORT i wybór Lasu w przejściu przez chmury. Przy pierwszym wejściu leci przelot kamery (ok. 14 s, kończy się rykiem Strażnika); przy drugim już nie.\n\n**Sprawdzone w grze:**\n- lista 16 kontroli: 15 w porządku, szesnasta (koszt) nie ma progu i wymaga oceny człowieka;\n- bieg piechotą od Polany Przybycia do bramy: 57,0 s (plan 57,5 s), nic nie blokuje; niewidzialne ściany trzymają gracza w pasie, a spadek poza mapę kończy się powrotem na Polanę;\n- potwory nie wychodzą ze swoich przegród (400 próbek pozycji, 0 poza przegrodą);\n- walka z każdym gatunkiem zaczyna się klawiszem E i wraca dokładnie w to samo miejsce; odradzanie: slime 12 s, muchomornik 15 s, wilk 18 s, Strażnik 121 s;\n- przegrana ze Strażnikiem nie otwiera bramy; po wygranej pojawia się napis „Brama do Bagna otwarta!”, wrota znikają tylko u zwycięzcy, a za bramą stoi tabliczka „Bagno — wkrótce”;\n- Kamień Powrotu przenosi do miasteczka; mgła jest tylko w pasie.\n\n**Koszt na komputerze:** klient potworów przy wilkach ok. 1,4–1,7 ms na klatkę; przy pełnym zestawie potworów wilki są tuż pod budżetem brył (3965 z 4000). Prawdziwej płynności nie da się ocenić — okno Studio było tej nocy przykryte.\n\n**Nie sprawdzono:** telefonu, dwóch graczy naraz (czy brama otwiera się tylko zwycięzcy), pada, odrodzenia Trolla po 150 s. Podpowiedzi E nie widać na zrzutach — narzędzie zrzutu ich nie rysuje; w grze działają.\n\n**Znane słabości:**\n- kryształowy filar Strażnika stoi na osi pasa — dróżka go obchodzi, ale bieg na wprost się na nim zatrzymuje;\n- po przejściu przez chmury jest ok. 0,8 s zwykłej kamery, potem cięcie do czerni i przelot;\n- po Strażniku pokazują się dwa panele bohatera i dwa banery;\n- walki liczy jeszcze stara wersja silnika; nowa (mana, statusy) wejdzie tej nocy razem z nowym ekranem walki.\n\n**Do decyzji:** czy przesunąć filar z osi pasa; czy po chmurach przelot ma startować od razu z bieli; pozostałe wybory w `swiat/las_pas_gra/README.md`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T01:16:36+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/LasPasGra",
+   "etykieta": "Las-pas w grze"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/las_pas_gra/README.md",
+   "etykieta": "Opis, wyniki prób i wybory"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "pytanie": "Czy nowy las w grze jest taki, jak chciałeś?"
+}
