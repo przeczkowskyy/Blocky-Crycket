@@ -211,3 +211,90 @@ to decyzje ludzi.
 | P1 walka, D2 | stopka z ziarnem tylko w trybie próby (z JESZCZE RAZ), spacja / B zamyka kartę wyniku (po 0,6 s) | `swiat/test_walki2/zrodla/InterfejsWalki2.luau` |
 | próba dźwięku | D2, D4, D5 rozpoznają stan (bez identyfikatora / wczytany / niewczytany) i wypisują go | `swiat/dzwiek_gra/testy/proba_play.py` |
 | próba dymna | D11 (wskazówka po starcie), D12 (wskazówka w lesie), D13 (dźwięk w walce), D04 czeka do 10 s na łup | `proba_dymna.py` |
+
+## Część 3 — po poprawkach (17.11.2026, wspólna próba całości, 14:52–15:50)
+
+Wszystko z dysku wdrożone w Studio (StanGracza, oba lasy, Bagno, nowe skrypty walki, chmury, dźwięk, wskazówki,
+Training Center, bazar, przymierzalnia). Okno Studio na wierzchu.
+
+### Próby w Play
+
+| Próba | Wcześniej | Teraz |
+|---|---|---|
+| `swiat/przejscie_gry/proba_dymna.py` (D01–D13) | 10 × OK, D04 NIE (łup) | **13/13 OK** (dwa przebiegi; D04: złoto 0 → 22 i 0 → 18) |
+| `test_walki2/testy/test_walki_play.py --szybko` | 111/111 | **111/111** |
+| `test_walki2/testy/test_v3_play.py` | 44/46 | **44/46** — te same dwa punkty: panel prób na telefonie 844 × 390 i 667 × 375 (napisy 10–11 pkt; czekają na decyzję) |
+| `test_walki2/testy/test_poprawek_play.py` | 27/27 | **27/27** |
+| `test_walki2/testy/test_klipow_play.py` | — | **29/29** |
+| `test_walki2/testy/test_dopieszczenia_play.py --tylko final` | — | **9/9** (ujęcie pokonanego 1,8 s, upadek skończony w ujęciu, objazd 17 klatek, twarz zwycięzcy 35°) |
+| `test_walki2/testy/klatki_aktorow.py --tylko mag --wszystkie` (+ `--przod`) | — | **zrzuty bezużyteczne** — na każdej klatce sala wyboru klasy, nie aktor (niżej) |
+| `trening_proba/testy/proba_play.py` (T01–T14) | 14/14 (kliknięcia GRAJ / WYJDŹ przez haczyk) | **14/14**, po poprawce próby kliknięcia GRAJ i WYJDŹ są prawdziwe |
+| `miasteczko_bazar_gra/testy/proba_play.py` (B01–B15) | B11 BŁĄD (próba znała stare dymki), B14 „?” | **13 × OK**, B03 „?” (bieg pominięty `--bez-biegu`), B14 „?” (klatka 16,7 ms) |
+| `miasteczko_bazar_gra/testy/proba_dodatkowa.py` | — | D01–D04 OK, D05 „?” (klatka) |
+| `teleport_chmury/testy/proba_play.py` | 6/6 | **6/6** |
+| `dzwiek_gra/testy/proba_play.py` (D1–D6) | — | **6/6** — stan: arkusz niewczytany (gra nie ma prawa do zasobu) → grają dźwięki wbudowane (zagrane 21); muzyka bazaru i lasu niewczytana → nie gra |
+| stroje S09 (walka w lesie w stroju) | „?” | **sprawdzone w grze**: Mag zdjął kapelusz w przymierzalni → w walce w lesie kot-mag bez kapelusza (`klatki/c3_07`, `c3_08`); liczby brył nie odczytałem |
+
+### Przejście „po ludzku” (Mag, prawdziwe kliknięcia i klawisze; haczyki: przestawienie postaci przy potworach,
+Kamieniach i trenerze, kamera za plecami przed E, autogra rundy Siły, poziom 14 i Strażnik lasu pokonany)
+
+Start → wybór klasy (strzałka, PLAY) → linijka „Otwórz TELEPORT i wybierz Las” ze strzałką przy TELEPORT (`c3_01`,
+`c3_02`) → przymierzalnia: zakładka Mag, hełm „— nic —” → „Założone — tak wyjdziesz do następnej walki” (`c3_04`) →
+TELEPORT → chmury z linijką podpowiedzi (`c3_05`) → przelot → las: panel „TWÓJ BOHATER: MAG · POZIOM 1”, linijka
+„Podejdź do potwora i wciśnij E” (`c3_06`) → walka ze slime'em Magiem w stroju (`c3_07`; dźwięk: zestaw arkusz,
+niewczytany → 24 dźwięki wbudowane) → karta bez stopki (`c3_08`) → **spacja zamyka kartę**, HUD wraca, złoto 0 → 21,
+poziom 1 → 2, linijka „Zdobywaj poziomy (masz 2)” (`c3_09`) → Kamień Powrotu → bazar → trener → runda Siły: HUD
+schowany (`c3_10`), „Trafienia 36 · pudła 11 · celność 77% · Siła +3” (`c3_11`), Siła gracza 10 → 13 → WYJDŹ →
+(haczyk: poziom 14, Strażnik lasu) → baner „POZIOM 14 · AWANS ×4!” i linijka „Bagno otwarte: TELEPORT → Bagno”
+(`c3_12`) → TELEPORT → Las → „Brama otwarta — idź do Bagna” → przez bramę (W) (`c3_13`) → przelot Bagna ze
+Strażnikiem Topieli (`c3_14`) → Bagno: „Podejdź do potwora i wciśnij E” (`c3_15`) → walka z Rechotkiem poz. 10, Mag
+poz. 14 ma 1144 HP (`c3_16`) → karta „TOKENY BAGNA” (`c3_17`) → spacja → złoto 138, panel „BAGNO · TWÓJ BOHATER”,
+„Zdobywaj poziomy (masz 14) — Strażnik Topieli na końcu Bagna” (`c3_18`) → Kamień Powrotu Bagna → start bazaru
+(`c3_19`). Konsola: 0 błędów ze skryptów gry; tylko „Requester does not have permission for Asset” (znane).
+
+### Znaleziska z części 1 → stan teraz
+
+| # | Znalezisko | Teraz |
+|---|---|---|
+| B1 | łup nie trafia do gracza | **naprawione** (StanGracza): złoto, XP, awans, tokeny krainy w HUD i atrybutach |
+| M1 | klasa nic nie zmienia | **częściowo**: statystyki z rozkładu klasy (StanGracza), ale Mag ma Siłę 10 > Inteligencję 9 (rozkład do sprawdzenia); postać poza walką to dalej awatar Roblox |
+| M2 | w lesie walczy „Wojownik AUTO” | **naprawione**: bohater z klasy i poziomu gracza („TWÓJ BOHATER: MAG · POZIOM N”) |
+| M3 | brak celu | **naprawione** (wskazówki: las i Bagno) |
+| M4 | Pets, Quests, Shop, Guilds bez okien | bez zmian (pliki Pawła, zgłoszone) |
+| M5 | chmury bez podpowiedzi | **naprawione** |
+| M6 | E przy chodzących potworach | **częściowo**: z kamerą za plecami E działa od razu (4 z 4); idąc narzędziem za slime'em raz chybione — dalej trzeba gonić |
+| M7 | ekwipunek / drzewko obiecują | bez zmian (Paweł) |
+| M8 | trening nie wzmacnia, tekst podsumowania | **naprawione** (Siła 10 → 13 po rundzie; nowy tekst) |
+| M9 | wskazówki ekranu ładowania | bez zmian (Paweł) |
+| M10 | dymki bazaru, kamera w ścianach | dymki **naprawione**; kamera — przenikanie części bez kolizji w pakiecie (B06/D01 bez zasłony); szczyty dachów w mapie dalej bez kolizji |
+| P1 | napisy dla twórców | **częściowo**: trening, walka, bazar czyste; zostało „PRZYMIERZALNIA (próba stroju)” i nagłówek „PRÓBA” w oknie przymierzalni (`swiat/stroje_proba`) |
+| P2 | język | do decyzji ludzi |
+| P3 | kamera | jak M10; w stoiskach kamera dalej blisko (7,8 st u mistrza gier) |
+| P4 | szara płyta | do decyzji ludzi |
+| P5 | odrodzenie w starym miasteczku | do decyzji ludzi |
+| P6 | przegrana daje więcej XP | niesprawdzone teraz |
+| P7 | HUD w mini-grze | **naprawione** |
+| P8 | pusta ramka awatara | bez zmian (Paweł) |
+| D1 | ślad stosu przy resecie w chmurach | naprawione w kodzie; w grze niepowtórzone |
+| D2 | spacja nie zamyka karty | **naprawione** (las i Bagno) |
+| D3 | przelot po resecie | niesprawdzone |
+
+### Nowe w części 3
+
+- **Przymierzalnia otwiera się na zakładce Wojownik**, choć gracz wybrał Maga (`c3_03`) — `swiat/stroje_proba` (MYLI).
+- **Arena walki w Bagnie to las z sosnami** — zgodnie z decyzją Karola areny będą zależne od biomu (praca w toku).
+- **Strzałka „◀” i znacznik „▼” były malutkie** (czcionka gry nie ma tych znaków) — poprawione: „<” 84 px i romb.
+- **`klatki_aktorow.py` robi zrzuty sali wyboru klasy zamiast aktora** — kamera ekranu wyboru klasy Pawła przejmuje
+  kadr w sesji Play próby; zamknięcie ekranu Enterem (próbowałem) nie pomogło, zmianę cofnąłem. Do sprawdzenia przez
+  autora próby (ocena klipów Maga ze zrzutów niemożliwa).
+- Dziennik serwera Bagna pisze „+ Strażnik Gaju” zamiast Topieli (`[BagnoPasGra] gotowy: …`) — kosmetyka wspólnego
+  kodu potworów.
+- Przy bramie do Bagna ekran na chwilę rozmyty (`c3_13`) — wygląda na przejście biomu; nie badałem.
+
+### Werdykt po poprawkach
+
+Da się dziś grać ok. **20–30 minut z sensem**: start z celem na ekranie, las z łupem w HUD i awansem, Training
+Center, które naprawdę wzmacnia, strój z przymierzalni w walce, Bagno z nowymi potworami i Strażnikiem Topieli,
+powrót Kamieniem. Bez zawieszeń i bez błędów skryptów. Najbardziej przeszkadza: **złota i gemów nie ma na co wydać**
+(sklepy, karczma, zagroda „wkrótce”, okna Pawła puste), **długa droga do Strażnika** (slime daje ok. 12 XP, Strażnik
+ma poziom 10 — nie mierzyłem, ile walk), gonienie chodzących potworów przy E i brak zapisu (wszystko ginie po wyjściu).

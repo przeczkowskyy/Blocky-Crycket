@@ -3,8 +3,8 @@
 	Lustro w Pythonie: swiat/wskazowki_gry/logika_wskazowek.py (ten sam opis stanu i te same przypadki wzorcowe —
 	sprawdzPrzypadki porównuje z wynikami Pythona zapisanymi w DaneWskazowek.przypadki).
 
-	L.krok(D, s) → nil | { id, tekst, cel }   — który krok pokazać (s: klasa, ukryte, wylaczone, miejsce, wygrane,
-	                                             przegrane, ostatni, trenowal, straznik, stan_gracza, trening_wzmacnia,
+	L.krok(D, s) → nil | { id, tekst, cel }   — który krok pokazać (s: klasa, ukryte, wylaczone, kraina, miejsce, wygrane,
+	                                             przegrane, ostatni, trenowal, straznik, straznik_bagna, stan_gracza, trening_wzmacnia,
 	                                             poziom, bagno)
 	L.miejsce(x, z, prostokat, bramaX) → "las" | "za_brama" | "miasto"
 	L.wynikWalki(napis) → "wygrana" | "przegrana" | nil
@@ -29,38 +29,64 @@ local function zbuduj(D, kid, poziom)
 	return { id = kid, tekst = tekst, cel = k.cel }
 end
 
+-- w biomie przed jego Strażnikiem (liczniki walk osobno dla każdego biomu)
+local function postep(D, s, kraina)
+	if s.ostatni == "przegrana" and not s.trenowal then
+		if s.stan_gracza and s.trening_wzmacnia then
+			return zbuduj(D, "d_trening")
+		end
+		return zbuduj(D, "d_slabszy")
+	end
+	if (s.wygrane or 0) > 0 then
+		if s.stan_gracza then
+			return zbuduj(D, if kraina == "las" then "c_poziomy" else "c_poziomy_bagno", s.poziom)
+		end
+		return zbuduj(D, if kraina == "las" then "c_straznik" else "c_straznik_bagno")
+	end
+	return zbuduj(D, "b_potwor")
+end
+
+local function miasto(D, s)
+	if s.straznik then
+		return zbuduj(D, if s.bagno then "e_bagno_miasto" else "e_brama_miasto")
+	end
+	if s.ostatni == "przegrana" and not s.trenowal then
+		if s.stan_gracza and s.trening_wzmacnia then
+			return zbuduj(D, "d_trening_miasto")
+		end
+		return zbuduj(D, "a_teleport")
+	end
+	if (s.wygrane or 0) > 0 then
+		return zbuduj(D, if s.stan_gracza then "c_poziomy_miasto" else "c_straznik_miasto")
+	end
+	return zbuduj(D, "a_teleport")
+end
+
 function L.krok(D, s)
 	if s.wylaczone or not s.klasa or s.ukryte then
 		return nil
 	end
 	local miejsce = s.miejsce or "miasto"
-	local wLesie = miejsce == "las"
+	local kraina = s.kraina
+	if kraina == nil and (miejsce == "las" or miejsce == "za_brama") then
+		kraina = "las"
+	end
+	if miejsce == "miasto" or kraina == nil then
+		return miasto(D, s)
+	end
+	if kraina == "bagno" then
+		if s.straznik_bagna then
+			return zbuduj(D, if miejsce == "za_brama" then "e_koniec_bagno" else "e_brama_dzungla")
+		end
+		return postep(D, s, "bagno") -- za bramą Bagna bez Strażnika serwer cofa — jak w Bagnie
+	end
 	if s.straznik then
 		if miejsce == "za_brama" then
 			return zbuduj(D, if s.bagno then "e_dalej" else "e_koniec")
 		end
-		return zbuduj(D, if wLesie then "e_brama" else "e_brama_miasto")
+		return zbuduj(D, if s.bagno then "e_brama_bagno" else "e_brama")
 	end
-	if miejsce == "za_brama" then
-		miejsce = "las" -- bez Strażnika za bramę się nie wejdzie (serwer cofa) — jak w lesie
-		wLesie = true
-	end
-	if s.ostatni == "przegrana" and not s.trenowal then
-		if s.stan_gracza and s.trening_wzmacnia then
-			return zbuduj(D, if wLesie then "d_trening" else "d_trening_miasto")
-		end
-		return zbuduj(D, if wLesie then "d_slabszy" else "a_teleport")
-	end
-	if (s.wygrane or 0) > 0 then
-		if s.stan_gracza then
-			if wLesie then
-				return zbuduj(D, "c_poziomy", s.poziom)
-			end
-			return zbuduj(D, "c_poziomy_miasto")
-		end
-		return zbuduj(D, if wLesie then "c_straznik" else "c_straznik_miasto")
-	end
-	return zbuduj(D, if wLesie then "b_potwor" else "a_teleport")
+	return postep(D, s, "las") -- za bramą lasu bez Strażnika serwer cofa — jak w lesie
 end
 
 function L.miejsce(x, z, prostokat, bramaX)

@@ -6,15 +6,17 @@ Stan gracza (słownik, wszystkie pola opcjonalne):
   klasa (bool)            — gracz wybrał klasę (atrybut Class)
   ukryte (bool)           — trwa walka, przelot, chmury, mini-gra, wybór klasy albo HUD jest schowany
   wylaczone (bool)        — gracz zamknął wskazówki krzyżykiem
-  miejsce                 — "las" | "za_brama" | "miasto" (wszystko inne: bazar, stare miasteczko, Bór)
-  wygrane, przegrane (int)— walki w lesie w tej sesji
-  ostatni                 — "wygrana" | "przegrana" | None (wynik ostatniej walki w lesie)
+  kraina                  — "las" | "bagno" | None (biom, w którym stoi gracz; None = miasto)
+  miejsce                 — "las" | "za_brama" | "miasto" (w biomie: przed / za jego bramą; poza biomami: miasto)
+  wygrane, przegrane (int)— walki w tym biomie w tej sesji (w mieście: wszystkie)
+  ostatni                 — "wygrana" | "przegrana" | None (wynik ostatniej walki w tym biomie / w ogóle)
   trenowal (bool)         — po ostatniej przegranej gracz był na stanowisku Training Center
   straznik (bool)         — pokonał Strażnika Gaju (atrybut PokonalStraznikaLasu)
+  straznik_bagna (bool)   — pokonał Strażnika Topieli (atrybut PokonalStraznikaBagna)
   stan_gracza (bool)      — działa pakiet swiat/stan_gracza (łup, poziomy); bez niego kroki o poziomach się nie pokazują
   trening_wzmacnia (bool) — stan gracza słucha treningu (TreningPodlaczony)
   poziom (int | None)     — atrybut Level
-  bagno (bool)            — za bramą stoi już następny biom (kontener Bagna)
+  bagno (bool)            — Bagno stoi w miejscu (kontener BagnoPasGra)
 Wynik: None (nic nie pokazujemy) albo {"id": klucz z D["kroki"], "tekst": gotowy napis, "cel": rodzaj celu | None}.
 """
 
@@ -27,26 +29,48 @@ def _krok(D, kid, poziom=None):
     return {"id": kid, "tekst": tekst, "cel": k["cel"]}
 
 
+def _postep(D, s, kraina):
+    """W biomie przed jego Strażnikiem: przegrana → trening / słabszy potwór; po wygranej → poziomy / Strażnik; inaczej
+    potwór. Liczniki walk (wygrane, ostatni, trenowal) są liczone osobno dla każdego biomu."""
+    if s.get("ostatni") == "przegrana" and not s.get("trenowal"):
+        if s.get("stan_gracza") and s.get("trening_wzmacnia"):
+            return _krok(D, "d_trening")
+        return _krok(D, "d_slabszy")
+    if (s.get("wygrane") or 0) > 0:
+        if s.get("stan_gracza"):
+            return _krok(D, "c_poziomy" if kraina == "las" else "c_poziomy_bagno", s.get("poziom"))
+        return _krok(D, "c_straznik" if kraina == "las" else "c_straznik_bagno")
+    return _krok(D, "b_potwor")
+
+
+def _miasto(D, s):
+    if s.get("straznik"):
+        return _krok(D, "e_bagno_miasto" if s.get("bagno") else "e_brama_miasto")
+    if s.get("ostatni") == "przegrana" and not s.get("trenowal"):
+        if s.get("stan_gracza") and s.get("trening_wzmacnia"):
+            return _krok(D, "d_trening_miasto")
+        return _krok(D, "a_teleport")
+    if (s.get("wygrane") or 0) > 0:
+        return _krok(D, "c_poziomy_miasto" if s.get("stan_gracza") else "c_straznik_miasto")
+    return _krok(D, "a_teleport")
+
+
 def krok(D, s):
     if s.get("wylaczone") or not s.get("klasa") or s.get("ukryte"):
         return None
     miejsce = s.get("miejsce") or "miasto"
-    w_lesie = miejsce == "las"
+    kraina = s.get("kraina") or ("las" if miejsce in ("las", "za_brama") else None)
+    if miejsce == "miasto" or kraina is None:
+        return _miasto(D, s)
+    if kraina == "bagno":
+        if s.get("straznik_bagna"):
+            return _krok(D, "e_koniec_bagno" if miejsce == "za_brama" else "e_brama_dzungla")
+        return _postep(D, s, "bagno")  # za bramą Bagna bez Strażnika serwer cofa — jak w Bagnie
     if s.get("straznik"):
         if miejsce == "za_brama":
             return _krok(D, "e_dalej" if s.get("bagno") else "e_koniec")
-        return _krok(D, "e_brama" if w_lesie else "e_brama_miasto")
-    if miejsce == "za_brama":
-        miejsce, w_lesie = "las", True  # bez Strażnika za bramę się nie wejdzie (serwer cofa) — jak w lesie
-    if s.get("ostatni") == "przegrana" and not s.get("trenowal"):
-        if s.get("stan_gracza") and s.get("trening_wzmacnia"):
-            return _krok(D, "d_trening" if w_lesie else "d_trening_miasto")
-        return _krok(D, "d_slabszy") if w_lesie else _krok(D, "a_teleport")
-    if (s.get("wygrane") or 0) > 0:
-        if s.get("stan_gracza"):
-            return _krok(D, "c_poziomy", s.get("poziom")) if w_lesie else _krok(D, "c_poziomy_miasto")
-        return _krok(D, "c_straznik" if w_lesie else "c_straznik_miasto")
-    return _krok(D, "b_potwor" if w_lesie else "a_teleport")
+        return _krok(D, "e_brama_bagno" if s.get("bagno") else "e_brama")
+    return _postep(D, s, "las")  # za bramą lasu bez Strażnika serwer cofa — jak w lesie
 
 
 def miejsce(x, z, prostokat, brama_x):
@@ -104,6 +128,19 @@ def przypadki(D):
     k("za bramą z Bagnem", miejsce="za_brama", straznik=True, bagno=True)
     k("za bramą bez Strażnika (cofany) jak las", miejsce="za_brama")
     k("Strażnik pokonany, ale ukryte", miejsce="las", straznik=True, ukryte=True)
+    k("Strażnik lasu pokonany, jest Bagno: brama do Bagna", miejsce="las", kraina="las", straznik=True, bagno=True)
+    k("Strażnik lasu pokonany, jest Bagno, w mieście: TELEPORT → Bagno", straznik=True, bagno=True)
+    k("w Bagnie bez walki: potwór", kraina="bagno", miejsce="las", straznik=True, bagno=True)
+    k("w Bagnie po wygranej ze stanem gracza: poziomy, Strażnik Topieli", kraina="bagno", miejsce="las", straznik=True,
+      bagno=True, wygrane=1, ostatni="wygrana", stan_gracza=True, poziom=12)
+    k("w Bagnie po wygranej bez stanu gracza", kraina="bagno", miejsce="las", straznik=True, bagno=True, wygrane=2,
+      ostatni="wygrana")
+    k("w Bagnie po przegranej, trening wzmacnia: do miasta", kraina="bagno", miejsce="las", straznik=True, bagno=True,
+      przegrane=1, ostatni="przegrana", stan_gracza=True, trening_wzmacnia=True)
+    k("Strażnik Topieli pokonany: brama do Dżungli", kraina="bagno", miejsce="las", straznik=True, straznik_bagna=True,
+      bagno=True)
+    k("za bramą Bagna", kraina="bagno", miejsce="za_brama", straznik=True, straznik_bagna=True, bagno=True)
+    k("za bramą Bagna bez Strażnika Topieli (cofany)", kraina="bagno", miejsce="za_brama", straznik=True, bagno=True)
     pr = {"x1": 1056, "x2": 2076, "z1": -760, "z2": -640}
     for x, z, br in [(1114, -700, 2034), (2034, -700, 2034), (2046, -700, 2034), (990, -697, 2034), (1500, -800, 2034),
                      (1056, -760, 2034), (2076, -640, 2034), (1500, -700, None), (0, 0, 2034)]:

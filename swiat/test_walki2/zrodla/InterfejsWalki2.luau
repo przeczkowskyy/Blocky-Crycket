@@ -24,6 +24,8 @@ local Interfejs = {}
 -- spacja (albo B na padzie) zamyka kartę wyniku; priorytet nad „POMIŃ” odtwarzacza (10001), który w tej fazie nic nie robi
 local AKCJA_ZAMKNIJ_WYNIK = "TestWalki2ZamknijWynik"
 local ZAMKNIJ_WYNIK_PO = 0.6 -- s od pokazania karty: podwójna spacja po POMIŃ nie zamknie jej, zanim gracz zobaczy łup
+-- podpis kafla tokenów z krainy walki (walka.lup.kraina z danych przeciwnika); nieznana kraina → „TOKENY”
+local NAPISY_TOKENOW = { las = "TOKENY LASU", bagno = "TOKENY BAGNA" }
 Interfejs.__index = Interfejs
 
 local PROPORCJE = 16 / 9
@@ -1542,6 +1544,10 @@ function Interfejs:pokazWynik(walka, naJeszczeRaz: () -> (), naZamknij: () -> ()
 		else string.format("%s (poz. %d) był silniejszy — %s", wrog.nazwa, wrog.poziom, Interfejs.liczebnik(walka.tury, "tura", "tury", "tur"))
 	local lup = walka.lup
 	local wartosci = { lup.zloto, lup.doswiadczenie, lup.tokeny_krainy, lup.gemy, lup.shard_ewolucji }
+	local kafelTokenow = w.kafle[3]
+	if kafelTokenow and kafelTokenow.podpis then
+		kafelTokenow.podpis.Text = NAPISY_TOKENOW[tostring(lup.kraina or "")] or "TOKENY"
+	end
 	w.liczniki = {}
 	for i, kafel in w.kafle do
 		local v = wartosci[i] or 0

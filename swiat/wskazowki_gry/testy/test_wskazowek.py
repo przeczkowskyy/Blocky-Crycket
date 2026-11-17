@@ -131,6 +131,18 @@ class TestLogiki(unittest.TestCase):
             elif w["cel"] is not None:
                 self.assertIn(w["cel"], {"potwor", "straznik", "kamien", "brama"}, (st, w))
 
+    def test_2f_bagno(self):
+        bag = dict(kraina="bagno", miejsce="las", straznik=True, bagno=True)
+        self.assertEqual(self.kid(miejsce="las", kraina="las", straznik=True, bagno=True), "e_brama_bagno")
+        self.assertEqual(LW.krok(D, s(miejsce="las", kraina="las", straznik=True, bagno=True))["cel"], "brama")
+        self.assertEqual(self.kid(straznik=True, bagno=True), "e_bagno_miasto")
+        self.assertEqual(self.kid(**bag), "b_potwor")
+        self.assertEqual(self.kid(wygrane=1, ostatni="wygrana", stan_gracza=True, poziom=12, **bag), "c_poziomy_bagno")
+        self.assertIn("Topieli", LW.krok(D, s(wygrane=1, ostatni="wygrana", **bag))["tekst"])
+        self.assertEqual(self.kid(straznik_bagna=True, **bag), "e_brama_dzungla")
+        self.assertEqual(self.kid(kraina="bagno", miejsce="za_brama", straznik=True, straznik_bagna=True, bagno=True),
+                         "e_koniec_bagno")
+
     def test_2e_miejsce(self):
         pr = {"x1": 0, "x2": 10, "z1": -5, "z2": 5}
         self.assertEqual(LW.miejsce(5, 0, pr, 8), "las")
@@ -188,7 +200,8 @@ class TestLuau(unittest.TestCase):
                   "przegrane": rnd.choice([0, 1, 2]), "ostatni": rnd.choice([None, "wygrana", "przegrana"]),
                   "trenowal": rnd.random() < 0.3, "straznik": rnd.random() < 0.2, "stan_gracza": rnd.random() < 0.5,
                   "trening_wzmacnia": rnd.random() < 0.5, "poziom": rnd.choice([None, 1, 3, 9.0, 12.7]),
-                  "bagno": rnd.random() < 0.3}
+                  "bagno": rnd.random() < 0.3, "kraina": rnd.choice([None, "las", "bagno"]),
+                  "straznik_bagna": rnd.random() < 0.2}
             st = {k: v for k, v in st.items() if v is not None}
             wl = LM.z_luau(self.wolaj("krok", self.Dl, LM.do_luau(st))[0])
             wp = LW.krok(D, st)
@@ -251,16 +264,22 @@ class TestStykow(unittest.TestCase):
             self.assertIn('self:atrybut("%s"' % a, odtw)
         self.assertIn('self:atrybut("%s", "%s")' % (Z["atrybut_stanu_walki"], Z["stan_wyniku"]), odtw)
 
-    def test_5b_las_pas_dane_i_punkty(self):
+    def test_5b_biomy_dane_i_punkty(self):
         Z = D["zrodla"]
-        dp = czytaj(REPO, "swiat", "las_pas_gra", "zrodla", "DanePasa.luau")
-        for klucz in ("wejscie =", "brama =", "zaBrama =", "powrot =", "straznik ="):
-            self.assertIn(klucz, dp)
-        zb = czytaj(REPO, "swiat", "las_pas_gra", "zbuduj.py")
-        self.assertIn('KONTENER = "%s"' % Z["las"], zb)
-        self.assertIn("Punkty/KamienPowrotu", czytaj(REPO, "swiat", "las_pas_gra", "README.md"))
-        self.assertIn(Z["atrybut_straznika"], czytaj(REPO, "swiat", "las_pas_gra", "zrodla", "PamiecGracza.luau")
-                      + czytaj(REPO, "swiat", "las_pas_gra", "zrodla", "SerwerPasa.server.luau"))
+        pliki = {"las": ("las_pas_gra", "DanePasa.luau"), "bagno": ("bagno_pas_gra", "DaneBagna.luau")}
+        for b in Z["biomy"]:
+            with self.subTest(biom=b["id"]):
+                pakiet, dane = pliki[b["id"]]
+                dp = czytaj(REPO, "swiat", pakiet, "zrodla", dane)
+                for klucz in ("wejscie =", "brama =", "zaBrama =", "powrot =", "straznik =", "atrybutStraznik = \"%s\""
+                              % b["atrybut_straznika"]):
+                    self.assertIn(klucz, dp)
+                self.assertIn('KONTENER = "%s"' % b["kontener"], czytaj(REPO, "swiat", pakiet, "zbuduj.py"))
+                self.assertTrue(b["dane"].startswith(b["kontener"] + "/Moduly/"))
+                self.assertTrue(b["kamien"].startswith(b["kontener"] + "/Punkty/"))
+        self.assertIn('"Punkty/KamienPowrotu"', czytaj(REPO, "swiat", "las_pas_gra", "zbuduj.py"))
+        self.assertEqual(set(Z["walki"].values()), {b["id"] for b in Z["biomy"]})
+        self.assertEqual({b["pole_straznika"] for b in Z["biomy"]}, {"straznik", "straznik_bagna"})
 
     def test_5c_trening_bazar_chmury_hud(self):
         Z = D["zrodla"]

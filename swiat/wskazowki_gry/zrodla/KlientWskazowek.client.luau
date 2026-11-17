@@ -8,7 +8,7 @@
 		2. Strzałka obok przycisku TELEPORT w HUD Pawła (tylko czyta jego położenie — HUD-u nie zmienia) albo znacznik
 		   w świecie nad celem: najbliższy potwór, Strażnik Gaju, Kamień Powrotu, trener, brama za Strażnikiem.
 		3. Krok wynika ze stanu gracza (LogikaWskazowek.krok): klasa, wynik ostatniej walki w lesie, pokonany Strażnik,
-		   położenie (prostokąt lasu z danych lasu-pasa), stan gracza (swiat/stan_gracza: poziomy i trening), a nie ze
+		   położenie (prostokąty biomów z ich danych: las-pas, Bagno), stan gracza (swiat/stan_gracza: poziomy i trening), a nie ze
 		   sztywnego scenariusza. Bez StanGracza kroki o poziomach i treningu się nie pokazują.
 		4. Schowane, gdy trwa walka, przelot, chmury, mini-gra, wybór klasy albo gdy HUD jest schowany — nie zasłania
 		   HUD-u ani ekranu walki.
@@ -70,76 +70,106 @@ local function pozycja(o)
 end
 
 ------------------------------------------------------------------ stan sesji (tylko w pamięci klienta)
+local function nowyLicznik()
+	return { wygrane = 0, przegrane = 0, ostatni = nil, trenowal = false }
+end
 local sesja = {
-	wygrane = 0,
-	przegrane = 0,
-	ostatni = nil, -- "wygrana" | "przegrana"
-	trenowal = false, -- po ostatniej przegranej był na stanowisku Training Center
+	ogolem = nowyLicznik(), -- wszystkie walki (dla miasta)
+	krainy = {}, -- id biomu → licznik walk w tym biomie (las, bagno)
 	wylaczone = false,
 }
 local wymuszone = {} -- haczyk "ustaw": pole → wartość (tylko testy)
 
--- wyniki walk w lesie: odtwarzacz ustawia u klienta na kontenerze lasu OstatnieZiarno na starcie walki, a przy
--- pokazaniu wyniku OstatniWynik i OstatniStan = "wynik". Liczymy jedną walkę na wejście w stan „wynik” z nowym
--- ziarnem (walka przerwana resetem nie ma wyniku i się nie liczy; dwie z rzędu z tym samym potworem — tak).
-local ostatnieZiarna = {}
-local function podepnijLas(las)
-	local function sprawdz()
-		if las:GetAttribute(Z.atrybut_stanu_walki) ~= Z.stan_wyniku then
-			return
-		end
-		local z = tostring(las:GetAttribute(Z.atrybut_ziarna))
-		if ostatnieZiarna[las] == z then
-			return
-		end
-		ostatnieZiarna[las] = z
-		local w = L.wynikWalki(las:GetAttribute(Z.atrybut_wyniku))
-		if w == "wygrana" then
-			sesja.wygrane += 1
-			sesja.ostatni = w
-		elseif w == "przegrana" then
-			sesja.przegrane += 1
-			sesja.ostatni = w
-			sesja.trenowal = false
-		end
+local function licznik(kraina)
+	if not sesja.krainy[kraina] then
+		sesja.krainy[kraina] = nowyLicznik()
 	end
-	ostatnieZiarna[las] = tostring(las:GetAttribute(Z.atrybut_ziarna)) -- walk sprzed startu skryptu nie liczymy
-	las:GetAttributeChangedSignal(Z.atrybut_stanu_walki):Connect(function()
+	return sesja.krainy[kraina]
+end
+
+local function zapiszWynik(l, w)
+	if w == "wygrana" then
+		l.wygrane += 1
+		l.ostatni = w
+	elseif w == "przegrana" then
+		l.przegrane += 1
+		l.ostatni = w
+		l.trenowal = false
+	end
+end
+
+-- wyniki walk: odtwarzacz ustawia u klienta na kontenerze biomu OstatnieZiarno na starcie walki, a przy pokazaniu
+-- wyniku OstatniWynik i OstatniStan = "wynik". Liczymy jedną walkę na wejście w stan „wynik” z nowym ziarnem (walka
+-- przerwana resetem nie ma wyniku i się nie liczy; dwie z rzędu z tym samym potworem — tak).
+local ostatnieZiarna = {}
+local function podepnijKontener(k, kraina)
+	local function sprawdz()
+		if k:GetAttribute(Z.atrybut_stanu_walki) ~= Z.stan_wyniku then
+			return
+		end
+		local z = tostring(k:GetAttribute(Z.atrybut_ziarna))
+		if ostatnieZiarna[k] == z then
+			return
+		end
+		ostatnieZiarna[k] = z
+		local w = L.wynikWalki(k:GetAttribute(Z.atrybut_wyniku))
+		zapiszWynik(sesja.ogolem, w)
+		zapiszWynik(licznik(kraina), w)
+	end
+	ostatnieZiarna[k] = tostring(k:GetAttribute(Z.atrybut_ziarna)) -- walk sprzed startu skryptu nie liczymy
+	k:GetAttributeChangedSignal(Z.atrybut_stanu_walki):Connect(function()
 		task.defer(sprawdz)
 	end)
 end
 local podpiete = {}
 local function podepnijLasy()
-	for _, n in Z.lasy_walk do
-		local las = workspace:FindFirstChild(n)
-		if las and not podpiete[las] then
-			podpiete[las] = true
-			podepnijLas(las)
+	for nazwa, kraina in Z.walki do
+		local k = workspace:FindFirstChild(nazwa)
+		if k and not podpiete[k] then
+			podpiete[k] = true
+			podepnijKontener(k, kraina)
 		end
 	end
 end
 
--- trening: wejście na stanowisko (atrybut gracza TreningGra) po przegranej = „potrenował”
+-- trening: wejście na stanowisko (atrybut gracza TreningGra) po przegranej = „potrenował” (w każdym biomie)
 gracz:GetAttributeChangedSignal(Z.atrybut_treningu):Connect(function()
-	if gracz:GetAttribute(Z.atrybut_treningu) ~= nil and sesja.ostatni == "przegrana" then
-		sesja.trenowal = true
+	if gracz:GetAttribute(Z.atrybut_treningu) == nil then
+		return
+	end
+	for _, l in sesja.krainy do
+		if l.ostatni == "przegrana" then
+			l.trenowal = true
+		end
+	end
+	if sesja.ogolem.ostatni == "przegrana" then
+		sesja.ogolem.trenowal = true
 	end
 end)
 
------------------------------------------------------------------- dane lasu-pasa (moduł innego pakietu, tylko odczyt)
-local daneLasu = nil
-local function wczytajDaneLasu()
-	if daneLasu then
-		return daneLasu
+------------------------------------------------------------------ dane biomów (moduły innych pakietów, tylko odczyt)
+local daneBiomow = {} -- id → tabela DanePasa
+local function daneBiomu(b)
+	if daneBiomow[b.id] then
+		return daneBiomow[b.id]
 	end
-	local m = sciezka(Z.dane_lasu)
+	local m = sciezka(b.dane)
 	if m and m:IsA("ModuleScript") then
 		local ok, w = pcall(require, m)
 		if ok and type(w) == "table" and w.wejscie then
-			daneLasu = w
+			daneBiomow[b.id] = w
 		end
 	end
-	return daneLasu
+	return daneBiomow[b.id]
+end
+
+local function biom(id)
+	for _, b in Z.biomy do
+		if b.id == id then
+			return b
+		end
+	end
+	return nil
 end
 
 local function v3(t)
@@ -241,7 +271,8 @@ strzalka.Name = "Strzalka"
 strzalka.BackgroundTransparency = 1
 strzalka.AnchorPoint = Vector2.new(0, 0.5)
 strzalka.Size = UDim2.fromOffset(U.strzalka_px, U.strzalka_px)
-strzalka.Font = CZCIONKA
+-- „◀” w GothamBold rysuje się zastępczą, malutką czcionką (wspólna próba 17.11.2026) — zwykły znak w grubej czcionce
+strzalka.Font = Enum.Font[U.czcionka_znakow]
 strzalka.TextSize = U.strzalka_px
 strzalka.TextColor3 = kolor(U.akcent)
 strzalka.TextStrokeTransparency = 0.2
@@ -270,23 +301,26 @@ znacznik.MaxDistance = U.znacznik_zasieg
 znacznik.Size = UDim2.fromOffset(U.znacznik_px, U.znacznik_px)
 znacznik.Enabled = false
 znacznik.Parent = ekrany
-local grot = Instance.new("TextLabel")
+-- znacznik: obrócony kwadrat (romb) zamiast znaku „▼”, którego czcionka gry nie ma
+local grot = Instance.new("Frame")
 grot.Name = "Grot"
-grot.BackgroundTransparency = 1
-grot.Size = UDim2.fromScale(1, 1)
-grot.Font = CZCIONKA
-grot.TextSize = U.znacznik_px
-grot.TextColor3 = kolor(U.akcent)
-grot.TextStrokeTransparency = 0
-grot.Text = U.znacznik
+grot.AnchorPoint = Vector2.new(0.5, 0.5)
+grot.Position = UDim2.fromScale(0.5, 0.5)
+grot.Size = UDim2.fromScale(0.6, 0.6)
+grot.Rotation = 45
+grot.BackgroundColor3 = kolor(U.akcent)
 grot.Parent = znacznik
+local obrysGrotu = Instance.new("UIStroke")
+obrysGrotu.Color = kolor(U.znacznik_obrys)
+obrysGrotu.Thickness = 3
+obrysGrotu.Parent = grot
 
 ------------------------------------------------------------------ cele
 local function najblizszyPotwor(od)
 	local najlepszy, odl = nil, D.czasy.potwor_promien
-	for _, n in Z.lasy_walk do
-		local las = workspace:FindFirstChild(n)
-		local stanP = las and las:FindFirstChild(Z.stan_potworow)
+	for nazwa in Z.walki do
+		local k = workspace:FindFirstChild(nazwa)
+		local stanP = k and k:FindFirstChild(Z.stan_potworow)
 		if stanP then
 			for _, c in stanP:GetChildren() do
 				local p = c:GetAttribute("Pozycja")
@@ -302,9 +336,9 @@ local function najblizszyPotwor(od)
 	return najlepszy
 end
 
-local function punktStraznika()
-	local las = workspace:FindFirstChild(Z.las)
-	local stanP = las and las:FindFirstChild(Z.stan_potworow)
+local function punktStraznika(b)
+	local k = workspace:FindFirstChild(b.kontener)
+	local stanP = k and k:FindFirstChild(Z.stan_potworow)
 	if stanP then
 		for _, c in stanP:GetChildren() do
 			local p = c:GetAttribute("Pozycja")
@@ -313,7 +347,7 @@ local function punktStraznika()
 			end
 		end
 	end
-	local dl = wczytajDaneLasu()
+	local dl = daneBiomu(b)
 	return dl and dl.straznik and v3(dl.straznik.poz)
 end
 
@@ -328,22 +362,26 @@ local function najblizszyTrener(od)
 	return najlepszy
 end
 
-local function punktCelu(cel, od)
+-- kraina: biom, w którym stoi gracz (w mieście: las — tam prowadzą kroki z miasta)
+local function punktCelu(cel, od, kraina)
+	local b = biom(kraina or "las")
 	if cel == "potwor" then
 		return najblizszyPotwor(od)
+	elseif cel == "trener" then
+		return najblizszyTrener(od)
+	elseif not b then
+		return nil
 	elseif cel == "straznik" then
-		return punktStraznika()
+		return punktStraznika(b)
 	elseif cel == "kamien" then
-		local p = pozycja(sciezka(Z.kamien))
+		local p = pozycja(sciezka(b.kamien))
 		if p then
 			return p
 		end
-		local dl = wczytajDaneLasu()
+		local dl = daneBiomu(b)
 		return dl and dl.powrot and v3(dl.powrot.punkt)
-	elseif cel == "trener" then
-		return najblizszyTrener(od)
 	elseif cel == "brama" then
-		local dl = wczytajDaneLasu()
+		local dl = daneBiomu(b)
 		return dl and dl.zaBrama and v3(dl.zaBrama.punkt)
 	end
 	return nil
@@ -355,23 +393,35 @@ local function stanGracza()
 		klasa = gracz:GetAttribute(Z.atrybut_klasy) ~= nil,
 		ukryte = ukryte(),
 		wylaczone = sesja.wylaczone,
-		wygrane = sesja.wygrane,
-		przegrane = sesja.przegrane,
-		ostatni = sesja.ostatni,
-		trenowal = sesja.trenowal,
-		straznik = gracz:GetAttribute(Z.atrybut_straznika) == true,
 		poziom = gracz:GetAttribute(Z.atrybut_poziomu),
-		bagno = workspace:FindFirstChild(Z.bagno) ~= nil,
 		miejsce = "miasto",
 	}
+	for _, b in Z.biomy do
+		s[b.pole_straznika] = gracz:GetAttribute(b.atrybut_straznika) == true
+		if b.id == "bagno" then
+			s.bagno = workspace:FindFirstChild(b.kontener) ~= nil
+		end
+	end
 	local sg = workspace:FindFirstChild(Z.stan_gracza)
 	s.stan_gracza = sg ~= nil and sg:GetAttribute(Z.stan_gracza_gotowy) == true
 	s.trening_wzmacnia = s.stan_gracza and sg:GetAttribute(Z.stan_gracza_trening) == true
 	local korzen = gracz.Character and gracz.Character:FindFirstChild("HumanoidRootPart")
-	local dl = wczytajDaneLasu()
-	if korzen and dl then
-		s.miejsce = L.miejsce(korzen.Position.X, korzen.Position.Z, dl.wejscie, dl.brama and dl.brama.x)
+	if korzen then
+		-- od ostatniego biomu: początek Bagna leży w prostokącie lasu (za jego bramą) — Bagno ma pierwszeństwo
+		for i = #Z.biomy, 1, -1 do
+			local b = Z.biomy[i]
+			local dl = workspace:FindFirstChild(b.kontener) and daneBiomu(b)
+			if dl then
+				local m = L.miejsce(korzen.Position.X, korzen.Position.Z, dl.wejscie, dl.brama and dl.brama.x)
+				if m ~= "miasto" then
+					s.kraina, s.miejsce = b.id, m
+					break
+				end
+			end
+		end
 	end
+	local l = if s.kraina then licznik(s.kraina) else sesja.ogolem
+	s.wygrane, s.przegrane, s.ostatni, s.trenowal = l.wygrane, l.przegrane, l.ostatni, l.trenowal
 	for pole, w in wymuszone do
 		s[pole] = w
 	end
@@ -428,7 +478,7 @@ local function odswiez()
 	-- znacznik nad celem w świecie
 	znacznikWidoczny = false
 	if k.cel and k.cel ~= "teleport" and korzen then
-		local p = punktCelu(k.cel, korzen.Position)
+		local p = punktCelu(k.cel, korzen.Position, s.kraina)
 		if p then
 			kotwica.Position = p + Vector3.new(0, U.znacznik_nad, 0)
 			znacznikWidoczny = true
@@ -473,16 +523,18 @@ sterowanie.OnInvoke = function(polecenie, a, b)
 		return {
 			krok = biezacy and biezacy.id, tekst = biezacy and biezacy.tekst, cel = biezacy and biezacy.cel,
 			widoczne = pasek.Visible, strzalka = strzalka.Visible, znacznik = znacznik.Enabled,
-			ukryte = s.ukryte, miejsce = s.miejsce, wygrane = sesja.wygrane, przegrane = sesja.przegrane,
-			ostatni = sesja.ostatni, trenowal = sesja.trenowal, wylaczone = sesja.wylaczone,
-			stan_gracza = s.stan_gracza, trening_wzmacnia = s.trening_wzmacnia, daneLasu = daneLasu ~= nil,
+			ukryte = s.ukryte, kraina = s.kraina, miejsce = s.miejsce, wygrane = s.wygrane, przegrane = s.przegrane,
+			ostatni = s.ostatni, trenowal = s.trenowal, wylaczone = sesja.wylaczone, bagno = s.bagno,
+			straznik = s.straznik, straznik_bagna = s.straznik_bagna,
+			stan_gracza = s.stan_gracza, trening_wzmacnia = s.trening_wzmacnia, daneLasu = daneBiomow.las ~= nil,
 		}
 	elseif polecenie == "wylacz" then
 		sesja.wylaczone = true
 	elseif polecenie == "wlacz" then
 		sesja.wylaczone = false
 	elseif polecenie == "zeruj" then
-		sesja.wygrane, sesja.przegrane, sesja.ostatni, sesja.trenowal = 0, 0, nil, false
+		sesja.ogolem = nowyLicznik()
+		table.clear(sesja.krainy)
 		table.clear(wymuszone)
 	elseif polecenie == "ustaw" and type(a) == "string" then
 		wymuszone[a] = b

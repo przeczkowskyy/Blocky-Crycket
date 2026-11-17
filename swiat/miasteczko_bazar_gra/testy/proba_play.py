@@ -37,7 +37,7 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       „Nowe miasteczko (E)” → postać na starcie bazaru; od razu drugie E → „Chwila…”; tabliczka w starym miasteczku
       nie zasłania PortalStart (odległość zapisana)
   B10 tablica: SurfaceGui pokazuje gracza („1. <nazwa> — poz. …”), wiersze = liczba graczy
-  B11 działka i lochy: E przy Bramie Twierdzy → „Działka — wkrótce”; E przy wrotach → „Zamknięte”; haczyk
+  B11 działka i lochy: E przy Bramie Twierdzy → dymek działki z danych; E przy wrotach → dymek lochów z danych; haczyk
       „lochy true” → BazarLochyOtwarte = true i kłódka niewidoczna TYLKO u klienta (LocalTransparencyModifier = 1,
       na serwerze bez zmian), E → OknoMiejsca("lochy"); „lochy false” przywraca
   B12 niewidzialne ściany: przy każdym z 4 brzegów pola gry marsz 30 st na zewnątrz (Humanoid:MoveTo) i skoki —
@@ -559,7 +559,8 @@ def main():
                     'return H:JSONEncode({ ukryte = u })', "Client")
             zapisz("B11", {"dzialka": dzialka, "lochy_zamkniete": zamk, "klodka_klient": klodka_k, "klodka_serwer": klodka_s,
                            "otwarte": {"e": ost_l, "zdarzenie": okno_l, "dymki": kl2.get("dymki")}, "po_zamknieciu": po})
-            punkt("B11", dzialka == "Działka — wkrótce" and zamk == "Zamknięte" and klodka_k["atrybut"] is True
+            punkt("B11", dzialka == D["miejsca"]["dzialka"]["dymek"] and zamk == D["miejsca"]["lochy"]["dymek"]
+                  and klodka_k["atrybut"] is True
                   and klodka_k["czesci"] > 0 and klodka_k["ukryte"] == klodka_k["czesci"] and klodka_s["ukryte"] == 0
                   and okno_l == "lochy" and po["ukryte"] == 0,
                   "działka „%s”, lochy „%s”, kłódka u klienta %s / serwer %s, po odblokowaniu E → %s" % (

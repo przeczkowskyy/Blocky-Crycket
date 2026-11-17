@@ -1,13 +1,7 @@
 {
- "data": "2026-11-15 15:44",
+ "data": "2026-11-17 15:24",
  "czesci": [
-  "final",
-  "lot",
-  "napisy",
-  "twarz",
-  "dzwiek",
-  "slime",
-  "tempo"
+  "final"
  ],
  "wyniki": [
   {
@@ -199,6 +193,46 @@
    "nazwa": "konsola bez komunikatów z TestWalki2",
    "ok": true,
    "opis": ""
+  },
+  {
+   "nazwa": "D1 finał wygrana, Strażnik (mag/straznik_lasu/1 ziarno 855296)",
+   "ok": true,
+   "opis": "ujęcie pokonanego 1.80 s, upadek skończony w ujęciu, objazd: 17 klatek, szczątki ≥ 1.16 odległości zwycięzcy, twarz zwycięzcy 35–35°"
+  },
+  {
+   "nazwa": "D1 finał przegrana, Muchomornik (mag/cierniowy_wilk/1 ziarno 879054)",
+   "ok": true,
+   "opis": "ujęcie pokonanego 1.79 s, upadek skończony w ujęciu, objazd: 17 klatek, szczątki ≥ 1.19 odległości zwycięzcy, twarz zwycięzcy 35–35°"
+  },
+  {
+   "nazwa": "D1 finał wygrana, Slime (wojownik/lesny_slime/1 ziarno 31718)",
+   "ok": true,
+   "opis": "ujęcie pokonanego 1.80 s, upadek skończony w ujęciu, objazd: 17 klatek, szczątki ≥ 1.09 odległości zwycięzcy, twarz zwycięzcy 35–35°"
+  },
+  {
+   "nazwa": "D1 finał przegrana, Slime (wojownik/lesny_slime/1 ziarno 879051)",
+   "ok": true,
+   "opis": "ujęcie pokonanego 1.80 s, upadek skończony w ujęciu, objazd: 17 klatek, szczątki ≥ 1.16 odległości zwycięzcy, twarz zwycięzcy 35–35°"
+  },
+  {
+   "nazwa": "D1 finał przegrana, Strażnik (wojownik/straznik_lasu/10 ziarno 554653)",
+   "ok": true,
+   "opis": "ujęcie pokonanego 1.80 s, upadek skończony w ujęciu, objazd: 17 klatek, szczątki ≥ 1.00 odległości zwycięzcy, twarz zwycięzcy 35–35°"
+  },
+  {
+   "nazwa": "D1 finał przegrana, Troll (zwiadowca/lesny_troll/10 ziarno 792221)",
+   "ok": true,
+   "opis": "ujęcie pokonanego 1.80 s, upadek skończony w ujęciu, objazd: 17 klatek, szczątki ≥ 1.05 odległości zwycięzcy, twarz zwycięzcy 35–35°"
+  },
+  {
+   "nazwa": "D1 finał przegrana, Strażnik (mag/straznik_lasu/1 ziarno 110910)",
+   "ok": true,
+   "opis": "ujęcie pokonanego 1.80 s, upadek skończony w ujęciu, objazd: 17 klatek, szczątki ≥ 0.98 odległości zwycięzcy, twarz zwycięzcy 35–35°"
+  },
+  {
+   "nazwa": "D1 finał wygrana, Troll (wojownik/lesny_troll/1 ziarno 475182)",
+   "ok": true,
+   "opis": "ujęcie pokonanego 1.80 s, upadek skończony w ujęciu, objazd: 17 klatek, szczątki ≥ 1.26 odległości zwycięzcy, twarz zwycięzcy 35–35°"
   }
  ]
 }

@@ -237,7 +237,9 @@ def main():
 
         def klik(sciezka_gui):
             call("user_mouse_input", {"datamodel_type": "Client", "actions": [
-                {"action": "moveTo", "instance_path": "LocalPlayer.PlayerGui.TreningProba." + sciezka_gui},
+                # panele siedzą w ramce „Ekran” (korzeń emulacji ekranu telefonu) — bez niej kliknięcie nie trafiało
+                # i próba przechodziła na haczyk (przejście gry 17.11.2026)
+                {"action": "moveTo", "instance_path": "LocalPlayer.PlayerGui.TreningProba.Ekran." + sciezka_gui},
                 {"action": "mouseButtonClick", "mouse_button": "left"}]})
 
         def czekaj_na_koniec_rundy(limit=None):
