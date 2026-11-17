@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (własne dźwięki i muzyka grają w grze)
+- **Karol nadał grze prawa do sześciu wgranych plików audio** (Creator Hub, 17.11 ok. 19:45). Wcześniej gra dostawała odmowę, bo pliki są na koncie Karola, a gra na innym; bycie współtwórcą gry tego nie załatwia.
+- **Kontrola w grze** (w sesji Play Karola, sam odczyt): wszystkie sześć plików wczytuje się poprawnie; muzyka stref gra w bazarze (utwór targu). W walce odtwarzacz sam przechodzi z dźwięków wbudowanych na odcinki arkusza, gdy tylko arkusz jest wczytany.
+- Nieocenione: brzmienie i głośność na słuch — ocenia Karol. Muzyka gra tylko w bazarze, lesie-pasie i Bagnie; start w starym miasteczku i menu są bez muzyki.
+- Notatki: [[Pipeline assetów]], [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (jajka i pety na próbę — pierwsze ujście Złota)
 - **Po co:** drugie przejście gry pokazało, że Złota nie ma na co wydać. Zatwierdzone decyzje mówią, na co ma iść: jajka tylko za Złoto, inkubator w każdym biomie, wyklucie od razu z animacją, zagroda w miasteczku (D-052, D-058, D-060, D-085, D-086). Próba realizuje je w najmniejszym zakresie, jako propozycja w osobnym kontenerze `Workspace/PetyProba`.
 - **Co działa w Studio:** inkubator przy miejscu przybycia w lesie-pasie (jajko na gnieździe, tablica z ceną i jawnymi szansami); E z przytrzymaniem → serwer zabiera Złoto i losuje → jajko trzęsie się, pęka w kolorze rzadkości, pet wyskakuje („NOWY PET!” albo „KOPIA +1”); pierwszy pet idzie za graczem, znika na czas walki, przelotu, chmur i mini-gry; w zagrodzie w bazarze stoją posiadane pety z liczbą kopii, a E opiekunki otwiera tymczasowe okno wyboru („PRÓBA”); aktywny pet daje premię do łupu z walk, pokazaną napisem przy łupie. Wskazówka celu podpowiada jajko, gdy gracza na nie stać.
