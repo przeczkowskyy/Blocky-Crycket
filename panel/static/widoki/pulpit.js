@@ -7,7 +7,7 @@ import { el, dopisz, zamien, ikona, czasTemu, dataKrotka, toast, arkusz, awatar,
 import { mdLinia } from "../wspolne/markdown.js";
 import { zbudujKolejke } from "../wspolne/kolejka.js";
 import { pobierzPrace, ostatniePrace, napisKonca, etapPracy, postep as postepPracy, kluczPozycji, inni as praceInnych,
-  zMain, kolizjeMojej, kolizjeCudzej, tekstKolizji, dopelniacz } from "../wspolne/prace.js";
+  zMain, kolizjeMojej, kolizjeCudzej, tekstKolizji, dopelniacz, miniaturaPracy } from "../wspolne/prace.js";
 
 const enc = encodeURIComponent;
 
@@ -68,7 +68,8 @@ export default {
       el("div", { class: "pulpit-gora-tekst" }, powitanie),
       faza);
 
-    // Prace w toku (bc/prace.py): na samej górze, widoczna tylko, gdy są jakieś prace; stary serwer — wcale
+    // Prace w toku (bc/prace.py): na samej górze, widoczna tylko, gdy są jakieś prace; stary serwer — wcale.
+    // Przy pracy z podglądem — miniatura tego, co powstaje; przycisk „Podglądy” prowadzi do zakładki Podgląd.
     const kPrace = karta("Prace w toku", "zegar", { klasa: "karta-prace" });
     kPrace.el.hidden = true;
     const kCzeka = karta("Czeka na Ciebie", "pytanie", { klasa: "karta-czeka" });
@@ -116,6 +117,7 @@ export default {
     let ostatnieDane = {};
     let zakonczoneOtwarte = false;
     let raportyPulpitu = [];            // do tytułów raportów przy pracach
+    let migawkiPulpitu = new Map();     // id migawki -> meta (praca z samą migawką 3D pokazuje jej pierwszy zrzut)
 
     // ------------------------------------------------------------------ rysowanie kart
     function rysujGore(plan, blad) {
@@ -192,7 +194,11 @@ export default {
       const pp = p.stan === "gotowe" ? null : postepPracy(p);
       const klucz = kluczPozycji(p);
       const pod = [etap, p.kto].filter(Boolean).join(" · ");
-      return el("li", { class: "praca stan-" + p.stan + (n.klasa ? " " + n.klasa : ""), dataset: { praca: p.id } },
+      // podgląd tego, co powstaje (ostatni zrzut, klatka z folderu albo zrzut migawki 3D) — mała miniatura z prawej
+      // obok tekstu, klik = powiększenie (styl.css: .praca.z-podgladem)
+      const podglad = miniaturaPracy(ctx, p, { naMigawke: (id) => ctx.idz("podglad", { migawka: id }), migawki: migawkiPulpitu });
+      return el("li", { class: "praca stan-" + p.stan + (n.klasa ? " " + n.klasa : "") + (podglad ? " z-podgladem" : ""), dataset: { praca: p.id } },
+        podglad,
         el("div", { class: "praca-gora" },
           el("strong", { class: "praca-tytul" }, p.tytul || p.id),
           el("span", { class: "praca-koniec" + (n.klasa ? " " + n.klasa : "") }, n.tekst)),
@@ -224,6 +230,10 @@ export default {
       const gotowe = prace.filter((p) => p.stan === "gotowe");
       const wToku = aktywne.filter((p) => p.stan === "w_toku").length;
       if (wToku) kPrace.akcje.append(el("span", { class: "cichy-tekst" }, String(wToku) + " " + odmiana(wToku, ["trwa", "trwają", "trwa"])));
+      if (ctx.maWidok("podglad") && aktywne.some((p) => p.podglad || p.migawka)) {
+        kPrace.akcje.append(el("button", { type: "button", class: "przycisk cichy maly", onclick: () => ctx.idz("podglad", { zakladka: "przeglad" }) },
+          ikona("obraz"), el("span", null, "Podglądy")));
+      }
       const dzis = new Date().toDateString();
       const wszystkieDzis = gotowe.every((p) => new Date(p.zakonczono || p.aktualizacja).toDateString() === dzis);
       let det = null;
@@ -599,7 +609,11 @@ export default {
         agenda: wart(ag), bladPlanu: blad(plan), bladRaportow: blad(rap),
       };
       if (dane.raporty) raportyPulpitu = dane.raporty;
-      rysuj("prace-tytuly", JSON.stringify((dane.raporty || []).map((r) => [r.id, r.tytul])), () => rysujPrace(ostatniePrace()));   // tytuły raportów przy pracach
+      if (pod.status === "fulfilled") migawkiPulpitu = new Map(((pod.value && pod.value.migawki) || []).map((m) => [m.id, m]));
+      rysuj("prace-tytuly", JSON.stringify([(dane.raporty || []).map((r) => [r.id, r.tytul]), [...migawkiPulpitu.keys()]]), () => {
+        podpisPrac = "";                                           // tytuły raportów i migawki przy pracach
+        rysujPrace(ostatniePrace());
+      });
       const sPlan = sygn(plan);
       const sRap = sygn(rap);
       rysuj("gora", sPlan, () => rysujGore(dane.plan, dane.bladPlanu));

@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (panel: podgląd prac i akceptacja kilku rzeczy naraz)
+- Zaległe zlecenia Karola z 13–14.11. Połączenie zakładek Plan i Raporty w Pytania, krótkie karty i aktywne osoby w lewym dolnym rogu były zrobione już 14.11, tylko nieodhaczone — potwierdzone próbą w przeglądarce.
+- **Nowe:** zakładka Podgląd ma siatkę „Do przejrzenia” (raporty czekające na decyzję; kilka naraz albo po kolei) i część „Powstaje teraz”; przy pracy w toku miniatura tego, co powstaje (`praca.py zrzut`, `--podglad-z`, `--migawka`); w zakładce Sesja podpowiedź „Na sesji padło” z przyciskiem „Wpisz do odpowiedzi” (wysyła człowiek).
+- Testy panelu: 635 (było 621), nowa próba w przeglądarce 90 kroków. Niesprawdzone: prawdziwy telefon przez tunel, prawdziwa sesja głosowa.
+- Agent pracujący nad panelem zgłosił jedną odmowę narzędzia (kasowanie własnych starych zrzutów w folderze roboczym) — nie obchodził jej.
+- Pliki: `panel/bc/prace.py`, `panel/narzedzia/praca.py`, `panel/static/` (widoki Podgląd, Pulpit, Sesja; wspólne `przeglad.js`, `kolejka.js`, `lista_pytan.*`, `prace.js`), `panel/testy/`, `panel/README.md`, `.claude/skills/panel/SKILL.md`; notatki [[Panel zespołu]], [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (pięć notatek o grze według decyzji)
 - Przepisane według [[Rejestr decyzji]] (stan do D-094) i odpowiedzi ludzi w [[Pytania otwarte]]: [[Karczma (Questy)]], [[Twierdza (Tycoon)]], [[Pety]], [[System RPG]], [[Drzewko umiejętności postaci]]. Dotąd miały głównie odsyłacze do propozycji. Każde ustalenie ma numer decyzji; uzgodnienia z jednym podpisem są tak oznaczone („podpis Karola, czeka na potwierdzenie Pawła”); propozycje i otwarte pytania stoją w osobnych sekcjach. Statusy notatek bez zmian.
 - Z [[Drzewko umiejętności postaci]] zniknęła treść odrzuconej D-047 (trzy gałęzie, piętra, punkty talentu).

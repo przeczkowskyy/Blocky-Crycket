@@ -19,6 +19,16 @@ Przykłady:
         --obszar model:rycerz --obszar swiat/postacie/biblioteka --koniec +40m [--stop-przy-kolizji]
     python panel/narzedzia/praca.py kolizje [--json] [--obszar model:rycerz]
 
+Podgląd tego, co powstaje (panel pokazuje go przy pracy na Pulpicie i w zakładce Podgląd):
+    python panel/narzedzia/praca.py zrzut --id biom-las --plik zrzut.png [--podpis "Polana od wschodu"]
+    python panel/narzedzia/praca.py etap --id biom-las --etap Kontrola --zrzut zrzut.png
+    python panel/narzedzia/praca.py start --id render-las --tytul "Render lasu" --podglad-z swiat/las_pas/klatki
+    python panel/narzedzia/praca.py etap --id biom-las --migawka 20261117-101500-ab12
+--zrzut kopiuje obraz (PNG/JPG/WEBP/GIF) do danych lokalnych panelu (najwyżej 6 ostatnich przy pracy, nie do
+repozytorium). --podglad-z: plik albo folder w repozytorium — panel sam pokazuje najnowszy obraz z tego miejsca (np.
+kolejne klatki renderu), bez wołania narzędzia po każdej klatce. --migawka: migawka 3D (narzedzia/migawka.py) do
+obejrzenia w zakładce Podgląd. Pusty tekst (--migawka "" / --podglad-z "") usuwa przypięty podgląd.
+
 --koniec: „HH:MM” (najbliższa taka godzina — dziś albo jutro), ISO (2026-11-15T14:30) albo czas od teraz (+90m, +2h,
 +1h30m). --dotyczy: raport:<id>, pytanie:<nr> albo decyzja:D-071.
 
@@ -138,6 +148,14 @@ def _wynik(a, p, naglowek, dodatki=None):
         _wypisz("  raport z wynikiem: " + p["raport"])
     if p.get("obszary"):
         _wypisz("  obszary: " + ", ".join(p["obszary"]))
+    if p.get("podglad"):
+        g = p["podglad"]
+        _wypisz("  podgląd: %s %s%s" % ("zrzut" if g["zrodlo"] == "zrzut" else "najnowszy obraz z " + (p.get("podglad_z") or "folderu"),
+                                       _godzina(g["czas"]), (" — " + g["podpis"]) if g.get("podpis") else ""))
+    elif p.get("podglad_z"):
+        _wypisz("  podgląd z: %s (na razie bez obrazu)" % p["podglad_z"])
+    if p.get("migawka"):
+        _wypisz("  migawka 3D: " + p["migawka"])
     return 0
 
 
@@ -216,7 +234,8 @@ def cmd_start(a):
                 _wypisz("Praca NIE została zapisana (--stop-przy-kolizji).")
             return KOD_KOLIZJI
     p = prace.rozpocznij(pid, a.tytul, opis=a.opis, etap=a.etap, etapy=a.etapy, numer=a.numer, koniec=a.koniec,
-                         dotyczy=a.dotyczy, kto=a.kto or _domyslny_kto(), obszary=obszary)
+                         dotyczy=a.dotyczy, kto=a.kto or _domyslny_kto(), obszary=obszary, zrzut=a.zrzut,
+                         podpis_zrzutu=a.podpis, migawka=a.migawka, podglad_z=a.podglad_z)
     _publikuj(a)
     kod = _wynik(a, p, "Start pracy", {"kolizje": kol} if obszary else None)
     if kol and not a.json:
@@ -224,10 +243,36 @@ def cmd_start(a):
     return kod
 
 
+def _podglad_z_argumentow(a):
+    """Zmiana przypiętego podglądu z --migawka / --podglad-z (None = bez zmian). → praca po zmianie albo None."""
+    zmiany = {k: v for k, v in (("migawka", a.migawka), ("podglad_z", a.podglad_z)) if v is not None}
+    return prace.ustaw_podglad(a.id, **zmiany) if zmiany else None
+
+
 def cmd_etap(a):
-    p = prace.ustaw_etap(a.id, etap=a.etap, numer=a.numer, koniec=a.koniec)
+    if a.etap is None and a.numer is None and a.koniec is None and not (a.zrzut or a.migawka is not None
+                                                                       or a.podglad_z is not None):
+        raise BladHTTP(400, "Podaj nowy etap (--etap), numer (--numer), szacowany koniec (--koniec) albo podgląd "
+                            "(--zrzut, --migawka, --podglad-z)")
+    if a.zrzut:                                                # zły obraz = błąd, zanim cokolwiek się zmieni
+        prace._przygotuj_obraz(a.zrzut)
+    for wartosc, sprawdz in ((a.migawka, prace.sprawdz_migawke), (a.podglad_z, prace.sprawdz_podglad_z)):
+        if wartosc is not None:
+            sprawdz(wartosc)
+    p = None
+    if a.etap is not None or a.numer is not None or a.koniec is not None:
+        p = prace.ustaw_etap(a.id, etap=a.etap, numer=a.numer, koniec=a.koniec)
+    p = _podglad_z_argumentow(a) or p
+    if a.zrzut:
+        p = prace.dodaj_zrzut(a.id, a.zrzut, podpis=a.podpis)
     _publikuj(a)
     return _wynik(a, p, "Etap")
+
+
+def cmd_zrzut(a):
+    p = prace.dodaj_zrzut(a.id, a.plik, podpis=a.podpis)
+    _publikuj(a)
+    return _wynik(a, p, "Zrzut")
 
 
 def cmd_koniec(a):
@@ -372,14 +417,34 @@ def main(argv=None):
                                                      "względem repozytorium, model:<id>, mapa:<scena>, studio:<Kontener>")
     s.add_argument("--stop-przy-kolizji", action="store_true",
                    help="przy kolizji z pracą innej osoby NIE zapisuj pracy i zakończ kodem 3")
+    podglad_pomoc = {
+        "zrzut": "obraz (PNG/JPG/WEBP/GIF) — podgląd tego, co powstaje (kopia w danych lokalnych panelu)",
+        "podpis": "krótki podpis zrzutu (do 120 znaków)",
+        "migawka": "id migawki 3D z narzedzia/migawka.py (pusty tekst = usuń)",
+        "podglad_z": "plik albo folder w repozytorium, z którego panel pokazuje najnowszy obraz (pusty tekst = usuń)",
+    }
+    s.add_argument("--zrzut", help=podglad_pomoc["zrzut"])
+    s.add_argument("--podpis", help=podglad_pomoc["podpis"])
+    s.add_argument("--migawka", help=podglad_pomoc["migawka"])
+    s.add_argument("--podglad-z", dest="podglad_z", help=podglad_pomoc["podglad_z"])
     s.set_defaults(fn=cmd_start)
 
-    e = sub.add_parser("etap", parents=[wspolne], help="zmiana etapu albo szacowanego końca")
+    e = sub.add_parser("etap", parents=[wspolne], help="zmiana etapu, szacowanego końca albo podglądu")
     e.add_argument("--id", required=True)
     e.add_argument("--etap", help="nowy etap")
     e.add_argument("--numer", type=int, help="numer etapu (od 1)")
     e.add_argument("--koniec", help=koniec_pomoc)
+    e.add_argument("--zrzut", help=podglad_pomoc["zrzut"])
+    e.add_argument("--podpis", help=podglad_pomoc["podpis"])
+    e.add_argument("--migawka", help=podglad_pomoc["migawka"])
+    e.add_argument("--podglad-z", dest="podglad_z", help=podglad_pomoc["podglad_z"])
     e.set_defaults(fn=cmd_etap)
+
+    zr = sub.add_parser("zrzut", parents=[wspolne], help="obraz jako najnowszy podgląd pracy")
+    zr.add_argument("--id", required=True)
+    zr.add_argument("--plik", required=True, help="obraz PNG/JPG/WEBP/GIF")
+    zr.add_argument("--podpis", help=podglad_pomoc["podpis"])
+    zr.set_defaults(fn=cmd_zrzut)
 
     k = sub.add_parser("koniec", parents=[wspolne], help="praca gotowa")
     k.add_argument("--id", required=True)

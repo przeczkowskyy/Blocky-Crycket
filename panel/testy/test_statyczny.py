@@ -52,7 +52,8 @@ class Eksport(unittest.TestCase):
                            timeout=180)
         self.assertEqual(r.returncode, 0, (r.stdout + r.stderr).decode("utf-8", "replace")[-800:])
         for nazwa in ("index.html", "app.js", "tryb.js", ".nojekyll", "widoki/pytania.js", "widoki/pytania.css",
-                      "wspolne/kolejka.js", "wspolne/raport_karta.js", "wspolne/lista_pytan.js", "wspolne/lista_pytan.css"):
+                      "wspolne/kolejka.js", "wspolne/raport_karta.js", "wspolne/lista_pytan.js", "wspolne/lista_pytan.css",
+                      "wspolne/przeglad.js", "wspolne/przeglad.css"):                # zakładka Podgląd: „Do przejrzenia”
             self.assertTrue(os.path.isfile(os.path.join(wyj, nazwa)), nazwa)
         for nazwa in ("widoki/decyzje.js", "widoki/plan.js", "widoki/raporty.js"):     # dawne zakładki nie wracają
             self.assertFalse(os.path.isfile(os.path.join(wyj, nazwa)), nazwa)

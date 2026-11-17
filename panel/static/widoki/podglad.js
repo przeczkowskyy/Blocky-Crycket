@@ -1,8 +1,28 @@
-// Podgląd 3D — „mini Roblox Studio w przeglądarce” (także na telefonie).
-// Migawka świata gry = części (czesci.json) + zrzuty ekranu ze Studio. Geometria kształtów wg panel/luau/KSZTALTY.md.
-// three.js ładujemy dopiero przy pierwszym pokazaniu widoku (moduł widoku jest lekki dla powłoki).
+// Zakładka Podgląd: dwie części przełączane na górze (17.11.2026, zlecenie Karola z 14.11):
+//   - „Do przejrzenia” (wspolne/przeglad.js): co właśnie powstaje (prace w toku z podglądem) i raporty do akceptacji —
+//     siatka miniatur, zaznaczanie kilku naraz, „Przeglądaj po kolei”; domyślna część;
+//   - „Model 3D” (ten plik): „mini Roblox Studio w przeglądarce” (także na telefonie). Migawka świata gry = części
+//     (czesci.json) + zrzuty ekranu ze Studio. Geometria kształtów wg panel/luau/KSZTALTY.md.
+// Adresy: #/podglad?migawka=<id>[&grupa=…] i #/podglad?zakladka=3d otwierają Model 3D, #/podglad?zakladka=przeglad —
+// Do przejrzenia; bez parametrów — ostatnio wybrana część (pamięć przeglądarki).
+// three.js ładujemy dopiero przy pierwszym pokazaniu części 3D (moduł widoku jest lekki dla powłoki).
 
-import { ikona as ikonaWspolna } from "../wspolne/ui.js";
+import { ikona as ikonaWspolna, przelacznik, el as elWspolny } from "../wspolne/ui.js";
+import { przegladAkceptacji } from "../wspolne/przeglad.js";
+
+const KLUCZ_TRYBU = "bc.podglad.tryb";
+function czytajTryb() {
+  try {
+    return localStorage.getItem(KLUCZ_TRYBU) === "3d" ? "3d" : "przeglad";
+  } catch (e) {
+    return "przeglad";
+  }
+}
+function zapiszTryb(t) {
+  try {
+    localStorage.setItem(KLUCZ_TRYBU, t);
+  } catch (e) { /* tryb prywatny */ }
+}
 
 const CSS = new URL("./podglad.css", import.meta.url).href;
 const ZLOTO = 0xf5b82e;
@@ -1183,35 +1203,77 @@ export default {
       }
     }
 
+    async function pokaz3d(parametry) {
+      S.widoczny = true;
+      const p = parametry || {};
+      if (p.migawka || p.grupa) S.oczekujace = { migawka: p.migawka, grupa: p.grupa };
+      try {
+        if (!T) {
+          pokazKomunikat("Wczytuję silnik 3D…");
+          await zaladujThree();
+          ukryjKomunikat();
+        }
+      } catch (e) {
+        S.bladWebGL = "Nie udało się wczytać silnika 3D (three.js): " + e.message;
+        pokazKomunikat(S.bladWebGL);
+      }
+      if (!S.lista) return wczytajListe(p.migawka);
+      if (p.migawka && (!S.meta || S.meta.id !== p.migawka)) {
+        if (!(S.lista.migawki || []).some((x) => x.id === p.migawka)) return wczytajListe(p.migawka);
+        return otworzMigawke(p.migawka);
+      }
+      zastosujOczekujace();
+      dopasujRozmiar();
+      zaplanuj();
+    }
+
+    function ukryj3d() {
+      S.widoczny = false;
+      if (S.raf) cancelAnimationFrame(S.raf);
+      S.raf = 0;
+    }
+
+    // ---------------- części zakładki: „Do przejrzenia” (wspolne/przeglad.js) i „Model 3D” (wyżej)
+    let tryb = czytajTryb();
+    const przel = przelacznik([
+      { id: "przeglad", tekst: "Do przejrzenia", ikona: "obraz" },
+      { id: "3d", tekst: "Model 3D", ikona: "podglad" },
+    ], tryb, (id) => ustawTryb(id, {}), "Część podglądu");
+    przel.classList.add("podglad-przelacznik");
+    const przeglad = przegladAkceptacji(ctx, {
+      naMigawke: (id) => ctx.idz("podglad", { migawka: id }),
+      naLiczbe: (n) => przel.licznik("przeglad", n ? n : null),
+    });
+    const widok = elWspolny("div", { class: "podglad-widok" }, elWspolny("header", { class: "podglad-glowa" }, przel), przeglad.el, root);
+
+    function ustawTryb(nowy, parametry) {
+      tryb = nowy === "3d" ? "3d" : "przeglad";
+      zapiszTryb(tryb);
+      przel.ustaw(tryb);
+      const trzyD = tryb === "3d";
+      przeglad.el.hidden = trzyD;
+      root.hidden = !trzyD;
+      if (trzyD) {
+        przeglad.ukryj();
+        return pokaz3d(parametry || {});
+      }
+      ukryj3d();
+      przeglad.pokaz();
+      return undefined;
+    }
+
     return {
-      el: root,
-      async pokaz(parametry) {
-        S.widoczny = true;
+      el: widok,
+      pokaz(parametry) {
         const p = parametry || {};
-        if (p.migawka || p.grupa) S.oczekujace = { migawka: p.migawka, grupa: p.grupa };
-        try {
-          if (!T) {
-            pokazKomunikat("Wczytuję silnik 3D…");
-            await zaladujThree();
-            ukryjKomunikat();
-          }
-        } catch (e) {
-          S.bladWebGL = "Nie udało się wczytać silnika 3D (three.js): " + e.message;
-          pokazKomunikat(S.bladWebGL);
-        }
-        if (!S.lista) return wczytajListe(p.migawka);
-        if (p.migawka && (!S.meta || S.meta.id !== p.migawka)) {
-          if (!(S.lista.migawki || []).some((x) => x.id === p.migawka)) return wczytajListe(p.migawka);
-          return otworzMigawke(p.migawka);
-        }
-        zastosujOczekujace();
-        dopasujRozmiar();
-        zaplanuj();
+        let t = tryb;
+        if (p.migawka || p.grupa || p.zakladka === "3d") t = "3d";
+        else if (p.zakladka === "przeglad") t = "przeglad";
+        return ustawTryb(t, p);
       },
       ukryj() {
-        S.widoczny = false;
-        if (S.raf) cancelAnimationFrame(S.raf);
-        S.raf = 0;
+        przeglad.ukryj();
+        ukryj3d();
       },
     };
   },

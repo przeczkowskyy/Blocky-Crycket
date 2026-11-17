@@ -28,6 +28,25 @@ def T(g, m=0, dzien=15):
     return datetime.datetime(2026, 11, dzien, g, m, tzinfo=STREFA)
 
 
+def png(kolor=(200, 60, 40), bok=4):
+    """Prawdziwy, mały obraz PNG (bez Pillow — sama biblioteka standardowa)."""
+    import struct
+    import zlib
+
+    def kawalek(typ, dane):
+        return struct.pack(">I", len(dane)) + typ + dane + struct.pack(">I", zlib.crc32(typ + dane) & 0xffffffff)
+    wiersz = b"\x00" + bytes(kolor) * bok
+    return (b"\x89PNG\r\n\x1a\n" + kawalek(b"IHDR", struct.pack(">IIBBBBB", bok, bok, 8, 2, 0, 0, 0)) +
+            kawalek(b"IDAT", zlib.compress(wiersz * bok)) + kawalek(b"IEND", b""))
+
+
+def zapisz_png(sciezka, **kw):
+    os.makedirs(os.path.dirname(sciezka), exist_ok=True)
+    with open(sciezka, "wb") as f:
+        f.write(png(**kw))
+    return sciezka
+
+
 @contextlib.contextmanager
 def dane_lokalne_testu(runtime):
     """Na czas bloku moduł prac pisze do `runtime` (katalog testu), a log panelu idzie do listy w pamięci i — gdyby
@@ -386,6 +405,176 @@ class TestOdpornosc(_KatalogTymczasowy):
         self.assertEqual([x for x in os.listdir(os.path.join(rdzen.RUNTIME, "prace")) if x.endswith((".lock", ".tmp"))], [])
 
 
+class TestPodgladPracy(_KatalogTymczasowy):
+    """Podgląd tego, co powstaje: zrzuty przypięte do pracy, migawka 3D, najnowszy obraz z folderu repozytorium."""
+
+    def setUp(self):
+        super().setUp()
+        self._stare = rdzen.REPO, rdzen.DANE
+        rdzen.REPO = os.path.join(self.tmp, "repo")                  # udawane repozytorium (folder podglądu)
+        rdzen.DANE = os.path.join(self.tmp, "dane")                  # migawki 3D
+        os.makedirs(rdzen.REPO)
+        prace._folder_cache.clear()
+
+    def tearDown(self):
+        rdzen.REPO, rdzen.DANE = self._stare
+        prace._folder_cache.clear()
+        super().tearDown()
+
+    def obraz(self, nazwa="z.png", **kw):
+        return zapisz_png(os.path.join(self.tmp, "wejscie", nazwa), **kw)
+
+    def wpis(self, pid):
+        return [p for p in prace.lista() if p["id"] == pid][0]
+
+    def test_zrzut_w_danych_lokalnych_i_w_api_bez_nazw_plikow(self):
+        prace.rozpocznij("las", "Las", kto="t", zrzut=self.obraz(), podpis_zrzutu="Polana od wschodu")
+        p = self.wpis("las")
+        self.assertEqual(p["zrzuty"], [{"n": 1, "czas": p["zrzuty"][0]["czas"], "podpis": "Polana od wschodu"}])
+        self.assertEqual((p["podglad"]["zrodlo"], p["podglad"]["n"], p["podglad"]["podpis"]), ("zrzut", 1, "Polana od wschodu"))
+        sciezka = prace.plik_podgladu("las")
+        self.assertTrue(sciezka.startswith(os.path.join(rdzen.RUNTIME, "prace", "zrzuty", "las") + os.sep), sciezka)
+        self.assertEqual(sciezka, prace.plik_zrzutu("las", 1))
+        self.assertIsNone(prace.plik_zrzutu("las", 2))
+        with open(sciezka, "rb") as f:
+            self.assertEqual(f.read(3), b"\xff\xd8\xff")                     # Pillow zamienia na JPG (bez Pillow: kopia)
+        self.assertNotIn("plik", json.dumps(p))
+        self.assertNotIn(self.tmp.replace("\\", "\\\\"), json.dumps(p))
+
+    def test_najwyzej_szesc_ostatnich_i_numery_rosna(self):
+        prace.rozpocznij("las", "Las", kto="t")
+        for i in range(8):
+            prace.dodaj_zrzut("las", self.obraz("z%d.png" % i, kolor=(i * 20, 0, 0)), podpis="klatka %d" % i)
+        p = self.wpis("las")
+        self.assertEqual([z["n"] for z in p["zrzuty"]], [3, 4, 5, 6, 7, 8])
+        self.assertEqual(p["podglad"]["n"], 8)
+        self.assertEqual(sorted(os.listdir(os.path.join(rdzen.RUNTIME, "prace", "zrzuty", "las"))),
+                         sorted("zrzut_%d.jpg" % n for n in range(3, 9)))       # starsze pliki usunięte
+        self.assertEqual(p["stan"], "w_toku")
+
+    def test_start_od_nowa_czysci_zrzuty_a_usun_kasuje_folder(self):
+        prace.rozpocznij("las", "Las", kto="t", zrzut=self.obraz())
+        prace.dodaj_zrzut("las", self.obraz())
+        prace.rozpocznij("las", "Las od nowa", kto="t")
+        self.assertNotIn("zrzuty", self.wpis("las"))
+        self.assertNotIn("podglad", self.wpis("las"))
+        self.assertFalse(os.path.exists(os.path.join(rdzen.RUNTIME, "prace", "zrzuty", "las")))
+        prace.dodaj_zrzut("las", self.obraz())
+        self.assertEqual(self.wpis("las")["zrzuty"][0]["n"], 1)
+        prace.usun("las")
+        self.assertFalse(os.path.exists(os.path.join(rdzen.RUNTIME, "prace", "zrzuty", "las")))
+
+    def test_zly_obraz_nic_nie_zmienia(self):
+        prace.rozpocznij("las", "Las", kto="t", zrzut=self.obraz())
+        tekst = os.path.join(self.tmp, "wejscie", "notatka.png")
+        with open(tekst, "w", encoding="utf-8") as f:
+            f.write("to nie jest obraz")
+        przed = prace.czytaj("las")
+        for zly in (tekst, os.path.join(self.tmp, "nie_ma.png"), ""):
+            with self.assertRaises(BladHTTP) as e:
+                prace.dodaj_zrzut("las", zly)
+            self.assertEqual(e.exception.status, 400)
+        self.assertEqual(prace.czytaj("las"), przed)
+        with self.assertRaises(BladHTTP):                                  # start ze złym obrazem: pracy nie ma
+            prace.rozpocznij("nowa", "Nowa", kto="t", zrzut=tekst)
+        self.assertIsNone(prace.czytaj("nowa"))
+        with self.assertRaises(BladHTTP) as e:
+            prace.dodaj_zrzut("nie-ma", self.obraz())
+        self.assertEqual(e.exception.status, 404)
+
+    def test_sciezka_podgladu_tylko_w_repozytorium(self):
+        self.assertEqual(prace.sprawdz_podglad_z("swiat\\las\\klatki\\"), "swiat/las/klatki")
+        self.assertEqual(prace.sprawdz_podglad_z(os.path.join(rdzen.REPO, "swiat", "las")), "swiat/las")
+        self.assertIsNone(prace.sprawdz_podglad_z(""))
+        for zla in ("../poza", "swiat/../../poza", ".git/objects", "swiat/.ukryte", os.path.join(self.tmp, "poza"),
+                    "C:/Windows", "/etc"):
+            with self.assertRaises(BladHTTP, msg=zla) as e:
+                prace.sprawdz_podglad_z(zla)
+            self.assertEqual(e.exception.status, 400)
+
+    def test_najnowszy_obraz_z_folderu_i_nowszy_wygrywa(self):
+        kat = os.path.join(rdzen.REPO, "swiat", "las", "klatki")
+        prace.rozpocznij("render", "Render lasu", kto="t", podglad_z="swiat/las/klatki")
+        p = self.wpis("render")
+        self.assertEqual(p["podglad_z"], "swiat/las/klatki")
+        self.assertNotIn("podglad", p)                                     # folder jeszcze nie istnieje
+        stare = zapisz_png(os.path.join(kat, "klatka_001.png"))
+        nowe = zapisz_png(os.path.join(kat, "klatka_002.png"))
+        os.utime(stare, (time.time() - 120, time.time() - 120))
+        os.utime(nowe, (time.time() - 60, time.time() - 60))
+        with open(os.path.join(kat, "opis.txt"), "w", encoding="utf-8") as f:
+            f.write("nie obraz")
+        zapisz_png(os.path.join(kat, ".ukryty.png"))
+        prace._folder_cache.clear()
+        p = self.wpis("render")
+        self.assertEqual((p["podglad"]["zrodlo"], p["podglad"]["plik"]), ("folder", "klatka_002.png"))
+        self.assertEqual(os.path.normcase(os.path.realpath(prace.plik_podgladu("render"))),
+                         os.path.normcase(os.path.realpath(nowe)))
+        prace.dodaj_zrzut("render", self.obraz())                           # zrzut nowszy niż klatki — wygrywa
+        prace._folder_cache.clear()
+        self.assertEqual(self.wpis("render")["podglad"]["zrodlo"], "zrzut")
+        os.utime(nowe, None)
+        time.sleep(0.05)
+        zapisz_png(os.path.join(kat, "klatka_003.png"))                    # nowa klatka po zrzucie — wygrywa folder
+        prace._folder_cache.clear()
+        p = self.wpis("render")
+        self.assertEqual((p["podglad"]["zrodlo"], p["podglad"]["plik"]), ("folder", "klatka_003.png"))
+        prace.ustaw_podglad("render", podglad_z="")                        # pusty tekst usuwa
+        self.assertNotIn("podglad_z", self.wpis("render"))
+        self.assertEqual(self.wpis("render")["podglad"]["zrodlo"], "zrzut")
+
+    def test_pojedynczy_plik_jako_podglad(self):
+        plik = zapisz_png(os.path.join(rdzen.REPO, "swiat", "ostatni.png"))
+        prace.rozpocznij("r", "R", kto="t", podglad_z="swiat/ostatni.png")
+        self.assertEqual(self.wpis("r")["podglad"]["plik"], "ostatni.png")
+        self.assertEqual(os.path.normcase(os.path.realpath(prace.plik_podgladu("r"))), os.path.normcase(os.path.realpath(plik)))
+
+    def test_migawka_musi_istniec(self):
+        with self.assertRaises(BladHTTP) as e:
+            prace.rozpocznij("las", "Las", kto="t", migawka="20261117-101500-ab12")
+        self.assertIn("Nie ma migawki", e.exception.komunikat)
+        with self.assertRaises(BladHTTP):
+            prace.rozpocznij("las", "Las", kto="t", migawka="../zle")
+        os.makedirs(os.path.join(rdzen.DANE, "podglad", "20261117-101500-ab12"))
+        prace.rozpocznij("las", "Las", kto="t", migawka="20261117-101500-ab12")
+        self.assertEqual(self.wpis("las")["migawka"], "20261117-101500-ab12")
+        prace.ustaw_podglad("las", migawka="")
+        self.assertNotIn("migawka", self.wpis("las"))
+
+    def test_dziwne_wpisy_zrzutow_z_pliku_pominiete(self):
+        self.plik("x.json", {"id": "x", "tytul": "X", "stan": "w_toku", "start": "2026-11-15T10:00:00+01:00",
+                             "podglad_z": "../poza", "migawka": "../zla",
+                             "zrzuty": [{"n": 1, "plik": "../../tajne.jpg", "czas": "2026-11-15T10:00:00+01:00"},
+                                        {"n": 2, "plik": "zrzut_3.jpg", "czas": "2026-11-15T10:00:00+01:00"},
+                                        {"n": "4", "plik": "zrzut_4.jpg", "czas": "2026-11-15T10:00:00+01:00"},
+                                        {"n": 5, "plik": "zrzut_5.jpg", "czas": "zle"}, "tekst",
+                                        {"n": 6, "plik": "zrzut_6.png", "czas": "2026-11-15T10:00:00+01:00", "podpis": 7}]})
+        p = self.wpis("x")
+        self.assertEqual(p["zrzuty"], [{"n": 6, "czas": "2026-11-15T10:00:00+01:00"}])
+        self.assertNotIn("podglad", p)                                     # pliku zrzut_6.png nie ma
+        self.assertNotIn("podglad_z", p)
+        self.assertNotIn("migawka", p)
+
+    def test_wymiana_prac_nie_wysyla_podgladu(self):
+        from bc import prace_wymiana
+        os.makedirs(os.path.join(rdzen.DANE, "podglad", "m1"))
+        prace.rozpocznij("las", "Las", kto="t", zrzut=self.obraz(), migawka="m1", podglad_z="swiat/las")
+        w = prace_wymiana.oczysc_prace(self.wpis("las"))
+        for pole in ("zrzuty", "podglad", "migawka", "podglad_z"):
+            self.assertNotIn(pole, w)
+
+    def test_sprzatanie_kasuje_zrzuty_starych_prac(self):
+        teraz = datetime.datetime.now().astimezone()
+        prace.rozpocznij("stara", "Stara", kto="t", zrzut=self.obraz(), teraz=teraz - datetime.timedelta(days=4))
+        prace.zakoncz("stara", teraz=teraz - datetime.timedelta(days=3))
+        kat = os.path.join(rdzen.RUNTIME, "prace", "zrzuty")
+        os.makedirs(os.path.join(kat, "sierota"))
+        os.utime(os.path.join(kat, "sierota"), (time.time() - 7200, time.time() - 7200))
+        os.makedirs(os.path.join(kat, "swieza-sierota"))
+        self.assertEqual(prace.sprzataj(), 1)
+        self.assertEqual(sorted(os.listdir(kat)), ["swieza-sierota"])
+
+
 class TestLogWTestach(unittest.TestCase):
     def test_przygotowanie_serwera_nie_pisze_do_logu_panelu(self):
         # przygotowanie prac dla serwera testowego (TestPraceAPI.przygotuj) nie może pisać do pliku logu z danych
@@ -472,6 +661,34 @@ class TestNarzedzie(unittest.TestCase):
         self.assertNotEqual(self.uruchom()[0], 0)                             # bez polecenia: pomoc i kod 2
         self.assertNotEqual(self.uruchom("start", "--id", "x")[0], 0)        # brak --tytul (argparse)
 
+    def test_zrzut_i_podglad_z_narzedzia(self):
+        obraz = zapisz_png(os.path.join(self.tmp, "z.png"))
+        kod, out, err = self.uruchom("start", "--id", "render", "--tytul", "Render lasu", "--kto", "t", "--bez-sieci",
+                                     "--zrzut", obraz, "--podpis", "Pierwsza klatka", "--podglad-z", "swiat/nie_ma_jeszcze")
+        self.assertEqual(kod, 0, err)
+        self.assertIn("podgląd: zrzut", out)
+        self.assertIn("Pierwsza klatka", out)
+        kod, out, err = self.uruchom("zrzut", "--id", "render", "--plik", obraz, "--podpis", "Druga", "--json", "--bez-sieci")
+        self.assertEqual(kod, 0, err)
+        d = json.loads(out)
+        self.assertEqual(([z["n"] for z in d["zrzuty"]], d["podglad"]["podpis"], d["podglad_z"]),
+                         ([1, 2], "Druga", "swiat/nie_ma_jeszcze"))
+        kod, out, err = self.uruchom("etap", "--id", "render", "--zrzut", obraz, "--bez-sieci")   # sam zrzut, bez etapu
+        self.assertEqual(kod, 0, err)
+        kod, out, err = self.uruchom("etap", "--id", "render", "--podglad-z", "", "--json", "--bez-sieci")
+        self.assertEqual(kod, 0, err)
+        d = json.loads(out)
+        self.assertNotIn("podglad_z", d)
+        self.assertEqual([z["n"] for z in d["zrzuty"]], [1, 2, 3])
+        self.assertTrue(os.path.isfile(os.path.join(self.tmp, "runtime", "prace", "zrzuty", "render", "zrzut_3.jpg")))
+        for argv, slowo in ((["etap", "--id", "render"], "Podaj"), (["zrzut", "--id", "render", "--plik", os.path.join(self.tmp, "brak.png")], "Nie ma pliku"),
+                            (["etap", "--id", "render", "--podglad-z", "../poza"], "Niepoprawna"),
+                            (["etap", "--id", "render", "--etap", "X", "--migawka", "brak-migawki"], "Nie ma migawki")):
+            kod, out, err = self.uruchom(*argv, "--bez-sieci")
+            self.assertEqual(kod, 1, argv)
+            self.assertIn(slowo, err, argv)
+        self.assertNotIn("X", json.loads(self.uruchom("lista", "--json")[1])["prace"][0].get("etap") or "")   # nic nie zmieniono
+
     def test_wstrzymaj_wznow_i_po_czasie(self):
         self.assertEqual(self.uruchom("start", "--id", "w", "--tytul", "W", "--kto", "t",
                                       "--koniec", (datetime.datetime.now().astimezone() - datetime.timedelta(minutes=5)).isoformat())[0], 0)
@@ -493,7 +710,9 @@ class TestPraceAPI(test_api.SerwerTestowy):
             teraz = datetime.datetime.now().astimezone()
             prace.rozpocznij("walka-v2", "Walka v2 — poprawki", etapy="Plan,Poprawki,Kontrola", numer=2,
                              koniec="+35m", dotyczy="raport:r-20261115-090000-ab12", kto="Claude (test)",
-                             opis="Pliki w C:\\Users\\tester\\Desktop")
+                             opis="Pliki w C:\\Users\\tester\\Desktop",
+                             zrzut=zapisz_png(os.path.join(os.path.dirname(runtime), "wejscie", "walka.png")),
+                             podpis_zrzutu="Arena po poprawkach")
             prace.rozpocznij("biom-las", "Biom Las", koniec=(teraz - datetime.timedelta(minutes=10)).isoformat(),
                              kto="Claude (test)", teraz=teraz - datetime.timedelta(hours=1))
             prace.rozpocznij("modele", "Gołe modele", kto="Claude (test)", teraz=teraz - datetime.timedelta(hours=1))
@@ -531,6 +750,27 @@ class TestPraceAPI(test_api.SerwerTestowy):
     def test_bez_kodu_dostepu(self):
         s, o, _ = self.get("/api/prace", klucz=False, naglowki={"X-Forwarded-For": "192.168.1.50"})
         self.assertEqual(s, 401, o)
+        for trasa in ("/api/prace/walka-v2/podglad", "/api/prace/walka-v2/zrzut/1"):
+            s, o, _ = self.get(trasa, klucz=False, naglowki={"X-Forwarded-For": "192.168.1.50"})
+            self.assertEqual(s, 401, trasa)
+
+    def test_podglad_pracy_dla_goscia(self):
+        s, o, _ = self.get("/api/prace", zdalny=True)
+        walka = [p for p in o["prace"] if p["id"] == "walka-v2"][0]
+        self.assertEqual(walka["zrzuty"], [{"n": 1, "czas": walka["zrzuty"][0]["czas"], "podpis": "Arena po poprawkach"}])
+        self.assertEqual((walka["podglad"]["zrodlo"], walka["podglad"]["n"]), ("zrzut", 1))
+        self.assertNotIn("podglad", [p for p in o["prace"] if p["id"] == "biom-las"][0])
+        for trasa in ("/api/prace/walka-v2/podglad", "/api/prace/walka-v2/zrzut/1"):
+            s, _, (nagl, b) = self.get(trasa, zdalny=True, bajty=True)
+            self.assertEqual(s, 200, trasa)
+            self.assertTrue(nagl.get("Content-Type", "").startswith("image/"), nagl.get("Content-Type"))
+            self.assertGreater(len(b), 20)
+        self.assertBlad(self.get("/api/prace/walka-v2/zrzut/2"), 404)
+        self.assertBlad(self.get("/api/prace/walka-v2/zrzut/abc"), 404)
+        self.assertBlad(self.get("/api/prace/biom-las/podglad"), 404)          # praca bez podglądu
+        self.assertBlad(self.get("/api/prace/nie-ma/podglad"), 404)
+        self.assertBlad(self.get("/api/prace/..%5Cpanel/podglad"), 400)
+        self.assertBlad(self.get("/api/prace/ZLE%20ID/podglad"), 400)
 
     def test_zdrowie(self):
         s, o, _ = self.get("/api/zdrowie", timeout=60)

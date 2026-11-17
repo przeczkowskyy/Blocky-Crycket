@@ -15,8 +15,12 @@
 //   kolizjeMojej(d, id), kolizjeCudzej(d, osoba, id), tekstKolizji(k, {przyCudzej?, nazwaTu?}) → napis ostrzeżenia;
 //   dopelniacz(nazwa) („Pawła”), opisObszaru(o) („model rycerz”, „kontener X w Studio”)
 //   Dane innych osób to tekst z publicznego repozytorium — tylko przez el() (węzły tekstu), nigdy jako HTML.
+//   Podgląd tego, co powstaje (17.11, bc/prace.py: pola podglad, zrzuty, migawka; stary serwer — bez tych pól):
+//   obrazyPracy(ctx, p) → [{src, podpis}] od najnowszego; maPodglad(p); miniaturaPracy(ctx, p, {duza?, naMigawke?})
+//   → <figure> z obrazem (klik = powiększenie wszystkich zrzutów) i podpisem „podgląd 12:31”, albo przycisk „Migawka
+//   3D”, albo null.
 
-import { el, ikona, dataKrotka } from "./ui.js";
+import { el, ikona, dataKrotka, powiekszenie, odmiana } from "./ui.js";
 
 const PAMIEC_MS = 10000;
 const PRZERWA_PO_BLEDZIE_MS = 5 * 60000;
@@ -176,6 +180,67 @@ export function znaczekPracy(p, o = {}) {
     : el("span", { class: "praca-znaczek " + klasa, title: tytul }, tresc);
   e.dataset.tekst = tekst + "|" + klasa;
   return e;
+}
+
+// ------------------------------------------------------------------ podgląd tego, co powstaje
+const enc = encodeURIComponent;
+
+/** Czy praca ma coś do obejrzenia (obraz albo migawkę 3D). */
+export function maPodglad(p) {
+  return !!(p && ((p.podglad && p.podglad.czas) || p.migawka));
+}
+
+/** Obrazy pracy od najnowszego: najnowszy podgląd (także klatka z folderu), potem starsze zrzuty. */
+export function obrazyPracy(ctx, p) {
+  if (!p || !p.id) return [];
+  const sciezka = (s) => (ctx && typeof ctx.plik === "function" ? ctx.plik(s) : s);
+  const wynik = [];
+  const g = p.podglad;
+  const tytul = String(p.tytul || p.id).slice(0, 120);
+  if (g && g.czas) {
+    wynik.push({ src: sciezka("/api/prace/" + enc(p.id) + "/podglad?v=" + enc(g.czas + (g.n || g.plik || ""))),
+      podpis: tytul + " — " + (g.podpis || (g.zrodlo === "folder" ? "najnowszy obraz" : "zrzut")) + " (" + godzina(g.czas) + ")",
+      n: g.zrodlo === "zrzut" ? g.n : null });
+  }
+  for (const z of (Array.isArray(p.zrzuty) ? p.zrzuty : []).slice().reverse()) {
+    if (!z || !Number.isInteger(z.n) || wynik.some((w) => w.n === z.n)) continue;
+    wynik.push({ src: sciezka("/api/prace/" + enc(p.id) + "/zrzut/" + z.n + "?v=" + enc(z.czas || "")),
+      podpis: tytul + " — " + (z.podpis || "zrzut") + " (" + godzina(z.czas) + ")", n: z.n });
+  }
+  return wynik;
+}
+
+/** Podgląd przy pracy: obraz (klik = powiększenie wszystkich zrzutów od najnowszego) z małym podpisem i — przy
+ * migawce — przyciskiem „W 3D”. o.duza = większy obraz (zakładka Podgląd); o.naMigawke(id) = przejście do 3D;
+ * o.migawki = Map(id → meta migawki z GET /api/podglad) — praca z samą migawką pokazuje jej pierwszy zrzut. */
+export function miniaturaPracy(ctx, p, o = {}) {
+  if (!maPodglad(p)) return null;
+  let obrazy = obrazyPracy(ctx, p);
+  const g = p.podglad;
+  const w3d = p.migawka && typeof o.naMigawke === "function"
+    ? el("button", { type: "button", class: "chip klik niebieski praca-3d", onclick: () => o.naMigawke(p.migawka) }, ikona("podglad"), el("span", null, "W 3D"))
+    : null;
+  let opis = "";
+  if (obrazy.length) {
+    opis = (g.zrodlo === "folder" ? "najnowszy obraz " : "podgląd ") + godzina(g.czas) +
+      (obrazy.length > 1 ? " · " + obrazy.length + " " + odmiana(obrazy.length, ["obraz", "obrazy", "obrazów"]) : "") +
+      (g.podpis ? " — " + String(g.podpis).slice(0, 120) : "");
+  } else {
+    const m = p.migawka && o.migawki && typeof o.migawki.get === "function" ? o.migawki.get(p.migawka) : null;
+    const zrzuty = m && Array.isArray(m.zrzuty) ? m.zrzuty.filter((n) => typeof n === "string").slice(0, 4) : [];
+    const sciezka = (s) => (ctx && typeof ctx.plik === "function" ? ctx.plik(s) : s);
+    obrazy = zrzuty.map((n) => ({ src: sciezka("/api/podglad/" + enc(m.id) + "/plik/" + enc(n)),
+      podpis: String(p.tytul || p.id).slice(0, 120) + " — migawka 3D" }));
+    opis = obrazy.length ? "migawka 3D" + (m.czas ? " " + godzina(m.czas) : "") : "";
+  }
+  if (!obrazy.length) {
+    return w3d ? el("div", { class: "praca-podglad bez-obrazu" + (o.duza ? " duza" : "") }, w3d) : null;
+  }
+  return el("figure", { class: "praca-podglad" + (o.duza ? " duza" : ""), dataset: { podglad: p.id } },
+    el("button", { type: "button", class: "praca-podglad-obraz", "aria-label": "Powiększ podgląd: " + String(p.tytul || p.id).slice(0, 80),
+      onclick: () => powiekszenie(obrazy, 0) },
+    el("img", { src: obrazy[0].src, alt: "", loading: "lazy", decoding: "async" })),
+    el("figcaption", { class: "praca-podglad-podpis" }, el("span", null, opis), w3d));
 }
 
 /** Mapa klucz karty → praca (pierwsza na liście wygrywa: w toku przed wstrzymaną i gotową). */

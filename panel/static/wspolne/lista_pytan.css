@@ -56,6 +56,12 @@
 .praca-znaczek.blad { color: #ff9b9b; }
 .praca-znaczek.wstrzymane { color: var(--przygaszony); }
 button.praca-znaczek { border: 0; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; min-height: 24px; text-decoration: underline; text-decoration-color: var(--obrys-jasny); text-underline-offset: 3px; }
+/* „Na sesji padło: …” (zakładka Sesja, notatki agenta): spokojny wiersz pod tytułem, bez pudełka */
+.sesja-padlo { display: flex; flex-direction: column; gap: 2px; margin: 0; padding: 0; }
+.sesja-padlo-tekst { margin: 0; font-size: 14px; overflow-wrap: anywhere; }
+.sesja-padlo-etykieta { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: #7cc0ff; margin-right: 2px; }
+.sesja-padlo-etykieta .ikona { width: 13px; height: 13px; }
+.sesja-padlo .rzad-przyciskow { margin: 0; }
 button.sprawa-meta-klik {
   background: none; border: 0; padding: 0; font: inherit; color: var(--przygaszony); cursor: pointer;
   text-decoration: underline; text-decoration-color: var(--obrys-jasny); text-underline-offset: 3px; min-height: 24px;
@@ -82,9 +88,10 @@ button.sprawa-meta-klik:hover { color: var(--tekst); }
 .sprawa .decyzja-info { border: 0; padding: 8px 12px; }
 
 .sprawa-decyzje { display: flex; flex-direction: column; gap: 6px; }
+/* decyzja w karcie pytania: bez pudełka w pudełku (uwaga Karola z 14.11) — cienka linia nad nią zamiast ciemnego tła */
 .sprawa-dec {
-  display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: 10px;
-  background: var(--tlo-gleb); border: 0;
+  display: flex; flex-direction: column; gap: 4px; padding: 8px 0 0; border-radius: 0;
+  background: none; border: 0; border-top: 1px solid var(--obrys);
 }
 .sprawa-dec .decyzja-gora { display: flex; align-items: center; gap: 0; flex-wrap: wrap; font-size: 12px; }
 .sprawa-dec .decyzja-gora > * + *::before { content: "·"; margin: 0 6px; color: var(--obrys-jasny); }
@@ -161,7 +168,7 @@ button.sprawa-meta-klik:hover { color: var(--tekst); }
 .lista-pytan.zwarta .sprawa.karta:first-child { border-top: 0; padding-top: 4px; }
 .lista-pytan.zwarta .sprawa-tytul { font-size: 15px; }
 .lista-pytan.zwarta .sprawa .md { font-size: 13.5px; }
-.lista-pytan.zwarta .sprawa-dec { padding: 8px 10px; }
+.lista-pytan.zwarta .sprawa-dec { padding: 6px 0 0; }
 .lista-pytan.zwarta .sprawa-dec-tytul { font-size: 14px; }
 .lista-pytan.zwarta .odpowiedz-formularz { gap: 6px; }
 .lista-pytan.zwarta .odpowiedz-formularz .pole { min-height: 44px; }

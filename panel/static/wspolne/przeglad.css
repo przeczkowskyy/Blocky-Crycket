@@ -1,0 +1,118 @@
+/* Przegląd do akceptacji (wspolne/przeglad.js) — część „Do przejrzenia” zakładki Podgląd.
+   Lekko: bez kolorowych pasków i ciężkich pudełek; obraz jest najważniejszy. Telefon (~390 px): dwie kolumny miniatur. */
+.przeglad { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.przeglad-sekcja { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.przeglad-naglowek { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 16px; font-weight: 800; }
+.przeglad-naglowek .ikona { width: 19px; height: 19px; color: var(--zloto); flex: none; }
+.przeglad-licznik { min-width: 22px; padding: 0 7px; border-radius: 999px; background: var(--karta2); border: 1.5px solid var(--obrys-jasny);
+  font-size: 12px; line-height: 20px; text-align: center; color: var(--przygaszony); }
+.przeglad-licznik:empty { display: none; }
+.przeglad-wszystkie { margin-left: auto; }
+.przeglad-podpowiedz { margin: -4px 0 0; font-size: 13px; }
+.przeglad-narzedzia { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.przeglad-narzedzia .przycisk.glowny { flex: 1 1 220px; }
+@media (min-width: 720px) { .przeglad-narzedzia .przycisk.glowny { flex: 0 0 auto; } }
+
+/* powstaje teraz: prace z podglądem — telefon: pasek przewijany w bok (karta ~80% szerokości), komputer: siatka */
+.przeglad-prace { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; margin: 0 -16px; padding-left: 16px;
+  padding-right: 16px; scroll-padding-left: 16px; scrollbar-width: thin; }
+.przeglad-prace > .przeglad-praca { flex: 0 0 80%; scroll-snap-align: start; }
+.przeglad-prace > .przeglad-praca:only-child { flex-basis: 100%; }
+@media (min-width: 720px) {
+  .przeglad-prace { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; overflow: visible; margin: 0; padding: 0; }
+}
+.przeglad-praca { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.przeglad-praca .praca-podglad { margin: 4px 0 0; }
+.przeglad-praca-tytul { font-size: 15px; font-weight: 800; overflow-wrap: anywhere; }
+.przeglad-praca .cichy-tekst { font-size: 13px; }
+
+/* siatka do akceptacji */
+.przeglad-siatka { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 720px) { .przeglad-siatka { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; } }
+.przeglad-siatka:empty { display: none; }
+.przeglad-kafel { position: relative; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.przeglad-kafel-obraz {
+  position: relative; display: block; width: 100%; aspect-ratio: 4 / 3; padding: 0; overflow: hidden; cursor: pointer;
+  border-radius: 12px; border: 2px solid var(--obrys); background: #0a0c11; color: var(--przygaszony); transition: border-color 0.15s, transform 0.15s;
+}
+.przeglad-kafel-obraz:hover, .przeglad-kafel-obraz:focus-visible { border-color: var(--zloto); }
+.przeglad-kafel.wybrany .przeglad-kafel-obraz { border-color: var(--zielen); box-shadow: 0 0 0 2px rgba(62, 207, 142, 0.35); }
+.przeglad-kafel-obraz img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.przeglad-bez-obrazu { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px; }
+.przeglad-bez-obrazu .ikona { width: 26px; height: 26px; }
+.przeglad-ile, .przeglad-3d {
+  position: absolute; bottom: 6px; display: inline-flex; align-items: center; gap: 3px; padding: 1px 7px; border-radius: 999px;
+  background: rgba(5, 6, 10, 0.72); color: #fff; font-size: 11.5px; font-weight: 800; line-height: 18px;
+}
+.przeglad-ile { right: 6px; }
+.przeglad-3d { left: 6px; color: #9fd0ff; }
+.przeglad-ile .ikona { width: 13px; height: 13px; }
+.przeglad-wybor {
+  position: absolute; top: 4px; left: 4px; display: grid; place-items: center; width: 44px; height: 44px; cursor: pointer; border-radius: 12px;
+}
+.przeglad-wybor input { width: 24px; height: 24px; margin: 0; accent-color: var(--zielen); cursor: pointer;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8)); }
+.przeglad-kafel-tekst { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.przeglad-kafel-tytul {
+  font-size: 14px; font-weight: 800; line-height: 1.3; overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.przeglad-kafel-meta { font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* pasek zaznaczonych: przyklejony nad dolną nawigacją telefonu */
+.przeglad-pasek-wyboru {
+  position: sticky; bottom: calc(var(--dol) + 10px); z-index: 20; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 10px; border-radius: 14px; background: rgba(27, 31, 43, 0.96); border: 2px solid var(--obrys-jasny); box-shadow: var(--cien-miekki);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+@media (min-width: 900px) { .przeglad-pasek-wyboru { bottom: 14px; } }
+.przeglad-pasek-tekst { flex: 1 1 100%; font-weight: 800; font-size: 13px; }
+@media (min-width: 560px) { .przeglad-pasek-tekst { flex: 1 1 auto; } }
+.przeglad-pasek-wyboru .przycisk.sukces, .przeglad-pasek-wyboru .przycisk.grozny { flex: 1 1 auto; }
+.przeglad-lista-hurt { max-height: 30vh; overflow: auto; gap: 2px; }
+
+/* okno „Przeglądaj po kolei” — nad stroną, pod arkuszami (80) i powiększeniem (100) */
+html.bez-przewijania-przeglad { overflow: hidden; }
+.przeglad-okno {
+  position: fixed; inset: 0; z-index: 70; display: flex; flex-direction: column; background: var(--tlo-gleb);
+  padding: var(--bezp-gora) var(--bezp-prawo) var(--bezp-dol) var(--bezp-lewo); outline: none;
+}
+.przeglad-okno-gora { display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 14px; min-height: 56px; border-bottom: 1px solid var(--obrys); flex: none; }
+.przeglad-okno-licznik { font-size: 13px; font-weight: 800; color: var(--zloto); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.przeglad-okno-tytul { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; }
+.przeglad-okno-x { margin-left: auto; flex: none; }
+.przeglad-okno-tresc { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.przeglad-okno-scena { position: relative; flex: 0 0 auto; height: 44vh; height: 44dvh; background: #05060a; touch-action: pan-y; display: grid; place-items: center; overflow: hidden; }
+.przeglad-okno-img { width: 100%; height: 100%; object-fit: contain; display: block; cursor: zoom-in; user-select: none; -webkit-user-drag: none; }
+.przeglad-okno-bez { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px; text-align: center; color: var(--przygaszony); font-size: 14px; }
+.przeglad-okno-bez .ikona { width: 34px; height: 34px; }
+.przeglad-okno-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(255, 255, 255, 0.14); color: #fff; display: inline-flex; align-items: center; justify-content: center;
+}
+.przeglad-okno-nav.lewo { left: 8px; }
+.przeglad-okno-nav.prawo { right: 8px; }
+.przeglad-okno-kropki { position: absolute; bottom: 6px; left: 0; right: 0; display: flex; justify-content: center; gap: 2px; }
+.przeglad-kropka { width: 28px; height: 28px; border: 0; background: none; padding: 0; cursor: pointer; display: grid; place-items: center; }
+.przeglad-kropka::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); }
+.przeglad-kropka.aktywna::after { background: var(--zloto); }
+.przeglad-okno-dol { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 8px; }
+.przeglad-okno-nad { margin: 0; font-size: 12px; font-weight: 700; color: var(--przygaszony); }
+.przeglad-okno-pytanie { margin: 0; font-size: 18px; font-weight: 800; line-height: 1.3; overflow-wrap: anywhere; }
+.przeglad-okno-opis { font-size: 14px; color: #c9cede; }
+.przeglad-okno-opis:empty { display: none; }
+.przeglad-okno-opis > :last-child { margin-bottom: 0; }
+.przeglad-okno-stan { margin: 0; font-size: 13px; font-weight: 700; color: var(--zielen); }
+.przeglad-okno-akcje { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+.przeglad-okno-akcje .przycisk { min-height: 52px; font-size: 16px; }
+.przeglad-okno-akcje .przycisk:last-child { grid-column: 1 / -1; min-height: 44px; font-size: 15px; }
+.przeglad-okno-poprawa { display: flex; flex-direction: column; gap: 8px; }
+.przeglad-okno-drugie { display: flex; flex-wrap: wrap; gap: 4px 8px; border-top: 1px solid var(--obrys); padding-top: 8px; margin-top: 4px; }
+.przeglad-okno-koniec { flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 24px; text-align: center; }
+.przeglad-okno-koniec > strong { font-size: 18px; }
+.przeglad-okno-wynik { gap: 2px; color: var(--przygaszony); }
+@media (min-width: 900px) {
+  .przeglad-okno-tresc { flex-direction: row; }
+  .przeglad-okno-scena { flex: 1 1 auto; height: auto; }
+  .przeglad-okno-dol { flex: 0 0 400px; border-left: 1px solid var(--obrys); padding: 18px 20px; }
+}

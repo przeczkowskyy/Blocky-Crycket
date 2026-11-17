@@ -33,6 +33,7 @@ Narzędzia działają bez uruchomionego serwera (piszą pliki do `panel/dane/`).
 ```
 python panel/narzedzia/praca.py start --id biom-las --tytul "Biom Las — mapa z klocków" --etapy "Plan,Budowa,Kontrola,Raport" --koniec +90m --kto "Claude (Karol)"
 python panel/narzedzia/praca.py etap --id biom-las --etap Kontrola --koniec 12:40
+python panel/narzedzia/praca.py zrzut --id biom-las --plik zrzut.png --podpis "Polana od wschodu"   # podgląd tego, co powstaje (miniatura na Pulpicie)
 python panel/narzedzia/praca.py koniec --id biom-las --raport <id raportu z raport.py dodaj>
 ```
 - `--koniec`: `12:40` (najbliższa taka godzina), `+90m`, `+2h`, `+1h30m` albo ISO (od wczoraj do dwóch tygodni naprzód). Szacuj uczciwie; gdy widzisz, że nie zdążysz, od razu podaj nowy koniec (`etap --koniec …`), zamiast zostawiać „po czasie”.

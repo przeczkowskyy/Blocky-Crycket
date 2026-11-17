@@ -1,4 +1,12 @@
 /* Podgląd 3D — style specyficzne dla widoku (wspólne klasy i zmienne z styl.css) */
+/* zakładka: przełącznik „Do przejrzenia” / „Model 3D” na górze (część „Do przejrzenia” — wspolne/przeglad.css) */
+.podglad-widok { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.podglad-glowa { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }
+.podglad-przelacznik { max-width: 100%; }
+@media (max-width: 560px) {
+  .podglad-przelacznik { display: flex; width: 100%; }
+  .podglad-przelacznik .przelacznik-opcja { flex: 1 1 0; padding: 0 8px; min-width: 0; }
+}
 .v3d { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .v3d [hidden] { display: none !important; }
 .v3d-ik { display: inline-flex; width: 20px; height: 20px; flex: none; }

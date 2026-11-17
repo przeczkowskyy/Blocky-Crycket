@@ -27,18 +27,30 @@ Pola pliku:
                        (bc/prace_wymiana.py)
     aktualizacja       ISO — ostatnia zmiana
     zakonczono?        ISO — kiedy praca przeszła w „gotowe” albo „blad”
+  Podgląd tego, co właśnie powstaje (17.11.2026, zlecenie Karola z 14.11 — „jak to wygląda”):
+    zrzuty?            [{n, plik, czas, podpis?}] — najwyżej 6 ostatnich zrzutów przypiętych do pracy; obrazy leżą
+                       w danych lokalnych (rdzen.RUNTIME/prace/zrzuty/<id>/zrzut_<n>.<ext>), jak plik pracy
+    migawka?           id migawki 3D z panel/dane/podglad (podgląd przypięty do pracy)
+    podglad_z?         ścieżka w repozytorium (plik albo folder, np. klatki renderu): panel sam pokazuje najnowszy
+                       obraz z tego miejsca — bez ponownego wołania narzędzia po każdej klatce
+  Nic z tego nie idzie na publiczną gałąź prac (bc/prace_wymiana.py bierze tylko pola z własnej listy).
 
 Funkcje publiczne (dla CLI i testów; `teraz` = datetime ze strefą, domyślnie teraz):
     parsuj_koniec(tekst, teraz=None) -> ISO        HH:MM (najbliższa taka godzina), ISO albo +90m / +2h / +1h30m
-    rozpocznij(id, tytul, ...) -> praca            nowa praca (ten sam id = praca od nowa)
+    rozpocznij(id, tytul, ...) -> praca            nowa praca (ten sam id = praca od nowa, stare zrzuty znikają)
     ustaw_etap(id, etap=None, numer=None, koniec=None) -> praca
     zakoncz(id, raport=None, komunikat=None), oznacz_blad(id, komunikat), wstrzymaj(id, komunikat=None),
     wznow(id, koniec=None), usun(id)
+    dodaj_zrzut(id, plik, podpis=None) -> praca     obraz z dysku (PNG/JPG/WEBP/GIF) jako najnowszy podgląd
+    ustaw_podglad(id, migawka=…, podglad_z=…) -> praca   (pusty tekst = usuń; brak argumentu = bez zmian)
+    plik_podgladu(id) -> ścieżka najnowszego obrazu albo None;  plik_zrzutu(id, n) -> ścieżka albo None
     lista(teraz=None) -> [praca z polami wyliczanymi]   (kolejność jak w GET /api/prace)
     aktywne(teraz=None) -> [praca]                       prace w_toku i wstrzymane (te idą do drugiej osoby)
     sprzataj(teraz=None) -> liczba usuniętych plików
 
-Pola wyliczane (w liście i w API): zostalo_min albo po_czasie_min, przeterminowana, postep (0–1 albo null).
+Pola wyliczane (w liście i w API): zostalo_min albo po_czasie_min, przeterminowana, postep (0–1 albo null),
+podglad ({zrodlo: "zrzut" | "folder", czas, n?, podpis?, plik?} — najnowszy obraz albo brak pola). W API zrzuty są
+bez nazw plików: [{n, czas, podpis?}]; obrazy: GET /api/prace/<id>/podglad i GET /api/prace/<id>/zrzut/<n>.
 Błędy walidacji to rdzen.BladHTTP(400, "…") z komunikatem po polsku (CLI pokazuje sam komunikat).
 """
 import contextlib
@@ -79,9 +91,19 @@ MAX_ETAP = 80
 MAX_ETAPY = 12
 MAX_KOMUNIKAT = 300
 MAX_KTO = 40
+MAX_PODPIS = 120
+MAX_ZRZUTY = 6                                                 # ile ostatnich zrzutów zostaje przy pracy
+MAX_PODGLAD_Z = 300
+MAX_OBRAZ_Z_FOLDERU = 15 * 1024 * 1024                         # większych klatek z folderu panel nie podaje
+MAX_PLIKOW_W_FOLDERZE = 5000                                   # przy przeglądaniu folderu podglądu
+ROZSZERZENIA_OBRAZOW = (".png", ".jpg", ".jpeg", ".webp", ".gif")
+RX_PLIK_ZRZUTU = re.compile(r"^zrzut_(\d{1,6})\.(jpg|png|webp|gif)$")
+PAMIEC_FOLDERU_S = 5.0
 
 _zapis_lock = threading.Lock()
 _sprzatanie = {"t": 0.0}
+_folder_cache = {}                                             # ścieżka -> (czas odczytu, wynik)
+_folder_lock = threading.Lock()
 
 
 # --------------------------------------------------------------------------- ścieżki i czas
@@ -271,6 +293,66 @@ def _numer(numer, etapy):
     return n
 
 
+# --------------------------------------------------------------------------- podgląd: walidacja
+def sprawdz_migawke(mid):
+    """Id migawki 3D, która istnieje w panel/dane/podglad (jak przy raporcie). Pusty tekst = brak (usuń)."""
+    from . import podglad
+    mid = str(mid or "").strip()
+    if not mid:
+        return None
+    if not podglad.bezpieczne_id(mid):
+        raise BladHTTP(400, "Niepoprawny identyfikator migawki „%s”" % mid[:80])
+    if not podglad.folder_migawki(mid):
+        raise BladHTTP(400, "Nie ma migawki %s w panel/dane/podglad. Najpierw ją zrób: python panel/narzedzia/migawka.py "
+                            "--tytul \"…\"" % mid[:80])
+    return mid
+
+
+def sprawdz_podglad_z(sciezka):
+    """Plik albo folder w repozytorium, z którego panel pokazuje najnowszy obraz (np. klatki renderu). Ścieżka
+    względem repozytorium (bezwzględna — tylko wewnątrz repozytorium); bez „..” i bez ukrytych części (.git, .env).
+    Miejsce nie musi jeszcze istnieć (render może go dopiero założyć). Pusty tekst = brak (usuń)."""
+    s = str(sciezka or "").strip().replace("\\", "/")
+    if not s:
+        return None
+    if re.match(r"^[A-Za-z]:/", s) or s.startswith("/"):
+        pelna = os.path.realpath(s)
+        repo = os.path.realpath(rdzen.REPO)
+        if not pelna.startswith(repo + os.sep):
+            raise BladHTTP(400, "Podgląd musi leżeć w repozytorium gry (podaj ścieżkę względem repozytorium, "
+                                "np. swiat/las_pas/klatki)")
+        s = os.path.relpath(pelna, repo).replace("\\", "/")
+    czesci = [c for c in s.split("/") if c not in ("", ".")]
+    if not czesci or any(c == ".." or c.startswith(".") for c in czesci):
+        raise BladHTTP(400, "Niepoprawna ścieżka podglądu „%s” — bez „..” i bez ukrytych folderów" % s[:80])
+    wzgl = "/".join(czesci)
+    if len(wzgl) > MAX_PODGLAD_Z or rdzen.w_katalogu(rdzen.REPO, wzgl) is None or RX_SCIEZKA.search(wzgl):
+        raise BladHTTP(400, "Niepoprawna ścieżka podglądu „%s”" % wzgl[:80])
+    return wzgl
+
+
+def _zrzuty_z_pliku(lista):
+    """Lista zrzutów z pliku pracy: tylko poprawne wpisy {n, plik, czas, podpis?}, najwyżej MAX_ZRZUTY ostatnich."""
+    if not isinstance(lista, list):
+        return []
+    out = []
+    for z in lista:
+        if not isinstance(z, dict):
+            continue
+        n, plik = z.get("n"), z.get("plik")
+        if not isinstance(n, int) or isinstance(n, bool) or not isinstance(plik, str):
+            continue
+        m = RX_PLIK_ZRZUTU.match(plik)
+        if not m or int(m.group(1)) != n or not _czas(z.get("czas")):
+            continue
+        w = {"n": n, "plik": plik, "czas": z["czas"]}
+        podpis = _tekst_z_pliku(z.get("podpis"), MAX_PODPIS)
+        if podpis:
+            w["podpis"] = podpis
+        out.append(w)
+    return out[-MAX_ZRZUTY:]
+
+
 # --------------------------------------------------------------------------- odczyt i zapis
 POLA_CZASU = ("start", "koniec_szacowany", "aktualizacja", "zakonczono")
 
@@ -306,6 +388,14 @@ def _oczysc(dane):
     raport = dane.get("raport")
     p["raport"] = raport if isinstance(raport, str) and RX_RAPORT.match(raport) else None
     p["obszary"] = obszary_mod.lista_bez_bledow(dane.get("obszary")) or None
+    p["zrzuty"] = _zrzuty_z_pliku(dane.get("zrzuty")) or None
+    from . import podglad
+    mig = dane.get("migawka")
+    p["migawka"] = mig if isinstance(mig, str) and podglad.bezpieczne_id(mig) else None
+    try:
+        p["podglad_z"] = sprawdz_podglad_z(dane["podglad_z"]) if isinstance(dane.get("podglad_z"), str) else None
+    except BladHTTP:
+        p["podglad_z"] = None
     return {k: v for k, v in p.items() if v is not None}
 
 
@@ -400,11 +490,57 @@ def _pod_blokada(fn):
     return opakowana
 
 
+def _kat_zrzutow(pid):
+    """Zrzuty pracy — w danych lokalnych obok pliku pracy (nie w repozytorium, nie robią commitów)."""
+    return os.path.join(katalog(), "zrzuty", pid)
+
+
+def _usun_zrzuty(pid):
+    import shutil
+    kat = _kat_zrzutow(pid)
+    if os.path.isdir(kat):
+        shutil.rmtree(kat, ignore_errors=True)
+
+
+def _przygotuj_obraz(sciezka):
+    """Obraz z dysku → (rozszerzenie, bajty), jak załącznik raportu (Pillow zmniejsza do 1600 px; bez Pillow kopia do
+    3 MB). Zły plik = BladHTTP 400."""
+    from . import raporty
+    if not isinstance(sciezka, str) or not sciezka.strip():
+        raise BladHTTP(400, "Podaj plik zrzutu (--zrzut obraz.png)")
+    return raporty._przygotuj_zrzut(sciezka.strip())
+
+
+def _zapisz_zrzut(p, obraz, podpis, t):
+    """Dopisuje gotowy obraz (wynik _przygotuj_obraz) do pracy `p` (bez zapisu pliku pracy): plik zrzut_<n>.<ext>
+    w katalogu zrzutów, najwyżej MAX_ZRZUTY ostatnich (starsze pliki znikają)."""
+    ext, bajty = obraz
+    zrzuty = _zrzuty_z_pliku(p.get("zrzuty"))
+    n = max([z["n"] for z in zrzuty] + [0]) + 1
+    if n > 999999:
+        n = 1
+        zrzuty = []
+    nazwa = "zrzut_%d%s" % (n, ".jpg" if ext in (".jpg", ".jpeg") else ext)
+    rdzen.zapisz_bajty(os.path.join(_kat_zrzutow(p["id"]), nazwa), bajty)
+    w = {"n": n, "plik": nazwa, "czas": _iso(t)}
+    if podpis:
+        w["podpis"] = podpis
+    zrzuty.append(w)
+    for stary in zrzuty[:-MAX_ZRZUTY]:
+        try:
+            os.remove(os.path.join(_kat_zrzutow(p["id"]), stary["plik"]))
+        except OSError:
+            pass
+    p["zrzuty"] = zrzuty[-MAX_ZRZUTY:]
+    return p
+
+
 @_pod_blokada
 def rozpocznij(pid, tytul, opis=None, etap=None, etapy=None, numer=None, koniec=None, dotyczy=None, kto=None,
-               obszary=None, teraz=None):
-    """Nowa praca (ten sam id = zaczyna się od nowa). `koniec` = tekst jak w parsuj_koniec albo None;
-    `obszary` = lista wpisów jak w bc/obszary.py (zły wpis = BladHTTP 400)."""
+               obszary=None, zrzut=None, podpis_zrzutu=None, migawka=None, podglad_z=None, teraz=None):
+    """Nowa praca (ten sam id = zaczyna się od nowa, także bez starych zrzutów). `koniec` = tekst jak w parsuj_koniec
+    albo None; `obszary` = lista wpisów jak w bc/obszary.py (zły wpis = BladHTTP 400); `zrzut` = obraz z dysku jako
+    pierwszy podgląd, `migawka` = id migawki 3D, `podglad_z` = plik albo folder w repozytorium z najnowszym obrazem."""
     pid = sprawdz_id(pid)
     t = _teraz(teraz)
     etapy = _etapy(etapy)
@@ -417,7 +553,13 @@ def rozpocznij(pid, tytul, opis=None, etap=None, etapy=None, numer=None, koniec=
     p = {"id": pid, "tytul": _tekst(tytul, "tytuł", MAX_TYTUL, wymagane=True),
          "opis": _tekst(opis, "opis", MAX_OPIS), "etap": etap, "etapy": etapy, "numer": numer,
          "start": _iso(t), "koniec_szacowany": parsuj_koniec(koniec, t) if koniec else None, "stan": "w_toku",
-         "dotyczy": parsuj_dotyczy(dotyczy), "kto": _kto(kto), "obszary": obszary_mod.lista(obszary) or None}
+         "dotyczy": parsuj_dotyczy(dotyczy), "kto": _kto(kto), "obszary": obszary_mod.lista(obszary) or None,
+         "migawka": sprawdz_migawke(migawka), "podglad_z": sprawdz_podglad_z(podglad_z)}
+    podpis = _tekst(podpis_zrzutu, "podpis zrzutu", MAX_PODPIS)
+    obraz = _przygotuj_obraz(zrzut) if zrzut else None         # najpierw wszystko sprawdź, potem zapisuj
+    _usun_zrzuty(pid)
+    if obraz:
+        _zapisz_zrzut(p, obraz, podpis, t)
     p = _zapisz(p, t)
     rdzen.log("prace: start %s (%s)" % (pid, p["tytul"][:60]))
     return p
@@ -499,10 +641,38 @@ def wznow(pid, koniec=None, teraz=None):
 
 
 @_pod_blokada
+def dodaj_zrzut(pid, plik, podpis=None, teraz=None):
+    """Obraz z dysku jako najnowszy podgląd pracy (stan pracy bez zmian; praca z błędem albo gotowa też może dostać
+    zrzut końcowy). Zły obraz = BladHTTP 400, brak pracy = 404."""
+    p = _wymagaj(pid)
+    t = _teraz(teraz)
+    podpis = _tekst(podpis, "podpis zrzutu", MAX_PODPIS)
+    obraz = _przygotuj_obraz(plik)
+    _zapisz_zrzut(p, obraz, podpis, t)
+    return _zapisz(p, t)
+
+
+_BEZ_ZMIAN = object()
+
+
+@_pod_blokada
+def ustaw_podglad(pid, migawka=_BEZ_ZMIAN, podglad_z=_BEZ_ZMIAN, teraz=None):
+    """Podgląd przypięty do pracy: `migawka` (id migawki 3D) i `podglad_z` (plik albo folder w repozytorium).
+    Pusty tekst usuwa, brak argumentu = bez zmian."""
+    p = _wymagaj(pid)
+    if migawka is not _BEZ_ZMIAN:
+        p["migawka"] = sprawdz_migawke(migawka)
+    if podglad_z is not _BEZ_ZMIAN:
+        p["podglad_z"] = sprawdz_podglad_z(podglad_z)
+    return _zapisz(p, teraz)
+
+
+@_pod_blokada
 def usun(pid):
     for proba in range(6):
         try:
             os.remove(_sciezka(pid))
+            _usun_zrzuty(pid)
             return True
         except FileNotFoundError:
             raise BladHTTP(404, "Nie ma pracy „%s”" % pid)
@@ -511,6 +681,101 @@ def usun(pid):
                 raise
             time.sleep(0.05 * (proba + 1))
     return True
+
+
+# --------------------------------------------------------------------------- podgląd: najnowszy obraz
+def _najnowszy_w_miejscu(wzgl):
+    """Najnowszy obraz w pliku albo folderze repozytorium (bez podfolderów, bez dowiązań i ukrytych plików) →
+    (ścieżka bezwzględna, mtime) albo None. Wynik pamiętany 5 s (lista prac odpytywana co kilkanaście sekund)."""
+    if not wzgl:
+        return None
+    teraz_s = time.time()
+    with _folder_lock:
+        w = _folder_cache.get((rdzen.REPO, wzgl))
+        if w and teraz_s - w[0] < PAMIEC_FOLDERU_S:
+            return w[1]
+    wynik = None
+    pelna = rdzen.w_katalogu(rdzen.REPO, wzgl)
+    try:
+        if pelna and os.path.isfile(pelna) and not os.path.islink(pelna):
+            if pelna.lower().endswith(ROZSZERZENIA_OBRAZOW) and os.path.getsize(pelna) <= MAX_OBRAZ_Z_FOLDERU:
+                wynik = (pelna, os.path.getmtime(pelna))
+        elif pelna and os.path.isdir(pelna):
+            najl = None
+            with os.scandir(pelna) as it:
+                for i, e in enumerate(it):
+                    if i >= MAX_PLIKOW_W_FOLDERZE:
+                        break
+                    if e.name.startswith(".") or not e.name.lower().endswith(ROZSZERZENIA_OBRAZOW) or ".tmp" in e.name:
+                        continue
+                    try:
+                        if not e.is_file(follow_symlinks=False):
+                            continue
+                        st = e.stat(follow_symlinks=False)
+                    except OSError:
+                        continue
+                    if st.st_size <= 0 or st.st_size > MAX_OBRAZ_Z_FOLDERU:
+                        continue
+                    if najl is None or (st.st_mtime, e.name) > (najl[1], os.path.basename(najl[0])):
+                        najl = (e.path, st.st_mtime)
+            wynik = najl
+    except OSError:
+        wynik = None
+    with _folder_lock:
+        if len(_folder_cache) > 200:
+            _folder_cache.clear()
+        _folder_cache[(rdzen.REPO, wzgl)] = (teraz_s, wynik)
+    return wynik
+
+
+def _iso_z_mtime(mtime):
+    try:
+        return _iso(datetime.datetime.fromtimestamp(mtime).astimezone())
+    except (OverflowError, OSError, ValueError):
+        return None
+
+
+def _podglad(p):
+    """Najnowszy obraz pracy: przypięty zrzut albo najnowszy obraz z `podglad_z` (wygrywa nowszy).
+    → (opis dla API, ścieżka bezwzględna) albo (None, None)."""
+    kandydaci = []
+    zrzuty = p.get("zrzuty") or []
+    if zrzuty:
+        z = zrzuty[-1]
+        sciezka = os.path.join(_kat_zrzutow(p["id"]), z["plik"])
+        d = _czas(z.get("czas"))
+        if os.path.isfile(sciezka) and d:
+            opis = {"zrodlo": "zrzut", "czas": z["czas"], "n": z["n"]}
+            if z.get("podpis"):
+                opis["podpis"] = z["podpis"]
+            kandydaci.append((d.timestamp(), opis, sciezka))
+    if p.get("podglad_z"):
+        f = _najnowszy_w_miejscu(p["podglad_z"])
+        czas = _iso_z_mtime(f[1]) if f else None
+        if f and czas:
+            kandydaci.append((f[1], {"zrodlo": "folder", "czas": czas, "plik": os.path.basename(f[0])[:120]}, f[0]))
+    if not kandydaci:
+        return None, None
+    kandydaci.sort(key=lambda k: k[0])
+    return kandydaci[-1][1], kandydaci[-1][2]
+
+
+def plik_podgladu(pid):
+    """Ścieżka najnowszego obrazu pracy albo None."""
+    p = czytaj(pid)
+    return _podglad(p)[1] if p else None
+
+
+def plik_zrzutu(pid, n):
+    """Ścieżka zrzutu nr `n` pracy albo None."""
+    p = czytaj(pid)
+    if not p:
+        return None
+    for z in p.get("zrzuty") or []:
+        if z["n"] == n:
+            sciezka = os.path.join(_kat_zrzutow(p["id"]), z["plik"])
+            return sciezka if os.path.isfile(sciezka) else None
+    return None
 
 
 # --------------------------------------------------------------------------- lista i pola wyliczane
@@ -522,13 +787,23 @@ def _zakonczona_dawno(p, t):
 
 
 POLA = ("id", "tytul", "opis", "etap", "etapy", "numer", "start", "koniec_szacowany", "stan", "komunikat", "dotyczy",
-        "raport", "kto", "obszary", "aktualizacja", "zakonczono")
+        "raport", "kto", "obszary", "aktualizacja", "zakonczono", "zrzuty", "migawka", "podglad_z")
 
 
 def _wylicz(p, t):
     """Praca dla listy i API — tylko pola z listy POLA (oczyszczone przy odczycie, patrz _oczysc) plus pola wyliczane:
-    zostalo_min / po_czasie_min, przeterminowana, postep (0–1 albo None)."""
+    zostalo_min / po_czasie_min, przeterminowana, postep (0–1 albo None), podglad (najnowszy obraz albo brak pola).
+    Zrzuty bez nazw plików: [{n, czas, podpis?}]."""
     out = {k: p[k] for k in POLA if p.get(k) is not None}
+    if out.get("zrzuty"):
+        out["zrzuty"] = [{k: z[k] for k in ("n", "czas", "podpis") if k in z} for z in out["zrzuty"]]
+    try:
+        podglad, _ = _podglad(p)
+    except Exception as e:                                     # noqa: BLE001 — podgląd nigdy nie psuje listy
+        rdzen.log("prace: podgląd pracy %s niedostępny (%s)" % (p.get("id"), type(e).__name__))
+        podglad = None
+    if podglad:
+        out["podglad"] = podglad
     start = _czas(p.get("start"))
     koniec = _czas(p.get("koniec_szacowany"))
     stan = p.get("stan")
@@ -614,9 +889,18 @@ def sprzataj(teraz=None):
         if _zakonczona_dawno(p, t):
             try:
                 os.remove(_sciezka(p["id"]))
+                _usun_zrzuty(p["id"])
                 ile += 1
             except OSError:
                 pass
+    try:                                                       # zrzuty pracy, której pliku już nie ma (starsze niż 1 h)
+        with os.scandir(os.path.join(katalog(), "zrzuty")) as it:
+            for e in it:
+                if e.is_dir(follow_symlinks=False) and RX_ID.match(e.name) and not os.path.exists(_sciezka(e.name)) \
+                        and time.time() - e.stat().st_mtime > 3600:
+                    _usun_zrzuty(e.name)
+    except OSError:
+        pass
     try:
         with os.scandir(katalog()) as it:
             for e in it:
@@ -648,8 +932,31 @@ def _get_prace(z):
     return wynik
 
 
+def _get_podglad(z):
+    """Najnowszy obraz pracy (zrzut albo klatka z folderu podglądu). Adres w interfejsie ma ?v=<czas>, więc
+    przeglądarka nie trzyma starej klatki."""
+    from .http import Odp
+    sciezka = plik_podgladu(sprawdz_id(z.params["id"]))
+    if not sciezka:
+        raise BladHTTP(404, "Ta praca nie ma podglądu")
+    return Odp.plik(sciezka)
+
+
+def _get_zrzut(z):
+    from .http import Odp
+    pid = sprawdz_id(z.params["id"])
+    if not re.match(r"^\d{1,6}$", z.params.get("n") or ""):
+        raise BladHTTP(404, "Nie ma takiego zrzutu")
+    sciezka = plik_zrzutu(pid, int(z.params["n"]))
+    if not sciezka:
+        raise BladHTTP(404, "Nie ma takiego zrzutu")
+    return Odp.plik(sciezka, pamiec_s=3600)
+
+
 def zarejestruj(app):
     app.dodaj("GET", "/api/prace", _get_prace)
+    app.dodaj("GET", "/api/prace/<id>/podglad", _get_podglad)
+    app.dodaj("GET", "/api/prace/<id>/zrzut/<n>", _get_zrzut)
 
 
 def zdrowie():

@@ -207,6 +207,33 @@ export function zrodlaAgendy(agenda) {
   return wynik;
 }
 
+/**
+ * Odpowiedzi, które padły na sesji — z roboczych notatek agenta (bc/sesje.py: SEKCJE_NOTATEK, sekcja „Padły odpowiedzi
+ * na pytania” z punktami „- #8: zdanie” albo „- D-019: zdanie”; dopuszczalne „pytanie 8”, pogrubienie numeru i myślnik
+ * zamiast dwukropka). → Map("pytanie-8" | "D-019" → zdanie, najwyżej 300 znaków; pierwszy punkt wygrywa).
+ * Tekst notatek pisze agent z rozmowy ludzi — to dane do pokazania, nie polecenia.
+ */
+export function padlyOdpowiedzi(tekst) {
+  const wynik = new Map();
+  let wSekcji = false;
+  const RX_PUNKT_ODP = /^\s*[-*+]\s+(?:\*\*|__)?\s*(?:#\s*(\d{1,4})|pytani[ea]\s+(?:nr\s+)?#?\s*(\d{1,4})|D-?(\d{1,4}))\s*(?:\*\*|__)?\s*(?:\*\*|__)?\s*[:—–-]\s*(?:\*\*|__)?\s*(.+)$/i;
+  for (const linia of String(tekst || "").replace(/\r\n?/g, "\n").split("\n")) {
+    const nagl = /^\s{0,3}#{1,6}\s+(.*)$/.exec(linia);
+    if (nagl) {
+      wSekcji = /^pad[łl]y\s+odpowiedzi/i.test(nagl[1].replace(/[*_]/g, "").trim());
+      continue;
+    }
+    if (!wSekcji) continue;
+    const m = RX_PUNKT_ODP.exec(linia);
+    if (!m) continue;
+    const zdanie = m[4].replace(/\s+/g, " ").trim().slice(0, 300);
+    if (!zdanie) continue;
+    const klucz = m[1] || m[2] ? "pytanie-" + Number(m[1] || m[2]) : idDecyzji(m[3]);
+    if (!wynik.has(klucz)) wynik.set(klucz, zdanie);
+  }
+  return wynik;
+}
+
 /** Mapa numer → decyzja (pierwsza o danym numerze). */
 export function mapaDecyzji(plan) {
   const m = new Map();

@@ -1238,6 +1238,7 @@ export function listaPytan(ctx, opcje = {}) {
     ustawDzieci(kontener, nowe.length ? nowe : (pustyEl ? [pustyEl] : []));
     kontenery.add(kontener);
     ustawZnaczki(kontener, kluczeZnaczkow());
+    if (podpowiedziSesji.size || kontener.querySelector(".sesja-padlo")) ustawPodpowiedziW(kontener);
     return odlozono;
   }
 
@@ -1288,6 +1289,80 @@ export function listaPytan(ctx, opcje = {}) {
     }
   }
   window.addEventListener("bc:prace", () => odswiezZnaczki());
+
+  // ------------------------------------------------------------------ „Na sesji padło” (zakładka Sesja, 17.11.2026)
+  // Robocze notatki agenta w trakcie sesji mają sekcję „Padły odpowiedzi na pytania” („#8: zdanie”, „D-019: zdanie”;
+  // bc/sesje.py: SEKCJE_NOTATEK). Lista w zakładce Sesja pokazuje to zdanie przy karcie pytania albo decyzji zaraz po
+  // aktualizacji notatek (kolejka.js: padlyOdpowiedzi) — przy pytaniu z przyciskiem „Wpisz do odpowiedzi”: zdanie trafia
+  // do pola odpowiedzi, człowiek je poprawia i wysyła sam (podpis jak zawsze). To podpowiedź z notatek, nie zapis
+  // w sejfie; do sejfu odpowiedzi z rozmowy dopisuje agent dopiero po „Zakończ sesję i spisz ustalenia”. Podpowiedź nie
+  // wchodzi do podpisu karty — nowa wersja notatek nie przerysowuje karty, w której ktoś pisze.
+  let podpowiedziSesji = new Map();
+  let czasPodpowiedzi = "";
+
+  function godzinaNotatek() {
+    const d = new Date(czasPodpowiedzi);
+    return isNaN(d) ? "" : String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+  }
+
+  function wpiszDoOdpowiedzi(k, tekst) {
+    const pole = k.querySelector("form.odpowiedz-formularz textarea");
+    if (!pole) return;
+    const det = pole.closest("details");
+    if (det) det.open = true;
+    pole.value = pole.value.trim() ? pole.value.trim() + " " + tekst : tekst;
+    pole.dispatchEvent(new Event("input", { bubbles: true }));  // szkic jak przy pisaniu (karta się nie przerysuje)
+    pole.focus();
+    try {
+      pole.setSelectionRange(pole.value.length, pole.value.length);
+    } catch (e) { /* nic */ }
+  }
+
+  function podpowiedzDla(s) {
+    if (!s || s.zamknieta || !podpowiedziSesji.size) return "";
+    const klucz = String(s.klucz || "").replace(/~\d+$/, "");
+    if (podpowiedziSesji.has(klucz)) return podpowiedziSesji.get(klucz);
+    for (const x of s.decyzje || []) if (podpowiedziSesji.has(x.id)) return podpowiedziSesji.get(x.id);
+    return "";
+  }
+
+  function ustawPodpowiedziW(kontener) {
+    for (const k of kontener.children) {
+      if (!k._sprawa) continue;
+      const s = k._sprawa;
+      const tekst = podpowiedzDla(s);
+      const podpis = tekst ? tekst + "|" + czasPodpowiedzi : "";
+      const stary = k.querySelector(":scope > .sesja-padlo");
+      if ((stary ? stary.dataset.tekst : "") === podpis) continue;
+      if (stary) stary.remove();
+      if (!tekst) continue;
+      const g = godzinaNotatek();
+      const b = s.typ === "pytanie" && mozeZapisywac() && k.querySelector("form.odpowiedz-formularz textarea")
+        ? el("button", { type: "button", class: "przycisk cichy maly", onclick: () => wpiszDoOdpowiedzi(k, tekst) }, ikona("strzalka"), el("span", null, "Wpisz do odpowiedzi"))
+        : null;
+      const e = el("div", { class: "sesja-padlo", role: "note", dataset: { tekst: podpis } },
+        el("p", { class: "sesja-padlo-tekst" },
+          el("span", { class: "sesja-padlo-etykieta" }, ikona("mikrofon"), "Na sesji padło" + (g ? " (notatki " + g + ")" : "") + ": "),
+          el("span", null, tekst)),
+        b ? el("div", { class: "rzad-przyciskow" }, b) : null);
+      // pod treścią sprawy, tuż nad polem odpowiedzi (pytanie) albo za krótkim opisem (decyzja)
+      const formularz = k.querySelector(":scope > form.odpowiedz-formularz, :scope > .sprawa-decyzje");
+      const poCzym = k.querySelector(":scope > .sprawa-krotko") || k.querySelector(":scope > .sprawa-tytul");
+      if (formularz) formularz.before(e);
+      else if (poCzym) poCzym.after(e);
+      else k.append(e);
+    }
+  }
+
+  /** Podpowiedzi z notatek sesji: Map("pytanie-8" | "D-019" → zdanie) i czas notatek (pusta mapa = bez podpowiedzi). */
+  function ustawPodpowiedzi(mapa, czas) {
+    const nowa = mapa instanceof Map ? mapa : new Map();
+    const c = String(czas || "");
+    if (c === czasPodpowiedzi && JSON.stringify([...nowa]) === JSON.stringify([...podpowiedziSesji])) return;
+    podpowiedziSesji = nowa;
+    czasPodpowiedzi = c;
+    for (const kontener of [...kontenery]) if (kontener.isConnected) ustawPodpowiedziW(kontener);
+  }
 
   // ------------------------------------------------------------------ wyszukiwanie
   /** Ukrywa karty, które nie pasują do zapytania. → liczba pasujących (czekające + odłożone). */
@@ -1494,6 +1569,7 @@ export function listaPytan(ctx, opcje = {}) {
       przerysuj();
     },
     pelnyRaport: (r) => raportyUI.pelny(r),
+    ustawPodpowiedzi,
     dane,
     get odlozonaZmiana() {
       return kolejkaOdlozona;

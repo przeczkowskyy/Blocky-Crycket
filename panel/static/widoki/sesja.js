@@ -10,6 +10,7 @@ import { el, zamien, ikona, toast, arkusz, pusty, awatar, kopiuj, odmiana, dataK
 import { md, mdLinia } from "../wspolne/markdown.js";
 import { Rozmowa, mozliwosci } from "../wspolne/rozmowa.js";
 import { listaPytan } from "../wspolne/lista_pytan.js";
+import { padlyOdpowiedzi } from "../wspolne/kolejka.js";
 
 const CSS = new URL("./sesja.css", import.meta.url).href;
 const STAN_MS = 5000;
@@ -562,6 +563,9 @@ export default {
             : "Notatki robi agent na przycisk „Notatki teraz” — pojawi się, gdy agent słucha."));
       }
       if (nt && nt.blad && widziZapis()) notatkiTresc.append(el("p", { class: "cichy-tekst sesja-blad-notatek" }, "Ostatnia próba notatek: " + nt.blad));
+      // „Padły odpowiedzi na pytania” z notatek → podpowiedź „Na sesji padło: …” przy kartach na liście Pytania obok
+      // (wspolne/lista_pytan.js: ustawPodpowiedzi; widzą ją tylko osoby, które widzą notatki)
+      listaP.ustawPodpowiedzi(widziZapis() && nt && nt.tekst_md ? padlyOdpowiedzi(nt.tekst_md) : new Map(), nt && nt.czas);
       const zak = S.stan && S.stan.zakonczenie;
       const akcje = [];
       if (sesja && ja().agent) {
