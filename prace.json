@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T19:11:31+01:00",
+ "aktualizacja": "2026-11-17T19:11:35+01:00",
  "prace": [
   {
    "id": "jajko-bagna",
@@ -40,6 +40,19 @@
    "aktualizacja": "2026-11-17T19:11:24+01:00",
    "obszary": [
     "model:jajko_lesne"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "przebudowa-nenufarek",
+   "tytul": "Przebudowa modelu nenufarek",
+   "stan": "w_toku",
+   "start": "2026-11-17T19:11:35+01:00",
+   "koniec_szacowany": "2026-11-17T19:31:35+01:00",
+   "aktualizacja": "2026-11-17T19:11:35+01:00",
+   "obszary": [
+    "model:nenufarek"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
