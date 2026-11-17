@@ -37,6 +37,10 @@ REPO = os.path.dirname(os.path.dirname(os.path.dirname(TU)))
 sys.path.insert(0, os.path.join(REPO, "swiat", "test_walki2", "testy"))
 from sesja_play import SesjaPlay, log  # noqa: E402
 
+with open(os.path.join(os.path.dirname(TU), "ustawienia.json"), encoding="utf-8") as _f:
+    # przyciszenie muzyki w walce bierzemy z ustawień pakietu (17.11.2026: 0,6 zamiast 0,25) — próg nie jest wpisany na sztywno
+    PRZYCISZENIE_WALKI = float(json.load(_f)["muzyka"]["przyciszenie_walki"])
+
 PROBNY = "rbxasset://sounds/action_falling.mp3"  # wbudowany w klienta (ok. 10 s szumu wiatru) — nie upload
 WALKA = ("wojownik", "cierniowy_wilk", 5, 1)       # krytyk Wojownika, ciosy i bloki; ok. 20 s przy ×1
 LISTA = []
@@ -227,7 +231,8 @@ def main():
         WYNIKI["D5_stany"]["po"] = stan_po
         ok5 = (not m["tablica"].get("gra") and all(o[0] for o in oceny.values())
                and m["probny"].get("gra") and (m["probny"].get("glosnosc") or 0) > 0.2
-               and m["przyciszenie_w_walce"] is not None and m["przyciszenie_w_walce"] < 0.35 and ok_po
+               and m["przyciszenie_w_walce"] is not None and m["przyciszenie_w_walce"] <= PRZYCISZENIE_WALKI + 0.05
+               and m["przyciszenie_w_walce"] < 0.95 and ok_po
                and (m["po"].get("bledy") or 0) == 0)
         punkt("D5", ok5, "tablica %s; strefy %s; próbny %s; przyciszenie w walce %s; po zabraniu: %s %s" % (
             {k: m["tablica"].get(k) for k in ("strefa", "gra")},
