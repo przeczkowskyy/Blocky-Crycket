@@ -472,6 +472,7 @@ Dopisek z 2026-11-17 (czat Karola, ok. 21:20, w trakcie sesji głównej): na pyt
 - Do wyboru: (a) nic i 20% doświadczenia; (b) nic i bez doświadczenia; (c) kara w Złocie; (d) mniejszy procent doświadczenia.
 
 Szczegóły: 20% liczy silnik walki (`src/server/Walka/Przeciwnicy.luau`); od 17.11 przyznaje je pakiet `swiat/stan_gracza/`. Rewanż jest dozwolony od razu. Zob. pytanie 53.
+Dopisek z 2026-11-17 (po sesji głównej, propozycja D-098): agent policzył sześć wariantów kary i przygotował w pakiecie stanu gracza jeden — przegrany traci 5% posiadanego Złota, ale najwyżej tyle, ile daje wygrana ze zwykłym potworem tego poziomu; Gemów nie traci, dostaje 20% doświadczenia, bez kary czasowej. W lesie to ok. 6 Złota za przegraną (najwyżej 14) i ok. 46 Złota w całym lesie przy ośmiu przegranych; pierwsze jajko się nie przesuwa, a każdą przegraną odrabia jedna walka. To jedna liczba do zmiany (z wyłącznikiem); w Studio jeszcze niewdrożone.
 **Odpowiedź:**
 - Claude Code (2026-11-17, z sesji głównej 20:55): Karol i Paweł: przegrany traci trochę Złota (Gemów nie), nie dostaje nagrody, ale dostaje doświadczenie, a kary czasowej nie ma (Paweł: gracz musi móc grać; Karol: „masz rację”) — wariant (c), propozycja D-098; ile Złota (pewnie procent, Karol rzucił 5%) i ile doświadczenia, policzy agent. Zapis agenta z rozmowy.
 
@@ -491,6 +492,7 @@ Szczegóły: Zob. pytania 17, 36 i 50 (trening jako trzecie źródło statystyk)
 - Do wyboru: (a) profil Pawła wszędzie; (b) wzorcowy Karola w walce, profil Pawła tylko na karcie; (c) wspólnie ustalić nowe liczby.
 
 Szczegóły: Wcześniejsze liczby (wzorcowe, z [[Walka v2 — silnik, klasy i umiejętności]]): Wojownik 26/30/12/8/10/14, Zwiadowca 27/27/10/14/13/9, Mag 24/22/24/10/10/10. Powiązane: pytanie 53. Zmienił Claude Code u Pawła 17.11 na jego polecenie (karta wyboru klasy).
+Dopisek z 2026-11-17 (symulacja lasu, 200 graczy na klasę i profil; las po skróceniu D-096): z profilem Pawła wszystkie klasy są słabsze niż z wzorcowym — Wojownik wygrywa ze Strażnikiem Gaju w 20% walk zamiast w 37% i przechodzi las w 32,5 minuty zamiast 27,4; Zwiadowca na trollu 30% zamiast 43%; Mag w pierwszej zagrodzie 54% zamiast 68%. Przegranych w lesie jest 11–13 zamiast 8, a rozrzut między klasami rośnie (na trollu 13 punktów procentowych zamiast 4), co dotyka D-069. Do decyzji gra czyta profil Pawła, czyli to, co gracz widzi na karcie klasy. Jeśli zostaje wariant (a), balans potworów trzeba przeliczyć pod ten profil.
 **Odpowiedź:**
 - Karol Balucki (2026-11-17): b
 
