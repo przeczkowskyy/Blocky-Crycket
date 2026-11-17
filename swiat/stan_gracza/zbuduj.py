@@ -15,6 +15,7 @@ Co powstaje (tylko w Workspace/StanGracza z atrybutem Wygenerowane = true; cudzy
   Zdalne/ZdarzeniaStanu                        RemoteEvent ("awans" do klienta, "pokaz" do serwera)
   Sygnaly/Bohater, Sygnaly/PrzyznajLup         BindableFunction — woła je SerwerPotworow obu lasów
   Sygnaly/SterowanieSerwera                    BindableFunction — haczyk testowy
+  Sygnaly/WydajZloto, Sygnaly/Pety             BindableFunction — Złoto i pety dla swiat/pety_proba (17.11.2026)
 Atrybuty kontenera: Wygenerowane, Zrodlo, Zbudowano, Skrot, StatystykiKlasy (true; false = zostają wartości testowe
 statystyk z src/server/PlayerStatsDefaults). StatystykiKlasy ustawione ręcznie w Edit przechodzi na odbudowany kontener.
 
@@ -56,6 +57,8 @@ INNE = [
     ("BindableFunction", "Sygnaly/Bohater"),
     ("BindableFunction", "Sygnaly/PrzyznajLup"),
     ("BindableFunction", "Sygnaly/SterowanieSerwera"),
+    ("BindableFunction", "Sygnaly/WydajZloto"),       # 17.11.2026: wydawanie Złota (swiat/pety_proba)
+    ("BindableFunction", "Sygnaly/Pety"),             # 17.11.2026: pety w profilu (swiat/pety_proba)
 ]
 ATRYBUTY_TESTOWE = ["StatystykiKlasy"]
 

@@ -26,6 +26,7 @@ w pierwszej minucie”). Teksty i kolejność kroków nie są kanonem — do dec
 | za bramą | Bagno już wkrótce… (albo „Idź dalej — przed tobą Bagno”, gdy stoi `BagnoPasGra`) | — |
 | (e) po Strażniku lasu, gdy stoi Bagno | Brama otwarta — idź do Bagna / w mieście: Bagno otwarte: TELEPORT → Bagno | ▼ za bramą lasu / strzałka |
 | w Bagnie | jak w lesie: potwór → „Zdobywaj poziomy (masz N) — Strażnik Topieli na końcu Bagna” → po Strażniku Topieli „Brama do Dżungli otwarta — Dżungla już wkrótce” | ▼ nad potworem / Strażnikiem Topieli / bramą |
+| (f) Złoto ≥ cena jajka i jeszcze bez peta (17.11.2026, stoi `PetyProba`) — przed innymi krokami, nie w Bagnie i nie za bramą | Masz dość Złota na jajko — inkubator przy wejściu do lasu / w mieście: …: TELEPORT → Las (inkubator) | ▼ nad punktem E inkubatora / strzałka |
 
 Biomy (las-pas, Bagno) są w `ustawienia.json` → `zrodla.biomy`: kontener, moduł danych (`Moduly/DanePasa`), Kamień
 Powrotu, atrybut pokonanego Strażnika. Biom rozpoznaje się po prostokącie `wejscie` z jego danych (Bagno ma
@@ -41,7 +42,8 @@ liczyć się do (d), gdy gracz wejdzie na stanowisko Training Center albo wygra 
 
 ## Skąd stan (tylko odczyt)
 
-- atrybuty gracza: `Class`, `Level`, `PokonalStraznikaLasu`, `TreningGra` (stanowisko mini-gry);
+- atrybuty gracza: `Class`, `Level`, `PokonalStraznikaLasu`, `TreningGra` (stanowisko mini-gry); `Gold`,
+  `PetyCenaJajka` (cena następnego jajka — pisze `swiat/pety_proba`) i `PetyLiczba` (pety w profilu — pisze StanGracza);
 - walki w lesie: u klienta na `LasPasGra` / `LasPotwory` odtwarzacz ustawia `OstatnieZiarno`, `OstatniWynik` i
   `OstatniStan = "wynik"` — jedna walka na wejście w stan „wynik” z nowym ziarnem (walka przerwana resetem się nie
   liczy); liczniki tylko w pamięci klienta (sesja);
@@ -62,13 +64,13 @@ liczyć się do (d), gdy gracz wejdzie na stanowisko Training Center albo wygra 
 | `zrodla/KlientWskazowek.client.luau` | klient: linijka celu, strzałka, znacznik, zbieranie stanu, haczyk testowy |
 | `sprawdz_luau_wskazowek.py` | kontrola statyczna Luau (reguły jak w `swiat/las_potwory`, SetAttribute tylko na kontenerze, bez FireServer, bez przełączania cudzych ekranów) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--usun`, `--studio` |
-| `testy/test_wskazowek.py` | 22 testy offline (dane, logika, Luau w luau_mini, styki z innymi pakietami, prywatność) |
+| `testy/test_wskazowek.py` | 24 testy offline (dane, logika, Luau w luau_mini, styki z innymi pakietami, prywatność) |
 
 ## Budowa i wyłączenie
 
 ```
 python -B swiat/wskazowki_gry/dane.py                 # po zmianie ustawień
-python -B swiat/wskazowki_gry/testy/test_wskazowek.py # 22 testy, < 1 s
+python -B swiat/wskazowki_gry/testy/test_wskazowek.py # 24 testy, < 1 s
 python -B swiat/wskazowki_gry/zbuduj.py --sucho       # bez Studio
 python -B swiat/wskazowki_gry/zbuduj.py               # Studio w trybie Edit
 python -B swiat/wskazowki_gry/zbuduj.py --usun        # gra wraca do stanu sprzed pakietu

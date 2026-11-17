@@ -84,7 +84,7 @@ def podstawa():
         "wersja": 1,
         "kontener": "StanGracza",
         "prefiks": "[StanGracza] ",
-        "wersja_profilu": 1,
+        "wersja_profilu": 2,                # 2 (17.11.2026): pety i licznik wydatków w profilu (swiat/pety_proba)
         "krzywa": {"a": tempo.DOMYSLNE_A, "b": 1.6},
         "pula": {"baza": wzorcowe.PUNKTY_START, "na_poziom": wzorcowe.PUNKTY_NA_POZIOM},
         "sloty": progi_slotow(),
@@ -120,6 +120,13 @@ def podstawa():
         "publikacja": {"zapas_s": 6, "min_s": 1.5, "odstep_pokaz_s": 0.5},
         # kontenery z kodem potworów, których łup przyjmujemy (każdy nowy biom: dopisać jego kontener; 17.11.2026 Bagno)
         "zrodla": ["LasPotwory", "LasPasGra", "BagnoPasGra"],
+        # wydawanie Złota (Sygnaly/WydajZloto i Sygnaly/Pety "kup", 17.11.2026): kto może wydawać (nazwy kontenerów
+        # pakietów) i największa jedna kwota; licznik wydatków na cel (np. kupione jajka) jest w profilu
+        "wydatki": {"zrodla": ["PetyProba"], "kwota_maks": 1000000},
+        # pety w profilu (swiat/pety_proba): kopie każdego peta (kopia = shard peta, D-058), aktywny pet i jego premia
+        # do łupu z walk (wartości premii przysyła pakiet petów — tu tylko granice); atrybuty gracza dla klientów
+        "pety": {"rodzajow_maks": 100, "kopii_maks": 1000000, "premia_maks": 0.5,
+                 "atrybut_aktywnego": "PetAktywny", "atrybut_liczby": "PetyLiczba"},
         "klasy_pawla": {"folder": "Shared", "modul": "ClassData", "czekaj_s": 10},
         "trening": {"kontener": "TreningProba", "sygnal": "PrzyrostStatystyki"},
         "hud": {"gui": "HUD", "czekaj_s": 60},
@@ -187,6 +194,27 @@ def przypadki(D):
                   [26, 30, 12, 8, 10, 15], [26, 30, 12, 8, -10, 34]):
         w, powod = LS.rozklad_z_class_data(D, stats)
         P["rozklad"].append({"stats": stats, "wynik": nil(w), "powod": powod})
+    # wydatki i pety (17.11.2026, swiat/pety_proba)
+    P["wydatek"] = []
+    dobry_w = {"ile": 300, "zrodlo": D["wydatki"]["zrodla"][0], "cel": "jajko_lesne"}
+    for info in (dobry_w, dict(dobry_w, ile=0), dict(dobry_w, ile=-5), dict(dobry_w, ile=2.5),
+                 dict(dobry_w, ile=D["wydatki"]["kwota_maks"] + 1), dict(dobry_w, ile="300"), dict(dobry_w, zrodlo="Haker"),
+                 dict(dobry_w, cel=""), dict(dobry_w, cel="jajko lesne"), dict(dobry_w, cel="x" * 25)):
+        w, powod = LS.czysty_wydatek(D, info)
+        P["wydatek"].append({"info": info, "wynik": nil(w), "powod": powod})
+    P["wydaj"] = [{"zloto": z, "ile": i, "wynik": list(LS.wydaj(D, z, i))}
+                  for z, i in ((500, 300), (300, 300), (299, 300), (0, 300), (-40, 10), (12.7, 12), (None, 5), ("9", 5))]
+    P["premia"] = []
+    for pr in ({"zloto": 0.05, "doswiadczenie": 0}, {"zloto": 0.2, "doswiadczenie": 0.2}, {"doswiadczenie": 0.08}, None,
+               {"zloto": -0.1}, {"zloto": D["pety"]["premia_maks"] + 0.01}, {"zloto": "0.1"}, "x"):
+        w, powod = LS.czysta_premia(D, pr)
+        P["premia"].append({"premia": nil(pr), "wynik": nil(w), "powod": powod})
+    P["premia_lupu"] = []
+    for lz, lx, pz, px in ((21, 12, 0.05, 0), (9, 30, 0.05, 0.08), (10, 10, 0.05, 0.05), (0, 3, 0.2, 0.2),
+                           (180, 95, 0.2, 0.2), (7, 4, 0, 0)):
+        lup = dict(dobry, zloto=lz, doswiadczenie=lx)
+        P["premia_lupu"].append({"lup": lup, "premia": {"zloto": pz, "doswiadczenie": px},
+                                 "wynik": LS.premia_lupu(D, lup, {"zloto": pz, "doswiadczenie": px})})
     return P
 
 

@@ -27,7 +27,7 @@ if TU not in sys.path:
     sys.path.insert(0, TU)
 import logika_wskazowek as LW  # noqa: E402
 
-CELE = {"teleport", "potwor", "straznik", "kamien", "trener", "brama", None}
+CELE = {"teleport", "potwor", "straznik", "kamien", "trener", "brama", "jajko", None}
 # napisy dla twórców nie mogą trafić na ekran gracza (raport przejścia gry 17.11.2026)
 TWORCY = re.compile(r"D-0\d\d|Paweł|Karol|próba|\btest|TYMCZASOW|bez zapisu|atrybut|placeholder|w budowie", re.I)
 

@@ -1,7 +1,7 @@
 --[[
 	DaneWskazowek — WYGENEROWANE przez swiat/wskazowki_gry/dane.py z ustawienia.json. Nie edytuj
 	ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: ced47ecc96df
+	Skrót danych: 3ff2f3a5d1f2
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -30,6 +30,8 @@ return {
 		c_straznik_bagno = { tekst = "Strażnik Topieli czeka na końcu Bagna", cel = "straznik" },
 		e_brama_dzungla = { tekst = "Brama do Dżungli otwarta — Dżungla już wkrótce", cel = "brama" },
 		e_koniec_bagno = { tekst = "Dżungla już wkrótce — na dziś to koniec drogi" },
+		f_jajko = { tekst = "Masz dość Złota na jajko — inkubator przy wejściu do lasu", cel = "jajko" },
+		f_jajko_miasto = { tekst = "Masz dość Złota na jajko: TELEPORT → Las (inkubator)", cel = "teleport" },
 	},
 	zrodla = {
 		biomy = {
@@ -70,6 +72,11 @@ return {
 		stan_gracza_gotowy = "SerwerStanuGotowy",
 		stan_gracza_trening = "TreningPodlaczony",
 		chmury_trwa = "Trwa",
+		pety = "PetyProba",
+		inkubator = "PetyProba/Punkty/E inkubator",
+		atrybut_zlota = "Gold",
+		atrybut_ceny_jajka = "PetyCenaJajka",
+		atrybut_petow = "PetyLiczba",
 	},
 	ui = {
 		y_px = 56,
@@ -413,6 +420,78 @@ return {
 				tekst = "Podejdź do potwora i wciśnij E",
 				cel = "potwor",
 			},
+			{
+				opis = "Złoto na jajko w lesie: inkubator",
+				stan = {
+					klasa = true,
+					miejsce = "las",
+					wygrane = 3,
+					przegrane = 0,
+					kraina = "las",
+					ostatni = "wygrana",
+					jajko = true,
+					pety = 0,
+				},
+				id = "f_jajko",
+				tekst = "Masz dość Złota na jajko — inkubator przy wejściu do lasu",
+				cel = "jajko",
+			},
+			{
+				opis = "Złoto na jajko w mieście: TELEPORT",
+				stan = { klasa = true, miejsce = "miasto", wygrane = 3, przegrane = 0, ostatni = "wygrana", jajko = true },
+				id = "f_jajko_miasto",
+				tekst = "Masz dość Złota na jajko: TELEPORT → Las (inkubator)",
+				cel = "teleport",
+			},
+			{
+				opis = "Złoto na jajko po przegranej — jajko wygrywa",
+				stan = {
+					klasa = true,
+					miejsce = "las",
+					wygrane = 0,
+					przegrane = 1,
+					ostatni = "przegrana",
+					jajko = true,
+					stan_gracza = true,
+					trening_wzmacnia = true,
+				},
+				id = "f_jajko",
+				tekst = "Masz dość Złota na jajko — inkubator przy wejściu do lasu",
+				cel = "jajko",
+			},
+			{
+				opis = "Złoto na jajko, ale ma już peta",
+				stan = { klasa = true, miejsce = "las", wygrane = 3, przegrane = 0, ostatni = "wygrana", jajko = true, pety = 1 },
+				id = "c_straznik",
+				tekst = "Strażnik Gaju czeka na końcu lasu",
+				cel = "straznik",
+			},
+			{
+				opis = "Złoto na jajko w Bagnie: bez kroku o jajku",
+				stan = {
+					klasa = true,
+					miejsce = "las",
+					wygrane = 0,
+					przegrane = 0,
+					kraina = "bagno",
+					straznik = true,
+					bagno = true,
+					jajko = true,
+				},
+				id = "b_potwor",
+				tekst = "Podejdź do potwora i wciśnij E",
+				cel = "potwor",
+			},
+			{
+				opis = "Złoto na jajko za bramą: bez kroku o jajku",
+				stan = { klasa = true, miejsce = "za_brama", wygrane = 0, przegrane = 0, straznik = true, jajko = true },
+				id = "e_koniec",
+				tekst = "Bagno już wkrótce — na dziś to koniec drogi",
+			},
+			{
+				opis = "Złoto na jajko, ale ukryte",
+				stan = { klasa = true, miejsce = "las", wygrane = 0, przegrane = 0, jajko = true, ukryte = true },
+			},
 		},
 		miejsca = {
 			{
@@ -469,5 +548,5 @@ return {
 			{ x = 1500, z = -700, brama = 2034, wynik = "miasto" },
 		},
 	},
-	skrot = "ced47ecc96df",
+	skrot = "3ff2f3a5d1f2",
 }

@@ -22,7 +22,9 @@
     "c_poziomy_bagno": {"tekst": "Zdobywaj poziomy (masz %d) — Strażnik Topieli na końcu Bagna", "cel": "straznik"},
     "c_straznik_bagno": {"tekst": "Strażnik Topieli czeka na końcu Bagna", "cel": "straznik"},
     "e_brama_dzungla": {"tekst": "Brama do Dżungli otwarta — Dżungla już wkrótce", "cel": "brama"},
-    "e_koniec_bagno": {"tekst": "Dżungla już wkrótce — na dziś to koniec drogi", "cel": null}
+    "e_koniec_bagno": {"tekst": "Dżungla już wkrótce — na dziś to koniec drogi", "cel": null},
+    "f_jajko": {"tekst": "Masz dość Złota na jajko — inkubator przy wejściu do lasu", "cel": "jajko"},
+    "f_jajko_miasto": {"tekst": "Masz dość Złota na jajko: TELEPORT → Las (inkubator)", "cel": "teleport"}
   },
   "zrodla": {
     "biomy": [
@@ -50,7 +52,12 @@
     "atrybut_ziarna": "OstatnieZiarno",
     "stan_gracza_gotowy": "SerwerStanuGotowy",
     "stan_gracza_trening": "TreningPodlaczony",
-    "chmury_trwa": "Trwa"
+    "chmury_trwa": "Trwa",
+    "pety": "PetyProba",
+    "inkubator": "PetyProba/Punkty/E inkubator",
+    "atrybut_zlota": "Gold",
+    "atrybut_ceny_jajka": "PetyCenaJajka",
+    "atrybut_petow": "PetyLiczba"
   },
   "ui": {
     "y_px": 56,

@@ -1,0 +1,56 @@
+RAPORT — swietlikowka
+ŚWIETLIKÓWKA — pet epicki z leśnego jajka (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny projekt).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/swietlikowka.py · wygenerowano 17.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py swietlikowka
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: swietlikowka
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 6 plików, zgodnych 6
+- ostrzeżenia z raportu: 0; uwagi podglądu: 6
+
+ZNANE SŁABOŚCI
+- Świecenie (oczy, brzuszek, świetliki) w Roblox to materiał Neon; poświata dookoła — PointLight w grze.
+- Skrzydła to płaskie klocki przy bokach — przy machaniu nie mają rozłożonych lotek.
+- Uwaga raportu „pętla skoczy” przy kościach świetlików jest oczekiwana: obrót 0° → 360° to ta sama poza.
+
+MODEL swietlikowka „Świetlikówka” (stwor)
+  wymiary ciała: 2,32 × 2,67 × 2,16; z akcesoriami: 2,32 × 2,67 × 2,16
+  trójkąty: 1012 (siatek: 9)
+  kości (10): Root, Tulow, Glowa, PiorkoL, SkrzydloL, PiorkoP, SkrzydloP, Swietlik1, Swietlik2, Swietlik3
+  klipy: spoczynek 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
+  punkty zaczepienia: RootAttachment, GlowaAttachment
+
+UWAGI PODGLĄDU
+- klip chod: Swietlik1.obrot — klatka 0 ≠ klatka 24, pętla skoczy
+- klip chod: Swietlik2.obrot — klatka 0 ≠ klatka 24, pętla skoczy
+- klip chod: Swietlik3.obrot — klatka 0 ≠ klatka 24, pętla skoczy
+- klip spoczynek: Swietlik1.obrot — klatka 0 ≠ klatka 60, pętla skoczy
+- klip spoczynek: Swietlik2.obrot — klatka 0 ≠ klatka 60, pętla skoczy
+- klip spoczynek: Swietlik3.obrot — klatka 0 ≠ klatka 60, pętla skoczy
+
+KONTROLA EKSPORTÓW
+- swietlikowka.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje brak -> ZGODNE
+- swietlikowka__spoczynek.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-61 -> ZGODNE
+- swietlikowka__chod.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-25 -> ZGODNE
+- swietlikowka__radosc.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-37 -> ZGODNE
+- swietlikowka__wyklucie.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-31 -> ZGODNE
+- swietlikowka.glb: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
+
+PLIKI
+- swietlikowka.blend
+- swietlikowka.fbx
+- swietlikowka.glb
+- swietlikowka__chod.fbx
+- swietlikowka__radosc.fbx
+- swietlikowka__spoczynek.fbx
+- swietlikowka__wyklucie.fbx
+- swietlikowka_bohater.jpg
+- swietlikowka_ikona.png
+- swietlikowka_plansza.jpg
+- swietlikowka_tekstury/
+- raport.json
+- raport.txt

@@ -1,0 +1,313 @@
+{
+ "modul": "lisciolis",
+ "modele": [
+  {
+   "id": "lisciolis",
+   "nazwa": "Liściolis",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 200,
+     "wierzcholki": 112,
+     "wymiary": [
+      1.114,
+      0.81,
+      1.41
+     ],
+     "min": [
+      -0.557,
+      0.44,
+      -0.725
+     ],
+     "max": [
+      0.557,
+      1.25,
+      0.685
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 376,
+     "wierzcholki": 208,
+     "wymiary": [
+      1.336,
+      0.88,
+      1.305
+     ],
+     "min": [
+      -0.668,
+      1.01,
+      0.35
+     ],
+     "max": [
+      0.668,
+      1.89,
+      1.655
+     ]
+    },
+    {
+     "nazwa": "UchoL_Geo",
+     "kosc": "UchoL",
+     "trojkaty": 72,
+     "wierzcholki": 44,
+     "wymiary": [
+      0.504,
+      0.743,
+      0.16
+     ],
+     "min": [
+      0.134,
+      1.796,
+      0.67
+     ],
+     "max": [
+      0.638,
+      2.539,
+      0.83
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodL_Geo",
+     "kosc": "LapaPrzodL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.3,
+      0.61,
+      0.34
+     ],
+     "min": [
+      0.12,
+      -0.01,
+      0.27
+     ],
+     "max": [
+      0.42,
+      0.6,
+      0.61
+     ]
+    },
+    {
+     "nazwa": "LapaTylL_Geo",
+     "kosc": "LapaTylL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.3,
+      0.61,
+      0.34
+     ],
+     "min": [
+      0.12,
+      -0.01,
+      -0.63
+     ],
+     "max": [
+      0.42,
+      0.6,
+      -0.29
+     ]
+    },
+    {
+     "nazwa": "UchoP_Geo",
+     "kosc": "UchoP",
+     "trojkaty": 72,
+     "wierzcholki": 44,
+     "wymiary": [
+      0.504,
+      0.743,
+      0.16
+     ],
+     "min": [
+      -0.638,
+      1.796,
+      0.67
+     ],
+     "max": [
+      -0.134,
+      2.539,
+      0.83
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodP_Geo",
+     "kosc": "LapaPrzodP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.3,
+      0.61,
+      0.34
+     ],
+     "min": [
+      -0.42,
+      -0.01,
+      0.27
+     ],
+     "max": [
+      -0.12,
+      0.6,
+      0.61
+     ]
+    },
+    {
+     "nazwa": "LapaTylP_Geo",
+     "kosc": "LapaTylP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.3,
+      0.61,
+      0.34
+     ],
+     "min": [
+      -0.42,
+      -0.01,
+      -0.63
+     ],
+     "max": [
+      -0.12,
+      0.6,
+      -0.29
+     ]
+    },
+    {
+     "nazwa": "Ogon_Geo",
+     "kosc": "Ogon",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.54,
+      0.899,
+      0.972
+     ],
+     "min": [
+      -0.27,
+      0.836,
+      -1.527
+     ],
+     "max": [
+      0.27,
+      1.735,
+      -0.555
+     ]
+    },
+    {
+     "nazwa": "OgonLisc_Geo",
+     "kosc": "OgonLisc",
+     "trojkaty": 72,
+     "wierzcholki": 44,
+     "wymiary": [
+      0.5,
+      0.784,
+      0.385
+     ],
+     "min": [
+      -0.25,
+      1.538,
+      -1.69
+     ],
+     "max": [
+      0.25,
+      2.322,
+      -1.305
+     ]
+    }
+   ],
+   "trojkaty_razem": 1232,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 10
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    1.336,
+    2.549,
+    3.345
+   ],
+   "wymiary_z_akcesoriami": [
+    1.336,
+    2.549,
+    3.345
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -0.668,
+     -0.01,
+     -1.69
+    ],
+    [
+     0.668,
+     2.539,
+     1.655
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Tulow",
+    "Glowa",
+    "UchoL",
+    "LapaPrzodL",
+    "LapaTylL",
+    "UchoP",
+    "LapaPrzodP",
+    "LapaTylP",
+    "Ogon",
+    "OgonLisc"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "chod",
+     "dlugosc": 20,
+     "fps": 30,
+     "sekundy": 0.67,
+     "petla": true
+    },
+    {
+     "n": "radosc",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "wyklucie",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "lisciolis.fbx: siatki 12, kości 11, trójkąty 1256, wzrost 2.55 st., akcje brak -> ZGODNE",
+  "lisciolis__spoczynek.fbx: siatki 12, kości 11, trójkąty 1256, wzrost 2.55 st., akcje lisciolis|Scene 1-61 -> ZGODNE",
+  "lisciolis__chod.fbx: siatki 12, kości 11, trójkąty 1256, wzrost 2.55 st., akcje lisciolis|Scene 1-21 -> ZGODNE",
+  "lisciolis__radosc.fbx: siatki 12, kości 11, trójkąty 1256, wzrost 2.55 st., akcje lisciolis|Scene 1-37 -> ZGODNE",
+  "lisciolis__wyklucie.fbx: siatki 12, kości 11, trójkąty 1256, wzrost 2.55 st., akcje lisciolis|Scene 1-31 -> ZGODNE",
+  "lisciolis.glb: siatki 12, kości 11, trójkąty 1256, wzrost 2.55 st., akcje chod 0-20, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
+ ]
+}

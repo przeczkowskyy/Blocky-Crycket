@@ -17,7 +17,13 @@
 		4. trening: Workspace/TreningProba/Sygnaly/PrzyrostStatystyki → przyrost do atrybutu statystyki (i do profilu),
 		   z ponownym podłączeniem, gdy kontener treningu zostanie przebudowany w czasie gry;
 		5. bohater walki (Sygnaly/Bohater): klasa z Class, poziom z Level, sześć statystyk z atrybutów, broń, pancerz
-		   z przedmiotów i sloty ze wzoru dla poziomu (LogikaStanu.opisBohatera = tools/walka/wzorcowe.postac).
+		   z przedmiotów i sloty ze wzoru dla poziomu (LogikaStanu.opisBohatera = tools/walka/wzorcowe.postac);
+		6. wydawanie Złota (Sygnaly/WydajZloto, 17.11.2026): kwota od pakietu z listy D.wydatki.zrodla, nigdy poniżej
+		   zera; za mało Złota = odmowa z brakującą kwotą; licznik wydatków na cel w profilu;
+		7. pety w profilu (Sygnaly/Pety, swiat/pety_proba): "kup" = wydatek + kopia peta w jednym wywołaniu (bez
+		   przerwy między nimi), "aktywny" = pet za graczem i jego premia do łupu (+% Złota / doświadczenia z walk —
+		   doliczana tu, przy przyjęciu łupu; komunikat "premia" do klienta przy pokazaniu), "stan"; atrybuty gracza
+		   D.pety.atrybut_aktywnego i D.pety.atrybut_liczby dla klientów.
 	Stan: JEDNA tabela profilu na gracza (pole wersja) — pod przyszły zapis (DataStore / ProfileStore; dziś tylko
 	pamięć serwera, profil znika przy wyjściu gracza, jak atrybuty).
 
@@ -27,8 +33,14 @@
 		                            gatunek, poziom }) → { ok = true } | { ok = false, powod }
 		SterowanieSerwera:Invoke("stan", gracz?) | ("zgodnosc") | ("publikuj", gracz?) | ("bohater", gracz?)
 		                  | ("przyznaj", gracz, lup) — testy (przyznaj pokazuje łup od razu)
-	Zdalne/ZdarzeniaStanu (RemoteEvent): serwer → klient "awans", poziom, ile; klient → serwer "pokaz" (bez liczb;
-	najwyżej raz na D.publikacja.odstep_pokaz_s — może tylko przyspieszyć pokazanie łupu, nigdy go zmienić).
+		WydajZloto:Invoke(gracz, { ile, zrodlo = nazwa kontenera, cel }) → { ok = true, zloto, ile, licznik }
+		                  | { ok = false, powod ("za_malo" z brakuje, zloto, ile | "zla_kwota" | "zle_zrodlo" | …) }
+		Pety:Invoke("kup", gracz, { ile, zrodlo, cel, pet, premia = { zloto, doswiadczenie } }) → jak WydajZloto
+		                  + pet, nowy, kopie, aktywny | ("aktywny", gracz, { pet, premia } | { odstaw = true })
+		                  → { ok, aktywny } | ("stan", gracz) → { ok, kopie, aktywny, premia, wydatki, zloto }
+	Zdalne/ZdarzeniaStanu (RemoteEvent): serwer → klient "awans", poziom, ile; "premia", zloto, doswiadczenie, pet
+	(dodatek peta w pokazanym łupie); klient → serwer "pokaz" (bez liczb; najwyżej raz na D.publikacja.odstep_pokaz_s —
+	może tylko przyspieszyć pokazanie łupu, nigdy go zmienić).
 	Działa tylko w Roblox Studio: poza Studio usuwa cały kontener, jak pozostałe prototypy.
 ]]
 if not game:GetService("RunService"):IsStudio() then
@@ -48,6 +60,8 @@ local sygnaly = kontener:WaitForChild("Sygnaly")
 local bohaterF: BindableFunction = sygnaly:WaitForChild("Bohater")
 local lupF: BindableFunction = sygnaly:WaitForChild("PrzyznajLup")
 local sterowanie: BindableFunction = sygnaly:WaitForChild("SterowanieSerwera")
+local wydajF: BindableFunction = sygnaly:WaitForChild("WydajZloto")
+local petyF: BindableFunction = sygnaly:WaitForChild("Pety")
 
 local P = D.prefiks
 local A = D.atrybuty
@@ -65,7 +79,8 @@ local function dolicz(nazwa: string)
 end
 
 kontener:SetAttribute("SerwerStanuGotowy", false)
-for _, n in { "LicznikLupow", "LicznikPokazan", "LicznikAwansow", "LicznikBohaterow", "LicznikTreningu", "LicznikOdmow" } do
+for _, n in { "LicznikLupow", "LicznikPokazan", "LicznikAwansow", "LicznikBohaterow", "LicznikTreningu", "LicznikOdmow",
+	"LicznikWydatkow", "LicznikPetow" } do
 	kontener:SetAttribute(n, 0)
 end
 
@@ -217,9 +232,15 @@ local function publikuj(gracz: Player, wymus: boolean, minWiek: number)
 	end
 	local t = teraz()
 	local gotowe, reszta = {}, {}
+	local premiaZ, premiaXp, premiaPet = 0, 0, nil
 	for _, o in p.oczekujace do
 		if t >= o.pokazOd or (wymus and t - o.przyjeto >= minWiek) then
 			table.insert(gotowe, o.lup)
+			if o.premia then
+				premiaZ += o.premia.zloto
+				premiaXp += o.premia.doswiadczenie
+				premiaPet = o.pet
+			end
 		else
 			table.insert(reszta, o)
 		end
@@ -249,6 +270,9 @@ local function publikuj(gracz: Player, wymus: boolean, minWiek: number)
 		p.awanse += ile
 		kontener:SetAttribute("LicznikAwansow", (kontener:GetAttribute("LicznikAwansow") or 0) + ile)
 		zdarzenia:FireClient(gracz, "awans", poziom, ile)
+	end
+	if premiaZ + premiaXp > 0 then
+		zdarzenia:FireClient(gracz, "premia", premiaZ, premiaXp, premiaPet)
 	end
 	kontener:SetAttribute("OstatniePokazanie", string.format("%s:+%dz:+%dxp:poz.%d", gracz.Name, suma.zloto,
 		suma.doswiadczenie, poziom))
@@ -280,8 +304,13 @@ local function przyjmijLup(gracz: any, info: any)
 	if #p.oczekujace >= D.limity.oczekujace_maks then
 		publikuj(gracz, true, 0)
 	end
+	-- premia aktywnego peta (pakiet swiat/pety_proba): +% Złota i doświadczenia z tej walki, liczona tu i teraz
+	local dodatek = L.premiaLupu(D, lup, p.pety.premia)
+	lup.zloto += dodatek.zloto
+	lup.doswiadczenie += dodatek.doswiadczenie
 	local t = teraz()
-	table.insert(p.oczekujace, { lup = lup, przyjeto = t, pokazOd = t + czas + D.publikacja.zapas_s })
+	table.insert(p.oczekujace, { lup = lup, przyjeto = t, pokazOd = t + czas + D.publikacja.zapas_s,
+		premia = if dodatek.zloto + dodatek.doswiadczenie > 0 then dodatek else nil, pet = p.pety.aktywny })
 	if info.wynik == "wygrana" then
 		p.walki.wygrane += 1
 	else
@@ -302,6 +331,139 @@ lupF.OnInvoke = function(gracz: any, info: any)
 		return wynik
 	end
 	warn(P .. "PrzyznajLup: " .. tostring(wynik))
+	return { ok = false, powod = "blad" }
+end
+
+------------------------------------------------------------------ wydatki Złota i pety (17.11.2026, swiat/pety_proba)
+-- Bez przerw (żadnego czekania) między sprawdzeniem a zapisem: dwa wywołania naraz nie wydadzą tego samego Złota.
+local function graczOk(gracz: any): boolean
+	return typeof(gracz) == "Instance" and gracz:IsA("Player") and gracz.Parent == Players
+end
+
+local function skopiuj(t: any): any
+	if type(t) ~= "table" then
+		return t
+	end
+	local w = {}
+	for k, v in t do
+		w[k] = skopiuj(v)
+	end
+	return w
+end
+
+local function publikujPety(gracz: Player)
+	local p = profil(gracz)
+	local suma = 0
+	for _, n in p.pety.kopie do
+		suma += n
+	end
+	gracz:SetAttribute(D.pety.atrybut_liczby, suma)
+	gracz:SetAttribute(D.pety.atrybut_aktywnego, p.pety.aktywny)
+end
+
+local function wydajZloto(gracz: any, info: any)
+	if not graczOk(gracz) then
+		return { ok = false, powod = "zly_gracz" }
+	end
+	local w, powod = L.czystyWydatek(D, info)
+	if not w then
+		return { ok = false, powod = powod }
+	end
+	-- łup zakończonej walki najpierw do atrybutów: gracz wydaje to, co widzi w HUD
+	publikuj(gracz, true, D.publikacja.min_s)
+	local zloto, brak = L.wydaj(D, gracz:GetAttribute(A.zloto), w.ile)
+	if brak > 0 then
+		return { ok = false, powod = "za_malo", brakuje = brak, zloto = zloto, ile = w.ile }
+	end
+	gracz:SetAttribute(A.zloto, zloto)
+	local p = profil(gracz)
+	p.zloto = zloto
+	p.wydatki[w.cel] = (p.wydatki[w.cel] or 0) + 1
+	dolicz("LicznikWydatkow")
+	kontener:SetAttribute("OstatniWydatek", string.format("%s:%s:%s:%dz", gracz.Name, w.zrodlo, w.cel, w.ile))
+	return { ok = true, zloto = zloto, ile = w.ile, licznik = p.wydatki[w.cel] }
+end
+
+wydajF.OnInvoke = function(gracz: any, info: any)
+	local ok, wynik = pcall(wydajZloto, gracz, info)
+	if ok then
+		return wynik
+	end
+	warn(P .. "WydajZloto: " .. tostring(wynik))
+	return { ok = false, powod = "blad" }
+end
+
+local function pety(polecenie: any, gracz: any, info: any)
+	if not graczOk(gracz) then
+		return { ok = false, powod = "zly_gracz" }
+	end
+	local p = profil(gracz)
+	if polecenie == "stan" then
+		return { ok = true, kopie = skopiuj(p.pety.kopie), aktywny = p.pety.aktywny, premia = skopiuj(p.pety.premia),
+			wydatki = skopiuj(p.wydatki), zloto = liczba(gracz, A.zloto, 0) }
+	end
+	if type(info) ~= "table" then
+		return { ok = false, powod = "zle_dane" }
+	end
+	if polecenie == "kup" then
+		if not L.nazwaOk(D, info.pet) then
+			return { ok = false, powod = "zly_pet" }
+		end
+		local premia, powodPremii = L.czystaPremia(D, info.premia)
+		if not premia then
+			return { ok = false, powod = powodPremii }
+		end
+		local rodzajow = 0
+		for _ in p.pety.kopie do
+			rodzajow += 1
+		end
+		local nowy = p.pety.kopie[info.pet] == nil
+		if (nowy and rodzajow >= D.pety.rodzajow_maks) or (not nowy and p.pety.kopie[info.pet] >= D.pety.kopii_maks) then
+			return { ok = false, powod = "limit_petow" }
+		end
+		local w = wydajZloto(gracz, info)
+		if not w.ok then
+			return w
+		end
+		p.pety.kopie[info.pet] = (p.pety.kopie[info.pet] or 0) + 1
+		if p.pety.aktywny == nil then
+			p.pety.aktywny = info.pet
+			p.pety.premia = premia
+		end
+		publikujPety(gracz)
+		dolicz("LicznikPetow")
+		w.pet = info.pet
+		w.nowy = nowy
+		w.kopie = p.pety.kopie[info.pet]
+		w.aktywny = p.pety.aktywny
+		return w
+	elseif polecenie == "aktywny" then
+		if info.odstaw == true then
+			p.pety.aktywny = nil
+			p.pety.premia = { zloto = 0, doswiadczenie = 0 }
+		else
+			if not L.nazwaOk(D, info.pet) or p.pety.kopie[info.pet] == nil then
+				return { ok = false, powod = "nie_masz" }
+			end
+			local premia, powodPremii = L.czystaPremia(D, info.premia)
+			if not premia then
+				return { ok = false, powod = powodPremii }
+			end
+			p.pety.aktywny = info.pet
+			p.pety.premia = premia
+		end
+		publikujPety(gracz)
+		return { ok = true, aktywny = p.pety.aktywny }
+	end
+	return { ok = false, powod = "nieznane_polecenie" }
+end
+
+petyF.OnInvoke = function(polecenie: any, gracz: any, info: any)
+	local ok, wynik = pcall(pety, polecenie, gracz, info)
+	if ok then
+		return wynik
+	end
+	warn(P .. "Pety: " .. tostring(wynik))
 	return { ok = false, powod = "blad" }
 end
 
@@ -419,6 +581,7 @@ local function nowyGracz(gracz: Player)
 	ustawXpMax(gracz)
 	zastosujBaze(gracz)
 	zbierz(gracz)
+	publikujPety(gracz)
 end
 Players.PlayerAdded:Connect(nowyGracz)
 for _, g in Players:GetPlayers() do

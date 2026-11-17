@@ -1,0 +1,298 @@
+{
+ "modul": "swietlikowka",
+ "modele": [
+  {
+   "id": "swietlikowka",
+   "nazwa": "Świetlikówka",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 220,
+     "wierzcholki": 120,
+     "wymiary": [
+      1.15,
+      1.37,
+      1.02
+     ],
+     "min": [
+      -0.575,
+      0.03,
+      -0.475
+     ],
+     "max": [
+      0.575,
+      1.4,
+      0.545
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 380,
+     "wierzcholki": 216,
+     "wymiary": [
+      1.25,
+      1.0,
+      1.16
+     ],
+     "min": [
+      -0.625,
+      1.33,
+      -0.48
+     ],
+     "max": [
+      0.625,
+      2.33,
+      0.68
+     ]
+    },
+    {
+     "nazwa": "PiorkoL_Geo",
+     "kosc": "PiorkoL",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.37,
+      0.476,
+      0.2
+     ],
+     "min": [
+      0.325,
+      2.222,
+      -0.1
+     ],
+     "max": [
+      0.695,
+      2.698,
+      0.1
+     ]
+    },
+    {
+     "nazwa": "SkrzydloL_Geo",
+     "kosc": "SkrzydloL",
+     "trojkaty": 96,
+     "wierzcholki": 54,
+     "wymiary": [
+      0.342,
+      1.031,
+      0.934
+     ],
+     "min": [
+      0.504,
+      0.371,
+      -0.577
+     ],
+     "max": [
+      0.846,
+      1.402,
+      0.357
+     ]
+    },
+    {
+     "nazwa": "PiorkoP_Geo",
+     "kosc": "PiorkoP",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.37,
+      0.476,
+      0.2
+     ],
+     "min": [
+      -0.695,
+      2.222,
+      -0.1
+     ],
+     "max": [
+      -0.325,
+      2.698,
+      0.1
+     ]
+    },
+    {
+     "nazwa": "SkrzydloP_Geo",
+     "kosc": "SkrzydloP",
+     "trojkaty": 96,
+     "wierzcholki": 54,
+     "wymiary": [
+      0.342,
+      1.031,
+      0.934
+     ],
+     "min": [
+      -0.846,
+      0.371,
+      -0.577
+     ],
+     "max": [
+      -0.504,
+      1.402,
+      0.357
+     ]
+    },
+    {
+     "nazwa": "Swietlik1_Geo",
+     "kosc": "Swietlik1",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.17,
+      0.17,
+      0.17
+     ],
+     "min": [
+      -0.085,
+      0.365,
+      1.165
+     ],
+     "max": [
+      0.085,
+      0.535,
+      1.335
+     ]
+    },
+    {
+     "nazwa": "Swietlik2_Geo",
+     "kosc": "Swietlik2",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.17,
+      0.17,
+      0.17
+     ],
+     "min": [
+      0.796,
+      1.365,
+      -0.824
+     ],
+     "max": [
+      0.966,
+      1.535,
+      -0.654
+     ]
+    },
+    {
+     "nazwa": "Swietlik3_Geo",
+     "kosc": "Swietlik3",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.17,
+      0.17,
+      0.17
+     ],
+     "min": [
+      -1.354,
+      0.865,
+      -0.547
+     ],
+     "max": [
+      -1.184,
+      1.035,
+      -0.377
+     ]
+    }
+   ],
+   "trojkaty_razem": 1012,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 12
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.32,
+    2.668,
+    2.159
+   ],
+   "wymiary_z_akcesoriami": [
+    2.32,
+    2.668,
+    2.159
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.354,
+     0.03,
+     -0.824
+    ],
+    [
+     0.966,
+     2.698,
+     1.335
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Tulow",
+    "Glowa",
+    "PiorkoL",
+    "SkrzydloL",
+    "PiorkoP",
+    "SkrzydloP",
+    "Swietlik1",
+    "Swietlik2",
+    "Swietlik3"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "chod",
+     "dlugosc": 24,
+     "fps": 30,
+     "sekundy": 0.8,
+     "petla": true
+    },
+    {
+     "n": "radosc",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "wyklucie",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [
+  "klip chod: Swietlik1.obrot — klatka 0 ≠ klatka 24, pętla skoczy",
+  "klip chod: Swietlik2.obrot — klatka 0 ≠ klatka 24, pętla skoczy",
+  "klip chod: Swietlik3.obrot — klatka 0 ≠ klatka 24, pętla skoczy",
+  "klip spoczynek: Swietlik1.obrot — klatka 0 ≠ klatka 60, pętla skoczy",
+  "klip spoczynek: Swietlik2.obrot — klatka 0 ≠ klatka 60, pętla skoczy",
+  "klip spoczynek: Swietlik3.obrot — klatka 0 ≠ klatka 60, pętla skoczy"
+ ],
+ "kontrola": [
+  "swietlikowka.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje brak -> ZGODNE",
+  "swietlikowka__spoczynek.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-61 -> ZGODNE",
+  "swietlikowka__chod.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-25 -> ZGODNE",
+  "swietlikowka__radosc.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-37 -> ZGODNE",
+  "swietlikowka__wyklucie.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-31 -> ZGODNE",
+  "swietlikowka.glb: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
+ ]
+}

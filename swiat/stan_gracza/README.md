@@ -38,12 +38,23 @@ nie jest zmieniony**.
 | `Sygnaly/Bohater` (BindableFunction) | las → stan | `Invoke(gracz)` → opis postaci dla `Silnik.symuluj` albo `nil` |
 | `Sygnaly/PrzyznajLup` (BindableFunction) | las → stan | `Invoke(gracz, { lup = walka.lup, wynik, czas = walka.czas, zrodlo = "LasPotwory" \| "LasPasGra" \| "BagnoPasGra", gatunek, poziom })` → `{ ok = true }` \| `{ ok = false, powod }` |
 | `Sygnaly/SterowanieSerwera` (BindableFunction) | testy | `"stan", gracz?` · `"zgodnosc"` · `"publikuj", gracz?` · `"bohater", gracz?` · `"przyznaj", gracz, lup` |
-| `Zdalne/ZdarzeniaStanu` (RemoteEvent) | serwer → klient | `"awans", poziom, ile` |
+| `Sygnaly/WydajZloto` (BindableFunction, 17.11) | pakiet → stan | `Invoke(gracz, { ile, zrodlo = kontener z listy D.wydatki.zrodla, cel })` → `{ ok = true, zloto, ile, licznik }` \| `{ ok = false, powod ("za_malo" + brakuje, zloto, ile \| "zla_kwota" \| "zle_zrodlo" \| "zly_cel" \| "zly_gracz") }` — nigdy poniżej zera |
+| `Sygnaly/Pety` (BindableFunction, 17.11) | pety → stan | `"kup", gracz, { ile, zrodlo, cel, pet, premia }` (wydatek + kopia peta w jednym wywołaniu) · `"aktywny", gracz, { pet, premia }` \| `{ odstaw = true }` · `"stan", gracz` |
+| `Zdalne/ZdarzeniaStanu` (RemoteEvent) | serwer → klient | `"awans", poziom, ile` · `"premia", zloto, doswiadczenie, pet` (dodatek peta w pokazanym łupie — czyta go klient `swiat/pety_proba`) |
 | | klient → serwer | `"pokaz"` (bez liczb, najwyżej raz na 0,5 s) |
 | `Workspace/TreningProba/Sygnaly/PrzyrostStatystyki` | trening → stan | tylko słuchamy (z ponownym podłączeniem po przebudowie) |
 
 Atrybuty gracza, które pisze pakiet: `Level`, `XP`, `XPMax`, `Gold`, `Gems`, `Strength`, `Constitution`,
-`Intelligence`, `Dexterity`, `Luck`, `Armor` (Pawła) oraz własne `ShardyEwolucji` i `TokenyKrainy_<kraina>`.
+`Intelligence`, `Dexterity`, `Luck`, `Armor` (Pawła) oraz własne `ShardyEwolucji`, `TokenyKrainy_<kraina>`, `PetAktywny`
+i `PetyLiczba` (17.11.2026).
+
+**Pety i wydawanie Złota (17.11.2026, pakiet `swiat/pety_proba`, propozycja):** profil ma wersję 2 z polami
+`pety = { kopie, aktywny, premia }` i `wydatki` (licznik wydatków na cel — np. kupione jajka; z niego pakiet petów
+liczy cenę). Zakup jajka to JEDNO wywołanie `Pety("kup")`: kwota i źródło sprawdzone, łup czekający na pokazanie
+(> `min_s`) wchodzi do Złota, Złoto w dół (za mało = odmowa z brakującą kwotą, bez zmian), kopia peta w górę —
+bez przerw między krokami. Premię aktywnego peta (ułamki Złota i doświadczenia, najwyżej `D.pety.premia_maks`)
+przysyła pakiet petów; doliczamy ją przy przyjęciu łupu (zaokrąglenie 0,5 w górę). Źródła wydatków: `D.wydatki.zrodla`
+(dziś `PetyProba`). Stan petów żyje tutaj, nie w pakiecie petów — Złoto i pety zapiszą się razem.
 Atrybuty kontenera do podglądu: `SerwerStanuGotowy`, `ZgodnoscLogikiStanu` („OK 80/80”), `RozkladyZ`,
 `TreningPodlaczony`, `LicznikLupow`, `LicznikPokazan`, `LicznikAwansow`, `LicznikBohaterow`, `LicznikTreningu`,
 `OstatniLup`, `OstatniePokazanie`, `OstatniBohater`.
@@ -81,6 +92,8 @@ każda nazwa z liter, cyfr i „_”, więc „bagno” działa bez zmian.
 10. **Baner „POZIOM N”** to tymczasowe GUI pakietu; docelowe pop-upy projektuje Paweł (D-093).
 11. **Bez zapisu:** profil w pamięci serwera; po wyjściu z gry wszystko znika (jak dziś). Miejsce na zapis: profil
     (`L.nowyProfil`, pole `wersja`), `swiat/las_pas_gra/zrodla/PamiecGracza.luau`.
+12. **Pety (17.11.2026):** premia peta do łupu poza silnikiem walki (D-059 mówi o mnożniku statystyk — następny krok),
+    pierwszy kupiony pet od razu aktywny, jedna kwota wydatku najwyżej 1 000 000 Złota.
 
 ## Co zgłosić Pawłowi
 - Jego atrybuty `Level`, `XP`, `XPMax`, `Gold`, `Gems` i sześć statystyk pisze teraz serwer pakietu (XPMax z krzywej,
@@ -99,7 +112,7 @@ każda nazwa z liter, cyfr i „_”, więc „bagno” działa bez zmian.
 Bez Studio (wszystko pojedynczo, bez wielu procesów):
 ```
 python -B swiat/stan_gracza/dane.py --sprawdz          # DaneStanu.luau aktualny
-python -B swiat/stan_gracza/testy/test_stanu.py        # 39 testów, w tym SerwerStanu i KlientStanu w luau_mini
+python -B swiat/stan_gracza/testy/test_stanu.py        # 42 testy, w tym SerwerStanu i KlientStanu w luau_mini
 python -B swiat/stan_gracza/sprawdz_luau_stanu.py      # kontrola statyczna Luau
 python -B swiat/stan_gracza/zbuduj.py --sucho          # plan budowy
 python -B swiat/stan_gracza/symulacja_lasu.py          # szanse w przegrodach lasu-pasa i czas do Strażnika

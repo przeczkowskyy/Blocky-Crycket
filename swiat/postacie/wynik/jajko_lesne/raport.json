@@ -1,0 +1,278 @@
+{
+ "modul": "jajko_lesne",
+ "modele": [
+  {
+   "id": "jajko_lesne",
+   "nazwa": "Jajko leśne",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Jajko_Geo",
+     "kosc": "Jajko",
+     "trojkaty": 248,
+     "wierzcholki": 144,
+     "wymiary": [
+      1.8,
+      1.5,
+      1.8
+     ],
+     "min": [
+      -0.9,
+      0.0,
+      -0.9
+     ],
+     "max": [
+      0.9,
+      1.5,
+      0.9
+     ]
+    },
+    {
+     "nazwa": "Czubek_Geo",
+     "kosc": "Czubek",
+     "trojkaty": 236,
+     "wierzcholki": 136,
+     "wymiary": [
+      1.53,
+      1.39,
+      1.53
+     ],
+     "min": [
+      -0.74,
+      1.5,
+      -0.74
+     ],
+     "max": [
+      0.79,
+      2.89,
+      0.79
+     ]
+    }
+   ],
+   "trojkaty_razem": 484,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    1.8,
+    2.89,
+    1.8
+   ],
+   "wymiary_z_akcesoriami": [
+    1.8,
+    2.89,
+    1.8
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -0.9,
+     0.0,
+     -0.9
+    ],
+    [
+     0.9,
+     2.89,
+     0.9
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Jajko",
+    "Czubek"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "trzesienie",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "pekniecie",
+     "dlugosc": 18,
+     "fps": 30,
+     "sekundy": 0.6,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  },
+  {
+   "id": "inkubator_lesny",
+   "nazwa": "Inkubator leśny (podgląd)",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Podstawa_Geo",
+     "kosc": "Podstawa",
+     "trojkaty": 528,
+     "wierzcholki": 288,
+     "wymiary": [
+      12.0,
+      5.5,
+      12.0
+     ],
+     "min": [
+      -6.0,
+      0.0,
+      -6.0
+     ],
+     "max": [
+      6.0,
+      5.5,
+      6.0
+     ]
+    },
+    {
+     "nazwa": "Jajko_Geo",
+     "kosc": "Jajko",
+     "trojkaty": 248,
+     "wierzcholki": 144,
+     "wymiary": [
+      3.24,
+      2.7,
+      3.24
+     ],
+     "min": [
+      -1.62,
+      0.92,
+      -1.62
+     ],
+     "max": [
+      1.62,
+      3.62,
+      1.62
+     ]
+    },
+    {
+     "nazwa": "Czubek_Geo",
+     "kosc": "Czubek",
+     "trojkaty": 236,
+     "wierzcholki": 136,
+     "wymiary": [
+      2.754,
+      2.502,
+      2.754
+     ],
+     "min": [
+      -1.332,
+      3.62,
+      -1.332
+     ],
+     "max": [
+      1.422,
+      6.122,
+      1.422
+     ]
+    },
+    {
+     "nazwa": "Tablica_Geo",
+     "kosc": "Tablica",
+     "trojkaty": 308,
+     "wierzcholki": 184,
+     "wymiary": [
+      4.494,
+      4.245,
+      2.102
+     ],
+     "min": [
+      2.053,
+      0.5,
+      2.349
+     ],
+     "max": [
+      6.547,
+      4.745,
+      4.451
+     ]
+    }
+   ],
+   "trojkaty_razem": 1320,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 23
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    12.547,
+    6.122,
+    12.0
+   ],
+   "wymiary_z_akcesoriami": [
+    12.547,
+    6.122,
+    12.0
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -6.0,
+     0.0,
+     -6.0
+    ],
+    [
+     6.547,
+     6.122,
+     6.0
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Podstawa",
+    "Jajko",
+    "Czubek",
+    "Tablica"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "jajko_lesne.fbx: siatki 4, kości 3, trójkąty 508, wzrost 2.89 st., akcje brak -> ZGODNE",
+  "jajko_lesne__spoczynek.fbx: siatki 4, kości 3, trójkąty 508, wzrost 2.89 st., akcje jajko_lesne|Scene 1-61 -> ZGODNE",
+  "jajko_lesne__trzesienie.fbx: siatki 4, kości 3, trójkąty 508, wzrost 2.89 st., akcje jajko_lesne|Scene 1-37 -> ZGODNE",
+  "jajko_lesne__pekniecie.fbx: siatki 4, kości 3, trójkąty 508, wzrost 2.89 st., akcje jajko_lesne|Scene 1-19 -> ZGODNE",
+  "jajko_lesne.glb: siatki 4, kości 3, trójkąty 508, wzrost 2.89 st., akcje pekniecie 0-18, spoczynek 0-60, trzesienie 0-36 -> ZGODNE",
+  "inkubator_lesny.fbx: siatki 6, kości 5, trójkąty 1344, wzrost 6.12 st., akcje brak -> ZGODNE",
+  "inkubator_lesny__spoczynek.fbx: siatki 6, kości 5, trójkąty 1344, wzrost 6.12 st., akcje inkubator_lesny|Scene 1-61 -> ZGODNE",
+  "inkubator_lesny.glb: siatki 6, kości 5, trójkąty 1344, wzrost 6.12 st., akcje spoczynek 0-60 -> ZGODNE"
+ ]
+}

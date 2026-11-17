@@ -1,0 +1,47 @@
+RAPORT — jelonek_gaju
+JELONEK GAJU — pet legendarny z leśnego jajka (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/jelonek_gaju.py · wygenerowano 17.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py jelonek_gaju
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: jelonek_gaju
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 6 plików, zgodnych 6
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Świecą kryształy na końcach poroża i klejnot (Neon w Roblox); gałęzie poroża są błyszczące, nie świecące — w grze cały Neon zlewał się z bliska w jedną cyjanową plamę (próba 17.11).
+- Nogi bez kolan (jedna bryła) — stęp to wymach całych nóg.
+
+MODEL jelonek_gaju „Jelonek Gaju” (stwor)
+  wymiary ciała: 1,85 × 3,75 × 2,69; z akcesoriami: 1,85 × 3,75 × 2,69
+  trójkąty: 1240 (siatek: 11)
+  kości (12): Root, Tulow, Szyja, Glowa, UchoL, NogaPrzodL, NogaTylL, UchoP, NogaPrzodP, NogaTylP, Poroze, Ogonek
+  klipy: spoczynek 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
+  punkty zaczepienia: RootAttachment, GlowaAttachment
+
+KONTROLA EKSPORTÓW
+- jelonek_gaju.fbx: siatki 13, kości 12, trójkąty 1264, wzrost 3.75 st., akcje brak -> ZGODNE
+- jelonek_gaju__spoczynek.fbx: siatki 13, kości 12, trójkąty 1264, wzrost 3.75 st., akcje jelonek_gaju|Scene 1-61 -> ZGODNE
+- jelonek_gaju__chod.fbx: siatki 13, kości 12, trójkąty 1264, wzrost 3.75 st., akcje jelonek_gaju|Scene 1-25 -> ZGODNE
+- jelonek_gaju__radosc.fbx: siatki 13, kości 12, trójkąty 1264, wzrost 3.75 st., akcje jelonek_gaju|Scene 1-37 -> ZGODNE
+- jelonek_gaju__wyklucie.fbx: siatki 13, kości 12, trójkąty 1264, wzrost 3.75 st., akcje jelonek_gaju|Scene 1-31 -> ZGODNE
+- jelonek_gaju.glb: siatki 13, kości 12, trójkąty 1264, wzrost 3.75 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
+
+PLIKI
+- jelonek_gaju.blend
+- jelonek_gaju.fbx
+- jelonek_gaju.glb
+- jelonek_gaju__chod.fbx
+- jelonek_gaju__radosc.fbx
+- jelonek_gaju__spoczynek.fbx
+- jelonek_gaju__wyklucie.fbx
+- jelonek_gaju_bohater.jpg
+- jelonek_gaju_ikona.png
+- jelonek_gaju_plansza.jpg
+- jelonek_gaju_tekstury/
+- raport.json
+- raport.txt

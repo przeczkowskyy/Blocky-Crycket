@@ -266,6 +266,30 @@ class TestLuau(unittest.TestCase):
             wl = self.wolaj("czystyPrzyrost", self.Dl, info)
             self.assertEqual((wl[0] if wl[0] is not None else None, wl[1]), (list(w) if w else None, powod), info)
 
+    def test_4f_wydatki_i_premie_jak_lustro(self):
+        los = random.Random(29)
+        for _ in range(300):
+            info = {"ile": los.choice([1, 300, 2.5, 0, -1, 10 ** 6, 10 ** 6 + 1, "5", None]),
+                    "zrodlo": los.choice(["PetyProba", "Haker", None, 7]),
+                    "cel": los.choice(["jajko_lesne", "", "a b", "x" * 25, None])}
+            info = {k: v for k, v in info.items() if v is not None}
+            w, powod = LS.czysty_wydatek(D, info)
+            wl = self.wolaj("czystyWydatek", self.Dl, info)
+            self.assertEqual((wl[0] if wl[0] is not None else None, wl[1]), (w, powod), info)
+            z = los.choice([0, 1, 299, 300, 301, 12.5, -7, 10 ** 13])
+            ile = los.choice([1, 300, 1000])
+            self.assertEqual(self.wolaj("wydaj", self.Dl, z, ile), list(LS.wydaj(D, z, ile)), (z, ile))
+            zn, brak = LS.wydaj(D, z, ile)
+            self.assertGreaterEqual(zn, 0, "Złoto nigdy poniżej zera")
+            self.assertTrue(brak == 0 or zn == LS.wydaj(D, z, 0)[0], "za mało Złota — bez zmiany")
+            pr = {"zloto": los.choice([0, 0.05, 0.2, 0.5, 0.51, -0.1, "x"]), "doswiadczenie": los.choice([0, 0.08, 0.5])}
+            w, powod = LS.czysta_premia(D, pr)
+            wl = self.wolaj("czystaPremia", self.Dl, pr)
+            self.assertEqual((norm(wl[0]) if wl[0] is not None else None, wl[1]), (norm(w) if w else None, powod), pr)
+            if w:
+                lup = {"zloto": los.randint(0, 500), "doswiadczenie": los.randint(0, 500)}
+                self.assertEqual(self.wolaj("premiaLupu", self.Dl, lup, w)[0], LS.premia_lupu(D, lup, w))
+
     def test_4e_suma_lupow_i_profil(self):
         lupy = [{"zloto": 21, "doswiadczenie": 12, "tokeny_krainy": 1, "gemy": 0, "shard_ewolucji": 0, "kraina": "las"},
                 {"zloto": 5, "doswiadczenie": 2, "tokeny_krainy": 2, "gemy": 1, "shard_ewolucji": 1, "kraina": "bagno"},
@@ -372,7 +396,8 @@ class TestStyku(unittest.TestCase):
     def test_6e_wiadomosci_klient_serwer(self):
         do_klienta = set(re.findall(r'zdarzenia:FireClient\(gracz, "(\w+)"', bez_komentarzy(SERWER)))
         do_serwera = set(re.findall(r'zdarzenia:FireServer\("(\w+)"\)', bez_komentarzy(KLIENT)))
-        self.assertEqual(do_klienta, {"awans"})
+        # "premia" (17.11.2026) czyta klient pakietu petów; KlientStanu go pomija (obsługuje tylko "awans")
+        self.assertEqual(do_klienta, {"awans", "premia"})
         self.assertEqual(do_serwera, {"pokaz"})
         self.assertIn('polecenie ~= "awans"', KLIENT)
         self.assertIn('polecenie ~= "pokaz"', SERWER)
@@ -549,6 +574,85 @@ class TestSerweraOffline(unittest.TestCase):
         self.k.ustaw("StatystykiKlasy", True)
         cel = LS.rozdziel(D, D["rozklady"]["zwiadowca"], LS.pula(D, 3))
         self.assertEqual(self.atr("Armor"), cel["pancerz"] + 1)
+
+    def wydaj(self, ile, zrodlo="PetyProba", cel="jajko_lesne"):
+        return self.wywolaj("WydajZloto", self.g.t, {"ile": ile, "zrodlo": zrodlo, "cel": cel})
+
+    def test_8i_wydawanie_zlota(self):
+        self.uruchom()
+        self.g.ustaw("Gold", 500)
+        self.assertEqual(self.wydaj(300), {"ok": True, "zloto": 200, "ile": 300, "licznik": 1})
+        self.assertEqual(self.atr("Gold"), 200)
+        # za mało: odmowa z brakującą kwotą, Złoto bez zmiany
+        self.assertEqual(self.wydaj(300), {"ok": False, "powod": "za_malo", "brakuje": 100, "zloto": 200, "ile": 300})
+        self.assertEqual(self.atr("Gold"), 200)
+        # złe wywołania: nic nie znika
+        self.assertEqual(self.wydaj(300, zrodlo="Haker")["powod"], "zle_zrodlo")
+        for zla in (0, -50, 2.5, "100"):
+            self.assertEqual(self.wydaj(zla)["powod"], "zla_kwota", zla)
+        self.assertEqual(self.wydaj(10, cel="jajko lesne")["powod"], "zly_cel")
+        self.assertEqual(self.wywolaj("WydajZloto", "nie-gracz", {"ile": 1, "zrodlo": "PetyProba", "cel": "x"})["powod"],
+                         "zly_gracz")
+        self.assertEqual(self.atr("Gold"), 200)
+        # dwa wydatki „naraz” (jeden po drugim w tej samej klatce) — drugi już nie ma z czego
+        self.assertTrue(self.wydaj(150)["ok"])
+        self.assertEqual(self.wydaj(150)["powod"], "za_malo")
+        self.assertEqual(self.atr("Gold"), 50)
+        # łup czekający na pokazanie (> min_s po walce) wchodzi do Złota przed wydatkiem
+        self.lup(czas=40.0, zloto=300)
+        self.sw.krok(D["publikacja"]["min_s"] + 0.1)
+        self.assertEqual(self.wydaj(300), {"ok": True, "zloto": 50, "ile": 300, "licznik": 3})
+        self.assertEqual(self.k.atrybuty["LicznikWydatkow"], 3)
+        self.assertEqual(self.sw.ostrzezenia, [])
+
+    def pety(self, polecenie, info=None):
+        return self.wywolaj("Pety", polecenie, self.g.t, info)
+
+    def test_8j_pety_kup_aktywny_premia_przy_lupie(self):
+        self.uruchom()
+        self.assertEqual((self.atr("PetyLiczba"), self.atr("PetAktywny")), (0, None))
+        self.g.ustaw("Gold", 1000)
+        kup = {"ile": 300, "zrodlo": "PetyProba", "cel": "jajko_lesne", "pet": "zoledziak",
+               "premia": {"zloto": 0.2, "doswiadczenie": 0}}
+        w = self.pety("kup", kup)
+        self.assertEqual((w["ok"], w["nowy"], w["kopie"], w["aktywny"], w["zloto"], w["licznik"]),
+                         (True, True, 1, "zoledziak", 700, 1))
+        self.assertEqual((self.atr("PetyLiczba"), self.atr("PetAktywny")), (1, "zoledziak"))
+        w = self.pety("kup", dict(kup, pet="lisciolis", premia={"zloto": 0.12}))
+        self.assertEqual((w["nowy"], w["aktywny"], w["zloto"]), (True, "zoledziak", 400), "pierwszy pet zostaje aktywny")
+        w = self.pety("kup", kup)
+        self.assertEqual((w["nowy"], w["kopie"], w["zloto"]), (False, 2, 100))
+        # za mało Złota: bez peta i bez zmiany Złota
+        w = self.pety("kup", kup)
+        self.assertEqual((w["ok"], w["powod"], w["brakuje"]), (False, "za_malo", 200))
+        st = self.pety("stan")
+        self.assertEqual((st["kopie"], st["aktywny"], st["wydatki"], st["zloto"]),
+                         ({"zoledziak": 2, "lisciolis": 1}, "zoledziak", {"jajko_lesne": 3}, 100))
+        # złe zakupy
+        self.assertEqual(self.pety("kup", dict(kup, pet="zly pet"))["powod"], "zly_pet")
+        self.assertEqual(self.pety("kup", dict(kup, premia={"zloto": 0.9}))["powod"], "zla_premia")
+        self.assertEqual(self.pety("kup", dict(kup, ile=0))["powod"], "zla_kwota")
+        self.assertEqual(self.pety("cos", {})["powod"], "nieznane_polecenie")
+        self.assertEqual(self.atr("Gold"), 100)
+        # premia aktywnego peta przy łupie: +20% Złota (21 → +4), komunikat "premia" przy pokazaniu
+        self.assertEqual(self.lup(czas=0.0), {"ok": True})
+        self.sw.krok(D["publikacja"]["zapas_s"] + 0.5)
+        self.assertEqual(self.atr("Gold"), 100 + 21 + 4)
+        self.assertIn(["premia", 4, 0, "zoledziak"], [x[1] for x in self.sw.do_klienta])
+        # zmiana aktywnego: tylko posiadany pet; odstawienie zeruje premię
+        self.assertEqual(self.pety("aktywny", {"pet": "jelonek_gaju", "premia": {"zloto": 0.2}})["powod"], "nie_masz")
+        self.assertEqual(self.pety("aktywny", {"pet": "lisciolis", "premia": {"zloto": 0.12}}),
+                         {"ok": True, "aktywny": "lisciolis"})
+        self.assertEqual(self.atr("PetAktywny"), "lisciolis")
+        self.assertEqual(self.pety("aktywny", {"odstaw": True}), {"ok": True})
+        self.assertEqual((self.atr("PetAktywny"), self.atr("PetyLiczba")), (None, 3))
+        przed = len(self.sw.do_klienta)
+        self.lup(czas=0.0)
+        self.sw.krok(D["publikacja"]["zapas_s"] + 0.5)
+        self.assertEqual(self.atr("Gold"), 125 + 21, "bez peta — bez premii")
+        self.assertFalse(any(x[1][0] == "premia" for x in self.sw.do_klienta[przed:]))
+        self.assertEqual(self.wywolaj("SterowanieSerwera", "stan", self.g.t)["wersja"], 2)
+        self.assertEqual(self.sw.ostrzezenia, [])
 
     def test_8h_bez_treningu_i_wyjscie_gracza(self):
         self.uruchom(trening=False)

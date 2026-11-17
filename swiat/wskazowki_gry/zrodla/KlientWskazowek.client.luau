@@ -6,7 +6,8 @@
 		1. Linijka celu u góry ekranu (własny ScreenGui „WskazowkiGry”) z krzyżykiem — jedno kliknięcie chowa wskazówki
 		   do końca sesji (haczyk testowy "wlacz" je przywraca).
 		2. Strzałka obok przycisku TELEPORT w HUD Pawła (tylko czyta jego położenie — HUD-u nie zmienia) albo znacznik
-		   w świecie nad celem: najbliższy potwór, Strażnik Gaju, Kamień Powrotu, trener, brama za Strażnikiem.
+		   w świecie nad celem: najbliższy potwór, Strażnik Gaju, Kamień Powrotu, trener, brama za Strażnikiem,
+		   inkubator jajek (swiat/pety_proba — gdy Złota wystarcza na pierwsze jajko).
 		3. Krok wynika ze stanu gracza (LogikaWskazowek.krok): klasa, wynik ostatniej walki w lesie, pokonany Strażnik,
 		   położenie (prostokąty biomów z ich danych: las-pas, Bagno), stan gracza (swiat/stan_gracza: poziomy i trening), a nie ze
 		   sztywnego scenariusza. Bez StanGracza kroki o poziomach i treningu się nie pokazują.
@@ -369,6 +370,8 @@ local function punktCelu(cel, od, kraina)
 		return najblizszyPotwor(od)
 	elseif cel == "trener" then
 		return najblizszyTrener(od)
+	elseif cel == "jajko" then
+		return pozycja(sciezka(Z.inkubator))
 	elseif not b then
 		return nil
 	elseif cel == "straznik" then
@@ -405,6 +408,11 @@ local function stanGracza()
 	local sg = workspace:FindFirstChild(Z.stan_gracza)
 	s.stan_gracza = sg ~= nil and sg:GetAttribute(Z.stan_gracza_gotowy) == true
 	s.trening_wzmacnia = s.stan_gracza and sg:GetAttribute(Z.stan_gracza_trening) == true
+	-- jajko (swiat/pety_proba): cena następnego jajka i liczba petów to atrybuty gracza (piszą je serwery pakietów)
+	local cena, zloto = gracz:GetAttribute(Z.atrybut_ceny_jajka), gracz:GetAttribute(Z.atrybut_zlota)
+	s.jajko = workspace:FindFirstChild(Z.pety) ~= nil and type(cena) == "number" and type(zloto) == "number" and zloto >= cena
+	local pety = gracz:GetAttribute(Z.atrybut_petow)
+	s.pety = if type(pety) == "number" then pety else 0
 	local korzen = gracz.Character and gracz.Character:FindFirstChild("HumanoidRootPart")
 	if korzen then
 		-- od ostatniego biomu: początek Bagna leży w prostokącie lasu (za jego bramą) — Bagno ma pierwszeństwo
@@ -527,6 +535,7 @@ sterowanie.OnInvoke = function(polecenie, a, b)
 			ostatni = s.ostatni, trenowal = s.trenowal, wylaczone = sesja.wylaczone, bagno = s.bagno,
 			straznik = s.straznik, straznik_bagna = s.straznik_bagna,
 			stan_gracza = s.stan_gracza, trening_wzmacnia = s.trening_wzmacnia, daneLasu = daneBiomow.las ~= nil,
+			jajko = s.jajko, pety = s.pety,
 		}
 	elseif polecenie == "wylacz" then
 		sesja.wylaczone = true

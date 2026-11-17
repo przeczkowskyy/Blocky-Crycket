@@ -221,4 +221,59 @@ def nowy_profil(D):
         "baza": None,
         "walki": {"wygrane": 0, "przegrane": 0},
         "awanse": 0,
+        # wersja 2: pety (kopie = shardy peta, D-058) i licznik wydatków Złota na cel (np. kupione jajka)
+        "pety": {"kopie": {}, "aktywny": None, "premia": {"zloto": 0, "doswiadczenie": 0}},
+        "wydatki": {},
     }
+
+
+# ------------------------------------------------------------------ wydatki Złota i pety (17.11.2026, swiat/pety_proba)
+def czysty_wydatek(D, info):
+    """Sygnał WydajZloto / Pety "kup": {ile, zrodlo, cel} → kopia albo (None, powód). Bez zaufania do wołającego:
+    kwota całkowita 1..kwota_maks, źródło z listy D["wydatki"]["zrodla"], cel = nazwa z liter, cyfr i „_”."""
+    if not isinstance(info, dict):
+        return None, "zly_wydatek"
+    ile = info.get("ile")
+    if not _calkowita(ile, D["wydatki"]["kwota_maks"]) or ile < 1:
+        return None, "zla_kwota"
+    if not isinstance(info.get("zrodlo"), str) or info["zrodlo"] not in D["wydatki"]["zrodla"]:
+        return None, "zle_zrodlo"
+    if not nazwa_ok(D, info.get("cel")):
+        return None, "zly_cel"
+    return {"ile": int(ile), "zrodlo": info["zrodlo"], "cel": info["cel"]}, "ok"
+
+
+def wydaj(D, zloto, ile):
+    """Złoto gracza (atrybut Gold — może nie być liczbą) minus kwota → (Złoto po, brakuje). Nigdy poniżej zera: gdy
+    Złota za mało, zostaje bez zmian, a brakuje > 0. Ułamki Złota obcinamy (atrybut jest całkowity)."""
+    if isinstance(zloto, bool) or not isinstance(zloto, (int, float)) or zloto != zloto or zloto < 0:
+        z = 0
+    else:
+        z = int(math.floor(min(zloto, D["limity"]["waluta_maks"])))
+    if z < ile:
+        return z, ile - z
+    return z - ile, 0
+
+
+def czysta_premia(D, premia):
+    """Premia aktywnego peta {zloto, doswiadczenie} (ułamki, np. 0.05) → kopia albo (None, powód). Brak premii = zera;
+    każde pole liczbą 0..premia_maks."""
+    if premia is None:
+        return {"zloto": 0, "doswiadczenie": 0}, "ok"
+    if not isinstance(premia, dict):
+        return None, "zla_premia"
+    w = {}
+    for pole in ("zloto", "doswiadczenie"):
+        v = premia.get(pole, 0)
+        if v is None:
+            v = 0
+        if isinstance(v, bool) or not isinstance(v, (int, float)) or v != v or v < 0 or v > D["pety"]["premia_maks"]:
+            return None, "zla_premia"
+        w[pole] = v
+    return w, "ok"
+
+
+def premia_lupu(D, lup, premia):
+    """Dodatek do łupu z walki od aktywnego peta: zaokrąglony ułamek Złota i doświadczenia (0,5 w górę)."""
+    return {"zloto": int(math.floor(lup["zloto"] * premia["zloto"] + 0.5)),
+            "doswiadczenie": int(math.floor(lup["doswiadczenie"] * premia["doswiadczenie"] + 0.5))}

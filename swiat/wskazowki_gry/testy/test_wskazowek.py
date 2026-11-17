@@ -143,6 +143,19 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(self.kid(kraina="bagno", miejsce="za_brama", straznik=True, straznik_bagna=True, bagno=True),
                          "e_koniec_bagno")
 
+    def test_2g_jajko(self):
+        # 17.11.2026 (swiat/pety_proba): Złoto na pierwsze jajko — znacznik nad inkubatorem w lesie, TELEPORT w mieście
+        las = LW.krok(D, s(miejsce="las", kraina="las", wygrane=2, ostatni="wygrana", jajko=True))
+        self.assertEqual((las["id"], las["cel"]), ("f_jajko", "jajko"))
+        self.assertIn("jajko", las["tekst"])
+        miasto = LW.krok(D, s(wygrane=2, ostatni="wygrana", jajko=True, pety=0))
+        self.assertEqual((miasto["id"], miasto["cel"]), ("f_jajko_miasto", "teleport"))
+        for st in (s(miejsce="las", jajko=True, pety=1), s(miejsce="las", jajko=False), s(miejsce="las"),
+                   s(kraina="bagno", miejsce="las", straznik=True, bagno=True, jajko=True),
+                   s(miejsce="za_brama", straznik=True, jajko=True)):
+            self.assertNotIn(LW.krok(D, st)["id"], {"f_jajko", "f_jajko_miasto"}, st)
+        self.assertIsNone(LW.krok(D, s(miejsce="las", jajko=True, ukryte=True)))
+
     def test_2e_miejsce(self):
         pr = {"x1": 0, "x2": 10, "z1": -5, "z2": 5}
         self.assertEqual(LW.miejsce(5, 0, pr, 8), "las")
@@ -300,6 +313,22 @@ class TestStykow(unittest.TestCase):
         for n in Z["przycisk_teleportu"].split("/")[1:]:
             self.assertIn(n, nazwy, n)
         self.assertIn('Name = "%s"' % Z["ekran_walki"], czytaj(REPO, "swiat", "test_walki2", "zrodla", "InterfejsWalki2.luau"))
+
+    def test_5e_pety_proba_gdy_jest(self):
+        Z = D["zrodla"]
+        ust = os.path.join(REPO, "swiat", "pety_proba", "ustawienia.json")
+        if not os.path.isfile(ust):
+            self.skipTest("brak pakietu swiat/pety_proba — krok o jajku się nie pokaże")
+        P = json.loads(czytaj(ust))
+        self.assertEqual(Z["pety"], P["kontener"])
+        self.assertEqual(Z["atrybut_ceny_jajka"], P["atrybuty_gracza"]["cena"])
+        self.assertEqual(Z["atrybut_petow"], P["stan_gracza"]["atrybut_liczby"])
+        self.assertEqual(Z["atrybut_zlota"], P["stan_gracza"]["atrybut_zlota"])
+        zb = czytaj(REPO, "swiat", "pety_proba", "zbuduj.py")
+        kontener, punkty, e = Z["inkubator"].split("/")
+        self.assertEqual(kontener, P["kontener"])
+        self.assertIn('"%s"' % punkty, zb)
+        self.assertIn('punktE(f.%s, "%s"' % (punkty, e), zb)
 
     def test_5d_stan_gracza_gdy_jest(self):
         Z = D["zrodla"]

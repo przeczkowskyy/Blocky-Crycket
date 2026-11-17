@@ -18,6 +18,9 @@
 		noweStatystyki(D, obecne, staraBaza, cel, wytrenowane) → wartości sześciu atrybutów po zmianie klasy / poziomu
 		czystyLup(D, lup), czystyPrzyrost(D, info) → kopia ze znanymi polami albo nil, powód
 		sumaLupow(D, lista), nowyProfil(D), rowne(a, b), sprawdzPrzypadki(D) → ok, n, bledy
+		czystyWydatek(D, info), czystaPremia(D, premia) → kopia albo nil, powód   (17.11.2026, swiat/pety_proba)
+		wydaj(D, zloto, ile)                      → Złoto po, brakuje (nigdy poniżej zera)
+		premiaLupu(D, lup, premia)                → { zloto, doswiadczenie } — dodatek od aktywnego peta
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -319,6 +322,72 @@ function L.nowyProfil(D)
 		baza = nil,
 		walki = { wygrane = 0, przegrane = 0 },
 		awanse = 0,
+		-- wersja 2: pety (kopie = shardy peta, D-058) i licznik wydatków Złota na cel (np. kupione jajka)
+		pety = { kopie = {}, aktywny = nil, premia = { zloto = 0, doswiadczenie = 0 } },
+		wydatki = {},
+	}
+end
+
+------------------------------------------------------------------ wydatki Złota i pety (17.11.2026, swiat/pety_proba)
+function L.czystyWydatek(D, info)
+	if type(info) ~= "table" then
+		return nil, "zly_wydatek"
+	end
+	local ile = info.ile
+	if not calkowita(ile, D.wydatki.kwota_maks) or ile < 1 then
+		return nil, "zla_kwota"
+	end
+	local znane = false
+	for _, z in D.wydatki.zrodla do
+		if info.zrodlo == z then
+			znane = true
+		end
+	end
+	if type(info.zrodlo) ~= "string" or not znane then
+		return nil, "zle_zrodlo"
+	end
+	if not L.nazwaOk(D, info.cel) then
+		return nil, "zly_cel"
+	end
+	return { ile = ile, zrodlo = info.zrodlo, cel = info.cel }, "ok"
+end
+
+function L.wydaj(D, zloto, ile: number): (number, number)
+	local z = 0
+	if liczba(zloto) and zloto >= 0 then
+		z = math.floor(math.min(zloto, D.limity.waluta_maks))
+	end
+	if z < ile then
+		return z, ile - z
+	end
+	return z - ile, 0
+end
+
+function L.czystaPremia(D, premia)
+	if premia == nil then
+		return { zloto = 0, doswiadczenie = 0 }, "ok"
+	end
+	if type(premia) ~= "table" then
+		return nil, "zla_premia"
+	end
+	local w = {}
+	for _, pole in { "zloto", "doswiadczenie" } do
+		local v = premia[pole]
+		if v == nil then
+			v = 0
+		end
+		if not liczba(v) or v < 0 or v > D.pety.premia_maks then
+			return nil, "zla_premia"
+		end
+		w[pole] = v
+	end
+	return w, "ok"
+end
+
+function L.premiaLupu(D, lup, premia)
+	return {
+		zloto = math.floor(lup.zloto * premia.zloto + 0.5),
+		doswiadczenie = math.floor(lup.doswiadczenie * premia.doswiadczenie + 0.5),
 	}
 end
 
@@ -397,6 +466,22 @@ function L.sprawdzPrzypadki(D)
 	for i, c in P.rozklad do
 		local w, powod = L.rozkladZClassData(D, c.stats)
 		sprawdz("rozklad", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
+	end
+	for i, c in P.wydatek do
+		local w, powod = L.czystyWydatek(D, c.info)
+		sprawdz("wydatek", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
+	end
+	for i, c in P.wydaj do
+		local z, brak = L.wydaj(D, c.zloto, c.ile)
+		sprawdz("wydaj", i, L.rowne({ z, brak }, c.wynik))
+	end
+	for i, c in P.premia do
+		local premia = if c.premia == false then nil else c.premia
+		local w, powod = L.czystaPremia(D, premia)
+		sprawdz("premia", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
+	end
+	for i, c in P.premia_lupu do
+		sprawdz("premia_lupu", i, L.rowne(L.premiaLupu(D, c.lup, c.premia), c.wynik))
 	end
 	return #bledy == 0, n, bledy
 end

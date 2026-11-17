@@ -1,0 +1,192 @@
+---
+status: propozycja
+---
+# Jajka i pety na próbę — pierwsze ujście Złota i pierwsza „zdobycz”
+
+**Status: propozycja** (zlecenie Karola z 17.11.2026). Nic tu nie jest kanonem: liczby, nazwy, wygląd i kolejność
+zakupów czekają na decyzje Karola i Pawła (lista „Przyjęte, do zmiany” niżej). Decyzje, których się trzymamy:
+D-052 (jajka za Złoto w każdej strefie, karmienie), D-058 (jeden stały skill, poziom, ewolucja za shardy peta, Shard
+Ewolucji i tokeny krainy), D-060 (inkubator w biomie, wyklucie od razu z animacją, bez jajek z potworów), D-076
+(inkubator przy teleporcie biomu), D-085 (zagroda petów w miasteczku), D-086 (jajka tylko za Złoto, szanse jawne).
+
+> **W skrócie.** Na Polanie Przybycia lasu-pasa, na kamiennym stanowisku jajka z mapy, stoi **wielkie leśne jajko**
+> ze słupem światła, napisem i tablicą z **jawnymi szansami**. **E (przytrzymanie) → serwer pobiera Złoto** (przez
+> właściciela stanu gracza) i losuje peta → jajko się trzęsie, pęka w kolorze rzadkości, pet wyskakuje, radość,
+> napis „NOWY PET!” albo „KOPIA +1”. **Aktywny pet chodzi za graczem** (widzą go wszyscy), znika w walce, przelocie,
+> chmurach i mini-grze. **W zagrodzie w bazarze** stoją posiadane pety, tablica „TWOJE PETY · PRÓBA” z liczbą kopii,
+> a E opiekunki otwiera tymczasowe okno wyboru aktywnego peta. **Pet daje premię do Złota albo doświadczenia z walk**
+> (liczy ją StanGracza, napis „+N Złota od peta” przy łupie). Wskazówka celu: „Masz dość Złota na jajko…”.
+
+## Pięć petów leśnego jajka
+
+Własne projekty (modele z klocków w `swiat/postacie/`, plansze i portrety w `swiat/postacie/wynik/<id>/`). Szanse:
+`tools/walka/progresja.py` (`ZALOZENIA["szanse_jajka"]`). Rzadszy = efektowniejszy: pospolity, zwykły i rzadki bez
+świecenia, epicki i legendarny świecą (Neon) i mają słup światła przy wykluciu.
+
+| Pet | Rzadkość | Szansa | Skill (pasywny, z walk) | Wygląd |
+|---|---|---:|---|---|
+| Żołędziak | Pospolity | 50% | Zbieracz: +5% Złota | pulchny żołądź w czapeczce z listkiem na ogonku, z patyczkowymi rączkami |
+| Mchowy Ślimak | Zwykły | 25% | Cierpliwość: +8% doświadczenia | bladozielony ślimak z oczami na czułkach i muszlą w mchu z czerwonym grzybkiem |
+| Liściolis | Rzadki | 15% | Lisi Spryt: +12% Złota | pomarańczowy lisek z uszami-liśćmi, liściastym kołnierzykiem i liściem na końcu ogona |
+| Świetlikówka | Epicki | 8% | Nocna Nauka: +15% doświadczenia | śliwkowa sówka ze świecącymi oczami i brzuszkiem-latarenką, krążą wokół niej trzy świetliki |
+| Jelonek Gaju | Legendarny | 2% | Błogosławieństwo Gaju: +20% Złota i doświadczenia | cętkowany jelonek ze świecącym kryształowym porożem w kwiatkach i złotymi kopytkami |
+
+Klipy każdego peta: `spoczynek`, `chod`, `radosc`, `wyklucie`. Jajko: `spoczynek`, `trzesienie`, `pekniecie`.
+Pies, Slime i Smok (pety z kanonu) zostają na inne jajka (np. miejskie).
+
+## Cena jajka i „kiedy pierwsze jajko”
+
+Złoto z łupu w lesie-pasie przy dzisiejszych danych (`ekonomia_jajek.py`, 100 graczy na klasę, gracz jak
+w `swiat/stan_gracza/symulacja_lasu.py`; minuty od wejścia do lasu, mediana i 10–90% graczy):
+
+| Cena | 1. jajko | 2. | 3. | 4. | 5. | odstępy (mediany) |
+|---|---|---|---|---|---|---|
+| kalkulator: stała 1000 | 13,7 (12,1–15,9) | 21,7 | 26,8 | 31,2 | 36,0 | 13,7 → 8,0 → 5,1 → 4,5 → 4,8 |
+| stała 300 | 6,7 (5,5–8,4) | 10,1 | 13,0 | 15,5 | 18,1 | 6,7 → 3,4 → 2,9 → 2,5 → 2,6 |
+| **rosnąca 300 +400 do 2000 (propozycja)** | **6,7 (5,5–8,4)** | 13,7 | 22,2 | 29,4 | 38,6 | 6,7 → 7,0 → 8,5 → 7,2 → 9,1 |
+
+Cena z kalkulatora (1000) przeczy celowi „pierwsze jajko po 5–10 minutach” — wypada dopiero po ok. 14 minutach.
+Stała niska cena daje pierwsze jajko w porę, ale kolejne coraz **częściej** (dochód rośnie z poziomem). Propozycja:
+**cena rośnie z każdym kupionym jajkiem tego rodzaju**: 300, 700, 1100, 1500, 1900, potem 2000 — pierwsze po ok.
+6,7 min, kolejne co ok. 7–9 min (spadek przy 4. to duży łup ze Strażnika). Gracz widzi swoją cenę przy E i na
+napisie nad jajkiem. Obie liczby są w `ustawienia.json` (`jajka[0].cena`: `tryb` = `"rosnaca"` albo `"kalkulator"`).
+Premii petów (+% Złota) symulacja nie liczy — to dolna granica tempa.
+
+## Jak działa zakup i gdzie żyje stan
+
+1. Gracz przytrzymuje E przy jajku (`ProximityPrompt` na niewidzialnej części w punkcie E mapy, 0,5 s).
+2. **Serwer** (`SerwerPetow`): blokada na czas wyklucia (4,6 s, ustawiona *przed* jakimkolwiek wywołaniem — drugi E
+   dostaje „Jajko jeszcze się wykluwa…”), cena z licznika kupionych jajek w profilu, los `Random:NextNumber()` →
+   pet z jawnych szans, potem **jedno** wywołanie `Workspace/StanGracza/Sygnaly/Pety("kup")`.
+3. **StanGracza** w jednym wywołaniu, bez przerwy: sprawdza kwotę i źródło, oddaje do atrybutów łup czekający na
+   pokazanie, odejmuje Złoto (nigdy poniżej zera — za mało = odmowa z brakującą kwotą), liczy wydatek na cel, dodaje
+   kopię peta; pierwszy pet od razu idzie za graczem. Atrybuty gracza `PetAktywny` i `PetyLiczba` widzą klienci.
+4. Serwer petów wysyła klientowi „wyklucie”; animację gra **klient** (nic w niej nie decyduje). Reset postaci w trakcie
+   niczego nie zabiera — pet jest już w profilu.
+
+**Stan petów żyje w profilu StanGracza** (`pety = { kopie, aktywny, premia }`, `wydatki`, wersja profilu 2), nie
+w serwerze petów. Uzasadnienie: StanGracza jest jedynym właścicielem stanu gracza; Złoto i pety muszą się zapisać
+razem (jeden klucz, jedna blokada sesji przy przyszłym zapisie), inaczej awaria między zapisami da „Złoto zabrane,
+peta brak” albo odwrotnie. Zakup to jedno wywołanie u właściciela, więc dziś i po dodaniu zapisu jest
+niepodzielny. Bez `StanGracza` inkubator odmawia napisem „Inkubator nieczynny — brak stanu gracza (próba)”,
+a zagroda pokazuje ten sam napis — bez błędów.
+
+## Pet przy graczu, zagroda, premia, wskazówka
+
+- **Pet przy graczu:** każdy klient buduje lokalnie model aktywnego peta *każdego* gracza (atrybut `PetAktywny`) —
+  płynnie (wygładzanie, grunt z promienia w dół), bez kolizji (części bez `CanCollide`/`CanQuery`), 2,6 studa w bok
+  i 3,2 w tył, chód / spoczynek / radość przy skoku; 21–45 części na peta. Znika u siebie od razu, gdy HUD jest
+  schowany, kamera nie jest zwykła, trwa mini-gra (`TreningGra`), przelot (`BlokadaWalki`), chmury (`Trwa`), wybór
+  klasy — wtedy chowa też cudze pety (nie wchodzą w kadr walki), a innym graczom zgłasza „czekaj” (atrybut `PetCzeka`).
+- **Zagroda (bazar):** do 6 posiadanych petów (bez aktywnego) stoi na miejscach z mapy `zagroda_miejsce_1…6` z napisem
+  „Nazwa ×N” (kopie = shardy peta, D-058); tablica przy bramie zagrody; **E opiekunki** (pakiet bazaru, zdarzenie
+  `ReplicatedStorage.OknoMiejsca`, id `zagroda_petow`) otwiera tymczasowe okno „TWOJE PETY · PRÓBA”: wiersz na peta
+  (kolor rzadkości, ×kopie, rzadkość, skill), przycisk „Wybierz” i „Odstaw peta”. Wybór sprawdza serwer (tylko
+  posiadany pet, tylko przy zagrodzie). Gdy nie ma `MiasteczkoBazarGra`, działa zapasowe E przy tablicy. Przycisku
+  Pets w HUD i plików Pawła pakiet nie rusza (docelowe okno robi Paweł).
+- **Premia:** skill peta liczy StanGracza przy przyjęciu łupu (zaokrąglony ułamek Złota / doświadczenia z tej walki,
+  0,5 w górę) i przy pokazaniu łupu wysyła klientowi „premia” → napis „+N Złota od peta: Liściolis”. Silnik walki
+  bez zmian.
+- **Wskazówka celu** (`swiat/wskazowki_gry`): „Masz dość Złota na jajko — inkubator przy wejściu do lasu” ze znacznikiem
+  nad punktem E inkubatora (w mieście: „…: TELEPORT → Las (inkubator)” ze strzałką) — tylko do pierwszego peta,
+  nie w Bagnie i nie za bramą.
+
+## Następne kroki (opis, liczby z `tools/walka/BALANS_1711.md`, część 3)
+
+- **Pet w walce petów (D-059):** skill peta działa w walkach petów; gracza pet wzmacnia tylko pasywnie. Dziś premia
+  jest do łupu; docelowo D-059 mówi o mnożniku statystyk gracza — wejście w `Sygnaly/Bohater` (opis bohatera) bez
+  zmiany silnika, do policzenia w kalkulatorze przed włączeniem.
+- **Poziom i karmienie (D-052, D-058):** poziom peta robocze maks. 30; karmienie słabszym petem przez rzadkość zjadanego.
+- **Ewolucja (D-058):** 3 ewolucje na poziomach peta 10 / 20 / 30; tokeny krainy 60 / 180 / 450 (27 / 82 / 205 minut
+  walk); kopie peta 2 / 3 / 5 (płasko 10 na komplet) albo według rzadkości 10 / 8 / 6 / 4 / 3; jeden Shard Ewolucji na
+  ewolucję (10% ze Strażnika, średnio 14 prób, z ochroną po 20 wygranych — 12). Komplet legendarnego przy jajku
+  z rosnącą ceną to setki jajek — pytanie 41 (ewolucje: wszystkie czy tylko lepsze; liczby).
+- **Zapis między sesjami:** profil StanGracza (wersja 2) ma już `pety` i `wydatki`; zapis to zadanie właściciela stanu.
+
+## Przyjęte, do zmiany
+
+1. **Cena rosnąca** 300 +400 do 2000 za kolejne jajko tego rodzaju (kalkulator: stała 1000) — wyżej.
+2. **Szanse** 50 / 25 / 15 / 8 / 2% z kalkulatora (D-052 mówi o ok. 1% na legendarnego w najdroższym jajku).
+3. **Skille**: premia do Złota albo doświadczenia z walk 5 / 8 / 12 / 15 / 20% (legendarny: oba), poza silnikiem walki.
+4. **Pierwszy pet sam idzie za graczem**; kolejne trafiają do zagrody (zmiana tylko w zagrodzie).
+5. **Wyklucie automatyczne** ok. 4 s (trzęsienie 1,4 s, pęknięcie 0,6 s, wyskok 1 s, radość 1,2 s), bez „klikania kilka
+   razy” z D-060 i bez skracania drzewkiem (D-056).
+6. **Jedno jajko w lesie**, jeden aktywny pet (drzewko petów zwiększy ich liczbę, D-056).
+7. **Pety od początku gry** — inkubator czynny od pierwszego wejścia do lasu (pytanie 38 nierozstrzygnięte).
+8. **E z przytrzymaniem 0,5 s** (chroni przed przypadkowym zakupem); cena widoczna w podpowiedzi i nad jajkiem.
+9. **Pet znika** w walce, przelocie, chmurach, mini-grze i przy wyborze klasy (nie czeka obok).
+10. **Kopie** liczone jako shardy peta (D-058), rozbiórki jeszcze nie ma.
+11. **Napisy „PRÓBA”** na tablicy i w oknie zagrody — okno tymczasowe do czasu okna Pets Pawła.
+
+## Pliki
+
+| Plik | Co to jest |
+|---|---|
+| `ustawienia.json` | jedyne źródło: pety, skille, rzadkości, cena, teksty, czasy, przesunięcia względem znaczników |
+| `dane_petow.py` | generator `zrodla/DanePetow.luau` i `zrodla/rigi/*.luau` (rigi z modeli `swiat/postacie`, szanse i cena z kalkulatora, położenia z map); `--sprawdz` |
+| `logika_petow.py` | lustro `zrodla/LogikaPetow.luau` (cena, losowanie, teksty, zagroda, decyzja serwera) |
+| `zrodla/SerwerPetow.server.luau`, `KlientPetow.client.luau`, `RigPetow.luau` | serwer, klient, budowa petów z klocków i klipy przez Motor6D |
+| `ekonomia_jajek.py` | kiedy gracz kupi kolejne jajka (tabela wyżej) |
+| `podglad.py` → `podglad/pety_lesne.jpg` | pięć portretów petów z rzadkością, szansą i skillem + inkubator i jajko (do raportu) |
+| `sprawdz_luau_petow.py` | kontrola statyczna Luau (m.in. bez Robuxów, bez zapisu Złota w pakiecie, klient bez liczb) |
+| `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
+| `testy/test_petow.py` | 34 testy offline (w tym prawdziwe SerwerPetow + SerwerStanu w `luau_mini`) |
+| `testy/proba_play.py` | próba w Play P00–P15 (+ P07b: każdy pet za graczem), zrzuty do `klatki/`; `--sprawdz` bez Studio. Atrybut klienta `TestKameraProby` na kontenerze: kamera do zrzutów nie chowa petów (tylko próby) |
+| `testy/proba_ludzka.py` | przejście „po ludzku”: walki do Złota na jajko (liczba walk i minut), wskazówka, E, wyklucie, pet, premia, zagroda (L01–L09) |
+| `swiat/postacie/zoledziak.py`, `mchowy_slimak.py`, `lisciolis.py`, `swietlikowka.py`, `jelonek_gaju.py`, `jajko_lesne.py`, `pety_lesne.py` | modele (Blender i klocki) |
+
+## Polecenia
+
+```
+python -B swiat/pety_proba/dane_petow.py                 # po zmianie ustawień albo modeli
+python -B swiat/pety_proba/testy/test_petow.py           # 34 testy, ok. 5 s
+python -B swiat/pety_proba/zbuduj.py --sucho             # bez Studio
+python -B swiat/postacie/przebuduj.py zoledziak mchowy_slimak lisciolis swietlikowka jelonek_gaju jajko_lesne --bez-filmow
+# Studio (Edit), po kolei: stan gracza (pełna budowa — nowe sygnały WydajZloto i Pety), wskazówki, pety, próba
+python -B swiat/stan_gracza/zbuduj.py
+python -B swiat/wskazowki_gry/zbuduj.py
+python -B swiat/pety_proba/zbuduj.py
+python -B swiat/pety_proba/testy/proba_play.py <folder wyników poza repo>
+python -B swiat/pety_proba/zbuduj.py --usun              # wyłącznik: gra wraca do stanu sprzed próby
+```
+
+## Zmiany w innych pakietach (małe, w osobnych miejscach)
+
+- `swiat/stan_gracza`: sygnały `Sygnaly/WydajZloto` i `Sygnaly/Pety` (`zbuduj.py` → `INNE`); `dane.py` (`wydatki`,
+  `pety`, wersja profilu 2, przypadki wzorcowe `wydatek`, `wydaj`, `premia`, `premia_lupu`); `logika_stanu.py`
+  i `LogikaStanu.luau` (`czysty_wydatek`, `wydaj`, `czysta_premia`, `premia_lupu`, profil z `pety` i `wydatki`);
+  `SerwerStanu.server.luau` (wydatek, pety, premia przy przyjęciu łupu, komunikat „premia”, atrybuty `PetAktywny`
+  i `PetyLiczba`); testy `4f`, `8i`, `8j`, zmieniony `6e`.
+- `swiat/wskazowki_gry`: kroki `f_jajko` i `f_jajko_miasto`, cel `jajko`, pola stanu `jajko` i `pety`, źródła
+  w `ustawienia.json`; testy `2g` i `5e`.
+- `swiat/postacie`: nowe moduły modeli (lista wyżej); istniejących plików nie zmieniano.
+
+## Co sprawdzone w grze (Studio, tryb Play, 17.11.2026)
+
+**`testy/proba_play.py` — 16 z 17 punktów OK** (P06 raz OK, raz „BŁĄD” progu: po marszu pet stał 7,4 st od postaci
+zamiast ≤ 6 — postać jeszcze szła; w P07b przy postoju każdy pet stoi 4,8–5,2 st od środka postaci):
+brak Złota → „Brakuje ci 300 Złota (masz 0, jajko kosztuje 300)”; kupno prawdziwym E (przytrzymanie) → Złoto −300,
+pet, cena następnego 700, podpowiedź „Kup za 300 Złota”; drugie E w trakcie → „Jajko jeszcze się wykluwa…”; każdy
+z pięciu petów idzie za graczem (pety kupione haczykiem z wymuszonym losem, wybór haczykiem — tylko w próbie);
+zagroda: 4 pety na miejscach, tablica z kopiami, E opiekunki otwiera okno „PRÓBA”, wybór zmienia peta za graczem;
+premia przy łupie: łup 100 + 12 (Liściolis) i napis „+12 Złota od peta: Liściolis”; reset postaci w trakcie
+wyklucia — pet jest, po odrodzeniu idzie za graczem; **walka na arenie (D-095)**: w walce 0 petów u gracza
+i `PetCzeka` dla innych, po walce pet wraca; bez sygnału `Pety` → „Inkubator nieczynny…”; konsola bez błędów.
+
+**`testy/proba_ludzka.py` — 9 z 9 OK**, nowy gracz, prawdziwe klawisze i kliknięcia: TELEPORT → chmury → las,
+**15 walk (14 wygranych) do pierwszych 300 Złota** (poziom 4), wskazówka „Masz dość Złota na jajko — inkubator przy
+wejściu do lasu”, E przy inkubatorze → Mchowy Ślimak, pet za graczem (5,1 st), walka z premią („+1 doświadczenia od
+peta”), Kamień Powrotu → bazar → E opiekunki → okno → „Odstaw peta” → „Wybierz” (kliknięcia). Czas do 300 Złota
+w prawdziwej grze: ok. 8 min (15 walk × ok. 31 s jak w symulacji); pomiar próby (11 min) jest zawyżony, bo czas
+ekranu walki w tempie ×4 liczony z opóźnieniem narzędzia razy cztery.
+
+**Poprawione po zrzutach:** napisy na tablicy szans (równe wiersze, czytelne z punktu E); jajko cieplejsze w kolorze
+(z bliska było białe); części w świecie jako Model „Persistent” (przez streaming klient nie miał punktu E i napisu
+ceny — E nie działało przy pierwszym podejściu); pet po wykluciu ląduje obok gracza, nie w nim; mniejszy błysk przy
+pęknięciu (cały kadr był różowy); napis „NOWY PET!” bez AlwaysOnTop (inaczej nie było go na zrzutach); okno zagrody
+wyższe (5. wiersz był ucięty); poroże Jelonka świeci tylko na kryształach (z bliska zlewało się w cyjanową plamę).
+
+## Czego nie sprawdzono
+
+Dwóch graczy naraz (pet widoczny dla innych — kod rysuje pety wszystkich graczy u każdego klienta, ale w Studio był
+jeden gracz), telefon i dotyk (E przytrzymane palcem), wydajność przy wielu graczach z petami.
