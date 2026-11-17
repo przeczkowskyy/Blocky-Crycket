@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T19:32:19+01:00",
+ "aktualizacja": "2026-11-17T19:37:01+01:00",
  "prace": [
   {
    "id": "jajko-bagna",
    "tytul": "Jajko Bagna: pięć bagiennych petów i inkubator przy pomoście",
    "stan": "w_toku",
+   "etap": "Gotowe bez Studio; wdrożenie po teście Karola w Studio",
    "start": "2026-11-17T18:42:57+01:00",
-   "koniec_szacowany": "2026-11-17T21:12:57+01:00",
-   "aktualizacja": "2026-11-17T18:42:57+01:00",
+   "koniec_szacowany": "2026-11-17T21:07:01+01:00",
+   "aktualizacja": "2026-11-17T19:37:01+01:00",
    "obszary": [
     "swiat/pety_proba",
     "studio:PetyProba"
