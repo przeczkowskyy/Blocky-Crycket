@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T19:05:15+01:00",
+ "aktualizacja": "2026-11-17T19:05:18+01:00",
  "prace": [
   {
    "id": "jajko-bagna",
@@ -14,19 +14,6 @@
    "obszary": [
     "swiat/pety_proba",
     "studio:PetyProba"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "przebudowa-ognik",
-   "tytul": "Przebudowa modelu ognik",
-   "stan": "w_toku",
-   "start": "2026-11-17T19:04:14+01:00",
-   "koniec_szacowany": "2026-11-17T19:24:14+01:00",
-   "aktualizacja": "2026-11-17T19:04:14+01:00",
-   "obszary": [
-    "model:ognik"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
