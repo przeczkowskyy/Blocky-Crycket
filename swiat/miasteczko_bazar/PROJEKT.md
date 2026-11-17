@@ -109,11 +109,11 @@ Nogi** (+ Kapelusz, Rekwizyt). Kolizję mają tułów i nogi.
 
 | Postać | Gdzie | Rozpoznawalna po | Okno (Paweł) |
 |---|---|---|---|
-| Barman (Karczmarz) | Karczma, za ladą | łysy, wąsy jak szczotki, czerwona kamizelka, wielki brzuch, ręcznik | zadania karczmy |
-| Mistrz gier | Karczma, przy stole z planszą 3 × 3 i kostką | cylinder ze złotą opaską, monokl, kamizelka w szachownicę, siedzi | plansza (D-053) |
+| Barman (Karczmarz) | Karczma, za ladą | łysy, krótka ruda broda z bakami bez wąsów, czerwona opaska karczmy, złoty kolczyk, zielona koszula, skórzany fartuch, wielki brzuch, ręcznik, kufel (17.11.2026: własny projekt zamiast wąsacza w czerwieni i bieli) | zadania karczmy |
+| Mistrz gier | Karczma, przy stole z planszą 3 × 3 i kostką | miękki beret ze złotą kostką, okrągłe okulary, bródka, kamizelka w szachownicę, siedzi (17.11.2026: bez cylindra, monokla i wąsika) | plansza (D-053) |
 | Mag-sklepikarz | Sklep magiczny | spiczasty fioletowy kapelusz z gwiazdką, biała broda do pasa, kostur z kryształem | sklep magiczny |
 | Zbrojmistrz | Zbrojownia | hełm z nosalem, ruda broda, skórzany fartuch, młot na ramieniu | broń i pancerz |
-| Trener | Training Center, przy tablicy wyboru | czerwona opaska, gwizdek, podkoszulek, ręka wskazuje tablicę | wybór mini-gry |
+| Trener | Training Center, przy tablicy wyboru | niebieska opaska na pot (17.11.2026, była czerwona), gwizdek, podkoszulek, ręka wskazuje tablicę | wybór mini-gry |
 | Opiekunka | Zagroda petów, przy korycie | słomkowy kapelusz, rude warkocze, morskie ogrodniczki, wiadro z kością | zagroda petów |
 | Pies, slime, smok | w zagrodzie (+ slime na dachu budki) | pety z kanonu (Pety.md) | — |
 

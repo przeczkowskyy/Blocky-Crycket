@@ -16,7 +16,7 @@ przejściem na działkę, zagrodą petów, tablicą z rankingiem i Bramą Leśn�
 | `wspolne.py` | skorupa sklepu z wnętrzem, lada, półki, markiza, lampa, girlanda, punkty E, rejestr znaczników |
 | `podglad/` | `plan_gora.jpg` (plansza z podpisami, izochronami biegu i skalą) i `u1`–`u5` (całość, uliczka, wnętrze karczmy, plac z portalem i działką, zagroda z tablicą) |
 
-**Liczby:** 4388 części (cel ok. 8000, twardy limit 12 000), 93 grupy. Kontener `Workspace/MiasteczkoBazar`.
+**Liczby:** 4410 części (po zmianie postaci 17.11.2026; cel ok. 8000, twardy limit 12 000), 93 grupy. Kontener `Workspace/MiasteczkoBazar`.
 Świat = (994 + x; y; −700 + z), bez obrotu: części stoją w pliku już tam, gdzie mają stanąć (X 882…1066,
 Z −790…−610), więc przy budowie i zrzutach **nie podaje się `--przesun`**. Wschodni brzeg (X 1066) to początek pasa
 Lasu. Bazar stoi na wschodnim końcu płyty Baseplate (PROJEKT.md, wybór 1).
@@ -75,10 +75,36 @@ z `podglad/`.
 11. **Sejf:** wpis w `B&C/Technika/Klocki — Blender i Roblox.md`, `Zadania.md` i `Dziennik zmian.md` (w tym etapie
     zakres zapisu był ograniczony do tego folderu).
 
+## Poprawki po pierwszej próbie w grze (17.11.2026, w nocy)
+
+Mapa stoi w Studio (`Workspace/MiasteczkoBazar`, 4410 części) razem z pakietem gry `swiat/miasteczko_bazar_gra`
+(podpowiedzi E, przejścia, tablica). Wyniki prób w trybie Play i zrzuty z gry: `swiat/miasteczko_bazar_gra/README.md`
+i `swiat/miasteczko_bazar_gra/klatki/`. Zmiany w tym folderze:
+
+- **Postacie — własne projekty** (`postacie.py`): karczmarz nie jest już wąsaczem w czerwieni i bieli (za bardzo
+  przypominał znaną postać z cudzych gier) — teraz łysy, z krótką rudą brodą i bakami BEZ wąsów, czerwona opaska
+  karczmy zawiązana z tyłu (bez czapki z daszkiem), złoty kolczyk, zielona koszula, skórzany fartuch na szelkach,
+  ręcznik na ramieniu, w prawej dłoni kufel z pianą. Przegląd pozostałych: **mistrz gier** miał cylinder, monokl,
+  podkręcony wąsik i muszkę (razem — maskotka znanej gry planszowej) → miękki beret w kolorze koła fortuny ze złotą
+  kostką, okrągłe okulary (same oprawki), bródka bez wąsów; **trener** — czerwona opaska z białą koszulką była blisko
+  znanego wojownika z bijatyk, a czerwoną opaskę ma już karczmarz → niebieska opaska na pot. Mag (fioletowa szata,
+  spiczasty kapelusz z gwiazdką), zbrojmistrz (hełm z nosalem, ruda broda, skórzany fartuch, młot) i opiekunka
+  (słomkowy kapelusz, rude warkocze, ogrodniczki) to ogólne typy fantasy/wiejskie — bez zmian.
+- **Kamera we wnętrzach:** kamera gracza w Roblox (Poppercam) zatrzymuje się tylko na częściach **z kolizją**. Przy
+  obróconej kamerze przy mistrzu gier wchodziła między tylną ścianę karczmy a tablicę zleceń (cały ekran zasłaniał tył
+  deski), w sklepie magicznym — między ścianę a księgi na półce, a słupek ramy drzwi karczmy zasłaniał postać, gdy
+  kamera stała za drzwiami. Teraz z kolizją: rama i deska tablicy zleceń (`budynki/karczma.py`), księgi i kryształy
+  dolnej półki maga (`budynki/sklep_magiczny.py`, nad głową gracza) i rama otworu drzwi każdego sklepu
+  (`wspolne.py`; wystaje 0,1 st w otwór — przejście bez zmian, `sprawdz.py` 0 błędów).
+- Kontrola po zmianach: **0 błędów, 2 ostrzeżenia** (jak wcześniej). Styk z płytą Baseplate sprawdzony skryptem na
+  `czesci.json`: żadna płaska część nie ma górnej ściany w płaszczyźnie gruntu (0,1) ani płyty (0,0) — nie ma czego
+  migotać; 85 części wtopionych głębiej niż 0,05 jest pod gruntem i niewidocznych.
+- Zrzut `klatki/u3_wnetrze.jpg` (ujęcie u3, tryb Edit) zrobiony ponownie z nowym karczmarzem i mistrzem gier.
+
 ## Czego nie sprawdzono
 
 - Wyglądu w Roblox Studio — podglądy to rysunek z klocków (bez faktur, cieni rzucanych i świecenia Neonu).
-- Kolizji, kamery we wnętrzach i chodzenia postacią w trybie Play — liczone na siatce 0,5 st z promieniem postaci 2.
+- ~~Kolizji, kamery we wnętrzach i chodzenia postacią w trybie Play~~ — sprawdzone 17.11.2026 (wyżej i w README pakietu gry).
 - Telefonu: wydajności, czytelności, streamingu.
 - Rozmiaru płyty Baseplate (założone ±1024, jak w planie Lasu).
 - Podglądy z Lasem za Bramą Leśną doklejają do rysunku początek `swiat/las_pas/czesci.json` (inny etap, praca w toku) —

@@ -25,7 +25,12 @@ return {
 	przedBrama = { punkt = { 2024, 0, -700 }, patrz = { 2034, 0, -700 } },
 	zaBrama = { punkt = { 2046, 0, -700 }, patrz = { 2074, 0, -700 } },
 	powrot = { punkt = { 1106.5, 0.1, -718.5 }, zasieg = 10 },
-	miasteczko = { punkt = { -63.6, 0, -771.5 }, patrz = { 0.3, 0, -698.7 }, teleport = "LasTeleport" },
+	miasteczko = {
+		punkt = { -63.6, 0, -771.5 },
+		patrz = { 0.3, 0, -698.7 },
+		teleport = "LasTeleport",
+		bazar = { kontener = "MiasteczkoBazarGra", uchwyt = "PrzeniesDoBazaru", punkt = "start" },
+	},
 	brama = { x = 2034, z1 = -760, z2 = -640, tolerancja = 1.5, glebokosc = 200, otwarcie = { -708, -692 } },
 	zapora = { srodek = { 2034, 20, -700 }, rozmiar = { 1, 40, 80 } },
 	napisBramy = { punkt = { 2032.4, 6.5, -700 }, tekst = "ZAMKNIĘTE", podpis = "Pokonaj Strażnika Gaju" },

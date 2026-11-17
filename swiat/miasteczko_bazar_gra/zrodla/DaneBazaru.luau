@@ -1,7 +1,7 @@
 --[[
 	DaneBazaru — WYGENEROWANE przez swiat/miasteczko_bazar_gra/dane.py z miejsca.json, swiat/miasteczko_bazar/
 	znaczniki.json i swiat/krzywe_miasteczko/uklad.json. Nie edytuj ręcznie: zmień źródła i uruchom dane.py.
-	Skrót danych: b332dce7e7d7
+	Skrót danych: 47f19de88a6a
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -256,9 +256,9 @@ return {
 			cel = "stare",
 			tabliczka = "STARE MIASTECZKO  (E)",
 			znacznik = "start",
-			stoisko = { 978, 0.3, -697 },
-			punkt = { 978, 3.8, -697 },
-			dymek_nad = { 978, 7.2, -697 },
+			stoisko = { 974, 0.3, -697 },
+			punkt = { 974, 3.8, -697 },
+			dymek_nad = { 974, 7.2, -697 },
 		},
 		nowe_miasteczko = {
 			id = "nowe_miasteczko",
@@ -277,7 +277,7 @@ return {
 		normalna = { 0.1392, 0, 0.9903 },
 		rozmiar = { 6.4, 4.8 },
 		wiersze = 8,
-		odsuniecie = 0.06,
+		odsuniecie = 0.45,
 		grubosc = 0.05,
 		px_na_stud = 50,
 		tytul = "RANKING SERWERA",
@@ -2734,5 +2734,5 @@ return {
 			wynik = false,
 		},
 	},
-	skrot = "b332dce7e7d7",
+	skrot = "47f19de88a6a",
 }

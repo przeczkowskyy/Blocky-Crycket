@@ -1,0 +1,242 @@
+{
+ "D02": {
+  "karczma": {
+   "odl_kamery": 17.869009017944336,
+   "punkt": [
+    957.8565673828125,
+    8.968000411987305,
+    -731.4110717773438
+   ],
+   "tekst": "Karczmarz: zadania wkrótce!",
+   "do_stropu": 5.831999778747559,
+   "za_sciana": false,
+   "na_ekranie": true
+  },
+  "mistrz_gier": {
+   "odl_kamery": 15.06053352355957,
+   "punkt": [
+    968.1092529296875,
+    7.4439496994018555,
+    -730.3222045898438
+   ],
+   "tekst": "Mistrz gier: plansza w budowie",
+   "do_stropu": 7.356050491333008,
+   "za_sciana": false,
+   "na_ekranie": true
+  },
+  "sklep_magiczny": {
+   "odl_kamery": 18.177059173583984,
+   "punkt": [
+    1022.1435546875,
+    10.554491996765137,
+    -730.1117553710938
+   ],
+   "tekst": "Mag: sklep w budowie",
+   "do_stropu": 3.2455081939697266,
+   "za_sciana": false,
+   "na_ekranie": true
+  },
+  "zbrojownia": {
+   "odl_kamery": 17.823122024536133,
+   "punkt": [
+    1045.2562255859375,
+    9.784000396728516,
+    -729.8170776367188
+   ],
+   "tekst": "Zbrojmistrz: sklep w budowie",
+   "do_stropu": 4.015999794006348,
+   "za_sciana": false,
+   "na_ekranie": true
+  },
+  "training_center": {
+   "odl_kamery": 18.012737274169922,
+   "punkt": [
+    942.3777465820312,
+    9.529000282287598,
+    -729.8311767578125
+   ],
+   "tekst": "Trener: mini-gry w budowie",
+   "do_stropu": 4.270999908447266,
+   "za_sciana": false,
+   "na_ekranie": true
+  },
+  "zagroda_petow": {
+   "odl_kamery": 17.001976013183594,
+   "punkt": [
+    959.3411865234375,
+    9.139898300170898,
+    -671.1752319335938
+   ],
+   "tekst": "Opiekunka: zagroda w budowie",
+   "do_stropu": false,
+   "za_sciana": false,
+   "na_ekranie": true
+  },
+  "tablica": {
+   "odl_kamery": 16.011157989501953,
+   "punkt": [
+    979.5390014648438,
+    7.699999809265137,
+    -718.010009765625
+   ],
+   "tekst": "Pełny ranking — wkrótce",
+   "do_stropu": false,
+   "za_sciana": false,
+   "na_ekranie": true
+  },
+  "dzialka": {
+   "odl_kamery": 13.000029563903809,
+   "punkt": [
+    994,
+    8.270000457763672,
+    -685
+   ],
+   "tekst": "Działka — wkrótce",
+   "do_stropu": false,
+   "za_sciana": false,
+   "na_ekranie": true
+  },
+  "lochy": {
+   "odl_kamery": 13.000001907348633,
+   "punkt": [
+    1038.5,
+    8.270000457763672,
+    -689
+   ],
+   "tekst": "Zamknięte",
+   "do_stropu": false,
+   "za_sciana": false,
+   "na_ekranie": true
+  },
+  "portal_krain": {
+   "odl_kamery": 17.50116539001465,
+   "punkt": [
+    994,
+    8.5,
+    -726
+   ],
+   "tekst": "Portal krain: przejście przez chmury jeszcze nie działa",
+   "do_stropu": false,
+   "za_sciana": false,
+   "na_ekranie": true
+  },
+  "brama_lesna": {
+   "odl_kamery": 16.800048828125,
+   "punkt": [
+    1057.300048828125,
+    8.300000190734863,
+    -700
+   ],
+   "tekst": "Brama Leśna",
+   "do_stropu": 6.699206352233887,
+   "za_sciana": false,
+   "na_ekranie": true
+  },
+  "stare_miasteczko": {
+   "odl_kamery": 12.050130844116211,
+   "punkt": [
+    974,
+    7.199999809265137,
+    -697
+   ],
+   "tekst": "Stare miasteczko",
+   "do_stropu": false,
+   "za_sciana": false,
+   "na_ekranie": true
+  },
+  "nowe_miasteczko": {
+   "odl_kamery": 17.68852424621582,
+   "punkt": [
+    11.692440032958984,
+    7.899998664855957,
+    -2.6994121074676514
+   ],
+   "tekst": "Nowe miasteczko",
+   "do_stropu": false,
+   "za_sciana": false,
+   "na_ekranie": true
+  }
+ },
+ "Z": {
+  "karczma": {
+   "przesunieta": false,
+   "cam": [
+    954.7237548828125,
+    8.067999839782715,
+    -720.5742797851562
+   ]
+  },
+  "karczmarz": {
+   "przesunieta": false,
+   "cam": [
+    957.4801635742188,
+    6.668000221252441,
+    -724.9219970703125
+   ]
+  },
+  "zbrojownia": {
+   "przesunieta": false,
+   "cam": [
+    1042.1453857421875,
+    8.883999824523926,
+    -719.9898681640625
+   ]
+  },
+  "sklep_magiczny": {
+   "przesunieta": false,
+   "cam": [
+    1019.9034423828125,
+    9.654516220092773,
+    -720.0503540039062
+   ]
+  },
+  "zagroda": {
+   "przesunieta": false,
+   "cam": [
+    963.5181274414062,
+    9.739839553833008,
+    -683.7372436523438
+   ]
+  },
+  "tablica": {
+   "przesunieta": false,
+   "cam": [
+    980.56201171875,
+    6.699999809265137,
+    -710.7307739257812
+   ]
+  },
+  "portal": {
+   "przesunieta": false,
+   "cam": [
+    989,
+    8,
+    -709.5
+   ]
+  },
+  "brama": {
+   "przesunieta": false,
+   "cam": [
+    1039.5,
+    7,
+    -694
+   ]
+  },
+  "stare_w_bazarze": {
+   "przesunieta": false,
+   "cam": [
+    997,
+    7.5,
+    -693
+   ]
+  },
+  "nowe_w_starym": {
+   "przesunieta": false,
+   "cam": [
+    -2.9231109619140625,
+    9.499999046325684,
+    3.6748530864715576
+   ]
+  }
+ }
+}

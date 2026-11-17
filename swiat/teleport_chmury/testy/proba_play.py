@@ -276,6 +276,15 @@ def testy(s, tylko):
         zapisz(wyniki, nazwa_pliku)
         log("TEST %s: %s" % (nr, "OK" if dane.get("ok") else "NIE"), json.dumps(dane, ensure_ascii=False)[:900])
 
+    # „miasteczko” to start nowego bazaru, gdy stoi Workspace/MiasteczkoBazarGra (pierwszy wpis przybycia w krainy.json,
+    # D-075); bez niego stare miasteczko jak dotąd
+    global MIASTO
+    baz = json.loads(s.luau('local k = workspace:FindFirstChild("MiasteczkoBazarGra") local p = k and k:GetAttribute("PunktStartuBazaru") '
+                            'return game:GetService("HttpService"):JSONEncode(if typeof(p) == "Vector3" then { p.X, p.Z } else {})', "Server"))
+    if len(baz) == 2:
+        MIASTO = (baz[0], baz[1])
+    log("cel krainy „miasteczko”:", MIASTO, "(nowy bazar)" if len(baz) == 2 else "(stare miasteczko)")
+
     # przygotowanie: gracz w miasteczku
     w = s.serwer("przenies", "miasteczko")
     log("przygotowanie (serwer przenosi do miasteczka):", w)

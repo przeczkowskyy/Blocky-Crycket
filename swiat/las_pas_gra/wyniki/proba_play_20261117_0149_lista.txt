@@ -1,0 +1,16 @@
+P01 OK   serwery: {'SerwerGotowy': True, 'StanMapy': 'ok', 'LicznikPrzelotow': 0, 'PunktPrzybyciaLasu': [1114, 3.559999942779541, -700], 'StanBiomu': 'ok', 'Potworow': 20, 'ZgodnoscLogikiPasa': 'OK 39/39', 'Przekierowanie': 'tak', 'ZgodnoscLogiki': 'OK 70/70', 'SzablonyGotowe': True, 'SerwerPasaGotowy': True} | stary las: {'Potworow': 36, 'SerwerGotowy': True}
+P02 OK   klienci: {'KlientGotowy': True, 'KlientTryb': 'aktorzy', 'KlientPasaGotowy': True}
+P03 OK   brama miasteczka → (1114.0; 3.4; -700.0), 0.0 st od przybycia
+P04 OK   fazy ['trwa', 'brak'], lot 13.4 s, ryk True, kamera Custom, ruch postaci 0.00 st, walka w trakcie: true → licznik walk 0→0
+P05 OK   po ponownym wejściu fazy {'brak'}, przeloty 1→1
+P13 OK   waga w pasie 1 (gęstość 0.360), w miasteczku 0; serwer 0.300 = Edit 0.300
+P06 OK   ponowny przelot: fazy ['brak', 'uspokaja', 'laduje', 'trwa', 'brak'], 14.1 s, licznik 2
+P07 OK   400 próbek pozycji w 40 s, poza polem strefy: 0 []
+P08 OK   walki z E i powrotem do pasa: ['s1', 'm1', 'w1', 't1']; szczegóły {'s1': {'id': 's1-1', 'E': True, 'jak': "E (za 2. razem; odmowy ['nil'])", 'walka': True, 'kamera': 'Custom', 'w_pasie': True, 'walk': [0, 1], 'ostatnia': 's1-1/zwiadowca/auto→1/wygrana'}, 'm1': {'id': 'm1-1', 'E': True, 'jak': 'E', 'walka': True, 'kamera': 'Custom', 'w_pasie': True, 'walk': [1, 2], 'ostatnia': 'm1-1/zwiadowca/auto→3/przegrana'}, 'w1': {'id': 'w1-1', 'E': True, 'jak': 'E', 'walka': True, 'kamera': 'Custom', 'w_pasie': True, 'walk': [2, 3], 'ostatnia': 'w1-1/zwiadowca/auto→6/wygrana'}, 't1': {'id': 't1-1', 'E': True, 'jak': 'E', 'walka': True, 'kamera': 'Custom', 'w_pasie': True, 'walk': [3, 4], 'ostatnia': 't1-1/zwiadowca/auto→8/wygrana'}}
+P09 OK   slime s2: 2 → 1, wrócił po 12.3 s
+P10 OK   nieuprawniony za bramą → X 2024.0 (brama 2034), cofnięć 0→1, komunikat „Brama do Bagna jest zamknięta — pokonaj Strażnika Gaju.”, wrota u klienta z kolizją: {'czesci': 17, 'kolizja': 2}
+P11 OK   wygrana; wrota klient {'czesci': 17, 'zapora': False, 'niewidoczne': 17, 'kolizja': 0} / serwer {'kolizja': 2, 'zapora': True}; za bramą X 2047.2 (cofnięć 1→1); ratunek → (2046; 3.3; -700)
+P12 OK   podpowiedź {'wlaczona': True}, E → nowe miasteczko (990; 3; -697)
+P14 ?    koszt zapisany w wyniki.json (P14) — ocenia człowiek; klatka śr. {'przybycie': 66.7, 'zarosla_w1': 66.7, 'straznik': 66.7} ms
+P15 OK   stary las: {'tryb': 'aktorzy', 'widoki': 1, 'mgla': 1}
+P16 OK   11 wierszy [LasPasGra]/error, w tym błędów: 0 []

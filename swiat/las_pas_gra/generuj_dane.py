@@ -338,8 +338,11 @@ def dane_pasa(m, skrot_danych):
         "przedBrama": {"punkt": sw(m, b["u"] - PRZED_BRAMA_U, 0, 0), "patrz": sw(m, b["u"], 0, 0)},
         "zaBrama": {"punkt": sw(m, b["u"] + ZA_BRAMA_U, 0, 0), "patrz": sw(m, b["u"] + 40, 0, 0)},
         "powrot": {"punkt": [k2(c) for c in m["kamien_powrotu"]], "zasieg": 10},
+        # Kamień Powrotu: nowe miasteczko (bazar, uchwyt swiat/miasteczko_bazar_gra), gdy jest jego kontener;
+        # inaczej stare miasteczko (punkt LasTeleport albo z planu) — D-075: miasteczko to pierwszy blok pasa
         "miasteczko": {"punkt": [k2(pp["swiat_xz"][0]), 0, k2(pp["swiat_xz"][1])], "patrz": MIASTECZKO_SRODEK,
-                       "teleport": "LasTeleport"},
+                       "teleport": "LasTeleport",
+                       "bazar": {"kontener": "MiasteczkoBazarGra", "uchwyt": "PrzeniesDoBazaru", "punkt": "start"}},
         "brama": {"x": xb, "z1": k2(Z0 - MGLA_POL_Z), "z2": k2(Z0 + MGLA_POL_Z), "tolerancja": BRAMA_TOLERANCJA,
                   "glebokosc": BRAMA_GLEBOKOSC, "otwarcie": [k2(Z0 + b["otwarcie_v"][0]), k2(Z0 + b["otwarcie_v"][1])]},
         # niewidzialna zapora przez całą szerokość pasa (u klienta uprawnionego bez kolizji); napis nad wrotami

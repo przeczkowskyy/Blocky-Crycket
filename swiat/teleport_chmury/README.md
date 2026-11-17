@@ -68,7 +68,12 @@ prędkości.
   naraz na kamerze, ucięty początek przelotu). Gdy uchwyt odmówi (np. `za_szybko`), działa zwykły punkt niżej.
 - **Las:** gdy w Workspace jest `LasPas`, gracz staje na Polanie Przybycia, w świecie (1114; y; −700). Wysokość daje rzut
   promienia w dół (tylko części z kolizją), z kontrolą wolnego miejsca. Bez `LasPas` gracz trafia do `LasTeleport.PunktLas`.
-- **Miasteczko:** `LasTeleport.PunktMiasteczka` (tylko odczyt atrybutu), a gdy go nie ma — liczby zapasowe z danych.
+- **Miasteczko, gdy stoi `Workspace/MiasteczkoBazarGra`** (nowe miasteczko-bazar, `swiat/miasteczko_bazar_gra`;
+  D-075: miasteczko to pierwszy blok pasa): start bazaru z atrybutów tego kontenera `PunktStartuBazaru` /
+  `PatrzStartuBazaru` (tylko odczyt; wpis „atrybut”, dopisany 17.11.2026). Makieta zna też obszar bazaru
+  (`obszary_xz` miasteczka: `[882, 1066, −790, −610]`).
+- **Miasteczko bez bazaru:** `LasTeleport.PunktMiasteczka` (stare Krzywe Miasteczko, tylko odczyt atrybutu), a gdy go
+  nie ma — liczby zapasowe z danych.
 - **Krainy zamknięte** mają punkty z planu pasa (`swiat/biom_las/pas/plan_pasa.json`). Nie są używane, póki krainy są
   zamknięte.
 
@@ -158,10 +163,17 @@ przelot pasa haczykiem `zapomnijPrzelot` (inaczej zakotwiczyłby postać w teśc
 przejmuje kamerę po 3,78 s — bez nakładania. Zapis: `wyniki/proba_play_20261117_0033.json`,
 `wyniki/proba_play_20261117_0100.json`.
 
+**Lądowanie „Miasteczka” w nowym bazarze** (wpis w `krainy.json`, `zbuduj.py --skrypty`): próba powtórzona 17.11.2026
+o 01:25 przy zbudowanym `Workspace/MiasteczkoBazarGra` — **6/6 OK**, test 2 (Las → miasteczko, prawdziwe kliknięcie
+myszą) postawił postać na starcie bazaru (990; −697), odchyłka 0,0. Próba sama bierze cel testu 2 z atrybutu
+`MiasteczkoBazarGra.PunktStartuBazaru` (bez bazaru — stare miasteczko jak wcześniej). Zapis:
+`wyniki/proba_play_20261117_0125.json`. To samo przejście sprawdza próba bazaru (`swiat/miasteczko_bazar_gra`, B07:
+portal krain → chmury → Las → chmury → „Miasteczko” → start bazaru, 0,0 st).
+
 | # | Próba | Wynik |
 |---|---|---|
 | 1 | miasteczko → Las | OK. Postać stanęła dokładnie w (1114; −700) na Polanie Przybycia `LasPas` (punkt z rzutu promienia, odchyłka 0,0). Po przejściu klawisz W przesuwa postać o 14,9 st. Kamera Custom z postacią, podpowiedzi włączone, chmury usunięte, ekrany gry przywrócone, kąt widzenia 70°. |
-| 2 | Las → miasteczko | OK. Wybór **prawdziwym kliknięciem myszy** (narzędzie `user_mouse_input`, współrzędne okna gry). Punkt z `LasTeleport.PunktMiasteczka`, odchyłka 0,01. |
+| 2 | Las → miasteczko | OK. Wybór **prawdziwym kliknięciem myszy** (narzędzie `user_mouse_input`, współrzędne okna gry). Punkt z `LasTeleport.PunktMiasteczka`, odchyłka 0,01 (od 17.11.2026 01:25 z bazarem: start bazaru, odchyłka 0,0). |
 | 3 | rezygnacja | OK. Dotknięcie z dala od pasa → powrót, postać w tym samym miejscu. Backspace → powrót. W pauzie fazy A klawisze W i spacja wciśnięte przez 0,8 s przesunęły postać o **0,0**. |
 | 4 | zamknięta kraina | OK. Dotknięcie Bagna: potrząśnięcie, czerwona obwódka, wybór trwa dalej (1 odmowa). Prośba wprost do serwera z pominięciem makiety: `zamknieta`. Nieznana kraina: `nieznana`. Złe argumenty: `zle_dane`. |
 | 5 | dwa szybkie żądania | OK. Drugie otwarcie w czasie przejścia: `trwa`. Dwie prośby naraz do serwera: jedna przeniosła, druga dostała `trwa`. Trzecia zaraz po nich: `za_szybko` (zostało 2,95 s). Postać przeniesiona raz. |

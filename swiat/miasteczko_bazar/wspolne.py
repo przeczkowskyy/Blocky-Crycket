@@ -119,9 +119,12 @@ def skorupa(s, rnd, W, D, sciana, dach, H0=15.0, T=1.2, otwor=14.0, otwor_x=0.0,
         for sx in (-1, 1):
             for sz in (-1, 1):
                 s.blok("Narożnik", (sx * (W / 2.0 - 0.5), (1.3 + H0 + 0.3) / 2.0, sz * (D / 2.0 - 0.5)), (1.3, H0 - 1.0, 1.3), "tusz")
-        for x in (xa - 0.35, xb + 0.35):                      # rama wystaje 0,1 w otwór (inna płaszczyzna niż filar)
-            s.blok("Rama otworu", (x, (Y_PODLOGI + H_otw) / 2.0, zf - T / 2.0), (0.9, H_otw - Y_PODLOGI, T + 0.7), "tusz")
-        s.blok("Rama otworu", (otwor_x, H_otw + 0.35, zf - T / 2.0), (otwor + 1.8, 0.9, T + 0.7), "tusz")
+        # rama otworu Z KOLIZJĄ: kamera gracza (Poppercam) zatrzymuje się tylko na częściach z kolizją — bez niej słupek
+        # ramy zasłaniał postać, gdy kamera stała za drzwiami (mistrz gier, próba w Studio 17.11.2026)
+        with s.cechy(kolizja=True):
+            for x in (xa - 0.35, xb + 0.35):                  # rama wystaje 0,1 w otwór (inna płaszczyzna niż filar)
+                s.blok("Rama otworu", (x, (Y_PODLOGI + H_otw) / 2.0, zf - T / 2.0), (0.9, H_otw - Y_PODLOGI, T + 0.7), "tusz")
+            s.blok("Rama otworu", (otwor_x, H_otw + 0.35, zf - T / 2.0), (otwor + 1.8, 0.9, T + 0.7), "tusz")
         with s.cechy(cien=False):
             s.blok("Pas cienia", (0, H0 - 0.6, zf + 0.1), (W - 2.8, 0.9, 0.2), cien(s, sciana))
     # --- okna w bocznych ścianach (na zewnątrz) + poświata od środka

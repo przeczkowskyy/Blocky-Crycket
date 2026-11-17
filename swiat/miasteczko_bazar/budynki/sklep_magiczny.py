@@ -79,14 +79,17 @@ def _wnetrze(s, rnd):
             wspolne.polka(s, (bx, y, zb), 9.5, kolor="drewno_ciemne", wsporniki="zloto")
         kolory = ("dach_karczma", "dach_gildia", "dach_twierdza", "zloto", "dach_wylegarnia")
         x = bx - 4.2
-        for i in range(6):                                     # księgi na dolnej półce
-            h = 1.6 + 0.3 * (i % 3)
-            s.blok("Księga", (x, 6.5 + h / 2.0, zb + 0.75), (0.7, h, 1.2), kolory[i % 5], rot=(0, 0, (0, 6, -4, 0, 10, 0)[i]))
-            x += 0.8
-        for i, xx in enumerate((1.3, 2.9)):                    # kryształy
-            s.ostroslup("Kryształ", (bx + xx, 6.5, zb + 0.75), 0.5, 0.5, 1.8 + 0.5 * i, DACH)
-        with s.cechy(cien=False):
-            s.ostroslup("Kryształ", (bx + 2.1, 6.5, zb + 0.75), 0.6, 0.6, 2.6, SWIATLO, "Neon")
+        # księgi i kryształy dolnej półki Z KOLIZJĄ (wysoko, nad głową gracza): kamera gracza zatrzymuje się tylko na
+        # częściach z kolizją — bez niej po obróceniu kamery przy ladzie wchodziła między ścianę a księgi (próba 17.11.2026)
+        with s.cechy(kolizja=True):
+            for i in range(6):                                 # księgi na dolnej półce
+                h = 1.6 + 0.3 * (i % 3)
+                s.blok("Księga", (x, 6.5 + h / 2.0, zb + 0.75), (0.7, h, 1.2), kolory[i % 5], rot=(0, 0, (0, 6, -4, 0, 10, 0)[i]))
+                x += 0.8
+            for i, xx in enumerate((1.3, 2.9)):                # kryształy
+                s.ostroslup("Kryształ", (bx + xx, 6.5, zb + 0.75), 0.5, 0.5, 1.8 + 0.5 * i, DACH)
+            with s.cechy(cien=False):
+                s.ostroslup("Kryształ", (bx + 2.1, 6.5, zb + 0.75), 0.6, 0.6, 2.6, SWIATLO, "Neon")
         for i in range(3):                                     # zwoje na górnej półce
             s.walec("Zwój", (bx - 3.0 + i * 1.6, 9.95, zb + 0.75), 0.4, 1.4, "biel", os="z", rot=(0, (8 * i) - 8, 0))
             s.walec("Zwój pieczęć", (bx - 3.0 + i * 1.6, 9.95, zb + 1.5), 0.25, 0.15, "dach_karczma", os="z")

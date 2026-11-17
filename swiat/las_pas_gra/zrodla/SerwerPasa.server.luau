@@ -512,6 +512,41 @@ end
 przeniesF.OnInvoke = przeniesDoLasu
 
 ------------------------------------------------------------------ Kamień Powrotu → miasteczko
+-- Nowe miasteczko (bazar), gdy jest jego kontener z uchwytem (przenosi serwer bazaru: wczytanie okolicy, własna
+-- blokada); bez niego — stare miasteczko jak dotąd. Odmowa uchwytu (np. „trwa”) nie przenosi nigdzie indziej.
+local function uchwytBazaru(): BindableFunction?
+	local b = workspace:FindFirstChild(D.miasteczko.bazar.kontener)
+	local s = b and b:FindFirstChild("Sygnaly")
+	local f = s and s:FindFirstChild(D.miasteczko.bazar.uchwyt)
+	return if f and f:IsA("BindableFunction") then f else nil
+end
+
+local function powrotDoMiasteczka(gracz: Player): (boolean, string?)
+	local f = uchwytBazaru()
+	if not f then
+		return przenies(gracz, punktMiasteczka(), false)
+	end
+	local s = stanGracza(gracz)
+	if os.clock() - s.ostatnioPrzeniesiony < ODSTEP_PRZENIESIEN then
+		return false, "za_szybko"
+	end
+	if s.przelot.faza ~= "brak" then
+		return false, "przelot_trwa"
+	end
+	local ok, w = pcall(function()
+		return f:Invoke(gracz, { punkt = D.miasteczko.bazar.punkt })
+	end)
+	if not ok then
+		warn(P .. "Kamień Powrotu: uchwyt bazaru zawiódł (" .. tostring(w) .. ") — stare miasteczko")
+		return przenies(gracz, punktMiasteczka(), false)
+	end
+	if type(w) == "table" and w.ok == true then
+		s.ostatnioPrzeniesiony = os.clock()
+		return true, nil
+	end
+	return false, if type(w) == "table" and type(w.powod) == "string" then w.powod else "blad"
+end
+
 do
 	local kamien = folderPunktow:WaitForChild("KamienPowrotu", 5)
 	local podp = kamien and kamien:FindFirstChildOfClass("ProximityPrompt")
@@ -519,7 +554,7 @@ do
 		podp.Enabled = gotowy
 		podp.Triggered:Connect(function(gracz: Player)
 			if gotowy then
-				task.spawn(przenies, gracz, punktMiasteczka(), false)
+				task.spawn(powrotDoMiasteczka, gracz)
 			end
 		end)
 	else

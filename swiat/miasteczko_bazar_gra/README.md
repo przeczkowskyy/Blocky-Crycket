@@ -1,10 +1,12 @@
 # Miasteczko-bazar w grze — podpowiedzi E, uchwyt okien 2D, portal krain, przejścia
 
-*Status: **propozycja** (17.11.2026). Kod przygotowany i sprawdzony bez Studio, **w Studio jeszcze nie uruchomiony**.
+*Status: **propozycja** (17.11.2026). **Wdrożone w Studio i sprawdzone w trybie Play w nocy 16/17.11.2026** — wyniki
+w „Co sprawdzone w grze” niżej, zrzuty w `klatki/`.
 Wymagania: D-084 (do sklepu się wchodzi, E na sprzedawcy otwiera okno 2D Pawła), D-085 (portal krain, przejście na
 działkę, zagroda petów, tablica z rankingiem, mini-gry z jednego miejsca), D-075 (miasteczko to pierwszy blok pasa,
 teleport przez chmury), D-042 (lochy zamknięte, osobno dla gracza), D-093 (okna 2D i ich skrypty robi Paweł).
-Mapa: `swiat/miasteczko_bazar/` (kontener `Workspace/MiasteczkoBazar`, buduje go inny etap) — ten pakiet jej nie zmienia.*
+Mapa: `swiat/miasteczko_bazar/` (kontener `Workspace/MiasteczkoBazar`) — ten pakiet jej nie zmienia; poprawki mapy po
+próbie w grze (kolizje dla kamery, nowe postacie) opisuje jej README.*
 
 > **W skrócie.** Jeden kontener `Workspace/MiasteczkoBazarGra` (atrybut `Wygenerowane = true`) obok mapy bazaru.
 > W nim **13 niewidzialnych punktów E** we własnych częściach (11 w bazarze w miejscach ze `znaczniki.json`, „Stare
@@ -30,7 +32,10 @@ Mapa: `swiat/miasteczko_bazar/` (kontener `Workspace/MiasteczkoBazar`, buduje go
 | `czasy_biegu.py` | plan czasów biegu ze startu do każdego E (siatka chodzenia mapy, tylko odczyt) i punkty przy ścianach — dla testów i próby |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
 | `testy/test_bazaru.py` | 38 testów offline (opis w nagłówku pliku) |
-| `testy/proba_play.py` | gotowa próba w Studio (Play) z listą kontrolną B01–B15 i 8 zrzutami — **dla następnego etapu, nieuruchomiona** |
+| `testy/proba_play.py` | próba w Studio (Play) z listą kontrolną B01–B15 i 8 zrzutami (uruchomiona 17.11.2026, wyniki niżej) |
+| `testy/proba_dodatkowa.py` | uzupełnienie próby: kamera za plecami i odwrócona na 6 stoiskach (D01), dymki 13 miejsc (D02), stare ↔ nowe prawdziwym E (D03), Kamień Powrotu z bazarem i bez (D04), koszt u klienta (D05), zrzuty z gry do README (Z) |
+| `wyniki/` | zapisy prób w Studio (bez nazwy konta — `<gracz>`) |
+| `klatki/` | zrzuty z gry (tryb Play) — tabela niżej |
 
 ## Co jest w kontenerze `Workspace/MiasteczkoBazarGra`
 
@@ -91,7 +96,10 @@ Przy kilku oknach Studio dopisz `--studio <studio_id>`. Każdy wysyłany kod spr
 i tryb Edit (w Play: STOP), budowa rusza tylko kontener z `Wygenerowane` (obiekt o tej nazwie bez atrybutu → STOP),
 stawia punkty historii przed i po (Ctrl+Z cofa całość), niczego nie publikuje ani nie zapisuje, Lighting nietknięty.
 
-## Kolejność wdrożenia w Studio (następny etap)
+## Kolejność wdrożenia w Studio
+
+Zrobione 17.11.2026 w nocy (punkty 1–6; panel i sejf — punkt 7 — nie, ten etap miał zakaz zapisu w `B&C/` i `panel/`).
+Przy powtórce: tak samo, a po budowie także `testy/proba_dodatkowa.py <folder poza repo>`.
 
 1. `git pull`, potem offline: `python -B swiat/miasteczko_bazar_gra/testy/test_bazaru.py` i
    `python -B swiat/miasteczko_bazar_gra/zbuduj.py --sucho` — oba kod 0. Zgłoś pracę:
@@ -134,10 +142,11 @@ bindable("OknoMiejsca").Event:Connect(function(id) if id == "zbrojownia" then op
   (z ekwipunku) i wybór klasy; okien Shop, Pets, Quests, Guilds jeszcze nie ma (`B&C/UI/HUD.md`: „Okien … jeszcze nie
   ma”). Od razu działa tylko portal → przejście przez chmury (pakiet `swiat/teleport_chmury`, nie Paweła).
 
-## Przejście przez chmury → lądowanie w nowym miasteczku (zmiana na następny etap)
+## Przejście przez chmury → lądowanie w nowym miasteczku (zrobione 17.11.2026)
 
-`swiat/teleport_chmury/**` nie był zmieniany. Jedna linijka w `swiat/teleport_chmury/krainy.json`, kraina
-`"miasteczko"`, jako **pierwszy** wpis listy `"przybycie"`:
+**Wpisane i sprawdzone w grze 17.11.2026** (próba przejścia przez chmury 6/6, B07 tutaj: lądowanie 0,0 st od startu
+bazaru). Jedna linijka w `swiat/teleport_chmury/krainy.json`, kraina `"miasteczko"`, jako **pierwszy** wpis listy
+`"przybycie"` (plus obszar bazaru w `"obszary_xz"`):
 
 ```json
 {"atrybut": ["MiasteczkoBazarGra", "PunktStartuBazaru", "PatrzStartuBazaru"]},
@@ -157,8 +166,9 @@ local w = f:Invoke(gracz, { punkt = "start" })
 -- w = { ok = true, punkt = Vector3, patrz = Vector3 } | { ok = false, powod = "zly_gracz" | "trwa" | "brak_postaci" | "nieznany_punkt" | "blad" }
 ```
 
-Kamień Powrotu w Lesie (`swiat/las_pas_gra`) prowadzi dalej do starego miasteczka (`LasTeleport.PunktMiasteczka`); stamtąd
-„Nowe miasteczko (E)”. Przestawienie go na bazar to osobna zmiana w tamtym pakiecie (`D.miasteczko` w jego danych).
+**Kamień Powrotu** w lesie-pasie (`swiat/las_pas_gra`, zmienione 17.11.2026) woła ten uchwyt: gdy stoi
+`Workspace/MiasteczkoBazarGra`, prowadzi na start bazaru; bez niego — do starego miasteczka (`LasTeleport.PunktMiasteczka`)
+jak dotąd. Odmowa uchwytu (np. `trwa`) nie przenosi nigdzie indziej. Sprawdzone w grze prawdziwym E (D04 niżej).
 
 ## Brama Leśna, działka, lochy, tablica, przejścia
 
@@ -178,12 +188,21 @@ Kamień Powrotu w Lesie (`swiat/las_pas_gra`) prowadzi dalej do starego miastecz
   poziom ↓, XP ↓, „moc” (suma statystyk) ↓, nazwa ↑, do 8 wierszy, odświeżany co 2 s po zmianie. **Uwaga: to prawdziwy
   odczyt, ale wartości są tymczasowe** — `PlayerStatsDefaults` to PLACEHOLDER do czasu DataStore, więc dziś wszyscy
   mają poziom 1 i moc 130; stopka tablicy mówi to wprost.
-- **Stare ↔ nowe miasteczko:** „Stare miasteczko (E)” stoi 12 st za plecami gracza na starcie bazaru (w pustym pasie
-  środkowym uliczki, sprawdzone na siatce chodzenia), poza zasięgiem 8 st ze startu. „Nowe miasteczko (E)” wybiera
+- **Stare ↔ nowe miasteczko:** „Stare miasteczko (E)” stoi 16 st za plecami gracza na starcie bazaru (w pustym pasie
+  środkowym uliczki, sprawdzone na siatce chodzenia), poza zasięgiem 8 st ze startu. Było 12 st — w grze tabliczka
+  wisiała wtedy dokładnie w kamerze gracza na starcie (kamera stoi ok. 12,5 st za głową), przy lewej krawędzi ekranu,
+  na HUD-zie; teraz jest za kamerą i widać ją po obróceniu się. „Nowe miasteczko (E)” wybiera
   budowa: SpawnLocation spoza bazaru najbliższy startowi z `swiat/krzywe_miasteczko/uklad.json` (bez niego ten punkt),
   pierścienie 12–26 st, najpierw ±45° od kierunku patrzenia na starcie, co najmniej 12 st od `LasTeleport/PortalStart`
   i 6 st od drogi start → portal, na wolnym miejscu (skrzynka 4 × 6 × 4 bez części z kolizją) i gruncie na wysokości
   startu. Powrót ląduje 9 st od punktu w stronę startu, twarzą do startu.
+  **W Studio (17.11.2026):** jedyny `SpawnLocation` stoi w (0; 0,5; 0), czyli w `Workspace/DemoLesnaBaza` (plac ze
+  spawnem, karczmą i kołem fortuny), a nie w `Workspace/KrzyweMiasteczko` (ono nie ma prawdziwego spawnu — jego
+  README). Budowa wypisuje więc uwagę „start poza obszarem starego miasteczka” i stawia „Nowe miasteczko (E)” w
+  (11,7; 1,0; −2,7): 12,0 st od spawnu, 22,1 st od `LasTeleport/PortalStart`, niczego nie zasłania (zrzut
+  `klatki/12_przejscie_nowe_w_starym.jpg`). To miejsce, w którym gracz dziś wchodzi do gry, więc rano: spawn → E →
+  bazar. „Stare miasteczko (E)” w bazarze prowadzi więc z powrotem na ten plac startowy, a nie do Krzywego
+  Miasteczka — do decyzji (wybór 9).
 
 ## Haczyki testowe (Play)
 
@@ -203,11 +222,11 @@ luau_mini), `swiat/las_potwory/sprawdz_luau.py` na tych samych plikach (4 pliki 
   miasteczka (0; 0; −700) = `--przesun` z jego README; przyciski HUD = `src/gui/HUD.model.json`.
 - **Znaczniki (2a–2h):** każdy z 12 punktów z podpowiedzią ma E (11) albo powód (studnia); każdy znacznik rozliczony;
   położenia 1:1; 13 unikalnych id, wszystkie 9 okien z zadania; ze stoiska własna podpowiedź 0,3–7,7 st (zasięg 10),
-  najbliższa cudza ≥ 11,8 st; „Stare miasteczko (E)” wolne na siatce chodzenia, 12 st od startu (zasięg 8); tablica na
+  najbliższa cudza ≥ 11,8 st; „Stare miasteczko (E)” wolne na siatce chodzenia, 16 st od startu (zasięg 8; do 17.11.2026 12 st); tablica na
   powierzchni ze znacznika; zero liczb ≥ 100 w kodzie (położenia tylko w danych).
 - **Czasy biegu planu** (siatka mapy, 16 st/s): portal 1,56 s, Brama Twierdzy 0,78, tablica 1,34, mistrz gier 2,66,
   zagroda 2,69, sklep magiczny 2,96, karczma 2,98, lochy 3,20, Brama Leśna 3,98, Training Center 4,32, zbrojownia
-  4,42, „Stare miasteczko” 0,75 — sklepy ≤ 5 s, portal ≤ 6 s (jak w PROJEKT.md mapy).
+  4,42, „Stare miasteczko” 1,0 (przy 12 st: 0,75) — sklepy ≤ 5 s, portal ≤ 6 s (jak w PROJEKT.md mapy).
 - **Logika (3a–3i):** akcje 13 miejsc; granica zasięgu (zasięg + 4) i spam (0,4 s, odrzucone E nie zabiera odstępu);
   lochy (flaga, próg poziomu 7/8/50/brak/napis/bool); portal bez chmur, Brama Leśna bez Lasu, przejście bez celu;
   każdy powód odmowy `PrzeniesDoLasu` odczytany ze źródła pasa ma tekst; „Chwila… jeszcze 3 s” (zaokrąglenie w górę,
@@ -227,23 +246,134 @@ luau_mini), `swiat/las_potwory/sprawdz_luau.py` na tych samych plikach (4 pliki 
   budowa tworzy tylko w kontenerze, bez ścieżek lokalnych; `--sucho` nie importuje `studio_mcp` ani `cel_studio`;
   `proba_play.py` się kompiluje, ma B01–B15 i 8 zrzutów, bez argumentów tylko wypisuje sposób użycia.
 
-## Czego nie da się sprawdzić bez Studio
+## Co sprawdzone w grze (17.11.2026, w nocy — Studio, tryb Play)
 
-Całe zachowanie w grze: czy `ProximityPrompt` pokazuje się na stoisku i nie przeszkadza ladą (RequiresLineOfSight =
-false), czy dymek (BillboardGui w PlayerGui) wisi nad głową sprzedawcy i jest czytelny (także na telefonie), czy
-wykrywanie „okno się otworzyło” nie łapie przypadkowych ekranów, kamera we wnętrzach sklepów, prawdziwe czasy biegu,
-niewidzialne ściany, przejście przez chmury i Brama Leśna z pakietami innych agentów, wybór miejsca „Nowe miasteczko (E)”
-przy prawdziwym SpawnLocation, czy `LocalTransparencyModifier` chowa kłódkę tylko u jednego gracza, czytelność tablicy
-(SurfaceGui 50 px/st), koszt klatki. To wszystko jest w `testy/proba_play.py` (B01–B15) albo na liście ręcznej w jego
-nagłówku.
+**Warunki.** Miejsce gry w Studio (Team Create, PlaceId 129485428021967), jeden gracz, okno gry 2041 × 1153. Ekran był
+przykryty czarnym oknem — Studio rysuje wtedy ok. 15 kl./s, więc czas klatki 66,7 ms to ograniczenie Studia, nie gry.
+W miejscu: `MiasteczkoBazar` (4410 części, po poprawkach z tej nocy), `MiasteczkoBazarGra` (60 instancji, 14 części,
+13 podpowiedzi), `TeleportChmury`, `LasPas` + `LasPasGra` (silnik walki v2), `LasTeleport`, `KrzyweMiasteczko`.
+Zapisy: `wyniki/` (nazwa konta zamieniona na `<gracz>`), zrzuty: `klatki/`.
+
+**Lista B01–B15** (`testy/proba_play.py`) — przebieg o 02:23: **14 × OK, „?”: B14** (`wyniki/proba_play_20261117_0223_*`). Wcześniejsze przebiegi (01:17–02:19, dziewięć) wykryły błędy opisane
+niżej w „Poprawkach”; zapisane m.in. `wyniki/proba_play_20261117_0126_*` (fałszywe OK w B09 — postać zginęła pod mapą
+i odrodziła się przy spawnie, obok celu) i `…_0145_*` (B04 zagroda i B06 przed poprawkami próby).
+
+| Punkt | Wynik |
+|---|---|
+| B01 gotowość | OK — `SerwerBazaruGotowy`, zgodność logiki „OK 70/70”, 13 podpowiedzi, `KlientBazaruGotowy`, Las i Chmury „jest” |
+| B02 start bazaru | OK — postać 0,01 st od `PunktStartuBazaru`, 13/13 podpowiedzi włączonych |
+| B03 bieg ze startu (`character_navigation`, od ruszenia do 2,5 st od stoiska) | OK — karczma 2,77 s (plan 2,99), mistrz gier 2,50 s (plan 2,68), sklep magiczny 2,70 s (plan 2,96), zbrojownia 4,15 s (plan 4,44), Training Center 4,07 s (plan 4,34), zagroda 2,42 s (plan 2,69), tablica 1,07 s (plan 1,34), Brama Twierdzy 0,62 s (plan 0,78), lochy 2,87 s (plan 3,20), **portal** 1,30 s (plan 1,56), Brama Leśna 3,83 s (plan 3,98), „Stare miasteczko” 0,78 s (plan 1,00). Każdy sklep ≤ 5 s, portal ≤ 6 s, każdy bieg krótszy od planu siatki |
+| B04 E przy 8 punktach z oknem (prawdziwe E) | OK — karczma, mistrz gier, sklep magiczny, zbrojownia, Training Center, zagroda, tablica, Brama Twierdzy: `OstatnieE = <gracz>:<id>:okno`, `OknoMiejsca` z właściwym id, sygnał HUD (karczma → `Quests`, sklepy → `Shop`, zagroda → `Pets`, reszta bez), dymek zastępczy z tekstem z `miejsca.json` |
+| B05 okna otwarte od razu | OK — żadne okno Pawła (Shop/Pets/Quests jeszcze nie istnieją); E przy portalu → `TeleportChmury` otwarte |
+| B06 kamera za plecami w 5 wnętrzach | OK — 12,5 st i nic nie zasłania; mistrz gier 7,8 st (kamera opiera się o ramę drzwi karczmy, wszystko widać) |
+| B07 portal → chmury → Las → chmury → „Miasteczko” | OK — Las (1114; 3; −700), powrót **na start bazaru, 0,0 st** (wpis w `krainy.json`) |
+| B08 Brama Leśna → Las | OK — postać w Lesie (1114; 3,4; −700) w < 1 s (uchwyt pasa `PrzeniesDoLasu`); drugie E zaraz potem: „Chwila… jeszcze 2 s” / „… 3 s” (blokada `za_szybko`) |
+| B09 stare ↔ nowe | OK — E w bazarze → 0,0 st od punktu powrotu przy spawnie; E przy „Nowe miasteczko (E)” → 0,0 st od startu bazaru; od razu drugie E → `za_szybko`; tabliczka 22,1 st od `PortalStart`; zero śmierci postaci |
+| B10 tablica | OK — wiersz „1. `<gracz>` — poz. 1 · moc 130”, wierszy = liczba graczy (1) |
+| B11 działka i lochy | OK — „Działka — wkrótce”, „Zamknięte”; po odblokowaniu kłódka niewidoczna u klienta 8/8 części, na serwerze 0/8; E → `OknoMiejsca("lochy")`, dymek „Hala portali — wkrótce”; po zamknięciu kłódka wraca |
+| B12 niewidzialne ściany (marsz 30 st na zewnątrz ze skokami przy 4 brzegach) | OK — zatrzymanie na x ≈ 899 (zachód), x ≈ 1057 (wschód, zamknięta Brama Leśna), z ≈ −735,6 (północ), z ≈ −664,1 (południe); najniżej y ≈ 3,1 — nikt nie spadł |
+| B13 dymek wyłączany atrybutem | OK — `DymkiWylaczone` i `BezDymku` gaszą dymek zbrojowni, po usunięciu wraca |
+| B14 czas klatki | „?” — 66,7 ms śr., p95 ≈ 68 ms w 4 miejscach = limit Studia pod zaciemnieniem (15 kl./s), nie pomiar gry |
+| B15 konsola | OK — 0 błędów pakietu |
+
+**Próba dodatkowa** (`testy/proba_dodatkowa.py`; D01, D03–D05 o 01:56, D02 i zrzuty o 02:04):
+
+| Punkt | Wynik |
+|---|---|
+| D01 kamera na 6 stoiskach z postacią, za plecami i odwrócona | OK — za plecami 12,5 st wszędzie poza mistrzem gier (7,8 st: opiera się o ramę drzwi, sprzedawca widoczny); odwrócona (gracz obraca kamerę przy ladzie) 4,3–6,9 st: kamera opiera się o głowę sprzedawcy, który jest wtedy ZA kamerą — ekran czysty. Zero kamer w ozdobach bez kolizji, zero zasłon, nigdy nad stropem |
+| D02 dymki 13 miejsc (kamera za plecami) | OK — 13/13 dymków na ekranie gracza, żaden po drugiej stronie ściany ani stropu; miejsca do stropu: karczma 5,8 st, mistrz gier 7,4, sklep magiczny 3,2, zbrojownia 4,0, Training Center 4,3, Brama Leśna 6,7 (pod łukiem); reszta pod gołym niebem. Teksty z `miejsca.json` (np. „Karczmarz: zadania wkrótce!”). Pierwsza wersja D02 (01:56) liczyła zasłonę promieniem i trafiała w głowy sprzedawców — dymek ma `AlwaysOnTop`, więc zasłona nie gra roli; kryterium poprawione |
+| D03 stare ↔ nowe prawdziwym E | OK — 0,0 st od punktu powrotu przy spawnie i 0,0 st od startu bazaru, `…:stare_miasteczko:ok`, `…:nowe_miasteczko:ok`, zero śmierci |
+| D04 Kamień Powrotu w lesie-pasie (prawdziwe E) | OK — z bazarem: start bazaru, 0,0 st; z uchwytem bazaru odpiętym na czas próby: `LasTeleport.PunktMiasteczka` (stare Krzywe Miasteczko), 0,0 st |
+| D05 koszt u klienta (start bazaru) | „?” — w Workspace u klienta 36 256 części i 59 028 instancji (całe miejsce testowe; streaming włączony, bazar 4410 z 4410 wczytany); klatka 66,7 ms = limit Studia pod zaciemnieniem |
+
+**Przejście przez chmury** (`swiat/teleport_chmury/testy/proba_play.py`, 01:25): **6/6 OK**, test 2 (Las → miasteczko,
+prawdziwe kliknięcie myszą) — start bazaru, odchyłka 0,0. **Las-pas** (`swiat/las_pas_gra/testy/proba_play.py`, 01:49):
+**15 × OK, P14 „?”** — m.in. P12 Kamień Powrotu (prawdziwe E) → start bazaru, walka z każdym gatunkiem, brama, przelot
+tylko przy pierwszym wejściu (P05: licznik 1 → 1).
+
+**Styk z płytą Baseplate:** skrypt na `swiat/miasteczko_bazar/czesci.json` — żadna płaska część nie ma górnej ściany
+w płaszczyźnie gruntu (0,1) ani płyty (0,0), więc nie ma czego migotać; na zrzutach migotania nie widać.
+
+## Poprawki po próbach w grze (17.11.2026)
+
+1. **Tablica z rankingiem nieczytelna** (`miejsca.json` → `tablica.odsuniecie` 0,06 → **0,45**): plakietki podium
+   i medale mapy wystają do 0,23 st przed deskę, a deska jest pochylona o 4°, więc przebijały SurfaceGui (czarne
+   kreski i niebieskie kółko na rankingu). Teraz ranking wisi przed nimi i je zasłania.
+2. **Tabliczka „STARE MIASTECZKO (E)” w kamerze** (`miejsca.json` → `od_startu_bazar` −12 → **−16**): przy 12 st
+   wisiała dokładnie tam, gdzie stoi kamera gracza na starcie (ok. 12,5 st za głową) — przy lewej krawędzi ekranu, na
+   HUD-zie. Teraz jest za kamerą, widać ją po obróceniu się.
+3. **Mapa — kamera we wnętrzach** (`swiat/miasteczko_bazar`, szczegóły w jego README): Poppercam zatrzymuje kamerę
+   tylko na częściach z kolizją. Przy obróconej kamerze stawała za tablicą zleceń w karczmie (cały ekran = tył deski),
+   między ścianą a księgami maga i W głowie maga; słupek ramy drzwi zasłaniał postać przy mistrzu gier. Teraz z kolizją:
+   tablica zleceń, księgi i kryształy dolnej półki maga, rama drzwi każdego sklepu, głowy i nakrycia głów sprzedawców.
+4. **Postacie — własne projekty** (punkt 6 zadania): nowy karczmarz (łysy, krótka ruda broda bez wąsów, czerwona
+   opaska karczmy, skórzany fartuch, zielona koszula, kufel), mistrz gier bez cylindra, monokla i wąsika (beret ze złotą
+   kostką, okulary), trener z niebieską opaską zamiast czerwonej.
+5. **Błędy próby, nie gry** (`testy/proba_play.py`): pusta tabela atrybutów przychodziła jako `[]` (wyjątek w B03);
+   stoisko „Stare miasteczko” = jego punkt E, więc `CFrame.lookAt` na ten sam punkt dawał NaN i postać ginęła pod mapą
+   — B09 „przechodziło” dzięki odrodzeniu przy spawnie (teraz B09 wymaga `…:stare_miasteczko:ok` i zera śmierci);
+   B07 nie czekało na koniec przelotu pasa (chmury się nie otwierały, a sprawdzenie było za luźne — „OK” bez powrotu);
+   B04 i B06 brały kierunek kamery z poprzedniego stoiska — podpowiedź E pokazuje się tylko na ekranie, więc E przy
+   zagrodzie „nie działało”, gdy była za kamerą (teraz kamera za plecami przed każdym E); próg B06 8 → 6 st (rama drzwi
+   to część z kolizją — 7,8 st przy pełnej widoczności to zwykła praca Poppercam); drugie E w B08 od razu haczykiem serwera „e” (z ustawieniem kamery i zrzutem mijała blokada 3 s, a powrót
+   postaci skryptem pod bramę i znów do Lasu zostawiał w B09 nieczynne podpowiedzi E — przebiegi 02:05 i 02:19); przelot kamery pasa przy pierwszym wejściu do Lasu (z B07)
+   rusza 2,4 s po przybyciu i potrafił wystartować już po powrocie do bazaru, zostawiając kamerę skryptową — B07
+   czeka teraz na start i koniec przelotu (haczyk `zapomnijPrzelot` nie nadaje się: klient pasa czekał wtedy na
+   przelot bez końca, kamera skryptowa do końca próby — przebieg 02:13); polskie znaki w haczykach (`json.dumps` dawał `\u00f3`, którego
+   Luau nie czyta).
+
+## Zrzuty z gry (`klatki/`, tryb Play)
+
+| Plik | Co widać |
+|---|---|
+| `01_start_bazaru.jpg` | start bazaru (kamera gracza zaraz po przeniesieniu; za postacią tabliczka „STARE MIASTECZKO (E)”) |
+| `02_uliczka_sklepow.jpg` | uliczka sklepów ze startu ku Bramie Leśnej (ujęcie u2 mapy) |
+| `03_karczma_dymek.jpg` | wnętrze karczmy: nowy karczmarz za ladą z dymkiem „Karczmarz: zadania wkrótce!”, mistrz gier w berecie przy planszy (zrzut sprzed ostatniej poprawki twarzy karczmarza — usta jeszcze tuż pod nosem) |
+| `03b_karczma_po_poprawce.jpg` | to samo wnętrze po poprawce z 17.11 ok. 02:30: karczmarz ma szeroki uśmiech z zębami nisko w brodzie (wcześniejsze usta pod nosem wyglądały jak czarne wąsy); zrzut z próby B06, kamera gracza |
+| `04_karczmarz_z_bliska.jpg`, `04b_mistrz_gier_z_bliska.jpg` | nowe projekty postaci z bliska (tryb Edit, kamera edytora — `tools/studio_zrzuty.py`); karczmarz już po poprawce twarzy |
+| `05_zbrojownia.jpg` | zbrojownia z dymkiem „Zbrojmistrz: sklep w budowie” |
+| `06_sklep_magiczny.jpg` | sklep magiczny z dymkiem maga (na zrzucie częściowo za lampą — w grze dymek jest nad wszystkim) |
+| `07_zagroda_petow.jpg` | zagroda petów: opiekunka z dymkiem, pies, smok, slime |
+| `08_tablica_ranking.jpg` | tablica z rankingiem po poprawce: „RANKING SERWERA”, „1. Gracz — poz. 1 · moc 130”, ozdoby mapy już nie przebijają |
+| `09_portal_krain.jpg` | portal krain (E → przejście przez chmury) |
+| `10_brama_lesna.jpg` | Brama Leśna (E → Las) |
+| `11_przejscie_stare_w_bazarze.jpg` | „STARE MIASTECZKO (E)” 16 st za startem, w środku uliczki, i tablica z rankingiem |
+| `12_przejscie_nowe_w_starym.jpg` | plac startowy gry (spawn): „NOWE MIASTECZKO (E)” 12 st od spawnu, nic nie zasłania |
+
+Narzędzie zrzutu nie rysuje `BillboardGui` z `AlwaysOnTop` (podpowiedzi E, dymki) — na czas zrzutów dymki dostają
+u klienta `AlwaysOnTop = false`; podpowiedzi E na zrzutach nie ma. Nazwa konta na tablicy zamieniona u klienta na
+„Gracz” (repozytorium jest publiczne). Kadry z kamery skryptowej (`proba_dodatkowa.py`, część Z).
+
+## Czego nie sprawdzono (po próbach w Studio)
+
+- **Telefon i pad** (emulator Studio): przycisk E, czytelność dymków i tabliczek na małym ekranie.
+- **Dwóch graczy** (Test → Clients and Servers): dymki i kłódka lochów tylko u tego, kto nacisnął E; tablica z dwoma
+  wierszami; blokady czasu osobno dla graczy (logika sprawdzona offline: 400 przebiegów).
+- **Prawdziwy czas klatki i pamięć** — Studio pod zaciemnieniem rysuje 15 kl./s; potrzebny pomiar przy odsłoniętym
+  oknie i na telefonie (sam bazar ma 4410 części; rozważyć `Persistent` dla huba).
+- **Migotanie w ruchu** — sprawdzone tylko analizą płaszczyzn i nieruchomymi zrzutami.
+- **Wykrywanie „okno się otworzyło”** — żadnego okna Pawła jeszcze nie ma (B05), więc heurystyka nie była sprawdzona na
+  prawdziwym oknie.
+- **Bieg na własnych nogach** — czasy z `character_navigation` (Studio prowadzi postać), nie z klawiatury.
+- **Opublikowana gra** — pakiet działa tylko w Studio (serwer usuwa kontener poza Studio).
+- **Podpowiedzi E po teleportach skryptem** — dwa przebiegi (02:05, 02:19): po przeniesieniu postaci skryptem
+  (`PivotTo`) z bazaru do Lasu i z powrotem podpowiedź „Stare miasteczko (E)” przez kilka sekund nie działała
+  (kamera skryptowa albo podpowiedzi wyłączone po stronie klienta). Gracz tak się nie przenosi (tylko E i uchwyty),
+  więc próba już tego nie robi; przyczyny w kliencie pasa nie szukano — do sprawdzenia, gdyby wróciło w grze.
 
 ## Znane ryzyka
 
-- **Nic nie było uruchomione w Studio.** Luau sprawdzone statycznie, sparsowane, a czysta logika wykonana
-  interpreterem `tools/walka/luau_mini.py` — to plik innego agenta, jeszcze nie w git (gdy zniknie, testy Luau są
-  pomijane z uwagą, reszta działa).
-- **Położenie „Nowe miasteczko (E)” zależy od Studio**: prawdziwego SpawnLocation nie ma w żadnym pliku repozytorium
-  (stare miasteczko ma tylko znacznik wejścia). Budowa wypisuje, skąd wzięła start; zła pozycja → atrybut ręczny.
+- **Testy Luau offline** wykonują logikę interpreterem `tools/walka/luau_mini.py` — to plik innego agenta, jeszcze nie
+  w git (gdy zniknie, testy Luau są pomijane z uwagą, reszta działa). W Studio logika przeszła sprawdzian 70/70 (B01).
+- **Położenie „Nowe miasteczko (E)” zależy od Studio**: prawdziwego SpawnLocation nie ma w żadnym pliku repozytorium.
+  W tym miejscu jedyny spawn stoi w `DemoLesnaBaza` (nie w Krzywym Miasteczku) — punkt stanął przy nim, 12 st od
+  spawnu i 22 st od `PortalStart` (wybór 9). Zła pozycja → atrybut ręczny `RecznyPunktStaregoMiasteczka`.
+- **Podpowiedź E działa tylko na ekranie** (zachowanie Roblox): gracz, który stoi tyłem do sprzedawcy z kamerą
+  odwróconą, nie zobaczy podpowiedzi i E nic nie zrobi — tak jest w każdej grze Roblox, ale testy muszą ustawiać
+  kamerę (próby to robią).
+- **Kolizje dodane w mapie dla kamery** (głowy sprzedawców, tablica zleceń, księgi, rama drzwi): wszystko nad głową
+  gracza albo w płaszczyźnie ściany — przejścia i czasy biegu bez zmian (B03), ale skok przy ladzie może teraz trafić
+  w głowę sprzedawcy.
 - **Wykrywanie otwartego okna** to heurystyka (włączony ScreenGui albo pokazany jego główny element w ciągu 0,35 s).
   Okno, które otwiera się inaczej, dostanie dymek, dopóki Paweł nie ustawi atrybutu na `OknoMiejsca`.
 - **Dwa sklepy na jednym przycisku `Shop`** — do decyzji (wybór 3); `OknoMiejsca` i tak niesie id sklepu.
@@ -279,9 +409,19 @@ nagłówku.
 - Dziś: stary spawn i obok „Nowe miasteczko (E)”.
 - SpawnLocation na starcie bazaru — zmiana cudzej instancji, decyzja człowieka (lista prac mapy, punkt 2).
 
-**7. Przejście przez chmury ma lądować w bazarze?**
-- Tak: jedna linijka w `krainy.json` (wyżej) — „Miasteczko” na makiecie prowadzi na bazar.
-- Jeszcze nie: zostaje stare miasteczko, dopóki bazar nie jest kanonem.
+**7. Przejście przez chmury i Kamień Powrotu mają lądować w bazarze?**
+- Tak (wpisane 17.11.2026 na polecenie z zadania, D-075): „Miasteczko” na makiecie i Kamień Powrotu w lesie-pasie
+  prowadzą na start bazaru, gdy stoi `MiasteczkoBazarGra`.
+- Jeszcze nie: usunąć pierwszy wpis „przybycia” miasteczka w `krainy.json` i `D.miasteczko.bazar` w
+  `swiat/las_pas_gra/generuj_dane.py` — wróci stare miasteczko.
+
+**9. „Stare miasteczko (E)” — dokąd ma prowadzić?**
+- Dziś: na plac startowy gry (jedyny `SpawnLocation` w (0; 0,5; 0), czyli `Workspace/DemoLesnaBaza`) — tam też stoi
+  „Nowe miasteczko (E)”, więc rano: spawn → E → bazar i z powrotem.
+- Do Krzywego Miasteczka (`KrzyweMiasteczko`, jak mówił opis w `miejsca.json`): atrybut `RecznyPunktStaregoMiasteczka`
+  przy `LasTeleport.PunktMiasteczka` (−63,6; 3,4; −771,9) i przebudowa — ale wtedy przy spawnie nie ma przejścia do
+  bazaru (zostaje przycisk Teleport → „Miasteczko”). Krzywe Miasteczko jest dziś osiągalne tylko przez stary las
+  (`PortalStart` → Kamień Powrotu `LasTeleport`).
 
 **8. Tymczasowe przejścia stare ↔ nowe: kiedy usunąć?**
 - Gdy bazar zostanie przyjęty i spawn przeniesiony.

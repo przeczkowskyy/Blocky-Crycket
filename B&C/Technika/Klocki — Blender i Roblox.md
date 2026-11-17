@@ -30,6 +30,15 @@ Demo v1 było zbyt grzeczne: proste ściany, drobne szyldy, mapa ginęła w lesi
 
 Najważniejsze ustalenia ze szkolenia: krzywizna od 4° wzwyż (mniej wygląda jak błąd), dach to 45–60% wysokości budynku, rekwizyt-szyld ma 8–12 studów, trzy walory koloru zamiast polegania na cieniu, kolor dachu jako kod funkcji; słońce tego miejsca stoi na północnym zachodzie, więc fronty głównych budynków patrzą w tę stronę; bez odniesień do alkoholu (Roblox dopuszcza je tylko w grach 18+). Według propozycji v2 gry miasteczko wchodzi do rozgrywki dopiero po sprawdzeniu pętli — na razie to demo stylu (propozycja D-025).
 
+## Pas biomów z klocków: las-pas i miasteczko-bazar (17.11.2026)
+Stan w Studio po nocy 16/17.11 (propozycje, D-075, D-084, D-085; ludzie jeszcze nie oglądali):
+- `Workspace/LasPas` (8601 części, `swiat/las_pas/`) i skrypty `Workspace/LasPasGra` (`swiat/las_pas_gra/`) — opis w [[Biom Las]].
+- `Workspace/MiasteczkoBazar` (4410 części, `swiat/miasteczko_bazar/`: `uklad.json` → `generuj.py` → `czesci.json`, kontrola `sprawdz.py`) — ciasny bazar jako pierwszy blok pasa, na zachód od lasu.
+- `Workspace/MiasteczkoBazarGra` (`swiat/miasteczko_bazar_gra/`): 13 miejsc z klawiszem E. Miejsce z oknem wysyła u klienta `ReplicatedStorage.OknoMiejsca` (id miejsca) i sygnał przycisku HUD; dopóki okna 2D nie ma, nad sprzedawcą pojawia się dymek.
+- `Workspace/TeleportChmury` (`swiat/teleport_chmury/`): przejście przez chmury; „Miasteczko” ląduje w bazarze, gdy stoi `MiasteczkoBazarGra`.
+- Części z kolizją dodane tylko po to, żeby kamera nie wchodziła w ozdoby wnętrz: tablica zleceń, księgi, ramy drzwi, głowy sprzedawców.
+- Każdy pakiet ma README z kolejnością wdrożenia, listą prób w trybie Play i wyborami do decyzji. Stare `KrzyweMiasteczko`, `BiomLas`, `LasPotwory` i `LasTeleport` zostają nietknięte do decyzji ludzi.
+
 ## Postacie z klocków (13.11.2026)
 Tą samą drogą co mapa da się postawić w Studio postacie: części Roblox połączone stawami `Motor6D`, z klipami animacji jako `KeyframeSequence`. Sześć postaci stoi w `Workspace/TestPostaci` na rynku miasteczka. Opis: [[Postacie 3D — Blender i Roblox]].
 

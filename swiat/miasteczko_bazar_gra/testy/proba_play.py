@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Próba „miasteczka-bazaru w grze” w Roblox Studio (tryb Play) — DLA NASTĘPNEGO ETAPU; przygotowana bez Studio,
-NIEURUCHOMIONA.
+"""Próba „miasteczka-bazaru w grze” w Roblox Studio (tryb Play). Pierwsze przebiegi 17.11.2026 w nocy (wyniki w
+../wyniki/, opis w README pakietu); poprawki po nich opisuje README („Poprawki po próbach w grze”, punkt 5).
+Uzupełnienie: testy/proba_dodatkowa.py (kamera odwrócona, dymki 13 miejsc, Kamień Powrotu, koszt, zrzuty do README).
 
     python -B swiat/miasteczko_bazar_gra/testy/proba_play.py <folder wyjściowy poza repo> [--studio <studio_id>]
            [--bez-zrzutow] [--bez-biegu]
@@ -24,8 +25,9 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       gdzie przypisany (karczma → Quests, sklepy → Shop, zagroda → Pets), dymek „… w budowie”, gdy nic się nie otworzyło
   B05 istniejące okna: które okna otworzyły się od razu (historia klienta „otwarto”) — dziś oczekiwane: żadne okno
       Pawła (Shop / Pets / Quests jeszcze nie istnieją), portal → TeleportChmury Trwa = true
-  B06 kamera we wnętrzach: na stoisku karczmy, mistrza gier, maga, zbrojmistrza i trenera — odległość kamery od głowy
-      (domyślnie ok. 12,5; < 8 = kamera przysunięta przez ścianę) i czy promień kamera → głowa trafia w część
+  B06 kamera we wnętrzach: na stoisku karczmy, mistrza gier, maga, zbrojmistrza i trenera, kamera ustawiona za plecami
+      — odległość kamery od głowy (domyślnie ok. 12,5; < 6 = kamera ściśnięta) i czy promień kamera → głowa trafia
+      w część (obrócona kamera: testy/proba_dodatkowa.py, D01)
   B07 portal → chmury → Las i powrót: E przy portalu → TeleportChmury (Trwa), wybór „las” haczykiem klienta →
       postać w Lesie; potem Otworz → „miasteczko” → gdzie wylądowała (stare miasteczko albo bazar — zależy od wpisu
       w krainy.json, README: jednolinijkowa zmiana)
@@ -174,13 +176,15 @@ def main():
             log("zrzut", nazwa)
 
         def atrybuty(nazwy, dm="Server"):
-            return js('local o = {} if not k then return H:JSONEncode({ brak = true }) end '
-                      'for _, n in { %s } do o[n] = J(k:GetAttribute(n)) end return H:JSONEncode(o)'
-                      % ", ".join('"%s"' % n for n in nazwy), dm)
+            w = js('local o = {} if not k then return H:JSONEncode({ brak = true }) end '
+                   'for _, n in { %s } do o[n] = J(k:GetAttribute(n)) end return H:JSONEncode(o)'
+                   % ", ".join('"%s"' % n for n in nazwy), dm)
+            # pusta tabela Luau (żaden atrybut nie ustawiony) przychodzi z JSONEncode jako [] — to „nic”, nie lista
+            return w if isinstance(w, dict) else {}
 
         def hak(polecenie, *argi, dm="Server"):
             nazwa = "SterowanieSerwera" if dm == "Server" else "SterowanieKlienta"
-            a = ", ".join("nil" if x is None else json.dumps(x) for x in argi)
+            a = ", ".join("nil" if x is None else json.dumps(x, ensure_ascii=False) for x in argi)
             return js('return H:JSONEncode(J(k.Sygnaly.%s:Invoke("%s"%s)))' % (nazwa, polecenie, (", " + a) if a else ""), dm)
 
         def klient():
@@ -190,6 +194,10 @@ def main():
             """Postać na punkcie p (grunt + 3,2), twarzą do patrz (poziomo)."""
             x, y, z = p
             px, pz = (patrz[0], patrz[2]) if patrz else (x + 1, z)
+            # stoisko „Stare miasteczko” = jego punkt E (ten sam X, Z): CFrame.lookAt na punkt w tym samym miejscu daje
+            # NaN i postać ginie pod mapą (próba 17.11.2026: B09 „przechodziło” dzięki odrodzeniu przy SpawnLocation)
+            if math.hypot(px - x, pz - z) < 0.1:
+                px, pz = x + 1, z
             luau(HRP + 'local p = Vector3.new(%f, %f, %f) hrp.Parent:PivotTo(CFrame.lookAt(p, Vector3.new(%f, p.Y, %f))) '
                        'hrp.AssemblyLinearVelocity = Vector3.zero return "ok"' % (x, y + 3.2, z, px, pz), "Server")
 
@@ -197,7 +205,19 @@ def main():
             return js(HRP + 'return H:JSONEncode(J(hrp.Position))', "Server")
 
         def nacisnij(klawisz):
+            if klawisz == "E":
+                kamera_za()
             call("user_keyboard_input", {"datamodel_type": "Client", "actions": [{"action": "keyPress", "key_code": klawisz}]})
+
+        def kamera_za():
+            """Kamera gracza za plecami postaci. Podpowiedź E pokazuje się (i E działa) tylko, gdy jest na ekranie — po
+            PivotTo kamera zostaje skierowana jak przy poprzednim punkcie (próba 17.11.2026: E przy zagrodzie nie działało,
+            bo podpowiedź była za kamerą). Gracz, który podchodzi do sprzedawcy, ma ją przed sobą."""
+            luau('local c = workspace.CurrentCamera local ch = game:GetService("Players").LocalPlayer.Character '
+                 'if c.CameraType == Enum.CameraType.Custom and ch and ch:FindFirstChild("Head") then '
+                 'c.CFrame = CFrame.lookAt(ch.Head.Position - ch.HumanoidRootPart.CFrame.LookVector * 12 + Vector3.new(0, 3.5, 0), ch.Head.Position) '
+                 'end return "ok"', "Client")
+            time.sleep(0.5)
 
         def czekaj_na(warunek, limit, co=0.5):
             t0 = time.time()
@@ -217,6 +237,12 @@ def main():
             nacisnij("E")
             time.sleep(czekaj)
             a = atrybuty(["OstatnieE"])
+            if (":%s:" % mid) not in str(a.get("OstatnieE")):
+                # podpowiedź pokazuje się chwilę po przeniesieniu postaci — drugie E (liczone w wynikach)
+                WYNIKI.setdefault("ponowione_E", []).append(mid)
+                nacisnij("E")
+                time.sleep(czekaj)
+                a = atrybuty(["OstatnieE"])
             kl = klient()
             hist = kl.get("historia") or []
             return a.get("OstatnieE"), (hist[-1] if hist else {}), kl
@@ -258,6 +284,15 @@ def main():
                 nacisnij("Return")
                 time.sleep(1.5)
             zapisz("wybor_klasy", wybor)
+            # licznik odrodzeń i śmierci postaci (atrybuty WŁASNEGO kontenera, tylko w Play) — pierwsza próba 17.11.2026
+            # skończyła B09 przy SpawnLocation bez E: trzeba odróżnić przeniesienie od odrodzenia
+            luau(KP + 'local g = game:GetService("Players"):GetPlayers()[1] '
+                      'local function smierc(c) local h = c:WaitForChild("Humanoid", 5) if h then h.Died:Connect(function() '
+                      'k:SetAttribute("ProbaSmierci", (k:GetAttribute("ProbaSmierci") or 0) + 1) '
+                      'k:SetAttribute("ProbaOstatniaSmierc", string.format("%.0f;%.0f;%.0f", c:GetPivot().X, c:GetPivot().Y, c:GetPivot().Z)) end) end end '
+                      'if g.Character then task.spawn(smierc, g.Character) end '
+                      'g.CharacterAdded:Connect(function(c) k:SetAttribute("ProbaOdrodzen", (k:GetAttribute("ProbaOdrodzen") or 0) + 1) task.spawn(smierc, c) end) '
+                      'return "ok"', "Server")
             # słuchacz próby: każde OknoMiejsca zapisuje id w atrybucie WŁASNEGO kontenera (tylko u klienta)
             luau(KP + 'local e = game:GetService("ReplicatedStorage"):WaitForChild("OknoMiejsca", 10) if e then '
                       'e.Event:Connect(function(id) k:SetAttribute("ProbaOkno", id) k:SetAttribute("ProbaOkien", (k:GetAttribute("ProbaOkien") or 0) + 1) end) end '
@@ -356,7 +391,13 @@ def main():
             for mid in ("karczma", "mistrz_gier", "sklep_magiczny", "zbrojownia", "training_center"):
                 m = M[mid]
                 przestaw(m["stoisko"], m["punkt"])
-                time.sleep(1.8)
+                time.sleep(0.8)
+                # kamera za plecami, jak u gracza, który wszedł do sklepu (bez tego kierunek kamery zostawał z poprzedniego
+                # stoiska i wynik zależał od kolejności — pierwsza próba 17.11.2026); Poppercam przysuwa ją sam
+                luau('local c = workspace.CurrentCamera local ch = game:GetService("Players").LocalPlayer.Character '
+                     'c.CFrame = CFrame.lookAt(ch.Head.Position - ch.HumanoidRootPart.CFrame.LookVector * 12 + Vector3.new(0, 3.5, 0), ch.Head.Position) '
+                     'return "ok"', "Client")
+                time.sleep(1.2)
                 kamera[mid] = js('local c = workspace.CurrentCamera local g = game:GetService("Players").LocalPlayer.Character.Head '
                                  'local par = RaycastParams.new() par.FilterType = Enum.RaycastFilterType.Exclude '
                                  'par.FilterDescendantsInstances = { game:GetService("Players").LocalPlayer.Character } '
@@ -365,7 +406,10 @@ def main():
                 if mid == "karczma":
                     zrzut("04_karczma_kamera")
             zapisz("B06", kamera)
-            zle = [mid for mid, w in kamera.items() if w["odleglosc"] < 8 or w.get("zaslona")]
+            # próg 6 (było 8): przy mistrzu gier kamera za plecami opiera się o ramę drzwi karczmy (część z kolizją,
+            # 7,8 st) i widać wszystko — to zwykła praca Poppercam, nie kamera w ścianie. Zasłona = błąd zawsze.
+            # Kamerę odwróconą i ozdoby bez kolizji sprawdza testy/proba_dodatkowa.py (D01).
+            zle = [mid for mid, w in kamera.items() if w["odleglosc"] < 6 or w.get("zaslona")]
             punkt("B06", not zle, "kamera (odległość od głowy, zasłona): %s" % {
                 mid: (round(w["odleglosc"], 1), w.get("zaslona")) for mid, w in kamera.items()})
 
@@ -381,36 +425,65 @@ def main():
                 wybor_las = js('return H:JSONEncode(J(workspace.TeleportChmury.Sygnaly.SterowanieKlienta:Invoke("wybierz", "las")))', "Client")
                 czekaj_na(lambda: not js('return H:JSONEncode({ t = workspace.TeleportChmury:GetAttribute("Trwa") == true })', "Client")["t"], 12, 0.5)
                 p_las = poz()
+                # pierwsze wejście do Lasu odpala przelot kamery pasa (ok. 2,4 + 13,4 s, postać zakotwiczona) — w tym
+                # czasie chmury się nie otworzą („nie_w_wyborze” w pierwszej próbie 17.11.2026); czekamy na koniec
+                # (przebieg 02:05: czekanie tylko na „brak” przechodziło, zanim przelot ruszył — rusza po 2,4 s — i przelot
+                # startował po powrocie do bazaru, zostawiając kamerę skryptową na B09; haczyk „zapomnijPrzelot” w
+                # przebiegu 02:13 zostawiał klienta pasa w oczekiwaniu na przelot — kamera skryptowa od B07 do końca)
+                def faza_pasa():
+                    return js('local l = workspace:FindFirstChild("LasPasGra") local f = l and l.Sygnaly:FindFirstChild("SterowaniePasa") '
+                              'local g = f and f:Invoke("gracz") return H:JSONEncode({ faza = if g then g.faza else "brak", '
+                              'widzial = g and g.pamiec and g.pamiec.widzialPrzelotLasu or false })', "Server")
+                ruszyl = czekaj_na(lambda: (lambda w: w if w.get("faza") != "brak" else None)(faza_pasa()), 8, 0.4)
+                przelot7 = czekaj_na(lambda: (lambda w: w if w.get("faza") == "brak" else None)(faza_pasa()), 30, 1.0)
+                przelot7 = {"ruszyl": ruszyl, "koniec": przelot7}
                 time.sleep(3.5)
-                luau('workspace.TeleportChmury.Otworz:Fire() return "ok"', "Client")
-                czekaj_na(lambda: js('local s = workspace.TeleportChmury.Sygnaly.SterowanieKlienta:Invoke("stan") '
-                                     'return H:JSONEncode({ g = s.biezacy and s.biezacy.faza == "wybor" or false })', "Client")["g"], 8, 0.4)
-                wybor_m = js('return H:JSONEncode(J(workspace.TeleportChmury.Sygnaly.SterowanieKlienta:Invoke("wybierz", "miasteczko")))', "Client")
-                czekaj_na(lambda: not js('return H:JSONEncode({ t = workspace.TeleportChmury:GetAttribute("Trwa") == true })', "Client")["t"], 12, 0.5)
-                p_m = poz()
+                wybor_m, p_m = None, p_las
+                for _ in range(3):
+                    luau('workspace.TeleportChmury.Otworz:Fire() return "ok"', "Client")
+                    if czekaj_na(lambda: js('local s = workspace.TeleportChmury.Sygnaly.SterowanieKlienta:Invoke("stan") '
+                                            'return H:JSONEncode({ g = s.biezacy and s.biezacy.faza == "wybor" or false })', "Client")["g"], 8, 0.4):
+                        wybor_m = js('return H:JSONEncode(J(workspace.TeleportChmury.Sygnaly.SterowanieKlienta:Invoke("wybierz", "miasteczko")))', "Client")
+                        czekaj_na(lambda: not js('return H:JSONEncode({ t = workspace.TeleportChmury:GetAttribute("Trwa") == true })', "Client")["t"], 12, 0.5)
+                        p_m = poz()
+                        break
+                    time.sleep(3.5)
                 w_bazarze = D["bazar"]["pole_x"][0] <= p_m[0] <= D["bazar"]["pole_x"][1] and D["bazar"]["pole_z"][0] <= p_m[2] <= D["bazar"]["pole_z"][1]
-                zapisz("B07", {"e": ost, "wybor": ok_wybor, "las": {"wybor": wybor_las, "pozycja": p_las},
-                               "powrot": {"wybor": wybor_m, "pozycja": p_m, "w_bazarze": w_bazarze}})
-                punkt("B07", bool(ok_wybor) and p_las[0] >= 1066 and abs(p_m[2] + 700) < 400,
+                d_start = odl_xz(p_m, D["start"]["korzen"])
+                # czy krainy.json przejścia przez chmury ma wpis bazaru (README pakietu: jednolinijkowa zmiana)
+                try:
+                    with open(os.path.join(REPO, "swiat", "teleport_chmury", "krainy.json"), encoding="utf-8") as f:
+                        kr = json.load(f)
+                    wpis_bazaru = any((p.get("atrybut") or [None])[0] == "MiasteczkoBazarGra" or p.get("gdy_jest") == "MiasteczkoBazarGra"
+                                      for k7 in kr["krainy"] if k7["id"] == "miasteczko" for p in k7["przybycie"])
+                except (OSError, ValueError, KeyError):
+                    wpis_bazaru = None
+                zapisz("B07", {"e": ost, "wybor": ok_wybor, "las": {"wybor": wybor_las, "pozycja": p_las}, "przelot": przelot7,
+                               "powrot": {"wybor": wybor_m, "pozycja": p_m, "w_bazarze": w_bazarze, "od_startu": d_start},
+                               "wpis_bazaru_w_krainy": wpis_bazaru})
+                wrocil = odl_xz(p_m, p_las) > 50
+                punkt("B07", bool(ok_wybor) and p_las[0] >= 1066 and wrocil and (w_bazarze and d_start < 3 if wpis_bazaru else not w_bazarze),
                       "portal → chmury → Las (%.0f; %.0f; %.0f) → powrót (%.0f; %.0f; %.0f) %s" % (
                           p_las[0], p_las[1], p_las[2], p_m[0], p_m[1], p_m[2],
-                          "W BAZARZE" if w_bazarze else "w starym miasteczku (krainy.json bez wpisu bazaru)"))
+                          ("W BAZARZE, %.1f st od startu" % d_start) if w_bazarze else
+                          ("w starym miasteczku" if wrocil else "NIE WRÓCIŁ (%s)" % wybor_m)))
 
             # ---------------------------------------------------------------- B08 Brama Leśna → Las
             hak("przenies", "bazar")
             time.sleep(3.5)
             ost, wpis, _ = e_w("brama_lesna", 0.3)
             p8 = czekaj_na(lambda: (lambda q: q if q[0] >= 1066 else None)(poz()), 6, 0.3)
-            if p8:
-                zrzut("07_las_po_bramie")
             dymek_las = (klient().get("dymki") or {}).get("brama_lesna")
-            # drugie E zaraz po przejściu (blokada czasu): wracamy pod bramę bez zerowania odstępu
-            przestaw(M["brama_lesna"]["stoisko"], M["brama_lesna"]["punkt"])
-            time.sleep(0.8)
-            nacisnij("E")
-            time.sleep(0.8)
+            # drugie E zaraz po przejściu (blokada czasu 3 s): od razu, bez zerowania odstępu, haczykiem serwera „e”
+            # (ta sama decyzja co po podpowiedzi, bez sprawdzania odległości) — prawdziwe E z ustawieniem kamery i zrzutem
+            # trwało za długo i blokada mijała (przebieg 01:58), a powrót postaci pod bramę i znów do Lasu zostawiał
+            # podpowiedzi E nieczynne w B09 (przebiegi 02:05, 02:19). Prawdziwe E przy bramie sprawdza pierwsze E wyżej.
+            hak("e", "brama_lesna")
+            time.sleep(0.5)
             drugie = atrybuty(["OstatnieE"]).get("OstatnieE")
             dymek2 = (klient().get("dymki") or {}).get("brama_lesna")
+            if p8:
+                zrzut("07_las_po_bramie")
             zapisz("B08", {"e": ost, "w_lesie": p8, "dymek": dymek_las, "drugie": drugie, "dymek2": dymek2, "las": edit["las"]})
             if edit["las"]:
                 punkt("B08", p8 is not None and str(drugie).endswith("dymek/za_szybko") and str(dymek2).startswith("Chwila"),
@@ -423,10 +496,13 @@ def main():
             hak("przenies", "bazar")
             time.sleep(3.5)
             hak("zeruj")
+            przed9 = atrybuty(["ProbaOdrodzen", "ProbaSmierci", "ProbaOstatniaSmierc", "OstatnieE"])
             ost, wpis, _ = e_w("stare_miasteczko", 2.5)
             p_st = poz()
             cel_st = gotowe.get("PunktPowrotuStare")
             d_st = odl_xz(p_st, cel_st) if cel_st else None
+            po9 = atrybuty(["ProbaOdrodzen", "ProbaSmierci", "ProbaOstatniaSmierc", "OstatniePrzejscie"])
+            zapisz("B09_diagnoza", {"przed": przed9, "po": po9})
             time.sleep(1.0)
             zrzut("08_stare_miasteczko_nowe")
             nowe = js('local c = k.Punkty:FindFirstChild("E nowe_miasteczko") local lt = workspace:FindFirstChild("LasTeleport") '
@@ -443,7 +519,9 @@ def main():
             zapisz("B09", {"do_starego": {"e": ost, "pozycja": p_st, "odleglosc": d_st}, "nowe": nowe,
                            "do_bazaru": {"pozycja": p_nowe, "odleglosc": d_nowe}, "zaraz_drugie": hak_e})
             od_portalu = odl_xz(nowe["punkt"], nowe["portal"]) if nowe.get("portal") and nowe.get("punkt") else None
-            punkt("B09", d_st is not None and d_st < 3 and d_nowe < 2 and hak_e.get("powod") == "za_szybko",
+            punkt("B09", d_st is not None and d_st < 3 and d_nowe < 2 and hak_e.get("powod") == "za_szybko"
+                  and str(po9.get("OstatniePrzejscie")).endswith("stare_miasteczko:ok")
+                  and po9.get("ProbaSmierci") == przed9.get("ProbaSmierci"),
                   "do starego: %s st od PunktPowrotuStare; do bazaru: %.1f st od startu; zaraz drugie: %s; tabliczka %s st od PortalStart"
                   % (d_st and round(d_st, 1), d_nowe, hak_e.get("powod"), od_portalu and round(od_portalu, 1)))
 

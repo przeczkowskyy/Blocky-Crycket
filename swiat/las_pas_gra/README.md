@@ -12,7 +12,8 @@ wejścia biomu, przelotu nie da się pominąć, stary las zostaje nietknięty i 
 > **ten sam kod potworów** co w starym lesie (`swiat/las_potwory`), uruchomiony na nowych danych — 10 stref w
 > przegrodach pasa i Strażnik (20 / 36 / 46 potworów przy 1 / 8 / 20 graczach); **brama do Bagna** zamknięta, dopóki
 > gracz nie pokona Strażnika (otwiera się tylko u niego, serwer cofa nieuprawnionych); **teleport** — dzisiejsza brama
-> w miasteczku prowadzi na Polanę Przybycia pasa, gdy jest mapa, a Kamień Powrotu wraca do miasteczka; **mgła** tylko
+> w miasteczku prowadzi na Polanę Przybycia pasa, gdy jest mapa, a Kamień Powrotu wraca do miasteczka (od 17.11.2026 do
+> nowego miasteczka-bazaru, gdy stoi `Workspace/MiasteczkoBazarGra`; inaczej do starego); **mgła** tylko
 > u gracza w prostokącie pasa; **przelot kamery** 13,4 s przy pierwszym wejściu z rykiem Strażnika, bez pomijania.
 
 ## Pliki
@@ -51,7 +52,7 @@ wejścia biomu, przelotu nie da się pominąć, stary las zostaje nietknięty i 
 | `Sygnaly/{SterowaniePasa, SterowaniePasaKlienta}` | BindableFunction | haczyki testowe pasa |
 | `Brama` (Model, Persistent): `Zapora`, `Napis` | części | niewidzialna zapora przez cały pas (40 wys.) i napis „ZAMKNIĘTE / Pokonaj Strażnika Gaju” |
 | `ZaBrama`: `Podloga`, `Sciana`, `Tabliczka` | części | zapasowa niewidzialna podłoga i ściana za bramą, tabliczka „BAGNO — WKRÓTCE” |
-| `Punkty/KamienPowrotu` | część + ProximityPrompt | punkt E przy Kamieniu Powrotu z mapy → miasteczko |
+| `Punkty/KamienPowrotu` | część + ProximityPrompt | punkt E przy Kamieniu Powrotu z mapy → start nowego miasteczka-bazaru (uchwyt `MiasteczkoBazarGra/Sygnaly/PrzeniesDoBazaru`), a bez niego → stare miasteczko |
 
 Atrybuty kontenera ustawiane przy budowie: `Wygenerowane`, `Zrodlo`, `Zbudowano`, `Skrot` oraz nadpisania stałych
 pakietu potworów `Stale_*`: `NAZWA_KONTENERA = LasPasGra`, `NAZWA_BIOMU = LasPas` (promień do gruntu), `NAZWA_SZABLONOW
@@ -145,6 +146,20 @@ P08 BŁĄD (s1, w1) — błąd próby, nie gry (poprawka 3 niżej). Pierwszy prz
 2024) z komunikatem; po wygranej wrota u zwycięzcy bez kolizji, na serwerze z kolizją; stary las działa obok (36
 potworów, widoki „aktorzy”, jego mgła).
 
+**Kamień Powrotu → nowe miasteczko (17.11.2026, 01:49).** Zmiana minimalna (D-075: miasteczko to pierwszy blok
+pasa): `SerwerPasa` przy E na Kamieniu woła uchwyt `MiasteczkoBazarGra/Sygnaly/PrzeniesDoBazaru` (`{ punkt = "start" }`,
+nazwy w `D.miasteczko.bazar`, `generuj_dane.py`), gdy ten kontener stoi; bez niego — stare miasteczko jak dotąd. Nasza
+blokada (`za_szybko`, `przelot_trwa`) działa przed wołaniem uchwytu; odmowa uchwytu (np. `trwa`) nie przenosi nigdzie
+indziej; błąd uchwytu → stare miasteczko. Haczyk testowy `przenies … "miasteczko"` dalej prowadzi do starego.
+Przebudowa `zbuduj.py --skrypty` ze starym silnikiem v2 (`BC_SILNIK_KORZEN`). Lista P01–P16 po zmianie: **15 × OK,
+P14 „?”** (`wyniki/proba_play_20261117_0149.json`, `…_lista.txt`): P12 — prawdziwe E przy Kamieniu → start bazaru
+(990; 3; −697); reszta lasu bez zmian — walka z każdym gatunkiem (s1, m1, w1, t1) i powrót do pasa, slime wraca po
+12,3 s, nieuprawniony za bramą cofnięty (x 2024) z komunikatem, po wygranej ze Strażnikiem wrota tylko u zwycięzcy,
+przelot 13,4 s przy pierwszym wejściu i **bez drugiego przelotu** (P05: faza „brak”, licznik 1 → 1), stary las działa,
+0 błędów w konsoli. P12 w próbie sprawdza teraz cel zależnie od tego, czy stoi `MiasteczkoBazarGra`. Bez bazaru
+(uchwyt odpięty na czas próby, tylko w sesji Play) Kamień prowadzi do `LasTeleport.PunktMiasteczka` — próba
+`swiat/miasteczko_bazar_gra/testy/proba_dodatkowa.py`, D04.
+
 **Próba dodatkowa** (`testy/proba_dodatkowa.py`, `wyniki/proba_dodatkowa_20261117_0047.json`; pierwszy przebieg
 `…_0035.json`):
 
@@ -152,7 +167,7 @@ potworów, widoki „aktorzy”, jego mgła).
 |---|---|
 | Brama w miasteczku, prawdziwe E (podpowiedź `LasTeleport/BramaMiejska`) | postać na Polanie Przybycia po 0,1 s, w (1114; 3,56; −700); **przelot** przy pierwszym wejściu: 13,9 s, ryk Strażnika zagrał, czarny ekran najdłużej 0,45 s, potem kamera `Custom` i W przesuwa postać o 16 st w 1 s |
 | Drugie wejście bramą | bez przelotu (faza „brak” przez 6 s, licznik przelotów 1 → 1) |
-| Kamień Powrotu, prawdziwe E | miasteczko (−63,6; 3,37; −771,9) |
+| Kamień Powrotu, prawdziwe E | miasteczko (−63,6; 3,37; −771,9) — przed zmianą z 17.11.2026 01:49; teraz przy stojącym `MiasteczkoBazarGra` start bazaru (990; 3; −697) |
 | Przejście przez chmury, świeży gracz | postać w lesie 0,4 s po wyborze (przez uchwyt `PrzeniesDoLasu`); chmury kończą się po 2,99 s, **przelot** przejmuje kamerę po 3,78 s, 13,9 s z rykiem, czarny ekran 0,37 s; potem `Custom` i W = 16 st |
 | Drugie przejście przez chmury | bez przelotu (licznik 2 → 2), kamera `Custom` |
 | Bieg piechotą Polana → brama (`Humanoid:MoveTo`, WalkSpeed 16) | **57,0 s** na 906 st (plan 57,5 s), bez zatrzymań i bez cofnięć; furtka, mostek (najwyżej y 4,5) i bród, zwężenie, próg i brama menhirów bez przeszkód. Kryształowy filar Strażnika (`LasPas/Punkty/FilarKrysztal`, 7 × 7 st) stoi na osi pasa w (1994; −700) — dróżka go obchodzi; idąc na wprost postać na nim utknęła (pierwszy bieg 73,9 s) |

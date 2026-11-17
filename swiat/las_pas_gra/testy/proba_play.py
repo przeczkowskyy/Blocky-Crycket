@@ -507,18 +507,25 @@ def main():
             time.sleep(1.5)
             pp = js('local p = k.Punkty.KamienPowrotu.PodpowiedzPowrotu return H:JSONEncode({ wlaczona = p.Enabled })', "Client")
             zrzut("17_kamien_powrotu")
+            # D-075: z pakietem nowego miasteczka (Workspace/MiasteczkoBazarGra) Kamień prowadzi na start bazaru
+            bazar12 = luau('return tostring(workspace:FindFirstChild("MiasteczkoBazarGra") ~= nil)', "Server") == "true"
+
+            def w_miasteczku(p):
+                if bazar12:
+                    return 882 <= p[0] <= 1066 and -790 <= p[2] <= -610
+                return abs(p[0]) < 400 and -900 < p[2] < -600
             nacisnij("E")
             time.sleep(4)
             p12 = poz()
             jak12 = "E"
-            if not (abs(p12[0]) < 400 and -900 < p12[2] < -600):
+            if not w_miasteczku(p12):
                 pasa("przenies", None, "miasteczko")
                 jak12 = "haczyk (E nie przeniosło)"
                 time.sleep(2)
                 p12 = poz()
-            zapisz("P12", {"podpowiedz": pp, "jak": jak12, "pozycja": p12})
-            punkt("P12", pp.get("wlaczona") and jak12 == "E" and abs(p12[0]) < 400, "podpowiedź %s, %s → (%.0f; %.0f; %.0f)"
-                  % (pp, jak12, p12[0], p12[1], p12[2]))
+            zapisz("P12", {"podpowiedz": pp, "jak": jak12, "pozycja": p12, "cel": "bazar" if bazar12 else "stare"})
+            punkt("P12", pp.get("wlaczona") and jak12 == "E" and w_miasteczku(p12), "podpowiedź %s, %s → %s (%.0f; %.0f; %.0f)"
+                  % (pp, jak12, "nowe miasteczko" if bazar12 else "stare miasteczko", p12[0], p12[1], p12[2]))
 
             # ---------------------------------------------------------------- P14 koszt
             koszt = {}

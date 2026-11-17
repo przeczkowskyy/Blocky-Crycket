@@ -4,7 +4,8 @@
 Każda postać to Model w Studio: grupa `<Budynek>/<Postac>` z niewidzialną częścią „Korzeń” (stopy, oś obrotu; pierwsza
 część grupy, więc tools/studio_buduj.py robi z niej Model) i nazwane podgrupy:
     Glowa (głowa i twarz), Tulow (tułów, pas, fartuch), Rece, Nogi, Kapelusz (nakrycie głowy), Rekwizyt (to, co trzyma).
-Kolizję mają tylko Tulow i Nogi (gracz nie przechodzi przez sprzedawcę); reszta bez kolizji.
+Kolizję mają Tulow i Nogi (gracz nie przechodzi przez sprzedawcę) oraz Glowa i Kapelusz (kamera gracza nie wchodzi w
+głowę sprzedawcy — Poppercam widzi tylko części z kolizją; 17.11.2026); ręce i rekwizyty bez kolizji.
 
 Układ postaci: stopy w (0, 0, 0), twarz ku +Z; wysokość ok. 8 przed skalą (domyślnie ×0,85 → ok. 6,8, gracz ma ok. 5,3 —
 głowa większa od nóg, przerysowanie jak w przykazaniach stylu). Kolory tylko z palety miasteczka (skóra = tynk_brzoskwinia).
@@ -33,6 +34,10 @@ class _R:
         self.s, self.g = s, g
 
     def __call__(self, pod, kolizja=False):
+        # głowa i nakrycie głowy też z kolizją (17.11.2026): kamera gracza (Poppercam) zatrzymuje się tylko na częściach
+        # z kolizją — bez tego przy obróconej kamerze przy ladzie stawała W głowie maga (sprzedawca stoi przy półce)
+        if pod in ("Glowa", "Kapelusz"):
+            kolizja = True
         return _Pod(self.s, self.g + "/" + pod, kolizja)
 
 
@@ -135,32 +140,58 @@ def _korzen(s, g):
 
 # --------------------------------------------------------------------------- sprzedawcy
 def barman(s, g):
-    """Gruby barman karczmy (Karczmarz): łysy, wąsy jak szczotki, czerwona kamizelka, wielki brzuch w białej koszuli,
-    ręcznik na ramieniu, dłonie oparte o ladę."""
+    """Gruby karczmarz — własny projekt (17.11.2026, zamiast wąsacza w czerwieni i bieli, który za bardzo przypominał
+    znaną postać z cudzych gier): łysy, krótka ruda broda z bakami BEZ wąsów, czerwona opaska karczmy zawiązana z tyłu
+    (bez czapki z daszkiem), złoty kolczyk, zielona koszula, wielki brzuch, skórzany fartuch na szelkach, ręcznik na
+    ramieniu; lewa dłoń na ladzie, w prawej kufel z pianą."""
     R = _R(s, g)
-    _nogi(s, R, "drewno", "drewno_ciemne")
-    _tulow(s, R, "dach_karczma", szer=3.5, gl=2.3)
+    _nogi(s, R, "drewno_ciemne", "tusz")
+    _tulow(s, R, "dach_gildia", szer=3.5, gl=2.3, pas="drewno_ciemne")
     with R("Tulow", kolizja=True):
-        s.kula("Brzuch", (0, 4.0, 0.6), 3.1, "biel")
-        s.blok("Fartuch", (0, 1.95, 1.0), (3.0, 1.9, 0.4), "tynk_krem")
+        s.kula("Brzuch", (0, 4.0, 0.6), 3.1, "dach_gildia")
+        s.blok("Fartuch", (0, 2.05, 1.35), (3.1, 2.3, 0.4), "drewno")
+        s.blok("Fartuch szew", (0, 1.0, 1.57), (3.1, 0.22, 0.1), "drewno_ciemne")
+        s.blok("Fartuch kieszeń", (-0.75, 2.25, 1.58), (1.0, 0.8, 0.12), "drewno_ciemne")
     with R("Tulow"):
+        for sx in (-1, 1):
+            s.blok("Szelka", (sx * 0.9, 4.6, 1.42), (0.42, 2.6, 0.2), "drewno", rot=(-20, 0, 0))
         s.blok("Ręcznik", (-1.3, 5.55, 0.15), (0.9, 0.3, 2.4), "tynk_krem")
         s.blok("Ręcznik", (-1.3, 4.65, 1.35), (0.85, 1.7, 0.3), "tynk_krem", rot=(0, 0, 6))
-    _rece(s, R, "biel", szer=3.5, poza=("lada", "lada"), grub=1.05)
+    _rece(s, R, "dach_gildia", szer=3.5, poza=("lada", "trzyma"), grub=1.05)
+    with R("Rekwizyt"):
+        xd, yd, zd = dlon("trzyma", 1, szer=3.5, grub=1.05)
+        with s.uklad(pos=(xd, yd - 0.2, zd + 0.15)):
+            s.walec("Kufel", (0, 0.3, 0), 0.62, 1.5, "drewno_jasne", os="y")
+            for yo in (-0.2, 0.75):
+                s.walec("Kufel obręcz", (0, yo, 0), 0.66, 0.16, "metal_ciemny", os="y")
+            s.walec("Kufel piana", (0, 1.12, 0), 0.68, 0.35, "biel", os="y")
+            s.blok("Kufel ucho", (-0.78, 0.35, 0), (0.25, 0.9, 0.3), "drewno_ciemne")
     yh = 6.69
-    _twarz(s, R, yh, usmiech=True, brwi="drewno_ciemne", glowa=(2.9, 2.6, 2.6))
+    _twarz(s, R, yh, usmiech=True, brwi="pomarancz", glowa=(2.9, 2.6, 2.6), usta=False)
     with R("Glowa"):
+        s.blok("Broda", (0, yh - 1.62, 0.95), (2.8, 1.25, 1.1), "pomarancz")
+        # szeroki uśmiech z zębami nisko w brodzie; wspólne usta z _twarz (dwie ukośne kreski tuż pod nosem)
+        # czytały się u niego jak czarne wąsy, a wąsów ma nie mieć
+        s.blok("Usta", (0, yh - 1.36, 1.52), (1.5, 0.5, 0.12), "tusz")
+        s.blok("Zęby", (0, yh - 1.25, 1.56), (1.2, 0.24, 0.1), "biel")
+        s.blok("Broda", (0, yh - 2.35, 1.05), (1.7, 0.6, 0.8), cien(s, "pomarancz", 0.85))
         for sx in (-1, 1):
-            s.blok("Włosy", (sx * 1.4, yh + 0.2, -0.3), (0.45, 1.1, 1.7), "drewno_ciemne")
-            s.blok("Wąs", (sx * 0.62, yh - 0.48, 1.62), (1.35, 0.55, 0.5), "drewno_ciemne", rot=(0, 0, sx * 16))
+            s.blok("Bak", (sx * 1.38, yh - 0.75, 0.45), (0.36, 1.5, 1.3), "pomarancz")
         s.blok("Policzek", (-0.95, yh - 0.35, 1.32), (0.55, 0.4, 0.2), "dach_karczma")
         s.blok("Policzek", (0.95, yh - 0.35, 1.32), (0.55, 0.4, 0.2), "dach_karczma")
         s.blok("Łysina blik", (0.5, yh + 1.33, 0.2), (1.0, 0.12, 0.7), "biel", rot=(0, 20, 0))
+        s.walec("Kolczyk", (1.62, yh - 0.6, -0.1), 0.22, 0.12, "zloto", os="x")
+    with R("Kapelusz"):
+        s.blok("Opaska", (0, yh + 0.72, -0.02), (3.04, 0.5, 2.74), "dach_karczma")
+        s.blok("Opaska węzeł", (0, yh + 0.72, -1.45), (0.6, 0.55, 0.3), cien(s, "dach_karczma", 0.85))
+        for sx in (-1, 1):
+            s.blok("Opaska koniec", (sx * 0.32, yh + 0.1, -1.5), (0.4, 1.1, 0.14), "dach_karczma", rot=(0, 0, sx * 18))
 
 
 def mistrz_gier(s, g):
-    """Mistrz gier planszowych (D-053): chudy, siedzi przy stole, cylinder ze złotą opaską, monokl, podkręcony wąsik,
-    kamizelka w szachownicę."""
+    """Mistrz gier planszowych (D-053): chudy, siedzi przy stole, okrągłe okulary, bródka bez wąsów, miękki beret
+    w kolorze koła fortuny ze złotą kostką, kamizelka w szachownicę. (17.11.2026: bez cylindra, monokla i podkręconego
+    wąsika — razem z muszką za bardzo przypominały maskotkę znanej gry planszowej.)"""
     R = _R(s, g)
     _nogi(s, R, "dach_twierdza", "tusz", siedzi=True, szer=1.0)
     yb = 2.3
@@ -173,15 +204,22 @@ def mistrz_gier(s, g):
     yh = yb + 2.8 + 1.25
     _twarz(s, R, yh, usmiech=False, glowa=(2.5, 2.5, 2.4))
     with R("Glowa"):
-        for sx in (-1, 1):
-            s.blok("Wąsik", (sx * 0.55, yh - 0.45, 1.5), (0.95, 0.25, 0.3), "tusz", rot=(0, 0, sx * 22))
-        s.blok("Bródka", (0, yh - 1.25, 1.1), (0.5, 0.6, 0.4), "tusz")
-        s.walec("Monokl", (0.62, yh + 0.22, 1.5), 0.55, 0.14, "zloto", os="z")
-        s.blok("Monokl łańcuszek", (0.95, yh - 0.6, 1.3), (0.14, 1.4, 0.14), "zloto", rot=(0, 0, 12))
+        s.blok("Bródka", (0, yh - 1.3, 1.05), (0.9, 0.75, 0.45), "drewno_ciemne")
+        for sx in (-1, 1):  # oprawki wokół oczu (same ramki — oczy widać)
+            xo, yo = sx * 0.62, yh + 0.22
+            for dy in (-0.55, 0.55):
+                s.blok("Okular ramka", (xo, yo + dy, 1.47), (1.06, 0.12, 0.1), "metal_ciemny")
+            for dx in (-0.47, 0.47):
+                s.blok("Okular ramka", (xo + dx, yo, 1.47), (0.12, 1.22, 0.1), "metal_ciemny")
+            s.blok("Okular zausznik", (sx * 1.3, yo + 0.4, 0.6), (0.12, 0.14, 1.75), "metal_ciemny")
+        s.blok("Okular mostek", (0, yh + 0.4, 1.47), (0.3, 0.12, 0.1), "metal_ciemny")
     with R("Kapelusz"):
-        s.walec("Cylinder rondo", (0, yh + 1.35, 0), 1.8, 0.3, "tusz", os="y")
-        s.walec("Cylinder", (0, yh + 2.6, 0), 1.15, 2.3, "tusz", os="y", rot=(0, 0, -6))
-        s.walec("Cylinder opaska", (0.03, yh + 1.8, 0), 1.2, 0.5, "zloto", os="y", rot=(0, 0, -6))
+        with s.uklad(pos=(0.25, yh + 1.35, -0.1), obrot=(0, 0, -10)):
+            s.walec("Beret", (0, 0, 0), 1.75, 0.55, "dach_kolo", os="y")
+            s.walec("Beret otok", (0, -0.3, 0), 1.4, 0.25, cien(s, "dach_kolo", 0.8), os="y")
+            s.blok("Beret ogonek", (0, 0.45, 0), (0.25, 0.4, 0.25), "dach_kolo")
+            with s.cechy(cien=False):
+                s.blok("Beret kostka", (0.9, 0.05, 1.2), (0.55, 0.55, 0.55), "zloto", rot=(20, 30, 0))
 
 
 def zbrojmistrz(s, g):
@@ -252,8 +290,9 @@ def mag(s, g):
 
 
 def trener(s, g):
-    """Trener Training Center: płaski czub, czerwona opaska, gwizdek na sznurku, podkoszulek z pasem, krótkie spodenki,
-    wielkie ramiona; jedna ręka wskazuje tablicę wyboru, druga na biodrze."""
+    """Trener Training Center: płaski czub, niebieska opaska na pot (17.11.2026: była czerwona — z białą koszulką za
+    blisko znanego wojownika z bijatyk, a czerwoną opaskę ma już karczmarz), gwizdek na sznurku, podkoszulek z pasem,
+    krótkie spodenki, wielkie ramiona; jedna ręka wskazuje tablicę wyboru, druga na biodrze."""
     R = _R(s, g)
     with R("Nogi", kolizja=True):
         for sx in (-1, 1):
@@ -273,8 +312,8 @@ def trener(s, g):
         s.blok("Podbródek", (0, yh - 1.15, 0.9), (1.6, 0.6, 0.8), cien(s, SKORA, 0.95))
     with R("Kapelusz"):
         s.blok("Czub", (0, yh + 1.65, 0), (2.85, 0.8, 2.6), "tusz")
-        s.blok("Opaska", (0, yh + 1.0, 0), (2.95, 0.5, 2.65), "dach_arena")
-        s.blok("Opaska węzeł", (-1.2, yh + 0.9, -1.35), (0.5, 0.9, 0.25), "dach_arena", rot=(0, 0, 25))
+        s.blok("Opaska", (0, yh + 1.0, 0), (2.95, 0.5, 2.65), "dach_twierdza")
+        s.blok("Opaska pasek", (0, yh + 1.0, 1.34), (2.0, 0.16, 0.06), "biel")
 
 
 def opiekunka(s, g):

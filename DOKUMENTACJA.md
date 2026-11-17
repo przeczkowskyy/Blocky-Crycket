@@ -242,16 +242,21 @@ Blocky&Crycket/
 ├── swiat/                     💡 mapy z klocków: generator → czesci.json → Blender / Studio / panel
 │   ├── demo_lesna_baza/       demo „Leśna baza startowa” (generuj.py, czesci.json, .blend, podglad/)
 │   ├── test_walki_roblox/     💡 prototyp walki v1 w Studio (Workspace/TestWalki): Rycerz kontra Zbir, 8–10 s
-│   ├── test_walki2/           💡 prototyp walki v2 w Studio (Workspace/TestWalki2): silnik v2, nowe modele, umiejętności i efekty
+│   ├── test_walki2/           💡 prototyp walki w Studio (Workspace/TestWalki2): nowe modele, umiejętności i efekty; od 17.11 ekran pod dziennik v3 i pomijanie walk (część bez Studio)
+│   ├── biom_las/  las_potwory/  💡 pierwszy las (Workspace/BiomLas), jego potwory w ruchu (Workspace/LasPotwory) i plan lasu jako pasa (biom_las/pas/)
+│   ├── las_pas/  las_pas_gra/   💡 las jako wąski pas: mapa (Workspace/LasPas) i skrypty gry (Workspace/LasPasGra)
+│   ├── miasteczko_bazar/  miasteczko_bazar_gra/  💡 miasteczko jako ciasny bazar: mapa (Workspace/MiasteczkoBazar) i skrypty gry (Workspace/MiasteczkoBazarGra)
+│   ├── teleport_chmury/       💡 przejście przez chmury zamiast okna mapy (Workspace/TeleportChmury)
 │   └── postacie/              💡 postacie, pety i ekwipunek z kodu: Blender (siatki, animacje) i postacie z klocków w Studio
-├── tools/walka/               💡 silnik walki v2 w Pythonie: symulacja, testy, tabela balansu, zgodność z Luau w Studio
+├── tools/walka/               💡 silnik walki w Pythonie (od 17.11 wersja 3: mana, statusy, blok, pasywki): symulacja, testy, tabela balansu, model tempa, zgodność z Luau
+├── tools/ekran_zaciemnienie.py  czarne okno na wszystkie monitory na czas nocnej pracy w Studio (uśpiony ekran zatrzymuje rysowanie)
 ├── tools/studio/              skrypty Luau uruchamiane w Studio (rzeczy spoza Rojo)
 ├── tools/studio_mcp.py        klient MCP Roblox Studio z terminala (bez zależności)
 ├── tools/studio_buduj.py      buduje w Studio scenę z czesci.json (jeden kontener, do cofnięcia)
 ├── tools/blender/klocki.py    czesci.json ↔ scena Blendera, rendery podglądu
 ├── tools/sejf_lint.py         kontrola sejfu: linki, statusy, sekrety
 ├── tools/*.py                 narzędzia pipeline'u assetów (obróbka, upload, manifest)
-├── assets/                    pipeline assetów: manifest.json, refs/, processed/, raw/ (poza Git)
+├── assets/                    pipeline assetów: manifest.json, refs/, processed/, raw/ (poza Git); audio/ — 💡 muzyka i dźwięki z generatora (manifest_audio.json)
 ├── docs/                      instrukcja pipeline'u i wcześniejsze prompty (HUD, pasek ładowania)
 ├── .claude/skills/            skille Claude Code (figma-to-roblox, asset)
 ├── .mcp.json                  serwery MCP: Higgsfield (pipeline assetów) i Roblox Studio
@@ -611,3 +616,4 @@ Pełna historia: [Dziennik zmian](B%26C/Produkcja/Dziennik%20zmian.md).
 - **13.11.2026 (popołudnie, Claude Code u Karola):** 💡 postacie, pety i ekwipunek z kodu (`swiat/postacie/`: 6 postaci, 3 zestawy, 8 broni, 20 klipów animacji) oraz te same postacie w Studio jako postacie z klocków ze stawami (`Workspace/TestPostaci`), animacje sprawdzone w trybie Edit i Play; import siatek nie sprawdzony (propozycja D-029, pytanie 24); 💡 zapis do sejfu z panelu (D-028, wyłączony do decyzji).
 - **13.11.2026 (wieczór, Karol z Claude Code):** ✅ D-030 — decyzje zatwierdza Karol albo Paweł, wystarczy jeden, każda zostaje w logach (zdecydował Karol; potwierdzenie Pawła czeka w pytaniu 27); ✅ D-027 — instrukcja „Glossy Ink” zastępuje prefiks Style Lock; ✅ D-028 — panel jako miejsce pracy, zapis do sejfu z panelu włączony; propozycja D-024 o walce zmieniona na „trzy długości”; import siatek sprawdzony na Rycerzu (postać R15 z 15 części w `Workspace/TestPostaci`).
 - **14.11.2026 (Claude Code u Game Directora):** okno ekwipunku: rozmiary napisów 15/16/20 px i wyśrodkowane zakładki; skill `/asset`: model Nano Banana 2.1, prompty mapy teleportacji w formacie Glossy Ink; HUD: trzecia waluta Rybki (ikona wgrana do Roblox).
+- **15–17.11.2026 (Claude Code u Karola):** 💡 pierwszy las w Studio z potworami w ruchu (`swiat/biom_las/`, `swiat/las_potwory/`); sesja główna 16.11 i decyzje D-073–D-093 (świat jako wąski pas biomów, pomijanie walk, miasteczko jak bazar, podział: Paweł 2D, Karol 3D i dźwięk); 💡 silnik walki v3 (`tools/walka/`, `src/server/Walka/`); 💡 las jako pas i miasteczko-bazar zbudowane i sprawdzone w grze w Studio (`swiat/las_pas*/`, `swiat/miasteczko_bazar*/`), przejście przez chmury zamiast okna mapy (`swiat/teleport_chmury/`); 💡 muzyka i dźwięki (`assets/audio/`); panel: zakładka Assety na bieżąco i szybsza synchronizacja. Szczegóły dzień po dniu: `B&C/Produkcja/Dziennik zmian.md`.

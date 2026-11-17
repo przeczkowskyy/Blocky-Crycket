@@ -1,0 +1,526 @@
+{
+ "edit": {
+  "kontener": true,
+  "stare": [
+   11.692440032958984,
+   -2.6994121074676514
+  ],
+  "mapa": true,
+  "chmury": true,
+  "las": true
+ },
+ "wybor_klasy": {
+  "ekran": false,
+  "kamera": "Custom",
+  "podpowiedzi": true
+ },
+ "B01": {
+  "serwer": {
+   "PunktStartuBazaru": [
+    990,
+    3.5,
+    -697
+   ],
+   "ZgodnoscLogikiBazaru": "OK 70/70",
+   "SerwerBazaruGotowy": true,
+   "ZrodloStartuStarego": "Workspace.SpawnLocation",
+   "Las": "jest",
+   "Podpowiedzi": 13,
+   "PunktPowrotuStare": [
+    2.9231090545654297,
+    0.9999984502792358,
+    -0.6748528480529785
+   ],
+   "Chmury": "jest",
+   "PunktStaregoMiasteczka": [
+    11.692440032958984,
+    0.9999984502792358,
+    -2.6994121074676514
+   ]
+  },
+  "klient": {
+   "KlientBazaruGotowy": true
+  }
+ },
+ "B02": {
+  "przenies": {
+   "punkt": [
+    990,
+    3.448025703430176,
+    -697
+   ],
+   "ok": true
+  },
+  "pozycja": [
+   989.9994506835938,
+   3.2969253063201904,
+   -696.9949951171875
+  ],
+  "odleglosc": 0.005034937981845787,
+  "podpowiedzi": {
+   "wlaczone": 13,
+   "n": 13
+  }
+ },
+ "B03": {
+  "karczma": {
+   "czas": 2.833925100014312,
+   "plan": 2.98,
+   "cel": 5.0,
+   "pozycja": [
+    957.5531005859375,
+    3.5000534057617188,
+    -724.41357421875
+   ]
+  },
+  "mistrz_gier": {
+   "czas": 2.3319346999924164,
+   "plan": 2.66,
+   "cel": 5.0,
+   "pozycja": [
+    967.385009765625,
+    3.5000534057617188,
+    -721.5466918945312
+   ]
+  },
+  "sklep_magiczny": {
+   "czas": 2.6672609000233933,
+   "plan": 2.96,
+   "cel": 5.0,
+   "pozycja": [
+    1021.814453125,
+    3.5000534057617188,
+    -722.7713623046875
+   ]
+  },
+  "zbrojownia": {
+   "czas": 4.000314700009767,
+   "plan": 4.42,
+   "cel": 5.0,
+   "pozycja": [
+    1044.4615478515625,
+    3.4980485439300537,
+    -722.7125854492188
+   ]
+  },
+  "training_center": {
+   "czas": 4.01654030001373,
+   "plan": 4.32,
+   "cel": 5.0,
+   "pozycja": [
+    938.333251953125,
+    3.5000534057617188,
+    -724.4191284179688
+   ]
+  },
+  "zagroda_petow": {
+   "czas": 2.3997715000004973,
+   "plan": 2.69,
+   "cel": 5.0,
+   "pozycja": [
+    960.2490234375,
+    3.5000534057617188,
+    -676.8853149414062
+   ]
+  },
+  "tablica": {
+   "czas": 1.0178049000096507,
+   "plan": 1.34,
+   "cel": null,
+   "pozycja": [
+    980.4212036132812,
+    3.2813000679016113,
+    -713.4796142578125
+   ]
+  },
+  "dzialka": {
+   "czas": 0.5823032000043895,
+   "plan": 0.78,
+   "cel": null,
+   "pozycja": [
+    993.78076171875,
+    3.2969253063201904,
+    -686.604248046875
+   ]
+  },
+  "lochy": {
+   "czas": 2.9827160999993794,
+   "plan": 3.2,
+   "cel": null,
+   "pozycja": [
+    1037.509765625,
+    3.2664432525634766,
+    -690.1429443359375
+   ]
+  },
+  "portal_krain": {
+   "czas": 1.36704430001555,
+   "plan": 1.56,
+   "cel": 6.0,
+   "pozycja": [
+    993.92138671875,
+    3.2969253063201904,
+    -720.026611328125
+   ]
+  },
+  "brama_lesna": {
+   "czas": 3.798910399986198,
+   "plan": 3.98,
+   "cel": null,
+   "pozycja": [
+    1051.4835205078125,
+    3.277628183364868,
+    -699.9511108398438
+   ]
+  },
+  "stare_miasteczko": {
+   "czas": 0.4834002999996301,
+   "plan": 0.75,
+   "cel": null,
+   "pozycja": [
+    978.6868286132812,
+    3.218799114227295,
+    -696.9949951171875
+   ]
+  }
+ },
+ "B04": {
+  "karczma": {
+   "serwer": "<gracz>:karczma:okno",
+   "zdarzenie": "karczma",
+   "klient": {
+    "czas": 8234.642045000015,
+    "zdarzenie": true,
+    "hud": "Quests",
+    "id": "karczma",
+    "dymek": true
+   },
+   "dymki": {
+    "karczma": "Karczmarz: zadania wkrótce!"
+   }
+  },
+  "mistrz_gier": {
+   "serwer": "<gracz>:mistrz_gier:okno",
+   "zdarzenie": "mistrz_gier",
+   "klient": {
+    "id": "mistrz_gier",
+    "czas": 8237.32504950001,
+    "dymek": true,
+    "zdarzenie": true
+   },
+   "dymki": {
+    "mistrz_gier": "Mistrz gier: plansza w budowie"
+   }
+  },
+  "sklep_magiczny": {
+   "serwer": "<gracz>:sklep_magiczny:okno",
+   "zdarzenie": "sklep_magiczny",
+   "klient": {
+    "czas": 8239.924777500011,
+    "zdarzenie": true,
+    "hud": "Shop",
+    "id": "sklep_magiczny",
+    "dymek": true
+   },
+   "dymki": {
+    "sklep_magiczny": "Mag: sklep w budowie"
+   }
+  },
+  "zbrojownia": {
+   "serwer": "<gracz>:zbrojownia:okno",
+   "zdarzenie": "zbrojownia",
+   "klient": {
+    "czas": 8244.591828300006,
+    "zdarzenie": true,
+    "hud": "Shop",
+    "id": "zbrojownia",
+    "dymek": true
+   },
+   "dymki": {
+    "zbrojownia": "Zbrojmistrz: sklep w budowie"
+   }
+  },
+  "training_center": {
+   "serwer": "<gracz>:training_center:okno",
+   "zdarzenie": "training_center",
+   "klient": {
+    "id": "training_center",
+    "czas": 8247.925050800026,
+    "dymek": true,
+    "zdarzenie": true
+   },
+   "dymki": {
+    "training_center": "Trener: mini-gry w budowie"
+   }
+  },
+  "zagroda_petow": {
+   "serwer": "<gracz>:zagroda_petow:okno",
+   "zdarzenie": "zagroda_petow",
+   "klient": {
+    "czas": 8250.59156260002,
+    "zdarzenie": true,
+    "hud": "Pets",
+    "id": "zagroda_petow",
+    "dymek": true
+   },
+   "dymki": {
+    "zagroda_petow": "Opiekunka: zagroda w budowie"
+   }
+  },
+  "tablica": {
+   "serwer": "<gracz>:tablica:okno",
+   "zdarzenie": "tablica",
+   "klient": {
+    "id": "tablica",
+    "czas": 8253.240634300018,
+    "dymek": true,
+    "zdarzenie": true
+   },
+   "dymki": {
+    "tablica": "Pełny ranking — wkrótce"
+   }
+  },
+  "dzialka": {
+   "serwer": "<gracz>:dzialka:okno",
+   "zdarzenie": "dzialka",
+   "klient": {
+    "id": "dzialka",
+    "czas": 8255.923771900008,
+    "dymek": true,
+    "zdarzenie": true
+   },
+   "dymki": {
+    "dzialka": "Działka — wkrótce"
+   }
+  }
+ },
+ "B05": {
+  "otwarte_od_razu": {},
+  "portal": {
+   "serwer": "<gracz>:portal_krain:chmury",
+   "klient": {
+    "id": "portal_krain",
+    "czas": 8258.524566000007,
+    "chmury": "otwarte"
+   },
+   "chmury_trwa": {
+    "trwa": true
+   }
+  }
+ },
+ "B06": {
+  "karczma": {
+   "odleglosc": 12.504374504089355
+  },
+  "mistrz_gier": {
+   "odleglosc": 7.9336442947387695
+  },
+  "sklep_magiczny": {
+   "odleglosc": 12.500195503234863
+  },
+  "zbrojownia": {
+   "odleglosc": 12.505228042602539
+  },
+  "training_center": {
+   "odleglosc": 12.48948860168457
+  }
+ },
+ "B07": {
+  "e": "<gracz>:portal_krain:chmury",
+  "wybor": true,
+  "las": {
+   "wybor": {
+    "ok": true,
+    "zamknieta": false
+   },
+   "pozycja": [
+    1114.00048828125,
+    3.3584001064300537,
+    -700.0003051757812
+   ]
+  },
+  "przelot": {
+   "faza": "brak"
+  },
+  "powrot": {
+   "wybor": {
+    "ok": true,
+    "zamknieta": false
+   },
+   "pozycja": [
+    989.9994506835938,
+    3.2969253063201904,
+    -696.9949951171875
+   ],
+   "w_bazarze": true,
+   "od_startu": 0.005034937981845787
+  },
+  "wpis_bazaru_w_krainy": true
+ },
+ "B08": {
+  "e": "<gracz>:brama_lesna:las",
+  "w_lesie": [
+   1114.00048828125,
+   3.3584001064300537,
+   -700.0003051757812
+  ],
+  "dymek": null,
+  "drugie": "<gracz>:brama_lesna:dymek/za_szybko",
+  "dymek2": "Chwila… jeszcze 1 s",
+  "las": true
+ },
+ "B09_diagnoza": {
+  "przed": {
+   "OstatnieE": "<gracz>:brama_lesna:dymek/za_szybko"
+  },
+  "po": {
+   "ProbaSmierci": 1,
+   "ProbaOstatniaSmierc": "0;-1000000;0",
+   "ProbaOdrodzen": 1,
+   "OstatniePrzejscie": "<gracz>:brama_lesna:ok"
+  }
+ },
+ "B09": {
+  "do_starego": {
+   "e": "<gracz>:brama_lesna:dymek/za_szybko",
+   "pozycja": [
+    2.4320626258850098,
+    4.175870418548584,
+    -1.8611925840377808
+   ],
+   "odleglosc": 1.283950374545794
+  },
+  "nowe": {
+   "punkt": [
+    11.692440032958984,
+    4.499998569488525,
+    -2.6994121074676514
+   ],
+   "portal": [
+    0,
+    5.160001754760742,
+    16
+   ]
+  },
+  "do_bazaru": {
+   "pozycja": [
+    989.9994506835938,
+    3.2969253063201904,
+    -696.9949951171875
+   ],
+   "odleglosc": 0.005034937981845787
+  },
+  "zaraz_drugie": {
+   "id": "stare_miasteczko",
+   "akcja": "dymek",
+   "powod": "za_szybko",
+   "tekst": "Chwila… jeszcze 2 s"
+  }
+ },
+ "B10": {
+  "wiersze": [
+   "1. <gracz> — poz. 1 · moc 130",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   ""
+  ],
+  "gracz": "<gracz>"
+ },
+ "B11": {
+  "dzialka": "Działka — wkrótce",
+  "lochy_zamkniete": "Zamknięte",
+  "klodka_klient": {
+   "czesci": 8,
+   "ukryte": 8,
+   "atrybut": true
+  },
+  "klodka_serwer": {
+   "ukryte": 0
+  },
+  "otwarte": {
+   "e": "<gracz>:lochy:okno",
+   "zdarzenie": "lochy",
+   "dymki": {
+    "lochy": "Hala portali — wkrótce"
+   }
+  },
+  "po_zamknieciu": {
+   "ukryte": 0
+  }
+ },
+ "B12": {
+  "zachod": {
+   "pozycja": [
+    899.310791015625,
+    6.431373596191406,
+    -722.177734375
+   ],
+   "miny": 3.2969253063201904
+  },
+  "wschod": {
+   "pozycja": [
+    1056.993408203125,
+    6.436369895935059,
+    -706.0296630859375
+   ],
+   "miny": 3.1982436180114746
+  },
+  "polnoc": {
+   "pozycja": [
+    986.1181640625,
+    8.356138229370117,
+    -735.6819458007812
+   ],
+   "miny": 3.1719231605529785
+  },
+  "poludnie": {
+   "pozycja": [
+    920.6204833984375,
+    10.190059661865234,
+    -664.3953247070312
+   ],
+   "miny": 3.146998643875122
+  }
+ },
+ "B13": {
+  "DymkiWylaczone": {
+   "dymek": false,
+   "widoczny": null
+  },
+  "BezDymku": {
+   "dymek": false,
+   "widoczny": null
+  },
+  "bez atrybutów": {
+   "dymek": true,
+   "widoczny": "Zbrojmistrz: sklep w budowie"
+  }
+ },
+ "B14": {
+  "start": {
+   "p95_ms": 67.84850358963013,
+   "sr_ms": 66.66298887381951,
+   "n": 120
+  },
+  "karczma": {
+   "p95_ms": 67.98630207777023,
+   "sr_ms": 66.67006015777588,
+   "n": 120
+  },
+  "zagroda": {
+   "p95_ms": 68.17930191755295,
+   "sr_ms": 66.67347835997741,
+   "n": 120
+  },
+  "brama_lesna": {
+   "p95_ms": 68.02959740161896,
+   "sr_ms": 66.6599235807856,
+   "n": 120
+  }
+ },
+ "B15": []
+}

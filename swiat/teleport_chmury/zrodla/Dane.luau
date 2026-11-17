@@ -16,8 +16,10 @@ return {
 			kolor_gruntu = "E0C48E",
 			kolor_podloza = "6B5848",
 			kolor_drogi = "C9A66A",
-			obszary_xz = { { -293, 392, -954, -442 } },
+			obszary_xz = { { -293, 392, -954, -442 }, { 882, 1066, -790, -610 } },
 			przybycie = { {
+					atrybut = { "MiasteczkoBazarGra", "PunktStartuBazaru", "PatrzStartuBazaru" },
+				}, {
 					atrybut = { "LasTeleport", "PunktMiasteczka", "PatrzMiasteczko" },
 				}, {
 					xyz = { -63.6, 3.37, -771.9 },
@@ -217,5 +219,5 @@ return {
 		ukryj_gui = true,
 		klawisz_testowy = "T",
 	},
-	skrot = "d6dd2bf88a5d",
+	skrot = "f1625dfd5047",
 }

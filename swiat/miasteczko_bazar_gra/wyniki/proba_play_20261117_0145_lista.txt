@@ -1,0 +1,15 @@
+B01 OK   serwer {'PunktStartuBazaru': [990, 3.5, -697], 'ZgodnoscLogikiBazaru': 'OK 70/70', 'SerwerBazaruGotowy': True, 'ZrodloStartuStarego': 'Workspace.SpawnLocation', 'Las': 'jest', 'Podpowiedzi': 13, 'PunktPowrotuStare': [2.9231090545654297, 0.9999984502792358, -0.6748528480529785], 'Chmury': 'jest', 'PunktStaregoMiasteczka': [11.692440032958984, 0.9999984502792358, -2.6994121074676514]} | klient {'KlientBazaruGotowy': True}
+B02 OK   start: 0.01 st od PunktStartuBazaru, podpowiedzi {'wlaczone': 13, 'n': 13}
+B03 OK   bieg [s] (plan): karczma 2.67 (2.99), mistrz_gier 2.43 (2.68), sklep_magiczny 2.7 (2.96), zbrojownia 4.1 (4.44), training_center 3.93 (4.34), zagroda_petow 2.33 (2.69), tablica 1.08 (1.34), dzialka 0.62 (0.78), lochy 2.92 (3.2), portal_krain 1.38 (1.56), brama_lesna 3.78 (3.98), stare_miasteczko 0.9 (1.0); poza celem/planem: []
+B04 BŁĄD E → okno (serwer, OknoMiejsca, HUD, dymek) — niezgodne: ['zagroda_petow']
+B05 OK   okna otwarte od razu: żadne; portal → chmury: otwarte (TeleportChmury jest)
+B06 BŁĄD kamera (odległość od głowy, zasłona): {'karczma': (12.5, None), 'mistrz_gier': (7.8, None), 'sklep_magiczny': (12.5, None), 'zbrojownia': (12.5, None), 'training_center': (12.5, None)}
+B07 OK   portal → chmury → Las (1114; 3; -700) → powrót (990; 3; -697) W BAZARZE, 0.0 st od startu
+B08 OK   Brama Leśna → [1114.00048828125, 3.3584001064300537, -700.0003051757812]; drugie E: <gracz>:brama_lesna:dymek/za_szybko „Chwila… jeszcze 1 s”
+B09 OK   do starego: 0.0 st od PunktPowrotuStare; do bazaru: 0.0 st od startu; zaraz drugie: za_szybko; tabliczka 22.1 st od PortalStart
+B10 OK   tablica: ['1. <gracz> — poz. 1 · moc 130', '']
+B11 OK   działka „Działka — wkrótce”, lochy „Zamknięte”, kłódka u klienta {'czesci': 8, 'ukryte': 8, 'atrybut': True} / serwer {'ukryte': 0}, po odblokowaniu E → lochy
+B12 OK   ściany: {'zachod': [899.0, 6.6, -722.1], 'wschod': [1057.4, 8.5, -705.4], 'polnoc': [986.1, 9.8, -735.5], 'poludnie': [920.1, 8.5, -664.1]}; poza polem gry: []
+B13 OK   dymek zbrojowni: {'DymkiWylaczone': {'dymek': False, 'widoczny': None}, 'BezDymku': {'dymek': False, 'widoczny': None}, 'bez atrybutów': {'dymek': True, 'widoczny': 'Zbrojmistrz: sklep w budowie'}}
+B14 ?    klatka śr./p95 [ms]: {'start': (66.7, 67.8), 'karczma': (66.7, 68.1), 'zagroda': (66.7, 68.1), 'brama_lesna': (66.7, 68.0)} — ocenia człowiek (Studio z zaciemnionym oknem rysuje wolniej)
+B15 OK   0 wierszy [MiasteczkoBazarGra]/error, błędów pakietu: 0 []

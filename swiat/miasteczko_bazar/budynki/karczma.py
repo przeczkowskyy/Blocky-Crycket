@@ -90,7 +90,10 @@ def _bar(s, rnd):
 def _tablica_zlecen(s):
     """Tablica zleceń na tylnej ścianie obok barmana: deska z ramą, daszek w kolorze karczmy, trzy kartki z kształtami."""
     zb = ZB
-    with s.uklad(pos=(4.4, 7.6, zb), obrot=(0, 0, 3)), s.cechy(kolizja=False):
+    # cała tablica Z KOLIZJĄ (wisi na ścianie nad głową gracza): kamera gracza (Poppercam) zatrzymuje się tylko na
+    # częściach z kolizją — bez niej po obróceniu kamery przy mistrzu gier wchodziła między ścianę a deskę albo między
+    # deskę a kartki zleceń i cały ekran zasłaniał tył deski lub kartki (próby w Studio 17.11.2026)
+    with s.uklad(pos=(4.4, 7.6, zb), obrot=(0, 0, 3)), s.cechy(kolizja=True):
         s.blok("Tablica rama", (0, 0, 0.2), (8.0, 5.6, 0.4), "tusz")
         s.blok("Tablica deska", (0, 0, 0.5), (7.2, 4.8, 0.4), "drewno_jasne", "WoodPlanks")
         s.klin("Tablica daszek", (0, 3.3, 0.9), (8.8, 1.2, 1.6), DACH)

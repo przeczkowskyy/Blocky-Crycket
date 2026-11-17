@@ -1,0 +1,447 @@
+{
+ "D01": {
+  "karczma": {
+   "za_plecami": {
+    "odleglosc": 12.49899673461914,
+    "nad_stropem": false,
+    "trafia": "Workspace.MiasteczkoBazar.Karczma.Barman.Glowa.Nos",
+    "sprzedawca": true,
+    "zaslona_gracza": false,
+    "przy_scianie": [],
+    "w_ozdobie": []
+   },
+   "odwrocona": {
+    "odleglosc": 5.7909722328186035,
+    "nad_stropem": false,
+    "sprzedawca": true,
+    "zaslona_gracza": false,
+    "przy_scianie": [
+     "Workspace.MiasteczkoBazar.Karczma.Barman.Glowa.Głowa",
+     "Workspace.MiasteczkoBazar.Karczma.Barman.Kapelusz.Opaska"
+    ],
+    "w_ozdobie": []
+   }
+  },
+  "mistrz_gier": {
+   "za_plecami": {
+    "odleglosc": 7.840715408325195,
+    "nad_stropem": false,
+    "trafia": "Workspace.MiasteczkoBazar.Karczma.MistrzGier.Glowa.Bródka",
+    "sprzedawca": true,
+    "zaslona_gracza": false,
+    "przy_scianie": [
+     "Workspace.MiasteczkoBazar.Karczma.Rama otworu"
+    ],
+    "w_ozdobie": []
+   },
+   "odwrocona": {
+    "odleglosc": 6.946648597717285,
+    "nad_stropem": false,
+    "trafia": "Workspace.MiasteczkoBazar.Karczma.MistrzGier.Glowa.Głowa",
+    "sprzedawca": true,
+    "zaslona_gracza": false,
+    "przy_scianie": [
+     "Workspace.MiasteczkoBazar.Karczma.MistrzGier.Kapelusz.Beret"
+    ],
+    "w_ozdobie": []
+   }
+  },
+  "sklep_magiczny": {
+   "za_plecami": {
+    "odleglosc": 12.506468772888184,
+    "nad_stropem": false,
+    "trafia": "Workspace.MiasteczkoBazar.SklepMagiczny.Mag.Kapelusz.Kapelusz stożek",
+    "sprzedawca": true,
+    "zaslona_gracza": false,
+    "przy_scianie": [],
+    "w_ozdobie": []
+   },
+   "odwrocona": {
+    "odleglosc": 5.850616931915283,
+    "nad_stropem": false,
+    "trafia": "Workspace.MiasteczkoBazar.SklepMagiczny.Mag.Glowa.Brew krzak",
+    "sprzedawca": true,
+    "zaslona_gracza": false,
+    "przy_scianie": [
+     "Workspace.MiasteczkoBazar.SklepMagiczny.Mag.Glowa.Głowa"
+    ],
+    "w_ozdobie": []
+   }
+  },
+  "zbrojownia": {
+   "za_plecami": {
+    "odleglosc": 12.509737014770508,
+    "nad_stropem": false,
+    "trafia": "Workspace.MiasteczkoBazar.Zbrojownia.Zbrojmistrz.Glowa.Brew",
+    "sprzedawca": true,
+    "zaslona_gracza": false,
+    "przy_scianie": [],
+    "w_ozdobie": []
+   },
+   "odwrocona": {
+    "odleglosc": 5.549720764160156,
+    "nad_stropem": false,
+    "trafia": "Workspace.MiasteczkoBazar.Zbrojownia.Zbrojmistrz.Kapelusz.Hełm rant",
+    "sprzedawca": true,
+    "zaslona_gracza": false,
+    "przy_scianie": [
+     "Workspace.MiasteczkoBazar.Zbrojownia.Zbrojmistrz.Kapelusz.Nosal"
+    ],
+    "w_ozdobie": []
+   }
+  },
+  "training_center": {
+   "za_plecami": {
+    "odleglosc": 12.504627227783203,
+    "nad_stropem": false,
+    "trafia": "Workspace.MiasteczkoBazar.TrainingCenter.Trener.Glowa.Oko",
+    "sprzedawca": true,
+    "zaslona_gracza": false,
+    "przy_scianie": [],
+    "w_ozdobie": []
+   },
+   "odwrocona": {
+    "odleglosc": 5.111942291259766,
+    "nad_stropem": false,
+    "trafia": "Workspace.MiasteczkoBazar.TrainingCenter.Trener.Glowa.Oko",
+    "sprzedawca": true,
+    "zaslona_gracza": false,
+    "przy_scianie": [
+     "Workspace.MiasteczkoBazar.TrainingCenter.Trener.Glowa.Źrenica"
+    ],
+    "w_ozdobie": []
+   }
+  },
+  "zagroda_petow": {
+   "za_plecami": {
+    "odleglosc": 12.498470306396484,
+    "nad_stropem": false,
+    "trafia": "Workspace.MiasteczkoBazar.ZagrodaPetow.Opiekunka.Glowa.Źrenica",
+    "sprzedawca": true,
+    "zaslona_gracza": false,
+    "przy_scianie": [],
+    "w_ozdobie": []
+   },
+   "odwrocona": {
+    "odleglosc": 4.306218147277832,
+    "nad_stropem": false,
+    "trafia": "Workspace.MiasteczkoBazar.ZagrodaPetow.Opiekunka.Glowa.Oko",
+    "sprzedawca": true,
+    "zaslona_gracza": false,
+    "przy_scianie": [
+     "Workspace.MiasteczkoBazar.ZagrodaPetow.Opiekunka.Glowa.Nos"
+    ],
+    "w_ozdobie": []
+   }
+  }
+ },
+ "D02": {
+  "karczma": {
+   "zaslona": "Workspace.MiasteczkoBazar.Karczma.Barman.Kapelusz.Opaska",
+   "punkt": [
+    957.8565673828125,
+    8.968000411987305,
+    -731.4110717773438
+   ],
+   "tekst": "Karczmarz: zadania wkrótce!",
+   "do_stropu": 5.831999778747559,
+   "w_czesciach": []
+  },
+  "mistrz_gier": {
+   "punkt": [
+    968.1092529296875,
+    7.4439496994018555,
+    -730.3222045898438
+   ],
+   "tekst": "Mistrz gier: plansza w budowie",
+   "do_stropu": 6.656050682067871,
+   "w_czesciach": [
+    "Workspace.MiasteczkoBazar.Karczma.MistrzGier.Kapelusz.Beret",
+    "Workspace.MiasteczkoBazar.Karczma.MistrzGier.Kapelusz.Beret otok",
+    "Workspace.MiasteczkoBazar.Karczma.MistrzGier.Glowa.Głowa"
+   ]
+  },
+  "sklep_magiczny": {
+   "zaslona": "Workspace.MiasteczkoBazar.SklepMagiczny.Mag.Kapelusz.Kapelusz rondo",
+   "punkt": [
+    1022.1435546875,
+    10.554491996765137,
+    -730.1117553710938
+   ],
+   "tekst": "Mag: sklep w budowie",
+   "do_stropu": 3.2455081939697266,
+   "w_czesciach": [
+    "Workspace.MiasteczkoBazar.SklepMagiczny.Mag.Kapelusz.Kapelusz stożek",
+    "Workspace.MiasteczkoBazar.SklepMagiczny.Mag.Kapelusz.Kapelusz stożek"
+   ]
+  },
+  "zbrojownia": {
+   "zaslona": "Workspace.MiasteczkoBazar.Zbrojownia.Zbrojmistrz.Glowa.Brew",
+   "punkt": [
+    1045.2562255859375,
+    9.784000396728516,
+    -729.8170776367188
+   ],
+   "tekst": "Zbrojmistrz: sklep w budowie",
+   "do_stropu": 4.015999794006348,
+   "w_czesciach": []
+  },
+  "training_center": {
+   "zaslona": "Workspace.MiasteczkoBazar.TrainingCenter.Tablica wyboru rama",
+   "punkt": [
+    942.3777465820312,
+    9.529000282287598,
+    -729.8311767578125
+   ],
+   "tekst": "Trener: mini-gry w budowie",
+   "do_stropu": 4.270999908447266,
+   "w_czesciach": []
+  },
+  "zagroda_petow": {
+   "punkt": [
+    959.3411865234375,
+    9.139898300170898,
+    -671.1752319335938
+   ],
+   "tekst": "Opiekunka: zagroda w budowie",
+   "w_czesciach": []
+  },
+  "tablica": {
+   "zaslona": "Workspace.MiasteczkoBazar.Tablica.Tablica rama",
+   "punkt": [
+    979.5390014648438,
+    7.699999809265137,
+    -718.010009765625
+   ],
+   "tekst": "Pełny ranking — wkrótce",
+   "do_stropu": 1.1831235885620117,
+   "w_czesciach": [
+    "Workspace.MiasteczkoBazar.Tablica.Tablica deska",
+    "Workspace.MiasteczkoBazar.Tablica.Kreska",
+    "Workspace.MiasteczkoBazar.Tablica.Plakietka"
+   ]
+  },
+  "dzialka": {
+   "punkt": [
+    994,
+    8.270000457763672,
+    -685
+   ],
+   "tekst": "Działka — wkrótce",
+   "w_czesciach": []
+  },
+  "lochy": {
+   "punkt": [
+    1038.5,
+    8.270000457763672,
+    -689
+   ],
+   "tekst": "Zamknięte",
+   "w_czesciach": []
+  },
+  "portal_krain": {
+   "zaslona": "Workspace.MiasteczkoBazar.PortalKrain.Wir podkład",
+   "punkt": [
+    994,
+    8.5,
+    -726
+   ],
+   "tekst": "Portal krain: przejście przez chmury jeszcze nie działa",
+   "w_czesciach": []
+  },
+  "brama_lesna": {
+   "punkt": [
+    1057.300048828125,
+    8.300000190734863,
+    -700
+   ],
+   "tekst": "Brama Leśna",
+   "do_stropu": 3.040493965148926,
+   "w_czesciach": []
+  },
+  "stare_miasteczko": {
+   "punkt": [
+    974,
+    7.199999809265137,
+    -697
+   ],
+   "tekst": "Stare miasteczko",
+   "w_czesciach": []
+  },
+  "nowe_miasteczko": {
+   "punkt": [
+    11.692440032958984,
+    7.899998664855957,
+    -2.6994121074676514
+   ],
+   "tekst": "Nowe miasteczko",
+   "w_czesciach": []
+  }
+ },
+ "D03": {
+  "przed": {
+   "OstatnieE": ""
+  },
+  "do_starego": {
+   "pozycja": [
+    2.9231090545654297,
+    4.3980255126953125,
+    -0.6748528480529785
+   ],
+   "cel": [
+    2.9231090545654297,
+    0.9999984502792358,
+    -0.6748528480529785
+   ],
+   "liczniki": {
+    "OstatniePrzejscie": "<gracz>:stare_miasteczko:ok",
+    "OstatnieE": "<gracz>:stare_miasteczko:przenies"
+   }
+  },
+  "do_bazaru": {
+   "pozycja": [
+    990,
+    3.448025703430176,
+    -697
+   ],
+   "liczniki": {
+    "OstatniePrzejscie": "<gracz>:nowe_miasteczko:ok",
+    "OstatnieE": "<gracz>:nowe_miasteczko:przenies"
+   }
+  }
+ },
+ "D04": {
+  "kamien": [
+   1106.5,
+   2.5999999046325684,
+   -718.5
+  ],
+  "z_uchwytem": {
+   "pozycja": [
+    990,
+    3.448025703430176,
+    -697
+   ],
+   "od_startu_bazaru": 0.0
+  },
+  "bez_uchwytu": {
+   "pozycja": [
+    -63.60697937011719,
+    3.369999885559082,
+    -771.906005859375
+   ],
+   "od_punktu_starego": 0.0,
+   "punkt_starego": [
+    -63.60697937011719,
+    3.369999885559082,
+    -771.906005859375
+   ]
+  },
+  "liczniki": [
+   {
+    "OstatniePrzejscie": "<gracz>:nowe_miasteczko:ok",
+    "OstatnieE": "<gracz>:nowe_miasteczko:przenies"
+   },
+   {
+    "OstatniePrzejscie": "<gracz>:nowe_miasteczko:ok",
+    "OstatnieE": "<gracz>:nowe_miasteczko:przenies"
+   }
+  ]
+ },
+ "D05": {
+  "czesci": 36256,
+  "streaming": true,
+  "klatka_p95_ms": 68.07290017604828,
+  "czesci_bazaru": 4410,
+  "instancje": 59028,
+  "klatka_sr_ms": 66.67480941273664,
+  "fps_studio": 60
+ },
+ "Z": {
+  "karczma": {
+   "sciana": "Workspace.MiasteczkoBazar.Karczma.Barman.Glowa.Usta",
+   "przesunieta": true,
+   "cam": [
+    957.9380493164062,
+    5.40036678314209,
+    -731.6929321289062
+   ]
+  },
+  "karczmarz": {
+   "sciana": "Workspace.MiasteczkoBazar.Karczma.Barman.Glowa.Usta",
+   "przesunieta": true,
+   "cam": [
+    957.8619384765625,
+    5.248128890991211,
+    -731.503173828125
+   ]
+  },
+  "zbrojownia": {
+   "sciana": "Workspace.MiasteczkoBazar.Zbrojownia.Zbrojmistrz.Glowa.Oko",
+   "przesunieta": true,
+   "cam": [
+    1045.372314453125,
+    6.186818599700928,
+    -730.184326171875
+   ]
+  },
+  "sklep_magiczny": {
+   "sciana": "Workspace.MiasteczkoBazar.SklepMagiczny.Mag.Glowa.Brew krzak",
+   "przesunieta": true,
+   "cam": [
+    1022.2037963867188,
+    6.984496593475342,
+    -730.3826904296875
+   ]
+  },
+  "zagroda": {
+   "przesunieta": false,
+   "cam": [
+    963.5181274414062,
+    9.739839553833008,
+    -683.7372436523438
+   ]
+  },
+  "tablica": {
+   "sciana": "Workspace.MiasteczkoBazar.Tablica.Kreska",
+   "przesunieta": true,
+   "cam": [
+    979.4461059570312,
+    5.8449273109436035,
+    -718.6693115234375
+   ]
+  },
+  "portal": {
+   "przesunieta": false,
+   "cam": [
+    989,
+    8,
+    -709.5
+   ]
+  },
+  "brama": {
+   "przesunieta": false,
+   "cam": [
+    1039.5,
+    7,
+    -694
+   ]
+  },
+  "stare_w_bazarze": {
+   "przesunieta": false,
+   "cam": [
+    997,
+    7.5,
+    -693
+   ]
+  },
+  "nowe_w_starym": {
+   "przesunieta": false,
+   "cam": [
+    -2.9231109619140625,
+    9.499999046325684,
+    3.6748530864715576
+   ]
+  }
+ }
+}
