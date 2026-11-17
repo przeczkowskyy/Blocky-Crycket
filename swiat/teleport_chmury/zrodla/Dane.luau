@@ -33,6 +33,11 @@ return {
 			kolor_drogi = "C08A55",
 			obszary_xz = { { 1076, 2040, -790, -610 }, { -700, 700, -2700, -1300 } },
 			przybycie = { {
+					gdy_jest = "LasPasGra",
+					uchwyt = "PrzeniesDoLasu",
+					punkt = "las",
+					przelot_po_s = 2.4,
+				}, {
 					gdy_jest = "LasPas",
 					xz = { 1114, -700 },
 					patrz_xz = { 1160, -700 },
@@ -212,5 +217,5 @@ return {
 		ukryj_gui = true,
 		klawisz_testowy = "T",
 	},
-	skrot = "a27f95a3278a",
+	skrot = "d6dd2bf88a5d",
 }

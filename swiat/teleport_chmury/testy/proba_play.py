@@ -138,6 +138,13 @@ class Sesja:
             st = self.stan()
             if st["kamera"] == "Custom" and st["podmiotHumanoid"]:
                 log("kamera gracza gotowa (próba %d)" % proba)
+                # las-pas (swiat/las_pas_gra), gdy stoi w Studio: jego przelot kamery przy pierwszym wejściu do lasu
+                # zakotwiczyłby postać w teście 1 (ruch klawiszem W) — na czas tych testów wstrzymany haczykiem
+                # testowym pasa (zapomnijPrzelot = nie startuj sam); przelot po chmurach sprawdza próba pasa
+                w = self.luau('local k = workspace:FindFirstChild("LasPasGra") local s = k and k:FindFirstChild("Sygnaly") '
+                              'local f = s and s:FindFirstChild("SterowaniePasa") '
+                              'return tostring(f and k:GetAttribute("SerwerPasaGotowy") == true and f:Invoke("zapomnijPrzelot"))', "Server")
+                log("przelot lasu-pasa wstrzymany na czas testów:", w)
                 return
             self.call("user_keyboard_input", {"datamodel_type": "Client",
                                               "actions": [{"action": "keyPress", "key_code": "Return"}]})

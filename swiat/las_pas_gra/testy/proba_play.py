@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Próba „lasu-pasa w grze” w Roblox Studio (tryb Play) — DLA NASTĘPNEGO ETAPU; przygotowana bez Studio, nieuruchomiona.
+"""Próba „lasu-pasa w grze” w Roblox Studio (tryb Play). Pierwsze przebiegi 17.11.2026 (wyniki w ../wyniki/,
+opis w README pakietu); poprawki po nich: ekran wyboru klasy zamykany Enterem przed P03, P08 z TestBezSesji
+i ponownym E (potwory chodzą). Uzupełnienie: testy/proba_dodatkowa.py (drogi do lasu, bieg, ściany, wszystkie
+gatunki, koszt przy pełnym zestawie).
 
     python -B swiat/las_pas_gra/testy/proba_play.py <folder wyjściowy> [--studio <studio_id>] [--bez-zrzutow]
 
@@ -242,6 +245,19 @@ def main():
                 atrybuty("LasPasGra", ["KlientGotowy", "KlientTryb", "KlientPasaGotowy"], "Client")), 60, 1.0) or {}
             zapisz("P02", kl)
             punkt("P02", kl.get("KlientTryb") == "aktorzy" and kl.get("KlientPasaGotowy") is True, "klienci: %s" % kl)
+            # ekran wyboru klasy (src/client/ClassSelectClient) trzyma kamerę skryptową w sali klas i wyłącza
+            # podpowiedzi E — Enter wybiera klasę jak gracz; bez tego przelot, mgła i E w pasie nie mają sensu
+            wybor = {}
+            for _ in range(20):
+                wybor = js('local p = game:GetService("Players").LocalPlayer local g = p.PlayerGui:FindFirstChild("ClassSelect") '
+                           'local c = workspace.CurrentCamera return H:JSONEncode({ ekran = g ~= nil and g.Enabled, kamera = c.CameraType.Name, '
+                           'podpowiedzi = game:GetService("ProximityPromptService").Enabled })', "Client")
+                if not wybor["ekran"] and wybor["kamera"] == "Custom" and wybor["podpowiedzi"]:
+                    break
+                nacisnij("Return")
+                time.sleep(1.5)
+            zapisz("wybor_klasy", wybor)
+            log("wybór klasy:", wybor)
 
             # ---------------------------------------------------------------- P03–P04 przybycie i pierwszy przelot
             luau(HRP + 'local t = workspace:FindFirstChild("LasTeleport") local p = t and t:GetAttribute("PunktMiasteczka") '
@@ -335,6 +351,9 @@ def main():
 
             # ---------------------------------------------------------------- P08 walka z każdym gatunkiem
             luau(KP + 'return tostring(k.Sygnaly.SterowanieKlienta:Invoke("bohater", "zwiadowca", "auto"))', "Client")
+            # test przewija walki — bez TestBezSesji serwer (słusznie) nie przyjmie następnej walki przed upływem
+            # prawdziwego czasu poprzedniej (odtwarzacz: OstatniaOdmowa = walka_trwa_lokalnie); sprawdzone 17.11.2026
+            luau(KP + 'k:SetAttribute("TestBezSesji", true) return "ok"', "Server")
             wyniki_walk = {}
             for nr, sid_strefy in enumerate(("s1", "m1", "w1", "t1")):
                 try:
@@ -344,20 +363,25 @@ def main():
                         wyniki_walk[sid_strefy] = "brak potwora"
                         continue
                     przed_walka = atrybuty("LasPasGra", ["SerwerLicznikWalk"]).get("SerwerLicznikWalk") or 0
-                    widzial_e = False
-                    for _ in range(6):
-                        p = js('local c = k.Stan:FindFirstChild("%s") return H:JSONEncode(J(c and c:GetAttribute("Pozycja") or Vector3.zero))' % cel["id"], "Server")
-                        przestaw(p[0] - 4, p[1] + 3.2, p[2], 1)
-                        time.sleep(0.6)
-                        kpot = klient_potworow()
-                        if kpot.get("podpowiedz") and kpot.get("najblizszy") == cel["id"]:
-                            widzial_e = True
-                            if nr == 0:
-                                zrzut("10_podpowiedz_slime")
-                            nacisnij("E")
+                    widzial_e, odmowy = False, []
+                    for proba_e in range(2):  # potwory chodzą: E przy oddalającym się potworze serwer może odrzucić
+                        for _ in range(6):
+                            p = js('local c = k.Stan:FindFirstChild("%s") return H:JSONEncode(J(c and c:GetAttribute("Pozycja") or Vector3.zero))' % cel["id"], "Server")
+                            przestaw(p[0] - 4, p[1] + 3.2, p[2], 1)
+                            time.sleep(0.6)
+                            kpot = klient_potworow()
+                            if kpot.get("podpowiedz") and kpot.get("najblizszy") == cel["id"]:
+                                widzial_e = True
+                                if nr == 0 and proba_e == 0:
+                                    zrzut("10_podpowiedz_slime")
+                                luau(KP + 'k:SetAttribute("OstatniaOdmowa", nil) return "ok"', "Client")
+                                nacisnij("E")
+                                break
+                        if czekaj_na(lambda: klient_potworow().get("walka"), 6, 0.5):
                             break
-                    jak = "E"
-                    if not czekaj_na(lambda: klient_potworow().get("walka"), 6, 0.5):
+                        odmowy.append(luau(KP + 'return tostring(k:GetAttribute("OstatniaOdmowa"))', "Client"))
+                    jak = "E" if not odmowy else "E (za %d. razem; odmowy %s)" % (len(odmowy) + 1, odmowy)
+                    if not czekaj_na(lambda: klient_potworow().get("walka"), 1, 0.5):
                         luau(KP + 'return tostring(k.Sygnaly.SterowanieKlienta:Invoke("walcz", "%s"))' % cel["id"], "Client")
                         jak = "haczyk walcz (E nie zadziałało)"
                     trwa = czekaj_na(lambda: klient_potworow().get("walka"), 10, 0.5)
@@ -382,8 +406,10 @@ def main():
                     time.sleep(1.5)
                 except Exception as e:  # noqa: BLE001
                     wyniki_walk[sid_strefy] = "wyjątek: %s" % str(e)[:200]
+            luau(KP + 'k:SetAttribute("TestBezSesji", nil) return "ok"', "Server")
             zapisz("P08", wyniki_walk)
             dobre = [k for k, v in wyniki_walk.items() if isinstance(v, dict) and v["E"] and v["walka"] and v["kamera"] == "Custom"
+                     and v["jak"].startswith("E")
                      and v["w_pasie"] and (v["walk"][1] or 0) > v["walk"][0]]
             punkt("P08", len(dobre) == 4, "walki z E i powrotem do pasa: %s; szczegóły %s" % (dobre, wyniki_walk))
 
@@ -528,7 +554,9 @@ def main():
 
             # ---------------------------------------------------------------- P16 konsola
             kons = call("get_console_output", {}, timeout=60)["text"]
-            linie = [x.strip()[:240] for x in kons.splitlines() if "LasPasGra" in x or "rror" in x]
+            imie = luau('return game:GetService("Players"):GetPlayers()[1].Name', "Server")
+            # repo jest publiczne: nazwa konta gracza z konsoli zastąpiona znacznikiem
+            linie = [x.strip()[:240].replace(imie, "<gracz>") for x in kons.splitlines() if "LasPasGra" in x or "rror" in x]
             bledy = [x for x in linie if "rror" in x or "błąd" in x.lower()]
             zapisz("P16", linie[-60:])
             punkt("P16", not bledy, "%d wierszy [LasPasGra]/error, w tym błędów: %d %s" % (len(linie), len(bledy), bledy[:3]))

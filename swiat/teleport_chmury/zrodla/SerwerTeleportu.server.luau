@@ -18,6 +18,8 @@
 		workspace.TeleportChmury.Sygnaly.SterowanieSerwera:Invoke("odblokuj", "bagno", gracz)
 
 	Punkty przybycia (krainy.json → przybycie, pierwszy pasujący):
+		{ gdy_jest = "LasPasGra", uchwyt = "PrzeniesDoLasu", punkt = "las", przelot_po_s = s } — postać przenosi pakiet
+		                                                       lasu-pasa (jego uchwyt); pierwszy przelot kamery czeka s
 		{ gdy_jest = "LasPas", xz = {…}, patrz_xz = {…} }  — tylko gdy w Workspace jest ten obiekt; wysokość z rzutu
 		                                                       promienia w dół (tylko części z kolizją, bez postaci)
 		{ atrybut = { "LasTeleport", "PunktLas", "PatrzLas" } } — odczyt atrybutów cudzego kontenera (tylko odczyt)
@@ -162,6 +164,39 @@ local function punktPrzybycia(kraina: any, humanoid: Humanoid, korzen: BasePart)
 	return nil, nil, "brak"
 end
 
+------------------------------------------------------------------ przeniesienie przez uchwyt innego pakietu (las-pas)
+-- { gdy_jest = "LasPasGra", uchwyt = "PrzeniesDoLasu", punkt = "las", przelot_po_s = s }: postać przenosi sam pakiet
+-- swiat/las_pas_gra (Sygnaly/PrzeniesDoLasu), a jego pierwszy przelot kamery czeka przelot_po_s, aż skończy się
+-- nasze opadanie kamery (17.11.2026: bez tego przelot zaczynał się w połowie opadania). Odmowa uchwytu → zwykłe
+-- punkty niżej (gracz i tak trafia do lasu; przelot wtedy startuje sam, bez opóźnienia). Zwraca wynik albo nil.
+local function przezUchwyt(gracz: Player, kraina: any): any?
+	for _, p in kraina.przybycie do
+		if not p.uchwyt then
+			continue
+		end
+		local k = p.gdy_jest and workspace:FindFirstChild(p.gdy_jest)
+		local sygnaly = k and k:FindFirstChild("Sygnaly")
+		local f = sygnaly and sygnaly:FindFirstChild(p.uchwyt)
+		if not f or not f:IsA("BindableFunction") then
+			continue
+		end
+		local t0 = os.clock()
+		local ok, w = pcall(function()
+			return (f :: BindableFunction):Invoke(gracz, { punkt = p.punkt, przelotPo = p.przelot_po_s or 0 })
+		end)
+		if ok and type(w) == "table" and w.ok == true and typeof(w.punkt) == "Vector3" then
+			return { ok = true, punkt = w.punkt, patrz = if typeof(w.patrz) == "Vector3" then w.patrz else w.punkt,
+				zrodlo = "uchwyt " .. p.gdy_jest .. "." .. p.uchwyt, wczytanie = os.clock() - t0 }
+		end
+		if ok and type(w) == "table" and w.powod == "brak_postaci" then
+			return { ok = false, powod = "brak_postaci" }
+		end
+		warn(PREFIKS .. "uchwyt " .. p.uchwyt .. " odmówił (" .. tostring(if ok and type(w) == "table" then w.powod else w)
+			.. ") — zwykły punkt przybycia")
+	end
+	return nil
+end
+
 ------------------------------------------------------------------ przeniesienie
 local function przenies(gracz: Player, id: string): any
 	local w = wpis(gracz)
@@ -187,6 +222,14 @@ local function przenies(gracz: Player, id: string): any
 	end
 	w.wTrakcie = true
 	local ok, wynik = pcall(function()
+		if humanoid.SeatPart then
+			humanoid.Sit = false
+			task.wait()
+		end
+		local przezPakiet = przezUchwyt(gracz, kraina)
+		if przezPakiet then
+			return przezPakiet
+		end
 		local punkt, patrz, zrodlo = punktPrzybycia(kraina, humanoid, korzen)
 		if not punkt or not patrz then
 			return { ok = false, powod = "brak_punktu" }

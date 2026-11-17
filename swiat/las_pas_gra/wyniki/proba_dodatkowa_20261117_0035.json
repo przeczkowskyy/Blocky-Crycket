@@ -1,0 +1,1390 @@
+{
+ "start": {
+  "serwery": true,
+  "wybor_klasy": {
+   "ekran": false,
+   "kamera": "Custom",
+   "podpowiedzi": true
+  }
+ },
+ "drogi": {
+  "podpowiedzi_LasTeleport": [
+   {
+    "zasieg": 14,
+    "p": [
+     0,
+     5.160001754760742,
+     16
+    ],
+    "wlaczona": true,
+    "nazwa": "Workspace.LasTeleport.PortalStart.Tafla",
+    "cel": "las"
+   },
+   {
+    "zasieg": 12,
+    "p": [
+     -221,
+     3.200000047683716,
+     -2417.199951171875
+    ],
+    "wlaczona": true,
+    "nazwa": "Workspace.LasTeleport.KamienPowrotu",
+    "cel": "miasteczko"
+   },
+   {
+    "zasieg": 18,
+    "p": [
+     -75.44449615478516,
+     3.5,
+     -785.4660034179688
+    ],
+    "wlaczona": true,
+    "nazwa": "Workspace.LasTeleport.BramaMiejska",
+    "cel": "las"
+   }
+  ],
+  "brama_1": {
+   "E_widoczne": {
+    "pps": true,
+    "n": 2
+   },
+   "pozycja": [
+    1114,
+    3.559999942779541,
+    -700
+   ],
+   "czas_E_s": 0.1,
+   "fazy": [
+    [
+     "trwa",
+     0.1
+    ],
+    [
+     "brak",
+     14.0
+    ]
+   ],
+   "os": {
+    "czarnyNajdluzej_s": 0.36,
+    "przelot_od_do": [
+     1,
+     15.03
+    ],
+    "chmury_od_do": null,
+    "kamera": [
+     [
+      0.07,
+      "Custom"
+     ],
+     [
+      1,
+      "Scriptable"
+     ],
+     [
+      15.16,
+      "Custom"
+     ]
+    ],
+    "klatki": {
+     "klatkiPrzelotu": 212,
+     "srMs": 66.8,
+     "p95Ms": 69.6,
+     "maksMs": 84.8,
+     "ponad100ms": 0
+    }
+   },
+   "ostatniPrzelot": {
+    "ok": true,
+    "ryk": true,
+    "id": 1,
+    "straznik": "straznik-1",
+    "powod": "",
+    "czas": 13.901744000002509
+   },
+   "kamera": {
+    "podmiot": true,
+    "typ": "Custom",
+    "podpowiedzi": true
+   },
+   "ruch_W_st": 16.0,
+   "ok": true
+  },
+  "kamien_powrotu": {
+   "podpowiedz": {
+    "e": true,
+    "p": [
+     1106.5,
+     2.5999999046325684,
+     -718.5
+    ]
+   },
+   "pozycja": [
+    -63.60697937011719,
+    3.369999885559082,
+    -771.906005859375
+   ],
+   "ok": true
+  },
+  "brama_2": {
+   "pozycja": [
+    1114,
+    3.559999942779541,
+    -700
+   ],
+   "fazy": [
+    "brak"
+   ],
+   "licznik": [
+    "1",
+    "1"
+   ],
+   "ok": true
+  },
+  "chmury_1": {
+   "gracz_przed": {
+    "widzial": false,
+    "faza": "brak"
+   },
+   "otworz": {
+    "ok": true
+   },
+   "wybor": true,
+   "wybierz": {
+    "ok": true,
+    "zamknieta": false
+   },
+   "pozycja": [
+    1114,
+    3.559999942779541,
+    -700
+   ],
+   "czas_do_lasu_s": 0.4,
+   "fazy": [
+    [
+     "brak",
+     0.1
+    ],
+    [
+     "uspokaja",
+     2.3
+    ],
+    [
+     "laduje",
+     2.6
+    ],
+    [
+     "trwa",
+     3.0
+    ],
+    [
+     "brak",
+     16.9
+    ]
+   ],
+   "os": {
+    "czarnyNajdluzej_s": 0.37,
+    "przelot_od_do": [
+     2.99,
+     17.12
+    ],
+    "chmury_od_do": [
+     0.05,
+     2.99
+    ],
+    "kamera": [
+     [
+      0.05,
+      "Custom"
+     ],
+     [
+      2.99,
+      "Scriptable"
+     ],
+     [
+      3.12,
+      "Custom"
+     ],
+     [
+      3.25,
+      "Scriptable"
+     ],
+     [
+      17.25,
+      "Custom"
+     ]
+    ],
+    "klatki": {
+     "klatkiPrzelotu": 213,
+     "srMs": 66.7,
+     "p95Ms": 68.7,
+     "maksMs": 82.3,
+     "ponad100ms": 0
+    }
+   },
+   "ostatniPrzelot": {
+    "ok": true,
+    "ryk": true,
+    "id": 2,
+    "straznik": "straznik-1",
+    "powod": "",
+    "czas": 13.902059699990787
+   },
+   "chmury_ostatnie": "wybrano las",
+   "kamera": {
+    "podmiot": true,
+    "typ": "Custom",
+    "podpowiedzi": true
+   },
+   "ruch_W_st": 16.0,
+   "ok": true
+  },
+  "chmury_2": {
+   "otworz": {
+    "ok": true
+   },
+   "wybor": true,
+   "wybierz": {
+    "ok": true,
+    "zamknieta": false
+   },
+   "pozycja": [
+    1114,
+    3.559999942779541,
+    -700
+   ],
+   "czas_do_lasu_s": 0.4,
+   "fazy": [
+    "brak"
+   ],
+   "licznik": [
+    "2",
+    "2"
+   ],
+   "kamera": {
+    "podmiot": true,
+    "typ": "Custom",
+    "podpowiedzi": true
+   },
+   "ok": true
+  }
+ },
+ "chod": {
+  "doszedl": true,
+  "czas": 73.86451690000831,
+  "koniec": [
+   2019.8223876953125,
+   3.304025173187256,
+   -699.8130493164062
+  ],
+  "yMin": 3.1654722690582275,
+  "zatrzymania": [
+   [
+    1989,
+    3.2,
+    -701
+   ],
+   [
+    1990,
+    10,
+    -699
+   ],
+   [
+    1990,
+    10,
+    -698
+   ],
+   [
+    1991,
+    10,
+    -698
+   ],
+   [
+    1991,
+    10,
+    -697
+   ],
+   [
+    1991,
+    10,
+    -697
+   ],
+   [
+    1991,
+    10,
+    -697
+   ],
+   [
+    1991,
+    10,
+    -697
+   ]
+  ],
+  "probki": [
+   [
+    0,
+    1114,
+    3.3
+   ],
+   [
+    2,
+    1146,
+    3.3
+   ],
+   [
+    4,
+    1178,
+    3.3
+   ],
+   [
+    6,
+    1210,
+    3.3
+   ],
+   [
+    8,
+    1242,
+    3.2
+   ],
+   [
+    10,
+    1274,
+    3.3
+   ],
+   [
+    12,
+    1305,
+    3.3
+   ],
+   [
+    14,
+    1337,
+    3.2
+   ],
+   [
+    16,
+    1370,
+    3.9
+   ],
+   [
+    18,
+    1402,
+    3.3
+   ],
+   [
+    20,
+    1434,
+    3.2
+   ],
+   [
+    22,
+    1466,
+    3.3
+   ],
+   [
+    24,
+    1498,
+    3.3
+   ],
+   [
+    26,
+    1530,
+    3.2
+   ],
+   [
+    28,
+    1562,
+    3.3
+   ],
+   [
+    30,
+    1594,
+    3.2
+   ],
+   [
+    32,
+    1625,
+    3.2
+   ],
+   [
+    34,
+    1657,
+    3.3
+   ],
+   [
+    36,
+    1689,
+    3.2
+   ],
+   [
+    38,
+    1721,
+    3.2
+   ],
+   [
+    40,
+    1753,
+    3.3
+   ],
+   [
+    42,
+    1786,
+    3.3
+   ],
+   [
+    44,
+    1818,
+    3.3
+   ],
+   [
+    46,
+    1850,
+    3.3
+   ],
+   [
+    48,
+    1881,
+    3.2
+   ],
+   [
+    50,
+    1914,
+    3.3
+   ],
+   [
+    52,
+    1946,
+    3.2
+   ],
+   [
+    54,
+    1978,
+    3.2
+   ],
+   [
+    56,
+    1989,
+    3.2
+   ],
+   [
+    58,
+    1990,
+    10
+   ],
+   [
+    60,
+    1990,
+    10
+   ],
+   [
+    62,
+    1991,
+    10
+   ],
+   [
+    64,
+    1991,
+    10
+   ],
+   [
+    66,
+    1991,
+    10
+   ],
+   [
+    68,
+    1991,
+    9.9
+   ],
+   [
+    70,
+    1991,
+    10
+   ],
+   [
+    72,
+    1992,
+    3.8
+   ]
+  ],
+  "zMaks": 4.9534912109375,
+  "yMaks": 10.072071075439453,
+  "cofniecia": [
+   "0",
+   "0"
+  ],
+  "dystans_st": 905.8,
+  "plan_s": 57.5,
+  "ok": false
+ },
+ "sciany": {
+  "boki": [
+   {
+    "x": 1110,
+    "wyniki": [
+     {
+      "kier": 1,
+      "y": 4.250656604766846,
+      "maksV": 36.49359130859375,
+      "z": -664.3341064453125
+     },
+     {
+      "kier": -1,
+      "y": 5.071067810058594,
+      "maksV": 36.50439453125,
+      "z": -735.689208984375
+     }
+    ],
+    "maksV": 36.50439453125
+   },
+   {
+    "x": 1210,
+    "wyniki": [
+     {
+      "kier": 1,
+      "y": 11.702288627624512,
+      "maksV": 36.51190185546875,
+      "z": -663.537841796875
+     },
+     {
+      "kier": -1,
+      "y": 9.299860000610352,
+      "maksV": 36.53460693359375,
+      "z": -735.8076782226562
+     }
+    ],
+    "maksV": 36.53460693359375
+   },
+   {
+    "x": 1330,
+    "wyniki": [
+     {
+      "kier": 1,
+      "y": 10.080225944519043,
+      "maksV": 36.4849853515625,
+      "z": -664.086669921875
+     },
+     {
+      "kier": -1,
+      "y": 2.9620699882507324,
+      "maksV": 36.484375,
+      "z": -735.9888305664062
+     }
+    ],
+    "maksV": 36.4849853515625
+   },
+   {
+    "x": 1480,
+    "wyniki": [
+     {
+      "kier": 1,
+      "y": 4.840221405029297,
+      "maksV": 36.49267578125,
+      "z": -664.3325805664062
+     },
+     {
+      "kier": -1,
+      "y": 9.429961204528809,
+      "maksV": 36.487060546875,
+      "z": -735.9400024414062
+     }
+    ],
+    "maksV": 36.49267578125
+   },
+   {
+    "x": 1630,
+    "wyniki": [
+     {
+      "kier": 1,
+      "y": 2.8822498321533203,
+      "maksV": 36.51031494140625,
+      "z": -664.0630493164062
+     },
+     {
+      "kier": -1,
+      "y": 5.535428047180176,
+      "maksV": 36.4923095703125,
+      "z": -735.6278076171875
+     }
+    ],
+    "maksV": 36.51031494140625
+   },
+   {
+    "x": 1850,
+    "wyniki": [
+     {
+      "kier": 1,
+      "y": 3.5753536224365234,
+      "maksV": 36.49298095703125,
+      "z": -664.345458984375
+     },
+     {
+      "kier": -1,
+      "y": 9.827900886535645,
+      "maksV": 36.47802734375,
+      "z": -736.3068237304688
+     }
+    ],
+    "maksV": 36.49298095703125
+   },
+   {
+    "x": 1975,
+    "wyniki": [
+     {
+      "kier": 1,
+      "y": 5.380376815795898,
+      "maksV": 36.468017578125,
+      "z": -664.3063354492188
+     },
+     {
+      "kier": -1,
+      "y": 2.898395538330078,
+      "maksV": 36.50360107421875,
+      "z": -735.8818359375
+     }
+    ],
+    "maksV": 36.50360107421875
+   }
+  ],
+  "tyl": {
+   "xMin": 1096.5162353515625,
+   "koniec": [
+    1096.6160888671875,
+    9.074233055114746,
+    -697.1343383789062
+   ]
+  },
+  "ratunek": {
+   "po": [
+    1114.00048828125,
+    3.3584001064300537,
+    -700.0003051757812
+   ],
+   "licznik": [
+    "0",
+    "1"
+   ],
+   "ok": true
+  },
+  "ok": true
+ },
+ "walki": {
+  "s1": {
+   "id": "s1-1",
+   "poziom": 1,
+   "E": true,
+   "walka": true,
+   "kamera_na_arenie": true,
+   "postac_w_czasie_walki": [
+    1186.0689697265625,
+    2.9980483055114746,
+    -688.9934692382812
+   ],
+   "odmowa": null,
+   "proby_E": 1,
+   "przyjeta": true,
+   "wynik": "s1-1/zwiadowca/auto→1/przegrana",
+   "kamera": "Custom",
+   "powrot_odl_st": 0.0,
+   "w_pasie": true,
+   "ok": true
+  },
+  "m1": {
+   "id": "m1-1",
+   "poziom": 4,
+   "E": true,
+   "walka": true,
+   "kamera_na_arenie": true,
+   "postac_w_czasie_walki": [
+    1397.5787353515625,
+    2.9980483055114746,
+    -694.0432739257812
+   ],
+   "odmowa": null,
+   "proby_E": 1,
+   "przyjeta": true,
+   "wynik": "m1-1/zwiadowca/auto→4/wygrana",
+   "kamera": "Custom",
+   "powrot_odl_st": 0.0,
+   "w_pasie": true,
+   "ok": true
+  },
+  "w1": {
+   "id": "w1-1",
+   "poziom": 6,
+   "E": true,
+   "walka": true,
+   "kamera_na_arenie": true,
+   "postac_w_czasie_walki": [
+    1606.178466796875,
+    2.9980483055114746,
+    -687.8733520507812
+   ],
+   "odmowa": [
+    "nil"
+   ],
+   "proby_E": 2,
+   "przyjeta": true,
+   "wynik": "w1-1/zwiadowca/auto→6/przegrana",
+   "kamera": "Custom",
+   "powrot_odl_st": 0.0,
+   "w_pasie": true,
+   "ok": true
+  },
+  "t1": {
+   "id": "t1-1",
+   "poziom": 9,
+   "E": true,
+   "walka": true,
+   "kamera_na_arenie": true,
+   "postac_w_czasie_walki": [
+    1833.6043701171875,
+    2.9980483055114746,
+    -711.3773193359375
+   ],
+   "odmowa": null,
+   "proby_E": 1,
+   "przyjeta": true,
+   "wynik": "t1-1/zwiadowca/auto→9/przegrana",
+   "kamera": "Custom",
+   "powrot_odl_st": 0.0,
+   "w_pasie": true,
+   "ok": true
+  },
+  "straznik_przegrana": {
+   "proby": [
+    {
+     "id": "straznik-1",
+     "poziom": 10,
+     "E": true,
+     "walka": true,
+     "kamera_na_arenie": true,
+     "postac_w_czasie_walki": [
+      1969,
+      3.2978532314300537,
+      -700.0003051757812
+     ],
+     "odmowa": null,
+     "proby_E": 1,
+     "przyjeta": true,
+     "wynik": "straznik-1/wojownik/1→1/przegrana",
+     "kamera": "Custom",
+     "powrot_odl_st": 0.0,
+     "w_pasie": true,
+     "ok": true
+    }
+   ],
+   "pokonal": false,
+   "za_brama_po_przegranej": [
+    2024,
+    3.3076188564300537,
+    -700.0003051757812
+   ],
+   "ok": true
+  },
+  "straznik_wygrana": {
+   "proby": [
+    {
+     "id": "straznik-1",
+     "poziom": 10,
+     "E": true,
+     "walka": true,
+     "kamera_na_arenie": true,
+     "postac_w_czasie_walki": [
+      1969,
+      3.2978532314300537,
+      -700.0003051757812
+     ],
+     "odmowa": null,
+     "proby_E": 1,
+     "przyjeta": true,
+     "wynik": "straznik-1/zwiadowca/10→10/przegrana",
+     "kamera": "Custom",
+     "powrot_odl_st": 0.0,
+     "w_pasie": true,
+     "ok": true
+    },
+    {
+     "id": "straznik-1",
+     "poziom": 10,
+     "E": true,
+     "walka": true,
+     "kamera_na_arenie": true,
+     "postac_w_czasie_walki": [
+      1969,
+      3.2978532314300537,
+      -700.0003051757812
+     ],
+     "odmowa": null,
+     "proby_E": 1,
+     "przyjeta": true,
+     "wynik": "straznik-1/zwiadowca/10→10/wygrana",
+     "kamera": "Custom",
+     "powrot_odl_st": 0.0,
+     "w_pasie": true,
+     "ok": true
+    }
+   ],
+   "wygrana": true,
+   "baner": {
+    "jest": true,
+    "tekst": "BRAMA DO BAGNA OTWARTA!"
+   },
+   "przejscie": {
+    "y": 3.3080227375030518,
+    "x": 2046.924560546875,
+    "czas": 1.9502098999801092
+   },
+   "za_brama": [
+    2046.92578125,
+    3.3076188564300537,
+    -700.0003051757812
+   ],
+   "cofniecia": [
+    "1",
+    "1"
+   ],
+   "wrota_klient": {
+    "czesci": 17,
+    "niewidoczne": 17,
+    "kolizja": 0
+   },
+   "ok": true
+  }
+ },
+ "koszt": {
+  "przybycie_1": {
+   "klatki": {
+    "maks_ms": 68.40170174837112,
+    "czesciWidokow": 287,
+    "sr_ms": 66.66880094756684,
+    "p95_ms": 67.96020269393921,
+    "czesciKlienta": 18715,
+    "n": 120
+   },
+   "serwer": {
+    "potwory": {
+     "odradzania": {
+      "maks": 0.07580002420581877,
+      "n": 8,
+      "sr": 0.042087503970833495
+     },
+     "ruchu": {
+      "maks": 0.2410000015515834,
+      "n": 31,
+      "sr": 0.11216129191339977
+     },
+     "okno": 8.216140300006373
+    },
+    "heartbeatMs": 0.23375631868839264,
+    "pas": {
+     "okno": 8.216138300020248,
+     "maks": 0.03480000304989517,
+     "naSekunde": 0.07112830928445495,
+     "n": 31,
+     "sr": 0.01885161374605471
+    },
+    "potworow": 19,
+    "fizykaFps": 60.07831954956055
+   },
+   "klient_potworow": {
+    "wybór widoków": {
+     "maks": 0.08109997725114226,
+     "naSekunde": 0.10280842119012001,
+     "n": 16,
+     "sr": 0.052800000048591755
+    },
+    "koniec walki": {
+     "maks": 0.001600012183189392,
+     "naSekunde": 0.0034561593736813154,
+     "n": 32,
+     "sr": 0.0008875013008946553
+    },
+    "podpowiedź": {
+     "maks": 0.06650001159869134,
+     "naSekunde": 0.3715122337650059,
+     "n": 74,
+     "sr": 0.04125405236688518
+    },
+    "okno": 8.217225699976552,
+    "klatka": {
+     "maks": 0.6275000050663948,
+     "naSekunde": 23.17948990445859,
+     "n": 493,
+     "sr": 0.38635111593359867
+    },
+    "korzen": {
+     "maks": 0.2958999830298126,
+     "naSekunde": 12.681153463752668,
+     "n": 960,
+     "sr": 0.10854572932051572
+    },
+    "budowa widoków": {
+     "maks": 0.002200016751885414,
+     "naSekunde": 0.009151513112408216,
+     "n": 73,
+     "sr": 0.0010301376539856605
+    },
+    "klipy": {
+     "maks": 0.2339000056963414,
+     "naSekunde": 9.381840432830613,
+     "n": 986,
+     "sr": 0.07818732283745929
+    }
+   },
+   "widoki": 2,
+   "animowane": 2,
+   "czesciWidokow": 230
+  },
+  "wilki_1": {
+   "klatki": {
+    "maks_ms": 70.69359719753265,
+    "czesciWidokow": 3769,
+    "sr_ms": 66.65314532195528,
+    "p95_ms": 69.00270283222198,
+    "czesciKlienta": 22197,
+    "n": 120
+   },
+   "serwer": {
+    "potwory": {
+     "odradzania": {
+      "maks": 0.041300023440271616,
+      "n": 8,
+      "sr": 0.03477500649751164
+     },
+     "ruchu": {
+      "maks": 0.17529999604448676,
+      "n": 32,
+      "sr": 0.11597812772379257
+     },
+     "okno": 8.233075800002553
+    },
+    "heartbeatMs": 0.01221699733287096,
+    "pas": {
+     "okno": 8.233085599989863,
+     "maks": 0.02230002428404987,
+     "naSekunde": 0.07107906922816905,
+     "n": 32,
+     "sr": 0.018287501916347537
+    },
+    "potworow": 19,
+    "fizykaFps": 60.035606384277344
+   },
+   "klient_potworow": {
+    "wybór widoków": {
+     "maks": 7.071500003803521,
+     "naSekunde": 0.9792683662462678,
+     "n": 16,
+     "sr": 0.50395625839883
+    },
+    "koniec walki": {
+     "maks": 0.0015999830793589354,
+     "naSekunde": 0.00400776209633339,
+     "n": 31,
+     "sr": 0.001064513907617619
+    },
+    "podpowiedź": {
+     "maks": 0.10710000060498714,
+     "naSekunde": 0.4941459371141862,
+     "n": 74,
+     "sr": 0.05498378202507927
+    },
+    "okno": 8.234004500001902,
+    "klatka": {
+     "maks": 2.9466999985743314,
+     "naSekunde": 90.49865108781944,
+     "n": 493,
+     "sr": 1.5114935097387572
+    },
+    "korzen": {
+     "maks": 0.8899999957066029,
+     "naSekunde": 82.69614129085708,
+     "n": 2188,
+     "sr": 0.3112067639495934
+    },
+    "budowa widoków": {
+     "maks": 12.102799984859303,
+     "naSekunde": 2.9444603712929185,
+     "n": 74,
+     "sr": 0.32763108036896166
+    },
+    "klipy": {
+     "maks": 0.10839998139999807,
+     "naSekunde": 4.965178304894284,
+     "n": 2208,
+     "sr": 0.018515987547921806
+    }
+   },
+   "widoki": 8,
+   "animowane": 7,
+   "czesciWidokow": 3578
+  },
+  "straznik_1": {
+   "klatki": {
+    "maks_ms": 68.73179972171783,
+    "czesciWidokow": 409,
+    "sr_ms": 66.64506855110328,
+    "p95_ms": 68.14000010490417,
+    "czesciKlienta": 14827,
+    "n": 120
+   },
+   "serwer": {
+    "potwory": {
+     "odradzania": {
+      "maks": 0.04469999112188816,
+      "n": 8,
+      "sr": 0.03484999979264103
+     },
+     "ruchu": {
+      "maks": 0.16650001634843647,
+      "n": 31,
+      "sr": 0.11374838481236609
+     },
+     "okno": 8.216127299994696
+    },
+    "heartbeatMs": 0.07304970175027847,
+    "pas": {
+     "okno": 8.216126400016947,
+     "maks": 0.02819998189806938,
+     "naSekunde": 0.07266199692021676,
+     "n": 31,
+     "sr": 0.01925806939271429
+    },
+    "potworow": 19,
+    "fizykaFps": 60.02133560180664
+   },
+   "klient_potworow": {
+    "wybór widoków": {
+     "maks": 0.08600001456215978,
+     "naSekunde": 0.11076138688362415,
+     "n": 17,
+     "sr": 0.05353529602015281
+    },
+    "koniec walki": {
+     "maks": 0.001600012183189392,
+     "naSekunde": 0.004259589202538487,
+     "n": 31,
+     "sr": 0.0011290333444072354
+    },
+    "podpowiedź": {
+     "maks": 0.08289999095723033,
+     "naSekunde": 0.47000260407141947,
+     "n": 74,
+     "sr": 0.05218783602735178
+    },
+    "okno": 8.216762699972605,
+    "klatka": {
+     "maks": 0.5419999943114817,
+     "naSekunde": 17.33608536722104,
+     "n": 493,
+     "sr": 0.2889381330809792
+    },
+    "korzen": {
+     "maks": 0.500100024510175,
+     "naSekunde": 15.121113348281153,
+     "n": 473,
+     "sr": 0.26267780156916376
+    },
+    "budowa widoków": {
+     "maks": 0.00300002284348011,
+     "naSekunde": 0.011184442988578064,
+     "n": 75,
+     "sr": 0.0012253321862469115
+    },
+    "klipy": {
+     "maks": 0.14960000407882035,
+     "naSekunde": 1.4669767929242892,
+     "n": 493,
+     "sr": 0.024449898973277356
+    }
+   },
+   "widoki": 1,
+   "animowane": 1,
+   "czesciWidokow": 390
+  },
+  "przybycie_20": {
+   "klatki": {
+    "maks_ms": 73.96010309457779,
+    "czesciWidokow": 716,
+    "sr_ms": 66.66880839814743,
+    "p95_ms": 67.79199838638306,
+    "czesciKlienta": 19144,
+    "n": 120
+   },
+   "serwer": {
+    "potwory": {
+     "odradzania": {
+      "maks": 0.4724999889731407,
+      "n": 8,
+      "sr": 0.17117500101448968
+     },
+     "ruchu": {
+      "maks": 0.29490000451914966,
+      "n": 32,
+      "sr": 0.17789062349038431
+     },
+     "okno": 8.218345700006466
+    },
+    "heartbeatMs": 0.1778939962387085,
+    "pas": {
+     "okno": 8.218349100003252,
+     "maks": 0.02300000051036477,
+     "naSekunde": 0.07265449180205466,
+     "n": 32,
+     "sr": 0.01865937429101905
+    },
+    "potworow": 45,
+    "fizykaFps": 60.010520935058594
+   },
+   "klient_potworow": {
+    "wybór widoków": {
+     "maks": 0.14940000255592167,
+     "naSekunde": 0.1595238997842349,
+     "n": 16,
+     "sr": 0.08193125358957332
+    },
+    "koniec walki": {
+     "maks": 0.0015999830793589354,
+     "naSekunde": 0.0038088947679634916,
+     "n": 32,
+     "sr": 0.0009781215339899063
+    },
+    "podpowiedź": {
+     "maks": 0.29960001120343804,
+     "naSekunde": 0.6687250267862254,
+     "n": 74,
+     "sr": 0.0742608099244535
+    },
+    "okno": 8.217577799980063,
+    "klatka": {
+     "maks": 1.1522999848239124,
+     "naSekunde": 29.88181016853705,
+     "n": 493,
+     "sr": 0.49808539526204587
+    },
+    "korzen": {
+     "maks": 0.24419999681413174,
+     "naSekunde": 13.48135707357932,
+     "n": 1031,
+     "sr": 0.10745305586949526
+    },
+    "budowa widoków": {
+     "maks": 7.690099999308586,
+     "naSekunde": 2.3416632487769933,
+     "n": 74,
+     "sr": 0.26003783686728393
+    },
+    "klipy": {
+     "maks": 0.17529999604448676,
+     "naSekunde": 14.848998441378024,
+     "n": 1618,
+     "sr": 0.07541582196774203
+    }
+   },
+   "widoki": 5,
+   "animowane": 5,
+   "czesciWidokow": 575
+  },
+  "wilki_20": {
+   "klatki": {
+    "maks_ms": 73.53279739618301,
+    "czesciWidokow": 4149,
+    "sr_ms": 66.67548399418592,
+    "p95_ms": 68.71099770069122,
+    "czesciKlienta": 19197,
+    "n": 120
+   },
+   "serwer": {
+    "potwory": {
+     "odradzania": {
+      "maks": 0.03940000897273421,
+      "n": 8,
+      "sr": 0.03653750172816217
+     },
+     "ruchu": {
+      "maks": 0.3307000151835382,
+      "n": 31,
+      "sr": 0.26048710025216065
+     },
+     "okno": 8.21588130001328
+    },
+    "heartbeatMs": 0.16280491650104523,
+    "pas": {
+     "okno": 8.21588529998553,
+     "maks": 0.03269998705945909,
+     "naSekunde": 0.07151998132004331,
+     "n": 31,
+     "sr": 0.01895483752201882
+    },
+    "potworow": 45,
+    "fizykaFps": 60.040252685546875
+   },
+   "klient_potworow": {
+    "wybór widoków": {
+     "maks": 2.6609000051394105,
+     "naSekunde": 0.5009060105110884,
+     "n": 16,
+     "sr": 0.2571937475295272
+    },
+    "koniec walki": {
+     "maks": 0.014699995517730713,
+     "naSekunde": 0.006402686853028921,
+     "n": 31,
+     "sr": 0.0016967767864585885
+    },
+    "podpowiedź": {
+     "maks": 0.1652000064495951,
+     "naSekunde": 0.9761404749646754,
+     "n": 74,
+     "sr": 0.10836892053359062
+    },
+    "okno": 8.215313599997899,
+    "klatka": {
+     "maks": 3.861500008497387,
+     "naSekunde": 117.74706931700419,
+     "n": 493,
+     "sr": 1.962127991723894
+    },
+    "korzen": {
+     "maks": 1.032100000884384,
+     "naSekunde": 108.38473648158764,
+     "n": 2678,
+     "sr": 0.3324923822439788
+    },
+    "budowa widoków": {
+     "maks": 5.5247999844141304,
+     "naSekunde": 0.697684822390424,
+     "n": 74,
+     "sr": 0.07745540013373199
+    },
+    "klipy": {
+     "maks": 0.07300000288523734,
+     "naSekunde": 5.960429847323697,
+     "n": 2746,
+     "sr": 0.017832046754024677
+    }
+   },
+   "widoki": 8,
+   "animowane": 7,
+   "czesciWidokow": 3965
+  },
+  "straznik_20": {
+   "klatki": {
+    "maks_ms": 68.49610060453415,
+    "czesciWidokow": 409,
+    "sr_ms": 66.67006903638442,
+    "p95_ms": 67.96970218420029,
+    "czesciKlienta": 11447,
+    "n": 120
+   },
+   "serwer": {
+    "potwory": {
+     "odradzania": {
+      "maks": 0.04040001658722758,
+      "n": 8,
+      "sr": 0.03696249405038543
+     },
+     "ruchu": {
+      "maks": 0.3328000020701438,
+      "n": 31,
+      "sr": 0.27288386838570716
+     },
+     "okno": 8.217254699993646
+    },
+    "heartbeatMs": 0.06742511689662933,
+    "pas": {
+     "okno": 8.217259199998807,
+     "maks": 0.029300019377842546,
+     "naSekunde": 0.073747226348357,
+     "n": 31,
+     "sr": 0.019548389489852613
+    },
+    "potworow": 45,
+    "fizykaFps": 59.998043060302734
+   },
+   "klient_potworow": {
+    "wybór widoków": {
+     "maks": 0.1587000151630491,
+     "naSekunde": 0.2149041440927018,
+     "n": 17,
+     "sr": 0.10387059335377725
+    },
+    "koniec walki": {
+     "maks": 0.0019999861251562834,
+     "naSekunde": 0.0036632729543853056,
+     "n": 31,
+     "sr": 0.0009709666858637526
+    },
+    "podpowiedź": {
+     "maks": 0.2595999976620078,
+     "naSekunde": 0.762217179214298,
+     "n": 74,
+     "sr": 0.08463378361665418
+    },
+    "okno": 8.216687000007369,
+    "klatka": {
+     "maks": 0.593700009630993,
+     "naSekunde": 15.918386580057481,
+     "n": 493,
+     "sr": 0.26530709954046666
+    },
+    "korzen": {
+     "maks": 0.5408000142779201,
+     "naSekunde": 13.623836485452198,
+     "n": 473,
+     "sr": 0.23666553940854368
+    },
+    "budowa widoków": {
+     "maks": 0.0025999906938523054,
+     "naSekunde": 0.010490851749471728,
+     "n": 74,
+     "sr": 0.0011648654755255258
+    },
+    "klipy": {
+     "maks": 0.09330001194030046,
+     "naSekunde": 1.5314202097196563,
+     "n": 493,
+     "sr": 0.02552373332404069
+    }
+   },
+   "widoki": 1,
+   "animowane": 1,
+   "czesciWidokow": 390
+  }
+ },
+ "zrzuty": {
+  "z_slime_kojec": "z_slime_kojec.jpg",
+  "z_muchomorniki": "z_muchomorniki.jpg",
+  "z_wilki": "z_wilki.jpg",
+  "z_troll": "z_troll.jpg",
+  "z_straznik_lezowisko": "z_straznik_lezowisko.jpg",
+  "z_przybycie_polana": "z_przybycie_polana.jpg"
+ },
+ "odrodzenia": [
+  {
+   "strefa": "m1",
+   "potwor": "m1-1",
+   "zniknal_s": 354.3,
+   "odrodzenie_s": 16.2
+  },
+  {
+   "strefa": "straznik",
+   "potwor": "straznik-1",
+   "zniknal_s": 468.1,
+   "odrodzenie_s": 120.6
+  }
+ ],
+ "konsola": [
+  "[LasPasGra] gotowy: 19 potworów w 10 strefach + Strażnik Gaju; zgodność logiki 70/70",
+  "[LasPasGra] serwer pasa gotowy: mapa ok, przekierowanie bramy miasteczka: tak, przybycie (1114.0, 3.6, -700.0), zgodność logiki 39/39",
+  "[LasPasGra] klient pasa gotowy",
+  "[LasPasGra] klient gotowy: tryb aktorzy, potworów w Stan: 20",
+  "[LasPasGra] walka s1-1 zwiadowca/auto→1 lesny_slime 1 → przegrana, 22,9 s",
+  "[LasPasGra] walka m1-1 zwiadowca/auto→4 muchomornik 4 → wygrana, 18,3 s",
+  "[LasPasGra] walka w1-1 zwiadowca/auto→6 cierniowy_wilk 6 → przegrana, 28,5 s",
+  "[LasPasGra] walka t1-1 zwiadowca/auto→9 lesny_troll 9 → przegrana, 32,6 s",
+  "[LasPasGra] walka straznik-1 wojownik/1→1 straznik_lasu 10 → przegrana, 7,4 s",
+  "[LasPasGra] walka straznik-1 zwiadowca/10→10 straznik_lasu 10 → przegrana, 46,2 s",
+  "[LasPasGra] walka straznik-1 zwiadowca/10→10 straznik_lasu 10 → wygrana, 27,0 s",
+  "[LasPasGra] <gracz> pokonał Strażnika Gaju — brama do Bagna otwarta dla niego"
+ ]
+}

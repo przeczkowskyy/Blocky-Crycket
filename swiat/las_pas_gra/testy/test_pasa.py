@@ -18,7 +18,9 @@
    same wyniki co lustro w Pythonie (przypadki wzorcowe, losowe wywołania, scenariusze automatu); oba wygenerowane
    moduły danych wczytane w Luau są równe danym z generatora.
 8. Punkty styku (czytane jak tekst): nazwy instancji, atrybuty, wiadomości zdalne, nadpisania Stale_*, haczyki
-   KlientPotworow, strażnik Studio, brak ścieżek lokalnych; zbuduj.py --sucho.
+   KlientPotworow, strażnik Studio, brak ścieżek lokalnych; zbuduj.py --sucho; przejście przez chmury idzie przez
+   uchwyt PrzeniesDoLasu z opóźnieniem przelotu (8k) i próby w Play zamykają ekran wyboru klasy (8l) — oba po
+   błędach znalezionych w Studio 17.11.2026.
 """
 import importlib.util
 import json
@@ -852,6 +854,45 @@ class TestStyku(unittest.TestCase):
             with self.subTest(kod=nazwa):
                 self.assertNotIn("__", kod)
                 LM.Parser(ZB.NAGLOWEK_MIEJSCA.replace("__MIEJSCE__", "1") + kod, nazwa, LM.Interpreter()).program()
+
+    @unittest.skipUnless(os.path.isfile(os.path.join(REPO, "swiat", "teleport_chmury", "krainy.json")),
+                         "brak swiat/teleport_chmury")
+    def test_8k_przejscie_przez_chmury_przez_uchwyt(self):
+        """Błąd z próby w Studio 17.11.2026: chmury przenosiły gracza same, a przelot pasa startował 1,2 s po
+        przeniesieniu — w połowie opadania kamery chmur (dwa skrypty naraz na kamerze, ucięty początek przelotu).
+        Teraz las z chmur idzie przez Sygnaly/PrzeniesDoLasu z przelotPo ≥ czas opadania."""
+        tc = os.path.join(REPO, "swiat", "teleport_chmury")
+        with open(os.path.join(tc, "krainy.json"), encoding="utf-8") as f:
+            kr = json.load(f)
+        las = next(k for k in kr["krainy"] if k["id"] == "las")
+        pierwszy = las["przybycie"][0]
+        self.assertEqual(pierwszy.get("uchwyt"), "PrzeniesDoLasu")
+        self.assertEqual(pierwszy.get("gdy_jest"), ZB.KONTENER)
+        self.assertIn(pierwszy.get("punkt"), ("las", "przed_brama", "za_brama"))
+        cz = kr["czasy"]
+        # najgorszy przypadek: serwer przenosi postać na początku zanurzenia (C), potem biel i opadanie (D);
+        # przelot przygotowuje kamerę po przelotPo + uspokojenie (DanePasa) — ma to być PO końcu przejścia chmur
+        # (pomiar w Studio 17.11: przeniesienie 0,4 s po wyborze, koniec chmur 2,99 s; przy 1,8 s kamery się nakładały)
+        koniec_chmur = cz["zanurzenie_s"] + cz["biel_min_s"] + cz["opadanie_s"]
+        self.assertGreaterEqual(pierwszy["przelot_po_s"] + DPA["przelot"]["uspokojenie"], koniec_chmur,
+                                "przelot pasa ruszyłby w czasie opadania kamery chmur")
+        self.assertLessEqual(pierwszy["przelot_po_s"], 10)  # SerwerPasa obcina przelotPo do 0–10 s
+        self.assertIn(("BindableFunction", "Sygnaly/PrzeniesDoLasu"), ZB.INNE)
+        self.assertIn("przeniesF.OnInvoke = przeniesDoLasu", SERWER)
+        self.assertIn("opcje.przelotPo", SERWER)
+        st = czytaj(tc, "zrodla", "SerwerTeleportu.server.luau")
+        self.assertLess(st.index("przezUchwyt(gracz, kraina)"), st.index("punktPrzybycia(kraina, humanoid, korzen)\n"),
+                        "uchwyt musi być pytany przed zwykłymi punktami przybycia")
+        self.assertIn("przelotPo = p.przelot_po_s", st)
+
+    def test_8l_proby_w_play_wybieraja_klase(self):
+        """Błąd z próby w Studio 17.11.2026: ekran wyboru klasy (src/client/ClassSelectClient) trzyma kamerę w sali
+        klas i wyłącza podpowiedzi E — bez Entera przelot, mgła i E w pasie dawały fałszywe wyniki."""
+        for nazwa in ("proba_play.py", "proba_dodatkowa.py"):
+            with self.subTest(plik=nazwa):
+                t = czytaj(TU, nazwa)
+                self.assertIn('FindFirstChild("ClassSelect")', t)
+                self.assertIn('"Return"', t)
 
 
 if __name__ == "__main__":

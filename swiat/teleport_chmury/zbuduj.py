@@ -316,8 +316,11 @@ def sprawdz_dane(dane):
         if not k["przybycie"]:
             bledy.append("%s: brak punktu przybycia" % k["id"])
         for p in k["przybycie"]:
-            if not any(x in p for x in ("atrybut", "xyz", "xz")):
-                bledy.append("%s: wpis przybycia bez atrybut/xyz/xz: %r" % (k["id"], p))
+            if not any(x in p for x in ("atrybut", "xyz", "xz", "uchwyt")):
+                bledy.append("%s: wpis przybycia bez atrybut/xyz/xz/uchwyt: %r" % (k["id"], p))
+            if "uchwyt" in p and not (p.get("gdy_jest") and p.get("punkt")
+                                      and 0 <= p.get("przelot_po_s", 0) <= 10):
+                bledy.append("%s: uchwyt bez gdy_jest/punkt albo przelot_po_s poza 0–10: %r" % (k["id"], p))
             if "xz" in p and "patrz_xz" not in p:
                 bledy.append("%s: xz bez patrz_xz" % k["id"])
             if "xyz" in p and "patrz_xyz" not in p:

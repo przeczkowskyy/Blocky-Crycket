@@ -61,6 +61,11 @@ Potem idzie tą samą bezpieczną drogą co `TeleportLasu`: najpierw `RequestStr
 prędkości.
 
 **Punkty przybycia** (`krainy.json` → `przybycie`, pierwszy pasujący):
+- **Las, gdy stoi `Workspace/LasPasGra`** (las-pas w grze, `swiat/las_pas_gra`): postać przenosi uchwyt pakietu
+  `LasPasGra/Sygnaly/PrzeniesDoLasu` (punkt „las” = Polana Przybycia). Uchwyt dostaje `przelotPo = przelot_po_s`
+  (2,4 s), więc przelot kamery przy pierwszym wejściu do lasu rusza dopiero po naszym opadaniu kamery. Dopisane
+  17.11.2026 po próbie w Studio: bez tego przelot startował 1,2 s po przeniesieniu, w połowie opadania (dwa skrypty
+  naraz na kamerze, ucięty początek przelotu). Gdy uchwyt odmówi (np. `za_szybko`), działa zwykły punkt niżej.
 - **Las:** gdy w Workspace jest `LasPas`, gracz staje na Polanie Przybycia, w świecie (1114; y; −700). Wysokość daje rzut
   promienia w dół (tylko części z kolizją), z kontrolą wolnego miejsca. Bez `LasPas` gracz trafia do `LasTeleport.PunktLas`.
 - **Miasteczko:** `LasTeleport.PunktMiasteczka` (tylko odczyt atrybutu), a gdy go nie ma — liczby zapasowe z danych.
@@ -93,7 +98,8 @@ potworów nie musi nic wiedzieć o teleporcie.
 | `zrodla/KlientTeleportu.client.luau` | klient: kamera, chmury, makieta, wybór, sprzątanie, haczyk `SterowanieKlienta` |
 | `testy/proba_play.py` | próba w trybie Play (testy 1–6) i seria zrzutów (`--zrzuty`) |
 | `testy/zrzut_edit.py` | zrzut makiety w trybie Edit |
-| `wyniki/proba_play_20261117_0010.json` | wyniki ostatniego pełnego przebiegu testów |
+| `wyniki/proba_play_20261117_0010.json` | wyniki pełnego przebiegu testów (przed uchwytem lasu-pasa) |
+| `wyniki/proba_play_20261117_0100.json` | wyniki ostatniego pełnego przebiegu (z uchwytem lasu-pasa) |
 | `wyniki/zrzuty_20261117_0009.json` | stan po ostatniej serii zrzutów |
 
 ## Budowa i usunięcie
@@ -143,6 +149,14 @@ Inne uchwyty:
 
 Sprawdzono 17.11.2026 o 00:10 w Studio, w trybie Play, z jednym graczem i oknem gry 2041 × 1153. Wynik: wszystkie 6 testów
 OK. Zapis: `wyniki/proba_play_20261117_0010.json`.
+
+Po dopisaniu uchwytu lasu-pasa (wyżej, „Punkty przybycia”) próba powtórzona 17.11.2026 przy zbudowanym
+`Workspace/LasPasGra`: o 00:33 (`przelot_po_s` 1,8) i o 01:00 (`przelot_po_s` 2,4) — za każdym razem 6/6 OK, test 1
+przeniesiony przez `uchwyt LasPasGra.PrzeniesDoLasu` (odchyłka 0,0, ruch po W 13,9 st). Próba wstrzymuje na swój czas
+przelot pasa haczykiem `zapomnijPrzelot` (inaczej zakotwiczyłby postać w teście 1). Sam przelot po chmurach sprawdza
+`swiat/las_pas_gra/testy/proba_dodatkowa.py` (część „drogi”): przy 2,4 s chmury kończą się po 2,99 s od wyboru, a przelot
+przejmuje kamerę po 3,78 s — bez nakładania. Zapis: `wyniki/proba_play_20261117_0033.json`,
+`wyniki/proba_play_20261117_0100.json`.
 
 | # | Próba | Wynik |
 |---|---|---|
