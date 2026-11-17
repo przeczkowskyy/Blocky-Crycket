@@ -20,6 +20,8 @@ Wszystko działa na samej bibliotece standardowej Pythona. Uruchamiaj z `-B` (be
 | `wzorcowe.py` | wzorcowe postacie (te same co w v2 i w prototypie Studio) i buildy (pod manę, zwykłe ataki, unik, Pancerz i blok, truciznę) |
 | `balans.py` | tabela balansu (Markdown, części a–k): klasy z potworami, klasa na klasę, wartość punktu statystyki, użycia umiejętności, buildy, blok 25% / 50% / 0%, sloty, nabijanie jednej statystyki, wysokie poziomy, Pancerz, wskrzeszenie |
 | `tempo.py` | model tempa: las gracz po graczu prawdziwym silnikiem i ogólny model biomów 1–7 (propozycja liczb doświadczenia i poziomów) |
+| `progresja.py` | kalkulator balansu 17.11 (propozycja liczb): Pancerz a obrażenia potworów w ośmiu biomach, drzewko Twierdzy, ewolucja petów, Gemy na drzewka, pytanie 40 (Wojownik z tarczą i unikiem), wzór przyrostu z mini-gier Training Center; wynik, założenia i wybory: `BALANS_1711.md` |
+| `test_progresja.py` | szybkie testy kalkulatora (drzewka z `src/shared/SkillTreeData.luau`, zgodność z `tempo.py`, wzór treningu, warianty zasad z pytania 40, potwory biomu) |
 | `wzorce.py`, `wzorce.json` | wzorce zgodności: podpisy dzienników z Pythona dla ustalonych wejść i ziaren, złe wejścia |
 | `zgodnosc_studio.py` | liczy te same walki modułami Luau i porównuje z wzorcami: w Studio (tylko odczyt) albo `--offline` |
 | `luau_mini.py` | mały interpreter **podzbioru** Luau w Pythonie (tylko do `--offline` i testów; nie zastępuje Studio) |
@@ -33,6 +35,8 @@ python -B tools/walka/balans.py                                  # tabela balans
 python -B tools/walka/balans.py --start 50001                    # to samo na innych ziarnach (kontrola dopasowania)
 python -B tools/walka/balans.py --ziaren 500 --czesci a,b --md balans.md   # szybciej, wybrane części, z zapisem
 python -B tools/walka/tempo.py --md tempo.md                     # model tempa (las + biomy 1–7)
+python -B tools/walka/progresja.py --md wynik.md                 # kalkulator 17.11: sześć rachunków (kilka minut)
+python -B tools/walka/progresja.py --czesci 2,3,4                # tylko Twierdza, pety i Gemy (kilka sekund)
 python -B tools/walka/silnik.py --klasa mag --wrog straznik_lasu --poziom 5 --ziarno 7   # jedna walka (JSON)
 python -B tools/walka/zgodnosc_studio.py --offline               # Luau kontra Python bez Studio (interpreter luau_mini)
 ```

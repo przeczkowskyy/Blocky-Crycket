@@ -332,12 +332,14 @@ Szczegóły: Na trzeciej sesji 14.11 obaj zgodzili się, że Pancerz jest warto�
 Szczegóły: Z trzeciej sesji 14.11 (D-062): Zręczność daje szansę na unik z limitem zależnym od klasy (Zwiadowca od 25% do maks. 50%, inne klasy od 0 i niżej); blok to cecha tarczy jako przedmiotu ze stałą szansą, slot tarczy ma tylko Wojownik; Inteligencja to moc umiejętności i odporność na magię. Paweł zauważył też ryzyko buildu „Wojownik z samą Inteligencją bijący tylko umiejętnościami”. Karol prosił o opinię agenta — dojdzie jako komentarz pod tym pytaniem z liczbami z kalkulatora balansu ([[Zadania]]). Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
 **Odpowiedź:**
 - Karol Balucki (2026-11-14): To zostawiam to Cloudowi do rozwiązania tego problemu z balansem i optymalizującego
+- Claude Code (2026-11-17): Opinia z liczbami (silnik walki v3, 800 walk na parę): Wojownik z tarczą i unikiem nie jest za mocny. Limit uniku klasy, czyli (a), już działa — Wojownik ma najwyżej 24,2% uniku. Wojownik, który cały trening wkłada w Zręczność, wygrywa z potworami 84% zamiast 96% i tylko 28–32% pojedynków. Mniejszy przyrost Zręczności (b) niczego nie naprawia, a niesumowanie bloku z unikiem (c) wyłącza blok Maga i Zwiadowcy, czyli w praktyce cofa D-073, i zwiększa różnicę klas z ok. 4 do ok. 6 pp. Rekomendacja: zostać przy (a); decyzja należy do Was. Tabele: `tools/walka/BALANS_1711.md`, część 5.
 
 ## 41. Ewolucja petów: wszystkie czy tylko lepsze; liczby (D-058)
 - Karol: ewolucje dla wszystkich petów (piesek → Cerber), legendarne z legendarnymi ewolucjami.
 - Paweł: raczej tylko lepsze pety, nie każdy pospolity.
 - Liczby do ustalenia: maks. poziom peta (robocze 30), ile shardów peta i tokenów krainy na ewolucję, szansa na Shard Ewolucji ze strażnika biomu.
 Szczegóły: Model z trzeciej sesji 14.11: jeden stały skill na typ peta; poziom z karmienia (D-052) otwiera ewolucje; ewolucja kosztuje shardy peta (skrapowanie kopii, 1:1), jeden Shard Ewolucji (rzadki drop ze strażnika biomu) i tokeny krainy (zabijanie potworów w krainie, mniej z walk petów) — propozycja D-058. Pety nie walczą obok gracza: dają pasywne premie i mają własne strefy walk, ok. 10 petów na biom (D-059). Liczby do kalkulatora balansu razem z tempem zdobywania tokenów. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]], [[Pety]].
+Dopisek z 2026-11-17 (kalkulator balansu, propozycja liczb): przy dzisiejszych 10% na Shard Ewolucji wychodzi średnio 14 prób strażnika (ok. 21 minut), a pechowe 10% graczy potrzebuje ponad 31; ochrona przed pechem po 20 wygranych obniża średnią do 12. Tokeny krainy: ok. 130 na godzinę, propozycja 60 / 180 / 450 na trzy ewolucje. Wąskim gardłem są kopie z jajek: komplet ewolucji legendarnego peta (2% w jajku) to ok. 550 jajek — propozycja: liczba kopii zależna od rzadkości. Tabele: `tools/walka/BALANS_1711.md`, część 3.
 **Odpowiedź:**
 - Karol Balucki (2026-11-14): Wszystkie pety jednak mogą ewolłować, tylko niektóre maja legendarne ewolucje
 
@@ -414,3 +416,20 @@ Dopisek z 2026-11-16 (Claude Code u Karola, 21:00): Karol polecił w rozmowie za
 Dopisek z 2026-11-16 (Claude Code u Karola, 21:18, z rozmowy z Karolem): modele ras robi Paweł, a agent Karola po jego wypchnięciu poprawia modele, halę wyboru i faktury. Przejście teleportu przez chmury (D-075) robi agent Karola. Bez przydziału zostają: miasto, okno zagrody petów z tablicą i pomijanie walk.
 **Odpowiedź:**
 - Karol Balucki (2026-11-16): Te wszystkie rzeczy na mnie "Karol"
+
+## 50. Trening: malejący zysk zamiast stałego +1 za trafienie?
+- Bez zmian (D-050: +1 za trafienie, bez limitu) trening po 10 godzinach gry daje ok. 130% puli statystyk z poziomów, a siedzenie w jednej mini-grze (Kondycja) wystarcza.
+- Propozycja: pasek treningu. Każde trafienie go napełnia, seria przyspiesza (×1 / ×1,25 / ×1,5 / ×2), a kolejny punkt tej samej statystyki wymaga coraz więcej trafień.
+- Skutek: trening sześciu statystyk po kolei daje ok. dwa razy więcej niż jedna mini-gra; grindu dalej nic nie blokuje.
+- Do wyboru: (a) przyjąć wzór; (b) zostać przy +1 za trafienie; (c) inny pomysł.
+
+Szczegóły: Prośba Karola z D-074 („zbalansować przyrosty tak, żeby nie opłacało się nadużywać jednej mini-gry”). Wzór zmienia zapis „+1 za trafienie” z zatwierdzonej D-050, więc potrzebuje decyzji. Liczby i założenia: `tools/walka/BALANS_1711.md`, część 6; ten sam wzór jest roboczo w prototypie mini-gier (`swiat/trening_proba/`). Przy okazji: Kondycja i Inteligencja nie mają węzła w gałęzi Training Center drzewka Twierdzy.
+**Odpowiedź:**
+
+## 51. Gemy: skąd ma je brać gracz bez płacenia?
+- Dziś łup z potworów daje ok. 7 Gemów w 10 godzin gry, a drzewka kosztują razem 20 650.
+- Sloty umiejętności są w drzewku za 25 / 70 / 125 Gemów, więc gracz bez płacenia nie ma w 10 godzin żadnego slotu.
+- Do wyboru: (a) Gemy za kamienie milowe, np. +10 za poziom i +100 za pierwszego strażnika biomu (ok. 135 na godzinę); (b) sloty umiejętności za poziom, nie za Gemy; (c) jedno i drugie; (d) zostawić.
+
+Szczegóły: Liczby z kalkulatora (`tools/walka/BALANS_1711.md`, część 4), ceny węzłów z `src/shared/SkillTreeData.luau`. Dotyczy D-057 (węzły za Gemy) oraz D-055 i D-088 (sloty umiejętności). Cel roboczy: żeby gracz bez płacenia kupił w 10 godzin ćwierć drzewka gracza, potrzeba ok. 200 Gemów na godzinę; kamienie milowe z kopalnią diamentów od 25. poziomu dają ok. 200.
+**Odpowiedź:**

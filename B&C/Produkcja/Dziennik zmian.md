@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (kalkulator balansu)
+- Nowy `tools/walka/progresja.py` liczy na silniku walki v3 sześć zaległych rachunków; wyniki i założenia w `tools/walka/BALANS_1711.md`. To propozycja liczb, nie kanon. Testy: 88 z 88.
+- **Najważniejsze:** z samego łupu wychodzi ok. 7 Gemów w 10 godzin, a sloty umiejętności kosztują 25 / 70 / 125 — gracz bez płacenia nie ma żadnego slotu (pytanie 51). Trening ze stałym +1 za trafienie daje po 10 godzinach ok. 130% puli statystyk; propozycja paska z malejącym zyskiem (pytanie 50, dotyka D-050). Potwory kolejnych biomów ok. 6% mocniejsze na biom. Kopalnia z ostrą krzywą albo pracująca całą dobę zarabia więcej niż walka.
+- [[Pytania otwarte]]: opinia z liczbami pod pytaniem 40 (zostać przy limicie uniku klasy), dopisek z liczbami pod pytaniem 41 (ewolucja petów), nowe pytania 50 i 51.
+- Raport w panelu: „Kalkulator balansu: Pancerz, Twierdza, pety, Gemy, trening”.
+- Pliki: `tools/walka/progresja.py`, `tools/walka/test_progresja.py`, `tools/walka/BALANS_1711.md`, `tools/walka/README.md`, `DOKUMENTACJA.md`; notatki [[Pytania otwarte]], [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (pomiar przy oknie Studio na wierzchu, narzędzia dźwięku)
 - Karol rano: „leć wszystkie pozostałe taski, póki nie wrócę do domu” — zlecenie pracy na dzień; na wybory z nocnych raportów odpowie później. W toku: poprawki walki z podpięciem własnych dźwięków, Training Center (projekt sześciu mini-gier i dwie na próbę), liczby balansu, plan siedmiu biomów i Bagna (do akceptacji, bez budowy w Studio).
 - **Poprawka nocnego wniosku:** 15 klatek na sekundę w nocnych próbach nie brało się z zaciemnienia ekranu, tylko z okna Studio w tle (fokus miało inne okno). Przy oknie na wierzchu: las-pas i bazar 16,7 ms średnio (najgorsze 5% klatek: 17,8–17,9 ms), walka 16,7 ms (ok. 18 ms), koszt skryptu walki 0,4–0,5 ms na klatkę. Punkty „do oceny” P14 (las-pas) i B14 (bazar) są w porządku.
