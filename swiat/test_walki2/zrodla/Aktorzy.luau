@@ -16,6 +16,9 @@
 			opcje.obrys   "brak" | "highlight" | "skorupa" (domyślnie Ustawienia.OBRYS)
 			opcje.reczny  true → Klipy liczone ręcznie (aktor.klipy:krok(dt) i :zastosuj())
 			opcje.bezSpoczynku  true → nie włączaj od razu klipu spoczynku
+			opcje.stroj   (D-071, swiat/stroje_proba) bohater w stroju: tabela id przedmiotów | false = dawny szablon |
+			              nil = strój lokalnego gracza z atrybutu serwera; bez kontenera Workspace/StrojeProba, bez
+			              stroju u gracza albo przy błędzie — dawny szablon (pełny strój), jak przed tą zmianą
 	aktor:
 		aktor.klucz, aktor.wpis, aktor.model, aktor.hrp, aktor.klipy (odtwarzacz z modułu Klipy),
 		aktor.liczbaCzesci (widoczne bryły, bez skorupy), aktor.liczbaInstancji
@@ -86,6 +89,33 @@ local function szablon(klucz: string): Model
 		error("Aktorzy: brak szablonu aktora " .. klucz .. " w " .. kontener:GetFullName() .. ".Aktorzy")
 	end
 	return m :: Model
+end
+
+-- strój bohatera (D-071, próba swiat/stroje_proba): moduł Workspace/StrojeProba/Moduly/Ubieranie składa aktora z gołego
+-- ciała i przedmiotów założonych przez gracza (strój decyduje serwer przymierzalni) na szkielecie tego szablonu;
+-- nil = dawny szablon (brak kontenera, klasa bez danych, brak stroju, błąd)
+local function zeStrojem(klucz: string, wzor: Model, stroj: any): Model?
+	if stroj == false then
+		return nil
+	end
+	local sp = workspace:FindFirstChild("StrojeProba")
+	local moduly = sp and sp:GetAttribute("Wygenerowane") == true and sp:FindFirstChild("Moduly")
+	local m = moduly and moduly:FindFirstChild("Ubieranie")
+	if not m or not m:IsA("ModuleScript") then
+		return nil
+	end
+	local ok, wynik = pcall(function()
+		local U = require(m) :: any
+		if type(U) ~= "table" or type(U.dlaAktora) ~= "function" then
+			return nil
+		end
+		return U.dlaAktora(klucz, wzor, stroj)
+	end)
+	if not ok then
+		warn("[StrojeProba] aktor " .. klucz .. " bez stroju (dawny szablon): " .. tostring(wynik))
+		return nil
+	end
+	return wynik
 end
 
 ------------------------------------------------------------------ obrys
@@ -196,7 +226,8 @@ function Aktorzy.nowy(klucz: string, cfZiemi: CFrame, opcje: any?)
 		error("Aktorzy: nieznany aktor " .. tostring(klucz))
 	end
 	local d = dane(klucz)
-	local model = szablon(klucz):Clone()
+	local wzor = szablon(klucz)
+	local model = zeStrojem(klucz, wzor, opcje.stroj) or wzor:Clone()
 	model.Name = klucz .. "_lokalny"
 	model:SetAttribute("Lokalny", true)
 	local hrp = model:FindFirstChild("HumanoidRootPart") :: BasePart

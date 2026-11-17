@@ -45,10 +45,26 @@ class TestKatalogu(unittest.TestCase):
             for pole in ("poczatek", "koniec", "atak", "szczyt"):
                 self.assertEqual(k["efekty"][n][pole], e[pole], (n, pole))
 
-    def test_identyfikatory_w_repo_zerowe(self):
-        # pliki nie są wgrane — w repozytorium wszystkie identyfikatory 0 (wpisuje je człowiek po wgraniu)
-        self.assertEqual(IDENT["arkusz"], 0)
-        self.assertTrue(all(v == 0 for v in IDENT["muzyka"].values()))
+    def test_identyfikatory_zgodne_z_rejestrem_wgran(self):
+        # identyfikator 0 = plik niewgrany; niezerowy musi pochodzić z rejestru wgrań (assets/audio/wgrane.json),
+        # żeby w katalogu nie znalazł się zasób, którego nikt świadomie nie wgrał
+        import json
+        import os
+        rejestr = os.path.join(os.path.dirname(__file__), "..", "..", "..", "assets", "audio", "wgrane.json")
+        wgrane = {}
+        if os.path.exists(rejestr):
+            with open(rejestr, encoding="utf-8") as f:
+                for w in json.load(f).get("wgrane", []):
+                    if w.get("gotowe") and w.get("assetId"):
+                        wgrane[os.path.splitext(os.path.basename(w["plik"]))[0]] = int(w["assetId"])
+        self.assertIsInstance(IDENT["arkusz"], int)
+        self.assertGreaterEqual(IDENT["arkusz"], 0)
+        if IDENT["arkusz"]:
+            self.assertIn(IDENT["arkusz"], wgrane.values(), "arkusz spoza rejestru wgrań")
+        for nazwa, v in IDENT["muzyka"].items():
+            self.assertGreaterEqual(v, 0, nazwa)
+            if v:
+                self.assertEqual(wgrane.get(nazwa), v, nazwa)
 
     def test_strefy_z_gruntu_map(self):
         k = ZB.katalog(UST, IDENT)

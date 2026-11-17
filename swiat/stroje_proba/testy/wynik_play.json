@@ -1,0 +1,1162 @@
+{
+ "czas": "2026-11-17 13:46",
+ "skrot": "943ba32a2c47",
+ "wyniki": [
+  {
+   "punkt": "S01",
+   "wynik": "OK",
+   "opis": "klient True, serwer True, podpowiedzi 1, skrót 943ba32a2c47 (lokalnie 943ba32a2c47), haczyk w Aktorzy True"
+  },
+  {
+   "punkt": "S02",
+   "wynik": "OK",
+   "opis": "E → okno True (kamera Scriptable), X → zamknięte True (kamera Custom)"
+  },
+  {
+   "punkt": "S03",
+   "wynik": "OK",
+   "opis": "„>” przy hełmie: atrybut 'rycerz_zbroja,rycerz_nogawice,rycerz_pas,rycerz_rekawice,rycerz_buty,rycerz_miecz,rycerz_tarcza', podgląd 'rycerz_zbroja,rycerz_nogawice,rycerz_pas,rycerz_rekawice,rycerz_buty,rycerz_miecz,rycerz_tarcza' (oczekiwane 'rycerz_zbroja,rycerz_nogawice,rycerz_pas,rycerz_rekawice,rycerz_buty,rycerz_miecz,rycerz_tarcza')"
+  },
+  {
+   "punkt": "S04",
+   "wynik": "OK",
+   "opis": "odmowy ['przedmiot_innej_klasy', 'czesc_zbroi', 'zla_klasa', 'zly_slot', 'nieznany_przedmiot'], za szybko 5 z 8, atrybut bez zmian True"
+  },
+  {
+   "punkt": "S05",
+   "wynik": "OK",
+   "opis": "9 strojów w podglądzie = dane (bryły, atrybut Stroj, cały podgląd nad oknem)"
+  },
+  {
+   "punkt": "S06",
+   "wynik": "OK",
+   "opis": "93 klipów × strojów klatka po klatce; zawis ciała po upadku: {'wojownik/komplet/upadek': 0.0, 'wojownik/golas/upadek': 0.247, 'wojownik/mieszany/upadek': 0.049, 'zwiadowca/komplet/upadek': 0.0, 'zwiadowca/golas/upadek': -0.025, 'zwiadowca/mieszany/upadek': 0.0, 'mag/komplet/upadek': 0.0, 'mag/golas/upadek': 0.198, 'mag/mieszany/upadek': 0.198}"
+  },
+  {
+   "punkt": "S11",
+   "wynik": "OK",
+   "opis": "okno na 667 × 375: tekst 12 pt (najmniej 12), góra okna 0.40, podgląd 0.01–0.35 wysokości ekranu"
+  },
+  {
+   "punkt": "S07",
+   "wynik": "OK",
+   "opis": "bohater w walce w stroju z przymierzalni (3 klasy)"
+  },
+  {
+   "punkt": "S08",
+   "wynik": "OK",
+   "opis": "dawny wygląd: model walki bez atrybutu Stroj, 127 brył (szablon 127)"
+  },
+  {
+   "punkt": "S09",
+   "wynik": "?",
+   "opis": "las-pas jest — walka w lesie gra tym samym Aktorzy.nowy (kod); próba w lesie do zrobienia ręcznie albo jego testy/proba_play.py po ustawieniu stroju"
+  },
+  {
+   "punkt": "S10",
+   "wynik": "OK",
+   "opis": "konsola: 0 linii z [StrojeProba]"
+  }
+ ],
+ "dane": {
+  "S05": {
+   "wojownik_golas": {
+    "bryly": 74,
+    "oczekiwane": 74,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.521,
+     "x0": 0.441,
+     "x1": 0.562,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.066,
+     "y1": 0.345,
+     "oknoPrawo": 0.71
+    }
+   },
+   "wojownik_komplet": {
+    "bryly": 127,
+    "oczekiwane": 127,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.521,
+     "x0": 0.433,
+     "x1": 0.581,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.007,
+     "y1": 0.349,
+     "oknoPrawo": 0.71
+    }
+   },
+   "wojownik_mieszany": {
+    "bryly": 107,
+    "oczekiwane": 107,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.521,
+     "x0": 0.433,
+     "x1": 0.581,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.007,
+     "y1": 0.349,
+     "oknoPrawo": 0.71
+    }
+   },
+   "zwiadowca_golas": {
+    "bryly": 109,
+    "oczekiwane": 109,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.521,
+     "x0": 0.432,
+     "x1": 0.563,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.071,
+     "y1": 0.35,
+     "oknoPrawo": 0.71
+    }
+   },
+   "zwiadowca_komplet": {
+    "bryly": 182,
+    "oczekiwane": 182,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.521,
+     "x0": 0.432,
+     "x1": 0.57,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.063,
+     "y1": 0.35,
+     "oknoPrawo": 0.71
+    }
+   },
+   "zwiadowca_mieszany": {
+    "bryly": 151,
+    "oczekiwane": 151,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.521,
+     "x0": 0.432,
+     "x1": 0.57,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.063,
+     "y1": 0.35,
+     "oknoPrawo": 0.71
+    }
+   },
+   "mag_golas": {
+    "bryly": 107,
+    "oczekiwane": 107,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.644,
+     "x0": 0.457,
+     "x1": 0.535,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.134,
+     "y1": 0.342,
+     "oknoPrawo": 0.71
+    }
+   },
+   "mag_komplet": {
+    "bryly": 166,
+    "oczekiwane": 166,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.644,
+     "x0": 0.439,
+     "x1": 0.541,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.069,
+     "y1": 0.343,
+     "oknoPrawo": 0.71
+    }
+   },
+   "mag_mieszany": {
+    "bryly": 149,
+    "oczekiwane": 149,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.644,
+     "x0": 0.439,
+     "x1": 0.535,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.069,
+     "y1": 0.343,
+     "oknoPrawo": 0.71
+    }
+   }
+  },
+  "S06": {
+   "wojownik/komplet/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/komplet/ruch": {
+    "klatki": 25,
+    "najnizej": -0.064,
+    "odejscie": 0,
+    "koniec_cialo": 0.14,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.923,
+     "rycerz_tarcza": 1.439
+    }
+   },
+   "wojownik/komplet/atak": {
+    "klatki": 33,
+    "najnizej": -0.141,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.861,
+     "rycerz_tarcza": 1.325
+    }
+   },
+   "wojownik/komplet/blok": {
+    "klatki": 31,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/komplet/unik": {
+    "klatki": 31,
+    "najnizej": -0.007,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/komplet/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/komplet/upadek": {
+    "klatki": 61,
+    "najnizej": -0.02,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 0.048,
+     "rycerz_tarcza": 0.053
+    }
+   },
+   "wojownik/komplet/radosc": {
+    "klatki": 37,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 3.927,
+     "rycerz_tarcza": 3.104
+    }
+   },
+   "wojownik/komplet/ciecie": {
+    "klatki": 49,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/komplet/kamienna_skora": {
+    "klatki": 45,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/komplet/miazdzacy_cios": {
+    "klatki": 51,
+    "najnizej": -0.035,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/golas/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_wlosy": 4.409
+    }
+   },
+   "wojownik/golas/ruch": {
+    "klatki": 25,
+    "najnizej": -0.048,
+    "odejscie": 0,
+    "koniec_cialo": 0.14,
+    "koniec_grupy": {
+     "rycerz_wlosy": 4.599
+    }
+   },
+   "wojownik/golas/atak": {
+    "klatki": 33,
+    "najnizej": -0.137,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_wlosy": 4.45
+    }
+   },
+   "wojownik/golas/blok": {
+    "klatki": 31,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_wlosy": 4.409
+    }
+   },
+   "wojownik/golas/unik": {
+    "klatki": 31,
+    "najnizej": -0.007,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_wlosy": 4.409
+    }
+   },
+   "wojownik/golas/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_wlosy": 4.409
+    }
+   },
+   "wojownik/golas/upadek": {
+    "klatki": 61,
+    "najnizej": -0.02,
+    "odejscie": 0,
+    "koniec_cialo": 0.247,
+    "koniec_grupy": {
+     "rycerz_wlosy": 0.327
+    }
+   },
+   "wojownik/golas/radosc": {
+    "klatki": 37,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_wlosy": 4.464
+    }
+   },
+   "wojownik/golas/ciecie": {
+    "klatki": 49,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_wlosy": 4.409
+    }
+   },
+   "wojownik/golas/kamienna_skora": {
+    "klatki": 45,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_wlosy": 4.409
+    }
+   },
+   "wojownik/golas/miazdzacy_cios": {
+    "klatki": 51,
+    "najnizej": -0.035,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_wlosy": 4.409
+    }
+   },
+   "wojownik/mieszany/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/mieszany/ruch": {
+    "klatki": 25,
+    "najnizej": -0.064,
+    "odejscie": 0,
+    "koniec_cialo": 0.14,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.923,
+     "rycerz_tarcza": 1.439
+    }
+   },
+   "wojownik/mieszany/atak": {
+    "klatki": 33,
+    "najnizej": -0.141,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.861,
+     "rycerz_tarcza": 1.325
+    }
+   },
+   "wojownik/mieszany/blok": {
+    "klatki": 31,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/mieszany/unik": {
+    "klatki": 31,
+    "najnizej": -0.007,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/mieszany/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/mieszany/upadek": {
+    "klatki": 61,
+    "najnizej": -0.02,
+    "odejscie": 0,
+    "koniec_cialo": 0.049,
+    "koniec_grupy": {
+     "rycerz_miecz": 0.048,
+     "rycerz_tarcza": 0.053
+    }
+   },
+   "wojownik/mieszany/radosc": {
+    "klatki": 37,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 3.927,
+     "rycerz_tarcza": 3.104
+    }
+   },
+   "wojownik/mieszany/ciecie": {
+    "klatki": 49,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/mieszany/kamienna_skora": {
+    "klatki": 45,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "wojownik/mieszany/miazdzacy_cios": {
+    "klatki": 51,
+    "najnizej": -0.035,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_miecz": 1.875,
+     "rycerz_tarcza": 1.354
+    }
+   },
+   "zwiadowca/komplet/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_sztylet": 1.644,
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/komplet/ruch": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_sztylet": 2.071,
+     "zwiadowca_luk": 1.793
+    }
+   },
+   "zwiadowca/komplet/atak": {
+    "klatki": 29,
+    "najnizej": -0.008,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_sztylet": 1.644,
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/komplet/unik": {
+    "klatki": 41,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_sztylet": 1.644,
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/komplet/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_sztylet": 1.644,
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/komplet/upadek": {
+    "klatki": 61,
+    "najnizej": -0.033,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "zwiadowca_sztylet": 0.098,
+     "zwiadowca_luk": 0.025
+    }
+   },
+   "zwiadowca/komplet/radosc": {
+    "klatki": 49,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_sztylet": 2.205,
+     "zwiadowca_luk": 1.983
+    }
+   },
+   "zwiadowca/komplet/skupienie": {
+    "klatki": 45,
+    "najnizej": -0.509,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "zwiadowca_sztylet": 1.645,
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/komplet/uderzenie_z_gory": {
+    "klatki": 47,
+    "najnizej": -0.015,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_sztylet": 1.644,
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/komplet/zatruta_strzala": {
+    "klatki": 55,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_sztylet": 1.644,
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/golas/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_wlosy": 4.221
+    }
+   },
+   "zwiadowca/golas/ruch": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_wlosy": 3.997
+    }
+   },
+   "zwiadowca/golas/atak": {
+    "klatki": 29,
+    "najnizej": -0.032,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_wlosy": 4.221
+    }
+   },
+   "zwiadowca/golas/unik": {
+    "klatki": 41,
+    "najnizej": -0.021,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_wlosy": 4.221
+    }
+   },
+   "zwiadowca/golas/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_wlosy": 4.221
+    }
+   },
+   "zwiadowca/golas/upadek": {
+    "klatki": 61,
+    "najnizej": -0.056,
+    "odejscie": 0,
+    "koniec_cialo": -0.025,
+    "koniec_grupy": {
+     "zwiadowca_wlosy": 0.842
+    }
+   },
+   "zwiadowca/golas/radosc": {
+    "klatki": 49,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_wlosy": 4.176
+    }
+   },
+   "zwiadowca/golas/skupienie": {
+    "klatki": 45,
+    "najnizej": -0.481,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "zwiadowca_wlosy": 4.221
+    }
+   },
+   "zwiadowca/golas/uderzenie_z_gory": {
+    "klatki": 47,
+    "najnizej": -0.038,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_wlosy": 4.221
+    }
+   },
+   "zwiadowca/golas/zatruta_strzala": {
+    "klatki": 55,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_wlosy": 4.221
+    }
+   },
+   "zwiadowca/mieszany/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/mieszany/ruch": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_luk": 1.793
+    }
+   },
+   "zwiadowca/mieszany/atak": {
+    "klatki": 29,
+    "najnizej": -0.032,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/mieszany/unik": {
+    "klatki": 41,
+    "najnizej": -0.021,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/mieszany/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/mieszany/upadek": {
+    "klatki": 61,
+    "najnizej": -0.056,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "zwiadowca_luk": 0.025
+    }
+   },
+   "zwiadowca/mieszany/radosc": {
+    "klatki": 49,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_luk": 1.983
+    }
+   },
+   "zwiadowca/mieszany/skupienie": {
+    "klatki": 45,
+    "najnizej": -0.481,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/mieszany/uderzenie_z_gory": {
+    "klatki": 47,
+    "najnizej": -0.038,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "zwiadowca/mieszany/zatruta_strzala": {
+    "klatki": 55,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_luk": 1.261
+    }
+   },
+   "mag/komplet/spoczynek": {
+    "klatki": 61,
+    "najnizej": 0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/komplet/ruch": {
+    "klatki": 21,
+    "najnizej": -0.221,
+    "odejscie": 0,
+    "koniec_cialo": -0.194,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.0,
+     "kot_mag_kostur": 0.206
+    }
+   },
+   "mag/komplet/atak": {
+    "klatki": 27,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/komplet/unik": {
+    "klatki": 29,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/komplet/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/komplet/upadek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": -0.0,
+     "kot_mag_kostur": -0.0
+    }
+   },
+   "mag/komplet/radosc": {
+    "klatki": 31,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 2.974,
+     "kot_mag_kostur": 0.469
+    }
+   },
+   "mag/komplet/bariera": {
+    "klatki": 43,
+    "najnizej": -0.012,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/komplet/kula_ognia": {
+    "klatki": 55,
+    "najnizej": -0.002,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/komplet/lodowy_pocisk": {
+    "klatki": 47,
+    "najnizej": -0.011,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/golas/spoczynek": {
+    "klatki": 61,
+    "najnizej": 0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {}
+   },
+   "mag/golas/ruch": {
+    "klatki": 21,
+    "najnizej": -0.221,
+    "odejscie": 0,
+    "koniec_cialo": -0.194,
+    "koniec_grupy": {}
+   },
+   "mag/golas/atak": {
+    "klatki": 27,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {}
+   },
+   "mag/golas/unik": {
+    "klatki": 29,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {}
+   },
+   "mag/golas/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {}
+   },
+   "mag/golas/upadek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0.198,
+    "koniec_grupy": {}
+   },
+   "mag/golas/radosc": {
+    "klatki": 31,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {}
+   },
+   "mag/golas/bariera": {
+    "klatki": 43,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {}
+   },
+   "mag/golas/kula_ognia": {
+    "klatki": 55,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {}
+   },
+   "mag/golas/lodowy_pocisk": {
+    "klatki": 47,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {}
+   },
+   "mag/mieszany/spoczynek": {
+    "klatki": 61,
+    "najnizej": 0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/mieszany/ruch": {
+    "klatki": 21,
+    "najnizej": -0.221,
+    "odejscie": 0,
+    "koniec_cialo": -0.194,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.0,
+     "kot_mag_kostur": 0.206
+    }
+   },
+   "mag/mieszany/atak": {
+    "klatki": 27,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/mieszany/unik": {
+    "klatki": 29,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/mieszany/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/mieszany/upadek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0.198,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": -0.0,
+     "kot_mag_kostur": -0.0
+    }
+   },
+   "mag/mieszany/radosc": {
+    "klatki": 31,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 2.974,
+     "kot_mag_kostur": 0.469
+    }
+   },
+   "mag/mieszany/bariera": {
+    "klatki": 43,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/mieszany/kula_ognia": {
+    "klatki": 55,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   },
+   "mag/mieszany/lodowy_pocisk": {
+    "klatki": 47,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_kapelusz": 3.038,
+     "kot_mag_kostur": 0.2
+    }
+   }
+  },
+  "S11": {
+   "ok": true,
+   "oknoGora": 0.4032527662212706,
+   "x0": 0.43322508689061734,
+   "x1": 0.5794275219331823,
+   "tekst": 12,
+   "oknoLewo": 0.23988006606749143,
+   "ekran": [
+    2041,
+    1153
+   ],
+   "fov": 50,
+   "y0": 0.007139736946416956,
+   "y1": 0.3494098593851637,
+   "oknoPrawo": 0.758620699967081
+  },
+  "S07": {
+   "wojownik": {
+    "stroj": "rycerz_helm,rycerz_buty,rycerz_miecz,rycerz_tarcza",
+    "jest": true,
+    "bryly": 107
+   },
+   "zwiadowca": {
+    "stroj": "zwiadowca_kaptur,zwiadowca_rekawice,zwiadowca_luk",
+    "jest": true,
+    "bryly": 151
+   },
+   "mag": {
+    "stroj": "kot_mag_kapelusz,kot_mag_kostur",
+    "jest": true,
+    "bryly": 149
+   }
+  },
+  "S08": {
+   "jest": true,
+   "bryly": 127
+  }
+ }
+}

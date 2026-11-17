@@ -6,6 +6,15 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (stroje na postaci, D-071)
+- **Pierwsza próba ubierania postaci stoi w Studio** (`Workspace/StrojeProba`, `swiat/stroje_proba/`): przymierzalnia przy placu startowym (punkt E, tymczasowe okno z napisem „PRÓBA”: po jednym przedmiocie na slot, „Goły”, „Komplet”, „Dawny wygląd”, podgląd bohatera z ruchami walki). Bohater w walce jest składany z gołego ciała swojej klasy i z założonych przedmiotów; bez stroju albo bez kontenera walka bierze dawny wygląd.
+- **Jak:** każda bryła przedmiotu jest przyspawana do swojej kości, więc idzie za nią w każdym klipie; o stroju decyduje serwer (odrzuca cudzy przedmiot, zły slot, spodnie bez zbroi, za szybkie prośby), klient tylko prosi i czyta.
+- **Sprawdzone:** bez Studio 21 z 21 testów — każdy z 272 dopuszczalnych strojów równa się strojowi z modułu bohatera, w żadnej klatce nic nie schodzi pod ziemię głębiej niż w pełnym stroju. W grze: 10 punktów w porządku, 1 niesprawdzony (walka w lesie), 0 błędów; 93 przebiegi klip × strój × klasa bez odpadającej bryły; stara próba walki 111 z 111.
+- **Przyjęte roboczo, do decyzji ludzi** (raport w panelu „Stroje na postaci: przymierzalnia i strój w walce (D-071)”): spodnie częścią zbroi, łuk z kołczanem jako jeden przedmiot w drugiej ręce, wspólny klip upadku (goły Rycerz leży 0,25 studa nad ziemią, goły kot 0,20), tylko przedmioty własnej klasy, strój to sam wygląd i żyje do końca sesji.
+- **Niesprawdzone:** prawdziwy telefon i dotyk, dwóch graczy, walka w lesie w stroju.
+- Zmiana w cudzym pakiecie: w `swiat/test_walki2/zrodla/Aktorzy.luau` jedna funkcja `zeStrojem` i dwie linie w `Aktorzy.nowy`.
+- Pliki: `swiat/stroje_proba/` (źródła, `PROJEKT.md`, testy, `klatki/`), `swiat/test_walki2/zrodla/Aktorzy.luau`; notatka [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (przejście gry okiem nowego gracza; dźwięk w Studio)
 - Zlecenie Karola z 17.11 ok. 12:15 na czacie: „Leć wszystko. Mamy duże rezerwy tokenów. Upewnijmy się nad grywalnością już gry”. To zlecenie pracy, nie zatwierdzenie propozycji — plan Bagna, stroje i reszta zostają propozycjami.
 - **Przejście gry** (agent grał w Studio ok. 40 minut, prawdziwą klawiaturą i myszą tam, gdzie się dało): grę da się przejść bez zawieszenia i bez błędów naszych skryptów — start, las od slime'a do Strażnika, bazar, Training Center, razem 15–20 minut. **Gry w tym jeszcze nie ma:** łup z walk nie trafia do gracza (po trzech wygranych Złoto 0, XP 0, poziom 1), klasa wybrana na starcie nie jest klasą w walce, poziom, trening, punkty statystyk, ekwipunek i drzewko nie zmieniają walki, Złota nie ma na co wydać, po wyjściu z gry przepada wszystko. Potwierdza to osobna mapa kodu: wspólny stan gracza to tylko atrybuty z kodu Pawła i nikt poza nim ich nie pisze.
