@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (kara za przegraną policzona; liczby do pytania 56; stała cena jajek w danych)
+- **Kara za przegraną (propozycja D-098 z sesji 17.11)** przygotowana w `swiat/stan_gracza/`: 5% posiadanego Złota, najwyżej łup z jednej wygranej ze zwykłym potworem tego poziomu; Gemów gracz nie traci, dostaje 20% doświadczenia, bez kary czasowej; komunikat „Przegrana: −N Złota, +M doświadczenia”. Wybrana z sześciu policzonych wariantów, bo nowy gracz z małym Złotem prawie nic nie traci, każdą przegraną odrabia jedna walka, a pierwsze jajko się nie przesuwa. Jedna liczba do zmiany, z wyłącznikiem. W Studio niewdrożone.
+- **Profile klas (pytanie 56):** agent Pawła zmienił 17.11 o 21:10 profile w `src/shared/ClassData.luau` na sumy 100, a stan gracza rozdaje z nich statystyki. Symulacja: z tym profilem wszystkie klasy są słabsze (Wojownik ze Strażnikiem Gaju 20% zamiast 37%, las 32,5 minuty zamiast 27,4, przegranych 11–13 zamiast 8), a rozrzut między klasami rośnie. Liczby dopisane pod pytaniem 56; do decyzji gra zostaje przy profilu z karty klasy. Testy stanu gracza nie wymagają już równości z rozkładem wzorcowym.
+- **Stała cena jajek (D-105)** wpisana w dane petów: las 300, Bagno 750. Skutek z symulacji: pierwsze jajko po ok. 6 minutach, do Strażnika biomu ok. 10 jajek (przy cenie rosnącej 3–5).
+- **Uwaga po skróceniu pasa (D-096):** jedna zagroda na przegrodę oznacza, że w pierwszej zagrodzie chodzą slime'y poziomów 1–3 naraz; gracz pierwszego poziomu wygrywa tam w 56–68% walk (z profilem Pawła 48–54%) zamiast w 84–88%. Do poprawy przy wdrożeniu krótkiego pasa.
+- Testy bez Studio: stan gracza 47, pety 40, wskazówki 24, lasy 17, 16, 3 i 45, Bagno 26, stroje 22. Wszystko to czeka na wdrożenie w Studio razem z krótszym pasem.
+- Notatki: [[Pytania otwarte]] (dopiski pod 54 i 56).
+
 ## 2026-11-17 · Claude Code u Karola (odpowiedzi Karola po sesji: stała cena jajka, Bagno, przegrana)
 - **Odpowiedzi Karola na czacie, 17.11 ok. 21:20** (w trakcie sesji głównej z Pawłem):
   - „Stała cena jajka, bo opener jajka jest per biom, więc tak czy siak źródło dropienia jajek się zmienia, gdy gracz zmieni biom” — zapisane jako **D-105** (zdecydował: Karol 2026-11-17). Próba przechodzi z ceny rosnącej na stałą: jajko leśne 300 Złota, jajko Bagna 750.
