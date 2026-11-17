@@ -321,9 +321,24 @@ function odswiezOkno()
 		ruch = lista[stan.ruch] and (D.nazwyRuchow[lista[stan.ruch]] or lista[stan.ruch]) })
 end
 
+-- klasa gracza z atrybutu Class (ekran wyboru Pawła; ta sama mapa co swiat/stan_gracza i Stale lasu) albo nil
+local KLASY_GRACZA = { Warrior = "wojownik", Scout = "zwiadowca", Mage = "mag" }
+local function klasaGracza()
+	local id = gracz:GetAttribute("Class")
+	local k = type(id) == "string" and KLASY_GRACZA[id] or nil
+	return if k and D.klasy[k] ~= nil then k else nil
+end
+
 local function otworz()
 	if stan.okno then
 		return
+	end
+	-- 17.11.2026: okno otwiera się na klasie gracza (u Maga — zakładka Maga); bez klasy — jak dawniej
+	local mojaKlasa = klasaGracza()
+	if mojaKlasa and mojaKlasa ~= stan.klasa then
+		stan.klasa = mojaKlasa
+		stan.ruch = 1
+		zbudujPodglad()
 	end
 	local emulacja = kontener:GetAttribute("EmulacjaEkranu")
 	stan.okno = Okno.nowe(gracz:WaitForChild("PlayerGui"), D, {

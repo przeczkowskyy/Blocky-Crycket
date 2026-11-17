@@ -95,6 +95,9 @@ local folderPunktow = kontener:WaitForChild("Punkty")
 local P = Stale.PREFIKS
 local OKRES = 0.25 -- s między tyknięciami bramy, ratunku i przelotu
 local ODSTEP_PRZENIESIEN = 2 -- s między przeniesieniami jednego gracza (jak TeleportLasu)
+-- wczytywanie mapy za bramą z wyprzedzeniem (17.11.2026): uprawniony gracz bliżej niż `zasieg` od bramy → prośba co
+-- `co_s` s o okolicę `wglab` studs za punktem „za bramą”
+local PRZEDSTRUMIEN = { zasieg = 90, co_s = 4, wglab = 40, limit_s = 3 }
 local ODSTEP_KOMUNIKATOW = 3 -- s
 local LIMIT_WIADOMOSCI = 10 -- najwyżej tyle wiadomości od klienta na 2 s
 local CZEKANIE_NA_MAPE = 15
@@ -433,6 +436,19 @@ local function tyknijGracza(gracz: Player, teraz: number)
 					komunikat(gracz, WYMAGANIE.komunikat)
 				end
 			end)
+		elseif uprawniony and math.abs(poz.X - D.brama.x) <= PRZEDSTRUMIEN.zasieg and teraz >= (s.przedstrumienOd or 0) then
+			-- 1b. (17.11.2026) uprawniony przy bramie: mapę za bramą wczytujemy z wyprzedzeniem. Miejsce ma
+			-- StreamingIntegrityMode = PauseOutsideLoadedArea, więc wejście bramą w niewczytany teren pauzowało grę
+			-- z rozmyciem całego ekranu (swiat/przejscie_gry/klatki/c3_13_brama_do_bagna.jpg)
+			s.przedstrumienOd = teraz + PRZEDSTRUMIEN.co_s
+			local kierunek = if punkty.za_brama.punkt.X >= D.brama.x then 1 else -1
+			local celStrumienia = punkty.za_brama.punkt + Vector3.new(kierunek * PRZEDSTRUMIEN.wglab, 0, 0)
+			task.spawn(function()
+				pcall(function()
+					gracz:RequestStreamAroundAsync(celStrumienia, PRZEDSTRUMIEN.limit_s)
+				end)
+			end)
+			dolicz("LicznikPrzedstrumieni")
 		end
 	end
 

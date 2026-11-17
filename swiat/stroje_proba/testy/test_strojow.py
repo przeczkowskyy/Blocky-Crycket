@@ -486,6 +486,36 @@ class TestKod(unittest.TestCase):
             self.assertIn('polecenie == "%s"' % polecenie, k)
         self.assertIn('polecenie == "ustaw"', czytaj("SerwerStrojow.server.luau"))
 
+    def test_4g_okno_na_klasie_gracza(self):
+        # 17.11.2026: okno otwiera się na klasie z atrybutu Class (Mag → zakładka Maga), bez klasy — jak dawniej;
+        # mapa nazw ta sama co w Stale lasu (swiat/las_potwory) i w danych swiat/stan_gracza
+        k = czytaj("KlientStrojow.client.luau")
+        wzor = r"local KLASY_GRACZA = (\{[^}]*\})"
+        m = re.search(wzor, k)
+        self.assertIsNotNone(m)
+        with open(os.path.join(REPO, "swiat", "las_potwory", "zrodla", "Stale.luau"), encoding="utf-8") as f:
+            stale = re.search(r"S\.KLASY_GRACZA = (\{[^}]*\})", f.read())
+        self.assertIsNotNone(stale)
+        mapa = dict(re.findall(r'(\w+) = "(\w+)"', m.group(1)))
+        self.assertEqual(mapa, dict(re.findall(r'(\w+) = "(\w+)"', stale.group(1))))
+        self.assertEqual(set(mapa.values()), set(D["klasy"]))
+        self.assertIn('gracz:GetAttribute("Class")', k)
+        cialo = k[k.index("local function otworz()"):]
+        cialo = cialo[:cialo.index("stan.okno = Okno.nowe")]
+        self.assertIn("local mojaKlasa = klasaGracza()", cialo)
+        self.assertIn("if mojaKlasa and mojaKlasa ~= stan.klasa then", cialo)
+        self.assertIn("stan.klasa = mojaKlasa", cialo)
+        if LM is not None:  # klasaGracza w luau_mini: Mage → mag, nieznana / brak → nil
+            f = k[k.index("local function klasaGracza()"):k.index("local function otworz()")]
+            for klasa, oczek in (("Mage", "mag"), ("Warrior", "wojownik"), ("Scout", "zwiadowca"), ("Nie", None),
+                                 (None, None)):
+                atr = "nil" if klasa is None else '"%s"' % klasa
+                kod = ('local KLASY_GRACZA = %s local D = { klasy = { wojownik = {}, zwiadowca = {}, mag = {} } } '
+                       'local gracz = { GetAttribute = function(_, n) if n == "Class" then return %s end return nil end } '
+                       '%s return klasaGracza()' % (m.group(1), atr, f))
+                wynik = LM.Interpreter().wykonaj(kod, "klasaGracza")
+                self.assertEqual(LM.z_luau(wynik[0]) if wynik else None, oczek, klasa)
+
     def test_4e_bez_danych_prywatnych(self):
         # ścieżki lokalne (dysk, katalog użytkownika, katalog tymczasowy) — wzorce składane, żeby nie trafiały same w siebie
         wzorce = [r"[A-Za-z]:\\" + "Users", "/" + "Users/", "App" + "Data", r"\\" + "Temp" + r"\\"]

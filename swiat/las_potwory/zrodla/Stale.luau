@@ -30,6 +30,11 @@ S.ZASIEG_E = 8                -- studs w poziomie od punktu bazowego + promień 
 S.ZAPAS_E_SERWER = 10         -- studs zapasu po stronie serwera (opóźnienie, ruch 4 Hz; M6 17.11: było 6 — chodzący
                               -- potwór uciekał z bramki w czasie reakcji gracza, patrz HISTEREZA_E niżej)
 S.MAKS_ROZNICA_WYSOKOSCI = 6
+-- zatrzymanie przy graczu (17.11.2026, propozycja): potwór staje i patrzy na najbliższego gracza w zasięgu E + zapas
+S.ZATRZYMANIE_ZAPAS = 4       -- studs ponad ZASIEG_E + promień (stoi nieco wcześniej, niż pojawi się podpowiedź)
+S.ZATRZYMANIE_MAKS_S = 20     -- s: najdłużej stoi naraz przy tym samym graczu
+S.ZATRZYMANIE_PRZERWA_S = 5   -- s: potem idzie co najmniej tyle, zanim znów stanie (nie da się go zamrozić)
+S.ATRYBUT_BEZ_ZATRZYMAN = "TestBezZatrzyman" -- atrybut kontenera (serwer, testy przed/po): true = bez zatrzymań
 S.PRZEDPOLE = 6               -- studs od węzła w stronę domu
 S.PROG_POZYCJI = 0.05         -- studs: mniejszej zmiany nie zapisujemy
 S.PROG_KIERUNKU = math.rad(2)

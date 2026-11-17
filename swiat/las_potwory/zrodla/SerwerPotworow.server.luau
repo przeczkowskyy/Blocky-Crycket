@@ -23,6 +23,8 @@
 
 	Tyknięcie ruchu jest skopiowane 1:1 w testy/test_logiki.py (klasa Symulacja): koniec zajętości → krokGrup →
 	członkowie grup → wychodzący → czekający. Zmieniasz kolejność tutaj — zmień ją tam (test pilnuje odstępu 25).
+	Zatrzymanie przy graczu (17.11.2026, aktualizujZatrzymania przed krokGrup) działa tylko przy graczu w pobliżu — w
+	Symulacji graczy nie ma, a grupa z zatrzymanym członkiem stoi tą samą drogą co grupa z zajętym (już testowaną).
 
 	Odczytania kontraktu (najprostsze; spis w UWAGI_S.md):
 		• zajętość nie zmienia stanu wewnętrznego (wychodzi / czeka / chodzi) — to osobne pole `zajety`; po przegranej
@@ -112,6 +114,8 @@ end
 local function stanAtrybutu(p): string
 	if p.zajety then
 		return "zajety"
+	elseif p.stop then
+		return "stoi" -- zatrzymany przy graczu (17.11.2026): klient gra spoczynek
 	elseif p.stan == "wychodzi" then
 		return "idzie"
 	elseif p.stan == "czeka" then
@@ -347,7 +351,58 @@ local function lukaTeraz(st): number
 	return najmniej
 end
 
-local function tyknijStrefe(st, czas: number, dt: number)
+------------------------------------------------------------------ zatrzymanie przy graczu (17.11.2026, propozycja)
+-- Potwór, do którego gracz podszedł na zasięg podpowiedzi E (+ Stale.ZATRZYMANIE_ZAPAS), staje i obraca się do
+-- najbliższego gracza, dopóki ten jest blisko — najwyżej Stale.ZATRZYMANIE_MAKS_S naraz, potem idzie co najmniej
+-- Stale.ZATRZYMANIE_PRZERWA_S (nie da się go zamrozić). Grupa z zatrzymanym członkiem stoi jak grupa z zajętym
+-- (ta sama droga w Logika.krokGrup, więc odstęp 25 i pętle działają jak przy walce). Strażnik (prędkość 0) — bez zmian.
+local function najblizszyGracz(p, gracze, zasieg: number)
+	local najlepszy, dNaj = nil, math.huge
+	for _, g in gracze do
+		local dx, dz = g[1] - p.x, g[2] - p.z
+		local d = math.sqrt(dx * dx + dz * dz)
+		if d <= zasieg and d < dNaj and math.abs(g[3] - p.y) <= Stale.MAKS_ROZNICA_WYSOKOSCI + Stale.ZATRZYMANIE_ZAPAS then
+			najlepszy, dNaj = g, d
+		end
+	end
+	return najlepszy
+end
+
+local function aktualizujZatrzymania(st, czas: number, gracze)
+	local zasieg = Stale.ZASIEG_E + st.gatunek.promien + Stale.ZATRZYMANIE_ZAPAS
+	for _, p in st.potwory do
+		if p.zajety or st.v <= 0 or st.d.straznik or #gracze == 0 then
+			p.stop = nil
+		else
+			local cel = najblizszyGracz(p, gracze, zasieg)
+			if p.stop and (not cel or czas - p.stop.od >= Stale.ZATRZYMANIE_MAKS_S) then
+				if cel then
+					p.stopWolnyOd = czas + Stale.ZATRZYMANIE_PRZERWA_S
+				end
+				p.stop = nil
+			elseif cel and not p.stop and czas >= (p.stopWolnyOd or 0) then
+				p.stop = { od = czas }
+			end
+			if p.stop then
+				local dx, dz = cel[1] - p.x, cel[2] - p.z
+				if dx * dx + dz * dz > 1e-6 then
+					p.yaw = Logika.yaw(dx, dz)
+				end
+			end
+		end
+	end
+end
+
+local function grupaZatrzymana(g): boolean
+	for _, p in g.czlonkowie do
+		if p.stop then
+			return true
+		end
+	end
+	return false
+end
+
+local function tyknijStrefe(st, czas: number, dt: number, gracze)
 	-- 1. koniec zajętości (zbieramy najpierw, bo usuwanie zmienia listę)
 	local konczace = {}
 	for _, p in st.potwory do
@@ -358,14 +413,15 @@ local function tyknijStrefe(st, czas: number, dt: number)
 	for _, p in konczace do
 		zakonczZajetosc(p)
 	end
+	aktualizujZatrzymania(st, czas, gracze)
 	local krok = st.v * dt
-	-- 2. grupy: jeden krok z odstępem 25; stoi rezerwacja i grupa z zajętym członkiem
+	-- 2. grupy: jeden krok z odstępem 25; stoi rezerwacja i grupa z zajętym albo zatrzymanym członkiem
 	if #st.grupy > 0 then
 		local s, dl, stoi = {}, {}, {}
 		for k, g in st.grupy do
 			s[k] = g.s
 			dl[k] = g.dlugosc
-			stoi[k] = g.rezerwacja or grupaZajeta(g)
+			stoi[k] = g.rezerwacja or grupaZajeta(g) or grupaZatrzymana(g)
 		end
 		local nowe, zbiezne = Logika.krokGrup(s, dl, stoi, st.L, krok, ODSTEP)
 		if not zbiezne and not st.ostrzezono then
@@ -380,8 +436,8 @@ local function tyknijStrefe(st, czas: number, dt: number)
 	-- 3. członkowie grup: punkt i kierunek z pętli (zajęty stoi tam, gdzie zaczęła się walka)
 	for _, g in st.grupy do
 		for _, p in g.czlonkowie do
-			if p.zajety then
-				p.ruszyl = false
+			if p.zajety or p.stop then
+				p.ruszyl = false -- zatrzymany: stoi i patrzy na gracza (kierunek z aktualizujZatrzymania)
 			else
 				ustawNaPetli(st, p)
 			end
@@ -389,7 +445,7 @@ local function tyknijStrefe(st, czas: number, dt: number)
 	end
 	-- 4. wychodzący z domu: po prostej do przedpola
 	for _, p in st.potwory do
-		if p.stan == "wychodzi" and not p.zajety then
+		if p.stan == "wychodzi" and not p.zajety and not p.stop then
 			local dom = st.d.domy[p.dom]
 			local cx, cz = dom.wejscie[1], dom.wejscie[2]
 			local x2, z2, doszedl = Logika.krokDo(p.x, p.z, cx, cz, krok)
@@ -411,7 +467,7 @@ local function tyknijStrefe(st, czas: number, dt: number)
 	end
 	-- 5. czekający: rezerwacja i wejście
 	for _, p in st.potwory do
-		if p.stan == "czeka" and not p.zajety then
+		if p.stan == "czeka" and not p.zajety and not p.stop then
 			sprobujWejsc(st, p)
 		end
 	end
@@ -422,10 +478,25 @@ local function tyknijStrefe(st, czas: number, dt: number)
 	st.minLuka = math.min(st.minLuka, lukaTeraz(st))
 end
 
+-- położenia graczy dla zatrzymań: { x, z, y } (bez graczy zablokowanych, np. w czasie przelotu kamery)
+local function graczeDoZatrzyman(): { { number } }
+	local lista = {}
+	for _, gracz in Players:GetPlayers() do
+		local postac = gracz.Character
+		local hrp = postac and postac:FindFirstChild("HumanoidRootPart")
+		local hum = postac and postac:FindFirstChildOfClass("Humanoid")
+		if hrp and hrp:IsA("BasePart") and hum and hum.Health > 0 and gracz:GetAttribute(Stale.ATRYBUT_BLOKADY) ~= true then
+			table.insert(lista, { hrp.Position.X, hrp.Position.Z, hrp.Position.Y })
+		end
+	end
+	return lista
+end
+
 local function tyknij(dt: number)
 	local czas = teraz()
+	local gracze = if kontener:GetAttribute(Stale.ATRYBUT_BEZ_ZATRZYMAN) == true then {} else graczeDoZatrzyman()
 	for _, st in strefy do
-		tyknijStrefe(st, czas, dt)
+		tyknijStrefe(st, czas, dt, gracze)
 	end
 end
 
@@ -1128,12 +1199,16 @@ petla("odradzania", Stale.OKRES_ODRADZANIA, function(_dt: number)
 	odradzaj()
 end)
 
-local zwykle = 0
+-- nazwa strażnika z danych biomu (17.11.2026: Bagno pisało „Strażnik Gaju”, bo nazwa była wpisana na sztywno)
+local zwykle, straznicy = 0, {}
 for _, st in strefy do
-	if not st.d.straznik then
+	if st.d.straznik then
+		table.insert(straznicy, if st.d.wariant then st.d.wariant.nazwa else st.gatunek.nazwa)
+	else
 		zwykle += #st.potwory
 	end
 end
-print(string.format("%sgotowy: %d potworów w %d strefach + Strażnik Gaju; zgodność logiki %d/%d", P, zwykle,
-	#strefy - 1, nLogiki - #bledyLogiki, nLogiki))
+print(string.format("%sgotowy: %d potworów w %d strefach + %s; zgodność logiki %d/%d", P, zwykle,
+	#strefy - #straznicy, if #straznicy > 0 then table.concat(straznicy, ", ") else "bez strażnika",
+	nLogiki - #bledyLogiki, nLogiki))
 kontener:SetAttribute("SerwerGotowy", true)

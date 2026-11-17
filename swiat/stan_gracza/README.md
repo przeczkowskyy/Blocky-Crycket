@@ -120,6 +120,12 @@ Wyniki mogą zawierać nazwę konta, dlatego folder wyników musi być poza repo
 Wynik w Studio 17.11.2026 (13:50–14:15): S00–S12 OK; M6 — walka ruszyła w 5 z 15 prób z dawną podpowiedzią i w 13 z 15
 po poprawce (histereza zasięgu 7 przy zapasie serwera 10; obie nieudane dały dymek „Podejdź bliżej potwora…”).
 
+Zatrzymanie potworów przy graczu (runda 3, 17.11.2026, propozycja): `--tylko-m6 --m6-zatrzymanie` mierzy „przed” bez
+zatrzymań (`TestBezZatrzyman` na `LasPasGra`) i „po” z nimi, zapisuje stan celu przy E (Stan, przesunięcie, odchylenie
+kierunku od gracza) i robi zrzuty `swiat/las_potwory/klatki/stop_*.jpg` (kamera z boku pary); `--reakcja <s>` zmienia
+czas do E. Wynik: przy 1,5 s 15/15 przed i 15/15 po; przy 3 s 7/15 przed i 15/15 po — przy E stało 3 z 15 potworów
+przed i 15 z 15 po, wszystkie 15 zwrócone do gracza, średnie przesunięcie 12,9 → 0,5 studa.
+
 ## Liczby z symulacji (17.11.2026, propozycja)
 Bohater na prawdziwym poziomie, bez treningu: pierwsza przegroda (Leśny Slime poz. 1) na poziomie 1 to 84–88% wygranych.
 Przejście lasu-pasa do wygranej ze Strażnikiem: mediana ok. 27 min przy walkach ×1 (Mag 25, Wojownik i Zwiadowca 28),

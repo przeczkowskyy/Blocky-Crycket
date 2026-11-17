@@ -799,6 +799,14 @@ S.ZASIEG_E = 8                -- studs w poziomie od punktu bazowego + promień 
 S.ZAPAS_E_SERWER = 6          -- studs zapasu po stronie serwera (opóźnienie, ruch 4 Hz) — 17.11.2026 (M6): 10, a klient ma
                               -- histerezę HISTEREZA_E = 7 dla bieżącego kandydata (patrz Stale.luau i testy/test_podpowiedzi_e.py)
 S.MAKS_ROZNICA_WYSOKOSCI = 6
+-- 17.11.2026 (runda 3, propozycja): zatrzymanie przy graczu — potwór, do którego gracz podszedł na
+-- ZASIEG_E + promień + ZATRZYMANIE_ZAPAS, staje (Stan "stoi", klient gra spoczynek) i obraca się do najbliższego
+-- gracza, najwyżej ZATRZYMANIE_MAKS_S naraz, potem idzie co najmniej ZATRZYMANIE_PRZERWA_S; jego grupa stoi jak
+-- grupa z zajętym (Logika.krokGrup, odstęp 25 bez zmian); Strażnik bez zmian. Decyduje serwer (SerwerPotworow:
+-- aktualizujZatrzymania); TestBezZatrzyman = true na kontenerze wyłącza (pomiar „przed”). Symulacja w Pythonie nie ma graczy.
+S.ZATRZYMANIE_ZAPAS = 4
+S.ZATRZYMANIE_MAKS_S = 20
+S.ZATRZYMANIE_PRZERWA_S = 5
 S.PRZEDPOLE = 6               -- studs od węzła w stronę domu
 S.PROG_POZYCJI = 0.05         -- studs: mniejszej zmiany nie zapisujemy
 S.PROG_KIERUNKU = math.rad(2)

@@ -3,6 +3,7 @@
 chodzących potworach). Nie zmienia miejsca: sama włącza i wyłącza Play, niczego nie zapisuje i nie publikuje.
 
     python -B swiat/stan_gracza/testy/proba_play.py <folder wyników POZA repo> [--studio <id>] [--bez-zrzutow] [--bez-m6] [--tylko-m6]
+        [--m6-zatrzymanie] [--reakcja <s>]
     python -B swiat/stan_gracza/testy/proba_play.py --sprawdz      # bez Studio: parsuje każdy kawałek Luau (luau_mini)
 
 Warunki (tryb Edit): Workspace/StanGracza (swiat/stan_gracza/zbuduj.py), Workspace/LasPasGra i Workspace/LasPas
@@ -146,11 +147,30 @@ KOD = {
     "trening_sila": GR + 'return H:JSONEncode({ s = gracz:GetAttribute("TreningSila") or 0 })',
     "gotowy_klient": 'local p = game:GetService("Players").LocalPlayer return tostring(p ~= nil and p.Character ~= nil)',
     # baner trwa 2,6 s — liczymy go słuchaczem u klienta (lokalne atrybuty kontenera), zrzut jest tylko dodatkiem
+    "stan_potwora": KP + ('local c = k.Stan:FindFirstChild("%s") if not c then return H:JSONEncode({}) end '
+                          'return H:JSONEncode({ stan = c:GetAttribute("Stan"), kierunek = c:GetAttribute("Kierunek"), '
+                          'pozycja = J(c:GetAttribute("Pozycja")) })'),
     "sledz_baner": ('local pg = game:GetService("Players").LocalPlayer.PlayerGui local s = workspace.StanGracza '
                     'pg.ChildAdded:Connect(function(c) if c.Name == "StanGraczaBaner" then task.wait(0.05) '
                     'local t = c:FindFirstChild("Tytul", true) s:SetAttribute("ProbaBanery", (s:GetAttribute("ProbaBanery") or 0) + 1) '
                     's:SetAttribute("ProbaBanerTekst", t and t.Text or "?") end end) return "ok"'),
+    # zrzut zatrzymania: kamera z boku pary gracz–potwór (strona %d = 1 albo -1), oba w kadrze z podpowiedzią E
+    "kamera_para": ('local cam = workspace.CurrentCamera local p = game:GetService("Players").LocalPlayer '
+                    'local h = p.Character and p.Character:FindFirstChild("HumanoidRootPart") if not h then return "brak" end '
+                    'local m = Vector3.new(%f, %f, %f) local srodek = (h.Position + m) / 2 '
+                    'local o = Vector3.new(m.X - h.Position.X, 0, m.Z - h.Position.Z) '
+                    'if o.Magnitude < 0.01 then o = Vector3.new(1, 0, 0) end o = o.Unit '
+                    'local bok = o:Cross(Vector3.yAxis) * %d '
+                    'local oko = srodek + bok * 12 - o * 4 + Vector3.new(0, 3, 0) '
+                    'cam.CameraType = Enum.CameraType.Scriptable cam.CFrame = CFrame.lookAt(oko, srodek + Vector3.new(0, 1, 0)) '
+                    'return "ok"'),
 }
+# M6 z --m6-zatrzymanie: podpowiedź i stan celu (Stan, Kierunek, Pozycja) jednym wywołaniem u klienta tuż przed E
+KOD["podpowiedz_potwor"] = KOD["podpowiedz"].replace(
+    "return H:JSONEncode({ ",
+    'local c = k.Stan:FindFirstChild("%s") return H:JSONEncode({ potwor = c and { stan = c:GetAttribute("Stan"), '
+    'kierunek = c:GetAttribute("Kierunek"), pozycja = J(c:GetAttribute("Pozycja")) } or false, ', 1)
+assert KOD["podpowiedz_potwor"] != KOD["podpowiedz"]
 
 
 def log(*a):
@@ -196,6 +216,11 @@ def main():
     bez_zrzutow = "--bez-zrzutow" in argv
     bez_m6 = "--bez-m6" in argv
     tylko_m6 = "--tylko-m6" in argv  # tylko S00–S02, S09 i S12 (powtórka pomiaru M6)
+    # --m6-zatrzymanie: w S09 „przed” = potwory bez zatrzymania przy graczu (TestBezZatrzyman na lesie-pasie), „po” = z
+    # zatrzymaniem; kotwica i zasięg E w obu seriach nowe (runda 3, 17.11.2026)
+    m6_zatrzymanie = "--m6-zatrzymanie" in argv
+    # --reakcja S: inny czas od stanięcia do E w S09 (domyślnie REAKCJA_M6 = 1,5 s; dłuższy pokazuje, co daje zatrzymanie)
+    reakcja_m6 = float(argv[argv.index("--reakcja") + 1]) if "--reakcja" in argv else REAKCJA_M6
     os.makedirs(wyj, exist_ok=True)
     os.makedirs(KLATKI, exist_ok=True)
     from cel_studio import wybierz_studio  # noqa: E402
@@ -251,7 +276,7 @@ def main():
         def stan_studio():
             return call("get_studio_state")["text"]
 
-        def zrzut(nazwa):
+        def zrzut(nazwa, folder=None):
             if bez_zrzutow:
                 return
             nie_usypiaj()
@@ -264,9 +289,9 @@ def main():
                 im = Image.open(io.BytesIO(dane)).convert("RGB")
                 if im.width > 1280:
                     im = im.resize((1280, round(im.height * 1280 / im.width)), Image.LANCZOS)
-                im.save(os.path.join(KLATKI, nazwa + ".jpg"), "JPEG", quality=85)
+                im.save(os.path.join(folder or KLATKI, nazwa + ".jpg"), "JPEG", quality=85)
             else:
-                with open(os.path.join(KLATKI, nazwa + ".png"), "wb") as f:
+                with open(os.path.join(folder or KLATKI, nazwa + ".png"), "wb") as f:
                     f.write(dane)
             log("zrzut", nazwa)
 
@@ -339,7 +364,19 @@ def main():
                 przestaw(stan, p)
                 luau(KOD["kamera"] % kamera, "Client")
                 time.sleep(reakcja or 0.5)
-                pp = js(KOD["podpowiedz"], "Client")
+                if reakcja:
+                    pp = js(KOD["podpowiedz_potwor"] % cel_id, "Client")
+                    pm = pp.pop("potwor", None) or {}
+                    poz, kier = pm.get("pozycja") or p, pm.get("kierunek")
+                    dx, dz = stan[0] - poz[0], stan[2] - poz[2]
+                    odch = None
+                    if isinstance(kier, (int, float)):
+                        odch = round(abs(math.degrees((kier - math.atan2(-dx, -dz) + math.pi) % (2 * math.pi) - math.pi)), 1)
+                    # przesunięcie potwora od stanięcia gracza do E i odchylenie jego kierunku od kierunku na gracza
+                    info["potwor"] = {"stan": pm.get("stan"), "odchylenie_st": odch,
+                                      "przesuniecie": round(math.hypot(poz[0] - p[0], poz[2] - p[2]), 2)}
+                else:
+                    pp = js(KOD["podpowiedz"], "Client")
                 info["podpowiedz"] = pp
                 # z „reakcją”: gracz wciska E po tylu sekundach, czy podpowiedź jeszcze jest, czy nie (jak człowiek)
                 if reakcja or (pp.get("wlaczona") and pp.get("najblizszy") == cel_id):
@@ -356,12 +393,17 @@ def main():
                 luau(KOD["kamera_zwykla"], "Client")
             return info
 
+        NIEUDANE = []  # nieudane podejścia ostatniego walka_w_strefie (diagnoza)
+
         def walka_w_strefie(strefa, kamera="za", proby=3, zrzut_walki=None, lap_baner=False):
             """Walka z pierwszym wolnym potworem strefy (prawdziwe E; zapas: haczyk "walcz" z adnotacją)."""
+            NIEUDANE.clear()
             for _ in range(proby):
                 cel = js(KOD["potwor_w_strefie"] % strefa, "Server")
                 if not cel.get("id"):
-                    time.sleep(3)
+                    # strefa wybita (2 potwory, odradzanie 12–16 s) — bez zrzutów próba idzie szybciej, więc czekamy dłużej
+                    NIEUDANE.append({"brak_celu": strefa})
+                    time.sleep(8)
                     continue
                 przed = {"gracz": gracz_atr(), "walka": ostatnia_walka(), "stan": stan_licz()}
                 e = podejdz_i_e(cel["id"], kamera)
@@ -371,6 +413,10 @@ def main():
                     jak = "haczyk walcz (E nie zadziałało)"
                     e["walka"] = bool(czekaj_na(lambda: klient_potworow().get("walka"), 6, 0.4))
                 if not e["walka"]:
+                    # do diagnozy: cel, stan potwora, podpowiedź, komunikat, odpowiedź serwera
+                    NIEUDANE.append({"cel": cel, "e": e, "potwor": js(KOD["stan_potwora"] % cel["id"], "Server"),
+                                     "komunikat": js(KOD["komunikat"], "Client"), "walka": ostatnia_walka(),
+                                     "gracz": gracz_atr()})
                     continue
                 time.sleep(3)
                 w_trakcie = {"gracz": gracz_atr(), "hud": js(KOD["hud"], "Client")}
@@ -460,8 +506,12 @@ def main():
                     # baner awansu pojawia się, gdy po walce HUD znów widać (KlientStanu) — zrzut przy pierwszym
                     w = walka_w_strefie("s1", zrzut_walki="02_walka_z_danych_gracza" if nr == 0 else None,
                                         lap_baner=banery == 0)
+                    if not w and all("brak_celu" in n for n in NIEUDANE):
+                        # s1 wybita (2 slime'y; z graczem w strefie odradzanie trwa dłużej) — drugi slime'owy obszar
+                        w = walka_w_strefie("s2", lap_baner=banery == 0)
                     if not w:
-                        walki[id_klasy] = {"blad": "walka nie ruszyła", "panel": panel}
+                        walki[id_klasy] = {"blad": "walka nie ruszyła", "panel": panel, "nieudane": list(NIEUDANE),
+                                           "klasa_przed": a0.get("Class")}
                         continue
                     if nr == 0:
                         zrzut("04_hud_po_walce")
@@ -583,7 +633,10 @@ def main():
             if not bez_m6:
                 m6 = {}
                 for seria, stara in (("przed", "true"), ("po", "nil")):
-                    luau(KOD["kotwica_stara"] % stara, "Client")
+                    if m6_zatrzymanie:
+                        luau(KOD["test_atr"] % ("LasPasGra", "TestBezZatrzyman", stara), "Server")
+                    else:
+                        luau(KOD["kotwica_stara"] % stara, "Client")
                     proby = []
                     for i in range(15):
                         kamera = ("przod", "bok", "za")[i % 3]
@@ -600,11 +653,34 @@ def main():
                         if pierwszy:
                             m6["zrzut"] = True
                         info = podejdz_i_e(cel["id"], kamera, kat, 4.5, "08_m6_kamera_z_przodu" if pierwszy else None,
-                                           reakcja=REAKCJA_M6)
+                                           reakcja=reakcja_m6)
                         if info.get("walka"):
                             dokoncz_walke()
                         proby.append(info)
                     m6[seria] = proby
+                if m6_zatrzymanie:
+                    luau(KOD["test_atr"] % ("LasPasGra", "TestBezZatrzyman", "nil"), "Server")
+                    # zrzuty: potwór zatrzymany przodem do gracza z podpowiedzią E, gracz podchodzi z dwóch stron,
+                    # kamera z boku pary (bez E)
+                    for nr, kat in enumerate((180.0, 20.0)):
+                        # po 30 walkach strefy bywają wybite (odradzanie 12–16 s) — szukamy w kilku i czekamy do 20 s
+                        c = czekaj_na(lambda: next((w for w in (js(KOD["potwor_w_strefie"] % s_, "Server")
+                                                                for s_ in ("s2", "s1", "s3", "m1")) if w.get("id")), None),
+                                      20, 2.0) or {}
+                        if c.get("id"):
+                            p = js(KOD["pozycja_potwora"] % c["id"], "Server")
+                            r = math.radians(kat)
+                            przestaw([p[0] + math.cos(r) * 6, p[1] + 3.2, p[2] + math.sin(r) * 6], p)
+                            time.sleep(2.0)
+                            p2 = js(KOD["pozycja_potwora"] % c["id"], "Server") or p
+                            luau(KOD["kamera_para"] % (p2[0], p2[1] + 1.5, p2[2], 1 if nr == 0 else -1), "Client")
+                            time.sleep(0.5)
+                            m6.setdefault("stop_zrzuty", []).append({"kat": kat, "potwor": js(KOD["stan_potwora"] % c["id"], "Server"),
+                                                                     "przesuniecie": round(math.hypot(p2[0] - p[0], p2[2] - p[2]), 2),
+                                                                     "podpowiedz": js(KOD["podpowiedz"], "Client")})
+                            zrzut("stop_%d_z_%s" % (nr + 1, "lewej" if nr == 0 else "prawej"),
+                                  os.path.join(REPO, "swiat", "las_potwory", "klatki"))
+                            luau(KOD["kamera_zwykla"], "Client")
                 luau(KOD["kotwica_stara"] % "nil", "Client")
                 # dymek przy odmowie: blokada po walce bez TestBezSesji (walka przewinięta, serwer liczy pełny czas)
                 luau(KOD["test_atr"] % ("LasPasGra", "TestBezSesji", "nil"), "Server")
@@ -638,15 +714,29 @@ def main():
                             "podpowiedz_przy_E": sum(1 for p in e if (p.get("podpowiedz") or {}).get("wlaczona")),
                             "dymek_przy_porazce": sum(1 for p in e if not p.get("walka") and ((p.get("komunikat") or {}).get("ostatni"))),
                             "kamera_przod": "%d/%d" % (sum(1 for p in e if p["kamera"] == "przod" and p.get("walka")),
-                                                       sum(1 for p in e if p["kamera"] == "przod"))}
+                                                       sum(1 for p in e if p["kamera"] == "przod")),
+                            # z --m6-zatrzymanie: ile potworów stało przy E (Stan "stoi", przesunięcie od odczytu przed
+                            # przestawieniem gracza < 3 studs — idący przez 1,5 s robi 8–15) i patrzyło na gracza
+                            "stal": sum(1 for p in e if (p.get("potwor") or {}).get("stan") == "stoi"
+                                        and (p.get("potwor") or {}).get("przesuniecie", 99) < 3),
+                            "patrzyl": sum(1 for p in e if (p.get("potwor") or {}).get("odchylenie_st") is not None
+                                           and p["potwor"]["odchylenie_st"] <= 20),
+                            "srednie_przesuniecie": round(sum((p.get("potwor") or {}).get("przesuniecie", 0) for p in e) / max(1, len(e)), 2)}
                 zp, zpo = zlicz(m6["przed"]), zlicz(m6["po"])
+                m6["zliczenie"] = {"przed": zp, "po": zpo}
+                zapisz("S09", m6)
                 kom = (odm.get("komunikat") or {}) if odm else {}
+                if m6_zatrzymanie:
+                    log("S09 zatrzymanie: stał przy E przed %d/%d, po %d/%d; patrzył na gracza (≤20°) przed %d, po %d; "
+                        "średnie przesunięcie przed %.2f, po %.2f studs" % (zp["stal"], zp["e"], zpo["stal"], zpo["e"],
+                                                                           zp["patrzyl"], zpo["patrzyl"],
+                                                                           zp["srednie_przesuniecie"], zpo["srednie_przesuniecie"]))
                 # z reakcją 1,5 s część potworów odchodzi naprawdę (poza bramkę serwera) — wtedy ma być dymek, nie cisza
                 punkt("S09", zpo["e"] > 0 and zpo["walka"] >= zp["walka"] and zpo["walka"] >= 0.8 * zpo["e"]
                       and bool(kom.get("ostatni")),
                       "E (po %.1f s od stanięcia przy potworze) zaczęło walkę: przed %d/%d (podpowiedź przy E %d, kamera z przodu %s), "
                       "po %d/%d (podpowiedź przy E %d, kamera z przodu %s, dymek przy nieudanych %d); dymek przy blokadzie: %r" % (
-                          REAKCJA_M6, zp["walka"], zp["e"], zp["podpowiedz_przy_E"], zp["kamera_przod"], zpo["walka"], zpo["e"],
+                          reakcja_m6, zp["walka"], zp["e"], zp["podpowiedz_przy_E"], zp["kamera_przod"], zpo["walka"], zpo["e"],
                           zpo["podpowiedz_przy_E"], zpo["kamera_przod"], zpo["dymek_przy_porazce"], kom.get("ostatni")))
 
             if not tylko_m6:
