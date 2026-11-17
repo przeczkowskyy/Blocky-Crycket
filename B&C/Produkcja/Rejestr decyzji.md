@@ -446,5 +446,9 @@ Wskrzeszenie jest tylko legendarną umiejętnością pasywną, która zajmuje je
 ✅ zatwierdzona · 3D / walka · 2026-11-17 · źródło: rozmowa Karola z Claude Code 17.11 · zdecydował: Karol 2026-11-17
 Walka toczy się na arenie biomu, w którym gracz spotkał potwora: las ma arenę leśną, Bagno bagienną, każdy kolejny biom własną (Karol: „Tak, arena walki musi zmieniać się z biomem. Tak w ogóle to dopracowałbym dużo lepiej tę arenę walki, żeby background też był dopracowany”). Tło areny ma być dopracowane tak jak mapa biomu, bo widać je we wszystkich ujęciach kamery, także w objeździe zwycięzcy. Odpowiada na wybór 5 z raportu „Bagno stoi w Studio: drugi biom do przejścia”. Decyzja ma podpis Karola i czeka na potwierdzenie Pawła (D-043). Dotyczy [[Walka v2 — silnik, klasy i umiejętności]]; budowa: zadanie w [[Zadania]].
 
+### D-096 Biom w pasie: 25 sekund biegu długości, 4 sekundy szerokości
+✅ zatwierdzona · świat · 2026-11-17 · źródło: rozmowa Karola z Claude Code 17.11 (po własnym teście w Studio) · zdecydował: Karol 2026-11-17
+Każdy biom w pasie ma ok. **25 sekund biegu długości** (było 55) i ok. **4 sekundy szerokości** (było 4,5). Karol po zagraniu: mapa jest „dużo za długa”, gracz „musi za dużo biegać i się denerwować”, traci „poczucie łatwości poruszania”. Zmiana ma być szybka i nieinwazyjna: ta sama kolejność przegród, te same potwory i zasady, tylko krócej i lekko węziej. Do tego szybki powrót do jajka z końca biomu: wybranie w TELEPORCIE biomu, w którym gracz już jest, przenosi go na miejsce przybycia (Karol: „Kliknąć las jeszcze raz? W sumie to byłoby rozwiązanie”). Doprecyzowuje D-075 (pas wąski na 4–5 sekund biegu i bardzo długi) i plan lasu jako pasa zaakceptowany 16.11; dotyczy lasu, Bagna i każdego kolejnego biomu. Decyzja ma podpis Karola i czeka na potwierdzenie Pawła (D-043). Zob. [[Biom Las]], [[Zadania]].
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*

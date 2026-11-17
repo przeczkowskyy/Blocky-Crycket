@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (decyzja D-096: krótszy i węższy pas biomów; test Karola w Studio)
+- **Karol zagrał w Studio** to, co powstało dziś, i zmienił decyzję na gorąco (ok. 20:00, na czacie): „Musimy przebudować długość mapy, bo dalej jest ona dużo za długa… zamiast 55 sekund długości tylko 25 sekund długości… 4 sekundy szerokości… gracz musi za dużo biegać i się denerwować.” Zapisane jako **D-096** (zdecydował: Karol 2026-11-17); czeka na potwierdzenie Pawła. Zmiana ma być szybka i nieinwazyjna.
+- Do tego jego pomysł szybkiego powrotu do jajka z końca biomu: TELEPORT → ten sam biom przenosi na miejsce przybycia.
+- **Z testu Karola:** nie słyszał muzyki. Zmierzone w jego sesji: muzyka grała i docierała do słuchawek, ale głośność stref była 35%, a w walce spadała do 9%, przy rozmowie głosowej ok. cztery razy głośniejszej; na placu startowym nie było strefy muzyki. Przygotowana poprawka (głośność 80%, w walce 60% tej głośności, nowe strefy: plac startowy, stare Krzywe Miasteczko, stary las) czeka na wdrożenie razem z przebudową map.
+- Ruszyła przebudowa map lasu i Bagna oraz danych, które z nich wynikają. Notatki: [[Rejestr decyzji]], [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (własne dźwięki i muzyka grają w grze)
 - **Karol nadał grze prawa do sześciu wgranych plików audio** (Creator Hub, 17.11 ok. 19:45). Wcześniej gra dostawała odmowę, bo pliki są na koncie Karola, a gra na innym; bycie współtwórcą gry tego nie załatwia.
 - **Kontrola w grze** (w sesji Play Karola, sam odczyt): wszystkie sześć plików wczytuje się poprawnie; muzyka stref gra w bazarze (utwór targu). W walce odtwarzacz sam przechodzi z dźwięków wbudowanych na odcinki arkusza, gdy tylko arkusz jest wczytany.
