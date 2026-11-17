@@ -2,21 +2,8 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T09:01:11+01:00",
+ "aktualizacja": "2026-11-17T09:26:07+01:00",
  "prace": [
-  {
-   "id": "notatki-gry",
-   "tytul": "Sejf: pięć notatek o grze przepisane według zatwierdzonych decyzji",
-   "stan": "w_toku",
-   "start": "2026-11-17T09:01:11+01:00",
-   "koniec_szacowany": "2026-11-17T11:15:00+01:00",
-   "aktualizacja": "2026-11-17T09:01:11+01:00",
-   "obszary": [
-    "B&C/Gra/**"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
   {
    "id": "panel-zlecenia",
    "tytul": "Panel: jedna zakładka z tym, co czeka na decyzję, krótkie karty pytań",
