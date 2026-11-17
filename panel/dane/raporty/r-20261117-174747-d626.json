@@ -1,0 +1,36 @@
+{
+ "id": "r-20261117-174747-d626",
+ "tytul": "Areny walki stoją w Studio: las, Bagno, plac ćwiczeń",
+ "opis_md": "**Co to jest:** trzy areny walki po Twojej decyzji D-095, już w grze. To zrzuty ze Studio z prawdziwymi postaciami; każdą arenę możesz też obrócić w 3D w podglądzie panelu.\n\n**Jak zobaczyć w Studio:** Play → wybierz klasę → walka przy tablicy „PRÓBA WALKI” (plac ćwiczeń), walka w lesie (polana), walka w Bagnie (pomost).\n\n**Co się zmienia z biomem:**\n- **Las:** słoneczna polana z ciepłym, jasnym placem, olbrzymie pnie z koronami wysoko nad walką, smugi światła, wielkie muchomory po bokach; w walce spadają liście.\n- **Bagno:** okrągły pomost nad ciemną wodą, chatki na palach z oknami, latarnie, trzciny, cypryśniki we mgle; w walce latają ogniki.\n- **Tablica próby:** piaszczysty krąg, mur z basztami, chorągwie, namiot, bele; w walce łopoczą chorągwie.\n\n**Sprawdzone w grze:** walka z każdego źródła idzie na swojej arenie; czas klatki taki sam jak na starej arenie (16,7 ms); stare próby walki 111 z 111 i 27 z 27; kamera w żadnym ujęciu nie wchodzi w bryły (kontrola liczbowa dla wszystkich par bohater–potwór).\n\n**Poprawione po obejrzeniu zrzutów** (ostatnie dwa obrazy to para „przed / po” z Bagna): trzcina ze źdźbeł zamiast płaskich snopów, zieleńsza mgła Bagna, cieplejszy plac polany, wyraźniejsze smugi światła.\n\n**Do Twojej oceny:**\n1. Czy tła są już „dopracowane”, czy któraś arena potrzebuje więcej (i czego: więcej życia, inna pora dnia, inne kolory)?\n2. Plac ćwiczeń ma szarawy mur z kamienia — zostawić czy ocieplić?\n3. Stary las i las-pas mają tę samą arenę — wystarczy?\n\n**Niesprawdzone:** telefon (trzy areny są trzymane stale u gracza — pamięć do zmierzenia), walki bez trybu testowego bohatera w lesie-pasie i Bagnie.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T17:47:47+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "migawka",
+   "cel": "20261117-174638-f176",
+   "etykieta": "Arena leśna 3D"
+  },
+  {
+   "typ": "migawka",
+   "cel": "20261117-174639-0f43",
+   "etykieta": "Plac ćwiczeń 3D"
+  },
+  {
+   "typ": "studio",
+   "cel": "ArenyWalki",
+   "etykieta": "Areny walki"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ],
+ "migawka": "20261117-174638-7113"
+}

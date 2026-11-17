@@ -1,0 +1,65 @@
+{
+ "id": "20261117-174638-7113",
+ "tytul": "Arena bagienna — Pomost Nad Topielą",
+ "opis": "Arena walki z klocków (D-095), stan z 17.11 po poprawkach w Studio.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T17:46:38+01:00",
+ "zrodlo": "studio",
+ "czesci": 1194,
+ "grupy": [
+  {
+   "sciezka": "Workspace/ArenyWalki/Bagno/Bliskie",
+   "czesci": 111
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Bagno/Chaty",
+   "czesci": 159
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Bagno/Dal",
+   "czesci": 402
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Bagno/Grunt",
+   "czesci": 16
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Bagno/Kulisy",
+   "czesci": 56
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Bagno/Mgla",
+   "czesci": 16
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Bagno/Obrecz",
+   "czesci": 32
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Bagno/Plac",
+   "czesci": 32
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Bagno/Sciana",
+   "czesci": 370
+  }
+ ],
+ "zrzuty": [],
+ "zakres": {
+  "min": [
+   -3268.857,
+   -10.601,
+   1543.81
+  ],
+  "max": [
+   -2742.012,
+   57.112,
+   2063.406
+  ]
+ },
+ "miejsce": {
+  "placeId": 129485428021967,
+  "nazwa": "Blocky&Crycket (placeId: 129485428021967)"
+ },
+ "korzen": "Workspace/ArenyWalki/Bagno"
+}

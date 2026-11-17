@@ -1,0 +1,69 @@
+{
+ "id": "20261117-174639-0f43",
+ "tytul": "Arena próby — Plac Ćwiczeń Pod Murem",
+ "opis": "Arena walki z klocków (D-095), stan z 17.11 po poprawkach w Studio.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T17:46:39+01:00",
+ "zrodlo": "studio",
+ "czesci": 1108,
+ "grupy": [
+  {
+   "sciezka": "Workspace/ArenyWalki/Proba/Bliskie",
+   "czesci": 53
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Proba/Dal",
+   "czesci": 296
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Proba/Grunt",
+   "czesci": 12
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Proba/Kulisy",
+   "czesci": 71
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Proba/Miasto",
+   "czesci": 245
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Proba/Mur",
+   "czesci": 113
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Proba/Obrecz",
+   "czesci": 72
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Proba/Plac",
+   "czesci": 6
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Proba/Sciana",
+   "czesci": 132
+  },
+  {
+   "sciezka": "Workspace/ArenyWalki/Proba/Tlo",
+   "czesci": 108
+  }
+ ],
+ "zrzuty": [],
+ "zakres": {
+  "min": [
+   -3264.385,
+   -11.782,
+   2336.581
+  ],
+  "max": [
+   -2741.475,
+   77.5,
+   2855.503
+  ]
+ },
+ "miejsce": {
+  "placeId": 129485428021967,
+  "nazwa": "Blocky&Crycket (placeId: 129485428021967)"
+ },
+ "korzen": "Workspace/ArenyWalki/Proba"
+}
