@@ -1,0 +1,30 @@
+{
+ "id": "r-20261117-134948-bff5",
+ "tytul": "Stroje na postaci: przymierzalnia i strój w walce (D-071)",
+ "opis_md": "**Co to jest:** pierwsza próba ubierania postaci (D-071). Bohater składa się z gołego ciała swojej klasy i z przedmiotów, które gracz założył; ten sam strój widać w walce.\n\n**Jak zobaczyć w Studio:** Play → Enter (wybór klasy) → przymierzalnia stoi przy placu startowym, na trawie na północny wschód, obok straganu w paski (lustro w złotej ramie) → **E**. W oknie strzałkami zmieniasz przedmiot w każdym slocie; „Goły”, „Komplet”, „Dawny wygląd”. Potem tablica „PRÓBA WALKI” → walka w tym stroju.\n\n**Sprawdzone w grze:** 10 punktów w porządku, 1 niesprawdzony (walka w lesie w stroju), 0 błędów. Każdy ruch walki każdej klasy w trzech strojach klatka po klatce: żaden przedmiot nie odpada od ciała. Stara próba walki 111 z 111.\n\n**Przyjęte roboczo, do Waszej decyzji:**\n- spodnie są częścią zbroi (jest przełącznik na osobny slot),\n- łuk z kołczanem to jeden przedmiot w drugiej ręce,\n- bohater bez zbroi po upadku leży ok. 0,2–0,25 studa nad ziemią (wspólny klip upadku),\n- tylko przedmioty własnej klasy,\n- strój to na razie sam wygląd: nie zmienia statystyk i znika po wyjściu z gry.\n\n**Niesprawdzone:** prawdziwy telefon i dotyk (było okno 667 × 375 na emulacji), dwóch graczy, walka w lesie w stroju.\n\n**Do Pawła:** okno jest tymczasowe (napis „PRÓBA”); docelowe okno ekwipunku może wysyłać do serwera te same prośby. Moduł `Items` nie zna slotu drugiej ręki — propozycja pól jest w `swiat/postacie/roblox/PrzedmiotyPropozycja.luau`.\n\n**Pytanie:** czy tak ma wyglądać ubieranie (przedmiot po przedmiocie, strój widoczny w walce) i czy przyjęte ustawienia zostają?",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T13:49:48+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "StrojeProba",
+   "etykieta": "Przymierzalnia"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/stroje_proba/README.md",
+   "etykieta": "Opis"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
