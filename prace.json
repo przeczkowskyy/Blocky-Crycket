@@ -2,23 +2,6 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T02:31:21+01:00",
- "prace": [
-  {
-   "id": "miasteczko-bazar-studio",
-   "tytul": "Miasteczko-bazar w Studio: budowa mapy, skrypty i testy w grze",
-   "stan": "w_toku",
-   "etap": "poprawka twarzy karczmarza, zrzuty, raport",
-   "start": "2026-11-17T01:12:47+01:00",
-   "koniec_szacowany": "2026-11-17T02:55:00+01:00",
-   "aktualizacja": "2026-11-17T02:31:21+01:00",
-   "obszary": [
-    "studio:MiasteczkoBazar",
-    "studio:MiasteczkoBazarGra",
-    "mapa:miasteczko_bazar"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  }
- ]
+ "aktualizacja": "2026-11-17T02:37:23+01:00",
+ "prace": []
 }
