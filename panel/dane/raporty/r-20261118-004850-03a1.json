@@ -1,0 +1,34 @@
+{
+ "id": "r-20261118-004850-03a1",
+ "tytul": "Kowal w bazarze: rozbieranie i ulepszanie przedmiotów (D-102)",
+ "opis_md": "- W bazarze stoi kuźnia z kowalem (D-102): E przy kowalu otwiera okno, w którym rozbierasz zapasowe przedmioty na materiały i ulepszasz swoje (+1 do +5) za Złoto i materiały.\n- Przedmioty wypadają z wygranych walk (zwykły potwór 10%, rzadki 30%, strażnik 50%) i zakładają się same; ulepszenie od razu podnosi broń albo pancerz bohatera.\n- Do oceny: miejsce kuźni, liczby i to, że okno jest tymczasowe (docelowe robi Paweł — pytanie 57).\n\nSzczegóły:\n\n**Jak sprawdzić:** Play → przed bramą lochów w bazarze, naprzeciw zbrojowni, stoi „KUŹNIA” → E przy kowalu. Na start masz broń i zbroję swojej klasy (Wojownik też tarczę). Żeby coś ulepszyć, potrzebujesz Złota z walk i materiałów z rozebrania zapasowego przedmiotu.\n\n**Sprawdzone w grze** (próba 13 punktów w porządku, 1 bez rozstrzygnięcia, 0 błędów): otwarcie okna prawdziwym E; nowy hełm zakłada się sam z napisem „Nowy przedmiot: Hełm Rycerza! Założony.”; rozbiórka kliknięciami daje 3 materiały; ulepszenie miecza +0 → +1 zabiera 150 Złota i 1 materiał, a broń bohatera rośnie z 12 na 13; odmowy mają czytelne napisy („Brakuje ci 300 Złota.”); po śmierci postaci przedmioty zostają; okno mieści się na małym ekranie telefonu (667 × 375). Przymierzalnia strojów i cała droga gracza dalej przechodzą swoje próby (14 z 14).\n\n**Bez rozstrzygnięcia:** walki w lesie w założonych przedmiotach nie obejrzałem — skutek widać dziś w opisie bohatera w oknie, nie na zrzucie z walki.\n\n**Przyjęte roboczo, do zmiany:**\n1. Kuźnia stoi w bazarze. D-049 i D-051 mówią o kowalu w Twierdzy — przeniesiemy, gdy Twierdza powstanie.\n2. Podstawowy zestaw liczy się dokładnie jak dziś; przedmioty z łupu i ulepszenia dodają ponad to. Pełny zestaw +5 podnosi średnią szansę wygranej z ok. 52% do ok. 84%.\n3. Wojownik bez założonej tarczy traci blok (okno ostrzega na czerwono).\n4. Koszty ulepszeń: 150 / 300 / 450 / 650 / 900 Złota i 1 / 2 / 3 / 4 / 6 materiałów. W symulacji pierwsze ulepszenie wypada po ok. 8 minutach lasu, las się nie skraca, Bagno skraca się o ok. 13%.\n5. Przedmioty tylko własnej klasy; jeden egzemplarz, kolejne wypadają jako zapas na materiały.\n\n**Znane usterki:** napis „Brakuje ci 1 materiałów” (odmiana); gdy okno otwiera się tuż przy straganie, kamera potrafi stać za belką albo za tarczą zbrojowni; brak wskazówki celu prowadzącej do kowala; niesprawdzone z dwoma graczami i na prawdziwym telefonie.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T00:48:50+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/kowal/kowal.glb",
+   "etykieta": "Kowal 3D"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/KowalProba",
+   "etykieta": "Kuźnia"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/kowal_proba/PROJEKT.md",
+   "etykieta": "Projekt"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg"
+ ]
+}
