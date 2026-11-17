@@ -1,0 +1,34 @@
+{
+ "id": "r-20261117-084624-1f39",
+ "tytul": "Bagno jako pas — plan do akceptacji",
+ "opis_md": "**W skrócie**\n- Przygotowałem plan drugiego biomu, Bagna, jako dalszy odcinek tego samego wąskiego pasa co las. W Studio nic jeszcze nie jest zbudowane.\n- Bagno zaczyna się za bramą lasu i wygląda inaczej: przez cały biom biegnie krzywa kładka z desek, obok jest płytka woda, trawiaste kępy, błoto, cypryśniki z brodami mchu, trzcina i niska mgła.\n- Układ jest taki sam jak w lesie: inkubator przy wejściu, trzy przegrody z potworami trzech klas, rzadka Ropucha z Chatką i Strażnik Topieli, który otwiera bramę do Dżungli.\n- Dołączyłem też zarys pozostałych siedmiu biomów z nazwami, potworami i poziomami. Wszystko to jest propozycja do Waszej oceny.\n\nSzczegóły:\n\nPodglądy niżej to rysunek z brył, nie zrzuty z Roblox.\n\n**Co powstało.** Generator mapy Bagna składa ją z klocków tak samo jak las-pas i używa jego kodu (te same zasady miejsca, ten sam Kamień Powrotu i to samo stanowisko jajka). Mapa ma 9 017 części, czyli tyle co las (8 601). Kontrola offline nie znalazła żadnego błędu. Podglądy to rysunek z brył, a nie zrzuty z Roblox, więc nie pokazują faktur, cieni ani świateł.\n\n**Jak wygląda Bagno, od wejścia.**\n- Pomost Przybycia: tu gracz ląduje po teleporcie albo wchodzi z lasu przez bramę. Obok stoi inkubator i Kamień Powrotu.\n- Rechotne Oczka: trzy trawiaste kępy na płytkiej wodzie, a na nich Rechotki, czyli skaczące ropuchy (klasa Zwiadowca). Nad kępami stoi Chata na Palach.\n- Bulgotne Trzęsawisko: ciemne błoto z bąblującymi kałużami i Bulgotniki, czyli mali błotni szamani z głową-bańką (klasa Mag). Przy ścianie rośnie Stary Cypryś wysoki na 31 studów.\n- Kłapiące Kępy: ciemne kępy na czarnej wodzie i Kłodokłapy, czyli żywe kłody z paszczą (klasa Wojownik). Przy ścianie sterczy Wrak Łodzi.\n- Leże Ropuchy: błotna łacha z chatą, w której mieszka rzadka Ropucha z Chatką na grzbiecie.\n- Topiel Strażnika: okrągły pomost na wodzie, krąg pni z zielonymi latarniami i Wieża Topieli. Strażnik Topieli to olbrzym z błota i korzeni z łódką zamiast kapelusza. Za nim jest brama do Dżungli.\n\n**Liczby.** Od przybycia do bramy biegnie się 57,5 sekundy, tak samo jak w lesie. Przy ośmiu graczach na serwerze w Bagnie chodzi 35 potworów. Bagno uczy długiej walki: potwory spowalniają i trują, więc opłaca się Kondycja oraz rozsądny Pancerz i odporność na magię. W każdej z trzech przegród jest potwór innej klasy, więc żadna klasa gracza nie jest wymagana.\n\n**Zarys pozostałych biomów.** Dżungla „Gąszcz Pod Parasolem” (strażnik: Wąż Stu Lian), Pustynia „Piaski Pod Patelnią” z Pracownią Zaklinacza (Strażnik Klepsydry), Góry z tundrą „Hale Pod Czapą” (Kamienny Pasterz), Lodowiec „Lodowy Jęzor” (Mamut Szronogrzywy), Wulkaniczny „Kotlina Krzywego Komina” (Strażnik Komina) i Kryształowy „Szklany Sad” (Strażniczka Sadu). Każdy ma swoją paletę, swoje elementy z klocków, trzy przegrody z potworami trzech klas i poziomy w obu wariantach tempa.\n\n**Wybory dla Was.**\n1. Tempo: czy Bagno ma trwać ok. 45 minut (poziomy 11–19), czy ok. 95 minut (poziomy 11–25)? Mapa się nie zmienia, zmieniają się poziomy i liczba walk.\n2. Czy nazwa „Moczary Krzywej Kładki” zostaje?\n3. Czy zostaje zestaw potworów Bagna: Rechotek, Bulgotnik, Kłodokłap, Ropucha z Chatką i Strażnik Topieli? Modele powstaną dopiero po akceptacji.\n4. Czy Strażnik Topieli i Ropucha mają być wspólni dla serwera, jak w lesie, czy osobni dla każdego gracza?\n5. Czy woda ma tylko wyglądać (gracz brodzi bez spowolnienia), czy ma spowalniać poza kładką?\n6. Czy zostawić niską mgłę zrobioną z części, czy tylko mgłę ustawianą u gracza? Mgła z części może w Roblox wyglądać jak szkło.\n7. Czy teleport ma prowadzić też przed Topiel, po pierwszym dojściu?\n8. Czy zapowiedź Bagna za bramą lasu usunąć ręcznie w Studio, czy dodać do generatora lasu przełącznik?\n9. Dla zarysu biomów: czy przyjmujemy tempo rosnące czy równe i które nazwy oraz potwory zostają?\n\nUwaga do tempa: wariant równy jest dziś liczony na dwa sposoby — kalkulator balansu przyjmuje ok. 86 minut na każdy biom razem z lasem, a ten plan „las 30 minut, potem po ok. 95”. Przy decyzji wybierzcie jeden.\n\n**Czego nie sprawdziłem.** Nie sprawdziłem wyglądu w Roblox, ruchu po kładce i w wodzie, płynności na telefonie ani czasów walk z nowymi potworami, bo te potwory nie mają jeszcze danych walki. Poziomy pochodzą z modelu tempa, a nie z gry.\n\n**Następny krok po akceptacji.** Budowa Bagna w Studio we własnym kontenerze `Workspace/BagnoPas`, zrzuty z tych samych ujęć co podglądy i raport w panelu. Pliki: `swiat/bagno_pas/` (README z dokładnymi poleceniami) i `swiat/biomy/PLAN_BIOMOW.md`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T08:46:24+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/bagno_pas/README.md",
+   "etykieta": "Plan Bagna"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/biomy/PLAN_BIOMOW.md",
+   "etykieta": "Zarys biomów 2–8"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Biomy — zarys siedmiu kolejnych",
+   "etykieta": "Notatka w sejfie"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg"
+ ]
+}
