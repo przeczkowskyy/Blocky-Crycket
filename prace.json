@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T19:11:38+01:00",
+ "aktualizacja": "2026-11-17T19:11:42+01:00",
  "prace": [
   {
    "id": "jajko-bagna",
@@ -79,6 +79,19 @@
    "aktualizacja": "2026-11-17T19:11:31+01:00",
    "obszary": [
     "model:palkus"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "przebudowa-perlowa_wydra",
+   "tytul": "Przebudowa modelu perlowa_wydra",
+   "stan": "w_toku",
+   "start": "2026-11-17T19:11:41+01:00",
+   "koniec_szacowany": "2026-11-17T19:31:41+01:00",
+   "aktualizacja": "2026-11-17T19:11:41+01:00",
+   "obszary": [
+    "model:perlowa_wydra"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
