@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T15:52:41+01:00",
+ "aktualizacja": "2026-11-17T15:52:44+01:00",
  "prace": [
   {
    "id": "areny-walki",
@@ -68,6 +68,19 @@
    "aktualizacja": "2026-11-17T15:52:34+01:00",
    "obszary": [
     "model:rechotek"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "przebudowa-ropucha_z_chatka",
+   "tytul": "Przebudowa modelu ropucha_z_chatka",
+   "stan": "w_toku",
+   "start": "2026-11-17T15:52:44+01:00",
+   "koniec_szacowany": "2026-11-17T16:12:44+01:00",
+   "aktualizacja": "2026-11-17T15:52:44+01:00",
+   "obszary": [
+    "model:ropucha_z_chatka"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
