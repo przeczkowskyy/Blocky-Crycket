@@ -1,0 +1,58 @@
+RAPORT — kokosowy_silacz
+KOKOSOWY SIŁACZ — zwykły przeciwnik Dżungli (Gaj Kokosów): krępa małpa-siłacz z dwoma kokosami w pięściach,
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/kokosowy_silacz.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py kokosowy_silacz
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: kokosowy_silacz
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości Kokosowego Siłacza nie są R15 (własny szkielet: Root + 18 kości) — import do Roblox Studio nie był testowany.
+- Kokos jest kulą (w Roblox: Ball przez SpecialMesh) na własnej kości w pięści; palce to klocki na przedniej ścianie kokosa (pięść go „obejmuje” z góry).
+- Bryły są sztywno przypięte do kości: przy mocnym uniesieniu rąk barki i ramiona lekko wchodzą w siebie.
+- Nogi są krótkie i grube — w chodzie stopy w podporze ślizgają się lekko po ziemi.
+- Fali przy uderzeniu kokosami nie ma w klipie — wstrząs i smugę robi odtwarzacz (styl „wrecz”).
+
+MODEL kokosowy_silacz „Kokosowy Siłacz” (stwor)
+  wymiary ciała: 6,31 × 7,12 × 2,89; z akcesoriami: 6,31 × 7,12 × 2,89
+  trójkąty: 3256 (siatek: 18)
+  kości (19): Root, Biodra, Tulow, Glowa, Szczeka, RamieL, PrzedramieL, DlonL, KokosL, UdoL, GolenL, StopaL, RamieP, PrzedramieP, DlonP, KokosP, UdoP, GolenP, StopaP
+  klipy: idle 72 kl. 2,40 s pętla, ruch 30 kl. 1,00 s pętla, atak 30 kl. 1,00 s jednorazowy, umiejetnosc 48 kl. 1,60 s jednorazowy, trafienie 20 kl. 0,67 s jednorazowy, unik 30 kl. 1,00 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, wiwat 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, KokosPAttachment, KokosLAttachment
+
+KONTROLA EKSPORTÓW
+- kokosowy_silacz.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje brak -> ZGODNE
+- kokosowy_silacz__idle.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-73 -> ZGODNE
+- kokosowy_silacz__ruch.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-31 -> ZGODNE
+- kokosowy_silacz__atak.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-31 -> ZGODNE
+- kokosowy_silacz__umiejetnosc.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-49 -> ZGODNE
+- kokosowy_silacz__trafienie.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-21 -> ZGODNE
+- kokosowy_silacz__unik.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-31 -> ZGODNE
+- kokosowy_silacz__upadek.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-61 -> ZGODNE
+- kokosowy_silacz__wiwat.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-61 -> ZGODNE
+- kokosowy_silacz.glb: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje atak 0-30, idle 0-72, ruch 0-30, trafienie 0-20, umiejetnosc 0-48, unik 0-30, upadek 0-60, wiwat 0-60 -> ZGODNE
+
+PLIKI
+- kokosowy_silacz.blend
+- kokosowy_silacz.fbx
+- kokosowy_silacz.glb
+- kokosowy_silacz__atak.fbx
+- kokosowy_silacz__idle.fbx
+- kokosowy_silacz__ruch.fbx
+- kokosowy_silacz__trafienie.fbx
+- kokosowy_silacz__umiejetnosc.fbx
+- kokosowy_silacz__unik.fbx
+- kokosowy_silacz__upadek.fbx
+- kokosowy_silacz__wiwat.fbx
+- kokosowy_silacz_bohater.jpg
+- kokosowy_silacz_ikona.png
+- kokosowy_silacz_plansza.jpg
+- kokosowy_silacz_tekstury/
+- raport.json
+- raport.txt

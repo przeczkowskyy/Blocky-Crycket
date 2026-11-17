@@ -1,0 +1,58 @@
+RAPORT — pancernik_ruin
+PANCERNIK RUIN — rzadki potwór Dżungli (leże w ruinach): pancernik obrośnięty płytami starego kamienia z rytami
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/pancernik_ruin.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py pancernik_ruin
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: pancernik_ruin
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości Pancernika nie są R15 (własny szkielet: Root + 15 kości) — import do Roblox Studio nie był testowany.
+- Kula przy kamiennej skórze to trzy sztywne części pancerza obrócone wokół szwów — z boku widać, że to „klamra”, a nie idealna kula; łapy chowają się pod nią.
+- Świecenie szwów i znaku: materiał Neon na rigu z klocków; poświaty (PointLight) nie ma. Szwy świecą cały czas — w spoczynku przykrywają je zakładki płyt.
+- Łapy są jednoczęściowe (bez kolan): krok to wymach łapy; stopy w podporze ślizgają się lekko po ziemi.
+- Aurę kamiennej skóry (kamienie wokół) robi odtwarzacz (styl „na_siebie”).
+
+MODEL pancernik_ruin „Pancernik Ruin” (stwor)
+  wymiary ciała: 3,69 × 4,46 × 7,67; z akcesoriami: 3,69 × 4,46 × 7,67
+  trójkąty: 5296 (siatek: 15)
+  kości (16): Root, Cialo, Przod, Tyl, Glowa, Szczeka, Ogon1, Ogon2, LapaPL, DlonPL, LapaTL, StopaTL, LapaPP, DlonPP, LapaTP, StopaTP
+  klipy: idle 72 kl. 2,40 s pętla, ruch 30 kl. 1,00 s pętla, atak 27 kl. 0,90 s jednorazowy, umiejetnosc 54 kl. 1,80 s jednorazowy, trafienie 18 kl. 0,60 s jednorazowy, unik 27 kl. 0,90 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, ryk 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, HelmAttachment, PyskAttachment
+
+KONTROLA EKSPORTÓW
+- pancernik_ruin.fbx: siatki 19, kości 16, trójkąty 5344, wzrost 4.46 st., akcje brak -> ZGODNE
+- pancernik_ruin__idle.fbx: siatki 19, kości 16, trójkąty 5344, wzrost 4.46 st., akcje pancernik_ruin|Scene 1-73 -> ZGODNE
+- pancernik_ruin__ruch.fbx: siatki 19, kości 16, trójkąty 5344, wzrost 4.46 st., akcje pancernik_ruin|Scene 1-31 -> ZGODNE
+- pancernik_ruin__atak.fbx: siatki 19, kości 16, trójkąty 5344, wzrost 4.46 st., akcje pancernik_ruin|Scene 1-28 -> ZGODNE
+- pancernik_ruin__umiejetnosc.fbx: siatki 19, kości 16, trójkąty 5344, wzrost 4.46 st., akcje pancernik_ruin|Scene 1-55 -> ZGODNE
+- pancernik_ruin__trafienie.fbx: siatki 19, kości 16, trójkąty 5344, wzrost 4.46 st., akcje pancernik_ruin|Scene 1-19 -> ZGODNE
+- pancernik_ruin__unik.fbx: siatki 19, kości 16, trójkąty 5344, wzrost 4.46 st., akcje pancernik_ruin|Scene 1-28 -> ZGODNE
+- pancernik_ruin__upadek.fbx: siatki 19, kości 16, trójkąty 5344, wzrost 4.46 st., akcje pancernik_ruin|Scene 1-61 -> ZGODNE
+- pancernik_ruin__ryk.fbx: siatki 19, kości 16, trójkąty 5344, wzrost 4.46 st., akcje pancernik_ruin|Scene 1-61 -> ZGODNE
+- pancernik_ruin.glb: siatki 19, kości 16, trójkąty 5344, wzrost 4.46 st., akcje atak 0-27, idle 0-72, ruch 0-30, ryk 0-60, trafienie 0-18, umiejetnosc 0-54, unik 0-27, upadek 0-60 -> ZGODNE
+
+PLIKI
+- pancernik_ruin.blend
+- pancernik_ruin.fbx
+- pancernik_ruin.glb
+- pancernik_ruin__atak.fbx
+- pancernik_ruin__idle.fbx
+- pancernik_ruin__ruch.fbx
+- pancernik_ruin__ryk.fbx
+- pancernik_ruin__trafienie.fbx
+- pancernik_ruin__umiejetnosc.fbx
+- pancernik_ruin__unik.fbx
+- pancernik_ruin__upadek.fbx
+- pancernik_ruin_bohater.jpg
+- pancernik_ruin_ikona.png
+- pancernik_ruin_plansza.jpg
+- pancernik_ruin_tekstury/
+- raport.json
+- raport.txt

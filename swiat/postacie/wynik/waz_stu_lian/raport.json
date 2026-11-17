@@ -1,0 +1,377 @@
+{
+ "modul": "waz_stu_lian",
+ "modele": [
+  {
+   "id": "waz_stu_lian",
+   "nazwa": "Wąż Stu Lian",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Zwoj_Geo",
+     "kosc": "Zwoj",
+     "trojkaty": 2436,
+     "wierzcholki": 1456,
+     "wymiary": [
+      10.883,
+      3.7,
+      11.144
+     ],
+     "min": [
+      -4.985,
+      -0.057,
+      -6.452
+     ],
+     "max": [
+      5.898,
+      3.643,
+      4.692
+     ]
+    },
+    {
+     "nazwa": "Ogon_Geo",
+     "kosc": "Ogon",
+     "trojkaty": 304,
+     "wierzcholki": 176,
+     "wymiary": [
+      5.283,
+      1.44,
+      5.673
+     ],
+     "min": [
+      -5.076,
+      -0.05,
+      -1.2
+     ],
+     "max": [
+      0.207,
+      1.39,
+      4.473
+     ]
+    },
+    {
+     "nazwa": "Szyja1_Geo",
+     "kosc": "Szyja1",
+     "trojkaty": 324,
+     "wierzcholki": 184,
+     "wymiary": [
+      2.613,
+      3.954,
+      2.866
+     ],
+     "min": [
+      -1.388,
+      2.687,
+      -4.532
+     ],
+     "max": [
+      1.225,
+      6.641,
+      -1.666
+     ]
+    },
+    {
+     "nazwa": "Szyja2_Geo",
+     "kosc": "Szyja2",
+     "trojkaty": 348,
+     "wierzcholki": 198,
+     "wymiary": [
+      2.45,
+      4.235,
+      3.86
+     ],
+     "min": [
+      -1.213,
+      5.667,
+      -4.139
+     ],
+     "max": [
+      1.237,
+      9.902,
+      -0.279
+     ]
+    },
+    {
+     "nazwa": "Szyja3_Geo",
+     "kosc": "Szyja3",
+     "trojkaty": 324,
+     "wierzcholki": 184,
+     "wymiary": [
+      2.128,
+      3.675,
+      3.634
+     ],
+     "min": [
+      -1.103,
+      8.592,
+      -2.28
+     ],
+     "max": [
+      1.025,
+      12.267,
+      1.354
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 700,
+     "wierzcholki": 392,
+     "wymiary": [
+      3.25,
+      2.407,
+      4.969
+     ],
+     "min": [
+      -1.625,
+      11.793,
+      0.825
+     ],
+     "max": [
+      1.625,
+      14.2,
+      5.794
+     ]
+    },
+    {
+     "nazwa": "Szczeka_Geo",
+     "kosc": "Szczeka",
+     "trojkaty": 188,
+     "wierzcholki": 104,
+     "wymiary": [
+      2.312,
+      1.0,
+      3.812
+     ],
+     "min": [
+      -1.156,
+      11.675,
+      1.638
+     ],
+     "max": [
+      1.156,
+      12.675,
+      5.45
+     ]
+    },
+    {
+     "nazwa": "Jezyk_Geo",
+     "kosc": "Jezyk",
+     "trojkaty": 36,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.514,
+      0.075,
+      2.002
+     ],
+     "min": [
+      -0.257,
+      12.425,
+      3.325
+     ],
+     "max": [
+      0.257,
+      12.5,
+      5.327
+     ]
+    },
+    {
+     "nazwa": "KapturL_Geo",
+     "kosc": "KapturL",
+     "trojkaty": 324,
+     "wierzcholki": 186,
+     "wymiary": [
+      3.689,
+      4.91,
+      0.768
+     ],
+     "min": [
+      0.094,
+      11.271,
+      0.563
+     ],
+     "max": [
+      3.783,
+      16.181,
+      1.331
+     ]
+    },
+    {
+     "nazwa": "KapturP_Geo",
+     "kosc": "KapturP",
+     "trojkaty": 324,
+     "wierzcholki": 186,
+     "wymiary": [
+      3.689,
+      4.91,
+      0.768
+     ],
+     "min": [
+      -3.783,
+      11.271,
+      0.563
+     ],
+     "max": [
+      -0.094,
+      16.181,
+      1.331
+     ]
+    },
+    {
+     "nazwa": "KapturG_Geo",
+     "kosc": "KapturG",
+     "trojkaty": 216,
+     "wierzcholki": 124,
+     "wymiary": [
+      3.404,
+      3.139,
+      0.768
+     ],
+     "min": [
+      -1.702,
+      13.944,
+      0.563
+     ],
+     "max": [
+      1.702,
+      17.083,
+      1.331
+     ]
+    }
+   ],
+   "trojkaty_razem": 5524,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 16
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    10.974,
+    17.14,
+    12.246
+   ],
+   "wymiary_z_akcesoriami": [
+    10.974,
+    17.14,
+    12.246
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -5.076,
+     -0.057,
+     -6.452
+    ],
+    [
+     5.898,
+     17.083,
+     5.794
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Zwoj",
+    "Ogon",
+    "Szyja1",
+    "Szyja2",
+    "Szyja3",
+    "Glowa",
+    "Szczeka",
+    "Jezyk",
+    "KapturL",
+    "KapturP",
+    "KapturG"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment",
+    "PyskAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att",
+    "Pysk_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 72,
+     "fps": 30,
+     "sekundy": 2.4,
+     "petla": true
+    },
+    {
+     "n": "ruch",
+     "dlugosc": 48,
+     "fps": 30,
+     "sekundy": 1.6,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "umiejetnosc",
+     "dlugosc": 54,
+     "fps": 30,
+     "sekundy": 1.8,
+     "petla": false
+    },
+    {
+     "n": "ukaszenie",
+     "dlugosc": 48,
+     "fps": 30,
+     "sekundy": 1.6,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 20,
+     "fps": 30,
+     "sekundy": 0.67,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 66,
+     "fps": 30,
+     "sekundy": 2.2,
+     "petla": false
+    },
+    {
+     "n": "ryk",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "waz_stu_lian.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje brak -> ZGODNE",
+  "waz_stu_lian__idle.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-73 -> ZGODNE",
+  "waz_stu_lian__ruch.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-49 -> ZGODNE",
+  "waz_stu_lian__atak.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-37 -> ZGODNE",
+  "waz_stu_lian__umiejetnosc.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-55 -> ZGODNE",
+  "waz_stu_lian__ukaszenie.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-49 -> ZGODNE",
+  "waz_stu_lian__trafienie.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-21 -> ZGODNE",
+  "waz_stu_lian__unik.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-31 -> ZGODNE",
+  "waz_stu_lian__upadek.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-67 -> ZGODNE",
+  "waz_stu_lian__ryk.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-61 -> ZGODNE",
+  "waz_stu_lian.glb: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje atak 0-36, idle 0-72, ruch 0-48, ryk 0-60, trafienie 0-20, ukaszenie 0-48, umiejetnosc 0-54, unik 0-30, upadek 0-66 -> ZGODNE"
+ ]
+}

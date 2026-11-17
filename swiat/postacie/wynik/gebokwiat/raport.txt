@@ -1,0 +1,58 @@
+RAPORT — gebokwiat
+GĘBOKWIAT — zwykły przeciwnik Dżungli (Kwietnik Gębokwiatów): wielki kwiat z paszczą na krótkich
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/gebokwiat.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py gebokwiat
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: gebokwiat
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 10 plików, zgodnych 10
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości Gębokwiatu nie są R15 (własny szkielet: Root + 15 kości) — import do Roblox Studio nie był testowany.
+- Pyłku nie ma w klipie: w grze pocisk umiejętności lodowy_pocisk rysuje odtwarzacz (dziś jako lodowy pocisk — wygląd pyłku wymaga osobnego wpisu w Choreografie/Efekty3D, poza tym modułem).
+- Płatki to cztery sztywne grupy na krawędzi tarczy — przy zamknięciu w pąk sąsiednie płatki lekko na siebie zachodzą.
+- Nóżki są jednoczęściowe (bez kolan): krok to wymach całej nóżki i kołysanie cebulki; stopy w podporze ślizgają się.
+- Liście-ręce są płaskie (bez wygięcia), żyłka to jaśniejszy pasek.
+
+MODEL gebokwiat „Gębokwiat” (stwor)
+  wymiary ciała: 3,66 × 5,17 × 1,76; z akcesoriami: 3,66 × 5,17 × 1,76
+  trójkąty: 2976 (siatek: 15)
+  kości (16): Root, Cialo, NogaL, StopaL, NogaP, StopaP, Lodyga1, LiscL, LiscP, Lodyga2, Glowa, Szczeka, PlatkiG, PlatkiD, PlatkiL, PlatkiP
+  klipy: idle 72 kl. 2,40 s pętla, ruch 30 kl. 1,00 s pętla, atak 27 kl. 0,90 s jednorazowy, umiejetnosc 54 kl. 1,80 s jednorazowy, trafienie 18 kl. 0,60 s jednorazowy, unik 27 kl. 0,90 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, wiwat 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, PaszczaAttachment
+
+KONTROLA EKSPORTÓW
+- gebokwiat.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje brak -> ZGODNE
+- gebokwiat__idle.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-73 -> ZGODNE
+- gebokwiat__ruch.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-31 -> ZGODNE
+- gebokwiat__atak.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-28 -> ZGODNE
+- gebokwiat__umiejetnosc.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-55 -> ZGODNE
+- gebokwiat__trafienie.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-19 -> ZGODNE
+- gebokwiat__unik.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-28 -> ZGODNE
+- gebokwiat__upadek.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-61 -> ZGODNE
+- gebokwiat__wiwat.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-61 -> ZGODNE
+- gebokwiat.glb: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje atak 0-27, idle 0-72, ruch 0-30, trafienie 0-18, umiejetnosc 0-54, unik 0-27, upadek 0-60, wiwat 0-60 -> ZGODNE
+
+PLIKI
+- gebokwiat.blend
+- gebokwiat.fbx
+- gebokwiat.glb
+- gebokwiat__atak.fbx
+- gebokwiat__idle.fbx
+- gebokwiat__ruch.fbx
+- gebokwiat__trafienie.fbx
+- gebokwiat__umiejetnosc.fbx
+- gebokwiat__unik.fbx
+- gebokwiat__upadek.fbx
+- gebokwiat__wiwat.fbx
+- gebokwiat_bohater.jpg
+- gebokwiat_ikona.png
+- gebokwiat_plansza.jpg
+- gebokwiat_tekstury/
+- raport.json
+- raport.txt

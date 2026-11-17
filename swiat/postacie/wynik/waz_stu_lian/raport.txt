@@ -1,0 +1,60 @@
+RAPORT — waz_stu_lian
+WĄŻ STU LIAN — strażnik Dżungli: ogromny wąż spleciony z lian i pnączy, z wielkim czerwono-żółtym kwiatem na
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/waz_stu_lian.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py waz_stu_lian
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: waz_stu_lian
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 11 plików, zgodnych 11
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości Węża nie są R15 (własny szkielet: Root + 11 kości) — import do Roblox Studio nie był testowany.
+- Zwój jest sztywny (jedna kość): wąż nie pełznie — ruch w miejscu to kołysanie zwoju i falowanie szyi.
+- Szyja ma trzy sztywne odcinki: przy mocnym wygięciu na stykach widać schodki między klockami.
+- Jadu nie ma w klipie: pocisk umiejętności zatruta_strzala rysuje odtwarzacz (dziś jako strzała z trucizną — wygląd plucia wymaga osobnego wpisu w Choreografie/Efekty3D, poza tym modułem).
+- Kaptur z płatków to trzy sztywne grupy (bez wygięcia płatków); w upadku płatki lekko wchodzą w ziemię (leżą płasko).
+
+MODEL waz_stu_lian „Wąż Stu Lian” (stwor)
+  wymiary ciała: 10,97 × 17,14 × 12,25; z akcesoriami: 10,97 × 17,14 × 12,25
+  trójkąty: 5524 (siatek: 11)
+  kości (12): Root, Zwoj, Ogon, Szyja1, Szyja2, Szyja3, Glowa, Szczeka, Jezyk, KapturL, KapturP, KapturG
+  klipy: idle 72 kl. 2,40 s pętla, ruch 48 kl. 1,60 s pętla, atak 36 kl. 1,20 s jednorazowy, umiejetnosc 54 kl. 1,80 s jednorazowy, ukaszenie 48 kl. 1,60 s jednorazowy, trafienie 20 kl. 0,67 s jednorazowy, unik 30 kl. 1,00 s jednorazowy, upadek 66 kl. 2,20 s jednorazowy, ryk 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, PyskAttachment
+
+KONTROLA EKSPORTÓW
+- waz_stu_lian.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje brak -> ZGODNE
+- waz_stu_lian__idle.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-73 -> ZGODNE
+- waz_stu_lian__ruch.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-49 -> ZGODNE
+- waz_stu_lian__atak.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-37 -> ZGODNE
+- waz_stu_lian__umiejetnosc.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-55 -> ZGODNE
+- waz_stu_lian__ukaszenie.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-49 -> ZGODNE
+- waz_stu_lian__trafienie.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-21 -> ZGODNE
+- waz_stu_lian__unik.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-31 -> ZGODNE
+- waz_stu_lian__upadek.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-67 -> ZGODNE
+- waz_stu_lian__ryk.fbx: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje waz_stu_lian|Scene 1-61 -> ZGODNE
+- waz_stu_lian.glb: siatki 14, kości 12, trójkąty 5560, wzrost 17.14 st., akcje atak 0-36, idle 0-72, ruch 0-48, ryk 0-60, trafienie 0-20, ukaszenie 0-48, umiejetnosc 0-54, unik 0-30, upadek 0-66 -> ZGODNE
+
+PLIKI
+- waz_stu_lian.blend
+- waz_stu_lian.fbx
+- waz_stu_lian.glb
+- waz_stu_lian__atak.fbx
+- waz_stu_lian__idle.fbx
+- waz_stu_lian__ruch.fbx
+- waz_stu_lian__ryk.fbx
+- waz_stu_lian__trafienie.fbx
+- waz_stu_lian__ukaszenie.fbx
+- waz_stu_lian__umiejetnosc.fbx
+- waz_stu_lian__unik.fbx
+- waz_stu_lian__upadek.fbx
+- waz_stu_lian_bohater.jpg
+- waz_stu_lian_ikona.png
+- waz_stu_lian_plansza.jpg
+- waz_stu_lian_tekstury/
+- raport.json
+- raport.txt

@@ -1,0 +1,457 @@
+{
+ "modul": "gebokwiat",
+ "modele": [
+  {
+   "id": "gebokwiat",
+   "nazwa": "Gębokwiat",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Cialo_Geo",
+     "kosc": "Cialo",
+     "trojkaty": 296,
+     "wierzcholki": 170,
+     "wymiary": [
+      2.074,
+      1.519,
+      1.673
+     ],
+     "min": [
+      -1.035,
+      0.44,
+      -0.923
+     ],
+     "max": [
+      1.039,
+      1.959,
+      0.75
+     ]
+    },
+    {
+     "nazwa": "NogaL_Geo",
+     "kosc": "NogaL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.612,
+      0.748,
+      0.58
+     ],
+     "min": [
+      0.194,
+      0.066,
+      -0.26
+     ],
+     "max": [
+      0.806,
+      0.814,
+      0.32
+     ]
+    },
+    {
+     "nazwa": "StopaL_Geo",
+     "kosc": "StopaL",
+     "trojkaty": 220,
+     "wierzcholki": 120,
+     "wymiary": [
+      0.802,
+      0.225,
+      1.14
+     ],
+     "min": [
+      0.131,
+      -0.025,
+      -0.299
+     ],
+     "max": [
+      0.933,
+      0.2,
+      0.841
+     ]
+    },
+    {
+     "nazwa": "NogaP_Geo",
+     "kosc": "NogaP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.612,
+      0.748,
+      0.58
+     ],
+     "min": [
+      -0.806,
+      0.066,
+      -0.26
+     ],
+     "max": [
+      -0.194,
+      0.814,
+      0.32
+     ]
+    },
+    {
+     "nazwa": "StopaP_Geo",
+     "kosc": "StopaP",
+     "trojkaty": 220,
+     "wierzcholki": 120,
+     "wymiary": [
+      0.802,
+      0.225,
+      1.14
+     ],
+     "min": [
+      -0.933,
+      -0.025,
+      -0.299
+     ],
+     "max": [
+      -0.131,
+      0.2,
+      0.841
+     ]
+    },
+    {
+     "nazwa": "Lodyga1_Geo",
+     "kosc": "Lodyga1",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      0.66,
+      1.236,
+      0.668
+     ],
+     "min": [
+      -0.33,
+      1.332,
+      -0.278
+     ],
+     "max": [
+      0.33,
+      2.568,
+      0.39
+     ]
+    },
+    {
+     "nazwa": "LiscL_Geo",
+     "kosc": "LiscL",
+     "trojkaty": 104,
+     "wierzcholki": 62,
+     "wymiary": [
+      1.597,
+      0.832,
+      0.756
+     ],
+     "min": [
+      0.239,
+      2.084,
+      -0.183
+     ],
+     "max": [
+      1.836,
+      2.916,
+      0.573
+     ]
+    },
+    {
+     "nazwa": "LiscP_Geo",
+     "kosc": "LiscP",
+     "trojkaty": 104,
+     "wierzcholki": 62,
+     "wymiary": [
+      1.582,
+      0.834,
+      0.756
+     ],
+     "min": [
+      -1.821,
+      2.084,
+      -0.183
+     ],
+     "max": [
+      -0.239,
+      2.918,
+      0.573
+     ]
+    },
+    {
+     "nazwa": "Lodyga2_Geo",
+     "kosc": "Lodyga2",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.48,
+      1.01,
+      0.638
+     ],
+     "min": [
+      -0.24,
+      2.295,
+      -0.169
+     ],
+     "max": [
+      0.24,
+      3.305,
+      0.469
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 444,
+     "wierzcholki": 278,
+     "wymiary": [
+      2.312,
+      2.312,
+      0.71
+     ],
+     "min": [
+      -1.156,
+      2.224,
+      0.0
+     ],
+     "max": [
+      1.156,
+      4.536,
+      0.71
+     ]
+    },
+    {
+     "nazwa": "Szczeka_Geo",
+     "kosc": "Szczeka",
+     "trojkaty": 176,
+     "wierzcholki": 104,
+     "wymiary": [
+      1.4,
+      0.86,
+      0.39
+     ],
+     "min": [
+      -0.7,
+      2.63,
+      0.3
+     ],
+     "max": [
+      0.7,
+      3.49,
+      0.69
+     ]
+    },
+    {
+     "nazwa": "PlatkiG_Geo",
+     "kosc": "PlatkiG",
+     "trojkaty": 324,
+     "wierzcholki": 186,
+     "wymiary": [
+      2.49,
+      1.556,
+      0.45
+     ],
+     "min": [
+      -1.245,
+      3.585,
+      0.002
+     ],
+     "max": [
+      1.245,
+      5.141,
+      0.452
+     ]
+    },
+    {
+     "nazwa": "PlatkiD_Geo",
+     "kosc": "PlatkiD",
+     "trojkaty": 324,
+     "wierzcholki": 186,
+     "wymiary": [
+      1.97,
+      1.407,
+      0.45
+     ],
+     "min": [
+      -0.985,
+      1.619,
+      0.002
+     ],
+     "max": [
+      0.985,
+      3.026,
+      0.452
+     ]
+    },
+    {
+     "nazwa": "PlatkiL_Geo",
+     "kosc": "PlatkiL",
+     "trojkaty": 216,
+     "wierzcholki": 124,
+     "wymiary": [
+      1.407,
+      1.295,
+      0.45
+     ],
+     "min": [
+      0.354,
+      2.395,
+      0.002
+     ],
+     "max": [
+      1.761,
+      3.69,
+      0.452
+     ]
+    },
+    {
+     "nazwa": "PlatkiP_Geo",
+     "kosc": "PlatkiP",
+     "trojkaty": 216,
+     "wierzcholki": 124,
+     "wymiary": [
+      1.407,
+      1.295,
+      0.45
+     ],
+     "min": [
+      -1.761,
+      2.395,
+      0.002
+     ],
+     "max": [
+      -0.354,
+      3.69,
+      0.452
+     ]
+    }
+   ],
+   "trojkaty_razem": 2976,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 18
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    3.657,
+    5.166,
+    1.764
+   ],
+   "wymiary_z_akcesoriami": [
+    3.657,
+    5.166,
+    1.764
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.821,
+     -0.025,
+     -0.923
+    ],
+    [
+     1.836,
+     5.141,
+     0.841
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Cialo",
+    "NogaL",
+    "StopaL",
+    "NogaP",
+    "StopaP",
+    "Lodyga1",
+    "LiscL",
+    "LiscP",
+    "Lodyga2",
+    "Glowa",
+    "Szczeka",
+    "PlatkiG",
+    "PlatkiD",
+    "PlatkiL",
+    "PlatkiP"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment",
+    "PaszczaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att",
+    "Paszcza_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 72,
+     "fps": 30,
+     "sekundy": 2.4,
+     "petla": true
+    },
+    {
+     "n": "ruch",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 27,
+     "fps": 30,
+     "sekundy": 0.9,
+     "petla": false
+    },
+    {
+     "n": "umiejetnosc",
+     "dlugosc": 54,
+     "fps": 30,
+     "sekundy": 1.8,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 18,
+     "fps": 30,
+     "sekundy": 0.6,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 27,
+     "fps": 30,
+     "sekundy": 0.9,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "wiwat",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "gebokwiat.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje brak -> ZGODNE",
+  "gebokwiat__idle.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-73 -> ZGODNE",
+  "gebokwiat__ruch.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-31 -> ZGODNE",
+  "gebokwiat__atak.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-28 -> ZGODNE",
+  "gebokwiat__umiejetnosc.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-55 -> ZGODNE",
+  "gebokwiat__trafienie.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-19 -> ZGODNE",
+  "gebokwiat__unik.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-28 -> ZGODNE",
+  "gebokwiat__upadek.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-61 -> ZGODNE",
+  "gebokwiat__wiwat.fbx: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje gebokwiat|Scene 1-61 -> ZGODNE",
+  "gebokwiat.glb: siatki 18, kości 16, trójkąty 3012, wzrost 5.17 st., akcje atak 0-27, idle 0-72, ruch 0-30, trafienie 0-18, umiejetnosc 0-54, unik 0-27, upadek 0-60, wiwat 0-60 -> ZGODNE"
+ ]
+}

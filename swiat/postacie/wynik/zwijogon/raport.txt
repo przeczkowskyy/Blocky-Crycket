@@ -1,0 +1,60 @@
+RAPORT — zwijogon
+ZWIJOGON — zwykły przeciwnik Dżungli (Polana Zwijogonów): kameleon z liści na pazurzastych łapach, ze zwiniętym
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/zwijogon.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py zwijogon
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: zwijogon
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 11 plików, zgodnych 11
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kości Zwijogona nie są R15 (własny szkielet: Root + 21 kości) — import do Roblox Studio nie był testowany.
+- Zmiany odcienia przy skupieniu nie ma w klipie (rig z klocków nie zmienia kolorów): klip daje przywarcie do ziemi i oczy zatrzymane na celu, złotą aurę robi odtwarzacz (styl „na_siebie”).
+- Ogon to cztery sztywne kawałki spirali — przy mocnym zwinięciu na stykach kości widać drobne schodki.
+- Bryły są sztywno przypięte do kości: w podporze stopy ślizgają się lekko po ziemi, gdy tułów się kołysze.
+- Liście na bokach to płaskie romby (bez wygięcia).
+
+MODEL zwijogon „Zwijogon” (stwor)
+  wymiary ciała: 2,66 × 3,51 × 5,55; z akcesoriami: 2,66 × 3,51 × 5,55
+  trójkąty: 3900 (siatek: 21)
+  kości (22): Root, Cialo, Glowa, Szczeka, OkoL, OkoP, RamieL, PrzedramieL, DlonL, UdoL, GolenL, StopaL, RamieP, PrzedramieP, DlonP, UdoP, GolenP, StopaP, Ogon1, Ogon2, Ogon3, Ogon4
+  klipy: idle 72 kl. 2,40 s pętla, ruch 30 kl. 1,00 s pętla, atak 27 kl. 0,90 s jednorazowy, umiejetnosc 48 kl. 1,60 s jednorazowy, skupienie 45 kl. 1,50 s jednorazowy, trafienie 18 kl. 0,60 s jednorazowy, unik 27 kl. 0,90 s jednorazowy, upadek 60 kl. 2,00 s jednorazowy, wiwat 60 kl. 2,00 s pętla
+  punkty zaczepienia: RootAttachment, GlowaAttachment, PazurAttachment, PyskAttachment
+
+KONTROLA EKSPORTÓW
+- zwijogon.fbx: siatki 25, kości 22, trójkąty 3948, wzrost 3.51 st., akcje brak -> ZGODNE
+- zwijogon__idle.fbx: siatki 25, kości 22, trójkąty 3948, wzrost 3.51 st., akcje zwijogon|Scene 1-73 -> ZGODNE
+- zwijogon__ruch.fbx: siatki 25, kości 22, trójkąty 3948, wzrost 3.51 st., akcje zwijogon|Scene 1-31 -> ZGODNE
+- zwijogon__atak.fbx: siatki 25, kości 22, trójkąty 3948, wzrost 3.51 st., akcje zwijogon|Scene 1-28 -> ZGODNE
+- zwijogon__umiejetnosc.fbx: siatki 25, kości 22, trójkąty 3948, wzrost 3.51 st., akcje zwijogon|Scene 1-49 -> ZGODNE
+- zwijogon__skupienie.fbx: siatki 25, kości 22, trójkąty 3948, wzrost 3.51 st., akcje zwijogon|Scene 1-46 -> ZGODNE
+- zwijogon__trafienie.fbx: siatki 25, kości 22, trójkąty 3948, wzrost 3.51 st., akcje zwijogon|Scene 1-19 -> ZGODNE
+- zwijogon__unik.fbx: siatki 25, kości 22, trójkąty 3948, wzrost 3.51 st., akcje zwijogon|Scene 1-28 -> ZGODNE
+- zwijogon__upadek.fbx: siatki 25, kości 22, trójkąty 3948, wzrost 3.51 st., akcje zwijogon|Scene 1-61 -> ZGODNE
+- zwijogon__wiwat.fbx: siatki 25, kości 22, trójkąty 3948, wzrost 3.51 st., akcje zwijogon|Scene 1-61 -> ZGODNE
+- zwijogon.glb: siatki 25, kości 22, trójkąty 3948, wzrost 3.51 st., akcje atak 0-27, idle 0-72, ruch 0-30, skupienie 0-45, trafienie 0-18, umiejetnosc 0-48, unik 0-27, upadek 0-60, wiwat 0-60 -> ZGODNE
+
+PLIKI
+- zwijogon.blend
+- zwijogon.fbx
+- zwijogon.glb
+- zwijogon__atak.fbx
+- zwijogon__idle.fbx
+- zwijogon__ruch.fbx
+- zwijogon__skupienie.fbx
+- zwijogon__trafienie.fbx
+- zwijogon__umiejetnosc.fbx
+- zwijogon__unik.fbx
+- zwijogon__upadek.fbx
+- zwijogon__wiwat.fbx
+- zwijogon_bohater.jpg
+- zwijogon_ikona.png
+- zwijogon_plansza.jpg
+- zwijogon_tekstury/
+- raport.json
+- raport.txt

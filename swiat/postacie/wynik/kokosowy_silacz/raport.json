@@ -1,0 +1,525 @@
+{
+ "modul": "kokosowy_silacz",
+ "modele": [
+  {
+   "id": "kokosowy_silacz",
+   "nazwa": "Kokosowy Siłacz",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Biodra_Geo",
+     "kosc": "Biodra",
+     "trojkaty": 276,
+     "wierzcholki": 160,
+     "wymiary": [
+      2.3,
+      1.34,
+      1.935
+     ],
+     "min": [
+      -1.15,
+      2.05,
+      -0.89
+     ],
+     "max": [
+      1.15,
+      3.39,
+      1.045
+     ]
+    },
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 432,
+     "wierzcholki": 240,
+     "wymiary": [
+      4.952,
+      3.201,
+      2.347
+     ],
+     "min": [
+      -2.476,
+      2.858,
+      -1.036
+     ],
+     "max": [
+      2.476,
+      6.059,
+      1.311
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 556,
+     "wierzcholki": 328,
+     "wymiary": [
+      2.028,
+      1.693,
+      2.08
+     ],
+     "min": [
+      -1.023,
+      5.425,
+      -0.225
+     ],
+     "max": [
+      1.005,
+      7.118,
+      1.855
+     ]
+    },
+    {
+     "nazwa": "Szczeka_Geo",
+     "kosc": "Szczeka",
+     "trojkaty": 80,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.95,
+      0.49,
+      0.65
+     ],
+     "min": [
+      -0.475,
+      5.2,
+      1.11
+     ],
+     "max": [
+      0.475,
+      5.69,
+      1.76
+     ]
+    },
+    {
+     "nazwa": "RamieL_Geo",
+     "kosc": "RamieL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.774,
+      2.396,
+      1.608
+     ],
+     "min": [
+      1.138,
+      3.325,
+      -0.579
+     ],
+     "max": [
+      2.912,
+      5.721,
+      1.029
+     ]
+    },
+    {
+     "nazwa": "PrzedramieL_Geo",
+     "kosc": "PrzedramieL",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.636,
+      1.534,
+      1.723
+     ],
+     "min": [
+      1.518,
+      2.383,
+      -0.377
+     ],
+     "max": [
+      3.154,
+      3.917,
+      1.346
+     ]
+    },
+    {
+     "nazwa": "DlonL_Geo",
+     "kosc": "DlonL",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      1.133,
+      0.941,
+      1.332
+     ],
+     "min": [
+      1.712,
+      1.499,
+      0.145
+     ],
+     "max": [
+      2.845,
+      2.44,
+      1.477
+     ]
+    },
+    {
+     "nazwa": "KokosL_Geo",
+     "kosc": "KokosL",
+     "trojkaty": 152,
+     "wierzcholki": 90,
+     "wymiary": [
+      1.198,
+      1.26,
+      1.26
+     ],
+     "min": [
+      1.781,
+      0.92,
+      0.19
+     ],
+     "max": [
+      2.979,
+      2.18,
+      1.45
+     ]
+    },
+    {
+     "nazwa": "UdoL_Geo",
+     "kosc": "UdoL",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.452,
+      1.75,
+      1.514
+     ],
+     "min": [
+      0.044,
+      0.975,
+      -0.597
+     ],
+     "max": [
+      1.496,
+      2.725,
+      0.917
+     ]
+    },
+    {
+     "nazwa": "GolenL_Geo",
+     "kosc": "GolenL",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.974,
+      1.364,
+      1.202
+     ],
+     "min": [
+      0.378,
+      0.103,
+      -0.416
+     ],
+     "max": [
+      1.352,
+      1.467,
+      0.786
+     ]
+    },
+    {
+     "nazwa": "StopaL_Geo",
+     "kosc": "StopaL",
+     "trojkaty": 220,
+     "wierzcholki": 120,
+     "wymiary": [
+      1.074,
+      0.34,
+      1.6
+     ],
+     "min": [
+      0.236,
+      0.0,
+      -0.27
+     ],
+     "max": [
+      1.31,
+      0.34,
+      1.33
+     ]
+    },
+    {
+     "nazwa": "RamieP_Geo",
+     "kosc": "RamieP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.774,
+      2.396,
+      1.608
+     ],
+     "min": [
+      -2.912,
+      3.325,
+      -0.579
+     ],
+     "max": [
+      -1.138,
+      5.721,
+      1.029
+     ]
+    },
+    {
+     "nazwa": "PrzedramieP_Geo",
+     "kosc": "PrzedramieP",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.636,
+      1.534,
+      1.723
+     ],
+     "min": [
+      -3.154,
+      2.383,
+      -0.377
+     ],
+     "max": [
+      -1.518,
+      3.917,
+      1.346
+     ]
+    },
+    {
+     "nazwa": "DlonP_Geo",
+     "kosc": "DlonP",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      1.133,
+      0.941,
+      1.332
+     ],
+     "min": [
+      -2.845,
+      1.499,
+      0.145
+     ],
+     "max": [
+      -1.712,
+      2.44,
+      1.477
+     ]
+    },
+    {
+     "nazwa": "KokosP_Geo",
+     "kosc": "KokosP",
+     "trojkaty": 152,
+     "wierzcholki": 90,
+     "wymiary": [
+      1.198,
+      1.26,
+      1.26
+     ],
+     "min": [
+      -2.979,
+      0.92,
+      0.19
+     ],
+     "max": [
+      -1.781,
+      2.18,
+      1.45
+     ]
+    },
+    {
+     "nazwa": "UdoP_Geo",
+     "kosc": "UdoP",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      1.452,
+      1.75,
+      1.514
+     ],
+     "min": [
+      -1.496,
+      0.975,
+      -0.597
+     ],
+     "max": [
+      -0.044,
+      2.725,
+      0.917
+     ]
+    },
+    {
+     "nazwa": "GolenP_Geo",
+     "kosc": "GolenP",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.974,
+      1.364,
+      1.202
+     ],
+     "min": [
+      -1.352,
+      0.103,
+      -0.416
+     ],
+     "max": [
+      -0.378,
+      1.467,
+      0.786
+     ]
+    },
+    {
+     "nazwa": "StopaP_Geo",
+     "kosc": "StopaP",
+     "trojkaty": 220,
+     "wierzcholki": 120,
+     "wymiary": [
+      1.074,
+      0.34,
+      1.6
+     ],
+     "min": [
+      -1.31,
+      0.0,
+      -0.27
+     ],
+     "max": [
+      -0.236,
+      0.34,
+      1.33
+     ]
+    }
+   ],
+   "trojkaty_razem": 3256,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 20
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    6.308,
+    7.118,
+    2.891
+   ],
+   "wymiary_z_akcesoriami": [
+    6.308,
+    7.118,
+    2.891
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -3.154,
+     0.0,
+     -1.036
+    ],
+    [
+     3.154,
+     7.118,
+     1.855
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Biodra",
+    "Tulow",
+    "Glowa",
+    "Szczeka",
+    "RamieL",
+    "PrzedramieL",
+    "DlonL",
+    "KokosL",
+    "UdoL",
+    "GolenL",
+    "StopaL",
+    "RamieP",
+    "PrzedramieP",
+    "DlonP",
+    "KokosP",
+    "UdoP",
+    "GolenP",
+    "StopaP"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment",
+    "KokosPAttachment",
+    "KokosLAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att",
+    "KokosP_Att",
+    "KokosL_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 72,
+     "fps": 30,
+     "sekundy": 2.4,
+     "petla": true
+    },
+    {
+     "n": "ruch",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": true
+    },
+    {
+     "n": "atak",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    },
+    {
+     "n": "umiejetnosc",
+     "dlugosc": 48,
+     "fps": 30,
+     "sekundy": 1.6,
+     "petla": false
+    },
+    {
+     "n": "trafienie",
+     "dlugosc": 20,
+     "fps": 30,
+     "sekundy": 0.67,
+     "petla": false
+    },
+    {
+     "n": "unik",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    },
+    {
+     "n": "upadek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    },
+    {
+     "n": "wiwat",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "kokosowy_silacz.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje brak -> ZGODNE",
+  "kokosowy_silacz__idle.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-73 -> ZGODNE",
+  "kokosowy_silacz__ruch.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-31 -> ZGODNE",
+  "kokosowy_silacz__atak.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-31 -> ZGODNE",
+  "kokosowy_silacz__umiejetnosc.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-49 -> ZGODNE",
+  "kokosowy_silacz__trafienie.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-21 -> ZGODNE",
+  "kokosowy_silacz__unik.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-31 -> ZGODNE",
+  "kokosowy_silacz__upadek.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-61 -> ZGODNE",
+  "kokosowy_silacz__wiwat.fbx: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje kokosowy_silacz|Scene 1-61 -> ZGODNE",
+  "kokosowy_silacz.glb: siatki 22, kości 19, trójkąty 3304, wzrost 7.12 st., akcje atak 0-30, idle 0-72, ruch 0-30, trafienie 0-20, umiejetnosc 0-48, unik 0-30, upadek 0-60, wiwat 0-60 -> ZGODNE"
+ ]
+}

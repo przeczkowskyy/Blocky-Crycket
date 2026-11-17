@@ -50,6 +50,8 @@ SPEC = {
     "lesny_troll": {"bron_kosci": ["Maczuga"], "glowa": ["Glowa", "Szczeka"], "tulow": ["Tulow", "Biodra"]},
     "muchomornik": {"bron_kosci": ["Laska"], "glowa": ["Glowa", "Kapelusz", "Broda", "Powieki"],
                     "tulow": ["Tulow", "Biodra"]},
+    # Dżungla (17.11.2026): kokosy w pięściach (kości KokosL / KokosP) — nazwy nie mówią „broń”, więc wpis jawny
+    "kokosowy_silacz": {"bron_kosci": ["KokosL", "KokosP"], "glowa": ["Glowa", "Szczeka"], "tulow": ["Tulow", "Biodra"]},
 }
 # aktor bez broni w ręku (uderza ciałem, pyskiem, pięścią) — nie ma czego mierzyć
 BEZ_BRONI = {"lesny_slime", "cierniowy_wilk", "straznik_lasu"}
