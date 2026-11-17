@@ -1,0 +1,43 @@
+{
+ "id": "r-20261118-005424-0cd1",
+ "tytul": "Dżungla: pięć potworów z Blendera do oceny",
+ "opis_md": "- Pięć potworów trzeciego biomu jest gotowych w Blenderze, z animacjami: trzy zwykłe, jeden rzadki i strażnik.\n- Do oceny: wygląd i rozmiary względem gracza (pierwszy obraz), zanim Dżungla stanie w Studio.\n- Każdy model da się obejrzeć w 3D przyciskami pod raportem.\n\nSzczegóły:\n\n| Potwór | Rola | Wysokość (gracz 5,7) | Jak walczy |\n|---|---|---|---|\n| Zwijogon | zwykły, często unika | 3,5 | kameleon z liści: wtapia się w tło, potem tnie pazurami na krzyż |\n| Gębokwiat | zwykły, mag | 5,1 | kłapie paszczą i pluje kulą usypiającego pyłku |\n| Kokosowy Siłacz | zwykły, wojownik | 7,1 | bije kokosami trzymanymi w pięściach, oba naraz z góry |\n| Pancernik Ruin | rzadki | 4,4 | szarżuje kamiennym hełmem, zwija się w kulę z turkusowymi szczelinami (tarcza) |\n| Wąż Stu Lian | strażnik Dżungli | 17,3 | pluje jadem i kąsa; kwiat na głowie jak kaptur kobry |\n\nOpisy są z zarysu biomów (`swiat/biomy/PLAN_BIOMOW.md`); Pancernik Ruin jest propozycją — w zarysie nie było jeszcze rzadkiego potwora Dżungli. Każdy ma komplet klipów: spoczynek, ruch, atak, umiejętność, trafienie, unik, upadek (strażnik także ryk).\n\n**Stan:** modele i animacje gotowe, w Studio jeszcze ich nie ma. Mapa Dżungli i jej podpięcie do gry (brama za Strażnikiem Topieli, walki, arena, muzyka) są w budowie tej nocy — osobny raport, gdy przejdą próbę w grze.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T00:54:24+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/waz_stu_lian/waz_stu_lian.glb",
+   "etykieta": "Wąż Stu Lian 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/kokosowy_silacz/kokosowy_silacz.glb",
+   "etykieta": "Kokosowy Siłacz 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/gebokwiat/gebokwiat.glb",
+   "etykieta": "Gębokwiat 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/zwijogon/zwijogon.glb",
+   "etykieta": "Zwijogon 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/pancernik_ruin/pancernik_ruin.glb",
+   "etykieta": "Pancernik Ruin 3D"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ]
+}
