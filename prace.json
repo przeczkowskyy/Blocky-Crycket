@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T17:50:44+01:00",
+ "aktualizacja": "2026-11-17T17:58:49+01:00",
  "prace": [
   {
    "id": "pety-proba",
    "tytul": "Jajka i pety na próbę: inkubator w lesie, wyklucie, pet przy graczu",
    "stan": "w_toku",
+   "etap": "Wdrożenie w Studio: inkubator, wyklucie, pet przy graczu, zagroda",
    "start": "2026-11-17T16:59:50+01:00",
-   "koniec_szacowany": "2026-11-17T20:19:50+01:00",
-   "aktualizacja": "2026-11-17T16:59:50+01:00",
+   "koniec_szacowany": "2026-11-17T19:30:00+01:00",
+   "aktualizacja": "2026-11-17T17:58:49+01:00",
    "obszary": [
     "swiat/pety_proba",
     "studio:PetyProba"
