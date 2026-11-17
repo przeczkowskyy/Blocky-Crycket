@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T13:48:50+01:00",
+ "aktualizacja": "2026-11-17T13:49:48+01:00",
  "prace": [
   {
    "id": "bagno-gra",
@@ -59,21 +59,6 @@
    "aktualizacja": "2026-11-17T13:48:45+01:00",
    "obszary": [
     "swiat/stan_gracza"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "stroje-proba",
-   "tytul": "Stroje na postaci w grze i w walce (D-071), pierwsza próba",
-   "stan": "w_toku",
-   "etap": "Próba w grze zaliczona, czeka na sprawdzenie i zapis",
-   "start": "2026-11-17T12:22:31+01:00",
-   "koniec_szacowany": "2026-11-17T14:30:00+01:00",
-   "aktualizacja": "2026-11-17T13:48:48+01:00",
-   "obszary": [
-    "studio:StrojeProba",
-    "swiat/stroje_proba"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
