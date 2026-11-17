@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (Training Center bez Studio, plan playtestu)
+- **Training Center, etap bez Studio** (`swiat/trening_proba/`): `PROJEKT.md` z sześcioma mini-grami (propozycja), wspólna rama i dwie mini-gry do próby — Siła („Rozbijanie”, według przykładu Pawła z D-063) i Pancerz („Blok”, D-074). O przyrostach decyduje serwer; wybór mini-gry jest tymczasowy, bo okno 2D robi Paweł (D-093). Przyrost liczony roboczo wzorem z kalkulatora balansu (pytanie 50). Testy bez Studio: 36 z 36, zgodność Luau z Pythonem 70 z 70. W Studio jeszcze nie wdrożone.
+- **Plan playtestu przed premierą** — nowa notatka [[Plan playtestu przed premierą]] (propozycja): jajka z D-060, Training Center i Pancerz, tempo i trudność; co mierzymy i przy jakich wynikach zmieniamy decyzję.
+- Pliki: `swiat/trening_proba/`; notatki [[Plan playtestu przed premierą]], [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (plan Bagna i zarys biomów 2–8)
 - **Plan Bagna jako odcinka pasa** (`swiat/bagno_pas/`): generator na kodzie lasu-pasa, 9017 części, kontrola 0 błędów, osiem podglądów (rysunek z brył, nie zrzuty z Roblox). Bagno zaczyna się za bramą lasu; układ jak w lesie: inkubator, trzy przegrody z potworami trzech klas, rzadki potwór, strażnik i brama do Dżungli. W Studio nic nie jest zbudowane — budowa po akceptacji planu.
 - **Zarys biomów 2–8** (`swiat/biomy/PLAN_BIOMOW.md`, nowa notatka [[Biomy — zarys siedmiu kolejnych]], status propozycja): robocze nazwy, palety, potwory z klasami, strażnicy i poziomy w obu wariantach tempa.
