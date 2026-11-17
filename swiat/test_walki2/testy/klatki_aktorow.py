@@ -6,6 +6,13 @@
     python -B swiat/test_walki2/testy/klatki_aktorow.py --tylko wojownik,mag --klatki 8
     python -B swiat/test_walki2/testy/klatki_aktorow.py --obrys                # porównanie obrysu (Leśny Troll)
     python -B swiat/test_walki2/testy/klatki_aktorow.py --wyj <folder>         # domyślnie swiat/test_walki2/klatki
+    python -B swiat/test_walki2/testy/klatki_aktorow.py --tylko mag --bez-spoczynku --oba --klipy "upadek@21-32/1,atak@15-18/0.5"
+                                            # wybrane klipy, zakres klatek / krok (ułamki = Lerp jak w grze), bok i przód
+
+Ekran wyboru klasy (src/client/ClassSelectClient, Pawła) trzyma kamerę w sali klas przez BindToRenderStep i przyjmuje
+Enter tylko przy WŁĄCZONYM swoim GUI — dlatego narzędzie najpierw zamyka go Enterem (jak sesja_play.py), a dopiero
+potem chowa interfejs; do tego trzyma swoją kamerę w każdej klatce (RenderStep po kamerze ekranu wyboru). Do 17.11
+kolejność była odwrotna i w każdym zrzucie była sala wyboru klasy.
 
 Co robi: włącza Play, czeka na klienta, chowa lokalnie interfejs gry, stawia klon aktora na środku podestu tak jak
 w walce (klasa po lewej patrzy w prawo, przeciwnik po prawej patrzy w lewo), kamera skryptowa z boku (jak plan
@@ -105,6 +112,20 @@ local s = U.scena()
 workspace.CurrentCamera.CameraType = Enum.CameraType.Scriptable
 workspace.CurrentCamera.FieldOfView = 50
 workspace.CurrentCamera.CFrame = CFrame.lookAt((s * CFrame.new(__KAMERA__)).Position, (s * CFrame.new(__CEL__)).Position)
+-- kamera trzymana W KAŻDEJ KLATCE po kamerach innych skryptów (ekran wyboru klasy trzyma swoją przez BindToRenderStep
+-- na Camera + 1, gdy nie dało się go zamknąć Enterem) — zmiana tylko w tej sesji Play
+_G.TW2_KAMERA = workspace.CurrentCamera.CFrame
+if not _G.TW2_KAMERA_TRZYMANA then
+	_G.TW2_KAMERA_TRZYMANA = true
+	game:GetService("RunService"):BindToRenderStep("TW2KlatkiKamera", Enum.RenderPriority.Camera.Value + 2, function()
+		local c = workspace.CurrentCamera
+		if _G.TW2_KAMERA then
+			c.CameraType = Enum.CameraType.Scriptable
+			c.FieldOfView = 50
+			c.CFrame = _G.TW2_KAMERA
+		end
+	end)
+end
 game:GetService("RunService").PreSimulation:Wait()
 game:GetService("RunService").Heartbeat:Wait()
 task.wait(0.05)
@@ -126,6 +147,10 @@ SPRZATAJ = r'''
 local k = workspace:FindFirstChild("TestWalki2")
 if k and k:FindFirstChild("KlatkiLokalne") then k.KlatkiLokalne:Destroy() end
 _G.TW2_AKTOR = nil
+if _G.TW2_KAMERA_TRZYMANA then
+	game:GetService("RunService"):UnbindFromRenderStep("TW2KlatkiKamera")
+	_G.TW2_KAMERA_TRZYMANA, _G.TW2_KAMERA = nil, nil
+end
 return "OK"
 '''
 
@@ -163,6 +188,10 @@ def main():
     ap.add_argument("--punkty", action="store_true", help="pokaż punkty Punkt_* jako świecące kulki")
     ap.add_argument("--bez-klipow", action="store_true", help="tylko spoczynek")
     ap.add_argument("--przod", action="store_true", help="klipy z przodu 3/4 (twarz, miny) zamiast z boku; pliki *_przod.jpg")
+    ap.add_argument("--oba", action="store_true", help="każdy klip z boku i z przodu 3/4 w jednej sesji Play")
+    ap.add_argument("--klipy", default="", help="tylko te klipy, z zakresem klatek i krokiem: "
+                                                "upadek@21-32/1,atak@14.5-18/0.5 (bez @ — --klatki po całym klipie)")
+    ap.add_argument("--bez-spoczynku", action="store_true", help="bez arkusza spoczynku")
     ap.add_argument("--wyj", default=os.path.join(KATALOG, "klatki"))
     ap.add_argument("--studio", default=None)
     a = ap.parse_args()
@@ -190,6 +219,26 @@ def main():
 
         def tryb_edit():
             return "Current Studio Mode: Edit" in call("get_studio_state")["text"]
+
+        def zamknij_wybor_klasy():
+            # jak sesja_play.SesjaPlay.zamknij_wybor_klasy: Enter, aż GUI wyboru zniknie, kamera wróci do Custom
+            # i podpowiedzi E znów działają (ClassSelect wyłącza ProximityPromptService)
+            kod = ('local p = game:GetService("Players").LocalPlayer local g = p.PlayerGui:FindFirstChild("ClassSelect") '
+                   'return tostring(g ~= nil and g.Enabled) .. " " .. workspace.CurrentCamera.CameraType.Name .. " " '
+                   '.. tostring(game:GetService("ProximityPromptService").Enabled)')
+            st = "? ? ?"
+            for _ in range(20):
+                try:
+                    st = luau(kod)
+                except StudioError:
+                    st = "? ? ?"
+                if st == "false Custom true":
+                    return True
+                call("user_keyboard_input", {"datamodel_type": "Client",
+                                             "actions": [{"action": "keyPress", "key_code": "Return"}]})
+                time.sleep(1.5)
+            print("UWAGA: ekran wyboru klasy się nie zamknął (%s) — kamera trzymana co klatkę w POZA" % st, flush=True)
+            return False
 
         kamera_teraz = {}
 
@@ -239,6 +288,10 @@ def main():
                         pass
                 time.sleep(0.5)
             time.sleep(1.5)
+            # ekran wyboru klasy (PlayerGui/ClassSelect, src/client/ClassSelectClient — Pawła, nie zmieniamy) trzyma
+            # kamerę w sali klas i przyjmuje Enter TYLKO przy włączonym GUI — więc Enter (jak gracz) PRZED schowaniem
+            # interfejsu w PRZYGOTUJ (dawniej odwrotnie: Enter nie działał, a w każdym zrzucie była sala wyboru klasy)
+            print("wybór klasy zamknięty:", zamknij_wybor_klasy(), flush=True)
             print("przygotowanie:", luau(PRZYGOTUJ), flush=True)
 
             def postaw(klucz, obrys="brak"):
@@ -285,13 +338,40 @@ def main():
                     # spoczynek: z boku (jak w walce) i trzy czwarte z przodu
                     kafle = []
                     import math
-                    for nazwa, (kam, cel) in (("bok", kamera(d)), ("przod 3/4", kamera(d, bok=False, kat=math.radians(30), kier=kier)),
-                                              ("przod", kamera(d, bok=False, kat=0.0, kier=kier)), ("tyl 3/4", kamera(d, bok=False, kat=math.radians(150), kier=kier))):
-                        # kat liczony od kierunku, w który patrzy aktor (oś X sceny), w stronę kamery (+Z sceny)
-                        wynik = pozuj(w["klipy"]["spoczynek"], "0", kam, cel)
-                        kafle.append(zrzut("%s spoczynek - %s" % (klucz, nazwa)))
-                    arkusz(kafle, os.path.join(a.wyj, "%s_spoczynek.jpg" % klucz), kolumny=4)
+                    if not a.bez_spoczynku:
+                        for nazwa, (kam, cel) in (("bok", kamera(d)), ("przod 3/4", kamera(d, bok=False, kat=math.radians(30), kier=kier)),
+                                                  ("przod", kamera(d, bok=False, kat=0.0, kier=kier)), ("tyl 3/4", kamera(d, bok=False, kat=math.radians(150), kier=kier))):
+                            # kat liczony od kierunku, w który patrzy aktor (oś X sceny), w stronę kamery (+Z sceny)
+                            wynik = pozuj(w["klipy"]["spoczynek"], "0", kam, cel)
+                            kafle.append(zrzut("%s spoczynek - %s" % (klucz, nazwa)))
+                        arkusz(kafle, os.path.join(a.wyj, "%s_spoczynek.jpg" % klucz), kolumny=4)
                     if a.bez_klipow:
+                        continue
+                    if a.klipy:
+                        # wybrane klipy z zakresem klatek (30 kl./s; ułamki = Lerp między klatkami jak w grze)
+                        fps = {k["n"]: float(k["fps"]) for k in d["klipy"]}
+                        for spec in [x for x in a.klipy.split(",") if x]:
+                            klip, _, zakres = spec.partition("@")
+                            if zakres:
+                                od_do, _, krok = zakres.partition("/")
+                                f0, f1 = (float(v) for v in od_do.split("-"))
+                                krok = float(krok or 1)
+                                klatki = [f0 + krok * i for i in range(int(round((f1 - f0) / krok)) + 1)]
+                            else:
+                                dl = next(k["dl"] for k in d["klipy"] if k["n"] == klip)
+                                klatki = [dl * i / float(a.klatki - 1) for i in range(a.klatki)]
+                            widoki = [("bok", kamera(d)), ("przod", kamera(d, bok=False, kat=math.radians(30), kier=kier))]
+                            if not a.oba:
+                                widoki = widoki[1:] if a.przod else widoki[:1]
+                            for wid, (kam, cel) in widoki:
+                                kafle = []
+                                for f in klatki:
+                                    wynik = pozuj(klip, "%.4f" % (f / fps[klip]), kam, cel)
+                                    raport[klucz]["odchylka_stawow"] = max(raport[klucz]["odchylka_stawow"], float(wynik.split()[1]))
+                                    kafle.append(zrzut("%s %s kl. %g (%s)" % (klucz, klip, f, wid)))
+                                nazwa = "%s_%s_kl%g-%g_%s.jpg" % (klucz, klip, klatki[0], klatki[-1], wid) if zakres else \
+                                    "%s_%s_%s.jpg" % (klucz, klip, wid)
+                                arkusz(kafle, os.path.join(a.wyj, nazwa))
                         continue
                     for klip, dlug in klipy_do_zdjec(w, d, a.wszystkie):
                         kafle = []

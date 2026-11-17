@@ -321,6 +321,30 @@ przechodzi bez wyjątków**: tułów najwyżej dotyk 0,074 (`umiejetnosc`; `atak
 głowa bez przenikania (najbliżej dotyk 0,018 w `ruch`, poniżej progu 0,02), skręt kija ≤ 3°/klatkę (tabela wyżej).
 Podglądy `podglad/bulgotnik_*.png` pokazują stan z 13:29 (przed jego poprawką).
 
+## Ocena w grze (część 3, Studio, 17.11.2026 ok. 16:00)
+
+Zmiany z części 1–2 są w Studio od 14:50. Zrzuty z trybu Play (klon aktora przez prawdziwy moduł `Klipy` albo walka
+w trybie ręcznym, czas sceny przewijany co 0,1 s przez `Sygnaly/Sterowanie „przewinDo”`), zestawione z rzutami brył
+„przed”. Arkusze dla ludzi: `podglad/gra_*.jpg` (podpisy przy każdym wierszu i klatce).
+
+| Arkusz | Co pokazuje | Ocena (na oko, z zrzutów) |
+|---|---|---|
+| `gra_mag_upadek.jpg` | upadek Maga kl. 22–25 co pół klatki (przód 3/4); u góry rzut brył sprzed poprawki | **dobrze** — w grze kostur idzie łukiem w górę i za głowę, potem przed kota na ziemię (kl. 21–32 w zrzutach roboczych z boku i z przodu); w kl. 23,5 (dawny błąd) nic nie przechodzi przez twarz |
+| `gra_mag_kostur.jpg` | kryształ kostura przed / po (zbliżenie z rzutu brył) i w grze: atak kl. 16–17, kula ognia kl. 36–37, lodowy pocisk kl. 5–7 co pół klatki | **dobrze** — ruch kostura płynny, w grze nie widać przeskoku; kryształ w zrzutach z gry jest mały (cała postać w kadrze), więc mignięcie oceniam głównie z liczb (6°/klatkę) i ze zbliżenia z rzutu brył |
+| `gra_wskrzeszenie.jpg` | Wojownik i Mag: rzut brył „przed” (mieszanie), w grze co 0,2 s ze słupem światła i — tylko do oceny ruchu — ze słupem schowanym lokalnie w sesji Play | **dobrze, liczby bez zmian** — leży ok. 0,45 s (w tym 0,33 s przed `wstaje`), wstaje w ok. 0,4–0,45 s (Mag 14,1 → 14,5 s, Wojownik 15,9 → 16,3 s), broń wraca do ręki przed ciałem; czyta się jak „przewinięcie” upadku, co pasuje do magicznego wskrzeszenia. Ze słupem światła samo wstawanie jest prawie całe zasłonięte — widać lot kostura / miecza do ręki i stojącą postać od ok. 1,25 s zdarzenia. `Ch.WSKRZESZENIE.stoi = 0.78` zostaje |
+| `gra_final.jpg` | od ostatniej klatki ujęcia pokonanego do ok. 0,7 s objazdu: Wojownik i Zwiadowca z wilkiem, Wojownik z Trollem (duży pokonany); u góry rzut brył „przed” | **dobrze** — w pierwszej klatce objazdu twarz odsłonięta u obu (miecz uniesiony obok głowy, sztylet z boku); w ujęciu pokonanego zwycięzcy nie ma w kadrze (wilk, Troll), więc obrotu nie widać i nie wygląda dziwnie |
+
+Czego nie oceniłem: obrót zwycięzcy w ujęciu pokonanego przy innych parach (Strażnik Gaju, Slime, lustro) — w
+sprawdzonych trzech zwycięzca jest poza kadrem; finał Maga (liczby: 0% zasłonięcia); wskrzeszenie przeciwnika-lustra
+(ta sama obsługa, kamera z drugiej strony). Zrzuty robocze (klatki 21–32 upadku z boku i z przodu, pełne serie
+walk) nie są w repozytorium — w arkuszach jest wybór.
+
+Naprawione przy okazji (narzędzie prób, nie gra): `swiat/test_walki2/testy/klatki_aktorow.py` dawał w każdej klatce
+salę wyboru klasy — ekran wyboru klasy (Pawła, bez zmian) przyjmuje Enter tylko przy włączonym swoim GUI, a narzędzie
+najpierw chowało cały interfejs. Teraz najpierw Enter (jak `sesja_play.py`), potem chowanie interfejsu, a kamera
+narzędzia jest trzymana w każdej klatce po kamerze ekranu wyboru; nowe opcje `--klipy klip@od-do/krok`, `--oba`,
+`--bez-spoczynku`.
+
 ## Testy (bez Studio, pojedynczo, na bieżącym drzewie)
 
 - `python -B swiat/test_walki2/testy/test_przenikania.py` — **12/12 OK** (ok. 2,5 min): lustro = `geometria.py`
@@ -376,7 +400,9 @@ Pliki Blendera Maga (FBX, filmy w `swiat/postacie/wynik/kot_mag/`) dostaną popr
 | `swiat/postacie/przenikanie/bryly.py` | kształty Roblox: odległość ze znakiem, punkty próbne, promienie, głębokość w sumie brył |
 | `swiat/postacie/przenikanie/pomiar.py` | strefy, broń aktorów, progi, scenariusze, model wskrzeszenia z kodu gry, skręt broni |
 | `swiat/postacie/przenikanie/kamera.py` | zasłonięcie twarzy z kamery finału (obrót zwycięzcy z kodu gry), obrazy PNG |
-| `swiat/postacie/przenikanie/podglad/*.png` | podglądy wyżej |
+| `swiat/postacie/przenikanie/podglad/*.png` | podglądy wyżej (rzuty brył) |
+| `swiat/postacie/przenikanie/podglad/gra_*.jpg` | część 3: „przed” (rzuty brył) i „w grze po” (zrzuty z Play) — upadek, kostur, wskrzeszenie, finał |
+| `swiat/test_walki2/testy/klatki_aktorow.py` | część 3: działa przy ekranie wyboru klasy; `--klipy`, `--oba`, `--bez-spoczynku` |
 | `swiat/test_walki2/testy/test_przenikania.py` | test na stałe (12 testów) |
 | `swiat/postacie/kot_mag.py` | `DOL` + 6 × `przod=DOL` (atak, kula_ognia, lodowy_pocisk), łapka w `upadek` |
 | `swiat/test_walki2/dane/mag.json` | przeliczone generatorem (`aktorzy.py --tylko mag`) |
