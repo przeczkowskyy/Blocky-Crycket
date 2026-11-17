@@ -164,6 +164,19 @@ local IKONY = {
 Interfejs.IKONY = IKONY
 
 ------------------------------------------------------------------ pomocnicze
+-- wielkie litery z polskimi znakami: string.upper zmienia tylko ASCII („Strażnik Gaju” → „STRAżNIK GAJU”,
+-- zauważone w Studio 17.11.2026); nazwy z Dane są w UTF-8
+local POLSKIE_WIELKIE = { { "ą", "Ą" }, { "ć", "Ć" }, { "ę", "Ę" }, { "ł", "Ł" }, { "ń", "Ń" }, { "ó", "Ó" },
+	{ "ś", "Ś" }, { "ź", "Ź" }, { "ż", "Ż" } }
+local function wielkie(tekst: string): string
+	local t = string.upper(tekst)
+	for _, para in POLSKIE_WIELKIE do
+		t = string.gsub(t, para[1], para[2])
+	end
+	return t
+end
+Interfejs.wielkie = wielkie
+
 local function gladko(x: number): number
 	x = math.clamp(x, 0, 1)
 	return x * x * (3 - 2 * x)
@@ -226,8 +239,9 @@ function Interfejs:_ikona(rodzic: GuiObject, nazwa: string, margines: number?)
 end
 
 function Interfejs:_ramka(rodzic: Instance, wlasciwosci: { [string]: any }, obrysPx: number, rog: number, cien: boolean?)
+	local c: Frame? = nil
 	if cien then
-		local c = self:_nowy("Frame", {
+		c = self:_nowy("Frame", {
 			Name = (wlasciwosci.Name or "Ramka") .. "Cien", BackgroundColor3 = self.K.tusz, BackgroundTransparency = 0.25,
 			BorderSizePixel = 0, AnchorPoint = wlasciwosci.AnchorPoint or Vector2.zero,
 			Position = (wlasciwosci.Position or UDim2.new()) + UDim2.fromScale(0.006, 0.014), Size = wlasciwosci.Size,
@@ -239,6 +253,15 @@ function Interfejs:_ramka(rodzic: Instance, wlasciwosci: { [string]: any }, obry
 	f.BorderSizePixel = 0
 	self:_rog(f, rog)
 	self:_obrys(f, obrysPx)
+	-- cień jest rodzeństwem ramki, więc sam nie znika z nią: ukryta karteczka pasywki zostawiała ciemny pas na
+	-- ekranie walki (Studio 17.11.2026, zrzuty v3_*) — cień idzie za Visible ramki
+	local cienRamki = c
+	if cienRamki then
+		cienRamki.Visible = f.Visible
+		f:GetPropertyChangedSignal("Visible"):Connect(function()
+			cienRamki.Visible = f.Visible
+		end)
+	end
 	return f
 end
 
@@ -775,7 +798,7 @@ function Interfejs:_pokazPasywke(z, opis)
 		stara:Destroy()
 	end
 	self:_ikona(z.poleIkony, zr[2], 0)
-	z.tytul.Text = zr[1] .. ": " .. string.upper(opis.nazwa)
+	z.tytul.Text = zr[1] .. ": " .. wielkie(opis.nazwa)
 	z.tytul.TextColor3 = Color3.fromHex(zr[3])
 	z.linia.Text = opis.linia
 	z.ramka.Visible = true
@@ -883,7 +906,7 @@ function Interfejs:ustawStrony(strony, aktorzy)
 	for strona, dane in strony do
 		local p = self.paski[strona]
 		if p then
-			p.nazwa.Text = string.upper(dane.nazwa) .. "  •  POZ. " .. tostring(dane.poziom)
+			p.nazwa.Text = wielkie(dane.nazwa) .. "  •  POZ. " .. tostring(dane.poziom)
 			p.maks = math.max(1, dane.zycie)
 			p.hp = dane.zycie
 			p.cel, p.pokazane, p.duchPokazany, p.duchCzeka, p.wstrzas = 1, 1, 1, 0, 0
@@ -1069,7 +1092,7 @@ end
 
 function Interfejs:pokazUmiejetnosc(tekst: string, strona: string)
 	local K = self.K
-	self.umNapis.Text = string.upper(tekst)
+	self.umNapis.Text = wielkie(tekst)
 	self.umWstega.BackgroundColor3 = if strona == "gracz" then K.niebieski else K.czerwony
 	self.umiejetnosc.Rotation = if strona == "gracz" then -2 else 2
 	self.umiejetnosc.Visible = true

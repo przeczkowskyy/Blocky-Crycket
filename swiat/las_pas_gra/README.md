@@ -93,7 +93,8 @@ swiat/las_potwory/testy/test_styku.py`,
    (1566, −1, −700), 1000 × 2 × 176, obrót 0, a na końcu „części: 7” (zapora, napis, podłoga, ściana, słupek, deska,
    punkt E) i `Skrot` równy temu z `--sucho`. Silnik walki musi być tą samą wersją co w `TestWalki2`: gdy
    `src/server/Walka` jest w trakcie zmian, ustaw przed budową `BC_SILNIK_KORZEN` na katalog z kopią zatwierdzonej
-   wersji (tak budowano 17.11.2026 — silnik v2, bo v3 czeka na odtwarzacz).
+   wersji (tak budowano 17.11.2026 do 01:49 — silnik v2). **Od wdrożenia v3 (17.11.2026, noc) zmiennej NIE ustawiamy**
+   — wszystkie trzy kontenery mają silnik v3 z repozytorium.
 5. Próba w Play: `python -B swiat/las_pas_gra/testy/proba_play.py <folder poza repo>` — lista P01–P16 z wynikami w
    `<folder>/lista.txt` i `wyniki.json`, zrzuty 01–20 w tym samym folderze. Potem
    `python -B swiat/las_pas_gra/testy/proba_dodatkowa.py <folder zrzutów poza repo>` (ok. 10 min; JSON w `wyniki/`).
@@ -207,6 +208,36 @@ potworów 0,25 ms na klatkę; pełny zestaw = 46 potworów; przy wilkach w pełn
 3. **P08: dwie walki „nie zaczęły się”** — test przewija walkę, a serwer słusznie nie przyjmuje następnej przed upływem
    prawdziwego czasu poprzedniej (odtwarzacz: `walka_trwa_lokalnie`); potwory też odchodzą od gracza między E a
    kontrolą serwera. Teraz P08 ustawia `TestBezSesji` i ponawia E.
+
+## Silnik walki v3 i pomijanie walk w pasie (17.11.2026, noc)
+
+**Co zmieniono.** Kontener przebudowany `zbuduj.py --skrypty` BEZ `BC_SILNIK_KORZEN` — kopia silnika v3 z
+`src/server/Walka` (ta sama co w `TestWalki2` i `LasPotwory`), dziennik v3 pokazuje odtwarzacz prototypu. Nowa
+instancja `Sygnaly/ZwolnijPoPominieciu` (BindableFunction, lista `INNE`) i jej obsługa we wspólnym
+`swiat/las_potwory/zrodla/SerwerPotworow.server.luau`: po pominięciu przyjętym przez serwer prototypu (D-078) gracz
+(`walkaDo`) i jego potwór (zajętość) są wolni od razu (**wybór „opcja A” przyjęty na noc — do zmiany**; cofnięcie:
+usunąć tę linię z `INNE`, wtedy pominięcie skraca tylko pokaz, a odpowiedź serwera to `sesja_zrodla`). Test offline
+`test_pasa.py` (test 8d) pilnuje uchwytu i nazwy po obu stronach; 45/45.
+
+**Próba w Play** (`testy/proba_play.py`, przebieg o 03:11, `wyniki/proba_play_20261117_0311.json`, `…_lista.txt`):
+**17 × OK, P14 „?”** (koszt ocenia człowiek; klatka 66,7 ms = zaciemniony ekran, klient potworów 0,39 ms na klatkę
+przy przybyciu — jak przed v3). Nowe punkty:
+- **P08v3** — każda z czterech walk pasa (s1 slime, m1 muchomornik, w1 wilk, t1 troll; prawdziwe E) idzie z dziennika
+  v3: mana obu stron na paskach (np. slime 86/85 w 3. turze), pierwsza walka z gatunkiem bez przycisku POMIŃ
+  (`pierwsza_walka`), kontrola pasków, many i błędów obsługi = 0.
+- **P08p** — druga walka ze slime'em (bez `TestBezSesji`): zgoda serwera i przycisk POMIŃ, spacja → wynik, serwer
+  „ok”, gracz wolny od razu (`NastepnaWalkaOd` 1,4 s przed „teraz”), potwór zwolniony, następna walka (muchomornik)
+  przyjęta od razu. Zrzuty: `swiat/test_walki2/klatki/v3_las_pas_walka.jpg`, `v3_las_pas_pominiecie.jpg`.
+- Reszta jak przed v3: przelot 13,6 s z rykiem, brama zamknięta dla nieuprawnionego, Strażnik pokonany za 2. razem
+  (ziarno 23, zwiadowca poz. 10) → wrota tylko u zwycięzcy, Kamień Powrotu → bazar, stary las działa obok, 0 błędów
+  `[LasPasGra]` w konsoli.
+
+**Dwa panele bohatera i dwa banery** (znalezione przy wdrożeniu lasu) — to NIE jest mostek ekranu walki. Panel
+„BOHATER: … · POZ. …” buduje każdy klient potworów osobno: stary las (`LasPotworyBohater`) i pas
+(`LasPasGraBohater`, `Las-pas · …`), więc gdy w miejscu stoją oba kontenery, widać dwa (zrzut `15_brama_otwarta` z tej
+próby). Banery po Strażniku: „STRAŻNIK GAJU POKONANY!” pokazuje `KlientPotworow` (`poWalce`, wspólny kod lasów), a
+„BRAMA DO BAGNA OTWARTA!” — `KlientPasa`. Odtwarzacz walki chowa na czas walki wszystkie te GUI i nic nie dokłada.
+Naprawa należy do pakietów lasu (np. panel starego lasu tylko w Borze, jeden baner w pasie) — do decyzji, nie ruszałem.
 
 ## Czego nie sprawdzono (także po próbach w Studio)
 

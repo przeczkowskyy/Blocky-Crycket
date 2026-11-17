@@ -784,6 +784,13 @@ class TestStyku(unittest.TestCase):
         self.assertIn("gracz:GetAttribute(Stale.ATRYBUT_BLOKADY) == true", SERWER_POTWOROW)
         self.assertIn("st.d.odrodzenieStale == true", SERWER_POTWOROW)
         self.assertIn("if not b.plyta then", SERWER_POTWOROW)
+        # pominięcie walki (D-078, opcja A przyjęta na noc 17.11.2026): uchwyt zwolnienia dla serwera prototypu
+        self.assertIn(("BindableFunction", "Sygnaly/ZwolnijPoPominieciu"), ZB.INNE)
+        self.assertIn('FindFirstChild("ZwolnijPoPominieciu")', SERWER_POTWOROW)
+        self.assertIn("zwolnij.OnInvoke = function(gracz: Player)", SERWER_POTWOROW)
+        proto = czytaj(REPO, "swiat", "test_walki2", "zrodla", "SerwerWalki2.server.luau")
+        self.assertIn('FindFirstChild("ZwolnijPoPominieciu")', proto)
+        self.assertIn("LasPasGra = true", proto.split("local ZRODLA_LASU", 1)[1].split("\n", 1)[0])
 
     def test_8e_haczyki_klienta_potworow_dla_przelotu(self):
         for polecenie in ("wymus", "klip"):

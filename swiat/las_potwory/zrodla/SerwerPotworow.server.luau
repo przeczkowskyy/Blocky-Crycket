@@ -977,6 +977,25 @@ sterowanie.OnInvoke = function(polecenie: string, a: any)
 	return nil
 end
 
+-- pominięcie walki (D-078, wybór 1 → opcja A, przyjęte na noc 17.11.2026): serwer prototypu woła ten uchwyt
+-- (BindableFunction — tylko serwer) po przyjętym pominięciu; gracz i jego potwór są wolni od razu
+local zwolnij = kontener:WaitForChild("Sygnaly"):FindFirstChild("ZwolnijPoPominieciu")
+if zwolnij and zwolnij:IsA("BindableFunction") then
+	zwolnij.OnInvoke = function(gracz: Player)
+		if typeof(gracz) ~= "Instance" or not gracz:IsA("Player") then
+			return false
+		end
+		local czas = teraz()
+		walkaDo[gracz] = czas
+		for _, p in potwory do
+			if p.zajety and p.zajety.gracz == gracz then
+				p.zajety.koniec = czas -- pętla ruchu zamknie zajętość w ciągu 0,25 s (wygrana: potwór znika)
+			end
+		end
+		return true
+	end
+end
+
 ------------------------------------------------------------------ pętle z ochroną przed błędami (rozdz. 8.5)
 local function petla(nazwa: string, okres: number, krok: (number) -> ())
 	task.spawn(function()

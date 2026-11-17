@@ -2,7 +2,7 @@
 
 Ten pakiet sprawia, że po 16 strefach lasu `Workspace/BiomLas` chodzą potwory. Przy jednym graczu jest ich 35, przy
 ośmiu 64, a przy dwudziestu 86. Do tego w Kamiennym Kręgu stoi Strażnik Gaju, który jest celem strefy. Gracz
-podchodzi do potwora i naciska E (na telefonie stuka podpowiedź). Wtedy serwer liczy walkę silnikiem v2, a klient
+podchodzi do potwora i naciska E (na telefonie stuka podpowiedź). Wtedy serwer liczy walkę silnikiem v3 (od 17.11.2026; wcześniej v2), a klient
 pokazuje ją w przyjętym odtwarzaczu walki z `swiat/test_walki2/`, na arenie prototypu, razem z łupem. Pokonany
 potwór znika, a z domu strefy wychodzi nowy.
 
@@ -62,18 +62,49 @@ buduje go `swiat/las_pas_gra/zbuduj.py`. Różnice ustawia tamten kontener sam: 
 szablony w ReplicatedStorage, osobne GUI, mapa `LasPas`), dane z `odrodzenieStale` (troll) i `biom.plyta = false`
 (gdy mapa nie ma Płyty), opcjonalny `Sygnaly/WynikWalki` i atrybut gracza `BlokadaWalki` (przelot kamery). Klient ma
 dwa nowe haczyki: `"wymus", id` i `"klip", id, nazwa`. Ten kontener (`LasPotwory`) nie ma żadnego z nich, więc działa
-jak dotąd. Szczegóły: `swiat/las_pas_gra/README.md`.
+jak dotąd. Szczegóły: `swiat/las_pas_gra/README.md`. (Od 17.11.2026 `LasPotwory` ma też `Sygnaly/WynikWalki` — niżej.)
+
+## Silnik walki v3 i pomijanie walk (17.11.2026, noc)
+
+**Co zmieniono.** Walki liczy kopia silnika **v3** z `src/server/Walka` (przebudowa `zbuduj.py --skrypty`, bez
+`BC_SILNIK_KORZEN`), a pokazuje odtwarzacz prototypu pod dziennik v3 (mana, statusy, blok, pasywki, wskrzeszenie).
+Dwie nowe instancje w `INNE` (`zbuduj.py`) — **wybory przyjęte na noc, do zmiany** (`swiat/test_walki2/README.md`,
+„Wybory do decyzji” 1 i 2):
+- `Sygnaly/WynikWalki` (BindableEvent) — serwer potworów strzelał nim już wcześniej, gdy był; teraz słucha go mostek
+  serwera prototypu (`SerwerWalki2`), więc **stary las też ma pomijanie walk (D-078)**: pierwsza walka z gatunkiem bez
+  pomijania, przy następnych przycisk POMIŃ i spacja;
+- `Sygnaly/ZwolnijPoPominieciu` (BindableFunction) i jej obsługa w `zrodla/SerwerPotworow.server.luau` (wspólna z
+  lasem-pasem; tylko serwer, sprawdza, że argument to `Player`): po pominięciu przyjętym przez serwer prototypu gracz
+  (`walkaDo`) i jego potwór (`zajety.koniec`) są wolni od razu — zajętość zamyka zwykła pętla ruchu (do 0,25 s;
+  wygrana: potwór znika).
+Testy offline: `test_styku.py` 16/16 (nowy test `test_pomijanie_walk_most_z_prototypem`: nazwy po obu stronach,
+treść uchwytu), `test_logiki.py` 17/17, `sprawdz_luau.py` OK, `zbuduj.py --sucho` kod 0.
+
+**Próba w Play** — `testy/proba_play.py` przepisana pod v3 (stara diagnoza podpowiedzi E zastąpiona listą L1–L5;
+wyniki `wyniki/proba_play_20261117_0312.json`, `…_lista.txt`): **5/5 OK**.
+- L1: serwer gotowy (36 potworów, zgodność logiki 70/70), `WynikWalki` i `ZwolnijPoPominieciu` są, ekran wyboru klasy
+  zamknięty Enterem, kamera `Custom`.
+- L2: pierwsza walka ze slime'em (Mag) z dziennika v3 — mana obu stron na paskach (44/94), bez pomijania
+  (`pierwsza_walka`, bez przycisku), kontrola pasków, many i błędów = 0, po walce kamera `Custom`.
+- L3: Strażnik Gaju (Zwiadowca poz. 10) — też pierwsza walka z gatunkiem, bez pomijania; zrzut
+  `swiat/test_walki2/klatki/v3_las_stary_walka.jpg` (mana z kryształem gotowości, „KRYTYK!”, ranga STRAŻNIK).
+- L4: druga walka ze slime'em bez `TestBezSesji`: zgoda serwera, przycisk POMIŃ, spacja → wynik, serwer „ok”, gracz
+  wolny od razu (`NastepnaWalkaOd` 1,45 s przed „teraz”), potwór zwolniony, kolejna walka przyjęta od razu.
+- L5: konsola bez błędów i ostrzeżeń `[LasPotwory]` / `[TestWalki2]`.
+Niesprawdzone w tej próbie: przegrana i rewanż z pominięciem, dwóch graczy, telefon, koszt klienta (bez zmian w kodzie
+klienta potworów).
 
 ## Pliki
 
 | Plik | Co to jest |
 |---|---|
-| `zrodla/SerwerPotworow.server.luau` | serwer: ruch 4 Hz, odradzanie, kontrola prośby o walkę, silnik v2 |
+| `zrodla/SerwerPotworow.server.luau` | serwer: ruch 4 Hz, odradzanie, kontrola prośby o walkę, silnik v3, zwolnienie po pominięciu |
 | `zrodla/KlientPotworow.client.luau` | klient: modele najbliższych potworów, tabliczki, podpowiedź E, panel bohatera |
 | `zrodla/Stale.luau`, `zrodla/Logika.luau` | wspólne stałe; czysta matematyka ruchu (tylko serwer) |
 | `zrodla/DanePotworow.luau` | dane stref w układzie świata, wygenerowane przez `generuj_dane.py` |
 | `logika.py`, `generuj_dane.py` | lustro `Logika` w Pythonie; generator danych |
 | `testy/test_logiki.py`, `testy/test_styku.py` | testy offline: logika, symulacja serwera, brzegi; punkty styku |
+| `testy/proba_play.py`, `wyniki/` | próba w Play pod v3 i pomijanie (L1–L5); wyniki prób bez nazw kont |
 | `sprawdz_luau.py`, `zbuduj.py` | tania kontrola statyczna Luau; budowa w Studio |
 | `UWAGI_S.md`, `UWAGI_K.md` | odczytania kontraktu programistów serwera i klienta |
 

@@ -69,7 +69,9 @@ SILNIK = [("src/server/Walka/%s.luau" % n, "Moduly/Walka/%s" % n)
 FOLDERY = ["Moduly", "Moduly/Walka", "Stan", "Zdalne", "Sygnaly"]
 # (klasa, ścieżka) — jedyna zdalna funkcja i dwa haczyki testowe
 INNE = [("RemoteFunction", "Zdalne/RozpocznijWalke2"), ("BindableFunction", "Sygnaly/SterowanieSerwera"),
-        ("BindableFunction", "Sygnaly/SterowanieKlienta")]
+        ("BindableFunction", "Sygnaly/SterowanieKlienta"),
+        ("BindableEvent", "Sygnaly/WynikWalki"),             # mostek pomijania walk (D-078) w serwerze prototypu
+        ("BindableFunction", "Sygnaly/ZwolnijPoPominieciu")]  # po pominięciu gracz i potwór wolni od razu
 
 # kontrola miejsca na początku KAŻDEGO wysyłanego kodu (__MIEJSCE__ wstawia wykonaj)
 NAGLOWEK_MIEJSCA = ('if game.PlaceId ~= __MIEJSCE__ then return "STOP: inne miejsce (PlaceId " .. tostring(game.PlaceId) .. ")" end\n'

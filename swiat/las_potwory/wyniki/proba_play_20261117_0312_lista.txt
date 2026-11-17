@@ -1,0 +1,5 @@
+L1 OK   serwer {'potworow': 36, 'zgodnosc': 'OK 70/70', 'zwolnij': True, 'wynik': True, 'serwer': True}, klient tryb aktorzy, wybór klasy {'ekran': False, 'kamera': 'Custom'}
+L2 OK   {'id': 'z01-2', 'walka': True, 'v3': {'mana': [44, 94], 'pomijanie': False, 'powod': 'pierwsza_walka', 'przycisk': False, 'faza': 'odtwarzanie'}, 'kontrola': {'OstatniaNiezgodnoscPaskow': 0, 'OstatniaNiezgodnoscMany': 0, 'OstatnieBledyObslugi': 0, 'OstatniWynik': 'wygrana'}, 'kamera': 'Custom'}
+L3 OK   {'id': 'straznik-1', 'walka': True, 'v3': {'mana': [65, 41], 'pomijanie': False, 'powod': 'pierwsza_walka', 'przycisk': False, 'faza': 'odtwarzanie'}, 'kontrola': {'OstatniaNiezgodnoscPaskow': 0, 'OstatniaNiezgodnoscMany': 0, 'OstatnieBledyObslugi': 0, 'OstatniWynik': 'przegrana'}}
+L4 OK   {'id': 'z01-3', 'walka': True, 'zgoda': True, 'przed': {'mana': [0, 0], 'pomijanie': True, 'powod': 'ok', 'przycisk': True, 'faza': 'odtwarzanie'}, 'po': {'odpowiedz': 'ok', 'pominieto': True, 'wolna_za_s': -1.45, 'potwor': {'jest': False, 'stan': ''}}, 'nastepna': {'id': 'z01-4', 'walka': True, 'odmowa': 'nil'}}
+L5 OK   

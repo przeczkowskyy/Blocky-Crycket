@@ -1,46 +1,46 @@
 {
- "data": "2026-11-15 15:41",
- "wynik": "29/29",
+ "data": "2026-11-17 03:40",
+ "wynik": "24/27",
  "testy": [
   {
-   "test": "kadr ciecie (wojownik/lesny_slime/1, zd. 6, wrecz)",
+   "test": "kadr ciecie (wojownik/lesny_slime/1, zd. 7, wrecz)",
    "ok": true,
    "opis": "krytyk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
-   "test": "kadr miazdzacy_cios (wojownik/lesny_slime/5, zd. 8, wrecz)",
+   "test": "kadr miazdzacy_cios (wojownik/lesny_slime/5, zd. 9, wrecz)",
    "ok": true,
    "opis": "krytyk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
-   "test": "kadr uderzenie_z_gory (zwiadowca/cierniowy_wilk/1, zd. 8, skok)",
-   "ok": true,
-   "opis": "krytyk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+   "test": "kadr uderzenie_z_gory (zwiadowca/lesny_slime/1, zd. 7, skok)",
+   "ok": false,
+   "opis": "τ=trafienie+0.00 krytyk: atak w kadrze 1.00 odsł. 0.95 | cel w kadrze 1.00 odsł. 0.38"
   },
   {
-   "test": "kadr zatruta_strzala (zwiadowca/lesny_slime/5, zd. 7, pocisk)",
-   "ok": true,
-   "opis": "pocisk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
-  },
-  {
-   "test": "kadr kula_ognia (mag/cierniowy_wilk/1, zd. 8, pocisk)",
+   "test": "kadr zatruta_strzala (zwiadowca/lesny_slime/5, zd. 10, pocisk)",
    "ok": true,
    "opis": "pocisk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
-   "test": "kadr lodowy_pocisk (mag/lesny_slime/5, zd. 10, pocisk)",
+   "test": "kadr kula_ognia (mag/lesny_slime/1, zd. 6, pocisk)",
    "ok": true,
    "opis": "pocisk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
-   "test": "kadr kwasny_plusk (wojownik/lesny_slime/1, zd. 6, w_klipie)",
+   "test": "kadr lodowy_pocisk (mag/lesny_troll/10, zd. 9, pocisk)",
+   "ok": true,
+   "opis": "pocisk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
+  },
+  {
+   "test": "kadr kwasny_plusk (wojownik/lesny_slime/1, zd. 5, w_klipie)",
    "ok": true,
    "opis": "boczny: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
    "test": "kadr rozszarpanie (wojownik/cierniowy_wilk/1, zd. 5, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.72 | cel w kadrze 0.66 odsł. 0.66"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.72 | cel w kadrze 0.68 odsł. 0.68"
   },
   {
    "test": "kadr chmura_zarodnikow (wojownik/muchomornik/1, zd. 5, chmura)",
@@ -48,59 +48,49 @@
    "opis": "pocisk: atak w kadrze 1.00 odsł. 1.00 | cel w kadrze 1.00 odsł. 1.00"
   },
   {
-   "test": "kadr ogluszajace_uderzenie (mag/lesny_troll/5, zd. 9, wrecz)",
+   "test": "kadr ogluszajace_uderzenie (wojownik/lesny_troll/1, zd. 6, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.76 | cel w kadrze 1.00 odsł. 1.00"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.81 | cel w kadrze 0.69 odsł. 0.69"
   },
   {
-   "test": "kadr uscisk_korzeni (wojownik/straznik_lasu/5, zd. 9, w_klipie)",
-   "ok": true,
-   "opis": "krytyk: atak w kadrze 1.00 odsł. 0.89 | cel w kadrze 1.00 odsł. 0.80"
+   "test": "kadr uscisk_korzeni (mag/straznik_lasu/1, zd. 8, w_klipie)",
+   "ok": false,
+   "opis": "τ=trafienie+0.00 boczny: atak w kadrze 1.00 odsł. 0.97 | cel w kadrze 1.00 odsł. 0.38"
   },
   {
-   "test": "kadr dluga: 21 trafień (wojownik/straznik_lasu/10)",
+   "test": "kadr dluga: 24 trafień (wojownik/lesny_slime/1)",
+   "ok": false,
+   "opis": "zd. 24 unik : zblizenie: atak w kadrze 0.98 odsł. 0.98 | cel w kadrze 0.00 odsł. 0.00"
+  },
+  {
+   "test": "kadr najdluzsza: 49 trafień (wojownik/straznik_lasu/10)",
    "ok": true,
    "opis": ""
   },
   {
-   "test": "kadr najdluzsza: 32 trafień (zwiadowca/straznik_lasu/1)",
+   "test": "ogluszenie od ogluszajace_uderzenie (wojownik/lesny_troll/5 ziarno 209465, zd. 8)",
    "ok": true,
-   "opis": ""
+   "opis": "napisy ['−102', 'OGŁUSZENIE!']; ozdoba Gwiazdka: 6 szt."
   },
   {
-   "test": "bez −0 przy pełnej tarczy (blok, wojownik/cierniowy_wilk/10 ziarno 475464, zd. 12)",
+   "test": "ogluszenie od uscisk_korzeni (wojownik/straznik_lasu/5 ziarno 104736, zd. 12)",
    "ok": true,
-   "opis": "napisy: ['BLOK!', 'TARCZA −12']"
+   "opis": "napisy ['OGŁUSZENIE!']; ozdoba Pnacze: 3 szt."
   },
   {
-   "test": "bez −0 przy pełnej tarczy (cios, mag/cierniowy_wilk/10 ziarno 150785, zd. 18)",
+   "test": "spowolnienie od lodowy_pocisk (mag/lesny_slime/5 ziarno 418923, zd. 15)",
    "ok": true,
-   "opis": "napisy: ['TARCZA −53']"
+   "opis": "napisy ['−122', 'SPOWOLNIENIE!']; ozdoba Krysztal: 5 szt."
   },
   {
-   "test": "spowolnienie od ogluszajace_uderzenie (wojownik/lesny_troll/5 ziarno 104736, zd. 8)",
+   "test": "odmiana w panelu wyniku (tury: 4, zdarzenia: 6, wygrana)",
    "ok": true,
-   "opis": "napisy ['−65', 'SPOWOLNIENIE!']; ozdoba Gwiazdka: 6 szt."
+   "opis": "Cierniowy Wilk (poz. 1) pokonany w 4 turach | dziennik policzył serwer  •  ziarno 879054  •  4 tury  •  6 zdarzeń  •  10.2 s"
   },
   {
-   "test": "spowolnienie od uscisk_korzeni (wojownik/straznik_lasu/5 ziarno 104736, zd. 8)",
+   "test": "odmiana w panelu wyniku (tury: 24, zdarzenia: 26, wygrana)",
    "ok": true,
-   "opis": "napisy ['SPOWOLNIENIE!']; ozdoba Pnacze: 3 szt."
-  },
-  {
-   "test": "spowolnienie od lodowy_pocisk (mag/lesny_slime/5 ziarno 209465, zd. 12)",
-   "ok": true,
-   "opis": "napisy ['−116', 'SPOWOLNIENIE!']; ozdoba Krysztal: 5 szt."
-  },
-  {
-   "test": "odmiana w panelu wyniku (tury: 3, zdarzenia: 3, przegrana)",
-   "ok": true,
-   "opis": "Muchomornik (poz. 5) był silniejszy — 3 tury | dziennik policzył serwer  •  ziarno 823742  •  3 tury  •  3 zdarzenia  •  7.3 s"
-  },
-  {
-   "test": "odmiana w panelu wyniku (tury: 24, zdarzenia: 33, wygrana)",
-   "ok": true,
-   "opis": "Strażnik Gaju (poz. 10) pokonany w 24 turach | dziennik policzył serwer  •  ziarno 348759  •  24 tury  •  33 zdarzenia  •  39.1 s"
+   "opis": "Leśny Slime (poz. 1) pokonany w 24 turach | dziennik policzył serwer  •  ziarno 910727  •  24 tury  •  26 zdarzeń  •  33.1 s"
   },
   {
    "test": "paski, tura i efekty = silnik (wojownik/cierniowy_wilk/1 ziarno 53484, 14 zdarzeń)",
@@ -108,22 +98,22 @@
    "opis": ""
   },
   {
-   "test": "paski, tura i efekty = silnik (mag/cierniowy_wilk/5 ziarno 910854, 13 zdarzeń)",
+   "test": "paski, tura i efekty = silnik (mag/cierniowy_wilk/5 ziarno 910854, 10 zdarzeń)",
    "ok": true,
    "opis": ""
   },
   {
-   "test": "paski, tura i efekty = silnik (zwiadowca/lesny_troll/10 ziarno 950601, 14 zdarzeń)",
+   "test": "paski, tura i efekty = silnik (zwiadowca/lesny_troll/10 ziarno 950601, 27 zdarzeń)",
    "ok": true,
    "opis": ""
   },
   {
-   "test": "paski, tura i efekty = silnik (wojownik/lesny_slime/10 ziarno 4043, 23 zdarzeń)",
+   "test": "paski, tura i efekty = silnik (wojownik/lesny_slime/10 ziarno 4043, 25 zdarzeń)",
    "ok": true,
    "opis": ""
   },
   {
-   "test": "paski, tura i efekty = silnik (wojownik/straznik_lasu/10 ziarno 348759, 29 zdarzeń)",
+   "test": "paski, tura i efekty = silnik (wojownik/lesny_slime/1 ziarno 910727, 25 zdarzeń)",
    "ok": true,
    "opis": ""
   },

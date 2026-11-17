@@ -101,23 +101,23 @@
    true
   ],
   [
-   "2.4 zwiadowca/cierniowy_wilk/5 ×1: panel wyniku",
+   "2.4 zwiadowca/cierniowy_wilk/5 ×4: panel wyniku",
    true
   ],
   [
-   "2.4 zwiadowca/cierniowy_wilk/5 ×1: dziennik z serwera = port Pythona",
+   "2.4 zwiadowca/cierniowy_wilk/5 ×4: dziennik z serwera = port Pythona",
    true
   ],
   [
-   "2.4 zwiadowca/cierniowy_wilk/5 ×1: każde zdarzenie obsłużone, bez braków i błędów",
+   "2.4 zwiadowca/cierniowy_wilk/5 ×4: każde zdarzenie obsłużone, bez braków i błędów",
    true
   ],
   [
-   "2.4 zwiadowca/cierniowy_wilk/5 ×1: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   "2.4 zwiadowca/cierniowy_wilk/5 ×4: paski = dziennik (po każdym zdarzeniu i na końcu)",
    true
   ],
   [
-   "2.4 zwiadowca/cierniowy_wilk/5 ×1: licznik tur = silnik, łup na panelu = dziennik",
+   "2.4 zwiadowca/cierniowy_wilk/5 ×4: licznik tur = silnik, łup na panelu = dziennik",
    true
   ],
   [
@@ -161,23 +161,23 @@
    true
   ],
   [
-   "2.7 mag/muchomornik/10 ×1: panel wyniku",
+   "2.7 mag/muchomornik/10 ×4: panel wyniku",
    true
   ],
   [
-   "2.7 mag/muchomornik/10 ×1: dziennik z serwera = port Pythona",
+   "2.7 mag/muchomornik/10 ×4: dziennik z serwera = port Pythona",
    true
   ],
   [
-   "2.7 mag/muchomornik/10 ×1: każde zdarzenie obsłużone, bez braków i błędów",
+   "2.7 mag/muchomornik/10 ×4: każde zdarzenie obsłużone, bez braków i błędów",
    true
   ],
   [
-   "2.7 mag/muchomornik/10 ×1: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   "2.7 mag/muchomornik/10 ×4: paski = dziennik (po każdym zdarzeniu i na końcu)",
    true
   ],
   [
-   "2.7 mag/muchomornik/10 ×1: licznik tur = silnik, łup na panelu = dziennik",
+   "2.7 mag/muchomornik/10 ×4: licznik tur = silnik, łup na panelu = dziennik",
    true
   ],
   [
@@ -225,23 +225,23 @@
    true
   ],
   [
-   "3a. długa walka 24 tur (wojownik/straznik_lasu/10): panel wyniku",
+   "3a. długa walka 24 tur (wojownik/lesny_slime/1): panel wyniku",
    true
   ],
   [
-   "3a. długa walka 24 tur (wojownik/straznik_lasu/10): dziennik z serwera = port Pythona",
+   "3a. długa walka 24 tur (wojownik/lesny_slime/1): dziennik z serwera = port Pythona",
    true
   ],
   [
-   "3a. długa walka 24 tur (wojownik/straznik_lasu/10): każde zdarzenie obsłużone, bez braków i błędów",
+   "3a. długa walka 24 tur (wojownik/lesny_slime/1): każde zdarzenie obsłużone, bez braków i błędów",
    true
   ],
   [
-   "3a. długa walka 24 tur (wojownik/straznik_lasu/10): paski = dziennik (po każdym zdarzeniu i na końcu)",
+   "3a. długa walka 24 tur (wojownik/lesny_slime/1): paski = dziennik (po każdym zdarzeniu i na końcu)",
    true
   ],
   [
-   "3a. długa walka 24 tur (wojownik/straznik_lasu/10): licznik tur = silnik, łup na panelu = dziennik",
+   "3a. długa walka 24 tur (wojownik/lesny_slime/1): licznik tur = silnik, łup na panelu = dziennik",
    true
   ],
   [
@@ -249,23 +249,23 @@
    true
   ],
   [
-   "3b. krótka walka 3 tury (mag/muchomornik/5): panel wyniku",
+   "3b. krótka walka 4 tury (mag/cierniowy_wilk/1): panel wyniku",
    true
   ],
   [
-   "3b. krótka walka 3 tury (mag/muchomornik/5): dziennik z serwera = port Pythona",
+   "3b. krótka walka 4 tury (mag/cierniowy_wilk/1): dziennik z serwera = port Pythona",
    true
   ],
   [
-   "3b. krótka walka 3 tury (mag/muchomornik/5): każde zdarzenie obsłużone, bez braków i błędów",
+   "3b. krótka walka 4 tury (mag/cierniowy_wilk/1): każde zdarzenie obsłużone, bez braków i błędów",
    true
   ],
   [
-   "3b. krótka walka 3 tury (mag/muchomornik/5): paski = dziennik (po każdym zdarzeniu i na końcu)",
+   "3b. krótka walka 4 tury (mag/cierniowy_wilk/1): paski = dziennik (po każdym zdarzeniu i na końcu)",
    true
   ],
   [
-   "3b. krótka walka 3 tury (mag/muchomornik/5): licznik tur = silnik, łup na panelu = dziennik",
+   "3b. krótka walka 4 tury (mag/cierniowy_wilk/1): licznik tur = silnik, łup na panelu = dziennik",
    true
   ],
   [
@@ -273,28 +273,28 @@
    true
   ],
   [
-   "3d. najdłuższa walka 33 tur przy ×4: panel wyniku",
+   "3d. najdłuższa walka 54 tur przy ×4: panel wyniku",
    true
   ],
   [
-   "3d. najdłuższa walka 33 tur przy ×4: dziennik z serwera = port Pythona",
+   "3d. najdłuższa walka 54 tur przy ×4: dziennik z serwera = port Pythona",
    true
   ],
   [
-   "3d. najdłuższa walka 33 tur przy ×4: każde zdarzenie obsłużone, bez braków i błędów",
+   "3d. najdłuższa walka 54 tur przy ×4: każde zdarzenie obsłużone, bez braków i błędów",
    true
   ],
   [
-   "3d. najdłuższa walka 33 tur przy ×4: paski = dziennik (po każdym zdarzeniu i na końcu)",
+   "3d. najdłuższa walka 54 tur przy ×4: paski = dziennik (po każdym zdarzeniu i na końcu)",
    true
   ],
   [
-   "3d. najdłuższa walka 33 tur przy ×4: licznik tur = silnik, łup na panelu = dziennik",
+   "3d. najdłuższa walka 54 tur przy ×4: licznik tur = silnik, łup na panelu = dziennik",
    true
   ],
   [
    "3e. ×4 skraca odtwarzanie (≈ 2 s + reszta/4 + finał w ×1)",
-   true
+   false
   ],
   [
    "3f. POMIŃ → panel wyniku od razu",
@@ -321,15 +321,11 @@
    true
   ],
   [
-   "3h. po POMIŃ JESZCZE RAZ zablokowane z odliczaniem",
+   "3h. po POMIŃ za zgodą serwera JESZCZE RAZ od razu dostępne (D-078: gracz wolny od razu)",
    true
   ],
   [
-   "3i. klik w trakcie blokady nic nie robi",
-   true
-  ],
-  [
-   "3j. blokada zdjęta po czasie walki",
+   "3j. serwer zwolnił sesję (NastepnaWalkaOd ≤ teraz)",
    true
   ],
   [
@@ -451,90 +447,56 @@
  ],
  "pomiary": [
   {
-   "OstatniCzasTrwania": 29.09,
-   "OstatniaSredniaKlatki": 66.78,
-   "OstatniP95Klatki": 68.2,
-   "OstatniaMaksKlatki": 116.74,
+   "OstatniCzasTrwania": 24.79,
+   "OstatniaSredniaKlatki": 66.71,
+   "OstatniP95Klatki": 67.99,
+   "OstatniaMaksKlatki": 84.1,
    "OstatniKosztSkryptuSredni": 0.59,
-   "OstatniKosztSkryptuP95": 1.08,
-   "OstatniKosztSkryptuMaks": 2.15,
-   "OstatniaLiczbaInstancji": 1442,
-   "OstatniaLiczbaUjec": 14,
-   "OstatniCzasPrzygotowania": 155,
-   "OstatniCzasSerwera": 74.1,
+   "OstatniKosztSkryptuP95": 1.15,
+   "OstatniKosztSkryptuMaks": 1.82,
+   "OstatniaLiczbaInstancji": 1587,
+   "OstatniaLiczbaUjec": 13,
+   "OstatniCzasPrzygotowania": 154,
+   "OstatniCzasSerwera": 74.2,
    "OstatnieTempo": 1,
    "nazwa": "wojownik/lesny_slime/1 ×1",
-   "czas_dziennika": 19.8,
-   "tury": 12
+   "czas_dziennika": 17.6,
+   "tury": 11
   },
   {
-   "OstatniCzasTrwania": 30.18,
-   "OstatniaSredniaKlatki": 66.81,
-   "OstatniP95Klatki": 68.09,
-   "OstatniaMaksKlatki": 133.91,
-   "OstatniKosztSkryptuSredni": 0.66,
-   "OstatniKosztSkryptuP95": 1.32,
-   "OstatniKosztSkryptuMaks": 2.87,
-   "OstatniaLiczbaInstancji": 2370,
-   "OstatniaLiczbaUjec": 19,
-   "OstatniCzasPrzygotowania": 205,
-   "OstatniCzasSerwera": 74,
-   "OstatnieTempo": 1,
-   "nazwa": "zwiadowca/cierniowy_wilk/5 ×1",
-   "czas_dziennika": 23.6,
-   "tury": 12
-  },
-  {
-   "OstatniCzasTrwania": 26.34,
-   "OstatniaSredniaKlatki": 66.75,
-   "OstatniP95Klatki": 68.07,
-   "OstatniaMaksKlatki": 100.05,
-   "OstatniKosztSkryptuSredni": 0.52,
-   "OstatniKosztSkryptuP95": 1.12,
-   "OstatniKosztSkryptuMaks": 2.24,
-   "OstatniaLiczbaInstancji": 1844,
-   "OstatniaLiczbaUjec": 15,
+   "OstatniCzasTrwania": 39.78,
+   "OstatniaSredniaKlatki": 66.66,
+   "OstatniP95Klatki": 68.2,
+   "OstatniaMaksKlatki": 76.03,
+   "OstatniKosztSkryptuSredni": 0.59,
+   "OstatniKosztSkryptuP95": 1.11,
+   "OstatniKosztSkryptuMaks": 2.03,
+   "OstatniaLiczbaInstancji": 1662,
+   "OstatniaLiczbaUjec": 21,
    "OstatniCzasPrzygotowania": 173,
-   "OstatniCzasSerwera": 76.5,
-   "OstatnieTempo": 1,
-   "nazwa": "mag/muchomornik/10 ×1",
-   "czas_dziennika": 21.0,
-   "tury": 10
-  },
-  {
-   "OstatniCzasTrwania": 44.42,
-   "OstatniaSredniaKlatki": 66.74,
-   "OstatniP95Klatki": 68.07,
-   "OstatniaMaksKlatki": 99.04,
-   "OstatniKosztSkryptuSredni": 0.78,
-   "OstatniKosztSkryptuP95": 1.67,
-   "OstatniKosztSkryptuMaks": 3.94,
-   "OstatniaLiczbaInstancji": 3858,
-   "OstatniaLiczbaUjec": 23,
-   "OstatniCzasPrzygotowania": 191,
-   "OstatniCzasSerwera": 76.9,
+   "OstatniCzasSerwera": 75.4,
    "OstatnieTempo": 1,
    "nazwa": "długa 24 tur ×1",
-   "czas_dziennika": 39.1,
+   "czas_dziennika": 33.1,
    "tury": 24
   },
   {
-   "OstatniCzasTrwania": 13.93,
-   "OstatniaSredniaKlatki": 66.75,
-   "OstatniP95Klatki": 67.97,
-   "OstatniaMaksKlatki": 85.97,
-   "OstatniKosztSkryptuSredni": 0.49,
-   "OstatniKosztSkryptuP95": 1,
-   "OstatniKosztSkryptuMaks": 1.79,
-   "OstatniaLiczbaInstancji": 1333,
-   "OstatniaLiczbaUjec": 5,
-   "OstatniCzasPrzygotowania": 207,
-   "OstatniCzasSerwera": 60.1,
+   "OstatniCzasTrwania": 17.38,
+   "OstatniaSredniaKlatki": 66.67,
+   "OstatniP95Klatki": 67.95,
+   "OstatniaMaksKlatki": 69.2,
+   "OstatniKosztSkryptuSredni": 0.6,
+   "OstatniKosztSkryptuP95": 1.16,
+   "OstatniKosztSkryptuMaks": 2.69,
+   "OstatniaLiczbaInstancji": 2337,
+   "OstatniaLiczbaUjec": 7,
+   "OstatniCzasPrzygotowania": 173,
+   "OstatniCzasSerwera": 58.8,
    "OstatnieTempo": 1,
-   "nazwa": "krótka 3 tury ×1",
-   "czas_dziennika": 7.3,
-   "tury": 3
+   "nazwa": "krótka 4 tury ×1",
+   "czas_dziennika": 10.2,
+   "tury": 4
   }
  ],
- "data": "2026-11-15 15:39"
+ "data": "2026-11-17 03:38"
 }

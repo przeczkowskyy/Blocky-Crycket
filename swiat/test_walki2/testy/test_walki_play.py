@@ -208,10 +208,17 @@ def main():
         time.sleep(1.0)
         p1 = Z["play"][0]
         t.ziarno(p1["ziarno"])
-        t.klawisz("E")
-        time.sleep(1.0)
-        s = t.stan()
+        s = {}
+        for _ in range(3):           # Studio pod zaciemnieniem rysuje ok. 15 kl./s — podpowiedź pojawia się z opóźnieniem
+            t.klawisz("E")
+            time.sleep(1.0)
+            s = t.stan()
+            if s.get("_panel"):
+                break
         sprawdz("1a. E przy tablicy otwiera panel wyboru", s.get("_panel"), "(podpowiedź: %s)" % s.get("_podpowiedzTekst"))
+        if not s.get("_panel"):
+            t.steruj('"wybor"')      # dalsze punkty sprawdzają panel; błąd 1a zostaje w wynikach
+            time.sleep(1.5)
         for sciezka in ("Klasy.Klasa_%s" % p1["klasa"], "Wrogowie.Wrog_%s" % p1["przeciwnik"], "Poziomy.Poziom_%d" % p1["poziom"]):
             t.klik(GUI_WYBOR + sciezka)
             time.sleep(0.3)

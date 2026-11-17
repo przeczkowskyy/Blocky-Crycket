@@ -126,6 +126,7 @@ class SesjaPlay:
                         pass
                 time.sleep(0.5)
             time.sleep(1.5)
+            self.zamknij_wybor_klasy()
         except BaseException:
             self.zatrzymaj()
             self.mcp.__exit__(None, None, None)
@@ -154,6 +155,26 @@ class SesjaPlay:
         self.edit_po = self.tryb_edit()
         log("Studio w trybie Edit:", self.edit_po)
 
+    def zamknij_wybor_klasy(self):
+        """Ekran wyboru klasy Pawła (PlayerGui/ClassSelect, src/client/ClassSelectClient) trzyma kamerę w sali klas
+        i zasłania zrzuty — Enter wybiera klasę jak gracz (tak samo jak swiat/las_pas_gra/testy/proba_play.py)."""
+        kod = ('local p = game:GetService("Players").LocalPlayer local g = p.PlayerGui:FindFirstChild("ClassSelect") '
+               'return tostring(g ~= nil and g.Enabled) .. " " .. workspace.CurrentCamera.CameraType.Name .. " " '
+               '.. tostring(game:GetService("ProximityPromptService").Enabled)')
+        st = "? ? ?"
+        for _ in range(20):
+            try:
+                st = self.luau(kod).strip()
+            except StudioError:
+                st = "? ? ?"
+            # ekran zamknięty, kamera postaci i podpowiedzi E włączone (ClassSelect wyłącza ProximityPromptService)
+            if st == "false Custom true":
+                return True
+            self.klawisz("Return")
+            time.sleep(1.5)
+        log("UWAGA: ekran wyboru klasy się nie zamknął:", st)
+        return False
+
     # --- narzędzia
     def call(self, nazwa, args=None, timeout=None):
         a = dict(args or {})
@@ -178,7 +199,15 @@ class SesjaPlay:
                          'return game:GetService("HttpService"):JSONEncode(s:Invoke(%s))' % kod_args)
 
     def przy_tablicy(self):
-        return self.luau(PRZESTAW % PRZY_TABLICY, "Server")
+        w = self.luau(PRZESTAW % PRZY_TABLICY, "Server")
+        # podpowiedź E pokazuje się tylko, gdy tablica jest w kadrze; po zamknięciu ekranu wyboru klasy kamera patrzy
+        # gdziekolwiek (Studio 17.11.2026: E przy tablicy nic nie robiło) — kamera postaci zza pleców na tablicę
+        try:
+            self.luau('local c = workspace.CurrentCamera if c.CameraType == Enum.CameraType.Custom then '
+                      'c.CFrame = CFrame.lookAt(Vector3.new(16, 10, 203), Vector3.new(16, 4, 220)) end return "ok"')
+        except StudioError:
+            pass
+        return w
 
     def daleko(self):
         return self.luau(PRZESTAW % DALEKO, "Server")

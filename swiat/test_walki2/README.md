@@ -38,7 +38,8 @@ czas doskoku; wcześniej klinga mijała wilka i muchomornika z boku), unik bohat
 **Etap 10** (17.11, praca bez Studio): odtwarzacz i interfejs pod **dziennik v3** (nowy silnik z
 `tools/walka/ZMIANY_SESJA_1611.md`: mana, statusy z charakterem, blok każdej klasy, tarcza procentowa, wskrzeszenie,
 pasywki), **pomijanie walk (D-078)** z decyzją serwera, **zestawy postaci i lustro** na tablicy, nowe testy bez Studio
-i gotowy skrypt prób w Studio — patrz „Etap 10 — dziennik v3 i pomijanie walk”. **W Studio jeszcze nie uruchomione.**
+i gotowy skrypt prób w Studio — patrz „Etap 10 — dziennik v3 i pomijanie walk”. **Wdrożone w Studio w nocy
+17.11.2026** (silnik v3 we wszystkich trzech kontenerach, próby w Play) — patrz „Wdrożenie v3 w Studio (17.11.2026, noc)”.
 
 ## Etap 10 — dziennik v3 i pomijanie walk (17.11.2026, bez Studio)
 
@@ -91,6 +92,10 @@ kolejka napisów bez zmian. Przeciwnik-postać (lustro) ma na tabliczce rangę �
     (odpowiedź `powod = "sesja_zrodla"`; klient lasu pokazuje „Walcz (za N s)”).
   - **Stary las** (`LasPotwory`) nie ma `Sygnaly/WynikWalki` → jego walki są dla prototypu „nieznane” → **bez
     pomijania** (bezpieczne zachowanie domyślne).
+
+*Stan po wdrożeniu 17.11.2026 (noc): oba dopiski niżej są ZROBIONE (wybory 1 → opcja A i 2 → tak, przyjęte na noc
+do zmiany) — las-pas i stary las mają `Sygnaly/WynikWalki` i `Sygnaly/ZwolnijPoPominieciu`, więc po pominięciu gracz
+i potwór są wolni od razu, a stary las też ma pomijanie. Opis dwóch punktów wyżej to stan sprzed wdrożenia.*
 
 **Co dopisać w pakietach lasu** (nie zmieniałem ich — zakaz w tej paczce; po dopisaniu działa bez zmian w prototypie):
 
@@ -178,13 +183,14 @@ zachowanie zdalnej funkcji i mostka w Play, kompilator Luau i typy (interpreter 
 
 ### Wybory do decyzji
 
-1. **Pomijanie w lesie: zwalniać gracza i potwora od razu?**
-   - Dziś: tablica zwalnia od razu; las-pas skraca tylko pokaz (sesja lasu do końca walki).
+1. **Pomijanie w lesie: zwalniać gracza i potwora od razu?** — *przyjęte na noc 17.11.2026 (do zmiany): opcja A,
+   wdrożona w obu lasach.*
+   - Przed wdrożeniem: tablica zwalniała od razu; las-pas skracał tylko pokaz (sesja lasu do końca walki).
    - Opcja A: dopisek z README w `SerwerPotworow` (ok. 12 linii, 3 pliki) — wolni od razu wszędzie.
-   - Opcja B: zostawić — mniej zmian w lesie, gracz czeka do końca walki.
-2. **Stary las: czy ma mieć pomijanie?**
-   - Dziś: bez pomijania (brak `Sygnaly/WynikWalki` w kontenerze).
-   - Opcja: jedna linia w `swiat/las_potwory/zbuduj.py` (lista `INNE`).
+   - Opcja B: cofnąć — usunąć `Sygnaly/ZwolnijPoPominieciu` z `INNE` obu `zbuduj.py`; gracz czeka do końca walki.
+2. **Stary las: czy ma mieć pomijanie?** — *przyjęte na noc 17.11.2026 (do zmiany): tak, wdrożone.*
+   - Przed wdrożeniem: bez pomijania (brak `Sygnaly/WynikWalki` w kontenerze).
+   - Cofnięcie: usunąć linię `Sygnaly/WynikWalki` z `INNE` w `swiat/las_potwory/zbuduj.py`.
 3. **Pamięć poznanych gatunków: tylko serwer czy zapis?**
    - Dziś: pamięć serwera (UserId), ginie przy restarcie — jak `PamiecGracza`.
    - Opcja: lista gatunków w profilu gracza (skill roblox-data); miejsce opisane w `PamiecWalk.luau`.
@@ -211,6 +217,107 @@ zachowanie zdalnej funkcji i mostka w Play, kompilator Luau i typy (interpreter 
 - Mostek opiera się na nazwach kontenerów lasu (`LasPasGra`, `LasPotwory`) i na polu `koniec` sygnału `WynikWalki`;
   zmiana nazwy albo sygnału w lesie wyłączy pomijanie w lesie (bezpiecznie: bez pomijania).
 - Pasek many w HUD gry (D-048) to osobna rzecz — tu tylko w walce prototypu.
+
+### Wdrożenie v3 w Studio (17.11.2026, noc)
+
+*Agent w nocnej sesji Karola; Studio na wyłączność, tryb Edit, ekran przykryty czarnym oknem (Studio rysuje ok.
+15 kl./s — klatka 66,7 ms to ograniczenie Studia). Niczego nie zapisano w miejscu ani nie opublikowano.*
+
+**Kolejność i wyniki.**
+1. Bez Studio, przed wdrożeniem: `tools/walka/test_walki.py` 73/73, `test_odtwarzacza.py` 18/18 (4644 dzienniki),
+   `test_aktorow.py` 15/15, `test_logiki.py` 17/17, `test_styku.py` 15/15 (po dopiskach lasu 16/16),
+   `test_pasa.py` 45/45, `zbuduj.py --sucho` wszystkich trzech pakietów — kod 0.
+2. **Zgodność silnika w prawdziwym Studio** (`tools/walka/zgodnosc_studio.py`): powtarzalność OK, niezmienniki 592
+   walk OK, **592/592 dzienników identycznych z portem w Pythonie, 60/60 złych wejść odrzuconych** — pełna, bez rozjazdu.
+3. Budowa `--skrypty` (aktorzy bez zmian): `TestWalki2` (nowa zdalna `Zdalne/PominiecieWalki2`, moduły `PlanWalki`,
+   `PamiecWalk`, kopia silnika v3), potem `LasPotwory` i `LasPasGra` (kopie silnika v3, **bez** `BC_SILNIK_KORZEN`,
+   nowe `Sygnaly/WynikWalki` w starym lesie i `Sygnaly/ZwolnijPoPominieciu` w obu). Punkty historii przed i po robią
+   skrypty budowy (sprawdzone w kodzie: „przed wymianą skryptów” i „zbudowano”).
+4. Edit (`testy/sprawdz_edit.py`): 12 modułów OK, **45/45 walk = Python** (Wzorcowe + kopia silnika), liczba,
+   odmiana, wygląd v3, zestawy przez walidację silnika, `PamiecWalk` i `PlanWalki` w Studio — WYNIK OK.
+5. Play, `testy/test_v3_play.py`: przebieg ze zrzutami o 02:57 **44/46**; końcowy przebieg o 03:47 na ostatecznym
+   kodzie (`--bez-zrzutow`, `testy/wynik_v3.json`) **43/46** — dodatkowy BŁĄD „telefon 844 × 390: walka” to baner
+   „WALKA!” zmierzony w połowie animacji wejścia (skala 0,3 → 1 w 0,28 s; 7 pkt) — chwila pomiaru, nie stały napis.
+   Pomijanie P1–P8 i nowe P8b OK (pierwsza walka
+   bez przycisku i z „PIERWSZE SPOTKANIE — BEZ POMIJANIA”, spacja i oszustwo z klienta odrzucone, wymuszony pokaz bez
+   zgody = JESZCZE RAZ z odliczaniem, druga walka z przyciskiem i gracz wolny od razu, inny gatunek znów bez
+   przycisku, mostek lasu-pasa i starego lasu); mana 2/2 (paski = dziennik zdarzenie po zdarzeniu,
+   `OstatniaNiezgodnoscMany` 0); statusy 11/11 (trucizna do ×3 ze znaczkiem, podpalenie dłuższe, krwawienie,
+   spowolnienie bez utraty tury, ogłuszenie z gwiazdkami i pnączami + „TRACI TURĘ!”, zdarcie, skupienie, tarcze −70%
+   i −71%); blok 8/8 (Wojownik z tarczą bez parady, reszta z łukiem parady) + blok umiejętności bez efektu;
+   wskrzeszenie gracza, przeciwnika i obu 3/3; pasywki 3/3; telefon — walka v3 2/2; koszt 3/3 (skrypt klienta śr.
+   0,55–0,63 ms, p95 1,1–1,3 ms, maks. 1,8–2,9 ms na klatkę, 1816–2357 instancji; p95 klatki 68 ms = zaciemnienie,
+   „?” do oceny człowieka); konsola bez `[TestWalki2]`. **BŁĄD: panel wyboru na telefonie** — 844 × 390:
+   „MUCHOMORNIK” 11 pkt; 667 × 375: „MUCHOMORNIK” 10 pkt, „CIERNIOWY WILK” i „STRAŻNIK GAJU” 11 pkt, podpis
+   Wojownika 11 pkt (ryzyko z listy wyżej potwierdzone; zrzut `klatki/v3_telefon_667x375_panel.jpg`; wybór niżej).
+6. `testy/test_walki_play.py --szybko` (`testy/wynik_play.json`): **110/111**. Jedyny BŁĄD: 3e (×4 skraca
+   odtwarzanie) — 31,2 s przy progu 29,75 s dla najdłuższej walki (54 tury, 69 zdarzeń, 81 s dziennika; w v2 było 33
+   tury). Prawdopodobnie klatka 66,7 ms pod zaciemnieniem (ok. 1 klatka narzutu na zdarzenie) — „?” do sprawdzenia
+   przy zwykłym ekranie. Pierwszy przebieg miał też BŁĄD 1a (E przy tablicy) — błąd próby (kamera po ekranie wyboru
+   klasy patrzyła obok tablicy), poprawione w `sesja_play.py`.
+7. `testy/test_poprawek_play.py` (`testy/wynik_poprawek.json`): **24/27**. Część „zero” (−0 przy pełnej tarczy) nie
+   dotyczy v3 — tarcza procentowa: w 17 955 walkach (3 klasy × 5 potworów × poziomy 1/5/10 × ziarna 1–399) nie ma
+   trafienia 0 z pochłonięciem; ziarna z v2 rzucały wyjątkiem (`IndexError`), teraz część to pomija z wpisem w
+   konsoli. Trzy BŁĘDY kadru (powtarzalne, kod kamery bez zmian od v2 — inne ziarna v3):
+   - `uderzenie_z_gory` (Zwiadowca → slime, ujęcie „krytyk”): cel odsłonięty w 38% (próg 45%) — zwiadowca w wyskoku
+     zasłania część slime'a; na zrzucie slime widać (granica progu);
+   - `uscisk_korzeni` (Strażnik → Mag, „boczny”): Mag odsłonięty w 38–41% — zasłaniają go pnącza samego efektu
+     (klatka korzeni wokół Maga), czyli raczej próg testu niż błąd kadru;
+   - długa walka, zd. 24 (unik slime'a przed Wojownikiem, ujęcie „zbliżenie”): **slime'a nie ma w kadrze** (0%) —
+     kamera trzyma zbliżenie na miejscu celu, a Wojownik po doskoku wypełnia kadr. Zrzut
+     `klatki/v3_kadr_unik_bez_celu.jpg`. Próba wyłączenia zbliżenia dla zdarzeń „unik” nic nie dała (ujęcie zostaje
+     z poprzedniego zdarzenia) i została cofnięta — do poprawki w choreografii kamery.
+8. `testy/telefon.py` (zrzuty poza repozytorium): walka i panel wyniku na 844 × 390 i 667 × 375 ≥ 12 pkt (stopka
+   wyniku 10 pkt — dozwolona); **panel wyboru: 5 napisów < 12 pkt** (te same co w p. 5).
+9. Lasy na v3 z pomijaniem: las-pas 17 × OK + P14 „?” (`swiat/las_pas_gra/README.md`), stary las 5/5
+   (`swiat/las_potwory/README.md`). Regresja pakietów zależnych: przejście przez chmury **6/6**
+   (`swiat/teleport_chmury/wyniki/proba_play_20261117_0313.json`); miasteczko-bazar — dwa przebiegi ze zrzutami
+   13 × OK + B14 „?” + **B09 BŁĄD**, przebieg bez zrzutów (`--bez-zrzutow --bez-biegu`) 13 × OK + B03 pominięte +
+   B14 „?”, B09 OK. B09 (E przy „Stare miasteczko” po Bramie Leśnej) psuje się tylko wtedy, gdy próba robi w lesie
+   zrzut ekranu (narzędzie zrzutu w Play ustawia kamerę); osobna próba tej samej drogi (brama → las → bazar → E)
+   przeniosła do starego miasteczka bez błędu. To ten sam znany kłopot z README bazaru („Podpowiedzi E po teleportach
+   skryptem”), nie skutek v3 — ale nie sprawdziłem, czy w przebiegu 02:23 (OK) narzędzie zachowywało się inaczej.
+
+**Poprawione po Studio** (kod gry):
+1. `InterfejsWalki2._ramka`: cień ramki jest rodzeństwem ramki i nie znikał z nią — ukryta karteczka pasywki
+   zostawiała **dwa ciemne pasy przez środek ekranu w każdej walce** (pierwszy przebieg zrzutów). Cień idzie teraz za
+   `Visible` ramki.
+2. `InterfejsWalki2` / `WyborWalki2`: `string.upper` nie zmienia polskich liter („STRAżNIK GAJU” w panelu wyboru,
+   tak samo tytuły karteczek pasywek „OGNISTA RóżDżKA” i wstęga „UśCISK KORZENI”; w kadrze walki font komiksowy
+   rysuje same wielkie litery, więc było to widać głównie w panelu). Nowa funkcja `Interfejs.wielkie`.
+
+**Poprawione w testach** (nie w grze): `test_v3_play.py` — P4 dostawał `za_szybko` (limit serwera 0,2 s tuż po P3)
+→ przerwa 0,3 s; część „mana” czeka na koniec sesji walki P7 (wcześniej „walka nie wystartowała”); pomiar panelu na
+telefonie po zamknięciu okna wyniku (wcześniej 844 × 390 mierzył 0 napisów i dawał fałszywe OK); zrzut stosów
+trucizny (`v3_trucizna_stosy3.jpg`); P8 pod opcję A, nowe P8b (stary las). `sesja_play.py` — zamyka ekran wyboru
+klasy Enterem (kamera `Custom`, podpowiedzi E włączone) i kieruje kamerę na tablicę: podpowiedź E pokazuje się
+tylko, gdy tablica jest w kadrze (punkt 1a `test_walki_play.py` — sprawdzone osobną próbą: przed poprawką
+podpowiedź nie była pokazana, po niej E otwiera panel).
+
+**Zrzuty** (`klatki/v3_*.jpg`, 1280 px): `pomijanie_pierwsza` (bez przycisku, „PIERWSZE SPOTKANIE — BEZ
+POMIJANIA”), `pomijanie_druga` (przycisk POMIŃ), `mana_gotowa` (pełny, świecący pasek z kryształem),
+`mana_uzycie` (u wilka błysk i spadek many po Rozszarpaniu, u Maga pasek prawie pełny), `ogluszenie_pnacza` (Mag „pod manę”: żółta
+kreska progu w ok. ⅔ paska i kryształ, ikona ogłuszenia, „OGŁUSZENIE!”), `trucizna_stosy3` (ikona trucizny ze
+znaczkiem ×3, „TRUCIZNA ×3”), `blok_wojownik` (tarcza, „BLOK −75%”), `blok_zwiadowca` (łuk parady przed bronią),
+`pasywki_wojownik` (karteczka „PASYWKA: KOLOS / +4% ŻYCIA · +2% OBRAŻEŃ”, po prawej już bez ciemnego pasa),
+`wskrzeszenie_obu` (słup złotego światła, „WSKRZESZENIE!”, „+213”, szare pióro gracza i złote przeciwnika),
+`las_pas_walka` (walka ze slime'em z lasu-pasa na arenie prototypu, paski many obu stron), `las_pas_pominiecie`
+(druga walka z gatunkiem: przycisk POMIŃ, baner „WALKA!”), `las_stary_walka` (stary las: Zwiadowca kontra Strażnik
+Gaju, „KRYTYK!”, ranga STRAŻNIK), `kadr_unik_bez_celu` (błąd kadru z p. 7), `telefon_667x375_panel` (drobne nazwy
+przeciwników) / `_walka`. Pozostałe zrzuty `test_v3_play.py` (statusy, bloki potworów, wskrzeszenia osobno) usunięte
+z repozytorium — skrypt robi je przy każdym przebiegu.
+
+**Niesprawdzone / słabe miejsca:** prawdziwy telefon i dotyk; dwóch graczy; koszt klatki przy normalnym ekranie
+(wszystkie progi czasowe liczone przy 15 kl./s); panel wyboru na telefonie (p. 5, 8); kadr przy uniku (p. 7);
+podpowiedź na tablicy i tytuł panelu mają dalej napis „Walka v2”.
+
+**Wybory do decyzji z wdrożenia:**
+1. **Panel wyboru prototypu na telefonie: jak zmieścić 6 przeciwników?**
+   - Dziś: jeden rząd 6 przycisków — nazwy 10–11 pkt na 667 × 375.
+   - Opcja A: dwa rzędy po 3 (ikona z lewej, nazwa obok; ok. 2× szerzej).
+   - Opcja B: zostawić (panel to narzędzie prób, nie ekran gry).
+2. **Unik w zbliżeniu: kamera ma śledzić cel czy przechodzić na ujęcie boczne?** (p. 7) — do decyzji przy
+   choreografii kamery.
 
 ## Jak obejrzeć (krok po kroku)
 

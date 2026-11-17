@@ -1,0 +1,289 @@
+{
+ "start": "2026-11-17 03:13:08",
+ "testy": {
+  "1": {
+   "ok": true,
+   "opis": "miasteczko → Las",
+   "sposob": "dotknij (385, 510) → las trafiony=True",
+   "ekran": {
+    "ok": true,
+    "x": 385.3360595703125,
+    "vy": 567.7307739257812,
+    "y": 509.73077392578125,
+    "vp": [
+     2041,
+     1153
+    ],
+    "wstawka": [
+     0,
+     58
+    ],
+    "vx": 385.3360595703125,
+    "widac": true
+   },
+   "odl_od_celu": 0.0,
+   "ruch_po_W": 13.86328125,
+   "problemy": [],
+   "wynik": "wybrano las",
+   "blad": null,
+   "czasy": {
+    "poWyborze": 2.531045499985339,
+    "C": 0.9308063000207767,
+    "przeskok": 0.00018889998318627477,
+    "D": 1.464190900005633,
+    "blokady": 0.00046030001249164343,
+    "B": 1.0653754000086337,
+    "doMakiety": 2.2842261000187136,
+    "wybor": 0.33399650000501424,
+    "calosc": 5.483734300010838,
+    "czekanie": 0.13509049999993294,
+    "A": 1.1504382999846712
+   },
+   "klatki": {
+    "fps": 15.002461901680809,
+    "p95_ms": 68.45120340585709,
+    "max_ms": 69.75709646940231,
+    "srednia_ms": 66.6557266769639,
+    "n": 83
+   },
+   "odpowiedz": {
+    "zrodlo": "uchwyt LasPasGra.PrzeniesDoLasu",
+    "ok": true,
+    "wczytanie": 0.033510300010675564
+   },
+   "obecna": "miasteczko",
+   "wybor": {
+    "id": "las"
+   },
+   "odmowy": null,
+   "pozycja": [
+    1114,
+    3.358025074005127,
+    -700
+   ],
+   "przeniesiony": true,
+   "uwaga": null,
+   "sterowanieWylaczone": false
+  },
+  "2": {
+   "ok": true,
+   "opis": "Las → miasteczko",
+   "sposob": "mysz (viewport: 139, 562)",
+   "ekran": {
+    "ok": true,
+    "x": 138.69293212890625,
+    "vy": 562.2101440429688,
+    "y": 504.21014404296875,
+    "vp": [
+     2041,
+     1153
+    ],
+    "wstawka": [
+     0,
+     58
+    ],
+    "vx": 138.69293212890625,
+    "widac": true
+   },
+   "odl_od_celu": 0.0,
+   "problemy": [],
+   "wynik": "wybrano miasteczko",
+   "blad": null,
+   "czasy": {
+    "poWyborze": 2.533087899995735,
+    "C": 0.9329068000079133,
+    "przeskok": 0.00019180000526830554,
+    "D": 1.4610374000039883,
+    "blokady": 0.0005871000175829977,
+    "B": 1.066523799992865,
+    "doMakiety": 2.282271200005198,
+    "wybor": 0.9997540999902412,
+    "calosc": 6.147788300004322,
+    "czekanie": 0.13748149998718873,
+    "A": 1.1468353999953251
+   },
+   "klatki": {
+    "fps": 15.00105225682008,
+    "p95_ms": 68.41669976711273,
+    "max_ms": 68.88820230960846,
+    "srednia_ms": 66.66199029773793,
+    "n": 93
+   },
+   "odpowiedz": {
+    "zrodlo": "atrybut MiasteczkoBazarGra.PunktStartuBazaru",
+    "ok": true,
+    "wczytanie": 0.017225899995537475
+   },
+   "obecna": "las",
+   "wybor": {
+    "id": "miasteczko"
+   },
+   "odmowy": null,
+   "pozycja": [
+    990,
+    3.298025131225586,
+    -697
+   ],
+   "przeniesiony": true,
+   "uwaga": null,
+   "sterowanieWylaczone": false
+  },
+  "3": {
+   "ok": true,
+   "opis": "rezygnacja: dotknięcie obok pasa i Backspace",
+   "obok": {
+    "ok": true,
+    "dotknij": {
+     "ok": true,
+     "trafiony": false
+    },
+    "wynik": "rezygnacja",
+    "wybor": {
+     "rezygnacja": "obok"
+    },
+    "problemy": [],
+    "postac_przesunela_sie_o": 0.0,
+    "czasy": {
+     "poWyborze": 2.5325169999850914,
+     "C": 0.9334038000088185,
+     "przeskok": 0.00018610002007335424,
+     "D": 1.464943700004369,
+     "blokady": 0.0004067000118084252,
+     "B": 1.0660209000052419,
+     "doMakiety": 3.8991393000178505,
+     "wybor": 0.20079410000471398,
+     "calosc": 6.63257159999921,
+     "czekanie": 0.133138000004692,
+     "A": 1.1007997999840882
+    }
+   },
+   "backspace": {
+    "ok": true,
+    "wybor": {
+     "rezygnacja": "klawisz"
+    },
+    "problemy": [],
+    "czasy": {
+     "poWyborze": 2.5326761000033002,
+     "C": 0.9320418999996036,
+     "przeskok": 0.00020160002168267965,
+     "D": 1.4649157999956515,
+     "blokady": 0.0004144000122323632,
+     "B": 1.067499199998565,
+     "doMakiety": 2.267550400021719,
+     "wybor": 0.2656360999972094,
+     "calosc": 5.065984400018351,
+     "czekanie": 0.134785300004296,
+     "A": 1.1321673000056762
+    }
+   }
+  },
+  "4": {
+   "ok": true,
+   "opis": "zamknięta kraina (Bagno)",
+   "sposob": "dotknij (591, 486) → bagno trafiony=True",
+   "nadal_w_wyborze": true,
+   "odmowy": 1,
+   "serwer_bagno": {
+    "ok": false,
+    "powod": "zamknieta"
+   },
+   "serwer_nieznana": {
+    "ok": false,
+    "powod": "nieznana"
+   },
+   "serwer_zle_dane": {
+    "ok": false,
+    "powod": "zle_dane"
+   },
+   "problemy": []
+  },
+  "5": {
+   "ok": true,
+   "opis": "dwa szybkie żądania",
+   "otworz_1": {
+    "ok": true
+   },
+   "otworz_2": {
+    "ok": false,
+    "powod": "trwa"
+   },
+   "serwer": [
+    {
+     "ok": true
+    },
+    {
+     "ok": false,
+     "powod": "trwa"
+    },
+    {
+     "ok": false,
+     "powod": "za_szybko",
+     "zostalo": 2.9664107999997213
+    }
+   ],
+   "odl_od_lasu": 0.0
+  },
+  "6": {
+   "ok": true,
+   "opis": "błąd w połowie przejścia",
+   "B": {
+    "ok": true,
+    "blad": "błąd testowy w fazie B\nWorkspace.TeleportChmury.KlientTeleportu:1075\nWorkspace.TeleportChmury.KlientTeleportu:238 function animuj\nWorkspace.TeleportChmury.KlientTeleportu:924 function przebieg\nWorkspace.TeleportChmury.KlientTeleportu:1074\n",
+    "problemy": [],
+    "ruch_po_W": 11.73046875
+   },
+   "C": {
+    "ok": true,
+    "blad": "błąd testowy w fazie C\nWorkspace.TeleportChmury.KlientTeleportu:1075\nWorkspace.TeleportChmury.KlientTeleportu:238 function animuj\nWorkspace.TeleportChmury.KlientTeleportu:953 function przebieg\nWorkspace.TeleportChmury.KlientTeleportu:1074\n",
+    "problemy": [],
+    "ruch_po_W": 11.7357177734375,
+    "odl_od_miasteczka": 0.0
+   },
+   "smierc": {
+    "ok": true,
+    "blad": "PRZERWANE: śmierć postaci\nWorkspace.TeleportChmury.KlientTeleportu:1075\nWorkspace.TeleportChmury.KlientTeleportu:190 function wybierzKraine\nWorkspace.TeleportChmury.KlientTeleportu:932 function przebieg\nWorkspace.TeleportChmury.KlientTeleportu:1074\n",
+    "problemy": [],
+    "kamera_po_odrodzeniu": "Custom",
+    "podmiot": true
+   }
+  }
+ },
+ "przed": {
+  "ukryteGui": 4,
+  "kamera": "Custom",
+  "zamkniete": [
+   "bagno",
+   "dzungla",
+   "pustynia",
+   "gory",
+   "lodowiec",
+   "wulkan",
+   "krysztal"
+  ]
+ },
+ "klatki_bez_przejscia": {
+  "srednia_ms": 67.03116430176628,
+  "max_ms": 83.8249996304512,
+  "fps": 14.918433991361384,
+  "n": 45
+ },
+ "konsola": [
+  "[TeleportChmury] przejście przerwane: błąd testowy w fazie B",
+  "Workspace.TeleportChmury.KlientTeleportu:1075",
+  "Workspace.TeleportChmury.KlientTeleportu:238 function animuj",
+  "Workspace.TeleportChmury.KlientTeleportu:924 function przebieg",
+  "Workspace.TeleportChmury.KlientTeleportu:1074",
+  "[TeleportChmury] przejście przerwane: błąd testowy w fazie C",
+  "Workspace.TeleportChmury.KlientTeleportu:1075",
+  "Workspace.TeleportChmury.KlientTeleportu:238 function animuj",
+  "Workspace.TeleportChmury.KlientTeleportu:953 function przebieg",
+  "Workspace.TeleportChmury.KlientTeleportu:1074",
+  "[TeleportChmury] przejście przerwane: PRZERWANE: śmierć postaci",
+  "Workspace.TeleportChmury.KlientTeleportu:1075",
+  "Workspace.TeleportChmury.KlientTeleportu:190 function wybierzKraine",
+  "Workspace.TeleportChmury.KlientTeleportu:932 function przebieg",
+  "Workspace.TeleportChmury.KlientTeleportu:1074"
+ ],
+ "koniec": "2026-11-17 03:14:33"
+}

@@ -246,7 +246,7 @@ function Wybor.pokaz(playerGui: Instance, opcje)
 	for i, klucz in klasy do
 		local w = Aktorzy.wpis(klucz)
 		local styl = Dane.klasy[klucz] and Dane.klasy[klucz].styl or ""
-		local b = self:_opcja(rzadK, "Klasa_" .. klucz, klucz, string.upper(w.nazwa), styl, {
+		local b = self:_opcja(rzadK, "Klasa_" .. klucz, klucz, Interfejs.wielkie(w.nazwa), styl, {
 			Position = UDim2.fromScale((i - 1) * 0.3367, 0), Size = UDim2.fromScale(0.315, 1), Rotation = ({ -1, 0.8, -0.6 })[i] or 0 })
 		-- ikona i nazwa u góry, styl klasy pełną szerokością pod spodem (na telefonie obok ikony był za drobny)
 		local ik, t, p = b:FindFirstChild("Ikona"), b:FindFirstChild("Tytul"), b:FindFirstChild("Podpis")
@@ -280,7 +280,7 @@ function Wybor.pokaz(playerGui: Instance, opcje)
 	for i, d in listaWrogow do
 		local w = if d.aktor then Aktorzy.wpis(d.id) else nil
 		local r = RANGI[d.ranga] or RANGI.zwykly
-		local b = self:_opcja(rzadW, "Wrog_" .. d.id, if w then d.id else (if d.aktor then nil else "gwiazda"), string.upper(d.nazwa), r[1], {
+		local b = self:_opcja(rzadW, "Wrog_" .. d.id, if w then d.id else (if d.aktor then nil else "gwiazda"), Interfejs.wielkie(d.nazwa), r[1], {
 			Position = UDim2.fromScale((i - 1) * krok, 0), Size = UDim2.fromScale(krok - 0.012, 1),
 			Rotation = ({ 0.8, -0.8, 0.6, -1, 1, -0.6 })[i] or 0 })
 		local pasek = self:_nowy("Frame", { Name = "Ranga", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1),

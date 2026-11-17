@@ -174,6 +174,7 @@ def test_pomijanie(s, Z, mostek):
     wynik("P3. pominięcie z klienta bez zgody odrzucone przez serwer",
           r1 == {"ok": False, "powod": "pierwsza_walka"} and r2.get("powod") == "zly_wybor" and r3.get("powod") == "zly_wybor"
           and int(po) >= int(przed) + 3, "(%s | %s | %s | odrzucone %s → %s)" % (r1, r2, r3, przed, po))
+    time.sleep(0.3)   # limit serwera 1 wywołanie na 0,2 s — bez przerwy P4 dostawał „za_szybko” po P3 (Studio 17.11.2026)
     s.steruj('"pomin", true')
     s.czekaj(("wynik",), 6)
     time.sleep(1.0)
@@ -240,9 +241,29 @@ def test_pomijanie(s, Z, mostek):
     c2 = zdalna_pominiecia(s, "czy", "LasPasGra")
     time.sleep(0.25)
     c3 = zdalna_pominiecia(s, "czy", "LasPotwory")
-    wynik("P8. mostek lasu-pasa: pamięć wspólna, las bez zwolnienia = sesja_zrodla, nowy gatunek bez zgody, stary las bez mostka",
-          c1.get("ok") is True and p1 == {"ok": True, "powod": "sesja_zrodla"} and c2 == {"ok": False, "powod": "pierwsza_walka"}
+    # 17.11.2026 (noc): oba lasy mają Sygnaly/ZwolnijPoPominieciu (wybór 1 → opcja A) — „pomin” = ok z nastepnaOd;
+    # bez uchwytu (stary kontener) dalej sesja_zrodla
+    zwolni = s.luau('local k = workspace.LasPasGra return tostring(k.Sygnaly:FindFirstChild("ZwolnijPoPominieciu") ~= nil)',
+                    "Server").strip() == "true"
+    p1_ok = (p1.get("ok") is True and p1.get("powod") == "ok" and isinstance(p1.get("nastepnaOd"), (int, float))) if zwolni \
+        else p1 == {"ok": True, "powod": "sesja_zrodla"}
+    wynik("P8. mostek lasu-pasa: pamięć wspólna, pominięcie %s, nowy gatunek bez zgody, stary las bez walki = brak_walki"
+          % ("zwalnia od razu" if zwolni else "= sesja_zrodla"),
+          c1.get("ok") is True and p1_ok and c2 == {"ok": False, "powod": "pierwsza_walka"}
           and c3 == {"ok": False, "powod": "brak_walki"}, "(%s | %s | %s | %s)" % (c1, p1, c2, c3))
+    # stary las z mostkiem (wybór 2 przyjęty na noc): sztuczny sygnał w LasPotwory → "czy" = ok dla poznanego gatunku
+    jest2 = s.luau('local k = workspace:FindFirstChild("LasPotwory") return tostring(k ~= nil and k:FindFirstChild("Sygnaly") ~= nil '
+                   'and k.Sygnaly:FindFirstChild("WynikWalki") ~= nil)', "Server").strip()
+    if jest2 == "true":
+        time.sleep(0.25)
+        s.luau(kod.replace("workspace.LasPasGra", "workspace.LasPotwory") % "lesny_slime", "Server")
+        c4 = zdalna_pominiecia(s, "czy", "LasPotwory")
+        time.sleep(0.25)
+        p4 = zdalna_pominiecia(s, "pomin", "LasPotwory")
+        wynik("P8b. mostek starego lasu: poznany gatunek → zgoda, pominięcie przyjęte",
+              c4.get("ok") is True and p4.get("ok") is True, "(%s | %s)" % (c4, p4))
+    else:
+        log("  P8b pominięte: brak Workspace/LasPotwory/Sygnaly/WynikWalki")
 
 
 def test_mana(s, Z):
@@ -253,7 +274,7 @@ def test_mana(s, Z):
             wynik("mana %s" % nazwa, False, "walka nie wystartowała")
             continue
         d = w["dziennik"]
-        zle, uzycia = [], 0
+        zle, uzycia, gotowa_zrzut = [], 0, False
         for i, z in enumerate(d):
             # na początku zdarzenia: paski = poprzednie zdarzenie (u używającego: już po koszcie)
             st = przewin(s, z["t"] + 0.02)
@@ -271,8 +292,9 @@ def test_mana(s, Z):
             for strona, pole in (("gracz", "manaGracz"), ("wrog", "manaWrog")):
                 if st.get(pole) != z["mana_" + strona]:
                     zle.append("zd. %d koniec %s: %s ≠ %s" % (i + 1, strona, st.get(pole), z["mana_" + strona]))
-            if st.get("manaGotowa", {}).get("gracz") and nazwa == "pasywki" and uzycia == 0:
-                zrzut(s, "mana_gotowa")
+            if (st.get("manaGotowa") or {}).get("gracz") and not gotowa_zrzut:
+                zrzut(s, "mana_gotowa")      # pierwsza chwila, gdy pasek gracza świeci (mana ≥ próg)
+                gotowa_zrzut = True
         s.steruj('"pomin", true')
         st = s.stan()
         wynik("mana %s (%s): %d zdarzeń, %d użyć — paski = dziennik" % (nazwa, ZE.NAZWY[o["zestaw"]], len(d), uzycia),
@@ -315,6 +337,16 @@ def test_statusy(s, Z):
             ok = ok and ikony[0].get("znaczek") == "−%d%%" % z["wartosc"]
         zrzut(s, pokaz)
         opis = "ikona %s, napisy %s, części %s" % (ikony[:1], teksty, cz)
+        # stosy: zrzut przy nałożeniu z największą liczbą stosów (trucizna ×3) — ikona ze znaczkiem „×N”
+        if znaczek == "stosy":
+            imax = max((i for i, x in enumerate(d) if x["typ"] == "efekt_nalozony" and x["efekt"] == efekt),
+                       key=lambda i: d[i]["stosy"])
+            zm = d[imax]
+            st3 = przewin(s, zm["t"] + zm["trwa"] - 0.02)
+            ik3 = [e for e in (st3.get("efekty") or {}).get(zm["cel"], []) if e["id"] == efekt]
+            ok = ok and bool(ik3) and (zm["stosy"] < 2 or ik3[0].get("znaczek") == "×%d" % zm["stosy"])
+            zrzut(s, "%s%d" % (pokaz, zm["stosy"]))
+            opis += ", najwięcej stosów: zd. %d ×%d → ikona %s" % (imax + 1, zm["stosy"], ik3[:1])
         # ogłuszenie: „TRACI TURĘ!” w turze celu; spowolnienie: nigdy
         traci = next((i for i in range(idx, len(d)) if d[i]["typ"] == "utrata_tury" and d[i]["kto"] == z["cel"]), None)
         if efekt == "ogluszenie" and traci is not None:
@@ -433,10 +465,17 @@ def test_pasywki(s, Z):
 def test_telefon(s, Z):
     import telefon as TEL
     for rozm in ((844, 390), (667, 375)):
+        s.steruj('"zamknij"')        # panel nie otwiera się, gdy sesja walki trwa (także w oknie wyniku)
+        time.sleep(1.0)
         s.luau('workspace.TestWalki2:SetAttribute("EmulacjaEkranu", Vector2.new(%d, %d)) return "ok"' % rozm)
         time.sleep(0.6)
         s.steruj('"wybor"')
-        time.sleep(1.0)
+        for _ in range(10):
+            time.sleep(0.5)
+            if s.luau('local g = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TestWalki2Wybor") '
+                      'return tostring(g ~= nil and g.Enabled)').strip() == "true":
+                break
+        time.sleep(0.6)
         p = TEL.zmierz(s, "TestWalki2Wybor")
         r = TEL.podsumuj("panel %dx%d" % rozm, p)
         if ZRZUTY:
@@ -516,6 +555,10 @@ def main():
         time.sleep(0.5)
         if "pomijanie" in czesci:
             test_pomijanie(s, Z, not a.bez_mostka)     # pierwsza: pamięć pomijania jest pusta tylko na starcie Play
+            # P7 zostawia sesję serwera (pierwsza walka z wilkiem, bez pominięcia) — bez czekania pierwsza walka
+            # części „mana” dostawała odmowę (Studio 17.11.2026: „walka nie wystartowała”)
+            s.steruj('"zamknij"')
+            s.czekaj_wolna(60)
         s.luau('workspace.TestWalki2:SetAttribute("TestBezSesji", true) return "ok"', "Server")
         for nazwa, f in (("mana", test_mana), ("statusy", test_statusy), ("blok", test_blok), ("wskrzeszenie", test_wskrzeszenie),
                          ("pasywki", test_pasywki), ("telefon", test_telefon), ("koszt", test_koszt)):

@@ -92,12 +92,31 @@ class TestSciezek(unittest.TestCase):
         self.assertEqual(zbuduj.FOLDERY, ["Moduly", "Moduly/Walka", "Stan", "Zdalne", "Sygnaly"])
         self.assertEqual(zbuduj.INNE, [("RemoteFunction", "Zdalne/RozpocznijWalke2"),
                                        ("BindableFunction", "Sygnaly/SterowanieSerwera"),
-                                       ("BindableFunction", "Sygnaly/SterowanieKlienta")])
+                                       ("BindableFunction", "Sygnaly/SterowanieKlienta"),
+                                       ("BindableEvent", "Sygnaly/WynikWalki"),
+                                       ("BindableFunction", "Sygnaly/ZwolnijPoPominieciu")])
         konteksty = {s[2]: s[3] for s in zbuduj.SKRYPTY}
         self.assertEqual(konteksty["SerwerPotworow"], "Server")
         self.assertEqual(konteksty["KlientPotworow"], "Client")
         self.assertIn('S.NAZWA_KONTENERA = "LasPotwory"', STALE)
         self.assertEqual(zbuduj.KONTENER, "LasPotwory")
+
+    def test_pomijanie_walk_most_z_prototypem(self):
+        """D-078 (przyjęte na noc 17.11.2026): stary las ma Sygnaly/WynikWalki (mostek pomijania w SerwerWalki2) i
+        Sygnaly/ZwolnijPoPominieciu (po pominięciu gracz i potwór wolni od razu) — te same nazwy co w prototypie."""
+        proto = czytaj(PROTO, "zrodla", "SerwerWalki2.server.luau")
+        sygnal = re.search(r'S\.SYGNAL_WYNIKU = "(\w+)"', STALE).group(1)
+        self.assertIn(("BindableEvent", "Sygnaly/" + sygnal), zbuduj.INNE)
+        self.assertIn('WaitForChild("%s"' % sygnal, proto)
+        self.assertIn(("BindableFunction", "Sygnaly/ZwolnijPoPominieciu"), zbuduj.INNE)
+        self.assertIn('FindFirstChild("ZwolnijPoPominieciu")', proto)
+        self.assertIn('FindFirstChild("ZwolnijPoPominieciu")', SERWER)
+        blok = SERWER.split('FindFirstChild("ZwolnijPoPominieciu")', 1)[1].split("\nend\n", 1)[0]
+        for kawalek in ("zwolnij.OnInvoke = function(gracz: Player)", 'gracz:IsA("Player")', "walkaDo[gracz] = czas",
+                        "p.zajety.gracz == gracz", "p.zajety.koniec = czas", "return true"):
+            self.assertIn(kawalek, blok, kawalek)
+        # zwalnianie kończy zajętość przez zwykłą pętlę ruchu (koniec <= czas), nie usuwa potwora bezpośrednio
+        self.assertIn("if p.zajety and czas >= p.zajety.koniec then", SERWER)
         self.assertEqual(zbuduj.ATRYBUTY_TESTOWE, ["ZiarnoTestowe", "TestBezSesji", "TestGraczy", "TestBezBiomu"])
 
 

@@ -385,9 +385,15 @@ def main():
                         luau(KP + 'return tostring(k.Sygnaly.SterowanieKlienta:Invoke("walcz", "%s"))' % cel["id"], "Client")
                         jak = "haczyk walcz (E nie zadziałało)"
                     trwa = czekaj_na(lambda: klient_potworow().get("walka"), 10, 0.5)
-                    if trwa and nr == 0:
-                        time.sleep(4)
-                        zrzut("11_walka_slime")
+                    v3 = None
+                    if trwa:
+                        time.sleep(4 if nr == 0 else 2)
+                        if nr == 0:
+                            zrzut("11_walka_slime")
+                        # dziennik v3 na ekranie (17.11.2026): mana na paskach, pierwsza walka z gatunkiem bez pomijania
+                        so = odtw('"stan"')
+                        v3 = {"mana": [so.get("manaGracz"), so.get("manaWrog")], "pomijanie": so.get("pomijanie"),
+                              "powod": so.get("powodPominiecia"), "przycisk": so.get("pomijanieNaEkranie")}
                     if trwa:
                         odtw('"przewinDo", 1000')
                         time.sleep(2.5)
@@ -402,7 +408,9 @@ def main():
                     w_pasie = 1056 <= pp[0] <= 2076 and -760 <= pp[2] <= -640
                     wyniki_walk[sid_strefy] = {"id": cel["id"], "E": widzial_e, "jak": jak, "walka": bool(trwa), "kamera": kam["typ"],
                                                "w_pasie": w_pasie, "walk": [przed_walka, po_walce.get("SerwerLicznikWalk")],
-                                               "ostatnia": po_walce.get("SerwerOstatniaWalka")}
+                                               "ostatnia": po_walce.get("SerwerOstatniaWalka"), "v3": v3,
+                                               "kontrola": atrybuty("LasPasGra", ["OstatniaNiezgodnoscMany", "OstatniaNiezgodnoscPaskow",
+                                                                                  "OstatnieBledyObslugi"], "Client")}
                     time.sleep(1.5)
                 except Exception as e:  # noqa: BLE001
                     wyniki_walk[sid_strefy] = "wyjątek: %s" % str(e)[:200]
@@ -412,6 +420,81 @@ def main():
                      and v["jak"].startswith("E")
                      and v["w_pasie"] and (v["walk"][1] or 0) > v["walk"][0]]
             punkt("P08", len(dobre) == 4, "walki z E i powrotem do pasa: %s; szczegóły %s" % (dobre, wyniki_walk))
+            # P08v3 — każda walka pasa odtworzona z dziennika v3: mana na paskach (liczby), pierwsza walka z każdym
+            # gatunkiem bez pomijania (pamięć serwera prototypu pusta na starcie Play), kontrola pasków i many = 0
+            v3_ok = [k for k, v in wyniki_walk.items() if isinstance(v, dict) and v.get("v3")
+                     and all(isinstance(x, (int, float)) for x in v["v3"]["mana"])
+                     and v["v3"]["pomijanie"] is False and v["v3"]["powod"] == "pierwsza_walka" and not v["v3"]["przycisk"]
+                     and (v["kontrola"].get("OstatniaNiezgodnoscMany") or 0) == 0
+                     and (v["kontrola"].get("OstatniaNiezgodnoscPaskow") or 0) == 0
+                     and (v["kontrola"].get("OstatnieBledyObslugi") or 0) == 0]
+            punkt("P08v3", len(v3_ok) == 4, "dziennik v3 i pierwsze spotkanie bez pomijania: %s" % v3_ok)
+
+            # ---------------------------------------------------------------- P08p pominięcie przy drugim spotkaniu (D-078)
+            # bez TestBezSesji: po pominięciu gracz i potwór mają być wolni od razu (Sygnaly/ZwolnijPoPominieciu, opcja A)
+            p08p = {}
+            try:
+                cel = js('for _, c in k.Stan:GetChildren() do local s = c:GetAttribute("Strefa") if (s == "s1" or s == "s2") '
+                         'and c:GetAttribute("Stan") ~= "zajety" then return H:JSONEncode({ id = c.Name }) end end return H:JSONEncode({})', "Server")
+                p08p["cel"] = cel.get("id")
+                if cel.get("id"):
+                    for _ in range(6):
+                        p = js('local c = k.Stan:FindFirstChild("%s") return H:JSONEncode(J(c and c:GetAttribute("Pozycja") or Vector3.zero))' % cel["id"], "Server")
+                        przestaw(p[0] - 4, p[1] + 3.2, p[2], 1)
+                        time.sleep(0.6)
+                        kpot = klient_potworow()
+                        if kpot.get("podpowiedz") and kpot.get("najblizszy") == cel["id"]:
+                            nacisnij("E")
+                            break
+                    if not czekaj_na(lambda: klient_potworow().get("walka"), 6, 0.5):
+                        luau(KP + 'return tostring(k.Sygnaly.SterowanieKlienta:Invoke("walcz", "%s"))' % cel["id"], "Client")
+                    p08p["walka"] = bool(czekaj_na(lambda: klient_potworow().get("walka"), 10, 0.5))
+                    zgoda = czekaj_na(lambda: odtw('"stan"').get("pomijanie"), 8, 0.5)
+                    so = odtw('"stan"')
+                    p08p["przed"] = {"pomijanie": so.get("pomijanie"), "przycisk": so.get("pomijanieNaEkranie"),
+                                     "powod": so.get("powodPominiecia"), "faza": so.get("faza")}
+                    zrzut("11b_druga_walka_pomin")
+                    nacisnij("Space")
+                    czekaj_na(lambda: odtw('"stan"').get("faza") in ("wynik", "brak", "koniec"), 8, 0.4)
+                    time.sleep(1.2)
+                    kl = atrybuty("LasPasGra", ["OstatniaOdpowiedzPominiecia", "OstatnioPominieto", "NastepnaWalkaOd"], "Client")
+                    teraz_s = float(luau('return tostring(workspace:GetServerTimeNow())', "Server"))
+                    potwor = js('local c = k.Stan:FindFirstChild("%s") return H:JSONEncode({ jest = c ~= nil, stan = c and c:GetAttribute("Stan") or "" })'
+                                % cel["id"], "Server")
+                    p08p["po"] = {"odpowiedz": kl.get("OstatniaOdpowiedzPominiecia"), "pominieto": kl.get("OstatnioPominieto"),
+                                  "wolna_za_s": round((kl.get("NastepnaWalkaOd") or 0) - teraz_s, 2), "potwor": potwor,
+                                  "zgoda": bool(zgoda)}
+                    odtw('"zamknij"')
+                    czekaj_na(lambda: not klient_potworow().get("walka"), 20, 0.5)
+                    time.sleep(1.0)
+                    # od razu następna walka (muchomornik m1) — serwer lasu ma ją przyjąć (gracz wolny)
+                    przed_walka = atrybuty("LasPasGra", ["SerwerLicznikWalk"]).get("SerwerLicznikWalk") or 0
+                    cel2 = js('for _, c in k.Stan:GetChildren() do if c:GetAttribute("Strefa") == "m1" and c:GetAttribute("Stan") ~= "zajety" then '
+                              'return H:JSONEncode({ id = c.Name }) end end return H:JSONEncode({})', "Server")
+                    if cel2.get("id"):
+                        p = js('local c = k.Stan:FindFirstChild("%s") return H:JSONEncode(J(c and c:GetAttribute("Pozycja") or Vector3.zero))' % cel2["id"], "Server")
+                        przestaw(p[0] - 4, p[1] + 3.2, p[2], 1)
+                        time.sleep(0.8)
+                        luau(KP + 'k:SetAttribute("OstatniaOdmowa", nil) return tostring(k.Sygnaly.SterowanieKlienta:Invoke("walcz", "%s"))'
+                             % cel2["id"], "Client")
+                        p08p["nastepna"] = bool(czekaj_na(lambda: klient_potworow().get("walka"), 8, 0.5))
+                        p08p["odmowa"] = luau(KP + 'return tostring(k:GetAttribute("OstatniaOdmowa"))', "Client")
+                        p08p["walk"] = [przed_walka, atrybuty("LasPasGra", ["SerwerLicznikWalk"]).get("SerwerLicznikWalk")]
+                        time.sleep(1.0)
+                        odtw('"pomin", true')
+                        time.sleep(1.0)
+                        odtw('"zamknij"')
+                        czekaj_na(lambda: not klient_potworow().get("walka"), 20, 0.5)
+            except Exception as e:  # noqa: BLE001
+                p08p["wyjatek"] = str(e)[:300]
+            zapisz("P08p", p08p)
+            po = p08p.get("po") or {}
+            pot = po.get("potwor") or {}
+            punkt("P08p", bool(p08p.get("walka")) and po.get("zgoda") is True and (p08p.get("przed") or {}).get("przycisk") is True
+                  and po.get("odpowiedz") == "ok" and po.get("pominieto") is True and po.get("wolna_za_s", 99) <= 0.5
+                  and (not pot.get("jest") or pot.get("stan") != "zajety") and p08p.get("nastepna") is True,
+                  "druga walka ze slime'em: przycisk POMIŃ, spacja → wynik, serwer ok, gracz i potwór wolni od razu, "
+                  "następna walka przyjęta: %s" % p08p)
 
             # ---------------------------------------------------------------- P09 odradzanie
             p09 = js('local S = k.Sygnaly.SterowanieSerwera local function ile() local n = 0 for _, c in k.Stan:GetChildren() do '

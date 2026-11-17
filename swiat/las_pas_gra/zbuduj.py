@@ -94,6 +94,7 @@ INNE = [
     ("BindableFunction", "Sygnaly/SterowanieSerwera"),    # haczyk testowy SerwerPotworow
     ("BindableFunction", "Sygnaly/SterowanieKlienta"),    # haczyk KlientPotworow (też „wymus” i „klip” dla przelotu)
     ("BindableEvent", "Sygnaly/WynikWalki"),              # SerwerPotworow → SerwerPasa: wynik walki (brama)
+    ("BindableFunction", "Sygnaly/ZwolnijPoPominieciu"),  # pominięcie walki (D-078): gracz i potwór wolni od razu
     ("BindableFunction", "Sygnaly/PrzeniesDoLasu"),       # uchwyt dla innych skryptów serwera (przejście przez chmury)
     ("BindableFunction", "Sygnaly/SterowaniePasa"),       # haczyk testowy SerwerPasa
     ("BindableFunction", "Sygnaly/SterowaniePasaKlienta"),  # haczyk testowy KlientPasa

@@ -1,0 +1,279 @@
+{
+ "wyniki": [
+  {
+   "test": "P1. pierwsza walka z gatunkiem: bez przycisku POMIŃ, zgoda serwera = false",
+   "ok": true,
+   "opis": "(pierwsza_walka, widoczny)"
+  },
+  {
+   "test": "P2. spacja i haczyk bez wymuszenia nic nie pomijają",
+   "ok": true,
+   "opis": "(2)"
+  },
+  {
+   "test": "P3. pominięcie z klienta bez zgody odrzucone przez serwer",
+   "ok": true,
+   "opis": "({'ok': False, 'powod': 'pierwsza_walka'} | {'ok': False, 'powod': 'zly_wybor'} | {'ok': False, 'powod': 'zly_wybor'} | odrzucone 0 → 3)"
+  },
+  {
+   "test": "P4. wymuszony pokaz bez zgody: serwer odmawia, JESZCZE RAZ zablokowane",
+   "ok": true,
+   "opis": "(pierwsza_walka, ZA 7 s)"
+  },
+  {
+   "test": "P5. gatunek poznany; druga walka: przycisk, klik → wynik, serwer ok, gracz wolny od razu",
+   "ok": true,
+   "opis": "(poznane lesny_slime, odpowiedź ok, wolna za -1.2 s)"
+  },
+  {
+   "test": "P6. trzecia walka: spacja pomija (serwer ok)",
+   "ok": true,
+   "opis": "(ok)"
+  },
+  {
+   "test": "P7. inny gatunek — znów bez przycisku",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "P8. mostek lasu-pasa: pamięć wspólna, pominięcie zwalnia od razu, nowy gatunek bez zgody, stary las bez walki = brak_walki",
+   "ok": true,
+   "opis": "({'ok': True, 'powod': 'ok'} | {'ok': True, 'nastepnaOd': 1794883466.598152, 'powod': 'ok'} | {'ok': False, 'powod': 'pierwsza_walka'} | {'ok': False, 'powod': 'brak_walki'})"
+  },
+  {
+   "test": "P8b. mostek starego lasu: poznany gatunek → zgoda, pominięcie przyjęte",
+   "ok": true,
+   "opis": "({'ok': True, 'powod': 'ok'} | {'ok': True, 'nastepnaOd': 1794883469.013973, 'powod': 'ok'})"
+  },
+  {
+   "test": "mana mana_pierwsza_akcja (POD MANĘ): 6 zdarzeń, 4 użyć — paski = dziennik",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "mana pasywki (PASYWKI): 8 zdarzeń, 2 użyć — paski = dziennik",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "status trucizna (wojownik/muchomornik/1/wzorcowa ziarno 554372)",
+   "ok": true,
+   "opis": "ikona [{'stosy': 1, 'ikona': 'trucizna', 'kolor': '#8BEA4E', 'tury': 4, 'id': 'trucizna'}], napisy ['−35', 'TRUCIZNA!'], części {'OzdobaNosnik': 1}, najwięcej stosów: zd. 26 ×3 → ikona [{'znaczek': '×3', 'ikona': 'trucizna', 'kolor': '#8BEA4E', 'stosy': 3, 'tury': 4, 'id': 'trucizna'}]"
+  },
+  {
+   "test": "status podpalenie (mag/cierniowy_wilk/5/pasywki ziarno 1780499)",
+   "ok": true,
+   "opis": "ikona [{'stosy': 1, 'ikona': 'ogien', 'kolor': '#FF9A2E', 'tury': 4, 'id': 'podpalenie'}], napisy ['PODPALENIE!'], części {'OzdobaNosnik': 1}"
+  },
+  {
+   "test": "status krwawienie (wojownik/cierniowy_wilk/1/wzorcowa ziarno 23802)",
+   "ok": true,
+   "opis": "ikona [{'stosy': 1, 'ikona': 'kropla', 'kolor': '#FF4A5E', 'tury': 3, 'id': 'krwawienie'}], napisy ['−16', 'KRWAWIENIE!'], części {'OzdobaNosnik': 1}"
+  },
+  {
+   "test": "status spowolnienie (mag/lustro/10/mana ziarno 523825)",
+   "ok": true,
+   "opis": "ikona [{'stosy': 1, 'ikona': 'sniezynka', 'kolor': '#7FD8FF', 'tury': 2, 'id': 'spowolnienie'}], napisy ['−143', 'SPOWOLNIENIE!'], części {'Krysztal': 5, 'LodStopy': 1}"
+  },
+  {
+   "test": "status ogluszenie (mag/lesny_troll/1/mana ziarno 2408799)",
+   "ok": true,
+   "opis": "ikona [{'stosy': 1, 'ikona': 'gwiazdki', 'kolor': '#FFE14A', 'tury': 1, 'id': 'ogluszenie'}], napisy ['OGŁUSZENIE!'], części {'Gwiazdka': 7}, utrata tury: ['OGŁUSZENIE!', 'TRACI TURĘ!']"
+  },
+  {
+   "test": "status ogluszenie (wojownik/lesny_slime/10/mana ziarno 419101)",
+   "ok": true,
+   "opis": "ikona [{'stosy': 1, 'ikona': 'gwiazdki', 'kolor': '#FFE14A', 'tury': 1, 'id': 'ogluszenie'}], napisy ['ZDARTY PANCERZ!', 'OGŁUSZENIE!'], części {'Gwiazdka': 6}, utrata tury: ['OGŁUSZENIE!', 'TRACI TURĘ!']"
+  },
+  {
+   "test": "status ogluszenie (mag/straznik_lasu/1/mana ziarno 1361511)",
+   "ok": true,
+   "opis": "ikona [{'stosy': 1, 'ikona': 'gwiazdki', 'kolor': '#FFE14A', 'tury': 1, 'id': 'ogluszenie'}], napisy ['OGŁUSZENIE!'], części {'Lisc': 3, 'Pnacze': 3}, utrata tury: ['TRACI TURĘ!']"
+  },
+  {
+   "test": "status zdarcie_pancerza (wojownik/lesny_slime/1/wzorcowa ziarno 31718)",
+   "ok": true,
+   "opis": "ikona [{'stosy': 1, 'ikona': 'pancerz', 'kolor': '#D9A066', 'tury': 3, 'id': 'zdarcie_pancerza'}], napisy ['−30', 'ZDARTY PANCERZ!'], części {'Pekniecie': 2}"
+  },
+  {
+   "test": "status skupienie (zwiadowca/lesny_slime/10/wzorcowa ziarno 404190)",
+   "ok": true,
+   "opis": "ikona [{'stosy': 1, 'ikona': 'oko', 'kolor': '#FFD23F', 'tury': 3, 'id': 'skupienie'}], napisy ['SKUPIENIE!'], części {'BlaskKrag': 1}"
+  },
+  {
+   "test": "status kamienna_skora (wojownik/muchomornik/10/wzorcowa ziarno 301243)",
+   "ok": true,
+   "opis": "ikona [{'znaczek': '−70%', 'ikona': 'kamien', 'kolor': '#C9CED6', 'stosy': 1, 'tury': 3, 'id': 'kamienna_skora'}], napisy ['KAMIENNA SKÓRA −70%'], części {'Kamien': 6, 'KamiennaPowloka': 1}"
+  },
+  {
+   "test": "status bariera (mag/muchomornik/10/wzorcowa ziarno 277486)",
+   "ok": true,
+   "opis": "ikona [{'znaczek': '−71%', 'ikona': 'banka', 'kolor': '#6FE3FF', 'stosy': 1, 'tury': 3, 'id': 'bariera'}], napisy ['BARIERA −71%'], części {'Banka': 1}"
+  },
+  {
+   "test": "blok wojownik (wojownik/lesny_slime/1/wzorcowa ziarno 427668, zd. 3)",
+   "ok": true,
+   "opis": "napisy ['BLOK −75%', '−1'], parada {'ParadaBlysk': 0, 'Parada': 0}"
+  },
+  {
+   "test": "blok zwiadowca (zwiadowca/cierniowy_wilk/5/wzorcowa ziarno 443633, zd. 5)",
+   "ok": true,
+   "opis": "napisy ['BLOK −75%', '−14'], parada {'ParadaBlysk': 1, 'Parada': 5}"
+  },
+  {
+   "test": "blok mag (mag/lesny_slime/5/wzorcowa ziarno 641605, zd. 5)",
+   "ok": true,
+   "opis": "napisy ['BLOK −75%', '−17'], parada {'ParadaBlysk': 1, 'Parada': 5}"
+  },
+  {
+   "test": "blok lesny_slime (mag/lesny_slime/1/wzorcowa ziarno 593967, zd. 4)",
+   "ok": true,
+   "opis": "napisy ['BLOK −75%', '−5'], parada {'ParadaBlysk': 1, 'Parada': 5}"
+  },
+  {
+   "test": "blok cierniowy_wilk (wojownik/cierniowy_wilk/5/wzorcowa ziarno 419876, zd. 4)",
+   "ok": true,
+   "opis": "napisy ['BLOK −75%', '−7'], parada {'ParadaBlysk': 1, 'Parada': 5}"
+  },
+  {
+   "test": "blok muchomornik (wojownik/muchomornik/10/wzorcowa ziarno 451704, zd. 2)",
+   "ok": true,
+   "opis": "napisy ['BLOK −75%', '−9'], parada {'ParadaBlysk': 1, 'Parada': 5}"
+  },
+  {
+   "test": "blok lesny_troll (wojownik/lesny_troll/10/pasywki ziarno 523833, zd. 6)",
+   "ok": true,
+   "opis": "napisy ['BLOK −75%', '−5'], parada {'ParadaBlysk': 1, 'Parada': 5}"
+  },
+  {
+   "test": "blok straznik_lasu (mag/straznik_lasu/5/wzorcowa ziarno 641607, zd. 17)",
+   "ok": true,
+   "opis": "napisy ['BLOK −75%', '−29'], parada {'ParadaBlysk': 1, 'Parada': 5}"
+  },
+  {
+   "test": "blok umiejętności bez efektu w dzienniku (wojownik/lesny_slime/1/wzorcowa ziarno 926565)",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "wskrzeszenie_gracza (mag/cierniowy_wilk/1/wskrzeszenie ziarno 942604)",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "wskrzeszenie_przeciwnika (mag/lustro/10/wskrzeszenie ziarno 314375)",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "wskrzeszenie_obu (mag/lustro/10/wskrzeszenie ziarno 628562)",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "pasywki wojownik: zapowiedź ['Kolos', 'Rozdzieracz', 'Topór rzeźnika']",
+   "ok": true,
+   "opis": "(widziane ['Kolos', 'Rozdzieracz', 'Topór rzeźnika'], atrybut gracz:kolos,gracz:rozdzieracz,gracz:topor_rzeznika)"
+  },
+  {
+   "test": "pasywki zwiadowca: zapowiedź ['Oko łowcy', 'Zwinność', 'Łuk wiatru']",
+   "ok": true,
+   "opis": "(widziane ['Oko łowcy', 'Zwinność', 'Łuk wiatru'], atrybut gracz:oko_lowcy,gracz:zwinnosc,gracz:luk_wiatru)"
+  },
+  {
+   "test": "pasywki mag: zapowiedź ['Skupiona magia', 'Magiczny pocisk', 'Ognista różdżka']",
+   "ok": true,
+   "opis": "(widziane ['Skupiona magia', 'Magiczny pocisk', 'Ognista różdżka'], atrybut gracz:skupiona_magia,gracz:magiczny_pocisk,gracz:ognista_rozdzka)"
+  },
+  {
+   "test": "telefon 844x390: panel wyboru (zestaw, lustro) ≥ 12 pkt",
+   "ok": false,
+   "opis": "[('MUCHOMORNIK', 11)]"
+  },
+  {
+   "test": "telefon 844x390: walka v3 (mana, znaczki, pasywki, pomijanie) ≥ 12 pkt",
+   "ok": false,
+   "opis": "[('Kadr.Baner.Napis', 'WALKA!', 7)]"
+  },
+  {
+   "test": "telefon 667x375: panel wyboru (zestaw, lustro) ≥ 12 pkt",
+   "ok": false,
+   "opis": "[('MUCHOMORNIK', 10), ('wytrzymałość, Pancerz i blok tarczą', 11), ('CIERNIOWY WILK', 11), ('STRAŻNIK GAJU', 11)]"
+  },
+  {
+   "test": "telefon 667x375: walka v3 (mana, znaczki, pasywki, pomijanie) ≥ 12 pkt",
+   "ok": true,
+   "opis": "[]"
+  },
+  {
+   "test": "koszt klienta mag/lustro/10/wskrzeszenie ziarno 628562 (23.4 s dziennika)",
+   "ok": true,
+   "opis": "{\"OstatniKosztSkryptuSredni\": 0.56, \"OstatniKosztSkryptuP95\": 1.15, \"OstatniKosztSkryptuMaks\": 2.24, \"OstatniP95Klatki\": 68.17, \"OstatniaLiczbaInstancji\": 2068, \"OstatniCzasTrwania\": 34.13, \"OstatniaNiezgodnoscPaskow\": 0, \"OstatniaNiezgodnoscMany\": 0, \"OstatnieBledyObslugi\": 0, \"OstatnieBrakiChoreografii\": 0}"
+  },
+  {
+   "test": "koszt klienta zwiadowca/cierniowy_wilk/10/pasywki ziarno 314378 (10.5 s dziennika)",
+   "ok": true,
+   "opis": "{\"OstatniKosztSkryptuSredni\": 0.62, \"OstatniKosztSkryptuP95\": 1.19, \"OstatniKosztSkryptuMaks\": 1.79, \"OstatniP95Klatki\": 68.25, \"OstatniaLiczbaInstancji\": 2357, \"OstatniCzasTrwania\": 17.11, \"OstatniaNiezgodnoscPaskow\": 0, \"OstatniaNiezgodnoscMany\": 0, \"OstatnieBledyObslugi\": 0, \"OstatnieBrakiChoreografii\": 0}"
+  },
+  {
+   "test": "koszt klienta wojownik/muchomornik/1/wzorcowa ziarno 554372 (30.4 s dziennika)",
+   "ok": true,
+   "opis": "{\"OstatniKosztSkryptuSredni\": 0.55, \"OstatniKosztSkryptuP95\": 1.08, \"OstatniKosztSkryptuMaks\": 2.27, \"OstatniP95Klatki\": 68.15, \"OstatniaLiczbaInstancji\": 1816, \"OstatniCzasTrwania\": 34.78, \"OstatniaNiezgodnoscPaskow\": 0, \"OstatniaNiezgodnoscMany\": 0, \"OstatnieBledyObslugi\": 0, \"OstatnieBrakiChoreografii\": 0}"
+  },
+  {
+   "test": "konsola bez ostrzeżeń i błędów [TestWalki2]",
+   "ok": true,
+   "opis": ""
+  },
+  {
+   "test": "Studio wróciło do trybu Edit",
+   "ok": true,
+   "opis": ""
+  }
+ ],
+ "pomiary": [
+  {
+   "OstatniKosztSkryptuSredni": 0.56,
+   "OstatniKosztSkryptuP95": 1.15,
+   "OstatniKosztSkryptuMaks": 2.24,
+   "OstatniP95Klatki": 68.17,
+   "OstatniaLiczbaInstancji": 2068,
+   "OstatniCzasTrwania": 34.13,
+   "OstatniaNiezgodnoscPaskow": 0,
+   "OstatniaNiezgodnoscMany": 0,
+   "OstatnieBledyObslugi": 0,
+   "OstatnieBrakiChoreografii": 0,
+   "walka": "mag/lustro/10/wskrzeszenie ziarno 628562",
+   "czas_dziennika": 23.4
+  },
+  {
+   "OstatniKosztSkryptuSredni": 0.62,
+   "OstatniKosztSkryptuP95": 1.19,
+   "OstatniKosztSkryptuMaks": 1.79,
+   "OstatniP95Klatki": 68.25,
+   "OstatniaLiczbaInstancji": 2357,
+   "OstatniCzasTrwania": 17.11,
+   "OstatniaNiezgodnoscPaskow": 0,
+   "OstatniaNiezgodnoscMany": 0,
+   "OstatnieBledyObslugi": 0,
+   "OstatnieBrakiChoreografii": 0,
+   "walka": "zwiadowca/cierniowy_wilk/10/pasywki ziarno 314378",
+   "czas_dziennika": 10.5
+  },
+  {
+   "OstatniKosztSkryptuSredni": 0.55,
+   "OstatniKosztSkryptuP95": 1.08,
+   "OstatniKosztSkryptuMaks": 2.27,
+   "OstatniP95Klatki": 68.15,
+   "OstatniaLiczbaInstancji": 1816,
+   "OstatniCzasTrwania": 34.78,
+   "OstatniaNiezgodnoscPaskow": 0,
+   "OstatniaNiezgodnoscMany": 0,
+   "OstatnieBledyObslugi": 0,
+   "OstatnieBrakiChoreografii": 0,
+   "walka": "wojownik/muchomornik/1/wzorcowa ziarno 554372",
+   "czas_dziennika": 30.4
+  }
+ ],
+ "data": "2026-11-17 03:47"
+}
