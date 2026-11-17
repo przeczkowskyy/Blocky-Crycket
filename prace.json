@@ -2,6 +2,20 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-17T10:38:06+01:00",
- "prace": []
+ "aktualizacja": "2026-11-17T12:22:22+01:00",
+ "prace": [
+  {
+   "id": "przejscie-gry",
+   "tytul": "Przejście całej gry okiem nowego gracza: lista blokad i próba dymna",
+   "stan": "w_toku",
+   "start": "2026-11-17T12:22:22+01:00",
+   "koniec_szacowany": "2026-11-17T14:02:22+01:00",
+   "aktualizacja": "2026-11-17T12:22:22+01:00",
+   "obszary": [
+    "swiat/przejscie_gry"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  }
+ ]
 }
