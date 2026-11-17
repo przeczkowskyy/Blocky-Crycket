@@ -21,6 +21,9 @@ Wzór: swiat/las_potwory/zbuduj.py (te same zasady bezpieczeństwa wspólnego mi
   nie zmienia Lighting ani cudzych instancji (przekierowanie bramy miasteczka robi SerwerPasa dopiero w trybie Play);
 - --sucho nie importuje studio_mcp ani cel_studio.
 
+Drugi biom (17.11.2026): swiat/bagno_pas_gra/zbuduj.py wczytuje ten moduł, woła ustaw_konfiguracje() z własnym
+kontenerem, mapą, danymi, szablonami i Stale_*, i dalej buduje tym samym kodem (main()). Dla lasu nic się nie zmienia.
+
 Kod potworów jest JEDEN: Stale, Logika, SerwerPotworow, KlientPotworow, Wzorcowe i kopia silnika walki są te same co w
 Workspace/LasPotwory (lista plików z swiat/las_potwory/zbuduj.py); różnią się tylko dane (DanePotworow ← nasz
 zrodla/DanePotworowPasa.luau) i atrybuty kontenera Stale_* (nazwy szablonów, GUI, mapy, prefiks komunikatów).
@@ -103,6 +106,9 @@ INNE = [
 ]
 
 NAGLOWEK_MIEJSCA = ZB_LASU.NAGLOWEK_MIEJSCA
+# skąd dane i kontrola Luau (drugi biom podaje swoje w ustaw_konfiguracje)
+GENERATOR = os.path.join(TU, "generuj_dane.py")
+ZRODLA_LUAU = [os.path.join(TU, "zrodla")]
 
 SPRAWDZ = r'''
 local uwagi = {}
@@ -172,9 +178,9 @@ if __USUN__ then
 	if #stare == 0 then
 		return "USUNIETO (kontenera nie było)"
 	end
-	CH:SetWaypoint("LasPasGra: przed usunięciem")
+	CH:SetWaypoint("__KONTENER__: przed usunięciem")
 	for _, d in stare do d:Destroy() end
-	CH:SetWaypoint("LasPasGra: usunięto")
+	CH:SetWaypoint("__KONTENER__: usunięto")
 	return "USUNIETO"
 end
 local testowe = {}
@@ -184,7 +190,7 @@ for _, d in stare do
 		if v ~= nil then testowe[a] = v end
 	end
 end
-CH:SetWaypoint("LasPasGra: przed budową")
+CH:SetWaypoint("__KONTENER__: przed budową")
 for _, d in stare do d:Destroy() end
 local f = Instance.new("Folder")
 f.Name = nazwa
@@ -380,7 +386,7 @@ end
 return "OK (części pakietu: " .. n .. ")"
 '''
 
-KONIEC = ZB_LASU.KONIEC.replace("LasPotwory: zbudowano", "LasPasGra: zbudowano")
+KONIEC = ZB_LASU.KONIEC.replace("LasPotwory: zbudowano", "__KONTENER__: zbudowano")
 
 
 # ----------------------------------------------------------------------------------------------- źródła i kontrole
@@ -397,12 +403,13 @@ def zrodla_pakietu():
     # zgodną z odtwarzaczem, gdy silnik w repo jest właśnie zmieniany (17.11.2026: silnik v3 czeka na odtwarzacz).
     korzen_silnika = os.environ.get("BC_SILNIK_KORZEN") or REPO
     for plik, sciezka in SILNIK:
-        pelna = os.path.join(korzen_silnika, plik)
+        # pliki z swiat/ (np. dane walki drugiego biomu) zawsze z repozytorium
+        pelna = os.path.join(REPO if plik.startswith("swiat/") else korzen_silnika, plik)
         if not os.path.isfile(pelna):
             braki.append(plik)
             continue
-        kopia = ("-- KOPIA %s zrobiona przez swiat/las_pas_gra/zbuduj.py (%s) — źródło prawdy jest w repozytorium.\n"
-                 % (plik, time.strftime("%Y-%m-%d"))) + ZB_LASU.STRAZNIK_MODULU + ZB_LASU.wczytaj(pelna)
+        kopia = ("-- KOPIA %s zrobiona przez %s/zbuduj.py (%s) — źródło prawdy jest w repozytorium.\n"
+                 % (plik, ZRODLO, time.strftime("%Y-%m-%d"))) + ZB_LASU.STRAZNIK_MODULU + ZB_LASU.wczytaj(pelna)
         wynik.append((sciezka, "ModuleScript", None, kopia, plik))
     if braki:
         print("BŁĄD: brak plików źródłowych:\n  " + "\n  ".join(braki))
@@ -412,22 +419,22 @@ def zrodla_pakietu():
 
 def dane_pasa():
     """Liczby z generatora (te same co w zrodla/DanePasa.luau) — do kodu części."""
-    gen = _modul("generuj_dane_las_pas_gra", os.path.join(TU, "generuj_dane.py"))
+    gen = _modul("generuj_dane_" + KONTENER, GENERATOR)
     _, dp, dpa = gen.wszystko()
     return dp, dpa
 
 
 def sprawdz_offline(zrodla):
     """--sucho i każda budowa: dane aktualne, oba sprawdzacze Luau czyste, strażniki, rozmiary. Zwraca skrót danych."""
-    gen = os.path.join(TU, "generuj_dane.py")
+    gen = GENERATOR
     r = subprocess.run([sys.executable, "-B", gen, "--sprawdz"], cwd=REPO, capture_output=True, text=True,
                        encoding="utf-8", errors="replace")
     wyjscie = (r.stdout + r.stderr).strip()
     print("generuj_dane.py --sprawdz: kod %d%s" % (r.returncode, (" — " + wyjscie.splitlines()[-1]) if wyjscie else ""))
     if r.returncode != 0:
         print(wyjscie)
-        sys.exit("BŁĄD: dane pasa nieaktualne — uruchom python -B swiat/las_pas_gra/generuj_dane.py")
-    pliki = sorted(os.path.join(TU, "zrodla", n) for n in os.listdir(os.path.join(TU, "zrodla")) if n.endswith(".luau"))
+        sys.exit("BŁĄD: dane nieaktualne — uruchom python -B %s" % os.path.relpath(gen, REPO).replace(os.sep, "/"))
+    pliki = sorted(os.path.join(d, n) for d in ZRODLA_LUAU for n in os.listdir(d) if n.endswith(".luau"))
     bledy, parser = sprawdz_luau_pasa.sprawdz_pliki(pliki, wypisz=print)
     print("sprawdz_luau_pasa.py: %d plików, %s%s" % (len(pliki), "OK" if not bledy else "BŁĘDY: %d" % len(bledy),
                                                     " (z parserem luau_mini)" if parser else ""))
@@ -504,15 +511,25 @@ def stale_luau():
     return ", ".join(czesci)
 
 
+def ustaw_konfiguracje(k):
+    """Drugi biom (swiat/bagno_pas_gra/zbuduj.py): podmienia ustawienia modułu przed main(). Klucze jak globalne
+    tego pliku: KONTENER, ZRODLO, MAPA, SZABLONY, STALE, SKRYPTY, SILNIK, INNE, GENERATOR, ZRODLA_LUAU."""
+    znane = {"KONTENER", "ZRODLO", "MAPA", "SZABLONY", "STALE", "SKRYPTY", "SILNIK", "INNE", "GENERATOR", "ZRODLA_LUAU"}
+    nieznane = set(k) - znane
+    if nieznane:
+        raise SystemExit("ustaw_konfiguracje: nieznane klucze %s" % sorted(nieznane))
+    globals().update(k)
+
+
 # ----------------------------------------------------------------------------------------------- główna
 def main():
     for strumien in (sys.stdout, sys.stderr):
         if hasattr(strumien, "reconfigure"):
             strumien.reconfigure(encoding="utf-8")
-    ap = argparse.ArgumentParser(description="Buduje kontener Workspace/LasPasGra w Roblox Studio")
+    ap = argparse.ArgumentParser(description="Buduje kontener Workspace/%s w Roblox Studio" % KONTENER)
     ap.add_argument("--sucho", action="store_true", help="bez Studio: sprawdź dane i źródła, pokaż plan")
     ap.add_argument("--skrypty", action="store_true", help="tylko skrypty, moduły, zdalne i atrybuty Stale_*")
-    ap.add_argument("--usun", action="store_true", help="usuń Workspace/LasPasGra")
+    ap.add_argument("--usun", action="store_true", help="usuń Workspace/%s" % KONTENER)
     ap.add_argument("--studio", default=None, help="studio_id (wymagane, gdy otwartych jest kilka okien Studio)")
     a = ap.parse_args()
 
@@ -582,8 +599,8 @@ def main():
             if a.skrypty:
                 wykonaj('local f = workspace:FindFirstChild("%s") if not f or f:GetAttribute("Wygenerowane") ~= true '
                         'then return "STOP: brak kontenera — zbuduj całość" end '
-                        'game:GetService("ChangeHistoryService"):SetWaypoint("LasPasGra: przed wymianą skryptów") return "OK"'
-                        % KONTENER)
+                        'game:GetService("ChangeHistoryService"):SetWaypoint("%s: przed wymianą skryptów") return "OK"'
+                        % (KONTENER, KONTENER))
                 print("  zdalne, haczyki, Stale_*:", wykonaj(inne_kod))
                 for sciezka, klasa, kontekst, tekst, plik in zrodla:
                     print("  skrypt:", wyslij_skrypt(sciezka, klasa, kontekst, tekst))

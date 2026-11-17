@@ -236,6 +236,8 @@ def main():
                     except Exception:  # noqa: BLE001
                         pass
                 time.sleep(0.5)
+            # stan gracza (swiat/stan_gracza, 17.11.2026): kontrola używa reguły testowej T1 (klasa i poziom z panelu)
+            luau(K + 'k:SetAttribute("TestBohater", true) return "ok"', "Server")
             time.sleep(4)
             p1 = js(K + 'return H:JSONEncode({ k:GetAttribute("SerwerGotowy"), k:GetAttribute("StanBiomu"), '
                     'k:GetAttribute("Potworow"), k:GetAttribute("Graczy"), k:GetAttribute("ZgodnoscLogiki"), #k.Stan:GetChildren() })',

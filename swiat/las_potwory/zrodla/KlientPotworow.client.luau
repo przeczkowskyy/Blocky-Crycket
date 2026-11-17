@@ -19,7 +19,15 @@
 		• tabliczka „poz. N” (czerwona, gdy poziom ≥ poziom bohatera + 3) i miecze z ramek, bez obrazków (rozdz. 4.4);
 		• co 0,1 s podpowiedź E (na telefonie stuknięcie) przy najbliższym dozwolonym potworze (rozdz. 4.5);
 		• panel bohatera (klasa i poziom — reguła testowa T1, rozdz. 5.2), start walki w odtwarzaczu, odczyt
-		  OstatniWynik po walce, ukrycie pokonanego, baner po Strażniku (rozdz. 4.6).
+		  OstatniWynik po walce, ukrycie pokonanego, baner po Strażniku (rozdz. 4.6);
+		• stan gracza (17.11.2026, swiat/stan_gracza, propozycja): gdy jest kontener Stale.KONTENER_STANU, a las nie ma
+		  atrybutu Stale.ATRYBUT_TESTU_BOHATERA = true, panel tylko pokazuje „Twój bohater: <klasa> · poziom N” (klasa
+		  z atrybutu gracza Class, poziom z Level; tabliczki czerwienieją względem poziomu gracza), a prośba o walkę
+		  niesie klasę gracza i "auto" — serwer i tak bierze bohatera z danych gracza;
+		• M6 (17.11.2026, przejście gry): kotwica podpowiedzi E staje nad postacią, gdy punkt nad potworem jest poza
+		  kadrem (ProximityPrompt działa tylko w kadrze), bieżący kandydat ma zapas zasięgu Stale.HISTEREZA_E (pomiar w
+		  Play: chodzący slime wychodził z bramki klienta w czasie reakcji gracza), a gdy walka się nie zaczęła (blokada po
+		  walce, odmowa serwera, E bez podpowiedzi tuż obok potwora) gracz dostaje dymek Stale.GUI_KOMUNIKATU zamiast ciszy.
 
 	Odczytania kontraktu (najprostsze; opisane też w UWAGI_K.md):
 		• w czasie walki (Odtwarzacz.czyTrwa()) wybór widoków i budowa stoją, a klipy nie są liczone — kamera stoi
@@ -175,6 +183,37 @@ local function pokazBaner(tytul: string, podpis: string?, sekundy: number)
 	end)
 end
 
+-- M6 (17.11.2026): krótki dymek, gdy walka się nie zaczęła (zamiast ciszy); jeden naraz, znika po Stale.KOMUNIKAT_S
+local function pokazKomunikat(tekst: string)
+	local playerGui = gracz:FindFirstChildOfClass("PlayerGui")
+	if not playerGui then
+		return
+	end
+	local stary = playerGui:FindFirstChild(Stale.GUI_KOMUNIKATU)
+	if stary then
+		stary:Destroy()
+	end
+	local gui = nowy("ScreenGui", { Name = Stale.GUI_KOMUNIKATU, ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 7,
+		ZIndexBehavior = Enum.ZIndexBehavior.Sibling }, nil)
+	gui:SetAttribute("Wygenerowane", true)
+	gui:SetAttribute("Tekst", tekst)
+	local dymek = nowy("TextLabel", { Name = "Dymek", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.3),
+		Size = UDim2.fromScale(0.62, 0.085), BackgroundColor3 = K.krem, BorderSizePixel = 0, Rotation = -1.5, Font = KOMIKS,
+		TextScaled = true, Text = tekst, TextColor3 = K.tusz }, gui)
+	nowy("UISizeConstraint", { MaxSize = Vector2.new(760, 70) }, dymek)
+	nowy("UIPadding", { PaddingLeft = UDim.new(0.03, 0), PaddingRight = UDim.new(0.03, 0), PaddingTop = UDim.new(0.12, 0),
+		PaddingBottom = UDim.new(0.12, 0) }, dymek)
+	rog(dymek, 0.25)
+	obrys(dymek, 3)
+	gui.Parent = playerGui
+	kontener:SetAttribute("KlientOstatniKomunikat", tekst) -- lokalnie, do testów
+	task.delay(Stale.KOMUNIKAT_S, function()
+		if gui.Parent then
+			gui:Destroy()
+		end
+	end)
+end
+
 ------------------------------------------------------------------ czekanie na serwer i wybór trybu (rozdz. 4.3)
 local ZLE_STANY_BIOMU = { brak_biomu = true, zle_polozenie = true }
 -- Poprawka recenzji: kontrakt mówi 15 s, ale serwer może potrzebować do 15 s na BiomLas i do 2 × 10 s na
@@ -315,7 +354,26 @@ local function naLiscie(lista: { string }, x: any): boolean
 	return type(x) == "string" and table.find(lista, x) ~= nil
 end
 
+-- stan gracza (17.11.2026, swiat/stan_gracza, propozycja): gdy jest kontener Stale.KONTENER_STANU, a las nie ma
+-- atrybutu Stale.ATRYBUT_TESTU_BOHATERA = true, bohater to klasa i poziom gracza (serwer i tak bierze je z danych
+-- gracza) — panel tylko je pokazuje; w trybie testowym (i bez kontenera) panel T1 działa jak dawniej
+local function trybTestowyBohatera(): boolean
+	if kontener:GetAttribute(Stale.ATRYBUT_TESTU_BOHATERA) == true then
+		return true
+	end
+	local k = workspace:FindFirstChild(Stale.KONTENER_STANU)
+	return k == nil or k:GetAttribute("Wygenerowane") ~= true
+end
+
+local function poziomGracza(): number
+	local v = gracz:GetAttribute(Stale.ATRYBUT_POZIOMU_GRACZA)
+	return if type(v) == "number" and v >= 1 then math.floor(v) else 1
+end
+
 local function poziomBohatera(): number?
+	if not trybTestowyBohatera() then
+		return poziomGracza() -- tabliczka czerwienieje względem prawdziwego poziomu gracza
+	end
 	if bohater.poziom == "auto" then
 		return nil -- przy „auto” bohater ma zawsze poziom potwora: tabliczka nie czerwienieje
 	end
@@ -333,6 +391,23 @@ local function ustawBohatera(klasa: any, poziom: any): boolean
 		naZmianeBohatera()
 	end
 	return true
+end
+
+-- poza trybem testowym wybór panelu = klasa gracza (z atrybutu Class) i "auto" (napisy z list, D-016)
+local function zsynchronizujBohatera()
+	if trybTestowyBohatera() then
+		if naZmianeBohatera then
+			naZmianeBohatera() -- napis panelu T1 (np. po włączeniu trybu testowego)
+		end
+		return
+	end
+	local id = gracz:GetAttribute(Stale.ATRYBUT_KLASY_GRACZA)
+	local klasa = (type(id) == "string" and Stale.KLASY_GRACZA[id]) or Stale.KLASY[1]
+	if bohater.klasa ~= klasa or bohater.poziom ~= Stale.POZIOMY_BOHATERA[1] then
+		ustawBohatera(klasa, Stale.POZIOMY_BOHATERA[1])
+	elseif naZmianeBohatera then
+		naZmianeBohatera()
+	end
 end
 
 ------------------------------------------------------------------ widoki
@@ -715,6 +790,10 @@ local function wybierzKandydata(): string?
 		end
 		local g = gatunek(cfg:GetAttribute("Gatunek"))
 		local zasieg = Stale.ZASIEG_E + (if g and type(g.promien) == "number" then g.promien else 0)
+		-- M6: bieżący kandydat ma zapas (podpowiedź nie miga przy chodzącym potworze; serwer ma większy zapas)
+		if cfg.Name == kandydat and kontener:GetAttribute(Stale.ATRYBUT_KOTWICY_STAREJ) ~= true then
+			zasieg += Stale.HISTEREZA_E
+		end
 		local d = Vector2.new(poz.X - p.X, poz.Z - p.Z).Magnitude
 		if d <= zasieg and d < najblizej then
 			najlepszy, najblizej = cfg.Name, d
@@ -744,6 +823,50 @@ local function punktKotwicy(id: string): Vector3?
 	return nil
 end
 
+-- M6 (17.11.2026, przejście gry: E przy chodzących potworach zaczęło walkę w 6 z 15 prób, z kamerą za plecami postaci
+-- — od razu): ProximityPrompt pokazuje się i przyjmuje E tylko wtedy, gdy jego kotwica jest w kadrze (linii widzenia
+-- nie wymaga — RequiresLineOfSight = false). Gdy kamera patrzy na postać z przodu albo z boku, potwór obok niej bywa
+-- za kamerą albo poza kadrem: podpowiedź znikała, a E nic nie robiło. Teraz, gdy punkt nad potworem jest poza kadrem,
+-- kotwica staje nad głową postaci (lekko w stronę potwora) — w kamerze trzeciej osoby postać jest zawsze w kadrze.
+local function naEkranie(p: Vector3): boolean
+	local kamera = workspace.CurrentCamera
+	if not kamera then
+		return true
+	end
+	local v, widac = kamera:WorldToViewportPoint(p)
+	local r = kamera.ViewportSize
+	local m = Stale.MARGINES_EKRANU_E
+	return widac and v.Z > 0 and v.X >= r.X * m and v.X <= r.X * (1 - m) and v.Y >= r.Y * m and v.Y <= r.Y * (1 - m)
+end
+
+local function punktPodpowiedzi(id: string): Vector3?
+	local p = punktKotwicy(id)
+	if not p or kontener:GetAttribute(Stale.ATRYBUT_KOTWICY_STAREJ) == true or naEkranie(p) then
+		return p
+	end
+	local postac = gracz.Character
+	local hrp = postac and postac:FindFirstChild("HumanoidRootPart")
+	if not hrp or not hrp:IsA("BasePart") then
+		return p
+	end
+	local ku = Vector3.new(p.X - hrp.Position.X, 0, p.Z - hrp.Position.Z)
+	local krok = if ku.Magnitude > 0.1 then ku.Unit * Stale.KOTWICA_KU_POTWOROWI else Vector3.zero
+	local nadGlowa = hrp.Position + krok + Vector3.new(0, Stale.KOTWICA_NAD_POSTACIA, 0)
+	if naEkranie(nadGlowa) then
+		return nadGlowa
+	end
+	-- kamera tuż przy postaci (np. między nią a potworem): kotwica przed kamerą, pod środkiem kadru — zawsze widać
+	local kamera = workspace.CurrentCamera
+	if kamera then
+		local przed = kamera.CFrame.Position + kamera.CFrame.LookVector * Stale.KOTWICA_PRZED_KAMERA
+			- kamera.CFrame.UpVector * (Stale.KOTWICA_PRZED_KAMERA * 0.25)
+		if (przed - hrp.Position).Magnitude < podpowiedz.MaxActivationDistance - 2 then
+			return przed
+		end
+	end
+	return nadGlowa
+end
+
 local function odswiezPodpowiedz()
 	kandydat = if walkaTrwa() then nil else wybierzKandydata()
 	local cfg = kandydat and folderStanu:FindFirstChild(kandydat)
@@ -769,7 +892,7 @@ local function odswiezPodpowiedz()
 	if podpowiedz.ActionText ~= akcja then
 		podpowiedz.ActionText = akcja
 	end
-	local punkt = punktKotwicy(kandydat :: string)
+	local punkt = punktPodpowiedzi(kandydat :: string)
 	if punkt then
 		kotwica.CFrame = CFrame.new(punkt)
 	end
@@ -784,8 +907,20 @@ local OPCJE_WALKI = { bezPowtorki = true }
 local mojaWalka: { id: string, gatunek: string, straznik: boolean }? = nil
 local poWalce: () -> () -- niżej
 
+local prosbaWalkiOd = -math.huge -- M6: kiedy ten las ostatnio poprosił o walkę (odmowa po tym czasie → dymek)
+
 local function zacznijWalke(id: string): boolean
-	if not Odtwarzacz or Odtwarzacz.czyTrwa() or Odtwarzacz.wolnaZa() > 0 then
+	-- M6: odmowa po stronie klienta nie jest już cicha (np. blokada po przewiniętej walce: serwer liczy pełny czas ×1)
+	if not Odtwarzacz then
+		pokazKomunikat(Stale.KOMUNIKATY_ODMOWY.brak_odtwarzacza)
+		return false
+	end
+	if Odtwarzacz.czyTrwa() then
+		return false
+	end
+	local zostalo = Odtwarzacz.wolnaZa()
+	if zostalo > 0 then
+		pokazKomunikat(string.format(Stale.KOMUNIKATY_ODMOWY.odpoczynek, math.max(1, math.ceil(zostalo))))
 		return false
 	end
 	if mojaWalka then
@@ -799,6 +934,9 @@ local function zacznijWalke(id: string): boolean
 		straznik = cfg ~= nil and (cfg:GetAttribute("Straznik") == true or klucz == "straznik_lasu"),
 	}
 	kontener:SetAttribute("OstatniWynik", nil) -- lokalnie; odtwarzacz ustawi go w Sesja:pokazWynik
+	kontener:SetAttribute("OstatniaOdmowa", nil) -- M6: odtwarzacz wpisze tu powód odmowy serwera → dymek (niżej)
+	prosbaWalkiOd = os.clock()
+	zsynchronizujBohatera() -- poza trybem testowym: klasa gracza (stan gracza)
 	-- odtwarzacz sam wysyła prośbę do kontener.Zdalne.RozpocznijWalke2: trzy napisy z list (D-016)
 	task.spawn(Odtwarzacz.uruchom, kontener, { klasa = bohater.klasa, przeciwnik = id, poziom = bohater.poziom }, OPCJE_WALKI)
 	return true
@@ -811,6 +949,32 @@ podpowiedz.Triggered:Connect(function(kto: Player)
 	local id = kandydat
 	if id then
 		zacznijWalke(id)
+	end
+end)
+
+-- M6: E bez podpowiedzi (potwór właśnie odszedł z zasięgu) — zamiast ciszy dymek „Podejdź bliżej”, gdy jakiś wolny
+-- potwór jest niedaleko (do Stale.ZASIEG_E + promień + Stale.ZASIEG_DYMKU_E); daleko od potworów E nic nie mówi
+game:GetService("UserInputService").InputBegan:Connect(function(wejscie: InputObject, przetworzone: boolean)
+	if przetworzone or wejscie.KeyCode ~= Enum.KeyCode.E or podpowiedz.Enabled or walkaTrwa() then
+		return
+	end
+	local postac = gracz.Character
+	local hrp = postac and postac:FindFirstChild("HumanoidRootPart")
+	if not hrp or not hrp:IsA("BasePart") then
+		return
+	end
+	local p = hrp.Position
+	for _, cfg in folderStanu:GetChildren() do
+		local poz = cfg:GetAttribute("Pozycja")
+		if typeof(poz) == "Vector3" and cfg:GetAttribute("Stan") ~= "zajety" and not ukryte[cfg.Name]
+			and math.abs(poz.Y - p.Y) <= Stale.MAKS_ROZNICA_WYSOKOSCI then
+			local g = gatunek(cfg:GetAttribute("Gatunek"))
+			local zasieg = Stale.ZASIEG_E + (if g and type(g.promien) == "number" then g.promien else 0) + Stale.ZASIEG_DYMKU_E
+			if Vector2.new(poz.X - p.X, poz.Z - p.Z).Magnitude <= zasieg then
+				pokazKomunikat(Stale.KOMUNIKATY_ODMOWY.za_daleko)
+				return
+			end
+		end
 	end
 end)
 
@@ -840,7 +1004,7 @@ function poWalce()
 			else
 				podpis = Stale.PODPIS_STRAZNIKA
 			end
-			pokazBaner("STRAŻNIK GAJU POKONANY!", podpis, Stale.BANER_S)
+			pokazBaner(Stale.TYTUL_BANERA_STRAZNIKA, podpis, Stale.BANER_S)
 		end
 	end
 	-- zabezpieczenie: odtwarzacz przywraca kamerę sam; gdyby jednak została skryptowa — zwykła kamera postaci
@@ -963,7 +1127,13 @@ local function zbudujPanel()
 	nowy("UIPadding", { PaddingTop = UDim.new(0, 6), PaddingBottom = UDim.new(0, 6) }, gotowe)
 
 	local function odswiez()
-		przycisk.Text = Stale.PANEL_PREFIKS .. string.format("Bohater: %s · poz. %s", NAZWY_KLAS[bohater.klasa] or bohater.klasa, bohater.poziom)
+		if trybTestowyBohatera() then
+			przycisk.Text = Stale.PANEL_PREFIKS .. string.format("Bohater: %s · poz. %s", NAZWY_KLAS[bohater.klasa] or bohater.klasa, bohater.poziom)
+		else
+			-- stan gracza: tylko napis (klasa ze startu, poziom gracza); okna wyboru T1 nie ma
+			przycisk.Text = Stale.PANEL_PREFIKS .. string.format("Twój bohater: %s · poziom %d", NAZWY_KLAS[bohater.klasa] or bohater.klasa, poziomGracza())
+			okno.Visible = false
+		end
 		for klasa, b in przyciskiKlas do
 			b.BackgroundColor3 = if klasa == bohater.klasa then K.zolty else K.bialy
 			b:SetAttribute("Wybrany", klasa == bohater.klasa)
@@ -974,7 +1144,7 @@ local function zbudujPanel()
 		end
 	end
 	przycisk.Activated:Connect(function()
-		okno.Visible = not okno.Visible
+		okno.Visible = trybTestowyBohatera() and not okno.Visible
 	end)
 	gotowe.Activated:Connect(function()
 		okno.Visible = false
@@ -1119,7 +1289,7 @@ polaczenieKlatki = RunService.PreSimulation:Connect(function(dt: number)
 			end
 		end
 		if kandydat and podpowiedz.Enabled then
-			local punkt = punktKotwicy(kandydat)
+			local punkt = punktPodpowiedzi(kandydat)
 			if punkt then
 				kotwica.CFrame = CFrame.new(punkt)
 			end
@@ -1167,6 +1337,45 @@ do
 end
 kontener:SetAttribute("KlientKlasa", bohater.klasa)
 kontener:SetAttribute("KlientPoziom", bohater.poziom)
+
+-- stan gracza: panel idzie za klasą i poziomem gracza, za trybem testowym i za kontenerem stanu (pojawia się / znika)
+local function poZmianieStanuGracza()
+	local udalo, blad = pcall(zsynchronizujBohatera)
+	if not udalo then
+		zglosBlad("stan gracza", blad)
+	end
+end
+gracz:GetAttributeChangedSignal(Stale.ATRYBUT_KLASY_GRACZA):Connect(poZmianieStanuGracza)
+gracz:GetAttributeChangedSignal(Stale.ATRYBUT_POZIOMU_GRACZA):Connect(poZmianieStanuGracza)
+kontener:GetAttributeChangedSignal(Stale.ATRYBUT_TESTU_BOHATERA):Connect(poZmianieStanuGracza)
+workspace.ChildAdded:Connect(function(d: Instance)
+	if d.Name == Stale.KONTENER_STANU then
+		task.delay(1, poZmianieStanuGracza)
+	end
+end)
+workspace.ChildRemoved:Connect(function(d: Instance)
+	if d.Name == Stale.KONTENER_STANU then
+		poZmianieStanuGracza()
+	end
+end)
+poZmianieStanuGracza()
+
+-- M6: odmowa serwera po E (odtwarzacz wpisuje powód do OstatniaOdmowa tego kontenera) → dymek lasu z powodem. Ogólny
+-- dymek prototypu (KlientWalki2, „Serwer nie przyjął tego wyboru…”) w lesie mylił, więc zastępujemy go naszym.
+kontener:GetAttributeChangedSignal("OstatniaOdmowa"):Connect(function()
+	local powod = kontener:GetAttribute("OstatniaOdmowa")
+	if type(powod) ~= "string" or os.clock() - prosbaWalkiOd > 20 then
+		return
+	end
+	task.delay(0.1, function()
+		local playerGui = gracz:FindFirstChildOfClass("PlayerGui")
+		local ogolny = playerGui and playerGui:FindFirstChild(Stale.GUI_KOMUNIKATU_PROTOTYPU)
+		if ogolny then
+			ogolny:Destroy()
+		end
+		pokazKomunikat(Stale.KOMUNIKATY_ODMOWY[powod] or Stale.KOMUNIKATY_ODMOWY.blad_silnika)
+	end)
+end)
 
 -- sprzątanie własnych ScreenGui, gdy kontener zniknie (np. koniec testu)
 kontener.AncestryChanged:Connect(function()

@@ -46,6 +46,11 @@
 		• gracz z atrybutem Stale.ATRYBUT_BLOKADY = true (np. w czasie przelotu kamery) dostaje odmowę „brak_postaci”;
 		• gdy w Sygnaly jest BindableEvent Stale.SYGNAL_WYNIKU, po przyjęciu walki serwer strzela nim
 		  (gracz, { id, strefa, gatunek, straznik, wynik, poziom, koniec }) — np. brama do Bagna po Strażniku.
+
+	Stan gracza (17.11.2026, swiat/stan_gracza, propozycja): gdy w Workspace jest kontener Stale.KONTENER_STANU, kontrola 7
+	bierze bohatera z jego Sygnaly/Bohater (klasa z atrybutu Class, poziom z Level, sześć statystyk gracza; klasy i poziomu
+	od klienta wtedy nie słuchamy), a po przyjęciu walki łup idzie do Sygnaly/PrzyznajLup. Atrybut kontenera lasu
+	Stale.ATRYBUT_TESTU_BOHATERA = true (ustawiają go próby w Play) przywraca regułę testową T1 i walki bez łupu.
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	-- Pakiet działa wyłącznie w Studio (testy). Poza Studio (opublikowane miejsce) serwer usuwa CAŁY kontener —
@@ -735,6 +740,57 @@ local function odmowa(powod: string, ponowZa: number?)
 	return { ok = false, powod = powod }
 end
 
+------------------------------------------------------------------ stan gracza (17.11.2026, swiat/stan_gracza, propozycja)
+-- Gdy w Workspace jest kontener Stale.KONTENER_STANU (Wygenerowane = true), bohater walki jest z danych gracza, a łup
+-- trafia do gracza (Sygnaly tego kontenera). Atrybut kontenera lasu Stale.ATRYBUT_TESTU_BOHATERA = true przywraca regułę
+-- testową T1 (klasa i poziom z panelu klienta, bez łupu). Bez kontenera albo przy błędzie — wszystko jak dawniej.
+local function sygnalStanu(nazwa: string): BindableFunction?
+	if kontener:GetAttribute(Stale.ATRYBUT_TESTU_BOHATERA) == true then
+		return nil
+	end
+	local k = workspace:FindFirstChild(Stale.KONTENER_STANU)
+	if not k or k:GetAttribute("Wygenerowane") ~= true then
+		return nil
+	end
+	local s = k:FindFirstChild("Sygnaly")
+	local f = s and s:FindFirstChild(nazwa)
+	if f and f:IsA("BindableFunction") then
+		return f
+	end
+	return nil
+end
+
+-- opis bohatera z danych gracza albo nil (wtedy postać wzorcowa z reguły T1)
+local function bohaterZeStanu(gracz: Player): any
+	local f = sygnalStanu(Stale.SYGNAL_BOHATERA)
+	if not f then
+		return nil
+	end
+	local udalo, opis = pcall(function()
+		return f:Invoke(gracz)
+	end)
+	if udalo and type(opis) == "table" and type(opis.klasa) == "string" and type(opis.poziom) == "number" then
+		return opis
+	end
+	warn(P .. "stan gracza nie podał bohatera — postać wzorcowa: " .. tostring(opis))
+	return nil
+end
+
+-- łup walki do gracza (tylko gdy bohater był z danych gracza); błąd stanu nie psuje walki
+local function nagrodaZaWalke(gracz: Player, p: any, walka: any)
+	local f = sygnalStanu(Stale.SYGNAL_LUPU)
+	if not f then
+		return
+	end
+	local udalo, wynik = pcall(function()
+		return f:Invoke(gracz, { lup = walka.lup, wynik = walka.wynik, czas = walka.czas, zrodlo = kontener.Name,
+			gatunek = p.gatunek, poziom = p.poziom })
+	end)
+	if not udalo or type(wynik) ~= "table" or wynik.ok ~= true then
+		warn(P .. "stan gracza nie przyjął łupu: " .. tostring(if udalo and type(wynik) == "table" then wynik.powod else wynik))
+	end
+end
+
 zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
 	-- 1. nie częściej niż raz na ODSTEP_PROSB s (także odrzucona)
 	local zegar = os.clock()
@@ -791,9 +847,13 @@ zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
 		return odmowa("za_daleko")
 	end
 
-	-- 7. bohater wzorcowy (reguła testowa T1, rozdz. 5.2) i przeciwnik z rejestru
+	-- 7. bohater z danych gracza (swiat/stan_gracza) albo wzorcowy (reguła testowa T1, rozdz. 5.2); przeciwnik z rejestru
 	local poziomBohatera = if poziomNapis == "auto" then p.poziom else (tonumber(poziomNapis) :: number)
-	local bohater = Wzorcowe.postac(klasa, poziomBohatera)
+	local zeStanu = bohaterZeStanu(gracz)
+	local bohater = zeStanu or Wzorcowe.postac(klasa, poziomBohatera)
+	if zeStanu then
+		klasa, poziomBohatera = zeStanu.klasa, zeStanu.poziom
+	end
 	local ziarno = wybierzZiarno()
 
 	-- 8. walka silnikiem v2 (łup liczy silnik w tym samym wywołaniu)
@@ -812,8 +872,12 @@ zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
 	p.ruszyl = false
 	zapiszAtrybuty(p)
 
-	-- W prawdziwej grze dokładnie tutaj serwer przyznaje i zapisuje łup (walka.lup); w testach niczego nie zapisujemy.
-	local opis = string.format("%s/%s/%s→%d/%s", p.id, klasa, poziomNapis, poziomBohatera, walka.wynik)
+	-- Łup (walka.lup) przyznaje stan gracza (swiat/stan_gracza) — tylko bohaterowi z danych gracza; w trybie testowym T1
+	-- i bez kontenera StanGracza niczego nie zapisujemy (jak dawniej).
+	if zeStanu then
+		nagrodaZaWalke(gracz, p, walka)
+	end
+	local opis =string.format("%s/%s/%s→%d/%s", p.id, klasa, poziomNapis, poziomBohatera, walka.wynik)
 	kontener:SetAttribute("SerwerLicznikWalk", (kontener:GetAttribute("SerwerLicznikWalk") or 0) + 1)
 	kontener:SetAttribute("SerwerOstatniaWalka", opis)
 	kontener:SetAttribute("SerwerOstatnieZiarno", ziarno)

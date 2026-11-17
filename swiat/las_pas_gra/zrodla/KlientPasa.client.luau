@@ -11,7 +11,8 @@
 		  go pominąć (żadne wejście nic nie robi; akcje gracza są pochłaniane). „przerwij” od serwera, śmierć postaci,
 		  usunięcie kontenera albo błąd w trakcie → to samo sprzątanie: kamera, sterowanie, dotyk i GUI wracają ZAWSZE
 		  (lista sprzątania wykonywana od końca, każdy krok w pcall).
-		• BRAMA DO BAGNA: gdy atrybut gracza PokonalStraznikaLasu = true (ustawia serwer), części grupy wrót mapy
+		• BRAMA DO NASTĘPNEGO BIOMU (las-pas: do Bagna; Bagno: do Dżungli — nazwy w DanePasa.biom): gdy atrybut
+		  gracza DanePasa.biom.atrybutStraznik (las: PokonalStraznikaLasu) = true (ustawia serwer), części grupy wrót mapy
 		  (DanePasa.mapa.grupaWrot) i niewidzialna Brama/Zapora tracą kolizję i zapytania TYLKO u tego klienta, wrota
 		  płynnie znikają (LocalTransparencyModifier), napis „ZAMKNIĘTE” gaśnie; po walce JEDEN baner — „STRAŻNIK GAJU
 	  POKONANY!” klienta potworów z podpisem „Brama do Bagna otwarta…” (lokalny atrybut PodpisBaneraStraznika), własny
@@ -44,9 +45,13 @@ local P = Stale.PREFIKS
 local K = Stale.KOLORY
 local KOMIKS = Enum.Font.Bangers
 
-local KROK_KAMERY = "LasPasGraPrzelot" -- nazwa BindToRenderStep
-local AKCJA_BLOKADY = "LasPasGraPrzelotBlokada"
-local NAZWA_GUI = "LasPasGraEkran"
+-- nazwy od kontenera (las-pas: LasPasGraPrzelot…; Bagno: BagnoPasGraPrzelot…) — dwa biomy nie biorą sobie nazw
+local KROK_KAMERY = kontener.Name .. "Przelot" -- nazwa BindToRenderStep
+local AKCJA_BLOKADY = kontener.Name .. "PrzelotBlokada"
+local NAZWA_GUI = kontener.Name .. "Ekran"
+-- nazwy i teksty biomu (DanePasa.biom; wartości lasu-pasa są zapasem)
+local B = D.biom or {}
+local ATR_STRAZNIKA = B.atrybutStraznik or "PokonalStraznikaLasu"
 
 ------------------------------------------------------------------ błędy
 local licznikBledow = 0
@@ -187,7 +192,7 @@ local function idStraznika(): string?
 end
 
 ------------------------------------------------------------------ brama do Bagna (tylko u tego klienta)
-local PODPIS_BRAMY = "Brama do Bagna otwarta — idź za arenę"
+local PODPIS_BRAMY = B.podpisBramy or "Brama do Bagna otwarta — idź za arenę"
 local wrota: Instance? = nil
 local brama: Instance? = nil
 local otwarta = false
@@ -283,13 +288,13 @@ task.spawn(function()
 			end
 		end)
 	end
-	if gracz:GetAttribute("PokonalStraznikaLasu") == true then
+	if gracz:GetAttribute(ATR_STRAZNIKA) == true then
 		ustawBrame(true, false)
 	end
 end)
 
-gracz:GetAttributeChangedSignal("PokonalStraznikaLasu"):Connect(function()
-	local teraz = gracz:GetAttribute("PokonalStraznikaLasu") == true
+gracz:GetAttributeChangedSignal(ATR_STRAZNIKA):Connect(function()
+	local teraz = gracz:GetAttribute(ATR_STRAZNIKA) == true
 	if teraz == otwarta then
 		return
 	end
@@ -314,7 +319,11 @@ gracz:GetAttributeChangedSignal("PokonalStraznikaLasu"):Connect(function()
 			if kontener:GetAttribute("PodpisBaneraStraznika") == PODPIS_BRAMY then
 				kontener:SetAttribute("PodpisBaneraStraznika", nil)
 				if otwarta then
-					pokazBaner("BRAMA DO BAGNA OTWARTA!", "Idź za arenę — dalej Bagno (wkrótce)", 5)
+					-- „dalej …” gdy stoi mapa następnego biomu (atrybut ustawia serwer), inaczej „(wkrótce)”
+					local jest = kontener:GetAttribute("NastepnyBiomJest") == true
+					pokazBaner(B.banerBramy or "BRAMA DO BAGNA OTWARTA!", if jest
+						then (B.podpisBanera or "Idź za arenę — dalej Bagno")
+						else (B.podpisBaneraWkrotce or "Idź za arenę — dalej Bagno (wkrótce)"), 5)
 				end
 			end
 		end)

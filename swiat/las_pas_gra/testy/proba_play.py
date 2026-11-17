@@ -35,7 +35,10 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
   P10 brama zamknięta: nieuprawniony za bramą → cofnięty przed bramę w < 1 s, komunikat; wrota z kolizją u klienta
   P11 Strażnik: walka (do 6 prób z różnym ziarnem) aż do wygranej → PokonalStraznikaLasu = true; wrota u klienta
       bez kolizji i niewidoczne, NA SERWERZE nadal z kolizją (otwarcie tylko dla zwycięzcy); przejście za bramę bez
-      cofnięcia; tabliczka „Bagno — wkrótce”; spadek w pustkę za bramą → ratunek
+      cofnięcia; tabliczka „Bagno — wkrótce”; spadek w pustkę za bramą → ratunek. Gdy stoi Bagno (Workspace/BagnoPas
+      i BagnoPasGra, swiat/bagno_pas_gra): przed wejściem za bramę wyłączony przelot Bagna (jego haczyk
+      „zapomnijPrzelot”), a ratunek za bramą robi serwer Bagna (liczniki obu kontenerów)
+  P11n (tylko gdy stoi mapa Bagna) brama prowadzi do Bagna: ZaBrama lasu usunięta, NastepnyBiomJest = true
   P11j jeden baner po wygranej ze Strażnikiem: „STRAŻNIK GAJU POKONANY!” z podpisem o otwartej bramie, bez drugiego
       banera „BRAMA DO BAGNA OTWARTA!” (KlientPasa)
   P12 Kamień Powrotu: podpowiedź E przy kamieniu, prawdziwe E → miasteczko
@@ -236,6 +239,9 @@ def main():
                 'local p = game:GetService("Players").LocalPlayer return tostring(p ~= nil and p.Character ~= nil)', "Client") == "true",
                 90, 1.0)
             # ---------------------------------------------------------------- P01–P02 gotowość
+            # stan gracza (swiat/stan_gracza, 17.11.2026): próba używa reguły testowej T1 (klasa i poziom z panelu) w obu lasach
+            luau('for _, n in { "LasPasGra", "LasPotwory" } do local k = workspace:FindFirstChild(n) '
+                 'if k then k:SetAttribute("TestBohater", true) end end return "ok"', "Server")
             time.sleep(3)
             gotowe = czekaj_na(lambda: (lambda a: a if a.get("SerwerGotowy") and a.get("SerwerPasaGotowy") else None)(
                 atrybuty("LasPasGra", ["SerwerGotowy", "SerwerPasaGotowy", "StanMapy", "StanBiomu", "SzablonyGotowe",
@@ -675,6 +681,16 @@ def main():
                           'local z = k.Brama.Zapora return H:JSONEncode({ czesci = n, kolizja = kol, niewidoczne = prz, zapora = z.CanCollide })', "Client")
             wrota_s = js('local w = workspace.LasPas.BramaBagna.Wrota local kol = 0 for _, d in w:GetDescendants() do '
                          'if d:IsA("BasePart") and d.CanCollide then kol += 1 end end return H:JSONEncode({ kolizja = kol, zapora = k.Brama.Zapora.CanCollide })', "Server")
+            # Bagno za bramą (swiat/bagno_pas_gra): bez przelotu Bagna w tej próbie (sprawdza go próba Bagna)
+            bagno = js('local b = workspace:FindFirstChild("BagnoPasGra") local m = workspace:FindFirstChild("BagnoPas") '
+                       'if b and b:FindFirstChild("Sygnaly") then b.Sygnaly.SterowaniePasa:Invoke("zapomnijPrzelot") end '
+                       'return H:JSONEncode({ gra = b ~= nil, mapa = m ~= nil and m:GetAttribute("Wygenerowane") == true, '
+                       'nastepny = k:GetAttribute("NastepnyBiomJest") == true, zaBrama = k:FindFirstChild("ZaBrama") ~= nil })', "Server")
+            zapisz("P11n", bagno)
+            if bagno.get("mapa"):
+                punkt("P11n", bagno.get("nastepny") is True and bagno.get("zaBrama") is False,
+                      "stoi mapa Bagna: NastepnyBiomJest %s, ZaBrama lasu %s" % (bagno.get("nastepny"),
+                                                                               "jest" if bagno.get("zaBrama") else "usunięta"))
             pasa("przenies", None, "przed_brama")
             time.sleep(1.5)
             zrzut("15_brama_otwarta")
@@ -684,11 +700,17 @@ def main():
             p11 = poz()
             cof2 = atrybuty("LasPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
             zrzut("16_za_brama_tabliczka")
-            ratunki = atrybuty("LasPasGra", ["LicznikRatunkow"]).get("LicznikRatunkow") or 0
+            def licz_ratunki():
+                # za bramą lasu przy stojącym Bagnie ratuje serwer Bagna (jedno pilnowanie) — sumujemy oba kontenery
+                n = atrybuty("LasPasGra", ["LicznikRatunkow"]).get("LicznikRatunkow") or 0
+                if bagno.get("gra"):
+                    n += atrybuty("BagnoPasGra", ["LicznikRatunkow"]).get("LicznikRatunkow") or 0
+                return n
+            ratunki = licz_ratunki()
             przestaw(2090, -60, -700)
             time.sleep(2)
             p11b = poz()
-            ratunki2 = atrybuty("LasPasGra", ["LicznikRatunkow"]).get("LicznikRatunkow") or 0
+            ratunki2 = licz_ratunki()
             zapisz("P11", {"proby": proby, "jak": jak_otwarta, "wrota_klient": wrota_k2, "wrota_serwer": wrota_s,
                            "za_brama": p11, "cofniecia": [cof, cof2], "ratunek": {"pozycja": p11b, "licznik": [ratunki, ratunki2]}})
             punkt("P11", wygrana and wrota_k2["kolizja"] == 0 and wrota_k2["zapora"] is False and wrota_s["kolizja"] > 0

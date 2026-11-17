@@ -296,6 +296,34 @@ gra na widoku; czy moduł kamery Roblox po przelocie staje za plecami gracza; cz
 prośby o wczytanie mapy wystarczą; czytelność tabliczki i napisu bramy; mgła na oko; koszt klienta i serwera; dwóch
 graczy; prawdziwy dotyk. To wszystko jest w `testy/proba_play.py` (P01–P16) albo na liście ręcznej w jego nagłówku.
 
+## Drugi biom: ten sam kod dla Bagna (17.11.2026, propozycja)
+
+Pakiet `swiat/bagno_pas_gra/` (kontener `Workspace/BagnoPasGra`) uruchamia TE SAME pliki tego pakietu na danych
+Bagna — bez kopiowania logiki. Co się zmieniło tutaj (las działa jak dotąd: `test_pasa.py` 45/45, DanePotworowPasa
+bajt w bajt ten sam, skrót danych `e8762ea11804` bez zmian):
+- `zrodlo_mapy.py`: konfiguracja mapy (`LAS` = pliki, kontener, klucz bramy `brama_bagna`, grupy wrót) jako argument
+  `wczytaj(..., konf=)`; Bagno podaje `brama_dzungli`, `BramaDzungli/Wrota`, `ZapowiedzDzungli`.
+- `generuj_dane.py`: wszystko, co było lasem na sztywno (gatunki, zakres poziomów, punkty wczytywania, mgła, teksty
+  bramy i tabliczki, prostokąty wejścia i ratunku, pliki wyjściowe), jest w słowniku `KONFIG`; funkcje biorą go jako
+  argument (`wszystko(k=)`, `main(k)`). DanePasa dostał pole **`biom`** z nazwami lasu (uchwyt `PrzeniesDoLasu`,
+  klucze pamięci, atrybuty gracza, komunikaty) i **`biom.nastepny = { mapa = "BagnoPas" }`**.
+- `zrodla/SerwerPasa.server.luau`: nazwy z `D.biom` (wartości lasu jako zapas); `biom.przekieruj = false` wyłącza
+  przekierowanie bramy miasteczka (robi je tylko las); gdy stoi mapa następnego biomu (`BagnoPas`, Wygenerowane), w Play
+  znika `ZaBrama` (ściana i tabliczka „wkrótce”) i jest atrybut kontenera `NastepnyBiomJest` — **brama lasu prowadzi
+  wtedy prosto do Bagna**; bez mapy Bagna wszystko jak dotąd. `biom.wymaganie` (tylko Bagno): gracz bez atrybutu
+  `PokonalStraznikaLasu` w prostokącie wejścia jest odsyłany przed bramę lasu, nie dostaje przelotu, a uchwyt odpowiada
+  `zamkniete`. Jedno pilnowanie przy bramie: gdy stoi mapa następnego biomu, przelot i ratunek lasu kończą się na
+  linii jego bramy (x < 2034), dalej pilnuje serwer Bagna; cofanie nieuprawnionych las robi do x 2234, Bagno od
+  `wymaganie.odX` = 2234 (test `3e` w `swiat/bagno_pas_gra/testy/test_bagna.py`).
+- `zrodla/KlientPasa.client.luau`: nazwy kroku kamery, akcji blokady i ekranu od nazwy kontenera (las: te same co
+  wcześniej), atrybut bramy i teksty banera z `D.biom`; podpis banera „… dalej Bagno” gdy `NastepnyBiomJest`, inaczej
+  „(wkrótce)”.
+- `zrodla/MglaPasa.client.luau`: kilka mgieł pasa naraz — każda wystawia lokalny atrybut `CelMglyPasa`; niższa ustępuje
+  (bez zapisu do Atmosphere), a narastająca startuje od wartości zastanych, więc przejście las → Bagno jest płynne.
+- `zrodla/PamiecGracza.luau`: `Pamiec.klucze(lista)` (klucze biomu), `opis()` po wszystkich kluczach.
+- `zbuduj.py`: `ustaw_konfiguracje(k)` podmienia kontener, mapę, skrypty, kopię silnika, uchwyty i Stale_* w kopii
+  modułu (tak buduje Bagno); nazwy punktów historii od nazwy kontenera.
+
 ## Zmiany w `swiat/las_potwory` (minimalne, zgodne wstecz)
 
 Stary las nie ma żadnego z nowych atrybutów ani instancji, więc jego zachowanie się nie zmienia (testy przed i po: te

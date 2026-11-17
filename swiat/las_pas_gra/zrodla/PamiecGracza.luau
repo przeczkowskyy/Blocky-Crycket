@@ -20,6 +20,16 @@ end
 local Pamiec = {}
 
 local KLUCZE = { widzialPrzelotLasu = true, pokonalStraznikaLasu = true }
+
+-- drugi biom (17.11.2026): SerwerPasa podaje klucze swojego biomu (DanePasa.biom), np. widzialPrzelotBagna;
+-- każdy kontener ma własną kopię modułu, więc klucze lasu i Bagna się nie mieszają
+function Pamiec.klucze(lista: { string })
+	for _, k in lista do
+		if type(k) == "string" and k ~= "" then
+			KLUCZE[k] = true
+		end
+	end
+end
 local dane: { [number]: { [string]: boolean } } = {}
 
 local function wpis(gracz: Player)
@@ -55,7 +65,11 @@ end
 -- tylko do testów (uchwyt SterowaniePasa): kopia wpisu gracza
 function Pamiec.opis(gracz: Player)
 	local w = dane[gracz.UserId] or {}
-	return { widzialPrzelotLasu = w.widzialPrzelotLasu == true, pokonalStraznikaLasu = w.pokonalStraznikaLasu == true }
+	local wynik = {}
+	for k in KLUCZE do
+		wynik[k] = w[k] == true
+	end
+	return wynik
 end
 
 return Pamiec

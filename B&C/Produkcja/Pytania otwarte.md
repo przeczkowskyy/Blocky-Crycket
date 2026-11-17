@@ -446,3 +446,28 @@ Szczegóły: Liczby z kalkulatora (`tools/walka/BALANS_1711.md`, część 4), ce
 
 Szczegóły: Las-pas w Studio i plan Bagna przyjmują roboczo wariant (a) — brama otwiera się po Strażniku. Sprawa dotyczy też notatek [[System RPG]] (poziom i dostęp do stref) i [[Karczma (Questy)]] (poziomy trudności zadań liczone w biomie).
 **Odpowiedź:**
+
+## 53. Stan gracza: czy serwer Karola pisze poziom, złoto i statystyki?
+- Przejście gry 17.11: łup z walk nie trafiał do gracza, klasa ze startu nie była klasą w walce, poziom i trening nic nie zmieniały.
+- Zbudowane na próbę i wdrożone w Studio (`Workspace/StanGracza`): wygrana daje Złoto, doświadczenie i Gemy, poziom rośnie, walczysz swoją klasą na swoim poziomie, trening wzmacnia bohatera. Kod Pawła jest bez zmian; usunięcie kontenera przywraca stan sprzed zmiany.
+- Skutek dla okien Pawła: atrybuty Level, XP, XPMax, Gold, Gems i sześć statystyk pisze teraz ten pakiet — startowe statystyki to 30 punktów według klasy zamiast testowych 130, a pasek doświadczenia ma zmienną długość.
+- Do wyboru: (a) zostaje jako wspólny moduł stanu gracza; (b) Paweł przejmuje go i przenosi do `src/`; (c) wyłączamy do czasu decyzji.
+
+Szczegóły: Pakiet `swiat/stan_gracza/` (status: propozycja), raport w panelu „Gra się spina: łup, awans, klasa i poziom w walce”. Przyjęte roboczo, do zmiany: krzywa doświadczenia 11,71 × poziom^1,6 (z kalkulatora tempa); +10 punktów statystyk na poziom rozdzielanych samoczynnie według rozkładu klasy z `ClassData` (pytanie 55); sloty umiejętności 1/2/3 od poziomów 1/5/10, inaczej niż w D-055 i D-088 (pytanie 51); Gemy z łupu dopisują się do testowych 1000; tablica próby walki nie daje nagród; bez zapisu między sesjami. Symulacja lasu na tych liczbach: przejście w ok. 27 minut, ok. 43 walki, ok. 8 przegranych, Strażnik pada zwykle na 11. poziomie. Zadanie „Moduł statystyk gracza” nie miało przydziału (pytanie 49). Do zgłoszenia Pawłowi: darmowy „+” w oknie ekwipunku wzmacnia teraz bohatera bez limitu, wybór klasy da się zmienić w każdej chwili (D-081 mówi o wyborze przy pierwszym wejściu), premie z drzewka dalej nie działają w walce, tokenów krain i shardów HUD nie pokazuje.
+**Odpowiedź:**
+
+## 54. Co gracz traci po przegranej walce?
+- Decyzji nie ma; D-076 mówi tylko, że ma się dać przegrać.
+- Przyjęte roboczo: gracz nic nie traci i dostaje 20% doświadczenia. Przegrana ze Strażnikiem daje przez to więcej doświadczenia (ok. 90) niż wygrana ze slime'em (ok. 11).
+- Do wyboru: (a) nic i 20% doświadczenia; (b) nic i bez doświadczenia; (c) kara w Złocie; (d) mniejszy procent doświadczenia.
+
+Szczegóły: 20% liczy silnik walki (`src/server/Walka/Przeciwnicy.luau`); od 17.11 przyznaje je pakiet `swiat/stan_gracza/`. Rewanż jest dozwolony od razu. Zob. pytanie 53.
+**Odpowiedź:**
+
+## 55. Punkty statystyk: same z poziomu, do rozdania czy za Złoto?
+- D-050 mówi o statystykach za Złoto, coraz drożej; D-057 o stałym przyroście co poziom i punktach do rozdania. Brakuje reguły, jak to się łączy.
+- Przyjęte roboczo: +10 punktów na poziom, rozdzielanych samoczynnie według klasy. Przycisk „+” w oknie ekwipunku dodaje punkt za darmo i bez limitu, a od 17.11 te punkty wzmacniają bohatera w walce.
+- Do wyboru: (a) część punktów sama, część do rozdania przez gracza; (b) wszystko samo, a „+” kosztuje Złoto; (c) wszystko do rozdania. Do tego: ile kosztuje „+”.
+
+Szczegóły: Zob. pytania 17, 36 i 50 (trening jako trzecie źródło statystyk) oraz 53. Dopóki „+” jest darmowy, liczby balansu z walk w Studio nie są miarodajne, gdy ktoś go używa.
+**Odpowiedź:**

@@ -181,6 +181,9 @@ def main():
                     except StudioError:
                         pass
                 time.sleep(0.5)
+            # stan gracza (swiat/stan_gracza, 17.11.2026): ta próba sprawdza regułę testową T1 (klasa i poziom z panelu)
+            # — bez atrybutu TestBohater bohater byłby z danych gracza; atrybut znika razem z sesją Play
+            luau(K + 'k:SetAttribute("TestBohater", true) return "ok"', "Server")
             time.sleep(1.5)
             # ---------------------------------------------------------------- L1
             wybor = {}

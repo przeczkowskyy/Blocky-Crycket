@@ -22,6 +22,10 @@ Generator PRZERYWA (kod 2), gdy: plan i mapa się różnią; potwór nie ma gatu
 poziom poza 1–10; strefa nie mieści swoich grup; dom jest bliżej lub dalej od węzła niż zasady.dom_od_wezlow; pole
 strefy wychodzi poza jej przegrodę albo kojec; teksty zasad i przelotu nie zawierają liczb, które przepisujemy.
 
+Drugi biom (17.11.2026): ten sam generator robi dane Bagna — swiat/bagno_pas_gra/generuj_dane.py woła wszystko()
+i main() z własną konfiguracją (KONFIG niżej opisuje las-pas; pola: mapa, gatunki, poziomy, teksty, mgła, nazwy
+dla skryptów Luau w polu „biom”). Dla lasu konfiguracja jest domyślna, więc wynik jest ten sam co wcześniej.
+
 Odczytania planu (najprostsze; opisane też w README):
   • „podbiom” strefy = id przegrody (jak w planie); „pod” = kojec / polanka; pole strefy w świecie jako {x1, x2, z1, z2};
   • zasiegGraczy (promień liczenia graczy do skracania odrodzenia) = pół przekątnej pola strefy + 4 st — stary las miał
@@ -102,16 +106,20 @@ class Blad(Exception):
 
 
 # --------------------------------------------------------------------------------------------- wczytanie
-def wczytaj(bez_mapy=False):
+def wczytaj(bez_mapy=False, k=None):
+    k = k or KONFIG
     try:
-        m = zrodlo_mapy.wczytaj(bez_mapy=bez_mapy)
+        m = zrodlo_mapy.wczytaj(bez_mapy=bez_mapy, konf=k["mapa"])
     except zrodlo_mapy.Blad as e:
         raise Blad(str(e))
     with open(PLIK_WALKI, encoding="utf-8") as f:
         walka = json.load(f)
-    with open(PLIK_AKTOROW, encoding="utf-8") as f:
-        aktorzy = f.read()
-    m["przeciwnicy"] = [p["id"] for p in walka["przeciwnicy"]]
+    aktorzy = ""
+    for plik in [PLIK_AKTOROW] + list(k.get("pliki_aktorow") or []):
+        with open(plik, encoding="utf-8") as f:
+            aktorzy += f.read()
+    # drugi biom dokłada własnych przeciwników (dane walki biomu, nie tools/walka/dane_walki.json)
+    m["przeciwnicy"] = [p["id"] for p in walka["przeciwnicy"]] + list(k.get("przeciwnicy_dodatkowi") or [])
     m["aktorzy"] = sorted(set(re.findall(r'"klucz":\s*"(\w+)"', aktorzy)))
     return m
 
@@ -127,18 +135,19 @@ def sw(m, u, y, v):
 
 
 # --------------------------------------------------------------------------------------------- potwory
-def gatunki(plan):
+def gatunki(plan, k=None):
+    k = k or KONFIG
     rozm = plan["rozmiary"]
     pred = plan["zasady"]["predkosc"]
     wynik = {}
-    for nazwa, gid in GATUNKI.items():
+    for nazwa, gid in k["gatunki"].items():
         r = rozm.get(nazwa)
         if not r:
             raise Blad("brak rozmiarów potwora „%s” w plan_pasa.json" % nazwa)
         szer = r.get("szer", r.get("dl"))
         dl = r.get("dl", r.get("szer"))
         wymiar = max(szer, dl)
-        stoi = gid == "straznik_lasu"
+        stoi = gid == k["straznik_gatunek"]
         if not stoi and nazwa not in pred:
             raise Blad("brak prędkości potwora „%s” w zasady.predkosc" % nazwa)
         wynik[gid] = {"nazwa": nazwa, "predkosc": 0 if stoi else pred[nazwa], "promien": k3(wymiar / 2),
@@ -166,16 +175,27 @@ def _odcinek_strefy(plan, st):
     raise Blad("strefa %s: nieznana przegroda „%s”" % (st["id"], st["podbiom"]))
 
 
-def strefa(m, st, gat, zas):
+def _poziomy_strefy(k, sid, z_planu):
+    """Poziomy strefy: z planu albo z konfiguracji biomu (poziomy_stref) — konfiguracja musi znać każdą strefę."""
+    if k.get("poziomy_stref") is None:
+        return list(z_planu)
+    if sid not in k["poziomy_stref"]:
+        raise Blad("strefa %s: brak poziomów w konfiguracji biomu (poziomy_stref)" % sid)
+    return list(k["poziomy_stref"][sid])
+
+
+def strefa(m, st, gat, zas, k=None):
+    k = k or KONFIG
     plan = m["plan"]
     sid = st["id"]
-    if st["potwor"] not in GATUNKI:
+    if st["potwor"] not in k["gatunki"]:
         raise Blad("strefa %s: potwór „%s” nie ma odpowiednika w silniku" % (sid, st["potwor"]))
-    gid = GATUNKI[st["potwor"]]
+    gid = k["gatunki"][st["potwor"]]
     g = gat[gid]
-    p1, p2 = st["poziomy"]
-    if not (1 <= p1 <= p2 <= 10):
-        raise Blad("strefa %s: poziomy %s poza 1–10" % (sid, st["poziomy"]))
+    p1, p2 = _poziomy_strefy(k, sid, st["poziomy"])
+    lo, hi = k["poziomy"]
+    if not (lo <= p1 <= p2 <= hi):
+        raise Blad("strefa %s: poziomy %s poza %d–%d" % (sid, [p1, p2], lo, hi))
     if st.get("wariant"):
         raise Blad("strefa %s: odmiany (wariant) w pasie nie są obsługiwane" % sid)
     y = float(st["y"])
@@ -229,11 +249,13 @@ def strefa(m, st, gat, zas):
     }
 
 
-def strefa_straznika(m):
+def strefa_straznika(m, k=None):
+    k = k or KONFIG
     s = m["plan"]["straznik"]
-    poz = s["poziom"]
-    if not (1 <= poz <= 10):
-        raise Blad("strażnik: poziom %s poza 1–10" % poz)
+    poz = s["poziom"] if k.get("poziom_straznika") is None else k["poziom_straznika"]
+    lo, hi = k["poziomy"]
+    if not (lo <= poz <= hi):
+        raise Blad("strażnik: poziom %s poza %d–%d" % (poz, lo, hi))
     if not s.get("odrodzenie_stale", True):
         raise Blad("strażnik: plan mówi o odrodzeniu ze skracaniem — serwer potworów zna tylko stałe")
     x, y, z = [k2(c) for c in m["straznik"]["poz"]]
@@ -242,7 +264,7 @@ def strefa_straznika(m):
         raise Blad("strażnik: plan podaje yaw %.4f, a twarzą do wejścia jest %.4f" % (s["yaw_swiat"], kierunek))
     r = s["arena"]["r"] + STRAZNIK_R_ZAPAS
     return {
-        "id": "straznik", "podbiom": "arena", "gatunek": GATUNKI[s["potwor"]], "wariant": False,
+        "id": "straznik", "podbiom": "arena", "gatunek": k["gatunki"][s["potwor"]], "wariant": False,
         "poziomy": [poz, poz], "naraz": 1, "max": 1,
         "srodek": [x, y, z], "r": r, "zasiegGraczy": 0,
         "grupy": 1, "miejsc": 1, "odstepWGrupie": 0, "watahy": False,
@@ -253,18 +275,19 @@ def strefa_straznika(m):
     }
 
 
-def dane_potworow(m):
+def dane_potworow(m, k=None):
+    k = k or KONFIG
     plan = m["plan"]
     silnik, aktorzy = set(m["przeciwnicy"]), set(m["aktorzy"])
-    for gid in GATUNKI.values():
+    for gid in k["gatunki"].values():
         if gid not in silnik:
-            raise Blad("gatunek %s nie istnieje w tools/walka/dane_walki.json" % gid)
+            raise Blad("gatunek %s nie istnieje w danych walki (%s)" % (gid, k["opis_walki"]))
         if gid not in aktorzy:
             raise Blad("gatunek %s nie ma aktora w swiat/test_walki2/aktorzy.py (szablon modelu dla klienta)" % gid)
-    gat = gatunki(plan)
+    gat = gatunki(plan, k)
     zas = zasady(plan)
-    strefy = [strefa(m, st, gat, zas) for st in plan["strefy"]]
-    strefy.append(strefa_straznika(m))
+    strefy = [strefa(m, st, gat, zas, k) for st in plan["strefy"]]
+    strefy.append(strefa_straznika(m, k))
     spokoj_pr = []
     for sp in plan["strefy_spokoju"]:
         x1, _, z1 = sw(m, sp["u"][0], 0, sp["v"][0])
@@ -294,9 +317,10 @@ def dane_potworow(m):
 
 
 # --------------------------------------------------------------------------------------------- dane pasa (świat)
-def _sprawdz_teksty(plan):
+def _sprawdz_teksty(plan, konf=None):
+    konf = konf or KONFIG
     k = plan["przelot_kamery"]
-    tekst = "u = " + ", ".join(str(u) for u in PUNKTY_STRUMIENIA_U)
+    tekst = "u = " + ", ".join(str(u) for u in konf["punkty_strumienia_u"])
     if tekst not in k.get("streaming", ""):
         raise Blad("przelot_kamery.streaming nie zawiera „%s” — punkty wczytywania mapy się zmieniły?" % tekst)
     if "zaciemnienie 0,5 s" not in k.get("potem", ""):
@@ -305,9 +329,10 @@ def _sprawdz_teksty(plan):
         raise Blad("straznik.ryk: oczekiwano klipu „ryk” 2,0 s")
 
 
-def dane_pasa(m, skrot_danych):
+def dane_pasa(m, skrot_danych, konf=None):
+    konf = konf or KONFIG
     plan = m["plan"]
-    _sprawdz_teksty(plan)
+    _sprawdz_teksty(plan, konf)
     X0, Z0 = m["X0"], m["Z0"]
     pas = m["pas"]
     b = m["brama"]
@@ -325,14 +350,20 @@ def dane_pasa(m, skrot_danych):
     stale.update({"czas": k["czas_s"], "zatrzymanieOd": k["zatrzymanie_od_s"], "rykOd": k["ryk_od_s"],
                   "rykDl": plan["straznik"]["ryk"]["dl_s"], "klip": plan["straznik"]["ryk"]["klip"],
                   "zaciemnienie": 0.5,
-                  "punkty": punkty, "strumien": [sw(m, u, 0, 0) for u in PUNKTY_STRUMIENIA_U]})
-    return {
+                  "punkty": punkty, "strumien": [sw(m, u, 0, 0) for u in konf["punkty_strumienia_u"]]})
+    # prostokąt „gracz jest w biomie” (pierwsze wejście → przelot) i prostokąt ratunku: domyślnie zakres części
+    # mapy ± 10 / ± 150 st; biom za bramą poprzedniego (Bagno) zaczyna je od własnej bramy wejściowej
+    wu1, wu2 = konf["wejscie_u"] if konf.get("wejscie_u") else (zu1 - 10, zu2 + 10)
+    ru1, ru2 = konf["ratunek_u"] if konf.get("ratunek_u") else (zu1 - 150, zu2 + 150)
+    napis_t, napis_p = konf["napis_bramy"]
+    tab_t, tab_p = konf["tabliczka"]
+    wynik = {
         "wersja": 1,
         "skrot": skrot_danych,
         "mapa": {"nazwa": m["kontener"], "zrodlo": m["zrodlo"], "X0": k2(X0), "Z0": k2(Z0),
                  "grupaWrot": b["grupa_wrot"], "grupaPalisady": b["grupa_palisady"], "zapowiedz": b["zapowiedz"]},
         # „gracz jest w lesie” (pierwsze wejście → przelot): cały zakres części mapy + 10 st zapasu
-        "wejscie": {"x1": k2(X0 + zu1 - 10), "x2": k2(X0 + zu2 + 10), "z1": k2(Z0 - MGLA_POL_Z), "z2": k2(Z0 + MGLA_POL_Z)},
+        "wejscie": {"x1": k2(X0 + wu1), "x2": k2(X0 + wu2), "z1": k2(Z0 - MGLA_POL_Z), "z2": k2(Z0 + MGLA_POL_Z)},
         "przybycie": {"punkt": [k2(c) for c in przyb["punkt"]], "patrz": [k2(c) for c in przyb["patrz"]],
                       "wysokosc": WYS_POSTACI},
         "przedBrama": {"punkt": sw(m, b["u"] - PRZED_BRAMA_U, 0, 0), "patrz": sw(m, b["u"], 0, 0)},
@@ -347,18 +378,21 @@ def dane_pasa(m, skrot_danych):
                   "glebokosc": BRAMA_GLEBOKOSC, "otwarcie": [k2(Z0 + b["otwarcie_v"][0]), k2(Z0 + b["otwarcie_v"][1])]},
         # niewidzialna zapora przez całą szerokość pasa (u klienta uprawnionego bez kolizji); napis nad wrotami
         "zapora": {"srodek": [xb, 20, k2(Z0)], "rozmiar": [1, 40, k2(2 * sciana + 4)]},
-        "napisBramy": {"punkt": [k2(xb - 1.6), 6.5, k2(Z0)], "tekst": "ZAMKNIĘTE", "podpis": "Pokonaj Strażnika Gaju"},
+        "napisBramy": {"punkt": [k2(xb - 1.6), 6.5, k2(Z0)], "tekst": napis_t, "podpis": napis_p},
         # za bramą (zapas, gdyby mapa nie miała własnej zapowiedzi Bagna): podłoga tuż pod Płytą i ściana na końcu
         "zabezpieczenie": {"podloga": {"srodek": [k2(xb + 35), -0.55, k2(Z0)], "rozmiar": [70, 1, k2(2 * sciana + 4)]},
                            "sciana": {"srodek": [k2(xb + 70), 20, k2(Z0)], "rozmiar": [2, 40, k2(2 * sciana + 4)]}},
-        "tabliczka": {"punkt": sw(m, b["u"] + 18, 0, 0), "tekst": "BAGNO — WKRÓTCE", "podpis": "tu zaczyna się następny biom"},
-        "ratunek": {"x1": k2(X0 + zu1 - 150), "x2": k2(X0 + zu2 + 150), "z1": k2(Z0 - 200), "z2": k2(Z0 + 200),
+        "tabliczka": {"punkt": sw(m, b["u"] + 18, 0, 0), "tekst": tab_t, "podpis": tab_p},
+        "ratunek": {"x1": k2(X0 + ru1), "x2": k2(X0 + ru2), "z1": k2(Z0 - 200), "z2": k2(Z0 + 200),
                     "yMin": RATUNEK_Y},
         "mgla": {"x1": k2(X0 + pas["u_od"]), "x2": k2(X0 + pas["u_do"]), "z1": k2(Z0 - MGLA_POL_Z), "z2": k2(Z0 + MGLA_POL_Z),
-                 "pas": MGLA_PAS, "tempo": MGLA_TEMPO, "wPrzelocie": MGLA_W_PRZELOCIE, "cel": MGLA_CEL},
+                 "pas": MGLA_PAS, "tempo": MGLA_TEMPO, "wPrzelocie": MGLA_W_PRZELOCIE, "cel": konf["mgla_cel"]},
         "przelot": stale,
-        "straznik": {"poz": [k2(c) for c in m["straznik"]["poz"]], "gatunek": "straznik_lasu"},
+        "straznik": {"poz": [k2(c) for c in m["straznik"]["poz"]], "gatunek": konf["straznik_gatunek"]},
     }
+    # nazwy i teksty biomu dla SerwerPasa / KlientPasa / MglaPasa (skrypty mają te same wartości lasu jako zapas)
+    wynik["biom"] = konf["biom"]
+    return wynik
 
 
 # --------------------------------------------------------------------------------------------- zapis Luau
@@ -390,14 +424,58 @@ end
 """
 
 
+# ------------------------------------------------------------------------------------- konfiguracja biomu (las-pas)
+# Nazwy w „biom” czytają skrypty Luau pakietu (SerwerPasa, KlientPasa, MglaPasa); drugi biom podaje własne.
+BIOM_LASU = {
+    "id": "las", "nazwa": "Las",
+    "uchwyt": "PrzeniesDoLasu",                      # Sygnaly/<uchwyt> (BindableFunction dla innych skryptów serwera)
+    "pamiecPrzelot": "widzialPrzelotLasu", "pamiecStraznik": "pokonalStraznikaLasu",   # klucze PamiecGracza
+    "atrybutPrzelot": "WidzialPrzelotLasu", "atrybutStraznik": "PokonalStraznikaLasu",  # atrybuty gracza (serwer)
+    "atrybutPunktu": "PunktPrzybyciaLasu", "atrybutPatrz": "PatrzPrzybyciaLasu",       # atrybuty kontenera
+    "straznik": "Strażnika Gaju",
+    "komunikatBramy": "Brama do Bagna jest zamknięta — pokonaj Strażnika Gaju.",
+    "przekieruj": True,                              # brama w miasteczku (LasTeleport) prowadzi tutaj (tylko las)
+    "podpisBramy": "Brama do Bagna otwarta — idź za arenę",
+    "banerBramy": "BRAMA DO BAGNA OTWARTA!",
+    "podpisBanera": "Idź za arenę — dalej Bagno",
+    "podpisBaneraWkrotce": "Idź za arenę — dalej Bagno (wkrótce)",
+    # następny biom: gdy w Workspace stoi jego mapa (Wygenerowane), serwer w Play usuwa ZaBrama (zapasowa ściana i
+    # tabliczka „wkrótce”), a baner mówi „dalej Bagno” — brama prowadzi wtedy prosto do Bagna
+    "nastepny": {"mapa": "BagnoPas", "nazwa": "Bagno"},
+}
+
+KONFIG = {
+    "id": "las",
+    "mapa": zrodlo_mapy.LAS,
+    "gatunki": GATUNKI,
+    "straznik_gatunek": "straznik_lasu",
+    "poziomy": (1, 10),
+    "poziomy_stref": None,                           # None = poziomy z planu
+    "poziom_straznika": None,
+    "punkty_strumienia_u": PUNKTY_STRUMIENIA_U,
+    "mgla_cel": MGLA_CEL,
+    "wejscie_u": None,
+    "ratunek_u": None,
+    "napis_bramy": ("ZAMKNIĘTE", "Pokonaj Strażnika Gaju"),
+    "tabliczka": ("BAGNO — WKRÓTCE", "tu zaczyna się następny biom"),
+    "biom": BIOM_LASU,
+    "cel_potworow": CEL_POTWOROW, "cel_pasa": CEL_PASA,
+    "naglowek_potworow": NAGLOWEK_POTWOROW, "naglowek_pasa": NAGLOWEK_PASA,
+    "polecenie": "python -B swiat/las_pas_gra/generuj_dane.py",
+    "opis_walki": "tools/walka/dane_walki.json",
+    "dodatkowe_pliki": None,
+}
+
+
 def tekst(naglowek, d):
     return naglowek + "\nreturn " + GEN_LASU.luau(d, 0) + "\n"
 
 
-def wszystko(bez_mapy=False):
-    m = wczytaj(bez_mapy=bez_mapy)
-    dp = dane_potworow(m)
-    dpa = dane_pasa(m, dp["skrot"])
+def wszystko(bez_mapy=False, k=None):
+    k = k or KONFIG
+    m = wczytaj(bez_mapy=bez_mapy, k=k)
+    dp = dane_potworow(m, k)
+    dpa = dane_pasa(m, dp["skrot"], k)
     return m, dp, dpa
 
 
@@ -416,16 +494,18 @@ def tabela(dp):
     return "\n".join(wiersze)
 
 
-def main():
+def main(k=None):
+    k = k or KONFIG
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     argv = sys.argv[1:]
     try:
-        m, dp, dpa = wszystko(bez_mapy="--bez-mapy" in argv)
+        m, dp, dpa = wszystko(bez_mapy="--bez-mapy" in argv, k=k)
     except (Blad, GEN_LASU.Blad) as e:
         print("BŁĄD generatora danych pasa:", e)
         sys.exit(2)
-    pliki = {CEL_POTWOROW: tekst(NAGLOWEK_POTWOROW, dp), CEL_PASA: tekst(NAGLOWEK_PASA, dpa)}
+    pliki = {k["cel_potworow"]: tekst(k["naglowek_potworow"], dp), k["cel_pasa"]: tekst(k["naglowek_pasa"], dpa)}
+    pliki.update(k["dodatkowe_pliki"](m, dp, dpa) if k.get("dodatkowe_pliki") else {})
     if "--sprawdz" in argv:
         zle = []
         for cel, nowy in pliki.items():
@@ -437,9 +517,9 @@ def main():
             if stary != nowy:
                 zle.append(os.path.basename(cel))
         if zle:
-            print("NIEAKTUALNE: %s — uruchom: python -B swiat/las_pas_gra/generuj_dane.py" % ", ".join(zle))
+            print("NIEAKTUALNE: %s — uruchom: %s" % (", ".join(zle), k["polecenie"]))
             sys.exit(1)
-        print("DanePotworowPasa.luau i DanePasa.luau aktualne (skrót %s, mapa: %s)" % (dp["skrot"], m["zrodlo"]))
+        print("%s aktualne (skrót %s, mapa: %s)" % (" i ".join(os.path.basename(c) for c in pliki), dp["skrot"], m["zrodlo"]))
         return
     folder = None
     if "--wyjscie" in argv:
@@ -460,7 +540,8 @@ def main():
     print("mapa: %s (kontener Workspace/%s, Płyta %s)" % (m["zrodlo"], m["kontener"],
                                                        "z czesci.json" if m["plyta"] else "nieznana — bez kontroli"))
     print("zapisano %s (skrót %s)" % ("do folderu z --wyjscie" if folder else
-                                       "zrodla/DanePotworowPasa.luau i zrodla/DanePasa.luau", dp["skrot"]))
+                                       " i ".join(os.path.relpath(c, TU).replace(os.sep, "/") for c in pliki),
+                                       dp["skrot"]))
 
 
 if __name__ == "__main__":

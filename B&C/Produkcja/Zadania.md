@@ -41,6 +41,8 @@ tags: [produkcja, zadania]
 - [ ] Karol i Paweł: obejrzeć walkę z silnikiem v3 (Play → Enter → TELEPORT → „Las” → dotknij potwora; druga walka z tym samym gatunkiem ma POMIŃ) i odpowiedzieć na raport „Walka: nowy silnik, ekran walki i pomijanie — działa w Studio”: czy po pominięciu gracz ma być wolny od razu, co z panelem prób na telefonie · #wysoki
 - [ ] [[Drzewko umiejętności postaci]]: węzeł „Jeszcze stoję” (ostatni dech) jest sprzeczny z D-068 — usunąć; zastępuje go legendarna umiejętność wskrzeszenia w slocie, raz na walkę, z 25% HP (propozycja D-094, pytanie 48, 16.11); przy 0 slotach na starcie (D-055) potwory pierwszych poziomów trzeba osłabić · #średni
 - [ ] Modele lasu w Robloxie, dalej: animacje na zaimportowanych siatkach (własne szkielety), świecenie (Neon), zastąpienie modeli z klocków w walce i w lesie — zacząć od modelu, który wskaże Karol; przed publikacją udostępnić zasoby grze albo wgrać na grupę (D-044) i usunąć `TestPostaci` (`swiat/postacie/IMPORT_LASU.md`) · #wysoki
+- [ ] Karol i Paweł: zagrać pętlę gry po spięciu (Play → wybór klasy → TELEPORT → Las → E przy potworze; po walce złoto i poziom w HUD) i odpowiedzieć na pytania 53 (stan gracza), 54 (przegrana) i 55 (punkty statystyk) — raport „Gra się spina: łup, awans, klasa i poziom w walce” · #wysoki
+- [ ] Stan gracza, dalej: zapis postępu między sesjami (profil z wersją jest gotowy na zapis; wymaga włączenia dostępu Studio do usług i zmian po stronie Pawła — wyścig przy wyborze klasy, przeliczanie premii drzewka); ujście Złota (sklepy, koszt „+”); drzewko i ekwipunek w walce; jedno źródło odblokowanych krain; telefon, pad, dwóch graczy (`swiat/stan_gracza/README.md`) · #wysoki
 - [ ] Karol i Paweł: zagrać w dwie mini-gry Training Center (Play → Enter → tablica „TRAINING CENTER / MINI-GRY” obok startu → E, albo E przy trenerze w bazarze) i ocenić projekt sześciu mini-gier — raport „Training Center: Siła i Pancerz już grają w Studio”; najważniejszy wybór to przyrost za trafienie (pytanie 50) · #wysoki
 - [ ] Training Center, dalej: cztery pozostałe mini-gry (Kondycja, Zręczność, Inteligencja, Szczęście) po akceptacji projektu; podpięcie przyrostów do modułu statystyk (dziś atrybuty sesyjne gracza); okno wyboru 2D zamiast tymczasowego (Paweł, D-093); telefon, pad, dwóch graczy naraz (`swiat/trening_proba/`) · agent: Karol · #średni
 - [ ] Paweł: dociąć ikony sześciu statystyk z assetów i wypchnąć do repozytorium (zapowiedź z trzeciej sesji 14.11) · #średni
@@ -61,7 +63,7 @@ tags: [produkcja, zadania]
 - [ ] Krzywe Miasteczko: zebrać od Karola zmiany w kolorystyce i poprawić czytelność sklepu z Petami i wejścia do dungeonu (pytanie 33, D-041) · #średni
 - [ ] Przenieść istniejące skrypty z `.rbxl` do `src/` (Studio → Save to File), bo inaczej Claude ich nie widzi · #wysoki
 - [ ] Uporządkować hierarchię StarterGui: MainHUD, LoadingScreenGui, TavernQuestGui, HeroSelectorGui, PetGui, InventoryGui · #wysoki
-- [ ] Moduł statystyk gracza (HP / Mana / EXP / Level) z replikacją do klienta, jako źródło danych dla [[HUD]] · #wysoki
+- [ ] Moduł statystyk gracza (HP / Mana / EXP / Level) z replikacją do klienta, jako źródło danych dla [[HUD]] · #wysoki (17.11: próba stoi w Studio — `swiat/stan_gracza/` pisze poziom, doświadczenie, złoto i statystyki do atrybutów gracza; zostaje decyzja z pytania 53 i zapis między sesjami)
 - [ ] Pasek HP w HUD (ukośny, czerwony, animacja TweenService). Zależy od dwóch zadań wyżej · #wysoki
 - [ ] [[Okno Karczmy]]: tablica questów. Najpierw ustalić, gdzie jest istniejące drzewo · #wysoki
 - [ ] [[HUD]]: test na telefonie (Device Emulator) i ręczny test hovera · #wysoki
@@ -113,6 +115,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-17: Gra spięta w jedną pętlę na próbę (`Workspace/StanGracza`, `swiat/stan_gracza/`): wygrana w lesie daje Złoto, doświadczenie i Gemy, poziom rośnie z banerem awansu, walczy klasa wybrana na starcie na poziomie gracza, trening wzmacnia bohatera; próba w grze w całości w porządku, stare próby lasu jak rano; E przy chodzących potworach: 13 z 15 zamiast 5 z 15
 - [x] 2026-11-17: Pierwsza próba ubierania postaci w Studio (D-071, `Workspace/StrojeProba`): przymierzalnia przy placu startowym, strój z 20 przedmiotów katalogu składany na gołym ciele trzech klas, ten sam strój w próbie walki; o stroju decyduje serwer; próba w grze 10 punktów w porządku, 1 niesprawdzony, stara próba walki 111 z 111; raport w panelu czeka na decyzję
 - [x] 2026-11-17: Przejście całej gry okiem nowego gracza (`swiat/przejscie_gry/`): 15–20 minut bez zawieszenia i bez błędów skryptów, ale łup z walk nie trafia do gracza, a klasa i poziom nic nie zmieniają; raport z listą znalezisk, 22 zrzuty i próba dymna całej drogi (10 punktów w porządku, 1 nie — łup)
 - [x] 2026-11-17: Wgrane dźwięki podpięte w Studio (`Workspace/DzwiekGra`); walka gra dźwięki wbudowane, dopóki arkusz własnych dźwięków się nie wczyta

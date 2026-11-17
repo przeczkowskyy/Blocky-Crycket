@@ -39,6 +39,17 @@
 		--     "za_szybko" | "przelot_trwa" | "nieznany_punkt" | "zly_gracz" }
 		-- punkt: "las" (Polana Przybycia; domyślnie), "przed_brama", "za_brama" (tylko po pokonaniu Strażnika);
 		-- przelotPo: s (0–10) — o ile opóźnić ewentualny pierwszy przelot (gdy wołający ma własną animację kamery)
+
+	Drugi biom (17.11.2026): ten sam skrypt działa w Workspace/BagnoPasGra (swiat/bagno_pas_gra) — nazwy i teksty
+	biomu są w DanePasa.biom (uchwyt, klucze pamięci, atrybuty gracza, komunikaty; las-pas jako zapas niżej):
+		• biom.przekieruj = false — nie przekierowujemy bramy miasteczka (to robi tylko las);
+		• biom.nastepny = { mapa } — gdy stoi mapa następnego biomu, w Play znika ZaBrama (tabliczka „wkrótce” i
+		  zapasowa ściana), a atrybut kontenera NastepnyBiomJest = true (baner klienta mówi „dalej …”); od tej chwili
+		  przelot i ratunek tego biomu kończą się na linii jego bramy (dalej pilnuje serwer następnego biomu);
+		• biom.wymaganie = { atrybut, punkt, patrz, komunikat, odX } — biom za bramą poprzedniego: gracz bez atrybutu
+		  (ustawia go serwer poprzedniego biomu po jego Strażniku) w prostokącie wejścia od x ≥ odX (tam, gdzie kończy
+		  się cofanie poprzedniego biomu) jest odsyłany przed tamtą bramę,
+		  nie dostaje przelotu, a uchwyt odpowiada { ok = false, powod = "zamkniete" }.
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	-- poza Studio (opublikowane miejsce) pakiet usuwa cały kontener, zanim ktokolwiek dołączy
@@ -54,9 +65,29 @@ local Stale = require(moduly:WaitForChild("Stale"))
 local D = require(moduly:WaitForChild("DanePasa"))
 local L = require(moduly:WaitForChild("LogikaPasa"))
 local Pamiec = require(moduly:WaitForChild("PamiecGracza"))
+
+-- nazwy i teksty biomu (DanePasa.biom); wartości lasu-pasa są zapasem dla starszego modułu danych
+local B = D.biom or {}
+local UCHWYT = B.uchwyt or "PrzeniesDoLasu"
+local KLUCZ_PRZELOTU = B.pamiecPrzelot or "widzialPrzelotLasu"
+local KLUCZ_STRAZNIKA = B.pamiecStraznik or "pokonalStraznikaLasu"
+local ATR_PRZELOTU = B.atrybutPrzelot or "WidzialPrzelotLasu"
+local ATR_STRAZNIKA = B.atrybutStraznik or "PokonalStraznikaLasu"
+local NAZWA_STRAZNIKA = B.straznik or "Strażnika Gaju"
+local KOMUNIKAT_BRAMY = B.komunikatBramy or "Brama do Bagna jest zamknięta — pokonaj Strażnika Gaju."
+local WYMAGANIE = B.wymaganie -- nil w lesie
+-- Jedno pilnowanie w każdym miejscu pasa (17.11.2026): gdy stoi mapa następnego biomu (sprawdzNastepny niżej), ten
+-- serwer kończy pilnowanie przelotu i ratunku na linii swojej bramy (x ≥ granica należy do serwera następnego biomu);
+-- cofanie nieuprawnionych za bramą zostaje, a serwer następnego biomu zaczyna własne od WYMAGANIE.odX (koniec tego)
+local granicaNastepnego: number? = nil
+local function zaGranica(x: number): boolean
+	return granicaNastepnego ~= nil and x >= granicaNastepnego
+end
+Pamiec.klucze({ KLUCZ_PRZELOTU, KLUCZ_STRAZNIKA })
+
 local zdarzenia: RemoteEvent = kontener:WaitForChild("Zdalne"):WaitForChild("ZdarzeniaPasa")
 local sygnaly = kontener:WaitForChild("Sygnaly")
-local przeniesF: BindableFunction = sygnaly:WaitForChild("PrzeniesDoLasu")
+local przeniesF: BindableFunction = sygnaly:WaitForChild(UCHWYT)
 local sterowanie: BindableFunction = sygnaly:WaitForChild("SterowaniePasa")
 local wynikWalki: BindableEvent = sygnaly:WaitForChild(Stale.SYGNAL_WYNIKU)
 local folderPunktow = kontener:WaitForChild("Punkty")
@@ -148,8 +179,17 @@ local punkty = {
 	za_brama = { punkt = naGruncie(D.zaBrama.punkt, WYS), patrz = v3(D.zaBrama.patrz) },
 }
 punkty.przybycie = punkty.las
-kontener:SetAttribute("PunktPrzybyciaLasu", punkty.las.punkt)
-kontener:SetAttribute("PatrzPrzybyciaLasu", punkty.las.patrz)
+if WYMAGANIE then
+	-- przed bramą poprzedniego biomu (punkt z danych poprzedniego biomu, bez pomiaru gruntu)
+	punkty.wymaganie = { punkt = v3(WYMAGANIE.punkt), patrz = v3(WYMAGANIE.patrz) }
+end
+kontener:SetAttribute(B.atrybutPunktu or "PunktPrzybyciaLasu", punkty.las.punkt)
+kontener:SetAttribute(B.atrybutPatrz or "PatrzPrzybyciaLasu", punkty.las.patrz)
+
+-- biom za bramą poprzedniego: prawo wejścia daje atrybut gracza ustawiany przez serwer poprzedniego biomu
+local function brakWejscia(gracz: Player): boolean
+	return WYMAGANIE ~= nil and gracz:GetAttribute(WYMAGANIE.atrybut) ~= true
+end
 
 -- miasteczko: punkt zmierzony przez swiat/biom_las/teleport.py (atrybuty LasTeleport) albo z planu + promień w dół
 local function punktMiasteczka()
@@ -251,6 +291,9 @@ end
 local przekierowanie = nil
 
 local function przekieruj(): string
+	if B.przekieruj == false then
+		return "nie_ten_biom" -- bramę miasteczka przekierowuje tylko pierwszy biom pasa (las)
+	end
 	if kontener:GetAttribute("PrzekierujBrameMiasteczka") == false then
 		return "wylaczone"
 	end
@@ -325,8 +368,8 @@ local function podtrzymaj(gracz: Player, s, teraz: number)
 end
 
 local function ustawWidzial(gracz: Player, wartosc: boolean)
-	Pamiec.ustaw(gracz, "widzialPrzelotLasu", wartosc)
-	gracz:SetAttribute("WidzialPrzelotLasu", wartosc)
+	Pamiec.ustaw(gracz, KLUCZ_PRZELOTU, wartosc)
+	gracz:SetAttribute(ATR_PRZELOTU, wartosc)
 end
 
 local function wykonaj(gracz: Player, s, akcja: string, teraz: number)
@@ -365,12 +408,17 @@ local function tyknijGracza(gracz: Player, teraz: number)
 
 	-- 1. brama i ratunek (w czasie przelotu postać stoi zakotwiczona — nic do pilnowania)
 	if poz and s.przelot.faza == "brak" and not s.przenoszenie then
-		local uprawniony = Pamiec.czytaj(gracz, "pokonalStraznikaLasu")
+		local uprawniony = Pamiec.czytaj(gracz, KLUCZ_STRAZNIKA)
 		local cel = nil
-		if L.decyzjaBramy(poz.X, poz.Z, uprawniony, D.brama) == "cofnij" then
+		local bezWejscia = brakWejscia(gracz) and L.wProstokacie(poz.X, poz.Z, D.wejscie)
+			and poz.X >= (WYMAGANIE.odX or -math.huge)
+		if bezWejscia then
+			cel = "wymaganie"
+			dolicz("LicznikCofniec")
+		elseif L.decyzjaBramy(poz.X, poz.Z, uprawniony, D.brama) == "cofnij" then
 			cel = "przed_brama"
 			dolicz("LicznikCofniec")
-		elseif L.potrzebaRatunku(poz.X, poz.Y, poz.Z, D.ratunek) then
+		elseif L.potrzebaRatunku(poz.X, poz.Y, poz.Z, D.ratunek) and not zaGranica(poz.X) then
 			cel = L.celRatunku(poz.X, poz.Z, uprawniony, D.brama)
 			dolicz("LicznikRatunkow")
 		end
@@ -380,7 +428,9 @@ local function tyknijGracza(gracz: Player, teraz: number)
 				przenies(gracz, punkty[cel], true)
 				s.przenoszenie = false
 				if cel == "przed_brama" and not uprawniony then
-					komunikat(gracz, "Brama do Bagna jest zamknięta — pokonaj Strażnika Gaju.")
+					komunikat(gracz, KOMUNIKAT_BRAMY)
+				elseif cel == "wymaganie" then
+					komunikat(gracz, WYMAGANIE.komunikat)
 				end
 			end)
 		end
@@ -391,8 +441,9 @@ local function tyknijGracza(gracz: Player, teraz: number)
 		s.postac = postac
 	end
 	local w = {
-		widzial = Pamiec.czytaj(gracz, "widzialPrzelotLasu"),
-		wPasie = poz ~= nil and L.wProstokacie(poz.X, poz.Z, D.wejscie) and poz.Y > D.ratunek.yMin,
+		widzial = Pamiec.czytaj(gracz, KLUCZ_PRZELOTU),
+		wPasie = poz ~= nil and L.wProstokacie(poz.X, poz.Z, D.wejscie) and poz.Y > D.ratunek.yMin and not brakWejscia(gracz)
+			and not zaGranica(poz.X),
 		gotowy = s.gotowy,
 		postac = zywa and postac == s.postac,
 		strumienie = s.strumienie,
@@ -407,17 +458,17 @@ end
 
 ------------------------------------------------------------------ wynik walki ze Strażnikiem → brama otwarta dla zwycięzcy
 local function ustawPokonal(gracz: Player, wartosc: boolean)
-	Pamiec.ustaw(gracz, "pokonalStraznikaLasu", wartosc)
-	gracz:SetAttribute("PokonalStraznikaLasu", wartosc)
+	Pamiec.ustaw(gracz, KLUCZ_STRAZNIKA, wartosc)
+	gracz:SetAttribute(ATR_STRAZNIKA, wartosc)
 end
 
 wynikWalki.Event:Connect(function(gracz: any, info: any)
 	if typeof(gracz) ~= "Instance" or not gracz:IsA("Player") or not L.otwieraBrame(info) then
 		return
 	end
-	if not Pamiec.czytaj(gracz, "pokonalStraznikaLasu") then
+	if not Pamiec.czytaj(gracz, KLUCZ_STRAZNIKA) then
 		ustawPokonal(gracz, true)
-		print(P .. gracz.Name .. " pokonał Strażnika Gaju — brama do Bagna otwarta dla niego")
+		print(P .. gracz.Name .. " pokonał " .. NAZWA_STRAZNIKA .. " — brama otwarta dla niego")
 	end
 end)
 
@@ -465,8 +516,8 @@ end)
 local function nowyGracz(gracz: Player)
 	Pamiec.wczytaj(gracz)
 	stanGracza(gracz)
-	gracz:SetAttribute("WidzialPrzelotLasu", Pamiec.czytaj(gracz, "widzialPrzelotLasu"))
-	gracz:SetAttribute("PokonalStraznikaLasu", Pamiec.czytaj(gracz, "pokonalStraznikaLasu"))
+	gracz:SetAttribute(ATR_PRZELOTU, Pamiec.czytaj(gracz, KLUCZ_PRZELOTU))
+	gracz:SetAttribute(ATR_STRAZNIKA, Pamiec.czytaj(gracz, KLUCZ_STRAZNIKA))
 end
 Players.PlayerAdded:Connect(nowyGracz)
 for _, g in Players:GetPlayers() do
@@ -477,7 +528,7 @@ Players.PlayerRemoving:Connect(function(gracz: Player)
 end)
 
 ------------------------------------------------------------------ uchwyt dla innych skryptów serwera
-local PUNKTY_UCHWYTU = { las = true, przed_brama = true, za_brama = true }
+local PUNKTY_UCHWYTU = { las = true, przybycie = true, przed_brama = true, za_brama = true }
 
 local function przeniesDoLasu(gracz: any, opcje: any)
 	if typeof(gracz) ~= "Instance" or not gracz:IsA("Player") then
@@ -495,8 +546,11 @@ local function przeniesDoLasu(gracz: any, opcje: any)
 			po = math.clamp(opcje.przelotPo, 0, 10)
 		end
 	end
-	if not PUNKTY_UCHWYTU[nazwa] or (nazwa == "za_brama" and not Pamiec.czytaj(gracz, "pokonalStraznikaLasu")) then
+	if not PUNKTY_UCHWYTU[nazwa] or (nazwa == "za_brama" and not Pamiec.czytaj(gracz, KLUCZ_STRAZNIKA)) then
 		return { ok = false, powod = "nieznany_punkt" }
+	end
+	if brakWejscia(gracz) then
+		return { ok = false, powod = "zamkniete" } -- biom za bramą poprzedniego: gracz jej jeszcze nie otworzył
 	end
 	local s = stanGracza(gracz)
 	if po > 0 then
@@ -666,6 +720,34 @@ if not gotowy then
 end
 
 kontener:SetAttribute("Przekierowanie", przekieruj())
+
+-- następny biom (DanePasa.biom.nastepny): gdy stoi jego mapa (Wygenerowane), brama prowadzi prosto do niego —
+-- znika ZaBrama (zapasowa ściana i tabliczka „wkrótce”; na serwerze w Play, więc u wszystkich graczy)
+local function sprawdzNastepny(): boolean
+	local n = B.nastepny
+	local m = n and workspace:FindFirstChild(n.mapa)
+	if not m or m:GetAttribute("Wygenerowane") ~= true then
+		return false
+	end
+	local zb = kontener:FindFirstChild("ZaBrama")
+	if zb then
+		zb:Destroy()
+	end
+	granicaNastepnego = D.brama.x
+	kontener:SetAttribute("NastepnyBiomJest", true)
+	return true
+end
+if B.nastepny and not sprawdzNastepny() then
+	local polaczenie: RBXScriptConnection? = nil
+	polaczenie = workspace.ChildAdded:Connect(function(d: Instance)
+		if d.Name == B.nastepny.mapa then
+			task.wait(1)
+			if sprawdzNastepny() and polaczenie then
+				polaczenie:Disconnect()
+			end
+		end
+	end)
+end
 
 task.spawn(function()
 	local bledyZRzedu = 0

@@ -15,6 +15,12 @@
 	lasu kończy wygaszanie po teleporcie), wartości są ustawiane ponownie.
 
 	Wyłączenie bez usuwania: atrybut kontenera MglaWylaczona = true. Do testów: lokalny atrybut WagaMglyPasa (0–1).
+
+	Kilka mgieł pasa naraz (17.11.2026: las-pas i Bagno stykają się w bramie): każda mgła wystawia na swoim
+	kontenerze lokalny atrybut CelMglyPasa (cel 0–1 z położenia kamery). Mgła, której cel jest niższy niż cel innej
+	(remis: ustępuje kontener o nazwie dalej w alfabecie), USTĘPUJE — cel 0 i żadnego zapisu do Atmosphere. Mgła,
+	która zaczyna narastać, startuje od wartości ZASTANYCH w Atmosphere (nie od zapamiętanej bazy), więc na granicy
+	biomów jedna mgła płynnie przechodzi w drugą, bez przebłysku czystego nieba. Gasnąc, wraca do bazy jak dotąd.
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return
@@ -54,19 +60,43 @@ local BAZA = {
 local waga = 0
 local ustawiona = -1
 local ostatniaGestosc = -1
+local OD = BAZA -- skąd narasta mgła: baza albo wartości zastane przy przejęciu po innej mgle pasa
 
 local function zastosuj(w: number, wymus: boolean)
 	if not wymus and math.abs(w - ustawiona) < 0.002 then
 		return
 	end
 	ustawiona = w
-	atmosfera.Density = BAZA.Density + (CEL.Density - BAZA.Density) * w
-	atmosfera.Offset = BAZA.Offset + (CEL.Offset - BAZA.Offset) * w
-	atmosfera.Haze = BAZA.Haze + (CEL.Haze - BAZA.Haze) * w
-	atmosfera.Glare = BAZA.Glare + (CEL.Glare - BAZA.Glare) * w
-	atmosfera.Color = BAZA.Color:Lerp(CEL.Color, w)
-	atmosfera.Decay = BAZA.Decay:Lerp(CEL.Decay, w)
+	atmosfera.Density = OD.Density + (CEL.Density - OD.Density) * w
+	atmosfera.Offset = OD.Offset + (CEL.Offset - OD.Offset) * w
+	atmosfera.Haze = OD.Haze + (CEL.Haze - OD.Haze) * w
+	atmosfera.Glare = OD.Glare + (CEL.Glare - OD.Glare) * w
+	atmosfera.Color = OD.Color:Lerp(CEL.Color, w)
+	atmosfera.Decay = OD.Decay:Lerp(CEL.Decay, w)
 	ostatniaGestosc = atmosfera.Density
+end
+
+-- inne mgły pasa (kontenery z lokalnym atrybutem CelMglyPasa), lista odświeżana co 0,5 s
+local inne: { Instance } = {}
+local odswiezonoInne = -math.huge
+local function ustepujeInnej(cel: number): boolean
+	local teraz = os.clock()
+	if teraz - odswiezonoInne > 0.5 then
+		odswiezonoInne = teraz
+		table.clear(inne)
+		for _, d in workspace:GetChildren() do
+			if d ~= kontener and d:GetAttribute("CelMglyPasa") ~= nil then
+				table.insert(inne, d)
+			end
+		end
+	end
+	for _, d in inne do
+		local c = d:GetAttribute("CelMglyPasa")
+		if type(c) == "number" and d.Parent and (c > cel or (c == cel and c > 0 and d.Name < kontener.Name)) then
+			return true
+		end
+	end
+	return false
 end
 
 local function wagaDocelowa(): number
@@ -85,8 +115,30 @@ local function wagaDocelowa(): number
 	return w
 end
 
+local opublikowanyCel = -1
 local polaczenie = RunService.RenderStepped:Connect(function(dt: number)
-	waga = L.krokWagi(waga, wagaDocelowa(), M.tempo, dt)
+	local cel = wagaDocelowa()
+	local celOkr = math.floor(cel * 100 + 0.5) / 100
+	if celOkr ~= opublikowanyCel then
+		opublikowanyCel = celOkr
+		kontener:SetAttribute("CelMglyPasa", celOkr)
+	end
+	if ustepujeInnej(celOkr) then
+		-- inna mgła pasa jest „bliżej”: oddajemy jej Atmosphere bez zapisu (ona przejmie od wartości zastanych)
+		waga = 0
+		ustawiona = 0
+		OD = BAZA
+		kontener:SetAttribute("WagaMglyPasa", 0)
+		return
+	end
+	if waga <= 0 and cel > 0 then
+		-- początek narastania: od wartości zastanych (inna mgła pasa albo baza)
+		OD = { Density = atmosfera.Density, Offset = atmosfera.Offset, Haze = atmosfera.Haze, Glare = atmosfera.Glare,
+			Color = atmosfera.Color, Decay = atmosfera.Decay }
+	elseif OD ~= BAZA and (waga >= 1 or cel < waga) then
+		OD = BAZA -- pełna mgła albo gaśnięcie: dalej względem bazy (wyjście z pasa wraca do wartości zastanych przy starcie)
+	end
+	waga = L.krokWagi(waga, cel, M.tempo, dt)
 	-- ktoś nadpisał Atmosphere, gdy nasza mgła jest włączona → ustawiamy ponownie
 	local obca = waga > 0 and ustawiona >= 0 and math.abs(atmosfera.Density - ostatniaGestosc) > 1e-4
 	zastosuj(waga, obca)
@@ -96,5 +148,9 @@ end)
 script.Destroying:Connect(function()
 	polaczenie:Disconnect()
 	ustawiona = -1
+	OD = BAZA
+	pcall(function()
+		kontener:SetAttribute("CelMglyPasa", nil)
+	end)
 	zastosuj(0, true)
 end)

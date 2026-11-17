@@ -27,7 +27,8 @@ S.ODSTEP_PROSB = 1.0          -- s, jak SerwerWalki2
 S.ZAPAS_SESJI = 0.4           -- s, jak SerwerWalki2
 S.ZAPAS_ZAJETOSCI = 1.0       -- s ponad walka.czas
 S.ZASIEG_E = 8                -- studs w poziomie od punktu bazowego + promień gatunku
-S.ZAPAS_E_SERWER = 6          -- studs zapasu po stronie serwera (opóźnienie, ruch 4 Hz)
+S.ZAPAS_E_SERWER = 10         -- studs zapasu po stronie serwera (opóźnienie, ruch 4 Hz; M6 17.11: było 6 — chodzący
+                              -- potwór uciekał z bramki w czasie reakcji gracza, patrz HISTEREZA_E niżej)
 S.MAKS_ROZNICA_WYSOKOSCI = 6
 S.PRZEDPOLE = 6               -- studs od węzła w stronę domu
 S.PROG_POZYCJI = 0.05         -- studs: mniejszej zmiany nie zapisujemy
@@ -83,8 +84,44 @@ S.ATRYBUT_BLOKADY = "BlokadaWalki"     -- atrybut gracza (ustawia inny skrypt se
 -- bohatera każdego z nich widać tylko w jego lesie (prostokąt płyty biomu z DanePotworow + zapas), więc nigdy dwa naraz
 S.PANEL_TYLKO_W_LESIE = true
 S.PANEL_ZAPAS = 40                     -- studs wokół płyty biomu, w których panel jeszcze widać
+S.TYTUL_BANERA_STRAZNIKA = "STRAŻNIK GAJU POKONANY!" -- tytuł banera po Strażniku (Bagno: Stale_TYTUL_BANERA_STRAZNIKA)
 S.PODPIS_STRAZNIKA = "Wróci za 2 min"  -- podpis banera po Strażniku; inny skrypt kontenera może go podmienić lokalnym
                                        -- atrybutem kontenera PodpisBaneraStraznika (las-pas: „brama otwarta”) — jeden baner
+-- stan gracza (17.11.2026, swiat/stan_gracza, propozycja): gdy w Workspace jest kontener KONTENER_STANU (Wygenerowane),
+-- bohater walki jest z danych gracza (klasa z atrybutu Class, poziom z Level, sześć statystyk), a łup trafia do gracza;
+-- atrybut kontenera lasu ATRYBUT_TESTU_BOHATERA = true przywraca regułę testową T1 (klasa i poziom z panelu, bez łupu)
+S.KONTENER_STANU = "StanGracza"
+S.SYGNAL_BOHATERA = "Bohater"          -- BindableFunction w KONTENER_STANU/Sygnaly: Invoke(gracz) → opis postaci | nil
+S.SYGNAL_LUPU = "PrzyznajLup"          -- BindableFunction w KONTENER_STANU/Sygnaly: Invoke(gracz, { lup, wynik, czas, zrodlo })
+S.ATRYBUT_TESTU_BOHATERA = "TestBohater"
+S.ATRYBUT_KLASY_GRACZA = "Class"       -- atrybut gracza (src/server/ClassSelect.server.luau, Paweł)
+S.ATRYBUT_POZIOMU_GRACZA = "Level"     -- atrybut gracza (PlayerStatsDefaults Pawła; awans: swiat/stan_gracza)
+S.KLASY_GRACZA = { Warrior = "wojownik", Scout = "zwiadowca", Mage = "mag" } -- Class → klasa silnika walki
+-- M6 (17.11.2026, przejście gry: E przy chodzących potworach działało w 6 z 15 prób, bez żadnego komunikatu)
+-- pomiar w Play 17.11 (14:05, E po 1,5 s od stanięcia 4,5 studa od potwora): slime idzie 6 studs/s, więc wychodził
+-- z bramki klienta (8 + promień) i podpowiedź gasła — walka ruszała w 5 z 15 prób; histereza 4 przy zapasie serwera 6
+-- dała 8 z 15. Teraz histereza 7 przy zapasie serwera 10 (≥ 2 studs zapasu na opóźnienie i ruch 4 Hz)
+S.HISTEREZA_E = 7                      -- studs: bieżący kandydat E zostaje do ZASIEG_E + promień + tyle (< ZAPAS_E_SERWER)
+S.MARGINES_EKRANU_E = 0.04             -- ułamek ekranu: kotwica bliżej brzegu kadru = „poza ekranem”
+S.KOTWICA_KU_POTWOROWI = 1.5           -- studs: kotwica przy postaci (gdy punkt nad potworem jest poza kadrem)
+S.KOTWICA_NAD_POSTACIA = 2.5           -- studs nad HumanoidRootPart
+S.KOTWICA_PRZED_KAMERA = 6             -- studs: ostatnia deska ratunku — kotwica przed kamerą, gdy i postać jest poza kadrem
+S.ZASIEG_DYMKU_E = 12                  -- studs ponad bramkę E: E bez podpowiedzi przy takim potworze → dymek „Podejdź bliżej”
+S.ATRYBUT_KOTWICY_STAREJ = "TestKotwicaStara" -- lokalny atrybut kontenera u klienta (próba przed/po): dawna kotwica i zasięg E
+S.GUI_KOMUNIKATU = "LasPotworyKomunikat"      -- ScreenGui dymku odmowy walki
+S.GUI_KOMUNIKATU_PROTOTYPU = "TestWalki2Komunikat" -- ogólny dymek odmowy z KlientWalki2 — w lesie zastępujemy go własnym
+S.KOMUNIKAT_S = 3
+S.KOMUNIKATY_ODMOWY = {
+	zly_wybor = "Ten potwór jest teraz zajęty — spróbuj za chwilę albo z innym",
+	za_daleko = "Podejdź bliżej potwora i naciśnij E",
+	walka_trwa = "Odpoczywasz po walce — spróbuj za chwilę",
+	walka_trwa_lokalnie = "Odpoczywasz po walce — spróbuj za chwilę",
+	za_szybko = "Za szybko — spróbuj za chwilę",
+	brak_postaci = "Poczekaj chwilę — twoja postać nie może teraz walczyć",
+	blad_silnika = "Walka się nie zaczęła — spróbuj jeszcze raz",
+	odpoczynek = "Odpoczywasz po walce — następna za %d s",
+	brak_odtwarzacza = "Walka niedostępna — odtwarzacz walki się nie wczytał",
+}
 
 ------------------------------------------------------------------ nadpisania z atrybutów kontenera
 -- Atrybut kontenera „Stale_<NAZWA>” (ustawia zbuduj.py drugiego kontenera) zastępuje istniejącą stałą tego samego

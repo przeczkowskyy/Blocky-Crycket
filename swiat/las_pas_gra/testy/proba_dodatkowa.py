@@ -334,6 +334,9 @@ def main():
                                             "Server") == "true", 60, 1.0)
             czekaj_na(lambda: luau(KP + 'return tostring(k:GetAttribute("KlientGotowy") == true and k:GetAttribute("KlientPasaGotowy") == true)',
                                    "Client") == "true", 60, 1.0)
+            # stan gracza (swiat/stan_gracza, 17.11.2026): próba używa reguły testowej T1 (klasa i poziom z panelu) w obu lasach
+            luau('for _, n in { "LasPasGra", "LasPotwory" } do local k = workspace:FindFirstChild(n) '
+                 'if k then k:SetAttribute("TestBohater", true) end end return "ok"', "Server")
             time.sleep(2)
             zapisz("start", {"serwery": bool(gotowe), "wybor_klasy": wybierz_klase()})
             luau(DZIENNIK_STANU, "Server")

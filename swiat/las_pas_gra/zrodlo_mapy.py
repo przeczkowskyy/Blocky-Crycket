@@ -34,6 +34,15 @@ GRUPA_PALISADY = "BramaBagna/Palisada"
 GRUPA_ZAPOWIEDZI = "ZapowiedzBagna"
 TOL = 1e-6
 
+# Konfiguracja mapy biomu (17.11.2026: ten sam kod gry dla drugiego biomu — swiat/bagno_pas_gra podaje własną).
+# Domyślnie las-pas, więc dla lasu nic się nie zmienia (te same pliki, te same nazwy, ten sam skrót danych).
+LAS = {
+    "plik_planu": PLIK_PLANU, "plik_znacznikow": PLIK_ZNACZNIKOW, "plik_czesci": PLIK_CZESCI,
+    "kontener": KONTENER_DOMYSLNY, "klucz_bramy": "brama_bagna", "nazwa_bramy": "brama do Bagna",
+    "grupa_wrot": GRUPA_WROT, "grupa_palisady": GRUPA_PALISADY, "zapowiedz": GRUPA_ZAPOWIEDZI,
+    "opis_mapy": "swiat/las_pas", "opis_planu": "plan_pasa.json",
+}
+
 
 class Blad(Exception):
     pass
@@ -57,7 +66,7 @@ def _miejsce(plan, mid):
     for m in plan["miejsca"]:
         if m["id"] == mid:
             return m
-    raise Blad("plan_pasa.json nie ma miejsca „%s”" % mid)
+    raise Blad("plan nie ma miejsca „%s”" % mid)
 
 
 def _plyta(czesci, kontener):
@@ -74,9 +83,10 @@ def _plyta(czesci, kontener):
     raise Blad("w czesci.json mapy nie ma części „%s” w grupie %s (wśród pierwszych 50)" % (NAZWA_PLYTY, chce))
 
 
-def _porownaj(plan, zn, X0, Z0):
+def _porownaj(plan, zn, X0, Z0, k=None):
     """Plan i znaczniki mają mówić to samo. Zwraca listę opisów rozjazdu (pusta = zgodne)."""
     roznice = []
+    konf = k or LAS
     k = zn["kontener"]
     if abs(k["X0"] - X0) > TOL or abs(k["Z0"] - Z0) > TOL or abs(k.get("obrot_y", 0)) > TOL:
         roznice.append("położenie pasa: znaczniki (%s; %s; obrót %s), plan (%s; %s; 0)" % (k["X0"], k["Z0"], k.get("obrot_y"), X0, Z0))
@@ -106,40 +116,44 @@ def _porownaj(plan, zn, X0, Z0):
     p_zn = zn.get("przybycie", {}).get("punkt")
     if not p_zn or abs(p_zn[0] - pr["u"]) > TOL or abs(p_zn[2] - pr["v"]) > TOL:
         roznice.append("przybycie: znaczniki %s, plan (%s; %s)" % (p_zn, pr["u"], pr["v"]))
-    br = _miejsce(plan, "brama_bagna")
-    b_zn = zn.get("brama_bagna", {})
+    br = _miejsce(plan, konf["klucz_bramy"])
+    b_zn = zn.get(konf["klucz_bramy"], {})
     if abs(b_zn.get("u", -1e9) - br["u"]) > TOL or list(b_zn.get("otwarcie_v", [])) != list(br["otwarcie"]):
-        roznice.append("brama do Bagna: znaczniki u %s otwarcie %s, plan u %s otwarcie %s" % (
-            b_zn.get("u"), b_zn.get("otwarcie_v"), br["u"], br["otwarcie"]))
+        roznice.append("%s: znaczniki u %s otwarcie %s, plan u %s otwarcie %s" % (
+            konf["nazwa_bramy"], b_zn.get("u"), b_zn.get("otwarcie_v"), br["u"], br["otwarcie"]))
     return roznice
 
 
-def wczytaj(plik_planu=None, plik_znacznikow=None, plik_czesci=None, bez_mapy=False):
-    """Znormalizowana mapa pasa w układzie świata. bez_mapy=True — udajemy, że swiat/las_pas/ nie istnieje (testy)."""
-    plan = _json(plik_planu or PLIK_PLANU)
+def wczytaj(plik_planu=None, plik_znacznikow=None, plik_czesci=None, bez_mapy=False, konf=None):
+    """Znormalizowana mapa pasa w układzie świata. bez_mapy=True — udajemy, że mapy z klocków nie ma (testy).
+    konf — konfiguracja biomu (domyślnie LAS, czyli las-pas)."""
+    konf = konf or LAS
+    plan = _json(plik_planu or konf["plik_planu"])
     sw = plan["swiat"]
     X0, Z0 = float(sw["X0"]), float(sw["Z0"])
     if abs(sw.get("obrot_y", 0)) > TOL:
         raise Blad("plan: obsługujemy tylko pas bez obrotu (obrot_y = 0), jest %s" % sw.get("obrot_y"))
-    plik_znacznikow = plik_znacznikow or PLIK_ZNACZNIKOW
-    plik_czesci = plik_czesci or PLIK_CZESCI
+    plik_znacznikow = plik_znacznikow or konf["plik_znacznikow"]
+    plik_czesci = plik_czesci or konf["plik_czesci"]
     zn = None if bez_mapy or not os.path.isfile(plik_znacznikow) else _json(plik_znacznikow)
     czesci = None if bez_mapy or not os.path.isfile(plik_czesci) else _json(plik_czesci)
     uwagi = []
 
     if zn is not None:
-        roznice = _porownaj(plan, zn, X0, Z0)
+        roznice = _porownaj(plan, zn, X0, Z0, konf)
         if roznice:
-            raise Blad("plan_pasa.json i swiat/las_pas/znaczniki.json się różnią:\n  " + "\n  ".join(roznice))
+            raise Blad("%s i %s/znaczniki.json się różnią:\n  " % (konf["opis_planu"], konf["opis_mapy"])
+                       + "\n  ".join(roznice))
         kontener = zn["kontener"]["nazwa"].split("/")[-1]
         zrodlo = "znaczniki"
     else:
-        kontener = KONTENER_DOMYSLNY
+        kontener = konf["kontener"]
         zrodlo = "plan"
-        uwagi.append("brak swiat/las_pas/znaczniki.json — kontener mapy „%s” (z zadania), punkty z planu" % kontener)
+        uwagi.append("brak %s/znaczniki.json — kontener mapy „%s” (z zadania), punkty z planu"
+                     % (konf["opis_mapy"], kontener))
     if plan["swiat"].get("kontener", "").split("/")[-1] != kontener:
-        uwagi.append("plan_pasa.json podaje kontener „%s”, mapa ma „%s” — bierzemy nazwę mapy"
-                     % (plan["swiat"].get("kontener"), kontener))
+        uwagi.append("%s podaje kontener „%s”, mapa ma „%s” — bierzemy nazwę mapy"
+                     % (konf["opis_planu"], plan["swiat"].get("kontener"), kontener))
 
     plyta = None
     if czesci is not None:
@@ -147,7 +161,8 @@ def wczytaj(plik_planu=None, plik_znacznikow=None, plik_czesci=None, bez_mapy=Fa
         if abs(plyta["obrot_y"]) > 1:
             raise Blad("Płyta mapy jest obrócona o %.1f° (pas ma być bez obrotu)" % plyta["obrot_y"])
     else:
-        uwagi.append("brak swiat/las_pas/czesci.json — serwer potworów sprawdzi tylko, czy mapa jest (bez Płyty)")
+        uwagi.append("brak %s/czesci.json — serwer potworów sprawdzi tylko, czy mapa jest (bez Płyty)"
+                     % konf["opis_mapy"])
 
     pas = plan["pas"]
     pr = _miejsce(plan, "przybycie")
@@ -158,13 +173,14 @@ def wczytaj(plik_planu=None, plik_znacznikow=None, plik_czesci=None, bez_mapy=Fa
         for p in zn.get("punkty_e", []):
             if p.get("grupa") == "Punkty/KamienPowrotu":
                 kamien = list(p["punkt_swiat"])
-    br = _miejsce(plan, "brama_bagna")
-    b_zn = (zn or {}).get("brama_bagna", {})
+    br = _miejsce(plan, konf["klucz_bramy"])
+    b_zn = (zn or {}).get(konf["klucz_bramy"], {})
     brama = {
         "u": br["u"], "x": X0 + br["u"], "otwarcie_v": list(br["otwarcie"]),
-        "grupa_wrot": b_zn.get("grupa_wrot", "Workspace/%s/%s" % (kontener, GRUPA_WROT)).split("/", 2)[-1],
-        "grupa_palisady": b_zn.get("grupa_palisady", "Workspace/%s/%s" % (kontener, GRUPA_PALISADY)).split("/", 2)[-1],
-        "zapowiedz": GRUPA_ZAPOWIEDZI,
+        "grupa_wrot": b_zn.get("grupa_wrot", "Workspace/%s/%s" % (kontener, konf["grupa_wrot"])).split("/", 2)[-1],
+        "grupa_palisady": b_zn.get("grupa_palisady",
+                                   "Workspace/%s/%s" % (kontener, konf["grupa_palisady"])).split("/", 2)[-1],
+        "zapowiedz": konf["zapowiedz"],
     }
     for klucz in ("grupa_wrot", "grupa_palisady"):
         if brama[klucz].startswith(kontener + "/"):
@@ -177,6 +193,7 @@ def wczytaj(plik_planu=None, plik_znacznikow=None, plik_czesci=None, bez_mapy=Fa
                 "arena": swiat(s["arena"]["srodek"][0], y_str, s["arena"]["srodek"][1], X0, Z0), "arena_r": s["arena"]["r"]}
     zakres_u = list((zn or {}).get("pas", {}).get("zakres_czesci_u", [pas["u_od"] - 10, pas["u_do"] + 26]))
     return {
+        "konf": konf,
         "zrodlo": zrodlo, "uwagi": uwagi, "plan": plan, "znaczniki": zn, "kontener": kontener, "X0": X0, "Z0": Z0,
         "pas": {"u_od": pas["u_od"], "u_do": pas["u_do"], "szerokosc": pas["szerokosc"], "kulisy": pas["kulisy"],
                 "sciana_v": (zn or {}).get("pas", {}).get("niewidzialna_sciana_v", pas["szerokosc"] / 2 + 2),
@@ -188,11 +205,12 @@ def wczytaj(plik_planu=None, plik_znacznikow=None, plik_czesci=None, bez_mapy=Fa
 def wejscie_dla_skrotu(m):
     """To, co czytamy z mapy (bez statystyk i opisów, które drugi agent zmienia przy każdej budowie) — do skrótu danych."""
     zn = m["znaczniki"]
+    klucz = m.get("konf", LAS)["klucz_bramy"]
     male = None
     if zn is not None:
         male = {"kontener": zn["kontener"], "strefy": [{"id": s["id"], "wezly": s["wezly"], "domy": s["domy"]}
                                                        for s in zn.get("strefy", [])],
-                "straznik": zn.get("straznik"), "przybycie": zn.get("przybycie"), "brama_bagna": zn.get("brama_bagna"),
+                "straznik": zn.get("straznik"), "przybycie": zn.get("przybycie"), klucz: zn.get(klucz),
                 "punkty_e": zn.get("punkty_e"), "pas": zn.get("pas")}
     return {"plan": m["plan"], "mapa": male, "plyta": m["plyta"]["rekord"] if m["plyta"] else None,
             "kontener": m["kontener"]}
