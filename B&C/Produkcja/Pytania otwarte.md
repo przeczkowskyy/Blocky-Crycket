@@ -48,6 +48,7 @@ Kanon ([[Twierdza (Tycoon)]], [[HUD]]) zna dwie waluty: **Złoto** i **Magiczne 
 Dopisek z 2026-11-14 (sesja główna): Złoto na przedmioty; Diamenty jako waluta premium kupowana za Robuxy i zdobywana w grze; konwersja tylko Diamenty → Złoto (propozycja D-038); drzewka umiejętności za Diamenty (D-039); trzecia waluta i waluta petów (D-040). Nazwa „Diamenty” jest robocza — Paweł chce tematycznej. O Magicznych Kryształach na sesji nikt nie wspomniał; równoległa propozycja D-031 (z pytania Pawła w panelu) nazywa tę walutę Magiczne Kryształy i wyklucza wydawanie jej na losowania — rozstrzygnąć razem z D-038. Zob. [[Sesja główna 2026-11-14 — zapis ustaleń]].
 Dopisek z 2026-11-14 (druga sesja): Twierdza ma mieć kopalnię diamentów (propozycja D-049), czyli produkować walutę premium, a D-031 przewiduje, że droppery dają tylko Złoto albo bardzo mało Kryształów — jedno z nich trzeba zmienić. Zob. [[Sesja główna 2026-11-14 (2) — zapis ustaleń]].
 Dopisek z 2026-11-14 (trzecia sesja): przy drzewkach obaj mówili „Gemy” (słowo z kodu HUD) — węzły drzewek kupuje się za Gemy, bez punktów talentu, a Gemy rzadko wypadają też z potworów (propozycja D-057). Nazwy nikt nie wybierał: Gemy, Diamenty czy Magiczne Kryształy — nadal do decyzji. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
+Dopisek z 2026-11-17 (przy przepisywaniu notatek o grze): nazwy dalej nie są uporządkowane — „Diamenty” (HUD, D-038), „Gemy” (D-057), „Magiczne Kryształy” (D-031), a D-086 nazywa „walutą premium” Rybki. Nie wiadomo też, czy kryształ z kopalni kryształów (D-049, D-061) to ta sama waluta. Notatki piszą na razie „waluta premium (w HUD Diamenty)”.
 Rozstrzyga: D-031, D-038
 **Odpowiedź:**
 - Claude Code (2026-11-14): Paweł zapytał w panelu, czym zastąpić grzybki z S&F jako walutę premium. Propozycja D-031: jedna waluta premium — Magiczne Kryształy z ikoną diamentu z HUD, zdobywana w grze i kupowana za Robuxy w stałych paczkach, wydawana tylko na rzeczy pewne (D-015). Temat był na liście [[Sesje główne]] (odhaczony przez Karola 14.11 bez spisanych ustaleń), więc decyzja w panelu zamknie to pytanie.
@@ -63,6 +64,7 @@ Rozstrzyga: D-013, D-034
 Kanon [[Karczma (Questy)]] opisuje trzy misje w mini-dungeonach. Rozmowa: strefy odblokowywane poziomem, a lochy jako osobna oś z portali (łatwy / średni / trudny). Co zostaje z D-009 i Energii?
 Dopisek z 2026-11-14 (sesja główna): poziomy łatwy / średni / trudny lokalne dla biomu (propozycja D-032), zadania na czas plus strefy do farmienia (D-034). Energia nie padła — wraca na sesję ([[Sesje główne]]).
 Dopisek z 2026-11-14 (druga sesja): Energia — rezygnacja (propozycja D-048): Karol zaproponował, Paweł zgodził się; farmienie stref i tak nie miało jej zużywać. Pasek „Many/Energii” w HUD zostałby paskiem Many. Zob. [[Sesja główna 2026-11-14 (2) — zapis ustaleń]].
+Dopisek z 2026-11-17 (przy przepisywaniu notatki [[Karczma (Questy)]]): żadna decyzja nie mówi, czy zadanie na czas (D-034) kończy się walką albo mini-dungeonem z dokumentacji i czy zostaje klikanie w beczkę, które przyspiesza zadanie. W notatce stoi to jako sprawa otwarta.
 Rozstrzyga: D-032, D-034, D-048
 **Odpowiedź:**
 - Claude Code (2026-11-13): Na sesję główną, razem z D-009 (Karczma: poziomy zadań i Energia). Karol: „będzie to dużo bardziej rozwinięte”; temat jest w [[Sesje główne]].
@@ -75,6 +77,7 @@ Szczegóły: Rozmowa [21:46]: działka od ok. 25. poziomu, surowce i klejnoty do
 Dopisek z 2026-11-14 (sesja główna): temat Walut odhaczono, ale o działce Twierdzy nie rozmawiano. Padło tylko, że podstawa Twierdzy wchodzi do pierwszego wydania, a podziemia później (D-035), oraz drzewko Twierdzy za Diamenty, np. szybsze kopanie (D-039). Wraca na sesję ([[Sesje główne]]).
 Dopisek z 2026-11-14 (druga sesja): Twierdzę omówiono i odhaczono — zamek z mini-budynkami i lista budynków (D-049), Training Center z mini-grami na statystyki (D-050), kowal i zaklinacz w biomie (D-051), stajnia petów poza działką, w mieście (D-052). Nie padło: poziom odblokowania działki (Karol zapytał „to Twierdza główna jest od początku?” — bez odpowiedzi), miejsce Training Center, podziemia. Odrzucone w rozmowie: napady na twierdze innych graczy. Zob. [[Sesja główna 2026-11-14 (2) — zapis ustaleń]].
 Dopisek z 2026-11-14 (trzecia sesja): działka Twierdzy i Training Center **od pierwszego poziomu** (Karol; Paweł potwierdził Training Center od razu) — propozycja D-063, która zamienia też sześć stref Training Center na jeden budynek z wyborem mini-gry. Drzewko Twierdzy mnoży procentowo wydajność konkretnego budynku (D-056). Podziemia nie padły. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
+Dopisek z 2026-11-17 (przy przepisywaniu notatki [[Twierdza (Tycoon)]]): dwie sprawy bez rozstrzygnięcia. Pierwsza: Training Center stoi na działce Twierdzy (D-049) czy w mieście — D-085 wymienia w mieście „mini-gry do wyboru z jednego panelu”, a próbne miasteczko-bazar ma tam trenera. Druga: surowce na budynki pochodzą z misji w karczmie (dokumentacja), z budynków Twierdzy (D-049) czy z obu.
 **Odpowiedź:**
 - Karol Balucki (2026-11-14): 25 poziom na kopalnie itd, a ceneter od początku. Twoje propozycje są dobre i dobrze wyłapałeś z rozmowy
 
@@ -256,6 +259,7 @@ Sprostowanie Claude Code z 2026-11-14 do punktu (4): Roblox ma przeniesienie wł
 Szczegóły: Lista „na premierę” i „później” jest w D-035. Sporne albo nie padło: (1) ulepszanie przedmiotów (kowal, zaklinanie) — Karol: może od razu, Paweł: później; (2) gildie — Paweł wcześniej chciał je odłożyć, na sesji wprost nie potwierdził; (3) które biomy i ile na start — padło tylko „las od początku, kryształowy wyżej” i „o biomach powiemy później”. Zob. [[Sesja główna 2026-11-14 — zapis ustaleń]], [[Roadmapa]].
 Dopisek z 2026-11-14 (druga sesja): kowal znalazł się na liście budynków Twierdzy „do wersji początkowej” (propozycje D-049, D-051), choć D-035 odkłada go na po premierze; tiery przedmiotów — Paweł: „nie teraz”. Zob. [[Sesja główna 2026-11-14 (2) — zapis ustaleń]].
 Dopisek z 2026-11-14 (trzecia sesja): (2) gildie — po premierze (obaj zgodni, propozycja D-067; budynek gildyjny z D-049 też); (3) biomy — osiem na start w kolejności las, bagno, dżungla, pustynia, góry z tundrą, lodowiec, wulkaniczny, kryształowy (D-061), obsydian pod znakiem zapytania. (1) ulepszanie na premierę nadal nie padło; zaklinacz miałby stać na pustyni. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
+Dopisek z 2026-11-17 (przy przepisywaniu notatek o grze): kowal i ulepszanie przedmiotów — D-035 (podpis Karola) odkłada je po premierze, a D-049 i D-051 (oba podpisy) wpisują kowala na listę budynków Twierdzy. Karol odpowiedział tutaj „na premierę”; odpowiedzi Pawła nie ma.
 **Odpowiedź:**
 - Karol Balucki (2026-11-14): Ulepszanie przedmiotów normalnie na premiere. Gildie później, biomy już zostały odpoiwedziane
 
@@ -312,6 +316,7 @@ Szczegóły: Na drugiej sesji 14.11 obaj opisali planszę bez stawek: kostka sze
 - Do wyboru: (a) jak D-052, pety od początku; (b) pety od poziomu albo z drzewka, stajnia w mieście zamknięta do tego czasu.
 Szczegóły: Stajnia w mieście, zestawy jajek na strefę (pierwsze miasto np. trzy, najdroższe ok. 10 tys. Złota, ok. 1% na legendarnego), rzadkie jajka z potworów i karmienie petów przez rzadkość — D-052. Rozmowa 12.11 mówiła „pety odblokowywane poziomem” i o wylęganiu na czas — na sesji wylęganie nie padło. Drzewka petów i ich waluta: D-039, D-040 (temat Pawła w [[Sesje główne]]). Zob. [[Sesja główna 2026-11-14 (2) — zapis ustaleń]], [[Pety]].
 Dopisek z 2026-11-14 (trzecia sesja): jajka w inkubatorach w każdym biomie, wyklucie od razu, bez jajek z potworów — zmiana wobec D-052, zapisana jako propozycja D-060 i pytanie 42. Zob. [[Sesja główna 2026-11-14 (3) — zapis ustaleń]].
+Dopisek z 2026-11-17 (przy przepisywaniu notatki [[Pety]]): wiersz „Rozstrzyga: D-052” jest na wyrost — D-052 zapisuje tylko stanowiska (Paweł: podstawowe jajka od początku; Karol nie potwierdził wprost). Inkubator przy wejściu do pierwszego biomu (D-076) sugeruje pety od początku, ale nikt tego nie zapisał.
 Rozstrzyga: D-052
 **Odpowiedź:**
 - Karol Balucki (2026-11-14): rozstrzygnięte decyzjami: D-052 zatwierdzona
@@ -432,4 +437,12 @@ Szczegóły: Prośba Karola z D-074 („zbalansować przyrosty tak, żeby nie op
 - Do wyboru: (a) Gemy za kamienie milowe, np. +10 za poziom i +100 za pierwszego strażnika biomu (ok. 135 na godzinę); (b) sloty umiejętności za poziom, nie za Gemy; (c) jedno i drugie; (d) zostawić.
 
 Szczegóły: Liczby z kalkulatora (`tools/walka/BALANS_1711.md`, część 4), ceny węzłów z `src/shared/SkillTreeData.luau`. Dotyczy D-057 (węzły za Gemy) oraz D-055 i D-088 (sloty umiejętności). Cel roboczy: żeby gracz bez płacenia kupił w 10 godzin ćwierć drzewka gracza, potrzeba ok. 200 Gemów na godzinę; kamienie milowe z kopalnią diamentów od 25. poziomu dają ok. 200.
+**Odpowiedź:**
+
+## 52. Co otwiera następny biom: strażnik, poziom czy oba?
+- D-057 i D-061 (oba podpisy) oraz D-032 (podpis Karola): strefy i biomy otwiera poziom postaci.
+- D-076 (oba podpisy, 16.11): następny biom otwiera pokonanie strażnika biomu.
+- Do wyboru: (a) tylko strażnik; (b) strażnik i próg poziomu razem; (c) tylko poziom.
+
+Szczegóły: Las-pas w Studio i plan Bagna przyjmują roboczo wariant (a) — brama otwiera się po Strażniku. Sprawa dotyczy też notatek [[System RPG]] (poziom i dostęp do stref) i [[Karczma (Questy)]] (poziomy trudności zadań liczone w biomie).
 **Odpowiedź:**

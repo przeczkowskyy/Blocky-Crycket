@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (pięć notatek o grze według decyzji)
+- Przepisane według [[Rejestr decyzji]] (stan do D-094) i odpowiedzi ludzi w [[Pytania otwarte]]: [[Karczma (Questy)]], [[Twierdza (Tycoon)]], [[Pety]], [[System RPG]], [[Drzewko umiejętności postaci]]. Dotąd miały głównie odsyłacze do propozycji. Każde ustalenie ma numer decyzji; uzgodnienia z jednym podpisem są tak oznaczone („podpis Karola, czeka na potwierdzenie Pawła”); propozycje i otwarte pytania stoją w osobnych sekcjach. Statusy notatek bez zmian.
+- Z [[Drzewko umiejętności postaci]] zniknęła treść odrzuconej D-047 (trzy gałęzie, piętra, punkty talentu).
+- **Sprzeczności między decyzjami**, których nie da się rozstrzygnąć datą i podpisami, trafiły do [[Pytania otwarte]]: nowe pytanie 52 (następny biom otwiera strażnik, poziom czy oba) i dopiski pod pytaniami 6 (nazwy walut), 8 (czy zadanie z karczmy kończy się mini-dungeonem), 9 (gdzie stoi Training Center, skąd surowce), 32 (kowal na premierę) i 38 (od kiedy pety).
+- Do zrobienia potem: [[Okno Karczmy]], [[HUD]], [[Koncepcja i Core Loop]], [[Okno drzewka umiejętności]], [[Mapa teleportacji]] — zadanie w [[Zadania]].
+- Pliki: pięć notatek w `B&C/Gra/`, [[Pytania otwarte]], [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (Training Center bez Studio, plan playtestu)
 - **Training Center, etap bez Studio** (`swiat/trening_proba/`): `PROJEKT.md` z sześcioma mini-grami (propozycja), wspólna rama i dwie mini-gry do próby — Siła („Rozbijanie”, według przykładu Pawła z D-063) i Pancerz („Blok”, D-074). O przyrostach decyduje serwer; wybór mini-gry jest tymczasowy, bo okno 2D robi Paweł (D-093). Przyrost liczony roboczo wzorem z kalkulatora balansu (pytanie 50). Testy bez Studio: 36 z 36, zgodność Luau z Pythonem 70 z 70. W Studio jeszcze nie wdrożone.
 - **Plan playtestu przed premierą** — nowa notatka [[Plan playtestu przed premierą]] (propozycja): jajka z D-060, Training Center i Pancerz, tempo i trudność; co mierzymy i przy jakich wynikach zmieniamy decyzję.
