@@ -60,8 +60,10 @@ INNE = [
     ("BindableFunction", "Sygnaly/SterowanieSerwera"),
     ("BindableFunction", "Sygnaly/WydajZloto"),       # 17.11.2026: wydawanie Złota (swiat/pety_proba)
     ("BindableFunction", "Sygnaly/Pety"),             # 17.11.2026: pety w profilu (swiat/pety_proba)
+    ("BindableFunction", "Sygnaly/Modyfikatory"),     # 18.11.2026: modyfikatory bohatera z pakietów (pety, Kowal)
+    ("BindableFunction", "Sygnaly/DanePakietu"),      # 18.11.2026: dane pakietów w profilu
 ]
-ATRYBUTY_TESTOWE = ["StatystykiKlasy", "KaraPrzegranej"]  # KaraPrzegranej (17.11.2026): false / ułamek kary w Edit
+ATRYBUTY_TESTOWE = ["StatystykiKlasy", "KaraPrzegranej", "PunktyStatystyk"]  # KaraPrzegranej (17.11.2026): false / ułamek kary w Edit
 
 NAGLOWEK_MIEJSCA = ('if game.PlaceId ~= __MIEJSCE__ then return "STOP: inne miejsce (PlaceId " .. tostring(game.PlaceId) .. ")" end\n'
                     'if game:GetService("RunService"):IsRunning() then return "STOP: Studio jest w trybie Play — buduję tylko w trybie Edit" end\n')

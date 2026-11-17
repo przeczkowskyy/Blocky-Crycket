@@ -13,8 +13,9 @@ folder nie może leżeć w repozytorium. Zrzuty (bez nazwy konta: lista graczy i
 
 LISTA KONTROLNA (OK / BŁĄD / ?):
   S00 w Edit: kontenery na miejscu; script_grep po innych piszących Gold / XP / DataStore / leaderstats (i)
-  S01 gotowość: SerwerStanuGotowy, ZgodnoscLogikiStanu „OK n/n”, RozkladyZ z ClassData, KlientStanuGotowy, las-pas gotowy
-  S02 wybór klasy prawdziwym Enterem → Class = Warrior, sześć statystyk = 30 pkt rozkładu klasy, XPMax z krzywej
+  S01 gotowość: SerwerStanuGotowy, ZgodnoscLogikiStanu „OK n/n”, RozkladyZ z ClassData (także „INNE NIŻ WZORCOWE” —
+      pytanie 56), KlientStanuGotowy, las-pas gotowy
+  S02 wybór klasy prawdziwym Enterem → Class = Warrior, sześć statystyk = 30 pkt rozkładu klasy z ClassData, XPMax z krzywej
   S03 (a) każda z trzech klas (Warrior z ekranu, Scout i Mage przez ChooseClass jak ekran wyboru): walka ze slime'em
       przegrody s1 → serwer walczy tą klasą na poziomie gracza (SerwerOstatniaWalka), panel „Twój bohater: …”
   S04 (b) łup po walce: w trakcie walki Gold / XP / Level bez zmian, po walce = wynik z OstatniLup i krzywej; HUD (Gold,
@@ -32,6 +33,9 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
   S13 (17.11.2026, D-098) komunikat po przegranej z S06: „Przegrana: −N Złota, +M doświadczenia” (PlayerGui.
       StanGraczaKomunikat, atrybut klienta KlientOstatniKomunikat) z N = kara z S06 i M = doświadczenie z OstatniLup;
       LicznikKar +1; zrzut 11_przegrana_komunikat
+  S14 (18.11.2026, D-097) punkty do rozdania: po awansach PunktyDoRozdania = 5 × (poziom − 1) − rozdane; „+” jak okno
+      ekwipunku (AddStatPoint:FireServer("Luck") — StatPoints Pawła) zdejmuje punkt; po wydaniu wszystkich kolejny „+”
+      jest cofnięty i klient pokazuje „Brak punktów — zdobądź poziom”
   S12 (h) konsola: bez błędów naszych skryptów ([StanGracza], [LasPasGra], [LasPotwory], „Script …StanGracza”);
       znane wiersze „Requester does not have permission for Asset” (dźwięki) pomijane
 """
@@ -51,10 +55,12 @@ for _s in (PAKIET, os.path.join(REPO, "tools"), os.path.join(REPO, "tools", "wal
     if _s not in sys.path:
         sys.path.insert(0, _s)
 import dane as DANE  # noqa: E402
+import porownaj_profile as PPF  # noqa: E402
 import logika_stanu as LS  # noqa: E402
 
 KLATKI = os.path.join(PAKIET, "klatki")
 _, D = DANE.dane_z_przypadkami()
+ROZKLADY_GRY = PPF.rozklady_pawla(D)  # src/shared/ClassData.luau — to, co czyta SerwerStanu w grze
 ID_KLASY = {v: k for k, v in D["klasy_gracza"].items()}  # klasa silnika → Class
 REAKCJA_M6 = 1.5  # s od stanięcia przy potworze do E w pomiarze M6 (gracz-człowiek; potwory chodzą)
 ZNANE_W_KONSOLI = ("Requester does not have permission for Asset",)
@@ -89,6 +95,7 @@ KOD = {
                         'tekst = l and l.Text or false, ostatni = s and s:GetAttribute("KlientOstatniKomunikat") or false })'),
     "zero_komunikatu_stanu": ('local s = workspace:FindFirstChild("StanGracza") if s then s:SetAttribute("KlientOstatniKomunikat", nil) end '
                               'return "ok"'),
+    "plus": 'game:GetService("ReplicatedStorage"):WaitForChild("AddStatPoint"):FireServer("%s") return "ok"',
     "stan_haczyk": KS + 'if not s then return H:JSONEncode({ brak = true }) end '
                         'return H:JSONEncode(J(s.Sygnaly.SterowanieSerwera:Invoke("%s", game:GetService("Players"):GetPlayers()[1])))',
     "klient_potworow": KP + 'return H:JSONEncode(J(k.Sygnaly.SterowanieKlienta:Invoke("stan")))',
@@ -479,7 +486,7 @@ def main():
             n_przyp = sum(len(v) for v in D["przypadki"].values())
             zapisz("S01", {"stan": st_atr, "klient": kl_atr, "pas": pas_atr})
             punkt("S01", st_atr.get("ZgodnoscLogikiStanu") == "OK %d/%d" % (n_przyp, n_przyp)
-                  and str(st_atr.get("RozkladyZ", "")).startswith("ClassData (3 klas)") and kl_atr.get("KlientStanuGotowy") is True
+                  and str(st_atr.get("RozkladyZ", "")).startswith("ClassData (3 klas") and kl_atr.get("KlientStanuGotowy") is True
                   and bool(pas_atr), "stan %s | klient %s | las-pas %s" % (st_atr, kl_atr, pas_atr))
 
             # ================================================================ S02 wybór klasy Enterem
@@ -493,7 +500,8 @@ def main():
             time.sleep(1.5)
             a = gracz_atr()
             klasa = LS.klasa_silnika(D, a.get("Class"))[0]
-            oczek = LS.rozdziel(D, D["rozklady"][klasa], LS.pula(D, LS.poziom_z(D, a.get("Level"))))
+            # gra czyta rozkłady z ClassData Pawła (pytanie 56: od 17.11 inne niż wzorcowe) — oczekujemy tego samego
+            oczek = LS.rozdziel(D, ROZKLADY_GRY[klasa], LS.pula_sama(D, LS.poziom_z(D, a.get("Level"))))
             zapisz("S02", {"wybor": wybor, "gracz": a, "oczekiwane": oczek})
             punkt("S02", a.get("Class") == "Warrior" and staty(a) == oczek and a.get("XPMax") == LS.xp_do_nastepnego(D, a.get("Level") or 1),
                   "Class %s, statystyki %s (oczek. %s), XPMax %s" % (a.get("Class"), staty(a), oczek, a.get("XPMax")))
@@ -774,6 +782,38 @@ def main():
                           zpo["podpowiedz_przy_E"], zpo["kamera_przod"], zpo["dymek_przy_porazce"], kom.get("ostatni")))
 
             if not tylko_m6:
+                # ================================================================ S14 punkty do rozdania (D-097)
+                a0 = js(KOD["gracz_atr"] % lua_lista(["Level", "Luck", "PunktyDoRozdania"]), "Server")
+                pula0 = a0.get("PunktyDoRozdania")
+                przebieg14 = {"przed": a0}
+                ok14 = False
+                if isinstance(pula0, (int, float)) and pula0 > 0:
+                    luau(KOD["zero_komunikatu_stanu"], "Client")
+                    luau(KOD["plus"] % "Luck", "Client")
+                    a1 = czekaj_na(lambda: (lambda a: a if a.get("Luck") != a0.get("Luck") else None)(
+                        js(KOD["gracz_atr"] % lua_lista(["Luck", "PunktyDoRozdania"]), "Server")), 5, 0.3) or {}
+                    przebieg14["po_plusie"] = a1
+                    for _ in range(int(pula0) - 1):
+                        luau(KOD["plus"] % "Luck", "Client")
+                        time.sleep(0.2)
+                    time.sleep(0.5)
+                    a2 = js(KOD["gracz_atr"] % lua_lista(["Luck", "PunktyDoRozdania"]), "Server")
+                    luau(KOD["plus"] % "Luck", "Client")
+                    time.sleep(1.0)
+                    a3 = js(KOD["gracz_atr"] % lua_lista(["Luck", "PunktyDoRozdania"]), "Server")
+                    kom = js(KOD["komunikat_stanu"], "Client")
+                    przebieg14.update(wszystkie=a2, ponad=a3, komunikat=kom)
+                    ok14 = (a1.get("Luck") == (a0.get("Luck") or 0) + 1 and a1.get("PunktyDoRozdania") == pula0 - 1
+                            and a2.get("PunktyDoRozdania") == 0 and a2.get("Luck") == (a0.get("Luck") or 0) + pula0
+                            and a3.get("Luck") == a2.get("Luck") and kom.get("ostatni") == D["punkty"]["komunikat_brak"])
+                zapisz("S14", przebieg14)
+                punkt("S14", ok14 if isinstance(pula0, (int, float)) and pula0 > 0 else None,
+                      "punkty %s, Luck %s → %s (pula %s) → wszystkie %s → ponad pulę %s, komunikat %r" % (
+                          pula0, a0.get("Luck"), (przebieg14.get("po_plusie") or {}).get("Luck"),
+                          (przebieg14.get("po_plusie") or {}).get("PunktyDoRozdania"),
+                          (przebieg14.get("wszystkie") or {}).get("Luck"), (przebieg14.get("ponad") or {}).get("Luck"),
+                          (przebieg14.get("komunikat") or {}).get("ostatni")))
+
                 # ================================================================ S10 brak sygnału Bohater
                 js(KOD["przemianuj"] % ("Bohater", "BohaterWylaczony"), "Server")
                 w10 = walka_w_strefie("s1")

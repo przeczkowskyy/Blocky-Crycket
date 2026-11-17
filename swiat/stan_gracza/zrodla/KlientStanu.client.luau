@@ -222,6 +222,62 @@ local function pokazCzekajacy()
 	end
 end
 
+zdarzenia.OnClientEvent:Connect(function(polecenie: any)
+	if polecenie ~= "brak_punktow" then
+		return
+	end
+	czekajacyKomunikat = D.punkty.komunikat_brak
+	pokazCzekajacy()
+end)
+
+-- Gemy za pierwsze pokonanie strażnika biomu (D-099) — ten sam napis co po przegranej, po walce
+zdarzenia.OnClientEvent:Connect(function(polecenie: any, n: any)
+	if polecenie ~= "gemy_straznika" or type(n) ~= "number" then
+		return
+	end
+	czekajacyKomunikat = string.format(D.gemy.komunikat_straznika, math.floor(n))
+	pokazCzekajacy()
+end)
+
+------------------------------------------------------------------ licznik punktów do rozdania (18.11.2026, D-097)
+-- TYMCZASOWY: mały napis na dole ekranu, gdy gracz ma punkty (atrybut gracza D.punkty.atrybut pisze serwer); własny
+-- ScreenGui (nie rusza HUD ani okna ekwipunku Pawła). ScreenGui zostaje włączony (odtwarzacz walki przywraca po walce
+-- GUI, które schował) — przy zerze chowamy sam napis
+local licznikNapis: TextLabel? = nil
+
+local function pokazLicznik()
+	local n = gracz:GetAttribute(D.punkty.atrybut)
+	kontener:SetAttribute("KlientLicznikPunktow", if type(n) == "number" then n else nil)
+	if not licznikNapis then
+		if type(n) ~= "number" or n <= 0 then
+			return
+		end
+		local gui = Instance.new("ScreenGui")
+		gui.Name = "StanGraczaPunkty"
+		gui.ResetOnSpawn = false
+		gui.DisplayOrder = 24
+		local l = Instance.new("TextLabel")
+		l.Name = "Tekst"
+		l.AnchorPoint = Vector2.new(0.5, 1)
+		l.Position = UDim2.new(0.5, 0, 1, -12)
+		l.Size = UDim2.fromOffset(0, 30)
+		l.AutomaticSize = Enum.AutomaticSize.X
+		l.BackgroundColor3 = Color3.fromHex("1D1916")
+		l.BackgroundTransparency = 0.25
+		l.TextColor3 = Color3.fromHex("FFD23F")
+		l.Font = Enum.Font.GothamBold
+		l.TextSize = 16
+		l.Parent = gui
+		gui.Parent = playerGui
+		licznikNapis = l
+	end
+	local l: any = licznikNapis
+	l.Visible = type(n) == "number" and n > 0
+	l.Text = if type(n) == "number" then "  " .. string.format(D.punkty.licznik, math.floor(n)) .. "  " else ""
+end
+gracz:GetAttributeChangedSignal(D.punkty.atrybut):Connect(pokazLicznik)
+pokazLicznik()
+
 zdarzenia.OnClientEvent:Connect(function(polecenie: any, kara: any, xp: any)
 	if polecenie ~= "przegrana" or type(kara) ~= "number" or type(xp) ~= "number" then
 		return

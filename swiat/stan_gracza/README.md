@@ -33,6 +33,58 @@ nie jest zmieniony**.
   więc to, co dopisze ktoś inny (darmowy „+” w oknie ekwipunku), zostaje.
 
 ## Interfejs (`Workspace/StanGracza`)
+
+### Wspólne punkty zaczepienia dla pakietów (18.11.2026: pety D-101, Kowal D-102)
+Inne pakiety NIE edytują `stan_gracza` — wpływają na bohatera i trzymają swoje dane gracza przez dwa sygnały
+(BindableFunction w `Sygnaly`, tylko serwer, zawsze `FindFirstChild` + `pcall`).
+
+**`Sygnaly/Modyfikatory`** — premie do bohatera walki i do łupu:
+- `Invoke("ustaw", gracz, zrodlo, mod)` → `{ ok = true }` albo `{ ok = false, powod }`. `zrodlo` = nazwa pakietu
+  („pety”, „kowal”…; litery, cyfry, „_”, do 24 znaków). Każde źródło ma JEDEN wpis na gracza — kolejne `ustaw` go
+  zastępuje (zły wpis jest odrzucany, a stary zostaje).
+- `Invoke("usun", gracz, zrodlo)` → `{ ok = true, bylo }`.
+- `Invoke("czytaj", gracz)` → złożenie wszystkich źródeł: `{ ok = true, statystyki, procent, lup = { zloto,
+  doswiadczenie }, bron, pancerz, tarcza, pasywki, zrodla = { nazwy źródeł } }`.
+- `mod` — tabela z dowolnymi z pól (inne pole → `nieznane_pole`):
+
+  | Pole | Znaczenie | Granice jednego źródła (`D.modyfikatory`) | Złożenie |
+  |---|---|---|---|
+  | `statystyki = { Strength = 5, … }` | stałe dodatki do sześciu statystyk (klucze = atrybuty gracza: Strength, Constitution, Intelligence, Dexterity, Luck, Armor) | liczby całkowite −1000…1000 | suma; statystyka 0…9999 |
+  | `procent = { Strength = 0.10, … }` | mnożnik końcowej statystyki (pole silnika `pet`, D-059) | 0…1 | suma, najwyżej 3 |
+  | `lup = { zloto = 0.05, doswiadczenie = 0.08 }` | ułamki premii do łupu z walki | 0…0,5 | suma, najwyżej 1 |
+  | `bron = N`, `pancerz = N` | dodatek do obrażeń broni / pancerza z przedmiotów ze wzoru dla poziomu (dziś broń 12 na 1. poziomie, 48 na 10.) | −1000…1000 | broń ≥ 1, pancerz ≥ 0 |
+  | `tarcza = N` | dodatek do szansy bloku (ułamek; wzór: 0,2828) — tylko klasa z tarczą (Wojownik) | −0,5…0,5 | blok 0…0,5 (`blok_maks` silnika) |
+  | `pasywki = { "nazwa", … }` | pasywki znane silnikowi — ich modyfikatory idą do pola `premie` opisu postaci (bez zajmowania slotu) | do 6 nazw, nieznana → `nieznana_pasywka` | bez powtórzeń; tylko pasywki klasy gracza (albo wspólne); sumy przycięte do granic silnika |
+  | `zaklecie = "podpalenie"` albo `"trucizna"` (18.11.2026) | zaklęcie broni silnika (`bron.zaklecie`): przy ciosie gracza, który nie został zablokowany, podpalenie z szansą 25%, trucizna 30% (+ modyfikator `szansa_zaklecia`) — np. żywioł peta (D-101) | tylko nazwy z `silnik.ZAKLECIA`, inna → `nieznane_zaklecie` | jedno: przy kilku źródłach wygrywa **pierwsze według nazwy źródła** (alfabetycznie: „kowal” przed „pety”); zaklęcie z broni (gdy kiedyś będzie) ma pierwszeństwo |
+
+  Inne powody odmowy: `zly_mod`, `zla_statystyka`, `zle_statystyki`, `zle_procent`, `zly_lup`, `zle_bron`,
+  `zle_pancerz`, `zle_tarcza`, `zle_pasywki`, `zle_zrodlo`, `zly_gracz`, `za_duzo_zrodel` (najwyżej 16 źródeł na gracza).
+- Dostępne pasywki (z `src/server/Walka/Dane.luau`, przez `dane.py` z `tools/walka/silnik.py`):
+  - umiejętności Wojownika: `bitewny_rytm` (mana +10%, mana na start +15), `furia` (zwykły cios +10,8%), `kolos`
+    (życie +4%, cios +2%), `mur_tarczy` (blok +4,2%, pancerz +15,7%), `rozdzieracz` (pancerz wroga −12%);
+  - umiejętności Zwiadowcy: `oko_lowcy` (kryt. +0,7%, mnożnik kryt. +2,5%), `przyplyw_adrenaliny` (mana),
+    `seria` (zwykły cios +13,4%), `zwinnosc` (unik +7,1%);
+  - umiejętności Maga: `kumulowanie_trucizny` (stosy trucizny +4, siła trucizny +42,7%), `magiczny_pocisk` (zwykły
+    atak +11,7%), `przeplyw_many` (mana), `skupiona_magia` (moc +2,5%);
+  - pasywki broni: Mag — `ciezka_rozdzka`, `jadowity_kostur`, `kostur_many`, `ognista_rozdzka` (podpalenie +2 tury);
+    Wojownik — `miecz_runiczny`, `topor_rzeznika`; Zwiadowca — `luk_mysliwego`, `luk_runiczny`, `luk_wiatru`.
+  - Niedostępna: `wskrzeszenie` (legendarna, działa tylko ze slotu umiejętności — D-094).
+- Wpisy żyją w pamięci serwera (nie w profilu): pakiet odtwarza je ze swoich danych po wejściu gracza.
+- **Zgodność wstecz (pety):** dopóki pakiet petów nie zawoła `Modyfikatory` dla źródła `"pety"`, premia z
+  `Pety("kup" / "aktywny")` liczy się jako to źródło (zachowanie jak dotąd). Pierwsze `ustaw` albo `usun` dla `"pety"`
+  przejmuje źródło — od tej chwili liczy się tylko wpis z `Modyfikatory` (bez podwójnej premii). Komunikat `"premia"`
+  do klienta petów niesie tylko część łupu ze źródła petów.
+
+**`Sygnaly/DanePakietu`** — dane pakietu w profilu gracza (pod przyszły zapis razem z resztą profilu):
+- `Invoke("czytaj", gracz, pakiet)` → kopia tabeli albo `nil`.
+- `Invoke("zapisz", gracz, pakiet, tabela)` → `{ ok = true }` albo `{ ok = false, powod }`; `tabela = nil` usuwa wpis.
+- Dane leżą w `profil.pakiety[pakiet]` (profil wersja 3). Tylko liczby skończone, napisy, logiczne i tabele z nich;
+  klucze napisy albo liczby całkowite; najwyżej 2000 wartości, 8 poziomów zagłębienia, napis i klucz do 200 bajtów,
+  32 pakiety na gracza. Powody: `zly_typ`, `zla_liczba`, `zly_klucz`, `za_dlugi_napis`, `za_gleboko`, `za_duzo`,
+  `zly_pakiet`, `za_duzo_pakietow`, `zly_gracz`. Zapis i odczyt robią kopię — zmiana tabeli po `zapisz` niczego nie
+  zmienia w profilu.
+
+### Pozostałe obiekty
 | Obiekt | Kierunek | Argumenty → wynik |
 |---|---|---|
 | `Sygnaly/Bohater` (BindableFunction) | las → stan | `Invoke(gracz)` → opis postaci dla `Silnik.symuluj` albo `nil` |
@@ -40,7 +92,7 @@ nie jest zmieniony**.
 | `Sygnaly/SterowanieSerwera` (BindableFunction) | testy | `"stan", gracz?` · `"zgodnosc"` · `"publikuj", gracz?` · `"bohater", gracz?` · `"przyznaj", gracz, lup` |
 | `Sygnaly/WydajZloto` (BindableFunction, 17.11) | pakiet → stan | `Invoke(gracz, { ile, zrodlo = kontener z listy D.wydatki.zrodla, cel })` → `{ ok = true, zloto, ile, licznik }` \| `{ ok = false, powod ("za_malo" + brakuje, zloto, ile \| "zla_kwota" \| "zle_zrodlo" \| "zly_cel" \| "zly_gracz") }` — nigdy poniżej zera |
 | `Sygnaly/Pety` (BindableFunction, 17.11) | pety → stan | `"kup", gracz, { ile, zrodlo, cel, pet, premia }` (wydatek + kopia peta w jednym wywołaniu) · `"aktywny", gracz, { pet, premia }` \| `{ odstaw = true }` · `"stan", gracz` |
-| `Zdalne/ZdarzeniaStanu` (RemoteEvent) | serwer → klient | `"awans", poziom, ile` · `"premia", zloto, doswiadczenie, pet` (dodatek peta w pokazanym łupie — czyta go klient `swiat/pety_proba`) · `"przegrana", kara, doswiadczenie` (kara za przegraną w pokazanym łupie — napis `KlientStanu`) |
+| `Zdalne/ZdarzeniaStanu` (RemoteEvent) | serwer → klient | `"awans", poziom, ile` · `"premia", zloto, doswiadczenie, pet` (dodatek peta w pokazanym łupie — czyta go klient `swiat/pety_proba`) · `"przegrana", kara, doswiadczenie` (kara za przegraną w pokazanym łupie — napis `KlientStanu`) · `"brak_punktow"` („+” bez punktu cofnięty) · `"gemy_straznika", n` (Gemy za pierwsze pokonanie strażnika) |
 | | klient → serwer | `"pokaz"` (bez liczb, najwyżej raz na 0,5 s) |
 | `Workspace/TreningProba/Sygnaly/PrzyrostStatystyki` | trening → stan | tylko słuchamy (z ponownym podłączeniem po przebudowie) |
 
@@ -67,23 +119,76 @@ Atrybuty kontenera do podglądu: `SerwerStanuGotowy`, `ZgodnoscLogikiStanu` („
 - **Kara za przegraną (17.11.2026):** `KARA_PROCENT` w `dane.py` (jedna liczba; `0` = wyłączona, potem
   `python -B swiat/stan_gracza/dane.py`) albo atrybut kontenera `KaraPrzegranej`: `false` = wyłączona w czasie gry, liczba
   0..1 = inny ułamek (np. do prób); przechodzi na odbudowany kontener jak `StatystykiKlasy`.
+- **Punkty statystyk (18.11.2026):** w `dane.py` dwie liczby: `PUNKTY_DO_ROZDANIA` (5, z D-097) i
+  `PUNKTY_SAMO_NA_POZIOM` (5 — wariant b; **0 = czysty wariant D-097**, tylko 5 do rozdania); potem
+  `python -B swiat/stan_gracza/dane.py` i `zbuduj.py --skrypty`. Atrybut kontenera `PunktyStatystyk = false` w czasie
+  gry — jak przed D-097 (10 samo na poziom, darmowy „+”, bez licznika); przechodzi na odbudowany kontener.
+- **Gemy (D-099):** `GEMY_ZA_POZIOM` (10) i `GEMY_ZA_STRAZNIKA` (100) w `dane.py`; 0 wyłącza.
 - **Tryb testowy lasu:** atrybut kontenera lasu `TestBohater = true` (`Workspace/LasPotwory` albo `Workspace/LasPasGra`)
   — reguła testowa T1 jak dawniej (klasa i poziom z panelu), walki bez łupu. Ustawiają go próby w Play
   (`swiat/las_potwory/testy/proba_play.py`, `kontrola_play.py`, `swiat/las_pas_gra/testy/proba_play.py`,
   `proba_dodatkowa.py`).
 
-**Nowy biom (17.11.2026, Bagno):** łup przyjmujemy tylko z kontenerów z listy `zrodla` w `dane.py` — kontener gry
-każdego nowego biomu (np. `BagnoPasGra`) trzeba tam dopisać, inaczej łup dostaje odmowę `zle_zrodlo` (test `6b`
-porównuje listę z kontenerami pakietów potworów). Krainy tokenów (`TokenyKrainy_<kraina>`) listy nie mają — przechodzi
-każda nazwa z liter, cyfr i „_”, więc „bagno” działa bez zmian.
+**Jak dodać pakiet (jedno miejsce, 18.11.2026):** listy kontenerów, które rozmawiają ze stanem gracza, są na górze
+`dane.py`: `PAKIETY_BIOMOW` (walki biomu — łup przez `PrzyznajLup` i kara za przegraną; dziś `LasPotwory`,
+`LasPasGra`, `BagnoPasGra` i od razu `DzunglaPasGra`) i `PAKIETY_WYDATKOW` (wydawanie Złota — `PetyProba`,
+`KowalProba`). Nowy pakiet: dopisz nazwę jego kontenera, `python -B swiat/stan_gracza/dane.py`, testy, potem
+`zbuduj.py --skrypty`. Cele wydatków (`jajko_lesne`, `ulepszenie`, `zakup_przedmiotu`…) listy nie mają — przechodzi każda
+nazwa z liter, cyfr i „_”. Test `6b` sam znajduje pakiety `swiat/*_pas_gra` i oblewa, gdy kontener biomu nie jest na
+liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyKrainy_<kraina>`) też listy nie mają.
 
 ## Przyjęte, do zmiany (robocze — do decyzji ludzi)
 1. **Krzywa doświadczenia** 11,71 × L^1,6 (z `tools/walka/tempo.py`; las ok. 30 min) zamiast stałego `XPMax = 100`.
-2. **Przyrost co poziom:** +10 punktów rozdzielanych automatycznie rozkładem klasy (jak postać wzorcowa w balansie).
-   D-057 mówi też o punktach do rozdania przez gracza — ich nie ma.
+2. **Przyrost co poziom (D-097 ✅ zatwierdzona 17.11: „5 punktów do rozdania za poziom”; wdrożenie 18.11.2026):** za każdy poziom
+   **5 punktów do rozdania** przez gracza (atrybut `PunktyDoRozdania`, „+” w oknie ekwipunku) **+ 5 rozdzielanych samo**
+   rozkładem klasy (stały przyrost z D-057; suma 10 jak dotąd, więc balans potworów zostaje). Złoto nie kupuje
+   statystyk. „+” Pawła (`StatPoints`, jego pliki nietknięte) dodaje punkt za darmo — **rozwiązanie tymczasowe:** serwer
+   stanu pilnuje zmian sześciu atrybutów, których sam nie zrobił: z punktem w puli zmiana zostaje, a punkt schodzi;
+   bez punktu albo spadek — zmiana cofnięta, gracz widzi „Brak punktów — zdobądź poziom”. Mały licznik „Punkty do
+   rozdania: N” na dole ekranu (własne GUI, tylko gdy N > 0). Wyłącznik: atrybut kontenera `PunktyStatystyk = false`
+   (jak przed D-097). Liczby z `punkty_statystyk.py` (las do Strażnika Gaju, Bagno do Strażnika Topieli, 40 graczy
+   na klasę; profil klas z `ClassData`, czyli dzisiejsza gra):
+
+   | Wariant | Gracz rozdaje | Las: min / przegrane / Gaj za 1. razem | Bagno: min / przegrane / Topiel za 1. razem |
+   |---|---|---|---|
+   | dziś: 10 samo | — | 32 / 12 / 22% | 57 / 26 / 17% |
+   | a: tylko 5 do rozdania | jak klasa | 61 / 34 / 2% | 126 / 93 / 3% |
+   | a | wszystko w jedną (główną) | 111 / 66 / 0% | 174 / 126 / 2% (78 z 120 nie kończy) |
+   | **b: 5 samo + 5 do rozdania (wybrany)** | **jak klasa** | **31 / 12 / 29%** | **57 / 26 / 13%** |
+   | b | po równo | 28 / 10 / 32% | 50 / 22 / 13% |
+   | b | wszystko w główną | 43 / 19 / 7% | 99 / 53 / 4% |
+   | b | wszystko w nieswoją | 31 / 13 / 26% | 66 / 33 / 6% |
+   | c: 10 do rozdania | jak klasa | 31 / 12 / 22% | 54 / 26 / 14% |
+   | c | wszystko w główną | 90 / 47 / 1% | 172 / 114 / 0% (76 nie kończy) |
+
+   **Odstępstwo od D-097, przyjęte roboczo dla balansu:** D-097 mówi tylko o 5 punktach do rozdania za poziom.
+   Wdrożony wariant b dokłada 5 rozdzielanych samo, bo czysty wariant (a) to połowa dzisiejszych punktów na poziom:
+   las wydłuża się z ok. 31 do ok. 61 min (przegranych 12 → 34, Strażnik Gaju za pierwszym razem 29% → 2%), Bagno
+   z 57 do 126 min — a potwory były strojone pod 10 punktów na poziom. Czysty wariant (a) wymaga osłabienia potworów
+   w danych silnika (`tools/walka/dane_walki.json`), czego tu nie robię. Przełącznik dla ludzi: `PUNKTY_SAMO_NA_POZIOM`
+   w `dane.py` (5 → 0 = czysty wariant D-097).
+   Dlaczego b: tylko 5 do rozdania (a) to połowa dzisiejszych punktów — las trwa dwa razy dłużej. 10 do rozdania (c)
+   daje dziecku, które kliknie wszystko w jedno, las 3× dłuższy, a Bagno prawie nie do przejścia. Przy b najgorszy
+   wybór kosztuje w lesie ok. +11 min, a rozkład samo rozdzielany trzyma postać przy życiu. Z profilem wzorcowym
+   wychodzi to samo (b: 27,5 min, 8 przegranych; najgorszy wybór 38 min). Ciekawostka: „po równo” wygrywa częściej
+   niż rozkład klasy — oba profile klas nie są najlepszym rozdaniem dla silnika (wątek do pytania 56).
+   **Tempo treningu (pytanie 50):** Karol wybrał wzór z paskiem (odpowiedź a). Wariant b nie zmienia sumy punktów na
+   poziom, więc pula odniesienia w `swiat/trening_proba/ustawienia.json` (`pula_baza` 30, `pula_na_poziom` 10) zostaje,
+   a wzór (4/5/6/8 jednostek za trafienie przy seriach 5/10/20, próg paska 40, połowa udziału 0,1) też — tego pakietu
+   nie zmieniam.
+   **Potwory pod profil z ClassData (sprawdzone, nie zmienione):** pierwsza walka (1. poziom, Leśny Slime poz. 1) to
+   dziś 73–79% przy celu ok. 85% — slime ma już najniższy poziom, a siły potworów nie da się zmienić bez zmiany silnika.
+   Strażnik Gaju za pierwszym razem 29% (cel 35–40%): obniżenie jego poziomu z 10 na 9 dałoby 54–64% na 11. poziomie
+   gracza, czyli za dużo — poziomy są za grube. Dane potworów zostają; możliwy ruch po stronie bohatera (do decyzji):
+   pula startowa 30 → 33 daje pierwszą walkę 79–84%. Strażnik Topieli zostaje trudny (13% za pierwszym razem).
 3. **Sloty umiejętności** 1 / 2 / 3 od poziomów 1 / 5 / 10 (jak dziś w walce). D-055 i D-088 mówią: sloty z drzewka,
-   na start 0; pytanie 51 (Gemy) otwarte.
-4. **Przegrana (17.11.2026: realizacja propozycji D-098, czeka na zatwierdzenie w panelu):** bez łupu, 20% doświadczenia
+   na start 0.
+   **Gemy bez płacenia (D-099 ✅ 17.11; wdrożenie 18.11.2026, liczby „do zmiany”):** +10 Gemów za każdy awans i +100 za
+   pierwsze pokonanie strażnika każdego biomu (raz na gatunek strażnika — profil `straznicy`; napis po walce). Nie
+   wdrożone (opis i liczby w `tools/walka/REBIRTH_1711.md`, część 1): +1 Gem za każde 10 wygranych i kopalnia
+   w Twierdzy (D-049). Przy tych liczbach gracz ma ok. 200 Gemów na końcu lasu, czyli wszystkie trzy sloty
+   umiejętności z drzewka (25 / 70 / 125), a po 10 godzinach ok. ćwierć drzewka gracza. Rebirth (D-100) odrzucony.
+4. **Przegrana (realizacja zatwierdzonej D-098 ✅ 17.11; liczby dalej „do zmiany”):** bez łupu, 20% doświadczenia
    (tak liczy silnik) i **kara: 5% posiadanego Złota (w dół do całych), najwyżej tyle, ile daje wygrana ze zwykłym
    potworem na poziomie przeciwnika** (łup Cierniowego Wilka z silnika: 22 + 9 × (poziom − 1)), nigdy poniżej zera.
    Bez kary czasowej, Gemy zostają. Tylko walki lasu-pasa, starego lasu i Bagna (`D.kara.zrodla`); tablica próby
@@ -132,8 +237,9 @@ każda nazwa z liter, cyfr i „_”, więc „bagno” działa bez zmian.
 - Jego atrybuty `Level`, `XP`, `XPMax`, `Gold`, `Gems` i sześć statystyk pisze teraz serwer pakietu (XPMax z krzywej,
   statystyki 30 pkt według klasy zamiast 20/16/18/12/7/57). Jego pliki są nietknięte; `PlayerStatsDefaults` dalej
   ustawia tylko brakujące wartości.
-- Darmowy „+” (`StatPoints`) wzmacnia teraz bohatera w walce bez limitu — potrzebny koszt (Złoto, D-050) albo punkty
-  z poziomu (D-057).
+- Darmowy „+” (`StatPoints`): od 18.11.2026 serwer stanu zdejmuje za niego punkt z `PunktyDoRozdania`, a bez punktu
+  cofa zmianę (rozwiązanie tymczasowe, jego plików nie zmieniamy). Docelowo „+” powinien zapytać stan gracza wprost
+  (np. sygnał po stronie serwera) i nie dodawać punktu, gdy puli brak; okno może pokazywać atrybut `PunktyDoRozdania`.
 - `ClassData.stats` steruje teraz balansem walki, nie tylko paskami ekranu wyboru.
 - `ChooseClass` przyjmuje zmianę klasy w każdej chwili, a D-081 mówi o wyborze tylko przy pierwszym wejściu.
 - Drzewko: premie `ST_*` nadal nic nie zmieniają w walce; gałąź gracza ma korzeń „WARRIOR” dla każdej klasy.
@@ -145,17 +251,18 @@ każda nazwa z liter, cyfr i „_”, więc „bagno” działa bez zmian.
 Bez Studio (wszystko pojedynczo, bez wielu procesów):
 ```
 python -B swiat/stan_gracza/dane.py --sprawdz          # DaneStanu.luau aktualny
-python -B swiat/stan_gracza/testy/test_stanu.py        # 47 testów, w tym SerwerStanu i KlientStanu w luau_mini
+python -B swiat/stan_gracza/testy/test_stanu.py        # 55 testów, w tym SerwerStanu i KlientStanu w luau_mini
 python -B swiat/stan_gracza/sprawdz_luau_stanu.py      # kontrola statyczna Luau
 python -B swiat/stan_gracza/zbuduj.py --sucho          # plan budowy
 python -B swiat/stan_gracza/symulacja_lasu.py          # szanse w przegrodach lasu-pasa i czas do Strażnika
 python -B swiat/stan_gracza/kara_przegranej.py         # warianty kary za przegraną (las, Bagno; --profil pawla)
 python -B swiat/stan_gracza/porownaj_profile.py        # profil klas Pawła vs wzorcowy (pytanie 56)
+python -B swiat/stan_gracza/punkty_statystyk.py       # punkty do rozdania: warianty × sposób rozdania × profil (D-097)
 ```
 W Studio (część B): `zbuduj.py` buduje kontener; potem wymiana skryptów obu lasów
 (`python -B swiat/las_potwory/zbuduj.py --skrypty`, `python -B swiat/las_pas_gra/zbuduj.py --skrypty`) i próba w Play:
 ```
-python -B swiat/stan_gracza/testy/proba_play.py <folder wyników poza repo>   # S00–S13, zrzuty → klatki/
+python -B swiat/stan_gracza/testy/proba_play.py <folder wyników poza repo>   # S00–S14, zrzuty → klatki/
 python -B swiat/stan_gracza/testy/proba_play.py --sprawdz                    # bez Studio: parsuje kawałki Luau próby
 ```
 Próba sprawdza: trzy klasy w walce na poziomie gracza, łup dopiero po walce i HUD = atrybuty, baner awansu,
@@ -174,6 +281,14 @@ kierunku od gracza) i robi zrzuty `swiat/las_potwory/klatki/stop_*.jpg` (kamera 
 czas do E. Wynik: przy 1,5 s 15/15 przed i 15/15 po; przy 3 s 7/15 przed i 15/15 po — przy E stało 3 z 15 potworów
 przed i 15 z 15 po, wszystkie 15 zwrócone do gracza, średnie przesunięcie 12,9 → 0,5 studa.
 
+Noc 17/18.11.2026 (Studio): po pełnej przebudowie `StanGracza` próba `--bez-m6` S00–S14 OK (S00 „?” jak zawsze;
+S06 400 → 380 Złota, S13 napis „Przegrana: −20 Złota, +34 doświadczenia”, S14 punkty 10 → „+” 9 → 0 → kolejny „+”
+cofnięty z napisem). Przejście prawdziwymi kliknięciami (awans o 2 poziomy → licznik „Punkty do rozdania: 10” →
+EQUIPMENT w HUD → „+” przy Szczęściu 10 razy → 11. „+” cofnięty, napis „Brak punktów — zdobądź poziom”; Gemy
+1000 → 1020 za dwa awanse): zrzuty `klatki/pkt_1…5`. Serwer `StatPoints` Pawła nie nadpisuje cofnięcia.
+Uwaga z tej nocy: `luau_mini` widzi lokalne funkcje zdefiniowane niżej w pliku, a Luau w Studio nie — tak padło
+`dopisz()` w `przyznajPunkty` (awans bez punktów i bez banera); test `7f` pilnuje teraz kolejności definicji.
+
 ## Liczby z symulacji (17.11.2026, propozycja)
 Bohater na prawdziwym poziomie, bez treningu: pierwsza przegroda (Leśny Slime poz. 1) na poziomie 1 to 84–88% wygranych.
 Przejście lasu-pasa do wygranej ze Strażnikiem: mediana ok. 27 min przy walkach ×1 (Mag 25, Wojownik i Zwiadowca 28),
@@ -186,7 +301,7 @@ z ok. 8 przegranymi po drodze. Cel planu rosnącego z `tools/walka/tempo.py`: ok
   `src/server/Walka/Statystyki.luau`), `logika_stanu.py` (lustro `zrodla/LogikaStanu.luau`).
 - `zrodla/SerwerStanu.server.luau`, `zrodla/KlientStanu.client.luau`, `zrodla/LogikaStanu.luau`.
 - `zbuduj.py`, `sprawdz_luau_stanu.py`, `symulacja_lasu.py`, `kara_przegranej.py` (warianty kary; gracze z
-  `swiat/pety_proba/ekonomia_jajek.py`, tylko uruchamiany), `porownaj_profile.py` (pytanie 56), `testy/test_stanu.py`,
+  `swiat/pety_proba/ekonomia_jajek.py`, tylko uruchamiany), `porownaj_profile.py` (pytanie 56), `punkty_statystyk.py` (D-097), `testy/test_stanu.py`,
   `testy/atrapa_roblox.py`.
 - Zmiany w innych pakietach (małe, w osobnych funkcjach): `swiat/las_potwory/zrodla/Stale.luau` (stałe stanu gracza),
   `SerwerPotworow.server.luau` (`sygnalStanu`, `bohaterZeStanu`, `nagrodaZaWalke` + dwa wywołania w kontroli 7

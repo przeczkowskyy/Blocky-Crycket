@@ -38,9 +38,60 @@ STATYSTYKI_LUAU = os.path.join(REPO, "src", "server", "Walka", "Statystyki.luau"
 # atrybut gracza Class (src/server/ClassSelect.server.luau, ClassData.id) → klasa silnika walki
 KLASY_GRACZA = {"Warrior": "wojownik", "Scout": "zwiadowca", "Mage": "mag"}
 
+# JEDNO MIEJSCE: które pakiety mogą rozmawiać ze stanem gracza (nazwy kontenerów w Workspace). Jak dodać pakiet:
+# dopisz nazwę jego kontenera tutaj, uruchom `python -B swiat/stan_gracza/dane.py` i testy, przebuduj StanGracza
+# (`zbuduj.py --skrypty` wystarcza — DaneStanu to moduł). Nazwy niezbudowanych jeszcze kontenerów nic nie psują.
+#  • BIOMY — kontenery z walkami biomu (kod SerwerPotworow): ich łup przyjmuje Sygnaly/PrzyznajLup i tylko w ich
+#    walkach działa kara za przegraną (tablica próby TestWalki2 łupu nie wysyła);
+#  • WYDATKI — kontenery, które mogą wydawać Złoto gracza (Sygnaly/WydajZloto, Pety "kup").
+PAKIETY_BIOMOW = ["LasPotwory", "LasPasGra", "BagnoPasGra", "DzunglaPasGra"]   # 18.11: Dżungla (trzeci biom)
+PAKIETY_WYDATKOW = ["PetyProba", "KowalProba"]                                # 18.11: Kowal (D-102)
+
+# punkty statystyk za poziom (D-097 ✅ 17.11: „5 punktów do rozdania za poziom”). PUNKTY_SAMO_NA_POZIOM = ile
+# punktów na poziom rozdziela się SAMO rozkładem klasy: 5 = wariant b (odstępstwo przyjęte roboczo dla balansu — suma
+# 10 jak przy strojeniu potworów); 0 = czysty wariant a z D-097 (las ok. 61 zamiast 31 min — punkty_statystyk.py)
+PUNKTY_DO_ROZDANIA = 5
+PUNKTY_SAMO_NA_POZIOM = 5
+
+# Gemy bez płacenia (D-099 ✅ 17.11; liczby „do zmiany”, tools/walka/REBIRTH_1711.md część 1): za każdy awans i za
+# pierwsze pokonanie strażnika każdego biomu (gatunek zaczyna się od PREFIKS_STRAZNIKA); za co dziesiątą wygraną
+# i z kopalni — jeszcze nie (README)
+GEMY_ZA_POZIOM = 10
+GEMY_ZA_STRAZNIKA = 100
+PREFIKS_STRAZNIKA = "straznik_"
+
 # kara za przegraną (propozycja D-098): ułamek posiadanego Złota; 0 = wyłączona. Liczby: kara_przegranej.py, README.
 KARA_PROCENT = 0.05
 ZWYKLY_POTWOR = "cierniowy_wilk"   # łup zwykłego potwora (limit kary); zwykłe potwory Bagna mają ten sam łup
+
+
+def silnik_stala(nazwa):
+    import silnik  # noqa: E402  (tools/walka — tylko odczyt)
+    return silnik.STALE[nazwa]
+
+
+def pasywki_silnika():
+    """Pasywki, które silnik zna i które działają przez modyfikatory (pole premie opisu postaci): pasywne umiejętności
+    klas (silnik.PASYWNE) i pasywki broni (silnik.PASYWKI_BRONI); bez tych bez modyfikatorów (Wskrzeszenie działa
+    tylko ze slotu). → {nazwa: {klasa, modyfikatory, rodzaj}}"""
+    import silnik  # noqa: E402
+    w = {}
+    for rodzaj, zrodlo in (("umiejetnosc", silnik.PASYWNE), ("bron", silnik.PASYWKI_BRONI)):
+        for n in sorted(zrodlo):
+            d = zrodlo[n]
+            if d.get("modyfikatory"):
+                w[n] = {"klasa": d["klasa"], "modyfikatory": dict(d["modyfikatory"]), "rodzaj": rodzaj}
+    return w
+
+
+def zaklecia_silnika():
+    import silnik  # noqa: E402
+    return sorted(silnik.ZAKLECIA)
+
+
+def granice_modyfikatorow():
+    import silnik  # noqa: E402
+    return {m["id"]: [m["min"], m["max"]] for m in silnik.MODYFIKATORY}
 
 
 def limit_lupu_zwyklego():
@@ -97,7 +148,9 @@ def podstawa():
         "wersja": 1,
         "kontener": "StanGracza",
         "prefiks": "[StanGracza] ",
-        "wersja_profilu": 2,                # 2 (17.11.2026): pety i licznik wydatków w profilu (swiat/pety_proba)
+        # 2 (17.11.2026): pety i licznik wydatków w profilu (swiat/pety_proba); 3 (18.11.2026): dane pakietów
+        # (Sygnaly/DanePakietu — pole pakiety; profil 2 dostaje puste pakiety)
+        "wersja_profilu": 3,
         "krzywa": {"a": tempo.DOMYSLNE_A, "b": 1.6},
         "pula": {"baza": wzorcowe.PUNKTY_START, "na_poziom": wzorcowe.PUNKTY_NA_POZIOM},
         "sloty": progi_slotow(),
@@ -132,10 +185,10 @@ def podstawa():
         # starsze niż min_s (żeby spóźnione zgłoszenie nie pokazało łupu kolejnej walki w jej trakcie)
         "publikacja": {"zapas_s": 6, "min_s": 1.5, "odstep_pokaz_s": 0.5},
         # kontenery z kodem potworów, których łup przyjmujemy (każdy nowy biom: dopisać jego kontener; 17.11.2026 Bagno)
-        "zrodla": ["LasPotwory", "LasPasGra", "BagnoPasGra"],
+        "zrodla": list(PAKIETY_BIOMOW),
         # wydawanie Złota (Sygnaly/WydajZloto i Sygnaly/Pety "kup", 17.11.2026): kto może wydawać (nazwy kontenerów
         # pakietów) i największa jedna kwota; licznik wydatków na cel (np. kupione jajka) jest w profilu
-        "wydatki": {"zrodla": ["PetyProba"], "kwota_maks": 1000000},
+        "wydatki": {"zrodla": list(PAKIETY_WYDATKOW), "kwota_maks": 1000000},
         # pety w profilu (swiat/pety_proba): kopie każdego peta (kopia = shard peta, D-058), aktywny pet i jego premia
         # do łupu z walk (wartości premii przysyła pakiet petów — tu tylko granice); atrybuty gracza dla klientów
         "pety": {"rodzajow_maks": 100, "kopii_maks": 1000000, "premia_maks": 0.5,
@@ -145,9 +198,30 @@ def podstawa():
         # przeciwnika (limit_lupu = łup Cierniowego Wilka z silnika, jak zwykłe potwory Bagna); tylko walki z kontenerów
         # `zrodla` (las-pas, stary las, Bagno — nie tablica próby, nie tryb testowy TestBohater, który łupu nie wysyła);
         # atrybut kontenera StanGracza `atrybut_wylacznika` = false wyłącza karę w czasie gry (próby, testy)
-        "kara": {"procent": KARA_PROCENT, "limit_lupu": limit_lupu_zwyklego(), "zrodla": ["LasPotwory", "LasPasGra", "BagnoPasGra"],
+        "kara": {"procent": KARA_PROCENT, "limit_lupu": limit_lupu_zwyklego(), "zrodla": list(PAKIETY_BIOMOW),
                  "atrybut_wylacznika": "KaraPrzegranej", "komunikat": "Przegrana: −%d Złota, +%d doświadczenia",
                  "komunikat_bez_zlota": "Przegrana: +%d doświadczenia", "czas_s": 3.5},
+        # modyfikatory bohatera (18.11.2026, Sygnaly/Modyfikatory — pety D-101, Kowal D-102): granice jednego wpisu
+        # źródła i złożenia; pasywki = nazwy z silnika z ich modyfikatorami (pole premie opisu postaci)
+        "modyfikatory": {"zrodel_maks": 16, "statystyka_maks": 1000, "procent_maks": 1, "procent_suma_maks": 3,
+                         "lup_maks_zrodla": 0.5, "lup_suma_maks": 1, "bron_maks": 1000, "pancerz_maks": 1000,
+                         "tarcza_maks": 0.5, "pasywek_maks": 6, "blok_maks": silnik_stala("blok_maks"),
+                         "zrodlo_pety": "pety"},
+        "pasywki_silnika": pasywki_silnika(),
+        # zaklęcia broni, które zna silnik (silnik.ZAKLECIA; pole bron.zaklecie opisu postaci) — pole `zaklecie` wpisu
+        "zaklecia_silnika": zaklecia_silnika(),
+        "granice_modyfikatorow": granice_modyfikatorow(),
+        # dane pakietów w profilu (Sygnaly/DanePakietu): tylko wartości dające się zapisać, z limitem rozmiaru
+        "pakiety": {"wartosci_maks": 2000, "glebokosc_maks": 8, "napis_maks": 200, "pakietow_maks": 32},
+        # punkty statystyk (18.11.2026, realizacja propozycji D-097 — czeka na zatwierdzenie): za poziom 5 do rozdania
+        # przez gracza + 5 rozdawanych samo rozkładem klasy (suma jak dziś: pula.na_poziom = 10); „+” w oknie ekwipunku
+        # (StatPoints Pawła — pliki nietknięte) zdejmuje punkt z puli, bez punktu zmiana jest cofana z komunikatem.
+        # Atrybut kontenera `atrybut_wylacznika` = false: jak przed D-097 (10 samo, darmowy „+”).
+        "punkty": {"na_poziom": PUNKTY_DO_ROZDANIA, "auto_na_poziom": PUNKTY_SAMO_NA_POZIOM,
+                   "atrybut": "PunktyDoRozdania", "atrybut_wylacznika": "PunktyStatystyk",
+                   "komunikat_brak": "Brak punktów — zdobądź poziom", "licznik": "Punkty do rozdania: %d"},
+        "gemy": {"za_poziom": GEMY_ZA_POZIOM, "za_straznika": GEMY_ZA_STRAZNIKA, "prefiks_straznika": PREFIKS_STRAZNIKA,
+                 "komunikat_straznika": "+%d Gemów za pierwsze pokonanie strażnika!"},
         "klasy_pawla": {"folder": "Shared", "modul": "ClassData", "czekaj_s": 10},
         "trening": {"kontener": "TreningProba", "sygnal": "PrzyrostStatystyki"},
         "hud": {"gui": "HUD", "czekaj_s": 60},
@@ -218,7 +292,8 @@ def przypadki(D):
     # wydatki i pety (17.11.2026, swiat/pety_proba)
     P["wydatek"] = []
     dobry_w = {"ile": 300, "zrodlo": D["wydatki"]["zrodla"][0], "cel": "jajko_lesne"}
-    for info in (dobry_w, dict(dobry_w, ile=0), dict(dobry_w, ile=-5), dict(dobry_w, ile=2.5),
+    for info in (dobry_w, dict(dobry_w, zrodlo="KowalProba", cel="ulepszenie"), dict(dobry_w, zrodlo="KowalProba",
+                                                                                      cel="zakup_przedmiotu"), dict(dobry_w, ile=0), dict(dobry_w, ile=-5), dict(dobry_w, ile=2.5),
                  dict(dobry_w, ile=D["wydatki"]["kwota_maks"] + 1), dict(dobry_w, ile="300"), dict(dobry_w, zrodlo="Haker"),
                  dict(dobry_w, cel=""), dict(dobry_w, cel="jajko lesne"), dict(dobry_w, cel="x" * 25)):
         w, powod = LS.czysty_wydatek(D, info)
@@ -244,6 +319,47 @@ def przypadki(D):
                                (500, 0, 0.05), (500, 2.7, 0.05), (10 ** 6, 999, 0.05), (777, 5, "0.05")):
         P["kara"].append({"zloto": nil(z), "poziom": poziom, "procent": nil(procent),
                           "wynik": LS.kara_przegranej(D, z, poziom, procent)})
+    # modyfikatory bohatera i dane pakietów (18.11.2026)
+    P["mod"] = []
+    for mod in ({"statystyki": {"Strength": 5, "Luck": -2}, "procent": {"Strength": 0.1}, "lup": {"zloto": 0.05},
+                 "bron": 3, "pancerz": 2.5, "tarcza": 0.05, "pasywki": ["furia", "luk_wiatru", "furia"]},
+                {}, {"lup": {"zloto": 0.6}}, {"statystyki": {"Mana": 1}}, {"statystyki": {"Strength": 1.5}},
+                {"procent": {"Luck": -0.1}}, {"bron": 5000}, {"pasywki": ["wskrzeszenie"]}, {"pasywki": ["nie_ma"]},
+                {"pasywki": ["a", "b", "c", "d", "e", "f", "g"]}, {"cos": 1}, {"statystyki": {"Armor": 0}},
+                {"zaklecie": "podpalenie"}, {"zaklecie": "lod"}, {"zaklecie": 5}):
+        w, powod = LS.czysty_modyfikator(D, mod)
+        P["mod"].append({"mod": mod, "wynik": nil(w), "powod": powod})
+    m1 = LS.czysty_modyfikator(D, {"statystyki": {"Strength": 5}, "procent": {"Strength": 0.1, "Armor": 0.9},
+                                   "lup": {"zloto": 0.3}, "bron": 4, "pasywki": ["furia", "seria"]})[0]
+    m2 = LS.czysty_modyfikator(D, {"statystyki": {"Strength": 3, "Luck": 2}, "procent": {"Armor": 0.9},
+                                   "lup": {"zloto": 0.5, "doswiadczenie": 0.1}, "pancerz": 6, "tarcza": 0.3,
+                                   "pasywki": ["seria", "mur_tarczy", "kolos"]})[0]
+    m3 = LS.czysty_modyfikator(D, {"procent": {"Armor": 1}, "tarcza": 0.4, "bron": -1000, "zaklecie": "trucizna"})[0]
+    m4 = LS.czysty_modyfikator(D, {"zaklecie": "podpalenie", "lup": {"doswiadczenie": 0.05}})[0]
+    P["zloz"], P["opis_mod"] = [], []
+    for lista in ([], [m1], [m1, m2], [m2, m1, m3], [m4, m3], [m3, m4]):
+        zl = LS.zloz_modyfikatory(D, lista)
+        P["zloz"].append({"mody": lista, "wynik": zl})
+        for k, L in (("wojownik", 1), ("zwiadowca", 5), ("mag", 10)):
+            st = LS.rozdziel(D, D["rozklady"][k], LS.pula(D, L))
+            opis = LS.opis_bohatera(D, k, L, st)
+            P["opis_mod"].append({"opis": opis, "z": zl, "wynik": LS.opis_z_modyfikatorami(D, opis, zl)})
+    P["dane_pakietu"] = []
+    for v in ({"poziom": 3, "przedmioty": [{"id": "miecz", "plus": 2}, {"id": "tarcza", "plus": 0}], "ok": True},
+              [1, 2, "trzy"], {}, "napis", 5, {"x": "y" * 201}, {"a": {"b": {"c": {"d": {"e": {"f": {"g": {"h": 1}}}}}}}},
+              {"a": {"b": {"c": {"d": {"e": {"f": {"g": {"h": {"i": 1}}}}}}}}}, {"tak": True, "n": -3.5}):
+        w, powod = LS.czyste_dane_pakietu(D, v)
+        P["dane_pakietu"].append({"v": v, "wynik": nil(w), "powod": powod})
+    # Gemy za strażnika (18.11.2026, D-099)
+    P["straznik"] = [{"gatunek": nil(g), "wynik": LS.czy_straznik(D, g)}
+                     for g in ("straznik_lasu", "straznik_topieli", "lesny_slime", "straznik", "", None, 7, "xstraznik_lasu")]
+    # punkty statystyk do rozdania (18.11.2026)
+    P["pula_sama"] = [{"poziom": L, "wl": wl, "wynik": LS.pula_sama(D, L, wl)} for L in (1, 2, 5, 11, 999) for wl in (True, False)]
+    P["zmiana"] = []
+    for znana, nowa, pula in ((20, 21, 5), (20, 21, 0), (20, 25, 5), (20, 26, 5), (20, 19, 5), (20, 20, 0), (20, None, 3),
+                              (None, 3, 5), (20, 22.7, 5), (20, 21, -1), (20, 21, None), (9999, 10000, 5)):
+        P["zmiana"].append({"znana": nil(znana), "nowa": nil(nowa), "pula": nil(pula),
+                            "wynik": list(LS.zmiana_statystyki(D, znana, nowa, pula))})
     return P
 
 

@@ -331,6 +331,57 @@ class TestLuau(unittest.TestCase):
                 lup = {"zloto": los.randint(0, 500), "doswiadczenie": los.randint(0, 500)}
                 self.assertEqual(self.wolaj("premiaLupu", self.Dl, lup, w)[0], LS.premia_lupu(D, lup, w))
 
+    def test_4h_modyfikatory_i_dane_pakietow_jak_lustro(self):
+        # Sygnaly/Modyfikatory i DanePakietu (18.11.2026): Luau = lustro na losowych danych
+        los = random.Random(37)
+        atr = list(D["atrybuty_statystyk"].values()) + ["Mana"]
+        nazwy = sorted(D["pasywki_silnika"]) + ["wskrzeszenie", "nie_ma"]
+        czyste = []
+        for _ in range(250):
+            mod = {}
+            if los.random() < 0.6:
+                mod["statystyki"] = {los.choice(atr): los.choice([1, 5, -3, 0, 1000, 1001, 2.5]) for _ in range(2)}
+            if los.random() < 0.5:
+                mod["procent"] = {los.choice(atr): los.choice([0.1, 0.5, 1, 1.2, -0.1, 0])}
+            if los.random() < 0.5:
+                mod["lup"] = {los.choice(["zloto", "doswiadczenie", "gemy"]): los.choice([0.05, 0.5, 0.6, -0.1])}
+            for pole in ("bron", "pancerz", "tarcza"):
+                if los.random() < 0.3:
+                    mod[pole] = los.choice([1, 3.5, -2, 0.1, 999, 1001, -0.6, "1"])
+            if los.random() < 0.4:
+                mod["pasywki"] = [los.choice(nazwy) for _ in range(los.randint(0, 7))]
+            if los.random() < 0.3:
+                mod["zaklecie"] = los.choice(["podpalenie", "trucizna", "lod", 3])
+            if los.random() < 0.05:
+                mod["cos"] = 1
+            w, powod = LS.czysty_modyfikator(D, mod)
+            wl = self.wolaj("czystyModyfikator", self.Dl, mod)
+            self.assertEqual((norm(wl[0]) if wl[0] is not None else None, wl[1]), (norm(w) if w is not None else None,
+                                                                                   powod), mod)
+            if w is not None:
+                czyste.append(w)
+        for _ in range(60):
+            lista = [los.choice(czyste) for _ in range(los.randint(0, 4))]
+            zl = LS.zloz_modyfikatory(D, lista)
+            zll = self.it.wywolaj(self.L.get("zlozModyfikatory"), [self.Dl, LM.do_luau(lista) if lista else LM.Tabela()])[0]
+            self.assertEqual(norm(LM.z_luau(zll)), norm(zl))
+            k = los.choice(D["klasy"])
+            L = los.choice([1, 5, 10, 40])
+            opis = LS.opis_bohatera(D, k, L, LS.rozdziel(D, D["rozklady"][k], LS.pula(D, L)))
+            wl = self.it.wywolaj(self.L.get("opisZModyfikatorami"), [self.Dl, LM.do_luau(opis), zll])[0]
+            wp = LS.opis_z_modyfikatorami(D, opis, zl)
+            self.assertEqual(norm(LM.z_luau(wl)), norm(wp))
+            silnik.sprawdz_postac(wp, "gracz")  # silnik przyjmuje opis z modyfikatorami
+        self.assertEqual(LS.opis_z_modyfikatorami(D, opis, LS.zloz_modyfikatory(D, [])), opis, "bez modyfikatorów bez zmian")
+        for v in ({"a": 1, "b": [1, 2, {"c": "x"}]}, {"x": "ż" * 101}, {"x": "y" * 200}, list(range(2001)), {}, [True],
+                  {"a": [[[[[[[[1]]]]]]]]}):
+            w, powod = LS.czyste_dane_pakietu(D, v)
+            wl = self.wolaj("czysteDanePakietu", self.Dl, v)
+            self.assertEqual((norm(wl[0]) if wl[0] is not None else None, wl[1]),
+                             (norm(w) if w is not None else None, powod), str(v)[:60])
+        self.assertEqual(LS.czyste_dane_pakietu(D, list(range(2001)))[1], "za_duzo")
+        self.assertEqual(LS.czyste_dane_pakietu(D, {"x": "ż" * 101})[1], "za_dlugi_napis", "limit w bajtach (jak # w Luau)")
+
     def test_4g_kara_przegranej_jak_lustro(self):
         # propozycja D-098: Luau = lustro na losowych danych; nigdy ujemna, nigdy więcej niż Złoto, procent i limit
         los = random.Random(31)
@@ -423,11 +474,19 @@ class TestStyku(unittest.TestCase):
             self.assertIn(k, pomocnicze, k)
         # każdy kontener z kodem potworów (stary las, las-pas, Bagno — KONTENER w ich zbuduj.py) jest na liście
         # przyjmowanych źródeł łupu; nowy biom bez wpisu w dane.py dostałby odmowę „zle_zrodlo”
+        # (każdy pakiet swiat/*_pas_gra jest brany sam — nowy biom bez wpisu w dane.py PAKIETY_BIOMOW oblewa test)
         kontenery = set()
-        for pakiet in ("las_potwory", "las_pas_gra", "bagno_pas_gra"):
+        pakiety = ["las_potwory"] + sorted(n for n in os.listdir(os.path.join(REPO, "swiat")) if n.endswith("_pas_gra"))
+        for pakiet in pakiety:
             if os.path.isfile(os.path.join(REPO, "swiat", pakiet, "zbuduj.py")):
                 kontenery.add(re.search(r'^KONTENER = "(\w+)"', czytaj(REPO, "swiat", pakiet, "zbuduj.py"), re.M).group(1))
-        self.assertEqual(sorted(D["zrodla"]), sorted(kontenery))
+        self.assertTrue({"LasPotwory", "LasPasGra", "BagnoPasGra"} <= kontenery)
+        self.assertTrue(kontenery <= set(D["zrodla"]), kontenery - set(D["zrodla"]))
+        self.assertEqual(D["zrodla"], DANE.PAKIETY_BIOMOW)
+        self.assertEqual(D["kara"]["zrodla"], DANE.PAKIETY_BIOMOW, "kara za przegraną w tych samych biomach")
+        self.assertEqual(D["wydatki"]["zrodla"], DANE.PAKIETY_WYDATKOW)
+        self.assertIn("DzunglaPasGra", D["zrodla"])
+        self.assertIn("KowalProba", D["wydatki"]["zrodla"])
 
     def test_6c_klient_lasu(self):
         kod = bez_komentarzy(KLIENT_LASU)
@@ -458,10 +517,11 @@ class TestStyku(unittest.TestCase):
         do_klienta = set(re.findall(r'zdarzenia:FireClient\(gracz, "(\w+)"', bez_komentarzy(SERWER)))
         do_serwera = set(re.findall(r'zdarzenia:FireServer\("(\w+)"\)', bez_komentarzy(KLIENT)))
         # "premia" (17.11.2026) czyta klient pakietu petów; KlientStanu obsługuje "awans" i "przegrana" (kara, D-098)
-        self.assertEqual(do_klienta, {"awans", "premia", "przegrana"})
+        self.assertEqual(do_klienta, {"awans", "premia", "przegrana", "brak_punktow", "gemy_straznika"})
         self.assertEqual(do_serwera, {"pokaz"})
         self.assertIn('polecenie ~= "awans"', KLIENT)
         self.assertIn('polecenie ~= "przegrana"', KLIENT)
+        self.assertIn('polecenie ~= "brak_punktow"', KLIENT)
         self.assertIn('polecenie ~= "pokaz"', SERWER)
         # klient nie wysyła liczb: FireServer tylko z jednym napisem
         self.assertEqual(re.findall(r"zdarzenia:FireServer\(([^)]*)\)", bez_komentarzy(KLIENT)), ['"pokaz"', '"pokaz"'])
@@ -480,7 +540,7 @@ class TestStyku(unittest.TestCase):
     def test_6h_kara_tylko_w_walkach_biomow(self):
         # kara za przegraną (D-098): las-pas, stary las, Bagno; tablica próby (TestWalki2) łupu nie wysyła, a w trybie
         # testowym TestBohater serwer potworów nie woła PrzyznajLup (sygnalStanu → nil)
-        self.assertEqual(sorted(D["kara"]["zrodla"]), sorted(["LasPotwory", "LasPasGra", "BagnoPasGra"]))
+        self.assertTrue({"LasPotwory", "LasPasGra", "BagnoPasGra"} <= set(D["kara"]["zrodla"]))
         self.assertTrue(set(D["kara"]["zrodla"]) <= set(D["zrodla"]))
         self.assertNotIn("TestWalki2", D["zrodla"])
         cialo = SERWER_LASU[SERWER_LASU.index("local function sygnalStanu"):SERWER_LASU.index("local function bohaterZeStanu")]
@@ -664,7 +724,11 @@ class TestSerweraOffline(unittest.TestCase):
         self.uruchom()
         self.g.ustaw("Class", "Mage")
         self.assertEqual(self.staty(), LS.rozdziel(D, ROZKLADY_CD["mag"], 30))
-        self.g.ustaw("Luck", self.atr("Luck") + 1)  # darmowy „+” w oknie ekwipunku (StatPoints Pawła)
+        self.assertEqual(self.atr("PunktyDoRozdania"), 0)
+        # „+” w oknie ekwipunku (StatPoints Pawła) bez punktów — cofnięty, komunikat (D-097)
+        self.g.ustaw("Luck", self.atr("Luck") + 1)
+        self.assertEqual(self.staty(), LS.rozdziel(D, ROZKLADY_CD["mag"], 30))
+        self.assertIn(["brak_punktow"], [x[1] for x in self.sw.do_klienta])
         opis = self.wywolaj("Bohater", self.g.t)
         self.assertEqual(norm(opis), norm(LS.opis_bohatera(D, "mag", 1, self.staty())))
         self.assertEqual(self.lup(czas=20.0), {"ok": True})
@@ -674,9 +738,19 @@ class TestSerweraOffline(unittest.TestCase):
                          (21, 0, 2, LS.xp_do_nastepnego(D, 2)))
         self.assertEqual(self.atr("TokenyKrainy_las"), 1)
         self.assertEqual(self.sw.do_klienta[-1][1], ["awans", 2, 1])
-        oczek = LS.rozdziel(D, ROZKLADY_CD["mag"], 40)
+        # awans: 5 samo (rozkład klasy) + 5 do rozdania; „+” zdejmuje punkt i zostaje przy kolejnym awansie
+        oczek = LS.rozdziel(D, ROZKLADY_CD["mag"], LS.pula_sama(D, 2))
+        self.assertEqual(self.staty(), oczek)
+        self.assertEqual(self.atr("PunktyDoRozdania"), D["punkty"]["na_poziom"])
+        self.g.ustaw("Luck", self.atr("Luck") + 1)
         oczek["szczescie"] += 1
-        self.assertEqual(self.staty(), oczek, "awans dopisał różnicę, „+” Pawła został")
+        self.assertEqual(self.staty(), oczek, "„+” z punktem przyjęty")
+        self.assertEqual(self.atr("PunktyDoRozdania"), D["punkty"]["na_poziom"] - 1)
+        self.g.ustaw("Level", 3)
+        oczek3 = LS.rozdziel(D, ROZKLADY_CD["mag"], LS.pula_sama(D, 3))
+        oczek3["szczescie"] += 1
+        self.assertEqual(self.staty(), oczek3, "awans dopisał różnicę, rozdany punkt został")
+        self.assertEqual(self.atr("PunktyDoRozdania"), 2 * D["punkty"]["na_poziom"] - 1)
 
     def test_8c_pokaz_od_klienta_i_gemy_drzewka(self):
         self.uruchom()
@@ -723,17 +797,20 @@ class TestSerweraOffline(unittest.TestCase):
         self.przyrost.odpal(self.g.t, LM.do_luau({"atrybut": "Mana", "przyrost": 5}))  # nieznana — pominięta
         self.assertEqual(self.atr("Strength"), przed["sila"] + 2)
         self.g.ustaw("Level", 5)  # np. tester w pasku poleceń
-        cel = LS.rozdziel(D, ROZKLADY_CD["wojownik"], LS.pula(D, 5))
+        cel = LS.rozdziel(D, ROZKLADY_CD["wojownik"], LS.pula_sama(D, 5))
         self.assertEqual(self.atr("Strength"), cel["sila"] + 2)
+        self.assertEqual(self.atr("PunktyDoRozdania"), 4 * D["punkty"]["na_poziom"], "trening nie zdejmuje punktów")
         self.assertEqual(self.atr("XPMax"), LS.xp_do_nastepnego(D, 5))
         opis = self.wywolaj("Bohater", self.g.t)
         st = dict(cel)
         st["sila"] += 2
         self.assertEqual(norm(opis), norm(LS.opis_bohatera(D, "wojownik", 5, st)))
-        if not ROZNE_OD_WZORCA:  # przy profilu wzorcowym to dokładnie postać wzorcowa silnika
+        if not ROZNE_OD_WZORCA:  # profil wzorcowy i rozdane po rozkładzie klasy = postać wzorcowa silnika
             dodatkowe = {s: 0 for s in D["statystyki"]}
             dodatkowe["sila"] = 2
-            self.assertEqual(norm(opis), norm(wzorcowe.postac("wojownik", 5, dodatkowe=dodatkowe)))
+            st2 = LS.rozdziel(D, ROZKLADY_CD["wojownik"], LS.pula(D, 5))
+            st2["sila"] += 2
+            self.assertEqual(LS.opis_bohatera(D, "wojownik", 5, st2), wzorcowe.postac("wojownik", 5, dodatkowe=dodatkowe))
         self.assertEqual(self.k.atrybuty["LicznikTreningu"], 1)
 
     def test_8g_wylacznik_statystyk(self):
@@ -749,8 +826,56 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual((opis["klasa"], opis["poziom"], opis["statystyki"]["pancerz"]), ("zwiadowca", 3, 58))
         # włączenie w czasie gry: od razu rozkład klasy (cel + trening)
         self.k.ustaw("StatystykiKlasy", True)
-        cel = LS.rozdziel(D, ROZKLADY_CD["zwiadowca"], LS.pula(D, 3))
+        cel = LS.rozdziel(D, ROZKLADY_CD["zwiadowca"], LS.pula_sama(D, 3))
         self.assertEqual(self.atr("Armor"), cel["pancerz"] + 1)
+        self.assertEqual(self.atr("PunktyDoRozdania"), 0, "punkty za poziomy z czasu wyłączenia nie dochodzą")
+
+    def test_8p_punkty_do_rozdania(self):
+        # D-097: 5 do rozdania za poziom; „+” z punktem przyjęty, bez punktu i spadek cofnięte; trening osobno
+        self.uruchom()
+        self.g.ustaw("Class", "Warrior")
+        n = D["punkty"]["na_poziom"]
+        self.g.ustaw("Level", 4)
+        self.assertEqual(self.atr("PunktyDoRozdania"), 3 * n)
+        baza = self.staty()
+        for _ in range(3 * n):
+            self.g.ustaw("Intelligence", self.atr("Intelligence") + 1)
+        self.assertEqual(self.atr("Intelligence"), baza["inteligencja"] + 3 * n)
+        self.assertEqual(self.atr("PunktyDoRozdania"), 0)
+        przed = len([x for x in self.sw.do_klienta if x[1] == ["brak_punktow"]])
+        self.g.ustaw("Strength", self.atr("Strength") + 1)
+        self.assertEqual(self.atr("Strength"), baza["sila"], "bez punktu — cofnięte")
+        self.g.ustaw("Strength", self.atr("Strength") - 3)
+        self.assertEqual(self.atr("Strength"), baza["sila"], "spadek — cofnięty")
+        self.g.ustaw("Strength", "x")
+        self.assertEqual(self.atr("Strength"), baza["sila"])
+        self.assertEqual(len([x for x in self.sw.do_klienta if x[1] == ["brak_punktow"]]), przed + 1)
+        # dwa punkty naraz przy jednym w puli — cofnięte w całości
+        self.g.ustaw("Level", 5)
+        self.g.ustaw("Luck", self.atr("Luck") + n + 1)
+        self.assertEqual(self.atr("PunktyDoRozdania"), n)
+        stan = self.wywolaj("SterowanieSerwera", "stan", self.g.t)
+        self.assertEqual(stan["punkty"]["rozdane"]["inteligencja"], 3 * n)
+        self.assertEqual((stan["punkty"]["pula"], stan["punkty"]["poziom"]), (n, 5))
+        # bohater walki ma rozdane punkty
+        opis = self.wywolaj("Bohater", self.g.t)
+        self.assertEqual(opis["statystyki"]["inteligencja"], self.atr("Intelligence"))
+        # trening dopisuje bez zdejmowania punktów
+        self.przyrost.odpal(self.g.t, LM.do_luau({"atrybut": "Armor", "przyrost": 2}))
+        self.assertEqual(self.atr("PunktyDoRozdania"), n)
+        # wyłącznik: „+” za darmo, pula samo rozdzielana 10 na poziom, licznik schowany
+        self.k.ustaw(D["punkty"]["atrybut_wylacznika"], False)
+        self.assertIsNone(self.atr("PunktyDoRozdania"))
+        przed_plus = self.atr("Luck")
+        self.g.ustaw("Luck", przed_plus + 1)
+        self.assertEqual(self.atr("Luck"), przed_plus + 1)
+        self.g.ustaw("Level", 6)
+        self.assertIsNone(self.atr("PunktyDoRozdania"))
+        # ponowne włączenie: obecne wartości przyjęte, pula samo rozdzielana znów 5 na poziom, punkty od poziomu 6
+        self.k.ustaw(D["punkty"]["atrybut_wylacznika"], None)
+        self.assertEqual(self.atr("PunktyDoRozdania"), n)
+        self.assertEqual(self.k.atrybuty["LicznikCofnietychPunktow"], 4)
+        self.assertEqual(self.ostrzezenia(), [])
 
     def wydaj(self, ile, zrodlo="PetyProba", cel="jajko_lesne"):
         return self.wywolaj("WydajZloto", self.g.t, {"ile": ile, "zrodlo": zrodlo, "cel": cel})
@@ -780,6 +905,11 @@ class TestSerweraOffline(unittest.TestCase):
         self.sw.krok(D["publikacja"]["min_s"] + 0.1)
         self.assertEqual(self.wydaj(300), {"ok": True, "zloto": 50, "ile": 300, "licznik": 3})
         self.assertEqual(self.k.atrybuty["LicznikWydatkow"], 3)
+        # Kowal (18.11.2026, D-102): drugi pakiet z prawem wydawania, cele „ulepszenie” i „zakup_przedmiotu”
+        self.assertEqual(self.wydaj(20, zrodlo="KowalProba", cel="ulepszenie"), {"ok": True, "zloto": 30, "ile": 20, "licznik": 1})
+        self.assertEqual(self.wydaj(30, zrodlo="KowalProba", cel="zakup_przedmiotu")["zloto"], 0)
+        self.assertEqual(self.wydaj(1, zrodlo="KowalProba", cel="ulepszenie")["powod"], "za_malo")
+        self.assertEqual(self.k.atrybuty["LicznikWydatkow"], 5)
         self.assertEqual(self.ostrzezenia(), [])
 
     def pety(self, polecenie, info=None):
@@ -828,7 +958,151 @@ class TestSerweraOffline(unittest.TestCase):
         self.sw.krok(D["publikacja"]["zapas_s"] + 0.5)
         self.assertEqual(self.atr("Gold"), 125 + 21, "bez peta — bez premii")
         self.assertFalse(any(x[1][0] == "premia" for x in self.sw.do_klienta[przed:]))
-        self.assertEqual(self.wywolaj("SterowanieSerwera", "stan", self.g.t)["wersja"], 2)
+        self.assertEqual(self.wywolaj("SterowanieSerwera", "stan", self.g.t)["wersja"], D["wersja_profilu"])
+        self.assertEqual(self.ostrzezenia(), [])
+
+    def mody(self, polecenie, zrodlo=None, mod=None):
+        return self.wywolaj("Modyfikatory", polecenie, self.g.t, zrodlo, mod)
+
+    def test_8m_modyfikatory(self):
+        # Sygnaly/Modyfikatory (18.11.2026): jeden wpis na źródło, złożenie w bohaterze walki i w premii do łupu
+        self.uruchom()
+        self.g.ustaw("Class", "Warrior")
+        bez = self.wywolaj("Bohater", self.g.t)
+        self.assertNotIn("pet", bez)
+        self.assertNotIn("premie", bez)
+        kowal = {"statystyki": {"Strength": 4}, "bron": 6, "pancerz": 3, "tarcza": 0.05, "pasywki": ["furia", "seria"]}
+        self.assertEqual(self.mody("ustaw", "kowal", kowal), {"ok": True})
+        pety = {"procent": {"Strength": 0.1}, "lup": {"zloto": 0.2}}
+        self.assertEqual(self.mody("ustaw", "pety", pety), {"ok": True})
+        opis = self.wywolaj("Bohater", self.g.t)
+        oczek = LS.opis_z_modyfikatorami(D, bez, LS.zloz_modyfikatory(D, [LS.czysty_modyfikator(D, kowal)[0],
+                                                                           LS.czysty_modyfikator(D, pety)[0]]))
+        self.assertEqual(norm(opis), norm(oczek))
+        self.assertEqual(opis["statystyki"]["sila"], bez["statystyki"]["sila"] + 4)
+        self.assertEqual(opis["pet"], {"sila": 0.1})
+        self.assertEqual(opis["premie"], {"cios_zwykly": 0.108}, "Seria to pasywka Zwiadowcy — Wojownik jej nie dostaje")
+        silnik.sprawdz_postac(opis, "gracz")
+        cz = self.mody("czytaj")
+        self.assertEqual((cz["ok"], cz["zrodla"], cz["bron"], cz["lup"]["zloto"]), (True, ["kowal", "pety"], 6, 0.2))
+        # kolejne ustaw zastępuje wpis źródła; złe wpisy odrzucone z powodem, stary wpis zostaje
+        self.assertEqual(self.mody("ustaw", "kowal", {"bron": 2}), {"ok": True})
+        self.assertEqual(self.mody("czytaj")["bron"], 2)
+        for zly, powod in (({"pasywki": ["wskrzeszenie"]}, "nieznana_pasywka"), ({"statystyki": {"Mana": 1}}, "zla_statystyka"),
+                           ({"lup": {"zloto": 0.9}}, "zly_lup"), ({"bron": "5"}, "zle_bron"), ({"x": 1}, "nieznane_pole"),
+                           ("mod", "zly_mod")):
+            self.assertEqual(self.mody("ustaw", "kowal", zly), {"ok": False, "powod": powod}, zly)
+        self.assertEqual(self.mody("ustaw", "kowal", {"zaklecie": "lod"}), {"ok": False, "powod": "nieznane_zaklecie"})
+        self.assertEqual(self.mody("ustaw", "zle zrodlo", {}), {"ok": False, "powod": "zle_zrodlo"})
+        self.assertEqual(self.wywolaj("Modyfikatory", "ustaw", "nie-gracz", "kowal", {}), {"ok": False, "powod": "zly_gracz"})
+        self.assertEqual(self.mody("czytaj")["bron"], 2)
+        # premia do łupu = złożenie (pety 0,2 + kowal 0,1); komunikat "premia" tylko z części petów
+        self.mody("ustaw", "kowal", {"lup": {"zloto": 0.1}})
+        self.g.ustaw("Gold", 0)
+        self.lup(czas=0.0, zloto=100)
+        self.sw.krok(D["publikacja"]["zapas_s"] + 0.5)
+        self.assertEqual(self.atr("Gold"), 130)
+        self.assertIn(["premia", 20, 0, None], [x[1] for x in self.sw.do_klienta])
+        # zaklęcie broni (pety D-101: żywioły): kilka źródeł — wygrywa pierwsze według nazwy źródła („kowal” < „pety”)
+        self.assertEqual(self.mody("ustaw", "pety", dict(pety, zaklecie="trucizna")), {"ok": True})
+        self.assertEqual(self.wywolaj("Bohater", self.g.t)["bron"]["zaklecie"], "trucizna")
+        self.assertEqual(self.mody("ustaw", "kowal", {"lup": {"zloto": 0.1}, "zaklecie": "podpalenie"}), {"ok": True})
+        opis_z = self.wywolaj("Bohater", self.g.t)
+        self.assertEqual((opis_z["bron"]["zaklecie"], self.mody("czytaj")["zaklecie"]), ("podpalenie", "podpalenie"))
+        silnik.sprawdz_postac(opis_z, "gracz")
+        # silnik naprawdę podpala (25% przy ciosie gracza) — w kilku walkach jest choć jedno podpalenie od gracza
+        podpalenia = sum(1 for ziarno in range(1, 11)
+                         for e in silnik.symuluj(opis_z, {"potwor": "lesny_slime", "poziom": 1}, ziarno)["dziennik"]
+                         if e.get("efekt") == "podpalenie" and e.get("kto") == "gracz")
+        self.assertGreater(podpalenia, 0)
+        self.mody("ustaw", "kowal", {"lup": {"zloto": 0.1}})
+        self.mody("ustaw", "pety", pety)
+        # usuń: źródło znika ze złożenia
+        self.assertEqual(self.mody("usun", "kowal"), {"ok": True, "bylo": True})
+        self.assertEqual(self.mody("usun", "kowal"), {"ok": True, "bylo": False})
+        self.assertEqual(self.mody("czytaj")["zrodla"], ["pety"])
+        # limit źródeł
+        for i in range(D["modyfikatory"]["zrodel_maks"] - 1):
+            self.assertEqual(self.mody("ustaw", "z%d" % i, {}), {"ok": True})
+        self.assertEqual(self.mody("ustaw", "jeszcze", {}), {"ok": False, "powod": "za_duzo_zrodel"})
+        self.assertEqual(self.ostrzezenia(), [])
+
+    def test_8n_dawna_premia_peta_do_przejecia(self):
+        # zgodność wstecz: premia z Pety("kup"/"aktywny") liczy się jako źródło "pety", dopóki pakiet petów nie zawoła
+        # Modyfikatory dla "pety" — wtedy liczy się tylko jego wpis (bez podwójnej premii)
+        self.uruchom()
+        self.g.ustaw("Gold", 300)
+        self.wywolaj("Pety", "kup", self.g.t, {"ile": 300, "zrodlo": "PetyProba", "cel": "jajko_lesne", "pet": "zoledziak",
+                                               "premia": {"zloto": 0.2, "doswiadczenie": 0}})
+        cz = self.mody("czytaj")
+        self.assertEqual((cz["zrodla"], cz["lup"]["zloto"]), (["pety"], 0.2))
+        self.lup(czas=0.0, zloto=100)
+        self.sw.krok(D["publikacja"]["zapas_s"] + 0.5)
+        self.assertEqual(self.atr("Gold"), 120)
+        self.assertIn(["premia", 20, 0, "zoledziak"], [x[1] for x in self.sw.do_klienta])
+        self.assertEqual(self.mody("ustaw", "pety", {"lup": {"zloto": 0.05}, "procent": {"Luck": 0.1}}), {"ok": True})
+        cz = self.mody("czytaj")
+        self.assertEqual((cz["zrodla"], cz["lup"]["zloto"], cz["procent"]), (["pety"], 0.05, {"Luck": 0.1}))
+        self.mody("usun", "pety")
+        self.assertEqual(self.mody("czytaj")["lup"]["zloto"], 0, "przejęte — dawna premia już nie wraca")
+        self.assertEqual(self.ostrzezenia(), [])
+
+    def pakiet(self, polecenie, pakiet="kowal", tabela=None):
+        return self.wywolaj("DanePakietu", polecenie, self.g.t, pakiet, tabela)
+
+    def test_8o_dane_pakietu(self):
+        # Sygnaly/DanePakietu (18.11.2026): profil.pakiety[pakiet], kopia przy zapisie i odczycie, limity
+        self.uruchom()
+        self.assertIsNone(self.pakiet("czytaj"))
+        dane = {"przedmioty": [{"id": "miecz", "plus": 2}], "zloto_wydane": 150, "ok": True}
+        self.assertEqual(self.pakiet("zapisz", tabela=dane), {"ok": True})
+        self.assertEqual(self.pakiet("czytaj"), dane)
+        stan = self.wywolaj("SterowanieSerwera", "stan", self.g.t)
+        self.assertEqual((stan["wersja"], stan["pakiety"]["kowal"]), (D["wersja_profilu"], dane))
+        self.assertEqual(D["wersja_profilu"], 3)
+        for zla, powod in (({"x": "y" * 201}, "za_dlugi_napis"), ("napis", "zly_typ"), (list(range(2001)), "za_duzo")):
+            self.assertEqual(self.pakiet("zapisz", tabela=zla), {"ok": False, "powod": powod})
+        self.assertEqual(self.pakiet("czytaj"), dane, "zły zapis niczego nie zmienia")
+        self.assertEqual(self.pakiet("zapisz", pakiet="zly pakiet", tabela={}), {"ok": False, "powod": "zly_pakiet"})
+        self.assertIsNone(self.pakiet("czytaj", pakiet="zly pakiet"))
+        self.assertEqual(self.pakiet("zapisz", tabela=None), {"ok": True})
+        self.assertIsNone(self.pakiet("czytaj"))
+        for i in range(D["pakiety"]["pakietow_maks"]):
+            self.assertEqual(self.pakiet("zapisz", pakiet="p%d" % i, tabela={"i": i}), {"ok": True})
+        self.assertEqual(self.pakiet("zapisz", pakiet="nowy", tabela={}), {"ok": False, "powod": "za_duzo_pakietow"})
+        self.assertEqual(self.pakiet("zapisz", pakiet="p3", tabela={"i": 33}), {"ok": True}, "istniejący wolno nadpisać")
+        self.assertEqual(self.ostrzezenia(), [])
+
+    def test_8q_gemy_za_poziom_i_straznika(self):
+        # D-099: +Gemy za każdy awans i za pierwsze pokonanie strażnika każdego biomu (raz na gatunek)
+        self.uruchom()
+        g0 = self.atr("Gems")
+        self.g.ustaw("Level", 4)
+        self.assertEqual(self.atr("Gems"), g0 + 3 * D["gemy"]["za_poziom"])
+        self.g.ustaw("Level", 2)  # spadek (tester) niczego nie zabiera i nie daje
+        self.g.ustaw("Level", 4)
+        self.assertEqual(self.atr("Gems"), g0 + 3 * D["gemy"]["za_poziom"])
+        g1 = self.atr("Gems")
+
+        def walka(gatunek, wynik="wygrana", zrodlo="LasPasGra"):
+            w = self.wywolaj("PrzyznajLup", self.g.t, {"lup": dict(self.LUP, doswiadczenie=0), "wynik": wynik, "czas": 0,
+                                                       "zrodlo": zrodlo, "gatunek": gatunek, "poziom": 10})
+            self.sw.krok(D["publikacja"]["zapas_s"] + 0.5)
+            return w
+        walka("straznik_lasu", wynik="przegrana")
+        self.assertEqual(self.atr("Gems"), g1, "przegrana ze strażnikiem — bez Gemów")
+        walka("straznik_lasu")
+        self.assertEqual(self.atr("Gems"), g1 + D["gemy"]["za_straznika"])
+        self.assertIn(["gemy_straznika", D["gemy"]["za_straznika"]], [x[1] for x in self.sw.do_klienta])
+        walka("straznik_lasu")
+        self.assertEqual(self.atr("Gems"), g1 + D["gemy"]["za_straznika"], "drugi raz ten sam strażnik — bez Gemów")
+        walka("straznik_topieli", zrodlo="BagnoPasGra")
+        self.assertEqual(self.atr("Gems"), g1 + 2 * D["gemy"]["za_straznika"])
+        walka("lesny_slime")
+        self.assertEqual(self.atr("Gems"), g1 + 2 * D["gemy"]["za_straznika"])
+        stan = self.wywolaj("SterowanieSerwera", "stan", self.g.t)
+        self.assertEqual(stan["straznicy"], {"straznik_lasu": True, "straznik_topieli": True})
+        self.assertEqual(self.k.atrybuty["LicznikGemowStraznika"], 2)
         self.assertEqual(self.ostrzezenia(), [])
 
     def test_8h_bez_treningu_i_wyjscie_gracza(self):
@@ -860,6 +1134,7 @@ class TestKlientaOffline(unittest.TestCase):
         self.do_klienta = AR.Zdarzenie(sw)
         ev.t.set("OnClientEvent", self.do_klienta.t)
         gracz = sw.gracz("Gracz1", {})
+        self.gr = gracz
         pg = AR.Inst(sw, "PlayerGui", "PlayerGui", gracz)
         self.hud = None
         if z_hudem:
@@ -971,6 +1246,23 @@ class TestKlientaOffline(unittest.TestCase):
         self.assertEqual(self.banery(), [], "przegrana bez awansu — bez banera")
         self.assertEqual(self.sw.ostrzezenia, [])
 
+    def test_9e_licznik_punktow_i_brak_punktow(self):
+        # D-097: tymczasowy licznik „Punkty do rozdania: N” (atrybut gracza od serwera) i komunikat przy „+” bez punktu
+        self.uruchom(hud_wlaczony=True)
+        self.assertEqual([o for o in self.nowe if o.klasa == "ScreenGui" and o.t.get("Name") == "StanGraczaPunkty"], [],
+                         "bez punktów — bez licznika")
+        ustaw = self.gr.ustaw
+        ustaw(D["punkty"]["atrybut"], 5.0)
+        napisy = [o for o in self.nowe if o.klasa == "TextLabel" and "Punkty do rozdania" in str(o.t.get("Text"))]
+        self.assertEqual(len(napisy), 1)
+        self.assertEqual(napisy[0].t.get("Text"), "  %s  " % (D["punkty"]["licznik"] % 5))
+        self.assertTrue(napisy[0].t.get("Visible"))
+        ustaw(D["punkty"]["atrybut"], 0.0)
+        self.assertFalse(napisy[0].t.get("Visible"))
+        self.do_klienta.odpal("brak_punktow")
+        self.assertIn("  %s  " % D["punkty"]["komunikat_brak"], self.napisy())
+        self.assertEqual(self.sw.ostrzezenia, [])
+
     def test_9c_bez_hud(self):
         self.uruchom(z_hudem=False)
         self.assertEqual(self.wyslane, [["pokaz"]])
@@ -986,6 +1278,21 @@ class TestKontroli(unittest.TestCase):
         self.assertTrue(parser)
         self.assertEqual(bledy, [])
         self.assertEqual(len(SLS.pliki_pakietu()), 4)
+
+    def test_7f_funkcje_przed_uzyciem(self):
+        # luau_mini widzi lokalne funkcje zdefiniowane PÓŹNIEJ w pliku, a prawdziwy Luau nie (to globalna nil) —
+        # 18.11.2026 tak padło dopisz() w przyznajPunkty w Studio; każda `local function` przed pierwszym użyciem
+        for plik in ("SerwerStanu.server.luau", "KlientStanu.client.luau", "LogikaStanu.luau"):
+            linie = bez_komentarzy(czytaj(ZR, plik)).split("\n")
+            definicje = {}
+            for i, l in enumerate(linie):
+                m = re.match(r"\s*local function (\w+)", l)
+                if m and m.group(1) not in definicje:
+                    definicje[m.group(1)] = i
+            for nazwa, d in definicje.items():
+                for i in range(d):
+                    self.assertIsNone(re.search(r"(?<![\w.:\"])%s\s*\(" % re.escape(nazwa), linie[i]),
+                                      "%s: %s użyte w linii %d przed definicją (linia %d)" % (plik, nazwa, i + 1, d + 1))
 
     def test_7b_kontrola_wykrywa_bledy(self):
         zly = 'if not game:GetService("RunService"):IsStudio() then\n\treturn {}\nend\nlocal L = {}\nlocal x = workspace\nreturn L\n'

@@ -23,6 +23,13 @@
 		premiaLupu(D, lup, premia)                → { zloto, doswiadczenie } — dodatek od aktywnego peta
 	lupZwyklego(D, poziom)                    → Złoto za wygraną ze zwykłym potworem na tym poziomie (17.11.2026)
 	karaPrzegranej(D, zloto, poziomPotwora, procent) → Złoto zabrane za przegraną (propozycja D-098)
+	czystyModyfikator(D, mod), czysteDanePakietu(D, v) → kopia albo nil, powód   (18.11.2026, Sygnaly/Modyfikatory
+	                                            i Sygnaly/DanePakietu)
+	zlozModyfikatory(D, mody)                 → złożenie wpisów wszystkich źródeł
+	opisZModyfikatorami(D, opis, z)           → opis bohatera dla silnika z modyfikatorami (bez nich — ten sam)
+	pulaSama(D, poziom, punktyWlaczone)       → punkty rozdzielane samo rozkładem klasy (18.11.2026, D-097)
+	czyStraznik(D, gatunek)                   → strażnik biomu (Gemy za pierwsze pokonanie, D-099)
+	zmianaStatystyki(D, znana, nowa, pula)    → wartość, pula po, "ok" | "brak_punktow" | "cofnieta"
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -306,6 +313,14 @@ function L.sumaLupow(D, lista)
 	return w
 end
 
+local function wytrenowaneZero(D)
+	local w = {}
+	for _, s in D.statystyki do
+		w[s] = 0
+	end
+	return w
+end
+
 function L.nowyProfil(D)
 	local wytrenowane = {}
 	for _, s in D.statystyki do
@@ -327,6 +342,12 @@ function L.nowyProfil(D)
 		-- wersja 2: pety (kopie = shardy peta, D-058) i licznik wydatków Złota na cel (np. kupione jajka)
 		pety = { kopie = {}, aktywny = nil, premia = { zloto = 0, doswiadczenie = 0 } },
 		wydatki = {},
+		-- wersja 3 (18.11.2026): dane pakietów (Sygnaly/DanePakietu) — pakiety[pakiet] = tabela pakietu
+		pakiety = {},
+		-- punkty statystyk do rozdania (18.11.2026, D-097)
+		punkty = { pula = 0, rozdane = wytrenowaneZero(D), poziom = 1 },
+		-- strażnicy pokonani choć raz (gatunek → true) — Gemy za pierwsze pokonanie (D-099, 18.11.2026)
+		straznicy = {},
 	}
 end
 
@@ -408,6 +429,327 @@ function L.karaPrzegranej(D, zloto, poziomPotwora, procent): number
 	end
 	local k = math.floor(z * math.min(procent, 1))
 	return math.min(k, L.lupZwyklego(D, poziomPotwora), z)
+end
+
+------------------------------------------------------------------ modyfikatory bohatera (18.11.2026, pety D-101, Kowal D-102)
+local POLA_MODU = { statystyki = true, procent = true, lup = true, bron = true, pancerz = true, tarcza = true, pasywki = true,
+	zaklecie = true }
+
+local function jestAtrybutem(D, a): boolean
+	for _, n in D.atrybuty_statystyk do
+		if n == a then
+			return true
+		end
+	end
+	return false
+end
+
+local function zawiera(lista, x): boolean
+	for _, y in lista do
+		if y == x then
+			return true
+		end
+	end
+	return false
+end
+
+-- czysta lista (klucze 1..n): liczba elementów albo nil
+local function dlugoscListy(t): number?
+	if type(t) ~= "table" then
+		return nil
+	end
+	local n = 0
+	for _ in t do
+		n += 1
+	end
+	if n ~= #t then
+		return nil
+	end
+	return n
+end
+
+function L.czystyModyfikator(D, mod)
+	local G = D.modyfikatory
+	if type(mod) ~= "table" then
+		return nil, "zly_mod"
+	end
+	for k in mod do
+		if not POLA_MODU[k] then
+			return nil, "nieznane_pole"
+		end
+	end
+	local w = {}
+	for _, spec in { { "statystyki", -G.statystyka_maks, G.statystyka_maks, true }, { "procent", 0, G.procent_maks, false } } do
+		local pole, lo, hi, calk = spec[1], spec[2], spec[3], spec[4]
+		local t = mod[pole]
+		if t ~= nil then
+			if type(t) ~= "table" then
+				return nil, "zle_" .. pole
+			end
+			local kopia = {}
+			for a, v in t do
+				if not jestAtrybutem(D, a) then
+					return nil, "zla_statystyka"
+				end
+				if not liczba(v) or v < lo or v > hi or (calk and math.floor(v) ~= v) then
+					return nil, "zle_" .. pole
+				end
+				if v ~= 0 then
+					kopia[a] = v
+				end
+			end
+			w[pole] = kopia
+		end
+	end
+	local t = mod.lup
+	if t ~= nil then
+		if type(t) ~= "table" then
+			return nil, "zly_lup"
+		end
+		local kopia = {}
+		for k, v in t do
+			if k ~= "zloto" and k ~= "doswiadczenie" then
+				return nil, "zly_lup"
+			end
+			if not liczba(v) or v < 0 or v > G.lup_maks_zrodla then
+				return nil, "zly_lup"
+			end
+			kopia[k] = v
+		end
+		w.lup = kopia
+	end
+	for _, pole in { "bron", "pancerz", "tarcza" } do
+		local v = mod[pole]
+		if v ~= nil then
+			local maks = G[pole .. "_maks"]
+			if not liczba(v) or v < -maks or v > maks then
+				return nil, "zle_" .. pole
+			end
+			w[pole] = v
+		end
+	end
+	t = mod.pasywki
+	if t ~= nil then
+		local n = dlugoscListy(t)
+		if n == nil or n > G.pasywek_maks then
+			return nil, "zle_pasywki"
+		end
+		local lista = {}
+		for i = 1, n do
+			local nazwa = t[i]
+			if type(nazwa) ~= "string" or D.pasywki_silnika[nazwa] == nil then
+				return nil, "nieznana_pasywka"
+			end
+			if not zawiera(lista, nazwa) then
+				table.insert(lista, nazwa)
+			end
+		end
+		w.pasywki = lista
+	end
+	local z = mod.zaklecie
+	if z ~= nil then
+		if type(z) ~= "string" or not zawiera(D.zaklecia_silnika, z) then
+			return nil, "nieznane_zaklecie"
+		end
+		w.zaklecie = z
+	end
+	return w, "ok"
+end
+
+function L.zlozModyfikatory(D, mody)
+	local G = D.modyfikatory
+	local w = { statystyki = {}, procent = {}, lup = { zloto = 0, doswiadczenie = 0 }, bron = 0, pancerz = 0, tarcza = 0,
+		pasywki = {} }
+	for _, m in mody do
+		for _, pole in { "statystyki", "procent" } do
+			for a, v in m[pole] or {} do
+				w[pole][a] = (w[pole][a] or 0) + v
+			end
+		end
+		for k, v in m.lup or {} do
+			w.lup[k] += v
+		end
+		for _, pole in { "bron", "pancerz", "tarcza" } do
+			w[pole] += m[pole] or 0
+		end
+		for _, n in m.pasywki or {} do
+			if not zawiera(w.pasywki, n) then
+				table.insert(w.pasywki, n)
+			end
+		end
+		-- zaklęcie broni: pierwsze z listy (serwer podaje wpisy posortowane według nazwy źródła)
+		if w.zaklecie == nil and m.zaklecie ~= nil then
+			w.zaklecie = m.zaklecie
+		end
+	end
+	for a, v in w.procent do
+		w.procent[a] = math.min(v, G.procent_suma_maks)
+	end
+	for _, k in { "zloto", "doswiadczenie" } do
+		w.lup[k] = math.min(w.lup[k], G.lup_suma_maks)
+	end
+	return w
+end
+
+local function kopiaPlytka(v)
+	if type(v) ~= "table" then
+		return v
+	end
+	local w = {}
+	for k, x in v do
+		w[k] = x
+	end
+	return w
+end
+
+function L.opisZModyfikatorami(D, opis, z)
+	local G = D.modyfikatory
+	local w = {}
+	for k, v in opis do
+		w[k] = kopiaPlytka(v)
+	end
+	for _, s in D.statystyki do
+		local d = z.statystyki[D.atrybuty_statystyk[s]] or 0
+		if d ~= 0 then
+			w.statystyki[s] = math.min(math.max(w.statystyki[s] + d, 0), D.limity.statystyka_maks)
+		end
+	end
+	local pet, jest = {}, false
+	for _, s in D.statystyki do
+		local p = z.procent[D.atrybuty_statystyk[s]] or 0
+		if p > 0 then
+			pet[s] = p
+			jest = true
+		end
+	end
+	if jest then
+		w.pet = pet
+	end
+	if z.bron ~= 0 then
+		w.bron.obrazenia = math.max(1, w.bron.obrazenia + z.bron)
+	end
+	if z.pancerz ~= 0 then
+		w.pancerz_przedmiotow = math.max(0, w.pancerz_przedmiotow + z.pancerz)
+	end
+	if z.zaklecie ~= nil and w.bron.zaklecie == nil then
+		w.bron.zaklecie = z.zaklecie -- zaklęcie broni silnika (podpalenie 25%, trucizna 30% przy ciosie)
+	end
+	if z.tarcza ~= 0 and w.tarcza ~= nil then
+		w.tarcza.blok = math.min(math.max(w.tarcza.blok + z.tarcza, 0), G.blok_maks)
+	end
+	local premie, sa = {}, false
+	for _, n in z.pasywki do
+		local p = D.pasywki_silnika[n]
+		if p.klasa == "" or p.klasa == opis.klasa then
+			for k, v in p.modyfikatory do
+				premie[k] = (premie[k] or 0) + v
+				sa = true
+			end
+		end
+	end
+	if sa then
+		local przyciete = {}
+		for k, v in premie do
+			local g = D.granice_modyfikatorow[k]
+			przyciete[k] = math.min(math.max(v, g[1]), g[2])
+		end
+		w.premie = przyciete
+	end
+	return w
+end
+
+------------------------------------------------------------------ dane pakietów w profilu (18.11.2026)
+function L.czysteDanePakietu(D, v)
+	local G = D.pakiety
+	local licznik = 0
+	local blad: string? = nil
+	local function kopia(x, glebokosc: number)
+		if blad then
+			return nil
+		end
+		licznik += 1
+		if licznik > G.wartosci_maks then
+			blad = "za_duzo"
+			return nil
+		end
+		local t = type(x)
+		if t == "boolean" then
+			return x
+		elseif t == "number" then
+			if not liczba(x) then
+				blad = "zla_liczba"
+				return nil
+			end
+			return x
+		elseif t == "string" then
+			if #x > G.napis_maks then
+				blad = "za_dlugi_napis"
+				return nil
+			end
+			return x
+		elseif t == "table" then
+			if glebokosc >= G.glebokosc_maks then
+				blad = "za_gleboko"
+				return nil
+			end
+			local w = {}
+			for k, y in x do
+				if not (type(k) == "string" or (liczba(k) and math.floor(k) == k)) then
+					blad = "zly_klucz"
+					return nil
+				end
+				if type(k) == "string" and #k > G.napis_maks then
+					blad = "za_dlugi_napis"
+					return nil
+				end
+				w[k] = kopia(y, glebokosc + 1)
+				if blad then
+					return nil
+				end
+			end
+			return w
+		end
+		blad = "zly_typ"
+		return nil
+	end
+	if type(v) ~= "table" then
+		return nil, "zly_typ"
+	end
+	local w = kopia(v, 0)
+	if blad then
+		return nil, blad
+	end
+	return w, "ok"
+end
+
+------------------------------------------------------------------ Gemy bez płacenia (18.11.2026, D-099)
+function L.czyStraznik(D, gatunek): boolean
+	local p = D.gemy.prefiks_straznika
+	return type(gatunek) == "string" and string.sub(gatunek, 1, #p) == p
+end
+
+------------------------------------------------------------------ punkty statystyk do rozdania (18.11.2026, D-097)
+function L.pulaSama(D, poziom, punktyWlaczone: boolean?): number
+	local na = if punktyWlaczone == false then D.pula.na_poziom else D.punkty.auto_na_poziom
+	return D.pula.baza + na * (L.poziomZ(D, poziom) - 1)
+end
+
+function L.zmianaStatystyki(D, znana, nowa, pula): (number, number, string)
+	local z = L.statystykaZ(D, znana) or 0
+	local p = if liczba(pula) and pula >= 0 then pula else 0
+	local n = L.statystykaZ(D, nowa)
+	if n == nil then
+		return z, p, "cofnieta"
+	end
+	local d = n - z
+	if d == 0 then
+		return z, p, "ok"
+	elseif d < 0 then
+		return z, p, "cofnieta"
+	elseif d > p then
+		return z, p, "brak_punktow"
+	end
+	return n, p - d, "ok"
 end
 
 -- równość głęboka (tabele: te same klucze i wartości; liczby z tolerancją 1e-9)
@@ -501,6 +843,30 @@ function L.sprawdzPrzypadki(D)
 	end
 	for i, c in P.premia_lupu do
 		sprawdz("premia_lupu", i, L.rowne(L.premiaLupu(D, c.lup, c.premia), c.wynik))
+	end
+	for i, c in P.mod do
+		local w, powod = L.czystyModyfikator(D, c.mod)
+		sprawdz("mod", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
+	end
+	for i, c in P.zloz do
+		sprawdz("zloz", i, L.rowne(L.zlozModyfikatory(D, c.mody), c.wynik))
+	end
+	for i, c in P.opis_mod do
+		sprawdz("opis_mod", i, L.rowne(L.opisZModyfikatorami(D, c.opis, c.z), c.wynik))
+	end
+	for i, c in P.dane_pakietu do
+		local w, powod = L.czysteDanePakietu(D, c.v)
+		sprawdz("dane_pakietu", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
+	end
+	for i, c in P.pula_sama do
+		sprawdz("pula_sama", i, L.pulaSama(D, c.poziom, c.wl) == c.wynik)
+	end
+	for i, c in P.zmiana do
+		local w, pula, wynik = L.zmianaStatystyki(D, c.znana, c.nowa, c.pula)
+		sprawdz("zmiana", i, L.rowne({ w, pula, wynik }, c.wynik))
+	end
+	for i, c in P.straznik do
+		sprawdz("straznik", i, L.czyStraznik(D, c.gatunek) == c.wynik)
 	end
 	for i, c in P.kara do
 		local zloto = if c.zloto == false then nil else c.zloto
