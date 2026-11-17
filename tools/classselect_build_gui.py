@@ -102,6 +102,32 @@ def main():
         text("Subtitle", ud(0.36, 0.14, 0.6, 0.045), "SHIELD & SWORD", "8AF0FF", 18, "Left", 2),
         *rows,
     ])
+    # panel ras (ekran wyboru rasy, D-079; makieta Figma „RaceSelect” 42:107) — lustro karty klasy po prawej,
+    # ukryty do chwili przejścia z wyboru klasy; pozycje = ułamki pudełka 420 × 600 px makiety
+    races = ["Human", "Demon", "DarkElf", "Elf", "Orc", "Goblin", "Demigod"]
+    centers = [(0.1905, 0.3167), (0.5, 0.3167), (0.8095, 0.3167), (0.1905, 0.5567), (0.5, 0.5567), (0.8095, 0.5567),
+               (0.5, 0.7967)]
+    buttons = []
+    for r, (cx, cy) in zip(races, centers):
+        buttons.append(node("Race" + r, "ImageButton", {
+            "AnchorPoint": [0.5, 0.5], **ud(cx, cy, 0.295, 0), "BackgroundTransparency": 1, "Image": img("Race" + r),
+            "ScaleType": "Fit", "AutoButtonColor": False, "ZIndex": 4}, [ar(1), node("UIScale", "UIScale", {"Scale": 1})]))
+    race_panel = node("RacePanel", "Frame", {"AnchorPoint": [1, 0.5], **ud(0.975, 0.53, 0.23, 0), "BackgroundTransparency": 1,
+                                             "Visible": False, "ZIndex": 2}, [
+        ar(aspect("CsStatsFrame")), node("UIScale", "UIScale", {"Scale": 1}),
+        node("Back", "Frame", {**ud(0.05, 0.033, 0.9, 0.934), "BackgroundColor3": c3("141A2E"), "BackgroundTransparency": 0.4,
+                               "ZIndex": 2}, [node("UICorner", "UICorner", {"CornerRadius": {"UDim": [0.06, 0]}})]),
+        node("FrameArt", "ImageLabel", {**ud(0, 0, 1, 1), "BackgroundTransparency": 1,
+                                        "Image": img_or("CsStatsFrame", "CsStatsPanel"), "ScaleType": "Fit", "ZIndex": 2}),
+        text("RaceName", ud(0.0476, 0.045, 0.905, 0.085), "HUMAN", "6EBEFF", 40, st=3),
+        text("RaceTrait", ud(0.0476, 0.135, 0.905, 0.045), "BALANCED IN EVERYTHING", "8AF0FF", 18, st=2),
+        node("SelectedRing", "Frame", {"AnchorPoint": [0.5, 0.5], **ud(0.1905, 0.3167, 0.3476, 0), "BackgroundTransparency": 1,
+                                       "ZIndex": 3}, [ar(1), node("UICorner", "UICorner", {"CornerRadius": {"UDim": [0.5, 0]}}),
+                                                      stroke(5, "Border", "FFDC5A")]),
+        *buttons,
+        text("DemigodLock", ud(0.3, 0.885, 0.4, 0.05), "PREMIUM", "FFD240", 20, st=2, z=5),
+    ])
+
     plank = node("TitlePlank", "ImageLabel", {"AnchorPoint": [0.5, 0], **ud(0.5, 0.012, 0.36, 0), "BackgroundTransparency": 1,
                                               "Image": img("CsTitlePlank"), "ScaleType": "Fit", "ZIndex": 2}, [
         ar(aspect("CsTitlePlank")),
@@ -113,7 +139,7 @@ def main():
         "Children": [
             # przyciemnienie brzegów (winieta), żeby napisy i karta były czytelne na scenie 3D
             node("Vignette", "Frame", {**ud(0, 0, 1, 1), "BackgroundColor3": [0, 0, 0], "BackgroundTransparency": 1, "ZIndex": 1}),
-            plank, card,
+            plank, card, race_panel,
             image_button("ArrowLeft", [0.5, 0.5], (0.335, 0.79), 0.075, "CsArrowLeft"),
             image_button("ArrowRight", [0.5, 0.5], (0.665, 0.79), 0.075, "CsArrowRight"),
             image_button("PlayButton", [0.5, 1], (0.5, 0.975), 0.23, "CsPlayButton",

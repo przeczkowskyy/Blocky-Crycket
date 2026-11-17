@@ -7,6 +7,9 @@
 	  strzałki / klawisze ←→ (A/D) obracają koło o jedną klasę, wybrana stoi z przodu.
 	- Karta statystyk po lewej pokazuje wybraną klasę. PLAY (albo Enter) → serwer ustawia atrybut "Class",
 	  ekran znika, kamera wraca do gracza, HUD się pokazuje.
+	- Po PLAY ten sam ekran przechodzi w WYBÓR RASY (D-079, Paweł 17.11): znikają strzałki i pozostali bohaterowie,
+	  na podeście zostaje jeden goły model, tytuł „CHOOSE YOUR RACE”, karta po lewej pokazuje wybraną klasę, a po prawej
+	  panel z siedmioma okrągłymi przyciskami ras (Półbóg — premium, zablokowany). PLAY → serwer ustawia atrybut "Race".
 	- Nastrój: na czas ekranu gracz ma u siebie nocne światło sali (ClassData.Scene.mood), ognie migoczą, bohaterowie
 	  mają komiksowy obrys, kamera lekko podąża za myszką. Po PLAY wszystko wraca do ustawień miejsca.
 ]]
@@ -21,6 +24,10 @@ local Lighting = game:GetService("Lighting")
 local ClassData = require(RS:WaitForChild("Shared"):WaitForChild("ClassData"))
 local Icons = require(RS:WaitForChild("Shared"):WaitForChild("ClassSelectIcons"))
 local chooseEvent = RS:WaitForChild("ChooseClass")
+local RaceData = require(RS:WaitForChild("Shared"):WaitForChild("RaceData"))
+local okIcons, RaceIcons = pcall(function()
+	return require(RS:WaitForChild("Shared"):WaitForChild("RaceIcons"))
+end)
 
 local player = Players.LocalPlayer
 local gui = player:WaitForChild("PlayerGui"):WaitForChild("ClassSelect")
@@ -186,54 +193,60 @@ local function yawOf(v: Vector3): number
 	return math.atan2(v.X, v.Z)
 end
 
+local function makeHero(src: Model, angle: number): Hero
+	local m = src:Clone()
+	for _, d in ipairs(m:GetDescendants()) do
+		if d:IsA("BasePart") then
+			d.Anchored = true
+			d.CanCollide = false
+		elseif d:IsA("Script") or d:IsA("LocalScript") then
+			d:Destroy()
+		end
+	end
+	m.Parent = stage
+	local hl = Instance.new("Highlight") -- komiksowy obrys sylwetki, jak rekwizyty sali
+	hl.Name = "ObrysKomiksowy"
+	hl.FillTransparency = 1
+	hl.OutlineColor = Color3.fromRGB(24, 20, 18)
+	hl.OutlineTransparency = 0
+	hl.DepthMode = Enum.HighlightDepthMode.Occluded
+	hl.Adornee = m
+	hl.Parent = m
+	local pivot = m:GetPivot()
+	local cf, size = m:GetBoundingBox()
+	local hrp = m:FindFirstChild("HumanoidRootPart", true)
+	local front = (hrp and hrp:IsA("BasePart") and hrp.CFrame.LookVector) or pivot.LookVector
+	-- atrybut na modelu może odwrócić przód (gdy import ma przód na plecach)
+	if m:GetAttribute("FrontFlip") then
+		front = -front
+	end
+	return {
+		model = m,
+		base = pivot - pivot.Position,
+		frontYaw = yawOf(Vector3.new(front.X, 0, front.Z)),
+		offsetY = pivot.Position.Y - (cf.Position.Y - size.Y / 2),
+		angle = angle,
+	}
+end
+
 for i, c in ipairs(CLASSES) do
 	local src = modelsFolder:FindFirstChild(c.model)
 	if src and src:IsA("Model") then
-		local m = src:Clone()
-		for _, d in ipairs(m:GetDescendants()) do
-			if d:IsA("BasePart") then
-				d.Anchored = true
-				d.CanCollide = false
-			elseif d:IsA("Script") or d:IsA("LocalScript") then
-				d:Destroy()
-			end
-		end
-		m.Parent = stage
-		local hl = Instance.new("Highlight") -- komiksowy obrys sylwetki, jak rekwizyty sali
-		hl.Name = "ObrysKomiksowy"
-		hl.FillTransparency = 1
-		hl.OutlineColor = Color3.fromRGB(24, 20, 18)
-		hl.OutlineTransparency = 0
-		hl.DepthMode = Enum.HighlightDepthMode.Occluded
-		hl.Adornee = m
-		hl.Parent = m
-		local pivot = m:GetPivot()
-		local cf, size = m:GetBoundingBox()
-		local hrp = m:FindFirstChild("HumanoidRootPart", true)
-		local front = (hrp and hrp:IsA("BasePart") and hrp.CFrame.LookVector) or pivot.LookVector
-		-- atrybut na modelu może odwrócić przód (gdy import ma przód na plecach)
-		if m:GetAttribute("FrontFlip") then
-			front = -front
-		end
-		table.insert(heroes, {
-			model = m,
-			base = pivot - pivot.Position,
-			frontYaw = yawOf(Vector3.new(front.X, 0, front.Z)),
-			offsetY = pivot.Position.Y - (cf.Position.Y - size.Y / 2),
-			angle = -(i - 1) * 2 * math.pi / N, -- 2. klasa (Zwiadowca) po lewej, 3. (Mag) po prawej
-		})
+		-- 2. klasa (Zwiadowca) po lewej, 3. (Mag) po prawej
+		table.insert(heroes, makeHero(src, -(i - 1) * 2 * math.pi / N))
 	end
 end
 
 local rot, rotTarget, index = 0, 0, 1
 local hopAt = -10 -- chwila ostatniej zmiany klasy: wybrany bohater lekko podskakuje
+local mode = "class" -- "class" → "race" (ekran wyboru rasy w tej samej sali)
 local function place(dt: number?)
 	rot += (rotTarget - rot) * math.clamp((dt or 1) * 9, 0, 1)
 	local now = os.clock()
 	for k, h in ipairs(heroes) do
 		local a = h.angle - rot
 		a = math.atan2(math.sin(a), math.cos(a)) -- do zakresu ±180° (inaczej po obrocie koła postać staje tyłem)
-		local hop = (k == index) and math.sin(math.clamp((now - hopAt) / 0.34, 0, 1) * math.pi) * 0.45 or 0
+		local hop = (k == (mode == "race" and 1 or index)) and math.sin(math.clamp((now - hopAt) / 0.34, 0, 1) * math.pi) * 0.45 or 0
 		local pos = SC.center + Vector3.new(SC.ringRadius * math.sin(a), h.offsetY + hop, SC.ringRadius * math.cos(a))
 		local front = math.abs(math.atan2(math.sin(a), math.cos(a))) < 0.3
 		local sway = front and math.sin(now * 1.6) * 0.1 or 0
@@ -315,12 +328,19 @@ local oldFov = cam.FieldOfView
 local renderConn
 local finished = false
 
+local raceIndex = 1
+local chooseRace = RS:WaitForChild("ChooseRace", 10) :: RemoteEvent
 local function finish()
 	if finished then
 		return
 	end
 	finished = true
-	chooseEvent:FireServer(CLASSES[index].id)
+	if mode == "race" then
+		local race = RaceData.Races[raceIndex]
+		chooseRace:FireServer(race.id)
+	else
+		chooseEvent:FireServer(CLASSES[index].id)
+	end
 	-- krótkie zaciemnienie, powrót kamery do gracza, sprzątanie
 	vignette.BackgroundTransparency = 1
 	local t = TS:Create(vignette, TweenInfo.new(0.25), { BackgroundTransparency = 0 })
@@ -359,25 +379,204 @@ local function finish()
 	end)
 end
 
+------------------------------------------------------------ ekran wyboru rasy (ta sama sala, D-079)
+local racePanel = gui:FindFirstChild("RacePanel")
+local raceHero: Hero? = nil
+local skinParts: { BasePart } = {}
+
+local function pickSkin(m: Model)
+	-- skóra = kolor największej WIDOCZNEJ bryły przy kości głowy (kości rigu Karola są niewidzialne); potem wszystkie
+	-- widoczne bryły w tym kolorze. Dopóki nie ma modeli ras, rasa zmienia kolor skóry (D-079)
+	local head = m:FindFirstChild("Head", true)
+	if not (head and head:IsA("BasePart")) then
+		return
+	end
+	local best, bestVol = nil, 0
+	for _, d in ipairs(m:GetDescendants()) do
+		local o = d:IsA("BasePart") and head.CFrame:PointToObjectSpace(d.Position) or nil
+		local h = head.Size / 2
+		if o and d ~= head and (d :: BasePart).Transparency < 1
+			and math.abs(o.X) < h.X and math.abs(o.Y) < h.Y and math.abs(o.Z) < h.Z then -- środek bryły w klocku głowy
+			local v = d.Size.X * d.Size.Y * d.Size.Z
+			if v > bestVol then
+				best, bestVol = d, v
+			end
+		end
+	end
+	if not best then
+		return
+	end
+	local ref = best.Color
+	for _, d in ipairs(m:GetDescendants()) do
+		if d:IsA("BasePart") and d.Transparency < 1 then
+			local c = d.Color
+			if math.abs(c.R - ref.R) + math.abs(c.G - ref.G) + math.abs(c.B - ref.B) < 0.12 then
+				table.insert(skinParts, d)
+			end
+		end
+	end
+end
+
+local function showRace(animate: boolean)
+	local r = RaceData.Races[raceIndex]
+	if not racePanel then
+		return
+	end
+	racePanel.RaceName.Text = r.name
+	racePanel.RaceName.TextColor3 = r.color
+	racePanel.RaceTrait.Text = r.trait
+	local btn = racePanel:FindFirstChild("Race" .. r.id)
+	if btn then
+		local ring = racePanel.SelectedRing
+		local goal = { Position = btn.Position }
+		if animate then
+			TS:Create(ring, QUICK, goal):Play()
+		else
+			ring.Position = btn.Position
+		end
+	end
+	for _, p in ipairs(skinParts) do
+		if animate then
+			TS:Create(p, TweenInfo.new(0.25), { Color = r.skin }):Play()
+		else
+			p.Color = r.skin
+		end
+	end
+	if animate then
+		hopAt = os.clock()
+		local sc = racePanel.RaceName:FindFirstChildOfClass("UIScale")
+		if not sc then
+			sc = Instance.new("UIScale")
+			sc.Parent = racePanel.RaceName
+		end
+		sc.Scale = 1.15
+		TS:Create(sc, POP, { Scale = 1 }):Play()
+	end
+end
+
+local function stepRace(dir: number)
+	raceIndex = (raceIndex - 1 + dir) % #RaceData.Races + 1
+	showRace(true)
+end
+
+local function enterRace()
+	if mode ~= "class" or finished then
+		return
+	end
+	chooseEvent:FireServer(CLASSES[index].id)
+	if not racePanel or not chooseRace then
+		finish() -- brak panelu ras w GUI: zachowanie jak dawniej
+		return
+	end
+	mode = "race"
+	-- znikają strzałki i bohaterowie klas; na podeście jeden goły model (z kopii WyborKlasyModele.Base)
+	for _, name in ipairs({ "ArrowLeft", "ArrowRight" }) do
+		local b = gui:FindFirstChild(name)
+		local sc = b and b:FindFirstChildWhichIsA("UIScale")
+		if sc then
+			TS:Create(sc, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.In), { Scale = 0 }):Play()
+		end
+		task.delay(0.22, function()
+			if b then
+				b.Visible = false
+			end
+		end)
+	end
+	local src = modelsFolder:FindFirstChild("Base") or modelsFolder:FindFirstChild(CLASSES[index].model)
+	for _, h in ipairs(heroes) do
+		h.model:Destroy()
+	end
+	table.clear(heroes)
+	if src and src:IsA("Model") then
+		raceHero = makeHero(src, 0)
+		table.insert(heroes, raceHero :: Hero)
+		pickSkin((raceHero :: Hero).model)
+	end
+	rot, rotTarget = 0, 0
+	local title = gui.TitlePlank:FindFirstChild("Title")
+	if title then
+		title.Text = "CHOOSE YOUR RACE"
+	end
+	-- panel ras wjeżdża z prawej
+	local home = racePanel.Position
+	racePanel.Position = home + UDim2.fromScale(0.4, 0)
+	racePanel.Visible = true
+	TS:Create(racePanel, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = home }):Play()
+	for i, r in ipairs(RaceData.Races) do
+		local b = racePanel:FindFirstChild("Race" .. r.id)
+		if b then
+			if okIcons and RaceIcons[r.icon] then
+				b.Image = RaceIcons[r.icon]
+			end
+			local sc = b:FindFirstChildWhichIsA("UIScale")
+			if sc then
+				sc.Scale = 0
+				TS:Create(sc, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 0, false, 0.2 + 0.05 * i),
+					{ Scale = 1 }):Play()
+			end
+		end
+	end
+	hopAt = os.clock()
+	showRace(false)
+end
+
+local function confirmRace()
+	local r = RaceData.Races[raceIndex]
+	if r.premium then
+		-- Półbóg: rasa premium (D-080) — jeszcze nie do kupienia; krótkie potrząśnięcie panelu
+		TS:Create(racePanel, TweenInfo.new(0.05, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 3, true), { Rotation = 3 }):Play()
+		return
+	end
+	finish()
+end
+
+if racePanel then
+	for i, r in ipairs(RaceData.Races) do
+		local b = racePanel:FindFirstChild("Race" .. r.id)
+		if b and b:IsA("GuiButton") then
+			bounce(b, function()
+				if mode == "race" and raceIndex ~= i then
+					raceIndex = i
+					showRace(true)
+				end
+			end)
+		end
+	end
+end
+
 bounce(gui:WaitForChild("ArrowLeft"), function()
 	step(-1)
 end)
 bounce(gui:WaitForChild("ArrowRight"), function()
 	step(1)
 end)
-bounce(gui:WaitForChild("PlayButton"), finish)
+bounce(gui:WaitForChild("PlayButton"), function()
+	if mode == "class" then
+		enterRace()
+	else
+		confirmRace()
+	end
+end)
 
 UIS.InputBegan:Connect(function(input, processed)
 	if processed or finished or not gui.Enabled then
 		return
 	end
 	local k = input.KeyCode
-	if k == Enum.KeyCode.Left or k == Enum.KeyCode.A then
-		step(-1)
-	elseif k == Enum.KeyCode.Right or k == Enum.KeyCode.D then
-		step(1)
+	local left = k == Enum.KeyCode.Left or k == Enum.KeyCode.A
+	local right = k == Enum.KeyCode.Right or k == Enum.KeyCode.D
+	if left or right then
+		if mode == "race" then
+			stepRace(right and 1 or -1)
+		else
+			step(right and 1 or -1)
+		end
 	elseif k == Enum.KeyCode.Return or k == Enum.KeyCode.KeypadEnter then
-		finish()
+		if mode == "class" then
+			enterRace()
+		else
+			confirmRace()
+		end
 	end
 end)
 

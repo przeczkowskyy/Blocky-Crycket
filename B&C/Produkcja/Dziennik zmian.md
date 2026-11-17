@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Pawła (ekran wyboru rasy i rzuty ras)
+- Polecenie Pawła: ekran wyboru rasy w tej samej sali co wybór klasy (bez strzałek, jeden goły model, karta wybranej klasy, „CHOOSE YOUR RACE”, okrągłe przyciski ras), ikony ras w jednej generacji, rzuty ras dla Karola, przyciski ułożone w Figmie. Potem: bez rzutu człowieka (model już jest), dodać Półboga (rzut i emblemat).
+- Higgsfield (Nano Banana 2.1, po 1 kopii): arkusz 6 ikon ras, emblemat Półboga, rzuty: demon, elf, mroczny elf, ork, goblin, Półbóg. Dwie generacje z przerwanego wysłania (prawdopodobnie człowiek i demon) zostały obciążone, ale ich wyników nie odzyskano. [[Rasy — rzuty dla modelarza]]
+- Figma: ramka „RaceSelect” (42:107) obok „ClassSelect”: panel ras po prawej z 7 ikonami, zaznaczenie, PREMIUM pod Półbogiem.
+- Kod: `src/shared/RaceData.luau` (7 ras, Półbóg premium zablokowany), `src/shared/RaceIcons.luau`, `ChooseRace` + atrybut `Race` w `src/server/ClassSelect.server.luau`, tryb rasy w `ClassSelectClient`, panel ras w `tools/classselect_build_gui.py`, HUD czeka na `Race`, `tools/studio/deploy_classselect.py` kopiuje goły model jako `Base`. Ikony wgrane po „tak” Pawła (manifest `Race*`) i wdrożone. Goły model: ciało bazowe Rycerza z kodu Karola (`rycerz.cialo()`) zbudowane jego narzędziem we własnym kontenerze `Workspace/WyborKlasyBaza` (`tools/studio/baza_rasy.py`, `TestPostaci` nietknięte). Test Play: przejście do ras, panel, zmiana rasy; poprawiony kolor skóry (kości rigu są niewidzialne). `tools/studio_mcp.py` pomija okna Studio bez otwartego miejsca. [[Selektor bohatera]]
+
 ## 2026-11-17 · Claude Code u Karola (odpowiedzi Karola po sesji: stała cena jajka, Bagno, przegrana)
 - **Odpowiedzi Karola na czacie, 17.11 ok. 21:20** (w trakcie sesji głównej z Pawłem):
   - „Stała cena jajka, bo opener jajka jest per biom, więc tak czy siak źródło dropienia jajek się zmienia, gdy gracz zmieni biom” — zapisane jako **D-105** (zdecydował: Karol 2026-11-17). Próba przechodzi z ceny rosnącej na stałą: jajko leśne 300 Złota, jajko Bagna 750.

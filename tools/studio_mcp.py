@@ -199,12 +199,15 @@ class StudioMCP:
 
 
 def first_studio_id(session):
-    """studio_id pierwszego otwartego okna (albo None)."""
-    for s in session.studios():
-        if isinstance(s, dict):
-            for k in ("studio_id", "studioId", "id"):
-                if s.get(k):
-                    return s[k]
+    """studio_id pierwszego okna z OTWARTYM miejscem (albo None). Okna bez miejsca („Place is not open”, mode
+    Unavailable) są pomijane — przy dwóch oknach Studio wybierało puste i kończyło się błędem."""
+    lista = [s for s in session.studios() if isinstance(s, dict)]
+    otwarte = [s for s in lista if s.get("placeId") or (s.get("mode") not in (None, "Unavailable")
+                                                         and "not open" not in str(s.get("state", "")))]
+    for s in otwarte or lista:
+        for k in ("studio_id", "studioId", "id"):
+            if s.get(k):
+                return s[k]
     return None
 
 

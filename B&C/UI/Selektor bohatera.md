@@ -28,6 +28,8 @@ tags: [ui, klasy, wybór]
 
 - **Tekstury sali (16.11):** paczka 16 tekstur Glossy Ink dla Karola — [[Tekstury sali wyboru klasy]].
 
+- **Wybór rasy (Paweł 17.11, D-079):** po PLAY na wyborze klasy ta sama sala przechodzi w wybór rasy: znikają strzałki i pozostali bohaterowie, na podeście zostaje jeden goły model (kopia gołego modelu Karola z `Workspace/TestPostaci` jako `WyborKlasyModele.Base`; dopóki nie ma modeli ras, rasa zmienia kolor skóry), tytuł „CHOOSE YOUR RACE”, karta po lewej pokazuje wybraną klasę, a po prawej panel w tej samej ramce z nazwą rasy, cechą i siedmioma okrągłymi przyciskami: człowiek, demon, mroczny elf, elf, ork, goblin oraz Półbóg (premium, D-080 — zablokowany, serwer go nie przyjmie). PLAY → RemoteEvent `ChooseRace` → atrybut `Race`; HUD pokazuje się dopiero po rasie. Strzałki ←/→ przełączają rasy. Makieta: Figma, ramka „RaceSelect” (42:107). Kod: `src/shared/RaceData.luau`, `src/shared/RaceIcons.luau`, `ClassSelectClient`, `ClassSelect.server`, `tools/classselect_build_gui.py`, `tools/raceselect_assets.py`. Ikony ras: 1 generacja Higgsfield (arkusz 6) + emblemat Półboga. Cechy ras na przyciskach to propozycja opisu, bez liczb.
+
 ## Do ustalenia
 - Czy wybór klasy jest raz na zawsze, czy można go zmienić (i za ile).
 - Rasa z wcześniejszej wersji tej notatki (lewy panel z rasą) — na razie pominięta.

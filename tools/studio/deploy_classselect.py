@@ -25,6 +25,8 @@ MODELE = {"Warrior": "Rycerz Blocky", "Scout": "Zwiadowca (import FBX)", "Mage":
 SCRIPTS = [
     ('game:GetService("ReplicatedStorage"):WaitForChild("Shared")', "ClassData", "ModuleScript", "src/shared/ClassData.luau"),
     ('game:GetService("ReplicatedStorage"):WaitForChild("Shared")', "ClassSelectIcons", "ModuleScript", "src/shared/ClassSelectIcons.luau"),
+    ('game:GetService("ReplicatedStorage"):WaitForChild("Shared")', "RaceData", "ModuleScript", "src/shared/RaceData.luau"),
+    ('game:GetService("ReplicatedStorage"):WaitForChild("Shared")', "RaceIcons", "ModuleScript", "src/shared/RaceIcons.luau"),
     ('game:GetService("ServerScriptService"):WaitForChild("Server")', "ClassSelect", "Script", "src/server/ClassSelect.server.luau"),
     ('game:GetService("StarterPlayer").StarterPlayerScripts:WaitForChild("Client")', "ClassSelectClient", "LocalScript",
      "src/client/ClassSelectClient.client.luau"),
@@ -243,6 +245,17 @@ def main():
                    f'local c = m:Clone() c.Name = "{cls}" '
                    'for _, d in ipairs(c:GetDescendants()) do if d:IsA("Script") or d:IsA("LocalScript") then d:Destroy() end end '
                    'c.Parent = f end')
+    # goły model do ekranu ras (D-079, D-071): pierwszy model w TestPostaci z „ciało”/„goł”/„baz” w nazwie
+    # najpierw własny kontener z tools/studio/baza_rasy.py (ciało bazowe Rycerza z kodu Karola)
+    out.append('do local baza = nil local wb = workspace:FindFirstChild("WyborKlasyBaza") '
+               'if wb then baza = wb:FindFirstChildWhichIsA("Model") end '
+               'if not baza then for _, m in ipairs(src:GetChildren()) do local n = m.Name:lower() '
+               'if m:IsA("Model") and (n:find("ciało") or n:find("cialo") or n:find("goł") or n:find("gol") or n:find("baz")) then '
+               'baza = m break end end end '
+               'if baza then local c = baza:Clone() c.Name = "Base" '
+               'for _, d in ipairs(c:GetDescendants()) do if d:IsA("Script") or d:IsA("LocalScript") then d:Destroy() end end '
+               'c.Parent = f print("[WyborKlasy] goły model ras:", baza.Name) '
+               'else warn("[WyborKlasy] brak gołego modelu w TestPostaci — ekran ras użyje modelu klasy") end end')
     out += ["f.Parent = RS", "end",
             'local SG = game:GetService("StarterGui")',
             "do", build_luau(gui, "root", "ClassSelect"),
