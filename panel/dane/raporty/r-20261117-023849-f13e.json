@@ -1,0 +1,36 @@
+{
+ "id": "r-20261117-023849-f13e",
+ "tytul": "Miasteczko-bazar w grze: sklepy, portal, przejścia — działa w Studio",
+ "opis_md": "**W skrócie**\n- Nowe miasteczko-bazar stoi w Studio (`Workspace/MiasteczkoBazar`, 4410 części) i działa w grze: 13 miejsc z klawiszem E, sklepy z wnętrzem i sprzedawcą, portal krain, Brama Leśna, tablica z rankingiem, zagroda petów, przejście na działkę i lochy.\n- Lista kontroli w trybie Play: 14 z 15 w porządku; piętnasta to czas klatki — do oceny przy odsłoniętym ekranie i na telefonie.\n- Przejście przez chmury („Miasteczko”) i Kamień Powrotu w lesie-pasie lądują już w bazarze.\n- Stare Krzywe Miasteczko i stary las są nietknięte. Przy starcie gry stoi tabliczka „Nowe miasteczko (E)”.\n\n**Jak obejrzeć:** Play → Enter (zamknij wybór klasy) → podejdź do tabliczki „Nowe miasteczko (E)” obok startu → E. Albo przycisk TELEPORT → „Miasteczko”.\n\nSzczegóły:\n\n**Co sprawdzone w grze (17.11, ok. 02:25–02:45)**\n- Bieg od startu bazaru: do każdego sklepu najwyżej 4,2 s, do portalu 1,3 s, do Bramy Leśnej 3,8 s.\n- E przy ośmiu miejscach z oknem wysyła zdarzenie `ReplicatedStorage.OknoMiejsca` (id miejsca) i sygnał przycisku HUD (karczma → Quests, sklepy → Shop, zagroda → Pets). Dopóki okna Pawła nie ma, nad sprzedawcą pojawia się dymek z tekstem.\n- Portal → chmury → Las → powrót „Miasteczko”: ląduje na starcie bazaru. Brama Leśna przenosi do Lasu w mniej niż sekundę.\n- Stare ↔ nowe miasteczko w obie strony, bez śmierci postaci. Kamień Powrotu z lasu-pasa → bazar.\n- Tablica pokazuje ranking graczy (poziom, potem suma statystyk). Lochy: kłódka znika tylko u gracza, który ma dostęp.\n- Niewidzialne ściany trzymają na wszystkich czterech brzegach, nikt nie spadł pod mapę. Konsola bez błędów.\n- Kamera we wnętrzach nie wchodzi w ściany ani w ozdoby (dodana kolizja tablicy zleceń, ksiąg, ram drzwi i głów sprzedawców).\n\n**Sprzedawcy — zmienione projekty (własne, żeby nie przypominały cudzych postaci)**\n- Karczmarz: łysy, ruda broda bez wąsów, czerwona opaska, kolczyk, szeroki uśmiech z zębami.\n- Mistrz gier: beret z kostką i okulary (zamiast cylindra i monokla).\n- Trener: niebieska opaska (zamiast czerwonej).\n\n**Nie sprawdzone**\n- Telefon i pad, dwóch graczy naraz.\n- Prawdziwy czas klatki (nocą ekran był zaciemniony i Studio rysowało 15 klatek na sekundę).\n- Otwieranie prawdziwych okien 2D — okien Pawła dla sklepów jeszcze nie ma.\n\n**Dla Pawła:** okno sklepu podpina się jedną linijką do `ReplicatedStorage.OknoMiejsca` — opis w `swiat/miasteczko_bazar_gra/README.md`, rozdział „Jak Paweł podpina okno”.\n\n**Przyjęte na noc, do zmiany jednym wpisem (lista w README, rozdział „Wybory do decyzji”)**\n1. Portal krain otwiera E (nie wejście w wir).\n2. Zbrojownia pokazuje dymek „sklep w budowie”.\n3. Mag i zbrojmistrz wysyłają ten sam przycisk Shop; id sklepu jest w zdarzeniu.\n4. Ranking: poziom → XP → suma statystyk.\n5. Lochy zamknięte, bez progu poziomu.\n6. Gracz startuje tam, gdzie dziś; do bazaru prowadzi tabliczka przy starcie.\n7. Chmury i Kamień Powrotu lądują w bazarze.\n8. Przejścia stare ↔ nowe zostają do czasu przyjęcia bazaru.\n9. „Stare miasteczko (E)” prowadzi na plac startowy gry, nie do Krzywego Miasteczka.\n\n**Słabe miejsca**\n- Bazar stoi na wschodnim końcu płyty Baseplate (85 części wchodzi w nią do 0,4 studa — niewidoczne).\n- Głowy sprzedawców mają kolizję, więc skok przy ladzie może w nie trafić.\n- W dwóch próbach podpowiedź „Stare miasteczko (E)” nie działała przez kilka sekund po przeniesieniu postaci skryptem testowym; gracz tak się nie przenosi, przyczyna niezbadana.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T02:38:49+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/MiasteczkoBazar",
+   "etykieta": "Mapa bazaru"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/MiasteczkoBazarGra",
+   "etykieta": "Skrypty bazaru"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/miasteczko_bazar_gra/README.md",
+   "etykieta": "README z wyborami"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ],
+ "migawka": "20261117-023707-2568"
+}
