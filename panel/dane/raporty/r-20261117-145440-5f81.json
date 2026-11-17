@@ -1,0 +1,35 @@
+{
+ "id": "r-20261117-145440-5f81",
+ "tytul": "Bagno stoi w Studio: drugi biom do przejścia",
+ "opis_md": "**Co to jest:** Bagno („Moczary Krzywej Kładki”) jako drugi biom, do którego gracz wchodzi po pokonaniu Strażnika lasu. Zbudowane na zlecenie Karola z 17.11 („Leć wszystko”); plan Bagna dalej jest propozycją — wszystko stoi w osobnych kontenerach i da się usunąć dwoma poleceniami.\n\n**Jak zobaczyć w Studio:** Play → wybierz klasę → TELEPORT → Las → dojdź do końca i pokonaj Strażnika Gaju → brama prowadzi do Bagna (przelot kamery przy pierwszym wejściu). Po Strażniku lasu Bagno jest też na mapie krain w teleporcie.\n\n**Co jest w Bagnie:**\n- mapa z 9017 części: pomosty, kępy, woda, mgła tylko u gracza;\n- pięć gatunków na poziomach 10–16: Rechotek (skacze z góry, częściej robi unik), Bulgotnik (bańka ochronna i trująca chmura), Kłodokłap (blok korą, zdziera pancerz), rzadka Ropucha z Chatką (dwie umiejętności), Strażnik Topieli (ogłusza, odporny na magię);\n- te same zasady co w lesie: walka na E, tempo, POMIŃ przy znanym gatunku, łup i poziomy, Kamień Powrotu, brama do Dżungli zamknięta („wkrótce”).\n\n**Sprawdzone w grze:** próba Bagna 14 punktów w porządku, przejście prawdziwym chodzeniem i E 4 z 4, las przy stojącym Bagnie 21 punktów w porządku. Klatka 16,7 ms. Silnik w Studio liczy walki Bagna tak samo jak kalkulator.\n\n**Wybory dla Was:**\n1. Poziomy Bagna 10–16 (z kalkulatora, gracz wychodzi z lasu na ok. 10.) czy 11–19 (z planu)?\n2. Strażnik Topieli bez treningu wygrywa się w 20–36% walk na 17. poziomie — zostaje tak trudny?\n3. Własna umiejętność bagienna ze spowolnieniem („lepki język”) wymaga zmiany silnika — robimy?\n4. Muzyka Bagna: na razie utwory lasu — czy generować własne?\n5. Walki w Bagnie toczą się na tej samej arenie co w lesie (sosny w tle) — czy arena ma się zmieniać z biomem?\n\n**Niesprawdzone:** telefon, pad, dwóch graczy naraz, odradzanie Ropuchy i Strażnika mierzone w grze.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-17T14:54:40+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "BagnoPas",
+   "etykieta": "Mapa Bagna"
+  },
+  {
+   "typ": "studio",
+   "cel": "BagnoPasGra",
+   "etykieta": "Potwory Bagna"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/bagno_pas_gra/README.md",
+   "etykieta": "Opis"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
