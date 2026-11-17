@@ -2,7 +2,8 @@
 
 > **To jest PROPOZYCJA do akceptacji** (17.11.2026). Ustalone są tylko punkty z zatwierdzonych decyzji wypisanych
 > niżej. Pomysły na mini-gry, nazwy, liczby i układ sceny to propozycja agenta Karola. Dwie mini-gry (Siła
-> i Pancerz) są zrobione do próby w grze (`README.md`), cztery pozostałe istnieją tylko w tym opisie.
+> i Pancerz) stoją w Studio do próby w grze (`README.md`, sprawdzone 17.11), cztery pozostałe istnieją tylko w tym
+> opisie.
 
 ## Co już ustalono (decyzje ✅ w `B&C/Produkcja/Rejestr decyzji.md`)
 
@@ -79,8 +80,9 @@
 - **Scena 3D.** Podest gracza, cztery przezroczyste kółka stref, miotacz z klocków (pomarańczowa kamizelka, fartuch,
   zielona opaska), stos skrzynek i szyld. Skrzynki, miecz i odłamki widzi tylko ten gracz.
 - **Ryzyka.** D-050 mówi o kierunkach „góra / prawo / dół”, a próba ma cztery (wybór 2). Krzyż przycisków na
-  telefonie może zasłaniać prawą strefę — do sprawdzenia na emulatorze. Kamera zza prawego ramienia jest dobrana
-  na oko, nie na zrzucie.
+  telefonie zasłaniał prawą strefę — po zrzucie 667 × 375 kamera patrzy bardziej w prawo, a gracz i strefy stoją
+  w lewej połowie ekranu (README, „Poprawki po próbach w grze”). Prawdziwego telefonu i dotyku jeszcze nikt nie
+  próbował. Trudność dla człowieka do oceny (w próbie rundy grał automat).
 
 ## 2. Pancerz — „Blok” (grywalna w próbie, D-074: na próbę)
 
@@ -238,5 +240,8 @@
 | Zasięg wejścia od trenera i tablicy | 16 st | przyjęte |
 | Telefon: przyciski | 56 px (strzałki), 52 px (pozostałe), 96 px (BLOK); skala 0,85–1,6 od 667 × 375 | przyjęte (wymóg 44 px, 12 pt) |
 | Teksty | 15 / 18 / 26 / 40 / 56 px | przyjęte |
-| Kamera stanowiska | oko 3,2 / 6,6 / 11,5 st od podestu (zza prawego ramienia), cel 8 st przed graczem | przyjęte, na oko |
+| Kamera stanowiska | oko 3,2 / 6,6 / 11,5 st od podestu (zza prawego ramienia), cel 6,0 (Siła) / 5,5 (Pancerz) st w prawo i 8 st przed graczem — gracz w lewej połowie ekranu, prawa wolna na przyciski | przyjęte, poprawione po zrzutach 17.11 |
+| Strefy Siły | góra (0; 6,6; −1,6), lewo / prawo (∓3,4; 3,4; −1,6), dół (0; 0,9; −3,2) st od podestu | przyjęte, „dół” odsunięty po zrzutach |
+| Postać w rundzie | półprzezroczysta u siebie (0,55), żeby strefa „dół” była widoczna | przyjęte po zrzutach |
+| Czcionka okien i szyldów | Nunito ExtraBold (pełne polskie znaki; FredokaOne ich nie ma) | przyjęte po zrzutach |
 | Arena | środek (3000; 300; 3000), 96 × 56 st | przyjęte (z dala od pasa krain, starego lasu i sal testowych) |

@@ -128,9 +128,11 @@ class TestDanych(unittest.TestCase):
 
     def test_1d_szesc_statystyk_z_systemu_rpg(self):
         rpg = czytaj(REPO, "B&C", "Gra", "System RPG.md")
-        m = re.search(r"\*\*Statystyki\*\* \(([^)]*)\)", rpg)
+        # sekcja „## Sześć statystyk”: punkty „- **Siła** — …”, „- **Kondycja (Życie)** — …” (stan sejfu od 17.11.2026)
+        m = re.search(r"## Sześć statystyk\n(.*?)(\n## |\Z)", rpg, re.S)
         self.assertIsNotNone(m)
-        self.assertEqual([s["nazwa"] for s in D["statystyki"]], [x.strip() for x in m.group(1).split(",")])
+        nazwy = [x.split(" (")[0].strip() for x in re.findall(r"^- \*\*([^*]+)\*\*", m.group(1), re.M)]
+        self.assertEqual([s["nazwa"] for s in D["statystyki"]], nazwy)
         domyslne = czytaj(REPO, "src", "server", "PlayerStatsDefaults.server.luau")
         for s in D["statystyki"]:
             self.assertRegex(domyslne, r"\b%s\s*=" % s["atrybut"])
@@ -723,17 +725,18 @@ class TestTelefonu(unittest.TestCase):
             krzyz = 3 * U["przycisk_px"] + 2 * U["odstep_px"]
             prawa = w * (1 - U["sterowanie_od_prawej"])
             pr = {"status": (w - 8 - 268 * s, 8, w - 8, 8 + 92 * s),
-                  "przerwij": (w - 8 - U["przycisk_maly_px"] * s, 8 + 100 * s, w - 8, 8 + (100 + U["przycisk_maly_px"]) * s),
+                  "przerwij": (w - 16 - (268 + U["przycisk_maly_px"]) * s, 8, w - 16 - 268 * s, 8 + U["przycisk_maly_px"] * s),
+                  "hud_quests": (w * 0.78, h * 0.40, w * 0.98, h * 0.55),  # górny przycisk prawej kolumny HUD Pawła
                   "krzyz": (prawa - krzyz * s, h - 8 - krzyz * s, prawa, h - 8),
                   "blok": (prawa - U["blok_px"] * s, h - 8 - U["blok_px"] * s, prawa, h - 8)}
             for a in pr:
                 x0, y0, x1, y1 = pr[a]
                 self.assertTrue(x0 >= 0 and y0 >= 0 and x1 <= w and y1 <= h, (a, ekran))
                 for b2 in pr:
-                    if a < b2 and {a, b2} != {"krzyz", "blok"}:
+                    if a < b2 and {a, b2} != {"krzyz", "blok"} and not {a, b2} <= {"krzyz", "blok", "hud_quests"}:
                         X0, Y0, X1, Y1 = pr[b2]
                         self.assertTrue(x1 <= X0 or X1 <= x0 or y1 <= Y0 or Y1 <= y0, (a, b2, ekran))
-        self.assertIn("8 + (ui.status.Size.Y.Offset + 8) * s", KLIENT)
+        self.assertIn("-8 - (ui.status.Size.X.Offset + 8) * s", KLIENT)
 
     def test_5d_wybor_opisany_jako_tymczasowy(self):
         T = D["teksty"]

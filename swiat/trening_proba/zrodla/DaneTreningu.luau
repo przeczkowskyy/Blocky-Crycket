@@ -1,7 +1,7 @@
 --[[
 	DaneTreningu — WYGENEROWANE przez swiat/trening_proba/dane.py z ustawienia.json (oraz punktu
 	trenera ze swiat/miasteczko_bazar/znaczniki.json). Nie edytuj ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: 83de79b4b59c
+	Skrót danych: b5bab2e3004e
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -150,14 +150,14 @@ return {
 			podest = { 2976, 300, 3008 },
 			patrz = { 2976, 300, 2998 },
 			oko = { 2979.2, 306.6, 3019.5 },
-			cel = { 2977.6, 303.2, 3000 },
+			cel = { 2982, 303.2, 3000 },
 			miotacz = { 2976, 300, 2992 },
 			reka = { 2977.6, 304.4, 2992.8 },
 			strefy = {
 				gora = { 2976, 306.6, 3006.4 },
 				lewo = { 2972.6, 303.4, 3006.4 },
 				prawo = { 2979.4, 303.4, 3006.4 },
-				dol = { 2976, 300.9, 3005.4 },
+				dol = { 2976, 300.9, 3004.8 },
 			},
 			luki = { gora = { 0, 9, 0 }, lewo = { -7, 3, 0 }, prawo = { 7, 3, 0 }, dol = { 0, -1.2, 0 } },
 			miecz = { 2977.7, 303.4, 3007.4 },
@@ -166,7 +166,7 @@ return {
 			podest = { 3024, 300, 3008 },
 			patrz = { 3024, 300, 2998 },
 			oko = { 3027.2, 306.6, 3019.5 },
-			cel = { 3025.2, 303.6, 3000 },
+			cel = { 3029.5, 303.6, 3000 },
 			golem = { 3024, 300, 2999 },
 			piesc_spoczynek = { 3026.4, 304.6, 3000.8 },
 			piesc_zamach = { 3027.8, 308.2, 2997.8 },
@@ -188,6 +188,10 @@ return {
 		wymog_przycisk_px = 44,
 		wymog_tekst_pt = 12,
 		kolejnosc_wyswietlania = 30,
+		czcionka = "Nunito",
+		waga_czcionki = "ExtraBold",
+		przezroczystosc_postaci = 0.55,
+		pasek_gorny_pt = 36,
 		sterowanie_od_prawej = 0.215,
 		kolory = {
 			krem = "FFF6E0",
@@ -261,7 +265,7 @@ return {
 		jeszcze_raz = "JESZCZE RAZ",
 		inna_gra = "INNA GRA",
 		wyjdz = "WYJDŹ",
-		tablica_wejscia = "TRAINING CENTER\nPRÓBA MINI-GIER (E)",
+		tablica_wejscia = "TRAINING CENTER\nMINI-GRY",
 		tablica_wyboru = "WYBÓR MINI-GRY (E)",
 		wyjscie = "WYJŚCIE (E)",
 	},
@@ -1227,5 +1231,5 @@ return {
 			{ 1024, 768, 1.535232383808096 },
 		},
 	},
-	skrot = "83de79b4b59c",
+	skrot = "b5bab2e3004e",
 }

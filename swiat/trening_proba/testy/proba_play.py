@@ -263,6 +263,19 @@ def main():
                 'local p = game:GetService("Players").LocalPlayer return tostring(p ~= nil and p.Character ~= nil)', "Client") == "true", 90, 1)
             nazwa_gracza[0] = luau('return game:GetService("Players").LocalPlayer.Name', "Client")
             time.sleep(2)
+            # ekran wyboru klasy (src/client/ClassSelectClient) trzyma kamerę skryptową i wyłącza podpowiedzi E —
+            # Enter wybiera klasę jak gracz (tak samo robią próby lasu-pasa)
+            wybor_klasy = {}
+            for _ in range(20):
+                wybor_klasy = js('local p = game:GetService("Players").LocalPlayer local g = p.PlayerGui:FindFirstChild("ClassSelect") '
+                                 'local c = workspace.CurrentCamera return H:JSONEncode({ ekran = g ~= nil and g.Enabled, '
+                                 'kamera = c.CameraType.Name, podpowiedzi = game:GetService("ProximityPromptService").Enabled })', "Client")
+                if not wybor_klasy["ekran"] and wybor_klasy["kamera"] == "Custom" and wybor_klasy["podpowiedzi"]:
+                    break
+                klawisz("Return")
+                time.sleep(1.5)
+            zapisz("wybor_klasy", wybor_klasy)
+            log("wybór klasy:", wybor_klasy)
             # słuchacz sygnału PrzyrostStatystyki (tylko na czas próby, w pamięci serwera)
             luau(KP + 'local n = 0 k.Sygnaly.PrzyrostStatystyki.Event:Connect(function(g, p) n += 1 '
                  'k:SetAttribute("ProbaSygnaly", n) k:SetAttribute("ProbaOstatniSygnal", H:JSONEncode(p)) end) return "ok"', "Server")

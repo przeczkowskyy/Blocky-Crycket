@@ -202,9 +202,9 @@ local function czesc(korzen, c)
 		l.Size = UDim2.fromScale(0.94, 0.9)
 		l.Position = UDim2.fromScale(0.03, 0.05)
 		l.BackgroundTransparency = 1
-		l.Font = Enum.Font.FredokaOne
+		l.FontFace = Font.new(Font.fromEnum(Enum.Font.__CZCIONKA__).Family, Enum.FontWeight.__WAGA__)
 		l.TextScaled = true
-		l.TextWrapped = true
+		l.TextWrapped = true -- bez zawijania TextScaled w SurfaceGui rysował napis bardzo mały (próba 17.11.2026)
 		l.TextColor3 = Color3.fromHex(c.napis.kolor)
 		l.Text = c.napis.tekst
 		l.Parent = sg
@@ -360,8 +360,8 @@ local function dodaj(n, lok, rozmiar, kol, napis, przezr)
 	p.CFrame = cf
 	return p
 end
-dodaj("NogaL", { -3.4, 3, 0 }, { 0.6, 6, 0.6 }, "6B4A2F")
-dodaj("NogaP", { 3.4, 3, 0 }, { 0.6, 6, 0.6 }, "6B4A2F")
+dodaj("NogaL", { -3.95, 3, 0 }, { 0.6, 6, 0.6 }, "6B4A2F")
+dodaj("NogaP", { 3.95, 3, 0 }, { 0.6, 6, 0.6 }, "6B4A2F")
 dodaj("Daszek", { 0, 7.3, 0 }, { 8.4, 0.5, 1.4 }, "E5533D")
 dodaj("Deska", { 0, 4.9, 0 }, { 7.2, 3.8, 0.4 }, "FFF6E0", { tekst = NAPIS, strona = "Front", px = 40, kolor = "17121F" })
 local tyl = dodaj("DeskaTyl", { 0, 4.9, 0.25 }, { 7.2, 3.8, 0.1 }, "FFF6E0", { tekst = NAPIS, strona = "Back", px = 40, kolor = "17121F" })
@@ -482,15 +482,19 @@ def _podpowiedzi(z_tablica):
     return "{ " + ", ".join("{ %s }" % ", ".join(DANE._napis(x) for x in p) for p in lista) + " }"
 
 
+def _czesc(D):
+    return CZESC.replace("__CZCIONKA__", D["ui"]["czcionka"]).replace("__WAGA__", D["ui"]["waga_czcionki"])
+
+
 def kod_areny(D):
-    return (ARENA.replace("__CZESC__", CZESC).replace("__KONTENER__", D["kontener"])
+    return (ARENA.replace("__CZESC__", _czesc(D)).replace("__KONTENER__", D["kontener"])
             .replace("__PODPOWIEDZ__", DANE._luau(D["podpowiedz"]))
             .replace("__PODPOWIEDZI_ARENY__", _podpowiedzi(False))
             .replace("__CZESCI__", DANE._luau(SCENA.czesci(D))))
 
 
 def kod_tablicy(D):
-    return (TABLICA.replace("__CZESC__", CZESC).replace("__KONTENER__", D["kontener"])
+    return (TABLICA.replace("__CZESC__", _czesc(D)).replace("__KONTENER__", D["kontener"])
             .replace("__PODPOWIEDZ__", DANE._luau(D["podpowiedz"]))
             .replace("__TABLICA__", DANE._luau(D["tablica_wejscia"]))
             .replace("__NAPIS__", DANE._napis(D["teksty"]["tablica_wejscia"])))

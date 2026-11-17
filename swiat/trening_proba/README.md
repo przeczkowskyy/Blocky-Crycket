@@ -1,8 +1,8 @@
 # Training Center — próba mini-gier (Siła i Pancerz)
 
-*Status: **propozycja** (17.11.2026). **Etap A gotowy: projekt, kod, budowniczy i testy bez Studio. W Studio jeszcze
-NIC nie stoi** — budowa i próba w trybie Play to etap B (lista niżej). Opis sześciu mini-gier, wybory dla ludzi
-i ustawienia „przyjęte, do zmiany”: [`PROJEKT.md`](PROJEKT.md).
+*Status: **propozycja** (17.11.2026). **Wdrożone w Studio i sprawdzone w trybie Play 17.11.2026 przed południem**
+(etap B): lista T01–T14 zaliczona, zrzuty z gry w `klatki/`, wyniki w „Co sprawdzone w grze”. Opis sześciu mini-gier,
+wybory dla ludzi i ustawienia „przyjęte, do zmiany”: [`PROJEKT.md`](PROJEKT.md).
 Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅). Przyrost według propozycji
 `tools/walka/BALANS_1711.md`, część 6 — to nie jest decyzja (wybór 1 w PROJEKT.md).*
 
@@ -31,7 +31,9 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | `sprawdz_luau_treningu.py` | kontrola statyczna Luau (reguły jak w bazarze + zakaz zasobów spoza Robloxa i rozmiarów tekstu z literałów) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
 | `testy/test_treningu.py` | 36 testów offline (opis w nagłówku pliku) |
-| `testy/proba_play.py` | próba w Studio (Play) z listą kontrolną T01–T14 i 6 zrzutami — **jeszcze nieuruchomiona** (etap B) |
+| `testy/proba_play.py` | próba w Studio (Play) z listą kontrolną T01–T14 i 6 zrzutami roboczymi (wyniki poza repo) |
+| `testy/zrzuty_gry.py` | 8 zrzutów z gry do `klatki/` (1280 px) i pomiar ekranu telefonu 667 × 375 (emulacja atrybutem `EmulacjaEkranu`) |
+| `klatki/` | zrzuty z gry (tryb Play) — tabela w „Zrzuty z gry” |
 
 ## Co powstanie w kontenerze `Workspace/TreningProba`
 
@@ -44,7 +46,7 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | `Sygnaly/WybierzGre` | BindableFunction (klient) | **uchwyt dla docelowego okna 2D Pawła** |
 | `Sygnaly/SterowanieSerwera`, `Sygnaly/SterowanieKlienta` | BindableFunction | haczyki testowe |
 | `Arena` (Model, `ModelStreamingMode = Persistent`) | części | podłoga 96 × 56 st, murki i niewidzialne ściany 14 st, stanowiska Siły i Pancerza, zapowiedzi, lobby: tablica „WYBÓR MINI-GRY (E)” i brama „WYJŚCIE (E)” (zapasowe — gracz trafia od razu na stanowisko) |
-| `TablicaWejscia` (Model, Persistent) | części | tablica „TRAINING CENTER / PRÓBA MINI-GIER (E)” 14–26 st od pierwszego SpawnLocation, na wolnym gruncie, z dala od „Nowe miasteczko (E)” bazaru i portalu startowego; miejsce wybiera budowa w Studio |
+| `TablicaWejscia` (Model, Persistent) | części | tablica „TRAINING CENTER / MINI-GRY” z podpowiedzią E 14–26 st od pierwszego SpawnLocation, na wolnym gruncie, z dala od „Nowe miasteczko (E)” bazaru i portalu startowego; miejsce wybiera budowa w Studio |
 
 Atrybuty kontenera: `Wygenerowane`, `Zrodlo`, `Zbudowano`, `Skrot`, `PunktTablicy`, **`WyborTymczasowy`** (true; false
 = tymczasowy wybór się nie otwiera, bo jest okno Pawła). Ręczne w Edit i przenoszone przy odbudowie:
@@ -75,7 +77,7 @@ zmienia.
   end)
   ```
 
-## Jak zbudować i obejrzeć (etap B)
+## Jak zbudować i obejrzeć
 
 ```
 python -B swiat/trening_proba/dane.py                    # po każdej zmianie ustawienia.json
@@ -84,7 +86,8 @@ python -B swiat/trening_proba/zbuduj.py --sucho          # bez Studio: dane, Lua
 python -B swiat/trening_proba/zbuduj.py                  # Studio w trybie Edit: buduje / odbudowuje kontener
 python -B swiat/trening_proba/zbuduj.py --skrypty        # tylko moduły i skrypty (arena i tablica zostają)
 python -B swiat/trening_proba/zbuduj.py --usun           # usuwa Workspace/TreningProba
-python -B swiat/trening_proba/testy/proba_play.py <folder poza repo>   # próba T01–T14 w trybie Play
+python -B swiat/trening_proba/testy/proba_play.py <folder poza repo>   # próba T01–T14 w trybie Play (ok. 4 min)
+python -B swiat/trening_proba/testy/zrzuty_gry.py                      # 8 zrzutów do klatki/ (ok. 2 min)
 ```
 
 Przy kilku oknach Studio dopisz `--studio <studio_id>`. Każdy wysyłany kod sprawdza `game.PlaceId == 129485428021967`
@@ -92,11 +95,12 @@ i tryb Edit. Budowa rusza tylko kontener z `Wygenerowane` (obiekt o tej nazwie b
 postawi, sprawdza, czy w pudle areny nie ma cudzych części (są → STOP). Stawia punkty historii przed i po (Ctrl+Z
 cofa całość), niczego nie publikuje ani nie zapisuje, a `Lighting` zostaje nietknięte.
 
-**Obejrzenie ręcznie w Studio:** Play → podejdź do tablicy „TRAINING CENTER / PRÓBA MINI-GIER” obok miejsca startu
+**Obejrzenie ręcznie w Studio:** Play → (Enter na ekranie wyboru klasy) → podejdź do tablicy „TRAINING CENTER /
+MINI-GRY” obok miejsca startu
 (albo do trenera w budynku Training Center w bazarze) → E → w oknie „TYMCZASOWY WYBÓR” kliknij GRAJ przy Sile →
 START (albo spacja) → strzałki / WASD w stronę skrzynki, gdy dolatuje do świecącego kółka → po rundzie podsumowanie →
 INNA GRA → Pancerz → spacja, gdy pierścień dojdzie do kółka (fioletowy = zmyłka, nie blokuj) → WYJDŹ (albo Q).
-Telefon: Test → Device → telefon w poziomie (667 × 375).
+Telefon: Test → Device → telefon w poziomie (667 × 375) albo zrzut z emulacją: `python -B swiat/trening_proba/testy/zrzuty_gry.py`.
 
 ## Co sprawdzone bez Studio (17.11.2026)
 
@@ -144,41 +148,101 @@ Liczby z modelu gracza (celność zależna od okna, 200 rund): Siła ok. 45 zdar
 ok. 170–195 jednostek paska na rundę. Świeża statystyka przy 10. poziomie daje ok. 3–4 punkty w pierwszej rundzie
 i ok. 1 po dziesięciu rundach tej samej gry. Wariant dosłowny D-050 dałby ok. 70 punktów na rundę.
 
-## Etap B — co dokładnie zrobić w Studio (ok. 1,5–2,5 h z jedną rundą poprawek)
+## Wdrożenie w Studio (17.11.2026, etap B)
 
-1. `git pull`; offline: `test_treningu.py` i `zbuduj.py --sucho` (kod 0). Zgłoś pracę:
-   `python panel/narzedzia/praca.py start --id trening-proba --tytul "Training Center: próba mini-gier" --koniec +120m --obszar studio:TreningProba --obszar swiat/trening_proba --stop-przy-kolizji`.
-2. Studio w trybie Edit, miejsce gry. Najlepiej z `MiasteczkoBazar` i `MiasteczkoBazarGra` (T03 z prawdziwym E przy
-   trenerze); bez nich T03 sprawdza tylko zdarzenie.
-3. `python -B swiat/trening_proba/zbuduj.py` (ok. 1 min). Oczekiwane: „pudło areny wolne”, „części areny: 83,
-   podpowiedzi: 2”, „OK tablica wejścia (x; y; z) — pierścień …” bez „BRAK WOLNEGO MIEJSCA” i „podpowiedzi E: 3”
-   bez „UWAGA”.
-4. Obejrzyj w Edit tablicę wejścia przy spawnie i arenę (zrzuty `tools/studio_zrzuty.py` albo kamerą). Gdy tablica
-   stoi źle — atrybut `RecznyPunktTablicy` i ponowna budowa.
-5. `python -B swiat/trening_proba/testy/proba_play.py <folder poza repo>` (ok. 8–10 min: cztery pełne rundy po 48 s).
-   Wynik: `lista.txt`, `wyniki.json`, 6 zrzutów.
-6. Ręcznie: emulator telefonu w poziomie (czy krzyż nie zasłania skrzynek, czytelność), dźwięki na słuch, pad, dwóch
-   graczy (Test → Clients and Servers, 2).
-7. Poprawki po próbie (najpewniej kamera, położenie krzyża i pierścieni, wysokości stref) w `ustawienia.json`, potem
-   `dane.py` i `zbuduj.py --skrypty` (albo pełna budowa przy zmianie sceny), powtórka próby.
-8. Raport ze zrzutami na panel (skill `panel`), wpisy w sejfie (`Zadania.md`, `Dziennik zmian.md`, notatka Training
-   Center), `praca.py koniec`, commit i push (D-070).
+Zrobione w tej kolejności (pracę w panelu zgłosił koordynator; sejf i panel uzupełnia on):
 
-## Czego nie sprawdzono (wszystko, co wymaga Studio)
+1. Offline: `test_treningu.py` (36/36) i `zbuduj.py --sucho` — kod 0.
+2. `python -B swiat/trening_proba/zbuduj.py` (Edit): „pudło areny wolne | SpawnLocation: 1 | MiasteczkoBazarGra: true |
+   trener w bazarze (E training_center): true”, „części areny: 83, podpowiedzi: 2”, „OK tablica wejścia (−12,9; 0,8; 5,4)
+   — pierścień 14 st, kierunek 7 (próba 1) | start (0,0; 1,0; 0,0) z Workspace.SpawnLocation”, na końcu „instancji: 144,
+   skryptów: 4, części: 89, podpowiedzi E: 3” bez „UWAGA”. Ostatnia budowa: skrót danych `b5bab2e3004e`.
+3. Zrzuty w Edit (`tools/studio_zrzuty.py`, poza repo) i w Play → poprawki (niżej) → przebudowa → próba
+   `testy/proba_play.py` → zrzuty `testy/zrzuty_gry.py` do `klatki/`.
+4. Na końcu Studio w trybie **Edit**, kontener `Workspace/TreningProba` stoi (atrybut `Wygenerowane`). Miejsca nie
+   zapisano ani nie opublikowano; `Lighting` i cudze kontenery (w tym `DzwiekGra`, lasy, walka) nietknięte.
 
-- **Nic nie działało jeszcze w Studio.** Logika jest wykonana w interpreterze luau_mini, a serwer i klient tylko
-  sparsowane i przejrzane. Błędy wykonania w API Robloxa (ContextActionService, GuiService, TweenService, PivotTo,
-  RequestStreamAroundAsync, ModelStreamingMode) wyjdą dopiero w T01–T14.
-- **Wygląd:** kąty kamery, czytelność skrzynek i stref, golem i pięść, strzałki z kresek w przyciskach, pierścienie
-  Pancerza, kolory i obrys `Highlight` — ustawione na oko, bez żadnego zrzutu.
-- **Pochłanianie ruchu** (wysoki priorytet ContextActionService) i wyłączanie sterowania dotykowego — zachowanie
-  domyślnych skryptów sterowania Robloxa nie było sprawdzone.
-- **Telefon i pad** — tylko rachunek rozmiarów; HUD Pawła zostaje pod spodem (wybór 5).
-- **Dźwięki** — nazwy plików jak w `swiat/test_walki2` (tam sprawdzone wczytanie), brzmienia nikt nie słyszał.
-- **Dwóch graczy na jednym stanowisku** — stoją w tym samym miejscu (każdy widzi tylko swoje skrzynki); nie ma
-  osobnych miejsc na stanowisku.
-- **Opóźnienie sieci w prawdziwej grze** — tylko symulacja offline (0–0,3 s).
-- **Miejsce tablicy wejścia** — wybiera je budowa w Studio (siatka kandydatów przy pierwszym SpawnLocation).
+Przed każdą próbą w Play: `python -B tools/studio_okno.py --na-wierzch` (kod 0) — z oknem w tle Studio rysuje 15 kl./s
+i wyniki zależne od czasu są niemiarodajne.
+
+## Co sprawdzone w grze (17.11.2026, Studio, tryb Play)
+
+**Warunki.** Miejsce gry (PlaceId 129485428021967), jeden gracz, okno gry 2041 × 1153, Studio na wierzchu:
+**czas klatki śr. 16,7 ms, p95 17,9 ms** (60 kl./s). W miejscu m.in. `MiasteczkoBazar` + `MiasteczkoBazarGra` (T03
+z prawdziwym E przy trenerze). Ekran wyboru klasy zamykany Enterem przed listą (jak w próbach lasu-pasa).
+
+**Lista T01–T14** — `python -B swiat/trening_proba/testy/proba_play.py <folder poza repo>`, przebieg końcowy o 10:28
+(na ostatniej wersji kodu): **14 × OK**. Pierwszy przebieg (10:15, przed poprawkami wyglądu) też 14 × OK. Progów nie
+luzowałem; jedyna zmiana próby: zamykanie ekranu wyboru klasy Enterem po starcie Play.
+
+| Punkt | Wynik (przebieg końcowy) |
+|---|---|
+| T01 gotowość | OK — „OK 70/70”, 3 podpowiedzi, 6 kafelków (2 grywalne), zdarzenie `OknoMiejsca` podpięte |
+| T02 tablica, prawdziwe E | OK — wybór otwarty, źródło `tablica` |
+| T03 trener w bazarze, prawdziwe E | OK — wybór otwarty, źródło `bazar`; historia bazaru: `otwarto = TreningProba`, **`dymek = false`** (dymek „w budowie” nie wyskakuje) |
+| T04 GRAJ prawdziwym kliknięciem | OK — postać 0,00 st od podestu, kamera Scriptable, dotyk wyłączony, punkt powrotu 0,00 st od miejsca przy tablicy |
+| T05 runda Siły bez pudła | OK — trafienia 45/45, pudła 0, jednostki 309 (oczek. 309), punkty 3 (oczek. 3), `TreningSila` +3, sygnałów `PrzyrostStatystyki` 3 (oczek. 3), rozbieżności klient ↔ serwer 0 |
+| T06 prawdziwe klawisze w rundzie | OK — 5 zgłoszeń z 6 klawiszy (spacja w Sile nic nie robi), postać przesunięta o 0,00 st |
+| T07 spam 60 naraz | OK — 56 odrzuconych jako spam, 0 jednostek paska ze spamu |
+| T08 werdykty | OK — 1 trafienie, 2 zły kierunek, 3 za wcześnie, 4 przepuszczone, 5–7 trafienia; po 7 seria 3 (podwójne kliknięcie przy 6 pominięte) |
+| T09 Pancerz przez INNA GRA | OK — trafienia 41/42, pudło 1 (celowo zablokowana zmyłka), `TreningPancerz` +3 = suma rundy |
+| T10 podsumowanie, JESZCZE RAZ | OK — panel podsumowania, prawdziwa spacja startuje nową rundę |
+| T11 wyjście | OK — kliknięcie WYJDŹ: 0,0 st od miejsca sprzed wejścia, kamera Custom, dotyk przywrócony, W przesuwa postać o 9,9 st; brama WYJŚCIE (E) w arenie bez punktu powrotu → poza areną (spawn) |
+| T12 telefon (rachunek) | OK — 667 × 375: przycisk 52 px, tekst 15 pt; 568 × 320: 44,3 px, 12,8 pt |
+| T13 czas klatki | OK — śr. 16,7 ms, p95 17,9 ms (okno na wierzchu) |
+| T14 konsola | OK — 0 błędów pakietu |
+
+**Telefon 667 × 375 na zrzucie** (`testy/zrzuty_gry.py`, emulacja: atrybut kontenera `EmulacjaEkranu = Vector2(667, 375)`
+u klienta — prostokąt telefonu bez paska Robloxa, powiększony ×3,06): najmniejszy widoczny napis **14,7 pt**,
+najmniejszy przycisk **52 pt** („X”), strzałki 56 pt. HUD Pawła układa się względem całego okna, więc na zrzucie stoi
+jak na telefonie o tych proporcjach.
+
+## Poprawki po próbach w grze (17.11.2026)
+
+1. **Czcionka** FredokaOne rysowała ę, ż, ś, ć, ź zastępczą, mniejszą czcionką („Bieżnia”, „Zręczność”, „mini-grę”).
+   Teraz napisy okien i szyldów mają Nunito ExtraBold (`ui.czcionka`, `ui.waga_czcionki`) — wszystkie polskie znaki.
+2. **Strefa „dół” zasłonięta przez postać** (kamera za plecami): strefa dalej przed stopami (z −2,6 na −3,2 st),
+   a w czasie rundy własna postać jest półprzezroczysta u siebie (`LocalTransparencyModifier` 0,55, tylko u klienta).
+3. **Telefon: krzyż zasłaniał prawą strefę**, a „X” (przerwij) wchodził na przycisk Quests HUD-u. Kamera patrzy teraz
+   bardziej w prawo (cel x 1,6 → 6,0 w Sile, 1,2 → 5,5 w Pancerzu), więc gracz i strefy stoją w lewej połowie ekranu
+   (prawa strefa ok. 0,45 szerokości, krzyż od 0,52). „X” stoi na lewo od statusu; pierścienie Pancerza i napis
+   środkowy przesunięte za graczem (0,34 / 0,38).
+4. **Tarcza** pokazywała od tyłu złotą ramę — rama jest teraz z przodu, gracz widzi niebieską płytę ze złotą obwódką.
+5. **BLOK** był kwadratem (dwa UICorner) — teraz okrągły.
+6. **Tablica wejścia**: słupki zasłaniały brzegi napisu → słupki poza deską (±3,95 st), napis krótszy
+   („TRAINING CENTER / MINI-GRY”). Próba bez zawijania napisów w SurfaceGui (`TextWrapped = false`) dawała bardzo małe
+   napisy na szyldach — cofnięte.
+7. **Podłoga areny** ciemniejsza (BFA37A), żeby białe strefy i skrzynki odcinały się od tła.
+
+## Zrzuty z gry (`klatki/`, tryb Play, 1280 px)
+
+| Plik | Co widać |
+|---|---|
+| `01_tablica_wejscia.jpg` | tablica „TRAINING CENTER / MINI-GRY” przy miejscu startu, kamera gracza |
+| `02_wybor_przy_trenerze.jpg` | tymczasowy wybór po prawdziwym E przy trenerze w budynku Training Center w bazarze (opis „TYMCZASOWY WYBÓR … D-093”) |
+| `03_sila_trafienie.jpg` | Siła: „TRAFIONE!”, odłamki skrzynki, licznik serii i pasek w statusie |
+| `04_sila_seria.jpg` | Siła: „SERIA 10!”, mnożnik ×1,50, pierwszy punkt Siły w statusie |
+| `05_sila_pudlo.jpg` | Siła: „ZŁA STRONA” (zły kierunek), seria spada do 0; skrzynka „dół” widoczna przez półprzezroczystą postać |
+| `06_pancerz_zamach.jpg` | Pancerz: fioletowy pierścień i fioletowe oczy golema (zmyłka), „STOI!” po bloku, tarcza, okrągły BLOK |
+| `07_podsumowanie.jpg` | podsumowanie rundy Pancerza (42 z 42, seria 42, Pancerz +3, pasek 62/160) |
+| `08_telefon_667x375.jpg` | Siła na ekranie telefonu 667 × 375 (wycięty prostokąt emulacji) |
+
+Nazwy konta na zrzutach nie ma (własna postać nie ma nad sobą nazwy). Pełne wyniki prób (`wyniki.json`, `lista.txt`)
+zostały poza repozytorium — zawierają nazwę konta.
+
+## Czego nie sprawdzono
+
+- **Prawdziwy telefon i dotyk** — tylko emulacja układu (rozmiary, nachodzenie); dotyk palcem, gęstość pikseli
+  i wydajność telefonu nie.
+- **Pad** — mapowanie klawiszy w danych (ABXY, krzyżak), bez próby z padem.
+- **Dźwięki** — wczytują się z plików wbudowanych, ale nikt ich nie słuchał.
+- **Dwóch graczy** (Test → Clients and Servers) — nie było próby; na jednym stanowisku staliby w tym samym miejscu.
+- **Opóźnienie sieci** w prawdziwej grze — Studio lokalnie; tylko symulacja offline (0–0,3 s).
+- **Prawdziwa ręka gracza**: rundy w próbie grał „autograj” (naciśnięcia w zaplanowanych chwilach tą samą drogą co
+  klawisz), a prawdziwe klawisze sprawdzono w T06 (dochodzą i nie ruszają postaci). Trudność dla człowieka do oceny
+  przez Karola i Pawła.
+- **Zrzut 02** pokazuje wybór na tle wnętrza budynku (kamera przy trenerze opiera się o ścianę) — sam trener na nim
+  nie jest widoczny.
 
 ## Znane ryzyka
 

@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-17 · Claude Code u Karola (Training Center w Studio)
+- **Training Center na próbę działa w grze** (`Workspace/TreningProba`, `swiat/trening_proba/`): Siła „Rozbijanie” (rozbijanie lecących skrzynek strzałką w ich stronę — przykład Pawła z D-063) i Pancerz „Blok” (blok w chwili uderzenia golema, ze zmyłką; D-074). Wejście: E przy trenerze w bazarze albo przy tablicy obok startu; wybór mini-gry jest tymczasowy, bo okno 2D robi Paweł (D-093). Cztery pozostałe mini-gry są tylko w projekcie (`PROJEKT.md`, propozycja).
+- **Próba w grze:** 14 z 14 punktów przy 60 klatkach na sekundę (16,7 ms średnio). O przyrostach decyduje serwer: z 60 kliknięć naraz odrzucił 56 i pasek nie urósł. Runda bez pudła daje ok. 3 punkty świeżej statystyki (wzór z kalkulatora balansu, pytanie 50). Przyrost zapisuje się na razie tylko na czas sesji.
+- **Poprawione po zrzutach:** czcionka z pełnymi polskimi znakami, półprzezroczysta postać w czasie rundy, układ na telefonie (przyciski nie zasłaniają gry ani przycisku Quests), tablica wejścia.
+- **Niesprawdzone:** prawdziwy telefon i dotyk, pad, dźwięk na słuch, dwóch graczy naraz, trudność dla człowieka (w próbie grał automat).
+- Raport w panelu: „Training Center: Siła i Pancerz już grają w Studio”.
+- Pliki: `swiat/trening_proba/` (źródła, ustawienia, testy, `klatki/`); notatka [[Zadania]].
+
 ## 2026-11-17 · Claude Code u Karola (poprawki walki, podpięcie własnych dźwięków)
 - **Poprawki walki** wdrożone w Studio (`Workspace/TestWalki2`, `LasPotwory`, `LasPasGra`): jeden panel bohatera i jeden baner po Strażniku w lesie-pasie; przegrana i rewanż z pominięciem; napisy „PRÓBA WALKI” zamiast „Walka v2”; błysk krytyka Wojownika w chwili styku miecza z celem; kamera Miażdżącego ciosu z boku; unik przed Trollem bez przenikania maczugi; tempo ×4 (zwolnienia krytyków teraz przyspieszają — najdłuższa walka 28,8 s zamiast 32,3 s); zamknięcie walki w trakcie startu nie zostawia już sceny i kamery. Bariera Maga sprawdzona — bez zmian (Mag staje na palcach, nie odrywa się od ziemi).
 - **Próby w grze przy 60 klatkach na sekundę:** 44 z 46 (nie przechodzą tylko dwa punkty panelu prób na telefonie, które czekają na decyzję), 27 z 27, 111 z 111; las-pas 20 punktów w porządku; stary las 5 z 5.

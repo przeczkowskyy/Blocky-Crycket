@@ -67,8 +67,8 @@ def czesci(D):
     kolory = {s["id"]: s["kolor"] for s in D["statystyki"]}
 
     # --- podłoga, murki, niewidzialne ściany, słupy narożne
-    S.klocek("Arena/Podloga", "Plyta", [0, -1, 0], [sz, 2, gl], "D9C49A")
-    S.klocek("Arena/Podloga", "Sciezka", [0, 0.05, 10], [60, 0.1, 4], "C9B184")
+    S.klocek("Arena/Podloga", "Plyta", [0, -1, 0], [sz, 2, gl], "BFA37A")
+    S.klocek("Arena/Podloga", "Sciezka", [0, 0.05, 10], [60, 0.1, 4], "A98C63")
     for n, p, s in [("MurekN", [0, 1.25, -gl / 2 + 0.5], [sz, 2.5, 1]), ("MurekS", [0, 1.25, gl / 2 - 0.5], [sz, 2.5, 1]),
                     ("MurekW", [-sz / 2 + 0.5, 1.25, 0], [1, 2.5, gl - 2]), ("MurekE", [sz / 2 - 0.5, 1.25, 0], [1, 2.5, gl - 2])]:
         S.klocek("Arena/Mury", n, p, s, DREWNO_C)
@@ -154,7 +154,7 @@ def czesci(D):
         for j, dx in enumerate((-3.2, 3.2)):
             S.klocek(r, "Noga%d" % (j + 1), [x + dx, 1.5, -23], [0.5, 3, 0.5], DREWNO)
         S.klocek(r, "Deska", [x, 3.1, -23], [7, 3.2, 0.4], KREM,
-                 napis=_napis("%s\n%s — %s" % (s["nazwa"].upper(), s["gra"], D["teksty"]["w_projekcie"]), px=34))
+                 napis=_napis("%s\n%s\n%s" % (s["nazwa"].upper(), s["gra"], D["teksty"]["w_projekcie"]), px=34))
     return S.lista
 
 

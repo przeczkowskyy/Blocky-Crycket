@@ -88,16 +88,16 @@
   "stanowiska": {
     "sila": {
       "podest": [-24, 0, 8],
-      "kamera": {"oko": [3.2, 6.6, 11.5], "cel": [1.6, 3.2, -8]},
+      "kamera": {"oko": [3.2, 6.6, 11.5], "cel": [6.0, 3.2, -8]},
       "miotacz": [0, 0, -16],
       "reka": [1.6, 4.4, 0.8],
-      "strefy": {"gora": [0, 6.6, -1.6], "lewo": [-3.4, 3.4, -1.6], "prawo": [3.4, 3.4, -1.6], "dol": [0, 0.9, -2.6]},
+      "strefy": {"gora": [0, 6.6, -1.6], "lewo": [-3.4, 3.4, -1.6], "prawo": [3.4, 3.4, -1.6], "dol": [0, 0.9, -3.2]},
       "luki": {"gora": [0, 9, 0], "lewo": [-7, 3, 0], "prawo": [7, 3, 0], "dol": [0, -1.2, 0]},
       "miecz": [1.7, 3.4, -0.6]
     },
     "pancerz": {
       "podest": [24, 0, 8],
-      "kamera": {"oko": [3.2, 6.6, 11.5], "cel": [1.2, 3.6, -8]},
+      "kamera": {"oko": [3.2, 6.6, 11.5], "cel": [5.5, 3.6, -8]},
       "golem": [0, 0, -9],
       "piesc_spoczynek": [2.4, 4.6, 1.8],
       "piesc_zamach": [3.8, 8.2, -1.2],
@@ -137,6 +137,10 @@
     "wymog_przycisk_px": 44,
     "wymog_tekst_pt": 12,
     "kolejnosc_wyswietlania": 30,
+    "czcionka": "Nunito",
+    "waga_czcionki": "ExtraBold",
+    "przezroczystosc_postaci": 0.55,
+    "pasek_gorny_pt": 36,
     "sterowanie_od_prawej": 0.215,
     "kolory": {"krem": "FFF6E0", "tusz": "17121F", "dobrze": "3DBE5A", "zle": "E5533D", "zloto": "F2B630", "cios": "3DA5FF", "zmylka": "B04CFF", "szary": "8A7F72"}
   },
@@ -180,7 +184,7 @@
     "jeszcze_raz": "JESZCZE RAZ",
     "inna_gra": "INNA GRA",
     "wyjdz": "WYJDŹ",
-    "tablica_wejscia": "TRAINING CENTER\nPRÓBA MINI-GIER (E)",
+    "tablica_wejscia": "TRAINING CENTER\nMINI-GRY",
     "tablica_wyboru": "WYBÓR MINI-GRY (E)",
     "wyjscie": "WYJŚCIE (E)"
   }

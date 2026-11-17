@@ -46,6 +46,8 @@ local U = D.ui
 local T = D.teksty
 local KOL = U.kolory
 local PX = U.tekst_px
+-- czcionka z pełnymi polskimi znakami (FredokaOne rysuje ę, ż, ś, ć, ź zastępczą, mniejszą czcionką)
+local CZCIONKA = Font.new(Font.fromEnum(Enum.Font[U.czcionka]).Family, Enum.FontWeight[U.waga_czcionki])
 
 local function kolor(h)
 	return Color3.fromHex(h)
@@ -102,6 +104,16 @@ gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Enabled = false
 gui.Parent = ekrany
 
+-- korzeń wszystkich paneli: cały ekran, a przy atrybucie kontenera EmulacjaEkranu (Vector2, punkty telefonu) —
+-- prostokąt telefonu na środku okna, powiększony UIScale (zrzuty „jak na telefonie”, wzór: swiat/test_walki2)
+local korzen = Instance.new("Frame")
+korzen.Name = "Ekran"
+korzen.BackgroundTransparency = 1
+korzen.Size = UDim2.fromScale(1, 1)
+korzen.Parent = gui
+local skalaKorzenia = Instance.new("UIScale")
+skalaKorzenia.Parent = korzen
+
 local skale = {}
 local przyciski = {} -- { obiekt, szer, wys } (bazowo)
 local napisy = {} -- { obiekt, rozmiar } (bazowo)
@@ -137,7 +149,7 @@ local function panel(nazwa, szer, wys, pozycja, kotwica, tlo)
 	local s = Instance.new("UIScale")
 	s.Parent = f
 	table.insert(skale, s)
-	f.Parent = gui
+	f.Parent = korzen
 	return f
 end
 
@@ -147,7 +159,7 @@ local function napis(rodzic, nazwa, tekst, rozmiar, x, y, szer, wys, h, wyrownaj
 	l.BackgroundTransparency = 1
 	l.Position = UDim2.fromOffset(x, y)
 	l.Size = UDim2.fromOffset(szer, wys)
-	l.Font = Enum.Font.FredokaOne
+	l.FontFace = CZCIONKA
 	l.TextSize = PX[rozmiar]
 	l.TextColor3 = kolor(h or KOL.tusz)
 	l.TextXAlignment = wyrownaj or Enum.TextXAlignment.Center
@@ -165,7 +177,7 @@ local function przycisk(rodzic, nazwa, tekst, x, y, szer, wys, tlo, akcja, rozmi
 	b.Size = UDim2.fromOffset(szer, wys)
 	b.BackgroundColor3 = kolor(tlo)
 	b.AutoButtonColor = true
-	b.Font = Enum.Font.FredokaOne
+	b.FontFace = CZCIONKA
 	b.TextSize = PX[rozmiar or "sredni"]
 	b.TextColor3 = kolor(KOL.krem)
 	b.Text = tekst
@@ -261,7 +273,7 @@ obrysuj(ui.toast, 2)
 ui.toastTekst = napis(ui.toast, "Tekst", "", "sredni", 8, 4, 364, 36, KOL.tusz)
 
 -- napis środkowy (odliczanie, TRAFIONE!) i błysk
-ui.srodek = panel("Napis", 460, 80, UDim2.new(0.42, 0, 0.34, 0), Vector2.new(0.5, 0.5), "")
+ui.srodek = panel("Napis", 460, 80, UDim2.new(0.38, 0, 0.25, 0), Vector2.new(0.5, 0.5), "")
 ui.srodekTekst = napis(ui.srodek, "Tekst", "", "wielki", 0, 0, 460, 80, KOL.krem)
 local obrysSrodka = Instance.new("UIStroke")
 obrysSrodka.Thickness = 3
@@ -279,7 +291,7 @@ ui.blysk.Active = false
 ui.blysk.Parent = gui
 
 -- pierścienie Pancerza (cel stały + dwa zbiegające się)
-ui.pierscienie = panel("Pierscienie", 64, 64, UDim2.new(0.42, 0, 0.64, 0), Vector2.new(0.5, 0.5), "")
+ui.pierscienie = panel("Pierscienie", 64, 64, UDim2.new(0.34, 0, 0.6, 0), Vector2.new(0.5, 0.5), "")
 local celPierscienia = Instance.new("Frame")
 celPierscienia.Name = "Cel"
 celPierscienia.Size = UDim2.fromScale(1, 1)
@@ -369,7 +381,7 @@ local function napisSrodek(tekst, h, rozmiar, czas)
 	skalaSrodka.Scale = (skale[1] and skale[1].Scale or 1) * 1.35
 	TweenService:Create(skalaSrodka, TweenInfo.new(0.16, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
 		{ Scale = skale[1] and skale[1].Scale or 1 }):Play()
-	task.delay(czas or 0.55, function()
+	task.delay((czas or 0.55) * (stan.dlugieNapisy or 1), function()
 		if moj == licznikNapisu then
 			ui.srodek.Visible = false
 		end
@@ -463,7 +475,7 @@ local function zbudujTarcze()
 	local t = czesc("Plyta", Vector3.new(2.6, 2.9, 0.35), D.statystyki[6].kolor)
 	t.Parent = model
 	local r = czesc("Rama", Vector3.new(2.95, 3.25, 0.25), KOL.zloto)
-	r.CFrame = CFrame.new(0, 0, 0.12)
+	r.CFrame = CFrame.new(0, 0, -0.12)
 	r.Parent = model
 	local k = czesc("Guz", Vector3.new(0.9, 0.9, 0.9), KOL.zloto, nil, Enum.PartType.Ball)
 	k.CFrame = CFrame.new(0, 0, -0.25)
@@ -692,7 +704,7 @@ do
 	local p = przycisk(ui.blok, "Przycisk_blok", "", 0, 0, U.blok_px, U.blok_px, D.statystyki[6].kolor, function()
 		nacisnij("blok")
 	end)
-	zaokraglij(p, U.blok_px)
+	p:FindFirstChildOfClass("UICorner").CornerRadius = UDim.new(0.5, 0) -- okrągły
 	napis(p, "Napis", s.napis, "duzy", 0, U.blok_px * 0.22, U.blok_px, 32, KOL.krem)
 	napis(p, "Klawisz", s.skrot, "maly", 0, U.blok_px * 0.6, U.blok_px, 18, KOL.krem)
 end
@@ -796,24 +808,43 @@ przycisk(ui.koniec, "Wyjdz", T.wyjdz, 296, 176, 94, U.przycisk_maly_px, KOL.zle,
 
 -- wybór i komunikat nad wszystkim (ZIndexBehavior.Sibling: później dodany = wyżej)
 ui.wybor.Parent = nil
-ui.wybor.Parent = gui
+ui.wybor.Parent = korzen
 ui.toast.Parent = nil
-ui.toast.Parent = gui
+ui.toast.Parent = korzen
 
 ------------------------------------------------------------------ skala UI (baza 667 × 375; min. 44 px przycisku, 12 pt tekstu)
 local function odswiezSkale()
 	local cam = workspace.CurrentCamera
-	local s = L.skalaUI(D, cam.ViewportSize.X, cam.ViewportSize.Y)
+	local w, h = cam.ViewportSize.X, cam.ViewportSize.Y
+	local em = kontener:GetAttribute("EmulacjaEkranu")
+	if typeof(em) == "Vector2" and em.X > 0 and em.Y > 0 then
+		-- ekran telefonu em (punkty) bez paska Robloxa, wpisany w obszar okna pod paskiem
+		local wys = em.Y - U.pasek_gorny_pt
+		local k = math.min(gui.AbsoluteSize.X / em.X, gui.AbsoluteSize.Y / wys)
+		korzen.AnchorPoint = Vector2.new(0.5, 0.5)
+		korzen.Position = UDim2.fromScale(0.5, 0.5)
+		korzen.Size = UDim2.fromOffset(em.X, wys)
+		skalaKorzenia.Scale = k
+		w, h = em.X, em.Y
+	else
+		korzen.AnchorPoint = Vector2.zero
+		korzen.Position = UDim2.fromScale(0, 0)
+		korzen.Size = UDim2.fromScale(1, 1)
+		skalaKorzenia.Scale = 1
+	end
+	local s = L.skalaUI(D, w, h)
 	for _, sk in skale do
 		if sk ~= skalaSrodka then
 			sk.Scale = s
 		end
 	end
-	-- przesunięcia (Position) nie skalują się z UIScale: przycisk przerwania zawsze tuż pod statusem
-	ui.przerwij.Position = UDim2.new(1, -8, 0, 8 + (ui.status.Size.Y.Offset + 8) * s)
+	-- przesunięcia (Position) nie skalują się z UIScale: przycisk przerwania zawsze na lewo od statusu (pod statusem
+	-- na telefonie wchodził na przycisk Quests prawej kolumny HUD)
+	ui.przerwij.Position = UDim2.new(1, -8 - (ui.status.Size.X.Offset + 8) * s, 0, 8)
 end
 odswiezSkale()
 workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(odswiezSkale)
+kontener:GetAttributeChangedSignal("EmulacjaEkranu"):Connect(odswiezSkale)
 
 ------------------------------------------------------------------ klawisze, kamera, dotyk
 local AKCJA = "TreningProbaKlawisze"
@@ -953,8 +984,24 @@ local function zejdzZeStanowiska()
 end
 
 ------------------------------------------------------------------ klatka: odliczanie, lot skrzynek, zamach golema, kamera
+-- własna postać gracza: tylko LocalTransparencyModifier u siebie (nic nie idzie na serwer)
+local przezroczystoscTeraz = 0
+local function przezroczystoscPostaci(v)
+	local postac = gracz.Character
+	if not postac or (v == 0 and przezroczystoscTeraz == 0) then
+		return
+	end
+	przezroczystoscTeraz = v
+	for _, d in postac:GetDescendants() do
+		if d:IsA("BasePart") or d:IsA("Decal") then
+			d.LocalTransparencyModifier = v
+		end
+	end
+end
+
 local function wyglad(t)
 	local W = stan.gra and D.swiat[stan.gra]
+	przezroczystoscPostaci(if W and stan.ekran == "runda" then U.przezroczystosc_postaci else 0)
 	if not W then
 		return
 	end
@@ -1356,6 +1403,9 @@ sterowanie.OnInvoke = function(polecenie, a, b2)
 		return true
 	elseif polecenie == "inna" then
 		return pokazWybor("stanowisko")
+	elseif polecenie == "dlugie_napisy" then
+		stan.dlugieNapisy = a -- mnożnik czasu napisów środkowych (zrzuty); nil = zwykle
+		return true
 	elseif polecenie == "zamknij" then
 		ukryjWybor()
 		return true
