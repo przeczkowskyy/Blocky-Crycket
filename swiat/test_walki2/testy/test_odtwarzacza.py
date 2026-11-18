@@ -451,6 +451,139 @@ class Pokrycie(unittest.TestCase):
         # utrata tury: puls ozdoby tylko przy efektach, które zabierają turę (typ „ogluszenie” w danych)
         self.assertEqual(set(CH["TRACI_TURE"]), {k for k, v in S.EFEKTY.items() if v["typ"] == "ogluszenie"})
 
+    # ----------------------------------------------------------------- własny wygląd umiejętności u aktora (Dżungla)
+    def test_wlasny_wyglad_umiejetnosci_aktora_dane(self):
+        """Choreografie.UMIEJETNOSCI_AKTORA: tylko aktorzy Dżungli, tylko ich umiejętności z klipem; styl, czas i kamera
+        jak we wpisie ogólnym (POLA_CZASU); pocisk, wybuch, aura i ozdoby statusów istnieją w Efekty3D; dźwięki
+        wskazują istniejące zdarzenia katalogu (uderzenie = takie, które ma szczyt na trafieniu)."""
+        wa = CH["UMIEJETNOSCI_AKTORA"]
+        ogolne = CH["UMIEJETNOSCI"]
+        pola_czasu = list(CH["POLA_CZASU"])
+        self.assertIn("styl", pola_czasu)
+        self.assertIn("predkosc", pola_czasu)
+        self.assertIn("kamera", pola_czasu)
+        dzungla = {w["klucz"] for w in A.AKTORZY_DZUNGLI}
+        self.assertEqual(set(wa), dzungla, "własny wygląd mają dokładnie aktorzy Dżungli (las, Bagno, bohaterowie — nie)")
+        with open(os.path.join(REPO, "swiat", "dzwiek_gra", "ustawienia.json"), encoding="utf-8") as f:
+            zdarzenia_dzwieku = json.load(f)["zdarzenia"]
+        wbudowane = set(re.findall(r"^\t([a-z_]+) = \{ id = S \.\.", Zrodla.ustawienia, re.M))
+        self.assertIn("plusk", wbudowane)
+        znane_pola = set(pola_czasu) | {"pocisk", "wybuch", "aura", "smuga", "fala", "pazury", "pazuryKrzyz", "kly", "wstrzas",
+                                        "grot", "nazwa", "wyglady", "dzwiekUderzenia", "dzwiekWypuszczenia", "dzwiekWbudowany",
+                                        "kolor", "skalaWybuchu"}
+        for klucz, wpisy_aktora in wa.items():
+            aktor = A.PO_KLUCZU[klucz]
+            for uid, w in wpisy_aktora.items():
+                gdzie = "%s/%s" % (klucz, uid)
+                self.assertIn(uid, S.UMIEJETNOSCI, gdzie)
+                self.assertTrue(aktor["umiejetnosci"].get(uid), "%s: aktor nie ma klipu tej umiejętności" % gdzie)
+                self.assertTrue(set(w) <= znane_pola, "%s: nieznane pola %s" % (gdzie, sorted(set(w) - znane_pola)))
+                baza = ogolne[uid]
+                for pole in pola_czasu:
+                    self.assertEqual(w.get(pole), baza.get(pole), "%s: pole czasu / kamery „%s” inne niż we wpisie ogólnym"
+                                     % (gdzie, pole))
+                styl = w["styl"]
+                self.assertIn(styl, Zrodla.CHOREO, gdzie)
+                self.assertEqual(styl == "na_siebie", S.UMIEJETNOSCI[uid]["cel"] == "sam", gdzie)
+                if styl == "pocisk":
+                    self.assertIn(w.get("pocisk"), Zrodla.POCISKI, "%s: brak Pocisk.%s" % (gdzie, w.get("pocisk")))
+                    self.assertGreater(w.get("grot", 0), 0, "%s: pocisk bez pola grot" % gdzie)
+                for pole in ("wybuch", "aura"):
+                    if w.get(pole):
+                        self.assertIn(w[pole], Zrodla.WYBUCHY, "%s: brak Wybuch.%s" % (gdzie, w[pole]))
+                # wygląd naprawdę własny: inny pocisk / wybuch / aura / ślad niż we wpisie ogólnym
+                wyglad = {p: w.get(p) for p in ("pocisk", "wybuch", "aura", "smuga", "pazury", "kly", "pazuryKrzyz", "fala")}
+                self.assertNotEqual(wyglad, {p: baza.get(p) for p in wyglad}, "%s: wygląd taki sam jak pożyczony" % gdzie)
+                naklada = {e["efekt"] for e in S.UMIEJETNOSCI[uid]["efekty"]}
+                for efekt, wygl in (w.get("wyglady") or {}).items():
+                    self.assertIn(efekt, naklada, "%s: ozdoba efektu %s, którego ta umiejętność nie nakłada" % (gdzie, efekt))
+                    self.assertIn(wygl, Zrodla.WYGLADY, "%s: brak Wyglad.%s" % (gdzie, wygl))
+                    self.assertNotEqual(wygl, CH["EFEKTY"][efekt]["wyglad"], gdzie)
+                if "nazwa" in w:
+                    self.assertTrue(isinstance(w["nazwa"], str) and 3 <= len(w["nazwa"]) <= 24, gdzie)
+                du = w.get("dzwiekUderzenia")
+                if du is not None and du is not False:
+                    self.assertTrue(zdarzenia_dzwieku.get(du, {}).get("uderzenie"), "%s: zdarzenie „%s” nie jest uderzeniem "
+                                    "w swiat/dzwiek_gra/ustawienia.json" % (gdzie, du))
+                if w.get("dzwiekWypuszczenia"):
+                    self.assertIn(w["dzwiekWypuszczenia"], zdarzenia_dzwieku, gdzie)
+                if w.get("dzwiekWbudowany"):
+                    self.assertIn(w["dzwiekWbudowany"], wbudowane, gdzie)
+        # nowe funkcje efektów i miejsca podpięcia w odtwarzaczu
+        for f in ("ukaszenie", "pyl", "licznik", "opisKosztu", "zmierz"):
+            self.assertRegex(Zrodla.efekty, r"function Efekty:%s\(" % f, "brak fx:%s w Efekty3D" % f)
+        for kawalek in ("Ch.UMIEJETNOSCI_AKTORA[klucz]", "Ch.UMIEJETNOSCI_AKTORA[aktor]", "c.pazuryKrzyz == true",
+                        "self.fx:ukaszenie(", "c.grot or (", "ev.choreo.dzwiekUderzenia ~= nil", "c.dzwiekWypuszczenia",
+                        "c.dzwiekWbudowany", "ev.choreo.nazwa", '"OstatniKosztEfektow"', "efekty3D = s.fx and s.fx:licznik()"):
+            self.assertIn(kawalek, Zrodla.odtw, "odtwarzacz nie używa: %s" % kawalek)
+        # nowe efekty nie świecą światłem i nie zostawiają niczego poza folderem sceny (sprzątanie przez fx:wyczysc)
+        nowe = Zrodla.efekty.split("-- Dżungla (18.11.2026) — rozbłyski", 1)[1].split("function Efekty:wybuch(", 1)[0] \
+            + Zrodla.efekty.split("-- Dżungla — usypiający pyłek", 1)[1].split("function Efekty:pocisk(", 1)[0] \
+            + Zrodla.efekty.split("Dżungla (18.11.2026): ozdoby własnych efektów", 1)[1].split("function Efekty:wyglad(", 1)[0] \
+            + Zrodla.efekty.split("--[[ Ukąszenie (Dżungla", 1)[1].split("-- wybuchy (rozbłysk przy trafieniu)", 1)[0]
+        for zakazane in ("PointLight", "Instance.new", "Debris", "task.delay", "task.spawn", "workspace:", "rbxassetid", "SoundId",
+                         "Texture ="):
+            self.assertNotIn(zakazane, nowe, "nowe efekty Dżungli: %s" % zakazane)
+
+    @staticmethod
+    def _funkcja_odtwarzacza(naglowek):
+        """Tekst funkcji najwyższego poziomu z OdtwarzaczWalki2.luau (od nagłówka do `end` w pierwszej kolumnie)."""
+        tekst = Zrodla.odtw.replace("\r\n", "\n")
+        i = tekst.index(naglowek)
+        return tekst[i:tekst.index("\nend\n", i) + 5]
+
+    def test_wlasny_wyglad_umiejetnosci_aktora_kod(self):
+        """PRAWDZIWY kod Sesja:wpisChoreo i Sesja.wygladEfektu z odtwarzacza wykonany interpreterem: aktor Dżungli dostaje
+        własny wpis, a KAŻDY inny aktor (bohaterowie, las, Bagno) dokładnie wpis ogólny i dawną ozdobę statusu."""
+        kod = ('local Ch = wymagaj("Choreografie")\nlocal Dane = { umiejetnosci = {} }\nlocal Sesja = {}\n'
+               + bez_rzutowan(self._funkcja_odtwarzacza("function Sesja:wpisChoreo(")) + "\n"
+               + bez_rzutowan(self._funkcja_odtwarzacza("function Sesja.wygladEfektu(")) + "\nreturn Sesja\n")
+        _I.laduj("WycinekOdtwarzacza", kod)
+        sesja = _I.wymagaj("WycinekOdtwarzacza")
+
+        def wpis(uid, klucz):
+            ja = LM.do_luau({"brakiChoreo": 0})
+            w = _I.wywolaj(sesja.get("wpisChoreo"), [ja, LM.do_luau({"umiejetnosc": uid, "rodzaj": "fizyczne"}), klucz])
+            self.assertTrue(LM.prawda(w[1]), "%s/%s: wpis zastępczy" % (klucz, uid))
+            return LM.z_luau(w[0])
+
+        def wyglad(efekt, uid, klucz):
+            return _I.wywolaj(sesja.get("wygladEfektu"), [efekt, uid, klucz])[0]
+
+        wa, ogolne = CH["UMIEJETNOSCI_AKTORA"], CH["UMIEJETNOSCI"]
+        sprawdzone = 0
+        for aktor in A.AKTORZY:
+            klucz = aktor["klucz"]
+            for uid in aktor["umiejetnosci"]:
+                if uid not in S.UMIEJETNOSCI:
+                    continue
+                w = wpis(uid, klucz)
+                if klucz in wa and uid in wa[klucz]:
+                    self.assertEqual(w, wa[klucz][uid], "%s/%s" % (klucz, uid))
+                else:
+                    self.assertEqual(w, ogolne[uid], "%s/%s: wpis inny niż ogólny" % (klucz, uid))
+                for e in S.UMIEJETNOSCI[uid]["efekty"]:
+                    efekt = e["efekt"]
+                    dawny = CH["WYGLAD_OD_UMIEJETNOSCI"].get(efekt, {}).get(uid) or CH["EFEKTY"][efekt]["wyglad"]
+                    wlasny = (wa.get(klucz, {}).get(uid, {}).get("wyglady") or {}).get(efekt)
+                    self.assertEqual(wyglad(efekt, uid, klucz), wlasny or dawny, "%s/%s/%s" % (klucz, uid, efekt))
+                    self.assertEqual(wyglad(efekt, uid, None), dawny, "bez aktora: dawna ozdoba (%s/%s)" % (uid, efekt))
+                sprawdzone += 1
+        self.assertGreaterEqual(sprawdzone, 20)
+        # przykłady wprost
+        self.assertEqual(wpis("lodowy_pocisk", "gebokwiat")["pocisk"], "pylek")
+        self.assertEqual(wpis("lodowy_pocisk", "mag")["pocisk"], "lod")
+        self.assertEqual(wpis("zatruta_strzala", "waz_stu_lian")["pocisk"], "jad")
+        self.assertEqual(wpis("zatruta_strzala", "zwiadowca")["pocisk"], "strzala")
+        self.assertEqual(wyglad("spowolnienie", "lodowy_pocisk", "gebokwiat"), "sen")
+        self.assertEqual(wyglad("spowolnienie", "lodowy_pocisk", "mag"), "lod")
+        self.assertEqual(wyglad("skupienie", "skupienie", "zwijogon"), "kamuflaz")
+        self.assertEqual(wyglad("skupienie", "skupienie", "zwiadowca"), "blask")
+        self.assertEqual(wyglad("kamienna_skora", "kamienna_skora", "pancernik_ruin"), "ruiny")
+        self.assertEqual(wyglad("kamienna_skora", "kamienna_skora", "wojownik"), "kamienie")
+        self.assertEqual(wyglad("trucizna", "zatruta_strzala", "waz_stu_lian"), "babelki")
+        self.assertEqual(wyglad("krwawienie", "", "waz_stu_lian"), "krople")
+
     def test_etykiety_premii_i_zapowiedzi_pasywek(self):
         et = CH["MODYFIKATORY"]
         ids = [m["id"] for m in S.MODYFIKATORY]

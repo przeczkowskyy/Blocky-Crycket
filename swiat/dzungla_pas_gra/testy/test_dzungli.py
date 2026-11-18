@@ -398,6 +398,44 @@ class TestWalki(unittest.TestCase):
             with self.subTest(plik=os.path.basename(plik)):
                 self.assertEqual(norm(luau_plik(plik)), norm(dane))
 
+    @unittest.skipIf(LM is None, "brak luau_mini")
+    def test_6e_wlasne_efekty_umiejetnosci(self):
+        """Każda umiejętność każdego potwora Dżungli ma własny wygląd (Choreografie.UMIEJETNOSCI_AKTORA) — nic nie jest
+        pożyczone; silnik dalej zna te same id umiejętności (logika walki bez zmian); README ma tabelę, a próba w grze
+        (J15) sprawdza każdą z nich."""
+        ch = luau_plik(os.path.join(REPO, "swiat", "test_walki2", "zrodla", "Choreografie.luau"))
+        wa, ogolne = ch["UMIEJETNOSCI_AKTORA"], ch["UMIEJETNOSCI"]
+        # id silnika — te same co przed własnymi efektami (zmiana wyglądu nie może ruszyć danych walki)
+        silnik = {"zwijogon": ["skupienie", "rozszarpanie"], "gebokwiat": ["lodowy_pocisk"], "kokosowy_silacz": ["ciecie"],
+                  "pancernik_ruin": ["kamienna_skora"], "waz_stu_lian": ["zatruta_strzala", "rozszarpanie"]}
+        self.assertEqual({d["id"]: d["umiejetnosci"] for d in PRZ.przeciwnicy()}, silnik)
+        self.assertEqual(set(wa), set(silnik))
+        readme = czytaj(PAKIET, "README.md")
+        proba = _modul("proba_play_dzungli_test", os.path.join(TU, "proba_play.py"))
+        for gatunek, umiejetnosci in silnik.items():
+            self.assertEqual(set(wa[gatunek]), set(umiejetnosci), gatunek)
+            self.assertEqual(set(proba.EFEKTY[gatunek][2]), set(umiejetnosci), "próba J15: %s" % gatunek)
+            for u in umiejetnosci:
+                with self.subTest(gatunek=gatunek, umiejetnosc=u):
+                    w = wa[gatunek][u]
+                    for pole in ch["POLA_CZASU"]:
+                        self.assertEqual(w.get(pole), ogolne[u].get(pole), "pole czasu / kamery %s" % pole)
+                    self.assertIn("`%s`" % u, readme, "README: brak wiersza umiejętności")
+                    if "nazwa" in w:
+                        self.assertIn(w["nazwa"], readme, "README: brak napisu umiejętności")
+                    oczek_wyglad, _ = proba.EFEKTY[gatunek][2][u]
+                    for pole, wartosc in oczek_wyglad.items():
+                        if pole in ("kly",):
+                            self.assertEqual("kly" in w, wartosc)
+                        else:
+                            self.assertEqual(w.get(pole), wartosc, "próba J15 oczekuje innego %s" % pole)
+        # nazwy instancji efektów, których próba szuka po walce = nazwy w kodzie własnych efektów
+        ef = czytaj(REPO, "swiat", "test_walki2", "zrodla", "Efekty3D.luau")
+        nowe = (ef.split("--[[ Ukąszenie (Dżungla", 1)[1].split("-- wybuchy (rozbłysk przy trafieniu)", 1)[0]
+                + ef.split("-- Dżungla — usypiający pyłek", 1)[1].split("function Efekty:pocisk(", 1)[0]
+                + ef.split("Dżungla (18.11.2026): ozdoby własnych efektów", 1)[1].split("function Efekty:wyglad(", 1)[0])
+        self.assertEqual(set(re.findall(r'Name = "([A-Za-z]+)"', nowe)), set(proba.NAZWY_EFEKTOW))
+
     def test_6d_wygrane_klas_w_widelkach(self):
         """Postacie wzorcowe (bez treningu) na poziomie wejścia do przegrody; rzadki i strażnik: gracz o poziom wyżej.
         Widełki przyjęte (do zmiany): zwykłe 65–90%, rzadki 40–70%, strażnik 15–45%, rozstęp klas ≤ 20 pp."""
@@ -502,8 +540,9 @@ class TestStykow(unittest.TestCase):
         tekst = czytaj(sciezka)
         self.assertIn('FindFirstChild("ClassSelect")', tekst)
         self.assertIn('nacisnij("Return")', tekst)
-        for kod in ("J%02d" % i for i in range(15)):
+        for kod in ("J%02d" % i for i in range(18)):   # J15–J17: własne efekty umiejętności (18.11.2026)
             self.assertIn('punkt("%s"' % kod, tekst)
+        self.assertIn('S:Invoke("wstrzymaj", true)', tekst)
 
     def test_7g_bez_sciezek_lokalnych(self):
         wzor = re.compile(r"[A-Za-z]:\\\\?Users|/Users/|/home/|AppData|@[a-z0-9-]+\.(?:com|pl)\b", re.I)

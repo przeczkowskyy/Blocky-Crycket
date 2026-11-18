@@ -7,7 +7,8 @@
 	  • każdy typ zdarzenia z Dziennik.TYPY ma wpis w ZDARZENIA, a każda obsługa istnieje w odtwarzaczu,
 	  • każda umiejętność z tools/walka/dane_walki.json ma wpis w UMIEJETNOSCI ze znanym stylem (i odwrotnie),
 	  • każdy efekt z danych ma wpis w EFEKTY ze znanym wyglądem,
-	  • pociski i wybuchy wskazane w tabelach istnieją w Efekty3D.
+	  • pociski i wybuchy wskazane w tabelach istnieją w Efekty3D,
+	  • własny wygląd umiejętności u aktora (UMIEJETNOSCI_AKTORA) nie zmienia stylu, czasu ani kamery wpisu ogólnego.
 	Nowa umiejętność bez wpisu NIE zostanie więc po cichu bez animacji. Gdyby mimo to w grze trafiło się coś bez wpisu,
 	odtwarzacz gra styl zastępczy (ZASTEPCZY) i liczy to w atrybucie OstatnieBrakiChoreografii.
 
@@ -116,6 +117,51 @@ Ch.EFEKTY = {
 	bariera = { wyglad = "banka", kolor = "#6FE3FF", ikona = "banka", napis = "BARIERA!", znaczek = "procent" },
 	skupienie = { wyglad = "blask", kolor = "#FFD23F", ikona = "oko", napis = "SKUPIENIE!" },
 }
+--[[ WŁASNY WYGLĄD UMIEJĘTNOŚCI U AKTORA (18.11.2026, propozycja — Dżungla): klucz aktora → id umiejętności → wpis jak
+	w UMIEJETNOSCI. Silnik zna tylko id umiejętności („lodowy_pocisk”), a potwory Dżungli pożyczają umiejętności klas
+	i lasu — tutaj ta sama umiejętność dostaje inny wygląd, gdy rzuca ją dany aktor (usypiający pyłek Gębokwiata nie
+	wygląda jak lodowy sopel Maga). Odtwarzacz bierze wpis stąd, a gdy go nie ma — z UMIEJETNOSCI, więc bohaterowie,
+	las i Bagno grają jak dotąd.
+	Wpis ZASTĘPUJE wpis ogólny w całości. Pola, od których zależą czasy sceny i kamera (POLA_CZASU), MUSZĄ być takie
+	same jak we wpisie ogólnym — test bez Studio tego pilnuje; zmienia się tylko wygląd, napis i dźwięk.
+	Pola dodatkowe (działają też w UMIEJETNOSCI, tam ich dziś nie ma):
+	  nazwa               napis umiejętności na ekranie zamiast nazwy z danych silnika (dziennik i liczby bez zmian)
+	  wyglady             efekt → Wyglad.<nazwa>: ozdoba statusu, gdy nałożyła go ta umiejętność tego aktora (ikona,
+	                      kolor i napis statusu zostają z EFEKTY — status wygląda w interfejsie jak zawsze)
+	  grot                (pocisk) ile studów przed środkiem pocisku jest jego przód
+	  kly                 (wręcz) kolor czterech kłów zatrzaskujących się na celu (Efekty3D: fx:ukaszenie)
+	  pazuryKrzyz         (wręcz) ślady pazurów na krzyż (dwie łapy)
+	  dzwiekUderzenia     zdarzenie katalogu dźwięków (swiat/dzwiek_gra, z „uderzenie”) grane ze szczytem na trafieniu
+	                      zamiast domyślnego; false = bez odcinka katalogu na trafieniu
+	  dzwiekWypuszczenia  zdarzenie katalogu grane przy wypuszczeniu pocisku zamiast „rzut” (głos potwora na początku
+	                      umiejętności milknie, gdy to ten sam dźwięk)
+	  dzwiekWbudowany     dźwięk z Ustawienia.DZWIEKI przy trafieniu, gdy katalog się nie wczytał (zamiast „wybuch”) ]]
+Ch.POLA_CZASU = { "styl", "predkosc", "luk", "kamera", "stronaKamery", "zamach", "wysokosc", "celPrzod", "puszcza", "punkt", "lot", "kaluza" }
+Ch.UMIEJETNOSCI_AKTORA = {
+	-- Zwijogon: „Kamuflaż” (Skupienie) — liście zamiast złotego błysku; rozszarpanie dwiema łapami na krzyż i sypiące się liście
+	zwijogon = {
+		skupienie = { styl = "na_siebie", aura = "kamuflaz", nazwa = "Kamuflaż", wyglady = { skupienie = "kamuflaz" } },
+		rozszarpanie = { styl = "wrecz", pazury = "#FF5A3C", pazuryKrzyz = true, wybuch = "liscie", wstrzas = 0.4, kamera = "zaBroniacym" },
+	},
+	-- Gębokwiat: usypiający pyłek (silnik: lodowy pocisk ze spowolnieniem) — żółta chmura, „zzz” nad uśpionym
+	gebokwiat = {
+		lodowy_pocisk = { styl = "pocisk", pocisk = "pylek", wybuch = "pylek", predkosc = 17, wstrzas = 0.3, grot = 0.6, nazwa = "Usypiający pyłek", wyglady = { spowolnienie = "sen" }, dzwiekUderzenia = false, dzwiekWypuszczenia = "zarodniki" },
+	},
+	-- Kokosowy Siłacz: oba kokosy z góry (silnik: Potężne cięcie) — brązowa smuga, odłamki łupiny, fala na ziemi
+	kokosowy_silacz = {
+		ciecie = { styl = "wrecz", smuga = "#C8935A", fala = "#B08A58", wybuch = "kokos", wstrzas = 0.35, kamera = "zaBroniacym", nazwa = "Kokosy z góry" },
+	},
+	-- Pancernik Ruin: Kamienna skóra — płyty ruin z turkusowym rytem zamiast szarych głazów
+	pancernik_ruin = {
+		kamienna_skora = { styl = "na_siebie", aura = "ruiny", wyglady = { kamienna_skora = "ruiny" } },
+	},
+	-- Wąż Stu Lian: jad (silnik: Zatruta strzała) — zielona struga i bąble; ukąszenie (silnik: Rozszarpanie) — kły
+	waz_stu_lian = {
+		zatruta_strzala = { styl = "pocisk", pocisk = "jad", wybuch = "jad", predkosc = 16, stronaKamery = -1, grot = 0.5, nazwa = "Plunięcie jadem", dzwiekUderzenia = "galareta", dzwiekWypuszczenia = "rzut", dzwiekWbudowany = "plusk" },
+		rozszarpanie = { styl = "wrecz", kly = "#E9FFD0", wybuch = "ukaszenie", wstrzas = 0.4, kamera = "zaBroniacym", nazwa = "Ukąszenie" },
+	},
+}
+
 -- efekt bez wpisu (gdyby się trafił)
 Ch.EFEKT_ZASTEPCZY = { wyglad = "blask", kolor = "#FFFFFF", ikona = "oko", napis = "EFEKT!" }
 

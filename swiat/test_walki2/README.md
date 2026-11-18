@@ -632,6 +632,38 @@ budowie (i `Moduly/Dziennik` z `src/shared/Walka`) — źródło prawdy zostaje 
   `zaplanujAtak` z funkcją „wypuszczenia”), nazwa w `Choreografie.STYLE`; nowy pocisk / rozbłysk / ozdoba efektu to
   funkcja `Pocisk.<x>` / `Wybuch.<x>` / `Wyglad.<x>` w `Efekty3D.luau`. Nowy typ zdarzenia: `Choreografie.ZDARZENIA` +
   `Obsluga.<nazwa>`.
+- **Własny wygląd tej samej umiejętności u innego aktora** (potwór biomu pożycza umiejętność klasy, a ma wyglądać
+  inaczej): wpis w `Choreografie.UMIEJETNOSCI_AKTORA` — opis niżej.
+
+## Własny wygląd umiejętności u aktora (18.11.2026, propozycja — część A bez Studio)
+
+Silnik zna tylko id umiejętności, a potwory biomów pożyczają umiejętności klas i lasu. `Choreografie.UMIEJETNOSCI_AKTORA`
+(klucz aktora → id umiejętności → wpis jak w `UMIEJETNOSCI`) daje tej samej umiejętności inny wygląd, napis i dźwięk,
+gdy rzuca ją dany aktor. Odtwarzacz bierze wpis stąd (`Sesja:wpisChoreo`), a gdy go nie ma — wpis ogólny, więc
+bohaterowie, las i Bagno grają jak dotąd. **Pola czasu i kamery (`Ch.POLA_CZASU`: styl, prędkość pocisku, kamera…)
+muszą być takie same jak we wpisie ogólnym** — czasy sceny się nie zmieniają; test tego pilnuje. Dziś wpisy ma pięć
+potworów Dżungli (siedem umiejętności); spis, wygląd i koszt: `swiat/dzungla_pas_gra/README.md`.
+
+| Pole wpisu | Co robi |
+|---|---|
+| `pocisk`, `wybuch`, `aura`, `smuga`, `fala`, `pazury` | jak w `UMIEJETNOSCI` (nowe nazwy: pociski `pylek`, `jad`; rozbłyski `pylek`, `jad`, `ukaszenie`, `liscie`, `kokos`, `kamuflaz`, `ruiny`) |
+| `nazwa` | napis umiejętności na ekranie zamiast nazwy z danych silnika (dziennik bez zmian) |
+| `wyglady` | efekt → `Wyglad.<nazwa>`: ozdoba statusu nałożonego tą umiejętnością przez tego aktora (`sen`, `kamuflaz`, `ruiny`); ikona, kolor i napis statusu zostają z `EFEKTY` |
+| `grot` | (pocisk) ile studów przed środkiem pocisku jest jego przód |
+| `kly`, `pazuryKrzyz` | (wręcz) cztery kły zatrzaskujące się na celu (`fx:ukaszenie`); ślady pazurów na krzyż |
+| `dzwiekUderzenia`, `dzwiekWypuszczenia`, `dzwiekWbudowany` | zdarzenia katalogu `swiat/dzwiek_gra` na trafieniu (ze szczytem; `false` = bez odcinka) i przy wypuszczeniu pocisku; dźwięk wbudowany na trafieniu, gdy katalog się nie wczytał |
+
+Pomiar i sprzątanie: `Efekty3D` liczy, ile instancji tworzy każdy rodzaj efektu (`fx:licznik()`, atrybut kontenera
+`OstatniKosztEfektow`, pole `efekty3D` w `Odtwarzacz.stan()`); `stan()` podaje też `kto`, `umiejetnosc`, `wyglad`
+bieżącego zdarzenia i `ozdoby` (strona:efekt → wygląd). Haczyk testowy `Sterowanie "wstrzymaj", tak` zatrzymuje czas
+sceny trwającej walki (walki z krain startują bez opcji `reczny`) — zatrzymaną scenę przesuwa `przewinDo`.
+
+Testy bez Studio (18.11.2026): `testy/test_efektow.py` — **7/7** (prawdziwy kod `Efekty3D.luau` w interpreterze na
+atrapach Roblox: każdy efekt tworzy się i kończy przy kroku ×1 / ×2 / ×4, dokładny koszt 14 efektów Dżungli, 36
+dawnych efektów tworzy tyle samo instancji co przed zmianą, pominięcie w locie nie zostawia niczego);
+`testy/test_odtwarzacza.py` — dwa nowe testy (dane wpisów; prawdziwy kod `wpisChoreo` i `wygladEfektu` w interpreterze
+dla wszystkich aktorów). Wygląd i geometrię (czy kły trafiają w pierś, czy „Z” jest czytelne) pokaże dopiero Studio:
+`swiat/dzungla_pas_gra/testy/proba_play.py`, punkty J15–J17.
 
 ## Pliki
 

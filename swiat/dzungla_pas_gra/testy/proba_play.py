@@ -41,6 +41,11 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
   J12 mgła tylko u gracza: w Dżungli waga Dżungli 1 i Bagna 0 (gęstość ok. 0,38), w Bagnie odwrotnie; serwer bez zmian
   J13 koszt przy oknie na wierzchu: klatka klienta w Gaju Kokosów (śr., p95, maks.), widoki potworów i ich bryły
   J14 konsola: bez błędów [DzunglaPasGra] / DzunglaPasGra
+  J15 własne efekty umiejętności (przed J10): z każdym gatunkiem walka z ziarnem, w którym potwór trafia umiejętnością;
+      scena zatrzymana haczykiem „wstrzymaj”, zrzuty e_<gatunek>_<umiejętność>_{lot,trafienie,status}.jpg; wygląd
+      z wpisu własnego (pocisk / wybuch / aura / napis), ozdoba statusu na celu, koszt efektów ≤ tabela testu bez Studio
+  J16 tempo ×2 i ×4: walki do końca bez zatrzymywania — po zamknięciu nie zostaje żadna instancja efektów
+  J17 pominięcie w locie pyłku: po wymuszonym pominięciu brak ozdób i instancji efektów
 """
 import io
 import json
@@ -62,6 +67,46 @@ KLATKI = os.path.join(PAKIET, "klatki")
 GATUNKI = {"z1": "zwijogon", "g1": "gebokwiat", "o1": "kokosowy_silacz", "t1": "pancernik_ruin"}
 AKTORZY = ["zwijogon", "gebokwiat", "kokosowy_silacz", "pancernik_ruin", "waz_stu_lian"]
 NASZE = ("DzunglaPasGra",)
+
+# J15: gatunek → strefa, bohater próby (klasa, poziom) i umiejętności: id silnika → (oczekiwany wygląd z wpisu
+# własnego, ozdoba statusu "strona:efekt" → Wyglad albo None, czy pocisk leci). Wąż: bohater, który przegrywa
+# (brama ma zostać zamknięta przed J10).
+EFEKTY = {
+    "zwijogon": ("z1", ("wojownik", "23"), {
+        "skupienie": ({"aura": "kamuflaz", "nazwa": "Kamuflaż"}, ("wrog:skupienie", "kamuflaz")),
+        "rozszarpanie": ({"wybuch": "liscie", "pazuryKrzyz": True}, ("gracz:krwawienie", "krople"))}),
+    "gebokwiat": ("g1", ("wojownik", "23"), {
+        "lodowy_pocisk": ({"pocisk": "pylek", "wybuch": "pylek", "nazwa": "Usypiający pyłek"}, ("gracz:spowolnienie", "sen"))}),
+    "kokosowy_silacz": ("o1", ("wojownik", "23"), {
+        "ciecie": ({"wybuch": "kokos", "nazwa": "Kokosy z góry"}, None)}),
+    "pancernik_ruin": ("t1", ("wojownik", "23"), {
+        "kamienna_skora": ({"aura": "ruiny"}, ("wrog:kamienna_skora", "ruiny"))}),
+    "waz_stu_lian": ("straznik", ("wojownik", "20"), {
+        "zatruta_strzala": ({"pocisk": "jad", "wybuch": "jad", "nazwa": "Plunięcie jadem"}, ("gracz:trucizna", "babelki")),
+        "rozszarpanie": ({"wybuch": "ukaszenie", "kly": True, "nazwa": "Ukąszenie"}, ("gracz:krwawienie", "krople"))}),
+}
+# nazwy instancji własnych efektów Dżungli (Efekty3D) — po walce nie może przybyć żadna
+NAZWY_EFEKTOW = ("Pylek", "PylekKlab", "Jad", "JadSrodek", "JadKropla", "PylNosnik", "Kiel", "SenZ", "LiscKamuflazu",
+                 "KamuflazKrag", "PlytaRuin", "PlytaRuinRyt", "PowlokaRuin")
+
+
+def ziarno_z_umiejetnosciami(gatunek, poziom, klasa, poziom_gracza, umiejetnosci, przegrana=False, ile=400):
+    """Ziarno (port silnika w Pythonie), przy którym potwór TRAFIA każdą z umiejętności; przegrana = gracz ma
+    przegrać. None, gdy takiego nie ma w 1…ile (próba i tak szuka umiejętności w trakcie walki)."""
+    try:
+        sys.path.insert(0, PAKIET)
+        import przeciwnicy as PRZ
+        import silnik
+        import wzorcowe
+        PRZ.zaladuj_do_silnika(silnik)
+        for z in range(1, ile + 1):
+            w = silnik.symuluj(wzorcowe.postac(klasa, poziom_gracza), {"potwor": gatunek, "poziom": poziom}, z)
+            trafione = {x["umiejetnosc"] for x in w["dziennik"] if x["kto"] == "wrog" and x["typ"] == "umiejetnosc"}
+            if set(umiejetnosci) <= trafione and (not przegrana or w["wynik"] == "przegrana"):
+                return z
+    except Exception as e:  # noqa: BLE001 — ziarno to tylko ułatwienie
+        log("ziarno: nie policzone (%s)" % str(e)[:120])
+    return None
 
 
 def _geometria():
@@ -187,6 +232,15 @@ KOD = {
                'maks = #t > 0 and t[#t] * 1000 or 0 })'),
     "kamien": KB + 'local p = k.Punkty:FindFirstChild("KamienPowrotu") return H:JSONEncode(J(p and p.Position or false))',
     "mostek": 'local t = workspace:FindFirstChild("TestWalki2") return tostring(t and t:GetAttribute("SerwerMostekWalk") or 0)',
+    # J15: zatrzymuje scenę walki i przesuwa ją po 0,05 s do następnej umiejętności potwora (zdarzenie o numerze > %d)
+    "szukaj_umiejetnosci": ('local S = workspace.TestWalki2.Sygnaly.Sterowanie local st = S:Invoke("wstrzymaj", true) local n = 0 '
+                            'while type(st) == "table" and st.faza == "odtwarzanie" and n < 500 do n += 1 '
+                            'if st.kto == "wrog" and st.umiejetnosc ~= nil and st.umiejetnosc ~= "" and (st.biezace or 0) > %d '
+                            'then break end st = S:Invoke("przewinDo", (st.tau or 0) + 0.05) end '
+                            'return H:JSONEncode(J(st))'),
+    "pozostalosci": ('local zb = {} for _, n in { %s } do zb[n] = true end local ile, przyklad = 0, false '
+                     'for _, d in workspace:GetDescendants() do if zb[d.Name] and d:IsA("BasePart") then ile += 1 '
+                     'przyklad = d:GetFullName() end end return H:JSONEncode({ ile = ile, przyklad = przyklad })'),
 }
 
 
@@ -659,6 +713,144 @@ def main():
             punkt("J09", p09[0] < G["brama"] and cof1 > cof0 and "Pustyni" in str(kom09.get("tekst")) and wr09.get("kolizja", 0) > 0,
                   "cofnięty do X %.1f (brama %.0f), cofnięć %s→%s, komunikat %r, wrota %s" % (
                       p09[0], G["brama"], cof0, cof1, kom09.get("tekst"), wr09))
+
+            # ================================================================ J15 własne efekty umiejętności
+            from test_efektow import KOSZT_DZUNGLI  # noqa: E402 — liczby z testu bez Studio
+            ziarno_przed = kont("DzunglaPasGra", ["ZiarnoTestowe"]).get("ZiarnoTestowe")
+
+            def pozostalosci():
+                return js(KOD["pozostalosci"] % lista(NAZWY_EFEKTOW), "Client")
+
+            def koszt_efektow():
+                tekst = str(kont("TestWalki2", ["OstatniKosztEfektow"], dm="Client").get("OstatniKosztEfektow") or "")
+                return {a: int(b) for a, b in (x.split("=") for x in tekst.split(";") if "=" in x)}
+
+            def walka_efektow(gatunek, przegrana=False):
+                """Walka z gatunkiem z ziarnem, w którym potwór trafia umiejętnościami. → (cel, ziarno) albo (None, None)."""
+                strefa, (klasa, poziom), um = EFEKTY[gatunek]
+                luau(KOD["bohater_t1"] % (klasa, poziom), "Client")
+                kandydat = js(KOD["potwor_w_strefie"] % strefa, "Server")
+                ziarno = ziarno_z_umiejetnosciami(gatunek, int(kandydat.get("poziom") or 23), klasa, int(poziom), list(um),
+                                                  przegrana=przegrana) if kandydat.get("id") else None
+                if ziarno is None and przegrana:
+                    ziarno = ziarno_z_umiejetnosciami(gatunek, int(kandydat.get("poziom") or 23), klasa, int(poziom), [], True)
+                ustaw("DzunglaPasGra", "ZiarnoTestowe", str(ziarno) if ziarno else "nil")
+                return zacznij_walke(strefa), ziarno
+
+            baza_pozostalosci = pozostalosci()
+            raport15, bledy15 = {}, []
+            for gatunek, (strefa, bohater, umiejetnosci) in EFEKTY.items():
+                cel, ziarno = walka_efektow(gatunek, przegrana=(gatunek == "waz_stu_lian"))
+                if not cel:
+                    bledy15.append("%s: walka nie ruszyła" % gatunek)
+                    continue
+                czekaj_na(lambda: odtw('"stan"').get("faza") == "odtwarzanie", 10, 0.4)
+                widziane, nr = {}, 0
+                while len(widziane) < len(umiejetnosci):
+                    st = js(KOD["szukaj_umiejetnosci"] % nr, "Client")
+                    if st.get("faza") != "odtwarzanie" or st.get("kto") != "wrog" or not st.get("umiejetnosc"):
+                        break
+                    nr = st.get("biezace") or nr + 1
+                    uid = st["umiejetnosc"]
+                    if uid not in umiejetnosci or (uid in widziane and widziane[uid]["typ"] == "umiejetnosc"):
+                        continue
+                    wyglad, ozdoba = umiejetnosci[uid]
+                    opis = {"typ": st.get("typ"), "wyglad": st.get("wyglad"), "styl": st.get("styl"), "ziarno": ziarno}
+                    nazwa = "e_%s_%s" % (gatunek, uid)
+                    traf = st.get("trafienie") or (st.get("t", 0) + 0.8)
+                    if st.get("wypuszczenie") and (st.get("lot") or 0) > 0:
+                        odtw('"przewinDo", %f' % (st["wypuszczenie"] + st["lot"] * 0.6))
+                        opis["w_locie"] = (odtw('"stan"').get("efekty3D") or {}).get("aktywne")
+                        zrzut(nazwa + "_lot")
+                    odtw('"przewinDo", %f' % (traf + 0.12))
+                    zrzut(nazwa + "_trafienie")
+                    po = odtw('"przewinDo", %f' % (traf + 1.7))
+                    zrzut(nazwa + "_status")
+                    opis["ozdoby"] = po.get("ozdoby")
+                    opis["efekty3D"] = po.get("efekty3D")
+                    widziane[uid] = opis
+                    wg = opis["wyglad"] or {}
+                    for pole, wartosc in wyglad.items():
+                        if wg.get(pole) != wartosc:
+                            bledy15.append("%s/%s: %s = %r, oczekiwane %r" % (gatunek, uid, pole, wg.get(pole), wartosc))
+                    if ozdoba and st.get("typ") == "umiejetnosc" and (opis["ozdoby"] or {}).get(ozdoba[0]) != ozdoba[1]:
+                        bledy15.append("%s/%s: ozdoba %s = %r, oczekiwana %r" % (gatunek, uid, ozdoba[0],
+                                                                                   (opis["ozdoby"] or {}).get(ozdoba[0]), ozdoba[1]))
+                for uid in umiejetnosci:
+                    if uid not in widziane:
+                        bledy15.append("%s/%s: potwór nie użył umiejętności (ziarno %s)" % (gatunek, uid, ziarno))
+                odtw('"wstrzymaj", false')
+                dokoncz_walke()
+                raport15[gatunek] = {"cel": cel, "ziarno": ziarno, "umiejetnosci": widziane, "koszt": koszt_efektow()}
+                for klucz, ile in raport15[gatunek]["koszt"].items():
+                    if klucz in KOSZT_DZUNGLI and ile > KOSZT_DZUNGLI[klucz][0]:
+                        bledy15.append("%s: koszt %s = %d > %d" % (gatunek, klucz, ile, KOSZT_DZUNGLI[klucz][0]))
+            po15 = pozostalosci()
+            if po15.get("ile") != baza_pozostalosci.get("ile"):
+                bledy15.append("po walkach zostały instancje efektów: %s → %s (%s)" % (baza_pozostalosci.get("ile"), po15.get("ile"),
+                                                                                    po15.get("przyklad")))
+            zapisz("J15", {"walki": raport15, "bledy": bledy15, "pozostalosci": [baza_pozostalosci, po15]})
+            punkt("J15", not bledy15, "własne efekty: %s; błędów %d %s" % (
+                {g: sorted(r["umiejetnosci"]) for g, r in raport15.items()}, len(bledy15), bledy15[:4]))
+
+            # ================================================================ J16 tempo ×2 i ×4 bez śmieci
+            raport16, bledy16 = {}, []
+            for tempo, gatunek in ((2, "zwijogon"), (4, "gebokwiat")):
+                cel, ziarno = walka_efektow(gatunek)
+                if not cel:
+                    bledy16.append("×%d %s: walka nie ruszyła" % (tempo, gatunek))
+                    continue
+                czekaj_na(lambda: odtw('"stan"').get("faza") == "odtwarzanie", 10, 0.4)
+                odtw('"tempo", %d' % tempo)
+                koniec = czekaj_na(lambda: odtw('"stan"').get("faza") in ("wynik", "brak"), 120, 1.0)
+                odtw('"zamknij"')
+                czekaj_na(lambda: not walka_trwa(), 30, 1.0)
+                odtw('"tempo", 1')
+                luau(KOD["kamera_zwykla"], "Client")
+                zost = pozostalosci()
+                raport16["x%d" % tempo] = {"gatunek": gatunek, "ziarno": ziarno, "koniec": bool(koniec), "koszt": koszt_efektow(),
+                                           "pozostalosci": zost}
+                if not koniec:
+                    bledy16.append("×%d: walka nie doszła do wyniku w 120 s" % tempo)
+                if zost.get("ile") != baza_pozostalosci.get("ile"):
+                    bledy16.append("×%d: zostały instancje efektów (%s)" % (tempo, zost.get("przyklad")))
+            zapisz("J16", {"walki": raport16, "bledy": bledy16})
+            punkt("J16", not bledy16, "tempo ×2 / ×4 do końca, instancji efektów po walce: %s; błędów %d %s" % (
+                [r["pozostalosci"].get("ile") for r in raport16.values()], len(bledy16), bledy16[:3]))
+
+            # ================================================================ J17 pominięcie w locie pyłku
+            bledy17, raport17 = [], {}
+            cel, ziarno = walka_efektow("gebokwiat")
+            if not cel:
+                bledy17.append("walka nie ruszyła")
+            else:
+                czekaj_na(lambda: odtw('"stan"').get("faza") == "odtwarzanie", 10, 0.4)
+                st = js(KOD["szukaj_umiejetnosci"] % 0, "Client")
+                if st.get("umiejetnosc") == "lodowy_pocisk" and st.get("wypuszczenie"):
+                    odtw('"przewinDo", %f' % (st["wypuszczenie"] + (st.get("lot") or 0.5) * 0.5))
+                    raport17["w_locie"] = pozostalosci()
+                else:
+                    bledy17.append("nie doszło do pyłku (ziarno %s)" % ziarno)
+                odtw('"wstrzymaj", false')
+                odtw('"pomin", true')
+                time.sleep(1.0)
+                po = odtw('"stan"')
+                raport17["po"] = {"ozdoby": po.get("ozdoby"), "efekty3D": po.get("efekty3D"), "pozostalosci": pozostalosci()}
+                zrzut("e_pominiecie_w_locie")
+                if (raport17.get("w_locie") or {}).get("ile", 0) <= baza_pozostalosci.get("ile", 0) and not bledy17:
+                    bledy17.append("w locie nie było instancji pyłku — próba niczego nie sprawdziła")
+                if po.get("ozdoby"):
+                    bledy17.append("po pominięciu zostały ozdoby %s" % po.get("ozdoby"))
+                if raport17["po"]["pozostalosci"].get("ile") != baza_pozostalosci.get("ile"):
+                    bledy17.append("po pominięciu zostały instancje efektów (%s)" % raport17["po"]["pozostalosci"].get("przyklad"))
+                odtw('"zamknij"')
+                czekaj_na(lambda: not walka_trwa(), 30, 1.0)
+                luau(KOD["kamera_zwykla"], "Client")
+            ustaw("DzunglaPasGra", "ZiarnoTestowe", "nil" if ziarno_przed in (None, "") else json.dumps(ziarno_przed))
+            zapisz("J17", {"raport": raport17, "bledy": bledy17})
+            punkt("J17", not bledy17, "pominięcie w locie pyłku: w locie %s, po %s; błędów %d %s" % (
+                (raport17.get("w_locie") or {}).get("ile"), ((raport17.get("po") or {}).get("pozostalosci") or {}).get("ile"),
+                len(bledy17), bledy17[:3]))
 
             # ================================================================ J10 Wąż Stu Lian: przegrana i wygrana
             luau(KOD["sledz_banery"], "Client")

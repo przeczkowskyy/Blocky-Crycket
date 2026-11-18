@@ -8,22 +8,34 @@
 	biegną w czasie rzeczywistym — to tylko ozdoba.
 
 	API (fx = Efekty3D.nowe(folder, ustawienia)):
-		fx:pocisk(nazwa, od, do, czas, opcje?)   → obiekt; Pocisk.<nazwa> (iskra, strzala, kula_ognia, lod, kwas);
-		                                          opcje.luk = wysokość łuku, opcje.naKoniec = fn(), opcje.chybiony = true
+		fx:pocisk(nazwa, od, do, czas, opcje?)   → obiekt; Pocisk.<nazwa> (iskra, strzala, kula_ognia, lod, kwas; Dżungla:
+		                                          pylek, jad); opcje.luk = wysokość łuku, opcje.naKoniec = fn(),
+		                                          opcje.chybiony = true
 		fx:wybuch(nazwa, poz, skala?)            Wybuch.<nazwa> (iskra, ogien, lod, kwas, trucizna, zarodniki, kamien,
-		                                          zloto, bariera, blask, cios, krytyk, blok, tarcza)
+		                                          zloto, bariera, blask, cios, krytyk, blok, tarcza; Dżungla: pylek, jad,
+		                                          ukaszenie, liscie, kokos, kamuflaz, ruiny)
 		fx:fala(poz, kolor, promien)             fala uderzeniowa na ziemi
-		fx:pazury(cf, kolor)                     trzy świecące ślady pazurów w poprzek celu
+		fx:pazury(cf, kolor, rozmiar, krzyz?)    trzy świecące ślady pazurów w poprzek celu (krzyz = drugie trzy na krzyż)
+		fx:ukaszenie(cf, kolor, rozmiar)         cztery kły zatrzaskujące się na celu (Wąż Stu Lian)
+		fx:pyl(poz, kolory, ile, czas, przysp, rozmiar)  jednorazowy obłok drobin (osiadający pyłek, bąble jadu)
 		fx:chmura(od, do, czas, kolor)           chmura zarodników płynąca do celu
 		fx:korzenie(cfZiemi, promien, kolor, czasWzrostu, czasTrwania)
 		fx:smuga(aktor, kolor, czas)             smuga (Trail) za bronią aktora przez czas sceny
 		fx:smugaCzesci(czesc, kolor, czas, szer) smuga za dowolną częścią (bańka kwasu z klipu)
 		fx:kaluza(poz, promien, kolor, czas)     płaska kałuża kwasu na ziemi przez czas sceny
 		fx:wyglad(nazwa, aktor) → ozdoba         Wyglad.<nazwa> — trwały efekt na postaci; ozdoba:puls(), ozdoba:zniszcz()
+		                                          (Dżungla: sen, kamuflaz, ruiny)
 		fx:lup(zrodlo, cel, lup, natychmiast)    wysypany łup (monety, żetony, klejnot, kryształ)
 		fx:krok(d)                               d = krok czasu sceny
 		fx:wyczysc()                             niszczy wszystko
 		fx.utworzono                             licznik utworzonych instancji (pomiar)
+		fx:licznik() → { aktywne, ozdoby, pula, utworzono, koszt }   pomiar: ile efektów żyje i ile instancji kosztował
+		                                          każdy rodzaj (koszt["pocisk:pylek"] = najwięcej nowych instancji naraz)
+		fx:opisKosztu() → "pocisk:jad=9;…"       to samo jako napis (atrybut OstatniKosztEfektow kontenera)
+
+	Efekty Dżungli (18.11.2026, propozycja): własny wygląd umiejętności potworów Dżungli — podpięty danymi
+	(Choreografie.UMIEJETNOSCI_AKTORA), z tych samych klocków i wbudowanych cząsteczek co reszta; nic nie świeci
+	światłem (PointLight), wszystko znika z fx:wyczysc(). Spis i liczniki: swiat/dzungla_pas_gra/README.md.
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -58,7 +70,37 @@ function Efekty.nowe(folder: Instance, U: any)
 	self.ozdoby = {}
 	self.utworzono = 0
 	self.wolne = {} -- pula iskier
+	self.koszt = {} -- "rodzaj:nazwa" → najwięcej nowych instancji przy jednym wywołaniu (pomiar)
 	return self
+end
+
+-- pomiar kosztu: ile instancji przybyło od `przed` przy efekcie rodzaj:nazwa (iskry z puli liczą się tylko nowe)
+function Efekty:zmierz(rodzaj: string, nazwa: string, przed: number)
+	local klucz = rodzaj .. ":" .. nazwa
+	self.koszt[klucz] = math.max(self.koszt[klucz] or 0, self.utworzono - przed)
+end
+
+function Efekty:licznik()
+	local ozdoby = 0
+	for _, oz in self.ozdoby do
+		if not oz.zniszczona then
+			ozdoby += 1
+		end
+	end
+	return { aktywne = #self.aktywne, ozdoby = ozdoby, pula = #self.wolne, utworzono = self.utworzono, koszt = self.koszt }
+end
+
+function Efekty:opisKosztu(): string
+	local klucze = {}
+	for k in self.koszt do
+		table.insert(klucze, k)
+	end
+	table.sort(klucze)
+	local czesci = {}
+	for _, k in klucze do
+		table.insert(czesci, k .. "=" .. tostring(self.koszt[k]))
+	end
+	return table.concat(czesci, ";")
 end
 
 function Efekty:nowa(klasa: string, w: { [string]: any }, rodzic: Instance?): any
@@ -256,13 +298,19 @@ function Efekty:fala(poz: Vector3, kolor: Color3, promien: number)
 	})
 end
 
-function Efekty:pazury(cf: CFrame, kolor: Color3, rozmiar: number)
+-- krzyz = true (Zwijogon: cięcie lewą i prawą łapą): drugie trzy ślady w przeciwną stronę, tuż przed pierwszymi
+function Efekty:pazury(cf: CFrame, kolor: Color3, rozmiar: number, krzyz: boolean?)
+	local przed = self.utworzono
 	local czesci = {}
-	for i = -1, 1 do
-		local p = self:czesc({ Name = "Pazur", Size = Vector3.new(0.18, rozmiar, 0.12), Color = kolor,
-			CFrame = cf * CFrame.new(i * rozmiar * 0.22, 0, 0) * CFrame.Angles(0, 0, rad(32)) })
-		table.insert(czesci, p)
+	local katy = if krzyz then { 32, -32 } else { 32 }
+	for nr, kat in katy do
+		for i = -1, 1 do
+			local p = self:czesc({ Name = "Pazur", Size = Vector3.new(0.18, rozmiar, 0.12), Color = kolor,
+				CFrame = cf * CFrame.new(i * rozmiar * 0.22, 0, (nr - 1) * -0.08) * CFrame.Angles(0, 0, rad(kat)) })
+			table.insert(czesci, p)
+		end
 	end
+	self:zmierz("pazury", if krzyz then "krzyz" else "zwykle", przed)
 	local wiek = 0
 	return self:dodaj({
 		krok = function(_, d)
@@ -280,6 +328,72 @@ function Efekty:pazury(cf: CFrame, kolor: Color3, rozmiar: number)
 			for _, p in czesci do
 				p:Destroy()
 			end
+		end,
+	})
+end
+
+--[[ Ukąszenie (Dżungla, Wąż Stu Lian): cztery kły — dwa z góry, dwa z dołu — zatrzaskują się na celu w 0,1 s czasu
+	sceny, trzymają i gasną (razem 0,5 s). cf = miejsce na piersi celu zwrócone do atakującego (jak przy pazurach).
+	Kieł = klin: prosta krawędź na zewnątrz, czubek do środka paszczy. 4 części. ]]
+function Efekty:ukaszenie(cf: CFrame, kolor: Color3, rozmiar: number)
+	local przed = self.utworzono
+	local dl = 0.9 * rozmiar
+	local kly = {}
+	for _, strona in { -1, 1 } do
+		for _, gora in { -1, 1 } do
+			local p = self:czesc({ Klasa = "WedgePart", Name = "Kiel", Size = Vector3.new(0.14, 0.32 * rozmiar, dl), Color = kolor })
+			-- klin: czubek to lokalne −Z, trójkąt leży w lokalnej płaszczyźnie YZ → obracamy go w płaszczyznę XY celu
+			local vY = Vector3.new(-strona, 0, 0)
+			local vZ = Vector3.new(0, gora, 0)
+			table.insert(kly, { p = p, strona = strona, gora = gora, obrot = CFrame.fromMatrix(Vector3.zero, vY:Cross(vZ), vY, vZ) })
+		end
+	end
+	self:zmierz("ukaszenie", "kly", przed)
+	local wiek = 0
+	local function ustaw()
+		local zamkniecie = gladko(wiek / 0.1)
+		local odl = dl / 2 + 0.05 + rozmiar * 0.7 * (1 - zamkniecie)
+		local u = wiek / 0.5
+		for _, k in kly do
+			k.p.CFrame = cf * CFrame.new(k.strona * rozmiar * 0.24, k.gora * odl, 0) * k.obrot
+			k.p.Transparency = if u > 0.45 then math.clamp((u - 0.45) / 0.55, 0, 1) else 0
+		end
+	end
+	ustaw()
+	return self:dodaj({
+		krok = function(_, d)
+			wiek += d
+			if wiek >= 0.5 then
+				return false
+			end
+			ustaw()
+			return true
+		end,
+		zniszcz = function()
+			for _, k in kly do
+				k.p:Destroy()
+			end
+		end,
+	})
+end
+
+--[[ Jednorazowy obłok drobin (Dżungla: osiadający pyłek, bąble jadu): `ile` cząsteczek naraz z niewidzialnego nośnika;
+	nośnik (i z nim drobiny) znika po `czas` s czasu sceny. przysp = przyspieszenie drobin (w dół: osiadają, w górę:
+	bąble). 1 część + 1 emiter. ]]
+function Efekty:pyl(poz: Vector3, kolory: { Color3 }, ile: number, czas: number, przysp: Vector3, rozmiar: number)
+	local nosnik = self:czesc({ Name = "PylNosnik", Size = Vector3.one * 0.3, Transparency = 1, CFrame = CFrame.new(poz) })
+	local e = self:emiter(nosnik, { Color = ColorSequence.new(kolory[1], kolory[2] or kolory[1]), Rate = 0,
+		Lifetime = NumberRange.new(czas * 0.55, czas * 0.9), Speed = NumberRange.new(1.5, 4), SpreadAngle = Vector2.new(180, 180),
+		Acceleration = przysp, Drag = 2, Size = NumberSequence.new(rozmiar, rozmiar * 0.2), LightEmission = 0.4 })
+	e:Emit(ile)
+	local wiek = 0
+	return self:dodaj({
+		krok = function(_, d)
+			wiek += d
+			return wiek < czas
+		end,
+		zniszcz = function()
+			nosnik:Destroy()
 		end,
 	})
 end
@@ -341,9 +455,51 @@ Wybuch.tarcza = function(fx, poz, s) -- tarcza pochłonęła cios
 	fx:kula(poz, hex("#9FE8FF"), 1.2 * s, 3.0 * s, 0.25, Enum.Material.ForceField, 0.2)
 end
 
+-- Dżungla (18.11.2026) — rozbłyski własnych efektów potworów Dżungli
+-- usypiający pyłek Gębokwiata: żółty kłąb rozchodzi się na celu, drobiny pyłku osiadają powoli w dół
+Wybuch.pylek = function(fx, poz, s)
+	fx:kula(poz, hex("#FFE14A"), 1.0 * s, 4.2 * s, 0.55, Enum.Material.SmoothPlastic, 0.45)
+	fx:iskry(poz, { hex("#FFE14A"), hex("#FFF3B0"), hex("#F2C230") }, 8, 5, 0.7 * s, 5)
+	fx:pyl(poz, { hex("#FFE14A"), hex("#FFF8D0") }, 26, 1.1, Vector3.new(0, -5, 0), 0.45 * s)
+end
+-- jad Węża Stu Lian: zielony rozprysk, krople na boki i bąble unoszące się z miejsca trafienia
+Wybuch.jad = function(fx, poz, s)
+	fx:kula(poz, hex("#C8FF7A"), 0.6 * s, 3.0 * s, 0.28, nil, 0.3)
+	fx:kula(poz, hex("#5FD13A"), 0.9 * s, 4.2 * s, 0.45, Enum.Material.SmoothPlastic, 0.5)
+	fx:iskry(poz, { hex("#8BEA4E"), hex("#5FD13A"), hex("#DFFF9A") }, 12, 11, 0.9 * s, 30)
+	fx:pyl(poz, { hex("#B8F55A"), hex("#3E8C2A") }, 14, 0.9, Vector3.new(0, 3, 0), 0.4 * s)
+end
+-- ukąszenie Węża: krótki rozprysk krwi z kroplą jadu (same iskry z puli)
+Wybuch.ukaszenie = function(fx, poz, s)
+	fx:iskry(poz, { hex("#FF4A5E"), hex("#9E1020"), hex("#8BEA4E") }, 10, 11, 0.9 * s)
+end
+-- rozszarpanie Zwijogona: liście sypią się z trafionego (wolno opadają)
+Wybuch.liscie = function(fx, poz, s)
+	fx:kula(poz, hex("#6FBF3A"), 0.5 * s, 2.4 * s, 0.3, Enum.Material.SmoothPlastic, 0.5)
+	fx:iskry(poz, { hex("#6FBF3A"), hex("#3E8C2A"), hex("#C8E86A"), hex("#FF5A3C") }, 10, 9, 0.9 * s, 12)
+end
+-- kokosy Kokosowego Siłacza: biały błysk miąższu i odłamki łupiny
+Wybuch.kokos = function(fx, poz, s)
+	fx:kula(poz, hex("#FFF6E0"), 0.6 * s, 2.8 * s, 0.22, nil, 0.2)
+	fx:iskry(poz, { hex("#6B4423"), hex("#8A5A34"), hex("#FFF6E0"), hex("#4A2E18") }, 12, 13, 1.1 * s, 34)
+end
+-- Kamuflaż Zwijogona (Skupienie na siebie): zielony kłąb liści i złote iskry skupienia
+Wybuch.kamuflaz = function(fx, poz, s)
+	fx:kula(poz, hex("#6FBF3A"), 1.0 * s, 4.4 * s, 0.45, Enum.Material.SmoothPlastic, 0.5)
+	fx:iskry(poz, { hex("#6FBF3A"), hex("#3E8C2A"), hex("#C8E86A"), hex("#FFD23F") }, 12, 8, 0.8 * s, 5)
+end
+-- Kamienna skóra Pancernika Ruin: turkusowy błysk rytów i odpryski starego kamienia
+Wybuch.ruiny = function(fx, poz, s)
+	fx:kula(poz, hex("#49E0D0"), 1.0 * s, 4.2 * s, 0.35, nil, 0.35)
+	fx:kula(poz, hex("#8D949C"), 1.2 * s, 3.6 * s, 0.4, Enum.Material.SmoothPlastic, 0.45)
+	fx:iskry(poz, { hex("#8D949C"), hex("#7C8A78"), hex("#49E0D0") }, 12, 10, 1.2 * s, 30)
+end
+
 function Efekty:wybuch(nazwa: string, poz: Vector3, skala: number?)
 	local f = Wybuch[nazwa] or Wybuch.cios
+	local przed = self.utworzono
 	f(self, poz, skala or 1)
+	self:zmierz("wybuch", if Wybuch[nazwa] then nazwa else "cios", przed)
 end
 
 --[[ Parada bez tarczy (v3: blok ma każda klasa i potwór): łuk „odbicia” z pięciu świecących klinów w poprzek ciosu,
@@ -589,9 +745,51 @@ Pocisk.kwas = function(fx, od, do_, czas, opcje)
 	return lot(fx, { { g, CFrame.identity }, { k, CFrame.new(0.2, 0.25, 0.3) } }, od, do_, czas, opcje)
 end
 
+-- Dżungla — usypiający pyłek Gębokwiata: żółta chmura pyłku (jasny środek i trzy kłęby krążące wokół osi lotu) płynie
+-- łukiem do celu i sypie drobinami; bez światła i smugi. 4 części + 1 emiter.
+Pocisk.pylek = function(fx, od, do_, czas, opcje)
+	local g = fx:czesc({ Name = "Pylek", Shape = Enum.PartType.Ball, Size = Vector3.one * 0.9, Color = hex("#FFE98A"), Transparency = 0.1 })
+	local ust = { { g, CFrame.identity } }
+	for i = 1, 3 do
+		local kat = (i - 1) / 3 * math.pi * 2
+		local p = fx:czesc({ Name = "PylekKlab", Shape = Enum.PartType.Ball, Size = Vector3.one * (1.5 - i * 0.2),
+			Color = hex(if i == 2 then "#FFF3B0" else "#F2C230"), Material = Enum.Material.SmoothPlastic, Transparency = 0.4 })
+		table.insert(ust, { p, CFrame.new(math.cos(kat) * 0.55, math.sin(kat) * 0.55, 0.35 * (i - 1)) })
+	end
+	fx:emiter(g, { Color = ColorSequence.new(hex("#FFE14A"), hex("#FFF8D0")), Rate = 45, Lifetime = NumberRange.new(0.4, 0.8),
+		Speed = NumberRange.new(0.5, 2), SpreadAngle = Vector2.new(180, 180), Acceleration = Vector3.new(0, -3, 0),
+		Size = NumberSequence.new(0.4, 0.05), LightEmission = 0.4 })
+	if opcje.luk == nil then
+		opcje.luk = 0.9
+	end
+	opcje.wirowanie = 0.12
+	return lot(fx, ust, od, do_, czas, opcje)
+end
+-- Dżungla — jad Węża Stu Lian: zielona struga (duża kropla z jasnym środkiem i dwie mniejsze za nią), szeroka smuga
+-- i kapiące krople; bez światła. 4 części + smuga (Trail i 2 zaczepy) + 1 emiter.
+Pocisk.jad = function(fx, od, do_, czas, opcje)
+	local g = fx:czesc({ Name = "Jad", Shape = Enum.PartType.Ball, Size = Vector3.one * 1.0, Color = hex("#8BEA4E"), Transparency = 0.1 })
+	local r = fx:czesc({ Name = "JadSrodek", Shape = Enum.PartType.Ball, Size = Vector3.one * 0.5, Color = hex("#E4FF9A") })
+	local k1 = fx:czesc({ Name = "JadKropla", Shape = Enum.PartType.Ball, Size = Vector3.one * 0.7, Color = hex("#5FD13A"), Transparency = 0.15 })
+	local k2 = fx:czesc({ Name = "JadKropla", Shape = Enum.PartType.Ball, Size = Vector3.one * 0.45, Color = hex("#3E8C2A"), Transparency = 0.15 })
+	fx:trail(g, Vector3.new(0, 0.45, 0), Vector3.new(0, -0.45, 0), hex("#7BE04A"), 0.35, 1.2)
+	fx:emiter(g, { Color = ColorSequence.new(hex("#8BEA4E"), hex("#3E8C2A")), Rate = 30, Lifetime = NumberRange.new(0.3, 0.5),
+		Speed = NumberRange.new(0.5, 1.5), SpreadAngle = Vector2.new(40, 40), Acceleration = Vector3.new(0, -22, 0),
+		Size = NumberSequence.new(0.3, 0.08), LightEmission = 0.6 })
+	if opcje.luk == nil then
+		opcje.luk = 0.9
+	end
+	-- przód lotu to −Z: krople za główną kroplą są na +Z
+	return lot(fx, { { g, CFrame.identity }, { r, CFrame.new(0, 0.05, -0.15) }, { k1, CFrame.new(0, 0, 0.75) },
+		{ k2, CFrame.new(0, 0.05, 1.35) } }, od, do_, czas, opcje)
+end
+
 function Efekty:pocisk(nazwa: string, od: Vector3, do_: Vector3, czas: number, opcje: any?)
 	local f = Pocisk[nazwa] or Pocisk.iskra
-	return f(self, od, do_, czas, opcje or {})
+	local przed = self.utworzono
+	local obiekt = f(self, od, do_, czas, opcje or {})
+	self:zmierz("pocisk", if Pocisk[nazwa] then nazwa else "iskra", przed)
+	return obiekt
 end
 
 ------------------------------------------------------------------ chmura i korzenie
@@ -1086,9 +1284,150 @@ Wyglad.blask = function(fx, aktor)
 	return zarejestruj(fx, o)
 end
 
+------------------------------------------------------------------ Dżungla (18.11.2026): ozdoby własnych efektów
+--[[ Spowolnienie od usypiającego pyłku Gębokwiata: trzy klockowe „Z” wypływają znad głowy, rosną i gasną (zawsze
+	przodem do kamery), a żółty pyłek osiada wokół głowy. Litery mają kolor statusu (jak ikona i napis
+	„SPOWOLNIENIE!”), pyłek — kolor pocisku. Puls (tyknięcie): litery płyną szybciej. 9 części + nośnik + 1 emiter. ]]
+Wyglad.sen = function(fx, aktor)
+	local o = ozdoba(fx, aktor, "glowa")
+	local s = math.clamp(aktor.wpis.wysokosc / 6, 0.7, 1.8)
+	local litery = {}
+	for i = 1, 3 do
+		local belki = {}
+		for j = 1, 3 do
+			local p = fx:czesc({ Name = "SenZ", Size = Vector3.new(0.6, 0.14, 0.12) * s, Color = hex("#9FE8FF"), Transparency = 1 })
+			table.insert(o.czesci, p)
+			belki[j] = p
+		end
+		litery[i] = { belki = belki, faza = (i - 1) / 3 }
+	end
+	local e = fx:emiter(o.nosnik, { Color = ColorSequence.new(hex("#FFE14A"), hex("#FFF8D0")), Rate = 9,
+		Lifetime = NumberRange.new(0.8, 1.3), Speed = NumberRange.new(0.5, 1.5), SpreadAngle = Vector2.new(180, 180),
+		Acceleration = Vector3.new(0, -4, 0), Size = NumberSequence.new(0.3 * s, 0), LightEmission = 0.4 })
+	local bieg = 0
+	function o:krok(d)
+		self.wiek += d
+		local cf = self:pozycja()
+		self.nosnik.CFrame = cf
+		local szybkosc = 0.55
+		if self.pulsy > 0 then
+			self.pulsy -= d
+			szybkosc = 1.6
+			e.Rate = 30
+		else
+			e.Rate = 9
+		end
+		bieg += d * szybkosc
+		local kam = workspace.CurrentCamera
+		local obrot = if kam then kam.CFrame.Rotation else CFrame.identity
+		for _, l in litery do
+			local u = (bieg + l.faza) % 1
+			local k = (0.55 + 0.75 * u) * s
+			-- litera odpływa w górę i w prawo (w kadrze), rośnie; pojawia się w pierwszych 15% drogi, gaśnie od 70%
+			local srodek = CFrame.new(cf.Position + Vector3.new(0, (0.3 + 1.9 * u) * s, 0)) * obrot * CFrame.new((0.5 + 1.0 * u) * s, 0, 0)
+			local widac = math.min(1, u / 0.15) * (1 - gladko((u - 0.7) / 0.3))
+			local b = l.belki
+			b[1].Size = Vector3.new(0.6, 0.14, 0.12) * k
+			b[1].CFrame = srodek * CFrame.new(0, 0.28 * k, 0)
+			b[2].Size = Vector3.new(0.6, 0.14, 0.12) * k
+			b[2].CFrame = srodek * CFrame.new(0, -0.28 * k, 0)
+			b[3].Size = Vector3.new(0.8, 0.14, 0.12) * k
+			b[3].CFrame = srodek * CFrame.Angles(0, 0, rad(43))
+			for _, p in b do
+				p.Transparency = 1 - widac
+			end
+		end
+	end
+	return zarejestruj(fx, o)
+end
+
+--[[ Skupienie Zwijogona („Kamuflaż”): sześć liści krąży wokół ciała w dwóch pierścieniach (wtapia się w gąszcz), pod
+	stopami złota obręcz w kolorze statusu. Puls: liście przyspieszają. 7 części + nośnik. ]]
+Wyglad.kamuflaz = function(fx, aktor)
+	local o = ozdoba(fx, aktor, "piers")
+	local w = aktor.wpis
+	local h = w.wysokosc
+	local r = math.max(w.szerokosc, w.glebokosc) * 0.5 + 0.5
+	local s = math.clamp(h / 6, 0.7, 1.8)
+	local liscie = {}
+	for i = 1, 6 do
+		local p = fx:czesc({ Klasa = "WedgePart", Name = "LiscKamuflazu", Size = Vector3.new(0.1, 0.5, 0.9) * s,
+			Color = hex(if i % 3 == 0 then "#C8E86A" elseif i % 2 == 0 then "#3E8C2A" else "#6FBF3A"),
+			Material = Enum.Material.SmoothPlastic })
+		table.insert(o.czesci, p)
+		liscie[i] = { p = p, kat = (i - 1) / 6 * 6.283, y = (0.28 + 0.42 * ((i - 1) % 2)) * h }
+	end
+	local krag = fx:czesc({ Name = "KamuflazKrag", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.1, r * 2, r * 2),
+		Color = hex("#FFD23F"), Transparency = 0.45 })
+	table.insert(o.czesci, krag)
+	local obieg = 0
+	function o:krok(d)
+		self.wiek += d
+		self.nosnik.CFrame = self:pozycja()
+		local stopy = self.aktor:cfZiemi()
+		local tempo = 1.8
+		if self.pulsy > 0 then
+			self.pulsy -= d
+			tempo = 6
+		end
+		obieg += d * tempo
+		krag.CFrame = stopy * CFrame.new(0, 0.1, 0) * CFrame.Angles(0, 0, rad(90))
+		krag.Transparency = 0.5 + 0.2 * math.sin(self.wiek * 4)
+		for _, l in liscie do
+			local kat = l.kat + obieg
+			l.p.CFrame = stopy * CFrame.Angles(0, kat, 0) * CFrame.new(r, l.y + math.sin(self.wiek * 3 + l.kat) * 0.2, 0)
+				* CFrame.Angles(rad(25), rad(90), 0)
+		end
+	end
+	return zarejestruj(fx, o)
+end
+
+--[[ Kamienna skóra Pancernika Ruin: cztery płyty starego kamienia krążą wolno wokół ciała, na każdej świeci
+	turkusowy ryt (jak szczeliny modelu); turkusowa powłoka jak przy kamiennej skórze bohatera. Puls (cios w tarczę):
+	powłoka rośnie. 9 części + nośnik. ]]
+Wyglad.ruiny = function(fx, aktor)
+	local o = ozdoba(fx, aktor, "piers")
+	local h = aktor.wpis.wysokosc
+	local r = math.max(aktor.wpis.szerokosc, aktor.wpis.glebokosc, h * 0.6) * 0.55 + 0.6
+	local s = math.clamp(h / 6, 0.8, 1.8)
+	local plyty = {}
+	for i = 1, 4 do
+		local p = fx:czesc({ Name = "PlytaRuin", Size = Vector3.new(1.5, 1.9, 0.35) * s,
+			Color = hex(if i % 2 == 0 then "#8D949C" else "#7C8A78"), Material = Enum.Material.Slate })
+		local ryt = fx:czesc({ Name = "PlytaRuinRyt", Size = Vector3.new(0.16, 1.3, 0.1) * s, Color = hex("#49E0D0") })
+		table.insert(o.czesci, p)
+		table.insert(o.czesci, ryt)
+		plyty[i] = { p = p, ryt = ryt, kat = (i - 1) / 4 * 6.283, y = (if i % 2 == 0 then 0.12 else -0.12) * h }
+	end
+	local powloka = fx:czesc({ Name = "PowlokaRuin", Shape = Enum.PartType.Ball, Size = Vector3.one * r * 2, Color = hex("#49E0D0"),
+		Material = Enum.Material.ForceField, Transparency = 0.2 })
+	table.insert(o.czesci, powloka)
+	function o:krok(d)
+		self.wiek += d
+		self.nosnik.CFrame = self:pozycja()
+		local srodek = self.aktor:cfZiemi() * CFrame.new(0, h * 0.5, 0)
+		local p = 0
+		if self.pulsy > 0 then
+			self.pulsy -= d
+			p = self.pulsy
+		end
+		powloka.CFrame = srodek
+		powloka.Size = Vector3.one * (r * 2 * (1 + p * 0.3))
+		for _, pl in plyty do
+			local cf = srodek * CFrame.Angles(0, pl.kat + self.wiek * 0.9, 0) * CFrame.new(0, pl.y, -r * 0.95)
+			pl.p.CFrame = cf
+			pl.ryt.CFrame = cf * CFrame.new(0, 0, -0.2 * s)
+		end
+	end
+	return zarejestruj(fx, o)
+end
+
 function Efekty:wyglad(nazwa: string, aktor)
 	local f = Wyglad[nazwa] or Wyglad.blask
-	return f(self, aktor)
+	local przed = self.utworzono
+	local o = f(self, aktor)
+	self:zmierz("wyglad", if Wyglad[nazwa] then nazwa else "blask", przed)
+	return o
 end
 
 ------------------------------------------------------------------ łup wysypany z pokonanego

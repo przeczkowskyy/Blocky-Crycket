@@ -10,6 +10,7 @@
 --zywo: zwykłe odtworzenie do panelu wyniku; wypisuje atrybuty pomiarów i komunikaty konsoli z TestWalki2.
 """
 import argparse
+import json
 import os
 import sys
 import time
@@ -18,6 +19,9 @@ sys.dont_write_bytecode = True
 TU = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, TU)
 from sesja_play import SesjaPlay, log, UKRYJ_GUI_GRY  # noqa: E402
+
+# własne efekty potworów Dżungli (Choreografie.UMIEJETNOSCI_AKTORA) — w walce z tablicy prototypu nie mogą się pojawić
+OBCE_EFEKTY = ("pylek", "jad", "ukaszenie", "liscie", "kokos", "kamuflaz", "ruiny", "sen", "kly", "krzyz")
 
 
 def arkusz(kafle, sciezka, kolumny=4, bok=(480, 270)):
@@ -107,6 +111,19 @@ def main():
             time.sleep(1.5)
             im, st = p.zrzut_odtwarzacza()
             kafel(im, "wynik").save(os.path.join(wyj, "%s_wynik.jpg" % a.nazwa), quality=88)
+            # efekty 3D (18.11.2026): koszt rodzajów efektów tej walki; walka z tablicy (bohater z potworem lasu albo
+            # lustrem) nie może grać własnych efektów potworów Dżungli; po zamknięciu nie zostaje żaden efekt
+            koszt = str(s.get("OstatniKosztEfektow") or "")
+            obce = [k for k in OBCE_EFEKTY if (":" + k + "=") in koszt]
+            log("efekty: koszt", koszt or "(brak atrybutu OstatniKosztEfektow)")
+            log("efekty Dżungli w walce z tablicy:", "BŁĄD %s" % obce if obce else "brak — OK")
+            p.steruj('"zamknij"')
+            time.sleep(1.5)
+            try:
+                po = json.loads(p.steruj('"stan"'))
+            except ValueError:
+                po = {}
+            log("efekty po zamknięciu walki (stan):", (po if isinstance(po, dict) else {}).get("efekty3D") or "scena zamknięta — OK")
         kons = p.konsola()
         zle = [w for w in kons.splitlines() if "TestWalki2" in w or "rror" in w]
         log("konsola (TestWalki2/Error):", len(zle))

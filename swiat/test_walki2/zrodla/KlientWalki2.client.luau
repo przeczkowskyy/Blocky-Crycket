@@ -10,6 +10,7 @@
 				"start", wybor, opcje   → uruchamia walkę bez panelu (opcje jak w OdtwarzaczWalki2; wybor może mieć zestaw)
 				"pomin" (jak przycisk: tylko ze zgodą serwera) | "pomin", true (wymuszony pokaz — testy)
 				| "zamknij" | "jeszczeRaz" | "tempo", t | "przewin", s | "przewinDo", τ | "stan" | "wybor" (otwiera panel)
+				| "wstrzymaj", tak (testy: czas sceny trwającej walki stoi / płynie; zwraca stan)
 				| "kadr" (czy aktorzy są w kadrze i nie zasłaniają się) | "napisy" (napisy nad postaciami)
 		• odmowa serwera → komunikat z powodem (panel wyboru z polem Status albo dymek); atrybut OstatniKomunikat.
 	Sam nic nie liczy i nie wysyła liczb — prośbę z wyborem z listy wysyła odtwarzacz.
@@ -222,6 +223,9 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 		return Odtwarzacz.stan()
 	elseif polecenie == "przewinDo" then
 		Odtwarzacz.przewinDo(a)
+		return Odtwarzacz.stan()
+	elseif polecenie == "wstrzymaj" then
+		Odtwarzacz.wstrzymaj(a == true)
 		return Odtwarzacz.stan()
 	elseif polecenie == "stan" then
 		return Odtwarzacz.stan()

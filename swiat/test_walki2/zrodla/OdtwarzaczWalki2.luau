@@ -21,6 +21,7 @@
 
 	API:  uruchom(kontener, wybor, opcje?) → boolean | pomin(wymus?) | zamknij() | jeszczeRaz() | ustawTempo(t) | czyTrwa()
 	      wolnaZa() → s | stan() → tabela (do testów) | przewin(s) (tylko opcje.reczny)
+	      wstrzymaj(tak) (testy: zatrzymuje / puszcza czas sceny trwającej walki; zatrzymaną przesuwa przewinDo)
 	opcje (testy): tempo (startowe), reczny (czas stoi; przesuwa go przewin), etykietaCzasu, pominPo (wymuszone
 	      pominięcie tylko pokazu — serwer i tak sam decyduje o sesji), zamknijPo, obrys;
 	      bezPowtorki (las_potwory, P2: panel wyniku bez JESZCZE RAZ).
@@ -53,7 +54,7 @@ if not game:GetService("RunService"):IsStudio() then
 		return false
 	end
 	return { uruchom = nic, pomin = nic, zamknij = nic, czyTrwa = nic, jeszczeRaz = nic, ustawTempo = nic, stan = nic,
-		przewin = nic, wolnaZa = function()
+		przewin = nic, wstrzymaj = nic, wolnaZa = function()
 			return 0
 		end }
 end
@@ -763,6 +764,9 @@ function Sesja:zdarzenieUderzenia(ev): string?
 		kand = "unik"
 	elseif z.typ == "blok" then
 		kand = "blok"
+	elseif ev.choreo and ev.choreo.dzwiekUderzenia ~= nil then
+		-- własny wygląd aktora (Choreografie.UMIEJETNOSCI_AKTORA): zdarzenie katalogu albo false = bez odcinka
+		kand = ev.choreo.dzwiekUderzenia or nil
 	elseif z.umiejetnosc == "kula_ognia" or z.umiejetnosc == "lodowy_pocisk" then
 		kand = z.umiejetnosc
 	elseif ev.choreo and ev.choreo.wybuch == "kwas" then
@@ -1004,7 +1008,9 @@ local ATAKI = { cios = true, krytyk = true, blok = true, unik = true }
 
 function Sesja:wpisChoreo(z, klucz: string)
 	if z.umiejetnosc ~= "" then
-		local w = Ch.UMIEJETNOSCI[z.umiejetnosc]
+		-- własny wygląd umiejętności u tego aktora (Choreografie.UMIEJETNOSCI_AKTORA — Dżungla), inaczej wpis ogólny
+		local wa = Ch.UMIEJETNOSCI_AKTORA and Ch.UMIEJETNOSCI_AKTORA[klucz]
+		local w = (wa and wa[z.umiejetnosc]) or Ch.UMIEJETNOSCI[z.umiejetnosc]
 		if w then
 			return w, true
 		end
@@ -1392,9 +1398,15 @@ end
 
 -- wygląd ozdoby efektu: ten sam efekt może wyglądać inaczej zależnie od umiejętności, która go nałożyła
 -- (ogłuszenie: pnącza przy uścisku korzeni, gwiazdki przy ogłuszającym uderzeniu; spowolnienie: lód) —
--- Choreografie.WYGLAD_OD_UMIEJETNOSCI
-function Sesja.wygladEfektu(id: string, umiejetnosc: string?): string
+-- Choreografie.WYGLAD_OD_UMIEJETNOSCI. aktor = klucz aktora, który nałożył efekt: jego własny wpis umiejętności
+-- (Choreografie.UMIEJETNOSCI_AKTORA, pole `wyglady`) ma pierwszeństwo — „zzz” po pyłku Gębokwiata zamiast lodu.
+function Sesja.wygladEfektu(id: string, umiejetnosc: string?, aktor: string?): string
 	local ch = Ch.EFEKTY[id] or Ch.EFEKT_ZASTEPCZY
+	local wa = aktor and umiejetnosc and Ch.UMIEJETNOSCI_AKTORA and Ch.UMIEJETNOSCI_AKTORA[aktor]
+	local wu = wa and wa[umiejetnosc]
+	if wu and wu.wyglady and wu.wyglady[id] then
+		return wu.wyglady[id]
+	end
 	local wg = Ch.WYGLAD_OD_UMIEJETNOSCI[id]
 	if wg and umiejetnosc and wg[umiejetnosc] then
 		return wg[umiejetnosc]
@@ -1402,10 +1414,10 @@ function Sesja.wygladEfektu(id: string, umiejetnosc: string?): string
 	return ch.wyglad
 end
 
-function Sesja:ozdobaEfektu(strona: string, id: string, umiejetnosc: string?)
+function Sesja:ozdobaEfektu(strona: string, id: string, umiejetnosc: string?, aktor: string?)
 	local klucz = strona .. ":" .. id
 	local o = self.ozdoby[klucz]
-	local wyglad = Sesja.wygladEfektu(id, umiejetnosc)
+	local wyglad = Sesja.wygladEfektu(id, umiejetnosc, aktor)
 	if o and not o.zniszczona then
 		if o.wyglad == wyglad then
 			o:puls()
@@ -1569,6 +1581,8 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 		local c = ev.choreo
 		if not wbud then
 			-- odcinek arkusza już gra (szczyt na tę klatkę)
+		elseif c and c.dzwiekWbudowany then
+			self:dzwiek(c.dzwiekWbudowany, los:NextNumber(0.95, 1.05)) -- własny wygląd aktora (jad Węża: plusk)
 		elseif c and c.wybuch == "kwas" then
 			self:dzwiek("plusk", los:NextNumber(0.95, 1.05))
 		elseif ev.styl == "pocisk" or ev.styl == "chmura" then
@@ -1590,7 +1604,11 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 		end
 		if c.pazury then
 			local cf = CFrame.lookAt(piers, self:piers(z.kto))
-			self.fx:pazury(cf * CFrame.new(0, 0, -0.6), Color3.fromHex(c.pazury), math.max(1.4, D.wpis.wysokosc * 0.35))
+			self.fx:pazury(cf * CFrame.new(0, 0, -0.6), Color3.fromHex(c.pazury), math.max(1.4, D.wpis.wysokosc * 0.35), c.pazuryKrzyz == true)
+		end
+		if c.kly then -- ukąszenie (Wąż Stu Lian): kły zatrzaskują się na piersi celu, od strony atakującego
+			local cf = CFrame.lookAt(piers, self:piers(z.kto))
+			self.fx:ukaszenie(cf * CFrame.new(0, 0, -0.6), Color3.fromHex(c.kly), math.max(1.4, D.wpis.wysokosc * 0.35))
 		end
 	end
 	-- reakcja celu
@@ -1645,7 +1663,7 @@ local function zaplanujAtak(self, ev, f_wypuszczenie)
 		end
 		if z.kto == "wrog" and z.umiejetnosc ~= "" then
 			self:zaplanujAkcje(t0 + (ev.eStart or 0), function()
-				self:glosPotwora("wrog", zd or (if ev.styl == "chmura" then "zarodniki" else nil))
+				self:glosPotwora("wrog", zd or (ev.choreo and ev.choreo.dzwiekWypuszczenia) or (if ev.styl == "chmura" then "zarodniki" else nil))
 			end)
 		end
 	end
@@ -1713,7 +1731,7 @@ Choreo.pocisk = function(self, ev)
 		local piers = self:piers(z.cel)
 		local pow = self:powierzchnia(z.cel, start, piers) or piers
 		-- ile przed środkiem pocisku jest jego przód (grot strzały 2,1 studa; Efekty3D liczy z tego koniec lotu)
-		local przod = if nazwa == "strzala" then 2.1 elseif nazwa == "lod" then 0.85 else 0.35
+		local przod = c.grot or (if nazwa == "strzala" then 2.1 elseif nazwa == "lod" then 0.85 else 0.35)
 		ev.punktTrafienia = pow
 		self.fx:pocisk(nazwa, start, pow, math.max(0.05, ev.lot - sp), {
 			luk = c.luk, chybiony = z.typ == "unik", grot = przod,
@@ -1730,6 +1748,8 @@ Choreo.pocisk = function(self, ev)
 		end
 		if c.pocisk == "strzala" then
 			self:dzwiek("strzal", 1.0)
+		elseif c.dzwiekWypuszczenia then
+			self:dzwiekZdarzenia(c.dzwiekWypuszczenia, "czar", 1.0) -- własny wygląd aktora: kłąb pyłku, plunięcie jadem
 		elseif not ev.dzwiekArkusza then
 			self:dzwiekZdarzenia("rzut", "czar", 1.0) -- kula ognia i lodowy pocisk: wystrzał jest we własnym odcinku
 		end
@@ -1885,7 +1905,8 @@ Obsluga.nalozenie = function(self, ev)
 	if self.pominieto then
 		return
 	end
-	self:ozdobaEfektu(z.cel, z.efekt, self:zrodloEfektu(ev))
+	local nakladajacy = self.aktorzy[z.kto]
+	self:ozdobaEfektu(z.cel, z.efekt, self:zrodloEfektu(ev), nakladajacy and nakladajacy.klucz)
 	local ch = Ch.EFEKTY[z.efekt] or Ch.EFEKT_ZASTEPCZY
 	local tekst = ch.napis
 	if nowy.procent then
@@ -2005,7 +2026,8 @@ Sesja.Obsluga = Obsluga
 function Sesja:pokazNazwe(ev)
 	local z = ev.z
 	local du = Dane.umiejetnosci[z.umiejetnosc]
-	local nazwa = (du and du.nazwa) or z.umiejetnosc
+	-- własny wygląd aktora może mieć własny napis („Usypiający pyłek” zamiast „Lodowy pocisk”); dziennik bez zmian
+	local nazwa = (ev.choreo and ev.choreo.nazwa) or (du and du.nazwa) or z.umiejetnosc
 	self.ui:pokazUmiejetnosc(nazwa, z.kto)
 	self.licznikNazw += 1
 	local token = self.licznikNazw
@@ -2975,6 +2997,7 @@ function Sesja:rozpocznij(walka)
 	self.tau = 0
 	self.tauWyniku = 0
 	self.pominieto = false
+	self.wstrzymana = false -- wstrzymanie testowe (Odtwarzacz.wstrzymaj) nie przechodzi na następne odtworzenie
 	self.klatki = table.create(2000)
 	self.koszt = table.create(2000)
 	self.zegarStartu = os.clock()
@@ -3180,14 +3203,16 @@ function Sesja:krok(dt: number)
 		ui:aktualizuj(dt, kamera)
 		return
 	end
-	local reczny = self.opcje.reczny and self.faza == "odtwarzanie"
+	-- czas sceny stoi: opcja `reczny` (testy z tablicy) albo wstrzymanie w locie (Odtwarzacz.wstrzymaj — próba efektów)
+	local stoi = self.opcje.reczny or self.wstrzymana
+	local reczny = stoi and self.faza == "odtwarzanie"
 	if not reczny then
 		self.zegar += dt
 	end
 	if self.faza == "odtwarzanie" then
 		table.insert(self.klatki, dt)
 		local d = 0
-		if not self.opcje.reczny then
+		if not stoi then
 			d = dt * self:tempoSceny(self.tau)
 		end
 		self:krokSceny(d, if reczny then 0 else dt)
@@ -3479,6 +3504,8 @@ function Sesja:pokazWynik()
 	self:atrybut("OstatniKosztSkryptuP95", if nk > 0 then ms(koszt[math.clamp(math.ceil(nk * 0.95), 1, nk)]) else 0)
 	self:atrybut("OstatniKosztSkryptuMaks", if nk > 0 then ms(koszt[nk]) else 0)
 	self:atrybut("OstatniaLiczbaInstancji", self.utworzono + ui.utworzono + (self.fx and self.fx.utworzono or 0))
+	-- ile nowych instancji kosztował każdy rodzaj efektu ("pocisk:pylek=5;wybuch:pylek=11;…") — pomiar własnych efektów
+	self:atrybut("OstatniKosztEfektow", if self.fx then self.fx:opisKosztu() else "")
 	self:atrybut("OstatnioPominieto", self.pominieto)
 	self:atrybut("OstatniWynik", self.walka.wynik)
 	self:atrybut("OstatniaLiczbaUjec", self.licznikUjec)
@@ -3756,6 +3783,13 @@ function Odtwarzacz.przewinDo(tau: number)
 		sesja:przewinDo(tau)
 	end
 end
+-- testy (próba własnych efektów w krainie, gdzie walka startuje bez opcji `reczny`): zatrzymuje (true) albo puszcza
+-- (false) czas sceny TEJ walki; zatrzymaną scenę przesuwa przewinDo. Nie zmienia opcji walki ani kolejnych walk.
+function Odtwarzacz.wstrzymaj(tak: boolean)
+	if sesja then
+		sesja.wstrzymana = tak == true
+	end
+end
 -- odmowa serwera: funkcja(powód) ustawiana przez KlientWalki2 (komunikat dla gracza)
 Odtwarzacz.naOdmowe = nil :: ((string) -> ())?
 Odtwarzacz.pokazLiczbe = Sesja.pokazLiczbe
@@ -3923,6 +3957,8 @@ function Odtwarzacz.stan()
 		manaGracz = s.ui and s.ui:mana("gracz"), manaWrog = s.ui and s.ui:mana("wrog"),
 		pomijanie = s.pomijanie == true, powodPominiecia = s.powodPominiecia,
 		pomijanieNaEkranie = s.ui ~= nil and s.ui.pomin.Visible, wskrzeszenia = s.wskrzeszenia,
+		-- efekty 3D: ile żyje (aktywne, ozdoby), pula iskier, koszt rodzajów — testy sprzątania i wydajności
+		efekty3D = s.fx and s.fx:licznik(),
 	}
 	if s.ui and s.stanEfektow then
 		wynik.efekty = { gracz = s:efektyStrony("gracz"), wrog = s:efektyStrony("wrog") }
@@ -3941,6 +3977,12 @@ function Odtwarzacz.stan()
 		wynik.wypuszczenie = if ev.tWypuszczenia then ev.t + ev.tWypuszczenia elseif ev.eRel and ev.lot and ev.lot > 0 then ev.t + ev.eRel else nil
 		wynik.cel = ev.z.cel
 		wynik.krytyk = ev.z.krytyk == true
+		-- kto i czym (próba własnych efektów): umiejętność z dziennika i wygląd z wpisu choreografii
+		wynik.kto = ev.z.kto
+		wynik.umiejetnosc = ev.z.umiejetnosc
+		local c = ev.choreo
+		wynik.wyglad = if c then { pocisk = c.pocisk, wybuch = c.wybuch, aura = c.aura, nazwa = c.nazwa, kly = c.kly ~= nil,
+			pazuryKrzyz = c.pazuryKrzyz == true } else nil
 		local pt = ev.punktTrafienia
 		wynik.punktTrafienia = if pt then { pt.X, pt.Y, pt.Z } else nil
 	end
@@ -3948,6 +3990,14 @@ function Odtwarzacz.stan()
 	if tor then
 		wynik.upadek = { czas = tor.czas, dlugosc = tor.dlugosc, koniec = tor.zakonczony }
 	end
+	-- ozdoby statusów na postaciach: "strona:efekt" → nazwa wyglądu (Efekty3D: Wyglad.<nazwa>)
+	wynik.ozdoby = {}
+	for klucz, o in s.ozdoby or {} do
+		if not o.zniszczona then
+			wynik.ozdoby[klucz] = o.wyglad
+		end
+	end
+	wynik.wstrzymana = s.wstrzymana == true
 	return wynik
 end
 
