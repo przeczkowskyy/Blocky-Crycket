@@ -1,0 +1,32 @@
+{
+ "id": "r-20261118-191821-2da1",
+ "tytul": "Bohater w świecie: nowy bieg trzech klas",
+ "opis_md": "- Bohater gracza biega teraz naturalniej: krótszy krok i prostsze kolana, wyraźna faza lotu, pracują ręce i tułów, a poły tabardu i szata kota ruszają się z krokiem.\n- Przy wbiegnięciu w ścianę stopa już się nie ślizga (0,02–0,06 studa zamiast 0,56), a postać od razu staje w spoczynku.\n- Fizyka postaci, sterowanie i haczyk dla mini-gier są bez zmian. Czas pętli nie wzrósł.\n- To dalej część propozycji „bohater klasy zamiast awatara” (pytanie 63); do oceny wygląd biegu każdej klasy na paskach klatek.\n\nSzczegóły:\n\n**Jak sprawdzić w Studio:** Play → wybierz klasę → WASD. Najlepiej widać z boku i w zakręcie.\n\n**Co się zmieniło (przy pełnym biegu 16 studów na sekundę)**\n\n| | Wojownik | Zwiadowca | Kot-Mag |\n|---|---|---|---|\n| Kolano w połowie podporu | 59° (było 79°) | 51° (było 79°) | 77° (pod szatą) |\n| Kroków na sekundę (cykli) | 2,2 (było 2,5) | 2,5 | 3,4 (było 4,1) |\n| Wymach rąk | ±7° tarcza, ±16° miecz | ±24° łuk, ±34° | ±22°, ±9° kostur |\n| Tułów | pochył 9°, lekki skręt | pochył 11° | pochył 6° |\n| Strój | 12 pasów tabardu idzie za udem | — | szata faluje, kostur trzymany pionowo |\n\n**Próba w grze (18.11, ostatni przebieg 18:57): 20 punktów w porządku, 1 bez rozstrzygnięcia, 0 błędów**\n- Stopa w podporze przy pełnym biegu: 0,00 studa u trzech klas.\n- Bieg w ścianę (nowy punkt): bieg → chód → spoczynek, stopa razem z uderzeniem 0,02–0,06 studa; spoczynek najpóźniej 0,13 s po zatrzymaniu.\n- Zakręt: tułów przechyla się do środka.\n- Czas pętli klienta: 0,07 ms dla jednego biegnącego bohatera; 0,4–0,6 ms dla dwunastu biegnących z połami stroju; 60 klatek na sekundę w każdym układzie.\n- Sąsiedzi: cała droga gracza 14 z 14, mini-gry 31 punktów w porządku.\n- Punkt bez rozstrzygnięcia to runda mini-gry, w którą w tej próbie nikt nie gra (jak dotąd).\n\n**Poprawione po próbie i zrzutach:** migotanie między chodem a spoczynkiem przy ścianie; ślizg stopy przy uderzeniu; kostur kota przechylał się ku głowie.\n\n**Niesprawdzone i słabe miejsca:** przy biegu po łuku stopa w podporze obraca się z bohaterem (0,02–0,09 studa na krok); kapelusz i ogon kota w ruchu są tylko policzone (gracz próby nie miał kapelusza); pochył Zwiadowcy wygląda na mocniejszy niż ustawiony; dwóch graczy, telefon i pochyłości jak dotąd bez sprawdzenia; zrzuty 01–14 pakietu pokazują jeszcze pierwszą wersję biegu.\n\nPliki: `swiat/bohater_swiat/` (opis w `README.md`, zrzuty `klatki/20`–`22`).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T19:18:21+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/BohaterSwiat",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytanie 63"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/bohater_swiat/README.md",
+   "etykieta": "Opis pakietu"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg"
+ ]
+}

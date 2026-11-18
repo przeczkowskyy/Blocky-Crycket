@@ -561,6 +561,7 @@ Dopisek z 2026-11-18 (własne efekty umiejętności): do oceny doszły (1) napis
 
 Szczegóły: Próba powstaje w `swiat/bohater_swiat/` (kontener `Workspace/BohaterSwiat`) z wyłącznikiem, który przywraca awatar bez przebudowy. Za (a): gracz widzi w świecie strój i przedmioty z D-071, a rasy z D-079 mają sens także poza walką. Za (b): gracze Roblox są przywiązani do własnego awatara, a bohater z klocków to więcej części na ekranie telefonu. Wynik próby i zrzuty dojdą w raporcie w panelu.
 Dopisek z 2026-11-18 (po próbie w Studio): bohater chodzi po świecie w stroju gracza u wszystkich trzech klas; raport w panelu „Bohater klasy chodzi po świecie zamiast awatara” ze zrzutami i modelami 3D. Wyłącznik bez przebudowy: atrybut `BohaterWSwiecie = false` na `Workspace/BohaterSwiat`. Na komputerze 60 klatek na sekundę także z dwunastoma bohaterami naraz; telefon niesprawdzony. Drugi wybór przy okazji: bieg liczony przez kod (jest dziś) czy ręcznie zrobiony klip biegu w modelach postaci.
+Dopisek z 2026-11-18 (wieczór): bieg liczony przez kod został poprawiony — prostsze kolana, praca rąk, poły stroju i szata kota w ruchu, brak ślizgu stopy przy przeszkodzie. Paski klatek trzech klas są w raporcie „Bohater w świecie: nowy bieg trzech klas”. Wybór „bieg z kodu czy ręczny klip w modelach” zostaje otwarty.
 **Odpowiedź:**
 
 ## 64. Mini-gry w stylu walki: co zostaje, co zmienić?

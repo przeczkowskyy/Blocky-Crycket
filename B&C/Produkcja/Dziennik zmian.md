@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-18 · Claude Code u Karola (bohater w świecie: nowy bieg — w Studio)
+- **Nowy cykl biegu trzech klas** (`Workspace/BohaterSwiat`, `swiat/bohater_swiat/`; część propozycji z pytania 63): krótszy krok i prostsze kolana (Wojownik 59° zamiast 79° w połowie podporu), wyraźna faza lotu, ręce i tułów pracują według danych klasy, głowa stabilna; pasy tabardu idą za udem, szata kota faluje, kostur trzymany pionowo. Tempo kroku idzie za rzeczywistą drogą postaci, więc przy przeszkodzie stopa się nie ślizga, a postać staje w spoczynku. Fizyka, sterowanie i haczyk `RuchBohatera` bez zmian.
+- **Próba w grze (ostatni przebieg 18:57):** 20 punktów w porządku, 1 bez rozstrzygnięcia (runda mini-gry, jak dotąd); nowy punkt „bieg w ścianę”: stopa 0,02–0,06 st (pierwsza wersja 0,56 st); czas pętli 0,07 ms na biegnącego bohatera, 0,4–0,6 ms na dwunastu; cała droga gracza 14 z 14, mini-gry 31 punktów w porządku.
+- **Słabe miejsca:** bieg po łuku (stopa obraca się z bohaterem, 0,02–0,09 st na krok), kapelusz i ogon kota tylko policzone, mocny pochył Zwiadowcy; telefon, dwóch graczy i pochyłości niesprawdzone.
+- Raport w panelu: „Bohater w świecie: nowy bieg trzech klas”. Notatki: [[Zadania]], [[Pytania otwarte]] (dopisek pod 63).
+
 ## 2026-11-18 · Claude Code u Karola (Training Center: arena z dekoracjami — w Studio)
 - **Wygląd areny Training Center** (`Workspace/TreningProba`, `swiat/trening_proba/dekoracje.py`; propozycja): podłoga w szachownicę z ramami pól stanowisk w kolorach statystyk, ogrodzenie z girlandami chorągiewek, brama z szyldem, dwie trybunki z widzami, tablica wyników jako dekoracja, stojaki z bronią i ciężarkami, lampiony; każde stanowisko ma własne dekoracje, a trenerzy są klockowymi figurami z twarzą i strojem. Elementy gry, zasady, kamera, napisy i przyrosty bez zmian. 1658 części (było 202), 87% dekoracji bez kolizji, bez świateł.
 - **Próba w grze (17:46–18:16):** 31 punktów w porządku w dwóch pełnych przebiegach; pola gry wolne, kadry kamery niezasłonięte (liczone z brył w miejscu), czas klatki 16,7 ms jak przed zmianą. Po zrzutach poprawione manekiny przy Sile (tarcza wyglądała jak strefa ciosu) i bele siana za strefą.
