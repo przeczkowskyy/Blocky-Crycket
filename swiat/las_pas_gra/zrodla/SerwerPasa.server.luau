@@ -84,6 +84,15 @@ local function zaGranica(x: number): boolean
 	return granicaNastepnego ~= nil and x >= granicaNastepnego
 end
 Pamiec.klucze({ KLUCZ_PRZELOTU, KLUCZ_STRAZNIKA })
+-- 18.11.2026 (swiat/cutscenka_biomu, D-077): gdy stoi Workspace/CutscenkaBiomu i przejął ten biom (jego atrybut
+-- "Przejmuje_<id biomu>" = true — ustawia go serwer tamtego pakietu w Play), cutscenkę pierwszego wejścia gra tamten
+-- pakiet, a automat pasa nie zaczyna własnego przelotu. Bez tamtego kontenera albo atrybutu — bez zmian.
+local KONTENER_CUTSCENKI = "CutscenkaBiomu"
+local ATR_PRZEJECIA = "Przejmuje_" .. (B.id or "las")
+local function cutscenkaPrzejela(): boolean
+	local c = workspace:FindFirstChild(KONTENER_CUTSCENKI)
+	return c ~= nil and c:GetAttribute(ATR_PRZEJECIA) == true
+end
 
 local zdarzenia: RemoteEvent = kontener:WaitForChild("Zdalne"):WaitForChild("ZdarzeniaPasa")
 local sygnaly = kontener:WaitForChild("Sygnaly")
@@ -113,6 +122,7 @@ kontener:SetAttribute("LicznikPrzelotow", 0)
 kontener:SetAttribute("LicznikCofniec", 0)
 kontener:SetAttribute("LicznikRatunkow", 0)
 kontener:SetAttribute("Przekierowanie", "nie")
+kontener:SetAttribute("UstepujeCutscence", true) -- ten serwer umie oddać przelot pakietowi swiat/cutscenka_biomu
 
 local function dolicz(nazwa: string)
 	kontener:SetAttribute(nazwa, (kontener:GetAttribute(nazwa) or 0) + 1)
@@ -467,6 +477,9 @@ local function tyknijGracza(gracz: Player, teraz: number)
 		przerwij = s.przerwij,
 	}
 	s.przerwij = nil
+	if s.przelot.faza == "brak" and cutscenkaPrzejela() then
+		w.wPasie = false -- cutscenkę pierwszego wejścia gra pakiet swiat/cutscenka_biomu; własny przelot nie startuje
+	end
 	for _, akcja in L.krokPrzelotu(s.przelot, w, teraz, D.przelot) do
 		wykonaj(gracz, s, akcja, teraz)
 	end
