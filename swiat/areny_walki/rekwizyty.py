@@ -27,6 +27,9 @@ from swiat.biom_las import skaly  # noqa: E402
 from swiat.biom_las.paleta import PALETA as PALETA_LASU  # noqa: E402
 from swiat.bagno_pas import rosliny as ros_bagna  # noqa: E402
 from swiat.bagno_pas.kontekst import KOLORY_BAGNA  # noqa: E402
+from swiat.bagno_pas.miejsca import palma, roslina_dzungli  # noqa: E402,F401
+from swiat.dzungla_pas import rosliny as ros_dzungli  # noqa: E402  (rośliny mapy Dżungli — tylko import)
+from swiat.dzungla_pas.kontekst import KOLORY_DZUNGLI  # noqa: E402
 from swiat.krzywe_miasteczko import zestaw  # noqa: E402
 from swiat.krzywe_miasteczko.paleta import cien  # noqa: E402
 from swiat.krzywe_miasteczko.zestaw import lamana  # noqa: E402
@@ -50,9 +53,30 @@ KOLORY_AREN = {
     "arena_wzgorze_bagno": "6F7D66",
     "arena_wzgorze_miasto": "9DBB7A",
     "arena_dach_daleki": "C98A6E",
+    # Dżungla (paleta z PLAN_BIOMOW i makiety krain: grunt 2FA34A, podłoże 5C3A22, droga B07A44, woda 2EC4B6)
+    "dzungla_kamien": "8E9A82",     # omszały kamień świątyni (stonowany — tło za walczącymi spokojniejsze od zieleni)
+    "dzungla_kamien_ciemny": "667260",
+    "dzungla_kamien_jasny": "B5BDA3",
+    "dzungla_mech": "5DAA45",
+    "dzungla_liana": "3E7D2E",
+    "dzungla_woda": "2EC4B6",
+    "dzungla_woda_jasna": "8FE3EC",
+    "dzungla_piana": "EFFCF8",
+    "dzungla_kwiat_neon": "FF5FA2",   # świecące kwiaty (Neon)
+    "dzungla_kwiat_zolty": "FFD84A",
+    "dzungla_zloto": "C9A44A",
+    "dzungla_grunt": "2E7D3A",
+    "dzungla_grunt_jasny": "3F9A45",
+    "dzungla_ziemia": "B07A44",
+    "dzungla_sylweta_1": "2F6B3A",
+    "dzungla_sylweta_2": "568E5E",
+    "dzungla_sylweta_3": "8DB894",
+    "arena_mgla_dzungla": "A8D3A4",
+    "arena_wzgorze_dzungla": "4F8F5A",
 }
 PALETA = dict(PALETA_LASU)
-for _k, _v in list(KOLORY_BAGNA.items()) + list(KOLORY_AREN.items()):
+# + paleta mapy Dżungli (klucze dz_, swiat/dzungla_pas/kontekst.py) — rośliny areny Dżungli to rośliny mapy
+for _k, _v in list(KOLORY_BAGNA.items()) + list(KOLORY_AREN.items()) + list(KOLORY_DZUNGLI.items()):
     assert _k not in PALETA, "klucz zderza się z istniejącym kluczem palety: " + _k
     PALETA[_k] = _v
 
@@ -613,3 +637,193 @@ def girlanda(s, rnd, p1, p2, y1, y2, n=7, kolory=("czerwien", "zloto", "dach_twi
             py = y1 + (y2 - y1) * t - 1.4 * (1 - (2 * t - 1) ** 2) - 0.7
             s.klin("Chorągiewka", (px, py, pz), (0.15, 1.3, 1.2), kolory[i % len(kolory)], "Fabric", rot=(180, ry + 90, 0))
     return max(y1, y2), 0.5
+
+# =========================================================================== DŻUNGLA — dziedziniec zarośniętej świątyni
+def _liany(s, rnd, x0, y0, z0, h, n=2, r=1.8):
+    """Liany opadające z wysokości y0 + h do y0 wokół osi (belki w kontrze) z liśćmi. 2·n części."""
+    for i in range(n):
+        a = rnd.uniform(0, 2 * math.pi)
+        p1 = (x0 + r * math.cos(a), y0 + h, z0 + r * math.sin(a))
+        p2 = (x0 + (r + 0.4) * math.cos(a + 0.6), y0 + h * rnd.uniform(0.15, 0.35), z0 + (r + 0.4) * math.sin(a + 0.6))
+        s.belka("Liana", p1, p2, 0.32, "dzungla_liana", "SmoothPlastic")
+        s.blok("Liana liść", ((p1[0] + p2[0]) / 2.0, (p1[1] + p2[1]) / 2.0, (p1[2] + p2[2]) / 2.0), (1.2, 0.25, 0.8),
+               rnd.choice(("dzungla_lisc", "dzungla_lisc_jasny")), rot=(rnd.uniform(-20, 20), rnd.uniform(0, 180), rnd.uniform(10, 30)))
+
+
+def posag_dzungli(s, rnd, pos, k=1.0, ry=0.0):
+    """Posąg strażnika świątyni (front +Z): cokół, krępy tułów, ręce, wielka głowa z jarzącymi się oczami i pióropuszem
+    z klinów, liany i mech. Wys. ok. 10·k. ok. 18 części."""
+    x, y, z = pos
+    zn = rnd.choice((-1, 1))
+    with s.uklad(pos=(x, y, z), obrot=(0, ry, _kontra(rnd, 1, 3))), s.uklad(skala=k):
+        s.blok("Posąg cokół", (0, 0.8, 0), (4.6, 1.6, 4.6), "dzungla_kamien_ciemny", "Slate")
+        s.blok("Posąg cokół płyta", (0, 1.8, 0), (5.0, 0.45, 5.0), "dzungla_kamien_jasny", "Slate")
+        with s.uklad(pos=(0, 2.0, 0), obrot=(0, 0, zn * rnd.uniform(2, 4))):
+            s.blok("Posąg tułów", (0, 2.2, 0), (3.2, 4.4, 2.6), "dzungla_kamien", "Slate")
+            for sx in (-1, 1):
+                s.blok("Posąg ręka", (sx * 2.1, 2.6, 0.5), (1.1, 3.2, 1.3), cien(s, "dzungla_kamien", 0.9), "Slate", rot=(-12, 0, sx * 6))
+            with s.uklad(pos=(0, 5.6, 0), obrot=(rnd.uniform(-4, 4), 0, -zn * rnd.uniform(3, 6))):
+                s.blok("Posąg głowa", (0, 1.4, 0), (3.2, 2.8, 2.9), "dzungla_kamien", "Slate")
+                s.blok("Posąg brwi", (0, 2.1, 1.5), (3.0, 0.5, 0.3), "dzungla_kamien_ciemny", "Slate")
+                with s.cechy(cien=False):
+                    for sx in (-0.75, 0.75):
+                        s.blok("Posąg oko", (sx, 1.6, 1.48), (0.6, 0.45, 0.12), "dzungla_kwiat_zolty", "Neon")
+                    s.blok("Posąg usta", (0, 0.7, 1.48), (1.8, 0.35, 0.12), "tusz")
+                for sx in (-1, 0, 1):
+                    s.naroznik("Posąg pióropusz", (sx * 0.9, 3.6, -0.3), (0.9, 1.8, 0.9), "dzungla_zloto", "Slate",
+                               rot=(0, 45 + 90 * sx, 0))
+                s.blok("Posąg mech", (0.4 * zn, 2.9, -0.2), (2.4, 0.35, 2.2), "dzungla_mech", rot=(0, 20, 0))
+            with s.cechy(cien=False):
+                _liany(s, rnd, 0, 0.2, 0, 7.6, n=2, r=1.7)
+    return 10.4 * k, 3.0 * k
+
+
+def swiatynia(s, rnd, pos, k=1.0, ry=0.0):
+    """Schodkowa świątynia (front +Z ku placowi): cztery tarasy, schody z klina z pasami stopni, kapliczka z ciemnym
+    wejściem i jarzącymi się znakami, mech i liany na tarasach. Wys. ok. 26·k. ok. 36 części."""
+    x, y, z = pos
+    with s.uklad(pos=(x, y, z), obrot=(0, ry, 0)), s.uklad(skala=k):
+        yb = 0.0
+        for i, (w, d) in enumerate(((42.0, 30.0), (34.0, 24.0), (26.0, 18.0), (18.0, 12.0))):
+            kol = "dzungla_kamien" if i % 2 == 0 else cien(s, "dzungla_kamien", 0.92)
+            s.blok("Świątynia taras", (0, yb + 2.0, -2.0 - 1.5 * i), (w, 4.0, d), kol, "Slate")
+            with s.cechy(cien=False):
+                s.blok("Świątynia gzyms", (0, yb + 4.05, -2.0 - 1.5 * i + d / 2.0 - 0.3), (w + 0.4, 0.3, 0.8), "dzungla_kamien_jasny", "Slate")
+                s.blok("Świątynia mech", (rnd.uniform(-w / 4, w / 4), yb + 4.15, -2.0 - 1.5 * i), (w * 0.35, 0.3, d * 0.4), "dzungla_mech",
+                       rot=(0, rnd.uniform(-10, 10), 0))
+            yb += 4.0
+        # schody: klin od ziemi do szczytu tarasów, pasy stopni
+        s.klin("Świątynia schody", (0, 8.0, 15.0), (10.0, 16.0, 6.0), "dzungla_kamien_jasny", "Slate", rot=(0, 180, 0))
+        with s.cechy(cien=False):
+            for i in range(7):
+                t = (i + 0.5) / 7.0
+                s.blok("Świątynia stopień", (0, 16.0 * (1 - t) + 0.05, 12.0 + 6.0 * t), (10.2, 0.25, 0.35), "dzungla_kamien_ciemny")
+            for sx in (-1, 1):
+                s.blok("Świątynia balustrada", (sx * 5.4, 8.6, 15.0), (0.8, 2.0, 6.6), "dzungla_kamien_ciemny", "Slate",
+                       rot=(math.degrees(math.atan2(16.0, 6.0)) - 90, 0, 0))
+        # kapliczka na szczycie
+        with s.uklad(pos=(0, 16.0, -5.0)):
+            s.blok("Kapliczka", (0, 3.5, 0), (13.0, 7.0, 9.0), "dzungla_kamien", "Slate")
+            s.blok("Kapliczka dach", (0, 7.4, 0), (14.6, 0.9, 10.6), "dzungla_kamien_jasny", "Slate")
+            s.blok("Kapliczka dach", (0, 8.4, 0), (10.0, 1.2, 7.0), "dzungla_kamien", "Slate")
+            s.naroznik("Kapliczka szczyt", (0, 9.8, 0), (3.0, 2.0, 3.0), "dzungla_zloto", "Slate", rot=(0, 45, 0))
+            with s.cechy(cien=False):
+                s.blok("Kapliczka wejście", (0, 2.6, 4.52), (4.0, 5.2, 0.1), "tusz")
+                for sx in (-4.2, 4.2):
+                    s.blok("Kapliczka znak", (sx, 4.5, 4.55), (1.4, 1.4, 0.1), "dzungla_woda", "Neon", rot=(0, 0, 45))
+                _liany(s, rnd, -5.6, 0, 3.6, 7.0, n=2, r=0.6)
+                _liany(s, rnd, 5.6, 0, 3.6, 7.0, n=1, r=0.6)
+        with s.cechy(cien=False):
+            for sx in (-1, 1):
+                _liany(s, rnd, sx * 14.0, 0, 10.0, 7.8, n=1, r=0.8)
+    return 26.0 * k, 21.0 * k
+
+
+def wodospad(s, rnd, pos, k=1.0, ry=0.0):
+    """Wodospad z omszałej skały (front +Z ku placowi): trzy bloki urwiska w kontrze, mech i krzaki na krawędzi, strumień
+    (jasna woda i biała smuga, lekko przezroczyste), sadzawka z pianą u stóp. Wys. ok. 34·k. ok. 16 części."""
+    x, y, z = pos
+    with s.uklad(pos=(x, y, z), obrot=(0, ry, 0)), s.uklad(skala=k):
+        for px, w, h, rr in ((-11.0, 13.0, 30.0, -4), (0.0, 12.0, 34.0, 2), (11.5, 13.0, 27.0, 5)):
+            s.blok("Urwisko", (px, h / 2.0 - 1.0, -4.0), (w, h + 2.0, 12.0), "dzungla_kamien_ciemny" if px else "dzungla_kamien",
+                   "Slate", rot=(0, rnd.uniform(-6, 6), rr))
+            with s.cechy(cien=False):
+                s.blok("Urwisko mech", (px, h + 0.4, -3.5), (w + 0.6, 1.2, 12.4), "dzungla_mech", rot=(0, 0, rr))
+        with s.cechy(cien=False):
+            s.blok("Wodospad", (0, 16.5, 2.3), (6.0, 34.0, 1.2), "dzungla_woda_jasna", alfa=0.12)
+            s.blok("Wodospad smuga", (0.6, 16.5, 3.0), (2.2, 34.0, 0.6), "dzungla_piana", alfa=0.2)
+            s.walec("Sadzawka", (0, 0.04, 8.0), 9.0, 0.12, "dzungla_woda", os="y")
+            s.walec("Sadzawka piana", (0, 0.1, 4.0), 3.6, 0.2, "dzungla_piana", os="y")
+            s.kula("Piana", (0, 0.9, 3.4), 3.4, "dzungla_piana", alfa=0.35)
+            for sx in (-8.0, 8.5):
+                roslina_dzungli(s, rnd, (sx, 0.0, 7.0), 1.1)
+    return 34.0 * k, 18.0 * k
+
+
+def kwiat_swiecacy(s, rnd, pos, k=1.0, ry=0.0):
+    """Kępa świecących kwiatów (Neon, nisko): trzy łodygi, kielichy w dwóch kolorach, dwa liście. 8 części."""
+    x, y, z = pos
+    with s.uklad(pos=(x, y, z), obrot=(0, rnd.uniform(0, 360), 0)), s.uklad(skala=k), s.cechy(cien=False):
+        for i in range(3):
+            a = math.radians(120 * i + rnd.uniform(-25, 25))
+            h = rnd.uniform(1.4, 2.4)
+            px, pz = 0.7 * math.cos(a), 0.7 * math.sin(a)
+            s.belka("Kwiat łodyga", (0, 0, 0), (px, h, pz), 0.18, "dzungla_liana", "SmoothPlastic")
+            s.blok("Kwiat kielich", (px, h + 0.2, pz), (0.75, 0.55, 0.75), "dzungla_kwiat_neon" if i != 1 else "dzungla_kwiat_zolty",
+                   "Neon", rot=(rnd.uniform(-15, 15), 45, rnd.uniform(-15, 15)))
+        for sx in (-1, 1):
+            s.klin("Kwiat liść", (sx * 0.8, 0.35, 0), (0.9, 0.7, 1.6), "dzungla_lisc", rot=(0, 90 * sx, 0))
+    return 2.8 * k, 1.2 * k
+
+
+def kepa_swiecacych(s, rnd, pos, k=1.0, ry=0.0):
+    """Dwa świecące kwiaty mapy Dżungli (swiat/dzungla_pas/rosliny.swiecacy_kwiat: różowy i żółty, Neon) obok siebie.
+    8 części."""
+    x, y, z = pos
+    a = math.radians(rnd.uniform(0, 360))
+    for i, kol in enumerate(("dz_kwiat_rozowy", rnd.choice(("dz_kwiat_jarzacy", "dz_kwiat_rozowy")))):
+        d = 0.7 * k * (1 if i else -1)
+        ros_dzungli.swiecacy_kwiat(s, rnd, (x + d * math.cos(a), y, z + d * math.sin(a)), k * rnd.uniform(0.95, 1.2), ry, kol)
+    return 2.8 * k, 1.6 * k
+
+
+def drzewo_dzungli(s, rnd, pos, k=1.0, ry=0.0, f=1.0):
+    """Drzewo dżungli: pień z 2 segmentów w kontrze na czterech korzeniach-skrzydłach, dwie płaskie korony-parasole
+    (ciemny spód, jasny wierzch), opadająca liana. Wys. ok. 27·k. ok. 11 części."""
+    x, y, z = pos
+    zn = rnd.choice((-1, 1))
+    kor = (ros_lasu.odcien(s, "dzungla_lisc", f * 0.8), ros_lasu.odcien(s, "dzungla_lisc_jasny", f * 0.85))
+    with s.uklad(pos=(x, y, z), obrot=(0, ry, 0)):
+        for i in range(4):
+            with s.uklad(obrot=(0, 90 * i + rnd.uniform(-15, 15), 0)):
+                s.klin("Korzeń skrzydło", (0, 1.4 * k, 1.6 * k), (0.6 * k, 2.8 * k, 2.4 * k), "drewno_ciemne", "Wood", rot=(0, 180, 0))
+        xe, ye, _ = lamana(s, "Pień", [(13.0 * k, 1.9 * k, zn * rnd.uniform(3, 6)), (11.0 * k, 1.5 * k, -zn * rnd.uniform(5, 9))],
+                           "drewno_ciemne", "Wood", start=(0.0, -0.4))
+        with s.uklad(pos=(xe, ye, 0), obrot=(rnd.uniform(-3, 3), rnd.uniform(0, 90), -zn * rnd.uniform(2, 5))):
+            s.blok("Korona spód", (0, 0.4 * k, 0), (17.0 * k, 1.8 * k, 15.0 * k), kor[0])
+            s.blok("Korona wierzch", (0.6 * zn * k, 2.0 * k, 0.4 * k), (11.0 * k, 1.6 * k, 10.0 * k), kor[1], rot=(0, 30, 0))
+            s.blok("Korona niższa", (-zn * 6.0 * k, -4.0 * k, 2.0 * k), (8.0 * k, 1.4 * k, 7.0 * k), kor[0], rot=(0, 15, zn * 6))
+        with s.cechy(cien=False):
+            s.belka("Liana", (xe * 0.8 + zn * 4.0 * k, ye - 0.5, 1.0 * k), (xe * 0.5 + zn * 4.4 * k, ye * 0.35, 1.4 * k), 0.4 * k,
+                    "dzungla_liana", "SmoothPlastic")
+    return 27.0 * k, 8.5 * k
+
+
+def kolumna_zlamana(s, rnd, pos, k=1.0, ry=0.0, stoi=False):
+    """Złamana kolumna: niski trzon (albo wysoki, gdy stoi), leżące bębny, mech. 4–5 części."""
+    x, y, z = pos
+    h = (rnd.uniform(6.0, 9.0) if stoi else rnd.uniform(1.6, 2.6)) * k
+    with s.uklad(pos=(x, y, z), obrot=(0, ry, 0)):
+        s.walec("Kolumna trzon", (0, h / 2.0, 0), 1.3 * k, h, "dzungla_kamien", "Slate", os="y", rot=(rnd.uniform(-3, 3), 0, rnd.uniform(-4, 4)))
+        with s.cechy(cien=False):
+            s.walec("Kolumna mech", (0.2, h + 0.1, 0), 1.0 * k, 0.25, "dzungla_mech", os="y")
+        s.walec("Kolumna bęben", (2.8 * k, 1.15 * k, 0.8 * k), 1.15 * k, 2.2 * k, "dzungla_kamien_jasny", "Slate", os="x",
+                rot=(0, rnd.uniform(-40, 40), 0))
+        if not stoi:
+            s.walec("Kolumna bęben", (-2.4 * k, 1.1 * k, -1.2 * k), 1.1 * k, 2.0 * k, "dzungla_kamien", "Slate", os="z",
+                    rot=(0, rnd.uniform(-30, 30), 0))
+    return h + 0.3, 3.8 * k
+
+
+def brama_ruin(s, rnd, pos, k=1.0, ry=0.0):
+    """Ruina bramy dziedzińca (front +Z ku placowi): próg, dwa filary z głowicami w kontrze, pęknięte nadproże z jarzącym
+    się znakiem (jak znaki świątyni) i mchem, liany z nadproża, odłamek u stóp. Wys. ok. 17·k. 15 części."""
+    x, y, z = pos
+    zn = rnd.choice((-1, 1))
+    with s.uklad(pos=(x, y, z), obrot=(0, ry, 0)), s.uklad(skala=k):
+        s.blok("Brama próg", (0, 0.5, 0), (16.0, 1.0, 5.0), "dzungla_kamien_ciemny", "Slate")
+        for sx in (-1, 1):
+            with s.uklad(pos=(sx * 5.6, 1.0, 0), obrot=(rnd.uniform(-2, 2), 0, sx * zn * rnd.uniform(1, 3))):
+                s.blok("Brama filar", (0, 6.5, 0), (2.6, 13.0, 2.6), "dzungla_kamien", "Slate")
+                s.blok("Brama głowica", (0, 13.4, 0), (3.4, 0.8, 3.4), "dzungla_kamien_jasny", "Slate")
+        with s.uklad(pos=(0, 15.6, 0), obrot=(0, rnd.uniform(-3, 3), zn * rnd.uniform(2, 4))):
+            s.blok("Brama nadproże", (0, 1.2, 0), (15.0, 2.4, 3.2), "dzungla_kamien", "Slate")
+            with s.cechy(cien=False):
+                s.blok("Brama mech", (zn * 2.0, 2.6, 0), (8.0, 0.4, 3.4), "dzungla_mech")
+                s.blok("Brama znak", (0, 1.2, 1.65), (1.6, 1.6, 0.1), "dzungla_woda", "Neon", rot=(0, 0, 45))
+        with s.cechy(cien=False):
+            _liany(s, rnd, -3.2, 2.0, 1.2, 13.6, n=1, r=0.6)
+            _liany(s, rnd, 3.6, 2.0, 1.2, 13.6, n=2, r=0.6)
+        s.blok("Brama odłamek", (zn * 8.6, 0.9, 2.4), (3.2, 1.8, 2.6), "dzungla_kamien_jasny", "Slate",
+               rot=(rnd.uniform(-8, 8), rnd.uniform(10, 40), rnd.uniform(-6, 6)))
+    return 17.6 * k, 9.0 * k

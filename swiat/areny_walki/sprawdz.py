@@ -161,9 +161,16 @@ def wczytaj(klucz):
     return d, z, sc
 
 
-def kamery_skrajne():
+def pary_tla(akt):
+    """Trzy pary planu ogólnego do kontroli tła: najmniejszy, średni i największy przeciwnik areny."""
+    wrogowie = sorted((a["h"], k) for k, a in akt.items() if a["rola"] == "przeciwnik")
+    wybor = [wrogowie[0][1], wrogowie[len(wrogowie) // 2][1], wrogowie[-1][1]]
+    return [("wojownik", wybor[0]), ("wojownik", wybor[1]), ("mag", wybor[2])]
+
+
+def kamery_skrajne(akt=None):
     """Kamery do kontroli horyzontu: najdalsze w każdej ósemce kierunków, najwyższa, plany ogólne, objazd co 30°."""
-    akt = kamery.aktorzy()
+    akt = akt or kamery.aktorzy()
     wszystkie = []
     for gk, wk in kamery.pary(akt):
         for poz, _ in kamery.kamery_pary(akt[gk], akt[wk]):
@@ -177,7 +184,7 @@ def kamery_skrajne():
         if m.any():
             wynik.append(tuple(A[m][r[m].argmax()]))
     wynik.append(tuple(A[A[:, 1].argmax()]))
-    for gk, wk in (("wojownik", "lesny_slime"), ("wojownik", "lesny_troll"), ("mag", "straznik_topieli")):
+    for gk, wk in pary_tla(akt):
         g = kamery.geometria(akt[gk], akt[wk])
         poz, cel, kat_, _ = kamery.ujecie(g, "ogolny", "gracz", "wrog", 0.0)
         wynik += [poz, (poz[0], poz[1], -poz[2])]
@@ -312,9 +319,9 @@ def sprawdz(klucz, prof, kam_horyzontu, szczegoly=False):
         bledy.append("horyzont otwarty: z kamery %s w kierunku %s° domknięcie tylko do %.1f° (wymagane %.1f°)"
                      % ([round(v, 1) for v in najg[2]], najg[1], najg[0], HORYZONT_MIN))
     # 4. tło za postaciami (plan ogólny trzech par)
-    akt = kamery.aktorzy()
+    akt = kamery.aktorzy_do_profilu(kamery.plik_profilu(klucz)[1])
     tla = []
-    for gk, wk in (("wojownik", "lesny_slime"), ("wojownik", "lesny_troll"), ("mag", "straznik_topieli")):
+    for gk, wk in pary_tla(akt):
         g = kamery.geometria(akt[gk], akt[wk])
         poz, cel, kat, _ = kamery.ujecie(g, "ogolny", "gracz", "wrog", 0.0)
         for strona in (1, -1):
@@ -338,14 +345,27 @@ def main():
     ap.add_argument("--szczegoly", action="store_true")
     ap.add_argument("--json", default=None, help="zapisz wyniki do pliku JSON")
     a = ap.parse_args()
-    prof = kamery.profil()
-    kam = kamery_skrajne()
     razem_bledow = 0
     wszystkie = {}
+    kamery_zestawu = {}
+    # aktorzy z tabeli, których nie ma w żadnej arenie (nowy biom bez wpisu „przeciwnicy”) — trzeba dopisać i przeliczyć
+    znani = set(P.PRZECIWNICY_17_11) | {k for A in P.ARENY.values() for k in A.get("przeciwnicy", [])}
+    nowi = sorted(k for k, x in kamery.aktorzy().items() if x["rola"] == "przeciwnik" and k not in znani)
+    if nowi:
+        print("UWAGA: przeciwnicy z tabeli aktorów bez areny (dopisz „przeciwnicy” w plan.py i przelicz):", ", ".join(nowi))
     for klucz in P.ARENY:
         if a.tylko and klucz not in a.tylko.split(","):
             continue
+        prof = kamery.profil_areny(klucz)
+        plik, przeciwnicy = kamery.plik_profilu(klucz)
+        if plik not in kamery_zestawu:
+            kamery_zestawu[plik] = kamery_skrajne(kamery.aktorzy_do_profilu(przeciwnicy))
+        kam = kamery_zestawu[plik]
+        szac = sorted(k for k, x in kamery.aktorzy_do_profilu(przeciwnicy).items() if x.get("zapas"))
+        if szac:
+            print("%-6s profil z szacunkowymi wymiarami: %s (przelicz po dodaniu ich danych)" % (klucz, ", ".join(szac)))
         bledy, uwagi, w = sprawdz(klucz, prof, kam, a.szczegoly)
+        w["szacunkowi"] = szac
         wszystkie[klucz] = {"bledy": bledy, "uwagi": uwagi, "wyniki": w}
         tl = w["tlo"]
         print("%-6s części %4d/%d · wolna przestrzeń: %d naruszeń · horyzont domknięty do ≥ %.1f° (%d kamer) · tło L* %s · %.0f s"

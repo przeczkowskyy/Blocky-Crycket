@@ -74,6 +74,31 @@ RODZINY = {
     "kepa_z_trzcina": (lambda b, s, r, p, k, ry, o: R.kepa_z_trzcina(s, r, p, k, ry, _y(b)), lambda k: 2.6, lambda k: 3.6 * k),
     "stragan": (lambda b, s, r, p, k, ry, o: zestaw.stragan(s, p, ry, tuple(o.get("kolory", ("dach_karczma", "biel"))),
                                                          o.get("towar", "jablka"), tani=True), lambda k: 10.0, lambda k: 6.5),
+    # dżungla
+    "posag_dzungli": (lambda b, s, r, p, k, ry, o: R.posag_dzungli(s, r, p, k, ry), lambda k: 10.4 * k, lambda k: 3.2 * k),
+    "swiatynia": (lambda b, s, r, p, k, ry, o: R.swiatynia(s, r, p, k, ry), lambda k: 26.0 * k, lambda k: 21.0 * k),
+    "wodospad": (lambda b, s, r, p, k, ry, o: R.wodospad(s, r, p, k, ry), lambda k: 34.0 * k, lambda k: 18.0 * k),
+    # rośliny mapy Dżungli (swiat/dzungla_pas/rosliny.py, paleta dz_) — arena wygląda jak kawałek tej samej Dżungli
+    "kwiat_swiecacy": (lambda b, s, r, p, k, ry, o: R.kepa_swiecacych(s, r, p, k, ry), lambda k: 2.8 * k, lambda k: 1.6 * k),
+    "drzewo_dzungli": (lambda b, s, r, p, k, ry, o: R.ros_dzungli.drzewo_dzungli(s, r, p, k, ry, o.get("f", 1.0), tusz=False),
+                       lambda k: 26.5 * k, lambda k: 8.0 * k),
+    "figowiec": (lambda b, s, r, p, k, ry, o: R.ros_dzungli.figowiec(s, r, p, k, ry, o.get("f", 1.0)), lambda k: 19.5 * k,
+                 lambda k: 7.5 * k),
+    "lisc_parasol": (lambda b, s, r, p, k, ry, o: R.ros_dzungli.lisc_parasol(s, r, p, k, ry, o.get("f", 1.0)), lambda k: 7.4 * k,
+                     lambda k: 4.0 * k),
+    "kepa_parasoli": (lambda b, s, r, p, k, ry, o: R.ros_dzungli.kepa_parasoli(s, r, p, k, ry, o.get("f", 1.0)), lambda k: 8.4 * k,
+                      lambda k: 5.5 * k),
+    "palma": (lambda b, s, r, p, k, ry, o: R.ros_dzungli.palma(s, r, p, k, ry, o.get("f", 1.0), proste=True), lambda k: 17.0 * k,
+              lambda k: 7.0 * k),
+    "paproc_drzewiasta": (lambda b, s, r, p, k, ry, o: R.ros_dzungli.paproc_drzewiasta(s, r, p, k, ry, o.get("f", 1.0)),
+                          lambda k: 9.0 * k, lambda k: 5.4 * k),
+    "krzew_dzungli": (lambda b, s, r, p, k, ry, o: R.ros_dzungli.krzew_dzungli(s, r, p, k, o.get("kwiat")), lambda k: 3.2 * k,
+                      lambda k: 2.0 * k),
+    "kolumna_zlamana": (lambda b, s, r, p, k, ry, o: R.kolumna_zlamana(s, r, p, k, ry, False), lambda k: 2.9 * k, lambda k: 4.0 * k),
+    "kolumna_stojaca": (lambda b, s, r, p, k, ry, o: R.kolumna_zlamana(s, r, p, k, ry, True), lambda k: 9.3 * k, lambda k: 4.0 * k),
+    "brama_ruin": (lambda b, s, r, p, k, ry, o: R.brama_ruin(s, r, p, k, ry), lambda k: 17.6 * k, lambda k: 9.0 * k),
+    "kanciak_dzungli": (lambda b, s, r, p, k, ry, o: skaly.kanciak(s, r, p, k, ry, "dzungla_kamien", "Slate", kolizja=False),
+                        lambda k: 1.6 * k, lambda k: 1.7 * k),
     "brama_miejska": (lambda b, s, r, p, k, ry, o: R.brama_miejska(s, r, p, ry, o.get("wys", 10.0)), lambda k: 21.0, lambda k: 9.0),
     "olbrzym": (lambda b, s, r, p, k, ry, o: R.olbrzym(s, r, p, k, ry, o.get("korona_ku")), lambda k: 30.0 * k, lambda k: 7.0 * k),
     "promien_swiatla": (lambda b, s, r, p, k, ry, o: R.promien_swiatla(s, r, p, o.get("h", 30), o.get("szer", 4), ry, o.get("pochyl", 16)),
@@ -110,7 +135,8 @@ RODZINY = {
     "choragiew": (lambda b, s, r, p, k, ry, o: _choragiew(s, p, o, ry), lambda k: 15.0, lambda k: 4.0),
 }
 
-TWARZA = ("chata_na_palach", "trybuna", "namiot", "domek_tla", "manekin", "stojak_broni", "tarcza_lucznicza", "brama_miejska", "stragan")
+TWARZA = ("chata_na_palach", "trybuna", "namiot", "domek_tla", "manekin", "stojak_broni", "tarcza_lucznicza", "brama_miejska", "stragan",
+          "posag_dzungli", "swiatynia", "wodospad", "brama_ruin")
 DACHY = ["dach_karczma", "dach_dom_ceglasty", "dach_twierdza", "dach_sklep", "dach_wylegarnia", "dach_stajnia", "dach_dom_lupek"]
 SCIANY = ["tynk_krem", "tynk_brzoskwinia", "tynk_mieta", "tynk_lawenda", "tynk_blekit"]
 WYS_DRZEW = {"dab": (21.0, 7.0), "okraglak": (15.0, 5.3), "sosna": (19.0, 5.0), "smukly": (23.0, 3.6), "swierk": (21.0, 4.8),
@@ -263,6 +289,24 @@ class Budowa:
                     s.walec("Plac piasek", (0, 0.045, 0), Rp - 2.8, 0.04, k0, "Sand", os="y")
                     s.walec("Plac kreda środek", (0, 0.07, 0), 2.6, 0.04, k1, "SmoothPlastic", os="y")
                     s.walec("Plac piasek środek", (0, 0.095, 0), 2.0, 0.04, k0, "Sand", os="y")
+            elif styl == "kamien":
+                # kamienny dziedziniec świątyni: płyty z fugami, jaśniejszy pierścień, złoty znak w środku, mech przy brzegu
+                dol = y - 0.4
+                s.walec("Dziedziniec", (0, dol / 2.0, 0), Rp, -dol, k0, "Slate", os="y")
+                s.walec("Dziedziniec obrys", (0, (dol + y + 0.32) / 2.0, 0), Rp + 0.55, (y + 0.32) - dol, k2, os="y")
+                s.walec("Dziedziniec pierścień", (0, 0.02, 0), Rp - 2.0, 0.04, k1, "Slate", os="y")
+                s.walec("Dziedziniec płyty", (0, 0.045, 0), Rp - 2.7, 0.04, k0, "Slate", os="y")
+                for i in range(8):                             # fugi promieniste (płyty klinami)
+                    a = math.pi * 2 * (i + 0.5) / 8
+                    s.blok("Dziedziniec fuga", (12.0 * math.cos(a), 0.07, 12.0 * math.sin(a)), (13.6, 0.04, 0.22), k2,
+                           rot=(0, -math.degrees(a), 0))
+                s.walec("Dziedziniec znak", (0, 0.07, 0), 3.8, 0.04, "dzungla_zloto", "Slate", os="y")
+                s.walec("Dziedziniec znak środek", (0, 0.095, 0), 3.0, 0.04, k1, "Slate", os="y")
+                for i in range(5):
+                    a = self.rnd.uniform(0, 2 * math.pi)
+                    rr = self.rnd.uniform(15.5, 19.0)
+                    s.walec("Dziedziniec mech", (rr * math.cos(a), 0.085, rr * math.sin(a)), self.rnd.uniform(1.2, 2.4), 0.04,
+                            "dzungla_mech", "Grass", os="y")
             elif styl == "pomost":
                 s.walec("Pomost", (0, -0.25, 0), Rp, 0.5, k0, "WoodPlanks", os="y")
                 s.walec("Pomost spód", (0, -1.45, 0), Rp - 0.4, 1.9, k1, "Wood", os="y")
@@ -297,7 +341,7 @@ class Budowa:
                     n0 = len(s.czesci)
                     with s.grupa("Obrecz"):
                         R.kamien_obreczy(s, rnd, (rr * math.cos(a), A["grunt"]["y"] + 0.1, rr * math.sin(a)), rnd.uniform(*o["k"]),
-                                         -kat + 90 + rnd.uniform(-15, 15))
+                                         -kat + 90 + rnd.uniform(-15, 15), o.get("kolor", "kamien_cieply"))
                     if self.narusza(n0):
                         del s.czesci[n0:]
                         self.stat["pominiete"]["kamien_obreczy"] = self.stat["pominiete"].get("kamien_obreczy", 0) + 1
@@ -343,6 +387,8 @@ class Budowa:
                     o["wariant"] = rnd.choice(w["warianty"])
                 if "cien" in w:
                     o["f"] = rnd.uniform(*w["cien"])
+                if "kwiat" in w:
+                    o["kwiat"] = w["kwiat"]
                 if w["rodzina"] == "domek_tla":
                     o.update(szer=rnd.uniform(9.0, 13.0), gl=rnd.uniform(7.0, 9.5), wys=rnd.uniform(7.5, 10.5), dach=rnd.choice(DACHY),
                              sciana=rnd.choice(SCIANY), okna=rnd.choice((1, 2, 2)))
@@ -639,8 +685,7 @@ def main():
     ap.add_argument("--tylko", default="", help="klucze aren po przecinku (domyślnie wszystkie)")
     a = ap.parse_args()
     t0 = time.time()
-    prof = kamery.profil()
-    print("profil kamer: %d położeń, r_max %.1f, y_max %.1f" % (prof.kamer, prof.r_max_kamery, prof.y_max_kamery))
+
     tylko = [k for k in a.tylko.split(",") if k]
     wyniki = {}
     for klucz, A in P.ARENY.items():
@@ -651,6 +696,8 @@ def main():
                     wyniki[klucz] = json.load(f)
             continue
         t1 = time.time()
+        prof = kamery.profil_areny(klucz)
+        print("%s: profil kamer %d położeń, r_max %.1f, y_max %.1f" % (klucz, prof.kamer, prof.r_max_kamery, prof.y_max_kamery))
         b = Budowa(klucz, A, prof).buduj()
         os.makedirs(os.path.join(TU, klucz), exist_ok=True)
         d = do_swiata_json(b)

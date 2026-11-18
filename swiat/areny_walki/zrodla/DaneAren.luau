@@ -6,13 +6,14 @@ if not game:GetService("RunService"):IsStudio() then
 end
 
 return {
-	wersja = "2026-11-17",
+	wersja = "2026-11-18",
 	rPlacu = 22.0,
 	zrodla = {
 		LasPotwory = "las",
 		LasPasGra = "las",
 		BagnoPasGra = "bagno",
 		TestWalki2 = "proba",
+		DzunglaPasGra = "dzungla",
 	},
 	areny = {
 		las = {
@@ -185,6 +186,72 @@ return {
 					{ 35.96, 89.01, 10.0 },
 					{ -3.42, 97.94, 10.0 },
 					{ -42.08, 86.28, 10.0 },
+				},
+			},
+		},
+		dzungla = {
+			nazwa = "Dziedziniec Zarośniętej Świątyni",
+			model = "Dzungla",
+			biom = "dzungla",
+			czesci = 1198,
+			yGruntu = -0.6,
+			scena = { -3000.0, 0.0, 3400.0 },
+			pudloSrodek = { -3000.0, 60.0, 3400.0 },
+			pudloRozmiar = { 500.0, 220.0, 500.0 },
+			nastroj = {
+				Density = 0.34,
+				Offset = 0.16,
+				Haze = 1.5,
+				Glare = 0.0,
+				Color = "8FC79A",
+				Decay = "4E8A5A",
+			},
+			detale = {
+				{
+					typ = "liscie",
+					n = 16,
+					r = { 26, 60 },
+					y = { 6, 26 },
+					kolory = { "FF8FB8", "FFD84A", "E5392B", "FFF6E0" },
+				},
+				{
+					typ = "ogniki",
+					n = 10,
+					r = { 30, 80 },
+					y = { 1.0, 7.0 },
+					kolor = "D8FF6A",
+					swiatla = 2,
+				},
+				{
+					typ = "pylki",
+					punkty = "Wodospad",
+					kolor = "E8FBFF",
+					tempo = 6,
+				},
+			},
+			kotwice = {
+				Kulisy = {
+					{ 30.0, 0.0, 10.4 },
+					{ -30.0, 0.0, 10.4 },
+					{ 44.05, -6.19, 10.08 },
+					{ 43.4, 6.87, 8.4 },
+					{ -48.86, 7.74, 9.24 },
+					{ -47.78, -7.57, 10.08 },
+					{ 25.86, 2.72, 3.08 },
+					{ 26.85, -2.82, 2.8 },
+					{ -25.86, 2.72, 2.8 },
+					{ -26.85, -2.82, 3.08 },
+				},
+				Swiatynia = {
+					{ -0.0, -96.0, 31.2 },
+					{ -14.12, -72.64, 8.84 },
+					{ 14.12, -72.64, 8.84 },
+					{ -45.85, -47.48, 10.23 },
+					{ -40.26, -59.69, 9.3 },
+					{ 0.0, 108.61, 22.0 },
+				},
+				Wodospad = {
+					{ 66.88, -60.22, 34.0 },
 				},
 			},
 		},

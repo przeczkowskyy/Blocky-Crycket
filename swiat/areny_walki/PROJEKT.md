@@ -7,17 +7,22 @@ Dziś każda walka (tablica „PRÓBA WALKI”, stary las, las-pas, Bagno) toczy
 `Workspace/TestWalki2/Arena`. Ten pakiet daje trzy osobne areny z klocków i cienkie wywołanie w odtwarzaczu walki, które
 stawia scenę na arenie biomu źródła walki. Bez kontenera `Workspace/ArenyWalki` (albo przy błędzie) wszystko działa jak dziś.
 
-## Trzy areny
+## Areny
+
+Trzy pierwsze (las, Bagno, plac) są przyjęte i stoją w Studio; czwarta (Dżungla, noc 17/18.11) stoi w Studio od
+18.11 ok. 02:00 i przeszła walki z prawdziwymi potworami pasa (rozdz. „Dżungla”).
 
 | Arena | Charakter | Z czego |
 |---|---|---|
 | **Polana Pod Koronami** (las, las-pas) | słoneczna polana w starym lesie: jasny ubity plac i nasłoneczniona trawa, za nimi ciemniejsze wnętrze lasu | olbrzymie pnie (Ø 7–9) z koronami wysoko nad polaną (dziura nieba nad placem), smugi światła między pniami, wielkie muchomory jako kulisy po bokach walczących, wysepki z paproci i grzybków, dwa rzędy drzew coraz ciemniejsze w głąb, korony nad polaną, dalekie sylwety i wzgórza w mgle |
 | **Pomost Nad Topielą** (Bagno) | okrągły pomost z desek nad ciemną wodą, mgła przy wodzie | kładka prowadzi do krzywej chatki na palach w środku tła (między walczącymi w planie ogólnym), dwie kolejne chatki i wieża z zieloną latarnią, korzeniaki, trzcina i pale z latarniami po bokach, kępy z grzybieniami, cypryśniki z brodą mchu i wierzby, sylwety cypryśników w mgle |
 | **Plac Ćwiczeń Pod Murem** (tablica prototypu) | piaszczysty krąg z kredowym pierścieniem pod murem miasteczka | manekiny, stojaki z drewnianą bronią, tarcze łucznicze i bele po bokach walczących; trybuna, namioty, chorągwie z girlandą; mur z bramą na osi tła i basztami, dachy domków za murem, twierdza na wzgórzu; od strony widowni jarmark i drzewa |
+| **Dziedziniec Zarośniętej Świątyni** (Dżungla) | kamienny dziedziniec przed schodkową świątynią zarośniętą dżunglą, wilgotna zielona mgła, sklepienie liści | plac z płyt z fugami, złotym znakiem i plamami mchu; na osi tła między walczącymi czteropiętrowa świątynia ze schodami, ciemnym wejściem i świecącymi znakami, po jej bokach dwa posągi, z prawej wodospad ze skały do sadzawki; kulisy: posągi z lianami i świecącymi oczami, liście-parasole i świecące kwiaty; złamane i stojące kolumny, palmy i drzewa dżungli z lianami, sklepienie koron nad placem; spadające płatki, świetliki, mgiełka przy wodospadzie |
 
 Rodziny drzew, grzybów, skał, roślin Bagna i rekwizytów miasteczka są **importowane** z map (`swiat/biom_las`,
 `swiat/bagno_pas`, `swiat/krzywe_miasteczko`) — te same sylwetki i paleta co w biomach; własne są tylko rzeczy aren
-(`rekwizyty.py`). Żadnych nazw ani wyglądu z innych gier, żadnych uploadów — klocki i wbudowane materiały.
+(`rekwizyty.py`). Dżungla bierze rośliny i paletę mapy Dżungli (`swiat/dzungla_pas/rosliny.py`,
+`kontekst.KOLORY_DZUNGLI`); posągi, świątynia, wodospad, kolumny i brama są w `rekwizyty.py`. Żadnych nazw ani wyglądu z innych gier, żadnych uploadów — klocki i wbudowane materiały.
 
 ## Warstwy scenografii (od placu na zewnątrz)
 
@@ -40,6 +45,13 @@ Wynik: 120 900 położeń kamery + odcinki widoku do celu i do postaci (0,25 / 0
 r 88, a kliny ±15° za walczącymi są wolne już od r ≈ 17 — stąd kulisy boczne. Profil liczy się sam od nowa, gdy zmienią
 się wymiary aktorów (odcisk danych; nowy duży potwór, np. Wąż Stu Lian 18 wys., odsunie ścianę sam).
 
+**Profil na arenę** (od Dżungli): wpis w planie może mieć listę `przeciwnicy` — wtedy arena ma własny
+`<arena>/profil_kamer.json` liczony tylko dla 3 klas i tych potworów (+ lustro). Trzy pierwsze areny nie mają listy
+i dzielą `profil_kamer.json` zamrożony na zestawie z 17.11 (`plan.PRZECIWNICY_17_11`: 5 potworów lasu i 5 Bagna), więc
+nowi potwory dżungli ich nie przesuwają. Potwór bez danych w `swiat/test_walki2/dane` dostaje wymiary szacunkowe
+z `kamery.ZAPASOWI`; profil i `sprawdz.py` to zaznaczają („szacunkowi”), a odcisk liczy się z wymiarów, więc po
+dopisaniu prawdziwych danych profil przeliczy się sam przy następnym `generuj.py`.
+
 Kontrola (`generuj.py` przy każdym obiekcie, `sprawdz.py` i `testy/test_aren.py` na gotowych plikach): **żaden punkt
 bryły żadnej części** (chmura punktów wypełniająca blok, klin, klin narożny, walec, kulę) nie leży w wolnej przestrzeni
 (zapas 1 stud), a nad placem nie ma nic poza gruntem. Odtwarzacz nie omija brył otoczenia, więc tę zasadę trzyma arena.
@@ -54,16 +66,16 @@ i Neonu (uwaga powyżej 12 % / 4 %). Wyniki ostatniego przebiegu: `sprawdz_wynik
 
 ## Budżet części
 
-**1200 na arenę** (twardy limit 1500); dziś las 1126, Bagno 1197, plac ćwiczeń 1108. Uzasadnienie: w walce na ekranie
+**1200 na arenę** (twardy limit 1500); dziś las 1126, Bagno 1194, plac ćwiczeń 1108, Dżungla 1199. Uzasadnienie: w walce na ekranie
 jest jedna arena (pozostałe stoją ≥ 800 studów dalej i telefon na niższej jakości ich nie rysuje), dwóch aktorów
 (do ok. 1100 brył Strażnika Gaju), efekty i interfejs. Mapy biomów mają 8–9 tys. części i chodzą na telefonie, a arena
 to ok. 1/8 tego. Wszystkie części: Anchored, bez CanCollide, CanQuery i CanTouch (poza fizyką i zapytaniami), dalej niż
 110 bez cienia; duże proste bryły zamiast drobnicy (sylwety 2–3 części, wał 24 kliny). Pamięć: trzy areny Persistent to
-ok. 3,4 tys. części u każdego gracza przez całą grę (rzędu kilku MB).
+ok. 3,4 tys. części u każdego gracza przez całą grę (rzędu kilku MB), z Dżunglą ok. 4,6 tys.
 
 ## Gdzie stoją i streaming
 
-`Workspace/ArenyWalki/{Las, Bagno, Proba}` w (−3000, 0, 1000 / 1800 / 2600) — z dala od wszystkich map (najbliżej
+`Workspace/ArenyWalki/{Las, Bagno, Proba, Dzungla}` w (−3000, 0, 1000 / 1800 / 2600 / 3400) — z dala od wszystkich map (najbliżej
 teleport krain i demo, > 2,5 tys. studów) i od siebie (800). Modele mają **`ModelStreamingMode = Persistent`**: przychodzą
 do klienta po dołączeniu i nie są wypychane, więc wejście w walkę nigdy nie pokazuje pustej areny, choć postać gracza
 stoi tysiące studów dalej (dziś serwery lasów co sekundę proszą o streaming starej areny — dla nowych aren nie trzeba).
@@ -75,7 +87,8 @@ doszła do klienta (pierwsze sekundy po dołączeniu), moduł zwraca „arena_ni
 `OdtwarzaczWalki2.luau` (5 dokładnych podmian): `modulAren()` szuka `Workspace/ArenyWalki/Moduly/ArenyWalki`,
 `Sesja:wybierzArene()` woła `ArenyWalki.przygotuj({ zrodlo = nazwa kontenera, kontener, folder = scena lokalna })` w
 `pcall` przed chowaniem obcych, `cfSceny` = znacznik `Scena` areny albo `U.scena()`, pudło chowania obcych z areny, model
-areny wykluczony. Źródła: `TestWalki2` → plac ćwiczeń, `LasPotwory` i `LasPasGra` → las, `BagnoPasGra` → Bagno; atrybut
+areny wykluczony. Źródła: `TestWalki2` → plac ćwiczeń, `LasPotwory` i `LasPasGra` → las, `BagnoPasGra` → Bagno,
+`DzunglaPasGra` → Dżungla (gdy ten kontener powstanie i serwer walki go przyjmie, rozdz. „Dżungla”); atrybut
 `BiomAreny` kontenera źródła ma pierwszeństwo. Atrybuty klienta: `OstatniaArena`, `OstatniaArenaPowod`. Wyłączenie bez
 usuwania: atrybut `Wylaczone = true` na `Workspace/ArenyWalki`.
 
@@ -86,7 +99,8 @@ usuwania: atrybut `Wylaczone = true` na `Workspace/ArenyWalki`.
   według swojej umowy i przejmują po walce bez mignięcia. Wspólne ustawienia miejsca nietknięte.
 - Detale (lokalne części w folderze sceny, ≤ ok. 40 instancji, ruch `BulkMoveTo`, położenia z czystych funkcji
   `LogikaAren`): las — spadające liście i pyłki w smugach światła; Bagno — 9 błędnych ogników (3 ze światłem) i bąbelki;
-  plac — łopot chorągwi i girlandy (lokalna zmiana CFrame części areny, przywracana), kurz, trzy ptaki wysoko.
+  plac — łopot chorągwi i girlandy (lokalna zmiana CFrame części areny, przywracana), kurz, trzy ptaki wysoko;
+  Dżungla — 16 płatków kwiatów (róż, żółć, czerwień, biel), 10 świetlików (2 ze światłem), mgiełka przy wodospadzie.
 - Sprzątanie: `uchwyt:zakoncz()` z listy sprzątania sesji (ZAMKNIJ, POMIŃ, reset postaci, błąd) i sam, gdy zniknie scena.
 
 ## Przepis na kolejną arenę (Dżungla i dalej)
@@ -105,7 +119,7 @@ Kod odtwarzacza i modułu się nie zmienia.
 |---|---|
 | `plan.py` | dane aren (warstwy, punkty, sylwety, nastrój, detale, źródła) |
 | `rekwizyty.py` | rodziny rekwizytów aren + paleta (mapy + kolory aren) |
-| `kamery.py`, `profil_kamer.json` | wolna przestrzeń kamer z wzorów odtwarzacza (`--odswiez` liczy od nowa, ok. 20 s) |
+| `kamery.py`, `profil_kamer.json`, `<arena>/profil_kamer.json` | wolna przestrzeń kamer z wzorów odtwarzacza (`kamery.py [arena] [--odswiez]` liczy od nowa, ok. 20 s) |
 | `generuj.py` | plan → `<arena>/czesci.json`, `<arena>/znaczniki.json`, `zrodla/DaneAren.luau` |
 | `sprawdz.py`, `sprawdz_wynik.json` | kontrola: wolna przestrzeń, budżet, horyzont, tło, zakres (ok. 3 min) |
 | `podglad.py`, `render_blender.py` | podglądy z kamer walki (Pillow szybko albo Blender z mgłą) → `<arena>/podglad/` |
@@ -117,7 +131,8 @@ Kod odtwarzacza i modułu się nie zmienia.
 
 ## Do zmiany (ustawienia przyjęte bez decyzji)
 
-Położenia aren w świecie; budżet 1200; nastrój (las Density 0,34 Color CFE3C9, Bagno 0,44 AAB68F, plac 0,27 EADBC2);
+Położenia aren w świecie; budżet 1200; nastrój (las Density 0,34 Color CFE3C9, Bagno 0,44 AAB68F, plac 0,27 EADBC2,
+Dżungla 0,34 8FC79A Haze 1,5); cały wygląd Dżungli (świątynia na osi tła, brama od widowni, korony od wys. 34);
 gęstość ogników, liści i ptaków; kąty i odległości kulis; mapowanie stary las → arena leśna; plac ćwiczeń dla tablicy
 prototypu (tablica nie ma biomu — mógłby to być też las); koronę nad polaną od wysokości 31.
 
@@ -148,3 +163,71 @@ prototypu (tablica nie ma biomu — mógłby to być też las); koronę nad pola
   klienta), `test_poprawek_play.py` 27/27. Kontrola `sprawdz.py` po poprawkach: zero naruszeń, horyzont ≥ 2°, budżet.
 - Do sprawdzenia dalej: telefon (czas klatki i pamięć z trzema arenami Persistent), walka gracza bez trybu testowego
   bohatera w Bagnie (próby szły z `TestBohater`), dźwięk otoczenia areny (brak — tylko nastrój wizualny).
+
+## Dżungla — część A (17/18.11.2026, bez Studio)
+
+**Dziedziniec Zarośniętej Świątyni.** Walka toczy się na kamiennym dziedzińcu przed schodkową świątynią, którą
+dżungla odebrała ludziom: świątynia stoi na osi tła między walczącymi, po bokach strzegą jej posągi z jarzącymi się
+oczami, z prawej spada wodospad. Wokół wilgotna zielona mgła, olbrzymie liście, świecące kwiaty i sklepienie koron,
+a w walce opadają płatki i krążą świetliki.
+
+- **Plan** (`plan.py`, wpis `dzungla`): model `Dzungla` w (−3000, 0, 3400), źródło `DzunglaPasGra`, biom `dzungla`.
+  Plac w stylu „kamien” (płyty z fugami, złoty znak w środku, plamy mchu), obręcz z kamieni z przerwą na osi tła.
+  Kulisy ±X: posągi strażników (r 30), kępy liści-parasoli i świecące kwiaty. Tło: świątynia (r 96, k 1,2) z dwoma
+  posągami przy schodach, wodospad pod 318°, stojące kolumny, ściana z drzew-olbrzymów, figowców, palm i kęp liści
+  z wolnym łukiem 252–288°, żeby nic nie zasłaniało świątyni. Od widowni: ruina bramy dziedzińca na osi (r 102), kępy
+  liści, krzewy z czerwonymi kwiatami. Korony nad placem na wys. 34–44.
+- **Rośliny i paleta mapy** (18.11): rośliny areny to rośliny mapy Dżungli — `lisc_parasol`, `kepa_parasoli`,
+  `drzewo_dzungli`, `figowiec`, `palma` (prosta), `krzew_dzungli`, `swiecacy_kwiat` (w `rekwizyty.kepa_swiecacych`)
+  z `swiat/dzungla_pas/rosliny.py`, tylko import; paleta areny ma `kontekst.KOLORY_DZUNGLI` (klucze `dz_`). Kolory
+  areny zgadzają się z mapą: runo 2E7D3A / 3F9A45 (grunt areny), korony 236E33 / 2E8A3E / 5CAC3F, droga B07A44,
+  turkus 2EC4B6, kamień ruin 8E9A82, świecące kwiaty FF5FA2 / FFD84A, kwiaty krzewów E5392B, mgła 8FC79A.
+- **Własne rodziny areny** (`rekwizyty.py` + `generuj.RODZINY`): `posag_dzungli`, `swiatynia`, `wodospad`,
+  `kolumna_zlamana` / `kolumna_stojaca`, `brama_ruin`, `kepa_swiecacych` (`kwiat_swiecacy` i `drzewo_dzungli`
+  z pierwszej wersji zostały w pliku, plan ich nie używa).
+- **Kamery z prawdziwych wymiarów** (`swiat/test_walki2/dane`, 18.11): Zwijogon 3,5 × dł. 5,6, Gębokwiat 5,1,
+  Kokosowy Siłacz 7,1, Pancernik Ruin 4,4 × dł. 7,7, Wąż Stu Lian 17,3 × 11,0 w zwoju. Własny profil
+  `dzungla/profil_kamer.json` — 3 klasy × 5 potworów Dżungli + lustro: 74 400 położeń, kamery do r 94,8 i wys. 27,1
+  (wyznacza je Wąż; mały Pancernik i reszta mieszczą się w kadrach zwykłych par, r 44–52). Strażnik Topieli, dodany
+  w nocy jako zapas, wypadł — pas `DzunglaPasGra` wystawia tylko potwory Dżungli. Szacunkowe wymiary w
+  `kamery.ZAPASOWI` są już tylko zapasem na wypadek braku danych (profil: „szacunkowi” puste).
+- **Tablica prototypu na arenie Dżungli** (`BiomAreny = "dzungla"`) nie jest objęta kontrolą: kamery leśnego trolla
+  i wilka wychodzą poza wolną przestrzeń Dżungli (troll do 39 studów, wilk do 3,7). Próby Play idą więc tylko
+  z prawdziwymi potworami pasa.
+- **Kontrola** (`sprawdz.py`): 1198 / 1200 części, 0 naruszeń wolnej przestrzeni, horyzont domknięty do ≥ 2° z 27 kamer,
+  tło za postaciami L* 50–57 (spokojny, średni walor; las 54–56, Bagno 48–50). Trzy przyjęte areny bez zmian (pliki
+  `czesci.json` / `znaczniki.json` identyczne, wspólny profil z tymi samymi wartościami — zmienił się tylko odcisk).
+- **Podglądy** (Blender, bez okna, `-t 2`, najniższy priorytet): `dzungla/podglad/` — `szeroki_przod`, `szeroki_tyl`,
+  `objazd_1..4`, `gora`, `pocztowka`.
+- **Poprawki po obejrzeniu podglądów:** świątynia zasłonięta liśćmi i drzewami → wolny łuk 252–288° w warstwach,
+  świątynia bliżej (r 96) i większa (k 1,2) na osi między walczącymi; mgła zbyt gęsta (świątynia ginęła) → Density 0,34,
+  Haze 1,5; korony za nisko dla kamer giganta (1262 części, ponad budżet) → korony 34–44 i mniej drzew w drugim rzędzie;
+  od widowni tylko pnie w mgle (dwie samotne kolumny ginęły) → ruina bramy na osi; rośliny mapy (1255 części) →
+  mniej drzew w pierwszym rzędzie (14 + 4 figowce), 5 palm, 20 koron nad placem, mniej kęp kwiatów.
+
+**Do uzgodnienia z mapą Dżungli** (zostało): mostów z lian (PLAN_BIOMOW) arena nie ma; paproć drzewiasta
+jest w `RODZINY`, ale plan jej nie stawia (budżet). Mgła Dżungli idzie kodem `MglaPasa` z umową `CelMglyPasa` (bez zmian).
+
+**Źródło walki:** `DzunglaPasGra` jest w `SerwerWalki2.ZRODLA` i w `plan.ZRODLA` (`DaneAren`) → arena `dzungla`.
+Kod odtwarzacza (`OdtwarzaczWalki2.luau`) i modułu aren bez zmian — arena to dane.
+
+**Część B — wynik (18.11.2026, 01:58–02:06):** `zbuduj.py --tylko dzungla` postawił `ArenyWalki/Dzungla` (1198 części,
+Persistent, Wygenerowane) i wysłał moduły; Las, Bagno i Proba nietknięte. Walki z prawdziwymi potworami pasa
+`DzunglaPasGra` (tryb `TestBohater`, bramy lasu i Bagna otwarte na starcie próby): Kokosowy Siłacz, Pancernik Ruin,
+Zwijogon, Wąż Stu Lian i Gębokwiat — wszystkie `OstatniaArena = dzungla`, `OstatniaArenaPowod = ok`, mgła areny od
+pierwszej klatki (0,34 / 0,16 / 1,5 / 8FC79A), 27 detali, po walce mgła mapy i detale posprzątane. Przy Wężu
+i Gębokwiacie ktoś inny pisał do `Atmosphere` w czasie walki — moduł oddał wartość areny 54 i 24 razy (osłona
+`Atmosphere.Changed` z części B lasu), więc obraz się nie zmienił. Zrzuty każdego ujęcia: `dzungla/klatki/`
+(73 kadry), wyniki: `dzungla/klatki_wyniki.json`. Za postaciami świątynia, wodospad, posągi i ściana dżungli, bez
+pustego nieba nisko i bez krawędzi świata; Wąż mieści się w planie ogólnym i zbliżeniu, mały Pancernik jest duży
+i czytelny, Gębokwiat odcina się od kamienia. Czas klatki (walka ×1, Studio na wierzchu): stara arena 16,68 / 18,00 ms
+(śr. / p95), plac 16,68 / 17,99, las 16,67 / 18,04, Bagno 16,69 / 18,08, Dżungla 16,70 / 17,96 — bez różnic (60 kl./s).
+
+**Część B (Studio, po wdrożeniu pasa Dżungli):**
+1. `python -B swiat/areny_walki/zbuduj.py --sucho`, potem `--tylko dzungla` (stawia `ArenyWalki/Dzungla` i wysyła moduły
+   z nowym `DaneAren`; inne areny nietknięte), ok. 3 min.
+2. `python -B swiat/areny_walki/testy/zrzuty_aren_play.py --tylko dzungla_kokos,dzungla_pancernik,dzungla_zwijogon,dzungla_waz,dzungla_gebokwiat`
+   — walki z prawdziwymi potworami pasa (tryb `TestBohater`), zrzuty każdego ujęcia do `dzungla/klatki/`, ok. 10 min.
+3. `... zrzuty_aren_play.py --bez-walk --klatka` — czas klatki w walce ×1 (stara arena, plac, las, Bagno, Dżungla),
+   ok. 4 min.
+4. Stare próby: `python -B swiat/test_walki2/testy/test_walki_play.py --szybko`, `test_poprawek_play.py`, ok. 10 min.

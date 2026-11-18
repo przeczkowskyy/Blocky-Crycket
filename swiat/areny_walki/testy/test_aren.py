@@ -111,21 +111,23 @@ class Logika(unittest.TestCase):
         m = re.search(r"local ZRODLA = \{ \[kontener\.Name\] = true, (.*?) \}", serwer)
         self.assertTrue(m, "nie znalazłem listy ZRODLA w SerwerWalki2")
         zrodla = ["TestWalki2"] + re.findall(r"([A-Za-z]+) = true", m.group(1))
-        oczek = {"TestWalki2": "proba", "LasPotwory": "las", "LasPasGra": "las", "BagnoPasGra": "bagno"}
+        # 18.11: pakiet Dżungli dopisał DzunglaPasGra do SerwerWalki2.ZRODLA
+        oczek = {"TestWalki2": "proba", "LasPotwory": "las", "LasPasGra": "las", "BagnoPasGra": "bagno", "DzunglaPasGra": "dzungla"}
         self.assertEqual(set(zrodla), set(oczek))
         for z, k in oczek.items():
             self.assertEqual(self.wybierz(z), k, z)
+        self.assertEqual(self.wybierz("CokolwiekInnego", "dzungla"), "dzungla")
 
     def test_nieznane_zrodlo_to_stara_arena(self):
-        self.assertIsNone(self.wybierz("DzunglaPasGra"))
+        self.assertIsNone(self.wybierz("PustyniaPasGra"))
         self.assertIsNone(self.wybierz(None))
         self.assertIsNone(wolaj(self.I, self.L, "wybierz", None, "TestWalki2", None)[0])
 
     def test_biom_z_atrybutu_ma_pierwszenstwo(self):
         self.assertEqual(self.wybierz("LasPasGra", "bagno"), "bagno")
-        self.assertEqual(self.wybierz("DzunglaPasGra", "las"), "las")
-        self.assertEqual(self.wybierz("BagnoPasGra", "dzungla"), "bagno")    # nieznany biom → mapa źródeł
-        self.assertIsNone(self.wybierz("DzunglaPasGra", "dzungla"))           # nowa arena = nowe dane, nie kod
+        self.assertEqual(self.wybierz("PustyniaPasGra", "las"), "las")
+        self.assertEqual(self.wybierz("BagnoPasGra", "pustynia"), "bagno")    # nieznany biom → mapa źródeł
+        self.assertIsNone(self.wybierz("PustyniaPasGra", "pustynia"))         # nowa arena = nowe dane, nie kod
 
     def test_wczytana(self):
         w = lambda o, j: LM.prawda(wolaj(self.I, self.L, "wczytana", float(o), float(j))[0])
@@ -198,7 +200,8 @@ class Dane(unittest.TestCase):
 
     def test_areny_daleko_od_map_i_od_siebie(self):
         mapy = [("demo", (0, 0), 160), ("TestWalki2", (0, 250), 140), ("las_biom", (0, -1960), 1100),
-                ("las_bagno_pas", (2000, -700), 1100), ("miasteczko", (0, -700), 400), ("trening", (3000, 3000), 400),
+                ("las_bagno_pas", (2000, -700), 1100), ("dzungla_pas", (3450, -700), 600), ("miasteczko", (0, -700), 400),
+                ("trening", (3000, 3000), 400),
                 ("teleport", (-5000, 5000), 600), ("wybor_klasy", (0, 4000), 200)]
         punkty = [(k, A["O"]) for k, A in P.ARENY.items()]
         for k, O in punkty:
@@ -210,16 +213,13 @@ class Dane(unittest.TestCase):
 
 
 class Areny(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.prof = kamery.profil()
-
     def test_wolna_przestrzen_budzet_i_cechy(self):
         for klucz, A in P.ARENY.items():
+            prof = kamery.profil_areny(klucz)
             with open(os.path.join(PAKIET, klucz, "czesci.json"), encoding="utf-8") as f:
                 d = json.load(f)
             sc = [geom.do_sceny(c, A["O"]) for c in d["czesci"]]
-            nar = naruszenia(sc, self.prof)
+            nar = naruszenia(sc, prof)
             self.assertEqual(nar, [], "%s: części w wolnej przestrzeni kamer: %s" % (klucz, nar[:5]))
             self.assertLessEqual(len(d["czesci"]), P.BUDZET, klucz)
             for c in sc:
@@ -236,13 +236,21 @@ class Areny(unittest.TestCase):
                     self.assertFalse(zle.any(), "%s: %s nad placem" % (klucz, c[14]))
 
     def test_profil_z_danych_aktorow(self):
-        akt = kamery.aktorzy()
-        with open(kamery.PLIK_PROFILU, encoding="utf-8") as f:
-            odcisk = json.load(f)["odcisk"]
-        self.assertEqual(odcisk, kamery.odcisk(akt), "profil_kamer.json nieaktualny — python -B swiat/areny_walki/kamery.py --odswiez")
-        self.assertGreater(self.prof.kamer, 50000)
-        # wolna przestrzeń sięga dalej niż dzisiejszy podest (r 22) — kamery ogólne i objazd stoją poza nim
-        self.assertGreater(self.prof.r_max_kamery, 40.0)
+        for klucz in P.ARENY:
+            plik, przeciwnicy = kamery.plik_profilu(klucz)
+            akt = kamery.aktorzy_do_profilu(przeciwnicy)
+            with open(plik, encoding="utf-8") as f:
+                odcisk = json.load(f)["odcisk"]
+            self.assertEqual(odcisk, kamery.odcisk(akt), "%s: profil nieaktualny — python -B swiat/areny_walki/kamery.py %s --odswiez"
+                             % (klucz, klucz))
+            prof = kamery.profil_areny(klucz)
+            self.assertGreater(prof.kamer, 50000)
+            # wolna przestrzeń sięga dalej niż dzisiejszy podest (r 22) — kamery ogólne i objazd stoją poza nim
+            self.assertGreater(prof.r_max_kamery, 40.0)
+        # trzy areny z 17.11 dzielą zamrożony zestaw przeciwników (nowi potwory innych biomów ich nie zmieniają)
+        for klucz in ("las", "bagno", "proba"):
+            self.assertEqual(kamery.plik_profilu(klucz)[0], kamery.PLIK_PROFILU)
+        self.assertNotEqual(kamery.plik_profilu("dzungla")[0], kamery.PLIK_PROFILU)
 
 
 class Odtwarzacz(unittest.TestCase):

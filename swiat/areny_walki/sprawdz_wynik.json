@@ -20,36 +20,36 @@
    },
    "tlo": [
     {
-     "para": "wojownik/lesny_slime",
+     "para": "wojownik/rechotek",
      "strona": "przod",
-     "L_srednie": 56.0,
+     "L_srednie": 55.9,
      "jasne": 0.003,
      "neon": 0.0,
-     "promieni": 6783
+     "promieni": 6836
     },
     {
-     "para": "wojownik/lesny_slime",
+     "para": "wojownik/rechotek",
      "strona": "tyl",
      "L_srednie": 56.5,
      "jasne": 0.0,
      "neon": 0.0,
-     "promieni": 6522
+     "promieni": 6575
     },
     {
-     "para": "wojownik/lesny_troll",
+     "para": "wojownik/cierniowy_wilk",
      "strona": "przod",
-     "L_srednie": 54.9,
-     "jasne": 0.026,
-     "neon": 0.023,
-     "promieni": 7658
+     "L_srednie": 56.0,
+     "jasne": 0.008,
+     "neon": 0.005,
+     "promieni": 6814
     },
     {
-     "para": "wojownik/lesny_troll",
+     "para": "wojownik/cierniowy_wilk",
      "strona": "tyl",
-     "L_srednie": 55.1,
-     "jasne": 0.001,
+     "L_srednie": 56.3,
+     "jasne": 0.0,
      "neon": 0.0,
-     "promieni": 7366
+     "promieni": 6583
     },
     {
      "para": "mag/straznik_topieli",
@@ -68,7 +68,8 @@
      "promieni": 4275
     }
    ],
-   "czas_s": 50.4
+   "czas_s": 57.1,
+   "szacunkowi": []
   }
  },
  "bagno": {
@@ -92,36 +93,36 @@
    },
    "tlo": [
     {
-     "para": "wojownik/lesny_slime",
+     "para": "wojownik/rechotek",
      "strona": "przod",
-     "L_srednie": 48.6,
+     "L_srednie": 48.5,
      "jasne": 0.018,
      "neon": 0.003,
-     "promieni": 6544
+     "promieni": 6591
     },
     {
-     "para": "wojownik/lesny_slime",
+     "para": "wojownik/rechotek",
+     "strona": "tyl",
+     "L_srednie": 49.7,
+     "jasne": 0.052,
+     "neon": 0.0,
+     "promieni": 6506
+    },
+    {
+     "para": "wojownik/cierniowy_wilk",
+     "strona": "przod",
+     "L_srednie": 48.7,
+     "jasne": 0.017,
+     "neon": 0.003,
+     "promieni": 6542
+    },
+    {
+     "para": "wojownik/cierniowy_wilk",
      "strona": "tyl",
      "L_srednie": 49.8,
-     "jasne": 0.053,
+     "jasne": 0.055,
      "neon": 0.0,
-     "promieni": 6460
-    },
-    {
-     "para": "wojownik/lesny_troll",
-     "strona": "przod",
-     "L_srednie": 47.9,
-     "jasne": 0.017,
-     "neon": 0.004,
-     "promieni": 6825
-    },
-    {
-     "para": "wojownik/lesny_troll",
-     "strona": "tyl",
-     "L_srednie": 49.4,
-     "jasne": 0.05,
-     "neon": 0.0,
-     "promieni": 6754
+     "promieni": 6440
     },
     {
      "para": "mag/straznik_topieli",
@@ -140,7 +141,8 @@
      "promieni": 3471
     }
    ],
-   "czas_s": 55.9
+   "czas_s": 59.7,
+   "szacunkowi": []
   }
  },
  "proba": {
@@ -164,36 +166,36 @@
    },
    "tlo": [
     {
-     "para": "wojownik/lesny_slime",
+     "para": "wojownik/rechotek",
      "strona": "przod",
-     "L_srednie": 74.6,
+     "L_srednie": 74.7,
      "jasne": 0.038,
      "neon": 0.001,
-     "promieni": 6371
+     "promieni": 6420
     },
     {
-     "para": "wojownik/lesny_slime",
+     "para": "wojownik/rechotek",
      "strona": "tyl",
      "L_srednie": 71.1,
      "jasne": 0.038,
      "neon": 0.0,
-     "promieni": 6283
+     "promieni": 6331
     },
     {
-     "para": "wojownik/lesny_troll",
+     "para": "wojownik/cierniowy_wilk",
      "strona": "przod",
-     "L_srednie": 72.9,
-     "jasne": 0.041,
-     "neon": 0.0,
-     "promieni": 7081
+     "L_srednie": 74.3,
+     "jasne": 0.045,
+     "neon": 0.001,
+     "promieni": 6378
     },
     {
-     "para": "wojownik/lesny_troll",
+     "para": "wojownik/cierniowy_wilk",
      "strona": "tyl",
-     "L_srednie": 66.6,
-     "jasne": 0.023,
+     "L_srednie": 70.7,
+     "jasne": 0.042,
      "neon": 0.0,
-     "promieni": 6992
+     "promieni": 6256
     },
     {
      "para": "mag/straznik_topieli",
@@ -212,7 +214,81 @@
      "promieni": 3762
     }
    ],
-   "czas_s": 49.5
+   "czas_s": 49.5,
+   "szacunkowi": []
+  }
+ },
+ "dzungla": {
+  "bledy": [],
+  "uwagi": [],
+  "wyniki": {
+   "wolna_przestrzen": {
+    "naruszen": 0,
+    "przyklady": []
+   },
+   "czesci": 1198,
+   "horyzont": {
+    "najnizsze_domkniecie_st": 2.0,
+    "azymut": null,
+    "kamera": [
+     49.6,
+     22.7,
+     33.4
+    ],
+    "kamer": 27
+   },
+   "tlo": [
+    {
+     "para": "wojownik/zwijogon",
+     "strona": "przod",
+     "L_srednie": 56.8,
+     "jasne": 0.001,
+     "neon": 0.001,
+     "promieni": 6706
+    },
+    {
+     "para": "wojownik/zwijogon",
+     "strona": "tyl",
+     "L_srednie": 53.9,
+     "jasne": 0.0,
+     "neon": 0.001,
+     "promieni": 6593
+    },
+    {
+     "para": "wojownik/gebokwiat",
+     "strona": "przod",
+     "L_srednie": 57.0,
+     "jasne": 0.001,
+     "neon": 0.001,
+     "promieni": 6693
+    },
+    {
+     "para": "wojownik/gebokwiat",
+     "strona": "tyl",
+     "L_srednie": 54.2,
+     "jasne": 0.0,
+     "neon": 0.001,
+     "promieni": 6579
+    },
+    {
+     "para": "mag/waz_stu_lian",
+     "strona": "przod",
+     "L_srednie": 54.1,
+     "jasne": 0.0,
+     "neon": 0.002,
+     "promieni": 4044
+    },
+    {
+     "para": "mag/waz_stu_lian",
+     "strona": "tyl",
+     "L_srednie": 50.1,
+     "jasne": 0.0,
+     "neon": 0.001,
+     "promieni": 3945
+    }
+   ],
+   "czas_s": 53.0,
+   "szacunkowi": []
   }
  }
 }

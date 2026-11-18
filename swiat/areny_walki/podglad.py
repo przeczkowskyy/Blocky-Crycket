@@ -33,10 +33,12 @@ for _s in (REPO, TU):
 import kamery  # noqa: E402
 import plan as P  # noqa: E402
 
-PARA = {"las": ("wojownik", "lesny_troll"), "bagno": ("wojownik", "ropucha_z_chatka"), "proba": ("zwiadowca", "lesny_slime")}
+PARA = {"las": ("wojownik", "lesny_troll"), "bagno": ("wojownik", "ropucha_z_chatka"), "proba": ("zwiadowca", "lesny_slime"),
+        "dzungla": ("mag", "kokosowy_silacz")}
 NIEBO = {"las": ((0.52, 0.72, 0.93), (0.81, 0.89, 0.80), 430.0),
          "bagno": ((0.55, 0.64, 0.62), (0.64, 0.68, 0.59), 290.0),
-         "proba": ((0.50, 0.70, 0.95), (0.92, 0.86, 0.76), 540.0)}
+         "proba": ((0.50, 0.70, 0.95), (0.92, 0.86, 0.76), 540.0),
+         "dzungla": ((0.50, 0.72, 0.86), (0.66, 0.82, 0.68), 460.0)}
 NISKI_PRIORYTET = False
 KADRY = ["szeroki_przod", "szeroki_tyl", "objazd_1", "objazd_2", "objazd_3", "objazd_4", "gora", "pocztowka"]
 OPISY = {"szeroki_przod": "plan ogólny walki (kąt 40°) od strony widowni",
@@ -48,7 +50,7 @@ OPISY = {"szeroki_przod": "plan ogólny walki (kąt 40°) od strony widowni",
 
 def kamery_kadrow(klucz):
     """{kadr: (kamera, cel, kąt pionowy°)} w układzie SCENY."""
-    akt = kamery.aktorzy()
+    akt = kamery.aktorzy_do_profilu(P.ARENY[klucz].get("przeciwnicy"))     # z szacunkowymi potworami nowego biomu
     gk, wk = PARA[klucz]
     g = kamery.geometria(akt[gk], akt[wk])
     wynik = {}

@@ -20,6 +20,11 @@ R_PLAC = 22.0              # = Ustawienia.PROMIEN_PODESTU (plac walki i wolna pr
 R_GRUNT = 240.0
 BUDZET = 1200              # części na arenę (uzasadnienie: PROJEKT.md, rozdz. „Budżet”)
 BUDZET_TWARDY = 1500
+# przeciwnicy, z którymi liczono wolną przestrzeń kamer trzech aren z 17.11 (las, Bagno, plac) — zestaw zamrożony,
+# żeby nowi potwory innych biomów (Dżungla: Wąż Stu Lian 18 wys.) nie zmieniali tych aren; arena z wpisem
+# „przeciwnicy” ma własny profil (<arena>/profil_kamer.json)
+PRZECIWNICY_17_11 = ["lesny_slime", "cierniowy_wilk", "muchomornik", "lesny_troll", "straznik_lasu",
+                     "rechotek", "bulgotnik", "klodoklap", "ropucha_z_chatka", "straznik_topieli"]
 
 ARENY = {
     # ------------------------------------------------------------------------------------------------ LAS
@@ -231,6 +236,91 @@ ARENY = {
             {"typ": "choragiewki", "grupa": "Tlo"},
             {"typ": "kurz", "r": [24, 40], "kolor": "E6C489"},
             {"typ": "ptaki", "n": 3, "r": [70, 120], "y": [44, 60]},
+        ],
+    },
+    # ------------------------------------------------------------------------------------------------ DŻUNGLA
+    # Kamienny dziedziniec zarośniętej świątyni: na osi tła schodkowa świątynia z kapliczką, obok wodospad z omszałej
+    # skały, po bokach walczących posągi strażników oplecione lianami, olbrzymie liście i świecące kwiaty, wokół drzewa
+    # dżungli z koronami-parasolami domykającymi niebo; w walce opadają płatki i krążą świetliki. Tło za walczącymi to
+    # stonowany kamień świątyni (zielony potwór nie ginie na zielonym tle — ryzyko z PLAN_BIOMOW).
+    "dzungla": {
+        "nazwa": "Dziedziniec Zarośniętej Świątyni",
+        "model": "Dzungla",
+        "biom": "dzungla",
+        "zrodla": ["DzunglaPasGra"],
+        "O": (-3000.0, 0.0, 3400.0),
+        "ziarno": 4711,
+        # potwory Dżungli (ostateczne klucze 18.11, wymiary z swiat/test_walki2/dane; pas DzunglaPasGra wystawia tylko je)
+        "przeciwnicy": ["zwijogon", "gebokwiat", "kokosowy_silacz", "pancernik_ruin", "waz_stu_lian"],
+        "grunt": {"y": -0.6, "kolor": "dzungla_grunt", "mat": "Grass",
+                  "laty": [{"r": 50.0, "kolor": "dzungla_grunt_jasny", "mat": "Grass"}, {"r": 31.0, "kolor": "dzungla_kamien_ciemny",
+                                                                                         "mat": "Slate"}],
+                  "plamy": {"n": 10, "r": (58, 190), "rozmiar": (8, 20), "kolory": ["dzungla_ziemia", "lisc_ciemny", "dzungla_grunt_jasny"]}},
+        "plac": {"styl": "kamien", "kolory": ["dzungla_kamien", "dzungla_kamien_jasny", "dzungla_kamien_ciemny"]},
+        "obrecz": {"rodzina": "kamien_obreczy", "r": 23.6, "n": 22, "k": (0.8, 1.15), "kolor": "dzungla_kamien", "przerwy": [(262, 278)]},
+        "warstwy": [
+            {"grupa": "Bliskie", "rodzina": "kwiat_swiecacy", "luki": [(200, 250), (290, 340)], "r": (28, 46), "n": 4, "k": (0.9, 1.2),
+             "min_odstep": 7.0},
+            {"grupa": "Bliskie", "rodzina": "lisc_parasol", "luki": [(200, 252), (288, 340)], "r": (34, 54), "n": 5, "k": (0.5, 0.65), "dosun": True,
+             "min_odstep": 8.0},
+            {"grupa": "Bliskie", "rodzina": "kolumna_zlamana", "luki": [(210, 250), (290, 330)], "r": (40, 56), "n": 3, "k": (0.9, 1.1),
+             "dosun": True, "min_odstep": 12.0},
+            {"grupa": "Bliskie", "rodzina": "kanciak_dzungli", "luki": [(190, 350)], "r": (28, 52), "n": 5, "k": (0.9, 1.3)},
+            {"grupa": "Bliskie", "rodzina": "mech_plat", "luki": [(0, 360)], "r": (26, 70), "n": 6, "k": (1.6, 3.0)},
+            {"grupa": "Bliskie", "rodzina": "kepa_parasoli", "luki": [(30, 150)], "r": (40, 86), "n": 4, "k": (0.8, 1.0), "min_odstep": 14.0},
+            {"grupa": "Bliskie", "rodzina": "kwiat_swiecacy", "luki": [(30, 150)], "r": (32, 80), "n": 3, "k": (0.9, 1.1), "min_odstep": 10.0},
+            {"grupa": "Bliskie", "rodzina": "krzew_dzungli", "luki": [(40, 140)], "r": (36, 84), "n": 2, "k": (0.9, 1.2), "min_odstep": 12.0,
+             "kwiat": "dz_kwiat_czerwony"},
+            # ściana dżungli z roślin mapy (swiat/dzungla_pas/rosliny.py): kępy liści-parasoli przed drzewami, drzewa-olbrzymy
+            # i figowce z koronami-parasolami, palmy
+            {"grupa": "Sciana", "rodzina": "kepa_parasoli", "luki": [(288, 252)], "r": (60, 92), "n": 10, "k": (1.1, 1.4), "dosun": True,
+             "min_odstep": 9.0},
+            {"grupa": "Sciana", "rodzina": "drzewo_dzungli", "luki": [(286, 254)], "r": (66, 100), "n": 14, "k": (1.0, 1.3), "dosun": True,
+             "min_odstep": 13.0, "cien": (0.85, 1.0)},
+            {"grupa": "Sciana", "rodzina": "figowiec", "luki": [(286, 254)], "r": (70, 100), "n": 4, "k": (1.1, 1.35), "dosun": True,
+             "min_odstep": 14.0, "cien": (0.85, 1.0)},
+            {"grupa": "Sciana", "rodzina": "palma", "luki": [(286, 254)], "r": (70, 104), "n": 5, "k": (1.1, 1.4), "dosun": True,
+             "min_odstep": 12.0},
+            {"grupa": "Sciana", "rodzina": "drzewo_dzungli", "luki": [(0, 360)], "r": (102, 126), "n": 10, "k": (1.25, 1.55), "dosun": True,
+             "min_odstep": 16.0, "cien": (0.7, 0.85)},
+        ],
+        "punkty": [
+            # kulisy boczne (±X): posągi strażników, olbrzymie liście, świecące kwiaty
+            {"grupa": "Kulisy", "rodzina": "posag_dzungli", "kat": 0, "r": 30, "k": 1.0},
+            {"grupa": "Kulisy", "rodzina": "posag_dzungli", "kat": 180, "r": 30, "k": 1.0},
+            {"grupa": "Kulisy", "rodzina": "kepa_parasoli", "kat": 352, "r": 37, "k": 1.2},
+            {"grupa": "Kulisy", "rodzina": "kepa_parasoli", "kat": 9, "r": 39, "k": 1.0},
+            {"grupa": "Kulisy", "rodzina": "kepa_parasoli", "kat": 171, "r": 38, "k": 1.1},
+            {"grupa": "Kulisy", "rodzina": "kepa_parasoli", "kat": 189, "r": 37, "k": 1.2},
+            {"grupa": "Kulisy", "rodzina": "kwiat_swiecacy", "kat": 6, "r": 26, "k": 1.1},
+            {"grupa": "Kulisy", "rodzina": "kwiat_swiecacy", "kat": 354, "r": 27, "k": 1.0},
+            {"grupa": "Kulisy", "rodzina": "kwiat_swiecacy", "kat": 174, "r": 26, "k": 1.0},
+            {"grupa": "Kulisy", "rodzina": "kwiat_swiecacy", "kat": 186, "r": 27, "k": 1.1},
+            # tło: świątynia na osi, posągi przy schodach, wodospad z boku, stojąca kolumna
+            {"grupa": "Swiatynia", "rodzina": "swiatynia", "kat": 270, "r": 96, "k": 1.2},
+            {"grupa": "Swiatynia", "rodzina": "posag_dzungli", "kat": 259, "r": 74, "k": 0.85},
+            {"grupa": "Swiatynia", "rodzina": "posag_dzungli", "kat": 281, "r": 74, "k": 0.85},
+            {"grupa": "Wodospad", "rodzina": "wodospad", "kat": 318, "r": 90, "k": 1.0},
+            {"grupa": "Swiatynia", "rodzina": "kolumna_stojaca", "kat": 226, "r": 66, "k": 1.1},
+            {"grupa": "Swiatynia", "rodzina": "kolumna_stojaca", "kat": 236, "r": 72, "k": 1.0},
+            # od strony widowni: ruina bramy dziedzińca na osi (za wolną przestrzenią kamer) — znak tła w ujęciu z drugiej
+            # strony; po obejrzeniu podglądów zamiast dwóch samotnych kolumn, które ginęły w mgle
+            {"grupa": "Swiatynia", "rodzina": "brama_ruin", "kat": 90, "r": 102, "k": 1.25},
+        ],
+        "korony_nad": {"y": (34.0, 44.0), "r_wew": 34.0, "r_zew": 106.0, "n": 20, "dl": (26, 40), "szer": (18, 28),
+                       "kolory": [["dzungla_lisc", "dzungla_lisc_jasny"], ["lisc_ciemny", "dzungla_lisc"], ["igla", "dzungla_lisc"]]},
+        "sylwety": [
+            {"rodzina": "korona_daleka", "r": (132, 160), "krok_kata": 9.0, "k": (1.5, 2.0), "kolor": "dzungla_sylweta_1"},
+            {"rodzina": "korona_daleka", "r": (165, 195), "krok_kata": 11.0, "k": (1.8, 2.4), "kolor": "dzungla_sylweta_2"},
+            {"rodzina": "wzgorze", "r": (205, 224), "krok_kata": 14.0, "szer": (90, 130), "wys": (46, 66), "kolor": "arena_wzgorze_dzungla"},
+            {"rodzina": "korona_daleka", "r": (198, 220), "krok_kata": 15.0, "k": (2.3, 2.9), "kolor": "dzungla_sylweta_3"},
+            {"rodzina": "wal", "r": 232.0, "wys": 26.0, "kolor": "arena_mgla_dzungla", "n": 24},
+        ],
+        "nastroj": {"Density": 0.34, "Offset": 0.16, "Haze": 1.5, "Glare": 0.0, "Color": "8FC79A", "Decay": "4E8A5A"},
+        "detale": [
+            {"typ": "liscie", "n": 16, "r": [26, 60], "y": [6, 26], "kolory": ["FF8FB8", "FFD84A", "E5392B", "FFF6E0"]},
+            {"typ": "ogniki", "n": 10, "r": [30, 80], "y": [1.0, 7.0], "kolor": "D8FF6A", "swiatla": 2},
+            {"typ": "pylki", "punkty": "Wodospad", "kolor": "E8FBFF", "tempo": 6},
         ],
     },
 }

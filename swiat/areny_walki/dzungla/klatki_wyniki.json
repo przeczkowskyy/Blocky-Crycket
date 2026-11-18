@@ -1,0 +1,438 @@
+{
+ "opis": "Dzungla czesc B (18.11.2026): walki z potworami pasa DzunglaPasGra na arenie dzungla i czas klatki (testy/zrzuty_aren_play.py)",
+ "walki": {
+  "dzungla_kokos": {
+   "cel": {
+    "id": "o1-1",
+    "p": [
+     2152.994873046875,
+     0,
+     -719.3399658203125
+    ],
+    "gatunek": "kokosowy_silacz",
+    "strefa": "o1"
+   },
+   "arena": "dzungla",
+   "powod": "ok",
+   "mgla_start": [
+    0.3400000035762787,
+    0.1599999964237213,
+    1.5,
+    "8fc79a"
+   ],
+   "detale": 27,
+   "zrzuty": [
+    "swiat/areny_walki/dzungla/klatki/dzungla_kokos_01_ogolny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_kokos_02_ogolny_druga_strona.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_kokos_03_zaAtakujacym.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_kokos_04_pocisk.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_kokos_05_pocisk.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_kokos_06_zaBroniacym.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_kokos_07_efekt.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_kokos_20_powalenie.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_kokos_21_objazd_1.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_kokos_22_objazd_2.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_kokos_24_objazd_4.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_kokos_25_wynik.jpg"
+   ],
+   "mgla_1_5s": [
+    0.3400000035762787,
+    0.1599999964237213,
+    1.5,
+    "8fc79a"
+   ],
+   "przywrocenia_mgly": null,
+   "koniec": {
+    "celMgly": 1,
+    "mgla": [
+     0.3400000035762787,
+     0.1599999964237213,
+     1.5,
+     "8fc79a"
+    ],
+    "detale": 27,
+    "OstatniaMaksKlatki": 178.66,
+    "OstatniaSredniaKlatki": 17.15,
+    "OstatniaLiczbaInstancji": 1583,
+    "OstatniStan": "wynik",
+    "OstatniaArena": "dzungla",
+    "OstatniaLiczbaKlatek": 784,
+    "OstatniKosztSkryptuSredni": 0.42,
+    "OstatniP95Klatki": 18.35,
+    "OstatniaArenaPowod": "ok"
+   }
+  },
+  "dzungla_pancernik": {
+   "cel": {
+    "id": "t1-1",
+    "p": [
+     2221.169677734375,
+     0,
+     -713.8491821289062
+    ],
+    "gatunek": "pancernik_ruin",
+    "strefa": "t1"
+   },
+   "arena": "dzungla",
+   "powod": "ok",
+   "mgla_start": [
+    0.3400000035762787,
+    0.1599999964237213,
+    1.5,
+    "8fc79a"
+   ],
+   "detale": 27,
+   "zrzuty": [
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_01_ogolny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_02_ogolny_druga_strona.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_03_krytyk.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_04_krytyk.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_05_boczny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_06_zaAtakujacym.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_07_naSiebie.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_08_zaBroniacym.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_09_efekt.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_10_ogolny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_11_naSiebie.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_20_powalenie.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_21_objazd_1.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_22_objazd_2.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_24_objazd_4.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_pancernik_25_wynik.jpg"
+   ],
+   "mgla_1_5s": [
+    0.3400000035762787,
+    0.1599999964237213,
+    1.5,
+    "8fc79a"
+   ],
+   "przywrocenia_mgly": null,
+   "koniec": {
+    "celMgly": 1,
+    "KlientOstatniaWalka": "o1-1/wygrana",
+    "detale": 27,
+    "OstatniaMaksKlatki": 257.07,
+    "OstatniaSredniaKlatki": 17.07,
+    "mgla": [
+     0.3400000035762787,
+     0.1599999964237213,
+     1.5,
+     "8fc79a"
+    ],
+    "OstatniaLiczbaInstancji": 2464,
+    "OstatniStan": "wynik",
+    "OstatniaArena": "dzungla",
+    "OstatniaLiczbaKlatek": 1063,
+    "OstatniKosztSkryptuSredni": 0.48,
+    "OstatniP95Klatki": 18.16,
+    "OstatniaArenaPowod": "ok"
+   }
+  },
+  "dzungla_zwijogon": {
+   "cel": {
+    "id": "z1-1",
+    "p": [
+     2003.0042724609375,
+     0,
+     -716.5166015625
+    ],
+    "gatunek": "zwijogon",
+    "strefa": "z1"
+   },
+   "arena": "dzungla",
+   "powod": "ok",
+   "mgla_start": [
+    0.3400000035762787,
+    0.1599999964237213,
+    1.5,
+    "8fc79a"
+   ],
+   "detale": 27,
+   "zrzuty": [
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_01_ogolny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_02_ogolny_druga_strona.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_03_zaAtakujacym.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_04_zaBroniacym.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_05_naSiebie.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_06_ogolny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_07_zblizenie.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_08_boczny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_09_zaBroniacym.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_10_zblizenie.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_11_krytyk.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_20_powalenie.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_21_objazd_1.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_22_objazd_2.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_24_objazd_4.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_zwijogon_25_wynik.jpg"
+   ],
+   "mgla_1_5s": [
+    0.3400000035762787,
+    0.1599999964237213,
+    1.5,
+    "8fc79a"
+   ],
+   "przywrocenia_mgly": null,
+   "koniec": {
+    "celMgly": 1,
+    "KlientOstatniaWalka": "t1-1/przegrana",
+    "detale": 27,
+    "OstatniaMaksKlatki": 159.14,
+    "OstatniaSredniaKlatki": 16.94,
+    "mgla": [
+     0.3400000035762787,
+     0.1599999964237213,
+     1.5,
+     "8fc79a"
+    ],
+    "OstatniaLiczbaInstancji": 1920,
+    "OstatniStan": "wynik",
+    "OstatniaArena": "dzungla",
+    "OstatniaLiczbaKlatek": 1104,
+    "OstatniKosztSkryptuSredni": 0.44,
+    "OstatniP95Klatki": 18.06,
+    "OstatniaArenaPowod": "ok"
+   }
+  },
+  "dzungla_waz": {
+   "cel": {
+    "id": "straznik-1",
+    "p": [
+     2309.3701171875,
+     0.30000001192092896,
+     -700
+    ],
+    "gatunek": "waz_stu_lian",
+    "strefa": "straznik"
+   },
+   "arena": "dzungla",
+   "powod": "ok",
+   "mgla_start": [
+    0.3400000035762787,
+    0.1599999964237213,
+    1.5,
+    "8fc79a"
+   ],
+   "detale": 27,
+   "zrzuty": [
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_01_ogolny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_02_ogolny_druga_strona.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_03_krytyk.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_04_zblizenie.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_05_pocisk.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_06_zaBroniacym.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_07_krytyk.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_08_zaBroniacym.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_09_boczny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_10_efekt.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_11_naSiebie.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_20_powalenie.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_21_objazd_1.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_22_objazd_2.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_24_objazd_4.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_waz_25_wynik.jpg"
+   ],
+   "mgla_1_5s": [
+    0.3400000035762787,
+    0.1599999964237213,
+    1.5,
+    "8fc79a"
+   ],
+   "przywrocenia_mgly": 54,
+   "koniec": {
+    "celMgly": 1,
+    "KlientOstatniaWalka": "straznik-1/nil",
+    "detale": 27,
+    "OstatniaMaksKlatki": 249.46,
+    "przywrocenia": 54,
+    "OstatniaSredniaKlatki": 17.04,
+    "mgla": [
+     0.3400000035762787,
+     0.1599999964237213,
+     1.5,
+     "8fc79a"
+    ],
+    "OstatniaLiczbaInstancji": 2299,
+    "OstatniStan": "wynik",
+    "OstatniaArena": "dzungla",
+    "OstatniaLiczbaKlatek": 1057,
+    "OstatniKosztSkryptuSredni": 0.47,
+    "OstatniP95Klatki": 18.33,
+    "OstatniaArenaPowod": "ok"
+   }
+  },
+  "dzungla_gebokwiat": {
+   "cel": {
+    "id": "g1-1",
+    "p": [
+     2071.058349609375,
+     0,
+     -684.4517211914062
+    ],
+    "gatunek": "gebokwiat",
+    "strefa": "g1"
+   },
+   "arena": "dzungla",
+   "powod": "ok",
+   "mgla_start": [
+    0.3400000035762787,
+    0.1599999964237213,
+    1.5,
+    "8fc79a"
+   ],
+   "detale": 27,
+   "zrzuty": [
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_01_ogolny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_02_ogolny_druga_strona.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_03_boczny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_04_boczny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_05_zaAtakujacym.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_06_ogolny.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_07_pocisk.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_08_efekt.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_20_powalenie.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_21_objazd_1.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_22_objazd_2.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_24_objazd_4.jpg",
+    "swiat/areny_walki/dzungla/klatki/dzungla_gebokwiat_25_wynik.jpg"
+   ],
+   "mgla_1_5s": [
+    0.3400000035762787,
+    0.1599999964237213,
+    1.5,
+    "8fc79a"
+   ],
+   "przywrocenia_mgly": 78,
+   "koniec": {
+    "celMgly": 1,
+    "KlientOstatniaWalka": "straznik-1/przegrana",
+    "detale": 27,
+    "OstatniaMaksKlatki": 50.66,
+    "przywrocenia": 78,
+    "OstatniaSredniaKlatki": 16.74,
+    "mgla": [
+     0.3400000035762787,
+     0.1599999964237213,
+     1.5,
+     "8fc79a"
+    ],
+    "OstatniaLiczbaInstancji": 1588,
+    "OstatniStan": "wynik",
+    "OstatniaArena": "dzungla",
+    "OstatniaLiczbaKlatek": 911,
+    "OstatniKosztSkryptuSredni": 0.45,
+    "OstatniP95Klatki": 17.94,
+    "OstatniaArenaPowod": "ok"
+   }
+  },
+  "po_walce": {
+   "mgla": [
+    0.3799999952316284,
+    0.10000000149011612,
+    1.7999999523162842,
+    "8fc79a"
+   ],
+   "przywrocenia": 78,
+   "detale": 0
+  }
+ },
+ "klatka": {
+  "klatka_proba_stara": {
+   "mgla": [
+    0.30000001192092896,
+    0.25,
+    0,
+    "c7c7c7"
+   ],
+   "detale": 0,
+   "OstatniaMaksKlatki": 51.34,
+   "OstatniaSredniaKlatki": 16.68,
+   "OstatniaLiczbaInstancji": 2265,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "stara",
+   "OstatniaLiczbaKlatek": 1871,
+   "OstatniKosztSkryptuSredni": 0.42,
+   "OstatniP95Klatki": 18,
+   "OstatniaArenaPowod": "wylaczone"
+  },
+  "klatka_proba": {
+   "celMgly": 1,
+   "mgla": [
+    0.27000001072883606,
+    0.23999999463558197,
+    1.100000023841858,
+    "eadbc2"
+   ],
+   "detale": 9,
+   "OstatniaMaksKlatki": 50.39,
+   "OstatniaSredniaKlatki": 16.68,
+   "OstatniaLiczbaInstancji": 2265,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "proba",
+   "OstatniaLiczbaKlatek": 1871,
+   "OstatniKosztSkryptuSredni": 0.51,
+   "OstatniP95Klatki": 17.99,
+   "OstatniaArenaPowod": "ok"
+  },
+  "klatka_las_slime": {
+   "celMgly": 1,
+   "mgla": [
+    0.3400000035762787,
+    0.18000000715255737,
+    1.2999999523162842,
+    "cfe3c9"
+   ],
+   "detale": 17,
+   "OstatniaMaksKlatki": 42.11,
+   "OstatniaSredniaKlatki": 16.67,
+   "OstatniaLiczbaInstancji": 1568,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "las",
+   "OstatniaLiczbaKlatek": 1707,
+   "OstatniKosztSkryptuSredni": 0.52,
+   "OstatniP95Klatki": 18.04,
+   "OstatniaArenaPowod": "ok"
+  },
+  "klatka_bagno_rechotek": {
+   "celMgly": 1,
+   "KlientOstatniaWalka": "r1-1/nil",
+   "detale": 19,
+   "OstatniaMaksKlatki": 68.27,
+   "przywrocenia": 70,
+   "OstatniaSredniaKlatki": 16.69,
+   "mgla": [
+    0.4399999976158142,
+    0.10000000149011612,
+    2.200000047683716,
+    "aab68f"
+   ],
+   "OstatniaLiczbaInstancji": 1660,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "bagno",
+   "OstatniaLiczbaKlatek": 2404,
+   "OstatniKosztSkryptuSredni": 0.46,
+   "OstatniP95Klatki": 18.08,
+   "OstatniaArenaPowod": "ok"
+  },
+  "klatka_dzungla_kokos": {
+   "celMgly": 1,
+   "mgla": [
+    0.3400000035762787,
+    0.1599999964237213,
+    1.5,
+    "8fc79a"
+   ],
+   "detale": 27,
+   "OstatniaMaksKlatki": 66.78,
+   "OstatniaSredniaKlatki": 16.7,
+   "przywrocenia": 78,
+   "OstatniaLiczbaInstancji": 1675,
+   "OstatniStan": "wynik",
+   "OstatniaArena": "dzungla",
+   "OstatniaLiczbaKlatek": 1512,
+   "OstatniKosztSkryptuSredni": 0.45,
+   "OstatniP95Klatki": 17.96,
+   "OstatniaArenaPowod": "ok"
+  }
+ }
+}

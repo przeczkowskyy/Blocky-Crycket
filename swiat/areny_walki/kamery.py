@@ -65,6 +65,36 @@ def aktorzy():
     return wynik
 
 
+# Aktorzy SZACUNKOWI (zapas), dopóki prawdziwych danych nie ma w swiat/test_walki2/dane: wysokość z PLAN_BIOMOW
+# (swiat/biomy/PLAN_BIOMOW.md), szerokość, głębokość i przód z proporcji podobnych potworów (z zapasem w górę).
+# Gdy w tabeli aktorów pojawi się wpis o tym kluczu, profil liczy się z prawdziwych wymiarów (inny odcisk → od nowa).
+ZAPASOWI = {
+    # Dżungla (18.11): ostateczne klucze; od 18.11 wszystkie mają prawdziwe dane, te liczby są tylko zapasem
+    "zwijogon": {"rola": "przeciwnik", "h": 3.6, "szer": 3.0, "gleb": 5.8, "przod": 3.0, "lezy": None},
+    "gebokwiat": {"rola": "przeciwnik", "h": 5.2, "szer": 3.8, "gleb": 2.0, "przod": 1.0, "lezy": None},
+    "kokosowy_silacz": {"rola": "przeciwnik", "h": 7.2, "szer": 6.6, "gleb": 3.2, "przod": 2.0, "lezy": None},
+    "pancernik_ruin": {"rola": "przeciwnik", "h": 4.5, "szer": 4.0, "gleb": 7.8, "przod": 4.1, "lezy": None},
+    "waz_stu_lian": {"rola": "przeciwnik", "h": 17.5, "szer": 11.2, "gleb": 12.5, "przod": 6.0, "lezy": None},
+}
+
+
+def aktorzy_do_profilu(przeciwnicy=None, akt=None):
+    """Klasy + wskazani przeciwnicy (prawdziwi z tabeli aktorów, a gdy ich jeszcze nie ma — szacunkowi z ZAPASOWI).
+    przeciwnicy = None → wszyscy prawdziwi aktorzy (jak dotąd)."""
+    akt = akt or aktorzy()
+    if przeciwnicy is None:
+        return akt
+    wynik = {k: a for k, a in akt.items() if a["rola"] == "klasa"}
+    for k in przeciwnicy:
+        if k in akt:
+            wynik[k] = akt[k]
+        elif k in ZAPASOWI:
+            wynik[k] = dict(ZAPASOWI[k], zapas=True)
+        else:
+            raise KeyError("nieznany przeciwnik %r (ani w tabeli aktorów, ani w ZAPASOWI)" % k)
+    return wynik
+
+
 def _lezy(d):
     """Obwiednia ostatniej klatki klipu „upadek” (jak zbuduj.obwiednia_lezenia) — kadr ujęcia pokonanego."""
     try:
@@ -463,22 +493,48 @@ def policz_profil(akt=None):
 PLIK_PROFILU = os.path.join(TU, "profil_kamer.json")
 
 
-def profil(odswiez=False):
+def plik_profilu(klucz_areny=None):
+    """Profil areny: wspólny `profil_kamer.json` dla aren z przeciwnikami z 17.11 (las, Bagno, plac — ten sam zestaw),
+    własny `<arena>/profil_kamer.json` dla areny z innym zestawem (np. Dżungla)."""
+    import plan as P
+    if klucz_areny is None:
+        return PLIK_PROFILU, None
+    przeciwnicy = P.ARENY[klucz_areny].get("przeciwnicy")
+    if przeciwnicy is None or sorted(przeciwnicy) == sorted(P.PRZECIWNICY_17_11):
+        return PLIK_PROFILU, P.PRZECIWNICY_17_11
+    return os.path.join(TU, klucz_areny, "profil_kamer.json"), przeciwnicy
+
+
+def profil_areny(klucz_areny, odswiez=False):
+    plik, przeciwnicy = plik_profilu(klucz_areny)
+    return profil(odswiez, przeciwnicy, plik)
+
+
+def profil(odswiez=False, przeciwnicy=None, plik=None):
     """Profil z pliku (gdy odcisk danych się zgadza) albo policzony od nowa i zapisany."""
-    akt = aktorzy()
+    plik = plik or PLIK_PROFILU
+    if przeciwnicy is None and plik == PLIK_PROFILU:
+        import plan as P
+        przeciwnicy = P.PRZECIWNICY_17_11
+    akt = aktorzy_do_profilu(przeciwnicy)
     o = odcisk(akt)
-    if not odswiez and os.path.isfile(PLIK_PROFILU):
-        with open(PLIK_PROFILU, encoding="utf-8") as f:
+    if not odswiez and os.path.isfile(plik):
+        with open(plik, encoding="utf-8") as f:
             d = json.load(f)
         if d.get("odcisk") == o:
             return Profil.z_json(d)
     p, st = policz_profil(akt)
+    import numpy as np
+    p.r = np.round(p.r, 2)                                   # jak w pliku — świeży profil = wczytany (te same areny)
     d = p.json()
     d["odcisk"] = o
     d["opis"] = ("Wolna przestrzeń kamer walki (swiat/areny_walki/kamery.py): r[kąt][wysokość] = największy promień od "
                  "środka placu, kąt od osi +X sceny ku +Z co krok_kata°, wysokość od płyty placu co krok_y.")
     d["pary"] = st
-    with open(PLIK_PROFILU, "w", encoding="utf-8", newline="\n") as f:
+    d["przeciwnicy"] = sorted(k for k, a in akt.items() if a["rola"] == "przeciwnik")
+    d["szacunkowi"] = sorted(k for k, a in akt.items() if a.get("zapas"))
+    os.makedirs(os.path.dirname(plik), exist_ok=True)
+    with open(plik, "w", encoding="utf-8", newline="\n") as f:
         json.dump(d, f, ensure_ascii=False, separators=(",", ":"))
         f.write("\n")
     return p
@@ -489,7 +545,8 @@ if __name__ == "__main__":
         sys.stdout.reconfigure(encoding="utf-8")
     import time
     t0 = time.time()
-    p = profil(odswiez="--odswiez" in sys.argv)
+    arena = next((a for a in sys.argv[1:] if not a.startswith("--")), None)
+    p = profil_areny(arena, odswiez="--odswiez" in sys.argv) if arena else profil(odswiez="--odswiez" in sys.argv)
     print("kamer: %d, r_max %.1f, y_max %.1f (%.1f s)" % (p.kamer, p.r_max_kamery, p.y_max_kamery, time.time() - t0))
     for ka in range(0, 360, 15):
         ik = int(ka / p.kk)

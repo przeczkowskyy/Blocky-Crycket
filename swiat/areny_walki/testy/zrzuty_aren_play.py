@@ -5,6 +5,7 @@
     python -B swiat/areny_walki/testy/zrzuty_aren_play.py                  # wszystkie walki z listy WALKI
     python -B swiat/areny_walki/testy/zrzuty_aren_play.py --tylko proba,las_slime --przyrostek _po
     python -B swiat/areny_walki/testy/zrzuty_aren_play.py --klatka         # + czas klatki w walce ×1 na każdej arenie
+    python -B swiat/areny_walki/testy/zrzuty_aren_play.py --bez-walk --klatka   # sam czas klatki
 
 Źródła walk jak w grze: tablica prototypu (Workspace/TestWalki2, Sygnaly/Sterowanie „start”, czas ręczny), las-pas
 (LasPasGra), Bagno (BagnoPasGra) i stary las (LasPotwory) — tu potwór prawdziwy, w trybie testowym bohatera
@@ -40,7 +41,16 @@ WALKI = [
     ("bagno_rechotek", "bagno", "BagnoPasGra", "zwiadowca", "rechotek", "auto", None),
     ("bagno_straznik", "bagno", "BagnoPasGra", "wojownik", "straznik_topieli", "auto", None),
     ("stary_las", "las", "LasPotwory", "wojownik", None, "auto", None),
+    # Dżungla (18.11): prawdziwe potwory pasa DzunglaPasGra (bez kontenera walka jest pomijana). Tablicy z potworami
+    # lasu nie używamy — ich kamery nie mieszczą się w profilu Dżungli (troll i wilk wychodzą poza wolną przestrzeń).
+    ("dzungla_kokos", "dzungla", "DzunglaPasGra", "mag", "kokosowy_silacz", "auto", None),
+    ("dzungla_pancernik", "dzungla", "DzunglaPasGra", "zwiadowca", "pancernik_ruin", "auto", None),
+    ("dzungla_zwijogon", "dzungla", "DzunglaPasGra", "wojownik", "zwijogon", "auto", None),
+    ("dzungla_waz", "dzungla", "DzunglaPasGra", "wojownik", "waz_stu_lian", "auto", None),
+    ("dzungla_gebokwiat", "dzungla", "DzunglaPasGra", "zwiadowca", "gebokwiat", "auto", None),
 ]
+# czas klatki (--klatka): (klucz z WALKI, przez starą arenę)
+KLATKI = (("proba", True), ("proba", False), ("las_slime", False), ("bagno_rechotek", False), ("dzungla_kokos", False))
 
 BEZ_NAZWY = ('local SG = game:GetService("StarterGui") for _, t in { Enum.CoreGuiType.PlayerList, Enum.CoreGuiType.Chat } do '
              'pcall(function() SG:SetCoreGuiEnabled(t, false) end) end return "ok"')
@@ -183,6 +193,10 @@ class Zrzuty:
             self.start_tablica(arena, klasa, wrog, poziom, ziarno)
             cel = {"id": wrog}
         else:
+            if s.luau('return tostring(workspace:FindFirstChild("%s") ~= nil)' % zrodlo, "Server").strip() != "true":
+                self.wyniki[klucz] = {"pominieto": "brak kontenera %s" % zrodlo}
+                log("  pominięta: brak kontenera", zrodlo)
+                return
             cel = self.start_potwor(zrodlo, klasa, wrog, poziom)
             if not cel:
                 self.wyniki[klucz] = {"blad": "brak wolnego potwora"}
@@ -279,6 +293,9 @@ class Zrzuty:
             s.luau('workspace.TestWalki2:SetAttribute("BiomAreny", %s) return "ok"' % biom)
             s.start(klasa, wrog, poziom, "{ tempo = 1 }")
         else:
+            if s.luau('return tostring(workspace:FindFirstChild("%s") ~= nil)' % zrodlo, "Server").strip() != "true":
+                log("  pominięta: brak kontenera", zrodlo)
+                return None
             if not self.start_potwor(zrodlo, klasa, wrog, poziom):
                 return None
             self.odtw('"tempo", 1')
@@ -305,6 +322,7 @@ def main():
     ap.add_argument("--przyrostek", default="")
     ap.add_argument("--klatka", action="store_true")
     ap.add_argument("--bez-zrzutow", action="store_true")
+    ap.add_argument("--bez-walk", action="store_true", help="bez walk ze zrzutami (np. sam --klatka)")
     ap.add_argument("--wyniki", default=os.path.join(PAKIET, "klatki_wyniki.json"))
     a = ap.parse_args()
     tylko = [t for t in a.tylko.split(",") if t]
@@ -316,15 +334,21 @@ def main():
                 break
             time.sleep(0.5)
         s.luau(BEZ_NAZWY)
-        for n in ("LasPasGra", "BagnoPasGra", "LasPotwory"):
+        for n in ("LasPasGra", "BagnoPasGra", "LasPotwory", "DzunglaPasGra"):
             s.luau('local k = workspace:FindFirstChild("%s") if k then k:SetAttribute("TestBohater", true) '
                    'k:SetAttribute("TestBezSesji", true) end return "ok"' % n, "Server")
         s.luau('workspace.TestWalki2:SetAttribute("TestBezSesji", true) return "ok"', "Server")
+        # Dżungla leży za lasem i Bagnem: obie bramy otwarte (jak swiat/dzungla_pas_gra/testy/proba_play.py), inaczej
+        # serwery pasów cofają gracza przed bramę lasu
+        if a.klatka or any(w[2] == "DzunglaPasGra" and (not tylko or w[0] in tylko) for w in WALKI):
+            for n in ("LasPasGra", "BagnoPasGra"):
+                s.luau('local k = workspace:FindFirstChild("%s") if k then pcall(function() k.Sygnaly.SterowaniePasa:Invoke("otworzBrame") end) '
+                       'end return "ok"' % n, "Server")
         time.sleep(2.0)
         z = Zrzuty(s, a.przyrostek)
         try:
             for w in WALKI:
-                if tylko and w[0] not in tylko:
+                if a.bez_walk or (tylko and w[0] not in tylko):
                     continue
                 try:
                     z.walka(*w, gesto=not a.bez_zrzutow)
@@ -332,7 +356,9 @@ def main():
                     z.wyniki[w[0]] = {"blad": str(e)[:300]}
                     log("  BŁĄD:", e)
             if a.klatka:
-                for w, stara in ((WALKI[0], True), (WALKI[0], False), (WALKI[1], False), (WALKI[3], False)):
+                po_kluczu = {w[0]: w for w in WALKI}
+                for k, stara in KLATKI:
+                    w = po_kluczu[k]
                     try:
                         z.klatka(*w, stara=stara)
                     except Exception as e:  # noqa: BLE001
