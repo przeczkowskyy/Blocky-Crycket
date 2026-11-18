@@ -435,6 +435,13 @@ class TestWalki(unittest.TestCase):
                 + ef.split("-- Dżungla — usypiający pyłek", 1)[1].split("function Efekty:pocisk(", 1)[0]
                 + ef.split("Dżungla (18.11.2026): ozdoby własnych efektów", 1)[1].split("function Efekty:wyglad(", 1)[0])
         self.assertEqual(set(re.findall(r'Name = "([A-Za-z]+)"', nowe)), set(proba.NAZWY_EFEKTOW))
+        # …i żadna z nich nie jest nazwą części modelu aktora (próba liczyłaby wtedy modele: „Kiel” Węża, 18.11.2026)
+        dane = os.path.join(REPO, "swiat", "test_walki2", "dane")
+        for plik in sorted(os.listdir(dane)):
+            if plik.endswith(".json"):
+                tekst = czytaj(dane, plik)
+                for nazwa in proba.NAZWY_EFEKTOW:
+                    self.assertNotIn('"%s"' % nazwa, tekst, "%s: część modelu nazywa się jak część efektu" % plik)
 
     def test_6d_wygrane_klas_w_widelkach(self):
         """Postacie wzorcowe (bez treningu) na poziomie wejścia do przegrody; rzadki i strażnik: gracz o poziom wyżej.

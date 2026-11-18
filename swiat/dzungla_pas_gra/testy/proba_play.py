@@ -79,14 +79,15 @@ EFEKTY = {
         "lodowy_pocisk": ({"pocisk": "pylek", "wybuch": "pylek", "nazwa": "Usypiający pyłek"}, ("gracz:spowolnienie", "sen"))}),
     "kokosowy_silacz": ("o1", ("wojownik", "23"), {
         "ciecie": ({"wybuch": "kokos", "nazwa": "Kokosy z góry"}, None)}),
-    "pancernik_ruin": ("t1", ("wojownik", "23"), {
-        "kamienna_skora": ({"aura": "ruiny"}, ("wrog:kamienna_skora", "ruiny"))}),
     "waz_stu_lian": ("straznik", ("wojownik", "20"), {
         "zatruta_strzala": ({"pocisk": "jad", "wybuch": "jad", "nazwa": "Plunięcie jadem"}, ("gracz:trucizna", "babelki")),
         "rozszarpanie": ({"wybuch": "ukaszenie", "kly": True, "nazwa": "Ukąszenie"}, ("gracz:krwawienie", "krople"))}),
+    # Pancernik na końcu: rzadki potwór wraca dopiero 150 s po walce z J06
+    "pancernik_ruin": ("t1", ("wojownik", "23"), {
+        "kamienna_skora": ({"aura": "ruiny"}, ("wrog:kamienna_skora", "ruiny"))}),
 }
 # nazwy instancji własnych efektów Dżungli (Efekty3D) — po walce nie może przybyć żadna
-NAZWY_EFEKTOW = ("Pylek", "PylekKlab", "Jad", "JadSrodek", "JadKropla", "PylNosnik", "Kiel", "SenZ", "LiscKamuflazu",
+NAZWY_EFEKTOW = ("Pylek", "PylekKlab", "Jad", "JadSrodek", "JadKropla", "PylNosnik", "KielUkaszenia", "SenZ", "LiscKamuflazu",
                  "KamuflazKrag", "PlytaRuin", "PlytaRuinRyt", "PowlokaRuin")
 
 
@@ -722,14 +723,17 @@ def main():
                 return js(KOD["pozostalosci"] % lista(NAZWY_EFEKTOW), "Client")
 
             def koszt_efektow():
-                tekst = str(kont("TestWalki2", ["OstatniKosztEfektow"], dm="Client").get("OstatniKosztEfektow") or "")
+                # atrybut zapisuje odtwarzacz na kontenerze, który zaczął walkę (tu: kraina, nie prototyp)
+                tekst = str(kont("DzunglaPasGra", ["OstatniKosztEfektow"], dm="Client").get("OstatniKosztEfektow") or "")
                 return {a: int(b) for a, b in (x.split("=") for x in tekst.split(";") if "=" in x)}
 
             def walka_efektow(gatunek, przegrana=False):
                 """Walka z gatunkiem z ziarnem, w którym potwór trafia umiejętnościami. → (cel, ziarno) albo (None, None)."""
                 strefa, (klasa, poziom), um = EFEKTY[gatunek]
                 luau(KOD["bohater_t1"] % (klasa, poziom), "Client")
-                kandydat = js(KOD["potwor_w_strefie"] % strefa, "Server")
+                # rzadki potwór i Strażnik wracają po stałym czasie (150 / 120 s) — po wcześniejszych walkach próby czekamy
+                kandydat = czekaj_na(lambda: js(KOD["potwor_w_strefie"] % strefa, "Server").get("id") and
+                                     js(KOD["potwor_w_strefie"] % strefa, "Server"), 200, 3.0) or {}
                 ziarno = ziarno_z_umiejetnosciami(gatunek, int(kandydat.get("poziom") or 23), klasa, int(poziom), list(um),
                                                   przegrana=przegrana) if kandydat.get("id") else None
                 if ziarno is None and przegrana:
@@ -762,10 +766,12 @@ def main():
                         odtw('"przewinDo", %f' % (st["wypuszczenie"] + st["lot"] * 0.6))
                         opis["w_locie"] = (odtw('"stan"').get("efekty3D") or {}).get("aktywne")
                         zrzut(nazwa + "_lot")
-                    odtw('"przewinDo", %f' % (traf + 0.12))
+                    # umiejętność na siebie: błysk jest w chwili `aura` (przed „trafieniem” zdarzenia), nie na trafieniu
+                    odtw('"przewinDo", %f' % ((st["aura"] + 0.1) if st.get("aura") else (traf + 0.12)))
                     zrzut(nazwa + "_trafienie")
                     po = odtw('"przewinDo", %f' % (traf + 1.7))
-                    zrzut(nazwa + "_status")
+                    if ozdoba:
+                        zrzut(nazwa + "_status")
                     opis["ozdoby"] = po.get("ozdoby")
                     opis["efekty3D"] = po.get("efekty3D")
                     widziane[uid] = opis
@@ -781,8 +787,15 @@ def main():
                         bledy15.append("%s/%s: potwór nie użył umiejętności (ziarno %s)" % (gatunek, uid, ziarno))
                 odtw('"wstrzymaj", false')
                 dokoncz_walke()
-                raport15[gatunek] = {"cel": cel, "ziarno": ziarno, "umiejetnosci": widziane, "koszt": koszt_efektow()}
-                for klucz, ile in raport15[gatunek]["koszt"].items():
+                # koszt: atrybut po walce + licznik odtwarzacza zaraz po każdej umiejętności (najwięcej instancji naraz)
+                koszt = dict(koszt_efektow())
+                for o in widziane.values():
+                    for klucz, ile in ((o.get("efekty3D") or {}).get("koszt") or {}).items():
+                        koszt[klucz] = max(koszt.get(klucz, 0), int(ile))
+                raport15[gatunek] = {"cel": cel, "ziarno": ziarno, "umiejetnosci": widziane, "koszt": koszt}
+                if widziane and not any(klucz in KOSZT_DZUNGLI for klucz in koszt):
+                    bledy15.append("%s: brak pomiaru kosztu własnych efektów (%s)" % (gatunek, sorted(koszt)))
+                for klucz, ile in koszt.items():
                     if klucz in KOSZT_DZUNGLI and ile > KOSZT_DZUNGLI[klucz][0]:
                         bledy15.append("%s: koszt %s = %d > %d" % (gatunek, klucz, ile, KOSZT_DZUNGLI[klucz][0]))
             po15 = pozostalosci()

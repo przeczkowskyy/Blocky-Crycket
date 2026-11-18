@@ -333,15 +333,19 @@ function Efekty:pazury(cf: CFrame, kolor: Color3, rozmiar: number, krzyz: boolea
 end
 
 --[[ Ukąszenie (Dżungla, Wąż Stu Lian): cztery kły — dwa z góry, dwa z dołu — zatrzaskują się na celu w 0,1 s czasu
-	sceny, trzymają i gasną (razem 0,5 s). cf = miejsce na piersi celu zwrócone do atakującego (jak przy pazurach).
-	Kieł = klin: prosta krawędź na zewnątrz, czubek do środka paszczy. 4 części. ]]
+	sceny, trzymają i gasną (razem 0,5 s). cf = miejsce na piersi celu (jak przy pazurach). Paszcza stoi zawsze
+	przodem do kamery, tuż przed celem od strony kamery — w ujęciu z boku kły ustawione do atakującego było widać
+	tylko krawędzią (próba w Studio 18.11.2026). Kieł = klin z kości słoniowej (bez świecenia — świecące kły zlewały
+	się w białe słupki): prosta krawędź na zewnątrz, czubek do środka paszczy; górne kły szerzej, dolne między nimi,
+	po zatrzaśnięciu zachodzą na siebie. 4 części. ]]
 function Efekty:ukaszenie(cf: CFrame, kolor: Color3, rozmiar: number)
 	local przed = self.utworzono
-	local dl = 0.9 * rozmiar
+	local dl = 0.75 * rozmiar
 	local kly = {}
 	for _, strona in { -1, 1 } do
 		for _, gora in { -1, 1 } do
-			local p = self:czesc({ Klasa = "WedgePart", Name = "Kiel", Size = Vector3.new(0.14, 0.32 * rozmiar, dl), Color = kolor })
+			local p = self:czesc({ Klasa = "WedgePart", Name = "KielUkaszenia", Size = Vector3.new(0.2, 0.45 * rozmiar, dl), Color = kolor,
+				Material = Enum.Material.SmoothPlastic })
 			-- klin: czubek to lokalne −Z, trójkąt leży w lokalnej płaszczyźnie YZ → obracamy go w płaszczyznę XY celu
 			local vY = Vector3.new(-strona, 0, 0)
 			local vZ = Vector3.new(0, gora, 0)
@@ -352,10 +356,23 @@ function Efekty:ukaszenie(cf: CFrame, kolor: Color3, rozmiar: number)
 	local wiek = 0
 	local function ustaw()
 		local zamkniecie = gladko(wiek / 0.1)
-		local odl = dl / 2 + 0.05 + rozmiar * 0.7 * (1 - zamkniecie)
+		local odl = dl * 0.35 + rozmiar * 0.8 * (1 - zamkniecie)
 		local u = wiek / 0.5
+		local kam = workspace.CurrentCamera
+		local srodek = cf.Position
+		local obrot = cf.Rotation
+		if kam then
+			obrot = kam.CFrame.Rotation
+			local doKamery = kam.CFrame.Position - srodek
+			if doKamery.Magnitude > 0.01 then
+				srodek += doKamery.Unit * math.min(1.5, doKamery.Magnitude * 0.5)
+			end
+		end
+		local baza = CFrame.new(srodek) * obrot
 		for _, k in kly do
-			k.p.CFrame = cf * CFrame.new(k.strona * rozmiar * 0.24, k.gora * odl, 0) * k.obrot
+			-- górne kły na zewnątrz (0,6), dolne w środku (0,2) — zęby mijają się jak w paszczy
+			local x = k.strona * rozmiar * (if k.gora > 0 then 0.6 else 0.2)
+			k.p.CFrame = baza * CFrame.new(x, k.gora * odl, if k.gora > 0 then 0 else 0.1) * k.obrot
 			k.p.Transparency = if u > 0.45 then math.clamp((u - 0.45) / 0.55, 0, 1) else 0
 		end
 	end
@@ -748,17 +765,17 @@ end
 -- Dżungla — usypiający pyłek Gębokwiata: żółta chmura pyłku (jasny środek i trzy kłęby krążące wokół osi lotu) płynie
 -- łukiem do celu i sypie drobinami; bez światła i smugi. 4 części + 1 emiter.
 Pocisk.pylek = function(fx, od, do_, czas, opcje)
-	local g = fx:czesc({ Name = "Pylek", Shape = Enum.PartType.Ball, Size = Vector3.one * 0.9, Color = hex("#FFE98A"), Transparency = 0.1 })
+	local g = fx:czesc({ Name = "Pylek", Shape = Enum.PartType.Ball, Size = Vector3.one * 1.2, Color = hex("#FFE98A"), Transparency = 0.1 })
 	local ust = { { g, CFrame.identity } }
 	for i = 1, 3 do
 		local kat = (i - 1) / 3 * math.pi * 2
-		local p = fx:czesc({ Name = "PylekKlab", Shape = Enum.PartType.Ball, Size = Vector3.one * (1.5 - i * 0.2),
+		local p = fx:czesc({ Name = "PylekKlab", Shape = Enum.PartType.Ball, Size = Vector3.one * (2.2 - i * 0.3),
 			Color = hex(if i == 2 then "#FFF3B0" else "#F2C230"), Material = Enum.Material.SmoothPlastic, Transparency = 0.4 })
-		table.insert(ust, { p, CFrame.new(math.cos(kat) * 0.55, math.sin(kat) * 0.55, 0.35 * (i - 1)) })
+		table.insert(ust, { p, CFrame.new(math.cos(kat) * 0.8, math.sin(kat) * 0.8, 0.5 * (i - 1)) })
 	end
-	fx:emiter(g, { Color = ColorSequence.new(hex("#FFE14A"), hex("#FFF8D0")), Rate = 45, Lifetime = NumberRange.new(0.4, 0.8),
+	fx:emiter(g, { Color = ColorSequence.new(hex("#FFE14A"), hex("#FFF8D0")), Rate = 60, Lifetime = NumberRange.new(0.4, 0.8),
 		Speed = NumberRange.new(0.5, 2), SpreadAngle = Vector2.new(180, 180), Acceleration = Vector3.new(0, -3, 0),
-		Size = NumberSequence.new(0.4, 0.05), LightEmission = 0.4 })
+		Size = NumberSequence.new(0.6, 0.05), LightEmission = 0.4 })
 	if opcje.luk == nil then
 		opcje.luk = 0.9
 	end
@@ -768,11 +785,11 @@ end
 -- Dżungla — jad Węża Stu Lian: zielona struga (duża kropla z jasnym środkiem i dwie mniejsze za nią), szeroka smuga
 -- i kapiące krople; bez światła. 4 części + smuga (Trail i 2 zaczepy) + 1 emiter.
 Pocisk.jad = function(fx, od, do_, czas, opcje)
-	local g = fx:czesc({ Name = "Jad", Shape = Enum.PartType.Ball, Size = Vector3.one * 1.0, Color = hex("#8BEA4E"), Transparency = 0.1 })
-	local r = fx:czesc({ Name = "JadSrodek", Shape = Enum.PartType.Ball, Size = Vector3.one * 0.5, Color = hex("#E4FF9A") })
-	local k1 = fx:czesc({ Name = "JadKropla", Shape = Enum.PartType.Ball, Size = Vector3.one * 0.7, Color = hex("#5FD13A"), Transparency = 0.15 })
-	local k2 = fx:czesc({ Name = "JadKropla", Shape = Enum.PartType.Ball, Size = Vector3.one * 0.45, Color = hex("#3E8C2A"), Transparency = 0.15 })
-	fx:trail(g, Vector3.new(0, 0.45, 0), Vector3.new(0, -0.45, 0), hex("#7BE04A"), 0.35, 1.2)
+	local g = fx:czesc({ Name = "Jad", Shape = Enum.PartType.Ball, Size = Vector3.one * 1.35, Color = hex("#8BEA4E"), Transparency = 0.1 })
+	local r = fx:czesc({ Name = "JadSrodek", Shape = Enum.PartType.Ball, Size = Vector3.one * 0.7, Color = hex("#E4FF9A") })
+	local k1 = fx:czesc({ Name = "JadKropla", Shape = Enum.PartType.Ball, Size = Vector3.one * 0.95, Color = hex("#5FD13A"), Transparency = 0.15 })
+	local k2 = fx:czesc({ Name = "JadKropla", Shape = Enum.PartType.Ball, Size = Vector3.one * 0.6, Color = hex("#3E8C2A"), Transparency = 0.15 })
+	fx:trail(g, Vector3.new(0, 0.6, 0), Vector3.new(0, -0.6, 0), hex("#7BE04A"), 0.35, 1.2)
 	fx:emiter(g, { Color = ColorSequence.new(hex("#8BEA4E"), hex("#3E8C2A")), Rate = 30, Lifetime = NumberRange.new(0.3, 0.5),
 		Speed = NumberRange.new(0.5, 1.5), SpreadAngle = Vector2.new(40, 40), Acceleration = Vector3.new(0, -22, 0),
 		Size = NumberSequence.new(0.3, 0.08), LightEmission = 0.6 })
@@ -780,8 +797,8 @@ Pocisk.jad = function(fx, od, do_, czas, opcje)
 		opcje.luk = 0.9
 	end
 	-- przód lotu to −Z: krople za główną kroplą są na +Z
-	return lot(fx, { { g, CFrame.identity }, { r, CFrame.new(0, 0.05, -0.15) }, { k1, CFrame.new(0, 0, 0.75) },
-		{ k2, CFrame.new(0, 0.05, 1.35) } }, od, do_, czas, opcje)
+	return lot(fx, { { g, CFrame.identity }, { r, CFrame.new(0, 0.05, -0.2) }, { k1, CFrame.new(0, 0, 1.0) },
+		{ k2, CFrame.new(0, 0.05, 1.8) } }, od, do_, czas, opcje)
 end
 
 function Efekty:pocisk(nazwa: string, od: Vector3, do_: Vector3, czas: number, opcje: any?)
@@ -1351,14 +1368,14 @@ Wyglad.kamuflaz = function(fx, aktor)
 	local s = math.clamp(h / 6, 0.7, 1.8)
 	local liscie = {}
 	for i = 1, 6 do
-		local p = fx:czesc({ Klasa = "WedgePart", Name = "LiscKamuflazu", Size = Vector3.new(0.1, 0.5, 0.9) * s,
-			Color = hex(if i % 3 == 0 then "#C8E86A" elseif i % 2 == 0 then "#3E8C2A" else "#6FBF3A"),
+		local p = fx:czesc({ Klasa = "WedgePart", Name = "LiscKamuflazu", Size = Vector3.new(0.14, 0.75, 1.35) * s,
+			Color = hex(if i % 3 == 0 then "#E6F58A" elseif i % 2 == 0 then "#9BD94A" else "#C8E86A"),
 			Material = Enum.Material.SmoothPlastic })
 		table.insert(o.czesci, p)
 		liscie[i] = { p = p, kat = (i - 1) / 6 * 6.283, y = (0.28 + 0.42 * ((i - 1) % 2)) * h }
 	end
 	local krag = fx:czesc({ Name = "KamuflazKrag", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.1, r * 2, r * 2),
-		Color = hex("#FFD23F"), Transparency = 0.45 })
+		Color = hex("#FFD23F"), Transparency = 0.25 })
 	table.insert(o.czesci, krag)
 	local obieg = 0
 	function o:krok(d)
@@ -1372,7 +1389,7 @@ Wyglad.kamuflaz = function(fx, aktor)
 		end
 		obieg += d * tempo
 		krag.CFrame = stopy * CFrame.new(0, 0.1, 0) * CFrame.Angles(0, 0, rad(90))
-		krag.Transparency = 0.5 + 0.2 * math.sin(self.wiek * 4)
+		krag.Transparency = 0.3 + 0.15 * math.sin(self.wiek * 4)
 		for _, l in liscie do
 			local kat = l.kat + obieg
 			l.p.CFrame = stopy * CFrame.Angles(0, kat, 0) * CFrame.new(r, l.y + math.sin(self.wiek * 3 + l.kat) * 0.2, 0)

@@ -635,7 +635,7 @@ budowie (i `Moduly/Dziennik` z `src/shared/Walka`) — źródło prawdy zostaje 
 - **Własny wygląd tej samej umiejętności u innego aktora** (potwór biomu pożycza umiejętność klasy, a ma wyglądać
   inaczej): wpis w `Choreografie.UMIEJETNOSCI_AKTORA` — opis niżej.
 
-## Własny wygląd umiejętności u aktora (18.11.2026, propozycja — część A bez Studio)
+## Własny wygląd umiejętności u aktora (18.11.2026, propozycja — wdrożone w Studio)
 
 Silnik zna tylko id umiejętności, a potwory biomów pożyczają umiejętności klas i lasu. `Choreografie.UMIEJETNOSCI_AKTORA`
 (klucz aktora → id umiejętności → wpis jak w `UMIEJETNOSCI`) daje tej samej umiejętności inny wygląd, napis i dźwięk,
@@ -662,8 +662,15 @@ Testy bez Studio (18.11.2026): `testy/test_efektow.py` — **7/7** (prawdziwy ko
 atrapach Roblox: każdy efekt tworzy się i kończy przy kroku ×1 / ×2 / ×4, dokładny koszt 14 efektów Dżungli, 36
 dawnych efektów tworzy tyle samo instancji co przed zmianą, pominięcie w locie nie zostawia niczego);
 `testy/test_odtwarzacza.py` — dwa nowe testy (dane wpisów; prawdziwy kod `wpisChoreo` i `wygladEfektu` w interpreterze
-dla wszystkich aktorów). Wygląd i geometrię (czy kły trafiają w pierś, czy „Z” jest czytelne) pokaże dopiero Studio:
-`swiat/dzungla_pas_gra/testy/proba_play.py`, punkty J15–J17.
+dla wszystkich aktorów). Wygląd i geometrię pokazuje dopiero Studio: `swiat/dzungla_pas_gra/testy/proba_play.py`,
+punkty J15–J17.
+
+W Studio (18.11.2026, `zbuduj.py --skrypty`, tryb Edit): próba Dżungli J00–J17 zielona (wyniki, koszt zmierzony
+w grze i lista poprawek po obejrzeniu zrzutów: `swiat/dzungla_pas_gra/README.md`). Walka z tablicy
+(`testy/proba_play.py --zywo`, Wojownik z Leśnym Trollem, ziarno 7): wygrana, `OstatniKosztEfektow` =
+`wybuch:krytyk=17;wyglad:gwiazdki=7;wyglad:odlamki=4;…` (same dawne efekty, liczby jak w `test_efektow.py`), żadnego
+efektu Dżungli, `OstatnieBrakiChoreografii` = 0, konsola bez błędów. `stan()` podaje też `aura` (chwila błysku
+umiejętności na siebie).
 
 ## Pliki
 

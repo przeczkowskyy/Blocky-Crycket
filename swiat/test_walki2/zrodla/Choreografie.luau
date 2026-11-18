@@ -145,7 +145,7 @@ Ch.UMIEJETNOSCI_AKTORA = {
 	},
 	-- Gębokwiat: usypiający pyłek (silnik: lodowy pocisk ze spowolnieniem) — żółta chmura, „zzz” nad uśpionym
 	gebokwiat = {
-		lodowy_pocisk = { styl = "pocisk", pocisk = "pylek", wybuch = "pylek", predkosc = 17, wstrzas = 0.3, grot = 0.6, nazwa = "Usypiający pyłek", wyglady = { spowolnienie = "sen" }, dzwiekUderzenia = false, dzwiekWypuszczenia = "zarodniki" },
+		lodowy_pocisk = { styl = "pocisk", pocisk = "pylek", wybuch = "pylek", predkosc = 17, wstrzas = 0.3, grot = 0.9, nazwa = "Usypiający pyłek", wyglady = { spowolnienie = "sen" }, dzwiekUderzenia = false, dzwiekWypuszczenia = "zarodniki" },
 	},
 	-- Kokosowy Siłacz: oba kokosy z góry (silnik: Potężne cięcie) — brązowa smuga, odłamki łupiny, fala na ziemi
 	kokosowy_silacz = {
@@ -157,8 +157,8 @@ Ch.UMIEJETNOSCI_AKTORA = {
 	},
 	-- Wąż Stu Lian: jad (silnik: Zatruta strzała) — zielona struga i bąble; ukąszenie (silnik: Rozszarpanie) — kły
 	waz_stu_lian = {
-		zatruta_strzala = { styl = "pocisk", pocisk = "jad", wybuch = "jad", predkosc = 16, stronaKamery = -1, grot = 0.5, nazwa = "Plunięcie jadem", dzwiekUderzenia = "galareta", dzwiekWypuszczenia = "rzut", dzwiekWbudowany = "plusk" },
-		rozszarpanie = { styl = "wrecz", kly = "#E9FFD0", wybuch = "ukaszenie", wstrzas = 0.4, kamera = "zaBroniacym", nazwa = "Ukąszenie" },
+		zatruta_strzala = { styl = "pocisk", pocisk = "jad", wybuch = "jad", predkosc = 16, stronaKamery = -1, grot = 0.7, nazwa = "Plunięcie jadem", dzwiekUderzenia = "galareta", dzwiekWypuszczenia = "rzut", dzwiekWbudowany = "plusk" },
+		rozszarpanie = { styl = "wrecz", kly = "#FFF6DC", wybuch = "ukaszenie", wstrzas = 0.4, kamera = "zaBroniacym", nazwa = "Ukąszenie" },
 	},
 }
 

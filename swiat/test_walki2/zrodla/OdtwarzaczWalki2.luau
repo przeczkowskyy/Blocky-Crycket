@@ -1608,7 +1608,7 @@ function Sesja:skutekAtaku(ev, cicho: boolean)
 		end
 		if c.kly then -- ukąszenie (Wąż Stu Lian): kły zatrzaskują się na piersi celu, od strony atakującego
 			local cf = CFrame.lookAt(piers, self:piers(z.kto))
-			self.fx:ukaszenie(cf * CFrame.new(0, 0, -0.6), Color3.fromHex(c.kly), math.max(1.4, D.wpis.wysokosc * 0.35))
+			self.fx:ukaszenie(cf * CFrame.new(0, 0, -0.6), Color3.fromHex(c.kly), math.clamp(D.wpis.wysokosc * 0.45, 1.6, 3.2))
 		end
 	end
 	-- reakcja celu
@@ -3980,6 +3980,7 @@ function Odtwarzacz.stan()
 		-- kto i czym (próba własnych efektów): umiejętność z dziennika i wygląd z wpisu choreografii
 		wynik.kto = ev.z.kto
 		wynik.umiejetnosc = ev.z.umiejetnosc
+		wynik.aura = if ev.styl == "na_siebie" and ev.eRel then ev.t + ev.eRel else nil -- chwila błysku umiejętności na siebie
 		local c = ev.choreo
 		wynik.wyglad = if c then { pocisk = c.pocisk, wybuch = c.wybuch, aura = c.aura, nazwa = c.nazwa, kly = c.kly ~= nil,
 			pazuryKrzyz = c.pazuryKrzyz == true } else nil

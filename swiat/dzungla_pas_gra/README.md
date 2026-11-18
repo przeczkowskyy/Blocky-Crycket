@@ -34,7 +34,7 @@ całość da się cofnąć (`--usun`).*
 Razem ze strażnikiem: 8 / 11 / 14 potworów przy 1 / 8 / 20 graczach. W scalonych strefach poziomy są rozdawane po
 miejscach (`poziomyPoMiejscach`, jak w lesie i Bagnie). Wygrane klas wzorcowych: `python -B swiat/dzungla_pas_gra/przeciwnicy.py`.
 
-## Własne efekty umiejętności (18.11.2026, propozycja — część A bez Studio; próba w grze J15–J17 jeszcze nie uruchomiona)
+## Własne efekty umiejętności (18.11.2026, propozycja — wdrożone w Studio, próba w grze J15–J17 zielona)
 Potwory Dżungli używają umiejętności, które silnik zna z klas i z lasu (te same id, liczby i czasy — **dane walki bez
 zmian**). Dotąd pożyczały też ich wygląd. Teraz każda ma własny, podpięty danymi: tabela
 `Choreografie.UMIEJETNOSCI_AKTORA` (klucz aktora → id umiejętności) w `swiat/test_walki2/zrodla/Choreografie.luau`;
@@ -49,7 +49,7 @@ nie może zmienić stylu, prędkości pocisku ani kamery (`Ch.POLA_CZASU`) — p
 | Kokosowy Siłacz | `ciecie` | cios 2,06 × | biała smuga miecza (Wojownik) | brązowa smuga kokosów, biały błysk i odłamki łupiny, fala na ziemi | Kokosy z góry |
 | Pancernik Ruin | `kamienna_skora` | tarcza procentowa na siebie | szary błysk, sześć szarych głazów i szara powłoka (Wojownik) | turkusowy błysk rytów; cztery płyty ruin z turkusowym rytem i turkusowa powłoka | Kamienna skóra (bez zmian) |
 | Wąż Stu Lian | `zatruta_strzala` | pocisk + trucizna (stosy) | strzała z zielonym grotem (Zwiadowca) | zielona struga jadu ze smugą i kroplami, rozprysk i unoszące się bąble | Plunięcie jadem |
-| Wąż Stu Lian | `rozszarpanie` | cios 1,4 × + krwawienie | trzy czerwone ślady pazurów (Cierniowy Wilk) | cztery kły zatrzaskują się na celu, rozprysk krwi z kroplą jadu | Ukąszenie |
+| Wąż Stu Lian | `rozszarpanie` | cios 1,4 × + krwawienie | trzy czerwone ślady pazurów (Cierniowy Wilk) | cztery kły (górne szerzej, dolne między nimi) zatrzaskują się na celu przodem do kamery, rozprysk krwi z kroplą jadu | Ukąszenie |
 
 Statusy w interfejsie (ikona, kolor, napis „SPOWOLNIENIE!”, „TRUCIZNA!”, „KRWAWIENIE!”…) są te same co zawsze. Zmienia
 się tylko ozdoba na postaci dla spowolnienia od pyłku („zzz”), Kamuflażu i Kamiennej skóry Pancernika; trucizna i
@@ -88,6 +88,37 @@ W grze odtwarzacz zapisuje koszt w atrybucie `OstatniKosztEfektow` kontenera `Te
   wbudowany „plusk”); ryk Węża na początku umiejętności zostaje;
 - ukąszenie, rozszarpanie, kokosy: „cios” jak dotąd; Kamuflaż i Kamienna skóra: „rzut” jak dotąd.
 
+**Próba w grze 18.11.2026** (`testy/proba_play.py`, trzy przebiegi, ostatni na końcowym kodzie 15:48–15:54, jeden
+gracz, Studio na PC): **J00–J12, J14–J17 OK**, J13 (pomiar) śr. 16,7 ms, p95 17,6 ms w Gaju Kokosów.
+- **J15** — z każdym z pięciu gatunków walka z ziarnem, w którym potwór trafia umiejętnością (ziarno liczy port
+  silnika w Pythonie); scena zatrzymana haczykiem `wstrzymaj`; wszystkie 7 umiejętności ma wygląd z wpisu własnego,
+  ozdoby statusów zgodne (`gracz:spowolnienie` = `sen`, `wrog:skupienie` = `kamuflaz`, `wrog:kamienna_skora` = `ruiny`,
+  trucizna `babelki`, krwawienie `krople`). Koszt zmierzony w grze (licznik odtwarzacza i atrybut
+  `OstatniKosztEfektow`): `pocisk:pylek` 5, `wybuch:pylek` 10, `wyglad:sen` 11, `pocisk:jad` 8, `wybuch:jad` 15,
+  `ukaszenie:kly` 4, `pazury:krzyz` 6, `wyglad:kamuflaz` 8, `wyglad:ruiny` 10 — równy tabeli wyżej albo niższy (iskry
+  z puli).
+- **J16** — walki przy ×2 (Zwijogon) i ×4 (Gębokwiat) do końca: po zamknięciu 0 instancji efektów.
+- **J17** — wymuszone pominięcie w locie pyłku: w locie 4 części pyłku, po pominięciu 0 instancji i 0 ozdób.
+- Wąż w J15 walczy z bohaterem, który przegrywa (Wojownik poz. 20, ziarno z portu) — brama zostaje zamknięta przed
+  J10; rzadki Pancernik idzie na końcu J15, bo po walce z J06 wraca dopiero po 150 s.
+
+Co wyszło w próbie i zostało poprawione (trzy rundy):
+1. Kły ustawione do atakującego było w ujęciu z boku widać tylko krawędzią (biała kreska) → paszcza stoi przodem do
+   kamery, kły są większe (skala od wzrostu celu 0,45, 1,6–3,2), górne szerzej, dolne między nimi, kość słoniowa bez
+   świecenia (świecące zlewały się w słupki).
+2. Chmura pyłku i struga jadu w locie były z daleka za małe → większe kłęby i krople (liczba części bez zmian).
+3. Liście Kamuflażu zlewały się z zielonym Zwijogonem → większe i jaśniejsze (żółtozielone), wyraźniejsza złota obręcz.
+4. Próba: część efektu nazywała się „Kiel” jak części modeli Węża i Kokosowego Siłacza, więc licznik pozostałości
+   liczył modele → `KielUkaszenia` (test pilnuje, że nazwy części efektów nie powtarzają nazw części modeli); koszt
+   czytany z kontenera krainy; błysk umiejętności „na siebie” łapany w chwili `aura`, nie na „trafieniu”.
+
+Zrzuty (`klatki/e_*.jpg`, z próby J15 i J17): `e_gebokwiat_lodowy_pocisk_{lot,trafienie,status}`,
+`e_waz_stu_lian_zatruta_strzala_{lot,trafienie,status}`, `e_waz_stu_lian_rozszarpanie_{trafienie,status}`,
+`e_zwijogon_skupienie_{trafienie,status}`, `e_zwijogon_rozszarpanie_{trafienie,status}`,
+`e_kokosowy_silacz_ciecie_trafienie`, `e_pancernik_ruin_kamienna_skora_{trafienie,status}`, `e_pominiecie_w_locie`.
+
+Czego próba nie sprawdza: dźwięków (nikt ich nie słuchał), wyglądu w ruchu (zrzuty to pojedyncze klatki), telefonu.
+
 **Do oceny przez ludzi** (wszystko „przyjęte, do zmiany”):
 1. Napisy umiejętności inne niż nazwa w silniku: „Usypiający pyłek”, „Plunięcie jadem”, „Ukąszenie”, „Kokosy z góry”,
    „Kamuflaż” — czy tak, czy zostawić nazwy silnika.
@@ -95,6 +126,9 @@ W grze odtwarzacz zapisuje koszt w atrybucie `OstatniKosztEfektow` kontenera `Te
 3. Trucizna Węża i krwawienie zostają przy wspólnych bąbelkach i kroplach — czy Wąż ma mieć własną ozdobę trucizny.
 4. Kokosy: fala na ziemi przy każdym trafieniu — czy nie za mocno jak na zwykłego potwora.
 5. Dźwięki: plusk galarety dla jadu i zarodniki dla pyłku — do odsłuchu w grze.
+6. Kły Węża: kość słoniowa bez świecenia ma czytelny kształt, ale słabszy kontrast na jasnej posadzce areny niż
+   świecąca biel — do wyboru (zrzut `e_waz_stu_lian_rozszarpanie_trafienie.jpg`).
+7. Płyty ruin Pancernika są szare jak sam Pancernik — z daleka czyta się głównie turkusowa powłoka i ryt.
 
 ## Styki z innymi pakietami (dokładne podmiany)
 - Bagno (`swiat/bagno_pas_gra`) już wskazywało następny biom `DzunglaPas` — przy stojącej Dżungli brama Bagna
