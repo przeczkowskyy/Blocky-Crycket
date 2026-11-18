@@ -595,6 +595,7 @@ Dopisek z 2026-11-18 (po obróbce i próbie w Studio): gotowe wersje są w `asse
 
 Szczegóły: To pytanie z sekcji „Do ustalenia” notatki [[Rasy — rzuty dla modelarza]], teraz z modelami do porównania: raport w panelu „Modele ras z rzutów Pawła: elf i ork do oceny (pilotaż)” (plansze „rzut i model”, modele 3D). Na rzutach tułów z rękami to ok. 0,45 wzrostu, w modelu 0,78 (pomiar przybliżony). Przy (a) rasę odróżniają skóra, twarz, uszy, włosy, rogi, kły, ogon, aureola i kolor spodenek, a wielkość to mnożnik całego modelu, więc ekwipunek rośnie razem z postacią. Przy (b) kontrakt z D-071 („przedmiot pasuje do typu ciała”) oznacza osobne dopasowanie 20 przedmiotów bohaterów do każdej rasy. Pozostałe cztery rasy powstają na razie według (a). Opis: `swiat/postacie/RASY.md`.
 Dopisek z 2026-11-18: komplet sześciu ras stoi na tym założeniu — plansza zbiorcza obok człowieka w raporcie „Sześć ras z rzutów Pawła: komplet modeli do oceny”. Najdalej od rzutu jest goblin (na rysunku duża głowa i cienkie ręce) i ork (masywne ciało).
+Dopisek z 2026-11-18 (Paweł w rozmowie z Claude Code, do potwierdzenia w panelu): „w momencie wybierania rasy (…) wyświetli się zamiast ludzika bazowego model, który zrobił Karol, zależnie od rasy, z bazowym ubraniem” — ekran wyboru pokazuje już figury z `Workspace/RasyProba` (dzisiejsze klocki i skale, wariant a).
 **Odpowiedź:**
 
 ## 68. Rasa a klasa Mag: Mag jest kotem
@@ -603,6 +604,7 @@ Dopisek z 2026-11-18: komplet sześciu ras stoi na tym założeniu — plansza z
 - Do wyboru: (a) Mag dowolnej rasy na ciele człowieka — potrzebne nowe przedmioty Maga dla człowieka, kot zostaje maskotką; (b) klasa Mag bez wyboru rasy (zawsze kot).
 
 Szczegóły: Wyszło przy budowie modeli ras (D-104): przedmioty mają typ ciała (`czlowiek` albo `kot`, D-071) i założenie szaty kota na ciało człowieka kończy się błędem. Dotyczy też logiki ras, którą robi sesja Pawła (D-079), i ekranu wyboru (D-081). Opis: `swiat/postacie/RASY.md` pkt 9.
+Dopisek z 2026-11-18 (Paweł w rozmowie z Claude Code, do potwierdzenia w panelu): „po wyborze ten model ma być na graczu (…) gracz wybierze demona i chodzi demonem; dziś są modele rycerza, łucznika i kotka, a chciałbym, żeby ten model był zamiast tego” — czyli rasa zamiast modelu klasy także u Maga (bliżej wariantu a: Mag na ciele rasy; brakuje przedmiotów i klipów Maga dla ciała człowieka).
 **Odpowiedź:**
 
 ## 69. Rasy: drobne wybory wyglądu

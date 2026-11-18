@@ -652,7 +652,9 @@ end
 -- Przycisk leży co do piksela na swojej kopii w grafice tła — każde powiększenie, zmniejszenie albo przyciemnienie samego
 -- obrazka odsłaniało kopię pod spodem (uwaga Pawła 16–17.11). Reakcja na mysz: nakładka-cień w kształcie przycisku
 -- (ten sam obrazek na czarno; dla pola bez obrazka — zaokrąglony prostokąt) i podskok napisu.
-local SHADE_OFF, SHADE_HOVER_OFF, SHADE_PRESS = 0.5, 0.72, 0.62
+-- przezroczystość cienia (1 = brak cienia): spoczynek lekko przygaszony, najechanie = rozjaśnienie (Paweł 18.11: napis
+-- się nie animuje — przy skalowaniu wyjeżdżał za przycisk — tylko przycisk się podświetla)
+local SHADE_ON, SHADE_OFF, SHADE_HOVER_OFF, SHADE_PRESS = 0.86, 0.5, 0.72, 0.62
 local function flatButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
 	local sc = btn:FindFirstChildWhichIsA("UIScale")
 	if sc then
@@ -691,11 +693,11 @@ local function flatButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
 			lsc.Parent = label
 		end
 	end
-	local base, hovering, pressed = 1, false, false
+	local base, hovering, pressed = SHADE_ON, false, false
 	local function apply()
 		local t = base
-		if hovering and t < 1 then
-			t = SHADE_HOVER_OFF
+		if hovering then
+			t = (base == SHADE_ON) and 1 or SHADE_HOVER_OFF -- aktywny: pełna jasność; nieaktywny: mniej cienia
 		end
 		if pressed then
 			t = math.min(t, SHADE_PRESS)
@@ -703,7 +705,7 @@ local function flatButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
 		local prop = shade:IsA("ImageLabel") and "ImageTransparency" or "BackgroundTransparency"
 		TS:Create(shade, QUICK, { [prop] = t }):Play()
 		if lsc then
-			TS:Create(lsc, QUICK, { Scale = pressed and 0.95 or (hovering and 1.12 or 1) }):Play()
+			lsc.Scale = 1 -- napis bez animacji
 		end
 	end
 	btn.MouseEnter:Connect(function()
@@ -727,8 +729,9 @@ local function flatButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
 		apply()
 		onClick()
 	end)
+	apply() -- stan spoczynku od razu (lekko przygaszony), żeby najechanie było widać jako podświetlenie
 	return function(active: boolean)
-		base = active and 1 or SHADE_OFF
+		base = active and SHADE_ON or SHADE_OFF
 		apply()
 	end
 end

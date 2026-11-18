@@ -17,23 +17,24 @@ export type Race = {
 	skin: Color3, -- kolor skóry na modelu-zastępcy, dopóki nie ma modeli ras (D-079)
 	trait: string, -- krótki opis cechy pasywnej (PROPOZYCJA, bez liczb)
 	premium: boolean?, -- rasa za Robuxy (D-080) — na razie zablokowana, zakupów jeszcze nie ma
+	model: string, -- figura rasy z wystawy Karola (Workspace/RasyProba/<model>, D-104) → WyborKlasyModele.Race_<id>
 }
 
 RaceData.Races = {
 	{ id = "Human", name = "HUMAN", icon = "RaceHuman", color = Color3.fromRGB(110, 190, 255),
-		skin = Color3.fromRGB(255, 204, 160), trait = "BALANCED IN EVERYTHING" },
+		skin = Color3.fromRGB(255, 204, 160), trait = "BALANCED IN EVERYTHING", model = "czlowiek" },
 	{ id = "Demon", name = "DEMON", icon = "RaceDemon", color = Color3.fromRGB(255, 92, 80),
-		skin = Color3.fromRGB(200, 52, 48), trait = "MORE HEALTH & STRENGTH" },
+		skin = Color3.fromRGB(200, 52, 48), trait = "MORE HEALTH & STRENGTH", model = "demon" },
 	{ id = "DarkElf", name = "DARK ELF", icon = "RaceDarkElf", color = Color3.fromRGB(196, 140, 255),
-		skin = Color3.fromRGB(150, 138, 178), trait = "MORE DEXTERITY & LUCK" },
+		skin = Color3.fromRGB(150, 138, 178), trait = "MORE DEXTERITY & LUCK", model = "mroczny_elf" },
 	{ id = "Elf", name = "ELF", icon = "RaceElf", color = Color3.fromRGB(120, 230, 140),
-		skin = Color3.fromRGB(255, 222, 190), trait = "MORE INTELLIGENCE" },
+		skin = Color3.fromRGB(255, 222, 190), trait = "MORE INTELLIGENCE", model = "elf" },
 	{ id = "Orc", name = "ORC", icon = "RaceOrc", color = Color3.fromRGB(170, 200, 90),
-		skin = Color3.fromRGB(122, 156, 74), trait = "MORE STRENGTH & ARMOR" },
+		skin = Color3.fromRGB(122, 156, 74), trait = "MORE STRENGTH & ARMOR", model = "ork" },
 	{ id = "Goblin", name = "GOBLIN", icon = "RaceGoblin", color = Color3.fromRGB(255, 170, 60),
-		skin = Color3.fromRGB(176, 206, 70), trait = "MORE LUCK & GOLD" },
+		skin = Color3.fromRGB(176, 206, 70), trait = "MORE LUCK & GOLD", model = "goblin" },
 	{ id = "Demigod", name = "DEMIGOD", icon = "RaceDemigod", color = Color3.fromRGB(255, 214, 90),
-		skin = Color3.fromRGB(240, 196, 110), trait = "PREMIUM RACE — COMING SOON", premium = true },
+		skin = Color3.fromRGB(240, 196, 110), trait = "PREMIUM RACE — COMING SOON", premium = true, model = "polbog" },
 } :: { Race }
 
 function RaceData.byId(id: string): Race?
