@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T14:51:43+01:00",
+ "aktualizacja": "2026-11-18T14:51:47+01:00",
  "prace": [
   {
    "id": "cutscenka-biomu",
@@ -14,6 +14,22 @@
    "obszary": [
     "swiat/cutscenka_biomu/**",
     "studio:CutscenkaBiomu"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "dzungla-efekty",
+   "tytul": "Dżungla: własne efekty umiejętności potworów w walce",
+   "stan": "w_toku",
+   "start": "2026-11-18T14:51:47+01:00",
+   "koniec_szacowany": "2026-11-18T16:11:47+01:00",
+   "aktualizacja": "2026-11-18T14:51:47+01:00",
+   "obszary": [
+    "swiat/dzungla_pas_gra/**",
+    "swiat/test_walki2/**",
+    "studio:DzunglaPasGra",
+    "studio:TestWalki2"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
