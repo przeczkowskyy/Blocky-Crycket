@@ -33,6 +33,8 @@ PROBY = [
     ("kowal", ["swiat/kowal_proba/testy/proba_play.py", "--bez-zrzutow"], 1200),
     ("stroje", ["swiat/stroje_proba/testy/proba_play.py", "--bez-zrzutow"], 1500),
     ("trening", ["swiat/trening_proba/testy/proba_play.py", "{w}/trening", "--bez-zrzutow"], 1200),
+    ("bohater", ["swiat/bohater_swiat/testy/proba_play.py", "{w}/bohater", "--bez-zrzutow"], 1200),
+    ("rasy", ["swiat/rasy_proba/testy/proba_play.py", "{w}/rasy", "--bez-zrzutow"], 600),
     ("bazar", ["swiat/miasteczko_bazar_gra/testy/proba_play.py", "{w}/bazar", "--bez-zrzutow"], 1200),
     ("chmury", ["swiat/teleport_chmury/testy/proba_play.py", "{w}/chmury"], 1200),
     ("dzwiek", ["swiat/dzwiek_gra/testy/proba_play.py", "{w}/dzwiek"], 900),
