@@ -559,5 +559,6 @@ Szczegóły: Potwory i liczby: raport „Dżungla stoi w Studio: trzeci biom do 
 - Do wyboru: (a) bohater klasy wszędzie; (b) awatar w świecie, bohater tylko w walce — jak dotąd; (c) gracz sam wybiera w ustawieniach.
 
 Szczegóły: Próba powstaje w `swiat/bohater_swiat/` (kontener `Workspace/BohaterSwiat`) z wyłącznikiem, który przywraca awatar bez przebudowy. Za (a): gracz widzi w świecie strój i przedmioty z D-071, a rasy z D-079 mają sens także poza walką. Za (b): gracze Roblox są przywiązani do własnego awatara, a bohater z klocków to więcej części na ekranie telefonu. Wynik próby i zrzuty dojdą w raporcie w panelu.
+Dopisek z 2026-11-18 (po próbie w Studio): bohater chodzi po świecie w stroju gracza u wszystkich trzech klas; raport w panelu „Bohater klasy chodzi po świecie zamiast awatara” ze zrzutami i modelami 3D. Wyłącznik bez przebudowy: atrybut `BohaterWSwiecie = false` na `Workspace/BohaterSwiat`. Na komputerze 60 klatek na sekundę także z dwunastoma bohaterami naraz; telefon niesprawdzony. Drugi wybór przy okazji: bieg liczony przez kod (jest dziś) czy ręcznie zrobiony klip biegu w modelach postaci.
 **Odpowiedź:**
 

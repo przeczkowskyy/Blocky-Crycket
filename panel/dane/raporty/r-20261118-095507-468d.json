@@ -1,0 +1,50 @@
+{
+ "id": "r-20261118-095507-468d",
+ "tytul": "Bohater klasy chodzi po świecie zamiast awatara",
+ "opis_md": "- Po wyborze klasy gracz chodzi po starym miasteczku, bazarze i biomach modelem swojego bohatera (Wojownik, Zwiadowca, Mag) w tym, co ma założone. Awatar Roblox jest wtedy niewidoczny.\n- Bohater biega własnym cyklem biegu, skacze i wraca po odrodzeniu; pety, walki, teleport przez chmury, przymierzalnia i kowal działają jak przedtem.\n- To propozycja (pytanie 63) z wyłącznikiem: atrybut `BohaterWSwiecie = false` na `Workspace/BohaterSwiat` od razu przywraca awatar.\n- Do oceny przez ludzi: jak wygląda bieg — kolana są mocno ugięte, a u kota szata prawie zakrywa nogi.\n\nSzczegóły:\n\n**Jak sprawdzić w Studio:** Play → wybierz klasę → WASD i spacja. Strój zmienia stojak „Przymierzalnia” przy starcie (E) albo przedmiot z łupu u kowala.\n\n**Próba w grze (18.11, 08:46–09:50): 19 punktów w porządku, 1 bez rozstrzygnięcia, 0 błędów**\n\n| Co sprawdzone | Wynik |\n|---|---|\n| Przed wyborem klasy | awatar jak dawniej |\n| Po wyborze klasy | bohater w stroju gracza, awatar niewidoczny |\n| Fizyka postaci | bez zmian: ta sama prędkość (16,3 st na sekundę z bohaterem i bez), ten sam skok |\n| Stopy | stoją na ziemi; w biegu stopa w podporze nie przesuwa się (0,000 st u trzech klas) |\n| Strój | goły, mieszany i komplet z przymierzalni; hełm z łupu kowala zakłada się sam |\n| Reset postaci | upadek, po odrodzeniu bohater wraca |\n| Pet | idzie za bohaterem jak za awatarem |\n| Walka w lesie | w walce bohater świata się chowa, po walce wraca |\n| Teleport przez chmury | bohater ląduje razem z postacią |\n| Runda Training Center | rusza bez błędów; całą rundę z bohaterem przeszła próba całej drogi gracza |\n| Cała droga gracza z bohaterem | 14 z 14 na ostatniej wersji; próba walki 111 z 111 i przymierzalnia 10 w porządku na wersji o jedną poprawkę wcześniejszej |\n\n**Liczby:** bohater ma 74–182 brył zależnie od klasy i stroju. Na komputerze 60 klatek na sekundę także z dwunastoma bohaterami naraz (1861 brył). Każdy klient pokazuje najwyżej 12 najbliższych bohaterów w promieniu 260 st; dalej widać awatar.\n\n**Jak to działa:** postać Roblox zostaje w całości (sterowanie, kamera, kolizje, podpowiedzi E), a bohater jest osobnym modelem ustawianym pod nią u każdego klienta. Spoczynek to klip z walki; bieg, skok i lądowanie są liczone w pakiecie, bez zmian w modelach postaci i w walce. Dla mini-gier jest haczyk `RuchBohatera` (bieg w miejscu, skok, padnij, ręce w górę, radość).\n\n**Czego nie sprawdzono:** prawdziwy telefon, dwóch prawdziwych graczy, bieg po łuku i po pochyłości. Gdy postać wpadnie na przeszkodę, stopa ślizga się (0,56 st w jednym kroku).\n\n**Znane słabości:** w widoku z pierwszej osoby bohater znika; bryła kolizji i wysokość kamery zostają z awatara, więc miecz przechodzi przez ściany, a kot jest niższy niż jego bryła; ręka z mieczem prawie się nie rusza w biegu.\n\n**Wybory dla ludzi (pytanie 63):** bohater wszędzie, awatar jak dotąd, czy wybór gracza. Do tego: bieg liczony przez kod czy ręcznie zrobiony klip biegu w modelach postaci.\n\nPliki: `swiat/bohater_swiat/` (opis w `README.md`, wybory w `PROJEKT.md`, zrzuty w `klatki/`).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T09:55:07+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/BohaterSwiat",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytanie 63"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/rycerz/rycerz.glb",
+   "etykieta": "Wojownik — model 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/zwiadowca/zwiadowca.glb",
+   "etykieta": "Zwiadowca — model 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/kot_mag/kot_mag.glb",
+   "etykieta": "Mag — model 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/bohater_swiat/README.md",
+   "etykieta": "Opis pakietu"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
