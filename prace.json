@@ -2,22 +2,6 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T09:55:58+01:00",
- "prace": [
-  {
-   "id": "minigry-kamera-efekty",
-   "tytul": "Mini-gry: kamera i komiksowe efekty jak w walce",
-   "stan": "w_toku",
-   "etap": "kod bez Studio; próby w grze po bohaterze",
-   "start": "2026-11-18T07:59:49+01:00",
-   "koniec_szacowany": "2026-11-18T10:45:00+01:00",
-   "aktualizacja": "2026-11-18T08:47:01+01:00",
-   "obszary": [
-    "studio:TreningProba",
-    "swiat/trening_proba"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  }
- ]
+ "aktualizacja": "2026-11-18T11:04:00+01:00",
+ "prace": []
 }
