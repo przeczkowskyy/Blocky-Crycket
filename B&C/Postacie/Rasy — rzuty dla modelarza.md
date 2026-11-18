@@ -23,8 +23,14 @@ tags: [postacie, rasy, rzuty, modele]
 - Higgsfield, Nano Banana 2.1, 16:9, 4k, po jednej kopii; części stałe promptu z [[Instrukcja promptów — Glossy Ink]], środek: arkusz rzutów dla modelarza (A-poza, te same wymiary, wspólna linia stóp). Przycięcie i pomniejszenie: `tools/raceselect_assets.py`.
 - Ikony ras do ekranu wyboru (te same twarze): `assets/processed/RaceSelect/Race<Id>.png` — zob. [[Selektor bohatera]].
 
+## Stan modeli (18.11.2026)
+- Modele robi agent Karola (D-104). **Pilotaż: elf i ork** zbudowane w Blenderze na ciele człowieka (te same klocki, kości i klipy co Rycerz i Zwiadowca), w stroju bazowym z rzutów; każdy przedmiot człowieka pasuje. To propozycja do oceny — raport w panelu „Modele ras z rzutów Pawła: elf i ork do oceny (pilotaż)”.
+- W budowie: demon, mroczny elf, goblin (pierwszy rzut) i Półbóg, na tym samym założeniu. Potem modele w Studio.
+- Kod i opis: `swiat/postacie/rasy.py`, `swiat/postacie/RASY.md`; wyniki: `swiat/postacie/wynik/rasa_<id>/`.
+- Pytania do ludzi w [[Pytania otwarte]]: 67 (proporcje ras), 68 (rasa a klasa Mag), 69 (drobne wybory wyglądu).
+
 ## Do ustalenia
-- Czy rasy mają tylko inną głowę, skórę i dodatki (rogi, uszy, ogon, kły) na tym samym ciele R15, czy własne proporcje (ork szerszy, goblin niższy) — wpływa na ekwipunek z D-071 (przedmiot pasuje do typu ciała).
+- (Pytanie 67 w [[Pytania otwarte]].) Czy rasy mają tylko inną głowę, skórę i dodatki (rogi, uszy, ogon, kły) na tym samym ciele R15, czy własne proporcje (ork szerszy, goblin niższy) — wpływa na ekwipunek z D-071 (przedmiot pasuje do typu ciała).
 - Wygląd Półboga zależy od rozstrzygnięcia D-080 (pytanie 47: mocniejsza rasa za Robuxy czy tylko inny wygląd).
 
 ## Powiązane

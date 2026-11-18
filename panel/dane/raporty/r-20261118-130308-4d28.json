@@ -1,0 +1,38 @@
+{
+ "id": "r-20261118-130308-4d28",
+ "tytul": "Modele ras z rzutów Pawła: elf i ork do oceny (pilotaż)",
+ "opis_md": "- Dwie pierwsze rasy z rzutów Pawła są zbudowane w Blenderze: elf i ork, w stroju bazowym (lniana koszula, spodenki, brązowe buty). Modele 3D można obrócić w podglądzie poniżej.\n- Stoją na tym samym ciele co Rycerz i Zwiadowca, więc każdy przedmiot człowieka pasuje od razu — na planszach elf i ork w komplecie Rycerza i Zwiadowcy.\n- Najważniejsze pytanie (67): rzuty są smuklejsze, a ork masywniejszy niż klocki Rycerza. Zostają te same klocki ze skalą całej postaci czy rasy dostają własne proporcje?\n- Pozostałe cztery rasy (demon, mroczny elf, goblin, Półbóg) są w budowie na tym samym założeniu; potem modele trafią do Studio.\n\nSzczegóły:\n\n**Co jest na obrazach:** plansze „rzut Pawła u góry, model pod spodem” w tych samych czterech widokach; przymiarki (strój bazowy, komplet Rycerza, komplet Zwiadowcy); plansza skali orka obok człowieka.\n\n**Liczby**\n\n| | Elf | Ork |\n|---|---|---|\n| Bryły ciała + włosów | 55 + 28 | 56 + 16 |\n| Trójkąty | 2492 | 2256 |\n| Wzrost (bez włosów) | 5,30 studa | 5,72 studa po skali 1,08 |\n| Plik modelu 3D | 420 kB | 389 kB |\n| Kości, zaczepy, klipy | jak ciało człowieka (17 kości, 18 zaczepów; spoczynek, chód, wiwat) | to samo |\n\n**Przyjęte na roboczo (propozycja, nie decyzja):**\n- Rasa to ciało człowieka bez zmiany klocków. Odróżniają ją skóra, twarz, uszy, włosy, rogi, kły, ogon, aureola i kolor spodenek.\n- Wielkość rasy to jedna liczba — skala całego modelu (ork 1,08, goblin 0,88, reszta 1,0). Ekwipunek rośnie razem z postacią.\n- Buty z rzutów są częścią ciała; każdy przedmiot „buty” sam je zakrywa.\n- Włosy chowa hełm i kaptur, tak jak u Rycerza. Uszy, kły i rogi zostają zawsze.\n- Spodenki orka są brązowe (tak było w zamówieniu rzutu; na rysunku wyszły wielokolorowe).\n\n**Co odbiega od rzutów:**\n- Sylwetka. Na rzutach tułów z rękami to ok. 0,45 wzrostu, w modelu 0,78 (pomiar przybliżony). Masywnego ciała orka nie ma — niesie je głowa i skala.\n- Włosy elfa są z płaskich brył, bez fal; pasma z przodu są krótsze niż na rysunku. Kok orka wygląda kanciasto. Obie rzeczy są w poprawkach razem z kolejnymi rasami.\n- Dłonie i stopy to klocki, twarze bez mimiki.\n\n**Przenikania z przymiarek (w pozie spoczynku):**\n- Uszy przechodzą przez ściankę hełmu i kaptura (elf: czubek ok. 0,5 studa poza hełmem; ork ok. 0,3).\n- Pod hełmem i kapturem włosy znikają w całości — elf traci długie włosy, ork kok.\n- Rękawice Zwiadowcy mają dłoń w kolorze skóry człowieka, więc ork dostaje ludzkie dłonie.\n- Tył włosów elfa przecina kołczan Zwiadowcy.\n- W ruchu przenikań nie sprawdzano.\n\n**Sprawdzone:** test bez Blendera (dane sześciu ras, ciało i klipy równe człowiekowi, każdy przedmiot człowieka zakłada się na każdą rasę, istniejący bohaterowie bez zmian) — zgodne; eksporty 8 z 8 zgodnych dla każdej rasy.\n\n**Niesprawdzone i niezrobione:** nic w Roblox Studio; modele 3D w podglądzie panelu otwieram pierwszy raz tym raportem; filmów klipów nie ma (klipy są skopiowane z Rycerza — prawa ręka stoi jak do miecza); cztery pozostałe rasy mają dopiero dane i szkic.\n\n**Pytania do ludzi:** 67 (proporcje ras), 68 (rasa a klasa Mag — Mag jest kotem), 69 (drobne wybory wyglądu: hełm a uszy i włosy, spodenki orka, wariant goblina, buty, dłonie w rękawicach).\n\nPliki: `swiat/postacie/RASY.md` (opis, pytania), `swiat/postacie/rasy.py`, `rasa_elf.py`, `rasa_ork.py`, wyniki w `swiat/postacie/wynik/rasa_elf/` i `rasa_ork/`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T13:03:08+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/rasa_elf/rasa_elf.glb",
+   "etykieta": "Elf — model 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/rasa_ork/rasa_ork.glb",
+   "etykieta": "Ork — model 3D"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytania 67–69"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/RASY.md",
+   "etykieta": "Opis ras i pytania"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ]
+}

@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-18 · Claude Code u Karola (pilotaż modeli ras: elf i ork; druga partia muzyki w repo)
+- **Modele ras (D-104), pilotaż:** elf i ork zbudowane w Blenderze z rzutów Pawła (12:17–12:58). Wspólny kod sześciu ras `swiat/postacie/rasy.py` (palety, cechy głowy, skala, spodenki), moduły `rasa_elf.py` i `rasa_ork.py`, plansze „rzut i model”, przymiarki kompletów Rycerza i Zwiadowcy, test bez Blendera. **Robocze założenie agenta (propozycja):** rasa to ciało człowieka bez zmiany klocków — różni się skórą, głową, włosami, dodatkami i kolorem spodenek, a wielkość to skala całej postaci (ork 1,08, goblin 0,88). Dzięki temu każdy przedmiot człowieka pasuje; ceną jest sylwetka dalsza od rzutów (pytanie 67).
+- **Co wyszło przy przymiarkach:** uszy przechodzą przez hełm i kaptur, włosy pod nimi znikają, rękawice Zwiadowcy dają orkowi ludzkie dłonie, Mag jako kot nie łączy się z rasami (pytania 68 i 69). Istniejący bohaterowie wychodzą identycznie jak przedtem (test). W `przebuduj.py` doszedł opcjonalny haczyk `po_przebudowie` (plansze ras).
+- **Dalej:** demon, mroczny elf, goblin i Półbóg w budowie, potem Studio. Raport w panelu: „Modele ras z rzutów Pawła: elf i ork do oceny (pilotaż)” (plansze, modele 3D).
+- **Muzyka, druga partia:** pięć utworów obrobionych jak pierwsza partia (głośność -16 LUFS, wersje do pętli) i sklejonych w jeden plik-arkusz 6 min 35 s, żeby wgranie zużyło jedno miejsce z limitu; nowe narzędzia `tools/audio_petla.py` i `tools/audio_arkusz_muzyki.py`. Pakiet `swiat/dzwiek_gra/` zna własne utwory Bagna i Dżungli, muzykę walki, walki ze Strażnikiem i mini-gier (gdy utwór nie ma identyfikatora albo plik się nie wczytał — zachowanie dotychczasowe). Testy bez Studio 24 z 24; próba w Studio w toku. Nic z drugiej partii nie jest wgrane.
+- Pliki: `swiat/postacie/` (rasy), `assets/audio/`, `tools/audio_*.py`, `swiat/dzwiek_gra/`, `DOKUMENTACJA.md`; notatki [[Zadania]], [[Pytania otwarte]] (nowe 67–69), [[Rasy — rzuty dla modelarza]] (stan modeli).
+
 ## 2026-11-18 · Claude Code u Karola (muzyka Bagna i Dżungli wgrana do Roblox)
 - **Wgrane dwa pliki audio** (12:24): `muzyka_06_bagno_petla.ogg` i `muzyka_07_dzungla_petla.ogg`, na konto Karola przez Roblox Studio. Zgoda Karola na czacie („Wgraj i zaprojektuj pozostałe muzyki”), droga potwierdzona osobno („Tak, przez folder modeli”); kopie z zatwierdzonego folderu usunięte po wgraniu. W listopadzie wykorzystane 8 z 10 wgrań audio.
 - **Do zrobienia przez Karola:** nadać grze prawa do obu plików w Creator Hub (nowe zadanie w [[Zadania]]). Podpięcie w grze robi pakiet `swiat/dzwiek_gra/` (w toku).

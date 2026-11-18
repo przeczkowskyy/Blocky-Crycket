@@ -585,3 +585,27 @@ Szczegóły: (1) obejrzeć walkę v2 i raport „Walka v2 na ekranie” z decyzj
 Szczegóły: Utwory są z tego samego generatora i w tej samej palecie instrumentów co pierwsza partia (ElevenLabs Music v2.5 przez Higgsfield, 65,4 kredytu, zostało 139,6). Nikt ich jeszcze nie słyszał — pliki poszły do Karola na telefon, gotowe wersje trafią do `assets/audio/muzyka/`. Do Roblox wejdą jako jeden plik z pięcioma utworami (gra odtwarza odcinki), żeby zużyć jedno wgranie zamiast pięciu: konto ma 10 wgrań audio na miesiąc, 6 zużytych, 2 pójdą na muzykę Bagna i Dżungli z pierwszej partii. Wgranie dopiero po odsłuchu i wyraźnej zgodzie. Kto wybiera: Karol (dźwięk i muzyka, D-093); Paweł może zgłosić uwagi.
 **Odpowiedź:**
 
+## 67. Rasy: te same klocki co człowiek czy własne proporcje?
+- Pilotaż (elf, ork) stoi na klockach Rycerza: każdy przedmiot człowieka pasuje od razu, klipy klas działają bez zmian.
+- Rzuty Pawła są smuklejsze, ork masywniejszy, goblin mniejszy — same klocki tego nie oddają.
+- Do wyboru: (a) te same klocki i skala całej postaci (ork 1,08, goblin 0,88) — tak jest teraz; (b) własne klocki ras — bliżej rzutów, ale każdy przedmiot trzeba dopasować do każdej rasy.
+
+Szczegóły: To pytanie z sekcji „Do ustalenia” notatki [[Rasy — rzuty dla modelarza]], teraz z modelami do porównania: raport w panelu „Modele ras z rzutów Pawła: elf i ork do oceny (pilotaż)” (plansze „rzut i model”, modele 3D). Na rzutach tułów z rękami to ok. 0,45 wzrostu, w modelu 0,78 (pomiar przybliżony). Przy (a) rasę odróżniają skóra, twarz, uszy, włosy, rogi, kły, ogon, aureola i kolor spodenek, a wielkość to mnożnik całego modelu, więc ekwipunek rośnie razem z postacią. Przy (b) kontrakt z D-071 („przedmiot pasuje do typu ciała”) oznacza osobne dopasowanie 20 przedmiotów bohaterów do każdej rasy. Pozostałe cztery rasy powstają na razie według (a). Opis: `swiat/postacie/RASY.md`.
+**Odpowiedź:**
+
+## 68. Rasa a klasa Mag: Mag jest kotem
+- Mag to kot z własnym ciałem; rasy są ciałem człowieka, więc szata i kapelusz Maga na nie nie pasują.
+- D-079 mówi „po wyborze klasy ekran ras”, ale nie rozstrzyga, jak wygląda Mag-elf albo Mag-ork.
+- Do wyboru: (a) Mag dowolnej rasy na ciele człowieka — potrzebne nowe przedmioty Maga dla człowieka, kot zostaje maskotką; (b) klasa Mag bez wyboru rasy (zawsze kot).
+
+Szczegóły: Wyszło przy budowie modeli ras (D-104): przedmioty mają typ ciała (`czlowiek` albo `kot`, D-071) i założenie szaty kota na ciało człowieka kończy się błędem. Dotyczy też logiki ras, którą robi sesja Pawła (D-079), i ekranu wyboru (D-081). Opis: `swiat/postacie/RASY.md` pkt 9.
+**Odpowiedź:**
+
+## 69. Rasy: drobne wybory wyglądu
+- Przy modelach ras wyszło kilka małych wyborów; pilotaż przyjął robocze odpowiedzi.
+- Najważniejsze: co robi hełm z uszami, rogami i włosami; kolor spodenek orka; który rzut goblina.
+- Można odpowiedzieć na wybrane punkty, reszta zostaje jak w pilotażu.
+
+Szczegóły: (1) Hełm i kaptur dziś chowają włosy w całości, a uszy przechodzą przez ściankę — zostawić, chować też uszy czy robić hełmy z wycięciami na uszy i rogi; (2) spodenki orka: w zamówieniu rzutu brązowe, na rysunku wielokolorowe, model ma brązowe (zlewają się z butami); (3) goblin: pierwszy rzut czy „wariant 2” (większa głowa, cieńsze ręce) — w budowie jest pierwszy; (4) buty: rasy mają brązowe buty jako część ciała, goły Rycerz i Zwiadowca są boso — ujednolicić?; (5) rękawice bez palców mają dłoń w kolorze skóry człowieka, więc ork dostaje ludzkie dłonie — przedmioty mają brać kolor skóry rasy?; (6) spoczynek rasy na ekranie wyboru: klipy są skopiowane z Rycerza (ręka jak do miecza) — zrobić neutralny?; (7) demon: ikona wyboru ma spiczaste uszy, rzut ich nie ma — model będzie bez uszu; (8) Półbóg: czy aureola i świecące oczy zostają pod hełmem (wygląd zależy też od pytania 47). Opis i liczby: `swiat/postacie/RASY.md` pkt 8 i 9.
+**Odpowiedź:**
+
