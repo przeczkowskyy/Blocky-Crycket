@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T13:01:36+01:00",
+ "aktualizacja": "2026-11-18T13:01:38+01:00",
  "prace": [
   {
    "id": "modele-ras",
@@ -28,9 +28,10 @@
    "id": "muzyka-partia-2",
    "tytul": "Muzyka: walka, Strażnik, mini-gry, Bagno i Dżungla — obróbka i podpięcie w grze",
    "stan": "w_toku",
+   "etap": "podpięcie w Studio i próba w grze",
    "start": "2026-11-18T12:21:02+01:00",
-   "koniec_szacowany": "2026-11-18T13:51:02+01:00",
-   "aktualizacja": "2026-11-18T12:21:02+01:00",
+   "koniec_szacowany": "2026-11-18T14:10:00+01:00",
+   "aktualizacja": "2026-11-18T13:01:38+01:00",
    "obszary": [
     "swiat/dzwiek_gra/**",
     "assets/audio/**",
