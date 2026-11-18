@@ -1,0 +1,40 @@
+{
+ "id": "r-20261118-110302-e72c",
+ "tytul": "Mini-gry Training Center w stylu walki: kamera, napisy, konfetti",
+ "opis_md": "- Sześć mini-gier ma kamerę nisko i z ukosa jak w walce (kąt 44–51° zamiast 70°), z dojazdem w odliczaniu i zbliżeniem na postać po rundzie.\n- Przy trafieniach wyskakują komiksowe napisy („ŁUP!”, „TRACH!”, „SERIA 10!”), a po rundzie z punktem statystyki sypie się konfetti; runda bez pudła daje „BEZ PUDŁA!”.\n- Ćwiczy bohater klasy gracza, nie awatar: biegnie po bieżni, skacze nad kłodą, pada pod wysoką, podnosi ręce po koniczynę i cieszy się po rundzie.\n- To propozycja do oceny (pytanie 64). Zasady gier, przyrosty statystyk i dźwięki są bez zmian.\n\nSzczegóły:\n\n**Jak sprawdzić w Studio:** Play → wybierz klasę → tablica „Training Center” przy starcie (E) albo trener w bazarze → wybierz grę.\n\n**Próba w grze (18.11, 09:50–11:00): 27 punktów w porządku, 0 błędów**\n\n| Co sprawdzone | Wynik |\n|---|---|\n| Sześć gier od wejścia do karty wyniku | w porządku; logika zgodna z kodem serwera 118 na 118, konsola bez błędów |\n| Kamera | ujęcie stanowiska 48°, w grze 45–48°, zbliżenie 42°; po wyjściu kamera gracza wraca do 70° |\n| Napisy | 55 napisów na 45 trafień, naraz najwyżej 5, czcionka komiksowa (bez zastępczej) |\n| Efekty trafień | z modułu walki, a gdy go brak — własne; oba warianty bez błędów |\n| Konfetti | runda bez pudła: 90 kawałków i „BEZ PUDŁA!”; runda przerwana bez punktu: brak |\n| Bohater klasy | bieg, skok, padnij, ręce w górę i radość przez haczyk pakietu bohatera; Wojownik i Mag (kot) na zrzutach |\n| Czas klatki | 16,7 ms średnio, 18 ms w najgorszych 5% (Siła, Bieżnia, Koniczyny) |\n| Telefon 667 × 375 i 844 × 390 (emulacja) | napisy i pierścień Pancerza stoją przy trafieniu, przyciski nie zasłaniają pola gry |\n| Cała droga gracza | 14 z 14 |\n\nZastrzeżenie: pełna lista 27 punktów szła na trzeciej z pięciu budów. Po dwóch ostatnich poprawkach (wiersze karty wyniku, miejsce słowa w Kłodach) powtórzonych zostało siedem punktów, w tym wejście, konfetti i ruch bohatera.\n\n**Kamery: było 70° z góry u wszystkich, jest**\n\n| Gra | Ujęcie | Kąt |\n|---|---|---|\n| Siła | zza ramienia, bohater półprzezroczysty | 48° |\n| Pancerz | z boku, golem naprzeciw | 48° |\n| Kondycja | od przodu, bohater biegnie w stronę kamery | 49° |\n| Zręczność | z ukosa, widać skok i przysiad | 48° |\n| Inteligencja | zza ramienia na tablicę run | 44° |\n| Szczęście | szeroko, z drzewem | 51° |\n\n**Co poprawione po obejrzeniu gry:** obrys napisów rośnie z literami (małe słowa były plamą tuszu); większa gwiazda za słowem; miecz Siły i tarcza Pancerza chowają się w zbliżeniu po rundzie; jedno duże słowo naraz; w Kłodach słowo stoi obok głowy, nie na niej; odliczanie niżej, żeby „START!” mieściło się na telefonie; rozsunięte wiersze karty wyniku.\n\n**Czego nie sprawdzono:** prawdziwy telefon i dotyk (tylko ekran o rozmiarze telefonu), dwóch graczy naraz, gracz bez bohatera klasy w grze (awatar — tylko testy poza Studio). Zrzuty 01–25 w `klatki/` pokazują stary wygląd.\n\n**Do decyzji (pytanie 64):**\n- Całość: nowy wygląd zostaje, wraca kamera z góry, czy zostaje z poprawkami.\n- Duże słowa na telefonie: „SERIA 5!” zajmuje ok. ćwierci szerokości ekranu 667 × 375 — zmniejszyć?\n- Siła: bohater stoi półprzezroczysty przed kamerą, a kule stref zostają w kadrze zbliżenia po rundzie — chować je jak miecz?\n- Runy: kadr zza ramienia przycina bohatera przy lewej krawędzi.\n- Konfetti: za punkt statystyki (dziś), po każdej rundzie czy tylko bez pudła.\n- Radość kota-Maga po rundzie jest mało widoczna (klip z pakietu bohatera).\n\nPliki: `swiat/trening_proba/` (opis w `README.md`, wybory 14–17 w `PROJEKT.md`, zrzuty 26–79 w `klatki/`).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T11:03:02+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TreningProba",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytanie 64"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/trening_proba/README.md",
+   "etykieta": "Opis pakietu"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/trening_proba/PROJEKT.md",
+   "etykieta": "Wybory dla ludzi (14–17)"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}

@@ -94,7 +94,7 @@ Lista robocza, na którą obaj się zgodzili (D-049):
 ## Propozycje czekające na decyzję
 - Wzór treningu z malejącym zyskiem tej samej statystyki (pytanie 50). Zmieniałby „+1 za trafienie” z D-050, więc potrzebuje decyzji.
 - Kalkulator balansu z 17.11 proponuje krzywą dochodu budynków i limit pracy offline (`tools/walka/BALANS_1711.md`, część 2) — to liczby robocze.
-- Projekt sześciu mini-gier Training Center z próbą dwóch, Siły i Pancerza, jest propozycją (`swiat/trening_proba/PROJEKT.md`).
+- Projekt sześciu mini-gier Training Center jest propozycją (`swiat/trening_proba/PROJEKT.md`); od 18.11 wszystkie sześć są grywalne w próbie, z kamerą i efektami w stylu walki (pytanie 64 w [[Pytania otwarte]]).
 
 ## Otwarte pytania
 - **Gdzie stoi Training Center** — na działce czy w mieście (pytanie 9, część o miejscu).

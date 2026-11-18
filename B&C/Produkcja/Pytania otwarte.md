@@ -562,3 +562,11 @@ Szczegóły: Próba powstaje w `swiat/bohater_swiat/` (kontener `Workspace/Bohat
 Dopisek z 2026-11-18 (po próbie w Studio): bohater chodzi po świecie w stroju gracza u wszystkich trzech klas; raport w panelu „Bohater klasy chodzi po świecie zamiast awatara” ze zrzutami i modelami 3D. Wyłącznik bez przebudowy: atrybut `BohaterWSwiecie = false` na `Workspace/BohaterSwiat`. Na komputerze 60 klatek na sekundę także z dwunastoma bohaterami naraz; telefon niesprawdzony. Drugi wybór przy okazji: bieg liczony przez kod (jest dziś) czy ręcznie zrobiony klip biegu w modelach postaci.
 **Odpowiedź:**
 
+## 64. Mini-gry w stylu walki: co zostaje, co zmienić?
+- Karol 18.11 zlecił mini-gry „pod takimi kątami i w takich efektach jak walki”; próba stoi w Studio (`Workspace/TreningProba`).
+- Całość do wyboru: (a) nowy wygląd zostaje; (b) wraca kamera z góry; (c) zostaje z poprawkami z listy niżej.
+- Osobno do oceny: wielkość napisów na telefonie, kadr Siły i Run, kiedy sypie się konfetti.
+
+Szczegóły: Kamera stoi nisko i z ukosa (kąt 44–51° zamiast 70°), dojeżdża w odliczaniu i robi zbliżenie na postać po rundzie; przy trafieniach wyskakują komiksowe napisy, po rundzie z punktem statystyki sypie się konfetti; ćwiczy bohater klasy (zależy od pytania 63). Zasady gier, przyrosty i dźwięki są bez zmian. Drobne wybory: (1) duże słowa — „SERIA 5!” zajmuje ok. ćwierci szerokości ekranu 667 × 375 — zmniejszyć na telefonie czy zostawić; (2) Siła: bohater stoi półprzezroczysty przed kamerą, a kule stref zostają w kadrze zbliżenia po rundzie — chować je jak miecz; (3) Runy: kadr zza ramienia przycina bohatera przy lewej krawędzi; (4) konfetti za punkt statystyki (dziś), po każdej ukończonej rundzie albo tylko po rundzie bez pudła; (5) słowa Siły „PAF!”, „ŁUP!”, „TRACH!”, „BAM!”, „POW!” zamiast pochwał; (6) postać obraca się do kamery po rundzie; (7) radość kota-Maga jest mało widoczna (klip z pakietu bohatera). Zrzuty i wynik próby: raport w panelu „Mini-gry Training Center w stylu walki: kamera, napisy, konfetti”; opis wyborów 14–17 w `swiat/trening_proba/PROJEKT.md`.
+**Odpowiedź:**
+
