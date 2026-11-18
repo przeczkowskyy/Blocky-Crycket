@@ -16,7 +16,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "9e8fcb457f4e",
+	skrot = "8e29bdddeca1",
 	arkusz = {
 		id = 93573204965127,
 		plik = "sfx_arkusz_a.ogg",
@@ -388,7 +388,7 @@ return {
 				utwory = {
 					{
 						nazwa = "muzyka_06_bagno_petla",
-						id = 0,
+						id = 116759284253061,
 					},
 					{
 						nazwa = "muzyka_06_bagno_b_petla",
@@ -422,7 +422,7 @@ return {
 				utwory = {
 					{
 						nazwa = "muzyka_07_dzungla_petla",
-						id = 0,
+						id = 78060184641141,
 					},
 					{
 						nazwa = "muzyka_07_dzungla_b_petla",

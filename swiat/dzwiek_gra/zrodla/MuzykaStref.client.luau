@@ -9,8 +9,9 @@
 		  zmiana strefy albo wyjście ze stref = płynne przejście (katalog: muzyka.przejscie s);
 		• utwór to osobny plik (grany w całości) albo ODCINEK arkusza muzyki (wpis z polami poczatek / koniec:
 		  Sound.PlaybackRegionsEnabled + Sound.PlaybackRegion; pozycja odtwarzania to sekundy w pliku arkusza);
-		• strefa z utworami zastępczymi (Bagno, Dżungla): dopóki żaden własny utwór nie ma identyfikatora, grają
-		  zastępcze (utwory lasu, ciszej) — żeby nie zapadła cisza;
+		• strefa z utworami zastępczymi (Bagno, Dżungla): dopóki żaden własny utwór nie ma identyfikatora ALBO jego
+		  plik się nie wczytał (gra bez prawa do zasobu, moderacja), grają zastępcze (utwory lasu, ciszej) — żeby nie
+		  zapadła cisza; gdy własny plik się wczyta, strefa przechodzi na własny utwór;
 		• KONTEKSTY (katalog: muzyka.konteksty) zastępują muzykę strefy i oddają jej miejsce po sobie:
 		    walka           — trwa walka (odtwarzacz prototypu TestWalki2: czyTrwa) i odtwarzanie już ruszyło;
 		    walka_straznik  — jak wyżej, a przeciwnik to Strażnik krainy. Odtwarzacz zapisuje u klienta na kontenerze,
@@ -152,17 +153,33 @@ local function listaUtworow(wpisy: any, glosnosc: number, proba: any, kontekst: 
 	return lista
 end
 
--- utwory strefy: własne z identyfikatorem, a gdy żaden go nie ma — zastępcze; (lista, czyZastepcze); pusta = cisza
+-- utwory strefy → (lista, czyZastepcze); pusta = cisza. Strefa bez utworów zastępczych gra własne utwory
+-- z identyfikatorem. Strefa z zastępczymi (Bagno, Dżungla) gra własne dopiero, gdy mają identyfikator I plik się
+-- wczytał; dopóki żaden własny nie jest wczytany (brak identyfikatora, gra bez prawa do zasobu, moderacja, brak
+-- sieci), grają zastępcze — strefa nie może przez to zamilknąć. Gdy własny plik się wczyta, strefa przechodzi na niego.
 local function utworyStrefy(nazwa: string): ({ any }, boolean)
 	local s = M.strefy[nazwa]
 	if not s or s.podpiete == false then
 		return {}, false
 	end
 	local lista = listaUtworow(s.utwory, s.glosnosc or 0.35, probne[nazwa], nil)
-	if #lista == 0 and type(s.zastepcze) == "table" then
-		return listaUtworow(s.zastepcze.utwory, s.zastepcze.glosnosc or s.glosnosc or 0.35, nil, nil), true
+	if type(s.zastepcze) ~= "table" then
+		return lista, false
 	end
-	return lista, false
+	local gotowe = {}
+	for _, u in lista do
+		if wczytany(u.adres) then
+			table.insert(gotowe, u)
+		end
+	end
+	if #gotowe > 0 then
+		return gotowe, false
+	end
+	local zastepcze = listaUtworow(s.zastepcze.utwory, s.zastepcze.glosnosc or s.glosnosc or 0.35, nil, nil)
+	if #zastepcze > 0 then
+		return zastepcze, true
+	end
+	return lista, false -- nie ma czym zastąpić: próbujemy własnych, jak w strefach bez zastępczych
 end
 
 -- utwory kontekstu: z identyfikatorem i już wczytane (pusta = kontekst nie gra, zostaje muzyka strefy)
@@ -397,7 +414,8 @@ local function sprawdz()
 		if nowaStrefa then
 			lista, zastepcze = utworyStrefy(nowaStrefa)
 			if #lista > 0 then
-				klucz = "strefa:" .. nowaStrefa
+				-- zastępcze to osobne źródło: gdy własny plik się wczyta, strefa płynnie przechodzi na własny utwór
+				klucz = "strefa:" .. nowaStrefa .. (if zastepcze then "/zastepcze" else "")
 			end
 		end
 	end
@@ -475,15 +493,27 @@ RunService.Heartbeat:Connect(function(dt: number)
 	end
 end)
 
--- pliki kontekstów wczytujemy na zapas od razu (arkusz muzyki ma kilka MB — pierwsza walka nie powinna na niego czekać)
-for _, k in KONTEKSTY do
-	if type(k) == "table" and type(k.utwory) == "table" then
-		for _, u in k.utwory do
-			local adres = contentId(u.id)
-			if adres then
-				wczytany(adres)
-			end
+-- pliki kontekstów wczytujemy na zapas od razu (arkusz muzyki ma kilka MB — pierwsza walka nie powinna na niego czekać);
+-- tak samo własne utwory stref z zastępczymi: zanim gracz dojdzie do strefy, wiadomo już, czy plik się wczytał
+local function wczytajNaZapas(utwory: any)
+	if type(utwory) ~= "table" then
+		return
+	end
+	for _, u in utwory do
+		local adres = contentId(u.id)
+		if adres then
+			wczytany(adres)
 		end
+	end
+end
+for _, k in KONTEKSTY do
+	if type(k) == "table" then
+		wczytajNaZapas(k.utwory)
+	end
+end
+for _, s in M.strefy do
+	if type(s) == "table" and s.podpiete ~= false and type(s.zastepcze) == "table" then
+		wczytajNaZapas(s.utwory)
 	end
 end
 
@@ -536,6 +566,10 @@ if h and h:IsA("BindableFunction") then
 			end
 			-- próbny identyfikator dostaje pierwszy utwór — niech zagra jako pierwszy
 			nrUtworu["strefa:" .. a], nrUtworu["kontekst:" .. a] = nil, nil
+			local adresStrefy = contentId(b)
+			if adresStrefy and M.strefy[a] and type(M.strefy[a].zastepcze) == "table" then
+				wczytany(adresStrefy) -- strefa z zastępczymi gra własny utwór dopiero po wczytaniu pliku
+			end
 			przelicz = true
 			return true
 		end

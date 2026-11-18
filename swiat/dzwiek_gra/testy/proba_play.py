@@ -38,7 +38,11 @@ LISTA KONTROLNA:
   D10 muzyka mini-gry: atrybut gracza z katalogu (TreningGra, tu ustawiony próbą po stronie serwera — tak jak robi to
      serwer mini-gier przy wejściu na stanowisko) → kontekst „trening” i utwór treningu; po zdjęciu atrybutu wraca
      muzyka strefy i gra dalej od miejsca, w którym ucichła (licznik wznowień rośnie)
-Punkty D7–D10 biegną przed D6 (konsola na końcu). Wynik: <wyj>/wyniki.json i lista na ekranie (nazwa konta
+  D11 plik niewczytany (gra bez prawa do zasobu, moderacja): własny utwór strefy z identyfikatorem, którego plik się
+     nie wczyta (próbny adres bez pliku) → grają zastępcze, nie cisza; po podstawieniu pliku, który się wczytuje →
+     własny utwór; kontekst z niewczytanym plikiem → zostaje muzyka strefy; prawdziwe pliki Bagna i Dżungli —
+     co zwraca klient (IsLoaded, TimeLength, ContentProvider:PreloadAsync) i czy strefa gra wtedy własne albo zastępcze
+Punkty D7–D11 biegną przed D6 (konsola na końcu). Wynik: <wyj>/wyniki.json i lista na ekranie (nazwa konta
 w konsoli zastąpiona znacznikiem <gracz>).
 """
 import json
@@ -59,6 +63,7 @@ with open(os.path.join(os.path.dirname(TU), "ustawienia.json"), encoding="utf-8"
     PRZYCISZENIE_WALKI = float(json.load(_f)["muzyka"]["przyciszenie_walki"])
 
 PROBNY = "rbxasset://sounds/action_falling.mp3"  # wbudowany w klienta (ok. 10 s szumu wiatru) — nie upload
+NIEWCZYTYWALNY = "rbxasset://sounds/proba_dzwiek_gra_nie_ma_takiego_pliku.mp3"  # adres bez pliku: dźwięk się nie wczyta
 WALKA = ("wojownik", "cierniowy_wilk", 5, 1)       # krytyk Wojownika, ciosy i bloki; ok. 20 s przy ×1
 LISTA = []
 WYNIKI = {}
@@ -289,18 +294,54 @@ def main():
         def nazwy(utwory):
             return [u["nazwa"] for u in utwory if u["id"]]
 
+        def stan_plikow(idy):
+            """Co klient mówi o plikach audio: dźwięk „Wczytanie” skryptu muzyki (IsLoaded, TimeLength) i wynik
+            ContentProvider:PreloadAsync na osobnym, niepodpiętym dźwięku (tylko odczyt, nic nie zostaje w miejscu)."""
+            if not idy:
+                return {}
+            lista = js('local CP = game:GetService("ContentProvider") local o = {} '
+                       'for _, id in { %s } do local adres = "rbxassetid://" .. id local w = { id = id } '
+                       'local s, wlasny = nil, false '
+                       'for _, x in D.MuzykaLokalna:GetChildren() do if x:IsA("Sound") and x.Name == "Wczytanie" '
+                       'and x.SoundId == adres then s = x w.wczytanie = { IsLoaded = x.IsLoaded, TimeLength = x.TimeLength } end end '
+                       'if not s then s = Instance.new("Sound") s.SoundId = adres wlasny = true end '
+                       'local ok, blad = pcall(function() CP:PreloadAsync({ s }, function(_, status) w.status = status.Name end) end) '
+                       'if not ok then w.blad = tostring(blad) end '
+                       'w.poPreload = { IsLoaded = s.IsLoaded, TimeLength = s.TimeLength, osobnyDzwiek = wlasny } '
+                       'if wlasny then s:Destroy() end table.insert(o, w) end '
+                       'return H:JSONEncode(o)' % ", ".join('"%d"' % i for i in idy))
+            return {int(w["id"]): w for w in lista}
+
+        def wczytane(utwory, pliki):
+            """Nazwy utworów z identyfikatorem, których plik skrypt muzyki ma wczytany."""
+            return [u["nazwa"] for u in utwory if u["id"] and (pliki.get(u["id"], {}).get("wczytanie") or {}).get("IsLoaded")
+                    and (pliki[u["id"]]["wczytanie"].get("TimeLength") or 0) > 0]
+
+        def opis_plikow(utwory, pliki):
+            return "; ".join("%s: skrypt muzyki IsLoaded=%s TimeLength=%s, PreloadAsync=%s" % (
+                u["nazwa"], (pliki.get(u["id"], {}).get("wczytanie") or {}).get("IsLoaded"),
+                (pliki.get(u["id"], {}).get("wczytanie") or {}).get("TimeLength"),
+                pliki.get(u["id"], {}).get("status") or pliki.get(u["id"], {}).get("blad")) for u in utwory if u["id"]) or "brak identyfikatorów"
+
+        def ocen_strefe_z_zastepczymi(st, strefa, pliki):
+            """Strefa z utworami zastępczymi: własne wczytane → własne; inaczej zastępcze (nigdy cisza z braku pliku)."""
+            sk = KAT["strefy"][strefa]
+            gotowe, zast = wczytane(sk["utwory"], pliki), nazwy(sk["zastepcze"]["utwory"])
+            if st.get("strefa") != strefa:
+                return False
+            if gotowe:
+                return st.get("utwor") in gotowe and not st.get("zastepcze")
+            if zast:
+                return st.get("utwor") in zast and st.get("zastepcze") is True
+            return True
+
         def d7():
             sb = KAT["strefy"]["bagno"]
             wlasne, zast = nazwy(sb["utwory"]), nazwy(sb["zastepcze"]["utwory"])
+            pliki = stan_plikow([u["id"] for u in sb["utwory"] if u["id"]])
 
             def wg_katalogu(st):
-                if st.get("strefa") != "bagno":
-                    return False
-                if wlasne:
-                    return st.get("utwor") in wlasne and not st.get("zastepcze")
-                if zast:
-                    return st.get("utwor") in zast and st.get("zastepcze") is True
-                return not st.get("gra")
+                return ocen_strefe_z_zastepczymi(st, "bagno", pliki)
 
             muz('"probny", "bagno", nil')
             muz('"wymus", "bagno"')
@@ -316,8 +357,8 @@ def main():
             muz('"probny", "bagno", nil')
             time.sleep(2.0)
             c = stan_muzyki()
-            WYNIKI["D7"] = {"wlasne_w_katalogu": wlasne, "zastepcze_w_katalogu": zast, "katalog": a, "bez_wlasnych": z,
-                            "probny": b, "po": c}
+            WYNIKI["D7"] = {"wlasne_w_katalogu": wlasne, "zastepcze_w_katalogu": zast, "pliki_wlasne": pliki, "katalog": a,
+                            "bez_wlasnych": z, "probny": b, "po": c}
             ok_z = (z.get("utwor") in zast and z.get("zastepcze") is True) if zast else not z.get("gra")
             ok_b = (b.get("utwor") == sb["utwory"][0]["nazwa"] and not b.get("zastepcze") and b.get("gra")
                     and b.get("id") == PROBNY and abs((b.get("glosnosc") or 0) - sb["glosnosc"]) < 0.08)
@@ -436,10 +477,92 @@ def main():
                         "na pozycji %s s, wznowień %d" % (a.get("utwor"), a.get("pozycja"), atrybut, b.get("kontekst"), b.get("utwor"),
                                                           c.get("kontekst"), c.get("utwor"), c.get("pozycja"), wznowien))
 
+        def d11():
+            sb = KAT["strefy"]["bagno"]
+            pierwszy, zast = sb["utwory"][0]["nazwa"], nazwy(sb["zastepcze"]["utwory"])
+            bazar = KAT["strefy"]["bazar"]["utwory"][0]["nazwa"]
+            # a) własny utwór ma identyfikator, ale plik się nie wczyta → zastępcze (nie cisza)
+            muz('"probny", "bagno", "%s"' % NIEWCZYTYWALNY)
+            muz('"wymus", "bagno"')
+            time.sleep(4.0)
+            a = stan_muzyki()
+            ok_a = (a.get("utwor") in zast and a.get("zastepcze") is True) if zast else True
+            # b) plik zaczyna się wczytywać → strefa przechodzi na własny utwór
+            muz('"probny", "bagno", "%s"' % PROBNY)
+            b = czekaj_na(lambda st: st.get("utwor") == pierwszy and not st.get("zastepcze") and st.get("gra"), 6.0)
+            ok_b = b.get("utwor") == pierwszy and not b.get("zastepcze") and bool(b.get("gra"))
+            # c) kontekst z identyfikatorem, którego plik się nie wczyta → zostaje muzyka strefy
+            muz('"probny", "bagno", nil')
+            muz('"probny", "bazar", "%s"' % PROBNY)
+            muz('"wymus", "bazar"')
+            muz('"probny", "walka", "%s"' % NIEWCZYTYWALNY)
+            time.sleep(3.0)
+            muz('"wymus_kontekst", "walka"')
+            time.sleep(3.0)
+            c = stan_muzyki()
+            ok_c = c.get("kontekst") is None and c.get("utwor") == bazar and bool(c.get("gra"))
+            muz('"wymus_kontekst", nil')
+            muz('"probny", "walka", nil')
+            muz('"probny", "bazar", nil')
+            # d) prawdziwe pliki Bagna i Dżungli: co zwraca Studio i co gra strefa (stojąc w niej, gdy stoi jej mapa)
+            krainy, ok_d, opisy = {}, True, []
+            for strefa in ("bagno", "dzungla"):
+                sk = KAT["strefy"][strefa]
+                pl = stan_plikow([u["id"] for u in sk["utwory"] if u["id"]])
+                pl_z = stan_plikow([u["id"] for u in sk["zastepcze"]["utwory"] if u["id"]])
+                r = sk["prostokaty"][0] if sk["prostokaty"] else None
+                stoi = bool(sk.get("kontener")) and js('return H:JSONEncode({ jest = workspace:FindFirstChild("%s") ~= nil })'
+                                                       % sk.get("kontener")).get("jest")
+                # stajemy w strefie, gdy stoi jej mapa; serwer krainy może cofnąć postać (np. zamknięta brama do Bagna) —
+                # wtedy strefę wymuszamy haczykiem (wybór utworów jest ten sam, nie zależy od sposobu wejścia do strefy)
+                jak = "strefa wymuszona, mapa nie stoi"
+                na_miejscu = False
+                if stoi and r:
+                    muz('"wymus", nil')
+                    s.luau('local p = game:GetService("Players"):GetPlayers()[1] p.Character:PivotTo(CFrame.new(%f, 14, %f)) return "ok"'
+                           % ((r[0] + r[1]) / 2, (r[2] + r[3]) / 2), "Server")
+                    time.sleep(2.5)
+                    poz = js('local c = game:GetService("Players").LocalPlayer.Character local h = c and c:FindFirstChild("HumanoidRootPart") '
+                             'return H:JSONEncode(h and { h.Position.X, h.Position.Y, h.Position.Z } or {})')
+                    na_miejscu = len(poz) == 3 and r[0] <= poz[0] <= r[1] and r[2] <= poz[2] <= r[3]
+                    jak = "postać w strefie" if na_miejscu else "strefa wymuszona — po przeniesieniu postać nie została w strefie (X %s, Z %s)" % (
+                        round(poz[0]) if len(poz) == 3 else None, round(poz[2]) if len(poz) == 3 else None)
+                if not na_miejscu:
+                    muz('"wymus", "%s"' % strefa)
+                time.sleep(4.5)
+                st = stan_muzyki()
+                ok_s = ocen_strefe_z_zastepczymi(st, strefa, pl)
+                ok_d = ok_d and ok_s
+                krainy[strefa] = {"pliki_wlasne": pl, "pliki_zastepcze": pl_z, "na_miejscu": na_miejscu, "jak": jak, "stan": st, "ok": ok_s}
+                opisy.append("%s (%s): własne — %s; gra %s (zastępcze: %s, wczytany: %s, gra: %s)" % (
+                    strefa, jak, opis_plikow(sk["utwory"], pl), st.get("utwor"), st.get("zastepcze"), st.get("wczytany"), st.get("gra")))
+            muz('"wymus", nil')
+            s.przy_tablicy()
+            time.sleep(1.0)
+            k = stan_muzyki()
+            # co konsola Studio mówi o własnych plikach Bagna i Dżungli (wiersze z ich identyfikatorami)
+            idy = [str(u["id"]) for n in ("bagno", "dzungla") for u in KAT["strefy"][n]["utwory"] if u["id"]]
+            kons = s.call("get_console_output", {}, timeout=60)["text"]
+            gracz_ = s.luau('return game:GetService("Players"):GetPlayers()[1].Name', "Server").strip()
+            wiersze = []
+            for x in kons.splitlines():
+                x = x.strip()[:300].replace(gracz_, "<gracz>")
+                if any(i in x for i in idy) and x not in wiersze:
+                    wiersze.append(x)
+            opisy.append("konsola o tych plikach: %s" % (wiersze[:4] or "brak wierszy"))
+            WYNIKI["D11"] = {"niewczytany_wlasny": a, "po_wczytaniu": b, "niewczytany_kontekst": c, "krainy": krainy, "koniec": k,
+                             "konsola_o_plikach": wiersze[:20]}
+            return (ok_a and ok_b and ok_c and ok_d and (k.get("bledy") or 0) == 0,
+                    "własny z niewczytanym plikiem → %s (zastępcze: %s); po podstawieniu pliku, który się wczytuje → %s (zastępcze: %s); "
+                    "kontekst z niewczytanym plikiem → kontekst %s, gra %s; %s"
+                    % (a.get("utwor"), a.get("zastepcze"), b.get("utwor"), b.get("zastepcze"), c.get("kontekst"), c.get("utwor"),
+                       " | ".join(opisy)))
+
         proba("D7", "utwory zastępcze i własne (Bagno)", d7)
         proba("D8", "utwór jako odcinek pliku (PlaybackRegion)", d8)
         proba("D9", "muzyka walki i walki ze Strażnikiem", d9)
         proba("D10", "muzyka mini-gry i wznowienie muzyki strefy", d10)
+        proba("D11", "plik niewczytany: zastępcze zamiast ciszy, pliki Bagna i Dżungli", d11)
         try:   # sprzątanie haczyków także po wyjątku w którymś punkcie
             for cel in ("bagno", "dzungla", "bazar", "walka", "walka_straznik", "trening"):
                 muz('"probny", "%s", nil' % cel)

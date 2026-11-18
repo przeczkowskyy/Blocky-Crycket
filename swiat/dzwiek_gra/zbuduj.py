@@ -484,9 +484,10 @@ def main():
     for n, s in k["muzyka"]["strefy"].items():
         if s.get("zastepcze"):
             wlasne = sum(1 for u in s["utwory"] if u["id"])
+            zast = ", ".join(u["nazwa"] for u in s["zastepcze"]["utwory"])
             print("  strefa %-8s własne utwory z id: %d/%d → gra %s" % (
                 n, wlasne, len(s["utwory"]),
-                "własne" if wlasne else "zastępcze (%s)" % ", ".join(u["nazwa"] for u in s["zastepcze"]["utwory"])))
+                "własne, gdy plik się wczyta; inaczej zastępcze (%s)" % zast if wlasne else "zastępcze (%s)" % zast))
     for n, s in k["muzyka"]["strefy"].items():
         if s["prostokaty"]:
             print("  strefa %-6s prostokąty %s (z map, tylko odczyt), kontener mapy %s" % (n, s["prostokaty"], s.get("kontener")))

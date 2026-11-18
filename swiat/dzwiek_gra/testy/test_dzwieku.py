@@ -191,7 +191,8 @@ class TestMuzykiArkuszaIKontekstow(unittest.TestCase):
         ident["arkusze_muzyki"]["muzyka_arkusz_b"] = 4343
         k2 = ZB.katalog(UST, ident)
         self.assertEqual([u["id"] for u in k2["muzyka"]["strefy"]["bagno"]["utwory"]], [4242, 4343])
-        self.assertEqual([u["id"] for u in k2["muzyka"]["strefy"]["dzungla"]["utwory"]], [0, 4343])
+        self.assertEqual([u["id"] for u in k2["muzyka"]["strefy"]["dzungla"]["utwory"]],
+                         [IDENT["muzyka"]["muzyka_07_dzungla_petla"], 4343])   # Dżungla: osobny plik jak w repozytorium
         self.assertEqual(k2["muzyka"]["konteksty"]["walka"]["utwory"][0]["id"], 4343)
 
     def test_konteksty_w_katalogu(self):
@@ -364,13 +365,40 @@ class TestZrodel(unittest.TestCase):
         self.assertNotIn(":Invoke(", MUZ_KOD)
         self.assertEqual(re.findall(r"Odtwarzacz\.(\w+)", MUZ_KOD), ["czyTrwa"])
 
+    def _funkcja(self, nazwa):
+        """Treść funkcji lokalnej skryptu muzyki (od nagłówka do pierwszego `end` w pierwszej kolumnie)."""
+        m = re.search(r"\nlocal function %s\(.*?\n(.*?)\nend\n" % nazwa, MUZ_KOD, re.S)
+        self.assertIsNotNone(m, nazwa)
+        return m.group(1)
+
+    def test_zastepcze_gdy_wlasny_plik_niewczytany(self):
+        # 18.11.2026: własny utwór strefy z identyfikatorem, którego plik się NIE wczytał (gra bez prawa do zasobu,
+        # moderacja), nie może uciszyć strefy — grają zastępcze; własny wchodzi, gdy plik się wczyta
+        self.assertRegex(self._funkcja("wczytany"), r"return s\.IsLoaded and s\.TimeLength > 0")
+        f = self._funkcja("utworyStrefy")
+        # strefa bez zastępczych: jak dotąd (własne z identyfikatorem, bez czekania na wczytanie)
+        self.assertRegex(f, r'if type\(s\.zastepcze\) ~= "table" then\s+return lista, false\s+end')
+        # strefa z zastępczymi: własne tylko wczytane; gdy żadnego — zastępcze; kolejność tych kroków ma znaczenie
+        kroki = ["if wczytany(u.adres) then", "table.insert(gotowe, u)", "if #gotowe > 0 then", "return gotowe, false",
+                 "listaUtworow(s.zastepcze.utwory,", "if #zastepcze > 0 then", "return zastepcze, true", "return lista, false"]
+        miejsca = [f.rindex(k) if k == "return lista, false" else f.index(k) for k in kroki]
+        self.assertEqual(miejsca, sorted(miejsca), "kolejność kroków w utworyStrefy")
+        # zastępcze to osobne źródło — po wczytaniu własnego pliku źródło się zmienia i skrypt przechodzi na własny utwór
+        self.assertIn('klucz = "strefa:" .. nowaStrefa .. (if zastepcze then "/zastepcze" else "")', MUZ_KOD)
+        # własne utwory stref z zastępczymi i utwory kontekstów zaczynają się wczytywać od startu skryptu
+        self.assertRegex(MUZ_KOD, r'if type\(s\) == "table" and s\.podpiete ~= false and type\(s\.zastepcze\) == "table" then\s+wczytajNaZapas\(s\.utwory\)')
+        self.assertRegex(MUZ_KOD, r'if type\(k\) == "table" then\s+wczytajNaZapas\(k\.utwory\)')
+        # w katalogu obie strefy z własnymi utworami mają czym je zastąpić
+        k = ZB.katalog(UST, IDENT)
+        for strefa in ("bagno", "dzungla"):
+            self.assertTrue(all(u["id"] for u in k["muzyka"]["strefy"][strefa]["zastepcze"]["utwory"]), strefa)
+
     def test_muzyka_gra_odcinki_i_zastepcze(self):
         # utwór z arkusza: odcinek przez PlaybackRegion; zastępcze tylko wtedy, gdy własna lista jest pusta;
         # kontekst tylko z wczytanym plikiem; Strażnik bez utworu → utwór zwykłej walki
         self.assertIn("d.PlaybackRegionsEnabled = odcinek", MUZ_KOD)
         self.assertIn("d.PlaybackRegion = NumberRange.new(u.od, u.do_)", MUZ_KOD)
-        self.assertIn('if #lista == 0 and type(s.zastepcze) == "table" then', MUZ_KOD)
-        self.assertIn("if wczytany(u.adres) then", MUZ_KOD)
+        self.assertIn("if wczytany(u.adres) then", self._funkcja("utworyKontekstu"))
         self.assertRegex(MUZ_KOD, r'if k == "walka_straznik" then\s+lista = utworyKontekstu\(k\)\s+if #lista == 0 then\s+k = "walka"')
         self.assertEqual(MUZ_KOD.count("Looped = false"), 1)       # bez pętli silnika: koniec utworu = przejście
         self.assertNotIn("Looped = true", MUZ_KOD)
