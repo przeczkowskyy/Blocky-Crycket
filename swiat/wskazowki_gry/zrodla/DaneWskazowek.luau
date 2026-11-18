@@ -1,7 +1,7 @@
 --[[
 	DaneWskazowek — WYGENEROWANE przez swiat/wskazowki_gry/dane.py z ustawienia.json. Nie edytuj
 	ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: 9b7289b02a1e
+	Skrót danych: 81d79130297c
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -40,6 +40,7 @@ return {
 		f_jajko = { tekst = "Masz dość Złota na jajko — inkubator przy wejściu do lasu", cel = "jajko" },
 		f_jajko_miasto = { tekst = "Masz dość Złota na jajko: TELEPORT → Las (inkubator)", cel = "teleport" },
 		f_jajko_bagno = { tekst = "Masz dość Złota na jajko Bagna — inkubator przy pomoście", cel = "jajko" },
+		f_jajko_dzungla = { tekst = "Masz dość Złota na jajko Dżungli — inkubator na tarasie", cel = "jajko" },
 		g_kowal_zapas = { tekst = "Masz zapasowy przedmiot — rozbierz go u kowala w bazarze", cel = "kowal" },
 		g_kowal_ulepsz = { tekst = "Możesz ulepszyć przedmiot u kowala w bazarze", cel = "kowal" },
 		g_kowal_zapas_las = { tekst = "Zapasowy przedmiot do rozbiórki: Kamień Powrotu → kowal", cel = "kamien" },
@@ -76,6 +77,9 @@ return {
 				kamien = "DzunglaPasGra/Punkty/KamienPowrotu",
 				atrybut_straznika = "PokonalStraznikaDzungli",
 				pole_straznika = "straznik_dzungli",
+				inkubator = "PetyProba/Punkty/E inkubator Dzungli",
+				atrybut_ceny_jajka = "PetyCenaJajkaDzungli",
+				atrybut_kupionych_jajek = "PetyKupioneJajkaDzungli",
 			},
 		},
 		walki = { LasPasGra = "las", LasPotwory = "las", BagnoPasGra = "bagno", DzunglaPasGra = "dzungla" },
@@ -622,6 +626,44 @@ return {
 				cel = "potwor",
 			},
 			{
+				opis = "Złoto na jajko Dżungli w Dżungli: inkubator na tarasie",
+				stan = {
+					klasa = true,
+					miejsce = "las",
+					wygrane = 0,
+					przegrane = 0,
+					kraina = "dzungla",
+					jajko = true,
+					kupione = 0,
+					straznik = true,
+					straznik_bagna = true,
+					bagno = true,
+					dzungla = true,
+				},
+				id = "f_jajko_dzungla",
+				tekst = "Masz dość Złota na jajko Dżungli — inkubator na tarasie",
+				cel = "jajko",
+			},
+			{
+				opis = "Złoto na jajko Dżungli, ale kupił już jajko Dżungli",
+				stan = {
+					klasa = true,
+					miejsce = "las",
+					wygrane = 0,
+					przegrane = 0,
+					kraina = "dzungla",
+					jajko = true,
+					kupione = 1,
+					straznik = true,
+					straznik_bagna = true,
+					bagno = true,
+					dzungla = true,
+				},
+				id = "b_potwor",
+				tekst = "Podejdź do potwora i wciśnij E",
+				cel = "potwor",
+			},
+			{
 				opis = "w Dżungli po wygranej ze stanem gracza: poziomy, Wąż Stu Lian",
 				stan = {
 					klasa = true,
@@ -930,5 +972,5 @@ return {
 			{ x = 1500, z = -700, brama = 2034, wynik = "miasto" },
 		},
 	},
-	skrot = "9b7289b02a1e",
+	skrot = "81d79130297c",
 }

@@ -93,7 +93,7 @@ def _krok_glowny(D, s):
     if s.get("jajko") and not s.get("kupione") and miejsce != "za_brama":
         if miejsce == "miasto" or kraina is None:
             return _krok(D, "f_jajko_miasto")
-        return _krok(D, "f_jajko_bagno" if kraina == "bagno" else "f_jajko")
+        return _krok(D, {"bagno": "f_jajko_bagno", "dzungla": "f_jajko_dzungla"}.get(kraina, "f_jajko"))
     if miejsce == "miasto" or kraina is None:
         return _miasto(D, s)
     if kraina == "dzungla":
@@ -201,6 +201,9 @@ def przypadki(D):
     k("za bramą Bagna, jest Dżungla", kraina="bagno", miejsce="za_brama", **dz)
     k("Strażnik Topieli pokonany, jest Dżungla, w mieście: TELEPORT → Dżungla", **dz)
     k("w Dżungli bez walki: potwór", kraina="dzungla", miejsce="las", **dz)
+    k("Złoto na jajko Dżungli w Dżungli: inkubator na tarasie", kraina="dzungla", miejsce="las", jajko=True, kupione=0,
+      **dz)
+    k("Złoto na jajko Dżungli, ale kupił już jajko Dżungli", kraina="dzungla", miejsce="las", jajko=True, kupione=1, **dz)
     k("w Dżungli po wygranej ze stanem gracza: poziomy, Wąż Stu Lian", kraina="dzungla", miejsce="las", wygrane=1,
       ostatni="wygrana", stan_gracza=True, poziom=18, **dz)
     k("w Dżungli po wygranej bez stanu gracza", kraina="dzungla", miejsce="las", wygrane=2, ostatni="wygrana", **dz)

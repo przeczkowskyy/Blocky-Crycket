@@ -33,6 +33,7 @@
     "f_jajko": {"tekst": "Masz dość Złota na jajko — inkubator przy wejściu do lasu", "cel": "jajko"},
     "f_jajko_miasto": {"tekst": "Masz dość Złota na jajko: TELEPORT → Las (inkubator)", "cel": "teleport"},
     "f_jajko_bagno": {"tekst": "Masz dość Złota na jajko Bagna — inkubator przy pomoście", "cel": "jajko"},
+    "f_jajko_dzungla": {"tekst": "Masz dość Złota na jajko Dżungli — inkubator na tarasie", "cel": "jajko"},
     "g_kowal_zapas": {"tekst": "Masz zapasowy przedmiot — rozbierz go u kowala w bazarze", "cel": "kowal"},
     "g_kowal_ulepsz": {"tekst": "Możesz ulepszyć przedmiot u kowala w bazarze", "cel": "kowal"},
     "g_kowal_zapas_las": {"tekst": "Zapasowy przedmiot do rozbiórki: Kamień Powrotu → kowal", "cel": "kamien"},
@@ -50,7 +51,9 @@
        "atrybut_kupionych_jajek": "PetyKupioneJajkaBagna"},
       {"id": "dzungla", "kontener": "DzunglaPasGra", "dane": "DzunglaPasGra/Moduly/DanePasa",
        "kamien": "DzunglaPasGra/Punkty/KamienPowrotu", "atrybut_straznika": "PokonalStraznikaDzungli",
-       "pole_straznika": "straznik_dzungli"}
+       "pole_straznika": "straznik_dzungli",
+       "inkubator": "PetyProba/Punkty/E inkubator Dzungli", "atrybut_ceny_jajka": "PetyCenaJajkaDzungli",
+       "atrybut_kupionych_jajek": "PetyKupioneJajkaDzungli"}
     ],
     "walki": {"LasPasGra": "las", "LasPotwory": "las", "BagnoPasGra": "bagno", "DzunglaPasGra": "dzungla"},
     "stan_potworow": "Stan",

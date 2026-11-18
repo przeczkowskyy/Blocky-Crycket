@@ -40,7 +40,22 @@
      "wyglad": "miętowy błędny ognik z buzią i świecącym, zawiniętym płomieniem, wokół krążą dwie iskry"},
     {"id": "perlowa_wydra", "nazwa": "Perłowa Wydra", "rzadkosc": "legendarny", "skala": 0.9,
      "skill": {"nazwa": "Perła Topieli", "zywiol": "woda", "mod": {"procent": {"Constitution": 0.15}, "lup": {"zloto": 0.06, "doswiadczenie": 0.06}}},
-     "wyglad": "czekoladowa wydra na tylnych łapkach z otwartą muszlą i świecącą perłą, w wianku z grzybienia"}
+     "wyglad": "czekoladowa wydra na tylnych łapkach z otwartą muszlą i świecącą perłą, w wianku z grzybienia"},
+    {"id": "ananasik", "nazwa": "Ananasik", "rzadkosc": "pospolity", "skala": 1.0,
+     "skill": {"nazwa": "Słodki Sok", "mod": {"procent": {"Dexterity": 0.03}}},
+     "wyglad": "pękaty złocisty ananas w łuski-romby, z buzią, koroną z sześciu liści i listkami-rączkami"},
+    {"id": "leniwczyk", "nazwa": "Leniwczyk", "rzadkosc": "zwykly", "skala": 1.0,
+     "skill": {"nazwa": "Senne Lekcje", "mod": {"lup": {"doswiadczenie": 0.02}}},
+     "wyglad": "przygarbiony mały leniwiec z ciemnymi opaskami wokół oczu, długimi łapami z pazurkami, szalikiem z liany i kwiatem za uchem"},
+    {"id": "tukanik", "nazwa": "Tukanik", "rzadkosc": "rzadki", "skala": 0.95,
+     "skill": {"nazwa": "Dziób Łowcy", "mod": {"procent": {"Strength": 0.15, "Luck": 0.05}}},
+     "wyglad": "czarne pisklę tukana z kremowym śliniaczkiem, turkusową obwódką oczu i ogromnym zielono-pomarańczowo-czerwonym dziobem"},
+    {"id": "posazek", "nazwa": "Posążek", "rzadkosc": "epicki", "skala": 1.0,
+     "skill": {"nazwa": "Kamień Ruin", "zywiol": "runy", "mod": {"procent": {"Constitution": 0.3}}},
+     "wyglad": "kanciasty kamienny bożek z ruin z wielką głową, świecącymi turkusowymi oczami i runami, w lianie, z pióropuszem z liści"},
+    {"id": "jaguarek", "nazwa": "Jaguarek", "rzadkosc": "legendarny", "skala": 0.9,
+     "skill": {"nazwa": "Zew Dżungli", "zywiol": "dzikosc", "mod": {"procent": {"Luck": 0.2}, "lup": {"zloto": 0.05, "doswiadczenie": 0.05}}},
+     "wyglad": "złociste kocię jaguara w czarne rozety ze świecącym turkusowym środkiem, z wiankiem z kwiatów i ogonem w lianie"}
   ],
   "zywioly": {
     "ogien": {"nazwa": "Ogień", "opis": "podpala wroga przy ciosie (25%)", "zaklecie": "podpalenie",
@@ -57,7 +72,13 @@
                  "uwaga": "Wojownik: Pancerz wroga −12%; Zwiadowca: krytyk +0,7% i mocniejszy krytyk; Mag: moc +2,5%"},
     "woda": {"nazwa": "Woda", "opis": "lepsza obrona",
              "pasywki": ["mur_tarczy", "zwinnosc", "przeplyw_many"],
-             "uwaga": "Wojownik: blok +4,2% i Pancerz +15,7%; Zwiadowca: unik +7,1%; Mag: szybsza mana (bariera wcześniej)"}
+             "uwaga": "Wojownik: blok +4,2% i Pancerz +15,7%; Zwiadowca: unik +7,1%; Mag: szybsza mana (bariera wcześniej)"},
+    "dzikosc": {"nazwa": "Dzikość", "opis": "mocniejsze ciosy",
+                "pasywki": ["furia", "seria", "magiczny_pocisk"],
+                "uwaga": "Dżungla, 18.11: zwykły cios Wojownika +10,8% (furia), Zwiadowcy +13,4% (seria), Maga +11,7% (magiczny pocisk) — pasywki, które Ogień zwolnił, gdy dostał prawdziwe podpalenie"},
+    "runy": {"nazwa": "Runy", "opis": "częstsze umiejętności",
+             "pasywki": ["miecz_runiczny", "luk_runiczny", "kostur_many"],
+             "uwaga": "Dżungla, 18.11: pasywki broni silnika (każda klasa ma swoją): mana z ciosów +25%, zwykły cios −10% — umiejętności przychodzą dużo szybciej"}
   },
   "statystyki": {"Strength": "Siły", "Dexterity": "Zręczności", "Intelligence": "Inteligencji",
                  "Constitution": "Kondycji", "Luck": "Szczęścia", "Armor": "Pancerza"},
@@ -94,7 +115,20 @@
                     "grupa_e": "Punkty/StanowiskoJajka", "obrot": 8, "skala_jajka": 1.7, "jajko_na_mchu": false},
      "folder": "InkubatorBagna", "punkt_e": "E inkubator Bagna",
      "atrybuty": {"cena": "PetyCenaJajkaBagna", "kupione": "PetyKupioneJajkaBagna"},
-     "kolor_swiatla": "C8FF6A", "opis_miejsca": "przy Pomoście Przybycia Bagna"}
+     "kolor_swiatla": "C8FF6A", "opis_miejsca": "przy Pomoście Przybycia Bagna"},
+    {"id": "jajko_dzungli", "nazwa": "Jajko Dżungli", "kraina": "dzungla", "tytul": "JAJKO DŻUNGLI",
+     "pula": ["ananasik", "leniwczyk", "tukanik", "posazek", "jaguarek"],
+     "cena": {"tryb": "stala", "stala": 1350, "start": 1350, "krok": 550, "maks": 4500, "kalkulator": null,
+              "tryby": ["stala", "rosnaca"],
+              "decyzja": "Karol, 17.11.2026 (czat): cena jajka jest stała w biomie — rośnie tylko między biomami (D-105: las 300, Bagno 750); liczba 1350 to propozycja (18.11), do zatwierdzenia",
+              "uzasadnienie": "ta sama reguła co Bagno (ekonomia_jajek.py, MINUT_CENY): Złoto z pierwszych 6 min walk w biomie, mediana graczy, zaokrąglone do 50 — Bagno 752 → 750 (jak w D-105), Dżungla 1362 → 1350 (gracz wchodzi na ok. 18. poziomie, ok. 160–230 Złota za walkę); pierwsze jajko Dżungli po ok. 6 min Dżungli; rosnąca 1350 +550 do 4500 zostaje przełącznikiem"},
+     "model": {"modul": "jajko_dzungli", "jajko": "jajko_dzungli", "inkubator": "inkubator_dzungli",
+               "rig": "RigJajkaDzungli", "kosci_stale": ["Tablica", "Totem"]},
+     "stanowisko": {"znaczniki": "swiat/dzungla_pas/krotki/znaczniki.json", "miejsce": "jajko",
+                    "grupa_e": "Punkty/StanowiskoJajka", "obrot": 8, "skala_jajka": 1.8, "jajko_na_mchu": true},
+     "folder": "InkubatorDzungli", "punkt_e": "E inkubator Dzungli",
+     "atrybuty": {"cena": "PetyCenaJajkaDzungli", "kupione": "PetyKupioneJajkaDzungli"},
+     "kolor_swiatla": "FF6FB0", "opis_miejsca": "na Tarasie Przybycia Dżungli"}
   ],
   "modele": {"tablica_kosc": "Tablica", "papier": "Papier"},
   "inkubator": {
@@ -110,7 +144,8 @@
     "widac_z_daleka": 260,
     "mech_od": 0.3,
     "mech_do": 2.5,
-    "kolizja": ["Tablica", "Slupek", "Daszek", "Pal", "Platforma", "Platforma skos", "Tyczka"]
+    "kolizja": ["Tablica", "Slupek", "Daszek", "Pal", "Platforma", "Platforma skos", "Tyczka", "Kolumna",
+                "Kolumna podstawa", "Kolumna glowica"]
   },
   "zagroda": {
     "znaczniki": "swiat/miasteczko_bazar/znaczniki.json",

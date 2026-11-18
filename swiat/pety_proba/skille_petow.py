@@ -11,10 +11,12 @@ zloz_modyfikatory, opis_z_modyfikatorami): `procent` → pole silnika `pet` (mno
 `premie` (tylko pasywki klasy gracza), `lup` → premia do łupu. Silnik: tools/walka/silnik.py (+ przeciwnicy Bagna
 z swiat/bagno_pas_gra/przeciwnicy.py w pamięci). Tylko odczyt cudzych pakietów.
 
-CZĘŚĆ 1 — szansa wygranej (ziarna 1…N) ze Strażnikiem Gaju (poziom 10) i Strażnikiem Topieli (poziom 16), gracz na
-poziomie strażnika i o jeden niżej, każda klasa: bez peta i z każdym petem.
+CZĘŚĆ 1 — szansa wygranej (ziarna 1…N) ze Strażnikiem Gaju (poziom 10), Strażnikiem Topieli (poziom 16) i Wężem Stu
+Lian (poziom 23, Dżungla — przeciwnicy z swiat/dzungla_pas_gra/przeciwnicy.py w pamięci silnika), gracz na poziomie
+strażnika i o jeden niżej, każda klasa: bez peta i z każdym petem.
 CZĘŚĆ 2 — przejście (ekonomia_jajek.gracz z bohaterem z petem i premią do łupu jak w stanie gracza): minuty do
-wygranej ze Strażnikiem Gaju i (od wejścia do Bagna) ze Strażnikiem Topieli; dochód = Złoto na minutę do tej chwili.
+wygranej ze Strażnikiem Gaju, (od wejścia do Bagna) ze Strażnikiem Topieli i (od wejścia do Dżungli) z Wężem Stu Lian;
+dochód = Złoto na minutę do tej chwili.
 """
 import argparse
 import os
@@ -34,7 +36,8 @@ import dane_petow as DP  # noqa: E402
 import logika_petow as LP  # noqa: E402
 import ekonomia_jajek as EJ  # noqa: E402
 
-STRAZNICY = (("straznik_lasu", 10, "Strażnik Gaju"), ("straznik_topieli", 16, "Strażnik Topieli"))
+STRAZNICY = (("straznik_lasu", 10, "Strażnik Gaju"), ("straznik_topieli", 16, "Strażnik Topieli"),
+             ("waz_stu_lian", 23, "Wąż Stu Lian"))
 
 
 def stan():
@@ -73,9 +76,7 @@ def mody(D):
 
 
 def czesc1(D, ziaren):
-    import silnik
-    import przeciwnicy
-    przeciwnicy.zaladuj_do_silnika(silnik)
+    EJ.zaladuj_przeciwnikow()
     Ds, LS = stan()
     wynik = {}
     for etykieta, p, mod in mody(D):
@@ -90,14 +91,13 @@ def czesc1(D, ziaren):
 
 def czesc2(D, graczy, ziarno=1):
     """Minuty do wygranej ze strażnikiem lasu i Bagna (mediana) dla każdego peta; ten sam los dla każdego wariantu."""
-    import silnik
-    import przeciwnicy
     import symulacja_lasu as SL
-    przeciwnicy.zaladuj_do_silnika(silnik)
+    EJ.zaladuj_przeciwnikow()
     Ds, LS = stan()
-    P, Pb = SL.przegrody(), EJ.przegrody_bagna()
+    P, Pb, Pd = SL.przegrody(), EJ.przegrody_bagna(), EJ.przegrody_dzungli()
     x0, przelot = SL.przybycie_i_przelot()
     xb, przelot_b = EJ.przybycie_i_przelot_bagna()
+    xd, przelot_d = EJ.przybycie_i_przelot_dzungli()
     stary = SL.bohater
     SL._bohater_bez_peta = stary
     wynik = {}
@@ -105,7 +105,7 @@ def czesc2(D, graczy, ziarno=1):
         for etykieta, p, mod in mody(D):
             SL.bohater = (lambda Dd, k, L, _m=mod: opis_z_petem(Ds, LS, k, L, _m))
             premia = (mod or {}).get("lup")
-            las, bagno, zl_las, zl_bag = [], [], [], []
+            las, bagno, dzungla, zl_las, zl_bag, zl_dz = [], [], [], [], [], []
             for k in Ds["klasy"]:
                 los = random.Random("skille-%s-%d" % (k, ziarno))
                 for _ in range(graczy):
@@ -116,14 +116,23 @@ def czesc2(D, graczy, ziarno=1):
                         continue
                     las.append(w / 60.0)
                     zl_las.append(o[-1][1] / (w / 60.0))
+                    st2 = {}
                     ob, wb = EJ.gracz(Ds, Pb, k, los, xb, przelot_b, po_strazniku=False, L0=st["L"], xp0=st["xp"],
                                       troll=EJ.TROLL_BAGNA, dojscie=EJ.DOJSCIE_BAGNA, limit_min=EJ.LIMIT_BAGNA_MIN,
+                                      premia=premia, koniec=st2)
+                    if wb is None:
+                        continue
+                    bagno.append(wb / 60.0)
+                    zl_bag.append(ob[-1][1] / (wb / 60.0))
+                    od, wd = EJ.gracz(Ds, Pd, k, los, xd, przelot_d, po_strazniku=False, L0=st2["L"], xp0=st2["xp"],
+                                      troll=EJ.TROLL_DZUNGLI, dojscie=EJ.DOJSCIE_DZUNGLI, limit_min=EJ.LIMIT_DZUNGLI_MIN,
                                       premia=premia)
-                    if wb is not None:
-                        bagno.append(wb / 60.0)
-                        zl_bag.append(ob[-1][1] / (wb / 60.0))
+                    if wd is not None:
+                        dzungla.append(wd / 60.0)
+                        zl_dz.append(od[-1][1] / (wd / 60.0))
             med = (lambda xs: statistics.median(xs) if xs else None)
-            wynik[etykieta] = (med(las), med(bagno), len(bagno), 3 * graczy, med(zl_las), med(zl_bag))
+            wynik[etykieta] = (med(las), med(bagno), len(bagno), 3 * graczy, med(zl_las), med(zl_bag), med(dzungla),
+                               len(dzungla), med(zl_dz))
     finally:
         SL.bohater = stary
     return wynik
@@ -173,17 +182,19 @@ def main():
         C = czesc2(D, a.graczy)
         w.append("### Przejście: minuty do wygranej ze strażnikiem (mediana, %d graczy na klasę) i dochód" % a.graczy)
         w.append("")
-        w.append("| Pet | Las: min do Strażnika Gaju | Bagno: min do Strażnika Topieli | Złoto/min las | Złoto/min Bagno |")
-        w.append("|---|---|---|---|---|")
+        w.append("| Pet | Las: min do Strażnika Gaju | Bagno: min do Strażnika Topieli | Dżungla: min do Węża Stu Lian | "
+                 "Złoto/min las | Złoto/min Bagno | Złoto/min Dżungla |")
+        w.append("|---|---|---|---|---|---|---|")
         b = C["bez peta"]
         for etykieta, p, mod in mody(D):
-            las, bag, n, wszy, zl, zb = C[etykieta]
+            las, bag, n, wszy, zl, zb, dz, nd, zd = C[etykieta]
 
             def zm(v, v0, fmt=" (%+.1f)"):
                 return "" if p is None or v is None or v0 is None else (fmt % (v - v0)).replace(".", ",")
-            w.append("| %s | %s%s | %s%s%s | %s%s | %s%s |" % (
+            w.append("| %s | %s%s | %s%s%s | %s%s%s | %s%s | %s%s | %s%s |" % (
                 etykieta, f1(las), zm(las, b[0]), f1(bag), zm(bag, b[1]), "" if n == wszy else " · %d z %d" % (n, wszy),
-                f(zl), zm(zl, b[4], " (%+.0f)"), f(zb), zm(zb, b[5], " (%+.0f)")))
+                f1(dz), zm(dz, b[6]), "" if nd == n else " · %d z %d" % (nd, n),
+                f(zl), zm(zl, b[4], " (%+.0f)"), f(zb), zm(zb, b[5], " (%+.0f)"), f(zd), zm(zd, b[8], " (%+.0f)")))
         w.append("")
     w.append("_python -B swiat/pety_proba/skille_petow.py --ziaren %d --graczy %d (%.0f s)_" % (a.ziaren, a.graczy,
                                                                                             time.time() - t0))

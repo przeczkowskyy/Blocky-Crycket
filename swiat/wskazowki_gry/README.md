@@ -26,7 +26,7 @@ w pierwszej minucie”). Teksty i kolejność kroków nie są kanonem — do dec
 | za bramą | Bagno już wkrótce… (albo „Idź dalej — przed tobą Bagno”, gdy stoi `BagnoPasGra`) | — |
 | (e) po Strażniku lasu, gdy stoi Bagno | Brama otwarta — idź do Bagna / w mieście: Bagno otwarte: TELEPORT → Bagno | ▼ za bramą lasu / strzałka |
 | w Bagnie | jak w lesie: potwór → „Zdobywaj poziomy (masz N) — Strażnik Topieli na końcu Bagna” → po Strażniku Topieli „Brama do Dżungli otwarta — Dżungla już wkrótce” | ▼ nad potworem / Strażnikiem Topieli / bramą |
-| (f) Złoto ≥ cena jajka biomu, w którym jest gracz (w mieście: lasu), i jeszcze żadnego jajka tego biomu (17.11.2026, stoi `PetyProba`) — przed innymi krokami, nie za bramą | Masz dość Złota na jajko — inkubator przy wejściu do lasu / w Bagnie: Masz dość Złota na jajko Bagna — inkubator przy pomoście / w mieście: …: TELEPORT → Las (inkubator) | ▼ nad punktem E inkubatora biomu / strzałka |
+| (f) Złoto ≥ cena jajka biomu, w którym jest gracz (w mieście: lasu), i jeszcze żadnego jajka tego biomu (17.11.2026, stoi `PetyProba`) — przed innymi krokami, nie za bramą | Masz dość Złota na jajko — inkubator przy wejściu do lasu / w Bagnie: Masz dość Złota na jajko Bagna — inkubator przy pomoście / w Dżungli (18.11): Masz dość Złota na jajko Dżungli — inkubator na tarasie / w mieście: …: TELEPORT → Las (inkubator) | ▼ nad punktem E inkubatora biomu / strzałka |
 | (g) kowal (18.11.2026, stoi `KowalProba`): zapasowy przedmiot (`KowalZapasy` > 0) albo Złoto i materiały na ulepszenie (`KowalMoznaUlepszyc`), jeszcze żadnego ulepszenia (`KowalUlepszen` = 0) — **tylko zamiast (c)**, więc nigdy przed TELEPORT, pierwszą walką, jajkiem, treningiem po przegranej ani bramą | Masz zapasowy przedmiot — rozbierz go u kowala w bazarze / Możesz ulepszyć przedmiot u kowala w bazarze; w lesie i Bagnie: Zapasowy przedmiot do rozbiórki: Kamień Powrotu → kowal / Możesz ulepszyć przedmiot: Kamień Powrotu → kowal | ▼ nad punktem E kowala (`KowalProba/Kuznia/E`) / nad Kamieniem Powrotu |
 
 Biomy (las-pas, Bagno) są w `ustawienia.json` → `zrodla.biomy`: kontener, moduł danych (`Moduly/DanePasa`), Kamień
@@ -45,8 +45,8 @@ liczyć się do (d), gdy gracz wejdzie na stanowisko Training Center albo wygra 
 
 - atrybuty gracza: `Class`, `Level`, `PokonalStraznikaLasu`, `TreningGra` (stanowisko mini-gry); `Gold`; dla każdego
   biomu z inkubatorem (`zrodla.biomy[].atrybut_ceny_jajka` i `atrybut_kupionych_jajek`): `PetyCenaJajka` /
-  `PetyCenaJajkaBagna` (cena następnego jajka) i `PetyKupioneJajka` / `PetyKupioneJajkaBagna` (ile jajek biomu gracz
-  kupił) — pisze je `swiat/pety_proba`; `KowalDostepne`, `KowalZapasy`, `KowalMoznaUlepszyc`, `KowalUlepszen` — pisze je
+  `PetyCenaJajkaBagna` / `PetyCenaJajkaDzungli` (cena następnego jajka) i `PetyKupioneJajka` / `PetyKupioneJajkaBagna` /
+  `PetyKupioneJajkaDzungli` (ile jajek biomu gracz kupił) — pisze je `swiat/pety_proba`; `KowalDostepne`, `KowalZapasy`, `KowalMoznaUlepszyc`, `KowalUlepszen` — pisze je
   `swiat/kowal_proba` (bez kontenera `KowalProba` krok (g) się nie pokazuje);
 - walki w lesie: u klienta na `LasPasGra` / `LasPotwory` odtwarzacz ustawia `OstatnieZiarno`, `OstatniWynik` i
   `OstatniStan = "wynik"` — jedna walka na wejście w stan „wynik” z nowym ziarnem (walka przerwana resetem się nie

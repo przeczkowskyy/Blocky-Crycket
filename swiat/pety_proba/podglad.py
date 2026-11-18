@@ -5,7 +5,7 @@ podgląd inkubatora i jajka. Ten sam układ dla każdego jajka; przy jajku dalsz
 samej rzadkości z jajka leśnego (porównanie). Tylko składa gotowe obrazy z swiat/postacie/wynik/ (Pillow) — Blender
 niepotrzebny.
 
-    python -B swiat/pety_proba/podglad.py        # → swiat/pety_proba/podglad/pety_lesne.jpg, pety_bagna.jpg
+    python -B swiat/pety_proba/podglad.py        # → swiat/pety_proba/podglad/pety_lesne.jpg, pety_bagna.jpg, pety_dzungli.jpg
 
 Najpierw: python -B swiat/postacie/przebuduj.py <moduły> --bez-filmow (portrety <id>_bohater.jpg).
 """
@@ -22,7 +22,7 @@ import logika_petow as LP  # noqa: E402
 
 WYNIK = os.path.join(REPO, "swiat", "postacie", "wynik")
 PODGLAD = os.path.join(TU, "podglad")
-PLIKI = {"las": "pety_lesne.jpg", "bagno": "pety_bagna.jpg"}   # inne biomy: pety_<kraina>.jpg
+PLIKI = {"las": "pety_lesne.jpg", "bagno": "pety_bagna.jpg", "dzungla": "pety_dzungli.jpg"}   # inne: pety_<kraina>.jpg
 
 
 def czcionka(rozmiar):

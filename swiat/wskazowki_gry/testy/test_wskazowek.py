@@ -154,6 +154,16 @@ class TestLogiki(unittest.TestCase):
         bag = LW.krok(D, s(kraina="bagno", miejsce="las", straznik=True, bagno=True, jajko=True, kupione=0))
         self.assertEqual((bag["id"], bag["cel"]), ("f_jajko_bagno", "jajko"))
         self.assertIn("Bagna", bag["tekst"])
+        # 18.11: jajko Dżungli — w Dżungli znacznik nad inkubatorem Dżungli (Taras Przybycia)
+        dz = {"straznik": True, "straznik_bagna": True, "bagno": True, "dzungla": True}
+        dzj = LW.krok(D, s(kraina="dzungla", miejsce="las", jajko=True, kupione=0, **dz))
+        self.assertEqual((dzj["id"], dzj["cel"]), ("f_jajko_dzungla", "jajko"))
+        self.assertIn("Dżungli", dzj["tekst"])
+        self.assertNotEqual(LW.krok(D, s(kraina="dzungla", miejsce="las", jajko=True, kupione=1, **dz))["id"],
+                            "f_jajko_dzungla")
+        b = next(x for x in D["zrodla"]["biomy"] if x["id"] == "dzungla")
+        self.assertEqual((b["inkubator"], b["atrybut_ceny_jajka"], b["atrybut_kupionych_jajek"]),
+                         ("PetyProba/Punkty/E inkubator Dzungli", "PetyCenaJajkaDzungli", "PetyKupioneJajkaDzungli"))
         for st in (s(miejsce="las", jajko=True, kupione=1), s(miejsce="las", jajko=False), s(miejsce="las"),
                    s(kraina="bagno", miejsce="las", straznik=True, bagno=True, jajko=True, kupione=1),
                    s(kraina="bagno", miejsce="las", straznik=True, bagno=True, jajko=False),

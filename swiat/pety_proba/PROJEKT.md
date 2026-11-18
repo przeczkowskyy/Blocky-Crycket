@@ -24,6 +24,10 @@ Ewolucji i tokeny krainy), D-060 (inkubator w biomie, wyklucie od razu z animacj
 > 300 Złota, jajko Bagna 750 — rośnie tylko między biomami (pierwsze jajko po ok. 6 min gry w biomie). Jajko = wpis
 > w `ustawienia.json` → `jajka` (trzeci biom = nowy wpis, bez kodu).
 > Jajka (leśne też) są od teraz **gładkie — z elipsoid**, nie ze schodków klocków („ul”, para przed / po niżej).
+>
+> **Od 18.11 (noc) trzecie jajko — Jajko Dżungli** (propozycja, bez Studio): turkusowe jajko z hibiskusem na mchu
+> stanowiska na Tarasie Przybycia Dżungli, obok **kamienny totem ruin** ze świecącym kwiatem i tablica szans; pięć
+> petów Dżungli (sekcja niżej), cena **1350 Złota** z tej samej reguły co Bagno.
 
 ## Pięć petów leśnego jajka
 
@@ -59,6 +63,41 @@ Własne projekty pod klimat Bagna (mokradła, mgła, ogniki, pomosty), sylwetki 
 Podgląd zbiorczy: `podglad/pety_bagna.jpg` (ten sam układ co `podglad/pety_lesne.jpg`, pod skillem — pet lasu tej
 rzadkości). Jajko Bagna: miętowe w ciemnozielone i turkusowe cętki, z liściem grzybienia i kwiatkiem na czubku.
 
+## Pięć petów Jajka Dżungli (18.11 noc, propozycja)
+
+Własne projekty pod klimat Dżungli (liście, liany, kwiaty, ruiny, turkusowa woda; paleta mapy 2FA34A / 6CCB4A, pnie
+5C3A22, turkus 2EC4B6, kwiaty E5392B / F2B030, świecące FF5FA2 / FFD84A). Sylwetki inne niż pety lasu i Bagna i niż
+potwory Dżungli (kameleon Zwijogon, kwiat Gębokwiat, małpa Kokosowy Siłacz, Pancernik Ruin, Wąż Stu Lian); nazwy nie
+mylą się z nimi ani z petami lasu i Bagna. Szanse jak w innych jajkach (jawne na tablicy, legendarny 2%).
+
+| Rzadkość · szansa | Pet Dżungli | Skill | Wygląd |
+|---|---|---|---|
+| Pospolity · 50% | Ananasik | Słodki Sok: +3% Zręczności | pękaty złocisty ananas w łuski-romby, z buzią, koroną z sześciu liści i listkami-rączkami |
+| Zwykły · 25% | Leniwczyk | Senne Lekcje: +2% doświadczenia z walk | przygarbiony leniwiec z ciemnymi opaskami wokół oczu, długimi łapami z pazurkami, szalikiem z liany i kwiatem za uchem |
+| Rzadki · 15% | Tukanik | Dziób Łowcy: +15% Siły, +5% Szczęścia | czarne pisklę tukana z kremowym śliniaczkiem, turkusową obwódką oczu i ogromnym zielono-pomarańczowo-czerwonym dziobem (skacze obunóż) |
+| Epicki · 8% | Posążek | Kamień Ruin: Runy (częstsze umiejętności), +30% Kondycji | kanciasty kamienny bożek z ruin z wielką głową, świecącymi turkusowymi oczami i runami, w lianie, z pióropuszem z liści i świecącym kwiatem |
+| Legendarny · 2% | Jaguarek | Zew Dżungli: Dzikość (mocniejsze ciosy), +20% Szczęścia, +5% Złota i doświadczenia | złociste kocię jaguara w czarne rozety ze świecącym turkusowym środkiem, z wiankiem z kwiatów i ogonem w lianie ze świecącym kwiatkiem |
+
+Pospolite i zwykłe dają małą premię każdej klasie (zwykłe pety trzech biomów mają różne premie: Złoto, Pancerz, Siła,
+Kondycja, Zręczność, doświadczenie). Dwa nowe żywioły z pasywek silnika, których nie miał jeszcze żaden pet:
+**Dzikość** (pasywki, które zwolnił Ogień: zwykły cios +10,8 / 13,4 / 11,7% dla Wojownika / Zwiadowcy / Maga) i **Runy**
+(pasywki broni: mana z ciosów +25%, zwykły cios −10% — umiejętności dużo częściej). Podgląd zbiorczy:
+`podglad/pety_dzungli.jpg`; modele `swiat/postacie/ananasik.py`, `leniwczyk.py`, `tukanik.py`, `posazek.py`,
+`jaguarek.py`, `jajko_dzungli.py` (plansze w `swiat/postacie/wynik/<id>/`).
+
+**Jajko i inkubator Dżungli** (`jajko_dzungli.py`): stanowisko z mapy jak w lesie (płyta, korzenie, gniazdo z mchem —
+jajko ×1,8 leży na mchu), więc gra stawia tylko dwie stałe bryły: **totem ruin** (kolumna z runami, w lianie, ze
+świecącym różowym kwiatem; z prawej strony gniazda, przed wiaderkami mapy) i **tablicę szans** z liśćmi na daszku
+(z przodu po lewej, przed świecącym kwiatem mapy — kwiat zostaje za tablicą, nauczka z tablicy Bagna). Słup światła
+różowy (FF6FB0). Punkt E i miejsce z `swiat/dzungla_pas/krotki/znaczniki.json` (mapy nie zmieniam).
+
+**Cena 1350 Złota — ta sama reguła co Bagno** (`ekonomia_jajek.py`, `MINUT_CENY` = 6): cena = Złoto z pierwszych 6 min
+walk w biomie (mediana graczy, którzy przeszli poprzednie biomy jak w symulacji lasu), zaokrąglone do 50. Sprawdzenie
+reguły: Bagno 752 → 750 (to cena z D-105), las 271 → 250 (D-105 ma 300 — cena lasu była wcześniej, pierwsze jajko
+po 6,4 min), Dżungla 1362 → **1350** (gracz wchodzi na 18. poziomie, 10–90%: 17–20; walka daje ok. 160–230 Złota).
+Przy 1350: pierwsze jajko Dżungli po 6,0 min (10–90%: 4,5–8,2), kolejne co ok. 5 min; do wygranej z Wężem Stu Lian
+(mediana 48 min) gracz kupi ok. 9 jajek (las 10,5, Bagno 10). Jajka tylko za Złoto z gry (D-086).
+
 ## Skille petów (D-101): różne premie i żywioły (18.11, liczby — propozycja)
 
 **D-101** (zatwierdzona w rejestrze: Karol, potwierdził Paweł, 17.11): pety dają różne premie — doświadczenie, Złoto,
@@ -78,6 +117,8 @@ wywołanie przejmuje źródło — dawna premia z `Pety("kup")` już się nie li
 |---|---|---|
 | Ogień | „podpala wroga przy ciosie (25%)” | zaklęcie `podpalenie` (25% na niezablokowany cios, każda klasa; w walce napis „PODPALENIE!”), Mag dodatkowo `ognista_rozdzka` (podpalenie trwa o 2 tury dłużej) |
 | Jad | „zatruwa wroga przy ciosie (30%)” | zaklęcie `trucizna` (30% na niezablokowany cios, każda klasa), Mag dodatkowo `kumulowanie_trucizny` (więcej stosów, mocniejsza trucizna) |
+| Dzikość (Dżungla) | „mocniejsze ciosy” | Wojownik `furia` (+10,8%), Zwiadowca `seria` (+13,4%), Mag `magiczny_pocisk` (+11,7%) — zwykły cios |
+| Runy (Dżungla) | „częstsze umiejętności” | pasywki broni: Wojownik `miecz_runiczny`, Zwiadowca `luk_runiczny`, Mag `kostur_many` — mana z ciosów +25%, zwykły cios −10% |
 | Światło | „szybsza mana” | `bitewny_rytm` / `przyplyw_adrenaliny` / `przeplyw_many` — mana z ciosów +10%, +15 many na start walki |
 | Kryształ | „ciosy mocniej trafiają” | Wojownik `rozdzieracz` (Pancerz wroga −12%), Zwiadowca `oko_lowcy` (krytyk), Mag `skupiona_magia` (moc +2,5%) |
 | Woda | „lepsza obrona” | Wojownik `mur_tarczy` (blok +4,2%, Pancerz +15,7%), Zwiadowca `zwinnosc` (unik +7,1%), Mag `przeplyw_many` (szybsza bariera) |
@@ -106,6 +147,30 @@ Zwiadowcy Wydra (unik), Magowi Ognik (Ogień); Zręczność i Inteligencja w sil
 Po zmianie na prawdziwe zaklęcie (18.11 noc) Ognik jest najmocniejszym epickim (+12 pp Wojownikowi i Magowi — blisko
 legendarnych w walce, ale bez premii do Złota), a Ważeczka pomaga każdej klasie po równo (+5–7 pp, trucizna działa
 z każdą bronią). Czas Bagna przy małych petach (±3 min) i czas lasu Ważeczki to szum 45 graczy na wariant.
+
+**Dżungla (18.11 noc): Wąż Stu Lian (poziom 23) i przejście Dżungli** — ta sama symulacja (`skille_petow.py` liczy teraz
+trzech strażników i trzy biomy; gracz wchodzi do Dżungli po Strażniku Topieli). Bez peta: Wąż 18 / 25 / 21%, Dżungla do
+Węża 53,5 min, 265 Złota/min. Czas biomu przy małych petach (±5 min) to szum 45 graczy na wariant (pp ze strażnikami — 600
+ziaren — są pewniejsze).
+
+| Pet | Strażnik Gaju (pp) | Wąż Stu Lian (pp) | Dżungla do Węża (53,5 min) | Złoto/min Dżungla (265) |
+|---|---|---|---|---|
+| Ananasik (+3% Zręczności) | +0 / +0 / +0 | +0 / +0 / +1 | −5,4 (szum) | +0 |
+| Leniwczyk (+2% doświadczenia) | +0 / +0 / +0 | +0 / +0 / +0 | −4,3 (szum) | −8 (szum) |
+| Tukanik (+15% Siły, +5% Szczęścia) | +8 / +6 / +5 | +5 / +2 / +1 | −6,1 | +27 |
+| Posążek (Runy, +30% Kondycji) | +10 / +8 / +10 | +5 / +7 / +6 | −9,9 | +17 |
+| Jaguarek (Dzikość, +20% Szczęścia, +5% / +5%) | +10 / +9 / +5 | +8 / +3 / +3 | −12,1 | +58 |
+| dla porównania: Ważeczka / Ognik | +7 / +5 / +6 · +12 / +7 / +12 | +3 / +2 / +2 · +6 / +4 / +6 | −5,1 · −8,2 | +8 · +29 |
+| dla porównania: Jelonek / Wydra | +13 / +8 / +6 · +12 / +16 / +6 | +9 / +4 / +3 · +13 / +12 / +4 | −9,5 · −8,7 | +43 · +43 |
+
+**Reguła wyważenia (pety późniejszych biomów nie są mocniejsze tylko dlatego, że biom jest późniejszy):** każda
+rzadkość ma ten sam „budżet” we wszystkich biomach, mierzony w punktach procentowych szansy wygranej ze strażnikiem
+na jego poziomie i w minutach biomu — pospolite i zwykłe ok. 0 (najwyżej 3%, bez żywiołu), rzadkie ok. +5–8 pp
+(Strażnik Gaju), epickie ok. +8–12 pp, legendarne ok. +10–16 pp i do 6% łupu. Procenty premii są w każdym biomie te same
+(15–30% statystyk) — procent mnoży statystyki gracza, więc sam rośnie z jego poziomem; nie podnoszę ich za biom.
+W pierwszej wersji Posążek (Runy, +20% Pancerza) dawał tylko +0–2 pp, a Tukanik (+20% Szczęścia) +2–4 pp — za mało
+na swoją rzadkość, więc dostali Kondycję i Siłę (Szczęście i Zręczność działają w silniku słabiej). Jaguarek najlepiej
+przechodzi samą Dżunglę (−12 min, krytyki na zwinnych przeciwnikach Dżungli), ale ze strażnikami jest jak Jelonek.
 
 **Zaklęcie przy ciosie (18.11 noc):** stan gracza ma już pole `zaklecie` w `Modyfikatorach` (ustawia zaklęcie broni
 bohatera, `bron.zaklecie`; przy kilku źródłach wygrywa pierwsze alfabetycznie). Ognik daje więc prawdziwe podpalenie
@@ -251,6 +316,8 @@ a zagroda pokazuje ten sam napis — bez błędów.
 12. **Jajko Bagna** za stałe 750 Złota (liczba do doboru); licznik ceny osobny (używany tylko przy cenie rosnącej).
 13. **Skille Bagna** — od 18.11 według D-101 (różne premie, nie „trochę lepsze od leśnych”; dawniej 6 / 10 / 14 / 18 /
     24% Złota albo doświadczenia).
+17. **Jajko Dżungli** za stałe 1350 Złota (reguła 6 min, jak Bagno) i pięć petów Dżungli (tabela wyżej) — 18.11 noc,
+    bez Studio; liczby i projekty do zatwierdzenia.
 15. **Żywioły** — Światło, Kryształ i Woda z pasywek silnika; Ogień (Ognik) i Jad (Ważeczka) to prawdziwa szansa na
     podpalenie (25%) / zatrucie (30%) przy ciosie przez pole `zaklecie` Modyfikatorów stanu gracza (18.11 noc).
 16. **Latarenka i tablica Bagna przestawione, jajko Bagna ciemniejsze** (18.11, po zrzutach z gry): latarenka z boku
@@ -269,12 +336,13 @@ a zagroda pokazuje ten sam napis — bez błędów.
 | `logika_petow.py` | lustro `zrodla/LogikaPetow.luau` (cena, licznik osobny / wspólny, losowanie, jajko peta i biomu, teksty, zagroda, decyzja serwera) |
 | `zrodla/SerwerPetow.server.luau`, `KlientPetow.client.luau`, `RigPetow.luau` | serwer, klient, budowa petów z klocków i klipy przez Motor6D |
 | `ekonomia_jajek.py` | kiedy gracz kupi kolejne jajka (tabele wyżej; `--biom bagno`) |
-| `skille_petow.py` | wpływ skilli petów (D-101) na walki: szansa wygranej ze strażnikami, czas przejścia, Złoto na minutę |
+| `skille_petow.py` | wpływ skilli petów (D-101) na walki: szansa wygranej ze strażnikami (Gaj, Topiel, Wąż Stu Lian), czas przejścia trzech biomów, Złoto na minutę |
+| `swiat/postacie/ananasik.py`, `leniwczyk.py`, `tukanik.py`, `posazek.py`, `jaguarek.py`, `jajko_dzungli.py` | modele Dżungli (jajko + inkubator: totem ruin, tablica) |
 | `podglad.py` → `podglad/pety_lesne.jpg`, `podglad/pety_bagna.jpg` | pięć portretów petów jajka z rzadkością, szansą i skillem + inkubator i jajko (do raportu); `podglad/jajko_lesne_przed_po.jpg` — para przed / po |
 | `sprawdz_luau_petow.py` | kontrola statyczna Luau (m.in. bez Robuxów, bez zapisu Złota w pakiecie, klient bez liczb) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
-| `testy/test_petow.py` | 43 testy offline (w tym prawdziwe SerwerPetow + SerwerStanu w `luau_mini`, oba jajka, cena stała i przełączniki) |
-| `testy/proba_play.py` | próba w Play P00–P15 (+ P07b: każdy pet za graczem); `--bagno`: B00–B09 (jajko Bagna); zrzuty do `klatki/`; `--sprawdz` bez Studio. Atrybut klienta `TestKameraProby` na kontenerze: kamera do zrzutów nie chowa petów (tylko próby) |
+| `testy/test_petow.py` | 43 testy offline (w tym prawdziwe SerwerPetow + SerwerStanu w `luau_mini`, trzy jajka, cena stała i przełączniki) |
+| `testy/proba_play.py` | próba w Play P00–P15 (+ P07b: każdy pet za graczem); `--bagno`: B00–B09 (jajko Bagna), `--dzungla`: te same punkty dla jajka Dżungli (zrzuty `dz…`); zrzuty do `klatki/`; `--sprawdz` bez Studio. Atrybut klienta `TestKameraProby` na kontenerze: kamera do zrzutów nie chowa petów (tylko próby) |
 | `testy/proba_ludzka.py` | przejście „po ludzku”: walki do Złota na jajko (liczba walk i minut), wskazówka, E, wyklucie, pet, premia, zagroda (L01–L09) |
 | `swiat/postacie/zoledziak.py`, `mchowy_slimak.py`, `lisciolis.py`, `swietlikowka.py`, `jelonek_gaju.py`, `jajko_lesne.py`, `pety_lesne.py` | modele lasu (Blender i klocki); `pety_lesne.py` — wspólne klipy, oczy, gładkie jajko, tablica szans |
 | `swiat/postacie/palkus.py`, `nenufarek.py`, `wazeczka.py`, `ognik.py`, `perlowa_wydra.py`, `jajko_bagienne.py` | modele Bagna (jajko + inkubator: gniazdo na palach, latarenka, tablica) |
@@ -286,6 +354,7 @@ python -B swiat/pety_proba/dane_petow.py                 # po zmianie ustawień 
 python -B swiat/pety_proba/testy/test_petow.py           # 43 testy, ok. 20 s
 python -B swiat/pety_proba/zbuduj.py --sucho             # bez Studio
 python -B swiat/pety_proba/ekonomia_jajek.py --biom bagno  # cena jajka Bagna
+python -B swiat/pety_proba/ekonomia_jajek.py --biom dzungla  # cena jajka Dżungli (reguła 6 min)
 python -B swiat/pety_proba/podglad.py                    # podglad/pety_lesne.jpg, pety_bagna.jpg
 python -B swiat/postacie/przebuduj.py zoledziak mchowy_slimak lisciolis swietlikowka jelonek_gaju jajko_lesne --bez-filmow
 python -B swiat/postacie/przebuduj.py palkus nenufarek wazeczka ognik perlowa_wydra jajko_bagienne --bez-filmow
@@ -295,6 +364,7 @@ python -B swiat/wskazowki_gry/zbuduj.py
 python -B swiat/pety_proba/zbuduj.py
 python -B swiat/pety_proba/testy/proba_play.py <folder wyników poza repo>
 python -B swiat/pety_proba/testy/proba_play.py <folder wyników poza repo> --bagno   # jajko Bagna (B00–B09)
+python -B swiat/pety_proba/testy/proba_play.py <folder wyników poza repo> --dzungla # jajko Dżungli (B00–B09, zrzuty dz…)
 python -B swiat/pety_proba/zbuduj.py --usun              # wyłącznik: gra wraca do stanu sprzed próby
 ```
 
@@ -349,6 +419,14 @@ kupno działa. Mylący był też haczyk klienta: `akcjaE` pokazywało zawsze jaj
 inkubatora (`jajkoPrzy`). Serwer od teraz sam sprawdza zasięg inkubatora (test `5c1`).
 
 ## Czego nie sprawdzono
+
+**Jajko Dżungli (18.11, 03:10–03:24, Studio)** — `proba_play.py --dzungla`: **14 z 14 OK** (trzy jajka lokalne, ceny
+300 / 750 / 1350, brak Złota → „Brakuje ci 1350 Złota”, wskazówka `f_jajko_dzungla`, kupno prawdziwym E, pięć petów
+Dżungli za graczem ok. 5,1 st, wyklucie każdego, zagroda z 10 petami, wybór Jaguarka; zgodność logiki 229/229, konsola
+czysta). Regresja: `--bagno` 14/14, las 17/17, próba dymna 14/14 (D04 łup 0 → 16). Walka w Dżungli z Jaguarkiem
+(Zwijogon, arena Dżungli) rusza po przelocie kamery biomu; modyfikator gracza: źródła `kowal`, `pety`,
+`szczescie_poczatkujacego`, pasywki Dzikości. Zrzuty `klatki/dz*`. Niesprawdzone w grze: Mag i Zwiadowca z petami
+Dżungli, Runy w walce.
 
 Dwóch graczy naraz (pet widoczny dla innych — kod rysuje pety wszystkich graczy u każdego klienta, ale w Studio był
 jeden gracz), telefon i dotyk (E przytrzymane palcem), wydajność przy wielu graczach z petami.

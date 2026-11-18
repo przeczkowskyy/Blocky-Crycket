@@ -97,7 +97,7 @@ class TestDanych(unittest.TestCase):
             w_pulach += [s["pet"] for s in j["szanse"]]
         self.assertEqual(sorted(w_pulach), sorted(p["id"] for p in U["pety"]), "każdy pet w puli dokładnie jednego jajka")
         self.assertEqual(D["jajka"][0]["cena"]["kalkulator"], progresja.ZALOZENIA["ceny_jajek"][0])
-        self.assertEqual([j["kraina"] for j in D["jajka"]], ["las", "bagno"])
+        self.assertEqual([j["kraina"] for j in D["jajka"]], ["las", "bagno", "dzungla"])
         self.assertIn(D["licznik_ceny"]["tryb"], ("osobny", "wspolny"))
         for p in D["pety"]:
             self.assertEqual(LP.jajko_peta(D, p["id"])["id"], p["jajko"])
@@ -242,7 +242,7 @@ class TestModeli(unittest.TestCase):
             self.assertIn(U["modele"]["papier"], nazwy, j["id"])
             self.assertFalse(any(n.startswith(("Pasek szansy", "Znak peta")) for n in nazwy), "paski rysuje SurfaceGui")
             self.assertLessEqual(len(T["czesci"]), 60, j["id"])
-        las, bagno = D["jajka"]
+        las, bagno = D["jajka"][:2]
         self.assertAlmostEqual(las["y_jajka"], 0.92, places=2)    # jajko na mchu gniazda z mapy lasu
         self.assertTrue(las["jajko_na_mchu"] and not bagno["jajko_na_mchu"])
         # Bagno: gniazdo na palach nad korzeniami stanowiska z mapy (wierzch korzeni ok. 1,8) — jajko wyżej
@@ -281,7 +281,7 @@ class TestLogiki(unittest.TestCase):
             self.assertEqual(LP.cena(D, dict(j, cena=dict(c, tryb="rosnaca")), 2), c["start"] + 2 * c["krok"])
             for zle in (-1, 2.5, None, "3"):
                 self.assertEqual(LP.cena(D, j, zle, "rosnaca"), c["start"])
-        las, bagno = D["jajka"]
+        las, bagno = D["jajka"][:2]
         self.assertEqual((las["cena"]["stala"], bagno["cena"]["stala"]), (300, 750))
         self.assertLess(las["cena"]["stala"], las["cena"]["kalkulator"], "tańsza niż kalkulator (1000)")
         self.assertEqual(LP.cena(D, dict(las, cena=dict(las["cena"], tryb="kalkulator")), 3), las["cena"]["kalkulator"])
@@ -292,7 +292,7 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(LP.opis_ceny(D, las, "rosnaca"), "od 300 Złota · rośnie z każdym jajkiem")
 
     def test_3b2_licznik_osobny_i_wspolny(self):
-        las, bagno = D["jajka"]
+        las, bagno = D["jajka"][:2]
         w = {las["id"]: 4, bagno["id"]: 1, "inny_cel": 9}
         self.assertEqual((LP.kupione(D, las, w, "osobny"), LP.kupione(D, bagno, w, "osobny")), (4, 1))
         self.assertEqual((LP.kupione(D, las, w, "wspolny"), LP.kupione(D, bagno, w, "wspolny")), (5, 5))
@@ -328,7 +328,8 @@ class TestLogiki(unittest.TestCase):
         self.assertIsNone(LP.mod_peta(D, "obcy"))
         self.assertEqual(LP.decyzja(D, {"stan_gracza": True, "jajko": "jajko_bagienne"})["ok"], True)
         self.assertEqual(LP.jajko_krainy(D, "bagno")["id"], "jajko_bagienne")
-        self.assertIsNone(LP.jajko_krainy(D, "dzungla"))
+        self.assertEqual(LP.jajko_krainy(D, "dzungla")["id"], "jajko_dzungli")
+        self.assertIsNone(LP.jajko_krainy(D, "pustynia"))
 
 
 def luau_logika():
@@ -616,7 +617,7 @@ class TestSerweraOffline(unittest.TestCase):
         # 17.11 (próba w Studio): E przy inkubatorze Bagna — serwer kupuje jajko TEJ podpowiedzi i sam sprawdza, że
         # gracz przy niej stoi; podpowiedź odpalona spod drugiego inkubatora (albo bez postaci) → odmowa, Złoto bez zmian
         self.uruchom(zloto=3000)
-        las, bagno = D["jajka"]
+        las, bagno = D["jajka"][:2]
         self.e_jajka(1)
         info = self.od_serwera("wyklucie")[-1][1]
         self.assertEqual((info["jajko"], info["cena"]), (bagno["id"], bagno["cena"]["stala"]))
@@ -725,7 +726,7 @@ class TestSerweraOffline(unittest.TestCase):
 
     def test_5e2_jajko_bagna_cena_stala(self):
         self.uruchom(zloto=1500)
-        las, bagno = D["jajka"]
+        las, bagno = D["jajka"][:2]
         cl, cb = las["cena"]["stala"], bagno["cena"]["stala"]
         for _ in range(2):                     # dwa jajka leśne: ceny obu jajek bez zmian
             self.e_jajka(0)
@@ -747,7 +748,7 @@ class TestSerweraOffline(unittest.TestCase):
 
     def test_5e2b_jajko_bagna_licznik_osobny_przy_rosnacej(self):
         self.uruchom(zloto=2500, cena="rosnaca")
-        las, bagno = D["jajka"]
+        las, bagno = D["jajka"][:2]
         cl, cb = las["cena"], bagno["cena"]
         for _ in range(2):                     # dwa jajka leśne: cena leśnego rośnie, Bagna — nie
             self.e_jajka(0)
@@ -764,7 +765,7 @@ class TestSerweraOffline(unittest.TestCase):
 
     def test_5e3_licznik_wspolny_po_przelaczeniu(self):
         self.uruchom(zloto=5000, tryb="wspolny", cena="rosnaca")
-        las, bagno = D["jajka"]
+        las, bagno = D["jajka"][:2]
         cl, cb = las["cena"], bagno["cena"]
         self.e_jajka(0)
         self.assertEqual(self.atr(bagno["atrybuty"]["cena"]), cb["start"] + cb["krok"], "wspólny: las podnosi Bagno")

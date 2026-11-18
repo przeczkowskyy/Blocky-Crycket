@@ -4,6 +4,7 @@
 
     python -B swiat/pety_proba/ekonomia_jajek.py                 # las: warianty ceny × 1.–5. jajko (Markdown)
     python -B swiat/pety_proba/ekonomia_jajek.py --biom bagno    # Bagno: gracz po lesie (do Strażnika Gaju) w Bagnie
+    python -B swiat/pety_proba/ekonomia_jajek.py --biom dzungla  # Dżungla: gracz po lesie i Bagnie (do Strażnika Topieli)
     python -B swiat/pety_proba/ekonomia_jajek.py --graczy 200 --md wynik.md
 
 Bagno (17.11 wieczór): gracz przechodzi las jak niżej do wygranej ze Strażnikiem Gaju, z tym poziomem i doświadczeniem
@@ -196,6 +197,99 @@ def wszyscy_gracze_bagna(graczy, ziarno=1, z_wygrana=False):
     return w, poziomy
 
 
+# ------------------------------------------------------------------------------------------------ Dżungla (18.11)
+DZUNGLA = os.path.join(REPO, "swiat", "dzungla_pas_gra")
+PLIK_PRZEGROD_DZUNGLI = os.path.join(DZUNGLA, "zrodla", "DanePotworowDzungli.luau")
+PLIK_DZUNGLI = os.path.join(DZUNGLA, "zrodla", "DaneDzungli.luau")
+TROLL_DZUNGLI = "pancernik_ruin"     # rzadki potwór Dżungli z odrodzeniem (jak Leśny Troll i Ropucha z Chatką)
+DOJSCIE_DZUNGLI = {"zwijogon": 10, "gebokwiat": 10, "kokosowy_silacz": 10, "pancernik_ruin": 15, "waz_stu_lian": 6}
+LIMIT_DZUNGLI_MIN = 150.0
+# reguła ceny jajka biomu (las 300, Bagno 750 — D-105): Złoto z MINUT_CENY minut walk od wejścia do biomu (mediana
+# graczy), zaokrąglone do 50 — pierwsze jajko biomu po kilku minutach gry w nim, łup biomu sam wyznacza cenę
+MINUT_CENY = 6.0
+
+
+def przegrody_z(plik):
+    d = SL.wczytaj_luau(plik)
+    return [{"id": s["id"], "gatunek": s["gatunek"], "od": s["poziomy"][0], "do": s["poziomy"][1], "x": s["srodek"][0],
+             "straznik": s["straznik"] is True, "odrodzenie": s["odrodzenieS"],
+             "stale": s.get("odrodzenieStale") is True, "naraz": s["naraz"]} for s in d["strefy"]]
+
+
+def przybycie_i_przelot_z(plik):
+    d = SL.wczytaj_luau(plik)
+    return d["przybycie"]["punkt"][0], d["przelot"]["czas"]
+
+
+def przegrody_dzungli():
+    return przegrody_z(PLIK_PRZEGROD_DZUNGLI)
+
+
+def przybycie_i_przelot_dzungli():
+    return przybycie_i_przelot_z(PLIK_DZUNGLI)
+
+
+def zaladuj_przeciwnikow():
+    """Przeciwnicy Bagna i Dżungli w pamięci silnika (tylko odczyt cudzych pakietów; oba moduły nazywają się
+    przeciwnicy.py, więc Dżunglę wczytuję pod inną nazwą)."""
+    import importlib.util
+    if BAGNO not in sys.path:
+        sys.path.insert(0, BAGNO)
+    import przeciwnicy  # noqa: E402  (swiat/bagno_pas_gra/przeciwnicy.py)
+    przeciwnicy.zaladuj_do_silnika(silnik)
+    spec = importlib.util.spec_from_file_location("przeciwnicy_dzungli", os.path.join(DZUNGLA, "przeciwnicy.py"))
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    m.zaladuj_do_silnika(silnik)
+
+
+def wszyscy_gracze_dzungli(graczy, ziarno=1, z_wygrana=False):
+    """Gracz przechodzi las (do Strażnika Gaju) i Bagno (do Strażnika Topieli), potem wchodzi do Dżungli: lista (czas od
+    wejścia do Dżungli, Złoto z walk w Dżungli) — Złoto z lasu i Bagna NIE wchodzi (dolna granica tempa);
+    z_wygrana=True: pary (os_czasu, czas wygranej z Wężem Stu Lian od wejścia do Dżungli albo None)."""
+    zaladuj_przeciwnikow()
+    _, D = DANE_STANU.dane_z_przypadkami()
+    P, Pb, Pd = SL.przegrody(), przegrody_bagna(), przegrody_dzungli()
+    x0, przelot = SL.przybycie_i_przelot()
+    xb, przelot_b = przybycie_i_przelot_bagna()
+    xd, przelot_d = przybycie_i_przelot_dzungli()
+    w, poziomy = [], []
+    for k in D["klasy"]:
+        los = random.Random("jajka-dzungla-%s-%d" % (k, ziarno))
+        for _ in range(graczy):
+            st = {}
+            _os, wygrana = gracz(D, P, k, los, x0, przelot, po_strazniku=False, limit_min=SL.LIMIT_MIN, koniec=st)
+            if wygrana is None:
+                continue
+            st2 = {}
+            _ob, wygrana_b = gracz(D, Pb, k, los, xb, przelot_b, po_strazniku=False, L0=st["L"], xp0=st["xp"],
+                                   troll=TROLL_BAGNA, dojscie=DOJSCIE_BAGNA, limit_min=LIMIT_BAGNA_MIN, koniec=st2)
+            if wygrana_b is None:
+                continue
+            poziomy.append(st2["L"])
+            os_czasu, wygrana_d = gracz(D, Pd, k, los, xd, przelot_d, L0=st2["L"], xp0=st2["xp"], troll=TROLL_DZUNGLI,
+                                        dojscie=DOJSCIE_DZUNGLI, limit_min=LIMIT_DZUNGLI_MIN)
+            w.append((os_czasu, wygrana_d) if z_wygrana else os_czasu)
+    return w, poziomy
+
+
+def zloto_do(os_czasu, t):
+    """Złoto z walk do chwili t (s) od wejścia do biomu."""
+    z = 0
+    for tt, zz in os_czasu:
+        if tt > t:
+            break
+        z = zz
+    return z
+
+
+def cena_z_reguly(gracze, minut=MINUT_CENY):
+    """(mediana Złota z `minut` minut walk, ta sama liczba zaokrąglona do 50) — reguła ceny jajka biomu."""
+    zl = sorted(zloto_do(o, minut * 60.0) for o in gracze)
+    m = statistics.median(zl)
+    return m, int(50 * round(m / 50.0))
+
+
 def tabela(gracze, warianty):
     """{nazwa wariantu: [(mediana, p10, p90, ilu nie zdążyło) dla jajka 1..JAJEK]} w minutach."""
     wynik = {}
@@ -222,7 +316,7 @@ def main():
     ap = argparse.ArgumentParser(description="Kiedy gracz kupi jajko (Złoto z lasu-pasa albo z Bagna)")
     ap.add_argument("--graczy", type=int, default=100, help="graczy na klasę")
     ap.add_argument("--ziarno", type=int, default=1)
-    ap.add_argument("--biom", choices=("las", "bagno"), default="las")
+    ap.add_argument("--biom", choices=("las", "bagno", "dzungla"), default="las")
     ap.add_argument("--md", default=None)
     a = ap.parse_args()
     t0 = time.time()
@@ -247,7 +341,7 @@ def main():
         opis = ("Złoto z walk w lesie-pasie, gracz jak w `swiat/stan_gracza/symulacja_lasu.py` (%d graczy na klasę, trzy "
                 "klasy); po Strażniku walczy dalej w przegrodzie przed nim. Minuty od wejścia do lasu: mediana "
                 "(10%%–90%% graczy)." % a.graczy)
-    else:
+    elif a.biom == "bagno":
         pary, poziomy = wszyscy_gracze_bagna(a.graczy, a.ziarno, z_wygrana=True)
         poziomy.sort()
         opis = ("Złoto z walk w Bagnie (swiat/bagno_pas_gra: przegrody, przeciwnicy.py w silniku), gracz jak w lesie: "
@@ -255,6 +349,14 @@ def main():
                 "potem Bagno; Złoto z lasu nie wchodzi. %d graczy (trzy klasy). Minuty od wejścia do Bagna: mediana "
                 "(10%%–90%% graczy)." % (statistics.median(poziomy), SL.kwantyl(poziomy, 0.1), SL.kwantyl(poziomy, 0.9),
                                          len(pary)))
+    else:
+        pary, poziomy = wszyscy_gracze_dzungli(a.graczy, a.ziarno, z_wygrana=True)
+        poziomy.sort()
+        opis = ("Złoto z walk w Dżungli (swiat/dzungla_pas_gra: przegrody, przeciwnicy.py w silniku), gracz jak w lesie: "
+                "przechodzi las i Bagno do wygranej ze Strażnikiem Topieli (wchodzi do Dżungli na poziomie %d, "
+                "10%%–90%%: %d–%d), potem Dżungla; Złoto z lasu i Bagna nie wchodzi. %d graczy (trzy klasy). Minuty od "
+                "wejścia do Dżungli: mediana (10%%–90%% graczy)." % (
+                    statistics.median(poziomy), SL.kwantyl(poziomy, 0.1), SL.kwantyl(poziomy, 0.9), len(pary)))
     gracze = [o for o, _w in pary]
     T = tabela(gracze, warianty)
 
@@ -272,9 +374,14 @@ def main():
         if all(x is not None for x in med):
             odstepy = [med[0]] + [med[j] - med[j - 1] for j in range(1, JAJEK)]
             w.append("- %s: odstępy między zakupami (mediany) %s min" % (nazwa, " → ".join(f(x) for x in odstepy)))
-    # ile jajek do wygranej ze Strażnikiem biomu (las: od wejścia do lasu; Bagno: od wejścia do Bagna)
+    # reguła ceny (D-105): Złoto z MINUT_CENY min walk od wejścia do biomu, zaokrąglone do 50
+    m, c50 = cena_z_reguly(gracze)
+    w.append("")
+    w.append("Reguła ceny: Złoto z pierwszych %s min walk w biomie (mediana %d graczy) = %d → zaokrąglone do 50: "
+             "**%d** (w ustawieniach: %d)." % (f(MINUT_CENY), len(gracze), round(m), c50, c["stala"]))
+    # ile jajek do wygranej ze Strażnikiem biomu (las: od wejścia do lasu; Bagno, Dżungla: od wejścia do biomu)
     wygrane = [(o, t) for o, t in pary if t is not None]
-    straznik = "Strażnikiem Gaju" if a.biom == "las" else "Strażnikiem Topieli"
+    straznik = {"las": "Strażnikiem Gaju", "bagno": "Strażnikiem Topieli", "dzungla": "Wężem Stu Lian"}[a.biom]
     if wygrane:
         czasy = sorted(t / 60.0 for _o, t in wygrane)
         w.append("")

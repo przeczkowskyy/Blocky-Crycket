@@ -86,7 +86,8 @@ local function glowny(D, s)
 		if miejsce == "miasto" or kraina == nil then
 			return zbuduj(D, "f_jajko_miasto")
 		end
-		return zbuduj(D, if kraina == "bagno" then "f_jajko_bagno" else "f_jajko")
+		return zbuduj(D, if kraina == "bagno" then "f_jajko_bagno" elseif kraina == "dzungla" then "f_jajko_dzungla"
+			else "f_jajko")
 	end
 	if miejsce == "miasto" or kraina == nil then
 		return miasto(D, s)
