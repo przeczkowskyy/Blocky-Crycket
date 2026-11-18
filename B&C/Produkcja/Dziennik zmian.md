@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-18 · Claude Code u Karola (popołudnie: efekty Dżungli; nowa oprawa przelotu w toku)
+- **Polecenie Karola (ok. 14:50, na czacie):** nie będzie go dziś przy komputerze, tygodniowy limit odnawia się jutro — wykorzystać resztę („Co możemy jeszcze zrobić”). Wybrane rzeczy, które nie wymagają decyzji ludzi: efekty Dżungli i cutscenka D-077; większe pozycje (Pustynia, arena Training Center, bieg bohatera) podane Karolowi do wyboru.
+- **Dżungla — własne efekty umiejętności potworów** (`swiat/test_walki2/zrodla/Efekty3D.luau`, `Choreografie.luau`, dane w `swiat/dzungla_pas_gra/`): siedem umiejętności pięciu gatunków ma własny wygląd zamiast pożyczonego (pyłek zamiast lodowego sopla, struga jadu zamiast strzały, kły zamiast pazurów, liście, kokosy, płyty ruin), podpięty danymi przez nową tabelę wyglądu według aktora. Silnik i wyniki walk bez zmian (592 walki kontrolne i 1200 walk Dżungli identyczne). Każdy efekt najwyżej 16 części i jeden emiter.
+- **Próba w grze (15:30–16:21):** próba Dżungli zielona na końcowym kodzie, tempo ×2 i ×4 oraz pominięcie w locie nie zostawiają części; las na żywo, próba całej drogi gracza i próby walki bez nowych błędów. W Bagnie jedna walka raz nie wystartowała i przeszła w powtórce — do obserwacji. Jeden zrzut przelotu Dżungli wyszedł czarny i nie trafił do repo.
+- **Sprostowanie do listy zadań:** przelot kamery przy pierwszym wejściu do biomu (D-077) działa w grze od 17.11 jako część pakietów biomów; zadanie na liście było nieaktualne. 18.11 powstaje nowa oprawa przelotu (`swiat/cutscenka_biomu/`, kod i testy bez Studio w repo); pomijanie zostaje wyłączone zgodnie z wcześniejszym ustaleniem Karola.
+- Raport w panelu: „Dżungla: własne efekty umiejętności potworów”. Notatki: [[Zadania]], [[Pytania otwarte]] (dopisek pod 62).
+
 ## 2026-11-18 · Claude Code u Karola (wystawa sześciu ras w Studio)
 - **Rasy stoją w grze jako wystawa** (`Workspace/RasyProba`, pakiet `swiat/rasy_proba/`; propozycja, D-104): siedem figur — człowiek, elf, mroczny elf, ork, demon, goblin, Półbóg — z części Roblox, w szpalerze po obu stronach drogi z płyty startu do gospody. Skala ras w geometrii (ork 1,08, goblin 0,88), tabliczki z nazwami, wspólny umowny oddech w Play, oczy demona i Półboga oraz aureola jako Neon. Figury są zakotwiczone i bez kolizji. Nic nie jest wgrane na konto Roblox.
 - **Próba w grze (13:47):** 10 punktów w porządku — 796 części razem, wzrost i stopy zgodne z danymi, bez kolizji z graczem, konsola bez błędów, czas klatki 16,7 ms; cała droga gracza z wystawą na placu 13 z 13.

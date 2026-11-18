@@ -1,0 +1,35 @@
+{
+ "id": "r-20261118-162408-2fc0",
+ "tytul": "Dżungla: własne efekty umiejętności potworów",
+ "opis_md": "- Potwory Dżungli mają własny wygląd umiejętności zamiast pożyczonego: pyłek Gębokwiata to żółta chmura i „Z” nad uśpionym, jad Węża to zielona struga, ukąszenie to zatrzaskujące się kły.\n- Zmienił się tylko wygląd i napisy. Wynik walki, kolejność zdarzeń i czasy są identyczne jak przedtem (sprawdzone na 592 walkach kontrolnych i 1200 walkach Dżungli).\n- Próba w grze przeszła w całości; las i Bagno wyglądają i działają jak dotąd.\n- Do oceny: nazwy na banerach, kontrast kłów i płyt Pancernika, dobór dźwięków (dopisek pod pytaniem 62).\n\nSzczegóły:\n\n**Jak sprawdzić w Studio:** Play → TELEPORT → Dżungla (po pokonaniu Strażnika Topieli) → walka z dowolnym potworem; umiejętność widać zwykle w pierwszych turach.\n\n**Co się zmieniło**\n\n| Potwór | Umiejętność | Było (pożyczone) | Jest |\n|---|---|---|---|\n| Gębokwiat | Usypiający pyłek | lodowy sopel Maga | żółta chmura pyłku, nad celem trzy „Z” |\n| Wąż Stu Lian | Plunięcie jadem | strzała z zielonym grotem | zielona struga jadu, rozprysk i bąble |\n| Wąż Stu Lian | Ukąszenie | ślady pazurów Wilka | cztery kły zatrzaskują się na celu |\n| Zwijogon | Kamuflaż | złoty błysk Zwiadowcy | kłąb liści, liście krążą wokół ciała |\n| Zwijogon | Rozszarpanie | trzy ślady pazurów | sześć śladów na krzyż, sypią się liście |\n| Kokosowy Siłacz | Kokosy z góry | biała smuga miecza | brązowa smuga, odłamki łupiny, fala na ziemi |\n| Pancernik Ruin | Kamienna skóra | szare głazy Wojownika | płyty ruin z turkusowym rytem i powłoka |\n\nKażdy efekt ma najwyżej 16 części i jeden emiter cząsteczek, bez świateł — mniej niż najcięższe dotychczasowe efekty.\n\n**Próba w grze (18.11, 15:48–15:54, końcowy kod)**\n- Wszystkie siedem umiejętności gra własny wygląd; koszt zmierzony w grze zgodny z tabelą albo niższy.\n- Walki przy tempie ×2 i ×4 oraz pominięcie w locie pyłku nie zostawiają po sobie żadnych części.\n- Czas klatki 16,7 ms; konsola bez błędów.\n- Starsze walki: las na żywo bez zmian, próba całej drogi gracza w porządku, próby walki 111 z 111 i 27 z 27; znany błąd z napisami wyboru próby na telefonie bez zmian.\n- Bagno: w jednym przebiegu jedna walka nie wystartowała, w powtórce na tym samym kodzie wszystko przeszło — uznane za przypadek, do obserwacji w wieczornej próbie całej gry.\n\n**Poprawione po obejrzeniu zrzutów:** kły ustawione przodem do kamery i większe; pyłek i jad w locie powiększone; liście Kamuflażu jaśniejsze, żeby nie zlewały się ze Zwijogonem.\n\n**Niesprawdzone:** dźwięki (pyłek gra „zarodniki”, jad „plusk galarety” — nikt nie słuchał), wygląd w ruchu i na telefonie (zrzuty to pojedyncze klatki z komputera).\n\n**Do oceny (dopisek pod pytaniem 62):** napisy na banerach inne niż nazwy w silniku („Usypiający pyłek”, „Plunięcie jadem”, „Ukąszenie”, „Kokosy z góry”, „Kamuflaż”); kły mało kontrastowe na jasnej posadzce; płyty Pancernika szare jak on sam; czy Wąż ma mieć własną ozdobę trucizny; fala przy kokosach.\n\nPliki: `swiat/test_walki2/zrodla/Efekty3D.luau`, `Choreografie.luau`, `swiat/dzungla_pas_gra/README.md` (tabele i wybory), zrzuty `swiat/dzungla_pas_gra/klatki/e_*.jpg`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T16:24:08+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TestWalki2",
+   "etykieta": "Odtwarzacz walki w Studio"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytanie 62"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/dzungla_pas_gra/README.md",
+   "etykieta": "Opis Dżungli i wybory"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}

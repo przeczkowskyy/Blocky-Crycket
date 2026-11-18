@@ -551,6 +551,7 @@ Dopisek z 2026-11-18: przy działającym kowalu przymierzalnia strojów (D-071) 
 - Do wyboru: (a) zostaje; (b) zostaje z innymi nazwami — jakimi; (c) strażnik łatwiejszy albo trudniejszy.
 
 Szczegóły: Potwory i liczby: raport „Dżungla stoi w Studio: trzeci biom do przejścia”; modele: raport „Dżungla: pięć potworów z Blendera do oceny”. Poziomy potworów 17–23 z kalkulatora tempa. Zarys: `swiat/biomy/PLAN_BIOMOW.md` (propozycja). Karol 17.11 o Bagnie: „Strażnik Topieli musi być trudny” — tę samą miarę agent przyjął dla Dżungli.
+Dopisek z 2026-11-18 (własne efekty umiejętności): do oceny doszły (1) napisy na banerach inne niż nazwy w silniku — „Usypiający pyłek”, „Plunięcie jadem”, „Ukąszenie”, „Kokosy z góry”, „Kamuflaż”; (2) kły Węża mało kontrastowe na jasnej posadzce areny; (3) płyty Pancernika szare jak on sam; (4) czy Wąż ma mieć własną ozdobę trucizny; (5) fala na ziemi przy kokosach; (6) dźwięki: pyłek gra „zarodniki”, jad „plusk galarety” — do odsłuchu. Raport: „Dżungla: własne efekty umiejętności potworów”.
 **Odpowiedź:**
 
 ## 63. Postać gracza w świecie: bohater klasy zamiast awatara?
