@@ -1,0 +1,27 @@
+{
+ "id": "r-20261118-035024-6bf3",
+ "tytul": "Noc 17/18.11: co stoi w Studio i co czeka na decyzje",
+ "opis_md": "- Wszystko z nocnej kolejki stoi w Studio i jest w repo: Dżungla jako trzeci biom z własną areną i jajkiem, Kowal, komplet sześciu mini-gier, pety z żywiołami, pewna pierwsza walka.\n- Regresja końcowa (18 prób w grze) i próba kontrolna na stanie końcowym przeszły; zostały dwa znane punkty o zbyt małych napisach w panelu wyboru próby walki na telefonie.\n- Na Was czekają pytania 58–62 i raporty z tej nocy; nic z tego nie jest kanonem.\n\nSzczegóły:\n\n**Co doszło tej nocy (każde ma własny raport w panelu):**\n\n| Co | Jak sprawdzić w Studio (Play) | Próba w grze |\n|---|---|---|\n| Dżungla — trzeci biom, 25 s biegu | TELEPORT → Dżungla (po Strażniku Topieli) | 15 punktów w porządku, 1 do oceny człowieka |\n| Arena Dżungli (D-095) | dowolna walka w Dżungli | 5 walk na arenie, klatka 16,7 ms |\n| Jajko Dżungli, pięć petów, 1350 Złota | inkubator po prawej od przybycia w Dżungli → E | 14 z 14 |\n| Pety z żywiołami (D-101) | jajko Bagna: Ognik podpala, Ważeczka zatruwa | las 17, Bagno 14 |\n| Kowal (D-102) ze wskazówką celu | kuźnia w bazarze przed bramą lochów → E | 14 z 14 |\n| Sześć mini-gier Training Center | tablica „TRAINING CENTER / MINI-GRY” przy starcie → E | 22 punkty |\n| Pierwsza walka nowego gracza | nowy gracz → TELEPORT → Las → najbliższy slime | próba całej drogi 14 z 14 |\n\n**Zmiany, o których trzeba wiedzieć:**\n- Rozkład statystyk klas w walce jest wzorcowy, a profil Pawła został na karcie wyboru klasy — według odpowiedzi Karola „b” na pytanie 56; czeka na potwierdzenie Pawła, cofnięcie to jedna wartość.\n- Premia do pierwszej wygranej wynosi ×2,75 (pytanie 59) — z ×1,75 gracz przegrywał pierwszą walkę, gdy trafił na slime'a 2. poziomu.\n- Zapis postępu jest napisany i przetestowany bez Studio, ale wyłączony; warunki włączenia w pytaniu 60.\n- Przy działającym kowalu przymierzalnia pozwala założyć tylko posiadane przedmioty (dopisek pod pytaniem 61).\n\n**Do decyzji:** pytania 58 (punkty za poziom: 5 samo + 5 do rozdania czy samo 5), 59 (premia pierwszej walki), 60 (zapis postępu), 61 (zasady Kowala), 62 (potwory i nazwy Dżungli); liczby petów i cena jajka Dżungli w raportach o petach. Paweł: potwierdzenia decyzji z jednym podpisem (D-089, D-094, D-095, D-096, D-105) i pytania 56.\n\n**Czego nie zrobiłem i dlaczego:**\n- Okno ekwipunku i ikony w stylu HUD (D-103) — w tych plikach pracuje Paweł, a połączenia z Figmą w tej sesji nie było.\n- Modele postaci z rzutów Pawła (D-104) — nie ma jeszcze rzutów.\n- Prawdziwy telefon, pad i dwóch graczy naraz — niesprawdzone nigdzie; układy są sprawdzone tylko na ekranie o rozmiarze telefonu.\n- Własna muzyka Bagna i Dżungli — utwory z 16.11 są w repo, niewgrane do Roblox (wgranie wymaga zgody Karola).\n\n**Znane usterki po nocy:** za małe napisy w panelu wyboru próby walki na telefonie (2 punkty w próbie walki v3); w walkach ze strażnikami inny skrypt mgły pisze do mgły świata (arena to poprawia, obraz bez zmian); efekty umiejętności potworów Dżungli wyglądają jak u bohaterów; arena treningu jest goła.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T03:50:24+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "Pytania otwarte",
+   "etykieta": "Pytania 58–62"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Dziennik zmian",
+   "etykieta": "Dziennik zmian"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg"
+ ]
+}
