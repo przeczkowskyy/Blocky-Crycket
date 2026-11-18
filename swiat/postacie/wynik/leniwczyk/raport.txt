@@ -1,0 +1,49 @@
+RAPORT — leniwczyk
+LENIWCZYK — pet zwykły z jajka Dżungli (próba swiat/pety_proba, 18.11.2026; status: propozycja, własny projekt).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/leniwczyk.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py leniwczyk
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: leniwczyk
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 6 plików, zgodnych 6
+- ostrzeżenia z raportu: 0; uwagi podglądu: 1
+
+ZNANE SŁABOŚCI
+- Futro to gładkie elipsoidy z dwoma płaskimi kudłami — z bliska leniwiec jest raczej pluszowy niż kudłaty.
+
+MODEL leniwczyk „Leniwczyk” (stwor)
+  wymiary ciała: 1,34 × 2,11 × 1,30; z akcesoriami: 1,34 × 2,11 × 1,30
+  trójkąty: 1252 (siatek: 7)
+  kości (8): Root, Tulow, Glowa, Kwiat, RekaL, NogaL, RekaP, NogaP
+  klipy: spoczynek 90 kl. 3,00 s pętla, chod 30 kl. 1,00 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
+  punkty zaczepienia: RootAttachment, GlowaAttachment
+
+UWAGI PODGLĄDU
+- leniwczyk: najniższy punkt na y = 0.08 — postać nie stoi na ziemi (y = 0)
+
+KONTROLA EKSPORTÓW
+- leniwczyk.fbx: siatki 9, kości 8, trójkąty 1276, wzrost 2.11 st., akcje brak -> ZGODNE
+- leniwczyk__spoczynek.fbx: siatki 9, kości 8, trójkąty 1276, wzrost 2.11 st., akcje leniwczyk|Scene 1-91 -> ZGODNE
+- leniwczyk__chod.fbx: siatki 9, kości 8, trójkąty 1276, wzrost 2.11 st., akcje leniwczyk|Scene 1-31 -> ZGODNE
+- leniwczyk__radosc.fbx: siatki 9, kości 8, trójkąty 1276, wzrost 2.11 st., akcje leniwczyk|Scene 1-37 -> ZGODNE
+- leniwczyk__wyklucie.fbx: siatki 9, kości 8, trójkąty 1276, wzrost 2.11 st., akcje leniwczyk|Scene 1-31 -> ZGODNE
+- leniwczyk.glb: siatki 9, kości 8, trójkąty 1276, wzrost 2.11 st., akcje chod 0-30, radosc 0-36, spoczynek 0-90, wyklucie 0-30 -> ZGODNE
+
+PLIKI
+- leniwczyk.blend
+- leniwczyk.fbx
+- leniwczyk.glb
+- leniwczyk__chod.fbx
+- leniwczyk__radosc.fbx
+- leniwczyk__spoczynek.fbx
+- leniwczyk__wyklucie.fbx
+- leniwczyk_bohater.jpg
+- leniwczyk_ikona.png
+- leniwczyk_plansza.jpg
+- leniwczyk_tekstury/
+- raport.json
+- raport.txt

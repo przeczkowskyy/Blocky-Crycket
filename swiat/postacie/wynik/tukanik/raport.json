@@ -1,0 +1,271 @@
+{
+ "modul": "tukanik",
+ "modele": [
+  {
+   "id": "tukanik",
+   "nazwa": "Tukanik",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 336,
+     "wierzcholki": 174,
+     "wymiary": [
+      0.974,
+      1.0,
+      0.95
+     ],
+     "min": [
+      -0.487,
+      0.48,
+      -0.475
+     ],
+     "max": [
+      0.487,
+      1.48,
+      0.475
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 440,
+     "wierzcholki": 246,
+     "wymiary": [
+      0.784,
+      0.91,
+      0.74
+     ],
+     "min": [
+      -0.392,
+      1.3,
+      -0.2
+     ],
+     "max": [
+      0.392,
+      2.21,
+      0.54
+     ]
+    },
+    {
+     "nazwa": "Dziob_Geo",
+     "kosc": "Dziob",
+     "trojkaty": 144,
+     "wierzcholki": 80,
+     "wymiary": [
+      0.4,
+      0.41,
+      0.975
+     ],
+     "min": [
+      -0.2,
+      1.39,
+      0.45
+     ],
+     "max": [
+      0.2,
+      1.8,
+      1.425
+     ]
+    },
+    {
+     "nazwa": "Ogon_Geo",
+     "kosc": "Ogon",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      0.44,
+      0.222,
+      0.491
+     ],
+     "min": [
+      -0.22,
+      0.637,
+      -0.891
+     ],
+     "max": [
+      0.22,
+      0.859,
+      -0.4
+     ]
+    },
+    {
+     "nazwa": "SkrzydloL_Geo",
+     "kosc": "SkrzydloL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.168,
+      0.536,
+      0.58
+     ],
+     "min": [
+      0.436,
+      0.686,
+      -0.35
+     ],
+     "max": [
+      0.604,
+      1.222,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "NogaL_Geo",
+     "kosc": "NogaL",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.22,
+      0.48,
+      0.3
+     ],
+     "min": [
+      0.09,
+      0.06,
+      0.02
+     ],
+     "max": [
+      0.31,
+      0.54,
+      0.32
+     ]
+    },
+    {
+     "nazwa": "SkrzydloP_Geo",
+     "kosc": "SkrzydloP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.168,
+      0.536,
+      0.58
+     ],
+     "min": [
+      -0.604,
+      0.686,
+      -0.35
+     ],
+     "max": [
+      -0.436,
+      1.222,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "NogaP_Geo",
+     "kosc": "NogaP",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.22,
+      0.48,
+      0.3
+     ],
+     "min": [
+      -0.31,
+      0.06,
+      0.02
+     ],
+     "max": [
+      -0.09,
+      0.54,
+      0.32
+     ]
+    }
+   ],
+   "trojkaty_razem": 1340,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 13
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    1.208,
+    2.15,
+    2.316
+   ],
+   "wymiary_z_akcesoriami": [
+    1.208,
+    2.15,
+    2.316
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -0.604,
+     0.06,
+     -0.891
+    ],
+    [
+     0.604,
+     2.21,
+     1.425
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Tulow",
+    "Glowa",
+    "Dziob",
+    "Ogon",
+    "SkrzydloL",
+    "NogaL",
+    "SkrzydloP",
+    "NogaP"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "chod",
+     "dlugosc": 16,
+     "fps": 30,
+     "sekundy": 0.53,
+     "petla": true
+    },
+    {
+     "n": "radosc",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "wyklucie",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [
+  "tukanik: najniższy punkt na y = 0.06 — postać nie stoi na ziemi (y = 0)"
+ ],
+ "kontrola": [
+  "tukanik.fbx: siatki 10, kości 9, trójkąty 1364, wzrost 2.15 st., akcje brak -> ZGODNE",
+  "tukanik__spoczynek.fbx: siatki 10, kości 9, trójkąty 1364, wzrost 2.15 st., akcje tukanik|Scene 1-61 -> ZGODNE",
+  "tukanik__chod.fbx: siatki 10, kości 9, trójkąty 1364, wzrost 2.15 st., akcje tukanik|Scene 1-17 -> ZGODNE",
+  "tukanik__radosc.fbx: siatki 10, kości 9, trójkąty 1364, wzrost 2.15 st., akcje tukanik|Scene 1-37 -> ZGODNE",
+  "tukanik__wyklucie.fbx: siatki 10, kości 9, trójkąty 1364, wzrost 2.15 st., akcje tukanik|Scene 1-31 -> ZGODNE",
+  "tukanik.glb: siatki 10, kości 9, trójkąty 1364, wzrost 2.15 st., akcje chod 0-16, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
+ ]
+}

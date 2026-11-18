@@ -1,0 +1,225 @@
+{
+ "modul": "ananasik",
+ "modele": [
+  {
+   "id": "ananasik",
+   "nazwa": "Ananasik",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 660,
+     "wierzcholki": 376,
+     "wymiary": [
+      1.1,
+      1.26,
+      1.08
+     ],
+     "min": [
+      -0.55,
+      0.36,
+      -0.525
+     ],
+     "max": [
+      0.55,
+      1.62,
+      0.555
+     ]
+    },
+    {
+     "nazwa": "Korona_Geo",
+     "kosc": "Korona",
+     "trojkaty": 84,
+     "wierzcholki": 58,
+     "wymiary": [
+      0.784,
+      0.94,
+      0.784
+     ],
+     "min": [
+      -0.405,
+      1.55,
+      -0.379
+     ],
+     "max": [
+      0.379,
+      2.49,
+      0.405
+     ]
+    },
+    {
+     "nazwa": "RekaL_Geo",
+     "kosc": "RekaL",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.354,
+      0.186,
+      0.2
+     ],
+     "min": [
+      0.523,
+      0.897,
+      -0.05
+     ],
+     "max": [
+      0.877,
+      1.083,
+      0.15
+     ]
+    },
+    {
+     "nazwa": "NogaL_Geo",
+     "kosc": "NogaL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.26,
+      0.46,
+      0.36
+     ],
+     "min": [
+      0.11,
+      0.02,
+      -0.08
+     ],
+     "max": [
+      0.37,
+      0.48,
+      0.28
+     ]
+    },
+    {
+     "nazwa": "RekaP_Geo",
+     "kosc": "RekaP",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.354,
+      0.186,
+      0.2
+     ],
+     "min": [
+      -0.877,
+      0.897,
+      -0.05
+     ],
+     "max": [
+      -0.523,
+      1.083,
+      0.15
+     ]
+    },
+    {
+     "nazwa": "NogaP_Geo",
+     "kosc": "NogaP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.26,
+      0.46,
+      0.36
+     ],
+     "min": [
+      -0.37,
+      0.02,
+      -0.08
+     ],
+     "max": [
+      -0.11,
+      0.48,
+      0.28
+     ]
+    }
+   ],
+   "trojkaty_razem": 1008,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 10
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    1.754,
+    2.47,
+    1.08
+   ],
+   "wymiary_z_akcesoriami": [
+    1.754,
+    2.47,
+    1.08
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -0.877,
+     0.02,
+     -0.525
+    ],
+    [
+     0.877,
+     2.49,
+     0.555
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Tulow",
+    "Korona",
+    "RekaL",
+    "NogaL",
+    "RekaP",
+    "NogaP"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "chod",
+     "dlugosc": 20,
+     "fps": 30,
+     "sekundy": 0.67,
+     "petla": true
+    },
+    {
+     "n": "radosc",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "wyklucie",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "ananasik.fbx: siatki 8, kości 7, trójkąty 1032, wzrost 2.47 st., akcje brak -> ZGODNE",
+  "ananasik__spoczynek.fbx: siatki 8, kości 7, trójkąty 1032, wzrost 2.47 st., akcje ananasik|Scene 1-61 -> ZGODNE",
+  "ananasik__chod.fbx: siatki 8, kości 7, trójkąty 1032, wzrost 2.47 st., akcje ananasik|Scene 1-21 -> ZGODNE",
+  "ananasik__radosc.fbx: siatki 8, kości 7, trójkąty 1032, wzrost 2.47 st., akcje ananasik|Scene 1-37 -> ZGODNE",
+  "ananasik__wyklucie.fbx: siatki 8, kości 7, trójkąty 1032, wzrost 2.47 st., akcje ananasik|Scene 1-31 -> ZGODNE",
+  "ananasik.glb: siatki 8, kości 7, trójkąty 1032, wzrost 2.47 st., akcje chod 0-20, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
+ ]
+}

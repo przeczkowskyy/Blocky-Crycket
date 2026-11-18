@@ -1,0 +1,247 @@
+{
+ "modul": "posazek",
+ "modele": [
+  {
+   "id": "posazek",
+   "nazwa": "Posążek",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 192,
+     "wierzcholki": 112,
+     "wymiary": [
+      0.98,
+      0.844,
+      0.882
+     ],
+     "min": [
+      -0.49,
+      0.403,
+      -0.38
+     ],
+     "max": [
+      0.49,
+      1.247,
+      0.502
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 388,
+     "wierzcholki": 216,
+     "wymiary": [
+      1.36,
+      1.01,
+      1.02
+     ],
+     "min": [
+      -0.68,
+      1.2,
+      -0.42
+     ],
+     "max": [
+      0.68,
+      2.21,
+      0.6
+     ]
+    },
+    {
+     "nazwa": "Pioropusz_Geo",
+     "kosc": "Pioropusz",
+     "trojkaty": 148,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.17,
+      0.732,
+      0.57
+     ],
+     "min": [
+      -0.585,
+      2.13,
+      -0.25
+     ],
+     "max": [
+      0.585,
+      2.862,
+      0.32
+     ]
+    },
+    {
+     "nazwa": "RekaL_Geo",
+     "kosc": "RekaL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.28,
+      0.55,
+      0.3
+     ],
+     "min": [
+      0.42,
+      0.56,
+      -0.09
+     ],
+     "max": [
+      0.7,
+      1.11,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "NogaL_Geo",
+     "kosc": "NogaL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.34,
+      0.48,
+      0.44
+     ],
+     "min": [
+      0.07,
+      0.0,
+      -0.14
+     ],
+     "max": [
+      0.41,
+      0.48,
+      0.3
+     ]
+    },
+    {
+     "nazwa": "RekaP_Geo",
+     "kosc": "RekaP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.28,
+      0.55,
+      0.3
+     ],
+     "min": [
+      -0.7,
+      0.56,
+      -0.09
+     ],
+     "max": [
+      -0.42,
+      1.11,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "NogaP_Geo",
+     "kosc": "NogaP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.34,
+      0.48,
+      0.44
+     ],
+     "min": [
+      -0.41,
+      0.0,
+      -0.14
+     ],
+     "max": [
+      -0.07,
+      0.48,
+      0.3
+     ]
+    }
+   ],
+   "trojkaty_razem": 1080,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 11
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    1.4,
+    2.862,
+    1.02
+   ],
+   "wymiary_z_akcesoriami": [
+    1.4,
+    2.862,
+    1.02
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -0.7,
+     0.0,
+     -0.42
+    ],
+    [
+     0.7,
+     2.862,
+     0.6
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Tulow",
+    "Glowa",
+    "Pioropusz",
+    "RekaL",
+    "NogaL",
+    "RekaP",
+    "NogaP"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 72,
+     "fps": 30,
+     "sekundy": 2.4,
+     "petla": true
+    },
+    {
+     "n": "chod",
+     "dlugosc": 24,
+     "fps": 30,
+     "sekundy": 0.8,
+     "petla": true
+    },
+    {
+     "n": "radosc",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "wyklucie",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "posazek.fbx: siatki 9, kości 8, trójkąty 1104, wzrost 2.86 st., akcje brak -> ZGODNE",
+  "posazek__spoczynek.fbx: siatki 9, kości 8, trójkąty 1104, wzrost 2.86 st., akcje posazek|Scene 1-73 -> ZGODNE",
+  "posazek__chod.fbx: siatki 9, kości 8, trójkąty 1104, wzrost 2.86 st., akcje posazek|Scene 1-25 -> ZGODNE",
+  "posazek__radosc.fbx: siatki 9, kości 8, trójkąty 1104, wzrost 2.86 st., akcje posazek|Scene 1-37 -> ZGODNE",
+  "posazek__wyklucie.fbx: siatki 9, kości 8, trójkąty 1104, wzrost 2.86 st., akcje posazek|Scene 1-31 -> ZGODNE",
+  "posazek.glb: siatki 9, kości 8, trójkąty 1104, wzrost 2.86 st., akcje chod 0-24, radosc 0-36, spoczynek 0-72, wyklucie 0-30 -> ZGODNE"
+ ]
+}

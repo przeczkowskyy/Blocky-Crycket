@@ -1,0 +1,300 @@
+{
+ "modul": "jajko_dzungli",
+ "modele": [
+  {
+   "id": "jajko_dzungli",
+   "nazwa": "Jajko Dżungli",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Jajko_Geo",
+     "kosc": "Jajko",
+     "trojkaty": 1968,
+     "wierzcholki": 1006,
+     "wymiary": [
+      1.798,
+      2.47,
+      1.81
+     ],
+     "min": [
+      -0.875,
+      0.0,
+      -0.935
+     ],
+     "max": [
+      0.923,
+      2.47,
+      0.875
+     ]
+    },
+    {
+     "nazwa": "Czubek_Geo",
+     "kosc": "Czubek",
+     "trojkaty": 744,
+     "wierzcholki": 398,
+     "wymiary": [
+      1.206,
+      1.469,
+      1.19
+     ],
+     "min": [
+      -0.603,
+      1.456,
+      -0.595
+     ],
+     "max": [
+      0.603,
+      2.925,
+      0.595
+     ]
+    }
+   ],
+   "trojkaty_razem": 2712,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 8
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    1.798,
+    2.925,
+    1.81
+   ],
+   "wymiary_z_akcesoriami": [
+    1.798,
+    2.925,
+    1.81
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -0.875,
+     0.0,
+     -0.935
+    ],
+    [
+     0.923,
+     2.925,
+     0.875
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Jajko",
+    "Czubek"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "trzesienie",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "pekniecie",
+     "dlugosc": 18,
+     "fps": 30,
+     "sekundy": 0.6,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  },
+  {
+   "id": "inkubator_dzungli",
+   "nazwa": "Inkubator Dżungli (podgląd)",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Podstawa_Geo",
+     "kosc": "Podstawa",
+     "trojkaty": 440,
+     "wierzcholki": 240,
+     "wymiary": [
+      16.93,
+      2.023,
+      16.93
+     ],
+     "min": [
+      -8.465,
+      0.0,
+      -8.465
+     ],
+     "max": [
+      8.465,
+      2.023,
+      8.465
+     ]
+    },
+    {
+     "nazwa": "Jajko_Geo",
+     "kosc": "Jajko",
+     "trojkaty": 1968,
+     "wierzcholki": 1006,
+     "wymiary": [
+      3.236,
+      4.446,
+      3.258
+     ],
+     "min": [
+      -1.575,
+      0.92,
+      -1.683
+     ],
+     "max": [
+      1.661,
+      5.366,
+      1.575
+     ]
+    },
+    {
+     "nazwa": "Czubek_Geo",
+     "kosc": "Czubek",
+     "trojkaty": 744,
+     "wierzcholki": 398,
+     "wymiary": [
+      2.172,
+      2.644,
+      2.142
+     ],
+     "min": [
+      -1.086,
+      3.541,
+      -1.071
+     ],
+     "max": [
+      1.086,
+      6.185,
+      1.071
+     ]
+    },
+    {
+     "nazwa": "Tablica_Geo",
+     "kosc": "Tablica",
+     "trojkaty": 352,
+     "wierzcholki": 208,
+     "wymiary": [
+      4.494,
+      4.36,
+      2.102
+     ],
+     "min": [
+      1.353,
+      0.5,
+      4.399
+     ],
+     "max": [
+      5.847,
+      4.86,
+      6.501
+     ]
+    },
+    {
+     "nazwa": "Totem_Geo",
+     "kosc": "Totem",
+     "trojkaty": 480,
+     "wierzcholki": 304,
+     "wymiary": [
+      1.565,
+      4.4,
+      1.619
+     ],
+     "min": [
+      -6.443,
+      0.5,
+      -0.595
+     ],
+     "max": [
+      -4.878,
+      4.9,
+      1.024
+     ]
+    }
+   ],
+   "trojkaty_razem": 3984,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 32
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    16.93,
+    6.185,
+    16.93
+   ],
+   "wymiary_z_akcesoriami": [
+    16.93,
+    6.185,
+    16.93
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -8.465,
+     0.0,
+     -8.465
+    ],
+    [
+     8.465,
+     6.185,
+     8.465
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Podstawa",
+    "Jajko",
+    "Czubek",
+    "Tablica",
+    "Totem"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "jajko_dzungli.fbx: siatki 4, kości 3, trójkąty 2736, wzrost 2.92 st., akcje brak -> ZGODNE",
+  "jajko_dzungli__spoczynek.fbx: siatki 4, kości 3, trójkąty 2736, wzrost 2.92 st., akcje jajko_dzungli|Scene 1-61 -> ZGODNE",
+  "jajko_dzungli__trzesienie.fbx: siatki 4, kości 3, trójkąty 2736, wzrost 2.92 st., akcje jajko_dzungli|Scene 1-37 -> ZGODNE",
+  "jajko_dzungli__pekniecie.fbx: siatki 4, kości 3, trójkąty 2736, wzrost 2.92 st., akcje jajko_dzungli|Scene 1-19 -> ZGODNE",
+  "jajko_dzungli.glb: siatki 4, kości 3, trójkąty 2736, wzrost 2.92 st., akcje pekniecie 0-18, spoczynek 0-60, trzesienie 0-36 -> ZGODNE",
+  "inkubator_dzungli.fbx: siatki 7, kości 6, trójkąty 4008, wzrost 6.18 st., akcje brak -> ZGODNE",
+  "inkubator_dzungli__spoczynek.fbx: siatki 7, kości 6, trójkąty 4008, wzrost 6.18 st., akcje inkubator_dzungli|Scene 1-61 -> ZGODNE",
+  "inkubator_dzungli.glb: siatki 7, kości 6, trójkąty 4008, wzrost 6.18 st., akcje spoczynek 0-60 -> ZGODNE"
+ ]
+}

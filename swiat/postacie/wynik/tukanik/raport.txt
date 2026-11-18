@@ -1,0 +1,49 @@
+RAPORT — tukanik
+TUKANIK — pet rzadki z jajka Dżungli (próba swiat/pety_proba, 18.11.2026; status: propozycja, własny projekt).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/tukanik.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py tukanik
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: tukanik
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 6 plików, zgodnych 6
+- ostrzeżenia z raportu: 0; uwagi podglądu: 1
+
+ZNANE SŁABOŚCI
+- Dziób to trzy klocki (bez zakrzywienia) — z boku prosty, nie łukowaty jak u prawdziwego tukana.
+
+MODEL tukanik „Tukanik” (stwor)
+  wymiary ciała: 1,21 × 2,15 × 2,32; z akcesoriami: 1,21 × 2,15 × 2,32
+  trójkąty: 1340 (siatek: 8)
+  kości (9): Root, Tulow, Glowa, Dziob, Ogon, SkrzydloL, NogaL, SkrzydloP, NogaP
+  klipy: spoczynek 60 kl. 2,00 s pętla, chod 16 kl. 0,53 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
+  punkty zaczepienia: RootAttachment, GlowaAttachment
+
+UWAGI PODGLĄDU
+- tukanik: najniższy punkt na y = 0.06 — postać nie stoi na ziemi (y = 0)
+
+KONTROLA EKSPORTÓW
+- tukanik.fbx: siatki 10, kości 9, trójkąty 1364, wzrost 2.15 st., akcje brak -> ZGODNE
+- tukanik__spoczynek.fbx: siatki 10, kości 9, trójkąty 1364, wzrost 2.15 st., akcje tukanik|Scene 1-61 -> ZGODNE
+- tukanik__chod.fbx: siatki 10, kości 9, trójkąty 1364, wzrost 2.15 st., akcje tukanik|Scene 1-17 -> ZGODNE
+- tukanik__radosc.fbx: siatki 10, kości 9, trójkąty 1364, wzrost 2.15 st., akcje tukanik|Scene 1-37 -> ZGODNE
+- tukanik__wyklucie.fbx: siatki 10, kości 9, trójkąty 1364, wzrost 2.15 st., akcje tukanik|Scene 1-31 -> ZGODNE
+- tukanik.glb: siatki 10, kości 9, trójkąty 1364, wzrost 2.15 st., akcje chod 0-16, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
+
+PLIKI
+- tukanik.blend
+- tukanik.fbx
+- tukanik.glb
+- tukanik__chod.fbx
+- tukanik__radosc.fbx
+- tukanik__spoczynek.fbx
+- tukanik__wyklucie.fbx
+- tukanik_bohater.jpg
+- tukanik_ikona.png
+- tukanik_plansza.jpg
+- tukanik_tekstury/
+- raport.json
+- raport.txt

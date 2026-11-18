@@ -1,0 +1,269 @@
+{
+ "modul": "jaguarek",
+ "modele": [
+  {
+   "id": "jaguarek",
+   "nazwa": "Jaguarek",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Tulow_Geo",
+     "kosc": "Tulow",
+     "trojkaty": 632,
+     "wierzcholki": 352,
+     "wymiary": [
+      1.054,
+      0.795,
+      1.5
+     ],
+     "min": [
+      -0.527,
+      0.4,
+      -0.7
+     ],
+     "max": [
+      0.527,
+      1.195,
+      0.8
+     ]
+    },
+    {
+     "nazwa": "Glowa_Geo",
+     "kosc": "Glowa",
+     "trojkaty": 356,
+     "wierzcholki": 200,
+     "wymiary": [
+      1.0,
+      1.09,
+      1.17
+     ],
+     "min": [
+      -0.5,
+      0.91,
+      0.49
+     ],
+     "max": [
+      0.5,
+      2.0,
+      1.66
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodL_Geo",
+     "kosc": "LapaPrzodL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.34,
+      0.62,
+      0.4
+     ],
+     "min": [
+      0.11,
+      -0.01,
+      0.31
+     ],
+     "max": [
+      0.45,
+      0.61,
+      0.71
+     ]
+    },
+    {
+     "nazwa": "LapaTylL_Geo",
+     "kosc": "LapaTylL",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.34,
+      0.62,
+      0.4
+     ],
+     "min": [
+      0.11,
+      -0.01,
+      -0.59
+     ],
+     "max": [
+      0.45,
+      0.61,
+      -0.19
+     ]
+    },
+    {
+     "nazwa": "LapaPrzodP_Geo",
+     "kosc": "LapaPrzodP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.34,
+      0.62,
+      0.4
+     ],
+     "min": [
+      -0.45,
+      -0.01,
+      0.31
+     ],
+     "max": [
+      -0.11,
+      0.61,
+      0.71
+     ]
+    },
+    {
+     "nazwa": "LapaTylP_Geo",
+     "kosc": "LapaTylP",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.34,
+      0.62,
+      0.4
+     ],
+     "min": [
+      -0.45,
+      -0.01,
+      -0.59
+     ],
+     "max": [
+      -0.11,
+      0.61,
+      -0.19
+     ]
+    },
+    {
+     "nazwa": "Ogon_Geo",
+     "kosc": "Ogon",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.256,
+      0.768,
+      0.825
+     ],
+     "min": [
+      -0.128,
+      0.901,
+      -1.484
+     ],
+     "max": [
+      0.128,
+      1.669,
+      -0.659
+     ]
+    },
+    {
+     "nazwa": "OgonKoniec_Geo",
+     "kosc": "OgonKoniec",
+     "trojkaty": 92,
+     "wierzcholki": 56,
+     "wymiary": [
+      0.338,
+      0.541,
+      0.338
+     ],
+     "min": [
+      -0.169,
+      1.57,
+      -1.589
+     ],
+     "max": [
+      0.169,
+      2.111,
+      -1.251
+     ]
+    }
+   ],
+   "trojkaty_razem": 1488,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 14
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    1.054,
+    2.121,
+    3.249
+   ],
+   "wymiary_z_akcesoriami": [
+    1.054,
+    2.121,
+    3.249
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -0.527,
+     -0.01,
+     -1.589
+    ],
+    [
+     0.527,
+     2.111,
+     1.66
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Tulow",
+    "Glowa",
+    "LapaPrzodL",
+    "LapaTylL",
+    "LapaPrzodP",
+    "LapaTylP",
+    "Ogon",
+    "OgonKoniec"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "chod",
+     "dlugosc": 22,
+     "fps": 30,
+     "sekundy": 0.73,
+     "petla": true
+    },
+    {
+     "n": "radosc",
+     "dlugosc": 36,
+     "fps": 30,
+     "sekundy": 1.2,
+     "petla": false
+    },
+    {
+     "n": "wyklucie",
+     "dlugosc": 30,
+     "fps": 30,
+     "sekundy": 1.0,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "jaguarek.fbx: siatki 10, kości 9, trójkąty 1512, wzrost 2.12 st., akcje brak -> ZGODNE",
+  "jaguarek__spoczynek.fbx: siatki 10, kości 9, trójkąty 1512, wzrost 2.12 st., akcje jaguarek|Scene 1-61 -> ZGODNE",
+  "jaguarek__chod.fbx: siatki 10, kości 9, trójkąty 1512, wzrost 2.12 st., akcje jaguarek|Scene 1-23 -> ZGODNE",
+  "jaguarek__radosc.fbx: siatki 10, kości 9, trójkąty 1512, wzrost 2.12 st., akcje jaguarek|Scene 1-37 -> ZGODNE",
+  "jaguarek__wyklucie.fbx: siatki 10, kości 9, trójkąty 1512, wzrost 2.12 st., akcje jaguarek|Scene 1-31 -> ZGODNE",
+  "jaguarek.glb: siatki 10, kości 9, trójkąty 1512, wzrost 2.12 st., akcje chod 0-22, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
+ ]
+}

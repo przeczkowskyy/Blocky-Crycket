@@ -1,0 +1,46 @@
+RAPORT — jaguarek
+JAGUAREK — pet legendarny z jajka Dżungli (próba swiat/pety_proba, 18.11.2026; status: propozycja, własny projekt).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/jaguarek.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py jaguarek
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: jaguarek
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 6 plików, zgodnych 6
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Łapy jednoczęściowe (bez kolan) — skradanie to wymach całej łapy, jak u Liściolisa.
+
+MODEL jaguarek „Jaguarek” (stwor)
+  wymiary ciała: 1,05 × 2,12 × 3,25; z akcesoriami: 1,05 × 2,12 × 3,25
+  trójkąty: 1488 (siatek: 8)
+  kości (9): Root, Tulow, Glowa, LapaPrzodL, LapaTylL, LapaPrzodP, LapaTylP, Ogon, OgonKoniec
+  klipy: spoczynek 60 kl. 2,00 s pętla, chod 22 kl. 0,73 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
+  punkty zaczepienia: RootAttachment, GlowaAttachment
+
+KONTROLA EKSPORTÓW
+- jaguarek.fbx: siatki 10, kości 9, trójkąty 1512, wzrost 2.12 st., akcje brak -> ZGODNE
+- jaguarek__spoczynek.fbx: siatki 10, kości 9, trójkąty 1512, wzrost 2.12 st., akcje jaguarek|Scene 1-61 -> ZGODNE
+- jaguarek__chod.fbx: siatki 10, kości 9, trójkąty 1512, wzrost 2.12 st., akcje jaguarek|Scene 1-23 -> ZGODNE
+- jaguarek__radosc.fbx: siatki 10, kości 9, trójkąty 1512, wzrost 2.12 st., akcje jaguarek|Scene 1-37 -> ZGODNE
+- jaguarek__wyklucie.fbx: siatki 10, kości 9, trójkąty 1512, wzrost 2.12 st., akcje jaguarek|Scene 1-31 -> ZGODNE
+- jaguarek.glb: siatki 10, kości 9, trójkąty 1512, wzrost 2.12 st., akcje chod 0-22, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
+
+PLIKI
+- jaguarek.blend
+- jaguarek.fbx
+- jaguarek.glb
+- jaguarek__chod.fbx
+- jaguarek__radosc.fbx
+- jaguarek__spoczynek.fbx
+- jaguarek__wyklucie.fbx
+- jaguarek_bohater.jpg
+- jaguarek_ikona.png
+- jaguarek_plansza.jpg
+- jaguarek_tekstury/
+- raport.json
+- raport.txt

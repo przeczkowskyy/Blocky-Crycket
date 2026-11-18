@@ -2,7 +2,7 @@ RAPORT — jajko_bagienne
 JAJKO BAGIENNE i INKUBATOR BAGIENNY — jajko Bagna (próba swiat/pety_proba, 17.11.2026; status: propozycja).
 
 Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
-Źródło: swiat/postacie/jajko_bagienne.py · wygenerowano 17.11.2026 poleceniem:
+Źródło: swiat/postacie/jajko_bagienne.py · wygenerowano 18.11.2026 poleceniem:
   python -B swiat/postacie/przebuduj.py jajko_bagienne
 Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
 

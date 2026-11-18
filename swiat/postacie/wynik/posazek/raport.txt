@@ -1,0 +1,46 @@
+RAPORT — posazek
+POSĄŻEK — pet epicki z jajka Dżungli (próba swiat/pety_proba, 18.11.2026; status: propozycja, własny projekt).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/posazek.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py posazek
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: posazek
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 6 plików, zgodnych 6
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Kwiat na pióropuszu to pięć płaskich płatków na jednej płaszczyźnie — z boku cienki.
+
+MODEL posazek „Posążek” (stwor)
+  wymiary ciała: 1,40 × 2,86 × 1,02; z akcesoriami: 1,40 × 2,86 × 1,02
+  trójkąty: 1080 (siatek: 7)
+  kości (8): Root, Tulow, Glowa, Pioropusz, RekaL, NogaL, RekaP, NogaP
+  klipy: spoczynek 72 kl. 2,40 s pętla, chod 24 kl. 0,80 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
+  punkty zaczepienia: RootAttachment, GlowaAttachment
+
+KONTROLA EKSPORTÓW
+- posazek.fbx: siatki 9, kości 8, trójkąty 1104, wzrost 2.86 st., akcje brak -> ZGODNE
+- posazek__spoczynek.fbx: siatki 9, kości 8, trójkąty 1104, wzrost 2.86 st., akcje posazek|Scene 1-73 -> ZGODNE
+- posazek__chod.fbx: siatki 9, kości 8, trójkąty 1104, wzrost 2.86 st., akcje posazek|Scene 1-25 -> ZGODNE
+- posazek__radosc.fbx: siatki 9, kości 8, trójkąty 1104, wzrost 2.86 st., akcje posazek|Scene 1-37 -> ZGODNE
+- posazek__wyklucie.fbx: siatki 9, kości 8, trójkąty 1104, wzrost 2.86 st., akcje posazek|Scene 1-31 -> ZGODNE
+- posazek.glb: siatki 9, kości 8, trójkąty 1104, wzrost 2.86 st., akcje chod 0-24, radosc 0-36, spoczynek 0-72, wyklucie 0-30 -> ZGODNE
+
+PLIKI
+- posazek.blend
+- posazek.fbx
+- posazek.glb
+- posazek__chod.fbx
+- posazek__radosc.fbx
+- posazek__spoczynek.fbx
+- posazek__wyklucie.fbx
+- posazek_bohater.jpg
+- posazek_ikona.png
+- posazek_plansza.jpg
+- posazek_tekstury/
+- raport.json
+- raport.txt
