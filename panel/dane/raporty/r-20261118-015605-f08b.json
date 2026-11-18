@@ -1,0 +1,35 @@
+{
+ "id": "r-20261118-015605-f08b",
+ "tytul": "Dżungla stoi w Studio: trzeci biom do przejścia",
+ "opis_md": "- Dżungla stoi w Studio jako trzeci biom: wejście bramą z Bagna po pokonaniu Strażnika Topieli, trzy zagrody, leże rzadkiego potwora, strażnik Wąż Stu Lian na wyspie i brama do Pustyni („wkrótce”).\n- Ma wymiary z D-096: bieg od przybycia do bramy 25,0 s i szerokość 4,06 s (zmierzone w grze).\n- Do oceny: wygląd biomu, trudność strażnika i nazwy; walki toczą się jeszcze na scenie zastępczej — arena Dżungli wchodzi do Studio jako następna.\n\nSzczegóły:\n\n**Jak sprawdzić:** Play → TELEPORT → Dżungla (otwiera się po pokonaniu Strażnika Topieli; w panelu testowym biomu da się ustawić poziom bohatera 17–30). Wybranie Dżungli w TELEPORCIE, gdy już w niej jesteś, przenosi na przybycie.\n\n**Co jest w biomie:** Dróżka z ubitej ziemi pod olbrzymimi liśćmi-parasolami, po bokach palmy, figowce i liany, turkusowe strumienie, omszałe ruiny z posągami o świecących oczach. Kolejno: Taras Przybycia (stanowisko inkubatora, jeszcze bez jajka, i Kamień Powrotu) → Polana Zwijogonów → Kwietnik Gębokwiatów → Gaj Kokosów → Ruiny Pancernika → Krąg Stu Lian ze strażnikiem → brama do Pustyni.\n\n| Potwór | Poziomy | Wygrane gracza na tym samym poziomie (Wojownik / Zwiadowca / Mag) |\n|---|---|---|\n| Zwijogon | 17–19 | 77 / 76 / 70% |\n| Gębokwiat | 19–21 | 77 / 76 / 74% |\n| Kokosowy Siłacz | 21–23 | 76 / 75 / 82% |\n| Pancernik Ruin (rzadki) | 23 | 46 / 46 / 53% |\n| Wąż Stu Lian (strażnik) | 23 | 17 / 26 / 23% |\n\nStrażnik jest tak trudny jak Strażnik Topieli; trzeba przyjść wyżej poziomem albo z przedmiotami i petem. Liczby są z symulacji (300 walk na komórkę) i są propozycją.\n\n**Sprawdzone w grze:** próba Dżungli 15 punktów w porządku i 1 bez rozstrzygnięcia (koszt klatki — średnio 16,7 ms); przelot kamery przy pierwszym wejściu 10,7 s z rykiem Węża; walki z czterema gatunkami i ze strażnikiem; łup trafia do gracza (+160 Złota, +117 doświadczenia na 18. poziomie); przycisk POMIŃ; Kamień Powrotu; mgła. Bagno (15 punktów) i las (22) po przebudowie dalej przechodzą swoje próby.\n\n**Przyjęte roboczo:** nazwa „Zwijogon” zamiast „Liściołaza” (zbyt podobna do peta Liściolis); Pancernik Ruin jako rzadki potwór; poziomy 17–23; muzyka lasu, ciszej — własnej muzyki Dżungli jeszcze nie ma; efekty umiejętności potworów wyglądają jak u bohaterów (pyłek Gębokwiatu jak lodowy pocisk, jad Węża jak zatruta strzała).\n\n**Niesprawdzone:** walki na arenie Dżungli (jeszcze jej nie ma w Studio), jajko Dżungli (nie ma), wielu graczy naraz, telefon.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T01:56:05+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "DzunglaPas",
+   "etykieta": "Mapa Dżungli"
+  },
+  {
+   "typ": "studio",
+   "cel": "DzunglaPasGra",
+   "etykieta": "Rozgrywka Dżungli"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/dzungla_pas_gra/README.md",
+   "etykieta": "Opis"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
