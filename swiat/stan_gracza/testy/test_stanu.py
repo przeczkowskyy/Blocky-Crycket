@@ -1160,15 +1160,18 @@ class TestSerweraOffline(unittest.TestCase):
         self.k.ustaw(D["poczatek"]["atrybut_wylacznika"], False)
         self.assertEqual(self.wywolaj("Bohater", self.g.t)["pet"], {"szczescie": 0.1})
         self.assertEqual(self.ostrzezenia(), [])
-        # skuteczność: profil z ClassData, 1. poziom, Leśny Slime 1. poziomu — każda klasa ≥ 95% (600 walk, ziarna stałe)
+        # skuteczność (1. poziom, 600 walk, ziarna stałe): każda klasa wygrywa ze slime'em 1.–3. poziomu (po D-096
+        # w pierwszej zagrodzie) w ≥ 95% walk przy rozkładach wzorcowych — 93% z zapasem na rozrzut; przy profilu
+        # z ClassData (tryb „classdata”) 3. poziom daje Magowi tylko ok. 79%, więc tam sprawdzamy slime'a 1. poziomu
         los = random.Random(41)
+        poziom_slime = 3 if TRYB == "wzorcowe" else 1
         for k in D["klasy"]:
             st = LS.rozdziel(D, ROZKLADY_GRY[k], 30)
             o = LS.opis_bohatera(D, k, 1, st)
             o["pet"] = {s: p for s in D["statystyki"]}
-            wyg = sum(silnik.symuluj(o, {"potwor": "lesny_slime", "poziom": 1}, los.randrange(1, 2 ** 31 - 1))["wynik"]
-                      == "wygrana" for _ in range(600))
-            self.assertGreaterEqual(wyg / 600, 0.93, k)  # 95% z zapasem na rozrzut 600 walk
+            wyg = sum(silnik.symuluj(o, {"potwor": "lesny_slime", "poziom": poziom_slime}, los.randrange(1, 2 ** 31 - 1))
+                      ["wynik"] == "wygrana" for _ in range(600))
+            self.assertGreaterEqual(wyg / 600, 0.93, k)
 
     def test_8s_tryby_rozkladow_klas(self):
         # pytanie 56: oba tryby od startu i przełączenie w czasie gry (trening i rozdane punkty zostają)

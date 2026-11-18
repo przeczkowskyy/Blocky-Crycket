@@ -124,7 +124,7 @@ Atrybuty kontenera do podglądu: `SerwerStanuGotowy`, `ZgodnoscLogikiStanu` („
   `python -B swiat/stan_gracza/dane.py` i `zbuduj.py --skrypty`. Atrybut kontenera `PunktyStatystyk = false` w czasie
   gry — jak przed D-097 (10 samo na poziom, darmowy „+”, bez licznika); przechodzi na odbudowany kontener.
 - **Gemy (D-099):** `GEMY_ZA_POZIOM` (10) i `GEMY_ZA_STRAZNIKA` (100) w `dane.py`; 0 wyłącza.
-- **„Szczęście początkującego” (18.11.2026):** `SZCZESCIE_POCZATKUJACEGO` w `dane.py` (0,75; 0 = wyłączone) albo atrybut
+- **„Szczęście początkującego” (18.11.2026):** `SZCZESCIE_POCZATKUJACEGO` w `dane.py` (1,75, czyli ×2,75; 0 = wyłączone) albo atrybut
   kontenera `SzczesciePoczatkujacego = false`.
 - **Zapis postępu:** domyślnie wyłączony — rozdział „Zapis postępu”.
 - **Tryb testowy lasu:** atrybut kontenera lasu `TestBohater = true` (`Workspace/LasPotwory` albo `Workspace/LasPasGra`)
@@ -185,12 +185,44 @@ liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyK
    gracza, czyli za dużo — poziomy są za grube. Dane potworów zostają; możliwy ruch po stronie bohatera (do decyzji):
    pula startowa 30 → 33 daje pierwszą walkę 79–84%. Strażnik Topieli zostaje trudny (13% za pierwszym razem).
 2b. **Pierwsza walka praktycznie pewna (18.11.2026, „szczęście początkującego”):** dopóki gracz nie ma żadnej wygranej,
-   jego sześć statystyk w walce ×1,75. Działa przez wewnętrzne źródło `szczescie_poczatkujacego` w `Modyfikatory`
-   (pole silnika `pet`), bez napisu dla gracza. Znika po pierwszej wygranej; przegrana go nie zdejmuje.
-   - Pierwsza walka z potworem 1. poziomu przy profilu klas z `ClassData`: Wojownik 79% → 99,6%, Zwiadowca 76% → 98%,
-     Mag 73% → 96%.
-   - Uwaga: po D-096 slime'y pierwszej przegrody mają poziomy 1–3 rozdane po miejscach. Ze slime'em 2. poziomu ta sama
-     premia daje 73–88% (bez niej 26–34%).
+   jego sześć statystyk w walce ×2,75 (`SZCZESCIE_POCZATKUJACEGO = 1.75`). Działa przez wewnętrzne źródło
+   `szczescie_poczatkujacego` w `Modyfikatory` (pole silnika `pet`), bez napisu dla gracza. Znika po pierwszej wygranej;
+   przegrana go nie zdejmuje.
+   - Po D-096 w pierwszej zagrodzie chodzą slime'y 1.–3. poziomu rozdane po miejscach, a gracz podchodzi do najbliższego
+     (w próbach dymnych pierwsza walka przegrana 2 razy na 7 przy ×1,75).
+   - ×2,75 to najmniejszy mnożnik, przy którym każda klasa wygrywa ze slime'em 3. poziomu w co najmniej 95% walk.
+
+   Szansa pierwszej walki: rozkłady wzorcowe, bohater 1. poziomu bez przedmiotów z łupu i bez peta, 700 walk na
+   komórkę (×2,6 i ×2,75 — 1000 walk); kolejno Wojownik / Zwiadowca / Mag:
+
+   | Mnożnik | Slime 1. poziomu | Slime 2. poziomu | Slime 3. poziomu |
+   |---|---|---|---|
+   | bez premii | 86 / 84 / 85% | 36 / 35 / 43% | 8 / 6 / 15% |
+   | ×1,75 (było) | 100 / 99 / 99% | 92 / 89 / 88% | 72 / 61 / 58% |
+   | ×2,5 | 100 / 100 / 100% | 99 / 99 / 99% | 94 / 94 / 91% |
+   | ×2,6 | — | — | 94 / 94 / 93% |
+   | **×2,75 (wybrany)** | **100%** | **99–100%** | **96 / 96 / 95%** |
+   | ×3 | 100% | 100% | 98 / 98 / 98% |
+   | ×4 | 100% | 100% | 100% |
+
+   - Przy profilu z `ClassData` (tryb `classdata`) ×2,75 daje: slime 1. poziomu 100%, 2. poziomu 95–99%, 3. poziomu
+     79–94% (Mag najsłabszy).
+   - **Czy da się to nadużyć** (gracz bez wygranej idzie od razu na mocniejszego potwora; wygrane Wojownik / Zwiadowca
+     / Mag i poziom po jednej wygranej, normalnie po pierwszej walce jest 2. poziom):
+
+     | Przeciwnik | Wygrane | Poziom po jednej wygranej |
+     |---|---|---|
+     | Muchomornik 3. poziomu | 98–99% | 2. |
+     | Muchomornik 5. poziomu | 74–81% | 2. |
+     | Wilk 6. poziomu | 53–61% | 2. |
+     | Wilk 8. poziomu | 28–41% | 3. |
+     | Troll | 2–4% | 4. |
+     | Strażnik Gaju | 0% | — |
+
+   - Wniosek: najwięcej da się zyskać 1–2 poziomy jedną walką, po kilku przegranych i dojściu przez pół lasu — mniej,
+     niż gracz zdobywa w tym czasie zwykłą grą. Nadużycie nie jest realne, więc premii nie ograniczam do poziomu
+     potwora. Byłoby to też trudne: sygnał `Bohater` nie dostaje dziś przeciwnika, a zmiana dotknęłaby wspólnego kodu
+     lasu-pasa.
 3. **Sloty umiejętności** 1 / 2 / 3 od poziomów 1 / 5 / 10 (jak dziś w walce). D-055 i D-088 mówią: sloty z drzewka,
    na start 0.
    **Gemy bez płacenia (D-099 ✅ 17.11; wdrożenie 18.11.2026, liczby „do zmiany”):** +10 Gemów za każdy awans i +100 za
@@ -254,8 +286,8 @@ liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyK
    | Mag | wzorcowe | 84% / 99% | ok. 36–37% | 25 min | 7–8 |
    | Mag | classdata | 75% / 94–95% | ok. 24–29% | 29 min | 12–13 |
 
-   Szczęście początkującego (×1,75) przy rozkładach wzorcowych wystarczyłoby mniejsze: ×1,4 daje już 97–98%. Nie
-   zmieniam go, bo działa tylko do pierwszej wygranej.
+   Szczęście początkującego: od 18.11 (noc) ×2,75 — ze względu na slime'y 2. i 3. poziomu w pierwszej zagrodzie
+   (punkt 2b). Kolumna „1. walka” w tabeli wyżej liczy slime'a 1. poziomu przy dawnym ×1,75.
 10. **Baner „POZIOM N”** to tymczasowe GUI pakietu; docelowe pop-upy projektuje Paweł (D-093).
 11. **Bez zapisu:** profil w pamięci serwera; po wyjściu z gry wszystko znika (jak dziś). Miejsce na zapis: profil
     (`L.nowyProfil`, pole `wersja`), `swiat/las_pas_gra/zrodla/PamiecGracza.luau`.

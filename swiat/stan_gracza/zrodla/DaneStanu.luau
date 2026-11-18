@@ -153,7 +153,7 @@ return {
 		komunikat_brak = "Brak punktów — zdobądź poziom",
 		licznik = "Punkty do rozdania: %d",
 	},
-	poczatek = { procent = 0.75, zrodlo = "szczescie_poczatkujacego", atrybut_wylacznika = "SzczesciePoczatkujacego" },
+	poczatek = { procent = 1.75, zrodlo = "szczescie_poczatkujacego", atrybut_wylacznika = "SzczesciePoczatkujacego" },
 	gemy = {
 		za_poziom = 10,
 		za_straznika = 100,
@@ -2235,5 +2235,5 @@ return {
 			{ znana = 9999, nowa = 10000, pula = 5, wynik = { 9999, 5, "ok" } },
 		},
 	},
-	skrot = "5999cc207651",
+	skrot = "2eea2269ad06",
 }

@@ -60,9 +60,10 @@ PUNKTY_SAMO_NA_POZIOM = 5
 ZAPIS_WLACZONY = False
 
 # „szczęście początkującego” (18.11.2026): dopóki gracz nie ma żadnej wygranej, jego sześć statystyk w walce ×(1 + tyle)
-# (pole silnika pet przez źródło w Modyfikatory) — pierwsza walka z potworem 1. poziomu ≥ 95% dla każdej klasy przy
-# profilu klas z ClassData (Mag 73% → 96%, Wojownik 79% → 99,6%, Zwiadowca 76% → 98%); 0 = wyłączone
-SZCZESCIE_POCZATKUJACEGO = 0.75
+# (pole silnika pet przez źródło w Modyfikatory); 0 = wyłączone. 1,75 (×2,75) = najmniejszy mnożnik, przy którym
+# każda klasa (rozkłady wzorcowe, 1. poziom) wygrywa ze slime'em 3. poziomu w ≥ 95% walk (96/96/95%; slime 1. i 2.
+# poziomu 99–100%) — po D-096 w pierwszej zagrodzie chodzą slime'y 1.–3. poziomu (README, punkt 2b)
+SZCZESCIE_POCZATKUJACEGO = 1.75
 
 GEMY_ZA_POZIOM = 10
 GEMY_ZA_STRAZNIKA = 100
