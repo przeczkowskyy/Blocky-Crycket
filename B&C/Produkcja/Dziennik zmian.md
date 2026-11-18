@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-18 · Claude Code u Karola (wystawa sześciu ras w Studio)
+- **Rasy stoją w grze jako wystawa** (`Workspace/RasyProba`, pakiet `swiat/rasy_proba/`; propozycja, D-104): siedem figur — człowiek, elf, mroczny elf, ork, demon, goblin, Półbóg — z części Roblox, w szpalerze po obu stronach drogi z płyty startu do gospody. Skala ras w geometrii (ork 1,08, goblin 0,88), tabliczki z nazwami, wspólny umowny oddech w Play, oczy demona i Półboga oraz aureola jako Neon. Figury są zakotwiczone i bez kolizji. Nic nie jest wgrane na konto Roblox.
+- **Próba w grze (13:47):** 10 punktów w porządku — 796 części razem, wzrost i stopy zgodne z danymi, bez kolizji z graczem, konsola bez błędów, czas klatki 16,7 ms; cała droga gracza z wystawą na placu 13 z 13.
+- **Czego nie ma:** rasy nie są podpięte do walki, postaci gracza ani ekranu wyboru (czeka na pytania 67 i 68); figury tylko w stroju bazowym; telefon i kilku graczy niesprawdzone. Przed publikacją gry: `python -B swiat/rasy_proba/zbuduj.py --usun`.
+- Raport w panelu: „Wystawa sześciu ras w grze: figury na placu startowym”. Pliki: `swiat/rasy_proba/`, `swiat/README.md`, `DOKUMENTACJA.md`; notatki [[Zadania]], [[Rasy — rzuty dla modelarza]].
+
 ## 2026-11-18 · Claude Code u Karola (muzyka podpięta w Studio — próba 11 z 11)
 - **Pakiet dźwięku gry po zmianach stoi w Studio** (`Workspace/DzwiekGra`, `swiat/dzwiek_gra/`; propozycja): Bagno i Dżungla mają wpisane numery własnych utworów — dopóki gra nie ma do nich praw, grają jak dotąd utwory lasu, a po nadaniu praw same przejdą na własne. Nowe: muzyka walki, walki ze Strażnikiem i mini-gier jako osobne utwory grane z jednego pliku; po walce albo mini-grze wraca muzyka krainy. Bez wgranych utworów zachowanie jest dotychczasowe (muzyka krainy przyciszona w walce).
 - **Próba w grze (13:11–13:16):** 11 punktów w porządku — bazar i las grają wgrane utwory, efekty walki z własnego pliku, przełączanie na walkę, Strażnika Gaju i mini-grę (z dźwiękiem zastępczym, bo nowych utworów nie wgrano), utwór jako odcinek większego pliku. Testy bez Studio 25 z 25. Po zmianie próba całej drogi gracza oraz próby Bagna i Dżungli bez błędów.

@@ -25,7 +25,7 @@ tags: [postacie, rasy, rzuty, modele]
 
 ## Stan modeli (18.11.2026)
 - Modele robi agent Karola (D-104). **Pilotaż: elf i ork** zbudowane w Blenderze na ciele człowieka (te same klocki, kości i klipy co Rycerz i Zwiadowca), w stroju bazowym z rzutów; każdy przedmiot człowieka pasuje. To propozycja do oceny — raport w panelu „Modele ras z rzutów Pawła: elf i ork do oceny (pilotaż)”.
-- **Komplet (18.11, 13:25):** demon, mroczny elf, goblin (pierwszy rzut) i Półbóg zbudowane na tym samym założeniu; włosy elfa oraz kok i uszy orka poprawione po pilotażu. Plansza zbiorcza: `swiat/postacie/wynik/_rasy/rasy_razem.jpg`; raport w panelu „Sześć ras z rzutów Pawła: komplet modeli do oceny”. Następne: wystawa ras w Studio; podpięcie do gry po odpowiedziach na pytania 67 i 68.
+- **Komplet (18.11, 13:25):** demon, mroczny elf, goblin (pierwszy rzut) i Półbóg zbudowane na tym samym założeniu; włosy elfa oraz kok i uszy orka poprawione po pilotażu. Plansza zbiorcza: `swiat/postacie/wynik/_rasy/rasy_razem.jpg`; raport w panelu „Sześć ras z rzutów Pawła: komplet modeli do oceny”. Od 18.11 (13:50) rasy stoją też w Studio jako wystawa na placu startowym (`Workspace/RasyProba`, pakiet `swiat/rasy_proba/`) — do obejrzenia w grze, bez podpięcia do walki i wyboru postaci. Podpięcie do gry po odpowiedziach na pytania 67 i 68.
 - Kod i opis: `swiat/postacie/rasy.py`, `swiat/postacie/RASY.md`; wyniki: `swiat/postacie/wynik/rasa_<id>/`.
 - Pytania do ludzi w [[Pytania otwarte]]: 67 (proporcje ras), 68 (rasa a klasa Mag), 69 (drobne wybory wyglądu).
 

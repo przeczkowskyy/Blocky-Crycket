@@ -1,0 +1,31 @@
+{
+ "id": "r-20261118-135234-41a7",
+ "tytul": "Wystawa sześciu ras w grze: figury na placu startowym",
+ "opis_md": "- Sześć ras i człowiek stoją w grze na placu startowym, zaraz po wejściu: szpaler po obu stronach drogi do gospody, z tabliczkami z nazwami.\n- Figury są w skali ras (ork większy, goblin mniejszy), lekko „oddychają”, oczy demona i Półboga oraz aureola świecą.\n- To tylko wystawa do obejrzenia modeli w świetle i skali gry. Rasy nie są podpięte do walki, postaci gracza ani wyboru postaci — to czeka na odpowiedzi na pytania 67 i 68.\n\nSzczegóły:\n\n**Jak sprawdzić w Studio:** Play → po wejściu patrzysz prosto na wystawę (14–25 studów od płyty startu). Po lewej człowiek, elf, mroczny elf, ork; po prawej demon, goblin, Półbóg. Przez figury można przejść.\n\n**Próba w grze (18.11, 13:47): 10 punktów w porządku, 0 błędów**\n\n| Co sprawdzone | Wynik |\n|---|---|\n| Figury i części | 7 figur, 796 części razem (od 88 u goblina do 160 u elfów) |\n| Skala i wzrost | 5,30 studa; ork 5,72; goblin 4,66 — zgodnie z danymi; stopy na ziemi |\n| Kolizje | żadna część nie koliduje z graczem |\n| Tabliczki | siedem nazw ras |\n| Oddech | gra na siedmiu figurach |\n| Świecenie | demon 4 części, Półbóg 16 |\n| Konsola | bez błędów pakietu |\n| Czas klatki | 16,7 ms z kamerą na wystawę (najdłuższa klatka 18,3 ms) |\n| Cała droga gracza z wystawą na placu | 13 z 13 |\n\n**Jak to stoi:** własny kontener `Workspace/RasyProba`, figury zbudowane z części Roblox z tych samych danych co modele z Blendera, bez wgrywania czegokolwiek. Oddech to jedna wspólna, umowna animacja — nie klipy z Blendera. Skrypty działają tylko w Studio. Przed publikacją gry kontener trzeba usunąć (`python -B swiat/rasy_proba/zbuduj.py --usun`).\n\n**Czego nie ma i czego nie sprawdzono:** figury stoją tylko w stroju bazowym (zbroi na rasach w grze nie ma); ławka z placu częściowo zasłania człowieka z płyty startu; telefonu i kilku graczy naraz nie sprawdzano.\n\n**Pytania do ludzi** bez zmian: 67 (proporcje ras), 68 (rasa a klasa Mag), 69 (drobne wybory wyglądu).\n\nPliki: `swiat/rasy_proba/` (opis w `README.md`, zrzuty w `klatki/`).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T13:52:34+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/RasyProba",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytania 67–69"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/rasy_proba/README.md",
+   "etykieta": "Opis wystawy"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ]
+}

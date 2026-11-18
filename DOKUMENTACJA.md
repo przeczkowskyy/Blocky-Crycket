@@ -260,7 +260,7 @@ Blocky&Crycket/
 │   ├── przejscie_gry/           raport z przejścia gry okiem nowego gracza i próba dymna całej drogi
 │   ├── miasteczko_bazar/  miasteczko_bazar_gra/  💡 miasteczko jako ciasny bazar: mapa (Workspace/MiasteczkoBazar) i skrypty gry (Workspace/MiasteczkoBazarGra)
 │   ├── teleport_chmury/       💡 przejście przez chmury zamiast okna mapy (Workspace/TeleportChmury)
-│   └── postacie/              💡 postacie, pety i ekwipunek z kodu: Blender (siatki, animacje) i postacie z klocków w Studio; od 18.11 modele ras z rzutów Pawła (D-104, `RASY.md`)
+│   └── postacie/              💡 postacie, pety i ekwipunek z kodu: Blender (siatki, animacje) i postacie z klocków w Studio; od 18.11 modele ras z rzutów Pawła (D-104, `RASY.md`) i ich wystawa w Studio (`swiat/rasy_proba/`, `Workspace/RasyProba`)
 ├── tools/walka/               💡 silnik walki w Pythonie (od 17.11 wersja 3: mana, statusy, blok, pasywki): symulacja, testy, tabela balansu, model tempa, kalkulator progresji (`progresja.py`, wyniki `BALANS_1711.md`), zgodność z Luau
 ├── tools/ekran_zaciemnienie.py  czarne okno na wszystkie monitory na czas nocnej pracy w Studio (uśpiony ekran zatrzymuje rysowanie)
 ├── tools/studio/              skrypty Luau uruchamiane w Studio (rzeczy spoza Rojo)
