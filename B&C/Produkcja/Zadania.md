@@ -13,7 +13,7 @@ tags: [produkcja, zadania]
 - [ ] Balans po sesji 17.11 (propozycje D-097–D-100): tempo poziomów i treningu przy 5 punktach do rozdania za poziom; ile Złota traci przegrany (procent; z tego, jak często przegrywa przeciętny gracz, ile może stracić i jak szybko wraca do gry) i ile doświadczenia dostaje (dziś 20%); ile Gemów za walki, poziom, kopalnię i Rebirth, tak żeby gracz bez płacenia dochodził do slotów umiejętności (pytanie 51); Rebirth: co się zeruje, przeliczniki, pula Gemów i Złota na start, czy 100. poziom jest w zasięgu; potem pakiet stanu gracza (5 punktów do rozdania zamiast +10 samoczynnie, Złoto po przegranej) — Karol na sesji: „pozwalam tobie samemu odpowiedzieć”, „te rzeczy będą na mnie” · agent: Karol · #wysoki
 - [ ] Pety z żywiołami (D-101), dalej: ocenić liczby z raportów „Pety: Ognik podpala, Ważeczka zatruwa (D-101)” i „Jajko Dżungli: pięć petów do oceny” — zwłaszcza czy epicki Ognik może być w walce prawie tak mocny jak pety legendarne i czy cena jajka Dżungli 1350 Złota zostaje; sprawdzić w grze truciznę Ważeczki, Runy Posążka, Dzikość Jaguarka i skutki dla Maga (dziś tylko symulacja) · agent: Karol · #średni
 - [ ] Kowal, dalej (próba stoi w Studio od 18.11, `swiat/kowal_proba/`): ocena roboczych zasad (pytanie 61); sklep zbrojmistrza za Złoto; przeniesienie do Twierdzy, gdy powstanie (D-049, D-051); docelowe okno (pytanie 57 — Paweł); dwóch graczy naraz, telefon · agent: Karol · #średni
-- [ ] Okno Kowala w Figmie i w grze (propozycja D-102) — kto robi: pytanie 57 · #średni
+- [ ] Okno Kowala w Figmie i w grze (D-102) — robi Paweł (odpowiedź Karola na pytanie 57 z 17.11) · agent: Paweł · #średni
 - [ ] Okno ekwipunku dopieszczone (prośba Karola z sesji 17.11: „spróbuj to u mnie zrobić”): poprawić wycięcia `EqTab*` (Attributes, Description, Info i pozostałe), `EqPlus`, `EqClose`, tła `EqBg2` i ikony `ItemScrap`; napis statystyki nie może skakać ani wychodzić poza ramkę po kliknięciu „+”; zakładki i karty ustandaryzowane; Figma (skill `figma-to-roblox`) i Higgsfield według D-103 — Karol na sesji: „użyj nawet mojego Higgsfielda”; okno zmieniał też Paweł, więc zgłosić pracę w panelu i uzgodnić z nim ([[Okno ekwipunku]]) · agent: Karol · #wysoki
 - [ ] Ikony nagród i walut w stylu HUD (propozycja D-103): w podsumowaniu wygranej walki Złoto i Gemy tymi samymi ikonami co w HUD zamiast pikselowych; nowe ikony doświadczenia i tokenów krain (las, Bagno, kolejne biomy) w tym samym stylu; Higgsfield (Nano Banana 2.1), wiele ikon w jednym obrazie, jedna kopia, potem wycięcie i układ w Figmie — Karol na sesji: „wygeneruj mi takie rzeczy z mojego konta” · agent: Karol · #wysoki
 - [ ] Modele postaci z rzutów Pawła (propozycja D-104): zacząć dopiero po nadesłaniu rzutów; z rzutów ustalić, czy to rasy (D-079), klasy czy oba — Karol na sesji: „proszę zrób również te modele, dodaj to zadanie do kolejki” · agent: Karol · #średni — **rzuty gotowe 17.11** (demon, elf, mroczny elf, ork, goblin, Półbóg; człowiek = ciało bazowe): [[Rasy — rzuty dla modelarza]]
@@ -38,7 +38,6 @@ tags: [produkcja, zadania]
 - [ ] Balans po sesji 16.11 (D-073, D-074, D-089–D-091), potem zmiany w silniku walki v2 (17.11: silnik v3 wdrożony w Studio i zgodny z wzorcem, zob. [[Walka v2 — silnik, klasy i umiejętności]]; zostają decyzje z raportu „Silnik walki v3 — wyniki i wybory”; wzór treningu policzony 17.11 i czeka na decyzję — pytanie 50): pasek many bez nowego okna statystyk (osobna statystyka czy z Inteligencji; autoataki Maga z Inteligencji), system statusów (trucizna inna niż podpalenie, spowolnienie, zdarcie pancerza, tarcza na kilka tur, ogłuszenie), limit Pancerza 75% i szybszy Wojownik, blok i unik każdej klasy, Zręczność przydatna Wojownikowi (np. mnożnik krytyka), trening bez nadużywania jednej mini-gry — Karol 16.11 w panelu (pytanie 49): „te wszystkie rzeczy na mnie” · agent: Karol · #wysoki
 - [ ] Karol i Paweł: odpowiedzieć na pytania 50 (wzór treningu) i 51 (Gemy dla gracza bez płacenia; 17.11 odpowiedź padła na sesji, propozycje D-099 i D-100) oraz na wybory z raportu „Kalkulator balansu: Pancerz, Twierdza, pety, Gemy, trening” · #wysoki
 - [ ] Karol i Paweł: odpowiedzieć na pytanie 52 (co otwiera następny biom: strażnik, poziom czy oba) i przejrzeć dopiski z 17.11 pod pytaniami 6, 8, 9, 32 i 38 (sprzeczności między decyzjami) · #średni
-- [ ] Modele sześciu ras i Półboga w Blenderze (D-079, D-080), bazowe „gołe” jak w D-071 — Karol 16.11 po sesji: robi Paweł (sesja 17.11: Paweł prześle rzuty, a modele zrobi agent Karola — propozycja D-104, zadanie wyżej) · agent: Paweł · #średni
 - [ ] Po wypchnięciu ras i hali wyboru przez Pawła: lekko poprawić modele i halę wyboru oraz dać kreskówkowe faktury jak w Krzywym Miasteczku, żeby pasowały do postaci (D-079; prośba Pawła przekazana przez Karola 16.11) · agent: Karol · #średni
 - [ ] Krzywe Miasteczko ciasne jak bazar (D-084, D-085): sklepy z wnętrzem i sprzedawcą, portal do biomów, przejście na działkę, zagroda petów, tablica ogłoszeń z rankingiem (17.11: mapa i skrypty stoją w Studio i przeszły próbę w grze, zob. Zrobione; zostają okna 2D Pawła, telefon, dwóch graczy i wybory z raportu „Miasteczko-bazar w grze”) — Karol 16.11 w panelu (pytanie 49): „te wszystkie rzeczy na mnie” · agent: Karol · #wysoki
 - [ ] Okno zagrody petów w HUD i tablica ogłoszeń z rankingiem serwera (D-085) — Karol 16.11 w panelu (pytanie 49): „te wszystkie rzeczy na mnie” · agent: Karol · #średni
@@ -63,7 +62,6 @@ tags: [produkcja, zadania]
 - [ ] Training Center, dalej: wygląd areny (dziś płaska podłoga i proste figury trenerów); ruch postaci widoczny dla innych graczy; okno wyboru 2D zamiast tymczasowego (Paweł, D-093); prawdziwy telefon (18.11 układ poprawiony i sprawdzony tylko na ekranie o rozmiarze telefonu), pad, dwóch graczy naraz (`swiat/trening_proba/`) · agent: Karol · #średni
 - [ ] Paweł: dociąć ikony sześciu statystyk z assetów i wypchnąć do repozytorium (zapowiedź z trzeciej sesji 14.11) · #średni
 - [ ] Playtest przed premierą: przyjąć albo poprawić [[Plan playtestu przed premierą]] (propozycja z 17.11: trzy pytania — jajka z D-060, Training Center i Pancerz, tempo i trudność — co mierzymy i progi), potem przeprowadzić test; wymaga testowej publikacji miejsca · #średni
-- [ ] (16.11: D-064 zdjęta jako nieaktualna, nowa mapa stref — propozycja D-075 i zadanie przebudowy mapy wyżej) [[Mapa teleportacji]] po D-064: przelot kamery z lotu ptaka nad Krzywym Miasteczkiem i piny tylko przy dostępnych lokacjach zamiast wygenerowanej grafiki mapy (prośba Karola z trzeciej sesji) — po decyzji; sprawdzić płynność na telefonie · #średni
 - [ ] Referencje z trzeciej sesji 14.11 do [[Rynek Roblox i konkurencja]]: gra z jajkami w inkubatorach pokazana przez Pawła (nazwa z zapisu niewyraźna, robocza „Tap Simulator Reborn”) i proste gry z rzucaniem jedzenia zwierzątkom o ogromnych przychodach — jako wzór sklepu za Robuxy i „dopaminy” animacji · #niski
 - [ ] [[Panel zespołu|Panel]], zakładka Sesja: wyciszenie własnego mikrofonu bez odłączania nasłuchu agenta (uwaga Pawła z drugiej sesji 14.11) oraz kolejka transkrypcji — „Zakończ sesję” ma poczekać na zaległe odcinki (Karol pod koniec sesji: transkrypcja nie nadąża) · #średni
 - [ ] [[Panel zespołu|Panel]]: na najbliższej prawdziwej sesji sprawdzić podpowiedź „Na sesji padło” przy pytaniach (17.11 sprawdzona tylko na podstawionych notatkach); do decyzji ludzi: czy agenci mają dokładać zrzut do pracy przy każdej zmianie etapu · #średni
@@ -73,7 +71,6 @@ tags: [produkcja, zadania]
 - [ ] Zaproponować nazwę waluty premium zamiast roboczych „Diamentów” (tematyczna; rozważyć Magiczne Kryształy z kanonu) oraz nazwę koła fortuny zamiast „Labubu”; do tego propozycja, co kupuje się za Złoto, walutę premium i trzecią walutę (D-031, D-038, D-040) — prośba Karola i Pawła z sesji 14.11 (17.11: propozycja nazw D-046 odrzucona 14.11 — Karol: trzecia waluta to Rybki, pety nie mają własnej waluty, „Krzywe Koło jest okej”; co za co się kupuje, zebrała D-086; do potwierdzenia przez ludzi, czy zadanie zamknąć) · #średni
 - [ ] Porównanie Krzywego Miasteczka w Blenderze i w Roblox obok siebie (prośba Pawła z sesji 14.11) i wskazanie raportu „Rycerz w trzech wersjach” z 13.11 — do decyzji o Blenderze (pytanie 24) · #średni
 - [ ] Kroki założenia grupy Roblox, publikacji gry jako gry grupy i ponownego wgrania animacji — po odpowiedzi na pytanie 31 (D-044) · #średni
-- [ ] Powiadomienia o decyzjach na telefon (bot Telegram albo e-mail) z potwierdzeniem drugiej osoby — po decyzji D-043 i odpowiedzi na pytanie 29 · #średni
 - [ ] Krzywe Miasteczko: zebrać od Karola zmiany w kolorystyce i poprawić czytelność sklepu z Petami i wejścia do dungeonu (pytanie 33, D-041) · #średni
 - [ ] Przenieść istniejące skrypty z `.rbxl` do `src/` (Studio → Save to File), bo inaczej Claude ich nie widzi · #wysoki
 - [ ] Uporządkować hierarchię StarterGui: MainHUD, LoadingScreenGui, TavernQuestGui, HeroSelectorGui, PetGui, InventoryGui · #wysoki
@@ -81,21 +78,12 @@ tags: [produkcja, zadania]
 - [ ] Pasek HP w HUD (ukośny, czerwony, animacja TweenService). Zależy od dwóch zadań wyżej · #wysoki
 - [ ] [[Okno Karczmy]]: tablica questów. Najpierw ustalić, gdzie jest istniejące drzewo · #wysoki
 - [ ] [[HUD]]: test na telefonie (Device Emulator) i ręczny test hovera · #wysoki
-- [ ] Decyzja: przyciski HUD z Figmy vs kanon ([[Pytania otwarte]] #5; 16.11 obaj za Figmą — propozycja D-092) · #wysoki
-- [ ] [[Pipeline assetów]]: wpisać klucz Open Cloud do `.env`, zalogować Higgsfield przez `/mcp`, sprawdzić połączenia · #wysoki
-- [ ] Decyzja D-011: pipeline assetów i moduł `AssetIds` ([[Rejestr decyzji]]) · #średni
-- [ ] Decyzje po rozmowie 12.11: pytania 7–14 w [[Pytania otwarte]] i propozycje D-012–D-018 w [[Rejestr decyzji]] · #wysoki
 - [ ] Obejrzeć demo `Workspace/DemoLesnaBaza` w Studio i w [[Panel zespołu|panelu]]: styl, skala, co poprawić ([[Klocki — Blender i Roblox]]) · #wysoki
-- [ ] Szara pętla MVP: plac → karczma → walka 10 s → łup → statystyki ([[Ocena potencjału gry]], tydzień 1) — wersja sprzed diagnozy; propozycja v2 zamienia ją na szary prototyp BONK-a (pytanie 16) · #wysoki
 - [ ] Paweł: `git pull` na `main`, uruchomić `panel\start.bat`, wpisać imię w Ustawieniach i odpowiedzieć na pytanie 27 w [[Pytania otwarte]] · #wysoki
 - [ ] Walka: spisać błędy zauważone 13.11 w `Workspace/TestWalki` i je poprawić; decyzja o D-033 (po sesji 14.11: cutscenka tylko przy bossach, rzadkich przeciwnikach i na koniec zadania; zastępuje D-024) · #wysoki
 - [ ] Do decyzji po kontroli przenikania broni (17.11, `swiat/postacie/przenikanie/WYNIKI.md`): miecz Wojownika w postawie spoczynkowej zasłania prawe oko w ujęciach z ukosa (poprawka wymaga zmiany postawy we wszystkich klipach); lewa łapka Maga obraca się w jednej klatce ataku o ponad 100° (bez broni, więc poza kontrolą); pliki Blendera Maga dostaną poprawki przy następnej przebudowie postaci · #średni
 - [ ] Postacie z siatek: sprawdzić animacje i broń na zaimportowanym Rycerzu (`Workspace/TestPostaci`), potem druga postać i pet · #średni
-- [ ] Decyzja z pytania 24: droga postaci do gry (po udanym imporcie siatek z 13.11 są dwie sprawdzone drogi) i właściciel animacji ([[Postacie 3D — Blender i Roblox]]) · #średni
 - [ ] Paweł: klucz zatwierdzania na własny telefon albo własny panel — `python panel/serwer.py --klucz-gd` na komputerze z panelem wypisuje link ([[Panel zespołu]]) · #średni
-- [ ] Decyzje dnia 0 po nocnej diagnozie: pytania 16–21 w [[Pytania otwarte]] i 15 decyzji w [[Karta ocen v2 i plan sprawdzenia]] · #wysoki
-- [ ] Makieta siatki: 12 kafelków z prawdziwą konkurencją, co najmniej 40 graczy 16+ — test haczyka przed prototypem ([[Karta ocen v2 i plan sprawdzenia]]) · #wysoki
-- [ ] Szary prototyp BONK-a z botem-klikaczem (bramka B1, [[Systemy gry v2]]) — po decyzji z pytania 16 · #wysoki
 
 ## 📥 Backlog
 
@@ -105,14 +93,12 @@ tags: [produkcja, zadania]
 - [ ] Drzewko: premie `ST_<stat>` podpiąć pod walkę, karczmę, Twierdzę i pety; zapis w DataStore; balans cen · #średni
 - [ ] [[Okno ekwipunku]]: test na telefonie; potem prawdziwe przedmioty i statystyki z serwera · #wysoki
 - [x] [[HUD]]: Rybki — ikona `Fish` wgrana do Roblox (2026-11-14, po „tak”)
-- [ ] [[HUD]]: ustalić rolę Rybek jako waluty ([[Pytania otwarte]] #44) · #średni
 - [ ] [[Mapa teleportacji]]: wygenerować mapę z ramką i arkusz 7 pinów (prompty Glossy Ink w notatce, Nano Banana 2.1), potem `TeleportMapGui` i teleport przez RemoteEvent. Najpierw potwierdzić listę lokacji ([[Pytania otwarte]] #28). Uwaga: propozycja D-064 z trzeciej sesji 14.11 zamienia grafikę mapy na przelot kamery z lotu ptaka — jeśli przejdzie, to zadanie odpada na rzecz zadania w „Teraz” · #średni
 - [ ] Postęp EXP i Level w HUD (animacja level-up „POW!”) · #średni
 - [ ] [[Ekran ładowania]]: test na prawdziwym serwerze / telefonie (w Studio ekran znika po ~1 s) · #średni
 - [ ] ViewportFrame z modelem [[Rycerz|Rycerza]] / [[Kot-Mag|Kota-Maga]] · #średni
 - [ ] Podgląd peta podążającego za graczem ([[Pety]]) · #niski
 - [ ] Usunąć pliki testowe Rojo: `Hello.server.luau`, `Hello.client.luau`, `FigmaTest.model.json` · #niski
-- [ ] Test powtórek walki (po decyzji o D-024): losowe warianty ciosów, krótka wersja 3–4 s, licznik pominięć; 20 walk z rzędu w Studio (Play, na wschód od placu do świecącego słupa, klawisz E) · #średni
 - [ ] Pomiar cutscenki i walki na tanim telefonie (≥ 30 klatek/s) — wymaga testowej publikacji albo urządzenia; na komputerze zmierzone · #średni
 - [ ] Usunąć prototyp `Workspace/TestWalki` przed publikacją miejsca: `python swiat/test_walki_roblox/zbuduj.py --usun` · #średni
 - [ ] Łańcuch narzędzi: `rokit.toml` jest w repo (Rojo 7.6.1); każda osoba instaluje Rokit u siebie (agent nie mógł — instalator zablokowany); potem wspólne podniesienie Rojo do 7.7.1 ([[Narzędzia i skille do Roblox]]) · #średni
@@ -121,13 +107,16 @@ tags: [produkcja, zadania]
 - [ ] [[Panel zespołu|Panel]]: lustro tylko-do-odczytu na GitHub Pages (właściciel repo włącza Pages → Source: GitHub Actions, potem uruchamia workflow „Panel — lustro”) · #niski
 
 ## 🎨 Assety do stworzenia
-- [ ] Rycerz (3D) · [ ] Kot-Mag (3D) · [ ] Karczmarz (3D)
+- [x] Rycerz (3D) · [x] Kot-Mag (3D) · [ ] Karczmarz (3D)
 - [ ] Pies · [ ] Niebieski slime · [ ] Czerwony smok (3D)
 - [x] Ikona Złota · [x] Ikona Kryształu (diament) · [x] Ikony przycisków HUD (6, z Figmy) · [x] Ramka portretu
 - [x] Ilustracja ekranu ładowania (`rbxassetid://129202798952612`) · [x] Logo z koroną (w key-arcie)
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-18: Przegląd starych zadań, część 1 — zamknięte zadania „do decyzji”, bo decyzje zapadły: przyciski HUD według Figmy (D-092); pipeline assetów (D-011); pytania 7–14 i D-012–D-018 po rozmowie 12.11 (cztery zatwierdzone, D-013, D-014 i D-018 odrzucone); droga postaci do gry (pytanie 24, D-029); pytania 16–21 z dnia 0 (D-019 i D-020 odrzucone); rola Rybek (pytanie 44, odpowiedź Karola z 15.11)
+- [x] 2026-11-18: Przegląd starych zadań, część 2 — zdjęte jako nieaktualne po odrzuconych albo zdjętych decyzjach: szara pętla MVP (D-014), makieta siatki i szary prototyp BONK-a (D-019, D-020, D-022), test powtórek walki (D-024), mapa teleportacji jako przelot z pinami (D-064 — zastąpiona teleportem przez chmury, D-075 i D-076)
+- [x] 2026-11-18: Przegląd starych zadań, część 3 — zamknięte jako zrobione albo powtórzone: klucz Open Cloud i Higgsfield na komputerze Karola (wgrania modeli działają od 14.11, generowanie dźwięku od 16.11); powiadomienia o decyzjach na Telegramie (zrobione 14.11, wpis niżej); „Modele sześciu ras i Półboga” połączone z zadaniem „Modele postaci z rzutów Pawła” (D-104); w assetach odhaczone modele Rycerza i Kota-Maga
 - [x] 2026-11-18: Mini-gry Training Center w stylu walki stoją w Studio (`Workspace/TreningProba`, propozycja — pytanie 64): kamera nisko i z ukosa (kąt 44–51° zamiast 70°) z dojazdem w odliczaniu i zbliżeniem po rundzie, komiksowe napisy przy trafieniach i seriach, konfetti za punkt statystyki i „BEZ PUDŁA!”, na stanowisku ćwiczy bohater klasy (bieg, skok, padnij, ręce w górę, radość); zasady, przyrosty i dźwięki bez zmian; próba w grze 27 punktów w porządku, próba całej drogi gracza 14 z 14
 - [x] 2026-11-18: Bohater klasy jako postać gracza w świecie stoi w Studio (`Workspace/BohaterSwiat`, propozycja — pytanie 63): po wyborze klasy gracz chodzi modelem bohatera w założonym stroju, awatar jest niewidoczny; własny cykl biegu (stopa w podporze nie przesuwa się), skok, powrót po odrodzeniu; pety, walka w lesie, teleport, przymierzalnia i kowal działają; próba w grze 19 punktów w porządku, 1 bez rozstrzygnięcia; wyłącznik `BohaterWSwiecie`
 - [x] 2026-11-18: Raport ogólny o stanie całej gry w panelu („Raport ogólny 18.11: stan całej gry”): co da się przejść w Studio, co sprawdzone, czego brakuje do premiery, co czeka na ludzi

@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-18 · Claude Code u Karola (przegląd starych zadań)
+- **[[Zadania]] po przeglądzie (obietnica z raportu ogólnego):** każde otwarte zadanie porównane z [[Rejestr decyzji]] i [[Pytania otwarte]]. Zamkniętych 14 pozycji: sześć „do decyzji”, przy których decyzje już zapadły (D-011, D-012–D-018, D-029, D-092, pytania 7–14, 16–21, 24 i 44); pięć zdjętych po odrzuconych albo zdjętych decyzjach (D-014, D-019, D-020, D-022, D-024, D-064); trzy zrobione albo powtórzone (klucz Open Cloud i Higgsfield u Karola, alerty na Telegramie, zdublowane zadanie o modelach ras). Przy oknie Kowala dopisany wykonawca (Paweł, pytanie 57); w assetach odhaczone modele Rycerza i Kota-Maga.
+- **Żadna decyzja nie zmieniła statusu.** Dziewięć pozycji, które wyglądają na nieaktualne, ale wymagają słowa człowieka, jest w nowym pytaniu 65.
+- Notatki: [[Zadania]], [[Pytania otwarte]] (nowe 65).
+
 ## 2026-11-18 · Claude Code u Karola (mini-gry Training Center w stylu walki — próba w Studio)
 - **Mini-gry z kamerą, napisami i świętowaniem jak w walce** (`Workspace/TreningProba`, pakiet `swiat/trening_proba/`; propozycja, pytanie 64 — polecenie Karola z 18.11 rano): sześć ujęć kamery nisko i z ukosa (kąt 44–51° zamiast 70° z góry), dojazd w odliczaniu, drgnięcie przy trafieniu, zbliżenie na postać po rundzie; komiksowe napisy przy trafieniach i seriach („ŁUP!”, „TRACH!”, „SERIA 10!”, „+1 Siła!”); konfetti za punkt statystyki i „BEZ PUDŁA!” po rundzie bez pudła (walka nie ma konfetti — to własny efekt z klocków). Efekty trafień idą z modułu walki, a gdy go brak — z własnego zapasu.
 - **Na stanowisku ćwiczy bohater klasy** (haczyk `RuchBohatera` z `swiat/bohater_swiat/`): biegnie po bieżni, skacze nad kłodą, pada pod wysoką, podnosi ręce po koniczynę, cieszy się po rundzie; bez bohatera to samo robi awatar stawami. Zasady gier, serwer, przyrosty statystyk i dźwięki bez zmian.
