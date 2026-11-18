@@ -318,6 +318,28 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 - Bez obrotu: kamera pokazałaby plecy albo musiałaby objechać stanowisko.
 - Szczegóły: obrót robi klient i widzą go też inni gracze.
 
+**18. Wygląd areny: ile dekoracji**
+- Dziś w generatorze (jeszcze nie w Studio): 1351 dekoracji, arena ma 1658 części zamiast 202.
+- Mniej: bez szachownicy podłogi (−112) albo bez girland chorągiewek (ok. −190) — lżej, ale bardziej pusto.
+- Szczegóły: generator `dekoracje.py`, opis i liczby w README („Wygląd areny”); czas klatki wyjdzie w części B.
+
+**19. Tablica wyników: dekoracja czy żywe wyniki**
+- Dziś: dekoracja — nazwa areny i sześć statystyk w ich kolorach, bez liczb.
+- Żywa: rekordy gracza albo serwera na tablicy — wymaga zapisu wyników, to osobna praca.
+
+**20. Tło stanowisk: spokojne czy bogate**
+- Dziś: za stanowiskami stoją trybunki, stojaki i sztandary (widać je w kadrach gier jako tło).
+- Spokojniej: tło tylko przy murze, bez manekinów i stojaków przy stanowiskach — czytelniejsze strefy gry.
+- Szczegóły: żadna dekoracja nie stoi między kamerą a grą (testy 4g–4h); ocena czytelności dopiero ze zrzutów z gry.
+
+**21. Figury trenerów: klockowe czy z modeli postaci**
+- Dziś: klockowe figury z twarzą i strojem, jak sprzedawcy bazaru; zero nowych zależności.
+- Z modeli postaci (`swiat/postacie`): ładniejsze, ale to rigi z siatkami — wgrywanie i zależność od pakietu postaci.
+
+**22. Lampiony bez świateł**
+- Dziś: lampiony to części Neon, zero świateł punktowych (taniej, arena stoi w dziennym świetle).
+- Ze światłem: kilka PointLight przy bramie i tablicy — widoczne dopiero o zmroku.
+
 ## Ustawienia „przyjęte, do zmiany” (wszystkie w `ustawienia.json`)
 
 | Co | Wartość | Skąd |

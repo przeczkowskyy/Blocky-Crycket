@@ -7,7 +7,8 @@ zrzut z gry.
 
     python -B swiat/trening_proba/podglad.py                     # wszystkie podglądy do swiat/trening_proba/podglady/
     python -B swiat/trening_proba/podglad.py --tylko kondycja     # jeden (sila, pancerz, kondycja, zrecznosc,
-                                                                  #  inteligencja, szczescie, arena)
+                                                                  #  inteligencja, szczescie, arena, arena_gora,
+                                                                  #  arena_zachod, arena_wschod, arena_lobby, arena_brama)
     python -B swiat/trening_proba/podglad.py --wyj <folder>      # inny folder
     python -B swiat/trening_proba/podglad.py --ujecie start       # ujęcie: gra (domyślnie) | start (początek odliczania)
                                                                   #  | final (zbliżenie na postać po rundzie)
@@ -34,6 +35,15 @@ W, H = 1280, 720  # rozmiar podglądu (zmienia --ekran)
 TLO_GORA, TLO_DOL = (126, 186, 236), (206, 230, 247)
 SLONCE = (-0.45, 0.8, 0.4)
 GRACZ = "D8CBB5"  # postać gracza na podglądzie (w grze — awatar)
+# widoki całej areny (bez postaci gracza): przesunięcie oka i celu od środka areny, kąt widzenia
+WIDOKI_ARENY = {
+    "arena": ([0, 70, 92], [0, 0, -6], 70.0),               # cała arena z ukosa
+    "arena_gora": ([0, 215, 48], [0, 0, 1], 62.0),          # prawie z góry: wzór podłogi, pola stanowisk, układ dekoracji
+    "arena_zachod": ([-64, 40, 60], [-64, 2, -9], 62.0),    # z ukosa: Kłody, Bieżnia, Ciosy
+    "arena_wschod": ([64, 40, 60], [64, 2, -9], 62.0),      # z ukosa: Blok, Runy, Koniczyny
+    "arena_lobby": ([0, 6.5, 19], [0, 5.5, -20], 70.0),     # oczami gracza po przybyciu: tablica wyboru i tablica wyników
+    "arena_brama": ([0, 7, -4], [0, 7.5, 24], 62.0),        # brama z szyldem od środka areny
+}
 
 
 def najnizszy_priorytet():
@@ -72,6 +82,17 @@ def _siatka(c, np):
             tr.append(((-hl, y0, z0), (hl, y1, z1), (-hl, y1, z1)))
             tr.append(((hl, 0, 0), (hl, y1, z1), (hl, y0, z0)))
             tr.append(((-hl, 0, 0), (-hl, y0, z0), (-hl, y1, z1)))
+    elif k == "W":  # klin Roblox: pełna wysokość z tyłu (+z), krawędź z przodu (−z) na dole
+        hx, hy, hz = s[0] / 2, s[1] / 2, s[2] / 2
+        v = [(-hx, -hy, -hz), (hx, -hy, -hz), (hx, -hy, hz), (-hx, -hy, hz), (-hx, hy, hz), (hx, hy, hz)]
+        for a, b, cc in ((0, 1, 2), (0, 2, 3), (3, 2, 5), (3, 5, 4), (0, 4, 5), (0, 5, 1), (0, 3, 4), (1, 5, 2)):
+            A, B, C = v[a], v[b], v[cc]
+            n_ = ((B[1] - A[1]) * (C[2] - A[2]) - (B[2] - A[2]) * (C[1] - A[1]),
+                  (B[2] - A[2]) * (C[0] - A[0]) - (B[0] - A[0]) * (C[2] - A[2]),
+                  (B[0] - A[0]) * (C[1] - A[1]) - (B[1] - A[1]) * (C[0] - A[0]))
+            if n_[0] * A[0] + n_[1] * (A[1] + hy / 3) + n_[2] * (A[2] - hz / 3) < 0:  # normalna na zewnątrz bryły
+                B, C = C, B
+            tr.append((A, B, C))
     else:
         r = s[0] / 2
         nu, nv = 14, 9
@@ -524,12 +545,11 @@ def karta(obraz, D, gra, ImageDraw, ImageFont):
 
 def podglad(D, gra, np, Image, ImageDraw, ImageFont, ujecie="gra"):
     cz = SCENA.czesci(D)
-    if gra == "arena":
-        A = D["arena"]
-        c = A["srodek"]
-        oko = [c[0], c[1] + 70, c[2] + 92]
-        cel = [c[0], c[1], c[2] - 6]
-        kat = 70.0
+    if gra in WIDOKI_ARENY:
+        c = D["arena"]["srodek"]
+        o, t, kat = WIDOKI_ARENY[gra]
+        oko = [c[i] + o[i] for i in range(3)]
+        cel = [c[i] + t[i] for i in range(3)]
         lista = cz
     else:
         u = ujecie_podgladu(D, gra, ujecie)
@@ -540,9 +560,9 @@ def podglad(D, gra, np, Image, ImageDraw, ImageFont, ujecie="gra"):
     kam, pl = rysuj(lista, oko, cel, np, kat)
     obrysy(pl, np)
     obraz = napisy(pl, kam, lista, np, Image, ImageDraw, ImageFont)
-    if gra != "arena" and ujecie == "gra":
+    if gra not in WIDOKI_ARENY and ujecie == "gra":
         sterowanie(obraz, D, gra, ImageDraw, ImageFont)
-    elif gra != "arena" and ujecie == "final":
+    elif gra not in WIDOKI_ARENY and ujecie == "final":
         karta(obraz, D, gra, ImageDraw, ImageFont)
     return obraz
 
@@ -586,9 +606,9 @@ def main():
     if a.ekran:
         W, H = [int(x) for x in a.ekran.lower().split("x")]
     _, D = DANE.wczytaj()
-    gry = [a.tylko] if a.tylko else ["kondycja", "zrecznosc", "inteligencja", "szczescie", "sila", "pancerz", "arena"]
+    gry = a.tylko.split(",") if a.tylko else ["kondycja", "zrecznosc", "inteligencja", "szczescie", "sila", "pancerz"] + list(WIDOKI_ARENY)
     if a.ujecie != "gra":
-        gry = [g for g in gry if g != "arena"]
+        gry = [g for g in gry if g not in WIDOKI_ARENY]
     os.makedirs(a.wyj, exist_ok=True)
     for g in gry:
         obraz = podglad(D, g, np, Image, ImageDraw, ImageFont, a.ujecie)

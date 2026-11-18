@@ -13,7 +13,9 @@ Opis sześciu mini-gier, wybory dla ludzi i ustawienia „przyjęte, do zmiany�
 Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅). Przyrost według propozycji
 `tools/walka/BALANS_1711.md`, część 6 — to nie jest decyzja (wybór 1 w PROJEKT.md).*
 
-> **W skrócie.** Jeden kontener `Workspace/TreningProba` (atrybut `Wygenerowane = true`). Arena z 202 klocków
+> **W skrócie.** Jeden kontener `Workspace/TreningProba` (atrybut `Wygenerowane = true`). Arena z 1658 klocków —
+> 307 części gry i 1351 dekoracji (18.11.2026 wieczorem: wygląd areny, część A bez Studio; w Studio stoi jeszcze
+> arena z 202 klocków) —
 > (256 × 56 st) stoi w powietrzu, z dala od map, w (3000; 300; 3000). Sześć stanowisk w jednym rzędzie: **Siła
 > „Rozbijanie”** (strzałka w stronę lecącej skrzynki), **Pancerz „Blok”** (blok w chwili ciosu, bez dawania się nabrać
 > na zmyłki), **Kondycja „Bieżnia”** (lewa / prawa stopa w rytmie, gdy ślad dojedzie do linii), **Zręczność „Kłody”**
@@ -33,7 +35,8 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | `dane.py` | generator `zrodla/DaneTreningu.luau` (położenia w świecie, przypadki wzorcowe z lustra); reguły ustawień każdego rodzaju gry i wyglądu (kąty kamer, style napisów, nazwy wybuchów z modułu walki, litery napisów w czcionce komiksowej); `--sprawdz`, `--wyjscie DIR` |
 | `logika_treningu.py` | lustro `zrodla/LogikaTreningu.luau` w Pythonie (plan rundy sześciu gier, werdykty: okno czasu, kolejność run, tor koszyka; pasek, waga, spam, wejście, skala UI) |
 | `kamera_treningu.py` | lustro `zrodla/KameraTreningu.luau` (ujęcia kamery stanowisk) + rzut punktu na ekran, miejsca postaci, prostokąt karty podsumowania — dla podglądów i testów |
-| `scena.py` | arena z prostych części (202): podłoga, murki, niewidzialne ściany, lobby z tablicą wyboru i bramą wyjścia, sześć stanowisk z trenerami; `pole_gry` — punkty, które gracz musi widzieć |
+| `dekoracje.py` | **wygląd areny** (18.11.2026): dekoracje z części Roblox w grupie `Arena/Dekoracje/…`, figury trenerów z twarzą i strojem, szczegóły golema; pola gry (`POLA_GRY`), `kontrola(D)` — pola gry wolne, kadry niezasłonięte, podpowiedzi E odsłonięte; `budzet(cz)`; uruchomiony wypisuje liczbę części wg grup i wynik kontroli |
+| `scena.py` | arena z części (1658, w tym 1351 dekoracji z `dekoracje.py`): podłoga, murki, niewidzialne ściany, lobby z tablicą wyboru i bramą wyjścia, sześć stanowisk z trenerami; `pole_gry` — punkty, które gracz musi widzieć |
 | `podglad.py` | **podglądy stanowisk bez Studio**: render brył z `scena.py` z kamery każdej mini-gry + przykładowa chwila gry, zarys przycisków i dużego napisu (numpy + Pillow, najniższy priorytet) → `podglady/`; `--ujecie start` / `final`, `--ekran 667x375` |
 | `podglady/` | `podglad_<gra>.jpg` (kamera gry), `podglad_<gra>_start.jpg` (początek odliczania), `podglad_<gra>_final.jpg` (zbliżenie po rundzie z kartą) i `podglad_arena.jpg` — render brył, nie zrzut z gry |
 | `zrodla/LogikaTreningu.luau` | czysta logika (ModuleScript) — ta sama co lustro; serwer sprawdza ją przy starcie (118 przypadków) |
@@ -129,6 +132,73 @@ MINI-GRY” obok miejsca startu
 START (albo spacja) → strzałki / WASD w stronę skrzynki, gdy dolatuje do świecącego kółka → po rundzie podsumowanie →
 INNA GRA → Pancerz → spacja, gdy pierścień dojdzie do kółka (fioletowy = zmyłka, nie blokuj) → WYJDŹ (albo Q).
 Telefon: Test → Device → telefon w poziomie (667 × 375) albo zrzut z emulacją: `python -B swiat/trening_proba/testy/zrzuty_gry.py`.
+
+## Wygląd areny (18.11.2026 wieczorem, część A — bez Studio; część B — budowa i próba w grze — jeszcze nie zrobiona)
+
+Zadanie: „Training Center: wygląd areny (dziś płaska podłoga i proste figury trenerów)”. Zmienia się **tylko wygląd**:
+zasady gier, serwer, przyrosty, dźwięki, kamery, efekty, `ustawienia.json` i `DaneTreningu.luau` — bez zmian (skrót
+danych ten sam). Wszystko z części Roblox stawianych przez `zbuduj.py` — bez zasobów z zewnątrz, bez wgrywania.
+**W Studio nic jeszcze nie zbudowano**: poniżej jest stan generatora, testów offline i podglądów (render brył).
+
+**Co doszło (generator `dekoracje.py`, wołany z `scena.czesci`):**
+- **Podłoga**: szachownica jaśniejszych płyt 8 × 8 st, pasy pod murami, róża kierunków przy punkcie przybycia, a każde
+  stanowisko ma **pole w kolorze swojej statystyki** (rama na podłodze z kremowymi narożnikami).
+- **Ogrodzenie**: na murkach słupki ze złotymi daszkami i poręcz, wzdłuż muru północnego i bocznych girlandy
+  trójkątnych chorągiewek (kliny `WedgePart`), flagi na czterech słupach narożnych.
+- **Brama** przy wyjściu: pylony z flagami i lampionami, łuk, szyld „TRAINING CENTER” ze skrzyżowanymi mieczami,
+  girlandy do muru; przejście i podpowiedź E zostają wolne.
+- **Zaplecze pod murem północnym** (tło kadrów): dwie trybunki z dachem w pasy i widzami, **tablica wyników jako
+  dekoracja** (nazwa areny, sześć statystyk w ich kolorach — bez liczb, żeby nie udawała żywych wyników), stojaki
+  z mieczami, stojaki z hantlami, sztangą i odważnikami, osiem latarni z lampionami, sztandary w kolorach statystyk,
+  beczki, skrzynie, bele siana; pod murem południowym cztery ławki z ręcznikami i wiadrami.
+- **Stanowiska** (dekoracje dopasowane do tego, co gra naprawdę pokazuje; elementy gry zostają, jak były):
+  Siła „Rozbijanie” — stojak z mieczami, dwa manekiny treningowe z tarczą, beczka drewnianych mieczy, siano, kowadło,
+  proporce na szyldzie; Pancerz „Blok” — stojak z trzema tarczami, dwie zbroje na stojakach, ruiny kolumn i głazy
+  przy golemie, pachołki z łańcuchem; Kondycja „Bieżnia” — za stanowiskiem tor biegowy z bandami, płotkami,
+  pachołkami, metą i bramą startu, z boku beczka z wodą, wieszak z ręcznikami, klepsydra, hantle; Zręczność „Kłody”
+  — stosy kłód, pnie z siekierą, kozioł z kłodą i piłą, kołki wokół placu (strona północna), tor równowagi
+  z pniaków, tarcza do rzutów; Inteligencja „Runy” — pulpit z księgą przy magu, regał z księgami, zwojami
+  i globusem, kryształy, świece na kolumnach, krąg na podłodze; Szczęście „Koniczyny” — polanka: trawa za drzewem,
+  płotek, 16 kwiatów, krzaki, grzyby, kępy koniczyny, studnia, taczka, podkowa nad szyldem.
+- **Figury trenerów** (miotacz, trener Bieżni, drwal, mag, ogrodnik): w stylu sprzedawców bazaru — większa głowa,
+  oczy ze źrenicami, brwi, nos, uśmiech, uszy, buty, pas, dłonie, strój z dodatkami (opaska, gwizdek, kraciasta
+  koszula z szelkami, kapelusz maga z gwiazdą, kapelusz ogrodnika). Golem dostał stopy, szczękę z zębami, brwi,
+  naramiennik, mech i rysy. Części animowane przez klienta (`RamieP` miotacza i trenera Bieżni, pięść i oczy golema,
+  bęben, kula maga) mają te same nazwy, rozmiary i miejsca. Figury z danych postaci (`swiat/postacie`) nie weszły:
+  to rigi z kośćmi i siatkami, a arena jest z samych części — własne klockowe figury nie dodają grze zależności.
+
+**Liczby (budżet):** przed 202 części → po **1658** (przyrost 1456, limit testu 1500): 307 części gry (było 202;
++105 to figury i golem) i 1351 dekoracji, z czego 1177 bez kolizji (87%); 124 kliny, 16 napisów `SurfaceGui`
+(było 8), 31 części Neon, **0 świateł**, wszystko zakotwiczone. Budowa idzie do Studio w 6 paczkach po 300 części
+(każda ok. 60 tys. znaków), ostatnia paczka sprawdza liczbę części.
+
+**Co pilnuje, że nic nie psuje gry** (`dekoracje.kontrola`, testy 4g–4j):
+- pola gry (`POLA_GRY`, koło Kłód, korytarz lobby od tablicy wyboru do wyjścia) wolne od dekoracji wyższych niż
+  0,25 st; jedyne dekoracje w polach to płaski wzór podłogi bez kolizji;
+- **kadry niezasłonięte**: dla każdej gry promienie z oka kamery — gra z kołysaniem, początek i droga odliczania,
+  zbliżenie po rundzie dla każdego miejsca postaci i trzech chwil — do punktów pola gry (`scena.pole_gry`) i do
+  postaci nie przecinają pudła żadnej dekoracji; w przedpolu kadru (16:9, telefon 844 × 390, 4:3) żadna dekoracja
+  nie stoi bliżej oka niż postać albo cel kamery; oko kamery nigdy nie jest w dekoracji;
+- podpowiedzi E (tablica wyboru, wyjście): widoczne z punktu przybycia, bez dekoracji w ich otoczeniu;
+- położenia stanowisk, punktu przybycia i części z podpowiedziami wpisane w test liczbami (bez zmian);
+- rachunek jest zachowawczy: obrócona część liczy się jako swoje pudło osiowe.
+
+**Podglądy (render brył, nie zrzut z gry), `podglady/`:** `podglad_arena_zachod.jpg` i `podglad_arena_wschod.jpg`
+(z ukosa, po trzy stanowiska), `podglad_arena_gora.jpg` (prawie z góry), `podglad_arena.jpg` (cała), `podglad_arena_lobby.jpg`
+(oczami gracza po przybyciu), `podglad_arena_brama.jpg`; podglądy kamer gier (`podglad_<gra>.jpg`, `_start`, `_final`)
+odświeżone z nową areną.
+
+**Sprawdzone bez Studio (18.11.2026, 17:15–17:45):** `dekoracje.py` (kontrola OK), `testy/test_treningu.py` (58 testów;
+jeden nie przechodzi niezależnie od tej zmiany — 6j porównuje listę efektów z walką, która tego dnia dostała efekty
+Dżungli), `dane.py --sprawdz`, `sprawdz_luau_treningu.py`, `zbuduj.py --sucho`, `testy/proba_play.py --sprawdz`.
+
+**Część B (w Studio — do zrobienia):** `zbuduj.py` (nowa arena w 6 paczkach), `testy/proba_play.py … --arena`
+(T28 części, T29 pola gry, T30 kadry liczone z prawdziwych brył, T31 czas klatki w lobby + zrzuty), pełna lista
+T01–T31 jako regresja (T13 i T21 pokażą czas klatki w rundach z nową areną), zrzuty stanowisk do `klatki/`.
+
+**Czego nie sprawdzono:** niczego w grze — wyglądu w silniku (materiały, cienie, czytelność stref na tle dekoracji),
+czasu klatki z 1658 częściami, budowy w paczkach; kierunku klina chorągiewek (przyjęty jak w bazarze: pełna
+wysokość z tyłu części).
 
 ## Wygląd jak w walce: kamery, komiksowe napisy, efekty, konfetti (18.11.2026, część A — bez Studio, część B — w Studio)
 

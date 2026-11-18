@@ -73,7 +73,9 @@ def czytaj(*czesci):
         return f.read().replace("\r\n", "\n")
 
 
-LICZBA_CZESCI = 202  # arena: sześć stanowisk, lobby, mury (zmiana sceny = świadoma zmiana tej liczby)
+LICZBA_CZESCI = 1658  # cała arena z dekoracjami (zmiana sceny = świadoma zmiana tej liczby)
+LICZBA_CZESCI_GRY = 307  # bez dekoracji: sześć stanowisk z figurami trenerów, lobby, mury
+LICZBA_CZESCI_PRZED = 202  # arena sprzed wyglądu (18.11.2026) — od niej liczony jest budżet przyrostu
 SERWER = czytaj(ZR, "SerwerTreningu.server.luau")
 KLIENT = czytaj(ZR, "KlientTreningu.client.luau")
 LOGIKA = czytaj(ZR, "LogikaTreningu.luau")
@@ -1189,7 +1191,8 @@ class TestSceny(unittest.TestCase):
             self.assertGreaterEqual(mn[2], c[2] - A["rozmiar"][1] / 2 - 1.01, x["n"])
             self.assertLessEqual(mx[2], c[2] + A["rozmiar"][1] / 2 + 1.01, x["n"])
             self.assertTrue(x["r"].startswith("Arena/"))
-            self.assertIn(x.get("m", "SmoothPlastic"), ("SmoothPlastic", "Neon", "WoodPlanks", "Metal", "Slate"))
+            self.assertIn(x.get("m", "SmoothPlastic"), ("SmoothPlastic", "Neon", "WoodPlanks", "Metal", "Slate", "Fabric"))
+            self.assertIn(x.get("k", "B"), ("B", "C", "K", "W"))
 
     def test_4b_nazwy_animowane_i_podpowiedzi(self):
         sciezki = {c["r"] + "/" + c["n"] for c in self.cz}
@@ -1343,6 +1346,124 @@ class TestSceny(unittest.TestCase):
                 W = D["swiat"][gra]
                 y0 = W["tasma_srodek"][1] + W["tasma_rozmiar"][1] / 2 + 0.05
             self.assertIsNone(self._wolne([p[0], y0, p[2]], [p[0], p[1] + 5.5, p[2]]), "miejsce gracza wolne: %s" % gra)
+
+    # ------------------------------------------------------------------------------------------ wygląd areny
+    def test_4g_pola_gry_wolne_od_dekoracji(self):
+        """Dekoracje nie stoją w polach gry, w kole Kłód ani w korytarzu lobby; płaski wzór podłogi jest bez kolizji;
+        stanowiska, punkt przybycia i części z podpowiedziami E stoją tam, gdzie stały."""
+        DEK = SCENA.DEK
+        P = DEK.przeszkody(D, self.cz)
+        self.assertGreater(len(P), 600)
+        pola = DEK.pola_gry(D)
+        self.assertEqual(sorted(pola), sorted(list(GRY) + ["lobby"]))
+        for nazwa, pole in pola.items():
+            for sciezka, mn, mx in P:
+                self.assertFalse(DEK.w_polu(pole, mn, mx), "%s: %s stoi w polu gry" % (nazwa, sciezka))
+            # wykrywacz działa: słupek na miejscu gracza byłby usterką
+            b = D["swiat"][nazwa]["podest"] if nazwa != "lobby" else D["swiat"]["przybycie"]
+            self.assertTrue(DEK.w_polu(pole, [b[0] - 0.5, b[1] + 1, b[2] - 0.5], [b[0] + 0.5, b[1] + 3, b[2] + 0.5]), nazwa)
+        y0 = D["arena"]["srodek"][1]
+        plaskie = 0
+        for c in self.cz:
+            if DEK.dekoracja(c):
+                mn, mx = _pudlo(c)
+                if mx[1] - y0 <= DEK.PLASKIE + 1e-6:
+                    plaskie += 1
+                    self.assertIs(c.get("kol"), False, "wzór podłogi bez kolizji: " + c["n"])
+        self.assertGreater(plaskie, 150)
+        # położenia sprzed dekoracji (liczby wpisane wprost — zmiana ustawień stanowisk ma tu wyjść)
+        c0 = D["arena"]["srodek"]
+        self.assertEqual(c0, [3000, 300, 3000])
+        for gra, x in (("zrecznosc", -104), ("kondycja", -64), ("sila", -24), ("pancerz", 24), ("inteligencja", 64),
+                       ("szczescie", 104)):
+            self.assertEqual(D["swiat"][gra]["podest"], [c0[0] + x, c0[1], c0[2] + 8], gra)
+        po = {x["r"] + "/" + x["n"]: x["p"] for x in self.cz}
+        self.assertEqual(po["Arena/Lobby/TablicaWyboru/E"], [3000, 303, 3006.7])
+        self.assertEqual(po["Arena/Lobby/Wyjscie/E"], [3000, 303, 3023.2])
+        self.assertEqual(po["Arena/Lobby/Przybycie"], [3000, 300.1, 3014])
+        self.assertEqual(po["Arena/Sila/Podest"], [2976, 300.1, 3008])
+        self.assertEqual(po["Arena/Pancerz/Golem/Piesc"], D["swiat"]["pancerz"]["piesc_spoczynek"])
+
+    def test_4h_kadry_niezasloniete(self):
+        """Żadna dekoracja nie zasłania kadru żadnej z sześciu gier: promienie z oka kamery (gra z kołysaniem, początek
+        i droga odliczania, zbliżenie po rundzie dla każdego miejsca postaci) do pola gry i do postaci są wolne,
+        w przedpolu kadru (16:9, telefon 844 × 390, 4:3) nic nie stoi bliżej niż postać, a podpowiedzi E są odsłonięte."""
+        DEK = SCENA.DEK
+        self.assertEqual(DEK.kontrola(D, self.cz), [])
+        for gra in GRY:
+            self.assertGreaterEqual(len(DEK.ujecia(D, gra)), 7 + 18, gra)
+            self.assertGreater(len(DEK.cele(D, gra, KT.miejsca_postaci(D, gra))), 8, gra)
+            # wykrywacz działa: słupek w połowie drogi oko → postać to usterka tej gry
+            W = D["swiat"][gra]
+            b = KT.miejsca_postaci(D, gra)[0]
+            sr = [(W["oko"][0] + b[0]) / 2, b[1] + 2.0, (W["oko"][2] + b[2]) / 2]
+            zla = {"n": "Proba", "r": "Arena/Dekoracje/Proba", "k": "B", "p": sr, "s": [1.0, 4.0, 1.0], "c": "FFFFFF", "kol": False}
+            u = DEK.kontrola(D, [zla])
+            self.assertTrue([x for x in u if x.startswith(gra) and "zasłania" in x], gra)
+            self.assertTrue([x for x in u if x.startswith(gra) and "przedpolu" in x], gra)
+        e = [x for x in self.cz if x["n"] == "E" and x["r"] == "Arena/Lobby/TablicaWyboru"]
+        zla = {"n": "Proba", "r": "Arena/Dekoracje/Proba", "k": "B", "p": [3000, 302, 3009], "s": [2.0, 4.0, 1.0], "c": "FFFFFF"}
+        self.assertTrue([x for x in DEK.kontrola(D, e + [zla]) if x.startswith("podpowiedź")])
+
+    def test_4i_budzet_czesci(self):
+        """Budżet wyglądu: przyrost części, udział dekoracji bez kolizji, wszystko zakotwiczone, zero świateł, budowa
+        w paczkach."""
+        DEK = SCENA.DEK
+        B = DEK.budzet(self.cz)
+        self.assertEqual(B["razem"], LICZBA_CZESCI)
+        self.assertEqual(B["gra"], LICZBA_CZESCI_GRY)
+        self.assertLessEqual(B["razem"] - LICZBA_CZESCI_PRZED, DEK.PRZYROST_MAX)
+        self.assertGreaterEqual(B["bez_kolizji"] / B["dekoracje"], DEK.BEZ_KOLIZJI_MIN)
+        self.assertLessEqual(B["napisy"], 20, "SurfaceGui tylko na szyldach")
+        self.assertLessEqual(B["neon"], 40)
+        self.assertEqual(B["swiatla"], 0)
+        for zakaz in ("PointLight", "SpotLight", "SurfaceLight", "ParticleEmitter"):
+            self.assertNotIn(zakaz, ZB.CZESC + ZB.ARENA)
+        self.assertIn("p.Anchored = true", ZB.CZESC)
+        self.assertIn('"WedgePart"', ZB.CZESC)
+        self.assertTrue(all(DEK.dekoracja(c) for c in self.cz if c.get("k") == "W"), "kliny tylko w dekoracjach")
+        kody = ZB.kody_areny(D)
+        self.assertEqual(len(kody), math.ceil(LICZBA_CZESCI / ZB.PACZKA_CZESCI))
+        self.assertTrue(all(len(k) < 100000 for k in kody), [len(k) for k in kody])
+        self.assertIn("if true then", kody[0])
+        self.assertIn("if false then", kody[-1])
+        self.assertIn("if not true then return", kody[-1])
+        self.assertIn("if not false then return", kody[0])
+        self.assertIn("if razem ~= %d then" % LICZBA_CZESCI, kody[-1])
+        # dekoracje nie wchodzą w nazwy, których szuka klient, i nie leżą w modelach stanowisk
+        for k, v in D["nazwy"].items():
+            for sciezka in (v if isinstance(v, list) else [v]):
+                self.assertFalse(sciezka.startswith("Arena/Dekoracje"), k)
+        grupy = DEK.grupy(self.cz)
+        for st in ("Sila", "Pancerz", "Kondycja", "Zrecznosc", "Inteligencja", "Szczescie"):
+            self.assertGreaterEqual(sum(n for g, n in DEK.grupy(self.cz, 3).items() if g == "Arena/Dekoracje/" + st), 40, st)
+        for g in ("Podloga", "Pola", "Ogrodzenie", "Brama", "TablicaWynikow", "Zaplecze"):
+            self.assertIn("Arena/Dekoracje/" + g, grupy)
+
+    def test_4j_figury_trenerow(self):
+        """Figury trenerów mają twarz i strój, a części, które animuje klient, zostały jednym klockiem w starym miejscu."""
+        po = {x["r"] + "/" + x["n"]: x for x in self.cz}
+        for grupa in ("Arena/Sila/Miotacz", "Arena/Kondycja/Trener", "Arena/Zrecznosc/Trener", "Arena/Inteligencja/Mag",
+                      "Arena/Szczescie/Ogrodnik"):
+            for n in ("NogaL", "NogaP", "Tulow", "Glowa", "RamieL", "RamieP", "OkoL", "OkoP", "ZrenicaL", "ZrenicaP", "BrewL",
+                      "BrewP", "Nos", "UstaL", "UstaP", "UchoL", "UchoP", "ButL", "ButP", "Pas", "DlonL"):
+                self.assertIn(grupa + "/" + n, po)
+            self.assertGreaterEqual(len([k for k in po if k.startswith(grupa + "/")]), 26, grupa)
+            for n in ("NogaL", "NogaP", "Tulow"):
+                self.assertTrue(po[grupa + "/" + n].get("kol", True), "kolizja figury jak dotąd: " + n)
+        for klucz, baza in (("miotacz_ramie", D["swiat"]["sila"]["miotacz"]), ("palka", None)):
+            c = po[D["nazwy"][klucz]]
+            self.assertEqual(c["s"], [1.0, 2.8, 1.0], klucz)
+            self.assertNotIn(D["nazwy"][klucz].rsplit("/", 1)[0] + "/DlonP", po, "ramię animowane = jeden klocek, bez osobnej dłoni")
+            if baza:
+                self.assertEqual(c["p"], [baza[0] + 2.0, baza[1] + 4.3, baza[2]])
+        g = D["swiat"]["pancerz"]["golem"]
+        self.assertEqual(po["Arena/Pancerz/Golem/OkoL"]["p"], [g[0] - 0.7, g[1] + 8.4, g[2] + 1.53])
+        self.assertEqual(po["Arena/Pancerz/Golem/RamieP"]["s"], [1.6, 2.4, 1.6])
+        for n in ("Szczeka", "StopaL", "NaramiennikL", "Klamra"):
+            self.assertIn("Arena/Pancerz/Golem/" + n, po)
+        for plik in ("README.md", "PROJEKT.md"):
+            self.assertIn("dekoracje.py", czytaj(PAKIET, plik))
 
 
 # ============================================================================================== 5. telefon
@@ -1716,7 +1837,7 @@ class TestStykow(unittest.TestCase):
             for n in re.findall(r'WaitForChild\("(\w+)"\)', tekst):
                 if n != "PlayerGui":
                     self.assertIn(n, tworzone)
-        for tekst in (ZB.kod_areny(D), ZB.kod_tablicy(D)):
+        for tekst in (ZB.kody_areny(D)[0], ZB.kod_tablicy(D)):
             self.assertIn('ModelStreamingMode.Persistent', tekst)
 
     def test_6c_atrybuty_gracza_tylko_sesyjne(self):

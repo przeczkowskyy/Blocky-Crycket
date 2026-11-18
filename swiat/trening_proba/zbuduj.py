@@ -178,10 +178,12 @@ local function grupa(korzen, sciezka)
 	return o
 end
 local function czesc(korzen, c)
-	local p = Instance.new("Part")
+	local p = Instance.new(if c.k == "W" then "WedgePart" else "Part")
 	p.Name = c.n
 	p.Anchored = true
-	p.Shape = if c.k == "C" then Enum.PartType.Cylinder elseif c.k == "K" then Enum.PartType.Ball else Enum.PartType.Block
+	if c.k ~= "W" then
+		p.Shape = if c.k == "C" then Enum.PartType.Cylinder elseif c.k == "K" then Enum.PartType.Ball else Enum.PartType.Block
+	end
 	p.Size = Vector3.new(c.s[1], c.s[2], c.s[3])
 	local cf = CFrame.new(c.p[1], c.p[2], c.p[3])
 	if c.o then cf = cf * CFrame.Angles(math.rad(c.o[1]), math.rad(c.o[2]), math.rad(c.o[3])) end
@@ -243,16 +245,27 @@ if not f or f:GetAttribute("Wygenerowane") ~= true then return "STOP: brak konte
 __CZESC__
 local PD = __PODPOWIEDZ__
 local stara = f:FindFirstChild("Arena")
-if stara then stara:Destroy() end
-local m = Instance.new("Model")
-m.Name = "Arena"
-m.ModelStreamingMode = Enum.ModelStreamingMode.Persistent
-m.Parent = f
+local m = stara
+if __PIERWSZA__ then
+	if stara then stara:Destroy() end
+	m = Instance.new("Model")
+	m.Name = "Arena"
+	m.ModelStreamingMode = Enum.ModelStreamingMode.Persistent
+	m.Parent = f
+end
+if not m then return "STOP: brak modelu Arena (paczka części bez pierwszej)" end
 local n = 0
 for _, c in __CZESCI__ do
 	czesc(f, c)
 	n += 1
 end
+if not __OSTATNIA__ then return "OK (paczka: " .. n .. " części)" end
+local razem = 0
+for _, d in m:GetDescendants() do
+	if d:IsA("BasePart") then razem += 1 end
+end
+if razem ~= __RAZEM__ then return "STOP: w Arenie " .. razem .. " części, a ma być __RAZEM__" end
+n = razem
 local pp = 0
 for _, w in __PODPOWIEDZI_ARENY__ do
 	local p = f
@@ -491,11 +504,24 @@ def _czesc(D):
     return CZESC.replace("__CZCIONKA__", D["ui"]["czcionka"]).replace("__WAGA__", D["ui"]["waga_czcionki"])
 
 
-def kod_areny(D):
-    return (ARENA.replace("__CZESC__", _czesc(D)).replace("__KONTENER__", D["kontener"])
-            .replace("__PODPOWIEDZ__", DANE._luau(D["podpowiedz"]))
-            .replace("__PODPOWIEDZI_ARENY__", _podpowiedzi(False))
-            .replace("__CZESCI__", DANE._luau(SCENA.czesci(D))))
+PACZKA_CZESCI = 300  # części areny w jednym wywołaniu Studio (arena z dekoracjami to ok. 1700 części)
+
+
+def kody_areny(D):
+    """Kod budowy areny w paczkach po PACZKA_CZESCI części: pierwsza zakłada model, ostatnia sprawdza liczbę części,
+    stawia podpowiedzi E i część główną."""
+    cz = SCENA.czesci(D)
+    paczki = [cz[i:i + PACZKA_CZESCI] for i in range(0, len(cz), PACZKA_CZESCI)]
+    kody = []
+    for i, paczka in enumerate(paczki):
+        kody.append(ARENA.replace("__CZESC__", _czesc(D)).replace("__KONTENER__", D["kontener"])
+                    .replace("__PODPOWIEDZ__", DANE._luau(D["podpowiedz"]))
+                    .replace("__PODPOWIEDZI_ARENY__", _podpowiedzi(False))
+                    .replace("__PIERWSZA__", "true" if i == 0 else "false")
+                    .replace("__OSTATNIA__", "true" if i == len(paczki) - 1 else "false")
+                    .replace("__RAZEM__", str(len(cz)))
+                    .replace("__CZESCI__", DANE._luau(paczka)))
+    return kody
 
 
 def kod_tablicy(D):
@@ -519,7 +545,7 @@ def kod_konca(D, punkt_historii="zbudowano"):
 def wszystkie_kody(D):
     """Kod wysyłany do Studio (bez skryptów) — do --sucho i do testu parsowania."""
     return {"sprawdz": kod_sprawdz(D), "start": kod_start(D, czas="x", skrot="x"), "usun": kod_start(D, True),
-            "arena": kod_areny(D), "tablica": kod_tablicy(D), "koniec": kod_konca(D)}
+            **{"arena%d" % (i + 1): k for i, k in enumerate(kody_areny(D))}, "tablica": kod_tablicy(D), "koniec": kod_konca(D)}
 
 
 def plan(D):
@@ -623,7 +649,8 @@ def main():
             print("start:", wynik)
             if a.usun or wynik != "OK":
                 return
-            print("  arena:", wykonaj(kod_areny(D)))
+            for i, k in enumerate(kody_areny(D)):
+                print("  arena %d:" % (i + 1), wykonaj(k))
             print("  tablica:", wykonaj(kod_tablicy(D)))
             skrypty()
             print("gotowe: %s (%.0f s)" % (wykonaj(kod_konca(D)), time.time() - t0))

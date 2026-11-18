@@ -2,14 +2,15 @@
 """Próba Training Center (sześć mini-gier) w Roblox Studio, tryb Play. T01–T14: Siła i Pancerz (przebieg z 17.11.2026,
 14 × OK), T15–T22: Kondycja „Bieżnia”, Zręczność „Kłody”, Inteligencja „Runy”, Szczęście „Koniczyny” (18.11.2026,
 22 × OK), T23–T27: wygląd jak w walce — kamery, komiksowe napisy, efekty 3D, konfetti, bohater klasy (18.11.2026,
-przygotowane bez Studio).
+przygotowane bez Studio), T28–T31: wygląd areny — części, pola gry, kadry, czas klatki (18.11.2026, przygotowane bez
+Studio).
 
     python -B swiat/trening_proba/testy/proba_play.py <folder wyjściowy poza repo> [--studio <studio_id>]
-           [--bez-zrzutow] [--tylko T01,T05,…] [--nowe] [--walka]
+           [--bez-zrzutow] [--tylko T01,T05,…] [--nowe] [--walka] [--arena]
     python -B swiat/trening_proba/testy/proba_play.py --sprawdz     # bez Studio: każdy kawałek Luau parsuje się
 
 --nowe: tylko gotowość (T01) i punkty nowych gier (T15–T22). --walka: tylko gotowość (T01) i wygląd jak w walce
-(T23–T27) z konsolą (T22). Warunki: Studio w trybie Edit, otwarte miejsce gry
+(T23–T27) z konsolą (T22). --arena: tylko gotowość (T01), wygląd areny (T28–T31) i konsola (T22). Warunki: Studio w trybie Edit, otwarte miejsce gry
 (placeId sprawdza cel_studio), zbudowane Workspace/TreningProba (python -B swiat/trening_proba/zbuduj.py); najlepiej też
 MiasteczkoBazar + MiasteczkoBazarGra (T03 z prawdziwym E przy trenerze — bez nich T03 sprawdza tylko zdarzenie
 OknoMiejsca). Skrypt sam włącza i wyłącza Play, w trybie Play zmienia tylko stan gracza (położenie postaci, kamera
@@ -76,6 +77,14 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       awatara nietknięte; gdy go nie ma — zastępczy haczyk we własnym kontenerze (atrybut HaczykBohatera): bez obsługi
       (Invoke czeka) nie zawiesza gry i zostaje awatar; z obsługą dostaje klipy skok / padnij / radosc, „padnij” bez
       przesunięcia w dół, stawy awatara nietknięte
+  --- wygląd areny (18.11.2026) ---
+  T28 części areny: liczba części Areny i dekoracji (Arena/Dekoracje) jak w scena.py, wszystkie zakotwiczone, świateł 0,
+      liczba klinów i dekoracji z kolizją jak w danych
+  T29 pola gry: w pudłach pól gry (dekoracje.POLA_GRY, kwadrat wpisany w koło Kłód, korytarz lobby) nie ma dekoracji
+      wyższej niż wzór podłogi ani żadnej dekoracji z kolizją (rachunek z CFrame i Size części w miejscu)
+  T30 kadry: odcinki oko kamery → pole gry i postać (te same ujęcia co test 4h: gra z kołysaniem, start, odliczanie,
+      zbliżenie) nie przecinają żadnej dekoracji — liczone z prawdziwych, obróconych brył w miejscu
+  T31 czas klatki w lobby areny (cała arena w kadrze): śr. i p95, zrzuty 28_arena_lobby i 29_arena_brama
   (ręcznie, poza skryptem: dźwięki na słuch; dwóch graczy (Test → Clients and Servers, 2); pad)
 
 ZRZUTY (w <wyj>): 01_wybor_tymczasowy, 02_stanowisko_sila, 03_runda_sila, 04_runda_pancerz, 05_podsumowanie,
@@ -102,6 +111,11 @@ J = ('local function J(v) local t = typeof(v) if t == "Vector3" then return { v.
      'elseif t == "Instance" then return v:GetFullName() elseif t == "EnumItem" then return v.Name end return v end ')
 GR = 'local gracz = game:GetService("Players"):GetPlayers()[1] '
 HRP = GR + 'local hrp = gracz.Character and gracz.Character:FindFirstChild("HumanoidRootPart") '
+# pudło osiowe części z jej CFrame i Size (dekoracje bez kolizji mają CanQuery = false — zapytania przestrzenne ich nie widzą)
+PUDLO = ('local function pudlo(p) local c, s = p.CFrame, p.Size / 2 local r, u, l = c.RightVector, c.UpVector, c.LookVector '
+         'local e = Vector3.new(math.abs(r.X) * s.X + math.abs(u.X) * s.Y + math.abs(l.X) * s.Z, '
+         'math.abs(r.Y) * s.X + math.abs(u.Y) * s.Y + math.abs(l.Y) * s.Z, '
+         'math.abs(r.Z) * s.X + math.abs(u.Z) * s.Y + math.abs(l.Z) * s.Z) return c.Position - e, c.Position + e end ')
 WYNIKI = {}
 LISTA = []
 
@@ -139,6 +153,39 @@ KOD = {
                'k:SetAttribute("%sP95", t[math.max(1, math.floor(#t * 0.95))] * 1000) end) return "ok"',
                (4.0, 6.0, "ProbaKlatka", "ProbaKlatka")),
     "brama": ('local e = k.Arena.Lobby.Wyjscie.E return H:JSONEncode({ p = J(e.Position) })', ()),
+    # --- wygląd areny (T28–T31) ---
+    "arena_czesci": ('local a = k.Arena local d = a:FindFirstChild("Dekoracje") '
+                     'local o = { czesci = 0, dekoracje = 0, luzne = 0, swiatla = 0, kliny = 0, kolizje = 0, napisy = 0 } '
+                     'for _, x in a:GetDescendants() do if x:IsA("BasePart") then o.czesci += 1 '
+                     'if not x.Anchored then o.luzne += 1 end if x:IsA("WedgePart") then o.kliny += 1 end '
+                     'if d and x:IsDescendantOf(d) then o.dekoracje += 1 if x.CanCollide then o.kolizje += 1 end end '
+                     'elseif x:IsA("Light") then o.swiatla += 1 elseif x:IsA("SurfaceGui") then o.napisy += 1 end end '
+                     'return H:JSONEncode(o)', ()),
+    "arena_pola": (PUDLO + 'local d = k.Arena:FindFirstChild("Dekoracje") local pola = %s local prog = %r local o = {} '
+                   'for _, w in pola do o[w[1]] = { wysokie = 0, kolizje = 0, przyklad = "" } end '
+                   'if d then for _, x in d:GetDescendants() do if x:IsA("BasePart") then local mn, mx = pudlo(x) '
+                   'for _, w in pola do if mn.X < w[5] and mx.X > w[2] and mn.Y < w[6] and mx.Y > w[3] and mn.Z < w[7] '
+                   'and mx.Z > w[4] then local t = o[w[1]] '
+                   'if mx.Y > prog then t.wysokie += 1 t.przyklad = x:GetFullName() end '
+                   'if x.CanCollide then t.kolizje += 1 t.przyklad = x:GetFullName() end end end end end end '
+                   'return H:JSONEncode(o)', ('{ { "sila", 1, 2, 3, 4, 5, 6 } }', 300.25)),
+    "arena_kadry": (PUDLO + 'local d = k.Arena:FindFirstChild("Dekoracje") local pary = %s local prog = %r '
+                    'local srodek = Vector3.new(%r, %r, %r) local czesci = {} '
+                    'if d then for _, x in d:GetDescendants() do if x:IsA("BasePart") and x.Transparency < 0.95 '
+                    'and (x.Position - srodek).Magnitude < 70 then local _, mx = pudlo(x) '
+                    'if mx.Y > prog then table.insert(czesci, x) end end end end '
+                    'local function przecina(p, a, b) local la, lb = p.CFrame:PointToObjectSpace(a), p.CFrame:PointToObjectSpace(b) '
+                    'local h = p.Size / 2 local t0, t1 = 0, 1 '
+                    'for _, osn in { "X", "Y", "Z" } do local da = la[osn] local dd = lb[osn] - da local hh = h[osn] '
+                    'if math.abs(dd) < 1e-9 then if da < -hh or da > hh then return false end '
+                    'else local u0, u1 = (-hh - da) / dd, (hh - da) / dd if u0 > u1 then u0, u1 = u1, u0 end '
+                    't0 = math.max(t0, u0) t1 = math.min(t1, u1) if t0 > t1 then return false end end end return true end '
+                    'local zle, n, przyklad = 0, 0, "" '
+                    'for _, w in pary do local a = Vector3.new(w.oko[1], w.oko[2], w.oko[3]) '
+                    'for _, c in w.cele do local b = Vector3.new(c[1], c[2], c[3]) n += 1 '
+                    'for _, p in czesci do if przecina(p, a, b) then zle += 1 przyklad = p:GetFullName() break end end end end '
+                    'return H:JSONEncode({ promienie = n, zasloniete = zle, czesci = #czesci, przyklad = przyklad })',
+                    ('{ { oko = { 1, 2, 3 }, cele = { { 1, 2, 3 } } } }', 300.25, 1.0, 2.0, 3.0)),
     # T20: reset postaci (serwer) — życie 0, Roblox odradza postać jak po zwykłej śmierci
     "reset": (GR + 'local h = gracz.Character and gracz.Character:FindFirstChildOfClass("Humanoid") '
               'if h then h.Health = 0 end return tostring(h ~= nil)', ()),
@@ -252,6 +299,8 @@ def main():
         tylko = {"T01"} | {"T%02d" % i for i in range(15, 23)}
     if "--walka" in argv:
         tylko = {"T01", "T22"} | {"T%02d" % i for i in range(23, 28)}
+    if "--arena" in argv:
+        tylko = {"T01", "T22"} | {"T%02d" % i for i in range(28, 32)}
     os.makedirs(wyj, exist_ok=True)
 
     sys.path.insert(0, PAKIET)
@@ -1176,6 +1225,87 @@ def main():
                     luau(kod("zastepczy_usun"), "Client")
                 zapisz("T27", {"prawdziwy_haczyk": prawdziwy, "opisy": opisy})
                 punkt("T27", ok27, "; ".join(opisy))
+
+            # ================================================================ wygląd areny (T28–T31)
+            if chce("T28") or chce("T29") or chce("T30"):
+                import scena as SCENA  # noqa: E402
+                DEK = SCENA.DEK
+                cz_areny = SCENA.czesci(D)
+                BU = DEK.budzet(cz_areny)
+                prog = D["arena"]["srodek"][1] + DEK.PLASKIE
+            # ---------------------------------------------------------------- T28 części areny
+            if chce("T28"):
+                a = js(kod("arena_czesci"), "Server")
+                z_kolizja = len([c for c in cz_areny if DEK.dekoracja(c) and c.get("kol") is not False])
+                ok28 = (a.get("czesci") == BU["razem"] and a.get("dekoracje") == BU["dekoracje"] and a.get("luzne") == 0
+                        and a.get("swiatla") == 0 and a.get("kliny") == BU["kliny"] and a.get("kolizje") == z_kolizja)
+                zapisz("T28", {"miejsce": a, "dane": BU, "dekoracje_z_kolizja": z_kolizja})
+                punkt("T28", ok28, "części %s (dane %s), dekoracje %s (dane %s), niezakotwiczone %s, światła %s, kliny %s (dane %s), "
+                      "dekoracje z kolizją %s (dane %s), napisy %s" % (
+                          a.get("czesci"), BU["razem"], a.get("dekoracje"), BU["dekoracje"], a.get("luzne"), a.get("swiatla"),
+                          a.get("kliny"), BU["kliny"], a.get("kolizje"), z_kolizja, a.get("napisy")))
+
+            # ---------------------------------------------------------------- T29 pola gry wolne
+            if chce("T29"):
+                pola = []
+                for nazwa, pole in DEK.pola_gry(D).items():
+                    if pole[0] == "pudlo":
+                        mn, mx = pole[1], pole[2]
+                    else:  # koło Kłód: kwadrat wpisany w koło
+                        h = pole[2] / math.sqrt(2)
+                        mn, mx = [pole[1][0] - h, pole[3], pole[1][2] - h], [pole[1][0] + h, pole[4], pole[1][2] + h]
+                    pola.append([nazwa, round(mn[0], 3), D["arena"]["srodek"][1] - 0.5, round(mn[2], 3), round(mx[0], 3),
+                                 round(mx[1], 3), round(mx[2], 3)])
+                w29 = js(kod("arena_pola", DANE._luau(pola), prog), "Server")
+                zle29 = {n: v for n, v in w29.items() if v.get("wysokie") or v.get("kolizje")}
+                zapisz("T29", w29)
+                punkt("T29", len(w29) == len(pola) and not zle29, "pól %d, z dekoracją wyższą niż wzór podłogi albo z kolizją: %s" % (
+                    len(w29), zle29 or "brak"))
+
+            # ---------------------------------------------------------------- T30 kadry niezasłonięte
+            if chce("T30"):
+                w30, ok30 = {}, True
+                for gra in D["gry"]:
+                    pary, widziane = [], set()
+                    for _opis, u, miejsca, _zb in DEK.ujecia(D, gra):
+                        klucz = tuple(round(x, 3) for x in u["oko"])
+                        if klucz in widziane:
+                            continue
+                        widziane.add(klucz)
+                        pary.append({"oko": list(klucz), "cele": [[round(x, 3) for x in c] for c in DEK.cele(D, gra, miejsca)]})
+                    pd = D["swiat"][gra]["podest"]
+                    w = js(kod("arena_kadry", DANE._luau(pary), prog, float(pd[0]), float(pd[1]), float(pd[2])), "Server")
+                    w30[gra] = w
+                    ok30 = ok30 and w.get("zasloniete") == 0 and (w.get("promienie") or 0) > 300 and (w.get("czesci") or 0) > 50
+                zapisz("T30", w30)
+                punkt("T30", ok30, "; ".join("%s: promieni %s, zasłoniętych %s, dekoracji w zasięgu %s%s" % (
+                    g, w.get("promienie"), w.get("zasloniete"), w.get("czesci"),
+                    (" (" + str(w.get("przyklad")) + ")") if w.get("zasloniete") else "") for g, w in w30.items()))
+
+            # ---------------------------------------------------------------- T31 czas klatki w lobby areny + zrzuty
+            if chce("T31"):
+                if serwer_gracza().get("gra") is not None:
+                    hak("wyjdz", dm="Client")
+                    czekaj_na(lambda: not serwer_gracza().get("gra"), 8, 0.5)
+                pr, pp = D["swiat"]["przybycie"], D["swiat"]["patrz_przybycie"]
+                przestaw([pr[0], pr[1] + 3.5, pr[2] + 7], pp)
+                time.sleep(1.5)
+                kamera_za()
+                time.sleep(0.8)
+                zrzut("28_arena_lobby")
+                luau(kod("klatka", 0.5, 6.0, "ProbaKlatkaArena", "ProbaKlatkaArena"), "Client")
+                time.sleep(8.5)
+                a = atrybuty(["ProbaKlatkaArenaSr", "ProbaKlatkaArenaP95"], "Client")
+                sr, p95 = a.get("ProbaKlatkaArenaSr"), a.get("ProbaKlatkaArenaP95")
+                przestaw([pr[0], pr[1] + 3.5, pr[2] - 8], [pr[0], pr[1], pr[2] + 20])
+                time.sleep(1.2)
+                kamera_za()
+                time.sleep(0.8)
+                zrzut("29_arena_brama")
+                zapisz("T31", {"sr": sr, "p95": p95})
+                punkt("T31", None if (sr is None or sr > 50) else (p95 or 99) < 33.4,
+                      "klatka w lobby areny śr. %s ms, p95 %s ms%s" % (sr and round(sr, 1), p95 and round(p95, 1),
+                                                                      " (okno Studio zaciemnione?)" if (sr or 0) > 50 else ""))
 
             # ---------------------------------------------------------------- T11 wyjście (kliknięcie WYJDŹ, brama w arenie)
             if chce("T11"):

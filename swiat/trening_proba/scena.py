@@ -4,13 +4,14 @@
     python -B swiat/trening_proba/scena.py        # wypisuje liczbę części, obrys i stanowiska
 
 czesci(D) → lista części w układzie świata (środek areny z ustawienia.json + układ lokalny):
-    {"n": nazwa, "r": rodzic w kontenerze ("Arena/Sila/Miotacz"), "k": "B" klocek | "C" walec | "K" kula,
+    {"n": nazwa, "r": rodzic w kontenerze ("Arena/Sila/Miotacz"), "k": "B" klocek | "C" walec | "K" kula | "W" klin,
      "p": [x, y, z] środek, "s": [x, y, z] rozmiar Roblox, "o": [rx, ry, rz] stopnie (walec: oś już w obrocie),
      "c": kolor hex, "m": materiał, "t": przezroczystość, "kol": CanCollide, "napis": {...} SurfaceGui (opcjonalnie)}
 Kolory: nasycone barwy jak w kierunku artystycznym (D-041), tusz do oczu i napisów. Nazwy części, które klient animuje
 lokalnie (ramię miotacza, pięść golema, oczy, strefy, pasy taśmy Bieżni, cele stóp, bęben i pałka trenera, ramię
 z kłodą, znaki run, kula maga, tory Koniczyn), pochodzą z dane.NAZWY. Stanowiska stoją w jednym rzędzie (x od −104 do
 +104 st od środka), kamery patrzą na północ (−z); zapowiedź „w projekcie” powstaje tylko dla statystyki bez gry.
+Wygląd areny (dekoracje w „Arena/Dekoracje/…”, figury trenerów z twarzą) dokłada dekoracje.py — sam wygląd, bez zmian w grze.
 """
 import math
 import os
@@ -21,6 +22,7 @@ TU = os.path.dirname(os.path.abspath(__file__))
 if not sys.path or sys.path[0] != TU:
     sys.path.insert(0, TU)
 import dane as DANE  # noqa: E402
+import dekoracje as DEK  # noqa: E402
 
 TUSZ, KREM = "17121F", "FFF6E0"
 DREWNO, DREWNO_C = "6B4A2F", "7A5C44"
@@ -140,13 +142,10 @@ def czesci(D):
     m = _plus(pd, st["miotacz"])
     r = "Arena/Sila/Miotacz"
     S.walec(r, "Mata", _plus(m, [0, 0.1, 0]), 0.2, 5, "C9B184")
-    for n, p, s, c in [("NogaL", [-0.6, 1.3, 0], [1, 2.6, 1], "4A4E69"), ("NogaP", [0.6, 1.3, 0], [1, 2.6, 1], "4A4E69"),
-                       ("Tulow", [0, 4.1, 0], [3, 3, 1.6], "F28C28"), ("Fartuch", [0, 3.6, 0.86], [2.4, 2.2, 0.12], DREWNO),
-                       ("Glowa", [0, 6.6, 0], [2, 2, 2], "E8B98A"), ("Opaska", [0, 7.25, 0], [2.1, 0.45, 2.1], "3DBE5A"),
-                       ("OkoL", [-0.45, 6.75, 1.02], [0.3, 0.4, 0.05], TUSZ), ("OkoP", [0.45, 6.75, 1.02], [0.3, 0.4, 0.05], TUSZ),
-                       ("Usmiech", [0, 6.15, 1.02], [0.9, 0.15, 0.05], TUSZ), ("RamieL", [-2, 4.3, 0], [1, 2.8, 1], "E8B98A"),
-                       ("RamieP", [2, 4.3, 0], [1, 2.8, 1], "E8B98A")]:
-        S.klocek(r, n, _plus(m, p), s, c, kol=n.startswith("Noga") or n == "Tulow")
+    DEK.figura(S, r, m, 0, "F28C28", "4A4E69", buty=DREWNO, rekaw=SKORA, cale_ramie_p=True, dodatki=[
+        ("Fartuch", [0, 3.6, 0.86], [2.4, 2.2, 0.12], DREWNO), ("Opaska", [0, 7.3, 0], [2.7, 0.45, 2.5], "3DBE5A"),
+        ("Wezel", [0.9, 7.2, -1.4], [0.7, 0.5, 0.4], "3DBE5A", "SmoothPlastic", 25),
+        ("Wasy", [0, 6.12, 1.3], [1.5, 0.28, 0.12], "6B3A1F"), ("Karwasz", [-2.05, 3.5, 0], [1.15, 0.7, 1.15], DREWNO)])
     for i, (p, s, c) in enumerate([([3.8, 0.8, -0.6], 1.6, "B07A45"), ([3.8, 2.3, -0.6], 1.4, "C48A52"),
                                    ([5.5, 0.8, -0.2], 1.6, "B07A45")]):
         S.klocek("Arena/Sila/Skrzynie", "Skrzynia%d" % (i + 1), _plus(m, p), [s, s, s], c)
@@ -173,6 +172,7 @@ def czesci(D):
                               ("RamieP", [3.3, 6, 0], [1.6, 2.4, 1.6], "8C8C99", {})]:
         S.klocek(r, n, _plus(g, p), s, c, m=extra.get("m", "SmoothPlastic"), kol=extra.get("kol", True))
     S.klocek(r, "Piesc", _plus(g, st["piesc_spoczynek"]), [2.4, 2.4, 2.4], "E5533D", kol=False)
+    DEK.golem_dodatki(S, r, g)
     for i, dx in enumerate((-5.2, 5.2)):
         S.klocek("Arena/Pancerz/Szyld", "Slupek%d" % (i + 1), _plus(g, [dx, 6.2, -2.5]), [0.5, 12.4, 0.5], DREWNO)
     st_p = [s for s in D["statystyki"] if s["id"] == "pancerz"][0]
@@ -228,8 +228,12 @@ def czesci(D):
                      m="Metal")
         szyld(r + "/Szyld", [ts[0], 0, z0 - 1.0], 4.6, "kondycja", 10)
         tn = _plus(pd, st["trener"])
-        _postac(S, r + "/Trener", tn, -50, "2E8B57", "264653",
-                [("Opaska", [0, 7.25, 0], [2.1, 0.45, 2.1], "F2B630"), ("Gwizdek", [0.3, 5.3, 0.86], [0.3, 0.3, 0.15], "D8DEE9")])
+        DEK.figura(S, r + "/Trener", tn, -50, "2E8B57", "264653", buty=KREM, rekaw=SKORA, pas="F2B630", cale_ramie_p=True,
+                   dodatki=[("Opaska", [0, 7.3, 0], [2.7, 0.45, 2.5], "F2B630"), ("Czub", [0, 7.95, 0], [2.3, 0.5, 2.2], TUSZ),
+                            ("Sznurek", [0.2, 5.0, 0.84], [0.1, 1.0, 0.08], TUSZ, "SmoothPlastic", 20),
+                            ("Gwizdek", [0.4, 4.5, 0.9], [0.45, 0.35, 0.3], "D8DEE9"),
+                            ("PasKoszulki", [0, 4.6, 0.82], [3.02, 0.5, 0.06], KREM),
+                            ("Spodenki", [0, 2.2, 0], [2.5, 0.7, 1.3], "264653")])
         bb = _plus(pd, st["beben"])
         S.walec(r + "/Trener", "BebenKorpus", _plus(bb, [0, 2.0, 0]), 1.3, 2.0, "E5533D")
         S.walec(r + "/Trener", "Beben", _plus(bb, [0, 2.7, 0]), 0.08, 2.05, KREM, kol=False)
@@ -256,11 +260,13 @@ def czesci(D):
         S.walec(r + "/Ramie", "Koniec", [sl[0] - st["ramie"] - 0.03, h, sl[2]], 0.06, sr - 0.3, "C48A52", os_="x", kol=False)
         szyld(r + "/Szyld", [sl[0], 0, sl[2] - st["ramie"] - 2.2], 7.6, "zrecznosc")
         tn = _plus(pd, st["trener"])
-        _postac(S, r + "/Trener", tn, 54, "C0392B", "264653",
-                [("Broda", [0, 6.0, 0.95], [1.6, 0.9, 0.2], "6B3A1F"), ("Czapka", [0, 7.7, 0], [2.1, 0.6, 2.1], "C0392B"),
-                 ("Krata1", [0, 4.8, 0.82], [3.02, 0.2, 0.05], TUSZ), ("Krata2", [0, 3.6, 0.82], [3.02, 0.2, 0.05], TUSZ),
-                 ("Stylisko", [2.3, 2.4, 0.9], [0.25, 3.6, 0.25], DREWNO), ("Ostrze", [2.3, 4.2, 1.25], [0.15, 0.9, 0.9], "D8DEE9",
-                                                                             "Metal")])
+        DEK.figura(S, r + "/Trener", tn, 54, "C0392B", "264653", buty=DREWNO, dodatki=[
+            ("Broda", [0, 5.75, 1.15], [2.2, 1.1, 0.4], "6B3A1F"), ("Czapka", [0, 7.95, 0], [2.7, 0.5, 2.5], "C0392B"),
+            ("Pompon", [0, 8.45, 0], [0.7, 0.5, 0.7], KREM), ("Daszek", [0, 7.75, 1.5], [2.2, 0.2, 0.7], "8E2A20"),
+            ("Krata1", [0, 4.8, 0.82], [3.02, 0.2, 0.05], TUSZ), ("Krata2", [0, 3.6, 0.82], [3.02, 0.2, 0.05], TUSZ),
+            ("Krata3", [-0.7, 4.05, 0.82], [0.2, 2.7, 0.05], TUSZ), ("Krata4", [0.7, 4.05, 0.82], [0.2, 2.7, 0.05], TUSZ),
+            ("Szelka1", [-1.2, 4.2, 0.86], [0.35, 2.6, 0.06], "264653"), ("Szelka2", [1.2, 4.2, 0.86], [0.35, 2.6, 0.06], "264653"),
+            ("Stylisko", [2.3, 2.4, 0.9], [0.25, 3.6, 0.25], DREWNO), ("Ostrze", [2.3, 4.2, 1.25], [0.15, 0.9, 0.9], "D8DEE9", "Metal")])
 
     # --- Inteligencja „Runy”: kamienna ściana, cztery kamienie w krzyżu ze znakami (kolor + kształt), mag
     if "inteligencja" in K["stanowiska"]:
@@ -297,10 +303,13 @@ def czesci(D):
                 S.klocek(rk, "Znak2", [p[0], p[1], zf], [0.42, 1.8, 0.06], c, kol=False)
         mg = _plus(pd, st["mag"])
         kat_maga = 35
-        _postac(S, r + "/Mag", mg, kat_maga, "6C3FB5", "4B2C82",
-                [("Szata", [0, 2.0, 0], [3.2, 1.6, 1.8], "6C3FB5"), ("Broda", [0, 5.9, 0.95], [1.4, 1.2, 0.2], "F2F2F2"),
-                 ("Kapelusz1", [0, 7.8, 0], [2.6, 0.5, 2.6], "4B2C82"), ("Kapelusz2", [0, 8.4, 0], [1.6, 0.8, 1.6], "4B2C82"),
-                 ("Kapelusz3", [0, 9.1, 0], [0.9, 0.7, 0.9], "4B2C82"), ("Laska", [2.4, 3.6, 0.6], [0.3, 7.2, 0.3], DREWNO)])
+        DEK.figura(S, r + "/Mag", mg, kat_maga, "6C3FB5", "4B2C82", buty="4B2C82", pas="F2B630", dodatki=[
+            ("Szata", [0, 1.6, 0], [3.3, 2.2, 1.9], "6C3FB5"), ("Rabek", [0, 0.6, 0], [3.5, 0.3, 2.1], "F2B630"),
+            ("Broda", [0, 5.5, 1.2], [1.8, 1.6, 0.4], "F2F2F2"), ("BrodaKoniec", [0, 4.5, 1.2], [1.0, 0.7, 0.35], "F2F2F2"),
+            ("Kapelusz1", [0, 7.95, 0], [3.6, 0.4, 3.4], "4B2C82"), ("Kapelusz2", [0, 8.6, 0], [2.2, 0.9, 2.1], "4B2C82"),
+            ("Kapelusz3", [0, 9.4, -0.2], [1.4, 0.8, 1.3], "4B2C82"), ("Kapelusz4", [0, 10.1, -0.5], [0.8, 0.7, 0.8], "4B2C82"),
+            ("Wstazka", [0, 8.25, 0], [2.3, 0.3, 2.2], "F2B630"), ("Gwiazda", [0, 8.9, 1.08], [0.6, 0.6, 0.08], "F2B630", "Neon", 45),
+            ("Laska", [2.4, 3.6, 0.6], [0.3, 7.2, 0.3], DREWNO)])
         S.kula(r + "/Mag", "Kula", _plus(mg, _plus(_obroc([2.4, 0, 0.6], kat_maga), [0, 7.6, 0])), 0.9, "C9A7FF", m="Neon",
                kol=False)
 
@@ -328,10 +337,14 @@ def czesci(D):
             S.kula(r + "/Drzewo", "Owoc%d" % (i + 1), _plus(dz, [dx, wys + 0.2, zp - 1.0]), 0.7, "F2B630", kol=False)
         szyld(r + "/Szyld", _plus(pd, [-9.6, 0, -6.5]), 5.0, "szczescie", 6.2)
         og = _plus(pd, st["ogrodnik"])
-        _postac(S, r + "/Ogrodnik", og, -30, "2EC4B6", "6B4A2F",
-                [("Fartuch", [0, 3.6, 0.86], [2.4, 2.2, 0.12], "3DBE5A"),
-                 ("Konewka", [2.3, 2.6, 0.9], [1.0, 1.0, 0.8], "9AA0A8", "Metal")])
-        S.walec(r + "/Ogrodnik", "Kapelusz", _plus(og, [0, 7.65, 0]), 0.3, 3.2, "E8C872", kol=False)
+        DEK.figura(S, r + "/Ogrodnik", og, -30, "2EC4B6", "6B4A2F", buty="3F8F35", dodatki=[
+            ("Fartuch", [0, 3.6, 0.86], [2.4, 2.2, 0.12], "3DBE5A"), ("Kieszen", [0, 3.3, 0.94], [1.2, 0.8, 0.08], "2E9B4A"),
+            ("Koniczynka", [0, 4.3, 0.95], [0.5, 0.5, 0.06], KREM, "SmoothPlastic", 45),
+            ("Wasy", [0, 6.12, 1.3], [1.4, 0.26, 0.12], "8B5A2E"), ("Denko", [0, 8.25, 0], [1.9, 0.9, 1.8], "E8C872"),
+            ("Wstazka", [0, 7.98, 0], [2.0, 0.25, 1.9], "E5392B"), ("Konewka", [2.3, 2.3, 0.9], [1.0, 1.0, 0.8], "9AA0A8", "Metal"),
+            ("Dziobek", [2.3, 2.6, 1.6], [0.25, 0.25, 0.9], "9AA0A8", "Metal")])
+        S.walec(r + "/Ogrodnik", "Kapelusz", _plus(og, [0, 7.85, 0]), 0.2, 3.8, "E8C872", kol=False)
+    DEK.dodaj(S, D, K)
     return S.lista
 
 
