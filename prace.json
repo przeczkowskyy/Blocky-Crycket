@@ -2,6 +2,21 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T03:26:15+01:00",
- "prace": []
+ "aktualizacja": "2026-11-18T07:59:45+01:00",
+ "prace": [
+  {
+   "id": "bohater-swiat",
+   "tytul": "Bohater klasy jako postać gracza w świecie",
+   "stan": "w_toku",
+   "start": "2026-11-18T07:59:45+01:00",
+   "koniec_szacowany": "2026-11-18T10:29:45+01:00",
+   "aktualizacja": "2026-11-18T07:59:45+01:00",
+   "obszary": [
+    "studio:BohaterSwiat",
+    "swiat/bohater_swiat"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  }
+ ]
 }
