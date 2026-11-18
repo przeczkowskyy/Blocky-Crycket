@@ -1,5 +1,5 @@
 {
- "czas": "2026-11-18 03:37",
+ "czas": "2026-11-18 11:35",
  "punkty": [
   {
    "punkt": "K00",
@@ -34,7 +34,7 @@
   {
    "punkt": "K06",
    "wynik": "OK",
-   "opis": "wpis kowala {'ok': True, 'statystyki': {'Constitution': 1}, 'pasywki': [], 'procent': {'Dexterity': 1.75, 'Luck': 1.75, 'Constitution': 1.75, 'Armor': 1.75, 'Strength': 1.75, 'Intelligence': 1.75}, 'lup': {'doswiadczenie': 0, 'zloto': 0}, 'tarcza': 0, 'bron': 0, 'pancerz': 2, 'zrodla': ['kowal', 'szczescie_poczatkujacego']} (oczekiwany {'pancerz': 2, 'statystyki': {'Constitution': 1}}); przedmioty z łupu na sobie ['rycerz_helm']; las {'poz': [1114, 3.358025074005127, -700], 'po_przelocie': True}; w walce broń 12 / pancerz 6.5 (wzór L1 + przedmioty: 12 / 6.5), modele w stroju [{'kontener': 'LasPasGra', 'stroj': 'rycerz_helm,rycerz_zbroja,rycerz_nogawice,rycerz_miecz,rycerz_tarcza', 'model': 'wojownik_lokalny'}], karta wyniku True"
+   "opis": "wpis kowala {'ok': True, 'statystyki': {'Strength': 2, 'Constitution': 1}, 'pasywki': [], 'procent': {'Dexterity': 1.75, 'Luck': 1.75, 'Constitution': 1.75, 'Armor': 1.75, 'Strength': 1.75, 'Intelligence': 1.75}, 'lup': {'doswiadczenie': 0, 'zloto': 0}, 'tarcza': 0, 'bron': 0, 'pancerz': 2, 'zrodla': ['kowal', 'szczescie_poczatkujacego']} (oczekiwany {'pancerz': 2, 'statystyki': {'Strength': 2, 'Constitution': 1}}); przedmioty z łupu na sobie ['rycerz_helm', 'rycerz_rekawice']; las {'poz': [1114, 3.358025074005127, -700], 'po_przelocie': True}; w walce broń 12 / pancerz 6.5 (wzór L1 + przedmioty: 12 / 6.5), modele w stroju [{'kontener': 'LasPasGra', 'stroj': 'rycerz_helm,rycerz_zbroja,rycerz_nogawice,rycerz_rekawice,rycerz_miecz,rycerz_tarcza', 'model': 'wojownik_lokalny'}], karta wyniku True"
   },
   {
    "punkt": "K07",
@@ -59,7 +59,7 @@
   {
    "punkt": "K11",
    "wynik": "OK",
-   "opis": "nieposiadany rycerz_rekawice: nie_masz; dawny wygląd: dawny_niedostepny"
+   "opis": "nieposiadany rycerz_buty: nie_masz; dawny wygląd: dawny_niedostepny"
   },
   {
    "punkt": "K12",
@@ -143,7 +143,8 @@
   "K06": {
    "wpis": true,
    "z_lupu": [
-    "rycerz_helm"
+    "rycerz_helm",
+    "rycerz_rekawice"
    ],
    "las": {
     "poz": [
@@ -165,7 +166,7 @@
       "szczescie": 3,
       "kondycja": 10,
       "pancerz": 4,
-      "sila": 8
+      "sila": 10
      },
      "tarcza": {
       "blok": 0.2828
@@ -180,6 +181,7 @@
     "mod": {
      "ok": true,
      "statystyki": {
+      "Strength": 2,
       "Constitution": 1
      },
      "pasywki": [],
@@ -198,7 +200,7 @@
     "stroje": [
      {
       "kontener": "LasPasGra",
-      "stroj": "rycerz_helm,rycerz_zbroja,rycerz_nogawice,rycerz_miecz,rycerz_tarcza",
+      "stroj": "rycerz_helm,rycerz_zbroja,rycerz_nogawice,rycerz_rekawice,rycerz_miecz,rycerz_tarcza",
       "model": "wojownik_lokalny"
      }
     ],

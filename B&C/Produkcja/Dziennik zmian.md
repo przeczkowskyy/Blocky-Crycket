@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-18 · Claude Code u Karola (próba całej gry; start modeli ras i drugiej partii muzyki)
+- **Próba całej gry na stanie końcowym dnia** (11:05–12:13, bohater klasy w świecie i mini-gry w stylu walki razem): 19 prób w grze, bez nowych błędów. Jedyny błąd jest znany od nocy — za małe napisy w wyborze próby walki na ekranie telefonu (walka 44 z 46). Próba bohatera: 19 punktów w porządku, 1 bez rozstrzygnięcia (runda Training Center, przechodzi ją próba całej drogi gracza). Mini-gry: wszystkie punkty w porządku, logika 118 na 118. Czas klatki 16,7 ms. Odświeżone pliki wyników prób walki, kowala i strojów.
+- **Modele ras (D-104) ruszyły** na polecenie Karola („Zacznij”): pilotaż elfa i orka w Blenderze na ciele człowieka — te same klocki, kości i klipy co Rycerz i Zwiadowca, żeby pasował ekwipunek z D-071; rasę odróżniają skóra, twarz, uszy, włosy, rogi, kły, ogon i kolor spodenek. To robocze założenie agenta, nie decyzja: pytanie o proporcje ras z notatki [[Rasy — rzuty dla modelarza]] pójdzie do ludzi razem z raportem z pilotażu.
+- **Muzyka** (Karol: „Wgraj i zaprojektuj pozostałe muzyki”): zgoda na wgranie muzyki Bagna i Dżungli z pierwszej partii — samo wgranie czeka na słowo Karola o drodze przez zatwierdzony folder modeli. Zamówionych pięć nowych utworów po 90 s (walka, walka ze Strażnikiem, mini-gry, drugie utwory Bagna i Dżungli; 65,4 kredytu, saldo 139,6) i wysłanych Karolowi do odsłuchu; obróbka i podpięcie w grze w toku (`swiat/dzwiek_gra/`). Które zostają: nowe pytanie 66.
+- Notatki: [[Zadania]], [[Pytania otwarte]] (nowe 66).
+
 ## 2026-11-18 · Claude Code u Karola (przegląd starych zadań)
 - **[[Zadania]] po przeglądzie (obietnica z raportu ogólnego):** każde otwarte zadanie porównane z [[Rejestr decyzji]] i [[Pytania otwarte]]. Zamkniętych 14 pozycji: sześć „do decyzji”, przy których decyzje już zapadły (D-011, D-012–D-018, D-029, D-092, pytania 7–14, 16–21, 24 i 44); pięć zdjętych po odrzuconych albo zdjętych decyzjach (D-014, D-019, D-020, D-022, D-024, D-064); trzy zrobione albo powtórzone (klucz Open Cloud i Higgsfield u Karola, alerty na Telegramie, zdublowane zadanie o modelach ras). Przy oknie Kowala dopisany wykonawca (Paweł, pytanie 57); w assetach odhaczone modele Rycerza i Kota-Maga.
 - **Żadna decyzja nie zmieniła statusu.** Dziewięć pozycji, które wyglądają na nieaktualne, ale wymagają słowa człowieka, jest w nowym pytaniu 65.

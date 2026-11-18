@@ -577,3 +577,11 @@ Szczegóły: Kamera stoi nisko i z ukosa (kąt 44–51° zamiast 70°), dojeżd�
 Szczegóły: (1) obejrzeć walkę v2 i raport „Walka v2 na ekranie” z decyzją o obrysie postaci — walkę zastąpił silnik v3; (2) spisać błędy z 13.11 w `Workspace/TestWalki` — to stary prototyp; (3) mapa teleportacji jako grafika z ramką i pinami (Backlog) — działa teleport przez chmury (D-075, D-076); (4) porównanie Krzywego Miasteczka w Blenderze i w Roblox, prośba Pawła z 14.11 — decyzja o Blenderze zapadła (D-029); (5) obejrzeć demo `Workspace/DemoLesnaBaza` z 12.11; (6) Krzywe Miasteczko: kolorystyka i czytelność budynków (pytanie 33) — miasteczko jest dziś bazarem (D-084); (7) „odpowiedzieć na pytania 50 i 51” oraz „na pytanie 52” — pytania mają odpowiedzi, zostały tylko wybory z raportu „Kalkulator balansu” i dopiski pod pytaniami 6, 8, 9, 32 i 38; (8) Paweł: `git pull`, panel, imię w Ustawieniach, pytanie 27 — pytanie zdjęte 16.11, Paweł korzysta z panelu i Telegrama; (9) zadania dla agenta osoby (D-072) — decyzja zatwierdzona, nie wiadomo, czy część Pawła jest zrobiona.
 **Odpowiedź:**
 
+## 66. Nowa muzyka: które z pięciu utworów zostają?
+- Karol 18.11 zlecił „zaprojektuj pozostałe muzyki”; powstało pięć utworów po 90 s: walka, walka ze Strażnikiem, mini-gry, drugi utwór Bagna, drugi utwór Dżungli.
+- Do wyboru przy każdym: zostaje, do poprawki (napisz, co zmienić) albo odpada.
+- Osobno: czy walka i mini-gry mają mieć własną muzykę zamiast przyciszonej muzyki krainy.
+
+Szczegóły: Utwory są z tego samego generatora i w tej samej palecie instrumentów co pierwsza partia (ElevenLabs Music v2.5 przez Higgsfield, 65,4 kredytu, zostało 139,6). Nikt ich jeszcze nie słyszał — pliki poszły do Karola na telefon, gotowe wersje trafią do `assets/audio/muzyka/`. Do Roblox wejdą jako jeden plik z pięcioma utworami (gra odtwarza odcinki), żeby zużyć jedno wgranie zamiast pięciu: konto ma 10 wgrań audio na miesiąc, 6 zużytych, 2 pójdą na muzykę Bagna i Dżungli z pierwszej partii. Wgranie dopiero po odsłuchu i wyraźnej zgodzie. Kto wybiera: Karol (dźwięk i muzyka, D-093); Paweł może zgłosić uwagi.
+**Odpowiedź:**
+
