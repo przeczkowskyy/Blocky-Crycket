@@ -2,6 +2,21 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T13:52:34+01:00",
- "prace": []
+ "aktualizacja": "2026-11-18T14:51:43+01:00",
+ "prace": [
+  {
+   "id": "cutscenka-biomu",
+   "tytul": "Przelot kamery przy pierwszym wejściu do biomu (D-077): las, Bagno, Dżungla",
+   "stan": "w_toku",
+   "start": "2026-11-18T14:51:43+01:00",
+   "koniec_szacowany": "2026-11-18T17:11:43+01:00",
+   "aktualizacja": "2026-11-18T14:51:43+01:00",
+   "obszary": [
+    "swiat/cutscenka_biomu/**",
+    "studio:CutscenkaBiomu"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  }
+ ]
 }
