@@ -2,21 +2,6 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T13:32:54+01:00",
- "prace": [
-  {
-   "id": "rasy-wystawa",
-   "tytul": "Wystawa sześciu ras w Studio (D-104): figury z klocków do obejrzenia w grze",
-   "stan": "w_toku",
-   "start": "2026-11-18T13:31:57+01:00",
-   "koniec_szacowany": "2026-11-18T14:21:57+01:00",
-   "aktualizacja": "2026-11-18T13:31:57+01:00",
-   "obszary": [
-    "studio:RasyProba",
-    "swiat/rasy_proba/**"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  }
- ]
+ "aktualizacja": "2026-11-18T13:52:34+01:00",
+ "prace": []
 }
