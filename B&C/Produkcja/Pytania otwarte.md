@@ -522,6 +522,7 @@ Szczegóły: Jedna liczba w `swiat/stan_gracza/dane.py` (`PUNKTY_SAMO_NA_POZIOM`
 - Do wyboru: (a) zostaje bez napisu; (b) zostaje, ale gracz widzi krótki napis; (c) wyłączyć i zamiast tego osłabić slime'y 1. poziomu.
 
 Szczegóły: Jedna liczba (`SZCZESCIE_POCZATKUJACEGO` w `swiat/stan_gracza/dane.py`, 0 = wyłączone) albo atrybut kontenera `SzczesciePoczatkujacego`. Jeśli gracz trafi pierwszy na slime'a 2. poziomu, wygrywa w 73–88% prób. Premia nie dotyczy kolejnych walk, więc nie zmienia tempa lasu. Zob. pytanie 56 (profil klas).
+Dopisek z 2026-11-18 (po regresji końcowej): przy ×1,75 pierwsza walka została w próbach dymnych przegrana 2 razy na 7 — gracz podchodzi do najbliższego slime'a, a ten bywa na 2. albo 3. poziomie (ze slime'em 3. poziomu było 58–72% wygranych). Mnożnik podniesiony do ×2,75: slime 1. i 2. poziomu 99–100%, 3. poziomu 95–96%. Nadużyć się tego praktycznie nie da: gracz bez wygranej pokona trolla w 2–4% prób, Strażnika Gaju w 0%. Dalej jedna liczba z wyłącznikiem; opcje (a)–(c) bez zmian.
 **Odpowiedź:**
 
 ## 60. Zapis postępu gracza: kiedy włączamy?
@@ -540,6 +541,7 @@ Szczegóły: Włączenie wymaga dostępu Studio do usług danych (ustawienie gry
 - Do wyboru: (a) zostaje jak w próbie; (b) zostaje, ale z innymi liczbami — jakimi; (c) przedmioty zastępują wzór poziomu (trzeba ulepszać, żeby nadążyć za potworami).
 
 Szczegóły: Projekt i tabele: `swiat/kowal_proba/PROJEKT.md`; raport w panelu „Kowal w bazarze: rozbieranie i ulepszanie przedmiotów (D-102)”. Koszty: 150 / 300 / 450 / 650 / 900 Złota i 1 / 2 / 3 / 4 / 6 materiałów; w symulacji pierwsze ulepszenie po ok. 8 minutach lasu, las się nie skraca, Bagno skraca się o ok. 13%. Okno jest tymczasowe; docelowe robi Paweł (pytanie 57). Bez tierów przedmiotów (D-051: „nie teraz”).
+Dopisek z 2026-11-18: przy działającym kowalu przymierzalnia strojów (D-071) pokazuje i zakłada tylko posiadane przedmioty, a „Dawnego wyglądu” nie ma — nieposiadane po prostu znikają z listy, bez wyjaśnienia. Do wyboru przy okazji: przymierzalnia pozwala przymierzyć wszystko na podglądzie, a do walki liczą się tylko posiadane; albo zostają tylko posiadane z napisem „Resztę przedmiotów zdobędziesz w walkach”.
 **Odpowiedź:**
 
 ## 62. Dżungla: czy potwory, nazwy i trudność z próby zostają?
