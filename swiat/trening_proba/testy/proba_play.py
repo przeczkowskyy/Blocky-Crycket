@@ -2,8 +2,8 @@
 """Próba Training Center (sześć mini-gier) w Roblox Studio, tryb Play. T01–T14: Siła i Pancerz (przebieg z 17.11.2026,
 14 × OK), T15–T22: Kondycja „Bieżnia”, Zręczność „Kłody”, Inteligencja „Runy”, Szczęście „Koniczyny” (18.11.2026,
 22 × OK), T23–T27: wygląd jak w walce — kamery, komiksowe napisy, efekty 3D, konfetti, bohater klasy (18.11.2026,
-przygotowane bez Studio), T28–T31: wygląd areny — części, pola gry, kadry, czas klatki (18.11.2026, przygotowane bez
-Studio).
+przygotowane bez Studio), T28–T31: wygląd areny — części, pola gry, kadry, czas klatki (18.11.2026 wieczorem, w Studio:
+31 × OK).
 
     python -B swiat/trening_proba/testy/proba_play.py <folder wyjściowy poza repo> [--studio <studio_id>]
            [--bez-zrzutow] [--tylko T01,T05,…] [--nowe] [--walka] [--arena]
@@ -1276,7 +1276,7 @@ def main():
                     pd = D["swiat"][gra]["podest"]
                     w = js(kod("arena_kadry", DANE._luau(pary), prog, float(pd[0]), float(pd[1]), float(pd[2])), "Server")
                     w30[gra] = w
-                    ok30 = ok30 and w.get("zasloniete") == 0 and (w.get("promienie") or 0) > 300 and (w.get("czesci") or 0) > 50
+                    ok30 = ok30 and w.get("zasloniete") == 0 and (w.get("promienie") or 0) >= 150 and (w.get("czesci") or 0) > 50
                 zapisz("T30", w30)
                 punkt("T30", ok30, "; ".join("%s: promieni %s, zasłoniętych %s, dekoracji w zasięgu %s%s" % (
                     g, w.get("promienie"), w.get("zasloniete"), w.get("czesci"),

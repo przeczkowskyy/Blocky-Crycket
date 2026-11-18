@@ -319,9 +319,9 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 - Szczegóły: obrót robi klient i widzą go też inni gracze.
 
 **18. Wygląd areny: ile dekoracji**
-- Dziś w generatorze (jeszcze nie w Studio): 1351 dekoracji, arena ma 1658 części zamiast 202.
+- Dziś (w Studio od 18.11.2026): 1351 dekoracji, arena ma 1658 części zamiast 202; czas klatki bez zmian (60 kl./s).
 - Mniej: bez szachownicy podłogi (−112) albo bez girland chorągiewek (ok. −190) — lżej, ale bardziej pusto.
-- Szczegóły: generator `dekoracje.py`, opis i liczby w README („Wygląd areny”); czas klatki wyjdzie w części B.
+- Szczegóły: generator `dekoracje.py`, opis, liczby i zrzuty w README („Wygląd areny”); telefonu nie mierzono.
 
 **19. Tablica wyników: dekoracja czy żywe wyniki**
 - Dziś: dekoracja — nazwa areny i sześć statystyk w ich kolorach, bez liczb.
@@ -330,7 +330,8 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 **20. Tło stanowisk: spokojne czy bogate**
 - Dziś: za stanowiskami stoją trybunki, stojaki i sztandary (widać je w kadrach gier jako tło).
 - Spokojniej: tło tylko przy murze, bez manekinów i stojaków przy stanowiskach — czytelniejsze strefy gry.
-- Szczegóły: żadna dekoracja nie stoi między kamerą a grą (testy 4g–4h); ocena czytelności dopiero ze zrzutów z gry.
+- Szczegóły: żadna dekoracja nie stoi między kamerą a grą (testy 4g–4h, T30); po zrzutach z gry manekiny straciły
+  tarcze strzelnicze, a siano zeszło zza strefy ciosu — zrzuty `klatki/a5`–`a9`.
 
 **21. Figury trenerów: klockowe czy z modeli postaci**
 - Dziś: klockowe figury z twarzą i strojem, jak sprzedawcy bazaru; zero nowych zależności.

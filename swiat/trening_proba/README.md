@@ -14,8 +14,8 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 `tools/walka/BALANS_1711.md`, część 6 — to nie jest decyzja (wybór 1 w PROJEKT.md).*
 
 > **W skrócie.** Jeden kontener `Workspace/TreningProba` (atrybut `Wygenerowane = true`). Arena z 1658 klocków —
-> 307 części gry i 1351 dekoracji (18.11.2026 wieczorem: wygląd areny, część A bez Studio; w Studio stoi jeszcze
-> arena z 202 klocków) —
+> 307 części gry i 1351 dekoracji (18.11.2026 wieczorem: wygląd areny, zbudowany w Studio i sprawdzony w trybie Play,
+> lista T01–T31 — 31 × OK; wcześniej 202 klocki) —
 > (256 × 56 st) stoi w powietrzu, z dala od map, w (3000; 300; 3000). Sześć stanowisk w jednym rzędzie: **Siła
 > „Rozbijanie”** (strzałka w stronę lecącej skrzynki), **Pancerz „Blok”** (blok w chwili ciosu, bez dawania się nabrać
 > na zmyłki), **Kondycja „Bieżnia”** (lewa / prawa stopa w rytmie, gdy ślad dojedzie do linii), **Zręczność „Kłody”**
@@ -133,12 +133,12 @@ START (albo spacja) → strzałki / WASD w stronę skrzynki, gdy dolatuje do św
 INNA GRA → Pancerz → spacja, gdy pierścień dojdzie do kółka (fioletowy = zmyłka, nie blokuj) → WYJDŹ (albo Q).
 Telefon: Test → Device → telefon w poziomie (667 × 375) albo zrzut z emulacją: `python -B swiat/trening_proba/testy/zrzuty_gry.py`.
 
-## Wygląd areny (18.11.2026 wieczorem, część A — bez Studio; część B — budowa i próba w grze — jeszcze nie zrobiona)
+## Wygląd areny (18.11.2026 wieczorem, część A — bez Studio, część B — w Studio)
 
 Zadanie: „Training Center: wygląd areny (dziś płaska podłoga i proste figury trenerów)”. Zmienia się **tylko wygląd**:
 zasady gier, serwer, przyrosty, dźwięki, kamery, efekty, `ustawienia.json` i `DaneTreningu.luau` — bez zmian (skrót
 danych ten sam). Wszystko z części Roblox stawianych przez `zbuduj.py` — bez zasobów z zewnątrz, bez wgrywania.
-**W Studio nic jeszcze nie zbudowano**: poniżej jest stan generatora, testów offline i podglądów (render brył).
+Arena z dekoracjami stoi w Studio od 18.11.2026, 17:44 (część B niżej: budowa, próba w trybie Play, zrzuty z gry).
 
 **Co doszło (generator `dekoracje.py`, wołany z `scena.czesci`):**
 - **Podłoga**: szachownica jaśniejszych płyt 8 × 8 st, pasy pod murami, róża kierunków przy punkcie przybycia, a każde
@@ -152,7 +152,7 @@ danych ten sam). Wszystko z części Roblox stawianych przez `zbuduj.py` — bez
   z mieczami, stojaki z hantlami, sztangą i odważnikami, osiem latarni z lampionami, sztandary w kolorach statystyk,
   beczki, skrzynie, bele siana; pod murem południowym cztery ławki z ręcznikami i wiadrami.
 - **Stanowiska** (dekoracje dopasowane do tego, co gra naprawdę pokazuje; elementy gry zostają, jak były):
-  Siła „Rozbijanie” — stojak z mieczami, dwa manekiny treningowe z tarczą, beczka drewnianych mieczy, siano, kowadło,
+  Siła „Rozbijanie” — stojak z mieczami, dwa manekiny treningowe z łatami, beczka drewnianych mieczy, siano, kowadło,
   proporce na szyldzie; Pancerz „Blok” — stojak z trzema tarczami, dwie zbroje na stojakach, ruiny kolumn i głazy
   przy golemie, pachołki z łańcuchem; Kondycja „Bieżnia” — za stanowiskiem tor biegowy z bandami, płotkami,
   pachołkami, metą i bramą startu, z boku beczka z wodą, wieszak z ręcznikami, klepsydra, hantle; Zręczność „Kłody”
@@ -188,17 +188,58 @@ danych ten sam). Wszystko z części Roblox stawianych przez `zbuduj.py` — bez
 (oczami gracza po przybyciu), `podglad_arena_brama.jpg`; podglądy kamer gier (`podglad_<gra>.jpg`, `_start`, `_final`)
 odświeżone z nową areną.
 
-**Sprawdzone bez Studio (18.11.2026, 17:15–17:45):** `dekoracje.py` (kontrola OK), `testy/test_treningu.py` (58 testów;
-jeden nie przechodzi niezależnie od tej zmiany — 6j porównuje listę efektów z walką, która tego dnia dostała efekty
-Dżungli), `dane.py --sprawdz`, `sprawdz_luau_treningu.py`, `zbuduj.py --sucho`, `testy/proba_play.py --sprawdz`.
+**Sprawdzone bez Studio (18.11.2026, 17:15–18:05; wszystko kod 0):** `dekoracje.py` (kontrola OK),
+`testy/test_treningu.py` (58 testów OK), `dane.py --sprawdz`, `sprawdz_luau_treningu.py`, `zbuduj.py --sucho`,
+`testy/proba_play.py --sprawdz` (28 kawałków Luau), `testy/zrzuty_gry.py --sprawdz` (15). Test 6j (efekty jak w walce)
+ma od 18.11 nowe oczekiwanie: własny moduł efektów ma te wybuchy, których używają mini-gry, każdy taki sam jak
+w walce; walka może mieć ich więcej (tego dnia doszło siedem efektów umiejętności potworów Dżungli — mini-gry ich
+nie wołają, więc nie są powielane).
 
-**Część B (w Studio — do zrobienia):** `zbuduj.py` (nowa arena w 6 paczkach), `testy/proba_play.py … --arena`
-(T28 części, T29 pola gry, T30 kadry liczone z prawdziwych brył, T31 czas klatki w lobby + zrzuty), pełna lista
-T01–T31 jako regresja (T13 i T21 pokażą czas klatki w rundach z nową areną), zrzuty stanowisk do `klatki/`.
+### Część B areny — w Studio (18.11.2026, 17:44–18:17, tryb Play)
 
-**Czego nie sprawdzono:** niczego w grze — wyglądu w silniku (materiały, cienie, czytelność stref na tle dekoracji),
-czasu klatki z 1658 częściami, budowy w paczkach; kierunku klina chorągiewek (przyjęty jak w bazarze: pełna
-wysokość z tyłu części).
+- **Budowa:** `zbuduj.py` — arena w 6 paczkach po 300 części, w miejscu 1658 części areny (kontener 1664 z tablicą
+  wejścia), 1806 instancji, 7 skryptów, skrót danych bez zmian. Zmieniany tylko własny kontener
+  `Workspace/TreningProba`; miejsca nie zapisano ani nie opublikowano, `Lighting` i cudze instancje nietknięte.
+- **Próba `proba_play.py`:** pełna lista **T01–T31 — 31 × OK** (17:46–17:57, bez zrzutów). Po poprawkach wyglądu
+  ze zrzutów (niżej) arena przebudowana i sprawdzona jeszcze raz: `--arena` (T01, T22, T28–T31 — 6 × OK) oraz drugi
+  pełny przebieg: T01–T31 — 31 × OK (18:05–18:16, na ostatecznej budowie). Po każdej próbie Studio wróciło do trybu Edit.
+
+| Punkt | Wynik |
+|---|---|
+| T28 części | 1658 części areny = dane; 1351 dekoracji; niezakotwiczonych 0; świateł 0; klinów 124; dekoracji z kolizją 174; napisów 16 |
+| T29 pola gry | 7 pól (sześć gier i lobby): żadnej dekoracji wyższej niż wzór podłogi ani z kolizją |
+| T30 kadry | promieni oko → pole gry / postać: Siła 210, Bieżnia 440, Runy 210, Kłody 690, Koniczyny 918, Blok 220 — zasłoniętych 0 (liczone z prawdziwych, obróconych brył w miejscu) |
+| T31 lobby | czas klatki z całą areną w kadrze: śr. 16,7 ms, p95 17,8–18,1 ms (60 kl./s) |
+
+**Czas klatki w rundach — przed i po** (okno Studio na wierzchu; „przed” = arena z 202 części, próba z rana 18.11):
+
+| Runda | Przed (202 części) | Po (1658 części) |
+|---|---|---|
+| Siła (T13) | śr. 16,7 ms, p95 18,1 ms | śr. 16,7 ms, p95 18,0–18,1 ms (dwa przebiegi) |
+| Bieżnia (T21) | 16,7 / 18,0 ms | 16,7 / 18,1 ms |
+| Koniczyny (T21) | 16,7 / 17,9 ms | 16,7 / 17,9 ms |
+
+Różnicy nie widać (Studio trzyma 60 kl./s), więc dekoracji nie odchudzałem. To pomiar na komputerze z Studio —
+na telefonie nie mierzono.
+
+**Co poprawiłem po zrzutach z gry (jedna runda poprawek):**
+- manekiny przy Sile miały czerwono-białą tarczę strzelniczą — w kadrze gry wyglądała jak strefa ciosu; teraz mają
+  brązowe łaty (liczba części bez zmian);
+- bele siana stały dokładnie za strefą „lewo” (jasne tło pod półprzezroczystym kółkiem) — przeniesione na wschodnią
+  stronę stanowiska, poza kadr gry;
+- chorągiewki wiszą dobrze (trójkąt w dół) — kierunek klina przyjęty z bazaru był właściwy;
+- żadna dekoracja nie stoi w kadrze przed postacią (T30 i zrzuty).
+
+**Zrzuty z gry (`klatki/`, przedrostek `a`, 1280 px; bez listy graczy i nazwy konta):** `a1_arena_lobby` (kamera
+testu za punktem przybycia), `a2_arena_brama`, `a3_arena_zachod`, `a4_arena_wschod` (kamera testu z ukosa),
+`a5_arena_sila_runda`, `a6_arena_kondycja_runda`, `a7_arena_szczescie_runda` (kamera gry w trakcie rundy),
+`a8_arena_sila_final` (zbliżenie po rundzie), `a9_arena_telefon_sila_667x375`. Robi je
+`testy/zrzuty_gry.py --arena`. Starsze zrzuty (01–79) pokazują arenę sprzed dekoracji — nie były odświeżane.
+
+**Czego nie sprawdzono:** czasu klatki na prawdziwym telefonie i przy kilku graczach; kadrów Bloku, Run i Kłód na
+zrzucie z gry (są policzone w T30, zrzuty zrobiono dla Siły, Bieżni i Koniczyn); wyglądu o innej porze dnia
+(lampiony to Neon bez świateł); pada i dotyku ręką. Jasna podłoga w silniku słabo pokazuje szachownicę płyt —
+widać ją na zrzutach z ukosa, w kadrach gier prawie nie.
 
 ## Wygląd jak w walce: kamery, komiksowe napisy, efekty, konfetti (18.11.2026, część A — bez Studio, część B — w Studio)
 

@@ -237,7 +237,8 @@ def choragiew(g, v, kolor, wys=9.0, znak=KREM):
 
 
 def manekin(g, v, ry=0.0):
-    """Manekin treningowy: słomiany korpus na palu, ramiona z belki, tarcza na piersi, stary hełm."""
+    """Manekin treningowy: słomiany korpus na palu, ramiona z belki, łaty na piersi, stary hełm. Bez tarczy strzelniczej
+    (próba w grze 18.11.2026: czerwono-biała tarcza w tle kadru Siły wyglądała jak strefa ciosu)."""
     u = g.w(g._p(v), g.ry + ry)
     u.wa("Podstawa", [0, 0.2, 0], 0.4, 2.6, DREWNO, kol=True)
     u.wa("Pal", [0, 2.0, 0], 4.0, 0.5, DREWNO_S, kol=True)
@@ -245,8 +246,8 @@ def manekin(g, v, ry=0.0):
     u.kl("Ramiona", [0, 4.9, 0], [5.0, 0.5, 0.5], DREWNO_S)
     u.ku("Glowa", [0, 6.3, 0], 1.8, SLOMA)
     u.kl("Helm", [0, 7.0, 0], [2.0, 0.6, 2.0], METAL_C, m="Metal")
-    u.wa("Tarcza", [0, 4.1, 0.8], 0.12, 1.6, CZERWIEN, os_="z")
-    u.wa("Srodek", [0, 4.1, 0.86], 0.12, 0.7, KREM, os_="z")
+    u.kl("Lata", [0.35, 4.4, 0.78], [0.9, 0.9, 0.08], DREWNO_J, rz=12)
+    u.kl("Szew", [-0.4, 3.5, 0.78], [0.9, 0.14, 0.08], DREWNO, rz=-30)
     for i, dy in enumerate((3.0, 5.1)):
         u.kl("Powroz%d" % (i + 1), [0, dy, 0], [2.3, 0.2, 1.6], DREWNO)
 
@@ -500,7 +501,7 @@ def _zaplecze(g, kolory):
 
 # ------------------------------------------------------------------------------------------------ stanowiska
 def _sila(g, pd):
-    """Siła „Ciosy”: stojak z mieczami, dwa manekiny treningowe, beczka z drewnianymi mieczami, bele siana, kowadło."""
+    """Siła „Rozbijanie”: stojak z mieczami, dwa manekiny treningowe, beczka z drewnianymi mieczami, bele siana, kowadło."""
     x0 = pd[0]
     stojak_mieczy(g, [x0 - 12.5, 0, -11.0], ry=20, ile=3)
     manekin(g, [x0 - 13.5, 0, 1.0], ry=60)   # z boku kadru: tarcza manekina nie może stać za strefą ciosu „lewo”
@@ -510,7 +511,8 @@ def _sila(g, pd):
     for i, (dx, dz, rz) in enumerate(((-0.4, 0.2, 8), (0.35, -0.2, -10), (0, 0.4, 3))):
         u.kl("MieczDrewniany", [dx, 3.2, dz], [0.35, 2.6, 0.14], DREWNO_J, m="WoodPlanks", rz=rz)
         u.kl("Jelec", [dx, 2.5, dz], [1.0, 0.25, 0.25], DREWNO, rz=rz)
-    for i, (dx, dz, ry) in enumerate(((-15.0, -7.0, 10), (-17.0, -6.4, -8), (-15.9, -6.7, 4))):
+    # siano po wschodniej stronie, poza kadrem gry: jasna bela za strefą „lewo” zmniejszała jej kontrast (próba 18.11.2026)
+    for i, (dx, dz, ry) in enumerate(((14.5, -3.0, 10), (16.4, -2.2, -8), (15.4, -2.6, 4))):
         g.kl("Siano", [x0 + dx, 0.7 + (1.4 if i == 2 else 0), dz], [2.4, 1.4, 1.6], SLOMA, kol=i < 2, ry=ry)
     u = g.w([x0 + 9.5, 0, -5.0], 30)
     u.kl("Pniak", [0, 0.6, 0], [1.6, 1.2, 1.6], DREWNO, m="WoodPlanks", kol=True)

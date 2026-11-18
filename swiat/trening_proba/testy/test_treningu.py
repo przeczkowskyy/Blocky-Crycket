@@ -1977,8 +1977,10 @@ class TestStykow(unittest.TestCase):
         self.assertIn("e ~= guiKomiks", KLIENT)  # własna warstwa nie jest „innym ekranem” do schowania
 
     def test_6j_efekty_w_jezyku_walki(self):
-        """Efekty 3D: własny moduł ma te same wybuchy (nazwy i liczby) co moduł efektów walki, a klient woła tylko
-        funkcje, które mają oba — więc efekty z walki (gdy stoi w miejscu) i własne (gdy jej nie ma) wyglądają tak samo."""
+        """Efekty 3D: każdy wybuch własnego modułu jest w module efektów walki i ma te same liczby, własny moduł ma
+        wszystkie wybuchy, których używają mini-gry, a klient woła tylko funkcje, które mają oba — więc efekty z walki
+        (gdy stoi w miejscu) i własne (gdy jej nie ma) wyglądają tak samo. Walka może mieć wybuchów więcej: efekty
+        umiejętności potworów (Dżungla, 18.11.2026) nie są mini-grom potrzebne i nie są tu powielane."""
         walka = czytaj(WALKA, "Efekty3D.luau")
 
         def wybuchy(tekst):
@@ -1988,8 +1990,16 @@ class TestStykow(unittest.TestCase):
                 w[m.group(1)] = re.sub(r"\s+", " ", cialo).strip()
             return w
         wl, ww = wybuchy(EFEKTY), wybuchy(walka)
-        self.assertEqual(sorted(wl), sorted(ww))
-        self.assertEqual(sorted(wl), sorted(DANE.wybuchy_walki()))
+        self.assertEqual(sorted(set(wl) - set(ww)), [], "wybuch własny, którego nie ma w walce")
+        self.assertEqual(sorted(ww), sorted(DANE.wybuchy_walki()))
+        EF = D["ui"]["efekty"]
+        uzywane = set(EF["trafienie"].values()) | {EF[k] for k in ("mocne", "kamien", "oberwanie", "zaklecie")}
+        self.assertEqual(sorted(uzywane - set(wl)), [], "wybuch używany przez mini-gry, którego nie ma we własnym module")
+        self.assertEqual(sorted(wl), ["bariera", "blask", "blok", "cios", "iskra", "kamien", "krytyk", "kwas", "lod", "ogien",
+                                      "tarcza", "trucizna", "zarodniki", "zloto"], "lista zapasowa: wybuchy ogólne walki")
+        # tylko w walce: efekty umiejętności potworów — żadna mini-gra ich nie woła
+        self.assertEqual(sorted(set(ww) - set(wl)), ["jad", "kamuflaz", "kokos", "liscie", "pylek", "ruiny", "ukaszenie"])
+        self.assertEqual(uzywane & (set(ww) - set(wl)), set())
         for nazwa in wl:
             self.assertEqual(wl[nazwa], ww[nazwa], "wybuch %s inny niż w walce" % nazwa)
         wspolne = re.search(r"Efekty\.WSPOLNE = \{([^}]*)\}", EFEKTY)

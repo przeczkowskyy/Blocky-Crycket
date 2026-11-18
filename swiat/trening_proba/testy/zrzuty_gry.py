@@ -14,6 +14,9 @@ i widok telefonu; 25 — okno wyboru z sześcioma grami. Lista graczy i czat sch
     python -B swiat/trening_proba/testy/zrzuty_gry.py --walka --klasa Warrior        # klasa bohatera: Warrior | Scout | Mage
     python -B swiat/trening_proba/testy/zrzuty_gry.py --walka --klasa Mage --krotko  # 68–79: druga klasa — dla każdej gry
                                                                     #  runda z trafieniem i zbliżenie po pierwszym punkcie
+    python -B swiat/trening_proba/testy/zrzuty_gry.py --arena       # a1–a9: wygląd areny — lobby, brama, dwie połowy
+                                                                    #  areny z ukosa, Siła / Bieżnia / Koniczyny w rundzie
+                                                                    #  na nowym tle, zbliżenie Siły, Siła na telefonie
     python -B swiat/trening_proba/testy/zrzuty_gry.py --sprawdz     # bez Studio: kawałki Luau parsują się
 
 Domyślnie zapisuje do swiat/trening_proba/klatki/ (JPG, szerokość 1280 px) i wypisuje pomiar telefonu: najmniejszy
@@ -88,6 +91,15 @@ KOD = {
                   'local h = p.Character and p.Character:FindFirstChild("HumanoidRootPart") if h then '
                   'cam.CameraType = Enum.CameraType.Custom cam.CFrame = CFrame.lookAt(h.Position - h.CFrame.LookVector * %r '
                   '+ Vector3.new(0, %r, 0), h.Position + h.CFrame.LookVector * 4) end return "ok"', (10.0, 4.0)),
+    # kamera testu w stałym miejscu (widoki areny) i oddanie kamery graczowi
+    # (ustawiana co klatkę po innych skryptach kamery — samo CFrame gra potrafi nadpisać, gdy kamera jest daleko od postaci)
+    "kamera_stala": ('local RS = game:GetService("RunService") pcall(function() RS:UnbindFromRenderStep("ProbaKameraAreny") end) '
+                     'local cf = CFrame.lookAt(Vector3.new(%r, %r, %r), Vector3.new(%r, %r, %r)) local kat = %r '
+                     'RS:BindToRenderStep("ProbaKameraAreny", Enum.RenderPriority.Last.Value + 1, function() '
+                     'local cam = workspace.CurrentCamera cam.CameraType = Enum.CameraType.Scriptable cam.CFrame = cf '
+                     'cam.FieldOfView = kat end) return "ok"', (1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 70.0)),
+    "kamera_oddaj": ('pcall(function() game:GetService("RunService"):UnbindFromRenderStep("ProbaKameraAreny") end) '
+                     'local cam = workspace.CurrentCamera cam.CameraType = Enum.CameraType.Custom cam.FieldOfView = 70 return "ok"', ()),
     "teraz": ('return workspace:GetServerTimeNow()', ()),
     "gotowy": ('local p = game:GetService("Players").LocalPlayer return tostring(p ~= nil and p.Character ~= nil)', ()),
     "wybor_klasy": ('local g = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("ClassSelect") '
@@ -143,6 +155,7 @@ def main():
     tylko_nowe = "--nowe" in argv
     tylko_telefon = "--telefon" in argv
     tylko_walka = "--walka" in argv
+    tylko_arena = "--arena" in argv
     wybrane = argv[argv.index("--tylko") + 1].split(",") if "--tylko" in argv else None
     klasa = argv[argv.index("--klasa") + 1] if "--klasa" in argv else None
     krotko = "--krotko" in argv
@@ -269,6 +282,59 @@ def main():
             przestaw([tab0["p"][0] + tab0["f"][0] * 5, tab0["p"][1] + 0.5, tab0["p"][2] + tab0["f"][2] * 5], tab0["p"])
             time.sleep(1.2)
 
+            if tylko_arena:
+                # a1–a9: wygląd areny (18.11.2026). Widoki areny kamerą testu w stałych miejscach (gracz stoi w punkcie
+                # przybycia), potem trzy stanowiska w trakcie rundy na nowym tle, zbliżenie Siły i Siła na telefonie.
+                c = D["arena"]["srodek"]
+                pr = D["swiat"]["przybycie"]
+                for nazwa, stoi, oko, cel, kat in (("a1_arena_lobby", [0, 0], [0, 7.5, 21.5], [0, 5, -20], 70.0),
+                                                   ("a2_arena_brama", [0, -16], [0, 6.5, 9], [0, 8.5, 24.6], 60.0),
+                                                   ("a3_arena_zachod", [0, 0], [-8, 30, 26], [-70, 0, -10], 62.0),
+                                                   ("a4_arena_wschod", [0, 0], [8, 30, 26], [70, 0, -10], 62.0)):
+                    if wybrane and nazwa.split("_")[0] not in wybrane:
+                        continue
+                    przestaw([pr[0] + stoi[0], pr[1] + 3.5, pr[2] + stoi[1]], D["swiat"]["patrz_przybycie"])
+                    time.sleep(1.5)
+                    luau(kod("kamera_stala", float(c[0] + oko[0]), float(c[1] + oko[1]), float(c[2] + oko[2]),
+                             float(c[0] + cel[0]), float(c[1] + cel[1]), float(c[2] + cel[2]), kat), "Client")
+                    time.sleep(1.2)
+                    zrzut(nazwa)
+                luau(kod("kamera_oddaj"), "Client")
+                for nr, gra in ((5, "sila"), (6, "kondycja"), (7, "szczescie")):
+                    if wybrane and "a%d" % nr not in wybrane:
+                        continue
+                    wejdz(gra)
+                    k0 = start_rundy()
+                    if not k0:
+                        log("%s: runda nie ruszyła" % gra)
+                        continue
+                    hak("autograj", 1.0, False)
+                    czekaj_do(k0["runda"]["t0"] + 6.0)
+                    czekaj_na(lambda: (klient().get("komiks") or {}).get("naEkranie", 0) >= 1, 4, 0.2)
+                    zrzut("a%d_arena_%s_runda" % (nr, gra))
+                    if gra == "sila" and (not wybrane or "a8" in wybrane):
+                        czekaj_na(lambda: ((klient().get("lokalnie") or {}).get("suma") or 0) >= 1, 40, 0.3)
+                        time.sleep(0.4)
+                        hak("przerwij")
+                        czekaj_na(lambda: klient().get("ekran") == "podsumowanie", 8, 0.3)
+                        time.sleep(1.6)
+                        zrzut("a8_arena_sila_final")
+                    else:
+                        hak("przerwij")
+                    time.sleep(1.2)
+                if not wybrane or "a9" in wybrane:
+                    wejdz("sila")
+                    luau(kod("emulacja", "Vector2.new(667, 375)"), "Client")
+                    time.sleep(1.2)
+                    k0 = start_rundy()
+                    if k0:
+                        hak("autograj", 1.0, False)
+                        czekaj_do(k0["runda"]["t0"] + 7.0)
+                        pomiar_i_zrzut("a9_arena_telefon_sila_667x375")
+                        hak("przerwij")
+                        time.sleep(1.2)
+                    luau(kod("emulacja", "nil"), "Client")
+                return
             if tylko_walka:
                 # 38–67: wygląd jak w walce. Dla każdej gry jedna pełna runda bez pudła (autogra): odliczanie w połowie
                 # dojazdu kamery, trafienie z komiksowym napisem i efektem, akcent serii („SERIA 10!”), zbliżenie
