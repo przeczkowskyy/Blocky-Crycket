@@ -1,0 +1,27 @@
+{
+ "id": "r-20261118-020830-fabb",
+ "tytul": "Arena Dżungli: świątynia i wodospad w tle walki",
+ "opis_md": "- Walki w Dżungli toczą się na własnej arenie (D-095): kamienny krąg wśród ruin, w tle świątynia ze świecącymi oczami, wodospad, posągi i te same rośliny co na mapie biomu.\n- Sprawdzone na pięciu walkach z prawdziwymi potworami Dżungli; czas klatki taki sam jak na pozostałych arenach.\n- Do oceny: czy tło jest dość dopracowane i czy wielki Wąż oraz mały Pancernik dobrze wyglądają w kadrze.\n\nSzczegóły:\n\n**Sprawdzone w grze:** walki z Kokosowym Siłaczem, Pancernikiem Ruin, Zwijogonem, Gębokwiatem i Wężem Stu Lian — każda wybrała arenę Dżungli; mgła areny jest od pierwszej klatki, a po walce wraca mgła mapy. 73 kadry wszystkich ujęć (plan ogólny z obu stron, boczny, zza pleców, zbliżenie, cios krytyczny, pocisk, powalenie, objazd, karta wyniku): za postaciami nigdzie nie ma pustego nieba ani krawędzi świata.\n\n| Arena | Średni czas klatki | 95% klatek poniżej |\n|---|---|---|\n| stara scena | 16,7 ms | 18,0 ms |\n| las | 16,7 ms | 18,0 ms |\n| Bagno | 16,7 ms | 18,1 ms |\n| Dżungla | 16,7 ms | 18,0 ms |\n\n**Budżet:** arena ma 1198 części z 1200 — każdy nowy element wymaga cięcia gdzie indziej. Mostów z lian z zarysu biomu nie ma; wodospad jest nieruchomy.\n\n**Niesprawdzone:** telefon (czas klatki i pamięć przy czterech arenach trzymanych stale u gracza), walka zwykłego gracza bez trybu testowego bohatera.\n\n**Uwaga techniczna:** w walkach z Wężem i Gębokwiatem inny skrypt pisał w tym czasie do mgły świata; moduł areny za każdym razem przywracał swoją wartość, więc obraz się nie zmienił — do wyjaśnienia, który skrypt mgły nie trzyma się wspólnej umowy.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T02:08:30+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/ArenyWalki/Dzungla",
+   "etykieta": "Arena Dżungli"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/areny_walki/PROJEKT.md",
+   "etykieta": "Projekt"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg"
+ ]
+}
