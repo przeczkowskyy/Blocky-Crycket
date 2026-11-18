@@ -1,0 +1,104 @@
+{
+ "opis": "Ustawienia pakietu „bohater w świecie” (swiat/bohater_swiat). Jedyne źródło liczb pakietu: dane.py przepisuje je do zrodla/DaneBohatera.luau. Status: propozycja (prototyp), wartości „przyjęte, do zmiany” — PROJEKT.md.",
+ "kontener": "BohaterSwiat",
+ "prefiks": "[BohaterSwiat] ",
+ "atrybut_wlacznika": "BohaterWSwiecie",
+ "atrybut_klasy": "Class",
+ "klasy_gracza": {"Warrior": "wojownik", "Scout": "zwiadowca", "Mage": "mag"},
+ "kontener_walki": "TestWalki2",
+ "kontener_strojow": "StrojeProba",
+ "folder_lokalny": "BohaterowieLokalni",
+ "akcje": {"spoczynek": "spoczynek", "ruch": "ruch", "radosc": "radosc", "upadek": "upadek"},
+ "ruch": {
+  "prog_ruchu_start": 0.75,
+  "prog_ruchu_stop": 0.35,
+  "tempo_min": 0.6,
+  "tempo_max": 1.8,
+  "przejscie_klipow_s": 0.18,
+  "bieg_predkosc": 16,
+  "prog_wznoszenia": 1.0,
+  "prog_ponownego_wznoszenia": 12,
+  "min_czas_w_powietrzu_s": 0.1,
+  "min_czas_na_ziemi_s": 0.06,
+  "czas_ladowania_s": 0.18,
+  "prog_pionu_zdalny": 8,
+  "korzen_klatke_pozniej": true,
+  "pochylenie_od": 6,
+  "pochylenie_do": 16
+ },
+ "pozy_opis": "Pozy proceduralne nakładane na klip (kąty w stopniach, CFrame.fromOrientation(rx, ry, rz) w układzie kości: rx > 0 = kończyna do przodu, tułów rx < 0 = pochylenie do przodu; rz = odwiedzenie ręki: lewa < 0, prawa > 0). przysiad = true: dane.py dolicza opuszczenie bioder tak, żeby najniższa bryła nóg stała na ziemi.",
+ "pozy": {
+  "skok": {"czas_s": 0.1, "przysiad": false, "kosci": {
+   "UpperTorso": [-6, 0, 0],
+   "LeftUpperArm": [0, 0, -55], "RightUpperArm": [0, 0, 55],
+   "LeftLowerArm": [25, 0, 0], "RightLowerArm": [25, 0, 0],
+   "LeftUpperLeg": [42, 0, 0], "LeftLowerLeg": [-75, 0, 0],
+   "RightUpperLeg": [12, 0, 0], "RightLowerLeg": [-38, 0, 0]}},
+  "spadanie": {"czas_s": 0.16, "przysiad": false, "kosci": {
+   "LeftUpperArm": [0, 0, -105], "RightUpperArm": [0, 0, 105],
+   "LeftUpperLeg": [6, 0, -10], "RightUpperLeg": [-10, 0, 10],
+   "LeftLowerLeg": [-18, 0, 0], "RightLowerLeg": [-28, 0, 0]}},
+  "ladowanie": {"czas_s": 0.07, "przysiad": true, "kosci": {
+   "UpperTorso": [-12, 0, 0],
+   "LeftUpperArm": [0, 0, -25], "RightUpperArm": [0, 0, 25],
+   "LeftUpperLeg": [32, 0, 0], "LeftLowerLeg": [-60, 0, 0], "LeftFoot": [28, 0, 0],
+   "RightUpperLeg": [32, 0, 0], "RightLowerLeg": [-60, 0, 0], "RightFoot": [28, 0, 0]}},
+  "padnij": {"czas_s": 0.12, "przysiad": true, "kosci": {
+   "UpperTorso": [-38, 0, 0], "Head": [22, 0, 0],
+   "LeftUpperArm": [55, 0, 0], "LeftLowerArm": [60, 0, 0],
+   "RightUpperArm": [55, 0, 0], "RightLowerArm": [60, 0, 0],
+   "LeftUpperLeg": [82, 0, 0], "LeftLowerLeg": [-132, 0, 0], "LeftFoot": [50, 0, 0],
+   "RightUpperLeg": [82, 0, 0], "RightLowerLeg": [-132, 0, 0], "RightFoot": [50, 0, 0]}},
+  "rece_gora": {"czas_s": 0.12, "przysiad": false, "kosci": {
+   "LeftUpperArm": [0, 0, -165], "RightUpperArm": [0, 0, 165],
+   "LeftLowerArm": [0, 0, 0], "RightLowerArm": [0, 0, 0]}},
+  "pochyl": {"czas_s": 0.2, "przysiad": false, "kosci": {
+   "UpperTorso": [-9, 0, 0]}}
+ },
+ "bieg_opis": "Proceduralny cykl biegu (bez klipu): kostka każdej nogi idzie po torze — w podporze stoi na ziemi i cofa się względem bioder ze stałą prędkością, w wymachu wraca łukiem do przodu — a kąty uda, łydki i stopy liczy z tego toru odwrotna kinematyka dwóch kości. Długości w ułamkach długości nogi bohatera (udo + łydka), więc krok każdej klasy wynika z jej nóg. Kadencja = prędkość × podpor / krok, najwyżej kadencja_wzorcowa × pierwiastek(noga_wzorcowa / noga); powyżej tej prędkości skraca się udział podporu (dłuższy lot), a stopa w podporze dalej stoi w miejscu. Bieg zaczyna się, gdy klip chodu przestaje nadążać: prędkość > tempo_max × chód naturalny × (1 + pasmo); wraca do chodu poniżej tempo_max × chód naturalny.",
+ "bieg": {
+  "krok_na_noge": 1.0,
+  "biodra_na_noge": 0.82,
+  "podskok_na_noge": 0.05,
+  "unoszenie_na_noge": 0.32,
+  "podpor": 0.32,
+  "podpor_min": 0.1,
+  "kadencja_min": 1.2,
+  "kadencja_wzorcowa": 2.5,
+  "noga_wzorcowa": 1.55,
+  "pasmo": 0.12,
+  "czas_przejscia_s": 0.2,
+  "stopa_w_wymachu_st": -22,
+  "rece_st": [28, 28],
+  "lokcie_st": [0, 0],
+  "skret_tulowia_st": 5,
+  "klasy": {
+   "wojownik": {"rece_st": [30, 10], "lokcie_st": [18, 0]},
+   "mag": {"rece_st": [26, 8]}
+  }
+ },
+ "kosci_nog": ["LeftUpperLeg", "LeftLowerLeg", "LeftFoot", "RightUpperLeg", "RightLowerLeg", "RightFoot"],
+ "widocznosc": {
+  "promien": 260,
+  "histereza": 1.15,
+  "maks_bohaterow": 12,
+  "promien_pelnej_animacji": 90,
+  "okres_daleko": 3,
+  "budowy_na_klatke": 1,
+  "ponow_po_bledzie_s": 5,
+  "ponow_zaleznosci_s": 2,
+  "sprawdzaj_awatar_co_s": 0.5
+ },
+ "awatar": {
+  "ukryj_pole_ochronne": true,
+  "efekty": ["ParticleEmitter", "Trail", "Beam", "Fire", "Smoke", "Sparkles"]
+ },
+ "kontrakt": {
+  "sygnal": "RuchBohatera",
+  "klipy": ["bieg", "skok", "padnij", "rece_gora", "radosc"],
+  "przesun_maks": 30,
+  "wymuszenie_maks_s": 0
+ },
+ "pomiar": {"okno_klatek": 600, "promien_w_dol": 40},
+ "limity": {"maks_czesci_bohatera": 220}
+}

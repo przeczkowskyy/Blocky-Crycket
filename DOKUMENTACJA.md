@@ -254,6 +254,7 @@ Blocky&Crycket/
 │   ├── areny_walki/             💡 areny walki zależne od biomu (D-095): las, Bagno, Dżungla, plac ćwiczeń (Workspace/ArenyWalki)
 │   ├── pety_proba/              💡 jajka i pety na próbę: inkubatory w lesie i Bagnie, wyklucie, pet przy graczu, zagroda, pety z żywiołami (D-101) (Workspace/PetyProba)
 │   ├── kowal_proba/             💡 Kowal na próbę (D-102): kuźnia w bazarze, przedmioty z łupu, rozbiórka na materiały, ulepszenia (Workspace/KowalProba)
+│   ├── bohater_swiat/           💡 Bohater klasy jako postać gracza w świecie (pytanie 63): model bohatera w stroju zamiast awatara, bieg, skok (Workspace/BohaterSwiat)
 │   ├── stroje_proba/            💡 ubieranie postaci (D-071): przymierzalnia i strój w walce (Workspace/StrojeProba)
 │   ├── wskazowki_gry/           💡 linijka celu i znacznik w świecie dla nowego gracza (Workspace/WskazowkiGry)
 │   ├── przejscie_gry/           raport z przejścia gry okiem nowego gracza i próba dymna całej drogi
