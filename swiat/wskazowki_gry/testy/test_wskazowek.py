@@ -162,6 +162,32 @@ class TestLogiki(unittest.TestCase):
             self.assertNotIn(LW.krok(D, st)["id"], {"f_jajko", "f_jajko_miasto", "f_jajko_bagno"}, st)
         self.assertIsNone(LW.krok(D, s(miejsce="las", jajko=True, ukryte=True)))
 
+    def test_2h_kowal(self):
+        # 18.11.2026 (swiat/kowal_proba): krok „kowal” tylko zamiast c_* i tylko do pierwszego ulepszenia
+        kow = {"kowal": True, "kowal_zapas": True, "kowal_ulepszen": 0}
+        m = LW.krok(D, s(wygrane=2, ostatni="wygrana", stan_gracza=True, poziom=3, **kow))
+        self.assertEqual((m["id"], m["cel"]), ("g_kowal_zapas", "kowal"))
+        las = LW.krok(D, s(miejsce="las", wygrane=2, ostatni="wygrana", **kow))
+        self.assertEqual((las["id"], las["cel"]), ("g_kowal_zapas_las", "kamien"))
+        self.assertIn("Kamień Powrotu", las["tekst"])
+        u = LW.krok(D, s(miejsce="las", wygrane=1, ostatni="wygrana", kowal=True, kowal_ulepsz=True))
+        self.assertEqual(u["id"], "g_kowal_ulepsz_las")
+        # ważniejsze kroki nowego gracza zostają: TELEPORT, pierwsza walka, jajko, trening po przegranej, brama
+        for st, oczek in ((s(**kow), "a_teleport"), (s(miejsce="las", **kow), "b_potwor"),
+                          (s(miejsce="las", wygrane=2, ostatni="wygrana", jajko=True, **kow), "f_jajko"),
+                          (s(miejsce="las", wygrane=1, przegrane=1, ostatni="przegrana", stan_gracza=True,
+                             trening_wzmacnia=True, **kow), "d_trening"),
+                          (s(miejsce="las", wygrane=1, przegrane=1, ostatni="przegrana", **kow), "d_slabszy"),
+                          (s(miejsce="las", wygrane=5, ostatni="wygrana", straznik=True, **kow), "e_brama"),
+                          (s(wygrane=5, ostatni="wygrana", straznik=True, **kow), "e_brama_miasto")):
+            self.assertEqual(LW.krok(D, st)["id"], oczek, st)
+        # po pierwszym ulepszeniu, bez kontenera kowala albo bez zapasu i Złota — zwykły krok
+        for st in (s(miejsce="las", wygrane=2, ostatni="wygrana", kowal=True, kowal_zapas=True, kowal_ulepszen=1),
+                   s(miejsce="las", wygrane=2, ostatni="wygrana", kowal_zapas=True, kowal_ulepsz=True),
+                   s(miejsce="las", wygrane=2, ostatni="wygrana", kowal=True)):
+            self.assertFalse(LW.krok(D, st)["id"].startswith("g_kowal"), st)
+        self.assertIsNone(LW.krok(D, s(miejsce="las", wygrane=2, ukryte=True, **kow)))
+
     def test_2e_miejsce(self):
         pr = {"x1": 0, "x2": 10, "z1": -5, "z2": 5}
         self.assertEqual(LW.miejsce(5, 0, pr, 8), "las")
@@ -220,7 +246,9 @@ class TestLuau(unittest.TestCase):
                   "trenowal": rnd.random() < 0.3, "straznik": rnd.random() < 0.2, "stan_gracza": rnd.random() < 0.5,
                   "trening_wzmacnia": rnd.random() < 0.5, "poziom": rnd.choice([None, 1, 3, 9.0, 12.7]),
                   "bagno": rnd.random() < 0.3, "kraina": rnd.choice([None, "las", "bagno"]),
-                  "straznik_bagna": rnd.random() < 0.2}
+                  "straznik_bagna": rnd.random() < 0.2, "kowal": rnd.random() < 0.6,
+                  "kowal_zapas": rnd.random() < 0.4, "kowal_ulepsz": rnd.random() < 0.4,
+                  "kowal_ulepszen": rnd.choice([None, 0, 0, 2])}
             st = {k: v for k, v in st.items() if v is not None}
             wl = LM.z_luau(self.wolaj("krok", self.Dl, LM.do_luau(st))[0])
             wp = LW.krok(D, st)
@@ -285,7 +313,8 @@ class TestStykow(unittest.TestCase):
 
     def test_5b_biomy_dane_i_punkty(self):
         Z = D["zrodla"]
-        pliki = {"las": ("las_pas_gra", "DanePasa.luau"), "bagno": ("bagno_pas_gra", "DaneBagna.luau")}
+        pliki = {"las": ("las_pas_gra", "DanePasa.luau"), "bagno": ("bagno_pas_gra", "DaneBagna.luau"),
+                 "dzungla": ("dzungla_pas_gra", "DaneDzungli.luau")}
         for b in Z["biomy"]:
             with self.subTest(biom=b["id"]):
                 pakiet, dane = pliki[b["id"]]
@@ -298,7 +327,7 @@ class TestStykow(unittest.TestCase):
                 self.assertTrue(b["kamien"].startswith(b["kontener"] + "/Punkty/"))
         self.assertIn('"Punkty/KamienPowrotu"', czytaj(REPO, "swiat", "las_pas_gra", "zbuduj.py"))
         self.assertEqual(set(Z["walki"].values()), {b["id"] for b in Z["biomy"]})
-        self.assertEqual({b["pole_straznika"] for b in Z["biomy"]}, {"straznik", "straznik_bagna"})
+        self.assertEqual({b["pole_straznika"] for b in Z["biomy"]}, {"straznik", "straznik_bagna", "straznik_dzungli"})
 
     def test_5c_trening_bazar_chmury_hud(self):
         Z = D["zrodla"]
@@ -342,6 +371,26 @@ class TestStykow(unittest.TestCase):
             self.assertEqual(b["atrybut_ceny_jajka"], j["atrybuty"]["cena"], b["id"])
             self.assertEqual(b["atrybut_kupionych_jajek"], j["atrybuty"]["kupione"], b["id"])
         self.assertEqual({b["id"] for b in Z["biomy"] if "inkubator" in b}, set(jajka))
+
+    def test_5f_kowal_proba_gdy_jest(self):
+        # 18.11.2026: krok „kowal” czyta atrybuty gracza od serwera swiat/kowal_proba i punkt E jego kuźni
+        Z = D["zrodla"]
+        ust = os.path.join(REPO, "swiat", "kowal_proba", "ustawienia.json")
+        if not os.path.isfile(ust):
+            self.skipTest("brak pakietu swiat/kowal_proba — krok „kowal” się nie pokaże")
+        K = json.loads(czytaj(ust))
+        self.assertEqual(Z["kowal"], K["kontener"])
+        A = K["atrybuty_gracza"]
+        self.assertEqual((Z["atrybut_kowal_dostepne"], Z["atrybut_kowal_zapasy"], Z["atrybut_kowal_ulepsz"],
+                          Z["atrybut_kowal_ulepszen"]), (A["dostepne"], A["zapasy"], A["ulepsz"], A["ulepszen"]))
+        kontener, folder, e = Z["kowal_e"].split("/")
+        self.assertEqual(kontener, K["kontener"])
+        zb = czytaj(REPO, "swiat", "kowal_proba", "zbuduj.py")
+        self.assertIn('e.Name = "%s"' % e, zb)
+        self.assertIn('"%s"' % folder, zb)
+        serwer = czytaj(REPO, "swiat", "kowal_proba", "zrodla", "SerwerKowala.server.luau")
+        for pole in ("dostepne", "zapasy", "ulepsz", "ulepszen"):
+            self.assertIn("D.atrybuty.%s" % pole, serwer)
 
     def test_5d_stan_gracza_gdy_jest(self):
         Z = D["zrodla"]

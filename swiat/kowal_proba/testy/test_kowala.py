@@ -126,8 +126,30 @@ class TestDanych(unittest.TestCase):
     def test_1e_teksty_dla_gracza(self):
         zle = re.compile(r"(swiat/|D-\d|atrybut|Studio|pakiet|KowalProba|_|\bid\b)")
         for k, t in D["teksty"].items():
-            self.assertFalse(zle.search(t), "tekst %s: %r" % (k, t))
+            for x in (t if isinstance(t, list) else [t]):
+                self.assertFalse(zle.search(x), "tekst %s: %r" % (k, x))
         self.assertIn("PRÓBA", D["teksty"]["tytul"])
+
+    def test_1f_odmiana_przy_liczbie(self):
+        oczek = {0: ("materiałów", "materiałów"), 1: ("materiał", "materiału"), 2: ("materiały", "materiałów"),
+                 3: ("materiały", "materiałów"), 4: ("materiały", "materiałów"), 5: ("materiałów", "materiałów"),
+                 11: ("materiałów", "materiałów"), 12: ("materiałów", "materiałów"), 14: ("materiałów", "materiałów"),
+                 21: ("materiałów", "materiałów"), 22: ("materiały", "materiałów"), 24: ("materiały", "materiałów"),
+                 25: ("materiałów", "materiałów"), 104: ("materiały", "materiałów"), 112: ("materiałów", "materiałów")}
+        for n, (m, d) in oczek.items():
+            self.assertEqual(LK.ile_materialow(D, n), "%d %s" % (n, m))
+            self.assertEqual(LK.ile_materialow_dop(D, n), "%d %s" % (n, d))
+        self.assertEqual(LK.komunikat(D, "za_malo_materialow", 1),
+                         "Brakuje ci 1 materiału — rozbierz zapasowe przedmioty z walk.")
+        # w oknie: koszt i rozbiórka z odmianą, bez skrótu „mat.”
+        s = _zestaw("wojownik", 0)
+        s["przedmioty"][D["klasy"]["wojownik"]["przedmioty"][0]]["zapas"] = 1
+        for w in LK.widok(D, s, "wojownik", LK.zalozone(D, "wojownik", s, None), 0, "")["wiersze"]:
+            for pole in ("koszt", "powod", "rozbiorka"):
+                self.assertNotIn("mat.", w[pole])
+                self.assertIsNone(re.search(r"\b1 materiałów|\b[2-4] materiałów\b(?! —)|\b1 materiały", w[pole]), w[pole])
+        teksty = [t for t in D["teksty"].values() if isinstance(t, str)]
+        self.assertFalse(any(re.search(r"%d (materia|mat\.)", t) for t in teksty), "liczba przy rzeczowniku bez odmiany")
 
 
 # ------------------------------------------------------------------------------------------------ 2. balans
@@ -646,13 +668,17 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertIn(str(k["zloto"]), r["tekst"])
         self.assertEqual(self.atr("Gold"), 0, "Złoto nigdy poniżej zera")
         self.assertEqual(self.atr("KowalMaterialy"), 5, "odmowa niczego nie zabiera")
+        self.assertEqual(self.atr("KowalMoznaUlepszyc"), False, "bez Złota — wskazówka nie kusi ulepszeniem")
+        self.assertEqual(self.atr("KowalUlepszen"), 0)
         self.gracz.ustaw("Gold", float(k["zloto"] + 7))
+        self.assertEqual(self.atr("KowalMoznaUlepszyc"), True, "Złoto przyszło — atrybut od razu")
         przed = self.bohater_stanu()["bron"]["obrazenia"]
         r = self.kuznia_("ulepsz", miecz)
         self.assertTrue(r["ok"], r)
         self.assertEqual(self.atr("Gold"), 7)
         self.assertEqual(self.atr("KowalMaterialy"), 5 - k["materialy"])
         self.assertEqual(self.hak("stan", self.gracz.t)["dane"]["przedmioty"][miecz]["poziom"], 1)
+        self.assertEqual(self.atr("KowalUlepszen"), 1, "po pierwszym ulepszeniu wskazówka „kowal” znika")
         self.assertEqual(self.bohater_stanu()["bron"]["obrazenia"], przed + D["przedmioty"][miecz]["krok"]["bron"])
         self.assertEqual(self.od_serwera("ulepszono")[-1], ["ulepszono", miecz, 1])
         w = r["widok"]

@@ -20,6 +20,10 @@ Stan gracza (słownik, wszystkie pola opcjonalne):
   jajko (bool)            — stoi inkubator biomu, w którym jest gracz (w mieście: lasu; swiat/pety_proba), i Złoto
                             gracza ≥ cena jajka tego biomu (17.11.2026)
   kupione (int)           — ile jajek tego biomu gracz już kupił; krok o jajku tylko do pierwszego jajka biomu
+  kowal (bool)            — działa kowal na próbę (kontener KowalProba, gracz ma atrybut KowalDostepne; 18.11.2026)
+  kowal_zapas (bool)      — gracz ma zapasowy przedmiot do rozbiórki (KowalZapasy > 0)
+  kowal_ulepsz (bool)     — gracz ma Złoto i materiały na ulepszenie (KowalMoznaUlepszyc)
+  kowal_ulepszen (int)    — suma poziomów ulepszeń (KowalUlepszen); krok „kowal” tylko do pierwszego ulepszenia
 Wynik: None (nic nie pokazujemy) albo {"id": klucz z D["kroki"], "tekst": gotowy napis, "cel": rodzaj celu | None}.
 """
 
@@ -32,6 +36,11 @@ def _krok(D, kid, poziom=None):
     return {"id": kid, "tekst": tekst, "cel": k["cel"]}
 
 
+# kroki „zdobywaj poziomy / Strażnik czeka” każdego biomu (las bez przyrostka)
+C_POZIOMY = {"las": "c_poziomy", "bagno": "c_poziomy_bagno", "dzungla": "c_poziomy_dzungla"}
+C_STRAZNIK = {"las": "c_straznik", "bagno": "c_straznik_bagno", "dzungla": "c_straznik_dzungla"}
+
+
 def _postep(D, s, kraina):
     """W biomie przed jego Strażnikiem: przegrana → trening / słabszy potwór; po wygranej → poziomy / Strażnik; inaczej
     potwór. Liczniki walk (wygrane, ostatni, trenowal) są liczone osobno dla każdego biomu."""
@@ -41,13 +50,15 @@ def _postep(D, s, kraina):
         return _krok(D, "d_slabszy")
     if (s.get("wygrane") or 0) > 0:
         if s.get("stan_gracza"):
-            return _krok(D, "c_poziomy" if kraina == "las" else "c_poziomy_bagno", s.get("poziom"))
-        return _krok(D, "c_straznik" if kraina == "las" else "c_straznik_bagno")
+            return _krok(D, C_POZIOMY.get(kraina, "c_poziomy"), s.get("poziom"))
+        return _krok(D, C_STRAZNIK.get(kraina, "c_straznik"))
     return _krok(D, "b_potwor")
 
 
 def _miasto(D, s):
     if s.get("straznik"):
+        if s.get("straznik_bagna") and s.get("dzungla"):
+            return _krok(D, "e_dzungla_miasto")
         return _krok(D, "e_bagno_miasto" if s.get("bagno") else "e_brama_miasto")
     if s.get("ostatni") == "przegrana" and not s.get("trenowal"):
         if s.get("stan_gracza") and s.get("trening_wzmacnia"):
@@ -59,6 +70,20 @@ def _miasto(D, s):
 
 
 def krok(D, s):
+    """Krok główny, a na jego miejscu krok „kowal” — tylko zamiast „zdobywaj poziomy / Strażnik czeka” (c_*), czyli po
+    pierwszej wygranej, bez przegranej do odrobienia, poza jajkiem i bramą: nigdy nie przykrywa TELEPORT, pierwszej
+    walki, jajka, treningu po przegranej ani drogi do następnego biomu."""
+    w = _krok_glowny(D, s)
+    if w is None or not w["id"].startswith("c_") or not s.get("kowal") or (s.get("kowal_ulepszen") or 0) > 0:
+        return w
+    if not (s.get("kowal_zapas") or s.get("kowal_ulepsz")):
+        return w
+    miasto = (s.get("miejsce") or "miasto") == "miasto"
+    kid = "g_kowal_zapas" if s.get("kowal_zapas") else "g_kowal_ulepsz"
+    return _krok(D, kid if miasto else kid + "_las")
+
+
+def _krok_glowny(D, s):
     if s.get("wylaczone") or not s.get("klasa") or s.get("ukryte"):
         return None
     miejsce = s.get("miejsce") or "miasto"
@@ -71,9 +96,15 @@ def krok(D, s):
         return _krok(D, "f_jajko_bagno" if kraina == "bagno" else "f_jajko")
     if miejsce == "miasto" or kraina is None:
         return _miasto(D, s)
+    if kraina == "dzungla":
+        if s.get("straznik_dzungli"):
+            return _krok(D, "e_koniec_dzungla" if miejsce == "za_brama" else "e_brama_pustynia")
+        return _postep(D, s, "dzungla")  # za bramą Dżungli bez Węża serwer cofa — jak w Bagnie
     if kraina == "bagno":
         if s.get("straznik_bagna"):
-            return _krok(D, "e_koniec_bagno" if miejsce == "za_brama" else "e_brama_dzungla")
+            if miejsce == "za_brama":
+                return _krok(D, "e_dalej_dzungla" if s.get("dzungla") else "e_koniec_bagno")
+            return _krok(D, "e_brama_do_dzungli" if s.get("dzungla") else "e_brama_dzungla")
         return _postep(D, s, "bagno")  # za bramą Bagna bez Strażnika serwer cofa — jak w Bagnie
     if s.get("straznik"):
         if miejsce == "za_brama":
@@ -164,6 +195,35 @@ def przypadki(D):
     k("Złoto na jajko za bramą Bagna: bez kroku o jajku", kraina="bagno", miejsce="za_brama", straznik=True,
       straznik_bagna=True, bagno=True, jajko=True)
     k("Złoto na jajko, ale ukryte", miejsce="las", jajko=True, ukryte=True)
+    # Dżungla (trzeci biom, 18.11.2026)
+    dz = {"straznik": True, "straznik_bagna": True, "bagno": True, "dzungla": True}
+    k("Strażnik Topieli pokonany, jest Dżungla: brama do Dżungli", kraina="bagno", miejsce="las", **dz)
+    k("za bramą Bagna, jest Dżungla", kraina="bagno", miejsce="za_brama", **dz)
+    k("Strażnik Topieli pokonany, jest Dżungla, w mieście: TELEPORT → Dżungla", **dz)
+    k("w Dżungli bez walki: potwór", kraina="dzungla", miejsce="las", **dz)
+    k("w Dżungli po wygranej ze stanem gracza: poziomy, Wąż Stu Lian", kraina="dzungla", miejsce="las", wygrane=1,
+      ostatni="wygrana", stan_gracza=True, poziom=18, **dz)
+    k("w Dżungli po wygranej bez stanu gracza", kraina="dzungla", miejsce="las", wygrane=2, ostatni="wygrana", **dz)
+    k("Wąż Stu Lian pokonany: brama do Pustyni", kraina="dzungla", miejsce="las", straznik_dzungli=True, **dz)
+    k("za bramą Dżungli", kraina="dzungla", miejsce="za_brama", straznik_dzungli=True, **dz)
+    # kowal na próbę (18.11.2026): tylko zamiast c_*, do pierwszego ulepszenia
+    kow = {"kowal": True, "kowal_zapas": True, "kowal_ulepszen": 0}
+    k("kowal: zapas w mieście po wygranej", wygrane=2, ostatni="wygrana", stan_gracza=True, poziom=3, **kow)
+    k("kowal: zapas w lesie po wygranej → Kamień Powrotu", miejsce="las", kraina="las", wygrane=2, ostatni="wygrana",
+      stan_gracza=True, poziom=3, **kow)
+    k("kowal: ulepszenie w Bagnie", kraina="bagno", miejsce="las", straznik=True, bagno=True, wygrane=1,
+      ostatni="wygrana", stan_gracza=True, poziom=12, kowal=True, kowal_ulepsz=True)
+    k("kowal: przed pierwszą walką — potwór", miejsce="las", **kow)
+    k("kowal: w mieście przed walką — TELEPORT", **kow)
+    k("kowal: jajko ważniejsze", miejsce="las", wygrane=2, ostatni="wygrana", jajko=True, kupione=0, **kow)
+    k("kowal: po przegranej — trening ważniejszy", miejsce="las", wygrane=1, przegrane=1, ostatni="przegrana",
+      stan_gracza=True, trening_wzmacnia=True, **kow)
+    k("kowal: po Strażniku — brama ważniejsza", miejsce="las", wygrane=5, ostatni="wygrana", straznik=True, **kow)
+    k("kowal: po pierwszym ulepszeniu — nic", miejsce="las", wygrane=2, ostatni="wygrana", stan_gracza=True,
+      kowal=True, kowal_zapas=True, kowal_ulepszen=1)
+    k("kowal: bez kontenera KowalProba — nic", miejsce="las", wygrane=2, ostatni="wygrana", stan_gracza=True,
+      kowal_zapas=True, kowal_ulepsz=True)
+    k("kowal: nic do rozbiórki ani ulepszenia", miejsce="las", wygrane=2, ostatni="wygrana", kowal=True)
     pr = {"x1": 1056, "x2": 2076, "z1": -760, "z2": -640}
     for x, z, br in [(1114, -700, 2034), (2034, -700, 2034), (2046, -700, 2034), (990, -697, 2034), (1500, -800, 2034),
                      (1056, -760, 2034), (2076, -640, 2034), (1500, -700, None), (0, 0, 2034)]:

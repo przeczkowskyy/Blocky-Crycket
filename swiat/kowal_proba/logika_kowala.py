@@ -227,6 +227,22 @@ def ulepsz(D, dane, pid, k):
     return w
 
 
+def mozna_ulepszyc(D, klasa, dane, zloto):
+    """Czy gracz ma Złoto i materiały na ulepszenie któregoś posiadanego przedmiotu klasy (atrybut KowalMoznaUlepszyc —
+    wskazówka celu „kowal”)."""
+    for pid in D["klasy"][klasa]["przedmioty"]:
+        if posiada(dane, pid):
+            k = koszt(D, pid, dane["przedmioty"][pid]["poziom"])
+            if k is not None and dane["materialy"] >= k["materialy"] and zloto >= k["zloto"]:
+                return True
+    return False
+
+
+def suma_poziomow(dane):
+    """Suma poziomów ulepszeń wszystkich przedmiotów (atrybut KowalUlepszen; 0 = jeszcze żadnego ulepszenia)."""
+    return sum(v["poziom"] for v in dane["przedmioty"].values())
+
+
 def ranga(D, roznica):
     """Przyrost tokenów krainy po pokazaniu łupu → ranga wygranej ("zwykly" / "rzadki" / "straznik") albo None."""
     G = D["lup"]["progi"]
@@ -260,6 +276,27 @@ def lup(D, dane, klasa, rg, los1, los2):
 
 
 # ------------------------------------------------------------------------------------------------ teksty okna
+def forma(formy, n):
+    """Odmiana rzeczownika przy liczbie: formy = [1, 2–4, 5+] (np. materiał / materiały / materiałów); 12–14 i 0
+    jak 5+, 22–24, 32–34… jak 2–4."""
+    n = int(abs(n))
+    if n == 1:
+        return formy[0]
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return formy[1]
+    return formy[2]
+
+
+def ile_materialow(D, n):
+    """„1 materiał”, „3 materiały”, „5 materiałów” (mianownik / biernik: koszt, zysk z rozbiórki)."""
+    return "%d %s" % (n, forma(D["teksty"]["formy_materialu"], n))
+
+
+def ile_materialow_dop(D, n):
+    """„1 materiału”, „3 materiałów” (dopełniacz: „Brakuje ci …”)."""
+    return "%d %s" % (n, forma(D["teksty"]["formy_materialu_dopelniacz"], n))
+
+
 def liczba_tekst(v):
     """Liczba całkowita jako tekst (statystyki przedmiotów są całkowite; opis bohatera zaokrąglamy wcześniej)."""
     return "%d" % int(v)
@@ -305,16 +342,16 @@ def wiersz(D, dane, klasa, pid, zal, zloto):
             if v != 0:
                 przyrost[x["id"]] = v
         w["nastepny"] = T["nastepny"] % tekst_stat_lista(D, przyrost)
-        w["koszt"] = T["koszt"] % (k["zloto"], k["materialy"])
+        w["koszt"] = T["koszt"] % (k["zloto"], ile_materialow(D, k["materialy"]))
         if dane["materialy"] < k["materialy"]:
-            w["powod"] = T["za_malo_materialow"] % (k["materialy"] - dane["materialy"])
+            w["powod"] = T["za_malo_materialow"] % ile_materialow_dop(D, k["materialy"] - dane["materialy"])
         elif zloto < k["zloto"]:
             w["powod"] = T["za_malo_zlota"] % (k["zloto"] - zloto)
         else:
             w["ulepsz"] = True
     if s["zapas"] > 0:
         w["rozbierz"] = True
-        w["rozbiorka"] = T["rozbiorka"] % D["rozbiorka"]["materialy"]
+        w["rozbiorka"] = T["rozbiorka"] % ile_materialow(D, D["rozbiorka"]["materialy"])
     return w
 
 
@@ -353,7 +390,7 @@ def komunikat(D, powod, ile=0):
     """Powód odmowy → tekst dla gracza (bez języka twórców)."""
     T = D["teksty"]
     if powod == "za_malo_materialow":
-        return T["za_malo_materialow"] % ile
+        return T["za_malo_materialow"] % ile_materialow_dop(D, ile)
     if powod == "za_malo_zlota":
         return T["za_malo_zlota"] % ile
     mapa = {"brak_zapasu": "brak_zapasu", "nie_masz": "nie_masz_przedmiotu", "najwyzszy": "najwyzszy",

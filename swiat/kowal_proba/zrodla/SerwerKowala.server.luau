@@ -105,6 +105,11 @@ local function zapisz(gracz, st, dane)
 	return false
 end
 
+local function zlotoGracza(gracz)
+	local z = gracz:GetAttribute(S.atrybutZlota)
+	return if type(z) == "number" and z == z then math.floor(z) else 0
+end
+
 local function napisStroju(gracz, klasa)
 	if not przymierzalnia() then
 		return nil
@@ -127,6 +132,8 @@ local function publikuj(gracz)
 		zapasy += v.zapas
 	end
 	gracz:SetAttribute(D.atrybuty.zapasy, zapasy)
+	gracz:SetAttribute(D.atrybuty.ulepszen, L.sumaPoziomow(st.dane))
+	gracz:SetAttribute(D.atrybuty.ulepsz, L.moznaUlepszyc(D, st.klasa, st.dane, zlotoGracza(gracz)))
 	local f = przymierzalnia()
 	if f then
 		local nowy = L.strojDoUstawienia(D, st.klasa, st.dane, napisStroju(gracz, st.klasa))
@@ -236,10 +243,8 @@ end
 
 local function widok(gracz)
 	local st = stany[gracz]
-	local zloto = gracz:GetAttribute(S.atrybutZlota)
-	zloto = if type(zloto) == "number" and zloto == zloto then math.floor(zloto) else 0
 	local zal = L.zalozone(D, st.klasa, st.dane, napisStroju(gracz, st.klasa))
-	return L.widok(D, st.dane, st.klasa, zal, zloto, opisBohatera(gracz))
+	return L.widok(D, st.dane, st.klasa, zal, zlotoGracza(gracz), opisBohatera(gracz))
 end
 
 local function przyKowalu(gracz)
@@ -291,7 +296,7 @@ local function wykonaj(gracz, akcja, id)
 		end
 		dolicz("LicznikRozbiorek")
 		publikuj(gracz)
-		return { ok = true, tekst = string.format(T.ok_rozbierz, zysk), widok = widok(gracz) }
+		return { ok = true, tekst = string.format(T.ok_rozbierz, L.ileMaterialow(D, zysk)), widok = widok(gracz) }
 	end
 	-- ulepsz: materiały sprawdzone przed wydaniem Złota; Złoto wydaje StanGracza (nigdy poniżej zera)
 	local ok, k, ile = L.planUlepszenia(D, st.dane, st.klasa, id)
@@ -377,6 +382,8 @@ local function dolaczyl(gracz)
 			zmianaTokenow(gracz, nazwa)
 		elseif nazwa == S.atrybutKlasy then
 			zmianaKlasy(gracz)
+		elseif nazwa == S.atrybutZlota then
+			gracz:SetAttribute(D.atrybuty.ulepsz, L.moznaUlepszyc(D, st.klasa, st.dane, zlotoGracza(gracz)))
 		elseif nazwa == D.przymierzalnia.atrybut .. st.klasa then
 			publikuj(gracz)
 		end

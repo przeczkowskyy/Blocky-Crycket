@@ -147,11 +147,30 @@ idzie na przedmioty (D-097).
   w nagłówku, broń / pancerz / blok bohatera w stopce. Zrzuty z części B.
 - Plecak 5×5 i zakładka OTHERS mogłyby pokazywać materiały i zapasy.
 
-## Wskazówka celu (pakietu `swiat/wskazowki_gry` nie ruszam)
-Proponowany krok „kowal”: gdy `KowalZapasy` > 0 albo gracz ma Złoto i materiały na ulepszenie założonego przedmiotu —
-„Masz zapasowy przedmiot — rozbierz go u kowala w bazarze” / „Możesz ulepszyć przedmiot u kowala w bazarze”, znacznik
-nad punktem E kowala (`KowalProba/Kuznia/E`), w lesie i Bagnie z dopiskiem „Kamień Powrotu → bazar”. Tylko do
-pierwszego ulepszenia (licznik `KowalProba` `LicznikUlepszen` albo poziom > 0 w widoku).
+## Wskazówka celu „kowal” (18.11.2026, wdrożona w `swiat/wskazowki_gry`, krok (g))
+Serwer kowala pisze atrybuty gracza `KowalZapasy` (zapasowe egzemplarze), `KowalMoznaUlepszyc` (Złoto i materiały na
+ulepszenie któregoś przedmiotu; odświeżany też przy każdej zmianie Złota) i `KowalUlepszen` (suma poziomów ulepszeń).
+Krok pokazuje się **tylko zamiast kroków „Zdobywaj poziomy / Strażnik czeka” (c)** i tylko do pierwszego ulepszenia,
+więc nigdy nie przykrywa TELEPORT, pierwszej walki, jajka, treningu po przegranej ani bramy do następnego biomu:
+- w bazarze: „Masz zapasowy przedmiot — rozbierz go u kowala w bazarze” / „Możesz ulepszyć przedmiot u kowala
+  w bazarze”, znacznik nad punktem E kowala (`KowalProba/Kuznia/E`);
+- w lesie i Bagnie: „Zapasowy przedmiot do rozbiórki: Kamień Powrotu → kowal” / „Możesz ulepszyć przedmiot: Kamień
+  Powrotu → kowal”, znacznik nad Kamieniem Powrotu biomu.
+Bez kontenera `KowalProba` (albo bez atrybutu `KowalDostepne`) krok się nie pokazuje.
+
+## Napisy z liczbą (18.11.2026)
+Liczba przy „materiał” odmienia się: koszt i zysk z rozbiórki — „1 materiał / 2–4 materiały / 5 materiałów”
+(22–24 jak 2–4, 12–14 i 0 jak 5+), „Brakuje ci 1 materiału / 2 materiałów”. Złoto zostaje „N Złota” (jak w całej grze).
+Formy w `ustawienia.json` (`teksty.formy_materialu`, `formy_materialu_dopelniacz`), funkcje `L.ileMaterialow` /
+`L.ileMaterialowDop` (lustro w Pythonie), test 1f i przypadki wzorcowe.
+
+## Kamera przy oknie kuźni (18.11.2026)
+Zrzuty `k04` i `k05` z pierwszej części B pokazywały głównie tarczę stojaka — to ślad próby: zrzut z ustawioną kamerą
+w K03 (kowal z bliska) zostawiał kamerę w kuźni, a K04 i K05 robiły zrzut bez jej przywrócenia. W zwykłej grze gracz
+podchodzi od uliczki (z zachodu, z północnego zachodu albo od zbrojowni) i między kamerą (12,5 st za plecami) a postacią
+nic nie stoi — sprawdzone promieniami na częściach kuźni i bazaru: 0 z 9 ustawień zasłoniętych dla każdego z tych
+kierunków. Zasłania tylko podejście od strony zamkniętej Bramy Leśnej (wrota, pień), skąd gracz nie przychodzi,
+a kamera Roblox i tak przysuwa się przed przeszkodę. Poprawka niepotrzebna; próba przywraca teraz kamerę za plecami.
 
 ## Kowal i kuźnia (modele, podglądy)
 - **Kowal** (`swiat/postacie/kowal.py`, własny projekt): krępy łysy kowal w czerwonej chustce z mosiężnymi goglami,
@@ -172,6 +191,10 @@ pierwszego ulepszenia (licznik `KowalProba` `LicznikUlepszen` albo poziom > 0 w 
   `bezDawnego` w `odswiezOkno`.
 - `swiat/stroje_proba/zrodla/OknoStrojow.luau`: bez przycisku „Dawny wygląd”, gdy `bezDawnego`.
 - Bez `KowalProba` wszystkie trzy działają jak dawniej (testy przymierzalni 22/22, kontrola Luau OK).
+- `swiat/wskazowki_gry` (18.11.2026): krok (g) „kowal” — cztery teksty i nazwy atrybutów w `ustawienia.json`, cel
+  „kowal” w `dane.py`, `krok` = krok główny + podmiana tylko kroków (c) w `logika_wskazowek.py` i
+  `zrodla/LogikaWskazowek.luau`, odczyt czterech atrybutów i punktu E w `zrodla/KlientWskazowek.client.luau`, 11
+  przypadków wzorcowych, testy 2h i 5f, README (testów 26/26).
 - `swiat/stan_gracza` — tylko czytany (dopisanie `KowalProba` do źródeł wydatków zrobił jego agent).
 - `swiat/postacie/kowal.py` — nowy moduł (istniejących nie zmieniano).
 
@@ -187,13 +210,13 @@ pierwszego ulepszenia (licznik `KowalProba` `LicznikUlepszen` albo poziom > 0 w 
 | `podglad.py` | podglądy kuźni w Blenderze → `podglad/` |
 | `sprawdz_luau_kowala.py` | kontrola statyczna Luau |
 | `zbuduj.py` | budowa w Studio (`--sucho`, `--skrypty`, `--usun`, `--studio`) |
-| `testy/test_kowala.py` | 30 testów bez Studio (w tym prawdziwe SerwerKowala + SerwerStanu + SerwerStrojow w `luau_mini`) |
+| `testy/test_kowala.py` | 31 testów bez Studio (w tym prawdziwe SerwerKowala + SerwerStanu + SerwerStrojow w `luau_mini`) |
 | `testy/proba_play.py` | próba w Play K00–K13 (część B); `--sprawdz` bez Studio |
 
 ## Polecenia
 ```
 python -B swiat/kowal_proba/dane.py                    # po zmianie ustawień, katalogu, mapy bazaru albo modelu kowala
-python -B swiat/kowal_proba/testy/test_kowala.py       # 30 testów, ok. 20 s
+python -B swiat/kowal_proba/testy/test_kowala.py       # 31 testów, ok. 20 s
 python -B swiat/kowal_proba/zbuduj.py --sucho
 python -B swiat/kowal_proba/balans_kowala.py           # tabele (ok. 30 s); --md <plik>
 python -B swiat/kowal_proba/podglad.py                 # podglądy kuźni (Blender w tle)
@@ -234,7 +257,8 @@ Poprawione po pierwszym przebiegu: u klienta `FindFirstChild` stawu kości trafi
 przed i po ulepszeniu oraz diagnoza walki w K06.
 
 ## Ryzyka i czego nie sprawdzono
-- Walka w lesie z przedmiotami nie była oglądana w Studio (K06 — haczyk lasu nie ruszył walki); dwóch graczy naraz,
+- Walka w lesie z przedmiotami nie była jeszcze oglądana w Studio — K06 wchodzi teraz do lasu jak gracz (TELEPORT →
+  chmury → Las) i walczy prawdziwym E, ale ta wersja czeka na okno w Studio; dwóch graczy naraz,
   telefon i dotyk — nie sprawdzone.
 - Łup z tokenów: gdy StanGracza pokaże kilka walk naraz, losowań jest mniej; przyszłe tokeny spoza walk (zadania)
   dawałyby przedmioty — lepszy jest sygnał z serwera lasu (wyżej).

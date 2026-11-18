@@ -27,6 +27,7 @@ w pierwszej minucie”). Teksty i kolejność kroków nie są kanonem — do dec
 | (e) po Strażniku lasu, gdy stoi Bagno | Brama otwarta — idź do Bagna / w mieście: Bagno otwarte: TELEPORT → Bagno | ▼ za bramą lasu / strzałka |
 | w Bagnie | jak w lesie: potwór → „Zdobywaj poziomy (masz N) — Strażnik Topieli na końcu Bagna” → po Strażniku Topieli „Brama do Dżungli otwarta — Dżungla już wkrótce” | ▼ nad potworem / Strażnikiem Topieli / bramą |
 | (f) Złoto ≥ cena jajka biomu, w którym jest gracz (w mieście: lasu), i jeszcze żadnego jajka tego biomu (17.11.2026, stoi `PetyProba`) — przed innymi krokami, nie za bramą | Masz dość Złota na jajko — inkubator przy wejściu do lasu / w Bagnie: Masz dość Złota na jajko Bagna — inkubator przy pomoście / w mieście: …: TELEPORT → Las (inkubator) | ▼ nad punktem E inkubatora biomu / strzałka |
+| (g) kowal (18.11.2026, stoi `KowalProba`): zapasowy przedmiot (`KowalZapasy` > 0) albo Złoto i materiały na ulepszenie (`KowalMoznaUlepszyc`), jeszcze żadnego ulepszenia (`KowalUlepszen` = 0) — **tylko zamiast (c)**, więc nigdy przed TELEPORT, pierwszą walką, jajkiem, treningiem po przegranej ani bramą | Masz zapasowy przedmiot — rozbierz go u kowala w bazarze / Możesz ulepszyć przedmiot u kowala w bazarze; w lesie i Bagnie: Zapasowy przedmiot do rozbiórki: Kamień Powrotu → kowal / Możesz ulepszyć przedmiot: Kamień Powrotu → kowal | ▼ nad punktem E kowala (`KowalProba/Kuznia/E`) / nad Kamieniem Powrotu |
 
 Biomy (las-pas, Bagno) są w `ustawienia.json` → `zrodla.biomy`: kontener, moduł danych (`Moduly/DanePasa`), Kamień
 Powrotu, atrybut pokonanego Strażnika. Biom rozpoznaje się po prostokącie `wejscie` z jego danych (Bagno ma
@@ -45,7 +46,8 @@ liczyć się do (d), gdy gracz wejdzie na stanowisko Training Center albo wygra 
 - atrybuty gracza: `Class`, `Level`, `PokonalStraznikaLasu`, `TreningGra` (stanowisko mini-gry); `Gold`; dla każdego
   biomu z inkubatorem (`zrodla.biomy[].atrybut_ceny_jajka` i `atrybut_kupionych_jajek`): `PetyCenaJajka` /
   `PetyCenaJajkaBagna` (cena następnego jajka) i `PetyKupioneJajka` / `PetyKupioneJajkaBagna` (ile jajek biomu gracz
-  kupił) — pisze je `swiat/pety_proba`;
+  kupił) — pisze je `swiat/pety_proba`; `KowalDostepne`, `KowalZapasy`, `KowalMoznaUlepszyc`, `KowalUlepszen` — pisze je
+  `swiat/kowal_proba` (bez kontenera `KowalProba` krok (g) się nie pokazuje);
 - walki w lesie: u klienta na `LasPasGra` / `LasPotwory` odtwarzacz ustawia `OstatnieZiarno`, `OstatniWynik` i
   `OstatniStan = "wynik"` — jedna walka na wejście w stan „wynik” z nowym ziarnem (walka przerwana resetem się nie
   liczy); liczniki tylko w pamięci klienta (sesja);
@@ -66,13 +68,13 @@ liczyć się do (d), gdy gracz wejdzie na stanowisko Training Center albo wygra 
 | `zrodla/KlientWskazowek.client.luau` | klient: linijka celu, strzałka, znacznik, zbieranie stanu, haczyk testowy |
 | `sprawdz_luau_wskazowek.py` | kontrola statyczna Luau (reguły jak w `swiat/las_potwory`, SetAttribute tylko na kontenerze, bez FireServer, bez przełączania cudzych ekranów) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--usun`, `--studio` |
-| `testy/test_wskazowek.py` | 24 testy offline (dane, logika, Luau w luau_mini, styki z innymi pakietami, prywatność) |
+| `testy/test_wskazowek.py` | 26 testów offline (dane, logika, Luau w luau_mini, styki z innymi pakietami, prywatność) |
 
 ## Budowa i wyłączenie
 
 ```
 python -B swiat/wskazowki_gry/dane.py                 # po zmianie ustawień
-python -B swiat/wskazowki_gry/testy/test_wskazowek.py # 24 testy, < 1 s
+python -B swiat/wskazowki_gry/testy/test_wskazowek.py # 26 testów, < 1 s
 python -B swiat/wskazowki_gry/zbuduj.py --sucho       # bez Studio
 python -B swiat/wskazowki_gry/zbuduj.py               # Studio w trybie Edit
 python -B swiat/wskazowki_gry/zbuduj.py --usun        # gra wraca do stanu sprzed pakietu

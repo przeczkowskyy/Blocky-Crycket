@@ -313,6 +313,27 @@ function L.ulepsz(D, dane, id, k)
 	return w
 end
 
+-- wskazówka celu „kowal”: Złoto i materiały na ulepszenie któregoś posiadanego przedmiotu klasy
+function L.moznaUlepszyc(D, klasa, dane, zloto)
+	for _, id in D.klasy[klasa].przedmioty do
+		if L.posiada(dane, id) then
+			local k = L.koszt(D, id, dane.przedmioty[id].poziom)
+			if k ~= nil and dane.materialy >= k.materialy and zloto >= k.zloto then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+function L.sumaPoziomow(dane)
+	local n = 0
+	for _, v in dane.przedmioty do
+		n += v.poziom
+	end
+	return n
+end
+
 function L.ranga(D, roznica)
 	local G = D.lup.progi
 	if not calkowita(roznica, 1, G.maks) then
@@ -346,6 +367,27 @@ function L.lup(D, dane, klasa, ranga, los1, los2)
 end
 
 ------------------------------------------------------------------ teksty okna
+-- odmiana przy liczbie: formy = { 1, 2–4, 5+ }; 12–14 i 0 jak 5+, 22–24, 32–34… jak 2–4
+function L.forma(formy, n)
+	n = math.floor(math.abs(n))
+	if n == 1 then
+		return formy[1]
+	end
+	local j, d = n % 10, n % 100
+	if j >= 2 and j <= 4 and not (d >= 12 and d <= 14) then
+		return formy[2]
+	end
+	return formy[3]
+end
+
+function L.ileMaterialow(D, n)
+	return string.format("%d %s", n, L.forma(D.teksty.formy_materialu, n))
+end
+
+function L.ileMaterialowDop(D, n)
+	return string.format("%d %s", n, L.forma(D.teksty.formy_materialu_dopelniacz, n))
+end
+
 function L.liczbaTekst(v)
 	return string.format("%d", v)
 end
@@ -401,9 +443,9 @@ function L.wiersz(D, dane, klasa, id, zal, zloto)
 			end
 		end
 		w.nastepny = string.format(T.nastepny, L.tekstStatLista(D, przyrost))
-		w.koszt = string.format(T.koszt, k.zloto, k.materialy)
+		w.koszt = string.format(T.koszt, k.zloto, L.ileMaterialow(D, k.materialy))
 		if dane.materialy < k.materialy then
-			w.powod = string.format(T.za_malo_materialow, k.materialy - dane.materialy)
+			w.powod = string.format(T.za_malo_materialow, L.ileMaterialowDop(D, k.materialy - dane.materialy))
 		elseif zloto < k.zloto then
 			w.powod = string.format(T.za_malo_zlota, k.zloto - zloto)
 		else
@@ -412,7 +454,7 @@ function L.wiersz(D, dane, klasa, id, zal, zloto)
 	end
 	if s.zapas > 0 then
 		w.rozbierz = true
-		w.rozbiorka = string.format(T.rozbiorka, D.rozbiorka.materialy)
+		w.rozbiorka = string.format(T.rozbiorka, L.ileMaterialow(D, D.rozbiorka.materialy))
 	end
 	return w
 end
@@ -467,7 +509,7 @@ local MAPA_KOMUNIKATOW = { brak_zapasu = "brak_zapasu", nie_masz = "nie_masz_prz
 function L.komunikat(D, powod, ile)
 	local T = D.teksty
 	if powod == "za_malo_materialow" then
-		return string.format(T.za_malo_materialow, ile or 0)
+		return string.format(T.za_malo_materialow, L.ileMaterialowDop(D, ile or 0))
 	elseif powod == "za_malo_zlota" then
 		return string.format(T.za_malo_zlota, ile or 0)
 	end
@@ -553,6 +595,12 @@ function L.sprawdzPrzypadki(D)
 	end
 	for i, p in P.opis do
 		sprawdz("opis", i, p.wynik, L.opisBohatera(D, p.opis))
+	end
+	for i, p in P.mozna do
+		sprawdz("mozna", i, { p.wynik, p.suma }, { L.moznaUlepszyc(D, p.klasa, p.dane, p.zloto), L.sumaPoziomow(p.dane) })
+	end
+	for i, p in P.odmiana do
+		sprawdz("odmiana", i, { p.mianownik, p.dopelniacz }, { L.ileMaterialow(D, p.n), L.ileMaterialowDop(D, p.n) })
 	end
 	return #zle == 0, n, zle
 end

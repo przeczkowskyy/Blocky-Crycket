@@ -377,6 +377,8 @@ local function punktCelu(cel, od, kraina)
 		return najblizszyTrener(od)
 	elseif cel == "jajko" then
 		return b and b.inkubator and pozycja(sciezka(b.inkubator)) -- inkubator biomu (swiat/pety_proba)
+	elseif cel == "kowal" then
+		return pozycja(sciezka(Z.kowal_e)) -- punkt E kowala w bazarze (swiat/kowal_proba)
 	elseif not b then
 		return nil
 	elseif cel == "straznik" then
@@ -408,6 +410,8 @@ local function stanGracza()
 		s[b.pole_straznika] = gracz:GetAttribute(b.atrybut_straznika) == true
 		if b.id == "bagno" then
 			s.bagno = workspace:FindFirstChild(b.kontener) ~= nil
+		elseif b.id == "dzungla" then
+			s.dzungla = workspace:FindFirstChild(b.kontener) ~= nil
 		end
 	end
 	local sg = workspace:FindFirstChild(Z.stan_gracza)
@@ -438,6 +442,13 @@ local function stanGracza()
 	s.jajko = workspace:FindFirstChild(Z.pety) ~= nil and type(cena) == "number" and type(zloto) == "number" and zloto >= cena
 	local kupione = bj and bj.atrybut_kupionych_jajek and gracz:GetAttribute(bj.atrybut_kupionych_jajek)
 	s.kupione = if type(kupione) == "number" then kupione else 0
+	-- kowal na próbę (swiat/kowal_proba, 18.11.2026): atrybuty gracza pisze jego serwer; bez kontenera — nic
+	s.kowal = workspace:FindFirstChild(Z.kowal) ~= nil and type(gracz:GetAttribute(Z.atrybut_kowal_dostepne)) == "string"
+	local zapasy = gracz:GetAttribute(Z.atrybut_kowal_zapasy)
+	local ulepszen = gracz:GetAttribute(Z.atrybut_kowal_ulepszen)
+	s.kowal_zapas = s.kowal and type(zapasy) == "number" and zapasy > 0
+	s.kowal_ulepsz = s.kowal and gracz:GetAttribute(Z.atrybut_kowal_ulepsz) == true
+	s.kowal_ulepszen = if type(ulepszen) == "number" then ulepszen else 0
 	for pole, w in wymuszone do
 		s[pole] = w
 	end
@@ -541,9 +552,11 @@ sterowanie.OnInvoke = function(polecenie, a, b)
 			widoczne = pasek.Visible, strzalka = strzalka.Visible, znacznik = znacznik.Enabled,
 			ukryte = s.ukryte, kraina = s.kraina, miejsce = s.miejsce, wygrane = s.wygrane, przegrane = s.przegrane,
 			ostatni = s.ostatni, trenowal = s.trenowal, wylaczone = sesja.wylaczone, bagno = s.bagno,
-			straznik = s.straznik, straznik_bagna = s.straznik_bagna,
+			straznik = s.straznik, straznik_bagna = s.straznik_bagna, straznik_dzungli = s.straznik_dzungli,
+			dzungla = s.dzungla,
 			stan_gracza = s.stan_gracza, trening_wzmacnia = s.trening_wzmacnia, daneLasu = daneBiomow.las ~= nil,
-			jajko = s.jajko, kupione = s.kupione,
+			jajko = s.jajko, kupione = s.kupione, kowal = s.kowal, kowal_zapas = s.kowal_zapas,
+			kowal_ulepsz = s.kowal_ulepsz, kowal_ulepszen = s.kowal_ulepszen,
 		}
 	elseif polecenie == "wylacz" then
 		sesja.wylaczone = true

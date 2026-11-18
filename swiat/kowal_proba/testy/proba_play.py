@@ -16,8 +16,10 @@ do plików), wynik bez nazw kont.
   K03 kuźnia z kilku stron (zrzuty: przód, ¾ z lewej i prawej, od drzwi zbrojowni, kowal przy kowadle)
   K04 prawdziwe E przy kowalu otwiera okno (zrzut); lista przedmiotów klasy
   K05 łup: haczyk (nowy przedmiot → założony, napis) i prawdziwa droga przez przyrost tokenów krainy (ochrona ≤ 10)
-  K06 walka z nowymi liczbami: opis bohatera z przedmiotami; walka w lesie-pasie (jeśli jest) z wpisem kowala
-  K07 rozbiórka zapasu prawdziwym kliknięciem (materiały +N; zrzut)
+  K06 walka z nowymi liczbami: wpis kowala = oczekiwany; wejście do lasu jak gracz (TELEPORT → chmury → Las, jak
+      swiat/przejscie_gry/proba_dymna.py), prawdziwe E przy slime'ie: bohater walki ma broń i pancerz z przedmiotami,
+      model bohatera w walce nosi przedmiot z łupu (atrybut Stroj); zrzut walki i karty wyniku
+  K07 wskazówka celu „kowal” (krok g, znacznik nad E kowala) i rozbiórka zapasu prawdziwym kliknięciem (materiały +N; zrzut)
   K08 ulepszenie prawdziwym kliknięciem: Złoto i materiały w dół, poziom w górę, klip radości kowala (zrzut)
   K09 odmowy serwera: za mało Złota, za mało materiałów, daleko od kowala, zły przedmiot — nic się nie zmienia
   K10 reset postaci: przedmioty, poziomy i wpis Modyfikatory zostają; okno działa
@@ -106,13 +108,47 @@ KOD = {
     "walcz": 'return tostring(workspace.LasPasGra.Sygnaly.SterowanieKlienta:Invoke("walcz", "%s"))',
     "klient_lasu": H + J + 'return H:JSONEncode(J(workspace.LasPasGra.Sygnaly.SterowanieKlienta:Invoke("stan")))',
     "odtw": H + J + 'return H:JSONEncode(J(workspace.TestWalki2.Sygnaly.Sterowanie:Invoke(%s)))',
+    # wejście do lasu jak gracz (te same kroki co swiat/przejscie_gry/proba_dymna.py; cudze kontenery tylko czytane)
+    "chmury_trwa": ('local k = workspace:FindFirstChild("TeleportChmury") return tostring(k and k:GetAttribute("Trwa"))'),
+    "chmury_faza": ('local k = workspace:FindFirstChild("TeleportChmury") local s = k and '
+                    'k.Sygnaly.SterowanieKlienta:Invoke("stan") return tostring(s and s.biezacy and s.biezacy.faza)'),
+    "postac": H + J + ('local lp = game:GetService("Players").LocalPlayer local hrp = lp.Character and '
+                       'lp.Character:FindFirstChild("HumanoidRootPart") local k = workspace:FindFirstChild("LasPasGra") '
+                       'local p = k and (k.Sygnaly.SterowaniePasaKlienta:Invoke("stan") or {}).przelot '
+                       'return H:JSONEncode({ poz = hrp and J(hrp.Position), kotwica = hrp and hrp.Anchored, '
+                       'kamera = workspace.CurrentCamera.CameraType.Name, przelot = p ~= nil and p ~= false, '
+                       'walka = k and k.Sygnaly.SterowanieKlienta:Invoke("stan").walka })'),
+    "slime": H + J + ('local k = workspace.LasPasGra local hrp = game:GetService("Players").LocalPlayer.Character'
+                      '.HumanoidRootPart local best, bd for _, c in k.Stan:GetChildren() do local q = c:GetAttribute('
+                      '"Pozycja") if q and c:GetAttribute("Gatunek") == "lesny_slime" and c:GetAttribute("Stan") ~= "zajety" '
+                      'then local d = (q - hrp.Position).Magnitude if not bd or d < bd then best, bd = c, d end end end '
+                      'return H:JSONEncode(if best then { id = best.Name, p = J(best:GetAttribute("Pozycja")) } else {})'),
+    "kamera_za": ('local lp = game:GetService("Players").LocalPlayer local cam = workspace.CurrentCamera '
+                  'local h = lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") if h then '
+                  'cam.CameraType = Enum.CameraType.Custom task.delay(0.05, function() cam.CFrame = CFrame.lookAt('
+                  'h.Position - h.CFrame.LookVector * 10 + Vector3.new(0, 4, 0), h.Position + h.CFrame.LookVector * 4) end) '
+                  'end return "ok"'),
+    # scena walki jest lokalna i leży w kontenerze, który zgłosił walkę (w lesie: Workspace/LasPasGra, przy tablicy
+    # prototypu: Workspace/TestWalki2) — szukamy folderu ScenaLokalna w każdym kontenerze Workspace
+    "stroj_w_walce": H + ('local w = {} for _, k in workspace:GetChildren() do local s = k:FindFirstChild("ScenaLokalna") '
+                          'if s then for _, m in s:GetDescendants() do if m:IsA("Model") and '
+                          'm:GetAttribute("Stroj") ~= nil then table.insert(w, { model = m.Name, stroj = m:GetAttribute("Stroj"), '
+                          'kontener = k.Name }) end end end end return H:JSONEncode(w)'),
+    "widoczny": ('local o = game:GetService("Players").LocalPlayer.PlayerGui for _, n in string.split("%s", ".") do '
+                 'o = o and o:FindFirstChild(n) end if not o then return "false" end local a = o while a and a:IsA("GuiObject") '
+                 'do if not a.Visible then return "false" end a = a.Parent end '
+                 'return tostring(a and (not a:IsA("ScreenGui") or a.Enabled))'),
+    "wskazowka": H + ('local k = workspace:FindFirstChild("WskazowkiGry") if not k then return H:JSONEncode({ brak = true }) end '
+                      'local s = k.Sygnaly.SterowanieKlienta:Invoke("stan") return H:JSONEncode({ krok = s.krok, tekst = s.tekst, '
+                      'widoczne = s.widoczne, znacznik = s.znacznik, kowal = s.kowal, zapas = s.kowal_zapas, '
+                      'ulepszen = s.kowal_ulepszen })'),
     "licz_stanu": H + ('local s = workspace.StanGracza return H:JSONEncode({ bohaterow = s:GetAttribute("LicznikBohaterow"), '
                        'lupow = s:GetAttribute("LicznikLupow") })'),
 }
 DOMYSLNE = {"hak_serwera": ("lup", '"zwykly"', "0"), "ustaw_atr": ("Gold", "0"), "tokeny": ("TokenyKrainy_las",),
             "przy_kowalu": (0.0, 0.0, 0.0, 1.0, 1.0), "kamera": (0.0, 5.0, 0.0, 1.0, 1.0, 1.0), "klient": ("stan", "nil"),
             "zdalnie": ("widok", "nil"), "emulacja": ("nil",), "stroje": ("zaloz", "wojownik", "nil"),
-            "potwor_w_strefie": ("s1",), "walcz": ("x",), "odtw": ('"stan"',)}
+            "potwor_w_strefie": ("s1",), "walcz": ("x",), "odtw": ('"stan"',), "widoczny": ("HUD.X",)}
 
 
 def sprawdz_kod():
@@ -229,6 +265,55 @@ def main(argv):
         def klik(nazwa):
             return sp.klik("KowalProbaOkno.Ekran.Okno." + nazwa)
 
+        def kamera_za():
+            # kamera postaci za plecami (po zrzutach z ustawioną kamerą i po przestawieniu postaci)
+            sp.luau(KOD["kamera_za"])
+            time.sleep(0.5)
+
+        def do_lasu():
+            """TELEPORT → chmury → strzałka w prawo + Enter = Las, potem koniec przelotu (jak proba_dymna D02)."""
+            sp.luau(KOD["kamera_zwykla"])
+            sp.klik("HUD.LeftColumn.TeleportSlot.Teleport")
+            if not czekaj(lambda: sp.luau(KOD["chmury_trwa"]).strip() == "true", 8, 0.5):
+                return {"blad": "chmury się nie otworzyły"}
+            czekaj(lambda: sp.luau(KOD["chmury_faza"]).strip() == "wybor", 10, 0.3)
+            sp.klawisz("Right")
+            time.sleep(0.8)
+            sp.klawisz("Return")
+            w_lesie = czekaj(lambda: (lambda p: p if (p.get("poz") or [0])[0] >= 1066 else None)(js(KOD["postac"])), 12, 0.5)
+            if not w_lesie:
+                return {"blad": "postać nie doszła do lasu"}
+            czekaj(lambda: js(KOD["postac"]).get("przelot"), 8, 0.4)
+            gotowe = czekaj(lambda: (lambda p: p if p.get("kamera") == "Custom" and not p.get("kotwica")
+                                     and not p.get("przelot") else None)(js(KOD["postac"])), 30, 1.0)
+            return {"poz": w_lesie.get("poz"), "po_przelocie": bool(gotowe)}
+
+        def walka_ze_slimem():
+            """Prawdziwe E przy najbliższym slime'ie (do 6 prób) → opis bohatera i strój modelu w walce, zrzuty."""
+            for _ in range(6):
+                c = js(KOD["slime"])
+                if not c.get("p"):
+                    return {"blad": "brak wolnego slime'a"}
+                q = c["p"]
+                sp.luau(KOD["przy_kowalu"] % (q[0] - 4, q[1] + 3.2, q[2], q[0], q[2]), "Server")
+                kamera_za()
+                sp.klawisz("E")
+                if czekaj(lambda: js(KOD["postac"]).get("walka"), 5, 0.4):
+                    break
+            else:
+                return {"blad": "E nie ruszyło walki"}
+            m = mody()   # opis bohatera z serwera stanu = ten, którym liczono tę walkę (wpis kowala już ustawiony)
+            time.sleep(1.5)
+            stroje = czekaj(lambda: js(KOD["stroj_w_walce"]) or None, 6, 0.5) or []
+            zrzut("k06_walka_w_przedmiotach")
+            sp.klik("TestWalki2Cutscenka.Kadr.Tempo.Tempo4.Przycisk")
+            sciezka_karty = "TestWalki2Cutscenka.Kadr.Wynik.Karta.Zamknij.Przycisk"
+            karta = czekaj(lambda: sp.luau(KOD["widoczny"] % sciezka_karty).strip() == "true", 60, 1.0)
+            zrzut("k06_karta_wyniku")
+            sp.klik(sciezka_karty)
+            czekaj(lambda: js(KOD["postac"]).get("kamera") == "Custom", 10, 0.5)
+            return {"bohater": m["bohater"], "mod": m["mod"], "stroje": stroje, "karta": bool(karta)}
+
         sp.luau(KOD["bez_nazwy"])
         time.sleep(1.0)
         # ------------------------------------------------------------------ K01
@@ -264,10 +349,12 @@ def main(argv):
             zrzut("k03_kuznia_od_zbrojowni", [uk["X0"] + 50.5, 6.5, uk["Z0"] - 12.0], cel)
             kw = D["kuznia"]["kowal"]
             zrzut("k03_kowal_przy_kowadle", _swiat(D, (-1.5, 4.6, 6.0)), [kw[0], kw[1] + 2.6, kw[2]])
+            sp.luau(KOD["kamera_zwykla"])
             punkt("K03", None if a.bez_zrzutow else True, "zrzuty kuźni z %d stron i kowala przy kowadle → klatki/" % (len(ujecia) + 1))
         # ------------------------------------------------------------------ K04 prawdziwe E
         if chce("K04"):
             przy_kowalu()
+            kamera_za()
             sp.klawisz("E")
             ok = czekaj(lambda: js(KOD["atr_klienta"]).get("okno"), 6)
             st = czekaj(lambda: (lambda w: w if w.get("wiersze", 0) > 0 else None)(klient("stan")), 6) or {}
@@ -283,6 +370,7 @@ def main(argv):
             w = hak("lup", '"zwykly"', "%.4f" % ((i + 0.5) / len(lista)))
             g1 = gracz()
             napis = czekaj(lambda: js(KOD["atr_klienta"]).get("napis"), 5)
+            kamera_za()
             zrzut("k05_lup_nowy_przedmiot")
             ok1 = w.get("ok") and nowy in (g1.get("dostepne") or "").split(",") and nowy in (g1.get("stroj") or "").split(",")
             sv0 = js(KOD["atr_kowala"], "Server").get("LicznikLupow") or 0
@@ -303,40 +391,37 @@ def main(argv):
             m = mody()
             oczek = LK.mod(D, k, LK.czyste(D, st["dane"]), st["zalozone"])
             wpis_ok = all(abs((m["mod"].get(p) or 0) - oczek.get(p, 0)) < 1e-6 for p in ("bron", "pancerz"))
-            walka = None
+            z_lupu = [p for p in st["zalozone"] if not D["przedmioty"][p]["podstawowy"]]
+            wynik = {"wpis": wpis_ok, "z_lupu": z_lupu}
+            L = gracz().get("poziom") or 1          # poziom przed walką (opis bohatera brany na jej starcie)
             if edit.get("las"):
-                przed = js(KOD["licz_stanu"], "Server")
-                cel = {}
-                for strefa in ("s1", "s2", "m1", "s3"):
-                    cel = js(KOD["potwor_w_strefie"] % strefa, "Server")
-                    if cel.get("id"):
-                        break
-                dane["K06_cel"] = cel
-                if cel.get("id"):
-                    p = cel["p"]
-                    sp.luau(KOD["przy_kowalu"] % (p[0] + 4, p[1] + 3.2, p[2], p[0], p[2]), "Server")
-                    time.sleep(0.8)
-                    dane["K06_walcz"] = sp.luau(KOD["walcz"] % cel["id"])
-                    if czekaj(lambda: js(KOD["klient_lasu"]).get("walka"), 10):
-                        time.sleep(2.5)
-                        zrzut("k06_walka_w_lesie_z_przedmiotami")
-                        czekaj(lambda: js(KOD["odtw"] % '"stan"').get("faza") == "odtwarzanie", 10)
-                        js(KOD["odtw"] % '"przewinDo", 1000')
-                        time.sleep(2.5)
-                        js(KOD["odtw"] % '"zamknij"')
-                        czekaj(lambda: not js(KOD["klient_lasu"]).get("walka"), 30, 1.0)
-                        po = js(KOD["licz_stanu"], "Server")
-                        walka = {"przed": przed, "po": po}
-                sp.luau(KOD["kamera_zwykla"])
-            ok = wpis_ok and (walka is None or (walka["po"].get("bohaterow") or 0) > (walka["przed"].get("bohaterow") or 0))
-            punkt("K06", bool(ok) if walka else (None if wpis_ok else False),
-                  "wpis kowala %s (oczekiwany %s); bohater: broń %s, pancerz %s; walka w lesie: %s"
-                  % (m["mod"], oczek, m["bohater"]["bron"]["obrazenia"], m["bohater"].get("pancerz_przedmiotow"), walka))
+                wynik["las"] = do_lasu()
+                if not wynik["las"].get("blad"):
+                    wynik["walka"] = walka_ze_slimem()
+            dane["K06"] = wynik
+            wk = wynik.get("walka") or {}
+            b = wk.get("bohater") or {}
+            bron_ok = abs((b.get("bron") or {}).get("obrazenia", -1) - (8 + 4 * L + oczek.get("bron", 0))) < 1e-6
+            panc_ok = abs((b.get("pancerz_przedmiotow") or -1) - (3 + 1.5 * L + oczek.get("pancerz", 0))) < 1e-6
+            w_stroju = any(all(p in (x.get("stroj") or "").split(",") for p in z_lupu) for x in wk.get("stroje") or [])
+            ok = wpis_ok and bool(z_lupu) and bron_ok and panc_ok and w_stroju and wk.get("karta")
+            punkt("K06", bool(ok) if edit.get("las") else (None if wpis_ok else False),
+                  "wpis kowala %s (oczekiwany %s); przedmioty z łupu na sobie %s; las %s; w walce broń %s / pancerz %s "
+                  "(wzór L%d + przedmioty: %s / %s), modele w stroju %s, karta wyniku %s"
+                  % (m["mod"], oczek, z_lupu, wynik.get("las"), (b.get("bron") or {}).get("obrazenia"),
+                     b.get("pancerz_przedmiotow"), L, 8 + 4 * L + oczek.get("bron", 0), 3 + 1.5 * L + oczek.get("pancerz", 0),
+                     wk.get("stroje"), wk.get("karta")))
         # ------------------------------------------------------------------ K07 rozbiórka prawdziwym kliknięciem
         if chce("K07"):
             podst = D["klasy"][k]["podstawowe"][0]
             hak("lup", '"zwykly"', "%.4f" % ((lista.index(podst) + 0.5) / len(lista)))
             przy_kowalu()
+            # wskazówka celu „kowal” (swiat/wskazowki_gry, krok g): po wygranej (K06), z zapasem, przed 1. ulepszeniem
+            kamera_za()
+            wsk = czekaj(lambda: (lambda w: w if w.get("krok") or w.get("brak") else None)(js(KOD["wskazowka"])), 4) or {}
+            dane["K07_wskazowka"] = wsk
+            if not wsk.get("brak"):
+                zrzut("k07a_wskazowka_kowal")
             klient("zamknij")
             klient("otworz")
             time.sleep(1.0)
@@ -346,7 +431,10 @@ def main(argv):
             klik("Szczegoly.Rozbierz")
             ok = czekaj(lambda: (gracz().get("materialy") or 0) == m0 + D["rozbiorka"]["materialy"], 5)
             zrzut("k07_rozbiorka")
-            punkt("K07", bool(ok), "materiały %s → %s (zapas %s)" % (m0, gracz().get("materialy"), podst))
+            wsk_ok = wsk.get("brak") or (wsk.get("krok") == "g_kowal_zapas" and wsk.get("znacznik"))
+            punkt("K07", bool(ok) and bool(wsk_ok), "materiały %s → %s (zapas %s); wskazówka %s „%s”, znacznik %s"
+                  % (m0, gracz().get("materialy"), podst, wsk.get("krok") or ("brak pakietu" if wsk.get("brak") else None),
+                     wsk.get("tekst"), wsk.get("znacznik")))
         # ------------------------------------------------------------------ K08 ulepszenie prawdziwym kliknięciem
         if chce("K08"):
             pid = D["klasy"][k]["podstawowe"][0]

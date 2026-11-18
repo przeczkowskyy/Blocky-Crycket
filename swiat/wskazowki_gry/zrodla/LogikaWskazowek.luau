@@ -4,8 +4,10 @@
 	sprawdzPrzypadki porównuje z wynikami Pythona zapisanymi w DaneWskazowek.przypadki).
 
 	L.krok(D, s) → nil | { id, tekst, cel }   — który krok pokazać (s: klasa, ukryte, wylaczone, kraina, miejsce, wygrane,
-	                                             przegrane, ostatni, trenowal, straznik, straznik_bagna, stan_gracza, trening_wzmacnia,
-	                                             poziom, bagno, jajko, kupione)
+	                                             przegrane, ostatni, trenowal, straznik, straznik_bagna, straznik_dzungli,
+	                                             stan_gracza, trening_wzmacnia, poziom, bagno, dzungla, jajko, kupione,
+	                                             kowal, kowal_zapas, kowal_ulepsz,
+	                                             kowal_ulepszen); krok „kowal” tylko zamiast c_* (18.11.2026)
 	L.miejsce(x, z, prostokat, bramaX) → "las" | "za_brama" | "miasto"
 	L.wynikWalki(napis) → "wygrana" | "przegrana" | nil
 ]]
@@ -29,6 +31,10 @@ local function zbuduj(D, kid, poziom)
 	return { id = kid, tekst = tekst, cel = k.cel }
 end
 
+-- kroki „zdobywaj poziomy / Strażnik czeka” każdego biomu (las bez przyrostka)
+local C_POZIOMY = { las = "c_poziomy", bagno = "c_poziomy_bagno", dzungla = "c_poziomy_dzungla" }
+local C_STRAZNIK = { las = "c_straznik", bagno = "c_straznik_bagno", dzungla = "c_straznik_dzungla" }
+
 -- w biomie przed jego Strażnikiem (liczniki walk osobno dla każdego biomu)
 local function postep(D, s, kraina)
 	if s.ostatni == "przegrana" and not s.trenowal then
@@ -39,15 +45,18 @@ local function postep(D, s, kraina)
 	end
 	if (s.wygrane or 0) > 0 then
 		if s.stan_gracza then
-			return zbuduj(D, if kraina == "las" then "c_poziomy" else "c_poziomy_bagno", s.poziom)
+			return zbuduj(D, C_POZIOMY[kraina] or "c_poziomy", s.poziom)
 		end
-		return zbuduj(D, if kraina == "las" then "c_straznik" else "c_straznik_bagno")
+		return zbuduj(D, C_STRAZNIK[kraina] or "c_straznik")
 	end
 	return zbuduj(D, "b_potwor")
 end
 
 local function miasto(D, s)
 	if s.straznik then
+		if s.straznik_bagna and s.dzungla then
+			return zbuduj(D, "e_dzungla_miasto")
+		end
 		return zbuduj(D, if s.bagno then "e_bagno_miasto" else "e_brama_miasto")
 	end
 	if s.ostatni == "przegrana" and not s.trenowal then
@@ -62,7 +71,7 @@ local function miasto(D, s)
 	return zbuduj(D, "a_teleport")
 end
 
-function L.krok(D, s)
+local function glowny(D, s)
 	if s.wylaczone or not s.klasa or s.ukryte then
 		return nil
 	end
@@ -82,9 +91,18 @@ function L.krok(D, s)
 	if miejsce == "miasto" or kraina == nil then
 		return miasto(D, s)
 	end
+	if kraina == "dzungla" then
+		if s.straznik_dzungli then
+			return zbuduj(D, if miejsce == "za_brama" then "e_koniec_dzungla" else "e_brama_pustynia")
+		end
+		return postep(D, s, "dzungla") -- za bramą Dżungli bez Węża serwer cofa — jak w Bagnie
+	end
 	if kraina == "bagno" then
 		if s.straznik_bagna then
-			return zbuduj(D, if miejsce == "za_brama" then "e_koniec_bagno" else "e_brama_dzungla")
+			if miejsce == "za_brama" then
+				return zbuduj(D, if s.dzungla then "e_dalej_dzungla" else "e_koniec_bagno")
+			end
+			return zbuduj(D, if s.dzungla then "e_brama_do_dzungli" else "e_brama_dzungla")
 		end
 		return postep(D, s, "bagno") -- za bramą Bagna bez Strażnika serwer cofa — jak w Bagnie
 	end
@@ -95,6 +113,24 @@ function L.krok(D, s)
 		return zbuduj(D, if s.bagno then "e_brama_bagno" else "e_brama")
 	end
 	return postep(D, s, "las") -- za bramą lasu bez Strażnika serwer cofa — jak w lesie
+end
+
+-- kowal na próbę (swiat/kowal_proba, 18.11.2026): zapas do rozbiórki albo Złoto i materiały na ulepszenie — tylko
+-- zamiast „zdobywaj poziomy / Strażnik czeka” (c_*), do pierwszego ulepszenia; nigdy nie przykrywa TELEPORT, pierwszej
+-- walki, jajka, treningu po przegranej ani bramy
+function L.krok(D, s)
+	local w = glowny(D, s)
+	if w == nil or string.sub(w.id, 1, 2) ~= "c_" or not s.kowal or (s.kowal_ulepszen or 0) > 0 then
+		return w
+	end
+	if not (s.kowal_zapas or s.kowal_ulepsz) then
+		return w
+	end
+	local kid = if s.kowal_zapas then "g_kowal_zapas" else "g_kowal_ulepsz"
+	if (s.miejsce or "miasto") ~= "miasto" then
+		kid = kid .. "_las"
+	end
+	return zbuduj(D, kid)
 end
 
 function L.miejsce(x, z, prostokat, bramaX)

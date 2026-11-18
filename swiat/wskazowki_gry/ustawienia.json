@@ -23,9 +23,20 @@
     "c_straznik_bagno": {"tekst": "Strażnik Topieli czeka na końcu Bagna", "cel": "straznik"},
     "e_brama_dzungla": {"tekst": "Brama do Dżungli otwarta — Dżungla już wkrótce", "cel": "brama"},
     "e_koniec_bagno": {"tekst": "Dżungla już wkrótce — na dziś to koniec drogi", "cel": null},
+    "e_brama_do_dzungli": {"tekst": "Brama otwarta — idź do Dżungli", "cel": "brama"},
+    "e_dalej_dzungla": {"tekst": "Idź dalej — przed tobą Dżungla", "cel": null},
+    "e_dzungla_miasto": {"tekst": "Dżungla otwarta: TELEPORT → Dżungla", "cel": "teleport"},
+    "c_poziomy_dzungla": {"tekst": "Zdobywaj poziomy (masz %d) — Wąż Stu Lian na końcu Dżungli", "cel": "straznik"},
+    "c_straznik_dzungla": {"tekst": "Wąż Stu Lian czeka na końcu Dżungli", "cel": "straznik"},
+    "e_brama_pustynia": {"tekst": "Brama do Pustyni otwarta — Pustynia już wkrótce", "cel": "brama"},
+    "e_koniec_dzungla": {"tekst": "Pustynia już wkrótce — na dziś to koniec drogi", "cel": null},
     "f_jajko": {"tekst": "Masz dość Złota na jajko — inkubator przy wejściu do lasu", "cel": "jajko"},
     "f_jajko_miasto": {"tekst": "Masz dość Złota na jajko: TELEPORT → Las (inkubator)", "cel": "teleport"},
-    "f_jajko_bagno": {"tekst": "Masz dość Złota na jajko Bagna — inkubator przy pomoście", "cel": "jajko"}
+    "f_jajko_bagno": {"tekst": "Masz dość Złota na jajko Bagna — inkubator przy pomoście", "cel": "jajko"},
+    "g_kowal_zapas": {"tekst": "Masz zapasowy przedmiot — rozbierz go u kowala w bazarze", "cel": "kowal"},
+    "g_kowal_ulepsz": {"tekst": "Możesz ulepszyć przedmiot u kowala w bazarze", "cel": "kowal"},
+    "g_kowal_zapas_las": {"tekst": "Zapasowy przedmiot do rozbiórki: Kamień Powrotu → kowal", "cel": "kamien"},
+    "g_kowal_ulepsz_las": {"tekst": "Możesz ulepszyć przedmiot: Kamień Powrotu → kowal", "cel": "kamien"}
   },
   "zrodla": {
     "biomy": [
@@ -36,9 +47,12 @@
       {"id": "bagno", "kontener": "BagnoPasGra", "dane": "BagnoPasGra/Moduly/DanePasa", "kamien": "BagnoPasGra/Punkty/KamienPowrotu",
        "atrybut_straznika": "PokonalStraznikaBagna", "pole_straznika": "straznik_bagna",
        "inkubator": "PetyProba/Punkty/E inkubator Bagna", "atrybut_ceny_jajka": "PetyCenaJajkaBagna",
-       "atrybut_kupionych_jajek": "PetyKupioneJajkaBagna"}
+       "atrybut_kupionych_jajek": "PetyKupioneJajkaBagna"},
+      {"id": "dzungla", "kontener": "DzunglaPasGra", "dane": "DzunglaPasGra/Moduly/DanePasa",
+       "kamien": "DzunglaPasGra/Punkty/KamienPowrotu", "atrybut_straznika": "PokonalStraznikaDzungli",
+       "pole_straznika": "straznik_dzungli"}
     ],
-    "walki": {"LasPasGra": "las", "LasPotwory": "las", "BagnoPasGra": "bagno"},
+    "walki": {"LasPasGra": "las", "LasPotwory": "las", "BagnoPasGra": "bagno", "DzunglaPasGra": "dzungla"},
     "stan_potworow": "Stan",
     "stan_gracza": "StanGracza",
     "trening": "TreningProba",
@@ -59,7 +73,13 @@
     "stan_gracza_trening": "TreningPodlaczony",
     "chmury_trwa": "Trwa",
     "pety": "PetyProba",
-    "atrybut_zlota": "Gold"
+    "atrybut_zlota": "Gold",
+    "kowal": "KowalProba",
+    "kowal_e": "KowalProba/Kuznia/E",
+    "atrybut_kowal_dostepne": "KowalDostepne",
+    "atrybut_kowal_zapasy": "KowalZapasy",
+    "atrybut_kowal_ulepsz": "KowalMoznaUlepszyc",
+    "atrybut_kowal_ulepszen": "KowalUlepszen"
   },
   "ui": {
     "y_px": 56,

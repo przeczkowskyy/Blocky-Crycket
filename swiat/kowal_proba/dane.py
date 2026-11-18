@@ -307,7 +307,7 @@ def _nil(v):
 def przypadki(D):
     """Wejścia i wyniki liczone lustrem (logika_kowala.py) — Luau sprawdza je w Studio (LogikaKowala.sprawdzPrzypadki)."""
     P = {"czyste": [], "mod": [], "koszt": [], "rozbierz": [], "plan": [], "lup": [], "stroj": [], "ranga": [],
-         "widok": [], "opis": []}
+         "widok": [], "opis": [], "odmiana": [], "mozna": []}
     for v in (None, "zle", {"przedmioty": {"rycerz_miecz": {"poziom": 3, "zapas": 1}, "nieznany": {"poziom": 1}},
                             "materialy": 7.5, "bezLupu": 2, "klasy": {"wojownik": True, "obcy": True}},
               {"przedmioty": {"kot_mag_kostur": {"poziom": 99, "zapas": -1}}, "materialy": -3}):
@@ -342,6 +342,10 @@ def przypadki(D):
         for napis in (None, "", ",".join(ids), ids[0] + "," + ids[-1], ",".join(ids + ([czesc] if czesc else []))):
             P["stroj"].append({"klasa": k, "dane": dane, "napis": _nil(napis),
                                "wynik": _nil(LK.stroj_do_ustawienia(D, k, dane, napis))})
+        for zl in (0, 149, 150, 10000):
+            for dn in (dane, pelna):
+                P["mozna"].append({"klasa": k, "dane": dn, "zloto": zl, "wynik": LK.mozna_ulepszyc(D, k, dn, zl),
+                                   "suma": LK.suma_poziomow(dn)})
         P["widok"].append({"klasa": k, "dane": pelna, "zalozone": LK.zalozone(D, k, pelna, None), "zloto": 150,
                            "bohater": "Broń 12", "wynik": LK.widok(D, pelna, k, LK.zalozone(D, k, pelna, None), 150,
                                                                   "Broń 12")})
@@ -350,6 +354,8 @@ def przypadki(D):
     for o in ({"bron": {"obrazenia": 30.4}, "pancerz_przedmiotow": 13.5, "tarcza": {"blok": 0.2828}},
               {"bron": {"obrazenia": 12}}, "zle"):
         P["opis"].append({"opis": o, "wynik": LK.opis_bohatera(D, o)})
+    for n in (0, 1, 2, 4, 5, 11, 12, 14, 21, 22, 25, 104, 112):
+        P["odmiana"].append({"n": n, "mianownik": LK.ile_materialow(D, n), "dopelniacz": LK.ile_materialow_dop(D, n)})
     return P
 
 
