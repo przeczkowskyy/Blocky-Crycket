@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T17:43:13+01:00",
+ "aktualizacja": "2026-11-18T18:19:46+01:00",
  "prace": [
   {
    "id": "bohater-bieg",
@@ -14,21 +14,6 @@
    "obszary": [
     "swiat/bohater_swiat/**",
     "studio:BohaterSwiat"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "trening-arena",
-   "tytul": "Training Center: wygląd areny i stanowisk mini-gier",
-   "stan": "w_toku",
-   "etap": "budowa areny w Studio i próba w grze",
-   "start": "2026-11-18T17:02:35+01:00",
-   "koniec_szacowany": "2026-11-18T18:35:00+01:00",
-   "aktualizacja": "2026-11-18T17:43:13+01:00",
-   "obszary": [
-    "swiat/trening_proba/**",
-    "studio:TreningProba"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
