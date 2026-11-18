@@ -1,0 +1,26 @@
+{
+ "id": "r-20261118-032614-ab95",
+ "tytul": "Jajko Dżungli w Studio: kupno, wyklucie, pięć petów",
+ "opis_md": "- Jajko Dżungli stoi w Studio: inkubator na Tarasie Przybycia z tablicą szans i totemem ruin, cena 1350 Złota, pięć petów chodzi za graczem.\n- Sprawdzone w grze: brak Złota, kupno klawiszem E, wyklucie każdego peta, zagroda z dziesięcioma petami, wybór peta, wskazówka „Masz dość Złota na jajko Dżungli”.\n- Do oceny razem z raportem „Jajko Dżungli: pięć petów do oceny” (tam projekty, cena i liczby).\n\nSzczegóły:\n\n**Jak sprawdzić:** Play → TELEPORT → Dżungla → inkubator po prawej od przybycia → E (potrzeba 1350 Złota; w próbie Złoto ustawiał test).\n\n**Próby w grze:** jajko Dżungli 14 punktów w porządku, bez błędów w konsoli; jajko Bagna 14 z 14 i jajko leśne 17 z 17 po przebudowie; próba całej drogi gracza 14 z 14. Trzy jajka mają stałe ceny 300 / 750 / 1350 (D-105).\n\n**Walka z petem:** walka w Dżungli z Jaguarkiem jako petem ruszyła na arenie Dżungli; serwer liczy graczowi premię peta (Szczęście +20%, łup +5%) i pasywki Dzikości. Gracz testowy miał 1. poziom i przegrał ze Zwijogonem 17. poziomu — wygranej walki z petem Dżungli w grze jeszcze nie obejrzałem.\n\n**Niesprawdzone:** Mag i Zwiadowca z petami Dżungli (próby szły Wojownikiem), działanie Run w prawdziwej walce, dwóch graczy naraz, telefon.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T03:26:14+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/PetyProba",
+   "etykieta": "Pety"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/pety_proba/PROJEKT.md",
+   "etykieta": "Projekt"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ]
+}
