@@ -1,0 +1,38 @@
+{
+ "opis": "Ustawienia pakietu „wystawa ras” (swiat/rasy_proba). Status: propozycja (D-104, etap B) — figury do obejrzenia w grze, niczego nie podpinają. Współrzędne w układzie świata Studio (x, z); wysokość ziemi budowniczy mierzy promieniem w dół.",
+ "kontener": "RasyProba",
+ "prefiks": "[RasyProba] ",
+ "zrodlo": "swiat/rasy_proba",
+ "skrypt_spoczynku": "SpoczynekRas",
+ "miejsce_opis": "Plac przed płytą startu: szpaler po obu stronach drogi do gospody, 14–25 studów od startu, twarzami do płyty startu. Gracz po wejściu patrzy w tę stronę. Środkowa droga (8,5 studa) zostaje wolna.",
+ "patrz": [0.0, 0.0],
+ "figury": [
+  {"id": "czlowiek", "poz": [-21.5, -12.5]},
+  {"id": "elf", "poz": [-16.5, -12.5]},
+  {"id": "mroczny_elf", "poz": [-11.5, -12.5]},
+  {"id": "ork", "poz": [-6.5, -12.5]},
+  {"id": "demon", "poz": [6.5, -12.5]},
+  {"id": "goblin", "poz": [11.5, -12.5]},
+  {"id": "polbog", "poz": [16.5, -12.5]}
+ ],
+ "nazwa_czlowieka": "Człowiek",
+ "wzrost_ciala": 5.3,
+ "wolne_miejsce": {"pudlo": [4.9, 7.2, 4.9], "nad_ziemia": 0.4},
+ "tabliczka": {"nad_szczytem": 0.9, "szer": 5.0, "wys": 1.1, "zasieg": 80},
+ "spoczynek": {
+  "opis": "Oddech: kąty w szczycie (stopnie, układ danych postaci: rx > 0 = skłon w przód, rz > 0 = w stronę lewej ręki); klatki 0 i ostatnia = spoczynek.",
+  "okres_s": 2.6,
+  "kosci": {"UpperTorso": [2.0, 0.0, 0.0], "Head": [-2.0, 0.0, 1.0], "LeftUpperArm": [0.0, 0.0, 4.0], "RightUpperArm": [0.0, 0.0, -4.0]}
+ },
+ "proba": {
+  "dopuszczalny_czas_klatki_ms": 34.0,
+  "tolerancja_wzrostu": 0.03,
+  "tolerancja_stop": 0.03,
+  "kamera_gracza": {"z": [0.0, 10.5, 13.0], "na": [0.0, 3.2, -12.5]},
+  "kamery": {
+   "lewa_grupa": {"z": [-10.0, 5.0, -3.0], "na": [-14.0, 3.5, -12.5]},
+   "prawa_grupa": {"z": [10.5, 5.0, -2.5], "na": [11.5, 3.6, -12.5]},
+   "z_boku": {"z": [-30.0, 8.5, 4.0], "na": [-2.0, 3.0, -12.5]}
+  }
+ }
+}
