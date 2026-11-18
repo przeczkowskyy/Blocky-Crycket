@@ -1,0 +1,47 @@
+{
+ "id": "r-20261118-022604-cc5d",
+ "tytul": "Jajko Dżungli: pięć petów do oceny",
+ "opis_md": "- Jajko Dżungli ma pięć nowych petów z modelami: Ananasik, Leniwczyk, Tukanik, Posążek i Jaguarek. W Studio jeszcze ich nie ma — wejdą po regresji tej nocy.\n- Cena jajka: 1350 Złota, stała w biomie (D-105), liczona tą samą regułą co w Bagnie — pierwsze jajko po ok. 6 minutach walk w Dżungli.\n- Do oceny: wygląd petów, ich skutki i cena.\n\nSzczegóły:\n\n| Rzadkość · szansa | Pet | Co daje |\n|---|---|---|\n| Pospolity · 50% | Ananasik | +3% Zręczności |\n| Zwykły · 25% | Leniwczyk | +2% doświadczenia z walk |\n| Rzadki · 15% | Tukanik | +15% Siły, +5% Szczęścia |\n| Epicki · 8% | Posążek | Runy: częstsze umiejętności, +30% Kondycji |\n| Legendarny · 2% | Jaguarek | Dzikość: mocniejsze ciosy, +20% Szczęścia, +5% Złota i doświadczenia |\n\n**Reguła wyważenia (propozycja):** każda rzadkość ma ten sam budżet siły we wszystkich biomach — pospolite i zwykłe prawie nic w walce, rzadkie ok. +5–8 punktów procentowych szansy ze strażnikiem, epickie +8–12, legendarne +10–16. Procenty nie rosną z biomem, bo mnożą statystyki gracza, które same rosną z poziomem. W symulacji (600 walk) Jaguarek daje ze Strażnikiem Gaju +10 / +9 / +5 (Wojownik / Zwiadowca / Mag), Jelonek Gaju +13 / +8 / +6, Perłowa Wydra +12 / +16 / +6.\n\n**Cena:** Złoto z pierwszych 6 minut walk w biomie, zaokrąglone do 50. Dla Bagna ta reguła daje 750 (tyle, ile dziś), dla lasu 250 (dziś 300), dla Dżungli 1350. Do pokonania Węża Stu Lian gracz kupi ok. 9 jajek (las 10,5, Bagno 10). Jajka tylko za Złoto z gry (D-086), szanse jawne na tablicy.\n\n**Dwa nowe żywioły** korzystają ze skutków, które silnik walki już ma: Runy (więcej many z ciosów, słabszy zwykły cios) i Dzikość (seria ciosów i furia). W grze niesprawdzone — tylko symulacja i testy bez Studio.\n\nInkubator Bagna ma teraz w plikach z Blendera tablicę w tym samym miejscu co w grze.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T02:26:04+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/jaguarek/jaguarek.glb",
+   "etykieta": "Jaguarek 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/posazek/posazek.glb",
+   "etykieta": "Posążek 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/tukanik/tukanik.glb",
+   "etykieta": "Tukanik 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/leniwczyk/leniwczyk.glb",
+   "etykieta": "Leniwczyk 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/ananasik/ananasik.glb",
+   "etykieta": "Ananasik 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/pety_proba/PROJEKT.md",
+   "etykieta": "Projekt"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg"
+ ]
+}
