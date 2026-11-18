@@ -552,3 +552,12 @@ Dopisek z 2026-11-18: przy działającym kowalu przymierzalnia strojów (D-071) 
 
 Szczegóły: Potwory i liczby: raport „Dżungla stoi w Studio: trzeci biom do przejścia”; modele: raport „Dżungla: pięć potworów z Blendera do oceny”. Poziomy potworów 17–23 z kalkulatora tempa. Zarys: `swiat/biomy/PLAN_BIOMOW.md` (propozycja). Karol 17.11 o Bagnie: „Strażnik Topieli musi być trudny” — tę samą miarę agent przyjął dla Dżungli.
 **Odpowiedź:**
+
+## 63. Postać gracza w świecie: bohater klasy zamiast awatara?
+- Dziś po świecie chodzi zwykły awatar Roblox, a bohater klasy (Wojownik, Zwiadowca, Mag) pojawia się tylko w walce.
+- Karol 18.11 zlecił próbę: po wyborze klasy gracz chodzi po bazarze i biomach modelem swojego bohatera w założonym stroju.
+- Do wyboru: (a) bohater klasy wszędzie; (b) awatar w świecie, bohater tylko w walce — jak dotąd; (c) gracz sam wybiera w ustawieniach.
+
+Szczegóły: Próba powstaje w `swiat/bohater_swiat/` (kontener `Workspace/BohaterSwiat`) z wyłącznikiem, który przywraca awatar bez przebudowy. Za (a): gracz widzi w świecie strój i przedmioty z D-071, a rasy z D-079 mają sens także poza walką. Za (b): gracze Roblox są przywiązani do własnego awatara, a bohater z klocków to więcej części na ekranie telefonu. Wynik próby i zrzuty dojdą w raporcie w panelu.
+**Odpowiedź:**
+

@@ -1,0 +1,38 @@
+{
+ "id": "r-20261118-080319-72be",
+ "tytul": "Raport ogólny 18.11: stan całej gry",
+ "opis_md": "- W Studio da się dziś przejść grę od wyboru klasy do trzeciego biomu: bazar, teleport przez chmury, Las, Bagno i Dżungla — z walką, łupem, awansem, petami, kowalem i sześcioma mini-grami.\n- To wszystko są próby działające tylko w Studio: nic nie jest opublikowane, postęp nie zapisuje się między wejściami, nikt nie grał na telefonie ani we dwóch.\n- Do premiery brakuje najwięcej: pięciu biomów z ośmiu, Twierdzy, karczmy z zadaniami, lochów, okien sklepów i HUD oraz przeniesienia prób do kodu gry.\n- Na ludzi czeka pięć pytań (58–62), przejście Bagna i Dżungli oraz potwierdzenia Pawła pod decyzjami Karola.\n\nSzczegóły:\n\n**1. Co gracz może dziś zrobić (Studio → Play)**\n\n| Część gry | Stan 18.11 rano | Kto |\n|---|---|---|\n| Ekran ładowania, wybór klasy i rasy | działa; menu głównego i sceny z podestem jeszcze nie ma | Paweł |\n| Krzywe Miasteczko jako bazar | stoi: uliczka sklepów ze sprzedawcami, karczma, zagroda petów, tablica rankingu, portal krain; okien sklepów brak | Karol / okna Paweł |\n| Teleport przez chmury | działa: wybór krainy z góry, zamknięta kraina odmawia | Karol |\n| Las, Bagno, Dżungla | trzy biomy po 25 s biegu, każdy z przelotem kamery, potworami w zagrodach, strażnikiem, bramą do następnego, własną areną walki i jajkiem (300 / 750 / 1350 Złota) | Karol |\n| Walka | silnik v3: mana, statusy, blok, wskrzeszenie, pomijanie znanych walk; łup, awans, kara za przegraną, premia do pierwszej wygranej | Karol |\n| Stan gracza | poziom, doświadczenie, Złoto, Gemy (+10 za poziom, +100 za strażnika), statystyki; zapis napisany, ale wyłączony | Karol |\n| Pety | trzy jajka, wyklucie, pety idą za graczem, zagroda, żywioły (Ognik podpala, Ważeczka zatruwa) | Karol |\n| Kowal | przedmioty z łupu, rozbiórka na materiały, ulepszenia +1…+5; wskazówka celu prowadzi do kuźni | Karol |\n| Stroje | przymierzalnia, bohater w walce nosi to, co gracz ma założone | Karol |\n| Training Center | sześć mini-gier, po jednej na statystykę; układ sprawdzony na ekranie o rozmiarze telefonu | Karol |\n| Dźwięk | muzyka bazaru i lasu, efekty walki; Bagno i Dżungla grają ciszej muzykę lasu | Karol |\n| HUD i okna | panel gracza i waluty działają; przyciski Pets, Quests, Shop i Guilds nic nie otwierają | Paweł |\n\nW Studio stoi 28 moich kontenerów; największe to stary las (22 tys. części), stare miasteczko, Dżungla, Bagno, las-pas, areny i bazar (po 4–5 tys.).\n\n**2. Co jest sprawdzone, a co nie**\n- Sprawdzone automatem w grze (noc 17/18.11, 18 prób): cała droga nowego gracza, trzy biomy, stan gracza, pety, Kowal, stroje, trening, bazar, chmury, dźwięk i trzy próby walki. Zostały dwa znane punkty: za małe napisy w panelu wyboru próby walki na telefonie.\n- Niesprawdzone nigdzie: prawdziwy telefon i dotyk, pad, dwóch graczy naraz, opublikowana gra, dźwięk „na ucho”. Rundy mini-gier i walki grał automat — czy gra jest zrozumiała i przyjemna, muszą ocenić ludzie.\n\n**3. Czego brakuje do premiery (zakres z D-035, D-061, D-102)**\n- **Biomy:** 3 z 8. Zostają Pustynia, Góry z tundrą, Lodowiec, Wulkaniczny i Kryształowy. Jeden biom z potworami, areną i jajkiem to mniej więcej pół nocnej sesji (szacunek z Dżungli: rzędu 3–4 mln tokenów).\n- **Twierdza** (D-049): nic nie stoi. Kowal i Training Center mają się do niej przenieść.\n- **Karczma z zadaniami i lochy** (D-035): jest tylko budynek karczmy w bazarze.\n- **Sklepy:** budynki i sprzedawcy stoją, handlu i okien nie ma (D-084, Paweł).\n- **Okna i HUD (Paweł):** okna Pets, Quests, Shop, Guilds, okno Kowala (pytanie 57), paski życia i many, menu główne, scena wyboru z podestem; okno ekwipunku i ikony nagród w stylu HUD (D-103) są u Karola i jeszcze nie ruszyły.\n- **Modele ras z rzutów Pawła** (D-104): rzuty są w repo od 17.11, modeli jeszcze nie ma.\n- **Zapis postępu** (pytanie 60) i jedno źródło odblokowanych krain.\n- **Przeniesienie prób do kodu gry:** wszystkie moje pakiety działają tylko w Studio i poza nim same się usuwają. Przed publikacją trzeba je przenieść do właściwego kodu, wgrać animacje i siatki jako zasoby gry i usunąć prototypy.\n- **Publikacja:** grupa Roblox i prywatne repozytorium (D-044, Paweł), telemetria (D-023), pytanie o prawa do muzyki, playtest według [[Plan playtestu przed premierą]], monetyzacja (bundle, Rybki, game passy — w grze nie ma nic).\n\n**4. Decyzje i pytania**\n- Rejestr: 105 decyzji — 89 zatwierdzonych, 14 odrzuconych, 2 zdjęte. Żadna propozycja nie czeka w kolejce.\n- 34 zatwierdzone decyzje mają tylko podpis Karola. Z ostatnich dni na Pawła czekają: D-087 (drzewko), D-089 (pasek many), D-095 (arena z biomem), D-096 (krótszy pas), D-105 (stała cena jajka).\n- Pytania: 62, bez odpowiedzi pięć — 58 (punkty za poziom), 59 (premia pierwszej walki), 60 (zapis), 61 (zasady Kowala), 62 (Dżungla).\n- Dwie poprawki do podsumowania nocy: D-094 (wskrzeszenie) Paweł już potwierdził 17.11 przez Telegram; rzuty ras **są** w repo od 17.11 ([[Rasy — rzuty dla modelarza]]) — napisałem, że ich nie ma, i to był mój błąd.\n\n**5. W toku i co proponuję dalej**\n- W toku od 08:00, koniec ok. 10:30: bohater klasy jako postać gracza w świecie (dziś po świecie chodzi zwykły awatar, bohater jest tylko w walce) oraz mini-gry z kamerą, komiksowymi napisami i świętowaniem jak w walce — polecenia Karola z dzisiejszego ranka.\n- Proponowana kolejność potem: (1) modele ras z rzutów, (2) Pustynia jako czwarty biom, (3) wspólna próba Karola i Pawła na telefonie i we dwóch, (4) z Pawłem: zapis postępu i przenoszenie prób do kodu gry.\n\n**6. Sejf a rzeczywistość**\n- [[Roadmapa]] mówi dalej „Faza 1 — Frontend”, a praca idzie głównie w systemach rozgrywki (fazy 2–3). Do aktualizacji przez ludzi.\n- W [[Zadania]] zostało sporo pozycji z 12–14.11, które wyprzedziły późniejsze decyzje — przejrzę je i zaproponuję, co zamknąć.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T08:03:19+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "Zadania",
+   "etykieta": "Zadania"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Pytania otwarte",
+   "etykieta": "Pytania otwarte"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Rejestr decyzji",
+   "etykieta": "Rejestr decyzji"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Rasy — rzuty dla modelarza",
+   "etykieta": "Rzuty ras"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ]
+}
