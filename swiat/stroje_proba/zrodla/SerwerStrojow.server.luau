@@ -99,7 +99,8 @@ local function wykonaj(gracz, akcja, klasa, arg)
 		gracz:SetAttribute(nazwa, nil)
 		return { ok = true, klasa = klasa }
 	end
-	if akcja == "zaloz" and zb and not zb[arg] then
+	-- tylko przedmiot do wyboru w tej klasie: nieznany, cudzej klasy albo część zbroi dostają swój dawny powód (L.zaloz)
+	if akcja == "zaloz" and zb and not zb[arg] and D.przedmioty[arg] ~= nil and L.wybieralny(D, klasa, arg) then
 		return { ok = false, powod = "nie_masz", klasa = klasa, stroj = teraz }
 	end
 	-- bez atrybutu postać wygląda jak szablon walki = strój odniesienia, więc od niego zaczynamy zmianę

@@ -22,6 +22,14 @@ Edit. Play tylko na czas próby (SesjaPlay z swiat/test_walki2/testy/sesja_play.
   S09 walka w lesie-pasie (jeśli LasPasGra jest w miejscu): bohater w stroju
   S10 konsola bez błędów [StrojeProba]
   S11 okno na małym ekranie (emulacja 667 × 375): tekst ≥ 12 pt; zrzut
+
+Dwa tryby (18.11.2026), próba wybiera sama na starcie Play:
+  • bez kowala (brak Workspace/KowalProba albo gracz bez atrybutu KowalDostepne) — wszystko jak dotąd;
+  • z kowalem (swiat/kowal_proba: przymierzalnia zakłada tylko posiadane przedmioty i nie ma „Dawnego wyglądu”) —
+    przed przebieraniem próba nadaje graczowi wszystkie nieposiadane całe przedmioty haczykiem kowala
+    (KowalProba/Sygnaly/SterowanieSerwera, polecenie „daj” — ten sam haczyk co próba kowala K05; reguł gry nie zmienia).
+    S03 zaczyna od stroju odniesienia zamiast „dawnego”, a S08 sprawdza, że „Dawnego wyglądu” nie ma: serwer odmawia
+    powodem „dawny_niedostepny”, atrybut stroju bez zmian, w oknie nie ma przycisku „Dawny wygląd”.
 """
 import argparse
 import json
@@ -48,6 +56,14 @@ MIESZANE = {"wojownik": ["rycerz_helm", "rycerz_buty", "rycerz_miecz", "rycerz_t
             "zwiadowca": ["zwiadowca_kaptur", "zwiadowca_rekawice", "zwiadowca_luk"],
             "mag": ["kot_mag_kapelusz", "kot_mag_kostur"]}
 PRZECIWNIK = {"wojownik": "cierniowy_wilk", "zwiadowca": "lesny_slime", "mag": "muchomornik"}
+# tryb z kowalem (swiat/kowal_proba): odczyt i nadanie przedmiotów jego haczykiem testowym (tylko w Play)
+KW = ('local kw = workspace:FindFirstChild("KowalProba") local H = game:GetService("HttpService") '
+      'local g = game:GetService("Players"):GetPlayers()[1] ')
+KOD_TRYB = KW + ('return H:JSONEncode({ jest = kw ~= nil, kowal = kw ~= nil and g ~= nil and '
+                 'type(g:GetAttribute("KowalDostepne")) == "string", dostepne = g and g:GetAttribute("KowalDostepne") })')
+KOD_DAJ = KW + 'return H:JSONEncode(kw.Sygnaly.SterowanieSerwera:Invoke("daj", g, "%s"))'
+KOD_PRZYCISK_DAWNY = ('local g = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("StrojeProbaOkno") '
+                      'local z = g and g:FindFirstChild("Zestawy", true) return tostring(z ~= nil and z:FindFirstChild("Dawny") ~= nil)')
 
 
 def log(*a):
@@ -128,6 +144,24 @@ def main():
                            'local g = game:GetService("Players"):GetPlayers()[1] local s = p + kier * 5 + Vector3.new(0, 3, 0) '
                            'g.Character:PivotTo(CFrame.lookAt(s, Vector3.new(p.X, s.Y, p.Z))) return "ok"', "Server")
 
+        # ------------------------------------------------------------------ tryb: bez kowala / z kowalem
+        tk = js(KOD_TRYB, "Server")
+        if tk.get("jest"):     # kontener kowala jest — dane gracza dochodzą z jego serwera chwilę po wejściu
+            czekaj(lambda: js(KOD_TRYB, "Server").get("kowal"), 15)
+            tk = js(KOD_TRYB, "Server")
+        kowal = bool(tk.get("kowal"))
+        nadane = []
+        if kowal:
+            posiadane = set((tk.get("dostepne") or "").split(","))
+            for pid in sorted(i for i, P in D["przedmioty"].items() if not P.get("czescOd")):
+                if pid not in posiadane:
+                    if js(KOD_DAJ % pid, "Server").get("ok"):
+                        nadane.append(pid)
+            time.sleep(0.5)
+            tk = js(KOD_TRYB, "Server")
+        dane["tryb"] = {"kowal": kowal, "nadane": nadane, "dostepne": tk.get("dostepne")}
+        log("tryb: %s" % ("z kowalem — nadano %d przedmiotów haczykiem kowala" % len(nadane) if kowal else "bez kowala"))
+
         # ------------------------------------------------------------------ S00–S01
         if chce("S01"):
             ok = czekaj(lambda: js(KS + 'return H:JSONEncode({ g = k:GetAttribute("KlientGotowy") })').get("g"), 20)
@@ -135,8 +169,9 @@ def main():
                    'skrot = k:GetAttribute("SkrotSerwera"), haczyk = string.find(workspace.TestWalki2.Moduly.Aktorzy.Source, '
                    '"zeStrojem", 1, true) ~= nil })', "Server")
             punkt("S01", ok and s.get("s") and s.get("p") == 1 and s.get("skrot") == D["skrot"] and s.get("haczyk"),
-                  "klient %s, serwer %s, podpowiedzi %s, skrót %s (lokalnie %s), haczyk w Aktorzy %s"
-                  % (ok, s.get("s"), s.get("p"), s.get("skrot"), D["skrot"], s.get("haczyk")))
+                  "klient %s, serwer %s, podpowiedzi %s, skrót %s (lokalnie %s), haczyk w Aktorzy %s; tryb %s"
+                  % (ok, s.get("s"), s.get("p"), s.get("skrot"), D["skrot"], s.get("haczyk"),
+                     "z kowalem (nadano %d)" % len(nadane) if kowal else "bez kowala"))
 
         # ------------------------------------------------------------------ S02 prawdziwe E, X
         if chce("S02"):
@@ -158,7 +193,7 @@ def main():
 
         # ------------------------------------------------------------------ S03 prawdziwe kliknięcie w oknie
         if chce("S03"):
-            ustaw("wojownik", None)
+            ustaw("wojownik", D["klasy"]["wojownik"]["odniesienie"] if kowal else None)
             hak('"otworz"')
             hak('"klasa", "wojownik"')
             time.sleep(0.8)
@@ -308,7 +343,21 @@ def main():
                     zle.append((klasa, m, cel))
             punkt("S07", not zle, "bohater w walce w stroju z przymierzalni (3 klasy)%s" % ("; ZŁE: %s" % zle if zle else ""))
 
-        if chce("S08"):
+        if chce("S08") and kowal:
+            time.sleep(0.4)
+            przed = atrybut("wojownik")
+            r = hak('"zmien", "dawny", "wojownik"')
+            po = atrybut("wojownik")
+            hak('"otworz"')
+            hak('"klasa", "wojownik"')
+            time.sleep(0.8)
+            przycisk = sp.luau(KOD_PRZYCISK_DAWNY).strip()
+            hak('"zamknij"')
+            dane["S08"] = {"odpowiedz": r, "przycisk_dawny": przycisk}
+            punkt("S08", r.get("powod") == "dawny_niedostepny" and przed == po and przycisk == "false",
+                  "z kowalem „Dawnego wyglądu” nie ma: serwer %s (powód %r), atrybut bez zmian %s, przycisk w oknie %s"
+                  % ("odmawia" if not r.get("ok") else "PRZYJĄŁ", r.get("powod"), przed == po, przycisk))
+        elif chce("S08"):
             ustaw("wojownik", None)
             m = walka("wojownik", None)
             dane["S08"] = m

@@ -191,6 +191,11 @@ a kamera Roblox i tak przysuwa się przed przeszkodę. Poprawka niepotrzebna; pr
   `bezDawnego` w `odswiezOkno`.
 - `swiat/stroje_proba/zrodla/OknoStrojow.luau`: bez przycisku „Dawny wygląd”, gdy `bezDawnego`.
 - Bez `KowalProba` wszystkie trzy działają jak dawniej (testy przymierzalni 22/22, kontrola Luau OK).
+- 18.11.2026: w `SerwerStrojow.server.luau` odmowa „nie_masz” dotyczy już tylko przedmiotu do wyboru w tej klasie —
+  przedmiot cudzej klasy, część zbroi i nieznany przedmiot dostają przy kowalu swój dawny powód (test 5g kowala).
+  `testy/proba_play.py` przymierzalni ma dwa tryby i sam je wybiera: z kowalem nadaje graczowi nieposiadane przedmioty
+  haczykiem kowala („daj”), S03 zaczyna od stroju odniesienia, a S08 sprawdza brak „Dawnego wyglądu” (odmowa
+  „dawny_niedostepny”, atrybut bez zmian, brak przycisku w oknie).
 - `swiat/wskazowki_gry` (18.11.2026): krok (g) „kowal” — cztery teksty i nazwy atrybutów w `ustawienia.json`, cel
   „kowal” w `dane.py`, `krok` = krok główny + podmiana tylko kroków (c) w `logika_wskazowek.py` i
   `zrodla/LogikaWskazowek.luau`, odczyt czterech atrybutów i punktu E w `zrodla/KlientWskazowek.client.luau`, 11

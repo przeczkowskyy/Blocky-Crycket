@@ -714,6 +714,10 @@ class TestSerweraOffline(unittest.TestCase):
         helm = next(p for p in D["klasy"]["wojownik"]["przedmioty"] if D["przedmioty"][p]["slot"] == "Helmet")
         r = self.stroj("zaloz", "wojownik", helm)
         self.assertEqual(r["powod"], "nie_masz", "przymierzalnia nie zakłada nieposiadanego")
+        # przy kowalu inne odmowy zostają jak dawniej (próba strojów S04): cudza klasa, część zbroi, nieznany przedmiot
+        self.assertEqual(self.stroj("zaloz", "wojownik", "kot_mag_kapelusz")["powod"], "przedmiot_innej_klasy")
+        self.assertEqual(self.stroj("zaloz", "wojownik", "rycerz_nogawice")["powod"], "czesc_zbroi")
+        self.assertEqual(self.stroj("zaloz", "wojownik", "nie_ma")["powod"], "nieznany_przedmiot")
         self.assertEqual(self.stroj("dawny", "wojownik")["powod"], "dawny_niedostepny")
         r = self.stroj("zestaw", "wojownik", "komplet")
         self.assertTrue(r["ok"], r)

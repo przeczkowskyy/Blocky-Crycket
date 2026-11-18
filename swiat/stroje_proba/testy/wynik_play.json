@@ -1,11 +1,11 @@
 {
- "czas": "2026-11-18 00:42",
+ "czas": "2026-11-18 03:40",
  "skrot": "943ba32a2c47",
  "wyniki": [
   {
    "punkt": "S01",
    "wynik": "OK",
-   "opis": "klient True, serwer True, podpowiedzi 1, skrót 943ba32a2c47 (lokalnie 943ba32a2c47), haczyk w Aktorzy True"
+   "opis": "klient True, serwer True, podpowiedzi 1, skrót 943ba32a2c47 (lokalnie 943ba32a2c47), haczyk w Aktorzy True; tryb z kowalem (nadano 15)"
   },
   {
    "punkt": "S02",
@@ -45,7 +45,7 @@
   {
    "punkt": "S08",
    "wynik": "OK",
-   "opis": "dawny wygląd: model walki bez atrybutu Stroj, 127 brył (szablon 127)"
+   "opis": "z kowalem „Dawnego wyglądu” nie ma: serwer odmawia (powód 'dawny_niedostepny'), atrybut bez zmian True, przycisk w oknie false"
   },
   {
    "punkt": "S09",
@@ -59,6 +59,27 @@
   }
  ],
  "dane": {
+  "tryb": {
+   "kowal": true,
+   "nadane": [
+    "kot_mag_kapelusz",
+    "kot_mag_kostur",
+    "kot_mag_pas",
+    "kot_mag_szata",
+    "rycerz_buty",
+    "rycerz_helm",
+    "rycerz_pas",
+    "rycerz_rekawice",
+    "zwiadowca_buty",
+    "zwiadowca_kaptur",
+    "zwiadowca_kurtka",
+    "zwiadowca_luk",
+    "zwiadowca_pas",
+    "zwiadowca_rekawice",
+    "zwiadowca_sztylet"
+   ],
+   "dostepne": "rycerz_miecz,rycerz_tarcza,rycerz_zbroja,rycerz_helm,rycerz_rekawice,rycerz_buty,rycerz_pas,zwiadowca_sztylet,zwiadowca_luk,zwiadowca_kurtka,zwiadowca_kaptur,zwiadowca_rekawice,zwiadowca_buty,zwiadowca_pas,kot_mag_kostur,kot_mag_szata,kot_mag_kapelusz,kot_mag_pas"
+  },
   "S05": {
    "wojownik_golas": {
     "bryly": 74,
@@ -1124,8 +1145,8 @@
   "S11": {
    "ok": true,
    "oknoGora": 0.4032527662212706,
-   "x0": 0.43322508689061734,
-   "x1": 0.5794275219331823,
+   "x0": 0.4332240103273518,
+   "x1": 0.5793020425036747,
    "tekst": 12,
    "oknoLewo": 0.23988006606749143,
    "ekran": [
@@ -1133,8 +1154,8 @@
     1153
    ],
    "fov": 50,
-   "y0": 0.007139736946416956,
-   "y1": 0.3494098593851637,
+   "y0": 0.00715582947677255,
+   "y1": 0.34941459715314666,
    "oknoPrawo": 0.758620699967081
   },
   "S07": {
@@ -1155,8 +1176,13 @@
    }
   },
   "S08": {
-   "jest": true,
-   "bryly": 127
+   "odpowiedz": {
+    "ok": false,
+    "stroj": "rycerz_helm,rycerz_buty,rycerz_miecz,rycerz_tarcza",
+    "powod": "dawny_niedostepny",
+    "klasa": "wojownik"
+   },
+   "przycisk_dawny": "false"
   }
  }
 }

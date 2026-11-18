@@ -664,8 +664,13 @@ def main():
                     zapisz("S07", {"wejscie": tw, "przed": a0, "po": a1, "sygnaly": [t0, t1], "TreningSila": przyrost_sesji,
                                    "opis": opis, "walka": w7 and w7["po"]["walka"], "stan": w7 and w7["po"]["stan"]})
                     dS = (a1.get("Strength") or 0) - (a0.get("Strength") or 0)
-                    ok7 = (dS > 0 and t1 > t0 and isinstance(opis, dict) and (opis.get("statystyki") or {}).get("sila") == a1.get("Strength")
-                           and bool(w7))
+                    # opis bohatera = atrybut gracza + modyfikatory źródeł; gdy działa kowal, przedmiot z łupu wcześniejszych walk
+                    # może dodać kilka punktów Siły (np. Szarfa Maga +1), więc wtedy dopuszczamy małą nadwyżkę
+                    sila_opisu = (opis.get("statystyki") or {}).get("sila") if isinstance(opis, dict) else None
+                    zrodla7 = (stan_hak("stan") or {}).get("zrodlaModyfikatorow") or []
+                    nadwyzka = (sila_opisu - a1.get("Strength")) if isinstance(sila_opisu, (int, float)) and a1.get("Strength") is not None else None
+                    sila_ok = nadwyzka == 0 or ("kowal" in zrodla7 and nadwyzka is not None and 0 < nadwyzka <= 10)
+                    ok7 = dS > 0 and t1 > t0 and sila_ok and bool(w7)
                     punkt("S07", ok7, "Strength %s→%s (+%s, sygnałów %s), opis bohatera: siła %s, walka po treningu: %s" % (
                         a0.get("Strength"), a1.get("Strength"), dS, t1 - t0, (opis or {}).get("statystyki", {}).get("sila") if isinstance(opis, dict) else opis,
                         w7 and w7["po"]["walka"].get("SerwerOstatniaWalka")))
