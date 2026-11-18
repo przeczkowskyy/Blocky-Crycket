@@ -11,7 +11,8 @@
 		                      strażnika: napis z imieniem, klip ryku (haczyk klienta potworów), dźwięk z katalogu
 		                      DzwiekGra (gdy jest), wstrząs kamery; zaciemnienie → „koniec” (id, czy pominięta);
 		„przerwij” (id)     → to samo sprzątanie co na końcu.
-	Przycisk POMIŃ (dotyk, mysz, klawisze z danych) kończy cutscenkę od razu. Sprzątanie jest JEDNO dla każdego
+	Przycisk POMIŃ (dotyk, mysz, klawisze z danych) kończy cutscenkę od razu — tylko gdy atrybut kontenera Pomijanie
+	= true (domyślnie false: cutscenki nie da się pominąć). Sprzątanie jest JEDNO dla każdego
 	zakończenia (koniec, pominięcie, śmierć albo zniknięcie postaci, przerwanie przez serwer, błąd, usunięcie
 	kontenera): lista kroków wykonywana od końca, każdy w pcall — kamera wraca za plecy postaci (typ sprzed
 	cutscenki), wracają kąt widzenia, sterowanie, dotyk, ekrany, podpowiedzi E i elementy Roblox (lista graczy, czat).
@@ -490,7 +491,8 @@ local function ryknij(s)
 end
 
 local function pomijanieWlaczone()
-	return O.pomijanie.wlaczone == true and kontener:GetAttribute(O.pomijanie.atrybut) ~= false
+	-- domyślnie wyłączone (ustalenie właściciela: przelotu nie da się pominąć); włącza je atrybut kontenera = true
+	return O.pomijanie.wlaczone == true and kontener:GetAttribute(O.pomijanie.atrybut) == true
 end
 
 local function pomin()
@@ -635,8 +637,8 @@ local function lot(s)
 	local tr = s.b.trasa
 	s.t0 = os.clock()
 	napisNadtytulu.Text = O.plansza.nadtytul
-	napisNazwy.Text = string.upper(s.b.nazwa)
-	napisStraznika.Text = string.upper(s.b.straznik.nazwa)
+	napisNazwy.Text = s.b.napis
+	napisStraznika.Text = s.b.straznik.napis
 	przycisk.Text = if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled
 		then O.pomijanie.napis .. " · " .. O.pomijanie.podpowiedz else O.pomijanie.napis
 	s.plansza = napisNazwy.Text
@@ -660,7 +662,8 @@ local function lot(s)
 			break
 		end
 		if not postacZyje() then
-			error("postać zginęła albo zniknęła w czasie cutscenki")
+			s.przerwana = "postać zginęła" -- zwykłe zdarzenie gry, nie błąd: sprzątamy bez zgłoszenia
+			return
 		end
 		RunService.Heartbeat:Wait()
 	end
@@ -682,7 +685,11 @@ local function start(id)
 			zglosBlad("lot", blad)
 		end
 		if biezaca == s then
-			zakoncz(ok, if ok then nil else "błąd w locie")
+			if s.przerwana then
+				zakoncz(false, s.przerwana)
+			else
+				zakoncz(ok, if ok then nil else "błąd w locie")
+			end
 		end
 	end)
 end

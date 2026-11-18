@@ -17,7 +17,8 @@ zawsze i sprawdza powrót do Edit). Trwa ok. 3 minut.
   C05 po cutscence: kamera Custom, W przesuwa postać, kotwica i blokada zdjęte, HUD, podpowiedzi E i lista graczy
       jak przed cutscenką
   C06 drugie wejście do lasu: cutscenki nie ma (licznik bez zmian), pamięć na graczu (atrybut)
-  C07 Bagno: pominięcie klawiszem — kończy się od razu, wszystko wraca, serwer liczy pominięcie
+  C07 Bagno: domyślnie (Pomijanie = false) przycisku nie ma i Spacja niczego nie kończy; po włączeniu przełącznika
+      przycisk jest, a Spacja kończy cutscenkę od razu — wszystko wraca, serwer liczy pominięcie
   C08 Dżungla: pełna cutscenka z pomiarem czasu klatki (miarodajny tylko, gdy okno Studio jest na wierzchu)
   C09 zrzuty kluczowych kadrów do swiat/cutscenka_biomu/klatki/ (bez nazwy konta i listy graczy)
   C10 odtworzenie na życzenie i śmierć postaci w trakcie: sprzątanie, kamera Custom po odrodzeniu, nic zablokowane
@@ -51,6 +52,7 @@ import zbuduj as ZB  # noqa: E402
 KLATKI = os.path.join(PAKIET, "klatki")
 BEZCZYNNOSC_S = 120
 PREFIKS = "[CutscenkaBiomu]"
+STUDYJNE_GUI = ("Freecam", "TouchGui", "LoadingScreen")   # ekrany Roblox / Studio, których cutscenka nie chowa
 
 SERWER_STAN = r'''
 local HS = game:GetService("HttpService")
@@ -99,6 +101,11 @@ return tostring(r and r.ok)
 SERWER_POLECENIE = r'''
 local gracz = game:GetService("Players"):GetPlayers()[1]
 return tostring(workspace.__KONTENER__.Sygnaly.SterowanieCutscenki:Invoke("__POLECENIE__", gracz.Name, __ARG__))
+'''
+
+SERWER_PRZELACZNIK = r'''
+workspace.__KONTENER__:SetAttribute("__ATRYBUT__", __WARTOSC__)
+return tostring(workspace.__KONTENER__:GetAttribute("__ATRYBUT__"))
 '''
 
 SERWER_ZABIJ = r'''
@@ -306,7 +313,7 @@ def main():
             ok = (po is not None and kl["stan"]["kamera"] == "Scriptable" and kl["stan"]["pasy"] and g["faza"] == "trwa"
                   and g["zakotwiczony"] and g["blokadaWalki"] and not kl["stan"]["podpowiedzi"]
                   and kl["ekran"]["nazwa"]["napis"] == biomy["las"]["nazwa"].upper()
-                  and not [n for n in kl["gui"] if not n.startswith(kont)])
+                  and not [n for n in kl["gui"] if not n.startswith(kont) and n not in STUDYJNE_GUI])
             punkt("C02", ok, "las: start po %s s od wejścia, kamera %s, pasy %s, plansza „%s”, faza serwera %s, kotwica %s, "
                   "blokada walki %s, podpowiedzi E %s, widoczne ekrany: %s"
                   % ("?" if po is None else "%.1f" % po, kl["stan"]["kamera"], kl["stan"]["pasy"], kl["ekran"]["nazwa"]["napis"],
@@ -370,11 +377,20 @@ def main():
                   % (licznik, st["atrybuty"].get("LicznikCutscenek"), g["faza"], kl["stan"]["kamera"], g["widziane"]["las"],
                      biomy["las"]["atrybut"], st["atrybutyGracza"].get(biomy["las"]["atrybut"])))
 
-            # C07: Bagno i pominięcie klawiszem
+            # C07: Bagno — domyślnie bez pomijania, po włączeniu przełącznika pominięcie klawiszem
+            atr = U["oprawa"]["pomijanie"]["atrybut_wylacznika"]
             pom0 = st["atrybuty"].get("LicznikPominiec")
+            domyslnie = st["atrybuty"].get(atr)
             log("wejście do Bagna:", wejdz("bagno"))
             kl, po = czekaj(lambda k: k["stan"]["trwa"] and k["stan"]["trwa"]["lot"]
                             and k["stan"]["trwa"]["t"] >= U["oprawa"]["pomijanie"]["od_s"] + 0.6, 14)
+            bez_przycisku = not kl["ekran"]["pomin"]["widoczny"]
+            sp.klawisz("Space")
+            time.sleep(1.2)
+            kl = klient()
+            nie_pominieta = bool(kl["stan"]["trwa"]) and not kl["stan"]["trwa"]["pomin"]
+            sp.luau(wstaw(SERWER_PRZELACZNIK, KONTENER=kont, ATRYBUT=atr, WARTOSC="true"), "Server")
+            kl, _ = czekaj(lambda k: not k["stan"]["trwa"] or k["ekran"]["pomin"]["widoczny"], 5)
             przycisk = kl["ekran"]["pomin"]
             zrzut("04_bagno_przycisk_pomin", zapisane)
             sp.klawisz("Space")
@@ -383,16 +399,20 @@ def main():
             kl, st = klient(), serwer()
             g = gracz_serwera(st)
             o = kl["stan"]["ostatnia"] or {}
-            ok = (o.get("pominieta") is True and o.get("czas", 99) < 6 and kl["stan"]["kamera"] == "Custom"
+            ok = (domyslnie is False and bez_przycisku and nie_pominieta
+                  and o.get("pominieta") is True and o.get("czas", 99) < 9 and kl["stan"]["kamera"] == "Custom"
                   and st["atrybuty"].get("LicznikPominiec") == (pom0 or 0) + 1 and not g["zakotwiczony"]
                   and not g["blokadaWalki"] and kl["gui"] == przed_gui and przycisk["widoczny"]
                   and przycisk["w"] >= PR["przycisk_min_px"] and przycisk["h"] >= PR["przycisk_min_px"]
                   and g["widziane"]["bagno"])
-            punkt("C07", ok, "Bagno: przycisk widoczny %s (%.0f × %.0f px, napis %s), po Spacji koniec w %s s, pominięta %s, "
-                  "czas %.1f s, kamera %s, licznik pominięć %s → %s, ekrany jak przed: %s"
-                  % (przycisk["widoczny"], przycisk["w"], przycisk["h"], przycisk["napis"],
-                     "?" if po2 is None else "%.1f" % po2, o.get("pominieta"), o.get("czas", 0), kl["stan"]["kamera"], pom0,
-                     st["atrybuty"].get("LicznikPominiec"), kl["gui"] == przed_gui))
+            punkt("C07", ok, "Bagno: domyślnie %s = %s — przycisk schowany %s, Spacja nie kończy %s; po włączeniu przełącznika "
+                  "przycisk widoczny %s (%.0f × %.0f px, napis %s), po Spacji koniec w %s s, pominięta %s, czas %.1f s, "
+                  "kamera %s, licznik pominięć %s → %s, ekrany jak przed: %s"
+                  % (atr, domyslnie, bez_przycisku, nie_pominieta, przycisk["widoczny"], przycisk["w"], przycisk["h"],
+                     przycisk["napis"], "?" if po2 is None else "%.1f" % po2, o.get("pominieta"), o.get("czas", 0),
+                     kl["stan"]["kamera"], pom0, st["atrybuty"].get("LicznikPominiec"), kl["gui"] == przed_gui))
+
+            sp.luau(wstaw(SERWER_PRZELACZNIK, KONTENER=kont, ATRYBUT=atr, WARTOSC="false"), "Server")   # z powrotem domyślnie
 
             # C08: Dżungla — pełna cutscenka z pomiarem klatek; C09: zrzuty
             log("wejście do Dżungli:", wejdz("dzungla"))
@@ -451,7 +471,7 @@ def main():
             sp.luau(wstaw(KLIENT_CHMURY, CHMURY=Z["kontener"], ATRYBUT=Z["atrybut"], WARTOSC="false"), "Client")
             kl, po = czekaj(lambda k: k["stan"]["trwa"] and k["stan"]["trwa"]["lot"], 10)
             time.sleep(1.5)
-            sp.klawisz("Space")
+            sp.luau(wstaw(SERWER_POLECENIE, KONTENER=kont, POLECENIE="przerwij", ARG="nil"), "Server")
             czekaj(lambda k: not k["stan"]["trwa"], 6)
             ok = (chm.strip() == "ok" and w_chmurach[0] and w_chmurach[1] >= 2 and not w_chmurach[2] and not w_chmurach[4]
                   and po is not None)
@@ -489,7 +509,7 @@ def main():
                 f.write(kons)
             linie = [l for l in kons.splitlines() if (PREFIKS in l or kont in l)
                      and "serwer gotowy" not in l and "klient gotowy" not in l
-                     and "postać usunięta" not in l and "postać zginęła" not in l]
+                     and "postać usunięta" not in l and "postać zginęła" not in l and "przerwane przez serwer" not in l]
             kl = klient()
             punkt("C13", not linie and kl["stan"]["bledy"] == 0, "konsola bez błędów i ostrzeżeń pakietu (poza zapowiedzianym "
                   "przerwaniem przy śmierci postaci); błędów klienta: %s" % kl["stan"]["bledy"]

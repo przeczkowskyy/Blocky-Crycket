@@ -145,6 +145,14 @@ class Sesja:
                               'local f = s and s:FindFirstChild("SterowaniePasa") '
                               'return tostring(f and k:GetAttribute("SerwerPasaGotowy") == true and f:Invoke("zapomnijPrzelot"))', "Server")
                 log("przelot lasu-pasa wstrzymany na czas testów:", w)
+                # 18.11.2026: to samo dla nowej cutscenki biomów (swiat/cutscenka_biomu) — biomy oznaczone jako
+                # widziane jej uchwytem testowym; cutscenkę po chmurach sprawdza jej własna próba (punkt C11)
+                w2 = self.luau('local k = workspace:FindFirstChild("CutscenkaBiomu") local s = k and k:FindFirstChild("Sygnaly") '
+                               'local f = s and s:FindFirstChild("SterowanieCutscenki") '
+                               'local g = game:GetService("Players"):GetPlayers()[1] '
+                               'if not f or not g then return "brak" end '
+                               'for _, b in { "las", "bagno", "dzungla" } do f:Invoke("oznacz", g.Name, b) end return "ok"', "Server")
+                log("cutscenki biomów oznaczone jako widziane na czas testów:", w2)
                 return
             self.call("user_keyboard_input", {"datamodel_type": "Client",
                                               "actions": [{"action": "keyPress", "key_code": "Return"}]})

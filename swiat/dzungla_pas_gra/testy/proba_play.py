@@ -136,6 +136,13 @@ def _geometria():
 
 G = _geometria()
 
+# 18.11.2026 (swiat/cutscenka_biomu): gdy Workspace/CutscenkaBiomu przejął biom, punkty o przelocie sprawdzają nową
+# cutscenkę; bez tego kontenera — stary przelot pasa. Wspólna pomoc: swiat/cutscenka_biomu/pomoc_prob.py
+import importlib.util as _ilu  # noqa: E402
+_sp = _ilu.spec_from_file_location("cutscenka_pomoc_prob", os.path.join(REPO, "swiat", "cutscenka_biomu", "pomoc_prob.py"))
+PP = _ilu.module_from_spec(_sp)
+_sp.loader.exec_module(PP)
+
 
 def tp(t):
     """Chwila zrzutu z projektu (lot 10,5 s, postój od 10,5) → ta sama chwila krótkiego przelotu."""
@@ -530,6 +537,9 @@ def main():
             # ================================================================ J02 bez bramy lasu
             las("zamknijBrame")
             las("zapomnijPrzelot")          # przelot lasu nie przeszkadza (sprawdza go próba lasu)
+            PP.oznacz(luau, ["las", "bagno"])     # to samo dla nowej cutscenki wcześniejszych biomów
+            nowa = PP.dopasuj(luau, "dzungla", G)      # nowa cutscenka (CutscenkaBiomu) albo stary przelot pasa
+            log("przelot biomu gra: %s" % ("nowa cutscenka (CutscenkaBiomu)" if nowa else "stary przelot pasa"))
             time.sleep(0.5)
             u = js(KOD["uchwyt_bagna"], "Server")
             t = teleport("stan", "gracz")
@@ -558,12 +568,12 @@ def main():
                                             (tp(11.6), "05_przelot_ryk")]
             t0 = time.time()
             while time.time() - t0 < 45:
-                gs = bagno("gracz")
+                gs = PP.scal_gracza(luau, "dzungla", bagno("gracz"))
                 if not fazy or fazy[-1][0] != gs.get("faza"):
                     fazy.append((gs.get("faza"), round(time.time() - t0, 1)))
                 if gs.get("faza") == "trwa" and t_trwa is None:
                     t_trwa = time.time()
-                if t_trwa is not None and plan and time.time() - t_trwa >= plan[0][0]:
+                if plan and PP.pora_na_zrzut(luau, "dzungla", plan, t_trwa, time.time()):
                     zrzut(plan.pop(0)[1])
                     continue
                 if gs.get("faza") == "brak" and len(fazy) > 1:
@@ -572,8 +582,8 @@ def main():
             czas_lotu = (time.time() - t_trwa) if t_trwa else None
             time.sleep(1.5)
             zrzut("06_po_przelocie_taras")
-            gs = bagno("gracz")
-            kp = hak("DzunglaPasGra", "SterowaniePasaKlienta", "stan", dm="Client")
+            gs = PP.scal_gracza(luau, "dzungla", bagno("gracz"))
+            kp = PP.scal_klienta(luau, "dzungla", hak("DzunglaPasGra", "SterowaniePasaKlienta", "stan", dm="Client"))
             ost = kp.get("ostatniPrzelot") or {}
             przel_las2 = kont("BagnoPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0
             zapisz("J03", {"fazy": fazy, "czas": czas_lotu, "gracz": gs, "klient": kp, "przeloty_lasu": [przel_las, przel_las2]})
@@ -589,15 +599,15 @@ def main():
 
             # ================================================================ J04 chmury → Dżungla, bez drugiego przelotu
             t = teleport("stan", "gracz")
-            przel0 = kont("DzunglaPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0
+            przel0 = PP.licznik(luau, "dzungla", kont("DzunglaPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0)
             luau(HRP + 'local t = workspace:FindFirstChild("LasTeleport") local p = t and t:GetAttribute("PunktMiasteczka") '
                        'if p then hrp.Parent:PivotTo(CFrame.new(p)) end return "ok"', "Server")
             time.sleep(2.5)
             w04 = teleport("przenies", '"dzungla", gracz')
             time.sleep(6.0)
             p04 = poz()
-            gs = bagno("gracz")
-            przel1 = kont("DzunglaPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0
+            gs = PP.scal_gracza(luau, "dzungla", bagno("gracz"))
+            przel1 = PP.licznik(luau, "dzungla", kont("DzunglaPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0)
             zapisz("J04", {"teleport": t, "przenies": w04, "pozycja": p04, "faza": gs.get("faza"), "przeloty": [przel0, przel1]})
             punkt("J04", "dzungla" in (t.get("odblokowane") or []) and w04.get("ok") is True
                   and "PrzeniesDoDzungli" in str(w04.get("zrodlo")) and abs(p04[0] - G["przybycie"]) < 4 and abs(p04[2] + 700) < 4
@@ -611,12 +621,12 @@ def main():
             przestaw(G["strefy"]["o1"], 3.2, -700)
             time.sleep(3.5)                                  # odstęp przeniesień teleportu (3 s) i pasa (2 s)
             z04b = poz()
-            przel0 = kont("DzunglaPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0
+            przel0 = PP.licznik(luau, "dzungla", kont("DzunglaPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0)
             w04b = teleport("przenies", '"dzungla", gracz')
             time.sleep(6.0)
             p04b = poz()
-            gs = bagno("gracz")
-            przel1 = kont("DzunglaPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0
+            gs = PP.scal_gracza(luau, "dzungla", bagno("gracz"))
+            przel1 = PP.licznik(luau, "dzungla", kont("DzunglaPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0)
             zapisz("J04b", {"z": z04b, "przenies": w04b, "pozycja": p04b, "faza": gs.get("faza"), "przeloty": [przel0, przel1]})
             punkt("J04b", w04b.get("ok") is True and abs(p04b[0] - G["przybycie"]) < 4 and abs(p04b[2] + 700) < 4
                   and gs.get("faza") == "brak" and przel1 == przel0,

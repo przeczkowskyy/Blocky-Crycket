@@ -105,6 +105,13 @@ def _geometria():
 
 G = _geometria()
 
+# 18.11.2026 (swiat/cutscenka_biomu): gdy Workspace/CutscenkaBiomu przejął biom, punkty o przelocie sprawdzają nową
+# cutscenkę; bez tego kontenera — stary przelot pasa. Wspólna pomoc: swiat/cutscenka_biomu/pomoc_prob.py
+import importlib.util as _ilu  # noqa: E402
+_sp = _ilu.spec_from_file_location("cutscenka_pomoc_prob", os.path.join(REPO, "swiat", "cutscenka_biomu", "pomoc_prob.py"))
+PP = _ilu.module_from_spec(_sp)
+_sp.loader.exec_module(PP)
+
 
 def tp(t):
     """Chwila zrzutu z projektu (lot 10,5 s, postój od 10,5) → ta sama chwila krótkiego przelotu."""
@@ -205,10 +212,10 @@ def main():
             return js('return H:JSONEncode(J(k.Sygnaly.%s:Invoke("%s"%s)))' % (hak, polecenie, (", " + a) if a else ""), dm)
 
         def gracz_serwer():
-            return pasa("gracz")
+            return PP.scal_gracza(luau, "las", pasa("gracz"))
 
         def klient_pasa():
-            return pasa("stan", dm="Client")
+            return PP.scal_klienta(luau, "las", pasa("stan", dm="Client"))
 
         def klient_potworow():
             return js('return H:JSONEncode(J(k.Sygnaly.SterowanieKlienta:Invoke("stan")))', "Client")
@@ -248,7 +255,7 @@ def main():
                     fazy.append((g["faza"], round(time.time() - t0, 1), g.get("zablokowany"), g.get("blokadaWalki")))
                 if g["faza"] == "trwa" and t_trwa is None:
                     t_trwa = time.time()
-                if t_trwa is not None and plan and time.time() - t_trwa >= plan[0][0]:
+                if plan and PP.pora_na_zrzut(luau, "las", plan, t_trwa, time.time()):
                     zrzut(plan.pop(0)[1])
                     continue
                 if g["faza"] == "brak" and len(fazy) > 1:
@@ -307,6 +314,8 @@ def main():
             log("wybór klasy:", wybor)
 
             # ---------------------------------------------------------------- P03–P04 przybycie i pierwszy przelot
+            nowa = PP.dopasuj(luau, "las", G)     # nowa cutscenka (CutscenkaBiomu) albo stary przelot pasa
+            log("przelot lasu gra: %s" % ("nowa cutscenka (CutscenkaBiomu)" if nowa else "stary przelot pasa"))
             luau(HRP + 'local t = workspace:FindFirstChild("LasTeleport") local p = t and t:GetAttribute("PunktMiasteczka") '
                        'if p then hrp.Parent:PivotTo(CFrame.new(p)) end return "ok"', "Server")
             time.sleep(3)
@@ -334,6 +343,7 @@ def main():
             kp = klient_pasa()
             p_po = poz()
             licznik_po = atrybuty("LasPasGra", ["SerwerLicznikWalk", "LicznikPrzelotow"])
+            licznik_po["LicznikPrzelotow"] = PP.licznik(luau, "las", licznik_po.get("LicznikPrzelotow"))
             ruch = ((p_po[0] - p_przyb[0]) ** 2 + (p_po[2] - p_przyb[2]) ** 2) ** 0.5
             ost = kp.get("ostatniPrzelot") or {}
             zapisz("P04", {"fazy": fazy, "czas_lotu": czas_lotu, "gracz": g, "klient": kp, "proba_walki": proba,
@@ -358,7 +368,7 @@ def main():
             for _ in range(12):
                 fazy2.append(gracz_serwer()["faza"])
                 time.sleep(0.5)
-            po = atrybuty("LasPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow")
+            po = PP.licznik(luau, "las", atrybuty("LasPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow"))
             zapisz("P05", {"fazy": fazy2, "licznik": [przed, po]})
             punkt("P05", set(fazy2) == {"brak"} and po == przed, "po ponownym wejściu fazy %s, przeloty %s→%s" % (set(fazy2), przed, po))
 
@@ -369,14 +379,14 @@ def main():
             przestaw(G["strefy"]["w1"], 3.5, -700, 1)
             time.sleep(1.5)
             z05t = poz()
-            przed_t = atrybuty("LasPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow")
+            przed_t = PP.licznik(luau, "las", atrybuty("LasPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow"))
             w05t = js('local g = game:GetService("Players"):GetPlayers()[1] local t = workspace:FindFirstChild("TeleportChmury") '
                       'if not t then return H:JSONEncode({ brak = true }) end '
                       'return H:JSONEncode(J(t.Sygnaly.SterowanieSerwera:Invoke("przenies", "las", g)))', "Server")
             time.sleep(6.0)
             p05t = poz()
             fazy_t = gracz_serwer()["faza"]
-            po_t = atrybuty("LasPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow")
+            po_t = PP.licznik(luau, "las", atrybuty("LasPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow"))
             zapisz("P05t", {"z": z05t, "przenies": w05t, "pozycja": p05t, "faza": fazy_t, "przeloty": [przed_t, po_t]})
             punkt("P05t", None if w05t.get("brak") else (
                       w05t.get("ok") is True and abs(p05t[0] - G["przybycie"]) < 4 and abs(p05t[2] + 700) < 4
@@ -398,11 +408,12 @@ def main():
                   % (mg.get("waga"), mg.get("gestosc", -1), waga_miasto, mg_s["gestosc"], edit["gestosc"]))
 
             # ---------------------------------------------------------------- P06 odtwórz ponownie
-            pasa("odtworzPrzelot")
+            if not PP.odtworz(luau, "las"):
+                pasa("odtworzPrzelot")
             fazy3, czas3 = czekaj_na_przelot_koniec()
             time.sleep(1)
             g3 = gracz_serwer()
-            po3 = atrybuty("LasPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow")
+            po3 = PP.licznik(luau, "las", atrybuty("LasPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow"))
             zapisz("P06", {"fazy": fazy3, "czas": czas3, "gracz": g3, "licznik": po3})
             punkt("P06", "trwa" in [f[0] for f in fazy3] and po3 == (po or 0) + 1 and not g3["zablokowany"],
                   "ponowny przelot: fazy %s, %s s, licznik %s" % ([f[0] for f in fazy3], czas3 and round(czas3, 1), po3))
@@ -738,6 +749,7 @@ def main():
             wrota_s = js('local w = workspace.LasPas.BramaBagna.Wrota local kol = 0 for _, d in w:GetDescendants() do '
                          'if d:IsA("BasePart") and d.CanCollide then kol += 1 end end return H:JSONEncode({ kolizja = kol, zapora = k.Brama.Zapora.CanCollide })', "Server")
             # Bagno za bramą (swiat/bagno_pas_gra): bez przelotu Bagna w tej próbie (sprawdza go próba Bagna)
+            PP.oznacz(luau, ["bagno"])            # to samo dla nowej cutscenki Bagna
             bagno = js('local b = workspace:FindFirstChild("BagnoPasGra") local m = workspace:FindFirstChild("BagnoPas") '
                        'if b and b:FindFirstChild("Sygnaly") then b.Sygnaly.SterowaniePasa:Invoke("zapomnijPrzelot") end '
                        'return H:JSONEncode({ gra = b ~= nil, mapa = m ~= nil and m:GetAttribute("Wygenerowane") == true, '

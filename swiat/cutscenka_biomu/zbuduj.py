@@ -11,8 +11,8 @@
 Co robi w Studio (tylko tryb Edit, tylko miejsce gry — numer miejsca bierze z swiat/test_walki_roblox/cel_studio.py):
 punkt historii, własny kontener (atrybut Wygenerowane) budowany od nowa — foldery Moduly, Zdalne, Sygnaly, zdarzenie
 zdalne, uchwyty, dwa moduły i dwa skrypty; punkt historii. Kontener nie ma ani jednej części. Niczego nie zapisuje,
-nie publikuje, nie rusza Lighting ani cudzych instancji. Wyłącznik pomijania (atrybut Pomijanie = false ustawiony
-w Edit) przechodzi na odbudowany kontener. Stary przelot pasa ustępuje tylko wtedy, gdy kontenery gry biomów mają
+nie publikuje, nie rusza Lighting ani cudzych instancji. Przełącznik pomijania (atrybut Pomijanie, domyślnie false;
+wartość ustawiona w Edit) przechodzi na odbudowany kontener. Stary przelot pasa ustępuje tylko wtedy, gdy kontenery gry biomów mają
 skrypt SerwerPasa z haczykiem (swiat/las_pas_gra — wgrywa się go budowniczymi tamtych pakietów).
 """
 import argparse
@@ -72,9 +72,10 @@ if __USUN__ then
 	CH:SetWaypoint(nazwa .. ": usunięto")
 	return "USUNIETO"
 end
-local wlacznik = true
+local wlacznik = __DOMYSLNIE__
 for _, d in stare do
-	if d:GetAttribute("__WLACZNIK__") == false then wlacznik = false end
+	local v = d:GetAttribute("__WLACZNIK__")
+	if type(v) == "boolean" then wlacznik = v end
 end
 CH:SetWaypoint(nazwa .. ": przed budową")
 for _, d in stare do d:Destroy() end
@@ -225,6 +226,7 @@ def kod_start(D, usun=False, czas="", skrot=""):
     return (START.replace("__KONTENER__", D["kontener"]).replace("__USUN__", "true" if usun else "false")
             .replace("__ZRODLO__", D["U"]["zrodlo"]).replace("__CZAS__", czas).replace("__SKROT__", skrot)
             .replace("__WLACZNIK__", _wlacznik(D))
+            .replace("__DOMYSLNIE__", "true" if D["U"]["oprawa"]["pomijanie"]["domyslnie"] else "false")
             .replace("__FOLDERY__", ", ".join(DN._napis(x) for x in FOLDERY))
             .replace("__INNE__", ", ".join("{%s, %s}" % (DN._napis(k), DN._napis(p)) for k, p in INNE)))
 
@@ -286,7 +288,8 @@ def main():
         for sciezka, klasa, kontekst, tekst, plik in zrodla:
             print("  %-34s → %s%s, zrodla/%s (%d znaków)" % (sciezka, klasa, " [RunContext=%s]" % kontekst if kontekst else "",
                                                            plik, len(tekst)))
-        print("  %-34s → %s = true (false ustawione w Edit przechodzi na odbudowany kontener)" % ("wyłącznik pomijania", _wlacznik(D)))
+        print("  %-34s → %s = %s (wartość ustawiona w Edit przechodzi na odbudowany kontener)"
+              % ("przełącznik pomijania", _wlacznik(D), "true" if U["oprawa"]["pomijanie"]["domyslnie"] else "false"))
         for linia in DN.opis(D):
             print(linia)
         kody = wszystkie_kody(D)

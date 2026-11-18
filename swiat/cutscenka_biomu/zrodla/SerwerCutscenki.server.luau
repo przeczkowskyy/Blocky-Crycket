@@ -311,7 +311,7 @@ zdarzenia.OnServerEvent:Connect(function(gracz, polecenie, id, dodatek)
 		if faza == "trwa" then
 			s.koniec = true
 			s.pominieta = dodatek == true and D.oprawa.pomijanie.wlaczone == true
-				and kontener:GetAttribute(D.oprawa.pomijanie.atrybut) ~= false
+				and kontener:GetAttribute(D.oprawa.pomijanie.atrybut) == true
 		elseif faza ~= "brak" then
 			s.przerwij = "klient" -- klient skończył przed startem (błąd albo śmierć postaci po jego stronie)
 		end

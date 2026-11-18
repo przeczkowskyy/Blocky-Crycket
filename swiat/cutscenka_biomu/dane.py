@@ -376,7 +376,8 @@ def wezly_biomu(M, U):
               strona * PI["patrz_bok_st"] * 0.45, PI["zwolnienie"], PI["szerokosc_st"], 0.0)
     for nr, p in enumerate(uk["przegrody"]):
         bok = -strona * PP["bok_st"] * (1 if nr % 2 == 0 else -1)
-        u = p["u"][0] + PP["za_wejsciem_st"]
+        # węzeł tuż za wejściem przegrody, ale nie dalej niż do_srodka_st od środka strefy (długie leże)
+        u = max(p["u"][0] + PP["za_wejsciem_st"], p["srodek"][0] - PP["do_srodka_st"])
         patrz_y = max(PP["patrz_y"], 0.4 * p["wys"]) if p["leze"] else PP["patrz_y"]
         dodaj("leze" if p["leze"] else "przegroda", p["nazwa"], u, _wysokosc(M, u, bok, PP["wysokosci"], odstep), bok,
               p["srodek"][0] + PP["patrz_za_srodek_st"], patrz_y, -bok / PP["bok_st"] * PP["patrz_bok_st"],
@@ -693,7 +694,10 @@ def tabela_danych(D):
         biomy.append({
             "id": b["id"], "nazwa": b["nazwa"], "kontenerGry": b["kontenerGry"], "mapa": b["mapa"], "atrybut": b["atrybut"],
             "wymaganie": b["wymaganie"], "prostokat": b["prostokat"], "yMin": b["yMin"],
-            "straznik": {k: b["straznik"][k] for k in ("nazwa", "klip", "gatunek", "poz", "wys")},
+            # wersaliki liczy Python: string.upper w Luau nie zmienia polskich liter (ż, ą…)
+            "napis": b["nazwa"].upper(),
+            "straznik": dict({k: b["straznik"][k] for k in ("nazwa", "klip", "gatunek", "poz", "wys")},
+                             napis=b["straznik"]["nazwa"].upper()),
             "przystanki": [{"t": p["t"], "nazwa": p["nazwa"]} for p in tr["przystanki"] if p["rola"] != "inkubator"],
             "strumien": b["strumien"],
             "trasa": {"krok": tr["krok"], "czas": tr["czas"], "lot": tr["lot"], "n": tr["n"], "poz": tr["poz"],
@@ -715,7 +719,8 @@ def tabela_danych(D):
                         "doKiedy": O["plansza"]["do_s"], "nadtytul": O["plansza"]["nadtytul"]},
             "podpisy": {"wlaczone": O["podpisy_przegrod"]["wlaczone"], "przed": O["podpisy_przegrod"]["przed_s"],
                         "trwa": O["podpisy_przegrod"]["trwa_s"]},
-            "pomijanie": {"wlaczone": O["pomijanie"]["wlaczone"], "od": O["pomijanie"]["od_s"], "napis": O["pomijanie"]["napis"],
+            "pomijanie": {"wlaczone": O["pomijanie"]["wlaczone"], "domyslnie": O["pomijanie"]["domyslnie"],
+                          "od": O["pomijanie"]["od_s"], "napis": O["pomijanie"]["napis"],
                           "klawisze": O["pomijanie"]["klawisze"], "podpowiedz": O["pomijanie"]["podpowiedz_klawisza"],
                           "atrybut": O["pomijanie"]["atrybut_wylacznika"]},
             "straznik": {"rykPo": O["straznik"]["ryk_po_s"], "napisPrzed": O["straznik"]["napis_przed_s"],

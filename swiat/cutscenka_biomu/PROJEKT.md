@@ -17,7 +17,7 @@ sprawdzenia płynność na telefonie. Reszta (oprawa, pomijanie, napisy, długo�
 | Plansza | nadtytuł „NOWA KRAINA” i nazwa biomu z pakietu gry, 0,1–1,9 s | `oprawa.plansza` |
 | Podpisy przegród | nazwa przegrody z mapy przy każdym zwolnieniu (1,3 s) | `oprawa.podpisy_przegrod` |
 | Strażnik | klip `ryk` z modelu, dźwięk ryku z katalogu, wstrząs 1,3 s, najazd o 6°, imię z mapy | `oprawa.straznik` |
-| Pomijanie | przycisk POMIŃ od 1. sekundy, także przy pierwszym razie | `oprawa.pomijanie`, atrybut `Pomijanie` |
+| Pomijanie | **wyłączone** (wcześniejsze ustalenie właściciela: przelotu nie da się pominąć); przycisk POMIŃ i przełącznik są w kodzie | atrybut kontenera `Pomijanie = true`, `oprawa.pomijanie.domyslnie` |
 | Wejście pieszo | cutscenka gra także po przejściu bramą (gracz staje zaraz za bramą) | — (jedna reguła wejścia) |
 | Pamięć | sesja serwera + atrybut gracza gotowy pod zapis postępu (zapis wyłączony) | — |
 | Stary przelot pasa | ustępuje przez haczyk, gdy ten pakiet stoi; bez pakietu działa jak dotąd | `README.md` |
@@ -28,13 +28,14 @@ osobnej kopii strażnika (gdy strażnik jest akurat pokonany, cutscenka kończy 
 
 ## Pytania do ludzi
 
-### 1. Czy cutscenkę da się pominąć już za pierwszym razem?
-- Dziś: tak, przycisk POMIŃ od 1. sekundy.
-- Wcześniejsze ustawienie właściciela dla starego przelotu lasu: „przelotu nie da się pominąć”.
-- Opcje: pomijalna zawsze / dopiero od drugiego obejrzenia (odtworzenie na życzenie) / nigdy.
+### 1. Czy cutscenkę da się pominąć?
+- Dziś wyłączone zgodnie z wcześniejszym ustaleniem (właściciel: „przelotu nie da się pominąć”); przełącznik gotowy.
+- Włączenie: atrybut kontenera `Pomijanie = true` — pojawia się przycisk POMIŃ (dotyk, mysz, Spacja, Enter, B).
+- Opcje: zostawić wyłączone / pomijalna zawsze / pomijalna dopiero przy odtworzeniu na życzenie.
 
-Szczegóły: wyłącznik jest gotowy (atrybut kontenera `Pomijanie = false` albo `oprawa.pomijanie.wlaczone`).
-D-077 o pomijaniu nie mówi; D-078 dotyczy tylko walk. Zlecenie części A prosiło o przycisk, stąd wartość domyślna.
+Szczegóły: próba w grze z 18.11.2026 sprawdziła oba tryby (domyślnie przycisku nie ma i Spacja nic nie robi; po
+włączeniu przełącznika Spacja kończy cutscenkę w 0,4 s i wszystko wraca). D-077 o pomijaniu nie mówi; D-078 dotyczy
+tylko walk. Wartość domyślną trzyma `oprawa.pomijanie.domyslnie` w `ustawienia.json`.
 
 ### 2. Długość: 11 sekund czy krócej?
 - Dziś: 11,2 s na biom (8,6 s lotu, 2,6 s strażnika), w granicach 8–12 s ze zlecenia.
@@ -75,10 +76,10 @@ tu rolę nagrody. Krótsza wersja to osobna trasa — do zrobienia, jeśli wybie
 
 Szczegóły: `oprawa.plansza.nadtytul` i `oprawa.podpisy_przegrod.wlaczone`.
 
-### 7. Próby starego przelotu w pakietach biomów
-- Po wdrożeniu stary przelot pasa nie rusza, więc punkty „przelot” w próbach lasu, Bagna, Dżungli i w regresji
-  całości przestaną przechodzić.
-- Opcje: przepisać te punkty na nową cutscenkę / puszczać tamte próby z usuniętym kontenerem `CutscenkaBiomu`.
-- Stary przelot zostaje w kodzie jako zapas, dopóki nie zdecydujecie o jego usunięciu.
+### 7. Stary przelot pasa — zostawić jako zapas czy usunąć?
+- Dziś: zostaje w kodzie i gra sam, gdy kontenera `CutscenkaBiomu` nie ma.
+- Próby lasu, Bagna i Dżungli sprawdzają od 18.11 to, co akurat gra: nową cutscenkę albo stary przelot.
+- Opcje: zostawić zapas / usunąć stary przelot z pakietów biomów po akceptacji nowej cutscenki.
 
-Szczegóły: pakiet Dżungli zmienia teraz inny agent (efekty walki), więc tamtych prób w części A nie ruszałem.
+Szczegóły: wspólna pomoc prób to `pomoc_prob.py`; usunięcie starego przelotu to osobna zmiana w `swiat/las_pas_gra`
+(skrypty pasa, dane, testy trzech pakietów).

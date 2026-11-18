@@ -567,6 +567,48 @@ class TestBudowniczy(unittest.TestCase):
                 self.assertIsNone(re.search(wzor, tekst), plik)
                 self.assertIsNone(re.search(r"(?<![\d.])\d{9,}(?![\d.])", tekst), "%s: długi numer (identyfikator?)" % plik)
 
+    def test_6g_pomoc_prob_stary_i_nowy_przelot(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("pomoc_prob_test", os.path.join(PAKIET, "pomoc_prob.py"))
+        PP = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(PP)
+
+        def gra(przejety):
+            def luau(kod, dm):
+                if "Przejmuje_" in kod:
+                    return "true" if przejety else "false"
+                if 'Invoke("gracz")' in kod:
+                    return json.dumps({"faza": "trwa", "zakotwiczony": True, "blokadaWalki": True, "widziane": {"bagno": True},
+                                       "licznik": 3})
+                if "SterowanieCutscenkiKlienta" in kod:
+                    return json.dumps({"kamera": "Scriptable", "zaslona": 1, "trwa": {"lot": True, "t": 4.0},
+                                       "ostatnia": {"biom": "bagno", "ok": True, "ryk": True, "czas": 11.2}})
+                if "SterowaniePasaKlienta" in kod:
+                    return json.dumps({"lot": True, "t": 4.0, "zaslona": True})
+                return "ok"
+            return luau
+        stary = {"faza": "brak", "pamiec": {"widzialPrzelotBagna": False}}
+        G = {"przelot": 10.17, "zatrzymanie": 7.27}
+        self.assertIs(PP.scal_gracza(gra(False), "bagno", stary), stary)
+        self.assertFalse(PP.dopasuj(gra(False), "bagno", G))
+        self.assertEqual(PP.licznik(gra(False), "bagno", 7), 7)
+        self.assertFalse(PP.odtworz(gra(False), "bagno"))
+        self.assertFalse(PP.pora_na_zrzut(gra(False), "bagno", [(3.5, "a")], 0.0, 9.0), "stary przelot: zasłona zasłania — bez zrzutu")
+        g = PP.scal_gracza(gra(True), "bagno", stary)
+        self.assertEqual((g["faza"], g["zablokowany"], g["blokadaWalki"], g["pamiec"]["widzialPrzelotBagna"]), ("trwa", True, True, True))
+        k = PP.scal_klienta(gra(True), "bagno", {"kamera": "Custom"})
+        self.assertEqual((k["kamera"], k["ostatniPrzelot"]["ok"], k["ostatniPrzelot"]["ryk"]), ("Scriptable", True, True))
+        self.assertTrue(PP.dopasuj(gra(True), "bagno", G))
+        b = next(x for x in D["biomy"] if x["id"] == "bagno")
+        self.assertEqual((G["przelot"], G["zatrzymanie"]), (b["trasa"]["czas"] - 0.5, b["trasa"]["lot"]))
+        self.assertEqual(PP.licznik(gra(True), "bagno", 7), 3)
+        plan = [(0.8, "za_pozno"), (3.5, "w_pore"), (5.0, "za_wczesnie")]     # lot u klienta: t = 4,0 s
+        self.assertTrue(PP.pora_na_zrzut(gra(True), "bagno", plan, None, 0.0))
+        self.assertEqual([n for _, n in plan], ["w_pore", "za_wczesnie"], "kadr spóźniony o ponad okno wypada z planu")
+        plan.pop(0)
+        self.assertFalse(PP.pora_na_zrzut(gra(True), "bagno", plan, None, 0.0))
+        self.assertFalse(PP.pora_na_zrzut(gra(True), "bagno", [], None, 0.0))
+
     def test_6f_podglady_tras(self):
         for b in D["biomy"]:
             sciezka = os.path.join(PAKIET, "podglady", "trasa_%s.jpg" % b["id"])
