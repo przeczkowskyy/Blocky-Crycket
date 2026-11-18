@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-18 · Claude Code u Karola (przelot przez biom w nowej oprawie — w Studio)
+- **Nowa oprawa przelotu D-077** (`Workspace/CutscenkaBiomu`, `swiat/cutscenka_biomu/`; propozycja wykonania zatwierdzonej decyzji): trasa liczona z map, 11,2 s (lot 8,6 s i postój na Strażniku 2,6 s), plansza z nazwą krainy, czarne pasy, zwolnienie i podpis przy każdej przegrodzie, zbliżenie na Strażnika z imieniem, gestem i rykiem; na czas przelotu postać stoi, walka nie rusza, HUD i podpowiedzi E są schowane. Skrypt pasa oddaje przelot nowemu pakietowi przez mały haczyk; bez nowego kontenera gra stary przelot.
+- **Pomijanie domyślnie wyłączone** — zgodnie z wcześniejszym ustaleniem Karola zapisanym w pakiecie lasu („przelotu nie da się pominąć”); przełącznik `Pomijanie` jest w kodzie.
+- **Próby w grze (16:30–17:08):** próba pakietu 15 punktów w porządku; las 22, Bagno 15, Dżungla 18 punktów w porządku, cała droga gracza 14 z 14, chmury i bohater w świecie bez błędów; czas klatki średnio 16,6 ms. Próby biomów sprawdzają teraz to, co akurat gra (nową oprawę albo stary przelot). Naprawiona przyczyna czarnego zrzutu w próbie Dżungli (kadr trafiał w końcowe zaciemnienie).
+- **Niesprawdzone:** prawdziwy telefon, dwóch graczy, wyjście gracza w trakcie. Wybory do oceny są w `swiat/cutscenka_biomu/PROJEKT.md`.
+- **Karol (ok. 16:55, na czacie):** „Dopalamy ostro te prace” — wykorzystać pozostałe 11% limitu; dołożone: wygląd areny Training Center i lepszy bieg bohatera w świecie (w toku). Pustynia nie ruszyła — nie zmieściłaby się w limicie.
+- Raport w panelu: „Przelot przez biom w nowej oprawie: plansza krainy, pasy, Strażnik z podpisem”. Notatki: [[Zadania]].
+
 ## 2026-11-18 · Claude Code u Karola (popołudnie: efekty Dżungli; nowa oprawa przelotu w toku)
 - **Polecenie Karola (ok. 14:50, na czacie):** nie będzie go dziś przy komputerze, tygodniowy limit odnawia się jutro — wykorzystać resztę („Co możemy jeszcze zrobić”). Wybrane rzeczy, które nie wymagają decyzji ludzi: efekty Dżungli i cutscenka D-077; większe pozycje (Pustynia, arena Training Center, bieg bohatera) podane Karolowi do wyboru.
 - **Dżungla — własne efekty umiejętności potworów** (`swiat/test_walki2/zrodla/Efekty3D.luau`, `Choreografie.luau`, dane w `swiat/dzungla_pas_gra/`): siedem umiejętności pięciu gatunków ma własny wygląd zamiast pożyczonego (pyłek zamiast lodowego sopla, struga jadu zamiast strzały, kły zamiast pazurów, liście, kokosy, płyty ruin), podpięty danymi przez nową tabelę wyglądu według aktora. Silnik i wyniki walk bez zmian (592 walki kontrolne i 1200 walk Dżungli identyczne). Każdy efekt najwyżej 16 części i jeden emiter.

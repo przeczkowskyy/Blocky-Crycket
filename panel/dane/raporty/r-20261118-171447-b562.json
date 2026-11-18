@@ -1,0 +1,35 @@
+{
+ "id": "r-20261118-171447-b562",
+ "tytul": "Przelot przez biom w nowej oprawie: plansza krainy, pasy, Strażnik z podpisem",
+ "opis_md": "- Przelot kamery przy pierwszym wejściu do biomu (D-077) ma nową oprawę w lesie, Bagnie i Dżungli: plansza z nazwą krainy, czarne pasy, podpisy przegród, zbliżenie na Strażnika z jego imieniem i rykiem.\n- Sam przelot był w grze od 17.11; teraz jest wolniejszy przy przegrodach (widać potwory), trwa 11,2 s i blokuje start walki na swój czas.\n- Pomijanie jest domyślnie wyłączone, zgodnie z wcześniejszym ustaleniem Karola. Przełącznik jest gotowy (atrybut `Pomijanie` na `Workspace/CutscenkaBiomu`).\n- Stary przelot został jako zapas: usunięcie nowego kontenera przywraca go bez zmian w kodzie.\n\nSzczegóły:\n\n**Jak sprawdzić w Studio:** Play → TELEPORT → Las (pierwsze wejście w sesji). Bagno i Dżungla: wejście bramą po pokonaniu Strażnika poprzedniej krainy. Ponowne odtworzenie: atrybut `Odtworz` = `las` / `bagno` / `dzungla` na kontenerze (widok serwera).\n\n**Próba w grze (18.11, 16:30–17:08): 15 punktów w porządku, 0 błędów**\n\n| Co sprawdzone | Wynik |\n|---|---|\n| Pierwsze wejście | cutscenka startuje po 1,4–1,8 s; pasy, plansza, HUD i podpowiedzi E schowane |\n| W trakcie | walka nie rusza, postać stoi w miejscu |\n| Strażnik | napis z imieniem, gest i dźwięk ryku |\n| Po cutscence | kamera i sterowanie wracają, blokady zdjęte |\n| Drugie wejście | cutscenki nie ma |\n| Pomijanie | domyślnie brak przycisku; po włączeniu przełącznika Spacja kończy w 0,4 s |\n| Śmierć postaci w trakcie, przelot przez chmury | sprzątanie bez błędów; w chmurach cutscenka czeka |\n| Czas klatki | średnio 16,6 ms, najdłuższa 23,7 ms |\n| Układ na ekran telefonu 667 × 375 i 844 × 390 | zgodny z wyliczonym |\n\nPróby całych biomów po zmianie: las 22 punkty w porządku, Bagno 15, Dżungla 18, próba całej drogi gracza 14 z 14, przelot przez chmury i bohater w świecie bez błędów.\n\n**Poprawione po obejrzeniu kadrów:** polskie litery w wersalikach („STRAŻNIK GAJU”), kamera dalej od liści i pni (wcześniej liść zasłaniał pół kadru w Dżungli), śmierć postaci w trakcie bez wpisu błędu.\n\n**Niesprawdzone:** prawdziwy telefon i dotyk; dwóch graczy naraz; wyjście gracza w trakcie; stary przelot po zmianach prób uruchomiony tylko w testach bez Studio.\n\n**Znane drobiazgi:** w kadrze leża Dżungli nie widać rzadkiego potwora; tabliczki poziomów potworów prześwitują pod planszą z nazwą krainy; zrzuty przelotu w pakietach lasu i Bagna pokazują jeszcze stary wygląd.\n\n**Do oceny (lista w `swiat/cutscenka_biomu/PROJEKT.md`):** długość 11,2 s czy krócej; czy pokazywać bramę do następnej krainy; osobne gesty Strażników; nadtytuł „NOWA KRAINA”; czy przelot ma grać także przy wejściu bramą pieszo (dziś tak).\n\nPliki: `swiat/cutscenka_biomu/` (opis w `README.md`, zrzuty w `klatki/`, trasy w `podglady/`).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T17:14:47+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/CutscenkaBiomu",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/cutscenka_biomu/PROJEKT.md",
+   "etykieta": "Wybory do oceny"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/cutscenka_biomu/README.md",
+   "etykieta": "Opis pakietu"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
