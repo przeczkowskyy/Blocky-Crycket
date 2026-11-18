@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T18:19:46+01:00",
+ "aktualizacja": "2026-11-18T18:19:49+01:00",
  "prace": [
   {
    "id": "bohater-bieg",
    "tytul": "Bohater w świecie: lepszy bieg trzech klas",
    "stan": "w_toku",
+   "etap": "wdrożenie biegu w Studio i próba w grze",
    "start": "2026-11-18T17:02:39+01:00",
-   "koniec_szacowany": "2026-11-18T19:02:39+01:00",
-   "aktualizacja": "2026-11-18T17:02:39+01:00",
+   "koniec_szacowany": "2026-11-18T19:00:00+01:00",
+   "aktualizacja": "2026-11-18T18:19:49+01:00",
    "obszary": [
     "swiat/bohater_swiat/**",
     "studio:BohaterSwiat"
