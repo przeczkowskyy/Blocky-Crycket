@@ -647,6 +647,44 @@ def skala_ui(D, w, h):
     return s
 
 
+def uklad_ui(D, gra, gw, gh, s):
+    """Prostokąty interfejsu rundy (x0, y0, x1, y1) w pikselach obszaru GUI gw × gh (po wycięciach i pasku Robloxa)
+    przy skali s: zwarty panel rundy i przycisk przerwania w prawym górnym rogu, przyciski gry przy krawędziach na dole
+    (prawa kolumna HUD-u jest na stanowisku schowana), kropki Run w lewym górnym rogu. Ten sam układ stosuje klient."""
+    U = D["ui"]
+    m = U["margines_px"]
+    R = {}
+    sw, sh = U["status_px"][0] * s, U["status_px"][1] * s
+    R["status"] = [gw - m - sw, m, gw - m, m + sh]
+    b = U["przycisk_maly_px"] * s
+    R["przerwij"] = [R["status"][0] - U["odstep_px"] * s - b, m, R["status"][0] - U["odstep_px"] * s, m + b]
+
+    def prawy(sz, wy):
+        return [gw - m - sz * s, gh - m - wy * s, gw - m, gh - m]
+
+    def lewy(sz, wy):
+        return [m, gh - m - wy * s, m + sz * s, gh - m]
+    g = U["odstep_px"]
+    if gra == "sila":
+        k = 3 * U["przycisk_px"] + 2 * g
+        R["krzyz"] = prawy(k, k)
+    elif gra == "pancerz":
+        R["blok"] = prawy(U["blok_px"], U["blok_px"])
+    elif gra == "kondycja":
+        R["stopaL"] = lewy(U["stopa_px"], U["stopa_px"])
+        R["stopaP"] = prawy(U["stopa_px"], U["stopa_px"])
+    elif gra == "zrecznosc":
+        R["unik"] = prawy(U["unik_px"], 2 * U["unik_px"] + 2 * g)
+    elif gra == "inteligencja":
+        k = 3 * U["runa_px"] + 2 * g
+        R["runy"] = prawy(k, k)
+        R["postep"] = [m, m, m + U["postep_px"][0] * s, m + U["postep_px"][1] * s]
+    elif gra == "szczescie":
+        R["torL"] = lewy(U["tor_px"], U["tor_px"])
+        R["torP"] = prawy(U["tor_px"], U["tor_px"])
+    return R
+
+
 def kod_wyniku(w, wygasly=False):
     if not w["przyjete"]:
         return {"spam": "S", "zla_wartosc": "X", "koniec": "K", "dubel": "D", "pokaz": "W"}.get(w["powod"], "?")

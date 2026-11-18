@@ -1,7 +1,7 @@
 --[[
 	DaneTreningu — WYGENEROWANE przez swiat/trening_proba/dane.py z ustawienia.json (oraz punktu
 	trenera ze swiat/miasteczko_bazar/znaczniki.json). Nie edytuj ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: 2d83905567d6
+	Skrót danych: 9148bb672e67
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -237,8 +237,8 @@ return {
 		kondycja = {
 			podest = { 2936, 300, 3008 },
 			patrz = { 2936, 300, 3018 },
-			oko = { 2936, 308.4, 3021.5 },
-			cel = { 2936, 302.4, 3007.5 },
+			oko = { 2936, 308.4, 3022.5 },
+			cel = { 2936, 301.4, 3007.5 },
 			tasma_srodek = { 2936, 300.3, 3010.5 },
 			tasma_rozmiar = { 5.6, 0.6, 16 },
 			linia = { 2936, 300.62, 3009.8 },
@@ -280,8 +280,8 @@ return {
 		szczescie = {
 			podest = { 3104, 300, 3008 },
 			patrz = { 3104, 300, 2998 },
-			oko = { 3104, 309.4, 3021.5 },
-			cel = { 3104, 306.6, 3002 },
+			oko = { 3104, 309.4, 3025.5 },
+			cel = { 3104, 308.1, 3002 },
 			tory = { lewy = { 3100, 300, 3008 }, srodek = { 3104, 300, 3008 }, prawy = { 3108, 300, 3008 } },
 			koszyk = { 3104, 306.6, 3007.7 },
 			spad_y = 13,
@@ -318,7 +318,6 @@ return {
 		waga_czcionki = "ExtraBold",
 		przezroczystosc_postaci = 0.55,
 		pasek_gorny_pt = 36,
-		sterowanie_od_prawej = 0.215,
 		kolory = {
 			krem = "FFF6E0",
 			tusz = "17121F",
@@ -341,6 +340,10 @@ return {
 		runa_px = 60,
 		tor_px = 88,
 		obrazek_px = { 400, 80 },
+		status_px = { 210, 52 },
+		postep_px = { 216, 30 },
+		margines_px = 8,
+		kamera_fov = 70,
 	},
 	sterowanie = {
 		gora = { klawisze = { "Up", "W" }, pad = { "DPadUp", "ButtonY" }, napis = "GÓRA", skrot = "W" },
@@ -2949,5 +2952,5 @@ return {
 			{ 1024, 768, 1.535232383808096 },
 		},
 	},
-	skrot = "2d83905567d6",
+	skrot = "9148bb672e67",
 }

@@ -333,4 +333,6 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 | Koniczyny: lot, pierwsza, pod koniczyną | 1,7 s; pierwszy upadek 2,4 s po starcie; koszyk na torze 0,2 s przed upadkiem | przyjęte (0,2 s — po teście bota) |
 | Kubełek Run i Koniczyn | 6 na start, +6 na sekundę (szybkie wpisywanie i przejścia) | przyjęte |
 | Przyciski nowych gier | stopy 96 px, SKOK / PADNIJ 80 px, runy 60 px, ◀ ▶ 88 px; podpowiedź obrazkowa 400 × 80 | przyjęte (wymóg 44 px, 12 pt) |
+| Panel rundy i przyciski (18.11, po zrzutach telefonu) | panel 210 × 52 w prawym górnym rogu, „X” obok; przyciski gier przy krawędziach ekranu na dole; obszar GUI w bezpiecznym obszarze telefonu | przyjęte (test 5e: 6 gier × 4 ekrany) |
+| Kamery Bieżni i Koniczyn (18.11) | Bieżnia oko (0; 8,4; 14,5), cel (0; 1,4; −0,5); Koniczyny oko (0; 9,4; 17,5), cel (0; 8,1; −6) | przyjęte po teście 5e |
 | Dźwięki z arkusza (swiat/dzwiek_gra) | trafienie Siły „cios”, Pancerza „blok”, Zręczności „unik”; punkt „awans”; koniec „zwyciestwo”; złota „monety”; zaklęcie „tarcza”; START „przycisk”; najwyżej 4 naraz | przyjęte; bez arkusza — dźwięki wbudowane |

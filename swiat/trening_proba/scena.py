@@ -335,6 +335,58 @@ def czesci(D):
     return S.lista
 
 
+def pole_gry(D, gra):
+    """Punkty świata, które gracz musi widzieć w czasie rundy (pole gry): [x, y, z, opis]. Rzutuje je test telefonu
+    (testy/test_treningu.py, 5e) — żaden nie może wpaść pod panel rundy ani przycisk na żadnym z badanych ekranów."""
+    W = D["swiat"][gra]
+    P = []
+    if gra == "sila":
+        for k, z in W["strefy"].items():
+            for dx, dy in ((-0.9, 0), (0.9, 0), (0, -0.9), (0, 0.9)):
+                P.append([z[0] + dx, z[1] + dy, z[2], "strefa " + k])
+    elif gra == "pancerz":
+        for k in ("piesc_spoczynek", "piesc_zamach", "piesc_cel", "tarcza", "tarcza_blok"):
+            P.append(W[k] + [k])
+        a, b = W["piesc_zamach"], W["piesc_cel"]
+        for i in range(1, 5):
+            P.append([a[j] + (b[j] - a[j]) * i / 5 for j in range(3)] + ["cios"])
+        g = W["golem"]
+        for dx, dy in ((-2.5, 3.2), (2.5, 3.2), (-1.5, 9.4), (1.5, 9.4), (0, 8.4)):
+            P.append([g[0] + dx, g[1] + dy, g[2], "golem"])
+    elif gra == "kondycja":
+        for k, p in W["stopy"].items():
+            for i in range(9):
+                z = p[2] + W["slad_predkosc"] * W["slady_s"] * i / 8
+                for dx in (-0.45, 0.45):
+                    P.append([p[0] + dx, p[1], z, "slad %s" % k])
+    elif gra == "zrecznosc":
+        sl, pd = W["slup"], W["podest"]
+        for nazwa, h in W["wysokosci"].items():
+            for kat in range(90, 181, 10):  # nadlatująca kłoda: ćwierć obrotu przed przejściem (strona podejścia)
+                a = math.radians(90 - W["obrot"] * (kat - 90))
+                for rr in (4.0, 7.0, W["ramie"]):
+                    P.append([sl[0] + math.cos(a) * rr, pd[1] + h, sl[2] + math.sin(a) * rr, "kloda %s" % nazwa])
+        for y in (0.2, 2.7, 5.4):
+            P.append([pd[0], pd[1] + y, pd[2], "gracz"])
+    elif gra == "inteligencja":
+        ks = W["kamien_rozmiar"]
+        for k, p in W["kamienie"].items():
+            for dx, dy in ((-1, -1), (-1, 1), (1, -1), (1, 1)):
+                P.append([p[0] + dx * ks[0] / 2, p[1] + dy * ks[1] / 2, p[2] + ks[2] / 2, "kamien " + k])
+    elif gra == "szczescie":
+        pd = W["podest"]
+        kosz = [W["koszyk"][i] - pd[i] for i in range(3)]
+        for k, p in W["tory"].items():
+            y0, y1 = pd[1] + W["spad_y"] + 0.7, p[1] + kosz[1] - 0.6
+            for i in range(7):
+                y = y0 + (y1 - y0) * i / 6
+                for dx in (-0.8, 0.8):
+                    P.append([p[0] + dx, y, p[2] + kosz[2], "tor " + k])
+            for y in (0.2, 5.4):
+                P.append([p[0], p[1] + y, p[2], "postac na torze " + k])
+    return P
+
+
 def obrys(D):
     """(min, max) części areny w świecie (pudła osiowe obróconych części — rozmiar_osiowy)."""
     mn, mx = [1e9] * 3, [-1e9] * 3

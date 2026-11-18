@@ -126,6 +126,8 @@ gui.ResetOnSpawn = false
 gui.DisplayOrder = U.kolejnosc_wyswietlania
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Enabled = false
+-- obszar GUI omija pasek Robloxa i wycięcia ekranu telefonu (bezpieczny obszar); układ liczy się od jego rozmiaru
+gui.ScreenInsets = Enum.ScreenInsets.CoreUISafeInsets
 gui.Parent = ekrany
 
 -- korzeń wszystkich paneli: cały ekran, a przy atrybucie kontenera EmulacjaEkranu (Vector2, punkty telefonu) —
@@ -289,18 +291,19 @@ end
 ------------------------------------------------------------------ ekran: panele
 local ui = {}
 
--- status (prawy górny róg: wolny od HUD-u)
-ui.status = panel("Status", 268, 92, UDim2.new(1, -8, 0, 8), Vector2.new(1, 0))
+-- panel rundy — zwarty (poprawka po zrzutach telefonu 18.11.2026: dawny 268 × 92 zajmował ok. 40% szerokości
+-- telefonu i zasłaniał koronę drzewa Koniczyn): czas · seria · mnożnik w jednym wierszu, pod nim pasek statystyki.
+-- Położenie (prawy górny róg) i przyciski gry ustawia odswiezSkale z L.ukladUI — ten sam układ sprawdza test telefonu.
+ui.status = panel("Status", U.status_px[1], U.status_px[2], UDim2.fromOffset(0, 8), Vector2.zero)
 zaokraglij(ui.status, 12)
 obrysuj(ui.status, 3)
-ui.nazwaGry = napis(ui.status, "Gra", "", "maly", 10, 4, 190, 20, KOL.tusz, Enum.TextXAlignment.Left)
-ui.czas = napis(ui.status, "Czas", "", "sredni", 196, 4, 62, 22, KOL.tusz, Enum.TextXAlignment.Right)
-ui.seria = napis(ui.status, "Seria", "SERIA 0", "duzy", 10, 24, 160, 36, KOL.tusz, Enum.TextXAlignment.Left)
-ui.mnoznik = napis(ui.status, "Mnoznik", "", "sredni", 168, 30, 90, 26, KOL.zloto, Enum.TextXAlignment.Right)
+ui.czas = napis(ui.status, "Czas", "", "sredni", 8, 4, 50, 24, KOL.tusz, Enum.TextXAlignment.Left)
+ui.seria = napis(ui.status, "Seria", "SERIA 0", "sredni", 58, 4, 96, 24, KOL.tusz, Enum.TextXAlignment.Center)
+ui.mnoznik = napis(ui.status, "Mnoznik", "", "maly", 152, 6, 50, 20, KOL.zloto, Enum.TextXAlignment.Right)
 ui.pasek = Instance.new("Frame")
 ui.pasek.Name = "Pasek"
-ui.pasek.Position = UDim2.fromOffset(10, 60)
-ui.pasek.Size = UDim2.fromOffset(248, 7)
+ui.pasek.Position = UDim2.fromOffset(8, 34)
+ui.pasek.Size = UDim2.fromOffset(U.status_px[1] - 16, 9)
 ui.pasek.BackgroundColor3 = kolor(KOL.szary)
 ui.pasek.BorderSizePixel = 0
 zaokraglij(ui.pasek, 3)
@@ -312,28 +315,32 @@ ui.wypelnienie.BackgroundColor3 = kolor(KOL.zloto)
 ui.wypelnienie.BorderSizePixel = 0
 zaokraglij(ui.wypelnienie, 3)
 ui.wypelnienie.Parent = ui.pasek
-ui.suma = napis(ui.status, "Suma", "", "maly", 10, 69, 248, 20, KOL.szary, Enum.TextXAlignment.Left)
 local skalaSerii = Instance.new("UIScale")
 skalaSerii.Parent = ui.seria
 
-ui.przerwij = panel("Przerwij", U.przycisk_maly_px, U.przycisk_maly_px, UDim2.new(1, -8, 0, 108), Vector2.new(1, 0), "")
+ui.przerwij = panel("Przerwij", U.przycisk_maly_px, U.przycisk_maly_px, UDim2.fromOffset(0, 8), Vector2.zero, "")
 
--- sterowanie dotykowe: prawa strona na lewo od dawnej kolumny HUD-u (1 − sterowanie_od_prawej), lewa przy krawędzi
+-- sterowanie dotykowe: przy krawędziach ekranu na dole (na stanowisku HUD jest schowany, więc prawa kolumna jest wolna);
+-- położenie z L.ukladUI (odswiezSkale), tu tylko rozmiary bazowe
 local b = U.przycisk_px
 local g = U.odstep_px
-local PRAWA = UDim2.new(1 - U.sterowanie_od_prawej, 0, 1, -8)
-local LEWA = UDim2.new(0, 8, 1, -8)
-ui.krzyz = panel("SterowanieSila", 3 * b + 2 * g, 3 * b + 2 * g, PRAWA, Vector2.new(1, 1), "")
-ui.blok = panel("SterowaniePancerz", U.blok_px, U.blok_px, PRAWA, Vector2.new(1, 1), "")
-ui.stopaL = panel("SterowanieKondycjaL", U.stopa_px, U.stopa_px, LEWA, Vector2.new(0, 1), "")
-ui.stopaP = panel("SterowanieKondycjaP", U.stopa_px, U.stopa_px, PRAWA, Vector2.new(1, 1), "")
-ui.unik = panel("SterowanieZrecznosc", U.unik_px, 2 * U.unik_px + 2 * g, PRAWA, Vector2.new(1, 1), "")
+local START_POZ = UDim2.fromOffset(0, 0)
+ui.krzyz = panel("SterowanieSila", 3 * b + 2 * g, 3 * b + 2 * g, START_POZ, Vector2.zero, "")
+ui.blok = panel("SterowaniePancerz", U.blok_px, U.blok_px, START_POZ, Vector2.zero, "")
+ui.stopaL = panel("SterowanieKondycjaL", U.stopa_px, U.stopa_px, START_POZ, Vector2.zero, "")
+ui.stopaP = panel("SterowanieKondycjaP", U.stopa_px, U.stopa_px, START_POZ, Vector2.zero, "")
+ui.unik = panel("SterowanieZrecznosc", U.unik_px, 2 * U.unik_px + 2 * g, START_POZ, Vector2.zero, "")
 local r_ = U.runa_px
-ui.runy = panel("SterowanieInteligencja", 3 * r_ + 2 * g, 3 * r_ + 2 * g, PRAWA, Vector2.new(1, 1), "")
-ui.torL = panel("SterowanieSzczescieL", U.tor_px, U.tor_px, LEWA, Vector2.new(0, 1), "")
-ui.torP = panel("SterowanieSzczescieP", U.tor_px, U.tor_px, PRAWA, Vector2.new(1, 1), "")
+ui.runy = panel("SterowanieInteligencja", 3 * r_ + 2 * g, 3 * r_ + 2 * g, START_POZ, Vector2.zero, "")
+ui.torL = panel("SterowanieSzczescieL", U.tor_px, U.tor_px, START_POZ, Vector2.zero, "")
+ui.torP = panel("SterowanieSzczescieP", U.tor_px, U.tor_px, START_POZ, Vector2.zero, "")
 -- Runy: postęp sekwencji (kropki) w lewym górnym rogu
-ui.postep = panel("PostepRun", 216, 30, UDim2.fromOffset(8, 8), Vector2.zero)
+ui.postep = panel("PostepRun", U.postep_px[1], U.postep_px[2], UDim2.fromOffset(8, 8), Vector2.zero)
+-- panel w układzie (L.ukladUI) → ramka klienta
+ui.wUkladzie = {
+	status = ui.status, przerwij = ui.przerwij, krzyz = ui.krzyz, blok = ui.blok, stopaL = ui.stopaL,
+	stopaP = ui.stopaP, unik = ui.unik, runy = ui.runy, postep = ui.postep, torL = ui.torL, torP = ui.torP,
+}
 zaokraglij(ui.postep, 10)
 obrysuj(ui.postep, 2)
 ui.kropki = {}
@@ -999,11 +1006,7 @@ local function odswiezStatus()
 	local suma = if R then R.suma else 0
 	ui.seria.Text = string.format("SERIA %d", seria)
 	ui.mnoznik.Text = string.format("×%.2f", mnoznikSerii(seria))
-	local st = stan.gra and L.statystyka(D, stan.gra)
-	if st then
-		ui.nazwaGry.Text = string.format("%s · %s", st.nazwa, st.gra)
-		ui.suma.Text = string.format("+%d %s w rundzie · sesja +%d", suma, st.nazwa, gracz:GetAttribute(st.atrybut_sesji) or 0)
-	end
+	stan.sumaRundy = suma -- punkty w rundzie: napis „+1 Siła!” w chwili zdobycia i podsumowanie (zwarty panel ich nie ma)
 	local pasek, prog = 0, 1
 	if R then
 		pasek, prog = R.pasek, L.prog(D, R.W, R.pula)
@@ -2012,10 +2015,31 @@ local function odswiezSkale()
 			sk.Scale = s
 		end
 	end
-	-- przesunięcia (Position) nie skalują się z UIScale: przycisk przerwania zawsze na lewo od statusu (pod statusem
-	-- na telefonie wchodził na przycisk Quests prawej kolumny HUD), podpowiedź obrazkowa nad panelem startu
-	ui.przerwij.Position = UDim2.new(1, -8 - (ui.status.Size.X.Offset + 8) * s, 0, 8)
+	-- przesunięcia (Position) nie skalują się z UIScale: podpowiedź obrazkowa nad panelem startu, a panel rundy,
+	-- przycisk przerwania i przyciski gry — z L.ukladUI (obszar GUI po pasku Robloxa i wycięciach ekranu)
 	ui.obrazek.Position = UDim2.new(0.5, 0, 1, -8 - (ui.start.Size.Y.Offset + 8) * s)
+	local gw, gh = korzen.AbsoluteSize.X / skalaKorzenia.Scale, korzen.AbsoluteSize.Y / skalaKorzenia.Scale
+	if typeof(em) == "Vector2" and em.X > 0 and em.Y > 0 then
+		gw, gh = em.X, em.Y - U.pasek_gorny_pt
+	end
+	for nazwa, r in L.ukladUI(D, stan.gra or "sila", gw, gh, s) do
+		local p = ui.wUkladzie[nazwa]
+		if p then
+			p.AnchorPoint = Vector2.zero
+			p.Position = UDim2.fromOffset(r[1], r[2])
+		end
+	end
+	-- przyciski gier, których nie ma w układzie bieżącej gry, i tak są schowane; ustawiamy wszystkie raz na grę
+	for _, gra in { "sila", "pancerz", "kondycja", "zrecznosc", "inteligencja", "szczescie" } do
+		if gra ~= stan.gra then
+			for nazwa, r in L.ukladUI(D, gra, gw, gh, s) do
+				local p = ui.wUkladzie[nazwa]
+				if p and nazwa ~= "status" and nazwa ~= "przerwij" then
+					p.Position = UDim2.fromOffset(r[1], r[2])
+				end
+			end
+		end
+	end
 end
 odswiezSkale()
 workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(odswiezSkale)
@@ -2204,6 +2228,7 @@ local function wejdzNaStanowisko(gra)
 	end
 	ui.opis.Text = T["sterowanie_" .. gra] or ""
 	obrazek(gra)
+	odswiezSkale()
 	odswiezStatus()
 	ui.czas.Text = string.format("%d:%02d", math.floor(D.runda.dlugosc_s / 60), D.runda.dlugosc_s % 60)
 	pokazWidocznosc()

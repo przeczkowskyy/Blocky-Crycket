@@ -964,6 +964,14 @@ class TestLuau(unittest.TestCase):
                 Gl = self.Dl.get("gry").get(gra)
                 self.assertAlmostEqual(self.wolaj("przyrost", self.Dl, float(s), Gl)[0], LT.przyrost(D, s, D["gry"][gra]))
         for gra in GRY:
+            for w_, h_ in ((667, 339), (750, 333), (1280, 684), (1024, 732)):
+                s_ = LT.skala_ui(D, w_, h_ + 36)
+                lu = LM.z_luau(self.wolaj("ukladUI", self.Dl, gra, float(w_), float(h_), s_)[0])
+                py = LT.uklad_ui(D, gra, w_, h_, s_)
+                self.assertEqual(sorted(lu), sorted(py), gra)
+                for n in py:
+                    self.assertEqual(norm(lu[n]), norm(py[n]), (gra, n))
+        for gra in GRY:
             Gl = self.Dl.get("gry").get(gra)
             for w in ("nisko", "wysoko", "lewo", "cios", "lewa"):
                 self.assertEqual(self.wolaj("odpowiedz", Gl, w)[0], LT.odpowiedz(D["gry"][gra], w))
@@ -1182,6 +1190,28 @@ def _wartosc(arg, U):
     return None
 
 
+# ekrany do testu telefonu: (szerokość, wysokość, (wycięcie z lewej, z prawej, pasek na dole)) — poziomo
+EKRANY = {"667x375": (667, 375, (0, 0, 0)), "844x390": (844, 390, (47, 47, 21)), "1280x720": (1280, 720, (0, 0, 0)),
+          "1024x768": (1024, 768, (0, 0, 0))}
+
+
+def rzut_ekranu(oko, cel, p, vw, vh, fov):
+    """Punkt świata → piksel ekranu dla kamery CFrame.lookAt(oko, cel) z pionowym kątem widzenia fov (jak w Roblox)."""
+    f = [cel[i] - oko[i] for i in range(3)]
+    d = math.sqrt(sum(x * x for x in f))
+    f = [x / d for x in f]
+    r = [f[1] * 0 - f[2] * 1, f[2] * 0 - f[0] * 0, f[0] * 1 - f[1] * 0]
+    d = math.sqrt(sum(x * x for x in r))
+    r = [x / d for x in r]
+    u = [r[1] * f[2] - r[2] * f[1], r[2] * f[0] - r[0] * f[2], r[0] * f[1] - r[1] * f[0]]
+    q = [p[i] - oko[i] for i in range(3)]
+    z = sum(q[i] * f[i] for i in range(3))
+    if z <= 0.1:
+        return None
+    k = (vh / 2) / math.tan(math.radians(fov / 2))
+    return vw / 2 + sum(q[i] * r[i] for i in range(3)) / z * k, vh / 2 - sum(q[i] * u[i] for i in range(3)) / z * k
+
+
 class TestTelefonu(unittest.TestCase):
     def test_5a_rozmiary_z_danych(self):
         U = D["ui"]
@@ -1213,58 +1243,73 @@ class TestTelefonu(unittest.TestCase):
     def test_5c_panele_mieszcza_sie(self):
         U = D["ui"]
         # (szer, wys) bazowo — te same liczby co w KlientTreningu (panel(...)); ekran bez paska górnego Robloxa (36)
-        panele = {"Wybor": (478, 304), "Podsumowanie": (400, 244), "Start": (400, 132), "Status": (268, 92)}
+        panele = {"Wybor": (478, 304), "Podsumowanie": (400, 244), "Start": (400, 132)}
         for nazwa, (w, h) in panele.items():
             self.assertRegex(KLIENT, r'panel\("%s", %d, %d' % (nazwa, w, h))
-        for ekran in ((667, 375), (568, 320), (812, 375)):
-            s = LT.skala_ui(D, *ekran)
-            for nazwa, (w, h) in panele.items():
-                self.assertLessEqual(w * s, ekran[0] - 16, (nazwa, ekran))
-                self.assertLessEqual(h * s, ekran[1] - 36 - 8, (nazwa, ekran))
-            # prostokąty w czasie rundy (bez paska górnego): status, przycisk przerwania, sterowanie każdej gry — bez
-            # nachodzenia (sterowanie różnych gier nie jest widoczne naraz; HUD jest schowany na stanowisku)
-            w, h = ekran[0], ekran[1] - 36
-            g = U["odstep_px"]
-            krzyz = 3 * U["przycisk_px"] + 2 * g
-            runy = 3 * U["runa_px"] + 2 * g
-            prawa = w * (1 - U["sterowanie_od_prawej"])
-
-            def prawy(sz, wy):
-                return (prawa - sz * s, h - 8 - wy * s, prawa, h - 8)
-
-            def lewy(sz, wy):
-                return (8, h - 8 - wy * s, 8 + sz * s, h - 8)
-            wspolne = {"status": (w - 8 - 268 * s, 8, w - 8, 8 + 92 * s),
-                       "przerwij": (w - 16 - (268 + U["przycisk_maly_px"]) * s, 8, w - 16 - 268 * s, 8 + U["przycisk_maly_px"] * s)}
-            gry = {"sila": {"krzyz": prawy(krzyz, krzyz)}, "pancerz": {"blok": prawy(U["blok_px"], U["blok_px"])},
-                   "kondycja": {"stopaL": lewy(U["stopa_px"], U["stopa_px"]), "stopaP": prawy(U["stopa_px"], U["stopa_px"])},
-                   "zrecznosc": {"unik": prawy(U["unik_px"], 2 * U["unik_px"] + 2 * g)},
-                   "inteligencja": {"runy": prawy(runy, runy), "postep": (8, 8, 8 + 216 * s, 8 + 30 * s)},
-                   "szczescie": {"torL": lewy(U["tor_px"], U["tor_px"]), "torP": prawy(U["tor_px"], U["tor_px"])}}
-            for gra, wlasne in gry.items():
-                pr = dict(wspolne, **wlasne)
+        self.assertIn('panel("Status", U.status_px[1], U.status_px[2]', KLIENT)
+        panele["Status"] = tuple(U["status_px"])
+        for nazwa, (vw, vh, ins) in EKRANY.items():
+            s = LT.skala_ui(D, vw, vh)
+            gw, gh = vw - ins[0] - ins[1], vh - U["pasek_gorny_pt"] - ins[2]
+            for n, (w, h) in panele.items():
+                self.assertLessEqual(w * s, gw - 16, (n, nazwa))
+                self.assertLessEqual(h * s, gh - 8, (n, nazwa))
+            # prostokąty rundy z tego samego układu co klient (L.ukladUI): w obszarze GUI i bez nachodzenia na siebie
+            for gra in GRY:
+                pr = LT.uklad_ui(D, gra, gw, gh, s)
                 for a in pr:
                     x0, y0, x1, y1 = pr[a]
-                    self.assertTrue(x0 >= 0 and y0 >= 0 and x1 <= w and y1 <= h, (gra, a, ekran))
+                    self.assertTrue(x0 >= 0 and y0 >= 0 and x1 <= gw and y1 <= gh, (gra, a, nazwa))
                     for b2 in pr:
                         if a < b2:
                             X0, Y0, X1, Y1 = pr[b2]
-                            self.assertTrue(x1 <= X0 or X1 <= x0 or y1 <= Y0 or Y1 <= y0, (gra, a, b2, ekran))
-                # przyciski w zasięgu kciuka: dolna połowa ekranu
-                for a, (x0, y0, x1, y1) in wlasne.items():
-                    if a != "postep":
-                        self.assertGreater(y0, h * 0.25, (gra, a, ekran))
+                            self.assertTrue(x1 <= X0 or X1 <= x0 or y1 <= Y0 or Y1 <= y0, (gra, a, b2, nazwa))
+                    if a not in ("status", "przerwij", "postep"):  # przyciski gry pod kciukami: dolna część ekranu
+                        self.assertGreater(y0, gh * 0.25, (gra, a, nazwa))
+                # panel rundy zwarty: najwyżej 40% szerokości razem z przyciskiem przerwania, najwyżej 18% wysokości
+                st, x = pr["status"], pr["przerwij"]
+                self.assertLessEqual((st[2] - x[0]) / gw, 0.4, (gra, nazwa))
+                self.assertLessEqual((st[3] - st[1]) / gh, 0.18, (gra, nazwa))
             # na stanowisku (przed rundą i w odliczaniu): podpowiedź obrazkowa nad panelem startu, pod statusem
             ob = U["obrazek_px"]
-            start = (w / 2 - 200 * s, h - 8 - 132 * s, w / 2 + 200 * s, h - 8)
-            obrazek = (w / 2 - ob[0] / 2 * s, start[1] - 8 * s - ob[1] * s, w / 2 + ob[0] / 2 * s, start[1] - 8 * s)
-            for nazwa, (X0, Y0, X1, Y1) in (("status", wspolne["status"]), ("start", start)):
+            start = (gw / 2 - 200 * s, gh - 8 - 132 * s, gw / 2 + 200 * s, gh - 8)
+            obrazek = (gw / 2 - ob[0] / 2 * s, start[1] - 8 * s - ob[1] * s, gw / 2 + ob[0] / 2 * s, start[1] - 8 * s)
+            for n, (X0, Y0, X1, Y1) in (("status", LT.uklad_ui(D, "sila", gw, gh, s)["status"]), ("start", start)):
                 x0, y0, x1, y1 = obrazek
-                self.assertTrue(x1 <= X0 or X1 <= x0 or y1 <= Y0 or Y1 <= y0, ("obrazek", nazwa, ekran))
+                self.assertTrue(x1 <= X0 or X1 <= x0 or y1 <= Y0 or Y1 <= y0, ("obrazek", n, nazwa))
             self.assertGreaterEqual(obrazek[1], 0)
-        self.assertIn("-8 - (ui.status.Size.X.Offset + 8) * s", KLIENT)
+        self.assertIn("L.ukladUI(D,", KLIENT)
+        self.assertIn("Enum.ScreenInsets.CoreUISafeInsets", KLIENT)
         self.assertIn("-8 - (ui.start.Size.Y.Offset + 8) * s", KLIENT)
         self.assertIn("and not stan.przedStartem", KLIENT, "przyciski gry schowane w odliczaniu (tam jest podpowiedź)")
+        for n in ("status", "przerwij", "krzyz", "blok", "stopaL", "stopaP", "unik", "runy", "postep", "torL", "torP"):
+            self.assertIn("%s = ui.%s" % (n, n), KLIENT, "panel %s w układzie klienta" % n)
+
+    def test_5e_pole_gry_widoczne_na_kazdym_ekranie(self):
+        """Poprawka po zrzutach telefonu (18.11.2026): na żadnym z ekranów (telefon 667 × 375, telefon z wycięciem
+        844 × 390, 1280 × 720, tablet 1024 × 768) pole gry (tablica run, tory i korona drzewa, nadlatująca kłoda, ślady
+        na całej taśmie, strefy Siły, golem) nie wpada pod panel rundy, przycisk przerwania ani przyciski gry i mieści
+        się w obszarze GUI (zapas 6 px). Rzut: kamera stanowiska, kąt widzenia pionowy 70° (Roblox)."""
+        U = D["ui"]
+        zapas = 6
+        for gra in GRY:
+            W = D["swiat"][gra]
+            pts = SCENA.pole_gry(D, gra)
+            self.assertGreater(len(pts), 8, gra)
+            for nazwa, (vw, vh, ins) in EKRANY.items():
+                s = LT.skala_ui(D, vw, vh)
+                gx0, gy0 = ins[0], U["pasek_gorny_pt"]
+                gw, gh = vw - ins[0] - ins[1], vh - gy0 - ins[2]
+                R = LT.uklad_ui(D, gra, gw, gh, s)
+                for p in pts:
+                    xy = rzut_ekranu(W["oko"], W["cel"], p[:3], vw, vh, U["kamera_fov"])
+                    self.assertIsNotNone(xy, (gra, nazwa, p[3]))
+                    x, y = xy
+                    self.assertTrue(gx0 + zapas <= x <= gx0 + gw - zapas and gy0 + zapas <= y <= gy0 + gh - zapas,
+                                    "%s %s: %s poza ekranem (%.0f; %.0f)" % (gra, nazwa, p[3], x, y))
+                    for n, (x0, y0, x1, y1) in R.items():
+                        pod = gx0 + x0 - zapas <= x <= gx0 + x1 + zapas and gy0 + y0 - zapas <= y <= gy0 + y1 + zapas
+                        self.assertFalse(pod, "%s %s: %s pod „%s” (%.0f; %.0f)" % (gra, nazwa, p[3], n, x, y))
 
     def test_5d_teksty_dla_gracza(self):
         # wybór jest dalej tymczasowy (WyborTymczasowy / WybierzGre dla okna Pawła), ale na ekranie gracza nie ma

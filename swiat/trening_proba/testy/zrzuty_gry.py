@@ -5,6 +5,7 @@ nocy 17/18.11.2026 także cztery nowe mini-gry: dla każdej start z podpowiedzi�
 i widok telefonu; 25 — okno wyboru z sześcioma grami. Lista graczy i czat schowane (SetCoreGuiEnabled u klienta).
 
     python -B swiat/trening_proba/testy/zrzuty_gry.py [--wyj <folder>] [--studio <studio_id>] [--nowe]
+    python -B swiat/trening_proba/testy/zrzuty_gry.py --telefon     # 26–37: sześć gier na telefonie 667 × 375 i 844 × 390
     python -B swiat/trening_proba/testy/zrzuty_gry.py --sprawdz     # bez Studio: kawałki Luau parsują się
 
 Domyślnie zapisuje do swiat/trening_proba/klatki/ (JPG, szerokość 1280 px) i wypisuje pomiar telefonu: najmniejszy
@@ -113,6 +114,7 @@ def main():
     wyj = os.path.abspath(argv[argv.index("--wyj") + 1]) if "--wyj" in argv else os.path.join(PAKIET, "klatki")
     studio = argv[argv.index("--studio") + 1] if "--studio" in argv else None
     tylko_nowe = "--nowe" in argv
+    tylko_telefon = "--telefon" in argv
     os.makedirs(wyj, exist_ok=True)
     sys.path.insert(0, PAKIET)
     import dane as DANE  # noqa: E402
@@ -225,6 +227,28 @@ def main():
             tab0 = json.loads(luau(kod("tablica"), "Server"))
             przestaw([tab0["p"][0] + tab0["f"][0] * 5, tab0["p"][1] + 0.5, tab0["p"][2] + tab0["f"][2] * 5], tab0["p"])
             time.sleep(1.2)
+
+            if tylko_telefon:
+                # 26–37: każda z sześciu gier w trakcie rundy na ekranie telefonu 667 × 375 i 844 × 390 (emulacja
+                # prostokąta ekranu u klienta) + pomiar najmniejszych napisów i przycisków
+                nr = 26
+                for gra in ("sila", "pancerz", "kondycja", "zrecznosc", "inteligencja", "szczescie"):
+                    wejdz(gra)
+                    for ew, eh in ((667, 375), (844, 390)):
+                        luau(kod("emulacja", "Vector2.new(%d, %d)" % (ew, eh)), "Client")
+                        time.sleep(1.2)
+                        k0 = start_rundy()
+                        if not k0:
+                            log("%s: runda nie ruszyła" % gra)
+                            continue
+                        hak("autograj", 1.0, False)
+                        czekaj_do(k0["runda"]["t0"] + 7.0)
+                        pomiar_i_zrzut("%02d_telefon_%s_%dx%d" % (nr, gra, ew, eh))
+                        nr += 1
+                        hak("przerwij")
+                        time.sleep(1.2)
+                    luau(kod("emulacja", "nil"), "Client")
+                return
 
             # 25 okno wyboru z sześcioma grami (wszystkie grywalne)
             hak("wybor", "test")

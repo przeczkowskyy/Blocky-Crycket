@@ -216,7 +216,7 @@
     "kondycja": {
       "podest": [-64, 0, 8],
       "patrz": [0, 0, 10],
-      "kamera": {"oko": [0, 8.4, 13.5], "cel": [0, 2.4, -0.5]},
+      "kamera": {"oko": [0, 8.4, 14.5], "cel": [0, 1.4, -0.5]},
       "tasma_srodek": [0, 0.3, 2.5],
       "tasma_rozmiar": [5.6, 0.6, 16],
       "linia": [0, 0.62, 1.8],
@@ -248,7 +248,7 @@
     },
     "szczescie": {
       "podest": [104, 0, 8],
-      "kamera": {"oko": [0, 9.4, 13.5], "cel": [0, 6.6, -6]},
+      "kamera": {"oko": [0, 9.4, 17.5], "cel": [0, 8.1, -6]},
       "tory": {"lewy": [-4, 0, 0], "srodek": [0, 0, 0], "prawy": [4, 0, 0]},
       "koszyk": [0, 6.6, -0.3],
       "spad_y": 13.0,
@@ -296,7 +296,6 @@
     "waga_czcionki": "ExtraBold",
     "przezroczystosc_postaci": 0.55,
     "pasek_gorny_pt": 36,
-    "sterowanie_od_prawej": 0.215,
     "kolory": {
       "krem": "FFF6E0",
       "tusz": "17121F",
@@ -318,7 +317,11 @@
     "unik_px": 80,
     "runa_px": 60,
     "tor_px": 88,
-    "obrazek_px": [400, 80]
+    "obrazek_px": [400, 80],
+    "status_px": [210, 52],
+    "postep_px": [216, 30],
+    "margines_px": 8,
+    "kamera_fov": 70
   },
   "sterowanie": {
     "gora": {"klawisze": ["Up", "W"], "pad": ["DPadUp", "ButtonY"], "napis": "GÓRA", "skrot": "W"},

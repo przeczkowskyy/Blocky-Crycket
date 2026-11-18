@@ -400,56 +400,60 @@ def obroc_ramie(D, cz, kat_stopnie):
 
 # ------------------------------------------------------------------------------------------------ zarys sterowania
 def sterowanie(obraz, D, gra, ImageDraw, ImageFont):
-    """Zarys przycisków dotykowych z KlientTreningu (rozmiary z ustawień przy skali 1280 × 720) i panelu statusu."""
+    """Zarys panelu rundy i przycisków z tego samego układu co klient (logika_treningu.uklad_ui) przy 1280 × 720;
+    obszar GUI zaczyna się pod paskiem Robloxa (36 px)."""
+    import logika_treningu as LT
     U = D["ui"]
-    sk = min(W / U["baza"][0], H / U["baza"][1])
-    sk = min(max(sk, U["skala_min"]), U["skala_max"])
+    sk = LT.skala_ui(D, W, H)
+    gora = U["pasek_gorny_pt"]
+    R = LT.uklad_ui(D, gra, W, H - gora, sk)
     dr = ImageDraw.Draw(obraz, "RGBA")
     f = _czcionka(int(15 * sk), ImageFont)
-    prawa = W * (1 - U["sterowanie_od_prawej"])
-    dol = H - 8 * sk
+    st = [s for s in D["statystyki"] if s["id"] == gra][0]
+    kol = st["kolor"]
 
-    def przycisk(x0, y0, w, h, tekst, kolor, okragly=False):
+    def prost(nazwa):
+        x0, y0, x1, y1 = R[nazwa]
+        return x0, y0 + gora, x1, y1 + gora
+
+    def przycisk(x0, y0, x1, y1, tekst, kolor, okragly=False):
         k = _kolor(kolor) + (225,)
         if okragly:
-            dr.ellipse([x0, y0, x0 + w, y0 + h], fill=k, outline=(23, 18, 31, 255), width=2)
+            dr.ellipse([x0, y0, x1, y1], fill=k, outline=(23, 18, 31, 255), width=2)
         else:
-            dr.rounded_rectangle([x0, y0, x0 + w, y0 + h], radius=10 * sk, fill=k, outline=(23, 18, 31, 255), width=2)
+            dr.rounded_rectangle([x0, y0, x1, y1], radius=10 * sk, fill=k, outline=(23, 18, 31, 255), width=2)
         tw = dr.textlength(tekst, font=f)
-        dr.text((x0 + (w - tw) / 2, y0 + h / 2 - 9 * sk), tekst, font=f, fill=(255, 246, 224, 255))
-    # status (prawy górny róg) i przerwij
-    dr.rounded_rectangle([W - 8 - 268 * sk, 8, W - 8, 8 + 92 * sk], radius=12 * sk, fill=(255, 246, 224, 225),
-                         outline=(23, 18, 31, 255), width=3)
-    st = [s for s in D["statystyki"] if s["id"] == gra][0]
-    dr.text((W - 268 * sk, 12), "%s · %s" % (st["nazwa"], st["gra"]), font=f, fill=(23, 18, 31, 255))
-    dr.text((W - 268 * sk, 12 + 26 * sk), "SERIA 7", font=_czcionka(int(26 * sk), ImageFont), fill=(23, 18, 31, 255))
-    przycisk(W - 16 - (268 + U["przycisk_maly_px"]) * sk, 8, U["przycisk_maly_px"] * sk, U["przycisk_maly_px"] * sk, "X", "E5533D")
-    kol = st["kolor"]
+        dr.text(((x0 + x1 - tw) / 2, (y0 + y1) / 2 - 9 * sk), tekst, font=f, fill=(255, 246, 224, 255))
+    x0, y0, x1, y1 = prost("status")
+    dr.rounded_rectangle([x0, y0, x1, y1], radius=12 * sk, fill=(255, 246, 224, 225), outline=(23, 18, 31, 255), width=3)
+    dr.text((x0 + 8 * sk, y0 + 4 * sk), "0:34     SERIA 7    ×1,25", font=_czcionka(int(18 * sk), ImageFont), fill=(23, 18, 31, 255))
+    dr.rounded_rectangle([x0 + 8 * sk, y0 + 34 * sk, x1 - 8 * sk, y0 + 43 * sk], radius=3, fill=_kolor(U["kolory"]["zloto"]) + (255,))
+    przycisk(*prost("przerwij"), "X", "E5533D")
+
+    def krzyz(nazwa, rozmiar, kolory, napisy):
+        x0, y0, _, _ = prost(nazwa)
+        b, g = rozmiar * sk, U["odstep_px"] * sk
+        for i, (cx, cy) in enumerate(((1, 0), (0, 1), (2, 1), (1, 2))):
+            przycisk(x0 + cx * (b + g), y0 + cy * (b + g), x0 + cx * (b + g) + b, y0 + cy * (b + g) + b, napisy[i], kolory[i])
     if gra == "sila":
-        b, g = U["przycisk_px"] * sk, U["odstep_px"] * sk
-        x0, y0 = prawa - 3 * b - 2 * g, dol - 3 * b - 2 * g
-        for n, (cx, cy) in (("W", (1, 0)), ("A", (0, 1)), ("D", (2, 1)), ("S", (1, 2))):
-            przycisk(x0 + cx * (b + g), y0 + cy * (b + g), b, b, n, kol)
+        krzyz("krzyz", U["przycisk_px"], [kol] * 4, ["W", "A", "D", "S"])
     elif gra == "pancerz":
-        b = U["blok_px"] * sk
-        przycisk(prawa - b, dol - b, b, b, "BLOK", kol, True)
+        przycisk(*prost("blok"), "BLOK", kol, True)
     elif gra == "kondycja":
-        b = U["stopa_px"] * sk
-        przycisk(8 * sk, dol - b, b, b, "LEWA  A", kol)
-        przycisk(prawa - b, dol - b, b, b, "PRAWA  D", kol)
+        przycisk(*prost("stopaL"), "LEWA  A", kol)
+        przycisk(*prost("stopaP"), "PRAWA  D", kol)
     elif gra == "zrecznosc":
+        x0, y0, x1, y1 = prost("unik")
         b = U["unik_px"] * sk
-        przycisk(prawa - b, dol - 2 * b - 6 * sk, b, b, "SKOK", kol)
-        przycisk(prawa - b, dol - b, b, b, "PADNIJ", kol)
+        przycisk(x0, y0, x1, y0 + b, "SKOK", kol)
+        przycisk(x0, y1 - b, x1, y1, "PADNIJ", kol)
     elif gra == "inteligencja":
-        b, g = U["runa_px"] * sk, U["odstep_px"] * sk
-        x0, y0 = prawa - 3 * b - 2 * g, dol - 3 * b - 2 * g
-        for k, (cx, cy) in (("gora", (1, 0)), ("lewo", (0, 1)), ("prawo", (2, 1)), ("dol", (1, 2))):
-            przycisk(x0 + cx * (b + g), y0 + cy * (b + g), b, b, "", U["kolory"]["runa_" + k])
+        krzyz("runy", U["runa_px"], [U["kolory"]["runa_" + k] for k in ("gora", "lewo", "prawo", "dol")], [""] * 4)
+        x0, y0, x1, y1 = prost("postep")
+        dr.rounded_rectangle([x0, y0, x1, y1], radius=10 * sk, fill=(23, 18, 31, 225))
     elif gra == "szczescie":
-        b = U["tor_px"] * sk
-        przycisk(8 * sk, dol - b, b, b, "LEWO A", kol)
-        przycisk(prawa - b, dol - b, b, b, "PRAWO D", kol)
+        przycisk(*prost("torL"), "LEWO A", kol)
+        przycisk(*prost("torP"), "PRAWO D", kol)
     dr.text((10, H - 22), "Podgląd brył (render bez Studio, nie zrzut z gry)", font=_czcionka(14, ImageFont),
             fill=(23, 18, 31, 200))
 

@@ -38,7 +38,7 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | `zrodla/DaneTreningu.luau` | **wygenerowany** — nie edytować ręcznie |
 | `sprawdz_luau_treningu.py` | kontrola statyczna Luau (reguły jak w bazarze + zakaz zasobów spoza Robloxa i rozmiarów tekstu z literałów; jedyny wyjątek: adres arkusza dźwięku z katalogu `swiat/dzwiek_gra`) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
-| `testy/test_treningu.py` | 43 testy offline (opis w nagłówku pliku) |
+| `testy/test_treningu.py` | 44 testy offline (opis w nagłówku pliku; 5e — pole gry na czterech ekranach) |
 | `testy/proba_play.py` | próba w Studio (Play): T01–T14 (Siła, Pancerz, wejście, wyjście, telefon) i T15–T22 (cztery nowe gry, spam, reset postaci, klatka); `--nowe` — tylko nowe; `--sprawdz` — kawałki Luau bez Studio |
 | `testy/zrzuty_gry.py` | zrzuty z gry do `klatki/` (1280 px): 01–08 (Siła, Pancerz) i 09–24 (każda nowa gra: start z podpowiedzią, środek rundy, podsumowanie, telefon 667 × 375); `--nowe`, `--sprawdz` |
 | `klatki/` | zrzuty z gry (tryb Play) — tabela w „Zrzuty z gry” |
@@ -90,7 +90,7 @@ zmienia.
 
 ```
 python -B swiat/trening_proba/dane.py                    # po każdej zmianie ustawienia.json
-python -B swiat/trening_proba/testy/test_treningu.py     # 43 testy, ok. 13 s
+python -B swiat/trening_proba/testy/test_treningu.py     # 44 testy, ok. 13 s
 python -B swiat/trening_proba/zbuduj.py --sucho          # bez Studio: dane, Luau, strażniki, plan budowy
 python -B swiat/trening_proba/podglad.py                 # podglądy stanowisk do podglady/ (ok. 10 s, bez Studio)
 python -B swiat/trening_proba/testy/proba_play.py --sprawdz   # kawałki Luau próby parsują się (bez Studio)
@@ -196,6 +196,41 @@ celność) — prawdziwe dziecko do oceny przez Karola i Pawła.
 podniesione ręce tylko dla R15; animacja biegu tylko, gdy awatar ma domyślny skrypt Animate; „ZA PÓŹNO” w Koniczynach
 może dziwić dzieci; w Runach zgadywanie daje trochę; arena jest dłuższa (256 st) — `zbuduj.py` sprawdza, że w jej pudle
 nie ma cudzych części.
+
+## Poprawki układu na telefonie (18.11.2026, bez Studio — do wdrożenia)
+
+Po zrzutach telefonu z części B (koordynator): przyciski Run zasłaniały romb i krzyż, panel rundy — koronę drzewa
+Koniczyn, prawy przycisk — prawy tor, a przyciski Bieżni — dolny odcinek taśmy.
+
+- **Jeden układ dla klienta i testu:** `L.ukladUI(D, gra, szer, wys, skala)` (lustro `logika_treningu.uklad_ui`) liczy
+  prostokąty panelu rundy, przycisku przerwania, kropek Run i przycisków każdej gry w obszarze GUI; klient ustawia
+  z niego położenia (`odswiezSkale`, także przy wejściu na stanowisko), a obszar GUI omija pasek Robloxa i wycięcia
+  ekranu (`ScreenInsets = CoreUISafeInsets`).
+- **Zwarty panel rundy:** 210 × 52 (było 268 × 92): czas · seria · mnożnik w jednym wierszu i pasek statystyki pod
+  nim; razem z „X” najwyżej 40% szerokości i 18% wysokości ekranu (test). Punkty w rundzie pokazuje napis „+1 …!”
+  i podsumowanie.
+- **Przyciski przy krawędziach ekranu:** prawe skupisko przy prawej krawędzi (było na 78,5% szerokości — miejsce
+  zostawione dla kolumny HUD-u, a HUD jest na stanowisku schowany), lewe przy lewej. Rozmiary bez zmian (≥ 44 pt).
+- **Kamery:** Bieżnia — oko (0; 8,4; 14,5), cel (0; 1,4; −0,5) (o 1 st niżej: ślady widać od pojawienia się aż do
+  linii); Koniczyny — oko (0; 9,4; 17,5), cel (0; 8,1; −6) (o 4 st dalej i wyżej: korona, początek spadania i trzy
+  tory pod panelem i między przyciskami). Pozostałe cztery gry bez zmian — mieściły się.
+- **Test 5e:** dla sześciu gier i czterech ekranów (667 × 375; 844 × 390 z wycięciami 47 px po bokach i paskiem 21 px
+  na dole; 1280 × 720; tablet 1024 × 768) rzutuje pole gry (`scena.pole_gry`: kamienie, tory od korony do koszyka,
+  ślady na całej taśmie, nadlatująca kłoda nisko i wysoko z ćwierci obrotu, strefy Siły, pięść i golem) kamerą
+  stanowiska (pionowy kąt 70°) i sprawdza, że każdy punkt jest w obszarze GUI i żaden nie leży pod panelem ani
+  przyciskiem (zapas 6 px). Przed poprawką: Bieżnia — ślady poza dołem ekranu na wszystkich czterech, Koniczyny —
+  prawy tor pod „X” na trzech; teraz 24 × OK. Test 5c: prostokąty układu nie nachodzą na siebie na tych ekranach.
+  Testy offline: **44 × OK**.
+- **Ekran pionowy:** gra trzyma poziom (domyślne ustawienie Robloxa; orientacja to sprawa okien Pawła) — układ liczony
+  dla poziomu.
+- **Ręce w Koniczynach:** pomiar w Studio (18.11, 01:19) — oba barki odwrócone w górę (AnimationConstraint); dłonie
+  chowają się za koszykiem trzymanym nad głową, dlatego na zrzucie ich nie widać. Bez zmian.
+- Podglądy (`podglady/`) rysują przyciski z tego samego układu.
+
+**W oknie Studio:** `python -B swiat/trening_proba/zbuduj.py` (pełna — zmieniają się dane i skrypty), potem
+`python -B swiat/trening_proba/testy/zrzuty_gry.py --telefon` (zrzuty 26–37: sześć gier w rundzie przy 667 × 375
+i 844 × 390 + pomiar napisów i przycisków). Zrzut z emulacją wycina prostokąt telefonu z widoku okna Studio, więc kadr
+3D przy 844 × 390 jest przybliżony — dokładny rachunek robi test 5e.
 
 ## Część B — cztery nowe gry w Studio (18.11.2026, 00:51–01:40, tryb Play)
 

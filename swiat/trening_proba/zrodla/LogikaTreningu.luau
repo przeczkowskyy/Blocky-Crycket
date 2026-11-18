@@ -759,6 +759,45 @@ function L.skalaUI(D, w, h)
 	return s
 end
 
+-- prostokąty interfejsu rundy { x0, y0, x1, y1 } w pikselach obszaru GUI gw × gh przy skali s: zwarty panel rundy
+-- i przycisk przerwania w prawym górnym rogu, przyciski gry przy krawędziach na dole (prawa kolumna HUD-u jest na
+-- stanowisku schowana), kropki Run w lewym górnym rogu; ten sam układ sprawdza test telefonu (lustro: uklad_ui)
+function L.ukladUI(D, gra, gw, gh, s)
+	local U = D.ui
+	local m = U.margines_px
+	local g = U.odstep_px
+	local R = {}
+	local sw, sh = U.status_px[1] * s, U.status_px[2] * s
+	R.status = { gw - m - sw, m, gw - m, m + sh }
+	local b = U.przycisk_maly_px * s
+	R.przerwij = { R.status[1] - g * s - b, m, R.status[1] - g * s, m + b }
+	local function prawy(sz, wy)
+		return { gw - m - sz * s, gh - m - wy * s, gw - m, gh - m }
+	end
+	local function lewy(sz, wy)
+		return { m, gh - m - wy * s, m + sz * s, gh - m }
+	end
+	if gra == "sila" then
+		local k = 3 * U.przycisk_px + 2 * g
+		R.krzyz = prawy(k, k)
+	elseif gra == "pancerz" then
+		R.blok = prawy(U.blok_px, U.blok_px)
+	elseif gra == "kondycja" then
+		R.stopaL = lewy(U.stopa_px, U.stopa_px)
+		R.stopaP = prawy(U.stopa_px, U.stopa_px)
+	elseif gra == "zrecznosc" then
+		R.unik = prawy(U.unik_px, 2 * U.unik_px + 2 * g)
+	elseif gra == "inteligencja" then
+		local k = 3 * U.runa_px + 2 * g
+		R.runy = prawy(k, k)
+		R.postep = { m, m, m + U.postep_px[1] * s, m + U.postep_px[2] * s }
+	elseif gra == "szczescie" then
+		R.torL = lewy(U.tor_px, U.tor_px)
+		R.torP = prawy(U.tor_px, U.tor_px)
+	end
+	return R
+end
+
 function L.kodWyniku(w, wygasly)
 	if not w.przyjete then
 		if w.powod == "spam" then
