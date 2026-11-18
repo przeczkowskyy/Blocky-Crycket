@@ -78,6 +78,32 @@
       "assetId": "106582652985449",
       "moderacja": "Reviewing",
       "blad": null
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_06_bagno_petla.ogg",
+      "sha256": "cc0634e08e941ca1757d7e93872c7f13245d005f6d028905738aa1d33368d5b1",
+      "nazwa": "Muzyka bagno petla",
+      "droga": "studio",
+      "kiedy": "2026-11-18 12:24",
+      "etap": "gotowe",
+      "operacja": "63e5bf10-ae3a-4f31-8e2f-9153d4cbebc3",
+      "gotowe": true,
+      "assetId": "116759284253061",
+      "moderacja": "Reviewing",
+      "blad": null
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_07_dzungla_petla.ogg",
+      "sha256": "d304409b86660383c7e47bead0a28f047edd5685f1cd296569297d4b286dc887",
+      "nazwa": "Muzyka dzungla petla",
+      "droga": "studio",
+      "kiedy": "2026-11-18 12:24",
+      "etap": "gotowe",
+      "operacja": "53b35623-605f-4962-a784-bd7396969eaf",
+      "gotowe": true,
+      "assetId": "78060184641141",
+      "moderacja": "Reviewing",
+      "blad": null
     }
   ]
 }

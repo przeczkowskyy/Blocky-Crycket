@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-18 · Claude Code u Karola (muzyka Bagna i Dżungli wgrana do Roblox)
+- **Wgrane dwa pliki audio** (12:24): `muzyka_06_bagno_petla.ogg` i `muzyka_07_dzungla_petla.ogg`, na konto Karola przez Roblox Studio. Zgoda Karola na czacie („Wgraj i zaprojektuj pozostałe muzyki”), droga potwierdzona osobno („Tak, przez folder modeli”); kopie z zatwierdzonego folderu usunięte po wgraniu. W listopadzie wykorzystane 8 z 10 wgrań audio.
+- **Do zrobienia przez Karola:** nadać grze prawa do obu plików w Creator Hub (nowe zadanie w [[Zadania]]). Podpięcie w grze robi pakiet `swiat/dzwiek_gra/` (w toku).
+- Pliki: `assets/audio/wgrane.json`, `assets/audio/zgoda_wgrania.json`; notatki [[Pipeline assetów]] (identyfikatory, limit), [[Zadania]].
+
 ## 2026-11-18 · Claude Code u Karola (próba całej gry; start modeli ras i drugiej partii muzyki)
 - **Próba całej gry na stanie końcowym dnia** (11:05–12:13, bohater klasy w świecie i mini-gry w stylu walki razem): 19 prób w grze, bez nowych błędów. Jedyny błąd jest znany od nocy — za małe napisy w wyborze próby walki na ekranie telefonu (walka 44 z 46). Próba bohatera: 19 punktów w porządku, 1 bez rozstrzygnięcia (runda Training Center, przechodzi ją próba całej drogi gracza). Mini-gry: wszystkie punkty w porządku, logika 118 na 118. Czas klatki 16,7 ms. Odświeżone pliki wyników prób walki, kowala i strojów.
 - **Modele ras (D-104) ruszyły** na polecenie Karola („Zacznij”): pilotaż elfa i orka w Blenderze na ciele człowieka — te same klocki, kości i klipy co Rycerz i Zwiadowca, żeby pasował ekwipunek z D-071; rasę odróżniają skóra, twarz, uszy, włosy, rogi, kły, ogon i kolor spodenek. To robocze założenie agenta, nie decyzja: pytanie o proporcje ras z notatki [[Rasy — rzuty dla modelarza]] pójdzie do ludzi razem z raportem z pilotażu.

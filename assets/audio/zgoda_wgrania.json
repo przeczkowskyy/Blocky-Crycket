@@ -42,6 +42,20 @@
       "kto": "Karol",
       "kiedy": "2026-11-17 09:08",
       "dlugosc_s": 78.35
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_06_bagno_petla.ogg",
+      "sha256": "cc0634e08e941ca1757d7e93872c7f13245d005f6d028905738aa1d33368d5b1",
+      "kto": "Karol",
+      "kiedy": "2026-11-18 12:23",
+      "dlugosc_s": 68.56
+    },
+    {
+      "plik": "assets/audio/muzyka/muzyka_07_dzungla_petla.ogg",
+      "sha256": "d304409b86660383c7e47bead0a28f047edd5685f1cd296569297d4b286dc887",
+      "kto": "Karol",
+      "kiedy": "2026-11-18 12:23",
+      "dlugosc_s": 80.01
     }
   ]
 }
