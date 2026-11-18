@@ -136,7 +136,7 @@ def predkosc(poprzednia, droga, dt, stala, maks):
     """Prędkość rzeczywista postaci: droga ÷ czas klatki, wygładzona; skok położenia przycięty."""
     if dt <= 0:
         return poprzednia
-    chwilowa = min(droga / dt, maks)
+    chwilowa = _ogranicz(droga / dt, -maks, maks)
     return poprzednia + (chwilowa - poprzednia) * (dt / (dt + stala))
 
 
@@ -152,7 +152,7 @@ def krok_biegu(B, faza, d_poprz, f, d, dt, droga, w_miejscu):
     if w_miejscu or fz >= d:
         fz += f * dt
     else:
-        fz += d * min(droga, B["krok"]) / B["krok"]
+        fz = max(0, fz + d * _ogranicz(droga, -B["krok"], B["krok"]) / B["krok"])
     n = pol + fz
     return n - math.floor(n)
 

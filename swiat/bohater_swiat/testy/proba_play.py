@@ -38,6 +38,8 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
   B18 konsola bez wierszy [BohaterSwiat]
   B19 cykl biegu: stopa w podporze stoi w miejscu — w zatrzymanych fazach (z przesunięciem o drogę postaci) i w
       prawdziwym biegu klatka po klatce; arkusz ośmiu kolejnych klatek biegu każdej klasy
+  B20 bieg w przeszkodę (ściana próby przed postacią, klawisz W trzymany): stopa w podporze nie jedzie po ziemi,
+      bohater przechodzi do spoczynku, choć klawisz jest wciśnięty; zakręt (W + strzałka): tułów się przechyla
 """
 import json
 import math
@@ -61,7 +63,7 @@ for _s in (os.path.join(REPO, "tools"), os.path.join(REPO, "tools", "walka"),
         sys.path.append(_s)
 
 KLATKI = os.path.join(PAKIET, "klatki")
-PUNKTY = ["B%02d" % i for i in range(20)]
+PUNKTY = ["B%02d" % i for i in range(21)]
 # stroje „mieszane” do prób (część przedmiotów: widać gołe ciało obok przedmiotów) — te same co w próbie przymierzalni
 MIESZANE = {"wojownik": ["rycerz_helm", "rycerz_buty", "rycerz_miecz", "rycerz_tarcza"],
             "zwiadowca": ["zwiadowca_kaptur", "zwiadowca_rekawice", "zwiadowca_luk"],
@@ -147,6 +149,13 @@ KOD = {
                   'od = l and l.odPostaci or 0, ltm = l and l.ltm or 0, wb = l and l.wagaBiegu or 0, '
                   'pet = ps and ps.odleglosc or false }) task.wait(0.04) end '
                   'k:SetAttribute("ProbaSlad", H:JSONEncode(J(lista))) end) return "ok"'),
+    # zakręt: największy i najmniejszy przechył tułowia lokalnego bohatera przez %f s → atrybut ProbaSkret (u klienta)
+    "skret_slad": KB + ('local s = k.Sygnaly.SterowanieKlienta k:SetAttribute("ProbaSkret", nil) task.spawn(function() '
+                        'local t0, mn, mx, tryby = os.clock(), 0, 0, {} while os.clock() - t0 < %f do '
+                        'local l = s:Invoke("stan").lokalny if l then mn = math.min(mn, l.skret) mx = math.max(mx, l.skret) '
+                        'tryby[l.tryb] = true end task.wait(0.03) end '
+                        'k:SetAttribute("ProbaSkret", H:JSONEncode(J({ mn = mn, mx = mx, tryby = tryby }))) end) return "ok"'),
+    "skret_czytaj": KB + 'return k:GetAttribute("ProbaSkret") or "null"',
     "slad_czytaj": KB + 'return k:GetAttribute("ProbaSlad") or "null"',
     # skok do zrzutu: po spacji postać zostaje na chwilę zawieszona w powietrzu (tylko postać próby, tylko w tej sesji Play)
     "zawies": LP + ('task.spawn(function() local t0 = os.clock() while os.clock() - t0 < 1.5 and hrp.AssemblyLinearVelocity.Y < 5 do '
@@ -162,6 +171,10 @@ KOD = {
                       'local kat = nr * 0.9 m:PivotTo(postac:GetPivot() * CFrame.new(math.cos(kat) * odl, 0.5, math.sin(kat) * odl)) '
                       'local r = m:FindFirstChild("HumanoidRootPart") if r and odl > 100 then r.Anchored = true end m.Parent = f '
                       'if s:Invoke("manekin", m, klasy[nr - 3 * math.floor((nr - 1) / 3)]) then n += 1 end end return tostring(n)'),
+    # ściana próby (tylko u klienta, tylko w tej sesji Play): środek %f %f %f, przodem do punktu %f %f %f
+    "sciana": ('local f = workspace:FindFirstChild("BohaterSwiatProba") or Instance.new("Folder") f.Name = "BohaterSwiatProba" '
+               'f.Parent = workspace local s = Instance.new("Part") s.Name = "Sciana" s.Anchored = true s.Size = Vector3.new(16, 10, 1) '
+               's.Transparency = 0.6 s.CFrame = CFrame.lookAt(Vector3.new(%f, %f, %f), Vector3.new(%f, %f, %f)) s.Parent = f return "ok"'),
     "manekiny_usun": ('workspace.BohaterSwiat.Sygnaly.SterowanieKlienta:Invoke("manekin_usun") '
                       'local f = workspace:FindFirstChild("BohaterSwiatProba") if f then f:Destroy() end return "ok"'),
     # pety (swiat/pety_proba): Złoto próby, kupno haczykiem, kamera próby nie chowa petów
@@ -239,7 +252,9 @@ def dryf_stop(klatki, min_waga=0.999):
         # w klatce i odpowiada fazie z klatki i − 1
         for poprzednia, k in zip(klatki, klatki[1:]):
             fz = (poprzednia[3] + przes) % 1.0
-            if k[1] == "bieg" and poprzednia[1] == "bieg" and k[2] >= min_waga and fz < poprzednia[4]:
+            # tylko klatki sąsiednie w czasie: lista bywa przesiana (np. sama pełna prędkość) i ma wtedy dziury
+            if (k[1] == "bieg" and poprzednia[1] == "bieg" and k[2] >= min_waga and fz < poprzednia[4]
+                    and 0 <= k[0] - poprzednia[0] < 0.07):
                 p = (k[kol], k[kol + 2])
                 if start is None:
                     start = p
@@ -832,7 +847,8 @@ def main():
                 droga = v / f
                 if not bez_zrzutow:
                     srodek = (poz[0] + przod[0] * droga / 2, poz[1] - 0.3, poz[2] + przod[2] * droga / 2)
-                    oko = (srodek[0] + prawo[0] * 9.5, poz[1] + 0.1, srodek[2] + prawo[2] * 9.5)
+                    bok = 9.5 * max(1.0, droga / 6.0)          # dłuższy cykl = kamera dalej (cała droga w kadrze)
+                    oko = (srodek[0] + prawo[0] * bok, poz[1] + 0.1, srodek[2] + prawo[2] * bok)
                     kafle = []
                     for i in range(8):
                         faza = i / 8.0
@@ -851,8 +867,29 @@ def main():
                         for i, kafel in enumerate(kafle):
                             arkusz.paste(kafel, ((i % 4) * kw, (i // 4) * kh))
                         arkusz.thumbnail((2400, 2400))
-                        arkusz.save(os.path.join(KLATKI, "15_bieg_%s_arkusz.jpg" % klucz), quality=85)
-                        log("zrzut 15_bieg_%s_arkusz" % klucz)
+                        arkusz.save(os.path.join(KLATKI, "20_bieg_%s_pasek.jpg" % klucz), quality=85)
+                        log("zrzut 20_bieg_%s_pasek" % klucz)
+                    # kadry dodatkowe (klatka cyklu zatrzymana haczykiem, bieg w miejscu): szata kota w ruchu i Rycerz
+                    # w zakręcie — przechył tułowia ustawiony haczykiem próby; prawdziwy zakręt mierzy B20
+                    ruch('"przesun", nil')
+                    for kto, plik, faza, skret, dal, bok in (("mag", "21_kot_szata_w_biegu", 0.30, None, 5.0, 4.5),
+                                                             ("wojownik", "22_zakret_wojownik", 0.55, -1, 8.0, 1.5)):
+                        if klucz != kto:
+                            continue
+                        js(KOD["klient"] % ('"faza_biegu", %.2f' % faza))
+                        if skret is not None:
+                            js(KOD["klient"] % ('"skret", %d' % skret))
+                        time.sleep(0.5)
+                        try:
+                            oko, cel = ujecie(dal=dal, bok=bok, wys=1.0)
+                            o = obraz(oko, cel)
+                            w, h = o.size
+                            o = o.crop((int(w * 0.25), int(h * 0.18), int(w * 0.75), int(h * 0.92)))
+                            o.save(os.path.join(KLATKI, plik + ".jpg"), quality=86)
+                            log("zrzut", plik)
+                        except Exception as ex:  # noqa: BLE001
+                            log("zrzut %s: %s" % (plik, str(ex)[:160]))
+                        js(KOD["klient"] % '"skret", nil')
                 js(KOD["klient"] % '"faza_biegu", nil')
                 ruch('"przesun", nil')
                 ruch('"klip", nil')
@@ -906,12 +943,35 @@ def main():
             st = klient()
             inni = st.get("inni") or []
             okresy = sorted({x.get("okres") for x in inni})
+            # koszt cyklu biegu: wszyscy bohaterowie biegną w miejscu — poły stroju włączone, potem wyłączone
+            bieg_ms = {}
+            js(KOD["klient"] % '"manekiny_bieg", true')
+            ruch('"klip", "bieg"')
+            for nazwa, arg in (("z_polami", "true"), ("bez_pol", "false"), ("z_polami_2", "true")):
+                js(KOD["klient"] % ('"poly", %s' % arg))
+                time.sleep(0.6)
+                sp.luau(J + KOD["klient"] % '"pomiar", "zeruj"')
+                time.sleep(3.0)
+                bieg_ms[nazwa] = slownik(js(KOD["klient"] % '"pomiar", "zeruj"'))
+            bieg_ms["fps"] = float(sp.luau(KOD["fps"] % 2.0))
+            js(KOD["klient"] % '"manekiny_bieg", false')
+            ruch('"klip", nil')
             oko, cel = ujecie(dal=30.0, bok=14.0, wys=12.0)
             if oko:
                 zrzut("11_wielu_bohaterow", oko, cel)
             sp.luau(KOD["manekiny_usun"])
             po = czekaj(lambda: (lambda x: x if x.get("bohaterow") == 1 else None)(klient()), 8) or {}
-            zapisz("B17", {"jeden": jeden, "fps_bez": fps0, "fps_1": fps1, "wielu": wielu, "fps_wielu": fps12, "postaci_testowych": n,
+            sp.luau(J + KOD["klient"] % '"pomiar", "zeruj"')
+            ruch('"klip", "bieg"')
+            for nazwa, arg in (("jeden_z_polami", "true"), ("jeden_bez_pol", "false")):
+                js(KOD["klient"] % ('"poly", %s' % arg))
+                time.sleep(0.6)
+                sp.luau(J + KOD["klient"] % '"pomiar", "zeruj"')
+                time.sleep(2.5)
+                bieg_ms[nazwa] = slownik(js(KOD["klient"] % '"pomiar", "zeruj"'))
+            js(KOD["klient"] % '"poly", true')
+            ruch('"klip", nil')
+            zapisz("B17", {"bieg": bieg_ms, "jeden": jeden, "fps_bez": fps0, "fps_1": fps1, "wielu": wielu, "fps_wielu": fps12, "postaci_testowych": n,
                            "bohaterow": st.get("bohaterow"), "bryl": st.get("bryl"), "inni": inni, "po": po.get("bohaterow")})
             ile = 1 + len(blisko) + len(srednio)
             dobrze = (n == len(blisko) + len(srednio) + len(daleko) and st.get("bohaterow") == ile and ile <= W["maks_bohaterow"]
@@ -920,11 +980,76 @@ def main():
             punkt("B17", (None if wolno else True) if dobrze else False,
                   "bez bohatera %.0f kl./s; 1 bohater: pętla %.2f ms średnio (najwięcej %.2f), %.0f kl./s; %s bohaterów (%s brył; %d "
                   "postaci testowych, 2 poza zasięgiem bez bohatera): pętla %.2f ms średnio (najwięcej %.2f), %.0f kl./s; okresy "
-                  "animacji %s; po sprzątaniu bohaterów %s%s"
+                  "animacji %s; po sprzątaniu bohaterów %s%s; BIEG w miejscu: wszyscy z połami %.2f ms (najwięcej %.2f), bez pół "
+                  "%.2f ms, znów z połami %.2f ms, %.0f kl./s; jeden bohater w biegu: z połami %.3f ms, bez %.3f ms"
                   % (fps0, jeden.get("srednia_ms") or -1, jeden.get("maks_ms") or -1, fps1, st.get("bohaterow"), st.get("bryl"), n,
                      wielu.get("srednia_ms") or -1, wielu.get("maks_ms") or -1, fps12, okresy, po.get("bohaterow"),
-                     " — UWAGA: pętla wolniejsza niż 6 ms" if wolno and dobrze else ""))
+                     " — UWAGA: pętla wolniejsza niż 6 ms" if wolno and dobrze else "",
+                     bieg_ms["z_polami"].get("srednia_ms") or -1, bieg_ms["z_polami"].get("maks_ms") or -1,
+                     bieg_ms["bez_pol"].get("srednia_ms") or -1, bieg_ms["z_polami_2"].get("srednia_ms") or -1, bieg_ms["fps"],
+                     bieg_ms["jeden_z_polami"].get("srednia_ms") or -1, bieg_ms["jeden_bez_pol"].get("srednia_ms") or -1))
         krok("B17", b17)
+
+        # ------------------------------------------------------------------ B20 bieg w przeszkodę
+        def b20():
+            v = D["ruch"]["bieg_predkosc"]
+            na_start()
+            p = postac()
+            poz, przod = p["poz"], p["przod"]
+            dal = 12.0
+            sp.luau(KOD["sciana"] % (poz[0] + przod[0] * dal, poz[1] + 2.0, poz[2] + przod[2] * dal, poz[0], poz[1] + 2.0, poz[2]))
+            time.sleep(0.3)
+            js(KOD["klient"] % '"nagraj", 4.0')
+            time.sleep(0.2)
+            klawisz_w(2200)                                  # ok. 0,5 s biegu do ściany, potem klawisz dalej wciśnięty
+            koniec_w = lokalny()
+            time.sleep(1.0)
+            kl = slownik(js(KOD["klient"] % '"nagranie"')).get("klatki") or []
+            sp.luau(KOD["manekiny_usun"])
+            na_start()
+            # chwila uderzenia: postać przestaje iść naprzód (HumanoidRootPart stoi przez 6 kolejnych klatek)
+            droga = [math.hypot(b[12] - a[12], b[14] - a[14]) for a, b in zip(kl, kl[1:])]
+            ruszyl = next((i for i, x in enumerate(droga) if x > 0.15), None)
+            stanal = None
+            if ruszyl is not None:
+                stanal = next((i for i in range(ruszyl + 5, len(droga) - 6) if sum(droga[i:i + 6]) < 0.05), None)
+            przebyl = math.hypot(kl[-1][12] - kl[0][12], kl[-1][14] - kl[0][14]) if kl else 0.0
+            dryf, podpory, klatek = dryf_stop(kl)            # cały bieg, razem z podporem, w którym postać trafiła w ścianę
+            t_idle, slizg_idle = None, 0.0
+            if stanal is not None:
+                idle = [i for i in range(stanal, len(kl)) if kl[i][1] == "idle" and kl[i][2] <= 0.001]
+                if idle:
+                    t_idle = kl[idle[0]][0] - kl[stanal][0]
+                    # po przejściu klipów (0,35 s) do puszczenia klawisza stopy mają stać
+                    stoi = [i for i in idle if 0.35 <= kl[i][0] - kl[idle[0]][0] <= 0.9]
+                    for i in stoi:
+                        a = kl[stoi[0]]
+                        slizg_idle = max(slizg_idle, math.hypot(kl[i][6] - a[6], kl[i][8] - a[8]),
+                                         math.hypot(kl[i][9] - a[9], kl[i][11] - a[11]))
+            # zakręt: W i strzałka w prawo (kamera się obraca, postać skręca) — tułów przechyla się do środka zakrętu
+            sp.luau(J + KOD["skret_slad"] % 2.4)
+            sp.call("user_keyboard_input", {"datamodel_type": "Client", "actions": [
+                {"action": "keyDown", "key_code": "W"}, {"action": "keyDown", "key_code": "Right"},
+                {"action": "wait", "wait_time_ms": 1600}, {"action": "keyUp", "key_code": "Right"}, {"action": "keyUp", "key_code": "W"}]})
+            zakret = czekaj(lambda: json.loads(sp.luau(J + KOD["skret_czytaj"])), 8, 0.4) or {}
+            na_start()
+            tryby = [k[1] for k in kl]
+            kolejnosc = [t for i, t in enumerate(tryby) if i == 0 or t != tryby[i - 1]]
+            zmian_po = len([1 for i in range((stanal or 0) + 1, len(tryby)) if tryby[i] != tryby[i - 1]])
+            zapisz("B20", {"klatek": len(kl), "ruszyl": ruszyl, "stanal": stanal, "przebyl": przebyl, "dryf": dryf, "podpory": podpory,
+                           "klatek_w_podporze": klatek, "t_idle": t_idle, "slizg_idle": slizg_idle, "zmian_trybu_po_zatrzymaniu": zmian_po, "zakret": zakret, "kolejnosc": kolejnosc[:20],
+                           "koniec_w": koniec_w.get("tryb"),
+                           "slad": [[round(x, 3) if isinstance(x, float) else x for x in k] for k in kl]})
+            punkt("B20", stanal is not None and 5.0 <= przebyl <= dal and podpory >= 2 and dryf <= 0.12
+                  and t_idle is not None and t_idle <= 0.7 and slizg_idle <= 0.05 and zmian_po <= 3 and koniec_w.get("tryb") == "idle" and (zakret.get("mn") or 0) < -0.25 and (zakret.get("mx") or 0) < 0.25,
+                  "bieg %g st/s w ścianę po %.1f st, klawisz W wciśnięty 2,2 s: %s; stopa w podporze najwyżej %.3f st (%d podporów, "
+                  "%d klatek, razem z podporem uderzenia); spoczynek %s po zatrzymaniu postaci, w spoczynku stopy przesunięte "
+                  "najwyżej %.3f st, zmian trybu po zatrzymaniu %d; pod koniec klawisza tryb %s; zakręt w prawo (W + strzałka): przechył tułowia od %.2f "
+                  "do %.2f (−1 = pełny w prawo)"
+                  % (v, przebyl, " → ".join(kolejnosc[:12]), dryf, podpory, klatek,
+                     ("%.2f s" % t_idle) if t_idle is not None else "nie nastąpił", slizg_idle, zmian_po, koniec_w.get("tryb"),
+                     zakret.get("mn") or 0, zakret.get("mx") or 0))
+        krok("B20", b20)
 
         # ------------------------------------------------------------------ B13 pet za bohaterem
         def b13():

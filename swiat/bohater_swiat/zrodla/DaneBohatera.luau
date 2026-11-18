@@ -1,5 +1,5 @@
 --[[
-	DaneBohatera — WYGENEROWANE przez swiat/bohater_swiat/dane.py (nie edytuj ręcznie), skrót 9d0ead2c5a44.
+	DaneBohatera — WYGENEROWANE przez swiat/bohater_swiat/dane.py (nie edytuj ręcznie), skrót 3ab80d06f5bb.
 	Źródła: ustawienia.json, swiat/test_walki2 (aktorzy.py, dane/<klasa>.json — tylko odczyt),
 	swiat/stroje_proba/dane.py (atrybut stroju, liczby brył).
 	Poza = lista { kość, x, y, z, rx, ry, rz } — Motor6D.Transform stawu tej kości:
@@ -56,7 +56,7 @@ D.kosciNog = { "LeftUpperLeg", "LeftLowerLeg", "LeftFoot", "RightUpperLeg", "Rig
 D.kolejnoscPoz = { "skok", "spadanie", "ladowanie", "padnij", "rece_gora", "pochyl" }
 D.czasyPoz = { skok = 0.1, spadanie = 0.16, ladowanie = 0.07, padnij = 0.12, rece_gora = 0.12, pochyl = 0.2 }
 D.kolejnoscKlas = { "wojownik", "zwiadowca", "mag" }
-D.skrot = "9d0ead2c5a44"
+D.skrot = "3ab80d06f5bb"
 D.klasy = {}
 D.klasy["wojownik"] = {
 	klucz = "wojownik",
@@ -96,7 +96,7 @@ D.klasy["wojownik"] = {
 		czas = 0.25,
 		stopaWymach = -0.38397,
 		skosStopy = 0.8,
-		wygladzanie = 0.1,
+		wygladzanie = 0.06,
 		vMaks = 64,
 		poly = true,
 		polaProg = 0.05,
@@ -212,7 +212,7 @@ D.klasy["zwiadowca"] = {
 		czas = 0.25,
 		stopaWymach = -0.48869,
 		skosStopy = 0.8,
-		wygladzanie = 0.1,
+		wygladzanie = 0.06,
 		vMaks = 64,
 		poly = true,
 		polaProg = 0.05,
@@ -328,7 +328,7 @@ D.klasy["mag"] = {
 		czas = 0.25,
 		stopaWymach = -0.17453,
 		skosStopy = 0.8,
-		wygladzanie = 0.1,
+		wygladzanie = 0.06,
 		vMaks = 64,
 		poly = true,
 		polaProg = 0.05,
@@ -346,13 +346,14 @@ D.klasy["mag"] = {
 			{ "RightLowerArm", 0.69813, 0, 0, 0, 0, 0, 1, 0 },
 			{ "UpperTorso", -0.10472, 0, 0, 0, 0.10472, 0.05236, 1, 0 },
 			{ "Head", 0.05236, 0, 0, 0, -0.06981, -0.03491, 1, 0 },
-			{ "StaffPivot", -0.69813, 0, 0, -0.15708, 0, 0, 1, 0 },
 			{ "Tail", -0.43633, 0, 0, 0, 0.24435, 0, 1, 0.1 },
 			{ "TailTip", 0.24435, 0, 0, 0, 0, 0.17453, 1, 0.3 },
 			{ "TailTip", 0, 0, 0, 0.08727, 0, 0, 2, 0.2 },
 			{ "HatPivot", 0.08727, 0, 0, 0.06981, 0, 0, 2, 0.15 },
 			{ "LeftEar", 0.10472, 0, 0, 0.08727, 0, 0, 2, 0.1 },
 			{ "RightEar", 0.10472, 0, 0, 0.08727, 0, 0, 2, 0.1 },
+			{ "StaffPivot", -0.38086, -0.49706, 0.10451, 0, 0, 0, 1, 0 },
+			{ "StaffPivot", 0, 0, 0, -0.10185, -0.2259, -0.01443, 1, 0 },
 		},
 	},
 	przysiady = { skok = 0, spadanie = 0, ladowanie = 0.0772, padnij = 0.3547, rece_gora = 0, pochyl = 0 },

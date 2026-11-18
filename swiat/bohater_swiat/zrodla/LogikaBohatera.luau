@@ -213,12 +213,13 @@ function L.skalaBiegu(B, v)
 end
 
 -- prędkość rzeczywista postaci: droga ÷ czas klatki, wygładzona (stala [s]); skok położenia (teleport) przycięty.
+-- Klient liczy ją osobno dla osi X i Z (droga ze znakiem): drganie postaci dociśniętej do przeszkody znosi się.
 -- Idzie za tym, co postać naprawdę przeszła, nie za wciśniętym klawiszem — na przeszkodzie spada do zera.
 function L.predkosc(poprzednia, droga, dt, stala, maks)
 	if dt <= 0 then
 		return poprzednia
 	end
-	local chwilowa = math.min(droga / dt, maks)
+	local chwilowa = ogranicz(droga / dt, -maks, maks)
 	return poprzednia + (chwilowa - poprzednia) * (dt / (dt + stala))
 end
 
@@ -237,7 +238,8 @@ function L.krokBiegu(B, faza, dPoprz, f, d, dt, droga, wMiejscu)
 	if wMiejscu or fz >= d then
 		fz += f * dt
 	else
-		fz += d * math.min(droga, B.krok) / B.krok
+		-- droga ze znakiem: odbicie postaci od przeszkody (ruch w tył) cofa fazę, stopa dalej stoi w miejscu
+		fz = math.max(0, fz + d * ogranicz(droga, -B.krok, B.krok) / B.krok)
 	end
 	local n = pol + fz
 	return n - math.floor(n)

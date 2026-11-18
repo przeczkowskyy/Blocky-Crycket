@@ -279,10 +279,10 @@ class TestDane(unittest.TestCase):
             droga = v * dt
             x += droga
             v_rz = L.predkosc(v_rz, droga, dt, B["wygladzanie"], B["vMaks"])
-            f, pod = L.kadencja(B, v_rz)
+            f, pod = L.kadencja(B, abs(v_rz))
             faza = L.krok_biegu(B, faza, d_poprz, f, pod, dt, droga, False)
             d_poprz = pod
-            c = L.bieg(B, faza, pod, L.skala_biegu(B, v_rz))
+            c = L.bieg(B, faza, pod, L.skala_biegu(B, abs(v_rz)))
             t = DN.transformy_biegu(rig, c)
             pozy = rig.pozy(t)
             w["biodra"].append(c["biodraY"])
@@ -341,22 +341,30 @@ class TestDane(unittest.TestCase):
     def test_1k_przeszkoda_i_zmienna_predkosc(self):
         """Postać zwalnia na przeszkodzie, staje, rusza, klatki są nierówne — stopa w podporze dalej stoi w miejscu
         (faza idzie drogą postaci, zmiana udziału podporu nie rusza stopy)."""
-        rnd = random.Random(5)
         for klucz in D["klasy"]:
-            v, lista, dts = 16.0, [], []
-            for n in range(900):
-                if n % 150 == 60:
-                    v = rnd.choice([0.0, 0.3, 3.0, 7.0])          # przeszkoda: prędkość spada w jednej klatce
-                elif n % 150 == 110:
-                    v = rnd.choice([12.0, 16.0, 22.0])
-                else:
-                    v = max(0.0, v + rnd.uniform(-0.8, 0.8))
-                lista.append(v)
-                dts.append(rnd.choice([1 / 60.0, 1 / 60.0, 1 / 30.0, 1 / 144.0, 0.05]))
-            w = self.symulacja(klucz, lista, dts)
-            self.assertGreater(w["podpory"], 10, klucz)
-            self.assertLess(w["dryf"], 0.005, "%s: stopa w podporze przesunęła się o %.4f st" % (klucz, w["dryf"]))
-            self.assertGreater(min(w["dno_wymachu"]), -0.02, klucz)
+            # bez odbicia stopa stoi co do 0,005 st; z odbiciem (postać cofa się po uderzeniu o kilka setnych — faza idzie
+            # wstecz) zostaje mały ślizg tylko wtedy, gdy stopa dopiero co stanęła (nie ma dokąd wrócić)
+            for odbicie, prog in ((False, 0.005), (True, 0.06)):
+                rnd = random.Random(5)
+                v, lista, dts = 16.0, [], []
+                for n in range(900):
+                    m = n % 150
+                    if m == 60:
+                        v = rnd.choice([0.0, 0.3, 3.0, 7.0])          # przeszkoda: prędkość spada w jednej klatce
+                    elif odbicie and m in (61, 63):
+                        v = -2.0
+                    elif odbicie and m in (62, 64):
+                        v = 1.0
+                    elif m == 110:
+                        v = rnd.choice([12.0, 16.0, 22.0])
+                    else:
+                        v = max(0.0, v + rnd.uniform(-0.8, 0.8))
+                    lista.append(v)
+                    dts.append(rnd.choice([1 / 60.0, 1 / 60.0, 1 / 30.0, 1 / 144.0, 0.05]))
+                w = self.symulacja(klucz, lista, dts)
+                self.assertGreater(w["podpory"], 10, klucz)
+                self.assertLess(w["dryf"], prog, "%s (odbicie %s): stopa w podporze przesunęła się o %.4f st" % (klucz, odbicie, w["dryf"]))
+                self.assertGreater(min(w["dno_wymachu"]), -0.02, klucz)
         # prędkość rzeczywista: stojąca postać z wciśniętym klawiszem → zero, a z nim koniec biegu
         v_rz = 16.0
         for _ in range(60):
@@ -398,7 +406,16 @@ class TestDane(unittest.TestCase):
             mag.setdefault(w[0], w)
         for kosc in ("Tail", "TailTip", "HatPivot", "StaffPivot"):
             self.assertIn(kosc, mag)
-        self.assertAlmostEqual(mag["StaffPivot"][4], -mag["RightUpperArm"][4], places=5)    # kostur zostaje w pionie
+        # kostur zostaje w biegu tak ustawiony jak w spoczynku (dodatek policzony przez generator znosi ruch ramienia)
+        K = D["klasy"]["mag"]
+        d, rig = rig_klasy("mag")
+        i = rig.indeks["StaffPivot"]
+        R0 = rig.pozy(rig.transformy(K["klipy"]["spoczynek"], 0))[i][0]
+        for n in range(8):
+            Rb = DN.poza_biegu(rig, d, K, n / 8.0, v)[1][i][0]
+            for os_ in (1, 2):                                   # oś kostura (Y) i jego przód (Z)
+                iloczyn = sum(R0[w][os_] * Rb[w][os_] for w in range(3))
+                self.assertLess(math.degrees(math.acos(max(-1.0, min(1.0, iloczyn)))), 4.0, (n, os_))
 
     def test_1m_poly_i_przenikanie(self):
         """Pełna poza biegu na bryłach (klip spoczynku + cykl + dodatki + poły): nic nie schodzi pod ziemię, poły się
@@ -852,7 +869,7 @@ class TestLuau(unittest.TestCase):
                 v = rnd.choice([0.5, 6.0, 16.0, rnd.uniform(0, 30)])
                 f, pod = L.kadencja(b_py, v)
                 a = [rnd.random(), rnd.choice([None, pod, rnd.uniform(0.06, 0.49)]), f, pod, rnd.choice([1 / 60.0, 0.1]),
-                     rnd.choice([0.0, v / 60.0, rnd.uniform(0, 3)]), rnd.random() < 0.2]
+                     rnd.choice([0.0, v / 60.0, -0.05, rnd.uniform(-1, 3)]), rnd.random() < 0.2]
                 py, lu = [L.krok_biegu(b_py, *a)], self.wolaj(it, Ll, "krokBiegu", b_lu, *a)
             elif co == "bieg":
                 a = [rnd.choice([0.0, 0.25, 0.5, 0.999, rnd.random()]), rnd.uniform(b_py["podporMin"], 0.49)]
@@ -990,7 +1007,7 @@ class TestLuau(unittest.TestCase):
             ("w = math.max(cel, w - krok)", "w = cel"),                                                  # pozy gasną skokiem
             ("elseif v > B.vOd then", "elseif v > 0 then"),                                              # bieg od zera
             ("return f, math.max(B.podporMin, podpor * f)", "return f, 0.3"),                            # podpór nie skraca się
-            ("fz += d * math.min(droga, B.krok) / B.krok", "fz += f * dt"),                              # faza zegarem
+            ("fz = math.max(0, fz + d * ogranicz(droga, -B.krok, B.krok) / B.krok)", "fz += f * dt"),                              # faza zegarem
             ("fz = fz * d / dPoprz", "fz = fz"),                                                         # stopa skacze przy zmianie podporu
             ("return poprzednia + (chwilowa - poprzednia) * (dt / (dt + stala))", "return chwilowa"),    # prędkość bez wygładzania
             ("return B.krok / 2 - B.krok * (fz / d), B.kostka, 0", "return B.krok / 2, B.kostka, 0"),    # stopa nie cofa się

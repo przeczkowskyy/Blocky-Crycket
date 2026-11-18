@@ -190,7 +190,36 @@ def _poza(nazwa, opis, rig, d, kosci_nog):
     return wiersze, _r(przysiad)
 
 
-def _bieg(U, d, rig, klucz, predkosc_chodu):
+def _pion(rig, klip, dodatki, kosc):
+    """Dodatek dla kości trzymanej w pionie (kostur): znosi obroty ramienia i tułowia z `dodatki`, tak żeby kość miała
+    w biegu ten sam kierunek co w klipie spoczynku. Dwa wpisy: stała i wymach raz na cykl, z kinematyki w przód."""
+    import logika_bohatera as LB
+    from geometria import cf, odwrotnosc, orientacja, razy
+    i = rig.indeks[kosc]
+    rodzic = rig.kosci[i - 1][1]
+    t0 = dict(rig.transformy(klip, 0))
+    obrot = lambda c: cf((0.0, 0.0, 0.0), c[0])                 # sama orientacja
+    spocz = obrot(rig.pozy(t0)[rodzic])
+    wlasny = obrot(t0[i]) if i in t0 else cf()
+    def potrzebny(faza):
+        t = dict(t0)
+        for w in dodatki:
+            j = rig.indeks[w[0]]
+            t[j] = razy(t.get(j, cf()), cf((0.0, 0.0, 0.0), orientacja(*LB.dodatek(w, faza, 1.0))))
+        bieg = obrot(rig.pozy(t)[rodzic])
+        return razy(razy(odwrotnosc(wlasny), razy(odwrotnosc(bieg), spocz)), wlasny)
+
+    def katy(M):
+        M = M[0]
+        return [_r(math.asin(max(-1.0, min(1.0, -M[1][2]))), 5), _r(math.atan2(M[0][2], M[2][2]), 5), _r(math.atan2(M[1][0], M[1][1]), 5)]
+
+    # stała część dokładnie (faza 0,25: wymachy raz na cykl są w zerze), wymach jako drugi, mały obrót po niej
+    staly = potrzebny(0.25)
+    wymach = razy(odwrotnosc(staly), potrzebny(0.0))
+    return [[kosc] + katy(staly) + [0.0, 0.0, 0.0, 1, 0], [kosc, 0.0, 0.0, 0.0] + katy(wymach) + [1, 0]]
+
+
+def _bieg(U, d, rig, klucz, predkosc_chodu, klip_spoczynku):
     """Liczby cyklu biegu jednej klasy z jej nóg (stawy biodra, kolana i kostki z rigu) i ustawień."""
     B = U["bieg"]
     kosci = {k[0]: k for k in d["kosci"]}
@@ -228,6 +257,10 @@ def _bieg(U, d, rig, klucz, predkosc_chodu):
         for w in wpisy:
             if any(w[:6]):
                 dodatki.append([kosc] + [_r(math.radians(x), 5) for x in w[:6]] + [w[6], w[7]])
+    for kosc in B.get("pion", []):
+        if kosc not in rig.indeks or kosc in B["dodatki"]:
+            raise BladDanych("klasa %s: bieg.pion — kość %s musi być w rigu i nie może mieć własnych dodatków" % (klucz, kosc))
+        dodatki.extend(_pion(rig, klip_spoczynku, list(dodatki), kosc))
     wynik = collections.OrderedDict([
         ("udo", _r(udo)), ("lydka", _r(lydka)), ("kostka", _r(kostka)), ("biodro", _r(biodro)), ("noga", _r(noga)),
         ("krok", _r(krok)), ("biodraPodpor", _r(biodra)), ("ugiecie", _r(ugiecie)),
@@ -415,7 +448,7 @@ def zbierz():
             ("wysokosc", _r(d["wymiary"]["wysokosc"], 3)), ("hrp", [_r(v) for v in d["hrp"]]),
             ("czesci", collections.OrderedDict([("golas", n_gol), ("odniesienie", n_odn)])),
             ("spod", collections.OrderedDict([("golas", spod_gol), ("odniesienie", spod_odn)])),
-            ("bieg", _bieg(U, d, rig, klucz, predkosc)),
+            ("bieg", _bieg(U, d, rig, klucz, predkosc, klipy["spoczynek"])),
             ("przysiady", przysiady), ("pozy", pozy)])
     D = collections.OrderedDict()
     D["wersja"] = 1

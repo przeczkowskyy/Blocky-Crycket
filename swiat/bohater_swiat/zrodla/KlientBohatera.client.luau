@@ -422,6 +422,7 @@ local function zbuduj(b)
 	b.wagaChodu = 0
 	b.wagaBiegu, b.fazaBiegu, b.vBiegu, b.drogaBiegu = 0, 0, R.bieg_predkosc, 0
 	b.vRzecz, b.skret, b.dBiegu, b.katCiala = b.vRzecz or 0, 0, nil, nil
+	b.vxRzecz, b.vzRzecz, b.vFiz = b.vxRzecz or 0, b.vzRzecz or 0, b.vFiz or 0
 	b.pola, b.polaRuszone = zbierzPoly(K.bieg, wiszace), false
 	b.baza, b.tor, b.licznikRuchu = nil, nil, -1
 	b.tryb = "idle"
@@ -503,14 +504,20 @@ local function aktualizuj(b, dt)
 	-- tym, co postać naprawdę przeszła, nie za wciśniętym klawiszem: na przeszkodzie prędkość spada i bieg ustaje.
 	local gdzie = hrp.Position
 	local bylo = b.pozBiegu
-	local drogaKlatki = 0
+	local dx, dz = 0, 0
 	if bylo ~= nil then
-		local dx, dz = gdzie.X - bylo.X, gdzie.Z - bylo.Z
-		drogaKlatki = math.sqrt(dx * dx + dz * dz)
+		dx, dz = gdzie.X - bylo.X, gdzie.Z - bylo.Z
 	end
 	b.pozBiegu = gdzie
-	b.drogaBiegu += drogaKlatki
-	b.vRzecz = L.predkosc(b.vRzecz, drogaKlatki, dt, Bg.wygladzanie, Bg.vMaks)
+	-- droga ze znakiem: ruch przeciwny do dotychczasowego (odbicie od przeszkody) liczy się wstecz
+	b.drogaBiegu += math.sqrt(dx * dx + dz * dz) * (if dx * b.vxRzecz + dz * b.vzRzecz < 0 then -1 else 1)
+	-- osobno oś X i Z: drganie postaci dociśniętej do ściany (tam i z powrotem) znosi się i nie udaje ruchu
+	b.vxRzecz = L.predkosc(b.vxRzecz, dx, dt, Bg.wygladzanie, Bg.vMaks)
+	b.vzRzecz = L.predkosc(b.vzRzecz, dz, dt, Bg.wygladzanie, Bg.vMaks)
+	b.vRzecz = math.sqrt(b.vxRzecz * b.vxRzecz + b.vzRzecz * b.vzRzecz)
+	-- prędkość z fizyki tak samo wygładzona: przy ścianie skacze między zerem a czymś (pojedyncze klatki), a pojedyncza
+	-- klatka nie ma przełączać chodu i spoczynku; przy teleporcie zostaje mała i gasi skok prędkości z drogi
+	b.vFiz = L.predkosc(b.vFiz, math.sqrt(pr.X * pr.X + pr.Z * pr.Z) * dt, dt, Bg.wygladzanie, Bg.vMaks)
 	-- obrót postaci → przechył tułowia w zakręcie
 	local _, katCiala = hrp.CFrame:ToOrientation()
 	local obrot = 0
@@ -523,10 +530,10 @@ local function aktualizuj(b, dt)
 		zyje = zyje,
 		stan = hum:GetState().Name,
 		naZiemi = hum.FloorMaterial ~= Enum.Material.Air,
-		vpoz = math.min(math.sqrt(pr.X * pr.X + pr.Z * pr.Z), b.vRzecz),
+		vpoz = math.min(b.vFiz, b.vRzecz),
 		vpion = pr.Y,
 		zdalny = b.zdalny,
-		wymuszony = if b.lokalny then wym.klip else nil,
+		wymuszony = if b.lokalny then wym.klip elseif wym.biegManekinow then "bieg" else nil,
 	}, R, dt, K.bieg)
 	b.tryb = wy.tryb
 	b.v = wy.v
@@ -564,7 +571,7 @@ local function aktualizuj(b, dt)
 			-- cykl biegu: biodra i nogi bezwzględnie (stopa w podporze stoi w miejscu), reszta ciała jako dodatek do klipu
 			local f, d = L.kadencja(Bg, b.vBiegu)
 			local s = L.skalaBiegu(Bg, b.vBiegu)
-			local wMiejscu = b.lokalny and wym.klip == "bieg"
+			local wMiejscu = if b.lokalny then wym.klip == "bieg" else wym.biegManekinow == true
 			if b.dBiegu == nil then
 				b.fazaBiegu = d / 2 -- wejście w bieg: lewa stopa pod biodrem (najbliżej pozy stojącej)
 			else
@@ -591,9 +598,17 @@ local function aktualizuj(b, dt)
 				dodajStaw(st[w[1]], CFrame.fromOrientation(rx * e, ry * e, rz * e))
 			end
 			local sc = Bg.skretCiala
-			dodajStaw(st.UpperTorso, CFrame.fromOrientation(0, sc.obrot * b.skret * e, sc.przechyl * b.skret * e))
+			local skret = if b.lokalny and wym.skret ~= nil then wym.skret else b.skret -- próba: przechył do zrzutu
+			dodajStaw(st.UpperTorso, CFrame.fromOrientation(0, sc.obrot * skret * e, sc.przechyl * skret * e))
 			-- poły stroju: pasy z przodu i z tyłu idą za udem, dzwon szaty unosi przód i faluje z krokiem
-			if b.pola ~= nil then
+			if b.pola ~= nil and wym.bezPol then
+				if b.polaRuszone then -- próba: poły wyłączone haczykiem
+					b.polaRuszone = false
+					for _, p in b.pola do
+						p.spaw.C0 = p.c0
+					end
+				end
+			elseif b.pola ~= nil then
 				b.polaRuszone = true
 				local wyzej = math.max(0, -c.biodraY) * e
 				for _, p in b.pola do
@@ -640,7 +655,15 @@ local function aktualizuj(b, dt)
 	local cf = b.cfOstatni
 	if zyje or cf == nil then
 		local dol = L.podStopami(hum.HipHeight, hrp.Size.Y, b.nogiR6)
-		cf = hrp.CFrame * CFrame.new(0, L.wysokoscRigu(b.spod, K.podniesienieChodu, b.wagaChodu) - dol, 0)
+		-- pion: przy uderzeniu w przeszkodę postać na chwilę się przechyla (kilka–kilkanaście stopni) — bohater stojący
+		-- sztywno pod nią wyjeżdżałby wtedy stopami do przodu; dopóki przechył jest mały, bohater stoi prosto (pozycja
+		-- i kierunek postaci, bez przechyłu), przy dużym (pływanie, siedzenie, leżenie) idzie za postacią jak dotąd
+		local podstawa = hrp.CFrame
+		if podstawa.UpVector.Y > 0.9 then
+			local przod = podstawa.LookVector
+			podstawa = CFrame.lookAt(podstawa.Position, podstawa.Position + Vector3.new(przod.X, 0, przod.Z))
+		end
+		cf = podstawa * CFrame.new(0, L.wysokoscRigu(b.spod, K.podniesienieChodu, b.wagaChodu) - dol, 0)
 		b.cfOstatni = cf
 	end
 	if b.lokalny and wym.px ~= nil then
@@ -806,6 +829,8 @@ local function praca(dt)
 		end
 		wym.ltm = nil
 		wym.fazaBiegu = nil
+		wym.bezPol = nil
+		wym.skret = nil
 	elseif D.kontrakt.wymuszenie_maks_s > 0 and wym.klip ~= nil and os.clock() - (wym.czas or 0) > D.kontrakt.wymuszenie_maks_s then
 		L.zerujRuch(wym)
 	end
@@ -934,6 +959,9 @@ local function opisBohatera(b)
 		wagaChodu = b.wagaChodu,
 		wagaBiegu = b.wagaBiegu,
 		fazaBiegu = b.fazaBiegu,
+		pola = if b.pola then #b.pola else 0,
+		vRzecz = b.vRzecz,
+		skret = b.skret,
 		budowa_ms = b.budowa_ms,
 		awatar = { czesci = razem, ukryte = ukryte, widoczne = widoczne },
 		fizyka = { zle = fizyka, zakotwiczony = b.korzen.Anchored },
@@ -996,6 +1024,18 @@ sterowanie.OnInvoke = function(polecenie, a, b, c)
 			return false
 		end
 		manekiny[a] = { klasa = b, napis = if type(c) == "string" then c else nil }
+		return true
+	elseif polecenie == "skret" then
+		-- próba: przechył tułowia w zakręcie lokalnego bohatera (−1…1) do zrzutów; nil = z obrotu postaci
+		wym.skret = if type(a) == "number" and a == a then math.clamp(a, -1, 1) else nil
+		return true
+	elseif polecenie == "poly" then
+		-- próba: false = poły stroju stoją (pomiar kosztu), true / nil = ruszają się
+		wym.bezPol = a == false
+		return true
+	elseif polecenie == "manekiny_bieg" then
+		-- próba: postacie testowe biegną w miejscu (pomiar pętli przy wielu biegnących bohaterach)
+		wym.biegManekinow = a == true
 		return true
 	elseif polecenie == "faza_biegu" then
 		-- zatrzymana faza cyklu biegu lokalnego bohatera (0…1) do zrzutów; nil = cykl biegnie sam

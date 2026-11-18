@@ -51,22 +51,27 @@ co do bryły takie jak w szablonie walki.
 - **Tempo chodu** = prędkość pozioma postaci ÷ prędkość naturalna klipu (2 × zakres ruchu stopy ÷ okres), w granicach
   `tempo_min`–`tempo_max`. Prędkości naturalne: Rycerz 3,06 st/s, Zwiadowca 7,11, Kot-Mag 1,16. Klipy chodu
   Rycerza i kota to marsz w miejscu z walki: powyżej tempa 1,8 klip przestaje nadążać i stopy ślizgałyby się po ziemi.
-- **Nowy cykl biegu (18.11.2026, w plikach, jeszcze nie w Studio)** zastępuje opis nóg, kadencji i reszty ciała
-  z punktu niżej; progi biegu, korzeń o klatkę później i umowa zostają.
+- **Nowy cykl biegu (18.11.2026, wdrożony w Studio, próba B00–B20: 20 × OK, 1 × ?)** zastępuje opis nóg, kadencji
+  i reszty ciała z punktu niżej; progi biegu, korzeń o klatkę później i umowa zostają.
   - *Tempo:* czas podporu = krok ÷ prędkość; czas lotu jednego kroku = (1 ÷ (2 × `kadencja_pelna`) − krok ÷ 16) ×
     prędkość ÷ 16, najmniej 30% tej wartości. Podpór jest zawsze krótszy niż pół cyklu. Przy 16 st/s: Rycerz 2,20
     cyklu/s (podpór 17%, lot 0,150 s), Zwiadowca 2,50 (17%, 0,132 s), kot 3,40 (13%, 0,108 s).
   - *Faza:* w podporze przesuwa się o podpór × droga ÷ krok — stopa cofa się względem bioder dokładnie o drogę
     postaci przy każdej prędkości; w locie idzie zegarem. Gdy udział podporu się zmienia (inna prędkość), faza jest
-    przeliczana tak, żeby stopa została w tym samym ułamku podporu. Prędkość = droga ÷ czas klatki, wygładzona
-    (0,1 s), i nie większa niż prędkość z fizyki: na przeszkodzie spada do zera i bieg ustaje.
+    przeliczana tak, żeby stopa została w tym samym ułamku podporu. Droga ma znak: ruch przeciwny do
+    dotychczasowego (odbicie od przeszkody) cofa fazę. Prędkość = droga ÷ czas klatki osobno w osiach X i Z,
+    wygładzona (0,06 s; drganie przy ścianie się znosi), i nie większa niż tak samo wygładzona prędkość z fizyki:
+    na przeszkodzie spada do zera i bieg ustaje (w grze: spoczynek 0,0–0,13 s po zatrzymaniu postaci).
+  - *Pion:* bohater staje pod postacią prosto (jej pozycja i kierunek, bez przechyłu), dopóki oś postaci odchyla się
+    od pionu o mniej niż ok. 25° — postać Roblox przy uderzeniu w przeszkodę przechyla się na kilka klatek i bez
+    tego stopa w podporze wyjeżdżała o 0,17–0,32 st (po zmianie 0,02–0,06 st).
   - *Nogi:* krok Rycerza 0,8, Zwiadowcy 0,7, kota 1,1 długości nogi; biodra w skrajach podporu na wysokości, przy
     której noga ma 0,99 długości (krótszy krok = prostsze kolano: w połowie podporu 59° / 51° zamiast 79°),
     w podporze uginają się, w locie wznoszą (1,6 × ugięcie × lot ÷ podpór). Wymach: pięta wcześnie w górę, wybieg
     w tył po odbiciu, cofnięcie stopy przed postawieniem; stopa w podporze płasko (miara B19 bez zmian).
   - *Dodatki* (`bieg.dodatki`): kąt kości = stałe + skala × wymach × cos(2π × (harmoniczna × faza − przesunięcie)),
     dokładane do pozy z klipu — ręce, tułów (pochył, skręt, kołysanie), głowa (wyrównanie), u kota ogon, kapelusz,
-    uszy i kostur. Pochył tułowia w biegu jest teraz dodatkiem; poza `pochyl` została dla chodu (przy 16 st/s
+    uszy i kostur (kostur: lista `pion` — generator liczy z kinematyki obrót, który trzyma go jak w spoczynku). Pochył tułowia w biegu jest teraz dodatkiem; poza `pochyl` została dla chodu (przy 16 st/s
     zastępowała całą pozę tułowia i kasowała jego skręt).
   - *Poły:* bryły przyspawane do kości bioder, których spód jest poniżej stawu biodra — klient rozpoznaje je przy
     budowie po geometrii (każdy strój), rusza spawem (`Weld.C0`), w spoczynku przywraca. Pasy z przodu / z tyłu:
@@ -145,8 +150,9 @@ Klipy wymuszone umową (mini-gra) widzi tylko gracz, który gra — tak samo jak
 | Mag (Kot-Mag) | 0,57 st | 0,63 st (było 0,57) | 2,3 / 2,1 st/s | 3,40 cyklu/s, 13% cyklu, 4,7 st (było 4,12, 15%, 3,9 st) |
 
 Limit kontrolny w testach: 220 brył na bohatera w najcięższym stroju. Przy 12 bohaterach to do ok. 2,2 tys. brył
-bez kolizji u jednego klienta. Zmierzone w Studio na komputerze (próba B17): pętla pakietu 0,05 ms na klatkę
-z jednym bohaterem i 0,41 ms z dwunastoma (1861 brył), 60 kl./s bez bohatera, z jednym i z dwunastoma.
+bez kolizji u jednego klienta. Zmierzone w Studio na komputerze (próba B17, nowy bieg): pętla pakietu 0,06 ms na klatkę
+z jednym bohaterem i 0,29–0,44 ms z dwunastoma stojącymi (1861 brył); gdy wszyscy dwunastu biegną: 0,42–0,62 ms
+z połami stroju i 0,37–0,51 ms bez nich; 60 kl./s bez bohatera, z jednym i z dwunastoma.
 
 ## 4. Umowa z mini-grami
 

@@ -11,14 +11,17 @@ skacze, spada i ląduje. Każdy gracz widzi bohaterów pozostałych graczy. Prze
 
 - **Zbudowane w Studio:** `Workspace/BohaterSwiat` (9 instancji: 4 skrypty i moduły, 3 sygnały, 0 części), wyłącznik
   `BohaterWSwiecie = true`. Miejsce nie było zapisywane ani publikowane.
-- **Próba w Play** (`testy/proba_play.py`, lista B00–B19): **19 × OK, 1 × ?, 0 × BŁĄD** — tabela niżej.
+- **Próba w Play** (`testy/proba_play.py`, lista B00–B20, z nowym cyklem biegu, 18.11 wieczorem): **20 × OK, 1 × ?, 0 × BŁĄD** —
+  sekcja „Nowy cykl biegu”; tabela punkt po punkcie niżej jest z przebiegu sprzed nowego biegu.
 - **Sąsiedzi z bohaterem w świecie:** próba dymna całej gry 14/14, próba walki `test_walki_play.py --szybko` 111/111,
   próba przymierzalni 10 × OK i jej stałe „?” (S09).
 - **Bez Studio:** 36 testów OK, kontrola Luau, `zbuduj.py --sucho`, `proba_play.py --sprawdz`.
-- **Nowy cykl biegu (18.11.2026) jest tylko w plikach** — w Studio stoi jeszcze poprzednia wersja skryptów, a tabela
-  próby niżej (B00–B19) dotyczy tej poprzedniej wersji. Wdrożenie i próba w grze: następny krok (sekcja niżej).
+- **Nowy cykl biegu (18.11.2026) jest wdrożony w Studio** (`zbuduj.py --skrypty`, skrót danych 3ab80d06f5bb; źródła
+  w repozytorium = skrypty w kontenerze). Miejsce nie było zapisywane ani publikowane.
+- **Sąsiedzi po wdrożeniu:** próba dymna całej gry 14/14 (runda Training Center z bohaterem OK), próba Training
+  Center 31 × OK. Próby walki i przymierzalni nie były powtarzane po nowym biegu.
 
-## Nowy cykl biegu (18.11.2026) — zrobione bez Studio, czeka na wdrożenie
+## Nowy cykl biegu (18.11.2026) — wdrożony i sprawdzony w grze
 
 Co się zmieniło w ruchu (liczby w `ustawienia.json` → `bieg`, opis w `PROJEKT.md` pkt 2.3):
 
@@ -38,27 +41,54 @@ Co się zmieniło w ruchu (liczby w `ustawienia.json` → `bieg`, opis w `PROJEK
   w podporze i wznoszą w locie. W truchcie (tuż nad progiem biegu) ruch jest mniejszy (skala 0,5–1,15).
 - **Ręce, tułów, głowa** to dodatki do pozy z klipu, opisane danymi na klasę (`bieg.dodatki`): ręka z mieczem ma
   mniejszy wymach, ręka z tarczą prawie stoi, głowa wyrównuje pochył i skręt tułowia. Kot: ogon, czubek ogona,
-  kapelusz i uszy ruszają się z krokiem, kostur zostaje w pionie (obrót przeciwny do ramienia) i jest niesiony wyżej.
+  kapelusz i uszy ruszają się z krokiem, kostur jest niesiony wyżej i zostaje ustawiony jak w spoczynku (`bieg.klasy.mag.pion`
+  — generator dolicza obrót znoszący ruch ramienia i tułowia; odchylenie osi kostura w cyklu do 2,2°).
 - **Poły stroju:** bryły wiszące poniżej bioder na kości bioder ruszają się spawem — pasy tabardu Rycerza idą za
   udem, dzwon szaty kota unosi przód (łapy wychodzą spod szaty), faluje i skręca się z krokiem. Wyłącznik:
   `bieg.poly.wlaczone`.
-- **Bez ślizgania na przeszkodzie:** faza cyklu w podporze idzie drogą postaci (w locie zegarem), prędkość to droga
-  ÷ czas (wygładzona, 0,1 s) i nie większa niż prędkość z fizyki — gdy postać stanie na przeszkodzie, stopa stoi,
-  a po chwili bohater przechodzi do spoczynku. Zmiana tempa w trakcie podporu nie rusza stopy.
+- **Bez ślizgania na przeszkodzie:** faza cyklu w podporze idzie drogą postaci (w locie zegarem; odbicie
+  postaci w tył cofa fazę), prędkość to droga ÷ czas liczona osobno w osi X i Z (wygładzona, 0,06 s — drganie przy
+  ścianie się znosi) i nie większa niż tak samo wygładzona prędkość z fizyki. Gdy postać stanie na przeszkodzie,
+  stopa stoi, a po 0,0–0,13 s bohater przechodzi do spoczynku, choć klawisz jest wciśnięty. Zmiana tempa w trakcie
+  podporu nie rusza stopy. Bohater stoi prosto także wtedy, gdy postać na chwilę przechyla się przy uderzeniu.
 - **Przejścia:** wejście w bieg zaczyna się od fazy ze stopą pod biodrem, waga cyklu dochodzi w 0,25 s; w zakręcie
   tułów przechyla się do środka (do 7°) i lekko obraca (do 5°).
 - **Umowa `RuchBohatera` bez zmian** (nazwy, wyniki, klip `bieg` w miejscu); fizyka postaci bez zmian.
-- **Koszt pętli (policzony, nie zmierzony):** na bohatera w biegu doszło na klatkę: Wojownik 7 obrotów stawów
-  (było 5) i 12 zapisów spawów pół, Zwiadowca 7 i 1, Kot-Mag 14 i 7 (każda bryła dzwonu: 4 mnożenia CFrame).
-  Czas w ms pokaże dopiero próba B17 w Studio.
 - **Bez Studio sprawdzone:** stopa w podporze przesuwa się o mniej niż 0,005 st przy czterech prędkościach i przy
-  postaci hamującej na przeszkodzie z nierównymi klatkami; nic poza nasadą ogona kota (pod trenem szaty, jak dawniej)
-  nie schodzi pod ziemię; broń, tarcza i kostur nie wchodzą w nogi ani tułów (0 punktów próbnych w spoczynku
-  i w całym cyklu, każda klasa).
-- **Podglądy** (`podglady/bieg_<klasa>.png`, `python -B swiat/bohater_swiat/podglad_biegu.py`): osiem klatek cyklu
-  z boku i z przodu, dawny cykl nad nowym — schemat z brył, nie zrzut z gry.
-- **Do zrobienia w Studio:** `zbuduj.py --skrypty`, próba B00–B19 (zwłaszcza B05, B17, B19), bieg w przeszkodę,
-  zrzuty; w próbie B19 zostaje ta sama miara (stopa w podporze, `L.kadencja` daje krok × kadencja ÷ podpór = prędkość).
+  postaci hamującej na przeszkodzie z nierównymi klatkami (z odbiciem w tył, gdy stopa dopiero stanęła: do 0,06 st);
+  nic poza nasadą ogona kota (pod trenem szaty, jak dawniej) nie schodzi pod ziemię; broń, tarcza i kostur nie
+  wchodzą w nogi ani tułów (0 punktów próbnych w spoczynku i w całym cyklu, każda klasa).
+- **Podglądy bez Studio** (`podglady/bieg_<klasa>.png`, `python -B swiat/bohater_swiat/podglad_biegu.py`): osiem klatek
+  cyklu z boku i z przodu, dawny cykl nad nowym — schemat z brył.
+
+### Próba w grze po wdrożeniu (18.11.2026, 18:57) — 20 × OK, 1 × ?, 0 × BŁĄD
+
+Jedno okno Studio, jeden gracz (Wojownik), przebieg `--bez-zrzutow`; po próbie Studio w trybie Edit.
+
+| Punkt | Wynik |
+|---|---|
+| B05 ruch (prawdziwy W) | OK — spoczynek → chód → bieg → chód → spoczynek, do 16,0 st/s, stopy −0,09…0,12 st; droga z W przez 1 s: 16,3 st z bohaterem i 16,3 st bez |
+| B12 umowa `RuchBohatera` | OK — `stan`, pięć klipów, zły klip → `false`, `nil` → ruch samoczynny, `przesun (0, 2, 0)` → 2,00 st |
+| B17 czas pętli | OK — 60 kl./s bez bohatera, z jednym i z dwunastoma. Stojący: 1 bohater 0,05–0,06 ms (przed zmianą 0,05–0,14), 12 bohaterów 0,29–0,44 ms (przed 0,3–0,9). **Wszyscy biegną w miejscu** (12 bohaterów, 1861 brył): z połami 0,42–0,62 ms, bez pół 0,37–0,51 ms (trzy przebiegi; najwięcej 2,4 ms); jeden bohater w biegu 0,07 ms z połami i bez |
+| B18 konsola | OK — 0 wierszy `[BohaterSwiat]`, 0 błędów pętli |
+| B19 stopa w podporze | OK — w zatrzymanych fazach 0,000 st, w prawdziwym biegu 16 st/s 0,00 st (Wojownik 5 podporów / 23 klatki, Zwiadowca 5 / 20, Mag 8 / 17) |
+| B20 bieg w przeszkodę (nowy) | OK — ściana próby 10,9 st przed postacią, klawisz W trzymany 2,2 s: bieg → chód → spoczynek; stopa w podporze razem z podporem uderzenia najwyżej 0,02–0,06 st (trzy przebiegi; pierwsza wersja cyklu: 0,56 st), spoczynek 0,0–0,13 s po zatrzymaniu, w spoczynku stopy stoją (do 0,03 st). Zakręt (W + strzałka w prawo): przechył tułowia −0,40…−0,62 (−1 = pełny) |
+| B16 runda Training Center | ? — jak dotąd: w tej próbie nikt w rundę nie gra; całą rundę z bohaterem przechodzi próba dymna gry (D07 OK) |
+| pozostałe (B00–B04, B06–B11, B13–B15) | OK |
+
+### Poprawione po próbie w grze i po zrzutach (18.11.2026)
+
+1. **Migotanie chód ↔ spoczynek przy ścianie.** Prędkość z fizyki skacze tam w pojedynczych klatkach między zerem
+   a kilkoma st/s, a postać drga. Prędkość z drogi jest teraz liczona osobno w osiach X i Z (drganie się znosi),
+   prędkość z fizyki też jest wygładzona, stała czasu 0,06 s (było 0,1).
+2. **Ślizg stopy przy uderzeniu (0,17–0,32 st).** Postać Roblox przy uderzeniu na kilka klatek się przechyla,
+   a bohater stał sztywno pod nią — stopy wyjeżdżały do przodu. Bohater stoi teraz prosto (pozycja i kierunek
+   postaci bez przechyłu), dopóki przechył jest mniejszy niż ok. 25°; przy większym (pływanie, siedzenie) idzie za
+   postacią jak dawniej. Do tego droga ze znakiem: odbicie w tył cofa fazę podporu.
+3. **Kostur kota przechylał się ku głowie** (ręka uniesiona o 40° obracała go wokół innej osi niż dłoń z klipu).
+   Generator dolicza teraz obrót, który trzyma kostur tak jak w spoczynku.
+4. **Miara próby:** `dryf_stop` łączy w jeden podpór tylko klatki sąsiednie w czasie (lista przesiana do pełnej
+   prędkości ma dziury); arkusze klatek mają kamerę dalej przy dłuższym cyklu.
 
 ## W Studio (18.11.2026) — poprzednia wersja skryptów
 
@@ -128,7 +158,10 @@ walki i przymierzalni szły wersję wcześniej (przed „korzeniem o klatkę pó
 | `12_walka_w_lesie.jpg`, `12_po_walce.jpg` | walka (bohater świata schowany) i powrót po walce |
 | `13_po_teleporcie.jpg` | po przejściu przez chmury |
 | `14_trening.jpg` | stanowisko Training Center |
-| `15_bieg_wojownik_arkusz.jpg`, `15_bieg_zwiadowca_arkusz.jpg`, `15_bieg_mag_arkusz.jpg` | osiem kolejnych klatek cyklu biegu przy 16 st/s, kamera nieruchoma w świecie — stopa w podporze zostaje w tym samym miejscu ziemi |
+| `15_bieg_wojownik_arkusz.jpg`, `15_bieg_zwiadowca_arkusz.jpg`, `15_bieg_mag_arkusz.jpg` | **pierwsza wersja cyklu biegu** (do porównania): osiem kolejnych klatek przy 16 st/s, kamera nieruchoma w świecie |
+| `20_bieg_wojownik_pasek.jpg`, `20_bieg_zwiadowca_pasek.jpg`, `20_bieg_mag_pasek.jpg` | **nowy cykl biegu** w grze: osiem kolejnych klatek przy 16 st/s z boku, kamera nieruchoma w świecie (stopa w podporze zostaje w tym samym miejscu ziemi) |
+| `21_kot_szata_w_biegu.jpg` | Kot-Mag w biegu z przodu: szata uniesiona z przodu, łapa spod szaty, kostur prosto (klatka cyklu zatrzymana haczykiem) |
+| `22_zakret_wojownik.jpg` | Rycerz w biegu z tułowiem przechylonym jak w zakręcie w prawo — przechył ustawiony haczykiem próby (pełny); prawdziwy zakręt mierzy B20 |
 
 ## Jak to działa
 
@@ -216,7 +249,8 @@ end
   `lokalny` (klasa, tryb, klip, tempo, strój, bryły, instancje, spód rigu, wysokość stóp nad ziemią, odległość od
   punktu pod postacią, przezroczystość, wagi póz, części awatara schowane / widoczne, fizyka); `"pomiar", "zeruj"?`;
   `"ruch", polecenie, arg` (to samo co `RuchBohatera`); `"przezroczystosc", x`; `"manekin", model, klasa, napis?`
-  (postać testowa dostaje bohatera jak cudzy gracz); `"manekin_usun"`; `"faza_biegu", 0…1 | nil` (zatrzymana faza
+  (postać testowa dostaje bohatera jak cudzy gracz); `"manekin_usun"`; `"manekiny_bieg", bool` (postacie testowe biegną w miejscu — pomiar pętli); `"poly", bool` (poły stroju
+  stoją / ruszają się — pomiar kosztu); `"skret", −1…1 | nil` (przechył tułowia do zrzutu); `"faza_biegu", 0…1 | nil` (zatrzymana faza
   cyklu biegu, do zrzutów); `"nagraj", sekundy` i `"nagranie"` (klatka po klatce: faza biegu, miejsce stóp i postaci).
 - `Sygnaly/SterowanieSerwera` (serwer): `"stan"` → wyłącznik, zależności, klasy i stroje graczy; `"wlacz", bool`.
 - Atrybuty kontenera: `SerwerGotowy`, `SkrotSerwera` (serwer), `KlientGotowy`, `SkrotKlienta` (u klienta).
@@ -235,7 +269,7 @@ end
 | `zrodla/SerwerBohatera.server.luau` | wyłącznik, haczyk testowy; poza Studio usuwa kontener |
 | `zrodla/LogikaBohatera.luau` | czysta logika (wykonywana też bez Studio) |
 | `testy/test_bohatera.py` | testy bez Studio |
-| `testy/proba_play.py` | próba w Play, lista B00–B19 |
+| `testy/proba_play.py` | próba w Play, lista B00–B20 |
 
 Pakiet nie zmienia żadnego pliku poza swoim folderem. Moduły postaci (`swiat/postacie`), dane walki
 (`swiat/test_walki2/dane`), przymierzalnia i odtwarzacz klipów są tylko czytane.
@@ -275,7 +309,14 @@ python -B swiat/bohater_swiat/testy/proba_play.py <folder wyników POZA repo> [-
 - **Prawdziwego telefonu** (czas klatki mierzony na komputerze, 60 kl./s).
 - **Ruchu ocenianego okiem w grze.** Arkusze klatek i pomiary mówią, że stopa stoi w miejscu; czy bieg „dobrze
   wygląda” (kadencja, wymach rąk z bronią, kot w szacie zakrywającej nogi), musi ocenić człowiek w grze.
-- **Biegu po łuku i po pochyłości** — pomiar stopy był w biegu po prostej, po płaskim.
+- **Biegu po łuku i po pochyłości** — pomiar stopy jest w biegu po prostej, po płaskim. W biegu po łuku stopa
+  w podporze obraca się z bohaterem: w przebiegach próby ze zrzutami (po narzędziu zrzutu postać biegła po łuku) było
+  to 0,02–0,09 st na podpór, a B19 dostał wtedy BŁĄD za zbyt mało podporów przy pełnej prędkości. Wynik B19 liczy
+  się z przebiegu `--bez-zrzutow`.
+- **Zrzuty 01–14** są z pierwszej wersji biegu (nie były odświeżane). Kadr w zakręcie jest ustawiony haczykiem.
+- **Kapelusza i ogona kota w grze** — gracz próby nie ma kapelusza w stroju, ogona na zrzutach nie widać; ich ruch
+  jest policzony tylko bez Studio. Kostur względem głowy i kapelusza: bez Studio 1 punkt próbny styku w dwóch fazach.
+- **Stroju innego niż strój gracza próby** z połami w grze; prób walki i przymierzalni po nowym biegu.
 - **Całej rundy Training Center w próbie tego pakietu** (B16 „?”) — przechodzi ją próba dymna gry.
 - Awatara R6 (wzór na stopy go obejmuje, ale miejsce gra R15).
 - Chodu wolniejszego niż bieg u gracza: przy zwykłej prędkości 16 st/s postać od razu biegnie; klip chodu gra tylko

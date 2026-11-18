@@ -55,7 +55,7 @@
   "pochyl": {"czas_s": 0.2, "przysiad": false, "kosci": {
    "UpperTorso": [-9, 0, 0]}}
  },
- "bieg_opis": "Proceduralny cykl biegu (bez klipu). NOGI: kostka idzie po torze — w podporze stoi na ziemi i cofa się względem bioder dokładnie o drogę postaci, w wymachu wraca łukiem (pięta wcześnie w górę, lekki wybieg w tył i podciągnięcie przed postawieniem), kąty liczy odwrotna kinematyka dwóch kości. Długości w ułamkach długości nogi (udo + łydka). Biodra w skrajach podporu stoją najwyżej, jak pozwala zasieg_nogi (im krótszy krok, tym prostsze kolano), w podporze uginają się o ugiecie, w locie wznoszą. TEMPO: czas podporu = krok ÷ prędkość, czas lotu = (1 ÷ (2 × kadencja_pelna) − krok ÷ bieg_predkosc) × prędkość ÷ bieg_predkosc (najmniej lot_min tej wartości). Faza w podporze idzie DROGĄ postaci, w locie zegarem; prędkość to droga ÷ czas, wygładzona (wygladzanie_predkosci_s). skala (prędkość ÷ bieg_predkosc w granicach skala_min…skala_maks) mnoży uniesienie stóp, wymachy i falowanie. DODATKI: kość → wpisy [stałe rx, ry, rz, wymach rx, ry, rz (stopnie), harmoniczna (1 = raz na cykl, 2 = raz na krok), przesunięcie fazy (cykle)]: kąt = stałe + skala × wymach × cos(2π × (harmoniczna × faza − przesunięcie)); faza 0 = lewa stopa staje z przodu; rx > 0 = kończyna do przodu, ry > 0 = prawy bark do przodu, rz > 0 = góra w lewo. POŁY: bryły wiszące poniżej bioder na kości bioder — pasy z przodu i z tyłu odchylają się z udem, dzwon (szata dookoła) unosi przód, faluje i skręca się z krokiem, im niżej, tym mocniej. Wpis w klasy nadpisuje liczby i dodatki (kość w klasie zastępuje wpisy tej kości). Bieg zaczyna się, gdy klip chodu przestaje nadążać: prędkość > tempo_max × chód naturalny × (1 + pasmo); wraca do chodu poniżej tempo_max × chód naturalny.",
+ "bieg_opis": "Proceduralny cykl biegu (bez klipu). NOGI: kostka idzie po torze — w podporze stoi na ziemi i cofa się względem bioder dokładnie o drogę postaci, w wymachu wraca łukiem (pięta wcześnie w górę, lekki wybieg w tył i podciągnięcie przed postawieniem), kąty liczy odwrotna kinematyka dwóch kości. Długości w ułamkach długości nogi (udo + łydka). Biodra w skrajach podporu stoją najwyżej, jak pozwala zasieg_nogi (im krótszy krok, tym prostsze kolano), w podporze uginają się o ugiecie, w locie wznoszą. TEMPO: czas podporu = krok ÷ prędkość, czas lotu = (1 ÷ (2 × kadencja_pelna) − krok ÷ bieg_predkosc) × prędkość ÷ bieg_predkosc (najmniej lot_min tej wartości). Faza w podporze idzie DROGĄ postaci, w locie zegarem; prędkość to droga ÷ czas, wygładzona (wygladzanie_predkosci_s). skala (prędkość ÷ bieg_predkosc w granicach skala_min…skala_maks) mnoży uniesienie stóp, wymachy i falowanie. DODATKI: kość → wpisy [stałe rx, ry, rz, wymach rx, ry, rz (stopnie), harmoniczna (1 = raz na cykl, 2 = raz na krok), przesunięcie fazy (cykle)]: kąt = stałe + skala × wymach × cos(2π × (harmoniczna × faza − przesunięcie)); faza 0 = lewa stopa staje z przodu; rx > 0 = kończyna do przodu, ry > 0 = prawy bark do przodu, rz > 0 = góra w lewo. PION (lista kości w klasie, np. kostur): generator dolicza kości dodatek, który znosi obrót ramienia i tułowia — kość ma w biegu ten sam kierunek co w spoczynku. POŁY: bryły wiszące poniżej bioder na kości bioder — pasy z przodu i z tyłu odchylają się z udem, dzwon (szata dookoła) unosi przód, faluje i skręca się z krokiem, im niżej, tym mocniej. Wpis w klasy nadpisuje liczby i dodatki (kość w klasie zastępuje wpisy tej kości). Bieg zaczyna się, gdy klip chodu przestaje nadążać: prędkość > tempo_max × chód naturalny × (1 + pasmo); wraca do chodu poniżej tempo_max × chód naturalny.",
  "bieg": {
   "krok_na_noge": 0.75,
   "zasieg_nogi": 0.99,
@@ -75,7 +75,7 @@
   "czas_przejscia_s": 0.25,
   "stopa_w_wymachu_st": -30,
   "skos_stopy": 0.8,
-  "wygladzanie_predkosci_s": 0.1,
+  "wygladzanie_predkosci_s": 0.06,
   "predkosc_maks": 64,
   "skret_ciala": {"przechyl_st": 7, "obrot_st": 5, "pelny_rad_s": 5, "wygladzanie_s": 0.15},
   "poly": {"wlaczone": true, "prog_st": 0.05, "srodek_st": 0.05, "udo": 0.9, "dzwon_unies_st": 7, "dzwon_fala_st": 3, "dzwon_skret_st": 6, "dzwon_zwloka": 0.18},
@@ -109,13 +109,13 @@
     }
    },
    "mag": {
+    "pion": ["StaffPivot"],
     "krok_na_noge": 1.1, "kadencja_pelna": 3.4, "ugiecie_na_noge": 0.04, "unoszenie_na_noge": 0.4,
     "dodatki": {
      "LeftUpperArm": [[0, 0, 0, -22, 0, 0, 1, 0]],
      "LeftLowerArm": [[10, 0, 0, 8, 0, 0, 1, 0.5]],
      "RightUpperArm": [[0, 0, 0, 9, 0, 0, 1, 0]],
      "RightLowerArm": [[40, 0, 0, 0, 0, 0, 1, 0]],
-     "StaffPivot": [[-40, 0, 0, -9, 0, 0, 1, 0]],
      "UpperTorso": [[-6, 0, 0, 0, 6, 3, 1, 0]],
      "Head": [[3, 0, 0, 0, -4, -2, 1, 0]],
      "Tail": [[-25, 0, 0, 0, 14, 0, 1, 0.1]],
