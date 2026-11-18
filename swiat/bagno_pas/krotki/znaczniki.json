@@ -17,7 +17,7 @@
   "niewidzialna_sciana_v": 34.0,
   "zakres_czesci_u": [
    416.0,
-   866.0
+   863.92
   ],
   "zakres_czesci_v": [
    -84.0,
@@ -412,7 +412,7 @@
    "v": 0.0,
    "y": 0,
    "patrz": [
-    900.0,
+    878.79,
     0.0
    ],
    "kamera_opada_z_wys": 60,
@@ -1566,7 +1566,7 @@
   "dlaczego": "kulisy i tło widać z daleka jako uproszczoną bryłę poza promieniem streamingu"
  },
  "statystyka": {
-  "czesci": 4957,
+  "czesci": 4887,
   "uwaga": "mapa przycięta przez swiat/biomy/przycinarka.py (D-096) — liczby na odcinek: projekt"
  },
  "wymiary": {
@@ -1610,7 +1610,7 @@
    ]
   ],
   "uwagi": [
-   "dalsze biomy bez map: po 420 st każdy, pierwszy (dzungla) od u 840.0",
+   "dalsze biomy bez map: po 420 st każdy, pierwszy (pustynia) od u 1260.0",
    "r1: max 5 → 4 (pętla 120.9 st)",
    "b1: max 5 → 4 (pętla 120.9 st)",
    "przelot: tor 851 → 367 st, lot 10.5 → 7.3 s, całość 10.2 s",

@@ -13,7 +13,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "aad4100250ba",
+	skrot = "9def43c437ac",
 	arkusz = {
 		id = 93573204965127,
 		plik = "sfx_arkusz_a.ogg",
@@ -272,14 +272,19 @@ return {
 	glosyPotworow = {
 		bulgotnik = "zarodniki",
 		cierniowy_wilk = "wilk",
+		gebokwiat = "zarodniki",
 		klodoklap = "wilk",
+		kokosowy_silacz = "troll",
 		lesny_slime = "galareta",
 		lesny_troll = "troll",
 		muchomornik = "zarodniki",
+		pancernik_ruin = "troll",
 		rechotek = "galareta",
 		ropucha_z_chatka = "troll",
 		straznik_lasu = "ryk_straznika",
 		straznik_topieli = "ryk_straznika",
+		waz_stu_lian = "ryk_straznika",
+		zwijogon = "wilk",
 	},
 	muzyka = {
 		przejscie = 2.5,
@@ -341,7 +346,25 @@ return {
 				},
 				kontener = "BagnoPas",
 				prostokaty = {
-					{ 1543.92, 1966.0, -784.0, -616.0 },
+					{ 1543.92, 1963.92, -784.0, -616.0 },
+				},
+			},
+			dzungla = {
+				glosnosc = 0.7,
+				podpiete = true,
+				utwory = {
+					{
+						nazwa = "muzyka_05_las_a_petla",
+						id = 70497074484606,
+					},
+					{
+						nazwa = "muzyka_05_las_b_petla",
+						id = 106582652985449,
+					},
+				},
+				kontener = "DzunglaPas",
+				prostokaty = {
+					{ 1963.92, 2386.0, -784.0, -616.0 },
 				},
 			},
 			start = {

@@ -37,9 +37,25 @@
       "wejscie_u": 934,
       "brama_u": 1874,
       "zostaw": [[934, 984], [1004, 1080], [1208, 1292], [1420, 1500], [1628, 1762], [1788, 1856], [1862, 1906]],
-      "pomin_grupy": [],
+      "pomin_grupy": ["ZapowiedzDzungli"],
       "strefy": {"r1": ["r1", "r2", "r3"], "b1": ["b1", "b2", "b3"], "k1": ["k1", "k2", "k3"], "t1": ["t1"]},
-      "opis_odcinkow": "Pomost Przybycia bez tylnej części (u 984–1004), rów z kładką + pierwsze oczko, Kładka nad Topielą + pierwsze bąblowisko Trzęsawiska, trzcinowa przesieka + Zatoka Kłód, zatopione pnie + Leże Ropuchy + Latarnie Topieli, Topiel z Wieżą, koniec przedbramia z bramą do Dżungli i zapowiedzią Dżungli"
+      "opis_odcinkow": "Pomost Przybycia bez tylnej części (u 984–1004), rów z kładką + pierwsze oczko, Kładka nad Topielą + pierwsze bąblowisko Trzęsawiska, trzcinowa przesieka + Zatoka Kłód, zatopione pnie + Leże Ropuchy + Latarnie Topieli, Topiel z Wieżą, koniec przedbramia z bramą do Dżungli; zapowiedź Dżungli odpada (stoi Dżungla)"
+    },
+    {
+      "id": "dzungla",
+      "plan": "swiat/dzungla_pas/plan_dzungli.json",
+      "czesci": "swiat/dzungla_pas/czesci.json",
+      "znaczniki": "swiat/dzungla_pas/znaczniki.json",
+      "wyj": "swiat/dzungla_pas/krotki",
+      "plik_planu": "plan_dzungli.json",
+      "kotwica_u": 1894,
+      "po_biomie": "bagno",
+      "wejscie_u": 1874,
+      "brama_u": 2814,
+      "zostaw": [[1874, 1924], [1944, 2020], [2148, 2232], [2360, 2440], [2568, 2702], [2728, 2796], [2802, 2846]],
+      "pomin_grupy": [],
+      "strefy": {"z1": ["z1", "z2", "z3"], "g1": ["g1", "g2", "g3"], "o1": ["o1", "o2", "o3"], "t1": ["t1"]},
+      "opis_odcinkow": "Układ Bagna + 940 (swiat/dzungla_pas): Taras Przybycia, strumyk + pierwsza polana Zwijogonów, Mostek nad Kaskadą + pierwszy kwietnik, bambusowa przesieka + pierwszy gaj Kokosów, omszałe schody + Ruiny Pancernika + Brama Posągów, Krąg Stu Lian, koniec przedbramia z bramą do Pustyni i zapowiedzią Pustyni"
     }
   ]
 }

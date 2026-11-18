@@ -15,7 +15,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "4412cbb7dbe0",
+	skrot = "508a950d46cf",
 	biom = {
 		nazwa = "LasPas",
 		srodek = { 1100, 0, -700 },

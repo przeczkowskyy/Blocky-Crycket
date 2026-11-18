@@ -112,6 +112,36 @@ local IKONY = {
 		paleta = { T = "#2EB8A6", B = "#7A5A36", M = "#5B4A34", G = "#C8E05A", E = "#36EE4E", A = "#A9B48E" },
 		mapa = { ".BBBBBB.", "BTTTTTTB", ".MMMMMM.", "MEMMMMEM", "MMMMMMMM", "MAAGGAAM", "MAAGGAAM", ".A.AA.A." },
 	},
+	-- przeciwnicy Dżungli (17.11.2026, propozycja; modele swiat/postacie/<klucz>.py, aktorzy_dzungli.py)
+	-- Zwijogon: czerwony hełm kameleona, oczy na wieżyczkach z turkusowym pierścieniem, linia pyska
+	zwijogon = {
+		paleta = { G = "#2FA34A", g = "#1F7A36", L = "#6CCB4A", R = "#E5392B", Y = "#F2B030", K = "#17121F",
+			T = "#2EC4B6" },
+		mapa = { "...RR...", "..RGGR..", ".GGGGGG.", "TYKGGKYT", ".GGGGGG.", ".KKKKKK.", ".LLLLLL.", "..g..g.." },
+	},
+	-- Gębokwiat: czerwone płatki wokół żółtej tarczy, oczy, paszcza z kremowymi zębami, zielona łodyga
+	gebokwiat = {
+		paleta = { R = "#E5392B", r = "#B32424", Y = "#F2B030", K = "#17121F", Z = "#F4EEDC", G = "#2FA34A" },
+		mapa = { ".R.RR.R.", "RRYYYYRR", "RYKYYKYR", "RYYYYYYR", "RKZKZKZR", "RYYYYYYR", ".rRGGRr.", "...GG..." },
+	},
+	-- Kokosowy Siłacz: brązowa małpa, opaska z liści i czerwony kwiat, jasna twarz, kokosy w pięściach
+	kokosowy_silacz = {
+		paleta = { B = "#5C3A22", b = "#432817", T = "#D9A066", G = "#2FA34A", R = "#E5392B", K = "#17121F",
+			C = "#A06A36" },
+		mapa = { "..bBBb..", ".GGGGGR.", "BbbbbbbB", "BTKTTKTB", "BTTTTTTB", "CBTKKTBC", "CCBTTBCC", "CC.BB.CC" },
+	},
+	-- Pancernik Ruin: kamienny pancerz z mchem, hełm ze świecącym turkusowym znakiem, ryj
+	pancernik_ruin = {
+		paleta = { S = "#8E8A7E", s = "#6A665C", L = "#A8A496", T = "#2EC4B6", M = "#6CCB4A", B = "#B07A44",
+			K = "#17121F", P = "#5C3A22" },
+		mapa = { "..MMSS..", ".SLSSLS.", "SSSSSSSS", "sSLTTLSs", "sKBBBBKs", ".sBBBBs.", "..BKKB..", ".P.BB.P." },
+	},
+	-- Wąż Stu Lian: wachlarz czerwono-żółtych płatków za zielonym łbem, żółte oczy, kły, zwój
+	waz_stu_lian = {
+		paleta = { R = "#E5392B", r = "#B32424", Y = "#F2B030", G = "#2FA34A", g = "#1F7A36", K = "#17121F",
+			W = "#F4EEDC" },
+		mapa = { "R.RRRR.R", "RRYYYYRR", "RYGGGGYR", "rYKGGKYr", ".GGGGGG.", ".GWGGWG.", "..gGGg..", ".gGggGg." },
+	},
 	-- efekty
 	trucizna = {
 		paleta = { G = "#8BEA4E", g = "#3E8C2A", L = "#E8FFD0" },

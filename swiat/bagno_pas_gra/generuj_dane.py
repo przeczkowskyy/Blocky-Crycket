@@ -109,7 +109,7 @@ BIOM_BAGNA = {
     "straznik": "Strażnika Topieli",
     "komunikatBramy": "Brama do Dżungli jest zamknięta — pokonaj Strażnika Topieli.",
     "przekieruj": False,
-    "podpisBramy": "Brama do Dżungli otwarta — Dżungla wkrótce",
+    "podpisBramy": "Brama do Dżungli otwarta — idź za Topiel",   # 18.11.2026: Dżungla stoi (było „Dżungla wkrótce”)
     "banerBramy": "BRAMA DO DŻUNGLI OTWARTA!",
     "podpisBanera": "Idź za Topiel — dalej Dżungla",
     "podpisBaneraWkrotce": "Za Topielą — Dżungla (wkrótce)",

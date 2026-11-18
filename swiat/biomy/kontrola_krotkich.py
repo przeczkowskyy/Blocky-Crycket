@@ -43,7 +43,9 @@ BIOMY = {
     "las": {"kontener": "Workspace/LasPas", "brama": "BramaBagna/Wrota", "miejsce_bramy": "brama_bagna",
             "klucz_bramy": "brama_bagna"},
     "bagno": {"kontener": "Workspace/BagnoPas", "brama": "BramaDzungli/Wrota", "miejsce_bramy": "brama_dzungli",
-              "klucz_bramy": "brama_dzungli"},
+              "klucz_bramy": "brama_dzungli", "kontrola": "swiat.bagno_pas.sprawdz"},
+    "dzungla": {"kontener": "Workspace/DzunglaPas", "brama": "BramaPustyni/Wrota", "miejsce_bramy": "brama_pustyni",
+                "klucz_bramy": "brama_pustyni", "kontrola": "swiat.dzungla_pas.sprawdz"},
 }
 PUNKTY_E = ("Punkty/KamienPowrotu/_Interakcja", "Punkty/StanowiskoJajka/_Interakcja")
 
@@ -88,15 +90,17 @@ def plan_lasu(sciezka):
     return k.group(1).strip() if k else "?"
 
 
-def plan_bagna(P):
-    from swiat.bagno_pas import sprawdz as SB
+def plan_biomu(bid, P):
+    """Część „plan” kontroli długiej mapy biomu (Bagno, Dżungla — ten sam wzór) na planie krótkim."""
+    import importlib
+    SB = importlib.import_module(BIOMY[bid]["kontrola"])
     SB.bledy.clear()
     SB.uwagi.clear()
     T, vmax, n = SB.sprawdz_plan(P)
     for t in SB.bledy:
         if not t.startswith("D-069"):          # liczy przegrody z trzema strefami — po scaleniu jest jedna (klasy_d069)
-            blad("bagno, plan: " + t)
-    klasy_d069("bagno", P)
+            blad("%s, plan: %s" % (bid, t))
+    klasy_d069(bid, P)
     return "%s s, najszybciej %s st/s (%d próbek)" % (l1(T), l1(vmax), n)
 
 
@@ -276,7 +280,7 @@ def main():
     wyn = {}
     for b in W["biomy"]:
         sciezka_planu = os.path.join(b["wyj"], b["plik_planu"])
-        przelot = plan_lasu(sciezka_planu) if b["id"] == "las" else plan_bagna(_json(sciezka_planu))
+        przelot = plan_lasu(sciezka_planu) if b["id"] == "las" else plan_biomu(b["id"], _json(sciezka_planu))
         wyn[b["id"]] = mapa(b, P, sucho=not a.bez_sucho)
         wyn[b["id"]]["przelot"] = przelot
     # 5 i 7. grunt bez dziur i ściany boczne — razem dla wszystkich biomów (też styk lasu i Bagna)

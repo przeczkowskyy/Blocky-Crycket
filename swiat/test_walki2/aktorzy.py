@@ -207,8 +207,11 @@ AKTORZY = [
 # przeciwnicy Bagna (17.11.2026, propozycja; swiat/bagno_pas_gra) — osobny plik, dopisani na KOŃCU tabeli, więc
 # miejsca w galerii aktorów lasu i bohaterów się nie zmieniają
 from aktorzy_bagna import AKTORZY_BAGNA  # noqa: E402
+# przeciwnicy Dżungli (17.11.2026, propozycja; trzeci biom) — osobny plik, dopisani za Bagnem, więc miejsca w galerii
+# aktorów lasu, bohaterów i Bagna się nie zmieniają
+from aktorzy_dzungli import AKTORZY_DZUNGLI  # noqa: E402
 
-AKTORZY = AKTORZY + AKTORZY_BAGNA
+AKTORZY = AKTORZY + AKTORZY_BAGNA + AKTORZY_DZUNGLI
 
 PO_KLUCZU = {a["klucz"]: a for a in AKTORZY}
 

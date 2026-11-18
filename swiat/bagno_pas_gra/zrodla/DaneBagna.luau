@@ -11,7 +11,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "228a77a4c430",
+	skrot = "27f04979a4a4",
 	mapa = {
 		nazwa = "BagnoPas",
 		zrodlo = "znaczniki",
@@ -21,7 +21,7 @@ return {
 		grupaPalisady = "BramaDzungli/Palisada",
 		zapowiedz = "ZapowiedzDzungli",
 	},
-	wejscie = { x1 = 1516, x2 = 1976, z1 = -760, z2 = -640 },
+	wejscie = { x1 = 1516, x2 = 1973.92, z1 = -760, z2 = -640 },
 	przybycie = { punkt = { 1534, 0, -700 }, patrz = { 1558.79, 0, -700 }, wysokosc = 3.2 },
 	przedBrama = { punkt = { 1924, 0, -700 }, patrz = { 1934, 0, -700 } },
 	zaBrama = { punkt = { 1946, 0, -700 }, patrz = { 1974, 0, -700 } },
@@ -40,7 +40,7 @@ return {
 		sciana = { srodek = { 2004, 20, -700 }, rozmiar = { 2, 40, 72 } },
 	},
 	tabliczka = { punkt = { 1952, 0, -700 }, tekst = "DŻUNGLA — WKRÓTCE", podpis = "tu zaczyna się następny biom" },
-	ratunek = { x1 = 1514, x2 = 2116, z1 = -900, z2 = -500, yMin = -30 },
+	ratunek = { x1 = 1514, x2 = 2113.92, z1 = -900, z2 = -500, yMin = -30 },
 	mgla = {
 		x1 = 1514,
 		x2 = 1940,
@@ -92,7 +92,7 @@ return {
 		straznik = "Strażnika Topieli",
 		komunikatBramy = "Brama do Dżungli jest zamknięta — pokonaj Strażnika Topieli.",
 		przekieruj = false,
-		podpisBramy = "Brama do Dżungli otwarta — Dżungla wkrótce",
+		podpisBramy = "Brama do Dżungli otwarta — idź za Topiel",
 		banerBramy = "BRAMA DO DŻUNGLI OTWARTA!",
 		podpisBanera = "Idź za Topiel — dalej Dżungla",
 		podpisBaneraWkrotce = "Za Topielą — Dżungla (wkrótce)",

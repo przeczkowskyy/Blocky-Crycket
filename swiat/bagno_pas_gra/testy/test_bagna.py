@@ -421,8 +421,9 @@ class TestStykow(unittest.TestCase):
                 self.assertTrue(os.path.isfile(os.path.join(REPO, "swiat", "test_walki2", "dane", g + ".json")))
                 self.assertTrue(os.path.isfile(os.path.join(REPO, "swiat", "postacie", A.PO_KLUCZU[g]["model"] + ".py")))
                 self.assertRegex(interfejs, r"\n\t%s = \{" % g)
-        # aktorzy Bagna na końcu tabeli: galeria lasu i bohaterów bez zmian
-        self.assertEqual(klucze[-5:], list(DP["gatunki"])[:0] + [a["klucz"] for a in A.AKTORZY_BAGNA])
+        # aktorzy Bagna jednym blokiem za galerią lasu i bohaterów (za nimi już tylko Dżungla, 18.11.2026)
+        i = klucze.index(A.AKTORZY_BAGNA[0]["klucz"])
+        self.assertEqual(klucze[i:i + 5], [a["klucz"] for a in A.AKTORZY_BAGNA])
 
     def test_7b_mostek_pomijania_zna_bagno(self):
         proto = czytaj(REPO, "swiat", "test_walki2", "zrodla", "SerwerWalki2.server.luau")

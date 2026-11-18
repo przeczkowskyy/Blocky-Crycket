@@ -1,0 +1,1809 @@
+{
+ "opis": "Dżungla jako odcinek wąskiego pasa — PROPOZYCJA (18.11.2026), bez budowy w Studio. Wzór: Bagno-pas (swiat/bagno_pas/plan_bagna.json) przesunięty o +940 st wzdłuż pasa (D-075, D-076, D-077, D-096). Układ pasa jak w lesie: u wzdłuż (ciągnie się od początku lasu), v w poprzek (v > 0 po prawej ręce idącego do bramy), y w górę. Generuje swiat/dzungla_pas/plan.py.",
+ "wersja": 1,
+ "status": "propozycja",
+ "nazwa_robocza": "Gąszcz Pod Parasolem",
+ "bieg": {
+  "walkspeed": 16,
+  "zrodlo": "src/ i default.project.json nie zmieniają Humanoid.WalkSpeed ani StarterPlayer.CharacterWalkSpeed (przeszukane 16.11.2026) → domyślne 16 st/s Roblox; wierzchowce ze Stajni mogą to kiedyś zmienić"
+ },
+ "pas": {
+  "szerokosc": 72,
+  "szerokosc_s": 4.5,
+  "kulisy": 24,
+  "kulisy_opis": "pas 24 st z każdej strony: drzewa dżungli z koronami-parasolami, palmy, figowce, paprocie drzewiaste, kępy liści-parasoli, bambus, liany i wiszące mosty z lian; kolizja tylko na pierwszym rzędzie; niewidzialna ściana na |v| = 38",
+  "u_od": 1874.0,
+  "u_do": 2820.0,
+  "przesuniecie_wzgledem_bagna_u": 940,
+  "u_tyl_opis": "u 1874: palisada bramy do Dżungli Bagna za plecami przybywającego (część Bagna-pasa)",
+  "y": 0,
+  "teren": "płasko (y = 0); woda to tafla bez kolizji 0,2 nad gruntem (brodzi się), dróżka i mostki ≤ 0,45",
+  "sciezka": {
+   "szer": 8,
+   "pts": [
+    [
+     1900,
+     0
+    ],
+    [
+     2840,
+     0
+    ]
+   ],
+   "opis": "Dróżka: ubita ziemia (wierzch 0,36–0,4) po osi pasa, w ruinach i w Kręgu z kamiennych płyt; nad nią tu i ówdzie liście-parasole (wyżej niż 7)"
+  }
+ },
+ "swiat": {
+  "X0": 1100,
+  "Z0": -700,
+  "obrot_y": 0,
+  "wzor": "świat = (X0 + u; y; Z0 + v) — bez obrotu: idąc do bramy gracz idzie w +X świata, v > 0 to +Z (południe)",
+  "kontener": "Workspace/DzunglaPas",
+  "slonce": "słońce miejsca świeci z pn.-zach. świata (swiat/biom_las/PROJEKT.md rozdz. 2; ujęcie u11 miasteczka „na zachód, pod słońce”) → idąc na wschód gracz ma słońce za plecami, z lewej; fronty lokacji oświetlone",
+  "miasteczko": {
+   "srodek": [
+    0,
+    -700
+   ],
+   "zajete": [
+    -293,
+    392,
+    -954,
+    -442
+   ],
+   "opis": "Krzywe Miasteczko — pierwszy blok linii; oś pasa z = −700 to oś miasteczka"
+  },
+  "zajete_inne": [
+   {
+    "id": "baseplate",
+    "xz": [
+     -1024,
+     1024,
+     -1024,
+     1024
+    ],
+    "uwaga": "założone 2048 × 2048 wokół (0; 0) — README lasu: kończy się na z −1024; sprawdzić w Studio"
+   },
+   {
+    "id": "BiomLas (stary las v2)",
+    "xz": [
+     -700,
+     700,
+     -2700,
+     -1300
+    ]
+   },
+   {
+    "id": "TestWalki2 (arena walki v2)",
+    "xz": [
+     -76,
+     64,
+     190,
+     314
+    ]
+   },
+   {
+    "id": "TestWalki (stary prototyp)",
+    "xz": [
+     134,
+     246,
+     -52,
+     52
+    ]
+   }
+  ],
+  "polowa_szerokosci_z_tlem": 90,
+  "sasiad_bagno": "Workspace/BagnoPas: części do u 1906 (kulisy, tło, płyta, Krzywa Kładka do u 1902, palisada bramy u 1872–1877); grupa ZapowiedzDzungli (u 1876–1906, niewidzialna ściana u 1905) do usunięcia przed budową Dżungli"
+ },
+ "przegrody": [
+  {
+   "id": "wejscie",
+   "nazwa": "Taras Przybycia",
+   "u_od": 1880,
+   "u_do": 1944,
+   "kolor": "8FC77A",
+   "opis": "przybycie teleportem i z Bagna przez bramę; kamienny taras ze znakiem, stanowisko jajka, Kamień Powrotu; strefa spokoju; tu startuje przelot",
+   "pod": [],
+   "strefy": []
+  },
+  {
+   "id": "zwijogony",
+   "nazwa": "Polana Zwijogonów",
+   "u_od": 1956,
+   "u_do": 2148,
+   "kolor": "A6D77A",
+   "opis": "trzy słoneczne polanki w paprociach pod liśćmi-parasolami, plamy światła; Zwijogony poziomów rosnących",
+   "pod": [
+    {
+     "id": "polana_paproci",
+     "nazwa": "Polana Paproci",
+     "u_od": 1956,
+     "u_do": 2020
+    },
+    {
+     "id": "polana_slonca",
+     "nazwa": "Polana Słońca",
+     "u_od": 2020,
+     "u_do": 2084
+    },
+    {
+     "id": "polana_pnaczy",
+     "nazwa": "Polana Pnączy",
+     "u_od": 2084,
+     "u_do": 2148
+    }
+   ],
+   "strefy": [
+    "z1",
+    "z2",
+    "z3"
+   ]
+  },
+  {
+   "id": "gebokwiaty",
+   "nazwa": "Kwietnik Gębokwiatów",
+   "u_od": 2168,
+   "u_do": 2360,
+   "kolor": "E7A07A",
+   "opis": "ciemna, wilgotna ziemia z grządkami czerwonych i żółtych kwiatów, świecące kwiaty, niskie żywopłoty kwiatowe 0,8 dzielą trzy kojce (przerwa 24 na środku); Gębokwiaty",
+   "pod": [
+    {
+     "id": "czerwone_grzadki",
+     "nazwa": "Czerwone Grządki",
+     "u_od": 2168,
+     "u_do": 2232
+    },
+    {
+     "id": "zlote_kielichy",
+     "nazwa": "Złote Kielichy",
+     "u_od": 2232,
+     "u_do": 2296
+    },
+    {
+     "id": "swietlisty_kwietnik",
+     "nazwa": "Świetlisty Kwietnik",
+     "u_od": 2296,
+     "u_do": 2360
+    }
+   ],
+   "strefy": [
+    "g1",
+    "g2",
+    "g3"
+   ]
+  },
+  {
+   "id": "kokosy",
+   "nazwa": "Gaj Kokosów",
+   "u_od": 2376,
+   "u_do": 2568,
+   "kolor": "D9B27E",
+   "opis": "piaszczysta ziemia pod palmami, stosy kokosów, Kaskada Gaju pod prawą ścianą; Kokosowi Siłacze (ciężcy, mniej naraz)",
+   "pod": [
+    {
+     "id": "palmowy_zagajnik",
+     "nazwa": "Palmowy Zagajnik",
+     "u_od": 2376,
+     "u_do": 2440
+    },
+    {
+     "id": "kokosowa_lacha",
+     "nazwa": "Kokosowa Łacha",
+     "u_od": 2440,
+     "u_do": 2504
+    },
+    {
+     "id": "gaj_starych_palm",
+     "nazwa": "Gaj Starych Palm",
+     "u_od": 2504,
+     "u_do": 2568
+    }
+   ],
+   "strefy": [
+    "o1",
+    "o2",
+    "o3"
+   ]
+  },
+  {
+   "id": "ruiny",
+   "nazwa": "Ruiny Pancernika",
+   "u_od": 2584,
+   "u_do": 2684,
+   "kolor": "B5BDA3",
+   "opis": "spękana kamienna posadzka, złamane kolumny i głowa posągu, Zapadła Kaplica pod lewą ścianą; jeden Pancernik Ruin (rzadki, twardy)",
+   "pod": [],
+   "strefy": [
+    "t1"
+   ]
+  },
+  {
+   "id": "krag",
+   "nazwa": "Krąg Stu Lian",
+   "u_od": 2700,
+   "u_do": 2820,
+   "kolor": "8ED3C9",
+   "opis": "okrągła kamienna posadzka na wyspie w turkusowej sadzawce, krąg omszałych filarów z lianami, Świątynia Stu Lian; Wąż Stu Lian; za nim brama do Pustyni",
+   "pod": [],
+   "strefy": [
+    "straznik"
+   ]
+  }
+ ],
+ "przejscia": [
+  {
+   "id": "turkusowy_strumyk",
+   "nazwa": "Turkusowy strumyk",
+   "miedzy": [
+    "wejscie",
+    "zwijogony"
+   ],
+   "u_od": 1944,
+   "u_do": 1956,
+   "otwarcie": [
+    -36,
+    36
+   ],
+   "wys_w_otwarciu": 1.6,
+   "wys_reszty": 0,
+   "blokuje": false,
+   "woda": [
+    1946,
+    1954
+   ],
+   "kladka": [
+    -6,
+    6
+   ],
+   "opis": "płytki turkusowy strumyk w poprzek pasa (woda bez kolizji, przejdzie się wszędzie), mostek z desek 12 szer. na osi, kamienie brzegu"
+  },
+  {
+   "id": "mostek_nad_kaskada",
+   "nazwa": "Mostek nad Kaskadą",
+   "miedzy": [
+    "zwijogony",
+    "gebokwiaty"
+   ],
+   "u_od": 2148,
+   "u_do": 2168,
+   "otwarcie": [
+    -36,
+    36
+   ],
+   "wys_w_otwarciu": 1.6,
+   "wys_reszty": 0,
+   "blokuje": false,
+   "woda": [
+    2151,
+    2165
+   ],
+   "kladka": [
+    -6,
+    6
+   ],
+   "opis": "szerszy, głębszy strumień (bez kolizji) spływa kaskadami ze skalnych progów w kulisach; kamienny mostek 12 z balustradą do 1,4"
+  },
+  {
+   "id": "bambusowa_przesieka",
+   "nazwa": "Bambusowa przesieka",
+   "miedzy": [
+    "gebokwiaty",
+    "kokosy"
+   ],
+   "u_od": 2360,
+   "u_do": 2376,
+   "otwarcie": [
+    -16,
+    16
+   ],
+   "wys_w_otwarciu": 0,
+   "wys_reszty": 6,
+   "blokuje": false,
+   "opis": "ściany bambusa 5–6 wys. od obu ścian zwężają przejście do 32"
+  },
+  {
+   "id": "kamienne_schody",
+   "nazwa": "Omszałe schody",
+   "miedzy": [
+    "kokosy",
+    "ruiny"
+   ],
+   "u_od": 2568,
+   "u_do": 2584,
+   "otwarcie": [
+    -14,
+    14
+   ],
+   "wys_w_otwarciu": 0.4,
+   "wys_reszty": 9,
+   "blokuje": false,
+   "opis": "mur ruin z omszałych bloków 6–9 wys. od ścian, po murze pną się kamienne schody; przejście 28 z niskim kamiennym progiem (0,4) i kamieniami z jarzącym się znakiem (ostrzeżenie)"
+  },
+  {
+   "id": "brama_posagow",
+   "nazwa": "Brama Posągów",
+   "miedzy": [
+    "ruiny",
+    "krag"
+   ],
+   "u_od": 2684,
+   "u_do": 2700,
+   "otwarcie": [
+    -14,
+    14
+   ],
+   "wys_w_otwarciu": 0,
+   "wys_reszty": 1.2,
+   "blokuje": false,
+   "posagi": [
+    [
+     2692,
+     -16
+    ],
+    [
+     2692,
+     16
+    ]
+   ],
+   "opis": "dwa kamienne posągi strażników (12) z jarzącymi się oczami po bokach osi, reszta to niskie korzenie i kamienie ≤ 1,2; widać Krąg"
+  }
+ ],
+ "miejsca": [
+  {
+   "id": "przybycie",
+   "nazwa": "Przybycie (teleport i wejście z Bagna)",
+   "u": 1894,
+   "v": 0,
+   "y": 0,
+   "patrz": [
+    1940,
+    0
+   ],
+   "opis": "punkt przybycia „dzungla” z planu Bagna; twarzą wzdłuż pasa"
+  },
+  {
+   "id": "jajko",
+   "nazwa": "Stanowisko jajka (inkubator Dżungli)",
+   "u": 1912,
+   "v": 22,
+   "y": 0,
+   "r": 6,
+   "e": true,
+   "opis": "to samo stanowisko co w lesie i Bagnie (podest 12 × 12 z punktem E) na kamiennej posadzce — jajko Dżungli zrobi agent petów (D-059, D-060)"
+  },
+  {
+   "id": "kamien_powrotu",
+   "nazwa": "Kamień Powrotu",
+   "u": 1888,
+   "v": -24,
+   "y": 0,
+   "r": 3,
+   "e": true,
+   "opis": "E → miasteczko (jak w lesie i Bagnie)"
+  },
+  {
+   "id": "brama_bagna",
+   "nazwa": "Brama do Dżungli (Bagno-pas)",
+   "u": 1874.0,
+   "v": 0,
+   "y": 0,
+   "otwarcie": [
+    -8,
+    8
+   ],
+   "e": false,
+   "opis": "palisada Bagna za plecami przybywającego (Workspace/BagnoPas/BramaDzungli) — Dżungla jej nie buduje"
+  },
+  {
+   "id": "brama_pustyni",
+   "nazwa": "Brama do Pustyni",
+   "u": 2814.0,
+   "v": 0,
+   "y": 0,
+   "otwarcie": [
+    -8,
+    8
+   ],
+   "e": false,
+   "opis": "mur ruin z omszałych bloków przez cały pas, wrota 16 szer. między filarami ze znakiem słońca; zamknięte dla gracza, póki nie pokona Węża Stu Lian"
+  },
+  {
+   "id": "odrodzenie",
+   "nazwa": "Odrodzenie po przegranej",
+   "u": 1894,
+   "v": 0,
+   "y": 0,
+   "opis": "jak w lesie i Bagnie: na razie walka wraca gracza w miejsce startu walki"
+  }
+ ],
+ "strefy_spokoju": [
+  {
+   "id": "wejscie",
+   "u": [
+    1876,
+    1944
+   ],
+   "v": [
+    -36,
+    36
+   ],
+   "opis": "cały Taras Przybycia"
+  },
+  {
+   "id": "przedbramie",
+   "u": [
+    2788,
+    2820
+   ],
+   "v": [
+    -36,
+    36
+   ],
+   "opis": "za Kręgiem Stu Lian, przed bramą do Pustyni"
+  }
+ ],
+ "punkty_orientacyjne": [
+  {
+   "id": "chatka_na_drzewie",
+   "nazwa": "Chatka na Drzewie",
+   "u": 2084,
+   "v": 30,
+   "r": 6,
+   "wys": 25,
+   "opis": "chatka z liściastym dachem na pomoście wokół pnia olbrzymiego drzewa, drabinka z lian, świecące okno — widać ją z wejścia"
+  },
+  {
+   "id": "wielki_kielich",
+   "nazwa": "Wielki Kielich",
+   "u": 2296,
+   "v": 32,
+   "r": 5,
+   "wys": 21,
+   "korona": {
+    "r": 8,
+    "od": 13
+   },
+   "opis": "olbrzymi kwiat na grubej łodydze: kielich z ośmiu czerwonych płatków r 8 na wys. 13–21, złota tarcza, jarzące się pręciki"
+  },
+  {
+   "id": "kaskada_gaju",
+   "nazwa": "Kaskada Gaju",
+   "u": 2504,
+   "v": 30,
+   "r": 7,
+   "wys": 25,
+   "opis": "omszałe urwisko w prawych kulisach, z którego spada wodospad do turkusowej sadzawki pod ścianą"
+  },
+  {
+   "id": "zapadla_kaplica",
+   "nazwa": "Zapadła Kaplica",
+   "u": 2664,
+   "v": -30,
+   "r": 7,
+   "wys": 17,
+   "opis": "ruina kamiennej kaplicy z zapadniętym dachem i drzewem na szczycie, ciemne wejście z jarzącym się znakiem — dom Pancernika Ruin"
+  },
+  {
+   "id": "posag_lewy",
+   "nazwa": "Posąg Strażnika (lewy)",
+   "u": 2692,
+   "v": -16,
+   "r": 2.5,
+   "wys": 13
+  },
+  {
+   "id": "posag_prawy",
+   "nazwa": "Posąg Strażnika (prawy)",
+   "u": 2692,
+   "v": 16,
+   "r": 2.5,
+   "wys": 13
+  },
+  {
+   "id": "swiatynia_stu_lian",
+   "nazwa": "Świątynia Stu Lian",
+   "u": 2788,
+   "v": 27,
+   "r": 9,
+   "wys": 34,
+   "opis": "schodkowa świątynia z czterech tarasów (16 → 7 st) z kapliczką i jarzącym się znakiem na szczycie (ok. 34) — cel widoczny wzdłuż całej Dżungli; stoi z boku osi"
+  }
+ ],
+ "zasady": {
+  "walke_zaczyna": "gracz: podpowiedź E w promieniu 8 (na telefonie przycisk); potwór nigdy nie atakuje sam",
+  "smycz": 10,
+  "odstep_min": 25,
+  "blokada_domu": 12,
+  "dom_od_wezlow": [
+   12,
+   20
+  ],
+  "plac_walki_r": 12,
+  "skracanie": "czas = baza / (1 + 0,15 × (gracze w strefie − 1)), najmniej 10 s",
+  "skalowanie": "naraz to liczba przy ok. 8 graczach; mniej graczy → mniej (najmniej połowa), więcej → do max",
+  "predkosc": {
+   "Zwijogon": 9,
+   "Gębokwiat": 4,
+   "Kokosowy Siłacz": 6,
+   "Pancernik Ruin": 5
+  },
+  "pojemnosc": "max ≤ obwód trasy / 25; wataha liczy się jako jeden odcinek (miejsca − 1) × odstęp w grupie + 25",
+  "zmiany_wzgledem_lasu_v2": "domy 12–20 od węzłów zamiast 35–50 i blokada domu 12 zamiast 18 (pas ma 72 szer., domy stoją pod ścianą na |v| = 34); trasa = pętla 8 węzłów w kojcu; odrodzenie krótsze (slime 12, muchomornik 15, wilk 18 s) — żeby gracz nie czekał"
+ },
+ "rozmiary": {
+  "Zwijogon": {
+   "wys": 3.5,
+   "dl": 5.4
+  },
+  "Gębokwiat": {
+   "wys": 5.1,
+   "szer": 3.7
+  },
+  "Kokosowy Siłacz": {
+   "wys": 7.1,
+   "szer": 6.4
+  },
+  "Pancernik Ruin": {
+   "wys": 4.4,
+   "dl": 7.4
+  },
+  "Wąż Stu Lian": {
+   "wys": 17.3,
+   "szer": 11.0
+  }
+ },
+ "rozmiary_zrodlo": "swiat/test_walki2/dane/<model>.json → wymiary (wysokosc, glebokosc = dl, szerokosc = szer)",
+ "potwory_opis": {
+  "Zwijogon": {
+   "klasa": "Zwiadowca",
+   "ranga": "zwykły",
+   "przegroda": "zwijogony",
+   "wys": 3.5,
+   "dl": 5.4,
+   "model": "zwijogon",
+   "ksztalt": "kameleon z liści na pazurzastych łapach: wąski, wysoki tułów jak liść na sztorc, grzebień z liściowych ząbków, łeb z hełmem, oczy na wieżyczkach, ogon zwinięty w ślimak",
+   "kolor": "zieleń 2FA34A / 6CCB4A, żółty pas wzdłuż boku i czerwona krawędź hełmu (E5392B / F2B030), turkusowy pierścień oka 2EC4B6, jasne pazury",
+   "walka": "szybki i zwinny: często unika; „rozszarpanie” (cięcie na krzyż) rani krwawieniem, „skupienie” — kameleon wtapia się w liście i celuje",
+   "dom": "szałas z dwóch olbrzymich liści pod ścianą (ciemne wejście, paproć)",
+   "predkosc": 9,
+   "odrodzenie_s": 12
+  },
+  "Gębokwiat": {
+   "klasa": "Mag",
+   "ranga": "zwykły",
+   "przegroda": "gebokwiaty",
+   "wys": 5.1,
+   "szer": 3.7,
+   "model": "gebokwiat",
+   "ksztalt": "wielki kwiat z paszczą na krótkich korzeniach-nóżkach: tarcza ośmiu czerwonych płatków na grubej łodydze, w środku żółta tarcza z paszczą i oczami, dwa liście-ręce, cebulka",
+   "kolor": "płatki E5392B z żółtymi czubkami, tarcza F2B030, łodyga i liście 2FA34A / 6CCB4A, korzenie 5C3A22",
+   "walka": "kłapnięcie paszczą jest słabe, ale usypiający pyłek (umiejętność silnika `lodowy_pocisk` w szacie pyłku) rani magią i spowalnia; mało życia",
+   "dom": "grządka ze świecącym pąkiem i sadzonkami pod ścianą",
+   "predkosc": 4,
+   "odrodzenie_s": 15
+  },
+  "Kokosowy Siłacz": {
+   "klasa": "Wojownik",
+   "ranga": "zwykły",
+   "przegroda": "kokosy",
+   "wys": 7.1,
+   "szer": 6.4,
+   "model": "kokosowy_silacz",
+   "ksztalt": "krępa małpa-siłacz: ogromne barki, łeb nisko, długie ręce z kokosami w pięściach, pas z liany ze złotą klamrą-kwiatem, opaska z liści",
+   "kolor": "futro 5C3A22, pierś i twarz B07A44 / D9A066, kokosy brązowe, liście 2FA34A / 6CCB4A, kwiat E5392B",
+   "walka": "ciężki i twardy: gruba skóra (Pancerz), sierp kokosem, „cięcie” oboma kokosami z góry; rzadko unika",
+   "dom": "legowisko z liści pod ściętą palmą i stos kokosów",
+   "predkosc": 6,
+   "odrodzenie_s": 18
+  },
+  "Pancernik Ruin": {
+   "klasa": "Wojownik",
+   "ranga": "rzadki",
+   "przegroda": "ruiny",
+   "wys": 4.4,
+   "dl": 7.4,
+   "model": "pancernik_ruin",
+   "ksztalt": "pancernik obrośnięty płytami starego kamienia z rytami i mchem, świecące turkusowe szczeliny, ryj w kamiennym hełmie, ogon z kamiennych pierścieni",
+   "kolor": "kamień 8E8A7E w trzech odcieniach, mech 6CCB4A / 2FA34A, skóra B07A44, szczeliny turkus 2EC4B6 (Neon)",
+   "walka": "rzadki i twardy: szarża kamiennym hełmem rani fizycznie, „kamienna skóra” zwija go w kulę (tarcza na siebie) — dłuższa walka",
+   "dom": "Zapadła Kaplica pod lewą ścianą (nora w gruzach obok)",
+   "predkosc": 5,
+   "odrodzenie_s": 150
+  },
+  "Wąż Stu Lian": {
+   "klasa": "strażnik (obrażenia pół na pół: fizyczne i magiczne)",
+   "ranga": "strażnik",
+   "przegroda": "krag",
+   "wys": 17.3,
+   "szer": 11.0,
+   "model": "waz_stu_lian",
+   "ksztalt": "ogromny wąż spleciony z lian i pnączy, zwinięty w spiralę, szyja łukiem, na głowie wachlarz siedmiu czerwonych płatków jak kaptur",
+   "kolor": "liany 2FA34A / 1F7A36 / 6CCB4A, pasma drewna 5C3A22, kaptur E5392B / F2B030, krople rosy 2EC4B6",
+   "walka": "dużo życia; ukąszenie z szarpaniem (fizyczne, krwawienie), plucie jadem (magia, trucizna)",
+   "dom": "kamienny krąg na wyspie w turkusowej sadzawce",
+   "predkosc": 0,
+   "odrodzenie_s": 120
+  }
+ },
+ "nacisk": "zwinni przeciwnicy, którzy często unikają i ranią krwawieniem — opłaca się Szczęście (krytyk skraca walkę) i Kondycja; Kokosowy Siłacz i Pancernik są twardzi fizycznie, Gębokwiat rani magią (D-069)",
+ "strefy": [
+  {
+   "id": "z1",
+   "podbiom": "zwijogony",
+   "pod": "polana_paproci",
+   "potwor": "Zwijogon",
+   "klasa": "Zwiadowca",
+   "wariant": null,
+   "model": "zwijogon",
+   "poziomy": [
+    17,
+    17
+   ],
+   "poziomy_rowny": [
+    25,
+    26
+   ],
+   "poziomy_status": "propozycja: `poziomy` = 17–23 rosnąco przez przegrody (zlecenie 18.11.2026; gra i tak nadpisuje poziomy swoimi — Bagno ma POZIOMY_STREF w swiat/bagno_pas_gra/generuj_dane.py), `poziomy_rowny` = tempo równe z swiat/biomy/PLAN_BIOMOW.md (Dżungla 25–35)",
+   "naraz": 4,
+   "max": 5,
+   "srodek": [
+    1988.0,
+    0.0
+   ],
+   "r": 28,
+   "y": 0,
+   "pole": [
+    1960,
+    2016,
+    -34,
+    34
+   ],
+   "dom": {
+    "opis": "szałas z dwóch olbrzymich liści pod ścianą (ciemne wejście, paproć)",
+    "pts": [
+     [
+      1982.0,
+      -34.0
+     ],
+     [
+      1994.0,
+      34.0
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     2006.0,
+     0.0
+    ],
+    [
+     2004.3,
+     17.5
+    ],
+    [
+     1988.0,
+     22.0
+    ],
+    [
+     1971.7,
+     17.5
+    ],
+    [
+     1970.0,
+     0.0
+    ],
+    [
+     1971.7,
+     -17.5
+    ],
+    [
+     1988.0,
+     -22.0
+    ],
+    [
+     2004.3,
+     -17.5
+    ]
+   ],
+   "liczba_wezlow": 8,
+   "odrodzenie_s": 12,
+   "zachowanie": "przemyka susami po polanie, przywiera do ziemi i krąży oczami; odwraca się do gracza w promieniu 18",
+   "grupa": null,
+   "obwod": 138.0,
+   "pojemnosc": 5
+  },
+  {
+   "id": "z2",
+   "podbiom": "zwijogony",
+   "pod": "polana_slonca",
+   "potwor": "Zwijogon",
+   "klasa": "Zwiadowca",
+   "wariant": null,
+   "model": "zwijogon",
+   "poziomy": [
+    17,
+    18
+   ],
+   "poziomy_rowny": [
+    26,
+    27
+   ],
+   "poziomy_status": "propozycja: `poziomy` = 17–23 rosnąco przez przegrody (zlecenie 18.11.2026; gra i tak nadpisuje poziomy swoimi — Bagno ma POZIOMY_STREF w swiat/bagno_pas_gra/generuj_dane.py), `poziomy_rowny` = tempo równe z swiat/biomy/PLAN_BIOMOW.md (Dżungla 25–35)",
+   "naraz": 4,
+   "max": 5,
+   "srodek": [
+    2052.0,
+    0.0
+   ],
+   "r": 28,
+   "y": 0,
+   "pole": [
+    2024,
+    2080,
+    -34,
+    34
+   ],
+   "dom": {
+    "opis": "szałas z dwóch olbrzymich liści pod ścianą (ciemne wejście, paproć)",
+    "pts": [
+     [
+      2046.0,
+      -34.0
+     ],
+     [
+      2058.0,
+      34.0
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     2070.0,
+     0.0
+    ],
+    [
+     2068.3,
+     17.5
+    ],
+    [
+     2052.0,
+     22.0
+    ],
+    [
+     2035.7,
+     17.5
+    ],
+    [
+     2034.0,
+     0.0
+    ],
+    [
+     2035.7,
+     -17.5
+    ],
+    [
+     2052.0,
+     -22.0
+    ],
+    [
+     2068.3,
+     -17.5
+    ]
+   ],
+   "liczba_wezlow": 8,
+   "odrodzenie_s": 12,
+   "zachowanie": "przemyka susami po polanie, przywiera do ziemi i krąży oczami; odwraca się do gracza w promieniu 18",
+   "grupa": null,
+   "obwod": 138.0,
+   "pojemnosc": 5
+  },
+  {
+   "id": "z3",
+   "podbiom": "zwijogony",
+   "pod": "polana_pnaczy",
+   "potwor": "Zwijogon",
+   "klasa": "Zwiadowca",
+   "wariant": null,
+   "model": "zwijogon",
+   "poziomy": [
+    18,
+    18
+   ],
+   "poziomy_rowny": [
+    27,
+    28
+   ],
+   "poziomy_status": "propozycja: `poziomy` = 17–23 rosnąco przez przegrody (zlecenie 18.11.2026; gra i tak nadpisuje poziomy swoimi — Bagno ma POZIOMY_STREF w swiat/bagno_pas_gra/generuj_dane.py), `poziomy_rowny` = tempo równe z swiat/biomy/PLAN_BIOMOW.md (Dżungla 25–35)",
+   "naraz": 4,
+   "max": 5,
+   "srodek": [
+    2116.0,
+    0.0
+   ],
+   "r": 28,
+   "y": 0,
+   "pole": [
+    2088,
+    2144,
+    -34,
+    34
+   ],
+   "dom": {
+    "opis": "szałas z dwóch olbrzymich liści pod ścianą (ciemne wejście, paproć)",
+    "pts": [
+     [
+      2110.0,
+      -34.0
+     ],
+     [
+      2122.0,
+      34.0
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     2134.0,
+     0.0
+    ],
+    [
+     2132.3,
+     17.5
+    ],
+    [
+     2116.0,
+     22.0
+    ],
+    [
+     2099.7,
+     17.5
+    ],
+    [
+     2098.0,
+     0.0
+    ],
+    [
+     2099.7,
+     -17.5
+    ],
+    [
+     2116.0,
+     -22.0
+    ],
+    [
+     2132.3,
+     -17.5
+    ]
+   ],
+   "liczba_wezlow": 8,
+   "odrodzenie_s": 12,
+   "zachowanie": "przemyka susami po polanie, przywiera do ziemi i krąży oczami; odwraca się do gracza w promieniu 18",
+   "grupa": null,
+   "obwod": 138.0,
+   "pojemnosc": 5
+  },
+  {
+   "id": "g1",
+   "podbiom": "gebokwiaty",
+   "pod": "czerwone_grzadki",
+   "potwor": "Gębokwiat",
+   "klasa": "Mag",
+   "wariant": null,
+   "model": "gebokwiat",
+   "poziomy": [
+    19,
+    19
+   ],
+   "poziomy_rowny": [
+    28,
+    29
+   ],
+   "poziomy_status": "propozycja: `poziomy` = 17–23 rosnąco przez przegrody (zlecenie 18.11.2026; gra i tak nadpisuje poziomy swoimi — Bagno ma POZIOMY_STREF w swiat/bagno_pas_gra/generuj_dane.py), `poziomy_rowny` = tempo równe z swiat/biomy/PLAN_BIOMOW.md (Dżungla 25–35)",
+   "naraz": 4,
+   "max": 5,
+   "srodek": [
+    2200.0,
+    0.0
+   ],
+   "r": 28,
+   "y": 0,
+   "pole": [
+    2172,
+    2228,
+    -34,
+    34
+   ],
+   "dom": {
+    "opis": "grządka ze świecącym pąkiem i sadzonkami pod ścianą",
+    "pts": [
+     [
+      2194.0,
+      -34.0
+     ],
+     [
+      2206.0,
+      34.0
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     2218.0,
+     0.0
+    ],
+    [
+     2216.3,
+     17.5
+    ],
+    [
+     2200.0,
+     22.0
+    ],
+    [
+     2183.7,
+     17.5
+    ],
+    [
+     2182.0,
+     0.0
+    ],
+    [
+     2183.7,
+     -17.5
+    ],
+    [
+     2200.0,
+     -22.0
+    ],
+    [
+     2216.3,
+     -17.5
+    ]
+   ],
+   "liczba_wezlow": 8,
+   "odrodzenie_s": 15,
+   "zachowanie": "drepcze na korzeniach między grządkami, przystaje i kołysze płatkami",
+   "grupa": null,
+   "obwod": 138.0,
+   "pojemnosc": 5
+  },
+  {
+   "id": "g2",
+   "podbiom": "gebokwiaty",
+   "pod": "zlote_kielichy",
+   "potwor": "Gębokwiat",
+   "klasa": "Mag",
+   "wariant": null,
+   "model": "gebokwiat",
+   "poziomy": [
+    19,
+    20
+   ],
+   "poziomy_rowny": [
+    29,
+    30
+   ],
+   "poziomy_status": "propozycja: `poziomy` = 17–23 rosnąco przez przegrody (zlecenie 18.11.2026; gra i tak nadpisuje poziomy swoimi — Bagno ma POZIOMY_STREF w swiat/bagno_pas_gra/generuj_dane.py), `poziomy_rowny` = tempo równe z swiat/biomy/PLAN_BIOMOW.md (Dżungla 25–35)",
+   "naraz": 4,
+   "max": 5,
+   "srodek": [
+    2264.0,
+    0.0
+   ],
+   "r": 28,
+   "y": 0,
+   "pole": [
+    2236,
+    2292,
+    -34,
+    34
+   ],
+   "dom": {
+    "opis": "grządka ze świecącym pąkiem i sadzonkami pod ścianą",
+    "pts": [
+     [
+      2258.0,
+      -34.0
+     ],
+     [
+      2270.0,
+      34.0
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     2282.0,
+     0.0
+    ],
+    [
+     2280.3,
+     17.5
+    ],
+    [
+     2264.0,
+     22.0
+    ],
+    [
+     2247.7,
+     17.5
+    ],
+    [
+     2246.0,
+     0.0
+    ],
+    [
+     2247.7,
+     -17.5
+    ],
+    [
+     2264.0,
+     -22.0
+    ],
+    [
+     2280.3,
+     -17.5
+    ]
+   ],
+   "liczba_wezlow": 8,
+   "odrodzenie_s": 15,
+   "zachowanie": "drepcze na korzeniach między grządkami, przystaje i kołysze płatkami",
+   "grupa": null,
+   "obwod": 138.0,
+   "pojemnosc": 5
+  },
+  {
+   "id": "g3",
+   "podbiom": "gebokwiaty",
+   "pod": "swietlisty_kwietnik",
+   "potwor": "Gębokwiat",
+   "klasa": "Mag",
+   "wariant": null,
+   "model": "gebokwiat",
+   "poziomy": [
+    20,
+    20
+   ],
+   "poziomy_rowny": [
+    30,
+    31
+   ],
+   "poziomy_status": "propozycja: `poziomy` = 17–23 rosnąco przez przegrody (zlecenie 18.11.2026; gra i tak nadpisuje poziomy swoimi — Bagno ma POZIOMY_STREF w swiat/bagno_pas_gra/generuj_dane.py), `poziomy_rowny` = tempo równe z swiat/biomy/PLAN_BIOMOW.md (Dżungla 25–35)",
+   "naraz": 4,
+   "max": 5,
+   "srodek": [
+    2328.0,
+    0.0
+   ],
+   "r": 28,
+   "y": 0,
+   "pole": [
+    2300,
+    2356,
+    -34,
+    34
+   ],
+   "dom": {
+    "opis": "grządka ze świecącym pąkiem i sadzonkami pod ścianą",
+    "pts": [
+     [
+      2322.0,
+      -34.0
+     ],
+     [
+      2334.0,
+      34.0
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     2346.0,
+     0.0
+    ],
+    [
+     2344.3,
+     17.5
+    ],
+    [
+     2328.0,
+     22.0
+    ],
+    [
+     2311.7,
+     17.5
+    ],
+    [
+     2310.0,
+     0.0
+    ],
+    [
+     2311.7,
+     -17.5
+    ],
+    [
+     2328.0,
+     -22.0
+    ],
+    [
+     2344.3,
+     -17.5
+    ]
+   ],
+   "liczba_wezlow": 8,
+   "odrodzenie_s": 15,
+   "zachowanie": "drepcze na korzeniach między grządkami, przystaje i kołysze płatkami",
+   "grupa": null,
+   "obwod": 138.0,
+   "pojemnosc": 5
+  },
+  {
+   "id": "o1",
+   "podbiom": "kokosy",
+   "pod": "palmowy_zagajnik",
+   "potwor": "Kokosowy Siłacz",
+   "klasa": "Wojownik",
+   "wariant": null,
+   "model": "kokosowy_silacz",
+   "poziomy": [
+    21,
+    21
+   ],
+   "poziomy_rowny": [
+    31,
+    32
+   ],
+   "poziomy_status": "propozycja: `poziomy` = 17–23 rosnąco przez przegrody (zlecenie 18.11.2026; gra i tak nadpisuje poziomy swoimi — Bagno ma POZIOMY_STREF w swiat/bagno_pas_gra/generuj_dane.py), `poziomy_rowny` = tempo równe z swiat/biomy/PLAN_BIOMOW.md (Dżungla 25–35)",
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    2408.0,
+    0.0
+   ],
+   "r": 28,
+   "y": 0,
+   "pole": [
+    2380,
+    2436,
+    -34,
+    34
+   ],
+   "dom": {
+    "opis": "legowisko z liści pod ściętą palmą i stos kokosów",
+    "pts": [
+     [
+      2402.0,
+      -34.0
+     ],
+     [
+      2414.0,
+      34.0
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     2426.0,
+     0.0
+    ],
+    [
+     2424.3,
+     17.5
+    ],
+    [
+     2408.0,
+     22.0
+    ],
+    [
+     2391.7,
+     17.5
+    ],
+    [
+     2390.0,
+     0.0
+    ],
+    [
+     2391.7,
+     -17.5
+    ],
+    [
+     2408.0,
+     -22.0
+    ],
+    [
+     2424.3,
+     -17.5
+    ]
+   ],
+   "liczba_wezlow": 8,
+   "odrodzenie_s": 18,
+   "zachowanie": "chodzi ciężko po gaju, przystaje i stuka kokosami",
+   "grupa": null,
+   "obwod": 138.0,
+   "pojemnosc": 5
+  },
+  {
+   "id": "o2",
+   "podbiom": "kokosy",
+   "pod": "kokosowa_lacha",
+   "potwor": "Kokosowy Siłacz",
+   "klasa": "Wojownik",
+   "wariant": null,
+   "model": "kokosowy_silacz",
+   "poziomy": [
+    21,
+    22
+   ],
+   "poziomy_rowny": [
+    32,
+    33
+   ],
+   "poziomy_status": "propozycja: `poziomy` = 17–23 rosnąco przez przegrody (zlecenie 18.11.2026; gra i tak nadpisuje poziomy swoimi — Bagno ma POZIOMY_STREF w swiat/bagno_pas_gra/generuj_dane.py), `poziomy_rowny` = tempo równe z swiat/biomy/PLAN_BIOMOW.md (Dżungla 25–35)",
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    2472.0,
+    0.0
+   ],
+   "r": 28,
+   "y": 0,
+   "pole": [
+    2444,
+    2500,
+    -34,
+    34
+   ],
+   "dom": {
+    "opis": "legowisko z liści pod ściętą palmą i stos kokosów",
+    "pts": [
+     [
+      2466.0,
+      -34.0
+     ],
+     [
+      2478.0,
+      34.0
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     2490.0,
+     0.0
+    ],
+    [
+     2488.3,
+     17.5
+    ],
+    [
+     2472.0,
+     22.0
+    ],
+    [
+     2455.7,
+     17.5
+    ],
+    [
+     2454.0,
+     0.0
+    ],
+    [
+     2455.7,
+     -17.5
+    ],
+    [
+     2472.0,
+     -22.0
+    ],
+    [
+     2488.3,
+     -17.5
+    ]
+   ],
+   "liczba_wezlow": 8,
+   "odrodzenie_s": 18,
+   "zachowanie": "chodzi ciężko po gaju, przystaje i stuka kokosami",
+   "grupa": null,
+   "obwod": 138.0,
+   "pojemnosc": 5
+  },
+  {
+   "id": "o3",
+   "podbiom": "kokosy",
+   "pod": "gaj_starych_palm",
+   "potwor": "Kokosowy Siłacz",
+   "klasa": "Wojownik",
+   "wariant": null,
+   "model": "kokosowy_silacz",
+   "poziomy": [
+    22,
+    22
+   ],
+   "poziomy_rowny": [
+    33,
+    34
+   ],
+   "poziomy_status": "propozycja: `poziomy` = 17–23 rosnąco przez przegrody (zlecenie 18.11.2026; gra i tak nadpisuje poziomy swoimi — Bagno ma POZIOMY_STREF w swiat/bagno_pas_gra/generuj_dane.py), `poziomy_rowny` = tempo równe z swiat/biomy/PLAN_BIOMOW.md (Dżungla 25–35)",
+   "naraz": 3,
+   "max": 4,
+   "srodek": [
+    2536.0,
+    0.0
+   ],
+   "r": 28,
+   "y": 0,
+   "pole": [
+    2508,
+    2564,
+    -34,
+    34
+   ],
+   "dom": {
+    "opis": "legowisko z liści pod ściętą palmą i stos kokosów",
+    "pts": [
+     [
+      2530.0,
+      -34.0
+     ],
+     [
+      2542.0,
+      34.0
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     2554.0,
+     0.0
+    ],
+    [
+     2552.3,
+     17.5
+    ],
+    [
+     2536.0,
+     22.0
+    ],
+    [
+     2519.7,
+     17.5
+    ],
+    [
+     2518.0,
+     0.0
+    ],
+    [
+     2519.7,
+     -17.5
+    ],
+    [
+     2536.0,
+     -22.0
+    ],
+    [
+     2552.3,
+     -17.5
+    ]
+   ],
+   "liczba_wezlow": 8,
+   "odrodzenie_s": 18,
+   "zachowanie": "chodzi ciężko po gaju, przystaje i stuka kokosami",
+   "grupa": null,
+   "obwod": 138.0,
+   "pojemnosc": 5
+  },
+  {
+   "id": "t1",
+   "podbiom": "ruiny",
+   "pod": null,
+   "potwor": "Pancernik Ruin",
+   "klasa": "Wojownik",
+   "wariant": null,
+   "model": "pancernik_ruin",
+   "poziomy": [
+    22,
+    22
+   ],
+   "poziomy_rowny": [
+    34,
+    34
+   ],
+   "poziomy_status": "propozycja: `poziomy` = 17–23 rosnąco przez przegrody (zlecenie 18.11.2026; gra i tak nadpisuje poziomy swoimi — Bagno ma POZIOMY_STREF w swiat/bagno_pas_gra/generuj_dane.py), `poziomy_rowny` = tempo równe z swiat/biomy/PLAN_BIOMOW.md (Dżungla 25–35)",
+   "naraz": 1,
+   "max": 1,
+   "srodek": [
+    2634.0,
+    0.0
+   ],
+   "r": 29,
+   "y": 0,
+   "pole": [
+    2588,
+    2680,
+    -34,
+    34
+   ],
+   "dom": {
+    "opis": "Zapadła Kaplica pod lewą ścianą (nora w gruzach obok)",
+    "pts": [
+     [
+      2640.0,
+      -34.0
+     ]
+    ]
+   },
+   "trasa": [
+    [
+     2658.0,
+     0.0
+    ],
+    [
+     2645.9,
+     16.0
+    ],
+    [
+     2622.1,
+     16.0
+    ],
+    [
+     2610.0,
+     0.0
+    ],
+    [
+     2622.1,
+     -16.0
+    ],
+    [
+     2645.9,
+     -16.0
+    ]
+   ],
+   "liczba_wezlow": 6,
+   "odrodzenie_s": 150,
+   "zachowanie": "węszy ryjem między kolumnami, przysiada przy kaplicy; przy graczu w promieniu 25 zwija się w kulę i rozwija",
+   "grupa": null,
+   "obwod": 127.8,
+   "pojemnosc": 5,
+   "odrodzenie_stale": true,
+   "uwaga": "rzadki: jeden naraz, stałe odrodzenie (jak Leśny Troll i Ropucha); wspólny czy osobny — wybór"
+  }
+ ],
+ "straznik": {
+  "potwor": "Wąż Stu Lian",
+  "klasa": "strażnik (obrażenia pół na pół: fizyczne i magiczne)",
+  "model": "waz_stu_lian",
+  "poziom": 23,
+  "poziom_rowny": 35,
+  "poziomy_status": "propozycja: `poziomy` = 17–23 rosnąco przez przegrody (zlecenie 18.11.2026; gra i tak nadpisuje poziomy swoimi — Bagno ma POZIOMY_STREF w swiat/bagno_pas_gra/generuj_dane.py), `poziomy_rowny` = tempo równe z swiat/biomy/PLAN_BIOMOW.md (Dżungla 25–35)",
+  "miejsce": [
+   2754,
+   0
+  ],
+  "y": 0.3,
+  "yaw_swiat": 1.5708,
+  "patrzy": "w stronę wejścia (−u, czyli −X świata)",
+  "arena": {
+   "srodek": [
+    2760,
+    0
+   ],
+   "r": 26,
+   "opis": "okrągła kamienna posadzka r 27 (wierzch 0,3) na wyspie w turkusowej sadzawce, krąg 8 omszałych filarów z lianami na r 26, Świątynia Stu Lian w (2788; 27), z boku osi"
+  },
+  "odrodzenie_s": 120,
+  "odrodzenie_stale": true,
+  "tryb": "do decyzji: wspólny dla serwera (jak Strażnik Gaju) albo osobny dla gracza",
+  "ryk": {
+   "klip": "ryk",
+   "dl_s": 2.0,
+   "zrodlo": "swiat/postacie/waz_stu_lian.py — klip „ryk” (60 klatek = 2,0 s)"
+  },
+  "otwiera": "brama_pustyni (osobno dla gracza)"
+ },
+ "przelot_kamery": {
+  "kiedy": "pierwsze wejście gracza do Dżungli (D-077); flaga na gracza; przy kolejnych wejściach brak",
+  "czas_s": 13.4,
+  "punkty": [
+   {
+    "t": 0.0,
+    "poz": [
+     1886,
+     0,
+     26
+    ],
+    "patrz": [
+     1950,
+     0,
+     4
+    ],
+    "pokazuje": "start nad plecami gracza, przed bramą Bagna"
+   },
+   {
+    "t": 1.2,
+    "poz": [
+     1932,
+     12,
+     28
+    ],
+    "patrz": [
+     2030,
+     0,
+     2
+    ],
+    "pokazuje": "Taras Przybycia: jajko, turkusowy strumyk"
+   },
+   {
+    "t": 2.7,
+    "poz": [
+     2040,
+     -16,
+     25
+    ],
+    "patrz": [
+     2110,
+     0,
+     2
+    ],
+    "pokazuje": "Polana Zwijogonów i Chatka na Drzewie"
+   },
+   {
+    "t": 4.3,
+    "poz": [
+     2180,
+     10,
+     25
+    ],
+    "patrz": [
+     2260,
+     0,
+     3
+    ],
+    "pokazuje": "Mostek nad Kaskadą i Kwietnik Gębokwiatów"
+   },
+   {
+    "t": 6.1,
+    "poz": [
+     2350,
+     -12,
+     23
+    ],
+    "patrz": [
+     2440,
+     0,
+     3
+    ],
+    "pokazuje": "bambusowa przesieka i Gaj Kokosów"
+   },
+   {
+    "t": 8.1,
+    "poz": [
+     2540,
+     10,
+     21
+    ],
+    "patrz": [
+     2634,
+     -6,
+     6
+    ],
+    "pokazuje": "omszałe schody i Ruiny Pancernika"
+   },
+   {
+    "t": 9.6,
+    "poz": [
+     2680,
+     0,
+     14
+    ],
+    "patrz": [
+     2754,
+     0,
+     11
+    ],
+    "pokazuje": "Brama Posągów, kamera zniża się"
+   },
+   {
+    "t": 10.5,
+    "poz": [
+     2726,
+     0,
+     11
+    ],
+    "patrz": [
+     2754,
+     0,
+     11.5
+    ],
+    "pokazuje": "Wąż Stu Lian w kadrze — zatrzymanie"
+   },
+   {
+    "t": 13.4,
+    "poz": [
+     2726,
+     0,
+     11
+    ],
+    "patrz": [
+     2754,
+     0,
+     11.5
+    ],
+    "pokazuje": "ryk Węża, potem cięcie do gracza"
+   }
+  ],
+  "ryk_od_s": 10.7,
+  "zatrzymanie_od_s": 10.5,
+  "potem": "zaciemnienie 0,5 s i powrót kamery za plecy gracza w punkcie przybycia",
+  "ruch": "krzywa Catmull-Rom jak w lesie (swiat/biom_las/pas/sprawdz_plan.krzywa_kamery)",
+  "streaming": "przed startem serwer prosi o wczytanie okolic u = 2050, 2330, 2580, 2754"
+ },
+ "punkty_przybycia": [
+  {
+   "id": "miasteczko",
+   "nazwa": "Krzywe Miasteczko",
+   "swiat_xz": [
+    -63.6,
+    -771.5
+   ],
+   "opis": "jak dziś: 18 st od środka Bramy Miejskiej w stronę rynku (liczy teleport.py w Studio; liczba przybliżona)",
+   "od_poczatku": true
+  },
+  {
+   "id": "dzungla",
+   "nazwa": "Dżungla — Taras Przybycia",
+   "u": 1894,
+   "v": 0,
+   "y": 0,
+   "patrz": [
+    1940,
+    0
+   ],
+   "kamera_opada_z_wys": 60,
+   "od_poczatku": false,
+   "odblokowanie": "po pokonaniu Strażnika Topieli (jak w planie Bagna)"
+  },
+  {
+   "id": "dzungla_arena",
+   "nazwa": "Dżungla — przed Kręgiem Stu Lian (opcja)",
+   "u": 2692,
+   "v": 0,
+   "y": 0,
+   "patrz": [
+    2754,
+    0
+   ],
+   "kamera_opada_z_wys": 60,
+   "od_poczatku": false,
+   "odblokowanie": "po pierwszym dojściu do Kręgu — wybór do decyzji"
+  },
+  {
+   "id": "pustynia",
+   "nazwa": "Pustynia — przybycie",
+   "u": 2834,
+   "v": 0,
+   "y": 0,
+   "patrz": [
+    2880,
+    0
+   ],
+   "kamera_opada_z_wys": 60,
+   "od_poczatku": false,
+   "odblokowanie": "po pokonaniu Węża Stu Lian"
+  }
+ ],
+ "czas": {
+  "cel_min": 60,
+  "pasmo_min": [
+   45,
+   80
+  ],
+  "cel_rowny_min": 95,
+  "status": "propozycja: rozkład rosnący z PLAN_BIOMOW (Dżungla 60 min) albo równy (ok. 95 min)",
+  "zalozenia": {
+   "walka_s": {
+    "Zwijogon": 19,
+    "Gębokwiat": 18,
+    "Kokosowy Siłacz": 23,
+    "Pancernik Ruin": 28,
+    "Wąż Stu Lian": 34
+   },
+   "walka_s_zrodlo": "SZACUNEK: potwory Dżungli nie mają jeszcze danych walki w silniku; wzięte z Bagna (Rechotek 18, Bulgotnik 17, Kłodokłap 21, Ropucha 26, Strażnik 32) z poprawką na uniki i większe życie",
+   "narzut_walki_s": 7,
+   "dojscie_s": 2,
+   "pominieta_walka_s": 2,
+   "przelot_s": 13.4,
+   "jajko_s": 45,
+   "trening_i_decyzje_s": 600,
+   "trening_opis": "jak w Bagnie (450 s na 45 min), przeskalowane do 60 min"
+  },
+  "walki_plan": {
+   "zwijogony": 33,
+   "gebokwiaty": 34,
+   "kokosy": 34,
+   "ruiny": 4,
+   "arena": 5
+  },
+  "walki_plan_rowny": {
+   "zwijogony": 52,
+   "gebokwiaty": 55,
+   "kokosy": 55,
+   "ruiny": 5,
+   "arena": 6
+  },
+  "walki_zrodlo": "swiat/biomy/PLAN_BIOMOW.md (model tools/walka/tempo.py, krzywa 11,71 × L^1,6): Dżungla 60 min ≈ 110 walk, 95 min ≈ 173 walki"
+ },
+ "gatunek_przegrody": {
+  "zwijogony": "Zwijogon",
+  "gebokwiaty": "Gębokwiat",
+  "kokosy": "Kokosowy Siłacz",
+  "ruiny": "Pancernik Ruin",
+  "arena": "Wąż Stu Lian"
+ },
+ "budzet_czesci": {
+  "cel": 9000,
+  "limit": 12000,
+  "porownanie": "Bagno-pas 9017, las-pas 8601"
+ },
+ "kolejne_biomy": [
+  {
+   "id": "pustynia",
+   "nazwa": "Pustynia",
+   "u_od": 2820,
+   "u_do": 3760,
+   "swiat_x": [
+    3920,
+    4860
+   ],
+   "przybycie_u": 2834,
+   "status": "rezerwacja miejsca; długość robocza jak las"
+  },
+  {
+   "id": "gory",
+   "nazwa": "Góry z tundrą",
+   "u_od": 3760,
+   "u_do": 4700,
+   "swiat_x": [
+    4860,
+    5800
+   ],
+   "przybycie_u": 3774,
+   "status": "rezerwacja miejsca; długość robocza jak las"
+  },
+  {
+   "id": "lodowiec",
+   "nazwa": "Lodowiec",
+   "u_od": 4700,
+   "u_do": 5640,
+   "swiat_x": [
+    5800,
+    6740
+   ],
+   "przybycie_u": 4714,
+   "status": "rezerwacja miejsca; długość robocza jak las"
+  },
+  {
+   "id": "wulkan",
+   "nazwa": "Wulkaniczny",
+   "u_od": 5640,
+   "u_do": 6580,
+   "swiat_x": [
+    6740,
+    7680
+   ],
+   "przybycie_u": 5654,
+   "status": "rezerwacja miejsca; długość robocza jak las"
+  },
+  {
+   "id": "krysztal",
+   "nazwa": "Kryształowy",
+   "u_od": 6580,
+   "u_do": 7520,
+   "swiat_x": [
+    7680,
+    8620
+   ],
+   "przybycie_u": 6594,
+   "status": "rezerwacja miejsca; długość robocza jak las"
+  }
+ ]
+}

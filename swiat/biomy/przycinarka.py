@@ -253,7 +253,8 @@ def zasady_planu(plan):
 def popraw_rzeczy(cz, plan, P, b):
     """Bryły zostają w dawnym rozmiarze, a pas się ściska — część drobiazgów wchodzi w plac walki, otwarcie przejścia
     albo pętlę potworów. Taka rzecz (stykające się bryły tej samej grupy) jest odsuwana o najmniej (0,5…6 st), a gdy
-    się nie da — odpada. → (odsunięte, usunięte, bryły usunięte)."""
+    się nie da — odpada. Rzecz, w którą wchodzi krótszy przelot kamery, odpada od razu.
+    → (odsunięte, usunięte, bryły usunięte)."""
     ZA, Z, r = zasady_planu(plan)
     stary_r, ZA.PLAC_R = ZA.PLAC_R, r
     try:
@@ -261,7 +262,10 @@ def popraw_rzeczy(cz, plan, P, b):
         o = P.biomy[b["id"]]
         u_lo, u_hi = X0 + o.T(o.seg[0][0]) - 40, X0 + o.T(o.seg[-1][1]) + 40
         zle = [i for i, c in enumerate(czesci) if Z.naruszenia(c, grupy[c[1]], tylko=ZASADY_RZECZY)]
-        if not zle:
+        # krótszy przelot kamery leci innym torem — rzecz, w którą wchodzi kamera, odpada (nie da się jej odsunąć
+        # tak, żeby nie zasłoniła kadru); D-096, Dżungla: liść-parasol nad Dróżką
+        kamera = [i for i, c in enumerate(czesci) if Z.naruszenia(c, grupy[c[1]], tylko=("kamera",))]
+        if not zle and not kamera:
             return 0, 0, 0
         bb = [aabb(c) for c in czesci]
         maly = [max(mx[0] - mn[0], mx[2] - mn[2]) <= 16 for mn, mx in bb]   # duże bryły (płoty, płyty) nie jeżdżą
@@ -270,6 +274,24 @@ def popraw_rzeczy(cz, plan, P, b):
             if maly[i]:
                 po_grupie.setdefault(c[1], []).append(i)
         zrobione, usun, odsuniete, usuniete = set(), set(), 0, 0
+        cala_grupa = {}
+        for i, c in enumerate(czesci):
+            cala_grupa.setdefault(c[1], []).append(i)
+        for i in kamera:
+            if i in usun:
+                continue
+            rzecz, stos = {i}, [i]
+            while stos:
+                j = stos.pop()
+                mn, mx = bb[j]
+                for k in cala_grupa[czesci[j][1]]:
+                    a, c_ = bb[k]
+                    if k not in rzecz and np.all(a <= mx + 0.05) and np.all(mn <= c_ + 0.05) and len(rzecz) < 40:
+                        rzecz.add(k)
+                        stos.append(k)
+            usun |= rzecz
+            zrobione |= rzecz
+            usuniete += 1
         for i in zle:
             if i in zrobione or not maly[i]:
                 continue
@@ -623,6 +645,9 @@ def znaczniki_krotkie(zn, P, b, W, plan_nowy, czesci_nowe):
                               "uwaga": "mapa przycięta przez swiat/biomy/przycinarka.py (D-096) — liczby na odcinek: projekt"}
     if "sasiad_las" in nowy:
         nowy["sasiad_las"]["usun_przed_budowa"] = "(nie dotyczy: krótki las nie ma zapowiedzi Bagna)"
+    if "sasiad_bagno" in nowy:
+        nowy["sasiad_bagno"]["usun_przed_budowa"] = ("(nie dotyczy: krótkie Bagno nie ma zapowiedzi Dżungli — "
+                                                     "BagnoPas trzeba tylko zbudować z krótkiej mapy na nowo)")
     nowy["wymiary"] = plan_nowy["wymiary"]
     nowy["plan"] = "%s/%s" % (b["wyj"], b["plik_planu"])
     return nowy
@@ -677,19 +702,21 @@ def drukuj(P, raport, W):
                                            for s in r["strefy"]))
         for u in r["uwagi"]:
             print("       " + u)
-    print("dalsze biomy przesunięte o %.0f st (brama do Dżungli X %.0f)" % (P.przesuniecie_dalej, X0 + P.T(1874)))
+    b_ost, o_ost = P.kolejnosc[-1]
+    print("dalsze biomy przesunięte o %.0f st (brama ostatniego biomu, %s: X %.0f)" % (
+        P.przesuniecie_dalej, b_ost["id"], X0 + o_ost.T(o_ost.brama)))
 
 
 def podglad(wyj, P):
-    """Rzut z góry „przed / po” w jednej skali: las + Bagno (projekt) obok krótkich map."""
+    """Rzut z góry „przed / po” w jednej skali: wszystkie biomy z wymiarów (projekt) nad krótkimi mapami."""
     from PIL import Image, ImageDraw
     from swiat.las_pas import podglad as RYS
     os.makedirs(wyj, exist_ok=True)
     skala, v0, v1 = 0.9, -90.0, 90.0
-    u0, u1 = -40.0, 1910.0
+    u0, u1 = -40.0, P.kolejnosc[-1][1].seg[-1][1] + 4.0
     obrazy = []
-    for etykieta, pliki in (("PRZED (projekt)", ("swiat/las_pas/czesci.json", "swiat/bagno_pas/czesci.json")),
-                            ("PO (D-096)", ("swiat/las_pas/krotki/czesci.json", "swiat/bagno_pas/krotki/czesci.json"))):
+    for etykieta, pliki in (("PRZED (projekt)", [b["czesci"] for b, _ in P.kolejnosc]),
+                            ("PO (D-096)", [b["wyj"] + "/czesci.json" for b, _ in P.kolejnosc])):
         sciany = []
         for p in pliki:
             sciany += RYS.wczytaj(os.path.join(REPO, p))[1]

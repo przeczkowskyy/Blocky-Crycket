@@ -51,7 +51,17 @@ function Pamiec.czytaj(gracz: Player, klucz: string): boolean
 		error("PamiecGracza: nieznany klucz " .. tostring(klucz))
 	end
 	local w = dane[gracz.UserId]
-	return w ~= nil and w[klucz] == true
+	if w ~= nil and w[klucz] == true then
+		return true
+	end
+	-- 18.11.2026, zapis postępu (swiat/stan_gracza, domyślnie wyłączony): gdy działa, stan z poprzedniej sesji wraca
+	-- jako atrybut gracza o nazwie klucza z wielkiej litery (WidzialPrzelotLasu, PokonalStraznikaBagna…); przy
+	-- wyłączonym zapisie bez zmian — tylko pamięć serwera
+	local stan = workspace:FindFirstChild("StanGracza")
+	if stan ~= nil and stan:GetAttribute("ZapisAktywny") == true then
+		return gracz:GetAttribute(string.upper(string.sub(klucz, 1, 1)) .. string.sub(klucz, 2)) == true
+	end
+	return false
 end
 
 function Pamiec.ustaw(gracz: Player, klucz: string, wartosc: boolean)

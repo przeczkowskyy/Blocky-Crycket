@@ -30,7 +30,7 @@
 		      "czy", zrodlo  → { ok, powod }      czy bieżącą walkę gracza z tego źródła wolno pominąć
 		      "pomin", zrodlo → { ok, powod, nastepnaOd? }   pominięcie: tablica zwalnia sesję od razu; las — gdy jego
 		                                                      kontener ma Sygnaly/ZwolnijPoPominieciu (README)
-		  zrodlo = nazwa kontenera z zamkniętej listy (TestWalki2, LasPasGra, LasPotwory, BagnoPasGra). Bez zgody → odmowa.
+		  zrodlo = nazwa kontenera z zamkniętej listy (TestWalki2, LasPasGra, LasPotwory, BagnoPasGra, DzunglaPasGra). Bez zgody → odmowa.
 		• walki z lasów liczy ich własny serwer (SerwerPotworow) — tutaj trafiają przez MOSTEK: serwer słucha
 		  Sygnaly/WynikWalki (BindableEvent) kontenerów LasPasGra i LasPotwory, gdy go mają (las-pas ma; stary las
 		  nie ma — wtedy jego walki są „nieznane” i pomijać ich nie wolno, bezpieczne zachowanie domyślne).
@@ -83,9 +83,10 @@ for _, z in Wzorcowe.ZESTAWY do
 	ZESTAWY[z] = true
 end
 -- źródła walk dla pamięci pomijania: ten kontener i kontenery lasów (mostek przez Sygnaly/WynikWalki);
--- 17.11.2026: też Bagno (BagnoPasGra, swiat/bagno_pas_gra — ten sam kod potworów co las-pas)
-local ZRODLA = { [kontener.Name] = true, LasPasGra = true, LasPotwory = true, BagnoPasGra = true }
-local ZRODLA_LASU = { LasPasGra = true, LasPotwory = true, BagnoPasGra = true }
+-- 17.11.2026: też Bagno (BagnoPasGra, swiat/bagno_pas_gra — ten sam kod potworów co las-pas);
+-- 18.11.2026: też Dżungla (DzunglaPasGra, swiat/dzungla_pas_gra — ten sam kod)
+local ZRODLA = { [kontener.Name] = true, LasPasGra = true, LasPotwory = true, BagnoPasGra = true, DzunglaPasGra = true }
+local ZRODLA_LASU = { LasPasGra = true, LasPotwory = true, BagnoPasGra = true, DzunglaPasGra = true }
 
 local ostatniaProsba: { [Player]: number } = {}
 local ostatniePominiecie: { [Player]: number } = {}

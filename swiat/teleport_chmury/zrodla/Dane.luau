@@ -83,7 +83,19 @@ return {
 			kolor_podloza = "5C3A22",
 			kolor_drogi = "B07A44",
 			obszary_xz = { { 1940, 2360, -790, -610 } },
+			odblokowanie = {
+				atrybut_gracza = "PokonalStraznikaBagna",
+			},
 			przybycie = { {
+					gdy_jest = "DzunglaPasGra",
+					uchwyt = "PrzeniesDoDzungli",
+					punkt = "przybycie",
+					przelot_po_s = 2.4,
+				}, {
+					gdy_jest = "DzunglaPas",
+					xz = { 1954, -700 },
+					patrz_xz = { 2000, -700 },
+				}, {
 					xz = { 1954, -700 },
 					patrz_xz = { 2000, -700 },
 				} },
@@ -231,5 +243,5 @@ return {
 		ukryj_gui = true,
 		klawisz_testowy = "T",
 	},
-	skrot = "172271c512ab",
+	skrot = "2e78390913cd",
 }

@@ -13,12 +13,12 @@ end
 
 return {
 	wersja = 1,
-	skrot = "228a77a4c430",
+	skrot = "27f04979a4a4",
 	biom = {
 		nazwa = "BagnoPas",
 		srodek = { 1100, 0, -700 },
 		obrotY = 0,
-		plyta = { sciezka = "Teren/Grunt/Płyta", pozycja = { 1754.96, -1, -700 }, rozmiar = { 422.08, 2, 168 } },
+		plyta = { sciezka = "Teren/Grunt/Płyta", pozycja = { 1753.92, -1, -700 }, rozmiar = { 420, 2, 168 } },
 	},
 	zasady = { odstep = 25, smycz = 10, blokadaDomu = 12, zasiegE = 8, minOdrodzenia = 10, skracanie = 0.15 },
 	gatunki = {
