@@ -64,7 +64,7 @@ TEXT = {
     "name": ("F4F1E8", "0E1220", 2, 15),
     "value": ("FFD23F", "0E1220", 2, 15),
     "sub": ("3A2412", None, 0, 15),
-    "level": ("E6FFC9", "0E3B12", 3, 36),
+    "level": ("E6FFC9", "1A1410", 3, 36),  # obwódka czarna jak w HUD (Paweł 18.11)
 }
 
 

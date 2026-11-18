@@ -550,9 +550,9 @@
            "ClassName": "UIStroke",
            "Properties": {
             "Color": [
-             0.0549,
-             0.2314,
-             0.0706
+             0.102,
+             0.0784,
+             0.0627
             ],
             "Thickness": 3,
             "LineJoinMode": "Round",

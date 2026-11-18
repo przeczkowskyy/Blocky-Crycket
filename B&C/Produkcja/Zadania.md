@@ -87,6 +87,7 @@ tags: [produkcja, zadania]
 - [ ] Paweł: klucz zatwierdzania na własny telefon albo własny panel — `python panel/serwer.py --klucz-gd` na komputerze z panelem wypisuje link ([[Panel zespołu]]) · #średni
 
 ## 📥 Backlog
+- [ ] Gracz chodzi modelem swojej RASY (Paweł 18.11): po wyborze rasy bohater w świecie (`swiat/bohater_swiat`) ma ciało rasy z figur `Workspace/RasyProba` w bazowym stroju zamiast Rycerza / Zwiadowcy / Kota-Maga; atrybut gracza `Race` (`Human`, `Demon`, `DarkElf`, `Elf`, `Orc`, `Goblin`; Półbóg zablokowany), mapowanie na figury w `src/shared/RaceData.luau` (`model`). Otwarte: klipy i przedmioty Maga dla ciała człowieka (pytanie 68) · agent: Karol · #wysoki
 
 - [ ] [[Selektor bohatera]]: upload grafik 2D ekranu wyboru klasy (po „tak”), udostępnienie siatki Zwiadowcy grze (D-044), zapis klasy w DataStore · #wysoki
 
@@ -115,6 +116,8 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-18: Ekwipunek — sloty broni według klasy (Wojownik: broń + nowy slot tarczy na środku; Mag: kostur; Zwiadowca: proca) z arkusza Higgsfield przez Figmę, oraz natywny pasek doświadczenia zamiast rozmazanego z tła; test Play OK ([[Okno ekwipunku]])
+- [x] 2026-11-18: Bronie startowe (Paweł): ikony kija z kamieniem, procy i kostura spiralnego w slocie broni po wyborze klasy (wgrane po „tak”), modele 3D z Blendera (`swiat/postacie/bronie_startowe.py`), a na ekranie wyboru rasy figura trzyma broń klasy; test Play w Studio OK ([[Selektor bohatera]], [[Okno ekwipunku]])
 - [x] 2026-11-18: Wieczorna próba całej gry na stanie końcowym dnia (20 prób w dwóch częściach, 17:15–17:43 i 19:16–20:02; po efektach Dżungli, nowej oprawie przelotu, arenie Training Center i nowym biegu bohatera): bez nowych błędów — jedyny błąd to znane za małe napisy w wyborze próby walki na ekranie telefonu (walka 44 z 46)
 - [x] 2026-11-18: Bohater w świecie — nowy bieg trzech klas stoi w Studio: krótszy krok i prostsze kolana, faza lotu, praca rąk i tułowia, poły tabardu i szata kota w ruchu, tempo kroku z rzeczywistej drogi postaci (przy ścianie stopa 0,02–0,06 st zamiast 0,56); próba 20 punktów w porządku, czas pętli bez wzrostu
 - [x] 2026-11-18: Training Center — arena z dekoracjami stoi w Studio: podłoga z polami stanowisk, ogrodzenie z chorągiewkami, brama z szyldem, trybunki, dekoracje sześciu stanowisk i klockowe figury trenerów (1658 części zamiast 202); zasady gier i kamera bez zmian; próba 31 punktów w porządku, czas klatki bez zmian

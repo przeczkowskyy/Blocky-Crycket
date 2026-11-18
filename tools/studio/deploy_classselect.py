@@ -27,6 +27,7 @@ SCRIPTS = [
     ('game:GetService("ReplicatedStorage"):WaitForChild("Shared")', "ClassSelectIcons", "ModuleScript", "src/shared/ClassSelectIcons.luau"),
     ('game:GetService("ReplicatedStorage"):WaitForChild("Shared")', "RaceData", "ModuleScript", "src/shared/RaceData.luau"),
     ('game:GetService("ReplicatedStorage"):WaitForChild("Shared")', "RaceIcons", "ModuleScript", "src/shared/RaceIcons.luau"),
+    ('game:GetService("ReplicatedStorage"):WaitForChild("Shared")', "Items", "ModuleScript", "src/shared/Items.luau"),
     ('game:GetService("ServerScriptService"):WaitForChild("Server")', "ClassSelect", "Script", "src/server/ClassSelect.server.luau"),
     ('game:GetService("StarterPlayer").StarterPlayerScripts:WaitForChild("Client")', "ClassSelectClient", "LocalScript",
      "src/client/ClassSelectClient.client.luau"),
@@ -203,6 +204,43 @@ print("[WyborKlasy] tekstury:", czesci, "części (", ogolne, "z reguły materia
 """
 
 
+def bronie_startowe_luau():
+    """Bronie startowe (swiat/postacie/bronie_startowe.py) -> Luau budujący WyborKlasyModele.Weapon_<klasa>:
+    Model z niewidzialnym Handle w (0, 0, 0) i częściami w układzie RightGripAttachment (te same bryły, z których
+    Blender robi siatki; rozkład na części: swiat/postacie/biblioteka/roblox_klocki.py)."""
+    sys.path.insert(0, str(ROOT))
+    from swiat.postacie.bronie_startowe import akcesoria, PRZEDMIOTY
+    from swiat.postacie.biblioteka.roblox_klocki import akcesoria_noszone
+    klasa = {p["id"]: p["klasa"] for p in PRZEDMIOTY}
+
+    class _P:
+        pass
+    dane = []
+    for a in akcesoria():
+        p = _P()
+        p.zalozone = [(a, a.zaczep, (0, 0, 0), (0, 0, 0), True)]
+        wyn, mat, _uwagi = akcesoria_noszone(p)
+        dane.append({"klasa": klasa[a.id], "id": a.id, "materialy": mat, "czesci": wyn[0]["czesci"]})
+    js = json.dumps(dane, ensure_ascii=False)
+    assert "]==]" not in js
+    return ("do local HS = game:GetService(\"HttpService\") "
+            "for _, b in ipairs(HS:JSONDecode([==[" + js + "]==])) do "
+            "local m = Instance.new(\"Model\") m.Name = \"Weapon_\" .. b.klasa m:SetAttribute(\"Bron\", b.id) "
+            "local h = Instance.new(\"Part\") h.Name = \"Handle\" h.Size = Vector3.new(0.2, 0.2, 0.2) h.Transparency = 1 "
+            "h.Anchored = true h.CanCollide = false h.CanTouch = false h.CanQuery = false h.CFrame = CFrame.new() h.Parent = m "
+            "for i, c in ipairs(b.czesci) do local ks = c[1] local p "
+            "if ks == 3 then p = Instance.new(\"WedgePart\") elseif ks == 4 then p = Instance.new(\"CornerWedgePart\") "
+            "else p = Instance.new(\"Part\") p.Shape = if ks == 1 then Enum.PartType.Ball elseif ks == 2 then "
+            "Enum.PartType.Cylinder else Enum.PartType.Block end "
+            "p.Name = b.id .. \"_\" .. i p.Size = Vector3.new(c[8], c[9], c[10]) p.Color = Color3.fromHex(c[11]) "
+            "local mt = b.materialy[c[12] + 1] p.Material = Enum.Material[mt[1]] p.Reflectance = mt[2] "
+            "p.TopSurface = Enum.SurfaceType.Smooth p.BottomSurface = Enum.SurfaceType.Smooth "
+            "p.Anchored = true p.CanCollide = false p.CanTouch = false p.CanQuery = false p.Massless = true "
+            "if c[13] ~= \"\" then local sm = Instance.new(\"SpecialMesh\") sm.MeshType = Enum.MeshType[c[13]] sm.Parent = p end "
+            "p.CFrame = CFrame.new(c[2], c[3], c[4]) * CFrame.fromOrientation(c[5], c[6], c[7]) p.Parent = m end "
+            "m.PrimaryPart = h m.Parent = f end print(\"[WyborKlasy] bronie startowe: 3\") end")
+
+
 def find(node, name):
     if node.get("Name") == name:
         return node
@@ -256,6 +294,17 @@ def main():
                'for _, d in ipairs(c:GetDescendants()) do if d:IsA("Script") or d:IsA("LocalScript") then d:Destroy() end end '
                'c.Parent = f print("[WyborKlasy] goły model ras:", baza.Name) '
                'else warn("[WyborKlasy] brak gołego modelu w TestPostaci — ekran ras użyje modelu klasy") end end')
+    # figury ras z wystawy Karola (Workspace/RasyProba, D-104) — tylko kopie, kontener Karola nietknięty
+    rasy = {"Human": "czlowiek", "Demon": "demon", "DarkElf": "mroczny_elf", "Elf": "elf", "Orc": "ork",
+            "Goblin": "goblin", "Demigod": "polbog"}
+    out.append('do local rp = workspace:FindFirstChild("RasyProba") local n = 0 '
+               'if rp then for id, nazwa in pairs(' + "{" + ", ".join('%s = "%s"' % kv for kv in rasy.items()) + "}" + ') do '
+               'local m = rp:FindFirstChild(nazwa) if m and m:IsA("Model") then local c = m:Clone() c.Name = "Race_" .. id '
+               'for _, d in ipairs(c:GetDescendants()) do if d:IsA("Script") or d:IsA("LocalScript") or d.Name == "Tabliczka" '
+               'or d:IsA("BillboardGui") then d:Destroy() end end c.Parent = f n += 1 end end end '
+               'print("[WyborKlasy] modele ras:", n) end')
+    # bronie startowe klas w dłoni figury rasy (Paweł 18.11)
+    out.append(bronie_startowe_luau())
     out += ["f.Parent = RS", "end",
             'local SG = game:GetService("StarterGui")',
             "do", build_luau(gui, "root", "ClassSelect"),

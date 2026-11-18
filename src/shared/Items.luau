@@ -13,6 +13,27 @@ local Items = {
 		category = "Amulets",
 		icon = "rbxassetid://119371548847065", -- ItemScrap (assets/processed/ItemScrap.png), podmieniane po uploadzie
 	},
+	-- bronie startowe (Paweł 18.11): gracz dostaje broń swojej klasy do slotu broni po wyborze klasy
+	-- (ClassData.Classes[].weapon). Ikony: górny rząd arkusza assets/raw/BronieStartowe_arkusz.jpg; modele 3D:
+	-- swiat/postacie/bronie_startowe.py (na ekranie wyboru rasy figura trzyma broń klasy). Bez statystyk (propozycja).
+	StarterClub = {
+		name = "Stone Club",
+		slot = "Weapon",
+		category = "Weapons",
+		icon = "rbxassetid://73877053632813", -- WeaponClub (Wojownik)
+	},
+	StarterStaff = {
+		name = "Curly Staff",
+		slot = "Weapon",
+		category = "Weapons",
+		icon = "rbxassetid://128671874530213", -- WeaponStaff (Mag)
+	},
+	StarterSlingshot = {
+		name = "Slingshot",
+		slot = "Weapon",
+		category = "Weapons",
+		icon = "rbxassetid://90364220695668", -- WeaponSlingshot (Zwiadowca)
+	},
 }
 
 return Items

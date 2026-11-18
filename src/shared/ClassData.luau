@@ -16,15 +16,17 @@ export type Class = {
 	model: string, -- nazwa modelu w ReplicatedStorage.WyborKlasyModele
 	stats: { number }, -- STR, CON, INT, DEX, LUCK, ARMOR (pasek pełny przy BAR_FULL)
 	color: { Color3 }, -- kolor klasy: góra i dół gradientu pasków, nazwa klasy (Paweł 17.11)
+	weapon: string, -- broń startowa: id w Shared.Items (slot broni po wyborze klasy) i model
+	--                 ReplicatedStorage.WyborKlasyModele.Weapon_<id klasy> w dłoni figury na ekranie rasy (Paweł 18.11)
 }
 
 ClassData.Classes = {
 	{ id = "Warrior", name = "WARRIOR", subtitle = "SHIELD & SWORD", emblem = "CsEmblemWarrior", model = "Warrior",
-		stats = { 25, 27, 6, 9, 9, 24 }, color = { Color3.fromRGB(120, 196, 255), Color3.fromRGB(38, 110, 230) } },
+		stats = { 25, 27, 6, 9, 9, 24 }, color = { Color3.fromRGB(120, 196, 255), Color3.fromRGB(38, 110, 230) }, weapon = "StarterClub" },
 	{ id = "Scout", name = "SCOUT", subtitle = "BOW & DAGGER", emblem = "CsEmblemScout", model = "Scout",
-		stats = { 15, 19, 9, 26, 21, 10 }, color = { Color3.fromRGB(150, 240, 110), Color3.fromRGB(44, 168, 64) } },
+		stats = { 15, 19, 9, 26, 21, 10 }, color = { Color3.fromRGB(150, 240, 110), Color3.fromRGB(44, 168, 64) }, weapon = "StarterSlingshot" },
 	{ id = "Mage", name = "MAGE", subtitle = "STAFF & SPELLS", emblem = "CsEmblemMage", model = "Mage",
-		stats = { 9, 14, 32, 13, 25, 7 }, color = { Color3.fromRGB(214, 150, 255), Color3.fromRGB(128, 58, 214) } },
+		stats = { 9, 14, 32, 13, 25, 7 }, color = { Color3.fromRGB(214, 150, 255), Color3.fromRGB(128, 58, 214) }, weapon = "StarterStaff" },
 } :: { Class }
 
 ClassData.BAR_FULL = 32 -- najwyższa wartość w profilach (INT Maga) = pełny pasek

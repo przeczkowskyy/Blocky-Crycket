@@ -1,0 +1,93 @@
+RAPORT — bronie_startowe
+BRONIE STARTOWE — trzy skromne bronie, które gracz dostaje po wyborze klasy (polecenie Pawła 2026-11-18).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/bronie_startowe.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py bronie_startowe
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: przym_kij_z_kamieniem, przym_kostur_spiralny, przym_proca
+- przedmioty (akcesoria): 3
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 18 plików, zgodnych 18
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Spirala kostura to łańcuch walców i kul — w Roblox ok. 40 części; na ekranie wyboru to nie przeszkadza.
+- Sznurek na kamieniu to płaskie paski na licu i plecach kamienia, nie prawdziwe owinięcie.
+
+MODEL przym_kij_z_kamieniem „Przymiarka: Kij z kamieniem” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 4,27 × 5,25 × 3,72
+  trójkąty: 1324 (siatek: 16)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: kij_z_kamieniem na RightGripAttachment
+
+MODEL przym_kostur_spiralny „Przymiarka: Kostur spiralny” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 4,50 × 5,25 × 6,07
+  trójkąty: 3032 (siatek: 16)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: kostur_spiralny na RightGripAttachment
+
+MODEL przym_proca „Przymiarka: Proca” (r15)
+  wymiary ciała: 4,00 × 5,25 × 1,32; z akcesoriami: 4,25 × 5,25 × 2,83
+  trójkąty: 1444 (siatek: 16)
+  budżety ciała R15: Head 132/4000, Torso 88/1750, LeftArm 132/1248, RightArm 132/1248, LeftLeg 132/1248, RightLeg 132/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, trzymanie 2 kl. 0,07 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: proca na RightGripAttachment
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+kij_z_kamieniem        RightGripAttachment        Bron         576  1,39 × 3,72 × 0,96   (0,07; -0,99; -0,00)  
+kostur_spiralny        RightGripAttachment        Bron        2284  1,68 × 6,07 × 0,36   (0,16; -1,02; -0,00)  
+proca                  RightGripAttachment        Bron         696  1,49 × 2,83 × 0,69   (-0,00; -0,59; -0,17) 
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+KONTROLA EKSPORTÓW
+- przym_kij_z_kamieniem.fbx: siatki 35, kości 17, trójkąty 1552, wzrost 5.25 st., akcje brak -> ZGODNE
+- przym_kij_z_kamieniem__spoczynek.fbx: siatki 35, kości 17, trójkąty 1552, wzrost 5.25 st., akcje przym_kij_z_kamieniem|Scene 1-61 -> ZGODNE
+- przym_kij_z_kamieniem__trzymanie.fbx: siatki 35, kości 17, trójkąty 1552, wzrost 5.25 st., akcje przym_kij_z_kamieniem|Scene 1-3 -> ZGODNE
+- przym_kij_z_kamieniem.glb: siatki 35, kości 17, trójkąty 1552, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- przym_kostur_spiralny.fbx: siatki 35, kości 17, trójkąty 3260, wzrost 5.25 st., akcje brak -> ZGODNE
+- przym_kostur_spiralny__spoczynek.fbx: siatki 35, kości 17, trójkąty 3260, wzrost 5.25 st., akcje przym_kostur_spiralny|Scene 1-61 -> ZGODNE
+- przym_kostur_spiralny__trzymanie.fbx: siatki 35, kości 17, trójkąty 3260, wzrost 5.25 st., akcje przym_kostur_spiralny|Scene 1-3 -> ZGODNE
+- przym_kostur_spiralny.glb: siatki 35, kości 17, trójkąty 3260, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- przym_proca.fbx: siatki 35, kości 17, trójkąty 1672, wzrost 5.25 st., akcje brak -> ZGODNE
+- przym_proca__spoczynek.fbx: siatki 35, kości 17, trójkąty 1672, wzrost 5.25 st., akcje przym_proca|Scene 1-61 -> ZGODNE
+- przym_proca__trzymanie.fbx: siatki 35, kości 17, trójkąty 1672, wzrost 5.25 st., akcje przym_proca|Scene 1-3 -> ZGODNE
+- przym_proca.glb: siatki 35, kości 17, trójkąty 1672, wzrost 5.25 st., akcje spoczynek 0-60, trzymanie 0-2 -> ZGODNE
+- kij_z_kamieniem.fbx: siatki 1, kości 0, trójkąty 576, wzrost 3.72 st., akcje brak -> ZGODNE
+- kij_z_kamieniem.glb: siatki 1, kości 0, trójkąty 576, wzrost 3.72 st., akcje brak -> ZGODNE
+- kostur_spiralny.fbx: siatki 1, kości 0, trójkąty 2284, wzrost 6.07 st., akcje brak -> ZGODNE
+- kostur_spiralny.glb: siatki 1, kości 0, trójkąty 2284, wzrost 6.07 st., akcje brak -> ZGODNE
+- proca.fbx: siatki 1, kości 0, trójkąty 696, wzrost 2.83 st., akcje brak -> ZGODNE
+- proca.glb: siatki 1, kości 0, trójkąty 696, wzrost 2.83 st., akcje brak -> ZGODNE
+
+PLIKI
+- przym_kij_z_kamieniem_plansza.jpg
+- przym_kostur_spiralny_plansza.jpg
+- przym_proca_plansza.jpg
+- przedmioty/kij_z_kamieniem.fbx
+- przedmioty/kij_z_kamieniem.glb
+- przedmioty/kij_z_kamieniem_tekstury/
+- ikony/kij_z_kamieniem_ikona.png
+- przedmioty/kostur_spiralny.fbx
+- przedmioty/kostur_spiralny.glb
+- przedmioty/kostur_spiralny_tekstury/
+- ikony/kostur_spiralny_ikona.png
+- przedmioty/proca.fbx
+- przedmioty/proca.glb
+- przedmioty/proca_tekstury/
+- ikony/proca_ikona.png
+- bronie_startowe_ikony_arkusz.jpg
+- raport.json
+- raport.txt

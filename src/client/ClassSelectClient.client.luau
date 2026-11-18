@@ -417,6 +417,74 @@ local function pickSkin(m: Model)
 	end
 end
 
+-- broń startowa klasy w prawej dłoni figury rasy (Paweł 18.11): model WyborKlasyModele.Weapon_<id klasy> (Handle +
+-- części, układ RightGripAttachment; budowa: tools/studio/deploy_classselect.py z swiat/postacie/bronie_startowe.py).
+-- Figura stoi zakotwiczona, więc „pozę trzymania” robimy wprost: przedramię (wszystko pod łokciem) obracamy do przodu
+-- wokół stawu łokcia, a broń stawiamy na zaczepie dłoni — wtedy stoi pionowo przed postacią.
+local HOLD_ELBOW = math.rad(80)
+local function holdWeapon(h: Hero)
+	local m = h.model
+	local w = modelsFolder:FindFirstChild("Weapon_" .. CLASSES[index].id)
+	local elbow = m:FindFirstChild("RightElbow", true)
+	if elbow and elbow:IsA("Motor6D") and elbow.Part0 and elbow.Part1 then
+		-- kości od łokcia w dół (przedramię, dłoń) i bryły do nich przyspawane
+		local moving: { [BasePart]: boolean } = { [elbow.Part1 :: BasePart] = true }
+		local grew = true
+		while grew do
+			grew = false
+			for _, d in ipairs(m:GetDescendants()) do
+				if d:IsA("JointInstance") or d:IsA("WeldConstraint") then
+					local a, b = (d :: any).Part0, (d :: any).Part1
+					if a and b and d ~= elbow then
+						if moving[a] and not moving[b] then
+							moving[b] = true
+							grew = true
+						elseif moving[b] and not moving[a] and d:IsA("WeldConstraint") then
+							moving[a] = true
+							grew = true
+						end
+					end
+				end
+			end
+		end
+		local pivot = (elbow.Part0 :: BasePart).CFrame * elbow.C0
+		-- figura jest zakotwiczona: stawy i spawy wyłączamy, inaczej przesunięcie jednej części ciągnie całe ciało
+		for _, d in ipairs(m:GetDescendants()) do
+			if d:IsA("JointInstance") or d:IsA("WeldConstraint") then
+				(d :: any).Enabled = false
+			end
+		end
+		local root = m:FindFirstChild("HumanoidRootPart")
+		local right = if root and root:IsA("BasePart") then root.CFrame.RightVector else m:GetPivot().RightVector
+		local turn = CFrame.new(pivot.Position) * CFrame.fromAxisAngle(right, HOLD_ELBOW) * CFrame.new(-pivot.Position)
+		for part in pairs(moving) do
+			part.CFrame = turn * part.CFrame
+		end
+	end
+	-- zaczep dłoni: RightGripAttachment, a gdy figura go nie ma (wystawa ras) — ten sam układ co u bohaterów Karola:
+	-- środek części RightHand, obrót −90° w osi X
+	local grip = m:FindFirstChild("RightGripAttachment", true)
+	local hand = m:FindFirstChild("RightHand", true)
+	local gripCF: CFrame? = nil
+	if grip and grip:IsA("Attachment") then
+		gripCF = grip.WorldCFrame
+	elseif hand and hand:IsA("BasePart") then
+		gripCF = hand.CFrame * CFrame.Angles(-math.pi / 2, 0, 0)
+	end
+	if not (w and w:IsA("Model") and gripCF) then
+		return
+	end
+	local c = w:Clone()
+	for _, d in ipairs(c:GetDescendants()) do
+		if d:IsA("BasePart") then
+			d.Anchored = true
+			d.CanCollide = false
+		end
+	end
+	c:PivotTo(gripCF :: CFrame)
+	c.Parent = m
+end
+
 local function showRace(animate: boolean)
 	local r = RaceData.Races[raceIndex]
 	if not racePanel then
@@ -435,11 +503,25 @@ local function showRace(animate: boolean)
 			ring.Position = btn.Position
 		end
 	end
-	for _, p in ipairs(skinParts) do
-		if animate then
-			TS:Create(p, TweenInfo.new(0.25), { Color = r.skin }):Play()
-		else
-			p.Color = r.skin
+	-- model rasy z wystawy Karola (WyborKlasyModele.Race_<id>); bez niego: goły model w kolorze skóry rasy
+	local raceModel = modelsFolder:FindFirstChild("Race_" .. r.id)
+	if raceModel and raceModel:IsA("Model") then
+		for _, h in ipairs(heroes) do
+			h.model:Destroy()
+		end
+		table.clear(heroes)
+		table.clear(skinParts)
+		raceHero = makeHero(raceModel, 0)
+		holdWeapon(raceHero :: Hero)
+		table.insert(heroes, raceHero :: Hero)
+		place()
+	else
+		for _, p in ipairs(skinParts) do
+			if animate then
+				TS:Create(p, TweenInfo.new(0.25), { Color = r.skin }):Play()
+			else
+				p.Color = r.skin
+			end
 		end
 	end
 	if animate then
@@ -489,6 +571,7 @@ local function enterRace()
 	table.clear(heroes)
 	if src and src:IsA("Model") then
 		raceHero = makeHero(src, 0)
+		holdWeapon(raceHero :: Hero)
 		table.insert(heroes, raceHero :: Hero)
 		pickSkin((raceHero :: Hero).model)
 	end

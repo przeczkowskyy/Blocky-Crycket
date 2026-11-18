@@ -654,7 +654,8 @@ end
 -- (ten sam obrazek na czarno; dla pola bez obrazka — zaokrąglony prostokąt) i podskok napisu.
 -- przezroczystość cienia (1 = brak cienia): spoczynek lekko przygaszony, najechanie = rozjaśnienie (Paweł 18.11: napis
 -- się nie animuje — przy skalowaniu wyjeżdżał za przycisk — tylko przycisk się podświetla)
-local SHADE_ON, SHADE_OFF, SHADE_HOVER_OFF, SHADE_PRESS = 0.86, 0.5, 0.72, 0.62
+-- Paweł 18.11: bez ciemnej nakładki na przyciskach — aktywny czysty, nieaktywna zakładka tylko lekko przygaszona
+local SHADE_ON, SHADE_OFF, SHADE_HOVER_OFF, SHADE_PRESS = 1, 0.8, 0.92, 0.85
 local function flatButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
 	local sc = btn:FindFirstChildWhichIsA("UIScale")
 	if sc then

@@ -2399,7 +2399,252 @@
       "approved_sha256": "90ee8ed9692d19bb2c1464a593e69127bceb22e02a69cc5b5b30d93cd84dc1bc",
       "roblox_image": "74172135014587",
       "notes": "wgrane 2026-11-17 po tak Pawla"
+    },
+    "WeaponClub": {
+      "created_at": "2026-11-18T20:23:17+00:00",
+      "history": [],
+      "category": "item",
+      "status": "in_roblox",
+      "raw": "assets/raw/BronieStartowe_arkusz.jpg",
+      "processed": "assets/processed/WeaponClub.png",
+      "usage": "Ekwipunek: slot broni po wyborze klasy (bron startowa)",
+      "notes": "gorny rzad arkusza Pawla 18.11 (tools/bronie_startowe_ikony.py); wgrane 2026-11-18 po tak Pawla przez Studio MCP upload_image",
+      "updated_at": "2026-11-18T20:23:59+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T20:23:17+00:00",
+      "approved_sha256": "7cbc4e4395b5d1e0d9a8e93a57d251c08b7c979df0d7a8ba87951fb2151c7e0d",
+      "roblox_image": "73877053632813"
+    },
+    "WeaponStaff": {
+      "created_at": "2026-11-18T20:23:18+00:00",
+      "history": [],
+      "category": "item",
+      "status": "in_roblox",
+      "raw": "assets/raw/BronieStartowe_arkusz.jpg",
+      "processed": "assets/processed/WeaponStaff.png",
+      "usage": "Ekwipunek: slot broni po wyborze klasy (bron startowa)",
+      "notes": "gorny rzad arkusza Pawla 18.11 (tools/bronie_startowe_ikony.py); wgrane 2026-11-18 po tak Pawla przez Studio MCP upload_image",
+      "updated_at": "2026-11-18T20:23:59+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T20:23:18+00:00",
+      "approved_sha256": "1d7858f4fede54548385861a7e9baa9620ce29a724b24fe9a8869943d85d9d80",
+      "roblox_image": "128671874530213"
+    },
+    "WeaponSlingshot": {
+      "created_at": "2026-11-18T20:23:18+00:00",
+      "history": [],
+      "category": "item",
+      "status": "in_roblox",
+      "raw": "assets/raw/BronieStartowe_arkusz.jpg",
+      "processed": "assets/processed/WeaponSlingshot.png",
+      "usage": "Ekwipunek: slot broni po wyborze klasy (bron startowa)",
+      "notes": "gorny rzad arkusza Pawla 18.11 (tools/bronie_startowe_ikony.py); wgrane 2026-11-18 po tak Pawla przez Studio MCP upload_image",
+      "updated_at": "2026-11-18T20:23:59+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T20:23:18+00:00",
+      "approved_sha256": "ff54a5fbf169b0cbe90b854e7bdbdd7743951c6405d97d545885af40aad307c8",
+      "roblox_image": "90364220695668"
+    },
+    "SlotPairWarrior": {
+      "created_at": "2026-11-18T20:49:59+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/SlotPlaceholders/v1_3.png",
+      "processed": "assets/processed/SlotPlaceholders/SlotPairWarrior.png",
+      "figma_node": "43:85",
+      "usage": "Ekwipunek: nakladka slotow broni i tarczy Wojownika",
+      "notes": "wgrane 2026-11-18 po tak Pawla przez Studio MCP upload_image; tools/slot_placeholders.py",
+      "updated_at": "2026-11-18T20:50:17+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T20:49:59+00:00",
+      "approved_sha256": "d48e250ac6bbb095848c1757ebff808bb3c1fb24356d63fc57f89ff24aaad0a7",
+      "roblox_image": "89240592397124"
+    },
+    "SlotWeaponMage": {
+      "created_at": "2026-11-18T20:49:59+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/SlotPlaceholders/v1_3.png",
+      "processed": "assets/processed/SlotPlaceholders/SlotWeaponMage.png",
+      "figma_node": "43:86",
+      "usage": "Ekwipunek: nakladka slotu broni Maga",
+      "notes": "wgrane 2026-11-18 po tak Pawla przez Studio MCP upload_image; tools/slot_placeholders.py",
+      "updated_at": "2026-11-18T20:50:17+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T20:50:00+00:00",
+      "approved_sha256": "ec8fc69dd2ba895dd79cb2823d726e5ae74591a7c5fa498cd99def3930ab85e3",
+      "roblox_image": "127743263185862"
+    },
+    "SlotWeaponScout": {
+      "created_at": "2026-11-18T20:49:59+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/SlotPlaceholders/v1_3.png",
+      "processed": "assets/processed/SlotPlaceholders/SlotWeaponScout.png",
+      "figma_node": "43:87",
+      "usage": "Ekwipunek: nakladka slotu broni Zwiadowcy",
+      "notes": "wgrane 2026-11-18 po tak Pawla przez Studio MCP upload_image; tools/slot_placeholders.py",
+      "updated_at": "2026-11-18T20:50:17+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T20:50:00+00:00",
+      "approved_sha256": "78e78ae82da3d2632de6bb85dba27049977be3775c6e8648d04ef1d284eef295",
+      "roblox_image": "75330052223718"
+    },
+    "SklepBron1": {
+      "created_at": "2026-11-18T20:52:22+00:00",
+      "history": [
+        {
+          "roblox_image": "83915846297526",
+          "replaced_at": "2026-11-18T21:05:07+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/Sklepy/SklepBron1.png",
+      "usage": "Okno sklepu",
+      "updated_at": "2026-11-18T21:05:07+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T21:03:54+00:00",
+      "approved_sha256": "1896e51bc7c83784253989534742a9c1389e7c5dd8c8414488b74191dc4e8eb4",
+      "roblox_image": "94433869045018",
+      "notes": "18.11: wersja bez bialego tla, po tak Pawla"
+    },
+    "SklepBron2": {
+      "created_at": "2026-11-18T20:52:22+00:00",
+      "history": [
+        {
+          "roblox_image": "72883238359676",
+          "replaced_at": "2026-11-18T21:05:07+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/Sklepy/SklepBron2.png",
+      "usage": "Okno sklepu",
+      "updated_at": "2026-11-18T21:05:07+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T21:03:54+00:00",
+      "approved_sha256": "560c1d3d333263a42ed8a38d705ebc9081e195a34ea1d3f3f859d1b824f2e32f",
+      "roblox_image": "98053018141559",
+      "notes": "18.11: wersja bez bialego tla, po tak Pawla"
+    },
+    "SklepBron3": {
+      "created_at": "2026-11-18T20:52:22+00:00",
+      "history": [
+        {
+          "roblox_image": "109588040247286",
+          "replaced_at": "2026-11-18T21:05:07+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/Sklepy/SklepBron3.png",
+      "usage": "Okno sklepu",
+      "updated_at": "2026-11-18T21:05:07+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T21:03:54+00:00",
+      "approved_sha256": "7a7f985a3239304a96a778b6d5537810b7c99753a102b2a99d5ff0d77ea42b2d",
+      "roblox_image": "119270563333742",
+      "notes": "18.11: wersja bez bialego tla, po tak Pawla"
+    },
+    "SklepBron4": {
+      "created_at": "2026-11-18T20:52:22+00:00",
+      "history": [
+        {
+          "roblox_image": "116381707825537",
+          "replaced_at": "2026-11-18T21:05:07+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/Sklepy/SklepBron4.png",
+      "usage": "Okno sklepu",
+      "updated_at": "2026-11-18T21:05:07+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T21:03:54+00:00",
+      "approved_sha256": "136c8e1b7f732db5777893836054d6124e097c7df2208fadcd3f6b70f3818310",
+      "roblox_image": "113979133149770",
+      "notes": "18.11: wersja bez bialego tla, po tak Pawla"
+    },
+    "SklepMagia1": {
+      "created_at": "2026-11-18T20:52:22+00:00",
+      "history": [
+        {
+          "roblox_image": "114002204028629",
+          "replaced_at": "2026-11-18T21:05:07+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/Sklepy/SklepMagia1.png",
+      "usage": "Okno sklepu",
+      "updated_at": "2026-11-18T21:05:07+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T21:03:54+00:00",
+      "approved_sha256": "88e70a7c508f74eee02c77163b69dc97f445b92c5d5c36067f6a38cb3ba60ddf",
+      "roblox_image": "91909406024436",
+      "notes": "18.11: wersja bez bialego tla, po tak Pawla"
+    },
+    "SklepMagia2": {
+      "created_at": "2026-11-18T20:52:22+00:00",
+      "history": [
+        {
+          "roblox_image": "103619332550435",
+          "replaced_at": "2026-11-18T21:05:07+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/Sklepy/SklepMagia2.png",
+      "usage": "Okno sklepu",
+      "updated_at": "2026-11-18T21:05:07+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T21:03:54+00:00",
+      "approved_sha256": "cd02076cd4476b620ee4d36ba57267c2420a1b39ca4d797113c72f2540d41c52",
+      "roblox_image": "134914967476228",
+      "notes": "18.11: wersja bez bialego tla, po tak Pawla"
+    },
+    "SklepMagia3": {
+      "created_at": "2026-11-18T20:52:22+00:00",
+      "history": [
+        {
+          "roblox_image": "89578438862939",
+          "replaced_at": "2026-11-18T21:05:08+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/Sklepy/SklepMagia3.png",
+      "usage": "Okno sklepu",
+      "updated_at": "2026-11-18T21:05:08+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T21:03:55+00:00",
+      "approved_sha256": "32ac85727eef0ddeb74867e2fb17e218f73ac60f195a188a9e44bdcda8adc854",
+      "roblox_image": "114841441648496",
+      "notes": "18.11: wersja bez bialego tla, po tak Pawla"
+    },
+    "SklepMagia4": {
+      "created_at": "2026-11-18T20:52:23+00:00",
+      "history": [
+        {
+          "roblox_image": "106698953543406",
+          "replaced_at": "2026-11-18T21:05:08+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/Sklepy/SklepMagia4.png",
+      "usage": "Okno sklepu",
+      "updated_at": "2026-11-18T21:05:08+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-18T21:03:55+00:00",
+      "approved_sha256": "a67c850b9432cae26fb3c38bcadaf5c37869972bc0922f1d8e333c3e2d3dda30",
+      "roblox_image": "90477826007829",
+      "notes": "18.11: wersja bez bialego tla, po tak Pawla"
     }
   },
-  "updated_at": "2026-11-17T20:49:23+00:00"
+  "updated_at": "2026-11-18T21:05:08+00:00"
 }

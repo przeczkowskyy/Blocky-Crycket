@@ -46,6 +46,127 @@ end
 local hudPressed = bindable("HUDButtonPressed")
 local action = bindable("EquipmentPanelAction")
 
+------------------------------------------------ sloty broni według klasy (Paweł 18.11)
+-- Tło okna ma wypalony slot broni z mieczem. Nakładka (obrazek z ramką wyciętą z tego samego tła,
+-- tools/slot_placeholders.py) leży w Background nad tłem, pod przyciskami:
+--   Wojownik — para: slot broni (miecz) przesunięty w lewo + nowy slot tarczy Slot_OffHand obok, razem na środku;
+--   Mag — slot broni z sylwetką kostura; Zwiadowca — z sylwetką procy. Bez klasy: tło jak dawniej.
+-- Położenia w pikselach pełnego tła 2048 × 1166 (ramki z czarnym obrysem); przycisk leży 12/7 px w głąb ramki.
+local BG_W, BG_H = 2048, 1166
+local function px(x, y, w, h)
+	return UDim2.fromScale(x / BG_W, y / BG_H), UDim2.fromScale(w / BG_W, h / BG_H)
+end
+local CLASS_SLOTS = {
+	Warrior = { image = "rbxassetid://89240592397124", frame = { 397, 455, 282, 135 }, weaponX = 397, offHandX = 543 },
+	Mage = { image = "rbxassetid://127743263185862", frame = { 470, 455, 136, 135 }, weaponX = 470 },
+	Scout = { image = "rbxassetid://75330052223718", frame = { 470, 455, 136, 135 }, weaponX = 470 },
+}
+local SLOT_DX, SLOT_DY, SLOT_SIZE = 12, 7, 116
+local weaponSlot = panel.Character.EquipSlots:WaitForChild("Slot_Weapon")
+local offHandSlot = panel.Character.EquipSlots:FindFirstChild("Slot_OffHand")
+if not offHandSlot then
+	offHandSlot = weaponSlot:Clone() -- ta sama budowa (Cover, Icon), przedmioty ze slot = "OffHand" (tarcze)
+	offHandSlot.Name = "Slot_OffHand"
+	offHandSlot.Visible = false
+	offHandSlot.Parent = weaponSlot.Parent
+end
+local classOverlay = Instance.new("ImageLabel")
+classOverlay.Name = "ClassSlots"
+classOverlay.BackgroundTransparency = 1
+classOverlay.ZIndex = 2 -- nad kafelkami tła (Background, ZIndexBehavior Sibling)
+classOverlay.Visible = false
+classOverlay.Parent = panel:WaitForChild("Background")
+local function applyClassSlots()
+	local cfg = CLASS_SLOTS[player:GetAttribute("Class") or ""]
+	local slotY = 455 + SLOT_DY
+	if not cfg then
+		classOverlay.Visible = false
+		offHandSlot.Visible = false
+		weaponSlot.Position = (px(470 + SLOT_DX, slotY, 0, 0))
+		return
+	end
+	local f = cfg.frame
+	classOverlay.Image = cfg.image
+	classOverlay.Position, classOverlay.Size = px(f[1], f[2], f[3], f[4])
+	classOverlay.Visible = true
+	weaponSlot.Position = (px(cfg.weaponX + SLOT_DX, slotY, 0, 0))
+	offHandSlot.Visible = cfg.offHandX ~= nil
+	if cfg.offHandX then
+		offHandSlot.Position, offHandSlot.Size = px(cfg.offHandX + SLOT_DX, slotY, SLOT_SIZE, SLOT_SIZE)
+	end
+end
+applyClassSlots()
+player:GetAttributeChangedSignal("Class"):Connect(applyClassSlots)
+
+------------------------------------------------ pasek doświadczenia (Paweł 18.11: wypalony w tle był rozmazany i miał
+-- łatę po usuniętym napisie) — natywny pasek na wnętrzu złotej ramki z tła, wypełnienie = XP / XPMax
+local expBar = Instance.new("Frame")
+expBar.Name = "ExpBar"
+expBar.BorderSizePixel = 0
+expBar.BackgroundColor3 = Color3.fromRGB(14, 10, 16)
+expBar.ZIndex = 2
+expBar.Position, expBar.Size = px(444, 378, 189, 50)
+expBar.Parent = panel.Background
+local function corner(parent: Instance, r: number)
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(r, 0)
+	c.Parent = parent
+end
+corner(expBar, 0.3)
+local track = Instance.new("Frame")
+track.Name = "Track"
+track.BorderSizePixel = 0
+track.BackgroundColor3 = Color3.fromRGB(36, 38, 60)
+track.Position = UDim2.fromScale(0.016, 0.06)
+track.Size = UDim2.fromScale(0.968, 0.88)
+track.ZIndex = 2
+track.ClipsDescendants = true
+track.Parent = expBar
+corner(track, 0.3)
+local fill = Instance.new("Frame")
+fill.Name = "Fill"
+fill.BorderSizePixel = 0
+fill.BackgroundColor3 = Color3.new(1, 1, 1)
+fill.Size = UDim2.fromScale(0, 1)
+fill.ZIndex = 2
+fill.Parent = track
+corner(fill, 0.3)
+local grad = Instance.new("UIGradient")
+grad.Rotation = 90
+grad.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(150, 236, 120)),
+	ColorSequenceKeypoint.new(0.35, Color3.fromRGB(70, 196, 74)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(34, 140, 52)),
+})
+grad.Parent = fill
+local shine = Instance.new("Frame") -- połysk w górnej części wypełnienia (styl Glossy Ink)
+shine.Name = "Shine"
+shine.BorderSizePixel = 0
+shine.BackgroundColor3 = Color3.new(1, 1, 1)
+shine.BackgroundTransparency = 0.55
+shine.Position = UDim2.fromScale(0.04, 0.12)
+shine.Size = UDim2.fromScale(0.92, 0.2)
+shine.ZIndex = 2
+shine.Parent = fill
+corner(shine, 0.5)
+local function refreshExp(animate: boolean)
+	local xp = player:GetAttribute("XP") or 0
+	local maxXp = math.max(player:GetAttribute("XPMax") or 100, 1)
+	local goal = UDim2.fromScale(math.clamp(xp / maxXp, 0, 1), 1)
+	if animate then
+		TS:Create(fill, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = goal }):Play()
+	else
+		fill.Size = goal
+	end
+end
+refreshExp(false)
+player:GetAttributeChangedSignal("XP"):Connect(function()
+	refreshExp(true)
+end)
+player:GetAttributeChangedSignal("XPMax"):Connect(function()
+	refreshExp(true)
+end)
+
 ------------------------------------------------ skalowanie obrysów tekstu
 local baseThickness = {}
 for _, d in ipairs(panel:GetDescendants()) do
@@ -100,7 +221,10 @@ end
 -- Przycisk leży co do piksela na swojej kopii w grafice tła — każde powiększenie, zmniejszenie albo przyciemnienie samego
 -- obrazka odsłaniało kopię pod spodem (uwaga Pawła 16–17.11). Reakcja na mysz: nakładka-cień w kształcie przycisku
 -- (ten sam obrazek na czarno; dla pola bez obrazka — zaokrąglony prostokąt) i podskok napisu.
-local SHADE_OFF, SHADE_HOVER_OFF, SHADE_PRESS = 0.5, 0.72, 0.62
+-- przezroczystość cienia (1 = brak cienia): spoczynek lekko przygaszony, najechanie = rozjaśnienie (Paweł 18.11: napis
+-- się nie animuje — przy skalowaniu wyjeżdżał za przycisk — tylko przycisk się podświetla)
+-- Paweł 18.11: bez ciemnej nakładki na przyciskach — aktywny czysty, nieaktywna zakładka tylko lekko przygaszona
+local SHADE_ON, SHADE_OFF, SHADE_HOVER_OFF, SHADE_PRESS = 1, 0.8, 0.92, 0.85
 local function flatButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
 	local sc = btn:FindFirstChildWhichIsA("UIScale")
 	if sc then
@@ -139,11 +263,11 @@ local function flatButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
 			lsc.Parent = label
 		end
 	end
-	local base, hovering, pressed = 1, false, false
+	local base, hovering, pressed = SHADE_ON, false, false
 	local function apply()
 		local t = base
-		if hovering and t < 1 then
-			t = SHADE_HOVER_OFF
+		if hovering then
+			t = (base == SHADE_ON) and 1 or SHADE_HOVER_OFF -- aktywny: pełna jasność; nieaktywny: mniej cienia
 		end
 		if pressed then
 			t = math.min(t, SHADE_PRESS)
@@ -151,7 +275,7 @@ local function flatButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
 		local prop = shade:IsA("ImageLabel") and "ImageTransparency" or "BackgroundTransparency"
 		TS:Create(shade, QUICK, { [prop] = t }):Play()
 		if lsc then
-			TS:Create(lsc, QUICK, { Scale = pressed and 0.95 or (hovering and 1.12 or 1) }):Play()
+			lsc.Scale = 1 -- napis bez animacji
 		end
 	end
 	btn.MouseEnter:Connect(function()
@@ -175,8 +299,9 @@ local function flatButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
 		apply()
 		onClick()
 	end)
+	apply() -- stan spoczynku od razu (lekko przygaszony), żeby najechanie było widać jako podświetlenie
 	return function(active: boolean)
-		base = active and 1 or SHADE_OFF
+		base = active and SHADE_ON or SHADE_OFF
 		apply()
 	end
 end
@@ -515,6 +640,31 @@ end)
 
 -- przedmiot testowy
 equip.Slot_Trinket = "Scrap"
+
+-- broń startowa klasy (Paweł 18.11): po wyborze klasy trafia do slotu broni (ClassData.Classes[].weapon).
+-- Stan tylko po stronie klienta, jak reszta ekwipunku (TEST) — wkładamy ją raz, później gracz może ją przełożyć.
+local starterGiven = false
+local function giveStarterWeapon()
+	if starterGiven then
+		return
+	end
+	local ok, ClassData = pcall(function()
+		return require(RS:WaitForChild("Shared"):WaitForChild("ClassData"))
+	end)
+	local c = ok and ClassData.byId(player:GetAttribute("Class") or "")
+	if not (c and c.weapon and Items[c.weapon]) then
+		return
+	end
+	starterGiven = true
+	if equip.Slot_Weapon == nil then
+		equip.Slot_Weapon = c.weapon
+	else
+		storeInBag(c.weapon)
+	end
+	renderAll()
+end
+player:GetAttributeChangedSignal("Class"):Connect(giveStarterWeapon)
+giveStarterWeapon()
 renderAll()
 
 local levelLbl = panel.Character.LevelBadge.LevelText
