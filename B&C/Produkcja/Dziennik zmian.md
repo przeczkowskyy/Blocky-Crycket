@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-18 · Claude Code u Karola (Training Center: arena z dekoracjami — w Studio)
+- **Wygląd areny Training Center** (`Workspace/TreningProba`, `swiat/trening_proba/dekoracje.py`; propozycja): podłoga w szachownicę z ramami pól stanowisk w kolorach statystyk, ogrodzenie z girlandami chorągiewek, brama z szyldem, dwie trybunki z widzami, tablica wyników jako dekoracja, stojaki z bronią i ciężarkami, lampiony; każde stanowisko ma własne dekoracje, a trenerzy są klockowymi figurami z twarzą i strojem. Elementy gry, zasady, kamera, napisy i przyrosty bez zmian. 1658 części (było 202), 87% dekoracji bez kolizji, bez świateł.
+- **Próba w grze (17:46–18:16):** 31 punktów w porządku w dwóch pełnych przebiegach; pola gry wolne, kadry kamery niezasłonięte (liczone z brył w miejscu), czas klatki 16,7 ms jak przed zmianą. Po zrzutach poprawione manekiny przy Sile (tarcza wyglądała jak strefa ciosu) i bele siana za strefą.
+- **Przy okazji:** test styku efektów treningu z walką dopasowany do dzisiejszych efektów Dżungli (walka może mieć więcej efektów niż mini-gry). Pierwsza połowa wieczornej próby całej gry (10 prób: stary las, stan gracza, pety, kowal, stroje, wystawa ras, bazar, dźwięk) — 0 błędów.
+- **Niesprawdzone:** prawdziwy telefon, kilku graczy, kadry trzech gier na zrzucie z gry. Wybory do oceny: `swiat/trening_proba/PROJEKT.md` (18–22).
+- Raport w panelu: „Training Center: arena z dekoracjami i nowymi figurami trenerów”. Notatki: [[Zadania]].
+
 ## 2026-11-18 · Claude Code u Karola (przelot przez biom w nowej oprawie — w Studio)
 - **Nowa oprawa przelotu D-077** (`Workspace/CutscenkaBiomu`, `swiat/cutscenka_biomu/`; propozycja wykonania zatwierdzonej decyzji): trasa liczona z map, 11,2 s (lot 8,6 s i postój na Strażniku 2,6 s), plansza z nazwą krainy, czarne pasy, zwolnienie i podpis przy każdej przegrodzie, zbliżenie na Strażnika z imieniem, gestem i rykiem; na czas przelotu postać stoi, walka nie rusza, HUD i podpowiedzi E są schowane. Skrypt pasa oddaje przelot nowemu pakietowi przez mały haczyk; bez nowego kontenera gra stary przelot.
 - **Pomijanie domyślnie wyłączone** — zgodnie z wcześniejszym ustaleniem Karola zapisanym w pakiecie lasu („przelotu nie da się pominąć”); przełącznik `Pomijanie` jest w kodzie.

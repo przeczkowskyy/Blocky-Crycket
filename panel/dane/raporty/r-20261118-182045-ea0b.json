@@ -1,0 +1,30 @@
+{
+ "id": "r-20261118-182045-ea0b",
+ "tytul": "Training Center: arena z dekoracjami i nowymi figurami trenerów",
+ "opis_md": "- Arena Training Center wygląda teraz jak plac treningowy: podłoga z polami stanowisk, ogrodzenie z chorągiewkami, brama z szyldem, trybunki z widzami, tablica wyników, stojaki z bronią i lampiony.\n- Każde z sześciu stanowisk ma własne dekoracje (manekiny i miecze przy Sile, zbroje przy Pancerzu, tor z płotkami przy Bieżni, kłody i siekiera, pulpit z księgami, polanka ze studnią), a trenerzy są klockowymi figurami z twarzą i strojem.\n- Zasady gier, kamera, napisy i przyrosty są bez zmian. Czas klatki się nie zmienił mimo 1658 części zamiast 202.\n- Do oceny: czy tła stanowisk nie są zbyt bogate i czy dekoracji nie jest za dużo (wybory 18–22 w `PROJEKT.md`).\n\nSzczegóły:\n\n**Jak sprawdzić w Studio:** Play → wybierz klasę → tablica „Training Center” przy starcie (E).\n\n**Próba w grze (18.11, 17:46–18:16): 31 punktów w porządku, dwa pełne przebiegi**\n\n| Co sprawdzone | Wynik |\n|---|---|\n| Części | 1658 (było 202), wszystkie zakotwiczone, 0 świateł |\n| Pola gry | 7 pól wolnych od dekoracji i kolizji |\n| Kadry kamery | 0 zasłoniętych promieni w sześciu grach (liczone z brył w miejscu) |\n| Czas klatki w rundach | 16,7 ms średnio, 18,0–18,1 ms w najgorszych 5% — jak przed zmianą |\n| Czas klatki w lobby z całą areną | 16,7 ms średnio |\n| Wszystkie dotychczasowe punkty gier | w porządku |\n\n**Poprawione po obejrzeniu zrzutów:** manekiny przy Sile miały czerwono-białą tarczę, która w kadrze wyglądała jak strefa ciosu — mają teraz brązowe łaty; bele siana przeniesione zza strefy „lewo”.\n\n**Niesprawdzone:** prawdziwy telefon i kilku graczy naraz; kadry Bloku, Run i Kłód obejrzane tylko w rachunku, nie na zrzucie z gry; wygląd o innej porze dnia (lampiony nie świecą światłem).\n\n**Uwaga:** przy jasnym świetle szachownica podłogi jest słabo widoczna w kadrach gier.\n\n**Do oceny (`swiat/trening_proba/PROJEKT.md`, wybory 18–22):** ile dekoracji (lżejsze warianty: bez szachownicy albo bez girland), tablica wyników z prawdziwymi rekordami, bogate czy spokojne tło stanowisk, figury klockowe czy z modeli postaci, prawdziwe światła w lampionach.\n\nPliki: `swiat/trening_proba/dekoracje.py`, `README.md`, zrzuty `klatki/a1`–`a9`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T18:20:45+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TreningProba",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/trening_proba/PROJEKT.md",
+   "etykieta": "Wybory do oceny (18–22)"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
