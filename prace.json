@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T02:10:23+01:00",
+ "aktualizacja": "2026-11-18T02:10:26+01:00",
  "prace": [
   {
    "id": "noc-pety-dzungla",
@@ -13,6 +13,19 @@
    "aktualizacja": "2026-11-18T01:57:02+01:00",
    "obszary": [
     "swiat/pety_proba"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "noc-regresja",
+   "tytul": "Regresja końcowa wszystkich prób w Studio",
+   "stan": "w_toku",
+   "start": "2026-11-18T02:10:26+01:00",
+   "koniec_szacowany": "2026-11-18T04:15:00+01:00",
+   "aktualizacja": "2026-11-18T02:10:26+01:00",
+   "obszary": [
+    "studio:Play"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
