@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T02:10:26+01:00",
+ "aktualizacja": "2026-11-18T02:10:43+01:00",
  "prace": [
   {
    "id": "noc-pety-dzungla",
@@ -26,6 +26,19 @@
    "aktualizacja": "2026-11-18T02:10:26+01:00",
    "obszary": [
     "studio:Play"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "przebudowa-tukanik",
+   "tytul": "Przebudowa modelu tukanik",
+   "stan": "w_toku",
+   "start": "2026-11-18T02:10:42+01:00",
+   "koniec_szacowany": "2026-11-18T02:30:42+01:00",
+   "aktualizacja": "2026-11-18T02:10:42+01:00",
+   "obszary": [
+    "model:tukanik"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
