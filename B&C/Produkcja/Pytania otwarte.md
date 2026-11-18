@@ -591,6 +591,7 @@ Szczegóły: Utwory są z tego samego generatora i w tej samej palecie instrumen
 - Do wyboru: (a) te same klocki i skala całej postaci (ork 1,08, goblin 0,88) — tak jest teraz; (b) własne klocki ras — bliżej rzutów, ale każdy przedmiot trzeba dopasować do każdej rasy.
 
 Szczegóły: To pytanie z sekcji „Do ustalenia” notatki [[Rasy — rzuty dla modelarza]], teraz z modelami do porównania: raport w panelu „Modele ras z rzutów Pawła: elf i ork do oceny (pilotaż)” (plansze „rzut i model”, modele 3D). Na rzutach tułów z rękami to ok. 0,45 wzrostu, w modelu 0,78 (pomiar przybliżony). Przy (a) rasę odróżniają skóra, twarz, uszy, włosy, rogi, kły, ogon, aureola i kolor spodenek, a wielkość to mnożnik całego modelu, więc ekwipunek rośnie razem z postacią. Przy (b) kontrakt z D-071 („przedmiot pasuje do typu ciała”) oznacza osobne dopasowanie 20 przedmiotów bohaterów do każdej rasy. Pozostałe cztery rasy powstają na razie według (a). Opis: `swiat/postacie/RASY.md`.
+Dopisek z 2026-11-18: komplet sześciu ras stoi na tym założeniu — plansza zbiorcza obok człowieka w raporcie „Sześć ras z rzutów Pawła: komplet modeli do oceny”. Najdalej od rzutu jest goblin (na rysunku duża głowa i cienkie ręce) i ork (masywne ciało).
 **Odpowiedź:**
 
 ## 68. Rasa a klasa Mag: Mag jest kotem
@@ -607,5 +608,6 @@ Szczegóły: Wyszło przy budowie modeli ras (D-104): przedmioty mają typ ciał
 - Można odpowiedzieć na wybrane punkty, reszta zostaje jak w pilotażu.
 
 Szczegóły: (1) Hełm i kaptur dziś chowają włosy w całości, a uszy przechodzą przez ściankę — zostawić, chować też uszy czy robić hełmy z wycięciami na uszy i rogi; (2) spodenki orka: w zamówieniu rzutu brązowe, na rysunku wielokolorowe, model ma brązowe (zlewają się z butami); (3) goblin: pierwszy rzut czy „wariant 2” (większa głowa, cieńsze ręce) — w budowie jest pierwszy; (4) buty: rasy mają brązowe buty jako część ciała, goły Rycerz i Zwiadowca są boso — ujednolicić?; (5) rękawice bez palców mają dłoń w kolorze skóry człowieka, więc ork dostaje ludzkie dłonie — przedmioty mają brać kolor skóry rasy?; (6) spoczynek rasy na ekranie wyboru: klipy są skopiowane z Rycerza (ręka jak do miecza) — zrobić neutralny?; (7) demon: ikona wyboru ma spiczaste uszy, rzut ich nie ma — model będzie bez uszu; (8) Półbóg: czy aureola i świecące oczy zostają pod hełmem (wygląd zależy też od pytania 47). Opis i liczby: `swiat/postacie/RASY.md` pkt 8 i 9.
+Dopisek z 2026-11-18 (po komplecie sześciu ras): doszły trzy punkty. (9) Rogi demona: połowa siedzi w hełmie i kapturze, wystają ok. 0,4 studa nad nie — te same trzy możliwości co przy uszach. (10) Ogon demona jest sztywny na biodrach; ruchomy ogon wymagałby własnych kości, a wtedy demon nie dzieli klipów z człowiekiem. (11) Uszy goblina wystają przez hełm najbardziej (ok. 0,7 studa), uszy orka są prawie całe schowane. Raport: „Sześć ras z rzutów Pawła: komplet modeli do oceny”.
 **Odpowiedź:**
 

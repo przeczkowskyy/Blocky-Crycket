@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-18 · Claude Code u Karola (komplet sześciu ras w Blenderze)
+- **Modele ras (D-104), komplet:** do elfa i orka doszły demon, mroczny elf, goblin i Półbóg (13:02–13:25), wszystkie na ciele człowieka w stroju bazowym, z planszami „rzut i model”, przymiarkami kompletów Rycerza i Zwiadowcy oraz planszą zbiorczą obok człowieka. Po przeglądzie pilotażu poprawione włosy elfa (dłuższe pasma, tył w trzech warstwach) oraz kok i uszy orka. Skala: ork 1,08, goblin 0,88, reszta 1,0 — tylko jako dana.
+- **Co odbiega od rzutów:** sylwetka u wszystkich (najbardziej goblin i ork), sztywny ogon demona, brak poświaty Półboga. Przymiarki: uszy elfów i goblina oraz rogi demona przechodzą przez hełm i kaptur, aureola się mieści, rękawice Zwiadowcy dają ludzkie dłonie pięciu rasom.
+- **Sprawdzone:** test sześciu modułów bez Blendera, bohaterowie bez zmian, eksporty zgodne. W Studio nic jeszcze nie stoi.
+- Raport w panelu: „Sześć ras z rzutów Pawła: komplet modeli do oceny” (osiem obrazów, sześć modeli 3D). Pliki: `swiat/postacie/` (`rasy.py`, `rasa_<id>.py`, `RASY.md`, `wynik/rasa_<id>/`, `wynik/_rasy/`); notatki [[Zadania]], [[Pytania otwarte]] (dopiski pod 67 i 69), [[Rasy — rzuty dla modelarza]].
+
 ## 2026-11-18 · Claude Code u Karola (pilotaż modeli ras: elf i ork; druga partia muzyki w repo)
 - **Modele ras (D-104), pilotaż:** elf i ork zbudowane w Blenderze z rzutów Pawła (12:17–12:58). Wspólny kod sześciu ras `swiat/postacie/rasy.py` (palety, cechy głowy, skala, spodenki), moduły `rasa_elf.py` i `rasa_ork.py`, plansze „rzut i model”, przymiarki kompletów Rycerza i Zwiadowcy, test bez Blendera. **Robocze założenie agenta (propozycja):** rasa to ciało człowieka bez zmiany klocków — różni się skórą, głową, włosami, dodatkami i kolorem spodenek, a wielkość to skala całej postaci (ork 1,08, goblin 0,88). Dzięki temu każdy przedmiot człowieka pasuje; ceną jest sylwetka dalsza od rzutów (pytanie 67).
 - **Co wyszło przy przymiarkach:** uszy przechodzą przez hełm i kaptur, włosy pod nimi znikają, rękawice Zwiadowcy dają orkowi ludzkie dłonie, Mag jako kot nie łączy się z rasami (pytania 68 i 69). Istniejący bohaterowie wychodzą identycznie jak przedtem (test). W `przebuduj.py` doszedł opcjonalny haczyk `po_przebudowie` (plansze ras).

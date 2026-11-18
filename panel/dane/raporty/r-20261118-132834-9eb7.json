@@ -1,0 +1,60 @@
+{
+ "id": "r-20261118-132834-9eb7",
+ "tytul": "Sześć ras z rzutów Pawła: komplet modeli do oceny",
+ "opis_md": "- Wszystkie sześć ras z rzutów Pawła jest zbudowanych w Blenderze: elf, mroczny elf, ork, demon, goblin i Półbóg. Plansza zbiorcza pokazuje je obok człowieka; modele 3D można obrócić w podglądzie poniżej.\n- Po uwagach z pilotażu poprawione: włosy elfa (dłuższe pasma, tył w trzech warstwach), kok orka (obły węzeł z kosmykiem) i jego uszy.\n- Wszystkie stoją na ciele człowieka, więc każdy przedmiot Rycerza i Zwiadowcy pasuje. Pytanie o proporcje (67) dalej czeka: rzuty są smuklejsze, ork masywniejszy, goblin ma dużą głowę i cienkie ręce.\n- Następny krok: wystawa ras w Studio, żeby obejrzeć je w grze. Podpięcie ras do walki i wyboru postaci dopiero po odpowiedziach na pytania 67 i 68.\n\nSzczegóły:\n\n**Liczby**\n\n| | Elf | Mroczny elf | Ork | Demon | Goblin | Półbóg |\n|---|---|---|---|---|---|---|\n| Bryły ciała + włosów | 55 + 42 | 55 + 42 | 56 + 16 | 63 + 0 | 57 + 0 | 59 + 17 |\n| Trójkąty | 2924 | 2924 | 2412 | 2166 | 1844 | 2888 |\n| Skala → wzrost (studa) | 1,00 → 5,30 | 1,00 → 5,30 | 1,08 → 5,72 | 1,00 → 5,30 | 0,88 → 4,66 | 1,00 → 5,30 |\n| Plik modelu 3D | 482 kB | 482 kB | 410 kB | 374 kB | 327 kB | 478 kB |\n\nKażda rasa ma kości, zaczepy i klipy ciała człowieka (spoczynek, chód, wiwat skopiowane z Rycerza).\n\n**Co ma każda nowa rasa**\n- Mroczny elf: bryły elfa w innej palecie — lawendowa skóra, srebrne włosy, fioletowe oczy i spodenki.\n- Demon: bez uszu (jak na rzucie), czarne rogi, złote świecące oczy, kieł, sztywny ogon z grotem na biodrach, czarne spodenki.\n- Goblin (pierwszy rzut): wielkie uszy, długi nos, uśmiech z zębami, pomarańczowe spodenki, skala 0,88.\n- Półbóg: aureola, świecące niebieskie oczy, jasne falowane włosy, białe spodenki ze złotą lamówką.\n\n**Co odbiega od rzutów**\n- Sylwetka u wszystkich (klocki Rycerza są szersze). Cienkich kończyn i dużej głowy goblina oraz masywnego ciała orka nie ma.\n- Ogon demona jest sztywny i kanciasty, na rzucie cienki i miękki.\n- Półbóg nie ma poświaty wokół postaci; włosy to kanciaste fale.\n- Mroczny elf ma oczy elfa, na rzucie są węższe. Nos goblina nie ma haczykowatego łuku.\n\n**Przenikania z przymiarek (w pozie spoczynku)**\n\n| Co | Wynik |\n|---|---|\n| Uszy elfów i goblina | przechodzą przez hełm i kaptur; czubek 0,5–0,7 studa na zewnątrz |\n| Uszy orka | prawie całe schowane w hełmie |\n| Rogi demona | połowa w hełmie, wystają ok. 0,4 studa nad hełm i kaptur |\n| Aureola Półboga | bez przecięcia, tuż nad grzebieniem hełmu |\n| Ogon demona | tabard Rycerza go nie tnie; przechodzi przez pas Zwiadowcy |\n| Włosy elfów i Półboga | pod hełmem i kapturem znikają; bez kaptura przecinają kołczan Zwiadowcy |\n| Rękawice Zwiadowcy | dają ludzkie dłonie pięciu rasom (wszystkim poza elfem) |\n\n**Sprawdzone:** test bez Blendera dla sześciu modułów — zgodne; istniejący bohaterowie wychodzą identycznie jak przed rasami; eksporty 8 z 8 zgodnych dla każdej rasy.\n\n**Niesprawdzone:** nic w Roblox Studio; przenikania w ruchu (ogon przy nodze w chodzie, długie włosy przy ruchu głowy); świecenie oczu i aureoli w grze; filmów klipów nie ma.\n\n**Pytania do ludzi:** 67 (proporcje ras), 68 (rasa a klasa Mag), 69 (drobne wybory wyglądu — doszły: rogi a hełm, ogon demona sztywny czy ruchomy).\n\nPliki: `swiat/postacie/RASY.md`, `swiat/postacie/rasy.py`, moduły `rasa_<id>.py`, wyniki w `swiat/postacie/wynik/rasa_<id>/` i `wynik/_rasy/rasy_razem.jpg`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T13:28:34+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/rasa_elf/rasa_elf.glb",
+   "etykieta": "Elf — model 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/rasa_mroczny_elf/rasa_mroczny_elf.glb",
+   "etykieta": "Mroczny elf — model 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/rasa_ork/rasa_ork.glb",
+   "etykieta": "Ork — model 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/rasa_demon/rasa_demon.glb",
+   "etykieta": "Demon — model 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/rasa_goblin/rasa_goblin.glb",
+   "etykieta": "Goblin — model 3D"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/wynik/rasa_polbog/rasa_polbog.glb",
+   "etykieta": "Półbóg — model 3D"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytania 67–69"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/RASY.md",
+   "etykieta": "Opis ras i pytania"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
