@@ -1,0 +1,77 @@
+RAPORT — rasa_demon
+DEMON — rasa postaci (D-079, D-104) z rzutu assets/processed/RaceTurnarounds/demon.jpg: ciało „czlowiek” w stroju bazowym.
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/rasa_demon.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py rasa_demon
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: rasa_demon
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 8 plików, zgodnych 8
+- ostrzeżenia z raportu: 1; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Status: propozycja (D-104, etapy A1–A2). Rasa = ciało typu „czlowiek” na klockach gołego Rycerza: sylwetka jest klockowa i szersza niż na rzucie (tułów z rękami ok. 0,78 wzrostu, na rysunku ok. 0,45) — to skutek założenia „te same klocki”, nie błąd głowy.
+- Skala rasy 1,00 jest tylko daną (RASY[...]["skala"], Postac.skala_rasy) — model, eksporty i przymiarki są w skali 1; skalę pokazuje plansza rasa_demon_skala.jpg.
+- Klipy idle, chod i wiwat są skopiowane z Rycerza (prawa ręka w gotowości do miecza — bez broni wygląda jak uniesiona pięść). W grze rasa gra klipy swojej klasy; neutralnego spoczynku dla ekranu wyboru rasy nie ma.
+- Brązowe buty są warstwą ciała (bryły „golas” na stopach): każdy przedmiot ze slotu Boots je zdejmuje. Goły Rycerz i Zwiadowca mają bose stopy — do decyzji, czy człowiek też dostaje buty (RASY.md).
+- Włosy, uszy i inne dodatki głowy są sztywne (bez kości): przy skłonie i skręcie głowy długie pasma wchodzą w tors i ramiona. Hełm i kaptur chowają włosy w całości (znacznik „Wlosy”), uszy i kły zostają.
+- Przymiarki (ekwipunek/rasa_demon_ekwipunek_plansza.jpg): rękawice Zwiadowcy mają w powłoce klocek dłoni w kolorze skóry człowieka, więc na rasie o innej skórze dłonie robią się ludzkie. Pełna lista: RASY.md pkt 8.
+- Twarz bez mimiki; oczy, brwi i usta to bryły 0,02–0,09 studa przed ścianą głowy.
+- Import do Roblox Studio nie był robiony (etap A1 jest tylko w Blenderze).
+- Demon względem rzutu: rogi są z dwóch klocków i szpica (łuk kanciasty), ogon to sztywna łamana z sześciu klocków z płaskim grotem — nie wije się i nie rusza się w klipach; na rzucie ogon jest cieńszy i ma miękki łuk. Oczy świecą przez emisję w teksturze-palecie (w grze trzeba ją podpiąć albo dać Neon).
+- Ogon siedzi na biodrach i wychodzi w lewą stronę postaci poza obrys nogi. Z tylną połą tabardu Rycerza się nie przecina (wychodzi tuż nad nią), przechodzi przez pas Zwiadowcy z tyłu i dotyka liścia jego peleryny; w chodzie i wiwacie nie był sprawdzany (RASY.md pkt 8).
+- Rogi przebijają górę hełmu Rycerza i czubek kaptura Zwiadowcy: ok. połowa objętości rogów siedzi w nakryciu głowy, czubki wystają ponad nie (RASY.md pkt 8). Ikona wyboru rasy ma spiczaste uszy, model według rzutu ich nie ma.
+
+MODEL rasa_demon „Demon” (r15)
+  wymiary ciała: 4,37 × 6,10 × 1,98; z akcesoriami: 4,37 × 6,10 × 1,98
+  trójkąty: 2166 (siatek: 15)
+  budżety ciała R15: Head 610/4000, Torso 476/1750, LeftArm 220/1248, RightArm 220/1248, LeftLeg 320/1248, RightLeg 320/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: idle 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, wiwat 36 kl. 1,20 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  OSTRZEŻENIE: ciało Head: wys 2.30 poza 0.50…2.00 studa (limit części ciała awatara)
+
+EKWIPUNEK (D-071: ciało bazowe + strój z przedmiotów; pliki w ekwipunek/)
+- strój golas (strój bazowy rasy): bez przedmiotów
+- strój rycerz (komplet Rycerza): rycerz_helm, rycerz_zbroja, rycerz_nogawice, rycerz_pas, rycerz_rekawice, rycerz_buty, rycerz_miecz
+- strój zwiadowca (komplet Zwiadowcy): zwiadowca_kaptur, zwiadowca_kurtka, zwiadowca_spodnie, zwiadowca_pas, zwiadowca_rekawice, zwiadowca_buty, zwiadowca_luk, zwiadowca_sztylet
+
+KONTROLA EKSPORTÓW
+- rasa_demon.fbx: siatki 34, kości 17, trójkąty 2394, wzrost 6.10 st., akcje brak -> ZGODNE
+- rasa_demon__idle.fbx: siatki 34, kości 17, trójkąty 2394, wzrost 6.10 st., akcje rasa_demon|Scene 1-61 -> ZGODNE
+- rasa_demon__chod.fbx: siatki 34, kości 17, trójkąty 2394, wzrost 6.10 st., akcje rasa_demon|Scene 1-25 -> ZGODNE
+- rasa_demon__wiwat.fbx: siatki 34, kości 17, trójkąty 2394, wzrost 6.10 st., akcje rasa_demon|Scene 1-37 -> ZGODNE
+- rasa_demon.glb: siatki 34, kości 17, trójkąty 2394, wzrost 6.10 st., akcje chod 0-24, idle 0-60, wiwat 0-36 -> ZGODNE
+- ekwipunek: rasa_demon_cialo.fbx: siatki 49, kości 17, trójkąty 2574, wzrost 6.10 st., akcje brak -> ZGODNE
+- ekwipunek: rasa_demon_cialo__idle.fbx: siatki 49, kości 17, trójkąty 2574, wzrost 6.10 st., akcje rasa_demon_cialo|Scene 1-61 -> ZGODNE
+- ekwipunek: rasa_demon_cialo.glb: siatki 49, kości 17, trójkąty 2574, wzrost 6.10 st., akcje idle 0-60 -> ZGODNE
+
+PLIKI
+- rasa_demon.blend
+- rasa_demon.fbx
+- rasa_demon.glb
+- rasa_demon__chod.fbx
+- rasa_demon__idle.fbx
+- rasa_demon__wiwat.fbx
+- rasa_demon_bohater.jpg
+- rasa_demon_ikona.png
+- rasa_demon_plansza.jpg
+- rasa_demon_tekstury/
+- ekwipunek/rasa_demon_golas_plansza.jpg
+- ekwipunek/rasa_demon_golas_bohater.jpg
+- ekwipunek/rasa_demon_rycerz_plansza.jpg
+- ekwipunek/rasa_demon_rycerz_bohater.jpg
+- ekwipunek/rasa_demon_zwiadowca_plansza.jpg
+- ekwipunek/rasa_demon_zwiadowca_bohater.jpg
+- ekwipunek/rasa_demon_ekwipunek_plansza.jpg
+- ekwipunek/rasa_demon_cialo.fbx
+- ekwipunek/rasa_demon_cialo.glb
+- ekwipunek/rasa_demon_cialo_tekstury/
+- ekwipunek/ekwipunek.json
+- rasa_demon_porownanie.jpg
+- rasa_demon_skala.jpg
+- raport.json
+- raport.txt

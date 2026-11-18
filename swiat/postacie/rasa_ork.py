@@ -73,10 +73,11 @@ SLABOSCI = rasy.slabosci(RASA) + [
     "jak u człowieka (żeby pasował ekwipunek). Masywność niesie głowa (szczęka szersza o 0,1 i wysunięta 0,075 "
     "studa, wał brwiowy, kły 0,27 studa) i skala 1,08 z danych rasy.",
     "Spodenki brązowe według zamówienia (rzut ma wielokolorowe) — wybór do potwierdzenia (RASY.md).",
-    "Kok to sztywne ostrosłupy na czubku głowy (do ok. 1,1 studa nad głową): hełm i kaptur chowają włosy razem "
-    "z kokiem. Kły, szczęka i wał brwiowy mieszczą się w otworze twarzy hełmu; ok. 50% objętości ucha siedzi "
-    "w ściance hełmu, czubek wystaje 0,27 studa poza hełm i 0,35 poza kaptur. W rękawicach Zwiadowcy dłonie "
-    "orka mają kolor skóry człowieka.",
+    "Kok to obły węzeł (kula z ośmiu ścian) związany rzemieniem, z kosmykiem z trzech klocków opadającym łukiem "
+    "za głowę (do ok. 0,9 studa nad głową); hełm i kaptur chowają włosy razem z kokiem. Uszy są krótkie "
+    "i odchylone 44° w górę: ponad połowa objętości ucha siedzi w ściance hełmu albo kaptura, czubek wystaje "
+    "0,07 studa poza hełm i 0,15 poza kaptur. Kły, szczęka i wał brwiowy mieszczą się w otworze twarzy hełmu. "
+    "W rękawicach Zwiadowcy dłonie orka mają kolor skóry człowieka.",
 ]
 
 

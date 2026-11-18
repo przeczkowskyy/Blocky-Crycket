@@ -13,7 +13,7 @@ PODSUMOWANIE
 - ostrzeżenia z raportu: 0; uwagi podglądu: 0
 
 ZNANE SŁABOŚCI
-- Status: propozycja (pilotaż D-104, część A1). Rasa = ciało typu „czlowiek” na klockach gołego Rycerza: sylwetka jest klockowa i szersza niż na rzucie (tułów z rękami ok. 0,78 wzrostu, na rysunku ok. 0,45) — to skutek założenia „te same klocki”, nie błąd głowy.
+- Status: propozycja (D-104, etapy A1–A2). Rasa = ciało typu „czlowiek” na klockach gołego Rycerza: sylwetka jest klockowa i szersza niż na rzucie (tułów z rękami ok. 0,78 wzrostu, na rysunku ok. 0,45) — to skutek założenia „te same klocki”, nie błąd głowy.
 - Skala rasy 1,00 jest tylko daną (RASY[...]["skala"], Postac.skala_rasy) — model, eksporty i przymiarki są w skali 1; skalę pokazuje plansza rasa_elf_skala.jpg.
 - Klipy idle, chod i wiwat są skopiowane z Rycerza (prawa ręka w gotowości do miecza — bez broni wygląda jak uniesiona pięść). W grze rasa gra klipy swojej klasy; neutralnego spoczynku dla ekranu wyboru rasy nie ma.
 - Brązowe buty są warstwą ciała (bryły „golas” na stopach): każdy przedmiot ze slotu Boots je zdejmuje. Goły Rycerz i Zwiadowca mają bose stopy — do decyzji, czy człowiek też dostaje buty (RASY.md).
@@ -21,12 +21,12 @@ ZNANE SŁABOŚCI
 - Przymiarki (ekwipunek/rasa_elf_ekwipunek_plansza.jpg): uszy przechodzą przez boki hełmu Rycerza i kaptura Zwiadowcy; rękawice Zwiadowcy mają w powłoce klocek dłoni w kolorze skóry człowieka, więc na rasie o innej skórze dłonie robią się ludzkie. Pełna lista: RASY.md pkt 8.
 - Twarz bez mimiki; oczy, brwi i usta to bryły 0,02–0,09 studa przed ścianą głowy.
 - Import do Roblox Studio nie był robiony (etap A1 jest tylko w Blenderze).
-- Elf względem rzutu: włosy są z płaskich brył (czapa, grzywka na boki, kurtyny ze skosem przy skroni, pasma wzdłuż żuchwy i na pierś, tył ze szpicem) — bez miękkich fal i objętości z rysunku; pasma na piersi są krótsze niż na rzucie i wiszą ok. 0,06 studa przed koszulą. Uszy to ostrosłupy 0,92 studa, odchylone 24° w górę i 14° do tyłu.
+- Elf względem rzutu: włosy są z klocków (schodkowa kopuła, grzywka na boki, trzy pasma po bokach głowy, pasma wzdłuż żuchwy i po dwa pasma na pierś, tył w trzech warstwach ze szpicem) — bez miękkich fal z rysunku; pasma na piersi wiszą ok. 0,06 studa przed koszulą. Uszy to ostrosłupy 0,92 studa, odchylone 24° w górę i 14° do tyłu.
 - Elf w przymiarkach: hełm i kaptur chowają długie włosy w całości (elf wygląda wtedy na łysego pod hełmem); ok. 40% objętości ucha siedzi w ściance hełmu, czubek wystaje 0,51 studa poza hełm i 0,59 poza kaptur. Bez kaptura tył włosów przecina kołczan Zwiadowcy na plecach.
 
 MODEL rasa_elf „Elf” (r15)
-  wymiary ciała: 4,14 × 5,30 × 1,59; z akcesoriami: 4,14 × 5,62 × 1,86
-  trójkąty: 2492 (siatek: 16)
+  wymiary ciała: 4,14 × 5,30 × 1,59; z akcesoriami: 4,14 × 5,70 × 1,98
+  trójkąty: 2924 (siatek: 16)
   budżety ciała R15: Head 504/4000, Torso 204/1750, LeftArm 220/1248, RightArm 220/1248, LeftLeg 320/1248, RightLeg 320/1248
   kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
   klipy: idle 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, wiwat 36 kl. 1,20 s pętla
@@ -39,14 +39,14 @@ EKWIPUNEK (D-071: ciało bazowe + strój z przedmiotów; pliki w ekwipunek/)
 - strój zwiadowca (komplet Zwiadowcy): zwiadowca_kaptur, zwiadowca_kurtka, zwiadowca_spodnie, zwiadowca_pas, zwiadowca_rekawice, zwiadowca_buty, zwiadowca_luk, zwiadowca_sztylet
 
 KONTROLA EKSPORTÓW
-- rasa_elf.fbx: siatki 35, kości 17, trójkąty 2720, wzrost 5.62 st., akcje brak -> ZGODNE
-- rasa_elf__idle.fbx: siatki 35, kości 17, trójkąty 2720, wzrost 5.62 st., akcje rasa_elf|Scene 1-61 -> ZGODNE
-- rasa_elf__chod.fbx: siatki 35, kości 17, trójkąty 2720, wzrost 5.62 st., akcje rasa_elf|Scene 1-25 -> ZGODNE
-- rasa_elf__wiwat.fbx: siatki 35, kości 17, trójkąty 2720, wzrost 5.62 st., akcje rasa_elf|Scene 1-37 -> ZGODNE
-- rasa_elf.glb: siatki 35, kości 17, trójkąty 2720, wzrost 5.62 st., akcje chod 0-24, idle 0-60, wiwat 0-36 -> ZGODNE
-- ekwipunek: rasa_elf_cialo.fbx: siatki 50, kości 17, trójkąty 2900, wzrost 5.62 st., akcje brak -> ZGODNE
-- ekwipunek: rasa_elf_cialo__idle.fbx: siatki 50, kości 17, trójkąty 2900, wzrost 5.62 st., akcje rasa_elf_cialo|Scene 1-61 -> ZGODNE
-- ekwipunek: rasa_elf_cialo.glb: siatki 50, kości 17, trójkąty 2900, wzrost 5.62 st., akcje idle 0-60 -> ZGODNE
+- rasa_elf.fbx: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje brak -> ZGODNE
+- rasa_elf__idle.fbx: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje rasa_elf|Scene 1-61 -> ZGODNE
+- rasa_elf__chod.fbx: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje rasa_elf|Scene 1-25 -> ZGODNE
+- rasa_elf__wiwat.fbx: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje rasa_elf|Scene 1-37 -> ZGODNE
+- rasa_elf.glb: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje chod 0-24, idle 0-60, wiwat 0-36 -> ZGODNE
+- ekwipunek: rasa_elf_cialo.fbx: siatki 50, kości 17, trójkąty 3332, wzrost 5.70 st., akcje brak -> ZGODNE
+- ekwipunek: rasa_elf_cialo__idle.fbx: siatki 50, kości 17, trójkąty 3332, wzrost 5.70 st., akcje rasa_elf_cialo|Scene 1-61 -> ZGODNE
+- ekwipunek: rasa_elf_cialo.glb: siatki 50, kości 17, trójkąty 3332, wzrost 5.70 st., akcje idle 0-60 -> ZGODNE
 
 PLIKI
 - rasa_elf.blend

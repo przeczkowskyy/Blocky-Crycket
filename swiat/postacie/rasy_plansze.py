@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Plansze ras: porównanie modelu z rzutem Pawła i plansza skali (opis ras: swiat/postacie/RASY.md).
+"""Plansze ras: porównanie modelu z rzutem Pawła, plansza skali i plansza zbiorcza (opis ras: swiat/postacie/RASY.md).
 
     # z głównego folderu repozytorium; Blender 5.0 pod wspólną blokadą (jedna instancja naraz), Pillow
     python -B swiat/postacie/rasy_plansze.py elf ork                 # do swiat/postacie/wynik/rasa_<id>/
     python -B swiat/postacie/rasy_plansze.py elf --wyj <folder>      # próba do folderu poza repozytorium
+    python -B swiat/postacie/rasy_plansze.py --razem                 # swiat/postacie/wynik/_rasy/rasy_razem.jpg
 
 Powstają (przebuduj.py woła to samo przez po_przebudowie() modułu rasy, zaraz po ułożeniu wynik/rasa_<id>/):
   rasa_<id>_porownanie.jpg  u góry rzut (przód, 3/4, bok, tył), pod spodem te same cztery widoki modelu w jednej
                             skali; model stoi w pozie A (ręce 10° od ciała) — tylko w tym renderze
   rasa_<id>_skala.jpg       manekin R15 | człowiek (goły Rycerz) | rasa pomnożona przez skalę z danych rasy
+Osobno (--razem, nie z przebuduj.py):
+  _rasy/rasy_razem.jpg      człowiek i wszystkie rasy obok siebie w skali ras: wiersz z przodu i wiersz 3/4
 Widoki renderuje rasy_plansze_blender.py (kwadratowe rendery ortogonalne o stałej skali), plansze składa Pillow.
 """
 import argparse
@@ -38,6 +41,8 @@ POZA_A = {"LeftUpperArm": (0, 0, 10), "RightUpperArm": (0, 0, -10)}             
 WYS_POROWNANIE = (-0.4, 6.7)             # zakres wysokości kadru (studs): stopy … czubek koka orka
 WYS_SKALA = (-0.3, 7.3)
 SZER_PLANSZY = 2000                      # px; plansza porównawcza
+RAZEM = os.path.join(WYNIK, "_rasy")     # plansza zbiorcza rasy_razem.jpg
+KOLEJNOSC_RAZEM = ("elf", "mroczny_elf", "ork", "demon", "goblin", "polbog")
 TLO, TEKST, TEKST2 = "#1d1729", "#ffffff", "#d9d0ee"
 
 
@@ -190,10 +195,61 @@ def po_przebudowie(rasa, cel):
     return plansze(rasa, cel)
 
 
+def plansza_razem(cel_folder=None, robocze=None):
+    """Plansza zbiorcza rasy_razem.jpg: człowiek (goły Rycerz) i wszystkie zbudowane rasy obok siebie, każda
+    pomnożona przez skalę ze swoich danych; górny wiersz z przodu, dolny 3/4, jedna skala i wspólna linia stóp.
+    Modele stoją w spoczynku (ręce w dół). Zwraca ścieżkę pliku."""
+    from PIL import Image, ImageDraw
+    from swiat.postacie import rycerz
+    cel_folder = cel_folder or RAZEM
+    sprzataj = robocze is None
+    robocze = robocze or tempfile.mkdtemp(prefix="rasy_razem_")
+    czlowiek = rycerz.cialo()
+    czlowiek.id = "razem_czlowiek"
+    modele, kolumny = [czlowiek], [("razem_czlowiek", "Człowiek (goły Rycerz)", 1.0)]
+    for rasa in KOLEJNOSC_RAZEM:
+        if rasa in rasy.ZBUDOWANE:
+            modele.append(rasy.w_skali(rasy.model(rasa), id="razem_" + rasa))
+            kolumny.append(("razem_" + rasa, rasy.RASY[rasa]["nazwa"], rasy.RASY[rasa]["skala"]))
+    widoki = (("przod", (0.0, 0.0, 1.0), "przód"), ("trzy_czwarte", (-0.75, 0.1, 1.0), "3/4"))
+    px, szer = 76.0, 4.9
+    zakres = WYS_SKALA[1] - WYS_SKALA[0]
+    zad = {"widoki": [[n, list(k)] for n, k, _ in widoki], "wys": list(WYS_SKALA),
+           "rozmiar": int(round(zakres * px * 1.5)), "obrys": True}
+    renderuj_widoki(modele, {m.id: zad for m in modele}, robocze)
+    fb, fn = _czcionki()
+    K, wys = round(szer * px), round(zakres * px)
+    N1, N2 = 64, 78
+    im = Image.new("RGB", (K * len(kolumny), N1 + wys * len(widoki) + N2), TLO)
+    dr = ImageDraw.Draw(im)
+    dr.text((18, 12), "Rasy w skali ras obok człowieka (propozycja, D-104) — klocki ciała „czlowiek”, strój bazowy",
+            font=fb, fill=TEKST)
+    for w, (nazwa, _, podpis) in enumerate(widoki):
+        for i, (mid, _, _) in enumerate(kolumny):
+            kadr = _wytnij(os.path.join(robocze, "%s_%s.png" % (mid, nazwa)), szer, px, wys)
+            im.paste(kadr, (i * K, N1 + w * wys))
+        dr.text((12, N1 + w * wys + 8), podpis, font=fn, fill="#3a3152")
+    wzrost = 5.3                                                  # czubek głowy ciała „czlowiek” (bez włosów)
+    for i, (_, nazwa, skala) in enumerate(kolumny):
+        t = "%s × %s" % (nazwa, ("%.2f" % skala).replace(".", ","))
+        dr.text((i * K + (K - dr.textlength(t, font=fn)) // 2, N1 + wys * len(widoki) + 8), t, font=fn, fill=TEKST)
+        t = "wzrost %s studa (bez włosów)" % ("%.2f" % (wzrost * skala)).replace(".", ",")
+        dr.text((i * K + (K - dr.textlength(t, font=fn)) // 2, N1 + wys * len(widoki) + 40), t, font=fn, fill=TEKST2)
+    os.makedirs(cel_folder, exist_ok=True)
+    cel = os.path.join(cel_folder, "rasy_razem.jpg")
+    im.save(cel, quality=88)
+    log("gotowe", cel)
+    if sprzataj:
+        shutil.rmtree(robocze, ignore_errors=True)
+    return cel
+
+
 def main():
-    ap = argparse.ArgumentParser(description="Plansze ras: porównanie z rzutem i plansza skali")
-    ap.add_argument("rasy", nargs="+", help="rasy z modułem rasa_<id>.py, np. elf ork")
-    ap.add_argument("--wyj", default="", help="folder wyników (domyślnie swiat/postacie/wynik/rasa_<id>/)")
+    ap = argparse.ArgumentParser(description="Plansze ras: porównanie z rzutem, plansza skali, plansza zbiorcza")
+    ap.add_argument("rasy", nargs="*", help="rasy z modułem rasa_<id>.py, np. elf ork")
+    ap.add_argument("--razem", action="store_true",
+                    help="plansza zbiorcza wszystkich ras obok człowieka: wynik/_rasy/rasy_razem.jpg")
+    ap.add_argument("--wyj", default="", help="folder wyników (domyślnie swiat/postacie/wynik/rasa_<id>/ i _rasy/)")
     ap.add_argument("--robocze", default="", help="folder roboczy na rendery widoków (domyślnie tymczasowy)")
     a = ap.parse_args()
     if hasattr(sys.stdout, "reconfigure"):
@@ -201,6 +257,10 @@ def main():
             sys.stdout.reconfigure(encoding="utf-8")
         except Exception:
             pass
+    if not a.rasy and not a.razem:
+        ap.error("podaj rasy albo --razem")
+    if a.razem:
+        plansza_razem(a.wyj or None, os.path.join(a.robocze, "_razem") if a.robocze else None)
     for rasa in a.rasy:
         rasa = rasa[5:] if rasa.startswith("rasa_") else rasa
         plansze(rasa, a.wyj or os.path.join(WYNIK, rasy.id_rasy(rasa)),

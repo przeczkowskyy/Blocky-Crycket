@@ -67,10 +67,10 @@ def po_przebudowie(cel):
 
 
 SLABOSCI = rasy.slabosci(RASA) + [
-    "Elf względem rzutu: włosy są z płaskich brył (czapa, grzywka na boki, kurtyny ze skosem przy skroni, pasma "
-    "wzdłuż żuchwy i na pierś, tył ze szpicem) — bez miękkich fal i objętości z rysunku; pasma na piersi są "
-    "krótsze niż na rzucie i wiszą ok. 0,06 studa przed koszulą. "
-    "Uszy to ostrosłupy 0,92 studa, odchylone 24° w górę i 14° do tyłu.",
+    "Elf względem rzutu: włosy są z klocków (schodkowa kopuła, grzywka na boki, trzy pasma po bokach głowy, pasma "
+    "wzdłuż żuchwy i po dwa pasma na pierś, tył w trzech warstwach ze szpicem) — bez miękkich fal z rysunku; "
+    "pasma na piersi wiszą ok. 0,06 studa przed koszulą. Uszy to ostrosłupy 0,92 studa, odchylone 24° w górę "
+    "i 14° do tyłu.",
     "Elf w przymiarkach: hełm i kaptur chowają długie włosy w całości (elf wygląda wtedy na łysego pod hełmem); "
     "ok. 40% objętości ucha siedzi w ściance hełmu, czubek wystaje 0,51 studa poza hełm i 0,59 poza kaptur. "
     "Bez kaptura tył włosów przecina kołczan Zwiadowcy na plecach.",

@@ -1,0 +1,56 @@
+{
+ "rasa": "goblin",
+ "id": "rasa_goblin",
+ "nazwa": "Goblin",
+ "cialo": "czlowiek",
+ "skala": 0.88,
+ "klipy": [
+  "idle",
+  "chod",
+  "wiwat"
+ ],
+ "zrodlo_klipow": "rycerz",
+ "glowa": {
+  "twarz": "goblin",
+  "uszy": "wielkie",
+  "wlosy": null,
+  "kly": null,
+  "rogi": null,
+  "nos": "dlugi",
+  "aureola": null
+ },
+ "ogon": null,
+ "stroj_bazowy": {
+  "koszula": "len",
+  "spodenki": "pomarańczowe",
+  "buty": "brązowe (warstwa ciała)"
+ },
+ "wlosy": null,
+ "stroje": {
+  "golas": [],
+  "rycerz": [
+   "rycerz_helm",
+   "rycerz_zbroja",
+   "rycerz_nogawice",
+   "rycerz_pas",
+   "rycerz_rekawice",
+   "rycerz_buty",
+   "rycerz_miecz"
+  ],
+  "zwiadowca": [
+   "zwiadowca_kaptur",
+   "zwiadowca_kurtka",
+   "zwiadowca_spodnie",
+   "zwiadowca_pas",
+   "zwiadowca_rekawice",
+   "zwiadowca_buty",
+   "zwiadowca_luk",
+   "zwiadowca_sztylet"
+  ]
+ },
+ "przedmioty": [],
+ "cialo_pliki": {
+  "fbx": "wynik/rasa_goblin/ekwipunek/rasa_goblin_cialo.fbx",
+  "glb": "wynik/rasa_goblin/ekwipunek/rasa_goblin_cialo.glb"
+ }
+}

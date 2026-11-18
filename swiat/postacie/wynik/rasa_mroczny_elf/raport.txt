@@ -1,0 +1,76 @@
+RAPORT — rasa_mroczny_elf
+MROCZNY ELF — rasa postaci (D-079, D-104) z rzutu assets/processed/RaceTurnarounds/mroczny_elf.jpg: ciało „czlowiek” w stroju bazowym.
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/rasa_mroczny_elf.py · wygenerowano 18.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py rasa_mroczny_elf
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: rasa_mroczny_elf
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 8 plików, zgodnych 8
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Status: propozycja (D-104, etapy A1–A2). Rasa = ciało typu „czlowiek” na klockach gołego Rycerza: sylwetka jest klockowa i szersza niż na rzucie (tułów z rękami ok. 0,78 wzrostu, na rysunku ok. 0,45) — to skutek założenia „te same klocki”, nie błąd głowy.
+- Skala rasy 1,00 jest tylko daną (RASY[...]["skala"], Postac.skala_rasy) — model, eksporty i przymiarki są w skali 1; skalę pokazuje plansza rasa_mroczny_elf_skala.jpg.
+- Klipy idle, chod i wiwat są skopiowane z Rycerza (prawa ręka w gotowości do miecza — bez broni wygląda jak uniesiona pięść). W grze rasa gra klipy swojej klasy; neutralnego spoczynku dla ekranu wyboru rasy nie ma.
+- Brązowe buty są warstwą ciała (bryły „golas” na stopach): każdy przedmiot ze slotu Boots je zdejmuje. Goły Rycerz i Zwiadowca mają bose stopy — do decyzji, czy człowiek też dostaje buty (RASY.md).
+- Włosy, uszy i inne dodatki głowy są sztywne (bez kości): przy skłonie i skręcie głowy długie pasma wchodzą w tors i ramiona. Hełm i kaptur chowają włosy w całości (znacznik „Wlosy”), uszy i kły zostają.
+- Przymiarki (ekwipunek/rasa_mroczny_elf_ekwipunek_plansza.jpg): uszy przechodzą przez boki hełmu Rycerza i kaptura Zwiadowcy; rękawice Zwiadowcy mają w powłoce klocek dłoni w kolorze skóry człowieka, więc na rasie o innej skórze dłonie robią się ludzkie. Pełna lista: RASY.md pkt 8.
+- Twarz bez mimiki; oczy, brwi i usta to bryły 0,02–0,09 studa przed ścianą głowy.
+- Import do Roblox Studio nie był robiony (etap A1 jest tylko w Blenderze).
+- Mroczny elf względem rzutu: te same bryły co elf, więc te same uproszczenia — włosy z płaskich brył bez fal, uszy to ostrosłupy 0,92 studa. Na rzucie oczy są węższe (przymknięte) niż u elfa; model ma oczy elfa w fiolecie.
+- Mroczny elf w przymiarkach: jak elf — hełm i kaptur chowają długie włosy w całości, uszy przechodzą przez ścianki hełmu i kaptura, bez kaptura tył włosów przecina kołczan Zwiadowcy. W rękawicach Zwiadowcy dłonie mają kolor skóry człowieka (przy lawendowej skórze widać to wyraźnie).
+
+MODEL rasa_mroczny_elf „Mroczny elf” (r15)
+  wymiary ciała: 4,14 × 5,30 × 1,59; z akcesoriami: 4,14 × 5,70 × 1,98
+  trójkąty: 2924 (siatek: 16)
+  budżety ciała R15: Head 504/4000, Torso 204/1750, LeftArm 220/1248, RightArm 220/1248, LeftLeg 320/1248, RightLeg 320/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: idle 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, wiwat 36 kl. 1,20 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: rasa_mroczny_elf_wlosy na HairAttachment
+
+EKWIPUNEK (D-071: ciało bazowe + strój z przedmiotów; pliki w ekwipunek/)
+- strój golas (strój bazowy rasy): bez przedmiotów
+- strój rycerz (komplet Rycerza): rycerz_helm, rycerz_zbroja, rycerz_nogawice, rycerz_pas, rycerz_rekawice, rycerz_buty, rycerz_miecz
+- strój zwiadowca (komplet Zwiadowcy): zwiadowca_kaptur, zwiadowca_kurtka, zwiadowca_spodnie, zwiadowca_pas, zwiadowca_rekawice, zwiadowca_buty, zwiadowca_luk, zwiadowca_sztylet
+
+KONTROLA EKSPORTÓW
+- rasa_mroczny_elf.fbx: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje brak -> ZGODNE
+- rasa_mroczny_elf__idle.fbx: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje rasa_mroczny_elf|Scene 1-61 -> ZGODNE
+- rasa_mroczny_elf__chod.fbx: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje rasa_mroczny_elf|Scene 1-25 -> ZGODNE
+- rasa_mroczny_elf__wiwat.fbx: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje rasa_mroczny_elf|Scene 1-37 -> ZGODNE
+- rasa_mroczny_elf.glb: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje chod 0-24, idle 0-60, wiwat 0-36 -> ZGODNE
+- ekwipunek: rasa_mroczny_elf_cialo.fbx: siatki 50, kości 17, trójkąty 3332, wzrost 5.70 st., akcje brak -> ZGODNE
+- ekwipunek: rasa_mroczny_elf_cialo__idle.fbx: siatki 50, kości 17, trójkąty 3332, wzrost 5.70 st., akcje rasa_mroczny_elf_cialo|Scene 1-61 -> ZGODNE
+- ekwipunek: rasa_mroczny_elf_cialo.glb: siatki 50, kości 17, trójkąty 3332, wzrost 5.70 st., akcje idle 0-60 -> ZGODNE
+
+PLIKI
+- rasa_mroczny_elf.blend
+- rasa_mroczny_elf.fbx
+- rasa_mroczny_elf.glb
+- rasa_mroczny_elf__chod.fbx
+- rasa_mroczny_elf__idle.fbx
+- rasa_mroczny_elf__wiwat.fbx
+- rasa_mroczny_elf_bohater.jpg
+- rasa_mroczny_elf_ikona.png
+- rasa_mroczny_elf_plansza.jpg
+- rasa_mroczny_elf_tekstury/
+- ekwipunek/rasa_mroczny_elf_golas_plansza.jpg
+- ekwipunek/rasa_mroczny_elf_golas_bohater.jpg
+- ekwipunek/rasa_mroczny_elf_rycerz_plansza.jpg
+- ekwipunek/rasa_mroczny_elf_rycerz_bohater.jpg
+- ekwipunek/rasa_mroczny_elf_zwiadowca_plansza.jpg
+- ekwipunek/rasa_mroczny_elf_zwiadowca_bohater.jpg
+- ekwipunek/rasa_mroczny_elf_ekwipunek_plansza.jpg
+- ekwipunek/rasa_mroczny_elf_cialo.fbx
+- ekwipunek/rasa_mroczny_elf_cialo.glb
+- ekwipunek/rasa_mroczny_elf_cialo_tekstury/
+- ekwipunek/ekwipunek.json
+- rasa_mroczny_elf_porownanie.jpg
+- rasa_mroczny_elf_skala.jpg
+- raport.json
+- raport.txt

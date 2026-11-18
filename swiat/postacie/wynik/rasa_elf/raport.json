@@ -324,26 +324,26 @@
     {
      "nazwa": "rasa_elf_wlosy_Akc",
      "kosc": "Head",
-     "trojkaty": 704,
-     "wierzcholki": 408,
+     "trojkaty": 1136,
+     "wierzcholki": 652,
      "wymiary": [
-      2.04,
-      2.72,
-      1.845
+      2.18,
+      3.0,
+      1.955
      ],
      "min": [
-      -1.02,
-      2.905,
-      -1.0
+      -1.09,
+      2.695,
+      -1.11
      ],
      "max": [
-      1.02,
-      5.625,
+      1.09,
+      5.695,
       0.845
      ]
     }
    ],
-   "trojkaty_razem": 2492,
+   "trojkaty_razem": 2924,
    "tekstury": {
     "rozmiar_px": 64,
     "kolory_materialy": 23
@@ -357,18 +357,18 @@
    ],
    "wymiary_z_akcesoriami": [
     4.14,
-    5.625,
-    1.865
+    5.695,
+    1.975
    ],
    "zakres_z_akcesoriami": [
     [
      -2.07,
      0.0,
-     -1.0
+     -1.11
     ],
     [
      2.07,
-     5.625,
+     5.695,
      0.865
     ]
    ],
@@ -523,14 +523,14 @@
  ],
  "uwagi_podgladu": [],
  "kontrola": [
-  "rasa_elf.fbx: siatki 35, kości 17, trójkąty 2720, wzrost 5.62 st., akcje brak -> ZGODNE",
-  "rasa_elf__idle.fbx: siatki 35, kości 17, trójkąty 2720, wzrost 5.62 st., akcje rasa_elf|Scene 1-61 -> ZGODNE",
-  "rasa_elf__chod.fbx: siatki 35, kości 17, trójkąty 2720, wzrost 5.62 st., akcje rasa_elf|Scene 1-25 -> ZGODNE",
-  "rasa_elf__wiwat.fbx: siatki 35, kości 17, trójkąty 2720, wzrost 5.62 st., akcje rasa_elf|Scene 1-37 -> ZGODNE",
-  "rasa_elf.glb: siatki 35, kości 17, trójkąty 2720, wzrost 5.62 st., akcje chod 0-24, idle 0-60, wiwat 0-36 -> ZGODNE",
-  "ekwipunek: rasa_elf_cialo.fbx: siatki 50, kości 17, trójkąty 2900, wzrost 5.62 st., akcje brak -> ZGODNE",
-  "ekwipunek: rasa_elf_cialo__idle.fbx: siatki 50, kości 17, trójkąty 2900, wzrost 5.62 st., akcje rasa_elf_cialo|Scene 1-61 -> ZGODNE",
-  "ekwipunek: rasa_elf_cialo.glb: siatki 50, kości 17, trójkąty 2900, wzrost 5.62 st., akcje idle 0-60 -> ZGODNE"
+  "rasa_elf.fbx: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje brak -> ZGODNE",
+  "rasa_elf__idle.fbx: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje rasa_elf|Scene 1-61 -> ZGODNE",
+  "rasa_elf__chod.fbx: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje rasa_elf|Scene 1-25 -> ZGODNE",
+  "rasa_elf__wiwat.fbx: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje rasa_elf|Scene 1-37 -> ZGODNE",
+  "rasa_elf.glb: siatki 35, kości 17, trójkąty 3152, wzrost 5.70 st., akcje chod 0-24, idle 0-60, wiwat 0-36 -> ZGODNE",
+  "ekwipunek: rasa_elf_cialo.fbx: siatki 50, kości 17, trójkąty 3332, wzrost 5.70 st., akcje brak -> ZGODNE",
+  "ekwipunek: rasa_elf_cialo__idle.fbx: siatki 50, kości 17, trójkąty 3332, wzrost 5.70 st., akcje rasa_elf_cialo|Scene 1-61 -> ZGODNE",
+  "ekwipunek: rasa_elf_cialo.glb: siatki 50, kości 17, trójkąty 3332, wzrost 5.70 st., akcje idle 0-60 -> ZGODNE"
  ],
  "ekwipunek": {
   "stroje": {
@@ -880,26 +880,26 @@
      {
       "nazwa": "rasa_elf_wlosy_Akc",
       "kosc": "Head",
-      "trojkaty": 704,
-      "wierzcholki": 408,
+      "trojkaty": 1136,
+      "wierzcholki": 652,
       "wymiary": [
-       2.04,
-       2.72,
-       1.845
+       2.18,
+       3.0,
+       1.955
       ],
       "min": [
-       -1.02,
-       2.905,
-       -1.0
+       -1.09,
+       2.695,
+       -1.11
       ],
       "max": [
-       1.02,
-       5.625,
+       1.09,
+       5.695,
        0.845
       ]
      }
     ],
-    "trojkaty_razem": 2492,
+    "trojkaty_razem": 2924,
     "tekstury": {
      "rozmiar_px": 64,
      "kolory_materialy": 23
@@ -913,18 +913,18 @@
     ],
     "wymiary_z_akcesoriami": [
      4.14,
-     5.625,
-     1.865
+     5.695,
+     1.975
     ],
     "zakres_z_akcesoriami": [
      [
       -2.07,
       0.0,
-      -1.0
+      -1.11
      ],
      [
       2.07,
-      5.625,
+      5.695,
       0.865
      ]
     ],

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """RASY POSTACI — wspólny kod i dane sześciu ras (D-079, D-080, D-104; opis i pytania: swiat/postacie/RASY.md).
 
-Status: propozycja, nie kanon. Pilotaż (część A1): zbudowane i obejrzane są ELF i ORK (moduły rasa_elf.py,
-rasa_ork.py). Mroczny elf, demon, goblin i półbóg mają tu komplet danych i SZKIC brył (liczy się w czystym
-Pythonie, nie był renderowany ani oglądany) — ich moduły powstaną w następnym etapie.
+Status: propozycja, nie kanon. Zbudowane i obejrzane w Blenderze jest wszystkie sześć ras: elf i ork (pilotaż A1),
+mroczny elf, demon, goblin i półbóg (etap A2) — moduły rasa_<id>.py. Roblox Studio: nic nie było robione.
 
 Założenia (propozycja prowadzącego, RASY.md pkt 1):
   1. Rasa = ciało typu „czlowiek” na klockach, kościach, zaczepach i stawach gołego Rycerza i Zwiadowcy
@@ -90,7 +89,7 @@ RASY = {
                 "spiczaste uszy, masywna szczęka; brązowe spodenki",
     },
     "mroczny_elf": {
-        "nazwa": "Mroczny elf", "zbudowana": False, "skala": 1.0,
+        "nazwa": "Mroczny elf", "zbudowana": True, "skala": 1.0,
         "rzut": RZUTY + "/mroczny_elf.jpg", "ikona": IKONY + "/RaceDarkElf.png",
         "paleta": {"skora": "8E8AB6", "skora_cien": "6F6B98", "ucho_srodek": "7A76A4", "usta": "3B3760",
                    "wlosy": "CACADD", "wlosy_cien": "A3A3BD", "wlosy_blask": "ECECF7", "oko": "8E5BD0",
@@ -101,10 +100,11 @@ RASY = {
         "opis": "jak elf: skóra lawendowo-szara, długie srebrne włosy, fioletowe oczy i spodenki",
     },
     "demon": {
-        "nazwa": "Demon", "zbudowana": False, "skala": 1.0,
+        "nazwa": "Demon", "zbudowana": True, "skala": 1.0,
         "rzut": RZUTY + "/demon.jpg", "ikona": IKONY + "/RaceDemon.png",
         "paleta": {"skora": "CC3650", "skora_cien": "9E2439", "usta": "5A1020", "rogi": "2B2530",
-                   "rogi_cien": "45404C", "oko": "FFC83A", "kiel": "F6EFD9", "brew": "5A1020",
+                   "rogi_cien": "3A3442", "oko": "FFC83A", "oko_blask": "FFF2B0", "kiel": "F6EFD9",
+                   "brew": "5A1020", "rumieniec": "E8667E",
                    "spodenki": "2A2730", "spodenki_cien": "3F3B47"},
         "glowa": {"twarz": "demon", "uszy": None, "wlosy": None, "kly": "jeden", "rogi": "male",
                   "nos": None, "aureola": None},
@@ -113,7 +113,7 @@ RASY = {
                 "włosów; czarne spodenki (ikona wyboru rasy ma spiczaste uszy, rzut ich nie ma)",
     },
     "goblin": {
-        "nazwa": "Goblin", "zbudowana": False, "skala": 0.88,
+        "nazwa": "Goblin", "zbudowana": True, "skala": 0.88,
         "rzut": RZUTY + "/goblin.jpg", "rzut_wariant2": RZUTY + "/goblin_wariant2.jpg",
         "ikona": IKONY + "/RaceGoblin.png",
         "paleta": {"skora": "C6D92E", "skora_cien": "9DB01F", "ucho_srodek": "9DB01F", "usta": "2A2A1C",
@@ -126,11 +126,12 @@ RASY = {
                 "pomarańczowe spodenki (dwa warianty rzutu — wybór do decyzji)",
     },
     "polbog": {
-        "nazwa": "Półbóg", "zbudowana": False, "skala": 1.0,
+        "nazwa": "Półbóg", "zbudowana": True, "skala": 1.0,
         "rzut": RZUTY + "/polbog.jpg", "ikona": IKONY + "/RaceDemigod.png",
         "paleta": {"skora": "F2B63C", "skora_cien": "D08F22", "usta": "8A5A14", "wlosy": "F0DDB0",
-                   "wlosy_cien": "D4BA84", "wlosy_blask": "FFF3D2", "oko": "9FE8FF", "brew": "D4BA84",
-                   "aureola": "FFE08A", "spodenki": "F4F4FA", "spodenki_cien": "F2C230"},
+                   "wlosy_cien": "D4BA84", "wlosy_blask": "FFF3D2", "oko": "36B4FF", "brew": "D4BA84",
+                   "powieka": "8A5A14",
+                   "aureola": "FFC62E", "spodenki": "F4F4FA", "spodenki_cien": "F2C230"},
         "glowa": {"twarz": "lagodna", "uszy": None, "wlosy": "fale", "kly": None, "rogi": None,
                   "nos": "maly", "aureola": "pierscien"},
         "ogon": None, "spodenki": "białe ze złotą lamówką",
@@ -206,15 +207,28 @@ def _stroj_bazowy(p, buty=True):
 
 
 # --------------------------------------------------------------------------- cechy głowy (nie znikają)
-def _uszy(p, dl, wys, gl, y, kat_gora, kat_tyl, wysun=0.0):
+def _belka(p, nazwa, a, b, grub, kolor, mat="zwykly", faza=None, zapas=0.06):
+    """Klocek od punktu a do punktu b (oś Y klocka wzdłuż odcinka), grub = (szer, głęb) — do łamanych z kilku
+    klocków: rogi, ogon. zapas wydłuża klocek, żeby sąsiednie odcinki zachodziły na siebie w zgięciu."""
+    v = [b[i] - a[i] for i in range(3)]
+    dl = math.sqrt(sum(c * c for c in v))
+    u = [c / dl for c in v]
+    rz = -math.degrees(math.asin(max(-1.0, min(1.0, u[0]))))
+    rx = math.degrees(math.atan2(u[2], u[1]))
+    sr = [(a[i] + b[i]) / 2 for i in range(3)]
+    return p.blok(nazwa, sr, (grub[0], dl + zapas, grub[1]), kolor, mat, rot=(rx, 0, rz), faza=faza)
+
+
+def _uszy(p, dl, wys, gl, y, kat_gora, kat_tyl, wysun=0.0, wglab=0.05):
     """Spiczaste uszy po bokach głowy (bryły kości Head). dl = długość na zewnątrz, wys = wysokość nasady,
     gl = grubość, y = wysokość środka nasady od środka głowy, kat_gora / kat_tyl = odchylenie czubka w górę
-    i do tyłu (stopnie), wysun = przesunięcie czubka ku górnej krawędzi ucha (górna krawędź bardziej pozioma)."""
+    i do tyłu (stopnie), wysun = przesunięcie czubka ku górnej krawędzi ucha (górna krawędź bardziej pozioma),
+    wglab = o ile nasada siedzi w głowie (więcej przy uszach stromo w górę)."""
     w, h, d = p.wymiary("Head")
     with p.na("Head", od="srodek"):
         for zn, s in ((1, "L"), (-1, "P")):
-            # układ ucha: +Y = od głowy na zewnątrz (i lekko w górę), +Z ≈ przód; lokalne +X lewego ucha patrzy w dół
-            with p.uklad(pos=(zn * (w / 2 - 0.05), y, 0.0), obrot=(0, zn * kat_tyl, -zn * (90 - kat_gora))):
+            # układ ucha: +Y = od głowy na zewnątrz (i w górę), +Z ≈ przód; lokalne +X lewego ucha patrzy w dół
+            with p.uklad(pos=(zn * (w / 2 - wglab), y, 0.0), obrot=(0, zn * kat_tyl, -zn * (90 - kat_gora))):
                 p.ostroslup("Ucho " + s, (0, dl / 2, 0), (wys, dl, gl), "skora", gora=(0.0, gl * 0.45),
                             przes_gory=(-zn * wysun, 0.0), faza=0.0)
                 p.ostroslup("Ucho srodek " + s, (0, dl * 0.4, gl / 2 + 0.005), (wys * 0.5, dl * 0.62, 0.03),
@@ -222,15 +236,19 @@ def _uszy(p, dl, wys, gl, y, kat_gora, kat_tyl, wysun=0.0):
 
 
 def _oczy(p, x=0.31, y=0.07, bialko=(0.37, 0.31), teczowka=(0.25, 0.27), swieca=False):
-    """Oczy „z rzutów”: białko, kolorowa tęczówka (paleta „oko”), źrenica, błysk i ciemna górna powieka.
-    swieca=True: całe oko świeci kolorem „oko” (demon, półbóg), bez źrenicy."""
+    """Oczy „z rzutów”: białko, kolorowa tęczówka (paleta „oko”), źrenica, błysk i górna powieka (kolor „powieka”
+    z palety rasy albo tusz). swieca=True: całe oko świeci kolorem „oko” (półbóg), bez źrenicy — emisja trafia do
+    tekstury-palety modelu."""
     w, h, d = p.wymiary("Head")
     z = d / 2
+    powieka = "powieka" if "powieka" in p.paleta else "tusz"
     with p.na("Head", od="srodek"):
         for zn, s in ((1, "L"), (-1, "P")):
             if swieca:
-                p.blok("Oko " + s, (zn * x, y, z + 0.02), (bialko[0], bialko[1], 0.05), "oko", "swiecacy", faza=0.03)
-                p.blok("Blysk " + s, (zn * x - 0.04, y + 0.04, z + 0.05), (0.08, 0.08, 0.02), "bialy", "swiecacy",
+                p.blok("Oko " + s, (zn * x, y, z + 0.02), (bialko[0], bialko[1], 0.04), "oko", "swiecacy", faza=0.03)
+                p.blok("Powieka " + s, (zn * x, y + bialko[1] / 2 + 0.015, z + 0.03), (bialko[0] + 0.04, 0.05, 0.06),
+                       powieka, "matowy", faza=0.0, rot=(0, 0, zn * 4))
+                p.blok("Blysk " + s, (zn * x - 0.05, y + 0.03, z + 0.045), (0.12, 0.1, 0.02), "bialy", "swiecacy",
                        faza=0.0)
             else:
                 p.blok("Bialko " + s, (zn * x, y, z + 0.015), (bialko[0], bialko[1], 0.04), "bialy", "polysk",
@@ -239,20 +257,23 @@ def _oczy(p, x=0.31, y=0.07, bialko=(0.37, 0.31), teczowka=(0.25, 0.27), swieca=
                        "polysk", faza=0.03)
                 p.blok("Zrenica " + s, (zn * x, y - 0.01, z + 0.045), (0.12, 0.15, 0.03), "tusz", "polysk", faza=0.0)
                 p.blok("Blysk " + s, (zn * x - 0.06, y + 0.06, z + 0.06), (0.07, 0.07, 0.02), "bialy", faza=0.0)
-            p.blok("Powieka " + s, (zn * x, y + bialko[1] / 2 + 0.015, z + 0.03), (bialko[0] + 0.04, 0.05, 0.06),
-                   "tusz", faza=0.0, rot=(0, 0, zn * 4))
+                p.blok("Powieka " + s, (zn * x, y + bialko[1] / 2 + 0.015, z + 0.03), (bialko[0] + 0.04, 0.05, 0.06),
+                       powieka, faza=0.0, rot=(0, 0, zn * 4))
 
 
 def _twarz_lagodna(p, swieca=False):
-    """Twarz elfa, mrocznego elfa i półboga: duże oczy z kolorową tęczówką, cienkie brwi w kolorze włosów, mały
-    nos, łagodny zamknięty uśmiech z uniesionymi kącikami."""
+    """Twarz elfa, mrocznego elfa i półboga: duże oczy z kolorową tęczówką (półbóg: świecące), cienkie brwi
+    w kolorze włosów, mały nos, łagodny zamknięty uśmiech z uniesionymi kącikami."""
     w, h, d = p.wymiary("Head")
     z = d / 2
-    _oczy(p, swieca=swieca)
+    if swieca:
+        _oczy(p, x=0.31, y=0.08, bialko=(0.32, 0.22), swieca=True)
+    else:
+        _oczy(p)
     with p.na("Head", od="srodek"):
         for zn, s in ((1, "L"), (-1, "P")):
-            p.blok("Brew " + s, (zn * 0.32, 0.36, z + 0.03), (0.38, 0.08, 0.06), "brew", "matowy",
-                   rot=(0, 0, zn * 6), faza=0.02)
+            p.blok("Brew " + s, (zn * 0.32, 0.31 if swieca else 0.36, z + 0.03), (0.38, 0.08, 0.06), "brew",
+                   "matowy", rot=(0, 0, zn * 6), faza=0.02)
             p.blok("Kacik " + s, (zn * 0.24, -0.385, z + 0.02), (0.1, 0.05, 0.04), "usta", "matowy",
                    rot=(0, 0, zn * 32), faza=0.0)
         p.blok("Nos", (0, -0.1, z + 0.04), (0.14, 0.2, 0.1), "skora_cien", "matowy", faza=0.03)
@@ -288,73 +309,103 @@ def _twarz_ork(p):
 
 
 def _twarz_demon(p):
-    """SZKIC (nieoglądany): złote świecące oczy, skośne brwi, uśmiech z jednym kłem."""
+    """Twarz demona: złote świecące skośne oczy w ciemnej obwódce, skośne brwi, szeroki uśmiech w łuk, jeden kieł
+    z górnej wargi (po lewej stronie postaci), bez nosa i uszu (głowa-klocek jak na rzucie)."""
     w, h, d = p.wymiary("Head")
     z = d / 2
-    _oczy(p, bialko=(0.26, 0.18), swieca=True)
     with p.na("Head", od="srodek"):
         for zn, s in ((1, "L"), (-1, "P")):
-            p.blok("Brew " + s, (zn * 0.33, 0.27, z + 0.03), (0.42, 0.1, 0.06), "brew", "matowy",
-                   rot=(0, 0, zn * 18), faza=0.02)
-            p.blok("Kacik " + s, (zn * 0.4, -0.3, z + 0.02), (0.14, 0.06, 0.04), "usta", "matowy",
-                   rot=(0, 0, zn * 35), faza=0.0)
-        p.blok("Usta", (0, -0.36, z + 0.02), (0.72, 0.06, 0.04), "usta", "matowy", faza=0.0)
-        p.ostroslup("Kiel", (-0.22, -0.43, z + 0.035), (0.1, 0.14, 0.05), "kiel", "polysk", rot=(0, 0, 180),
+            p.blok("Oko obwodka " + s, (zn * 0.33, 0.1, z + 0.012), (0.38, 0.24, 0.03), "usta", "matowy",
+                   rot=(0, 0, zn * 14), faza=0.03)
+            p.blok("Oko " + s, (zn * 0.33, 0.1, z + 0.03), (0.28, 0.15, 0.04), "oko", "swiecacy",
+                   rot=(0, 0, zn * 14), faza=0.03)
+            p.blok("Blysk " + s, (zn * 0.33, 0.1, z + 0.055), (0.1, 0.08, 0.02), "oko_blask", "swiecacy", faza=0.0)
+            p.blok("Brew " + s, (zn * 0.35, 0.31, z + 0.04), (0.48, 0.1, 0.07), "brew", "matowy",
+                   rot=(0, 0, zn * 22), faza=0.02)
+            p.blok("Usta bok " + s, (zn * 0.42, -0.33, z + 0.02), (0.3, 0.06, 0.04), "usta", "matowy",
+                   rot=(0, 0, zn * 24), faza=0.0)
+            p.blok("Kacik " + s, (zn * 0.58, -0.24, z + 0.02), (0.1, 0.06, 0.04), "usta", "matowy",
+                   rot=(0, 0, zn * 50), faza=0.0)
+            p.blok("Rumieniec " + s, (zn * 0.6, -0.08, z + 0.01), (0.14, 0.07, 0.03), "rumieniec", "matowy", faza=0.0)
+        p.blok("Usta", (0, -0.39, z + 0.02), (0.6, 0.06, 0.04), "usta", "matowy", faza=0.0)
+        p.ostroslup("Kiel", (0.24, -0.47, z + 0.04), (0.12, 0.16, 0.05), "kiel", "polysk", rot=(0, 0, 180),
                     gora=(0.0, 0.0), faza=0.0)
 
 
 def _twarz_goblin(p):
-    """SZKIC (nieoglądany): skośne brwi, małe czarne oczy, długi nos z żółtawym czubkiem, szeroki uśmiech z zębami."""
+    """Twarz goblina (pierwszy rzut): grube skośne brwi, małe czarne oczy, długi nos opadający nad usta
+    z żółtawym czubkiem, szeroki uśmiech z rzędem zębów i uniesionymi kącikami."""
     w, h, d = p.wymiary("Head")
     z = d / 2
     with p.na("Head", od="srodek"):
         for zn, s in ((1, "L"), (-1, "P")):
-            p.blok("Oko " + s, (zn * 0.34, 0.12, z + 0.02), (0.16, 0.2, 0.05), "tusz", "polysk", faza=0.03)
-            p.blok("Blysk " + s, (zn * 0.34 - 0.03, 0.17, z + 0.05), (0.05, 0.05, 0.02), "bialy", faza=0.0)
-            p.blok("Brew " + s, (zn * 0.36, 0.33, z + 0.03), (0.44, 0.1, 0.06), "brew", "matowy",
-                   rot=(0, 0, zn * 20), faza=0.02)
-            p.blok("Kacik " + s, (zn * 0.55, -0.27, z + 0.02), (0.16, 0.07, 0.04), "usta", "matowy",
-                   rot=(0, 0, zn * 40), faza=0.0)
-        p.blok("Usta", (0, -0.38, z + 0.02), (1.0, 0.22, 0.05), "usta", "matowy", faza=0.02)
-        p.blok("Zeby", (0, -0.35, z + 0.05), (0.88, 0.1, 0.03), "zeby", faza=0.0)
-        p.ostroslup("Nos", (0, -0.12, z + 0.3), (0.26, 0.6, 0.3), "skora", rot=(90, 0, 0), gora=(0.1, 0.12),
-                    przes_gory=(0.0, 0.1), faza=0.02)
-        p.blok("Nos czubek", (0, -0.2, z + 0.6), (0.16, 0.16, 0.12), "nos", faza=0.03)
+            p.blok("Oko " + s, (zn * 0.36, 0.13, z + 0.02), (0.17, 0.2, 0.05), "tusz", "polysk", faza=0.03)
+            p.blok("Blysk " + s, (zn * 0.36 - 0.03, 0.18, z + 0.05), (0.05, 0.05, 0.02), "bialy", faza=0.0)
+            p.blok("Brew " + s, (zn * 0.38, 0.33, z + 0.04), (0.5, 0.12, 0.07), "brew", "matowy",
+                   rot=(0, 0, zn * 22), faza=0.02)
+            p.blok("Kacik " + s, (zn * 0.57, -0.3, z + 0.02), (0.2, 0.07, 0.04), "usta", "matowy",
+                   rot=(0, 0, zn * 42), faza=0.0)
+            p.blok("Policzek " + s, (zn * 0.62, -0.12, z + 0.01), (0.16, 0.05, 0.03), "skora_cien", "matowy",
+                   rot=(0, 0, zn * 30), faza=0.0)
+        p.blok("Usta", (0, -0.43, z + 0.02), (1.02, 0.24, 0.05), "usta", "matowy", faza=0.03)
+        p.blok("Zeby", (0, -0.385, z + 0.05), (0.9, 0.13, 0.03), "zeby", faza=0.0)
+        for i in (-1.5, -0.5, 0.5, 1.5):
+            p.blok("Zab przerwa", (i * 0.225, -0.385, z + 0.07), (0.025, 0.13, 0.02), "usta", "matowy", faza=0.0)
+        # nos: nasada między oczami, grzbiet wysunięty do przodu i w dół, żółtawy czubek nad ustami
+        p.blok("Nos nasada", (0, 0.05, z + 0.08), (0.3, 0.3, 0.2), "skora", faza=0.06)
+        p.blok("Nos", (0, -0.1, z + 0.27), (0.34, 0.36, 0.46), "skora", rot=(32, 0, 0), faza=0.08)
+        p.blok("Nos czubek", (0, -0.27, z + 0.47), (0.36, 0.32, 0.28), "nos", rot=(42, 0, 0), faza=0.07)
 
 
 def _kly_rogi_aureola(p, g):
-    """SZKIC dodatków głowy ras niezbudowanych: małe rogi demona i aureola półboga (sztywne bryły kości Head)."""
+    """Dodatki głowy: rogi demona (każdy z dwóch klocków i szpica, łuk na zewnątrz i z powrotem ku środkowi)
+    i aureola półboga (świecący pierścień z dwunastu belek nad głową, pochylony do przodu). Sztywne bryły kości
+    Head: zostają pod każdym strojem."""
     w, h, d = p.wymiary("Head")
     with p.na("Head", od="srodek"):
         if g["rogi"]:
             for zn, s in ((1, "L"), (-1, "P")):
-                p.ostroslup("Rog " + s, (zn * 0.5, h / 2 + 0.24, 0.15), (0.3, 0.52, 0.3), "rogi", "polysk",
-                            rot=(0, 0, -zn * 12), gora=(0.0, 0.0), przes_gory=(-zn * 0.12, 0.0), faza=0.0)
+                a, b, c, e = ((zn * 0.5, h / 2 - 0.06, 0.14), (zn * 0.68, h / 2 + 0.24, 0.14),
+                              (zn * 0.66, h / 2 + 0.5, 0.14), (zn * 0.5, h / 2 + 0.78, 0.14))
+                _belka(p, "Rog " + s, a, b, (0.32, 0.32), "rogi", faza=0.06)
+                _belka(p, "Rog srodek " + s, b, c, (0.26, 0.26), "rogi_cien", faza=0.05)
+                v = (e[0] - c[0], e[1] - c[1])
+                p.ostroslup("Rog szpic " + s, ((c[0] + e[0]) / 2, (c[1] + e[1]) / 2, 0.14),
+                            (0.22, math.hypot(*v) + 0.04, 0.22), "rogi",
+                            rot=(0, 0, -math.degrees(math.atan2(v[0], v[1]))), gora=(0.0, 0.0), faza=0.0)
         if g["aureola"]:
-            r = 0.62                                               # pierścień z ośmiu belek 0,36 nad głową
-            for i in range(8):
-                k = math.radians(i * 45.0)
-                p.blok("Aureola %d" % i, (r * math.sin(k), h / 2 + 0.36, r * math.cos(k)), (0.52, 0.07, 0.1),
-                       "aureola", "swiecacy", rot=(0, i * 45.0, 0), faza=0.02)
+            r, n = 0.62, 12
+            with p.uklad(pos=(0, h / 2 + 0.68, 0), obrot=(16, 0, 0)):
+                for i in range(n):
+                    k = 2 * math.pi * i / n
+                    p.blok("Aureola %d" % i, (r * math.sin(k), 0, r * math.cos(k)),
+                           (2 * r * math.tan(math.pi / n) + 0.03, 0.08, 0.11), "aureola", "swiecacy",
+                           rot=(0, math.degrees(k), 0), faza=0.02)
 
 
 def _ogon(p):
-    """SZKIC (nieoglądany): ogon demona z grotem — sztywne bryły kości LowerTorso (bez nowych kości), bez
-    znacznika „golas”, więc spodnie go nie zdejmują."""
+    """Ogon demona z grotem — sztywna łamana z klocków na kości LowerTorso (bez nowych kości, bez znacznika
+    „golas”, więc spodnie go nie zdejmują). Wychodzi ze środka pleców bioder, idzie do tyłu, w lewą stronę postaci
+    i w dół poza obrys nogi (noga w chodzie go nie tnie), a grot zadziera do góry obok lewej łydki."""
     w, h, d = p.wymiary("LowerTorso")
+    z = -d / 2
+    pkt = ((0.0, -0.02, z + 0.08), (0.0, -0.06, z - 0.36), (0.56, -0.32, z - 0.42), (1.3, -0.78, z - 0.4),
+           (1.56, -1.36, z - 0.36), (1.86, -1.5, z - 0.36), (2.06, -1.22, z - 0.36))
     with p.na("LowerTorso", od="srodek"):
-        z = -d / 2
-        p.blok("Ogon nasada", (0, -0.05, z - 0.2), (0.16, 0.16, 0.44), "skora", faza=0.04)
-        p.blok("Ogon", (0.25, -0.5, z - 0.5), (0.14, 0.9, 0.14), "skora", rot=(-25, 0, 30), faza=0.04)
-        p.blok("Ogon koniec", (0.62, -0.95, z - 0.62), (0.12, 0.5, 0.12), "skora", rot=(0, 0, 70), faza=0.03)
-        p.ostroslup("Ogon grot", (0.98, -0.86, z - 0.62), (0.36, 0.36, 0.1), "skora_cien", rot=(0, 0, -70),
-                    gora=(0.0, 0.1), faza=0.0)
+        for i, gr in enumerate((0.2, 0.18, 0.16, 0.15, 0.14, 0.13)):
+            _belka(p, "Ogon %d" % i, pkt[i], pkt[i + 1], (gr, gr), "skora", faza=0.04)
+        a, b = pkt[-2], pkt[-1]
+        v = (b[0] - a[0], b[1] - a[1])
+        dl = math.hypot(*v)
+        u = (v[0] / dl, v[1] / dl)
+        p.ostroslup("Ogon grot", (b[0] + u[0] * 0.2, b[1] + u[1] * 0.2, b[2]), (0.46, 0.44, 0.1), "skora_cien",
+                    rot=(0, 0, -math.degrees(math.atan2(u[0], u[1]))), gora=(0.0, 0.1), faza=0.0)
 
 
 TWARZE = {"lagodna": _twarz_lagodna, "ork": _twarz_ork, "demon": _twarz_demon, "goblin": _twarz_goblin}
 # uszy: dl, wys, gl, y, kat_gora, kat_tyl, wysun
-USZY = {"dlugie": (0.92, 0.44, 0.16, 0.1, 24, 14, 0.14), "krotkie": (0.62, 0.5, 0.16, 0.08, 22, 12, 0.12),
-        "wielkie": (1.05, 0.66, 0.16, 0.12, 12, 10, 0.16)}
+USZY = {"dlugie": (0.92, 0.44, 0.16, 0.1, 24, 14, 0.14), "krotkie": (0.58, 0.42, 0.16, -0.08, 44, 10, 0.06, 0.1),
+        "wielkie": (1.0, 0.8, 0.16, 0.1, 14, 10, 0.2)}
 
 
 def _cechy_glowy(p, rasa):
@@ -378,47 +429,60 @@ def _akc_wlosy(rasa):
 
 
 def wlosy_dlugie(rasa):
-    """Długie proste włosy elfa (i mrocznego elfa): czapa z przedziałkiem na środku, grzywka rozczesana na boki,
-    kurtyny po bokach głowy ze skośną krawędzią przy skroni (ucho wychodzi przez kurtynę), pasma wzdłuż żuchwy
-    i w dół na pierś (poza obrysem twarzy) oraz tył do łopatek, niżej szerszy, zakończony szpicem. Układ zaczepu:
-    (0, 0, 0) = środek górnej ściany głowy. Sztywne z głową (bez kości) — przy skłonie pasma wchodzą w tors."""
+    """Długie proste włosy elfa i mrocznego elfa: schodkowa kopuła z przedziałkiem, grzywka rozczesana na boki,
+    po bokach głowy trzy pasma różnej długości ze szpicami i skos przy skroni (ucho wychodzi między pasmami),
+    pasma wzdłuż żuchwy i dwa pasma na pierś (poza obrysem twarzy), tył w warstwach: potylica, szeroka warstwa
+    na ramionach i najdłuższa środkowa ze szpicem do łopatek. Układ zaczepu: (0, 0, 0) = środek górnej ściany
+    głowy. Sztywne z głową (bez kości) — przy skłonie pasma wchodzą w tors."""
     a = _akc_wlosy(rasa)
     w, h, d = WYMIARY["Head"]
     x, z = w / 2, d / 2
     a.blok("Czupryna", (0, 0.09, -0.02), (w + 0.14, 0.24, d + 0.12), "wlosy", faza=0.08)
     a.blok("Czupryna gora", (0, 0.25, -0.04), (w - 0.16, 0.14, d - 0.14), "wlosy", faza=0.07)
-    a.blok("Przedzialek", (0, 0.31, 0.1), (0.05, 0.03, d - 0.5), "wlosy_cien", "matowy", faza=0.0)
+    a.blok("Czupryna czubek", (0, 0.335, -0.06), (w - 0.62, 0.08, d - 0.5), "wlosy", faza=0.04)
+    a.blok("Przedzialek", (0, 0.38, -0.02), (0.05, 0.03, 0.66), "wlosy_cien", "matowy", faza=0.0)
     for zn, s in ((1, "L"), (-1, "P")):
         a.blok("Grzywka " + s, (zn * 0.45, -0.13, z + 0.035), (0.86, 0.3, 0.09), "wlosy", rot=(0, 0, -zn * 16),
                faza=0.03)
         a.blok("Blask " + s, (zn * 0.42, -0.02, z + 0.085), (0.4, 0.05, 0.02), "wlosy_blask", rot=(0, 0, -zn * 16),
                faza=0.0)
-        # bok: kurtyna za uchem i wokół ucha do linii brody, przy skroni klin ze skośną krawędzią ku twarzy
-        a.blok("Bok " + s, (zn * (x + 0.04), -0.8, -0.2225), (0.12, 1.6, 1.045), "wlosy", faza=0.04)
-        a.ostroslup("Bok skron " + s, (zn * (x + 0.04), -0.5, 0.45), (0.12, 1.0, 0.3), "wlosy", rot=(180, 0, 0),
-                    gora=(0.12, 0.0), przes_gory=(0.0, 0.15), faza=0.0)
-        # pasmo: wzdłuż żuchwy do przodu i w dół na pierś, przed ramieniem (poza obrysem twarzy, jak na rzucie)
-        a.blok("Pasmo zuchwa " + s, (zn * (x + 0.04), -1.34, 0.555), (0.12, 0.3, 0.55), "wlosy", faza=0.04)
-        a.blok("Pasmo przod " + s, (zn * (x - 0.02), -1.72, 0.76), (0.32, 0.6, 0.14), "wlosy", faza=0.04)
-        a.ostroslup("Pasmo przod koniec " + s, (zn * (x - 0.02), -2.18, 0.76), (0.32, 0.34, 0.14), "wlosy",
-                    rot=(0, 0, 180), gora=(0.0, 0.07), przes_gory=(zn * 0.08, 0.0), faza=0.0)
-        a.blok("Pasmo przod cien " + s, (zn * (x - 0.1), -1.75, 0.835), (0.04, 0.5, 0.02), "wlosy_cien",
+        # bok: trzy pasma (od tyłu do skroni) coraz krótsze ku twarzy, dwa przednie zakończone szpicem
+        for i, (zc, gl, dl, dx, kon) in enumerate(((-0.56, 0.42, 1.5, 0.05, 0.0), (-0.16, 0.46, 1.28, 0.08, 0.24),
+                                                   (0.2, 0.36, 1.18, 0.05, 0.22))):
+            a.blok("Bok %s%d" % (s, i), (zn * (x + dx), 0.02 - dl / 2, zc), (0.14, dl, gl), "wlosy", faza=0.05)
+            if kon:
+                a.ostroslup("Bok koniec %s%d" % (s, i), (zn * (x + dx), 0.03 - dl - kon / 2, zc),
+                            (0.14, kon, gl), "wlosy", rot=(0, 0, 180), gora=(0.14, 0.0),
+                            przes_gory=(0.0, -gl / 4), faza=0.0)
+        a.blok("Bok cien " + s, (zn * (x + 0.125), -0.62, -0.37), (0.02, 1.1, 0.04), "wlosy_cien", "matowy", faza=0.0)
+        a.ostroslup("Bok skron " + s, (zn * (x + 0.04), -0.43, 0.5), (0.12, 0.9, 0.26), "wlosy", rot=(180, 0, 0),
+                    gora=(0.12, 0.0), przes_gory=(0.0, 0.13), faza=0.0)
+        # pasma: wzdłuż żuchwy do przodu i w dół na pierś, przed ramieniem (poza obrysem twarzy, jak na rzucie)
+        a.blok("Pasmo zuchwa " + s, (zn * (x + 0.04), -1.33, 0.59), (0.12, 0.32, 0.48), "wlosy", faza=0.04)
+        a.blok("Pasmo przod " + s, (zn * (x - 0.03), -1.785, 0.76), (0.34, 0.73, 0.14), "wlosy", faza=0.05)
+        a.ostroslup("Pasmo przod koniec " + s, (zn * (x - 0.03), -2.325, 0.76), (0.34, 0.36, 0.14), "wlosy",
+                    rot=(0, 0, 180), gora=(0.0, 0.07), przes_gory=(zn * 0.09, 0.0), faza=0.0)
+        a.blok("Pasmo przod cien " + s, (zn * (x - 0.11), -1.8, 0.835), (0.04, 0.62, 0.02), "wlosy_cien",
                "matowy", faza=0.0)
-    # tył: gruba tafla do łopatek, niżej szersza (włosy rozchodzą się na plecach), zakończona szpicem
-    a.blok("Tyl", (0, -0.875, -z - 0.11), (w + 0.2, 1.95, 0.26), "wlosy", faza=0.08)
-    a.blok("Tyl dol", (0, -1.45, -z - 0.11), (w + 0.44, 0.8, 0.3), "wlosy", faza=0.1)
-    a.ostroslup("Tyl szpic", (0, -2.12, -z - 0.11), (w + 0.36, 0.55, 0.3), "wlosy", rot=(0, 0, 180),
+        a.blok("Pasmo przod krotkie " + s, (zn * (x + 0.2), -1.66, 0.74), (0.18, 0.46, 0.1), "wlosy", faza=0.04)
+        a.ostroslup("Pasmo krotkie koniec " + s, (zn * (x + 0.2), -2.02, 0.74), (0.18, 0.28, 0.1), "wlosy",
+                    rot=(0, 0, 180), gora=(0.0, 0.05), przes_gory=(zn * 0.05, 0.0), faza=0.0)
+    # tył w warstwach: potylica (wypukła), szeroka warstwa na ramionach, najdłuższa środkowa ze szpicem
+    a.blok("Tyl", (0, -0.55, -z - 0.12), (w + 0.2, 1.3, 0.28), "wlosy", faza=0.09)
+    a.blok("Tyl potylica", (0, -0.42, -z - 0.3), (w - 0.14, 0.72, 0.14), "wlosy", faza=0.07)
+    a.blok("Tyl ramiona", (0, -1.42, -z - 0.15), (w + 0.5, 0.86, 0.3), "wlosy", faza=0.1)
+    a.blok("Tyl srodek", (0, -1.7, -z - 0.11), (w + 0.1, 0.9, 0.3), "wlosy", faza=0.08)
+    a.ostroslup("Tyl szpic", (0, -2.375, -z - 0.11), (w + 0.1, 0.46, 0.3), "wlosy", rot=(0, 0, 180),
                 gora=(0.3, 0.12), faza=0.0)
-    for xk, dl in ((-0.6, 1.3), (-0.22, 1.6), (0.22, 1.5), (0.6, 1.2)):
-        a.blok("Pasmo tyl", (xk, -0.3 - dl / 2, -z - 0.265), (0.05, dl, 0.02), "wlosy_cien", "matowy", faza=0.0)
-    for xk in (-0.4, 0.42):
-        a.blok("Blask tyl", (xk, -0.5, -z - 0.245), (0.12, 0.5, 0.02), "wlosy_blask", faza=0.0)
+    for xk, dl in ((-0.42, 0.66), (0.44, 0.6)):
+        a.blok("Pasmo tyl", (xk, -1.08 - dl / 2, -z - 0.305), (0.05, dl, 0.02), "wlosy_cien", "matowy", faza=0.0)
+    a.blok("Blask tyl", (0, -0.24, -z - 0.375), (0.9, 0.09, 0.02), "wlosy_blask", faza=0.0)
     return a
 
 
 def wlosy_kok(rasa):
     """Czarne włosy orka: czapa z klinem nad czołem, tył do karku, boki nad uszami i za nimi, baczki, a na czubku
-    kok — węzeł związany brązowym rzemieniem, z którego sterczą kosmyki w górę i do tyłu."""
+    kok — obły węzeł związany brązowym rzemieniem, z kosmykiem opadającym łukiem za głowę (klocki z fazą)."""
     a = _akc_wlosy(rasa)
     w, h, d = WYMIARY["Head"]
     x, z = w / 2, d / 2
@@ -431,31 +495,38 @@ def wlosy_kok(rasa):
         a.blok("Bok " + s, (zn * (x + 0.025), -0.29, -0.2), (0.06, 0.6, d - 0.42), "wlosy", "matowy", faza=0.02)
         a.blok("Bok tyl " + s, (zn * (x + 0.025), -0.78, -0.47), (0.06, 0.44, 0.5), "wlosy", "matowy", faza=0.02)
         a.blok("Baczek " + s, (zn * (x + 0.025), -0.68, 0.22), (0.06, 0.26, 0.14), "wlosy", "matowy", faza=0.0)
-    # kok: rzemień, trzon i kosmyki (środkowy w górę i do tyłu, dwa na boki, jeden opada za głowę)
-    a.walec("Kok rzemien", (0, 0.24, -0.3), (0.4, 0.14, 0.4), "wiazanie", "matowy")
-    a.blok("Kok trzon", (0, 0.46, -0.35), (0.38, 0.4, 0.38), "wlosy", "matowy", rot=(-22, 0, 0), faza=0.07)
-    a.ostroslup("Kok kosmyk", (0, 0.86, -0.56), (0.5, 0.6, 0.44), "wlosy", "matowy", rot=(-40, 0, 0),
-                gora=(0.0, 0.0), faza=0.0)
-    for zn in (1, -1):
-        a.ostroslup("Kok kosmyk bok", (zn * 0.22, 0.76, -0.42), (0.3, 0.5, 0.3), "wlosy_cien" if zn > 0 else "wlosy",
-                    "matowy", rot=(-22, 0, -zn * 32), gora=(0.0, 0.0), faza=0.0)
-    a.ostroslup("Kok ogon", (0, 0.44, -0.9), (0.4, 0.9, 0.36), "wlosy", "matowy", rot=(-140, 0, 0),
-                gora=(0.0, 0.0), faza=0.0)
+    # kok: rzemień, obły węzeł (kula z ośmiu ścian) i kosmyk z trzech coraz cieńszych klocków, łukiem za głowę
+    a.walec("Kok rzemien", (0, 0.25, -0.28), (0.46, 0.14, 0.46), "wiazanie", "matowy")
+    a.kula("Kok", (0, 0.58, -0.3), (0.7, 0.58, 0.7), "wlosy", "matowy", segm=8)
+    a.blok("Kok pasmo", (0.0, 0.84, -0.3), (0.16, 0.06, 0.4), "wlosy_cien", "matowy", faza=0.02)
+    a.blok("Kok kosmyk 1", (0, 0.68, -0.7), (0.4, 0.44, 0.36), "wlosy", "matowy", rot=(-108, 0, 0), faza=0.08)
+    a.blok("Kok kosmyk 2", (0, 0.46, -0.98), (0.34, 0.42, 0.3), "wlosy", "matowy", rot=(-146, 0, 0), faza=0.07)
+    a.blok("Kok kosmyk 3", (0, 0.16, -1.1), (0.26, 0.36, 0.22), "wlosy", "matowy", rot=(-172, 0, 0), faza=0.05)
     return a
 
 
 def wlosy_fale(rasa):
-    """SZKIC (nieoglądany): jasne falowane włosy półboga do karku — czapa, tył i trzy fale na każdym boku."""
+    """Jasne falowane włosy półboga do karku: schodkowa kopuła, grzywka zaczesana na bok z dwóch fal, po bokach
+    trzy fale na przemian wysunięte (zakrywają miejsce uszu), tył w dwóch warstwach z falistym dołem."""
     a = _akc_wlosy(rasa)
     w, h, d = WYMIARY["Head"]
     x, z = w / 2, d / 2
-    a.blok("Czupryna", (0, 0.1, -0.02), (w + 0.16, 0.26, d + 0.14), "wlosy", faza=0.1)
-    a.blok("Tyl", (0, -0.55, -z - 0.07), (w + 0.16, 1.1, 0.16), "wlosy", faza=0.08)
-    a.blok("Grzywka", (0.1, -0.1, z + 0.04), (w + 0.1, 0.26, 0.1), "wlosy", rot=(0, 0, -6), faza=0.06)
+    a.blok("Czupryna", (0, 0.1, -0.02), (w + 0.2, 0.28, d + 0.18), "wlosy", faza=0.1)
+    a.blok("Czupryna gora", (0.05, 0.28, -0.04), (w - 0.1, 0.16, d - 0.1), "wlosy", faza=0.08)
+    a.blok("Czupryna fala", (-0.2, 0.37, 0.1), (0.7, 0.1, 0.8), "wlosy_blask", rot=(0, 14, 0), faza=0.04)
+    # grzywka: dwie fale zaczesane w prawą stronę postaci (przedziałek po lewej)
+    a.blok("Grzywka", (0.18, -0.12, z + 0.05), (1.0, 0.3, 0.12), "wlosy", rot=(0, 0, 12), faza=0.06)
+    a.blok("Grzywka fala", (-0.52, -0.2, z + 0.05), (0.56, 0.3, 0.12), "wlosy", rot=(0, 0, -24), faza=0.06)
+    a.blok("Grzywka blask", (0.2, -0.05, z + 0.115), (0.5, 0.05, 0.02), "wlosy_blask", rot=(0, 0, 12), faza=0.0)
     for zn, s in ((1, "L"), (-1, "P")):
-        for i, (y, dx) in enumerate(((-0.25, 0.06), (-0.6, 0.11), (-0.95, 0.05))):
-            a.blok("Fala %s%d" % (s, i), (zn * (x + dx), y, -0.1), (0.16, 0.4, d - 0.3), "wlosy" if i != 1
-                   else "wlosy_cien", faza=0.07)
+        for i, (y, dx, gl, kolor) in enumerate(((-0.28, 0.08, d - 0.1, "wlosy"), (-0.66, 0.14, d - 0.2, "wlosy_cien"),
+                                                (-1.02, 0.07, d - 0.36, "wlosy"))):
+            a.blok("Fala %s%d" % (s, i), (zn * (x + dx), y, -0.12), (0.2, 0.46, gl), kolor, faza=0.08)
+    a.blok("Tyl", (0, -0.5, -z - 0.1), (w + 0.24, 1.0, 0.24), "wlosy", faza=0.09)
+    a.blok("Tyl dol", (0, -1.1, -z - 0.13), (w + 0.1, 0.5, 0.26), "wlosy", faza=0.09)
+    for xk, wys in ((-0.6, 0.2), (0.0, 0.26), (0.58, 0.18)):
+        a.blok("Tyl fala", (xk, -1.3 - wys / 2, -z - 0.13), (0.5, wys, 0.24), "wlosy_cien" if xk == 0.0
+               else "wlosy", faza=0.07)
     return a
 
 
@@ -564,7 +635,7 @@ def slabosci(rasa):
     """Wspólne znane słabości modelu rasy (do raport.txt modułu rasy)."""
     r = RASY[rasa]
     return [
-        "Status: propozycja (pilotaż D-104, część A1). Rasa = ciało typu „czlowiek” na klockach gołego Rycerza: "
+        "Status: propozycja (D-104, etapy A1–A2). Rasa = ciało typu „czlowiek” na klockach gołego Rycerza: "
         "sylwetka jest klockowa i szersza niż na rzucie (tułów z rękami ok. 0,78 wzrostu, na rysunku ok. 0,45) — "
         "to skutek założenia „te same klocki”, nie błąd głowy.",
         "Skala rasy %s jest tylko daną (RASY[...][\"skala\"], Postac.skala_rasy) — model, eksporty i przymiarki są "
@@ -575,9 +646,10 @@ def slabosci(rasa):
         "Goły Rycerz i Zwiadowca mają bose stopy — do decyzji, czy człowiek też dostaje buty (RASY.md).",
         "Włosy, uszy i inne dodatki głowy są sztywne (bez kości): przy skłonie i skręcie głowy długie pasma wchodzą "
         "w tors i ramiona. Hełm i kaptur chowają włosy w całości (znacznik „Wlosy”), uszy i kły zostają.",
-        "Przymiarki (ekwipunek/%s_ekwipunek_plansza.jpg): uszy przechodzą przez boki hełmu Rycerza i kaptura "
-        "Zwiadowcy; rękawice Zwiadowcy mają w powłoce klocek dłoni w kolorze skóry człowieka, więc na rasie o innej "
-        "skórze dłonie robią się ludzkie. Pełna lista: RASY.md pkt 8." % id_rasy(rasa),
+        "Przymiarki (ekwipunek/%s_ekwipunek_plansza.jpg): %srękawice Zwiadowcy mają w powłoce klocek dłoni "
+        "w kolorze skóry człowieka, więc na rasie o innej skórze dłonie robią się ludzkie. Pełna lista: RASY.md "
+        "pkt 8." % (id_rasy(rasa), "uszy przechodzą przez boki hełmu Rycerza i kaptura Zwiadowcy; "
+                    if r["glowa"]["uszy"] else ""),
         "Twarz bez mimiki; oczy, brwi i usta to bryły 0,02–0,09 studa przed ścianą głowy.",
         "Import do Roblox Studio nie był robiony (etap A1 jest tylko w Blenderze).",
     ]

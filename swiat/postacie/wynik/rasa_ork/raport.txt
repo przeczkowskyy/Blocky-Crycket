@@ -13,7 +13,7 @@ PODSUMOWANIE
 - ostrzeżenia z raportu: 0; uwagi podglądu: 0
 
 ZNANE SŁABOŚCI
-- Status: propozycja (pilotaż D-104, część A1). Rasa = ciało typu „czlowiek” na klockach gołego Rycerza: sylwetka jest klockowa i szersza niż na rzucie (tułów z rękami ok. 0,78 wzrostu, na rysunku ok. 0,45) — to skutek założenia „te same klocki”, nie błąd głowy.
+- Status: propozycja (D-104, etapy A1–A2). Rasa = ciało typu „czlowiek” na klockach gołego Rycerza: sylwetka jest klockowa i szersza niż na rzucie (tułów z rękami ok. 0,78 wzrostu, na rysunku ok. 0,45) — to skutek założenia „te same klocki”, nie błąd głowy.
 - Skala rasy 1,08 jest tylko daną (RASY[...]["skala"], Postac.skala_rasy) — model, eksporty i przymiarki są w skali 1; skalę pokazuje plansza rasa_ork_skala.jpg.
 - Klipy idle, chod i wiwat są skopiowane z Rycerza (prawa ręka w gotowości do miecza — bez broni wygląda jak uniesiona pięść). W grze rasa gra klipy swojej klasy; neutralnego spoczynku dla ekranu wyboru rasy nie ma.
 - Brązowe buty są warstwą ciała (bryły „golas” na stopach): każdy przedmiot ze slotu Boots je zdejmuje. Goły Rycerz i Zwiadowca mają bose stopy — do decyzji, czy człowiek też dostaje buty (RASY.md).
@@ -23,11 +23,11 @@ ZNANE SŁABOŚCI
 - Import do Roblox Studio nie był robiony (etap A1 jest tylko w Blenderze).
 - Ork względem rzutu: masywny tułów, grube ręce i szeroki kark z rysunku NIE są oddane — klocki ciała są takie jak u człowieka (żeby pasował ekwipunek). Masywność niesie głowa (szczęka szersza o 0,1 i wysunięta 0,075 studa, wał brwiowy, kły 0,27 studa) i skala 1,08 z danych rasy.
 - Spodenki brązowe według zamówienia (rzut ma wielokolorowe) — wybór do potwierdzenia (RASY.md).
-- Kok to sztywne ostrosłupy na czubku głowy (do ok. 1,1 studa nad głową): hełm i kaptur chowają włosy razem z kokiem. Kły, szczęka i wał brwiowy mieszczą się w otworze twarzy hełmu; ok. 50% objętości ucha siedzi w ściance hełmu, czubek wystaje 0,27 studa poza hełm i 0,35 poza kaptur. W rękawicach Zwiadowcy dłonie orka mają kolor skóry człowieka.
+- Kok to obły węzeł (kula z ośmiu ścian) związany rzemieniem, z kosmykiem z trzech klocków opadającym łukiem za głowę (do ok. 0,9 studa nad głową); hełm i kaptur chowają włosy razem z kokiem. Uszy są krótkie i odchylone 44° w górę: ponad połowa objętości ucha siedzi w ściance hełmu albo kaptura, czubek wystaje 0,07 studa poza hełm i 0,15 poza kaptur. Kły, szczęka i wał brwiowy mieszczą się w otworze twarzy hełmu. W rękawicach Zwiadowcy dłonie orka mają kolor skóry człowieka.
 
 MODEL rasa_ork „Ork” (r15)
-  wymiary ciała: 4,14 × 5,30 × 1,64; z akcesoriami: 4,14 × 6,39 × 2,10
-  trójkąty: 2256 (siatek: 16)
+  wymiary ciała: 4,14 × 5,30 × 1,64; z akcesoriami: 4,14 × 6,20 × 2,14
+  trójkąty: 2412 (siatek: 16)
   budżety ciała R15: Head 504/4000, Torso 204/1750, LeftArm 220/1248, RightArm 220/1248, LeftLeg 320/1248, RightLeg 320/1248
   kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
   klipy: idle 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, wiwat 36 kl. 1,20 s pętla
@@ -40,14 +40,14 @@ EKWIPUNEK (D-071: ciało bazowe + strój z przedmiotów; pliki w ekwipunek/)
 - strój zwiadowca (komplet Zwiadowcy): zwiadowca_kaptur, zwiadowca_kurtka, zwiadowca_spodnie, zwiadowca_pas, zwiadowca_rekawice, zwiadowca_buty, zwiadowca_luk, zwiadowca_sztylet
 
 KONTROLA EKSPORTÓW
-- rasa_ork.fbx: siatki 35, kości 17, trójkąty 2484, wzrost 6.39 st., akcje brak -> ZGODNE
-- rasa_ork__idle.fbx: siatki 35, kości 17, trójkąty 2484, wzrost 6.39 st., akcje rasa_ork|Scene 1-61 -> ZGODNE
-- rasa_ork__chod.fbx: siatki 35, kości 17, trójkąty 2484, wzrost 6.39 st., akcje rasa_ork|Scene 1-25 -> ZGODNE
-- rasa_ork__wiwat.fbx: siatki 35, kości 17, trójkąty 2484, wzrost 6.39 st., akcje rasa_ork|Scene 1-37 -> ZGODNE
-- rasa_ork.glb: siatki 35, kości 17, trójkąty 2484, wzrost 6.39 st., akcje chod 0-24, idle 0-60, wiwat 0-36 -> ZGODNE
-- ekwipunek: rasa_ork_cialo.fbx: siatki 50, kości 17, trójkąty 2664, wzrost 6.39 st., akcje brak -> ZGODNE
-- ekwipunek: rasa_ork_cialo__idle.fbx: siatki 50, kości 17, trójkąty 2664, wzrost 6.39 st., akcje rasa_ork_cialo|Scene 1-61 -> ZGODNE
-- ekwipunek: rasa_ork_cialo.glb: siatki 50, kości 17, trójkąty 2664, wzrost 6.39 st., akcje idle 0-60 -> ZGODNE
+- rasa_ork.fbx: siatki 35, kości 17, trójkąty 2640, wzrost 6.20 st., akcje brak -> ZGODNE
+- rasa_ork__idle.fbx: siatki 35, kości 17, trójkąty 2640, wzrost 6.20 st., akcje rasa_ork|Scene 1-61 -> ZGODNE
+- rasa_ork__chod.fbx: siatki 35, kości 17, trójkąty 2640, wzrost 6.20 st., akcje rasa_ork|Scene 1-25 -> ZGODNE
+- rasa_ork__wiwat.fbx: siatki 35, kości 17, trójkąty 2640, wzrost 6.20 st., akcje rasa_ork|Scene 1-37 -> ZGODNE
+- rasa_ork.glb: siatki 35, kości 17, trójkąty 2640, wzrost 6.20 st., akcje chod 0-24, idle 0-60, wiwat 0-36 -> ZGODNE
+- ekwipunek: rasa_ork_cialo.fbx: siatki 50, kości 17, trójkąty 2820, wzrost 6.20 st., akcje brak -> ZGODNE
+- ekwipunek: rasa_ork_cialo__idle.fbx: siatki 50, kości 17, trójkąty 2820, wzrost 6.20 st., akcje rasa_ork_cialo|Scene 1-61 -> ZGODNE
+- ekwipunek: rasa_ork_cialo.glb: siatki 50, kości 17, trójkąty 2820, wzrost 6.20 st., akcje idle 0-60 -> ZGODNE
 
 PLIKI
 - rasa_ork.blend

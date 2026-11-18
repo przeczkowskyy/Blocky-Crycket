@@ -1,0 +1,60 @@
+{
+ "rasa": "polbog",
+ "id": "rasa_polbog",
+ "nazwa": "Półbóg",
+ "cialo": "czlowiek",
+ "skala": 1.0,
+ "klipy": [
+  "idle",
+  "chod",
+  "wiwat"
+ ],
+ "zrodlo_klipow": "rycerz",
+ "glowa": {
+  "twarz": "lagodna",
+  "uszy": null,
+  "wlosy": "fale",
+  "kly": null,
+  "rogi": null,
+  "nos": "maly",
+  "aureola": "pierscien"
+ },
+ "ogon": null,
+ "stroj_bazowy": {
+  "koszula": "len",
+  "spodenki": "białe ze złotą lamówką",
+  "buty": "brązowe (warstwa ciała)"
+ },
+ "wlosy": {
+  "id": "rasa_polbog_wlosy",
+  "zaczep": "HairAttachment",
+  "znacznik": "Wlosy"
+ },
+ "stroje": {
+  "golas": [],
+  "rycerz": [
+   "rycerz_helm",
+   "rycerz_zbroja",
+   "rycerz_nogawice",
+   "rycerz_pas",
+   "rycerz_rekawice",
+   "rycerz_buty",
+   "rycerz_miecz"
+  ],
+  "zwiadowca": [
+   "zwiadowca_kaptur",
+   "zwiadowca_kurtka",
+   "zwiadowca_spodnie",
+   "zwiadowca_pas",
+   "zwiadowca_rekawice",
+   "zwiadowca_buty",
+   "zwiadowca_luk",
+   "zwiadowca_sztylet"
+  ]
+ },
+ "przedmioty": [],
+ "cialo_pliki": {
+  "fbx": "wynik/rasa_polbog/ekwipunek/rasa_polbog_cialo.fbx",
+  "glb": "wynik/rasa_polbog/ekwipunek/rasa_polbog_cialo.glb"
+ }
+}

@@ -1,0 +1,60 @@
+{
+ "rasa": "mroczny_elf",
+ "id": "rasa_mroczny_elf",
+ "nazwa": "Mroczny elf",
+ "cialo": "czlowiek",
+ "skala": 1.0,
+ "klipy": [
+  "idle",
+  "chod",
+  "wiwat"
+ ],
+ "zrodlo_klipow": "rycerz",
+ "glowa": {
+  "twarz": "lagodna",
+  "uszy": "dlugie",
+  "wlosy": "dlugie",
+  "kly": null,
+  "rogi": null,
+  "nos": "maly",
+  "aureola": null
+ },
+ "ogon": null,
+ "stroj_bazowy": {
+  "koszula": "len",
+  "spodenki": "fioletowe",
+  "buty": "brązowe (warstwa ciała)"
+ },
+ "wlosy": {
+  "id": "rasa_mroczny_elf_wlosy",
+  "zaczep": "HairAttachment",
+  "znacznik": "Wlosy"
+ },
+ "stroje": {
+  "golas": [],
+  "rycerz": [
+   "rycerz_helm",
+   "rycerz_zbroja",
+   "rycerz_nogawice",
+   "rycerz_pas",
+   "rycerz_rekawice",
+   "rycerz_buty",
+   "rycerz_miecz"
+  ],
+  "zwiadowca": [
+   "zwiadowca_kaptur",
+   "zwiadowca_kurtka",
+   "zwiadowca_spodnie",
+   "zwiadowca_pas",
+   "zwiadowca_rekawice",
+   "zwiadowca_buty",
+   "zwiadowca_luk",
+   "zwiadowca_sztylet"
+  ]
+ },
+ "przedmioty": [],
+ "cialo_pliki": {
+  "fbx": "wynik/rasa_mroczny_elf/ekwipunek/rasa_mroczny_elf_cialo.fbx",
+  "glb": "wynik/rasa_mroczny_elf/ekwipunek/rasa_mroczny_elf_cialo.glb"
+ }
+}

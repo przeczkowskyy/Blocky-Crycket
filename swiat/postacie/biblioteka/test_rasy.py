@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Sprawdzian ras postaci (bez Blendera i bez Studio; ok. 5 s).
+"""Sprawdzian ras postaci (bez Blendera i bez Studio; ok. 3 s).
 
     python -B swiat/postacie/biblioteka/test_rasy.py            # wszystkie próby, kod wyjścia 0 = ZGODNE
     python -B swiat/postacie/biblioteka/test_rasy.py --odciski  # wypisz dzisiejsze odciski bohaterów (do ODCISKI)
@@ -12,7 +12,7 @@ Co sprawdza (założenia z swiat/postacie/RASY.md):
      odniesienia człowieka (rycerz.cialo());
   4. ekwipunek: każdy przedmiot „czlowiek” Rycerza i Zwiadowcy daje się założyć na każdą rasę; pełne komplety
      zdejmują strój bazowy (koszulę, spodenki, buty) i włosy, a cechy rasy (twarz, uszy, kły, rogi, ogon) zostają;
-  5. moduły rasa_elf i rasa_ork: zbuduj() ma kształt modułu postaci (jedna Postac „rasa_<id>”, bez błędów
+  5. sześć modułów rasa_<id>: zbuduj() ma kształt modułu postaci (jedna Postac „rasa_<id>”, bez błędów
      w sprawdz(), pakiet dla Blendera daje się zapisać), warianty() i ekwipunek_json() działają;
   6. istniejący bohaterowie bez zmian: pakiety zbuduj() i cialo() Rycerza, Zwiadowcy i Kota-Maga mają odciski
      sprzed dodania ras (18.11.2026). Po ZAMIERZONEJ zmianie bohatera odśwież słownik ODCISKI (opcja --odciski).
@@ -28,7 +28,8 @@ REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.a
 if REPO not in sys.path:
     sys.path.insert(0, REPO)
 
-from swiat.postacie import kot_mag, rasa_elf, rasa_ork, rasy, rycerz, zwiadowca  # noqa: E402
+from swiat.postacie import (kot_mag, rasa_demon, rasa_elf, rasa_goblin, rasa_mroczny_elf, rasa_ork,  # noqa: E402
+                            rasa_polbog, rasy, rycerz, zwiadowca)
 from swiat.postacie.biblioteka.postac import Postac, pakiet  # noqa: E402
 from swiat.postacie.ekwipunek import ubierz  # noqa: E402
 
@@ -93,8 +94,11 @@ def test_dane():
             zle.append("%s: nieznane uszy %r" % (rasa, g["uszy"]))
         if g.get("wlosy") and g["wlosy"] not in rasy.WLOSY:
             zle.append("%s: nieznane włosy %r" % (rasa, g["wlosy"]))
-    if rasy.ZBUDOWANE != ("elf", "ork"):
-        zle.append("zbudowane rasy: %r (pilotaż: elf i ork)" % (rasy.ZBUDOWANE,))
+    if rasy.ZBUDOWANE != tuple(rasy.RASY):
+        zle.append("zbudowane rasy: %r (od etapu A2 wszystkie sześć)" % (rasy.ZBUDOWANE,))
+    for rasa in rasy.RASY:
+        if not os.path.isfile(os.path.join(REPO, "swiat", "postacie", "rasa_%s.py" % rasa)):
+            zle.append("%s: brak modułu rasa_%s.py" % (rasa, rasa))
     if rasy.RASY["ork"]["skala"] <= 1.0 or rasy.RASY["goblin"]["skala"] >= 1.0:
         zle.append("skala: ork ma być większy od 1, goblin mniejszy")
     return zle
@@ -191,7 +195,7 @@ def test_ekwipunek():
 
 def test_moduly():
     zle = []
-    for mod, rasa in ((rasa_elf, "elf"), (rasa_ork, "ork")):
+    for mod, rasa in MODULY:
         ob = mod.zbuduj()
         if not (isinstance(ob, list) and len(ob) == 1 and isinstance(ob[0], Postac)):
             zle.append("%s.zbuduj(): oczekiwana lista z jedną postacią" % mod.ID)
@@ -232,8 +236,10 @@ def test_bohaterowie():
     return zle
 
 
+MODULY = ((rasa_elf, "elf"), (rasa_ork, "ork"), (rasa_mroczny_elf, "mroczny_elf"), (rasa_demon, "demon"),
+          (rasa_goblin, "goblin"), (rasa_polbog, "polbog"))
 PROBY = (("dane sześciu ras", test_dane), ("ciało i klipy ras = ciało człowieka", test_cialo_i_klipy),
-         ("przedmioty „czlowiek” na rasach", test_ekwipunek), ("moduły rasa_elf i rasa_ork", test_moduly),
+         ("przedmioty „czlowiek” na rasach", test_ekwipunek), ("sześć modułów rasa_<id>", test_moduly),
          ("istniejący bohaterowie bez zmian", test_bohaterowie))
 
 
