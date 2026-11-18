@@ -31,6 +31,8 @@ warianty() i STROJE, ten sam przebieg robi dodatkowo wynik/<moduł>/ekwipunek/:
   przedmioty/<segment>.fbx/.glb/_tekstury/              każdy segment kostny osobno (broń: przedmioty/ wyżej)
   ikony/<przedmiot>_ikona.png, <id>_ekwipunek_ikony_arkusz.jpg   ikony całych przedmiotów
   ekwipunek.json                                         dane przedmiotów dla gry (moduł ekwipunek_json())
+Opcjonalnie — moduł z funkcją po_przebudowie(cel) (rasy: rasa_<id>.py) dokłada po ułożeniu wyniku własne obrazy,
+np. rasa_<id>_porownanie.jpg (rzut i model) i rasa_<id>_skala.jpg; zwraca ich nazwy do listy plików raportu.
 Inne moduły przebudowują się jak dotąd.
 """
 import argparse
@@ -456,6 +458,10 @@ def przebuduj(mod_nazwa, a):
         p_e, k_e, rap_ekw = ekwipunek_uloz(mod_nazwa, modul, ekw_r, cel, rap)
         pliki += p_e
         kontrola = kontrola + k_e
+    # opcjonalnie: moduł dokłada własne obrazy do świeżo ułożonego folderu (rasy: plansza porównawcza z rzutem
+    # i plansza skali — rasy_plansze.py); po_przebudowie(cel) zwraca nazwy plików względem wynik/<moduł>/
+    if hasattr(modul, "po_przebudowie"):
+        pliki += list(modul.po_przebudowie(cel) or [])
     naprawione = 0
     for dp, _, fs in os.walk(cel):
         for f in fs:

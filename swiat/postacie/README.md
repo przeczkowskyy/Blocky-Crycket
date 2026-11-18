@@ -25,6 +25,9 @@ Wszystko powstało skryptami Pythona w Blenderze 5.0 uruchamianym w tle, bez pł
 | **Biblioteka** | `biblioteka/` | kod wspólny; opis API, konwencji i faktów Roblox w `biblioteka/README.md` |
 | **Wzory** | `wzor_postaci.py`, `wzor_ekwipunku.py` | najprostsze przykłady do kopiowania |
 
+### Rasy postaci (D-104, pilotaż z 18.11.2026)
+Modele ras z rzutów Pawła (`assets/processed/RaceTurnarounds/`) powstają tym samym sposobem co bohaterowie. Rasa to ciało typu `czlowiek` na klockach, kościach, zaczepach i klipach gołego Rycerza, więc każdy przedmiot `czlowiek` na nią pasuje; rasę odróżniają skóra, twarz, uszy, włosy, kły i kolor spodenek, a skala rasy (ork 1,08) jest daną, nie geometrią. Zbudowane i obejrzane są **elf i ork** (`rasa_elf.py`, `rasa_ork.py` → `wynik/rasa_<id>/`, z planszą porównawczą `rasa_<id>_porownanie.jpg`: rzut u góry, model pod spodem); mroczny elf, demon, goblin i półbóg mają na razie dane i szkic w `rasy.py`. W Roblox Studio nic nie było robione. Założenia, lista przenikań z przymiarek i pytania do ludzi: **`RASY.md`**; test bez Blendera: `python -B swiat/postacie/biblioteka/test_rasy.py`.
+
 ## Układ `wynik/<moduł>/` (jeden dla wszystkich)
 
 | Plik | Co to |
