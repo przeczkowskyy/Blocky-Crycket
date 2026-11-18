@@ -1,6 +1,9 @@
 {
- "opis": "Identyfikatory zasobów audio w Roblox (0 = jeszcze nie wgrane → cisza muzyki i wbudowane dźwięki walki). Wpisuje je: python -B swiat/dzwiek_gra/zbuduj.py --identyfikatory <plik.json>",
+ "opis": "Identyfikatory zasobów audio w Roblox (0 = jeszcze nie wgrane → cisza albo utwory zastępcze i wbudowane dźwięki walki). arkusz = arkusz efektów; arkusze_muzyki = pliki z kilkoma utworami (odcinki); muzyka = utwory wgrane jako osobne pliki. Wpisuje je: python -B swiat/dzwiek_gra/zbuduj.py --identyfikatory <plik.json>",
  "arkusz": 93573204965127,
+ "arkusze_muzyki": {
+  "muzyka_arkusz_b": 0
+ },
  "muzyka": {
   "muzyka_01_menu_a_petla": 0,
   "muzyka_01_menu_b_petla": 0,
@@ -8,6 +11,8 @@
   "muzyka_03_bazar_rzemieslnicy_petla": 116217836078354,
   "muzyka_04_bazar_wieczor_petla": 75722490819761,
   "muzyka_05_las_a_petla": 70497074484606,
-  "muzyka_05_las_b_petla": 106582652985449
+  "muzyka_05_las_b_petla": 106582652985449,
+  "muzyka_06_bagno_petla": 0,
+  "muzyka_07_dzungla_petla": 0
  }
 }

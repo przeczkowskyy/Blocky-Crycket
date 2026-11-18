@@ -1,11 +1,14 @@
 --[[
 	KatalogDzwiekow — WYGENEROWANY przez swiat/dzwiek_gra/zbuduj.py z assets/audio/arkusz/sfx_arkusz_a.json
-	(odcinki arkusza), swiat/dzwiek_gra/ustawienia.json (głośności, zdarzenia, muzyka stref) i identyfikatory.json.
+	(odcinki arkusza efektów), map arkuszy muzyki (assets/audio/arkusz/muzyka_arkusz_*.json), ustawienia.json
+	(głośności, zdarzenia, muzyka stref i kontekstów) i identyfikatory.json.
 	NIE EDYTUJ RĘCZNIE: zmień pliki źródłowe i uruchom python -B swiat/dzwiek_gra/zbuduj.py --sucho.
 
 	Czytają go: OdtwarzaczWalki2 (prototyp walki: odcinki arkusza zamiast wbudowanych dźwięków, gdy arkusz.id ≠ 0)
-	i MuzykaStref (muzyka bazaru i lasu-pasa). Identyfikator 0 = plik jeszcze nie wgrany (cisza / dźwięki wbudowane).
-	Czasy efektów: poczatek / koniec = sekundy w pliku arkusza, atak / szczyt = sekundy od początku odcinka.
+	i MuzykaStref (muzyka stref i kontekstów). Identyfikator 0 = plik jeszcze nie wgrany (cisza, utwory zastępcze
+	albo dźwięki wbudowane). Czasy efektów: poczatek / koniec = sekundy w pliku arkusza, atak / szczyt = sekundy
+	od początku odcinka. Utwór muzyki z polami arkusz / poczatek / koniec to odcinek pliku arkusza muzyki
+	(sekundy w pliku, już zwężone o margines); bez nich — osobny plik grany w całości.
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -13,7 +16,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "9def43c437ac",
+	skrot = "9e8fcb457f4e",
 	arkusz = {
 		id = 93573204965127,
 		plik = "sfx_arkusz_a.ogg",
@@ -290,6 +293,54 @@ return {
 		przejscie = 2.5,
 		przyciszenieWalki = 0.6,
 		przyciszenieCzas = 0.8,
+		arkusze = {
+			muzyka_arkusz_b = {
+				id = 0,
+				plik = "muzyka_arkusz_b.ogg",
+				sha256 = "00f1167bc9e0abc12fe973c7eea518a91656fe6de15c5084520d70df27f986dc",
+				dlugosc = 395.388,
+			},
+		},
+		konteksty = {
+			walka = {
+				glosnosc = 0.7,
+				utwory = {
+					{
+						nazwa = "muzyka_13_walka_petla",
+						id = 0,
+						arkusz = "muzyka_arkusz_b",
+						poczatek = 0.55,
+						koniec = 70.0151,
+					},
+				},
+			},
+			walka_straznik = {
+				glosnosc = 0.7,
+				utwory = {
+					{
+						nazwa = "muzyka_14_walka_straznik_petla",
+						id = 0,
+						arkusz = "muzyka_arkusz_b",
+						poczatek = 71.6151,
+						koniec = 147.7054,
+					},
+				},
+				gatunki = { "straznik_lasu", "straznik_topieli", "waz_stu_lian" },
+			},
+			trening = {
+				glosnosc = 0.7,
+				utwory = {
+					{
+						nazwa = "muzyka_15_trening_petla",
+						id = 0,
+						arkusz = "muzyka_arkusz_b",
+						poczatek = 149.3054,
+						koniec = 224.2048,
+					},
+				},
+				atrybutGracza = "TreningGra",
+			},
+		},
 		strefy = {
 			bazar = {
 				glosnosc = 0.8,
@@ -332,16 +383,32 @@ return {
 				},
 			},
 			bagno = {
-				glosnosc = 0.7,
+				glosnosc = 0.8,
 				podpiete = true,
 				utwory = {
 					{
-						nazwa = "muzyka_05_las_a_petla",
-						id = 70497074484606,
+						nazwa = "muzyka_06_bagno_petla",
+						id = 0,
 					},
 					{
-						nazwa = "muzyka_05_las_b_petla",
-						id = 106582652985449,
+						nazwa = "muzyka_06_bagno_b_petla",
+						id = 0,
+						arkusz = "muzyka_arkusz_b",
+						poczatek = 225.8048,
+						koniec = 310.2507,
+					},
+				},
+				zastepcze = {
+					glosnosc = 0.7,
+					utwory = {
+						{
+							nazwa = "muzyka_05_las_a_petla",
+							id = 70497074484606,
+						},
+						{
+							nazwa = "muzyka_05_las_b_petla",
+							id = 106582652985449,
+						},
 					},
 				},
 				kontener = "BagnoPas",
@@ -350,16 +417,32 @@ return {
 				},
 			},
 			dzungla = {
-				glosnosc = 0.7,
+				glosnosc = 0.8,
 				podpiete = true,
 				utwory = {
 					{
-						nazwa = "muzyka_05_las_a_petla",
-						id = 70497074484606,
+						nazwa = "muzyka_07_dzungla_petla",
+						id = 0,
 					},
 					{
-						nazwa = "muzyka_05_las_b_petla",
-						id = 106582652985449,
+						nazwa = "muzyka_07_dzungla_b_petla",
+						id = 0,
+						arkusz = "muzyka_arkusz_b",
+						poczatek = 311.8507,
+						koniec = 394.8383,
+					},
+				},
+				zastepcze = {
+					glosnosc = 0.7,
+					utwory = {
+						{
+							nazwa = "muzyka_05_las_a_petla",
+							id = 70497074484606,
+						},
+						{
+							nazwa = "muzyka_05_las_b_petla",
+							id = 106582652985449,
+						},
 					},
 				},
 				kontener = "DzunglaPas",

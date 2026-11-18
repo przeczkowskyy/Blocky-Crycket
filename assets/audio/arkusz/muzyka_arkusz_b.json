@@ -1,0 +1,68 @@
+{
+  "opis": "Arkusz muzyki: kilka pętli w jednym pliku, odcinki w sekundach. Buduje tools/audio_arkusz_muzyki.py. poczatek / koniec = dokładne granice utworu w pliku; graj_od / graj_do = odcinek do grania (zwężony o margines na przesunięcie po przekodowaniu w Roblox).",
+  "plik": "muzyka_arkusz_b.ogg",
+  "sha256": "00f1167bc9e0abc12fe973c7eea518a91656fe6de15c5084520d70df27f986dc",
+  "dlugosc_s": 395.388,
+  "rozmiar_bajtow": 8775839,
+  "odstep_s": 1.5,
+  "margines_s": 0.05,
+  "kolejnosc": [
+    "muzyka_13_walka_petla",
+    "muzyka_14_walka_straznik_petla",
+    "muzyka_15_trening_petla",
+    "muzyka_06_bagno_b_petla",
+    "muzyka_07_dzungla_b_petla"
+  ],
+  "utwory": {
+    "muzyka_13_walka_petla": {
+      "poczatek": 0.5,
+      "koniec": 70.0651,
+      "graj_od": 0.55,
+      "graj_do": 70.0151,
+      "dlugosc": 69.5651,
+      "plik": "muzyka/muzyka_13_walka_petla.ogg",
+      "sha256_pliku": "12e2c35ed5b899cf2ea25a295cc705a4df67806544a5e752ba4cf4f0abb51502",
+      "zrodlo": "flac"
+    },
+    "muzyka_14_walka_straznik_petla": {
+      "poczatek": 71.5651,
+      "koniec": 147.7554,
+      "graj_od": 71.6151,
+      "graj_do": 147.7054,
+      "dlugosc": 76.1903,
+      "plik": "muzyka/muzyka_14_walka_straznik_petla.ogg",
+      "sha256_pliku": "883394e345f1ce4528332cfef74c0d4ec5a284ac40286ec10ecda665725aff0f",
+      "zrodlo": "flac"
+    },
+    "muzyka_15_trening_petla": {
+      "poczatek": 149.2554,
+      "koniec": 224.2548,
+      "graj_od": 149.3054,
+      "graj_do": 224.2048,
+      "dlugosc": 74.9993,
+      "plik": "muzyka/muzyka_15_trening_petla.ogg",
+      "sha256_pliku": "77091214ad03c7b66622094c477e1f9457fbe8274603fc6066daf3f75a3acc74",
+      "zrodlo": "flac"
+    },
+    "muzyka_06_bagno_b_petla": {
+      "poczatek": 225.7548,
+      "koniec": 310.3007,
+      "graj_od": 225.8048,
+      "graj_do": 310.2507,
+      "dlugosc": 84.546,
+      "plik": "muzyka/muzyka_06_bagno_b_petla.ogg",
+      "sha256_pliku": "359db9b54382240738b2c8b3d31040c3f072665018e30d78973d4dbe4f7d0123",
+      "zrodlo": "flac"
+    },
+    "muzyka_07_dzungla_b_petla": {
+      "poczatek": 311.8007,
+      "koniec": 394.8883,
+      "graj_od": 311.8507,
+      "graj_do": 394.8383,
+      "dlugosc": 83.0875,
+      "plik": "muzyka/muzyka_07_dzungla_b_petla.ogg",
+      "sha256_pliku": "6a0c88abccb00792d560cbec0a26dbfa6994546396f628839ba60dab350b9ab8",
+      "zrodlo": "flac"
+    }
+  }
+}

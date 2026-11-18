@@ -3,6 +3,8 @@
 Wygenerowane 16.11.2026 w Higgsfield (zgoda Karola z 16.11.2026). **Status wszystkich plików: do odsłuchu** — nic nie jest wybrane ani wgrane do Roblox.
 **Stan na 16.11.2026 wieczorem:** Karol przesłuchał partię, zaakceptował ją w panelu („jest bardzo dobre”; dalsze poprawki możliwe) i poprosił o wypchnięcie plików. Gotowe pliki są więc w repo: `muzyka/` (pełne wersje `.mp3` i wersje do pętli `_petla.ogg`) oraz `dzwieki/` (warianty A i B). Lokalnie zostają tylko oryginały sprzed obróbki (`oryginaly/`) i składanki do odsłuchu (`przeglad/`). `manifest_audio.json` ma prompty, identyfikatory zleceń, koszty i pomiary. Sekcja „Zanim wgramy do Roblox” niżej pozostaje aktualna — do Roblox nic nie jest wgrane, a prawa do użycia w opublikowanej grze są do wyjaśnienia.
 
+**Druga partia (18.11.2026):** pięć nowych utworów — walka, walka ze Strażnikiem krainy, mini-gry Training Center, drugi utwór Bagna i Dżungli — czeka na odsłuch. Opis w sekcji „Druga partia” niżej, po tabeli muzyki pierwszej partii.
+
 ## Najpierw przesłuchaj
 
 1. `muzyka/muzyka_01_menu_a.mp3` (potem `_menu_b`): motyw przewodni, od niego zależy charakter całej ścieżki.
@@ -31,6 +33,47 @@ Model: `elevenlabs_music_v2_5`, najnowszy model muzyczny na liście Higgsfield (
 | `muzyka_10_lodowiec` | Chłodny spokój: celesta, pozytywka, wysokie smyczki, ok. 76 BPM | 90,0 s / 75,3 s | **uwaga:** koniec pętli o 6,8 dB głośniejszy niż początek, na szwie może być słychać spadek |
 | `muzyka_11_wulkan` | Niskie bębny, napięcie, ale przygodowo, ok. 116 BPM | 90,0 s / 74,5 s | ma krótkie wyciszenie |
 | `muzyka_12_krysztaly` | Magicznie, iskrząco, finałowo: dzwonki, celesta, harfa, waltornia, ok. 108 BPM | 90,0 s / 80,0 s | ma krótkie wyciszenie |
+
+## Druga partia (18.11.2026) — pięć utworów do odsłuchu
+
+**Status: do odsłuchu (18.11.2026).** Nikt jeszcze nie słyszał tych utworów — opisy niżej mówią, co zamówiono, a nie co wyszło. Każdy utwór można odrzucić; wtedy trzeba zbudować arkusz muzyki od nowa bez niego (polecenie niżej). Do Roblox nic z tej partii nie jest wgrane.
+
+Ten sam model i te same ustawienia co w pierwszej partii (`elevenlabs_music_v2_5`, 90 s, „tylko instrumenty”), ten sam opis wspólnej palety w promptach. Pełne prompty, identyfikatory zleceń i pomiary: `manifest_audio.json` (pięć ostatnich wpisów listy `muzyka` i blok `partia_2`).
+
+| Plik | Czego się spodziewać (tak zamówiono, nikt jeszcze nie słyszał) | Pełna / pętla | Uwagi techniczne |
+|---|---|---|---|
+| `muzyka_13_walka` | Walka ze zwykłym przeciwnikiem: szybko, skocznie, „bohatersko na wesoło” — smyczki staccato i pizzicato, werbel, tamburyn, ksylofon i flet piccolo, ok. 138 BPM | 90,0 s / 69,6 s | urywa się w pełnym graniu; oryginał najgłośniejszy z partii (-12,3 LUFS, szczyt +0,2 dBTP), ściszony o 3,7 dB; najwyższe dopasowanie pętli (0,99) |
+| `muzyka_14_walka_straznik` | Walka ze Strażnikiem krainy: większa i bardziej dramatyczna, ale nadal bajkowa — niskie bębny i kotły w marszowym rytmie, fagot, niskie smyczki, waltornia, ok. 126 BPM | 90,0 s / 76,2 s | ma zakończenie (żywa muzyka do 88,0 s); najniższe dopasowanie pętli w partii (0,93) |
+| `muzyka_15_trening` | Mini-gry Training Center: sportowo i motywująco — klaskanie, drewniane klocki, krowi dzwonek, marimba i ukulele, piccolo i klarnet, ok. 128 BPM | 90,0 s / 75,0 s | **uwaga:** oryginał ma cichszy wstęp — pierwsze ok. 7,5 s jest o ok. 7 dB cichsze niż reszta (zamawiany był start „od razu w rytmie”); pętla zaczyna się za wstępem (od 11,3 s), więc wstęp słychać tylko w pełnej wersji |
+| `muzyka_06_bagno_b` | Bagno, drugie ujęcie: sennie i psotnie — waltornia z tłumikiem, niski klarnet, szarpany kontrabas, guiro, marimba „jak pękające bąbelki”, ok. 88 BPM | 90,0 s / 84,5 s | urywa się w pełnym graniu; szczyt nie pozwolił dojść do -16 LUFS (pełna -16,9, pętla -16,8) |
+| `muzyka_07_dzungla_b` | Dżungla, spokojniejsze ujęcie: ciekawie i słonecznie — marimba jak kalimba, drewniane bębny, grzechotki, flet z trylami jak ptaki, bongosy, ok. 104 BPM | 90,0 s / 83,1 s | ma zakończenie i 0,3 s ciszy; koniec pętli o 3,2 dB głośniejszy niż początek (pierwsze i ostatnie 2 s) |
+
+**Jak słuchać:** pełne wersje `muzyka/<nazwa>.mp3` do oceny utworu, wersje `muzyka/<nazwa>_petla.ogg` z powtarzaniem jednego utworu do oceny szwu (jak w pierwszej partii). W grze utwory tej partii mają grać z jednego pliku — arkusza muzyki (niżej).
+
+**Kontrola techniczna drugiej partii** (liczby w manifeście):
+- Oryginały: MP3 128 kb/s, 44,1 kHz, stereo, każdy 90,04 s, głośność od -17,0 do -12,3 LUFS. Po obróbce pełne wersje mają -16,0 LUFS (Bagno B -16,9, bo nie pozwolił szczyt), a true peak najwyżej -1,3 dBTP; pętle od -16,8 do -15,8 LUFS, true peak najwyżej -1,4 dBTP.
+- Skrypt pierwszej partii się nie zachował, więc obróbkę robi nowe narzędzie `tools/audio_petla.py`, napisane według zasad z manifestu (te same wagi: 0,4 rytm + 0,4 harmonia + 0,2 barwa; 1 s liniowego przenikania końca w początek). Cechy są policzone od nowa, więc **wynik dopasowania nie jest ściśle porównywalny z pierwszą partią** (na utworach pierwszej partii nowe narzędzie daje liczby od 0,02 niższych do 0,12 wyższych niż zapisane wtedy). Sprawdzenie narzędzia na 14 oryginałach pierwszej partii (samo liczenie, pliki pierwszej partii zostały nietknięte): koniec żywej muzyki wyznaczyło tak samo w 13 utworach, w 7 wybrało pętlę tej samej długości co wtedy (różnica najwyżej 0,02 s), a w pozostałych 7 inne powtórzenie — pętlę o 2–11 s dłuższą albo krótszą.
+- Pętle: dopasowanie 0,93–0,99; skok próbki na szwie od 0,0002 do 0,026 i w każdym utworze jest mniejszy niż zwykła różnica sąsiednich próbek w tym miejscu (pole `skok_sasiednich_probek_p95`), czyli szew nie daje trzasku. Różnica głośności między pierwszymi a ostatnimi 2 s pętli: od -0,5 do 1,5 dB, w Dżungli B 3,2 dB.
+- Długość każdej pętli to niemal dokładnie całkowita liczba taktów przy zamówionym tempie (walka, Strażnik i trening po 160,0 uderzeń = 40 taktów; Bagno B 124,0 = 31 taktów; Dżungla B 144,0 = 36 taktów). To zgodność rachunkowa z zamówionym tempem, a nie odsłuch — czy szew jest płynny muzycznie, oceni dopiero ucho.
+- Nowe w narzędziu względem opisu pierwszej partii: przy wyborze miejsca mała kara za różnicę głośności po obu stronach szwu i mała premia za dłuższą pętlę; gdy utwór ma cichszy wstęp, pętla zaczyna się za nim (tak jest w `muzyka_15_trening`).
+- Bezstratne kopie pętli (`muzyka/oryginaly/<nazwa>_petla.flac`) i oryginały leżą tylko lokalnie (folder poza gitem). Służą do budowy arkusza bez drugiego kodowania stratnego.
+
+**Arkusz muzyki** (`arkusz/muzyka_arkusz_b.ogg` + mapa `arkusz/muzyka_arkusz_b.json`) — propozycja, nic nie jest wgrane:
+- Pięć pętli tej partii jedna po drugiej w jednym pliku: walka, Strażnik, trening, Bagno B, Dżungla B; 1,5 s ciszy między utworami, 0,5 s na brzegach. Razem **395,4 s (6 min 35 s) i 8,37 MB** — limit Roblox to 7 minut i 20 MB.
+- Po co: konto ma limit wgrań audio na miesiąc (10 bez weryfikacji tożsamości; rejestr `wgrane.json` ma dziś 8 wpisów z tego miesiąca). Jeden arkusz to jedno wgranie zamiast pięciu; gra odtwarza utwór jako odcinek pliku (`Sound.PlaybackRegion`), tak jak efekty walki.
+- Mapa podaje dla każdego utworu dokładne granice (`poczatek`, `koniec`) i odcinek do grania (`graj_od`, `graj_do`) zwężony o 0,05 s z każdej strony — na wypadek przesunięcia czasów po przekodowaniu w Roblox. Tego przesunięcia nikt jeszcze nie zmierzył; po wgraniu warto odsłuchać początek i koniec każdego utworu w grze.
+- Budowa i kontrola (kontrola sprawdza długość, rozmiar, ciszę między utworami i zgodność odcinków z plikami pętli):
+
+```
+python -B tools/audio_arkusz_muzyki.py --nazwa muzyka_arkusz_b muzyka_13_walka_petla muzyka_14_walka_straznik_petla muzyka_15_trening_petla muzyka_06_bagno_b_petla muzyka_07_dzungla_b_petla
+python -B tools/audio_arkusz_muzyki.py --nazwa muzyka_arkusz_b --sprawdz
+```
+
+- Po odrzuceniu utworu: to samo polecenie bez niego, potem `python -B swiat/dzwiek_gra/zbuduj.py --sucho` (katalog gry bierze odcinki z mapy). Utwór usunięty z arkusza trzeba też zdjąć z `swiat/dzwiek_gra/ustawienia.json`.
+
+**Kredyty drugiej partii:** 5 × 13,08 = **65,40**. Saldo konta: 205,01 przed, **139,61 po**.
+
+**Czego nie da się sprawdzić bez ucha** — to samo co w pierwszej partii (lista niżej), a dodatkowo: czy muzyka walki nie męczy przy wielu walkach z rzędu, czy utwór Strażnika nie jest za groźny dla młodszych graczy i czy cichszy wstęp treningu w pełnej wersji to wada, czy zamierzone wejście.
 
 ## Efekty dźwiękowe (22 efekty, po dwa warianty)
 

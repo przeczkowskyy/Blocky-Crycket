@@ -12,6 +12,7 @@ Sound.PlaybackRegion). Między efektami jest cisza, żeby drobne przesunięcie p
 
 Wynik: assets/audio/arkusz/sfx_arkusz_<wariant>.ogg i .json (mapa: nazwa → początek i koniec w sekundach).
 Niczego nie wgrywa. Wymaga ffmpeg i ffprobe w PATH.
+Arkusz MUZYKI (kilka pętli w jednym pliku, ta sama zasada) buduje osobne narzędzie: tools/audio_arkusz_muzyki.py.
 """
 from __future__ import annotations
 

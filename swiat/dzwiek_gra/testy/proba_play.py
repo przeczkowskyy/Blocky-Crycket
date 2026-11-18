@@ -24,7 +24,22 @@ LISTA KONTROLNA:
      wczytał (niewczytany: nie gra i nie liczy się jako błąd); z identyfikatorem próbnym gra i w walce cichnie do
      przyciszenia z katalogu; po zabraniu próbnego — wraca do stanu z katalogu (jak wyżej)
   D6 konsola bez błędów [DzwiekGra] i [TestWalki2]
-Wynik: <wyj>/wyniki.json i lista na ekranie (nazwa konta w konsoli zastąpiona znacznikiem <gracz>).
+  D7 strefa z utworami zastępczymi (Bagno, strefa wymuszona haczykiem): stan z katalogu (własne utwory, gdy mają
+     identyfikator, inaczej zastępcze); własny utwór „bez identyfikatora” (próbny identyfikator 0) → grają zastępcze
+     (utwory lasu); własny utwór z identyfikatorem próbnym → gra własny, nie zastępcze, z głośnością strefy; po
+     zabraniu próbnego wraca stan z katalogu
+  D8 utwór jako odcinek pliku (jak utwory z arkusza muzyki; próbny plik, odcinek 2,0–8,0 s w strefie Dżungla): Sound
+     ma PlaybackRegion = odcinek, pozycja odtwarzania zostaje w odcinku, a pod koniec odcinka utwór przechodzi
+     w następny (tu: w siebie) — licznik zmian rośnie
+  D9 muzyka kontekstu walki (próbne odcinki dla „walka” i „walka_straznik”, strefa bazar z próbnym plikiem):
+     zwykła walka z tablicy → kontekst „walka” i utwór walki; okno wyniku → muzyka walki przyciszona; po zamknięciu
+     wraca muzyka strefy; walka ze Strażnikiem Gaju → kontekst „walka_straznik” i utwór Strażnika; Strażnik bez
+     własnego utworu → utwór zwykłej walki; bez żadnego utworu kontekstu → zostaje muzyka strefy
+  D10 muzyka mini-gry: atrybut gracza z katalogu (TreningGra, tu ustawiony próbą po stronie serwera — tak jak robi to
+     serwer mini-gier przy wejściu na stanowisko) → kontekst „trening” i utwór treningu; po zdjęciu atrybutu wraca
+     muzyka strefy i gra dalej od miejsca, w którym ucichła (licznik wznowień rośnie)
+Punkty D7–D10 biegną przed D6 (konsola na końcu). Wynik: <wyj>/wyniki.json i lista na ekranie (nazwa konta
+w konsoli zastąpiona znacznikiem <gracz>).
 """
 import json
 import os
@@ -36,6 +51,8 @@ TU = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(TU)))
 sys.path.insert(0, os.path.join(REPO, "swiat", "test_walki2", "testy"))
 from sesja_play import SesjaPlay, log  # noqa: E402
+sys.path.insert(0, os.path.dirname(TU))
+import zbuduj as ZB  # noqa: E402  (katalog muzyki do oczekiwań D7–D10: te same dane co w Studio)
 
 with open(os.path.join(os.path.dirname(TU), "ustawienia.json"), encoding="utf-8") as _f:
     # przyciszenie muzyki w walce bierzemy z ustawień pakietu (17.11.2026: 0,6 zamiast 0,25) — próg nie jest wpisany na sztywno
@@ -116,12 +133,13 @@ def main():
         WYNIKI["D1"] = d1
         punkt("D1", d1.get("ok") and d1.get("region") == [1.5, 2.5], "PlaybackRegion: %s" % d1)
 
-        def walka(etykieta):
+        def walka(etykieta, przeciwnik=None, tempo=1):
             klasa, wrog, poz, z = WALKA
+            wrog = przeciwnik or wrog
             s.steruj('"zamknij"')
             time.sleep(0.8)
             s.ziarno(z)
-            s.steruj('"start", { klasa = "%s", przeciwnik = "%s", poziom = "%d" }, { tempo = 1 }' % (klasa, wrog, poz))
+            s.steruj('"start", { klasa = "%s", przeciwnik = "%s", poziom = "%d" }, { tempo = %d }' % (klasa, wrog, poz, tempo))
             s.czekaj(("odtwarzanie",), 15)
             probki, przyciszenia = [], []
             t0 = time.time()
@@ -132,7 +150,9 @@ def main():
                        'x.PlaybackRegionsEnabled, x.SoundId }) end end end '
                        'local m = D and D.Sygnaly.SterowanieMuzyki:Invoke("stan") '
                        'return H:JSONEncode({ graja = o, stan = workspace.TestWalki2:GetAttribute("OstatniStan"), '
-                       'muzyka = m and { gra = m.gra, przyciszenie = m.przyciszenie, walka = m.walka } })')
+                       'muzyka = m and { gra = m.gra, przyciszenie = m.przyciszenie, walka = m.walka, kontekst = m.kontekst, '
+                       'utwor = m.utwor, region = m.region, pozycja = m.pozycja, pk = m.przyciszenieKontekstu, '
+                       'wk = m.walkaKontekst, faza = m.walkaFaza, wczytany = m.wczytany } })')
                 probki.extend(r["graja"])
                 if r.get("muzyka"):
                     przyciszenia.append(r["muzyka"])
@@ -143,7 +163,8 @@ def main():
             w = {"zestaw": st.get("OstatniZestawDzwiekow"), "zagrane": st.get("OstatnieDzwiekiZagrane"),
                  "niewczytane": st.get("OstatniArkuszNiewczytany"),
                  "odcinki": json.loads(st.get("OstatnieOdcinkiArkusza") or "[]"), "regiony": st.get("OstatnieRegionyArkusza"),
-                 "probki": probki[:80], "muzyka": przyciszenia[-40:], "czas": st.get("OstatniCzasTrwania")}
+                 "probki": probki[:80], "muzyka": przyciszenia[-40:], "muzyka_wszystko": przyciszenia[:400],
+                 "czas": st.get("OstatniCzasTrwania")}
             WYNIKI[etykieta] = w
             return w
 
@@ -238,6 +259,195 @@ def main():
             {k: m["tablica"].get(k) for k in ("strefa", "gra")},
             {n: o[1] for n, o in oceny.items()}, {k: m["probny"].get(k) for k in ("utwor", "gra", "glosnosc")},
             m["przyciszenie_w_walce"], stan_po, {k: m["po"].get(k) for k in ("strefa", "gra", "bledy")}))
+        # ---------------------------------------------------------------- D7–D10: zastępcze, odcinki, konteksty
+        MUZ = "D.Sygnaly.SterowanieMuzyki"
+        KAT = ZB.katalog(ZB.wczytaj_json(ZB.USTAWIENIA), ZB.wczytaj_json(ZB.IDENTYFIKATORY))["muzyka"]
+
+        def muz(argumenty):
+            """SterowanieMuzyki:Invoke(…) u klienta; argumenty = tekst argumentów Luau."""
+            return js('local w = %s:Invoke(%s) return H:JSONEncode({ ok = true, w = w })' % (MUZ, argumenty)).get("w")
+
+        def stan_muzyki():
+            return js('return H:JSONEncode(%s:Invoke("stan"))' % MUZ)
+
+        def czekaj_na(warunek, limit, co=0.25):
+            """Odpytuje stan muzyki, aż warunek(stan) będzie prawdą albo minie limit; zwraca ostatni stan."""
+            t0 = time.time()
+            st = stan_muzyki()
+            while not warunek(st) and time.time() - t0 < limit:
+                time.sleep(co)
+                st = stan_muzyki()
+            return st
+
+        def proba(kod, opis, funkcja):
+            try:
+                ok, tekst = funkcja()
+            except Exception as e:  # noqa: BLE001 — punkt nie może zatrzymać pozostałych ani D6
+                ok, tekst = False, "wyjątek: %s" % str(e)[:300]
+            punkt(kod, ok, "%s — %s" % (opis, tekst))
+
+        def nazwy(utwory):
+            return [u["nazwa"] for u in utwory if u["id"]]
+
+        def d7():
+            sb = KAT["strefy"]["bagno"]
+            wlasne, zast = nazwy(sb["utwory"]), nazwy(sb["zastepcze"]["utwory"])
+
+            def wg_katalogu(st):
+                if st.get("strefa") != "bagno":
+                    return False
+                if wlasne:
+                    return st.get("utwor") in wlasne and not st.get("zastepcze")
+                if zast:
+                    return st.get("utwor") in zast and st.get("zastepcze") is True
+                return not st.get("gra")
+
+            muz('"probny", "bagno", nil')
+            muz('"wymus", "bagno"')
+            time.sleep(4.0)
+            a = stan_muzyki()
+            # własny utwór „bez identyfikatora” (próbny identyfikator 0) → grają zastępcze, także gdy katalog ma już własne
+            muz('"probny", "bagno", 0')
+            time.sleep(3.0)
+            z = stan_muzyki()
+            muz('"probny", "bagno", "%s"' % PROBNY)
+            time.sleep(4.0)
+            b = stan_muzyki()
+            muz('"probny", "bagno", nil')
+            time.sleep(2.0)
+            c = stan_muzyki()
+            WYNIKI["D7"] = {"wlasne_w_katalogu": wlasne, "zastepcze_w_katalogu": zast, "katalog": a, "bez_wlasnych": z,
+                            "probny": b, "po": c}
+            ok_z = (z.get("utwor") in zast and z.get("zastepcze") is True) if zast else not z.get("gra")
+            ok_b = (b.get("utwor") == sb["utwory"][0]["nazwa"] and not b.get("zastepcze") and b.get("gra")
+                    and b.get("id") == PROBNY and abs((b.get("glosnosc") or 0) - sb["glosnosc"]) < 0.08)
+            return (wg_katalogu(a) and ok_z and ok_b and wg_katalogu(c) and (c.get("bledy") or 0) == 0,
+                    "katalog: własne %s, zastępcze %s → gra %s (zastępcze: %s); własny bez identyfikatora → %s (zastępcze: %s); "
+                    "z próbnym: %s, głośność %s; po zabraniu: %s (zastępcze: %s)"
+                    % (wlasne, zast, a.get("utwor"), a.get("zastepcze"), z.get("utwor"), z.get("zastepcze"), b.get("utwor"),
+                       b.get("glosnosc"), c.get("utwor"), c.get("zastepcze")))
+
+        def d8():
+            pierwszy = KAT["strefy"]["dzungla"]["utwory"][0]["nazwa"]
+            muz('"probny", "bagno", nil')
+            muz('"probny", "dzungla", "%s", { poczatek = 2.0, koniec = 8.0 }' % PROBNY)
+            muz('"wymus", "dzungla"')
+            probki, t0 = [], time.time()
+            while time.time() - t0 < 10.0:
+                st = stan_muzyki()
+                st["_t"] = round(time.time() - t0, 2)
+                probki.append(st)
+                time.sleep(0.2)
+            muz('"probny", "dzungla", nil')
+            swoje = [x for x in probki if x.get("utwor") == pierwszy and x.get("gra") and x.get("wczytany")]
+            poza = [x for x in swoje if x.get("region") != [2, 8] or not (1.7 <= (x.get("pozycja") or 0) <= 8.3)]
+            pozniej = [x for x in probki if x["_t"] >= 1.5]
+            zmiany = (pozniej[-1].get("zmiany", 0) - pozniej[0].get("zmiany", 0)) if pozniej else 0
+            najdalej = max([x.get("pozycja") or 0 for x in swoje] or [0])
+            WYNIKI["D8"] = {"probek": len(probki), "swoje": len(swoje), "poza": poza[:5], "zmiany": zmiany, "najdalej": najdalej,
+                            "korekty": probki[-1].get("korekty"), "probki": [
+                                {k: x.get(k) for k in ("_t", "utwor", "pozycja", "region", "zmiany", "glosnosc", "korekty")}
+                                for x in probki[:60]]}
+            return (len(swoje) >= 5 and not poza and zmiany >= 1 and najdalej > 3.5 and (probki[-1].get("bledy") or 0) == 0,
+                    "próbek z utworem %s: %d, poza odcinkiem 2–8 s: %d, najdalsza pozycja %.2f s, zmian utworu po 1,5 s: %d, "
+                    "korekt pozycji: %s" % (pierwszy, len(swoje), len(poza), najdalej, zmiany, probki[-1].get("korekty")))
+
+        def d9():
+            bazar = KAT["strefy"]["bazar"]["utwory"][0]["nazwa"]
+            u_walka = KAT["konteksty"]["walka"]["utwory"][0]["nazwa"]
+            u_straznik = KAT["konteksty"]["walka_straznik"]["utwory"][0]["nazwa"]
+            muz('"probny", "bazar", "%s"' % PROBNY)
+            muz('"wymus", "bazar"')
+            muz('"probny", "walka", "%s", { poczatek = 2.0, koniec = 8.0 }' % PROBNY)
+            muz('"probny", "walka_straznik", "%s", { poczatek = 1.0, koniec = 9.0 }' % PROBNY)
+            time.sleep(3.5)
+            przed = stan_muzyki()
+
+            def w_walce(w, kontekst, utwor, region):
+                """Próbki z czasu odtwarzania walki: (ile z oczekiwanym kontekstem i utworem, ile z innym kontekstem)."""
+                odtw = [x for x in w["muzyka_wszystko"] if x.get("faza") == "odtwarzanie"]
+                dobre = [x for x in odtw if x.get("kontekst") == kontekst and x.get("utwor") == utwor
+                         and x.get("region") == region and x.get("wk") == kontekst]
+                inne = [x for x in odtw if x.get("kontekst") not in (None, kontekst)]
+                return len(odtw), len(dobre), len(inne), min([x.get("pk", 1) for x in dobre] or [0])
+
+            wa = walka("D9_walka")
+            a = w_walce(wa, "walka", u_walka, [2, 8])
+            wynik = czekaj_na(lambda st: st.get("walkaFaza") == "wynik" and (st.get("przyciszenieKontekstu") or 1) <= PRZYCISZENIE_WALKI + 0.05, 4.0)
+            s.steruj('"zamknij"')
+            po = czekaj_na(lambda st: st.get("kontekst") is None and st.get("utwor") == bazar and not st.get("walka"), 5.0)
+            wb = walka("D9_straznik", przeciwnik="straznik_lasu", tempo=4)
+            b = w_walce(wb, "walka_straznik", u_straznik, [1, 9])
+            s.steruj('"zamknij"')
+            time.sleep(1.0)
+            # Strażnik bez własnego utworu → utwór zwykłej walki; bez żadnego utworu kontekstu → muzyka strefy
+            muz('"probny", "walka_straznik", nil')
+            muz('"wymus_kontekst", "walka_straznik"')
+            c = czekaj_na(lambda st: st.get("kontekst") == "walka" and st.get("utwor") == u_walka, 5.0)
+            muz('"probny", "walka", nil')
+            bez_id = not any(u["id"] for k in ("walka", "walka_straznik") for u in KAT["konteksty"][k]["utwory"])
+            d = czekaj_na(lambda st: st.get("kontekst") is None and st.get("utwor") == bazar, 5.0)
+            muz('"wymus_kontekst", nil')
+            WYNIKI["D9"] = {"przed": przed, "walka": a, "wynik": wynik, "po": po, "straznik": b, "straznik_bez_utworu": c,
+                            "bez_utworow": d, "katalog_bez_id_kontekstow": bez_id}
+            ok = (przed.get("utwor") == bazar and przed.get("gra") and przed.get("kontekst") is None
+                  and a[1] >= 3 and a[2] == 0 and a[3] > 0.95
+                  and wynik.get("walkaFaza") == "wynik" and (wynik.get("przyciszenieKontekstu") or 1) <= PRZYCISZENIE_WALKI + 0.05
+                  and po.get("kontekst") is None and po.get("utwor") == bazar
+                  and b[1] >= 3 and b[2] == 0
+                  and c.get("kontekst") == "walka" and c.get("utwor") == u_walka
+                  and (not bez_id or (d.get("kontekst") is None and d.get("utwor") == bazar))
+                  and (d.get("bledy") or 0) == 0)
+            return ok, ("zwykła walka: próbek odtwarzania %d, z kontekstem „walka” i utworem %s: %d, z innym kontekstem: %d; "
+                        "okno wyniku: przyciszenie muzyki walki %s; po zamknięciu: kontekst %s, utwór %s; Strażnik: próbek %d, "
+                        "z kontekstem „walka_straznik” i utworem %s: %d, z innym: %d; Strażnik bez utworu → kontekst %s, utwór %s; "
+                        "bez utworów kontekstu → kontekst %s, utwór %s"
+                        % (a[0], u_walka, a[1], a[2], wynik.get("przyciszenieKontekstu"), po.get("kontekst"), po.get("utwor"),
+                           b[0], u_straznik, b[1], b[2], c.get("kontekst"), c.get("utwor"), d.get("kontekst"), d.get("utwor")))
+
+        def d10():
+            bazar = KAT["strefy"]["bazar"]["utwory"][0]["nazwa"]
+            u_trening = KAT["konteksty"]["trening"]["utwory"][0]["nazwa"]
+            atrybut = KAT["konteksty"]["trening"]["atrybutGracza"]
+            ustaw = 'game:GetService("Players"):GetPlayers()[1]:SetAttribute("%s", %%s) return "ok"' % atrybut
+            muz('"probny", "trening", "%s"' % PROBNY)
+            muz('"probny", "bazar", "%s"' % PROBNY)
+            muz('"wymus", "bazar"')            # utwór strefy od początku — znana pozycja
+            time.sleep(2.0)
+            a = stan_muzyki()
+            s.luau(ustaw % '"proba_muzyki"', "Server")
+            try:
+                b = czekaj_na(lambda st: st.get("kontekst") == "trening" and st.get("utwor") == u_trening and st.get("gra"), 4.0)
+                time.sleep(3.5)                 # strefa zdąży ucichnąć i zostać wstrzymana
+            finally:
+                s.luau(ustaw % "nil", "Server")
+            c = czekaj_na(lambda st: st.get("kontekst") is None and st.get("utwor") == bazar, 4.0)
+            muz('"probny", "trening", nil')
+            muz('"probny", "bazar", nil')
+            muz('"wymus", nil')
+            time.sleep(1.0)
+            k = stan_muzyki()
+            WYNIKI["D10"] = {"przed": a, "w_mini_grze": b, "po": c, "koniec": k}
+            wznowien = (c.get("wznowienia") or 0) - (a.get("wznowienia") or 0)
+            ok = (a.get("utwor") == bazar and a.get("gra") and b.get("kontekst") == "trening" and b.get("utwor") == u_trening
+                  and b.get("gra") and c.get("kontekst") is None and c.get("utwor") == bazar and wznowien == 1
+                  and (c.get("pozycja") or 0) > (a.get("pozycja") or 0) + 0.5 and (k.get("bledy") or 0) == 0)
+            return ok, ("przed: utwór %s na pozycji %s s; z atrybutem %s: kontekst %s, utwór %s; po zdjęciu: kontekst %s, utwór %s "
+                        "na pozycji %s s, wznowień %d" % (a.get("utwor"), a.get("pozycja"), atrybut, b.get("kontekst"), b.get("utwor"),
+                                                          c.get("kontekst"), c.get("utwor"), c.get("pozycja"), wznowien))
+
+        proba("D7", "utwory zastępcze i własne (Bagno)", d7)
+        proba("D8", "utwór jako odcinek pliku (PlaybackRegion)", d8)
+        proba("D9", "muzyka walki i walki ze Strażnikiem", d9)
+        proba("D10", "muzyka mini-gry i wznowienie muzyki strefy", d10)
+        try:   # sprzątanie haczyków także po wyjątku w którymś punkcie
+            for cel in ("bagno", "dzungla", "bazar", "walka", "walka_straznik", "trening"):
+                muz('"probny", "%s", nil' % cel)
+            muz('"wymus", nil')
+            muz('"wymus_kontekst", nil')
+            s.steruj('"zamknij"')
+        except Exception as e:  # noqa: BLE001
+            log("sprzątanie haczyków muzyki: %s" % str(e)[:200])
         s.luau('workspace.TestWalki2:SetAttribute("TestBezSesji", nil) return "ok"', "Server")
         # D6 — konsola
         kons = s.call("get_console_output", {}, timeout=60)["text"]

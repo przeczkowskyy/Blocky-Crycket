@@ -15,6 +15,26 @@
     "dzwieki": "Cisza przycięta (początek: próg -50 dBFS, 10 ms zapasu, 3 ms narastania; koniec: próg -55 dBFS, 30 ms zapasu, wygaszenie 30 ms albo 120 ms przy możliwym ucięciu). Głośność: maksymalna głośność chwilowa (okno 400 ms) -14 LUFS, szczyt nie wyżej niż -1 dBFS. Wynik: WAV PCM 16 bit, częstotliwość i liczba kanałów jak w oryginale.",
     "pomiary": "ffprobe (format), ffmpeg ebur128 (LUFS, LRA, true peak), numpy (szczyt, RMS, cisza przy progu -50 dBFS, głośność chwilowa z filtrem K wg BS.1770). Dla efektów krótszych niż 0,4 s zintegrowana LUFS z ebur128 jest niemiarodajna — patrz glosnosc_chwilowa_max_lufs."
   },
+  "partia_2": {
+    "opis": "Druga partia muzyki z Higgsfield (ElevenLabs Music v2.5, 90 s, instrumentalnie): walka, walka ze Strażnikiem krainy, mini-gry Training Center oraz drugie utwory Bagna i Dżungli. Wpisy to pięć ostatnich pozycji listy muzyka. Nikt ich jeszcze nie słyszał — człowiek może któryś odrzucić.",
+    "utworzono": "2026-11-18",
+    "status_partii": "do odsłuchu (18.11.2026)",
+    "utwory": [
+      "muzyka_06_bagno_b",
+      "muzyka_07_dzungla_b",
+      "muzyka_13_walka",
+      "muzyka_14_walka_straznik",
+      "muzyka_15_trening"
+    ],
+    "kredyty": {
+      "saldo_przed": 205.01,
+      "saldo_po": 139.61,
+      "wydano": 65.4,
+      "suma_kosztow_zlecen": 65.4
+    },
+    "obrobka": "tools/audio_petla.py — napisane 18.11.2026 według zasady_obrobki.muzyka, bo skrypt pierwszej partii się nie zachował. Te same wagi (0,4 rytm + 0,4 harmonia + 0,2 barwa), ale cechy policzone od nowa, więc wynik dopasowania nie jest ściśle porównywalny z pierwszą partią. Nowe pola: wybor_miejsca.kara_glosnosci (kara za różnicę głośności po obu stronach szwu, liczona przy wyborze) i skok_sasiednich_probek_p95 (zwykła różnica sąsiednich próbek przy szwie — tło dla skok_probki_na_szwie). Gdy utwór ma cichszy wstęp, pętla zaczyna się za nim (muzyka_15_trening: od 11,3 s).",
+    "arkusz": "assets/audio/arkusz/muzyka_arkusz_b.ogg i .json (tools/audio_arkusz_muzyki.py): pięć pętli tej partii w jednym pliku — jedno wgranie do Roblox zamiast pięciu. Propozycja, nic nie jest wgrane."
+  },
   "muzyka": [
     {
       "id": "muzyka_01_menu_a",
@@ -1667,6 +1687,606 @@
         }
       },
       "status": "zaakceptowane w partii (Karol 2026-11-16)"
+    },
+    {
+      "id": "muzyka_06_bagno_b",
+      "przeznaczenie": "Kraina: bagno (drugi utwór)",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Silly swamp, alternative take: sleepy and mischievous, muted horn and low clarinet melody, plucked double bass, guiro and soft brushes in a slow shuffle, marimba notes like bubbles popping, a few funny sliding clarinet glissandi, around 88 BPM, goofy and laid-back, a little mysterious but not scary. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "7636f7e7-cc98-412c-9b3e-77aeca6da5a0",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-18",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_06_bagno_b.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_06_bagno_b.mp3",
+        "petla": "muzyka/muzyka_06_bagno_b_petla.ogg"
+      },
+      "wzmocnienie_db": 0.1,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -17.0,
+          "lra_lu": 3.5,
+          "true_peak_dbtp": -1.4,
+          "szczyt_dbfs": -1.42,
+          "srednia_rms_dbfs": -20.02,
+          "glosnosc_chwilowa_max_lufs": -11.9,
+          "cisza_poczatek_s": 0.02,
+          "cisza_koniec_s": 0.019,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.2,
+            "rms_ostatnie_2s_db": -21.8,
+            "roznica_rms_db": -2.6,
+            "podobienstwo_widma_poczatek_koniec": 0.919,
+            "centroid_poczatek_hz": 551,
+            "centroid_koniec_hz": 976,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -3.3,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 3.1
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 237,
+          "lufs_zintegrowana": -16.9,
+          "lra_lu": 3.5,
+          "true_peak_dbtp": -1.3,
+          "szczyt_dbfs": -1.31,
+          "srednia_rms_dbfs": -19.92,
+          "glosnosc_chwilowa_max_lufs": -11.8,
+          "cisza_poczatek_s": 0.02,
+          "cisza_koniec_s": 0.018,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -19.1,
+            "rms_ostatnie_2s_db": -21.7,
+            "roznica_rms_db": -2.6,
+            "podobienstwo_widma_poczatek_koniec": 0.919,
+            "centroid_poczatek_hz": 551,
+            "centroid_koniec_hz": 976,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -3.3,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 3.1
+          }
+        },
+        "petla": {
+          "dlugosc_s": 84.546,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 170,
+          "lufs_zintegrowana": -16.8,
+          "lra_lu": 3.4,
+          "true_peak_dbtp": -1.4,
+          "szczyt_dbfs": -1.36,
+          "srednia_rms_dbfs": -19.85,
+          "glosnosc_chwilowa_max_lufs": -11.8,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -21.2,
+            "rms_ostatnie_2s_db": -19.9,
+            "roznica_rms_db": 1.3,
+            "podobienstwo_widma_poczatek_koniec": 0.798,
+            "centroid_poczatek_hz": 554,
+            "centroid_koniec_hz": 779,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -13.4,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -1.2
+          },
+          "skok_probki_na_szwie": 0.0002,
+          "skok_sasiednich_probek_p95": 0.002,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.959,
+            "rytm": 0.96,
+            "harmonia": 0.943,
+            "barwa": 0.99,
+            "start_s": 2.401,
+            "koniec_s": 86.947,
+            "koniec_zywej_muzyki_s": 90.0,
+            "kara_glosnosci": 0.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "liniowe",
+            "korelacja_fali_w_przenikaniu": 0.782,
+            "przesuniecie_probki": -94,
+            "dlugosc_petli_s": 84.546
+          }
+        }
+      },
+      "status": "do odsłuchu (18.11.2026)"
+    },
+    {
+      "id": "muzyka_07_dzungla_b",
+      "przeznaczenie": "Kraina: dżungla (drugi utwór)",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Jungle exploration, calmer alternative take: curious and sunny, kalimba-like marimba pattern, wooden log drums and soft shakers, wooden flute melody with bird-call trills, pizzicato strings, gentle bongo groove around 104 BPM, walking through tall leaves and vines, adventurous and friendly. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Gentle on the ears for twenty minutes of play.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "9b2529fd-1e62-4ed6-ad3f-37633a021ed9",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-18",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_07_dzungla_b.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_07_dzungla_b.mp3",
+        "petla": "muzyka/muzyka_07_dzungla_b_petla.ogg"
+      },
+      "wzmocnienie_db": -1.8,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -14.2,
+          "lra_lu": 3.3,
+          "true_peak_dbtp": -1.2,
+          "szczyt_dbfs": -1.21,
+          "srednia_rms_dbfs": -17.32,
+          "glosnosc_chwilowa_max_lufs": -10.5,
+          "cisza_poczatek_s": 0.014,
+          "cisza_koniec_s": 0.302,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.4,
+            "rms_ostatnie_2s_db": -32.4,
+            "roznica_rms_db": -14.0,
+            "podobienstwo_widma_poczatek_koniec": 0.796,
+            "centroid_poczatek_hz": 1567,
+            "centroid_koniec_hz": 652,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -43.5,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.9
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 253,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 3.3,
+          "true_peak_dbtp": -3.0,
+          "szczyt_dbfs": -2.98,
+          "srednia_rms_dbfs": -19.12,
+          "glosnosc_chwilowa_max_lufs": -12.3,
+          "cisza_poczatek_s": 0.018,
+          "cisza_koniec_s": 0.342,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -20.2,
+            "rms_ostatnie_2s_db": -34.2,
+            "roznica_rms_db": -14.0,
+            "podobienstwo_widma_poczatek_koniec": 0.796,
+            "centroid_poczatek_hz": 1570,
+            "centroid_koniec_hz": 651,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -43.5,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.9
+          }
+        },
+        "petla": {
+          "dlugosc_s": 83.088,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 179,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 3.3,
+          "true_peak_dbtp": -2.8,
+          "szczyt_dbfs": -2.82,
+          "srednia_rms_dbfs": -18.99,
+          "glosnosc_chwilowa_max_lufs": -12.1,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -21.5,
+            "rms_ostatnie_2s_db": -18.3,
+            "roznica_rms_db": 3.2,
+            "podobienstwo_widma_poczatek_koniec": 0.836,
+            "centroid_poczatek_hz": 1849,
+            "centroid_koniec_hz": 1233,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -0.1,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -3.0
+          },
+          "skok_probki_na_szwie": 0.0028,
+          "skok_sasiednich_probek_p95": 0.009,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.954,
+            "rytm": 0.958,
+            "harmonia": 0.931,
+            "barwa": 0.991,
+            "start_s": 1.352,
+            "koniec_s": 84.439,
+            "koniec_zywej_muzyki_s": 88.0,
+            "kara_glosnosci": 0.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "liniowe",
+            "korelacja_fali_w_przenikaniu": 0.284,
+            "przesuniecie_probki": -288,
+            "dlugosc_petli_s": 83.088
+          }
+        }
+      },
+      "status": "do odsłuchu (18.11.2026)"
+    },
+    {
+      "id": "muzyka_13_walka",
+      "przeznaczenie": "Walka: zwykły przeciwnik",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Battle theme for quick cartoon fights: fast, bouncy and heroic in a playful way, driving staccato strings and pizzicato ostinato, snare drum and tambourine, short punchy horn stabs, xylophone and piccolo flute trading a catchy fanfare-like melody, around 138 BPM, exciting and fun like brave little heroes against silly monsters, major key with a few cheeky minor turns, not scary, not aggressive. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Lively but never harsh or tiring, pleasant to hear many times in a row.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "12744555-bfb2-4b32-8f3f-94a0d2dd60e4",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-18",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_13_walka.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_13_walka.mp3",
+        "petla": "muzyka/muzyka_13_walka_petla.ogg"
+      },
+      "wzmocnienie_db": -3.7,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -12.3,
+          "lra_lu": 4.0,
+          "true_peak_dbtp": 0.2,
+          "szczyt_dbfs": 0.04,
+          "srednia_rms_dbfs": -16.4,
+          "glosnosc_chwilowa_max_lufs": -8.6,
+          "cisza_poczatek_s": 0.011,
+          "cisza_koniec_s": 0.012,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -16.7,
+            "rms_ostatnie_2s_db": -17.3,
+            "roznica_rms_db": -0.7,
+            "podobienstwo_widma_poczatek_koniec": 0.872,
+            "centroid_poczatek_hz": 2449,
+            "centroid_koniec_hz": 2090,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -1.1,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 1.1
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 245,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 4.0,
+          "true_peak_dbtp": -3.6,
+          "szczyt_dbfs": -3.79,
+          "srednia_rms_dbfs": -20.1,
+          "glosnosc_chwilowa_max_lufs": -12.3,
+          "cisza_poczatek_s": 0.018,
+          "cisza_koniec_s": 0.009,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -20.4,
+            "rms_ostatnie_2s_db": -21.0,
+            "roznica_rms_db": -0.6,
+            "podobienstwo_widma_poczatek_koniec": 0.872,
+            "centroid_poczatek_hz": 2455,
+            "centroid_koniec_hz": 2095,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -1.1,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 1.1
+          }
+        },
+        "petla": {
+          "dlugosc_s": 69.565,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 185,
+          "lufs_zintegrowana": -16.1,
+          "lra_lu": 4.1,
+          "true_peak_dbtp": -4.4,
+          "szczyt_dbfs": -4.42,
+          "srednia_rms_dbfs": -20.04,
+          "glosnosc_chwilowa_max_lufs": -12.3,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -21.1,
+            "rms_ostatnie_2s_db": -21.6,
+            "roznica_rms_db": -0.5,
+            "podobienstwo_widma_poczatek_koniec": 0.914,
+            "centroid_poczatek_hz": 1919,
+            "centroid_koniec_hz": 1973,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -3.3,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -3.1
+          },
+          "skok_probki_na_szwie": 0.0016,
+          "skok_sasiednich_probek_p95": 0.0124,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.989,
+            "rytm": 0.984,
+            "harmonia": 0.989,
+            "barwa": 1.0,
+            "start_s": 2.986,
+            "koniec_s": 72.551,
+            "koniec_zywej_muzyki_s": 90.0,
+            "kara_glosnosci": 0.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "liniowe",
+            "korelacja_fali_w_przenikaniu": 0.346,
+            "przesuniecie_probki": 82,
+            "dlugosc_petli_s": 69.565
+          }
+        }
+      },
+      "status": "do odsłuchu (18.11.2026)"
+    },
+    {
+      "id": "muzyka_14_walka_straznik",
+      "przeznaczenie": "Walka: Strażnik krainy (boss)",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Boss battle theme against a big guardian of the land: bigger and more dramatic than a normal fight but still cartoonish and fun, low toms and timpani pounding a steady march-like groove, bassoon and low strings ostinato, bold French horn melody answered by clarinet and glockenspiel, rising tension, minor key with heroic major lifts, around 126 BPM, mighty but playful, not horror, not dark. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Lively but never harsh or tiring, pleasant to hear many times in a row.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "7a11efa9-3b71-42e1-acf8-f49e5ced5de6",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-18",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_14_walka_straznik.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_14_walka_straznik.mp3",
+        "petla": "muzyka/muzyka_14_walka_straznik_petla.ogg"
+      },
+      "wzmocnienie_db": -2.0,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -14.0,
+          "lra_lu": 4.6,
+          "true_peak_dbtp": -1.4,
+          "szczyt_dbfs": -1.39,
+          "srednia_rms_dbfs": -17.63,
+          "glosnosc_chwilowa_max_lufs": -10.1,
+          "cisza_poczatek_s": 0.024,
+          "cisza_koniec_s": 0.02,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -21.2,
+            "rms_ostatnie_2s_db": -36.0,
+            "roznica_rms_db": -14.8,
+            "podobienstwo_widma_poczatek_koniec": 0.933,
+            "centroid_poczatek_hz": 1142,
+            "centroid_koniec_hz": 764,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -45.0,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.0
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 246,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 4.6,
+          "true_peak_dbtp": -3.3,
+          "szczyt_dbfs": -3.34,
+          "srednia_rms_dbfs": -19.63,
+          "glosnosc_chwilowa_max_lufs": -12.1,
+          "cisza_poczatek_s": 0.024,
+          "cisza_koniec_s": 0.388,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -23.2,
+            "rms_ostatnie_2s_db": -38.0,
+            "roznica_rms_db": -14.8,
+            "podobienstwo_widma_poczatek_koniec": 0.932,
+            "centroid_poczatek_hz": 1144,
+            "centroid_koniec_hz": 765,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -45.0,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 0.0
+          }
+        },
+        "petla": {
+          "dlugosc_s": 76.19,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 170,
+          "lufs_zintegrowana": -15.9,
+          "lra_lu": 4.5,
+          "true_peak_dbtp": -3.2,
+          "szczyt_dbfs": -3.2,
+          "srednia_rms_dbfs": -19.46,
+          "glosnosc_chwilowa_max_lufs": -12.0,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -23.1,
+            "rms_ostatnie_2s_db": -21.6,
+            "roznica_rms_db": 1.5,
+            "podobienstwo_widma_poczatek_koniec": 0.904,
+            "centroid_poczatek_hz": 1074,
+            "centroid_koniec_hz": 1601,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -7.3,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -5.3
+          },
+          "skok_probki_na_szwie": 0.0116,
+          "skok_sasiednich_probek_p95": 0.0229,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.929,
+            "rytm": 0.909,
+            "harmonia": 0.917,
+            "barwa": 0.994,
+            "start_s": 1.039,
+            "koniec_s": 77.23,
+            "koniec_zywej_muzyki_s": 88.0,
+            "kara_glosnosci": 0.005
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "liniowe",
+            "korelacja_fali_w_przenikaniu": 0.317,
+            "przesuniecie_probki": -249,
+            "dlugosc_petli_s": 76.19
+          }
+        }
+      },
+      "status": "do odsłuchu (18.11.2026)"
+    },
+    {
+      "id": "muzyka_15_trening",
+      "przeznaczenie": "Training Center: mini-gry",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Training camp mini-games: sporty, upbeat and motivating workout tune, hand claps, woodblocks, cowbell and snare rim clicks, bouncy marimba and ukulele riff, bright piccolo flute and clarinet melody, cheerful horn hits on the beat, around 128 BPM, a fun training montage, energetic and encouraging. Instrumental background music for a cheerful, colorful cartoon fantasy adventure video game for young players. Shared soundtrack palette: small whimsical chamber orchestra with pizzicato and warm legato strings, wooden flute, clarinet, bassoon, soft French horn, glockenspiel, marimba, ukulele and light hand percussion. Simple, catchy, hummable melody, bright friendly harmony, playful and light-hearted; never dark, never epic or bombastic film score. No vocals, no choir, no singing. Made to loop seamlessly in the background: steady tempo and constant energy the whole time, starts straight on the main groove without a long intro, no big final ending and no fade out, so the end flows back into the beginning. Lively but never harsh or tiring, pleasant to hear many times in a row.",
+      "parametry": {
+        "duration": 90,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "f8df12f4-c831-4830-98ee-a4d21661961b",
+      "koszt_kredyty": 13.08,
+      "data": "2026-11-18",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_15_trening.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_15_trening.mp3",
+        "petla": "muzyka/muzyka_15_trening_petla.ogg"
+      },
+      "wzmocnienie_db": -2.9,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -13.1,
+          "lra_lu": 2.3,
+          "true_peak_dbtp": -0.0,
+          "szczyt_dbfs": -0.15,
+          "srednia_rms_dbfs": -15.38,
+          "glosnosc_chwilowa_max_lufs": -10.9,
+          "cisza_poczatek_s": 0.011,
+          "cisza_koniec_s": 0.013,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -22.1,
+            "rms_ostatnie_2s_db": -15.6,
+            "roznica_rms_db": 6.5,
+            "podobienstwo_widma_poczatek_koniec": 0.471,
+            "centroid_poczatek_hz": 2619,
+            "centroid_koniec_hz": 2520,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -2.1,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -6.5
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 90.044,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 246,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 2.3,
+          "true_peak_dbtp": -2.9,
+          "szczyt_dbfs": -3.03,
+          "srednia_rms_dbfs": -18.28,
+          "glosnosc_chwilowa_max_lufs": -13.8,
+          "cisza_poczatek_s": 0.015,
+          "cisza_koniec_s": 0.013,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -25.0,
+            "rms_ostatnie_2s_db": -18.5,
+            "roznica_rms_db": 6.5,
+            "podobienstwo_widma_poczatek_koniec": 0.472,
+            "centroid_poczatek_hz": 2625,
+            "centroid_koniec_hz": 2527,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -2.1,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -6.5
+          }
+        },
+        "petla": {
+          "dlugosc_s": 74.999,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 192,
+          "lufs_zintegrowana": -15.8,
+          "lra_lu": 1.1,
+          "true_peak_dbtp": -3.2,
+          "szczyt_dbfs": -3.21,
+          "srednia_rms_dbfs": -17.92,
+          "glosnosc_chwilowa_max_lufs": -13.8,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.1,
+            "rms_ostatnie_2s_db": -18.3,
+            "roznica_rms_db": -0.3,
+            "podobienstwo_widma_poczatek_koniec": 0.916,
+            "centroid_poczatek_hz": 2309,
+            "centroid_koniec_hz": 2250,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -0.4,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 1.2
+          },
+          "skok_probki_na_szwie": 0.0261,
+          "skok_sasiednich_probek_p95": 0.0547,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.981,
+            "rytm": 0.987,
+            "harmonia": 0.965,
+            "barwa": 0.999,
+            "start_s": 11.309,
+            "koniec_s": 86.309,
+            "koniec_zywej_muzyki_s": 90.0,
+            "kara_glosnosci": 0.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "liniowe",
+            "korelacja_fali_w_przenikaniu": 0.531,
+            "przesuniecie_probki": 50,
+            "dlugosc_petli_s": 74.999
+          }
+        }
+      },
+      "status": "do odsłuchu (18.11.2026)"
     }
   ],
   "dzwieki": [

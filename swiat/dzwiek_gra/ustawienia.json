@@ -1,6 +1,6 @@
 {
- "opis": "Ustawienia dźwięku gry (pakiet swiat/dzwiek_gra): głośności efektów, które efekt gra przy którym zdarzeniu walki, odgłosy potworów i muzyka stref. Odcinki arkusza (początek, koniec, atak, szczyt) NIE są tutaj — budowniczy bierze je z pliku arkusza. Identyfikatory zasobów są w identyfikatory.json. Po zmianie: python -B swiat/dzwiek_gra/zbuduj.py --sucho (odświeża zrodla/KatalogDzwiekow.luau), potem --skrypty w Studio.",
- "status": "propozycja (17.11.2026) — przyjęte, do zmiany: mapowanie zdarzeń, głośności i czasy przejść ustawił agent; nikt jeszcze nie słyszał tych plików w grze",
+ "opis": "Ustawienia dźwięku gry (pakiet swiat/dzwiek_gra): głośności efektów, które efekt gra przy którym zdarzeniu walki, odgłosy potworów, muzyka stref i muzyka kontekstów (walka, walka ze Strażnikiem, mini-gry Training Center). Odcinki arkuszy (efekty: początek, koniec, atak, szczyt; muzyka: graj_od, graj_do) NIE są tutaj — budowniczy bierze je z map arkuszy. Identyfikatory zasobów są w identyfikatory.json. Po zmianie: python -B swiat/dzwiek_gra/zbuduj.py --sucho (odświeża zrodla/KatalogDzwiekow.luau), potem --skrypty w Studio.",
+ "status": "propozycja (17.11.2026, muzyka kontekstów i arkusz muzyki 18.11.2026) — przyjęte, do zmiany: mapowanie zdarzeń, głośności i czasy przejść ustawił agent; nikt jeszcze nie słyszał tych plików w grze",
  "arkusz": {
   "mapa": "assets/audio/arkusz/sfx_arkusz_a.json",
   "glosnosc": 0.6,
@@ -77,6 +77,27 @@
   "przejscie_s": 2.5,
   "przyciszenie_walki": 0.6,
   "przyciszenie_s": 0.8,
+  "arkusze_opis": "arkusz muzyki = kilka pętli w jednym pliku (tools/audio_arkusz_muzyki.py); utwór z arkusza gra jako odcinek pliku (Sound.PlaybackRegion). Identyfikator arkusza: identyfikatory.json → arkusze_muzyki",
+  "arkusze": {
+   "muzyka_arkusz_b": {"mapa": "assets/audio/arkusz/muzyka_arkusz_b.json"}
+  },
+  "konteksty_opis": "muzyka kontekstu zastępuje muzykę strefy (przenikanie przejscie_s) i oddaje jej miejsce po kontekście. Gra tylko wtedy, gdy utwór ma identyfikator i plik się wczytał; inaczej zostaje muzyka strefy (w walce przyciszona jak dotąd). walka_straznik bez utworu gra utwór zwykłej walki. gatunki = gatunki Strażników krain (walka z tablicy prototypu podaje gatunek; walka w krainie — potwora z atrybutem Straznik). atrybut_gracza = atrybut, który serwer mini-gier ustawia graczowi na czas pobytu na stanowisku",
+  "konteksty": {
+   "walka": {
+    "glosnosc": 0.7,
+    "utwory": ["muzyka_13_walka_petla"]
+   },
+   "walka_straznik": {
+    "glosnosc": 0.7,
+    "gatunki": ["straznik_lasu", "straznik_topieli", "waz_stu_lian"],
+    "utwory": ["muzyka_14_walka_straznik_petla"]
+   },
+   "trening": {
+    "glosnosc": 0.7,
+    "atrybut_gracza": "TreningGra",
+    "utwory": ["muzyka_15_trening_petla"]
+   }
+  },
   "strefy": {
    "bazar": {
     "glosnosc": 0.8,
@@ -91,18 +112,20 @@
     "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]
    },
    "bagno": {
-    "glosnosc": 0.7,
-    "uwaga": "Bagno (swiat/bagno_pas, propozycja 17.11.2026): na razie te same dwa utwory co las, ciszej — własnej muzyki Bagna jeszcze nie ma",
+    "glosnosc": 0.8,
+    "uwaga": "Bagno (swiat/bagno_pas): własne utwory — muzyka_06_bagno_petla (osobny plik) i muzyka_06_bagno_b_petla (z arkusza muzyki). Dopóki żaden z nich nie ma identyfikatora, strefa gra utwory zastępcze: dwa utwory lasu, ciszej (jak do 18.11.2026)",
     "mapy": ["swiat/bagno_pas/krotki/czesci.json"],
     "kontener": "BagnoPas",
-    "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]
+    "utwory": ["muzyka_06_bagno_petla", "muzyka_06_bagno_b_petla"],
+    "zastepcze": {"glosnosc": 0.7, "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]}
    },
    "dzungla": {
-    "glosnosc": 0.7,
-    "uwaga": "Dżungla (swiat/dzungla_pas, propozycja 18.11.2026): na razie te same dwa utwory co las, ciszej — własnej muzyki Dżungli jeszcze nie ma",
+    "glosnosc": 0.8,
+    "uwaga": "Dżungla (swiat/dzungla_pas): własne utwory — muzyka_07_dzungla_petla (osobny plik) i muzyka_07_dzungla_b_petla (z arkusza muzyki). Dopóki żaden z nich nie ma identyfikatora, strefa gra utwory zastępcze: dwa utwory lasu, ciszej (jak do 18.11.2026)",
     "mapy": ["swiat/dzungla_pas/krotki/czesci.json"],
     "kontener": "DzunglaPas",
-    "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]
+    "utwory": ["muzyka_07_dzungla_petla", "muzyka_07_dzungla_b_petla"],
+    "zastepcze": {"glosnosc": 0.7, "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]}
    },
    "start": {
     "glosnosc": 0.8,

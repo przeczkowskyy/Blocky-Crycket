@@ -11,16 +11,19 @@
     python -B swiat/dzwiek_gra/zbuduj.py --studio <studio_id>        # gdy otwartych jest kilka okien Studio
 
 Co powstaje (tylko w Workspace/DzwiekGra z atrybutem Wygenerowane = true; bez części):
-  Moduly/KatalogDzwiekow  (ModuleScript, WYGENEROWANY tu z assets/audio/arkusz/sfx_arkusz_a.json + ustawienia.json +
-                          identyfikatory.json — także plik zrodla/KatalogDzwiekow.luau w repozytorium)
-  MuzykaStref             (Script, RunContext = Client) — muzyka bazaru i lasu-pasa, przyciszenie na czas walki
+  Moduly/KatalogDzwiekow  (ModuleScript, WYGENEROWANY tu z assets/audio/arkusz/sfx_arkusz_a.json, map arkuszy muzyki
+                          (assets/audio/arkusz/muzyka_arkusz_*.json), ustawienia.json i identyfikatory.json — także
+                          plik zrodla/KatalogDzwiekow.luau w repozytorium)
+  MuzykaStref             (Script, RunContext = Client) — muzyka stref i kontekstów (walka, walka ze Strażnikiem,
+                          mini-gry Training Center); utwór może być osobnym plikiem albo odcinkiem arkusza muzyki
   Sygnaly/SterowanieMuzyki (BindableFunction, haczyk testowy klienta)
 Odtwarzacz walki prototypu (swiat/test_walki2/zrodla/OdtwarzaczWalki2.luau) sam czyta Moduly/KatalogDzwiekow: gdy
 kontener jest i arkusz ma identyfikator ≠ 0, zdarzenia walki grają odcinki arkusza; inaczej zostają wbudowane dźwięki.
 
 --identyfikatory przyjmuje JSON w jednej z dwóch postaci:
-  {"arkusz": 123, "muzyka": {"muzyka_02_bazar_targ_petla": 456, …}}
-  {"wgrane": [{"plik": "assets/audio/arkusz/sfx_arkusz_a.ogg", "assetId": "123"}, …]}   (assets/audio/wgrane.json)
+  {"arkusz": 123, "arkusze_muzyki": {"muzyka_arkusz_b": 789}, "muzyka": {"muzyka_06_bagno_petla": 456, …}}
+  {"wgrane": [{"plik": "assets/audio/arkusz/sfx_arkusz_a.ogg", "assetId": "123"}, …]}   (assets/audio/wgrane.json:
+      …/sfx_arkusz_*.ogg = arkusz efektów, …/muzyka_arkusz_*.ogg = arkusz muzyki, …/muzyka_XX_…_petla.ogg = utwór)
 Nazwy spoza listy i liczby ≤ 0 są błędem (nic nie zapisujemy). Plik repozytorium: swiat/dzwiek_gra/identyfikatory.json.
 
 Zasady (wspólne miejsce Team Create, jak swiat/las_potwory/zbuduj.py): tylko własny kontener z atrybutem
@@ -53,6 +56,7 @@ MUZYKA_PLIKI = os.path.join(REPO, "assets", "audio", "muzyka")
 FOLDERY = ["Moduly", "Sygnaly"]
 INNE = [("BindableFunction", "Sygnaly/SterowanieMuzyki")]
 LIMIT_ZRODLA = 199000
+KONTEKSTY = ("walka", "walka_straznik", "trening")   # konteksty muzyki, które zna MuzykaStref
 
 NAGLOWEK_MIEJSCA = ('if game.PlaceId ~= __MIEJSCE__ then return "STOP: inne miejsce (PlaceId " .. tostring(game.PlaceId) .. ")" end\n'
                     'if game:GetService("RunService"):IsRunning() then return "STOP: Studio jest w trybie Play — buduję tylko w trybie Edit" end\n')
@@ -232,16 +236,37 @@ def katalog(ustawienia, ident):
             raise SystemExit("BŁĄD: ustawienia.json — odgłos %s: nieznane zdarzenie %s" % (aktor, z))
     arkusz_id = int(ident.get("arkusz") or 0)
     m = ustawienia["muzyka"]
+    arkusze, mapy_muzyki = arkusze_muzyki(m, ident)
+    uzyte = set()
+
+    def utwory_z(lista, gdzie):
+        """Nazwy utworów → wpisy katalogu: osobny plik { nazwa, id } albo odcinek arkusza muzyki
+        { nazwa, id (arkusza), arkusz, poczatek, koniec }."""
+        wynik = []
+        for u in lista:
+            if not os.path.isfile(os.path.join(MUZYKA_PLIKI, u + ".ogg")):
+                raise SystemExit("BŁĄD: ustawienia.json — %s: nie ma pliku assets/audio/muzyka/%s.ogg" % (gdzie, u))
+            uzyte.add(u)
+            if u in ident["muzyka"]:
+                wynik.append(KolejnySlownik(nazwa=u, id=int(ident["muzyka"][u] or 0)))
+                continue
+            ark = next((a for a, mp in mapy_muzyki.items() if u in mp["utwory"]), None)
+            if ark is None:
+                raise SystemExit("BŁĄD: %s — utwór %s nie ma pozycji w identyfikatory.json (osobny plik) ani w żadnym "
+                                 "arkuszu muzyki" % (gdzie, u))
+            e = mapy_muzyki[ark]["utwory"][u]
+            wynik.append(KolejnySlownik(nazwa=u, id=arkusze[ark]["id"], arkusz=ark, poczatek=e["graj_od"], koniec=e["graj_do"]))
+        return wynik
+
     strefy = KolejnySlownik()
     for nazwa, s in m["strefy"].items():
-        utwory = []
-        for u in s["utwory"]:
-            if not os.path.isfile(os.path.join(MUZYKA_PLIKI, u + ".ogg")):
-                raise SystemExit("BŁĄD: ustawienia.json — strefa %s: nie ma pliku assets/audio/muzyka/%s.ogg" % (nazwa, u))
-            if u not in ident["muzyka"]:
-                raise SystemExit("BŁĄD: identyfikatory.json — brak pozycji %s" % u)
-            utwory.append(KolejnySlownik(nazwa=u, id=int(ident["muzyka"][u] or 0)))
+        utwory = utwory_z(s["utwory"], "strefa %s" % nazwa)
         wpis = KolejnySlownik(glosnosc=float(s["glosnosc"]), podpiete=bool(s.get("podpiete", True)), utwory=utwory)
+        if s.get("zastepcze"):
+            # utwory zastępcze: grają, dopóki żaden własny utwór strefy nie ma identyfikatora (żeby nie zapadła cisza)
+            z = s["zastepcze"]
+            wpis["zastepcze"] = KolejnySlownik(glosnosc=float(z["glosnosc"]),
+                                               utwory=utwory_z(z["utwory"], "strefa %s (zastępcze)" % nazwa))
         if s.get("kontener"):
             wpis["kontener"] = s["kontener"]
         wpis["prostokaty"] = [prostokat_mapy(p) for p in s.get("mapy", [])]
@@ -252,9 +277,25 @@ def katalog(ustawienia, ident):
                 raise SystemExit("BŁĄD: ustawienia.json — strefa %s: prostokąt %r ma być [x1, x2, z1, z2] z x1 < x2 i z1 < z2" % (nazwa, r))
             wpis["prostokaty"].append([float(v) for v in r])
         strefy[nazwa] = wpis
+    konteksty = KolejnySlownik()
+    for nazwa, s in (m.get("konteksty") or {}).items():
+        if nazwa not in KONTEKSTY:
+            raise SystemExit("BŁĄD: ustawienia.json — nieznany kontekst muzyki %s (znane: %s)" % (nazwa, ", ".join(KONTEKSTY)))
+        wpis = KolejnySlownik(glosnosc=float(s["glosnosc"]), utwory=utwory_z(s["utwory"], "kontekst %s" % nazwa))
+        if nazwa == "walka_straznik":
+            gatunki = s.get("gatunki")
+            if not isinstance(gatunki, list) or not gatunki or not all(isinstance(g, str) and g for g in gatunki):
+                raise SystemExit("BŁĄD: ustawienia.json — kontekst walka_straznik: gatunki mają być niepustą listą nazw")
+            wpis["gatunki"] = list(gatunki)
+        if nazwa == "trening":
+            atr = s.get("atrybut_gracza")
+            if not isinstance(atr, str) or not atr:
+                raise SystemExit("BŁĄD: ustawienia.json — kontekst trening: brak atrybut_gracza")
+            wpis["atrybutGracza"] = atr
+        konteksty[nazwa] = wpis
     for u in ident["muzyka"]:
-        if not any(u == x["nazwa"] for s in strefy.values() for x in s["utwory"]):
-            raise SystemExit("BŁĄD: identyfikatory.json — %s nie należy do żadnej strefy" % u)
+        if u not in uzyte:
+            raise SystemExit("BŁĄD: identyfikatory.json — %s nie należy do żadnej strefy ani kontekstu" % u)
     with open(os.path.join(REPO, mapa_sciezka.replace(".json", ".ogg").replace("sfx_arkusz_a.ogg", mapa["plik"])), "rb") as f:
         sha = hashlib.sha256(f.read()).hexdigest()
     if sha != mapa.get("sha256"):
@@ -268,19 +309,54 @@ def katalog(ustawienia, ident):
     k["zdarzenia"] = zdarzenia
     k["glosyPotworow"] = KolejnySlownik(sorted(ustawienia["glosy_potworow"].items()))
     k["muzyka"] = KolejnySlownik(przejscie=float(m["przejscie_s"]), przyciszenieWalki=float(m["przyciszenie_walki"]),
-                                 przyciszenieCzas=float(m["przyciszenie_s"]), strefy=strefy)
+                                 przyciszenieCzas=float(m["przyciszenie_s"]), arkusze=arkusze, konteksty=konteksty,
+                                 strefy=strefy)
     return k
+
+
+def arkusze_muzyki(m, ident):
+    """Arkusze muzyki z ustawień → (wpisy katalogu { nazwa: id, plik, sha256, dlugosc }, mapy { nazwa: mapa z pliku }).
+    Sprawdza: plik arkusza = mapa (sha256), odcinki w pliku i bez nakładania, pozycja w identyfikatory.json."""
+    wpisy, mapy = KolejnySlownik(), {}
+    znane = ident.get("arkusze_muzyki") or {}
+    for nazwa, a in (m.get("arkusze") or {}).items():
+        mapa = wczytaj_json(os.path.join(REPO, a["mapa"]))
+        if nazwa not in znane:
+            raise SystemExit("BŁĄD: identyfikatory.json — brak pozycji arkusze_muzyki.%s" % nazwa)
+        plik = os.path.join(os.path.dirname(os.path.join(REPO, a["mapa"])), mapa["plik"])
+        with open(plik, "rb") as f:
+            sha = hashlib.sha256(f.read()).hexdigest()
+        if sha != mapa.get("sha256"):
+            raise SystemExit("BŁĄD: plik arkusza muzyki %s ma inny skrót niż w mapie (%s…) — mapa nieaktualna" % (mapa["plik"], sha[:12]))
+        if set(mapa["kolejnosc"]) != set(mapa["utwory"]):
+            raise SystemExit("BŁĄD: %s — kolejnosc i utwory nie zgadzają się" % a["mapa"])
+        poprzedni = 0.0
+        for u in mapa["kolejnosc"]:
+            e = mapa["utwory"][u]
+            if not (poprzedni <= e["poczatek"] < e["graj_od"] < e["graj_do"] < e["koniec"] <= mapa["dlugosc_s"] + 1e-6):
+                raise SystemExit("BŁĄD: %s — odcinek %s poza plikiem albo nachodzi na poprzedni" % (a["mapa"], u))
+            poprzedni = e["koniec"]
+        mapy[nazwa] = mapa
+        wpisy[nazwa] = KolejnySlownik(id=int(znane[nazwa] or 0), plik=mapa["plik"], sha256=mapa["sha256"],
+                                      dlugosc=mapa["dlugosc_s"])
+    for nazwa in znane:
+        if nazwa not in wpisy:
+            raise SystemExit("BŁĄD: identyfikatory.json — arkusza muzyki %s nie ma w ustawienia.json (muzyka.arkusze)" % nazwa)
+    return wpisy, mapy
 
 
 def zrodlo_katalogu(k):
     tresc = luau(k)
     skrot = hashlib.sha256(tresc.encode("utf-8")).hexdigest()[:12]
     return ("--[[\n\tKatalogDzwiekow — WYGENEROWANY przez swiat/dzwiek_gra/zbuduj.py z assets/audio/arkusz/sfx_arkusz_a.json\n"
-            "\t(odcinki arkusza), swiat/dzwiek_gra/ustawienia.json (głośności, zdarzenia, muzyka stref) i identyfikatory.json.\n"
+            "\t(odcinki arkusza efektów), map arkuszy muzyki (assets/audio/arkusz/muzyka_arkusz_*.json), ustawienia.json\n"
+            "\t(głośności, zdarzenia, muzyka stref i kontekstów) i identyfikatory.json.\n"
             "\tNIE EDYTUJ RĘCZNIE: zmień pliki źródłowe i uruchom python -B swiat/dzwiek_gra/zbuduj.py --sucho.\n\n"
             "\tCzytają go: OdtwarzaczWalki2 (prototyp walki: odcinki arkusza zamiast wbudowanych dźwięków, gdy arkusz.id ≠ 0)\n"
-            "\ti MuzykaStref (muzyka bazaru i lasu-pasa). Identyfikator 0 = plik jeszcze nie wgrany (cisza / dźwięki wbudowane).\n"
-            "\tCzasy efektów: poczatek / koniec = sekundy w pliku arkusza, atak / szczyt = sekundy od początku odcinka.\n]]\n"
+            "\ti MuzykaStref (muzyka stref i kontekstów). Identyfikator 0 = plik jeszcze nie wgrany (cisza, utwory zastępcze\n"
+            "\talbo dźwięki wbudowane). Czasy efektów: poczatek / koniec = sekundy w pliku arkusza, atak / szczyt = sekundy\n"
+            "\tod początku odcinka. Utwór muzyki z polami arkusz / poczatek / koniec to odcinek pliku arkusza muzyki\n"
+            "\t(sekundy w pliku, już zwężone o margines); bez nich — osobny plik grany w całości.\n]]\n"
             + STRAZNIK_MODULU + "\nreturn " + tresc.replace("\twersja = 1,\n", '\twersja = 1,\n\tskrot = "%s",\n' % skrot, 1) + "\n"), skrot
 
 
@@ -288,6 +364,7 @@ def wpisz_identyfikatory(sciezka, ident):
     """Scala identyfikatory z pliku (dwie postaci, opis w nagłówku) do ident; zwraca listę zmian."""
     d = wczytaj_json(sciezka)
     nowe = {}
+    arkusze = ident.setdefault("arkusze_muzyki", {})
     if "wgrane" in d:
         for w in d["wgrane"]:
             plik, aid = os.path.basename(str(w.get("plik", ""))), w.get("assetId")
@@ -296,11 +373,15 @@ def wpisz_identyfikatory(sciezka, ident):
             nazwa, roz = os.path.splitext(plik)
             if nazwa.startswith("sfx_arkusz"):
                 nowe["arkusz"] = aid
+            elif nazwa in arkusze:
+                nowe["arkusze_muzyki." + nazwa] = aid
             elif nazwa in ident["muzyka"]:
                 nowe[nazwa] = aid
     else:
         if "arkusz" in d:
             nowe["arkusz"] = d["arkusz"]
+        for n, v in (d.get("arkusze_muzyki") or {}).items():
+            nowe["arkusze_muzyki." + n] = v
         for n, v in (d.get("muzyka") or {}).items():
             nowe[n] = v
     if not nowe:
@@ -317,12 +398,18 @@ def wpisz_identyfikatory(sciezka, ident):
             if ident["arkusz"] != liczba:
                 zmiany.append("arkusz: %s → %d" % (ident["arkusz"], liczba))
             ident["arkusz"] = liczba
+        elif n.startswith("arkusze_muzyki.") and n.split(".", 1)[1] in arkusze:
+            a = n.split(".", 1)[1]
+            if arkusze[a] != liczba:
+                zmiany.append("arkusz muzyki %s: %s → %d" % (a, arkusze[a], liczba))
+            arkusze[a] = liczba
         elif n in ident["muzyka"]:
             if ident["muzyka"][n] != liczba:
                 zmiany.append("%s: %s → %d" % (n, ident["muzyka"][n], liczba))
             ident["muzyka"][n] = liczba
         else:
-            raise SystemExit("BŁĄD: %s — nieznana pozycja %s (znane: arkusz, %s)" % (sciezka, n, ", ".join(ident["muzyka"])))
+            raise SystemExit("BŁĄD: %s — nieznana pozycja %s (znane: arkusz, %s, %s)" % (
+                sciezka, n, ", ".join("arkusze_muzyki." + a for a in arkusze), ", ".join(ident["muzyka"])))
     return zmiany
 
 
@@ -387,6 +474,19 @@ def main():
         KONTENER, k["arkusz"]["plik"], k["arkusz"]["id"], len(k["efekty"]), len(k["zdarzenia"]),
         ", ".join("%s %d/%d z id%s" % (n, sum(1 for u in s["utwory"] if u["id"]), len(s["utwory"]),
                                         "" if s["podpiete"] else " (niepodpięte)") for n, s in k["muzyka"]["strefy"].items())))
+    for n, ark in k["muzyka"]["arkusze"].items():
+        z_arkusza = sorted({u["nazwa"] for zr in list(k["muzyka"]["strefy"].values()) + list(k["muzyka"]["konteksty"].values())
+                            for u in zr["utwory"] if u.get("arkusz") == n})
+        print("  arkusz muzyki %s: id %d, %.1f s, utwory: %s" % (n, ark["id"], ark["dlugosc"], ", ".join(z_arkusza)))
+    for n, s in k["muzyka"]["konteksty"].items():
+        print("  kontekst %-15s %d/%d utworów z id (%s)" % (n, sum(1 for u in s["utwory"] if u["id"]), len(s["utwory"]),
+                                                         ", ".join(u["nazwa"] for u in s["utwory"])))
+    for n, s in k["muzyka"]["strefy"].items():
+        if s.get("zastepcze"):
+            wlasne = sum(1 for u in s["utwory"] if u["id"])
+            print("  strefa %-8s własne utwory z id: %d/%d → gra %s" % (
+                n, wlasne, len(s["utwory"]),
+                "własne" if wlasne else "zastępcze (%s)" % ", ".join(u["nazwa"] for u in s["zastepcze"]["utwory"])))
     for n, s in k["muzyka"]["strefy"].items():
         if s["prostokaty"]:
             print("  strefa %-6s prostokąty %s (z map, tylko odczyt), kontener mapy %s" % (n, s["prostokaty"], s.get("kontener")))
