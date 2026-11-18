@@ -13,6 +13,7 @@ wejścia przy miejscu startu gracza, skrypty serwera i klienta.
 Co powstaje (tylko w Workspace/TreningProba z atrybutem Wygenerowane = true; cudzych kontenerów budowa NIE zmienia —
 SpawnLocation, MiasteczkoBazarGra i LasTeleport tylko czyta):
   Moduly/DaneTreningu, Moduly/LogikaTreningu      ModuleScript (zrodla/; DaneTreningu wygenerowany przez dane.py)
+  Moduly/KameraTreningu, EfektyTreningu, KomiksTreningu   ModuleScript — wygląd jak w walce (kamera, efekty, napisy)
   SerwerTreningu (RunContext = Server), KlientTreningu (RunContext = Client)
   Zdalne/ZdarzeniaTreningu                         RemoteEvent (oba kierunki; opis w SerwerTreningu)
   Sygnaly/PrzyrostStatystyki                       BindableEvent — przyrost statystyki dla przyszłego modułu statystyk
@@ -54,6 +55,10 @@ ZRODLA = os.path.join(TU, "zrodla")
 SKRYPTY = [
     ("DaneTreningu.luau", "ModuleScript", "Moduly/DaneTreningu", None),
     ("LogikaTreningu.luau", "ModuleScript", "Moduly/LogikaTreningu", None),
+    # wygląd jak w walce (18.11.2026): rachunek kamery, efekty 3D trafień i konfetti, komiksowe napisy — tylko klient
+    ("KameraTreningu.luau", "ModuleScript", "Moduly/KameraTreningu", None),
+    ("EfektyTreningu.luau", "ModuleScript", "Moduly/EfektyTreningu", None),
+    ("KomiksTreningu.luau", "ModuleScript", "Moduly/KomiksTreningu", None),
     ("SerwerTreningu.server.luau", "Script", "SerwerTreningu", "Server"),
     ("KlientTreningu.client.luau", "Script", "KlientTreningu", "Client"),
 ]

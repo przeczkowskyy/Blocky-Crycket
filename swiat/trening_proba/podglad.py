@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Podglądy stanowisk Training Center bez Studio: bryły z scena.py (te same części, które stawia zbuduj.py) widziane
-z kamery mini-gry (oko / cel z ustawienia.json, kąt widzenia 70° jak w Roblox) i przykładowa chwila gry (postać gracza,
-przedmioty, które w grze rysuje klient). To RENDER BRYŁ do oceny układu i czytelności, nie zrzut z gry.
+z kamery mini-gry (oko / cel / kąt widzenia z ustawienia.json — pionowy, jak Camera.FieldOfView w Roblox) i przykładowa
+chwila gry (postać gracza, przedmioty, które w grze rysuje klient). To RENDER BRYŁ do oceny układu i czytelności, nie
+zrzut z gry.
 
     python -B swiat/trening_proba/podglad.py                     # wszystkie podglądy do swiat/trening_proba/podglady/
     python -B swiat/trening_proba/podglad.py --tylko kondycja     # jeden (sila, pancerz, kondycja, zrecznosc,
                                                                   #  inteligencja, szczescie, arena)
     python -B swiat/trening_proba/podglad.py --wyj <folder>      # inny folder
+    python -B swiat/trening_proba/podglad.py --ujecie start       # ujęcie: gra (domyślnie) | start (początek odliczania)
+                                                                  #  | final (zbliżenie na postać po rundzie)
+    python -B swiat/trening_proba/podglad.py --ekran 667x375      # kadr telefonu (domyślnie 1280x720)
 
 Rysowanie: numpy, bufor głębi z interpolacją 1/z, obcinanie przy bliskiej płaszczyźnie, cieniowanie płaskie (słońce +
 światło otoczenia), Neon bez cienia, części półprzezroczyste nakładane po nieprzezroczystych, obrys krawędzi brył,
@@ -26,8 +30,7 @@ if not sys.path or sys.path[0] != TU:
 import dane as DANE  # noqa: E402
 import scena as SCENA  # noqa: E402
 
-W, H = 1280, 720
-FOV = 70.0
+W, H = 1280, 720  # rozmiar podglądu (zmienia --ekran)
 TLO_GORA, TLO_DOL = (126, 186, 236), (206, 230, 247)
 SLONCE = (-0.45, 0.8, 0.4)
 GRACZ = "D8CBB5"  # postać gracza na podglądzie (w grze — awatar)
@@ -88,7 +91,7 @@ def _siatka(c, np):
 
 
 class Kamera:
-    def __init__(self, oko, cel, np):
+    def __init__(self, oko, cel, np, kat):
         self.np = np
         self.oko = np.array(oko, dtype=float)
         f = np.array(cel, dtype=float) - self.oko
@@ -97,7 +100,7 @@ class Kamera:
         r /= np.linalg.norm(r)
         u = np.cross(r, f)
         self.B = np.stack([r, u, f])
-        self.f = (H / 2) / math.tan(math.radians(FOV / 2))
+        self.f = (H / 2) / math.tan(math.radians(kat / 2))
 
     def widok(self, P):
         return (P - self.oko) @ self.B.T
@@ -168,8 +171,8 @@ def _kolor(h):
     return tuple(int(h[i:i + 2], 16) for i in range(0, 6, 2))
 
 
-def rysuj(czesci, oko, cel, np):
-    kam = Kamera(oko, cel, np)
+def rysuj(czesci, oko, cel, np, kat):
+    kam = Kamera(oko, cel, np, kat)
     pl = Plotno(np)
     sl = np.array(SLONCE) / np.linalg.norm(SLONCE)
     przezr = []
@@ -325,7 +328,7 @@ def chwila(D, gra):
         z2 = W_["strefy"]["gora"]
         _cz(L, "Dzban", [z2[0], z2[1] + 3.2, z2[2] - 4], [1.7, 1.7, 1.7], "B07A45", k="K")
     elif gra == "pancerz":
-        _gracz(L, pd, przezr=0.55)
+        _gracz(L, pd)  # kamera z boku: postać nie zasłania pola gry, więc w grze jest pełna (nie półprzezroczysta)
         _cz(L, "Tarcza", W_["tarcza_blok"], [2.6, 2.9, 0.35], "3D7BE5")
     elif gra == "kondycja":
         gora_t = W_["tasma_srodek"][1] + W_["tasma_rozmiar"][1] / 2
@@ -343,7 +346,7 @@ def chwila(D, gra):
     elif gra == "zrecznosc":
         _gracz(L, pd, uniesienie=2.4)  # skok nad niską kłodą (ramię obraca podglad(): kłoda tuż przed graczem)
     elif gra == "inteligencja":
-        _gracz(L, pd, przezr=0.55)
+        _gracz(L, pd)
         p = W_["kamienie"]["prawo"]
         ks = W_["kamien_rozmiar"]
         _cz(L, "Swiecenie", [p[0], p[1], p[2] + ks[2] / 2 + 0.08], [1.5, 1.5, 0.08], D["ui"]["kolory"]["runa_prawo"], m="Neon",
@@ -454,31 +457,116 @@ def sterowanie(obraz, D, gra, ImageDraw, ImageFont):
     elif gra == "szczescie":
         przycisk(*prost("torL"), "LEWO A", kol)
         przycisk(*prost("torP"), "PRAWO D", kol)
+    # miejsce dużych napisów stanowiska („SERIA 10!”, „+1 Siła!”): zarys największego słowa z gwiazdą
+    KX = U["komiks"]
+    tekst = D["teksty"]["punkt"] % (1, st["nazwa"])
+    wys = KX["rozmiary_px"][KX["style"]["punkt"]["rozmiar"]]
+    szer = wys * max(1.2, len(tekst) * KX["szerokosc_znaku"] * 1.12)
+    bok = KX["gwiazda"]["bok"] * wys * math.sqrt(2)
+    w2, h2 = (szer + 10) * sk, (max(wys, bok) + 10) * sk
+    n = D["swiat"][gra]["napis"]
+    cx, cy = W * n[0], gora + (H - gora) * n[1]
+    mg = KX["margines_px"]
+    cx = min(max(cx, mg + w2 / 2), W - mg - w2 / 2)  # długi napis przesuwa się w bok, żeby zmieścić się na ekranie (jak w grze)
+    dr.rectangle([cx - w2 / 2, cy - h2 / 2, cx + w2 / 2, cy + h2 / 2], outline=(232, 54, 79, 255), width=2)
+    for i, kolor_g in enumerate(KX["gwiazda"]["kolory"]):
+        r = KX["gwiazda"]["bok"] * wys * sk / 2
+        a = math.radians(KX["gwiazda"]["obrot"][i])
+        rogi = [(cx + r * math.sqrt(2) * math.cos(a + math.pi / 4 + j * math.pi / 2),
+                 cy + r * math.sqrt(2) * math.sin(a + math.pi / 4 + j * math.pi / 2)) for j in range(4)]
+        dr.polygon(rogi, fill=_kolor(kolor_g) + (235,), outline=(23, 18, 31, 255))
+    fk = _czcionka(int(wys * 0.62 * sk), ImageFont)
+    tw = dr.textlength(tekst.upper(), font=fk)
+    for dx, dy, barwa in ((2 * sk, 3 * sk, (23, 18, 31, 255)), (0, 0, _kolor(KX["kolory"]["krytyk"]) + (255,))):
+        dr.text((cx - tw / 2 + dx, cy - wys * 0.36 * sk + dy), tekst.upper(), font=fk, fill=barwa, stroke_width=2,
+                stroke_fill=(23, 18, 31, 255))
     dr.text((10, H - 22), "Podgląd brył (render bez Studio, nie zrzut z gry)", font=_czcionka(14, ImageFont),
             fill=(23, 18, 31, 200))
 
 
 # ------------------------------------------------------------------------------------------------ główna
-def podglad(D, gra, np, Image, ImageDraw, ImageFont):
+def ujecie_podgladu(D, gra, ujecie):
+    """Ujęcie kamery do podglądu (ten sam rachunek co w grze — kamera_treningu.py): gra | start | final."""
+    import kamera_treningu as KT
+    import logika_treningu as LT
+    if ujecie == "start":
+        return KT.odliczanie(D, gra, D["runda"]["odliczanie_s"])
+    if ujecie == "final":
+        U = D["ui"]
+        s = LT.skala_ui(D, W, H)
+        fx = KT.ulamek_postaci(D, 0, W, W, s)
+        baza = KT.miejsca_postaci(D, gra)[0]
+        korzen = [baza[0], baza[1] + U["kamera"]["final"]["korzen_nad_ziemia"], baza[2]]
+        return KT.final(D, gra, korzen, fx, W / H, U["kamera"]["final"]["dojazd_s"])
+    return KT.gra(D, gra)
+
+
+def karta(obraz, D, gra, ImageDraw, ImageFont):
+    """Zarys karty podsumowania (prawa część ekranu) na podglądzie zbliżenia po rundzie."""
+    import kamera_treningu as KT
+    import logika_treningu as LT
+    U = D["ui"]
+    sk = LT.skala_ui(D, W, H)
+    gora = U["pasek_gorny_pt"]
+    x0, y0, x1, y1 = KT.karta_podsumowania(D, W, H - gora, sk)
+    dr = ImageDraw.Draw(obraz, "RGBA")
+    dr.rounded_rectangle([x0, y0 + gora, x1, y1 + gora], radius=14 * sk, fill=(255, 246, 224, 235), outline=(23, 18, 31, 255),
+                         width=3)
+    dr.rounded_rectangle([x0 - 8 * sk, y0 + gora - 14 * sk, x1 + 8 * sk, y0 + gora + 34 * sk], radius=10 * sk,
+                         fill=_kolor(U["komiks"]["kolory"]["pomarancz"]) + (255,), outline=(23, 18, 31, 255), width=3)
+    f = _czcionka(int(24 * sk), ImageFont)
+    tekst = D["teksty"]["koniec"]
+    dr.text(((x0 + x1 - dr.textlength(tekst, font=f)) / 2, y0 + gora - 6 * sk), tekst, font=f,
+            fill=_kolor(U["komiks"]["kolory"]["zolty"]) + (255,))
+    dr.text((10, H - 22), "Podgląd brył (render bez Studio, nie zrzut z gry)", font=_czcionka(14, ImageFont),
+            fill=(23, 18, 31, 200))
+
+
+def podglad(D, gra, np, Image, ImageDraw, ImageFont, ujecie="gra"):
     cz = SCENA.czesci(D)
     if gra == "arena":
         A = D["arena"]
         c = A["srodek"]
         oko = [c[0], c[1] + 70, c[2] + 92]
         cel = [c[0], c[1], c[2] - 6]
+        kat = 70.0
         lista = cz
     else:
-        W_ = D["swiat"][gra]
-        oko, cel = W_["oko"], W_["cel"]
-        if gra == "zrecznosc":
+        u = ujecie_podgladu(D, gra, ujecie)
+        oko, cel, kat = u["oko"], u["cel"], u["kat"]
+        if gra == "zrecznosc" and ujecie != "final":
             cz = obroc_ramie(D, cz, 90 + 24)
-        lista = cz + chwila(D, gra)
-    kam, pl = rysuj(lista, oko, cel, np)
+        lista = cz + (postac_finalu(D, gra) if ujecie == "final" else chwila(D, gra))
+    kam, pl = rysuj(lista, oko, cel, np, kat)
     obrysy(pl, np)
     obraz = napisy(pl, kam, lista, np, Image, ImageDraw, ImageFont)
-    if gra != "arena":
+    if gra != "arena" and ujecie == "gra":
         sterowanie(obraz, D, gra, ImageDraw, ImageFont)
+    elif gra != "arena" and ujecie == "final":
+        karta(obraz, D, gra, ImageDraw, ImageFont)
     return obraz
+
+
+def postac_finalu(D, gra):
+    """Postać gracza po rundzie: obrócona twarzą do kamery zbliżenia, ręce w górze (radość)."""
+    import kamera_treningu as KT
+    baza = KT.miejsca_postaci(D, gra)[0]
+    kier = KT.kierunek_finalu(D, gra, 0)
+    kat = math.degrees(math.atan2(kier[0], kier[2]))  # obrót wokół Y: twarz (+z postaci z klocków) w stronę kamery
+    L = []
+    S = SCENA._Scena([0, 0, 0])
+    SCENA._postac(S, "Gracz", [0, 0, 0], kat, "8FA6C8", "4A4E69", [("Wlosy", [0, 7.7, 0], [2.1, 0.5, 2.1], "6B3A1F")], kol=False)
+    k = SKALA_GRACZA
+    for c in S.lista:
+        if c["n"] in ("RamieL", "RamieP"):  # ręce w górę
+            dx = -2.0 if c["n"] == "RamieL" else 2.0
+            v = SCENA._obroc([dx, 6.9, 0], kat)
+            c["p"] = [v[0], v[1], v[2]]
+        p = c["p"]
+        c["s"] = [x * k for x in c["s"]]
+        c["p"] = [baza[0] + p[0] * k, baza[1] + p[1] * k, baza[2] + p[2] * k]
+        L.append(c)
+    return L
 
 
 def main():
@@ -488,16 +576,24 @@ def main():
     ap = argparse.ArgumentParser(description="Podglądy stanowisk Training Center (render brył)")
     ap.add_argument("--tylko", default=None)
     ap.add_argument("--wyj", default=os.path.join(TU, "podglady"))
+    ap.add_argument("--ujecie", default="gra", choices=("gra", "start", "final"))
+    ap.add_argument("--ekran", default=None, help="rozmiar kadru, np. 667x375 (domyślnie 1280x720)")
     a = ap.parse_args()
     najnizszy_priorytet()
     import numpy as np
     from PIL import Image, ImageDraw, ImageFont
+    global W, H
+    if a.ekran:
+        W, H = [int(x) for x in a.ekran.lower().split("x")]
     _, D = DANE.wczytaj()
     gry = [a.tylko] if a.tylko else ["kondycja", "zrecznosc", "inteligencja", "szczescie", "sila", "pancerz", "arena"]
+    if a.ujecie != "gra":
+        gry = [g for g in gry if g != "arena"]
     os.makedirs(a.wyj, exist_ok=True)
     for g in gry:
-        obraz = podglad(D, g, np, Image, ImageDraw, ImageFont)
-        nazwa = os.path.join(a.wyj, "podglad_%s.jpg" % g)
+        obraz = podglad(D, g, np, Image, ImageDraw, ImageFont, a.ujecie)
+        przyrostek = ("" if a.ujecie == "gra" else "_" + a.ujecie) + ("_%s" % a.ekran.lower() if a.ekran else "")
+        nazwa = os.path.join(a.wyj, "podglad_%s%s.jpg" % (g, przyrostek))
         obraz.convert("RGB").save(nazwa, "JPEG", quality=88)
         print("zapisano", os.path.relpath(nazwa, os.path.dirname(os.path.dirname(TU))).replace("\\", "/"))
 

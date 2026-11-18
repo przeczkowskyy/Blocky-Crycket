@@ -51,11 +51,18 @@ SET_ATTRIBUTE = {
     "SerwerTreningu.server.luau": {"kontener", "gracz"},
     "KlientTreningu.client.luau": {"kontener", "okna"},
     "LogikaTreningu.luau": set(),
+    "KameraTreningu.luau": set(),
+    "EfektyTreningu.luau": set(),
+    "KomiksTreningu.luau": set(),
 }
 DESTROY = {
     "SerwerTreningu.server.luau": {"script.Parent"},
     "KlientTreningu.client.luau": {"obj", "gui", "efekty", "model", "dzwiek"},
     "LogikaTreningu.luau": set(),
+    "KameraTreningu.luau": set(),
+    # własne części efektów (iskry, rozbłysk, fala, łuk odbicia, konfetti) i własne napisy komiksowe
+    "EfektyTreningu.luau": {"p", "p2", "blysk"},
+    "KomiksTreningu.luau": {"obj"},
 }
 ZAKAZANE_ZASOBY = ["rbxassetid://", "InsertService", "MarketplaceService", "GetAsync", "PostAsync", "http://", "https://"]
 # adres arkusza efektów z katalogu swiat/dzwiek_gra (identyfikator tylko z katalogu) — dozwolony raz, tylko w kliencie

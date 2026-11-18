@@ -353,7 +353,14 @@ def pole_gry(D, gra):
         g = W["golem"]
         for dx, dy in ((-2.5, 3.2), (2.5, 3.2), (-1.5, 9.4), (1.5, 9.4), (0, 8.4)):
             P.append([g[0] + dx, g[1] + dy, g[2], "golem"])
+        pd = W["podest"]
+        for y in (0.2, 2.7, 5.4):  # postać z tarczą (kamera z boku: gracz nie może wypaść z kadru)
+            P.append([pd[0], pd[1] + y, pd[2], "gracz"])
     elif gra == "kondycja":
+        pd = W["podest"]
+        gora_t = W["tasma_srodek"][1] + W["tasma_rozmiar"][1] / 2
+        for y in (0.2, 2.7, 5.4):  # biegacz na taśmie
+            P.append([pd[0], gora_t + y, pd[2], "gracz"])
         for k, p in W["stopy"].items():
             for i in range(9):
                 z = p[2] + W["slad_predkosc"] * W["slady_s"] * i / 8
@@ -368,6 +375,7 @@ def pole_gry(D, gra):
                     P.append([sl[0] + math.cos(a) * rr, pd[1] + h, sl[2] + math.sin(a) * rr, "kloda %s" % nazwa])
         for y in (0.2, 2.7, 5.4):
             P.append([pd[0], pd[1] + y, pd[2], "gracz"])
+        P.append([pd[0], pd[1] + 5.4 + 2.7, pd[2], "gracz w skoku"])  # głowa w szczycie skoku (niska kamera z bliska)
     elif gra == "inteligencja":
         ks = W["kamien_rozmiar"]
         for k, p in W["kamienie"].items():

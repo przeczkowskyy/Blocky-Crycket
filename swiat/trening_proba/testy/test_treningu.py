@@ -12,14 +12,20 @@
    Runy (pokaz, kolejność, kara, bezczynność, dubel, zaklęcie), Koniczyny (tor przy upadku, kamień, złota, stanie
    w miejscu = 0, ruch bez werdyktu), przerwanie rundy, bot spamujący bez zysku w każdej grze.
 3. Luau w luau_mini: pliki parsują się; przypadki wzorcowe OK (zepsuty wykryty); losowe wywołania = lustro (wszystkie
-   gry); dane w Luau = dane z Pythona; kod wysyłany do Studio parsuje się, bez niewstawionych __…__.
+   gry); dane w Luau = dane z Pythona; kod wysyłany do Studio parsuje się, bez niewstawionych __…__; rachunek kamery
+   (KameraTreningu.luau) = lustro kamera_treningu.py; miejsce i rozmiar napisu komiksowego (KomiksTreningu.luau).
 4. Scena: części, rozmiary, obrys, nazwy animowane, stanowiska widoczne z kamery (sześć), tory lotu i obrotu kłody bez
-   przeszkód, ściany, miejsce gracza wolne.
+   przeszkód, ściany, miejsce gracza wolne; ujęcia w stylu walki (początek odliczania, zbliżenie po rundzie) poza
+   bryłami i z wolnym widokiem na postać.
 5. Telefon: przyciski ≥ 44 px i teksty ≥ 12 pt przy 667 × 375 i przy skali minimalnej; panele i przyciski sześciu
-   gier mieszczą się i nie nachodzą na siebie; teksty bez napisów dla twórców.
+   gier mieszczą się i nie nachodzą na siebie; teksty bez napisów dla twórców; pole gry na czterech ekranach przy
+   kamerze stanowiska (także przy największym zawężeniu kąta po trafieniu); postać nie zasłania pola gry; zbliżenie po
+   rundzie mieści postać na lewo od karty; duże napisy nie wchodzą na panele.
 6. Styki: wiadomości zdalne, nazwy instancji, atrybuty, zakazy (Lighting, zasoby; adres arkusza dźwięku tylko
    z katalogu), dźwięki wbudowane i zdarzenia arkusza, PlaceId, punkty historii, --sucho bez studio_mcp,
-   proba_play.py (T01–T22, --sprawdz), podgląd stanowisk, bez ścieżek i nazw kont w plikach pakietu.
+   proba_play.py (T01–T22, --sprawdz), podgląd stanowisk, bez ścieżek i nazw kont w plikach pakietu; styl komiksu =
+   styl walki (liczby i kolory z jej źródeł), efekty = nazwy i liczby z modułu walki, czcionka komiksowa ma każdą
+   literę napisów, haczyk bohatera osłonięty.
 """
 import copy
 import glob
@@ -51,6 +57,7 @@ def _modul(nazwa, plik):
 
 
 LT = _modul("logika_treningu", "logika_treningu.py")
+KT = _modul("kamera_treningu", "kamera_treningu.py")
 DANE = _modul("dane", "dane.py")
 SCENA = _modul("scena", "scena.py")
 SLT = _modul("sprawdz_luau_treningu", "sprawdz_luau_treningu.py")
@@ -70,6 +77,10 @@ LICZBA_CZESCI = 202  # arena: sześć stanowisk, lobby, mury (zmiana sceny = św
 SERWER = czytaj(ZR, "SerwerTreningu.server.luau")
 KLIENT = czytaj(ZR, "KlientTreningu.client.luau")
 LOGIKA = czytaj(ZR, "LogikaTreningu.luau")
+KAMERA = czytaj(ZR, "KameraTreningu.luau")
+EFEKTY = czytaj(ZR, "EfektyTreningu.luau")
+KOMIKS = czytaj(ZR, "KomiksTreningu.luau")
+WALKA = os.path.join(REPO, "swiat", "test_walki2", "zrodla")  # prototyp walki — tylko odczyt (wzór stylu)
 
 
 def bez_komentarzy(tekst):
@@ -217,6 +228,22 @@ class TestDanych(unittest.TestCase):
         zle(lambda k: k["gry"]["szczescie"].update(przyciski=["w_gore"]))
         zle(lambda k: k["dzwieki_katalog"].update(punkt="fanfara_ktorej_nie_ma"))
         zle(lambda k: k["dzwieki_katalog"]["trafienie"].update(kondycja="krok_ktorego_nie_ma"))
+        # wygląd jak w walce (18.11.2026): kamery, komiks, efekty, bohater
+        zle(lambda k: k["stanowiska"]["sila"]["kamera"].update(kat=70))  # szeroki kąt — to nie kadr walki
+        zle(lambda k: k["stanowiska"]["sila"]["kamera"].pop("start"))
+        zle(lambda k: k["stanowiska"]["kondycja"]["kamera"]["final"].update(dystans=2))
+        zle(lambda k: k["stanowiska"]["pancerz"].update(napis=[1.2, 0.5]))
+        zle(lambda k: k["ui"]["kamera"]["seria"].update(kat=0.1))  # zawężenie serii słabsze niż zwykłego trafienia
+        zle(lambda k: k["ui"]["komiks"].update(czcionka="FredokaOne"))
+        zle(lambda k: k["ui"]["komiks"]["rozmiary_px"].update(maly=12))
+        zle(lambda k: k["ui"]["komiks"]["style"].pop("seria"))
+        zle(lambda k: k["ui"]["komiks"]["style"]["mocne"].update(kolor="teczowy"))
+        zle(lambda k: k["ui"]["komiks"]["kolor_trafienia"].pop("sila"))
+        zle(lambda k: k["ui"]["efekty"]["trafienie"].update(sila="fajerwerk_ktorego_nie_ma"))
+        zle(lambda k: k["ui"]["efekty"]["konfetti"]["wielkie"].update(ile=10))  # wielkie mniejsze od zwykłego
+        zle(lambda k: k["ui"]["bohater"]["klipy"].pop("radosc"))
+        zle(lambda k: k["teksty"]["trafienia"].append("ÄÖÜ!"))  # litera spoza czcionki komiksowej
+        zle(lambda k: k["teksty"].update(bez_pudla="BEZ PUDŁA ★"))
         DANE._sprawdz(DANE._czytaj_json(DANE.USTAWIENIA))  # prawdziwe ustawienia przechodzą
 
     def test_1d_szesc_statystyk_z_systemu_rpg(self):
@@ -903,7 +930,9 @@ class TestLuau(unittest.TestCase):
         bledy, parser = SLT.sprawdz_pliki(SLT.pliki_pakietu(), wypisz=lambda *_: None)
         self.assertTrue(parser)
         self.assertEqual(bledy, [])
-        self.assertEqual(len(SLT.pliki_pakietu()), 4)
+        self.assertEqual(sorted(os.path.basename(x) for x in SLT.pliki_pakietu()),
+                         ["DaneTreningu.luau", "EfektyTreningu.luau", "KameraTreningu.luau", "KlientTreningu.client.luau",
+                          "KomiksTreningu.luau", "LogikaTreningu.luau", "SerwerTreningu.server.luau"])
 
     def test_3b_przypadki_wzorcowe(self):
         ok, n, bledy = self.wolaj("sprawdzPrzypadki", self.Dl)
@@ -980,6 +1009,121 @@ class TestLuau(unittest.TestCase):
             self.assertEqual(self.wolaj("pula", self.Dl, lv)[0], LT.pula(D, lv))
             W, pl = float(rnd.randrange(0, 500)), float(LT.pula(D, rnd.randrange(1, 66)))
             self.assertAlmostEqual(self.wolaj("prog", self.Dl, W, pl)[0], LT.prog(D, W, pl), places=9)
+
+    def _z_matematyka(self):
+        """Interpreter z funkcjami trygonometrycznymi (luau_mini ma tylko floor, sqrt, abs, min, max)."""
+        it, Dl = luau_modul(DANE.PLIK_LUAU)
+        m = it.globalne.z["math"]
+        for nazwa, f in (("sin", math.sin), ("cos", math.cos), ("tan", math.tan), ("atan", math.atan), ("asin", math.asin),
+                         ("exp", math.exp), ("rad", math.radians), ("deg", math.degrees)):
+            m.set(nazwa, f)
+        m.set("pi", math.pi)
+        return it, Dl
+
+    def test_3f_kamera_w_luau_jak_lustro(self):
+        """Rachunek kamery stanowisk (KameraTreningu.luau) = kamera_treningu.py: ujęcia gry, kołysania, odliczania
+        i zbliżenia po rundzie, zawężenie kąta, drżenie, kąt okna emulacji."""
+        it, Dl = self._z_matematyka()
+        Kl = it.wykonaj(KAMERA, "KameraTreningu.luau")[0]
+
+        def wolaj(nazwa, *argi):
+            return LM.z_luau(it.wywolaj(Kl.get(nazwa), list(argi))[0])
+
+        def rowne(a, b, opis):
+            for k in ("oko", "cel"):
+                for i in range(3):
+                    self.assertAlmostEqual(a[k][i], b[k][i], places=9, msg=opis)
+            self.assertAlmostEqual(a["kat"], b["kat"], places=9, msg=opis)
+        rnd = random.Random(1811)
+        for gra in GRY:
+            rowne(wolaj("gra", Dl, gra), KT.gra(D, gra), gra)
+            for _ in range(12):
+                t = rnd.uniform(-1, 40)
+                rowne(wolaj("stanowisko", Dl, gra, t), KT.stanowisko(D, gra, t), (gra, "stanowisko", t))
+                do_startu = rnd.uniform(-0.5, D["runda"]["odliczanie_s"] + 0.5)
+                rowne(wolaj("odliczanie", Dl, gra, do_startu), KT.odliczanie(D, gra, do_startu), (gra, "odliczanie", do_startu))
+                korzen = [D["swiat"][gra]["podest"][i] + rnd.uniform(-5, 5) for i in range(3)]
+                fx, asp, czas = rnd.uniform(0.1, 0.5), rnd.uniform(1.2, 2.4), rnd.uniform(0, 30)
+                rowne(wolaj("final", Dl, gra, LM.do_luau(korzen), fx, asp, czas), KT.final(D, gra, korzen, fx, asp, czas),
+                      (gra, "final"))
+                kl, kp = wolaj("kierunekFinalu", Dl, gra, czas), KT.kierunek_finalu(D, gra, czas)
+                for i in range(3):
+                    self.assertAlmostEqual(kl[i], kp[i], places=9)
+            # odliczanie zaczyna się w ujęciu „start”, a kończy dokładnie w kamerze gry — przed startem rundy
+            rowne(KT.odliczanie(D, gra, D["runda"]["odliczanie_s"]), D["swiat"][gra]["start"], gra)
+            rowne(KT.odliczanie(D, gra, D["ui"]["kamera"]["odliczanie_koniec_s"]), KT.gra(D, gra), gra)
+            rowne(KT.odliczanie(D, gra, 0), KT.gra(D, gra), gra)
+        for _ in range(60):
+            wiek, sila = rnd.uniform(-0.2, 1.2), rnd.uniform(0, 1)
+            for rodzaj in ("uderzenie", "mocne", "seria", "nieznane"):
+                self.assertAlmostEqual(it.wywolaj(Kl.get("zawezenie"), [Dl, rodzaj, wiek])[0], KT.zawezenie(D, rodzaj, wiek))
+            self.assertAlmostEqual(it.wywolaj(Kl.get("wstrzas"), [Dl, sila, wiek + 0.2])[0], KT.wstrzas(D, sila, wiek + 0.2))
+            kat, wsp = rnd.uniform(38, 54), rnd.uniform(1, 1.6)
+            self.assertAlmostEqual(it.wywolaj(Kl.get("katOkna"), [kat, wsp])[0], KT.kat_okna(kat, wsp), places=9)
+            x = rnd.uniform(-0.5, 1.5)
+            self.assertAlmostEqual(it.wywolaj(Kl.get("gladko"), [x])[0], KT.gladko(x))
+            self.assertAlmostEqual(it.wywolaj(Kl.get("wyjscie"), [x])[0], KT.wyjscie(x))
+        # zawężenie: od razu pełne, potem maleje do zera; bez emulacji kąt zostaje
+        KA = D["ui"]["kamera"]
+        for rodzaj in ("uderzenie", "mocne", "seria"):
+            self.assertAlmostEqual(KT.zawezenie(D, rodzaj, 0), KA[rodzaj]["kat"])
+            self.assertGreater(KT.zawezenie(D, rodzaj, KA[rodzaj]["czas_s"] * 0.3), KT.zawezenie(D, rodzaj, KA[rodzaj]["czas_s"] * 0.7))
+            self.assertEqual(KT.zawezenie(D, rodzaj, KA[rodzaj]["czas_s"]), 0)
+        self.assertAlmostEqual(KT.kat_okna(46, 1), 46)
+        self.assertEqual(KT.wstrzas(D, 0.5, 5), 0)
+        # klient bierze kamerę z tego modułu (żadnego własnego rachunku położeń)
+        for f in ("Kam.stanowisko(", "Kam.odliczanie(", "Kam.gra(", "Kam.final(", "Kam.zawezenie(", "Kam.wstrzas(",
+                  "Kam.katOkna(", "Kam.przejscie(", "Kam.kierunekFinalu("):
+            self.assertIn(f, KLIENT)
+
+    def test_3g_miejsce_i_rozmiar_napisu_komiksowego(self):
+        """Czyste funkcje KomiksTreningu.luau: rozmiar narysowanego napisu i jego miejsce — w obszarze, poza panelami,
+        bez ruszania napisu, który nikomu nie przeszkadza."""
+        it, Dl = self._z_matematyka()
+        Kx = it.wykonaj(KOMIKS, "KomiksTreningu.luau")[0]
+        KX = D["ui"]["komiks"]
+        KXl = Dl.get("ui").get("komiks")
+        w0, h0 = it.wywolaj(Kx.get("rozmiar"), [KXl, 200.0, 50.0, 0.0, False])
+        m = 2 * (KX["obrys_px"] + 1)
+        self.assertAlmostEqual(w0, (200 + m) * KX["nadmiar"])
+        self.assertAlmostEqual(h0, (50 + m) * KX["nadmiar"])
+        w1, h1 = it.wywolaj(Kx.get("rozmiar"), [KXl, 200.0, 50.0, 8.0, False])
+        self.assertGreater(h1, h0)  # obrócony napis jest wyższy
+        w2, h2 = it.wywolaj(Kx.get("rozmiar"), [KXl, 60.0, 50.0, 0.0, True])
+        self.assertAlmostEqual(h2, (KX["gwiazda"]["bok"] * 50 * math.sqrt(2) + m) * KX["nadmiar"])  # gwiazda w każdym obrocie
+        self.assertAlmostEqual(w2, h2)
+        rnd = random.Random(7)
+        obszar = [0.0, 36.0, 667.0, 375.0]
+        for _ in range(300):
+            w, h = rnd.uniform(40, 380), rnd.uniform(30, 130)
+            x, y = rnd.uniform(-100, 800), rnd.uniform(-100, 500)
+            przeszkody = []
+            for _ in range(rnd.randrange(0, 4)):
+                px, py = rnd.uniform(0, 600), rnd.uniform(36, 330)
+                przeszkody.append([px, py, px + rnd.uniform(40, 200), py + rnd.uniform(40, 100)])
+            mg = float(KX["margines_px"])
+            nx, ny = it.wywolaj(Kx.get("miejsce"), [x, y, w, h, LM.do_luau(obszar), LM.do_luau(przeszkody) if przeszkody else None, mg])
+            self.assertTrue(obszar[0] + mg - 1e-6 <= nx - w / 2 and nx + w / 2 <= obszar[2] - mg + 1e-6, (x, y, w, h))
+            self.assertTrue(obszar[1] + mg - 1e-6 <= ny - h / 2 and ny + h / 2 <= obszar[3] - mg + 1e-6, (x, y, w, h))
+            wolne = all(nx + w / 2 + mg <= r[0] + 1e-6 or r[2] <= nx - w / 2 - mg + 1e-6 or ny + h / 2 + mg <= r[1] + 1e-6
+                        or r[3] <= ny - h / 2 - mg + 1e-6 for r in przeszkody)
+            # napis w obszarze i bez kolizji zostaje tam, gdzie był
+            if (obszar[0] + mg <= x - w / 2 and x + w / 2 <= obszar[2] - mg and obszar[1] + mg <= y - h / 2
+                    and y + h / 2 <= obszar[3] - mg):
+                bez_kolizji = all(x + w / 2 + mg <= r[0] or r[2] <= x - w / 2 - mg or y + h / 2 + mg <= r[1]
+                                  or r[3] <= y - h / 2 - mg for r in przeszkody)
+                if bez_kolizji:
+                    self.assertEqual((nx, ny), (x, y))
+                    self.assertTrue(wolne)
+            # jedna przeszkoda z wolnym miejscem obok: napis zawsze z niej schodzi
+            if len(przeszkody) == 1:
+                r = przeszkody[0]
+                miejsce = (r[0] - obszar[0] >= w + 3 * mg or obszar[2] - r[2] >= w + 3 * mg or r[1] - obszar[1] >= h + 3 * mg
+                           or obszar[3] - r[3] >= h + 3 * mg)
+                if miejsce:
+                    self.assertTrue(wolne, (x, y, w, h, r, nx, ny))
+        # bez obszaru (ekran jeszcze niezmierzony) miejsce zostaje
+        self.assertEqual(tuple(it.wywolaj(Kx.get("miejsce"), [10.0, 20.0, 30.0, 40.0, None, None, 6.0])), (10.0, 20.0))
 
     def test_3d_dane_w_luau_jak_w_pythonie(self):
         dl = LM.z_luau(self.Dl)
@@ -1143,6 +1287,49 @@ class TestSceny(unittest.TestCase):
                 self.assertIsNone(self._wolne(W["oko"], [p[0], y, p[2] + kosz[2]]), "Koniczyny: kamera → tor %s, y %.1f" % (k, y))
             self.assertIsNone(self._wolne([p[0], p[1] + 0.3, p[2]], [p[0], p[1] + 5.4, p[2]]), "Koniczyny: tor %s wolny" % k)
 
+    def test_4f_ujecia_w_stylu_walki(self):
+        """Kamery stanowisk w stylu walki: wąski kąt widzenia, nisko; oko kamery gry, początku odliczania i zbliżenia
+        po rundzie stoi w arenie, nad podłogą i poza bryłami; ze zbliżenia widać postać (pierś i głowę) bez przeszkody
+        — dla każdego miejsca, w którym może stać postać, na początku zbliżenia i po objeździe."""
+        A = D["arena"]
+        c = A["srodek"]
+        KA = D["ui"]["kamera"]
+        O = KA["final"]
+
+        def w_arenie(p, opis):
+            self.assertLess(abs(p[0] - c[0]), A["rozmiar"][0] / 2 - 1.5, opis)
+            self.assertLess(abs(p[2] - c[2]), A["rozmiar"][1] / 2 - 1.5, opis)
+            self.assertGreater(p[1], c[1] + 1.0, opis)
+            self.assertIsNone(self._wolne(p, p), "%s: oko w bryle" % opis)
+        for gra in GRY:
+            W = D["swiat"][gra]
+            self.assertTrue(KA["kat_min"] <= W["kat"] <= KA["kat_max"], gra)
+            self.assertLessEqual(W["kat"], 52, "%s: kąt jak w walce (40–52°), nie szeroki 70°" % gra)
+            self.assertLessEqual(W["oko"][1] - W["podest"][1], 5.5, "%s: kamera nisko (jak ujęcia walki)" % gra)
+            w_arenie(W["oko"], gra + " gra")
+            w_arenie(W["start"]["oko"], gra + " start")
+            # dojazd: początek odliczania dalej od celu niż kamera gry
+            d_start = math.dist(W["start"]["oko"], W["cel"])
+            self.assertGreater(d_start, math.dist(W["oko"], W["cel"]) * 1.1, gra)
+            for u in (0.25, 0.5, 0.75):  # droga dojazdu poza bryłami
+                p = KT.przejscie(W["start"], KT.gra(D, gra), u)["oko"]
+                self.assertIsNone(self._wolne(p, p), "%s: dojazd %.2f w bryle" % (gra, u))
+            for baza in KT.miejsca_postaci(D, gra):
+                korzen = [baza[0], baza[1] + O["korzen_nad_ziemia"], baza[2]]
+                for czas in (0, O["dojazd_s"], 60):
+                    u = KT.final(D, gra, korzen, 0.2, 16 / 9, czas)
+                    w_arenie(u["oko"], "%s final %s s" % (gra, czas))
+                    for wys in (3.4, 5.2):
+                        cel = [baza[0], baza[1] + wys, baza[2]]
+                        self.assertIsNone(self._wolne(u["oko"], cel), "%s: zbliżenie → postać (%.1f st, %s s)" % (gra, wys, czas))
+                    # kamera przed postacią, nisko: postać patrzy w nią po obrocie
+                    self.assertGreater(math.dist(u["oko"], korzen), 6, gra)
+                    self.assertLess(u["oko"][1] - baza[1], 5, gra)
+        # klient obraca postać do kamery zbliżenia i wraca ją twarzą do gry przed kolejną rundą
+        for f in ("zacznijFinal(a)", "postacDoGry(a.gra)", 'ujecie("final", KA.final.przejscie_s)', 'ujecie("odliczanie"',
+                  'ujecie("gra", 0)', "kam.przed.kat"):
+            self.assertIn(f, KLIENT)
+
     def test_4d_sciany_i_podest(self):
         sciany = [c for c in self.cz if c["r"] == "Arena/Mury" and c["n"].startswith("Sciana")]
         self.assertEqual(len(sciany), 4)
@@ -1278,6 +1465,19 @@ class TestTelefonu(unittest.TestCase):
                 x0, y0, x1, y1 = obrazek
                 self.assertTrue(x1 <= X0 or X1 <= x0 or y1 <= Y0 or Y1 <= y0, ("obrazek", n, nazwa))
             self.assertGreaterEqual(obrazek[1], 0)
+            # karta podsumowania przy prawej krawędzi, ze wstęgą wystającą o 8 px na boki i 12 px w górę — w obszarze GUI
+            k = KT.karta_podsumowania(D, gw, gh, s)
+            self.assertGreaterEqual(k[0] - 8 * s, 0, nazwa)
+            self.assertLessEqual(k[2] + 8 * s, gw, nazwa)
+            self.assertGreaterEqual(k[1] - 12 * s, 0, nazwa)
+            self.assertLessEqual(k[3], gh, nazwa)
+            self.assertGreaterEqual(k[0], gw * 0.3, "%s: lewy pas dla postaci w zbliżeniu" % nazwa)
+            # w odliczaniu podpowiedź obrazkowa stoi na dole (środek ekranu dla dojazdu kamery): pod panelem rundy
+            dol = (gw / 2 - ob[0] / 2 * s, gh - 8 - ob[1] * s, gw / 2 + ob[0] / 2 * s, gh - 8)
+            st = LT.uklad_ui(D, "sila", gw, gh, s)["status"]
+            self.assertTrue(dol[1] >= st[3] or dol[2] <= st[0], nazwa)
+        self.assertIn("ui.obrazek.Position = UDim2.new(0.5, 0, 1, -8)", KLIENT)
+        self.assertIn('panel("Podsumowanie", 400, 244, UDim2.new(1, -KX.karta.margines_px, 0.5, 0), Vector2.new(1, 0.5))', KLIENT)
         self.assertIn("L.ukladUI(D,", KLIENT)
         self.assertIn("Enum.ScreenInsets.CoreUISafeInsets", KLIENT)
         self.assertIn("-8 - (ui.start.Size.Y.Offset + 8) * s", KLIENT)
@@ -1288,28 +1488,185 @@ class TestTelefonu(unittest.TestCase):
     def test_5e_pole_gry_widoczne_na_kazdym_ekranie(self):
         """Poprawka po zrzutach telefonu (18.11.2026): na żadnym z ekranów (telefon 667 × 375, telefon z wycięciem
         844 × 390, 1280 × 720, tablet 1024 × 768) pole gry (tablica run, tory i korona drzewa, nadlatująca kłoda, ślady
-        na całej taśmie, strefy Siły, golem) nie wpada pod panel rundy, przycisk przerwania ani przyciski gry i mieści
-        się w obszarze GUI (zapas 6 px). Rzut: kamera stanowiska, kąt widzenia pionowy 70° (Roblox)."""
+        na całej taśmie, strefy Siły, golem, postać) nie wpada pod panel rundy, przycisk przerwania ani przyciski gry
+        i mieści się w obszarze GUI (zapas 6 px). Rzut: kamera gry stanowiska z jej kątem widzenia (pionowy, jak
+        w Roblox; od 18.11.2026 kamery w stylu walki — wąski kąt zamiast 70°) i TA SAMA reguła przy największym
+        zawężeniu kąta po trafieniu (akcent serii), bo wtedy kadr się zacieśnia."""
         U = D["ui"]
         zapas = 6
+        self.assertNotIn("kamera_fov", U)  # jeden kąt 70° dla wszystkich stanowisk już nie istnieje
+        zawezenie = KT.najwieksze_zawezenie(D)
+        self.assertGreater(zawezenie, 0)
         for gra in GRY:
             W = D["swiat"][gra]
             pts = SCENA.pole_gry(D, gra)
             self.assertGreater(len(pts), 8, gra)
+            self.assertEqual(rzut_ekranu(W["oko"], W["cel"], pts[0][:3], 667, 375, W["kat"]),
+                             KT.rzut(KT.gra(D, gra), pts[0][:3], 667, 375))
             for nazwa, (vw, vh, ins) in EKRANY.items():
                 s = LT.skala_ui(D, vw, vh)
                 gx0, gy0 = ins[0], U["pasek_gorny_pt"]
                 gw, gh = vw - ins[0] - ins[1], vh - gy0 - ins[2]
                 R = LT.uklad_ui(D, gra, gw, gh, s)
-                for p in pts:
-                    xy = rzut_ekranu(W["oko"], W["cel"], p[:3], vw, vh, U["kamera_fov"])
-                    self.assertIsNotNone(xy, (gra, nazwa, p[3]))
-                    x, y = xy
-                    self.assertTrue(gx0 + zapas <= x <= gx0 + gw - zapas and gy0 + zapas <= y <= gy0 + gh - zapas,
-                                    "%s %s: %s poza ekranem (%.0f; %.0f)" % (gra, nazwa, p[3], x, y))
-                    for n, (x0, y0, x1, y1) in R.items():
-                        pod = gx0 + x0 - zapas <= x <= gx0 + x1 + zapas and gy0 + y0 - zapas <= y <= gy0 + y1 + zapas
-                        self.assertFalse(pod, "%s %s: %s pod „%s” (%.0f; %.0f)" % (gra, nazwa, p[3], n, x, y))
+                for kat in (W["kat"], W["kat"] - zawezenie):
+                    for p in pts:
+                        xy = rzut_ekranu(W["oko"], W["cel"], p[:3], vw, vh, kat)
+                        self.assertIsNotNone(xy, (gra, nazwa, p[3]))
+                        x, y = xy
+                        self.assertTrue(gx0 + zapas <= x <= gx0 + gw - zapas and gy0 + zapas <= y <= gy0 + gh - zapas,
+                                        "%s %s %.1f°: %s poza ekranem (%.0f; %.0f)" % (gra, nazwa, kat, p[3], x, y))
+                        for n, (x0, y0, x1, y1) in R.items():
+                            pod = gx0 + x0 - zapas <= x <= gx0 + x1 + zapas and gy0 + y0 - zapas <= y <= gy0 + y1 + zapas
+                            self.assertFalse(pod, "%s %s %.1f°: %s pod „%s” (%.0f; %.0f)" % (gra, nazwa, kat, p[3], n, x, y))
+            # kadr walki: pole gry jest duże — na telefonie zajmuje co najmniej ćwierć szerokości i połowę wysokości
+            # obszaru GUI (przy starej kamerze 70° było to 13–28% szerokości)
+            xs = [rzut_ekranu(W["oko"], W["cel"], p[:3], 667, 375, W["kat"]) for p in pts]
+            self.assertGreaterEqual((max(x for x, _ in xs) - min(x for x, _ in xs)) / 667, 0.25, gra)
+            self.assertGreaterEqual((max(y for _, y in xs) - min(y for _, y in xs)) / 339, 0.5, gra)
+
+    def test_5f_postac_nie_zaslania_pola_gry(self):
+        """Postać gracza (awatar, a przy aktywnym bohaterze klasy — nieprzezroczysty model) nie chowa tego, na co
+        gracz reaguje: z kamery gry w każdej grupie punktów pola gry (strefa, tor, kamień, kłoda…) co najmniej połowa
+        nie leży za bryłą postaci (nogi, tułów z rękami, głowa — z zapasem na szerszego bohatera)."""
+        def pudla(b):
+            x, y, z = b
+            return [([x - 1.1, y, z - 0.7], [x + 1.1, y + 2.6, z + 0.7]), ([x - 2.0, y + 2.6, z - 0.8], [x + 2.0, y + 4.7, z + 0.8]),
+                    ([x - 0.9, y + 4.7, z - 0.9], [x + 0.9, y + 6.0, z + 0.9])]
+        for gra in GRY:
+            W = D["swiat"][gra]
+            grupy = {}
+            for p in SCENA.pole_gry(D, gra):
+                if p[3].startswith(("gracz", "postac")):
+                    continue
+                zasl = False
+                for baza in KT.miejsca_postaci(D, gra):
+                    if gra == "szczescie" and abs(baza[0] - p[0]) < 1.5:
+                        continue  # tor, na którym stoi postać: koniczyna wpada do koszyka nad jej głową
+                    for mn, mx in pudla(baza):
+                        w_srodku = all(mn[i] - 0.4 <= p[i] <= mx[i] + 0.4 for i in range(3))
+                        if not w_srodku and _odcinek_w_pudle(W["oko"], p[:3], mn, mx):
+                            zasl = True
+                g = grupy.setdefault(p[3], [0, 0])
+                g[0] += 1
+                g[1] += 1 if zasl else 0
+            for nazwa, (n, zasloniete) in grupy.items():
+                self.assertLessEqual(zasloniete * 2, n, "%s: postać zasłania „%s” (%d z %d punktów)" % (gra, nazwa, zasloniete, n))
+
+    def test_5g_zblizenie_po_rundzie_miesci_postac(self):
+        """Zbliżenie na postać po rundzie (jak finał walki): na każdym ekranie postać z rękami w górze stoi w wolnym
+        pasie na lewo od karty podsumowania — stopy, głowa i dłonie w obszarze GUI, nic pod kartą; środek postaci
+        w ułamku szerokości, który liczy klient (uklad.fx). Na początku zbliżenia i po dojeździe z objazdem."""
+        U = D["ui"]
+        O = U["kamera"]["final"]
+        zapas = 6
+        for gra in GRY:
+            for baza in KT.miejsca_postaci(D, gra):
+                korzen = [baza[0], baza[1] + O["korzen_nad_ziemia"], baza[2]]
+                for nazwa, (vw, vh, ins) in EKRANY.items():
+                    s = LT.skala_ui(D, vw, vh)
+                    gx0, gy0 = ins[0], U["pasek_gorny_pt"]
+                    gw, gh = vw - ins[0] - ins[1], vh - gy0 - ins[2]
+                    karta = KT.karta_podsumowania(D, gw, gh, s)
+                    fx = KT.ulamek_postaci(D, gx0, gw, vw, s)
+                    self.assertTrue(0.1 <= fx <= 0.35, (nazwa, fx))
+                    for czas in (0, O["dojazd_s"], 60):
+                        u = KT.final(D, gra, korzen, fx, vw / vh, czas)
+                        kier = KT.kierunek_finalu(D, gra, czas)
+                        bok = [kier[2], 0, -kier[0]]  # „w prawo” kamery
+                        srodek = KT.rzut(u, [baza[0], baza[1] + D["swiat"][gra]["final"]["cel_wysokosc"], baza[2]], vw, vh)
+                        self.assertAlmostEqual(srodek[0], fx * vw, delta=3, msg=(gra, nazwa, czas))
+                        punkty = [("stopy", 0.0, 0.0), ("głowa", 5.8, 0.0), ("lewa dłoń", 7.4, -1.7), ("prawa dłoń", 7.4, 1.7),
+                                  ("lewy bark", 4.5, -2.0), ("prawy bark", 4.5, 2.0)]
+                        for opis, wys, w_bok in punkty:
+                            p = [baza[0] + bok[0] * w_bok, baza[1] + wys, baza[2] + bok[2] * w_bok]
+                            xy = KT.rzut(u, p, vw, vh)
+                            self.assertIsNotNone(xy, (gra, nazwa, opis))
+                            x, y = xy
+                            self.assertTrue(gx0 + zapas <= x <= gx0 + karta[0] - zapas,
+                                            "%s %s %s s: %s poza wolnym pasem (%.0f; pas %.0f–%.0f)" % (
+                                                gra, nazwa, czas, opis, x, gx0, gx0 + karta[0]))
+                            self.assertTrue(gy0 + zapas <= y <= gy0 + gh - zapas,
+                                            "%s %s %s s: %s poza ekranem w pionie (%.0f)" % (gra, nazwa, czas, opis, y))
+        self.assertIn("uklad.fx = (ox + kartaLewa * ks * KA.final.postac_w_wolnym) / cam.ViewportSize.X", KLIENT)
+        self.assertIn("uklad.aspekt = cam.ViewportSize.X / cam.ViewportSize.Y * uklad.wsp", KLIENT)
+
+    def test_5h_duze_napisy_nie_wchodza_na_panele(self):
+        """Duże napisy komiksowe na każdym ekranie: po ułożeniu przez kod z gry (KomiksTreningu.miejsce w luau_mini)
+        napis jest w obszarze GUI i nie leży na panelu rundy, przycisku przerwania ani przyciskach gry — ta sama
+        reguła co dla pola gry. Miejsce stanowiska (stanowiska.<gra>.napis): „+9 <statystyka>!” z gwiazdą, „SERIA 20!”,
+        a w Runach też „ZAKLĘCIE!”, „TWOJA KOLEJ!” i „PATRZ!” (ten nie rusza się z miejsca i nie zasłania żadnego
+        kamienia — zaraz po nim świecą runy). Liczby odliczania i „START!” stoją na środku ekranu
+        (ui.komiks.licznik_miejsce), nad podpowiedzią obrazkową na dole i poza panelem rundy."""
+        if LM is None:
+            self.skipTest("brak luau_mini")
+        it, Dl = TestLuau._z_matematyka(self)
+        Kx = it.wykonaj(KOMIKS, "KomiksTreningu.luau")[0]
+        U = D["ui"]
+        KX = U["komiks"]
+        KXl = Dl.get("ui").get("komiks")
+        T = D["teksty"]
+        mg = float(KX["margines_px"])
+
+        def prostokat(tekst, styl):
+            st = KX["style"][styl]
+            wys = KX["rozmiary_px"][st["rozmiar"]]
+            szer = wys * max(1.2, len(tekst) * KX["szerokosc_znaku"] * 1.12)
+            # obrót jak w grze: długi napis obraca się mniej (KomiksTreningu: maksObrot)
+            obrot = min(KX["obrot_max"], math.degrees(math.asin(min(1.0, 0.3 * wys / szer))))
+            return it.wywolaj(Kx.get("rozmiar"), [KXl, float(szer), float(wys), float(obrot), bool(st.get("gwiazda"))])
+
+        def uloz(x, y, w, h, gw, gh, przeszkody):
+            nx, ny = it.wywolaj(Kx.get("miejsce"), [float(x), float(y), float(w), float(h), LM.do_luau([0.0, 0.0, float(gw), float(gh)]),
+                                                   LM.do_luau([[float(v) for v in r] for r in przeszkody]), mg])
+            return nx, ny
+
+        def legalny(nx, ny, w, h, gw, gh, przeszkody):
+            if not (mg - 1e-6 <= nx - w / 2 and nx + w / 2 <= gw - mg + 1e-6 and mg - 1e-6 <= ny - h / 2 and ny + h / 2 <= gh - mg + 1e-6):
+                return False
+            return all(nx + w / 2 <= r[0] or r[2] <= nx - w / 2 or ny + h / 2 <= r[1] or r[3] <= ny - h / 2 for r in przeszkody)
+        w_odliczaniu = [(str(int(D["runda"]["odliczanie_s"])), "licznik"), (D["sterowanie"]["start"]["napis"] + "!", "start")]
+        ob = U["obrazek_px"]
+        lm = KX["licznik_miejsce"]
+        for gra in GRY:
+            n = D["swiat"][gra]["napis"]
+            W = D["swiat"][gra]
+            w_rundzie = [(T["punkt"] % (9, LT.statystyka(D, gra)["nazwa"]), "punkt"),
+                         (T["seria"] % max(D["przyrost"]["progi_serii"]), "seria")]
+            if D["gry"][gra]["typ"] == "sekwencja":
+                w_rundzie += [(T["zaklecie"], "zloto"), (T["twoja_kolej"], "info"), (T["patrz"], "info")]
+            for nazwa, (vw, vh, ins) in EKRANY.items():
+                s = LT.skala_ui(D, vw, vh)
+                gx0, gy0 = ins[0], U["pasek_gorny_pt"]
+                gw, gh = vw - ins[0] - ins[1], vh - gy0 - ins[2]
+                R = LT.uklad_ui(D, gra, gw, gh, s)
+                panele = list(R.values())
+                for tekst, styl in w_rundzie:
+                    w, h = prostokat(tekst, styl)
+                    w, h = w * s, h * s
+                    nx, ny = uloz(gw * n[0], gh * n[1], w, h, gw, gh, panele)
+                    self.assertTrue(legalny(nx, ny, w, h, gw, gh, panele),
+                                    "%s %s: „%s” na panelu albo poza ekranem: (%.0f; %.0f), %.0f × %.0f" % (gra, nazwa, tekst, nx, ny, w, h))
+                    # napis zostaje blisko miejsca stanowiska (długi przesuwa się w bok, żeby zmieścić się na ekranie,
+                    # a z panelu schodzi najkrótszą drogą)
+                    self.assertLessEqual(abs(ny - gh * n[1]), 0.08 * gh, (gra, nazwa, tekst))
+                    if tekst == T["patrz"]:
+                        self.assertAlmostEqual(nx, gw * n[0], delta=0.5, msg=(gra, nazwa, tekst))
+                        self.assertAlmostEqual(ny, gh * n[1], delta=0.5, msg=(gra, nazwa, tekst))
+                        for p in SCENA.pole_gry(D, gra):  # rogi kamieni z runami
+                            x, y = rzut_ekranu(W["oko"], W["cel"], p[:3], vw, vh, W["kat"])
+                            x, y = x - gx0, y - gy0
+                            self.assertFalse(nx - w / 2 <= x <= nx + w / 2 and ny - h / 2 <= y <= ny + h / 2,
+                                             "%s: „%s” zasłania %s" % (nazwa, tekst, p[3]))
+                odliczanie = [R["status"], R["przerwij"], [gw / 2 - ob[0] / 2 * s, gh - 8 - ob[1] * s, gw / 2 + ob[0] / 2 * s, gh - 8]]
+                for tekst, styl in w_odliczaniu:
+                    w, h = prostokat(tekst, styl)
+                    w, h = w * s, h * s
+                    nx, ny = uloz(gw * lm[0], gh * lm[1], w, h, gw, gh, odliczanie)
+                    self.assertTrue(abs(nx - gw * lm[0]) < 0.5 and abs(ny - gh * lm[1]) < 0.5 and legalny(nx, ny, w, h, gw, gh, odliczanie),
+                                    "%s %s: „%s” nie mieści się na środku (%.0f; %.0f), %.0f × %.0f" % (gra, nazwa, tekst, nx, ny, w, h))
+        self.assertIn("D.swiat[stan.gra].napis", KLIENT)
+        self.assertIn("przeszkody = przeszkodyNapisow()", KLIENT)
+        self.assertIn("KX.licznik_miejsce[1]", KLIENT)
 
     def test_5d_teksty_dla_gracza(self):
         # wybór jest dalej tymczasowy (WyborTymczasowy / WybierzGre dla okna Pawła), ale na ekranie gracza nie ma
@@ -1420,7 +1777,7 @@ class TestStykow(unittest.TestCase):
         plik = os.path.join(TU, "proba_play.py")
         py_compile.compile(plik, doraise=True, cfile=os.path.join(tempfile.gettempdir(), "proba_play_trening.pyc"))
         tekst = czytaj(plik)
-        for i in range(1, 23):
+        for i in range(1, 28):  # T23–T27: wygląd jak w walce (kamera, napisy, efekty, konfetti, bohater)
             self.assertIn("T%02d" % i, tekst)
         r = subprocess.run([sys.executable, "-B", plik], capture_output=True)
         self.assertNotEqual(r.returncode, 0)
@@ -1446,6 +1803,177 @@ class TestStykow(unittest.TestCase):
         r = subprocess.run([sys.executable, "-B", "-c", "import sys; sys.path.insert(0, %r); import podglad; "
                             "print('numpy' in sys.modules)" % PAKIET], capture_output=True)
         self.assertEqual(r.stdout.decode().strip(), "False", r.stderr.decode("utf-8", "replace"))
+
+    def test_6i_komiks_w_stylu_walki(self):
+        """Napisy mini-gier mają styl napisów walki: liczby i kolory z ui.komiks są tymi z jej źródeł (tylko odczyt
+        swiat/test_walki2/zrodla) — zmiana stylu walki bez zmiany tutaj wyjdzie w tym teście."""
+        KX = D["ui"]["komiks"]
+        iw = czytaj(WALKA, "InterfejsWalki2.luau")
+        ust = czytaj(WALKA, "Ustawienia.luau")
+        self.assertIn("local KOMIKS = Enum.Font.%s" % KX["czcionka"], iw)
+        self.assertIn("local NAGLOWKI = Enum.Font.%s" % KX["czcionka_naglowka"], iw)
+        self.assertIn("local NADMIAR_WEJSCIA = %s " % KX["nadmiar"], iw)
+        # wejście: od 0,2 do NADMIAR w 0,1 s, potem do 1 w kolejne 0,1 s; zanik od 74% życia
+        self.assertIn("sk = %s + (NADMIAR_WEJSCIA - %s) * (n.wiek / %s)" % (KX["wejscie_od"], KX["wejscie_od"], KX["wejscie_s"]), iw)
+        self.assertIn("math.clamp((n.wiek / n.zycie - %s) / %s, 0, 1)" % (KX["zanik_od"], round(1 - KX["zanik_od"], 2)), iw)
+        # gwiazda: dwa kwadraty obrócone o 12° i 12° + 45°, kręcą się 40 i −55 °/s. W walce bok to 1,15 wysokości pola,
+        # w którym tekst (TextScaled) jest mniejszy od pola; tu litery mają pełny rozmiar stylu, więc żeby gwiazda
+        # wystawała zza słowa tak samo, bok jest większy (1,15 × ok. 1,2)
+        g = KX["gwiazda"]
+        self.assertIn("Size = UDim2.fromScale(1.15, 1.15), SizeConstraint = Enum.SizeConstraint.RelativeYY", iw)
+        self.assertTrue(1.15 <= g["bok"] <= 1.5, g["bok"])
+        self.assertIn("g.Size = UDim2.fromScale(KX.gwiazda.bok, KX.gwiazda.bok)", KOMIKS)
+        self.assertIn("Rotation = (i - 1) * %d + %d" % (g["obrot"][1] - g["obrot"][0], g["obrot"][0]), iw)
+        self.assertIn("g.Rotation += dtNapisow * (if j == 1 then %d else %d)" % tuple(g["predkosc"]), iw)
+        self.assertIn("BackgroundColor3 = if i == 1 then K.pomarancz else K.czerwony", iw)
+        self.assertEqual(g["kolory"], [KX["kolory"]["pomarancz"], KX["kolory"]["czerwony"]])
+        self.assertIn("math.min(%d, math.deg(math.asin(math.clamp(0.3 * wys / szer, 0, 1))))" % KX["obrot_max"], iw)
+        self.assertIn("math.min(KX.obrot_max, math.deg(math.asin(ogranicz(0.3 * wys / szer, 0, 1))))", KOMIKS)
+        self.assertIn("Position = UDim2.new(0.5, 3, 0.5, 4)", iw)  # cień napisu walki (przy 720 px); tu 2 i 3 px przy 375
+        for nazwa, styl in (("krytyk", "krytyk"), ("blok", "blok"), ("unik", "unik"), ("otrzymane", "otrzymane"),
+                            ("magiczne", "magiczne"), ("bialy", "zadane")):
+            self.assertRegex(iw, r'%s = \{ kolor = "#%s"' % (styl, KX["kolory"][nazwa]))
+        for nazwa in ("tusz", "bialy", "krem", "zolty", "pomarancz", "czerwony", "zielony", "ciemny"):
+            self.assertIn('%s = hex("#%s")' % (nazwa, KX["kolory"][nazwa]), ust)
+        self.assertEqual(KX["kolory"]["tusz"], D["ui"]["kolory"]["tusz"])
+        # konfetti w barwach walki (walka nie ma konfetti — świętuje radością, objazdem kamery i łupem)
+        self.assertNotIn("onfetti", czytaj(WALKA, "Efekty3D.luau") + czytaj(WALKA, "OdtwarzaczWalki2.luau"))
+        barwy = set(re.findall(r'hex\("#([0-9A-F]{6})"\)', ust))
+        for h in D["ui"]["efekty"]["konfetti"]["kolory"]:
+            self.assertIn(h, barwy, "konfetti: kolor %s spoza palety walki" % h)
+        # litery w rozmiarze stylu (TextScaled kończy się na 100 px), obrys i cień rosną z rozmiarem liter
+        self.assertIn("l.TextScaled = false", KOMIKS)
+        self.assertIn("l.TextSize = math.min(wys, KX.rozmiar_max)", KOMIKS)
+        self.assertIn("math.max(1.5, grubosc * udzial) * skala", KOMIKS)
+        # miecz i tarcza (stałe miejsce stanowiska) schowane w zbliżeniu po rundzie, wracają z kolejną rundą
+        self.assertIn("pokazModelGracza(false)", KLIENT)
+        self.assertIn("pokazModelGracza(true)", KLIENT)
+        # klient: każdy napis rundy idzie przez warstwę komiksową (dawny napis środkowy w czcionce okien zniknął)
+        self.assertNotIn("napisSrodek", KLIENT)
+        self.assertGreaterEqual(KLIENT.count("napisKomiks("), 9)
+        self.assertIn("guiKomiks.IgnoreGuiInset = true", KLIENT)
+        self.assertIn("guiKomiks.DisplayOrder = U.kolejnosc_wyswietlania - 1", KLIENT)  # napisy pod przyciskami
+        self.assertIn("e ~= guiKomiks", KLIENT)  # własna warstwa nie jest „innym ekranem” do schowania
+
+    def test_6j_efekty_w_jezyku_walki(self):
+        """Efekty 3D: własny moduł ma te same wybuchy (nazwy i liczby) co moduł efektów walki, a klient woła tylko
+        funkcje, które mają oba — więc efekty z walki (gdy stoi w miejscu) i własne (gdy jej nie ma) wyglądają tak samo."""
+        walka = czytaj(WALKA, "Efekty3D.luau")
+
+        def wybuchy(tekst):
+            w = {}
+            for m in re.finditer(r"^Wybuch\.(\w+) = function\(fx, poz, s\)(.*?)^end", tekst, re.M | re.S):
+                cialo = bez_komentarzy(m.group(2)).replace('"#', '"')
+                w[m.group(1)] = re.sub(r"\s+", " ", cialo).strip()
+            return w
+        wl, ww = wybuchy(EFEKTY), wybuchy(walka)
+        self.assertEqual(sorted(wl), sorted(ww))
+        self.assertEqual(sorted(wl), sorted(DANE.wybuchy_walki()))
+        for nazwa in wl:
+            self.assertEqual(wl[nazwa], ww[nazwa], "wybuch %s inny niż w walce" % nazwa)
+        wspolne = re.search(r"Efekty\.WSPOLNE = \{([^}]*)\}", EFEKTY)
+        nazwy = re.findall(r'"(\w+)"', wspolne.group(1))
+        self.assertEqual(sorted(nazwy), ["fala", "iskry", "krok", "kula", "parada", "wybuch", "wyczysc"])
+        for n in nazwy:
+            self.assertRegex(walka, r"function Efekty:%s\(" % n)
+            self.assertRegex(EFEKTY, r"function Efekty:%s\(" % n)
+            self.assertRegex(EFEKTY, r"function Zestaw:%s\(" % n)
+        # te same parametry (kolejność) funkcji, które klient woła w obu modułach
+        for n, argi in (("wybuch", "nazwa, poz, skala"), ("fala", "poz, kolor, promien"), ("parada", "punkt, kier, kolor, s"),
+                        ("kula", "poz, kolor, od, do_, czas, material, przezr"),
+                        ("iskry", "poz, paleta, ile, predkosc, skala, grawitacja")):
+            m = re.search(r"function Efekty:%s\(([^)]*)\)" % n, walka)
+            self.assertEqual(re.sub(r":\s*[^,]+", "", m.group(1)).replace(" ", ""), argi.replace(" ", ""), n)
+            self.assertIn("function Efekty:%s(%s)" % (n, argi), EFEKTY)
+        self.assertIn("function Efekty.nowe(folder: Instance, U: any)", walka)
+        self.assertIn("Efekty.WYBUCHY = Wybuch", walka)
+        self.assertIn("Efekty.WYBUCHY = Wybuch", EFEKTY)
+        E = D["ui"]["efekty"]
+        self.assertTrue(os.path.isfile(os.path.join(WALKA, E["modul_walki"] + ".luau")))
+        self.assertIn('U.NAZWA_KONTENERA = "%s"' % E["kontener_walki"], czytaj(WALKA, "Ustawienia.luau"))
+        # moduł walki tylko przez FindFirstChild + pcall(require) — brak kontenera walki nie psuje mini-gier
+        blok = EFEKTY.split("local function modulWalki(U)")[1].split("function Efekty.dlaTreningu")[0]
+        self.assertIn("workspace:FindFirstChild(U.kontener_walki)", blok)
+        self.assertIn("pcall(require, e)", blok)
+        self.assertNotIn("WaitForChild", EFEKTY)
+        self.assertIn("pcall(w[nazwa], w, a, b, c, d, e, f, g)", EFEKTY)  # błąd w cudzym module → własne efekty
+        self.assertIn('Efekty.dlaTreningu(efekty, EF, kontener:GetAttribute("EfektyWlasne") == true)', KLIENT)
+        k = bez_komentarzy(KLIENT)
+        for wywolanie in set(re.findall(r"\bfx:(\w+)\(", k)):
+            self.assertIn(wywolanie, nazwy + ["konfetti", "policz"], "klient woła fx:%s" % wywolanie)
+        self.assertIn("fx:konfetti(", k)
+        self.assertIn("function Efekty:konfetti(ziemia, prawo, K, wielkie)", EFEKTY)
+        self.assertNotIn("rbxasset", EFEKTY + KOMIKS + KAMERA)  # wszystko z części i wbudowanych czcionek
+
+    def test_6k_czcionka_komiksowa_ma_kazda_litere(self):
+        """Żaden napis komiksowy nie dostanie zastępczej czcionki (jak ę, ż, ś w FredokaOne — README 17.11): wszystkie
+        litery napisów są w ASCII albo w ui.komiks.znaki, a znaki te czcionka naprawdę ma — sprawdzane w pliku czcionki
+        z instalacji klienta Roblox, gdy jest na tym komputerze (inaczej ta część jest pomijana)."""
+        teksty = DANE.napisy_komiksowe(K)
+        self.assertGreater(len(teksty), 50)
+        for t in teksty:
+            self.assertTrue(DANE.komiks_pokrywa(K, t), t)
+        self.assertFalse(DANE.komiks_pokrywa(K, "ÄÖ"))
+        for z in "ĄĆĘŁŃÓŚŹŻąćęłńóśźż":
+            self.assertIn(z, K["ui"]["komiks"]["znaki"])
+        self.assertIn("self.znaki[kod]", KOMIKS)
+        self.assertIn("return self.czcionkaOkien, false", KOMIKS)
+        self.assertIn("komiks:czcionkaDla(ui.k3.Text)", KLIENT)
+        try:
+            from fontTools.ttLib import TTFont
+        except Exception:  # noqa: BLE001
+            self.skipTest("brak fontTools — pokrycie czcionki sprawdzone tylko z listy ui.komiks.znaki")
+        korzen = os.environ.get("LOCAL" + "APPDATA", "")
+        znaki = set(K["ui"]["komiks"]["znaki"]) | {chr(i) for i in range(32, 127)} | {z for t in teksty for z in t}
+        sprawdzone = 0
+        for nazwa, potrzebne in ((K["ui"]["komiks"]["czcionka"], znaki),
+                                 (K["ui"]["komiks"]["czcionka_naglowka"], set(K["teksty"]["koniec"] + K["teksty"]["przerwana"]))):
+            for plik in glob.glob(os.path.join(korzen, "Roblox", "Versions", "*", "content", "fonts", nazwa + "-Regular.ttf")):
+                czcionka = TTFont(plik)
+                try:
+                    cmap = czcionka.getBestCmap()
+                finally:
+                    czcionka.close()
+                brak = sorted(z for z in potrzebne if ord(z) not in cmap)
+                self.assertEqual(brak, [], "%s nie ma liter %s" % (nazwa, brak))
+                sprawdzone += 1
+        if not sprawdzone:
+            self.skipTest("brak plików czcionek klienta Roblox na tym komputerze")
+
+    def test_6l_haczyk_bohatera_osloniety(self):
+        """Bohater klasy (inny pakiet): każde wywołanie haczyka jest osłonięte i żadne nie zawiesi mini-gry; gdy
+        haczyka nie ma, zostaje awatar. Przy „padnij” bohater nie jest przesuwany w dół (poza sama opuszcza biodra)."""
+        k = bez_komentarzy(KLIENT)
+        B = D["ui"]["bohater"]
+        self.assertEqual(B["sciezka"], "BohaterSwiat/Sygnaly/RuchBohatera")
+        self.assertEqual(sorted(B["klipy"].values()), ["bieg", "padnij", "radosc", "rece_gora", "skok"])
+        self.assertNotIn("padnij_w_dol", B)
+        self.assertEqual(len(re.findall(r"(?<!On)Invoke\b", k)), 1)  # jedno miejsce wywołania…
+        blok = k.split("local function wolajBohatera(polecenie, arg)")[1].split("local function bohaterAktywny()")[0]
+        self.assertIn('sciezka(workspace, if type(gdzie) == "string" and gdzie ~= "" then gdzie else BH.sciezka)', blok)  # …przez FindFirstChild
+        self.assertIn('f:IsA("BindableFunction")', blok)
+        self.assertIn("task.spawn(function()", blok)  # …w osobnym wątku (brak obsługi nie zatrzyma klatki)
+        self.assertIn("pcall(f.Invoke, f, polecenie, arg)", blok)
+        self.assertIn("hak.zawieszony = true", blok)
+        self.assertNotIn("WaitForChild(\"BohaterSwiat", k)
+        for polecenie in ('"stan"', '"klip"', '"przesun"'):
+            self.assertIn("wolajBohatera(%s," % polecenie, k)
+        # ruchy postaci: bohater przez haczyk, awatar stawami / animacją — w każdej z czterech sytuacji
+        for f in ("klipBohatera(BH.klipy.bieg)", "klipBohatera(BH.klipy.skok)", "klipBohatera(BH.klipy.padnij)",
+                  "klipBohatera(BH.klipy.rece)", "klipBohatera(BH.klipy.radosc)", "przesunBohatera(Vector3.new(0, BH.skok_wys * luk, 0))",
+                  'animacjaAwatara("run")', 'animacjaAwatara("cheer")', "ustawStaw(nil, CFrame.new(0, 2.7 * luk, 0))"):
+            self.assertIn(f, k)
+        padnij = k.split("klipBohatera(BH.klipy.padnij)")[1][:80]
+        self.assertIn("przesunBohatera(nil)", padnij)
+        # półprzezroczystość postaci (Siła) idzie przez LocalTransparencyModifier awatara także przy bohaterze: awatar
+        # jest wtedy niewidoczny przez Transparency, a bohater przejmuje ten modyfikator (README pakietu bohatera)
+        cialo = k.split("local function przezroczystoscPostaci(v)")[1].split("local function poza(o)")[0]
+        self.assertIn("d.LocalTransparencyModifier = v", cialo)
+        self.assertNotIn("bohaterAktywny()", cialo)
+        self.assertNotIn(".Transparency = ", cialo)
+        # wymuszony klip sprawdzany po polu „wymuszony” z odpowiedzi „stan”; wiwat bohatera zamawiany od nowa
+        self.assertIn("local wymuszony = w.wymuszony", k)
+        self.assertIn("BH.radosc_co_s", k)
 
     def test_6g_straznik_i_samousuniecie(self):
         for plik in glob.glob(os.path.join(ZR, "*.luau")):

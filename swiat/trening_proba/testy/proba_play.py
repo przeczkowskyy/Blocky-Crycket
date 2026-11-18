@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 """Próba Training Center (sześć mini-gier) w Roblox Studio, tryb Play. T01–T14: Siła i Pancerz (przebieg z 17.11.2026,
-14 × OK), T15–T22: Kondycja „Bieżnia”, Zręczność „Kłody”, Inteligencja „Runy”, Szczęście „Koniczyny” (nowe, noc
-17/18.11.2026 — jeszcze nieuruchomione w Studio).
+14 × OK), T15–T22: Kondycja „Bieżnia”, Zręczność „Kłody”, Inteligencja „Runy”, Szczęście „Koniczyny” (18.11.2026,
+22 × OK), T23–T27: wygląd jak w walce — kamery, komiksowe napisy, efekty 3D, konfetti, bohater klasy (18.11.2026,
+przygotowane bez Studio).
 
     python -B swiat/trening_proba/testy/proba_play.py <folder wyjściowy poza repo> [--studio <studio_id>]
-           [--bez-zrzutow] [--tylko T01,T05,…] [--nowe]
+           [--bez-zrzutow] [--tylko T01,T05,…] [--nowe] [--walka]
     python -B swiat/trening_proba/testy/proba_play.py --sprawdz     # bez Studio: każdy kawałek Luau parsuje się
 
---nowe: tylko gotowość (T01) i punkty nowych gier (T15–T22). Warunki: Studio w trybie Edit, otwarte miejsce gry
+--nowe: tylko gotowość (T01) i punkty nowych gier (T15–T22). --walka: tylko gotowość (T01) i wygląd jak w walce
+(T23–T27) z konsolą (T22). Warunki: Studio w trybie Edit, otwarte miejsce gry
 (placeId sprawdza cel_studio), zbudowane Workspace/TreningProba (python -B swiat/trening_proba/zbuduj.py); najlepiej też
 MiasteczkoBazar + MiasteczkoBazarGra (T03 z prawdziwym E przy trenerze — bez nich T03 sprawdza tylko zdarzenie
 OknoMiejsca). Skrypt sam włącza i wyłącza Play, w trybie Play zmienia tylko stan gracza (położenie postaci, kamera
@@ -58,6 +60,22 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       ekran „brak”, kamera Custom, dotyk przywrócony, HUD oddany (schowane ekrany 0), nowa postać bez zmian stawów
   T21 czas klatki w rundzie Bieżni i Koniczyn (najwięcej ruchomych części): śr. i p95 (okno Studio na wierzchu)
   T22 konsola po nowych grach: bez błędów pakietu; ZgodnoscLogikiTreningu dalej „OK”
+  --- wygląd jak w walce (18.11.2026) ---
+  T23 kamera Siły: na stanowisku ujęcie „stanowisko” z kątem widzenia z danych (wąski, jak w walce), w odliczaniu
+      „odliczanie” (oko między ujęciem startu a kamerą gry, podpowiedź obrazkowa na dole), w rundzie „gra” (oko = kamera
+      gry z danych, kąt nie węższy niż o największe zawężenie), po rundzie „final”: kąt zbliżenia, postać obrócona do
+      kamery, karta podsumowania po prawej, kąt widzenia gracza oddany po wyjściu; po JESZCZE RAZ postać znów twarzą do gry
+  T24 komiksowe napisy: w rundzie Siły pokazane ≥ tyle, ile trafień; wszystkie czcionką komiksową (zastępczych 0);
+      każdy napis z danych (trafienia, pudła, serie, punkty, odliczanie) dostaje czcionkę komiksową; warstwa napisów
+      włączona tylko na stanowisku
+  T25 efekty 3D: źródło „walka” (gdy w miejscu stoi kontener walki z modułem efektów) albo „wlasne”, części efektów
+      powstają przy trafieniach, błędów 0; z atrybutem EfektyWlasne = true źródło „wlasne” i efekty dalej powstają
+  T26 konfetti i radość: po rundzie bez pudła z punktem statystyki — konfetti „wielkie” (liczba kawałków z danych),
+      napis „BEZ PUDŁA!”, postać się cieszy; po przerwanej rundzie bez punktu — konfetti 0, bez radości
+  T27 bohater klasy: gdy w miejscu działa haczyk bohatera — w Kłodach skok idzie przez haczyk (przesunięcie), stawy
+      awatara nietknięte; gdy go nie ma — zastępczy haczyk we własnym kontenerze (atrybut HaczykBohatera): bez obsługi
+      (Invoke czeka) nie zawiesza gry i zostaje awatar; z obsługą dostaje klipy skok / padnij / radosc, „padnij” bez
+      przesunięcia w dół, stawy awatara nietknięte
   (ręcznie, poza skryptem: dźwięki na słuch; dwóch graczy (Test → Clients and Servers, 2); pad)
 
 ZRZUTY (w <wyj>): 01_wybor_tymczasowy, 02_stanowisko_sila, 03_runda_sila, 04_runda_pancerz, 05_podsumowanie,
@@ -126,11 +144,60 @@ KOD = {
               'if h then h.Health = 0 end return tostring(h ~= nil)', ()),
     # próbka stanu klienta co 0,1 s przez N s (stawy przesunięte, bieg, tor, pozycja) → atrybuty kontenera u klienta
     "probki": ('local k = workspace.TreningProba task.spawn(function() local maks, bieg, x0, x1 = 0, false, nil, nil '
+               'local awatar, klipy, przes = 0, {}, false '
                'for _ = 1, %d do local s = k.Sygnaly.SterowanieKlienta:Invoke("stan") maks = math.max(maks, s.stawyZmienione or 0) '
+               'awatar = math.max(awatar, s.stawyAwatara or 0) '
+               'if s.bohater then if s.bohater.klip then klipy[s.bohater.klip] = true end przes = przes or s.bohater.przesuniety end '
                'bieg = bieg or s.bieg if s.pozycja then x0 = math.min(x0 or s.pozycja[1], s.pozycja[1]) '
-               'x1 = math.max(x1 or s.pozycja[1], s.pozycja[1]) end task.wait(0.1) end '
+               'x1 = math.max(x1 or s.pozycja[1], s.pozycja[1]) end '
+               # atrybuty po każdej próbce: pętla trwa dłużej niż N × 0,1 s (czas klatki), a próba czyta je o swojej porze
+               'local nazwy = {} for n in klipy do table.insert(nazwy, n) end table.sort(nazwy) '
                'k:SetAttribute("ProbaStawy", maks) k:SetAttribute("ProbaBieg", bieg) '
-               'k:SetAttribute("ProbaRozpietoscX", if x0 then x1 - x0 else -1) end) return "ok"', (50,)),
+               'k:SetAttribute("ProbaStawyAwatara", awatar) k:SetAttribute("ProbaKlipy", table.concat(nazwy, ",")) '
+               'k:SetAttribute("ProbaPrzesuniety", przes) '
+               'k:SetAttribute("ProbaRozpietoscX", if x0 then x1 - x0 else -1) task.wait(0.1) end end) return "ok"', (50,)),
+    # --- wygląd jak w walce (T23–T27) ---
+    # próbki kamery co 0,1 s przez N s: ujęcia po kolei (bez powtórzeń), najwęższy i najszerszy kąt w ujęciu gry,
+    # największa odległość oka od kamery gry w ujęciu gry (drżenie), największa liczba napisów naraz
+    "probki_kamery": ('local k = workspace.TreningProba task.spawn(function() local uj, mn, mx, odl, nap = {}, 999, 0, 0, 0 '
+                      'local ox, oy, oz = %r, %r, %r '
+                      'for _ = 1, %d do local s = k.Sygnaly.SterowanieKlienta:Invoke("stan") '
+                      'if uj[#uj] ~= s.kameraUjecie then table.insert(uj, s.kameraUjecie) end '
+                      'if s.kameraUjecie == "gra" then mn = math.min(mn, s.kameraKat) mx = math.max(mx, s.kameraKat) '
+                      'local o = s.kameraOko odl = math.max(odl, math.sqrt((o[1] - ox) ^ 2 + (o[2] - oy) ^ 2 + (o[3] - oz) ^ 2)) end '
+                      'nap = math.max(nap, s.komiks.naEkranie) '
+                      'k:SetAttribute("ProbaUjecia", table.concat(uj, ",")) k:SetAttribute("ProbaKatMin", mn) '
+                      'k:SetAttribute("ProbaKatMax", mx) k:SetAttribute("ProbaOkoOdl", odl) k:SetAttribute("ProbaNapisy", nap) '
+                      'task.wait(0.1) end end) return "ok"', (1.0, 2.0, 3.0, 50)),
+    "atrybut_klienta": ('local k = workspace.TreningProba k:SetAttribute("%s", %s) return "ok"', ("EfektyWlasne", "true")),
+    "kontener_walki": ('local w = workspace:FindFirstChild("%s") local m = w and w:FindFirstChild("Moduly") '
+                       'return tostring(m ~= nil and m:FindFirstChild("%s") ~= nil)', ("TestWalki2", "Efekty3D")),
+    "kat_gracza": ('return tostring(workspace.CurrentCamera.FieldOfView)', ()),
+    # czy w miejscu jest prawdziwy haczyk bohatera klasy (inny pakiet) — tylko odczyt
+    "haczyk_bohatera": ('local o = workspace for _, n in string.split("%s", "/") do o = o and o:FindFirstChild(n) end '
+                        'return tostring(o ~= nil and o:IsA("BindableFunction"))', ("BohaterSwiat/Sygnaly/RuchBohatera",)),
+    # zastępczy haczyk bohatera WE WŁASNYM kontenerze (tylko u klienta, na czas próby): obsluga = false → Invoke czeka
+    "zastepczy_bohater": ('local k = workspace.TreningProba local f = k:FindFirstChild("ProbaBohater") if f then f:Destroy() end '
+                          'f = Instance.new("Folder") f.Name = "ProbaBohater" '
+                          'local b = Instance.new("BindableFunction") b.Name = "RuchBohatera" b.Parent = f '
+                          'if %s then local zapis = {} b.OnInvoke = function(polecenie, arg) '
+                          'if polecenie == "stan" then return { aktywny = true, klasa = "wojownik", klip = f:GetAttribute("Klip"), '
+                          'wymuszony = f:GetAttribute("Klip") ~= nil } end '
+                          'table.insert(zapis, tostring(polecenie) .. "=" .. tostring(arg)) '
+                          'if #zapis > 400 then table.remove(zapis, 1) end '
+                          'if polecenie == "klip" then f:SetAttribute("Klip", arg) '
+                          'local z = f:GetAttribute("Klipy") or "" if arg and not string.find(z, tostring(arg), 1, true) then '
+                          'f:SetAttribute("Klipy", z .. tostring(arg) .. ",") end return true end '
+                          'if polecenie == "przesun" and arg then '
+                          'f:SetAttribute("PrzesunMaxY", math.max(f:GetAttribute("PrzesunMaxY") or 0, arg.Y)) '
+                          'f:SetAttribute("PrzesunMinY", math.min(f:GetAttribute("PrzesunMinY") or 0, arg.Y)) end '
+                          'return true end end f.Parent = k '
+                          'k:SetAttribute("HaczykBohatera", "TreningProba/ProbaBohater/RuchBohatera") return "ok"', ("true",)),
+    "zastepczy_stan": ('local k = workspace.TreningProba local f = k:FindFirstChild("ProbaBohater") '
+                       'return game:GetService("HttpService"):JSONEncode(if f then { klipy = f:GetAttribute("Klipy") or "", '
+                       'maxY = f:GetAttribute("PrzesunMaxY") or 0, minY = f:GetAttribute("PrzesunMinY") or 0 } else {})', ()),
+    "zastepczy_usun": ('local k = workspace.TreningProba local f = k:FindFirstChild("ProbaBohater") if f then f:Destroy() end '
+                       'k:SetAttribute("HaczykBohatera", nil) return "ok"', ()),
 }
 
 
@@ -183,12 +250,15 @@ def main():
     tylko = set(argv[argv.index("--tylko") + 1].split(",")) if "--tylko" in argv else None
     if "--nowe" in argv:
         tylko = {"T01"} | {"T%02d" % i for i in range(15, 23)}
+    if "--walka" in argv:
+        tylko = {"T01", "T22"} | {"T%02d" % i for i in range(23, 28)}
     os.makedirs(wyj, exist_ok=True)
 
     sys.path.insert(0, PAKIET)
     import dane as DANE  # noqa: E402
     import logika_treningu as LT  # noqa: E402
-    _, D = DANE.dane_z_przypadkami()
+    import kamera_treningu as KT  # noqa: E402
+    K_UST, D = DANE.dane_z_przypadkami()
 
     for _s in (os.path.join(REPO, "tools"), os.path.join(REPO, "swiat", "test_walki_roblox"),
                os.path.join(REPO, "swiat", "test_walki2", "testy")):
@@ -342,6 +412,14 @@ def main():
             return k0
 
         def wejdz_do(gra):
+            # poza stanowiskiem serwer wpuszcza tylko z zasięgu tablicy albo trenera (odmowa „za_daleko”) — próba wybrana
+            # przez --tylko bez T02 / T04 zaczyna więc przy tablicy (miejsce startu postaci bywa poza zasięgiem)
+            if not serwer_gracza().get("gra"):
+                t = js(kod("tablica"), "Server")
+                if t.get("p"):
+                    p, f = t["p"], t["przod"]
+                    przestaw([p[0] + f[0] * 4, p[1] + 0.5, p[2] + f[2] * 4], p)
+                    time.sleep(1.0)
             hak("inna", dm="Client")
             time.sleep(0.4)
             hak("graj", gra, dm="Client")
@@ -410,6 +488,8 @@ def main():
             log("wybór klasy:", wybor_klasy)
             # słuchacz sygnału PrzyrostStatystyki (tylko na czas próby, w pamięci serwera)
             luau(kod("sluchacz"), "Server")
+            # kąt widzenia kamery gracza przed pierwszym wejściem na stanowisko (T23: po wyjściu ma wrócić)
+            KAT0 = float(luau(kod("kat_gracza"), "Client"))
 
             # ---------------------------------------------------------------- T01 gotowość
             at = atrybuty(["SerwerTreninguGotowy", "ZgodnoscLogikiTreningu", "Podpowiedzi"])
@@ -702,7 +782,7 @@ def main():
                     po = klient()
                     ok = (ost.get("trafienia") == n and ost.get("pudla") == 0 and ost.get("suma") == pkt
                           and w["sesja1"] - w["sesja0"] == pkt and (st.get("ProbaStawy") or 0) >= 1
-                          and po.get("stawyZmienione") == 0)
+                          and (po.get("stawyZmienione") == 0 or po.get("radoscStawami") is True))
                     k1 = start_rundy()
                     zgl_k = 0
                     if k1:
@@ -723,7 +803,8 @@ def main():
                               ost.get("trafienia"), n, ost.get("pudla"), ost.get("suma"), pkt, w["sesja1"] - w["sesja0"],
                               st.get("ProbaStawy"), po.get("stawyZmienione"), zgl_k))
                 else:
-                    punkt("T16", False, "runda Kłód nie wystartowała")
+                    punkt("T16", False, "runda Kłód nie wystartowała (ekran klienta %s, gra u serwera %s)" % (
+                        klient().get("ekran"), serwer_gracza().get("gra")))
 
             # ---------------------------------------------------------------- T17 Inteligencja „Runy”
             if chce("T17"):
@@ -882,6 +963,219 @@ def main():
                     time.sleep(1.5)
                 zapisz("T21", wyniki21)
                 punkt("T21", ok21, "klatka śr. / p95 [ms]: %s" % wyniki21)
+
+
+            # ================================================================ wygląd jak w walce (T23–T27)
+            def czesci_wzrosly(przed, po):
+                return ((po.get("efekty") or {}).get("utworzono") or 0) - ((przed.get("efekty") or {}).get("utworzono") or 0)
+
+            # ---------------------------------------------------------------- T23 kamera, T24 napisy, T26 konfetti (Siła)
+            if chce("T23") or chce("T24") or chce("T26"):
+                wejdz_do("sila")
+                hak("dlugie_napisy", 4, dm="Client")  # napisy żyją 4 × dłużej: widać je na zrzutach i w stanie haczyka
+                W = D["swiat"]["sila"]
+                ks = klient()
+                wsp = ks.get("wspEmulacji") or 1
+                st_ok = (ks.get("kameraUjecie") == "stanowisko" and abs((ks.get("kameraKat") or 0) - KT.kat_okna(W["kat"], wsp)) < 0.2
+                         and math.dist(ks.get("kameraOko") or [0, 0, 0], W["oko"]) < 1.5)
+                k0 = start_rundy()
+                if k0:
+                    n_probek = int((D["runda"]["odliczanie_s"] + D["runda"]["dlugosc_s"] + 4) * 10)
+                    luau(kod("probki_kamery", W["oko"][0], W["oko"][1], W["oko"][2], n_probek), "Client")
+                    time.sleep(1.2)
+                    k_odl = klient()  # w odliczaniu
+                    d_start, d_gra = math.dist(W["start"]["oko"], W["oko"]), math.dist(k_odl.get("kameraOko") or W["oko"], W["oko"])
+                    odl_ok = (k_odl.get("kameraUjecie") == "odliczanie" and d_gra < d_start + 0.5
+                              and k_odl.get("ui", {}).get("obrazek") is True)
+                    zrzut("23_sila_odliczanie")
+                    hak("autograj", 1.0, False, dm="Client")
+                    time.sleep(D["runda"]["odliczanie_s"] + 6)
+                    kg = klient()
+                    zrzut("24_sila_napisy")
+                    kk = czekaj_na_koniec_rundy() or klient()
+                    time.sleep(2.2)
+                    kf = klient()
+                    zrzut("26_sila_final")
+                    a = atrybuty(["ProbaUjecia", "ProbaKatMin", "ProbaKatMax", "ProbaOkoOdl", "ProbaNapisy"], "Client")
+                    sg = serwer_gracza()
+                    ost = sg.get("ostatnia") or {}
+                    F = W["final"]
+                    # postać obrócona do kamery zbliżenia (kierunek z danych), karta po prawej
+                    kier = KT.kierunek_finalu(D, "sila", 0)
+                    obr = kf.get("obrotPostaci") or [0, 0]
+                    zwrot = obr[0] * kier[0] + obr[1] * kier[2]
+                    karta = kf.get("karta") or [0, 0, 0, 0]
+                    ekran_px = (kf.get("ui") or {}).get("ekranPx") or [1, 1]
+                    gra_ok = (kg.get("kameraUjecie") == "gra" and (a.get("ProbaKatMax") or 0) <= KT.kat_okna(W["kat"], wsp) + 0.2
+                              and (a.get("ProbaKatMin") or 0) >= KT.kat_okna(W["kat"] - KT.najwieksze_zawezenie(D), wsp) - 0.2
+                              and (a.get("ProbaOkoOdl") or 9) < 1.0)
+                    fin_ok = (kf.get("kameraUjecie") == "final" and abs((kf.get("kameraKat") or 0) - KT.kat_okna(F["kat"], wsp)) < 0.2
+                              and kf.get("final") is True and zwrot > 0.9 and karta[0] >= ekran_px[0] * 0.3)
+                    ujecia = a.get("ProbaUjecia") or ""
+                    # JESZCZE RAZ: postać znów twarzą do gry (−Z), kamera od nowa w odliczaniu
+                    k2 = start_rundy()
+                    time.sleep(0.8)
+                    kr = klient()
+                    obr2 = kr.get("obrotPostaci") or [0, 0]
+                    raz_ok = bool(k2) and obr2[1] < -0.95 and kr.get("kameraUjecie") == "odliczanie" and kr.get("final") is False
+                    hak("przerwij", dm="Client")
+                    time.sleep(1.5)
+                    kp = klient()  # przerwana runda bez punktu: bez konfetti i radości
+                    hak("dlugie_napisy", None, dm="Client")
+                    # wyjście: kamera gracza i jej kąt widzenia wracają (potem próby wchodzą na stanowiska od nowa)
+                    hak("wyjdz", dm="Client")
+                    czekaj_na(lambda: not serwer_gracza().get("gra"), 8, 0.5)
+                    time.sleep(1.0)
+                    kat_po, kw = float(luau(kod("kat_gracza"), "Client")), klient()
+                    wyj_ok = abs(kat_po - KAT0) < 0.5 and kw.get("kamera") == "Custom" and (kw.get("komiks") or {}).get("warstwa") is False
+                    if chce("T23"):
+                        zapisz("T23", {"stanowisko": ks, "odliczanie": k_odl, "gra": kg, "final": kf, "probki": a, "po_starcie": kr,
+                                       "kat_gracza": [KAT0, kat_po]})
+                        punkt("T23", st_ok and odl_ok and gra_ok and fin_ok and raz_ok and wyj_ok and "odliczanie,gra,final" in ujecia,
+                              "stanowisko %s (kąt %.1f°, oczek. %.1f°); odliczanie %s; gra %s (kąt %.1f–%.1f°, drżenie oka ≤ %.2f st); "
+                              "final %s (kąt %.1f°, zwrot postaci do kamery %.2f, karta od x = %.0f z %.0f px); ujęcia: %s; "
+                              "po JESZCZE RAZ postać do gry %s; po wyjściu kąt gracza %.1f° (przed %.1f°), kamera %s" % (
+                                  st_ok, ks.get("kameraKat") or 0, KT.kat_okna(W["kat"], wsp), odl_ok, gra_ok,
+                                  a.get("ProbaKatMin") or 0, a.get("ProbaKatMax") or 0, a.get("ProbaOkoOdl") or -1, fin_ok,
+                                  kf.get("kameraKat") or 0, zwrot, karta[0], ekran_px[0], ujecia, raz_ok, kat_po, KAT0,
+                                  kw.get("kamera")))
+                    if chce("T24"):
+                        km = kk.get("komiks") or {}
+                        # każdy napis z danych dostaje czcionkę komiksową (haczyk „napis” pokazuje go w miejscu napisów)
+                        wejdz_do("sila")
+                        zle = []
+                        for tekst in sorted(set(DANE.napisy_komiksowe(K_UST))):
+                            w_n = hak("napis", tekst, "info", dm="Client")
+                            if not (isinstance(w_n, dict) and w_n.get("komiksowa") is True):
+                                zle.append(tekst)
+                        k24 = klient().get("komiks") or {}
+                        # licznik napisów rośnie od startu klienta — liczy się przyrost od wejścia na stanowisko
+                        w_rundzie = (km.get("pokazane") or 0) - ((ks.get("komiks") or {}).get("pokazane") or 0)
+                        ok24 = (w_rundzie >= (ost.get("trafienia") or 0) > 0 and (km.get("zastepcze") or 0) == 0
+                                and km.get("czcionka") == "Bangers" and (a.get("ProbaNapisy") or 0) >= 1 and not zle
+                                and (k24.get("zastepcze") or 0) == 0 and km.get("warstwa") is True)
+                        zapisz("T24", {"komiks_po_rundzie": km, "bez_czcionki": zle, "po_wszystkich": k24, "naraz": a.get("ProbaNapisy")})
+                        punkt("T24", ok24, "napisów w rundzie %s (trafień %s), naraz najwyżej %s, czcionką zastępczą %s, czcionka %s; "
+                              "napisy z danych bez czcionki komiksowej: %s" % (
+                                  w_rundzie, ost.get("trafienia"), a.get("ProbaNapisy"), km.get("zastepcze"),
+                                  km.get("czcionka"), zle or "brak"))
+                    if chce("T26"):
+                        KF = D["ui"]["efekty"]["konfetti"]
+                        idealna = (ost.get("pudla") or 0) + (ost.get("puste") or 0) == 0 and (ost.get("trafienia") or 0) > 0
+                        oczek = (KF["wielkie"] if idealna else KF["zwykle"])["ile"] if (ost.get("suma") or 0) > 0 else 0
+                        napisy = [x.get("tekst") for x in ((kf.get("komiks") or {}).get("ostatnie") or [])]
+                        ok26 = (kf.get("konfetti") == oczek and (kf.get("radosc") is True) == (oczek > 0)
+                                and (not idealna or D["teksty"]["bez_pudla"] in napisy)
+                                and (kp.get("konfetti") or 0) == 0 and kp.get("radosc") is False)
+                        zapisz("T26", {"ostatnia": ost, "final": kf, "po_przerwanej": kp})
+                        punkt("T26", ok26, "runda: punkty %s, pudła %s → konfetti %s (oczek. %s), radość %s (animacja %s), "
+                              "napisy na ekranie %s; po przerwanej rundzie bez punktu: konfetti %s, radość %s" % (
+                                  ost.get("suma"), (ost.get("pudla") or 0) + (ost.get("puste") or 0), kf.get("konfetti"), oczek,
+                                  kf.get("radosc"), kf.get("radoscAnimacja"), napisy, kp.get("konfetti"), kp.get("radosc")))
+                else:
+                    for t in ("T23", "T24", "T26"):
+                        if chce(t):
+                            punkt(t, False, "runda Siły nie wystartowała")
+
+            # ---------------------------------------------------------------- T25 efekty 3D: z walki albo własne
+            if chce("T25"):
+                E = D["ui"]["efekty"]
+                jest_walka = luau(kod("kontener_walki", E["kontener_walki"], E["modul_walki"]), "Client") == "true"
+                opisy, ok25 = [], True
+                for wymus in (False, True):
+                    luau(kod("atrybut_klienta", "EfektyWlasne", "true" if wymus else "nil"), "Client")
+                    wejdz_do("pancerz")
+                    k0 = start_rundy()
+                    if not k0:
+                        ok25 = False
+                        opisy.append("brak rundy")
+                        continue
+                    przed = klient()
+                    hak("autograj", 1.0, False, dm="Client")
+                    time.sleep(D["runda"]["odliczanie_s"] + 7)
+                    po = klient()
+                    if not wymus:
+                        zrzut("25_pancerz_efekty")
+                    hak("przerwij", dm="Client")
+                    time.sleep(1.5)
+                    ef = po.get("efekty") or {}
+                    oczek_zrodlo = "walka" if (jest_walka and not wymus) else "wlasne"
+                    dobrze = ef.get("zrodlo") == oczek_zrodlo and czesci_wzrosly(przed, po) > 0 and (ef.get("bledy") or 0) == 0
+                    ok25 = ok25 and dobrze
+                    opisy.append("%s: źródło %s (oczek. %s), nowych części %d, błędów %s" % (
+                        "wymuszone własne" if wymus else "domyślnie", ef.get("zrodlo"), oczek_zrodlo, czesci_wzrosly(przed, po),
+                        ef.get("bledy")))
+                luau(kod("atrybut_klienta", "EfektyWlasne", "nil"), "Client")
+                zapisz("T25", {"walka_w_miejscu": jest_walka, "opisy": opisy})
+                punkt("T25", ok25, "moduł efektów walki w miejscu: %s; %s" % (jest_walka, "; ".join(opisy)))
+
+            # ---------------------------------------------------------------- T27 bohater klasy (haczyk) albo awatar
+            if chce("T27"):
+                prawdziwy = luau(kod("haczyk_bohatera", D["ui"]["bohater"]["sciezka"]), "Client") == "true"
+                opisy, ok27 = [], True
+
+                def runda_klod(sekundy):
+                    wejdz_do("zrecznosc")
+                    k0 = start_rundy()
+                    if not k0:
+                        return None
+                    luau(kod("probki", int((D["runda"]["odliczanie_s"] + sekundy) * 10)), "Client")
+                    hak("autograj", 1.0, False, dm="Client")
+                    time.sleep(D["runda"]["odliczanie_s"] + sekundy + 0.6)
+                    stan_k = klient()
+                    hak("przerwij", dm="Client")
+                    time.sleep(1.5)
+                    return stan_k, atrybuty(["ProbaStawy", "ProbaStawyAwatara", "ProbaKlipy", "ProbaPrzesuniety"], "Client")
+                if prawdziwy:
+                    w27 = runda_klod(22)  # od 12 s są też wysokie kłody (padnij)
+                    if w27:
+                        stan_k, pr = w27
+                        b = stan_k.get("bohater") or {}
+                        if b.get("aktywny"):
+                            dobrze = ((pr.get("ProbaStawyAwatara") or 0) == 0 and pr.get("ProbaPrzesuniety") is True
+                                      and "skok" in (pr.get("ProbaKlipy") or "") and not b.get("zawieszony"))
+                        else:  # haczyk jest, ale gracz nie ma aktywnego bohatera: awatar jak dotąd
+                            dobrze = (pr.get("ProbaStawy") or 0) >= 1 and not b.get("zawieszony")
+                        ok27 = ok27 and dobrze
+                        opisy.append("prawdziwy haczyk: bohater aktywny %s, klipy %s, przesunięcie %s, stawy awatara %s, wywołań %s" % (
+                            b.get("aktywny"), pr.get("ProbaKlipy"), pr.get("ProbaPrzesuniety"), pr.get("ProbaStawyAwatara"),
+                            b.get("wywolania")))
+                    else:
+                        ok27 = False
+                        opisy.append("prawdziwy haczyk: brak rundy")
+                else:
+                    # (a) haczyk bez obsługi: Invoke czeka — gra nie staje, zostaje awatar
+                    luau(kod("zastepczy_bohater", "false"), "Client")
+                    w27 = runda_klod(8)
+                    if w27:
+                        stan_k, pr = w27
+                        b = stan_k.get("bohater") or {}
+                        dobrze = (b.get("zawieszony") is True and b.get("aktywny") is False and (pr.get("ProbaStawy") or 0) >= 1
+                                  and stan_k.get("ekran") == "runda")
+                        ok27 = ok27 and dobrze
+                        opisy.append("haczyk bez obsługi: zawieszony %s, bohater aktywny %s, awatar skacze (stawy %s), wywołań %s" % (
+                            b.get("zawieszony"), b.get("aktywny"), pr.get("ProbaStawy"), b.get("wywolania")))
+                    else:
+                        ok27 = False
+                        opisy.append("haczyk bez obsługi: brak rundy")
+                    # (b) haczyk z obsługą (aktywny bohater): klipy i przesunięcie przez haczyk, stawy awatara nietknięte
+                    luau(kod("zastepczy_bohater", "true"), "Client")
+                    w27 = runda_klod(22)
+                    if w27:
+                        stan_k, pr = w27
+                        zs = json.loads(luau(kod("zastepczy_stan"), "Client"))
+                        klipy = zs.get("klipy") or ""
+                        dobrze = ((pr.get("ProbaStawyAwatara") or 0) == 0 and "skok" in klipy and (zs.get("maxY") or 0) > 1.0
+                                  and (zs.get("minY") or 0) >= 0 and (stan_k.get("bohater") or {}).get("aktywny") is True)
+                        ok27 = ok27 and dobrze
+                        opisy.append("haczyk z obsługą: klipy %s, przesunięcie w górę do %.1f st, w dół %.1f st, stawy awatara %s" % (
+                            klipy, zs.get("maxY") or 0, zs.get("minY") or 0, pr.get("ProbaStawyAwatara")))
+                    else:
+                        ok27 = False
+                        opisy.append("haczyk z obsługą: brak rundy")
+                    luau(kod("zastepczy_usun"), "Client")
+                zapisz("T27", {"prawdziwy_haczyk": prawdziwy, "opisy": opisy})
+                punkt("T27", ok27, "; ".join(opisy))
 
             # ---------------------------------------------------------------- T11 wyjście (kliknięcie WYJDŹ, brama w arenie)
             if chce("T11"):

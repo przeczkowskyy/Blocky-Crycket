@@ -234,6 +234,110 @@ def _sprawdz(K):
     for g in DK["trafienie"]:
         if g not in K["gry"]:
             raise BladDanych("dzwieki_katalog: nieznana gra %s" % g)
+    _sprawdz_wyglad(K)
+
+
+# nazwy wybuchów z modułu efektów walki (swiat/test_walki2/zrodla/Efekty3D.luau, tylko odczyt) — ui.efekty może
+# wskazywać tylko je; własny moduł EfektyTreningu ma te same (pilnuje tego test 6j)
+EFEKTY_WALKI = os.path.join(REPO, "swiat", "test_walki2", "zrodla", "Efekty3D.luau")
+
+
+def wybuchy_walki():
+    with open(EFEKTY_WALKI, encoding="utf-8") as f:
+        return set(re.findall(r"^Wybuch\.(\w+)\s*=", f.read(), re.M))
+
+
+def komiks_pokrywa(K, tekst):
+    """Czy czcionka komiksowa ma wszystkie litery napisu (ASCII drukowalne + ui.komiks.znaki)."""
+    znaki = K["ui"]["komiks"]["znaki"]
+    return all(32 <= ord(z) <= 126 or z in znaki for z in tekst)
+
+
+def napisy_komiksowe(K):
+    """Wszystkie napisy, które klient rysuje komiksową czcionką (wyskakujące słowa, tytuł karty podsumowania)."""
+    T = K["teksty"]
+    lista = []
+    for k in ("trafienia", "trafienia_blok", "trafienia_rytm", "trafienia_unik", "trafienia_runy", "trafienia_lapanie"):
+        lista += T[k]
+    lista += list(T["pudlo"].values())
+    for d in T["pudla_gier"].values():
+        lista += list(d.values())
+    lista += [T[k] for k in ("zmylka_ok", "patrz", "twoja_kolej", "zaklecie", "nowe_zaklecie", "zlota", "podbieg", "koniec",
+                             "przerwana", "bez_pudla")]
+    lista += [T["seria"] % n for n in K["przyrost"]["progi_serii"]]
+    lista += [T["punkt"] % (9, s["nazwa"]) for s in K["statystyki"]]
+    lista += [K["sterowanie"]["start"]["napis"] + "!"] + [str(n) for n in range(1, int(K["runda"]["odliczanie_s"]) + 2)]
+    return lista
+
+
+def _sprawdz_wyglad(K):
+    """Kamery w stylu walki, komiksowe napisy, efekty i haczyk bohatera → BladDanych."""
+    U = K["ui"]
+    KA = U["kamera"]
+    if not (20 <= KA["kat_min"] < KA["kat_max"] <= 70):
+        raise BladDanych("ui.kamera: kat_min / kat_max")
+    for k in ("uderzenie", "mocne", "seria"):
+        if not (_w(KA[k]["kat"], 0, 6) and _w(KA[k]["czas_s"], 0.05, 1.5)):
+            raise BladDanych("ui.kamera.%s: kat 0–6°, czas_s 0,05–1,5" % k)
+    if not (KA["uderzenie"]["kat"] <= KA["mocne"]["kat"] <= KA["seria"]["kat"]):
+        raise BladDanych("ui.kamera: zawężenie kąta ma rosnąć: uderzenie ≤ mocne ≤ seria")
+    if not (_w(KA["odliczanie_koniec_s"], 0, K["runda"]["odliczanie_s"] - 0.5) and _w(KA["wstrzas_zanik"], 1, 40)):
+        raise BladDanych("ui.kamera: odliczanie_koniec_s / wstrzas_zanik")
+    for gid, st in K["stanowiska"].items():
+        kam = st["kamera"]
+        for nazwa, u in (("kamera", kam), ("kamera.start", kam.get("start") or {})):
+            if not (_punkt(u.get("oko")) and _punkt(u.get("cel")) and _w(u.get("kat"), KA["kat_min"], KA["kat_max"])):
+                raise BladDanych("%s: %s — oko, cel i kat w %s–%s°" % (gid, nazwa, KA["kat_min"], KA["kat_max"]))
+            if sum((u["oko"][i] - u["cel"][i]) ** 2 for i in range(3)) < 9:
+                raise BladDanych("%s: %s — oko za blisko celu" % (gid, nazwa))
+        f = kam.get("final") or {}
+        if not (_w(f.get("azymut"), -80, 80) and _w(f.get("dystans"), 6, 20) and _w(f.get("wysokosc"), 0.5, 8)
+                and _w(f.get("cel_wysokosc"), 1, 6) and _w(f.get("kat"), 30, KA["kat_max"])):
+            raise BladDanych("%s: kamera.final (azymut, dystans, wysokosc, cel_wysokosc, kat)" % gid)
+        n = st.get("napis")
+        if not (isinstance(n, list) and len(n) == 2 and all(_w(x, 0.05, 0.95) for x in n)):
+            raise BladDanych("%s: napis — miejsce dużych napisów jako ułamki obszaru GUI [x, y]" % gid)
+    KO = U["komiks"]
+    if KO["czcionka"] != "Bangers" or KO["czcionka_naglowka"] not in ("LuckiestGuy", "Bangers"):
+        raise BladDanych("ui.komiks: czcionki wbudowane walki (Bangers, LuckiestGuy)")
+    if min(KO["rozmiary_px"].values()) * U["skala_min"] < U["wymog_tekst_pt"]:
+        raise BladDanych("ui.komiks: najmniejszy napis przy skali minimalnej < %d pt" % U["wymog_tekst_pt"])
+    for n in ("trafienie", "mocne", "pudlo", "seria", "punkt", "licznik", "start", "info", "zloto"):
+        if n not in KO["style"]:
+            raise BladDanych("ui.komiks.style: brak stylu %s" % n)
+    for n, st in KO["style"].items():
+        if st["kolor"] not in KO["kolory"] or st["rozmiar"] not in KO["rozmiary_px"] or not _w(st["zycie_s"], 0.2, 3):
+            raise BladDanych("ui.komiks.style.%s: kolor / rozmiar / zycie_s" % n)
+    if sorted(KO["kolor_trafienia"]) != sorted(K["gry"]) or any(v not in KO["kolory"] for v in KO["kolor_trafienia"].values()):
+        raise BladDanych("ui.komiks.kolor_trafienia: po jednym kolorze z ui.komiks.kolory na grę")
+    for h in list(KO["kolory"].values()) + KO["gwiazda"]["kolory"] + U["efekty"]["konfetti"]["kolory"]:
+        if not re.fullmatch(r"[0-9A-F]{6}", h):
+            raise BladDanych("ui.komiks / ui.efekty: kolor %s" % h)
+    if not (_w(KO["obrot_max"], 0, 15) and _w(KO["nadmiar"], 1, 1.3) and _w(KO["zanik_od"], 0.3, 0.95)
+            and _w(KO["mocne_co"], 2, 20) and _w(KO["naraz"], 2, 12)):
+        raise BladDanych("ui.komiks: obrot_max / nadmiar / zanik_od / mocne_co / naraz")
+    E = U["efekty"]
+    znane = wybuchy_walki()
+    wpisy = list(E["trafienie"].values()) + [E[k] for k in ("mocne", "kamien", "oberwanie", "zaklecie")]
+    for z in wpisy:
+        if z not in znane:
+            raise BladDanych("ui.efekty: wybuchu %s nie ma w module efektów walki" % z)
+    if sorted(E["trafienie"]) != sorted(K["gry"]):
+        raise BladDanych("ui.efekty.trafienie: po jednym wybuchu na grę")
+    KF = E["konfetti"]
+    if not (1 <= KF["zwykle"]["ile"] < KF["wielkie"]["ile"] <= 160 and 1 <= KF["zwykle"]["salwy"] <= KF["wielkie"]["salwy"] <= 6
+            and _w(KF["zycie_s"], 1, 6) and _w(KF["predkosc"], 5, 60) and _w(KF["grawitacja"], 1, 60) and _w(KF["opor"], 0, 6)
+            and _w(KF["rozrzut"], 0.5, 10) and _punkt(KF["rozmiar"])):
+        raise BladDanych("ui.efekty.konfetti: zwykłe mniejsze od wielkiego, najwyżej 160 kawałków, 1–6 salw, życie 1–6 s, "
+                         "prędkość 5–60, grawitacja 1–60, opór 0–6, rozrzut 0,5–10, rozmiar [x, y, z]")
+    B = U["bohater"]
+    if sorted(B["klipy"]) != ["bieg", "padnij", "radosc", "rece", "skok"] or not re.fullmatch(r"[\w/]+", B["sciezka"]):
+        raise BladDanych("ui.bohater: klipy (bieg, skok, padnij, rece, radosc) i sciezka")
+    # żaden napis wyskakujący nie może dostać zastępczej czcionki (FredokaOne nie miała ę, ż, ś — README 17.11)
+    for tekst in napisy_komiksowe(K):
+        if not komiks_pokrywa(K, tekst):
+            raise BladDanych("napis „%s” ma literę spoza ui.komiks.znaki — dopisz ją po sprawdzeniu czcionki albo zmień napis"
+                             % tekst)
 
 
 def _swiat(K):
@@ -242,8 +346,13 @@ def _swiat(K):
     S = {"przybycie": _dodaj(c, K["arena"]["przybycie"]), "patrz_przybycie": _dodaj(c, K["arena"]["patrz_przybycie"])}
     for gid, st in K["stanowiska"].items():
         p = _dodaj(c, st["podest"])
+        kam = st["kamera"]
+        # kamera gry (oko, cel, kąt widzenia), ujęcie początku odliczania (start → dojazd do kamery gry) i parametry
+        # zbliżenia na postać po rundzie (final: względem postaci, liczy klient); napis = miejsce dużych napisów
         w = {"podest": p, "patrz": _dodaj(p, st.get("patrz", [0, 0, -10])),
-             "oko": _dodaj(p, st["kamera"]["oko"]), "cel": _dodaj(p, st["kamera"]["cel"])}
+             "oko": _dodaj(p, kam["oko"]), "cel": _dodaj(p, kam["cel"]), "kat": kam["kat"],
+             "start": {"oko": _dodaj(p, kam["start"]["oko"]), "cel": _dodaj(p, kam["start"]["cel"]), "kat": kam["start"]["kat"]},
+             "final": kam["final"], "napis": st["napis"]}
         if gid == "sila":
             w["miotacz"] = _dodaj(p, st["miotacz"])
             w["reka"] = _dodaj(w["miotacz"], st["reka"])
@@ -261,7 +370,7 @@ def _swiat(K):
             # nowe stanowiska: każdy punkt [x, y, z] (i słownik punktów) względem podestu → świat; liczby, słowniki
             # liczb i klucze *_rozmiar bez zmian
             for k, v in st.items():
-                if k in ("podest", "kamera", "patrz"):
+                if k in ("podest", "kamera", "patrz", "napis"):
                     continue
                 if _punkt(v) and not k.endswith("_rozmiar"):
                     w[k] = _dodaj(p, v)
@@ -275,6 +384,15 @@ def _swiat(K):
 
 def _punkt(v):
     return isinstance(v, list) and len(v) == 3 and all(isinstance(x, (int, float)) and not isinstance(x, bool) for x in v)
+
+
+def _bez_opisow(v):
+    """Kopia bez pól „opis” (objaśnienia dla ludzi w ustawienia.json nie idą do gry)."""
+    if isinstance(v, dict):
+        return {k: _bez_opisow(x) for k, x in v.items() if k != "opis"}
+    if isinstance(v, list):
+        return [_bez_opisow(x) for x in v]
+    return v
 
 
 def _trener():
@@ -309,7 +427,7 @@ def wczytaj():
         "gry": K["gry"],
         "swiat": _swiat(K),
         "podpowiedz": K["podpowiedz"],
-        "ui": K["ui"],
+        "ui": _bez_opisow(K["ui"]),
         "sterowanie": K["sterowanie"],
         "dzwieki": K["dzwieki"],
         "dzwieki_katalog": {k: v for k, v in K["dzwieki_katalog"].items() if k != "opis"},

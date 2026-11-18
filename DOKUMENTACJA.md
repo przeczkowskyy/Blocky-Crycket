@@ -247,7 +247,7 @@ Blocky&Crycket/
 │   ├── las_pas/  las_pas_gra/   💡 las jako wąski pas: mapa (Workspace/LasPas) i skrypty gry (Workspace/LasPasGra)
 │   ├── bagno_pas/  biomy/       💡 mapa Bagna jako odcinka pasa (zbudowana w Studio 17.11: Workspace/BagnoPas) i zarys biomów 2–8 — do akceptacji
 │   ├── dzwiek_gra/              💡 katalog dźwięków i muzyka stref (Workspace/DzwiekGra); identyfikatory wgranych plików, gra czeka na prawo do zasobów
-│   ├── trening_proba/           💡 Training Center: sześć mini-gier na próbę, po jednej na statystykę (Workspace/TreningProba)
+│   ├── trening_proba/           💡 Training Center: sześć mini-gier na próbę, po jednej na statystykę, kamera i efekty jak w walce (Workspace/TreningProba)
 │   ├── stan_gracza/             💡 jeden właściciel stanu gracza: łup i awans po walce, bohater z klasy i poziomu, pety i wydatki (Workspace/StanGracza)
 │   ├── bagno_pas_gra/           💡 Bagno jako drugi biom na kodzie lasu-pasa: pięć gatunków, Strażnik Topieli (Workspace/BagnoPasGra)
 │   ├── dzungla_pas/  dzungla_pas_gra/  💡 Dżungla jako trzeci biom: mapa (Workspace/DzunglaPas) i skrypty gry (Workspace/DzunglaPasGra), pięć gatunków, strażnik Wąż Stu Lian

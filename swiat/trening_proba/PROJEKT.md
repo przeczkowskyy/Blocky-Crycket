@@ -44,13 +44,18 @@
 - **Sterowanie na stanowisku**: kamera stoi, postać się nie rusza (klawisze ruchu są pochłonięte), a sterowanie
   dotykowe Robloxa jest wyłączone. Klawiatura, dotyk (przyciski co najmniej 44 px, tekst co najmniej 12 pt przy
   667 × 375) i pad. Po wyjściu wszystko wraca.
-- **Frajda z trafienia**: licznik serii „podskakuje”, pojawia się krótki napis („TRAFIONE!”, „SERIA 10!”, „+1 Siła!”),
-  ekran błyska, lecą odłamki, kamera lekko drży, a dźwięk trafienia idzie w górę razem z serią. Dźwięki: gdy w miejscu
+- **Frajda z trafienia** (od 18.11.2026 w stylu walki — polecenie Karola, w kodzie i offline, przed próbą w Studio):
+  licznik serii „podskakuje”, przy miejscu trafienia wyskakuje komiksowe słowo („PAF!”, „BLOK!”, „HOP!”) z iskrami,
+  rozbłyskiem albo falą w języku efektów walki, duże słowa z gwiazdą („SERIA 10!”, „+1 Siła!”) stoją w stałym miejscu
+  stanowiska, kadr na chwilę się zacieśnia i drży, a dźwięk trafienia idzie w górę razem z serią. Kamera stoi nisko,
+  pod wąskim kątem jak w walce; w odliczaniu dojeżdża, po rundzie robi zbliżenie na postać, która obraca się do
+  kamery — z punktem statystyki cieszy się w konfetti (większym po rundzie bez pudła). Szczegóły: README, „Wygląd jak
+  w walce”. Dźwięki: gdy w miejscu
   jest pakiet `swiat/dzwiek_gra` z wgranym arkuszem efektów, trafienie Siły gra „cios”, Pancerza „blok”, Zręczności
   „unik”, punkt statystyki „awans”, koniec rundy „zwycięstwo”, złota koniczyna „monety”, ukończone zaklęcie „tarcza”
   (tylko zdarzenia, które są w arkuszu). Bez arkusza — pliki wbudowane w klienta Roblox; nic nowego nie wgrywamy.
-- **Podpowiedź obrazkowa** (noc 17/18.11): na stanowisku i w czasie odliczania nad panelem startu stoi pasek z ramek:
-  co widzisz → co naciskasz → co się dzieje (bez czytania). Przyciski mini-gry pojawiają się dopiero po odliczaniu,
+- **Podpowiedź obrazkowa** (noc 17/18.11): na stanowisku nad panelem startu, a w czasie odliczania na dole ekranu stoi
+  pasek z ramek: co widzisz → co naciskasz → co się dzieje (bez czytania). Przyciski mini-gry pojawiają się dopiero po odliczaniu,
   a naciśnięcia w odliczaniu nic nie robią (wcześniej liczyły się jako pudło „w powietrze”).
 - **Waga mini-gry** (D-074): każda gra ma mnożnik jednostek paska (`gry.<id>.waga`), dobrany tak, żeby gracz-model
   zdobywał tyle samo jednostek na minutę w każdej z sześciu gier (test: 0,85–1,18 Siły; dziś 0,96–1,03).
@@ -291,6 +296,27 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 **13. Kłody: skok i padnij przesunięciem biodra**
 - Tak (dziś): bez wgrywania animacji, działa na każdym awatarze, widać tylko u siebie.
 - Własne animacje skoku i padnięcia — ładniej i widać u innych graczy, ale trzeba je zrobić i wgrać.
+- Od 18.11.2026: gdy gracz ma bohatera klasy, skok i padnij gra bohater (haczyk pakietu bohatera).
+
+**14. Kamery mini-gier w stylu walki**
+- Dziś (18.11, przed próbą w Studio): nisko, kąt 44–51°, z ukosa; dojazd w odliczaniu, zbliżenie po rundzie.
+- Poprzednio: wysoko, kąt 70° — mniej filmowo, pole gry dwa razy mniejsze na ekranie.
+- Szczegóły: tabela „było → jest” w README; do oceny na zrzutach z gry, czy rytm i kierunki dalej czyta się łatwo.
+
+**15. Siła: komiksowe słowa zamiast pochwał**
+- Dziś: „PAF!”, „ŁUP!”, „TRACH!”, „BAM!”, „POW!” (rosną z serią).
+- Poprzednio: „TRAFIONE!”, „ŁUP!”, „DOBRZE!”, „ŚWIETNIE!”, „MOCARZ!”.
+- Szczegóły: lista w `ustawienia.json` (`teksty.trafienia`); pozostałe gry zachowały swoje słowa.
+
+**16. Konfetti po rundzie**
+- Dziś: gdy runda dała punkt statystyki; większe i napis „BEZ PUDŁA!” po rundzie bez pudła.
+- Inaczej: po każdej ukończonej rundzie albo tylko po rundzie bez pudła.
+- Szczegóły: walka nie ma konfetti (świętuje radością, objazdem kamery i łupem) — to własny efekt z klocków.
+
+**17. Postać obraca się do kamery po rundzie**
+- Dziś: tak, jak zwycięzca w finale walki (widać twarz i radość); przed kolejną rundą wraca twarzą do gry.
+- Bez obrotu: kamera pokazałaby plecy albo musiałaby objechać stanowisko.
+- Szczegóły: obrót robi klient i widzą go też inni gracze.
 
 ## Ustawienia „przyjęte, do zmiany” (wszystkie w `ustawienia.json`)
 
@@ -316,9 +342,12 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 | Zasięg wejścia od trenera i tablicy | 16 st | przyjęte |
 | Telefon: przyciski | 56 px (strzałki), 52 px (pozostałe), 96 px (BLOK); skala 0,85–1,6 od 667 × 375 | przyjęte (wymóg 44 px, 12 pt) |
 | Teksty | 15 / 18 / 26 / 40 / 56 px | przyjęte |
-| Kamera stanowiska | oko 3,2 / 6,6 / 11,5 st od podestu (zza prawego ramienia), cel 6,0 (Siła) / 5,5 (Pancerz) st w prawo i 8 st przed graczem — gracz w lewej połowie ekranu, prawa wolna na przyciski | przyjęte, poprawione po zrzutach 17.11 |
+| Kamery stanowisk (od 18.11.2026, styl walki) | kąt widzenia 44–51° (było 70°), oko 2,7–4,1 st nad podestem, z ukosa; Siła: oko (5,3; 2,7; 8,8) → cel (1,4; 3,9; −3,4), 48°; Pancerz: (13,8; 2,8; 3,2) → (0,6; 5,2; −8,0), 48°; Bieżnia: (2,6; 3,3; 14,7) → (−1,1; 1,9; 0,8), 49°; Kłody: (5,3; 2,9; 11,2) → (−0,4; 4,3; −0,7), 48°; Runy: (9,7; 4,0; 6,3) → (4,8; 4,9; −8,1), 44°; Koniczyny: (8,2; 4,1; 18,3) → (1,8; 7,4; −3,4), 51° | przyjęte po podglądach i teście 5e; przed próbą w Studio |
+| Ruch kamery | dojazd w odliczaniu (koniec 0,4 s przed startem); zawężenie kąta po trafieniu 0,8° / 1,8° / 3°; zbliżenie po rundzie: 14 st od postaci, 2,4 st nad ziemią, 42° | przyjęte (wzór: walka) |
+| Komiksowe napisy | Bangers; 26 / 34 / 42 / 52 / 72 px przy 667 × 375; życie 0,6–1,3 s; mocne trafienie co 5. w serii | przyjęte (styl i kolory z walki) |
+| Konfetti | 46 kawałków w 2 salwach; po rundzie bez pudła 90 w 4 salwach; 3,2 s | przyjęte |
 | Strefy Siły | góra (0; 6,6; −1,6), lewo / prawo (∓3,4; 3,4; −1,6), dół (0; 0,9; −3,2) st od podestu | przyjęte, „dół” odsunięty po zrzutach |
-| Postać w rundzie | półprzezroczysta u siebie (0,55), żeby strefa „dół” była widoczna | przyjęte po zrzutach |
+| Postać w rundzie | półprzezroczysta u siebie (0,55) tylko w Sile, żeby strefy były widoczne (w Pancerzu i Runach kamera z boku tego nie wymaga) | przyjęte po zrzutach; zmienione 18.11 |
 | Czcionka okien i szyldów | Nunito ExtraBold (pełne polskie znaki; FredokaOne ich nie ma) | przyjęte po zrzutach |
 | Arena | środek (3000; 300; 3000), 256 × 56 st (od nocy 17/18.11; było 96 × 56) | przyjęte (z dala od pasa krain, starego lasu i sal testowych) |
 | Stanowiska (x od środka areny) | Kłody −104, Bieżnia −64, Siła −24, lobby 0, Pancerz +24, Runy +64, Koniczyny +104; podest z = +8 | przyjęte, noc 17/18.11 |
@@ -334,5 +363,5 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 | Kubełek Run i Koniczyn | 6 na start, +6 na sekundę (szybkie wpisywanie i przejścia) | przyjęte |
 | Przyciski nowych gier | stopy 96 px, SKOK / PADNIJ 80 px, runy 60 px, ◀ ▶ 88 px; podpowiedź obrazkowa 400 × 80 | przyjęte (wymóg 44 px, 12 pt) |
 | Panel rundy i przyciski (18.11, po zrzutach telefonu) | panel 210 × 52 w prawym górnym rogu, „X” obok; przyciski gier przy krawędziach ekranu na dole; obszar GUI w bezpiecznym obszarze telefonu | przyjęte (test 5e: 6 gier × 4 ekrany) |
-| Kamery Bieżni i Koniczyn (18.11) | Bieżnia oko (0; 8,4; 14,5), cel (0; 1,4; −0,5); Koniczyny oko (0; 9,4; 17,5), cel (0; 8,1; −6) | przyjęte po teście 5e |
+| Kamery Bieżni i Koniczyn (18.11 rano) | Bieżnia oko (0; 8,4; 14,5), cel (0; 1,4; −0,5); Koniczyny oko (0; 9,4; 17,5), cel (0; 8,1; −6) | zastąpione kamerami w stylu walki (wiersz wyżej) |
 | Dźwięki z arkusza (swiat/dzwiek_gra) | trafienie Siły „cios”, Pancerza „blok”, Zręczności „unik”; punkt „awans”; koniec „zwyciestwo”; złota „monety”; zaklęcie „tarcza”; START „przycisk”; najwyżej 4 naraz | przyjęte; bez arkusza — dźwięki wbudowane |

@@ -206,7 +206,12 @@
   "stanowiska": {
     "sila": {
       "podest": [-24, 0, 8],
-      "kamera": {"oko": [3.2, 6.6, 11.5], "cel": [6.0, 3.2, -8]},
+      "kamera": {
+        "oko": [5.3, 2.7, 8.8], "cel": [1.4, 3.9, -3.4], "kat": 48,
+        "start": {"oko": [10.3, 4.9, 11.0], "cel": [1.4, 3.9, -3.4], "kat": 52},
+        "final": {"azymut": 25, "dystans": 14, "wysokosc": 2.4, "cel_wysokosc": 4.2, "kat": 42}
+      },
+      "napis": [0.2, 0.2],
       "miotacz": [0, 0, -16],
       "reka": [1.6, 4.4, 0.8],
       "strefy": {"gora": [0, 6.6, -1.6], "lewo": [-3.4, 3.4, -1.6], "prawo": [3.4, 3.4, -1.6], "dol": [0, 0.9, -3.2]},
@@ -216,7 +221,12 @@
     "kondycja": {
       "podest": [-64, 0, 8],
       "patrz": [0, 0, 10],
-      "kamera": {"oko": [0, 8.4, 14.5], "cel": [0, 1.4, -0.5]},
+      "kamera": {
+        "oko": [2.6, 3.3, 14.7], "cel": [-1.1, 1.9, 0.8], "kat": 49,
+        "start": {"oko": [8.7, 5.5, 17.1], "cel": [-1.1, 1.9, 0.8], "kat": 52},
+        "final": {"azymut": 18, "dystans": 14, "wysokosc": 2.4, "cel_wysokosc": 4.2, "kat": 42}
+      },
+      "napis": [0.27, 0.2],
       "tasma_srodek": [0, 0.3, 2.5],
       "tasma_rozmiar": [5.6, 0.6, 16],
       "linia": [0, 0.62, 1.8],
@@ -229,7 +239,12 @@
     },
     "inteligencja": {
       "podest": [64, 0, 8],
-      "kamera": {"oko": [3.4, 6.6, 9.0], "cel": [2.8, 4.5, -8]},
+      "kamera": {
+        "oko": [9.7, 4.0, 6.3], "cel": [4.8, 4.9, -8.1], "kat": 44,
+        "start": {"oko": [15.7, 6.2, 8.8], "cel": [4.8, 4.9, -8.1], "kat": 48},
+        "final": {"azymut": 25, "dystans": 14, "wysokosc": 2.4, "cel_wysokosc": 4.2, "kat": 42}
+      },
+      "napis": [0.12, 0.3],
       "kamienie": {"gora": [3.0, 7.6, -8], "lewo": [-0.4, 4.7, -8], "prawo": [6.4, 4.7, -8], "dol": [3.0, 1.8, -8]},
       "kamien_rozmiar": [2.7, 2.7, 0.8],
       "sciana": [3.0, 4.7, -8.75],
@@ -238,7 +253,12 @@
     },
     "zrecznosc": {
       "podest": [-104, 0, 8],
-      "kamera": {"oko": [7.6, 4.4, 8.2], "cel": [-1.6, 2.2, -2.6]},
+      "kamera": {
+        "oko": [5.3, 2.9, 11.2], "cel": [-0.4, 4.3, -0.7], "kat": 48,
+        "start": {"oko": [10.7, 5.1, 12.7], "cel": [-0.4, 4.3, -0.7], "kat": 52},
+        "final": {"azymut": 28, "dystans": 14, "wysokosc": 2.4, "cel_wysokosc": 4.2, "kat": 42}
+      },
+      "napis": [0.28, 0.2],
       "slup": [0, 0, -7],
       "ramie": 9.6,
       "kloda_srednica": 1.3,
@@ -248,7 +268,12 @@
     },
     "szczescie": {
       "podest": [104, 0, 8],
-      "kamera": {"oko": [0, 9.4, 17.5], "cel": [0, 8.1, -6]},
+      "kamera": {
+        "oko": [8.2, 4.1, 18.3], "cel": [1.8, 7.4, -3.4], "kat": 51,
+        "start": {"oko": [16.0, 7.0, 18.3], "cel": [1.8, 7.4, -3.4], "kat": 54},
+        "final": {"azymut": 15, "dystans": 14, "wysokosc": 2.4, "cel_wysokosc": 4.2, "kat": 42}
+      },
+      "napis": [0.29, 0.2],
       "tory": {"lewy": [-4, 0, 0], "srodek": [0, 0, 0], "prawy": [4, 0, 0]},
       "koszyk": [0, 6.6, -0.3],
       "spad_y": 13.0,
@@ -257,7 +282,12 @@
     },
     "pancerz": {
       "podest": [24, 0, 8],
-      "kamera": {"oko": [3.2, 6.6, 11.5], "cel": [5.5, 3.6, -8]},
+      "kamera": {
+        "oko": [13.8, 2.8, 3.2], "cel": [0.6, 5.2, -8.0], "kat": 48,
+        "start": {"oko": [13.9, 5.0, 10.6], "cel": [0.6, 5.2, -8.0], "kat": 52},
+        "final": {"azymut": 40, "dystans": 14, "wysokosc": 2.4, "cel_wysokosc": 4.2, "kat": 42}
+      },
+      "napis": [0.36, 0.8],
       "golem": [0, 0, -9],
       "piesc_spoczynek": [2.4, 4.6, 1.8],
       "piesc_zamach": [3.8, 8.2, -1.2],
@@ -321,7 +351,134 @@
     "status_px": [210, 52],
     "postep_px": [216, 30],
     "margines_px": 8,
-    "kamera_fov": 70
+    "kamera": {
+      "opis": "Kamera stanowiska w stylu ekranu walki (swiat/test_walki2/zrodla/OdtwarzaczWalki2.luau): niski kadr pod wąskim kątem widzenia (kąt każdego stanowiska w stanowiska.<gra>.kamera.kat — pionowy, jak Camera.FieldOfView), dojazd w odliczaniu, krótkie zawężenie kąta przy trafieniu, drżenie gasnące wykładniczo, po rundzie zbliżenie na postać. W czasie gry kamera stoi — test 5e sprawdza pole gry także przy największym zawężeniu.",
+      "kat_min": 38,
+      "kat_max": 54,
+      "odliczanie_koniec_s": 0.4,
+      "uderzenie": {"kat": 0.8, "czas_s": 0.2},
+      "mocne": {"kat": 1.8, "czas_s": 0.35},
+      "seria": {"kat": 3.0, "czas_s": 0.6},
+      "wstrzas_zanik": 9,
+      "kolysanie": {"stopnie": 1.2, "okres_s": 9},
+      "final": {
+        "przejscie_s": 0.9,
+        "obrot_postaci_s": 0.35,
+        "dojazd": 0.08,
+        "dojazd_s": 2.6,
+        "dryf_stopnie_s": 1.2,
+        "dryf_max": 10,
+        "korzen_nad_ziemia": 3.0,
+        "postac_w_wolnym": 0.5
+      }
+    },
+    "komiks": {
+      "opis": "Komiksowe napisy w stylu walki (swiat/test_walki2/zrodla/InterfejsWalki2.luau — STYLE, _pokazNapis, _aktualizujNapisy): czcionka Bangers, cień i obrys tuszem, obrót, wejście od 0,2 przez 1,08 do 1 w 0,2 s, zanik od 74% życia, gwiazda z dwóch obróconych kwadratów. Pole znaki = litery spoza ASCII, które ma czcionka (sprawdzone w pliku czcionki klienta Roblox 18.11.2026); napis z inną literą dostaje czcionkę okien (ui.czcionka).",
+      "czcionka": "Bangers",
+      "czcionka_naglowka": "LuckiestGuy",
+      "znaki": "ĄĆĘŁŃÓŚŹŻąćęłńóśźż×·—–…„”",
+      "rozmiary_px": {"maly": 26, "sredni": 34, "duzy": 42, "wielki": 52, "licznik": 72},
+      "szerokosc_znaku": 0.42,
+      "rozmiar_max": 100,
+      "obrys_px": 4,
+      "cien_px": [2, 3],
+      "obrot_max": 8,
+      "wejscie_s": 0.1,
+      "wejscie_od": 0.2,
+      "nadmiar": 1.08,
+      "zanik_od": 0.74,
+      "naraz": 6,
+      "margines_px": 6,
+      "licznik_miejsce": [0.5, 0.45],
+      "gwiazda": {"bok": 1.4, "kolory": ["FF8A1F", "E8364F"], "obrot": [12, 57], "predkosc": [40, -55], "obrys_px": 3},
+      "kolory": {
+        "tusz": "17121F",
+        "bialy": "FFFFFF",
+        "krem": "FFF3D1",
+        "zolty": "FFD23F",
+        "krytyk": "FFE14A",
+        "pomarancz": "FF8A1F",
+        "czerwony": "E8364F",
+        "otrzymane": "FF8A9A",
+        "blok": "7CF3FF",
+        "unik": "B8FF8A",
+        "magiczne": "C08CFF",
+        "zielony": "52D273",
+        "ciemny": "2B2238"
+      },
+      "style": {
+        "trafienie": {"kolor": "bialy", "rozmiar": "sredni", "zycie_s": 0.6},
+        "mocne": {"kolor": "krytyk", "rozmiar": "duzy", "zycie_s": 0.85, "gwiazda": true},
+        "pudlo": {"kolor": "otrzymane", "rozmiar": "maly", "zycie_s": 0.7},
+        "seria": {"kolor": "krytyk", "rozmiar": "wielki", "zycie_s": 1.1, "gwiazda": true},
+        "punkt": {"kolor": "krytyk", "rozmiar": "wielki", "zycie_s": 1.3, "gwiazda": true},
+        "licznik": {"kolor": "bialy", "rozmiar": "licznik", "zycie_s": 0.85},
+        "start": {"kolor": "krytyk", "rozmiar": "licznik", "zycie_s": 0.75, "gwiazda": true},
+        "info": {"kolor": "bialy", "rozmiar": "duzy", "zycie_s": 0.8},
+        "zloto": {"kolor": "krytyk", "rozmiar": "duzy", "zycie_s": 0.9, "gwiazda": true}
+      },
+      "kolor_trafienia": {
+        "sila": "bialy",
+        "pancerz": "blok",
+        "kondycja": "bialy",
+        "zrecznosc": "unik",
+        "inteligencja": "magiczne",
+        "szczescie": "zielony"
+      },
+      "mocne_co": 5,
+      "karta": {
+        "obrot": -1.2,
+        "wstega_obrot": 1.6,
+        "wstega": "pomarancz",
+        "tytul": "zolty",
+        "margines_px": 14,
+        "wejscie_od": 0.7,
+        "wejscie_s": 0.28,
+        "liczenie_s": 0.7
+      }
+    },
+    "efekty": {
+      "opis": "Efekty 3D trafień w języku walki (iskry, rozbłysk, fala, łuk odbicia — swiat/test_walki2/zrodla/Efekty3D.luau; nazwy wybuchów = Efekty3D.WYBUCHY) i papierowe konfetti (własne, z klocków w barwach walki — walka konfetti nie ma). Gdy w miejscu jest kontener walki z modułem efektów, klient bierze iskry, rozbłyski, fale i łuk odbicia z niego; inaczej z własnego modułu EfektyTreningu.",
+      "kontener_walki": "TestWalki2",
+      "modul_walki": "Efekty3D",
+      "trafienie": {
+        "sila": "cios",
+        "pancerz": "blok",
+        "kondycja": "cios",
+        "zrecznosc": "blask",
+        "inteligencja": "iskra",
+        "szczescie": "trucizna"
+      },
+      "mocne": "krytyk",
+      "kamien": "kamien",
+      "oberwanie": "cios",
+      "zaklecie": "bariera",
+      "skala": 0.8,
+      "skala_mocne": 1.1,
+      "fala_promien": 2.2,
+      "fala_serii": 5.5,
+      "konfetti": {
+        "kolory": ["FFD23F", "FF8A1F", "E8364F", "FF7A8A", "3FF2D0", "27B6F2", "52D273", "7B4DFF", "FFFFFF"],
+        "zwykle": {"ile": 46, "salwy": 2},
+        "wielkie": {"ile": 90, "salwy": 4},
+        "odstep_salw_s": 0.45,
+        "zycie_s": 3.2,
+        "rozrzut": 4.5,
+        "predkosc": 30,
+        "grawitacja": 9,
+        "opor": 2.2,
+        "rozmiar": [0.34, 0.22, 0.05]
+      }
+    },
+    "bohater": {
+      "opis": "Haczyk bohatera klasy (inny pakiet, gdy jest w miejscu): BindableFunction u klienta pod ścieżką z pola sciezka. Gdy bohater jest aktywny, awatar jest schowany, więc ruchy postaci w mini-grach (bieg, skok, padnij, ręce w górę, radość) idą przez haczyk; bez niego — stawy awatara jak dotąd. Przesunięcie widoku bohatera idzie tylko przy skoku (skok_wys); poza padnij sama opuszcza jego biodra ze stopami na ziemi, więc przy niej bohatera się nie przesuwa.",
+      "sciezka": "BohaterSwiat/Sygnaly/RuchBohatera",
+      "klipy": {"bieg": "bieg", "skok": "skok", "padnij": "padnij", "rece": "rece_gora", "radosc": "radosc"},
+      "skok_wys": 2.7,
+      "radosc_co_s": 3.0,
+      "odswiez_s": 0.5,
+      "ponow_po_s": 2.0
+    }
   },
   "sterowanie": {
     "gora": {"klawisze": ["Up", "W"], "pad": ["DPadUp", "ButtonY"], "napis": "GÓRA", "skrot": "W"},
@@ -387,7 +544,7 @@
     "sterowanie_zrecznosc": "Niska kłoda — SKOK, wysoka kłoda — PADNIJ",
     "sterowanie_inteligencja": "Patrz, które runy świecą, i powtórz je po kolei",
     "sterowanie_szczescie": "Łap koniczyny koszykiem, omijaj kamienie",
-    "trafienia": ["TRAFIONE!", "ŁUP!", "DOBRZE!", "ŚWIETNIE!", "MOCARZ!"],
+    "trafienia": ["PAF!", "ŁUP!", "TRACH!", "BAM!", "POW!"],
     "trafienia_blok": ["BLOK!", "TWARDY!", "STOI!", "MUR!", "SKAŁA!"],
     "trafienia_rytm": ["RÓWNO!", "TUP!", "W RYTM!", "BIEGNIESZ!", "MARATON!"],
     "trafienia_unik": ["HOP!", "ZWINNIE!", "UNIK!", "JAK KOT!", "AKROBATA!"],
@@ -428,6 +585,9 @@
       "blad": "Nie udało się — spróbuj jeszcze raz"
     },
     "koniec": "KONIEC RUNDY",
+    "przerwana": "PRZERWANA",
+    "bez_pudla": "BEZ PUDŁA!",
+    "punkt": "+%d %s!",
     "jeszcze_raz": "JESZCZE RAZ",
     "inna_gra": "INNA GRA",
     "wyjdz": "WYJDŹ",

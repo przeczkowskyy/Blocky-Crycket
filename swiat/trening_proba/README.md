@@ -5,8 +5,11 @@ południem** (etap B): lista T01–T14 zaliczona, zrzuty z gry w `klatki/`, wyni
 nowe mini-gry (Kondycja „Bieżnia”, Zręczność „Kłody”, Inteligencja „Runy”, Szczęście „Koniczyny”) — noc 17/18.11:
 zaprogramowane i sprawdzone offline (część A), a 18.11.2026 o 00:51–01:40 zbudowane w Studio i sprawdzone w trybie
 Play (część B: lista T01–T22 — 22 × OK)**; podglądy brył w `podglady/`, zrzuty z gry w `klatki/` (09–25), wyniki
-w „Noc 17/18.11” i „Część B”. Opis sześciu mini-gier, wybory dla ludzi i ustawienia „przyjęte,
-do zmiany”: [`PROJEKT.md`](PROJEKT.md).
+w „Noc 17/18.11” i „Część B”. **18.11.2026 (dzień): wygląd jak w walce — kamery pod kątami ekranu walki, komiksowe
+napisy, efekty 3D trafień, konfetti i radość po rundzie — zaprogramowane, sprawdzone offline (54 testy), a o 09:50–11:00
+wdrożone w Studio i sprawdzone w trybie Play z bohaterem klasy (część B: lista T01–T27 — 27 × OK)** (sekcja „Wygląd jak
+w walce”; nowy wygląd pokazują zrzuty 26–79 w `klatki/`, zrzuty 01–25 są sprzed tej zmiany).
+Opis sześciu mini-gier, wybory dla ludzi i ustawienia „przyjęte, do zmiany”: [`PROJEKT.md`](PROJEKT.md).
 Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅). Przyrost według propozycji
 `tools/walka/BALANS_1711.md`, część 6 — to nie jest decyzja (wybór 1 w PROJEKT.md).*
 
@@ -26,21 +29,25 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | Plik | Co to jest |
 |---|---|
 | `PROJEKT.md` | sześć mini-gier (PROPOZYCJA), wybory dla ludzi, ustawienia „przyjęte, do zmiany” |
-| `ustawienia.json` | **jedyne źródło liczb**: statystyki, runda, poziomy trudności i wagi sześciu gier, pasek przyrostu, ochrona przed spamem, układ areny i stanowisk, telefon (rozmiary), klawisze, dźwięki (wbudowane i zdarzenia arkusza `swiat/dzwiek_gra`), teksty |
-| `dane.py` | generator `zrodla/DaneTreningu.luau` (położenia w świecie, przypadki wzorcowe z lustra); reguły ustawień każdego rodzaju gry; `--sprawdz`, `--wyjscie DIR` |
+| `ustawienia.json` | **jedyne źródło liczb**: statystyki, runda, poziomy trudności i wagi sześciu gier, pasek przyrostu, ochrona przed spamem, układ areny i stanowisk (kamera gry, ujęcie początku odliczania, zbliżenie po rundzie, miejsce dużych napisów), telefon (rozmiary), ruch kamery (`ui.kamera`), komiksowe napisy (`ui.komiks`), efekty i konfetti (`ui.efekty`), haczyk bohatera (`ui.bohater`), klawisze, dźwięki (wbudowane i zdarzenia arkusza `swiat/dzwiek_gra`), teksty |
+| `dane.py` | generator `zrodla/DaneTreningu.luau` (położenia w świecie, przypadki wzorcowe z lustra); reguły ustawień każdego rodzaju gry i wyglądu (kąty kamer, style napisów, nazwy wybuchów z modułu walki, litery napisów w czcionce komiksowej); `--sprawdz`, `--wyjscie DIR` |
 | `logika_treningu.py` | lustro `zrodla/LogikaTreningu.luau` w Pythonie (plan rundy sześciu gier, werdykty: okno czasu, kolejność run, tor koszyka; pasek, waga, spam, wejście, skala UI) |
-| `scena.py` | arena z prostych części (202): podłoga, murki, niewidzialne ściany, lobby z tablicą wyboru i bramą wyjścia, sześć stanowisk z trenerami |
-| `podglad.py` | **podglądy stanowisk bez Studio**: render brył z `scena.py` z kamery każdej mini-gry + przykładowa chwila gry i zarys przycisków (numpy + Pillow, najniższy priorytet) → `podglady/` |
-| `podglady/` | `podglad_<gra>.jpg` (sześć stanowisk) i `podglad_arena.jpg` — render brył, nie zrzut z gry |
+| `kamera_treningu.py` | lustro `zrodla/KameraTreningu.luau` (ujęcia kamery stanowisk) + rzut punktu na ekran, miejsca postaci, prostokąt karty podsumowania — dla podglądów i testów |
+| `scena.py` | arena z prostych części (202): podłoga, murki, niewidzialne ściany, lobby z tablicą wyboru i bramą wyjścia, sześć stanowisk z trenerami; `pole_gry` — punkty, które gracz musi widzieć |
+| `podglad.py` | **podglądy stanowisk bez Studio**: render brył z `scena.py` z kamery każdej mini-gry + przykładowa chwila gry, zarys przycisków i dużego napisu (numpy + Pillow, najniższy priorytet) → `podglady/`; `--ujecie start` / `final`, `--ekran 667x375` |
+| `podglady/` | `podglad_<gra>.jpg` (kamera gry), `podglad_<gra>_start.jpg` (początek odliczania), `podglad_<gra>_final.jpg` (zbliżenie po rundzie z kartą) i `podglad_arena.jpg` — render brył, nie zrzut z gry |
 | `zrodla/LogikaTreningu.luau` | czysta logika (ModuleScript) — ta sama co lustro; serwer sprawdza ją przy starcie (118 przypadków) |
+| `zrodla/KameraTreningu.luau` | czysty rachunek kamery (ModuleScript): ujęcia stanowiska, odliczania, gry i zbliżenia po rundzie, zawężenie kąta po trafieniu, drżenie |
+| `zrodla/EfektyTreningu.luau` | efekty 3D trafień w języku walki (z modułu efektów walki, gdy stoi w miejscu; inaczej własne kopie) i papierowe konfetti (ModuleScript) |
+| `zrodla/KomiksTreningu.luau` | komiksowe napisy w stylu walki: Bangers, cień i obrys tuszem, obrót, gwiazda, wejście i zanik (ModuleScript) |
 | `zrodla/SerwerTreningu.server.luau` | serwer: werdykty i przyrosty, ochrona przed spamem, wejście i wyjście, podpowiedzi E, sygnał dla modułu statystyk, haczyk testowy |
-| `zrodla/KlientTreningu.client.luau` | klient: własny ScreenGui (tymczasowy wybór, status, sterowanie sześciu gier, podpowiedź obrazkowa, podsumowanie), kamera stanowiska, pochłanianie ruchu, rysowanie stanowisk (`GRY[gra]`), ruch postaci (bieg, skok / padnij, przejścia z koszykiem), efekty i dźwięki, `OknoMiejsca`, uchwyt `WybierzGre` |
+| `zrodla/KlientTreningu.client.luau` | klient: własny ScreenGui (tymczasowy wybór, status, sterowanie sześciu gier, podpowiedź obrazkowa, karta podsumowania) i warstwa komiksowa, kamera stanowiska (ujęcia jak w walce), pochłanianie ruchu, rysowanie stanowisk (`GRY[gra]`), ruch postaci (bieg, skok / padnij, przejścia z koszykiem, radość — awatar albo bohater klasy przez haczyk), efekty i dźwięki, `OknoMiejsca`, uchwyt `WybierzGre` |
 | `zrodla/DaneTreningu.luau` | **wygenerowany** — nie edytować ręcznie |
 | `sprawdz_luau_treningu.py` | kontrola statyczna Luau (reguły jak w bazarze + zakaz zasobów spoza Robloxa i rozmiarów tekstu z literałów; jedyny wyjątek: adres arkusza dźwięku z katalogu `swiat/dzwiek_gra`) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
-| `testy/test_treningu.py` | 44 testy offline (opis w nagłówku pliku; 5e — pole gry na czterech ekranach) |
-| `testy/proba_play.py` | próba w Studio (Play): T01–T14 (Siła, Pancerz, wejście, wyjście, telefon) i T15–T22 (cztery nowe gry, spam, reset postaci, klatka); `--nowe` — tylko nowe; `--sprawdz` — kawałki Luau bez Studio |
-| `testy/zrzuty_gry.py` | zrzuty z gry do `klatki/` (1280 px): 01–08 (Siła, Pancerz) i 09–24 (każda nowa gra: start z podpowiedzią, środek rundy, podsumowanie, telefon 667 × 375); `--nowe`, `--sprawdz` |
+| `testy/test_treningu.py` | 54 testy offline (opis w nagłówku pliku; 5e — pole gry na czterech ekranach, 5f–5h i 3f–3g, 4f, 6i–6l — wygląd jak w walce) |
+| `testy/proba_play.py` | próba w Studio (Play): T01–T14 (Siła, Pancerz, wejście, wyjście, telefon), T15–T22 (cztery nowe gry, spam, reset postaci, klatka) i T23–T27 (kamery, napisy, efekty, konfetti, bohater); `--nowe`, `--walka`; `--sprawdz` — kawałki Luau bez Studio |
+| `testy/zrzuty_gry.py` | zrzuty z gry do `klatki/` (1280 px): 01–08 (Siła, Pancerz), 09–24 (każda nowa gra: start z podpowiedzią, środek rundy, podsumowanie, telefon 667 × 375), `--telefon` (26–37), `--walka` (38–67: odliczanie, trafienie, seria, zbliżenie z konfetti, zbliżenie na telefonie); `--nowe`, `--sprawdz` |
 | `klatki/` | zrzuty z gry (tryb Play) — tabela w „Zrzuty z gry” |
 
 ## Co powstanie w kontenerze `Workspace/TreningProba`
@@ -48,6 +55,7 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | Ścieżka | Klasa | Co robi |
 |---|---|---|
 | `Moduly/DaneTreningu`, `Moduly/LogikaTreningu` | ModuleScript | dane (wygenerowane) i logika |
+| `Moduly/KameraTreningu`, `Moduly/EfektyTreningu`, `Moduly/KomiksTreningu` | ModuleScript | wygląd jak w walce (tylko klient): rachunek kamery, efekty 3D i konfetti, komiksowe napisy |
 | `SerwerTreningu` (RunContext Server), `KlientTreningu` (RunContext Client) | Script | poza Studio serwer usuwa cały kontener (jak inne prototypy) |
 | `Zdalne/ZdarzeniaTreningu` | RemoteEvent | klient → serwer: `wejdz`, `start`, `akcja`, `przerwij`, `wyjdz`; serwer → klient: `wybor`, `odmowa`, `przybycie`, `runda`, `wynik`, `koniec`, `wyjscie` |
 | `Sygnaly/PrzyrostStatystyki` | BindableEvent | **dla przyszłego modułu statystyk** (dziś nikt go nie słucha) |
@@ -58,7 +66,9 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 
 Atrybuty kontenera: `Wygenerowane`, `Zrodlo`, `Zbudowano`, `Skrot`, `PunktTablicy`, **`WyborTymczasowy`** (true; false
 = tymczasowy wybór się nie otwiera, bo jest okno Pawła). Ręczne w Edit i przenoszone przy odbudowie:
-`WyborTymczasowy`, `RecznyPunktTablicy` (Vector3 na gruncie — własne miejsce tablicy). W Play serwer ustawia
+`WyborTymczasowy`, `RecznyPunktTablicy` (Vector3 na gruncie — własne miejsce tablicy). Tylko do prób, u klienta
+w Play: `EmulacjaEkranu` (Vector2 — ekran telefonu), `EfektyWlasne` (true — efekty z własnego modułu mimo modułu
+walki w miejscu), `HaczykBohatera` (ścieżka zastępczego haczyka bohatera). W Play serwer ustawia
 `SerwerTreninguGotowy`, `ZgodnoscLogikiTreningu` („OK 70/70”), `Podpowiedzi` (3), liczniki `LicznikWejsc`,
 `LicznikRund`, `LicznikTrafien`, `LicznikPudel`, `LicznikSpamu`, `LicznikSygnalow`, `LicznikOdmow`, `OstatniWynik`,
 `OstatniaOdmowa`, a klient (u siebie) — `KlientTreninguGotowy`. Atrybuty gracza: `TreningSila`, `TreningKondycja`,
@@ -90,17 +100,22 @@ zmienia.
 
 ```
 python -B swiat/trening_proba/dane.py                    # po każdej zmianie ustawienia.json
-python -B swiat/trening_proba/testy/test_treningu.py     # 44 testy, ok. 13 s
+python -B swiat/trening_proba/testy/test_treningu.py     # 54 testy, ok. 18 s
 python -B swiat/trening_proba/zbuduj.py --sucho          # bez Studio: dane, Luau, strażniki, plan budowy
-python -B swiat/trening_proba/podglad.py                 # podglądy stanowisk do podglady/ (ok. 10 s, bez Studio)
+python -B swiat/trening_proba/podglad.py                 # podglądy stanowisk do podglady/ (ok. 1 min, bez Studio)
+python -B swiat/trening_proba/podglad.py --ujecie final  # zbliżenie po rundzie z kartą (--ujecie start: początek odliczania)
+python -B swiat/trening_proba/podglad.py --ekran 667x375 --wyj <folder>   # kadr telefonu
 python -B swiat/trening_proba/testy/proba_play.py --sprawdz   # kawałki Luau próby parsują się (bez Studio)
 python -B swiat/trening_proba/zbuduj.py                  # Studio w trybie Edit: buduje / odbudowuje kontener
 python -B swiat/trening_proba/zbuduj.py --skrypty        # tylko moduły i skrypty (arena i tablica zostają)
 python -B swiat/trening_proba/zbuduj.py --usun           # usuwa Workspace/TreningProba
 python -B swiat/trening_proba/testy/proba_play.py <folder poza repo>   # próba T01–T22 w trybie Play (ok. 12 min)
 python -B swiat/trening_proba/testy/proba_play.py <folder> --nowe      # tylko T01 i T15–T22 (ok. 8 min)
+python -B swiat/trening_proba/testy/proba_play.py <folder> --walka     # tylko T01, T22 i T23–T27 — wygląd jak w walce (ok. 7 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py                      # 24 zrzuty do klatki/ (ok. 7 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py --nowe               # tylko 09–24 (cztery nowe gry, ok. 5 min)
+python -B swiat/trening_proba/testy/zrzuty_gry.py --telefon            # 26–37: sześć gier na telefonie (ok. 5 min)
+python -B swiat/trening_proba/testy/zrzuty_gry.py --walka              # 38–67: odliczanie, trafienie, seria, zbliżenie (ok. 9 min)
 ```
 
 Przy kilku oknach Studio dopisz `--studio <studio_id>`. Każdy wysyłany kod sprawdza `game.PlaceId == 129485428021967`
@@ -114,6 +129,264 @@ MINI-GRY” obok miejsca startu
 START (albo spacja) → strzałki / WASD w stronę skrzynki, gdy dolatuje do świecącego kółka → po rundzie podsumowanie →
 INNA GRA → Pancerz → spacja, gdy pierścień dojdzie do kółka (fioletowy = zmyłka, nie blokuj) → WYJDŹ (albo Q).
 Telefon: Test → Device → telefon w poziomie (667 × 375) albo zrzut z emulacją: `python -B swiat/trening_proba/testy/zrzuty_gry.py`.
+
+## Wygląd jak w walce: kamery, komiksowe napisy, efekty, konfetti (18.11.2026, część A — bez Studio, część B — w Studio)
+
+Polecenie Karola z 18.11.2026: „Popraw gry, tak żeby były pod takimi kątami, i w takich samych efektach POW/PAF
+komiksowych, konfetti jak walki.” Wzór: prototyp walki `swiat/test_walki2` (`OdtwarzaczWalki2`, `InterfejsWalki2`,
+`Efekty3D`). **Stan: zaprogramowane, sprawdzone offline (część A, punkty 1–7), wdrożone w Studio i sprawdzone w trybie
+Play (część B, punkt 8).** Reguły gier (werdykty serwera, przyrosty, ochrona przed spamem, lustro logiki — 118 przypadków) i dźwięki
+bez zmian; arena bez zmian (te same 202 części), żadnych nowych zasobów.
+
+### 1. Kamery (`stanowiska.<gra>.kamera`, `ui.kamera`; rachunek: `KameraTreningu.luau` = `kamera_treningu.py`)
+
+Położenia względem podestu stanowiska (x w prawo, y w górę, z do gracza); kąt widzenia pionowy. Było: jeden kąt 70°
+i kamera wysoko; jest: 44–51° (walka: 40–52°) i oko 2,7–4,1 st nad podestem.
+
+| Gra | Było: oko → cel (70°) | Jest: oko → cel, kąt | Kadr | Pole gry na telefonie (szer. × wys. ekranu) |
+|---|---|---|---|---|
+| Siła | (3,2; 6,6; 11,5) → (6,0; 3,2; −8) | (5,3; 2,7; 8,8) → (1,4; 3,9; −3,4), 48° | zza prawego ramienia, nisko, 18° od osi, lekko w górę | 0,28 × 0,37 → 0,43 × 0,69 |
+| Pancerz | (3,2; 6,6; 11,5) → (5,5; 3,6; −8) | (13,8; 2,8; 3,2) → (0,6; 5,2; −8,0), 48° | z boku (50°): gracz z tarczą po lewej, golem twarzą trzy czwarte | 0,13 × 0,31 → 0,48 × 0,66 |
+| Kondycja | (0; 8,4; 14,5) → (0; 1,4; −0,5) | (2,6; 3,3; 14,7) → (−1,1; 1,9; 0,8), 49° | nisko z przodu, 15° z ukosa: taśma biegnie na widza | 0,16 × 0,33 → 0,35 × 0,70 |
+| Zręczność | (7,6; 4,4; 8,2) → (−1,6; 2,2; −2,6) | (5,3; 2,9; 11,2) → (−0,4; 4,3; −0,7), 48° | nisko z ukosa (26°), w kadrze także szczyt skoku | 0,20 × 0,33 → 0,30 × 0,71 |
+| Inteligencja | (3,4; 6,6; 9,0) → (2,8; 4,5; −8) | (9,7; 4,0; 6,3) → (4,8; 4,9; −8,1), 44° | ściana z runami z ukosa (19°), mag po lewej | 0,23 × 0,36 → 0,40 × 0,71 |
+| Szczęście | (0; 9,4; 17,5) → (0; 8,1; −6) | (8,2; 4,1; 18,3) → (1,8; 7,4; −3,4), 51° | nisko z ukosa (16°), w górę na koronę drzewa | 0,22 × 0,54 → 0,26 × 0,74 |
+
+Ujęcia (klient: `ujecie(…)`, `kameraKlatka`):
+
+- **stanowisko** (przed rundą) — kamera gry z lekkim kołysaniem (±1,2° co 9 s);
+- **odliczanie** — dojazd z ujęcia `kamera.start` (dalej, wyżej, szerzej o 3–4°) do kamery gry; kończy się 0,4 s przed
+  startem, potem kamera stoi. Podpowiedź obrazkowa schodzi w odliczaniu na dół ekranu, liczby 3-2-1 i „START!” są
+  na środku;
+- **gra** — kamera stoi (pole gry czytelne). Trafienie: krótkie zawężenie kąta o 0,8° (0,2 s), mocne trafienie 1,8°,
+  próg serii / punkt statystyki 3° (0,6 s); drżenie gaśnie wykładniczo jak w walce (`exp(−9·t)`). Test 5e sprawdza
+  pole gry także przy największym zawężeniu;
+- **final** (po rundzie) — zbliżenie na postać: kamera 14 st przed nią, 2,4 st nad ziemią, kąt 42°, dojazd 8% i powolny
+  objazd; postać obraca się do kamery (0,35 s), karta podsumowania stoi po prawej, a postać w środku wolnego pasa po
+  lewej (kadr liczony z szerokości ekranu). Przed kolejną rundą postać wraca twarzą do gry.
+
+Postać półprzezroczysta u siebie została tylko w Sile (kamera za plecami); w Pancerzu i Runach kamera z boku jej nie
+potrzebuje. Pierścienie Pancerza stoją teraz na ekranie w miejscu, w które uderzy pięść (rzut punktu ciosu).
+W emulacji telefonu (`EmulacjaEkranu`) kamera okna dostaje szerszy kąt, żeby w prostokącie telefonu było widać to
+samo, co na telefonie.
+
+### 2. Komiksowe napisy (`ui.komiks`; `KomiksTreningu.luau`, warstwa `TreningProbaKomiks`)
+
+- Styl napisów walki: czcionka **Bangers**, cień i obrys tuszem, obrót do 8° (długie mniej), wejście od 0,2 przez 1,08
+  do 1 w 0,2 s, zanik od 74% życia, za dużymi słowami **gwiazda** z dwóch kręcących się kwadratów (pomarańcz i czerwień).
+- **Słowo przy miejscu trafienia** (rzut punktu 3D na ekran): rozbita skrzynka, tarcza, cel stopy obok taśmy, obok głowy
+  przy kłodzie, naciśnięty kamień, miejsce złapania koniczyny. Siła dostała słowa „PAF!”, „ŁUP!”, „TRACH!”, „BAM!”, „POW!” (było:
+  „TRAFIONE!”, „DOBRZE!”…). Kolor z walki: biały (cios), błękit (blok), zieleń (unik), fiolet (magia). Pudła —
+  mniejsze, różowoczerwone, w tym samym miejscu.
+- **Mocne trafienie** (co piąte w serii, próg serii, punkt statystyki, złota koniczyna, całe zaklęcie): większe żółte
+  słowo z gwiazdą, większy wybuch, mocniejsze zawężenie kadru.
+- **Duże słowa** („SERIA 10!”, „+1 Siła!”, „ZAKLĘCIE!”, „PATRZ!”, „TWOJA KOLEJ!”) w miejscu stanowiska z danych
+  (`stanowiska.<gra>.napis`): Siła, Bieżnia, Kłody, Koniczyny — lewy górny róg; Pancerz — dół między graczem
+  a golemem; Runy — przy magu (żeby „PATRZ!” nie zasłaniało kamieni). Jedno duże słowo naraz: punkt, potem seria,
+  potem zaklęcie; nowe duże słowo zdejmuje poprzednie z tego miejsca (`Komiks:usun`), a przy zbliżeniu po rundzie
+  słowa z rundy znikają, żeby nie zostały pod kartą.
+- Litery mają rozmiar stylu wprost (`TextSize`, bez `TextScaled`), obrys i cień rosną razem z literami (małe słowo —
+  cienki obrys, najmniej 1,5 px), gwiazda ma bok 1,4 wysokości napisu (w walce 1,15 wysokości tabliczki, która jest
+  wyższa od liter). Odliczanie stoi w stałym miejscu ekranu (`licznik_miejsce` = środek, 45% wysokości).
+- Napisy są w osobnej warstwie pod oknami mini-gry, więc nie przykrywają przycisków; z paneli schodzą, poza ekran nie
+  wychodzą (`Komiks.miejsce`).
+- **Czcionka a polskie znaki:** plik czcionki Bangers z instalacji klienta Roblox ma wszystkie polskie litery (a także
+  × · — … „ ”) — sprawdzone 18.11.2026 (FredokaOne ich nie ma, stąd wcześniejsza zmiana na Nunito). Lista liter spoza
+  ASCII jest w `ui.komiks.znaki`; napis z literą spoza listy dostaje czcionkę okien (Nunito ExtraBold), a generator
+  danych takiego napisu nie przepuści. Tytuł karty podsumowania: LuckiestGuy (czcionka nagłówków walki, też ma
+  polskie litery).
+
+### 3. Efekty 3D trafień (`ui.efekty`; `EfektyTreningu.luau`)
+
+| Gra | W chwili trafienia | Mocne trafienie / inne |
+|---|---|---|
+| Siła | iskry „cios” przy skrzynce + odłamki w jej kolorze, smuga za ostrzem miecza | wybuch „krytyk” |
+| Pancerz | iskry „blok” i łuk odbicia (parada) na tarczy | cios bez bloku: iskry przy postaci, czerwony błysk |
+| Kondycja | iskry i złota fala na celu stopy | — |
+| Zręczność | rozbłysk i fala kurzu spod stóp | kłoda trąca postać: iskry na piersi |
+| Inteligencja | fioletowe iskry „iskra” przy kamieniu | całe zaklęcie: rozbłysk „bariera” na ścianie + odłamki z czterech kamieni |
+| Szczęście | zielony rozbłysk przy koszyku | złota: „krytyk”; kamień w koszyku: wybuch „kamien” |
+
+Próg serii i punkt statystyki: złota fala wokół postaci (promień 5,5 st), drżenie i największe zawężenie kadru.
+
+### 4. Konfetti i radość po rundzie
+
+Walka **nie ma konfetti** — świętuje radością zwycięzcy, objazdem kamery, wstęgą „ZWYCIĘSTWO!” i wysypanym łupem.
+Dlatego konfetti jest własne, w tym samym języku: papierowe prostokąty z klocków w barwach palety walki, wystrzelone
+salwami z lewej i z prawej strony postaci, opadają wirując i gasną (3,2 s).
+
+- Runda dała punkt statystyki → postać się cieszy (animacja „cheer” z własnego skryptu Animate awatara; gdy jej nie ma —
+  ręce w górę i podskoki), 46 kawałków w 2 salwach, złoty rozbłysk nad głową.
+- Runda bez pudła (i nieprzerwana) → 90 kawałków w 4 salwach i napis „BEZ PUDŁA!” z gwiazdą nad postacią.
+- Bez punktu → samo zbliżenie i karta, bez konfetti i radości.
+- Miecz Siły i tarcza Pancerza (rekwizyty stanowiska, wiszą w stałym miejscu) są w zbliżeniu schowane i wracają
+  z kolejną rundą; postać obraca się do kamery.
+- Karta podsumowania w stylu karty wyniku walki: przy prawej krawędzi, lekko przekrzywiona, pomarańczowa wstęga
+  z tytułem, wyskakuje z powiększeniem, liczby rosną od zera (0,7 s). Rozmiar 400 × 244 i przyciski bez zmian. Panel
+  rundy jest na podsumowaniu schowany.
+
+### 5. Bohater klasy (`ui.bohater`)
+
+Gdy w miejscu działa pakiet bohatera (`Workspace/BohaterSwiat/Sygnaly/RuchBohatera`, BindableFunction u klienta)
+i gracz ma aktywnego bohatera, ruchy postaci idą przez haczyk: Bieżnia — klip `bieg`; Kłody — `skok` z przesunięciem
+w górę po łuku (2,7 st), `padnij` **bez przesunięcia w dół** (poza sama opuszcza biodra), trącenie kłodą —
+przesunięcie do tyłu; Koniczyny — `rece_gora`; po rundzie z punktem — `radosc` (zamawiana od nowa co 3 s). Bez haczyka
+albo bez aktywnego bohatera — stawy i animacje awatara jak dotąd. Każde wywołanie jest osłonięte (`FindFirstChild`,
+`pcall`, osobny wątek: haczyk bez obsługi nie zatrzyma gry — do następnego wejścia na stanowisko zostaje awatar).
+Półprzezroczystość postaci w Sile działa także na bohaterze (przejmuje `LocalTransparencyModifier` awatara).
+
+### 6. Co jest brane z walki, a co przeniesione
+
+- **Brane w czasie gry (`require`), gdy w miejscu stoi `Workspace/TestWalki2/Moduly/Efekty3D`:** iskry, rozbłyski,
+  fala uderzeniowa, łuk odbicia i tabela wybuchów. Klient sprawdza przy wejściu na stanowisko, czy moduł ma potrzebne
+  funkcje i nazwy wybuchów; każde wywołanie idzie przez `pcall`, a pierwszy błąd przełącza na własne efekty do
+  zejścia ze stanowiska. Bez kontenera walki mini-gry działają na własnych efektach (atrybut `EfektyWlasne = true`
+  wymusza je do próby).
+- **Przeniesione do pakietu:**
+  - te same efekty jako zapas (`EfektyTreningu.luau`: iskry, kula, fala, parada, 14 wybuchów) — test 6j pilnuje, że
+    nazwy, parametry i liczby są takie same jak w module walki;
+  - styl napisów (`KomiksTreningu.luau`) — `InterfejsWalki2` rysuje napisy tylko wewnątrz swojego ekranu walki (kadr,
+    tabliczki, stosy przy aktorach), a jego tabela stylów jest lokalna; liczby i kolory stylu są w `ui.komiks`,
+    a test 6i porównuje je ze źródłami walki;
+  - zasady kamery (`KameraTreningu.luau`) — ujęcia walki liczą się z geometrii dwóch aktorów na arenie, więc tu jest
+    własny mały rachunek z tymi samymi regułami (wąski kąt, niski kadr, dojazd, drżenie, finał ze zbliżeniem);
+  - konfetti — własne (w walce go nie ma).
+
+### 7. Sprawdzone offline (18.11.2026; wszystko kod 0)
+
+```
+python -B swiat/trening_proba/dane.py --sprawdz               # aktualny (36 planów, 36 sekwencji wzorcowych)
+python -B swiat/trening_proba/sprawdz_luau_treningu.py        # 7 plików, OK (z parserem luau_mini)
+python -B swiat/las_potwory/sprawdz_luau.py swiat/trening_proba/zrodla/*.luau   # 7 plików, OK
+python -B swiat/trening_proba/testy/test_treningu.py          # Ran 54 tests … OK (ok. 18 s)
+python -B swiat/trening_proba/testy/proba_play.py --sprawdz   # 25 kawałków Luau, OK
+python -B swiat/trening_proba/testy/zrzuty_gry.py --sprawdz   # 13 kawałków Luau, OK
+python -B swiat/trening_proba/zbuduj.py --sucho               # sucho: OK (202 części, 7 modułów i skryptów)
+```
+
+Nowe testy (10) i zmienione:
+
+- **3f** rachunek kamery w Luau (luau_mini) = lustro w Pythonie: ujęcia sześciu gier, zbliżenie dla losowych miejsc
+  postaci i ekranów, zawężenie, drżenie; odliczanie zaczyna się w ujęciu „start” i kończy w kamerze gry przed startem;
+- **3g** rozmiar i miejsce napisu (`Komiks.rozmiar`, `Komiks.miejsce`): 300 losowych układów — napis w obszarze, schodzi
+  z przeszkody, bez kolizji zostaje na miejscu;
+- **4f** oko kamery gry, początku odliczania, drogi dojazdu i zbliżenia stoi w arenie, nad podłogą i poza bryłami;
+  ze zbliżenia widać pierś i głowę postaci (każde miejsce postaci, początek i koniec objazdu); kąt ≤ 52°, oko ≤ 5,5 st
+  nad podestem;
+- **5e** (zmieniony, reguła ta sama): pole gry — teraz także postać w Pancerzu i na Bieżni oraz szczyt skoku
+  w Kłodach — na czterech ekranach w obszarze GUI i poza panelami, z kątem kamery stanowiska **i przy największym
+  zawężeniu**; do tego pole gry zajmuje co najmniej ćwierć szerokości i połowę wysokości telefonu;
+- **5f** postać (także nieprzezroczysty bohater) nie zasłania więcej niż połowy żadnej grupy punktów pola gry;
+- **5g** zbliżenie po rundzie: stopy, głowa, barki i dłonie w górze mieszczą się w wolnym pasie na lewo od karty na
+  czterech ekranach, na początku i po objeździe;
+- **5h** duże napisy po ułożeniu przez kod z gry nie leżą na panelach ani poza ekranem; „PATRZ!” nie zasłania kamieni;
+  odliczanie na środku nie koliduje z podpowiedzią na dole;
+- **6i** liczby i kolory stylu napisów = źródła walki; **6j** efekty: nazwy, parametry i liczby wybuchów = moduł walki,
+  klient woła tylko wspólne funkcje, moduł walki brany przez `FindFirstChild` + `pcall(require)`;
+- **6k** każda litera każdego napisu jest w czcionce komiksowej (lista w danych + plik czcionki klienta Roblox, gdy jest
+  na komputerze); **6l** haczyk bohatera: jedno osłonięte miejsce wywołania, „padnij” bez przesunięcia w dół;
+- **1c** 15 nowych rodzajów złych ustawień wyglądu → błąd; **5c** karta ze wstęgą mieści się na czterech ekranach.
+
+Podglądy (`podglady/`, render brył — obejrzane): kamera gry, początek odliczania i zbliżenie po rundzie dla sześciu
+gier. Wybór kamer: przeszukanie losowe z regułami testu 5e (kilkadziesiąt tysięcy kadrów na grę), potem ocena na oko.
+
+### 8. Część B — w Studio (18.11.2026, 09:50–11:00, tryb Play, z bohaterem klasy)
+
+Miejsce: `Workspace/BohaterSwiat` z `BohaterWSwiecie = true`, więc po wyborze klasy gracz jest bohaterem klasy —
+wszystkie próby szły z **prawdziwym** haczykiem `RuchBohatera` i z modułem efektów walki w miejscu. Wdrożenie:
+`zbuduj.py --skrypty` (arena bez zmian, 7 modułów i skryptów), w sumie pięć razy — po każdej turze poprawek. Pełna
+lista T01–T27 szła na trzeciej budowie; po dwóch ostatnich (przesunięcie trzech wierszy karty, miejsce słowa
+w Kłodach) powtórzone T01, T09, T10, T16, T22, T26, T27 — OK.
+
+```
+python -B tools/studio_okno.py --na-wierzch                                  # przed próbą: czas klatki z okna w tle jest niemiarodajny
+python -B swiat/trening_proba/zbuduj.py --skrypty                            # 1 min
+python -B swiat/trening_proba/testy/proba_play.py <folder poza repo>         # 12 min — cała lista T01–T27
+python -B swiat/trening_proba/testy/proba_play.py <folder poza repo> --walka # 4 min — T01, T22–T27
+python -B swiat/trening_proba/testy/zrzuty_gry.py --walka --klasa Warrior    # 9 min — zrzuty 38–67 (+ 54b)
+python -B swiat/trening_proba/testy/zrzuty_gry.py --walka --klasa Mage --krotko   # 3 min — zrzuty 68–79
+python -B swiat/trening_proba/testy/zrzuty_gry.py --telefon --klasa Warrior  # 3 min — zrzuty 26–37
+python -B swiat/przejscie_gry/proba_dymna.py <folder poza repo>              # 3 min — regresja całej gry
+```
+
+**Lista kontrolna T01–T27: 27 × OK.**
+
+| Punkt | Wynik w grze |
+|---|---|
+| T01–T22 | OK jak w nocy 18.11 (reguły bez zmian): zgodność logiki 118/118; Siła 45/45, Pancerz 42/43 (zablokowana zmyłka), Bieżnia 67/67, Kłody 31/31, Runy 37 trafień i 7 zaklęć, Koniczyny 30/30; punkty i przyrosty = oczekiwane; spam odrzucony (54–56 z 60); reset postaci w rundzie sprząta; konsola: 0 błędów pakietu |
+| T13, T21 | czas klatki z napisami, efektami i konfetti: Siła śr. 16,7 ms, p95 18,1 ms; Bieżnia 16,7 / 18,0 ms; Koniczyny 16,7 / 17,9 ms |
+| T23 kamera | stanowisko 48,0° (= dane); odliczanie zaczyna w ujęciu „start” i dojeżdża do kamery gry; w grze 45,3–48,0° (zawężenie przy trafieniach), drżenie oka ≤ 0,14 st; zbliżenie 42,0°, postać zwrócona do kamery (1,00), karta od x = 1387 z 2041 px; po JESZCZE RAZ postać znów przodem do gry; po wyjściu kąt kamery gracza 70° jak przed wejściem |
+| T24 napisy | 55 napisów w rundzie Siły na 45 trafień, naraz najwyżej 5, czcionką zastępczą 0 (Bangers), każdy napis z danych dostaje czcionkę komiksową |
+| T25 efekty | moduł walki w miejscu → źródło „walka” (49 nowych części, 0 błędów); wymuszone własne → „wlasne” (55 części, 0 błędów) |
+| T26 konfetti | runda bez pudła z punktami → 90 kawałków, radość postaci (klip bohatera), napis „BEZ PUDŁA!”; przerwana runda bez punktu → 0 kawałków, bez radości |
+| T27 bohater | prawdziwy haczyk: bohater aktywny, w Kłodach klipy `skok`, `padnij`, po rundzie `radosc`, przesunięcie w skoku, stawy awatara nietknięte, haczyk nie zawieszony |
+
+W pełnym przebiegu T27 wyszło „BŁĄD”, a T24 podało 529 napisów — oba przez kod próby, nie gry: próbki ruchu zapisywały
+atrybuty dopiero po pętli (pętla trwa dłużej niż N × 0,1 s, więc próba czytała wynik poprzedniej gry), a licznik
+napisów rośnie od startu klienta. Próbki zapisują teraz wynik po każdej próbce, T24 liczy przyrost od wejścia na
+stanowisko; powtórka `--tylko T01,T24,T27,T22` na tej samej budowie: 4 × OK (wyniki w tabeli). Trzecia poprawka
+próby: wybrane przez `--tylko` punkty bez T02 / T04 zaczynały z miejsca startu postaci, które bywa poza zasięgiem
+tablicy (serwer słusznie odmawiał: „za_daleko”) — `wejdz_do` stawia teraz postać przy tablicy, gdy gracz nie jest na
+stanowisku.
+
+**Próba dymna całej gry** (`swiat/przejscie_gry/proba_dymna.py`): D00–D13 — 14 × OK (walka, łup 0 → 25 złota, trener
+w bazarze, runda Siły, wyjście; klatka 16,7 ms, p95 17,8 ms; konsola bez śladów błędów). Żadna próba nie zmieniła
+śledzonych plików poza tym pakietem.
+
+**Co poprawione po zobaczeniu gry:**
+
+1. Napisy: litery mają rozmiar stylu wprost, obrys i cień rosną z rozmiarem liter — małe słowa („TUP!”, „HOP!”) były
+   plamą tuszu, bo pełny obrys zalewał litery.
+2. Gwiazda za słowem większa (bok 1,4 wysokości napisu) — wcześniej prawie cała chowała się za literami.
+3. Miecz Siły i tarcza Pancerza (rekwizyty stanowiska) schowane w zbliżeniu po rundzie — wisiały w powietrzu obok
+   postaci obróconej do kamery.
+4. Jedno duże słowo naraz w miejscu stanowiska („+1 Pancerz!” i „SERIA 10!” nakładały się); słowa z rundy znikają przy
+   zbliżeniu (na telefonie zostawały pod kartą).
+5. Smuga za mieczem węższa i krótsza (zasłaniała strefę „góra”).
+6. Kłody: „HOP!” / „UNIK!” obok głowy po prawej, nie na głowie skaczącej postaci (po lewej zderzało się z dużym
+   słowem stanowiska „+1 Zręczność!”).
+7. Odliczanie na 45% wysokości ekranu — „START!” z większą gwiazdą nie mieściło się nad podpowiedzią na telefonie.
+8. Karta podsumowania: wiersze nad przyrostem wyżej, przyrost niżej — kreski liter „Ś”, „Ć” („ZRĘCZNOŚĆ +3”)
+   wchodziły na wiersz serii.
+
+**Zrzuty z gry (`klatki/`, 1280 px; „✓” = obejrzany w tej wersji, „(✓)” = obejrzana wersja tego samego kadru sprzed ostatnich poprawek).** Bohater: Wojownik (38–67, 26–37) i Mag-kot (68–79). Nazwy konta
+na zrzutach nie ma; wyniki prób z nazwą konta zostały poza repozytorium.
+
+| Pliki | Co widać |
+|---|---|
+| `38`, `43`, `48`, `53`, `58`, `63` `_walka_<gra>_odliczanie` | odliczanie: kamera w drodze z ujęcia „start”, cyfra na środku, podpowiedź obrazkowa na dole ((✓) 38, 58) |
+| `39_walka_sila_trafienie`, `40_walka_sila_seria` | Siła: „TRACH!”, „ŁUP!” z gwiazdą przy rozbitej skrzynce, „SERIA 10!” w lewym górnym rogu, złota fala; bohater półprzezroczysty, strefy widać przez niego (✓ 40; (✓) 39) |
+| `44_walka_pancerz_trafienie`, `45_walka_pancerz_seria` | Pancerz: pierścień na tarczy w miejscu ciosu, „SPOKÓJ!” przy tarczy, „SERIA 10!” na dole między graczem a golemem (✓ 44, 45) |
+| `49_walka_kondycja_trafienie`, `50_walka_kondycja_seria` | Bieżnia: bohater biegnie po taśmie (klip `bieg`), „TUP!” / „W RYTM!” obok taśmy, „SERIA 10!” ((✓) 49, 50) |
+| `54_walka_zrecznosc_trafienie`, `54b_walka_zrecznosc_padnij`, `55_walka_zrecznosc_seria` | Kłody: bohater w skoku nad kłodą („HOP!” obok głowy, po prawej) i w przysiadzie pod wysoką kłodą („ZWINNIE!” z gwiazdą, obok „+1 Zręczność!”) (✓ 54, 54b) |
+| `59_walka_inteligencja_trafienie`, `60_walka_inteligencja_seria` | Runy: kadr zza ramienia bohatera, „PATRZ!” przy magu, „MĄDRZE!” / „PAMIĘTASZ!” na naciśniętych kamieniach, „SERIA 10!” (✓ 60; (✓) 59) |
+| `64_walka_szczescie_trafienie`, `65_walka_szczescie_seria` | Koniczyny: bohater z rękami w górze (klip `rece_gora`), „MAM!” / „SZCZĘŚCIE!” w miejscu złapania, „SERIA 10!” (✓ 64; (✓) 65) |
+| `41`, `46`, `51`, `56`, `61`, `66` `_walka_<gra>_final` | zbliżenie po rundzie bez pudła: bohater cieszy się twarzą do kamery, konfetti, „BEZ PUDŁA!”, karta po prawej (✓ 41, 46, 51; (✓) 56, 61, 66) |
+| `42`, `47`, `52`, `57`, `62`, `67` `_walka_<gra>_final_telefon_667x375` | to samo na telefonie 667 × 375 po przerwanej rundzie z punktem: bohater w kadrze na lewo od karty, konfetti (✓ 42, 67; (✓) 47, 52, 57) |
+| `68`–`79` `_mag_<gra>_runda` / `_final` | Mag (kot, niższy): runda z trafieniem i zbliżenie po pierwszym punkcie w każdej grze — kot mieści się w kadrze obok karty, skacze nad kłodą, biegnie po taśmie (✓ 68, 69, 70, 72, 74, 78, 79) |
+| `26`–`37` `_telefon_<gra>_667x375` / `_844x390` | runda na dwóch ekranach telefonu: pierścień Pancerza na tarczy i słowo przy tarczy na obu ekranach, „TUP!” obok taśmy, przyciski nie zasłaniają pola gry (✓ 32; (✓) 26, 28, 29, 30, 33, 34) |
+
+Zrzuty `01`–`25` nie były odświeżane — pokazują wygląd sprzed tej zmiany.
+
+### 9. Czego nie sprawdzono i ryzyka
+
+- **Prawdziwy telefon i dotyk** — tylko emulacja układu w oknie Studia (667 × 375 i 844 × 390); wycięcie ekranu,
+  gęstość pikseli i wydajność telefonu nie.
+- **Awatar bez bohatera klasy w Play nie był uruchomiony** — miejsce ma aktywnego bohatera, więc ruch stawami awatara,
+  jego animacja radości i haczyk bez obsługi (zastępczy haczyk z T27) są pokryte tylko testami offline i nocnymi
+  próbami sprzed bohatera. Wróci do sprawdzenia, gdy bohater będzie wyłączony.
+- **Duże napisy na telefonie są duże:** „SERIA 5!” zajmuje ok. ćwierci szerokości ekranu 667 × 375 i na ok. 1 s
+  przykrywa część pola gry (zrzuty 26, 28); w Runach „+1 Inteligencja!” zachodzi na kamienie w czasie wpisywania.
+  Rozmiar idzie ze skalą okien (przyciski ≥ 44 px) — do decyzji, czy słowa na telefonie zmniejszyć.
+- **Kule stref Siły zostają w kadrze zbliżenia** po rundzie (półprzezroczyste kule wokół postaci, zrzuty 41, 69) — to
+  części areny, nie rekwizyt klienta; można je chować tak jak miecz, jeśli przeszkadzają.
+- **Radość Maga (kot)** na zbliżeniu jest mało widoczna (zrzuty 69, 79) — to klip `radosc` z pakietu bohatera;
+  Wojownik podnosi miecz wyraźnie.
+- **Obrót postaci do kamery po rundzie** robi klient (`PivotTo`, jak przejścia w Koniczynach) — inni gracze też go
+  widzą; z dwoma graczami naraz niesprawdzone.
+- **Runy:** kadr zza ramienia — bohater stoi przy lewej krawędzi i jest przycięty przez kadr (zrzuty 58–60); kamienie
+  i przyciski są wolne.
+- Sekcje niżej opisują kamery i wygląd z 17–18.11 rano (sprzed tej zmiany), tak jak zrzuty 01–25.
 
 ## Noc 17/18.11.2026: cztery nowe mini-gry (część A — bez Studio)
 

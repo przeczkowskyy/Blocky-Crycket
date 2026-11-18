@@ -21,9 +21,20 @@
 		   w rytmie bębna; Zręczność „Kłody” — ramię z kłodą obraca się wokół słupa, niska: SKOK, wysoka: PADNIJ (postać
 		   skacze i pada — przesunięcie stawu biodra tylko u siebie); Inteligencja „Runy” — kamienie świecą po kolei,
 		   gracz powtarza; Szczęście „Koniczyny” — postać z koszykiem nad głową przechodzi między trzema torami.
+		5. Wygląd jak w walce (18.11.2026, polecenie Karola: „pod takimi kątami i w takich samych efektach POW / PAF,
+		   konfetti jak walki”):
+		   • kamera stanowiska nisko, pod wąskim kątem widzenia, z ukosa (rachunek: Moduly/KameraTreningu) — dojazd
+		     w odliczaniu, w rundzie stoi (krótkie zawężenie kąta i drżenie przy trafieniu), po rundzie zbliżenie na
+		     postać, która obraca się do kamery i się cieszy;
+		   • komiksowe napisy (Moduly/KomiksTreningu: Bangers, obrys tuszem, obrót, gwiazda za dużymi słowami) przy
+		     miejscu trafienia, duże słowa („SERIA 10!”, „+1 Siła!”) w miejscu stanowiska z danych;
+		   • efekty 3D trafień w języku walki (Moduly/EfektyTreningu: z modułu efektów walki, gdy stoi w miejscu, inaczej
+		     własne) i papierowe konfetti przy podsumowaniu, gdy runda dała punkt statystyki (większe bez pudła);
+		   • postać: gdy w miejscu działa bohater klasy (BindableFunction Workspace/BohaterSwiat/Sygnaly/RuchBohatera),
+		     bieg, skok, padnij, ręce w górę i radość idą przez ten haczyk; bez niego — stawy i animacje awatara.
 	Haczyk testowy: Sygnaly/SterowanieKlienta ("stan" | "wybor" | "okno" | "graj", gra | "start" | "nacisnij", w |
 	"autograj", celnosc, blokujZmylki | "zaplanuj", lista | "spam", n, w | "surowe", w, dt | "wyjdz" | "inna" | "zamknij"
-	| "przerwij" | "dlugie_napisy", k).
+	| "przerwij" | "dlugie_napisy", k | "napis", tekst, styl | "konfetti", wielkie).
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return
@@ -41,6 +52,9 @@ local kontener = script.Parent
 local moduly = kontener:WaitForChild("Moduly")
 local D = require(moduly:WaitForChild("DaneTreningu"))
 local L = require(moduly:WaitForChild("LogikaTreningu"))
+local Kam = require(moduly:WaitForChild("KameraTreningu"))
+local Efekty = require(moduly:WaitForChild("EfektyTreningu"))
+local Komiks = require(moduly:WaitForChild("KomiksTreningu"))
 local zdalne: RemoteEvent = kontener:WaitForChild("Zdalne"):WaitForChild("ZdarzeniaTreningu")
 local sygnaly = kontener:WaitForChild("Sygnaly")
 local sterowanie: BindableFunction = sygnaly:WaitForChild("SterowanieKlienta")
@@ -51,8 +65,14 @@ local U = D.ui
 local T = D.teksty
 local KOL = U.kolory
 local PX = U.tekst_px
+local KA = U.kamera -- ruch kamery (jak w walce)
+local KX = U.komiks -- komiksowe napisy
+local EF = U.efekty -- efekty 3D trafień i konfetti
+local BH = U.bohater -- haczyk bohatera klasy
 -- czcionka z pełnymi polskimi znakami (FredokaOne rysuje ę, ż, ś, ć, ź zastępczą, mniejszą czcionką)
 local CZCIONKA = Font.new(Font.fromEnum(Enum.Font[U.czcionka]).Family, Enum.FontWeight[U.waga_czcionki])
+-- nagłówek karty podsumowania: czcionka nagłówków walki (ma polskie znaki — sprawdzone jak czcionka napisów)
+local CZCIONKA_NAGLOWKA = Font.fromEnum(Enum.Font[KX.czcionka_naglowka])
 
 local function kolor(h)
 	return Color3.fromHex(h)
@@ -117,6 +137,10 @@ local stan = {
 	runyNacisk = {}, -- Runy: runa → { t, zle }
 	pokazGrany = nil, -- Runy: "pokazy:i" ostatnio zagranej nuty pokazu
 	pokazNapis = nil, -- Runy: numer pokazu, przy którym był napis PATRZ / TWOJA KOLEJ
+	final = nil, -- po rundzie: { korzen, fx, cfOd, cfDo, t, obrot } — zbliżenie na postać, obrót do kamery
+	liczenie = nil, -- karta podsumowania: { t, a } — liczby rosną od zera
+	konfetti = 0, -- ile kawałków konfetti poszło przy ostatnim podsumowaniu (haczyk)
+	radosc = nil, -- postać się cieszy: chwila startu (podskoki awatara bez animacji)
 }
 
 ------------------------------------------------------------------ ekran: pomocnicze (rozmiary tylko z D.ui)
@@ -140,6 +164,25 @@ korzen.Parent = gui
 local skalaKorzenia = Instance.new("UIScale")
 skalaKorzenia.Parent = korzen
 
+-- warstwa komiksowa: napisy przy miejscu trafienia i pierścienie Pancerza. Osobny ScreenGui na cały ekran
+-- (IgnoreGuiInset), bo jego współrzędne to piksele widoku kamery (Camera:WorldToViewportPoint) — jak w ekranie walki;
+-- stoi pod oknami mini-gry (niższy DisplayOrder), więc napis nigdy nie przykrywa przycisku ani panelu rundy
+local guiKomiks = Instance.new("ScreenGui")
+guiKomiks.Name = "TreningProbaKomiks"
+guiKomiks.ResetOnSpawn = false
+guiKomiks.IgnoreGuiInset = true
+guiKomiks.DisplayOrder = U.kolejnosc_wyswietlania - 1
+guiKomiks.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+guiKomiks.Enabled = false
+guiKomiks.Parent = ekrany
+local warstwa = Instance.new("Frame")
+warstwa.Name = "Napisy"
+warstwa.BackgroundTransparency = 1
+warstwa.Size = UDim2.fromScale(1, 1)
+warstwa.Active = false
+warstwa.Parent = guiKomiks
+local komiks = Komiks.nowy(warstwa, U, CZCIONKA)
+
 local skale = {}
 local przyciski = {} -- { obiekt, szer, wys } (bazowo)
 local napisy = {} -- { obiekt, rozmiar } (bazowo)
@@ -157,6 +200,16 @@ local function obrysuj(o, grubosc, h)
 	s.Color = kolor(h or KOL.tusz)
 	s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	s.Parent = o
+	return s
+end
+
+-- obrys liter (napisy w stylu walki: tytuł karty podsumowania, przyrost)
+local function obrysTekstu(l, grubosc, h)
+	local s = Instance.new("UIStroke")
+	s.Thickness = grubosc
+	s.Color = kolor(h or KOL.tusz)
+	s.LineJoinMode = Enum.LineJoinMode.Round
+	s.Parent = l
 	return s
 end
 
@@ -365,15 +418,33 @@ ui.obrazek = panel("Obrazek", U.obrazek_px[1], U.obrazek_px[2], UDim2.new(0.5, 0
 zaokraglij(ui.obrazek, 12)
 obrysuj(ui.obrazek, 3)
 
--- podsumowanie rundy (środek)
-ui.koniec = panel("Podsumowanie", 400, 244, UDim2.new(0.5, 0, 0.5, 0), Vector2.new(0.5, 0.5))
+-- podsumowanie rundy — karta w stylu wyniku walki: przy prawej krawędzi (lewa część ekranu zostaje dla postaci
+-- w zbliżeniu po rundzie), lekko przekrzywiona, z pomarańczową wstęgą tytułu; liczby rosną od zera (stan.liczenie)
+ui.koniec = panel("Podsumowanie", 400, 244, UDim2.new(1, -KX.karta.margines_px, 0.5, 0), Vector2.new(1, 0.5))
 zaokraglij(ui.koniec, 14)
-obrysuj(ui.koniec, 3)
-ui.kTytul = napis(ui.koniec, "Tytul", T.koniec, "duzy", 0, 8, 400, 32, KOL.tusz)
+obrysuj(ui.koniec, 4)
+ui.koniec.Rotation = KX.karta.obrot
+ui.wstega = Instance.new("Frame")
+ui.wstega.Name = "Wstega"
+ui.wstega.Position = UDim2.fromOffset(-8, -12)
+ui.wstega.Size = UDim2.fromOffset(416, 50)
+ui.wstega.BackgroundColor3 = kolor(KX.kolory[KX.karta.wstega])
+ui.wstega.BorderSizePixel = 0
+ui.wstega.Rotation = KX.karta.wstega_obrot
+zaokraglij(ui.wstega, 12)
+obrysuj(ui.wstega, 4)
+ui.wstega.Parent = ui.koniec
+ui.kTytul = napis(ui.wstega, "Tytul", T.koniec, "duzy", 0, 6, 416, 38, KX.kolory[KX.karta.tytul])
+ui.kTytul.FontFace = CZCIONKA_NAGLOWKA
+obrysTekstu(ui.kTytul, 3)
+-- wiersze nad przyrostem wyżej, przyrost niżej: kreski liter „Ś”, „Ć” w czcionce komiksowej wchodziły na wiersz serii
+-- (próba w Studio 18.11.2026)
 ui.k1 = napis(ui.koniec, "Trafienia", "", "sredni", 10, 46, 380, 24, KOL.tusz)
-ui.k2 = napis(ui.koniec, "Seria", "", "sredni", 10, 72, 380, 24, KOL.tusz)
-ui.k3 = napis(ui.koniec, "Przyrost", "", "duzy", 10, 98, 380, 32, KOL.dobrze)
-ui.k4 = napis(ui.koniec, "Sesja", "", "maly", 10, 134, 380, 34, KOL.szary)
+ui.k2 = napis(ui.koniec, "Seria", "", "sredni", 10, 70, 380, 24, KOL.tusz)
+ui.k3 = napis(ui.koniec, "Przyrost", "", "seria", 10, 100, 380, 44, KX.kolory.zielony)
+obrysTekstu(ui.k3, 3)
+ui.k4 = napis(ui.koniec, "Sesja", "", "maly", 10, 142, 380, 32, KOL.szary)
+local skalaKarty = ui.koniec:FindFirstChildOfClass("UIScale")
 
 -- komunikat (odmowa)
 ui.toast = panel("Komunikat", 380, 44, UDim2.new(0.5, 0, 0.3, 0), Vector2.new(0.5, 0.5))
@@ -381,15 +452,7 @@ zaokraglij(ui.toast, 10)
 obrysuj(ui.toast, 2)
 ui.toastTekst = napis(ui.toast, "Tekst", "", "sredni", 8, 4, 364, 36, KOL.tusz)
 
--- napis środkowy (odliczanie, TRAFIONE!) i błysk
-ui.srodek = panel("Napis", 460, 80, UDim2.new(0.38, 0, 0.25, 0), Vector2.new(0.5, 0.5), "")
-ui.srodekTekst = napis(ui.srodek, "Tekst", "", "wielki", 0, 0, 460, 80, KOL.krem)
-local obrysSrodka = Instance.new("UIStroke")
-obrysSrodka.Thickness = 3
-obrysSrodka.Color = kolor(KOL.tusz)
-obrysSrodka.Parent = ui.srodekTekst
-local skalaSrodka = ui.srodek:FindFirstChildOfClass("UIScale")
-
+-- błysk ekranu (napisy odliczania i trafień rysuje warstwa komiksowa — napisKomiks niżej)
 ui.blysk = Instance.new("Frame")
 ui.blysk.Name = "Blysk"
 ui.blysk.Size = UDim2.fromScale(1, 1)
@@ -399,8 +462,17 @@ ui.blysk.BorderSizePixel = 0
 ui.blysk.Active = false
 ui.blysk.Parent = gui
 
--- pierścienie Pancerza (cel stały + dwa zbiegające się)
-ui.pierscienie = panel("Pierscienie", 64, 64, UDim2.new(0.34, 0, 0.6, 0), Vector2.new(0.5, 0.5), "")
+-- pierścienie Pancerza (cel stały + dwa zbiegające się) — w warstwie komiksowej, w miejscu, w które uderzy pięść
+-- (rzut punktu ciosu na ekran co klatkę): wskazówka czasu jest tam, gdzie gracz patrzy na cios
+ui.pierscienie = Instance.new("Frame")
+ui.pierscienie.Name = "Pierscienie"
+ui.pierscienie.AnchorPoint = Vector2.new(0.5, 0.5)
+ui.pierscienie.Size = UDim2.fromOffset(64, 64)
+ui.pierscienie.BackgroundTransparency = 1
+ui.pierscienie.Visible = false
+ui.pierscienie.Parent = warstwa
+local skalaPierscieni = Instance.new("UIScale")
+skalaPierscieni.Parent = ui.pierscienie
 local celPierscienia = Instance.new("Frame")
 celPierscienia.Name = "Cel"
 celPierscienia.Size = UDim2.fromScale(1, 1)
@@ -519,7 +591,8 @@ end
 
 ------------------------------------------------------------------ efekty ekranu
 local function pokazWidocznosc()
-	ui.status.Visible = stan.gra ~= nil
+	-- panel rundy znika na podsumowaniu (jego miejsce zajmuje wstęga karty; czas i seria są już nieaktualne)
+	ui.status.Visible = stan.gra ~= nil and stan.ekran ~= "podsumowanie"
 	ui.start.Visible = stan.ekran == "stanowisko" and not stan.wybor
 	ui.koniec.Visible = stan.ekran == "podsumowanie" and not stan.wybor
 	-- przyciski mini-gry dopiero po odliczaniu (w czasie odliczania na ich miejscu jest podpowiedź obrazkowa)
@@ -528,7 +601,7 @@ local function pokazWidocznosc()
 			p.Visible = stan.ekran == "runda" and stan.gra == gra and not stan.przedStartem
 		end
 	end
-	ui.pierscienie.Visible = stan.ekran == "runda" and stan.gra == "pancerz"
+	ui.pierscienie.Visible = stan.ekran == "runda" and stan.gra == "pancerz" and not stan.przedStartem
 	ui.przerwij.Visible = stan.ekran == "runda"
 	ui.obrazek.Visible = stan.gra ~= nil and not stan.wybor
 		and (stan.ekran == "stanowisko" or (stan.ekran == "runda" and stan.przedStartem))
@@ -536,6 +609,7 @@ local function pokazWidocznosc()
 		ui.wybor.Visible = stan.wybor
 	end
 	gui.Enabled = stan.gra ~= nil or stan.wybor or ui.toast.Visible
+	guiKomiks.Enabled = stan.gra ~= nil
 end
 
 local licznikToastu = 0
@@ -553,22 +627,79 @@ local function komunikat(tekst)
 	end)
 end
 
-local licznikNapisu = 0
-local function napisSrodek(tekst, h, rozmiar, czas)
-	licznikNapisu += 1
-	local moj = licznikNapisu
-	ui.srodekTekst.Text = tekst
-	ui.srodekTekst.TextColor3 = kolor(h or KOL.krem)
-	ui.srodekTekst.TextSize = PX[rozmiar or "seria"]
-	ui.srodek.Visible = true
-	skalaSrodka.Scale = (skale[1] and skale[1].Scale or 1) * 1.35
-	TweenService:Create(skalaSrodka, TweenInfo.new(0.16, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-		{ Scale = skale[1] and skale[1].Scale or 1 }):Play()
-	task.delay((czas or 0.55) * (stan.dlugieNapisy or 1), function()
-		if moj == licznikNapisu then
-			ui.srodek.Visible = false
+------------------------------------------------------------------ komiksowe napisy (styl walki)
+-- obszar napisów w pikselach warstwy komiksowej (= piksele widoku kamery): prostokąt korzenia okien — ekran pod paskiem
+-- Robloxa i między wycięciami telefonu albo emulowany telefon; skala = skala interfejsu. Ustawia odswiezSkale.
+local uklad = { skala = 1, obszar = nil }
+
+-- prostokąt panelu okien w pikselach warstwy komiksowej (położenia okien liczą się od końca paska Robloxa)
+local function prostokatPanelu(p)
+	local wstawka = GuiService:GetGuiInset()
+	local a, r = p.AbsolutePosition, p.AbsoluteSize
+	return { a.X + wstawka.X, a.Y + wstawka.Y, a.X + wstawka.X + r.X, a.Y + wstawka.Y + r.Y }
+end
+
+-- panele, na które napis nie może wejść: panel rundy, przerwanie, przyciski gry, podpowiedź, start, karta podsumowania
+local function przeszkodyNapisow()
+	local lista = {}
+	local function dodaj(p)
+		if p and p.Visible then
+			table.insert(lista, prostokatPanelu(p))
 		end
-	end)
+	end
+	for _, p in { ui.status, ui.przerwij, ui.obrazek, ui.start, ui.koniec, ui.wybor } do
+		dodaj(p)
+	end
+	for _, p in (stan.gra and ui.panele[stan.gra]) or {} do
+		dodaj(p)
+	end
+	return lista
+end
+
+local function punktEkranu(p)
+	local v = workspace.CurrentCamera:WorldToViewportPoint(p)
+	return v.X, v.Y, v.Z > 0
+end
+
+--[[ Komiksowy napis. punkt = miejsce w świecie (Vector3), przy którym ma wyskoczyć — rzut na ekran w chwili pokazania
+	(w rundzie kamera stoi); nil = miejsce dużych napisów stanowiska (D.swiat[gra].napis, ułamki obszaru). opcje: kolor
+	(nazwa z ui.komiks.kolory), przesun (Vector2 — piksele bazowe od punktu), ekran (Vector2 — gotowe miejsce
+	w pikselach warstwy), gwiazda, obrot. Napis nie wychodzi poza obszar okien i schodzi z paneli. ]]
+local function napisKomiks(tekst, styl, punkt, opcje)
+	local o = uklad.obszar
+	if o == nil then
+		return nil
+	end
+	opcje = opcje or {}
+	local n = (stan.gra and D.swiat[stan.gra].napis) or { 0.5, 0.3 }
+	local x, y = o[1] + (o[3] - o[1]) * n[1], o[2] + (o[4] - o[2]) * n[2]
+	if opcje.ekran then
+		x, y = opcje.ekran.X, opcje.ekran.Y -- gotowe miejsce na ekranie (napis nad postacią w zbliżeniu po rundzie)
+	elseif punkt then
+		local px, py, widac = punktEkranu(punkt)
+		if widac then
+			x, y = px, py
+			if opcje.przesun then
+				x += opcje.przesun.X * uklad.skala
+				y += opcje.przesun.Y * uklad.skala
+			end
+		end
+	end
+	-- w miejscu dużych napisów stoi jedno słowo naraz: nowe zastępuje poprzednie („+1 Pancerz!” i zaraz „SERIA 10!”
+	-- nakładały się na siebie — próba w Studio 18.11.2026)
+	local wMiejscu = not opcje.ekran and not punkt
+	if wMiejscu and stan.duzyNapis then
+		komiks:usun(stan.duzyNapis)
+		stan.duzyNapis = nil
+	end
+	local wpis = komiks:napis(tekst, styl, x, y, {
+		kolor = opcje.kolor, gwiazda = opcje.gwiazda, obrot = opcje.obrot, zycie = stan.dlugieNapisy,
+		skala = uklad.skala, obszar = o, przeszkody = przeszkodyNapisow(),
+	})
+	if wMiejscu then
+		stan.duzyNapis = wpis
+	end
+	return wpis
 end
 
 local function blysk(przezr, h)
@@ -582,14 +713,72 @@ local function podskokSerii()
 	TweenService:Create(skalaSerii, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 end
 
+------------------------------------------------------------------ kamera stanowiska (ujęcia jak w walce; rachunek: KameraTreningu)
+-- uj: "stanowisko" (przed rundą) | "odliczanie" (dojazd) | "gra" (stoi) | "final" (zbliżenie na postać po rundzie)
+local kam = {
+	uj = "stanowisko", start = 0, od = nil, przejscie = 0, przejscieStart = 0, ostatnie = nil,
+	wstrzasSila = 0, wstrzasWiek = 0, zawezenia = {}, przed = nil,
+}
+
+local function ujecie(nazwa, przejscie)
+	if kam.uj == nazwa then
+		return
+	end
+	-- płynne przejście od ostatniego kadru (albo cięcie, gdy przejscie = 0)
+	kam.od = if przejscie and przejscie > 0 then kam.ostatnie else nil
+	kam.przejscie = przejscie or 0
+	kam.przejscieStart = os.clock()
+	kam.uj = nazwa
+	kam.start = os.clock()
+end
+
+-- drżenie kamery: gaśnie wykładniczo; nowe nie jest słabsze od tego, co jeszcze nie zgasło (jak w walce)
 local function wstrzas(sila)
-	stan.wstrzas = { t = os.clock(), sila = sila }
+	kam.wstrzasSila = math.max(Kam.wstrzas(D, kam.wstrzasSila, kam.wstrzasWiek), sila)
+	kam.wstrzasWiek = 0
+end
+
+-- krótkie zawężenie kąta widzenia („wciśnięcie” kadru) po trafieniu: "uderzenie" | "mocne" | "seria"
+local function zawezenie(rodzaj)
+	kam.zawezenia[rodzaj] = os.clock()
 end
 
 ------------------------------------------------------------------ lokalne obiekty 3D (tylko u tego gracza)
 local efekty = Instance.new("Folder")
 efekty.Name = "TreningProbaEfekty"
 efekty.Parent = workspace.CurrentCamera
+
+-- efekty trafień w języku walki i konfetti (Moduly/EfektyTreningu). Zestaw powstaje przy wejściu na stanowisko —
+-- wtedy sprawdzamy, czy w miejscu stoi moduł efektów walki (jest → iskry, rozbłyski, fale i łuk odbicia z niego,
+-- nie ma → własne); atrybut kontenera EfektyWlasne = true wymusza własne (próba w Studio). Znika przy zejściu.
+local fx = nil
+local function efektyStanowiska()
+	if fx == nil then
+		fx = Efekty.dlaTreningu(efekty, EF, kontener:GetAttribute("EfektyWlasne") == true)
+	end
+	return fx
+end
+
+local function sprzatnijEfekty()
+	if fx then
+		fx:wyczysc()
+		fx = nil
+	end
+	komiks:wyczysc()
+	stan.duzyNapis = nil
+end
+
+local function wybuch(nazwa, punkt, skala)
+	if fx and punkt then
+		fx:wybuch(nazwa, punkt, (skala or 1) * EF.skala)
+	end
+end
+
+local function fala(punkt, h, promien)
+	if fx and punkt then
+		fx:fala(punkt, kolor(h), promien)
+	end
+end
 
 local function czesc(nazwa, rozmiar, h, material, ksztalt)
 	local obj = Instance.new("Part")
@@ -651,6 +840,7 @@ end
 
 -- miecz (Siła), tarcza (Pancerz), koszyk (Szczęście): modele przesuwane PivotTo
 local modelGracza = nil
+local smugaMiecza = nil -- Trail na ostrzu (smuga ciosu jak za bronią w walce), włączana na czas machnięcia
 local function zbudujMiecz()
 	local model = modelZCzesci("Miecz", {
 		{ "Rekojesc", Vector3.new(0.35, 1.1, 0.35), "6B4A2F" },
@@ -658,6 +848,30 @@ local function zbudujMiecz()
 		{ "Ostrze", Vector3.new(0.25, 3.6, 0.7), "D8DEE9", Vector3.new(0, 2.65, 0), Enum.Material.Metal },
 	})
 	obrysModelu(model)
+	local ostrze = model:FindFirstChild("Ostrze")
+	if ostrze then
+		-- smuga tylko za końcową częścią ostrza i mocno przezroczysta: pełna szerokość ostrza dawała przy machnięciu
+		-- biały wachlarz, który na chwilę zasłaniał strefę (próba w Studio 18.11.2026)
+		local a0 = Instance.new("Attachment")
+		a0.Position = Vector3.new(0, 0.5, 0)
+		a0.Parent = ostrze
+		local a1 = Instance.new("Attachment")
+		a1.Position = Vector3.new(0, 1.8, 0)
+		a1.Parent = ostrze
+		local slad = Instance.new("Trail")
+		slad.Name = "Smuga"
+		slad.Attachment0 = a0
+		slad.Attachment1 = a1
+		slad.Lifetime = 0.14
+		slad.Color = ColorSequence.new(kolor(KX.kolory.bialy), kolor(KX.kolory.zolty))
+		slad.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 1) })
+		slad.LightEmission = 0.6
+		slad.FaceCamera = true
+		slad.MinLength = 0.05
+		slad.Enabled = false
+		slad.Parent = ostrze
+		smugaMiecza = slad
+	end
 	return model
 end
 
@@ -782,6 +996,120 @@ local function swiec(w, h, przezr, neon)
 	end
 end
 
+------------------------------------------------------------------ bohater klasy (haczyk innego pakietu) albo awatar
+--[[ Gdy w miejscu działa bohater klasy, awatar gracza jest schowany, a zamiast niego widać model bohatera. Jego ruchy
+	na stanowisku idą przez BindableFunction u klienta (ścieżka w Workspace z D.ui.bohater.sciezka):
+		Invoke("stan")                    → nil (brak aktywnego bohatera) albo { aktywny = true, klasa = …, klip = bieżący
+		                                    tryb ruchu, wymuszony = nazwa wymuszonego klipu albo brak }
+		Invoke("klip", nazwa | nil)       wymusza pozę / klip: bieg, skok, padnij, rece_gora, radosc (wiwat raz, potem
+		                                    spoczynek — każde wywołanie gra go od nowa); nil = ruch samoczynny;
+		                                    → true / false (false: nieznana nazwa albo brak bohatera)
+		Invoke("przesun", Vector3 | nil)  przesunięcie bohatera względem postaci (X w prawo, Y w górę, −Z do przodu),
+		                                    od razu, bez wygładzania (podskok rysujemy klatka po klatce); nil = bez.
+		                                    Poza „padnij” sama opuszcza biodra — przy niej bez przesunięcia w dół
+	Każde wywołanie jest osłonięte: obiektu może nie być, funkcja może nie mieć obsługi (Invoke czekałby bez końca,
+	więc wołamy w osobnym wątku i liczy się tylko odpowiedź dana od razu) albo zgłosić błąd — wtedy zostaje awatar.
+	Awatar chowa pakiet bohatera (przez Transparency), a bohater przejmuje LocalTransparencyModifier awatara — więc
+	półprzezroczystość postaci w Sile działa bez zmian także na bohaterze. ]]
+local hak = {
+	niedostepnyDo = 0, zawieszony = false, aktywny = false, sprawdzono = -math.huge, klip = nil, odrzucony = nil,
+	przesuniety = false, wywolania = 0,
+}
+
+local function wolajBohatera(polecenie, arg)
+	if hak.zawieszony or os.clock() < hak.niedostepnyDo then
+		return nil, false
+	end
+	-- ścieżka z danych; atrybut kontenera HaczykBohatera (napis) podmienia ją na czas próby w Studio
+	local gdzie = kontener:GetAttribute("HaczykBohatera")
+	local f = sciezka(workspace, if type(gdzie) == "string" and gdzie ~= "" then gdzie else BH.sciezka)
+	if not f or not f:IsA("BindableFunction") then
+		hak.niedostepnyDo = os.clock() + BH.ponow_po_s
+		return nil, false
+	end
+	local wynik, gotowe, blad = nil, false, false
+	task.spawn(function()
+		local ok, w = pcall(f.Invoke, f, polecenie, arg)
+		if ok then
+			wynik = w
+		else
+			blad = true
+		end
+		gotowe = true
+	end)
+	hak.wywolania += 1
+	if not gotowe then
+		-- brak obsługi po drugiej stronie (Invoke czeka): nie pytamy więcej do następnego wejścia na stanowisko
+		hak.zawieszony = true
+		return nil, false
+	end
+	if blad then
+		hak.niedostepnyDo = os.clock() + BH.ponow_po_s
+		return nil, false
+	end
+	return wynik, true
+end
+
+-- czy lokalny gracz ma aktywnego bohatera klasy (odpowiedź pamiętana przez odswiez_s)
+local function bohaterAktywny()
+	local c = os.clock()
+	if c - hak.sprawdzono < BH.odswiez_s then
+		return hak.aktywny
+	end
+	hak.sprawdzono = c
+	local w, ok = wolajBohatera("stan", nil)
+	local aktywny = ok and type(w) == "table" and w.aktywny == true
+	if not aktywny then
+		hak.klip = nil
+		hak.przesuniety = false
+	elseif hak.klip ~= nil then
+		-- czy nasz wymuszony klip dalej obowiązuje (bohater zeruje go przy odrodzeniu postaci): pole „wymuszony”,
+		-- a gdyby go nie było — nazwa bieżącego klipu
+		local wymuszony = w.wymuszony
+		if wymuszony == nil then
+			wymuszony = w.klip
+		end
+		if wymuszony ~= hak.klip then
+			hak.klip = nil -- następne żądanie pójdzie jeszcze raz
+		end
+	end
+	hak.odrzucony = nil
+	hak.aktywny = aktywny
+	return aktywny
+end
+
+-- wymuszony klip bohatera (nil = sam). Haczyk odpowiada true / false (false: nieznana nazwa albo brak bohatera) —
+-- odrzuconej nazwy nie powtarzamy co klatkę, tylko po następnym odświeżeniu stanu
+local function klipBohatera(nazwa)
+	if hak.klip == nazwa or (nazwa ~= nil and hak.odrzucony == nazwa) then
+		return
+	end
+	local w, ok = wolajBohatera("klip", nazwa)
+	if ok and w ~= false then
+		hak.klip = nazwa
+	elseif ok then
+		hak.odrzucony = nazwa
+	end
+end
+
+local function przesunBohatera(v)
+	if v == nil and not hak.przesuniety then
+		return
+	end
+	local _, ok = wolajBohatera("przesun", v)
+	if ok then
+		hak.przesuniety = v ~= nil
+	end
+end
+
+-- bohater wraca do zwykłego zachowania (koniec rundy, zejście ze stanowiska)
+local function spokojBohatera()
+	if hak.aktywny or hak.klip ~= nil or hak.przesuniety then
+		klipBohatera(nil)
+		przesunBohatera(nil)
+	end
+end
+
 ------------------------------------------------------------------ postać gracza (tylko u siebie: nic nie idzie na serwer)
 local przezroczystoscTeraz = 0
 local function przezroczystoscPostaci(v)
@@ -789,6 +1117,8 @@ local function przezroczystoscPostaci(v)
 	if not postac or (v == przezroczystoscTeraz) then
 		return
 	end
+	-- (przy aktywnym bohaterze klasy awatar jest niewidoczny przez Transparency, a bohater przejmuje ten
+	-- LocalTransparencyModifier — półprzezroczystość działa więc na to, co gracz widzi)
 	przezroczystoscTeraz = v
 	for _, d in postac:GetDescendants() do
 		if d:IsA("BasePart") or d:IsA("Decal") then
@@ -876,8 +1206,30 @@ local function przywrocStawy()
 	table.clear(znaneStawy)
 end
 
--- animacja biegu z domyślnego skryptu Animate postaci (bez wgrywania animacji); brak — biegacz tylko podskakuje
-local bieg = nil -- { sciezkaAnimacji, gra }
+-- animacja z domyślnego skryptu Animate postaci (bez wgrywania animacji): "run" — bieg na taśmie, "cheer" — radość
+local function animacjaAwatara(nazwa)
+	local postac = gracz.Character
+	local hum = postac and postac:FindFirstChildOfClass("Humanoid")
+	local animator = hum and hum:FindFirstChildOfClass("Animator")
+	local a = postac and postac:FindFirstChild("Animate")
+	local grupa = a and a:FindFirstChild(nazwa)
+	local anim = grupa and grupa:FindFirstChildOfClass("Animation")
+	if not animator or not anim then
+		return nil
+	end
+	local ok, tr = pcall(function()
+		return animator:LoadAnimation(anim)
+	end)
+	if ok and tr then
+		tr.Priority = Enum.AnimationPriority.Action
+		tr.Looped = true
+		return tr
+	end
+	return nil
+end
+
+-- bieg na taśmie: bohater klasy — klip biegu przez haczyk; awatar — animacja biegu z Animate (brak — tylko podskakuje)
+local bieg = nil -- ścieżka animacji biegu awatara
 local function zatrzymajBieg()
 	if bieg then
 		pcall(function()
@@ -888,30 +1240,52 @@ local function zatrzymajBieg()
 end
 
 local function zacznijBieg(predkosc)
+	if bohaterAktywny() then
+		zatrzymajBieg()
+		klipBohatera(BH.klipy.bieg)
+		return
+	end
 	if bieg then
 		pcall(function()
 			bieg:AdjustSpeed(predkosc)
 		end)
 		return
 	end
-	local postac = gracz.Character
-	local hum = postac and postac:FindFirstChildOfClass("Humanoid")
-	local animator = hum and hum:FindFirstChildOfClass("Animator")
-	local a = postac and postac:FindFirstChild("Animate")
-	local run = a and a:FindFirstChild("run")
-	local anim = run and run:FindFirstChildOfClass("Animation")
-	if not animator or not anim then
-		return
-	end
-	local ok, tr = pcall(function()
-		return animator:LoadAnimation(anim)
-	end)
-	if ok and tr then
-		tr.Priority = Enum.AnimationPriority.Action
-		tr.Looped = true
+	local tr = animacjaAwatara("run")
+	if tr then
 		tr:Play(0.15, 1, predkosc)
 		bieg = tr
 	end
+end
+
+-- radość po rundzie z punktem statystyki: bohater klasy — klip radości; awatar — animacja „cheer” z Animate, a gdy
+-- jej nie ma — ręce w górę i podskoki (stawy tylko u siebie, w wyglad())
+local radosc = nil -- ścieżka animacji radości awatara
+local function zatrzymajRadosc()
+	if radosc then
+		pcall(function()
+			radosc:Stop(0.2)
+		end)
+		radosc = nil
+	end
+	stan.radosc = nil
+end
+
+local function zacznijRadosc()
+	zatrzymajRadosc()
+	stan.radosc = os.clock()
+	if bohaterAktywny() then
+		stan.radoscBohatera = os.clock()
+		klipBohatera(BH.klipy.radosc)
+		return "bohater"
+	end
+	local tr = animacjaAwatara("cheer")
+	if tr then
+		tr:Play(0.15, 1, 1)
+		radosc = tr
+		return "animacja"
+	end
+	return "stawy"
 end
 
 -- Koniczyny: postać przechodzi między torami (PivotTo w kliencie, który i tak steruje fizyką swojej postaci)
@@ -1018,7 +1392,27 @@ local function rzadPoziomu(G, t, Rd)
 	return G.poziomy[L.poziom(G, t - Rd.t0)]
 end
 
------------------------------------------------------------------- mini-gry: rysowanie stanowisk w czasie rundy
+-- punkt na ziemi pod postacią gracza (fale, konfetti) i jej pierś (napisy, wybuch przy oberwaniu)
+local function stopyPostaci()
+	local postac = gracz.Character
+	local hrp = postac and postac:FindFirstChild("HumanoidRootPart")
+	if hrp then
+		return hrp.Position - Vector3.new(0, KA.final.korzen_nad_ziemia, 0)
+	end
+	return if stan.gra then v3(D.swiat[stan.gra].podest) else nil
+end
+
+local function piersPostaci()
+	local p = stopyPostaci()
+	return if p then p + Vector3.new(0, 3.4, 0) else nil
+end
+
+--[[ Mini-gry: rysowanie stanowisk w czasie rundy. Każda gra może mieć:
+	akcja(wartosc)      — ruch po naciśnięciu (miecz, tarcza, skok…)
+	miejsce(w) → Vector3 — gdzie w świecie padł werdykt: tam idzie wybuch w języku walki i (domyślnie) słowo
+	napis(w) → Vector3, Vector2 — inne miejsce słowa i przesunięcie w pikselach bazowych (żeby nie zasłaniało pola gry)
+	efekt(w, m)         — dodatki tej gry (odłamki skrzynki, łuk odbicia, czerwony błysk przy oberwaniu…)
+	klatka(t, Rd, W)    — rysowanie co klatkę ]]
 local GRY = {}
 
 -- Siła „Rozbijanie”: miotacz rzuca skrzynki łukiem do czterech stref; strefa w oknie świeci
@@ -1028,6 +1422,17 @@ GRY.sila = {
 			stan.miecz = { t = os.clock(), k = wartosc }
 			graj("swist")
 		end
+	end,
+	miejsce = function(w)
+		local v = w.nr and wizualne[w.nr]
+		if v and v.obj then
+			return v.obj.Position
+		end
+		local strefa = w.wartosc and D.swiat.sila.strefy[w.wartosc]
+		return if strefa then v3(strefa) else nil
+	end,
+	napis = function(_)
+		return nil, Vector2.new(0, -34)
 	end,
 	efekt = function(w)
 		if w.trafienie then
@@ -1045,14 +1450,19 @@ GRY.sila = {
 		if modelGracza then
 			local spoczynek = CFrame.new(v3(W.miecz)) * CFrame.Angles(math.rad(25), 0, math.rad(-20))
 			local cf = spoczynek
+			local macha = false
 			if stan.miecz then
 				local dt = os.clock() - stan.miecz.t
 				if dt < 0.34 then
+					macha = true
 					local piers = v3(W.podest) + Vector3.new(0.8, 3.4, -0.4)
 					local cios = CFrame.lookAt(piers, v3(W.strefy[stan.miecz.k])) * CFrame.Angles(-math.pi / 2, 0, 0)
 					local f = if dt < 0.09 then dt / 0.09 else 1 - (dt - 0.09) / 0.25
 					cf = spoczynek:Lerp(cios, math.clamp(f, 0, 1))
 				end
+			end
+			if smugaMiecza and smugaMiecza.Parent then
+				smugaMiecza.Enabled = macha
 			end
 			modelGracza:PivotTo(cf)
 		end
@@ -1101,18 +1511,31 @@ GRY.pancerz = {
 	akcja = function()
 		stan.tarcza = { t = os.clock() }
 	end,
-	efekt = function(w)
+	miejsce = function(_)
+		return v3(D.swiat.pancerz.piesc_cel)
+	end,
+	napis = function(_)
+		return nil, Vector2.new(-36, -52)
+	end,
+	efekt = function(w, m)
 		local W = D.swiat.pancerz
 		if w.trafienie and w.powod ~= "przetrwana_zmylka" then
-			odlamki(v3(W.piesc_cel), KOL.zloto, 7, 2.5)
+			-- cios przyjęty na tarczę: łuk odbicia zwrócony do golema (jak parada w walce)
+			if fx then
+				fx:parada(v3(W.tarcza_blok), v3(W.golem) - v3(W.podest), kolor(KX.kolory.blok), 1.6)
+			end
 			wstrzas(0.25)
 		elseif w.powod == "przepuszczone" then
 			graj("oberwanie")
 			blysk(0.75, KOL.zle)
 			wstrzas(0.5)
+			wybuch(EF.oberwanie, m, 1.3)
 		end
 	end,
 	klatka = function(t, Rd, W)
+		-- pierścienie czasu stoją na ekranie tam, gdzie pięść trafi w tarczę
+		local rx, ry = punktEkranu(v3(W.piesc_cel))
+		ui.pierscienie.Position = UDim2.fromOffset(rx, ry)
 		if modelGracza then
 			local spoczynek = CFrame.lookAt(v3(W.tarcza), v3(W.tarcza) + Vector3.new(0, 0, -1))
 			local blok = CFrame.lookAt(v3(W.tarcza_blok), v3(W.tarcza_blok) + Vector3.new(0, 0, -1))
@@ -1184,7 +1607,16 @@ GRY.kondycja = {
 	akcja = function(wartosc)
 		stan.krok[wartosc] = os.clock()
 	end,
-	efekt = function(w)
+	-- stopa na śladzie: wybuch i fala na celu tej stopy; słowo obok taśmy po stronie stopy (nie zasłania śladów)
+	miejsce = function(w)
+		local p = D.swiat.kondycja.stopy[w.wartosc or w.akcja]
+		return if p then v3(p) + Vector3.new(0, 0.2, 0) else nil
+	end,
+	napis = function(w)
+		local lewa = (w.wartosc or w.akcja) == D.gry.kondycja.kierunki[1]
+		return nil, Vector2.new(if lewa then -96 else 96, -8)
+	end,
+	efekt = function(w, m)
 		local v = wizualne[w.nr]
 		if v and v.obj then
 			for _, c in v.obj:GetChildren() do
@@ -1196,6 +1628,7 @@ GRY.kondycja = {
 		end
 		if w.trafienie then
 			graj("krok")
+			fala(m, KOL.zloto, EF.fala_promien * 0.7)
 		elseif w.powod == "przepuszczone" then
 			wstrzas(0.15)
 		end
@@ -1327,30 +1760,72 @@ GRY.zrecznosc = {
 			graj("skok")
 		end
 	end,
-	efekt = function(w)
-		if w.powod == "przepuszczone" then
+	-- unik udany: fala kurzu spod stóp; słowo nad głową postaci (kłoda przechodzi niżej)
+	miejsce = function(_)
+		local p = stopyPostaci()
+		return if p then p + Vector3.new(0, 0.15, 0) else nil
+	end,
+	napis = function(_)
+		local p = stopyPostaci()
+		if p then
+			-- obok głowy, nie na niej: w skoku postać jest wyżej i słowo zasłaniało głowę; po prawej, bo po lewej stoi
+			-- duże słowo stanowiska („+1 Zręczność!”) — próba w Studio 18.11.2026
+			return p + Vector3.new(0, 7.2, 0), Vector2.new(124, 0)
+		end
+		return nil, nil
+	end,
+	efekt = function(w, m)
+		if w.trafienie then
+			fala(m, KOL.krem, EF.fala_promien)
+		elseif w.powod == "przepuszczone" then
 			stan.unik = { rodzaj = "uderzenie", t = os.clock() }
 			graj("upadek")
 			blysk(0.75, KOL.zle)
 			wstrzas(0.4)
+			wybuch(EF.oberwanie, piersPostaci(), 1.3)
 		end
 	end,
 	klatka = function(t, Rd, W)
-		-- postać: skok (uniesienie po łuku), padnij (niżej i pochylona), uderzenie (odchylenie do tyłu)
+		-- postać: skok (uniesienie po łuku), padnij (niżej i pochylona), uderzenie (odchylenie do tyłu).
+		-- Bohater klasy: klip skoku / padnięcia i przesunięcie widoku przez haczyk; awatar: staw biodra u siebie
 		local u = stan.unik
 		if u then
 			local dt = os.clock() - u.t
+			local bohater = bohaterAktywny()
 			if u.rodzaj == "skok" and dt < 0.6 then
-				ustawStaw(nil, CFrame.new(0, 2.7 * math.sin(math.pi * dt / 0.6), 0))
+				local luk = math.sin(math.pi * dt / 0.6)
+				if bohater then
+					klipBohatera(BH.klipy.skok)
+					przesunBohatera(Vector3.new(0, BH.skok_wys * luk, 0))
+				else
+					ustawStaw(nil, CFrame.new(0, 2.7 * luk, 0))
+				end
 			elseif u.rodzaj == "padnij" and dt < 0.75 then
 				local f = math.clamp(math.min(dt / 0.1, (0.75 - dt) / 0.15), 0, 1)
-				ustawStaw(nil, CFrame.new(0, -1.7 * f, 0) * CFrame.Angles(-1.2 * f, 0, 0))
+				if bohater then
+					-- poza „padnij” sama opuszcza biodra bohatera ze stopami na ziemi — bez przesunięcia w dół
+					-- (inaczej wszedłby pod ziemię); przesunięcie zostaje tylko na skok
+					klipBohatera(BH.klipy.padnij)
+					przesunBohatera(nil)
+				else
+					ustawStaw(nil, CFrame.new(0, -1.7 * f, 0) * CFrame.Angles(-1.2 * f, 0, 0))
+				end
 			elseif u.rodzaj == "uderzenie" and dt < 0.45 then
 				local f = math.sin(math.pi * dt / 0.45)
-				ustawStaw(nil, CFrame.Angles(0.45 * f, 0, 0))
+				if bohater then
+					klipBohatera(nil)
+					przesunBohatera(Vector3.new(0, 0, 0.7 * f)) -- odrzut od kłody (postać stoi twarzą do słupa)
+				else
+					ustawStaw(nil, CFrame.Angles(0.45 * f, 0, 0))
+				end
 			else
 				stan.unik = nil
-				ustawStaw(nil, CFrame.new())
+				if bohater then
+					klipBohatera(nil)
+					przesunBohatera(nil)
+				else
+					ustawStaw(nil, CFrame.new())
+				end
 			end
 		end
 		if not arena.klody or not arena.klody.obj.Parent then
@@ -1397,6 +1872,11 @@ GRY.inteligencja = {
 		stan.runyNacisk[wartosc] = { t = os.clock(), zle = w ~= nil and w.przyjete and not w.trafienie }
 		nutaRuny(wartosc)
 	end,
+	-- runa wpisana: iskry przy naciśniętym kamieniu; słowo na tym kamieniu (gracz już go nacisnął)
+	miejsce = function(w)
+		local p = D.swiat.inteligencja.kamienie[w.akcja or w.wartosc]
+		return if p then v3(p) + Vector3.new(0, 0, 0.9) else nil
+	end,
 	efekt = function(w)
 		if w.trafienie and w.zaklecie then
 			for k, rw in arena.runy do
@@ -1404,6 +1884,9 @@ GRY.inteligencja = {
 					odlamki(rw.kamien.obj.Position + Vector3.new(0, 0, 0.8), KOL["runa_" .. k], 5, 2.5)
 				end
 			end
+			-- całe zaklęcie: rozbłysk bariery na środku ściany z runami
+			local W = D.swiat.inteligencja
+			wybuch(EF.zaklecie, v3(W.sciana) + Vector3.new(0, 0, 1.2), 1.4)
 			if not grajZdarzenie(DK.zaklecie) then
 				melodia(D.dzwieki.melodia_koniec)
 			end
@@ -1435,7 +1918,7 @@ GRY.inteligencja = {
 				end
 				if stan.pokazNapis ~= R.pokazy and t >= Rd.t0 then
 					stan.pokazNapis = R.pokazy
-					napisSrodek(T.patrz, KOL.krem, "seria", 0.7)
+					napisKomiks(T.patrz, "info", nil)
 				end
 				if arena.kula then
 					swiec(arena.kula, "FFFFFF", 0, true)
@@ -1443,7 +1926,7 @@ GRY.inteligencja = {
 			elseif r >= R.pokazDo then
 				if stan.pokazNapis ~= -R.pokazy and R.poz == 0 then
 					stan.pokazNapis = -R.pokazy
-					napisSrodek(T.twoja_kolej, KOL.zloto, "seria", 0.7)
+					napisKomiks(T.twoja_kolej, "info", nil, { kolor = "krytyk" })
 				end
 				przywrocCzesc(arena.kula)
 			end
@@ -1504,7 +1987,22 @@ local function nowyObiekt(e)
 end
 
 GRY.szczescie = {
-	efekt = function(w)
+	-- koniczyna w koszyku (albo kamień): wybuch tam, gdzie rzecz spadła; słowo na piersi postaci (nie na torach)
+	miejsce = function(w)
+		local v = w.nr and wizualne[w.nr]
+		if v and v.obj then
+			return v.obj:GetPivot().Position
+		end
+		local p = stopyPostaci()
+		return if p then p + (v3(D.swiat.szczescie.koszyk) - v3(D.swiat.szczescie.podest)) else nil
+	end,
+	napis = function(w)
+		if w.trafienie or w.powod == "kamien" then
+			return piersPostaci(), nil
+		end
+		return nil, Vector2.new(0, -30) -- koniczyna spadła obok: słowo nad miejscem upadku
+	end,
+	efekt = function(w, m)
 		local v = wizualne[w.nr]
 		if w.trafienie then
 			graj("lap")
@@ -1520,6 +2018,7 @@ GRY.szczescie = {
 			graj("kamien")
 			blysk(0.75, KOL.zle)
 			wstrzas(0.3)
+			wybuch(EF.kamien, m, 1.1)
 		end
 	end,
 	klatka = function(t, Rd, W)
@@ -1609,6 +2108,15 @@ local function efekt(w)
 		stan.lokalne[w.nr] = w.trafienie
 	end
 	local gra = stan.gra
+	local h = gra and GRY[gra]
+	-- miejsce werdyktu w świecie (wybuch) i miejsce słowa (domyślnie to samo, z przesunięciem gry)
+	local m = if h and h.miejsce then h.miejsce(w) else nil
+	local gdzie, przesun = m, nil
+	if h and h.napis then
+		local p2, d2 = h.napis(w)
+		gdzie = p2 or m
+		przesun = d2
+	end
 	if w.trafienie then
 		if not grajZdarzenie(gra and DK.trafienie[gra]) then
 			graj("trafienie")
@@ -1619,14 +2127,6 @@ local function efekt(w)
 		end
 		blysk(0.82)
 		podskokSerii()
-		local tekst = tekstTrafienia(w.seria, TRAFIENIA[gra] or T.trafienia)
-		if w.powod == "przetrwana_zmylka" then
-			tekst = T.zmylka_ok
-		elseif w.powod == "zlota" then
-			tekst = T.zlota
-		elseif w.zaklecie then
-			tekst = T.zaklecie
-		end
 		local prog = false
 		for _, p in D.przyrost.progi_serii do
 			if w.seria == p then
@@ -1634,27 +2134,62 @@ local function efekt(w)
 			end
 		end
 		local st = gra and L.statystyka(D, gra)
-		if (w.przyrost or 0) > 0 and st then
+		local punkt = (w.przyrost or 0) > 0 and st ~= nil
+		local zmylka = w.powod == "przetrwana_zmylka"
+		local zlota = w.powod == "zlota"
+		local zaklecie = w.zaklecie == true
+		-- „mocne” trafienie (jak krytyk w walce): co któreś w serii, próg serii, punkt statystyki, złota koniczyna, całe
+		-- zaklęcie — większy wybuch, gwiazda za słowem, mocniejsze zawężenie kadru
+		local mocne = not zmylka and (punkt or prog or zlota or zaklecie or (w.seria > 0 and w.seria % KX.mocne_co == 0))
+		if not zmylka then
+			wybuch(if mocne then EF.mocne else (EF.trafienie[gra] or "cios"), m, if mocne then EF.skala_mocne else 1)
+		end
+		zawezenie(if mocne then "mocne" else "uderzenie")
+		-- duże słowo w miejscu napisów stanowiska: punkt statystyki, potem próg serii, potem całe zaklęcie (jedno naraz)
+		local duze = nil
+		if punkt then
 			-- pasek treningu pełny: punkt statystyki (to widzi gracz jako nagrodę)
 			if not grajZdarzenie(DK.punkt) then
 				graj("seria")
 				melodia(D.dzwieki.melodia_koniec)
 			end
-			napisSrodek(string.format("+%d %s!", w.przyrost, st.nazwa), KOL.zloto, "wielki", 1.0)
+			duze = "punkt"
+			napisKomiks(string.format(T.punkt, w.przyrost, st.nazwa), "punkt", nil)
 		elseif prog then
 			graj("seria")
-			napisSrodek(string.format(T.seria, w.seria), KOL.zloto, "wielki", 0.9)
-		else
-			napisSrodek(tekst, if w.zaklecie or w.powod == "zlota" then KOL.zloto else KOL.krem, "seria")
+			duze = "seria"
+			napisKomiks(string.format(T.seria, w.seria), "seria", nil)
+		elseif zaklecie then
+			duze = "zaklecie"
+			napisKomiks(T.zaklecie, "zloto", nil)
+		end
+		if duze == "punkt" or duze == "seria" then
+			-- akcent serii: mocniejsze zawężenie kadru, drżenie i złota fala wokół postaci
+			zawezenie("seria")
+			wstrzas(0.2)
+			fala(stopyPostaci(), KOL.zloto, EF.fala_serii)
+		end
+		-- słowo przy miejscu trafienia (komiksowe „PAF!”, „BLOK!”, „HOP!”…)
+		local tekst = tekstTrafienia(w.seria, TRAFIENIA[gra] or T.trafienia)
+		local styl = if mocne then "mocne" else "trafienie"
+		local barwa = if mocne then nil else KX.kolor_trafienia[gra]
+		if zmylka then
+			tekst = T.zmylka_ok
+		elseif zlota then
+			tekst, styl = T.zlota, "zloto"
+		elseif zaklecie then
+			tekst, styl = T.zaklecie, "zloto"
+		end
+		if duze ~= "zaklecie" then
+			napisKomiks(tekst, styl, gdzie, { kolor = barwa, przesun = przesun })
 		end
 	else
 		graj("pudlo")
 		local wlasne = gra and T.pudla_gier[gra]
-		napisSrodek((wlasne and wlasne[w.powod]) or T.pudlo[w.powod] or T.pudlo.przepuszczone, KOL.zle, "duzy", 0.6)
+		napisKomiks((wlasne and wlasne[w.powod]) or T.pudlo[w.powod] or T.pudlo.przepuszczone, "pudlo", gdzie, { przesun = przesun })
 	end
-	local h = gra and GRY[gra]
 	if h and h.efekt then
-		h.efekt(w)
+		h.efekt(w, m)
 	end
 	odswiezStatus()
 end
@@ -1994,14 +2529,30 @@ local function odswiezSkale()
 	local cam = workspace.CurrentCamera
 	local w, h = cam.ViewportSize.X, cam.ViewportSize.Y
 	local em = kontener:GetAttribute("EmulacjaEkranu")
+	-- obszar okien w pikselach widoku kamery (dla warstwy komiksowej i kadru zbliżenia): ScreenGui omija pasek Robloxa
+	-- i wycięcia ekranu, a położenia okien liczą się od końca paska — stąd wstawka
+	local wstawka = GuiService:GetGuiInset()
+	local ox, oy = gui.AbsolutePosition.X + wstawka.X, gui.AbsolutePosition.Y + wstawka.Y
+	local osz, owy = gui.AbsoluteSize.X, gui.AbsoluteSize.Y
+	if osz < 1 or owy < 1 then
+		-- ekran okien jeszcze niezmierzony (pierwsza klatka): cały widok pod paskiem Robloxa
+		ox, oy = wstawka.X, wstawka.Y
+		osz, owy = math.max(1, w - wstawka.X), math.max(1, h - wstawka.Y)
+	end
+	uklad.wsp = 1
 	if typeof(em) == "Vector2" and em.X > 0 and em.Y > 0 then
 		-- ekran telefonu em (punkty) bez paska Robloxa, wpisany w obszar okna pod paskiem
 		local wys = em.Y - U.pasek_gorny_pt
-		local k = math.min(gui.AbsoluteSize.X / em.X, gui.AbsoluteSize.Y / wys)
+		local k = math.min(osz / em.X, owy / wys)
 		korzen.AnchorPoint = Vector2.new(0.5, 0.5)
 		korzen.Position = UDim2.fromScale(0.5, 0.5)
 		korzen.Size = UDim2.fromOffset(em.X, wys)
 		skalaKorzenia.Scale = k
+		-- kadr 3D jak na tym telefonie: jego ekran jest środkową częścią okna, więc kamera okna dostaje szerszy kąt
+		-- (Kam.katOkna) — w prostokącie telefonu widać wtedy to samo, co na telefonie
+		uklad.wsp = math.max(1, h / (em.Y * k))
+		ox, oy = ox + (osz - em.X * k) / 2, oy + (owy - wys * k) / 2
+		osz, owy = em.X * k, wys * k
 		w, h = em.X, em.Y
 	else
 		korzen.AnchorPoint = Vector2.zero
@@ -2011,17 +2562,26 @@ local function odswiezSkale()
 	end
 	local s = L.skalaUI(D, w, h)
 	for _, sk in skale do
-		if sk ~= skalaSrodka then
-			sk.Scale = s
-		end
+		sk.Scale = s
 	end
+	local ks = skalaKorzenia.Scale
+	skalaPierscieni.Scale = s * ks
+	uklad.skala = s * ks
+	uklad.s = s
+	uklad.obszar = { ox, oy, ox + osz, oy + owy }
 	-- przesunięcia (Position) nie skalują się z UIScale: podpowiedź obrazkowa nad panelem startu, a panel rundy,
-	-- przycisk przerwania i przyciski gry — z L.ukladUI (obszar GUI po pasku Robloxa i wycięciach ekranu)
-	ui.obrazek.Position = UDim2.new(0.5, 0, 1, -8 - (ui.start.Size.Y.Offset + 8) * s)
-	local gw, gh = korzen.AbsoluteSize.X / skalaKorzenia.Scale, korzen.AbsoluteSize.Y / skalaKorzenia.Scale
-	if typeof(em) == "Vector2" and em.X > 0 and em.Y > 0 then
-		gw, gh = em.X, em.Y - U.pasek_gorny_pt
+	-- przycisk przerwania i przyciski gry — z L.ukladUI (obszar GUI po pasku Robloxa i wycięciach ekranu).
+	-- W odliczaniu panel startu jest schowany, więc podpowiedź schodzi na dół: środek ekranu zostaje dla dojazdu kamery
+	if stan.ekran == "runda" and stan.przedStartem then
+		ui.obrazek.Position = UDim2.new(0.5, 0, 1, -8)
+	else
+		ui.obrazek.Position = UDim2.new(0.5, 0, 1, -8 - (ui.start.Size.Y.Offset + 8) * s)
 	end
+	local gw, gh = osz / ks, owy / ks
+	-- zbliżenie po rundzie: postać stoi w środku wolnego pasa na lewo od karty podsumowania (ułamek szerokości widoku)
+	local kartaLewa = gw - KX.karta.margines_px - ui.koniec.Size.X.Offset * s
+	uklad.fx = (ox + kartaLewa * ks * KA.final.postac_w_wolnym) / cam.ViewportSize.X
+	uklad.aspekt = cam.ViewportSize.X / cam.ViewportSize.Y * uklad.wsp
 	for nazwa, r in L.ukladUI(D, stan.gra or "sila", gw, gh, s) do
 		local p = ui.wUkladzie[nazwa]
 		if p then
@@ -2043,6 +2603,7 @@ local function odswiezSkale()
 end
 odswiezSkale()
 workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(odswiezSkale)
+gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(odswiezSkale) -- obszar okien (pasek, wycięcia) znany albo zmieniony
 kontener:GetAttributeChangedSignal("EmulacjaEkranu"):Connect(odswiezSkale)
 
 ------------------------------------------------------------------ klawisze, kamera, dotyk
@@ -2117,17 +2678,88 @@ end
 
 local function kameraNaStanowisko(gra)
 	local cam = workspace.CurrentCamera
-	local W = D.swiat[gra]
+	if kam.przed == nil then
+		kam.przed = { kat = cam.FieldOfView } -- kąt widzenia gracza sprzed stanowiska (oddajemy przy zejściu)
+	end
 	cam.CameraType = Enum.CameraType.Scriptable
-	cam.CFrame = CFrame.lookAt(v3(W.oko), v3(W.cel))
+	kam.uj = "stanowisko"
+	kam.od = nil
+	kam.start = os.clock()
+	kam.wstrzasSila = 0
+	table.clear(kam.zawezenia)
+	local u = Kam.stanowisko(D, gra, 0)
+	kam.ostatnie = u
+	cam.CFrame = CFrame.lookAt(v3(u.oko), v3(u.cel))
+	cam.FieldOfView = math.clamp(Kam.katOkna(u.kat, uklad.wsp or 1), 5, 120)
 end
 
 local function kameraPrzywroc()
 	local cam = workspace.CurrentCamera
 	cam.CameraType = Enum.CameraType.Custom
+	if kam.przed then
+		cam.FieldOfView = kam.przed.kat
+		kam.przed = nil
+	end
 	local hum = gracz.Character and gracz.Character:FindFirstChildOfClass("Humanoid")
 	if hum then
 		cam.CameraSubject = hum
+	end
+end
+
+-- kamera co klatkę: ujęcie z rachunku KameraTreningu, płynne przejście od poprzedniego kadru, zawężenie kąta po
+-- trafieniu (tylko w ujęciu gry) i drżenie; t = czas serwera (odliczanie), dt = czas klatki
+local function kameraKlatka(t, dt, gra)
+	local cam = workspace.CurrentCamera
+	if stan.ekran == "brak" or cam.CameraType ~= Enum.CameraType.Scriptable then
+		return
+	end
+	local c = os.clock()
+	local u
+	if kam.uj == "odliczanie" and stan.runda then
+		u = Kam.odliczanie(D, gra, stan.runda.t0 - t)
+	elseif kam.uj == "final" and stan.final then
+		u = Kam.final(D, gra, stan.final.korzen, uklad.fx or 0.25, uklad.aspekt or 1.78, c - kam.start)
+	elseif kam.uj == "gra" then
+		u = Kam.gra(D, gra)
+	else
+		u = Kam.stanowisko(D, gra, c - kam.start)
+	end
+	if kam.od then
+		local f = (c - kam.przejscieStart) / kam.przejscie
+		if f >= 1 then
+			kam.od = nil
+		else
+			u = Kam.przejscie(kam.od, u, f)
+		end
+	end
+	kam.ostatnie = u
+	local kat = u.kat
+	if kam.uj == "gra" then
+		local z = 0
+		for rodzaj, od in kam.zawezenia do
+			z = math.max(z, Kam.zawezenie(D, rodzaj, c - od))
+		end
+		kat -= z
+	end
+	local drzenie = Vector3.zero
+	if kam.wstrzasSila > 0 then
+		kam.wstrzasWiek += dt
+		local amp = Kam.wstrzas(D, kam.wstrzasSila, kam.wstrzasWiek)
+		if amp <= 0 then
+			kam.wstrzasSila = 0
+		else
+			drzenie = Vector3.new(losowe:NextNumber(-1, 1), losowe:NextNumber(-1, 1), losowe:NextNumber(-1, 1)) * amp
+		end
+	end
+	cam.CFrame = CFrame.lookAt(v3(u.oko) + drzenie, v3(u.cel) + drzenie * 0.35)
+	cam.FieldOfView = math.clamp(Kam.katOkna(kat, uklad.wsp or 1), 5, 120)
+end
+
+-- miecz i tarcza wiszą w stałym miejscu stanowiska — w zbliżeniu po rundzie (postać obraca się do kamery) są
+-- schowane, wracają z kolejną rundą; koszyk Koniczyn idzie za postacią, więc zostaje
+local function pokazModelGracza(widac)
+	if modelGracza and stan.gra ~= "szczescie" then
+		modelGracza.Parent = if widac then efekty else nil
 	end
 end
 
@@ -2139,12 +2771,78 @@ local function usunModelGracza()
 	end
 end
 
--- po rundzie (i przy zejściu): postać bez przesunięć stawów, bez biegu, koszyk na środku
+-- po rundzie (i przy zejściu): postać bez przesunięć stawów, bez biegu i radości, koszyk na środku; bohater klasy
+-- wraca do własnych klipów
 local function spokojPostaci()
 	stan.unik = nil
 	stan.ruchToru = nil
 	zatrzymajBieg()
+	zatrzymajRadosc()
 	przywrocStawy()
+	spokojBohatera()
+end
+
+-- postać twarzą w stronę gry (po zbliżeniu patrzyła w kamerę) — przed kolejną rundą na tym samym stanowisku
+local function postacDoGry(gra)
+	local postac = gracz.Character
+	local hrp = postac and postac:FindFirstChild("HumanoidRootPart")
+	if not hrp then
+		return
+	end
+	local W = D.swiat[gra]
+	local kier = Vector3.new(W.patrz[1] - W.podest[1], 0, W.patrz[3] - W.podest[3])
+	if kier.Magnitude < 0.1 then
+		return
+	end
+	postac:PivotTo(CFrame.lookAt(hrp.Position, hrp.Position + kier.Unit))
+	hrp.AssemblyLinearVelocity = Vector3.zero
+	hrp.AssemblyAngularVelocity = Vector3.zero
+end
+
+--[[ Koniec rundy jak finał walki: kamera robi zbliżenie na postać (karta podsumowania stoi po prawej), postać obraca
+	się do kamery; gdy runda dała punkt statystyki — postać się cieszy i leci konfetti (większe po rundzie bez pudła,
+	wtedy też napis „BEZ PUDŁA!”). a = podsumowanie z serwera. ]]
+local function zacznijFinal(a)
+	local gra = stan.gra
+	local W = D.swiat[gra]
+	local postac = gracz.Character
+	local hrp = postac and postac:FindFirstChild("HumanoidRootPart")
+	local korzen = if hrp then hrp.Position else v3(W.podest) + Vector3.new(0, KA.final.korzen_nad_ziemia, 0)
+	local kier = Kam.kierunekFinalu(D, gra, 0)
+	local F = { korzen = { korzen.X, korzen.Y, korzen.Z }, t = os.clock(), obrot = false, postac = postac }
+	local hum = postac and postac:FindFirstChildOfClass("Humanoid")
+	-- obrót tylko żywej postaci (runda przerwana resetem postaci też kończy się podsumowaniem)
+	if hrp and hum and hum.Health > 0 then
+		F.cfOd = hrp.CFrame
+		F.cfDo = CFrame.lookAt(hrp.Position, hrp.Position + Vector3.new(kier[1], 0, kier[3]))
+		F.obrot = true
+	end
+	stan.final = F
+	pokazModelGracza(false)
+	-- słowa z rundy nie zostają pod kartą podsumowania (na telefonie karta zajmuje ponad połowę ekranu)
+	komiks:wyczysc()
+	stan.duzyNapis = nil
+	ujecie("final", KA.final.przejscie_s)
+	stan.konfetti = 0
+	if (a.suma or 0) <= 0 or not F.obrot then
+		return -- bez punktu statystyki (albo bez żywej postaci) nie ma świętowania
+	end
+	local idealna = not a.przerwana and (a.trafienia or 0) > 0 and (a.pudla or 0) + (a.puste or 0) == 0
+	zacznijRadosc()
+	-- konfetti, gdy kamera jest już w drodze do postaci: salwy z lewej i z prawej strony względem kamery zbliżenia
+	task.delay(KA.final.przejscie_s * 0.5, function()
+		if stan.final ~= F or stan.ekran ~= "podsumowanie" or not fx then
+			return
+		end
+		local ziemia = Vector3.new(korzen.X, korzen.Y - KA.final.korzen_nad_ziemia, korzen.Z)
+		stan.konfetti = fx:konfetti(ziemia, Vector3.new(kier[3], 0, -kier[1]), EF.konfetti, idealna)
+		wybuch("zloto", ziemia + Vector3.new(0, 5.5, 0), 1.2)
+		if idealna and uklad.obszar then
+			local o = uklad.obszar
+			local x = (uklad.fx or 0.25) * workspace.CurrentCamera.ViewportSize.X
+			napisKomiks(T.bez_pudla, "seria", nil, { ekran = Vector2.new(x, o[2] + (o[4] - o[2]) * 0.17) })
+		end
+	end)
 end
 
 ------------------------------------------------------------------ inne ekrany schowane na stanowisku (jak w walce)
@@ -2161,13 +2859,14 @@ local function schowajInneEkrany()
 	end
 	schowaneEkrany = {}
 	local function sprawdz(e)
-		if schowaneEkrany and e:IsA("ScreenGui") and e ~= gui and not POMIJANE_EKRANY[e.Name] and e.Enabled then
+		if schowaneEkrany and e:IsA("ScreenGui") and e ~= gui and e ~= guiKomiks and not POMIJANE_EKRANY[e.Name]
+			and e.Enabled then
 			schowaneEkrany[e] = true
 			e.Enabled = false
 		end
 	end
 	local function pilnuj(e)
-		if e:IsA("ScreenGui") and e ~= gui then
+		if e:IsA("ScreenGui") and e ~= gui and e ~= guiKomiks then
 			sprawdz(e)
 			table.insert(polaczeniaEkranow, e:GetPropertyChangedSignal("Enabled"):Connect(function()
 				sprawdz(e)
@@ -2210,13 +2909,21 @@ local function wejdzNaStanowisko(gra)
 	stan.lokalne = {}
 	stan.wybor = false
 	stan.przedStartem = false
+	stan.final = nil
+	stan.liczenie = nil
 	stan.ekran = "stanowisko"
+	-- nowe stanowisko: efekty od zera (i ponowne sprawdzenie modułu walki), haczyk bohatera pytany od nowa
+	sprzatnijEfekty()
+	efektyStanowiska()
+	hak.zawieszony = false
+	hak.sprawdzono = -math.huge
 	schowajInneEkrany()
 	przypnij(gra)
 	if dotykPrzed == nil then
 		dotykPrzed = GuiService.TouchControlsEnabled
 	end
 	GuiService.TouchControlsEnabled = false
+	odswiezSkale()
 	kameraNaStanowisko(gra)
 	if gra == "sila" then
 		modelGracza = zbudujMiecz()
@@ -2240,6 +2947,7 @@ local function zejdzZeStanowiska()
 	usunModelGracza()
 	spokojPostaci()
 	przywrocArene()
+	sprzatnijEfekty()
 	if dotykPrzed ~= nil then
 		GuiService.TouchControlsEnabled = dotykPrzed
 		dotykPrzed = nil
@@ -2249,6 +2957,8 @@ local function zejdzZeStanowiska()
 	stan.gra = nil
 	stan.runda = nil
 	stan.R = nil
+	stan.final = nil
+	stan.liczenie = nil
 	stan.ekran = "brak"
 	stan.wybor = false
 	stan.przedStartem = false
@@ -2256,9 +2966,11 @@ local function zejdzZeStanowiska()
 end
 
 ------------------------------------------------------------------ klatka: odliczanie, rysowanie mini-gry, kamera
-local PRZEZROCZYSTE = { sila = true, pancerz = true, inteligencja = true } -- postać zasłania strefy / kamienie
+-- postać półprzezroczysta u siebie tylko w Sile: tam kamera stoi za plecami i postać jest pośrodku czterech stref.
+-- W Pancerzu i Runach kamera w stylu walki patrzy z boku — postać nie zasłania pola gry (test 5f) i zostaje pełna
+local PRZEZROCZYSTE = { sila = true }
 
-local function wyglad(t)
+local function wyglad(t, dt)
 	local gra = stan.gra
 	local W = gra and D.swiat[gra]
 	przezroczystoscPostaci(if W and stan.ekran == "runda" and PRZEZROCZYSTE[gra] then U.przezroczystosc_postaci else 0)
@@ -2266,28 +2978,65 @@ local function wyglad(t)
 		return
 	end
 	local Rd = if stan.ekran == "runda" then stan.runda else nil
-	-- Koniczyny: koszyk nad głową (barki w górę) przez cały pobyt na stanowisku
+	local bohater = bohaterAktywny()
+	-- Koniczyny: koszyk nad głową przez cały pobyt na stanowisku — bohater klasy: klip „ręce w górę”, awatar: barki
 	if gra == "szczescie" then
+		if bohater then
+			if stan.radosc == nil then
+				klipBohatera(BH.klipy.rece)
+			end
+		else
+			ustawStawLokalnie("RightShoulder", CFrame.Angles(math.pi, 0, 0))
+			ustawStawLokalnie("LeftShoulder", CFrame.Angles(math.pi, 0, 0))
+		end
+	end
+	-- radość bohatera klasy: jego wiwat gra raz, więc póki trwa podsumowanie, zamawiamy go od nowa co radosc_co_s
+	if stan.radosc and bohater and os.clock() - (stan.radoscBohatera or 0) > BH.radosc_co_s then
+		stan.radoscBohatera = os.clock()
+		hak.klip = nil
+		klipBohatera(BH.klipy.radosc)
+	end
+	-- radość awatara, gdy nie ma animacji „cheer”: ręce w górę i podskoki (stawy tylko u siebie)
+	if stan.radosc and radosc == nil and not bohater then
 		ustawStawLokalnie("RightShoulder", CFrame.Angles(math.pi, 0, 0))
 		ustawStawLokalnie("LeftShoulder", CFrame.Angles(math.pi, 0, 0))
+		ustawStaw(nil, CFrame.new(0, 0.9 * math.abs(math.sin((os.clock() - stan.radosc) * 5)), 0))
 	end
 	local h = GRY[gra]
 	if h and h.klatka then
 		h.klatka(t, Rd, W)
 	end
-	local cam = workspace.CurrentCamera
-	if stan.ekran ~= "brak" and cam.CameraType == Enum.CameraType.Scriptable then
-		local baza = CFrame.lookAt(v3(W.oko), v3(W.cel))
-		if stan.wstrzas then
-			local dt = os.clock() - stan.wstrzas.t
-			if dt < 0.25 then
-				local s = stan.wstrzas.sila * (1 - dt / 0.25)
-				baza = baza * CFrame.new(losowe:NextNumber(-s, s), losowe:NextNumber(-s, s), 0)
-			else
-				stan.wstrzas = nil
-			end
+	-- po rundzie: postać obraca się twarzą do kamery zbliżenia (jak zwycięzca w finale walki)
+	local F = stan.final
+	if F and F.obrot then
+		local postac = gracz.Character
+		local hrp = postac and postac == F.postac and postac:FindFirstChild("HumanoidRootPart")
+		local f = math.clamp((os.clock() - F.t) / KA.final.obrot_postaci_s, 0, 1)
+		if hrp then
+			postac:PivotTo(F.cfOd:Lerp(F.cfDo, Kam.gladko(f)))
+			hrp.AssemblyLinearVelocity = Vector3.zero
+			hrp.AssemblyAngularVelocity = Vector3.zero
 		end
-		cam.CFrame = baza
+		if f >= 1 or not hrp then
+			F.obrot = false
+		end
+	end
+	if fx then
+		fx:krok(dt)
+	end
+	komiks:krok(dt)
+	kameraKlatka(t, dt, gra)
+	-- karta podsumowania: liczby rosną od zera (jak łup na karcie wyniku walki)
+	local Lz = stan.liczenie
+	if Lz then
+		local f = Kam.gladko((os.clock() - Lz.t) / KX.karta.liczenie_s)
+		local a = Lz.a
+		ui.k1.Text = string.format("Trafienia %d · pudła %d · celność %d%%", math.floor((a.trafienia or 0) * f + 0.5),
+			math.floor(((a.pudla or 0) + (a.puste or 0)) * f + 0.5), math.floor((a.celnosc or 0) * f + 0.5))
+		ui.k3.Text = string.format("%s +%d", Lz.nazwa, math.floor((a.suma or 0) * f + 0.5))
+		if f >= 1 then
+			stan.liczenie = nil
+		end
 	end
 	if not Rd then
 		return
@@ -2296,18 +3045,26 @@ local function wyglad(t)
 	local przed = t < Rd.t0
 	if przed ~= stan.przedStartem then
 		stan.przedStartem = przed
+		if not przed then
+			ujecie("gra", 0) -- dojazd skończył się przed startem: kamera stoi w ujęciu gry
+		end
+		odswiezSkale()
 		pokazWidocznosc()
 	end
+	-- liczby odliczania i „START!” na środku ekranu (ui.komiks.licznik_miejsce): w odliczaniu nic się nie rozgrywa
+	local o = uklad.obszar
+	local srodek = if o then Vector2.new(o[1] + (o[3] - o[1]) * KX.licznik_miejsce[1], o[2] + (o[4] - o[2]) * KX.licznik_miejsce[2])
+		else nil
 	if przed then
 		local n = math.ceil(Rd.t0 - t)
 		if n ~= stan.ostatnieOdliczanie then
 			stan.ostatnieOdliczanie = n
-			napisSrodek(tostring(n), KOL.krem, "wielki", 0.8)
+			napisKomiks(tostring(n), "licznik", nil, { ekran = srodek })
 			graj("nuta", 1)
 		end
 	elseif stan.ostatnieOdliczanie ~= 0 then
 		stan.ostatnieOdliczanie = 0
-		napisSrodek(D.sterowanie.start.napis .. "!", KOL.zloto, "wielki", 0.6)
+		napisKomiks(D.sterowanie.start.napis .. "!", "start", nil, { ekran = srodek })
 		graj("nuta", 2)
 	end
 	local zostalo = math.max(0, Rd.t0 + Rd.dlugosc - math.max(t, Rd.t0))
@@ -2320,8 +3077,8 @@ local function wyglad(t)
 		end
 	end
 end
-RunService.RenderStepped:Connect(function()
-	wyglad(teraz())
+RunService.RenderStepped:Connect(function(dt)
+	wyglad(teraz(), dt)
 end)
 
 ------------------------------------------------------------------ wiadomości z serwera
@@ -2346,6 +3103,12 @@ zdalne.OnClientEvent:Connect(function(rodzaj, a, b2)
 		usunWizualne()
 		spokojPostaci()
 		przywrocArene()
+		if stan.final then
+			postacDoGry(a.gra) -- po zbliżeniu postać patrzyła w kamerę
+		end
+		pokazModelGracza(true)
+		stan.final = nil
+		stan.liczenie = nil
 		stan.runda = a
 		stan.R = L.nowaRunda(D, a.gra, a.id, a.t0, a.plan, { pasek = a.pasek, W = a.W, pula = a.pula })
 		stan.lokalne = {}
@@ -2361,6 +3124,10 @@ zdalne.OnClientEvent:Connect(function(rodzaj, a, b2)
 		if D.gry[a.gra].typ == "lapanie" then
 			ustawTor(table.find(D.gry[a.gra].tory, D.gry[a.gra].start_tor) or 2, true)
 		end
+		-- odliczanie: kamera przechodzi do ujęcia „start” i dojeżdża do kamery gry (jak wjazd kamery przed walką)
+		table.clear(kam.zawezenia)
+		ujecie("odliczanie", 0.35)
+		odswiezSkale()
 		odswiezStatus()
 		pokazWidocznosc()
 	elseif rodzaj == "wynik" then
@@ -2405,7 +3172,7 @@ zdalne.OnClientEvent:Connect(function(rodzaj, a, b2)
 		spokojPostaci()
 		przywrocArene()
 		local st = L.statystyka(D, a.gra)
-		ui.kTytul.Text = if a.przerwana then T.koniec .. " (przerwana)" else T.koniec
+		ui.kTytul.Text = if a.przerwana then T.przerwana else T.koniec
 		-- liczone z rozstrzygniętych prób (trafienia + pudła + naciśnięcia w powietrze), nie ze wszystkich zdarzeń
 		-- planu — po przerwaniu rundy „2 z 43 (15%)” było sprzeczne (raport przejścia gry 17.11.2026, M8)
 		ui.k1.Text = string.format("Trafienia %d · pudła %d · celność %d%%", a.trafienia or 0, (a.pudla or 0) + (a.puste or 0),
@@ -2418,10 +3185,19 @@ zdalne.OnClientEvent:Connect(function(rodzaj, a, b2)
 			ui.k2.Text = string.format("Najdłuższa seria %d", a.najdluzsza)
 		end
 		ui.k3.Text = string.format("%s +%d", st.nazwa, a.suma)
+		ui.k3.FontFace = komiks:czcionkaDla(ui.k3.Text)
+		ui.k3.TextColor3 = kolor(if (a.suma or 0) > 0 then KX.kolory.zielony else KOL.szary)
 		ui.k4.Text = string.format("Do następnego punktu: %d/%d · %s łącznie: +%d", math.floor(a.pasek or 0),
 			math.ceil(a.prog or 0), st.nazwa, a.sesja or 0)
 		stan.ekran = "podsumowanie"
 		stan.przedStartem = false
+		-- karta wyskakuje jak karta wyniku walki, liczby rosną od zera; kamera robi zbliżenie na postać
+		stan.liczenie = { t = os.clock(), a = a, nazwa = st.nazwa }
+		odswiezSkale()
+		skalaKarty.Scale = (uklad.s or 1) * KX.karta.wejscie_od
+		TweenService:Create(skalaKarty, TweenInfo.new(KX.karta.wejscie_s, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+			{ Scale = uklad.s or 1 }):Play()
+		zacznijFinal(a)
 		if (a.trafienia or 0) == 0 or not grajZdarzenie(DK.koniec) then
 			melodia(D.dzwieki.melodia_koniec)
 		end
@@ -2436,6 +3212,8 @@ gracz.CharacterAdded:Connect(function()
 	table.clear(stawy) -- nowa postać ma własne stawy (stare zniknęły razem z postacią)
 	table.clear(znaneStawy)
 	bieg = nil
+	radosc = nil
+	stan.radosc = nil
 	przezroczystoscTeraz = 0
 	if stan.gra then
 		zejdzZeStanowiska()
@@ -2591,6 +3369,9 @@ local function stanTestowy()
 	for _, n in napisy do
 		minTekst = math.min(minTekst, n.rozmiar)
 	end
+	for _, px in KX.rozmiary_px do
+		minTekst = math.min(minTekst, px) -- napisy komiksowe też liczą się do najmniejszego tekstu
+	end
 	local kafelki, grywalne = 0, 0
 	for _, k in ui.wybor:GetChildren() do
 		if string.sub(k.Name, 1, 8) == "Kafelek_" then
@@ -2639,9 +3420,38 @@ local function stanTestowy()
 			end
 			return n
 		end)(),
-		tor = stan.tor, unik = stan.unik and stan.unik.rodzaj, stawyZmienione = zmienioneStawy, bieg = bieg ~= nil,
+		tor = stan.tor, unik = stan.unik and stan.unik.rodzaj,
+		-- ruch postaci: stawy awatara albo bohater klasy przez haczyk (przesunięcie / klip biegu)
+		stawyZmienione = zmienioneStawy + (if hak.przesuniety then 1 else 0),
+		stawyAwatara = zmienioneStawy, -- same stawy awatara (przy aktywnym bohaterze mają zostać nietknięte)
+		radoscStawami = stan.radosc ~= nil and radosc == nil and not hak.aktywny, -- radość bez animacji: ręce i podskoki
+		bieg = bieg ~= nil or hak.klip == BH.klipy.bieg,
 		arkusz = arkusz() ~= false, pozycja = if hrp then { hrp.Position.X, hrp.Position.Y, hrp.Position.Z } else nil,
 		przezroczystosc = przezroczystoscTeraz,
+		-- wygląd jak w walce: ujęcie i kąt kamery, napisy komiksowe, efekty 3D, konfetti, bohater klasy
+		kameraUjecie = kam.uj, kameraKat = cam.FieldOfView,
+		kameraOko = { cam.CFrame.Position.X, cam.CFrame.Position.Y, cam.CFrame.Position.Z },
+		kameraPatrzy = { cam.CFrame.LookVector.X, cam.CFrame.LookVector.Y, cam.CFrame.LookVector.Z },
+		wspEmulacji = uklad.wsp, obszar = uklad.obszar, ulamekPostaci = uklad.fx,
+		komiks = {
+			naEkranie = komiks:ile(), pokazane = komiks.pokazane, zastepcze = komiks.zastepcze,
+			czcionka = KX.czcionka, warstwa = guiKomiks.Enabled,
+			ostatnie = (function()
+				local lista = {}
+				for _, n in komiks.napisy do
+					table.insert(lista, { tekst = n.napis, styl = n.styl, x = n.x, y = n.y, komiksowa = n.komiksowa })
+				end
+				return lista
+			end)(),
+		},
+		efekty = if fx then { zrodlo = fx.zrodlo, utworzono = fx:policz(), bledy = fx.bledy } else nil,
+		czesciEfektow = #efekty:GetChildren(),
+		konfetti = stan.konfetti, radosc = stan.radosc ~= nil, radoscAnimacja = radosc ~= nil,
+		final = stan.final ~= nil, obrotPostaci = if hrp then { hrp.CFrame.LookVector.X, hrp.CFrame.LookVector.Z } else nil,
+		bohater = { aktywny = hak.aktywny, klip = hak.klip, przesuniety = hak.przesuniety, wywolania = hak.wywolania,
+			zawieszony = hak.zawieszony },
+		pierscienie = { ui.pierscienie.Visible, ui.pierscienie.AbsolutePosition.X, ui.pierscienie.AbsolutePosition.Y },
+		karta = { ui.koniec.AbsolutePosition.X, ui.koniec.AbsolutePosition.Y, ui.koniec.AbsoluteSize.X, ui.koniec.AbsoluteSize.Y },
 	}
 end
 
@@ -2700,8 +3510,20 @@ sterowanie.OnInvoke = function(polecenie, a, b3)
 	elseif polecenie == "inna" then
 		return pokazWybor("stanowisko")
 	elseif polecenie == "dlugie_napisy" then
-		stan.dlugieNapisy = a -- mnożnik czasu napisów środkowych (zrzuty); nil = zwykle
+		stan.dlugieNapisy = a -- mnożnik życia napisów komiksowych (zrzuty); nil = zwykle
 		return true
+	elseif polecenie == "napis" then
+		-- napis komiksowy w miejscu dużych napisów stanowiska (zrzuty i pomiar czcionki): a = tekst, b3 = styl
+		local n = napisKomiks(tostring(a), b3 or "seria", nil)
+		return n ~= nil and { komiksowa = n.komiksowa, x = n.x, y = n.y } or nil
+	elseif polecenie == "konfetti" then
+		-- konfetti przy postaci (zrzuty): a = true → wielkie
+		local p0 = stopyPostaci()
+		if not fx or not p0 then
+			return 0
+		end
+		stan.konfetti = fx:konfetti(p0, workspace.CurrentCamera.CFrame.RightVector, EF.konfetti, a == true)
+		return stan.konfetti
 	elseif polecenie == "zamknij" then
 		ukryjWybor()
 		return true
