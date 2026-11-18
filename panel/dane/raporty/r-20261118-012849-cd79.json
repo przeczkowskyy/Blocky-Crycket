@@ -1,0 +1,25 @@
+{
+ "id": "r-20261118-012849-cd79",
+ "tytul": "Kowal: wskazówka do kuźni i walka w przedmiotach",
+ "opis_md": "- Gra sama prowadzi teraz do kowala: po pierwszej wygranej, gdy masz zapasowy przedmiot albo stać cię na ulepszenie, u góry ekranu pojawia się wskazówka i znacznik nad kuźnią.\n- Potwierdzone w prawdziwej walce w lesie: bohater nosi hełm i rękawice zdobyte z łupu, a jego broń i pancerz liczą się z przedmiotami.\n- Napisy mają poprawną odmianę („Brakuje ci 1 materiału”, „2 materiały”, „5 materiałów”).\n\nSzczegóły:\n\nUzupełnienie raportu „Kowal w bazarze: rozbieranie i ulepszanie przedmiotów (D-102)”. Próba Kowala w grze: 14 punktów w porządku, 0 błędów; próba całej drogi gracza 14 z 14.\n\n**Wskazówka** pokazuje się tylko zamiast kroku „zdobywaj poziomy” i tylko do pierwszego ulepszenia — nie przykrywa TELEPORTU, pierwszej walki, jajka, treningu po przegranej ani bramy do następnego biomu. W lesie i w Bagnie brzmi „Zapasowy przedmiot do rozbiórki: Kamień Powrotu → kowal”, a znacznik stoi nad Kamieniem Powrotu.\n\n**Stroje w walce (D-071):** to pierwsze sprawdzenie w grze, że bohater w walce w lesie nosi dokładnie to, co gracz ma założone — dotąd było to sprawdzone tylko przy tablicy próby walki.\n\nKamera za belką straganu z poprzedniego raportu okazała się śladem samej próby, nie gry: gracz podchodzący od uliczki widzi okno i kuźnię bez przeszkód.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T01:28:49+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/KowalProba",
+   "etykieta": "Kuźnia"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/WskazowkiGry",
+   "etykieta": "Wskazówki"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ]
+}
