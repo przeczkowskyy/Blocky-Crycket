@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T17:02:39+01:00",
+ "aktualizacja": "2026-11-18T17:14:20+01:00",
  "prace": [
   {
    "id": "bohater-bieg",
@@ -14,22 +14,6 @@
    "obszary": [
     "swiat/bohater_swiat/**",
     "studio:BohaterSwiat"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "cutscenka-biomu-studio",
-   "tytul": "Oprawa przelotu przez biom (D-077): wdrożenie w Studio i próby lasu, Bagna i Dżungli",
-   "stan": "w_toku",
-   "start": "2026-11-18T16:22:31+01:00",
-   "koniec_szacowany": "2026-11-18T17:37:31+01:00",
-   "aktualizacja": "2026-11-18T16:22:31+01:00",
-   "obszary": [
-    "studio:CutscenkaBiomu",
-    "studio:LasPasGra",
-    "studio:BagnoPasGra",
-    "studio:DzunglaPasGra"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
