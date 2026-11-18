@@ -2,22 +2,6 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-18T11:04:50+01:00",
- "prace": [
-  {
-   "id": "regresja-dzien-1811",
-   "tytul": "Próba całej gry po zmianach z 18.11 (bohater w świecie, mini-gry)",
-   "stan": "w_toku",
-   "etap": "19 prób w grze + próba bohatera",
-   "start": "2026-11-18T11:04:50+01:00",
-   "koniec_szacowany": "2026-11-18T12:19:50+01:00",
-   "aktualizacja": "2026-11-18T11:04:50+01:00",
-   "obszary": [
-    "studio:TreningProba",
-    "studio:BohaterSwiat"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  }
- ]
+ "aktualizacja": "2026-11-18T12:14:21+01:00",
+ "prace": []
 }
