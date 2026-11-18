@@ -1,0 +1,31 @@
+{
+ "id": "r-20261118-133241-ddbd",
+ "tytul": "Muzyka: Bagno i Dżungla wgrane, pięć nowych utworów, muzyka walki i mini-gier w grze",
+ "opis_md": "- Muzyka Bagna i Dżungli jest wgrana do Roblox (18.11, 12:24). Zagra, gdy Karol nada grze prawa do obu plików w Creator Hub; do tego czasu obie krainy grają jak dotąd muzykę lasu.\n- Powstało pięć nowych utworów do odsłuchu: walka, walka ze Strażnikiem, mini-gry, drugi utwór Bagna, drugi utwór Dżungli (pytanie 66). Nikt ich jeszcze nie słyszał.\n- Gra umie już zmieniać muzykę: w walce utwór walki, przy Strażniku jego własny, w mini-grze utwór treningu, potem powrót do muzyki krainy. Zadziała po wgraniu nowych utworów.\n- Nowe utwory wejdą do Roblox jednym plikiem (6 min 35 s) — jedno wgranie z dwóch, które zostały w listopadzie. Wgranie dopiero po odsłuchu i zgodzie.\n\nSzczegóły:\n\n**Co ma zrobić człowiek**\n1. Karol: Creator Hub → lista plików audio → „Muzyka bagno petla” i „Muzyka dzungla petla” → Uprawnienia → dodać grę. Nadania nie da się cofnąć. W kodzie nic nie trzeba zmieniać — po nadaniu praw krainy zagrają własne utwory od następnego wejścia do gry.\n2. Odsłuch pięciu utworów: pliki `assets/audio/muzyka/<nazwa>.mp3` (Karol ma je też na telefonie) i odpowiedź przy pytaniu 66: zostaje, do poprawki albo odpada.\n\n**Pięć nowych utworów (tak zamówiono; liczby to pomiary, nie ocena)**\n\n| Utwór | Zamówienie | Pełna / pętla | Uwagi |\n|---|---|---|---|\n| `muzyka_13_walka` | szybko, skocznie, „bohatersko na wesoło”, ok. 138 uderzeń na minutę | 90,0 / 69,6 s | najgłośniejszy z generatora, ściszony o 3,7 dB |\n| `muzyka_14_walka_straznik` | większa, bardziej dramatyczna, marszowe bębny, waltornia | 90,0 / 76,2 s | ma zakończenie; najsłabsze dopasowanie pętli w partii |\n| `muzyka_15_trening` | sportowo: klaskanie, marimba, ukulele, piccolo | 90,0 / 75,0 s | pierwsze ok. 7,5 s jest cichsze o ok. 7 dB — w grze pętla zaczyna się za tym wstępem |\n| `muzyka_06_bagno_b` | sennie i psotnie, wolny rytm | 90,0 / 84,5 s | nieco cichszy od reszty (ok. 1 dB) |\n| `muzyka_07_dzungla_b` | spokojna wędrówka, marimba, flet, bongosy | 90,0 / 83,1 s | koniec pętli o 3,2 dB głośniejszy niż początek |\n\nGłośność wyrównana jak w pierwszej partii. Na szwach pętli nie ma trzasku (pomiar); czy są płynne muzycznie, oceni dopiero ucho. Koszt: 65,4 kredytu, na koncie zostało 139,6.\n\n**Jak gra wybiera muzykę (od 18.11)**\n\n| Sytuacja | Co gra |\n|---|---|\n| Bazar, las, plac startowy, stare miasteczko, stary las | bez zmian |\n| Bagno, Dżungla | własny utwór, gdy plik się wczytuje; inaczej muzyka lasu ciszej, jak dotąd |\n| Walka | utwór walki; przy oknie wyniku cichnie, po zamknięciu wraca muzyka krainy |\n| Walka ze Strażnikiem | utwór Strażnika (bez niego — utwór zwykłej walki) |\n| Stanowisko mini-gry | utwór treningu; po wyjściu muzyka krainy gra dalej od miejsca, w którym ucichła |\n\nDopóki utwór walki, Strażnika albo treningu nie jest wgrany, zostaje zachowanie dotychczasowe: w walce muzyka krainy jest przyciszona.\n\n**Próba w grze (18.11, 13:11–13:16): 11 punktów w porządku, 0 błędów**\n- Bazar i las grają swoje wgrane utwory; efekty walki idą z własnego pliku (14 odcinków w walce).\n- Bagno: plik ma numer, ale gra nie ma do niego praw („Requester does not have permission for Asset”) → grają utwory lasu; z plikiem próbnym gra własny utwór.\n- Utwór jako odcinek większego pliku: 35 odczytów, żaden poza odcinkiem.\n- Walka, walka ze Strażnikiem Gaju i mini-gra przełączają muzykę i wracają do muzyki krainy.\n- Testy bez Studio: 25 z 25.\n- Po zmianie puszczone jeszcze raz (13:20–13:31): cała droga gracza oraz próby Bagna i Dżungli — bez błędów.\n\n**Czego nie sprawdzono:** prawdziwych nowych utworów w grze (w próbie zastępował je dźwięk wbudowany w grę); głośności muzyki walki względem efektów; przesunięcia czasów w dużym pliku po przetworzeniu przez Roblox; Strażnika w krainie (w próbie był Strażnik z tablicy prób walki); wykrycia Bagna i Dżungli z położenia postaci (w próbie strefa była wymuszona); mini-gra jest rozpoznawana po pobycie na stanowisku, także między rundami.\n\n**Limit wgrań audio:** 8 z 10 w listopadzie. Jeden plik z pięcioma utworami to dziewiąte wgranie.\n\nPliki: `assets/audio/README.md` (sekcja „Druga partia”), `assets/audio/arkusz/muzyka_arkusz_b.ogg`, `swiat/dzwiek_gra/README.md`, narzędzia `tools/audio_petla.py` i `tools/audio_arkusz_muzyki.py`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-18T13:32:41+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/DzwiekGra",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytanie 66"
+  },
+  {
+   "typ": "plik",
+   "cel": "assets/audio/README.md",
+   "etykieta": "Lista utworów i pomiary"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/dzwiek_gra/README.md",
+   "etykieta": "Jak gra wybiera muzykę"
+  }
+ ],
+ "zrzuty": []
+}

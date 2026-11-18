@@ -583,6 +583,7 @@ Szczegóły: (1) obejrzeć walkę v2 i raport „Walka v2 na ekranie” z decyzj
 - Osobno: czy walka i mini-gry mają mieć własną muzykę zamiast przyciszonej muzyki krainy.
 
 Szczegóły: Utwory są z tego samego generatora i w tej samej palecie instrumentów co pierwsza partia (ElevenLabs Music v2.5 przez Higgsfield, 65,4 kredytu, zostało 139,6). Nikt ich jeszcze nie słyszał — pliki poszły do Karola na telefon, gotowe wersje trafią do `assets/audio/muzyka/`. Do Roblox wejdą jako jeden plik z pięcioma utworami (gra odtwarza odcinki), żeby zużyć jedno wgranie zamiast pięciu: konto ma 10 wgrań audio na miesiąc, 6 zużytych, 2 pójdą na muzykę Bagna i Dżungli z pierwszej partii. Wgranie dopiero po odsłuchu i wyraźnej zgodzie. Kto wybiera: Karol (dźwięk i muzyka, D-093); Paweł może zgłosić uwagi.
+Dopisek z 2026-11-18 (po obróbce i próbie w Studio): gotowe wersje są w `assets/audio/muzyka/` (pełne `.mp3` do odsłuchu, `_petla.ogg` do gry), a wspólny plik na jedno wgranie to `assets/audio/arkusz/muzyka_arkusz_b.ogg` (6 min 35 s). Gra już przełącza muzykę na walkę, Strażnika i mini-grę — w próbie z dźwiękiem zastępczym, bo nic z tej partii nie jest wgrane. Uwaga do odsłuchu: utwór mini-gier ma w pełnej wersji cichszy wstęp (ok. 7,5 s), którego w grze nie będzie. Raport w panelu: „Muzyka: Bagno i Dżungla wgrane, pięć nowych utworów, muzyka walki i mini-gier w grze”.
 **Odpowiedź:**
 
 ## 67. Rasy: te same klocki co człowiek czy własne proporcje?

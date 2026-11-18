@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-18 · Claude Code u Karola (muzyka podpięta w Studio — próba 11 z 11)
+- **Pakiet dźwięku gry po zmianach stoi w Studio** (`Workspace/DzwiekGra`, `swiat/dzwiek_gra/`; propozycja): Bagno i Dżungla mają wpisane numery własnych utworów — dopóki gra nie ma do nich praw, grają jak dotąd utwory lasu, a po nadaniu praw same przejdą na własne. Nowe: muzyka walki, walki ze Strażnikiem i mini-gier jako osobne utwory grane z jednego pliku; po walce albo mini-grze wraca muzyka krainy. Bez wgranych utworów zachowanie jest dotychczasowe (muzyka krainy przyciszona w walce).
+- **Próba w grze (13:11–13:16):** 11 punktów w porządku — bazar i las grają wgrane utwory, efekty walki z własnego pliku, przełączanie na walkę, Strażnika Gaju i mini-grę (z dźwiękiem zastępczym, bo nowych utworów nie wgrano), utwór jako odcinek większego pliku. Testy bez Studio 25 z 25. Po zmianie próba całej drogi gracza oraz próby Bagna i Dżungli bez błędów.
+- **Niesprawdzone:** prawdziwe nowe utwory w grze i ich głośność względem efektów, Strażnik w krainie, wykrycie Bagna i Dżungli z położenia postaci (w próbie strefa była wymuszona), przesunięcie czasów w dużym pliku po przetworzeniu przez Roblox.
+- Raport w panelu: „Muzyka: Bagno i Dżungla wgrane, pięć nowych utworów, muzyka walki i mini-gier w grze”. Pliki: `swiat/dzwiek_gra/`, `swiat/README.md`, `DOKUMENTACJA.md`; notatki [[Zadania]], [[Pytania otwarte]] (dopisek pod 66), [[Pipeline assetów]].
+
 ## 2026-11-18 · Claude Code u Karola (komplet sześciu ras w Blenderze)
 - **Modele ras (D-104), komplet:** do elfa i orka doszły demon, mroczny elf, goblin i Półbóg (13:02–13:25), wszystkie na ciele człowieka w stroju bazowym, z planszami „rzut i model”, przymiarkami kompletów Rycerza i Zwiadowcy oraz planszą zbiorczą obok człowieka. Po przeglądzie pilotażu poprawione włosy elfa (dłuższe pasma, tył w trzech warstwach) oraz kok i uszy orka. Skala: ork 1,08, goblin 0,88, reszta 1,0 — tylko jako dana.
 - **Co odbiega od rzutów:** sylwetka u wszystkich (najbardziej goblin i ork), sztywny ogon demona, brak poświaty Półboga. Przymiarki: uszy elfów i goblina oraz rogi demona przechodzą przez hełm i kaptur, aureola się mieści, rękawice Zwiadowcy dają ludzkie dłonie pięciu rasom.
