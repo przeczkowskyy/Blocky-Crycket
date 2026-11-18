@@ -1,15 +1,21 @@
-# Training Center — próba mini-gier (Siła i Pancerz)
+# Training Center — próba sześciu mini-gier
 
-*Status: **propozycja** (17.11.2026). **Wdrożone w Studio i sprawdzone w trybie Play 17.11.2026 przed południem**
-(etap B): lista T01–T14 zaliczona, zrzuty z gry w `klatki/`, wyniki w „Co sprawdzone w grze”. Opis sześciu mini-gier,
-wybory dla ludzi i ustawienia „przyjęte, do zmiany”: [`PROJEKT.md`](PROJEKT.md).
+*Status: **propozycja** (17.11.2026). **Siła i Pancerz wdrożone w Studio i sprawdzone w trybie Play 17.11.2026 przed
+południem** (etap B): lista T01–T14 zaliczona, zrzuty z gry w `klatki/`, wyniki w „Co sprawdzone w grze”. **Cztery
+nowe mini-gry (Kondycja „Bieżnia”, Zręczność „Kłody”, Inteligencja „Runy”, Szczęście „Koniczyny”) — noc 17/18.11:
+zaprogramowane i sprawdzone offline (część A), a 18.11.2026 o 00:51–01:40 zbudowane w Studio i sprawdzone w trybie
+Play (część B: lista T01–T22 — 22 × OK)**; podglądy brył w `podglady/`, zrzuty z gry w `klatki/` (09–25), wyniki
+w „Noc 17/18.11” i „Część B”. Opis sześciu mini-gier, wybory dla ludzi i ustawienia „przyjęte,
+do zmiany”: [`PROJEKT.md`](PROJEKT.md).
 Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅). Przyrost według propozycji
 `tools/walka/BALANS_1711.md`, część 6 — to nie jest decyzja (wybór 1 w PROJEKT.md).*
 
-> **W skrócie.** Jeden kontener `Workspace/TreningProba` (atrybut `Wygenerowane = true`). Arena z 83 klocków stoi
-> w powietrzu, z dala od map, w (3000; 300; 3000). Są w niej dwa grywalne stanowiska — **Siła „Rozbijanie”**
-> (miotacz rzuca skrzynki, gracz rozbija je strzałką w ich stronę) i **Pancerz „Blok”** (golem uderza, gracz blokuje
-> w chwili ciosu i nie daje się nabrać na zmyłki) — oraz cztery zapowiedzi „w projekcie”. Wejście: E przy trenerze
+> **W skrócie.** Jeden kontener `Workspace/TreningProba` (atrybut `Wygenerowane = true`). Arena z 202 klocków
+> (256 × 56 st) stoi w powietrzu, z dala od map, w (3000; 300; 3000). Sześć stanowisk w jednym rzędzie: **Siła
+> „Rozbijanie”** (strzałka w stronę lecącej skrzynki), **Pancerz „Blok”** (blok w chwili ciosu, bez dawania się nabrać
+> na zmyłki), **Kondycja „Bieżnia”** (lewa / prawa stopa w rytmie, gdy ślad dojedzie do linii), **Zręczność „Kłody”**
+> (skok nad niską kłodą, padnij pod wysoką), **Inteligencja „Runy”** (powtórz świecące runy) i **Szczęście
+> „Koniczyny”** (koszyk nad głową, przejście na tor koniczyny, z dala od kamieni). Wejście: E przy trenerze
 > w bazarze (zdarzenie `OknoMiejsca`, bez zmian w pakiecie bazaru) albo E przy własnej tablicy obok miejsca startu.
 > Otwiera się **tymczasowy** wybór mini-gry (docelowe okno 2D robi Paweł). Serwer decyduje o przyrostach i zapisuje je
 > w atrybutach sesyjnych gracza (`TreningSila`, `TreningPancerz`; bez DataStore), a do tego ogłasza je sygnałem
@@ -20,19 +26,21 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | Plik | Co to jest |
 |---|---|
 | `PROJEKT.md` | sześć mini-gier (PROPOZYCJA), wybory dla ludzi, ustawienia „przyjęte, do zmiany” |
-| `ustawienia.json` | **jedyne źródło liczb**: statystyki, runda, poziomy trudności, pasek przyrostu, ochrona przed spamem, układ areny i stanowisk, telefon (rozmiary), klawisze, dźwięki, teksty |
-| `dane.py` | generator `zrodla/DaneTreningu.luau` (położenia w świecie, przypadki wzorcowe z lustra); `--sprawdz`, `--wyjscie DIR` |
-| `logika_treningu.py` | lustro `zrodla/LogikaTreningu.luau` w Pythonie (plan rundy, werdykty, pasek, spam, wejście, skala UI) |
-| `scena.py` | arena z prostych części (83): podłoga, murki, niewidzialne ściany, lobby z tablicą wyboru i bramą wyjścia, stanowiska, zapowiedzi |
-| `zrodla/LogikaTreningu.luau` | czysta logika (ModuleScript) — ta sama co lustro; serwer sprawdza ją przy starcie (70 przypadków) |
+| `ustawienia.json` | **jedyne źródło liczb**: statystyki, runda, poziomy trudności i wagi sześciu gier, pasek przyrostu, ochrona przed spamem, układ areny i stanowisk, telefon (rozmiary), klawisze, dźwięki (wbudowane i zdarzenia arkusza `swiat/dzwiek_gra`), teksty |
+| `dane.py` | generator `zrodla/DaneTreningu.luau` (położenia w świecie, przypadki wzorcowe z lustra); reguły ustawień każdego rodzaju gry; `--sprawdz`, `--wyjscie DIR` |
+| `logika_treningu.py` | lustro `zrodla/LogikaTreningu.luau` w Pythonie (plan rundy sześciu gier, werdykty: okno czasu, kolejność run, tor koszyka; pasek, waga, spam, wejście, skala UI) |
+| `scena.py` | arena z prostych części (202): podłoga, murki, niewidzialne ściany, lobby z tablicą wyboru i bramą wyjścia, sześć stanowisk z trenerami |
+| `podglad.py` | **podglądy stanowisk bez Studio**: render brył z `scena.py` z kamery każdej mini-gry + przykładowa chwila gry i zarys przycisków (numpy + Pillow, najniższy priorytet) → `podglady/` |
+| `podglady/` | `podglad_<gra>.jpg` (sześć stanowisk) i `podglad_arena.jpg` — render brył, nie zrzut z gry |
+| `zrodla/LogikaTreningu.luau` | czysta logika (ModuleScript) — ta sama co lustro; serwer sprawdza ją przy starcie (118 przypadków) |
 | `zrodla/SerwerTreningu.server.luau` | serwer: werdykty i przyrosty, ochrona przed spamem, wejście i wyjście, podpowiedzi E, sygnał dla modułu statystyk, haczyk testowy |
-| `zrodla/KlientTreningu.client.luau` | klient: własny ScreenGui (tymczasowy wybór, status, sterowanie, podsumowanie), kamera stanowiska, pochłanianie ruchu, efekty i dźwięki, `OknoMiejsca`, uchwyt `WybierzGre` |
+| `zrodla/KlientTreningu.client.luau` | klient: własny ScreenGui (tymczasowy wybór, status, sterowanie sześciu gier, podpowiedź obrazkowa, podsumowanie), kamera stanowiska, pochłanianie ruchu, rysowanie stanowisk (`GRY[gra]`), ruch postaci (bieg, skok / padnij, przejścia z koszykiem), efekty i dźwięki, `OknoMiejsca`, uchwyt `WybierzGre` |
 | `zrodla/DaneTreningu.luau` | **wygenerowany** — nie edytować ręcznie |
-| `sprawdz_luau_treningu.py` | kontrola statyczna Luau (reguły jak w bazarze + zakaz zasobów spoza Robloxa i rozmiarów tekstu z literałów) |
+| `sprawdz_luau_treningu.py` | kontrola statyczna Luau (reguły jak w bazarze + zakaz zasobów spoza Robloxa i rozmiarów tekstu z literałów; jedyny wyjątek: adres arkusza dźwięku z katalogu `swiat/dzwiek_gra`) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
-| `testy/test_treningu.py` | 36 testów offline (opis w nagłówku pliku) |
-| `testy/proba_play.py` | próba w Studio (Play) z listą kontrolną T01–T14 i 6 zrzutami roboczymi (wyniki poza repo) |
-| `testy/zrzuty_gry.py` | 8 zrzutów z gry do `klatki/` (1280 px) i pomiar ekranu telefonu 667 × 375 (emulacja atrybutem `EmulacjaEkranu`) |
+| `testy/test_treningu.py` | 43 testy offline (opis w nagłówku pliku) |
+| `testy/proba_play.py` | próba w Studio (Play): T01–T14 (Siła, Pancerz, wejście, wyjście, telefon) i T15–T22 (cztery nowe gry, spam, reset postaci, klatka); `--nowe` — tylko nowe; `--sprawdz` — kawałki Luau bez Studio |
+| `testy/zrzuty_gry.py` | zrzuty z gry do `klatki/` (1280 px): 01–08 (Siła, Pancerz) i 09–24 (każda nowa gra: start z podpowiedzią, środek rundy, podsumowanie, telefon 667 × 375); `--nowe`, `--sprawdz` |
 | `klatki/` | zrzuty z gry (tryb Play) — tabela w „Zrzuty z gry” |
 
 ## Co powstanie w kontenerze `Workspace/TreningProba`
@@ -45,7 +53,7 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | `Sygnaly/PrzyrostStatystyki` | BindableEvent | **dla przyszłego modułu statystyk** (dziś nikt go nie słucha) |
 | `Sygnaly/WybierzGre` | BindableFunction (klient) | **uchwyt dla docelowego okna 2D Pawła** |
 | `Sygnaly/SterowanieSerwera`, `Sygnaly/SterowanieKlienta` | BindableFunction | haczyki testowe |
-| `Arena` (Model, `ModelStreamingMode = Persistent`) | części | podłoga 96 × 56 st, murki i niewidzialne ściany 14 st, stanowiska Siły i Pancerza, zapowiedzi, lobby: tablica „WYBÓR MINI-GRY (E)” i brama „WYJŚCIE (E)” (zapasowe — gracz trafia od razu na stanowisko) |
+| `Arena` (Model, `ModelStreamingMode = Persistent`) | części | podłoga 256 × 56 st, murki i niewidzialne ściany 14 st, sześć stanowisk (Kłody, Bieżnia, Siła, Pancerz, Runy, Koniczyny), lobby: tablica „WYBÓR MINI-GRY (E)” i brama „WYJŚCIE (E)” (zapasowe — gracz trafia od razu na stanowisko) |
 | `TablicaWejscia` (Model, Persistent) | części | tablica „TRAINING CENTER / MINI-GRY” z podpowiedzią E 14–26 st od pierwszego SpawnLocation, na wolnym gruncie, z dala od „Nowe miasteczko (E)” bazaru i portalu startowego; miejsce wybiera budowa w Studio |
 
 Atrybuty kontenera: `Wygenerowane`, `Zrodlo`, `Zbudowano`, `Skrot`, `PunktTablicy`, **`WyborTymczasowy`** (true; false
@@ -53,8 +61,9 @@ Atrybuty kontenera: `Wygenerowane`, `Zrodlo`, `Zbudowano`, `Skrot`, `PunktTablic
 `WyborTymczasowy`, `RecznyPunktTablicy` (Vector3 na gruncie — własne miejsce tablicy). W Play serwer ustawia
 `SerwerTreninguGotowy`, `ZgodnoscLogikiTreningu` („OK 70/70”), `Podpowiedzi` (3), liczniki `LicznikWejsc`,
 `LicznikRund`, `LicznikTrafien`, `LicznikPudel`, `LicznikSpamu`, `LicznikSygnalow`, `LicznikOdmow`, `OstatniWynik`,
-`OstatniaOdmowa`, a klient (u siebie) — `KlientTreninguGotowy`. Atrybuty gracza: `TreningSila`, `TreningPancerz`
-(punkty w tej sesji), `TreningGra`, `TreningSeria`. Atrybutów `Strength`, `Armor`… (`PlayerStatsDefaults`) pakiet nie
+`OstatniaOdmowa`, a klient (u siebie) — `KlientTreninguGotowy`. Atrybuty gracza: `TreningSila`, `TreningKondycja`,
+`TreningInteligencja`, `TreningZrecznosc`, `TreningSzczescie`, `TreningPancerz` (punkty w tej sesji), `TreningGra`,
+`TreningSeria`. Atrybutów `Strength`, `Armor`… (`PlayerStatsDefaults`) pakiet nie
 zmienia.
 
 ## Jak podpiąć resztę gry (bez zmian w cudzych plikach)
@@ -81,13 +90,17 @@ zmienia.
 
 ```
 python -B swiat/trening_proba/dane.py                    # po każdej zmianie ustawienia.json
-python -B swiat/trening_proba/testy/test_treningu.py     # 36 testów, ok. 3 s
+python -B swiat/trening_proba/testy/test_treningu.py     # 43 testy, ok. 13 s
 python -B swiat/trening_proba/zbuduj.py --sucho          # bez Studio: dane, Luau, strażniki, plan budowy
+python -B swiat/trening_proba/podglad.py                 # podglądy stanowisk do podglady/ (ok. 10 s, bez Studio)
+python -B swiat/trening_proba/testy/proba_play.py --sprawdz   # kawałki Luau próby parsują się (bez Studio)
 python -B swiat/trening_proba/zbuduj.py                  # Studio w trybie Edit: buduje / odbudowuje kontener
 python -B swiat/trening_proba/zbuduj.py --skrypty        # tylko moduły i skrypty (arena i tablica zostają)
 python -B swiat/trening_proba/zbuduj.py --usun           # usuwa Workspace/TreningProba
-python -B swiat/trening_proba/testy/proba_play.py <folder poza repo>   # próba T01–T14 w trybie Play (ok. 4 min)
-python -B swiat/trening_proba/testy/zrzuty_gry.py                      # 8 zrzutów do klatki/ (ok. 2 min)
+python -B swiat/trening_proba/testy/proba_play.py <folder poza repo>   # próba T01–T22 w trybie Play (ok. 12 min)
+python -B swiat/trening_proba/testy/proba_play.py <folder> --nowe      # tylko T01 i T15–T22 (ok. 8 min)
+python -B swiat/trening_proba/testy/zrzuty_gry.py                      # 24 zrzuty do klatki/ (ok. 7 min)
+python -B swiat/trening_proba/testy/zrzuty_gry.py --nowe               # tylko 09–24 (cztery nowe gry, ok. 5 min)
 ```
 
 Przy kilku oknach Studio dopisz `--studio <studio_id>`. Każdy wysyłany kod sprawdza `game.PlaceId == 129485428021967`
@@ -102,7 +115,147 @@ START (albo spacja) → strzałki / WASD w stronę skrzynki, gdy dolatuje do św
 INNA GRA → Pancerz → spacja, gdy pierścień dojdzie do kółka (fioletowy = zmyłka, nie blokuj) → WYJDŹ (albo Q).
 Telefon: Test → Device → telefon w poziomie (667 × 375) albo zrzut z emulacją: `python -B swiat/trening_proba/testy/zrzuty_gry.py`.
 
-## Co sprawdzone bez Studio (17.11.2026)
+## Noc 17/18.11.2026: cztery nowe mini-gry (część A — bez Studio)
+
+Projekt każdej gry i zmiany względem pierwszego opisu: `PROJEKT.md`, sekcje 3–6. W skrócie:
+
+| Gra | Co robi gracz | Rodzaj oceny | Zdarzeń w rundzie | Waga |
+|---|---|---|---|---|
+| Kondycja „Bieżnia” | biegnie na taśmie twarzą do kamery; LEWA / PRAWA, gdy ślad stopy dojedzie do linii (stopy na zmianę, bęben trenera) | okno czasu (rytm, bez rozrzutu, podbiegi) | 66–69 | 0,7 |
+| Zręczność „Kłody” | ramię z kłodą obraca się wokół słupa; SKOK nad niską, PADNIJ pod wysoką (postać skacze i pada) | okno czasu, akcja zależna od wysokości | 30–32 | 1,2 |
+| Inteligencja „Runy” | patrzy, które z czterech kamieni świecą (każdy ze swoją nutą), i powtarza | kolejność, bez okna czasu na runę | ok. 26 run trafionych | 1,35 |
+| Szczęście „Koniczyny” | przechodzi z koszykiem nad głową na tor koniczyny, schodzi spod kamienia | tor koszyka w chwili upadku (i 0,2 s przed) | 37–39 | 1,3 |
+
+Wspólne dla nowych gier: podpowiedź obrazkowa na stanowisku i w odliczaniu (przyciski gry dopiero po odliczaniu,
+naciśnięcia w odliczaniu nic nie robią); serwer decyduje (klient zgłasza tylko naciśnięcie albo ruch koszyka);
+dźwięki z arkusza `swiat/dzwiek_gra`, gdy jest wgrany, inaczej wbudowane; reset postaci sprząta stanowisko, stawy
+i HUD (jak w Sile i Pancerzu).
+
+**Sprawdzone offline (wszystko kod 0):**
+
+```
+python -B swiat/trening_proba/dane.py --sprawdz               # aktualny (36 planów, 36 sekwencji wzorcowych)
+python -B swiat/trening_proba/sprawdz_luau_treningu.py        # 4 pliki, OK (z parserem luau_mini)
+python -B swiat/las_potwory/sprawdz_luau.py swiat/trening_proba/zrodla/*.luau   # 4 pliki, OK
+python -B swiat/trening_proba/testy/test_treningu.py          # Ran 43 tests … OK (ok. 13 s)
+python -B swiat/trening_proba/testy/proba_play.py --sprawdz   # 17 kawałków Luau, OK
+python -B swiat/trening_proba/testy/zrzuty_gry.py --sprawdz   # 10 kawałków Luau, OK
+python -B swiat/trening_proba/zbuduj.py --sucho               # sucho: OK (202 części, kod areny 39 tys. znaków)
+```
+
+- **Lustro logiki = Luau:** 118 przypadków wzorcowych (36 planów i 36 sekwencji — po 6 na grę — 26 przyrostów,
+  12 wejść, 8 skal) daje to samo w Pythonie i w `LogikaTreningu.luau` (luau_mini); do tego 90 losowych planów i 72
+  losowe sekwencje kroków ze wszystkich gier (stan rundy, tory Koniczyn, stan Run, podsumowanie).
+- **Ocena wejścia przez serwer (2k–2n):** Bieżnia — zła stopa, za wcześnie, przepuszczony krok, „zawsze ta sama stopa”
+  nie rośnie; Kłody — skok pod wysoką = pudło, zmiana wysokości nie zmienia oceny, pierwszy poziom tylko niskie; Runy —
+  naciśnięcie w pokazie pominięte bez kary, dubel, zła runa skraca o 2, zaklęcie wydłuża o 1, po 8 nowe zaklęcie,
+  ponowny pokaz po bezczynności niezależny od chwili sprawdzenia; Koniczyny — ruch nie jest werdyktem, stanie
+  w miejscu = 0 jednostek (40 rund), koniczyna nie spada na tor lecącego kamienia (ponad 500 sprawdzeń), werdykt
+  klienta przy upadku = werdykt serwera z zapasem.
+- **Nadużycia (2e):** bot wciskający losowo 20 razy na sekundę przez całą rundę: Siła, Pancerz, Bieżnia, Kłody — 0
+  jednostek; Koniczyny — 11% zysku gracza 80% (wymóg 0,2 s pod koniczyną); Runy — 16–18% gracza mylącego co dziesiątą
+  runę (zgadywanie 1 z 4). Spam 100 zgłoszeń w 1 s — kubełek.
+- **Opóźnienie sieci (2g):** gry czasowe — naciśnięcia idealne, wiadomość po 0–0,3 s → wszystko trafia; Koniczyny —
+  ruchy dochodzą do serwera po 0–0,3 s i w innej kolejności, serwer co tik → ten sam wynik co klient, 0 pudeł.
+- **Balans (2h, D-074):** jednostki na minutę gracza-modelu względem Siły: Pancerz 0,97, Bieżnia 0,98, Kłody 1,02,
+  Runy 0,96, Koniczyny 1,03 (test: 0,85–1,18). Celność modelu: 83–94%.
+- **Przerwanie i koniec rundy (2o)** w każdej z sześciu gier; podsumowanie z rozstrzygniętych prób.
+- **Scena (4a–4e):** 202 części w obrysie areny, bez powtórzonych nazw; części animowane istnieją (pasy taśmy, cele
+  stóp, bęben, pałka, ramię z kłodą, znaki run, kula maga, tory); z kamery każdej nowej gry widać to, na co gracz
+  reaguje (ślady na całej drodze, kłodę nisko i wysoko, cztery kamienie, trzy tory od korony do koszyka); ramię
+  z kłodą obraca się (co 5°, obie wysokości) bez zahaczenia o lite części; miejsce gracza wolne (na taśmie — nad nią).
+- **Telefon (5a–5d):** każdy przycisk ≥ 44 px przy skali 0,85, teksty ≥ 12 pt; przy 667 × 375, 568 × 320 i 812 × 375
+  przyciski każdej gry, status i „X” mieszczą się i nie nachodzą na siebie, przyciski w dolnej części ekranu;
+  podpowiedź obrazkowa między statusem a panelem startu; brak napisów dla twórców (także w zagnieżdżonych tekstach).
+- **Styki (6a–6h):** adres arkusza dźwięku tylko raz i tylko z identyfikatora w katalogu; zdarzenia dźwięku istnieją
+  w `swiat/dzwiek_gra/ustawienia.json`; `proba_play.py` ma T01–T22 i `--sprawdz`; `podglad.py` nie ładuje numpy przy
+  imporcie.
+
+**Podglądy stanowisk** (`podglady/`, render brył z kamery gry + przykładowa chwila i zarys przycisków — *ocenione na
+oko*, nie zrzut z gry): `podglad_kondycja.jpg`, `podglad_zrecznosc.jpg`, `podglad_inteligencja.jpg`,
+`podglad_szczescie.jpg`, a także `podglad_sila.jpg`, `podglad_pancerz.jpg` i `podglad_arena.jpg` (cała arena).
+Podglądy zmieniły projekt trzy razy: biegacz twarzą do kamery (za plecami zasłaniał ślady), koszyk nad głową (przed
+postacią zasłaniało go ciało), postać i mag w Runach z boku (zasłaniali kamienie).
+
+**Część B (Studio, w tej kolejności):** `python -B tools/studio_okno.py --na-wierzch` → `python -B
+swiat/trening_proba/zbuduj.py` (pełna budowa — zmienia się arena) → `python -B swiat/trening_proba/testy/proba_play.py
+<folder poza repo>` (T01–T22) → `python -B swiat/trening_proba/testy/zrzuty_gry.py` (24 zrzuty do `klatki/`) →
+obejrzenie zrzutów i poprawki → regresja `python -B swiat/przejscie_gry/proba_dymna.py`.
+
+**Obejrzenie ręcznie w Studio (nowe gry):** Play → E przy tablicy → GRAJ przy Kondycji → START → A / D (albo ← / →),
+gdy ślad dojedzie do białej linii → INNA GRA → Zręczność → spacja nad niską kłodą, S pod wysoką → INNA GRA →
+Inteligencja → patrz na kamienie, potem strzałki w tej samej kolejności → INNA GRA → Szczęście → A / D pod koniczynę,
+z dala od cienia kamienia → WYJDŹ.
+
+**Czego nie sprawdzono (nowe gry):** nic z czterech nowych gier nie było jeszcze uruchomione w Studio — rysowanie
+stanowisk, ruch postaci (bieg z Animate, przesunięcie biodra, przejścia z koszykiem, podniesione ręce), dźwięki
+z arkusza, czas klatki i czytelność na prawdziwym ekranie to część B. Gracz-model w testach to założenie (reakcja,
+celność) — prawdziwe dziecko do oceny przez Karola i Pawła.
+
+**Znane ryzyka (nowe gry):** przesunięcie stawów (`C0`) widać tylko u siebie (inni gracze widzą stojącą postać);
+podniesione ręce tylko dla R15; animacja biegu tylko, gdy awatar ma domyślny skrypt Animate; „ZA PÓŹNO” w Koniczynach
+może dziwić dzieci; w Runach zgadywanie daje trochę; arena jest dłuższa (256 st) — `zbuduj.py` sprawdza, że w jej pudle
+nie ma cudzych części.
+
+## Część B — cztery nowe gry w Studio (18.11.2026, 00:51–01:40, tryb Play)
+
+**Warunki.** Miejsce gry (PlaceId 129485428021967), jeden gracz, okno gry 2041 × 1153, Studio na wierzchu (nakładka
+nocna). W miejscu m.in. przebudowany `StanGracza` (zapis postępu wyłączony), `KowalProba`, `PetyProba`, bazar.
+Próba porównuje atrybuty sesyjne `Trening…` (przed i po rundzie), nie stałe liczby statystyk.
+
+1. `python -B swiat/trening_proba/zbuduj.py`: „pudło areny wolne | SpawnLocation: 1 | MiasteczkoBazarGra: true |
+   trener w bazarze (E training_center): true”, „części areny: 202, podpowiedzi: 2”, tablica wejścia (−12,9; 0,8; 5,4),
+   na końcu „instancji: 284, skryptów: 4, części: 208, podpowiedzi E: 3”, bez „UWAGA”.
+2. Pierwsza próba (`proba_play.py --nowe`): T01, T15, T17–T22 OK; **T16 BŁĄD** — runda Kłód bez pudła, ale postać nie
+   skakała i nie padała. Przyczyna: awatar w tym miejscu ma **15 AnimationConstraint i 0 Motor6D** (nowe stawy
+   Robloxa), a klient szukał tylko Motor6D. Poprawka w kliencie: staw może być Motor6D (`C0`) albo AnimationConstraint
+   (`CFrame` jego `Attachment0`) — to samo dla barków w Koniczynach. Przy okazji szersza tablica Bieżni (napis
+   „KONDYCJA — BIEŻNIA” łamał się, druga linia za głową biegacza). Przebudowa, testy offline dalej 43 × OK.
+3. Pełna próba `proba_play.py <folder poza repo>` (T01–T22, 00:59–01:09): **21 × OK, T11 BŁĄD** — wyjście wracało
+   4,56 st od P0, bo nowy punkt T20 (reset postaci) odradza postać, a kolejne wejście zapamiętuje nowy punkt powrotu.
+   T11 porównuje teraz z punktem powrotu zapamiętanym przez serwer przy ostatnim wejściu; powtórka `--tylko T11,T12`:
+   **T11 OK (0,0 st)**. Razem **22 × OK**, wyniki (`wyniki.json`, `lista.txt`) poza repozytorium.
+
+| Punkt | Wynik w Studio |
+|---|---|
+| T01 | „OK 118/118”, 3 podpowiedzi, **6/6 grywalnych kafelków**, arkusz dźwięku znaleziony |
+| T02–T10, T12–T14 | jak 17.11 (Siła 45/45, 309 jednostek, 3 punkty; spam 56/60; werdykty; Pancerz 42/43 z jedną zablokowaną zmyłką; telefon 52 px / 15 pt, 568 × 320: 44,3 px / 12,8 pt; konsola bez błędów) |
+| T15 Bieżnia | 67/67, pudła 0, 3 punkty (oczek. 3), 339,5 jednostki (oczek. 339,5), animacja biegu gra, A / D / ← / → → 4 zgłoszenia, postać nie przesunięta, podpowiedź obrazkowa na stanowisku i w odliczaniu |
+| T16 Kłody | 31/31, pudła 0, 3 punkty; staw biodra przesunięty w rundzie, po rundzie wszystkie stawy jak przed; spacja i S → 3 zgłoszenia |
+| T17 Runy | naciśnięcie w pokazie → „pokaz” (bez kary); 37 run, pudła 0, 7 zaklęć, najdłuższe 8, 3 punkty; zła runa: długość 3 → 2, pudło 1 |
+| T18 Koniczyny | 28/28 złapanych, pudła 0, postać przechodziła między torami; 15 s bez ruchu: **0 jednostek**, 0 trafień, 10 pudeł (kamienie w koszyk) |
+| T19 spam | po 60 naraz: odrzucone 54–56, jednostki ze spamu 0–4,8 (limit 8 × waga) |
+| T20 reset w rundzie Kłód | (staw przesunięty) → serwer zdejmuje ze stanowiska, runda przerwana, klient: ekran „brak”, kamera Custom, dotyk przywrócony, HUD oddany, nowa postać bez zmian stawów |
+| T21 klatka | Bieżnia śr. 16,7 ms, p95 18,0 ms; Koniczyny 16,7 / 17,8 ms (60 kl./s) |
+| T11 wyjście | (powtórka) 0,0 st od punktu powrotu, kamera Custom, W przesuwa o 9,9 st, brama → poza areną |
+| T22 konsola | 0 błędów pakietu, zgodność logiki „OK 118/118” |
+
+**Zrzuty z gry** (`klatki/`, `testy/zrzuty_gry.py --nowe`; lista graczy i czat schowane, własna postać bez nazwy):
+
+| Plik | Co widać |
+|---|---|
+| `25_wybor_szesc_gier.jpg` | tymczasowe okno wyboru — sześć grywalnych mini-gier (GRAJ przy każdej) |
+| `09_kondycja_start.jpg` | Bieżnia: stanowisko z podpowiedzią obrazkową (taśma i ślady → A / D → stopy) nad panelem START |
+| `10_kondycja_runda.jpg` | Bieżnia w trakcie rundy: biegacz, ślady na torach, świecący cel przy linii, bęben trenera |
+| `11_kondycja_podsumowanie.jpg` | podsumowanie: 68 / 0 / 100%, najdłuższa seria 68, **Kondycja +3** |
+| `12_kondycja_telefon_667x375.jpg` | Bieżnia na ekranie telefonu (wycięty prostokąt emulacji): stopy po bokach, status u góry |
+| `13_zrecznosc_start.jpg` … `16_zrecznosc_telefon_667x375.jpg` | Kłody: start z podpowiedzią (niska → SKOK, wysoka → PADNIJ), skok nad niską kłodą („ZWINNIE!”), podsumowanie z przyrostem, telefon |
+| `17_inteligencja_start.jpg` … `20_inteligencja_telefon_667x375.jpg` | Runy: start z podpowiedzią (oko → runa → przycisk), pokaz („PATRZ!”, świecący zielony romb, kropki postępu, świecąca kula maga), podsumowanie z najdłuższym zaklęciem, telefon |
+| `21_szczescie_start.jpg` … `24_szczescie_telefon_667x375.jpg` | Koniczyny: start z podpowiedzią, złapana koniczyna w koszyku nad głową („ZŁAPANE!”), podsumowanie ze złapanymi, telefon |
+
+**Regresja całej gry:** `python -B swiat/przejscie_gry/proba_dymna.py <folder poza repo>` (01:16–01:18) — **14 × OK**
+(D00–D13: start, teleport, walka, łup, powrót, trener w bazarze → okno wyboru, runda Siły, wyjście, klatka 16,7 ms,
+konsola bez błędów).
+
+**Otwarte (kosmetyka):** w Koniczynach ręce pod koszykiem — pomiar pokazuje obrócone stawy barków (AnimationConstraint,
+oba ramiona odwrócone), ale na zrzucie dłonie są na wysokości barków, a nie nad głową; do sprawdzenia przy kolejnej
+próbie.
+
+**Czego dalej nie sprawdzono:** prawdziwy telefon i dotyk palcem (tylko emulacja 667 × 375), pad, dźwięki na słuch,
+dwóch graczy naraz, opóźnienie sieci w prawdziwej grze; przesunięcie stawów widać tylko u siebie (inni gracze
+widzą stojącą postać); rundy grał automat — trudność dla dziecka do oceny przez Karola i Pawła.
+
+## Co sprawdzone bez Studio (17.11.2026 — Siła i Pancerz, przed nowymi grami)
 
 Wszystkie polecenia zakończone kodem 0:
 

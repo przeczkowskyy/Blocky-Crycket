@@ -39,6 +39,10 @@ DZWIEKI_WBUDOWANE = {"action_falling.ogg", "action_footsteps_plastic.mp3", "acti
 KLAWISZE = {"Up", "Down", "Left", "Right", "W", "A", "S", "D", "F", "Q", "E", "Space", "Return", "Thumbstick1",
             "DPadUp", "DPadDown", "DPadLeft", "DPadRight", "ButtonA", "ButtonB", "ButtonX", "ButtonY", "ButtonR1",
             "ButtonR2", "ButtonL1", "ButtonSelect"}
+TYPY = ("kierunki", "blok", "rytm", "unik", "sekwencja", "lapanie")
+CZASOWE = ("kierunki", "blok", "rytm", "unik")  # okno czasu wokół zdarzenia, rozdzielność zdarzeń
+# zdarzenia arkusza efektów pakietu swiat/dzwiek_gra (tylko odczyt) — dzwieki_katalog może wskazywać tylko je
+DZWIEK_GRA = os.path.join(REPO, "swiat", "dzwiek_gra", "ustawienia.json")
 
 # nazwy instancji areny, które klient animuje lokalnie (scena.py buduje je pod tymi nazwami)
 NAZWY = {
@@ -47,6 +51,15 @@ NAZWY = {
     "strefy": "Arena/Sila/Strefy",
     "golem_piesc": "Arena/Pancerz/Golem/Piesc",
     "golem_oczy": ["Arena/Pancerz/Golem/OkoL", "Arena/Pancerz/Golem/OkoP"],
+    "tasma_pasy": "Arena/Kondycja/Tasma",
+    "cele_stop": "Arena/Kondycja/Cele",
+    "podest_klody": "Arena/Zrecznosc/Podest",
+    "beben": "Arena/Kondycja/Trener/Beben",
+    "palka": "Arena/Kondycja/Trener/RamieP",
+    "ramie_klody": "Arena/Zrecznosc/Ramie",
+    "runy": "Arena/Inteligencja/Runy",
+    "kula_maga": "Arena/Inteligencja/Mag/Kula",
+    "tory": "Arena/Szczescie/Tory",
     "tablica_wyboru": "Arena/Lobby/TablicaWyboru/E",
     "wyjscie": "Arena/Lobby/Wyjscie/E",
     "tablica_wejscia": "TablicaWejscia/E",
@@ -66,6 +79,104 @@ def _dodaj(a, b):
     return [round(a[i] + b[i], 4) for i in range(3)]
 
 
+def _w(x, a, b):
+    return isinstance(x, (int, float)) and not isinstance(x, bool) and a <= x <= b
+
+
+def _sprawdz_gre(K, gid, G):
+    """Reguły jednej mini-gry (zależne od typu) → BladDanych."""
+    typ = G.get("typ")
+    if typ not in TYPY:
+        raise BladDanych("%s: typ %s" % (gid, typ))
+    poz = G["poziomy"]
+    if not poz or poz[0]["od_s"] != 0:
+        raise BladDanych("%s: pierwszy poziom musi zaczynać się od 0 s" % gid)
+    for a, b in zip(poz, poz[1:]):
+        if b["od_s"] <= a["od_s"]:
+            raise BladDanych("%s: poziomy nie rosną" % gid)
+    if not _w(G.get("rozrzut", 0), 0, 0.4999):
+        raise BladDanych("%s: rozrzut" % gid)
+    if not _w(G.get("waga", 1), 0.05, 10):
+        raise BladDanych("%s: waga (mnożnik jednostek paska) poza 0,05–10" % gid)
+    kub = G.get("kubelek")
+    if kub is not None and not (_w(kub.get("pojemnosc"), 1, 50) and _w(kub.get("uzupelnianie_na_s"), 0.1, 50)):
+        raise BladDanych("%s: kubelek" % gid)
+    for a in G.get("przyciski", G["akcje"]):
+        if a not in K["sterowanie"] or isinstance(K["sterowanie"][a], list):
+            raise BladDanych("%s: akcja %s bez wpisu w sterowanie" % (gid, a))
+    if len(set(G["akcje"])) != len(G["akcje"]):
+        raise BladDanych("%s: powtórzone akcje" % gid)
+    if typ in CZASOWE:
+        for p in poz:
+            if not (0 < p["okno_s"] < 1):
+                raise BladDanych("%s: okno %s" % (gid, p["okno_s"]))
+            # rozdzielność: najkrótszy odstęp dłuższy niż dwa okna + 0,05 s — zgłoszenie zawsze wskazuje jedno zdarzenie
+            najkrotszy = p["odstep_s"] * (1 - G["rozrzut"])
+            if typ == "rytm" and p["podbiegi"] > 0:
+                najkrotszy = najkrotszy * G["podbieg"]["mnoznik"]
+            if najkrotszy <= 2 * p["okno_s"] + 0.05:
+                raise BladDanych("%s: odstęp %s za krótki przy oknie %s" % (gid, p["odstep_s"], p["okno_s"]))
+    if typ == "kierunki":
+        for p in poz:
+            if not (1 <= p["kierunki"] <= len(G["kierunki"])):
+                raise BladDanych("%s: kierunki %s" % (gid, p["kierunki"]))
+        if sorted(G["akcje"]) != sorted(G["kierunki"]):
+            raise BladDanych("%s: akcje ≠ kierunki" % gid)
+    elif typ == "blok":
+        for p in poz:
+            if not (0 <= p["zmylki"] <= 0.5):
+                raise BladDanych("%s: zmyłki %s" % (gid, p["zmylki"]))
+        if G["akcje"] != ["blok"]:
+            raise BladDanych("%s: akcja bloku" % gid)
+    elif typ == "rytm":
+        if len(G["kierunki"]) != 2 or sorted(G["akcje"]) != sorted(G["kierunki"]):
+            raise BladDanych("%s: rytm ma dwie stopy (akcje = kierunki)" % gid)
+        if not (_w(G["podbieg"]["kroki"], 2, 8) and _w(G["podbieg"]["mnoznik"], 0.5, 1)):
+            raise BladDanych("%s: podbieg" % gid)
+        for p in poz:
+            if not _w(p["podbiegi"], 0, 0.3):
+                raise BladDanych("%s: podbiegi %s" % (gid, p["podbiegi"]))
+    elif typ == "unik":
+        o = G["odpowiedz"]
+        if sorted(o) != sorted(G["wartosci"]) or sorted(o.values()) != sorted(G["akcje"]):
+            raise BladDanych("%s: odpowiedz ma łączyć każdą wartość z inną akcją" % gid)
+        if not _w(G["wyprzedzenie_s"], 0, 0.4):
+            raise BladDanych("%s: wyprzedzenie_s" % gid)
+        for p in poz:
+            if not (1 <= p["wartosci"] <= len(G["wartosci"])) or not _w(p["zmiany"], 0, 0.5):
+                raise BladDanych("%s: wartosci / zmiany" % gid)
+    elif typ == "sekwencja":
+        if sorted(G["runy"]) != sorted(G["akcje"]) or len(G["runy"]) < 2:
+            raise BladDanych("%s: runy = akcje" % gid)
+        if not (2 <= G["min_dlugosc"] <= G["start_dlugosc"] <= G["maks_dlugosc"] <= 12) or not _w(G["kara"], 1, 6):
+            raise BladDanych("%s: długości sekwencji (2 ≤ min ≤ start ≤ maks ≤ 12) albo kara" % gid)
+        if G["baza"] < 4 * G["maks_dlugosc"]:
+            raise BladDanych("%s: baza run za krótka" % gid)
+        for k in ("przerwa_s", "przerwa_bledu_s", "bezczynnosc_s"):
+            if not _w(G[k], 0.05, 20):
+                raise BladDanych("%s: %s" % (gid, k))
+        for p in poz:
+            if not (_w(p["pokaz_s"], 0.15, 2) and _w(p["przerwa_s"], 0.05, 1)):
+                raise BladDanych("%s: pokaz_s / przerwa_s" % gid)
+    elif typ == "lapanie":
+        if G["tory"] != G["akcje"] or len(G["tory"]) != 3 or G["start_tor"] not in G["tory"]:
+            raise BladDanych("%s: trzy tory = akcje, tor startowy z listy" % gid)
+        if not (_w(G["lot_s"], 0.3, 4) and G["pierwsze_s"] >= G["lot_s"] and _w(G["zlota_mnoznik"], 1, 4)):
+            raise BladDanych("%s: lot_s / pierwsze_s / zlota_mnoznik" % gid)
+        if not _w(G["zlapanie_s"], 0, 0.5):
+            raise BladDanych("%s: zlapanie_s (koszyk pod koniczyną przed upadkiem) poza 0–0,5 s" % gid)
+        for p in poz:
+            if p["odstep_s"] * (1 - G["rozrzut"]) < 0.6:
+                raise BladDanych("%s: odstęp %s — upadki za gęsto" % (gid, p["odstep_s"]))
+            if not (_w(p["kamienie"], 0, 0.5) and _w(p["zlote"], 0, 0.5) and _w(p["wiatr"], 0, 0.5)):
+                raise BladDanych("%s: kamienie / zlote / wiatr" % gid)
+
+
+def zdarzenia_dzwieku():
+    """Zdarzenia arkusza efektów z pakietu swiat/dzwiek_gra (tylko odczyt)."""
+    return set(_czytaj_json(DZWIEK_GRA)["zdarzenia"])
+
+
 def _sprawdz(K):
     """Reguły ustawień → BladDanych z opisem."""
     st = K["statystyki"]
@@ -82,30 +193,7 @@ def _sprawdz(K):
         if not re.fullmatch(r"[0-9A-F]{6}", s["kolor"]):
             raise BladDanych("%s: kolor %s" % (s["id"], s["kolor"]))
     for gid, G in K["gry"].items():
-        poz = G["poziomy"]
-        if not poz or poz[0]["od_s"] != 0:
-            raise BladDanych("%s: pierwszy poziom musi zaczynać się od 0 s" % gid)
-        for a, b in zip(poz, poz[1:]):
-            if b["od_s"] <= a["od_s"]:
-                raise BladDanych("%s: poziomy nie rosną" % gid)
-        for p in poz:
-            if not (0 < p["okno_s"] < 1):
-                raise BladDanych("%s: okno %s" % (gid, p["okno_s"]))
-            # rozdzielność: najkrótszy odstęp dłuższy niż dwa okna + 0,05 s — zgłoszenie zawsze wskazuje jedno zdarzenie
-            if p["odstep_s"] * (1 - G["rozrzut"]) <= 2 * p["okno_s"] + 0.05:
-                raise BladDanych("%s: odstęp %s za krótki przy oknie %s" % (gid, p["odstep_s"], p["okno_s"]))
-            if G["typ"] == "kierunki" and not (1 <= p["kierunki"] <= len(G["kierunki"])):
-                raise BladDanych("%s: kierunki %s" % (gid, p["kierunki"]))
-            if G["typ"] == "blok" and not (0 <= p["zmylki"] <= 0.5):
-                raise BladDanych("%s: zmyłki %s" % (gid, p["zmylki"]))
-        if G["typ"] == "kierunki" and sorted(G["akcje"]) != sorted(G["kierunki"]):
-            raise BladDanych("%s: akcje ≠ kierunki" % gid)
-        if G["typ"] == "blok" and G["akcje"] != ["blok"]:
-            raise BladDanych("%s: akcja bloku" % gid)
-        if G["typ"] not in ("kierunki", "blok"):
-            raise BladDanych("%s: typ %s" % (gid, G["typ"]))
-        if not (0 <= G["rozrzut"] < 0.5):
-            raise BladDanych("%s: rozrzut" % gid)
+        _sprawdz_gre(K, gid, G)
     P = K["przyrost"]
     if len(P["za_trafienie"]) != len(P["progi_serii"]) + 1:
         raise BladDanych("przyrost: za_trafienie ma mieć o jeden wpis więcej niż progi_serii")
@@ -137,6 +225,15 @@ def _sprawdz(K):
         for k in klawisze:
             if k not in KLAWISZE:
                 raise BladDanych("sterowanie %s: nieznany klawisz %s" % (n, k))
+    DK = K["dzwieki_katalog"]
+    znane = zdarzenia_dzwieku()
+    wpisy = list(DK["trafienie"].values()) + [DK[k] for k in ("punkt", "koniec", "zlota", "zaklecie", "przycisk")]
+    for z in wpisy:
+        if z not in znane:
+            raise BladDanych("dzwieki_katalog: zdarzenia %s nie ma w arkuszu swiat/dzwiek_gra" % z)
+    for g in DK["trafienie"]:
+        if g not in K["gry"]:
+            raise BladDanych("dzwieki_katalog: nieznana gra %s" % g)
 
 
 def _swiat(K):
@@ -145,7 +242,7 @@ def _swiat(K):
     S = {"przybycie": _dodaj(c, K["arena"]["przybycie"]), "patrz_przybycie": _dodaj(c, K["arena"]["patrz_przybycie"])}
     for gid, st in K["stanowiska"].items():
         p = _dodaj(c, st["podest"])
-        w = {"podest": p, "patrz": _dodaj(p, [0, 0, -10]),
+        w = {"podest": p, "patrz": _dodaj(p, st.get("patrz", [0, 0, -10])),
              "oko": _dodaj(p, st["kamera"]["oko"]), "cel": _dodaj(p, st["kamera"]["cel"])}
         if gid == "sila":
             w["miotacz"] = _dodaj(p, st["miotacz"])
@@ -153,15 +250,31 @@ def _swiat(K):
             w["strefy"] = {k: _dodaj(p, v) for k, v in st["strefy"].items()}
             w["luki"] = st["luki"]
             w["miecz"] = _dodaj(p, st["miecz"])
-        else:
+        elif gid == "pancerz":
             g = _dodaj(p, st["golem"])
             w["golem"] = g
             for k in ("piesc_spoczynek", "piesc_zamach"):
                 w[k] = _dodaj(g, st[k])
             for k in ("piesc_cel", "tarcza", "tarcza_blok"):
                 w[k] = _dodaj(p, st[k])
+        else:
+            # nowe stanowiska: każdy punkt [x, y, z] (i słownik punktów) względem podestu → świat; liczby, słowniki
+            # liczb i klucze *_rozmiar bez zmian
+            for k, v in st.items():
+                if k in ("podest", "kamera", "patrz"):
+                    continue
+                if _punkt(v) and not k.endswith("_rozmiar"):
+                    w[k] = _dodaj(p, v)
+                elif isinstance(v, dict) and v and all(_punkt(x) for x in v.values()):
+                    w[k] = {a: _dodaj(p, x) for a, x in v.items()}
+                else:
+                    w[k] = v
         S[gid] = w
     return S
+
+
+def _punkt(v):
+    return isinstance(v, list) and len(v) == 3 and all(isinstance(x, (int, float)) and not isinstance(x, bool) for x in v)
 
 
 def _trener():
@@ -199,6 +312,7 @@ def wczytaj():
         "ui": K["ui"],
         "sterowanie": K["sterowanie"],
         "dzwieki": K["dzwieki"],
+        "dzwieki_katalog": {k: v for k, v in K["dzwieki_katalog"].items() if k != "opis"},
         "teksty": K["teksty"],
         "nazwy": NAZWY,
         "tablica_wejscia": K["tablica_wejscia"],
@@ -234,11 +348,11 @@ def _sekwencja(D, gra, z, t0, rnd, ile=16):
             tk = cel + round(rnd.uniform(-0.5, 0.5) * e["okno"], 3)
         przybycie = round(max(teraz, tk + rnd.uniform(0.02, 0.2)), 3)
         teraz = przybycie
-        if G["typ"] == "kierunki":
-            dobra = e["wartosc"]
-            zla = [k for k in G["akcje"] if k != dobra][rnd.randrange(len(G["akcje"]) - 1)]
-        else:
+        if G["typ"] == "blok":
             dobra, zla = "blok", "blok"
+        else:
+            dobra = LT.odpowiedz(G, e["wartosc"])
+            zla = [k for k in G["akcje"] if k != dobra][rnd.randrange(len(G["akcje"]) - 1)]
         w = zla if rodzaj == "zle" else dobra
         if rodzaj == "zla":
             kroki.append({"typ": "z", "w": "miecz", "tk": round(tk, 3), "teraz": teraz})
@@ -263,18 +377,134 @@ def _sekwencja(D, gra, z, t0, rnd, ile=16):
     return kroki
 
 
+def _sekwencja_runy(D, gra, z, t0, rnd, ile=26):
+    """Kroki Run: trafienia po pokazie, zła runa, naciśnięcie w czasie pokazu, dubel, spam, zła wartość, czasy spoza
+    zakresu i bezczynność (ponowny pokaz). Stan pomocniczy liczy ta sama logika (te same wywołania co przy odtworzeniu)."""
+    G = D["gry"][gra]
+    R = LT.nowa_runda(D, gra, 1, t0, LT.plan(D, gra, z))
+    kroki = []
+
+    def z_(w, tk, tn):
+        k = {"typ": "z", "w": w, "tk": round(tk, 3), "teraz": round(tn, 3)}
+        kroki.append(k)
+        LT.zgloszenie(D, R, k["w"], k["tk"], k["teraz"])
+
+    def p_(tn):
+        k = {"typ": "p", "teraz": round(tn, 3)}
+        kroki.append(k)
+        LT.przeterminowane(D, R, k["teraz"])
+
+    teraz = t0
+    for _ in range(ile):
+        if R["koniec"] or teraz - t0 > D["runda"]["dlugosc_s"] - 2:
+            break
+        rodzaj = rnd.choice(["traf"] * 6 + ["zle", "pokaz", "dubel", "spam", "zla", "przyszlosc", "stary", "czekaj"])
+        if rodzaj == "pokaz":
+            teraz = max(teraz, t0 + R["pokazOd"] + 0.05)
+            z_(rnd.choice(G["akcje"]), teraz, teraz)
+            teraz += rnd.uniform(0.1, 0.3)
+            continue
+        if teraz < t0 + R["pokazDo"]:
+            teraz = t0 + R["pokazDo"] + rnd.uniform(0.05, 0.6)
+        i = R["offset"] + R["poz"]
+        dobra = R["plan"][i]["wartosc"]
+        zla = [k for k in G["akcje"] if k != dobra][rnd.randrange(len(G["akcje"]) - 1)]
+        if rodzaj == "traf":
+            z_(dobra, teraz - rnd.uniform(0, 0.2), teraz)
+        elif rodzaj == "zle":
+            z_(zla, teraz, teraz)
+        elif rodzaj == "dubel":
+            z_(dobra, teraz, teraz)
+            z_(dobra, teraz + 0.05, teraz + 0.05)
+        elif rodzaj == "spam":
+            for _ in range(9):
+                z_(dobra, teraz, teraz)
+        elif rodzaj == "zla":
+            z_("miecz", teraz, teraz)
+        elif rodzaj == "przyszlosc":
+            z_(dobra, teraz + 5, teraz)
+        elif rodzaj == "stary":
+            z_(dobra, teraz - 3, teraz)
+        else:  # czekaj: bezczynność → ten sam pokaz od początku
+            teraz += G["bezczynnosc_s"] + rnd.uniform(0.2, 1.0)
+            p_(teraz)
+        teraz += rnd.uniform(0.15, 0.5)
+    koniec = t0 + D["runda"]["dlugosc_s"] + 1
+    p_(koniec)
+    kroki.append({"typ": "z", "w": G["akcje"][0], "tk": round(koniec, 3), "teraz": round(koniec, 3)})
+    return kroki
+
+
+def _sekwencja_lapania(D, gra, z, t0, rnd, ile=16):
+    """Kroki Koniczyn: ruchy koszyka (do koniczyny, z dala od kamienia, w złą stronę), spam, zła wartość, czasy spoza
+    zakresu, upadki rozstrzygane z zapasem serwera albo od razu (zapas 0, jak u klienta)."""
+    G = D["gry"][gra]
+    R = LT.nowa_runda(D, gra, 1, t0, LT.plan(D, gra, z))
+    kroki = []
+
+    def z_(w, tk, tn):
+        k = {"typ": "z", "w": w, "tk": round(tk, 3), "teraz": round(tn, 3)}
+        kroki.append(k)
+        LT.zgloszenie(D, R, k["w"], k["tk"], k["teraz"])
+
+    teraz = t0
+    for e in R["plan"][:ile]:
+        start = t0 + e["t"] - G["lot_s"]
+        teraz = max(teraz, start + rnd.uniform(0.05, 0.9))
+        k, _ = LT.tory_zdarzenia(D, copy.deepcopy(R), e)
+        b = LT.tor_w(D, R, teraz - t0)
+        rodzaj = rnd.choice(["traf"] * 5 + ["zle", "spam", "zla", "przyszlosc", "stary", "nic"])
+        if e["wartosc"] == "kamien":
+            cel = [i for i in (1, 2, 3) if i != k][rnd.randrange(2)] if rodzaj == "traf" else k
+        else:
+            cel = k if rodzaj in ("traf", "spam", "przyszlosc") else [i for i in (1, 2, 3) if i != k][rnd.randrange(2)]
+        nazwa = G["tory"][cel - 1]
+        if rodzaj == "nic":
+            pass
+        elif rodzaj == "spam":
+            for _ in range(9):
+                z_(nazwa, teraz, teraz)
+        elif rodzaj == "zla":
+            z_("gora", teraz, teraz)
+        elif rodzaj == "przyszlosc":
+            z_(nazwa, teraz + 5, teraz)
+        elif rodzaj == "stary":
+            z_(nazwa, teraz - 3, teraz)
+        elif cel != b or rnd.random() < 0.3:
+            z_(nazwa, teraz - rnd.uniform(0, 0.3), teraz)
+        teraz += rnd.uniform(0.05, 0.3)
+        if rnd.random() < 0.5:
+            kroki.append({"typ": "p", "teraz": round(t0 + e["t"] + rnd.choice([0.01, 0.2, 0.4]), 3),
+                          "zapas": rnd.choice([None, 0])})
+            LT.przeterminowane(D, R, kroki[-1]["teraz"], kroki[-1]["zapas"])
+            teraz = max(teraz, kroki[-1]["teraz"])
+    koniec = t0 + D["runda"]["dlugosc_s"] + 1
+    kroki.append({"typ": "p", "teraz": round(koniec, 3)})
+    kroki.append({"typ": "z", "w": G["akcje"][0], "tk": round(koniec, 3), "teraz": round(koniec, 3)})
+    return kroki
+
+
+def sekwencja_krokow(D, gra, z, t0, rnd, ile=None):
+    typ = D["gry"][gra]["typ"]
+    if typ == "sekwencja":
+        return _sekwencja_runy(D, gra, z, t0, rnd, ile or 26)
+    if typ == "lapanie":
+        return _sekwencja_lapania(D, gra, z, t0, rnd, ile or 16)
+    return _sekwencja(D, gra, z, t0, rnd, ile or 16)
+
+
 def przypadki(D):
     rnd = random.Random(17112026)
     P = {"plany": [], "sekwencje": [], "przyrosty": [], "wejscia": [], "skale": []}
     for gra in sorted(D["gry"]):
         for z in (1, 7, 12345, 99999, 2147483000, 31337):
             pl = LT.plan(D, gra, z)
-            P["plany"].append({"gra": gra, "ziarno": z, "n": len(pl), "suma_t": round(sum(e["t"] for e in pl), 6),
-                               "pierwsze": [[e["t"], e["wartosc"]] for e in pl[:6]]})
+            P["plany"].append({"gra": gra, "ziarno": z, "n": len(pl), "suma_t": round(sum(e.get("t", 0) for e in pl), 6),
+                               "pierwsze": [[e.get("t", 0), e["wartosc"]] for e in pl[:6]]})
         for _ in range(6):
             z = rnd.randrange(1, 2 ** 31 - 2)
             t0 = round(rnd.uniform(10, 5000), 3)
-            kroki = _sekwencja(D, gra, z, t0, rnd)
+            kroki = sekwencja_krokow(D, gra, z, t0, rnd)
             s0 = {"pasek": round(rnd.uniform(0, 30), 3), "W": rnd.randrange(0, 40), "pula": LT.pula(D, rnd.randrange(1, 66))}
             kod, R = LT.wykonaj_kroki(D, gra, z, t0, kroki, s0)
             P["sekwencje"].append({"gra": gra, "ziarno": z, "t0": t0, "kroki": kroki, "s0": s0, "wynik": {

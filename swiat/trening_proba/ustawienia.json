@@ -5,32 +5,78 @@
   "prefiks": "[TreningProba] ",
   "zdarzenie_okien": "OknoMiejsca",
   "id_miejsca_bazaru": "training_center",
-  "bazar": {
-    "kontener": "MiasteczkoBazarGra",
-    "podpowiedz": "Punkty/E training_center"
-  },
+  "bazar": {"kontener": "MiasteczkoBazarGra", "podpowiedz": "Punkty/E training_center"},
   "arena": {
     "srodek": [3000, 300, 3000],
-    "rozmiar": [96, 56],
+    "rozmiar": [256, 56],
     "zapas_wArenie": 6,
     "wysokosc_wArenie": [-20, 40],
     "przybycie": [0, 0, 14],
     "patrz_przybycie": [0, 0, -10]
   },
   "statystyki": [
-    {"id": "sila", "nazwa": "Siła", "atrybut": "Strength", "atrybut_sesji": "TreningSila", "gra": "Rozbijanie", "stan": "grywalna", "kolor": "E5533D", "opis": "Rozbij mieczem lecące skrzynki"},
-    {"id": "kondycja", "nazwa": "Kondycja", "atrybut": "Constitution", "atrybut_sesji": "TreningKondycja", "gra": "Bieżnia", "stan": "w_projekcie", "kolor": "3DBE5A", "opis": "Biegnij równo w rytmie"},
-    {"id": "inteligencja", "nazwa": "Inteligencja", "atrybut": "Intelligence", "atrybut_sesji": "TreningInteligencja", "gra": "Runy", "stan": "w_projekcie", "kolor": "9B59E5", "opis": "Powtórz świecące runy"},
-    {"id": "zrecznosc", "nazwa": "Zręczność", "atrybut": "Dexterity", "atrybut_sesji": "TreningZrecznosc", "gra": "Kłody", "stan": "w_projekcie", "kolor": "F2B630", "opis": "Przeskocz albo przeczekaj kłodę"},
-    {"id": "szczescie", "nazwa": "Szczęście", "atrybut": "Luck", "atrybut_sesji": "TreningSzczescie", "gra": "Koniczyny", "stan": "w_projekcie", "kolor": "2EC4B6", "opis": "Łap koniczyny, omijaj kamienie"},
-    {"id": "pancerz", "nazwa": "Pancerz", "atrybut": "Armor", "atrybut_sesji": "TreningPancerz", "gra": "Blok", "stan": "grywalna", "kolor": "3D7BE5", "opis": "Zablokuj cios, nie daj się nabrać"}
+    {
+      "id": "sila",
+      "nazwa": "Siła",
+      "atrybut": "Strength",
+      "atrybut_sesji": "TreningSila",
+      "gra": "Rozbijanie",
+      "stan": "grywalna",
+      "kolor": "E5533D",
+      "opis": "Rozbij mieczem lecące skrzynki"
+    },
+    {
+      "id": "kondycja",
+      "nazwa": "Kondycja",
+      "atrybut": "Constitution",
+      "atrybut_sesji": "TreningKondycja",
+      "gra": "Bieżnia",
+      "stan": "grywalna",
+      "kolor": "3DBE5A",
+      "opis": "Biegnij równo w rytmie"
+    },
+    {
+      "id": "inteligencja",
+      "nazwa": "Inteligencja",
+      "atrybut": "Intelligence",
+      "atrybut_sesji": "TreningInteligencja",
+      "gra": "Runy",
+      "stan": "grywalna",
+      "kolor": "9B59E5",
+      "opis": "Powtórz świecące runy"
+    },
+    {
+      "id": "zrecznosc",
+      "nazwa": "Zręczność",
+      "atrybut": "Dexterity",
+      "atrybut_sesji": "TreningZrecznosc",
+      "gra": "Kłody",
+      "stan": "grywalna",
+      "kolor": "F2B630",
+      "opis": "Przeskocz albo przeczekaj kłodę"
+    },
+    {
+      "id": "szczescie",
+      "nazwa": "Szczęście",
+      "atrybut": "Luck",
+      "atrybut_sesji": "TreningSzczescie",
+      "gra": "Koniczyny",
+      "stan": "grywalna",
+      "kolor": "2EC4B6",
+      "opis": "Łap koniczyny, omijaj kamienie"
+    },
+    {
+      "id": "pancerz",
+      "nazwa": "Pancerz",
+      "atrybut": "Armor",
+      "atrybut_sesji": "TreningPancerz",
+      "gra": "Blok",
+      "stan": "grywalna",
+      "kolor": "3D7BE5",
+      "opis": "Zablokuj cios, nie daj się nabrać"
+    }
   ],
-  "runda": {
-    "dlugosc_s": 45,
-    "odliczanie_s": 3,
-    "pierwsze_s": 1.0,
-    "koniec_zapas_s": 0.5
-  },
+  "runda": {"dlugosc_s": 45, "odliczanie_s": 3, "pierwsze_s": 1.0, "koniec_zapas_s": 0.5},
   "przyrost": {
     "zrodlo": "tools/walka/BALANS_1711.md, część 6 (propozycja innej pracy, nie decyzja). Wariant dosłowny D-050: za_trafienie [1, 2, 3, 4], prog_paska 1, malejacy_zysk false",
     "progi_serii": [5, 10, 20],
@@ -66,10 +112,81 @@
       "lot_s": 1.1,
       "rozrzut": 0.15,
       "poziomy": [
-        {"od_s": 0, "odstep_s": 1.25, "okno_s": 0.30, "kierunki": 3},
+        {"od_s": 0, "odstep_s": 1.25, "okno_s": 0.3, "kierunki": 3},
         {"od_s": 12, "odstep_s": 1.05, "okno_s": 0.26, "kierunki": 4},
         {"od_s": 24, "odstep_s": 0.9, "okno_s": 0.22, "kierunki": 4},
         {"od_s": 34, "odstep_s": 0.78, "okno_s": 0.19, "kierunki": 4}
+      ],
+      "waga": 1
+    },
+    "kondycja": {
+      "typ": "rytm",
+      "akcje": ["lewa", "prawa"],
+      "kierunki": ["lewa", "prawa"],
+      "rozrzut": 0,
+      "waga": 0.7,
+      "podbieg": {"kroki": 4, "mnoznik": 0.8},
+      "poziomy": [
+        {"od_s": 0, "odstep_s": 0.8, "okno_s": 0.25, "podbiegi": 0},
+        {"od_s": 12, "odstep_s": 0.7, "okno_s": 0.23, "podbiegi": 0},
+        {"od_s": 24, "odstep_s": 0.62, "okno_s": 0.21, "podbiegi": 0.06},
+        {"od_s": 34, "odstep_s": 0.56, "okno_s": 0.19, "podbiegi": 0.08}
+      ]
+    },
+    "inteligencja": {
+      "typ": "sekwencja",
+      "akcje": ["gora", "lewo", "prawo", "dol"],
+      "runy": ["gora", "lewo", "prawo", "dol"],
+      "start_dlugosc": 3,
+      "min_dlugosc": 2,
+      "maks_dlugosc": 8,
+      "kara": 2,
+      "baza": 64,
+      "przerwa_s": 0.8,
+      "przerwa_bledu_s": 1.3,
+      "bezczynnosc_s": 6,
+      "waga": 1.35,
+      "kubelek": {"pojemnosc": 6, "uzupelnianie_na_s": 6},
+      "poziomy": [
+        {"od_s": 0, "pokaz_s": 0.6, "przerwa_s": 0.22},
+        {"od_s": 12, "pokaz_s": 0.52, "przerwa_s": 0.2},
+        {"od_s": 24, "pokaz_s": 0.45, "przerwa_s": 0.17},
+        {"od_s": 34, "pokaz_s": 0.4, "przerwa_s": 0.15}
+      ]
+    },
+    "zrecznosc": {
+      "typ": "unik",
+      "akcje": ["skok", "padnij"],
+      "wartosci": ["nisko", "wysoko"],
+      "odpowiedz": {"nisko": "skok", "wysoko": "padnij"},
+      "rozrzut": 0.12,
+      "waga": 1.2,
+      "wyprzedzenie_s": 0.15,
+      "poziomy": [
+        {"od_s": 0, "odstep_s": 1.7, "okno_s": 0.32, "wartosci": 1, "zmiany": 0},
+        {"od_s": 12, "odstep_s": 1.5, "okno_s": 0.3, "wartosci": 2, "zmiany": 0},
+        {"od_s": 24, "odstep_s": 1.32, "okno_s": 0.28, "wartosci": 2, "zmiany": 0.12},
+        {"od_s": 34, "odstep_s": 1.18, "okno_s": 0.26, "wartosci": 2, "zmiany": 0.15}
+      ]
+    },
+    "szczescie": {
+      "typ": "lapanie",
+      "akcje": ["lewy", "srodek", "prawy"],
+      "tory": ["lewy", "srodek", "prawy"],
+      "start_tor": "srodek",
+      "przyciski": ["w_lewo", "w_prawo"],
+      "lot_s": 1.7,
+      "zlapanie_s": 0.2,
+      "pierwsze_s": 2.4,
+      "rozrzut": 0.15,
+      "waga": 1.3,
+      "zlota_mnoznik": 2,
+      "kubelek": {"pojemnosc": 6, "uzupelnianie_na_s": 6},
+      "poziomy": [
+        {"od_s": 0, "odstep_s": 1.4, "kamienie": 0, "zlote": 0.07, "wiatr": 0},
+        {"od_s": 12, "odstep_s": 1.2, "kamienie": 0.22, "zlote": 0.07, "wiatr": 0},
+        {"od_s": 24, "odstep_s": 1.05, "kamienie": 0.25, "zlote": 0.07, "wiatr": 0.2},
+        {"od_s": 34, "odstep_s": 0.95, "kamienie": 0.28, "zlote": 0.07, "wiatr": 0.25}
       ]
     },
     "pancerz": {
@@ -78,11 +195,12 @@
       "zamach_s": 1.0,
       "rozrzut": 0.15,
       "poziomy": [
-        {"od_s": 0, "odstep_s": 1.3, "okno_s": 0.30, "zmylki": 0.0},
+        {"od_s": 0, "odstep_s": 1.3, "okno_s": 0.3, "zmylki": 0.0},
         {"od_s": 12, "odstep_s": 1.1, "okno_s": 0.26, "zmylki": 0.15},
         {"od_s": 24, "odstep_s": 0.95, "okno_s": 0.22, "zmylki": 0.2},
         {"od_s": 34, "odstep_s": 0.82, "okno_s": 0.19, "zmylki": 0.25}
-      ]
+      ],
+      "waga": 1
     }
   },
   "stanowiska": {
@@ -94,6 +212,48 @@
       "strefy": {"gora": [0, 6.6, -1.6], "lewo": [-3.4, 3.4, -1.6], "prawo": [3.4, 3.4, -1.6], "dol": [0, 0.9, -3.2]},
       "luki": {"gora": [0, 9, 0], "lewo": [-7, 3, 0], "prawo": [7, 3, 0], "dol": [0, -1.2, 0]},
       "miecz": [1.7, 3.4, -0.6]
+    },
+    "kondycja": {
+      "podest": [-64, 0, 8],
+      "patrz": [0, 0, 10],
+      "kamera": {"oko": [0, 8.4, 13.5], "cel": [0, 2.4, -0.5]},
+      "tasma_srodek": [0, 0.3, 2.5],
+      "tasma_rozmiar": [5.6, 0.6, 16],
+      "linia": [0, 0.62, 1.8],
+      "stopy": {"lewa": [-1.2, 0.63, 1.8], "prawa": [1.2, 0.63, 1.8]},
+      "slady_s": 1.8,
+      "slad_predkosc": 4.0,
+      "pasy": 7,
+      "trener": [6.3, 0, -2.4],
+      "beben": [4.6, 0, -1.0]
+    },
+    "inteligencja": {
+      "podest": [64, 0, 8],
+      "kamera": {"oko": [3.4, 6.6, 9.0], "cel": [2.8, 4.5, -8]},
+      "kamienie": {"gora": [3.0, 7.6, -8], "lewo": [-0.4, 4.7, -8], "prawo": [6.4, 4.7, -8], "dol": [3.0, 1.8, -8]},
+      "kamien_rozmiar": [2.7, 2.7, 0.8],
+      "sciana": [3.0, 4.7, -8.75],
+      "sciana_rozmiar": [11.4, 9.8, 0.7],
+      "mag": [-7.4, 0, -6.6]
+    },
+    "zrecznosc": {
+      "podest": [-104, 0, 8],
+      "kamera": {"oko": [7.6, 4.4, 8.2], "cel": [-1.6, 2.2, -2.6]},
+      "slup": [0, 0, -7],
+      "ramie": 9.6,
+      "kloda_srednica": 1.3,
+      "wysokosci": {"nisko": 1.0, "wysoko": 4.8},
+      "obrot": -1,
+      "trener": [-12.5, 0, -6.5]
+    },
+    "szczescie": {
+      "podest": [104, 0, 8],
+      "kamera": {"oko": [0, 9.4, 13.5], "cel": [0, 6.6, -6]},
+      "tory": {"lewy": [-4, 0, 0], "srodek": [0, 0, 0], "prawy": [4, 0, 0]},
+      "koszyk": [0, 6.6, -0.3],
+      "spad_y": 13.0,
+      "drzewo": [0, 0, -10],
+      "ogrodnik": [9.6, 0, -8]
     },
     "pancerz": {
       "podest": [24, 0, 8],
@@ -119,12 +279,7 @@
     "rzut_dlugosc": 40,
     "zapas_bez_spawnu": [0, 0, 0]
   },
-  "podpowiedz": {
-    "klawisz": "E",
-    "pad": "ButtonX",
-    "zasieg": 9,
-    "zapas": 4
-  },
+  "podpowiedz": {"klawisz": "E", "pad": "ButtonX", "zasieg": 9, "zapas": 4},
   "ui": {
     "baza": [667, 375],
     "skala_min": 0.85,
@@ -142,14 +297,46 @@
     "przezroczystosc_postaci": 0.55,
     "pasek_gorny_pt": 36,
     "sterowanie_od_prawej": 0.215,
-    "kolory": {"krem": "FFF6E0", "tusz": "17121F", "dobrze": "3DBE5A", "zle": "E5533D", "zloto": "F2B630", "cios": "3DA5FF", "zmylka": "B04CFF", "szary": "8A7F72"}
+    "kolory": {
+      "krem": "FFF6E0",
+      "tusz": "17121F",
+      "dobrze": "3DBE5A",
+      "zle": "E5533D",
+      "zloto": "F2B630",
+      "cios": "3DA5FF",
+      "zmylka": "B04CFF",
+      "szary": "8A7F72",
+      "runa_gora": "3DA5FF",
+      "runa_lewo": "E5533D",
+      "runa_prawo": "3DBE5A",
+      "runa_dol": "F2B630",
+      "koniczyna": "3DBE5A",
+      "kamien": "8A8F99",
+      "drewno": "8C5A3C"
+    },
+    "stopa_px": 96,
+    "unik_px": 80,
+    "runa_px": 60,
+    "tor_px": 88,
+    "obrazek_px": [400, 80]
   },
   "sterowanie": {
     "gora": {"klawisze": ["Up", "W"], "pad": ["DPadUp", "ButtonY"], "napis": "GÓRA", "skrot": "W"},
     "lewo": {"klawisze": ["Left", "A"], "pad": ["DPadLeft", "ButtonX"], "napis": "LEWO", "skrot": "A"},
     "prawo": {"klawisze": ["Right", "D"], "pad": ["DPadRight", "ButtonB"], "napis": "PRAWO", "skrot": "D"},
     "dol": {"klawisze": ["Down", "S"], "pad": ["DPadDown", "ButtonA"], "napis": "DÓŁ", "skrot": "S"},
-    "blok": {"klawisze": ["Space", "F", "Up", "W"], "pad": ["ButtonA", "ButtonR1", "ButtonR2"], "napis": "BLOK", "skrot": "Spacja"},
+    "blok": {
+      "klawisze": ["Space", "F", "Up", "W"],
+      "pad": ["ButtonA", "ButtonR1", "ButtonR2"],
+      "napis": "BLOK",
+      "skrot": "Spacja"
+    },
+    "lewa": {"klawisze": ["Left", "A"], "pad": ["ButtonL1", "ButtonX", "DPadLeft"], "napis": "LEWA", "skrot": "A"},
+    "prawa": {"klawisze": ["Right", "D"], "pad": ["ButtonR1", "ButtonB", "DPadRight"], "napis": "PRAWA", "skrot": "D"},
+    "skok": {"klawisze": ["Space", "Up", "W"], "pad": ["ButtonA", "DPadUp"], "napis": "SKOK", "skrot": "Spacja"},
+    "padnij": {"klawisze": ["Down", "S"], "pad": ["ButtonB", "DPadDown"], "napis": "PADNIJ", "skrot": "S"},
+    "w_lewo": {"klawisze": ["Left", "A"], "pad": ["DPadLeft", "ButtonX", "ButtonL1"], "napis": "LEWO", "skrot": "A"},
+    "w_prawo": {"klawisze": ["Right", "D"], "pad": ["DPadRight", "ButtonB", "ButtonR1"], "napis": "PRAWO", "skrot": "D"},
     "start": {"klawisze": ["Space", "Return"], "pad": ["ButtonA"], "napis": "START", "skrot": "Spacja"},
     "wyjdz": {"klawisze": ["Q"], "pad": ["ButtonSelect"], "napis": "WYJDŹ", "skrot": "Q"},
     "blokuj_ruch": ["W", "A", "S", "D", "Up", "Down", "Left", "Right", "Space", "Thumbstick1", "ButtonA"]
@@ -162,24 +349,81 @@
     "seria": {"plik": "impact_explosion_03.mp3", "glosnosc": 0.3, "szybkosc": 1.4, "maks": 0.7},
     "przycisk": {"plik": "volume_slider.ogg", "glosnosc": 0.4, "szybkosc": 1.5, "maks": 0.15},
     "oberwanie": {"plik": "oof.ogg", "glosnosc": 0.35, "szybkosc": 1.15},
+    "krok": {"plik": "action_footsteps_plastic.mp3", "glosnosc": 0.9, "szybkosc": 1.25, "maks": 0.3},
+    "beben": {"plik": "action_jump_land.mp3", "glosnosc": 1.3, "szybkosc": 0.62, "maks": 0.4},
+    "skok": {"plik": "action_jump.mp3", "glosnosc": 1.0, "szybkosc": 1.1},
+    "upadek": {"plik": "action_jump_land.mp3", "glosnosc": 1.6, "szybkosc": 0.8},
+    "lap": {"plik": "volume_slider.ogg", "glosnosc": 0.6, "szybkosc": 2.0, "maks": 0.2},
+    "kamien": {"plik": "action_jump_land.mp3", "glosnosc": 2.0, "szybkosc": 0.45},
     "skale_nuty": [1.0, 1.12, 1.26, 1.33, 1.5, 1.68, 1.89, 2.0],
     "melodia_koniec": [1.0, 1.26, 1.5, 2.0],
-    "odstep_melodii_s": 0.11
+    "odstep_melodii_s": 0.11,
+    "runy_nuty": [1.0, 1.26, 1.5, 1.78]
+  },
+  "dzwieki_katalog": {
+    "opis": "Zdarzenia z arkusza efektów pakietu swiat/dzwiek_gra (Workspace/DzwiekGra/Moduly/KatalogDzwiekow). Gdy katalogu nie ma albo arkusz ma identyfikator 0 — dźwięki wbudowane z „dzwieki”. Tylko zdarzenia, które są w swiat/dzwiek_gra/ustawienia.json.",
+    "kontener": "DzwiekGra",
+    "modul": "KatalogDzwiekow",
+    "naraz": 4,
+    "trafienie": {"sila": "cios", "pancerz": "blok", "zrecznosc": "unik"},
+    "punkt": "awans",
+    "koniec": "zwyciestwo",
+    "zlota": "monety",
+    "zaklecie": "tarcza",
+    "przycisk": "przycisk"
   },
   "teksty": {
     "tytul_wyboru": "TRAINING CENTER — wybierz mini-grę",
-    "tymczasowy": "Gotowe są dwie mini-gry — cztery kolejne już wkrótce.",
+    "tymczasowy": "Wybierz, co chcesz dziś trenować.",
     "graj": "GRAJ",
     "w_projekcie": "w projekcie",
     "start_podpowiedz": "Spacja / Enter / A na padzie",
     "sterowanie_sila": "Strzałka albo WASD w stronę skrzynki, gdy dolatuje do kółka",
     "sterowanie_pancerz": "BLOK (Spacja), gdy pierścień dojdzie do kółka. Fioletowy = zmyłka, nie blokuj!",
+    "sterowanie_kondycja": "Lewa i prawa stopa na zmianę, gdy ślad dojedzie do linii",
+    "sterowanie_zrecznosc": "Niska kłoda — SKOK, wysoka kłoda — PADNIJ",
+    "sterowanie_inteligencja": "Patrz, które runy świecą, i powtórz je po kolei",
+    "sterowanie_szczescie": "Łap koniczyny koszykiem, omijaj kamienie",
     "trafienia": ["TRAFIONE!", "ŁUP!", "DOBRZE!", "ŚWIETNIE!", "MOCARZ!"],
     "trafienia_blok": ["BLOK!", "TWARDY!", "STOI!", "MUR!", "SKAŁA!"],
+    "trafienia_rytm": ["RÓWNO!", "TUP!", "W RYTM!", "BIEGNIESZ!", "MARATON!"],
+    "trafienia_unik": ["HOP!", "ZWINNIE!", "UNIK!", "JAK KOT!", "AKROBATA!"],
+    "trafienia_runy": ["DOBRZE!", "PAMIĘTASZ!", "MĄDRZE!", "MAG!", "MISTRZ RUN!"],
+    "trafienia_lapanie": ["MAM!", "ZŁAPANE!", "SZCZĘŚCIE!", "FARCIARZ!", "KONICZYNKA!"],
     "zmylka_ok": "SPOKÓJ!",
     "seria": "SERIA %d!",
-    "pudlo": {"za_wczesnie": "ZA WCZEŚNIE", "za_pozno": "ZA PÓŹNO", "zly_kierunek": "ZŁA STRONA", "zmylka": "ZMYŁKA!", "przepuszczone": "PUDŁO", "pusty": "W POWIETRZE"},
-    "odmowa": {"za_daleko": "Podejdź bliżej trenera albo tablicy", "za_szybko": "Chwila…", "nieznana": "Nie ma takiej mini-gry", "w_projekcie": "Ta mini-gra jest jeszcze w projekcie", "trwa_runda": "Najpierw skończ rundę", "brak_gry": "Najpierw wybierz mini-grę", "brak_postaci": "Brak postaci — spróbuj po odrodzeniu", "blad": "Nie udało się — spróbuj jeszcze raz"},
+    "pudlo": {
+      "za_wczesnie": "ZA WCZEŚNIE",
+      "za_pozno": "ZA PÓŹNO",
+      "zly_kierunek": "ZŁA STRONA",
+      "zmylka": "ZMYŁKA!",
+      "przepuszczone": "PUDŁO",
+      "pusty": "W POWIETRZE"
+    },
+    "pudla_gier": {
+      "kondycja": {"zly_kierunek": "ZŁA STOPA", "przepuszczone": "POTKNIĘCIE"},
+      "zrecznosc": {"zly_kierunek": "ODWROTNIE!", "przepuszczone": "BUM!"},
+      "inteligencja": {"zla_runa": "OJ! JESZCZE RAZ"},
+      "szczescie": {"spadla": "SPADŁA", "kamien": "AUĆ! KAMIEŃ", "za_pozno": "ZA PÓŹNO"}
+    },
+    "patrz": "PATRZ!",
+    "twoja_kolej": "TWOJA KOLEJ!",
+    "zaklecie": "ZAKLĘCIE!",
+    "nowe_zaklecie": "NOWE ZAKLĘCIE!",
+    "zlota": "ZŁOTA ×2!",
+    "podbieg": "PODBIEG!",
+    "najdluzsze_zaklecie": "Najdłuższe zaklęcie: %d run",
+    "zlapane": "Złapane koniczyny: %d",
+    "odmowa": {
+      "za_daleko": "Podejdź bliżej trenera albo tablicy",
+      "za_szybko": "Chwila…",
+      "nieznana": "Nie ma takiej mini-gry",
+      "w_projekcie": "Ta mini-gra jest jeszcze w projekcie",
+      "trwa_runda": "Najpierw skończ rundę",
+      "brak_gry": "Najpierw wybierz mini-grę",
+      "brak_postaci": "Brak postaci — spróbuj po odrodzeniu",
+      "blad": "Nie udało się — spróbuj jeszcze raz"
+    },
     "koniec": "KONIEC RUNDY",
     "jeszcze_raz": "JESZCZE RAZ",
     "inna_gra": "INNA GRA",

@@ -17,7 +17,9 @@ Kod wyjścia 1 przy błędzie. Reguły:
   8.   cudze instancje: SetAttribute tylko na kontenerze pakietu, graczu (serwer) i zdarzeniu okien OknoMiejsca
        (klient, udokumentowany sposób wyłączenia dymku bazaru); :Destroy() tylko na własnych obiektach;
   9.   bez zasobów spoza Robloxa: żadnego rbxassetid://, InsertService, MarketplaceService, HttpService:GetAsync;
-       dźwięki tylko z rbxasset://sounds/ (lista 11 wbudowanych plików w dane.py), przez dane;
+       dźwięki tylko z rbxasset://sounds/ (lista 11 wbudowanych plików w dane.py), przez dane. Jedyny wyjątek (od
+       17.11.2026): klient może raz złożyć adres arkusza efektów z identyfikatora w katalogu pakietu swiat/dzwiek_gra
+       — dokładnie `"rbxassetid://" .. tostring(math.floor(id))`, bez żadnej liczby w kodzie;
  10.   rozmiary tekstu w kliencie tylko z danych (D.ui.tekst_px) — bez literału TextSize = <liczba>.
 """
 import glob
@@ -56,6 +58,9 @@ DESTROY = {
     "LogikaTreningu.luau": set(),
 }
 ZAKAZANE_ZASOBY = ["rbxassetid://", "InsertService", "MarketplaceService", "GetAsync", "PostAsync", "http://", "https://"]
+# adres arkusza efektów z katalogu swiat/dzwiek_gra (identyfikator tylko z katalogu) — dozwolony raz, tylko w kliencie
+ADRES_ARKUSZA = '"rbxassetid://" .. tostring(math.floor(id))'
+ADRES_ARKUSZA_PLIK = "KlientTreningu.client.luau"
 
 
 def luau_mini():
@@ -89,10 +94,16 @@ def sprawdz_tekst(tekst, nazwa, lm=None):
             lm.Parser(tekst, nazwa, lm.Interpreter()).program()
         except lm.BladSkladni as e:
             bledy.append("%s: składnia (luau_mini): %s" % (nazwa, e))
-    for z in ZAKAZANE_ZASOBY:
-        if z in bez_kom:
-            bledy.append("%s: zakazany zasób / usługa „%s”" % (nazwa, z))
     plik = os.path.basename(nazwa)
+    do_zasobow = bez_kom
+    if plik == ADRES_ARKUSZA_PLIK:
+        n = bez_kom.count(ADRES_ARKUSZA)
+        if n > 1:
+            bledy.append("%s: adres arkusza efektów składany %d razy (dozwolony raz)" % (nazwa, n))
+        do_zasobow = bez_kom.replace(ADRES_ARKUSZA, "")
+    for z in ZAKAZANE_ZASOBY:
+        if z in do_zasobow:
+            bledy.append("%s: zakazany zasób / usługa „%s”" % (nazwa, z))
     if plik == WYGENEROWANY:
         return bledy
     wolne = LISTA_LICZB.get(plik, set())

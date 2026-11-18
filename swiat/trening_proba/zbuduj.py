@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Buduje w Roblox Studio kontener Workspace/TreningProba — próba Training Center: arena z prostych części w powietrzu
-z dala od map (dwa grywalne stanowiska: Siła „Rozbijanie”, Pancerz „Blok”; cztery zapowiedzi „w projekcie”), tablica
+z dala od map (sześć grywalnych stanowisk w jednym rzędzie: Kłody, Bieżnia, Rozbijanie, lobby, Blok, Runy, Koniczyny), tablica
 wejścia przy miejscu startu gracza, skrypty serwera i klienta.
 
     python -B swiat/trening_proba/zbuduj.py --sucho      # bez Studio: dane, kontrola Luau, strażniki, plan budowy
@@ -18,7 +18,7 @@ SpawnLocation, MiasteczkoBazarGra i LasTeleport tylko czyta):
   Sygnaly/PrzyrostStatystyki                       BindableEvent — przyrost statystyki dla przyszłego modułu statystyk
   Sygnaly/SterowanieSerwera, SterowanieKlienta     BindableFunction — haczyki testowe
   Sygnaly/WybierzGre                               BindableFunction (klient) — uchwyt dla docelowego okna 2D Pawła
-  Arena (Model, ModelStreamingMode Persistent)     83 części z scena.py, podpowiedzi E: wybór i wyjście
+  Arena (Model, ModelStreamingMode Persistent)     ok. 200 części z scena.py, podpowiedzi E: wybór i wyjście
   TablicaWejscia (Model, Persistent)               tablica z podpowiedzią E przy pierwszym SpawnLocation (wybór w Studio)
 Atrybuty kontenera: Wygenerowane, Zrodlo, Zbudowano, Skrot, WyborTymczasowy (true; false = okno Pawła zamiast
 tymczasowego wyboru), PunktTablicy. Atrybuty ustawione ręcznie w Edit (WyborTymczasowy, RecznyPunktTablicy — Vector3

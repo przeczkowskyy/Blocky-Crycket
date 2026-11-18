@@ -8,7 +8,11 @@
 	czas klienta tylko w granicach [teraz − max_opoznienie, teraz + max_wyprzedzenie] (inaczej czas serwera),
 	najbliższe nierozstrzygnięte zdarzenie w zasięgu przypisania, okno czasu i kierunek. Pierwsze zgłoszenie
 	rozstrzyga zdarzenie; naciśnięcie bez zdarzenia w pobliżu łamie serię. Zdarzenia przepuszczone rozstrzyga pętla
-	co tik_s. Przyrost trafia do ATRYBUTU SESYJNEGO gracza (np. TreningSila; bez DataStore) i do sygnału
+	co tik_s. Sześć mini-gier w czterech rodzajach ocen: okno czasu (Siła, Pancerz, Kondycja „Bieżnia”, Zręczność
+	„Kłody”), kolejność run bez okna czasu (Inteligencja „Runy”: naciśnięcia w czasie pokazu pomijane bez kary,
+	ponowny pokaz po bezczynności) i tor koszyka w chwili upadku (Szczęście „Koniczyny”: zgłoszenie = ruch koszyka,
+	werdykt daje dopiero upadek; koniczyna spada poza tor, na którym koszyk stał, gdy zaczęła spadać — stanie w miejscu
+	nic nie daje). Przyrost trafia do ATRYBUTU SESYJNEGO gracza (np. TreningSila; bez DataStore) i do sygnału
 	Sygnaly/PrzyrostStatystyki (BindableEvent dla przyszłego modułu statystyk — dziś nikt go nie słucha):
 		workspace.TreningProba.Sygnaly.PrzyrostStatystyki.Event:Connect(function(gracz, p)
 			-- p = { statystyka = "sila", atrybut = "Strength", atrybutSesji = "TreningSila", przyrost = 2,
@@ -200,8 +204,8 @@ end
 
 -- werdykt (trafienie / pudło) → atrybut sesyjny, sygnał dla modułu statystyk, wiadomość do klienta
 local function wynik(gracz, R, w)
-	if not w.przyjete then
-		return
+	if not w.przyjete or w.ruch then
+		return -- ruch koszyka (Koniczyny) nie jest werdyktem; werdykt da upadek
 	end
 	local st = L.statystyka(D, R.gra)
 	if w.trafienie then
@@ -225,9 +229,12 @@ local function wynik(gracz, R, w)
 		S.paski[R.gra] = R.pasek
 	end
 	kontener:SetAttribute("OstatniWynik", string.format("%s:%s:%s:%s", gracz.Name, R.gra, tostring(w.nr), w.powod))
+	-- Runy: stan sekwencji po werdykcie (klient wyrównuje swoją kopię); Koniczyny: tor upadku
 	zdalne:FireClient(gracz, "wynik", {
 		id = R.id, nr = w.nr, trafienie = w.trafienie, powod = w.powod, seria = w.seria, przyrost = w.przyrost,
-		jednostki = w.jednostki, suma = w.suma, pasek = w.pasek, prog = w.prog, d = w.d,
+		jednostki = w.jednostki, suma = w.suma, pasek = w.pasek, prog = w.prog, d = w.d, tor = w.tor,
+		zaklecie = w.zaklecie, dl = w.dl, poz = w.poz, offset = w.offset, pokazOd = w.pokazOd, pokazDo = w.pokazDo,
+		pokazy = w.pokazy, ostatnia = w.ostatnia,
 	})
 end
 
@@ -475,6 +482,9 @@ sterowanie.OnInvoke = function(polecenie, a, b)
 					id = R.id, gra = R.gra, n = #R.plan, trafienia = R.trafienia, pudla = R.pudla, puste = R.puste,
 					spam = R.spam, odrzucone = R.odrzucone, seria = R.seria, najdluzsza = R.najdluzsza, suma = R.suma,
 					jednostki = R.jednostki, pasek = R.pasek, W = R.W, pula = R.pula, koniec = R.koniec, t0 = R.t0,
+					dl = R.dl, poz = R.poz, offset = R.offset, pokazOd = R.pokazOd, pokazDo = R.pokazDo, pokazy = R.pokazy,
+					zaklecia = R.zaklecia, ruchy = if R.ruchy then #R.ruchy else nil, zlapane = R.zlapane,
+					kamienie = R.kamienie,
 				} else nil,
 			}
 		end
