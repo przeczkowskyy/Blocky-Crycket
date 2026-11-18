@@ -541,3 +541,12 @@ Szczegóły: Włączenie wymaga dostępu Studio do usług danych (ustawienie gry
 
 Szczegóły: Projekt i tabele: `swiat/kowal_proba/PROJEKT.md`; raport w panelu „Kowal w bazarze: rozbieranie i ulepszanie przedmiotów (D-102)”. Koszty: 150 / 300 / 450 / 650 / 900 Złota i 1 / 2 / 3 / 4 / 6 materiałów; w symulacji pierwsze ulepszenie po ok. 8 minutach lasu, las się nie skraca, Bagno skraca się o ok. 13%. Okno jest tymczasowe; docelowe robi Paweł (pytanie 57). Bez tierów przedmiotów (D-051: „nie teraz”).
 **Odpowiedź:**
+
+## 62. Dżungla: czy potwory, nazwy i trudność z próby zostają?
+- Dżungla stoi w Studio jako trzeci biom; jej potwory to propozycje agenta na podstawie zarysu biomów.
+- Zmienione względem zarysu: „Zwijogon” zamiast „Liściołaza” (nazwa myliła się z petem Liściolis) i nowy rzadki potwór Pancernik Ruin.
+- Strażnik Wąż Stu Lian jest tak trudny jak Strażnik Topieli: gracz na tym samym poziomie wygrywa w 17–26% walk.
+- Do wyboru: (a) zostaje; (b) zostaje z innymi nazwami — jakimi; (c) strażnik łatwiejszy albo trudniejszy.
+
+Szczegóły: Potwory i liczby: raport „Dżungla stoi w Studio: trzeci biom do przejścia”; modele: raport „Dżungla: pięć potworów z Blendera do oceny”. Poziomy potworów 17–23 z kalkulatora tempa. Zarys: `swiat/biomy/PLAN_BIOMOW.md` (propozycja). Karol 17.11 o Bagnie: „Strażnik Topieli musi być trudny” — tę samą miarę agent przyjął dla Dżungli.
+**Odpowiedź:**

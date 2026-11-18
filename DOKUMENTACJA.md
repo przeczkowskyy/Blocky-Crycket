@@ -247,11 +247,13 @@ Blocky&Crycket/
 │   ├── las_pas/  las_pas_gra/   💡 las jako wąski pas: mapa (Workspace/LasPas) i skrypty gry (Workspace/LasPasGra)
 │   ├── bagno_pas/  biomy/       💡 mapa Bagna jako odcinka pasa (zbudowana w Studio 17.11: Workspace/BagnoPas) i zarys biomów 2–8 — do akceptacji
 │   ├── dzwiek_gra/              💡 katalog dźwięków i muzyka stref (Workspace/DzwiekGra); identyfikatory wgranych plików, gra czeka na prawo do zasobów
-│   ├── trening_proba/           💡 Training Center: projekt sześciu mini-gier i dwie na próbę (Workspace/TreningProba)
+│   ├── trening_proba/           💡 Training Center: sześć mini-gier na próbę, po jednej na statystykę (Workspace/TreningProba)
 │   ├── stan_gracza/             💡 jeden właściciel stanu gracza: łup i awans po walce, bohater z klasy i poziomu, pety i wydatki (Workspace/StanGracza)
 │   ├── bagno_pas_gra/           💡 Bagno jako drugi biom na kodzie lasu-pasa: pięć gatunków, Strażnik Topieli (Workspace/BagnoPasGra)
-│   ├── areny_walki/             💡 areny walki zależne od biomu (D-095): las, Bagno, plac ćwiczeń (Workspace/ArenyWalki)
-│   ├── pety_proba/              💡 jajka i pety na próbę: inkubator w lesie, wyklucie, pet przy graczu, zagroda (Workspace/PetyProba)
+│   ├── dzungla_pas/  dzungla_pas_gra/  💡 Dżungla jako trzeci biom: mapa (Workspace/DzunglaPas) i skrypty gry (Workspace/DzunglaPasGra), pięć gatunków, strażnik Wąż Stu Lian
+│   ├── areny_walki/             💡 areny walki zależne od biomu (D-095): las, Bagno, Dżungla, plac ćwiczeń (Workspace/ArenyWalki)
+│   ├── pety_proba/              💡 jajka i pety na próbę: inkubatory w lesie i Bagnie, wyklucie, pet przy graczu, zagroda, pety z żywiołami (D-101) (Workspace/PetyProba)
+│   ├── kowal_proba/             💡 Kowal na próbę (D-102): kuźnia w bazarze, przedmioty z łupu, rozbiórka na materiały, ulepszenia (Workspace/KowalProba)
 │   ├── stroje_proba/            💡 ubieranie postaci (D-071): przymierzalnia i strój w walce (Workspace/StrojeProba)
 │   ├── wskazowki_gry/           💡 linijka celu i znacznik w świecie dla nowego gracza (Workspace/WskazowkiGry)
 │   ├── przejscie_gry/           raport z przejścia gry okiem nowego gracza i próba dymna całej drogi
@@ -627,3 +629,4 @@ Pełna historia: [Dziennik zmian](B%26C/Produkcja/Dziennik%20zmian.md).
 - **13.11.2026 (wieczór, Karol z Claude Code):** ✅ D-030 — decyzje zatwierdza Karol albo Paweł, wystarczy jeden, każda zostaje w logach (zdecydował Karol; potwierdzenie Pawła czeka w pytaniu 27); ✅ D-027 — instrukcja „Glossy Ink” zastępuje prefiks Style Lock; ✅ D-028 — panel jako miejsce pracy, zapis do sejfu z panelu włączony; propozycja D-024 o walce zmieniona na „trzy długości”; import siatek sprawdzony na Rycerzu (postać R15 z 15 części w `Workspace/TestPostaci`).
 - **14.11.2026 (Claude Code u Game Directora):** okno ekwipunku: rozmiary napisów 15/16/20 px i wyśrodkowane zakładki; skill `/asset`: model Nano Banana 2.1, prompty mapy teleportacji w formacie Glossy Ink; HUD: trzecia waluta Rybki (ikona wgrana do Roblox).
 - **15–17.11.2026 (Claude Code u Karola):** 💡 pierwszy las w Studio z potworami w ruchu (`swiat/biom_las/`, `swiat/las_potwory/`); sesja główna 16.11 i decyzje D-073–D-093 (świat jako wąski pas biomów, pomijanie walk, miasteczko jak bazar, podział: Paweł 2D, Karol 3D i dźwięk); 💡 sesja główna 17.11 i propozycje D-097–D-104 (statystyki z poziomu i treningu, przegrana, Gemy i Rebirth, pety z żywiołami, Kowal na premierę, ikony w stylu HUD, modele z rzutów Pawła); 💡 silnik walki v3 (`tools/walka/`, `src/server/Walka/`), 17.11 wdrożony w Studio razem z nowym ekranem walki i pomijaniem walk (prototyp i oba lasy); 💡 las jako pas i miasteczko-bazar zbudowane i sprawdzone w grze w Studio (`swiat/las_pas*/`, `swiat/miasteczko_bazar*/`), przejście przez chmury zamiast okna mapy (`swiat/teleport_chmury/`); 💡 muzyka i dźwięki (`assets/audio/`); panel: zakładka Assety na bieżąco i szybsza synchronizacja. Szczegóły dzień po dniu: `B&C/Produkcja/Dziennik zmian.md`.
+- **18.11.2026 (noc, Claude Code u Karola):** 💡 Dżungla jako trzeci biom z własną areną walki; Kowal na próbę (D-102) ze wskazówką celu; komplet sześciu mini-gier Training Center; pety z żywiołami (D-101); premia do pierwszej wygranej nowego gracza; zapis postępu napisany, wyłączony; rozkład statystyk klas według odpowiedzi Karola na pytanie 56 (czeka na Pawła); pytania 58–62.
