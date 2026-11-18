@@ -115,6 +115,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-18: Wieczorna próba całej gry na stanie końcowym dnia (20 prób w dwóch częściach, 17:15–17:43 i 19:16–20:02; po efektach Dżungli, nowej oprawie przelotu, arenie Training Center i nowym biegu bohatera): bez nowych błędów — jedyny błąd to znane za małe napisy w wyborze próby walki na ekranie telefonu (walka 44 z 46)
 - [x] 2026-11-18: Bohater w świecie — nowy bieg trzech klas stoi w Studio: krótszy krok i prostsze kolana, faza lotu, praca rąk i tułowia, poły tabardu i szata kota w ruchu, tempo kroku z rzeczywistej drogi postaci (przy ścianie stopa 0,02–0,06 st zamiast 0,56); próba 20 punktów w porządku, czas pętli bez wzrostu
 - [x] 2026-11-18: Training Center — arena z dekoracjami stoi w Studio: podłoga z polami stanowisk, ogrodzenie z chorągiewkami, brama z szyldem, trybunki, dekoracje sześciu stanowisk i klockowe figury trenerów (1658 części zamiast 202); zasady gier i kamera bez zmian; próba 31 punktów w porządku, czas klatki bez zmian
 - [x] 2026-11-18: Przelot przez biom (D-077) w nowej oprawie stoi w Studio w lesie, Bagnie i Dżungli: plansza z nazwą krainy, czarne pasy, zwolnienia i podpisy przegród, Strażnik z imieniem i rykiem, blokada walki na czas przelotu, 11,2 s; pomijanie domyślnie wyłączone; próba pakietu 15 punktów w porządku, próby trzech biomów i całej drogi gracza bez błędów

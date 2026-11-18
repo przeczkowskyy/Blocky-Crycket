@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-18 · Claude Code u Karola (wieczorna próba całej gry — stan końcowy dnia)
+- **Próba całej gry w dwóch częściach** (17:15–17:43 i 19:16–20:02, 20 prób): bez nowych błędów. Część pierwsza: stary las, stan gracza, pety (las, Bagno, Dżungla), kowal, stroje, wystawa ras, bazar, dźwięk. Część druga, już po wszystkich dzisiejszych zmianach: cała droga gracza 14 z 14, las, Bagno, Dżungla (z nową oprawą przelotu i efektami), Training Center 31 punktów (z nową areną), bohater w świecie 20 punktów (z nowym biegiem), chmury, walka 111 z 111 i 27 z 27. Jedyny błąd jest znany: za małe napisy w wyborze próby walki na ekranie telefonu (44 z 46).
+- Walka w Bagnie, która po południu raz nie wystartowała, w wieczornej próbie przeszła. Do listy prób całej gry doszły próby bohatera w świecie i wystawy ras (`swiat/przejscie_gry/regresja_calosci.py`). Odświeżone pliki wyników prób walki.
+- Studio na koniec w trybie Edit; wszystkie prace dnia zamknięte w „Pracach w toku”.
+
 ## 2026-11-18 · Claude Code u Karola (bohater w świecie: nowy bieg — w Studio)
 - **Nowy cykl biegu trzech klas** (`Workspace/BohaterSwiat`, `swiat/bohater_swiat/`; część propozycji z pytania 63): krótszy krok i prostsze kolana (Wojownik 59° zamiast 79° w połowie podporu), wyraźna faza lotu, ręce i tułów pracują według danych klasy, głowa stabilna; pasy tabardu idą za udem, szata kota faluje, kostur trzymany pionowo. Tempo kroku idzie za rzeczywistą drogą postaci, więc przy przeszkodzie stopa się nie ślizga, a postać staje w spoczynku. Fizyka, sterowanie i haczyk `RuchBohatera` bez zmian.
 - **Próba w grze (ostatni przebieg 18:57):** 20 punktów w porządku, 1 bez rozstrzygnięcia (runda mini-gry, jak dotąd); nowy punkt „bieg w ścianę”: stopa 0,02–0,06 st (pierwsza wersja 0,56 st); czas pętli 0,07 ms na biegnącego bohatera, 0,4–0,6 ms na dwunastu; cała droga gracza 14 z 14, mini-gry 31 punktów w porządku.
