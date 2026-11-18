@@ -51,7 +51,29 @@ co do bryły takie jak w szablonie walki.
 - **Tempo chodu** = prędkość pozioma postaci ÷ prędkość naturalna klipu (2 × zakres ruchu stopy ÷ okres), w granicach
   `tempo_min`–`tempo_max`. Prędkości naturalne: Rycerz 3,06 st/s, Zwiadowca 7,11, Kot-Mag 1,16. Klipy chodu
   Rycerza i kota to marsz w miejscu z walki: powyżej tempa 1,8 klip przestaje nadążać i stopy ślizgałyby się po ziemi.
-- **Bieg — cykl proceduralny** (bez klipu, bez zmian w modułach postaci i danych walki). Gra, gdy prędkość pozioma
+- **Nowy cykl biegu (18.11.2026, w plikach, jeszcze nie w Studio)** zastępuje opis nóg, kadencji i reszty ciała
+  z punktu niżej; progi biegu, korzeń o klatkę później i umowa zostają.
+  - *Tempo:* czas podporu = krok ÷ prędkość; czas lotu jednego kroku = (1 ÷ (2 × `kadencja_pelna`) − krok ÷ 16) ×
+    prędkość ÷ 16, najmniej 30% tej wartości. Podpór jest zawsze krótszy niż pół cyklu. Przy 16 st/s: Rycerz 2,20
+    cyklu/s (podpór 17%, lot 0,150 s), Zwiadowca 2,50 (17%, 0,132 s), kot 3,40 (13%, 0,108 s).
+  - *Faza:* w podporze przesuwa się o podpór × droga ÷ krok — stopa cofa się względem bioder dokładnie o drogę
+    postaci przy każdej prędkości; w locie idzie zegarem. Gdy udział podporu się zmienia (inna prędkość), faza jest
+    przeliczana tak, żeby stopa została w tym samym ułamku podporu. Prędkość = droga ÷ czas klatki, wygładzona
+    (0,1 s), i nie większa niż prędkość z fizyki: na przeszkodzie spada do zera i bieg ustaje.
+  - *Nogi:* krok Rycerza 0,8, Zwiadowcy 0,7, kota 1,1 długości nogi; biodra w skrajach podporu na wysokości, przy
+    której noga ma 0,99 długości (krótszy krok = prostsze kolano: w połowie podporu 59° / 51° zamiast 79°),
+    w podporze uginają się, w locie wznoszą (1,6 × ugięcie × lot ÷ podpór). Wymach: pięta wcześnie w górę, wybieg
+    w tył po odbiciu, cofnięcie stopy przed postawieniem; stopa w podporze płasko (miara B19 bez zmian).
+  - *Dodatki* (`bieg.dodatki`): kąt kości = stałe + skala × wymach × cos(2π × (harmoniczna × faza − przesunięcie)),
+    dokładane do pozy z klipu — ręce, tułów (pochył, skręt, kołysanie), głowa (wyrównanie), u kota ogon, kapelusz,
+    uszy i kostur. Pochył tułowia w biegu jest teraz dodatkiem; poza `pochyl` została dla chodu (przy 16 st/s
+    zastępowała całą pozę tułowia i kasowała jego skręt).
+  - *Poły:* bryły przyspawane do kości bioder, których spód jest poniżej stawu biodra — klient rozpoznaje je przy
+    budowie po geometrii (każdy strój), rusza spawem (`Weld.C0`), w spoczynku przywraca. Pasy z przodu / z tyłu:
+    0,9 × kąt uda, które je wypycha. Dzwon (bryła obejmuje przód i tył): uniesienie przodu wokół tylnego dolnego
+    skraju 7° ± 3° dwa razy na cykl, skręt ±6°, niższe bryły mocniej i z opóźnieniem, plus podniesienie o zejście bioder.
+  - *Zakręt:* prędkość obrotu postaci → przechył tułowia do 7° i obrót do 5° (pełne przy 5 rad/s, wygładzone 0,15 s).
+- **Bieg — cykl proceduralny, wersja pierwsza (stoi w Studio)** (bez klipu, bez zmian w modułach postaci i danych walki). Gra, gdy prędkość pozioma
   przekroczy `tempo_max` × chód naturalny × 1,12 (Rycerz 6,2 st/s, Zwiadowca 14,3, kot 2,3), wraca do chodu poniżej
   `tempo_max` × chód naturalny; przejście chód ↔ bieg trwa 0,2 s (waga cyklu rośnie płynnie, klip chodu gaśnie do
   spoczynku). Przy zwykłej prędkości postaci (16 st/s) wszyscy trzej biegną.
@@ -118,9 +140,9 @@ Klipy wymuszone umową (mini-gra) widzi tylko gracz, który gra — tak samo jak
 
 | Klasa | Noga (udo + łydka) | Krok biegu | Bieg od / chód poniżej | Przy 16 st/s: kadencja, podpór, droga na cykl |
 |---|---|---|---|---|
-| Wojownik (Rycerz) | 1,55 st | 1,55 st | 6,2 / 5,5 st/s | 2,5 cyklu/s, 24% cyklu, 6,4 st |
-| Zwiadowca | 1,55 st | 1,55 st | 14,3 / 12,8 st/s | 2,5 cyklu/s, 24% cyklu, 6,4 st |
-| Mag (Kot-Mag) | 0,57 st | 0,57 st | 2,3 / 2,1 st/s | 4,12 cyklu/s, 15% cyklu, 3,9 st |
+| Wojownik (Rycerz) | 1,55 st | 1,24 st (było 1,55) | 6,2 / 5,5 st/s | 2,20 cyklu/s, 17% cyklu, 7,3 st (było 2,5, 24%, 6,4 st) |
+| Zwiadowca | 1,55 st | 1,08 st (było 1,55) | 14,3 / 12,8 st/s | 2,50 cyklu/s, 17% cyklu, 6,4 st (było 2,5, 24%, 6,4 st) |
+| Mag (Kot-Mag) | 0,57 st | 0,63 st (było 0,57) | 2,3 / 2,1 st/s | 3,40 cyklu/s, 13% cyklu, 4,7 st (było 4,12, 15%, 3,9 st) |
 
 Limit kontrolny w testach: 220 brył na bohatera w najcięższym stroju. Przy 12 bohaterach to do ok. 2,2 tys. brył
 bez kolizji u jednego klienta. Zmierzone w Studio na komputerze (próba B17): pętla pakietu 0,05 ms na klatkę
@@ -135,7 +157,8 @@ Po odrodzeniu postaci i po wyłączeniu bohatera wymuszony klip i przesunięcie 
 ## 5. Sprawy do decyzji ludzi
 
 1. **Bieg jest proceduralny** (pkt 2.3): stopy nie ślizgają się, ale to ruch policzony wzorem, bez ręki animatora.
-   Do oceny w grze: kadencja (kot stawia 8 kroków na sekundę), długość kroku, wymach rąk z bronią. Liczby są
+   Do oceny w grze: kadencja (kot stawia teraz 6,8 kroku na sekundę zamiast 8), długość kroku, wymach rąk z bronią,
+   ruch pół stroju i szaty kota (nowe, policzone bez Studio — podglądy w `podglady/`). Liczby są
    w `ustawienia.json` → `bieg`. Inne wyjście na później: ręczny klip biegu w modułach postaci.
 2. **Skok bez własnego klipu** — poza proceduralna. Czy ma powstać klip skoku?
 3. **Telefon.** 127–182 brył na bohatera; ilu bohaterów naraz i z jakiej odległości (dziś 12 i 260 st).

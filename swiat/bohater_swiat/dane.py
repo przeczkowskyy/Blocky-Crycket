@@ -96,18 +96,43 @@ def ustawienia():
     if W["histereza"] < 1 or W["maks_bohaterow"] < 1 or W["okres_daleko"] < 1 or W["budowy_na_klatke"] < 1:
         raise BladDanych("ustawienia.widocznosc: histereza ≥ 1, maks_bohaterow ≥ 1, okres_daleko ≥ 1, budowy_na_klatke ≥ 1")
     B = U["bieg"]
-    if not (0 < B["podpor_min"] <= B["podpor"] < 0.5 and 0 < B["kadencja_min"] < B["kadencja_wzorcowa"] and B["pasmo"] > 0):
-        raise BladDanych("ustawienia.bieg: 0 < podpor_min ≤ podpor < 0,5; 0 < kadencja_min < kadencja_wzorcowa; pasmo > 0")
-    # w skrajach podporu noga musi sięgać ziemi (w długościach nogi): biodra są tam o −podskok · cos(2π · podpor)
-    # od średniej wysokości (najwyżej przy najdłuższym podporze)
-    if (B["krok_na_noge"] / 2) ** 2 + (B["biodra_na_noge"] - B["podskok_na_noge"] * math.cos(2 * math.pi * B["podpor"])) ** 2 >= 0.99:
-        raise BladDanych("ustawienia.bieg: krok_na_noge i biodra_na_noge nie mieszczą się w długości nogi")
     for k in B["klasy"]:
         if k not in U["klasy_gracza"].values():
             raise BladDanych("ustawienia.bieg.klasy: nieznana klasa %s" % k)
+    for k in list(U["klasy_gracza"].values()):
+        Bk = bieg_klasy(U, k)
+        if not (0 < Bk["podpor_min"] < 0.5 and 0 < Bk["lot_min"] <= 1 and Bk["pasmo"] > 0 and Bk["kadencja_pelna"] > 0
+                and 0 < Bk["skala_min"] <= 1 <= Bk["skala_maks"] and Bk["predkosc_min"] > 0):
+            raise BladDanych("ustawienia.bieg (%s): 0 < podpor_min < 0,5; 0 < lot_min ≤ 1; pasmo, kadencja_pelna, "
+                             "predkosc_min > 0; skala_min ≤ 1 ≤ skala_maks" % k)
+        if not (0 < Bk["krok_na_noge"] / 2 < Bk["zasieg_nogi"] < 0.999):
+            raise BladDanych("ustawienia.bieg (%s): pół kroku musi być krótsze niż zasieg_nogi < 0,999" % k)
+        P = Bk["poly"]
+        if not 0 <= P["dzwon_fala_st"] <= P["dzwon_unies_st"]:
+            raise BladDanych("ustawienia.bieg.poly: 0 ≤ dzwon_fala_st ≤ dzwon_unies_st (przód szaty nie schodzi pod ziemię)")
+        for kosc, wpisy in Bk["dodatki"].items():
+            for w in wpisy:
+                if len(w) != 8 or w[6] not in (1, 2):
+                    raise BladDanych("ustawienia.bieg.dodatki (%s, %s): wpis = 3 stałe, 3 wymachy, harmoniczna 1 | 2, "
+                                     "przesunięcie fazy" % (k, kosc))
     if sorted(U["akcje"]) != sorted(AKCJE):
         raise BladDanych("ustawienia.akcje: dokładnie %s" % (AKCJE,))
     return U
+
+
+def bieg_klasy(U, klucz):
+    """Ustawienia biegu jednej klasy: wspólne liczby z nadpisami z bieg.klasy (dodatki: kość klasy zastępuje wspólną)."""
+    B = U["bieg"]
+    nadpis = B["klasy"].get(klucz, {})
+    wynik = {k: v for k, v in B.items() if k != "klasy"}
+    for k, v in nadpis.items():
+        if k == "dodatki":
+            wynik["dodatki"] = collections.OrderedDict(list(B["dodatki"].items()) + list(v.items()))
+        elif isinstance(v, dict):
+            wynik[k] = dict(B[k], **v)
+        else:
+            wynik[k] = v
+    return wynik
 
 
 # --------------------------------------------------------------------------------------------- geometria rigu
@@ -185,34 +210,56 @@ def _bieg(U, d, rig, klucz, predkosc_chodu):
     spod = najnizej(rig, d, {}, STOPY)
     if abs(spod) > 0.01:
         raise BladDanych("klasa %s: stopy w spoczynku nie stoją na ziemi (%.3f)" % (klucz, spod))
-    nadpis = B["klasy"].get(klucz, {})
-    rece = nadpis.get("rece_st", B["rece_st"])
-    lokcie = nadpis.get("lokcie_st", B["lokcie_st"])
+    B = bieg_klasy(U, klucz)
     v_do = U["ruch"]["tempo_max"] * predkosc_chodu
+    v_pelna = float(U["ruch"]["bieg_predkosc"])
+    krok = B["krok_na_noge"] * noga
+    # biodra w skrajach podporu: najwyżej, jak pozwala zasięg nogi przy tym kroku (krótszy krok = prostsze kolano)
+    biodra = math.sqrt((B["zasieg_nogi"] * noga) ** 2 - (krok / 2) ** 2)
+    ugiecie = B["ugiecie_na_noge"] * noga
+    lot = 1.0 / (2 * B["kadencja_pelna"]) - krok / v_pelna
+    if lot <= 0.01:
+        raise BladDanych("klasa %s: przy kadencja_pelna %.2f i kroku %.2f st nie ma lotu" % (klucz, B["kadencja_pelna"], krok))
+    P, S = B["poly"], B["skret_ciala"]
+    dodatki = []
+    for kosc, wpisy in B["dodatki"].items():
+        if kosc not in rig.indeks:
+            raise BladDanych("klasa %s: bieg.dodatki — w rigu nie ma kości %s" % (klucz, kosc))
+        for w in wpisy:
+            if any(w[:6]):
+                dodatki.append([kosc] + [_r(math.radians(x), 5) for x in w[:6]] + [w[6], w[7]])
     wynik = collections.OrderedDict([
         ("udo", _r(udo)), ("lydka", _r(lydka)), ("kostka", _r(kostka)), ("biodro", _r(biodro)), ("noga", _r(noga)),
-        ("krok", _r(B["krok_na_noge"] * noga)), ("biodraPodpor", _r(B["biodra_na_noge"] * noga)),
-        ("podskok", _r(B["podskok_na_noge"] * noga)), ("unoszenie", _r(B["unoszenie_na_noge"] * noga)),
-        ("podpor", B["podpor"]), ("podporMin", B["podpor_min"]), ("kadencjaMin", B["kadencja_min"]),
-        ("kadencjaMaks", _r(B["kadencja_wzorcowa"] * math.sqrt(B["noga_wzorcowa"] / noga), 3)),
+        ("krok", _r(krok)), ("biodraPodpor", _r(biodra)), ("ugiecie", _r(ugiecie)),
+        ("wzlotMaks", _r(B["wzlot_maks_na_ugiecie"] * ugiecie)), ("wzlotRazy", B["wzlot_razy"]), ("unoszenie", _r(B["unoszenie_na_noge"] * noga)),
+        ("skosUnoszenia", B["skos_unoszenia"]), ("wybieg", _r(B["wybieg_na_krok"] * krok)),
+        ("lot", _r(lot, 5)), ("lotMin", B["lot_min"]), ("vPelna", v_pelna), ("vMin", B["predkosc_min"]),
+        ("podporMin", B["podpor_min"]), ("skalaMin", B["skala_min"]), ("skalaMaks", B["skala_maks"]),
         ("vOd", _r(v_do * (1 + B["pasmo"]), 3)), ("vDo", _r(v_do, 3)), ("czas", B["czas_przejscia_s"]),
-        ("stopaWymach", _r(math.radians(B["stopa_w_wymachu_st"]), 5)),
-        ("rekaL", _r(math.radians(rece[0]), 5)), ("rekaP", _r(math.radians(rece[1]), 5)),
-        ("lokiecL", _r(math.radians(lokcie[0]), 5)), ("lokiecP", _r(math.radians(lokcie[1]), 5)),
-        ("skret", _r(math.radians(B["skret_tulowia_st"]), 5))])
+        ("stopaWymach", _r(math.radians(B["stopa_w_wymachu_st"]), 5)), ("skosStopy", B["skos_stopy"]),
+        ("wygladzanie", B["wygladzanie_predkosci_s"]), ("vMaks", B["predkosc_maks"]),
+        ("poly", bool(P["wlaczone"])), ("polaProg", P["prog_st"]), ("polaSrodek", P["srodek_st"]), ("polaUdo", P["udo"]),
+        ("dzwonUnies", _r(math.radians(P["dzwon_unies_st"]), 5)), ("dzwonFala", _r(math.radians(P["dzwon_fala_st"]), 5)),
+        ("dzwonSkret", _r(math.radians(P["dzwon_skret_st"]), 5)), ("dzwonZwloka", P["dzwon_zwloka"]),
+        ("skretCiala", collections.OrderedDict([
+            ("przechyl", _r(math.radians(S["przechyl_st"]), 5)), ("obrot", _r(math.radians(S["obrot_st"]), 5)),
+            ("pelny", S["pelny_rad_s"]), ("wygladzanie", S["wygladzanie_s"])])),
+        ("dodatki", dodatki)])
     # pochylenie stopy w wymachu (czubek w dół): u bohatera z długą stopą na krótkiej nodze czubek wszedłby w ziemię —
-    # kąt maleje co 2°, aż w całym wymachu najniższa bryła stopy unosi się co najmniej o 0,35 uniesienia kostki
+    # kąt maleje co 2°, aż w całym wymachu (przy każdej skali ruchu) najniższa bryła stopy jest nad ziemią
     import logika_bohatera as LB
     kat = float(B["stopa_w_wymachu_st"])
     while True:
         wynik["stopaWymach"] = _r(math.radians(kat), 5)
         zapas = 1e9
-        for podpor in (B["podpor_min"], B["podpor"]):
-            for n in range(0, 60):
-                faza = n / 60.0
-                if faza >= podpor:
-                    dno = najnizej(rig, d, transformy_biegu(rig, LB.bieg(wynik, faza, podpor)), ["LeftFoot"])
-                    zapas = min(zapas, dno - 0.35 * (LB.tor_kostki(wynik, faza, podpor)[1] - kostka))
+        for v in (v_do, v_pelna, 1.5 * v_pelna):
+            podpor = LB.kadencja(wynik, v)[1]
+            for s in (B["skala_min"], 1.0, B["skala_maks"]):
+                for n in range(0, 60):
+                    faza = n / 60.0
+                    if faza >= podpor:
+                        dno = najnizej(rig, d, transformy_biegu(rig, LB.bieg(wynik, faza, podpor, s)), ["LeftFoot"])
+                        zapas = min(zapas, dno - 0.2 * (LB.tor_kostki(wynik, faza, podpor, s)[1] - kostka))
         if zapas >= -0.005 or kat >= 0:
             break
         kat = min(0.0, kat + 2.0)
@@ -229,6 +276,74 @@ def transformy_biegu(rig, c):
         t[rig.indeks[strona + "LowerLeg"]] = cf((0.0, 0.0, 0.0), orientacja(c["lydka" + s], 0.0, 0.0))
         t[rig.indeks[strona + "Foot"]] = cf((0.0, 0.0, 0.0), orientacja(c["stopa" + s], 0.0, 0.0))
     return t
+
+
+def poly_rigu(rig, d, B):
+    """Poły stroju odniesienia — to samo, co klient zbiera przy budowie (zbierzPoly): bryły wiszące na kości bioder
+    z rodzajem, wagą i zawiasem w układzie modelu."""
+    import logika_bohatera as LB
+    from geometria import narozniki
+    if not B["poly"]:
+        return []
+    spocz = rig.pozy()
+    kandydaci = []
+    for c in d["czesci"]:
+        if c[0] == rig.indeks["LowerTorso"]:
+            pts = narozniki(rig.czesc_cf(c, spocz), c[9:12])
+            ys, zs = [p[1] for p in pts], [p[2] for p in pts]
+            r = LB.rodzaj_poly(B, min(ys), min(zs), max(zs))
+            if r is not None:
+                kandydaci.append((c, r, min(ys), max(ys), min(zs), max(zs)))
+    if not kandydaci:
+        return []
+    dzwon = any(k[1] == "dzwon" for k in kandydaci)
+    dno, tyl = min(k[2] for k in kandydaci), max(k[5] for k in kandydaci)
+    wynik = []
+    for c, r, dol, gora, zp, zt in kandydaci:
+        if dzwon:
+            wynik.append({"c": c, "dzwon": True, "waga": LB.waga_dzwonu(B, (dol + gora) / 2, dno), "zawias": (0.0, dno, tyl)})
+        else:
+            grupa = [k for k in kandydaci if k[1] == r]
+            wynik.append({"c": c, "dzwon": False, "przod": r == "przod",
+                          "zawias": (0.0, max(k[3] for k in grupa), sum((k[4] + k[5]) / 2 for k in grupa) / len(grupa))})
+    return wynik
+
+
+def cf_poly(rig, p, pozy, spocz, c_bieg, B, faza, s):
+    """CFrame bryły poły w cyklu biegu (klient robi to samo spawem bryły): obrót wokół zawiasu w układzie modelu
+    w spoczynku, niesiony kością bioder."""
+    import logika_bohatera as LB
+    from geometria import cf, odwrotnosc, orientacja, przesun, razy
+    H = p["zawias"]
+    wstecz = przesun((-H[0], -H[1], -H[2]))
+    if p["dzwon"]:
+        unies, skret = LB.dzwon(B, faza, s, p["waga"])
+        M = razy(razy(razy(przesun(H), cf((0, 0, 0), orientacja(unies, 0.0, 0.0))), wstecz), cf((0, 0, 0), orientacja(0.0, skret, 0.0)))
+        M = razy(przesun((0.0, max(0.0, -c_bieg["biodraY"]) * p["waga"], 0.0)), M)
+    else:
+        kat = c_bieg["polaPrzod"] if p["przod"] else c_bieg["polaTyl"]
+        M = razy(razy(przesun(H), cf((0, 0, 0), orientacja(kat, 0.0, 0.0))), wstecz)
+    i = p["c"][0]
+    return razy(razy(razy(pozy[i], odwrotnosc(spocz[i])), M), rig.czesc_cf(p["c"], spocz))
+
+
+def poza_biegu(rig, d, K, faza, v):
+    """Pełna poza bohatera w cyklu biegu jak w kliencie: klip spoczynku (klatka 0), biodra i nogi z cyklu, dodatki
+    (ręce, tułów, głowa, ogon…), poły. → (wynik L.bieg, pozy kości, lista CFrame brył w kolejności d["czesci"])."""
+    import logika_bohatera as LB
+    from geometria import cf, orientacja, razy
+    B = K["bieg"]
+    pod = LB.kadencja(B, v)[1]
+    s = LB.skala_biegu(B, v)
+    c = LB.bieg(B, faza, pod, s)
+    t = dict(rig.transformy(K["klipy"]["spoczynek"], 0))
+    t.update(transformy_biegu(rig, c))
+    for w in B["dodatki"]:
+        i = rig.indeks[w[0]]
+        t[i] = razy(t.get(i, cf()), cf((0.0, 0.0, 0.0), orientacja(*LB.dodatek(w, faza, s))))
+    pozy, spocz = rig.pozy(t), rig.pozy()
+    pola = {id(p["c"]): cf_poly(rig, p, pozy, spocz, c, B, faza, s) for p in poly_rigu(rig, d, B)}
+    return c, pozy, [pola.get(id(cz)) or rig.czesc_cf(cz, pozy) for cz in d["czesci"]]
 
 
 def _bryly_stroju(DS, Ds, klucz, ids, kosci_nog):
@@ -413,12 +528,12 @@ def podsumowanie(D):
                         min(D["ruch"]["tempo_max"], max(D["ruch"]["tempo_min"], D["ruch"]["bieg_predkosc"] / K["predkoscChodu"])),
                         K["podniesienieChodu"], K["wysokosc"]))
         Bg = K["bieg"]
-        f_maks = Bg["kadencjaMaks"]
+        import logika_bohatera as LB
         v = D["ruch"]["bieg_predkosc"]
-        f = min(f_maks, max(Bg["kadencjaMin"], v * Bg["podpor"] / Bg["krok"]))
+        f, pod = LB.kadencja(Bg, v)
         linie.append("  %-10s bieg od %.1f st/s (chód wraca poniżej %.1f): noga %.2f st, krok %.2f st; przy %g st/s kadencja %.2f "
-                     "cyklu/s, podpór %.0f%% cyklu" % ("", Bg["vOd"], Bg["vDo"], Bg["noga"], Bg["krok"], v, f,
-                                                       100 * max(Bg["podporMin"], min(Bg["podpor"], Bg["krok"] * f / v))))
+                     "cyklu/s, podpór %.0f%% cyklu, lot %.3f s na krok" % ("", Bg["vOd"], Bg["vDo"], Bg["noga"], Bg["krok"], v, f,
+                                                                         100 * pod, Bg["lot"]))
         linie.append("  %-10s bryły: goły %d, strój odniesienia %d (limit %d) · spód nóg: goły %.3f, w stroju %.3f · "
                      "przysiad: %s" % ("", K["czesci"]["golas"], K["czesci"]["odniesienie"],
                                        D["limity"]["maks_czesci_bohatera"], K["spod"]["golas"], K["spod"]["odniesienie"],

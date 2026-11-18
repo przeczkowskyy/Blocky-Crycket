@@ -16,10 +16,20 @@
 	                                             klipu (spoczynek | ruch | radosc | upadek); poza: nazwa pozy
 	                                             proceduralnej; bieg = true: gra proceduralny cykl biegu
 	L.kadencja(B, v) → f, d                      kadencja biegu [cykli/s] i udział podporu w cyklu dla prędkości v
-	L.czasBiegu(dt, droga, v, wMiejscu) → s      czas cyklu biegu w tej klatce (z drogi postaci; w miejscu — z zegara)
-	L.fazaBiegu(faza, f, dt) → faza              faza cyklu biegu po czasie dt (zawija się w 0…1)
-	L.bieg(B, faza, d) → poza                    cykl biegu: { biodraY, udoL, lydkaL, stopaL, udoP, lydkaP, stopaP
-	                                             (kąty stawów, radiany), rekaL, rekaP, skret (dodatki do klipu) }
+	L.skalaBiegu(B, v) → liczba                  skala ruchu (trucht → pełny bieg): uniesienie stóp, wymachy, poły
+	L.predkosc(poprzednia, droga, dt, stala, maks) → v   prędkość rzeczywista postaci: droga ÷ czas, wygładzona
+	L.krokBiegu(B, faza, dPoprz, f, d, dt, droga, wMiejscu) → faza
+	                                             faza cyklu po klatce: w podporze idzie DROGĄ postaci (stopa stoi
+	                                             w miejscu przy każdej prędkości), w locie i w miejscu — zegarem;
+	                                             zmiana udziału podporu nie rusza stopy, która stoi
+	L.bieg(B, faza, d, s?) → poza                cykl biegu: { biodraY, udoL, lydkaL, stopaL, udoP, lydkaP, stopaP
+	                                             (kąty stawów, radiany), polaPrzod, polaTyl (odchylenie pasów stroju) }
+	L.dodatek(w, faza, s) → rx, ry, rz           dodatek do pozy z klipu dla kości z wpisu B.dodatki (ręce, tułów,
+	                                             głowa, ogon, kapelusz, kostur)
+	L.rodzajPoly(B, dol, przod, tyl) → napis|nil bryła na kości bioder: "przod" | "tyl" | "dzwon" albo nil (nie wisi)
+	L.wagaDzwonu(B, srodekY, dno) → 0…1          jak mocno bryła dzwonu szaty idzie za ruchem (im niżej, tym mocniej)
+	L.dzwon(B, faza, s, w) → unies, skret        dzwon szaty: uniesienie przodu i skręt bryły o wadze w (radiany)
+	L.skretCiala(poprzedni, omega, dt, S) → x    przechył tułowia w zakręcie (−1…1), wygładzony; omega [rad/s]
 	L.krokWag(wagi, cele, dt, czasy, kolejnosc)  wagi póz idą liniowo do celów (czas przejścia z danych)
 	L.podStopami(hip, wysHrp, nogi) → studs      odległość środka HumanoidRootPart od ziemi pod postacią
 	L.wysokoscRigu(spod, podniesienie, waga)     pionowa poprawka rigu: stopy na ziemi (spód rigu, chód pod ziemią)
@@ -182,33 +192,54 @@ end
 
 ------------------------------------------------------------------ proceduralny cykl biegu
 --[[ B = D.klasy[klasa].bieg. Kostka każdej nogi idzie po torze w płaszczyźnie biegu (przód, góra) względem stawu
-	biodra: w podporze (faza nogi 0…d) stoi na ziemi i cofa się od +krok/2 do −krok/2 ze stałą prędkością, w wymachu
-	(d…1) wraca do przodu łukiem. Przy kadencji f [cykli/s] stopa w podporze cofa się względem bioder z prędkością
-	krok · f / d — gdy d = krok · f / v, jest to dokładnie prędkość postaci, więc stopa stoi w miejscu na ziemi.
-	Kąty uda i łydki z toru kostki: odwrotna kinematyka dwóch kości (kolano do przodu). ]]
+	biodra: w podporze (faza nogi 0…d) stoi na ziemi i cofa się od +krok/2 do −krok/2, w wymachu (d…1) wraca do przodu
+	łukiem. Faza w podporze przesuwa się o d · droga / krok, więc stopa cofa się względem bioder dokładnie o drogę
+	postaci — stoi w miejscu na ziemi przy każdej prędkości, także gdy postać zwalnia na przeszkodzie. Lot (żadna stopa
+	nie stoi) idzie zegarem. Kąty uda i łydki z toru kostki: odwrotna kinematyka dwóch kości (kolano do przodu). ]]
 
--- kadencja [cykli/s] i udział podporu w cyklu dla prędkości poziomej v
+-- kadencja [cykli/s] i udział podporu w cyklu dla prędkości poziomej v: czas podporu = krok / v, czas lotu jednego
+-- kroku rośnie z prędkością do B.lot (przy B.vPelna); podpór jest zawsze krótszy niż pół cyklu (bieg ma lot)
 function L.kadencja(B, v)
-	local f = ogranicz(v * B.podpor / B.krok, B.kadencjaMin, B.kadencjaMaks)
-	local d = B.podpor
-	if v > 0 then
-		d = math.min(B.podpor, B.krok * f / v)
-	end
-	return f, math.max(B.podporMin, d)
+	local vv = math.max(v, B.vMin)
+	local podpor = B.krok / vv
+	local lot = B.lot * ogranicz(vv / B.vPelna, B.lotMin, 1)
+	local f = 1 / (2 * (podpor + lot))
+	return f, math.max(B.podporMin, podpor * f)
 end
 
--- czas, o który przesuwa się cykl biegu w tej klatce: z DROGI postaci (droga / prędkość), nie z zegara — wtedy stopa
--- w podporze cofa się względem bioder dokładnie o tyle, o ile postać przesunęła się naprzód, także gdy klatki są
--- nierówne; bieg w miejscu (klip umowy) i postać prawie stojąca idą zegarem; skok położenia (teleport) jest przycięty
-function L.czasBiegu(dt, droga, v, wMiejscu)
-	if wMiejscu or v < 1 then
-		return dt
-	end
-	return math.min(droga / v, 3 * dt)
+-- skala ruchu: trucht (małe uniesienie stóp, mały wymach) → pełny bieg
+function L.skalaBiegu(B, v)
+	return ogranicz(v / B.vPelna, B.skalaMin, B.skalaMaks)
 end
 
-function L.fazaBiegu(faza, f, dt)
-	local n = faza + f * dt
+-- prędkość rzeczywista postaci: droga ÷ czas klatki, wygładzona (stala [s]); skok położenia (teleport) przycięty.
+-- Idzie za tym, co postać naprawdę przeszła, nie za wciśniętym klawiszem — na przeszkodzie spada do zera.
+function L.predkosc(poprzednia, droga, dt, stala, maks)
+	if dt <= 0 then
+		return poprzednia
+	end
+	local chwilowa = math.min(droga / dt, maks)
+	return poprzednia + (chwilowa - poprzednia) * (dt / (dt + stala))
+end
+
+-- faza cyklu po jednej klatce. dPoprz = udział podporu z poprzedniej klatki (nil na początku): gdy się zmienił,
+-- faza jest przeliczana tak, żeby stopa w podporze została tam, gdzie stała (ten sam ułamek podporu albo lotu).
+function L.krokBiegu(B, faza, dPoprz, f, d, dt, droga, wMiejscu)
+	local pol = if faza >= 0.5 then 0.5 else 0
+	local fz = faza - pol
+	if dPoprz ~= nil and dPoprz ~= d and dPoprz < 0.5 then
+		if fz < dPoprz then
+			fz = fz * d / dPoprz
+		else
+			fz = d + (fz - dPoprz) / (0.5 - dPoprz) * (0.5 - d)
+		end
+	end
+	if wMiejscu or fz >= d then
+		fz += f * dt
+	else
+		fz += d * math.min(droga, B.krok) / B.krok
+	end
+	local n = pol + fz
 	return n - math.floor(n)
 end
 
@@ -227,37 +258,96 @@ local function nogaIK(B, przod, wys)
 	return doKostki + odchylenie, kolano - math.pi
 end
 
+-- łuk wymachu 0 → szczyt → 0; skos > 0 przesuwa szczyt przed połowę (pięta idzie w górę zaraz po odbiciu)
+local function luk(u, skos)
+	local t = math.pi * u
+	return math.sin(t) * (1 + skos * math.cos(t))
+end
+
 -- tor kostki jednej nogi: przód względem biodra, wysokość nad ziemią, pochylenie stopy (radiany)
-local function torKostki(B, fz, d)
+local function torKostki(B, fz, d, s)
 	if fz < d then
 		return B.krok / 2 - B.krok * (fz / d), B.kostka, 0
 	end
 	local u = (fz - d) / (1 - d)
-	local s = math.sin(math.pi * u)
-	return -(B.krok / 2) * math.cos(math.pi * u), B.kostka + B.unoszenie * s, B.stopaWymach * s
+	local t = math.pi * u
+	-- wybieg: zaraz po odbiciu stopa idzie jeszcze w tył, przed postawieniem cofa się ku ziemi
+	return -(B.krok / 2) * math.cos(t) - B.wybieg * math.sin(2 * t), B.kostka + B.unoszenie * s * luk(u, B.skosUnoszenia),
+		B.stopaWymach * s * luk(u, B.skosStopy)
 end
 
--- poza cyklu biegu w fazie 0…1 (0 = lewa stopa staje z przodu); d = udział podporu z L.kadencja
-function L.bieg(B, faza, d)
-	-- biodra: najniżej w połowie podporu, najwyżej w połowie lotu (dwa podskoki na cykl)
-	local biodra = B.kostka + B.biodraPodpor - B.podskok * math.cos(4 * math.pi * (faza - d / 2))
+-- wysokość bioder nad ziemią: w skrajach podporu najwyżej, jak sięga noga; w podporze ugięcie (najniżej w połowie),
+-- w locie wzlot tym wyższy, im dłuższy lot (wzlotRazy = 1: nachylenie na końcu podporu = na początku lotu)
+local function wysBioder(B, faza, d)
+	local fz = if faza >= 0.5 then faza - 0.5 else faza
+	if fz < d then
+		return B.kostka + B.biodraPodpor - B.ugiecie * math.sin(math.pi * fz / d)
+	end
+	local wzlot = math.min(B.wzlotMaks, B.wzlotRazy * B.ugiecie * (0.5 - d) / d)
+	return B.kostka + B.biodraPodpor + wzlot * math.sin(math.pi * (fz - d) / (0.5 - d))
+end
+
+-- poza cyklu biegu w fazie 0…1 (0 = lewa stopa staje z przodu); d = udział podporu z L.kadencja, s = L.skalaBiegu
+function L.bieg(B, faza, d, s)
+	if s == nil then
+		s = 1
+	end
+	local biodra = wysBioder(B, faza, d)
 	local fazaP = faza + 0.5
 	if fazaP >= 1 then
 		fazaP -= 1
 	end
-	local przodL, wysL, stopaL = torKostki(B, faza, d)
-	local przodP, wysP, stopaP = torKostki(B, fazaP, d)
+	local przodL, wysL, stopaL = torKostki(B, faza, d, s)
+	local przodP, wysP, stopaP = torKostki(B, fazaP, d, s)
 	local udoL, lydkaL = nogaIK(B, przodL, wysL - biodra)
 	local udoP, lydkaP = nogaIK(B, przodP, wysP - biodra)
-	local c = math.cos(2 * math.pi * faza)
 	return {
 		biodraY = biodra - B.biodro,
 		udoL = udoL, lydkaL = lydkaL, stopaL = stopaL - udoL - lydkaL,
 		udoP = udoP, lydkaP = lydkaP, stopaP = stopaP - udoP - lydkaP,
-		-- ręce przeciwnie do nóg (dodatek do pozy z klipu): lewa do tyłu, gdy lewa stopa z przodu
-		rekaL = -B.rekaL * c, rekaP = B.rekaP * c,
-		skret = B.skret * math.sin(2 * math.pi * faza),
+		-- pasy stroju wiszące z przodu i z tyłu bioder idą za udem, które je wypycha
+		polaPrzod = B.polaUdo * math.max(0, udoL, udoP),
+		polaTyl = B.polaUdo * math.min(0, udoL, udoP),
 	}
+end
+
+-- dodatek do pozy z klipu dla jednej kości: w = { kość, stałe rx, ry, rz, wymach rx, ry, rz, harmoniczna, przesunięcie }
+function L.dodatek(w, faza, s)
+	local c = s * math.cos(2 * math.pi * (w[8] * faza - w[9]))
+	return w[2] + w[5] * c, w[3] + w[6] * c, w[4] + w[7] * c
+end
+
+-- bryła przyspawana do kości bioder (model w spoczynku): dol = jej najniższy punkt, przod / tyl = skraje w osi Z
+function L.rodzajPoly(B, dol, przod, tyl)
+	if dol >= B.biodro - B.polaProg then
+		return nil
+	end
+	if tyl < -B.polaSrodek then
+		return "przod"
+	elseif przod > B.polaSrodek then
+		return "tyl"
+	end
+	return "dzwon"
+end
+
+function L.wagaDzwonu(B, srodekY, dno)
+	return ogranicz((B.biodro - srodekY) / math.max(0.01, B.biodro - dno), 0, 1)
+end
+
+-- dzwon szaty: uniesienie przodu (obrót wokół tylnego dolnego skraju, zawsze ≥ 0 — nic nie schodzi pod ziemię)
+-- i skręt wokół osi ciała; niższe bryły (większa waga w) idą mocniej i z opóźnieniem — szata faluje z krokiem
+function L.dzwon(B, faza, s, w)
+	local t = 2 * math.pi * (faza - B.dzwonZwloka * w)
+	return w * s * (B.dzwonUnies + B.dzwonFala * math.cos(2 * t)), w * s * B.dzwonSkret * math.cos(t)
+end
+
+-- przechył tułowia w zakręcie: omega = prędkość obrotu postaci [rad/s, > 0 = w lewo]; wynik −1…1, wygładzony
+function L.skretCiala(poprzedni, omega, dt, S)
+	if dt <= 0 then
+		return poprzedni
+	end
+	local cel = ogranicz(omega / S.pelny, -1, 1)
+	return poprzedni + (cel - poprzedni) * (dt / (dt + S.wygladzanie))
 end
 
 function L.krokWag(wagi, cele, dt, czasy, kolejnosc)

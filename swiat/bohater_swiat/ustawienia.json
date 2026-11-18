@@ -55,26 +55,76 @@
   "pochyl": {"czas_s": 0.2, "przysiad": false, "kosci": {
    "UpperTorso": [-9, 0, 0]}}
  },
- "bieg_opis": "Proceduralny cykl biegu (bez klipu): kostka każdej nogi idzie po torze — w podporze stoi na ziemi i cofa się względem bioder ze stałą prędkością, w wymachu wraca łukiem do przodu — a kąty uda, łydki i stopy liczy z tego toru odwrotna kinematyka dwóch kości. Długości w ułamkach długości nogi bohatera (udo + łydka), więc krok każdej klasy wynika z jej nóg. Kadencja = prędkość × podpor / krok, najwyżej kadencja_wzorcowa × pierwiastek(noga_wzorcowa / noga); powyżej tej prędkości skraca się udział podporu (dłuższy lot), a stopa w podporze dalej stoi w miejscu. Bieg zaczyna się, gdy klip chodu przestaje nadążać: prędkość > tempo_max × chód naturalny × (1 + pasmo); wraca do chodu poniżej tempo_max × chód naturalny.",
+ "bieg_opis": "Proceduralny cykl biegu (bez klipu). NOGI: kostka idzie po torze — w podporze stoi na ziemi i cofa się względem bioder dokładnie o drogę postaci, w wymachu wraca łukiem (pięta wcześnie w górę, lekki wybieg w tył i podciągnięcie przed postawieniem), kąty liczy odwrotna kinematyka dwóch kości. Długości w ułamkach długości nogi (udo + łydka). Biodra w skrajach podporu stoją najwyżej, jak pozwala zasieg_nogi (im krótszy krok, tym prostsze kolano), w podporze uginają się o ugiecie, w locie wznoszą. TEMPO: czas podporu = krok ÷ prędkość, czas lotu = (1 ÷ (2 × kadencja_pelna) − krok ÷ bieg_predkosc) × prędkość ÷ bieg_predkosc (najmniej lot_min tej wartości). Faza w podporze idzie DROGĄ postaci, w locie zegarem; prędkość to droga ÷ czas, wygładzona (wygladzanie_predkosci_s). skala (prędkość ÷ bieg_predkosc w granicach skala_min…skala_maks) mnoży uniesienie stóp, wymachy i falowanie. DODATKI: kość → wpisy [stałe rx, ry, rz, wymach rx, ry, rz (stopnie), harmoniczna (1 = raz na cykl, 2 = raz na krok), przesunięcie fazy (cykle)]: kąt = stałe + skala × wymach × cos(2π × (harmoniczna × faza − przesunięcie)); faza 0 = lewa stopa staje z przodu; rx > 0 = kończyna do przodu, ry > 0 = prawy bark do przodu, rz > 0 = góra w lewo. POŁY: bryły wiszące poniżej bioder na kości bioder — pasy z przodu i z tyłu odchylają się z udem, dzwon (szata dookoła) unosi przód, faluje i skręca się z krokiem, im niżej, tym mocniej. Wpis w klasy nadpisuje liczby i dodatki (kość w klasie zastępuje wpisy tej kości). Bieg zaczyna się, gdy klip chodu przestaje nadążać: prędkość > tempo_max × chód naturalny × (1 + pasmo); wraca do chodu poniżej tempo_max × chód naturalny.",
  "bieg": {
-  "krok_na_noge": 1.0,
-  "biodra_na_noge": 0.82,
-  "podskok_na_noge": 0.05,
-  "unoszenie_na_noge": 0.32,
-  "podpor": 0.32,
-  "podpor_min": 0.1,
-  "kadencja_min": 1.2,
-  "kadencja_wzorcowa": 2.5,
-  "noga_wzorcowa": 1.55,
+  "krok_na_noge": 0.75,
+  "zasieg_nogi": 0.99,
+  "ugiecie_na_noge": 0.03,
+  "wzlot_razy": 1.6,
+  "wzlot_maks_na_ugiecie": 5,
+  "unoszenie_na_noge": 0.34,
+  "skos_unoszenia": 0.5,
+  "wybieg_na_krok": 0.1,
+  "kadencja_pelna": 2.35,
+  "lot_min": 0.3,
+  "podpor_min": 0.06,
+  "predkosc_min": 1,
+  "skala_min": 0.5,
+  "skala_maks": 1.15,
   "pasmo": 0.12,
-  "czas_przejscia_s": 0.2,
-  "stopa_w_wymachu_st": -22,
-  "rece_st": [28, 28],
-  "lokcie_st": [0, 0],
-  "skret_tulowia_st": 5,
+  "czas_przejscia_s": 0.25,
+  "stopa_w_wymachu_st": -30,
+  "skos_stopy": 0.8,
+  "wygladzanie_predkosci_s": 0.1,
+  "predkosc_maks": 64,
+  "skret_ciala": {"przechyl_st": 7, "obrot_st": 5, "pelny_rad_s": 5, "wygladzanie_s": 0.15},
+  "poly": {"wlaczone": true, "prog_st": 0.05, "srodek_st": 0.05, "udo": 0.9, "dzwon_unies_st": 7, "dzwon_fala_st": 3, "dzwon_skret_st": 6, "dzwon_zwloka": 0.18},
+  "dodatki": {
+   "LeftUpperArm": [[0, 0, 0, -30, 0, 0, 1, 0]],
+   "RightUpperArm": [[0, 0, 0, 30, 0, 0, 1, 0]],
+   "LeftLowerArm": [[20, 0, 0, 14, 0, 0, 1, 0.5]],
+   "RightLowerArm": [[20, 0, 0, 14, 0, 0, 1, 0]],
+   "UpperTorso": [[-8, 0, 0, 0, 5, 2, 1, 0]],
+   "Head": [[4, 0, 0, 0, -4, -1.5, 1, 0]]
+  },
   "klasy": {
-   "wojownik": {"rece_st": [30, 10], "lokcie_st": [18, 0]},
-   "mag": {"rece_st": [26, 8]}
+   "wojownik": {
+    "krok_na_noge": 0.8, "kadencja_pelna": 2.2, "ugiecie_na_noge": 0.035, "unoszenie_na_noge": 0.3,
+    "dodatki": {
+     "LeftUpperArm": [[0, 0, 0, -7, 0, 0, 1, 0]],
+     "LeftLowerArm": [[6, 0, 0, 3, 0, 0, 1, 0.5]],
+     "RightUpperArm": [[0, 0, 0, 16, 0, 0, 1, 0]],
+     "RightLowerArm": [[8, 0, 0, 6, 0, 0, 1, 0]],
+     "UpperTorso": [[-9, 0, 0, 0, 4, 2.5, 1, 0]],
+     "Head": [[5, 0, 0, 0, -3, -2, 1, 0]]
+    }
+   },
+   "zwiadowca": {
+    "krok_na_noge": 0.7, "kadencja_pelna": 2.5, "ugiecie_na_noge": 0.025, "unoszenie_na_noge": 0.4,
+    "dodatki": {
+     "LeftUpperArm": [[0, 0, 0, -24, 0, 0, 1, 0]],
+     "RightUpperArm": [[0, 0, 0, 34, 0, 0, 1, 0]],
+     "UpperTorso": [[-11, 0, 0, 0, 7, 2, 1, 0]],
+     "Head": [[6, 0, 0, 0, -6, -1.5, 1, 0]]
+    }
+   },
+   "mag": {
+    "krok_na_noge": 1.1, "kadencja_pelna": 3.4, "ugiecie_na_noge": 0.04, "unoszenie_na_noge": 0.4,
+    "dodatki": {
+     "LeftUpperArm": [[0, 0, 0, -22, 0, 0, 1, 0]],
+     "LeftLowerArm": [[10, 0, 0, 8, 0, 0, 1, 0.5]],
+     "RightUpperArm": [[0, 0, 0, 9, 0, 0, 1, 0]],
+     "RightLowerArm": [[40, 0, 0, 0, 0, 0, 1, 0]],
+     "StaffPivot": [[-40, 0, 0, -9, 0, 0, 1, 0]],
+     "UpperTorso": [[-6, 0, 0, 0, 6, 3, 1, 0]],
+     "Head": [[3, 0, 0, 0, -4, -2, 1, 0]],
+     "Tail": [[-25, 0, 0, 0, 14, 0, 1, 0.1]],
+     "TailTip": [[14, 0, 0, 0, 0, 10, 1, 0.3], [0, 0, 0, 5, 0, 0, 2, 0.2]],
+     "HatPivot": [[5, 0, 0, 4, 0, 0, 2, 0.15]],
+     "LeftEar": [[6, 0, 0, 5, 0, 0, 2, 0.1]],
+     "RightEar": [[6, 0, 0, 5, 0, 0, 2, 0.1]]
+    }
+   }
   }
  },
  "kosci_nog": ["LeftUpperLeg", "LeftLowerLeg", "LeftFoot", "RightUpperLeg", "RightLowerLeg", "RightFoot"],

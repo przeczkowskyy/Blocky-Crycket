@@ -121,22 +121,39 @@ def krok(pam, we, R, dt, B=None):
 # ------------------------------------------------------------------ proceduralny cykl biegu (opis w LogikaBohatera.luau)
 def kadencja(B, v):
     """(kadencja [cykli/s], udział podporu w cyklu) dla prędkości poziomej v."""
-    f = _ogranicz(v * B["podpor"] / B["krok"], B["kadencjaMin"], B["kadencjaMaks"])
-    d = B["podpor"]
-    if v > 0:
-        d = min(B["podpor"], B["krok"] * f / v)
-    return f, max(B["podporMin"], d)
+    vv = max(v, B["vMin"])
+    podpor = B["krok"] / vv
+    lot = B["lot"] * _ogranicz(vv / B["vPelna"], B["lotMin"], 1)
+    f = 1 / (2 * (podpor + lot))
+    return f, max(B["podporMin"], podpor * f)
 
 
-def czas_biegu(dt, droga, v, w_miejscu):
-    """Czas, o który przesuwa się cykl biegu w tej klatce: z drogi postaci (w miejscu i przy v < 1 — z zegara)."""
-    if w_miejscu or v < 1:
-        return dt
-    return min(droga / v, 3 * dt)
+def skala_biegu(B, v):
+    return _ogranicz(v / B["vPelna"], B["skalaMin"], B["skalaMaks"])
 
 
-def faza_biegu(faza, f, dt):
-    n = faza + f * dt
+def predkosc(poprzednia, droga, dt, stala, maks):
+    """Prędkość rzeczywista postaci: droga ÷ czas klatki, wygładzona; skok położenia przycięty."""
+    if dt <= 0:
+        return poprzednia
+    chwilowa = min(droga / dt, maks)
+    return poprzednia + (chwilowa - poprzednia) * (dt / (dt + stala))
+
+
+def krok_biegu(B, faza, d_poprz, f, d, dt, droga, w_miejscu):
+    """Faza cyklu po jednej klatce: w podporze drogą postaci, w locie i w miejscu zegarem."""
+    pol = 0.5 if faza >= 0.5 else 0
+    fz = faza - pol
+    if d_poprz is not None and d_poprz != d and d_poprz < 0.5:
+        if fz < d_poprz:
+            fz = fz * d / d_poprz
+        else:
+            fz = d + (fz - d_poprz) / (0.5 - d_poprz) * (0.5 - d)
+    if w_miejscu or fz >= d:
+        fz += f * dt
+    else:
+        fz += d * min(droga, B["krok"]) / B["krok"]
+    n = pol + fz
     return n - math.floor(n)
 
 
@@ -153,30 +170,79 @@ def _noga_ik(B, przod, wys):
     return do_kostki + odchylenie, kolano - math.pi
 
 
-def tor_kostki(B, fz, d):
+def _luk(u, skos):
+    t = math.pi * u
+    return math.sin(t) * (1 + skos * math.cos(t))
+
+
+def tor_kostki(B, fz, d, s=1):
     """Tor kostki jednej nogi: (przód względem biodra, wysokość nad ziemią, pochylenie stopy)."""
     if fz < d:
         return B["krok"] / 2 - B["krok"] * (fz / d), B["kostka"], 0
     u = (fz - d) / (1 - d)
-    s = math.sin(math.pi * u)
-    return -(B["krok"] / 2) * math.cos(math.pi * u), B["kostka"] + B["unoszenie"] * s, B["stopaWymach"] * s
+    t = math.pi * u
+    return (-(B["krok"] / 2) * math.cos(t) - B["wybieg"] * math.sin(2 * t),
+            B["kostka"] + B["unoszenie"] * s * _luk(u, B["skosUnoszenia"]),
+            B["stopaWymach"] * s * _luk(u, B["skosStopy"]))
 
 
-def bieg(B, faza, d):
-    biodra = B["kostka"] + B["biodraPodpor"] - B["podskok"] * math.cos(4 * math.pi * (faza - d / 2))
+def wys_bioder(B, faza, d):
+    """Wysokość stawu biodra nad ziemią (ugięcie w podporze, wzlot w locie)."""
+    fz = faza - 0.5 if faza >= 0.5 else faza
+    if fz < d:
+        return B["kostka"] + B["biodraPodpor"] - B["ugiecie"] * math.sin(math.pi * fz / d)
+    wzlot = min(B["wzlotMaks"], B["wzlotRazy"] * B["ugiecie"] * (0.5 - d) / d)
+    return B["kostka"] + B["biodraPodpor"] + wzlot * math.sin(math.pi * (fz - d) / (0.5 - d))
+
+
+def bieg(B, faza, d, s=None):
+    if s is None:
+        s = 1
+    biodra = wys_bioder(B, faza, d)
     faza_p = faza + 0.5
     if faza_p >= 1:
         faza_p -= 1
-    przod_l, wys_l, stopa_l = tor_kostki(B, faza, d)
-    przod_p, wys_p, stopa_p = tor_kostki(B, faza_p, d)
+    przod_l, wys_l, stopa_l = tor_kostki(B, faza, d, s)
+    przod_p, wys_p, stopa_p = tor_kostki(B, faza_p, d, s)
     udo_l, lydka_l = _noga_ik(B, przod_l, wys_l - biodra)
     udo_p, lydka_p = _noga_ik(B, przod_p, wys_p - biodra)
-    c = math.cos(2 * math.pi * faza)
     return {"biodraY": biodra - B["biodro"],
             "udoL": udo_l, "lydkaL": lydka_l, "stopaL": stopa_l - udo_l - lydka_l,
             "udoP": udo_p, "lydkaP": lydka_p, "stopaP": stopa_p - udo_p - lydka_p,
-            "rekaL": -B["rekaL"] * c, "rekaP": B["rekaP"] * c,
-            "skret": B["skret"] * math.sin(2 * math.pi * faza)}
+            "polaPrzod": B["polaUdo"] * max(0, udo_l, udo_p),
+            "polaTyl": B["polaUdo"] * min(0, udo_l, udo_p)}
+
+
+def dodatek(w, faza, s):
+    """Dodatek do pozy z klipu dla kości z wpisu B["dodatki"]: (rx, ry, rz)."""
+    c = s * math.cos(2 * math.pi * (w[7] * faza - w[8]))
+    return w[1] + w[4] * c, w[2] + w[5] * c, w[3] + w[6] * c
+
+
+def rodzaj_poly(B, dol, przod, tyl):
+    if dol >= B["biodro"] - B["polaProg"]:
+        return None
+    if tyl < -B["polaSrodek"]:
+        return "przod"
+    if przod > B["polaSrodek"]:
+        return "tyl"
+    return "dzwon"
+
+
+def waga_dzwonu(B, srodek_y, dno):
+    return _ogranicz((B["biodro"] - srodek_y) / max(0.01, B["biodro"] - dno), 0, 1)
+
+
+def dzwon(B, faza, s, w):
+    t = 2 * math.pi * (faza - B["dzwonZwloka"] * w)
+    return w * s * (B["dzwonUnies"] + B["dzwonFala"] * math.cos(2 * t)), w * s * B["dzwonSkret"] * math.cos(t)
+
+
+def skret_ciala(poprzedni, omega, dt, S):
+    if dt <= 0:
+        return poprzedni
+    cel = _ogranicz(omega / S["pelny"], -1, 1)
+    return poprzedni + (cel - poprzedni) * (dt / (dt + S["wygladzanie"]))
 
 
 def krok_wag(wagi, cele, dt, czasy, kolejnosc):

@@ -298,6 +298,63 @@ local function modelWStroju(klasa, napis)
 	return U.zbuduj(klasa, plan, nil)
 end
 
+-- skraje bryły w układzie modelu: najniższy i najwyższy punkt, przód (najmniejsze Z) i tył (największe Z)
+local function obrys(cf, rozmiar)
+	local x, y, z = cf.XVector, cf.YVector, cf.ZVector
+	local hx, hy, hz = rozmiar.X / 2, rozmiar.Y / 2, rozmiar.Z / 2
+	local ey = math.abs(x.Y) * hx + math.abs(y.Y) * hy + math.abs(z.Y) * hz
+	local ez = math.abs(x.Z) * hx + math.abs(y.Z) * hy + math.abs(z.Z) * hz
+	return cf.Position.Y - ey, cf.Position.Y + ey, cf.Position.Z - ez, cf.Position.Z + ez
+end
+
+-- Poły stroju (LogikaBohatera.rodzajPoly): bryły wiszące poniżej bioder na kości bioder; model stoi w początku układu.
+-- Ruch poły = obrót jej spawu wokół zawiasu: C0 = a · obrót · b (dzwon szaty: unoszenie przodu wokół tylnego dolnego
+-- skraju, skręt wokół osi ciała i podniesienie o tyle, o ile biodra schodzą w biegu). Spoczynek = C0 z budowy (c0).
+-- Wynik: lista pół albo nil, gdy nic nie wisi.
+local function zbierzPoly(Bg, wiszace)
+	local lista, jestDzwon = {}, false
+	local dno, tyl = math.huge, -math.huge
+	local gory = { przod = -math.huge, tyl = -math.huge }
+	local sumy = { przod = 0, tyl = 0 }
+	local ile = { przod = 0, tyl = 0 }
+	for _, w in wiszace do
+		local dol, gora, zp, zt = obrys(w[1].CFrame, w[1].Size)
+		local rodzaj = L.rodzajPoly(Bg, dol, zp, zt)
+		if rodzaj ~= nil then
+			dno = math.min(dno, dol)
+			tyl = math.max(tyl, zt)
+			if rodzaj == "dzwon" then
+				jestDzwon = true
+			else
+				gory[rodzaj] = math.max(gory[rodzaj], gora)
+				sumy[rodzaj] += (zp + zt) / 2
+				ile[rodzaj] += 1
+			end
+			table.insert(lista, { rodzaj = rodzaj, spaw = w[2], c0 = w[2].C0, kosc = w[3].CFrame, srodekY = (dol + gora) / 2 })
+		end
+	end
+	if #lista == 0 then
+		return nil
+	end
+	for _, p in lista do
+		local odwr = p.kosc:Inverse()
+		if jestDzwon then
+			-- szata dookoła: wszystko, co wisi, idzie razem z nią
+			p.dzwon = true
+			p.waga = L.wagaDzwonu(Bg, p.srodekY, dno)
+			p.a = odwr * CFrame.new(0, dno, tyl)
+			p.m = CFrame.new(0, -dno, -tyl)
+			p.b = p.kosc * p.c0
+			p.gora = odwr:VectorToWorldSpace(Vector3.yAxis)
+		else
+			p.przod = p.rodzaj == "przod"
+			p.a = odwr * CFrame.new(0, gory[p.rodzaj], sumy[p.rodzaj] / ile[p.rodzaj])
+			p.b = p.a:Inverse() * p.c0
+		end
+	end
+	return lista
+end
+
 local function zbuduj(b)
 	local t0 = os.clock()
 	local K = D.klasy[b.klasa]
@@ -312,6 +369,7 @@ local function zbuduj(b)
 	end
 	korzen.Anchored = true
 	local czesci, nogi, spod = {}, {}, math.huge
+	local wiszace = {}
 	for _, c in model:GetDescendants() do
 		if c:IsA("BasePart") then
 			-- nic w bohaterze nie bierze udziału w fizyce ani w zapytaniach (ruch postaci zostaje taki sam)
@@ -326,6 +384,9 @@ local function zbuduj(b)
 				if kosc and NOGI[kosc.Name] then
 					table.insert(nogi, c)
 					spod = math.min(spod, nisko(c.CFrame, c.Size)) -- model stoi jeszcze w początku układu
+				end
+				if kosc and kosc.Name == "LowerTorso" and c ~= kosc and K.bieg.poly then
+					table.insert(wiszace, { c, w, kosc })
 				end
 			end
 		end
@@ -360,6 +421,8 @@ local function zbuduj(b)
 	b.wagi = {}
 	b.wagaChodu = 0
 	b.wagaBiegu, b.fazaBiegu, b.vBiegu, b.drogaBiegu = 0, 0, R.bieg_predkosc, 0
+	b.vRzecz, b.skret, b.dBiegu, b.katCiala = b.vRzecz or 0, 0, nil, nil
+	b.pola, b.polaRuszone = zbierzPoly(K.bieg, wiszace), false
 	b.baza, b.tor, b.licznikRuchu = nil, nil, -1
 	b.tryb = "idle"
 	b.v = 0
@@ -435,11 +498,32 @@ local function aktualizuj(b, dt)
 	local K = D.klasy[b.klasa]
 	local zyje = hum.Health > 0
 	local pr = hrp.AssemblyLinearVelocity
+	local Bg = K.bieg
+	-- droga postaci po ziemi w tej klatce: z niej prędkość rzeczywista (wygładzona) i krok cyklu biegu. Ruch idzie za
+	-- tym, co postać naprawdę przeszła, nie za wciśniętym klawiszem: na przeszkodzie prędkość spada i bieg ustaje.
+	local gdzie = hrp.Position
+	local bylo = b.pozBiegu
+	local drogaKlatki = 0
+	if bylo ~= nil then
+		local dx, dz = gdzie.X - bylo.X, gdzie.Z - bylo.Z
+		drogaKlatki = math.sqrt(dx * dx + dz * dz)
+	end
+	b.pozBiegu = gdzie
+	b.drogaBiegu += drogaKlatki
+	b.vRzecz = L.predkosc(b.vRzecz, drogaKlatki, dt, Bg.wygladzanie, Bg.vMaks)
+	-- obrót postaci → przechył tułowia w zakręcie
+	local _, katCiala = hrp.CFrame:ToOrientation()
+	local obrot = 0
+	if b.katCiala ~= nil then
+		obrot = (katCiala - b.katCiala + math.pi) % (2 * math.pi) - math.pi
+	end
+	b.katCiala = katCiala
+	b.skret = L.skretCiala(b.skret, obrot / math.max(dt, 0.001), dt, Bg.skretCiala)
 	local wy = L.krok(b.pam, {
 		zyje = zyje,
 		stan = hum:GetState().Name,
 		naZiemi = hum.FloorMaterial ~= Enum.Material.Air,
-		vpoz = math.sqrt(pr.X * pr.X + pr.Z * pr.Z),
+		vpoz = math.min(math.sqrt(pr.X * pr.X + pr.Z * pr.Z), b.vRzecz),
 		vpion = pr.Y,
 		zdalny = b.zdalny,
 		wymuszony = if b.lokalny then wym.klip else nil,
@@ -448,7 +532,6 @@ local function aktualizuj(b, dt)
 	b.v = wy.v
 	ustawKlip(b, K, wy)
 	-- waga biegu: cykl proceduralny wchodzi i wychodzi płynnie (klip chodu ↔ bieg)
-	local Bg = K.bieg
 	local celBiegu = if wy.bieg then 1 else 0
 	local krokBiegu = dt / Bg.czas
 	if b.wagaBiegu < celBiegu then
@@ -459,14 +542,6 @@ local function aktualizuj(b, dt)
 	if wy.bieg then
 		b.vBiegu = wy.v
 	end
-	-- droga postaci po ziemi od ostatniego kroku animacji (cykl biegu idzie drogą, nie zegarem)
-	local gdzie = hrp.Position
-	local bylo = b.pozBiegu
-	if bylo ~= nil then
-		local dx, dz = gdzie.X - bylo.X, gdzie.Z - bylo.Z
-		b.drogaBiegu += math.sqrt(dx * dx + dz * dz)
-	end
-	b.pozBiegu = gdzie
 	-- waga chodu: o tyle rig unosi się, gdy klip chodu schodzi stopami pod ziemię
 	local celChodu = if wy.baza == "ruch" then 1 else 0
 	local krokChodu = dt / R.przejscie_klipow_s
@@ -486,15 +561,21 @@ local function aktualizuj(b, dt)
 		local drogaKroku = b.drogaBiegu
 		b.drogaBiegu = 0
 		if b.wagaBiegu > 0 then
-			-- cykl biegu: biodra i nogi bezwzględnie (stopa w podporze stoi w miejscu), ręce i tułów jako dodatek do klipu
+			-- cykl biegu: biodra i nogi bezwzględnie (stopa w podporze stoi w miejscu), reszta ciała jako dodatek do klipu
 			local f, d = L.kadencja(Bg, b.vBiegu)
+			local s = L.skalaBiegu(Bg, b.vBiegu)
 			local wMiejscu = b.lokalny and wym.klip == "bieg"
-			b.fazaBiegu = L.fazaBiegu(b.fazaBiegu, f, L.czasBiegu(dta, drogaKroku, b.vBiegu, wMiejscu))
+			if b.dBiegu == nil then
+				b.fazaBiegu = d / 2 -- wejście w bieg: lewa stopa pod biodrem (najbliżej pozy stojącej)
+			else
+				b.fazaBiegu = L.krokBiegu(Bg, b.fazaBiegu, b.dBiegu, f, d, dta, drogaKroku, wMiejscu)
+			end
+			b.dBiegu = d
 			local faza = b.fazaBiegu
 			if b.lokalny and wym.fazaBiegu ~= nil then
 				faza = wym.fazaBiegu -- próba: zatrzymana faza (arkusz klatek)
 			end
-			local c = L.bieg(Bg, faza, d)
+			local c = L.bieg(Bg, faza, d, s)
 			local e = b.wagaBiegu * b.wagaBiegu * (3 - 2 * b.wagaBiegu)
 			local st = b.stawy
 			ustawStaw(st.LowerTorso, CFrame.new(0, c.biodraY, 0), e)
@@ -504,16 +585,40 @@ local function aktualizuj(b, dt)
 			ustawStaw(st.RightUpperLeg, CFrame.Angles(c.udoP, 0, 0), e)
 			ustawStaw(st.RightLowerLeg, CFrame.Angles(c.lydkaP, 0, 0), e)
 			ustawStaw(st.RightFoot, CFrame.Angles(c.stopaP, 0, 0), e)
-			dodajStaw(st.LeftUpperArm, CFrame.Angles(c.rekaL * e, 0, 0))
-			dodajStaw(st.RightUpperArm, CFrame.Angles(c.rekaP * e, 0, 0))
-			dodajStaw(st.LeftLowerArm, CFrame.Angles(Bg.lokiecL * e, 0, 0))
-			dodajStaw(st.RightLowerArm, CFrame.Angles(Bg.lokiecP * e, 0, 0))
-			dodajStaw(st.UpperTorso, CFrame.Angles(0, c.skret * e, 0))
+			-- ręce, tułów, głowa i dodatki klasy (ogon, kapelusz, kostur): wymach z fazą kroku, skala rośnie z prędkością
+			for _, w in Bg.dodatki do
+				local rx, ry, rz = L.dodatek(w, faza, s)
+				dodajStaw(st[w[1]], CFrame.fromOrientation(rx * e, ry * e, rz * e))
+			end
+			local sc = Bg.skretCiala
+			dodajStaw(st.UpperTorso, CFrame.fromOrientation(0, sc.obrot * b.skret * e, sc.przechyl * b.skret * e))
+			-- poły stroju: pasy z przodu i z tyłu idą za udem, dzwon szaty unosi przód i faluje z krokiem
+			if b.pola ~= nil then
+				b.polaRuszone = true
+				local wyzej = math.max(0, -c.biodraY) * e
+				for _, p in b.pola do
+					if p.dzwon then
+						local unies, skret = L.dzwon(Bg, faza, s * e, p.waga)
+						p.spaw.C0 = p.a * CFrame.Angles(unies, 0, 0) * p.m * CFrame.Angles(0, skret, 0) * p.b
+							+ p.gora * (wyzej * p.waga)
+					else
+						p.spaw.C0 = p.a * CFrame.Angles((if p.przod then c.polaPrzod else c.polaTyl) * e, 0, 0) * p.b
+					end
+				end
+			end
+		else
+			b.dBiegu = nil
+			if b.polaRuszone then
+				b.polaRuszone = false
+				for _, p in b.pola do
+					p.spaw.C0 = p.c0
+				end
+			end
 		end
 		local cele = {}
 		if wy.poza ~= nil then
 			cele[wy.poza] = 1
-		elseif wy.baza == "ruch" or wy.bieg then
+		elseif wy.baza == "ruch" then
 			cele.pochyl = L.pochylenie(wy.v, R)
 		end
 		L.krokWag(b.wagi, cele, dta, D.czasyPoz, D.kolejnoscPoz)

@@ -14,9 +14,53 @@ skacze, spada i ląduje. Każdy gracz widzi bohaterów pozostałych graczy. Prze
 - **Próba w Play** (`testy/proba_play.py`, lista B00–B19): **19 × OK, 1 × ?, 0 × BŁĄD** — tabela niżej.
 - **Sąsiedzi z bohaterem w świecie:** próba dymna całej gry 14/14, próba walki `test_walki_play.py --szybko` 111/111,
   próba przymierzalni 10 × OK i jej stałe „?” (S09).
-- **Bez Studio:** 33 testy OK, kontrola Luau, `zbuduj.py --sucho`, `proba_play.py --sprawdz`.
+- **Bez Studio:** 36 testów OK, kontrola Luau, `zbuduj.py --sucho`, `proba_play.py --sprawdz`.
+- **Nowy cykl biegu (18.11.2026) jest tylko w plikach** — w Studio stoi jeszcze poprzednia wersja skryptów, a tabela
+  próby niżej (B00–B19) dotyczy tej poprzedniej wersji. Wdrożenie i próba w grze: następny krok (sekcja niżej).
 
-## W Studio (18.11.2026)
+## Nowy cykl biegu (18.11.2026) — zrobione bez Studio, czeka na wdrożenie
+
+Co się zmieniło w ruchu (liczby w `ustawienia.json` → `bieg`, opis w `PROJEKT.md` pkt 2.3):
+
+| | Wojownik | Zwiadowca | Kot-Mag |
+|---|---|---|---|
+| Krok (droga stopy w podporze) | 1,24 st (było 1,55) | 1,08 st (było 1,55) | 0,63 st (było 0,57) |
+| Przy 16 st/s: kadencja, podpór, lot na krok | 2,20 cyklu/s, 17%, 0,150 s (było 2,5 i 24%) | 2,50, 17%, 0,132 s (było 2,5 i 24%) | 3,40, 13%, 0,108 s (było 4,12 i 15%) |
+| Kolano w połowie podporu | 59° (było 79°) | 51° (było 79°) | 77° (pod szatą) |
+| Kolano w cyklu: najmniej / najwięcej | 5° / 111° | 12° / 122° | 5° / 136° |
+| Biodra góra–dół | 0,22 st | 0,16 st | 0,12 st |
+| Wymach ramion (lewe / prawe) | ±7° tarcza / ±16° miecz | ±24° łuk / ±34° | ±22° / ±9° kostur |
+| Tułów: pochył, skręt, kołysanie | 9°, ±4°, ±2,5° | 11°, ±7°, ±2° | 6°, ±6°, ±3° |
+| Poły stroju odniesienia | 12 brył (6 z przodu, 6 z tyłu) | 1 bryła | 7 brył szaty (dzwon) |
+
+- **Nogi:** krótszy krok i biodra tak wysoko, jak sięga noga — bieg mniej przykucnięty; w wymachu pięta idzie
+  wcześnie w górę, stopa po odbiciu leci jeszcze w tył, a przed postawieniem cofa się ku ziemi; biodra uginają się
+  w podporze i wznoszą w locie. W truchcie (tuż nad progiem biegu) ruch jest mniejszy (skala 0,5–1,15).
+- **Ręce, tułów, głowa** to dodatki do pozy z klipu, opisane danymi na klasę (`bieg.dodatki`): ręka z mieczem ma
+  mniejszy wymach, ręka z tarczą prawie stoi, głowa wyrównuje pochył i skręt tułowia. Kot: ogon, czubek ogona,
+  kapelusz i uszy ruszają się z krokiem, kostur zostaje w pionie (obrót przeciwny do ramienia) i jest niesiony wyżej.
+- **Poły stroju:** bryły wiszące poniżej bioder na kości bioder ruszają się spawem — pasy tabardu Rycerza idą za
+  udem, dzwon szaty kota unosi przód (łapy wychodzą spod szaty), faluje i skręca się z krokiem. Wyłącznik:
+  `bieg.poly.wlaczone`.
+- **Bez ślizgania na przeszkodzie:** faza cyklu w podporze idzie drogą postaci (w locie zegarem), prędkość to droga
+  ÷ czas (wygładzona, 0,1 s) i nie większa niż prędkość z fizyki — gdy postać stanie na przeszkodzie, stopa stoi,
+  a po chwili bohater przechodzi do spoczynku. Zmiana tempa w trakcie podporu nie rusza stopy.
+- **Przejścia:** wejście w bieg zaczyna się od fazy ze stopą pod biodrem, waga cyklu dochodzi w 0,25 s; w zakręcie
+  tułów przechyla się do środka (do 7°) i lekko obraca (do 5°).
+- **Umowa `RuchBohatera` bez zmian** (nazwy, wyniki, klip `bieg` w miejscu); fizyka postaci bez zmian.
+- **Koszt pętli (policzony, nie zmierzony):** na bohatera w biegu doszło na klatkę: Wojownik 7 obrotów stawów
+  (było 5) i 12 zapisów spawów pół, Zwiadowca 7 i 1, Kot-Mag 14 i 7 (każda bryła dzwonu: 4 mnożenia CFrame).
+  Czas w ms pokaże dopiero próba B17 w Studio.
+- **Bez Studio sprawdzone:** stopa w podporze przesuwa się o mniej niż 0,005 st przy czterech prędkościach i przy
+  postaci hamującej na przeszkodzie z nierównymi klatkami; nic poza nasadą ogona kota (pod trenem szaty, jak dawniej)
+  nie schodzi pod ziemię; broń, tarcza i kostur nie wchodzą w nogi ani tułów (0 punktów próbnych w spoczynku
+  i w całym cyklu, każda klasa).
+- **Podglądy** (`podglady/bieg_<klasa>.png`, `python -B swiat/bohater_swiat/podglad_biegu.py`): osiem klatek cyklu
+  z boku i z przodu, dawny cykl nad nowym — schemat z brył, nie zrzut z gry.
+- **Do zrobienia w Studio:** `zbuduj.py --skrypty`, próba B00–B19 (zwłaszcza B05, B17, B19), bieg w przeszkodę,
+  zrzuty; w próbie B19 zostaje ta sama miara (stopa w podporze, `L.kadencja` daje krok × kadencja ÷ podpór = prędkość).
+
+## W Studio (18.11.2026) — poprzednia wersja skryptów
 
 Próba: jedno okno Studio, jeden gracz (Wojownik po wyborze klasy klawiszem Enter), tryb z kowalem na próbę (gracz ma
 część przedmiotów). Wyniki z nazwą konta leżą poza repozytorium.
@@ -101,8 +145,9 @@ walki i przymierzalni szły wersję wcześniej (przed „korzeniem o klatkę pó
   przebudowany. Odrodzenie → bohater wraca przy nowej postaci.
 - **Ruch:** klipy `idle` i `chod` / `ruch` bohatera z danych walki; skok, spadanie i lądowanie to pozy proceduralne.
   Powyżej prędkości, przy której klip chodu przestaje nadążać (Rycerz 6,2 st/s, Zwiadowca 14,3, kot 2,3), gra
-  **proceduralny cykl biegu**: nogi z odwrotnej kinematyki tak, żeby stopa w podporze stała w miejscu, podskok
-  bioder, wymach rąk, pochylenie tułowia (`PROJEKT.md` pkt 2.3; liczby w `ustawienia.json` → `bieg`).
+  **proceduralny cykl biegu**: nogi z odwrotnej kinematyki tak, żeby stopa w podporze stała w miejscu, ugięcie
+  i wzlot bioder, dodatki na klasę (ręce, tułów, głowa, ogon, kapelusz, kostur), poły stroju (`PROJEKT.md` pkt 2.3;
+  liczby w `ustawienia.json` → `bieg`).
 - **Znika razem z awatarem:** walka, mini-gra i widok z pierwszej osoby chowają awatara przez
   `LocalTransparencyModifier` — bohater przejmuje tę wartość co klatkę.
 - **Potrzebuje w grze** (tylko odczyt): `Workspace/TestWalki2` (`Moduly/Klipy`, `Moduly/DaneAktorow`)
@@ -181,7 +226,8 @@ end
 | Plik | Co robi |
 |---|---|
 | `ustawienia.json` | liczby, pozy proceduralne (kąty), nazwy — jedyne miejsce do strojenia |
-| `dane.py` | generator `zrodla/DaneBohatera.luau` (prędkość naturalna chodu, podniesienie, przysiady póz, liczby biegu z długości nóg) |
+| `dane.py` | generator `zrodla/DaneBohatera.luau` (prędkość naturalna chodu, podniesienie, przysiady póz, liczby biegu z długości nóg); pełna poza biegu i poły na bryłach bez Studio (`poza_biegu`, `poly_rigu`) |
+| `podglad_biegu.py` | paski klatek cyklu biegu (było / jest, z boku i z przodu) → `podglady/` |
 | `logika_bohatera.py` | lustro `LogikaBohatera.luau` (automat ruchu, cykl biegu, tempo, wagi póz, zasięg, umowa) |
 | `sprawdz_luau_bohatera.py` | kontrola statyczna źródeł Luau |
 | `zbuduj.py` | budowa kontenera w Studio (`--sucho`, `--skrypty`, `--usun`, `--studio`) |
@@ -199,7 +245,8 @@ Pakiet nie zmienia żadnego pliku poza swoim folderem. Moduły postaci (`swiat/p
 ```
 python -B swiat/bohater_swiat/dane.py                     # po zmianie ustawień: nowy zrodla/DaneBohatera.luau
 python -B swiat/bohater_swiat/dane.py --sprawdz           # dane aktualne i zgodne z danymi walki i przymierzalni
-python -B swiat/bohater_swiat/testy/test_bohatera.py      # bez Studio, ok. 30 s
+python -B swiat/bohater_swiat/testy/test_bohatera.py      # bez Studio, ok. 75 s
+python -B swiat/bohater_swiat/podglad_biegu.py            # paski klatek biegu do podglady/
 python -B swiat/bohater_swiat/sprawdz_luau_bohatera.py
 python -B swiat/bohater_swiat/zbuduj.py --sucho
 python -B swiat/bohater_swiat/testy/proba_play.py --sprawdz
@@ -211,12 +258,13 @@ python -B swiat/bohater_swiat/testy/proba_play.py <folder wyników POZA repo> [-
 
 ## Wyniki bez Studio (18.11.2026)
 
-- `testy/test_bohatera.py`: 33 testy, OK. Dane (klasy = klasy gry, klipy z tabeli aktorów, stopy na ziemi
+- `testy/test_bohatera.py`: 36 testów, OK (z nowym cyklem biegu: zmienna prędkość i przeszkoda, zakresy stawów,
+  poły i przenikanie broni — sekcja „Nowy cykl biegu”). Opis niżej dotyczy też wcześniejszych testów. Dane (klasy = klasy gry, klipy z tabeli aktorów, stopy na ziemi
   w spoczynku i w chodzie, pozy sprawdzone kinematyką w przód, bryły i spód nóg w każdym dopuszczalnym stroju,
   liczby biegu z długości nóg), cykl biegu na rigu każdej klasy przy czterech prędkościach (stopa w podporze
   przesuwa się o mniej niż 0,005 st, w wymachu jest nad ziemią, kąty bez szarpnięć), logika (automat ruchu z biegiem,
   umowa), `LogikaBohatera.luau` wykonana interpreterem = lustro w Pythonie na 9 tys. losowych kroków i 4 tys.
-  losowych wywołań, 12 celowo zepsutych wersji logiki wykrytych, miara dryfu stóp z próby w Play, kontrola kodu.
+  losowych wywołań, 15 celowo zepsutych wersji logiki wykrytych, miara dryfu stóp z próby w Play, kontrola kodu.
 - `sprawdz_luau_bohatera.py` i `swiat/las_potwory/sprawdz_luau.py`: 4 pliki, OK.
 - `zbuduj.py --sucho`: OK. `proba_play.py --sprawdz`: 42 kawałki Luau, 20 punktów listy, OK.
 

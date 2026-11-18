@@ -232,10 +232,9 @@ class TestDane(unittest.TestCase):
             self.assertLess(max(spody), 0.05, klucz)
 
     def test_1i_dane_biegu(self):
-        U = DN.ustawienia()["bieg"]
         for klucz, K in D["klasy"].items():
             d, rig = rig_klasy(klucz)
-            B = K["bieg"]
+            B, U = K["bieg"], DN.bieg_klasy(DN.ustawienia(), klucz)
             kosci = {k[0]: k for k in d["kosci"]}
             self.assertAlmostEqual(B["udo"], kosci["LeftUpperLeg"][3] - kosci["LeftLowerLeg"][3], places=4)
             self.assertAlmostEqual(B["lydka"], kosci["LeftLowerLeg"][3] - kosci["LeftFoot"][3], places=4)
@@ -248,71 +247,214 @@ class TestDane(unittest.TestCase):
             self.assertAlmostEqual(L.tempo(B["vDo"], K["predkoscChodu"], R), R["tempo_max"], places=3)
             self.assertGreater(B["vOd"], B["vDo"])
             self.assertLess(B["vOd"], R["bieg_predkosc"], "%s: przy zwykłej prędkości postaci ma już biec" % klucz)
-            self.assertAlmostEqual(B["kadencjaMaks"], U["kadencja_wzorcowa"] * math.sqrt(U["noga_wzorcowa"] / B["noga"]), places=2)
-        # krótsze nogi = krótszy krok i szybsza kadencja
-        self.assertLess(D["klasy"]["mag"]["bieg"]["krok"], D["klasy"]["wojownik"]["bieg"]["krok"])
-        self.assertGreater(D["klasy"]["mag"]["bieg"]["kadencjaMaks"], D["klasy"]["wojownik"]["bieg"]["kadencjaMaks"])
+            # w skrajach podporu noga sięga ziemi z zapasem; przy zwykłej prędkości kadencja z ustawień i wyraźny lot
+            self.assertAlmostEqual(math.hypot(B["krok"] / 2, B["biodraPodpor"]), U["zasieg_nogi"] * B["noga"], places=3)
+            f, pod = L.kadencja(B, R["bieg_predkosc"])
+            self.assertAlmostEqual(f, U["kadencja_pelna"], places=2)
+            self.assertLess(pod, 0.3, klucz)
+            self.assertGreater(B["lot"], 0.06, klucz)
+            for w in B["dodatki"]:
+                self.assertIn(w[0], rig.indeks)
+        kl = D["klasy"]
+        # krótsze nogi = krótszy krok i szybsza kadencja; Zwiadowca lżej i szybciej niż Wojownik
+        self.assertLess(kl["mag"]["bieg"]["krok"], kl["wojownik"]["bieg"]["krok"])
+        v = R["bieg_predkosc"]
+        self.assertGreater(L.kadencja(kl["mag"]["bieg"], v)[0], L.kadencja(kl["zwiadowca"]["bieg"], v)[0])
+        self.assertGreater(L.kadencja(kl["zwiadowca"]["bieg"], v)[0], L.kadencja(kl["wojownik"]["bieg"], v)[0])
+        self.assertGreater(kl["zwiadowca"]["bieg"]["unoszenie"], kl["wojownik"]["bieg"]["unoszenie"])
+
+    def symulacja(self, klucz, predkosci, dts=None):
+        """Bieg klatka po klatce z kinematyką w przód: prędkość postaci z listy (jedna na klatkę), cykl jak w kliencie
+        (prędkość rzeczywista z drogi, faza z L.krok_biegu). → największy dryf stopy w podporze i pomiary."""
+        K = D["klasy"][klucz]
+        d, rig = rig_klasy(klucz)
+        B = K["bieg"]
+        faza, d_poprz, x, v_rz = 0.0, None, 0.0, predkosci[0]
+        start = {"Left": None, "Right": None}
+        w = {"dryf": 0.0, "podpory": 0, "dno_podporu": [], "dno_wymachu": [], "skok_kata": 0.0, "biodra": [],
+             "kolano": [], "kolano_podpor": [], "fazy": []}
+        poprzednie = None
+        for n, v in enumerate(predkosci):
+            dt = dts[n] if dts else DT
+            droga = v * dt
+            x += droga
+            v_rz = L.predkosc(v_rz, droga, dt, B["wygladzanie"], B["vMaks"])
+            f, pod = L.kadencja(B, v_rz)
+            faza = L.krok_biegu(B, faza, d_poprz, f, pod, dt, droga, False)
+            d_poprz = pod
+            c = L.bieg(B, faza, pod, L.skala_biegu(B, v_rz))
+            t = DN.transformy_biegu(rig, c)
+            pozy = rig.pozy(t)
+            w["biodra"].append(c["biodraY"])
+            w["fazy"].append(faza)
+            w["kolano"].append(-math.degrees(c["lydkaL"]))
+            for strona, przes in (("Left", 0.0), ("Right", 0.5)):
+                fz = (faza + przes) % 1.0
+                swiat = x - pozy[rig.indeks[strona + "Foot"]][1][2]       # przód = −Z
+                dno = DN.najnizej(rig, d, t, [strona + "Foot"])
+                if fz < pod:
+                    if start[strona] is None:
+                        start[strona] = swiat
+                        w["podpory"] += 1
+                    w["dryf"] = max(w["dryf"], abs(swiat - start[strona]))
+                    w["dno_podporu"].append(dno)
+                    if strona == "Left" and abs(fz / pod - 0.5) < 0.15:
+                        w["kolano_podpor"].append(-math.degrees(c["lydkaL"]))
+                else:
+                    start[strona] = None
+                    w["dno_wymachu"].append(dno)
+            katy = [c[k] for k in ("udoL", "lydkaL", "stopaL", "udoP", "lydkaP", "stopaP")]
+            if poprzednie is not None:
+                w["skok_kata"] = max(w["skok_kata"], max(abs(a - b) for a, b in zip(katy, poprzednie)))
+            poprzednie = katy
+            # noga nigdy nie jest wyprostowana do granicy (odwrotna kinematyka nie przycina toru kostki)
+            self.assertLess(c["lydkaL"], -math.radians(4), (klucz, v, faza))
+        return w
 
     def test_1j_cykl_biegu_stopa_stoi_w_miejscu(self):
         """Kinematyka w przód na rigu klasy: przy prędkości v ciało jedzie do przodu, a stopa w podporze ma stać."""
         wyniki = {}
         for klucz, K in D["klasy"].items():
-            d, rig = rig_klasy(klucz)
             B = K["bieg"]
             for v in (B["vOd"] + 0.05, 9.0, R["bieg_predkosc"], 20.0):
                 f, pod = L.kadencja(B, v)
-                dokladny = pod > B["podporMin"] + 1e-9 and f > B["kadencjaMin"] + 1e-9
-                if dokladny:        # kadencja × krok / podpór = prędkość postaci
-                    self.assertAlmostEqual(B["krok"] * f / pod, v, places=6, msg=(klucz, v))
-                faza, x, dryf, dno_podporu, dno_wymachu = 0.0, 0.0, 0.0, [], []
-                start = {"Left": None, "Right": None}
-                poprzednie, skok_kata, biodra, podpory = None, 0.0, [], 0
-                for _ in range(180):
-                    c = L.bieg(B, faza, pod)
-                    t = DN.transformy_biegu(rig, c)
-                    pozy = rig.pozy(t)
-                    biodra.append(c["biodraY"])
-                    for strona, przes in (("Left", 0.0), ("Right", 0.5)):
-                        fz = (faza + przes) % 1.0
-                        swiat = x - pozy[rig.indeks[strona + "Foot"]][1][2]       # przód = −Z
-                        dno = DN.najnizej(rig, d, t, [strona + "Foot"])
-                        if fz < pod - f * DT - 1e-9:
-                            if start[strona] is None:
-                                start[strona] = swiat
-                                podpory += 1
-                            dryf = max(dryf, abs(swiat - start[strona]))
-                            dno_podporu.append(dno)
-                        else:
-                            start[strona] = None
-                            if fz >= pod:
-                                dno_wymachu.append(dno)
-                    katy = [c[n] for n in ("udoL", "lydkaL", "stopaL", "udoP", "lydkaP", "stopaP")]
-                    if poprzednie is not None:
-                        skok_kata = max(skok_kata, max(abs(a - b) for a, b in zip(katy, poprzednie)))
-                    poprzednie = katy
-                    # noga nigdy nie jest wyprostowana do granicy (odwrotna kinematyka nie przycina toru kostki)
-                    self.assertLess(c["lydkaL"], -math.radians(4), (klucz, v, faza))
-                    x += v * DT
-                    faza = L.faza_biegu(faza, f, DT)
-                if dokladny:
-                    self.assertGreater(podpory, 4, (klucz, v))
-                    self.assertLess(dryf, 0.005, "%s przy %.1f st/s: stopa w podporze przesunęła się o %.4f st" % (klucz, v, dryf))
-                    self.assertLess(max(abs(y) for y in dno_podporu), 0.01, (klucz, v))
-                self.assertGreater(min(dno_wymachu), -0.02, (klucz, v))               # w wymachu stopa nad ziemią
-                self.assertGreater(max(dno_wymachu), 0.1 * B["noga"], (klucz, v))      # i wyraźnie uniesiona (czubek)
-                self.assertLess(skok_kata, math.radians(75), (klucz, v))               # bez szarpnięć klatka po klatce
-                self.assertAlmostEqual(max(biodra) - min(biodra), 2 * B["podskok"], delta=0.25 * B["podskok"])
-                wyniki[(klucz, round(v, 1))] = (round(f, 2), round(pod, 3), round(dryf, 5))
-            # nogi symetryczne: prawa = lewa pół cyklu później; ręce przeciwnie do nóg
+                self.assertAlmostEqual(B["krok"] * f / pod, v, places=6, msg=(klucz, v))   # umowa próby B19
+                self.assertLess(pod, 0.5)
+                w = self.symulacja(klucz, [v] * 200)
+                self.assertGreater(w["podpory"], 4, (klucz, v))
+                self.assertLess(w["dryf"], 0.005, "%s przy %.1f st/s: stopa w podporze przesunęła się o %.4f st" % (klucz, v, w["dryf"]))
+                self.assertLess(max(abs(y) for y in w["dno_podporu"]), 0.01, (klucz, v))
+                self.assertGreater(min(w["dno_wymachu"]), -0.02, (klucz, v))               # w wymachu stopa nad ziemią
+                self.assertGreater(max(w["dno_wymachu"]), 0.08 * B["noga"] * L.skala_biegu(B, v), (klucz, v))   # uniesiona
+                self.assertLess(w["skok_kata"], math.radians(75), (klucz, v))               # bez szarpnięć
+                # biodra: ugięcie w podporze i wzlot w locie (wyraźna faza lotu)
+                self.assertGreater(max(w["biodra"]) - min(w["biodra"]), (2.0 if v >= 16 else 1.02) * B["ugiecie"], (klucz, v))
+                wyniki[(klucz, round(v, 1))] = (round(f, 2), round(pod, 3), round(w["dryf"], 5))
+            # nogi symetryczne: prawa = lewa pół cyklu później
             a, b2 = L.bieg(B, 0.2, 0.25), L.bieg(B, 0.7, 0.25)
             for n in ("udo", "lydka", "stopa"):
                 self.assertAlmostEqual(a[n + "L"], b2[n + "P"], places=9)
                 self.assertAlmostEqual(a[n + "P"], b2[n + "L"], places=9)
-            start = L.bieg(B, 0.0, 0.25)                     # lewa stopa z przodu → lewa ręka z tyłu, prawa z przodu
-            self.assertGreater(start["udoL"], start["udoP"])
-            self.assertLessEqual(start["rekaL"], 0)
-            self.assertGreaterEqual(start["rekaP"], 0)
+            self.assertGreater(L.bieg(B, 0.0, 0.25)["udoL"], L.bieg(B, 0.0, 0.25)["udoP"])    # faza 0: lewa stopa z przodu
         self.assertEqual(len(wyniki), 12)
+
+    def test_1k_przeszkoda_i_zmienna_predkosc(self):
+        """Postać zwalnia na przeszkodzie, staje, rusza, klatki są nierówne — stopa w podporze dalej stoi w miejscu
+        (faza idzie drogą postaci, zmiana udziału podporu nie rusza stopy)."""
+        rnd = random.Random(5)
+        for klucz in D["klasy"]:
+            v, lista, dts = 16.0, [], []
+            for n in range(900):
+                if n % 150 == 60:
+                    v = rnd.choice([0.0, 0.3, 3.0, 7.0])          # przeszkoda: prędkość spada w jednej klatce
+                elif n % 150 == 110:
+                    v = rnd.choice([12.0, 16.0, 22.0])
+                else:
+                    v = max(0.0, v + rnd.uniform(-0.8, 0.8))
+                lista.append(v)
+                dts.append(rnd.choice([1 / 60.0, 1 / 60.0, 1 / 30.0, 1 / 144.0, 0.05]))
+            w = self.symulacja(klucz, lista, dts)
+            self.assertGreater(w["podpory"], 10, klucz)
+            self.assertLess(w["dryf"], 0.005, "%s: stopa w podporze przesunęła się o %.4f st" % (klucz, w["dryf"]))
+            self.assertGreater(min(w["dno_wymachu"]), -0.02, klucz)
+        # prędkość rzeczywista: stojąca postać z wciśniętym klawiszem → zero, a z nim koniec biegu
+        v_rz = 16.0
+        for _ in range(60):
+            v_rz = L.predkosc(v_rz, 0.0, DT, D["klasy"]["wojownik"]["bieg"]["wygladzanie"], 64)
+        self.assertLess(v_rz, R["prog_ruchu_stop"])
+        self.assertAlmostEqual(L.predkosc(3.0, 1e6, DT, 0.1, 64), 3.0 + (64 - 3.0) * DT / (DT + 0.1))    # teleport przycięty
+
+    def test_1l_zakresy_stawow_i_dodatki(self):
+        """Naturalniejszy zakres kolan (bieg mniej przykucnięty niż dawny cykl: 79° w połowie podporu), praca rąk."""
+        v = R["bieg_predkosc"]
+        kolana = {}
+        for klucz, K in D["klasy"].items():
+            B = K["bieg"]
+            w = self.symulacja(klucz, [v] * 240)
+            kolana[klucz] = (sum(w["kolano_podpor"]) / len(w["kolano_podpor"]), max(w["kolano"]), min(w["kolano"]))
+            if klucz != "mag":                       # kot ma nogi pod szatą i długi krok — kolan nie widać
+                self.assertLess(kolana[klucz][0], 62, klucz)
+            self.assertGreater(kolana[klucz][1], 75, klucz)      # w wymachu pięta idzie wysoko
+            self.assertLess(kolana[klucz][1], 150, klucz)
+            self.assertLess(kolana[klucz][2], 30, klucz)         # przy postawieniu i odbiciu noga prawie prosta
+            wym = {}
+            for wp in B["dodatki"]:
+                wym.setdefault(wp[0], []).append(wp)
+            for kosc in ("LeftUpperArm", "RightUpperArm", "UpperTorso", "Head"):
+                self.assertIn(kosc, wym, klucz)
+            # faza 0 (lewa stopa z przodu): lewa ręka z tyłu, prawa z przodu; tułów pochylony, głowa go wyrównuje
+            self.assertLess(L.dodatek(wym["LeftUpperArm"][0], 0.0, 1)[0], 0)
+            self.assertGreater(L.dodatek(wym["RightUpperArm"][0], 0.0, 1)[0], 0)
+            self.assertLess(wym["UpperTorso"][0][1], 0)
+            self.assertGreater(wym["Head"][0][1], 0)
+            self.assertLess(abs(wym["Head"][0][1] + wym["UpperTorso"][0][1]), math.radians(6))
+        self.assertLess(kolana["zwiadowca"][0], kolana["wojownik"][0])       # Zwiadowca lżej: prostsza noga w podporze
+        woj = {w[0]: w for w in D["klasy"]["wojownik"]["bieg"]["dodatki"]}
+        # ręka z mieczem (prawa): mniejszy, ale widoczny wymach; ręka z tarczą (lewa) prawie nieruchoma
+        self.assertTrue(math.radians(12) <= woj["RightUpperArm"][4] <= math.radians(20))
+        self.assertLessEqual(abs(woj["LeftUpperArm"][4]), math.radians(8))
+        mag = {}
+        for w in D["klasy"]["mag"]["bieg"]["dodatki"]:
+            mag.setdefault(w[0], w)
+        for kosc in ("Tail", "TailTip", "HatPivot", "StaffPivot"):
+            self.assertIn(kosc, mag)
+        self.assertAlmostEqual(mag["StaffPivot"][4], -mag["RightUpperArm"][4], places=5)    # kostur zostaje w pionie
+
+    def test_1m_poly_i_przenikanie(self):
+        """Pełna poza biegu na bryłach (klip spoczynku + cykl + dodatki + poły): nic nie schodzi pod ziemię, poły się
+        ruszają, a broń, tarcza i kostur nie wchodzą w nogi ani tułów bardziej niż w spoczynku."""
+        from geometria import narozniki, punkty_probne, w_pudle
+        v = R["bieg_predkosc"]
+        for klucz, K in D["klasy"].items():
+            d, rig = rig_klasy(klucz)
+            B = K["bieg"]
+            pola = DN.poly_rigu(rig, d, B)
+            if klucz == "mag":                      # szata dookoła: wszystko, co wisi, idzie razem
+                self.assertGreater(len(pola), 5)
+                self.assertTrue(all(p["dzwon"] for p in pola))
+                self.assertGreater(max(p["waga"] for p in pola), 0.7)
+            elif klucz == "wojownik":               # pasy tabardu z przodu i z tyłu
+                self.assertGreater(len([p for p in pola if not p["dzwon"] and p["przod"]]), 3)
+                self.assertGreater(len([p for p in pola if not p["dzwon"] and not p["przod"]]), 3)
+            ids_pol = {id(p["c"]) for p in pola}
+            cialo = {rig.indeks[n] for n in ("LowerTorso", "UpperTorso", "LeftUpperLeg", "LeftLowerLeg", "LeftFoot",
+                                             "RightUpperLeg", "RightLowerLeg", "RightFoot")}
+            bron = [n for n, c in enumerate(d["czesci"]) if c[14] != 0 and id(c) not in ids_pol]      # grupy broni, tarczy, kostura
+            self.assertGreater(len(bron), 5, klucz)
+
+            def wnikanie(cfs):
+                ile = 0
+                for n in bron:
+                    for p in punkty_probne(cfs[n], d["czesci"][n][9:12]):
+                        for m, c in enumerate(d["czesci"]):
+                            if c[0] in cialo and c[14] == 0 and id(c) not in ids_pol and w_pudle(p, cfs[m], c[9:12], 0.03):
+                                ile += 1
+                                break
+                return ile
+
+            t0 = rig.transformy(K["klipy"]["spoczynek"], 0)
+            pozy0 = rig.pozy(t0)
+            spoczynek = wnikanie([rig.czesc_cf(c, pozy0) for c in d["czesci"]])
+            najgorzej, ruch_pol, dno = 0, 0.0, 1e9
+            for n in range(16):
+                c, pozy, cfs = DN.poza_biegu(rig, d, K, n / 16.0, v)
+                najgorzej = max(najgorzej, wnikanie(cfs))
+                for m, cz in enumerate(d["czesci"]):
+                    naroza = narozniki(cfs[m], cz[9:12])
+                    # nasada ogona kota siedzi pod trenem szaty i schodzi z biodrami (dawny cykl: −0,066 st) — osobny próg
+                    if d["kosci"][cz[0] - 1][0] == "Tail":
+                        self.assertGreater(min(p[1] for p in naroza), -0.07, klucz)
+                    else:
+                        dno = min(dno, min(p[1] for p in naroza))
+                    if id(cz) in ids_pol:
+                        stale = narozniki(rig.czesc_cf(cz, pozy), cz[9:12])
+                        ruch_pol = max(ruch_pol, max(math.dist(a, b) for a, b in zip(naroza, stale)))
+            self.assertGreater(dno, -0.03, "%s: bryła pod ziemią w biegu (%.3f)" % (klucz, dno))
+            if len(pola) > 3:
+                self.assertGreater(ruch_pol, 0.12, "%s: poły stroju stoją w biegu" % klucz)
+            print("  przenikanie %s: w spoczynku %d punktów, w biegu najwyżej %d (z %d brył broni)" % (klucz, spoczynek, najgorzej, len(bron)))
+            self.assertLessEqual(najgorzej, spoczynek + 2, "%s: broń wchodzi w ciało w biegu (%d punktów, w spoczynku %d)"
+                                 % (klucz, najgorzej, spoczynek))
 
     def test_1h_umowa_w_danych(self):
         self.assertEqual(D["kontrakt"]["klipy"], KLIPY_UMOWY)
@@ -483,25 +625,32 @@ class TestLogika(unittest.TestCase):
                          {"tryb": "bieg", "baza": "ruch", "petla": True, "v": R["bieg_predkosc"]})
         # bez danych biegu szybki ruch to dalej chód
         self.assertEqual(L.krok(L.nowa_pamiec(), we(vpoz=16.0), R, DT)["tryb"], "chod")
-        # kadencja: rośnie z prędkością do granicy, potem skraca się podpór; faza zawija się w 0…1
+        # kadencja rośnie z prędkością, podpór skraca się (dłuższy lot) i zawsze jest krótszy niż pół cyklu
         f1, d1 = L.kadencja(B, B["vOd"])
         f2, d2 = L.kadencja(B, 16.0)
         f3, d3 = L.kadencja(B, 40.0)
         self.assertLess(f1, f2)
-        self.assertEqual((f2, f3), (B["kadencjaMaks"], B["kadencjaMaks"]))
-        self.assertAlmostEqual(d1, B["podpor"])
+        self.assertLess(f2, f3)
         self.assertLess(d2, d1)
+        self.assertLess(d1, 0.5)
         self.assertLessEqual(d3, d2)
         self.assertGreaterEqual(d3, B["podporMin"])
-        self.assertEqual(L.kadencja(B, 0.0), (B["kadencjaMin"], B["podpor"]))
-        self.assertAlmostEqual(L.faza_biegu(0.9, 3.0, 0.1), 0.2)
-        # cykl idzie drogą postaci: 0,3 st przy 15 st/s = 0,02 s cyklu, nawet gdy klatka trwała dłużej albo krócej
-        self.assertAlmostEqual(L.czas_biegu(0.03, 0.3, 15.0, False), 0.02)
-        self.assertAlmostEqual(L.czas_biegu(0.01, 0.3, 15.0, False), 0.02)
-        self.assertEqual(L.czas_biegu(0.016, 0.0, 16.0, True), 0.016)       # bieg w miejscu — zegar
-        self.assertEqual(L.czas_biegu(0.016, 0.5, 0.5, False), 0.016)       # prawie stoi — zegar
-        self.assertAlmostEqual(L.czas_biegu(0.016, 400.0, 16.0, False), 0.048)   # teleport: najwyżej trzy klatki
-        self.assertEqual(L.faza_biegu(0.25, 0.0, 1.0), 0.25)
+        self.assertEqual(L.kadencja(B, 0.0), L.kadencja(B, B["vMin"]))
+        self.assertLess(L.skala_biegu(B, B["vOd"]), L.skala_biegu(B, 16.0))           # trucht: mniejszy ruch
+        # faza: w podporze idzie drogą postaci (pół kroku drogi = pół podporu), w locie zegarem, zawija się w 0…1
+        self.assertAlmostEqual(L.krok_biegu(B, 0.0, d2, f2, d2, 0.5, B["krok"] / 2, False), d2 / 2)
+        self.assertAlmostEqual(L.krok_biegu(B, 0.0, d2, f2, d2, 0.5, 0.0, False), 0.0)          # postać stoi: stopa też
+        self.assertAlmostEqual(L.krok_biegu(B, 0.45, d2, f2, d2, 0.01, 0.0, False), 0.45 + f2 * 0.01)
+        self.assertAlmostEqual(L.krok_biegu(B, 0.99, d2, 3.0, d2, 0.1, 0.0, True), 0.29)        # w miejscu — zegar
+        # zmiana udziału podporu: stopa zostaje w tym samym ułamku podporu
+        self.assertAlmostEqual(L.krok_biegu(B, 0.5 + d2 / 4, d2, f2, d2 / 2, 0.01, 0.0, False), 0.5 + d2 / 8)
+        # przechył w zakręcie: w lewo dodatni, ograniczony, wygładzony
+        S = B["skretCiala"]
+        x = 0.0
+        for _ in range(120):
+            x = L.skret_ciala(x, 50.0, DT, S)
+        self.assertAlmostEqual(x, 1.0, places=2)
+        self.assertLess(L.skret_ciala(0.0, -3.0, DT, S), 0)
 
     def test_2g_cudza_postac(self):
         # podłoże cudzej postaci nie jest pewne: lot poznajemy po stanie albo po dużej prędkości pionowej
@@ -691,21 +840,42 @@ class TestLuau(unittest.TestCase):
         wym_py, wym_lu = L.nowy_ruch(), it.wywolaj(Ll.get("nowyRuch"), [])[0]
         for _ in range(n):
             co = rnd.choice(["klasa", "stroj", "tempo", "pochyl", "wagi", "stopy", "rig", "przesun", "widoczny", "okres",
-                             "wybierz", "ruch", "zeruj", "kadencja", "faza", "bieg", "bieg"])
+                             "wybierz", "ruch", "zeruj", "kadencja", "faza", "bieg", "bieg", "dodatek", "poly", "predkosc"])
             klasa_b = rnd.choice(list(D["klasy"]))
             b_py, b_lu = D["klasy"][klasa_b]["bieg"], Dl.get("klasy").get(klasa_b).get("bieg")
-            if co == "faza" and rnd.random() < 0.5:
-                a = [rnd.choice([1 / 60.0, 0.03]), rnd.uniform(0, 2), rnd.choice([0.0, 0.5, 6.0, 16.0]), rnd.random() < 0.3]
-                py, lu = [L.czas_biegu(*a)], self.wolaj(it, Ll, "czasBiegu", *a)
-            elif co == "kadencja":
+            if co == "kadencja":
                 v = rnd.choice([0.0, 2.0, 16.0, rnd.uniform(0, 45)])
                 py, lu = list(L.kadencja(b_py, v)), self.wolaj(it, Ll, "kadencja", b_lu, v)
+                py.append(L.skala_biegu(b_py, v))
+                lu += self.wolaj(it, Ll, "skalaBiegu", b_lu, v)
             elif co == "faza":
-                a = [rnd.random(), rnd.uniform(0, 6), rnd.choice([1 / 60.0, 0.1, 0.7])]
-                py, lu = [L.faza_biegu(*a)], self.wolaj(it, Ll, "fazaBiegu", *a)
+                v = rnd.choice([0.5, 6.0, 16.0, rnd.uniform(0, 30)])
+                f, pod = L.kadencja(b_py, v)
+                a = [rnd.random(), rnd.choice([None, pod, rnd.uniform(0.06, 0.49)]), f, pod, rnd.choice([1 / 60.0, 0.1]),
+                     rnd.choice([0.0, v / 60.0, rnd.uniform(0, 3)]), rnd.random() < 0.2]
+                py, lu = [L.krok_biegu(b_py, *a)], self.wolaj(it, Ll, "krokBiegu", b_lu, *a)
             elif co == "bieg":
-                a = [rnd.choice([0.0, 0.25, 0.5, 0.999, rnd.random()]), rnd.uniform(b_py["podporMin"], b_py["podpor"])]
+                a = [rnd.choice([0.0, 0.25, 0.5, 0.999, rnd.random()]), rnd.uniform(b_py["podporMin"], 0.49)]
+                if rnd.random() < 0.7:
+                    a.append(rnd.uniform(0.4, 1.2))
                 py, lu = [L.bieg(b_py, *a)], self.wolaj(it, Ll, "bieg", b_lu, *a)
+            elif co == "dodatek":
+                n = rnd.randrange(len(b_py["dodatki"]))
+                a = [rnd.random(), rnd.uniform(0.4, 1.2)]
+                py = list(L.dodatek(b_py["dodatki"][n], *a))
+                lu = self.wolaj(it, Ll, "dodatek", b_lu.get("dodatki").get(n + 1), *a)
+            elif co == "poly":
+                a = [rnd.uniform(-0.2, 2.5), rnd.uniform(-1.5, 0.5), rnd.uniform(-0.5, 1.5)]
+                w = rnd.random()
+                py = [L.rodzaj_poly(b_py, *a), L.waga_dzwonu(b_py, a[0], a[1])] + list(L.dzwon(b_py, a[2], 1.0, w))
+                lu = (self.wolaj(it, Ll, "rodzajPoly", b_lu, *a) or [None]) + self.wolaj(it, Ll, "wagaDzwonu", b_lu, a[0], a[1]) \
+                    + self.wolaj(it, Ll, "dzwon", b_lu, a[2], 1.0, w)
+            elif co == "predkosc":
+                a = [rnd.uniform(0, 20), rnd.choice([0.0, 0.27, 5.0]), rnd.choice([0.0, 1 / 60.0, 0.1]), 0.1, 64.0]
+                om = rnd.uniform(-9, 9)
+                py = [L.predkosc(*a), L.skret_ciala(a[0] / 20 - 0.5, om, a[2], b_py["skretCiala"])]
+                lu = self.wolaj(it, Ll, "predkosc", *a) + self.wolaj(it, Ll, "skretCiala", a[0] / 20 - 0.5, om, a[2],
+                                                                    b_lu.get("skretCiala"))
             elif co == "klasa":
                 a = rnd.choice(list(KLASY) + ["x", "", None, 3.0, True, "wojownik"])
                 py, lu = [L.klasa(D, a)], self.wolaj(it, Ll, "klasa", Dl, a)
@@ -819,7 +989,10 @@ class TestLuau(unittest.TestCase):
             ("if not klipUmowy(D, a) then", "if false then"),                                            # umowa przyjmuje wszystko
             ("w = math.max(cel, w - krok)", "w = cel"),                                                  # pozy gasną skokiem
             ("elseif v > B.vOd then", "elseif v > 0 then"),                                              # bieg od zera
-            ("return f, math.max(B.podporMin, d)", "return f, B.podpor"),                                # podpór nie skraca się
+            ("return f, math.max(B.podporMin, podpor * f)", "return f, 0.3"),                            # podpór nie skraca się
+            ("fz += d * math.min(droga, B.krok) / B.krok", "fz += f * dt"),                              # faza zegarem
+            ("fz = fz * d / dPoprz", "fz = fz"),                                                         # stopa skacze przy zmianie podporu
+            ("return poprzednia + (chwilowa - poprzednia) * (dt / (dt + stala))", "return chwilowa"),    # prędkość bez wygładzania
             ("return B.krok / 2 - B.krok * (fz / d), B.kostka, 0", "return B.krok / 2, B.kostka, 0"),    # stopa nie cofa się
             ("return doKostki + odchylenie, kolano - math.pi", "return doKostki, kolano - math.pi"),     # zła kinematyka
         ]
@@ -959,7 +1132,7 @@ class TestKod(unittest.TestCase):
                 klatki.append([n * DT, "bieg", 1.0, faza, pod, v, 0.0, lewa[1], z + lewa[2], 0.0, prawa[1], z + prawa[2],
                                0.0, 3.0, z])
                 poprzednia = faza
-                faza = L.faza_biegu(faza, f * slizg, DT)
+                faza = (faza + f * slizg * DT) % 1.0
                 z -= v * DT                                   # postać biegnie do przodu (−Z)
             return klatki
         dryf, podpory, klatek = PP.dryf_stop(nagranie(1.0))
