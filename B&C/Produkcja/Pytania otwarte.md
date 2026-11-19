@@ -638,3 +638,12 @@ Rozstrzyga: D-111 (życie −15%); doświadczenie z potworów Dżungli +25% zost
 Szczegóły: Skryptu `ShopClient` nie ma w repozytorium ani w `src/` — jest tylko w miejscu gry, więc narzędzia go nie widzą; prośba do Pawła o dodanie go do repo razem z nowymi oknami (Kowal, Mag, sklepy). Umowa dla okna sklepu (pola przedmiotu, prośba `kup <id>`, odmowy) jest opisana w `swiat/sklep_proba/README.md` i `swiat/postacie/SKLEP_PRZEDMIOTY.md`. Kliknięcie w samą figurę zbrojmistrza otwiera dziś makietę Pawła, a E — okno sklepu. To pytanie do Pawła (jego okna, D-093).
 **Odpowiedź:**
 
+## 72. Przyciąć grę do jednego rdzenia: który wariant?
+- Film twórcy hitu i nasza diagnoza z 13.11 mówią to samo: jedna prosta czynność, jedna liczba, moment do nagrania, telefon najpierw, szybko do prawdziwych graczy.
+- (a) Szybki grinder: walka rozstrzyga się w 1–2 s w świecie, potwór odlatuje, pełna walka tylko przy Strażnikach; gracz widzi jedną liczbę „Moc”; karczma, Twierdza, drzewka, rasy, plansza, dungeony, arena i gildie zamrożone do czasu danych.
+- (b) BONK: gracz sam uderza potwory w czasie rzeczywistym — więcej pracy, mocniejszy moment do nagrania. (c) Zostaje obecny kształt, tylko dopieszczamy.
+- Osobno: kiedy pierwsza publiczna wersja testowa i czy wydajemy Robuxy na reklamę.
+
+Szczegóły: Pełna analiza, tabela zasad i lista konfliktów z zatwierdzonymi decyzjami: [[Diagnoza 2026-11-19 — prostota i szansa na hit]]. Rekomendacja agenta: (a) jako najszybsza droga do graczy, (b) jeśli pomiar pokaże, że rdzeń jest za bierny. Zamrożenie nie kasuje kodu — systemy wracają, gdy gracze zostają (bramka z [[Ocena potencjału gry]]: powroty następnego dnia 15–20%). Przycięcie dotyka plików i decyzji Pawła (wybór klasy, drzewko, okna) — potrzebne zdanie obu osób. Przed jakimkolwiek wypuszczeniem i tak trzeba: sprawdzić grę na prawdziwym telefonie, przenieść ją z prób w Studio do prawdziwej gry i włączyć telemetrię (D-023).
+**Odpowiedź:**
+

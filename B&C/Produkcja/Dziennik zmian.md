@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-19 · Claude Code u Karola (diagnoza po filmie twórcy hitu: prostota i szansa na viral)
+- **Karol, ok. 15:30:** przekazał transkrypcję filmu współwłaściciela gry „Build a Base and Steal” i poprosił o szczerą ocenę, czy gra może być viralem, oraz propozycję zmian w całej logice („Będziemy musieli ukrócić bardzo wiele logik”). Transkrypcja zostaje lokalnie, poza repozytorium (cudzy materiał).
+- **Nowa notatka** [[Diagnoza 2026-11-19 — prostota i szansa na hit]] (propozycja): jedenaście zasad z filmu, tabela „nasza gra wobec zasad”, szczery werdykt (dziś — nie; po przycięciu — szansa, bez gwarancji), propozycja przycięcia do jednego rdzenia („bij potwory, rośnij w siłę, zbieraj pety, idź dalej”), lista systemów do zamrożenia i konfliktów z zatwierdzonymi decyzjami. Wnioski pokrywają się z [[Diagnoza pomysłu 2026-11-13]].
+- **Nowe pytanie 72** w [[Pytania otwarte]]: wariant (a) szybki grinder, (b) BONK albo (c) obecny kształt; termin pierwszej publicznej wersji testowej. Żadna decyzja nie zmieniła statusu.
+
 ## 2026-11-19 · Claude Code u Karola (zapis postępu włączony — sprawdzony w Studio)
 - **D-110 wdrożona** (`swiat/stan_gracza/`, `tools/zapis_prob.py`): zapis postępu jest włączony domyślnie (wyłącznik atrybutem `ZapisPostepu` jak dotąd). Zapisuje się poziom, doświadczenie, Złoto, Gemy, punkty statystyk, trening z mini-gier z paskiem malejącego zysku, przedmioty posiadane i założone (także ze sklepu) z ulepszeniami, pety, pokonani Strażnicy i bramy, obejrzane przeloty, strój. Działa w Studio, na magazynie z końcówką `_Studio`.
 - **Poprawione przed włączeniem:** kowal, pety i mini-gry czekają na wczytanie profilu — wcześniej kowal brał gracza za nowego w trakcie wczytywania i pierwszy łup albo zakup nadpisałby zapisane przedmioty; skill aktywnego peta nie działał po powrocie; pasek treningu ginął przy wyjściu.
