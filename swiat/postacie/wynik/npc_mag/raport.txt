@@ -20,22 +20,22 @@ ZNANE SŁABOŚCI
 - Kostur jest ustawiony na pozę spoczynku (przedramię poziomo): stoi pionowo i sięga ziemi tylko w tej pozie.
 
 MODEL npc_mag „Mag” (r15)
-  wymiary ciała: 4,24 × 8,09 × 5,76; z akcesoriami: 4,24 × 8,09 × 5,76
+  wymiary ciała: 4,24 × 7,46 × 5,76; z akcesoriami: 4,24 × 7,46 × 5,76
   trójkąty: 2614 (siatek: 15)
   budżety ciała R15: Head 1030/4000, Torso 352/1750, LeftArm 264/1248, RightArm 528/1248, LeftLeg 220/1248, RightLeg 220/1248
   kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
   klipy: spoczynek 60 kl. 2,00 s pętla, powitanie 48 kl. 1,60 s jednorazowy, gest 60 kl. 2,00 s jednorazowy
   punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
-  OSTRZEŻENIE: ciało Head: wys 5.22 poza 0.50…2.00 studa (limit części ciała awatara)
+  OSTRZEŻENIE: ciało Head: wys 4.59 poza 0.50…2.00 studa (limit części ciała awatara)
   OSTRZEŻENIE: ciało RightArm: głęb 5.76 poza 0.05…4.00 studa (limit części ciała awatara)
   OSTRZEŻENIE: ciało razem: głęb 5.76 poza 0.50…4.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
 
 KONTROLA EKSPORTÓW
-- npc_mag.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 8.09 st., akcje brak -> ZGODNE
-- npc_mag__spoczynek.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 8.09 st., akcje npc_mag|Scene 1-61 -> ZGODNE
-- npc_mag__powitanie.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 8.09 st., akcje npc_mag|Scene 1-49 -> ZGODNE
-- npc_mag__gest.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 8.09 st., akcje npc_mag|Scene 1-61 -> ZGODNE
-- npc_mag.glb: siatki 34, kości 17, trójkąty 2842, wzrost 8.09 st., akcje gest 0-60, powitanie 0-48, spoczynek 0-60 -> ZGODNE
+- npc_mag.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 7.46 st., akcje brak -> ZGODNE
+- npc_mag__spoczynek.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 7.46 st., akcje npc_mag|Scene 1-61 -> ZGODNE
+- npc_mag__powitanie.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 7.46 st., akcje npc_mag|Scene 1-49 -> ZGODNE
+- npc_mag__gest.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 7.46 st., akcje npc_mag|Scene 1-61 -> ZGODNE
+- npc_mag.glb: siatki 34, kości 17, trójkąty 2842, wzrost 7.46 st., akcje gest 0-60, powitanie 0-48, spoczynek 0-60 -> ZGODNE
 
 PLIKI
 - npc_mag.blend

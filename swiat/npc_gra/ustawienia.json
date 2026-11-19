@@ -34,7 +34,8 @@
     "tekst_powitania_s": 3.0,
     "przeglad_s": 0.25,
     "szukaj_modelu_s": 2.0,
-    "opis": "gest roli co gest_min–gest_max s (losowo); powitanie nie częściej niż co powitanie_odstep_s; przejscie_s = płynne przejście między klipami; przeglad_s = co ile klient sprawdza odległości (budowa, usypianie); szukaj_modelu_s = co ile ponawia szukanie figury do schowania (mapa dochodzi strumieniowaniem)"
+    "dymek_zasieg": 4.0,
+    "opis": "gest roli co gest_min–gest_max s (losowo); powitanie nie częściej niż co powitanie_odstep_s; przejscie_s = płynne przejście między klipami; przeglad_s = co ile klient sprawdza odległości (budowa, usypianie); szukaj_modelu_s = co ile ponawia szukanie figury do schowania (mapa dochodzi strumieniowaniem); dymek_zasieg = cudzy dymek (BillboardGui zawsze na wierzchu) zaczepiony bliżej niż tyle studów od stanowiska chowa na swój czas tabliczkę NPC"
   },
   "wzrok": {
     "glowa_maks": 62,
@@ -50,7 +51,7 @@
   "tabliczka": {
     "szer": 5.2,
     "wys": 1.5,
-    "nad_glowa": 0.75,
+    "nad_glowa": 0.55,
     "zasieg": 60,
     "tlo": "1D1729",
     "przezroczystosc_tla": 0.25,
@@ -107,14 +108,20 @@
     "opis": "klucz = id miejsca bazaru (miejsca.json); który NPC tam stoi, mówi pakiet bazaru (pole „npc” miejsca); skala i przesunięcie (układ postaci: x w lewo postaci, y w górę, z do przodu; w studach świata) to wybór tego pakietu"
   },
   "obce_modele": [
-    {"klucz": "kowal", "npc": "kowal", "model": "Workspace/KowalProba/Kuznia/Kowal",
-     "opis": "sama tabliczka nad modelem, którego NpcGra nie buduje ani nie animuje"}
+    {"klucz": "kowal", "npc": "kowal", "model": "Workspace/KowalProba/Kuznia/Kowal", "dol": 6.05, "przod": 2.7,
+     "opis": "sama tabliczka przy modelu, którego NpcGra nie buduje ani nie animuje. dol / przod (opcjonalne): spód tabliczki tyle studów nad najniższym punktem modelu i tyle przed nim — kuźnia ma nad kowalem daszek, a przed nim szyld (do 6,2 st nad ziemią kuźni), falbanę i belkę (2,0–2,3 st przed kowalem), więc tabliczka nad głową byłaby z uliczki niewidoczna; wisi przed falbaną, tuż nad szyldem. Bez tych pól: nad najwyższym punktem modelu"}
   ],
   "trenerzy": {
     "skala": 1.1,
     "skala_golema": 1.5,
     "gry": {"sila": "trener_sila", "pancerz": "golem", "kondycja": "trener_kondycja", "zrecznosc": "trener_zrecznosc",
             "inteligencja": "trener_inteligencja", "szczescie": "trener_szczescie"},
+    "zrodlo": "swiat/trening_proba/dane.py",
+    "klucz": "trening_%s",
+    "skale_gier": {"pancerz": 1.15},
+    "zostaw": {"kondycja": ["Beben*", "NogaBebna*"], "inteligencja": ["Kula"]},
+    "tolerancja_figury": 3.0,
+    "zrodlo_opis": "punkty trenerów (zbuduj.py --trenerzy) czyta dane.py z generatora danych pakietu treningu: swiat.<gra>.trener_npc — miejsce (świat), patrz, figura (ścieżka figury z klocków w kontenerze treningu; null = nic do schowania). klucz = nazwa stanowiska dla poleceń „graj”. skale_gier = skala w arenie inna niż domyślna postaci (golem-trener stoi obok golema gry, więc jest mniejszy). zostaw = części figury, które są elementami gry i mają zostać widoczne, gdy figura jest schowana (bęben Bieżni, kula maga; nazwa albo początek nazwy z gwiazdką). tolerancja_figury = o ile studów figura w Studio może stać od punktu z danych — dalej znaczy, że w Studio stoi inna arena niż w repozytorium i budowniczy niczego nie stawia",
     "opis": "trenerów mini-gier ten pakiet NIE stawia (arenę przebudowuje pakiet swiat/trening_proba): stanowisko powstaje z kotwicy — niewidzialnej części z tagiem tag_kotwicy i atrybutem Npc — albo z polecenia Sygnaly/Polecenie („postaw”); README, rozdział „Jak postawić trenera mini-gry”"
   },
   "proba": {

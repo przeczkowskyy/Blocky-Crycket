@@ -218,6 +218,49 @@ def skale(U, stanowiska=None):
     return w
 
 
+_CZYTAJ_TRENING = r"""
+import importlib.util, json, os, sys
+sys.dont_write_bytecode = True
+sciezka = sys.argv[1]
+sys.path.insert(0, os.path.dirname(sciezka))
+spec = importlib.util.spec_from_file_location("dane_treningu", sciezka)
+m = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(m)
+D = m.dane_z_przypadkami()[-1]
+sys.stdout.buffer.write(json.dumps({"kontener": D["kontener"], "skrot": D.get("skrot"),
+    "trenerzy": {g: s["trener_npc"] for g, s in D["swiat"].items() if isinstance(s, dict) and "trener_npc" in s}},
+    ensure_ascii=False).encode("utf-8"))
+"""
+
+
+def punkty_trenerow(U=None):
+    """Punkty trenerów mini-gier z danych pakietu treningu (tylko odczyt, w osobnym procesie) → lista stanowisk:
+    gra, npc, klucz, poz (stopy, świat), patrz (x, z), skala, zastepuje (pełna ścieżka figury albo None), zostaw
+    (części figury, które zostają widoczne), kontener i skrót danych treningu."""
+    import subprocess
+    U = U or ustawienia()
+    T = U["trenerzy"]
+    r = subprocess.run([sys.executable, "-B", "-c", _CZYTAJ_TRENING, sciezka_repo(T["zrodlo"])], capture_output=True)
+    if r.returncode != 0:
+        raise BladDanych("nie udało się wczytać punktów trenerów z %s: %s" % (T["zrodlo"], r.stderr.decode("utf-8", "replace")[-300:]))
+    Tr = json.loads(r.stdout.decode("utf-8"))
+    brak = sorted(set(T["gry"]) - set(Tr["trenerzy"]))
+    if brak:
+        raise BladDanych("pakiet treningu nie ma punktu trenera dla gier: %s" % ", ".join(brak))
+    S = skale(U, [])
+    wynik = []
+    for gra, nid in T["gry"].items():
+        p = Tr["trenerzy"][gra]
+        wpis_npc(U, nid)
+        figura = p.get("figura")
+        wynik.append({"gra": gra, "npc": nid, "klucz": T["klucz"] % gra, "poz": [_r(v) for v in p["miejsce"]],
+                      "patrz": [_r(p["patrz"][0]), _r(p["patrz"][2])],
+                      "skala": float(T.get("skale_gier", {}).get(gra, S[nid])),
+                      "zastepuje": "Workspace/%s/%s" % (Tr["kontener"], figura) if figura else None,
+                      "zostaw": list(T.get("zostaw", {}).get(gra, [])), "kontener": Tr["kontener"], "skrot": Tr.get("skrot")})
+    return wynik
+
+
 # ------------------------------------------------------------------------------------------------ dane całe
 def wszystko():
     """→ (U, D, R): ustawienia, dane dla DaneNpc.luau, rigi {id: rig} tylko dla NPC budowanych w grze."""
@@ -263,7 +306,7 @@ def wszystko():
         "tabliczka": {k: v for k, v in U["tabliczka"].items() if k != "opis"},
         "npc": npc, "kolejnosc": kolejnosc,
         "stanowiska": [{k: s[k] for k in ("klucz", "npc", "poz", "kier", "skala", "zastepuje", "rola")} for s in stan],
-        "obce": [{k: o[k] for k in ("klucz", "npc", "model")} for o in U["obce_modele"]],
+        "obce": [{k: o[k] for k in ("klucz", "npc", "model", "dol", "przod") if k in o} for o in U["obce_modele"]],
         "trenerzy": {"skala": T["skala"], "skala_golema": T["skala_golema"], "gry": dict(T["gry"])},
     }
     for o in D["obce"]:

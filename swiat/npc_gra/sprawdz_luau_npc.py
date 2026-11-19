@@ -32,7 +32,8 @@ def kody_budowniczego(U):
                             TEKST=DN.luau("return 1\n"), **w)),
         ("KONIEC", ZB.wstaw(ZB.KONIEC, **w)), ("USUN", ZB.wstaw(ZB.USUN, **w)),
         ("BEZ_KOTWICY", ZB.wstaw(ZB.BEZ_KOTWICY, KOTWICE=ZB.FOLDER_KOTWIC, NAZWA="Kotwica_x", **w)),
-        ("KOTWICA", kotwica), ("STAN", ZB.kod_stanu(U)),
+        ("KOTWICA", kotwica), ("STAN", ZB.kod_stanu(U)), ("TRENERZY", ZB.kod_trenerow(U, w)[1]),
+        ("BEZ_TRENEROW", ZB.wstaw(ZB.BEZ_TRENEROW, KOTWICE=ZB.FOLDER_KOTWIC, NAZWY='"Kotwica_x"', **w)),
     ]
 
 

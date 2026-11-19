@@ -18,10 +18,11 @@ Wymaga: kontener Workspace/NpcGra (zbuduj.py), mapa bazaru w Studio, Studio w tr
   N07 gest na polecenie: Polecenie „graj” → gest, po jego czasie powrót do spoczynku
   N08 trener z kotwicy i z polecenia: kotwica z tagiem (serwer) i „postaw” (klient) stawiają NPC, „usun” go zdejmuje
   N09 wyłącznik: false → NPC znikają, figury z klocków znów widać; true → NPC wracają
-  N10 podpowiedź E karczmy istnieje, jest włączona i w zasięgu gracza na stoisku
+  N10 podpowiedź E karczmy istnieje, jest włączona i w zasięgu gracza na stoisku; dymek bazaru (tekst po E) chowa
+      na swój czas tabliczkę NPC
   N11 czas pętli pakietu i czas klatki przy NPC
   N12 konsola bez wpisów pakietu
-  N13 zrzuty do swiat/npc_gra/klatki/
+  N13 zrzuty do swiat/npc_gra/klatki/ (sześć stanowisk bazaru i kowal z tabliczką; bez interfejsu i nazw graczy)
   N14 po próbie Studio wróciło do trybu Edit
 """
 import argparse
@@ -46,6 +47,12 @@ import zbuduj as ZB  # noqa: E402
 
 KLATKI = os.path.join(PAKIET, "klatki")
 PUNKTY = ["N%02d" % i for i in range(15)]
+BEZCZYNNOSC_S = 120
+# zrzuty stanowisk bazaru: (odległość kamery przed NPC, przesunięcie w bok ku lewej NPC); gracz stoi 2,5 st za kamerą,
+# więc NPC patrzy w obiektyw, a postaci gracza nie ma w kadrze
+KADRY = {"karczma": (7.5, 1.5), "mistrz_gier": (8.0, 2.0), "sklep_magiczny": (9.5, 1.5), "zbrojownia": (7.5, 1.5),
+         "training_center": (8.0, 1.5), "zagroda_petow": (8.0, 1.5)}
+KADR_DOMYSLNY = (8.0, 1.5)
 
 PRZENIES = r'''
 local gracz = game:GetService("Players"):GetPlayers()[1]
@@ -134,6 +141,27 @@ return HS:JSONEncode({ jest = true, wlaczona = pp.Enabled, zasieg = pp.MaxActiva
 	obiekt = pp.ObjectText, poz = { cz.Position.X, cz.Position.Y, cz.Position.Z } })
 '''
 
+SERWER_MODEL = r'''
+local HS = game:GetService("HttpService")
+local o = game
+for kawalek in string.gmatch("__SCIEZKA__", "[^/]+") do
+	o = o and o:FindFirstChild(kawalek)
+end
+if not o or not o:IsA("Model") then return HS:JSONEncode({ jest = false }) end
+local cf, rozmiar = o:GetBoundingBox()
+local korzen = o.PrimaryPart or o:FindFirstChild("Korzen")
+local przod = if korzen then korzen.CFrame.LookVector else cf.LookVector
+return HS:JSONEncode({ jest = true, poz = { cf.Position.X, cf.Position.Y - rozmiar.Y / 2, cf.Position.Z },
+	kier = { przod.X, przod.Z }, wys = rozmiar.Y })
+'''
+
+KLIENT_DYMEK = r'''
+local k = workspace:FindFirstChild("__BAZAR__")
+local s = k and k:FindFirstChild("Sygnaly") and k.Sygnaly:FindFirstChild("SterowanieKlienta")
+if not s then return "brak" end
+return tostring(s:Invoke("dymek", "__ID__", __TEKST__))
+'''
+
 KLATKA = r'''
 local RS = game:GetService("RunService")
 local n, suma, maks = 0, 0, 0
@@ -188,6 +216,37 @@ def log(*a):
     print("[%s]" % time.strftime("%H:%M:%S"), *a, flush=True)
 
 
+def bezczynnosc_s():
+    """Sekundy od ostatniego ruchu myszy albo klawisza (Windows GetLastInputInfo); None poza Windows."""
+    if os.name != "nt":
+        return None
+    import ctypes
+
+    class LII(ctypes.Structure):
+        _fields_ = [("cbSize", ctypes.c_uint), ("dwTime", ctypes.c_uint)]
+    lii = LII()
+    lii.cbSize = ctypes.sizeof(LII)
+    if not ctypes.windll.user32.GetLastInputInfo(ctypes.byref(lii)):
+        return None
+    return ((ctypes.windll.kernel32.GetTickCount() - lii.dwTime) & 0xFFFFFFFF) / 1000.0
+
+
+def okno_studio(wyniki_dane):
+    """Okno Studio na wierzch tylko, gdy nie jest na wierzchu, a klawiatura i mysz stoją od BEZCZYNNOSC_S sekund
+    (pomiar PRZED startem sesji Play: sesja sama rusza myszą). → czy okno jest na wierzchu."""
+    import subprocess
+    bezcz = bezczynnosc_s()
+    okno = [sys.executable, "-B", os.path.join(REPO, "tools", "studio_okno.py")]
+    stan = subprocess.run(okno, capture_output=True).stdout.decode("utf-8", "replace")
+    na_wierzchu = "na wierzchu" in stan
+    if not na_wierzchu and bezcz is not None and bezcz >= BEZCZYNNOSC_S:
+        na_wierzchu = subprocess.run(okno + ["--na-wierzch"], capture_output=True).returncode == 0
+    log("bezczynność klawiatury i myszy: %s s; okno Studio na wierzchu: %s"
+        % ("?" if bezcz is None else "%.0f" % bezcz, "tak" if na_wierzchu else "nie (nie przenoszę)"))
+    wyniki_dane["bezczynnosc_s"], wyniki_dane["okno_na_wierzchu"] = bezcz, na_wierzchu
+    return na_wierzchu
+
+
 def wek(v):
     return ", ".join(repr(float(x)) for x in v)
 
@@ -213,6 +272,8 @@ def kody(U, S):
             U, "trener_sila", "proba_kotwica", (0, 0, 0), (0, 1), "kont:FindFirstChild(%s)" % json.dumps(ZB.FOLDER_KOTWIC)))),
         ("SERWER_BEZ_KOTWICY", ZB.wstaw(SERWER_BEZ_KOTWICY, KONTENER=kont, KOTWICE=ZB.FOLDER_KOTWIC, NAZWA="Kotwica_proba_kotwica")),
         ("SERWER_PODPOWIEDZ", ZB.wstaw(SERWER_PODPOWIEDZ, SCIEZKA="Workspace/MiasteczkoBazar")),
+        ("SERWER_MODEL", ZB.wstaw(SERWER_MODEL, SCIEZKA=U["obce_modele"][0]["model"])),
+        ("KLIENT_DYMEK", ZB.wstaw(KLIENT_DYMEK, BAZAR="MiasteczkoBazarGra", ID="karczma", TEKST=json.dumps("Tekst"))),
         ("KLATKA", KLATKA), ("SCHOWAJ", SCHOWAJ), ("POKAZ", POKAZ), ("STAN", ZB.kod_stanu(U)),
     ]
 
@@ -264,6 +325,8 @@ def main():
     def punkt(kod, ok, opis):
         wyniki.append({"punkt": kod, "wynik": "OK" if ok is True else ("?" if ok is None else "BŁĄD"), "opis": opis})
         log("%s %s — %s" % (kod, wyniki[-1]["wynik"], opis))
+
+    na_wierzchu = okno_studio(dane)
 
     from sesja_play import SesjaPlay  # noqa: E402  (tylko odczyt: wspólna obsługa Play)
     from studio_mcp import StudioMCP  # noqa: E402
@@ -317,7 +380,10 @@ def main():
         # N02–N04: gracz na stoisku karczmy
         ka = st["karczma"]
         przenies(sp, [ka["stoisko"][0], ka["stoisko"][1] + 3.2, ka["stoisko"][2]], [ka["poz"][0], ka["stoisko"][1] + 3.2, ka["poz"][2]])
-        k = czekaj(sp, lambda k: all(x["zbudowany"] for x in k["stanowiska"] if (x.get("odl") or 1e9) <= Zs["budowa"] - 5))
+        k = czekaj(sp, lambda k: ((stanowisko(k, "karczma") or {}).get("odl") or 1e9) < 12
+                   and all(x["zbudowany"] for x in k["stanowiska"] if (x.get("odl") or 1e9) <= Zs["budowa"] - 5), limit=10)
+        time.sleep(0.6)
+        k = czekaj(sp, lambda k: True, limit=0)
         dane["klient"] = k
         zle, zbud = [], 0
         for x in k.get("stanowiska", []):
@@ -350,7 +416,13 @@ def main():
             s_ = st.get(x["klucz"])
             if s_ and x["zbudowany"] and x.get("napisy") != [D["npc"][x["npc"]]["imie"], s_["rola"]]:
                 zle.append("%s: napisy %s" % (x["klucz"], x.get("napisy")))
-        punkt("N03", not zle and zbud > 0, "tabliczki: %s" % "; ".join(" / ".join(x["napisy"]) for x in k["stanowiska"] if x.get("napisy"))
+        kowal = json.loads(sp.luau(ZB.wstaw(SERWER_MODEL, SCIEZKA=U["obce_modele"][0]["model"]), "Server", timeout=60))
+        dane["kowal"] = kowal
+        if kowal.get("jest") and "kowal" not in k.get("obce", []):
+            zle.append("kowal stoi w grze, ale nie ma tabliczki")
+        punkt("N03", not zle and zbud > 0, "tabliczki: %s; kowal: %s"
+              % ("; ".join(" / ".join(x["napisy"]) for x in k["stanowiska"] if x.get("napisy")),
+                 "tabliczka jest" if "kowal" in k.get("obce", []) else "modelu kowala nie ma w grze")
               if not zle else "; ".join(zle))
         time.sleep(0.5)
         k2 = czekaj(sp, lambda k: True, limit=0)
@@ -443,16 +515,27 @@ def main():
               % (", ".join("%d" % v["widoczne"] for v in fig.values() if v["jest"]), (stanowisko(k, "zagroda_petow") or {}).get("zbudowany")))
 
         # N10: podpowiedź E karczmy
-        ZN = DN.czytaj_json(DN.sciezka_repo(U["bazar"]["znaczniki"]))
-        zk = DN._znajdz(ZN, "sklepy/karczma")
-        pp = json.loads(sp.luau(ZB.wstaw(SERWER_PODPOWIEDZ, SCIEZKA=zk["grupa_zaczepu"] + "/" + zk["czesc_podpowiedzi"]), "Server", timeout=60))
+        bazar = DN.czytaj_json(DN.sciezka_repo(U["bazar"]["miejsca"]))
+        pp = json.loads(sp.luau(ZB.wstaw(SERWER_PODPOWIEDZ, SCIEZKA="Workspace/%s/Punkty/E karczma" % bazar["kontener"]), "Server", timeout=60))
         dane["podpowiedz"] = pp
         odl = None
         if pp.get("jest"):
             odl = sum((p - q) ** 2 for p, q in zip(pp["poz"], [ka["stoisko"][0], ka["stoisko"][1] + 4.5, ka["stoisko"][2]])) ** 0.5
-        punkt("N10", bool(pp.get("jest") and pp.get("wlaczona") and odl is not None and odl <= pp["zasieg"]),
-              "podpowiedź E karczmy: jest %s, włączona %s, „%s / %s”, %.1f st od głowy gracza na stoisku (zasięg %s)"
-              % (pp.get("jest"), pp.get("wlaczona"), pp.get("obiekt"), pp.get("tekst"), odl or -1, pp.get("zasieg")))
+        przenies(sp, [ka["stoisko"][0], ka["stoisko"][1] + 3.2, ka["stoisko"][2]], [ka["poz"][0], ka["stoisko"][1] + 3.2, ka["poz"][2]])
+        czekaj(sp, lambda k: (stanowisko(k, "karczma") or {}).get("zbudowany"), limit=6)
+        tekst_dymka = next(m["dymek"] for m in bazar["miejsca"] if m["id"] == "karczma")
+        dymek = sp.luau(ZB.wstaw(KLIENT_DYMEK, BAZAR=bazar["kontener"], ID="karczma", TEKST=json.dumps(tekst_dymka, ensure_ascii=False)), "Client", timeout=60)
+        time.sleep(0.5)
+        w_dymku = (stanowisko(czekaj(sp, lambda k: True, limit=0), "karczma") or {}).get("tabliczkaWidac")
+        time.sleep(bazar["czasy"]["dymek_s"] + 1.0)
+        po_dymku = (stanowisko(czekaj(sp, lambda k: True, limit=0), "karczma") or {}).get("tabliczkaWidac")
+        dane["dymek"] = {"pokazany": dymek, "tabliczka_w_czasie": w_dymku, "tabliczka_po": po_dymku}
+        punkt("N10", bool(pp.get("jest") and pp.get("wlaczona") and odl is not None and odl <= pp["zasieg"]
+                          and dymek == "true" and w_dymku is False and po_dymku is True),
+              "podpowiedź E karczmy: jest %s, włączona %s, „%s / %s”, %.1f st od głowy gracza na stoisku (zasięg %s); "
+              "dymek bazaru pokazany: %s, tabliczka NPC w jego czasie widoczna: %s, po nim: %s"
+              % (pp.get("jest"), pp.get("wlaczona"), pp.get("obiekt"), pp.get("tekst"), odl or -1, pp.get("zasieg"),
+                 dymek, w_dymku, po_dymku))
 
         # N11: czas pętli i klatki przy karczmie
         przenies(sp, [ka["stoisko"][0], ka["stoisko"][1] + 3.2, ka["stoisko"][2]], [ka["poz"][0], ka["stoisko"][1] + 3.2, ka["poz"][2]])
@@ -467,10 +550,10 @@ def main():
         dane["petla"] = {"srednio_ms": k.get("petla_ms"), "najwiecej_ms": k.get("petla_maks_ms"), "klatek": k.get("klatek"),
                          "rusza_sie": k.get("ruszaSie"), "klatka": kl}
         ok = k.get("petla_ms") is not None and k["petla_ms"] <= P["prog_petli_ms"] and k.get("bledy") == 0
-        punkt("N11", ok if (kl is None or float(kl[0]) <= P["prog_klatki_ms"]) else None,
-              "pętla pakietu %.3f ms średnio (najwięcej %.2f, %s klatek, rusza się %s NPC; próg %.1f ms); klatka %s ms"
+        punkt("N11", ok if (kl is None or not na_wierzchu or float(kl[0]) <= P["prog_klatki_ms"]) else None,
+              "pętla pakietu %.3f ms średnio (najwięcej %.2f, %s klatek, rusza się %s NPC; próg %.1f ms); klatka %s ms%s"
               % (k.get("petla_ms") or -1, k.get("petla_maks_ms") or -1, k.get("klatek"), k.get("ruszaSie"), P["prog_petli_ms"],
-                 kl[0] if kl else "?"))
+                 kl[0] if kl else "?", "" if na_wierzchu else " (okno Studio nie na wierzchu — czas klatki niemiarodajny)"))
 
         # N13: zrzuty
         if a.bez_zrzutow:
@@ -478,23 +561,38 @@ def main():
         else:
             os.makedirs(KLATKI, exist_ok=True)
             zapisane = []
+
+            def zapisz(im, nazwa):
+                if im.width > 1600:
+                    im = im.resize((1600, round(im.height * 1600 / im.width)))
+                im.save(os.path.join(KLATKI, nazwa), quality=88)
+                zapisane.append(nazwa)
+
+            kadry = [(klucz, st[klucz], D["npc"][st[klucz]["npc"]]["czubek"] * st[klucz]["skala"]) for klucz in KADRY]
+            if kowal.get("jest"):
+                kadry.append(("kowal", {"poz": kowal["poz"], "kier": kowal["kier"]}, kowal["wys"]))
             try:
                 sp.luau(SCHOWAJ, "Client")
-                for klucz in ("karczma", "mistrz_gier", "sklep_magiczny", "zbrojownia", "training_center", "zagroda_petow"):
-                    s_ = st[klucz]
-                    stoi = miejsce_gracza(s_, 12, 3)
-                    przenies(sp, stoi, s_["poz"])
-                    time.sleep(1.2)
-                    oko = miejsce_gracza(s_, 9, -2.5, wys=5.5)
-                    im = sp.zrzut(oko, [s_["poz"][0], s_["poz"][1] + 4.2, s_["poz"][2]])
-                    if im.width > 1600:
-                        im = im.resize((1600, round(im.height * 1600 / im.width)))
-                    sc = os.path.join(KLATKI, "npc_%s.jpg" % klucz)
-                    im.save(sc, quality=88)
-                    zapisane.append(os.path.basename(sc))
+                for klucz, s_, czubek in kadry:
+                    odl, bok = KADRY.get(klucz, KADR_DOMYSLNY)
+                    odl = max(odl, czubek * 1.15)
+                    przenies(sp, miejsce_gracza(s_, odl + 2.5, bok), s_["poz"])
+                    time.sleep(2.2)
+                    # kowal i mag z wysokości oczu gracza (kuźnia ma daszek, sklep magiczny lampę pod sufitem)
+                    nisko = klucz in ("kowal", "sklep_magiczny")
+                    oko = miejsce_gracza(s_, odl, bok, wys=4.6 if nisko else czubek * 0.72)
+                    cel_y = 5.4 if klucz == "kowal" else czubek * (0.78 if nisko else 0.68)
+                    zapisz(sp.zrzut(oko, [s_["poz"][0], s_["poz"][1] + cel_y, s_["poz"][2]]),
+                           "npc_%s.jpg" % klucz)
+                # mistrz gier z boku: czy siedzi na stołku, a nogi mieszczą się pod stołem
+                s_ = st["mistrz_gier"]
+                przenies(sp, miejsce_gracza(s_, 9.0, 2.0), s_["poz"])
+                time.sleep(1.5)
+                zapisz(sp.zrzut(miejsce_gracza(s_, 1.6, 6.0, wys=3.2), [s_["poz"][0], s_["poz"][1] + 2.8, s_["poz"][2]]),
+                       "npc_mistrz_gier_z_boku.jpg")
             finally:
                 sp.luau(POKAZ, "Client")
-            punkt("N13", len(zapisane) == 6, "zrzuty: %s" % ", ".join(zapisane))
+            punkt("N13", len(zapisane) == len(kadry) + 1, "zrzuty: %s" % ", ".join(zapisane))
 
         kons = sp.konsola()
         linie = [l for l in kons.splitlines() if U["prefiks"].strip() in l or "KlientNpc" in l or "SerwerNpc" in l or "RigNpc" in l]

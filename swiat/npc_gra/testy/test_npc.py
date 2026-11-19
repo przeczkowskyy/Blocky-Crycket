@@ -454,6 +454,35 @@ class TestZasady(unittest.TestCase):
         with self.assertRaises(DN.BladDanych):
             ZB.kotwica_luau(U, "nie_ma", "k", (0, 0, 0), (0, 1), "workspace")
 
+    def test_trenerzy_z_pakietu_treningu(self):
+        """Punkty trenerów pochodzą z danych pakietu treningu; kod budowniczego najpierw sprawdza arenę w Studio."""
+        T = DN.punkty_trenerow(U)
+        self.assertEqual({t["gra"]: t["npc"] for t in T}, U["trenerzy"]["gry"])
+        self.assertEqual(len({t["klucz"] for t in T}), 6)
+        for t in T:
+            with self.subTest(gra=t["gra"]):
+                self.assertIn(t["npc"], R)
+                self.assertEqual(t["klucz"], "trening_" + t["gra"])
+                self.assertGreater(math.hypot(t["patrz"][0] - t["poz"][0], t["patrz"][1] - t["poz"][2]), 5)
+                self.assertTrue(1.0 <= t["skala"] <= 1.6)
+                if t["zastepuje"]:
+                    self.assertTrue(t["zastepuje"].startswith("Workspace/%s/Arena/" % t["kontener"]))
+        pan = next(t for t in T if t["gra"] == "pancerz")
+        self.assertIsNone(pan["zastepuje"], "golem gry zostaje — trener Pancerza stoi w pustym miejscu trenera")
+        self.assertEqual(next(t for t in T if t["gra"] == "kondycja")["zostaw"], ["Beben*", "NogaBebna*"])
+        self.assertEqual(next(t for t in T if t["gra"] == "inteligencja")["zostaw"], ["Kula"])
+        _, kod = ZB.kod_trenerow(U, dict(MIEJSCE="1", KONTENER=U["kontener"]))
+        self.assertNotIn("__", kod)
+        self.assertLess(kod.index("STOP: arena w Studio nie zgadza się"), kod.index('SetWaypoint("NpcGra: przed trenerami")'))
+        for wymagane in ('a:SetAttribute("NpcZastepuje", t.zastepuje)', 'a:SetAttribute("NpcZostaw", t.zostaw)', "D.tylko_stan",
+                         'zostaw = "Beben*,NogaBebna*"', 'npc = "golem"'):
+            self.assertIn(wymagane, kod)
+        if LM is not None:
+            LM.Parser(kod, "TRENERZY", LM.Interpreter()).program()
+        kl = czytaj(ZR, "KlientNpc.client.luau")
+        self.assertIn('a:GetAttribute("NpcZostaw")', kl)
+        self.assertIn("not zostaje(s, p.Name)", kl)
+
     def test_bez_sciezek_z_dysku(self):
         wzor = re.compile(r"[A-Za-z]:[\\/](?!/)|\\Users\\|/Users/|AppData|OneDrive", re.I)
         pliki = []

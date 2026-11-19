@@ -1,7 +1,7 @@
 --[[
 	DaneNpc — WYGENEROWANE przez swiat/npc_gra/dane.py z ustawienia.json, modułów postaci (swiat/postacie)
 	i pakietu bazaru (miejsca.json, znaczniki.json, czesci.json). NIE EDYTUJ RĘCZNIE: zmień źródło i uruchom
-	python -B swiat/npc_gra/dane.py. Kąty wzroku w radianach. Skrót danych: d13e3f6d9b1d. Status: propozycja (D-109).
+	python -B swiat/npc_gra/dane.py. Kąty wzroku w radianach. Skrót danych: 8bb3a982837a. Status: propozycja (D-109).
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -32,6 +32,7 @@ return {
 		tekst_powitania_s = 3,
 		przeglad_s = 0.25,
 		szukaj_modelu_s = 2,
+		dymek_zasieg = 4,
 	},
 	wzrok = {
 		glowa_maks = 1.0821,
@@ -46,7 +47,7 @@ return {
 	tabliczka = {
 		szer = 5.2,
 		wys = 1.5,
-		nad_glowa = 0.75,
+		nad_glowa = 0.55,
 		zasieg = 60,
 		tlo = "1D1729",
 		przezroczystosc_tla = 0.25,
@@ -93,9 +94,9 @@ return {
 			gest_razy = 1,
 			skala = 1.15,
 			rig = "Rig_mag",
-			wysokosc = 8.09,
-			czubek = 8.09,
-			bryl = 79,
+			wysokosc = 7.465,
+			czubek = 7.465,
+			bryl = 78,
 			dlugosci = { spoczynek = 2, powitanie = 1.6, gest = 2 },
 		},
 		zbrojmistrz = {
@@ -291,7 +292,7 @@ return {
 			rola = "Opiekunka · Zagroda petów",
 		},
 	},
-	obce = { { klucz = "kowal", npc = "kowal", model = "Workspace/KowalProba/Kuznia/Kowal" } },
+	obce = { { klucz = "kowal", npc = "kowal", model = "Workspace/KowalProba/Kuznia/Kowal", dol = 6.05, przod = 2.7 } },
 	trenerzy = {
 		skala = 1.1,
 		skala_golema = 1.5,
@@ -304,5 +305,5 @@ return {
 			szczescie = "trener_szczescie",
 		},
 	},
-	skrot = "d13e3f6d9b1d",
+	skrot = "8bb3a982837a",
 }

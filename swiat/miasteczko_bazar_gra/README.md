@@ -454,4 +454,5 @@ Sześć miejsc w `miejsca.json` ma pole `"npc"` (karczma → `karczmarz`, mistrz
 `dane.py`, więc `DaneBazaru.luau`, jego skrót i skrypty są bez zmian i bazaru nie trzeba wdrażać od nowa. Figura
 z mapy zostaje w Studio; klient pakietu `NpcGra` chowa ją u gracza, gdy stoi NPC (kolizje figury, dymek i podpowiedź E
 bez zmian), a bez `NpcGra` albo przy `NpcWGrze = false` figura jest widoczna jak dawniej. Opis: `swiat/npc_gra/README.md`.
-W Studio jeszcze niesprawdzone.
+Sprawdzone w grze 19.11.2026 próbą pakietu NPC (N00–N14: 15 × OK — figury schowane, ich kolizje zostały, podpowiedź E
+karczmy działa, tabliczka NPC ustępuje dymkowi bazaru).

@@ -6,8 +6,10 @@
 	Stanowisko = miejsce, gdzie stoi NPC:
 		• z danych (DaneNpc.stanowiska — bazar): stopy i kierunek figury z mapy; figurę z klocków („zastepuje”)
 		  klient chowa u siebie (LocalTransparencyModifier), dopóki stoi NPC — kolizje figury i podpowiedzi E zostają;
+		  gdy inny pakiet pokaże nad stanowiskiem swój dymek (bazar po E), tabliczka NPC znika na ten czas;
 		• z kotwicy: każda część z tagiem D.tag_kotwicy i atrybutem Npc = id postaci (opcjonalnie NpcSkala, NpcKlucz,
-		  NpcImie, NpcRola, NpcZastepuje = ścieżka Modelu do schowania) — stopy w środku części, przód = jej przód;
+		  NpcImie, NpcRola, NpcZastepuje = ścieżka Modelu do schowania, NpcZostaw = nazwy części tego Modelu, które
+		  mają zostać widoczne — po przecinku, gwiazdka na końcu = początek nazwy) — stopy w środku części, przód = jej przód;
 		• z polecenia: Sygnaly/Polecenie:Invoke("postaw", klucz, idNpc, CFrame, skala?).
 	Zachowanie (LogikaNpc): rig powstaje blisko gracza i znika daleko; rusza się tylko w zasięgu animacji (dalej stoi
 	w pierwszej klatce spoczynku); spoczynek w pętli, co jakiś czas gest roli, powitanie po podejściu gracza, głowa
@@ -73,8 +75,19 @@ local function znajdz(sciezka: string)
 end
 
 ------------------------------------------------------------------ figura z klocków, którą NPC zastępuje
+local function zostaje(s, nazwa: string): boolean
+	if s.zostaw then
+		for _, wzor in s.zostaw do
+			if nazwa == wzor or (string.sub(wzor, -1) == "*" and string.sub(nazwa, 1, #wzor - 1) == string.sub(wzor, 1, -2)) then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 local function schowajCzesc(s, p: Instance)
-	if p:IsA("BasePart") then
+	if p:IsA("BasePart") and not zostaje(s, p.Name) then
 		s.ukryte[p] = true
 		p.LocalTransparencyModifier = 1
 	end
@@ -190,6 +203,7 @@ local function zbuduj(s): boolean
 	model:SetAttribute("Npc", s.npc.id)
 	s.model, s.uchwyt = model, u
 	local tab, pow = tabliczka(s.cf, s.npc.czubek * s.skala, s.imie, s.rola, s.npc.powitanie)
+	tab.Nazwa.Enabled = s.dymki == nil
 	tab.Parent = model
 	s.tab, s.napisPowitania = tab, pow
 	s.stan = L.nowy_stan(math.random(), C)
@@ -242,6 +256,7 @@ local function postaw(klucz: string, idNpc: string, cf: CFrame, skala: number?, 
 		klucz = klucz, npc = npc, cf = CFrame.lookAt(cf.Position, cf.Position + przod),
 		skala = if type(skala) == "number" and skala > 0 then skala else npc.skala,
 		imie = opcje.imie or npc.imie, rola = opcje.rola or npc.rola, zastepuje = opcje.zastepuje,
+		zostaw = if type(opcje.zostaw) == "string" and opcje.zostaw ~= "" then string.split(opcje.zostaw, ",") else nil,
 		tryb = "brak", liczniki = {}, dt = 0, odSzukania = 0,
 	}
 	stanowiska[klucz] = s
@@ -268,6 +283,7 @@ local function odKotwicy(a: Instance)
 	kluczeKotwic[a] = klucz
 	postaw(klucz, id, a.CFrame, a:GetAttribute("NpcSkala"), {
 		imie = a:GetAttribute("NpcImie"), rola = a:GetAttribute("NpcRola"), zastepuje = a:GetAttribute("NpcZastepuje"),
+		zostaw = a:GetAttribute("NpcZostaw"),
 	})
 end
 
@@ -293,8 +309,16 @@ local function przegladObcych()
 			local npc = D.npc[o.npc]
 			if m and m:IsA("Model") and npc then
 				local cf, rozmiar = m:GetBoundingBox()
-				local tab = tabliczka(CFrame.new(cf.Position.X, cf.Position.Y - rozmiar.Y / 2, cf.Position.Z), rozmiar.Y,
-					npc.imie, npc.rola, "")
+				local dol = Vector3.new(cf.Position.X, cf.Position.Y - rozmiar.Y / 2, cf.Position.Z)
+				local wysokosc = rozmiar.Y
+				if o.dol then
+					-- stała wysokość spodu tabliczki nad stopami i wysunięcie przed model (jego przód = −Z korzenia)
+					local korzen = m.PrimaryPart or m:FindFirstChild("Korzen")
+					local przod = if korzen then korzen.CFrame.LookVector else cf.LookVector
+					dol += Vector3.new(przod.X, 0, przod.Z) * (o.przod or 0)
+					wysokosc = o.dol - T.nad_glowa
+				end
+				local tab = tabliczka(CFrame.new(dol), wysokosc, npc.imie, npc.rola, "")
 				tab.Name = "Tabliczka_" .. o.klucz
 				tab.Parent = folder
 				obce[o.klucz] = { model = m, tabliczka = tab }
@@ -328,6 +352,19 @@ local function przeglad(poz: Vector3?, dt: number)
 		end
 		if nowy == "blisko" or nowy == "daleko" then
 			table.insert(aktywne, s)
+		end
+		if s.dymki then
+			for i = #s.dymki, 1, -1 do
+				if not s.dymki[i].Parent then
+					table.remove(s.dymki, i)
+				end
+			end
+			if #s.dymki == 0 then
+				s.dymki = nil
+				if s.tab then
+					s.tab.Nazwa.Enabled = true
+				end
+			end
 		end
 		if s.model and s.zastepuje and not s.figura then
 			s.odSzukania += dt
@@ -398,6 +435,45 @@ end)
 kontener:GetAttributeChangedSignal(D.wylacznik):Connect(function()
 	wlaczone = kontener:GetAttribute(D.wylacznik) ~= false
 	odPrzegladu = math.huge
+end)
+
+------------------------------------------------------------------ cudzy dymek nad NPC: tabliczka znika na ten czas
+-- Dymek innego pakietu (BillboardGui zawsze na wierzchu, zaczepiony przy stanowisku nad głową NPC — np. tekst bazaru
+-- po E) wypada w miejscu tabliczki; żeby napisy nie leżały na sobie, tabliczka stanowiska chowa się, dopóki dymek istnieje.
+local function cudzyDymek(g: Instance)
+	if not g:IsA("BillboardGui") or not g.AlwaysOnTop or g:IsDescendantOf(folder) then
+		return
+	end
+	local a = g.Adornee
+	if not a or not a:IsA("BasePart") then
+		return
+	end
+	local najblizsze, odl = nil, C.dymek_zasieg
+	for _, s in lista do
+		local d = Vector3.new(a.Position.X - s.cf.Position.X, 0, a.Position.Z - s.cf.Position.Z).Magnitude
+		if d < odl then
+			najblizsze, odl = s, d
+		end
+	end
+	local s = najblizsze
+	if not s then
+		return
+	end
+	-- tylko dymek nad głową NPC (tam, gdzie tabliczka); podpowiedź E Roblox to też BillboardGui na wierzchu, ale
+	-- wisi przy tułowiu sprzedawcy i tabliczce nie przeszkadza
+	local wysokosc = a.Position.Y + g.StudsOffsetWorldSpace.Y + g.StudsOffset.Y
+	if wysokosc < s.cf.Position.Y + s.npc.czubek * s.skala - 0.5 then
+		return
+	end
+	-- koniec dymka wykrywa przegląd odległości (zdarzenia zniszczonej instancji przy odroczonych sygnałach nie dochodzą)
+	s.dymki = s.dymki or {}
+	table.insert(s.dymki, g)
+	if s.tab then
+		s.tab.Nazwa.Enabled = false
+	end
+end
+task.spawn(function()
+	gracz:WaitForChild("PlayerGui").DescendantAdded:Connect(cudzyDymek)
 end)
 
 ------------------------------------------------------------------ stanowiska z danych i z kotwic
@@ -482,6 +558,7 @@ local function odczyt(s)
 		w.tabliczka = s.tab.Position.Y - s.cf.Position.Y
 		w.napisy = { s.tab.Nazwa.Ramka.Imie.Text, s.tab.Nazwa.Ramka.Rola.Text }
 		w.powitanieWidac = s.napisPowitania.Visible
+		w.tabliczkaWidac = s.tab.Nazwa.Enabled
 	end
 	if s.figura then
 		local ukryte, widoczne = 0, 0

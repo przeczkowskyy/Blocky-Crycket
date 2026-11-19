@@ -9,6 +9,10 @@
     python -B swiat/npc_gra/zbuduj.py --kotwica trener_sila --klucz trening_sila --poz 10,0.5,20 --patrz 10,30
                                                    # kotwica NPC w Workspace/NpcGra/Kotwice (stopy w poz, twarzą ku patrz)
     python -B swiat/npc_gra/zbuduj.py --bez-kotwicy trening_sila
+    python -B swiat/npc_gra/zbuduj.py --trenerzy          # sześciu trenerów mini-gier w punktach z danych pakietu treningu
+    python -B swiat/npc_gra/zbuduj.py --trenerzy --stan   # tylko porównanie: czy arena w Studio zgadza się z danymi
+    python -B swiat/npc_gra/zbuduj.py --trenerzy --sucho  # plan bez Studio
+    python -B swiat/npc_gra/zbuduj.py --bez-trenerow
 
 Co robi w Studio (tylko tryb Edit, tylko miejsce gry — numer z swiat/test_walki_roblox/cel_studio.py): punkt historii,
 własny kontener Workspace/NpcGra (atrybut Wygenerowane): Moduly/{DaneNpc, LogikaNpc, RigNpc}, Moduly/Rigi/Rig_<id>,
@@ -200,6 +204,118 @@ do
 end
 '''
 
+# trenerzy mini-gier: kotwice w punktach z danych pakietu treningu — najpierw kontrola (tylko odczyt), czy arena w Studio
+# to ta z repozytorium (figura każdej gry stoi przy swoim punkcie); przy niezgodności nic nie powstaje
+TRENERZY = WSTEP + r'''
+local D = __DANE__
+local kont, odmowa = kontener()
+if odmowa then
+	return odmowa
+end
+if not kont then
+	return "STOP: brak kontenera Workspace/" .. KONTENER .. " — najpierw zbuduj.py"
+end
+local folder = kont:FindFirstChild("__KOTWICE__")
+if not folder then
+	return "STOP: brak folderu __KOTWICE__ — najpierw zbuduj.py"
+end
+local function znajdz(sciezka)
+	local o = game
+	for kawalek in string.gmatch(sciezka, "[^/]+") do
+		o = o and o:FindFirstChild(kawalek)
+	end
+	return o
+end
+local zle, opisy, podloza = {}, {}, {}
+for i, t in D.trenerzy do
+	local punkt = Vector3.new(t.poz[1], t.poz[2], t.poz[3])
+	local pomin = { kont }
+	if t.zastepuje then
+		local fig = znajdz(t.zastepuje)
+		if not fig or not fig:IsA("Model") then
+			table.insert(zle, t.gra .. ": brak figury " .. t.zastepuje)
+		else
+			table.insert(pomin, fig)
+			local cf = fig:GetBoundingBox()
+			local d = Vector3.new(cf.Position.X - punkt.X, 0, cf.Position.Z - punkt.Z).Magnitude
+			if d > D.tolerancja then
+				table.insert(zle, string.format("%s: figura stoi %.1f st od punktu z danych", t.gra, d))
+			end
+		end
+	end
+	local p = RaycastParams.new()
+	p.FilterType = Enum.RaycastFilterType.Exclude
+	p.FilterDescendantsInstances = pomin
+	local traf = workspace:Raycast(punkt + Vector3.new(0, 8, 0), Vector3.new(0, -16, 0), p)
+	if not traf then
+		table.insert(zle, t.gra .. ": brak podłoża pod punktem trenera")
+	else
+		podloza[i] = traf.Position.Y
+		table.insert(opisy, string.format("%s → %s (podłoże %s, y = %.2f)", t.gra, t.npc, traf.Instance.Name, traf.Position.Y))
+	end
+end
+if #zle > 0 then
+	return "STOP: arena w Studio nie zgadza się z danymi pakietu treningu — nic nie postawiono: " .. table.concat(zle, "; ")
+end
+if D.tylko_stan then
+	return "zgodne — można stawiać: " .. table.concat(opisy, "; ")
+end
+local CH = game:GetService("ChangeHistoryService")
+CH:SetWaypoint("NpcGra: przed trenerami")
+for i, t in D.trenerzy do
+	local nazwa = "Kotwica_" .. t.klucz
+	local stara = folder:FindFirstChild(nazwa)
+	if stara then
+		stara:Destroy()
+	end
+	local a = Instance.new("Part")
+	a.Name = nazwa
+	a.Size = Vector3.new(1, 0.2, 1)
+	a.Transparency = 1
+	a.Anchored = true
+	a.CanCollide = false
+	a.CanTouch = false
+	a.CanQuery = false
+	a.CastShadow = false
+	local poz = Vector3.new(t.poz[1], podloza[i], t.poz[3])
+	a.CFrame = CFrame.lookAt(poz, Vector3.new(t.patrz[1], poz.Y, t.patrz[2]))
+	a:SetAttribute("Npc", t.npc)
+	a:SetAttribute("NpcKlucz", t.klucz)
+	a:SetAttribute("NpcSkala", t.skala)
+	if t.zastepuje then
+		a:SetAttribute("NpcZastepuje", t.zastepuje)
+	end
+	if t.zostaw then
+		a:SetAttribute("NpcZostaw", t.zostaw)
+	end
+	a:AddTag("__TAG__")
+	a.Parent = folder
+end
+CH:SetWaypoint("NpcGra: trenerzy")
+return "POSTAWIONO kotwice trenerów: " .. table.concat(opisy, "; ")
+'''
+
+BEZ_TRENEROW = WSTEP + r'''
+local kont, odmowa = kontener()
+if odmowa then
+	return odmowa
+end
+local f = kont and kont:FindFirstChild("__KOTWICE__")
+local ile = 0
+if f then
+	game:GetService("ChangeHistoryService"):SetWaypoint("NpcGra: przed usunięciem trenerów")
+	for _, nazwa in { __NAZWY__ } do
+		local a = f:FindFirstChild(nazwa)
+		if a then
+			a:Destroy()
+			ile += 1
+		end
+	end
+	game:GetService("ChangeHistoryService"):SetWaypoint("NpcGra: usunięto trenerów")
+end
+return string.format("USUNIĘTO kotwic trenerów: %d", ile)
+'''
+
 BEZ_KOTWICY = WSTEP + r'''
 local kont, odmowa = kontener()
 if odmowa then
@@ -289,13 +405,28 @@ def sprawdz_zrodla():
     return kontrola_luau().sprawdz_pliki(pliki_luau(), wypisz=lambda t: None)
 
 
-def kotwica_luau(U, npc, klucz, poz, patrz, rodzic, skala=None, zastepuje=None, imie=None, rola=None, nazwa=None):
+def dane_trenerow(U, tylko_stan=False):
+    """Dane dla kodu TRENERZY: punkty z pakietu treningu (DN.punkty_trenerow) w układzie listy Luau."""
+    T = DN.punkty_trenerow(U)
+    trenerzy = [{"gra": t["gra"], "npc": t["npc"], "klucz": t["klucz"], "poz": t["poz"], "patrz": t["patrz"],
+                 "skala": t["skala"], "zastepuje": t["zastepuje"], "zostaw": ",".join(t["zostaw"]) or None} for t in T]
+    return T, {"trenerzy": trenerzy, "tolerancja": U["trenerzy"]["tolerancja_figury"], "tylko_stan": tylko_stan}
+
+
+def kod_trenerow(U, wspolne, tylko_stan=False):
+    T, d = dane_trenerow(U, tylko_stan)
+    return T, wstaw(TRENERZY, DANE=DN.luau(d), KOTWICE=FOLDER_KOTWIC, TAG=U["tag_kotwicy"], **wspolne)
+
+
+def kotwica_luau(U, npc, klucz, poz, patrz, rodzic, skala=None, zastepuje=None, imie=None, rola=None, nazwa=None,
+                 zostaw=None):
     """Kawałek Luau (do wklejenia w kod budowniczego innego pakietu, tryb Edit): niewidzialna kotwica NPC w `rodzic`
     (wyrażenie Luau, np. 'workspace.TreningProba.Arena'). poz = stopy NPC (x, y, z), patrz = punkt (x, z), ku
     któremu NPC stoi twarzą. Klient NpcGra postawi tam NPC `npc` sam, gdy gracz będzie blisko."""
     DN.wpis_npc(U, npc)
     dodatki = []
-    for atr, v in (("NpcSkala", skala), ("NpcZastepuje", zastepuje), ("NpcImie", imie), ("NpcRola", rola)):
+    for atr, v in (("NpcSkala", skala), ("NpcZastepuje", zastepuje), ("NpcImie", imie), ("NpcRola", rola),
+                   ("NpcZostaw", ",".join(zostaw) if zostaw else None)):
         if v is not None:
             dodatki.append("a:SetAttribute(%s, %s)" % (json.dumps(atr), DN.luau(v)))
     return wstaw(KOTWICA, RODZIC=rodzic, NAZWA=nazwa or ("Kotwica_" + klucz), POZ="%r, %r, %r" % tuple(float(v) for v in poz),
@@ -328,6 +459,9 @@ def main():
     ap.add_argument("--patrz", default=None, help="x,z — punkt, ku któremu NPC stoi twarzą")
     ap.add_argument("--skala", type=float, default=None)
     ap.add_argument("--bez-kotwicy", default=None, metavar="KLUCZ", help="usuń kotwicę o tym kluczu")
+    ap.add_argument("--trenerzy", action="store_true",
+                    help="postaw sześciu trenerów mini-gier w punktach z danych pakietu treningu (z --stan: tylko porównanie)")
+    ap.add_argument("--bez-trenerow", action="store_true", help="usuń kotwice trenerów mini-gier")
     ap.add_argument("--studio", default=None)
     a = ap.parse_args()
     try:
@@ -355,6 +489,12 @@ def main():
             ap.error("--kotwica wymaga --klucz, --poz i --patrz")
         kod_kotwicy = kotwica_luau(U, a.kotwica, a.klucz, _liczby(a.poz, 3), _liczby(a.patrz, 2),
                                    "kont:FindFirstChild(%s)" % json.dumps(FOLDER_KOTWIC), skala=a.skala)
+    if a.trenerzy:
+        for t in DN.punkty_trenerow(U):
+            log("trener %-13s %-20s ×%.2f  stopy (%.1f; %.1f; %.1f)  %s%s" % (
+                t["gra"], t["npc"], t["skala"], t["poz"][0], t["poz"][1], t["poz"][2],
+                "chowa " + t["zastepuje"].split("/", 2)[-1] if t["zastepuje"] else "nic nie chowa (puste miejsce trenera)",
+                "; zostają widoczne: " + ", ".join(t["zostaw"]) if t["zostaw"] else ""))
     if bledy:
         return 1
     if a.sucho:
@@ -376,6 +516,14 @@ def main():
                 raise SystemExit(1)
             return tekst
 
+        if a.trenerzy:
+            _, kod = kod_trenerow(U, wspolne, tylko_stan=a.stan)
+            log(wykonaj(kod, "trenerzy"))
+            return 0
+        if a.bez_trenerow:
+            nazwy = ", ".join(json.dumps("Kotwica_" + t["klucz"]) for t in DN.punkty_trenerow(U))
+            log(wykonaj(wstaw(BEZ_TRENEROW, KOTWICE=FOLDER_KOTWIC, NAZWY=nazwy, **wspolne), "trenerzy"))
+            return 0
         if a.stan:
             print(json.dumps(json.loads(wykonaj(kod_stanu(U), "stan")), ensure_ascii=False, indent=1))
             return 0

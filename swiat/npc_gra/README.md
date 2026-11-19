@@ -3,8 +3,10 @@
 > **Status: propozycja.** Decyzja D-109 (Karol, 19.11.2026; czeka na potwierdzenie Pawła) mówi, że karczmarz, sprzedawcy,
 > mistrz gier i postacie przy mini-grach mają być NPC ze szkieletem i animacją, a nie figurami z klocków. Wygląd,
 > imiona i gesty poszczególnych postaci to propozycje do oceny (lista na końcu).
-> **Stan 19.11.2026: część A — wszystko, co da się zrobić bez Roblox Studio.** W Studio nic jeszcze nie stoi:
-> budowa kontenera, próba w grze i zrzuty to część B.
+> **Stan 19.11.2026: kontener `Workspace/NpcGra` stoi w Studio** (17 źródeł, zero części; miejsce nie było zapisywane
+> ani publikowane), próba w grze **15 × OK**. Trenerzy mini-gier są przygotowani, ale nie stoją — czekają na wdrożenie
+> nowej areny pakietu treningu (rozdział „Jak postawić trenera mini-gry”). Przed publikacją miejsca:
+> `python -B swiat/npc_gra/zbuduj.py --usun`.
 
 ## Co to jest
 
@@ -13,7 +15,7 @@ Roblox — bez wgrywania czegokolwiek. Każdy klient składa NPC u siebie i sam 
 
 - **spoczynek** w pętli (oddech), co 9–18 s **gest roli**, **powitanie** (machanie i krótki tekst), gdy gracz podejdzie
   na 14 studów, **głowa i tułów obracają się ku graczowi** (głowa do 62°, tułów do 22°), nad głową **tabliczka**
-  z imieniem i rolą;
+  z imieniem i rolą (ustępuje dymkowi bazaru po E);
 - **tanio:** rig powstaje dopiero ≤ 150 studów od gracza, rusza się tylko ≤ 55 studów (dalej stoi w pierwszej klatce
   spoczynku), bliżej niż 25 studów liczony co klatkę, dalej co drugą;
 - **nie przeszkadza:** żadna część NPC nie ma kolizji, dotyku ani promieni; podpowiedzi E zostają na częściach
@@ -25,7 +27,7 @@ Roblox — bez wgrywania czegokolwiek. Każdy klient składa NPC u siebie i sam 
 |---|---|---|---|---|---|
 | `karczmarz` | Bolko · Karczmarz | bazar, karczma (za ladą) | idle / zaproszenie / śmiech ×2 | 98 | 1,15 |
 | `mistrz_gier` | Pionek · Mistrz gier | bazar, karczma (na stołku przy planszy) | siedzi i macha nogami / machanie / rzut kostką | 75 | 1,10 |
-| `mag` | Zefir · Mag | bazar, sklep magiczny | oddech / machanie / unosi kostur, dłoń krąży nad kryształem | 79 | 1,15 |
+| `mag` | Zefir · Mag | bazar, sklep magiczny | oddech / machanie / unosi kostur, dłoń krąży nad kryształem | 78 | 1,15 |
 | `zbrojmistrz` | Radomir · Zbrojmistrz | bazar, zbrojownia | oddech / machanie / ogląda klingę i salutuje mieczem | 72 | 1,15 |
 | `trener` | Tymon · Trener | bazar, Training Center (wejście na mini-gry) | oddech / machanie / napina bicepsy | 62 | 1,15 |
 | `opiekunka` | Jagoda · Opiekunka | bazar, zagroda petów | oddech / machanie / potrząsa wiadrem z kością | 80 | 1,10 |
@@ -61,13 +63,13 @@ Rachunek (z `python -B swiat/npc_gra/dane.py --tabela`):
 
 | Co | Ile |
 |---|---|
-| Bazar: 6 NPC | 466 brył, **568 części u klienta** (bryły + 15 kości + korzeń + tabliczka na postać); bez cieni |
+| Bazar: 6 NPC | 465 brył, **567 części u klienta** (bryły + 15 kości + korzeń + tabliczka na postać); bez cieni |
 | Figury z klocków, które zastępują | 250 części (zostają w mapie, u gracza niewidoczne) |
-| Wszystkie 12 rigów (z trenerami) | 867 brył |
+| Wszystkie 12 rigów (z trenerami) | 866 brył |
 | Dane | `DaneNpc` 8 kB + 12 rigów po 21–33 kB = **306 kB** źródeł modułów (pobierane raz; rig wczytuje się dopiero przy pierwszej budowie postaci) |
 | Serwer | nic nie buduje i nic nie wysyła: jeden skrypt z wyłącznikiem |
 | Praca co klatkę | tylko NPC ≤ 55 studów: na postać 15 interpolacji pozy i 15 wpisów stawów (≤ 25 studów co klatkę, dalej co drugą); przegląd odległości co 0,25 s |
-| Spodziewany czas pętli | rząd 0,1–0,2 ms na klatkę przy sześciu NPC w zasięgu (dla porównania: 12 stojących bohaterów w `swiat/bohater_swiat` to 0,29–0,44 ms) — **do zmierzenia w części B** (próg próby 1,5 ms) |
+| Zmierzony czas pętli klienta | **0,035–0,039 ms średnio w siedmiu przebiegach (najdłuższa klatka pętli 0,06–0,24 ms)** przy czterech NPC w ruchu, na komputerze autora przy 60 kl./s (próg próby 1,5 ms); czas klatki 16,7 ms |
 
 ## Podmiana w bazarze
 
@@ -95,8 +97,42 @@ stanowisk: `ustawienia.json` → `stanowiska_bazaru`.
 
 ## Jak postawić trenera mini-gry
 
-Trenerów ten pakiet nie stawia (arenę przebudowuje `swiat/trening_proba`). Są trzy równoważne sposoby — NPC pojawia
-się u gracza, gdy ten jest bliżej niż 150 studów:
+**Po wdrożeniu nowej areny pakietu treningu w Studio — jedno polecenie:**
+
+```
+python -B swiat/npc_gra/zbuduj.py --trenerzy          # sześć kotwic w Workspace/NpcGra/Kotwice
+python -B swiat/npc_gra/zbuduj.py --trenerzy --stan   # samo porównanie areny w Studio z danymi (nic nie zmienia)
+python -B swiat/npc_gra/zbuduj.py --bez-trenerow      # cofnięcie
+```
+
+Punkty bierze z danych pakietu treningu (`swiat.<gra>.trener_npc`: miejsce, `patrz`, `figura` — czytane generatorem
+tamtego pakietu, bez kopiowania liczb). Najpierw sprawdza w Studio, czy figura każdej gry stoi przy swoim punkcie
+(do 3 st); gdy nie — „STOP: arena w Studio nie zgadza się z danymi” i nic nie powstaje (19.11.2026 tak właśnie
+odpowiada, bo w Studio stoi jeszcze stara arena). Wysokość stóp mierzy promieniem w dół.
+
+| Gra | NPC | Skala | Figura do schowania | Zostaje widoczne |
+|---|---|---|---|---|
+| Siła | Borys (`trener_sila`) | 1,10 | `Arena/Sila/Miotacz` | — |
+| Pancerz | Głaz (`golem`) | 1,15 | — (puste miejsce trenera; golem gry zostaje) | — |
+| Kondycja | Iskra (`trener_kondycja`) | 1,10 | `Arena/Kondycja/Trener` | `Beben*`, `NogaBebna*` (bęben) |
+| Zręczność | Wiór (`trener_zrecznosc`) | 1,10 | `Arena/Zrecznosc/Trener` | — |
+| Inteligencja | Runa (`trener_inteligencja`) | 1,10 | `Arena/Inteligencja/Mag` | `Kula` |
+| Szczęście | Fart (`trener_szczescie`) | 1,10 | `Arena/Szczescie/Ogrodnik` | — |
+
+**Ruchy, które animuje klient mini-gier** (do uzgodnienia z pakietem treningu):
+
+- `RamieP` miotacza Siły i trenera Bieżni to części figury — po schowaniu figury ruszają się dalej, ale niewidocznie
+  (klient treningu niczego nie zauważy, błędów nie będzie). Skrzynka miotacza wyleci więc „z ręki” NPC, który w tej
+  chwili nie robi zamachu. Żeby NPC ruszał się z grą, klient treningu woła
+  `workspace.NpcGra.Sygnaly.Polecenie:Invoke("graj", "trening_sila", "gest")` (to samo dla `trening_kondycja`).
+  Dzisiejsze gesty są dłuższe niż jeden rzut albo jedno uderzenie (wyciskanie 2,0 s, trzy uderzenia pałką 1,8 s) —
+  krótki klip „akcja” (jeden rzut, jedno uderzenie) trzeba dorobić, gdy będzie znany czas ruchu `RamieP`.
+- `Kula` maga i bęben Bieżni to elementy gry, więc zostają widoczne (`trenerzy.zostaw` w `ustawienia.json` → atrybut
+  kotwicy `NpcZostaw`). Kula została przy dawnym miejscu dłoni figury — czy pasuje do Runy z księgą, pokaże zrzut.
+- Golem Pancerza (pięść, oczy) nie jest ruszany. W pustym miejscu trenera staje mniejszy golem-trener (skala 1,15);
+  czy dwa golemy obok siebie to dobry pomysł, czy miejsce ma zostać puste — do decyzji.
+
+Pojedynczego trenera można postawić też ręcznie — NPC pojawia się u gracza, gdy ten jest bliżej niż 150 studów:
 
 1. **Kotwica w kodzie budowniczego** (zalecane): niewidzialna część z tagiem `NpcGraKotwica` i atrybutem `Npc`.
    Stopy NPC stają w środku części, przodem tam, gdzie przód części.
@@ -128,15 +164,16 @@ ramię miotacza) zostają częściami `trening_proba`; NPC ich nie zastępuje, d
 | `ustawienia.json` | obsada (imiona, role, teksty powitań, klipy), skale, zasięgi, czasy, wzrok, tabliczka — jedyne miejsce do strojenia |
 | `dane.py` | generator `zrodla/DaneNpc.luau` i `zrodla/rigi/Rig_<id>.luau`; tabela obsady i rachunek (`--tabela`) |
 | `logika_npc.py` | lustro `LogikaNpc.luau` |
-| `zbuduj.py` | budowa kontenera w Studio (`--sucho`, `--stan`, `--usun`, `--kotwica`), `kotwica_luau()` dla innych pakietów |
+| `zbuduj.py` | budowa kontenera w Studio (`--sucho`, `--stan`, `--usun`, `--kotwica`, `--trenerzy`), `kotwica_luau()` dla innych pakietów |
 | `plansza.py` | plansza zbiorcza `podglady/npc_razem.jpg` (Blender) |
 | `sprawdz_luau_npc.py` | kontrola statyczna źródeł Luau i kodu budowniczego |
 | `zrodla/LogikaNpc.luau` | czysta logika: stopień szczegółów, powitanie, gesty, wzrok, numer klatki |
 | `zrodla/RigNpc.luau` | budowa rigu z danych, klipy, przejścia, wzrok |
 | `zrodla/KlientNpc.client.luau` | stanowiska (dane, kotwice, polecenia), chowanie figur, tabliczki, pętla |
 | `zrodla/SerwerNpc.server.luau` | wyłącznik i haczyk prób; poza Studio usuwa kontener |
-| `testy/test_npc.py` | testy bez Studio (28) |
-| `testy/proba_play.py` | próba w grze N00–N14 (napisana; `--sprawdz` działa bez Studio) |
+| `testy/test_npc.py` | testy bez Studio (29) |
+| `testy/proba_play.py` | próba w grze N00–N14 (`--sprawdz` działa bez Studio) |
+| `klatki/` | zrzuty z gry |
 | `swiat/postacie/npc_wspolne.py`, `npc_<id>.py` | wspólne ciało i jedenaście nowych postaci |
 
 ## Polecenia
@@ -150,34 +187,82 @@ python -B swiat/npc_gra/testy/test_npc.py
 python -B swiat/npc_gra/sprawdz_luau_npc.py
 python -B swiat/npc_gra/zbuduj.py --sucho
 python -B swiat/npc_gra/testy/proba_play.py --sprawdz
-# część B (Studio w trybie Edit):
+# Studio w trybie Edit:
 python -B swiat/npc_gra/zbuduj.py [--studio <id>]
 python -B swiat/npc_gra/testy/proba_play.py <folder wyników POZA repo> [--bez-zrzutow]
 python -B swiat/npc_gra/zbuduj.py --usun                        # przed publikacją miejsca
 ```
 
+## Próba w grze (19.11.2026) — 15 × OK, 0 × ?, 0 × BŁĄD
+
+Jedno okno Studio, jeden gracz; po próbie Studio w trybie Edit. Wynik i konsola leżą poza repozytorium.
+
+| Punkt | Wynik |
+|---|---|
+| N00 Edit | OK — 17 źródeł = lokalne, skrót zgodny, zero części |
+| N01 serwer | OK — gotowy, wyłącznik włączony, 12 rigów |
+| N02 NPC przy karczmie | OK — 6 NPC bazaru zbudowanych, 465 brył = dane, zero części z kolizją, dotykiem albo promieniami, stopy na posadzce, sześć figur z klocków schowanych u gracza, kolizje figur zostały |
+| N03 tabliczki | OK — Bolko / Karczmarz · Zadania; Pionek / Mistrz gier · Zagraj; Zefir / Mag · Sklep; Radomir / Zbrojmistrz · Sklep; Tymon / Trener · Mini-gry; Jagoda / Opiekunka · Zagroda petów; kowal ma tabliczkę |
+| N04 spoczynek | OK — NPC w zasięgu się ruszają (głowa 0,09–0,68 st między odczytami), dalsze stoją uśpione |
+| N05 powitanie | OK — zbrojmistrz: jedno powitanie po podejściu, tekst nad tabliczką, potem spoczynek |
+| N06 wzrok | OK — gracz z lewej strony opiekunki: tułów +0,18 rad, głowa +0,34 rad, głowa patrzy na gracza (zgodność kierunku 1,00) |
+| N07 gest na polecenie | OK — `graj` zwraca 1,8 s, klip gest, po czasie spoczynek; nieznany klucz → `false` |
+| N08 kotwica i `postaw` | OK — kotwica z tagiem → trener Siły (61 brył, skala 1,1); `postaw` → golem (52 bryły, skala 1,5, stopy na ziemi); po usunięciu nic nie zostaje |
+| N09 wyłącznik | OK — `false`: NPC 0, figury znów widoczne; `true`: NPC wracają |
+| N10 podpowiedź E i dymek | OK — podpowiedź E karczmy włączona, 6,0 st od głowy gracza na stoisku (zasięg 10); dymek bazaru chowa tabliczkę NPC na swój czas, potem tabliczka wraca |
+| N11 czas pętli | OK — 0,035–0,039 ms średnio w siedmiu przebiegach (najdłuższa klatka pętli 0,06–0,24 ms), czas klatki 16,7 ms |
+| N12 konsola | OK — bez wpisów pakietu |
+| N13 zrzuty | OK — osiem zrzutów w `klatki/` |
+| N14 powrót do Edit | OK |
+
+**Sąsiedzi po wdrożeniu NPC** (`swiat/przejscie_gry/regresja_calosci.py <folder> "proba dymna,bazar"`, 10:04–10:10): próba dymna całej gry 13 × OK (w tym E przy trenerze w bazarze i runda mini-gry; klatka 16,7 ms). Próba bazaru 11 × OK, 1 × ? (czas klatki — ocenia człowiek), 2 × BŁĄD: B04 i B13, oba o zbrojowni — E dochodzi do serwera i klienta (zdarzenie okna, sygnał `Shop`), ale dymek zastępczy się nie pokazuje, bo zbrojownia otwiera już prawdziwe okno sklepu (pakiet `swiat/sklep_proba`), czego próba bazaru jeszcze nie zna. To wniosek z odczytów próby (dymek `false` przy otwartym oknie), nie osobno sprawdzony przebieg bez NPC.
+
+### Poprawione po próbie i po zrzutach
+
+1. **Tabliczka a dymek bazaru.** Dymek bazaru (tekst po E) wypada dokładnie w miejscu tabliczki. Tabliczka NPC znika
+   teraz na czas każdego cudzego dymka zaczepionego nad głową NPC i wraca po nim. Podpowiedź E Roblox (też dymek
+   „zawsze na wierzchu”, ale przy tułowiu) tabliczki nie chowa — pierwsza wersja chowała ją przez cały czas stania
+   przy ladzie.
+2. **Koniec dymka** wykrywa przegląd co 0,25 s, a nie zdarzenie zniszczonej instancji (przy odroczonych sygnałach
+   takie zdarzenie nie dochodzi i tabliczka nie wracała).
+3. **Tabliczka maga** wisiała 10 st nad posadzką: kapelusz jest niższy (czubek 8,6 zamiast 9,3 st), a odstęp
+   tabliczki od głowy mniejszy u wszystkich (0,55 zamiast 0,75 st).
+4. **Tabliczka kowala** nad głową była z uliczki niewidoczna (daszek, falbana i szyld kuźni). Wisi teraz przed
+   falbaną, tuż nad szyldem „KUŹNIA” (`obce_modele` → `dol`, `przod`).
+5. **Próba:** czeka, aż klient zobaczy gracza po przeniesieniu; podpowiedzi E szuka w kontenerze pakietu bazaru.
+
+### Zrzuty (`klatki/`, bez interfejsu i nazw graczy)
+
+| Plik | Co widać |
+|---|---|
+| `npc_karczma.jpg` | Bolko za ladą karczmy, tabliczka z imieniem i rolą |
+| `npc_mistrz_gier.jpg` | Pionek przy planszy, w tle karczmarz |
+| `npc_mistrz_gier_z_boku.jpg` | Pionek z boku: siedzi na stołku, nogi pod stołem (kadr kontrolny, ciemny) |
+| `npc_sklep_magiczny.jpg` | Zefir za ladą sklepu magicznego, tekst powitania nad tabliczką (lampa sklepu zasłania jego część) |
+| `npc_zbrojownia.jpg` | Radomir z mieczem, tekst powitania „Dobra stal czeka!” |
+| `npc_training_center.jpg` | Tymon przy tablicy wyboru mini-gier |
+| `npc_zagroda_petow.jpg` | Jagoda w zagrodzie petów, patrzy na gracza |
+| `npc_kowal.jpg` | kowal w kuźni z tabliczką „Krzesimir / Kowal” nad szyldem |
+
 ## Wyniki bez Studio (19.11.2026)
 
 - `przebuduj.py` jedenastu modułów `npc_*` (`--bez-filmow`): każdy 12 plików, kontrola eksportów 5/5 zgodnych.
-- `testy/test_npc.py`: 28 testów OK — dane (13 postaci, 12 rigów, klipy, stopy na ziemi, źródła poniżej limitu,
-  zapis deterministyczny), bazar (6 stanowisk = miejsca z polem `npc`, miejsce i kierunek figury, dane bazaru bez
-  zmian), logika (podejście i odejście, histereza, powitanie raz i po powrocie, gesty co 9–18 s, wzrok),
-  `LogikaNpc.luau` wykonana interpreterem = lustro na 3 × 1500 losowych wywołaniach, 7 celowo zepsutych wersji
-  wykrytych, zasady (strażnik Studio, brak kolizji, tylko własny kontener, brak ścieżek z dysku).
-- `sprawdz_luau_npc.py`: 17 plików i kod budowniczego bez błędów. `zbuduj.py --sucho`: OK (17 źródeł, 336 kB).
-  `proba_play.py --sprawdz`: 15 punktów, 14 kawałków Luau, składnia bez błędów.
-- Bazar po zmianie `miejsca.json`: `dane.py --sprawdz` — aktualny, skrót bez zmian; `testy/test_bazaru.py` — OK.
+- `testy/test_npc.py`: 29 testów OK — dane, bazar, logika, `LogikaNpc.luau` wykonana interpreterem = lustro
+  (3 × 1500 losowych wywołań, 7 zepsutych wersji wykrytych), zasady, punkty trenerów z pakietu treningu.
+- `sprawdz_luau_npc.py`: 17 plików i kod budowniczego bez błędów. `zbuduj.py --sucho` i `--trenerzy --sucho`: OK.
+  `proba_play.py --sprawdz`: 15 punktów, składnia bez błędów.
+- Bazar: `dane.py --sprawdz` — aktualny, skrót bez zmian; `testy/test_bazaru.py` — 38 testów OK.
 
-## Czego nie sprawdzono (część B)
+## Czego nie sprawdzono
 
-- **Niczego w Studio:** budowy kontenera, wyglądu NPC z klocków w grze, chowania figur, tabliczek, powitania, wzroku,
-  czasu pętli, podpowiedzi E przy NPC, zrzutów. Lista prób: `testy/proba_play.py` (N00–N14).
-- Mistrz gier na stołku: wysokość i odsunięcie policzone z danych mapy; kolana wchodzą pod blat stołu (ok. 0,2 st
-  w rant) — do obejrzenia na zrzucie.
-- Mag jest wyższy od figury o kapelusz i kostur (czubek kapelusza 9,3 st): tabliczka wisi nad nim, do oceny.
-- Dymek bazaru (tekst po E) i tabliczka NPC są blisko siebie nad głową — czy się nie zasłaniają, pokaże zrzut.
-- Klipy to szkice (1,6–2,7 s), próbkowane liniowo; ruch okiem oceni człowiek w grze.
-- Telefonu ani dwóch graczy naraz nikt nie mierzył.
+- **Trenerów na arenie:** `--trenerzy` sprawdzone bez Studio i odmową na starej arenie; w nowych sceneriach nie stali.
+- **Zrzutu tabliczki obok dymka bazaru:** narzędzie zrzutów nie pokazuje dymków z interfejsu gracza, więc zachowanie
+  (tabliczka znika i wraca) jest sprawdzone odczytem (N10), nie obrazem.
+- **Prawdziwego naciśnięcia E przy NPC** w tej próbie — robi to próba pakietu bazaru.
+- Wnętrza sklepów są ciemne: NPC w zbrojowni i karczmie widać słabiej niż figury w mocnych barwach — do oceny okiem.
+- Mistrz gier: z boku widać, że siedzi na stołku i mieści się pod stołem; kadr jest ciemny, dokładnie nie mierzono.
+- Lampa sklepu magicznego wisi między graczem a tabliczką maga i zasłania jej część z miejsca przy ladzie.
+- Klipy to szkice (1,6–2,7 s); ruch okiem oceni człowiek w grze. Telefonu ani dwóch graczy naraz nikt nie mierzył.
 
 ## Wybory do oceny
 

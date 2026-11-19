@@ -51,11 +51,11 @@ def zbuduj():
             p.walec("Kapelusz rondo", (0, 0.06, 0), (2.5, 0.14, 2.5), "szata_cien", "matowy", segm=8)
             p.walec("Kapelusz opaska", (0, 0.24, 0), (1.5, 0.24, 1.5), "zloto_szaty", "matowy", segm=8)
             with p.uklad(pos=(0, 0.3, 0), obrot=(-6, 0, 5)):
-                p.stozek("Kapelusz stozek", (0, 0.75, 0), (1.44, 1.5, 1.44), "kapelusz", "matowy", gora=0.32, segm=8)
-                with p.uklad(pos=(0, 1.45, 0), obrot=(-32, 0, 0)):
-                    p.stozek("Kapelusz czubek", (0, 0.42, 0), (0.5, 0.9, 0.5), "kapelusz", "matowy", segm=8)
-                    p.blok("Gwiazdka a", (0, 0.95, 0.04), (0.42, 0.42, 0.1), "zloto", "metal", rot=(0, 0, 45), faza=0.0)
-                    p.blok("Gwiazdka b", (0, 0.95, 0.06), (0.42, 0.42, 0.1), "zloto", "metal", faza=0.0)
+                p.stozek("Kapelusz stozek", (0, 0.55, 0), (1.44, 1.1, 1.44), "kapelusz", "matowy", gora=0.34, segm=8)
+                with p.uklad(pos=(0, 1.05, 0), obrot=(-38, 0, 0)):
+                    p.stozek("Kapelusz czubek", (0, 0.32, 0), (0.52, 0.7, 0.52), "kapelusz", "matowy", segm=8)
+                    p.blok("Gwiazdka a", (0, 0.74, 0.04), (0.42, 0.42, 0.1), "zloto", "metal", rot=(0, 0, 45), faza=0.0)
+                    p.blok("Gwiazdka b", (0, 0.74, 0.06), (0.42, 0.42, 0.1), "zloto", "metal", faza=0.0)
     with p.na("UpperTorso", od="srodek"):
         w, h, d = p.wymiary("UpperTorso")
         z = d / 2

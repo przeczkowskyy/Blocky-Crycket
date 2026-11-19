@@ -55,7 +55,7 @@
      "wierzcholki": 569,
      "wymiary": [
       2.5,
-      5.22,
+      4.595,
       2.5
      ],
      "min": [
@@ -65,7 +65,7 @@
      ],
      "max": [
       1.25,
-      8.09,
+      7.465,
       1.25
      ]
     },
@@ -331,12 +331,12 @@
    "skala": 1.0,
    "wymiary_ciala": [
     4.24,
-    8.09,
+    7.465,
     5.76
    ],
    "wymiary_z_akcesoriami": [
     4.24,
-    8.09,
+    7.465,
     5.76
    ],
    "zakres_z_akcesoriami": [
@@ -347,7 +347,7 @@
     ],
     [
      2.12,
-     8.09,
+     7.465,
      3.41
     ]
    ],
@@ -441,7 +441,7 @@
      "limit": 4000,
      "wymiary": [
       2.5,
-      5.22,
+      4.595,
       2.5
      ]
     },
@@ -492,7 +492,7 @@
     }
    },
    "ostrzezenia": [
-    "ciało Head: wys 5.22 poza 0.50…2.00 studa (limit części ciała awatara)",
+    "ciało Head: wys 4.59 poza 0.50…2.00 studa (limit części ciała awatara)",
     "ciało RightArm: głęb 5.76 poza 0.05…4.00 studa (limit części ciała awatara)",
     "ciało razem: głęb 5.76 poza 0.50…4.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
    ]
@@ -500,10 +500,10 @@
  ],
  "uwagi_podgladu": [],
  "kontrola": [
-  "npc_mag.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 8.09 st., akcje brak -> ZGODNE",
-  "npc_mag__spoczynek.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 8.09 st., akcje npc_mag|Scene 1-61 -> ZGODNE",
-  "npc_mag__powitanie.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 8.09 st., akcje npc_mag|Scene 1-49 -> ZGODNE",
-  "npc_mag__gest.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 8.09 st., akcje npc_mag|Scene 1-61 -> ZGODNE",
-  "npc_mag.glb: siatki 34, kości 17, trójkąty 2842, wzrost 8.09 st., akcje gest 0-60, powitanie 0-48, spoczynek 0-60 -> ZGODNE"
+  "npc_mag.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 7.46 st., akcje brak -> ZGODNE",
+  "npc_mag__spoczynek.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 7.46 st., akcje npc_mag|Scene 1-61 -> ZGODNE",
+  "npc_mag__powitanie.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 7.46 st., akcje npc_mag|Scene 1-49 -> ZGODNE",
+  "npc_mag__gest.fbx: siatki 34, kości 17, trójkąty 2842, wzrost 7.46 st., akcje npc_mag|Scene 1-61 -> ZGODNE",
+  "npc_mag.glb: siatki 34, kości 17, trójkąty 2842, wzrost 7.46 st., akcje gest 0-60, powitanie 0-48, spoczynek 0-60 -> ZGODNE"
  ]
 }
