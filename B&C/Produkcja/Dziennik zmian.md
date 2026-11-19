@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-20 · Claude Code u Karola (BONK, etap 2 w nocy)
+- **BONK (D-112), etap 2:** pałki, jajka i pety z Księgą, Strażnicy bici wspólnie, Moc nad głową, korona, tablice, komunikaty serwera, dzienny prezent bez kary, zapis w wersji 2 z przeniesieniem postępu. Próba w Studio 27/27, testy bez Studio 34/34, 16,7 ms na klatkę. Jajka tylko za monety z gry, szanse jawne (D-086, D-015, D-105). Wszystkie liczby to propozycja.
+- Pakiet `swiat/bonk/`, raport w panelu z 8 zrzutami, stan w [[BONK — projekt prototypu]]. Szkice ikony i trzech miniatur z Higgsfield (8 kredytów) czekają na etap 3. Etap 3 w toku.
+
 ## 2026-11-19 · Claude Code u Karola (BONK, etap 1 w Studio)
 - **BONK (D-112), etap 1:** rdzeń gry zbudowany w Studio we własnym kontenerze `BonkGra` i sprawdzony w Play — 17/17 prób, śr. 16,7 ms na klatkę. Uderzasz potwory, odlatują łukiem, HOME RUN od 120 st., monety i Moc, bramy krain otwiera Moc. Obecna gra nietknięta (wejście bramą obok płyty startu).
 - Pakiet `swiat/bonk/` (kod, testy, zrzuty `klatki/`), raport w panelu ze zrzutami trzech krain i telefonu. Stan budowy w [[BONK — projekt prototypu]]. Etap 2 i 3 w toku (praca „bonk-noc”, do ok. 07:30).

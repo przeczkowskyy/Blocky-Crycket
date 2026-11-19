@@ -36,7 +36,7 @@ Klas, ras, statystyk do rozdawania, auto-walki, mini-gier, kowala, Twierdzy, kar
 
 ## Stan budowy
 - [x] 2026-11-19 (noc) — **etap 1, rdzeń:** trzy krainy z map pasów, 12 potworów, BONK z lotem po łuku, HOME RUN, rzadki złoty potwór, monety i Moc, bramy Mocą (Bagno 2.4K, Dżungla 55K), wejście bramą przy starcie obecnej gry, własny zapis. Próba w Studio 17/17, śr. 16,7 ms na klatkę. Szczegóły: `swiat/bonk/README.md`.
-- [ ] etap 2 — pałki, jajka i pety z Księgą, Strażnicy, pokazanie się, dzienny prezent.
+- [x] 2026-11-20 (noc) — **etap 2:** pałki (8 stopni z naszej zbrojowni, w dłoni), jajka w każdej krainie ze stałą ceną i jawnymi szansami, 15 petów, do 3 za graczem, Księga z sylwetkami; Strażnicy bici wspólnie (brama wymaga Strażnika i Mocy; progi podniesione do 4.5K i 600K); Moc nad głową, korona, tablice, komunikaty; dzienny prezent bez kary za opuszczony dzień; zapis v2. Próba w Studio 27/27, testy 34/34. Tempo z rachunku: pierwsza pałka ok. 2 min, jajko ok. 4 min, brama Bagna ok. 9,5 min, Dżungli ok. 24 min.
 - [ ] etap 3 — dopracowanie, telefon i pad, dźwięki, ikona i miniatury, próba całości.
 
 ## Do ustalenia
