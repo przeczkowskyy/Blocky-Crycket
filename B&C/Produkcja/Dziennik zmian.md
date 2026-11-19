@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-19 · Claude Code u Karola (próba całej gry — stan końcowy dnia)
+- **Próba całej gry, 23 próby (12:00–13:23):** bez nowych błędów. Przeszły: cała droga gracza, las, Bagno, Dżungla (z walką bez przestojów), stary las, stan gracza, pety trzech krain, kowal 13 punktów, przymierzalnia 10, Training Center w sceneriach krain, bohater w świecie 20, wystawa ras, przelot przez biom 15, NPC 14, sklep 12, bazar, chmury, dźwięk, walka 111 z 111 i 27 z 27. Jedyny błąd jest znany: za małe napisy w wyborze próby walki na ekranie telefonu (44 z 46). Do listy prób doszły próby przelotu przez biom, NPC i sklepu (`swiat/przejscie_gry/regresja_calosci.py`).
+- **Symulacja przejścia puszczona ponownie** na liczbach z końca dnia (walka bez przestojów, sklep): czasy zmieniły się o najwyżej minutę, wnioski bez zmian — gra do przejścia w ok. 1 godz. 20 min, gracz utyka na Strażniku Topieli i Wężu Stu Lian (pytanie 70).
+- Studio na koniec w trybie Edit; wszystkie prace dnia zamknięte w „Pracach w toku”.
+
 ## 2026-11-19 · Claude Code u Karola (sklep zbrojmistrza i przedmioty — w Studio)
 - **Sklep zbrojmistrza** (`Workspace/SklepProba`, `swiat/sklep_proba/`; propozycja, D-106): przy zbrojmistrzu w bazarze (E) tymczasowe okno z przedmiotami klasy gracza w czterech stopniach; kupno za Złoto przez serwer kowala (klasa, poziom, Złoto, posiadanie), przedmiot zakłada się sam, gdy slot jest pusty albo założony ma niższy stopień. 60 nowych przedmiotów (`swiat/postacie/stopnie.py`) widać na postaci w świecie i w walce, liczą się w walce i da się je ulepszać. Ceny kompletu 1 400 / 3 300 / 5 200 Złota (ok. 40% Złota krainy do Strażnika) — propozycja.
 - **Próby w grze (do 11:56):** sklep 12 punktów w porządku (w tym prawdziwa walka w kupionym komplecie), kowal 13, przymierzalnia 10, bazar w całości, cała droga gracza, bohater w świecie, walka 111 z 111.

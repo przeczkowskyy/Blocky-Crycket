@@ -122,6 +122,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-19: Próba całej gry na stanie końcowym dnia (23 próby, 12:00–13:23; po walce bez przestojów, NPC, sceneriach mini-gier i sklepie): bez nowych błędów — jedyny błąd to znane za małe napisy w wyborze próby walki na ekranie telefonu (walka 44 z 46); symulacja przejścia na dzisiejszych liczbach bez zmian wniosków
 - [x] 2026-11-19: Sklep zbrojmistrza stoi w Studio (`Workspace/SklepProba`): kupno za Złoto 60 przedmiotów w trzech stopniach dla trzech klas, odmowy, reguła zakładania, strój w świecie i w walce, statystyki liczone w walce; próba sklepu 12 punktów w porządku, kowal, przymierzalnia, bazar i cała droga gracza bez błędów
 - [x] 2026-11-19: Mini-gry w sceneriach krain (D-108) stoją w Studio: łąka pod dębem i polana drwali (las), grobla i pomost (Bagno), krąg strażnika i świątynia run (Dżungla); w Rozbijaniu owoce i dynie zamiast skrzynek; zasady bez zmian; próba 31 punktów w porządku, czas klatki bez zmian
 - [x] 2026-11-19: Postacie niezależne jako NPC (D-109) stoją w Studio: karczmarz, mistrz gier, mag, zbrojmistrz, trener i opiekunka w bazarze, pięciu trenerów przy mini-grach — ze szkieletem, spoczynkiem, gestem roli, powitaniem i wzrokiem na gracza; próba 15 punktów w porządku

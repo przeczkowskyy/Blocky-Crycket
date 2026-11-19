@@ -35,6 +35,9 @@ PROBY = [
     ("trening", ["swiat/trening_proba/testy/proba_play.py", "{w}/trening", "--bez-zrzutow"], 1200),
     ("bohater", ["swiat/bohater_swiat/testy/proba_play.py", "{w}/bohater", "--bez-zrzutow"], 1200),
     ("rasy", ["swiat/rasy_proba/testy/proba_play.py", "{w}/rasy", "--bez-zrzutow"], 600),
+    ("cutscenka", ["swiat/cutscenka_biomu/testy/proba_play.py", "{w}/cutscenka", "--bez-zrzutow"], 900),
+    ("npc", ["swiat/npc_gra/testy/proba_play.py", "{w}/npc", "--bez-zrzutow"], 600),
+    ("sklep", ["swiat/sklep_proba/testy/proba_play.py", "--bez-zrzutow", "--wynik", "{w}/sklep/wynik_play.json"], 1200),
     ("bazar", ["swiat/miasteczko_bazar_gra/testy/proba_play.py", "{w}/bazar", "--bez-zrzutow"], 1200),
     ("chmury", ["swiat/teleport_chmury/testy/proba_play.py", "{w}/chmury"], 1200),
     ("dzwiek", ["swiat/dzwiek_gra/testy/proba_play.py", "{w}/dzwiek"], 900),
@@ -65,7 +68,8 @@ def main(argv):
         arg = [a.replace("{w}", w) for a in arg]
         for a in arg:
             if a.startswith(w):
-                os.makedirs(a, exist_ok=True)
+                # plik wyniku (np. --wynik …/wynik_play.json): tworzymy tylko jego folder, nie folder o nazwie pliku
+                os.makedirs(os.path.dirname(a) if a.lower().endswith(".json") else a, exist_ok=True)
         t0 = datetime.datetime.now()
         try:
             r = subprocess.run([sys.executable, "-B"] + arg, cwd=REPO, env=env, capture_output=True, timeout=limit)

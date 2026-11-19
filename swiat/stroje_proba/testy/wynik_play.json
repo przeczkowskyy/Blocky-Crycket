@@ -1,5 +1,5 @@
 {
- "czas": "2026-11-19 11:54",
+ "czas": "2026-11-19 12:39",
  "skrot": "7a3275db36ae",
  "wyniki": [
   {
@@ -33,6 +33,11 @@
    "opis": "186 klipów × strojów klatka po klatce; zawis ciała po upadku: {'wojownik/komplet/upadek': 0.0, 'wojownik/golas/upadek': 0.247, 'wojownik/mieszany/upadek': 0.049, 'wojownik/las/upadek': -0.025, 'wojownik/bagno/upadek': 0.0, 'wojownik/dzungla/upadek': 0.0, 'zwiadowca/komplet/upadek': 0.0, 'zwiadowca/golas/upadek': -0.025, 'zwiadowca/mieszany/upadek': 0.0, 'zwiadowca/las/upadek': -0.053, 'zwiadowca/bagno/upadek': 0.0, 'zwiadowca/dzungla/upadek': -0.059, 'mag/komplet/upadek': 0.0, 'mag/golas/upadek': 0.198, 'mag/mieszany/upadek': 0.198, 'mag/las/upadek': 0.0, 'mag/bagno/upadek': 0.0, 'mag/dzungla/upadek': 0.0}"
   },
   {
+   "punkt": "S11",
+   "wynik": "OK",
+   "opis": "okno na 667 × 375: tekst 12 pt (najmniej 12), góra okna 0.40, podgląd 0.01–0.35 wysokości ekranu"
+  },
+  {
    "punkt": "S07",
    "wynik": "OK",
    "opis": "bohater w walce w stroju z przymierzalni (3 klasy)"
@@ -51,11 +56,6 @@
    "punkt": "S10",
    "wynik": "OK",
    "opis": "konsola: 0 linii z [StrojeProba]"
-  },
-  {
-   "punkt": "S11",
-   "wynik": "OK",
-   "opis": "okno na 667 × 375: tekst 12 pt (najmniej 12), góra okna 0.40, podgląd 0.01–0.35 wysokości ekranu"
   }
  ],
  "dane": {
@@ -508,7 +508,7 @@
       1153
      ],
      "fov": 50,
-     "y0": 0.091,
+     "y0": 0.09,
      "y1": 0.342,
      "oknoPrawo": 0.71
     }
@@ -2318,8 +2318,8 @@
   "S11": {
    "ok": true,
    "oknoGora": 0.4032527662212706,
-   "x0": 0.42828620338720297,
-   "x1": 0.5783437815791891,
+   "x0": 0.42828339236089846,
+   "x1": 0.5783140564712457,
    "tekst": 12,
    "oknoLewo": 0.23988006606749143,
    "ekran": [
@@ -2327,8 +2327,8 @@
     1153
    ],
    "fov": 50,
-   "y0": 0.010127389317270166,
-   "y1": 0.34945665476948723,
+   "y0": 0.010131253641993711,
+   "y1": 0.34945771348858956,
    "oknoPrawo": 0.758620699967081
   },
   "S07": {

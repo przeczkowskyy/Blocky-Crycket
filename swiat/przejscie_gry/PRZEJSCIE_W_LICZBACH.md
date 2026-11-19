@@ -154,27 +154,27 @@ Pliki: `symulacja_przejscia.py` (symulator; założenia w `WARIANTY`, `CZAS`, `S
 
 | Sposób gry | Klasa | 1. wygrana | Strażnik: Las | Strażnik: Bagno | Strażnik: Dżungla | Koniec: 10%–90% graczy | Skończyło |
 |---|---|---:|---:|---:|---:|---|---:|
-| Tylko walki, każda oglądana w całości | Wojownik | 0,7 | 27 | 77 | 129 | 112–148 | 100% |
-| Tylko walki, każda oglądana w całości | Zwiadowca | 0,7 | 27 | 73 | 124 | 111–142 | 100% |
-| Tylko walki, każda oglądana w całości | Mag | 0,7 | 25 | 68 | 108 | 96–119 | 100% |
-| Tylko walki | Wojownik | 0,7 | 18 | 50 | 80 | 71–93 | 100% |
-| Tylko walki | Zwiadowca | 0,8 | 19 | 49 | 78 | 72–91 | 100% |
-| Tylko walki | Mag | 0,7 | 18 | 45 | 70 | 64–79 | 100% |
-| Walki + mini-gry (10 min na godzinę) | Wojownik | 0,7 | 17 | 49 | 85 | 78–99 | 100% |
-| Walki + mini-gry (10 min na godzinę) | Zwiadowca | 0,7 | 19 | 51 | 83 | 78–99 | 100% |
-| Walki + mini-gry (10 min na godzinę) | Mag | 0,7 | 18 | 47 | 76 | 71–85 | 100% |
-| Walki + mini-gry + pety + kowal | Wojownik | 0,7 | 20 | 51 | 87 | 82–96 | 100% |
-| Walki + mini-gry + pety + kowal | Zwiadowca | 0,7 | 20 | 51 | 86 | 82–97 | 100% |
-| Walki + mini-gry + pety + kowal | Mag | 0,7 | 18 | 48 | 80 | 76–84 | 100% |
-| Wszystko + sklep z przedmiotami | Wojownik | 0,7 | 20 | 51 | 86 | 82–95 | 100% |
+| Tylko walki, każda oglądana w całości | Wojownik | 0,7 | 26 | 75 | 126 | 112–149 | 100% |
+| Tylko walki, każda oglądana w całości | Zwiadowca | 0,7 | 28 | 73 | 122 | 111–144 | 100% |
+| Tylko walki, każda oglądana w całości | Mag | 0,7 | 25 | 69 | 108 | 95–120 | 100% |
+| Tylko walki | Wojownik | 0,7 | 17 | 50 | 84 | 72–99 | 100% |
+| Tylko walki | Zwiadowca | 0,7 | 19 | 49 | 77 | 72–90 | 100% |
+| Tylko walki | Mag | 0,7 | 18 | 45 | 71 | 64–82 | 100% |
+| Walki + mini-gry (10 min na godzinę) | Wojownik | 0,7 | 17 | 49 | 86 | 78–97 | 100% |
+| Walki + mini-gry (10 min na godzinę) | Zwiadowca | 0,8 | 18 | 50 | 83 | 78–98 | 100% |
+| Walki + mini-gry (10 min na godzinę) | Mag | 0,7 | 17 | 47 | 77 | 71–85 | 100% |
+| Walki + mini-gry + pety + kowal | Wojownik | 0,7 | 21 | 51 | 87 | 83–98 | 100% |
+| Walki + mini-gry + pety + kowal | Zwiadowca | 0,7 | 20 | 50 | 85 | 82–97 | 100% |
+| Walki + mini-gry + pety + kowal | Mag | 0,7 | 18 | 48 | 80 | 77–85 | 100% |
+| Wszystko + sklep z przedmiotami | Wojownik | 0,7 | 21 | 50 | 86 | 83–95 | 100% |
 | Wszystko + sklep z przedmiotami | Zwiadowca | 0,8 | 20 | 52 | 86 | 82–95 | 100% |
-| Wszystko + sklep z przedmiotami | Mag | 0,7 | 20 | 49 | 81 | 77–92 | 100% |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | 0,7 | 35 | 74 | 125 | 113–132 | 100% |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | 0,7 | 35 | 74 | 126 | 113–133 | 100% |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Mag | 0,7 | 33 | 68 | 109 | 105–123 | 100% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 0,5 | 11 | 28 | 49 | 44–54 | 100% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 0,5 | 11 | 27 | 47 | 43–52 | 100% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 0,5 | 10 | 27 | 46 | 42–51 | 100% |
+| Wszystko + sklep z przedmiotami | Mag | 0,7 | 20 | 49 | 81 | 77–86 | 100% |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | 0,7 | 35 | 74 | 126 | 113–129 | 100% |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | 0,7 | 35 | 75 | 126 | 114–132 | 100% |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Mag | 0,7 | 33 | 68 | 109 | 106–123 | 100% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 0,5 | 11 | 29 | 49 | 45–54 | 100% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 0,5 | 12 | 27 | 47 | 43–53 | 100% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 0,5 | 10 | 25 | 46 | 42–50 | 100% |
 
 Brama otwiera się od razu po wygranej ze Strażnikiem; dojście do niej to kilka sekund (dokładne czasy bram są w pliku JSON, pola `brama_…`).
 
@@ -182,27 +182,27 @@ Brama otwiera się od razu po wygranej ze Strażnikiem; dojście do niej to kilk
 
 | Sposób gry | Klasa | Poziom przy bramach | Walk | Przegranych | Złoto zarobione | Złoto wydane | Złoto stracone po przegranych | Punkty z mini-gier |
 |---|---|---|---:|---:|---:|---:|---:|---:|
-| Tylko walki, każda oglądana w całości | Wojownik | 11 / 18 / 25 | 190 | 38 | 25548 | 0 | 5900 | 0 |
-| Tylko walki, każda oglądana w całości | Zwiadowca | 11 / 18 / 25 | 190 | 40 | 24970 | 0 | 6186 | 0 |
-| Tylko walki, każda oglądana w całości | Mag | 11 / 19 / 25 | 187 | 37 | 25050 | 0 | 5680 | 0 |
-| Tylko walki | Wojownik | 11 / 18 / 25 | 189 | 38 | 25108 | 0 | 5905 | 0 |
-| Tylko walki | Zwiadowca | 11 / 18 / 24 | 192 | 41 | 24501 | 0 | 6321 | 0 |
-| Tylko walki | Mag | 11 / 19 / 24 | 183 | 35 | 24478 | 0 | 5314 | 0 |
-| Walki + mini-gry (10 min na godzinę) | Wojownik | 11 / 18 / 24 | 179 | 31 | 24362 | 0 | 4642 | 25 |
-| Walki + mini-gry (10 min na godzinę) | Zwiadowca | 12 / 18 / 24 | 181 | 33 | 23662 | 0 | 4984 | 22 |
-| Walki + mini-gry (10 min na godzinę) | Mag | 12 / 18 / 24 | 178 | 31 | 24054 | 0 | 4488 | 21 |
-| Walki + mini-gry + pety + kowal | Wojownik | 11 / 17 / 23 | 159 | 17 | 23406 | 15450 | 834 | 25 |
-| Walki + mini-gry + pety + kowal | Zwiadowca | 11 / 17 / 23 | 162 | 20 | 23375 | 14800 | 1292 | 22 |
-| Walki + mini-gry + pety + kowal | Mag | 11 / 17 / 24 | 161 | 18 | 23712 | 14660 | 1004 | 21 |
-| Wszystko + sklep z przedmiotami | Wojownik | 11 / 17 / 23 | 157 | 15 | 23410 | 19450 | 397 | 25 |
-| Wszystko + sklep z przedmiotami | Zwiadowca | 11 / 17 / 23 | 159 | 17 | 23391 | 19025 | 541 | 22 |
-| Wszystko + sklep z przedmiotami | Mag | 11 / 17 / 23 | 157 | 16 | 23476 | 20080 | 597 | 21 |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | 11 / 18 / 24 | 181 | 7 | 26396 | 22200 | 198 | 60 |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | 11 / 18 / 24 | 186 | 10 | 26401 | 22200 | 337 | 56 |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Mag | 12 / 18 / 24 | 184 | 9 | 26584 | 22880 | 308 | 44 |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 11 / 17 / 24 | 176 | 57 | 20548 | 0 | 8250 | 0 |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 11 / 17 / 23 | 169 | 55 | 20147 | 0 | 7881 | 0 |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 11 / 17 / 24 | 168 | 52 | 20414 | 0 | 7562 | 0 |
+| Tylko walki, każda oglądana w całości | Wojownik | 11 / 18 / 25 | 189 | 38 | 25153 | 0 | 5870 | 0 |
+| Tylko walki, każda oglądana w całości | Zwiadowca | 12 / 18 / 24 | 188 | 42 | 24700 | 0 | 6391 | 0 |
+| Tylko walki, każda oglądana w całości | Mag | 11 / 19 / 25 | 186 | 36 | 25082 | 0 | 5784 | 0 |
+| Tylko walki | Wojownik | 11 / 18 / 25 | 196 | 40 | 26166 | 0 | 6104 | 0 |
+| Tylko walki | Zwiadowca | 12 / 18 / 24 | 188 | 39 | 24328 | 0 | 5960 | 0 |
+| Tylko walki | Mag | 12 / 19 / 25 | 186 | 35 | 24366 | 0 | 5622 | 0 |
+| Walki + mini-gry (10 min na godzinę) | Wojownik | 11 / 18 / 24 | 180 | 30 | 24835 | 0 | 4542 | 26 |
+| Walki + mini-gry (10 min na godzinę) | Zwiadowca | 11 / 18 / 24 | 182 | 34 | 23566 | 0 | 4966 | 22 |
+| Walki + mini-gry (10 min na godzinę) | Mag | 11 / 18 / 24 | 178 | 30 | 24062 | 0 | 4337 | 21 |
+| Walki + mini-gry + pety + kowal | Wojownik | 11 / 17 / 24 | 161 | 16 | 23652 | 15325 | 920 | 26 |
+| Walki + mini-gry + pety + kowal | Zwiadowca | 11 / 17 / 23 | 160 | 20 | 23246 | 14800 | 1226 | 22 |
+| Walki + mini-gry + pety + kowal | Mag | 11 / 17 / 24 | 162 | 17 | 23448 | 15800 | 988 | 21 |
+| Wszystko + sklep z przedmiotami | Wojownik | 11 / 17 / 23 | 157 | 14 | 23571 | 19600 | 403 | 24 |
+| Wszystko + sklep z przedmiotami | Zwiadowca | 11 / 17 / 23 | 158 | 17 | 23391 | 19025 | 552 | 22 |
+| Wszystko + sklep z przedmiotami | Mag | 11 / 17 / 23 | 156 | 16 | 23451 | 20092 | 586 | 21 |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | 11 / 18 / 24 | 181 | 7 | 26396 | 22200 | 221 | 60 |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | 11 / 18 / 24 | 186 | 10 | 26552 | 22200 | 348 | 56 |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Mag | 11 / 18 / 24 | 184 | 10 | 26687 | 22880 | 320 | 44 |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 11 / 18 / 24 | 174 | 56 | 20428 | 0 | 8212 | 0 |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 11 / 17 / 23 | 168 | 57 | 19755 | 0 | 8084 | 0 |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 11 / 17 / 24 | 168 | 52 | 20288 | 0 | 7258 | 0 |
 
 ### Strażnicy — świat „przed zmianą (stan z 18.11)”
 
@@ -210,79 +210,79 @@ Dla każdej krainy: poziom przy pierwszej próbie · prób do wygranej (mediana 
 
 | Sposób gry | Klasa | Las | Bagno | Dżungla |
 |---|---|---|---|---|
-| Tylko walki, każda oglądana w całości | Wojownik | poz. 10 · 2 / 4 · 5% | poz. 16 · 4 / 7 · 22% | poz. 23 · 3 / 7 · 20% |
-| Tylko walki, każda oglądana w całości | Zwiadowca | poz. 10 · 2 / 4 · 2% | poz. 16 · 3 / 7 · 19% | poz. 23 · 2 / 5 · 7% |
-| Tylko walki, każda oglądana w całości | Mag | poz. 10 · 2 / 4 · 2% | poz. 16 · 4 / 7 · 24% | poz. 23 · 4 / 7 · 28% |
-| Tylko walki | Wojownik | poz. 10 · 2 / 4 · 0% | poz. 16 · 4 / 7 · 24% | poz. 23 · 3 / 7 · 19% |
-| Tylko walki | Zwiadowca | poz. 10 · 2 / 4 · 3% | poz. 16 · 3 / 6 · 19% | poz. 23 · 2 / 7 · 18% |
-| Tylko walki | Mag | poz. 10 · 2 / 4 · 6% | poz. 16 · 4 / 7 · 29% | poz. 23 · 3 / 7 · 18% |
-| Walki + mini-gry (10 min na godzinę) | Wojownik | poz. 10 · 2 / 4 · 1% | poz. 16 · 3 / 5 · 6% | poz. 23 · 3 / 6 · 13% |
+| Tylko walki, każda oglądana w całości | Wojownik | poz. 10 · 2 / 4 · 2% | poz. 16 · 4 / 6 · 12% | poz. 23 · 3 / 7 · 18% |
+| Tylko walki, każda oglądana w całości | Zwiadowca | poz. 10 · 2 / 5 · 2% | poz. 16 · 3 / 6 · 15% | poz. 23 · 2 / 6 · 12% |
+| Tylko walki, każda oglądana w całości | Mag | poz. 10 · 2 / 4 · 2% | poz. 16 · 4 / 8 · 28% | poz. 23 · 4 / 7 · 30% |
+| Tylko walki | Wojownik | poz. 10 · 2 / 4 · 0% | poz. 16 · 3 / 7 · 25% | poz. 23 · 4 / 8 · 20% |
+| Tylko walki | Zwiadowca | poz. 10 · 2 / 4 · 5% | poz. 16 · 3 / 6 · 18% | poz. 23 · 2 / 6 · 12% |
+| Tylko walki | Mag | poz. 10 · 2 / 4 · 2% | poz. 16 · 4 / 7 · 30% | poz. 23 · 4 / 8 · 28% |
+| Walki + mini-gry (10 min na godzinę) | Wojownik | poz. 10 · 2 / 3 · 0% | poz. 16 · 3 / 5 · 8% | poz. 23 · 3 / 6 · 12% |
 | Walki + mini-gry (10 min na godzinę) | Zwiadowca | poz. 10 · 2 / 4 · 5% | poz. 16 · 3 / 5 · 8% | poz. 23 · 2 / 6 · 15% |
-| Walki + mini-gry (10 min na godzinę) | Mag | poz. 10 · 2 / 4 · 1% | poz. 16 · 3 / 7 · 21% | poz. 23 · 3 / 6 · 15% |
-| Walki + mini-gry + pety + kowal | Wojownik | poz. 10 · 1 / 3 · 0% | poz. 16 · 2 / 4 · 0% | poz. 23 · 1 / 3 · 1% |
-| Walki + mini-gry + pety + kowal | Zwiadowca | poz. 10 · 1 / 3 · 0% | poz. 16 · 2 / 4 · 3% | poz. 23 · 1 / 3 · 0% |
-| Walki + mini-gry + pety + kowal | Mag | poz. 10 · 1 / 3 · 0% | poz. 16 · 2 / 5 · 8% | poz. 23 · 2 / 3 · 2% |
+| Walki + mini-gry (10 min na godzinę) | Mag | poz. 10 · 2 / 4 · 0% | poz. 16 · 3 / 7 · 18% | poz. 23 · 2 / 6 · 12% |
+| Walki + mini-gry + pety + kowal | Wojownik | poz. 10 · 1 / 3 · 0% | poz. 16 · 2 / 4 · 0% | poz. 23 · 2 / 3 · 0% |
+| Walki + mini-gry + pety + kowal | Zwiadowca | poz. 10 · 1 / 3 · 0% | poz. 16 · 1 / 3 · 0% | poz. 23 · 1 / 3 · 0% |
+| Walki + mini-gry + pety + kowal | Mag | poz. 10 · 1 / 3 · 0% | poz. 16 · 2 / 5 · 5% | poz. 23 · 2 / 4 · 0% |
 | Wszystko + sklep z przedmiotami | Wojownik | poz. 10 · 1 / 3 · 0% | poz. 16 · 1 / 2 · 0% | poz. 23 · 1 / 3 · 0% |
-| Wszystko + sklep z przedmiotami | Zwiadowca | poz. 10 · 1 / 3 · 0% | poz. 16 · 2 / 4 · 0% | poz. 23 · 1 / 3 · 1% |
-| Wszystko + sklep z przedmiotami | Mag | poz. 10 · 2 / 4 · 0% | poz. 16 · 2 / 5 · 5% | poz. 23 · 1 / 3 · 2% |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | poz. 11 · 1 / 2 · 0% | poz. 17 · 1 / 2 · 0% | poz. 24 · 1 / 2 · 0% |
+| Wszystko + sklep z przedmiotami | Zwiadowca | poz. 10 · 2 / 3 · 0% | poz. 16 · 2 / 4 · 0% | poz. 23 · 1 / 3 · 2% |
+| Wszystko + sklep z przedmiotami | Mag | poz. 10 · 2 / 3 · 0% | poz. 16 · 3 / 5 · 8% | poz. 23 · 1 / 3 · 2% |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | poz. 11 · 1 / 1 · 0% | poz. 17 · 1 / 2 · 0% | poz. 24 · 1 / 2 · 0% |
 | Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | poz. 11 · 1 / 2 · 0% | poz. 17 · 1 / 3 · 0% | poz. 24 · 1 / 2 · 0% |
 | Ostrożny (bez sklepu, z zapasem poziomu) | Mag | poz. 11 · 1 / 2 · 0% | poz. 17 · 1 / 2 · 0% | poz. 24 · 1 / 3 · 0% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | poz. 9 · 3 / 7 · 19% | poz. 15 · 5 / 11 · 43% | poz. 22 · 4 / 11 · 31% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | poz. 9 · 4 / 6 · 16% | poz. 15 · 4 / 8 · 37% | poz. 22 · 3 / 8 · 28% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | poz. 9 · 3 / 6 · 19% | poz. 15 · 6 / 11 · 50% | poz. 22 · 4 / 12 · 43% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | poz. 9 · 4 / 7 · 22% | poz. 15 · 5 / 11 · 48% | poz. 22 · 4 / 9 · 42% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | poz. 9 · 4 / 6 · 20% | poz. 15 · 5 / 9 · 40% | poz. 22 · 4 / 6 · 20% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | poz. 9 · 2 / 6 · 20% | poz. 15 · 5 / 10 · 42% | poz. 22 · 4 / 9 · 25% |
 
 ### Nuda i przestoje — świat „przed zmianą (stan z 18.11)” (mediana)
 
 | Sposób gry | Klasa | Najdłużej bez awansu | Najdłużej bez nowej zagrody | Najdłuższa seria jednego potwora | Czekanie (odradzanie + blokada) |
 |---|---|---|---|---|---:|
-| Tylko walki, każda oglądana w całości | Wojownik | 11 min (dzungla/o1) | 21 min (bagno/straznik) | 22 × Kokosowy Siłacz | 0,0 min |
+| Tylko walki, każda oglądana w całości | Wojownik | 11 min (dzungla/o1) | 20 min (bagno/straznik) | 20 × Kokosowy Siłacz | 0,0 min |
 | Tylko walki, każda oglądana w całości | Zwiadowca | 10 min (dzungla/o1) | 20 min (dzungla/o1) | 22 × Kokosowy Siłacz | 0,0 min |
-| Tylko walki, każda oglądana w całości | Mag | 8,4 min (dzungla/o1) | 17 min (bagno/straznik) | 24 × Kokosowy Siłacz | 0,0 min |
-| Tylko walki | Wojownik | 6,6 min (dzungla/o1) | 13 min (bagno/straznik) | 23 × Kokosowy Siłacz | 3,8 min |
-| Tylko walki | Zwiadowca | 6,5 min (dzungla/o1) | 13 min (dzungla/o1) | 22 × Kokosowy Siłacz | 3,0 min |
-| Tylko walki | Mag | 5,4 min (dzungla/o1) | 11 min (bagno/straznik) | 24 × Kokosowy Siłacz | 1,6 min |
-| Walki + mini-gry (10 min na godzinę) | Wojownik | 10 min (dzungla/z1) | 14 min (dzungla/g1) | 25 × Kokosowy Siłacz | 3,2 min |
-| Walki + mini-gry (10 min na godzinę) | Zwiadowca | 9,8 min (dzungla/g1) | 14 min (dzungla/g1) | 24 × Kokosowy Siłacz | 2,6 min |
-| Walki + mini-gry (10 min na godzinę) | Mag | 9,4 min (dzungla/g1) | 14 min (dzungla/g1) | 24 × Kokosowy Siłacz | 1,4 min |
+| Tylko walki, każda oglądana w całości | Mag | 8,4 min (dzungla/o1) | 18 min (bagno/straznik) | 24 × Kokosowy Siłacz | 0,0 min |
+| Tylko walki | Wojownik | 7,0 min (dzungla/o1) | 13 min (dzungla/straznik) | 22 × Kokosowy Siłacz | 4,0 min |
+| Tylko walki | Zwiadowca | 6,2 min (dzungla/o1) | 13 min (bagno/straznik) | 22 × Kokosowy Siłacz | 2,9 min |
+| Tylko walki | Mag | 5,3 min (dzungla/o1) | 13 min (bagno/straznik) | 24 × Kokosowy Siłacz | 1,7 min |
+| Walki + mini-gry (10 min na godzinę) | Wojownik | 10 min (dzungla/z1) | 14 min (bagno/b1) | 25 × Kokosowy Siłacz | 3,3 min |
+| Walki + mini-gry (10 min na godzinę) | Zwiadowca | 9,9 min (dzungla/z1) | 14 min (dzungla/g1) | 22 × Kokosowy Siłacz | 2,6 min |
+| Walki + mini-gry (10 min na godzinę) | Mag | 9,4 min (bagno/r1) | 14 min (dzungla/g1) | 24 × Kokosowy Siłacz | 1,4 min |
 | Walki + mini-gry + pety + kowal | Wojownik | 10 min (dzungla/z1) | 13 min (bagno/b1) | 24 × Kokosowy Siłacz | 2,1 min |
-| Walki + mini-gry + pety + kowal | Zwiadowca | 10 min (dzungla/z1) | 13 min (bagno/b1) | 24 × Kokosowy Siłacz | 2,0 min |
-| Walki + mini-gry + pety + kowal | Mag | 9,9 min (dzungla/g1) | 13 min (dzungla/g1) | 24 × Kokosowy Siłacz | 1,2 min |
-| Wszystko + sklep z przedmiotami | Wojownik | 10,0 min (dzungla/z1) | 12 min (dzungla/z1) | 23 × Kokosowy Siłacz | 2,0 min |
-| Wszystko + sklep z przedmiotami | Zwiadowca | 10,0 min (dzungla/z1) | 12 min (bagno/b1) | 24 × Kokosowy Siłacz | 1,8 min |
-| Wszystko + sklep z przedmiotami | Mag | 9,8 min (dzungla/g1) | 13 min (bagno/b1) | 24 × Kokosowy Siłacz | 1,0 min |
+| Walki + mini-gry + pety + kowal | Zwiadowca | 10 min (bagno/b1) | 13 min (bagno/b1) | 24 × Kokosowy Siłacz | 2,0 min |
+| Walki + mini-gry + pety + kowal | Mag | 9,9 min (bagno/b1) | 13 min (dzungla/g1) | 24 × Kokosowy Siłacz | 1,1 min |
+| Wszystko + sklep z przedmiotami | Wojownik | 10 min (dzungla/z1) | 12 min (dzungla/z1) | 23 × Kokosowy Siłacz | 2,0 min |
+| Wszystko + sklep z przedmiotami | Zwiadowca | 9,8 min (dzungla/z1) | 12 min (bagno/b1) | 24 × Kokosowy Siłacz | 1,8 min |
+| Wszystko + sklep z przedmiotami | Mag | 9,8 min (dzungla/g1) | 12 min (bagno/b1) | 23 × Kokosowy Siłacz | 1,0 min |
 | Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | 14 min (bagno/k1) | 19 min (bagno/k1) | 24 × Kokosowy Siłacz | 2,2 min |
 | Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | 14 min (bagno/k1) | 19 min (bagno/k1) | 23 × Zwijogon | 2,0 min |
 | Ostrożny (bez sklepu, z zapasem poziomu) | Mag | 13 min (dzungla/g1) | 17 min (bagno/k1) | 24 × Zwijogon | 1,0 min |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 4,4 min (dzungla/o1) | 7,2 min (dzungla/o1) | 25 × Kokosowy Siłacz | 3,0 min |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 4,0 min (dzungla/o1) | 7,2 min (dzungla/o1) | 26 × Kokosowy Siłacz | 2,6 min |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 3,8 min (dzungla/o1) | 7,2 min (dzungla/o1) | 25 × Kokosowy Siłacz | 1,9 min |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 4,4 min (dzungla/o1) | 7,2 min (dzungla/o1) | 24 × Kokosowy Siłacz | 3,0 min |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 4,1 min (dzungla/o1) | 7,5 min (dzungla/o1) | 26 × Kokosowy Siłacz | 2,7 min |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 3,9 min (dzungla/o1) | 7,1 min (dzungla/o1) | 25 × Kokosowy Siłacz | 1,9 min |
 
 ### Czasy do kamieni milowych — świat „po zmianie D-107 (pliki gry)” (minuty gry, mediana)
 
 | Sposób gry | Klasa | 1. wygrana | Strażnik: Las | Strażnik: Bagno | Strażnik: Dżungla | Koniec: 10%–90% graczy | Skończyło |
 |---|---|---:|---:|---:|---:|---|---:|
-| Tylko walki, każda oglądana w całości | Wojownik | 0,7 | 26 | 80 | 133 | 119–155 | 100% |
-| Tylko walki, każda oglądana w całości | Zwiadowca | 0,7 | 28 | 74 | 128 | 109–150 | 100% |
-| Tylko walki, każda oglądana w całości | Mag | 0,7 | 23 | 66 | 108 | 94–124 | 100% |
-| Tylko walki | Wojownik | 0,8 | 18 | 47 | 79 | 69–89 | 100% |
-| Tylko walki | Zwiadowca | 0,8 | 18 | 45 | 76 | 67–86 | 100% |
-| Tylko walki | Mag | 0,7 | 16 | 43 | 69 | 59–77 | 100% |
-| Walki + mini-gry (10 min na godzinę) | Wojownik | 0,7 | 18 | 48 | 80 | 75–94 | 100% |
-| Walki + mini-gry (10 min na godzinę) | Zwiadowca | 0,7 | 17 | 47 | 82 | 74–96 | 100% |
-| Walki + mini-gry (10 min na godzinę) | Mag | 0,7 | 16 | 45 | 74 | 68–84 | 100% |
-| Walki + mini-gry + pety + kowal | Wojownik | 0,7 | 19 | 50 | 84 | 79–94 | 100% |
-| Walki + mini-gry + pety + kowal | Zwiadowca | 0,7 | 20 | 50 | 83 | 78–95 | 100% |
-| Walki + mini-gry + pety + kowal | Mag | 0,7 | 17 | 45 | 76 | 72–81 | 100% |
-| Wszystko + sklep z przedmiotami | Wojownik | 0,8 | 20 | 49 | 82 | 77–92 | 100% |
-| Wszystko + sklep z przedmiotami | Zwiadowca | 0,8 | 20 | 49 | 82 | 77–87 | 100% |
-| Wszystko + sklep z przedmiotami | Mag | 0,7 | 19 | 46 | 78 | 74–82 | 100% |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | 0,7 | 33 | 71 | 114 | 108–127 | 100% |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | 0,7 | 33 | 71 | 114 | 109–127 | 100% |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Mag | 0,7 | 31 | 65 | 106 | 100–110 | 100% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 0,6 | 10 | 28 | 47 | 42–52 | 100% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 0,5 | 11 | 26 | 46 | 41–52 | 100% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 0,5 | 9,8 | 26 | 42 | 38–49 | 100% |
+| Tylko walki, każda oglądana w całości | Wojownik | 0,8 | 25 | 79 | 132 | 120–152 | 100% |
+| Tylko walki, każda oglądana w całości | Zwiadowca | 0,7 | 27 | 74 | 131 | 109–151 | 100% |
+| Tylko walki, każda oglądana w całości | Mag | 0,7 | 25 | 65 | 108 | 97–123 | 100% |
+| Tylko walki | Wojownik | 0,8 | 18 | 48 | 78 | 70–86 | 100% |
+| Tylko walki | Zwiadowca | 0,8 | 17 | 46 | 78 | 68–86 | 100% |
+| Tylko walki | Mag | 0,7 | 17 | 41 | 69 | 59–77 | 100% |
+| Walki + mini-gry (10 min na godzinę) | Wojownik | 0,7 | 17 | 50 | 79 | 75–93 | 100% |
+| Walki + mini-gry (10 min na godzinę) | Zwiadowca | 0,7 | 17 | 47 | 81 | 74–98 | 100% |
+| Walki + mini-gry (10 min na godzinę) | Mag | 0,8 | 16 | 45 | 73 | 69–82 | 100% |
+| Walki + mini-gry + pety + kowal | Wojownik | 0,7 | 19 | 50 | 83 | 80–94 | 100% |
+| Walki + mini-gry + pety + kowal | Zwiadowca | 0,8 | 20 | 50 | 85 | 78–95 | 100% |
+| Walki + mini-gry + pety + kowal | Mag | 0,7 | 17 | 45 | 76 | 72–80 | 100% |
+| Wszystko + sklep z przedmiotami | Wojownik | 0,7 | 19 | 49 | 81 | 77–92 | 100% |
+| Wszystko + sklep z przedmiotami | Zwiadowca | 0,7 | 20 | 48 | 82 | 77–86 | 100% |
+| Wszystko + sklep z przedmiotami | Mag | 0,7 | 19 | 47 | 79 | 74–83 | 100% |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | 0,7 | 33 | 71 | 114 | 109–127 | 100% |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | 0,7 | 34 | 72 | 115 | 109–127 | 100% |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Mag | 0,7 | 31 | 65 | 104 | 100–111 | 100% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 0,6 | 11 | 29 | 47 | 41–51 | 100% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 0,5 | 11 | 27 | 46 | 40–52 | 100% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 0,6 | 9,8 | 28 | 43 | 40–47 | 100% |
 
 Brama otwiera się od razu po wygranej ze Strażnikiem; dojście do niej to kilka sekund (dokładne czasy bram są w pliku JSON, pola `brama_…`).
 
@@ -290,27 +290,27 @@ Brama otwiera się od razu po wygranej ze Strażnikiem; dojście do niej to kilk
 
 | Sposób gry | Klasa | Poziom przy bramach | Walk | Przegranych | Złoto zarobione | Złoto wydane | Złoto stracone po przegranych | Punkty z mini-gier |
 |---|---|---|---:|---:|---:|---:|---:|---:|
-| Tylko walki, każda oglądana w całości | Wojownik | 12 / 19 / 25 | 186 | 49 | 26038 | 0 | 7440 | 0 |
-| Tylko walki, każda oglądana w całości | Zwiadowca | 12 / 18 / 25 | 186 | 47 | 26364 | 0 | 7276 | 0 |
-| Tylko walki, każda oglądana w całości | Mag | 12 / 19 / 25 | 175 | 42 | 26318 | 0 | 6080 | 0 |
-| Tylko walki | Wojownik | 12 / 19 / 25 | 188 | 49 | 26470 | 0 | 7458 | 0 |
-| Tylko walki | Zwiadowca | 12 / 18 / 25 | 186 | 47 | 26160 | 0 | 7118 | 0 |
-| Tylko walki | Mag | 12 / 19 / 25 | 179 | 42 | 25790 | 0 | 6260 | 0 |
-| Walki + mini-gry (10 min na godzinę) | Wojownik | 12 / 18 / 24 | 170 | 38 | 24304 | 0 | 5294 | 25 |
-| Walki + mini-gry (10 min na godzinę) | Zwiadowca | 11 / 18 / 25 | 178 | 43 | 25254 | 0 | 6224 | 22 |
-| Walki + mini-gry (10 min na godzinę) | Mag | 11 / 19 / 24 | 171 | 38 | 24472 | 0 | 5398 | 21 |
-| Walki + mini-gry + pety + kowal | Wojownik | 11 / 17 / 23 | 153 | 24 | 23338 | 14675 | 1326 | 24 |
-| Walki + mini-gry + pety + kowal | Zwiadowca | 11 / 17 / 24 | 157 | 26 | 24055 | 14150 | 1676 | 22 |
-| Walki + mini-gry + pety + kowal | Mag | 11 / 17 / 24 | 150 | 21 | 23824 | 14660 | 1316 | 21 |
-| Wszystko + sklep z przedmiotami | Wojownik | 11 / 17 / 23 | 148 | 19 | 23430 | 18950 | 552 | 24 |
-| Wszystko + sklep z przedmiotami | Zwiadowca | 11 / 17 / 23 | 151 | 21 | 23499 | 18700 | 702 | 22 |
-| Wszystko + sklep z przedmiotami | Mag | 11 / 17 / 24 | 150 | 20 | 23730 | 20058 | 714 | 21 |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | 12 / 18 / 24 | 174 | 10 | 26457 | 21550 | 325 | 50 |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | 12 / 18 / 24 | 177 | 14 | 26456 | 20900 | 465 | 48 |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Mag | 12 / 18 / 24 | 173 | 12 | 26358 | 21740 | 430 | 45 |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 11 / 18 / 24 | 171 | 67 | 21788 | 0 | 9691 | 0 |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 11 / 18 / 24 | 170 | 66 | 21819 | 0 | 9410 | 0 |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 11 / 18 / 24 | 156 | 58 | 21288 | 0 | 8112 | 0 |
+| Tylko walki, każda oglądana w całości | Wojownik | 11 / 18 / 25 | 186 | 49 | 25936 | 0 | 7404 | 0 |
+| Tylko walki, każda oglądana w całości | Zwiadowca | 12 / 18 / 25 | 195 | 50 | 26922 | 0 | 7470 | 0 |
+| Tylko walki, każda oglądana w całości | Mag | 12 / 18 / 25 | 178 | 42 | 26588 | 0 | 6144 | 0 |
+| Tylko walki | Wojownik | 12 / 19 / 25 | 184 | 49 | 25797 | 0 | 7226 | 0 |
+| Tylko walki | Zwiadowca | 12 / 18 / 26 | 189 | 48 | 26938 | 0 | 6990 | 0 |
+| Tylko walki | Mag | 11 / 19 / 25 | 182 | 41 | 25251 | 0 | 6389 | 0 |
+| Walki + mini-gry (10 min na godzinę) | Wojownik | 11 / 18 / 24 | 171 | 38 | 24245 | 0 | 5254 | 25 |
+| Walki + mini-gry (10 min na godzinę) | Zwiadowca | 11 / 18 / 25 | 174 | 40 | 25219 | 0 | 5971 | 22 |
+| Walki + mini-gry (10 min na godzinę) | Mag | 11 / 19 / 24 | 168 | 37 | 24537 | 0 | 5276 | 21 |
+| Walki + mini-gry + pety + kowal | Wojownik | 11 / 18 / 23 | 154 | 24 | 23338 | 14150 | 1354 | 24 |
+| Walki + mini-gry + pety + kowal | Zwiadowca | 11 / 17 / 24 | 158 | 26 | 24331 | 14150 | 1985 | 22 |
+| Walki + mini-gry + pety + kowal | Mag | 11 / 17 / 23 | 150 | 21 | 23778 | 14660 | 1302 | 21 |
+| Wszystko + sklep z przedmiotami | Wojownik | 11 / 17 / 23 | 148 | 18 | 23372 | 18850 | 538 | 24 |
+| Wszystko + sklep z przedmiotami | Zwiadowca | 11 / 17 / 23 | 150 | 20 | 23526 | 18575 | 668 | 22 |
+| Wszystko + sklep z przedmiotami | Mag | 11 / 17 / 24 | 150 | 20 | 23704 | 19432 | 742 | 21 |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | 12 / 18 / 24 | 173 | 10 | 26470 | 21550 | 317 | 49 |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | 12 / 18 / 24 | 178 | 14 | 26304 | 20575 | 526 | 48 |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Mag | 12 / 18 / 24 | 172 | 11 | 26386 | 21740 | 382 | 45 |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 11 / 18 / 24 | 171 | 69 | 21517 | 0 | 9639 | 0 |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 11 / 18 / 24 | 168 | 64 | 22402 | 0 | 9072 | 0 |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 11 / 19 / 24 | 158 | 58 | 21640 | 0 | 8126 | 0 |
 
 ### Strażnicy — świat „po zmianie D-107 (pliki gry)”
 
@@ -318,53 +318,53 @@ Dla każdej krainy: poziom przy pierwszej próbie · prób do wygranej (mediana 
 
 | Sposób gry | Klasa | Las | Bagno | Dżungla |
 |---|---|---|---|---|
-| Tylko walki, każda oglądana w całości | Wojownik | poz. 10 · 2 / 3 · 0% | poz. 16 · 3 / 5 · 8% | poz. 23 · 2 / 6 · 15% |
-| Tylko walki, każda oglądana w całości | Zwiadowca | poz. 10 · 2 / 4 · 0% | poz. 16 · 2 / 4 · 6% | poz. 23 · 3 / 6 · 12% |
-| Tylko walki, każda oglądana w całości | Mag | poz. 10 · 2 / 3 · 0% | poz. 16 · 3 / 6 · 20% | poz. 23 · 3 / 7 · 16% |
-| Tylko walki | Wojownik | poz. 10 · 2 / 4 · 0% | poz. 16 · 3 / 5 · 10% | poz. 23 · 3 / 6 · 13% |
-| Tylko walki | Zwiadowca | poz. 10 · 2 / 4 · 1% | poz. 16 · 3 / 6 · 12% | poz. 23 · 3 / 5 · 10% |
-| Tylko walki | Mag | poz. 10 · 2 / 4 · 0% | poz. 16 · 3 / 6 · 16% | poz. 23 · 3 / 6 · 18% |
-| Walki + mini-gry (10 min na godzinę) | Wojownik | poz. 10 · 2 / 4 · 2% | poz. 16 · 3 / 5 · 6% | poz. 23 · 2 / 4 · 8% |
-| Walki + mini-gry (10 min na godzinę) | Zwiadowca | poz. 10 · 2 / 4 · 1% | poz. 16 · 3 / 5 · 6% | poz. 23 · 2 / 5 · 8% |
-| Walki + mini-gry (10 min na godzinę) | Mag | poz. 10 · 2 / 3 · 1% | poz. 16 · 3 / 7 · 13% | poz. 23 · 2 / 6 · 13% |
+| Tylko walki, każda oglądana w całości | Wojownik | poz. 10 · 2 / 3 · 0% | poz. 16 · 2 / 4 · 2% | poz. 24 · 2 / 5 · 10% |
+| Tylko walki, każda oglądana w całości | Zwiadowca | poz. 10 · 2 / 3 · 0% | poz. 16 · 2 / 6 · 12% | poz. 23 · 3 / 6 · 20% |
+| Tylko walki, każda oglądana w całości | Mag | poz. 10 · 2 / 3 · 0% | poz. 16 · 3 / 6 · 20% | poz. 23 · 4 / 7 · 18% |
+| Tylko walki | Wojownik | poz. 10 · 2 / 4 · 0% | poz. 16 · 3 / 7 · 15% | poz. 23 · 2 / 6 · 12% |
+| Tylko walki | Zwiadowca | poz. 10 · 2 / 4 · 0% | poz. 16 · 3 / 6 · 12% | poz. 23 · 3 / 5 · 10% |
+| Tylko walki | Mag | poz. 10 · 2 / 4 · 0% | poz. 16 · 3 / 5 · 8% | poz. 23 · 3 / 5 · 10% |
+| Walki + mini-gry (10 min na godzinę) | Wojownik | poz. 10 · 2 / 4 · 5% | poz. 16 · 3 / 4 · 2% | poz. 23 · 2 / 4 · 2% |
+| Walki + mini-gry (10 min na godzinę) | Zwiadowca | poz. 10 · 2 / 4 · 2% | poz. 16 · 2 / 5 · 8% | poz. 23 · 2 / 5 · 10% |
+| Walki + mini-gry (10 min na godzinę) | Mag | poz. 10 · 2 / 2 · 0% | poz. 16 · 4 / 7 · 15% | poz. 23 · 3 / 5 · 10% |
 | Walki + mini-gry + pety + kowal | Wojownik | poz. 10 · 2 / 3 · 0% | poz. 16 · 2 / 4 · 0% | poz. 23 · 1 / 4 · 0% |
-| Walki + mini-gry + pety + kowal | Zwiadowca | poz. 10 · 2 / 3 · 0% | poz. 16 · 2 / 4 · 0% | poz. 23 · 2 / 4 · 4% |
-| Walki + mini-gry + pety + kowal | Mag | poz. 10 · 1 / 3 · 0% | poz. 16 · 2 / 4 · 2% | poz. 23 · 2 / 4 · 0% |
-| Wszystko + sklep z przedmiotami | Wojownik | poz. 10 · 1 / 3 · 0% | poz. 16 · 2 / 3 · 0% | poz. 23 · 1 / 3 · 0% |
-| Wszystko + sklep z przedmiotami | Zwiadowca | poz. 10 · 2 / 3 · 0% | poz. 16 · 2 / 3 · 0% | poz. 23 · 1 / 3 · 0% |
-| Wszystko + sklep z przedmiotami | Mag | poz. 10 · 2 / 3 · 0% | poz. 16 · 2 / 4 · 3% | poz. 23 · 1 / 4 · 2% |
+| Walki + mini-gry + pety + kowal | Zwiadowca | poz. 10 · 2 / 3 · 0% | poz. 16 · 2 / 4 · 0% | poz. 23 · 2 / 4 · 5% |
+| Walki + mini-gry + pety + kowal | Mag | poz. 10 · 1 / 2 · 0% | poz. 16 · 2 / 4 · 2% | poz. 23 · 1 / 3 · 0% |
+| Wszystko + sklep z przedmiotami | Wojownik | poz. 10 · 1 / 3 · 0% | poz. 16 · 2 / 3 · 0% | poz. 23 · 1 / 2 · 0% |
+| Wszystko + sklep z przedmiotami | Zwiadowca | poz. 10 · 2 / 3 · 0% | poz. 16 · 1 / 4 · 0% | poz. 23 · 1 / 3 · 0% |
+| Wszystko + sklep z przedmiotami | Mag | poz. 10 · 2 / 3 · 0% | poz. 16 · 2 / 4 · 2% | poz. 23 · 2 / 3 · 0% |
 | Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | poz. 11 · 1 / 1 · 0% | poz. 17 · 1 / 2 · 0% | poz. 24 · 1 / 2 · 0% |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | poz. 11 · 1 / 2 · 0% | poz. 17 · 1 / 2 · 0% | poz. 24 · 1 / 2 · 0% |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Mag | poz. 11 · 1 / 2 · 0% | poz. 17 · 2 / 3 · 1% | poz. 24 · 1 / 2 · 0% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | poz. 9 · 3 / 5 · 7% | poz. 15 · 4 / 9 · 34% | poz. 22 · 4 / 8 · 30% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | poz. 9 · 3 / 5 · 6% | poz. 15 · 4 / 7 · 21% | poz. 22 · 3 / 8 · 27% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | poz. 9 · 3 / 5 · 6% | poz. 15 · 5 / 9 · 42% | poz. 22 · 4 / 9 · 33% |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | poz. 11 · 1 / 2 · 0% | poz. 17 · 1 / 2 · 0% | poz. 24 · 1 / 3 · 0% |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Mag | poz. 11 · 1 / 2 · 0% | poz. 17 · 2 / 3 · 0% | poz. 24 · 1 / 2 · 0% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | poz. 9 · 2 / 5 · 8% | poz. 15 · 4 / 9 · 38% | poz. 22 · 4 / 8 · 38% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | poz. 9 · 3 / 4 · 5% | poz. 15 · 3 / 7 · 30% | poz. 22 · 3 / 9 · 38% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | poz. 9 · 3 / 5 · 5% | poz. 15 · 6 / 10 · 55% | poz. 22 · 3 / 9 · 35% |
 
 ### Nuda i przestoje — świat „po zmianie D-107 (pliki gry)” (mediana)
 
 | Sposób gry | Klasa | Najdłużej bez awansu | Najdłużej bez nowej zagrody | Najdłuższa seria jednego potwora | Czekanie (odradzanie + blokada) |
 |---|---|---|---|---|---:|
-| Tylko walki, każda oglądana w całości | Wojownik | 11 min (dzungla/o1) | 23 min (dzungla/straznik) | 21 × Kokosowy Siłacz | 0,0 min |
-| Tylko walki, każda oglądana w całości | Zwiadowca | 11 min (dzungla/o1) | 23 min (dzungla/straznik) | 19 × Gębokwiat | 0,0 min |
-| Tylko walki, każda oglądana w całości | Mag | 8,6 min (dzungla/o1) | 21 min (bagno/straznik) | 22 × Kokosowy Siłacz | 0,0 min |
-| Tylko walki | Wojownik | 6,5 min (dzungla/o1) | 14 min (dzungla/straznik) | 20 × Kokosowy Siłacz | 0,0 min |
-| Tylko walki | Zwiadowca | 6,1 min (dzungla/o1) | 13 min (dzungla/straznik) | 18 × Kokosowy Siłacz | 0,0 min |
-| Tylko walki | Mag | 5,3 min (dzungla/o1) | 12 min (bagno/straznik) | 22 × Kokosowy Siłacz | 0,0 min |
-| Walki + mini-gry (10 min na godzinę) | Wojownik | 9,8 min (dzungla/z1) | 15 min (dzungla/g1) | 24 × Kokosowy Siłacz | 0,0 min |
-| Walki + mini-gry (10 min na godzinę) | Zwiadowca | 9,8 min (dzungla/z1) | 15 min (dzungla/g1) | 22 × Kokosowy Siłacz | 0,0 min |
-| Walki + mini-gry (10 min na godzinę) | Mag | 9,4 min (dzungla/o1) | 14 min (dzungla/o1) | 24 × Kokosowy Siłacz | 0,0 min |
-| Walki + mini-gry + pety + kowal | Wojownik | 10 min (bagno/b1) | 13 min (bagno/b1) | 23 × Kokosowy Siłacz | 0,0 min |
-| Walki + mini-gry + pety + kowal | Zwiadowca | 10 min (bagno/b1) | 13 min (bagno/b1) | 24 × Kokosowy Siłacz | 0,0 min |
-| Walki + mini-gry + pety + kowal | Mag | 9,3 min (dzungla/g1) | 13 min (dzungla/g1) | 23 × Kokosowy Siłacz | 0,0 min |
-| Wszystko + sklep z przedmiotami | Wojownik | 9,8 min (bagno/b1) | 12 min (bagno/b1) | 23 × Kokosowy Siłacz | 0,0 min |
+| Tylko walki, każda oglądana w całości | Wojownik | 11 min (dzungla/o1) | 22 min (bagno/k1) | 22 × Kokosowy Siłacz | 0,0 min |
+| Tylko walki, każda oglądana w całości | Zwiadowca | 11 min (dzungla/o1) | 25 min (dzungla/straznik) | 20 × Kokosowy Siłacz | 0,0 min |
+| Tylko walki, każda oglądana w całości | Mag | 8,4 min (dzungla/o1) | 21 min (bagno/straznik) | 23 × Kokosowy Siłacz | 0,0 min |
+| Tylko walki | Wojownik | 6,6 min (dzungla/o1) | 14 min (bagno/straznik) | 20 × Kokosowy Siłacz | 0,0 min |
+| Tylko walki | Zwiadowca | 6,1 min (dzungla/o1) | 14 min (dzungla/straznik) | 18 × Kokosowy Siłacz | 0,0 min |
+| Tylko walki | Mag | 5,3 min (dzungla/o1) | 11 min (bagno/straznik) | 22 × Kokosowy Siłacz | 0,0 min |
+| Walki + mini-gry (10 min na godzinę) | Wojownik | 9,9 min (dzungla/z1) | 15 min (bagno/b1) | 24 × Kokosowy Siłacz | 0,0 min |
+| Walki + mini-gry (10 min na godzinę) | Zwiadowca | 9,9 min (dzungla/z1) | 14 min (dzungla/g1) | 23 × Kokosowy Siłacz | 0,0 min |
+| Walki + mini-gry (10 min na godzinę) | Mag | 9,5 min (dzungla/o1) | 14 min (dzungla/o1) | 24 × Kokosowy Siłacz | 0,0 min |
+| Walki + mini-gry + pety + kowal | Wojownik | 10 min (dzungla/z1) | 13 min (bagno/b1) | 24 × Kokosowy Siłacz | 0,0 min |
+| Walki + mini-gry + pety + kowal | Zwiadowca | 10 min (dzungla/z1) | 13 min (dzungla/g1) | 24 × Kokosowy Siłacz | 0,0 min |
+| Walki + mini-gry + pety + kowal | Mag | 9,2 min (dzungla/g1) | 13 min (dzungla/g1) | 23 × Kokosowy Siłacz | 0,0 min |
+| Wszystko + sklep z przedmiotami | Wojownik | 9,8 min (dzungla/g1) | 13 min (bagno/b1) | 23 × Gębokwiat | 0,0 min |
 | Wszystko + sklep z przedmiotami | Zwiadowca | 9,8 min (bagno/b1) | 12 min (bagno/b1) | 23 × Kokosowy Siłacz | 0,0 min |
-| Wszystko + sklep z przedmiotami | Mag | 9,6 min (dzungla/g1) | 13 min (dzungla/g1) | 23 × Kokosowy Siłacz | 0,0 min |
+| Wszystko + sklep z przedmiotami | Mag | 9,7 min (dzungla/g1) | 13 min (dzungla/g1) | 24 × Kokosowy Siłacz | 0,0 min |
 | Ostrożny (bez sklepu, z zapasem poziomu) | Wojownik | 14 min (dzungla/z1) | 18 min (bagno/k1) | 23 × Zwijogon | 0,0 min |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | 14 min (dzungla/z1) | 19 min (bagno/k1) | 23 × Zwijogon | 0,0 min |
-| Ostrożny (bez sklepu, z zapasem poziomu) | Mag | 13 min (dzungla/z1) | 17 min (dzungla/o1) | 23 × Kokosowy Siłacz | 0,0 min |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 4,0 min (dzungla/o1) | 7,6 min (dzungla/straznik) | 24 × Kokosowy Siłacz | 0,0 min |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 4,0 min (dzungla/o1) | 8,0 min (dzungla/o1) | 24 × Kokosowy Siłacz | 0,0 min |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 3,7 min (dzungla/o1) | 7,3 min (bagno/straznik) | 24 × Kokosowy Siłacz | 0,0 min |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Zwiadowca | 14 min (dzungla/z1) | 19 min (bagno/k1) | 22 × Zwijogon | 0,0 min |
+| Ostrożny (bez sklepu, z zapasem poziomu) | Mag | 13 min (dzungla/o1) | 17 min (dzungla/o1) | 24 × Kokosowy Siłacz | 0,0 min |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 4,0 min (dzungla/g1) | 7,7 min (dzungla/o1) | 22 × Kokosowy Siłacz | 0,0 min |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 3,9 min (dzungla/o1) | 7,6 min (dzungla/o1) | 26 × Kokosowy Siłacz | 0,0 min |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 3,7 min (dzungla/o1) | 7,4 min (bagno/straznik) | 24 × Kokosowy Siłacz | 0,0 min |
 
 ### Gdzie schodzi czas — „Tylko walki”, świat „po zmianie D-107 (pliki gry)” (mediana, średnio z klas)
 
@@ -372,21 +372,21 @@ Minuty liczą się od pierwszego wejścia do zagrody do pierwszego wejścia do n
 
 | Zagroda | Potwór (poziomy) | Poziom na wejściu | Minut | Walk | Przegranych |
 |---|---|---:|---:|---:|---:|
-| las/s1 | Leśny Slime (1–3) | 1 | 1,5 | 5 | 1,0 |
-| las/m1 | Muchomornik (3–5) | 3 | 3,8 | 11 | 2,0 |
-| las/w1 | Cierniowy Wilk (6–8) | 6 | 3,8 | 18 | 2,3 |
+| las/s1 | Leśny Slime (1–3) | 1 | 1,5 | 4 | 0,8 |
+| las/m1 | Muchomornik (3–5) | 3 | 3,8 | 11 | 1,7 |
+| las/w1 | Cierniowy Wilk (6–8) | 6 | 3,7 | 18 | 2,3 |
 | las/t1 | Leśny Troll (8–9) | 8 | 4,0 | 6 | 2,0 |
 | las/straznik | Strażnik Gaju (10–10) | 10 | 3,5 | 2 | 1,0 |
-| bagno/r1 | Rechotek (10–12) | 12 | 0,9 | 10 | 2,0 |
-| bagno/b1 | Bulgotnik (12–14) | 12 | 6,7 | 17 | 5,0 |
-| bagno/k1 | Kłodokłap (14–16) | 14 | 8,2 | 26 | 5,0 |
-| bagno/t1 | Ropucha z Chatką (16–16) | 16 | 1,2 | 7 | 3,3 |
-| bagno/straznik | Strażnik Topieli (16–16) | 16 | 8,2 | 3 | 2,0 |
+| bagno/r1 | Rechotek (10–12) | 12 | 1,0 | 11 | 2,0 |
+| bagno/b1 | Bulgotnik (12–14) | 12 | 6,9 | 17 | 4,7 |
+| bagno/k1 | Kłodokłap (14–16) | 14 | 8,1 | 24 | 5,0 |
+| bagno/t1 | Ropucha z Chatką (16–16) | 16 | 1,2 | 7 | 3,5 |
+| bagno/straznik | Strażnik Topieli (16–16) | 16 | 7,8 | 3 | 2,0 |
 | dzungla/z1 | Zwijogon (17–19) | 19 | 0,9 | 10 | 2,0 |
-| dzungla/g1 | Gębokwiat (19–21) | 19 | 6,8 | 22 | 4,8 |
-| dzungla/o1 | Kokosowy Siłacz (21–23) | 21 | 9,2 | 28 | 5,8 |
-| dzungla/t1 | Pancernik Ruin (23–23) | 23 | 1,8 | 7 | 2,3 |
-| dzungla/straznik | Wąż Stu Lian (23–23) | 23 | 7,7 | 3 | 2,0 |
+| dzungla/g1 | Gębokwiat (19–21) | 19 | 7,2 | 21 | 4,8 |
+| dzungla/o1 | Kokosowy Siłacz (21–23) | 21 | 9,3 | 28 | 6,0 |
+| dzungla/t1 | Pancernik Ruin (23–23) | 23 | 1,8 | 7 | 2,7 |
+| dzungla/straznik | Wąż Stu Lian (23–23) | 23 | 7,2 | 3 | 1,8 |
 
 ### Gdzie schodzi czas — „Walki + mini-gry + pety + kowal”, świat „po zmianie D-107 (pliki gry)” (mediana, średnio z klas)
 
@@ -394,21 +394,21 @@ Minuty liczą się od pierwszego wejścia do zagrody do pierwszego wejścia do n
 
 | Zagroda | Potwór (poziomy) | Poziom na wejściu | Minut | Walk | Przegranych |
 |---|---|---:|---:|---:|---:|
-| las/s1 | Leśny Slime (1–3) | 1 | 1,5 | 5 | 1,0 |
-| las/m1 | Muchomornik (3–5) | 3 | 4,5 | 11 | 1,7 |
+| las/s1 | Leśny Slime (1–3) | 1 | 1,5 | 4 | 1,0 |
+| las/m1 | Muchomornik (3–5) | 3 | 4,4 | 11 | 1,7 |
 | las/w1 | Cierniowy Wilk (6–8) | 6 | 5,3 | 16 | 2,0 |
-| las/t1 | Leśny Troll (8–9) | 8 | 4,3 | 5 | 2,0 |
-| las/straznik | Strażnik Gaju (10–10) | 10 | 2,6 | 2 | 0,7 |
-| bagno/r1 | Rechotek (10–12) | 11 | 2,8 | 7 | 1,0 |
-| bagno/b1 | Bulgotnik (12–14) | 12 | 13 | 15 | 2,7 |
-| bagno/k1 | Kłodokłap (14–16) | 14 | 8,0 | 20 | 1,3 |
-| bagno/t1 | Ropucha z Chatką (16–16) | 16 | 1,0 | 3 | 1,0 |
-| bagno/straznik | Strażnik Topieli (16–16) | 16 | 3,7 | 2 | 1,0 |
-| dzungla/z1 | Zwijogon (17–19) | 17 | 8,0 | 16 | 2,0 |
-| dzungla/g1 | Gębokwiat (19–21) | 19 | 11 | 22 | 2,7 |
+| las/t1 | Leśny Troll (8–9) | 8 | 4,4 | 5 | 2,0 |
+| las/straznik | Strażnik Gaju (10–10) | 10 | 2,8 | 2 | 0,7 |
+| bagno/r1 | Rechotek (10–12) | 11 | 2,6 | 7 | 1,2 |
+| bagno/b1 | Bulgotnik (12–14) | 12 | 13 | 16 | 2,5 |
+| bagno/k1 | Kłodokłap (14–16) | 14 | 7,8 | 20 | 1,7 |
+| bagno/t1 | Ropucha z Chatką (16–16) | 16 | 1,0 | 4 | 0,8 |
+| bagno/straznik | Strażnik Topieli (16–16) | 16 | 3,8 | 2 | 1,0 |
+| dzungla/z1 | Zwijogon (17–19) | 17 | 8,2 | 15 | 2,3 |
+| dzungla/g1 | Gębokwiat (19–21) | 19 | 10 | 22 | 2,7 |
 | dzungla/o1 | Kokosowy Siłacz (21–23) | 21 | 8,7 | 24 | 2,0 |
 | dzungla/t1 | Pancernik Ruin (23–23) | 23 | 1,5 | 2 | 0,0 |
-| dzungla/straznik | Wąż Stu Lian (23–23) | 23 | 2,2 | 2 | 0,7 |
+| dzungla/straznik | Wąż Stu Lian (23–23) | 23 | 2,3 | 1 | 0,3 |
 
 ### Szansa wygranej ze Strażnikiem (%), bohater na poziomie Strażnika −1 … +3
 
@@ -434,38 +434,38 @@ Liczone na kopii danych; pliki gry bez zmian. Kolumny: minuty do końca · róż
 
 | Zmiana | Koniec (min) | Różnica klas (min) | Przegranych | Prób ze Strażnikami | Utknęło (%) | Bez awansu (min) |
 |---|---:|---:|---:|---|---|---:|
-| Bez zmian (liczby z plików gry) | 75 | 10 | 46 | 2,0 / 3,0 / 3,0 | 0 / 13 / 14 | 6,0 |
-| Dla porównania: krzywa doświadczenia +25% (dłuższa gra) | 91 | 10 | 57 | 2,0 / 3,0 / 3,0 | 3 / 17 / 20 | 7,1 |
-| Krzywa doświadczenia: wykładnik 1,5 zamiast 1,6 | 59 | 9,5 | 36 | 2,0 / 3,0 / 2,8 | 1 / 6 / 12 | 4,7 |
-| Razem: Strażnicy −30% życia i doświadczenie Dżungli +25% | 66 | 8,0 | 41 | 2,0 / 2,0 / 2,0 | 0 / 3 / 3 | 5,3 |
-| Strażnik Topieli i Wąż Stu Lian: życie −15% | 73 | 10 | 46 | 2,0 / 2,3 / 2,2 | 0 / 6 / 6 | 6,0 |
-| Strażnik Topieli i Wąż Stu Lian: życie −30% | 71 | 9,9 | 45 | 2,0 / 2,0 / 2,0 | 0 / 3 / 2 | 5,9 |
-| Doświadczenie z potworów Dżungli +25% | 70 | 11 | 43 | 2,0 / 3,0 / 3,0 | 0 / 13 / 15 | 5,3 |
+| Bez zmian (liczby z plików gry) | 75 | 9,0 | 46 | 2,0 / 3,0 / 2,8 | 0 / 12 / 11 | 6,0 |
+| Strażnik Topieli i Wąż Stu Lian: życie −15% | 72 | 13 | 46 | 2,0 / 2,7 / 2,3 | 0 / 5 / 6 | 6,0 |
+| Strażnik Topieli i Wąż Stu Lian: życie −30% | 71 | 11 | 44 | 2,0 / 2,2 / 2,0 | 0 / 2 / 2 | 5,9 |
+| Doświadczenie z potworów Dżungli +25% | 72 | 11 | 44 | 2,0 / 3,0 / 3,0 | 0 / 12 / 18 | 5,3 |
+| Krzywa doświadczenia: wykładnik 1,5 zamiast 1,6 | 59 | 7,4 | 37 | 1,7 / 2,8 / 2,7 | 2 / 3 / 10 | 4,8 |
+| Razem: Strażnicy −30% życia i doświadczenie Dżungli +25% | 66 | 7,3 | 41 | 2,0 / 2,2 / 1,8 | 0 / 2 / 2 | 5,3 |
+| Dla porównania: krzywa doświadczenia +25% (dłuższa gra) | 91 | 8,2 | 58 | 2,0 / 3,0 / 3,3 | 2 / 13 / 21 | 7,2 |
 
 **Walki + mini-gry + pety + kowal**
 
 | Zmiana | Koniec (min) | Różnica klas (min) | Przegranych | Prób ze Strażnikami | Utknęło (%) | Bez awansu (min) |
 |---|---:|---:|---:|---|---|---:|
-| Bez zmian (liczby z plików gry) | 81 | 7,8 | 24 | 1,7 / 2,0 / 1,7 | 0 / 1 / 1 | 9,8 |
-| Dla porównania: krzywa doświadczenia +25% (dłuższa gra) | 99 | 8,4 | 27 | 1,0 / 2,0 / 1,3 | 0 / 3 / 2 | 11 |
-| Krzywa doświadczenia: wykładnik 1,5 zamiast 1,6 | 69 | 6,2 | 21 | 1,7 / 2,0 / 1,8 | 0 / 1 / 4 | 8,9 |
-| Razem: Strażnicy −30% życia i doświadczenie Dżungli +25% | 75 | 7,3 | 22 | 1,7 / 1,0 / 1,0 | 0 / 0 / 0 | 9,5 |
-| Strażnik Topieli i Wąż Stu Lian: życie −15% | 80 | 7,3 | 23 | 1,7 / 1,8 / 1,0 | 0 / 1 / 1 | 9,8 |
-| Strażnik Topieli i Wąż Stu Lian: życie −30% | 80 | 7,2 | 23 | 1,7 / 1,0 / 1,0 | 0 / 0 / 0 | 9,8 |
-| Doświadczenie z potworów Dżungli +25% | 77 | 6,4 | 22 | 1,7 / 2,0 / 1,8 | 0 / 1 / 2 | 9,5 |
+| Bez zmian (liczby z plików gry) | 81 | 9,2 | 24 | 1,7 / 2,0 / 1,3 | 0 / 1 / 2 | 9,9 |
+| Strażnik Topieli i Wąż Stu Lian: życie −15% | 80 | 7,9 | 24 | 1,7 / 2,0 / 1,0 | 0 / 1 / 2 | 9,9 |
+| Strażnik Topieli i Wąż Stu Lian: życie −30% | 80 | 7,9 | 23 | 1,7 / 1,3 / 1,0 | 0 / 0 / 0 | 9,8 |
+| Doświadczenie z potworów Dżungli +25% | 77 | 7,7 | 22 | 1,7 / 2,0 / 2,0 | 0 / 1 / 1 | 9,7 |
+| Krzywa doświadczenia: wykładnik 1,5 zamiast 1,6 | 69 | 5,7 | 21 | 1,3 / 1,8 / 2,0 | 0 / 2 / 6 | 8,9 |
+| Razem: Strażnicy −30% życia i doświadczenie Dżungli +25% | 76 | 8,7 | 22 | 1,7 / 1,3 / 1,0 | 0 / 0 / 0 | 9,7 |
+| Dla porównania: krzywa doświadczenia +25% (dłuższa gra) | 99 | 10 | 27 | 1,0 / 1,8 / 1,5 | 0 / 5 / 3 | 11 |
 
 **Niecierpliwy (pomija walki, pcha do przodu)**
 
 | Zmiana | Koniec (min) | Różnica klas (min) | Przegranych | Prób ze Strażnikami | Utknęło (%) | Bez awansu (min) |
 |---|---:|---:|---:|---|---|---:|
-| Bez zmian (liczby z plików gry) | 45 | 4,6 | 64 | 3,0 / 4,3 / 3,5 | 6 / 32 / 30 | 3,9 |
-| Dla porównania: krzywa doświadczenia +25% (dłuższa gra) | 55 | 2,7 | 76 | 3,0 / 4,7 / 3,7 | 10 / 39 / 32 | 4,7 |
-| Krzywa doświadczenia: wykładnik 1,5 zamiast 1,6 | 35 | 3,2 | 49 | 3,0 / 4,0 / 3,7 | 2 / 27 / 27 | 3,0 |
-| Razem: Strażnicy −30% życia i doświadczenie Dżungli +25% | 40 | 3,2 | 55 | 3,0 / 3,0 / 2,2 | 6 / 9 / 6 | 3,4 |
-| Strażnik Topieli i Wąż Stu Lian: życie −15% | 45 | 4,3 | 61 | 3,0 / 3,7 / 3,0 | 6 / 20 / 19 | 3,9 |
-| Strażnik Topieli i Wąż Stu Lian: życie −30% | 44 | 3,8 | 59 | 3,0 / 3,0 / 2,0 | 6 / 9 / 8 | 3,9 |
-| Doświadczenie z potworów Dżungli +25% | 43 | 3,9 | 58 | 3,0 / 4,3 / 4,0 | 6 / 32 / 31 | 3,4 |
+| Bez zmian (liczby z plików gry) | 45 | 4,1 | 64 | 2,7 / 4,3 / 3,2 | 6 / 41 / 37 | 3,9 |
+| Strażnik Topieli i Wąż Stu Lian: życie −15% | 45 | 3,3 | 62 | 2,7 / 3,8 / 3,0 | 6 / 24 / 20 | 3,9 |
+| Strażnik Topieli i Wąż Stu Lian: życie −30% | 44 | 4,0 | 61 | 2,7 / 3,0 / 2,3 | 6 / 9 / 9 | 3,9 |
+| Doświadczenie z potworów Dżungli +25% | 43 | 3,6 | 59 | 2,7 / 4,3 / 3,7 | 6 / 41 / 26 | 3,4 |
+| Krzywa doświadczenia: wykładnik 1,5 zamiast 1,6 | 35 | 2,3 | 50 | 3,0 / 4,2 / 4,0 | 2 / 29 / 28 | 3,0 |
+| Razem: Strażnicy −30% życia i doświadczenie Dżungli +25% | 41 | 2,1 | 56 | 2,7 / 3,0 / 2,3 | 6 / 9 / 7 | 3,4 |
+| Dla porównania: krzywa doświadczenia +25% (dłuższa gra) | 56 | 4,3 | 77 | 3,3 / 4,5 / 4,0 | 8 / 39 / 32 | 4,7 |
 
-_Uruchomienie: `python -B swiat/przejscie_gry/symulacja_przejscia.py --przebiegow 100 --ziarno 1` · 100 przebiegów na komórkę · krzywa doświadczenia 11,71 × L^1,6 · katalog sklepu: swiat/postacie/sklep_liczby.json · liczone 2026-11-19._
+_Uruchomienie: `python -B swiat/przejscie_gry/symulacja_przejscia.py --przebiegow 40 --ziarno 1` · 40 przebiegów na komórkę · krzywa doświadczenia 11,71 × L^1,6 · katalog sklepu: swiat/postacie/sklep_liczby.json · liczone 2026-11-19._
 
 <!-- TABELE:KONIEC -->
