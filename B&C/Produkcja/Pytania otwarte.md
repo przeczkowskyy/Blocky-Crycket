@@ -534,6 +534,9 @@ Dopisek z 2026-11-18 (po regresji końcowej): przy ×1,75 pierwsza walka został
 Szczegóły: Włączenie wymaga dostępu Studio do usług danych (ustawienie gry, zmienia właściciel) i zmian w plikach Pawła: ekran wyboru klasy czeka na wczytanie profilu; klasa wybierana tylko raz (D-081); zakupy drzewka zapisywane razem z profilem; wartości testowe (1000 Gemów) usunięte. Nowy gracz przy włączonym zapisie zaczyna z 0 Złota i 0 Gemów. Dziś pakiet działa tylko w Studio, więc na serwerze gry zapisu sprawdzić się nie da. Pełny opis: `swiat/stan_gracza/README.md`, rozdział „Zapis postępu”. Zob. pytanie 53.
 Dopisek z 2026-11-19: po decyzji D-106 (gra do przejścia od startu do bramy Pustyni) to pytanie blokuje grę na więcej niż jedno posiedzenie — bez zapisu poziom, Złoto i przedmioty znikają po wyjściu. Włączenie wymaga zgody jednej z osób i dostępu Studio do usług danych w ustawieniach gry (robi właściciel gry).
 **Odpowiedź:**
+- Karol (2026-11-19): Tak. Daj zapis postępu.
+Rozstrzyga: D-110
+
 
 ## 61. Kowal: czy robocze zasady z próby zostają?
 - Kowal na próbę stoi w Studio (D-102): łup przedmiotów z walk, rozbieranie zapasów na materiały, ulepszenia +1…+5.
@@ -623,6 +626,9 @@ Dopisek z 2026-11-18 (po komplecie sześciu ras): doszły trzy punkty. (9) Rogi 
 
 Szczegóły: Karol 17.11 ustalił na czacie, że Strażnik Topieli ma być trudny — dlatego to pytanie, a nie zmiana. Z mini-grami, petami i kowalem utyka dziś 0–4% graczy, więc trudność Strażników wymusza korzystanie z dodatków; bez dodatków boli (niecierpliwy gracz utyka w 21–42% przypadków). Osobna sprawa z tego samego rachunku: kara za przegraną zabiera graczowi, który nie wydaje, 27% zarobionego Złota (niecierpliwemu 42%) — do rozstrzygnięcia razem z propozycjami D-097–D-100. Liczby i założenia: `swiat/przejscie_gry/PRZEJSCIE_W_LICZBACH.md`; raport w panelu „Przejście gry w liczbach…”.
 **Odpowiedź:**
+- Karol (2026-11-19): Nie wiem czy 30% to nie za dużo. Gracz słusznie ma się pomęczyć. Może jakieś 15%?
+Rozstrzyga: D-111 (życie −15%); doświadczenie z potworów Dżungli +25% zostaje otwarte
+
 
 ## 71. Paweł: makieta okna „Shop” a sklep zbrojmistrza
 - W Studio stoi skrypt Pawła `ShopClient` z makietą okna „Shop”; przy zbrojowni otwierał się razem z tymczasowym oknem sklepu Karola.

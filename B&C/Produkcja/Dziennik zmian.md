@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-19 · Claude Code u Karola (decyzje Karola: zapis postępu, Strażnicy −15%)
+- **Karol, ok. 13:30 na czacie:** „Tak. Daj zapis postępu. Nie wiem czy 30% to nie za dużo. Gracz słusznie ma się pomęczyć. Może jakieś 15%?” Zapisane jako **D-110** (zapis postępu włączony; rozstrzyga pytanie 60) i **D-111** (Strażnik Topieli i Wąż Stu Lian −15% życia; rozstrzyga pierwszą część pytania 70). Obie mają podpis Karola i czekają na Pawła.
+- Sprawdzone przed startem: Studio ma dostęp do usług danych gry (odczyt z magazynu działa w trybie Edit), więc zapis da się włączyć bez zmiany ustawień gry. Zapis ze Studio idzie do osobnego magazynu.
+- [[Zadania]]: trzy nowe pozycje (zapis, Strażnicy, lista dla Pawła po włączeniu zapisu). [[Pytania otwarte]]: odpowiedzi pod 60 i 70; druga część pytania 70 (doświadczenie w Dżungli +25%) zostaje otwarta.
+
 ## 2026-11-19 · Claude Code u Karola (próba całej gry — stan końcowy dnia)
 - **Próba całej gry, 23 próby (12:00–13:23):** bez nowych błędów. Przeszły: cała droga gracza, las, Bagno, Dżungla (z walką bez przestojów), stary las, stan gracza, pety trzech krain, kowal 13 punktów, przymierzalnia 10, Training Center w sceneriach krain, bohater w świecie 20, wystawa ras, przelot przez biom 15, NPC 14, sklep 12, bazar, chmury, dźwięk, walka 111 z 111 i 27 z 27. Jedyny błąd jest znany: za małe napisy w wyborze próby walki na ekranie telefonu (44 z 46). Do listy prób doszły próby przelotu przez biom, NPC i sklepu (`swiat/przejscie_gry/regresja_calosci.py`).
 - **Symulacja przejścia puszczona ponownie** na liczbach z końca dnia (walka bez przestojów, sklep): czasy zmieniły się o najwyżej minutę, wnioski bez zmian — gra do przejścia w ok. 1 godz. 20 min, gracz utyka na Strażniku Topieli i Wężu Stu Lian (pytanie 70).

@@ -504,5 +504,13 @@ Mini-gry Training Center mają być pokazane ciekawiej niż „platforma w murac
 ✅ zatwierdzona · 3D / postacie · 2026-11-19 · źródło: rozmowa Karola z Claude Code 19.11 (wiadomość głosowa na początek dnia) · zdecydował: Karol 2026-11-19
 Karczmarz, sprzedawcy, mistrz gier i postacie przy mini-grach mają być postaciami NPC — modelami postaci ze szkieletem i animacją, jak bohaterowie — a nie nieruchomymi figurami złożonymi z klocków (Karol: „żeby to po prostu były NPC-ty”). Robi agent Karola (D-093, 3D). Wygląd poszczególnych postaci to propozycje do oceny. Decyzja ma podpis Karola i czeka na potwierdzenie Pawła (D-043). Zob. [[Karczmarz]].
 
+### D-110 Zapis postępu gracza włączony
+✅ zatwierdzona · technika / grywalność · 2026-11-19 · źródło: rozmowa Karola z Claude Code 19.11 (odpowiedź na czacie ok. 13:30) · zdecydował: Karol 2026-11-19
+Karol: „Tak. Daj zapis postępu.” Poziom, Złoto, przedmioty, pety, trening i otwarte bramy mają zostawać po wyjściu z gry — bez tego gry nie da się przejść na więcej niż jedno posiedzenie (D-106). Włącza gotowy zapis z pakietu stanu gracza (`swiat/stan_gracza/`, opis w README, rozdział „Zapis postępu”). Dziś działa to tylko w Studio (prototypy gry żyją w Studio) i pisze do osobnego magazynu Studio, nie do magazynu opublikowanej gry. Po stronie Pawła zostają trzy rzeczy z listy w README stanu gracza: wybór klasy ma czekać na wczytanie i być jednorazowy, a zakupy drzewka umiejętności muszą trafić do zapisu — do tego czasu drzewko się nie zapisuje. Rozstrzyga pytanie 60. Decyzja ma podpis Karola i czeka na potwierdzenie Pawła (D-043). Zob. [[Zadania]].
+
+### D-111 Strażnik Topieli i Wąż Stu Lian: życie mniejsze o 15%
+✅ zatwierdzona · game design / balans · 2026-11-19 · źródło: rozmowa Karola z Claude Code 19.11 (odpowiedź na czacie ok. 13:30) · zdecydował: Karol 2026-11-19
+Na propozycję z symulacji przejścia (−30% życia) Karol: „Nie wiem, czy 30% to nie za dużo. Gracz słusznie ma się pomęczyć. Może jakieś 15%?” Strażnik Topieli i Wąż Stu Lian dostają 15% mniej życia. Według symulacji z samym bohaterem utyka wtedy ok. 6% graczy zamiast 13–14%. Strażnik Gaju bez zmian. Druga część propozycji — 25% więcej doświadczenia z potworów Dżungli — nie padła w odpowiedzi i zostaje otwarta. Zmienia wcześniejsze ustalenie Karola z 17.11, że Strażnik Topieli ma być trudny: zostaje trudny, ale mniej. Rozstrzyga pierwszą część pytania 70. Decyzja ma podpis Karola i czeka na potwierdzenie Pawła (D-043). Zob. [[Biomy — zarys siedmiu kolejnych]].
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*

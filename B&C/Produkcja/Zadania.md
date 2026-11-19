@@ -7,6 +7,9 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Zapis postępu (D-110): włączyć gotowy zapis w pakiecie stanu gracza, sprawdzić w Studio powrót stanu po ponownym wejściu (poziom, Złoto, przedmioty ze sklepu, pety, trening, bramy), próby gry mają dalej zaczynać od świeżego gracza · agent: Karol · #wysoki
+- [ ] Strażnik Topieli i Wąż Stu Lian −15% życia (D-111): zmiana w danych Bagna i Dżungli, próby obu krain, symulacja przejścia jeszcze raz · agent: Karol · #wysoki
+- [ ] Paweł, po włączeniu zapisu (D-110): wybór klasy ma czekać na wczytanie stanu i być jednorazowy; zakupy drzewka umiejętności zapisywać przez dane pakietu stanu gracza (lista z plikami w `swiat/stan_gracza/README.md`, rozdział „Zapis postępu”) · agent: Paweł · #wysoki
 - [ ] **Kierunek od 19.11 (D-106): grywalność trzech biomów od startu do bramy Pustyni** — pięć prac agenta Karola niżej; Pustynia wstrzymana · agent: Karol · #wysoki
 - [ ] Walka bez przestojów (D-107), dalej: stoi w Studio od 19.11 i czeka na ocenę (raport „Walka bez przestojów: bez czekania, więcej potworów, szybkie odradzanie”) — liczba potworów, czasy odradzania rzadkiego i Strażnika, tempo doświadczenia (do ok. 240 walk w 10 minut przy pomijaniu); niesprawdzone: kilku graczy naraz, telefon · agent: Karol · #wysoki
 - [ ] Przedmioty do kupienia (D-106), dalej: 60 przedmiotów w trzech stopniach i sklep zbrojmistrza z tymczasowym oknem stoją w Studio od 19.11 i czekają na ocenę (raport „Sklep zbrojmistrza: 60 przedmiotów w trzech stopniach za Złoto”; wygląd, nazwy, ceny, reguła zakładania — `swiat/postacie/SKLEP_PRZEDMIOTY.md`); docelowe okno 2D — Paweł (pytanie 71); do zrobienia: wskazówka „stać cię na przedmiot”, blade polskie litery w oknie, łuk Zwiadowcy z Dżungli pod ziemią w uniku · agent: Karol · #wysoki
