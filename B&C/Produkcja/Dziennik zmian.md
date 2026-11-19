@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-19 · Claude Code u Karola (rynek 19.11 i propozycja decyzji biznesowej)
+- **Karol, wieczór:** „Co realnie powinniśmy zrobić? Chcemy, żeby gra była viralem… Jaka powinna być decyzja biznesowa?”
+- **Przegląd rynku** (trackery z 18–19.11, dokumentacja Roblox o polecaniu, poradniki o reklamie): na szczycie jajka i pety z kradzieżą (fala się starzeje), fizyka i ragdoll, prosta czynność z uroczymi zwierzętami, horror ze znajomymi, „+1”; nowe RPG prawie nie wchodzą. Algorytm od czerwca 2026 patrzy na 28 dni powrotów i grę ze znajomymi; gracze z reklam nie liczą się do rankingu. Reklama ma sens od ok. 30% powrotów następnego dnia, minimum ok. 35 tys. Robux na tydzień.
+- **Propozycja decyzji biznesowej** (dopisana do [[Diagnoza 2026-11-19 — prostota i szansa na hit]]): cel to gra, którą algorytm sam rozdaje, a nie „viral” na zamówienie; jedna gra naraz, publiczna wersja testowa w ok. 3 tygodnie; rdzeń BONK z fizyką, jajka i pety, kot-mag jako twarz gry (rekomendacja zmieniona z (a) na (b)); progi z góry; bez klonu „Steal an Egg”. Dopisek pod pytaniem 72 w [[Pytania otwarte]]; wskaźnik w [[Rynek Roblox i konkurencja]]. Żadna decyzja nie zmieniła statusu.
+
 ## 2026-11-19 · Claude Code u Karola (diagnoza po filmie twórcy hitu: prostota i szansa na viral)
 - **Karol, ok. 15:30:** przekazał transkrypcję filmu współwłaściciela gry „Build a Base and Steal” i poprosił o szczerą ocenę, czy gra może być viralem, oraz propozycję zmian w całej logice („Będziemy musieli ukrócić bardzo wiele logik”). Transkrypcja zostaje lokalnie, poza repozytorium (cudzy materiał).
 - **Nowa notatka** [[Diagnoza 2026-11-19 — prostota i szansa na hit]] (propozycja): jedenaście zasad z filmu, tabela „nasza gra wobec zasad”, szczery werdykt (dziś — nie; po przycięciu — szansa, bez gwarancji), propozycja przycięcia do jednego rdzenia („bij potwory, rośnij w siłę, zbieraj pety, idź dalej”), lista systemów do zamrożenia i konfliktów z zatwierdzonymi decyzjami. Wnioski pokrywają się z [[Diagnoza pomysłu 2026-11-13]].

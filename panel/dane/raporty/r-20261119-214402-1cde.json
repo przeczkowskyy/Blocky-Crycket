@@ -1,0 +1,22 @@
+{
+ "id": "r-20261119-214402-1cde",
+ "tytul": "Rynek 19.11 i decyzja biznesowa: jak realnie dojść do hitu",
+ "opis_md": "- Propozycja decyzji: nie gonimy „virala” na zamówienie, tylko robimy grę, którą algorytm Roblox sam rozdaje — co najmniej 30% graczy wraca następnego dnia, czas gry rośnie. Viral to nagroda za to, plus moment do nagrania i szczęście.\n- Jedna gra naraz: przycięte B&C do publicznej wersji testowej w ok. 3 tygodnie, z rdzeniem dopasowanym do trendów — BONK z fizyką (potwory odlatują), jajka i pety, kot-mag jako twarz gry.\n- Progi z góry: od 30% powrotów → reklama i aktualizacje co tydzień; 15–30% → poprawki rdzenia; poniżej 15% → inny rdzeń z tych samych zasobów.\n- Do decyzji: pytanie 72 (rekomendacja zmieniona z „szybkiego grindera” na BONK).\n\nSzczegóły:\n\n**Co dziś wygrywa na Roblox (18–19.11.2026, trackery niezależne — liczby się różnią)**\n\n| Wzorzec | Przykłady |\n|---|---|\n| Jajka i pety z kradzieżą (fala się starzeje) | Steal An Egg 0,5–1,2 mln graczy naraz; Break and Steal an Egg ok. 95 tys.; Steal a Brainrot spadł do ok. 40 tys. |\n| Fizyka i ragdoll | Hyper Realistic Ragdoll ok. 90 tys., Ragdoll Soccer ok. 53 tys. |\n| Jedna prosta czynność, urocze zwierzęta | Throw Food For Animals 0,2–0,47 mln |\n| Horror i przetrwanie ze znajomymi | DONT SPLASH ok. 97 tys. po 17 dniach, 99 Nights in the Forest |\n| „+1” | +1 Spider Arm ok. 34 tys. po 14 dniach |\n| Kolekcja i liczby | Tap Simulator REBORN, Pet Simulator 99, Sol's RNG |\n| Kot jako bohater | Cat Battles ok. 15 tys. po 28 dniach |\n\nNowe RPG prawie nie wchodzą; na szczycie jest Blox Fruits — lata aktualizacji i duży zespół.\n\n**Jak Roblox poleca gry (od czerwca 2026):** patrzy na 28 dni — dni gry, czas gry, powroty po 1 i 7 dniach, wspólną grę ze znajomymi. Nowa gra dostaje mały test, a gdy wyniki rosną — więcej wyświetleń. Gracze z reklam nie liczą się do rankingu, więc reklama tylko przyspiesza pomiar.\n\n**Reklama:** minimum ok. 5 tys. Robux dziennie przez tydzień (ok. 35 tys. Robux, w zakupie ok. 1,5–1,8 tys. zł). Ma sens dopiero od ok. 30% powrotów następnego dnia.\n\n**Plan:**\n1. Tydzień 1 — rdzeń BONK, przycięcie, próba na prawdziwym telefonie, przeniesienie z prób w Studio do prawdziwej gry.\n2. Tydzień 2 — samouczek, ikona i trzy miniatury, mała zamknięta próba ze znajomymi.\n3. Tydzień 3 — publiczny start, pomiar, poprawki codziennie.\n4. Decyzja po dwóch tygodniach danych według progów.\n\n**Darmowe kanały:** krótkie klipy (TikTok, YouTube Shorts), Discord z graczami, kody nagród, wczesny dostęp dla małych twórców.\n\n**Dla ludzi:** przez tydzień codziennie godzina grania w gry z tabeli i notatka, co trzyma.\n\n**Czego nie robić:** klonu „Steal an Egg”, nowych systemów przed danymi, reklamy przed progiem 30%.\n\nPełny opis: rozdział „Rynek 19.11.2026 i decyzja biznesowa” w notatce „Diagnoza 2026-11-19 — prostota i szansa na hit”.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-19T21:44:02+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Badania/Diagnoza 2026-11-19 — prostota i szansa na hit.md",
+   "etykieta": "Diagnoza i decyzja biznesowa"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytanie 72"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Czy przyjmujemy plan: jedna gra naraz, rdzeń BONK z petami, publiczna wersja testowa w ok. 3 tygodnie i progi decyzji z góry?"
+}

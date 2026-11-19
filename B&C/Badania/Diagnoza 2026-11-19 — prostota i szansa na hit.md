@@ -93,8 +93,46 @@ Rekomendacja agenta: **(a) jako najszybsza droga do pierwszych graczy**, a (b), 
 
 Propozycja zawiesza (nie odwołuje) decyzje wymienione wyżej przy „Zamrażamy” oraz zmienia D-062 i D-097 (6 statystyk i punkty do rozdania → jedna Moc widoczna dla gracza), D-081 (start gry: najpierw walka, potem klasa) i D-068 / D-078 (walka oglądana tylko przy Strażnikach i przy pierwszym spotkaniu). Część z nich to pliki i decyzje Pawła (wybór klasy, drzewko, okna) — bez jego zgody ich nie ruszamy. Wcześniej podobne kierunki odrzucono: D-014 (najpierw mała pętla i test popytu; Karol 13.11: „chcemy mieć zaimplementowane od razu przed pierwszym wypuszczeniem dużo więcej logik”), D-019 i D-020 (jedna czynność „BONK”; uzasadnienie „NIEAKTUALNE”).
 
+## Rynek 19.11.2026 i decyzja biznesowa (dopisek, wieczór 19.11)
+
+Karol: „Chcemy, żeby gra była viralem… Jaka powinna być decyzja biznesowa?” Poniżej migawka rynku z niezależnych trackerów (18–19.11; liczby różnią się między źródłami) i dokumentacji Roblox.
+
+### Co dziś wygrywa
+- **Szczyt listy:** Steal An Egg (0,5–1,2 mln graczy naraz), Brookhaven, Adopt Me!, Throw Food For Animals (0,2–0,47 mln), Blox Fruits.
+- **Jajka i pety z kradzieżą:** cała rodzina klonów (Break and Steal an Egg ok. 95 tys. po 58 dniach, Fake an Egg ok. 19 tys. jako „odwrotność”). Fala już się starzeje — Steal a Brainrot spadł do ok. 40 tys.
+- **Fizyka i ragdoll:** Hyper Realistic Ragdoll ok. 90 tys., Ragdoll Soccer ok. 53 tys., BloxNG (zderzenia) ok. 37 tys.
+- **Jedna prosta czynność z uroczymi zwierzętami:** Throw Food For Animals.
+- **Horror i przetrwanie ze znajomymi:** DONT SPLASH (ok. 97 tys. po 17 dniach), 99 Nights in the Forest.
+- **„+1”:** +1 Spider Arm (ok. 34 tys. po 14 dniach).
+- **Kolekcja i liczby:** Tap Simulator REBORN ok. 39 tys., Pet Simulator 99, Sol's RNG.
+- **Kot jako bohater działa:** Cat Battles (kot, sumo, skrzynki futer) ok. 15 tys. po 28 dniach.
+- **RPG:** na szczycie jest Blox Fruits — lata aktualizacji i duży zespół. Nowe RPG prawie nie wchodzą.
+
+### Jak działa polecanie (Roblox, od czerwca 2026)
+- Okno 28 dni zamiast 7: algorytm nagradza długie powroty — dni gry, czas gry, przejście pierwszej sesji, powroty po 1 i 7 dniach — oraz wspólną grę ze znajomymi.
+- Nowa gra dostaje najpierw mały test; gdy wyniki rosną, dostaje więcej wyświetleń.
+- Gracze z reklam, od znajomych i z wyszukiwarki nie liczą się do rankingu: reklama nie kupuje polecania, tylko przyspiesza pomiar.
+- Grający ze znajomymi zostają dłużej (studium gry horror: po 7 dniach 38% ze znajomymi wobec 16% solo).
+
+### Reklama
+- Minimum ok. 5 tys. Robux dziennie przez 7 dni (ok. 35 tys. Robux; w zakupie ok. 1,5–1,8 tys. zł, przeliczenie przybliżone). Poniżej tego budżet przepada w aukcjach.
+- Ma sens dopiero, gdy następnego dnia wraca co najmniej 30% graczy. Wcześniej — szkoda pieniędzy.
+- Klikalność kafelka reklamy (1–2% to norma) to dobry test samego pomysłu i miniatury, zanim gra się rozkręci.
+
+### Decyzja biznesowa (propozycja agenta)
+1. **Cel:** nie „viral”, bo tego nikt nie kontroluje, tylko gra, którą algorytm sam rozdaje: co najmniej 30% powrotów następnego dnia i rosnący czas gry. Viral to nagroda za to, plus moment do nagrania i szczęście.
+2. **Jedna gra naraz, krótko do graczy:** przycięte B&C do publicznej wersji testowej w ok. 3 tygodnie, potem tydzień pomiaru i codzienne poprawki.
+3. **Rdzeń dopasowany do trendu — zmiana rekomendacji z (a) na (b):** BONK z fizyką (uderzony potwór odlatuje jak szmaciana lalka — trend ragdoll i rzucania), jajka i pety (trend kolekcji), kot-mag jako twarz gry (koty działają). Daleki lot to moment do nagrania; ranking „najdalszy BONK serwera” to pokazanie się.
+4. **Progi ustalone z góry:** co najmniej 30% powrotów → reklama (ok. 35 tys. Robux) i aktualizacje co tydzień; 15–30% → dwa tygodnie poprawek rdzenia; poniżej 15% po dwóch rundach poprawek → kolejna próba z innym rdzeniem z tych samych zasobów.
+5. **Darmowe kanały od pierwszego dnia:** krótkie klipy (TikTok, YouTube Shorts) z momentów do nagrania, Discord z graczami, kody nagród, wczesny dostęp dla małych twórców.
+6. **Zasięg:** angielski tytuł i opis (D-045), ikona i miniatury pokazujące czynność (trzy warianty do testu), telefon najpierw, pad, gra dla każdego wieku (D-022), premia za grę ze znajomymi.
+7. **Ludzie:** przez tydzień codziennie godzina grania w gry z listy wyżej (Steal An Egg, Throw Food For Animals, Hyper Realistic Ragdoll, Cat Battles, +1 Spider Arm, DONT SPLASH) i krótka notatka, co trzyma — tego agent nie zastąpi.
+8. **Czego nie robić:** klonu „Steal an Egg” (jesteśmy spóźnieni, takie fale gasną); nowych systemów przed danymi; reklamy przed progiem 30%.
+
+Źródła migawki: endgametools.com/en/roblox/charts, livecounts.nl/roblox-charts, ggrecon.com (fastest-growing new Roblox games, November 2026), create.roblox.com/docs/discovery, about.roblox.com/newsroom/2026/06 (optimizing discovery), rowatcher.com (ads minimum budget 2026, launch checklist), deconstructoroffun.com (how to build a real business on Roblox in 2026).
+
 ## Do ustalenia
-- Wariant rdzenia: (a), (b) czy obecny kształt — pytanie 72 w [[Pytania otwarte]].
+- Wariant rdzenia: (a), (b) czy obecny kształt — pytanie 72 w [[Pytania otwarte]]. Rekomendacja agenta po przeglądzie rynku: (b).
 - Termin pierwszej publicznej wersji testowej i czy wydajemy Robuxy na reklamę.
 - Które mini-gry zostają.
 - Co Paweł robi ze swoimi oknami (Kowal, Mag, sklepy) i drzewkiem przy przycięciu.
