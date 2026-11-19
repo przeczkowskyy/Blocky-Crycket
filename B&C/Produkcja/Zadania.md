@@ -8,10 +8,10 @@ tags: [produkcja, zadania]
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
 - [ ] **Kierunek od 19.11 (D-106): grywalność trzech biomów od startu do bramy Pustyni** — pięć prac agenta Karola niżej; Pustynia wstrzymana · agent: Karol · #wysoki
-- [ ] Walka bez przestojów (D-107): zdjąć karę czasową po przegranej, więcej potworów na pasie i szybsze odradzanie w lesie, Bagnie i Dżungli; liczby do oceny · agent: Karol · #wysoki
-- [ ] Przedmioty do kupienia (D-106): zbroje, hełmy i reszta ekwipunku w kilku stopniach dla trzech klas — katalog, modele, statystyki i ceny; potem sklep za Złoto pod okna Pawła · agent: Karol · #wysoki
-- [ ] Mini-gry w sceneriach krain (D-108): każda gra w innym otoczeniu zamiast areny w murach · agent: Karol · #wysoki
-- [ ] Postacie niezależne jako NPC (D-109): karczmarz, sprzedawcy, mistrz gier, trenerzy mini-gier ze szkieletem i animacją · agent: Karol · #wysoki
+- [ ] Walka bez przestojów (D-107), dalej: stoi w Studio od 19.11 i czeka na ocenę (raport „Walka bez przestojów: bez czekania, więcej potworów, szybkie odradzanie”) — liczba potworów, czasy odradzania rzadkiego i Strażnika, tempo doświadczenia (do ok. 240 walk w 10 minut przy pomijaniu); niesprawdzone: kilku graczy naraz, telefon · agent: Karol · #wysoki
+- [ ] Przedmioty do kupienia (D-106), dalej: 60 przedmiotów w trzech stopniach dla trzech klas ma modele, ceny i statystyki (`swiat/postacie/SKLEP_PRZEDMIOTY.md`, 19.11); w toku: przedmioty w grze i sklep zbrojmistrza z tymczasowym oknem (`swiat/sklep_proba/`); docelowe okno 2D — Paweł; do oceny wygląd, nazwy i ceny · agent: Karol · #wysoki
+- [ ] Mini-gry w sceneriach krain (D-108), dalej: sześć scenerii gotowych w kodzie (19.11; po dwie gry na krainę, arena w murach znika), wdrożenie w Studio w kolejce; do oceny dobór scenerii i wejście prosto do gry bez lobby (`swiat/trening_proba/PROJEKT.md`) · agent: Karol · #wysoki
+- [ ] Postacie niezależne jako NPC (D-109), dalej: trzynaście postaci ma modele i klipy (19.11), wdrożenie w bazarze w toku, trenerzy staną w sceneriach mini-gier po ich wdrożeniu; do oceny imiona, wygląd i gesty (`swiat/npc_gra/README.md`) · agent: Karol · #wysoki
 - [ ] Przejście gry w liczbach (D-106), dalej: symulator gotowy 19.11 (gra do przejścia w ok. 1 godz. 20 min, gracz utyka na Strażniku Topieli i Wężu Stu Lian — pytanie 70); puścić ponownie po zmianach liczb (walka bez przestojów w grze, katalog przedmiotów), potem próba całej drogi w grze · agent: Karol · #wysoki
 - [ ] Paweł: wypchnąć nowe okna 2D — Kowal, Mag, sklepy — i poprawki interfejsu (zapowiedź przekazana przez Karola 19.11) · agent: Paweł · #wysoki
 - [ ] Paweł: potwierdzić decyzje z samym podpisem Karola z ostatnich dni — D-087 (drzewko: gałąź Timer), D-089 (pasek many), D-095 (arena zmienia się z biomem), D-096 (biom 25 s długości, 4 s szerokości), D-105 (stała cena jajka w biomie); starsze decyzje z jednym podpisem (13–15.11) Paweł ma jeszcze do przejrzenia · #wysoki
@@ -122,6 +122,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-19: Walka bez przestojów (D-107) stoi w Studio w lesie, Bagnie i Dżungli: bez czekania po walce i przegranej, 13–14 potworów na biom dla jednego gracza (do 25–26 przy dwudziestu), odradzanie ok. 3 s (rzadki 21 s, Strażnik 31 s), łup po pominiętej walce od razu; próby trzech biomów i całej drogi gracza bez błędów, czas klatki 16,7 ms
 - [x] 2026-11-19: Przejście gry w liczbach — symulator drogi gracza przez trzy biomy na prawdziwym silniku i danych gry (`swiat/przejscie_gry/symulacja_przejscia.py`): każda klasa kończy grę, ok. 1 godz. 20 min zwykłej gry; raport z miejscami utknięcia i propozycjami zmian liczb (pytanie 70)
 - [x] 2026-11-18: Wieczorna próba całej gry na stanie końcowym dnia (20 prób w dwóch częściach, 17:15–17:43 i 19:16–20:02; po efektach Dżungli, nowej oprawie przelotu, arenie Training Center i nowym biegu bohatera): bez nowych błędów — jedyny błąd to znane za małe napisy w wyborze próby walki na ekranie telefonu (walka 44 z 46)
 - [x] 2026-11-18: Bohater w świecie — nowy bieg trzech klas stoi w Studio: krótszy krok i prostsze kolana, faza lotu, praca rąk i tułowia, poły tabardu i szata kota w ruchu, tempo kroku z rzeczywistej drogi postaci (przy ścianie stopa 0,02–0,06 st zamiast 0,56); próba 20 punktów w porządku, czas pętli bez wzrostu

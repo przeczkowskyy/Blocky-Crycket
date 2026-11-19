@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-19 · Claude Code u Karola (walka bez przestojów w Studio; NPC, scenerie mini-gier i przedmioty — części bez Studio)
+- **Walka bez przestojów (D-107) w Studio** (`swiat/las_potwory/`, pakiety trzech biomów, `swiat/stan_gracza/`): zdjęte czekanie po walce i po przegranej (także rewanż ze Strażnikiem), potworów 13–14 na biom dla jednego gracza i 25–26 przy dwudziestu (było 8 i 16), odradzanie zwykłych ok. 3 s (było 12–18 s), rzadkiego 21 s (150 s), Strażnika 31 s (120 s); łup po szybko pominiętej walce pokazuje się od razu; najbliższy potwór ma pierwszeństwo przy rysowaniu. Wilków w lesie o jednego mniej niż w rachunku — osiem nie mieściło się w budżecie brył klienta. Silnik walki bez zmian (592 walki kontrolne identyczne).
+- **Próby w grze (9:08–9:42):** las 27 punktów w porządku, Bagno 20, Dżungla 23, cała droga gracza 13 z 13, stary las, stan gracza, pety, chmury, walka 111 z 111; czas klatki 16,7 ms. Próba kowala nie ruszyła, bo jego pakiet jest w trakcie zmian pod sklep.
+- **Liczby to propozycja agenta** (D-107 zostawia ich dobór agentowi): wybory do oceny w `swiat/las_pas_gra/README.md`. Najważniejszy skutek: przy pomijaniu walk do ok. 240 walk w 10 minut, czyli szybsze poziomy niż w rachunku balansu.
+- **Części bez Studio w repo:** trzynaście postaci NPC z klipami i pakiet `swiat/npc_gra/` (D-109); sześć scenerii mini-gier zamiast areny w murach (D-108, `swiat/trening_proba/scenerie.py`); 60 przedmiotów do kupienia w trzech stopniach dla trzech klas z cenami i statystykami (D-106, `swiat/postacie/stopnie.py`, `SKLEP_PRZEDMIOTY.md`). Wszystko to propozycje do oceny; wdrożenia w Studio idą po kolei.
+- Raport w panelu: „Walka bez przestojów: bez czekania, więcej potworów, szybkie odradzanie”. Notatki: [[Zadania]].
+
 ## 2026-11-19 · Claude Code u Karola (przejście gry w liczbach)
 - **Symulator przejścia gry** (`swiat/przejscie_gry/symulacja_przejscia.py`, raport `PRZEJSCIE_W_LICZBACH.md`; rachunek, nie decyzja): 100 graczy każdej klasy od poziomu 1 do pokonania Węża Stu Lian, wynik walk z prawdziwego silnika, nagrody i wymagania z plików gry. Każda klasa kończy grę; zwykła gra trwa ok. 1 godz. 20 min (niecierpliwy 45 min, oglądający wszystko ok. 2 godz.); poziom przy bramach 11–12, 17–19, 23–25.
 - **Wnioski:** gracz utyka na Strażniku Topieli i Wężu Stu Lian (sam bohater wygrywa 12–28% walk), nudzi się pod koniec Bagna i Dżungli (20–28 walk z rzędu z jednym potworem); najtrudniej ma Mag na Strażniku Topieli; żadna klasa nie jest wymagana. Propozycje zmian liczb są w nowym pytaniu 70 — w grze nic nie zmienione.
