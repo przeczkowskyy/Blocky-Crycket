@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-19 · Claude Code u Karola (BONK, etap 1 w Studio)
+- **BONK (D-112), etap 1:** rdzeń gry zbudowany w Studio we własnym kontenerze `BonkGra` i sprawdzony w Play — 17/17 prób, śr. 16,7 ms na klatkę. Uderzasz potwory, odlatują łukiem, HOME RUN od 120 st., monety i Moc, bramy krain otwiera Moc. Obecna gra nietknięta (wejście bramą obok płyty startu).
+- Pakiet `swiat/bonk/` (kod, testy, zrzuty `klatki/`), raport w panelu ze zrzutami trzech krain i telefonu. Stan budowy w [[BONK — projekt prototypu]]. Etap 2 i 3 w toku (praca „bonk-noc”, do ok. 07:30).
+
 ## 2026-11-19 · Claude Code u Karola (BONK na noc; pomysł Ring Potworów)
 - **Karol, wieczór:** zgoda na budowę prostej gry z propozycji (wariant b) w nocy, na Opusie, „w całości”, z Higgsfield. Zapisane jako **D-112** (podpis Karola, czeka na Pawła); odpowiedź pod pytaniem 72. Projekt: [[BONK — projekt prototypu]] — osobny, samowystarczalny pakiet `swiat/bonk/`; B&C nietknięte; publikacja zostaje decyzją ludzi.
 - **Pomysł Karola i Pawła — druga gra:** jajka, potwory z Księgi, trening AFK, wspólny ring serwera do ostatniego potwora. Ocena agenta i sześć poprawek w [[Ring Potworów — pomysł]]; kolejność budowy — nowe pytanie 73.

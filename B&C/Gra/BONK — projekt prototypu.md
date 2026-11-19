@@ -34,6 +34,11 @@ Klas, ras, statystyk do rozdawania, auto-walki, mini-gier, kowala, Twierdzy, kar
 - Lot potwora liczy serwer, rysuje klient (bez fizyki sieciowej) — tanio na telefonie.
 - Powtórne użycie: mapy pasów (`czesci.json`), modele potworów i petów, bronie, efekty komiksowe, arkusz dźwięków i wgrana muzyka.
 
+## Stan budowy
+- [x] 2026-11-19 (noc) — **etap 1, rdzeń:** trzy krainy z map pasów, 12 potworów, BONK z lotem po łuku, HOME RUN, rzadki złoty potwór, monety i Moc, bramy Mocą (Bagno 2.4K, Dżungla 55K), wejście bramą przy starcie obecnej gry, własny zapis. Próba w Studio 17/17, śr. 16,7 ms na klatkę. Szczegóły: `swiat/bonk/README.md`.
+- [ ] etap 2 — pałki, jajka i pety z Księgą, Strażnicy, pokazanie się, dzienny prezent.
+- [ ] etap 3 — dopracowanie, telefon i pad, dźwięki, ikona i miniatury, próba całości.
+
 ## Do ustalenia
 - Wyniki pierwszego pomiaru na prawdziwych graczach (D1, czas gry) — progi w [[Diagnoza 2026-11-19 — prostota i szansa na hit]].
 - Publikacja jako osobna gra w grupie (D-044) — decyzja i czynność ludzi.
