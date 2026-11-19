@@ -532,6 +532,7 @@ Dopisek z 2026-11-18 (po regresji końcowej): przy ×1,75 pierwsza walka został
 - Do wyboru: (a) włączyć po zmianach po stronie Pawła (lista niżej); (b) włączyć już teraz na próbę tylko w Studio; (c) zostawić wyłączony do czasu przeniesienia pakietu do `src/`.
 
 Szczegóły: Włączenie wymaga dostępu Studio do usług danych (ustawienie gry, zmienia właściciel) i zmian w plikach Pawła: ekran wyboru klasy czeka na wczytanie profilu; klasa wybierana tylko raz (D-081); zakupy drzewka zapisywane razem z profilem; wartości testowe (1000 Gemów) usunięte. Nowy gracz przy włączonym zapisie zaczyna z 0 Złota i 0 Gemów. Dziś pakiet działa tylko w Studio, więc na serwerze gry zapisu sprawdzić się nie da. Pełny opis: `swiat/stan_gracza/README.md`, rozdział „Zapis postępu”. Zob. pytanie 53.
+Dopisek z 2026-11-19: po decyzji D-106 (gra do przejścia od startu do bramy Pustyni) to pytanie blokuje grę na więcej niż jedno posiedzenie — bez zapisu poziom, Złoto i przedmioty znikają po wyjściu. Włączenie wymaga zgody jednej z osób i dostępu Studio do usług danych w ustawieniach gry (robi właściciel gry).
 **Odpowiedź:**
 
 ## 61. Kowal: czy robocze zasady z próby zostają?
@@ -570,6 +571,7 @@ Dopisek z 2026-11-18 (wieczór): bieg liczony przez kod został poprawiony — p
 - Osobno do oceny: wielkość napisów na telefonie, kadr Siły i Run, kiedy sypie się konfetti.
 
 Szczegóły: Kamera stoi nisko i z ukosa (kąt 44–51° zamiast 70°), dojeżdża w odliczaniu i robi zbliżenie na postać po rundzie; przy trafieniach wyskakują komiksowe napisy, po rundzie z punktem statystyki sypie się konfetti; ćwiczy bohater klasy (zależy od pytania 63). Zasady gier, przyrosty i dźwięki są bez zmian. Drobne wybory: (1) duże słowa — „SERIA 5!” zajmuje ok. ćwierci szerokości ekranu 667 × 375 — zmniejszyć na telefonie czy zostawić; (2) Siła: bohater stoi półprzezroczysty przed kamerą, a kule stref zostają w kadrze zbliżenia po rundzie — chować je jak miecz; (3) Runy: kadr zza ramienia przycina bohatera przy lewej krawędzi; (4) konfetti za punkt statystyki (dziś), po każdej ukończonej rundzie albo tylko po rundzie bez pudła; (5) słowa Siły „PAF!”, „ŁUP!”, „TRACH!”, „BAM!”, „POW!” zamiast pochwał; (6) postać obraca się do kamery po rundzie; (7) radość kota-Maga jest mało widoczna (klip z pakietu bohatera). Zrzuty i wynik próby: raport w panelu „Mini-gry Training Center w stylu walki: kamera, napisy, konfetti”; opis wyborów 14–17 w `swiat/trening_proba/PROJEKT.md`.
+Dopisek z 2026-11-19: Karol zdecydował o otoczeniu (D-108) — mini-gry w sceneriach krain zamiast areny w murach; kamera, napisy i konfetti zostają do oceny jak wyżej.
 **Odpowiedź:**
 
 ## 65. Stare zadania z 12–17.11: zamknąć te dziewięć?

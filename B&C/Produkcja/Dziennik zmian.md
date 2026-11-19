@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-19 · Claude Code u Karola (kierunek dnia: grywalność trzech biomów)
+- **Karol, wiadomość głosowa ok. 7:55:** nie budujemy Pustyni; stabilizujemy las, Bagno i Dżunglę oraz resztę gry, żeby dało się ją przejść od włączenia do bramy Pustyni, kupując przedmioty i rozwijając postać w Training Center. Zapisane jako decyzje z podpisem Karola (czekają na Pawła): **D-106** (zakres i kolejność), **D-107** (bez kary czasowej po przegranej, więcej potworów, szybsze odradzanie — uwaga Pawła z testów przekazana przez Karola), **D-108** (mini-gry w sceneriach krain zamiast areny w murach), **D-109** (karczmarz, sprzedawcy, mistrz gier i trenerzy jako prawdziwi NPC).
+- **Paweł** ma wypchnąć nowe okna 2D (Kowal, Mag, sklepy) i poprawki interfejsu — zapowiedź przekazana przez Karola.
+- [[Zadania]]: siedem nowych pozycji na górze listy; Pustynia wstrzymana. [[Pytania otwarte]]: dopiski pod 60 (zapis postępu blokuje grę na więcej niż jedno posiedzenie) i 64 (otoczenie mini-gier rozstrzygnięte przez D-108).
+- Po nocnym wyłączeniu komputera uruchomione panel i tunel; Karol dostał plik z nowym linkiem dla Pawła.
+
 ## 2026-11-18 · Claude Code u Karola (wieczorna próba całej gry — stan końcowy dnia)
 - **Próba całej gry w dwóch częściach** (17:15–17:43 i 19:16–20:02, 20 prób): bez nowych błędów. Część pierwsza: stary las, stan gracza, pety (las, Bagno, Dżungla), kowal, stroje, wystawa ras, bazar, dźwięk. Część druga, już po wszystkich dzisiejszych zmianach: cała droga gracza 14 z 14, las, Bagno, Dżungla (z nową oprawą przelotu i efektami), Training Center 31 punktów (z nową areną), bohater w świecie 20 punktów (z nowym biegiem), chmury, walka 111 z 111 i 27 z 27. Jedyny błąd jest znany: za małe napisy w wyborze próby walki na ekranie telefonu (44 z 46).
 - Walka w Bagnie, która po południu raz nie wystartowała, w wieczornej próbie przeszła. Do listy prób całej gry doszły próby bohatera w świecie i wystawy ras (`swiat/przejscie_gry/regresja_calosci.py`). Odświeżone pliki wyników prób walki.
