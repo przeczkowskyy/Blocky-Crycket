@@ -38,9 +38,9 @@ sys.path.insert(0, TU)
 import dane as DN  # noqa: E402
 
 ZRODLA = os.path.join(TU, "zrodla")
-MODULY = ("LogikaBonk", "EfektyBonk", "InterfejsBonk")      # obok wygenerowanego DaneBonk
+MODULY = ("LogikaBonk", "EfektyBonk", "InterfejsBonk", "OknaBonk")      # obok wygenerowanego DaneBonk
 SKRYPTY = (("SerwerBonk", "SerwerBonk.server.luau", "Server"), ("KlientBonk", "KlientBonk.client.luau", "Client"))
-ZDALNE = ("Bonk", "Zdarzenia")                               # RemoteEvent
+ZDALNE = ("Bonk", "Zdarzenia", "Akcja")                      # RemoteEvent
 LOKALNE = ("SterowanieSerwera", "SterowanieKlienta")         # BindableFunction (haczyki prób)
 PACZKA_MAPY = 400
 GALERIA_Y = -90                                              # wzorce w Edit: pod mapą (w grze serwer przenosi je do RS)
@@ -112,7 +112,7 @@ if not kont then
 end
 local zostaw = { Mapa = not __MAPA_OD_NOWA__ }
 if __TYLKO_SKRYPTY__ then
-	zostaw = { Mapa = true, Wzorce = true, Bramy = true, Portal = true, Powrot = true }
+	zostaw = { Mapa = true, Wzorce = true, Bramy = true, Portal = true, Powrot = true, Stanowiska = true }
 end
 for _, d in kont:GetChildren() do
 	if not zostaw[d.Name] then
@@ -441,6 +441,169 @@ return string.format("brama BONK przy płycie %s: (%.1f; %.1f; %.1f), %.0f st od
 	(Vector3.new(poz.X, gora.Y, poz.Z) - gora).Magnitude)
 '''
 
+# etap 2: inkubatory (jajko z brył na cokole + tablica jawnych szans), stoiska pałek, trzy tablice wyników (wiersze
+# Rzad1…N wypełnia serwer). Wszystko zakotwiczone, we własnym kontenerze (Stanowiska).
+STANOWISKA = WSTEP + r'''
+local D = __DANE__
+local kont, odmowa = kontener()
+if odmowa then
+	return odmowa
+end
+local mapa = kont:FindFirstChild("Mapa")
+local pr = RaycastParams.new()
+pr.FilterType = Enum.RaycastFilterType.Include
+pr.FilterDescendantsInstances = if mapa then { mapa } else {}
+pr.RespectCanCollide = true
+local function ziemia(x, y, z)
+	local t = mapa and workspace:Raycast(Vector3.new(x, y + 30, z), Vector3.new(0, -60, 0), pr)
+	return if t then t.Position.Y else y
+end
+local stare = kont:FindFirstChild("Stanowiska")
+if stare then
+	stare:Destroy()
+end
+local st = Instance.new("Folder")
+st.Name = "Stanowiska"
+local KSZ = { [0] = Enum.PartType.Block, [1] = Enum.PartType.Ball, [2] = Enum.PartType.Cylinder }
+local function bryly(rodzic, lista, baza)
+	for _, c in lista do
+		local p
+		if c[1] == 3 then
+			p = Instance.new("WedgePart")
+		elseif c[1] == 4 then
+			p = Instance.new("CornerWedgePart")
+		else
+			p = Instance.new("Part")
+			p.Shape = KSZ[c[1]] or Enum.PartType.Block
+		end
+		p.Size = Vector3.new(c[8], c[9], c[10])
+		p.CFrame = baza * CFrame.new(c[2], c[3], c[4]) * CFrame.fromOrientation(c[5], c[6], c[7])
+		p.Color = Color3.fromHex(c[11])
+		p.Material = Enum.Material[c[12]]
+		p.Reflectance = c[13]
+		p.Anchored = true
+		p.CanCollide = false
+		p.CanTouch = false
+		p.CastShadow = true
+		p.TopSurface = Enum.SurfaceType.Smooth
+		p.BottomSurface = Enum.SurfaceType.Smooth
+		if c[14] ~= "" then
+			local sm = Instance.new("SpecialMesh")
+			sm.MeshType = Enum.MeshType[c[14]]
+			sm.Parent = p
+		end
+		p.Parent = rodzic
+	end
+end
+local function napisy(czesc, linie, tlo)
+	local sg = Instance.new("SurfaceGui")
+	sg.Name = "Ekran"
+	sg.Face = Enum.NormalId.Front
+	sg.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	sg.PixelsPerStud = 50
+	sg.LightInfluence = 0
+	sg.Parent = czesc
+	local f = Instance.new("Frame")
+	f.Size = UDim2.fromScale(1, 1)
+	f.BackgroundColor3 = Color3.fromHex(tlo)
+	f.BorderSizePixel = 0
+	f.Parent = sg
+	local lista = Instance.new("UIListLayout")
+	lista.SortOrder = Enum.SortOrder.LayoutOrder
+	lista.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	lista.Padding = UDim.new(0.01, 0)
+	lista.Parent = f
+	local pad = Instance.new("UIPadding")
+	pad.PaddingTop = UDim.new(0.04, 0)
+	pad.PaddingLeft = UDim.new(0.04, 0)
+	pad.PaddingRight = UDim.new(0.04, 0)
+	pad.Parent = f
+	for i, l in linie do
+		local t = Instance.new("TextLabel")
+		t.Name = l.nazwa or ("Linia" .. i)
+		t.LayoutOrder = i
+		t.BackgroundTransparency = 1
+		t.Size = UDim2.fromScale(1, l.wys)
+		t.Text = l.tekst
+		t.TextScaled = true
+		t.Font = if l.cyfry then Enum.Font.FredokaOne else Enum.Font.LuckiestGuy
+		t.TextColor3 = Color3.fromHex(l.kolor)
+		t.TextXAlignment = if l.lewo then Enum.TextXAlignment.Left else Enum.TextXAlignment.Center
+		local o = Instance.new("UIStroke")
+		o.Thickness = 2
+		o.Color = Color3.fromHex("1B1424")
+		o.Parent = t
+		t.Parent = f
+	end
+	return sg
+end
+local function plaszczyzna(x, y, z, patrz)
+	return CFrame.lookAt(Vector3.new(x, y, z), Vector3.new(patrz[1], y, patrz[3]))
+end
+local drewno, ciemne, kamien = Color3.fromHex("9A6234"), Color3.fromHex("5E3A1A"), Color3.fromHex("8C8A84")
+for _, I in D.inkubatory do
+	local m = Instance.new("Model")
+	m.Name = "Inkubator" .. I.nr
+	local y = ziemia(I.miejsce[1], I.miejsce[2], I.miejsce[3])
+	local cf = plaszczyzna(I.miejsce[1], y, I.miejsce[3], I.patrz)
+	local cokol = czesc(m, "Cokol", Vector3.new(1.2, 7, 7), cf * CFrame.new(0, 0.6, 0) * CFrame.Angles(0, 0, math.pi / 2), kamien, Enum.Material.Slate)
+	cokol.Shape = Enum.PartType.Cylinder
+	local obr = czesc(m, "Obrecz", Vector3.new(0.25, 7.3, 7.3), cf * CFrame.new(0, 0.95, 0) * CFrame.Angles(0, 0, math.pi / 2), Color3.fromHex(I.kolor), Enum.Material.Neon)
+	obr.Shape = Enum.PartType.Cylinder
+	obr.CanCollide = false
+	local jajko = Instance.new("Model")
+	jajko.Name = "Jajko"
+	bryly(jajko, I.bryly, cf * CFrame.new(0, 1.2, 0))
+	jajko.Parent = m
+	local tab = czesc(m, "Tablica", Vector3.new(6.4, 5.2, 0.4), cf * CFrame.new(-6.4, 3.4, 0.6) * CFrame.Angles(0, math.rad(-18), 0), Color3.fromHex("FFF6E0"))
+	for _, s in { -1, 1 } do
+		czesc(m, "Noga", Vector3.new(0.4, 3.2, 0.4), cf * CFrame.new(-6.4, 0, 0.6) * CFrame.Angles(0, math.rad(-18), 0) * CFrame.new(s * 2.6, 1.6, 0.3), ciemne, Enum.Material.Wood)
+	end
+	napisy(tab, I.linie, "FFF6E0")
+	m.Parent = st
+end
+for _, S in D.sklepy do
+	local m = Instance.new("Model")
+	m.Name = "Sklep" .. S.nr
+	local y = ziemia(S.miejsce[1], S.miejsce[2], S.miejsce[3])
+	local cf = plaszczyzna(S.miejsce[1], y, S.miejsce[3], S.patrz)
+	czesc(m, "Lada", Vector3.new(9, 3, 2.6), cf * CFrame.new(0, 1.5, 0), drewno, Enum.Material.Wood)
+	czesc(m, "Blat", Vector3.new(9.6, 0.4, 3.2), cf * CFrame.new(0, 3.2, 0), ciemne, Enum.Material.Wood)
+	for _, sx in { -4.3, 4.3 } do
+		czesc(m, "Slup", Vector3.new(0.6, 8, 0.6), cf * CFrame.new(sx, 4, 1.4), ciemne, Enum.Material.Wood)
+	end
+	for i = 0, 5 do
+		czesc(m, "Daszek" .. i, Vector3.new(1.6, 0.35, 4.4), cf * CFrame.new(-4 + i * 1.6, 8.1, 0.2) * CFrame.Angles(math.rad(-12), 0, 0),
+			if i % 2 == 0 then Color3.fromHex("FF4D4D") else Color3.fromHex("FFF6E0"))
+	end
+	local szyld = czesc(m, "Szyld", Vector3.new(7.4, 1.8, 0.3), cf * CFrame.new(0, 6.6, -0.6), Color3.fromHex("FFC83D"))
+	napisy(szyld, { { tekst = S.tytul, kolor = "FFF6E0", wys = 0.9 } }, "FF8A3D")
+	local wystawa = Instance.new("Model")
+	wystawa.Name = "Wystawa"
+	bryly(wystawa, S.bryly, cf * CFrame.new(0, 3.4, 0) * CFrame.Angles(0, math.pi, 0))
+	wystawa.Parent = m
+	m.Parent = st
+end
+for _, T in D.tablice do
+	local m = Instance.new("Model")
+	m.Name = "Tablica" .. T.nr
+	local y = ziemia(T.miejsce[1], T.miejsce[2], T.miejsce[3])
+	local cf = plaszczyzna(T.miejsce[1], y, T.miejsce[3], T.patrz)
+	for _, sx in { -1, 1 } do
+		czesc(m, "Slup", Vector3.new(0.6, T.wys + 1.6, 0.6), cf * CFrame.new(sx * (T.szer / 2 + 0.2), (T.wys + 1.6) / 2, 0.3), ciemne, Enum.Material.Wood)
+	end
+	local tab = czesc(m, "Tablica", Vector3.new(T.szer, T.wys, 0.4), cf * CFrame.new(0, 1.6 + T.wys / 2, 0), Color3.fromHex("1B1424"))
+	local linie = { { tekst = T.tytul, kolor = T.kolor, wys = 0.12 } }
+	for i = 1, T.wierszy do
+		table.insert(linie, { tekst = "", kolor = "FFF6E0", wys = 0.095, nazwa = "Rzad" .. i, cyfry = true, lewo = true })
+	end
+	napisy(tab, linie, "2A2236")
+	m.Parent = st
+end
+st.Parent = kont
+return string.format("stanowiska: %d inkubatory, %d stoiska, %d tablice", #D.inkubatory, #D.sklepy, #D.tablice)
+'''
+
 MAPA_START = WSTEP + r'''
 local kont, odmowa = kontener()
 if odmowa then
@@ -653,6 +816,8 @@ if mapa then
 end
 local b = kont:FindFirstChild("Bramy")
 w.bramy = if b then #b:GetChildren() else 0
+local st = kont:FindFirstChild("Stanowiska")
+w.stanowiska = if st then #st:GetChildren() else 0
 w.portal = kont:FindFirstChild("Portal") ~= nil
 w.powrot = kont:FindFirstChild("Powrot") ~= nil
 return HS:JSONEncode(w)
@@ -718,6 +883,44 @@ def dane_wzorca(klucz, i):
     return {"klucz": klucz, "nazwa": w["nazwa"], "bryly": w["bryly"], "poz": [0, 0, 0], "_i": i}
 
 
+def wzorce_wszystkie(U, D):
+    """[(nazwa wzorca, dane do WZORZEC)] — potwory i Strażnicy (D.gatunki) oraz pety, jajka i pałki (etap 2)."""
+    w = [(k, dane_wzorca(k, i)) for i, k in enumerate(sorted(D["gatunki"]))]
+    for nazwa, x in sorted(DN.wzorce_etapu2(U).items()):
+        w.append((nazwa, {"klucz": nazwa, "nazwa": x["nazwa"], "bryly": x["bryly"], "poz": [0, 0, 0]}))
+    return w
+
+
+def oczekiwane_wzorce(U, D):
+    """{nazwa: liczba części (bryły + korzeń)} — do kontroli po budowie."""
+    return {n: len(d["bryly"]) + 1 for n, d in wzorce_wszystkie(U, D)}
+
+
+def dane_stanowisk(U, D):
+    W = DN.wzorce_etapu2(U)
+    ui = U["ui"]
+    ink = []
+    for J in D["jajka"]:
+        K = D["krainy"][J["nr"] - 1]
+        linie = [{"tekst": J["nazwa"], "kolor": "1B1424", "wys": 0.17},
+                 {"tekst": "%s %s" % (format_liczby(J["cena"]), ui["monety"]), "kolor": "C98A00", "wys": 0.12, "cyfry": True},
+                 {"tekst": ui["szanse"], "kolor": "1B1424", "wys": 0.1}]
+        for i, pid in enumerate(J["pety"]):
+            R = D["rzadkosci"][i]
+            linie.append({"tekst": "%s  %g%%" % (D["pety"][pid]["nazwa"], R["szansa"] * 100), "kolor": R["kolor"], "wys": 0.1,
+                          "cyfry": True})
+        ink.append({"nr": J["nr"], "miejsce": J["miejsce"], "patrz": [J["miejsce"][0], 0, K["start"][2]],
+                    "bryly": W[J["wzorzec"]]["bryly"], "linie": linie, "kolor": D["rzadkosci"][2]["kolor"]})
+    skl = []
+    for i, S in enumerate(D["sklepy"], 1):
+        K = D["krainy"][S["kraina"] - 1]
+        skl.append({"nr": i, "miejsce": S["miejsce"], "patrz": [S["miejsce"][0], 0, K["start"][2]], "tytul": ui["sklep"],
+                    "bryly": W[DN.nazwa_wzorca_palki(3)]["bryly"]})
+    kolory = [ui["kolory"]["moc"], ui["kolory"]["monety"], "C27BFF"]
+    tab = [dict(T, wierszy=D["pokazanie"]["wierszy"], kolor=kolory[i]) for i, T in enumerate(D["pokazanie"]["tablice"])]
+    return {"inkubatory": ink, "sklepy": skl, "tablice": tab}
+
+
 def dane_bram(U, D, publikacja):
     bramy = []
     for K in D["krainy"]:
@@ -781,7 +984,9 @@ def obszar(U):
 def plan(U, D, Z, mapa):
     w = ["do Studio: %d modułów i skryptów (%d kB), sygnały: %s" % (
         len(Z), sum(len(t.encode("utf-8")) for *_, t in Z) // 1000, ", ".join(ZDALNE + LOKALNE))]
-    w.append("wzorce: %d gatunków, %d brył" % (len(D["gatunki"]), sum(g["czesci"] for g in D["gatunki"].values())))
+    W = wzorce_wszystkie(U, D)
+    w.append("wzorce: %d (potwory i Strażnicy %d, pety, jajka, pałki), %d brył" % (len(W), len(D["gatunki"]),
+                                                                                  sum(len(d["bryly"]) for _, d in W)))
     w.append("mapa: %s — razem %d części, przesunięcie %s" % (
         ", ".join("%s %d" % (k, len(c)) for k, _, _, c in mapa), sum(len(c) for *_, c in mapa), U["przesuniecie"]))
     O = obszar(U)
@@ -893,12 +1098,12 @@ def main():
                                           DANE=DN.luau(czesci[i:i + PACZKA_MAPY]), **wspolne), "mapa " + nazwa)
                         razem += int(float(n))
                     log("mapa %s: %d części" % (nazwa, razem))
-            for i, klucz in enumerate(sorted(D["gatunki"])):
-                d = dane_wzorca(klucz, i)
+            for i, (klucz, d) in enumerate(wzorce_wszystkie(U, D)):
                 p = U["przesuniecie"]
                 d["poz"] = [DN.X0 + p[0] + 20 * i, GALERIA_Y + p[1], DN.Z0 + p[2]]
                 log(wykonaj(wstaw(WZORZEC, DANE=DN.luau(d), **wspolne), "wzorzec " + klucz))
             log(wykonaj(wstaw(BRAMY, DANE=DN.luau(dane_bram(U, D, a.publikacja)), **wspolne), "bramy"))
+            log(wykonaj(wstaw(STANOWISKA, DANE=DN.luau(dane_stanowisk(U, D)), **wspolne), "stanowiska"))
             if not a.publikacja:
                 P = U["portal"]
                 dp = {"rozmiar": P["rozmiar"], "odleglosci": list(range(P["odleglosc"][0], P["odleglosc"][1] + 1, 4)),
@@ -916,15 +1121,17 @@ def main():
         oczek_mapy = sum(len(c) for *_, c in mapa)
         if stan["czesciMapy"] != oczek_mapy:
             niezgodne.append("mapa %d / %d części" % (stan["czesciMapy"], oczek_mapy))
-        oczek_wz = {k: g["czesci"] + 1 for k, g in D["gatunki"].items()}
+        oczek_wz = oczekiwane_wzorce(U, D)
         if stan["wzorce"] != oczek_wz:
-            niezgodne.append("wzorce")
+            niezgodne.append("wzorce (%d / %d)" % (len(stan["wzorce"]), len(oczek_wz)))
+        if stan.get("stanowiska") != len(D["jajka"]) + len(D["sklepy"]) + len(D["pokazanie"]["tablice"]):
+            niezgodne.append("stanowiska")
         if stan["bramy"] != len(D["krainy"]):
             niezgodne.append("bramy")
         log("kontrola po budowie (%.0f s): %s" % (time.time() - t0, "zgodne — %d źródeł, skrót %s, mapa %d części, wzorce %d, "
-                                                 "bramy %d, portal %s, powrót %s, AutoStart %s" % (
+                                                 "bramy %d, stanowiska %s, portal %s, powrót %s, AutoStart %s" % (
                                                      len(stan["zrodla"]), stan["atrybuty"].get("Skrot"), stan["czesciMapy"],
-                                                     len(stan["wzorce"]), stan["bramy"], stan["portal"], stan["powrot"],
+                                                     len(stan["wzorce"]), stan["bramy"], stan.get("stanowiska"), stan["portal"], stan["powrot"],
                                                      stan["atrybuty"].get(U["autostart"]))
                                                  if not niezgodne else "NIEZGODNE: " + ", ".join(niezgodne)))
         return 1 if niezgodne else 0

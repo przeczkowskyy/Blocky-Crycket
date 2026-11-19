@@ -7,7 +7,13 @@
 	— Enabled = false lokalnie, pilnowane) i przywraca je po wyjściu. Własny ekran: PlayerGui/BonkUI/BonkEkran.
 	Gdy przy wejściu trwa ekran wyboru klasy obecnej gry, zdejmuje też jego kamerę (RenderStep „ClassSelectCam”).
 
-	Haczyki prób: Sygnaly/SterowanieKlienta (BindableFunction u klienta): "stan", "bonk", "pomiar_zeruj", "trzymaj".
+	Etap 2: okna (OknaBonk: sklep pałek, pety, Księga, prezent, przycisk przy stoisku / inkubatorze z jawnymi szansami),
+	efektowne wyklucie (jajko przed kamerą trzęsie się, pęka w kolorze rzadkości, pet wyskakuje), pety za graczami (z
+	atrybutu gracza BonkPety — rysuje każdy klient, tylko w zasięgu), Moc nad głową każdego gracza, pasek życia Strażnika
+	(wspólny), lot Strażnika w niebo, komunikaty serwera. Akcje gracza idą przez Sygnaly/Akcja (sprawdza serwer).
+
+	Haczyki prób: Sygnaly/SterowanieKlienta (BindableFunction u klienta): "stan", "bonk", "pomiar_zeruj", "trzymaj",
+	"emulacja", "akcja", "okno".
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return
@@ -25,8 +31,10 @@ local D = require(Moduly:WaitForChild("DaneBonk"))
 local L = require(Moduly:WaitForChild("LogikaBonk"))
 local Efekty = require(Moduly:WaitForChild("EfektyBonk"))
 local Interfejs = require(Moduly:WaitForChild("InterfejsBonk"))
+local Okna = require(Moduly:WaitForChild("OknaBonk"))
 local Sygnaly = kontener:WaitForChild("Sygnaly")
 local evBonk = Sygnaly:WaitForChild("Bonk")
+local evAkcja = Sygnaly:WaitForChild("Akcja")
 local evZdarzenia = Sygnaly:WaitForChild("Zdarzenia")
 local sterowanie = Sygnaly:WaitForChild("SterowanieKlienta")
 local P = D.prefiks
@@ -294,8 +302,8 @@ end
 local warstwa: ScreenGui? = nil -- napisy i paski nad potworami (ekran, rzut ze świata), istnieje w BONK
 
 local function pasekZycia(w: any)
-	if w.pasek or not warstwa then
-		return
+	if w.pasek or not warstwa or w.cfg:GetAttribute("Straznik") then
+		return -- Strażnik: wspólny pasek u góry ekranu (OknaBonk)
 	end
 	local tlo = Instance.new("Frame")
 	tlo.Name = "Pasek"
@@ -373,6 +381,7 @@ krag.Parent = pierscien
 local celTeraz: Configuration? = nil
 
 local ui: any = nil
+local okna: any = nil
 local ostatniBonk = 0
 local trzymane: { [any]: boolean } = {}
 local wyslane = 0
@@ -434,6 +443,22 @@ local function odblokowane(): number
 	return tonumber(gracz:GetAttribute("BonkOdblokowane")) or 1
 end
 
+-- czy gracz pokonał Strażnika krainy nr (atrybut BonkStraznicy „1,0,0” od serwera)
+local function pokonal(nr: number): boolean
+	local napis = gracz:GetAttribute("BonkStraznicy")
+	if type(napis) ~= "string" then
+		return false
+	end
+	local i = 0
+	for kawalek in string.gmatch(napis, "[^,]+") do
+		i += 1
+		if i == nr then
+			return (tonumber(kawalek) or 0) > 0
+		end
+	end
+	return false
+end
+
 local kolizjeWrot: { [BasePart]: boolean } = setmetatable({}, { __mode = "k" }) -- kolizje wrót z mapy (przed otwarciem)
 local function uaktualnijBramy()
 	local n = odblokowane()
@@ -448,6 +473,8 @@ local function uaktualnijBramy()
 					napis.Text = D.ui.brama_dalej
 				elseif otwarta then
 					napis.Text = D.ui.brama_otwarta
+				elseif (tonumber(gracz:GetAttribute("BonkMoc")) or 1) >= K.brama.wymagana and not pokonal(k) then
+					napis.Text = D.ui.straznik_brama
 				else
 					napis.Text = string.format(D.ui.brama_zamknieta, L.format(K.brama.wymagana))
 				end
@@ -472,6 +499,297 @@ local function uaktualnijBramy()
 			end
 		end
 	end
+end
+
+------------------------------------------------------------------ pety za graczami (każdy klient rysuje wszystkich w zasięgu)
+local PU = D.petyUst
+local petyGraczy: { [Player]: any } = {}
+local czesciPetow = 0
+
+local function usunPety(g: Player)
+	local w = petyGraczy[g]
+	if not w then
+		return
+	end
+	for _, p in w.modele do
+		czesciPetow -= p.czesci
+		p.model:Destroy()
+	end
+	petyGraczy[g] = nil
+end
+
+local function modelPeta(id: string): any
+	local P = D.pety[id]
+	if not P then
+		return nil
+	end
+	local m = wzorzec(P.wzorzec)
+	local korzen = m.PrimaryPart
+	if not korzen then
+		m:Destroy()
+		return nil
+	end
+	korzen.Anchored = true
+	m.Name = "Pet_" .. id
+	m.Parent = lokalne
+	local n = liczCzesci(m)
+	czesciPetow += n
+	return { model = m, korzen = korzen, czesci = n, id = id, poz = nil, yaw = 0, faza = math.random() * 6 }
+end
+
+local function krokPetow(dt: number, oko: Vector3, zegar: number)
+	for _, g in Players:GetPlayers() do
+		local napis = g:GetAttribute("BonkPety")
+		local postac = g.Character
+		local h = postac and postac:FindFirstChild("HumanoidRootPart")
+		local hum = postac and postac:FindFirstChildOfClass("Humanoid")
+		local widoczny = g:GetAttribute("BonkAktywny") == true and type(napis) == "string" and napis ~= "" and h ~= nil
+			and h:IsA("BasePart") and hum ~= nil and (h.Position - oko).Magnitude <= PU.za_graczem.widok
+		local w = petyGraczy[g]
+		if not widoczny then
+			if w then
+				usunPety(g)
+			end
+			continue
+		end
+		if w and w.napis ~= napis then
+			usunPety(g)
+			w = nil
+		end
+		if not w then
+			w = { napis = napis, modele = {} }
+			for id in string.gmatch(napis, "[^,]+") do
+				local p = modelPeta(id)
+				if p then
+					table.insert(w.modele, p)
+				end
+			end
+			petyGraczy[g] = w
+		end
+		local korzenG: any = h
+		local humG: any = hum
+		local cf = korzenG.CFrame
+		local ziemiaY = korzenG.Position.Y - humG.HipHeight - korzenG.Size.Y / 2
+		local ruch = korzenG.AssemblyLinearVelocity.Magnitude > 2
+		local n = #w.modele
+		for i, p in w.modele do
+			local x = (i - (n + 1) / 2) * PU.za_graczem.bok
+			local z = PU.za_graczem.odstep + (if i == 2 and n == 3 then 1.4 else 0)
+			local cel = (cf * CFrame.new(x, 0, z)).Position
+			cel = Vector3.new(cel.X, ziemiaY, cel.Z)
+			if not p.poz or (p.poz - cel).Magnitude > 40 then
+				p.poz = cel
+			end
+			local a = math.min(1, dt * PU.za_graczem.predkosc * 0.6)
+			p.poz = p.poz:Lerp(cel, a)
+			local d = cel - p.poz
+			local docelowy = if d.Magnitude > 0.3 then math.atan2(-d.X, -d.Z) else select(2, cf:ToOrientation())
+			local roznica = (docelowy - p.yaw + math.pi) % (2 * math.pi) - math.pi
+			p.yaw += roznica * math.min(1, dt * 8)
+			local skok = if ruch then math.abs(math.sin(zegar * 9 + p.faza)) * 0.6 else math.abs(math.sin(zegar * 2.5 + p.faza)) * 0.15
+			p.korzen.CFrame = CFrame.new(p.poz + Vector3.new(0, skok, 0)) * CFrame.Angles(0, p.yaw, 0)
+		end
+	end
+	for g in petyGraczy do
+		if not g.Parent then
+			usunPety(g)
+		end
+	end
+end
+
+------------------------------------------------------------------ Moc nad głową każdego gracza (warstwa ekranu)
+local etykietyMocy: { [Player]: TextLabel } = {}
+
+local function usunEtykiety()
+	for g, t in etykietyMocy do
+		t:Destroy()
+		etykietyMocy[g] = nil
+	end
+end
+
+local function krokEtykiet(oko: Vector3)
+	if not warstwa then
+		return
+	end
+	for _, g in Players:GetPlayers() do
+		local postac = g.Character
+		local glowa = postac and postac:FindFirstChild("Head")
+		local t = etykietyMocy[g]
+		local jest = g:GetAttribute("BonkAktywny") == true and glowa ~= nil and glowa:IsA("BasePart")
+			and (glowa.Position - oko).Magnitude <= D.pokazanie.nad_glowa
+		if not jest then
+			if t then
+				t.Visible = false
+			end
+			continue
+		end
+		if not t then
+			t = Instance.new("TextLabel")
+			t.Name = "Moc_" .. g.UserId
+			t.AnchorPoint = Vector2.new(0.5, 1)
+			t.Size = UDim2.fromOffset(110, 26)
+			t.BackgroundTransparency = 1
+			t.TextScaled = true
+			t.Font = Enum.Font[D.ui.czcionka_cyfr] or Enum.Font.FredokaOne
+			t.TextColor3 = Color3.fromHex(D.ui.kolory.moc)
+			t.ZIndex = 3
+			local o = Instance.new("UIStroke")
+			o.Thickness = 2.5
+			o.Color = Color3.fromHex(D.ui.kolory.tusz)
+			o.Parent = t
+			t.Parent = warstwa
+			etykietyMocy[g] = t
+		end
+		local korona = g:GetAttribute("BonkKorona") == true
+		local g0: any = glowa
+		local widac, x, y = Efekty.rzut(g0.Position + Vector3.new(0, if korona then 2.4 else 1.6, 0), D.pokazanie.nad_glowa)
+		t.Visible = widac
+		t.Position = UDim2.fromOffset(x, y)
+		t.Text = L.format(tonumber(g:GetAttribute("BonkMoc")) or 1) .. " " .. D.ui.moc
+	end
+	for g, t in etykietyMocy do
+		if not g.Parent then
+			t:Destroy()
+			etykietyMocy[g] = nil
+		end
+	end
+end
+
+------------------------------------------------------------------ wyklucie: scena na środku ekranu (ViewportFrame w oknach)
+-- jajko trzęsie się coraz mocniej, pęka błyskiem w kolorze rzadkości, pet wyskakuje i rośnie, NEW PET! / DUPLICATE
+local wyklucie: any = nil
+
+local function koniecWyklucia()
+	if not wyklucie then
+		return
+	end
+	if okna then
+		okna:wyklucie(nil)
+	end
+	wyklucie = nil
+end
+
+local function startWyklucia(z)
+	koniecWyklucia()
+	local J = D.jajka[z.jajko]
+	local P = D.pety[z.pet]
+	local vf = okna and okna:scena(true)
+	if not J or not P or not vf then
+		return
+	end
+	local jajko = wzorzec(J.wzorzec)
+	jajko:PivotTo(CFrame.new())
+	jajko.Parent = vf
+	wyklucie = { t = 0, jajko = jajko, pet = nil, z = z, J = J, P = P, pekniete = false, vf = vf }
+	zagraj("trzesienie", 0.9)
+	-- inni widzą błysk nad inkubatorem
+	E:iskry(Vector3.new(J.miejsce[1], J.miejsce[2] + 5, J.miejsce[3]), Color3.fromHex(D.rzadkosci[z.rzadkosc].kolor), 10, 0.8)
+end
+
+local function krokWyklucia(dt: number)
+	local w = wyklucie
+	if not w then
+		return
+	end
+	w.t += dt
+	local wysJ = w.J.wysokosc
+	if w.t < 1.6 then
+		local sila = 0.05 + w.t * 0.14
+		local kiw = math.sin(w.t * (18 + w.t * 14)) * sila
+		w.jajko:PivotTo(CFrame.new(0, 2.3 - wysJ / 2, 0) * CFrame.Angles(0, 0, kiw))
+		if w.t > 0.8 and not w.drugie then
+			w.drugie = true
+			zagraj("trzesienie", 1.15)
+		end
+	elseif not w.pekniete then
+		w.pekniete = true
+		w.jajko:Destroy()
+		w.jajko = nil
+		local pet = wzorzec(w.P.wzorzec)
+		pet:PivotTo(CFrame.new())
+		pet.Parent = w.vf
+		w.pet = pet
+		zagraj("wyklucie")
+		if w.z.rzadkosc >= 4 then
+			zagraj("brama")
+		end
+		local R = D.rzadkosci[w.z.rzadkosc]
+		if okna then
+			okna:blysk(R.kolor)
+			okna:wyklucie({ nowy = w.z.nowy, nazwa = w.P.nazwa, rzadkosc = R.nazwa, kolor = R.kolor, kopie = w.z.kopie })
+		end
+	end
+	if w.pet then
+		local tp = w.t - 1.6
+		local s = if tp < 0.25 then 0.4 + tp / 0.25 * 0.9 elseif tp < 0.45 then 1.3 - (tp - 0.25) / 0.2 * 0.3 else 1
+		local skok = if tp < 0.4 then math.sin(tp / 0.4 * math.pi) * 1.2 else 0
+		local m = 4.2 / math.max(1, w.P.wysokosc) -- pet wypełnia scenę jak jajko
+		pcall(function()
+			w.pet:ScaleTo(math.max(0.2, s * m))
+		end)
+		local h = w.P.wysokosc * s * m
+		w.pet:PivotTo(CFrame.new(0, 2.3 - h / 2 + skok, 0) * CFrame.Angles(0, math.sin(tp * 2.2) * 0.6, 0))
+		if tp > 3.0 then
+			koniecWyklucia()
+		end
+	end
+end
+
+------------------------------------------------------------------ strefy: stoisko pałek i inkubator (przycisk na dole)
+local function krokStref(hp: Vector3?)
+	if not okna then
+		return
+	end
+	if not hp then
+		okna:kontekst(nil)
+		return
+	end
+	local rodzaj, nr, naj = nil, nil, math.huge
+	for _, sk in D.sklepy do
+		local d = Vector2.new(hp.X - sk.miejsce[1], hp.Z - sk.miejsce[3]).Magnitude
+		if d <= D.sklep.zasieg and d < naj then
+			rodzaj, nr, naj = "sklep", sk.kraina, d
+		end
+	end
+	for _, J in D.jajka do
+		local d = Vector2.new(hp.X - J.miejsce[1], hp.Z - J.miejsce[3]).Magnitude
+		if d <= PU.zasieg_inkubatora and d < naj then
+			rodzaj, nr, naj = "jajko", J.nr, d
+		end
+	end
+	if wyklucie then
+		rodzaj, nr = nil, nil -- w trakcie wyklucia przycisk i szanse schowane (scena na środku)
+	end
+	okna:kontekst(rodzaj, nr)
+end
+
+-- wspólny pasek życia najbliższego Strażnika (w zasięgu)
+local function krokStraznika(hp: Vector3?)
+	if not okna then
+		return
+	end
+	local naj, odl = nil, math.huge
+	if hp then
+		for _, S in D.straznicy do
+			local d = Vector2.new(hp.X - S.miejsce[1], hp.Z - S.miejsce[3]).Magnitude
+			if d <= D.straznik.pasek_zasieg and d < odl then
+				naj, odl = S, d
+			end
+		end
+	end
+	if not naj then
+		okna:straznik(nil)
+		return
+	end
+	local cfg = folderPotworow:FindFirstChild("straznik_" .. naj.kraina)
+	if not cfg then
+		okna:straznik(nil)
+		return
+	end
+	local powrot = cfg:GetAttribute("Powrot")
+	okna:straznik({ nazwa = naj.nazwa, hp = tonumber(cfg:GetAttribute("Hp")) or 0, hpMax = tonumber(cfg:GetAttribute("HpMax")) or 1,
+		zywy = cfg:GetAttribute("Zywy") == true,
+		powrotZa = if type(powrot) == "number" then powrot - workspace:GetServerTimeNow() else 0 })
 end
 
 ------------------------------------------------------------------ włączenie i wyłączenie BONK u gracza
@@ -505,6 +823,10 @@ local function wlacz()
 	warstwa.DisplayOrder = 4
 	warstwa.Parent = folderUI
 	E:warstwa2D(warstwa)
+	okna = Okna.nowe(folderUI, D, L, { dotyk = dotyk or emulacja ~= nil, emulacja = emulacja }, function(rodzaj, arg)
+		zagraj("klik")
+		evAkcja:FireServer(rodzaj, arg)
+	end, wzorce)
 	ui.przycisk.InputBegan:Connect(function(wejscie)
 		local typ = wejscie.UserInputType
 		if typ == Enum.UserInputType.Touch or typ == Enum.UserInputType.MouseButton1 then
@@ -543,6 +865,15 @@ local function wylacz()
 		ui:zniszcz()
 		ui = nil
 	end
+	koniecWyklucia()
+	if okna then
+		okna:zniszcz()
+		okna = nil
+	end
+	for g in petyGraczy do
+		usunPety(g)
+	end
+	usunEtykiety()
 	przywrocCudze()
 	muzyka:Stop()
 	pierscien.Parent = nil
@@ -587,6 +918,24 @@ gracz:GetAttributeChangedSignal("BonkMonety"):Connect(function()
 	odswiezLiczby()
 end)
 gracz:GetAttributeChangedSignal("BonkOdblokowane"):Connect(uaktualnijBramy)
+gracz:GetAttributeChangedSignal("BonkStraznicy"):Connect(uaktualnijBramy)
+-- okna od nowa po zmianie stanu z serwera (zbiorczo, raz na klatkę)
+local doOdswiezenia = false
+for _, a in { "BonkPalka", "BonkPety", "BonkPetyMam", "BonkKsiega", "BonkAutoPety", "BonkPrezentMozna", "BonkPrezentDzien",
+	"BonkMonety", "BonkMnoznikPetow" } do
+	gracz:GetAttributeChangedSignal(a):Connect(function()
+		if doOdswiezenia then
+			return
+		end
+		doOdswiezenia = true
+		task.defer(function()
+			doOdswiezenia = false
+			if okna then
+				okna:odswiez()
+			end
+		end)
+	end)
+end
 gracz:GetAttributeChangedSignal("BonkSamouczek"):Connect(function()
 	if aktywny and ui and gracz:GetAttribute("BonkSamouczek") == false and podpowiedzNr == nil then
 		podpowiedzNr = 1
@@ -608,6 +957,8 @@ local function kolorGatunku(cfg: Configuration): Color3
 end
 
 local slowoNr = 0
+local ostatnieWyklucie: any = nil
+local ostatnieOgloszenie: string? = nil
 local promienZiemi = RaycastParams.new()
 promienZiemi.FilterType = Enum.RaycastFilterType.Include
 promienZiemi.FilterDescendantsInstances = if mapa then { mapa } else {}
@@ -651,6 +1002,49 @@ end
 
 evZdarzenia.OnClientEvent:Connect(function(z)
 	if type(z) ~= "table" then
+		return
+	end
+	if z.t == "wyklucie" then
+		startWyklucia(z)
+		ostatnieWyklucie = z
+		return
+	elseif z.t == "kupiono" then
+		zagraj("zakup")
+		local P = D.palki[z.nr]
+		if okna and P then
+			okna:toast(P.nazwa .. "!  " .. string.format(D.ui.mnoznik, L.format(P.mnoznik)), D.ui.kolory.monety)
+		end
+		return
+	elseif z.t == "odmowa" then
+		if okna then
+			okna:toast(if z.powod == "monety" then D.ui.za_malo elseif z.powod == "jutro" then D.ui.prezent_jutro else "...", "FF8A8A")
+		end
+		return
+	elseif z.t == "prezent" then
+		zagraj("monety")
+		zagraj("wyklucie")
+		if okna then
+			okna:toast("+" .. L.format(z.monety) .. " " .. D.ui.monety, D.ui.kolory.monety)
+		end
+		if ui then
+			ui:monety(tonumber(gracz:GetAttribute("BonkMonety")) or 0, z.monety)
+		end
+		return
+	elseif z.t == "nagroda_straznika" then
+		zagraj("brama")
+		if okna then
+			okna:toast(string.format(D.ui.straznik_pokonany, z.nazwa) .. "  +" .. L.format(z.monety) .. " " .. D.ui.monety,
+				D.ui.kolory.monety)
+		end
+		if ui then
+			ui:moc(tonumber(gracz:GetAttribute("BonkMoc")) or 1, z.moc)
+		end
+		return
+	elseif z.t == "ogloszenie" then
+		ostatnieOgloszenie = z.tekst
+		if okna then
+			okna:ogloszenie(z.tekst, z.kolor)
+		end
 		return
 	end
 	local moj = z.g == gracz.UserId
@@ -746,7 +1140,12 @@ local function krokLotow(dt: number)
 			local obrot = CFrame.fromAxisAngle(l.os, f * l.obroty * 2 * math.pi) * CFrame.Angles(0, f * 3, 0)
 			korzen.CFrame = CFrame.new(p + Vector3.new(0, l.wys * 0.5, 0)) * obrot * CFrame.Angles(0, l.yaw, 0)
 				* CFrame.new(0, -l.wys * 0.5, 0)
-			if f >= 1 then
+			if f >= 1 and z.niebo then
+				-- Strażnik znika w niebie z błyskiem
+				E:iskry(p, Color3.fromHex(D.ui.kolory.monety), 22, 1.6)
+				E:slowo(p, D.ui.home_run, Color3.fromHex(D.ui.kolory.monety), 1.2)
+				skonczony = true
+			elseif f >= 1 then
 				local traf = workspace:Raycast(p + Vector3.new(0, 25, 0), Vector3.new(0, -70, 0), promienZiemi)
 				if traf then
 					l.faza = "lezy"
@@ -801,8 +1200,12 @@ RunService.RenderStepped:Connect(function(dt)
 	end
 	E:krok(dt)
 	krokLotow(dt)
+	krokWyklucia(dt)
 	if ui then
 		ui:krok(dt)
+	end
+	if okna then
+		okna:krok(dt)
 	end
 	if not aktywny then
 		return
@@ -942,6 +1345,12 @@ RunService.RenderStepped:Connect(function(dt)
 			muzykaKrainy(nr)
 		end
 	end
+	krokPetow(dt, oko, zegar)
+	krokEtykiet(oko)
+	if nrKlatki % 6 == 0 then
+		krokStref(hp)
+		krokStraznika(hp)
+	end
 	akumBram += dt
 	if akumBram > 1 then
 		akumBram = 0
@@ -980,7 +1389,7 @@ local function nazwyWlaczonych(): { string }
 	return w
 end
 
-sterowanie.OnInvoke = function(polecenie: string, a: any)
+sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 	if polecenie == "stan" then
 		local n = 0
 		for _ in widoki do
@@ -1003,7 +1412,52 @@ sterowanie.OnInvoke = function(polecenie: string, a: any)
 			klatki = pomiar.klatek, srKlatki = if pomiar.klatek > 0 then pomiar.suma / pomiar.klatek else 0,
 			maksKlatki = pomiar.maks, srPetli = if pomiar.klatek > 0 then pomiar.petlaSuma / pomiar.klatek else 0,
 			maksPetli = pomiar.petlaMaks,
+			okna = if okna then okna:stan() else nil, petow = (function()
+				local n, modele = 0, 0
+				for _, w in petyGraczy do
+					n += 1
+					modele += #w.modele
+				end
+				return { graczy = n, modeli = modele, czesci = czesciPetow }
+			end)(), etykietMocy = (function()
+				local n, tekst = 0, nil
+				for g, t in etykietyMocy do
+					if t.Visible then
+						n += 1
+						if g == gracz then
+							tekst = t.Text
+						end
+					end
+				end
+				return { widoczne = n, moja = tekst }
+			end)(), wyklucie = if wyklucie then wyklucie.t else nil, ostatnieWyklucie = ostatnieWyklucie,
+			ogloszenie = ostatnieOgloszenie,
+			pozPetow = (function()
+				local w = petyGraczy[gracz]
+				local lista = {}
+				if w then
+					for _, p in w.modele do
+						local q = p.korzen.Position
+						table.insert(lista, { p.id, q.X, q.Y, q.Z })
+					end
+				end
+				return lista
+			end)(),
 		}
+	elseif polecenie == "akcja" then
+		-- próby: ta sama droga co przycisk (Sygnaly/Akcja, sprawdza serwer)
+		evAkcja:FireServer(a, b)
+		return true
+	elseif polecenie == "okno" then
+		if not okna then
+			return false
+		end
+		if a then
+			okna:otworz(a)
+		else
+			okna:zamknij()
+		end
+		return okna:stan()
 	elseif polecenie == "bonk" then
 		ostatniBonk = 0
 		bonkRaz()

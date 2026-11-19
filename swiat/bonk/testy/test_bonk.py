@@ -82,6 +82,10 @@ def tab(t):
     return dict(t.d) if isinstance(t, LM.Tabela) else t
 
 
+def z(t):
+    return LM.z_luau(t)
+
+
 # ============================================================================================== 1. dane
 class TestDanych(unittest.TestCase):
     def test_1a_aktualne_i_powtarzalne(self):
@@ -120,7 +124,19 @@ class TestDanych(unittest.TestCase):
             for b in w["bryly"]:
                 self.assertIn(b[0], (0, 1, 2, 3, 4))
                 self.assertTrue(re.fullmatch(r"[0-9A-Fa-f]{6}", b[10]), b[10])
-        self.assertLess(sum(G["czesci"] for G in D["gatunki"].values()), 2600)
+        self.assertLess(sum(G["czesci"] for G in D["gatunki"].values() if not G.get("straznik")), 2600)
+        # etap 2: pety, jajka, pałki — wzorce z swiat/postacie (tylko odczyt), lekkie
+        W = DN.wzorce_etapu2(U)
+        self.assertEqual(len([k for k in W if k.startswith("Pet_")]), 15)
+        self.assertEqual(len([k for k in W if k.startswith("Jajko_")]), 3)
+        self.assertEqual(len([k for k in W if k.startswith("Palka_")]), 8)
+        for k, w in W.items():
+            self.assertTrue(5 <= len(w["bryly"]) <= 120, k)
+            for b in w["bryly"]:
+                self.assertIn(b[0], (0, 1, 2, 3, 4))
+                self.assertTrue(re.fullmatch(r"[0-9A-F]{6}", b[10]), (k, b[10]))
+        self.assertEqual(len(D["petyKolejnosc"]), 15)
+        self.assertEqual(sorted(D["pety"]), sorted(D["petyKolejnosc"]))
 
     def test_1e_dzwieki_z_prawami(self):
         Z = D["dzwieki"]
@@ -159,12 +175,14 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(jeden("kraina", K[1]["start"][0], DL), 2)
         self.assertEqual(jeden("kraina", K[2]["brama"]["x"] + 50, DL), 3)
         b1, b2 = K[0]["brama"]["wymagana"], K[1]["brama"]["wymagana"]
-        self.assertEqual(jeden("odblokowane", b1 - 1, DL, None, None), 1)
-        self.assertEqual(jeden("odblokowane", b1, DL, None, None), 2)
-        self.assertEqual(jeden("odblokowane", b2, DL, None, None), 3)
-        self.assertEqual(jeden("odblokowane", 1e30, DL, None, None), 3, "za ostatnią bramą nie ma krainy")
-        self.assertEqual(jeden("odblokowane", 1, DL, None, 2), 2, "otwartej bramy się nie zamyka")
-        self.assertFalse(jeden("mozePrzejsc", 3, 1e30, DL, None))
+        wszyscy = LM.do_luau({"straznicy": [1, 1, 1]})
+        self.assertEqual(jeden("odblokowane", b1 - 1, DL, wszyscy, None), 1)
+        self.assertEqual(jeden("odblokowane", b1, DL, wszyscy, None), 2)
+        self.assertEqual(jeden("odblokowane", b2, DL, wszyscy, None), 3)
+        self.assertEqual(jeden("odblokowane", 1e30, DL, wszyscy, None), 3, "za ostatnią bramą nie ma krainy")
+        self.assertEqual(jeden("odblokowane", 1, DL, wszyscy, 2), 2, "otwartej bramy się nie zamyka")
+        self.assertFalse(jeden("mozePrzejsc", 3, 1e30, DL, wszyscy))
+        self.assertEqual(jeden("odblokowane", 1e30, DL, None, None), 1, "bez profilu (bez Strażników) brama zamknięta")
 
     def test_2d_wiadro_5_na_sekunde(self):
         stan, przyjete = None, 0
@@ -224,6 +242,155 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual((p["moc"], p["monety"], p["odblokowane"], p["kraina"], p["samouczek"], p["bonki"]),
                          (5000, 77, 2, 2, True, 12))
 
+    # ------------------------------------------------------------------------------------------ etap 2
+    def test_2i_migracja_profilu_1_do_2(self):
+        """Rekord z etapu 1 (v = 1, pałka 1 = bez pałki, puste pety i Strażnicy) → profil v2 bez utraty postępu."""
+        v1 = {"v": 1, "moc": 3000.0, "monety": 900.0, "bonki": 40.0, "najdalej": 130.0, "homeRuny": 2.0, "rzadkie": 1.0,
+              "odblokowane": 2.0, "kraina": 2.0, "samouczek": True, "palka": 1.0, "pety": {}, "straznicy": {}}
+        p = z(jeden("profil", v1, DL))
+        self.assertEqual(p["v"], 2)
+        self.assertEqual((p["moc"], p["monety"], p["bonki"], p["odblokowane"], p["kraina"], p["samouczek"]),
+                         (3000, 900, 40, 2, 2, True), "postęp z v1 zostaje")
+        self.assertEqual((p["palka"], p["pety"], p["aktywne"], p["ksiega"], p["straznicy"], p["autoPety"]),
+                         (0, {}, {}, {}, [0, 0, 0], True), "nowe pola v2 od zera (pusta tabela = {})")
+        self.assertEqual(p["prezent"], {"dzien": -1, "seria": 0})
+        # otwarta w v1 brama zostaje otwarta (L.odblokowane nie zamyka), mimo braku Strażnika
+        self.assertEqual(jeden("odblokowane", 3000, DL, LM.do_luau(p), 2), 2)
+        # v2 tam i z powrotem: zapisany profil wczytuje się tak samo
+        v2 = dict(p, palka=3, pety={"zoledziak": 2, "lisciolis": 1, "nieznany": 5}, ksiega={"zoledziak": True, "ognik": True},
+                  aktywne=["lisciolis", "zoledziak", "zoledziak", "zoledziak"], autoPety=False, straznicy=[1, 0, 0],
+                  prezent={"dzien": 20410, "seria": 4}, jajek=3)
+        q = z(jeden("profil", v2, DL))
+        self.assertEqual((q["palka"], q["pety"], q["straznicy"], q["prezent"], q["jajek"], q["autoPety"]),
+                         (3, {"zoledziak": 2, "lisciolis": 1}, [1, 0, 0], {"dzien": 20410, "seria": 4}, 3, False))
+        self.assertEqual(q["aktywne"], ["lisciolis", "zoledziak", "zoledziak"], "nie więcej kopii niż ma, najwyżej 3")
+        self.assertEqual(q["ksiega"], {"zoledziak": True, "lisciolis": True, "ognik": True}, "Księga = odkryte")
+        self.assertEqual(z(jeden("profil", dict(v2, palka=99), DL))["palka"], len(U["palki"]["lista"]))
+
+    def test_2j_palki(self):
+        P = U["palki"]["lista"]
+        p = jeden("profil", None, DL)
+        p.set("monety", float(P[0]["cena"] - 1))
+        self.assertEqual(wolaj("kupPalke", p, 1, DL), [False, "monety"])
+        p.set("monety", float(P[0]["cena"] + P[1]["cena"]))
+        self.assertEqual(wolaj("kupPalke", p, 2, DL), [False, "kolejnosc"], "po kolei")
+        self.assertEqual(wolaj("kupPalke", p, 1, DL), [True, None])
+        self.assertEqual((p.get("palka"), p.get("monety")), (1, float(P[1]["cena"])))
+        self.assertEqual(wolaj("kupPalke", p, 1, DL), [False, "kolejnosc"], "drugi raz tej samej nie")
+        self.assertEqual(wolaj("kupPalke", p, 2, DL)[0], True)
+        self.assertEqual(p.get("monety"), 0)
+        self.assertEqual(jeden("mnoznikPalki", 0, DL), 1)
+        self.assertEqual([jeden("mnoznikPalki", i, DL) for i in range(1, 9)], [x["mnoznik"] for x in P])
+        self.assertEqual(jeden("moc", 100, jeden("mnoznikPalki", 2, DL), 1), 100 * P[1]["mnoznik"])
+        self.assertEqual(len(P), 8)
+        self.assertEqual([x["nazwa"] for x in P], ["Nail Club", "Frying Pan", "War Hammer", "Great Axe", "Banner Spear",
+                                                   "Flame Sword", "Ice Staff", "Master Ladle"])
+
+    def test_2k_jajka_szanse_i_losowanie(self):
+        R = U["rzadkosci"]
+        self.assertAlmostEqual(sum(r["szansa"] for r in R), 1)
+        J = DL.get("jajka").get(1.0)
+        pety = [p["id"] for p in U["jajka"][0]["pety"]]
+        # granice przedziałów: r tuż przed i tuż po progu
+        prog = 0
+        for i, r in enumerate(R):
+            self.assertEqual(jeden("losujPeta", J, prog + 1e-9, DL), pety[i])
+            prog += r["szansa"]
+            self.assertEqual(jeden("losujPeta", J, prog - 1e-9, DL), pety[i])
+        self.assertEqual(jeden("losujPeta", J, 0.999999999, DL), pety[-1])
+        # rozkład z równomiernej siatki r = jawne szanse
+        n = 2000
+        licz = {}
+        for k in range(n):
+            pid = jeden("losujPeta", J, (k + 0.5) / n, DL)
+            licz[pid] = licz.get(pid, 0) + 1
+        for i, r in enumerate(R):
+            self.assertAlmostEqual(licz[pety[i]] / n, r["szansa"], places=3)
+        # stała cena (D-105), jajka tylko za monety (D-086): w kodzie nie ma zakupów za Robux
+        for j in D["jajka"]:
+            self.assertEqual(j["cena"], next(x["cena"] for x in U["jajka"] if x["nazwa"] == j["nazwa"]))
+        for plik in ("SerwerBonk.server.luau", "KlientBonk.client.luau", "OknaBonk.luau"):
+            t = czytaj(plik)
+            for zakazane in ("MarketplaceService", "PromptProductPurchase", "ProcessReceipt", "Robux"):
+                self.assertNotIn(zakazane, t, plik)
+
+    def test_2l_wyklucie_kopie_ksiega(self):
+        p = jeden("profil", None, DL)
+        J1 = U["jajka"][0]
+        self.assertEqual(wolaj("wyklujJajko", p, 1, 0.1, DL), [False, "monety"])
+        p.set("monety", float(J1["cena"] * 3))
+        self.assertEqual(wolaj("wyklujJajko", p, 2, 0.1, DL), [False, "kraina"], "jajko zamkniętej krainy")
+        ok, w = wolaj("wyklujJajko", p, 1, 0.1, DL)
+        w = z(w)
+        self.assertTrue(ok)
+        self.assertEqual((w["pet"], w["nowy"], w["kopie"], w["rzadkosc"]), (J1["pety"][0]["id"], True, 1, 1))
+        ok, w = wolaj("wyklujJajko", p, 1, 0.2, DL)
+        self.assertEqual((z(w)["nowy"], z(w)["kopie"]), (False, 2), "DUPLICATE: kopie się liczą")
+        ok, w = wolaj("wyklujJajko", p, 1, 0.99, DL)
+        self.assertEqual(z(w)["pet"], J1["pety"][4]["id"])
+        q = z(p)
+        self.assertEqual(q["monety"], 0)
+        self.assertEqual(q["jajek"], 3)
+        self.assertEqual(q["pety"], {J1["pety"][0]["id"]: 2, J1["pety"][4]["id"]: 1})
+        self.assertEqual(wolaj("ksiega", p, DL), [2, 15])
+        self.assertEqual(q["aktywne"], [J1["pety"][4]["id"], J1["pety"][0]["id"], J1["pety"][0]["id"]], "auto: najlepsze 3")
+
+    def test_2m_mnoznik_petow(self):
+        prem = {p["id"]: J["premie"][i] for J in U["jajka"] for i, p in enumerate(J["pety"])}
+        self.assertEqual(jeden("mnoznikPetow", [], DL), 1)
+        akt = ["jaguarek", "perlowa_wydra", "zoledziak"]
+        self.assertAlmostEqual(jeden("mnoznikPetow", akt, DL), 1 + sum(prem[a] for a in akt))
+        # najlepsze 3 z kopiami; więcej petów nie podnosi ponad 1 + 3 × najlepsza premia (nie wybucha)
+        pety = {k: 5 for k in prem}
+        best = z(jeden("najlepszePety", pety, DL))
+        self.assertEqual(best, ["jaguarek"] * 3)
+        self.assertAlmostEqual(jeden("mnoznikPetow", best, DL), 1 + 3 * max(prem.values()))
+        self.assertEqual(z(jeden("najlepszePety", {"zoledziak": 1, "lisciolis": 1}, DL)), ["lisciolis", "zoledziak"])
+        self.assertEqual(z(jeden("aktywneZListy", ["ognik", "zoledziak", "x", 7], {"zoledziak": 1}, DL)), ["zoledziak"])
+        # premie rosną z rzadkością i krainą
+        for J in U["jajka"]:
+            self.assertEqual(J["premie"], sorted(J["premie"]))
+
+    def test_2n_straznik_i_brama(self):
+        K = D["krainy"]
+        b1 = K[0]["brama"]["wymagana"]
+        bez = LM.do_luau({"straznicy": [0, 0, 0]})
+        z1 = LM.do_luau({"straznicy": [1, 0, 0]})
+        self.assertFalse(jeden("mozePrzejsc", 1, b1 * 10, DL, bez), "bez Strażnika brama zamknięta")
+        self.assertFalse(jeden("mozePrzejsc", 1, b1 - 1, DL, z1), "bez Mocy brama zamknięta")
+        self.assertTrue(jeden("mozePrzejsc", 1, b1, DL, z1))
+        self.assertEqual(jeden("odblokowane", 1e30, DL, z1, None), 2, "Strażnik Bagna niepokonany")
+        self.assertEqual(jeden("odblokowane", 1e30, DL, LM.do_luau({"straznicy": [1, 1, 1]}), None), 3)
+        S = DL.get("straznicy").get(1.0)
+        Su = U["straznicy"][0]
+        self.assertEqual(wolaj("nagrodaStraznika", S, 1, DL), [Su["monety"], Su["moc"]])
+        um = U["straznik"]["udzial_min"]
+        self.assertEqual(wolaj("nagrodaStraznika", S, 0.01, DL), [math.floor(Su["monety"] * um), math.floor(Su["moc"] * um)])
+        self.assertEqual(wolaj("nagrodaStraznika", S, 0.5, DL), [Su["monety"] * 0.5, Su["moc"] * 0.5])
+        # samotny gracz z Mocą bramy pokonuje Strażnika w czas_solo_s
+        lo, hi = U["straznik"]["czas_solo_s"]
+        for i in range(len(K)):
+            self.assertTrue(lo <= TP.czas_solo_straznika(U, i) <= hi, i)
+        for S in D["straznicy"]:
+            self.assertTrue(D["gatunki"][S["gatunek"]]["straznik"])
+            k = next(x for x in K if x["nr"] == S["kraina"])
+            self.assertTrue(k["xOd"] < S["miejsce"][0] < k["brama"]["x"], "Strażnik przed bramą swojej krainy")
+
+    def test_2o_prezent_bez_kary(self):
+        p = jeden("profil", None, DL)
+        N = U["prezent"]["nagrody"]
+        dzien = 20000
+        self.assertEqual(wolaj("odbierzPrezent", p, dzien, DL), [True, N[0], 1])
+        self.assertEqual(wolaj("odbierzPrezent", p, dzien, DL), [False, 0, 2], "raz na dzień")
+        self.assertEqual(wolaj("odbierzPrezent", p, dzien + 1, DL)[0:2], [True, N[1]])
+        self.assertEqual(wolaj("odbierzPrezent", p, dzien + 5, DL)[0:2], [True, N[2]], "opuszczone dni: seria rośnie dalej")
+        for d in range(dzien + 6, dzien + 20):
+            wolaj("odbierzPrezent", p, d, DL)
+        self.assertEqual(wolaj("prezent", p, dzien + 30, DL), [True, N[-1], len(N)], "po 7 dniach najwyższa nagroda")
+        p.set("odblokowane", 3.0)
+        self.assertEqual(wolaj("prezent", p, dzien + 30, DL)[1], N[-1] * U["prezent"]["mnoznik_krainy"][2])
+        self.assertEqual(jeden("dzien", 86400 * 3 + 5), 3)
+
 
 # ============================================================================================== 3. tempo
 class TestTempa(unittest.TestCase):
@@ -231,7 +398,21 @@ class TestTempa(unittest.TestCase):
         zdarzenia, czasy, pierwszy = TP.przebieg(U)
         self.assertEqual(TP.w_celach(U, czasy, pierwszy), [])
         self.assertLessEqual(pierwszy, 30)
-        self.assertEqual(len(czasy), 3)
+        self.assertEqual(sorted(czasy), ["brama_1", "brama_2", "pierwsza_palka", "pierwsze_jajko"])
+        self.assertTrue(any("STRAŻNIK" in o for _, o, _ in zdarzenia), "Strażnik przed bramą")
+
+    def test_3d_mnozniki_jak_luau(self):
+        """tempo.py liczy mnożniki jak L.mnoznikPetow / L.mnoznikPalki."""
+        prem = [0.35, 1.0, 0.1, 0.2]
+        ids = ["lisciolis", "jelonek_gaju", "zoledziak", "mchowy_slimak"]
+        najl = z(jeden("najlepszePety", {i: 1 for i in ids}, DL))
+        self.assertAlmostEqual(TP.mnoznik_petow(prem, 3), jeden("mnoznikPetow", najl, DL))
+        for n in range(0, 9):
+            self.assertEqual(TP.mnoznik_palki(U, n), jeden("mnoznikPalki", n, DL))
+        wyk, szanse = [0] * 5, [r["szansa"] for r in U["rzadkosci"]]
+        for k in range(1, 101):
+            wyk[TP.rzadkosc_wyklucia(k, wyk, szanse)] += 1
+        self.assertEqual(wyk, [50, 25, 15, 8, 2], "„średnie szczęście” = jawne szanse")
 
     def test_3b_python_jak_luau(self):
         """tempo.py liczy z tych samych liczb co gra: życie, Moc i nagrody z L.zycie / L.nagroda."""
@@ -243,27 +424,21 @@ class TestTempa(unittest.TestCase):
                 self.assertEqual(wolaj("nagroda", GL, False, False, DL)[1], U["gatunki"][z["gatunek"]]["moc"])
 
     def test_3c_bez_dodatkow_wolniej_niz_z(self):
-        """Haczyk etapu 2: mnożnik pałki/petów przyspiesza grę (ta sama symulacja z Mocą ×2)."""
-        U2 = json.loads(json.dumps(U))
-        for g in U2["gatunki"].values():
-            g["hp"] = g["hp"] / 2                  # Moc ×2 ≡ życie / 2 przy tych samych nagrodach
+        """Pałki i pety przyspieszają grę: bez dodatków brama lasu dużo później."""
         _, cz1, _ = TP.przebieg(U)
-        _, cz2, _ = TP.przebieg(U2)
-        self.assertLess(cz2[0], cz1[0])
+        _, cz2, _ = TP.przebieg(U, dodatki=False)
+        self.assertLess(cz1["brama_1"] * 1.3, cz2["brama_1"])
 
 
 # ============================================================================================== 4. źródła
 class TestZrodel(unittest.TestCase):
-    PLIKI = ["LogikaBonk.luau", "EfektyBonk.luau", "InterfejsBonk.luau", "SerwerBonk.server.luau", "KlientBonk.client.luau",
-             "DaneBonk.luau"]
-
     def test_4a_kontrola_statyczna(self):
         self.assertEqual(ZB.sprawdz_zrodla(), [])
 
     def test_4b_skladnia_i_publikacja(self):
         Z = ZB.zrodla(PLIKI)
         Zp = ZB.zrodla(PLIKI, publikacja=True)
-        self.assertEqual(len(Z), 6)
+        self.assertEqual(len(Z), 7)
         for (_, n, _, _, t), (_, _, _, _, tp) in zip(Z, Zp):
             LM.Parser(t, n, LM.Interpreter()).program()
             LM.Parser(tp, n + " (publikacja)", LM.Interpreter()).program()
@@ -274,13 +449,21 @@ class TestZrodel(unittest.TestCase):
     def test_4c_siec(self):
         s = czytaj("SerwerBonk.server.luau")
         k = czytaj("KlientBonk.client.luau")
-        self.assertEqual(re.findall(r"(\w+)\.OnServerEvent", s), ["evBonk"], "jedyne zdalne wejście od klienta")
+        o = czytaj("OknaBonk.luau")
+        self.assertEqual(re.findall(r"(\w+)\.OnServerEvent", s), ["evBonk", "evAkcja"], "dwa zdalne wejścia od klienta")
         self.assertIn("evBonk.OnServerEvent:Connect(function(gracz: Player)\n", s, "BONK bez argumentów od klienta")
         self.assertIn("L.wiadro(s.wiadro, os.clock(), D.bonk.uderzen_na_s, D.bonk.zapas_uderzen)", s, "limit tempa na serwerze")
-        self.assertEqual(re.findall(r"(\w+):FireServer\(([^)]*)\)", k), [("evBonk", "")])
-        self.assertNotIn("InvokeServer", k + s)
-        for a in ("BonkMoc", "BonkMonety", "BonkOdblokowane"):
-            self.assertNotIn('SetAttribute("%s"' % a, k, "klient nie ustawia stanu gracza")
+        self.assertIn("evAkcja.OnServerEvent:Connect(function(gracz: Player, rodzaj: any, arg: any)\n", s)
+        self.assertIn("L.wiadro(s.wiadroAkcji, os.clock(), D.akcje.na_s, D.akcje.zapas)", s, "limit akcji na serwerze")
+        self.assertIn('if type(rodzaj) ~= "string" or not AKCJE[rodzaj] then', s, "znane akcje")
+        self.assertEqual(sorted(set(re.findall(r"(\w+):FireServer\(", k + o))), ["evAkcja", "evBonk"])
+        self.assertNotIn("InvokeServer", k + s + o)
+        for a in ("BonkMoc", "BonkMonety", "BonkOdblokowane", "BonkPety", "BonkPalka", "BonkMnoznikPalki", "BonkMnoznikPetow"):
+            self.assertNotIn('SetAttribute("%s"' % a, k + o, "klient nie ustawia stanu gracza")
+        # zakupy liczy serwer z logiki (L.kupPalke, L.wyklujJajko, L.odbierzPrezent), los z serwera
+        for f in ("L.kupPalke(", "L.wyklujJajko(", "L.odbierzPrezent(", "L.aktywneZListy("):
+            self.assertIn(f, s)
+            self.assertNotIn(f, k + o)
 
     def test_4d_cudze_ekrany_i_bohater(self):
         k = czytaj("KlientBonk.client.luau")

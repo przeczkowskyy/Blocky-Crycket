@@ -68,10 +68,17 @@ def skala_potworow(U=None):
     return float((U or ustawienia())["potwory"].get("skala", 1))
 
 
+def straznicy_modele(U=None):
+    return {s["model"] for s in (U or ustawienia())["straznicy"]}
+
+
 def wzorzec(klucz, k=None):
     """Wzorzec potwora do budowy w Studio: bryły w pozie spoczynku (układ rigu: stopy na y = 0, przód = −Z), w skali
-    potwory.skala. Bryła: [kształt, x, y, z, rx, ry, rz, sx, sy, sz, kolor, materiał, połysk, siatka]."""
-    k = skala_potworow() if k is None else k
+    potwory.skala (Strażnicy: straznik.skala). Bryła: [kształt, x, y, z, rx, ry, rz, sx, sy, sz, kolor, materiał,
+    połysk, siatka]."""
+    if k is None:
+        U = ustawienia()
+        k = float(U["straznik"]["skala"]) if klucz in straznicy_modele(U) else skala_potworow(U)
     d = model_potwora(klucz)
     bryly = []
     for c in d["czesci"]:
@@ -79,6 +86,165 @@ def wzorzec(klucz, k=None):
         bryly.append([int(c[1]), _r(c[3] * k, 4), _r(c[4] * k, 4), _r(c[5] * k, 4), _r(c[6], 5), _r(c[7], 5), _r(c[8], 5),
                       _r(c[9] * k, 4), _r(c[10] * k, 4), _r(c[11] * k, 4), c[12], mat[0], _r(mat[1], 3), c[15] or ""])
     return {"klucz": klucz, "nazwa": d["nazwa"], "bryly": bryly, "wymiary": d["wymiary"]}
+
+
+def _postacie():
+    """Moduły modeli swiat/postacie (tylko odczyt) — import leniwy (repo na ścieżce)."""
+    if REPO not in sys.path:
+        sys.path.insert(0, REPO)
+    from swiat.postacie.roblox_postac import postacie_z_modulu
+    from swiat.postacie.biblioteka import roblox_klocki as RK
+    return postacie_z_modulu, RK
+
+
+def _bryly_z_rigu(d, k):
+    """Rig z klocków (roblox_klocki.rig, układ rigu: ziemia y = 0, przód −Z) → bryły wzorca w pozie spoczynku."""
+    bryly = []
+    for c in d["czesci"]:
+        mat = d["materialy"][int(c[13])]
+        bryly.append([int(c[1]), _r(c[3] * k, 4), _r(c[4] * k, 4), _r(c[5] * k, 4), _r(c[6], 5), _r(c[7], 5), _r(c[8], 5),
+                      _r(c[9] * k, 4), _r(c[10] * k, 4), _r(c[11] * k, 4), c[12].upper(), mat[0], _r(mat[1], 3), c[15] or ""])
+    return bryly
+
+
+_RIGI = {}
+
+
+def wzorzec_modelu(modul, model_id, k):
+    """Pet albo jajko z swiat/postacie/<modul>.py → wzorzec (bryły w pozie spoczynku, skala k)."""
+    klucz = (modul, model_id, k)
+    if klucz not in _RIGI:
+        postacie_z_modulu, RK = _postacie()
+        p = next((x for x in postacie_z_modulu(os.path.join(REPO, "swiat", "postacie", modul + ".py")) if x.id == model_id), None)
+        if p is None:
+            raise BladDanych("brak modelu %s w swiat/postacie/%s.py" % (model_id, modul))
+        d = RK.rig(p, None)
+        bryly = _bryly_z_rigu(d, k)
+        wys = max(b[2] + b[8] / 2 for b in bryly)
+        _RIGI[klucz] = {"klucz": model_id, "nazwa": p.nazwa, "bryly": bryly, "wysokosc": _r(wys)}
+    return _RIGI[klucz]
+
+
+def wzorzec_palki(id_, k):
+    """Broń z swiat/postacie/bronie.py → bryły w układzie RightGripAttachment (konwencja Roblox, przód −Z), skala k."""
+    klucz = ("bronie", id_, k)
+    if klucz not in _RIGI:
+        _postacie_z, RK = _postacie()
+        from swiat.postacie import bronie
+        from swiat.postacie.biblioteka.postac import macierz_obrotu, mnoz, razy_wektor
+        a = next((x for x in bronie.akcesoria() if x.id == id_), None)
+        if a is None:
+            raise BladDanych("brak broni %s w swiat/postacie/bronie.py" % id_)
+        bryly = []
+        for c in a.czesci_w():
+            R0 = macierz_obrotu(*c["r"])
+            mat = RK.MATERIALY_ROBLOX.get(c["m"], RK.MATERIALY_ROBLOX["zwykly"])
+            for ks, o, R, roz, siatka in RK.rozloz(c, []):
+                if min(roz) < 0.001:
+                    continue
+                pp = RK._poz(tuple(c["p"][i] + razy_wektor(R0, o)[i] for i in range(3)))
+                katy = RK._katy_bryly(mnoz(R0, R))
+                bryly.append([int(ks), _r(pp[0] * k, 4), _r(pp[1] * k, 4), _r(pp[2] * k, 4), _r(katy[0], 5), _r(katy[1], 5),
+                              _r(katy[2], 5), _r(roz[0] * k, 4), _r(roz[1] * k, 4), _r(roz[2] * k, 4), str(c["c"]).upper(),
+                              mat[0], _r(mat[1], 3), siatka or ""])
+        _RIGI[klucz] = {"klucz": id_, "nazwa": a.nazwa, "bryly": bryly}
+    return _RIGI[klucz]
+
+
+def nazwa_wzorca_peta(pid):
+    return "Pet_" + pid
+
+
+def nazwa_wzorca_jajka(nr):
+    return "Jajko_%d" % nr
+
+
+def nazwa_wzorca_palki(nr):
+    return "Palka_%d" % nr
+
+
+def wzorce_etapu2(U):
+    """{nazwa wzorca: dane wzorca} — pety, jajka, pałki (potwory i Strażnicy: wzorzec(klucz))."""
+    w = {}
+    P = U["pety"]
+    for nr, J in enumerate(U["jajka"], 1):
+        for p in J["pety"]:
+            w[nazwa_wzorca_peta(p["id"])] = wzorzec_modelu(p["id"], p["id"], P["skala"])
+        w[nazwa_wzorca_jajka(nr)] = wzorzec_modelu(J["model"], J["model"], P["skala_jajka"])
+    for nr, pal in enumerate(U["palki"]["lista"], 1):
+        w[nazwa_wzorca_palki(nr)] = wzorzec_palki(pal["id"], U["palki"]["skala"])
+    return w
+
+
+def _miejsce_mapy(K, id_):
+    zn = czytaj_json(sciezka_repo(K["mapa"] + "/znaczniki.json"))
+    m = next((x for x in zn["miejsca"] if x["id"] == id_), None)
+    if m is None:
+        raise BladDanych("%s: brak miejsca %r w znaczniki.json" % (K["id"], id_))
+    return m["punkt"]
+
+
+def etap2(U, krainy):
+    """Dane etapu 2: pałki, rzadkości, jajka i pety, Strażnicy, pokazanie się, prezent, akcje."""
+    nr_krainy = {K["id"]: i + 1 for i, K in enumerate(U["krainy"])}
+    W = wzorce_etapu2(U)
+    palki = []
+    for nr, p in enumerate(U["palki"]["lista"], 1):
+        palki.append({"nr": nr, "id": p["id"], "nazwa": p["nazwa"], "cena": p["cena"], "mnoznik": p["mnoznik"],
+                      "wzorzec": nazwa_wzorca_palki(nr), "czesci": len(W[nazwa_wzorca_palki(nr)]["bryly"])})
+    ceny = [p["cena"] for p in palki]
+    if ceny != sorted(ceny) or [p["mnoznik"] for p in palki] != sorted(p["mnoznik"] for p in palki):
+        raise BladDanych("pałki: ceny i mnożniki muszą rosnąć")
+    sklepy = []
+    for s in U["palki"]["sklepy"]:
+        sklepy.append({"kraina": nr_krainy[s["kraina"]], "miejsce": swiat(U, s["u"], 0, s["v"])})
+    rz = U["rzadkosci"]
+    if abs(sum(r["szansa"] for r in rz) - 1) > 1e-9:
+        raise BladDanych("szanse rzadkości nie sumują się do 1")
+    jajka, pety, kolejnosc = [], {}, []
+    for nr, J in enumerate(U["jajka"], 1):
+        if nr_krainy.get(J["kraina"]) != nr:
+            raise BladDanych("jajka w kolejności krain (%s)" % J["kraina"])
+        if len(J["pety"]) != len(rz) or len(J["premie"]) != len(rz):
+            raise BladDanych("jajko %s: po jednym pecie i premii na rzadkość" % J["nazwa"])
+        K = U["krainy"][nr - 1]
+        m = _miejsce_mapy(K, "jajko")
+        wj = W[nazwa_wzorca_jajka(nr)]
+        jajka.append({"nr": nr, "nazwa": J["nazwa"], "cena": J["cena"], "wzorzec": nazwa_wzorca_jajka(nr),
+                      "pety": [p["id"] for p in J["pety"]], "miejsce": swiat(U, m[0], m[1], m[2]),
+                      "wysokosc": wj["wysokosc"], "czesci": len(wj["bryly"])})
+        for r, p in enumerate(J["pety"], 1):
+            if p["id"] in pety:
+                raise BladDanych("pet %s w dwóch jajkach" % p["id"])
+            wp = W[nazwa_wzorca_peta(p["id"])]
+            pety[p["id"]] = {"nazwa": p["nazwa"], "rzadkosc": r, "kraina": nr, "premia": J["premie"][r - 1],
+                             "wzorzec": nazwa_wzorca_peta(p["id"]), "wysokosc": wp["wysokosc"], "czesci": len(wp["bryly"])}
+            kolejnosc.append(p["id"])
+    straznicy = []
+    for S in U["straznicy"]:
+        nr = nr_krainy[S["kraina"]]
+        st = krainy[nr - 1]["straznik"]
+        straznicy.append({"kraina": nr, "gatunek": S["model"], "nazwa": S["nazwa"], "hp": S["hp"], "moc": S["moc"],
+                          "monety": S["monety"], "miejsce": st["miejsce"], "arena": st["arena"], "r": st["r"]})
+    if [s["kraina"] for s in straznicy] != list(range(1, len(krainy) + 1)):
+        raise BladDanych("po jednym Strażniku na krainę, w kolejności krain")
+    T = U["pokazanie"]["tablice"]
+    K1 = U["krainy"][0]
+    tablice = []
+    for i, tytul in enumerate(U["ui"]["tablice"]):
+        u = T["u"] - (i - 1) * T["odstep"]          # patrząc od polany (+Z): pierwsza z lewej
+        tablice.append({"nr": i + 1, "tytul": tytul, "miejsce": swiat(U, u, 0, T["v"]),
+                        "patrz": swiat(U, u, 0, 0), "szer": T["szer"], "wys": T["wys"]})
+    bez_opisu = lambda d: {k: v for k, v in d.items() if k != "opis"}  # noqa: E731
+    return {
+        "palki": palki, "sklepy": sklepy, "sklep": {"zasieg": U["palki"]["zasieg"]},
+        "rzadkosci": [{"nazwa": r["nazwa"], "kolor": r["kolor"], "szansa": r["szansa"]} for r in rz],
+        "jajka": jajka, "pety": pety, "petyKolejnosc": kolejnosc, "petyUst": bez_opisu(U["pety"]),
+        "straznicy": straznicy, "straznik": bez_opisu(U["straznik"]),
+        "pokazanie": {"tablice": tablice, "wierszy": T["wierszy"], "co_s": U["pokazanie"]["co_s"],
+                      "korona": U["pokazanie"]["korona"], "nad_glowa": U["pokazanie"]["nad_glowa"]},
+        "prezent": bez_opisu(U["prezent"]), "akcje": bez_opisu(U["akcje"]),
+    }
 
 
 def dzwieki(U):
@@ -146,9 +312,18 @@ def dane(U):
         gatunki[g] = {"nazwa": G["nazwa"], "hp": G["hp"], "moc": G["moc"], "monety": G["monety"],
                       "promien": _r(k * max(1.2, min(w["promien"], max(w["szerokosc"], w["glebokosc"]) / 2))),
                       "wysokosc": _r(k * w["wysokosc"]), "czesci": len(m["czesci"])}
+    E2 = etap2(U, krainy)
+    ks = float(U["straznik"]["skala"])
+    for S in E2["straznicy"]:
+        g = S["gatunek"]
+        m = model_potwora(g)
+        w = m["wymiary"]
+        gatunki[g] = {"nazwa": S["nazwa"], "hp": S["hp"], "moc": S["moc"], "monety": S["monety"], "straznik": True,
+                      "promien": _r(ks * max(1.2, min(w["promien"], max(w["szerokosc"], w["glebokosc"]) / 2))),
+                      "wysokosc": _r(ks * w["wysokosc"]), "czesci": len(m["czesci"])}
     pow_ = U["powrot"]
     D = {
-        "wersja": 1,
+        "wersja": 2,
         "kontener": U["kontener"], "prefiks": U["prefiks"], "wylacznik": U["wylacznik"], "autostart": U["autostart"],
         "folderWzorcow": U["folder_wzorcow_rs"],
         "przesuniecie": U["przesuniecie"],
@@ -165,6 +340,7 @@ def dane(U):
         "ui": {k: v for k, v in U["ui"].items() if k != "opis"},
         "dzwieki": dzwieki(U),
     }
+    D.update(E2)
     tekst = json.dumps(D, sort_keys=True, ensure_ascii=False)
     D["skrot"] = hashlib.sha1(tekst.encode("utf-8")).hexdigest()[:12]
     return D
