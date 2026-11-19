@@ -86,10 +86,10 @@ KOD = {
     "plus": 'game:GetService("ReplicatedStorage"):WaitForChild("AddStatPoint"):FireServer("%s") return "ok"',
     "sklep": H + GR + (
         'local sk = workspace.KowalProba.Sygnaly.Sklep local of = sk:Invoke("oferta", gracz) '
-        'local lista = {} for _, o in (of and of.oferta) or {} do if o.stan == "kup" then table.insert(lista, o) end end '
+        'local lista = {} for _, o in (of and of.oferta) or {} do if o.stan == "kup" and o.stopien ~= "start" then table.insert(lista, o) end end '
         'table.sort(lista, function(a, b) return a.cena < b.cena end) '
         'for _, o in lista do local w = sk:Invoke("kup", gracz, o.id) if type(w) == "table" and w.ok then '
-        'return H:JSONEncode({ ok = true, id = o.id, slot = o.slot, cena = o.cena, zalozony = w.zalozony == true }) end end '
+        'return H:JSONEncode({ ok = true, id = o.id, slot = o.slot, cena = o.cena, stopien = o.stopien, nazwa = o.nazwa, zalozony = w.zalozony == true }) end end '
         'return H:JSONEncode({ ok = false, ofert = #lista })'),
     "do_kowala": GR + ('local k = workspace.KowalProba k.Sygnaly.SterowanieSerwera:Invoke("materialy", gracz, 50) '
                        'local e = require(k.Moduly.DaneKowala).kuznia.e '
@@ -114,8 +114,17 @@ KOD = {
         'if ev then ev:Fire(gracz, { straznik = true, wynik = "wygrana" }) end '
         'return H:JSONEncode({ ok = type(w) == "table" and w.ok == true, powod = type(w) == "table" and w.powod or false, brama = ev ~= nil })'),
     "przelot": GR + ('local c = workspace:FindFirstChild("CutscenkaBiomu") '
-                     'if not c then return "brak" end c.Sygnaly.SterowanieSerwera:Invoke("oznacz", gracz, "las") return "ok"'),
+                     'if not c then return "brak" end c.Sygnaly.SterowanieCutscenki:Invoke("oznacz", gracz, "las") '
+                     'return tostring(gracz:GetAttribute("WidzialPrzelotLasu"))'),
+    # stan oferty sklepu dla jednego przedmiotu (zalozone / masz / kup…) i inny założony slot (przymierzalnia)
+    "oferta": H + GR + ('local of = workspace.KowalProba.Sygnaly.Sklep:Invoke("oferta", gracz) local w = { inny = false } '
+                        'for _, o in (of and of.oferta) or {} do if o.id == "%s" then w.stan = o.stan w.ulepszenie = o.ulepszenie '
+                        'elseif o.stan == "zalozone" and o.slot ~= "%s" and not w.inny then w.inny = o.slot end end '
+                        'return H:JSONEncode(w)'),
     "bledy": KS + 's:SetAttribute("%s", %d) return "ok"',
+    # strój, w który klient ubiera bohatera walki (Ubieranie przymierzalni — ten sam kod co aktor walki)
+    "stroj_klienta": H + ('local U = require(workspace.StrojeProba.Moduly.Ubieranie) '
+                          'return H:JSONEncode(U.strojGracza(game:GetService("Players").LocalPlayer, "%s") or {})'),
 }
 
 
@@ -127,7 +136,7 @@ def sprawdz_kod():
     """Bez Studio: każdy kawałek Luau (po podstawieniu zer) i kod z zapis_prob / zbuduj parsuje się w luau_mini."""
     import luau_mini as LM
     kody = {n: re.sub(r"%[sd]", "0", k) for n, k in KOD.items()}
-    kody.update({"zp_start": ZP.LUAU_START, "zp_koniec": ZP.LUAU_KONIEC, "zp_stan": ZP.LUAU_STAN,
+    kody.update({"zp_start": ZP.LUAU_START, "zp_koniec": ZP.LUAU_KONIEC, "zp_stan": ZP.LUAU_STAN, "zp_po": ZP.LUAU_PO_STARCIE,
                  "zp_magazyn": ZP.kod_magazynu(2), "zapis_proby": ZB.kod_zapisu(D, kasuj=True, proba=True)})
     bledy = []
     for nazwa, kod in kody.items():
@@ -235,6 +244,17 @@ def main():
         def rekord_proby(kasuj=False):
             return luau(ZB.NAGLOWEK_MIEJSCA.replace("__MIEJSCE__", str(ZB.MIEJSCE)) + ZB.kod_zapisu(D, kasuj=kasuj, proba=True), "Edit")
 
+        def rekord_po_stop(limit=45):
+            """Rekord po Stop: zapis wyjścia (BindToClose, z ponowieniami) kończy się już po powrocie Studio do Edit —
+            czekamy, aż zwolni sesję. Odczyt co 5 s (GetAsync trzyma wynik 4 s w pamięci podręcznej)."""
+            t0, r = time.time(), ""
+            while time.time() - t0 < limit:
+                r = rekord_proby()
+                if "świeża sesja" not in r:
+                    return r
+                time.sleep(5)
+            return r
+
         def play(magazyn, bledy=None):
             """Edit → (znacznik magazynu próby) → Play (znacznik próby stawia zapis_prob) → gracz wczytany."""
             if magazyn:
@@ -275,7 +295,7 @@ def main():
             stop()
 
         # ============================================================ Z01 Play 1: nowy gracz w magazynie próby
-        przed = {}
+        przed, item, kroki = {}, None, {}
         w1 = play(magazyn=True)
         m1 = migawka()
         k1, a1 = m1.get("k", {}), m1.get("a", {})
@@ -289,25 +309,35 @@ def main():
         try:
             # ======================================================== Z02 gra
             kroki = {}
+
+            def krok(nazwa, fn):
+                try:
+                    kroki[nazwa] = fn()
+                except Exception as e:  # noqa: BLE001 — krok nieudany: zapisujemy powód, próba idzie dalej
+                    kroki[nazwa] = {"ok": False, "blad": str(e)[-300:]}
+                zapisz("Z02_kroki", kroki)
+                return kroki[nazwa]
             luau(KOD["klasa"] % KLASA, "Client")
-            kroki["klasa"] = bool(czekaj_na(lambda: migawka()["a"].get("Class") == KLASA, 15, 0.5))
-            kroki["lup"] = js(KOD["przyznaj"] % (4000, 400))
+            krok("klasa", lambda: bool(czekaj_na(lambda: migawka()["a"].get("Class") == KLASA, 15, 0.5)))
+            krok("lup", lambda: js(KOD["przyznaj"] % (4000, 400)))
             time.sleep(1.0)
             for _ in range(2):
                 luau(KOD["plus"] % "Luck", "Client")
                 time.sleep(0.6)
-            kroki["sklep"] = js(KOD["sklep"])
+            krok("sklep", lambda: js(KOD["sklep"]))
             item = kroki["sklep"].get("id")
             if item:
                 luau(KOD["do_kowala"], "Server")
                 time.sleep(1.5)
-                kroki["ulepsz"] = js(KOD["ulepsz"] % item, "Client")
+                krok("ulepsz", lambda: js(KOD["ulepsz"] % item, "Client"))
                 time.sleep(1.2)
-                if kroki["sklep"].get("slot"):
-                    kroki["stroj"] = js(KOD["stroj"] % (KLASA_STROJU, kroki["sklep"]["slot"]), "Client")
-            kroki["pet"] = js(KOD["pet"] % JAJKO)
-            tw = js(KOD["trening_wejdz"])
-            kroki["trening_wejdz"] = tw
+                inny = krok("oferta_przed_strojem", lambda: js(KOD["oferta"] % (item, kroki["sklep"].get("slot") or ""))).get("inny")
+                if inny:
+                    krok("stroj", lambda: js(KOD["stroj"] % (KLASA_STROJU, inny), "Client"))
+                time.sleep(1.2)
+                krok("oferta_po_stroju", lambda: js(KOD["oferta"] % (item, "")))
+            krok("pet", lambda: js(KOD["pet"] % JAJKO))
+            tw = krok("trening_wejdz", lambda: js(KOD["trening_wejdz"]))
             if tw.get("ok"):
                 time.sleep(2.0)
                 luau(KOD["trening_klient"] % ("start", "nil"), "Client")
@@ -315,8 +345,8 @@ def main():
                 time.sleep((tw.get("dlugosc") or 30) + (tw.get("odliczanie") or 3) + 3)
                 luau(KOD["trening_wyjdz"], "Server")
                 time.sleep(1.0)
-            kroki["straznik"] = js(KOD["straznik"] % D["gemy"]["prefiks_straznika"])
-            kroki["przelot"] = luau(KOD["przelot"], "Server")
+            krok("straznik", lambda: js(KOD["straznik"] % D["gemy"]["prefiks_straznika"]))
+            krok("przelot", lambda: luau(KOD["przelot"], "Server"))
             time.sleep(2.0)
             przed = migawka()
             a = przed.get("a", {})
@@ -324,16 +354,22 @@ def main():
                                                       "TreningSila", "PokonalStraznikaLasu", "WidzialPrzelotLasu", "KowalDostepne",
                                                       "StrojProba_" + KLASA_STROJU)}
             pak = przed.get("p", {}).get("pakiety") or {}
-            dobre = (kroki["klasa"] and kroki["lup"].get("ok") and (a.get("Level") or 1) > 1 and kroki["sklep"].get("ok")
-                     and kroki["pet"].get("ok") and (a.get("TreningSila") or 0) > 0 and a.get("PokonalStraznikaLasu") is True
-                     and "kowal" in pak and "trening" in pak)
-            punkt("Z02", True if dobre else None, "kroki: %s" % json.dumps(kroki, ensure_ascii=False)[:900])
-            zapisz("Z02", {"kroki": kroki, "przed": przed})
+            stroj = a.get("StrojProba_" + KLASA_STROJU) or ""
+            braki = [n for n, ok in (
+                ("klasa", kroki.get("klasa") is True), ("łup", kroki["lup"].get("ok")), ("awans", (a.get("Level") or 1) > 1),
+                ("sklep", kroki["sklep"].get("ok") and kroki["sklep"].get("stopien") not in (None, "start")),
+                ("ulepszenie", (kroki.get("ulepsz") or {}).get("ok")), ("strój", (kroki.get("stroj") or {}).get("ok")),
+                ("kupiony założony", (kroki.get("oferta_po_stroju") or {}).get("stan") == "zalozone" and item in stroj.split(",")),
+                ("pet", kroki["pet"].get("ok") and a.get("PetAktywny")), ("mini-gra", (a.get("TreningSila") or 0) > 0 and "trening" in pak),
+                ("Strażnik", kroki["straznik"].get("ok") and a.get("PokonalStraznikaLasu") is True),
+                ("przelot", a.get("WidzialPrzelotLasu") is True), ("kowal w profilu", "kowal" in pak)) if not ok]
+            punkt("Z02", True if not braki else None, "braki: %s; kroki: %s" % (braki or "brak", json.dumps(kroki, ensure_ascii=False)[:1200]))
+            zapisz("Z02", {"kroki": kroki, "przed": przed, "braki": braki})
         finally:
             stop()
 
         # ============================================================ Z03 rekord po Stop
-        r3 = rekord_proby()
+        r3 = rekord_po_stop()
         a = przed.get("a", {})
         oczek = "poziom %s, doświadczenie %s, Złoto %s, Gemy %s, klasa %s" % (a.get("Level"), a.get("XP"), a.get("Gold"),
                                                                               a.get("Gems"), przed.get("p", {}).get("idKlasy"))
@@ -349,6 +385,22 @@ def main():
               "wróciło %s; wczytanie %s ms; różnice trwałe: %s; inne: %s" % ("WSZYSTKO" if not zle else "NIE WSZYSTKO", w4.get("ms"),
                                                                           zle[:8] or "brak", inne[:6] or "brak"))
         zapisz("Z04", {"wczytany": w4, "po": po, "zle": zle, "inne": inne})
+        if item:
+            of4 = js(KOD["oferta"] % (item, ""))
+            kow = ((po.get("p", {}).get("pakiety") or {}).get("kowal") or {}).get("przedmioty") or {}
+            stroj4 = po.get("a", {}).get("StrojProba_" + KLASA_STROJU) or ""
+            try:
+                klient4 = js(KOD["stroj_klienta"] % KLASA_STROJU, "Client")
+            except Exception as e:  # noqa: BLE001
+                klient4 = {"blad": str(e)[-200:]}
+            punkt("Z04b", of4.get("stan") == "zalozone" and item in kow and item in stroj4.split(",")
+                  and isinstance(klient4, list) and item in klient4
+                  and of4.get("ulepszenie") == (kroki.get("oferta_po_stroju") or {}).get("ulepszenie"),
+                  "kupiony %s (%s, stopień %s): po ponownym wejściu stan oferty %r, ulepszenie %r, w profilu kowala %s, "
+                  "w stroju %s, na bohaterze u klienta %s" % (item, kroki["sklep"].get("nazwa"), kroki["sklep"].get("stopien"),
+                                   of4.get("stan"), of4.get("ulepszenie"), item in kow, item in stroj4.split(","),
+                                   isinstance(klient4, list) and item in klient4))
+            zapisz("Z04b", {"oferta": of4, "kowal": kow.get(item), "stroj": stroj4, "klient": klient4})
         try:
             # ======================================================== Z05 błąd usługi przy zapisie wyjścia
             zl = (po.get("a", {}).get("Gold") or 0)
@@ -358,7 +410,7 @@ def main():
             luau(KOD["bledy"] % (G["proba"]["atrybut_bledow"], 2), "Server")
         finally:
             stop()
-        r5 = rekord_proby()
+        r5 = rekord_po_stop()
         punkt("Z05", ("Złoto %s," % zl5) in r5 and (zl5 or 0) > zl,
               "po 2 błędach przy zamknięciu: %s (Złoto %s → %s przed Stop; łup z premią peta)" % (r5, zl, zl5))
         zapisz("Z05", r5)
@@ -373,7 +425,7 @@ def main():
             g1 = migawka().get("a", {}).get("Gold")
         finally:
             stop()
-        r6 = rekord_proby()
+        r6 = rekord_po_stop()
         punkt("Z06", w6.get("z") == "bez_zapisu" and w6.get("w") is True and (g1 or 0) > g0 and r6 == r5,
               "StanGraczaZapis %r po %s ms, Złoto w pamięci %s → %s, rekord przed %r, po %r"
               % (w6.get("z"), w6.get("ms"), g0, g1, r5, r6))

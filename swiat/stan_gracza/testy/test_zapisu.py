@@ -482,7 +482,7 @@ class TestZapisu(unittest.TestCase):
         ZP.play(wyw, {"is_start": True, "studio_id": "S1"})
         ZP.play(wyw, {"is_start": False, "studio_id": "S1"})
         self.assertEqual([(n, dm, sid) for n, dm, _, sid in log],
-                         [("execute_luau", "Edit", "S1"), ("start_stop_play", None, "S1"),
+                         [("execute_luau", "Edit", "S1"), ("start_stop_play", None, "S1"), ("execute_luau", "Server", "S1"),
                           ("start_stop_play", None, "S1"), ("execute_luau", "Edit", "S1")])
         log, wyw = mostek(lambda n, a: {"text": "STOP: znacznik próby się nie ustawił", "is_error": False}
                           if n == "execute_luau" else {"text": "ok", "is_error": False})
@@ -501,7 +501,8 @@ class TestZapisu(unittest.TestCase):
         klient._call = wyw
         klient.call("start_stop_play", {"is_start": True})
         klient.call("get_studio_state", {})
-        self.assertEqual([n for n, *_ in log], ["execute_luau", "start_stop_play", "get_studio_state"])
+        self.assertEqual([n for n, *_ in log], ["execute_luau", "start_stop_play", "execute_luau", "get_studio_state"],
+                         "znacznik → Play → odczyt ZapisStan z serwera do dziennika → dalej bez opakowania")
 
 
 if __name__ == "__main__":

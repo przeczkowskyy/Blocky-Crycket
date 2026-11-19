@@ -52,6 +52,28 @@ LUAU_STAN = (_KONTENER_LUAU +
              % (ATR_DO, ATR_MAGAZYNU, ATR_BLEDOW))
 
 
+# po starcie Play (serwer): stan zapisu, jaki wybrał serwer stanu gracza — do dziennika próby
+LUAU_PO_STARCIE = ('local k = workspace:FindFirstChild("%s") local z = k and k:GetAttribute("ZapisStan") '
+                   'return if z == nil then "" else tostring(z) .. " | magazyn " .. tostring(k:GetAttribute("ZapisMagazyn"))'
+                   % KONTENER)
+
+
+def sprawdz_po_starcie(wywolaj, sid, prob=20, czekaj=0.5):
+    """Po Play: odczytuje ZapisStan z serwera i wypisuje go (dziennik próby). Nie rzuca."""
+    for _ in range(prob):
+        try:
+            r = wywolaj("execute_luau", dict(sid, code=LUAU_PO_STARCIE, datamodel_type="Server"), 30)
+            w = (r.get("text") or "").strip()
+            if not r.get("is_error") and w:
+                print("[zapis_prob] Play ze znacznikiem próby: ZapisStan = %s" % w, flush=True)
+                return w
+        except Exception:  # noqa: BLE001 — serwer jeszcze rusza
+            pass
+        time.sleep(czekaj)
+    print("[zapis_prob] Play: nie odczytałem ZapisStan z serwera", flush=True)
+    return None
+
+
 def kod_magazynu(bledy=None):
     """Luau (Edit) dla próby zapisu: ZapisProbaMagazyn = true i atrapa błędów (ile kolejnych wywołań usługi pada)."""
     b = "nil" if bledy is None else str(int(bledy))
@@ -98,6 +120,8 @@ def play(wywolaj, arguments=None, timeout=None, blad=RuntimeError):
         r = wywolaj("start_stop_play", a, timeout)
         if r.get("is_error"):
             koniec(wywolaj, sid, ponow=2)
+        elif w != "BRAK":
+            sprawdz_po_starcie(wywolaj, sid)
         return r
     r = wywolaj("start_stop_play", a, timeout)
     koniec(wywolaj, sid)

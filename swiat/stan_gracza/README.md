@@ -312,7 +312,38 @@ migracja, cykl życia zapisu).
 - **Wyłączyć:** atrybut kontenera `StanGracza.ZapisPostepu = false` w trybie Edit (działa od następnego Play, przechodzi
   na odbudowany kontener) albo `ZAPIS_WLACZONY = False` w `dane.py` + `dane.py` + `zbuduj.py --skrypty`.
 - **Próby gry (agenci) zaczynają od świeżego gracza i nie dotykają zapisu człowieka** (niżej: „Próby gry a zapis”).
-- Nie zapisuje się jeszcze: drzewko umiejętności i przedmioty z okna ekwipunku (pliki Pawła — lista niżej).
+- Nie zapisuje się jeszcze: drzewko umiejętności i przedmioty z okna ekwipunku (pliki Pawła — lista niżej),
+  `PoznaneGatunki` (POMIŃ przy znanym gatunku walki). Wybór klasy pokaże się powracającemu graczowi jeszcze raz (Paweł).
+
+**Jak sprawdzić, że zapis działa (Studio, tryb Edit — robi człowiek):**
+1. Pierwsze wejście: Play. Na kontenerze `Workspace/StanGracza` (podczas gry, widok Server) `ZapisStan` = „włączony”,
+   a u gracza `StanGraczaZapis` = „aktywny”. Pierwszy raz zaczynasz od nowego gracza (poziom 1, 0 Złota, 0 Gemów).
+2. Zagraj chwilę: walka, kupno u zbrojmistrza, jajko, mini-gra. Zapamiętaj poziom i Złoto z HUD.
+3. Stop. Odczekaj kilka sekund (zapis wyjścia kończy się po powrocie Studio do Edit).
+4. Podgląd bez gry: `python -B swiat/stan_gracza/zbuduj.py --kasuj-zapis` — pokazuje zapisany poziom, Złoto, Gemy i klasę.
+5. Play jeszcze raz: HUD ma ten sam poziom i Złoto, przedmioty i pet wracają. Ekran wyboru klasy jeszcze się pokaże
+   (poprawka po stronie Pawła) — wybierz tę samą klasę, bo inna zostałaby zapisana. Od zera: Stop, potem
+   `zbuduj.py --kasuj-zapis --tak`.
+
+**Wynik próby w Studio 19.11.2026 (14:32–14:34, `testy/proba_zapisu.py`, magazyn próby): Z00–Z08 OK.**
+- Z00: zwykła próba gry — „wyłączony (próba gry)”, bez wczytywania. Z01: nowy gracz w magazynie próby, wczytanie ok. 1 s.
+- Z02: klasa Wojownik, łup → poziom 6, „+” ×2 (Szczęście), kupno w sklepie przedmiotu stopnia leśnego („Pas Leśnika
+  z Sakiewką”, 100 Złota, od razu założony), ulepszenie u kowala do poziomu 1, przymierzalnia (zdjęta broń), jajko leśne
+  (pet aktywny), mini-gra Siły (autogra: 4 punkty), Strażnik Gaju (+100 Gemów, brama), przelot lasu.
+- Z03–Z04: po Stop i ponownym Play wróciło wszystko co do wartości: poziom 6, XP 33/206, Złoto 3501, Gemy 150, klasa
+  Warrior, punkty do rozdania 23 (rozdane 2 w Szczęście), statystyki, pet aktywny i 1 kopia, kupione jajka i licznik
+  wydatków, przedmioty kowala z ulepszeniem i 49 materiałami, strój, trening (4 punkty Siły i pasek 80,25), Strażnik i
+  brama, przelot; czas wczytania 0,9–1,6 s. Kupiony pas po powrocie: posiadany, „założone” w sklepie, w stroju i na
+  bohaterze walki u klienta (Z04b).
+- Z05: 2 błędy usługi przy zapisie wyjścia — ponowienie się udało (Złoto 3512 w rekordzie).
+- Z06: usługa pada cały czas — po ok. 7 s „bez_zapisu”, gra w pamięci (łup dochodzi), rekord po Stop identyczny.
+- Z07: rekord próby skasowany, znaczniki zdjęte. Z08: bez błędów skryptów w konsoli.
+- Prawdziwy zapis człowieka: podgląd `--kasuj-zapis` rozpoznaje gracza zalogowanego w Studio i pokazuje „brak zapisu”
+  przed próbami i po nich (19.11, przed pierwszym wejściem człowieka); nic nie skasowane ani nadpisane.
+- Regresja 19.11 (14:35–15:08, `regresja_calosci.py` „proba dymna, stan gracza, kowal, pety, trening, sklep, stroje,
+  cutscenka, zapis”): każda próba z wierszem `ZapisStan = wyłączony (próba gry)` w dzienniku (próba zapisu: 1× ten,
+  3× „włączony (magazyn próby)”); bez błędów poza próbą dymną: D02 (kamera po przelocie została „Scriptable”) i zależne
+  od niego D12, D05 — powtórka 15:09 14 z 14, więc jednorazowe. Po regresji znaczników nie ma.
 
 **Jak działa.** `Moduly/ZapisStanu` + `SerwerStanu`:
 - **Wczytanie przy wejściu, zanim cokolwiek wpisze atrybuty:**
@@ -361,7 +392,8 @@ migracja, cykl życia zapisu).
 przepuszcza przez `tools/zapis_prob.py`:
 - przed Play (tryb Edit) stawia na kontenerze znacznik `ZapisProbaDo` = `os.time()` + 900 s (`D.zapis.proba`);
 - serwer stanu czyta znacznik tylko przy starcie: przy znaczniku **nie otwiera magazynu** — gracz jest świeży i w pamięci,
-  dokładnie jak przed D-110 (`ZapisStan` = „wyłączony (próba gry)”);
+  dokładnie jak przed D-110 (`ZapisStan` = „wyłączony (próba gry)”); zaraz po Play `zapis_prob` odczytuje `ZapisStan`
+  z serwera i wypisuje go do dziennika próby (`[zapis_prob] Play ze znacznikiem próby: ZapisStan = …`);
 - po Stop znacznik jest zdejmowany. Gdy próba padnie przed Stop, znacznik sam wygasa po kwadransie (do tego czasu Play
   człowieka też idzie bez zapisu — nic nie ginie, tylko nie wczytuje się postęp);
 - kontener jest, a znacznika nie da się ustawić → Play nie startuje (próba kończy się błędem, zapis nietknięty);
