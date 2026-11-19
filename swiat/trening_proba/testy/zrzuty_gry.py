@@ -14,9 +14,9 @@ i widok telefonu; 25 — okno wyboru z sześcioma grami. Lista graczy i czat sch
     python -B swiat/trening_proba/testy/zrzuty_gry.py --walka --klasa Warrior        # klasa bohatera: Warrior | Scout | Mage
     python -B swiat/trening_proba/testy/zrzuty_gry.py --walka --klasa Mage --krotko  # 68–79: druga klasa — dla każdej gry
                                                                     #  runda z trafieniem i zbliżenie po pierwszym punkcie
-    python -B swiat/trening_proba/testy/zrzuty_gry.py --arena       # a1–a9: wygląd areny — lobby, brama, dwie połowy
-                                                                    #  areny z ukosa, Siła / Bieżnia / Koniczyny w rundzie
-                                                                    #  na nowym tle, zbliżenie Siły, Siła na telefonie
+    python -B swiat/trening_proba/testy/zrzuty_gry.py --arena       # a1–a12: scenerie krain (D-108) — Las, Bagno i Dżungla
+                                                                    #  z ukosa, cały pas scenerii, sześć gier w rundzie
+                                                                    #  na tle swojej scenerii, zbliżenie Siły, Siła na telefonie
     python -B swiat/trening_proba/testy/zrzuty_gry.py --sprawdz     # bez Studio: kawałki Luau parsują się
 
 Domyślnie zapisuje do swiat/trening_proba/klatki/ (JPG, szerokość 1280 px) i wypisuje pomiar telefonu: najmniejszy
@@ -283,24 +283,25 @@ def main():
             time.sleep(1.2)
 
             if tylko_arena:
-                # a1–a9: wygląd areny (18.11.2026). Widoki areny kamerą testu w stałych miejscach (gracz stoi w punkcie
-                # przybycia), potem trzy stanowiska w trakcie rundy na nowym tle, zbliżenie Siły i Siła na telefonie.
+                # a1–a12: scenerie krain (D-108, 19.11.2026). Widoki kamerą testu w stałych miejscach nad pasem scenerii
+                # (gracz stoi na podeście jednej ze scenerii krainy), potem sześć gier w trakcie rundy na tle swojej
+                # scenerii, zbliżenie Siły i Siła na telefonie.
                 c = D["arena"]["srodek"]
-                pr = D["swiat"]["przybycie"]
-                for nazwa, stoi, oko, cel, kat in (("a1_arena_lobby", [0, 0], [0, 7.5, 21.5], [0, 5, -20], 70.0),
-                                                   ("a2_arena_brama", [0, -16], [0, 6.5, 9], [0, 8.5, 24.6], 60.0),
-                                                   ("a3_arena_zachod", [0, 0], [-8, 30, 26], [-70, 0, -10], 62.0),
-                                                   ("a4_arena_wschod", [0, 0], [8, 30, 26], [70, 0, -10], 62.0)):
+                for nazwa, gra_stoi, oko, cel, kat in (("a1_las", "sila", [-144, 36, 40], [-144, 0, -14], 62.0),
+                                                       ("a2_bagno", "zrecznosc", [0, 36, 40], [0, 0, -14], 62.0),
+                                                       ("a3_dzungla", "pancerz", [144, 36, 40], [144, 0, -14], 62.0),
+                                                       ("a4_pas_scenerii", "kondycja", [0, 150, 172], [0, 0, -14], 62.0)):
                     if wybrane and nazwa.split("_")[0] not in wybrane:
                         continue
-                    przestaw([pr[0] + stoi[0], pr[1] + 3.5, pr[2] + stoi[1]], D["swiat"]["patrz_przybycie"])
+                    pr = D["swiat"][gra_stoi]["podest"]
+                    przestaw([pr[0], pr[1] + 3.5, pr[2]], D["swiat"][gra_stoi]["patrz"])
                     time.sleep(1.5)
                     luau(kod("kamera_stala", float(c[0] + oko[0]), float(c[1] + oko[1]), float(c[2] + oko[2]),
                              float(c[0] + cel[0]), float(c[1] + cel[1]), float(c[2] + cel[2]), kat), "Client")
                     time.sleep(1.2)
                     zrzut(nazwa)
                 luau(kod("kamera_oddaj"), "Client")
-                for nr, gra in ((5, "sila"), (6, "kondycja"), (7, "szczescie")):
+                for nr, gra in ((5, "sila"), (6, "kondycja"), (7, "szczescie"), (10, "zrecznosc"), (11, "pancerz"), (12, "inteligencja")):
                     if wybrane and "a%d" % nr not in wybrane:
                         continue
                     wejdz(gra)

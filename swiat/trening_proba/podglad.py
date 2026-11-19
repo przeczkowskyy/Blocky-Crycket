@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Podglądy stanowisk Training Center bez Studio: bryły z scena.py (te same części, które stawia zbuduj.py) widziane
-z kamery mini-gry (oko / cel / kąt widzenia z ustawienia.json — pionowy, jak Camera.FieldOfView w Roblox) i przykładowa
-chwila gry (postać gracza, przedmioty, które w grze rysuje klient). To RENDER BRYŁ do oceny układu i czytelności, nie
-zrzut z gry.
+"""Podglądy mini-gier Training Center w sceneriach krain bez Studio: bryły z scena.py (te same części, które stawia
+zbuduj.py — elementy gier i scenerie) widziane z kamery mini-gry (oko / cel / kąt widzenia z ustawienia.json — pionowy,
+jak Camera.FieldOfView w Roblox) i przykładowa chwila gry (postać gracza, przedmioty, które w grze rysuje klient).
+To RENDER BRYŁ do oceny układu i czytelności, nie zrzut z gry.
 
     python -B swiat/trening_proba/podglad.py                     # wszystkie podglądy do swiat/trening_proba/podglady/
-    python -B swiat/trening_proba/podglad.py --tylko kondycja     # jeden (sila, pancerz, kondycja, zrecznosc,
-                                                                  #  inteligencja, szczescie, arena, arena_gora,
-                                                                  #  arena_zachod, arena_wschod, arena_lobby, arena_brama)
+    python -B swiat/trening_proba/podglad.py --tylko kondycja     # jeden: kadr gry (sila, pancerz, kondycja, zrecznosc,
+                                                                  #  inteligencja, szczescie), sceneria z góry
+                                                                  #  (sila_gora, …) albo cały pas scenerii (pas)
     python -B swiat/trening_proba/podglad.py --wyj <folder>      # inny folder
     python -B swiat/trening_proba/podglad.py --ujecie start       # ujęcie: gra (domyślnie) | start (początek odliczania)
                                                                   #  | final (zbliżenie na postać po rundzie)
@@ -35,15 +35,13 @@ W, H = 1280, 720  # rozmiar podglądu (zmienia --ekran)
 TLO_GORA, TLO_DOL = (126, 186, 236), (206, 230, 247)
 SLONCE = (-0.45, 0.8, 0.4)
 GRACZ = "D8CBB5"  # postać gracza na podglądzie (w grze — awatar)
-# widoki całej areny (bez postaci gracza): przesunięcie oka i celu od środka areny, kąt widzenia
-WIDOKI_ARENY = {
-    "arena": ([0, 70, 92], [0, 0, -6], 70.0),               # cała arena z ukosa
-    "arena_gora": ([0, 215, 48], [0, 0, 1], 62.0),          # prawie z góry: wzór podłogi, pola stanowisk, układ dekoracji
-    "arena_zachod": ([-64, 40, 60], [-64, 2, -9], 62.0),    # z ukosa: Kłody, Bieżnia, Ciosy
-    "arena_wschod": ([64, 40, 60], [64, 2, -9], 62.0),      # z ukosa: Blok, Runy, Koniczyny
-    "arena_lobby": ([0, 6.5, 19], [0, 5.5, -20], 70.0),     # oczami gracza po przybyciu: tablica wyboru i tablica wyników
-    "arena_brama": ([0, 7, -4], [0, 7.5, 24], 62.0),        # brama z szyldem od środka areny
-}
+GRY = ("sila", "pancerz", "kondycja", "zrecznosc", "inteligencja", "szczescie")
+# widoki bez postaci gracza: sceneria każdej gry z góry (oko i cel względem podestu) i cały pas scenerii (względem
+# środka areny) → (oko, cel, kąt widzenia, promień części wokół celu)
+WIDOK_GORA = ([0, 112, 22], [0, 0, -15], 46.0, 70.0)
+WIDOK_PASA = ([0, 150, 172], [0, 0, -14], 62.0, 1e9)
+WIDOKI_ARENY = tuple(g + "_gora" for g in GRY) + ("pas",)
+ZASIEG_KADRU = 125.0  # do kadru gry rysujemy części do tylu studów (w poziomie) od podestu: własna sceneria i sąsiednie
 
 
 def najnizszy_priorytet():
@@ -58,7 +56,7 @@ def najnizszy_priorytet():
 
 # ------------------------------------------------------------------------------------------------ siatki brył
 def _siatka(c, np):
-    """Trójkąty części (świat): klocek 12, walec 2 × 16 + 32, kula 12 × 8 → tablica (n, 3, 3)."""
+    """Trójkąty części (świat): klocek 12, walec 2 × 16 + 32, klin 8, klin narożny 6, kula 14 × 9 × 2 → tablica (n, 3, 3)."""
     s = c["s"]
     R = np.array(SCENA.macierz(c.get("o")))
     p = np.array(c["p"], dtype=float)
@@ -91,6 +89,18 @@ def _siatka(c, np):
                   (B[2] - A[2]) * (C[0] - A[0]) - (B[0] - A[0]) * (C[2] - A[2]),
                   (B[0] - A[0]) * (C[1] - A[1]) - (B[1] - A[1]) * (C[0] - A[0]))
             if n_[0] * A[0] + n_[1] * (A[1] + hy / 3) + n_[2] * (A[2] - hz / 3) < 0:  # normalna na zewnątrz bryły
+                B, C = C, B
+            tr.append((A, B, C))
+    elif k == "N":  # klin narożny Roblox: prostokątna podstawa, wierzchołek nad rogiem (+x, −z)
+        hx, hy, hz = s[0] / 2, s[1] / 2, s[2] / 2
+        v = [(-hx, -hy, -hz), (hx, -hy, -hz), (hx, -hy, hz), (-hx, -hy, hz), (hx, hy, -hz)]
+        sr = (hx / 5, -hy * 3 / 5, -hz / 5)  # punkt wewnątrz bryły
+        for a, b, cc in ((0, 1, 2), (0, 2, 3), (0, 1, 4), (1, 2, 4), (2, 3, 4), (3, 0, 4)):
+            A, B, C = v[a], v[b], v[cc]
+            n_ = ((B[1] - A[1]) * (C[2] - A[2]) - (B[2] - A[2]) * (C[1] - A[1]),
+                  (B[2] - A[2]) * (C[0] - A[0]) - (B[0] - A[0]) * (C[2] - A[2]),
+                  (B[0] - A[0]) * (C[1] - A[1]) - (B[1] - A[1]) * (C[0] - A[0]))
+            if n_[0] * (A[0] - sr[0]) + n_[1] * (A[1] - sr[1]) + n_[2] * (A[2] - sr[2]) < 0:  # normalna na zewnątrz bryły
                 B, C = C, B
             tr.append((A, B, C))
     else:
@@ -543,15 +553,20 @@ def karta(obraz, D, gra, ImageDraw, ImageFont):
             fill=(23, 18, 31, 200))
 
 
+def _w_zasiegu(cz, srodek, r):
+    return [c for c in cz if math.hypot(c["p"][0] - srodek[0], c["p"][2] - srodek[2]) < r + max(c["s"]) / 2]
+
+
 def podglad(D, gra, np, Image, ImageDraw, ImageFont, ujecie="gra"):
     cz = SCENA.czesci(D)
     if gra in WIDOKI_ARENY:
-        c = D["arena"]["srodek"]
-        o, t, kat = WIDOKI_ARENY[gra]
+        c = D["arena"]["srodek"] if gra == "pas" else D["swiat"][gra[:-5]]["podest"]
+        o, t, kat, zasieg = WIDOK_PASA if gra == "pas" else WIDOK_GORA
         oko = [c[i] + o[i] for i in range(3)]
         cel = [c[i] + t[i] for i in range(3)]
-        lista = cz
+        lista = _w_zasiegu(cz, cel, zasieg)
     else:
+        cz = _w_zasiegu(cz, D["swiat"][gra]["podest"], ZASIEG_KADRU)
         u = ujecie_podgladu(D, gra, ujecie)
         oko, cel, kat = u["oko"], u["cel"], u["kat"]
         if gra == "zrecznosc" and ujecie != "final":
@@ -606,7 +621,7 @@ def main():
     if a.ekran:
         W, H = [int(x) for x in a.ekran.lower().split("x")]
     _, D = DANE.wczytaj()
-    gry = a.tylko.split(",") if a.tylko else ["kondycja", "zrecznosc", "inteligencja", "szczescie", "sila", "pancerz"] + list(WIDOKI_ARENY)
+    gry = a.tylko.split(",") if a.tylko else list(GRY) + list(WIDOKI_ARENY)
     if a.ujecie != "gra":
         gry = [g for g in gry if g not in WIDOKI_ARENY]
     os.makedirs(a.wyj, exist_ok=True)

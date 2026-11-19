@@ -1,7 +1,8 @@
 # Training Center — sześć mini-gier 3D
 
 > **To jest PROPOZYCJA do akceptacji** (17.11.2026, uzupełniona w nocy 17/18.11). Ustalone są tylko punkty
-> z zatwierdzonych decyzji wypisanych niżej. Pomysły na mini-gry, nazwy, liczby i układ sceny to propozycja agenta
+> z zatwierdzonych decyzji wypisanych niżej (od 19.11.2026 także D-108: mini-gry w sceneriach krain — dobór scenerii
+> do gier to propozycja do oceny, sekcja „Scenerie krain”). Pomysły na mini-gry, nazwy, liczby i układ sceny to propozycja agenta
 > Karola. Dwie mini-gry (Siła i Pancerz) stoją w Studio do próby w grze (`README.md`, sprawdzone 17.11). Cztery
 > kolejne (Kondycja, Zręczność, Inteligencja, Szczęście) są **zaprogramowane i sprawdzone offline** (testy, lustro
 > logiki, podglądy brył w `podglady/`) — czekają na budowę i próbę w Studio. Co zmieniłem względem pierwszego opisu,
@@ -59,10 +60,11 @@
   a naciśnięcia w odliczaniu nic nie robią (wcześniej liczyły się jako pudło „w powietrze”).
 - **Waga mini-gry** (D-074): każda gra ma mnożnik jednostek paska (`gry.<id>.waga`), dobrany tak, żeby gracz-model
   zdobywał tyle samo jednostek na minutę w każdej z sześciu gier (test: 0,85–1,18 Siły; dziś 0,96–1,03).
-- **Scena**: jedna arena „Training Center” z prostych klocków, w powietrzu z dala od map — 256 × 56 st, sześć stanowisk
-  w jednym rzędzie (Kłody, Bieżnia, Rozbijanie, lobby, Blok, Runy, Koniczyny), każda kamera patrzy na północ, więc
-  w tle jest tylko murek. Gracz trafia od razu na swoje stanowisko. W budynku Training Center w bazarze jest trener
-  z klawiszem E (D-085).
+- **Scena** (od 19.11.2026, D-108 — bez Studio; w Studio do części B stoi jeszcze arena w murach): sześć scenerii
+  krain w jednym pasie w powietrzu z dala od map, po dwie na Las, Bagno i Dżunglę; każda kamera patrzy na północny
+  zachód, a tło zamykają kulisy krainy (drzewa, woda, ruiny). Gracz przechodzi z okna wyboru prosto do scenerii swojej
+  gry — lobby nie ma. W budynku Training Center w bazarze jest trener z klawiszem E (D-085). Szczegóły: sekcja
+  „Scenerie krain” niżej i README.
 
 ## Sześć mini-gier w skrócie
 
@@ -241,6 +243,25 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 
 ---
 
+## Scenerie krain (D-108, 19.11.2026 — propozycja doboru, zrobiona bez Studio)
+
+| Gra | Sceneria | Kraina | Dlaczego tu |
+|---|---|---|---|
+| Szczęście „Koniczyny” | Łąka pod dębem | Las | koniczyny spadają z korony starego dębu na kwietną łąkę; jasne, spokojne tło dla spadających rzeczy |
+| Siła „Rozbijanie” | Polana drwali | Las | rozbijanie skrzyń i dyń to robota drwali: pniaki, stosy kłód, olbrzymi pień |
+| Kondycja „Bieżnia” | Grobla przez Bagno | Bagno | bieg po grobli z bali nad wodą — ruchome deski pod stopami tłumaczą się same; w głębi chata na palach |
+| Zręczność „Kłody” | Pomost nad topielą | Bagno | kłoda krąży nad okrągłym pomostem na palach; unik nad wodą, wokół szuwary i cypryśniki |
+| Pancerz „Blok” | Krąg strażnika | Dżungla | omszały kamienny golem pilnuje kręgu menhirów przed bramą ruin |
+| Inteligencja „Runy” | Świątynia run | Dżungla | cztery kamienne tablice w ścianie świątyni; za nią stopnie świątyni i wodospad |
+
+- **Co zostaje**: zasady, serwer, przyrosty, dźwięki, kamery i efekty; nazwy, miejsca i rozmiary pól trafień.
+- **Co się zmienia**: wygląd elementów gry (grobla zamiast taśmy, pomost zamiast placu, kamień ruin, dąb w barwach lasu,
+  dynie przy miotaczu) i otoczenie — 2482 części scenerii z rodzin map krain, wszystkie bez kolizji, zero świateł.
+- **Lobby**: zniknęło; z okna wyboru prosto do scenerii (wybór 23).
+- **Trenerzy**: w każdej scenerii jest punkt trenera w danych (`trener_npc`: miejsce i kierunek) — dziś stoją tam
+  figury z klocków, w Pancerzu puste miejsce; do podmiany na animowane postacie NPC (D-109).
+- Liczby, kontrola kadrów i plan budowy: README, „Scenerie krain”.
+
 ## Wybory dla ludzi
 
 **1. Przyrost: pasek z malejącym zyskiem czy dosłownie D-050?**
@@ -318,28 +339,44 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 - Bez obrotu: kamera pokazałaby plecy albo musiałaby objechać stanowisko.
 - Szczegóły: obrót robi klient i widzą go też inni gracze.
 
-**18. Wygląd areny: ile dekoracji**
-- Dziś (w Studio od 18.11.2026): 1351 dekoracji, arena ma 1658 części zamiast 202; czas klatki bez zmian (60 kl./s).
-- Mniej: bez szachownicy podłogi (−112) albo bez girland chorągiewek (ok. −190) — lżej, ale bardziej pusto.
-- Szczegóły: generator `dekoracje.py`, opis, liczby i zrzuty w README („Wygląd areny”); telefonu nie mierzono.
+**18. Scenerie: ile części**
+- Dziś (bez Studio): 2798 części — 316 elementów gier i 2482 części scenerii (396–527 na scenerię).
+- Mniej: bez dalekich sylwet i drugiego rzędu drzew (ok. −300) albo bez wschodnich rzędów (ok. −140) — lżej, ale
+  w zbliżeniach po rundzie tło będzie rzadsze.
+- Szczegóły: arena w murach z 18.11 miała 1658 części (60 kl./s w próbie 18.11); czas klatki scenerii zmierzy
+  część B. Generator `scenerie.py`, kontrola `dekoracje.py`, liczby w README („Scenerie krain”).
 
-**19. Tablica wyników: dekoracja czy żywe wyniki**
-- Dziś: dekoracja — nazwa areny i sześć statystyk w ich kolorach, bez liczb.
-- Żywa: rekordy gracza albo serwera na tablicy — wymaga zapisu wyników, to osobna praca.
+**19. Tablica wyników**
+- Dziś: nie ma (była dekoracją areny w murach; w sceneriach krain nie pasuje).
+- Żywa tablica rekordów w obozie treningowym albo w budynku Training Center — wymaga zapisu wyników, osobna praca.
 
-**20. Tło stanowisk: spokojne czy bogate**
-- Dziś: za stanowiskami stoją trybunki, stojaki i sztandary (widać je w kadrach gier jako tło).
-- Spokojniej: tło tylko przy murze, bez manekinów i stojaków przy stanowiskach — czytelniejsze strefy gry.
-- Szczegóły: żadna dekoracja nie stoi między kamerą a grą (testy 4g–4h, T30); po zrzutach z gry manekiny straciły
-  tarcze strzelnicze, a siano zeszło zza strefy ciosu — zrzuty `klatki/a5`–`a9`.
+**20. Tło gier: bogate czy spokojniejsze**
+- Dziś: za każdą grą stoi sceneria krainy (drzewa, chaty, ruiny); w polu gry i przed kamerą nie stoi nic.
+- Spokojniej: mniej rekwizytów w drugim planie tuż za grą (pniaki z dyniami, kolumny, kwiaty) — czytelniejsze strefy.
+- Szczegóły: kontrola kadrów w testach 4g, 4h i 4l; ocena czytelności na zrzutach z gry w części B.
 
 **21. Figury trenerów: klockowe czy z modeli postaci**
 - Dziś: klockowe figury z twarzą i strojem, jak sprzedawcy bazaru; zero nowych zależności.
 - Z modeli postaci (`swiat/postacie`): ładniejsze, ale to rigi z siatkami — wgrywanie i zależność od pakietu postaci.
 
-**22. Lampiony bez świateł**
-- Dziś: lampiony to części Neon, zero świateł punktowych (taniej, arena stoi w dziennym świetle).
-- Ze światłem: kilka PointLight przy bramie i tablicy — widoczne dopiero o zmroku.
+**22. Światła w sceneriach**
+- Dziś: zero świateł; latarnie, okna chat, ogniki i świecące kwiaty to części Neon (47).
+- Ze światłem: po jednym PointLight przy chacie na Bagnie i przy bramie ruin — widoczne dopiero o zmroku.
+
+**23. Lobby: prosto do scenerii czy obóz treningowy**
+- Dziś: z okna wyboru prosto do scenerii wybranej gry; „INNA GRA” przenosi między sceneriami, „WYJDŹ” wraca do świata.
+- Obóz: mała polana z ogniskiem i drogowskazami do sześciu gier, do której gracz trafia najpierw i z niej wybiera.
+- Szczegóły: obóz to jedno przejście więcej przed każdą grą; dziś nie jest potrzebny, żeby gry działały.
+
+**24. Siła: skrzynki czy owoce**
+- Dziś: lecą skrzynki, dzbany i beczułki (jak dotąd), a dynie leżą przy miotaczu i na pniakach w tle.
+- Owoce i dynie jako lecące cele i „tarcze” na pniach w strefach ciosu — bliżej słów Karola, ale to zmiana klienta.
+- Szczegóły: strefy ciosu zostały bez zmian, żeby czytelność i rozmiary pól trafień były te same.
+
+**25. Dobór scenerii do gier**
+- Dziś: Szczęście i Siła w Lesie, Kondycja i Zręczność na Bagnie, Pancerz i Inteligencja w Dżungli.
+- Inaczej: np. Kondycja jako leśna ścieżka (wtedy Las ma trzy gry) albo tarcza Pancerza na Bagnie.
+- Szczegóły: zmiana doboru to zmiana `scenerie` w `ustawienia.json` i funkcji scenerii w `scenerie.py`.
 
 ## Ustawienia „przyjęte, do zmiany” (wszystkie w `ustawienia.json`)
 
@@ -372,8 +409,9 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 | Strefy Siły | góra (0; 6,6; −1,6), lewo / prawo (∓3,4; 3,4; −1,6), dół (0; 0,9; −3,2) st od podestu | przyjęte, „dół” odsunięty po zrzutach |
 | Postać w rundzie | półprzezroczysta u siebie (0,55) tylko w Sile, żeby strefy były widoczne (w Pancerzu i Runach kamera z boku tego nie wymaga) | przyjęte po zrzutach; zmienione 18.11 |
 | Czcionka okien i szyldów | Nunito ExtraBold (pełne polskie znaki; FredokaOne ich nie ma) | przyjęte po zrzutach |
-| Arena | środek (3000; 300; 3000), 256 × 56 st (od nocy 17/18.11; było 96 × 56) | przyjęte (z dala od pasa krain, starego lasu i sal testowych) |
-| Stanowiska (x od środka areny) | Kłody −104, Bieżnia −64, Siła −24, lobby 0, Pancerz +24, Runy +64, Koniczyny +104; podest z = +8 | przyjęte, noc 17/18.11 |
+| Arena | środek (3000; 300; 3000); od 19.11 (D-108) pas scenerii 444 × 92 st w pudle 464 × 128 st (arena w murach: 256 × 56) | przyjęte (z dala od pasa krain, starego lasu i sal testowych) |
+| Stanowiska (x od środka areny) | od 19.11: Koniczyny −180, Siła −108, Bieżnia −36, Kłody +36, Pancerz +108, Runy +180 (komórka 72 st); podest z = +8; kulisy od −60 do +32 st od podestu; woda Bagna 1,3 st pod pomostami | przyjęte, D-108 |
+| Punkty trenerów (`trener_npc`, od podestu) | Siła (0; 0; −16) 0°, Bieżnia (6,3; 0; −2,4) −50°, Kłody (−12,5; 0; −6,5) 54°, Runy (−7,4; 0; −6,6) 35°, Koniczyny (9,6; 0; −8) −30°, Pancerz (−9,5; 0; −1,5) 80° (bez figury) | miejsca dzisiejszych figur; Pancerz — nowe |
 | Waga (mnożnik jednostek paska) | Siła 1, Pancerz 1, Bieżnia 0,7, Kłody 1,2, Runy 1,35, Koniczyny 1,3 — gracz-model: 0,96–1,03 Siły na minutę | dobrane symulacją (test 2h) |
 | Bieżnia: krok, okno, podbiegi | 0,8 / 0,7 / 0,62 / 0,56 s; ±0,25 / 0,23 / 0,21 / 0,19 s; 0 / 0 / 6 / 8% (4 kroki ×0,8) | przyjęte |
 | Bieżnia: ślady | widać 1,8 s przed linią, 4 st/s; stopy ±1,2 st od środka taśmy, linia 1,8 st przed biegaczem | przyjęte po podglądach |
