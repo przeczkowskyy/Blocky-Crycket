@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-19T08:22:19+01:00",
+ "aktualizacja": "2026-11-19T08:22:22+01:00",
  "prace": [
   {
    "id": "minigry-scenerie",
@@ -43,6 +43,19 @@
    "obszary": [
     "swiat/postacie/przedmioty*",
     "swiat/postacie/ekwipunek*"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "przejscie-symulacja",
+   "tytul": "Przejście gry w liczbach (D-106): symulacja drogi gracza przez trzy biomy",
+   "stan": "w_toku",
+   "start": "2026-11-19T08:22:22+01:00",
+   "koniec_szacowany": "2026-11-19T09:52:22+01:00",
+   "aktualizacja": "2026-11-19T08:22:22+01:00",
+   "obszary": [
+    "swiat/przejscie_gry/**"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
