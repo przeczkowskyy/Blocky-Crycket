@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-19T09:00:52+01:00",
+ "aktualizacja": "2026-11-19T09:01:00+01:00",
  "prace": [
   {
    "id": "minigry-scenerie",
@@ -29,19 +29,6 @@
     "swiat/npc_gra/**",
     "swiat/miasteczko_bazar_gra/**",
     "studio:NpcGra"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "przebudowa-stopnie_mag",
-   "tytul": "Przebudowa modelu stopnie_mag",
-   "stan": "w_toku",
-   "start": "2026-11-19T08:59:12+01:00",
-   "koniec_szacowany": "2026-11-19T09:19:12+01:00",
-   "aktualizacja": "2026-11-19T08:59:12+01:00",
-   "obszary": [
-    "model:stopnie_mag"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
