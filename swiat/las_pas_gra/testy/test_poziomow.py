@@ -82,9 +82,10 @@ class TestPoziomowPoMiejscach(unittest.TestCase):
     def test_2_pierwsza_zagroda_lasu(self):
         s1 = next(s for s in DP["strefy"] if s["id"] == "s1")
         self.assertEqual(s1["poziomy"], [1, 3])
-        self.assertEqual(napelnij(s1, 1), [1, 2])
-        self.assertEqual(napelnij(s1, 8), [1, 2, 3])
-        self.assertEqual(sorted(napelnij(s1, 20)), [1, 1, 2, 3])
+        # D-107: 4 / 7 / 8 potworów przy 1 / 8 / 20 graczach (było 2 / 3 / 4) — najniższy poziom zawsze pierwszy
+        self.assertEqual(napelnij(s1, 1), [1, 2, 3, 1])
+        self.assertEqual(sorted(napelnij(s1, 8)), [1, 1, 1, 2, 2, 3, 3])
+        self.assertEqual(sorted(napelnij(s1, 20)), [1, 1, 1, 2, 2, 2, 3, 3])
 
     def test_3_zawsze_najnizszy_po_odrodzeniu(self):
         """Losowe wygrane gracza (z przewagą najsłabszych): po każdym odrodzeniu w strefie chodzi najniższy poziom,

@@ -29,6 +29,8 @@
 	Odczytania kontraktu (najprostsze; spis w UWAGI_S.md):
 		• zajętość nie zmienia stanu wewnętrznego (wychodzi / czeka / chodzi) — to osobne pole `zajety`; po przegranej
 		  potwór po prostu wraca do tego stanu;
+		• D-107 (19.11.2026): blokada sesji gracza i zajętość potwora trwają walka.czas / Stale.TEMPO_POKAZU_MAKS (najkrótszy
+		  pokaz), nie pełny czas ×1 — bez czekania po walce; sygnał WynikWalki niesie dalej koniec pokazu ×1;
 		• czas „teraz” to workspace:GetServerTimeNow() (ten sam zegar, którego odtwarzacz używa dla nastepnaOd);
 		  odstęp między prośbami mierzy os.clock(), jak w SerwerWalki2;
 		• Strażnik przechodzi tą samą ścieżką co zwykły potwór, z jednym wyjątkiem (poprawka recenzji): zasada „dom
@@ -927,7 +929,8 @@ zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
 		return odmowa("brak_postaci")
 	end
 
-	-- 4. poprzednia walka gracza skończyła się (pełny czas ×1)
+	-- 4. poprzednia walka gracza skończyła się (D-107: najkrótszy możliwy pokaz, walka.czas / TEMPO_POKAZU_MAKS — kto
+	--    obejrzał walkę albo ją pominął, nigdy tu nie czeka; zostaje ochrona przed podwójnym startem)
 	local czas = teraz()
 	local koniec = walkaDo[gracz]
 	if koniec and czas < koniec and kontener:GetAttribute("TestBezSesji") ~= true then
@@ -965,12 +968,15 @@ zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
 		return odmowa("blad_silnika")
 	end
 
-	-- 9. blokada sesji gracza i zajętość potwora (rozdz. 3.6)
-	walkaDo[gracz] = czas + walka.czas - Stale.ZAPAS_SESJI
+	-- 9. blokada sesji gracza i zajętość potwora (rozdz. 3.6). D-107 (walka bez przestojów): obie trwają najkrótszy
+	--    możliwy pokaz (walka.czas / TEMPO_POKAZU_MAKS), nie pełny czas ×1 — po obejrzanej walce (także przegranej)
+	--    gracz jest wolny od razu, a potwór po przegranej jest od razu do rewanżu (także dla innych graczy)
+	local pokaz = walka.czas / math.max(1, Stale.TEMPO_POKAZU_MAKS)
+	walkaDo[gracz] = czas + pokaz - Stale.ZAPAS_SESJI
 	if kontener:GetAttribute("TestBezSesji") == true then
 		walkaDo[gracz] = czas
 	end
-	p.zajety = { gracz = gracz, wynik = walka.wynik, koniec = czas + walka.czas + Stale.ZAPAS_ZAJETOSCI }
+	p.zajety = { gracz = gracz, wynik = walka.wynik, koniec = czas + pokaz + Stale.ZAPAS_ZAJETOSCI }
 	p.ruszyl = false
 	zapiszAtrybuty(p)
 
@@ -988,7 +994,7 @@ zdalna.OnServerInvoke = function(gracz: Player, wybor: any)
 		p.poziom, walka.wynik, sekundy))
 	if sygnalWyniku and sygnalWyniku:IsA("BindableEvent") then
 		local info = { id = p.id, strefa = p.strefa.d.id, gatunek = p.gatunek, straznik = p.strefa.d.straznik == true,
-			wynik = walka.wynik, poziom = p.poziom, koniec = p.zajety.koniec }
+			wynik = walka.wynik, poziom = p.poziom, koniec = czas + walka.czas + Stale.ZAPAS_ZAJETOSCI } -- koniec pokazu ×1 (pamięć pomijania)
 		local udaloSie, bladSygnalu = pcall(function()
 			sygnalWyniku:Fire(gracz, info)
 		end)

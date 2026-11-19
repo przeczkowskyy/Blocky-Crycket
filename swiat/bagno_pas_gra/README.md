@@ -217,3 +217,33 @@ Cofnięcie: `python -B swiat/bagno_pas_gra/zbuduj.py --usun`, `python -B tools/s
    (zmiana `tools/walka` i prototypu) czy zostać przy istniejących?
 3. **Zapowiedź Bagna w lesie:** usuwać skryptem po każdej budowie lasu czy dodać przełącznik w `swiat/las_pas/generuj.py`?
 4. **Muzyka Bagna:** utwory lasu czy własne (Higgsfield, osobne zadanie)?
+
+## D-107 — walka bez przestojów (19.11.2026; część A: bez Studio)
+
+*Status: decyzja D-107 ma podpis Karola i czeka na potwierdzenie Pawła; liczby dobrał agent i są **propozycją do
+oceny**. Sprawdzone tylko testami bez Studio — w grze jeszcze nie wdrożone (część B). Liczby w rozdziałach wyżej
+(8 / 11 / 14 potworów, odrodzenie 12–18 s, strażnik 120 s, rzadki potwór 150 s) opisują stan sprzed D-107.*
+
+Bagno używa tego samego kodu potworów i tego samego generatora co las, więc dostaje te same zasady z jednego
+miejsca (`GESTOSC_D107` w `swiat/las_pas_gra/generuj_dane.py`; plan mapy i wygląd bez zmian):
+
+| | Było | Jest |
+|---|---|---|
+| Zwykła strefa (Rechotek, Bulgotnik, Kłodokłap), potworów przy 1 / 8 / 20 graczach | 2 / 3 / 4 | 4 / 7 / 8 |
+| Razem ze strażnikiem | 8 / 11 / 14 | 14 / 23 / 26 |
+| Odrodzenie zwykłych | 12 / 15 / 18 s (z tłumem najszybciej 10 s) | 4 s |
+| Rzadki potwór (Ropucha z Chatką) | 150 s | 20 s |
+| Strażnik (Strażnik Topieli) | 120 s | 30 s |
+| Odstęp potworów na pętli | 25 st | 12 st |
+| Czekanie po walce obejrzanej przy ×4 (także przegranej) | do końca czasu walki ×1 | brak (blokada ÷ 4 mija przed końcem pokazu) |
+| Potwór po przegranej zajęty | czas walki ×1 + 1 s | ÷ 4 + 1 s (rewanż od razu po obejrzeniu) |
+
+Pełna lista zdjętych czekań, rachunek „samotny gracz nigdy nie czeka” (38–57% czasu bez potwora → 0%), koszt i
+**wybory do oceny** są w `swiat/las_pas_gra/README.md`, rozdz. „D-107 — walka bez przestojów”. Liczby części potworów
+Bagna przy pełnym zestawie nie są policzone — zmierzy je próba w grze (BD3).
+
+Testy bez Studio: `python -B swiat/bagno_pas_gra/testy/test_bagna.py` (liczby D-107 w teście 1c) i
+`python -B swiat/las_pas_gra/testy/test_bez_przestojow.py` (trzy biomy naraz). Próba w grze
+(`testy/proba_play.py`) dostała punkty **BD1–BD4** (liczba potworów przy 1 i 20 graczach, odradzanie
+w zadanym czasie, czas klatki przy pełnym zestawie, brak czekania po przegranej i rewanż od razu) ze wspólnego
+`swiat/las_pas_gra/testy/pomoc_d107.py` — **nie uruchomione**, to część B.

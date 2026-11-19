@@ -25,7 +25,13 @@ S.OKRES_RUCHU = 0.25          -- s (4 Hz)
 S.OKRES_ODRADZANIA = 1.0      -- s
 S.ODSTEP_PROSB = 1.0          -- s, jak SerwerWalki2
 S.ZAPAS_SESJI = 0.4           -- s, jak SerwerWalki2
-S.ZAPAS_ZAJETOSCI = 1.0       -- s ponad walka.czas
+S.ZAPAS_ZAJETOSCI = 1.0       -- s ponad czas zajętości (niżej)
+-- D-107 (19.11.2026, walka bez przestojów): po walce NIE MA czekania. Blokada sesji gracza i zajętość potwora trwają
+-- walka.czas / TEMPO_POKAZU_MAKS — tyle co najmniej trwa pokaz przy najszybszym tempie odtwarzacza (×4), a do tego
+-- dochodzą wejście i wynik, więc gracz, który obejrzał walkę (także przegraną), jest wolny, zanim wróci na pas, a
+-- potwór po przegranej jest od razu do rewanżu. Zostaje tylko ochrona przed podwójnym startem (ta blokada +
+-- ODSTEP_PROSB). Było: pełny czas walki przy tempie ×1 („Odpoczywasz po walce — następna za … s”). 1 = jak dawniej.
+S.TEMPO_POKAZU_MAKS = 4       -- najszybsze tempo odtwarzacza walki (×1 / ×2 / ×4)
 S.ZASIEG_E = 8                -- studs w poziomie od punktu bazowego + promień gatunku
 S.ZAPAS_E_SERWER = 10         -- studs zapasu po stronie serwera (opóźnienie, ruch 4 Hz; M6 17.11: było 6 — chodzący
                               -- potwór uciekał z bramki w czasie reakcji gracza, patrz HISTEREZA_E niżej)
@@ -90,7 +96,8 @@ S.ATRYBUT_BLOKADY = "BlokadaWalki"     -- atrybut gracza (ustawia inny skrypt se
 S.PANEL_TYLKO_W_LESIE = true
 S.PANEL_ZAPAS = 40                     -- studs wokół płyty biomu, w których panel jeszcze widać
 S.TYTUL_BANERA_STRAZNIKA = "STRAŻNIK GAJU POKONANY!" -- tytuł banera po Strażniku (Bagno: Stale_TYTUL_BANERA_STRAZNIKA)
-S.PODPIS_STRAZNIKA = "Wróci za 2 min"  -- podpis banera po Strażniku; inny skrypt kontenera może go podmienić lokalnym
+S.PODPIS_STRAZNIKA = "Wróci za chwilę" -- podpis banera po Strażniku (D-107: wraca po odrodzenieS z danych, było „za 2 min”);
+                                       -- inny skrypt kontenera może go podmienić lokalnym
                                        -- atrybutem kontenera PodpisBaneraStraznika (las-pas: „brama otwarta”) — jeden baner
 -- stan gracza (17.11.2026, swiat/stan_gracza, propozycja): gdy w Workspace jest kontener KONTENER_STANU (Wygenerowane),
 -- bohater walki jest z danych gracza (klasa z atrybutu Class, poziom z Level, sześć statystyk), a łup trafia do gracza;
@@ -119,12 +126,12 @@ S.KOMUNIKAT_S = 3
 S.KOMUNIKATY_ODMOWY = {
 	zly_wybor = "Ten potwór jest teraz zajęty — spróbuj za chwilę albo z innym",
 	za_daleko = "Podejdź bliżej potwora i naciśnij E",
-	walka_trwa = "Odpoczywasz po walce — spróbuj za chwilę",
-	walka_trwa_lokalnie = "Odpoczywasz po walce — spróbuj za chwilę",
+	walka_trwa = "Poprzednia walka jeszcze trwa — spróbuj za chwilę",
+	walka_trwa_lokalnie = "Poprzednia walka jeszcze trwa — spróbuj za chwilę",
 	za_szybko = "Za szybko — spróbuj za chwilę",
 	brak_postaci = "Poczekaj chwilę — twoja postać nie może teraz walczyć",
 	blad_silnika = "Walka się nie zaczęła — spróbuj jeszcze raz",
-	odpoczynek = "Odpoczywasz po walce — następna za %d s",
+	odpoczynek = "Poprzednia walka jeszcze trwa — następna za %d s", -- D-107: tylko po przerwanym pokazie (ochrona przed podwójnym startem)
 	brak_odtwarzacza = "Walka niedostępna — odtwarzacz walki się nie wczytał",
 }
 

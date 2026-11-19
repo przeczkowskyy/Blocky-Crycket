@@ -33,7 +33,10 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       przegrana, przycisk POMIŃ, spacja → wynik „przegrana”, serwer „ok”, gracz wolny od razu, ten sam wilk żyje i
       nie jest zajęty; rewanż = ponowne E przy TYM SAMYM wilku → walka z POMIŃ, spacja → wynik, znów wolni
   P08j jeden komplet: w pasie widać tylko panel bohatera pasa (LasPasGraBohater), panel starego lasu schowany
-  P09 odradzanie: zabity slime s1 wraca w 12–16 s
+  P09 odradzanie: zabity slime s1 wraca po czasie z danych gry (D-107: 4 s, do +3 s na pętlę odradzania; było 12–16 s)
+  PD1–PD4 (D-107, walka bez przestojów; wspólne z Bagnem i Dżunglą — pomoc_d107.py): liczba potworów przy 1 i 20
+      graczach, odradzanie zwykłego / rzadkiego / Strażnika w zadanym czasie, czas klatki przy pełnym zestawie, brak
+      czekania po przegranej obejrzanej przy ×4 i rewanż od razu
   P10 brama zamknięta: nieuprawniony za bramą → cofnięty przed bramę w < 1 s, komunikat; wrota z kolizją u klienta
   P11 Strażnik: walka (do 6 prób z różnym ziarnem) aż do wygranej → PokonalStraznikaLasu = true; wrota u klienta
       bez kolizji i niewidoczne, NA SERWERZE nadal z kolizją (otwarcie tylko dla zwycięzcy); przejście za bramę bez
@@ -111,6 +114,14 @@ import importlib.util as _ilu  # noqa: E402
 _sp = _ilu.spec_from_file_location("cutscenka_pomoc_prob", os.path.join(REPO, "swiat", "cutscenka_biomu", "pomoc_prob.py"))
 PP = _ilu.module_from_spec(_sp)
 _sp.loader.exec_module(PP)
+
+# D-107 (19.11.2026, walka bez przestojów): liczby potworów i czasy odradzania z DANYCH GRY (generator), nie z planu
+# mapy; wspólne punkty prób D1–D4 trzech biomów: swiat/las_pas_gra/testy/pomoc_d107.py
+_spd = _ilu.spec_from_file_location("pomoc_d107", os.path.join(REPO, "swiat", "las_pas_gra", "testy", "pomoc_d107.py"))
+D107 = _ilu.module_from_spec(_spd)
+_spd.loader.exec_module(D107)
+G["d107"] = D107.wczytaj_liczby(REPO, "las_pas_gra")
+G["potworow_1"] = G["d107"]["razem1"]
 
 
 def tp(t):
@@ -669,7 +680,10 @@ def main():
                      'S:Invoke("zabij", id) local t0 = os.clock() local po = ile() while ile() < przed and os.clock() - t0 < 25 do task.wait(0.25) end '
                      'return H:JSONEncode({ przed = przed, zaraz = po, wrocil = ile() >= przed, czas = os.clock() - t0 })', "Server")
             zapisz("P09", p09)
-            punkt("P09", p09["wrocil"] and 11 <= p09["czas"] <= 17, "slime s1: %d → %d, wrócił po %.1f s" % (p09["przed"], p09["zaraz"], p09["czas"]))
+            # D-107: czas odrodzenia z danych gry (4 s stałe; pętla odradzania co 1 s → do +3 s zapasu); było 11–17 s
+            t09 = next(s["odrodzenie"] for s in G["d107"]["strefy"] if s["id"] == "s1")
+            punkt("P09", p09["wrocil"] and t09 - 0.5 <= p09["czas"] <= t09 + 3, "slime s1: %d → %d, wrócił po %.1f s (ma być %d–%d s)" % (
+                p09["przed"], p09["zaraz"], p09["czas"], t09, t09 + 3))
 
             # ---------------------------------------------------------------- P10 brama zamknięta
             pasa("zamknijBrame")
@@ -871,6 +885,10 @@ def main():
                       and not st.get("panelPasa"), "stary las: %s" % st)
             else:
                 punkt("P15", None, "nie ma Workspace/LasPotwory — pominięte")
+
+            # D-107 (walka bez przestojów): PD1 liczba potworów (1 i 20 graczy), PD2 odradzanie w zadanym czasie,
+            # PD3 czas klatki przy pełnym zestawie, PD4 brak czekania po przegranej obejrzanej przy ×4 i rewanż od razu
+            D107.punkty("P", "LasPasGra", G["d107"], luau, punkt, zapisz, przestaw, nacisnij, czekaj_na, klient_potworow, odtw)
 
             # ---------------------------------------------------------------- P16 konsola
             kons = call("get_console_output", {}, timeout=60)["text"]
