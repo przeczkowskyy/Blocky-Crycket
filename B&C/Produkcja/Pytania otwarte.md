@@ -616,3 +616,11 @@ Szczegóły: (1) Hełm i kaptur dziś chowają włosy w całości, a uszy przech
 Dopisek z 2026-11-18 (po komplecie sześciu ras): doszły trzy punkty. (9) Rogi demona: połowa siedzi w hełmie i kapturze, wystają ok. 0,4 studa nad nie — te same trzy możliwości co przy uszach. (10) Ogon demona jest sztywny na biodrach; ruchomy ogon wymagałby własnych kości, a wtedy demon nie dzieli klipów z człowiekiem. (11) Uszy goblina wystają przez hełm najbardziej (ok. 0,7 studa), uszy orka są prawie całe schowane. Raport: „Sześć ras z rzutów Pawła: komplet modeli do oceny”.
 **Odpowiedź:**
 
+## 70. Strażnicy Bagna i Dżungli: zdjąć im 30% życia?
+- Symulacja przejścia gry: z samym bohaterem gracz wygrywa ze Strażnikiem Topieli i Wężem Stu Lian 12–28% walk i co siódmy–ósmy gracz odbija się od nich pięć razy lub więcej.
+- Propozycja: obu Strażnikom −30% życia (ostrożniej −15%) i potworom Dżungli +25% doświadczenia; utyka wtedy 2–3% graczy, a gra skraca się tylko z 75 do 66 minut.
+- Do wyboru: (a) −30% i +25%; (b) −15% i +25%; (c) bez zmian — Strażnicy mają być trudni, gracz ma sięgać po mini-gry, pety i przedmioty.
+
+Szczegóły: Karol 17.11 ustalił na czacie, że Strażnik Topieli ma być trudny — dlatego to pytanie, a nie zmiana. Z mini-grami, petami i kowalem utyka dziś 0–4% graczy, więc trudność Strażników wymusza korzystanie z dodatków; bez dodatków boli (niecierpliwy gracz utyka w 21–42% przypadków). Osobna sprawa z tego samego rachunku: kara za przegraną zabiera graczowi, który nie wydaje, 27% zarobionego Złota (niecierpliwemu 42%) — do rozstrzygnięcia razem z propozycjami D-097–D-100. Liczby i założenia: `swiat/przejscie_gry/PRZEJSCIE_W_LICZBACH.md`; raport w panelu „Przejście gry w liczbach…”.
+**Odpowiedź:**
+

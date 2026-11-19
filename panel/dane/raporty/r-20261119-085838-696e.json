@@ -1,0 +1,22 @@
+{
+ "id": "r-20261119-085838-696e",
+ "tytul": "Przejście gry w liczbach: da się przejść w 1 godz. 20 min, gracz utyka na dwóch Strażnikach",
+ "opis_md": "- Grę da się dziś przejść każdą klasą: od poziomu 1 do pokonania Węża Stu Lian (brama Pustyni) w ok. 1 godz. 20 min zwykłej gry; niecierpliwy gracz w 45 min, oglądający każdą walkę w ok. 2 godz.\n- Gracz utyka na Strażniku Topieli i Wężu Stu Lian (sam bohater wygrywa z nimi 12–28% walk) i nudzi się pod koniec Bagna i Dżungli (20–28 walk z rzędu z jednym potworem).\n- Propozycja (pytanie 70): obu Strażnikom zdjąć 30% życia i dać potworom Dżungli 25% więcej doświadczenia. Skraca odbijanie się od Strażników, a gry prawie nie skraca.\n- To rachunek z symulatora, nie próba z ludźmi: jeden gracz, zachowanie według prostych reguł.\n\nSzczegóły:\n\n**Skąd liczby:** symulator prowadzi 100 graczy każdej klasy przez las, Bagno i Dżunglę. Wynik każdej walki liczy prawdziwy silnik walki, a nagrody, poziomy i wymagania czyta z plików gry (stan z 19.11 ok. 8:50, już z walką bez przestojów).\n\n**Minuty do kamieni milowych (mediana)**\n\n| Sposób gry | Strażnik Gaju | Strażnik Topieli | Wąż Stu Lian — Wojownik / Zwiadowca / Mag |\n|---|---:|---:|---:|\n| Tylko walki, każda oglądana w całości | 26 | 73 | 133 / 128 / 108 |\n| Tylko walki | 17 | 45 | 79 / 76 / 69 |\n| Walki + mini-gry + pety + kowal | 19 | 48 | 84 / 83 / 76 |\n| Ostrożny | 33 | 69 | 114 / 114 / 106 |\n| Niecierpliwy | 10 | 27 | 47 / 46 / 42 |\n\nPoziom przy bramach: 11–12, 17–19 i 23–25. Walk 150–190, przegranych 12–46. Las zajmuje ok. 19 minut, Bagno 30, Dżungla 33.\n\n**Gdzie gracz utyka i się nudzi**\n- Kto tylko walczy, w 10–18% przypadków przegrywa ze Strażnikiem Topieli albo Wężem pięć razy lub więcej; niecierpliwy w 21–42%. Z mini-grami, petami i kowalem utyka 0–4%.\n- Najdłuższe powtarzanie: 28 walk z Kokosowym Siłaczem (9 minut) i 26 z Kłodokłapem (8 minut).\n- Najtrudniej ma Mag na Strażniku Topieli (wygrywa 12% walk), choć całą grę kończy najszybciej. Żadna klasa nie jest wymagana.\n\n**Proponowane zmiany liczb (policzone na kopii danych, w grze nic nie zmienione)**\n\n| Zmiana | Efekt |\n|---|---|\n| Strażnik Topieli i Wąż Stu Lian: życie −30% | utyka 13–14% → 2–3% (niecierpliwy 30% → 8–9%); koniec gry 75 → 71 min |\n| To samo, ostrożniej: −15% | utyka 6% |\n| Doświadczenie z potworów Dżungli +25% | koniec 75 → 70 min; najdłużej bez awansu 6,0 → 5,3 min |\n| Oba razem | 75 → 66 min; różnica między klasami 10 → 8 min |\n| Kara za przegraną: niższy górny limit | gracz, który nie wydaje, traci dziś 27% zarobionego Złota, niecierpliwy 42% |\n\nCzego nie robić: wydłużać gry krzywą doświadczenia (+25% daje 91 min, ale utyka 17–20% graczy).\n\n**Uwaga:** Karol 17.11 chciał, żeby Strażnik Topieli był trudny — zdjęcie życia to zmiana tego ustalenia, dlatego jest pytaniem, a nie zmianą.\n\n**Założenia i braki:** jeden gracz na serwerze; punkty statystyk według wzorca klasy; czasy przyjęte (podejście 9 s, pominięta walka 1,5 s, wyjście do miasteczka 40 s); poza rachunkiem drzewko umiejętności, Gemy, Twierdza, zadania i zapis postępu. Sklep z nowymi przedmiotami wczytuje się z pliku — po zmianach danych symulację puszcza się ponownie (ok. 2,5 min).\n\nPliki: `swiat/przejscie_gry/PRZEJSCIE_W_LICZBACH.md`, `symulacja_przejscia.py`, `przejscie_w_liczbach.json`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-19T08:58:38+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytanie 70"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/przejscie_gry/PRZEJSCIE_W_LICZBACH.md",
+   "etykieta": "Pełny raport z tabelami"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Czy zdjąć Strażnikowi Topieli i Wężowi Stu Lian 30% życia i dać potworom Dżungli 25% więcej doświadczenia?"
+}

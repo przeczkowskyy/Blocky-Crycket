@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-19 · Claude Code u Karola (przejście gry w liczbach)
+- **Symulator przejścia gry** (`swiat/przejscie_gry/symulacja_przejscia.py`, raport `PRZEJSCIE_W_LICZBACH.md`; rachunek, nie decyzja): 100 graczy każdej klasy od poziomu 1 do pokonania Węża Stu Lian, wynik walk z prawdziwego silnika, nagrody i wymagania z plików gry. Każda klasa kończy grę; zwykła gra trwa ok. 1 godz. 20 min (niecierpliwy 45 min, oglądający wszystko ok. 2 godz.); poziom przy bramach 11–12, 17–19, 23–25.
+- **Wnioski:** gracz utyka na Strażniku Topieli i Wężu Stu Lian (sam bohater wygrywa 12–28% walk), nudzi się pod koniec Bagna i Dżungli (20–28 walk z rzędu z jednym potworem); najtrudniej ma Mag na Strażniku Topieli; żadna klasa nie jest wymagana. Propozycje zmian liczb są w nowym pytaniu 70 — w grze nic nie zmienione.
+- **Walka bez przestojów (D-107), część bez Studio** jest w repo: bez czekania po walce i przegranej, 14 / 23 / 26 potworów na biom przy 1 / 8 / 20 graczach (było 8 / 12 / 16), odradzanie 4 s (rzadki 20 s, Strażnik 30 s); wdrożenie w Studio w toku.
+- Raport w panelu: „Przejście gry w liczbach: da się przejść w 1 godz. 20 min, gracz utyka na dwóch Strażnikach”. Notatki: [[Zadania]], [[Pytania otwarte]] (nowe 70).
+
 ## 2026-11-19 · Claude Code u Karola (kierunek dnia: grywalność trzech biomów)
 - **Karol, wiadomość głosowa ok. 7:55:** nie budujemy Pustyni; stabilizujemy las, Bagno i Dżunglę oraz resztę gry, żeby dało się ją przejść od włączenia do bramy Pustyni, kupując przedmioty i rozwijając postać w Training Center. Zapisane jako decyzje z podpisem Karola (czekają na Pawła): **D-106** (zakres i kolejność), **D-107** (bez kary czasowej po przegranej, więcej potworów, szybsze odradzanie — uwaga Pawła z testów przekazana przez Karola), **D-108** (mini-gry w sceneriach krain zamiast areny w murach), **D-109** (karczmarz, sprzedawcy, mistrz gier i trenerzy jako prawdziwi NPC).
 - **Paweł** ma wypchnąć nowe okna 2D (Kowal, Mag, sklepy) i poprawki interfejsu — zapowiedź przekazana przez Karola.
