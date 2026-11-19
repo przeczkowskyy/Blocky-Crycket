@@ -2,25 +2,6 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-19T11:07:37+01:00",
- "prace": [
-  {
-   "id": "sklep-przedmioty",
-   "tytul": "Przedmioty w grze i sklep zbrojmistrza za Złoto (D-106)",
-   "stan": "w_toku",
-   "start": "2026-11-19T09:12:14+01:00",
-   "koniec_szacowany": "2026-11-19T12:32:14+01:00",
-   "aktualizacja": "2026-11-19T09:12:14+01:00",
-   "obszary": [
-    "swiat/sklep_proba/**",
-    "swiat/stroje_proba/**",
-    "swiat/kowal_proba/**",
-    "studio:SklepProba",
-    "studio:StrojeProba",
-    "studio:KowalProba"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  }
- ]
+ "aktualizacja": "2026-11-19T11:59:17+01:00",
+ "prace": []
 }
