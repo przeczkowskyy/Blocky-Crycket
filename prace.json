@@ -2,8 +2,24 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-19T13:38:35+01:00",
+ "aktualizacja": "2026-11-19T13:38:38+01:00",
  "prace": [
+  {
+   "id": "straznicy-zycie",
+   "tytul": "Strażnik Topieli i Wąż Stu Lian: życie mniejsze o 15% (D-111)",
+   "stan": "w_toku",
+   "start": "2026-11-19T13:38:38+01:00",
+   "koniec_szacowany": "2026-11-19T14:28:38+01:00",
+   "aktualizacja": "2026-11-19T13:38:38+01:00",
+   "obszary": [
+    "swiat/bagno_pas_gra/**",
+    "swiat/dzungla_pas_gra/**",
+    "studio:BagnoPasGra",
+    "studio:DzunglaPasGra"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
   {
    "id": "zapis-postepu",
    "tytul": "Zapis postępu gracza (D-110): włączenie i próba powrotu stanu",
