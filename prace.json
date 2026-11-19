@@ -2,8 +2,22 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-19T08:22:13+01:00",
+ "aktualizacja": "2026-11-19T08:22:16+01:00",
  "prace": [
+  {
+   "id": "minigry-scenerie",
+   "tytul": "Mini-gry w sceneriach krain (D-108)",
+   "stan": "w_toku",
+   "start": "2026-11-19T08:22:16+01:00",
+   "koniec_szacowany": "2026-11-19T11:22:16+01:00",
+   "aktualizacja": "2026-11-19T08:22:16+01:00",
+   "obszary": [
+    "swiat/trening_proba/**",
+    "studio:TreningProba"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
   {
    "id": "npc-postacie",
    "tytul": "Postacie niezależne jako NPC (D-109): karczmarz, sprzedawcy, mistrz gier, trenerzy",
