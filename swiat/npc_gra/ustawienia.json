@@ -1,0 +1,125 @@
+{
+  "opis": "Postacie niezależne w grze (decyzja D-109) — JEDYNE źródło ustawień pakietu swiat/npc_gra: obsada, imiona, role, klipy, skale, zasięgi, wzrok, tabliczka. Położenia w bazarze czyta dane.py z pakietu bazaru (miejsca.json → pole „npc”, znaczniki.json → Model figury, czesci.json → część „Korzeń” figury). Wynik: zrodla/DaneNpc.luau i zrodla/rigi/Rig_<id>.luau (wygenerowane, nie edytować ręcznie).",
+  "status": "propozycja",
+  "kontener": "NpcGra",
+  "prefiks": "[NpcGra] ",
+  "wylacznik": "NpcWGrze",
+  "folder_lokalny": "NpcLokalni",
+  "tag_kotwicy": "NpcGraKotwica",
+  "bazar": {
+    "miejsca": "swiat/miasteczko_bazar_gra/miejsca.json",
+    "znaczniki": "swiat/miasteczko_bazar/znaczniki.json",
+    "czesci": "swiat/miasteczko_bazar/czesci.json",
+    "czesc_korzenia": "Korzeń",
+    "korzen_nad_stopami": 0.17,
+    "korzen_bok": 1.9,
+    "opis": "figura bazaru = Model z niewidzialną częścią „Korzeń” (swiat/miasteczko_bazar/postacie.py: środek 0,17 nad stopami, bok 1,9 przed skalą figury); NPC staje stopami w tym samym punkcie, twarzą tam, gdzie figura"
+  },
+  "zasiegi": {
+    "budowa": 150,
+    "usuniecie": 180,
+    "animacja": 55,
+    "uspienie": 65,
+    "blisko": 25,
+    "powitanie": 14,
+    "pozegnanie": 30,
+    "gest": 40,
+    "opis": "studs od gracza do NPC: rig powstaje u klienta ≤ budowa i znika > usuniecie; rusza się ≤ animacja (zasypia > uspienie, stoi wtedy w pierwszej klatce spoczynku); ≤ blisko liczony co klatkę, dalej co drugą; powitanie raz po wejściu ≤ powitanie (znów po odejściu > pozegnanie); gesty roli tylko gdy gracz ≤ gest"
+  },
+  "czasy": {
+    "gest_min_s": 9,
+    "gest_max_s": 18,
+    "powitanie_odstep_s": 25,
+    "przejscie_s": 0.25,
+    "tekst_powitania_s": 3.0,
+    "przeglad_s": 0.25,
+    "szukaj_modelu_s": 2.0,
+    "opis": "gest roli co gest_min–gest_max s (losowo); powitanie nie częściej niż co powitanie_odstep_s; przejscie_s = płynne przejście między klipami; przeglad_s = co ile klient sprawdza odległości (budowa, usypianie); szukaj_modelu_s = co ile ponawia szukanie figury do schowania (mapa dochodzi strumieniowaniem)"
+  },
+  "wzrok": {
+    "glowa_maks": 62,
+    "tulow_maks": 22,
+    "tulow_udzial": 0.35,
+    "pochyl_maks": 20,
+    "za_plecami": 118,
+    "zasieg": 40,
+    "tempo": 5.0,
+    "wysokosc_oczu": 4.6,
+    "opis": "stopnie: głowa skręca do glowa_maks względem tułowia, tułów bierze tulow_udzial kąta (do tulow_maks), pochylenie głowy do pochyl_maks; gracz za plecami (> za_plecami) albo dalej niż zasieg → patrzy przed siebie; tempo = jak szybko dogania (1/s); wysokosc_oczu = oczy NPC nad stopami przy skali 1"
+  },
+  "tabliczka": {
+    "szer": 5.2,
+    "wys": 1.5,
+    "nad_glowa": 0.75,
+    "zasieg": 60,
+    "tlo": "1D1729",
+    "przezroczystosc_tla": 0.25,
+    "imie": "FFE28C",
+    "rola": "FFFFFF",
+    "powitanie": "BFF3FF",
+    "czcionka": "GothamBold",
+    "opis": "BillboardGui nad głową (rozmiar w studach, więc maleje z odległością): imię, pod nim rola; przy powitaniu nad tabliczką na chwilę tekst powitania"
+  },
+  "probkowanie": {
+    "co_ile_klatek": 2,
+    "miejsca_po_przecinku": 3,
+    "opis": "klipy z modułów postaci (30 kl./s, liniowo między kluczami — roblox_klocki.probki_liniowe, bez Blendera) zapisywane co drugą klatkę (15 kl./s); klient i tak wygładza liniowo między klatkami"
+  },
+  "limit_zrodla": 190000,
+  "npc": [
+    {"id": "karczmarz", "modul": "karczmarz", "postac": "karczmarz", "imie": "Bolko", "rola": "Karczmarz",
+     "powitanie": "Witaj w karczmie!", "klipy": {"spoczynek": "idle", "powitanie": "zaproszenie", "gest": "smiech"}, "gest_razy": 2},
+    {"id": "mistrz_gier", "modul": "npc_mistrz_gier", "postac": "npc_mistrz_gier", "imie": "Pionek", "rola": "Mistrz gier",
+     "powitanie": "Zagrasz w kostkę?"},
+    {"id": "mag", "modul": "npc_mag", "postac": "npc_mag", "imie": "Zefir", "rola": "Mag",
+     "powitanie": "Czego szukasz, wędrowcze?"},
+    {"id": "zbrojmistrz", "modul": "npc_zbrojmistrz", "postac": "npc_zbrojmistrz", "imie": "Radomir", "rola": "Zbrojmistrz",
+     "powitanie": "Dobra stal czeka!"},
+    {"id": "trener", "modul": "npc_trener", "postac": "npc_trener", "imie": "Tymon", "rola": "Trener",
+     "powitanie": "Gotów na trening?"},
+    {"id": "opiekunka", "modul": "npc_opiekunka", "postac": "npc_opiekunka", "imie": "Jagoda", "rola": "Opiekunka",
+     "powitanie": "Cześć! Pety już czekają."},
+    {"id": "kowal", "modul": "kowal", "postac": "kowal", "imie": "Krzesimir", "rola": "Kowal", "powitanie": "",
+     "klipy": {"spoczynek": "spoczynek", "powitanie": "radosc", "gest": "kucie"}, "rig_w_grze": false,
+     "opis": "kowal stoi w grze jako rig z klipami w Workspace/KowalProba (swiat/kowal_proba, 18.11) — NpcGra dokłada mu tylko tabliczkę (obce_modele), jego rigu nie buduje"},
+    {"id": "trener_sila", "modul": "npc_trener_sila", "postac": "npc_trener_sila", "imie": "Borys", "rola": "Trener Siły",
+     "powitanie": "Pokaż, ile masz siły!"},
+    {"id": "golem", "modul": "npc_golem", "postac": "npc_golem", "imie": "Głaz", "rola": "Trener Pancerza",
+     "powitanie": "Tarcza. W górę."},
+    {"id": "trener_kondycja", "modul": "npc_trener_kondycja", "postac": "npc_trener_kondycja", "imie": "Iskra",
+     "rola": "Trenerka Kondycji", "powitanie": "Trzymaj tempo!"},
+    {"id": "trener_zrecznosc", "modul": "npc_trener_zrecznosc", "postac": "npc_trener_zrecznosc", "imie": "Wiór",
+     "rola": "Trener Zręczności", "powitanie": "Lekko na nogach!"},
+    {"id": "trener_inteligencja", "modul": "npc_trener_inteligencja", "postac": "npc_trener_inteligencja", "imie": "Runa",
+     "rola": "Trenerka Inteligencji", "powitanie": "Zapamiętaj znaki."},
+    {"id": "trener_szczescie", "modul": "npc_trener_szczescie", "postac": "npc_trener_szczescie", "imie": "Fart",
+     "rola": "Trener Szczęścia", "powitanie": "Szczęście sprzyja odważnym!"}
+  ],
+  "klipy_domyslne": {"spoczynek": "spoczynek", "powitanie": "powitanie", "gest": "gest"},
+  "stanowiska_bazaru": {
+    "karczma": {"skala": 1.15},
+    "mistrz_gier": {"skala": 1.1, "przesun": [0, -0.06, -0.3],
+                    "opis": "siedzi na stołku karczmy (wierzch 1,45 st nad posadzką, 0,2 st za figurą): biodra o 0,06 st niżej niż stojąc, 0,3 st w tył"},
+    "sklep_magiczny": {"skala": 1.15},
+    "zbrojownia": {"skala": 1.15},
+    "training_center": {"skala": 1.15},
+    "zagroda_petow": {"skala": 1.1},
+    "opis": "klucz = id miejsca bazaru (miejsca.json); który NPC tam stoi, mówi pakiet bazaru (pole „npc” miejsca); skala i przesunięcie (układ postaci: x w lewo postaci, y w górę, z do przodu; w studach świata) to wybór tego pakietu"
+  },
+  "obce_modele": [
+    {"klucz": "kowal", "npc": "kowal", "model": "Workspace/KowalProba/Kuznia/Kowal",
+     "opis": "sama tabliczka nad modelem, którego NpcGra nie buduje ani nie animuje"}
+  ],
+  "trenerzy": {
+    "skala": 1.1,
+    "skala_golema": 1.5,
+    "gry": {"sila": "trener_sila", "pancerz": "golem", "kondycja": "trener_kondycja", "zrecznosc": "trener_zrecznosc",
+            "inteligencja": "trener_inteligencja", "szczescie": "trener_szczescie"},
+    "opis": "trenerów mini-gier ten pakiet NIE stawia (arenę przebudowuje pakiet swiat/trening_proba): stanowisko powstaje z kotwicy — niewidzialnej części z tagiem tag_kotwicy i atrybutem Npc — albo z polecenia Sygnaly/Polecenie („postaw”); README, rozdział „Jak postawić trenera mini-gry”"
+  },
+  "proba": {
+    "prog_petli_ms": 1.5,
+    "prog_klatki_ms": 34,
+    "opis": "progi próby w grze (testy/proba_play.py): średni czas pętli pakietu na klatkę i czas klatki z kamerą na bazar"
+  }
+}

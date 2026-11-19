@@ -1,0 +1,48 @@
+RAPORT — npc_trener_kondycja
+TRENERKA KONDYCJI — biegaczka z bębnem przy mini-grze Kondycji („Bieżnia”) w Training Center (NPC, D-109).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/npc_trener_kondycja.py · wygenerowano 19.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py npc_trener_kondycja
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: npc_trener_kondycja
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 5 plików, zgodnych 5
+- ostrzeżenia z raportu: 0; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Rekwizyt to bryły na kościach dłoni (nie osobne akcesorium) — w FBX postaci jest częścią dłoni.
+- Strój, zarost i ręce to sztywne bryły na kościach: przy dużych ruchach (machanie, gest) lekko się przenikają.
+- Klipy to szkice (1–2 s), nie gotowa animacja; obrót głowy ku graczowi dokłada dopiero gra (swiat/npc_gra).
+- Bębna nie ma w modelu — to rekwizyt stanowiska (stoi przed trenerką, uderzenia pałki kończą się ok. 1,6 studa przed nią na wysokości pasa).
+
+MODEL npc_trener_kondycja „Trenerka Kondycji” (r15)
+  wymiary ciała: 4,22 × 5,56 × 2,38; z akcesoriami: 4,22 × 5,56 × 2,38
+  trójkąty: 2124 (siatek: 15)
+  budżety ciała R15: Head 700/4000, Torso 272/1750, LeftArm 264/1248, RightArm 400/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, powitanie 48 kl. 1,60 s jednorazowy, gest 54 kl. 1,80 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+
+KONTROLA EKSPORTÓW
+- npc_trener_kondycja.fbx: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje brak -> ZGODNE
+- npc_trener_kondycja__spoczynek.fbx: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje npc_trener_kondycja|Scene 1-61 -> ZGODNE
+- npc_trener_kondycja__powitanie.fbx: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje npc_trener_kondycja|Scene 1-49 -> ZGODNE
+- npc_trener_kondycja__gest.fbx: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje npc_trener_kondycja|Scene 1-55 -> ZGODNE
+- npc_trener_kondycja.glb: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje gest 0-54, powitanie 0-48, spoczynek 0-60 -> ZGODNE
+
+PLIKI
+- npc_trener_kondycja.blend
+- npc_trener_kondycja.fbx
+- npc_trener_kondycja.glb
+- npc_trener_kondycja__gest.fbx
+- npc_trener_kondycja__powitanie.fbx
+- npc_trener_kondycja__spoczynek.fbx
+- npc_trener_kondycja_bohater.jpg
+- npc_trener_kondycja_ikona.png
+- npc_trener_kondycja_plansza.jpg
+- npc_trener_kondycja_tekstury/
+- raport.json
+- raport.txt

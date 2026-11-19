@@ -1,0 +1,505 @@
+{
+ "modul": "npc_trener_sila",
+ "modele": [
+  {
+   "id": "npc_trener_sila",
+   "nazwa": "Trener Siły",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 144,
+     "wierzcholki": 80,
+     "wymiary": [
+      2.32,
+      0.56,
+      1.42
+     ],
+     "min": [
+      -1.16,
+      1.9,
+      -0.66
+     ],
+     "max": [
+      1.16,
+      2.46,
+      0.76
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 288,
+     "wierzcholki": 160,
+     "wymiary": [
+      3.5,
+      1.52,
+      1.36
+     ],
+     "min": [
+      -1.75,
+      2.3,
+      -0.68
+     ],
+     "max": [
+      1.75,
+      3.82,
+      0.68
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 580,
+     "wierzcholki": 328,
+     "wymiary": [
+      1.88,
+      1.575,
+      1.79
+     ],
+     "min": [
+      -0.94,
+      3.75,
+      -0.725
+     ],
+     "max": [
+      0.94,
+      5.325,
+      1.065
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.17,
+      0.95,
+      1.17
+     ],
+     "min": [
+      0.99,
+      2.85,
+      -0.545
+     ],
+     "max": [
+      2.16,
+      3.8,
+      0.625
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.07,
+      0.75,
+      1.07
+     ],
+     "min": [
+      1.04,
+      2.1,
+      -0.535
+     ],
+     "max": [
+      2.11,
+      2.85,
+      0.535
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.9,
+      0.35,
+      0.9
+     ],
+     "min": [
+      1.125,
+      1.75,
+      -0.45
+     ],
+     "max": [
+      2.025,
+      2.1,
+      0.45
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.13,
+      0.8,
+      1.13
+     ],
+     "min": [
+      -0.015,
+      1.1,
+      -0.565
+     ],
+     "max": [
+      1.115,
+      1.9,
+      0.565
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.17,
+      0.75,
+      1.17
+     ],
+     "min": [
+      -0.035,
+      0.35,
+      -0.585
+     ],
+     "max": [
+      1.135,
+      1.1,
+      0.585
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.11,
+      0.35,
+      1.41
+     ],
+     "min": [
+      -0.005,
+      0.0,
+      -0.555
+     ],
+     "max": [
+      1.105,
+      0.35,
+      0.855
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.17,
+      0.95,
+      1.17
+     ],
+     "min": [
+      -2.16,
+      2.85,
+      -0.545
+     ],
+     "max": [
+      -0.99,
+      3.8,
+      0.625
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.07,
+      0.75,
+      1.07
+     ],
+     "min": [
+      -2.11,
+      2.1,
+      -0.535
+     ],
+     "max": [
+      -1.04,
+      2.85,
+      0.535
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 372,
+     "wierzcholki": 200,
+     "wymiary": [
+      0.94,
+      0.9,
+      2.22
+     ],
+     "min": [
+      -2.045,
+      1.425,
+      -1.11
+     ],
+     "max": [
+      -1.105,
+      2.325,
+      1.11
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.13,
+      0.8,
+      1.13
+     ],
+     "min": [
+      -1.115,
+      1.1,
+      -0.565
+     ],
+     "max": [
+      0.015,
+      1.9,
+      0.565
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.17,
+      0.75,
+      1.17
+     ],
+     "min": [
+      -1.135,
+      0.35,
+      -0.585
+     ],
+     "max": [
+      0.035,
+      1.1,
+      0.585
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.11,
+      0.35,
+      1.41
+     ],
+     "min": [
+      -1.105,
+      0.0,
+      -0.555
+     ],
+     "max": [
+      0.005,
+      0.35,
+      0.855
+     ]
+    }
+   ],
+   "trojkaty_razem": 2396,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 20
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.32,
+    5.325,
+    2.22
+   ],
+   "wymiary_z_akcesoriami": [
+    4.32,
+    5.325,
+    2.22
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.16,
+     0.0,
+     -1.11
+    ],
+    [
+     2.16,
+     5.325,
+     1.11
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "powitanie",
+     "dlugosc": 48,
+     "fps": 30,
+     "sekundy": 1.6,
+     "petla": false
+    },
+    {
+     "n": "gest",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 580,
+     "limit": 4000,
+     "wymiary": [
+      1.88,
+      1.575,
+      1.79
+     ]
+    },
+    "Torso": {
+     "trojkaty": 432,
+     "limit": 1750,
+     "wymiary": [
+      3.5,
+      1.92,
+      1.44
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 220,
+     "limit": 1248,
+     "wymiary": [
+      1.17,
+      2.05,
+      1.17
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 548,
+     "limit": 1248,
+     "wymiary": [
+      1.17,
+      2.375,
+      2.22
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 308,
+     "limit": 1248,
+     "wymiary": [
+      1.17,
+      1.9,
+      1.44
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 308,
+     "limit": 1248,
+     "wymiary": [
+      1.17,
+      1.9,
+      1.44
+     ]
+    }
+   },
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "npc_trener_sila.fbx: siatki 34, kości 17, trójkąty 2624, wzrost 5.33 st., akcje brak -> ZGODNE",
+  "npc_trener_sila__spoczynek.fbx: siatki 34, kości 17, trójkąty 2624, wzrost 5.33 st., akcje npc_trener_sila|Scene 1-61 -> ZGODNE",
+  "npc_trener_sila__powitanie.fbx: siatki 34, kości 17, trójkąty 2624, wzrost 5.33 st., akcje npc_trener_sila|Scene 1-49 -> ZGODNE",
+  "npc_trener_sila__gest.fbx: siatki 34, kości 17, trójkąty 2624, wzrost 5.33 st., akcje npc_trener_sila|Scene 1-61 -> ZGODNE",
+  "npc_trener_sila.glb: siatki 34, kości 17, trójkąty 2624, wzrost 5.33 st., akcje gest 0-60, powitanie 0-48, spoczynek 0-60 -> ZGODNE"
+ ]
+}

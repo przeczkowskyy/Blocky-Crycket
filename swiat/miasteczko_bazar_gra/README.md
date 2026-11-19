@@ -445,3 +445,13 @@ Raport `swiat/przejscie_gry/RAPORT_PRZEJSCIA.md` (M10, P3). Zmienione: `miejsca.
   `DevCameraOcclusionMode = Invisicam` w `StarterPlayer` (wspólne ustawienie gry).
 - Wdrożenie: pełna budowa `python -B swiat/miasteczko_bazar_gra/zbuduj.py` (stopka tablicy powstaje przy budowie;
   `--skrypty` podmieniłby tylko dymki i kamerę).
+
+## Postacie niezależne zamiast figur (D-109, 19.11.2026 — część bez Studio)
+
+Sześć miejsc w `miejsca.json` ma pole `"npc"` (karczma → `karczmarz`, mistrz_gier → `mistrz_gier`, sklep_magiczny →
+`mag`, zbrojownia → `zbrojmistrz`, training_center → `trener`, zagroda_petow → `opiekunka`): id postaci z pakietu
+`swiat/npc_gra`, która stoi w tym miejscu zamiast figury z klocków. To jedyna zmiana w tym pakiecie — pola nie czyta
+`dane.py`, więc `DaneBazaru.luau`, jego skrót i skrypty są bez zmian i bazaru nie trzeba wdrażać od nowa. Figura
+z mapy zostaje w Studio; klient pakietu `NpcGra` chowa ją u gracza, gdy stoi NPC (kolizje figury, dymek i podpowiedź E
+bez zmian), a bez `NpcGra` albo przy `NpcWGrze = false` figura jest widoczna jak dawniej. Opis: `swiat/npc_gra/README.md`.
+W Studio jeszcze niesprawdzone.
