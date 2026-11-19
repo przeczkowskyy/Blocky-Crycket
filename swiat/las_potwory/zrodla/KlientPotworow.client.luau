@@ -730,11 +730,33 @@ local function zbudujKolejny()
 		local cfg = folderStanu:FindFirstChild(id)
 		if cfg and not widoki[id] and not ukryte[id] then
 			local klucz = cfg:GetAttribute("Gatunek")
-			if type(klucz) == "string" and sumaCzesci + kosztWidoku(klucz) <= Stale.BUDZET_CZESCI then
-				zbudujWidok(cfg)
-				return -- najwyżej jeden klon na BUDOWA_CO
+			if type(klucz) == "string" then
+				local koszt = kosztWidoku(klucz)
+				if sumaCzesci + koszt > Stale.BUDZET_CZESCI and koszt <= Stale.BUDZET_CZESCI then
+					-- D-107 (19.11.2026, więcej potworów): budżet brył zajmowały dalsze widoki zbudowane wcześniej, a potwór
+					-- tuż przy graczu zostawał bez widoku (próba w Play: 8 wilków, 2 niewidoczne). Najbliższy ma pierwszeństwo:
+					-- zwalniamy najdalsze widoki — tylko dalsze od kandydata, więc nic nie miga; budżet zostaje ten sam
+					local poz = cfg:GetAttribute("Pozycja")
+					local d = if typeof(poz) == "Vector3" then (poz - workspace.CurrentCamera.CFrame.Position).Magnitude else math.huge
+					while sumaCzesci + koszt > Stale.BUDZET_CZESCI do
+						local najdalszy, dNaj = nil, d
+						for idW, w in widoki do
+							if idW ~= wymuszony and (w.odl or 0) > dNaj then
+								najdalszy, dNaj = idW, w.odl
+							end
+						end
+						if not najdalszy then
+							break
+						end
+						zniszczWidok(najdalszy)
+					end
+				end
+				if sumaCzesci + koszt <= Stale.BUDZET_CZESCI then
+					zbudujWidok(cfg)
+					return -- najwyżej jeden klon na BUDOWA_CO
+				end
 			end
-			-- przekroczyłby budżet brył: nie budujemy (następny wybór spróbuje znowu)
+			-- przekroczyłby budżet brył i nie ma dalszych widoków do zwolnienia: nie budujemy (następny wybór spróbuje znowu)
 		end
 	end
 end

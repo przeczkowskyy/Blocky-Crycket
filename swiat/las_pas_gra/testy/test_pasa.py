@@ -175,7 +175,7 @@ class TestDanych(unittest.TestCase):
         # plan mapy bez zmian (D-096, krótki pas: 8 / 12 / 16; projekt długiego pasa: 20 / 36 / 46)
         self.assertEqual(sumy, [8, 12, 16])
         # D-107 (walka bez przestojów): liczby gry z GEN.GESTOSC_D107 — 4 / 7 / 8 na zwykłą strefę + rzadki + Strażnik
-        self.assertEqual(nasze, [14, 23, 26])
+        self.assertEqual(nasze, [13, 22, 25])       # wilki 3 / 6 / 7 (budżet brył klienta)
         self.assertGreater(nasze, sumy)
         self.assertEqual(len(DP["strefy"]), len(PLAN["strefy"]) + 1)
         self.assertEqual(DP["strefy"][-1]["id"], "straznik")
@@ -207,11 +207,13 @@ class TestPrzegrod(unittest.TestCase):
                 self.assertEqual(GEN.GATUNKI[sp.GATUNEK[st["podbiom"]]], st["gatunek"])
                 self.assertEqual(st["poziomy"], st_plan["poziomy"])
                 # D-107: ile potworów i jak szybko wracają — liczby gry (GESTOSC_D107), nie planu mapy
-                ge = GEN.GESTOSC_D107["rzadki" if st_plan.get("odrodzenie_stale") else "zwykla"]
+                ge = dict(GEN.GESTOSC_D107["rzadki" if st_plan.get("odrodzenie_stale") else "zwykla"])
+                ge.update(GEN.GESTOSC_D107["strefy"].get(st["id"], {}))
                 self.assertEqual((st["naraz"], st["max"], st["odrodzenieS"]),
                                  (ge.get("naraz", st_plan["naraz"]), ge.get("max", st_plan["max"]), ge["odrodzenie_s"]))
                 self.assertLess(st["odrodzenieS"], st_plan["odrodzenie_s"])
                 self.assertGreaterEqual(st["max"], st_plan["max"])
+                self.assertGreater(Lg.cel(st["naraz"], st["max"], 1), Lg.cel(st_plan["naraz"], st_plan["max"], 1) - (1 if st["rzadki"] else 0))
                 self.assertTrue(st["odrodzenieStale"])            # stały czas, bez dolnej granicy 10 s
                 self.assertEqual(st["rzadki"], st["id"] == "t1")
                 # potwory mieszczą się na pętli z zapasem na wejście nowego (odstęp z danych)

@@ -969,7 +969,7 @@ def main():
                 kp13.get("czesciWidokow")))
 
             # D-107 (walka bez przestojów): JD1 liczba potworów (1 i 20 graczy), JD2 odradzanie w zadanym czasie,
-            # JD3 czas klatki przy pełnym zestawie, JD4 brak czekania po przegranej obejrzanej przy ×4 i rewanż od razu
+            # JD3 czas klatki przy pełnym zestawie, JD4 przegrana ze strażnikiem przy ×4 bez blokady i rewanż od razu, D5 czas pominiętej walki
             D107.punkty("J", "DzunglaPasGra", G["d107"], luau, punkt, zapisz, przestaw, nacisnij, czekaj_na, klient_potworow, odtw)
 
             # ================================================================ J14 konsola

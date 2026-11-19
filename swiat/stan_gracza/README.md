@@ -482,3 +482,21 @@ z ok. 8 przegranymi po drodze. Cel planu rosnącego z `tools/walka/tempo.py`: ok
   `SerwerPotworow.server.luau` (`sygnalStanu`, `bohaterZeStanu`, `nagrodaZaWalke` + dwa wywołania w kontroli 7
   i po przyjęciu walki), `KlientPotworow.client.luau` (`trybTestowyBohatera`, `poziomGracza`,
   `zsynchronizujBohatera`, napis panelu). Las-pas używa tych samych źródeł.
+
+## Łup po szybko pominiętej walce — od razu (19.11.2026, D-107)
+
+*Mała zmiana przy decyzji D-107 (walka bez przestojów; podpis Karola, czeka na potwierdzenie Pawła). Wdrożona w Studio
+19.11.2026 (`zbuduj.py --skrypty`).*
+
+Łup walki pokazuje się graczowi (atrybuty Gold, XP…), gdy klient zgłosi koniec ekranu walki („pokaz”), ale tylko łupy
+starsze niż `publikacja.min_s` (1,5 s) — żeby spóźnione zgłoszenie nie pokazało łupu następnej walki w jej trakcie.
+Pominięta walka kończy się u klienta w ok. 0,5 s (pomiar w Play 19.11), więc zgłoszenie przychodzi, zanim łup
+„dojrzeje” — według kodu gracz widziałby wtedy Złoto i doświadczenie dopiero przy końcu następnej walki albo po
+czasie walki + 6 s (samego opóźnienia w grze nie mierzyłem).
+
+Teraz: gdy przy zgłoszeniu zostaje łup młodszy niż `min_s`, serwer sam pokazuje go, gdy tylko dojrzeje (najwyżej 1,5 s
+po przyjęciu walki) — tylko łupy przyjęte przed tym zgłoszeniem; łup następnej walki dalej czeka na jej koniec.
+Kod: `zrodla/SerwerStanu.server.luau` (obsługa „pokaz”, `publikuj(…, doCzasu)`), test `test_8c2` w `testy/test_stanu.py`.
+Sprawdzone testem bez Studio na prawdziwym skrypcie serwera; próba „stan gracza” w Play 19.11 przeszła, ale tego
+przypadku osobno nie mierzy.
+Do oceny: skrócić `min_s` (np. do 0,5 s), jeśli 1,5 s opóźnienia po bardzo szybkim pominięciu ma zniknąć całkiem.

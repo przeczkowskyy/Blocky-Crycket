@@ -6,6 +6,8 @@
 	ich kodu nie ruszamy; HUD i okno ekwipunku same słuchają zmian). Ten skrypt:
 		1. łup z walki w lesie (Sygnaly/PrzyznajLup, woła SerwerPotworow obu lasów) → profil od razu, atrybuty po walce:
 		   gdy klient zgłosi, że HUD znów widać ("pokaz"), albo najpóźniej po czasie walki + D.publikacja.zapas_s;
+		   łup młodszy niż min_s w chwili zgłoszenia (walka pominięta zaraz po starcie, D-107) pokazuje się sam, gdy
+		   dojrzeje — bez czekania na następne zgłoszenie;
 		   Gold i Gems czytamy i dopisujemy (odczyt-zapis), bo drzewko Pawła odejmuje Gems z tego samego atrybutu;
 		2. awans: XP ≥ XPMax → Level + 1, nowe XPMax z krzywej (D.krzywa = tools/walka/tempo.py), komunikat "awans"
 		   do klienta (baner „POZIOM N”);
@@ -530,7 +532,8 @@ end
 
 ------------------------------------------------------------------ łup: przyjęcie i pokazanie
 -- pokazuje (atrybuty) łupy gotowe do pokazania: po czasie albo — wymus — wszystkie starsze niż minWiek
-local function publikuj(gracz: Player, wymus: boolean, minWiek: number)
+-- (doCzasu: tylko łupy przyjęte nie później niż ta chwila — dokończenie zgłoszenia "pokaz", D-107)
+local function publikuj(gracz: Player, wymus: boolean, minWiek: number, doCzasu: number?)
 	local p = profile[gracz]
 	if not p or not gracz.Parent or #p.oczekujace == 0 then
 		return 0
@@ -540,7 +543,7 @@ local function publikuj(gracz: Player, wymus: boolean, minWiek: number)
 	local gemyStraznika = 0
 	local premiaZ, premiaXp, premiaPet = 0, 0, nil
 	for _, o in p.oczekujace do
-		if t >= o.pokazOd or (wymus and t - o.przyjeto >= minWiek) then
+		if t >= o.pokazOd or (wymus and t - o.przyjeto >= minWiek and (doCzasu == nil or o.przyjeto <= doCzasu)) then
 			table.insert(gotowe, o.lup)
 			if o.premia then
 				premiaZ += o.premia.zloto
@@ -1040,6 +1043,24 @@ zdarzenia.OnServerEvent:Connect(function(gracz: Player, polecenie: any)
 	end
 	ostatniePokaz[gracz] = t
 	publikuj(gracz, true, D.publikacja.min_s)
+	-- D-107 (walka bez przestojów): walka pominięta zaraz po starcie kończy się, zanim jej łup ma min_s — dawniej
+	-- czekał wtedy na następne "pokaz" albo na pełny czas walki + zapas_s. Teraz pokazujemy go, gdy tylko dojrzeje
+	-- (najwyżej min_s po przyjęciu); tylko łupy przyjęte PRZED tym zgłoszeniem — łup następnej walki dalej czeka
+	local p = profile[gracz]
+	if p and #p.oczekujace > 0 then
+		local granica = teraz()
+		local najmlodszy = nil
+		for _, o in p.oczekujace do
+			if o.przyjeto <= granica and (najmlodszy == nil or o.przyjeto > najmlodszy) then
+				najmlodszy = o.przyjeto
+			end
+		end
+		if najmlodszy ~= nil and granica - najmlodszy < D.publikacja.min_s then
+			task.delay(D.publikacja.min_s - (granica - najmlodszy) + 0.05, function()
+				publikuj(gracz, true, D.publikacja.min_s, granica)
+			end)
+		end
+	end
 end)
 
 ------------------------------------------------------------------ gracze

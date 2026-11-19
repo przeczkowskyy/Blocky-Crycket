@@ -111,8 +111,12 @@ GESTOSC_D107 = {
     # dom wolny, gdy żaden gracz nie stoi bliżej (plan: 12 st). 0 = potwór wraca także wtedy, gdy gracz stoi przy
     # domu: strefa ma dwa domy i gracze czekający przy obu zatrzymywali odradzanie całkiem (test_bez_przestojow.py)
     "blokada_domu": 0,
-    # zwykła strefa (także watahy): cel = 4 / 7 / 8 potworów przy 1 / 8 / 20 graczach (Logika.cel), odrodzenie stałe
-    "zwykla": {"naraz": 7, "max": 8, "odrodzenie_s": 4},
+    # zwykła strefa: cel = 4 / 7 / 8 potworów przy 1 / 8 / 20 graczach (Logika.cel), odrodzenie stałe. 2 s (było 4 s
+    # do próby w Play 19.11): pominięta walka trwa u klienta 0,45 s, więc gracze zabijają szybciej, niż zakładałem
+    "zwykla": {"naraz": 7, "max": 8, "odrodzenie_s": 2},
+    # wyjątki stref (id strefy): wilki lasu mają po 544 bryły, a klient ma budżet 4000 brył widoków — 8 wilków się
+    # w nim nie mieści (próba w Play 19.11). 3 / 6 / 7 wilków: przy 8 graczach zostaje miejsce na trolla obok
+    "strefy": {"w1": {"naraz": 6, "max": 7}},
     # rzadki potwór (strefa z odrodzenie_stale w planie — troll, ropucha, pancernik): jeden, wraca po 20 s (było 150)
     "rzadki": {"odrodzenie_s": 20},
     # strażnik biomu: wraca po 30 s (było 120)
@@ -227,7 +231,8 @@ def strefa(m, st, gat, zas, k=None):
     rzadki = bool(st.get("odrodzenie_stale"))
     naraz, maks, odrodzenie, stale = st["naraz"], st["max"], st["odrodzenie_s"], rzadki
     if k.get("gestosc"):
-        ge = k["gestosc"]["rzadki" if rzadki else "zwykla"]
+        ge = dict(k["gestosc"]["rzadki" if rzadki else "zwykla"])
+        ge.update((k["gestosc"].get("strefy") or {}).get(sid) or {})
         naraz, maks, odrodzenie, stale = ge.get("naraz", naraz), ge.get("max", maks), ge["odrodzenie_s"], True
     y = float(st["y"])
     u_od, u_do, przeg = _odcinek_strefy(plan, st)

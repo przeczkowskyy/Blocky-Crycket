@@ -14,7 +14,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "84f35ba99ab7",
+	skrot = "5648a060af56",
 	biom = {
 		nazwa = "DzunglaPas",
 		srodek = { 1100, 0, -700 },
@@ -45,7 +45,7 @@ return {
 			miejsc = 1,
 			odstepWGrupie = 10.4,
 			watahy = false,
-			odrodzenieS = 4,
+			odrodzenieS = 2,
 			straznik = false,
 			trasa = {
 				x = { 2030.03, 2028.63, 2015.16, 2001.69, 2000.28, 2001.69, 2015.16, 2028.63 },
@@ -80,7 +80,7 @@ return {
 			miejsc = 1,
 			odstepWGrupie = 8.7,
 			watahy = false,
-			odrodzenieS = 4,
+			odrodzenieS = 2,
 			straznik = false,
 			trasa = {
 				x = { 2099.45, 2098.05, 2084.58, 2071.11, 2069.7, 2071.11, 2084.58, 2098.05 },
@@ -115,7 +115,7 @@ return {
 			miejsc = 1,
 			odstepWGrupie = 11.4,
 			watahy = false,
-			odrodzenieS = 4,
+			odrodzenieS = 2,
 			straznik = false,
 			trasa = {
 				x = { 2165.57, 2164.17, 2150.69, 2137.22, 2135.82, 2137.22, 2150.69, 2164.17 },

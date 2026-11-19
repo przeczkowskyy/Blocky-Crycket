@@ -10,16 +10,17 @@ Co sprawdza:
      a nie pełny czas ×1 — po obejrzanej walce (także przegranej) nie ma czekania; ochrona przed podwójnym startem
      zostaje (odstęp próśb, blokada na czas najkrótszego pokazu); sygnał WynikWalki niesie dalej koniec pokazu ×1;
   2. dane trzech biomów: liczby gry z GESTOSC_D107 (4 / 7 / 8 potworów na zwykłą strefę przy 1 / 8 / 20 graczach,
-     odrodzenie stałe 4 s, rzadki 20 s, strażnik 30 s), plan mapy nietknięty, potwory mieszczą się na pętli;
+     wilki lasu 3 / 6 / 7, odrodzenie stałe 2 s, rzadki 20 s, strażnik 30 s), plan mapy nietknięty, potwory mieszczą
+     się na pętli;
   3. rachunek „gracz nigdy nie czeka” — symulacja tą samą klasą Symulacja co testy potworów (lustro tyknięcia
-     SerwerPotworow): gracze walczą bez przerwy (walka pominięta: 3 s + dojście 1 s), a test liczy, ile sekund
+     SerwerPotworow): gracze walczą bez przerwy (walka pominięta 1 s + dojście 1,5 s — z pomiaru w Play), a test liczy, ile sekund
      gracz stał bez wolnego potwora. Samotny gracz: 0 s w każdej strefie; 3 graczy w strefie (8 na serwerze): 0 s;
      6 graczy w strefie (20 na serwerze): liczba w teście 3b. Dla porównania te same przebiegi na liczbach sprzed
-     D-107 (z planu) — samotny gracz stał wtedy 38–57% czasu;
+     D-107 (z planu) — samotny gracz stał wtedy 61–73% czasu;
   4. rzadki potwór i strażnik wracają po czasie z danych (bez skracania i bez dolnej granicy 10 s).
 
-Czego nie da się sprawdzić bez Studio: prawdziwy czas pominiętej walki (E → POMIŃ → ZAMKNIJ; tu przyjęte 3 s) i koszt
-klatki przy większej liczbie potworów — to punkty prób w Play (testy/proba_play.py trzech biomów, P17–P20).
+Czego nie da się sprawdzić bez Studio: prawdziwy czas pominiętej walki i koszt klatki przy większej liczbie potworów —
+to punkty prób w Play (testy/pomoc_d107.py: D3 i D5; pomiar 19.11.2026: pominięta walka 0,45 s od E do powrotu na pas).
 """
 import importlib.util
 import os
@@ -71,9 +72,11 @@ with open(os.path.join(POTWORY, "zrodla", "SerwerPotworow.server.luau"), encodin
 with open(os.path.join(POTWORY, "zrodla", "Stale.luau"), encoding="utf-8") as _f:
     STALE = _f.read()
 
-# model gracza do rachunku (liczby do potwierdzenia pomiarem w Play — proba_play.py, P17)
-WALKA_POMINIETA_S = 3.0     # E → pokaz → POMIŃ → ZAMKNIJ (najszybszy gracz)
-DOJSCIE_S = 1.0             # do następnego potwora: 8 potworów co ok. 15 st, bieg 16 st/s
+# model gracza do rachunku. Próba w Play 19.11.2026 (punkt PD5): pominięta walka trwa u klienta 0,45 s od E do powrotu
+# na pas (E → przycisk POMIŃ 0,21 s, spacja → wynik 0,01 s, zamknięcie → pas 0,00 s; reszta to chwila między nimi) —
+# do tego dwa naciśnięcia człowieka (POMIŃ, ZAMKNIJ), razem przyjęte 1 s; serwer i tak przyjmuje jedną prośbę na 1 s
+WALKA_POMINIETA_S = 1.0     # E → POMIŃ → ZAMKNIJ (najszybszy gracz; przed pomiarem zakładałem 3 s)
+DOJSCIE_S = 1.5             # do następnego potwora: 4 potwory na pętli 121 st to ok. 30 st, bieg 16 st/s, potwór też idzie
 GRACZE_W_STREFIE = {1: 1, 8: 3, 20: 6}   # graczy na serwerze → w jednej strefie (trzy strefy zwykłe + rzadki + strażnik)
 CZAS_PROBY_S = 600
 
@@ -179,7 +182,7 @@ class TestDanych(unittest.TestCase):
     def test_2a_liczby_gry_w_trzech_biomach(self):
         for biom, dp in DANE.items():
             with self.subTest(biom=biom):
-                self.assertEqual(suma_celow(dp), [14, 23, 26])
+                self.assertEqual(suma_celow(dp), [13, 22, 25] if biom == "las" else [14, 23, 26])
                 self.assertEqual(dp["zasady"]["odstep"], G107["odstep"])
                 self.assertEqual(dp["zasady"]["blokadaDomu"], G107["blokada_domu"])
                 for st in dp["strefy"]:
@@ -189,7 +192,9 @@ class TestDanych(unittest.TestCase):
                     elif st["rzadki"]:
                         self.assertEqual((st["naraz"], st["max"], st["odrodzenieS"]), (1, 1, G107["rzadki"]["odrodzenie_s"]))
                     else:
-                        self.assertEqual([Lg.cel(st["naraz"], st["max"], G) for G in (1, 8, 20)], [4, 7, 8])
+                        # wilki lasu: 3 / 6 / 7 (544 bryły każdy przy budżecie 4000 brył widoków klienta)
+                        self.assertEqual([Lg.cel(st["naraz"], st["max"], G) for G in (1, 8, 20)],
+                                         [3, 6, 7] if st["id"] == "w1" else [4, 7, 8])
                         self.assertEqual(st["odrodzenieS"], G107["zwykla"]["odrodzenie_s"])
 
     def test_2b_plan_mapy_i_trasy_bez_zmian(self):
@@ -224,7 +229,7 @@ class TestBezCzekania(unittest.TestCase):
                     with self.subTest(biom=biom, strefa=st["id"], ziarno=ziarno):
                         walk, czekanie, _, min_wolnych = przebieg(st, dp["zasady"], 1, ziarno)
                         self.assertEqual(czekanie, 0.0)
-                        self.assertGreaterEqual(min_wolnych, 2)      # po każdej walce zostają co najmniej 2 wolne
+                        self.assertGreaterEqual(min_wolnych, 1)      # po każdej walce zostaje co najmniej 1 wolny
                         self.assertGreaterEqual(walk, CZAS_PROBY_S / (WALKA_POMINIETA_S + DOJSCIE_S) - 2)
 
     def test_3b_kilku_graczy_ma_z_kim_walczyc(self):
@@ -239,7 +244,7 @@ class TestBezCzekania(unittest.TestCase):
                     self.assertLessEqual(najdluzej, 4.0)
 
     def test_3c_przed_d107_samotny_gracz_stal(self):
-        """Te same przebiegi na liczbach sprzed D-107 (z planu): samotny gracz stał bez potwora 38–57% czasu."""
+        """Te same przebiegi na liczbach sprzed D-107 (z planu): samotny gracz stał bez potwora 61–73% czasu."""
         for biom, dp in DANE_PRZED.items():
             st = zwykle(dp)[0]
             with self.subTest(biom=biom, strefa=st["id"]):
@@ -304,7 +309,7 @@ class TestLupu(unittest.TestCase):
 def tabela():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    print("cykl gracza: walka pominięta %.0f s + dojście %.0f s; próba %d s; graczy w strefie przy 1 / 8 / 20: %s" % (
+    print("cykl gracza: walka pominięta %.1f s + dojście %.1f s; próba %d s; graczy w strefie przy 1 / 8 / 20: %s" % (
         WALKA_POMINIETA_S, DOJSCIE_S, CZAS_PROBY_S, " / ".join(str(GRACZE_W_STREFIE[g]) for g in (1, 8, 20))))
     print("biom     strefa  stan     potworów 1/8/20  odrodz.  czekanie gracza (udział czasu) przy 1 / 8 / 20   walk solo")
     for biom in DANE:

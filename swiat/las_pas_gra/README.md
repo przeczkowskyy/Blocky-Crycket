@@ -19,11 +19,12 @@ wejścia biomu, przelotu nie da się pominąć, stary las zostaje nietknięty i 
 > `python -B swiat/las_pas_gra/testy/test_poziomow.py` (`--rozklad` — tabela). Bieg i szerokość w Studio:
 > `python -B swiat/biomy/proba_biegu.py <folder poza repo>`.
 
-> **Walka bez przestojów (D-107, Karol 19.11.2026) — kod i dane gotowe bez Studio, w grze JESZCZE NIE wdrożone ani
-> sprawdzone.** Po walce (także przegranej) nie ma czekania, potworów jest więcej (4 / 7 / 8 na zwykłą strefę przy
-> 1 / 8 / 20 graczach; razem 14 / 23 / 26, było 8 / 12 / 16) i wracają po 4 s (rzadki 20 s, Strażnik 30 s). Mapa bez
-> zmian. Liczby, rachunek i wybory do oceny: rozdz. „D-107 — walka bez przestojów” niżej. Liczby w akapitach wyżej i
-> niżej (8 / 12 / 16, odrodzenie 12–18 s, Strażnik 120 s, troll 150 s) opisują stan sprzed D-107.
+> **Walka bez przestojów (D-107, Karol 19.11.2026) — wdrożone w Studio 19.11.2026 i sprawdzone próbami w Play**
+> (jeden gracz, komputer). Po walce (także przegranej) nie ma czekania, potworów jest więcej (4 / 7 / 8 na zwykłą
+> strefę przy 1 / 8 / 20 graczach, wilków 3 / 6 / 7; razem 13 / 22 / 25, było 8 / 12 / 16) i wracają po 2 s (rzadki
+> 20 s, Strażnik 30 s). Mapa bez zmian. Liczby, pomiary i wybory do oceny: rozdz. „D-107 — walka bez przestojów”
+> niżej. Liczby w akapitach wyżej i niżej (8 / 12 / 16, odrodzenie 12–18 s, Strażnik 120 s, troll 150 s) opisują stan
+> sprzed D-107.
 
 > **W skrócie.** Jeden kontener `Workspace/LasPasGra` (atrybut `Wygenerowane = true`, osobny od
 > `Workspace/LasPotwory`) obok mapy z klocków `Workspace/LasPas` (robi ją inny agent w `swiat/las_pas/`). W nim:
@@ -51,8 +52,9 @@ wejścia biomu, przelotu nie da się pominąć, stary las zostaje nietknięty i 
 | `zbuduj.py` | budowa kontenera w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
 | `testy/test_pasa.py` | 45 testów offline (opis w nagłówku pliku) |
 | `testy/test_bez_przestojow.py` | D-107: 14 testów bez Studio dla trzech biomów (serwer bez czekania, liczby gry, rachunek „gracz nigdy nie czeka”, łup); `--tabela` drukuje rachunek „było / jest” |
-| `testy/pomoc_d107.py` | D-107: wspólne punkty prób w Play D1–D4 dla lasu, Bagna i Dżungli (woła je `proba_play.py` każdego biomu) |
-| `testy/proba_play.py` | próba w Studio (Play) z listą kontrolną P01–P16 i listą zrzutów (od 19.11.2026 też PD1–PD4) |
+| `testy/pomoc_d107.py` | D-107: wspólne punkty prób w Play D1–D5 dla lasu, Bagna i Dżungli (woła je `proba_play.py` każdego biomu) |
+| `testy/proba_d107.py` | D-107: krótka próba w Play samych punktów D1–D5 jednego biomu (ok. 2,5 min) i dwa zrzuty |
+| `testy/proba_play.py` | próba w Studio (Play) z listą kontrolną P01–P16 i listą zrzutów (od 19.11.2026 też PD1–PD5) |
 | `testy/proba_dodatkowa.py` | druga próba w Play: obie drogi do lasu z przelotem, bieg Polana → brama, ściany i ratunek, walka z każdym gatunkiem, Strażnik (przegrana i wygrana), koszt przy pełnym zestawie, ujęcia potworów |
 | `wyniki/` | zapisy prób w Play (JSON, zapisywane po każdym kroku) |
 | `klatki/` | wybrane zrzuty z gry (bez filmów) |
@@ -293,10 +295,11 @@ widać tylko panel pasa), P11j OK (po wygranej ze Strażnikiem jeden baner: „S
 do Bagna otwarta — idź za arenę”, bez drugiego), P15 OK (w Borze tylko panel starego lasu). Koszt przy oknie na
 wierzchu: klatka klienta śr. 16,7 ms, p95 17,9–18,0 ms w trzech miejscach pasa (w nocy 66,7 ms — okno w tle).
 
-## D-107 — walka bez przestojów (19.11.2026; część A: bez Studio)
+## D-107 — walka bez przestojów (19.11.2026; wdrożone w Studio i sprawdzone w grze)
 
 *Status: decyzja D-107 ma podpis Karola i czeka na potwierdzenie Pawła. Liczby niżej dobrał agent — są **propozycją do
-oceny**. Kod i dane sprawdzone tylko testami bez Studio; wdrożenie w Studio i próby w grze to część B.*
+oceny**. Wdrożone w Studio 19.11.2026 (skrypty i dane trzech kontenerów gry, starego lasu i stanu gracza) i sprawdzone
+próbami w Play: jeden gracz, komputer, okno Studio na wierzchu. Telefon i kilku graczy naraz — nie sprawdzone.*
 
 **Zdjęte kary i czekania** (wspólny kod potworów `swiat/las_potwory`, więc od razu dla lasu, Bagna i Dżungli):
 
@@ -304,11 +307,12 @@ oceny**. Kod i dane sprawdzone tylko testami bez Studio; wdrożenie w Studio i p
 |---|---|---|---|
 | „Odpoczywasz po walce — następna za … s” po walce obejrzanej szybciej niż ×1 (także po przegranej) | `SerwerPotworow`, blokada sesji `walkaDo` | pełny czas walki ×1 (walka 25 s oglądana przy ×4 → kilkanaście sekund stania; Strażnik 44 s → ok. pół minuty) | czas najkrótszego pokazu: `walka.czas / Stale.TEMPO_POKAZU_MAKS` (÷ 4) — mija, zanim skończy się pokaz, więc gracz nie czeka |
 | Po przegranej potwór „zajęty” (miecze, brak podpowiedzi E) — rewanż dopiero po czasie | `SerwerPotworow`, zajętość potwora | czas walki ×1 + 1 s | ÷ 4 + 1 s — po zamknięciu wyniku potwór jest wolny (także dla innych graczy) |
-| Rewanż ze Strażnikiem po przegranej | jak wyżej (walka średnio 44 s) | do ok. 45 s od startu walki | od razu po obejrzeniu |
+| Rewanż ze Strażnikiem po przegranej | jak wyżej (walka średnio 44 s) | do ok. 45 s od startu walki | od razu po obejrzeniu (w grze: 1,3 s po podejściu) |
 | Strażnik po wygranej znika na 2 minuty (wspólny dla serwera — czekają wszyscy) | dane: `odrodzenieS` | 120 s | 30 s |
 | Rzadki potwór (Leśny Troll) znika na 2,5 minuty | dane | 150 s | 20 s |
-| Zwykły potwór wraca po 12–18 s (z tłumem najszybciej 10 s — dolna granica w `Logika.czasOdrodzenia`) | dane | 12 / 15 / 18 s | 4 s stałe (`odrodzenieStale`, bez dolnej granicy) |
+| Zwykły potwór wraca po 12–18 s (z tłumem najszybciej 10 s — dolna granica w `Logika.czasOdrodzenia`) | dane | 12 / 15 / 18 s | 2 s stałe (`odrodzenieStale`, bez dolnej granicy) |
 | Odradzanie staje, gdy gracze stoją przy obu domach strefy | dane: `zasady.blokadaDomu` | 12 st | 0 |
+| Złoto i doświadczenie po bardzo szybko pominiętej walce widać dopiero przy następnej | `swiat/stan_gracza`, pokazywanie łupu | koniec następnej walki albo czas walki + 6 s | najwyżej 1,5 s po przyjęciu walki |
 
 **Zostawione zabezpieczenia** (ochrona przed podwójnym startem i błędami): jedna prośba o walkę na 1 s (`ODSTEP_PROSB`,
 odtwarzacz ponawia sam); blokada na czas najkrótszego pokazu (gdy pokaz przerwano, np. reset postaci — komunikat
@@ -321,66 +325,92 @@ Tablica próby `TestWalki2` (narzędzie testowe, nie gra) zostaje z pełną blok
 | | Było (D-096) | Jest (D-107) |
 |---|---|---|
 | Zwykła strefa (slime, muchomornik), potworów przy 1 / 8 / 20 graczach | 2 / 3 / 4 | 4 / 7 / 8 |
-| Wilki (dwie watahy) | 2 / 4 / 6 | 4 / 7 / 8 (watahy 2 × 4 miejsca) |
-| Las razem ze Strażnikiem | 8 / 12 / 16 | 14 / 23 / 26 |
+| Wilki (dwie watahy) | 2 / 4 / 6 | 3 / 6 / 7 (budżet brył klienta — niżej) |
+| Las razem ze Strażnikiem | 8 / 12 / 16 | 13 / 22 / 25 |
 | Bagno, Dżungla razem ze strażnikiem | 8 / 11 / 14 | 14 / 23 / 26 |
-| Odrodzenie zwykłych | 12 / 15 / 18 s, skracane tłumem do 10 s | 4 s |
+| Odrodzenie zwykłych | 12 / 15 / 18 s, skracane tłumem do 10 s | 2 s |
 | Odrodzenie rzadkiego | 150 s | 20 s |
 | Odrodzenie strażnika | 120 s | 30 s |
 | Odstęp potworów na pętli (pętla 121 st) | 25 st | 12 st (8 × 12 = 96 st, zostaje 25 st luzu) |
 | Poziomy w Zagrodzie przy 1 graczu | 1, 2 | 1, 2, 3, 1 |
 
+**Zmierzone w grze 19.11.2026** (`testy/proba_play.py` — pełna lista, i `testy/proba_d107.py` — same punkty D-107):
+
+| Co | Wynik |
+|---|---|
+| Liczba potworów (PD1) | 13 przy jednym graczu (4 slime'y, 4 muchomorniki, 3 wilki, troll, Strażnik); po „graczy = 20” 25 po 2,6 s |
+| Odradzanie (PD2, P09) | zwykły 3,0 s (2 s + pętla odradzania co 1 s), rzadki 21,1 s, Strażnik 31,4 s |
+| Pominięta walka (PD5) | E → przycisk POMIŃ 0,20 s, spacja → wynik 0,01 s, zamknięcie → pas 0,00 s; od E do powrotu na pas 0,45 s (bez czasu reakcji człowieka) |
+| Przegrana ze Strażnikiem obejrzana przy ×4, bez pomijania (PD4) | pokaz 9,3 s; po zamknięciu wyniku blokada gracza minęła 7 s wcześniej, Strażnik wolny, rewanż ruszył 1,3 s po podejściu, bez odmowy |
+| Koszt przy pełnym zestawie w Zaroślach (PD3: 7 wilków, 25 potworów) | klatka śr. 16,7 ms, p95 18,6 ms, maks. 26,1 ms; 8 widoków, 3965 brył (budżet 4000); pętla ruchu serwera śr. 0,13 ms, maks. 0,21 ms |
+| To samo przy 8 wilkach (pierwsza próba, 26 potworów) | klatka śr. 16,7 ms, p95 18,2 ms — ale widoki miało 6 wilków z 8 (10 widoków, 3892 bryły): **poza budżetem** |
+| Reszta listy lasu (P01–P16) | 22 × OK, P14 „?” (koszt ocenia człowiek: klatka śr. 16,7 ms w trzech miejscach pasa), konsola bez błędów |
+
+Zrzuty z gry (19.11.2026, bez filmów): `klatki/d107_strefa_pelna.jpg` — gracz na dróżce przed Zaroślami przy pełnym
+zestawie (w kadrze 3 z 7 wilków, reszta za skałami i poza kadrem); `klatki/d107_po_przegranej_rewanz.jpg` — chwila po
+przegranej ze Strażnikiem: gracz z powrotem na arenie, Strażnik bez ikony zajętości (podpowiedzi E narzędzie zrzutu
+nie rysuje), wskazówka „Wróć do miasta i potrenuj u trenera”.
+
+**Co zmieniłem po próbach.** (1) Wilków 3 / 6 / 7 zamiast 4 / 7 / 8: wilk ma 544 bryły, 8 wilków to 4352 — ponad
+budżet 4000 brył widoków klienta. (2) Klient potworów: najbliższy potwór ma pierwszeństwo w budżecie brył (dawniej
+dalsze widoki zbudowane wcześniej blokowały budżet i potwór przy graczu był niewidoczny) — `swiat/las_potwory/README.md`.
+(3) Odrodzenie zwykłych 2 s zamiast 4 s: pominięta walka trwa 0,45 s, nie 3 s, jak zakładałem — gracze zabijają
+szybciej. (4) Łup po szybko pominiętej walce pokazuje się od razu (`swiat/stan_gracza/README.md`; sprawdzone testem bez
+Studio na prawdziwym skrypcie serwera, w grze osobno nie mierzone).
+
 **Rachunek** (`python -B swiat/las_pas_gra/testy/test_bez_przestojow.py --tabela`; ta sama symulacja ruchu i
-odradzania co testy potworów). Gracz walczy bez przerwy: walka pominięta 3 s + dojście 1 s (8 potworów na pętli co ok.
-15 st, bieg 16 st/s) — **te 3 s to założenie, do zmierzenia w grze**. Czas walki bez pominięcia z silnika (trzy
-klasy × 60 ziaren): slime 25 s, muchomornik 18 s, wilk 20 s, troll 31 s, Strażnik 44 s; przy ×4 to 4–11 s pokazu.
+odradzania co testy potworów). Gracz walczy bez przerwy: pominięta walka 1 s (zmierzone 0,45 s + dwa naciśnięcia
+człowieka — to drugie jest założeniem) + dojście 1,5 s. Czas walki bez pominięcia z silnika (trzy klasy × 60 ziaren):
+slime 25 s, muchomornik 18 s, wilk 20 s, troll 31 s, Strażnik 44 s; przy ×4 to 4–11 s pokazu.
 
-| Strefa | Stan | Samotny gracz stoi bez potwora | Walk w 10 min (solo) |
+| Strefa | Stan | Samotny gracz stoi bez potwora | Walk w 10 min (solo, model) |
 |---|---|---|---|
-| slime / muchomornik / wilk | przed D-107 | 38% / 49% / 57% czasu | 93 / 76 / 64 |
-| każda zwykła strefa trzech biomów | D-107 | 0% (zawsze zostają co najmniej 2 wolne potwory) | 150 |
+| slime / muchomornik / wilk | przed D-107 | 61% / 68% / 73% czasu | 93 / 76 / 64 |
+| każda zwykła strefa trzech biomów | D-107 | 0% (zawsze zostaje co najmniej 1 wolny potwór) | 240 |
 
-Przy 3 graczach w strefie (8 na serwerze) i 6 w strefie (20 na serwerze) model też daje 0 s czekania; przed D-107
-gracze stojący przy obu domach zatrzymywali odradzanie całkiem (blokada domu).
+Przy 3 graczach w strefie (8 na serwerze) model daje 0 s czekania, przy 6 w strefie (20 na serwerze) 0% — w Zaroślach
+(7 wilków) 3%. Przed D-107 gracze stojący przy obu domach zatrzymywali w modelu odradzanie całkiem (blokada domu).
 
-**Koszt** (policzony, nie zmierzony — pomiar w części B, punkt PD3): potworów przy 20 graczach 16 → 26 (+63%), przy
-jednym 8 → 14. Ruch: serwer przesuwa każdego 4 razy na sekundę, więc zapisów pozycji najwyżej 64 → 104 na sekundę na
-biom; to mniej niż 45–46 potworów długiego pasa zmierzonych 17.11 (pętla ruchu śr. 0,28 ms). Klient: limity bez zmian
-(12 najbliższych widoków, budżet 4000 brył), więc koszt ma tę samą górną granicę; przy wilkach (544 bryły każdy) solo
-1088 → 2176 brył, przy 8 graczach 2176 → 3808, przy 20 graczach 8 wilków to 4352 — ponad budżet, najdalszy wilk
-dostanie widok dopiero, gdy gracz podejdzie (ryzyko do sprawdzenia). Części mapy: bez zmian.
+**Koszt.** Potworów przy 20 graczach 16 → 25, przy jednym 8 → 13. Zmierzone przy pełnym zestawie: klatka klienta bez
+zmiany (śr. 16,7 ms, czyli 60 kl./s, p95 18,6 ms), pętla ruchu serwera 0,13 ms (17.11 przy 45–46 potworach długiego
+pasa: 0,28 ms). Limity klienta bez zmian (12 najbliższych widoków, budżet 4000 brył): przy wilkach widać 7 wilków
+i jednego muchomornika, dalsze potwory (muchomorniki 70 st dalej, troll) dostają widok, gdy gracz podejdzie.
+Bryły szablonów w Studio: wilk 566 (klient liczy 544), Strażnik 1165, troll 408, muchomornik 186, slime 143; Bagno
+89–177, Dżungla 123–246 na potwora — tam cały biom przy pełnym zestawie to ok. 2900 i 3950 brył. Części mapy: bez zmian.
 
 **Doświadczenie zawsze dostępne** (sprawdzone w kodzie i testem 5a–5b): łup liczy silnik przy przyjęciu walki i zależy
 tylko od poziomu potwora, nie od poziomu bohatera — słabszy potwór daje swoje doświadczenie i Złoto zawsze; walka
 pominięta idzie tą samą drogą (łup już przyznany), przegrana daje 20% doświadczenia. Nic nie odcina ani nie zeruje.
-Jedna uwaga: po bardzo szybkim pominięciu (poniżej 1,5 s od startu) `StanGracza` pokazuje łup z opóźnieniem — przy
-końcu następnej walki albo po czasie walki + 6 s (`publikacja.min_s`); propozycja małej zmiany w wyborach niżej.
 
 **Wybory do oceny przez ludzi**
 
-1. **Ile potworów na zwykłą strefę?** Dziś 4 / 7 / 8. Mniej (3 / 6 / 8) = luźniej na oko; więcej niż 8 nie mieści
-   się na pętli bez odstępu poniżej 12 st.
-2. **Odrodzenie zwykłych 4 s?** Albo 2 s (potwór wraca prawie od razu) albo 6 s (spokojniej).
+1. **Ile potworów na zwykłą strefę?** Dziś 4 / 7 / 8 (wilki 3 / 6 / 7). Mniej = luźniej na oko; więcej niż 8 nie
+   mieści się na pętli bez odstępu poniżej 12 st, a ósmego wilka nie mieści budżet brył klienta.
+2. **Odrodzenie zwykłych 2 s?** Albo 4 s (spokojniej; przy 20 graczach w modelu część czeka) albo 1 s.
 3. **Rzadki potwór po 20 s** — czy ma zostać „rzadki” (np. 60 s), skoro i tak są obok zwykłe?
 4. **Strażnik po 30 s.** Daje ok. 460 doświadczenia (wilk 50); przy 30 s nie opłaca się bardziej niż zwykłe potwory.
    10 s = krótsza kolejka przy wielu graczach, ale najlepsza farma w biomie; 60 s = odwrotnie.
 5. **Strażnik wspólny dla serwera — kolejka.** Pierwszą walkę każdy musi obejrzeć, Strażnik jest wtedy zajęty
    (co najmniej ¼ czasu walki), a po wygranej wraca po 30 s: 20 graczy = kilka minut kolejki. Bez kolejki: kilku
    graczy naraz albo Strażnik osobny dla gracza — większa zmiana, nie zrobiona.
-6. **Odstęp na pętli 12 st (było 25)** i potwory wychodzące z domu także obok gracza — do oceny na oko w Studio.
+6. **Odstęp na pętli 12 st (było 25)** i potwory wychodzące z domu także obok gracza — do oceny na oko w Studio
+   (zrzut `klatki/d107_strefa_pelna.jpg`). Przy skoku liczby graczy kilka potworów wychodzi z jednego domu naraz.
 7. **Blokada po walce = najkrótszy pokaz.** Albo zwolnienie zgłasza klient po zamknięciu wyniku (dokładniej, więcej
    kodu), albo żadnej blokady poza 1 s między prośbami.
-8. **Tempo doświadczenia.** Samotny gracz, który pomija walki, robi w modelu 150 walk na 10 min zamiast 64–93 —
-   poziomy pójdą szybciej; balans poziomów (`tools/walka/BALANS_1711.md`) liczono na starych liczbach.
-9. **Łup po szybkim pominięciu** pokazywać od razu (mała zmiana w `swiat/stan_gracza`: ponowić pokazanie po 1,5 s)?
+8. **Tempo doświadczenia.** Pominięta walka trwa pół sekundy, potworów nie brakuje — samotny gracz robi w modelu
+   240 walk na 10 min zamiast 64–93. Poziomy pójdą dużo szybciej; balans (`tools/walka/BALANS_1711.md`) liczono na
+   starych liczbach. Hamulce do wyboru: dłuższy pokaz pominiętej walki, mniej doświadczenia za pominiętą, dłuższe
+   odrodzenie.
+9. **Widoki przy wilkach.** Budżet 4000 brył to 7 wilków; reszta lasu (muchomorniki, troll) jest wtedy niewidoczna
+   z daleka. Lżejszy model wilka zdjąłby ten limit — zmiana modelu, nie tego pakietu.
 10. **Stary las (`LasPotwory`)** dostał brak czekania (wspólny serwer), ale liczby potworów ma stare — zostawić?
 
-**Testy bez Studio (19.11.2026):** `test_bez_przestojow.py` (nowy: serwer, dane trzech biomów, rachunek, łup),
-`test_pasa.py` 45, `test_poziomow.py` 4 — wyniki i pełna lista poleceń w raporcie części A. **Próby w grze**
-(`testy/proba_play.py` trzech biomów) dostały wspólne punkty z `testy/pomoc_d107.py`: **PD1** liczba potworów przy
-1 i 20 graczach, **PD2** odradzanie zwykłego / rzadkiego / Strażnika w zadanym czasie, **PD3** czas klatki przy pełnym
-zestawie, **PD4** przegrana obejrzana przy ×4 → brak blokady, potwór wolny, rewanż od razu (Bagno: BD1–BD4, Dżungla:
-JD1–JD4); P09 czeka teraz 4–7 s. **Nie uruchomione** — to część B.
+**Testy bez Studio:** `test_bez_przestojow.py` (14: serwer, dane trzech biomów, rachunek, łup), `test_pasa.py` 45,
+`test_poziomow.py` 4. **Próby w grze:** `testy/proba_play.py` trzech biomów mają na końcu wspólne punkty z
+`testy/pomoc_d107.py` — **PD1** liczba potworów przy 1 i 20 graczach, **PD2** odradzanie zwykłego / rzadkiego /
+Strażnika, **PD3** koszt przy pełnym zestawie, **PD4** przegrana ze Strażnikiem przy ×4 → brak blokady i rewanż od
+razu, **PD5** czas pominiętej walki (Bagno: BD1–BD5, Dżungla: JD1–JD5); same te punkty w ok. 2,5 min:
+`python -B swiat/las_pas_gra/testy/proba_d107.py <folder poza repo> [las|bagno|dzungla]`.
 
 ## Czego nie sprawdzono (także po próbach w Studio)
 

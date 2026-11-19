@@ -13,7 +13,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "11e7fbf0c4e2",
+	skrot = "e69e1fa74ed6",
 	biom = {
 		nazwa = "BagnoPas",
 		srodek = { 1100, 0, -700 },
@@ -44,7 +44,7 @@ return {
 			miejsc = 1,
 			odstepWGrupie = 8.6,
 			watahy = false,
-			odrodzenieS = 4,
+			odrodzenieS = 2,
 			straznik = false,
 			trasa = {
 				x = { 1610.03, 1608.63, 1595.16, 1581.69, 1580.28, 1581.69, 1595.16, 1608.63 },
@@ -79,7 +79,7 @@ return {
 			miejsc = 1,
 			odstepWGrupie = 8,
 			watahy = false,
-			odrodzenieS = 4,
+			odrodzenieS = 2,
 			straznik = false,
 			trasa = {
 				x = { 1679.45, 1678.05, 1664.58, 1651.11, 1649.7, 1651.11, 1664.58, 1678.05 },
@@ -114,7 +114,7 @@ return {
 			miejsc = 1,
 			odstepWGrupie = 13.6,
 			watahy = false,
-			odrodzenieS = 4,
+			odrodzenieS = 2,
 			straznik = false,
 			trasa = {
 				x = { 1745.57, 1744.17, 1730.69, 1717.22, 1715.82, 1717.22, 1730.69, 1744.17 },

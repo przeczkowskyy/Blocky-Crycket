@@ -17,7 +17,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "81a3ac36420b",
+	skrot = "509bc60fd049",
 	biom = {
 		nazwa = "LasPas",
 		srodek = { 1100, 0, -700 },
@@ -48,7 +48,7 @@ return {
 			miejsc = 1,
 			odstepWGrupie = 7.7,
 			watahy = false,
-			odrodzenieS = 4,
+			odrodzenieS = 2,
 			straznik = false,
 			trasa = {
 				x = { 1190.67, 1189.25, 1175.67, 1162.08, 1160.67, 1162.08, 1175.67, 1189.25 },
@@ -83,7 +83,7 @@ return {
 			miejsc = 1,
 			odstepWGrupie = 7.95,
 			watahy = false,
-			odrodzenieS = 4,
+			odrodzenieS = 2,
 			straznik = false,
 			trasa = {
 				x = { 1260.67, 1259.25, 1245.67, 1232.08, 1230.67, 1232.08, 1245.67, 1259.25 },
@@ -109,8 +109,8 @@ return {
 			gatunek = "cierniowy_wilk",
 			wariant = false,
 			poziomy = { 6, 8 },
-			naraz = 7,
-			max = 8,
+			naraz = 6,
+			max = 7,
 			srodek = { 1312.33, 0, -700 },
 			r = 28,
 			zasiegGraczy = 42.2,
@@ -118,7 +118,7 @@ return {
 			miejsc = 4,
 			odstepWGrupie = 12.7,
 			watahy = true,
-			odrodzenieS = 4,
+			odrodzenieS = 2,
 			straznik = false,
 			trasa = {
 				x = { 1327.33, 1325.92, 1312.33, 1298.75, 1297.33, 1298.75, 1312.33, 1325.92 },
