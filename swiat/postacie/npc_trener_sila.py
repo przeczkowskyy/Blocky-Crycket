@@ -5,7 +5,8 @@ wąsacz w czerwieni za bardzo przypominałby znaną postać z cudzych gier), sze
 
     python -B swiat/postacie/przebuduj.py npc_trener_sila --bez-filmow
 
-Klipy: spoczynek, powitanie (macha lewą ręką), gest (wyciska hantlę nad głowę i stęka — dwa powtórzenia).
+Klipy: spoczynek, powitanie (macha lewą ręką), gest (wyciska hantlę nad głowę i stęka — dwa powtórzenia),
+akcja (jeden rzut prawą ręką — krótki ruch dla mini-gry Siły).
 Status: propozycja (własny projekt, nie kanon). Ciało i klipy wspólne: npc_wspolne.py.
 """
 from swiat.postacie import npc_wspolne as N
@@ -28,6 +29,18 @@ def _gest(p, start):
     k.poza(40, gora)
     k.poza(48, bark)
     k.poza(60, start)
+
+
+def _akcja(p, start):
+    """Jeden rzut prawą ręką (ruch mini-gry Siły): zamach w tył ze skrętem tułowia, wyrzut przed siebie, powrót.
+    18 klatek; czas w grze ustawia swiat/npc_gra (trenerzy.akcja_s)."""
+    k = p.klip("akcja", 18, petla=False)
+    k.poza(0, start)
+    k.poza(5, {"RightUpperArm": (42, 0, -18), "RightLowerArm": (-62, 0, 0), "UpperTorso": (-3, -14, 0), "Head": (0, 10, 0)})
+    k.poza(9, {"RightUpperArm": (-98, 0, -4), "RightLowerArm": (-10, 0, 0), "UpperTorso": (7, 12, 0), "Head": (2, -8, 0)},
+           wyg="liniowo")
+    k.poza(12, {"RightUpperArm": (-74, 0, 4), "RightLowerArm": (-18, 0, 0), "UpperTorso": (5, 8, 0), "Head": (2, -5, 0)})
+    k.poza(18, start)
 
 
 def zbuduj():
@@ -76,7 +89,7 @@ def zbuduj():
             p.walec("Talerz %d" % zn, (0, -0.05, zn * 0.72), (0.9, 0.34, 0.9), "zelazo", "metal", rot=(90, 0, 0), segm=8)
             p.walec("Talerz maly %d" % zn, (0, -0.05, zn * 1.0), (0.6, 0.22, 0.6), "zelazo", "metal", rot=(90, 0, 0),
                     segm=8)
-    N.klipy(p, BAZA, wolna="Left", gest=_gest)
+    _akcja(p, N.klipy(p, BAZA, wolna="Left", gest=_gest))
     p.ustaw_poze_renderu("gest", 20)
     return [p]
 

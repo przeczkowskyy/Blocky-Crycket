@@ -61,9 +61,15 @@ class TestDane(unittest.TestCase):
         for nid in D["kolejnosc"]:
             n = D["npc"][nid]
             self.assertTrue(n["imie"] and n["rola"], nid)
-            self.assertEqual(set(n["klipy"]), set(DN.LOGICZNE), nid)
-        self.assertEqual(sorted(D["trenerzy"]["gry"]), ["inteligencja", "kondycja", "pancerz", "sila", "szczescie", "zrecznosc"])
-        self.assertEqual(D["trenerzy"]["gry"]["pancerz"], "golem")
+            self.assertTrue(set(DN.LOGICZNE) <= set(n["klipy"]) <= set(DN.LOGICZNE) | {"akcja"}, nid)
+        # Pancerz nie ma trenera-NPC: golem gry jest tam przeciwnikiem i trenerem naraz; postać golema zostaje zapasem
+        self.assertEqual(sorted(D["trenerzy"]["gry"]), ["inteligencja", "kondycja", "sila", "szczescie", "zrecznosc"])
+        self.assertNotIn("golem", D["trenerzy"]["gry"].values())
+        self.assertIn("golem", R)
+        self.assertEqual(D["npc"]["golem"]["skala"], U["trenerzy"]["skala_golema"])
+        self.assertEqual(sorted(n for n in D["kolejnosc"] if "akcja" in D["npc"][n]["klipy"]), ["trener_kondycja", "trener_sila"])
+        for nid in ("trener_sila", "trener_kondycja"):
+            self.assertAlmostEqual(D["npc"][nid]["dlugosci"]["akcja"], U["trenerzy"]["akcja_s"], places=3)
         self.assertEqual(len(set(D["npc"][n]["imie"] for n in D["kolejnosc"])), 13, "imiona się powtarzają")
 
     def test_rigi(self):
@@ -90,13 +96,14 @@ class TestDane(unittest.TestCase):
     def test_klipy_wracaja_do_spoczynku(self):
         """Powitanie i gest nowych postaci kończą się w pozie, od której zaczynają (powrót bez skoku)."""
         for nid in NOWE:
-            for rola in ("powitanie", "gest"):
+            for rola in [r for r in ("powitanie", "gest", "akcja") if r in D["npc"][nid]["klipy"]]:
                 kl = R[nid]["klipy"][D["npc"][nid]["klipy"][rola]]
                 self.assertFalse(kl["petla"], (nid, rola))
                 roznica = max(abs(a - b) for a, b in zip(kl["klatki"][0], kl["klatki"][-1]))
                 self.assertLess(roznica, 1e-6, (nid, rola))
                 ruch = max(abs(a - b) for w in kl["klatki"] for a, b in zip(w, kl["klatki"][0]))
-                self.assertGreater(ruch, 0.5, "%s %s: klip prawie się nie rusza" % (nid, rola))
+                # „akcja” to jeden krótki ruch (uderzenie pałką ma mały zamach), więc próg jest niższy
+                self.assertGreater(ruch, 0.3 if rola == "akcja" else 0.5, "%s %s: klip prawie się nie rusza" % (nid, rola))
 
     def test_pliki_aktualne_i_male(self):
         self.assertEqual(DN.nieaktualne(PLIKI), [])
@@ -118,7 +125,7 @@ class TestDane(unittest.TestCase):
         for w in U["npc"]:
             if w["modul"].startswith("npc_") and w["id"] != "golem":
                 p = DN.postac_modulu(w)
-                self.assertEqual(sorted(k.nazwa for k in p.klipy), sorted(npc_wspolne.KLIPY), w["id"])
+                self.assertEqual(sorted(k.nazwa for k in p.klipy if k.nazwa != "akcja"), sorted(npc_wspolne.KLIPY), w["id"])
                 self.assertEqual(p.wymiary("Head"), tuple(rycerz.WYMIARY["Head"]), w["id"])
 
 
@@ -256,6 +263,11 @@ class TestLogika(unittest.TestCase):
         self.assertIsNone(LN.krok(stan, 5, 0.1, 0.5, D, N1))
         self.assertEqual(LN.krok(stan, 5, N1["dlugosci"]["gest"], 0.5, D, N1), "spoczynek")
         self.assertFalse(LN.wymus(stan, "taniec", N1))
+        self.assertFalse(LN.wymus(stan, "akcja", N1), "zbrojmistrz nie ma klipu akcja")
+        sila = D["npc"]["trener_sila"]
+        self.assertTrue(LN.wymus(stan, "akcja", sila))
+        self.assertEqual((stan["klip"], stan["zostalo"]), ("akcja", sila["dlugosci"]["akcja"]))
+        self.assertEqual(LN.krok(stan, 5, sila["dlugosci"]["akcja"], 0.5, D, sila), "spoczynek")
 
     def test_wzrok(self):
         self.assertEqual(LN.wzrok(0.0, 0.0, 10, W), (0, 0, 0))
@@ -321,7 +333,8 @@ def przebieg(wolaj, ziarno, ile=1500):
             wyniki.append(wolaj("klatka", [rnd.uniform(-1, 12), rnd.choice([15, 30]), rnd.choice([1, 2, 21, 31]), rnd.random() < 0.5]))
         else:
             i = rnd.randrange(4)
-            wyniki.append(("wymus", wolaj("wymus", [stany[i], rnd.choice(["gest", "powitanie", "spoczynek", "x"]), N1], stan=stany[i])))
+            n = D["npc"][rnd.choice(["zbrojmistrz", "trener_sila"])]
+            wyniki.append(("wymus", wolaj("wymus", [stany[i], rnd.choice(["gest", "powitanie", "spoczynek", "akcja", "x"]), n], stan=stany[i])))
     return wyniki
 
 
@@ -456,9 +469,18 @@ class TestZasady(unittest.TestCase):
 
     def test_trenerzy_z_pakietu_treningu(self):
         """Punkty trenerów pochodzą z danych pakietu treningu; kod budowniczego najpierw sprawdza arenę w Studio."""
-        T = DN.punkty_trenerow(U)
+        bez_punktu = []
+        T = DN.punkty_trenerow(U, bez_punktu)
+        self.assertEqual(bez_punktu, [])
         self.assertEqual({t["gra"]: t["npc"] for t in T}, U["trenerzy"]["gry"])
-        self.assertEqual(len({t["klucz"] for t in T}), 6)
+        self.assertEqual(len({t["klucz"] for t in T}), 5)
+        self.assertNotIn("pancerz", [t["gra"] for t in T])
+        # gra bez punktu w danych treningu jest pomijana, a pozostali trenerzy stają
+        U2 = dict(U, trenerzy=dict(U["trenerzy"], gry=dict(U["trenerzy"]["gry"], pancerz="golem")))
+        bez_punktu = []
+        T2 = DN.punkty_trenerow(U2, bez_punktu)
+        self.assertEqual(bez_punktu, ["pancerz"])
+        self.assertEqual([t["gra"] for t in T2], [t["gra"] for t in T])
         for t in T:
             with self.subTest(gra=t["gra"]):
                 self.assertIn(t["npc"], R)
@@ -467,16 +489,15 @@ class TestZasady(unittest.TestCase):
                 self.assertTrue(1.0 <= t["skala"] <= 1.6)
                 if t["zastepuje"]:
                     self.assertTrue(t["zastepuje"].startswith("Workspace/%s/Arena/" % t["kontener"]))
-        pan = next(t for t in T if t["gra"] == "pancerz")
-        self.assertIsNone(pan["zastepuje"], "golem gry zostaje — trener Pancerza stoi w pustym miejscu trenera")
         self.assertEqual(next(t for t in T if t["gra"] == "kondycja")["zostaw"], ["Beben*", "NogaBebna*"])
         self.assertEqual(next(t for t in T if t["gra"] == "inteligencja")["zostaw"], ["Kula"])
         _, kod = ZB.kod_trenerow(U, dict(MIEJSCE="1", KONTENER=U["kontener"]))
         self.assertNotIn("__", kod)
         self.assertLess(kod.index("STOP: arena w Studio nie zgadza się"), kod.index('SetWaypoint("NpcGra: przed trenerami")'))
         for wymagane in ('a:SetAttribute("NpcZastepuje", t.zastepuje)', 'a:SetAttribute("NpcZostaw", t.zostaw)', "D.tylko_stan",
-                         'zostaw = "Beben*,NogaBebna*"', 'npc = "golem"'):
+                         'zostaw = "Beben*,NogaBebna*"', 'npc = "trener_sila"'):
             self.assertIn(wymagane, kod)
+        self.assertNotIn('"golem"', kod)
         if LM is not None:
             LM.Parser(kod, "TRENERZY", LM.Interpreter()).program()
         kl = czytaj(ZR, "KlientNpc.client.luau")

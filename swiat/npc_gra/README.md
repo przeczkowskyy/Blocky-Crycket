@@ -7,6 +7,9 @@
 > ani publikowane), próba w grze **15 × OK**. Trenerzy mini-gier są przygotowani, ale nie stoją — czekają na wdrożenie
 > nowej areny pakietu treningu (rozdział „Jak postawić trenera mini-gry”). Przed publikacją miejsca:
 > `python -B swiat/npc_gra/zbuduj.py --usun`.
+> **Uwaga:** po próbie doszły zmiany bez Studio (Pancerz bez trenera-NPC, klip „akcja” — skrót danych d66df4377d67),
+> a w Studio stoi kontener sprzed nich (skrót 8bb3a982837a). Przed `--trenerzy` trzeba go odświeżyć:
+> `python -B swiat/npc_gra/zbuduj.py` (kotwice zostają).
 
 ## Co to jest
 
@@ -32,9 +35,9 @@ Roblox — bez wgrywania czegokolwiek. Każdy klient składa NPC u siebie i sam 
 | `trener` | Tymon · Trener | bazar, Training Center (wejście na mini-gry) | oddech / machanie / napina bicepsy | 62 | 1,15 |
 | `opiekunka` | Jagoda · Opiekunka | bazar, zagroda petów | oddech / machanie / potrząsa wiadrem z kością | 80 | 1,10 |
 | `kowal` | Krzesimir · Kowal | bazar, kuźnia — **stoi już jako rig z klipami** w `Workspace/KowalProba` (18.11) | spoczynek / kucie / radość (jego pakiet) | 90 | 1,00 |
-| `trener_sila` | Borys · Trener Siły | arena, mini-gra Siły | oddech / machanie / wyciska hantlę ×2 | 61 | 1,10 |
-| `golem` | Głaz · Trener Pancerza | arena, mini-gra Pancerza (golem zostaje golemem) | ciężki oddech / unosi pięść / zamach i cios pięścią | 52 | 1,50 |
-| `trener_kondycja` | Iskra · Trenerka Kondycji | arena, mini-gra Kondycji | oddech / machanie / trzy uderzenia pałką i krok w miejscu | 58 | 1,10 |
+| `trener_sila` | Borys · Trener Siły | arena, mini-gra Siły | oddech / machanie / wyciska hantlę ×2; **akcja:** jeden rzut (0,6 s) | 61 | 1,10 |
+| `golem` | Głaz · Kamienny golem | **zapas — nie stoi w grze**: w mini-grze Pancerza golem gry jest przeciwnikiem i trenerem naraz | ciężki oddech / unosi pięść / zamach i cios pięścią | 52 | 1,50 |
+| `trener_kondycja` | Iskra · Trenerka Kondycji | arena, mini-gra Kondycji | oddech / machanie / trzy uderzenia pałką i krok w miejscu; **akcja:** jedno uderzenie (0,6 s) | 58 | 1,10 |
 | `trener_zrecznosc` | Wiór · Trener Zręczności | arena, mini-gra Zręczności | oddech / machanie / zamach siekierą i cięcie | 66 | 1,10 |
 | `trener_inteligencja` | Runa · Trenerka Inteligencji | arena, mini-gra Inteligencji | oddech / machanie / kreśli znak nad księgą | 85 | 1,10 |
 | `trener_szczescie` | Fart · Trener Szczęścia | arena, mini-gra Szczęścia | oddech / machanie / podlewa konewką | 79 | 1,10 |
@@ -100,7 +103,7 @@ stanowisk: `ustawienia.json` → `stanowiska_bazaru`.
 **Po wdrożeniu nowej areny pakietu treningu w Studio — jedno polecenie:**
 
 ```
-python -B swiat/npc_gra/zbuduj.py --trenerzy          # sześć kotwic w Workspace/NpcGra/Kotwice
+python -B swiat/npc_gra/zbuduj.py --trenerzy          # pięć kotwic w Workspace/NpcGra/Kotwice
 python -B swiat/npc_gra/zbuduj.py --trenerzy --stan   # samo porównanie areny w Studio z danymi (nic nie zmienia)
 python -B swiat/npc_gra/zbuduj.py --bez-trenerow      # cofnięcie
 ```
@@ -113,7 +116,7 @@ odpowiada, bo w Studio stoi jeszcze stara arena). Wysokość stóp mierzy promie
 | Gra | NPC | Skala | Figura do schowania | Zostaje widoczne |
 |---|---|---|---|---|
 | Siła | Borys (`trener_sila`) | 1,10 | `Arena/Sila/Miotacz` | — |
-| Pancerz | Głaz (`golem`) | 1,15 | — (puste miejsce trenera; golem gry zostaje) | — |
+| Pancerz | — bez NPC: golem gry jest przeciwnikiem i trenerem naraz | — | — | — |
 | Kondycja | Iskra (`trener_kondycja`) | 1,10 | `Arena/Kondycja/Trener` | `Beben*`, `NogaBebna*` (bęben) |
 | Zręczność | Wiór (`trener_zrecznosc`) | 1,10 | `Arena/Zrecznosc/Trener` | — |
 | Inteligencja | Runa (`trener_inteligencja`) | 1,10 | `Arena/Inteligencja/Mag` | `Kula` |
@@ -125,12 +128,16 @@ odpowiada, bo w Studio stoi jeszcze stara arena). Wysokość stóp mierzy promie
   (klient treningu niczego nie zauważy, błędów nie będzie). Skrzynka miotacza wyleci więc „z ręki” NPC, który w tej
   chwili nie robi zamachu. Żeby NPC ruszał się z grą, klient treningu woła
   `workspace.NpcGra.Sygnaly.Polecenie:Invoke("graj", "trening_sila", "gest")` (to samo dla `trening_kondycja`).
-  Dzisiejsze gesty są dłuższe niż jeden rzut albo jedno uderzenie (wyciskanie 2,0 s, trzy uderzenia pałką 1,8 s) —
-  krótki klip „akcja” (jeden rzut, jedno uderzenie) trzeba dorobić, gdy będzie znany czas ruchu `RamieP`.
+  Gesty roli są dłuższe niż jeden rzut albo jedno uderzenie (2,0 s i 1,8 s), więc obie postacie mają osobny krótki
+  klip **„akcja”** (jeden rzut prawą ręką; jedno uderzenie pałką): `Invoke("graj", "trening_sila", "akcja")` →
+  czas klipu. Trwa `trenerzy.akcja_s` = **0,6 s — wartość przyjęta**, do podmiany na czas ruchu `RamieP` z pakietu
+  treningu (zmiana ustawienia i `dane.py`, bez Blendera). W grze klip „akcja” nie był jeszcze oglądany.
 - `Kula` maga i bęben Bieżni to elementy gry, więc zostają widoczne (`trenerzy.zostaw` w `ustawienia.json` → atrybut
   kotwicy `NpcZostaw`). Kula została przy dawnym miejscu dłoni figury — czy pasuje do Runy z księgą, pokaże zrzut.
-- Golem Pancerza (pięść, oczy) nie jest ruszany. W pustym miejscu trenera staje mniejszy golem-trener (skala 1,15);
-  czy dwa golemy obok siebie to dobry pomysł, czy miejsce ma zostać puste — do decyzji.
+- **Pancerz nie ma trenera-NPC** (ustalenie z 19.11.2026): golem gry jest tam przeciwnikiem i trenerem naraz,
+  a pakiet treningu nie daje dla niego punktu. Gra, dla której pakiet treningu nie ma punktu trenera, jest przez
+  `--trenerzy` pomijana (jeden wiersz informacji), pozostali trenerzy stają. Postać golema (`npc_golem`) zostaje
+  w pakiecie jako zapas.
 
 Pojedynczego trenera można postawić też ręcznie — NPC pojawia się u gracza, gdy ten jest bliżej niż 150 studów:
 
@@ -144,7 +151,7 @@ Pojedynczego trenera można postawić też ręcznie — NPC pojawia się u gracz
    Atrybuty kotwicy: `Npc` (id z tabeli), `NpcKlucz` (nazwa stanowiska do poleceń), opcjonalnie `NpcSkala` (domyślnie
    1,1; golem 1,5), `NpcImie`, `NpcRola`, `NpcZastepuje` (ścieżka Modelu figury do schowania, np.
    `Workspace/TreningProba/Arena/Sila/Miotacz`). Która postać do której gry: `DaneNpc.trenerzy.gry`
-   (sila → `trener_sila`, pancerz → `golem`, kondycja → `trener_kondycja`, zrecznosc → `trener_zrecznosc`,
+   (sila → `trener_sila`, kondycja → `trener_kondycja`, zrecznosc → `trener_zrecznosc`,
    inteligencja → `trener_inteligencja`, szczescie → `trener_szczescie`).
 2. **Polecenie budowniczego** (kotwica w `Workspace/NpcGra/Kotwice`):
    `python -B swiat/npc_gra/zbuduj.py --kotwica trener_sila --klucz trening_sila --poz 10,0.5,20 --patrz 10,30`
@@ -153,9 +160,9 @@ Pojedynczego trenera można postawić też ręcznie — NPC pojawia się u gracz
    i `Invoke("usun", "trening_sila")`.
 
 Ruch na życzenie mini-gry (u klienta): `Polecenie:Invoke("graj", "trening_sila", "gest")` → czas klipu w sekundach
-(albo `false`, gdy NPC nie stoi albo jest za daleko); `"powitanie"` i `"spoczynek"` tak samo. Gesty odpowiadają
-mechanice: golem — cios pięścią, trenerka Kondycji — uderzenia pałką, drwal — cięcie. Części gry (pięść golema,
-ramię miotacza) zostają częściami `trening_proba`; NPC ich nie zastępuje, dopóki tamten pakiet tak nie postanowi.
+(albo `false`, gdy NPC nie stoi albo jest za daleko); `"powitanie"`, `"spoczynek"` i — u trenera Siły i trenerki
+Kondycji — `"akcja"` tak samo. Części gry (pięść golema, ramię miotacza) zostają częściami `trening_proba`; NPC ich
+nie zastępuje, dopóki tamten pakiet tak nie postanowi.
 
 ## Pliki
 
@@ -256,6 +263,8 @@ Jedno okno Studio, jeden gracz; po próbie Studio w trybie Edit. Wynik i konsola
 ## Czego nie sprawdzono
 
 - **Trenerów na arenie:** `--trenerzy` sprawdzone bez Studio i odmową na starej arenie; w nowych sceneriach nie stali.
+- **Zmian po próbie** (Pancerz bez trenera, klip „akcja”, krótsze przejście do niego): tylko bez Studio — kontener
+  w Studio jest sprzed nich, a próba N00–N14 nie była po nich powtarzana.
 - **Zrzutu tabliczki obok dymka bazaru:** narzędzie zrzutów nie pokazuje dymków z interfejsu gracza, więc zachowanie
   (tabliczka znika i wraca) jest sprawdzone odczytem (N10), nie obrazem.
 - **Prawdziwego naciśnięcia E przy NPC** w tej próbie — robi to próba pakietu bazaru.

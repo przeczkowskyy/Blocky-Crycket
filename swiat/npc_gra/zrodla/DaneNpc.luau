@@ -1,7 +1,7 @@
 --[[
 	DaneNpc — WYGENEROWANE przez swiat/npc_gra/dane.py z ustawienia.json, modułów postaci (swiat/postacie)
 	i pakietu bazaru (miejsca.json, znaczniki.json, czesci.json). NIE EDYTUJ RĘCZNIE: zmień źródło i uruchom
-	python -B swiat/npc_gra/dane.py. Kąty wzroku w radianach. Skrót danych: 8bb3a982837a. Status: propozycja (D-109).
+	python -B swiat/npc_gra/dane.py. Kąty wzroku w radianach. Skrót danych: d66df4377d67. Status: propozycja (D-109).
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -29,6 +29,7 @@ return {
 		gest_max_s = 18,
 		powitanie_odstep_s = 25,
 		przejscie_s = 0.25,
+		przejscie_akcji_s = 0.08,
 		tekst_powitania_s = 3,
 		przeglad_s = 0.25,
 		szukaj_modelu_s = 2,
@@ -155,19 +156,19 @@ return {
 			imie = "Borys",
 			rola = "Trener Siły",
 			powitanie = "Pokaż, ile masz siły!",
-			klipy = { spoczynek = "spoczynek", powitanie = "powitanie", gest = "gest" },
+			klipy = { spoczynek = "spoczynek", powitanie = "powitanie", gest = "gest", akcja = "akcja" },
 			gest_razy = 1,
 			skala = 1.1,
 			rig = "Rig_trener_sila",
 			wysokosc = 5.325,
 			czubek = 5.325,
 			bryl = 61,
-			dlugosci = { spoczynek = 2, powitanie = 1.6, gest = 2 },
+			dlugosci = { spoczynek = 2, powitanie = 1.6, gest = 2, akcja = 0.6 },
 		},
 		golem = {
 			id = "golem",
 			imie = "Głaz",
-			rola = "Trener Pancerza",
+			rola = "Kamienny golem",
 			powitanie = "Tarcza. W górę.",
 			klipy = { spoczynek = "spoczynek", powitanie = "powitanie", gest = "gest" },
 			gest_razy = 1,
@@ -183,14 +184,14 @@ return {
 			imie = "Iskra",
 			rola = "Trenerka Kondycji",
 			powitanie = "Trzymaj tempo!",
-			klipy = { spoczynek = "spoczynek", powitanie = "powitanie", gest = "gest" },
+			klipy = { spoczynek = "spoczynek", powitanie = "powitanie", gest = "gest", akcja = "akcja" },
 			gest_razy = 1,
 			skala = 1.1,
 			rig = "Rig_trener_kondycja",
 			wysokosc = 5.56,
 			czubek = 5.56,
 			bryl = 58,
-			dlugosci = { spoczynek = 2, powitanie = 1.6, gest = 1.8 },
+			dlugosci = { spoczynek = 2, powitanie = 1.6, gest = 1.8, akcja = 0.6 },
 		},
 		trener_zrecznosc = {
 			id = "trener_zrecznosc",
@@ -298,12 +299,11 @@ return {
 		skala_golema = 1.5,
 		gry = {
 			sila = "trener_sila",
-			pancerz = "golem",
 			kondycja = "trener_kondycja",
 			zrecznosc = "trener_zrecznosc",
 			inteligencja = "trener_inteligencja",
 			szczescie = "trener_szczescie",
 		},
 	},
-	skrot = "8bb3a982837a",
+	skrot = "d66df4377d67",
 }

@@ -129,6 +129,10 @@ def rig_npc(U, wpis):
     for rola, nazwa in potrzebne.items():
         if nazwa not in klipy:
             raise BladDanych("postać %s nie ma klipu %s (%s)" % (wpis["id"], nazwa, rola))
+    if "akcja" in potrzebne:
+        # klip „akcja” trwa tyle, ile ruch ręki figury w mini-grze (ustawienie), niezależnie od liczby klatek w module
+        kl = klipy[potrzebne["akcja"]]
+        kl["fps"] = _r((len(kl["klatki"]) - 1) / float(U["trenerzy"]["akcja_s"]), 4)
     nazwy = [k[0] for k in kosci]
     for wymagana in ("Head", "UpperTorso"):
         if wymagana not in nazwy:
@@ -214,7 +218,9 @@ def skale(U, stanowiska=None):
         w[s["npc"]] = float(s["skala"])
     T = U["trenerzy"]
     for nid in T["gry"].values():
-        w[nid] = float(T["skala_golema"] if nid == "golem" else T["skala"])
+        w[nid] = float(T["skala"])
+    if "golem" in w:
+        w["golem"] = float(T["skala_golema"])                # golem jest zapasem (nie stoi na arenie), ale ma swoją skalę
     return w
 
 
@@ -233,10 +239,11 @@ sys.stdout.buffer.write(json.dumps({"kontener": D["kontener"], "skrot": D.get("s
 """
 
 
-def punkty_trenerow(U=None):
+def punkty_trenerow(U=None, pominiete=None):
     """Punkty trenerów mini-gier z danych pakietu treningu (tylko odczyt, w osobnym procesie) → lista stanowisk:
     gra, npc, klucz, poz (stopy, świat), patrz (x, z), skala, zastepuje (pełna ścieżka figury albo None), zostaw
-    (części figury, które zostają widoczne), kontener i skrót danych treningu."""
+    (części figury, które zostają widoczne), kontener i skrót danych treningu. Gra z ustawień, dla której pakiet
+    treningu nie ma punktu trenera, jest pomijana (jej nazwa trafia do listy `pominiete`, gdy ją podano)."""
     import subprocess
     U = U or ustawienia()
     T = U["trenerzy"]
@@ -244,13 +251,14 @@ def punkty_trenerow(U=None):
     if r.returncode != 0:
         raise BladDanych("nie udało się wczytać punktów trenerów z %s: %s" % (T["zrodlo"], r.stderr.decode("utf-8", "replace")[-300:]))
     Tr = json.loads(r.stdout.decode("utf-8"))
-    brak = sorted(set(T["gry"]) - set(Tr["trenerzy"]))
-    if brak:
-        raise BladDanych("pakiet treningu nie ma punktu trenera dla gier: %s" % ", ".join(brak))
     S = skale(U, [])
     wynik = []
     for gra, nid in T["gry"].items():
-        p = Tr["trenerzy"][gra]
+        p = Tr["trenerzy"].get(gra)
+        if p is None:
+            if pominiete is not None:
+                pominiete.append(gra)
+            continue
         wpis_npc(U, nid)
         figura = p.get("figura")
         wynik.append({"gra": gra, "npc": nid, "klucz": T["klucz"] % gra, "poz": [_r(v) for v in p["miejsce"]],
@@ -281,7 +289,7 @@ def wszystko():
             wpis.update({"rig": "Rig_" + nid, "wysokosc": r["wysokosc"], "czubek": r["czubek_glowy"],
                          "bryl": len(r["czesci"]),
                          "dlugosci": {rola: _r(dlugosc_klipu(r, kl[rola]) * (wpis["gest_razy"] if rola == "gest" else 1))
-                                      for rola in LOGICZNE}})
+                                      for rola in kl}})
         npc[nid] = wpis
         kolejnosc.append(nid)
     for s in stan:

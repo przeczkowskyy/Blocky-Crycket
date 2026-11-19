@@ -9,7 +9,7 @@ Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, 
 PODSUMOWANIE
 - modele z kośćmi: npc_trener_kondycja
 - przedmioty (akcesoria): 0
-- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 5 plików, zgodnych 5
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 6 plików, zgodnych 6
 - ostrzeżenia z raportu: 0; uwagi podglądu: 0
 
 ZNANE SŁABOŚCI
@@ -23,7 +23,7 @@ MODEL npc_trener_kondycja „Trenerka Kondycji” (r15)
   trójkąty: 2124 (siatek: 15)
   budżety ciała R15: Head 700/4000, Torso 272/1750, LeftArm 264/1248, RightArm 400/1248, LeftLeg 244/1248, RightLeg 244/1248
   kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
-  klipy: spoczynek 60 kl. 2,00 s pętla, powitanie 48 kl. 1,60 s jednorazowy, gest 54 kl. 1,80 s jednorazowy
+  klipy: spoczynek 60 kl. 2,00 s pętla, powitanie 48 kl. 1,60 s jednorazowy, gest 54 kl. 1,80 s jednorazowy, akcja 18 kl. 0,60 s jednorazowy
   punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
 
 KONTROLA EKSPORTÓW
@@ -31,12 +31,14 @@ KONTROLA EKSPORTÓW
 - npc_trener_kondycja__spoczynek.fbx: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje npc_trener_kondycja|Scene 1-61 -> ZGODNE
 - npc_trener_kondycja__powitanie.fbx: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje npc_trener_kondycja|Scene 1-49 -> ZGODNE
 - npc_trener_kondycja__gest.fbx: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje npc_trener_kondycja|Scene 1-55 -> ZGODNE
-- npc_trener_kondycja.glb: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje gest 0-54, powitanie 0-48, spoczynek 0-60 -> ZGODNE
+- npc_trener_kondycja__akcja.fbx: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje npc_trener_kondycja|Scene 1-19 -> ZGODNE
+- npc_trener_kondycja.glb: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje akcja 0-18, gest 0-54, powitanie 0-48, spoczynek 0-60 -> ZGODNE
 
 PLIKI
 - npc_trener_kondycja.blend
 - npc_trener_kondycja.fbx
 - npc_trener_kondycja.glb
+- npc_trener_kondycja__akcja.fbx
 - npc_trener_kondycja__gest.fbx
 - npc_trener_kondycja__powitanie.fbx
 - npc_trener_kondycja__spoczynek.fbx

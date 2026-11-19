@@ -7,7 +7,7 @@
 		L.co_ile(tryb)                    → co ile klatek liczyć pozę (0 = wcale)
 		L.nowy_stan(los, C)               → stan zachowania jednego NPC
 		L.krok(stan, odl, dt, los, D, n)  → nil | "powitanie" | "gest" | "spoczynek"   (zmienia stan)
-		L.wymus(stan, rola, n)            → true/false: klip „powitanie” / „gest” / „spoczynek” na polecenie
+		L.wymus(stan, rola, n)            → true/false: klip „powitanie” / „gest” / „akcja” / „spoczynek” na polecenie
 		L.wzrok(kat, pochyl, poziom, W)   → skręt tułowia, skręt głowy, pochylenie głowy (radiany)
 		L.wygladz(a, cel, dt, tempo)      → a bliżej celu
 		L.klatka(t, fps, n, petla)        → i0, i1, a   (numery klatek od 0 i udział drugiej)
@@ -105,13 +105,14 @@ function L.krok(stan, odl, dt, los, D, n)
 	return nil
 end
 
--- Klip na polecenie (mini-gra, próba): „gest” i „powitanie” grają raz i wracają do spoczynku.
+-- Klip na polecenie (mini-gra, próba): „gest”, „powitanie” i — u postaci, które go mają — „akcja” (jeden krótki
+-- ruch mini-gry) grają raz i wracają do spoczynku.
 function L.wymus(stan, rola, n)
 	if rola == "spoczynek" then
 		stan.klip = "spoczynek"
 		stan.zostalo = 0
 		return true
-	elseif rola == "gest" or rola == "powitanie" then
+	elseif rola == "gest" or rola == "powitanie" or (rola == "akcja" and n.dlugosci.akcja ~= nil) then
 		stan.klip = rola
 		stan.zostalo = n.dlugosci[rola]
 		return true

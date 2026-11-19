@@ -490,6 +490,10 @@ def main():
         kod_kotwicy = kotwica_luau(U, a.kotwica, a.klucz, _liczby(a.poz, 3), _liczby(a.patrz, 2),
                                    "kont:FindFirstChild(%s)" % json.dumps(FOLDER_KOTWIC), skala=a.skala)
     if a.trenerzy:
+        bez_punktu = []
+        DN.punkty_trenerow(U, bez_punktu)
+        for gra in bez_punktu:
+            log("trener %-13s pominięty — pakiet treningu nie ma dla tej gry punktu trenera" % gra)
         for t in DN.punkty_trenerow(U):
             log("trener %-13s %-20s ×%.2f  stopy (%.1f; %.1f; %.1f)  %s%s" % (
                 t["gra"], t["npc"], t["skala"], t["poz"][0], t["poz"][1], t["poz"][2],

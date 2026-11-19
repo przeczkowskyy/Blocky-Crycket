@@ -432,6 +432,13 @@
      "fps": 30,
      "sekundy": 1.8,
      "petla": false
+    },
+    {
+     "n": "akcja",
+     "dlugosc": 18,
+     "fps": 30,
+     "sekundy": 0.6,
+     "petla": false
     }
    ],
    "akcesoria": [],
@@ -500,6 +507,7 @@
   "npc_trener_kondycja__spoczynek.fbx: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje npc_trener_kondycja|Scene 1-61 -> ZGODNE",
   "npc_trener_kondycja__powitanie.fbx: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje npc_trener_kondycja|Scene 1-49 -> ZGODNE",
   "npc_trener_kondycja__gest.fbx: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje npc_trener_kondycja|Scene 1-55 -> ZGODNE",
-  "npc_trener_kondycja.glb: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje gest 0-54, powitanie 0-48, spoczynek 0-60 -> ZGODNE"
+  "npc_trener_kondycja__akcja.fbx: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje npc_trener_kondycja|Scene 1-19 -> ZGODNE",
+  "npc_trener_kondycja.glb: siatki 34, kości 17, trójkąty 2352, wzrost 5.56 st., akcje akcja 0-18, gest 0-54, powitanie 0-48, spoczynek 0-60 -> ZGODNE"
  ]
 }

@@ -73,7 +73,7 @@ def wymus(stan, rola, n):
         stan["klip"] = "spoczynek"
         stan["zostalo"] = 0
         return True
-    if rola in ("gest", "powitanie"):
+    if rola in ("gest", "powitanie") or (rola == "akcja" and n["dlugosci"].get("akcja") is not None):
         stan["klip"] = rola
         stan["zostalo"] = n["dlugosci"][rola]
         return True

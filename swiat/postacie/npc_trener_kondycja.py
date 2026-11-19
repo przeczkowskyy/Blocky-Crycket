@@ -6,7 +6,8 @@ do bębna, którym nadaje tempo.
 
     python -B swiat/postacie/przebuduj.py npc_trener_kondycja --bez-filmow
 
-Klipy: spoczynek, powitanie (macha lewą ręką), gest (trzy uderzenia pałką w rytm i krok w miejscu).
+Klipy: spoczynek, powitanie (macha lewą ręką), gest (trzy uderzenia pałką w rytm i krok w miejscu),
+akcja (jedno uderzenie pałką — krótki ruch dla mini-gry Kondycji).
 Status: propozycja (własny projekt, nie kanon). Ciało i klipy wspólne: npc_wspolne.py.
 """
 from swiat.postacie import npc_wspolne as N
@@ -33,6 +34,18 @@ def _gest(p, start):
                        "LeftUpperLeg": (0, 0, 0), "LeftLowerLeg": (0, 0, 0), "RightUpperLeg": (0, 0, 0),
                        "RightLowerLeg": (0, 0, 0)}, wyg="liniowo")
     k.poza(54, N._zera(start, ("LeftUpperLeg", "LeftLowerLeg", "RightUpperLeg", "RightLowerLeg")))
+
+
+def _akcja(p, start):
+    """Jedno uderzenie pałką (ruch mini-gry Kondycji): uniesienie, uderzenie w dół, odbicie, powrót.
+    18 klatek; czas w grze ustawia swiat/npc_gra (trenerzy.akcja_s)."""
+    k = p.klip("akcja", 18, petla=False)
+    k.poza(0, start)
+    k.poza(5, {"RightUpperArm": (-42, 0, -10), "RightLowerArm": (-102, 0, 0), "Head": (-4, 0, 0), "UpperTorso": (-2, 0, 0)})
+    k.poza(8, {"RightUpperArm": (-20, 0, -8), "RightLowerArm": (-44, 0, 0), "Head": (6, 0, 0), "UpperTorso": (3, 0, 0)},
+           wyg="liniowo")
+    k.poza(11, {"RightUpperArm": (-26, 0, -8), "RightLowerArm": (-64, 0, 0), "Head": (3, 0, 0), "UpperTorso": (1, 0, 0)})
+    k.poza(18, start)
 
 
 def zbuduj():
@@ -69,7 +82,7 @@ def zbuduj():
         # pałka do bębna wzdłuż −Y dłoni (przedłuża przedramię), z miękką główką
         p.blok("Palka", (0, -0.75, 0.05), (0.12, 1.3, 0.12), "palka", "matowy", faza=0.03)
         p.kula("Palka glowka", (0, -1.45, 0.05), 0.34, "palka_glowka", "matowy", segm=8)
-    N.klipy(p, BAZA, wolna="Left", gest=_gest)
+    _akcja(p, N.klipy(p, BAZA, wolna="Left", gest=_gest))
     p.ustaw_poze_renderu("powitanie", 24)
     return [p]
 

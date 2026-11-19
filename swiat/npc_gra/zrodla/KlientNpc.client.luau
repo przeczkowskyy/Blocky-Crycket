@@ -16,7 +16,8 @@
 	i tułów obracają się ku graczowi; nad głową tabliczka z imieniem i rolą.
 
 	Sygnaly/Polecenie (BindableFunction, dla innych pakietów u klienta):
-		Invoke("graj", klucz, "gest" | "powitanie" | "spoczynek") → czas klipu w sekundach albo false
+		Invoke("graj", klucz, "gest" | "powitanie" | "spoczynek" | "akcja") → czas klipu w sekundach albo false
+		        („akcja” = jeden krótki ruch mini-gry; mają ją trener Siły — rzut — i trenerka Kondycji — uderzenie pałką)
 		Invoke("postaw", klucz, idNpc, CFrame, skala?) → true/false   ·   Invoke("usun", klucz) → true/false
 		Invoke("stan", klucz) → { zbudowany, tryb, klip } albo nil    ·   Invoke("lista") → { klucze }
 	Sygnaly/SterowanieKlienta (haczyk prób): "stan" → pełny odczyt, "pomiar_zeruj".
@@ -180,7 +181,7 @@ end
 
 ------------------------------------------------------------------ budowa i usuwanie NPC na stanowisku
 local function graj(s, rola: string)
-	Rig.graj(s.uchwyt, s.npc.klipy[rola], C.przejscie_s)
+	Rig.graj(s.uchwyt, s.npc.klipy[rola], if rola == "akcja" then C.przejscie_akcji_s else C.przejscie_s)
 	s.liczniki[rola] = (s.liczniki[rola] or 0) + 1
 	if rola == "powitanie" and s.napisPowitania and s.npc.powitanie ~= "" then
 		s.napisPowitania.Visible = true

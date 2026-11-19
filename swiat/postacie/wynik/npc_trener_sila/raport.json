@@ -432,6 +432,13 @@
      "fps": 30,
      "sekundy": 2.0,
      "petla": false
+    },
+    {
+     "n": "akcja",
+     "dlugosc": 18,
+     "fps": 30,
+     "sekundy": 0.6,
+     "petla": false
     }
    ],
    "akcesoria": [],
@@ -500,6 +507,7 @@
   "npc_trener_sila__spoczynek.fbx: siatki 34, kości 17, trójkąty 2624, wzrost 5.33 st., akcje npc_trener_sila|Scene 1-61 -> ZGODNE",
   "npc_trener_sila__powitanie.fbx: siatki 34, kości 17, trójkąty 2624, wzrost 5.33 st., akcje npc_trener_sila|Scene 1-49 -> ZGODNE",
   "npc_trener_sila__gest.fbx: siatki 34, kości 17, trójkąty 2624, wzrost 5.33 st., akcje npc_trener_sila|Scene 1-61 -> ZGODNE",
-  "npc_trener_sila.glb: siatki 34, kości 17, trójkąty 2624, wzrost 5.33 st., akcje gest 0-60, powitanie 0-48, spoczynek 0-60 -> ZGODNE"
+  "npc_trener_sila__akcja.fbx: siatki 34, kości 17, trójkąty 2624, wzrost 5.33 st., akcje npc_trener_sila|Scene 1-19 -> ZGODNE",
+  "npc_trener_sila.glb: siatki 34, kości 17, trójkąty 2624, wzrost 5.33 st., akcje akcja 0-18, gest 0-60, powitanie 0-48, spoczynek 0-60 -> ZGODNE"
  ]
 }
