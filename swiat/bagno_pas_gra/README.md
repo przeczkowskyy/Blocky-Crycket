@@ -52,7 +52,10 @@ Wygrane: postacie wzorcowe bez treningu, 400 walk na parę (`przeciwnicy.py`).
 | Bulgotnik | b1–b3 · 12–14 | Mag (Muchomornik) | Bariera, Chmura zarodników | osłania się bańką (tarcza procentowa) i truje | 74 / 75 / 74% (poz. 12) |
 | Kłodokłap | k1–k3 · 14–16 | Wojownik (Leśny Troll) | Miażdżący cios | blokuje korą (szansa bloku 15%), Pancerz +20%, zero uniku; kłapnięcie zdziera pancerz | 75 / 77 / 83% (poz. 14) |
 | Ropucha z Chatką (rzadka) | t1 · 16 | Mag (Leśny Troll, Int ↑) | Chmura zarodników, Uderzenie z góry | rzadki Mag z dwiema umiejętnościami: dym z komina truje, ciężki sus | 52 / 55 / 56% (gracz 17) |
-| Strażnik Topieli | arena · 16 | strażnik (Strażnik Gaju) | Ogłuszające uderzenie | fizyczne uderzenie w taflę (60% ogłuszenia), zysk many +25%, odporność na magię +30% | 20 / 36 / 20% (gracz 17) |
+| Strażnik Topieli | arena · 16 | strażnik (Strażnik Gaju) | Ogłuszające uderzenie | fizyczne uderzenie w taflę (60% ogłuszenia), zysk many +25%, odporność na magię +30% | 34 / 42 / 30% (gracz 17) |
+
+Strażnik Topieli ma od 19.11 o 15% mniej życia (D-111, decyzja Karola: modyfikator życia 0,6 → 0,36, na poz. 16
+2528 → 2149); przed zmianą wzorcowi wygrywali o poziom wyżej 20 / 36 / 20%.
 
 Dla porównania las (gracz 10): Wilk 85%, Troll (poz. 9) 68%, Strażnik Gaju 36%. Kalkulator dla Bagna bez treningu:
 zwykłe na wejściu 73%, strażnik na wyjściu 24%.
@@ -206,8 +209,8 @@ Cofnięcie: `python -B swiat/bagno_pas_gra/zbuduj.py --usun`, `python -B tools/s
 - **Ponowna budowa mapy lasu** (`swiat/las_pas`) przywraca `ZapowiedzBagna` z niewidzialną ścianą na Pomoście Bagna.
 - **TabelaAktorow prototypu** buduje się z bieżących danych wszystkich aktorów z dysku — wdrożenie aktorów Bagna w
   czasie pracy agentów bohaterów może wysłać ich niedokończone dane.
-- Strażnik Topieli jest trudny (wzorcowy gracz bez treningu wygrywa 20–36% o poziom wyżej) — zgodnie z kalkulatorem,
-  ale bez treningu i petów długo.
+- Strażnik Topieli jest trudny (wzorcowy gracz bez treningu wygrywa 30–42% o poziom wyżej, po D-111; wcześniej
+  20–36%) — zgodnie z kalkulatorem, ale bez treningu i petów długo.
 - Bez spowolnienia w Bagnie (nacisk planu „spowolnienie i trucizna” zostaje tylko jako trucizna i osłony).
 
 ## Wybory dla ludzi

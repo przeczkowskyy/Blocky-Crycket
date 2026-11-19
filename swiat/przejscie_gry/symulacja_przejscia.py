@@ -153,18 +153,13 @@ BIOMY = [  # kolejność krain i ich pliki (dane gry)
 ]
 
 # Propozycje zmian liczb, liczone na KOPII danych (pliki gry zostają nietknięte). Opis pól: zastosuj_zmiany.
+# Życie Strażnika Topieli i Węża Stu Lian −15% jest już w plikach gry (D-111, 19.11) — propozycje −15% / −30% i „razem”
+# z tym życiem zniknęły z listy; „xp_dzungli” liczy się teraz na Strażnikach po D-111.
 PROPOZYCJE = {
     "bez_zmian": {"nazwa": "Bez zmian (liczby z plików gry)", "zmiany": {}},
-    "straznicy": {"nazwa": "Strażnik Topieli i Wąż Stu Lian: życie −15%",
-                  "zmiany": {"potwor": {"straznik_topieli": {"zycie": -0.15}, "waz_stu_lian": {"zycie": -0.15}}}},
-    "straznicy_30": {"nazwa": "Strażnik Topieli i Wąż Stu Lian: życie −30%",
-                     "zmiany": {"potwor": {"straznik_topieli": {"zycie": -0.30}, "waz_stu_lian": {"zycie": -0.30}}}},
     "xp_dzungli": {"nazwa": "Doświadczenie z potworów Dżungli +25%",
                    "zmiany": {"lup": {"dzungla": {"doswiadczenie": 1.25}}}},
     "krzywa_b": {"nazwa": "Krzywa doświadczenia: wykładnik 1,5 zamiast 1,6", "zmiany": {"krzywa_b": 1.5}},
-    "razem": {"nazwa": "Razem: Strażnicy −30% życia i doświadczenie Dżungli +25%",
-              "zmiany": {"potwor": {"straznik_topieli": {"zycie": -0.30}, "waz_stu_lian": {"zycie": -0.30}},
-                         "lup": {"dzungla": {"doswiadczenie": 1.25}}}},
     "dluzsza": {"nazwa": "Dla porównania: krzywa doświadczenia +25% (dłuższa gra)", "zmiany": {"krzywa_a": 1.25}},
 }
 PROPOZYCJE_TRYBY = ["walki", "wszystko", "niecierpliwy"]

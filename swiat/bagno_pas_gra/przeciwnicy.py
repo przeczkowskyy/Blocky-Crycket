@@ -87,7 +87,8 @@ PRZEPISY = [
         "wyglad": "Olbrzym z błota i korzeni wynurzony z wody, z przewróconą łódką jak kapeluszem, zieloną latarnią w "
                   "piersi i brodą z mchu.",
         "umiejetnosci": ["ogluszajace_uderzenie"],
-        "modyfikatory": {"odpornosc": 0.3, "zysk_many": 0.25, "zycie": 0.6},
+        # życie: D-111 (Karol 19.11) −15% — było 0,6 (2528 na poz. 16), jest (1 + 0,6) × 0,85 − 1 = 0,36 (2149)
+        "modyfikatory": {"odpornosc": 0.3, "zysk_many": 0.25, "zycie": 0.36},
         "cecha": "fizyczne uderzenie w taflę (60% ogłuszenia) częściej niż Strażnik Gaju (zysk many +25%) i "
                  "odporność na magię; Strażnik Gaju unieruchamia magicznymi korzeniami",
     },

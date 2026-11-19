@@ -34,6 +34,9 @@ całość da się cofnąć (`--usun`).*
 Razem ze strażnikiem: 8 / 11 / 14 potworów przy 1 / 8 / 20 graczach. W scalonych strefach poziomy są rozdawane po
 miejscach (`poziomyPoMiejscach`, jak w lesie i Bagnie). Wygrane klas wzorcowych: `python -B swiat/dzungla_pas_gra/przeciwnicy.py`.
 
+Wąż Stu Lian ma od 19.11 o 15% mniej życia (D-111, decyzja Karola: modyfikator życia 0,3 → 0,105, na poz. 23
+2852 → 2424; wzorcowi bez treningu o poziom wyżej wygrywają teraz 34 / 40 / 34% W / Z / M).
+
 ## Własne efekty umiejętności (18.11.2026, propozycja — wdrożone w Studio, próba w grze J15–J17 zielona)
 Potwory Dżungli używają umiejętności, które silnik zna z klas i z lasu (te same id, liczby i czasy — **dane walki bez
 zmian**). Dotąd pożyczały też ich wygląd. Teraz każda ma własny, podpięty danymi: tabela
