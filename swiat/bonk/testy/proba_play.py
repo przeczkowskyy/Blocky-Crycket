@@ -30,6 +30,7 @@ import argparse
 import io
 import json
 import os
+import subprocess
 import sys
 import time
 
@@ -79,7 +80,8 @@ AWATAR = ('local HS = game:GetService("HttpService") local c = game:GetService("
 ATR_EDIT = ('local k = workspace:FindFirstChild("%s") if not k or k:GetAttribute("Wygenerowane") ~= true then return "BRAK" end '
             'local stary = k:GetAttribute("%s") k:SetAttribute("%s", %%s) return tostring(stary)' % (K, U["autostart"], U["autostart"]))
 KLASA = ('local p = game:GetService("Players").LocalPlayer local g = p.PlayerGui:FindFirstChild("ClassSelect") '
-         'return tostring(g ~= nil and g.Enabled) .. " " .. tostring(p:GetAttribute("Class"))')
+         'return tostring(g ~= nil and g.Enabled) .. " " .. workspace.CurrentCamera.CameraType.Name .. " " '
+         '.. tostring(p:GetAttribute("Class")) .. " " .. tostring(p:GetAttribute("Race"))')
 
 
 def log(*a):
@@ -154,6 +156,12 @@ class Proba:
         return img
 
 
+def na_wierzch():
+    """Okno Studio na wierzch (w tle Studio rysuje ok. 15 klatek/s) — tylko gdy nikt nie pracuje przy komputerze."""
+    r = subprocess.run([sys.executable, "-B", os.path.join(REPO, "tools", "studio_okno.py"), "--na-wierzch"], capture_output=True)
+    log("okno Studio na wierzch: kod %d" % r.returncode)
+
+
 def czekaj(warunek, limit, krok=0.4):
     t0 = time.time()
     while time.time() - t0 < limit:
@@ -183,6 +191,7 @@ def main():
     ap.add_argument("folder")
     ap.add_argument("--bez-zrzutow", action="store_true")
     ap.add_argument("--studio", default=None)
+    ap.add_argument("--bez-okna", action="store_true", help="nie wysuwaj okna Studio na wierzch")
     a = ap.parse_args()
     wyj = os.path.abspath(a.folder)
     if wyj.startswith(os.path.abspath(REPO)):
@@ -209,22 +218,31 @@ def main():
                 niezgodne=zle, mapa=st.get("czesciMapy"), wzorce=len(st.get("wzorce", {})), portal=st.get("portal"))
         if not st.get("jest"):
             sys.exit("brak kontenera — najpierw python -B swiat/bonk/zbuduj.py")
+        if not a.bez_okna:
+            na_wierzch()
         autostart_przed = p.luau(ATR_EDIT % "true")
         p.luau(ZP.kod_magazynu(None, K))
         t_play = time.time()
         try:
             log("Play:", p.call("start_stop_play", {"is_start": True})["text"][:80])
             gotowe, dt = czekaj(lambda: p.luau(GOTOWOSC, "Client") == "true true true", 90, 0.5)
-            t_wejscia = time.time()
-            log("klient gotowy i w BONK po %.1f s" % (t_wejscia - t_play))
-            # ekran wyboru klasy obecnej gry (gracz bez zapisu): wybór jak człowiek, Enter dwa razy (klasa, rasa)
-            for _ in range(6):
+            log("klient gotowy, serwer wpuścił do BONK po %.1f s" % (time.time() - t_play))
+            # ekran wyboru klasy obecnej gry (gracz bez zapisu, AutoStart w obecnym miejscu): BONK czeka, aż się skończy;
+            # wybór jak człowiek — Enter (klasa, potem rasa), aż ekran zniknie i kamera wróci do postaci
+            stan_klasy = ""
+            for _ in range(22):
                 stan_klasy = p.luau(KLASA, "Client")
-                if stan_klasy.startswith("false") and not stan_klasy.endswith("nil"):
+                cz = stan_klasy.split()
+                if len(cz) >= 3 and cz[0] == "false" and cz[1] == "Custom" and cz[2] != "nil":
                     break
                 p.call("user_keyboard_input", {"datamodel_type": "Client", "actions": [{"action": "keyPress", "key_code": "Return"}]})
                 time.sleep(1.6)
+            log("wybór klasy:", stan_klasy)
+            aktywny, dt = czekaj(lambda: p.klient('"stan"').get("aktywny"), 15, 0.3)
+            t_wejscia = time.time()
+            log("ekran BONK po wyborze klasy po %.1f s" % dt)
             p.luau(BEZ_LISTY, "Client")
+            p.serwer('"od_nowa"')                           # rekord magazynu próby z poprzedniej próby — od zera
             # ---------------------------------------------------------------- B01
             s0, _ = czekaj(lambda: (lambda w: w if w.get("gotowy") else None)(p.serwer('"stan"')), 30)
             s0 = s0 or {}
@@ -236,11 +254,13 @@ def main():
             k0 = p.klient('"stan"')
             av = json.loads(p.luau(AWATAR, "Client"))
             poz = k0.get("poz") or [0, 0, 0]
-            p.wynik("B02", bool(gotowe) and k0.get("aktywny") and k0.get("ui") and K1["xOd"] < poz[0] < K1["brama"]["x"]
+            p.wynik("B02", bool(gotowe) and bool(aktywny) and k0.get("ui") and K1["xOd"] < poz[0] < K1["brama"]["x"]
+                    and k0.get("kamera") == "Custom"
                     and not [n for n in k0.get("wlaczoneCudze", []) if n not in ("BonkEkran",)] and av["widoczne"] > 0
                     and av["bez"] is True and av["bohaterow"] == 0,
                     poz=poz, schowane=k0.get("schowane"), wlaczoneCudze=k0.get("wlaczoneCudze"), awatar=av,
-                    kamera=k0.get("kamera"), klasa=p.luau(KLASA, "Client"), podpowiedz=(k0.get("ui") or {}).get("podpowiedz"))
+                    kamera=k0.get("kamera"), klasa=p.luau(KLASA, "Client"), podpowiedz=(k0.get("ui") or {}).get("podpowiedz"),
+                    inneDzwieki=k0.get("inneDzwieki"), muzyka=k0.get("muzyka"))
             # ---------------------------------------------------------------- B03: dojście do slime'a i trzymany BONK
             slimy = potwory(p, 1, "lesny_slime")
             cel = min(slimy, key=lambda m: (m["x"] - poz[0]) ** 2 + (m["z"] - poz[2]) ** 2)
@@ -279,6 +299,12 @@ def main():
             przyjete = po_spam["trafienia"] - przed["trafienia"]
             odrzucone = po_spam["odrzucone"] - przed["odrzucone"]
             p.wynik("B07", przyjete <= 4 and odrzucone >= 25, przyjete=przyjete, odrzucone=odrzucone)
+            # ---------------------------------------------------------------- B09a: bez Mocy serwer cofa za bramę
+            bx = K1["brama"]["x"]
+            p.przenies(bx + 12, K2["start"][1], K2["start"][2])
+            time.sleep(1.5)
+            po_cofnieciu = p.poz()
+            cofniety = bool(po_cofnieciu) and po_cofnieciu[0] < bx
             # ---------------------------------------------------------------- B08: HOME RUN i zrzuty lotu
             p.serwer('"moc", 1e7')
             sl = potwory(p, 1, "lesny_slime")[0]
@@ -287,7 +313,7 @@ def main():
             hr0 = gracz(p.serwer('"stan"')).get("homeRuny", 0)
             p.klient('"bonk"')
             if not a.bez_zrzutow:
-                time.sleep(0.55)
+                time.sleep(0.25)
                 p.zrzut(os.path.join(KLATKI, "bonk_home_run.jpg"), (sl["x"] - 16, sl["y"] + 9, sl["z"] - 18),
                         (sl["x"] + 20, sl["y"] + 14, sl["z"]))
             time.sleep(0.5)
@@ -303,16 +329,10 @@ def main():
                     p.przenies(t["x"] - 7, t["y"], t["z"] + 3)
                     time.sleep(0.8)
                     p.klient('"bonk"')
-                    time.sleep(0.45)
-                    p.zrzut(os.path.join(KLATKI, "bonk_lot.jpg"), (t["x"] - 22, t["y"] + 8, t["z"] + 22),
-                            (t["x"] + 8, t["y"] + 8, t["z"]))
+                    time.sleep(0.3)
+                    p.zrzut(os.path.join(KLATKI, "bonk_lot.jpg"), (t["x"] - 26, t["y"] + 12, t["z"] + 34),
+                            (t["x"] + 14, t["y"] + 10, t["z"]))
             # ---------------------------------------------------------------- B09: brama lasu
-            p.serwer('"moc", %d' % (K1["brama"]["wymagana"] // 2))
-            bx = K1["brama"]["x"]
-            p.przenies(bx + 12, K2["start"][1], K2["start"][2])
-            time.sleep(1.2)
-            po_cofnieciu = p.poz()
-            cofniety = po_cofnieciu and po_cofnieciu[0] < bx
             p.serwer('"moc", %d' % K1["brama"]["wymagana"])
             time.sleep(0.5)
             p.przenies(bx - 10, K1["start"][1], K1["start"][2])
@@ -320,9 +340,9 @@ def main():
             p.idz(bx + 20, K2["start"][1], K2["start"][2])
             przeszedl, t_p = czekaj(lambda: (p.poz() or [0])[0] > bx + 12, 10, 0.4)
             k9 = p.klient('"stan"')
-            p.wynik("B09", cofniety and bool(przeszedl) and k9.get("kraina") == 2 and k9.get("odblokowane") == 2,
+            p.wynik("B09", cofniety and bool(przeszedl) and k9.get("kraina") == 2 and k9.get("odblokowane", 0) >= 2,
                     cofniety=cofniety, przeszedl=bool(przeszedl), kraina=k9.get("kraina"), napis=(k9.get("ui") or {}).get("kraina"),
-                    muzyka=k9.get("muzyka"))
+                    muzyka=k9.get("muzyka"), inneDzwieki=k9.get("inneDzwieki"))
             # ---------------------------------------------------------------- B10: trzy krainy
             p.serwer('"moc", %d' % K2["brama"]["wymagana"])
             krainy_ok = []
@@ -341,6 +361,7 @@ def main():
             p.wynik("B10", all(k["widokow"] and k["widokow"] > 0 and k["naKrainie"] == k["kraina"] for k in krainy_ok),
                     krainy=krainy_ok)
             # ---------------------------------------------------------------- B11: czas klatki (pełny las)
+            na_wierzch()
             p.serwer('"kraina", 1')
             time.sleep(1.5)
             z3 = K1["zagrody"][2]
@@ -392,8 +413,8 @@ def main():
                 k14 = p.klient('"stan"')
                 okno = (k14.get("ui") or {}).get("okno")
                 pz = p.poz()
-                img = p.zrzut(os.path.join(wyj, "telefon_caly.jpg"), (pz[0] - 14, pz[1] + 7, pz[2] - 2),
-                              (pz[0] + 10, pz[1], pz[2]))
+                img = p.zrzut(os.path.join(wyj, "telefon_caly.jpg"), (pz[0] - 20, pz[1] + 10, pz[2] - 6),
+                              (pz[0] + 14, pz[1] + 1, pz[2]))
                 if okno:
                     # okno w punktach ekranu; zrzut może mieć inną skalę niż okno gry — liczymy z proporcji
                     vp = json.loads(p.luau('local v = workspace.CurrentCamera.ViewportSize local i = game:GetService("GuiService"):'

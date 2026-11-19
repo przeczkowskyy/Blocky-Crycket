@@ -83,8 +83,8 @@ function Interfejs.nowy(rodzic: Instance, D, L, opcje)
 		nowy("TextLabel", { Name = "Etykieta", BackgroundTransparency = 1, Position = UDim2.fromOffset(12, 2),
 			Size = UDim2.new(0, 60, 1, -4), Text = etykieta, TextScaled = true, Font = czcionka, TextColor3 = papier,
 			TextXAlignment = Enum.TextXAlignment.Left }, f)
-		local w = nowy("TextLabel", { Name = "Wartosc", BackgroundTransparency = 1, Position = UDim2.new(0, 70, 0, 3),
-			Size = UDim2.new(1, -80, 1, -6), Text = "0", TextScaled = true, Font = cyfry, TextColor3 = papier,
+		local w = nowy("TextLabel", { Name = "Wartosc", BackgroundTransparency = 1, Position = UDim2.new(0, 70, 0, 4),
+			Size = UDim2.new(1, -86, 1, -8), Text = "0", TextScaled = true, Font = cyfry, TextColor3 = papier,
 			TextXAlignment = Enum.TextXAlignment.Right }, f)
 		tekstObrys(w, 2, tusz)
 		local s = nowy("UIScale", {}, f)
@@ -123,7 +123,7 @@ function Interfejs.nowy(rodzic: Instance, D, L, opcje)
 	------------------------------------------------------------ przycisk BONK
 	local rozm = if self.dotyk then 104 else 84
 	local b = nowy("TextButton", { Name = "PrzyciskBonk", AnchorPoint = Vector2.new(1, 1),
-		Position = if self.dotyk then UDim2.new(1, -112, 1, -96) else UDim2.new(1, -24, 1, -28),
+		Position = if self.dotyk then UDim2.new(1, -112, 1, -96) else UDim2.new(1, -28, 1, -52),
 		Size = UDim2.fromOffset(rozm, rozm), BackgroundColor3 = Color3.fromHex(K.przycisk), AutoButtonColor = false,
 		Text = U.przycisk, TextScaled = true, Font = czcionka, TextColor3 = papier }, ekran)
 	nowy("UICorner", { CornerRadius = UDim.new(0.5, 0) }, b)

@@ -133,7 +133,6 @@ folderUI.Parent = pg
 local aktywny = false
 local schowane: { [ScreenGui]: boolean } = {}
 local straze: { RBXScriptConnection } = {}
-local zdjetaKameraKlasy = false
 
 local function schowaj(g: Instance)
 	if not g:IsA("ScreenGui") then
@@ -151,15 +150,18 @@ local function schowaj(g: Instance)
 	end))
 end
 
-local function schowajCudze()
-	local wybor = pg:FindFirstChild("ClassSelect")
-	if wybor and wybor:IsA("ScreenGui") and wybor.Enabled then
-		-- ekran wyboru klasy trzyma kamerę co klatkę — zdejmujemy to (lokalnie), kamera wraca do postaci
-		pcall(function()
-			RunService:UnbindFromRenderStep("ClassSelectCam")
-		end)
-		zdjetaKameraKlasy = true
+-- ekran wyboru klasy obecnej gry (src/client/ClassSelectClient) trwa: trzyma kamerę w sali i swoje światło sali, póki
+-- gracz nie wybierze klasy i rasy. Przy AutoStart w obecnym miejscu BONK rusza dopiero po nim (w osobnym miejscu go nie ma).
+local function wyborKlasyTrwa(): boolean
+	local g = pg:FindFirstChild("ClassSelect")
+	if not g or not g:IsA("ScreenGui") then
+		return false
 	end
+	-- koniec wyboru: klasa wybrana, ekran zamknięty, kamera wróciła do postaci (rasa bywa wybierana w tym samym ekranie)
+	return not (gracz:GetAttribute("Class") ~= nil and not g.Enabled and kamera.CameraType ~= Enum.CameraType.Scriptable)
+end
+
+local function schowajCudze()
 	for _, g in pg:GetChildren() do
 		schowaj(g)
 	end
@@ -246,36 +248,37 @@ local function zbuduj(cfg: Configuration): any
 		h.OutlineColor = Color3.fromHex(D.rzadki.kolor)
 		h.DepthMode = Enum.HighlightDepthMode.Occluded
 		h.Parent = m
-		local b = Instance.new("BillboardGui")
-		b.Size = UDim2.fromOffset(90, 30)
-		b.StudsOffsetWorldSpace = Vector3.new(0, (D.gatunki[klucz] and D.gatunki[klucz].wysokosc or 3) * D.rzadki.skala + 1.5, 0)
-		b.AlwaysOnTop = false
-		b.MaxDistance = 120
-		b.LightInfluence = 0
-		b.Parent = korzen
-		local t = Instance.new("TextLabel")
-		t.BackgroundTransparency = 1
-		t.Size = UDim2.fromScale(1, 1)
-		t.Text = D.ui.rzadki
-		t.TextScaled = true
-		t.Font = Enum.Font[D.ui.czcionka] or Enum.Font.LuckiestGuy
-		t.TextColor3 = Color3.fromHex(D.rzadki.kolor)
-		t.Parent = b
-		local o = Instance.new("UIStroke")
-		o.Thickness = 2
-		o.Color = Color3.fromHex(D.ui.kolory.tusz)
-		o.Parent = t
 	end
 	m.Name = cfg.Name
 	m.Parent = lokalne
 	local n = liczCzesci(m)
 	czesciWidokow += n
 	return { cfg = cfg, model = m, korzen = korzen, nr = cfg:GetAttribute("Nr") or 0, faza = math.random() * 6,
-		drganie = 0, pasek = nil, wypelnienie = nil, pasekDo = 0, yaw = math.pi / 2, rzadki = rzadki, czesci = n }
+		drganie = 0, pasek = nil, wypelnienie = nil, pasekDo = 0, yaw = math.pi / 2, rzadki = rzadki, czesci = n,
+		etykieta = nil }
 end
+
+local function usunNaglowek(w: any)
+	if w.pasek then
+		w.pasek:Destroy()
+		w.pasek = nil
+	end
+	if w.etykieta then
+		w.etykieta:Destroy()
+		w.etykieta = nil
+	end
+end
+
+local liczbaObrysow = 0
+local OBRYSY_MAKS = 10 -- komiksowy obrys (Highlight) najbliższych potworów; silnik pozwala na 31 naraz u gracza
 
 local function usunWidok(w: any)
 	czesciWidokow -= w.czesci
+	if w.obrys then
+		liczbaObrysow -= 1
+		w.obrys = nil
+	end
+	usunNaglowek(w)
 	w.model:Destroy()
 end
 
@@ -288,46 +291,85 @@ local function polozenie(cfg: Configuration, t: number): Vector3?
 	return Vector3.new(x, od.Y, z)
 end
 
+local warstwa: ScreenGui? = nil -- napisy i paski nad potworami (ekran, rzut ze świata), istnieje w BONK
+
 local function pasekZycia(w: any)
-	if w.pasek then
+	if w.pasek or not warstwa then
 		return
 	end
-	local klucz = w.cfg:GetAttribute("Gatunek")
-	local wys = (D.gatunki[klucz] and D.gatunki[klucz].wysokosc or 3) * (if w.rzadki then D.rzadki.skala else 1)
-	local b = Instance.new("BillboardGui")
-	b.Size = UDim2.fromOffset(80, 12)
-	b.StudsOffsetWorldSpace = Vector3.new(0, wys + 0.8, 0)
-	b.AlwaysOnTop = true
-	b.MaxDistance = 90
-	b.LightInfluence = 0
 	local tlo = Instance.new("Frame")
-	tlo.Size = UDim2.fromScale(1, 1)
+	tlo.Name = "Pasek"
+	tlo.AnchorPoint = Vector2.new(0.5, 1)
+	tlo.Size = UDim2.fromOffset(84, 13)
 	tlo.BackgroundColor3 = Color3.fromHex(D.ui.kolory.tusz)
 	tlo.BorderSizePixel = 0
-	tlo.Parent = b
+	tlo.Visible = false
 	local wyp = Instance.new("Frame")
 	wyp.Position = UDim2.fromOffset(2, 2)
 	wyp.Size = UDim2.new(1, -4, 1, -4)
 	wyp.BackgroundColor3 = Color3.fromRGB(120, 230, 90)
 	wyp.BorderSizePixel = 0
 	wyp.Parent = tlo
-	b.Parent = w.korzen
-	w.pasek, w.wypelnienie = b, wyp
+	tlo.Parent = warstwa
+	w.pasek, w.wypelnienie = tlo, wyp
+end
+
+local function etykietaRzadkiego(w: any)
+	if w.etykieta or not warstwa then
+		return
+	end
+	local t = Instance.new("TextLabel")
+	t.Name = "Rzadki"
+	t.AnchorPoint = Vector2.new(0.5, 1)
+	t.BackgroundTransparency = 1
+	t.Size = UDim2.fromOffset(90, 30)
+	t.Text = D.ui.rzadki
+	t.TextScaled = true
+	t.Font = Enum.Font[D.ui.czcionka] or Enum.Font.LuckiestGuy
+	t.TextColor3 = Color3.fromHex(D.rzadki.kolor)
+	t.Visible = false
+	local o = Instance.new("UIStroke")
+	o.Thickness = 2
+	o.Color = Color3.fromHex(D.ui.kolory.tusz)
+	o.Parent = t
+	t.Parent = warstwa
+	w.etykieta = t
+end
+
+-- pasek życia i RARE nad głową: rzut punktu nad modelem na ekran
+local function naglowek(w: any, glowa: Vector3)
+	if w.pasek then
+		local jest, x, y = Efekty.rzut(glowa + Vector3.new(0, 0.8, 0), 90)
+		w.pasek.Visible = jest
+		w.pasek.Position = UDim2.fromOffset(x, y)
+	end
+	if w.etykieta then
+		local jest, x, y = Efekty.rzut(glowa + Vector3.new(0, 1.6, 0), 120)
+		w.etykieta.Visible = jest
+		w.etykieta.Position = UDim2.fromOffset(x, y - (if w.pasek and w.pasek.Visible then 16 else 0))
+	end
 end
 
 ------------------------------------------------------------------ cel w zasięgu (pierścień) i BONK
+-- pierścień pod celem w zasięgu: niewidzialna część + krąg z otworem (CylinderHandleAdornment)
 local pierscien = Instance.new("Part")
 pierscien.Name = "CelBonk"
-pierscien.Shape = Enum.PartType.Cylinder
 pierscien.Anchored = true
 pierscien.CanCollide = false
 pierscien.CanQuery = false
 pierscien.CanTouch = false
 pierscien.CastShadow = false
-pierscien.Material = Enum.Material.Neon
-pierscien.Color = Color3.fromHex(D.ui.kolory.przycisk)
-pierscien.Transparency = 0.35
-pierscien.Size = Vector3.new(0.15, 4, 4)
+pierscien.Transparency = 1
+pierscien.Size = Vector3.new(0.2, 0.2, 0.2)
+local krag = Instance.new("CylinderHandleAdornment")
+krag.Adornee = pierscien
+krag.Color3 = Color3.fromHex(D.ui.kolory.przycisk)
+krag.Transparency = 0.15
+krag.Height = 0.25
+krag.Radius = 3
+krag.InnerRadius = 2.5
+krag.CFrame = CFrame.Angles(math.pi / 2, 0, 0)
+krag.Parent = pierscien
 local celTeraz: Configuration? = nil
 
 local ui: any = nil
@@ -450,15 +492,19 @@ local function wlacz()
 	end
 	aktywny = true
 	schowajCudze()
-	if zdjetaKameraKlasy then
-		kameraNaPostac()
-	end
 	local dotyk = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 	local emulacja = kontener:GetAttribute("EmulacjaEkranu")
 	if typeof(emulacja) ~= "Vector2" then
 		emulacja = nil
 	end
 	ui = Interfejs.nowy(folderUI, D, L, { dotyk = dotyk or emulacja ~= nil, emulacja = emulacja })
+	warstwa = Instance.new("ScreenGui")
+	warstwa.Name = "BonkNapisy"
+	warstwa.IgnoreGuiInset = true
+	warstwa.ResetOnSpawn = false
+	warstwa.DisplayOrder = 4
+	warstwa.Parent = folderUI
+	E:warstwa2D(warstwa)
 	ui.przycisk.InputBegan:Connect(function(wejscie)
 		local typ = wejscie.UserInputType
 		if typ == Enum.UserInputType.Touch or typ == Enum.UserInputType.MouseButton1 then
@@ -505,14 +551,34 @@ local function wylacz()
 		widoki[cfg] = nil
 	end
 	E:wyczysc()
+	E:warstwa2D(nil)
+	if warstwa then
+		warstwa:Destroy()
+		warstwa = nil
+	end
 end
 
-gracz:GetAttributeChangedSignal("BonkAktywny"):Connect(function()
+local czekaNaWybor = false
+local function uzgodnijAktywny()
+	if gracz:GetAttribute("BonkAktywny") ~= true then
+		wylacz()
+		return
+	end
+	if czekaNaWybor then
+		return
+	end
+	czekaNaWybor = true
+	while wyborKlasyTrwa() and gracz:GetAttribute("BonkAktywny") == true do
+		task.wait(0.3)
+	end
+	czekaNaWybor = false
 	if gracz:GetAttribute("BonkAktywny") == true then
 		wlacz()
-	else
-		wylacz()
+		kameraNaPostac()
 	end
+end
+gracz:GetAttributeChangedSignal("BonkAktywny"):Connect(function()
+	task.spawn(uzgodnijAktywny)
 end)
 gracz:GetAttributeChangedSignal("BonkMoc"):Connect(function()
 	odswiezLiczby()
@@ -521,6 +587,12 @@ gracz:GetAttributeChangedSignal("BonkMonety"):Connect(function()
 	odswiezLiczby()
 end)
 gracz:GetAttributeChangedSignal("BonkOdblokowane"):Connect(uaktualnijBramy)
+gracz:GetAttributeChangedSignal("BonkSamouczek"):Connect(function()
+	if aktywny and ui and gracz:GetAttribute("BonkSamouczek") == false and podpowiedzNr == nil then
+		podpowiedzNr = 1
+		ui:podpowiedz(1)
+	end
+end)
 
 ------------------------------------------------------------------ zdarzenia z serwera
 local function widokDla(id: string): (Configuration?, any)
@@ -558,10 +630,7 @@ local function startLotu(z, cfg: Configuration?, w: any)
 	if not w then
 		return
 	end
-	if w.pasek then
-		w.pasek:Destroy()
-		w.pasek = nil
-	end
+	usunNaglowek(w)
 	local nosnik = Instance.new("Part")
 	nosnik.Anchored = true
 	nosnik.CanCollide = false
@@ -779,7 +848,7 @@ RunService.RenderStepped:Connect(function(dt)
 			end
 		end
 		if w then
-			if odl <= W.ruch_blisko or (nrKlatki % 3 == 0) then
+			if odl <= W.ruch_blisko or (nrKlatki + math.floor(w.faza * 10)) % 4 == 0 or w.drganie > 0 then
 				-- obrót: do gracza, gdy blisko; inaczej w stronę kroku
 				local cel: Vector3? = nil
 				if hp and (hp - poz).Magnitude < 28 then
@@ -811,6 +880,28 @@ RunService.RenderStepped:Connect(function(dt)
 				w.pasek:Destroy()
 				w.pasek = nil
 			end
+			if not w.rzadki then
+				if odl < 45 and not w.obrys and liczbaObrysow < OBRYSY_MAKS then
+					local h = Instance.new("Highlight")
+					h.FillTransparency = 1
+					h.OutlineColor = Color3.fromHex(D.ui.kolory.tusz)
+					h.OutlineTransparency = 0.15
+					h.DepthMode = Enum.HighlightDepthMode.Occluded
+					h.Parent = w.model
+					w.obrys = h
+					liczbaObrysow += 1
+				elseif odl > 55 and w.obrys then
+					w.obrys:Destroy()
+					w.obrys = nil
+					liczbaObrysow -= 1
+				end
+			end
+			if w.rzadki and not w.etykieta and odl < 120 then
+				etykietaRzadkiego(w)
+			end
+			if w.pasek or w.etykieta then
+				naglowek(w, w.korzen.Position + Vector3.new(0, wysokosci[cfg.Name] or 3, 0))
+			end
 			if hp then
 				local dx, dz = poz.X - hp.X, poz.Z - hp.Z
 				local promien = (cfg:GetAttribute("Promien") or 1.5) * (if w.rzadki then D.rzadki.skala else 1)
@@ -824,13 +915,14 @@ RunService.RenderStepped:Connect(function(dt)
 	celTeraz = najblizszy
 	if najblizszy and widoki[najblizszy] then
 		local w = widoki[najblizszy]
-		local r = (najblizszy:GetAttribute("Promien") or 1.5) * (if w.rzadki then D.rzadki.skala else 1) * 2 + 1.5
-		pierscien.Size = Vector3.new(0.15, r, r)
+		local r = (najblizszy:GetAttribute("Promien") or 1.5) * (if w.rzadki then D.rzadki.skala else 1) + 0.8
+		krag.Radius = r + 0.25 * math.sin(zegar * 8)
+		krag.InnerRadius = krag.Radius - 0.45
 		local p = w.korzen.Position
-		pierscien.CFrame = CFrame.new(p.X, p.Y + 0.1, p.Z) * CFrame.Angles(0, zegar, math.pi / 2)
-		pierscien.Transparency = 0.35
+		pierscien.CFrame = CFrame.new(p.X, p.Y + 0.15, p.Z)
+		krag.Visible = true
 	else
-		pierscien.Transparency = 1
+		krag.Visible = false
 	end
 	-- trzymany przycisk: BONK co przytrzymanie_s
 	if cokolwiekTrzymane() and zegar - ostatniBonk >= D.bonk.przytrzymanie_s then
@@ -863,6 +955,20 @@ RunService.RenderStepped:Connect(function(dt)
 end)
 
 ------------------------------------------------------------------ haczyki prób
+-- grające dźwięki innych pakietów (np. muzyka stref obecnej gry) — do próby
+local function inneDzwieki(): { string }
+	local w = {}
+	for _, d in game:GetDescendants() do
+		local ok, jest = pcall(function()
+			return d:IsA("Sound") and d.IsPlaying and d.Volume > 0 and not d:IsDescendantOf(folderDzwiekow)
+		end)
+		if ok and jest then
+			table.insert(w, d:GetFullName() .. string.format(" (%.2f)", d.Volume))
+		end
+	end
+	return w
+end
+
 local function nazwyWlaczonych(): { string }
 	local w = {}
 	for _, g in pg:GetChildren() do
@@ -887,13 +993,13 @@ sterowanie.OnInvoke = function(polecenie: string, a: any)
 		end
 		table.sort(schowaneNazwy)
 		return {
-			gotowy = true, aktywny = aktywny, widokow = n, czesciWidokow = czesciWidokow, lotow = #loty, efektow = E:ile(),
+			gotowy = true, aktywny = aktywny, widokow = n, czesciWidokow = czesciWidokow, obrysow = liczbaObrysow, lotow = #loty, efektow = E:ile(),
 			schowane = schowaneNazwy, wlaczoneCudze = nazwyWlaczonych(), ui = if ui then ui:stan() else nil,
 			kraina = krainaTeraz, cel = if celTeraz then celTeraz.Name else nil, wyslane = wyslane,
 			muzyka = if muzyka.IsPlaying then muzyka.SoundId else nil, dzwiekow = graneDzwieki,
 			podpowiedz = podpowiedzNr, odblokowane = odblokowane(), wzorce = wzorce ~= nil,
 			poz = if h then { h.Position.X, h.Position.Y, h.Position.Z } else nil,
-			kamera = kamera.CameraType.Name, kameraKlasyZdjeta = zdjetaKameraKlasy,
+			kamera = kamera.CameraType.Name, czekaNaWyborKlasy = czekaNaWybor, inneDzwieki = inneDzwieki(),
 			klatki = pomiar.klatek, srKlatki = if pomiar.klatek > 0 then pomiar.suma / pomiar.klatek else 0,
 			maksKlatki = pomiar.maks, srPetli = if pomiar.klatek > 0 then pomiar.petlaSuma / pomiar.klatek else 0,
 			maksPetli = pomiar.petlaMaks,
@@ -923,5 +1029,5 @@ end
 gotowy = true
 kontener:SetAttribute("KlientGotowy", true)
 if gracz:GetAttribute("BonkAktywny") == true then
-	wlacz()
+	task.spawn(uzgodnijAktywny)
 end

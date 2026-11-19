@@ -275,7 +275,7 @@ for _, b in D.bramy do
 	local g = Instance.new("BillboardGui")
 	g.Name = "Tablica"
 	g.Size = UDim2.fromScale(30, 6)
-	g.StudsOffsetWorldSpace = Vector3.new(0, 13 - b.wys / 2, 0)
+	g.StudsOffsetWorldSpace = Vector3.new(0, 18 - b.wys / 2, 0)
 	g.LightInfluence = 0
 	g.MaxDistance = 220
 	g.Parent = s

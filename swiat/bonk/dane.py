@@ -64,15 +64,20 @@ def model_potwora(klucz):
     return czytaj_json(s)
 
 
-def wzorzec(klucz):
-    """Wzorzec potwora do budowy w Studio: bryły w pozie spoczynku (układ rigu: stopy na y = 0, przód = −Z).
-    Bryła: [kształt, x, y, z, rx, ry, rz, sx, sy, sz, kolor, materiał, połysk, siatka]."""
+def skala_potworow(U=None):
+    return float((U or ustawienia())["potwory"].get("skala", 1))
+
+
+def wzorzec(klucz, k=None):
+    """Wzorzec potwora do budowy w Studio: bryły w pozie spoczynku (układ rigu: stopy na y = 0, przód = −Z), w skali
+    potwory.skala. Bryła: [kształt, x, y, z, rx, ry, rz, sx, sy, sz, kolor, materiał, połysk, siatka]."""
+    k = skala_potworow() if k is None else k
     d = model_potwora(klucz)
     bryly = []
     for c in d["czesci"]:
         mat = d["materialy"][int(c[13])]
-        bryly.append([int(c[1]), _r(c[3], 4), _r(c[4], 4), _r(c[5], 4), _r(c[6], 5), _r(c[7], 5), _r(c[8], 5),
-                      _r(c[9], 4), _r(c[10], 4), _r(c[11], 4), c[12], mat[0], _r(mat[1], 3), c[15] or ""])
+        bryly.append([int(c[1]), _r(c[3] * k, 4), _r(c[4] * k, 4), _r(c[5] * k, 4), _r(c[6], 5), _r(c[7], 5), _r(c[8], 5),
+                      _r(c[9] * k, 4), _r(c[10] * k, 4), _r(c[11] * k, 4), c[12], mat[0], _r(mat[1], 3), c[15] or ""])
     return {"klucz": klucz, "nazwa": d["nazwa"], "bryly": bryly, "wymiary": d["wymiary"]}
 
 
@@ -137,9 +142,10 @@ def dane(U):
         m = model_potwora(g)
         w = m["wymiary"]
         G = U["gatunki"][g]
+        k = skala_potworow(U)
         gatunki[g] = {"nazwa": G["nazwa"], "hp": G["hp"], "moc": G["moc"], "monety": G["monety"],
-                      "promien": _r(max(1.2, min(w["promien"], max(w["szerokosc"], w["glebokosc"]) / 2))),
-                      "wysokosc": _r(w["wysokosc"]), "czesci": len(m["czesci"])}
+                      "promien": _r(k * max(1.2, min(w["promien"], max(w["szerokosc"], w["glebokosc"]) / 2))),
+                      "wysokosc": _r(k * w["wysokosc"]), "czesci": len(m["czesci"])}
     pow_ = U["powrot"]
     D = {
         "wersja": 1,

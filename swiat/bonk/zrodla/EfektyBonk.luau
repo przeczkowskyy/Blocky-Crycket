@@ -4,6 +4,7 @@
 	BillboardGui o stałej wielkości na ekranie, jedna pętla krok(dt) dla wszystkich efektów.
 
 	Użycie (klient): local E = Efekty.nowe(folder, D)
+		E:warstwa2D(screenGui)                 -- napisy rysowane na ekranie (rzut ze świata)
 		E:slowo(poz, tekst, kolor, wielkosc)   -- komiksowy napis „BONK!” / „HOME RUN!” / „SPLAT!”
 		E:liczba(poz, tekst, kolor)            -- liczba obrażeń, unosi się i gaśnie
 		E:iskry(poz, kolor, ile, sila)         -- odpryski
@@ -95,34 +96,39 @@ function Efekty:wyczysc()
 	self.lista = {}
 end
 
--- kotwica napisu: niewidzialna część (BillboardGui potrzebuje rodzica w świecie)
-function Efekty:kotwica(poz: Vector3): Part
-	local a = czesc(self.folder, Vector3.new(0.2, 0.2, 0.2), Color3.new(1, 1, 1))
-	a.Transparency = 1
-	a.Position = poz
-	return a
+-- warstwa napisów: ScreenGui z IgnoreGuiInset (punkty ekranu = punkty kamery); napisy rzutowane co klatkę ze świata.
+-- Nie BillboardGui: w zrzutach z trybu Play BillboardGui u klienta się nie pokazują (sprawdzone 19.11.2026), a raporty
+-- idą zrzutami. Bez warstwy (gracz poza BONK) napisów nie ma.
+function Efekty:warstwa2D(w: Instance?)
+	self.warstwa = w
 end
 
+local function rzut(poz: Vector3, maks: number): (boolean, number, number)
+	local kam = workspace.CurrentCamera
+	local v, naEkranie = kam:WorldToViewportPoint(poz)
+	if not naEkranie or v.Z > maks then
+		return false, 0, 0
+	end
+	return true, v.X, v.Y
+end
+Efekty.rzut = rzut
+
 function Efekty:slowo(poz: Vector3, tekst: string, kolor: Color3, wielkosc: number?)
+	if not self.warstwa then
+		return
+	end
 	local w = wielkosc or 1
-	local a = self:kotwica(poz)
-	local b = Instance.new("BillboardGui")
-	b.AlwaysOnTop = true
-	b.LightInfluence = 0
-	b.Size = UDim2.fromOffset(math.floor(230 * w), math.floor(90 * w))
-	b.MaxDistance = 400
-	b.Parent = a
 	local t = Instance.new("TextLabel")
 	t.BackgroundTransparency = 1
-	t.Size = UDim2.fromScale(1, 1)
+	t.Size = UDim2.fromOffset(math.floor(230 * w), math.floor(90 * w))
 	t.AnchorPoint = Vector2.new(0.5, 0.5)
-	t.Position = UDim2.fromScale(0.5, 0.5)
 	t.Text = tekst
 	t.TextScaled = true
 	t.Font = self.czcionka
 	t.TextColor3 = kolor
 	t.Rotation = math.random(-12, 12)
-	t.Parent = b
+	t.Visible = false
+	t.ZIndex = 5
 	local obrys = Instance.new("UIStroke")
 	obrys.Color = self.tusz
 	obrys.Thickness = 3.5 * w
@@ -130,46 +136,51 @@ function Efekty:slowo(poz: Vector3, tekst: string, kolor: Color3, wielkosc: numb
 	local skala = Instance.new("UIScale")
 	skala.Scale = 0.2
 	skala.Parent = t
-	local czas = 0.9 + 0.25 * w
+	t.Parent = self.warstwa
+	local czas = 1.3 + 0.3 * w
 	self:dodaj(czas, function(f)
 		local s = if f < 0.12 then 0.2 + (f / 0.12) * 1.0 elseif f < 0.22 then 1.2 - (f - 0.12) / 0.1 * 0.2 else 1
 		skala.Scale = s
-		b.StudsOffsetWorldSpace = Vector3.new(0, f * 3, 0)
+		local jest, x, y = rzut(poz + Vector3.new(0, f * 3, 0), 400)
+		t.Visible = jest
+		t.Position = UDim2.fromOffset(x, y)
 		local zanik = math.clamp((f - 0.7) / 0.3, 0, 1)
 		t.TextTransparency = zanik
 		obrys.Transparency = zanik
 	end, function()
-		a:Destroy()
+		t:Destroy()
 	end)
 end
 
 function Efekty:liczba(poz: Vector3, tekst: string, kolor: Color3)
-	local a = self:kotwica(poz + Vector3.new(math.random() * 2 - 1, 0, math.random() * 2 - 1))
-	local b = Instance.new("BillboardGui")
-	b.AlwaysOnTop = true
-	b.LightInfluence = 0
-	b.Size = UDim2.fromOffset(110, 40)
-	b.MaxDistance = 140
-	b.Parent = a
+	if not self.warstwa then
+		return
+	end
+	local p0 = poz + Vector3.new(math.random() * 2 - 1, 0, math.random() * 2 - 1)
 	local t = Instance.new("TextLabel")
 	t.BackgroundTransparency = 1
-	t.Size = UDim2.fromScale(1, 1)
+	t.Size = UDim2.fromOffset(110, 40)
+	t.AnchorPoint = Vector2.new(0.5, 0.5)
 	t.Text = tekst
 	t.TextScaled = true
 	t.Font = Enum.Font.FredokaOne
 	t.TextColor3 = kolor
-	t.Parent = b
+	t.Visible = false
+	t.ZIndex = 4
 	local obrys = Instance.new("UIStroke")
 	obrys.Color = self.tusz
 	obrys.Thickness = 2
 	obrys.Parent = t
+	t.Parent = self.warstwa
 	self:dodaj(0.8, function(f)
-		b.StudsOffsetWorldSpace = Vector3.new(0, 1 + f * 3.5, 0)
+		local jest, x, y = rzut(p0 + Vector3.new(0, 1 + f * 3.5, 0), 140)
+		t.Visible = jest
+		t.Position = UDim2.fromOffset(x, y)
 		local zanik = math.clamp((f - 0.6) / 0.4, 0, 1)
 		t.TextTransparency = zanik
 		obrys.Transparency = zanik
 	end, function()
-		a:Destroy()
+		t:Destroy()
 	end)
 end
 

@@ -54,7 +54,8 @@
     "wedrowka_r": 4,
     "predkosc": 3,
     "rozrzut_startu": 3,
-    "opis": "potwór po BONK wraca po losowym czasie z przedziału odrodzenie_s; co wedrowka_s robi mały krok (najwyżej wedrowka_r studów od swojego miejsca) z prędkością predkosc; miejsce = węzeł strefy z mapy (wezly) z rozrzutem"
+    "skala": 1.35,
+    "opis": "potwór po BONK wraca po losowym czasie z przedziału odrodzenie_s; co wedrowka_s robi mały krok (najwyżej wedrowka_r studów od swojego miejsca) z prędkością predkosc; miejsce = węzeł strefy z mapy (wezly) z rozrzutem; skala = modele potworów w BONK większe niż w walce (czytelność na telefonie, frajda z uderzenia) — wzorce budowane od razu w tej skali"
   },
   "rzadki": {"szansa": 0.025, "hp_x": 8, "moc_x": 5, "monety_x": 10, "skala": 1.35, "kolor": "FFC83D",
              "opis": "rzadki potwór: przy każdym odrodzeniu szansa w każdej zagrodzie; złoty, większy, z napisem RARE; więcej życia, Mocy i monet"},
@@ -72,8 +73,8 @@
   "portal": {"odleglosc": [16, 24], "rozmiar": [8, 11, 2], "zasieg": 5, "przerwa_s": 3,
              "opis": "brama BONK stoi przy płycie startu obecnej gry (pierwsze wolne miejsce w odległości odleglosc od płyty, wybiera zbuduj.py odczytem); wejście, gdy środek gracza ≤ zasieg od środka bramy; po przejściu przerwa_s bez ponownego przejścia"},
   "powrot": {"u": 2, "v": -16},
-  "widok": {"budowa": 170, "usuniecie": 200, "ruch_blisko": 90, "lot_widoczny": 260,
-            "opis": "u klienta: widok potwora powstaje ≤ budowa studów od kamery, znika > usuniecie; ruch co klatkę ≤ ruch_blisko (dalej co trzecią); lot rysujemy, gdy potwór ≤ lot_widoczny od kamery"},
+  "widok": {"budowa": 170, "usuniecie": 200, "ruch_blisko": 50, "lot_widoczny": 260,
+            "opis": "u klienta: widok potwora powstaje ≤ budowa studów od kamery, znika > usuniecie; ruch co klatkę ≤ ruch_blisko (dalej co czwartą); lot rysujemy, gdy potwór ≤ lot_widoczny od kamery"},
   "ui": {
     "moc": "POWER", "monety": "COINS", "przycisk": "BONK!",
     "podpowiedzi": ["Walk up to a monster!", "Tap BONK to smash it!", "Get more Power to open the gate!"],

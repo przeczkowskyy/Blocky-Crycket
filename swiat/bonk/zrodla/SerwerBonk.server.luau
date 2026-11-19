@@ -661,14 +661,24 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 			return magazyn:GetAsync(klucz(g))
 		end)
 		return { magazyn = true, ok = ok, rekord = if ok then v else tostring(v) }
-	elseif polecenie == "skasuj" then
+	elseif polecenie == "skasuj" or polecenie == "od_nowa" then
+		-- tylko magazyn próby: rekord próby skasowany; "od_nowa" — świeży profil (zapis dalej działa),
+		-- "skasuj" — koniec próby (bez zapisu przy wyjściu, żeby rekord próby nie wrócił)
 		local g = pierwszy()
-		if not g or not magazyn or kontener:GetAttribute("ZapisStan") ~= "włączony (magazyn próby)" then
+		local s = g and stany[g]
+		if not s or not magazyn or kontener:GetAttribute("ZapisStan") ~= "włączony (magazyn próby)" then
 			return false
 		end
-		return (pcall(function()
+		local ok = pcall(function()
 			magazyn:RemoveAsync(klucz(g))
-		end))
+		end)
+		if polecenie == "od_nowa" then
+			s.profil = L.nowyProfil(D)
+			przelicz(g)
+		else
+			s.zapisywalny = false
+		end
+		return ok
 	elseif polecenie == "wczytaj_ponownie" then
 		local g = pierwszy()
 		local s = g and stany[g]
