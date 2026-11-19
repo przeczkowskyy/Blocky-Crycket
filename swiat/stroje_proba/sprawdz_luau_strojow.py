@@ -41,7 +41,7 @@ def _modul(nazwa, sciezka):
 
 SL = _modul("sprawdz_luau_las_potwory", os.path.join(REPO, "swiat", "las_potwory", "sprawdz_luau.py"))  # tylko odczyt
 
-WYGENEROWANY = "DaneStrojow.luau"
+WYGENEROWANY = "DaneStrojow"   # początek nazwy modułów danych z dane.py (główny i moduły stopni)
 SET_ATTRIBUTE = {
     "SerwerStrojow.server.luau": {"kontener", "gracz"},
     "KlientStrojow.client.luau": {"kontener", "stan.model"},
@@ -95,7 +95,7 @@ def sprawdz_tekst(tekst, nazwa, lm=None):
         if z in bez_kom:
             bledy.append("%s: zakazany zasób / usługa „%s”" % (nazwa, z))
     plik = os.path.basename(nazwa)
-    if plik == WYGENEROWANY:
+    if plik.startswith(WYGENEROWANY):
         return bledy
     for m in re.finditer(r"(?:Vector3|CFrame)\.new\(([^()]*)\)", bez_kom_nap):
         for x in re.findall(r"(?<![\w.\[])(\d+(?:\.\d+)?)(?![\w.\]])", m.group(1)):  # bez indeksów c[10]

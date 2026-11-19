@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 """Testy kowala na próbę bez Studio (swiat/kowal_proba). Uruchom: python -B swiat/kowal_proba/testy/test_kowala.py
 
-1. Dane: pliki aktualne, katalog przedmiotów (18 całych + 2 części zbroi = 20 przedmiotów bohaterów), podstawowe
+1. Dane: pliki aktualne, katalog przedmiotów (stopień startowy: 18 całych + 2 części zbroi = 20 przedmiotów bohaterów;
+   z przedmiotami do kupienia D-106 razem 72 całe + 8 części — kupno sprawdza swiat/sklep_proba/testy), podstawowe
    zestawy, koszty, miejsce kuźni w bazarze, teksty dla gracza bez języka twórców.
 2. Balans: podstawowy zestaw = dzisiejszy bohater ze wzoru (co do pola opisu) na poziomach 1–30; każdy wpis kowala
    przechodzi walidację Sygnaly/Modyfikatory (prawdziwa logika stanu gracza); bez tarczy Wojownik traci blok tarczy;
@@ -19,6 +20,7 @@
    brak ścieżek lokalnych, proba_play.py --sprawdz.
 """
 import copy
+import glob
 import importlib.util
 import json
 import math
@@ -84,8 +86,16 @@ class TestDanych(unittest.TestCase):
         K = DANE.katalog()
         bohaterow = [p for p in K["przedmioty"] if p["zestaw"] in DANE.ZESTAWY_BOHATEROW]
         self.assertEqual(len(bohaterow), 20)
-        self.assertEqual(len(D["przedmioty"]) + len(D["czesci"]), 20)
-        self.assertEqual(set(D["czesci"]), {"rycerz_nogawice", "zwiadowca_spodnie"})
+        # D-106: do dzisiejszych 18 całych + 2 części doszły 54 przedmioty do kupienia + 6 części (katalog sklepu)
+        startowe = [i for i, P in D["przedmioty"].items() if P["nrStopnia"] == 0]
+        czesci_start = {c for c, cal in D["czesci"].items() if D["przedmioty"][cal]["nrStopnia"] == 0}
+        self.assertEqual(len(startowe) + len(czesci_start), 20)
+        self.assertEqual(czesci_start, {"rycerz_nogawice", "zwiadowca_spodnie"})
+        self.assertEqual((len(D["przedmioty"]), len(D["czesci"])), (72, 8))
+        self.assertEqual(sorted(startowe), sorted(DANE.ustawienia()["przedmioty"]), "stopień startowy = ustawienia kowala")
+        for k, Kl in D["klasy"].items():
+            self.assertEqual(Kl["przedmioty"], [i for i in Kl["wszystkie"] if D["przedmioty"][i]["nrStopnia"] == 0], k)
+            self.assertFalse(any(D["przedmioty"][i]["podstawowy"] for i in Kl["wszystkie"] if i not in Kl["przedmioty"]))
         for k, Kl in D["klasy"].items():
             sloty = [D["przedmioty"][i]["slot"] for i in Kl["przedmioty"]]
             self.assertEqual(len(sloty), len(set(sloty)), k)
@@ -312,11 +322,55 @@ class TestLustra(unittest.TestCase):
             r = los.choice([0, 1, 2, 3, 4, 5, 6, 7, 9, -1])
             self.assertEqual(LK.ranga(D, r), self.wolaj("ranga", self.Dl, r)[0])
 
+    def test_3d_losowe_wywolania_z_kupionymi(self):
+        """D-106: te same funkcje na danych gracza z przedmiotami wszystkich stopni + kupno, oferta, reguła zakładania."""
+        los = random.Random(23)
+
+        def norm(v):
+            return json.loads(json.dumps(v)) if v is not None else None
+        for _ in range(250):
+            k = los.choice(list(D["klasy"]))
+            ids = D["klasy"][k]["wszystkie"]
+            s = LK.nowe(D)
+            for pid in ids:
+                if los.random() < 0.4:
+                    s["przedmioty"][pid] = {"poziom": los.randint(0, D["ulepszenie"]["maks"]), "zapas": los.randint(0, 1)}
+            s["materialy"] = los.randint(0, 12)
+            czesci = [c for c, cal in D["czesci"].items() if D["przedmioty"][cal]["klasa"] == k]
+            napis = None if los.random() < 0.3 else ",".join(p for p in ids + czesci if los.random() < 0.35)
+            zal = LK.zalozone(D, k, s, napis)
+            self.assertEqual(len(zal), len({D["przedmioty"][i]["slot"] for i in zal}), "jeden przedmiot na slot")
+            self.assertEqual(norm(zal) or {}, self.wolaj("zalozone", self.Dl, k, s, napis)[0] or {})
+            ml = self.wolaj("mod", self.Dl, k, s, zal)[0]
+            self.assertEqual(json.dumps(norm(LK.mod(D, k, s, zal)) or {}, sort_keys=True), json.dumps(ml or {}, sort_keys=True))
+            self.assertEqual(LK.stroj_do_ustawienia(D, k, s, napis), self.wolaj("strojDoUstawienia", self.Dl, k, s, napis)[0])
+            self.assertEqual(LK.dostepne(D, s), self.wolaj("dostepne", self.Dl, s)[0])
+            zl, poziom = los.randint(0, 3000), los.randint(1, 30)
+            self.assertEqual(LK.mozna_ulepszyc(D, k, s, zl), self.wolaj("moznaUlepszyc", self.Dl, k, s, zl)[0])
+            self.assertEqual(norm(LK.widok(D, s, k, zal, zl, "")), self.wolaj("widok", self.Dl, s, k, zal, zl, "")[0])
+            self.assertEqual(norm(LK.oferta(D, s, k, poziom, zl, zal)), self.wolaj("oferta", self.Dl, s, k, poziom, zl, zal)[0])
+            self.assertEqual(LK.stac_na(D, s, k, poziom, zl), self.wolaj("stacNa", self.Dl, s, k, poziom, zl)[0])
+            pid = los.choice(ids + czesci + ["nieznany", los.choice(D["kolejnosc"])])
+            ok, w, info = LK.kup(D, s, k, poziom, zl, pid)
+            wl = self.wolaj("kup", self.Dl, s, k, poziom, zl, pid)
+            self.assertEqual([ok, norm(w), norm(info)], wl, pid)
+            if ok:
+                self.assertEqual(w["przedmioty"][pid], {"poziom": 0, "zapas": 0})
+                self.assertEqual(len(w["przedmioty"]), len(s["przedmioty"]) + 1)
+            x = los.choice(ids)
+            self.assertEqual(LK.czy_zalozyc(D, zal, x), self.wolaj("czyZalozyc", self.Dl, zal, x)[0])
+            self.assertEqual(LK.stroj_z_przedmiotem(D, napis, x), self.wolaj("strojZPrzedmiotem", self.Dl, napis, x)[0])
+            po = LK.zalozone(D, k, dict(s, przedmioty=dict(s["przedmioty"], **{x: {"poziom": 0, "zapas": 0}})),
+                             LK.stroj_z_przedmiotem(D, napis, x))
+            self.assertIn(x, po, "założony ręcznie przedmiot liczy się w swoim slocie")
+
     def test_3c_zepsute_wersje_wykryte(self):
         zepsute = [
             ("w.materialy += zysk", "w.materialy += zysk + 1"),                       # rozbiórka daje za dużo
             ("K.zloto[poziom + 1]", "K.zloto[poziom]"),                                # koszt o poziom za tani
             ("suma.tarcza = (suma.tarcza or 0) - D.blokTarczy", "suma.tarcza = (suma.tarcza or 0)"),  # tarcza za darmo
+            ('return false, "za_malo_zlota", P.cena - zloto', 'return false, "za_malo_zlota", P.cena'),  # zła brakująca kwota
+            ("return Z.nrStopnia < P.nrStopnia", "return Z.nrStopnia > P.nrStopnia"),       # reguła zakładania na odwrót
         ]
         for stare, nowe in zepsute:
             self.assertEqual(LOGIKA.count(stare), 1, stare)
@@ -429,9 +483,9 @@ class _Wywolanie:
         return w[0] if w else None
 
 
-@unittest.skipIf(LM is None, "brak tools/walka/luau_mini.py — Luau nie wykonany")
-class TestSerweraOffline(unittest.TestCase):
-    """Prawdziwe SerwerKowala, SerwerStanu i SerwerStrojow w jednym interpreterze z atrapą Roblox."""
+class SerweryOffline:
+    """Prawdziwe SerwerKowala, SerwerStanu i SerwerStrojow w jednym interpreterze z atrapą Roblox (sama atrapa, bez
+    testów — używają jej też testy sklepu swiat/sklep_proba)."""
 
     def uruchom(self, stan_gracza=True, stroje=True, zloto=0, klasa="Warrior"):
         import atrapa_roblox as AR
@@ -513,6 +567,9 @@ class TestSerweraOffline(unittest.TestCase):
         f = {n: AR.Inst(self.sw, n, "Folder", k) for n in ("Moduly", "Zdalne", "Sygnaly")}
         self.sw.modul(f["Moduly"], "DaneStrojow", czytaj(STROJE, "zrodla", "DaneStrojow.luau"))
         self.sw.modul(f["Moduly"], "LogikaStrojow", czytaj(STROJE, "zrodla", "LogikaStrojow.luau"))
+        # moduły stopni przymierzalni (D-106: DaneStrojowLas / Bagno / Dzungla) — scala je sam DaneStrojow
+        for plik in sorted(glob.glob(os.path.join(STROJE, "zrodla", "DaneStrojow?*.luau"))):
+            self.sw.modul(f["Moduly"], os.path.basename(plik)[:-len(".luau")], czytaj(plik))
         self.zmien = AR.Inst(self.sw, "ZmienStroj", "RemoteFunction", f["Zdalne"])
         st = AR.Inst(self.sw, "SterowanieSerwera", "BindableFunction", f["Sygnaly"])
         st.t.set("Invoke", _Wywolanie(self.sw, st))
@@ -532,6 +589,8 @@ class TestSerweraOffline(unittest.TestCase):
         self.ev.t.set("FireClient", lambda _s, gracz, *a: self.sw.do_klienta.append((gracz, [AR.py(x) for x in a])))
         self.ster = AR.Inst(self.sw, "SterowanieSerwera", "BindableFunction", f["Sygnaly"])
         AR.Inst(self.sw, "SterowanieKlienta", "BindableFunction", f["Sygnaly"])
+        self.sklep_f = AR.Inst(self.sw, "Sklep", "BindableFunction", f["Sygnaly"])
+        self.sklep_f.t.set("Invoke", _Wywolanie(self.sw, self.sklep_f))
         e = AR.Inst(self.sw, "E", "BasePart", f["Kuznia"])
         self.pp = AR.Inst(self.sw, "Podpowiedz", "ProximityPrompt", e)
         self.pp.t.set("Enabled", False)
@@ -584,6 +643,13 @@ class TestSerweraOffline(unittest.TestCase):
         n = (self.atr("TokenyKrainy_" + kraina) or 0) + tokeny
         self.gracz.ustaw("TokenyKrainy_" + kraina, float(n))
 
+    def sklep(self, polecenie, pid=None):
+        w = self.sw.wolaj(self.sklep_f.t.get("OnInvoke"), polecenie, self.gracz.t, pid)
+        return LM.z_luau(w[0]) if w else None
+
+
+@unittest.skipIf(LM is None, "brak tools/walka/luau_mini.py — Luau nie wykonany")
+class TestSerweraOffline(SerweryOffline, unittest.TestCase):
     # --- testy
     def test_5a_start_podstawowy_zestaw_jak_dzis(self):
         self.uruchom()
@@ -756,6 +822,34 @@ class TestSerweraOffline(unittest.TestCase):
         self.stan_gracza()
         self.sw.krok(D["stan"]["coIleS"] + 0.1)
         self.assertIn("kowal", self.mody()["zrodla"])
+
+    def test_5l_wejscie_sklepu(self):
+        """D-106: Sygnaly/Sklep — oferta, kupno (Złoto przez WydajZloto), odmowa bez zmian, atrybut SklepStacNa."""
+        self.uruchom()
+        self.assertEqual(self.kp.atrybuty.get("WejscieSklepu"), True)
+        self.gracz.ustaw("Level", 30.0)
+        pas = next(i for i in D["klasy"]["wojownik"]["wszystkie"]
+                   if D["przedmioty"][i]["nrStopnia"] == 1 and D["przedmioty"][i]["slot"] == "Belt")
+        cena = D["przedmioty"][pas]["cena"]
+        r = self.sklep("kup", pas)
+        self.assertEqual((r["ok"], r["powod"], r["brakuje"]), (False, "za_malo_zlota", cena))
+        self.assertNotIn(pas, self.hak("stan", self.gracz.t)["dane"]["przedmioty"])
+        self.assertEqual(self.atr("SklepStacNa"), 0)
+        self.gracz.ustaw("Gold", float(cena + 5))
+        self.assertGreaterEqual(self.atr("SklepStacNa"), 1)
+        of = self.sklep("oferta")
+        self.assertEqual((of["ok"], of["zloto"], of["poziom"], of["klasa"]), (True, cena + 5, 30, "wojownik"))
+        self.assertEqual(len(of["oferta"]), len(D["klasy"]["wojownik"]["wszystkie"]))
+        r = self.sklep("kup", pas)
+        self.assertTrue(r["ok"], r)
+        self.assertEqual((self.atr("Gold"), r["zloto"], r["cena"]), (5, 5, cena))
+        self.assertEqual(self.hak("stan", self.gracz.t)["dane"]["przedmioty"][pas], {"poziom": 0, "zapas": 0})
+        self.assertEqual(self.sklep("kup", pas)["powod"], "masz")
+        self.assertEqual(self.atr("Gold"), 5)
+        self.assertEqual(self.kp.atrybuty.get("LicznikKupna"), 1)
+        # kupiony przedmiot ulepsza się jak dzisiejsze: jest w oknie kowala gracza
+        self.assertIn(pas, [w["id"] for w in self.hak("widok", self.gracz.t)["widok"]["wiersze"]])
+        self.assertEqual([o for o in self.sw.ostrzezenia if "KowalProba" in o], [])
 
     def test_5k_bez_przymierzalni_licza_sie_wszystkie_posiadane(self):
         self.uruchom(stroje=False)

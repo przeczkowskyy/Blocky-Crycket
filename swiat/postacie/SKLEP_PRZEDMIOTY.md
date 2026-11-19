@@ -5,6 +5,11 @@ Pustyni”): katalog, modele w Blenderze, dane dla gry i testy — **bez Roblox 
 i nie da się ich kupić; to następne części (plan na końcu). Wygląd, nazwy, ceny, poziomy i statystyki czekają na ocenę
 Karola i Pawła. Kontrakt modeli: `EKWIPUNEK.md` (D-071).
 
+**Stan 19.11.2026 po części B (dalej bez Studio):** przymierzalnia zna wszystkie 80 przedmiotów, kowal liczy
+statystyki nowych przedmiotów i umie je sprzedać, jest pakiet sklepu zbrojmistrza `swiat/sklep_proba/` z tymczasowym
+oknem i testami. W Roblox Studio nic z tego nie jest jeszcze zbudowane ani obejrzane — rozdziały „Przedmioty w grze
+i sklep” i „Plan części ze Studio” niżej.
+
 ## W skrócie
 - Cztery stopnie: **startowy** (dzisiejsze 20 przedmiotów bohaterów, bez zmian) i trzy kupowane, po jednym na krainę:
   **leśny**, **bagienny**, **Dżungli**.
@@ -109,7 +114,7 @@ Statystyki to te same rodzaje i ta sama skala co u kowala (`swiat/kowal_proba/us
 | Dżungli | Rękawice | Rękawice z Jadeitową Bransoletą (`zwiadowca_dzungla_rekawice`) | rękawice bez palców z jadeitową bransoletą | Siła +9 | Siła +3 | 18 | 400 |
 | Dżungli | Buty | Złote Buty Jaguara (`zwiadowca_dzungla_buty`) | złote buty z jadeitowym dyskiem na kolanie i piórami przy kostce | Zręczność +9 | Zręczność +3 | 19 | 400 |
 | Dżungli | Druga ręka | Łuk Słońca z Kołczanem (`zwiadowca_dzungla_luk`) | złoty łuk z piórami na końcach, czerwone lotki | Broń +6 · Szczęście +6 | Broń +3 | 20 | 750 |
-| Dżungli | Broń | Jadeitowy Sierp (`zwiadowca_dzungla_sztylet`) | szerokie jadeitowe ostrze z zagiętym czubkiem, złote skrzydełka jelca, pióra przy głowicy | Broń +6 | Broń +3 | 22 | 1 250 |
+| Dżungli | Broń | Jadeitowy Sierp (`zwiadowca_dzungla_sztylet`) | szerokie jadeitowe ostrze z zagiętym czubkiem, złote skrzydełka jelca, czerwony klejnot w głowicy | Broń +6 | Broń +3 | 22 | 1 250 |
 
 ### Mag
 
@@ -290,9 +295,7 @@ wynik kompletu startowego); druga — jak głęboko bryły zbroi wchodzą w bry�
 
 Pomiar wyłapał i pozwolił poprawić trzy rzeczy: jelec miecza-liścia wchodził w nowy pas (zwężony jelec, cieńszy pas),
 futrzany mankiet i bransoleta wchodziły w przedramię (obniżone), a głowice kosturów lasu i Dżungli wchodziły w bok głowy
-kota (zakręt odwrócony od głowy, dysk berła podniesiony nad głowę). **Nie sprawdzono:** klipów walki klatka po klatce
-w nowych kompletach (narzędzie `przenikanie/przenikanie.py` potrzebuje danych aktora walki — następna część) i niczego
-w Studio.
+kota (zakręt odwrócony od głowy, dysk berła podniesiony nad głowę). Klipy walki mierzy osobny pomiar (rozdział „Przenikanie broni w klipach walki”). **Nie sprawdzono** niczego w Studio.
 
 ## Umowa dla sklepu (okna robi druga osoba)
 Jedno źródło: `swiat/postacie/sklep_przedmioty.json`, lista `przedmioty`. Okno sklepu potrzebuje tylko tych pól:
@@ -319,6 +322,10 @@ Zasady po stronie serwera (propozycja, do zrobienia w następnej części — ok
    — tak jak dziś nowy przedmiot z łupu.
 4. Wpływ na walkę liczy kowal z `baza` i `krok` założonych przedmiotów (bez zmian w silniku walki).
 
+**Wykonanie (część B):** serwer i okno są w `swiat/sklep_proba/` (opis: jego `README.md`). Różnice względem zasad
+wyżej: płaci serwer kowala (źródło wydatku `KowalProba` — lista źródeł w stanie gracza nie ma `SklepProba`), a część
+zbroi nie ma własnego wpisu w posiadanych (idzie za swoją zbroją, jak dziś przy zbroi startowej).
+
 Pozostałe pola wpisu (`kategoria`, `cialo`, `klasy`, `czesc_od`, `ukrywa`, `zestaw`, `czesci`, `podstawowy`, `waga`) są
 dla przymierzalni i kowala — te same nazwy i znaczenie co we wpisach bohaterów w `przedmioty.json` i w ustawieniach
 kowala.
@@ -330,6 +337,7 @@ kowala.
 | `stopnie_wojownik.py`, `stopnie_zwiadowca.py`, `stopnie_mag.py` | opakowania dla `przebuduj.py` (cztery komplety na bohaterze + ikony) |
 | `sklep_ceny.py` → `sklep_liczby.json` | kalkulator cen, poziomów i statystyk z danych gry (silnik walki, pakiety krain, stan gracza, kowal) |
 | `sklep_katalog.py` → `sklep_przedmioty.json` | katalog końcowy (modele + liczby); `--sprawdz`, `--md` |
+| `przenikanie_stopni.py` | pomiar przenikania broni w klipach walki dla kompletów stopni (`--md`) |
 | `test_stopnie.py` | testy: bohaterowie bez zmian, zakładanie, przenikanie w spoczynku, spójność katalogu |
 | `wynik/stopnie_<klasa>/` | plansza czterech stopni, arkusz ikon, ikony, raport; lokalnie także GLB / FBX / .blend kompletów i GLB każdego przedmiotu (`przedmioty/<id>.glb`) |
 
@@ -344,18 +352,104 @@ python -B swiat/postacie/przebuduj.py stopnie_wojownik stopnie_zwiadowca stopnie
 Uwaga: `sklep_ceny.py --sprawdz` liczy z żywych plików krain — po zmianie liczby potworów albo odradzania (D-107)
 zgłosi plik jako nieaktualny; wtedy trzeba policzyć od nowa i odświeżyć katalog.
 
-## Plan następnych części
-**B — przedmioty w grze (Studio):**
-1. `swiat/stroje_proba/dane.py`: przedmioty klasy = moduł bohatera + `stopnie.przedmioty(klasa, stopień)`, katalog
-   = `przedmioty.json` + `sklep_przedmioty.json`; nowe `DaneStrojow.luau`; testy przymierzalni na nowych kompletach.
-2. `swiat/kowal_proba/ustawienia.json`: 54 nowe wpisy `przedmioty` z `sklep_przedmioty.json` (generowane, nie ręcznie);
-   łup dalej tylko ze stopnia startowego albo ze stopnia krainy — do decyzji.
-3. Klipy walki w nowych kompletach: pomiar przenikania klatka po klatce, próba w Play (trzy klasy × trzy stopnie),
-   zrzuty do raportu.
+## Przedmioty w grze i sklep — część B (bez Studio)
 
-**C — kupowanie:** serwer sklepu według umowy wyżej (odmowy, `WydajZloto`, nadanie przedmiotu), tymczasowe okno
-próbne przy zbrojmistrzu w bazarze (E już wysyła `OknoMiejsca` z id `zbrojownia`), wskazówka celu „stać cię na
-przedmiot”, symulacja przejścia gry ze sklepem, potem docelowe okno 2D (Paweł).
+### Przymierzalnia (`swiat/stroje_proba/`) — strój na postaci w świecie i w walce
+- Dane mają **80 przedmiotów** (20 dzisiejszych + 60 stopni z `stopnie.py`, wpisy z `sklep_przedmioty.json`). Jeden
+  moduł przekroczyłby granicę długości źródła, więc dane są w czterech: `DaneStrojow.luau` (dzisiejsze przedmioty,
+  klasy, scalenie) i `DaneStrojowLas` / `Bagno` / `Dzungla.luau` (po 20 przedmiotów); `Ubieranie`, serwer i klient dalej
+  dostają jedno `D`. Dzisiejsze bryły i strój odniesienia bez zmian (kontrola z szablonem walki przechodzi).
+- Lista dzisiejszych przedmiotów klasy (`przedmioty`) zostaje przy 8 / 8 / 4; nowe są w polu `stopnie`, a gotowe
+  zestawy `las`, `bagno`, `dzungla` — obok dzisiejszych. Brak modułu stopnia nie jest błędem (stopień znika z list).
+- Testy: 29 (było 22) — każdy nowy przedmiot w danych, komplety stopni przez logikę i lustro Luau, obca klasa
+  odrzucona, część zbroi idzie za zbroją, stroje mieszane między stopniami.
+
+### Kowal (`swiat/kowal_proba/`) — statystyki i kupno
+- `dane.py` kowala bierze 18 dzisiejszych wpisów z ustawień (bez zmian) i **54 nowe wprost z katalogu**; wszystkie 72
+  mają też `cena`, `poziom`, `stopien`. Założony nowy przedmiot liczy się w walce tym samym torem co dzisiejsze
+  (`Modyfikatory`, źródło „kowal”) i da się go ulepszać.
+- **Łup z walk losuje dalej tylko ze stopnia startowego**; gracz, który nic nie kupił, ma wszystko jak dziś (logika
+  sprzed zmiany i po niej dała te same wyniki w 4000 losowych stanach).
+- Nowe w logice (Luau + lustro w Pythonie, 355 przypadków wzorcowych): `kup`, `oferta`, `stacNa`, reguła zakładania.
+  Nowe wejście serwera `KowalProba/Sygnaly/Sklep`: `oferta`, `kup`, `zaloz`; atrybut gracza `SklepStacNa`.
+
+### Sklep zbrojmistrza (`swiat/sklep_proba/`, kontener `Workspace/SklepProba`)
+Pełny opis: `swiat/sklep_proba/README.md`. W skrócie:
+1. Okno otwiera istniejące E bazaru przy zbrojmistrzu (klient sklepu słucha zdarzenia okien bazaru dla miejsca
+   `zbrojownia`; bazar i NPC bez zmian). Klient wysyła tylko akcję i id.
+2. Serwer sklepu sprawdza limit zapytań i odległość od stoiska i woła wejście kowala.
+3. Kowal sprawdza logiką `kup`, płaci przez `WydajZloto` (cel `zakup_przedmiotu`), zapisuje posiadanie, zakłada według
+   reguły i przelicza wpływ na walkę.
+
+- **Reguła zakładania:** kupiony przedmiot zakłada się sam, gdy slot jest pusty albo założony ma niższy stopień; przy
+  tym samym lub wyższym zostaje dotychczasowy, a kupiony zakłada się przyciskiem „Załóż” albo w przymierzalni.
+- **Odmowy:** nieznany przedmiot, część zbroi, inna klasa, już posiadany, za niski poziom („Potrzebujesz poziomu 13.”),
+  za mało Złota („Brakuje ci 150 Złota.”), za daleko, za szybko, sklep nieczynny (brak kowala albo stanu gracza).
+- **Okno tymczasowe:** zakładki czterech stopni, przewijana lista slotów; nazwa, statystyki, poziom, cena, stan
+  (kup / za drogie / za niski poziom / masz / założone), „Kup” albo „Załóż”; kolorowe pole stopnia zamiast ikony.
+  Na ekranie 667 × 375: okno 480 × 352 px, wiersz 48 px, przycisk 44 px, tekst 14 pt (policzone testem, nie widziane).
+- **Wskazówka „stać cię na nowy przedmiot”:** serwer pisze atrybut `SklepStacNa`; pakietu wskazówek nie zmieniano —
+  README sklepu opisuje, co trzeba w nim dopisać (dwa teksty, cel, warunek kroku i wyciszenie po otwarciu okna).
+
+### Liczba brył i uproszczenia modeli
+Bohater w świecie ma limit 220 brył (`swiat/bohater_swiat`). Pierwsza wersja kompletów Bagna i Dżungli go przekraczała
+(pióro = 10 części Roblox, kolec = 4), więc pióra, zęby, kły i płetwy grzebieni są teraz **płaskimi trójkątami
+z dwóch klinów**; trójwymiarowe zostały kolce naramienników, rogi i guzy. Plansze i ikony są przebudowane.
+
+| Części Roblox w komplecie | Start | Las | Bagno | Dżungla |
+|---|---:|---:|---:|---:|
+| Wojownik | 127 | 144 | 213 (było 259) | 181 (było 321) |
+| Zwiadowca | 182 | 187 | 216 (było 250) | 210 (było 333) |
+| Mag | 166 | 173 | 182 | 171 (było 299) |
+
+### Przenikanie broni w klipach walki
+`python -B swiat/postacie/przenikanie_stopni.py --md` (narzędzie `przenikanie/` na bohaterze w komplecie stopnia; broń,
+tarcza, łuk i kostur kontra głowa z nakryciem i tułów; progi: głowa 0,02, tułów 0,10 studa; komplety startowe nie mają
+miejsc ponad próg). Pierwszy pomiar (połowa gęstości próbek) znalazł: sztylet Dżungli — pióra głowicy w tułowiu 0,30
+(klip umiejętności); łuk Dżungli — pióro końca w tułowiu 0,26 (upadek); kostur bagienny — róg w rogu czepca 0,13
+(atak) i rogi w uchu kota 0,04–0,06 już w spoczynku; berło Dżungli — promienie w uchu 0,03–0,05; łuk bagienny — róg
+końca w tułowiu 0,10. Poprawione w `stopnie.py`: sztylet bez piór przy głowicy, krótsze ozdoby końców łuków, krótsze
+i bardziej pionowe rogi kostura, promienie berła tylko u góry. Pomiar po poprawkach:
+
+| klasa | stopień | scenariusz (klip) | strefa | głębokość | start | gorzej o | co w co | chwila [s] | ocena |
+|---|---|---|---|---|---|---|---|---|---|
+| mag | bagno | unik | nakrycie | 0,030 | 0,000 | +0,030 | kostur: Rog 3 → HatPivot/Rog | 0,100 | PONAD PRÓG |
+| wojownik | bagno | atak_miecz | glowa | 0,026 | 0,000 | +0,026 | miecz: Zab → Head/Helm bok P | 0,158 | PONAD PRÓG |
+| wojownik | bagno | atak_miecz | nakrycie | 0,026 | 0,000 | +0,026 | miecz: Zab → Head/Helm bok P | 0,158 | PONAD PRÓG |
+| zwiadowca | las | upadek (+1 innych) | tulow | 0,076 | 0,000 | +0,076 | łuk: Listek konca → UpperTorso/Futro barkow | 1,000 | gorzej |
+| zwiadowca | dzungla | upadek (+1 innych) | tulow | 0,067 | 0,000 | +0,067 | łuk: Pioro konca → UpperTorso/Kirys | 0,900 | gorzej |
+| wojownik | dzungla | unik (+1 innych) | tulow | 0,057 | 0,000 | +0,057 | miecz: Pioro glowicy → LowerTorso/LowerTorso | 0,333 | gorzej |
+| wojownik | dzungla | trafienie | tulow | 0,052 | 0,000 | +0,052 | miecz: Pioro glowicy → UpperTorso/UpperTorso | 0,292 | gorzej |
+| zwiadowca | dzungla | umiejetnosc | tulow | 0,049 | 0,000 | +0,049 | sztylet: Glowica → UpperTorso/Kirys | 0,192 | gorzej |
+| zwiadowca | bagno | umiejetnosc | tulow | 0,042 | 0,000 | +0,042 | sztylet: Glowica → UpperTorso/Kirys | 0,175 | gorzej |
+| zwiadowca | bagno | upadek (+1 innych) | tulow | 0,033 | 0,000 | +0,033 | łuk: Rog konca → UpperTorso/Kirys | 0,900 | gorzej |
+
+Po poprawkach ponad progiem zostały dwa drobne miejsca (róg kostura bagiennego w rogu czepca 0,03 w uniku; ząb tasaka w boku hełmu 0,03 w ataku), reszta jest pod progiem (najwięcej 0,08 studa w tułowiu). Pomiar z połową gęstości próbek; „start” = komplet startowy.
+
+Nie zmierzono: broni w rękach i nogach, ozdób zbroi wchodzących w ciało bez udziału broni (poroże, pióropusze, skrzydła
+naramienników przy rękach uniesionych nad głowę), zasłaniania twarzy z kamery. Test przymierzalni mierzy za to
+schodzenie pod ziemię względem stroju odniesienia i ma na to granice z zapasem — do obniżenia po próbie w Studio.
+
+### Ceny po zmianach walki bez przestojów (D-107)
+`sklep_ceny.py` przeliczony 19.11 po porannych zmianach plików krain: **żadna cena, poziom ani statystyka się nie
+przesunęły** względem zapisanego katalogu. Jedyne przesunięcie tego dnia zaszło jeszcze przed zapisaniem katalogu
+(Złoto lasu do Strażnika 3 262 → 3 413) i jest już w cenach. Więcej potworów i szybsze odradzanie zmienia Złoto na
+minutę, a nie Złoto na walkę, od którego liczą się ceny.
+
+## Plan części ze Studio (polecenia w kolejności)
+Praca zgłoszona z obszarami `studio:StrojeProba`, `studio:KowalProba`, `studio:SklepProba`; Studio w trybie Edit.
+1. `python -B swiat/stroje_proba/zbuduj.py --skrypty` — cztery moduły danych i logika przymierzalni (bez tego kupiony
+   przedmiot nie pokaże się na postaci).
+2. `python -B swiat/kowal_proba/zbuduj.py` — **pełna** budowa (nie `--skrypty`): tylko ona tworzy `Sygnaly/Sklep`.
+3. `python -B swiat/sklep_proba/zbuduj.py` — kontener sklepu.
+4. `python -B tools/studio_okno.py --na-wierzch`, potem próby: `python -B swiat/kowal_proba/testy/proba_play.py`
+   (dzisiejsze zachowanie kowala), `python -B swiat/stroje_proba/testy/proba_play.py` (przymierzalnia; do rozszerzenia
+   o komplety stopni), `python -B swiat/sklep_proba/testy/proba_play.py` (prawdziwe E przy zbrojmistrzu, kupno
+   kliknięciem, strój po kupnie, wpis kowala i opis bohatera, odmowy, mały ekran, konsola, zrzuty trzech klas w trzech
+   stopniach).
+5. Walka w kupionym komplecie w lesie i w próbie walki (oglądana, ze zrzutami), potem regresja całości.
+6. Zrzuty do raportu w panelu, zakończenie pracy. Wyłącznik: `zbuduj.py --usun` sklepu; kowal i przymierzalnia bez
+   kupionych przedmiotów działają jak przed zmianą.
 
 ## Wybory do oceny przez ludzi
 1. **Wygląd stopni** — trzy plansze wyżej: czy kierunek (materiały krain, poroże / kość / pióra) się podoba i co
@@ -373,3 +467,12 @@ przedmiot”, symulacja przejścia gry ze sklepem, potem docelowe okno 2D (Pawe�
 11. **Rozmiar:** głowa Wojownika z pióropuszem ma 2,8 studa (limit części awatara 2,0 dotyczy tylko rigu z wgrywanych
     siatek; rig z części, którym gra dziś ubiera bohatera, tego limitu nie ma); berło Dżungli jest o 0,7 studa
     dłuższe od dzisiejszego kostura.
+12. **Reguła zakładania po kupnie:** sam zakłada się tylko przedmiot wyższego stopnia niż założony (albo do pustego
+    slotu). Czy tak, czy zawsze zakładać kupiony?
+13. **Łup z walk:** dalej tylko przedmioty startowe; czy potwory krain mają dawać także przedmioty swojego stopnia?
+14. **Uproszczone pióra i kolce** (płaskie trójkąty) przez limit 220 brył bohatera w świecie — zostawić, czy podnieść
+    limit i wrócić do pełniejszych kształtów?
+15. **Okno kowala** pokazuje najwyżej 8 wierszy — przy wielu kupionych przedmiotach potrzebuje przewijania albo
+    zakładek (do zrobienia razem z docelowym oknem).
+16. **Płatność przez kowala** (źródło wydatku `KowalProba`) — zostawić, czy dopisać `SklepProba` do źródeł w stanie gracza?
+17. **Wskazówka „stać cię na nowy przedmiot”** — czy dopisać krok w pakiecie wskazówek według opisu z README sklepu?

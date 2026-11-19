@@ -7,6 +7,32 @@ Gracz podchodzi do stojaka „Przymierzalnia” przy placu startowym, naciska **
 zdejmuje przedmioty po jednym na slot. Na podeście przed lustrem stoi jego bohater w tym stroju (z ruchami walki).
 Następna walka — próba walki przy tablicy i walki w lesie — pokazuje bohatera w tym samym stroju.
 
+## Przedmioty do kupienia w trzech stopniach (D-106, 19.11.2026 — bez Studio, jeszcze nie wgrane)
+
+Dane przymierzalni mają teraz **80 przedmiotów**: 20 dzisiejszych (bez zmian, na początku, w dawnej kolejności) i 60
+nowych z `swiat/postacie/stopnie.py` (las, bagno, dżungla; wpisy z `swiat/postacie/sklep_przedmioty.json`, te same
+kontrole pól co dla dzisiejszych). Strój odniesienia dalej równa się szablonowi walki co do bryły.
+
+- **Cztery moduły zamiast jednego** (granica długości jednego modułu to ok. 200 000 znaków, a dane razem mają ok.
+  263 tys.): `DaneStrojow.luau` (ustawienia, klasy, 20 dzisiejszych przedmiotów — ok. 82 tys. znaków) oraz
+  `DaneStrojowLas.luau` (42 tys.), `DaneStrojowBagno.luau` (58 tys.), `DaneStrojowDzungla.luau` (81 tys.) — po 20
+  przedmiotów stopnia. Moduł główny **sam scala** moduły stopni (szuka ich obok siebie, a potem w
+  `Workspace/StrojeProba/Moduly`), więc `Ubieranie`, serwer, klient i inne pakiety dalej biorą jedno `D`.
+- **Gdy modułu stopnia nie ma** (np. test innego pakietu wczytuje sam `DaneStrojow.luau`), stopnia po prostu nie ma w
+  danych: jego nazwa trafia do `D.brakStopni`, znika z list klas i zestawów, a dzisiejsze przedmioty działają jak
+  dawniej. Kto chce w teście mieć wszystkie 80 przedmiotów, wkłada do folderu `Moduly` także trzy moduły stopni.
+- **W danych klasy:** `przedmioty` to nadal 8 / 8 / 4 dzisiejszych przedmiotów (żeby nic, co je wylicza, nie urosło),
+  a nowe pole `stopnie` = lista `{ id, nazwa, przedmioty }`; pełną listę klasy daje `L.przedmiotyKlasy(D, klasa)`
+  (w Pythonie `logika_strojow.przedmioty_klasy`). Każdy przedmiot stopnia ma pole `stopien`.
+- **Zestawy:** obok `golas` i `komplet` są gotowe komplety `las`, `bagno`, `dzungla` (akcja `zestaw` serwera i
+  `L.zestaw`). Okno przymierzalni ma te same przyciski co dawniej (`zestawy_okna` bez zmian); w każdym slocie można
+  teraz przełączać cztery przedmioty (dzisiejszy i trzy stopnie), a stopnie wolno mieszać slot po slocie. Nogawice i
+  spodnie stopnia idą za zbroją swojego stopnia.
+- `zbuduj.py` wgrywa także moduły stopni (przed modułem głównym); `--sucho`, kontrola Luau i testy je obejmują.
+- Komplety stopni w klipach walki: test `3d` wypisuje, o ile głębiej pod ziemię schodzą niż strój odniesienia
+  (najwięcej Zwiadowca w komplecie Dżungli: 0,535 studa w uniku), i pilnuje, żeby nie było gorzej. Przenikanie broni
+  w ciało mierzy `python -B swiat/postacie/przenikanie_stopni.py`.
+
 ## W Studio (17.11.2026)
 
 **Kontener:** `Workspace/StrojeProba` (atrybut `Wygenerowane`): 6 skryptów i modułów, 14 części stojaka,

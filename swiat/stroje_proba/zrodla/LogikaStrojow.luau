@@ -10,8 +10,9 @@
 	L.dostepny(D, klasa, id) → bool        przedmiot pasuje do klasy (D.dobor: "klasa" — pole klasy, "cialo" — typ ciała)
 	L.slotOkna(D, id) → slot               slot w oknie przymierzalni ("Legs" dla spodni przy D.spodnie = "osobny_slot")
 	L.wybieralny(D, klasa, id) → bool      ma własny wybór w oknie (część zbroi przy D.spodnie = "czesc_zbroi" — nie)
+	L.przedmiotyKlasy(D, klasa) → { id… }  dzisiejsze (K.przedmioty), potem stopnie (K.stopnie: las, bagno, dzungla)
 	L.oferta(D, klasa) → { { slot, nazwa, przedmioty = { id… } } }   sloty okna z przedmiotami
-	L.normalizuj(D, klasa, ids) → ok, ids  bez powtórzeń, z częściami zbroi, w kolejności K.przedmioty
+	L.normalizuj(D, klasa, ids) → ok, ids  bez powtórzeń, z częściami zbroi, w kolejności L.przedmiotyKlasy
 	L.zaloz(D, klasa, stroj, id) / L.zdejmij(D, klasa, stroj, slot) / L.zestaw(D, klasa, nazwa) → ok, ids
 	L.plan(D, klasa, ids) → ok, { przedmioty = { id… }, zakryte = { [kość] = true }, ukryte = { [znacznik] = true } }
 	L.naNapis(ids) → "a,b"                 L.zNapisu(napis) → { id… } | nil (nil = brak stroju: dawny szablon walki)
@@ -54,19 +55,35 @@ function L.wybieralny(D, klasa, id)
 	return not czescZbroi(D, D.przedmioty[id])
 end
 
--- kolejność przedmiotów klasy (przy doborze po ciele dochodzą przedmioty innych klas, w kolejności danych)
-local function kolejnosc(D, klasa)
+-- wszystkie przedmioty klasy: dzisiejsze (K.przedmioty), potem stopnie po kolei (K.stopnie, D-106)
+local function dopiszKlase(D, klasa, lista)
 	local K = D.klasy[klasa]
-	local lista = {}
 	for _, id in K.przedmioty do
 		table.insert(lista, id)
 	end
+	for _, st in K.stopnie or {} do
+		for _, id in st.przedmioty do
+			table.insert(lista, id)
+		end
+	end
+end
+
+function L.przedmiotyKlasy(D, klasa)
+	local lista = {}
+	if D.klasy[klasa] ~= nil then
+		dopiszKlase(D, klasa, lista)
+	end
+	return lista
+end
+
+-- kolejność przedmiotów klasy (przy doborze po ciele dochodzą przedmioty innych klas, w kolejności danych)
+local function kolejnosc(D, klasa)
+	local lista = {}
+	dopiszKlase(D, klasa, lista)
 	if D.dobor == "cialo" then
 		for _, k in D.kolejnoscKlas do
 			if k ~= klasa then
-				for _, id in D.klasy[k].przedmioty do
-					table.insert(lista, id)
-				end
+				dopiszKlase(D, k, lista)
 			end
 		end
 	end

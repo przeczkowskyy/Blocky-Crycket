@@ -24,6 +24,15 @@
 	Zdalne/ZdarzeniaKowala (RemoteEvent, serwer → klient): "lup", nazwa, nowy · "ulepszono", id, poziom.
 	Sygnaly/SterowanieSerwera (BindableFunction, haczyk testowy): "stan" | "widok" | "przelicz", gracz ·
 		"lup", gracz, ranga, los2 (pewny łup) · "daj", gracz, id · "materialy", gracz, n · "zgodnosc".
+
+	Sygnaly/Sklep (BindableFunction, D-106) — wejście dla pakietu sklepu (swiat/sklep_proba); kowal jest właścicielem
+	posiadanych przedmiotów i to on płaci (źródło wydatku D.stan.zrodloWydatku, cel D.sklep.celWydatku):
+		Invoke("oferta", gracz)   → { ok, oferta, zloto, poziom, klasa }
+		Invoke("kup", gracz, id)  → { ok, powod?, brakuje?, wymagany?, zalozony, zloto, id?, nazwa?, cena?, czesc? }
+		Invoke("zaloz", gracz, id) → { ok, powod?, zalozony, zloto, nazwa? }
+	Kupno: L.kup (klasa, poziom z atrybutu Level, posiadanie, Złoto) → WydajZloto (odmowa = nic nie zapisane) → zapis
+	posiadania (DanePakietu) → założenie według reguły L.czyZalozyc (pusty slot albo założony przedmiot niższego
+	stopnia) → Modyfikatory. Atrybut gracza D.sklep.atrybutStacNa = ile przedmiotów gracz może teraz kupić.
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	script.Parent:Destroy()
@@ -47,7 +56,7 @@ local los = Random.new()
 local stany = {}       -- [gracz] = { dane, klasa, tokeny = { [atrybut] = n }, zajety }
 local polaczenia = {}  -- [gracz] = { połączenia zdarzeń }
 local ostatnie = {}
-local liczniki = { LicznikLupow = 0, LicznikUlepszen = 0, LicznikRozbiorek = 0, LicznikOdmow = 0 }
+local liczniki = { LicznikLupow = 0, LicznikUlepszen = 0, LicznikRozbiorek = 0, LicznikOdmow = 0, LicznikKupna = 0 }
 local AKCJE = { widok = true, rozbierz = true, ulepsz = true }
 
 local function dolicz(nazwa)
@@ -110,6 +119,18 @@ local function zlotoGracza(gracz)
 	return if type(z) == "number" and z == z then math.floor(z) else 0
 end
 
+local function poziomGracza(gracz)
+	return L.poziomGracza(gracz:GetAttribute(D.sklep.atrybutPoziomu))
+end
+
+-- wskazówka „stać cię na nowy przedmiot”: ile przedmiotów klasy gracz może teraz kupić
+local function publikujStacNa(gracz)
+	local st = stany[gracz]
+	if st then
+		gracz:SetAttribute(D.sklep.atrybutStacNa, L.stacNa(D, st.dane, st.klasa, poziomGracza(gracz), zlotoGracza(gracz)))
+	end
+end
+
 local function napisStroju(gracz, klasa)
 	if not przymierzalnia() then
 		return nil
@@ -134,6 +155,7 @@ local function publikuj(gracz)
 	gracz:SetAttribute(D.atrybuty.zapasy, zapasy)
 	gracz:SetAttribute(D.atrybuty.ulepszen, L.sumaPoziomow(st.dane))
 	gracz:SetAttribute(D.atrybuty.ulepsz, L.moznaUlepszyc(D, st.klasa, st.dane, zlotoGracza(gracz)))
+	publikujStacNa(gracz)
 	local f = przymierzalnia()
 	if f then
 		local nowy = L.strojDoUstawienia(D, st.klasa, st.dane, napisStroju(gracz, st.klasa))
@@ -177,15 +199,28 @@ local function zaladuj(gracz)
 end
 
 ------------------------------------------------------------------ łup przedmiotów
-local function zalozNowy(gracz, st, id)
+-- zakłada posiadany przedmiot w jego slocie przez przymierzalnię (dotychczasowy przedmiot slotu schodzi)
+local function zalozWSlocie(gracz, st, id)
 	local f = przymierzalnia()
 	local napis = napisStroju(gracz, st.klasa)
 	if not f or napis == nil then
-		return
+		return false
 	end
-	local ids = L.zNapisu(napis) or {}
-	table.insert(ids, id)
-	wolaj(f, "ustaw", gracz, st.klasa, L.naNapis(ids))
+	gracz:SetAttribute(D.atrybuty.dostepne, L.dostepne(D, st.dane))
+	wolaj(f, "ustaw", gracz, st.klasa, L.strojZPrzedmiotem(D, napis, id))
+	return true
+end
+
+-- nowy przedmiot (łup albo kupno): zakłada się sam tylko w pusty slot albo w miejsce przedmiotu niższego stopnia
+local function zalozNowy(gracz, st, id)
+	local zal = L.zalozone(D, st.klasa, st.dane, napisStroju(gracz, st.klasa))
+	if table.find(zal, id) == nil and L.czyZalozyc(D, zal, id) then
+		zalozWSlocie(gracz, st, id)
+	end
+end
+
+local function czyZalozony(gracz, st, id)
+	return table.find(L.zalozone(D, st.klasa, st.dane, napisStroju(gracz, st.klasa)), id) ~= nil
 end
 
 local function losuj(gracz, ranga, los1, los2)
@@ -384,6 +419,9 @@ local function dolaczyl(gracz)
 			zmianaKlasy(gracz)
 		elseif nazwa == S.atrybutZlota then
 			gracz:SetAttribute(D.atrybuty.ulepsz, L.moznaUlepszyc(D, st.klasa, st.dane, zlotoGracza(gracz)))
+			publikujStacNa(gracz)
+		elseif nazwa == D.sklep.atrybutPoziomu then
+			publikujStacNa(gracz)
 		elseif nazwa == D.przymierzalnia.atrybut .. st.klasa then
 			publikuj(gracz)
 		end
@@ -476,6 +514,104 @@ sterowanie.OnInvoke = function(polecenie, gracz, a, b)
 	end
 	return { ok = false, powod = "nieznane_polecenie" }
 end
+
+------------------------------------------------------------------ sklep (D-106): wejście dla pakietu sklepu
+local function kupPrzedmiot(gracz, st, id)
+	local zloto = zlotoGracza(gracz)
+	local ok, w, info = L.kup(D, st.dane, st.klasa, poziomGracza(gracz), zloto, id)
+	if not ok then
+		dolicz("LicznikOdmow")
+		return { ok = false, powod = w, brakuje = info, zalozony = false, zloto = zloto,
+			wymagany = if w == "za_niski_poziom" then D.przedmioty[id].poziom else nil }
+	end
+	if info.cena > 0 then
+		local okW, r = wolaj(sygnalStanu(S.wydaj), gracz, { ile = info.cena, zrodlo = S.zrodloWydatku, cel = D.sklep.celWydatku })
+		if not okW or type(r) ~= "table" then
+			dolicz("LicznikOdmow")
+			return { ok = false, powod = "brak_stanu", zalozony = false, zloto = zloto }
+		end
+		if r.ok ~= true then
+			dolicz("LicznikOdmow")
+			if r.powod == "za_malo" then
+				return { ok = false, powod = "za_malo_zlota", zalozony = false, zloto = zlotoGracza(gracz),
+					brakuje = if type(r.brakuje) == "number" then r.brakuje else info.cena }
+			end
+			warn(D.prefiks .. "WydajZloto odmówił zakupu: " .. tostring(r.powod))
+			return { ok = false, powod = "brak_stanu", zalozony = false, zloto = zlotoGracza(gracz) }
+		end
+	end
+	if not zapisz(gracz, st, w) then
+		st.dane = w -- Złoto już wydane: przedmiot zostaje w pamięci serwera, zapis spróbuje przy następnej zmianie
+	end
+	dolicz("LicznikKupna")
+	zalozNowy(gracz, st, id)
+	publikuj(gracz)
+	local zalozony = czyZalozony(gracz, st, id)
+	kontener:SetAttribute("OstatnieKupno", string.format("%s:%s:%d:%s", gracz.Name, id, info.cena,
+		if zalozony then "zalozony" else "schowany"))
+	return { ok = true, id = id, nazwa = D.przedmioty[id].nazwa, cena = info.cena, czesc = info.czesc,
+		zalozony = zalozony, zloto = zlotoGracza(gracz) }
+end
+
+local function zalozPrzedmiot(gracz, st, id)
+	local zloto = zlotoGracza(gracz)
+	if type(id) ~= "string" or D.przedmioty[id] == nil or D.przedmioty[id].klasa ~= st.klasa then
+		return { ok = false, powod = "nieznany_przedmiot", zalozony = false, zloto = zloto }
+	end
+	if not L.posiada(st.dane, id) then
+		return { ok = false, powod = "nie_masz", zalozony = false, zloto = zloto }
+	end
+	local nazwa = D.przedmioty[id].nazwa
+	if czyZalozony(gracz, st, id) then
+		return { ok = true, zalozony = true, zloto = zloto, nazwa = nazwa }
+	end
+	if not zalozWSlocie(gracz, st, id) then
+		return { ok = false, powod = "brak_przymierzalni", zalozony = false, zloto = zloto }
+	end
+	publikuj(gracz)
+	local zalozony = czyZalozony(gracz, st, id)
+	return { ok = zalozony, powod = if zalozony then nil else "nie_zalozono", zalozony = zalozony, zloto = zloto,
+		nazwa = nazwa }
+end
+
+local function sklep(polecenie, gracz, id)
+	if typeof(gracz) ~= "Instance" or not gracz:IsA("Player") then
+		return { ok = false, powod = "zly_gracz" }
+	end
+	if id ~= nil and (type(id) ~= "string" or #id > 64) then
+		return { ok = false, powod = "nieznany_przedmiot", zalozony = false, zloto = zlotoGracza(gracz) }
+	end
+	local st = stany[gracz] or zaladuj(gracz)
+	if not st or not stanCzynny() then
+		return { ok = false, powod = "brak_stanu" }
+	end
+	if polecenie == "oferta" then
+		local poziom, zloto = poziomGracza(gracz), zlotoGracza(gracz)
+		local zal = L.zalozone(D, st.klasa, st.dane, napisStroju(gracz, st.klasa))
+		return { ok = true, oferta = L.oferta(D, st.dane, st.klasa, poziom, zloto, zal), zloto = zloto, poziom = poziom,
+			klasa = st.klasa }
+	end
+	if polecenie ~= "kup" and polecenie ~= "zaloz" then
+		return { ok = false, powod = "nieznane_polecenie" }
+	end
+	if st.zajety then
+		return { ok = false, powod = "za_szybko", zalozony = false, zloto = zlotoGracza(gracz) }
+	end
+	st.zajety = true
+	local ok, w = pcall(if polecenie == "kup" then kupPrzedmiot else zalozPrzedmiot, gracz, st, id)
+	st.zajety = false
+	if not ok then
+		warn(D.prefiks .. "błąd sklepu: " .. tostring(w))
+		return { ok = false, powod = "blad", zalozony = false, zloto = zlotoGracza(gracz) }
+	end
+	return w
+end
+
+local sklepF = kontener:WaitForChild("Sygnaly"):FindFirstChild(D.sklep.sygnal)
+if sklepF and sklepF:IsA("BindableFunction") then
+	sklepF.OnInvoke = sklep
+end
+kontener:SetAttribute("WejscieSklepu", sklepF ~= nil)
 
 -- podpowiedź E przy kowalu: zbudowana wyłączona (Edit), włączona w Play (tylko w Studio)
 local podpowiedzi = 0

@@ -582,10 +582,10 @@
     {
      "nazwa": "Head_Geo",
      "kosc": "Head",
-     "trojkaty": 1038,
-     "wierzcholki": 593,
+     "trojkaty": 1030,
+     "wierzcholki": 589,
      "wymiary": [
-      2.139,
+      2.095,
       1.992,
       2.629
      ],
@@ -595,7 +595,7 @@
       -1.764
      ],
      "max": [
-      1.209,
+      1.165,
       5.762,
       0.865
      ]
@@ -895,7 +895,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 4478,
+   "trojkaty_razem": 4470,
    "tekstury": {
     "rozmiar_px": 64,
     "kolory_materialy": 21
@@ -1007,10 +1007,10 @@
    ],
    "grupy_ciala": {
     "Head": {
-     "trojkaty": 1038,
+     "trojkaty": 1030,
      "limit": 4000,
      "wymiary": [
-      2.139,
+      2.095,
       1.992,
       2.629
      ]
@@ -1092,10 +1092,10 @@
     {
      "nazwa": "UpperTorso_Geo",
      "kosc": "UpperTorso",
-     "trojkaty": 944,
-     "wierzcholki": 562,
+     "trojkaty": 964,
+     "wierzcholki": 576,
      "wymiary": [
-      2.84,
+      2.926,
       2.608,
       1.96
      ],
@@ -1105,7 +1105,7 @@
       -1.22
      ],
      "max": [
-      1.15,
+      1.236,
       4.56,
       0.74
      ]
@@ -1113,8 +1113,8 @@
     {
      "nazwa": "Head_Geo",
      "kosc": "Head",
-     "trojkaty": 1044,
-     "wierzcholki": 602,
+     "trojkaty": 1094,
+     "wierzcholki": 637,
      "wymiary": [
       1.86,
       2.23,
@@ -1134,11 +1134,11 @@
     {
      "nazwa": "LeftUpperArm_Geo",
      "kosc": "LeftUpperArm",
-     "trojkaty": 138,
-     "wierzcholki": 77,
+     "trojkaty": 148,
+     "wierzcholki": 84,
      "wymiary": [
       0.985,
-      1.345,
+      1.397,
       1.01
      ],
      "min": [
@@ -1148,7 +1148,7 @@
      ],
      "max": [
       2.115,
-      4.195,
+      4.247,
       0.505
      ]
     },
@@ -1176,8 +1176,8 @@
     {
      "nazwa": "LeftHand_Geo",
      "kosc": "LeftHand",
-     "trojkaty": 100,
-     "wierzcholki": 58,
+     "trojkaty": 120,
+     "wierzcholki": 72,
      "wymiary": [
       0.9,
       0.36,
@@ -1218,8 +1218,8 @@
     {
      "nazwa": "LeftLowerLeg_Geo",
      "kosc": "LeftLowerLeg",
-     "trojkaty": 106,
-     "wierzcholki": 61,
+     "trojkaty": 116,
+     "wierzcholki": 68,
      "wymiary": [
       1.11,
       0.77,
@@ -1260,11 +1260,11 @@
     {
      "nazwa": "RightUpperArm_Geo",
      "kosc": "RightUpperArm",
-     "trojkaty": 138,
-     "wierzcholki": 77,
+     "trojkaty": 148,
+     "wierzcholki": 84,
      "wymiary": [
       0.985,
-      1.345,
+      1.397,
       1.01
      ],
      "min": [
@@ -1274,7 +1274,7 @@
      ],
      "max": [
       -1.13,
-      4.195,
+      4.247,
       0.505
      ]
     },
@@ -1302,8 +1302,8 @@
     {
      "nazwa": "RightHand_Geo",
      "kosc": "RightHand",
-     "trojkaty": 100,
-     "wierzcholki": 58,
+     "trojkaty": 120,
+     "wierzcholki": 72,
      "wymiary": [
       0.9,
       0.36,
@@ -1344,8 +1344,8 @@
     {
      "nazwa": "RightLowerLeg_Geo",
      "kosc": "RightLowerLeg",
-     "trojkaty": 106,
-     "wierzcholki": 61,
+     "trojkaty": 116,
+     "wierzcholki": 68,
      "wymiary": [
       1.11,
       0.77,
@@ -1386,22 +1386,22 @@
     {
      "nazwa": "zwiadowca_bagno_luk_Akc",
      "kosc": "LeftHand",
-     "trojkaty": 480,
-     "wierzcholki": 274,
+     "trojkaty": 500,
+     "wierzcholki": 288,
      "wymiary": [
       0.28,
       0.694,
-      4.04
+      3.8
      ],
      "min": [
       1.435,
       1.755,
-      -2.02
+      -1.9
      ],
      "max": [
       1.715,
       2.449,
-      2.02
+      1.9
      ]
     },
     {
@@ -1426,7 +1426,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 4292,
+   "trojkaty_razem": 4462,
    "tekstury": {
     "rozmiar_px": 64,
     "kolory_materialy": 21
@@ -1441,13 +1441,13 @@
    "wymiary_z_akcesoriami": [
     4.23,
     6.0,
-    4.179
+    4.059
    ],
    "zakres_z_akcesoriami": [
     [
      -2.115,
      0.0,
-     -2.02
+     -1.9
     ],
     [
      2.115,
@@ -1538,7 +1538,7 @@
    ],
    "grupy_ciala": {
     "Head": {
-     "trojkaty": 1044,
+     "trojkaty": 1094,
      "limit": 4000,
      "wymiary": [
       1.86,
@@ -1547,34 +1547,34 @@
      ]
     },
     "Torso": {
-     "trojkaty": 1144,
+     "trojkaty": 1164,
      "limit": 1750,
      "wymiary": [
-      2.84,
+      2.926,
       2.79,
       1.96
      ]
     },
     "LeftArm": {
-     "trojkaty": 350,
+     "trojkaty": 380,
      "limit": 1248,
      "wymiary": [
       1.025,
-      2.445,
+      2.497,
       1.235
      ]
     },
     "RightArm": {
-     "trojkaty": 350,
+     "trojkaty": 380,
      "limit": 1248,
      "wymiary": [
       1.025,
-      2.445,
+      2.497,
       1.235
      ]
     },
     "LeftLeg": {
-     "trojkaty": 318,
+     "trojkaty": 328,
      "limit": 1248,
      "wymiary": [
       1.11,
@@ -1583,7 +1583,7 @@
      ]
     },
     "RightLeg": {
-     "trojkaty": 318,
+     "trojkaty": 328,
      "limit": 1248,
      "wymiary": [
       1.11,
@@ -1646,11 +1646,11 @@
     {
      "nazwa": "Head_Geo",
      "kosc": "Head",
-     "trojkaty": 1088,
-     "wierzcholki": 632,
+     "trojkaty": 1048,
+     "wierzcholki": 612,
      "wymiary": [
       1.86,
-      2.725,
+      2.728,
       1.964
      ],
      "min": [
@@ -1660,18 +1660,18 @@
      ],
      "max": [
       0.93,
-      6.495,
+      6.498,
       0.945
      ]
     },
     {
      "nazwa": "LeftUpperArm_Geo",
      "kosc": "LeftUpperArm",
-     "trojkaty": 204,
-     "wierzcholki": 120,
+     "trojkaty": 180,
+     "wierzcholki": 108,
      "wymiary": [
       1.345,
-      1.509,
+      1.49,
       1.01
      ],
      "min": [
@@ -1681,7 +1681,7 @@
      ],
      "max": [
       2.475,
-      4.359,
+      4.34,
       0.505
      ]
     },
@@ -1793,11 +1793,11 @@
     {
      "nazwa": "RightUpperArm_Geo",
      "kosc": "RightUpperArm",
-     "trojkaty": 204,
-     "wierzcholki": 120,
+     "trojkaty": 180,
+     "wierzcholki": 108,
      "wymiary": [
       1.345,
-      1.509,
+      1.49,
       1.01
      ],
      "min": [
@@ -1807,7 +1807,7 @@
      ],
      "max": [
       -1.13,
-      4.359,
+      4.34,
       0.505
      ]
     },
@@ -1919,38 +1919,38 @@
     {
      "nazwa": "zwiadowca_dzungla_luk_Akc",
      "kosc": "LeftHand",
-     "trojkaty": 516,
-     "wierzcholki": 296,
+     "trojkaty": 500,
+     "wierzcholki": 288,
      "wymiary": [
-      0.33,
+      0.28,
       0.694,
-      4.232
+      3.864
      ],
      "min": [
-      1.385,
+      1.435,
       1.755,
-      -2.116
+      -1.932
      ],
      "max": [
       1.715,
       2.449,
-      2.116
+      1.932
      ]
     },
     {
      "nazwa": "zwiadowca_dzungla_sztylet_Akc",
      "kosc": "RightHand",
-     "trojkaty": 332,
-     "wierzcholki": 196,
+     "trojkaty": 296,
+     "wierzcholki": 172,
      "wymiary": [
       0.84,
       0.26,
-      3.071
+      2.712
      ],
      "min": [
       -1.995,
       1.795,
-      -1.139
+      -0.78
      ],
      "max": [
       -1.155,
@@ -1959,33 +1959,33 @@
      ]
     }
    ],
-   "trojkaty_razem": 4664,
+   "trojkaty_razem": 4524,
    "tekstury": {
     "rozmiar_px": 64,
-    "kolory_materialy": 26
+    "kolory_materialy": 25
    },
    "typ": "r15",
    "skala": 1.0,
    "wymiary_ciala": [
     4.95,
-    6.495,
+    6.498,
     2.165
    ],
    "wymiary_z_akcesoriami": [
     4.95,
-    6.495,
-    4.232
+    6.498,
+    3.864
    ],
    "zakres_z_akcesoriami": [
     [
      -2.475,
      0.0,
-     -2.116
+     -1.932
     ],
     [
      2.475,
-     6.495,
-     2.116
+     6.498,
+     1.932
     ]
    ],
    "kosci": [
@@ -2071,11 +2071,11 @@
    ],
    "grupy_ciala": {
     "Head": {
-     "trojkaty": 1088,
+     "trojkaty": 1048,
      "limit": 4000,
      "wymiary": [
       1.86,
-      2.725,
+      2.728,
       1.964
      ]
     },
@@ -2089,20 +2089,20 @@
      ]
     },
     "LeftArm": {
-     "trojkaty": 460,
+     "trojkaty": 436,
      "limit": 1248,
      "wymiary": [
       1.47,
-      2.609,
+      2.59,
       1.18
      ]
     },
     "RightArm": {
-     "trojkaty": 460,
+     "trojkaty": 436,
      "limit": 1248,
      "wymiary": [
       1.47,
-      2.609,
+      2.59,
       1.18
      ]
     },
@@ -2137,8 +2137,8 @@
     {
      "nazwa": "zwiadowca_las_kaptur",
      "kosc": null,
-     "trojkaty": 834,
-     "wierzcholki": 473,
+     "trojkaty": 826,
+     "wierzcholki": 469,
      "wymiary": [
       2.5,
       3.81,
@@ -2156,7 +2156,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 834,
+   "trojkaty_razem": 826,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 4
@@ -2561,26 +2561,26 @@
     {
      "nazwa": "zwiadowca_bagno_kaptur",
      "kosc": null,
-     "trojkaty": 808,
-     "wierzcholki": 468,
+     "trojkaty": 878,
+     "wierzcholki": 517,
      "wymiary": [
-      2.3,
+      2.472,
       4.048,
       2.659
      ],
      "min": [
-      -1.15,
+      -1.236,
       1.952,
       -1.764
      ],
      "max": [
-      1.15,
+      1.236,
       6.0,
       0.895
      ]
     }
    ],
-   "trojkaty_razem": 808,
+   "trojkaty_razem": 878,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 3
@@ -2589,12 +2589,12 @@
    "typ_roblox": "Inne",
    "zakres_od_zaczepu": [
     [
-     -1.15,
+     -1.236,
      1.952,
      -1.764
     ],
     [
-     1.15,
+     1.236,
      6.0,
      0.895
     ]
@@ -2614,11 +2614,11 @@
     {
      "nazwa": "zwiadowca_bagno_kurtka",
      "kosc": null,
-     "trojkaty": 964,
-     "wierzcholki": 554,
+     "trojkaty": 984,
+     "wierzcholki": 568,
      "wymiary": [
       4.23,
-      2.927,
+      2.979,
       1.38
      ],
      "min": [
@@ -2628,12 +2628,12 @@
      ],
      "max": [
       2.115,
-      4.195,
+      4.247,
       0.74
      ]
     }
    ],
-   "trojkaty_razem": 964,
+   "trojkaty_razem": 984,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 7
@@ -2648,13 +2648,13 @@
     ],
     [
      2.115,
-     4.195,
+     4.247,
      0.74
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    2.732,
+    2.757,
     0.05
    ],
    "ostrzezenia": []
@@ -2773,8 +2773,8 @@
     {
      "nazwa": "zwiadowca_bagno_rekawice",
      "kosc": null,
-     "trojkaty": 200,
-     "wierzcholki": 116,
+     "trojkaty": 240,
+     "wierzcholki": 144,
      "wymiary": [
       2.0,
       0.36,
@@ -2792,7 +2792,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 200,
+   "trojkaty_razem": 240,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 3
@@ -2826,8 +2826,8 @@
     {
      "nazwa": "zwiadowca_bagno_buty",
      "kosc": null,
-     "trojkaty": 412,
-     "wierzcholki": 234,
+     "trojkaty": 432,
+     "wierzcholki": 248,
      "wymiary": [
       2.21,
       1.12,
@@ -2845,7 +2845,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 412,
+   "trojkaty_razem": 432,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 5
@@ -2879,26 +2879,26 @@
     {
      "nazwa": "zwiadowca_bagno_luk",
      "kosc": null,
-     "trojkaty": 768,
-     "wierzcholki": 450,
+     "trojkaty": 788,
+     "wierzcholki": 464,
      "wymiary": [
       3.16,
-      4.04,
+      3.8,
       1.925
      ],
      "min": [
       -1.69,
-      1.03,
+      1.15,
       -1.22
      ],
      "max": [
       1.47,
-      5.07,
+      4.95,
       0.705
      ]
     }
    ],
-   "trojkaty_razem": 768,
+   "trojkaty_razem": 788,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 5
@@ -2908,12 +2908,12 @@
    "zakres_od_zaczepu": [
     [
      -1.69,
-     1.03,
+     1.15,
      -1.22
     ],
     [
      1.47,
-     5.07,
+     4.95,
      0.705
     ]
    ],
@@ -2985,11 +2985,11 @@
     {
      "nazwa": "zwiadowca_dzungla_kaptur",
      "kosc": null,
-     "trojkaty": 840,
-     "wierzcholki": 488,
+     "trojkaty": 800,
+     "wierzcholki": 468,
      "wymiary": [
       2.3,
-      4.543,
+      4.546,
       1.964
      ],
      "min": [
@@ -2999,15 +2999,15 @@
      ],
      "max": [
       1.15,
-      6.495,
+      6.498,
       0.945
      ]
     }
    ],
-   "trojkaty_razem": 840,
+   "trojkaty_razem": 800,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 8
+    "kolory_materialy": 7
    },
    "zaczep": "EkwHeadAttachment",
    "typ_roblox": "Inne",
@@ -3019,13 +3019,13 @@
     ],
     [
      1.15,
-     6.495,
+     6.498,
      0.945
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    4.223,
+    4.225,
     -0.037
    ],
    "ostrzezenia": []
@@ -3038,11 +3038,11 @@
     {
      "nazwa": "zwiadowca_dzungla_kurtka",
      "kosc": null,
-     "trojkaty": 1004,
-     "wierzcholki": 584,
+     "trojkaty": 956,
+     "wierzcholki": 560,
      "wymiary": [
       4.95,
-      3.091,
+      3.072,
       1.38
      ],
      "min": [
@@ -3052,15 +3052,15 @@
      ],
      "max": [
       2.475,
-      4.359,
+      4.34,
       0.74
      ]
     }
    ],
-   "trojkaty_razem": 1004,
+   "trojkaty_razem": 956,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 11
+    "kolory_materialy": 10
    },
    "zaczep": "EkwUpperTorsoAttachment",
    "typ_roblox": "Inne",
@@ -3072,13 +3072,13 @@
     ],
     [
      2.475,
-     4.359,
+     4.34,
      0.74
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    2.813,
+    2.804,
     0.05
    ],
    "ostrzezenia": []
@@ -3303,41 +3303,41 @@
     {
      "nazwa": "zwiadowca_dzungla_luk",
      "kosc": null,
-     "trojkaty": 804,
-     "wierzcholki": 472,
+     "trojkaty": 788,
+     "wierzcholki": 464,
      "wymiary": [
       3.16,
-      4.232,
+      3.864,
       1.925
      ],
      "min": [
       -1.69,
-      0.934,
+      1.118,
       -1.22
      ],
      "max": [
       1.47,
-      5.166,
+      4.982,
       0.705
      ]
     }
    ],
-   "trojkaty_razem": 804,
+   "trojkaty_razem": 788,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 6
+    "kolory_materialy": 5
    },
    "zaczep": "EkwUpperTorsoAttachment",
    "typ_roblox": "Inne",
    "zakres_od_zaczepu": [
     [
      -1.69,
-     0.934,
+     1.118,
      -1.22
     ],
     [
      1.47,
-     5.166,
+     4.982,
      0.705
     ]
    ],
@@ -3356,16 +3356,16 @@
     {
      "nazwa": "zwiadowca_dzungla_sztylet",
      "kosc": null,
-     "trojkaty": 332,
-     "wierzcholki": 196,
+     "trojkaty": 296,
+     "wierzcholki": 172,
      "wymiary": [
       0.84,
-      3.071,
+      2.712,
       0.26
      ],
      "min": [
       -0.42,
-      -1.139,
+      -0.78,
       -0.13
      ],
      "max": [
@@ -3375,17 +3375,17 @@
      ]
     }
    ],
-   "trojkaty_razem": 332,
+   "trojkaty_razem": 296,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 6
+    "kolory_materialy": 5
    },
    "zaczep": "RightGripAttachment",
    "typ_roblox": "Bron",
    "zakres_od_zaczepu": [
     [
      -0.42,
-     -1.139,
+     -0.78,
      -0.13
     ],
     [
@@ -3396,7 +3396,7 @@
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    0.396,
+    0.576,
     0.0
    ],
    "ostrzezenia": []
@@ -3407,17 +3407,17 @@
   "stopnie_zwiadowca_start.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje brak -> ZGODNE",
   "stopnie_zwiadowca_start__idle.fbx: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje stopnie_zwiadowca_start|Scene 1-61 -> ZGODNE",
   "stopnie_zwiadowca_start.glb: siatki 34, kości 17, trójkąty 3602, wzrost 5.76 st., akcje idle 0-60 -> ZGODNE",
-  "stopnie_zwiadowca_las.fbx: siatki 34, kości 17, trójkąty 3934, wzrost 5.76 st., akcje brak -> ZGODNE",
-  "stopnie_zwiadowca_las__idle.fbx: siatki 34, kości 17, trójkąty 3934, wzrost 5.76 st., akcje stopnie_zwiadowca_las|Scene 1-61 -> ZGODNE",
-  "stopnie_zwiadowca_las.glb: siatki 34, kości 17, trójkąty 3934, wzrost 5.76 st., akcje idle 0-60 -> ZGODNE",
-  "stopnie_zwiadowca_bagno.fbx: siatki 34, kości 17, trójkąty 3752, wzrost 6.00 st., akcje brak -> ZGODNE",
-  "stopnie_zwiadowca_bagno__idle.fbx: siatki 34, kości 17, trójkąty 3752, wzrost 6.00 st., akcje stopnie_zwiadowca_bagno|Scene 1-61 -> ZGODNE",
-  "stopnie_zwiadowca_bagno.glb: siatki 34, kości 17, trójkąty 3752, wzrost 6.00 st., akcje idle 0-60 -> ZGODNE",
-  "stopnie_zwiadowca_dzungla.fbx: siatki 34, kości 17, trójkąty 4044, wzrost 6.50 st., akcje brak -> ZGODNE",
-  "stopnie_zwiadowca_dzungla__idle.fbx: siatki 34, kości 17, trójkąty 4044, wzrost 6.50 st., akcje stopnie_zwiadowca_dzungla|Scene 1-61 -> ZGODNE",
-  "stopnie_zwiadowca_dzungla.glb: siatki 34, kości 17, trójkąty 4044, wzrost 6.50 st., akcje idle 0-60 -> ZGODNE",
-  "zwiadowca_las_kaptur.fbx: siatki 1, kości 0, trójkąty 834, wzrost 3.81 st., akcje brak -> ZGODNE",
-  "zwiadowca_las_kaptur.glb: siatki 1, kości 0, trójkąty 834, wzrost 3.81 st., akcje brak -> ZGODNE",
+  "stopnie_zwiadowca_las.fbx: siatki 34, kości 17, trójkąty 3926, wzrost 5.76 st., akcje brak -> ZGODNE",
+  "stopnie_zwiadowca_las__idle.fbx: siatki 34, kości 17, trójkąty 3926, wzrost 5.76 st., akcje stopnie_zwiadowca_las|Scene 1-61 -> ZGODNE",
+  "stopnie_zwiadowca_las.glb: siatki 34, kości 17, trójkąty 3926, wzrost 5.76 st., akcje idle 0-60 -> ZGODNE",
+  "stopnie_zwiadowca_bagno.fbx: siatki 34, kości 17, trójkąty 3902, wzrost 6.00 st., akcje brak -> ZGODNE",
+  "stopnie_zwiadowca_bagno__idle.fbx: siatki 34, kości 17, trójkąty 3902, wzrost 6.00 st., akcje stopnie_zwiadowca_bagno|Scene 1-61 -> ZGODNE",
+  "stopnie_zwiadowca_bagno.glb: siatki 34, kości 17, trójkąty 3902, wzrost 6.00 st., akcje idle 0-60 -> ZGODNE",
+  "stopnie_zwiadowca_dzungla.fbx: siatki 34, kości 17, trójkąty 3956, wzrost 6.50 st., akcje brak -> ZGODNE",
+  "stopnie_zwiadowca_dzungla__idle.fbx: siatki 34, kości 17, trójkąty 3956, wzrost 6.50 st., akcje stopnie_zwiadowca_dzungla|Scene 1-61 -> ZGODNE",
+  "stopnie_zwiadowca_dzungla.glb: siatki 34, kości 17, trójkąty 3956, wzrost 6.50 st., akcje idle 0-60 -> ZGODNE",
+  "zwiadowca_las_kaptur.fbx: siatki 1, kości 0, trójkąty 826, wzrost 3.81 st., akcje brak -> ZGODNE",
+  "zwiadowca_las_kaptur.glb: siatki 1, kości 0, trójkąty 826, wzrost 3.81 st., akcje brak -> ZGODNE",
   "zwiadowca_las_kurtka.fbx: siatki 1, kości 0, trójkąty 980, wzrost 2.71 st., akcje brak -> ZGODNE",
   "zwiadowca_las_kurtka.glb: siatki 1, kości 0, trójkąty 980, wzrost 2.71 st., akcje brak -> ZGODNE",
   "zwiadowca_las_spodnie.fbx: siatki 1, kości 0, trójkąty 132, wzrost 1.20 st., akcje brak -> ZGODNE",
@@ -3432,26 +3432,26 @@
   "zwiadowca_las_luk.glb: siatki 1, kości 0, trójkąty 780, wzrost 3.94 st., akcje brak -> ZGODNE",
   "zwiadowca_las_sztylet.fbx: siatki 1, kości 0, trójkąty 280, wzrost 2.69 st., akcje brak -> ZGODNE",
   "zwiadowca_las_sztylet.glb: siatki 1, kości 0, trójkąty 280, wzrost 2.69 st., akcje brak -> ZGODNE",
-  "zwiadowca_bagno_kaptur.fbx: siatki 1, kości 0, trójkąty 808, wzrost 4.05 st., akcje brak -> ZGODNE",
-  "zwiadowca_bagno_kaptur.glb: siatki 1, kości 0, trójkąty 808, wzrost 4.05 st., akcje brak -> ZGODNE",
-  "zwiadowca_bagno_kurtka.fbx: siatki 1, kości 0, trójkąty 964, wzrost 2.93 st., akcje brak -> ZGODNE",
-  "zwiadowca_bagno_kurtka.glb: siatki 1, kości 0, trójkąty 964, wzrost 2.93 st., akcje brak -> ZGODNE",
+  "zwiadowca_bagno_kaptur.fbx: siatki 1, kości 0, trójkąty 878, wzrost 4.05 st., akcje brak -> ZGODNE",
+  "zwiadowca_bagno_kaptur.glb: siatki 1, kości 0, trójkąty 878, wzrost 4.05 st., akcje brak -> ZGODNE",
+  "zwiadowca_bagno_kurtka.fbx: siatki 1, kości 0, trójkąty 984, wzrost 2.98 st., akcje brak -> ZGODNE",
+  "zwiadowca_bagno_kurtka.glb: siatki 1, kości 0, trójkąty 984, wzrost 2.98 st., akcje brak -> ZGODNE",
   "zwiadowca_bagno_spodnie.fbx: siatki 1, kości 0, trójkąty 132, wzrost 1.20 st., akcje brak -> ZGODNE",
   "zwiadowca_bagno_spodnie.glb: siatki 1, kości 0, trójkąty 132, wzrost 1.20 st., akcje brak -> ZGODNE",
   "zwiadowca_bagno_pas.fbx: siatki 1, kości 0, trójkąty 156, wzrost 0.51 st., akcje brak -> ZGODNE",
   "zwiadowca_bagno_pas.glb: siatki 1, kości 0, trójkąty 156, wzrost 0.51 st., akcje brak -> ZGODNE",
-  "zwiadowca_bagno_rekawice.fbx: siatki 1, kości 0, trójkąty 200, wzrost 0.36 st., akcje brak -> ZGODNE",
-  "zwiadowca_bagno_rekawice.glb: siatki 1, kości 0, trójkąty 200, wzrost 0.36 st., akcje brak -> ZGODNE",
-  "zwiadowca_bagno_buty.fbx: siatki 1, kości 0, trójkąty 412, wzrost 1.12 st., akcje brak -> ZGODNE",
-  "zwiadowca_bagno_buty.glb: siatki 1, kości 0, trójkąty 412, wzrost 1.12 st., akcje brak -> ZGODNE",
-  "zwiadowca_bagno_luk.fbx: siatki 1, kości 0, trójkąty 768, wzrost 4.04 st., akcje brak -> ZGODNE",
-  "zwiadowca_bagno_luk.glb: siatki 1, kości 0, trójkąty 768, wzrost 4.04 st., akcje brak -> ZGODNE",
+  "zwiadowca_bagno_rekawice.fbx: siatki 1, kości 0, trójkąty 240, wzrost 0.36 st., akcje brak -> ZGODNE",
+  "zwiadowca_bagno_rekawice.glb: siatki 1, kości 0, trójkąty 240, wzrost 0.36 st., akcje brak -> ZGODNE",
+  "zwiadowca_bagno_buty.fbx: siatki 1, kości 0, trójkąty 432, wzrost 1.12 st., akcje brak -> ZGODNE",
+  "zwiadowca_bagno_buty.glb: siatki 1, kości 0, trójkąty 432, wzrost 1.12 st., akcje brak -> ZGODNE",
+  "zwiadowca_bagno_luk.fbx: siatki 1, kości 0, trójkąty 788, wzrost 3.80 st., akcje brak -> ZGODNE",
+  "zwiadowca_bagno_luk.glb: siatki 1, kości 0, trójkąty 788, wzrost 3.80 st., akcje brak -> ZGODNE",
   "zwiadowca_bagno_sztylet.fbx: siatki 1, kości 0, trójkąty 288, wzrost 2.89 st., akcje brak -> ZGODNE",
   "zwiadowca_bagno_sztylet.glb: siatki 1, kości 0, trójkąty 288, wzrost 2.89 st., akcje brak -> ZGODNE",
-  "zwiadowca_dzungla_kaptur.fbx: siatki 1, kości 0, trójkąty 840, wzrost 4.54 st., akcje brak -> ZGODNE",
-  "zwiadowca_dzungla_kaptur.glb: siatki 1, kości 0, trójkąty 840, wzrost 4.54 st., akcje brak -> ZGODNE",
-  "zwiadowca_dzungla_kurtka.fbx: siatki 1, kości 0, trójkąty 1004, wzrost 3.09 st., akcje brak -> ZGODNE",
-  "zwiadowca_dzungla_kurtka.glb: siatki 1, kości 0, trójkąty 1004, wzrost 3.09 st., akcje brak -> ZGODNE",
+  "zwiadowca_dzungla_kaptur.fbx: siatki 1, kości 0, trójkąty 800, wzrost 4.54 st., akcje brak -> ZGODNE",
+  "zwiadowca_dzungla_kaptur.glb: siatki 1, kości 0, trójkąty 800, wzrost 4.54 st., akcje brak -> ZGODNE",
+  "zwiadowca_dzungla_kurtka.fbx: siatki 1, kości 0, trójkąty 956, wzrost 3.07 st., akcje brak -> ZGODNE",
+  "zwiadowca_dzungla_kurtka.glb: siatki 1, kości 0, trójkąty 956, wzrost 3.07 st., akcje brak -> ZGODNE",
   "zwiadowca_dzungla_spodnie.fbx: siatki 1, kości 0, trójkąty 132, wzrost 1.20 st., akcje brak -> ZGODNE",
   "zwiadowca_dzungla_spodnie.glb: siatki 1, kości 0, trójkąty 132, wzrost 1.20 st., akcje brak -> ZGODNE",
   "zwiadowca_dzungla_pas.fbx: siatki 1, kości 0, trójkąty 156, wzrost 0.51 st., akcje brak -> ZGODNE",
@@ -3460,9 +3460,9 @@
   "zwiadowca_dzungla_rekawice.glb: siatki 1, kości 0, trójkąty 288, wzrost 0.55 st., akcje brak -> ZGODNE",
   "zwiadowca_dzungla_buty.fbx: siatki 1, kości 0, trójkąty 544, wzrost 1.20 st., akcje brak -> ZGODNE",
   "zwiadowca_dzungla_buty.glb: siatki 1, kości 0, trójkąty 544, wzrost 1.20 st., akcje brak -> ZGODNE",
-  "zwiadowca_dzungla_luk.fbx: siatki 1, kości 0, trójkąty 804, wzrost 4.23 st., akcje brak -> ZGODNE",
-  "zwiadowca_dzungla_luk.glb: siatki 1, kości 0, trójkąty 804, wzrost 4.23 st., akcje brak -> ZGODNE",
-  "zwiadowca_dzungla_sztylet.fbx: siatki 1, kości 0, trójkąty 332, wzrost 3.07 st., akcje brak -> ZGODNE",
-  "zwiadowca_dzungla_sztylet.glb: siatki 1, kości 0, trójkąty 332, wzrost 3.07 st., akcje brak -> ZGODNE"
+  "zwiadowca_dzungla_luk.fbx: siatki 1, kości 0, trójkąty 788, wzrost 3.86 st., akcje brak -> ZGODNE",
+  "zwiadowca_dzungla_luk.glb: siatki 1, kości 0, trójkąty 788, wzrost 3.86 st., akcje brak -> ZGODNE",
+  "zwiadowca_dzungla_sztylet.fbx: siatki 1, kości 0, trójkąty 296, wzrost 2.71 st., akcje brak -> ZGODNE",
+  "zwiadowca_dzungla_sztylet.glb: siatki 1, kości 0, trójkąty 296, wzrost 2.71 st., akcje brak -> ZGODNE"
  ]
 }

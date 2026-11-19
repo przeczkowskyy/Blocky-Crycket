@@ -1035,11 +1035,11 @@
     {
      "nazwa": "kot_mag_las_kapelusz_Akc",
      "kosc": "HatPivot",
-     "trojkaty": 308,
-     "wierzcholki": 172,
+     "trojkaty": 300,
+     "wierzcholki": 168,
      "wymiary": [
       2.5,
-      1.192,
+      1.179,
       2.3
      ],
      "min": [
@@ -1049,7 +1049,7 @@
      ],
      "max": [
       1.25,
-      4.347,
+      4.334,
       1.15
      ]
     },
@@ -1075,10 +1075,10 @@
      ]
     }
    ],
-   "trojkaty_razem": 3456,
+   "trojkaty_razem": 3448,
    "tekstury": {
     "rozmiar_px": 64,
-    "kolory_materialy": 23
+    "kolory_materialy": 22
    },
    "typ": "r15",
    "skala": 1.0,
@@ -1089,7 +1089,7 @@
    ],
    "wymiary_z_akcesoriami": [
     3.013,
-    4.347,
+    4.334,
     2.591
    ],
    "zakres_z_akcesoriami": [
@@ -1100,7 +1100,7 @@
     ],
     [
      1.255,
-     4.347,
+     4.334,
      1.15
     ]
    ],
@@ -1263,8 +1263,8 @@
     {
      "nazwa": "LowerTorso_Geo",
      "kosc": "LowerTorso",
-     "trojkaty": 254,
-     "wierzcholki": 143,
+     "trojkaty": 264,
+     "wierzcholki": 150,
      "wymiary": [
       2.16,
       0.99,
@@ -1284,8 +1284,8 @@
     {
      "nazwa": "UpperTorso_Geo",
      "kosc": "UpperTorso",
-     "trojkaty": 394,
-     "wierzcholki": 227,
+     "trojkaty": 424,
+     "wierzcholki": 248,
      "wymiary": [
       2.006,
       1.354,
@@ -1662,8 +1662,8 @@
     {
      "nazwa": "kot_mag_bagno_kapelusz_Akc",
      "kosc": "HatPivot",
-     "trojkaty": 290,
-     "wierzcholki": 169,
+     "trojkaty": 320,
+     "wierzcholki": 190,
      "wymiary": [
       2.578,
       1.25,
@@ -1686,23 +1686,23 @@
      "trojkaty": 382,
      "wierzcholki": 215,
      "wymiary": [
-      1.442,
-      3.596,
+      0.794,
+      3.644,
       0.51
      ],
      "min": [
-      -1.661,
+      -1.337,
       -0.14,
       -0.24
      ],
      "max": [
-      -0.219,
-      3.456,
+      -0.543,
+      3.504,
       0.27
      ]
     }
    ],
-   "trojkaty_razem": 3384,
+   "trojkaty_razem": 3454,
    "tekstury": {
     "rozmiar_px": 64,
     "kolory_materialy": 20
@@ -1715,13 +1715,13 @@
     2.301
    ],
    "wymiary_z_akcesoriami": [
-    2.95,
+    2.626,
     4.52,
     2.301
    ],
    "zakres_z_akcesoriami": [
     [
-     -1.661,
+     -1.337,
      -0.14,
      -1.441
     ],
@@ -1833,7 +1833,7 @@
      ]
     },
     "Torso": {
-     "trojkaty": 648,
+     "trojkaty": 688,
      "limit": 1750,
      "wymiary": [
       2.16,
@@ -1911,21 +1911,21 @@
     {
      "nazwa": "UpperTorso_Geo",
      "kosc": "UpperTorso",
-     "trojkaty": 516,
-     "wierzcholki": 304,
+     "trojkaty": 468,
+     "wierzcholki": 280,
      "wymiary": [
-      2.682,
-      1.379,
+      2.676,
+      1.359,
       1.35
      ],
      "min": [
-      -1.341,
+      -1.338,
       0.99,
       -0.675
      ],
      "max": [
-      1.341,
-      2.369,
+      1.338,
+      2.349,
       0.675
      ]
     },
@@ -2289,72 +2289,72 @@
     {
      "nazwa": "kot_mag_dzungla_kapelusz_Akc",
      "kosc": "HatPivot",
-     "trojkaty": 264,
-     "wierzcholki": 160,
+     "trojkaty": 224,
+     "wierzcholki": 140,
      "wymiary": [
-      2.042,
-      1.718,
+      1.992,
+      1.719,
       1.59
      ],
      "min": [
-      -1.021,
+      -0.996,
       3.098,
       -0.78
      ],
      "max": [
-      1.021,
-      4.816,
+      0.996,
+      4.817,
       0.81
      ]
     },
     {
      "nazwa": "kot_mag_dzungla_kostur_Akc",
      "kosc": "StaffPivot",
-     "trojkaty": 452,
-     "wierzcholki": 262,
+     "trojkaty": 444,
+     "wierzcholki": 260,
      "wymiary": [
-      1.34,
+      0.948,
       4.06,
       0.27
      ],
      "min": [
-      -1.61,
+      -1.414,
       0.07,
       -0.135
      ],
      "max": [
-      -0.27,
+      -0.466,
       4.13,
       0.135
      ]
     }
    ],
-   "trojkaty_razem": 3572,
+   "trojkaty_razem": 3476,
    "tekstury": {
     "rozmiar_px": 64,
-    "kolory_materialy": 22
+    "kolory_materialy": 21
    },
    "typ": "r15",
    "skala": 1.0,
    "wymiary_ciala": [
-    2.682,
+    2.676,
     3.822,
     2.301
    ],
    "wymiary_z_akcesoriami": [
-    2.951,
-    4.816,
+    2.752,
+    4.817,
     2.301
    ],
    "zakres_z_akcesoriami": [
     [
-     -1.61,
+     -1.414,
      0.0,
      -1.441
     ],
     [
-     1.341,
-     4.816,
+     1.338,
+     4.817,
      0.86
     ]
    ],
@@ -2460,11 +2460,11 @@
      ]
     },
     "Torso": {
-     "trojkaty": 792,
+     "trojkaty": 744,
      "limit": 1750,
      "wymiary": [
-      2.682,
-      2.359,
+      2.676,
+      2.339,
       2.301
      ]
     },
@@ -2517,11 +2517,11 @@
     {
      "nazwa": "kot_mag_las_kapelusz",
      "kosc": null,
-     "trojkaty": 308,
-     "wierzcholki": 172,
+     "trojkaty": 300,
+     "wierzcholki": 168,
      "wymiary": [
       2.5,
-      1.192,
+      1.179,
       2.3
      ],
      "min": [
@@ -2531,15 +2531,15 @@
      ],
      "max": [
       1.25,
-      1.177,
+      1.164,
       1.15
      ]
     }
    ],
-   "trojkaty_razem": 308,
+   "trojkaty_razem": 300,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 8
+    "kolory_materialy": 7
    },
    "zaczep": "HatAttachment",
    "typ_roblox": "Hat",
@@ -2551,13 +2551,13 @@
     ],
     [
      1.25,
-     1.177,
+     1.164,
      1.15
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    0.581,
+    0.575,
     0.0
    ],
    "ostrzezenia": []
@@ -2729,8 +2729,8 @@
     {
      "nazwa": "kot_mag_bagno_kapelusz",
      "kosc": null,
-     "trojkaty": 290,
-     "wierzcholki": 169,
+     "trojkaty": 320,
+     "wierzcholki": 190,
      "wymiary": [
       2.578,
       1.25,
@@ -2748,7 +2748,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 290,
+   "trojkaty_razem": 320,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 6
@@ -2782,8 +2782,8 @@
     {
      "nazwa": "kot_mag_bagno_szata",
      "kosc": null,
-     "trojkaty": 842,
-     "wierzcholki": 477,
+     "trojkaty": 872,
+     "wierzcholki": 498,
      "wymiary": [
       2.51,
       2.334,
@@ -2801,7 +2801,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 842,
+   "trojkaty_razem": 872,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 6
@@ -2835,8 +2835,8 @@
     {
      "nazwa": "kot_mag_bagno_pas",
      "kosc": null,
-     "trojkaty": 94,
-     "wierzcholki": 53,
+     "trojkaty": 104,
+     "wierzcholki": 60,
      "wymiary": [
       1.44,
       0.37,
@@ -2854,7 +2854,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 94,
+   "trojkaty_razem": 104,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 3
@@ -2891,18 +2891,18 @@
      "trojkaty": 382,
      "wierzcholki": 215,
      "wymiary": [
-      1.442,
-      3.596,
+      0.794,
+      3.644,
       0.51
      ],
      "min": [
-      -0.721,
+      -0.397,
       -1.1,
       -0.24
      ],
      "max": [
-      0.721,
-      2.496,
+      0.397,
+      2.544,
       0.27
      ]
     }
@@ -2916,19 +2916,19 @@
    "typ_roblox": "Bron",
    "zakres_od_zaczepu": [
     [
-     -0.721,
+     -0.397,
      -1.1,
      -0.24
     ],
     [
-     0.721,
-     2.496,
+     0.397,
+     2.544,
      0.27
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    0.698,
+    0.722,
     0.015
    ],
    "ostrzezenia": []
@@ -2941,41 +2941,41 @@
     {
      "nazwa": "kot_mag_dzungla_kapelusz",
      "kosc": null,
-     "trojkaty": 264,
-     "wierzcholki": 160,
+     "trojkaty": 224,
+     "wierzcholki": 140,
      "wymiary": [
-      2.042,
-      1.718,
+      1.992,
+      1.719,
       1.59
      ],
      "min": [
-      -1.021,
+      -0.996,
       -0.072,
       -0.78
      ],
      "max": [
-      1.021,
-      1.646,
+      0.996,
+      1.647,
       0.81
      ]
     }
    ],
-   "trojkaty_razem": 264,
+   "trojkaty_razem": 224,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 7
+    "kolory_materialy": 6
    },
    "zaczep": "HatAttachment",
    "typ_roblox": "Hat",
    "zakres_od_zaczepu": [
     [
-     -1.021,
+     -0.996,
      -0.072,
      -0.78
     ],
     [
-     1.021,
-     1.646,
+     0.996,
+     1.647,
      0.81
     ]
    ],
@@ -2994,47 +2994,47 @@
     {
      "nazwa": "kot_mag_dzungla_szata",
      "kosc": null,
-     "trojkaty": 964,
-     "wierzcholki": 554,
+     "trojkaty": 916,
+     "wierzcholki": 530,
      "wymiary": [
-      2.682,
-      2.359,
+      2.676,
+      2.339,
       2.301
      ],
      "min": [
-      -1.341,
+      -1.338,
       0.01,
       -1.441
      ],
      "max": [
-      1.341,
-      2.369,
+      1.338,
+      2.349,
       0.86
      ]
     }
    ],
-   "trojkaty_razem": 964,
+   "trojkaty_razem": 916,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 11
+    "kolory_materialy": 10
    },
    "zaczep": "EkwUpperTorsoAttachment",
    "typ_roblox": "Inne",
    "zakres_od_zaczepu": [
     [
-     -1.341,
+     -1.338,
      0.01,
      -1.441
     ],
     [
-     1.341,
-     2.369,
+     1.338,
+     2.349,
      0.86
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    1.19,
+    1.179,
     -0.291
    ],
    "ostrzezenia": []
@@ -3100,40 +3100,40 @@
     {
      "nazwa": "kot_mag_dzungla_kostur",
      "kosc": null,
-     "trojkaty": 452,
-     "wierzcholki": 262,
+     "trojkaty": 444,
+     "wierzcholki": 260,
      "wymiary": [
-      1.34,
+      0.948,
       4.06,
       0.27
      ],
      "min": [
-      -0.67,
+      -0.474,
       -0.89,
       -0.135
      ],
      "max": [
-      0.67,
+      0.474,
       3.17,
       0.135
      ]
     }
    ],
-   "trojkaty_razem": 452,
+   "trojkaty_razem": 444,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 7
+    "kolory_materialy": 6
    },
    "zaczep": "RightGripAttachment",
    "typ_roblox": "Bron",
    "zakres_od_zaczepu": [
     [
-     -0.67,
+     -0.474,
      -0.89,
      -0.135
     ],
     [
-     0.67,
+     0.474,
      3.17,
      0.135
     ]
@@ -3159,35 +3159,35 @@
   "stopnie_mag_las.fbx: siatki 40, kości 23, trójkąty 2992, wzrost 3.82 st., akcje brak -> ZGODNE",
   "stopnie_mag_las__idle.fbx: siatki 40, kości 23, trójkąty 2992, wzrost 3.82 st., akcje stopnie_mag_las|Scene 1-61 -> ZGODNE",
   "stopnie_mag_las.glb: siatki 40, kości 23, trójkąty 2992, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
-  "stopnie_mag_bagno.fbx: siatki 40, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",
-  "stopnie_mag_bagno__idle.fbx: siatki 40, kości 23, trójkąty 2964, wzrost 3.82 st., akcje stopnie_mag_bagno|Scene 1-61 -> ZGODNE",
-  "stopnie_mag_bagno.glb: siatki 40, kości 23, trójkąty 2964, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
-  "stopnie_mag_dzungla.fbx: siatki 40, kości 23, trójkąty 3108, wzrost 3.82 st., akcje brak -> ZGODNE",
-  "stopnie_mag_dzungla__idle.fbx: siatki 40, kości 23, trójkąty 3108, wzrost 3.82 st., akcje stopnie_mag_dzungla|Scene 1-61 -> ZGODNE",
-  "stopnie_mag_dzungla.glb: siatki 40, kości 23, trójkąty 3108, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
-  "kot_mag_las_kapelusz.fbx: siatki 1, kości 0, trójkąty 308, wzrost 1.19 st., akcje brak -> ZGODNE",
-  "kot_mag_las_kapelusz.glb: siatki 1, kości 0, trójkąty 308, wzrost 1.19 st., akcje brak -> ZGODNE",
+  "stopnie_mag_bagno.fbx: siatki 40, kości 23, trójkąty 3004, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "stopnie_mag_bagno__idle.fbx: siatki 40, kości 23, trójkąty 3004, wzrost 3.82 st., akcje stopnie_mag_bagno|Scene 1-61 -> ZGODNE",
+  "stopnie_mag_bagno.glb: siatki 40, kości 23, trójkąty 3004, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "stopnie_mag_dzungla.fbx: siatki 40, kości 23, trójkąty 3060, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "stopnie_mag_dzungla__idle.fbx: siatki 40, kości 23, trójkąty 3060, wzrost 3.82 st., akcje stopnie_mag_dzungla|Scene 1-61 -> ZGODNE",
+  "stopnie_mag_dzungla.glb: siatki 40, kości 23, trójkąty 3060, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "kot_mag_las_kapelusz.fbx: siatki 1, kości 0, trójkąty 300, wzrost 1.18 st., akcje brak -> ZGODNE",
+  "kot_mag_las_kapelusz.glb: siatki 1, kości 0, trójkąty 300, wzrost 1.18 st., akcje brak -> ZGODNE",
   "kot_mag_las_szata.fbx: siatki 1, kości 0, trójkąty 832, wzrost 1.93 st., akcje brak -> ZGODNE",
   "kot_mag_las_szata.glb: siatki 1, kości 0, trójkąty 832, wzrost 1.93 st., akcje brak -> ZGODNE",
   "kot_mag_las_pas.fbx: siatki 1, kości 0, trójkąty 132, wzrost 0.33 st., akcje brak -> ZGODNE",
   "kot_mag_las_pas.glb: siatki 1, kości 0, trójkąty 132, wzrost 0.33 st., akcje brak -> ZGODNE",
   "kot_mag_las_kostur.fbx: siatki 1, kości 0, trójkąty 408, wzrost 3.10 st., akcje brak -> ZGODNE",
   "kot_mag_las_kostur.glb: siatki 1, kości 0, trójkąty 408, wzrost 3.10 st., akcje brak -> ZGODNE",
-  "kot_mag_bagno_kapelusz.fbx: siatki 1, kości 0, trójkąty 290, wzrost 1.25 st., akcje brak -> ZGODNE",
-  "kot_mag_bagno_kapelusz.glb: siatki 1, kości 0, trójkąty 290, wzrost 1.25 st., akcje brak -> ZGODNE",
-  "kot_mag_bagno_szata.fbx: siatki 1, kości 0, trójkąty 842, wzrost 2.33 st., akcje brak -> ZGODNE",
-  "kot_mag_bagno_szata.glb: siatki 1, kości 0, trójkąty 842, wzrost 2.33 st., akcje brak -> ZGODNE",
-  "kot_mag_bagno_pas.fbx: siatki 1, kości 0, trójkąty 94, wzrost 0.37 st., akcje brak -> ZGODNE",
-  "kot_mag_bagno_pas.glb: siatki 1, kości 0, trójkąty 94, wzrost 0.37 st., akcje brak -> ZGODNE",
-  "kot_mag_bagno_kostur.fbx: siatki 1, kości 0, trójkąty 382, wzrost 3.60 st., akcje brak -> ZGODNE",
-  "kot_mag_bagno_kostur.glb: siatki 1, kości 0, trójkąty 382, wzrost 3.60 st., akcje brak -> ZGODNE",
-  "kot_mag_dzungla_kapelusz.fbx: siatki 1, kości 0, trójkąty 264, wzrost 1.72 st., akcje brak -> ZGODNE",
-  "kot_mag_dzungla_kapelusz.glb: siatki 1, kości 0, trójkąty 264, wzrost 1.72 st., akcje brak -> ZGODNE",
-  "kot_mag_dzungla_szata.fbx: siatki 1, kości 0, trójkąty 964, wzrost 2.36 st., akcje brak -> ZGODNE",
-  "kot_mag_dzungla_szata.glb: siatki 1, kości 0, trójkąty 964, wzrost 2.36 st., akcje brak -> ZGODNE",
+  "kot_mag_bagno_kapelusz.fbx: siatki 1, kości 0, trójkąty 320, wzrost 1.25 st., akcje brak -> ZGODNE",
+  "kot_mag_bagno_kapelusz.glb: siatki 1, kości 0, trójkąty 320, wzrost 1.25 st., akcje brak -> ZGODNE",
+  "kot_mag_bagno_szata.fbx: siatki 1, kości 0, trójkąty 872, wzrost 2.33 st., akcje brak -> ZGODNE",
+  "kot_mag_bagno_szata.glb: siatki 1, kości 0, trójkąty 872, wzrost 2.33 st., akcje brak -> ZGODNE",
+  "kot_mag_bagno_pas.fbx: siatki 1, kości 0, trójkąty 104, wzrost 0.37 st., akcje brak -> ZGODNE",
+  "kot_mag_bagno_pas.glb: siatki 1, kości 0, trójkąty 104, wzrost 0.37 st., akcje brak -> ZGODNE",
+  "kot_mag_bagno_kostur.fbx: siatki 1, kości 0, trójkąty 382, wzrost 3.64 st., akcje brak -> ZGODNE",
+  "kot_mag_bagno_kostur.glb: siatki 1, kości 0, trójkąty 382, wzrost 3.64 st., akcje brak -> ZGODNE",
+  "kot_mag_dzungla_kapelusz.fbx: siatki 1, kości 0, trójkąty 224, wzrost 1.72 st., akcje brak -> ZGODNE",
+  "kot_mag_dzungla_kapelusz.glb: siatki 1, kości 0, trójkąty 224, wzrost 1.72 st., akcje brak -> ZGODNE",
+  "kot_mag_dzungla_szata.fbx: siatki 1, kości 0, trójkąty 916, wzrost 2.34 st., akcje brak -> ZGODNE",
+  "kot_mag_dzungla_szata.glb: siatki 1, kości 0, trójkąty 916, wzrost 2.34 st., akcje brak -> ZGODNE",
   "kot_mag_dzungla_pas.fbx: siatki 1, kości 0, trójkąty 116, wzrost 0.30 st., akcje brak -> ZGODNE",
   "kot_mag_dzungla_pas.glb: siatki 1, kości 0, trójkąty 116, wzrost 0.30 st., akcje brak -> ZGODNE",
-  "kot_mag_dzungla_kostur.fbx: siatki 1, kości 0, trójkąty 452, wzrost 4.06 st., akcje brak -> ZGODNE",
-  "kot_mag_dzungla_kostur.glb: siatki 1, kości 0, trójkąty 452, wzrost 4.06 st., akcje brak -> ZGODNE"
+  "kot_mag_dzungla_kostur.fbx: siatki 1, kości 0, trójkąty 444, wzrost 4.06 st., akcje brak -> ZGODNE",
+  "kot_mag_dzungla_kostur.glb: siatki 1, kości 0, trójkąty 444, wzrost 4.06 st., akcje brak -> ZGODNE"
  ]
 }

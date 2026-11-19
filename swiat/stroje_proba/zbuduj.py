@@ -15,7 +15,8 @@ z lustrem i podestem przy miejscu startu, moduły danych / logiki / ubierania i 
 
 Co powstaje (tylko w Workspace/StrojeProba z atrybutem Wygenerowane = true; cudzych kontenerów budowa NIE zmienia —
 SpawnLocation, TreningProba, MiasteczkoBazarGra i LasTeleport tylko czyta; wyjątek: --walka, opisany wyżej):
-  Moduly/DaneStrojow (wygenerowany przez dane.py), Moduly/LogikaStrojow, Moduly/Ubieranie, Moduly/OknoStrojow
+  Moduly/DaneStrojow i Moduly/DaneStrojow<Stopien> (wygenerowane przez dane.py; moduł główny scala moduły stopni),
+  Moduly/LogikaStrojow, Moduly/Ubieranie, Moduly/OknoStrojow
   SerwerStrojow (RunContext = Server), KlientStrojow (RunContext = Client)
   Zdalne/ZmienStroj (RemoteFunction), Sygnaly/SterowanieSerwera i Sygnaly/SterowanieKlienta (BindableFunction, testy)
   Przymierzalnia (Model, ModelStreamingMode Persistent): podłoga, rama lustra z taflą, podest podglądu, tablica,
@@ -52,7 +53,8 @@ ZRODLA = os.path.join(TU, "zrodla")
 AKTORZY_WALKI = os.path.join(REPO, "swiat", "test_walki2", "zrodla", "Aktorzy.luau")
 HACZYK_WALKI = "StrojeProba"          # napis, po którym --walka poznaje, że Aktorzy.luau ma haczyk stroju
 
-SKRYPTY = [
+# moduły stopni (D-106, wygenerowane przez dane.py: DaneStrojowLas / Bagno / Dzungla) idą przed modułem głównym, który je scala
+SKRYPTY = [(plik, "ModuleScript", "Moduly/" + plik[:-len(".luau")], None) for plik in DANE.pliki_luau()[1:]] + [
     ("DaneStrojow.luau", "ModuleScript", "Moduly/DaneStrojow", None),
     ("LogikaStrojow.luau", "ModuleScript", "Moduly/LogikaStrojow", None),
     ("Ubieranie.luau", "ModuleScript", "Moduly/Ubieranie", None),
@@ -394,7 +396,7 @@ def sprawdz_offline(zrodla):
     print("dane.py --sprawdz: %s (skrót %s, %d klas, %d przedmiotów)"
           % ("aktualny" if ok else "NIEAKTUALNY", D["skrot"], len(D["klasy"]), len(D["przedmioty"])))
     if not ok:
-        sys.exit("BŁĄD: zrodla/DaneStrojow.luau nieaktualny — uruchom python -B swiat/stroje_proba/dane.py")
+        sys.exit("BŁĄD: zrodla/DaneStrojow*.luau nieaktualne — uruchom python -B swiat/stroje_proba/dane.py")
     bledy, parser = SLS.sprawdz_pliki(SLS.pliki_pakietu(), wypisz=print)
     print("sprawdz_luau_strojow.py: %d plików, %s%s" % (len(zrodla), "OK" if not bledy else "BŁĘDY: %d" % len(bledy),
                                                        " (z parserem luau_mini)" if parser else " (bez parsera)"))

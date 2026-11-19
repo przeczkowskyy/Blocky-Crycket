@@ -155,7 +155,7 @@ OPISY = {
         "rekawice": ("Rękawice z Jadeitową Bransoletą", "rękawice bez palców z jadeitową bransoletą"),
         "buty": ("Złote Buty Jaguara", "złote buty z jadeitowym dyskiem na kolanie i piórami przy kostce"),
         "sztylet": ("Jadeitowy Sierp", "szerokie jadeitowe ostrze z zagiętym czubkiem, złote skrzydełka jelca, "
-                                        "pióra przy głowicy"),
+                                        "czerwony klejnot w głowicy"),
         "luk": ("Łuk Słońca z Kołczanem", "złoty łuk z piórami na końcach, czerwone lotki"),
     },
     ("mag", "las"): {
@@ -233,11 +233,33 @@ def _bron(id, klasa, st, rzecz, zaczep="RightGripAttachment", ikona_obrot=(0, 0,
                       ikona_obrot=ikona_obrot)
 
 
+def _trojkat(a, nazwa, h, szer, grub, kolor, mat="matowy", plaszczyzna="XY"):
+    """Płaski trójkąt z dwóch klinów w układzie bieżącym: podstawa w (0,0,0), wierzchołek w +Y. Płaszczyzna „XY” —
+    szerokość w osi X, grubość w Z; „YZ” — szerokość w Z, grubość w X. Dwie części Roblox (ostrosłup to cztery,
+    ścięty ostrosłup dziewięć) — bohater w świecie ma limit brył."""
+    if plaszczyzna == "XY":
+        a.klin(nazwa, (szer / 4, h / 2, 0), (grub, h, szer / 2), kolor, mat, rot=(0, -90, 0), faza=0.0)
+        a.klin(nazwa, (-szer / 4, h / 2, 0), (grub, h, szer / 2), kolor, mat, rot=(0, 90, 0), faza=0.0)
+    else:
+        a.klin(nazwa, (0, h / 2, szer / 4), (grub, h, szer / 2), kolor, mat, rot=(0, 180, 0), faza=0.0)
+        a.klin(nazwa, (0, h / 2, -szer / 4), (grub, h, szer / 2), kolor, mat, faza=0.0)
+
+
+def _plaski(a, nazwa, srodek, rozmiar, kolor, mat="matowy", rot=(0, 0, 0), faza=None):
+    """Płaski kolec (kieł, ząb, płetwa grzebienia) w miejscu ostrosłupa o tym samym środku, rozmiarze i obrocie:
+    trójkąt w płaszczyźnie szerszego z wymiarów X / Z, grubość = węższy."""
+    x, h, z = rozmiar
+    with a.uklad(pos=srodek, obrot=rot):
+        with a.uklad(pos=(0, -h / 2, 0)):
+            if x <= z:
+                _trojkat(a, nazwa, h, z, x, kolor, mat, "YZ")
+            else:
+                _trojkat(a, nazwa, h, x, z, kolor, mat, "XY")
+
+
 def _pioro(a, nazwa, kolor, dl=1.0, szer=0.3):
-    """Pióro w układzie bieżącym: nasada w (0,0,0), rośnie w +Y, płaskie w osi Z."""
-    a.ostroslup(nazwa, (0, dl / 2, 0), (szer, dl, 0.06), kolor, "matowy", gora=(szer * 0.3, 0.04), faza=0.0)
-    a.blok(nazwa + " stosina", (0, dl * 0.45, 0), (0.04, dl * 0.8, 0.08), "akcent_cien" if kolor != "akcent_cien"
-           else "akcent", "matowy", faza=0.0)
+    """Pióro w układzie bieżącym: nasada w (0,0,0), rośnie w +Y, płaskie w osi Z (trójkąt z dwóch klinów)."""
+    _trojkat(a, nazwa, dl, szer, 0.06, kolor, "matowy", "XY")
 
 
 def _wachlarz(a, nazwa, pos, katy, dl, szer=0.3, pochyl=-10):
@@ -254,7 +276,7 @@ def _ozdoby_dloni(a, st, W):
         a.blok("Futro mankietu", (0, h / 2 + 0.05, 0), (w + 0.22, 0.14, d + 0.22), "akcent_cien", "matowy", faza=0.05)
     elif st == "bagno":
         for x in (-0.24, 0.24):
-            a.ostroslup("Kolec kostki", (x, -0.02, d / 2 + 0.13), (0.18, 0.3, 0.18), "akcent", "matowy",
+            _plaski(a, "Kolec kostki", (x, -0.02, d / 2 + 0.13), (0.18, 0.3, 0.18), "akcent", "matowy",
                         rot=(90, 0, 0), faza=0.0)
     else:
         a.blok("Bransoleta", (0, h / 2 + 0.06, 0), (w + 0.24, 0.12, d + 0.24), "ozdoba", "polysk", faza=0.04)
@@ -268,7 +290,7 @@ def _ozdoby_goleni(a, st, W, przod):
     if st == "las":
         a.blok("Futro cholewy", (0, h / 2 - 0.07, 0), (w + 0.16, 0.16, d + 0.16), "akcent_cien", "matowy", faza=0.05)
     elif st == "bagno":
-        a.ostroslup("Kolec kolana", (0, h / 2 - 0.1, d / 2 + przod + 0.14), (0.24, 0.3, 0.24), "akcent", "matowy",
+        _plaski(a, "Kolec kolana", (0, h / 2 - 0.1, d / 2 + przod + 0.14), (0.24, 0.3, 0.24), "akcent", "matowy",
                     rot=(90, 0, 0), faza=0.0)
     else:
         a.walec("Dysk kolana", (0, h / 2 - 0.1, d / 2 + przod + 0.03), (0.4, 0.06, 0.4), "ozdoba", "polysk",
@@ -299,7 +321,7 @@ def _miecz(id, st):
         for y in (-0.3, 0.0, 0.3):
             a.blok("Owijka", (0, y, 0), (0.28, 0.07, 0.28), "glowny_ciemny", "matowy", faza=0.0)
         a.blok("Glowica", (0, -0.66, 0), (0.36, 0.26, 0.36), "ozdoba", "metal", faza=0.08)
-        a.ostroslup("Glowica pazur", (0, -0.92, 0), (0.2, 0.3, 0.2), "akcent", "matowy", rot=(180, 0, 0), faza=0.0)
+        _plaski(a, "Glowica pazur", (0, -0.92, 0), (0.2, 0.3, 0.2), "akcent", "matowy", rot=(180, 0, 0), faza=0.0)
         a.blok("Jelec", (0, 0.64, 0), (0.9, 0.22, 0.34), "ozdoba", "metal", faza=0.06)
         a.ostroslup("Klinga", (0, 2.1, 0), (1.0, 2.6, 0.16), "glowny", "metal", rot=(180, 0, 0), gora=(0.5, 0.14))
         a.ostroslup("Sztych", (0, 3.7, 0), (1.0, 0.6, 0.16), "glowny", "metal", gora=(0.0, 0.1),
@@ -307,7 +329,7 @@ def _miecz(id, st):
         a.blok("Grzbiet", (-0.3, 2.1, 0), (0.12, 2.3, 0.2), "glowny_ciemny", "metal", rot=(0, 0, 5.5), faza=0.0)
         for y in (1.2, 1.8, 2.4, 3.0):                             # zęby z kości na ostrzu (+X)
             pol = 0.25 + 0.25 * (y - 0.8) / 2.6
-            a.ostroslup("Zab", (pol + 0.12, y, 0), (0.26, 0.34, 0.1), "akcent", "matowy", rot=(0, 0, -90), faza=0.0)
+            _plaski(a, "Zab", (pol + 0.12, y, 0), (0.26, 0.34, 0.1), "akcent", "matowy", rot=(0, 0, -90), faza=0.0)
     else:
         a.blok("Rekojesc", (0, 0, 0), (0.24, 1.05, 0.24), "glowny_ciemny", "metal", faza=0.04)
         for y in (-0.3, 0.0, 0.3):
@@ -354,8 +376,7 @@ def _tarcza(id, st):
                     a.blok("Plytka", (x, y - 0.05, 0.09), (0.4, 0.4, 0.05), "glowny_cien", "polysk",
                            rot=(0, 0, 45), faza=0.0)
                 for x, y, kat in ((0, 0.95, 0), (0, -1.05, 180), (0.84, -0.05, -90), (-0.84, -0.05, 90)):
-                    a.ostroslup("Kolec", (x, y, 0.0), (0.22, 0.26, 0.1), "akcent", "matowy", rot=(0, 0, kat),
-                                faza=0.0)
+                    _plaski(a, "Kolec", (x, y, 0.0), (0.22, 0.26, 0.1), "akcent", "matowy", rot=(0, 0, kat))
                 a.ostroslup("Guz", (0, -0.05, 0.22), (0.3, 0.3, 0.3), "akcent", "matowy", rot=(90, 0, 0), faza=0.0)
             else:
                 a.walec("Dysk", (0, -0.05, 0.0), (1.4, 0.12, 1.4), "glowny", "metal", rot=(90, 0, 0))
@@ -365,8 +386,7 @@ def _tarcza(id, st):
                         rot=(90, 0, 0), faza=0.0)
                 for kat in (-90, -45, 0, 45, 90):                  # promienie u góry i po bokach
                     with a.uklad(pos=(0, -0.05, 0), obrot=(0, 0, kat)):
-                        a.ostroslup("Promien", (0, 0.82, 0), (0.3, 0.26, 0.1), "glowny_cien", "metal",
-                                    gora=(0.0, 0.06), faza=0.0)
+                        _plaski(a, "Promien", (0, 0.82, 0), (0.3, 0.26, 0.1), "glowny_cien", "metal")
                 for i, kat in enumerate((150, 180, 210)):          # pióra u dołu
                     with a.uklad(pos=(0, -0.05, -0.02), obrot=(0, 0, kat)):
                         with a.uklad(pos=(0, 0.6, 0)):
@@ -400,10 +420,10 @@ def _wojownik(st):
                rot=(0, 0, 45), faza=0.0)
     elif st == "bagno":
         for i, zz in enumerate((0.55, 0.15, -0.25, -0.65)):
-            a.ostroslup("Grzebien kolec", (0, h / 2 + 0.5 - 0.03 * i, zz), (0.2, 0.46 - 0.04 * i, 0.34), "akcent",
+            _plaski(a, "Grzebien kolec", (0, h / 2 + 0.5 - 0.03 * i, zz), (0.2, 0.46 - 0.04 * i, 0.34), "akcent",
                         "matowy", rot=(-14, 0, 0), faza=0.0)
         for zn in (1, -1):
-            a.ostroslup("Kiel", (zn * 0.74, -0.42, zf + 0.34), (0.2, 0.5, 0.2), "akcent", "matowy",
+            _plaski(a, "Kiel", (zn * 0.74, -0.42, zf + 0.34), (0.2, 0.5, 0.2), "akcent", "matowy",
                         rot=(108, 0, -zn * 8), faza=0.0)
     else:
         _wachlarz(a, "Pioro", (0, h / 2 + 0.28, -0.12), (-44, -22, 0, 22, 44), 1.0, 0.3)
@@ -476,7 +496,7 @@ def _wojownik(st):
         a.blok("Sakiewka klapka", (0.78, -0.02, zf + 0.27), (0.38, 0.14, 0.03), "ozdoba_ciemna", "matowy", faza=0.0)
     elif st == "bagno":
         for x in (-0.86, 0.86):
-            a.ostroslup("Kiel pasa", (x, -0.26, zf + 0.09), (0.14, 0.34, 0.08), "akcent", "matowy",
+            _plaski(a, "Kiel pasa", (x, -0.26, zf + 0.09), (0.14, 0.34, 0.08), "akcent", "matowy",
                         rot=(180, 0, 0), faza=0.0)
     else:
         a.walec("Dysk pasa", (0, 0, zf + 0.12), (0.52, 0.06, 0.52), "ozdoba", "polysk", rot=(90, 0, 0), faza=0.0)
@@ -538,9 +558,7 @@ def _sztylet(id, st):
         for y in (-0.25, 0.05, 0.35):
             a.blok("Owijka", (0, y, 0), (0.24, 0.07, 0.24), "akcent", "matowy", faza=0.0)
         a.walec("Glowica", (0, -0.6, 0), (0.36, 0.14, 0.36), "glowny", "metal", rot=(90, 0, 0))
-        for zn, kolor in ((1, "akcent"), (-1, "piora1")):
-            with a.uklad(pos=(zn * 0.07, -0.7, 0), obrot=(0, 0, 180 - zn * 16)):
-                _pioro(a, "Pioro glowicy", kolor, 0.45, 0.16)
+        a.blok("Glowica klejnot", (0, -0.6, 0), (0.18, 0.18, 0.2), "akcent", "polysk", rot=(0, 0, 45), faza=0.0)
         a.blok("Jelec", (0, 0.56, 0), (0.76, 0.16, 0.26), "glowny", "metal", faza=0.04)
         for zn in (1, -1):
             a.ostroslup("Jelec skrzydlo", (zn * 0.34, 0.76, 0), (0.16, 0.3, 0.2), "glowny", "metal", faza=0.0)
@@ -566,11 +584,11 @@ def _luk(id, st):
             a.blok("Listek konca", (0, y + zn * 0.16, zz), (0.05, 0.3, 0.3), "tkanina_jasna", "matowy",
                    rot=(45, 0, 0), faza=0.0)
         elif st == "bagno":
-            a.ostroslup("Rog konca", (0, y + zn * 0.22, zz), (0.16, 0.4, 0.16), "akcent", "matowy",
+            _plaski(a, "Rog konca", (0, y + zn * 0.16, zz), (0.16, 0.28, 0.16), "akcent", "matowy",
                         rot=(0 if zn > 0 else 180, 0, 0), faza=0.0)
         else:
             with a.uklad(pos=(0, y + zn * 0.04, zz), obrot=(-20 if zn > 0 else 200, 90, 0)):
-                _pioro(a, "Pioro konca", "akcent" if zn > 0 else "piora1", 0.5, 0.2)
+                _pioro(a, "Pioro konca", "akcent" if zn > 0 else "piora1", 0.3, 0.18)
     return a
 
 
@@ -597,12 +615,12 @@ def _zwiadowca(st):
                faza=0.1)
     elif st == "bagno":
         for i, (y, zz) in enumerate(((h / 2 + 0.5, 0.1), (h / 2 + 0.5, -0.36), (h / 2 + 0.36, -0.8))):
-            a.ostroslup("Kolec kaptura %d" % i, (0, y, zz), (0.2, 0.42, 0.32), "akcent", "matowy",
+            _plaski(a, "Kolec kaptura %d" % i, (0, y, zz), (0.2, 0.42, 0.32), "akcent", "matowy",
                         rot=(-18 - 14 * i, 0, 0), faza=0.0)
         for zn in (1, -1):
-            a.ostroslup("Kiel kaptura", (zn * 0.52, h / 2 - 0.2, zf + 0.12), (0.14, 0.34, 0.1), "akcent", "matowy",
+            _plaski(a, "Kiel kaptura", (zn * 0.52, h / 2 - 0.2, zf + 0.12), (0.14, 0.34, 0.1), "akcent", "matowy",
                         rot=(180, 0, 0), faza=0.0)
-            t.ostroslup("Kolec barku", (zn * 1.04, th / 2 + 0.22, -0.04), (0.26, 0.38, 0.26), "akcent", "matowy",
+            _plaski(t, "Kolec barku", (zn * 1.04, th / 2 + 0.22, -0.04), (0.26, 0.38, 0.26), "akcent", "matowy",
                         rot=(0, 0, -zn * 24), faza=0.0)
     else:
         _wachlarz(a, "Pioro", (0, h / 2 + 0.22, -0.4), (-52, -26, 0, 26, 52), 1.0, 0.32, pochyl=-14)
@@ -630,7 +648,7 @@ def _zwiadowca(st):
             a.blok("Plytka drewna", (zn * 0.08, h / 2 + 0.05, 0), (w + 0.16, 0.12, d + 0.2), "ozdoba", "matowy",
                    rot=(0, 0, -zn * 8), faza=0.05)
         elif st == "bagno":
-            a.ostroslup("Kolec ramienia", (zn * 0.2, h / 2 + 0.2, 0), (0.28, 0.42, 0.28), "akcent", "matowy",
+            _plaski(a, "Kolec ramienia", (zn * 0.2, h / 2 + 0.2, 0), (0.28, 0.42, 0.28), "akcent", "matowy",
                         rot=(0, 0, -zn * 22), faza=0.0)
         else:
             for i, kat in enumerate((30, 60, 90)):
@@ -673,7 +691,7 @@ def _kapelusz(id, st):
         a.blok("Czepiec", (0, 0.13, -0.02), (1.75, 0.3, 1.5), "glowny", "polysk", faza=0.1)
         a.blok("Obrecz", (0, 0.0, -0.02), (1.82, 0.08, 1.56), "ozdoba", "metal", faza=0.02)
         for zz in (0.3, -0.05, -0.4):
-            a.ostroslup("Grzebien", (0, 0.42, zz), (0.16, 0.3, 0.28), "glowny_cien", "polysk", rot=(-12, 0, 0),
+            _plaski(a, "Grzebien", (0, 0.42, zz), (0.16, 0.3, 0.28), "glowny_cien", "polysk", rot=(-12, 0, 0),
                         faza=0.0)
         a.blok("Czaszka", (0, 0.2, 0.76), (0.5, 0.4, 0.1), "akcent", "matowy", faza=0.04)
         for x in (-0.12, 0.12):
@@ -726,8 +744,8 @@ def _kostur(id, st):
         for x in (-0.13, 0.13):
             a.blok("Oko", (x, 2.03, 0.25), (0.13, 0.15, 0.04), "blask", "swiecacy", faza=0.0)
         for zn in (1, -1):
-            with a.uklad(pos=(zn * 0.24, 2.12, 0), obrot=(0, 0, -zn * 52)):
-                a.ostroslup("Rog", (0, 0.3, 0), (0.18, 0.62, 0.18), "akcent_cien", "matowy")
+            with a.uklad(pos=(zn * 0.2, 2.14, 0), obrot=(0, 0, -zn * 26)):
+                a.ostroslup("Rog", (0, 0.22, 0), (0.18, 0.46, 0.18), "akcent_cien", "matowy")
     else:
         a.blok("Okucie", (0, -0.83, 0), (0.24, 0.12, 0.24), "ozdoba", "polysk", faza=0.03)
         for i, y in enumerate((0.55, 1.0)):
@@ -736,10 +754,9 @@ def _kostur(id, st):
         a.walec("Dysk slonca", (0, 2.5, 0), (0.8, 0.1, 0.8), "glowny", "metal", rot=(90, 0, 0))
         for zk in (1, -1):
             a.blok("Klejnot", (0, 2.5, zk * 0.07), (0.3, 0.3, 0.06), "ozdoba", "polysk", rot=(0, 0, 45), faza=0.0)
-        for kat in (-90, -45, 0, 45, 90):
+        for kat in (-45, 0, 45):
             with a.uklad(pos=(0, 2.5, 0), obrot=(0, 0, kat)):
-                a.ostroslup("Promien", (0, 0.53, 0), (0.18, 0.28, 0.08), "glowny_cien", "metal", gora=(0.0, 0.04),
-                            faza=0.0)
+                _plaski(a, "Promien", (0, 0.53, 0), (0.18, 0.28, 0.08), "glowny_cien", "metal")
         for zn, kolor in ((1, "akcent"), (-1, "piora1")):
             with a.uklad(pos=(zn * 0.12, 1.66, 0), obrot=(0, 0, 180 - zn * 20)):
                 _pioro(a, "Pioro berla", kolor, 0.5, 0.18)
@@ -784,7 +801,7 @@ def _mag(st):
             a.ostroslup("Kolec", (zn * 0.88, h / 2 + 0.32, 0), (0.22, 0.38, 0.22), "akcent", "matowy",
                         rot=(0, 0, -zn * 24), faza=0.0)
         for x in (-0.22, 0.0, 0.22):
-            a.ostroslup("Kiel naszyjnika", (x, h / 2 - 0.4 + abs(x) * 0.3, zf + 0.12), (0.11, 0.24, 0.06), "akcent",
+            _plaski(a, "Kiel naszyjnika", (x, h / 2 - 0.4 + abs(x) * 0.3, zf + 0.12), (0.11, 0.24, 0.06), "akcent",
                         "matowy", rot=(180, 0, 0), faza=0.0)
     else:
         a.blok("Pektoral", (0, h / 2 - 0.01, 0), (w + 0.5, 0.14, d + 0.4), "glowny", "metal", faza=0.05)
@@ -803,7 +820,7 @@ def _mag(st):
         if st == "las":
             a.blok("Sakiewka", (0.44, 0.04, 0.6), (0.24, 0.26, 0.14), "glowny_cien", "matowy", faza=0.05)
         elif st == "bagno":
-            a.ostroslup("Kiel", (0.4, 0.02, 0.6), (0.12, 0.3, 0.08), "akcent", "matowy", rot=(180, 0, 0), faza=0.0)
+            _plaski(a, "Kiel", (0.4, 0.02, 0.6), (0.12, 0.3, 0.08), "akcent", "matowy", rot=(180, 0, 0), faza=0.0)
         else:
             a.walec("Dysk", (0.42, 0.1, 0.6), (0.3, 0.06, 0.3), "glowny_cien", "metal", rot=(90, 0, 0), faza=0.0)
 

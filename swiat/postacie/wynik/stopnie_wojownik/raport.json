@@ -1073,8 +1073,8 @@
     {
      "nazwa": "LowerTorso_Geo",
      "kosc": "LowerTorso",
-     "trojkaty": 300,
-     "wierzcholki": 186,
+     "trojkaty": 320,
+     "wierzcholki": 200,
      "wymiary": [
       2.26,
       1.566,
@@ -1115,12 +1115,12 @@
     {
      "nazwa": "Head_Geo",
      "kosc": "Head",
-     "trojkaty": 936,
-     "wierzcholki": 550,
+     "trojkaty": 996,
+     "wierzcholki": 592,
      "wymiary": [
       2.02,
       2.273,
-      2.235
+      2.249
      ],
      "min": [
       -1.01,
@@ -1130,7 +1130,7 @@
      "max": [
       1.01,
       6.023,
-      1.3
+      1.314
      ]
     },
     {
@@ -1178,8 +1178,8 @@
     {
      "nazwa": "LeftHand_Geo",
      "kosc": "LeftHand",
-     "trojkaty": 100,
-     "wierzcholki": 58,
+     "trojkaty": 120,
+     "wierzcholki": 72,
      "wymiary": [
       1.04,
       0.47,
@@ -1220,8 +1220,8 @@
     {
      "nazwa": "LeftLowerLeg_Geo",
      "kosc": "LeftLowerLeg",
-     "trojkaty": 138,
-     "wierzcholki": 77,
+     "trojkaty": 148,
+     "wierzcholki": 84,
      "wymiary": [
       1.05,
       0.85,
@@ -1304,8 +1304,8 @@
     {
      "nazwa": "RightHand_Geo",
      "kosc": "RightHand",
-     "trojkaty": 100,
-     "wierzcholki": 58,
+     "trojkaty": 120,
+     "wierzcholki": 72,
      "wymiary": [
       1.04,
       0.47,
@@ -1346,8 +1346,8 @@
     {
      "nazwa": "RightLowerLeg_Geo",
      "kosc": "RightLowerLeg",
-     "trojkaty": 138,
-     "wierzcholki": 77,
+     "trojkaty": 148,
+     "wierzcholki": 84,
      "wymiary": [
       1.05,
       0.85,
@@ -1388,8 +1388,8 @@
     {
      "nazwa": "rycerz_bagno_miecz_Akc",
      "kosc": "RightHand",
-     "trojkaty": 286,
-     "wierzcholki": 171,
+     "trojkaty": 336,
+     "wierzcholki": 206,
      "wymiary": [
       1.249,
       0.36,
@@ -1409,26 +1409,26 @@
     {
      "nazwa": "rycerz_bagno_tarcza_Akc",
      "kosc": "LeftHand",
-     "trojkaty": 226,
-     "wierzcholki": 145,
+     "trojkaty": 266,
+     "wierzcholki": 173,
      "wymiary": [
       0.664,
       2.26,
-      1.91
+      1.928
      ],
      "min": [
       2.055,
       1.145,
-      -0.955
+      -0.964
      ],
      "max": [
       2.719,
       3.405,
-      0.955
+      0.964
      ]
     }
    ],
-   "trojkaty_razem": 3536,
+   "trojkaty_razem": 3766,
    "tekstury": {
     "rozmiar_px": 64,
     "kolory_materialy": 22
@@ -1438,7 +1438,7 @@
    "wymiary_ciala": [
     4.77,
     6.023,
-    2.289
+    2.303
    ],
    "wymiary_z_akcesoriami": [
     5.104,
@@ -1540,16 +1540,16 @@
    ],
    "grupy_ciala": {
     "Head": {
-     "trojkaty": 936,
+     "trojkaty": 996,
      "limit": 4000,
      "wymiary": [
       2.02,
       2.273,
-      2.235
+      2.249
      ]
     },
     "Torso": {
-     "trojkaty": 624,
+     "trojkaty": 644,
      "limit": 1750,
      "wymiary": [
       2.26,
@@ -1558,7 +1558,7 @@
      ]
     },
     "LeftArm": {
-     "trojkaty": 406,
+     "trojkaty": 426,
      "limit": 1248,
      "wymiary": [
       1.37,
@@ -1567,7 +1567,7 @@
      ]
     },
     "RightArm": {
-     "trojkaty": 406,
+     "trojkaty": 426,
      "limit": 1248,
      "wymiary": [
       1.37,
@@ -1576,7 +1576,7 @@
      ]
     },
     "LeftLeg": {
-     "trojkaty": 326,
+     "trojkaty": 336,
      "limit": 1248,
      "wymiary": [
       1.09,
@@ -1585,7 +1585,7 @@
      ]
     },
     "RightLeg": {
-     "trojkaty": 326,
+     "trojkaty": 336,
      "limit": 1248,
      "wymiary": [
       1.09,
@@ -1606,8 +1606,8 @@
     {
      "nazwa": "LowerTorso_Geo",
      "kosc": "LowerTorso",
-     "trojkaty": 364,
-     "wierzcholki": 224,
+     "trojkaty": 348,
+     "wierzcholki": 216,
      "wymiary": [
       2.26,
       1.626,
@@ -1627,17 +1627,17 @@
     {
      "nazwa": "UpperTorso_Geo",
      "kosc": "UpperTorso",
-     "trojkaty": 312,
-     "wierzcholki": 192,
+     "trojkaty": 288,
+     "wierzcholki": 180,
      "wymiary": [
       2.2,
       1.58,
-      1.42
+      1.41
      ],
      "min": [
       -1.1,
       2.3,
-      -0.7
+      -0.69
      ],
      "max": [
       1.1,
@@ -1648,11 +1648,11 @@
     {
      "nazwa": "Head_Geo",
      "kosc": "Head",
-     "trojkaty": 1060,
-     "wierzcholki": 624,
+     "trojkaty": 1020,
+     "wierzcholki": 604,
      "wymiary": [
       2.02,
-      2.818,
+      2.82,
       1.965
      ],
      "min": [
@@ -1662,7 +1662,7 @@
      ],
      "max": [
       1.01,
-      6.568,
+      6.57,
       1.03
      ]
     },
@@ -1921,17 +1921,17 @@
     {
      "nazwa": "rycerz_dzungla_miecz_Akc",
      "kosc": "RightHand",
-     "trojkaty": 476,
-     "wierzcholki": 288,
+     "trojkaty": 460,
+     "wierzcholki": 280,
      "wymiary": [
       1.048,
       0.438,
-      5.431
+      5.423
      ],
      "min": [
       -2.099,
       1.706,
-      -1.331
+      -1.323
      ],
      "max": [
       -1.051,
@@ -1942,51 +1942,51 @@
     {
      "nazwa": "rycerz_dzungla_tarcza_Akc",
      "kosc": "LeftHand",
-     "trojkaty": 264,
-     "wierzcholki": 166,
+     "trojkaty": 280,
+     "wierzcholki": 184,
      "wymiary": [
-      0.495,
+      0.514,
       2.05,
-      1.882
+      1.888
      ],
      "min": [
       2.055,
       1.175,
-      -0.941
+      -0.944
      ],
      "max": [
-      2.55,
+      2.569,
       3.225,
-      0.941
+      0.944
      ]
     }
    ],
-   "trojkaty_razem": 4076,
+   "trojkaty_razem": 3996,
    "tekstury": {
     "rozmiar_px": 64,
-    "kolory_materialy": 25
+    "kolory_materialy": 24
    },
    "typ": "r15",
    "skala": 1.0,
    "wymiary_ciala": [
     5.132,
-    6.568,
+    6.57,
     2.019
    ],
    "wymiary_z_akcesoriami": [
-    5.132,
-    6.568,
-    5.431
+    5.135,
+    6.57,
+    5.423
    ],
    "zakres_z_akcesoriami": [
     [
      -2.566,
      0.0,
-     -1.331
+     -1.323
     ],
     [
-     2.566,
-     6.568,
+     2.569,
+     6.57,
      4.1
     ]
    ],
@@ -2073,16 +2073,16 @@
    ],
    "grupy_ciala": {
     "Head": {
-     "trojkaty": 1060,
+     "trojkaty": 1020,
      "limit": 4000,
      "wymiary": [
       2.02,
-      2.818,
+      2.82,
       1.965
      ]
     },
     "Torso": {
-     "trojkaty": 676,
+     "trojkaty": 636,
      "limit": 1750,
      "wymiary": [
       2.26,
@@ -2563,12 +2563,12 @@
     {
      "nazwa": "rycerz_bagno_helm",
      "kosc": null,
-     "trojkaty": 520,
-     "wierzcholki": 310,
+     "trojkaty": 580,
+     "wierzcholki": 352,
      "wymiary": [
       2.02,
       2.273,
-      2.235
+      2.249
      ],
      "min": [
       -1.01,
@@ -2578,11 +2578,11 @@
      "max": [
       1.01,
       6.023,
-      1.3
+      1.314
      ]
     }
    ],
-   "trojkaty_razem": 520,
+   "trojkaty_razem": 580,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 4
@@ -2598,13 +2598,13 @@
     [
      1.01,
      6.023,
-     1.3
+     1.314
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
     4.886,
-    0.182
+    0.19
    ],
    "ostrzezenia": []
   },
@@ -2722,8 +2722,8 @@
     {
      "nazwa": "rycerz_bagno_pas",
      "kosc": null,
-     "trojkaty": 112,
-     "wierzcholki": 66,
+     "trojkaty": 132,
+     "wierzcholki": 80,
      "wymiary": [
       2.26,
       0.6,
@@ -2741,7 +2741,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 112,
+   "trojkaty_razem": 132,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 4
@@ -2775,8 +2775,8 @@
     {
      "nazwa": "rycerz_bagno_rekawice",
      "kosc": null,
-     "trojkaty": 200,
-     "wierzcholki": 116,
+     "trojkaty": 240,
+     "wierzcholki": 144,
      "wymiary": [
       2.14,
       0.47,
@@ -2794,7 +2794,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 200,
+   "trojkaty_razem": 240,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 3
@@ -2828,8 +2828,8 @@
     {
      "nazwa": "rycerz_bagno_buty",
      "kosc": null,
-     "trojkaty": 476,
-     "wierzcholki": 266,
+     "trojkaty": 496,
+     "wierzcholki": 280,
      "wymiary": [
       2.19,
       1.2,
@@ -2847,7 +2847,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 476,
+   "trojkaty_razem": 496,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 6
@@ -2881,8 +2881,8 @@
     {
      "nazwa": "rycerz_bagno_miecz",
      "kosc": null,
-     "trojkaty": 286,
-     "wierzcholki": 171,
+     "trojkaty": 336,
+     "wierzcholki": 206,
      "wymiary": [
       1.249,
       5.05,
@@ -2900,7 +2900,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 286,
+   "trojkaty_razem": 336,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 6
@@ -2934,26 +2934,26 @@
     {
      "nazwa": "rycerz_bagno_tarcza",
      "kosc": null,
-     "trojkaty": 226,
-     "wierzcholki": 145,
+     "trojkaty": 266,
+     "wierzcholki": 173,
      "wymiary": [
       0.664,
-      1.91,
+      1.928,
       2.26
      ],
      "min": [
       0.48,
-      -0.955,
+      -0.964,
       -1.48
      ],
      "max": [
       1.144,
-      0.955,
+      0.964,
       0.78
      ]
     }
    ],
-   "trojkaty_razem": 226,
+   "trojkaty_razem": 266,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 5
@@ -2963,12 +2963,12 @@
    "zakres_od_zaczepu": [
     [
      0.48,
-     -0.955,
+     -0.964,
      -1.48
     ],
     [
      1.144,
-     0.955,
+     0.964,
      0.78
     ]
    ],
@@ -2987,11 +2987,11 @@
     {
      "nazwa": "rycerz_dzungla_helm",
      "kosc": null,
-     "trojkaty": 644,
-     "wierzcholki": 384,
+     "trojkaty": 604,
+     "wierzcholki": 364,
      "wymiary": [
       2.02,
-      2.818,
+      2.82,
       1.965
      ],
      "min": [
@@ -3001,15 +3001,15 @@
      ],
      "max": [
       1.01,
-      6.568,
+      6.57,
       1.03
      ]
     }
    ],
-   "trojkaty_razem": 644,
+   "trojkaty_razem": 604,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 9
+    "kolory_materialy": 8
    },
    "zaczep": "EkwHeadAttachment",
    "typ_roblox": "Inne",
@@ -3021,13 +3021,13 @@
     ],
     [
      1.01,
-     6.568,
+     6.57,
      1.03
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    5.159,
+    5.16,
     0.047
    ],
    "ostrzezenia": []
@@ -3040,8 +3040,8 @@
     {
      "nazwa": "rycerz_dzungla_zbroja",
      "kosc": null,
-     "trojkaty": 984,
-     "wierzcholki": 576,
+     "trojkaty": 960,
+     "wierzcholki": 564,
      "wymiary": [
       5.132,
       3.771,
@@ -3059,10 +3059,10 @@
      ]
     }
    ],
-   "trojkaty_razem": 984,
+   "trojkaty_razem": 960,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 11
+    "kolory_materialy": 10
    },
    "zaczep": "EkwUpperTorsoAttachment",
    "typ_roblox": "Inne",
@@ -3146,8 +3146,8 @@
     {
      "nazwa": "rycerz_dzungla_pas",
      "kosc": null,
-     "trojkaty": 176,
-     "wierzcholki": 104,
+     "trojkaty": 160,
+     "wierzcholki": 96,
      "wymiary": [
       2.26,
       0.84,
@@ -3165,10 +3165,10 @@
      ]
     }
    ],
-   "trojkaty_razem": 176,
+   "trojkaty_razem": 160,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 7
+    "kolory_materialy": 6
    },
    "zaczep": "EkwLowerTorsoAttachment",
    "typ_roblox": "Inne",
@@ -3305,16 +3305,16 @@
     {
      "nazwa": "rycerz_dzungla_miecz",
      "kosc": null,
-     "trojkaty": 476,
-     "wierzcholki": 288,
+     "trojkaty": 460,
+     "wierzcholki": 280,
      "wymiary": [
       1.048,
-      5.431,
+      5.423,
       0.438
      ],
      "min": [
       -0.524,
-      -1.331,
+      -1.323,
       -0.219
      ],
      "max": [
@@ -3324,17 +3324,17 @@
      ]
     }
    ],
-   "trojkaty_razem": 476,
+   "trojkaty_razem": 460,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 8
+    "kolory_materialy": 7
    },
    "zaczep": "RightGripAttachment",
    "typ_roblox": "Bron",
    "zakres_od_zaczepu": [
     [
      -0.524,
-     -1.331,
+     -1.323,
      -0.219
     ],
     [
@@ -3345,7 +3345,7 @@
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    1.384,
+    1.388,
     0.0
    ],
    "ostrzezenia": []
@@ -3358,46 +3358,46 @@
     {
      "nazwa": "rycerz_dzungla_tarcza",
      "kosc": null,
-     "trojkaty": 264,
-     "wierzcholki": 166,
+     "trojkaty": 280,
+     "wierzcholki": 184,
      "wymiary": [
-      0.495,
-      1.882,
+      0.514,
+      1.888,
       2.05
      ],
      "min": [
       0.48,
-      -0.941,
+      -0.944,
       -1.3
      ],
      "max": [
-      0.975,
-      0.941,
+      0.994,
+      0.944,
       0.75
      ]
     }
    ],
-   "trojkaty_razem": 264,
+   "trojkaty_razem": 280,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 8
+    "kolory_materialy": 7
    },
    "zaczep": "LeftGripAttachment",
    "typ_roblox": "Bron",
    "zakres_od_zaczepu": [
     [
      0.48,
-     -0.941,
+     -0.944,
      -1.3
     ],
     [
-     0.975,
-     0.941,
+     0.994,
+     0.944,
      0.75
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
-    0.728,
+    0.737,
     0.0,
     -0.275
    ],
@@ -3412,12 +3412,12 @@
   "stopnie_wojownik_las.fbx: siatki 34, kości 17, trójkąty 3540, wzrost 5.94 st., akcje brak -> ZGODNE",
   "stopnie_wojownik_las__idle.fbx: siatki 34, kości 17, trójkąty 3540, wzrost 5.94 st., akcje stopnie_wojownik_las|Scene 1-61 -> ZGODNE",
   "stopnie_wojownik_las.glb: siatki 34, kości 17, trójkąty 3540, wzrost 5.94 st., akcje idle 0-60 -> ZGODNE",
-  "stopnie_wojownik_bagno.fbx: siatki 34, kości 17, trójkąty 3252, wzrost 6.02 st., akcje brak -> ZGODNE",
-  "stopnie_wojownik_bagno__idle.fbx: siatki 34, kości 17, trójkąty 3252, wzrost 6.02 st., akcje stopnie_wojownik_bagno|Scene 1-61 -> ZGODNE",
-  "stopnie_wojownik_bagno.glb: siatki 34, kości 17, trójkąty 3252, wzrost 6.02 st., akcje idle 0-60 -> ZGODNE",
-  "stopnie_wojownik_dzungla.fbx: siatki 34, kości 17, trójkąty 3564, wzrost 6.57 st., akcje brak -> ZGODNE",
-  "stopnie_wojownik_dzungla__idle.fbx: siatki 34, kości 17, trójkąty 3564, wzrost 6.57 st., akcje stopnie_wojownik_dzungla|Scene 1-61 -> ZGODNE",
-  "stopnie_wojownik_dzungla.glb: siatki 34, kości 17, trójkąty 3564, wzrost 6.57 st., akcje idle 0-60 -> ZGODNE",
+  "stopnie_wojownik_bagno.fbx: siatki 34, kości 17, trójkąty 3392, wzrost 6.02 st., akcje brak -> ZGODNE",
+  "stopnie_wojownik_bagno__idle.fbx: siatki 34, kości 17, trójkąty 3392, wzrost 6.02 st., akcje stopnie_wojownik_bagno|Scene 1-61 -> ZGODNE",
+  "stopnie_wojownik_bagno.glb: siatki 34, kości 17, trójkąty 3392, wzrost 6.02 st., akcje idle 0-60 -> ZGODNE",
+  "stopnie_wojownik_dzungla.fbx: siatki 34, kości 17, trójkąty 3484, wzrost 6.57 st., akcje brak -> ZGODNE",
+  "stopnie_wojownik_dzungla__idle.fbx: siatki 34, kości 17, trójkąty 3484, wzrost 6.57 st., akcje stopnie_wojownik_dzungla|Scene 1-61 -> ZGODNE",
+  "stopnie_wojownik_dzungla.glb: siatki 34, kości 17, trójkąty 3484, wzrost 6.57 st., akcje idle 0-60 -> ZGODNE",
   "rycerz_las_helm.fbx: siatki 1, kości 0, trójkąty 804, wzrost 2.19 st., akcje brak -> ZGODNE",
   "rycerz_las_helm.glb: siatki 1, kości 0, trójkąty 804, wzrost 2.19 st., akcje brak -> ZGODNE",
   "rycerz_las_zbroja.fbx: siatki 1, kości 0, trójkąty 900, wzrost 3.45 st., akcje brak -> ZGODNE",
@@ -3434,37 +3434,37 @@
   "rycerz_las_miecz.glb: siatki 1, kości 0, trójkąty 368, wzrost 4.83 st., akcje brak -> ZGODNE",
   "rycerz_las_tarcza.fbx: siatki 1, kości 0, trójkąty 232, wzrost 1.74 st., akcje brak -> ZGODNE",
   "rycerz_las_tarcza.glb: siatki 1, kości 0, trójkąty 232, wzrost 1.74 st., akcje brak -> ZGODNE",
-  "rycerz_bagno_helm.fbx: siatki 1, kości 0, trójkąty 520, wzrost 2.27 st., akcje brak -> ZGODNE",
-  "rycerz_bagno_helm.glb: siatki 1, kości 0, trójkąty 520, wzrost 2.27 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_helm.fbx: siatki 1, kości 0, trójkąty 580, wzrost 2.27 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_helm.glb: siatki 1, kości 0, trójkąty 580, wzrost 2.27 st., akcje brak -> ZGODNE",
   "rycerz_bagno_zbroja.fbx: siatki 1, kości 0, trójkąty 1080, wzrost 3.57 st., akcje brak -> ZGODNE",
   "rycerz_bagno_zbroja.glb: siatki 1, kości 0, trójkąty 1080, wzrost 3.57 st., akcje brak -> ZGODNE",
   "rycerz_bagno_nogawice.fbx: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE",
   "rycerz_bagno_nogawice.glb: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE",
-  "rycerz_bagno_pas.fbx: siatki 1, kości 0, trójkąty 112, wzrost 0.60 st., akcje brak -> ZGODNE",
-  "rycerz_bagno_pas.glb: siatki 1, kości 0, trójkąty 112, wzrost 0.60 st., akcje brak -> ZGODNE",
-  "rycerz_bagno_rekawice.fbx: siatki 1, kości 0, trójkąty 200, wzrost 0.47 st., akcje brak -> ZGODNE",
-  "rycerz_bagno_rekawice.glb: siatki 1, kości 0, trójkąty 200, wzrost 0.47 st., akcje brak -> ZGODNE",
-  "rycerz_bagno_buty.fbx: siatki 1, kości 0, trójkąty 476, wzrost 1.20 st., akcje brak -> ZGODNE",
-  "rycerz_bagno_buty.glb: siatki 1, kości 0, trójkąty 476, wzrost 1.20 st., akcje brak -> ZGODNE",
-  "rycerz_bagno_miecz.fbx: siatki 1, kości 0, trójkąty 286, wzrost 5.05 st., akcje brak -> ZGODNE",
-  "rycerz_bagno_miecz.glb: siatki 1, kości 0, trójkąty 286, wzrost 5.05 st., akcje brak -> ZGODNE",
-  "rycerz_bagno_tarcza.fbx: siatki 1, kości 0, trójkąty 226, wzrost 1.91 st., akcje brak -> ZGODNE",
-  "rycerz_bagno_tarcza.glb: siatki 1, kości 0, trójkąty 226, wzrost 1.91 st., akcje brak -> ZGODNE",
-  "rycerz_dzungla_helm.fbx: siatki 1, kości 0, trójkąty 644, wzrost 2.82 st., akcje brak -> ZGODNE",
-  "rycerz_dzungla_helm.glb: siatki 1, kości 0, trójkąty 644, wzrost 2.82 st., akcje brak -> ZGODNE",
-  "rycerz_dzungla_zbroja.fbx: siatki 1, kości 0, trójkąty 984, wzrost 3.77 st., akcje brak -> ZGODNE",
-  "rycerz_dzungla_zbroja.glb: siatki 1, kości 0, trójkąty 984, wzrost 3.77 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_pas.fbx: siatki 1, kości 0, trójkąty 132, wzrost 0.60 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_pas.glb: siatki 1, kości 0, trójkąty 132, wzrost 0.60 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_rekawice.fbx: siatki 1, kości 0, trójkąty 240, wzrost 0.47 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_rekawice.glb: siatki 1, kości 0, trójkąty 240, wzrost 0.47 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_buty.fbx: siatki 1, kości 0, trójkąty 496, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_buty.glb: siatki 1, kości 0, trójkąty 496, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_miecz.fbx: siatki 1, kości 0, trójkąty 336, wzrost 5.05 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_miecz.glb: siatki 1, kości 0, trójkąty 336, wzrost 5.05 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_tarcza.fbx: siatki 1, kości 0, trójkąty 266, wzrost 1.93 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_tarcza.glb: siatki 1, kości 0, trójkąty 266, wzrost 1.93 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_helm.fbx: siatki 1, kości 0, trójkąty 604, wzrost 2.82 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_helm.glb: siatki 1, kości 0, trójkąty 604, wzrost 2.82 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_zbroja.fbx: siatki 1, kości 0, trójkąty 960, wzrost 3.77 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_zbroja.glb: siatki 1, kości 0, trójkąty 960, wzrost 3.77 st., akcje brak -> ZGODNE",
   "rycerz_dzungla_nogawice.fbx: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE",
   "rycerz_dzungla_nogawice.glb: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE",
-  "rycerz_dzungla_pas.fbx: siatki 1, kości 0, trójkąty 176, wzrost 0.84 st., akcje brak -> ZGODNE",
-  "rycerz_dzungla_pas.glb: siatki 1, kości 0, trójkąty 176, wzrost 0.84 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_pas.fbx: siatki 1, kości 0, trójkąty 160, wzrost 0.84 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_pas.glb: siatki 1, kości 0, trójkąty 160, wzrost 0.84 st., akcje brak -> ZGODNE",
   "rycerz_dzungla_rekawice.fbx: siatki 1, kości 0, trójkąty 288, wzrost 0.55 st., akcje brak -> ZGODNE",
   "rycerz_dzungla_rekawice.glb: siatki 1, kości 0, trójkąty 288, wzrost 0.55 st., akcje brak -> ZGODNE",
   "rycerz_dzungla_buty.fbx: siatki 1, kości 0, trójkąty 608, wzrost 1.20 st., akcje brak -> ZGODNE",
   "rycerz_dzungla_buty.glb: siatki 1, kości 0, trójkąty 608, wzrost 1.20 st., akcje brak -> ZGODNE",
-  "rycerz_dzungla_miecz.fbx: siatki 1, kości 0, trójkąty 476, wzrost 5.43 st., akcje brak -> ZGODNE",
-  "rycerz_dzungla_miecz.glb: siatki 1, kości 0, trójkąty 476, wzrost 5.43 st., akcje brak -> ZGODNE",
-  "rycerz_dzungla_tarcza.fbx: siatki 1, kości 0, trójkąty 264, wzrost 1.88 st., akcje brak -> ZGODNE",
-  "rycerz_dzungla_tarcza.glb: siatki 1, kości 0, trójkąty 264, wzrost 1.88 st., akcje brak -> ZGODNE"
+  "rycerz_dzungla_miecz.fbx: siatki 1, kości 0, trójkąty 460, wzrost 5.42 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_miecz.glb: siatki 1, kości 0, trójkąty 460, wzrost 5.42 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_tarcza.fbx: siatki 1, kości 0, trójkąty 280, wzrost 1.89 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_tarcza.glb: siatki 1, kości 0, trójkąty 280, wzrost 1.89 st., akcje brak -> ZGODNE"
  ]
 }
