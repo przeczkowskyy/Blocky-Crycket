@@ -355,9 +355,9 @@ def chwila(D, gra):
     if gra == "sila":
         _gracz(L, pd, przezr=0.55)
         z = W_["strefy"]["prawo"]
-        _cz(L, "Skrzynka", z, [1.6, 1.6, 1.6], "D9822B", m="WoodPlanks")
+        _cz(L, "Dynia", z, [1.7, 1.7, 1.7], "F08A24", k="K")
         z2 = W_["strefy"]["gora"]
-        _cz(L, "Dzban", [z2[0], z2[1] + 3.2, z2[2] - 4], [1.7, 1.7, 1.7], "B07A45", k="K")
+        _cz(L, "Jablko", [z2[0], z2[1] + 3.2, z2[2] - 4], [1.5, 1.5, 1.5], "E5392B", k="K")
     elif gra == "pancerz":
         _gracz(L, pd)  # kamera z boku: postać nie zasłania pola gry, więc w grze jest pełna (nie półprzezroczysta)
         _cz(L, "Tarcza", W_["tarcza_blok"], [2.6, 2.9, 0.35], "3D7BE5")

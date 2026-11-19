@@ -208,8 +208,6 @@ def czesci_gry(D):
         S.klocek("Arena/Pancerz/Szyld", "Slupek%d" % (i + 1), _plus(g, [dx, 6.2, -2.5]), [0.7, 12.4, 0.7], KAMIEN_DZ, m="Slate")
     S.klocek("Arena/Pancerz/Szyld", "Deska", _plus(g, [0, 12.5, -2.5]), [10, 2, 0.4], KREM,
              napis=_napis("%s — %s" % (st_k["pancerz"]["nazwa"].upper(), st_k["pancerz"]["gra"].upper())))
-    tn, kat, _ = trener("pancerz")  # punkt trenera bez figury: płaska kamienna płyta (miejsce dla postaci NPC)
-    S.walec("Arena/Pancerz", "MiejsceTrenera", _plus(tn, [0, 0.08, 0]), 0.16, 3.6, KAMIEN_DZ_J, m="Slate", kol=False)
 
     # --- Kondycja „Bieżnia” — Grobla przez Bagno: biegacz twarzą do kamery na grobli z bali; deski (dawne pasy taśmy)
     #     przesuwa klient, ślady stóp jadą od przodu do linii przed palcami; poręcze z żerdzi, z boku pomost trenera z bębnem

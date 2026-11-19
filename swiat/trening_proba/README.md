@@ -10,17 +10,17 @@ napisy, efekty 3D trafień, konfetti i radość po rundzie — zaprogramowane, s
 wdrożone w Studio i sprawdzone w trybie Play z bohaterem klasy (część B: lista T01–T27 — 27 × OK)** (sekcja „Wygląd jak
 w walce”; nowy wygląd pokazują zrzuty 26–79 w `klatki/`, zrzuty 01–25 są sprzed tej zmiany).
 **19.11.2026: scenerie krain (D-108) — każda mini-gra w innym otoczeniu Lasu, Bagna i Dżungli zamiast areny w murach;
-część A zrobiona i sprawdzona bez Studio (60 testów), w Studio nadal stoi arena z 18.11 — sekcja „Scenerie krain”.**
+zbudowane w Studio i sprawdzone w trybie Play (lista T01–T31 — 31 × OK, czas klatki bez zmian), w Sile lecą owoce
+zamiast skrzynek, pięciu trenerów to animowane postacie NPC — sekcja „Scenerie krain”.**
 Opis sześciu mini-gier, wybory dla ludzi i ustawienia „przyjęte, do zmiany”: [`PROJEKT.md`](PROJEKT.md).
 Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅). Przyrost według propozycji
 `tools/walka/BALANS_1711.md`, część 6 — to nie jest decyzja (wybór 1 w PROJEKT.md).*
 
 > **W skrócie.** Jeden kontener `Workspace/TreningProba` (atrybut `Wygenerowane = true`). Od 19.11.2026 (D-108,
-> na razie bez Studio) sześć mini-gier stoi w **sceneriach krain**: pas 2798 klocków (316 części gier i 2482 części
-> scenerii) w powietrzu, z dala od map, wokół (3000; 300; 3000) — Łąka pod dębem i Polana drwali w Lesie, Grobla
-> i Pomost nad topielą na Bagnie, Krąg strażnika i Świątynia run w Dżungli. W Studio stoi jeszcze arena w murach
-> z 18.11 (1658 klocków, lista T01–T31 — 31 × OK). Sześć gier: **Siła
-> „Rozbijanie”** (strzałka w stronę lecącej skrzynki), **Pancerz „Blok”** (blok w chwili ciosu, bez dawania się nabrać
+> zbudowane w Studio, lista T01–T31 — 31 × OK) sześć mini-gier stoi w **sceneriach krain**: pas 2797 klocków (315
+> części gier i 2482 części scenerii) w powietrzu, z dala od map, wokół (3000; 300; 3000) — Łąka pod dębem i Polana
+> drwali w Lesie, Grobla i Pomost nad topielą na Bagnie, Krąg strażnika i Świątynia run w Dżungli. Sześć gier: **Siła
+> „Rozbijanie”** (strzałka w stronę lecącego owocu), **Pancerz „Blok”** (blok w chwili ciosu, bez dawania się nabrać
 > na zmyłki), **Kondycja „Bieżnia”** (lewa / prawa stopa w rytmie, gdy ślad dojedzie do linii), **Zręczność „Kłody”**
 > (skok nad niską kłodą, padnij pod wysoką), **Inteligencja „Runy”** (powtórz świecące runy) i **Szczęście
 > „Koniczyny”** (koszyk nad głową, przejście na tor koniczyny, z dala od kamieni). Wejście: E przy trenerze
@@ -41,7 +41,7 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | `scenerie.py` | **generator scenerii krain** (D-108): sześć scenerii z rodzin map Lasu, Bagna i Dżungli (tylko import), każdy rekwizyt po kontroli wolnej przestrzeni gry → `scenerie.json`; `--sprawdz`, `--raport` |
 | `scenerie.json` | **wygenerowany** — części scenerii w układzie areny (grupa `Arena/Dekoracje/<Gra>/…`, bez kolizji); nie edytować ręcznie |
 | `dekoracje.py` | figury trenerów z twarzą i strojem, szczegóły golema oraz **kontrola scenerii** (numpy): pola gry (`POLA_GRY`), `kontrola(D)` — pola gry wolne, kadry niezasłonięte, przedpole czyste; `kontrola_tla(D)` — tło kadrów bez pustki; `Straznik` (ta sama kontrola dla generatora); `budzet(cz)`; uruchomiony wypisuje liczbę części wg grup i wyniki. Dekoracje placu w murach z 18.11 usunięte (zastąpiły je scenerie) |
-| `scena.py` | elementy gier (316 części): podłoże komórek, niewidzialne ściany pasa, sześć stanowisk z figurami trenerów w punktach `trener_npc`; `czesci(D)` dokłada scenerie z `scenerie.json` (razem 2798); `pole_gry` — punkty, które gracz musi widzieć |
+| `scena.py` | elementy gier (315 części): podłoże komórek, niewidzialne ściany pasa, sześć stanowisk z figurami trenerów w punktach `trener_npc`; `czesci(D)` dokłada scenerie z `scenerie.json` (razem 2797); `pole_gry` — punkty, które gracz musi widzieć |
 | `podglad.py` | **podglądy bez Studio**: render brył z `scena.py` z kamery każdej mini-gry + przykładowa chwila gry, zarys przycisków i dużego napisu; sceneria każdej gry z góry (`<gra>_gora`) i cały pas (`pas`) (numpy + Pillow, najniższy priorytet) → `podglady/`; `--ujecie start` / `final`, `--ekran 667x375` |
 | `podglady/` | `podglad_<gra>.jpg` (kamera gry), `podglad_<gra>_gora.jpg` (sceneria z góry), `podglad_<gra>_start.jpg` (początek odliczania), `podglad_<gra>_final.jpg` (zbliżenie po rundzie z kartą) i `podglad_pas.jpg` — render brył, nie zrzut z gry |
 | `zrodla/LogikaTreningu.luau` | czysta logika (ModuleScript) — ta sama co lustro; serwer sprawdza ją przy starcie (118 przypadków) |
@@ -53,7 +53,7 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | `zrodla/DaneTreningu.luau` | **wygenerowany** — nie edytować ręcznie |
 | `sprawdz_luau_treningu.py` | kontrola statyczna Luau (reguły jak w bazarze + zakaz zasobów spoza Robloxa i rozmiarów tekstu z literałów; jedyny wyjątek: adres arkusza dźwięku z katalogu `swiat/dzwiek_gra`) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
-| `testy/test_treningu.py` | 60 testów offline (opis w nagłówku pliku; 5e — pole gry na czterech ekranach, 5f–5h i 3f–3g, 4f, 6i–6l — wygląd jak w walce; 4g–4l — scenerie krain) |
+| `testy/test_treningu.py` | 61 testów offline (opis w nagłówku pliku; 5e — pole gry na czterech ekranach, 5f–5h i 3f–3g, 4f, 6i–6l — wygląd jak w walce; 4g–4l — scenerie krain; 6m — owoce w Sile) |
 | `testy/proba_play.py` | próba w Studio (Play): T01–T14 (Siła, Pancerz, wejście, wyjście, telefon), T15–T22 (cztery nowe gry, spam, reset postaci, klatka) i T23–T27 (kamery, napisy, efekty, konfetti, bohater); `--nowe`, `--walka`; `--sprawdz` — kawałki Luau bez Studio |
 | `testy/zrzuty_gry.py` | zrzuty z gry do `klatki/` (1280 px): 01–08 (Siła, Pancerz), 09–24 (każda nowa gra: start z podpowiedzią, środek rundy, podsumowanie, telefon 667 × 375), `--telefon` (26–37), `--walka` (38–67: odliczanie, trafienie, seria, zbliżenie z konfetti, zbliżenie na telefonie); `--nowe`, `--sprawdz` |
 | `klatki/` | zrzuty z gry (tryb Play) — tabela w „Zrzuty z gry” |
@@ -69,7 +69,7 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | `Sygnaly/PrzyrostStatystyki` | BindableEvent | **dla przyszłego modułu statystyk** (dziś nikt go nie słucha) |
 | `Sygnaly/WybierzGre` | BindableFunction (klient) | **uchwyt dla docelowego okna 2D Pawła** |
 | `Sygnaly/SterowanieSerwera`, `Sygnaly/SterowanieKlienta` | BindableFunction | haczyki testowe |
-| `Arena` (Model, `ModelStreamingMode = Persistent`) | części | od D-108 (po części B): pas sześciu scenerii krain — podłoże komórek, niewidzialne ściany 16 st wokół pasa, sześć stanowisk i `Dekoracje/<Gra>` ze scenerią każdej gry; bez lobby (gracz przechodzi z okna wyboru prosto do scenerii). Do części B w Studio stoi arena w murach z 18.11 |
+| `Arena` (Model, `ModelStreamingMode = Persistent`) | części | od D-108 (w Studio od 19.11.2026): pas sześciu scenerii krain — podłoże komórek, niewidzialne ściany 16 st wokół pasa, sześć stanowisk i `Dekoracje/<Gra>` ze scenerią każdej gry, 2797 części; bez lobby (gracz przechodzi z okna wyboru prosto do scenerii) |
 | `TablicaWejscia` (Model, Persistent) | części | tablica „TRAINING CENTER / MINI-GRY” z podpowiedzią E 14–26 st od pierwszego SpawnLocation, na wolnym gruncie, z dala od „Nowe miasteczko (E)” bazaru i portalu startowego; miejsce wybiera budowa w Studio |
 
 Atrybuty kontenera: `Wygenerowane`, `Zrodlo`, `Zbudowano`, `Skrot`, `PunktTablicy`, **`WyborTymczasowy`** (true; false
@@ -110,7 +110,7 @@ zmienia.
 python -B swiat/trening_proba/dane.py                    # po każdej zmianie ustawienia.json
 python -B swiat/trening_proba/scenerie.py                # po zmianie stanowisk albo scenerii: generuje scenerie.json
 python -B swiat/trening_proba/dekoracje.py               # liczby części i kontrola scenerii (pola gry, kadry, tło)
-python -B swiat/trening_proba/testy/test_treningu.py     # 60 testów, ok. 1 min
+python -B swiat/trening_proba/testy/test_treningu.py     # 61 testów, ok. 1 min
 python -B swiat/trening_proba/zbuduj.py --sucho          # bez Studio: dane, Luau, strażniki, plan budowy
 python -B swiat/trening_proba/podglad.py                 # podglądy stanowisk do podglady/ (ok. 1 min, bez Studio)
 python -B swiat/trening_proba/podglad.py --ujecie final  # zbliżenie po rundzie z kartą (--ujecie start: początek odliczania)
@@ -140,13 +140,13 @@ START (albo spacja) → strzałki / WASD w stronę skrzynki, gdy dolatuje do św
 INNA GRA → Pancerz → spacja, gdy pierścień dojdzie do kółka (fioletowy = zmyłka, nie blokuj) → WYJDŹ (albo Q).
 Telefon: Test → Device → telefon w poziomie (667 × 375) albo zrzut z emulacją: `python -B swiat/trening_proba/testy/zrzuty_gry.py`.
 
-## Scenerie krain (D-108, 19.11.2026, część A — bez Studio)
+## Scenerie krain (D-108, 19.11.2026: część A — bez Studio, część B — w Studio)
 
 Decyzja D-108 (Karol, 19.11.2026; czeka na potwierdzenie Pawła): mini-gry mają być pokazane ciekawiej niż „platforma
 w murach” — każda w innym otoczeniu w stylu krain. **Zmienia się tylko wygląd i miejsce stanowisk**: zasady gier,
 serwer, przyrosty, dźwięki, rachunek kamery, efekty i pliki `zrodla/*.luau` (poza wygenerowanym `DaneTreningu.luau`)
-są bez zmian. **Stan: zrobione i sprawdzone bez Studio; w Studio nadal stoi arena w murach z 18.11** — budowa, próba
-w grze i zrzuty to część B.
+są bez zmian (wyjątek z części B: wygląd lecących celów Siły i gest trenera NPC w kliencie). **Stan: zbudowane
+w Studio i sprawdzone w trybie Play 19.11.2026** — wyniki w „Część B — w Studio” niżej.
 
 ### Która gra gdzie
 
@@ -176,7 +176,7 @@ w `PROJEKT.md` — nie jest potrzebny, żeby gry działały.
 
 ### Jak to jest zbudowane
 
-- **Elementy gier** (`scena.py`, 316 części): te same nazwy, miejsca względem podestu i rozmiary pól trafień co dotąd;
+- **Elementy gier** (`scena.py`, 315 części): te same nazwy, miejsca względem podestu i rozmiary pól trafień co dotąd;
   nowy jest wygląd (tabela niżej), podłoże komórki (jedna płyta z kolizją; na Bagnie to woda 1,3 st pod pomostami)
   i cztery niewidzialne ściany wokół całego pasa.
 - **Scenerie** (`scenerie.py` → `scenerie.json`, 2482 części w grupie `Arena/Dekoracje/<Gra>/…`, wszystkie bez kolizji):
@@ -191,16 +191,16 @@ w `PROJEKT.md` — nie jest potrzebny, żeby gry działały.
   (dziś 19 pominiętych, np. pale pomostu od strony kamery).
 - **Punkt trenera** jest w danych każdej gry: `stanowiska.<gra>.trener_npc` w `ustawienia.json` i
   `swiat.<gra>.trener_npc` w `DaneTreningu.luau` — `miejsce` (świat), `obrot_y` (stopnie; 0 = twarzą na +z, ku
-  kamerom), `patrz` (punkt 10 st przed twarzą) i `figura` (ścieżka dzisiejszej figury z klocków do podmiany). Pancerz
-  nie miał trenera — ma puste miejsce z płaską kamienną płytą (`Arena/Pancerz/MiejsceTrenera`). Uwaga dla podmiany:
-  klient animuje `RamieP` miotacza Siły i trenera Bieżni oraz `Kula` maga (ścieżki w `dane.NAZWY`) — gdy figura zniknie,
-  te ruchy po prostu się nie pokażą (klient sprawdza, czy część istnieje).
+  kamerom), `patrz` (punkt 10 st przed twarzą) i `figura` (ścieżka figury z klocków, którą zastępuje postać NPC).
+  Pancerz punktu trenera nie ma: golem gry jest tam przeciwnikiem i trenerem naraz. Klient animuje `RamieP` miotacza
+  Siły i trenera Bieżni oraz `Kula` maga (ścieżki w `dane.NAZWY`); gdy figurę chowa pakiet NPC, ruch ręki zastępuje
+  klip „akcja” postaci (część B).
 
 ### Co zmieniło się w wyglądzie elementów gry
 
 | Gra | Zmiana (rozmiary i miejsca pól trafień bez zmian) |
 |---|---|
-| Siła | podest = plaster pnia w obwódce barwy statystyki; mata miotacza = pień; zamiast stosu trzech skrzyń dwie skrzynie z dyniami; **strefy ciosu i lecące skrzynki bez zmian** (owoce na pniach wymagałyby zmiany klienta — wybór 24) |
+| Siła | podest = plaster pnia w obwódce barwy statystyki; mata miotacza = pień; zamiast stosu trzech skrzyń dwie skrzynie z dyniami; **lecące cele to owoce** (dynia, jabłko, arbuz, gruszka — rozpadają się na połówki i cząstki; sam wygląd w kliencie); strefy ciosu bez zmian |
 | Pancerz | golem w barwach omszałego kamienia ruin (jaśniejszy od menhirów w tle), liana zamiast pasa; czerwona pięść i niebieskie oczy bez zmian; kamienny podest i słupki szyldu |
 | Kondycja | taśma = grobla z ciemnych desek, ruchome pasy = jaśniejsze deski, boki = bale z liną w barwie statystyki, wałki = kłody, poręcze z żerdzi, pale do wody, pomost trenera z bębnem |
 | Zręczność | plac = okrągły pomost z desek na wodzie z ciemną obręczą, słup = pal cumowniczy ze świecącą czapą, kłoda w barwie kory (żółte pasy zostają), pomost drwala; żółty podest gracza bez zmian |
@@ -215,12 +215,12 @@ w `PROJEKT.md` — nie jest potrzebny, żeby gry działały.
 | Polana drwali (Siła) | 352 | 44 | 396 |
 | Grobla przez Bagno (Kondycja) | 458 | 69 | 527 |
 | Pomost nad topielą (Zręczność) | 430 | 49 | 479 |
-| Krąg strażnika (Pancerz) | 461 | 36 | 497 |
+| Krąg strażnika (Pancerz) | 461 | 35 | 496 |
 | Świątynia run (Inteligencja) | 404 | 55 | 459 |
 | podłoże i ściany pasa | — | 10 | 10 |
-| **razem** | **2482** | **316** | **2798** |
+| **razem** | **2482** | **315** | **2797** |
 
-Wszystkie części zakotwiczone; kolizję ma 95 (podłoże, pomosty, ściany pasa, bryły stanowisk), pozostałe 2703 są bez
+Wszystkie części zakotwiczone; kolizję ma 95 (podłoże, pomosty, ściany pasa, bryły stanowisk), pozostałe 2702 są bez
 kolizji. Świateł 0; części Neon w sceneriach 47 (okna chat, latarnie, ogniki, świecące kwiaty, znaki ruin, smugi
 światła). Kliny 156, kliny narożne 46 (nowy kształt w budowie: `CornerWedgePart`). `Lighting` nietknięty. Budowa
 w Studio pójdzie w 10 paczkach po 300 części. Dla porównania arena w murach miała 1658 części.
@@ -229,12 +229,12 @@ w Studio pójdzie w 10 paczkach po 300 części. Dla porównania arena w murach 
 
 | Polecenie | Wynik |
 |---|---|
-| `python -B swiat/trening_proba/testy/test_treningu.py` | **60 testów OK** (ok. 1 min); nowe: 4k (scenerie.json aktualny, obrót części, punkty trenerów), 4l (tło kadrów); przebudowane 4g–4i |
+| `python -B swiat/trening_proba/testy/test_treningu.py` | **61 testów OK** (ok. 1 min); nowe: 4k (scenerie.json aktualny, obrót części, punkty trenerów), 4l (tło kadrów), 6m (owoce w Sile to sam wygląd); przebudowane 4g–4i |
 | `python -B swiat/trening_proba/dane.py --sprawdz` | aktualny |
 | `python -B swiat/trening_proba/scenerie.py --sprawdz` | aktualny (2482 części) |
 | `python -B swiat/trening_proba/dekoracje.py` | kontrola: OK (pola gry wolne, kadry niezasłonięte); tło kadrów: OK (bez pustki) |
 | `python -B swiat/trening_proba/sprawdz_luau_treningu.py` | 7 plików, OK |
-| `python -B swiat/trening_proba/zbuduj.py --sucho` | sucho: OK (Arena 2798 części) |
+| `python -B swiat/trening_proba/zbuduj.py --sucho` | sucho: OK (Arena 2797 części) |
 | `python -B swiat/trening_proba/testy/proba_play.py --sprawdz` | 27 kawałków Luau, OK |
 
 Kontrola kadrów liczy teraz dwie rzeczy. (1) Jak dotąd: żadna część scenerii nie stoi w polu gry, nie przecina promienia
@@ -251,34 +251,89 @@ promieni w pustkę** w każdej grze; nieba w kadrze gry jest do 14% (Siła), 1% 
 `podglad_<gra>_start.jpg` i `_final.jpg` — początek odliczania i zbliżenie po rundzie; `podglad_pas.jpg` — cały pas
 sześciu scenerii. Podgląd nie pokazuje materiałów, cieni ani obrysów postaci — to ocena układu i tła, nie wyglądu w grze.
 
-### Plan części B (Studio)
+### Część B — w Studio (19.11.2026, 10:20–11:05, tryb Play)
 
-1. `zbuduj.py` — odbudowa kontenera (stara arena w murach znika razem z nim; pudło pasa jest większe: 464 × 128 st
-   wokół tego samego środka — budowa sprawdzi, czy jest wolne).
-2. `proba_play.py` — pełna lista T01–T31 (dostosowana: T01 jedna podpowiedź E, T11 bez bramy lobby, T28 liczba części
-   razem i na scenerię oraz sumy położeń, T29–T30 pola gry i kadry na prawdziwych bryłach, T31 czas klatki w Grobli
-   i Kręgu strażnika).
-3. `zrzuty_gry.py --arena` — a1–a12: trzy krainy z ukosa, cały pas, sześć gier w rundzie na tle scenerii, zbliżenie,
-   telefon; do tego odświeżenie zrzutów 26–67.
-4. Ocena na zrzutach: czytelność stref Siły i koniczyn na tle zieleni, golem na tle ruin, czas klatki (2798 części
-   zamiast 1658), wygląd materiałów (Wood, Slate) w świetle miejsca.
+**Zbudowane i sprawdzone w grze.** `zbuduj.py` odbudował kontener (pudło pasa było wolne): `Arena` ma 2797 części
+w 10 paczkach, cały kontener 2803 (z tablicą wejścia), jedna podpowiedź E. Studio po każdej próbie wracało do trybu
+Edit; nic nie zostało zapisane ani opublikowane, `Lighting` i cudze instancje nietknięte.
+
+**Przed budową, bez Studio (polecenia z 19.11):**
+- **Owoce w Sile.** Lecące cele to teraz dynia, jabłko, arbuz i gruszka (kula w barwie skórki z ogonkiem, listkiem albo
+  paskiem), a po trafieniu rozpadają się na dwie połówki w barwie miąższu i cząstki skórki. To sam wygląd w kliencie
+  (`nowyPrzedmiot`, `polowkiOwocu`): tor lotu, strefy ciosu, okna czasu i werdykty liczą te same wyrażenia i ta sama
+  logika — `LogikaTreningu.luau` i serwer są bez zmian, a w danych zmieniły się tylko dwa napisy („owoce” zamiast
+  „skrzynki”). Pilnuje tego test 6m (zasady i plan rundy Siły wpisane wprost sprzed zmiany), a w grze T01 / T22
+  („zgodność logiki OK 118/118”) i T05 (45 / 45 trafień, jednostki i punkty co do jednego).
+- **Pancerz bez osobnego trenera.** Golem gry jest tam przeciwnikiem i trenerem naraz: punkt `trener_npc` Pancerza
+  i płyta `MiejsceTrenera` zniknęły z danych (arena ma przez to 2797 części, elementy gier 315).
+
+**Próba `proba_play.py` — pełna lista T01–T31: 31 × OK za pierwszym razem** (10:23–10:35, bez zrzutów), potem jeszcze
+raz 15 punktów z trenerami NPC na miejscu (10:38–10:45: T01, T02, T04, T05, T09, T10, T13, T15–T18, T23, T26, T30, T31,
+T14, T22 — wszystkie OK).
+
+| Punkt | Wynik 19.11 |
+|---|---|
+| T01 | zgodność logiki 118/118, podpowiedzi E 1, kafelków wyboru 6/6 |
+| T05 / T09 / T15–T18 | każda gra zagrana automatem bez rozbieżności: Siła 45/45, Pancerz 42/43 (jedno pudło = zablokowana zmyłka, tak ma być), Bieżnia 67/67, Kłody 31/31, Runy 38 trafień i 7 zaklęć, Koniczyny 31–32 złapane; po +3 punkty statystyki |
+| T11 | WYJDŹ wraca do miejsca sprzed wejścia (0,0 st), kamera gracza oddana, po wyjściu postać poza pasem scenerii |
+| T28 | części 2797 = dane; scenerie 2482 = dane, na każdą scenerię jak w danych; niezakotwiczonych 0, świateł 0, kliny 156, kliny narożne 46, scenerie z kolizją 0, napisy 6; odchyłka sum położeń części 0,01 st |
+| T29 | 6 pól gry: żadnej części scenerii wyższej niż wzór podłoża ani z kolizją |
+| T30 | promienie oko → pole gry i postać na prawdziwych bryłach: Siła 210, Pancerz 220, Runy 210, Bieżnia 440, Kłody 690, Koniczyny 918 — zasłoniętych 0 |
+| T14 / T22 | konsola bez błędów pakietu |
+
+**Czas klatki (okno Studio na wierzchu, średnio / p95 w ms):** Łąka pod dębem 16,7 / 18,0 · Polana drwali 16,7 / 17,7 ·
+Grobla 16,7 / 18,0 · Pomost nad topielą 16,7 / 17,9 · Krąg strażnika 16,7 / 17,8 · Świątynia run 16,7 / 18,0 (T31,
+kamera stanowiska); w rundzie: Siła 16,7 / 17,8–17,9 (T13), Bieżnia 16,7 / 18,0 i Koniczyny 16,7 / 17,9 (T21). To 60 kl./s,
+tyle samo co arena w murach (16,7 / 17,8–18,1) — scenerii nie trzeba było odchudzać. Telefonu nie mierzono.
+
+**Trenerzy NPC (pakiet `swiat/npc_gra`, D-109).** Po poprawce po stronie pakietu NPC (Pancerz zdjęty z jego listy
+trenerów) polecenia `python -B swiat/npc_gra/zbuduj.py`, `--trenerzy --stan` („zgodne — można stawiać”) i `--trenerzy`
+postawiły pięciu trenerów w punktach `trener_npc`: Borys (Siła), Iskra (Bieżnia), Wiór (Kłody), Runa (Runy), Fart
+(Koniczyny). Figury z klocków chowa u gracza pakiet NPC (bęben Bieżni i kula maga zostają widoczne). Próba pakietu NPC
+N00–N14: wszystko OK poza N13 „?” (zrzuty pominięte). W kliencie mini-gier w chwili ruchu ręki miotacza i pałki
+trenera Bieżni idzie `workspace.NpcGra.Sygnaly.Polecenie:Invoke("graj", "trening_sila" | "trening_kondycja", "akcja")`
+— osłonięte, w osobnym wątku, najwyżej jedno wywołanie naraz; bez pakietu NPC nic się nie zmienia. Ruch ręki figury
+trwa u nas 0,41 s (miotacz: 0,12 s w górę, 0,04 s, 0,25 s w dół) i 0,28 s (pałka trenera Bieżni), klip „akcja” NPC 0,6 s.
+Co nie pasuje (po stronie NPC albo do decyzji): w Bieżni tabliczka z imieniem trenerki wchodzi pod panel rundy
+w prawym górnym rogu; w Runach trenerka stoi poza kadrem gry (widać skraj tabliczki), a kula dawnej figury maga wisi
+ok. 2 st nad jej księgą i z bliska nachodzi na tabliczkę (`klatki/s14`); w Sile prawa strefa ciosu wypada na tle twarzy
+trenera. Czy klip „akcja” rzeczywiście gra przy każdym rzucie, osobno nie sprawdzano (rundy z trenerami przeszły bez
+błędów w konsoli).
+
+**Zrzuty z gry (`klatki/`, przedrostek `s`, 1280 px; bez nazwy konta i listy graczy — każdy obejrzany):**
+`s1_pas_z_gory` (cały pas, kamera testu; widać HUD gry), `s5_sila_runda`, `s6_kondycja_runda`, `s7_szczescie_runda`,
+`s8_zrecznosc_runda`, `s9_pancerz_runda`, `s10_inteligencja_runda` (kamera gry w rundzie, z trenerami NPC),
+`s11_sila_final` i `s12_zrecznosc_final` (zbliżenie po rundzie z konfetti i kartą), `s13_telefon_sila_667x375`,
+`s14_inteligencja_trenerka` (trenerka Run z bliska). Robi je `python -B swiat/trening_proba/testy/zrzuty_gry.py --arena`
+(ok. 2 min; `--tylko s5,s9` — wybrane). Zrzuty areny w murach `a1`–`a9` usunięte jako nieaktualne; zrzuty 01–79 są
+sprzed scenerii (inne tło).
+
+**Co poprawione po zrzutach:** z zestawu wypadły trzy widoki krain z ukosa (korony drzew granicznych zasłaniały
+scenerie — nic nie wnosiły), doszedł kadr trenerki Run. W samych sceneriach po zrzutach nic nie wymagało zmiany: tła
+są zamknięte, postać i pola gry odsłonięte, koniczyny (z obrysem) i strefy ciosu czytają się na tle zieleni.
+
+**Sąsiedzi** (`regresja_calosci.py`, próby „proba dymna”, „bohater”, „dzwiek”; „kowal” i „bazar” celowo pominięte):
+próba dymna całej gry — 11 punktów OK (w tym wejście do mini-gry od trenera w bazarze, runda, podsumowanie i powrót
+0,0 st od miejsca sprzed wejścia; konsola bez błędów); bohater — 20 × OK i 1 × „?” (B16: runda Siły w tej próbie nie
+jest grana — całą rundę przechodzi próba dymna; bez błędów bohatera); dźwięk — D1–D11 OK, w tym D10: muzyka mini-gry
+włącza się po atrybucie gracza `TreningGra` i po wyjściu wraca muzyka strefy. Żadna z tych prób nie nadpisała plików
+w repozytorium.
 
 ### Czego nie sprawdzono i ryzyka
 
-- Nic z tego nie było jeszcze w Studio: materiały, cienie, obrysy postaci i czas klatki są nieznane. Części jest
-  o 1140 więcej niż w arenie w murach, a model `Arena` jest trwale wczytany każdemu graczowi.
-- Zielone koniczyny i kremowe strefy ciosu mają teraz za sobą zieleń zamiast gładkiej podłogi i muru — w podglądzie są
-  czytelne, ale to trzeba ocenić w grze.
+- Prawdziwego telefonu, dotyku i pada; dwóch graczy naraz; czasu klatki na słabszym sprzęcie (części jest o 1139
+  więcej niż w arenie w murach, a model `Arena` jest trwale wczytany każdemu graczowi).
+- Zrzuty 01–79 w `klatki/` pokazują jeszcze arenę w murach — odświeżenie całego zestawu to osobny przebieg.
 - Scenerie zależą od rodzin w mapach krain: gdy ktoś zmieni tam drzewo albo chatę, `scenerie.py --sprawdz` i test 4k
-  zgłoszą nieaktualny `scenerie.json` — wtedy trzeba uruchomić generator i przejrzeć kontrolę.
-- Pudło pasa (464 × 128 st) jest większe niż dawnej areny (256 × 56); offline jest dalej niż 500 st od znanych obszarów
-  (test 1f), ale zajętość w miejscu sprawdzi dopiero budowa.
+  zgłoszą nieaktualny `scenerie.json` — wtedy trzeba uruchomić generator, przejrzeć kontrolę i odbudować arenę.
+- Po każdej odbudowie areny (`zbuduj.py`) trzeba ponownie uruchomić `python -B swiat/npc_gra/zbuduj.py --trenerzy`
+  (kotwice trenerów stoją w kontenerze NPC, ale porównują się z danymi areny).
 
 ## Wygląd areny (18.11.2026 wieczorem, część A — bez Studio, część B — w Studio)
 
-> **Zastąpione 19.11.2026 przez scenerie krain (D-108, sekcja wyżej).** Opis niżej to stan areny w murach, która do
-> części B scenerii nadal stoi w Studio; generator jej dekoracji został usunięty z `dekoracje.py`, podglądy
-> `podglad_arena*.jpg` usunięte z `podglady/`, a testy 4g–4i i punkty próby T28–T31 sprawdzają teraz scenerie.
+> **Zastąpione 19.11.2026 przez scenerie krain (D-108, sekcja wyżej).** Opis niżej to stan areny w murach, której
+> w Studio już nie ma; generator jej dekoracji został usunięty z `dekoracje.py`, podglądy `podglad_arena*.jpg`
+> i zrzuty `a1`–`a9` usunięte, a testy 4g–4i i punkty próby T28–T31 sprawdzają teraz scenerie.
 
 Zadanie: „Training Center: wygląd areny (dziś płaska podłoga i proste figury trenerów)”. Zmienia się **tylko wygląd**:
 zasady gier, serwer, przyrosty, dźwięki, kamery, efekty, `ustawienia.json` i `DaneTreningu.luau` — bez zmian (skrót

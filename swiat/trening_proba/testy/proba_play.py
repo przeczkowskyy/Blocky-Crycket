@@ -86,8 +86,8 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       wzór podłoża ani żadnej części scenerii z kolizją (rachunek z CFrame i Size części w miejscu)
   T30 kadry: odcinki oko kamery → pole gry i postać (te same ujęcia co test 4h: gra z kołysaniem, start, odliczanie,
       zbliżenie) nie przecinają żadnej części scenerii — liczone z prawdziwych, obróconych brył w miejscu
-  T31 czas klatki w sceneriach z największą liczbą części (Grobla i Krąg strażnika, kamera stanowiska): śr. i p95,
-      zrzuty 28_sceneria_kondycja i 29_sceneria_pancerz
+  T31 czas klatki w każdej z sześciu scenerii (kamera stanowiska): śr. i p95, zrzuty 28_sceneria_kondycja
+      i 29_sceneria_pancerz (scenerie z największą liczbą części)
   (ręcznie, poza skryptem: dźwięki na słuch; dwóch graczy (Test → Clients and Servers, 2); pad)
 
 ZRZUTY (w <wyj>): 01_wybor_tymczasowy, 02_stanowisko_sila, 03_runda_sila, 04_runda_pancerz, 05_podsumowanie,
@@ -1298,10 +1298,11 @@ def main():
             # ---------------------------------------------------------------- T31 czas klatki w sceneriach + zrzuty
             if chce("T31"):
                 pomiary = {}
-                for nr, gra_sc in ((28, "kondycja"), (29, "pancerz")):  # scenerie z największą liczbą części
+                for gra_sc in D["kolejnosc_scenerii"]:  # każda sceneria z kamery swojego stanowiska
                     wejdz_do(gra_sc)
                     time.sleep(2.0)
-                    zrzut("%d_sceneria_%s" % (nr, gra_sc))
+                    if gra_sc in ("kondycja", "pancerz"):  # zrzuty scenerii z największą liczbą części
+                        zrzut("%d_sceneria_%s" % (28 if gra_sc == "kondycja" else 29, gra_sc))
                     luau(kod("klatka", 0.5, 6.0, "ProbaKlatkaArena", "ProbaKlatkaArena"), "Client")
                     time.sleep(8.5)
                     a = atrybuty(["ProbaKlatkaArenaSr", "ProbaKlatkaArenaP95"], "Client")
@@ -1310,8 +1311,9 @@ def main():
                 p95 = max([v["p95"] for v in pomiary.values() if v["p95"] is not None] or [None], key=lambda x: x or 0)
                 zapisz("T31", pomiary)
                 punkt("T31", None if (sr is None or sr > 50) else (p95 or 99) < 33.4,
-                      "klatka w sceneriach (najgorsza z %s): śr. %s ms, p95 %s ms%s" % (
-                          ", ".join(pomiary), sr and round(sr, 1), p95 and round(p95, 1),
+                      "klatka w sceneriach śr. / p95 [ms]: %s; najgorsza: śr. %s ms, p95 %s ms%s" % (
+                          ", ".join("%s %s / %s" % (g, v["sr"] and round(v["sr"], 1), v["p95"] and round(v["p95"], 1))
+                                    for g, v in pomiary.items()), sr and round(sr, 1), p95 and round(p95, 1),
                           " (okno Studio zaciemnione?)" if (sr or 0) > 50 else ""))
 
             # ---------------------------------------------------------------- T11 wyjście (kliknięcie WYJDŹ)

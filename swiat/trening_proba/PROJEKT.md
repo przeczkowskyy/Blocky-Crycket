@@ -60,7 +60,7 @@
   a naciśnięcia w odliczaniu nic nie robią (wcześniej liczyły się jako pudło „w powietrze”).
 - **Waga mini-gry** (D-074): każda gra ma mnożnik jednostek paska (`gry.<id>.waga`), dobrany tak, żeby gracz-model
   zdobywał tyle samo jednostek na minutę w każdej z sześciu gier (test: 0,85–1,18 Siły; dziś 0,96–1,03).
-- **Scena** (od 19.11.2026, D-108 — bez Studio; w Studio do części B stoi jeszcze arena w murach): sześć scenerii
+- **Scena** (od 19.11.2026, D-108 — zbudowana w Studio i sprawdzona w grze 19.11): sześć scenerii
   krain w jednym pasie w powietrzu z dala od map, po dwie na Las, Bagno i Dżunglę; każda kamera patrzy na północny
   zachód, a tło zamykają kulisy krainy (drzewa, woda, ruiny). Gracz przechodzi z okna wyboru prosto do scenerii swojej
   gry — lobby nie ma. W budynku Training Center w bazarze jest trener z klawiszem E (D-085). Szczegóły: sekcja
@@ -70,7 +70,7 @@
 
 | Statystyka | Mini-gra | Jedno zdanie | W próbie |
 |---|---|---|---|
-| Siła | **Rozbijanie** | Miotacz rzuca skrzynki z czterech stron, a gracz rozbija je mieczem strzałką w stronę skrzynki. | grywalna |
+| Siła | **Rozbijanie** | Trener rzuca owoce i dynie z czterech stron, a gracz przecina je mieczem strzałką w stronę owocu (do 18.11: skrzynki). | grywalna |
 | Pancerz | **Blok** | Golem bierze zamach, a gracz blokuje tarczą w chwili uderzenia i nie daje się nabrać na zmyłki. | grywalna |
 | Kondycja | **Bieżnia** | Gracz biegnie na taśmie twarzą do kamery i naciska lewą / prawą stopę, gdy ślad dojedzie do linii. | grywalna (Studio 18.11) |
 | Zręczność | **Kłody** | Ramię z kłodą obraca się wokół słupa; niską gracz przeskakuje, pod wysoką pada. | grywalna (Studio 18.11) |
@@ -101,7 +101,9 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
   dłuższy niż dwa okna, więc każde naciśnięcie wskazuje jedno zdarzenie.
 - **Długość rundy.** 45 s, czyli ok. 45 rzutów (43–47).
 - **Scena 3D.** Podest gracza, cztery przezroczyste kółka stref, miotacz z klocków (pomarańczowa kamizelka, fartuch,
-  zielona opaska), stos skrzynek i szyld. Skrzynki, miecz i odłamki widzi tylko ten gracz.
+  zielona opaska), stos skrzynek i szyld. Skrzynki, miecz i odłamki widzi tylko ten gracz. Od 19.11.2026 (D-108):
+  Polana drwali w Lesie, lecą owoce (dynia, jabłko, arbuz, gruszka) zamiast skrzynek, a w miejscu miotacza stoi
+  trener NPC — zasady, strefy i czasy bez zmian.
 - **Ryzyka.** D-050 mówi o kierunkach „góra / prawo / dół”, a próba ma cztery (wybór 2). Krzyż przycisków na
   telefonie zasłaniał prawą strefę — po zrzucie 667 × 375 kamera patrzy bardziej w prawo, a gracz i strefy stoją
   w lewej połowie ekranu (README, „Poprawki po próbach w grze”). Prawdziwego telefonu i dotyku jeszcze nikt nie
@@ -243,12 +245,12 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 
 ---
 
-## Scenerie krain (D-108, 19.11.2026 — propozycja doboru, zrobiona bez Studio)
+## Scenerie krain (D-108, 19.11.2026 — propozycja doboru; w Studio od 19.11, lista T01–T31 — 31 × OK)
 
 | Gra | Sceneria | Kraina | Dlaczego tu |
 |---|---|---|---|
 | Szczęście „Koniczyny” | Łąka pod dębem | Las | koniczyny spadają z korony starego dębu na kwietną łąkę; jasne, spokojne tło dla spadających rzeczy |
-| Siła „Rozbijanie” | Polana drwali | Las | rozbijanie skrzyń i dyń to robota drwali: pniaki, stosy kłód, olbrzymi pień |
+| Siła „Rozbijanie” | Polana drwali | Las | przecinanie lecących owoców i dyń na polanie drwali: pniaki, stosy kłód, olbrzymi pień |
 | Kondycja „Bieżnia” | Grobla przez Bagno | Bagno | bieg po grobli z bali nad wodą — ruchome deski pod stopami tłumaczą się same; w głębi chata na palach |
 | Zręczność „Kłody” | Pomost nad topielą | Bagno | kłoda krąży nad okrągłym pomostem na palach; unik nad wodą, wokół szuwary i cypryśniki |
 | Pancerz „Blok” | Krąg strażnika | Dżungla | omszały kamienny golem pilnuje kręgu menhirów przed bramą ruin |
@@ -256,10 +258,12 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 
 - **Co zostaje**: zasady, serwer, przyrosty, dźwięki, kamery i efekty; nazwy, miejsca i rozmiary pól trafień.
 - **Co się zmienia**: wygląd elementów gry (grobla zamiast taśmy, pomost zamiast placu, kamień ruin, dąb w barwach lasu,
-  dynie przy miotaczu) i otoczenie — 2482 części scenerii z rodzin map krain, wszystkie bez kolizji, zero świateł.
+  dynie przy miotaczu, w Sile lecą owoce zamiast skrzynek) i otoczenie — 2482 części scenerii z rodzin map krain,
+  wszystkie bez kolizji, zero świateł.
 - **Lobby**: zniknęło; z okna wyboru prosto do scenerii (wybór 23).
-- **Trenerzy**: w każdej scenerii jest punkt trenera w danych (`trener_npc`: miejsce i kierunek) — dziś stoją tam
-  figury z klocków, w Pancerzu puste miejsce; do podmiany na animowane postacie NPC (D-109).
+- **Trenerzy**: pięć gier ma punkt trenera w danych (`trener_npc`: miejsce i kierunek); od 19.11 stoją tam animowane
+  postacie NPC (D-109, pakiet `swiat/npc_gra`), a figury z klocków są chowane. Pancerz punktu nie ma — golem gry jest
+  tam przeciwnikiem i trenerem naraz.
 - Liczby, kontrola kadrów i plan budowy: README, „Scenerie krain”.
 
 ## Wybory dla ludzi
@@ -340,11 +344,12 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 - Szczegóły: obrót robi klient i widzą go też inni gracze.
 
 **18. Scenerie: ile części**
-- Dziś (bez Studio): 2798 części — 316 elementów gier i 2482 części scenerii (396–527 na scenerię).
+- Dziś (w Studio od 19.11.2026): 2797 części — 315 elementów gier i 2482 części scenerii (396–527 na scenerię);
+  czas klatki w każdej scenerii 16,7 ms średnio, p95 17,7–18,0 ms (60 kl./s) — jak w arenie w murach.
 - Mniej: bez dalekich sylwet i drugiego rzędu drzew (ok. −300) albo bez wschodnich rzędów (ok. −140) — lżej, ale
   w zbliżeniach po rundzie tło będzie rzadsze.
-- Szczegóły: arena w murach z 18.11 miała 1658 części (60 kl./s w próbie 18.11); czas klatki scenerii zmierzy
-  część B. Generator `scenerie.py`, kontrola `dekoracje.py`, liczby w README („Scenerie krain”).
+- Szczegóły: arena w murach z 18.11 miała 1658 części; telefonu nie mierzono. Generator `scenerie.py`, kontrola
+  `dekoracje.py`, liczby w README („Scenerie krain”).
 
 **19. Tablica wyników**
 - Dziś: nie ma (była dekoracją areny w murach; w sceneriach krain nie pasuje).
@@ -368,10 +373,11 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 - Obóz: mała polana z ogniskiem i drogowskazami do sześciu gier, do której gracz trafia najpierw i z niej wybiera.
 - Szczegóły: obóz to jedno przejście więcej przed każdą grą; dziś nie jest potrzebny, żeby gry działały.
 
-**24. Siła: skrzynki czy owoce**
-- Dziś: lecą skrzynki, dzbany i beczułki (jak dotąd), a dynie leżą przy miotaczu i na pniakach w tle.
-- Owoce i dynie jako lecące cele i „tarcze” na pniach w strefach ciosu — bliżej słów Karola, ale to zmiana klienta.
-- Szczegóły: strefy ciosu zostały bez zmian, żeby czytelność i rozmiary pól trafień były te same.
+**24. Siła: jakie owoce i jak się rozpadają**
+- Dziś (od 19.11.2026, polecenie Karola): lecą dynia, jabłko, arbuz i gruszka; po trafieniu dwie połówki i cząstki.
+- Inaczej: więcej rodzajów, sok albo pestki przy trafieniu, „tarcze” na pniach w strefach ciosu.
+- Szczegóły: to sam wygląd w kliencie — strefy, czasy i liczenie trafień bez zmian (test 6m); nazwa gry „Rozbijanie”
+  została (wybór 8).
 
 **25. Dobór scenerii do gier**
 - Dziś: Szczęście i Siła w Lesie, Kondycja i Zręczność na Bagnie, Pancerz i Inteligencja w Dżungli.
@@ -411,7 +417,7 @@ koszyk, a nie kiedy się naciska). Wszystkie cztery nowe gry przeszły próbę w
 | Czcionka okien i szyldów | Nunito ExtraBold (pełne polskie znaki; FredokaOne ich nie ma) | przyjęte po zrzutach |
 | Arena | środek (3000; 300; 3000); od 19.11 (D-108) pas scenerii 444 × 92 st w pudle 464 × 128 st (arena w murach: 256 × 56) | przyjęte (z dala od pasa krain, starego lasu i sal testowych) |
 | Stanowiska (x od środka areny) | od 19.11: Koniczyny −180, Siła −108, Bieżnia −36, Kłody +36, Pancerz +108, Runy +180 (komórka 72 st); podest z = +8; kulisy od −60 do +32 st od podestu; woda Bagna 1,3 st pod pomostami | przyjęte, D-108 |
-| Punkty trenerów (`trener_npc`, od podestu) | Siła (0; 0; −16) 0°, Bieżnia (6,3; 0; −2,4) −50°, Kłody (−12,5; 0; −6,5) 54°, Runy (−7,4; 0; −6,6) 35°, Koniczyny (9,6; 0; −8) −30°, Pancerz (−9,5; 0; −1,5) 80° (bez figury) | miejsca dzisiejszych figur; Pancerz — nowe |
+| Punkty trenerów (`trener_npc`, od podestu) | Siła (0; 0; −16) 0°, Bieżnia (6,3; 0; −2,4) −50°, Kłody (−12,5; 0; −6,5) 54°, Runy (−7,4; 0; −6,6) 35°, Koniczyny (9,6; 0; −8) −30°; Pancerz bez punktu (trenerem jest golem gry) | miejsca figur z klocków; od 19.11 stoją tam postacie NPC |
 | Waga (mnożnik jednostek paska) | Siła 1, Pancerz 1, Bieżnia 0,7, Kłody 1,2, Runy 1,35, Koniczyny 1,3 — gracz-model: 0,96–1,03 Siły na minutę | dobrane symulacją (test 2h) |
 | Bieżnia: krok, okno, podbiegi | 0,8 / 0,7 / 0,62 / 0,56 s; ±0,25 / 0,23 / 0,21 / 0,19 s; 0 / 0 / 6 / 8% (4 kroki ×0,8) | przyjęte |
 | Bieżnia: ślady | widać 1,8 s przed linią, 4 st/s; stopy ±1,2 st od środka taśmy, linia 1,8 st przed biegaczem | przyjęte po podglądach |

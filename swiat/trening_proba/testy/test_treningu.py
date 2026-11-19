@@ -74,8 +74,8 @@ def czytaj(*czesci):
         return f.read().replace("\r\n", "\n")
 
 
-LICZBA_CZESCI = 2798  # elementy gier + scenerie krain (zmiana sceny = świadoma zmiana tej liczby)
-LICZBA_CZESCI_GRY = 316  # bez scenerii: podłoże komórek, ściany pasa, sześć stanowisk z figurami trenerów
+LICZBA_CZESCI = 2797  # elementy gier + scenerie krain (zmiana sceny = świadoma zmiana tej liczby)
+LICZBA_CZESCI_GRY = 315  # bez scenerii: podłoże komórek, ściany pasa, sześć stanowisk z figurami trenerów
 LICZBA_SCENERII = {"szczescie": 377, "sila": 352, "kondycja": 458, "zrecznosc": 430, "pancerz": 461, "inteligencja": 404}  # części scenerii każdej gry
 SERWER = czytaj(ZR, "SerwerTreningu.server.luau")
 KLIENT = czytaj(ZR, "KlientTreningu.client.luau")
@@ -252,8 +252,9 @@ class TestDanych(unittest.TestCase):
         zle(lambda k: k["scenerie"]["sila"].update(kraina="bagno"))  # trzy gry na Bagnie
         zle(lambda k: k["scenerie"]["kolejnosc"].pop())
         zle(lambda k: k["stanowiska"]["sila"]["podest"].__setitem__(0, -100))
-        zle(lambda k: k["stanowiska"]["pancerz"].pop("trener_npc"))
-        zle(lambda k: k["stanowiska"]["pancerz"]["trener_npc"].update(obrot_y=400))
+        zle(lambda k: k["stanowiska"]["sila"].pop("trener_npc"))
+        zle(lambda k: k["stanowiska"]["zrecznosc"]["trener_npc"].update(obrot_y=400))
+        zle(lambda k: k["stanowiska"]["zrecznosc"]["trener_npc"].update(figura=None))
         zle(lambda k: k["stanowiska"]["kondycja"]["trener_npc"].update(miejsce=[1, 0, 1]))  # figura stoi gdzie indziej
         zle(lambda k: k["arena"].update(rozmiar=[300, 128]))
         DANE._sprawdz(DANE._czytaj_json(DANE.USTAWIENIA))  # prawdziwe ustawienia przechodzą
@@ -1514,15 +1515,16 @@ class TestSceny(unittest.TestCase):
                 self.assertTrue([n for n in nazwy[st] if n.startswith(z)], "%s: brak „%s”" % (st, z))
         # punkty trenerów: w danych gry (świat), figura stoi dokładnie tam i patrzy w zapisanym kierunku
         po = {x["r"] + "/" + x["n"]: x for x in self.cz}
+        # Pancerz: golem gry jest przeciwnikiem i trenerem naraz — bez punktu trenera (pakiet NPC nie stawia drugiego golema)
+        self.assertNotIn("trener_npc", D["swiat"]["pancerz"])
+        self.assertNotIn("Arena/Pancerz/MiejsceTrenera", po)
         for gra in GRY:
+            if gra == "pancerz":
+                continue
             T = D["swiat"][gra]["trener_npc"]
             pd = D["swiat"][gra]["podest"]
             self.assertLess(math.dist(T["miejsce"], pd), 20, gra)
             self.assertAlmostEqual(math.dist(T["patrz"], T["miejsce"]), 10, places=3)
-            if T["figura"] is None:
-                self.assertEqual(gra, "pancerz")
-                self.assertIn("Arena/Pancerz/MiejsceTrenera", po)
-                continue
             tulow = po[T["figura"] + "/Tulow"]
             self.assertAlmostEqual(tulow["p"][0], T["miejsce"][0], places=3)
             self.assertAlmostEqual(tulow["p"][2], T["miejsce"][2], places=3)
@@ -2021,6 +2023,39 @@ class TestStykow(unittest.TestCase):
             for n in ("podglad_%s.jpg" % g, "podglad_%s_gora.jpg" % g):
                 self.assertTrue(os.path.isfile(os.path.join(PAKIET, "podglady", n)), n)
 
+    def test_6m_owoce_w_sile_to_sam_wyglad(self):
+        """Lecące cele Siły to owoce (D-108) — zmienił się tylko wygląd w kliencie: logika i serwer ich nie znają, tor
+        lotu, strefy i okno czasu liczą te same wyrażenia, a zasady i plan rundy Siły są takie jak przed zmianą (liczby
+        wpisane wprost z danych sprzed owoców). Gest trenera NPC jest osłonięty."""
+        k = bez_komentarzy(KLIENT)
+        for nazwa in ("Dynia", "Jablko", "Arbuz", "Gruszka"):
+            self.assertIn('nazwa = "%s"' % nazwa, k)
+        for stare in ("KOLORY_SKRZYN", '"Skrzynka"', '"Dzban"', '"Beczulka"'):
+            self.assertNotIn(stare, k)
+        for f in ("bezier(math.max(0, a), H, C, Z)", "v3(W.strefy[v.k])", "(t - start) / G.lot_s", "math.abs(t - ti) <= e.okno",
+                  "polowkiOwocu(v.obj.Position, v.owoc)", "d[1].CFrame = v.obj.CFrame * d[2]"):
+            self.assertIn(f, k)
+        for tekst in (LOGIKA, SERWER):
+            for s in ("OWOCE", "Dynia", "Arbuz", "polowki"):
+                self.assertNotIn(s, tekst)
+        G = D["gry"]["sila"]
+        self.assertEqual((G["typ"], G["lot_s"], G["rozrzut"], G["waga"]), ("kierunki", 1.1, 0.15, 1))
+        self.assertEqual([(q["od_s"], q["odstep_s"], q["okno_s"], q["kierunki"]) for q in G["poziomy"]],
+                         [(0, 1.25, 0.3, 3), (12, 1.05, 0.26, 4), (24, 0.9, 0.22, 4), (34, 0.78, 0.19, 4)])
+        self.assertEqual(K["stanowiska"]["sila"]["strefy"], {"gora": [0, 6.6, -1.6], "lewo": [-3.4, 3.4, -1.6], "prawo": [3.4, 3.4, -1.6],
+                                                             "dol": [0, 0.9, -3.2]})
+        for ziarno, n, suma, pierwsze in ((1, 45, 1113.018, [(1.0, "lewo"), (2.126, "lewo"), (3.482, "prawo")]),
+                                          (7, 45, 1101.324, [(1.0, "lewo"), (2.318, "prawo"), (3.43, "prawo")])):
+            pl = LT.plan(D, "sila", ziarno)
+            self.assertEqual(len(pl), n)
+            self.assertAlmostEqual(sum(e["t"] for e in pl), suma, places=3)
+            self.assertEqual([(e["t"], e["wartosc"]) for e in pl[:3]], pierwsze)
+        # gest trenera NPC: w chwili ruchu ręki miotacza i pałki trenera Bieżni, osłonięty, najwyżej jeden wątek czeka
+        self.assertRegex(KLIENT, r'machnij\(arena\.ramie, -2\.4, 0\.12, 0\.25\)\s+gestTrenera\("trening_sila"\)')
+        self.assertRegex(KLIENT, r'machnij\(arena\.palka, -1\.3, 0\.06, 0\.18\)\s+gestTrenera\("trening_kondycja"\)')
+        for f in ('workspace:FindFirstChild("NpcGra")', 'f:Invoke("graj", klucz, "akcja")', "if gestWToku then", "pcall(function()"):
+            self.assertIn(f, KLIENT)
+
     def test_6i_komiks_w_stylu_walki(self):
         """Napisy mini-gier mają styl napisów walki: liczby i kolory z ui.komiks są tymi z jej źródeł (tylko odczyt
         swiat/test_walki2/zrodla) — zmiana stylu walki bez zmiany tutaj wyjdzie w tym teście."""
@@ -2175,7 +2210,8 @@ class TestStykow(unittest.TestCase):
         self.assertEqual(B["sciezka"], "BohaterSwiat/Sygnaly/RuchBohatera")
         self.assertEqual(sorted(B["klipy"].values()), ["bieg", "padnij", "radosc", "rece_gora", "skok"])
         self.assertNotIn("padnij_w_dol", B)
-        self.assertEqual(len(re.findall(r"(?<!On)Invoke\b", k)), 1)  # jedno miejsce wywołania…
+        # dwa miejsca wywołania: haczyk bohatera i (od 19.11.2026) gest trenera NPC — oba osłonięte…
+        self.assertEqual(len(re.findall(r"(?<!On)Invoke\b", k)), 2)
         blok = k.split("local function wolajBohatera(polecenie, arg)")[1].split("local function bohaterAktywny()")[0]
         self.assertIn('sciezka(workspace, if type(gdzie) == "string" and gdzie ~= "" then gdzie else BH.sciezka)', blok)  # …przez FindFirstChild
         self.assertIn('f:IsA("BindableFunction")', blok)

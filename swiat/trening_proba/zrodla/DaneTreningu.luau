@@ -1,7 +1,7 @@
 --[[
 	DaneTreningu — WYGENEROWANE przez swiat/trening_proba/dane.py z ustawienia.json (oraz punktu
 	trenera ze swiat/miasteczko_bazar/znaczniki.json). Nie edytuj ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: 4fd66695febd
+	Skrót danych: 8cb084e88ddf
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -46,7 +46,7 @@ return {
 			gra = "Rozbijanie",
 			stan = "grywalna",
 			kolor = "E5533D",
-			opis = "Rozbij mieczem lecące skrzynki",
+			opis = "Przetnij mieczem lecące owoce",
 		},
 		{
 			id = "kondycja",
@@ -351,7 +351,6 @@ return {
 			start = { oko = { 3121.9, 305, 3018.6 }, cel = { 3108.6, 305.2, 3000 }, kat = 52 },
 			final = { azymut = 40, dystans = 14, wysokosc = 2.4, cel_wysokosc = 4.2, kat = 42 },
 			napis = { 0.36, 0.8 },
-			trener_npc = { miejsce = { 3098.5, 300, 3006.5 }, obrot_y = 80, patrz = { 3108.3481, 300, 3008.2365 } },
 			golem = { 3108, 300, 2999 },
 			piesc_spoczynek = { 3110.4, 304.6, 3000.8 },
 			piesc_zamach = { 3111.8, 308.2, 2997.8 },
@@ -584,7 +583,7 @@ return {
 		graj = "GRAJ",
 		w_projekcie = "w projekcie",
 		start_podpowiedz = "Spacja / Enter / A na padzie",
-		sterowanie_sila = "Strzałka albo WASD w stronę skrzynki, gdy dolatuje do kółka",
+		sterowanie_sila = "Strzałka albo WASD w stronę owocu, gdy dolatuje do kółka",
 		sterowanie_pancerz = "BLOK (Spacja), gdy pierścień dojdzie do kółka. Fioletowy = zmyłka, nie blokuj!",
 		sterowanie_kondycja = "Lewa i prawa stopa na zmianę, gdy ślad dojedzie do linii",
 		sterowanie_zrecznosc = "Niska kłoda — SKOK, wysoka kłoda — PADNIJ",
@@ -3135,5 +3134,5 @@ return {
 			{ 1024, 768, 1.535232383808096 },
 		},
 	},
-	skrot = "4fd66695febd",
+	skrot = "8cb084e88ddf",
 }

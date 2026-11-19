@@ -17,7 +17,7 @@
     "woda_y": -1.3
   },
   "scenerie": {
-    "opis": "D-108: każda mini-gra w osobnej scenerii w stylu krain (po dwie na Las, Bagno i Dżunglę), w jednym pasie — komórka arena.komorka st na grę, podest w jej środku, kulisy od arena.polnoc do arena.poludnie st od podestu. Części scenerii generuje scenerie.py do scenerie.json (grupa Arena/Dekoracje/<Gra>); elementy gry stawia scena.py. trener_npc w stanowiskach = punkt trenera dla animowanych postaci NPC (miejsce względem podestu, obrot_y w stopniach: 0 = twarzą na +z, czyli ku kamerze; figura = dzisiejsza figura z klocków do podmiany albo null).",
+    "opis": "D-108: każda mini-gra w osobnej scenerii w stylu krain (po dwie na Las, Bagno i Dżunglę), w jednym pasie — komórka arena.komorka st na grę, podest w jej środku, kulisy od arena.polnoc do arena.poludnie st od podestu. Części scenerii generuje scenerie.py do scenerie.json (grupa Arena/Dekoracje/<Gra>); elementy gry stawia scena.py. trener_npc w stanowiskach = punkt trenera dla animowanych postaci NPC (miejsce względem podestu, obrot_y w stopniach: 0 = twarzą na +z, czyli ku kamerze; figura = dzisiejsza figura z klocków do podmiany). Pancerz nie ma punktu trenera: golem gry jest tam przeciwnikiem i trenerem naraz.",
     "kolejnosc": ["szczescie", "sila", "kondycja", "zrecznosc", "pancerz", "inteligencja"],
     "szczescie": {"kraina": "las", "nazwa": "Łąka pod dębem"},
     "sila": {"kraina": "las", "nazwa": "Polana drwali"},
@@ -35,7 +35,7 @@
       "gra": "Rozbijanie",
       "stan": "grywalna",
       "kolor": "E5533D",
-      "opis": "Rozbij mieczem lecące skrzynki"
+      "opis": "Przetnij mieczem lecące owoce"
     },
     {
       "id": "kondycja",
@@ -299,7 +299,6 @@
     },
     "pancerz": {
       "podest": [108, 0, 8],
-      "trener_npc": {"miejsce": [-9.5, 0, -1.5], "obrot_y": 80, "figura": null},
       "kamera": {
         "oko": [13.8, 2.8, 3.2], "cel": [0.6, 5.2, -8.0], "kat": 48,
         "start": {"oko": [13.9, 5.0, 10.6], "cel": [0.6, 5.2, -8.0], "kat": 52},
@@ -556,7 +555,7 @@
     "graj": "GRAJ",
     "w_projekcie": "w projekcie",
     "start_podpowiedz": "Spacja / Enter / A na padzie",
-    "sterowanie_sila": "Strzałka albo WASD w stronę skrzynki, gdy dolatuje do kółka",
+    "sterowanie_sila": "Strzałka albo WASD w stronę owocu, gdy dolatuje do kółka",
     "sterowanie_pancerz": "BLOK (Spacja), gdy pierścień dojdzie do kółka. Fioletowy = zmyłka, nie blokuj!",
     "sterowanie_kondycja": "Lewa i prawa stopa na zmianę, gdy ślad dojedzie do linii",
     "sterowanie_zrecznosc": "Niska kłoda — SKOK, wysoka kłoda — PADNIJ",

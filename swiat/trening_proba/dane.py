@@ -266,9 +266,11 @@ def _sprawdz_scenerie(K):
         if pd[2] != z0:
             raise BladDanych("%s: podesty w jednej linii (z = %g)" % (g, z0))
         T = K["stanowiska"][g].get("trener_npc")
+        if T is None and "golem" in K["stanowiska"][g]:
+            continue  # Pancerz: golem gry jest przeciwnikiem i trenerem naraz — osobnego punktu trenera nie ma
         if not (isinstance(T, dict) and _punkt(T.get("miejsce")) and _w(T.get("obrot_y"), -180, 180)
-                and (T.get("figura") is None or re.fullmatch(r"Arena/\w+/\w+", T["figura"]))):
-            raise BladDanych("%s: trener_npc — miejsce [x, y, z], obrot_y w stopniach, figura (ścieżka albo null)" % g)
+                and isinstance(T.get("figura"), str) and re.fullmatch(r"Arena/\w+/\w+", T["figura"])):
+            raise BladDanych("%s: trener_npc — miejsce [x, y, z], obrot_y w stopniach, figura (ścieżka)" % g)
         if max(abs(T["miejsce"][0]), abs(T["miejsce"][2])) > km / 2.0 - 6:
             raise BladDanych("%s: trener_npc poza polaną scenerii" % g)
     if len(kol) * km + 16 > A["rozmiar"][0] or z0 + A["poludnie"] > A["rozmiar"][1] / 2.0 or z0 + A["polnoc"] < -A["rozmiar"][1] / 2.0:
@@ -396,12 +398,13 @@ def _swiat(K):
              "start": {"oko": _dodaj(p, kam["start"]["oko"]), "cel": _dodaj(p, kam["start"]["cel"]), "kat": kam["start"]["kat"]},
              "final": kam["final"], "napis": st["napis"]}
         # punkt trenera dla postaci NPC (D-108/D-109): miejsce w świecie, obrót wokół Y (0 = twarzą na +z), punkt, na
-        # który patrzy, i ścieżka dzisiejszej figury z klocków do podmiany (brak = w tym miejscu nic nie stoi)
-        T = st["trener_npc"]
-        m = _dodaj(p, T["miejsce"])
-        a = math.radians(T["obrot_y"])
-        w["trener_npc"] = {"miejsce": m, "obrot_y": T["obrot_y"], "patrz": _dodaj(m, [10 * math.sin(a), 0, 10 * math.cos(a)]),
-                           "figura": T["figura"]}
+        # który patrzy, i ścieżka dzisiejszej figury z klocków do podmiany; Pancerz punktu nie ma (trenerem jest golem)
+        T = st.get("trener_npc")
+        if T:
+            m = _dodaj(p, T["miejsce"])
+            a = math.radians(T["obrot_y"])
+            w["trener_npc"] = {"miejsce": m, "obrot_y": T["obrot_y"], "patrz": _dodaj(m, [10 * math.sin(a), 0, 10 * math.cos(a)]),
+                               "figura": T["figura"]}
         if gid == "sila":
             w["miotacz"] = _dodaj(p, st["miotacz"])
             w["reka"] = _dodaj(w["miotacz"], st["reka"])
