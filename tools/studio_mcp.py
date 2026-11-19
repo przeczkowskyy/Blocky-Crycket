@@ -169,7 +169,20 @@ class StudioMCP:
                 return out
 
     def call(self, name, arguments=None, timeout=None):
-        """Zwraca dict: {"text": str, "images": [bytes], "is_error": bool, "raw": wynik MCP}."""
+        """Zwraca dict: {"text": str, "images": [bytes], "is_error": bool, "raw": wynik MCP}.
+
+        `start_stop_play` idzie przez tools/zapis_prob.py (D-110, 19.11.2026): przed Play znacznik próby na
+        Workspace/StanGracza (serwer nie czyta i nie pisze prawdziwego zapisu postępu człowieka), po Stop zdjęty."""
+        if name == "start_stop_play":
+            tu = os.path.dirname(os.path.abspath(__file__))
+            if tu not in sys.path:
+                sys.path.insert(0, tu)
+            import zapis_prob  # noqa: E402
+            return zapis_prob.play(self._call, arguments, timeout, StudioError)
+        return self._call(name, arguments, timeout)
+
+    def _call(self, name, arguments=None, timeout=None):
+        """Samo wywołanie narzędzia MCP (bez opakowań)."""
         res = self._request("tools/call", {"name": name, "arguments": arguments or {}}, timeout=timeout)
         texts, images = [], []
         for c in (res or {}).get("content", []):

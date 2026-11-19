@@ -50,6 +50,7 @@ local kuzniaF = zdalne:WaitForChild("Kuznia")
 local zdarzenia = zdalne:WaitForChild("ZdarzeniaKowala")
 local sterowanie = kontener:WaitForChild("Sygnaly"):WaitForChild("SterowanieSerwera")
 local S = D.stan
+local ATR_WCZYTANIA = "StanGraczaWczytany" -- atrybut gracza od StanGracza (zapis postępu, D-110)
 local T = D.teksty
 local los = Random.new()
 
@@ -172,8 +173,15 @@ local function publikuj(gracz)
 	kontener:SetAttribute("OstatnieModyfikatory", string.format("%s:%s:%d przedm.", gracz.Name, st.klasa, #zal))
 end
 
+-- zapis postępu (D-110, 19.11.2026): StanGracza wczytuje profil po wejściu gracza; do końca (atrybut gracza
+-- StanGraczaWczytany = false) DanePakietu odmawia i "czytaj" daje nil — bez tego czekania kowal wziąłby gracza za nowego
+-- i pierwsza zmiana nadpisałaby zapisane przedmioty. Dane bierzemy, gdy atrybut zmieni się na true (dolaczyl).
+local function wczytywanieStanu(gracz)
+	return gracz:GetAttribute(ATR_WCZYTANIA) == false
+end
+
 local function zaladuj(gracz)
-	if not stanCzynny() then
+	if not stanCzynny() or wczytywanieStanu(gracz) then
 		return nil
 	end
 	local ok, v = wolaj(sygnalStanu(S.danePakietu), "czytaj", gracz, S.pakiet)
@@ -409,6 +417,14 @@ local function dolaczyl(gracz)
 	end
 	local lista = {}
 	table.insert(lista, gracz.AttributeChanged:Connect(function(nazwa)
+		if nazwa == ATR_WCZYTANIA then
+			-- zapis postępu: początek wczytywania → stan kowala odłożony; koniec → dane z wczytanego profilu
+			stany[gracz] = nil
+			if not wczytywanieStanu(gracz) then
+				zaladuj(gracz)
+			end
+			return
+		end
 		local st = stany[gracz]
 		if not st or type(nazwa) ~= "string" then
 			return

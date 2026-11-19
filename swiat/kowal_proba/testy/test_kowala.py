@@ -673,6 +673,28 @@ class TestSerweraOffline(SerweryOffline, unittest.TestCase):
         self.assertEqual(self.sw.ostrzezenia, [])
         self.assertGreater(n, 100)
 
+    def test_5m_zapis_postepu_czeka_na_wczytanie_profilu(self):
+        # D-110 (19.11.2026): StanGracza wczytuje profil po wejściu (atrybut gracza StanGraczaWczytany = false do końca,
+        # DanePakietu "czytaj" daje wtedy nil); kowal odkłada swój stan i po wczytaniu bierze dane z profilu — inaczej
+        # wziąłby gracza za nowego i pierwsza zmiana nadpisałaby zapisane przedmioty
+        self.uruchom()
+        przed = self.hak("stan", self.gracz.t)["dane"]
+        pid = next(p for p in D["klasy"]["wojownik"]["przedmioty"] if not D["przedmioty"][p]["podstawowy"])
+        self.hak("daj", self.gracz.t, pid)
+        self.assertIn(pid, self.atr("KowalDostepne").split(","))
+        # „wczytany profil” bez pid (pamięć kowala go ma): ustawiamy go, zanim zacznie się wczytywanie
+        f = self.inne["DanePakietu"]
+        w = self.sw.wolaj(f.t.get("OnInvoke"), "zapisz", self.gracz.t, D["stan"]["pakiet"], LM.do_luau(przed))
+        self.assertEqual(LM.z_luau(w[0]), {"ok": True})
+        self.gracz.ustaw("StanGraczaWczytany", False)
+        self.assertEqual(self.kuznia_("widok")["powod"], "brak_stanu", "w trakcie wczytywania kuźnia czeka")
+        self.wygrana(1)  # łup w trakcie wczytywania: kowal nic nie pisze
+        self.gracz.ustaw("StanGraczaWczytany", True)
+        self.assertNotIn(pid, self.atr("KowalDostepne").split(","), "po wczytaniu dane z profilu, nie z pamięci")
+        self.assertEqual(self.hak("stan", self.gracz.t)["dane"], przed)
+        self.assertTrue(self.kuznia_("widok")["ok"])
+        self.assertEqual([o for o in self.sw.ostrzezenia if "odrzucon" in o], [])
+
     def test_5b_lup_z_tokenow_nowy_przedmiot_zalozony(self):
         self.uruchom()
         przed = self.bohater_stanu()

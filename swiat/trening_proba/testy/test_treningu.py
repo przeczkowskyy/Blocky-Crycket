@@ -1940,6 +1940,24 @@ class TestStykow(unittest.TestCase):
         self.assertNotIn("DataStore", s + KLIENT + LOGIKA)
         self.assertIn("przyrostE:Fire(", s)
 
+    def test_6c2_zapis_postepu_przez_stan_gracza(self):
+        # D-110 (19.11.2026): W (atrybut sesyjny) i paski mini-gier idą do profilu StanGracza przez DanePakietu (pakiet
+        # „trening”); odczyt po wczytaniu profilu (StanGraczaWczytany), zapis dopiero po odczycie, przy nowym punkcie
+        # i na końcu rundy; przywrócenie tylko podnosi W (nigdy nie zmniejsza)
+        s = bez_komentarzy(SERWER)
+        for f in ('sygnal = "DanePakietu"', 'pakiet = "trening"', 'atrybut = "StanGraczaWczytany"', 'gotowy = "SerwerStanuGotowy"',
+                  'f:Invoke("czytaj", gracz, ZP.pakiet)', 'f:Invoke("zapisz", gracz, ZP.pakiet, { w = w, paski = paski })',
+                  "S.zProfilu = true", "not S.zProfilu", "gracz:GetAttribute(ZP.atrybut) == false",
+                  "n > (gracz:GetAttribute(st.atrybut_sesji) or 0)", "GetAttributeChangedSignal(ZP.atrybut)"):
+            self.assertIn(f, s)
+        # kolejność definicji (Luau w Studio nie widzi lokalnych funkcji zdefiniowanych niżej)
+        i_zap = s.index("local function zapiszTrening")
+        self.assertLess(s.index("local function wczytajTrening"), i_zap)
+        self.assertLess(i_zap, s.index("local function zakoncz"))
+        self.assertLess(i_zap, s.index("local function wynik"))
+        self.assertEqual(s.count("zapiszTrening(gracz)") - s.count("function zapiszTrening(gracz)"), 2,
+                         "zapis przy nowym punkcie i na końcu rundy")
+
     def test_6d_zakazy_i_dzwieki(self):
         pliki = [os.path.join(PAKIET, n) for n in ("dane.py", "scena.py", "zbuduj.py", "logika_treningu.py", "scenerie.py",
                                                    "dekoracje.py")]

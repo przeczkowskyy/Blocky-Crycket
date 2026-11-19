@@ -330,9 +330,9 @@ class TestAutomat(unittest.TestCase):
                 if g.kotwica:
                     self.assertIn(g.s["faza"], ("laduje", "trwa"))
 
-    def test_3j_pamiec_gotowa_na_zapis_a_zapis_wylaczony(self):
+    def test_3j_pamiec_gotowa_na_zapis_i_zapis_wlaczony(self):
         zrodlo = czytaj("swiat", "stan_gracza", "dane.py")
-        self.assertRegex(zrodlo, r"(?m)^ZAPIS_WLACZONY = False", "zapis postępu ma zostać wyłączony")
+        self.assertRegex(zrodlo, r"(?m)^ZAPIS_WLACZONY = True", "zapis postępu włączony decyzją D-110 (19.11.2026)")
         m = re.search(r'"atrybuty_prefiksy":\s*\[([^\]]*)\]', zrodlo)
         prefiksy = re.findall(r'"([^"]+)"', m.group(1))
         for b in D["biomy"]:

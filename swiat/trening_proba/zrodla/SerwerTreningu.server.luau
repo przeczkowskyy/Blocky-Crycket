@@ -184,6 +184,89 @@ local function stan(gracz)
 	return S
 end
 
+------------------------------------------------------------------ zapis postępu (D-110, 19.11.2026): punkty i paski treningu
+-- W (punkty wytrenowane: atrybut st.atrybut_sesji) i pasek każdej mini-gry trzymamy też w profilu StanGracza
+-- (Workspace/StanGracza/Sygnaly/DanePakietu, pakiet "trening"), żeby malejący zysk nie wracał do zera po ponownym
+-- wejściu. Do końca wczytania profilu (atrybut gracza StanGraczaWczytany = false) nic nie czytamy i nie piszemy, a piszemy
+-- dopiero po odczycie (pusty stan nie nadpisze zapisanego). Bez StanGracza — jak dawniej (tylko pamięć serwera).
+local ZP = { kontener = "StanGracza", gotowy = "SerwerStanuGotowy", sygnal = "DanePakietu", pakiet = "trening",
+	atrybut = "StanGraczaWczytany" }
+
+local function danePakietu()
+	local k = workspace:FindFirstChild(ZP.kontener)
+	if not k or k:GetAttribute(ZP.gotowy) ~= true then
+		return nil
+	end
+	local s = k:FindFirstChild("Sygnaly")
+	local f = s and s:FindFirstChild(ZP.sygnal)
+	return if f and f:IsA("BindableFunction") then f else nil
+end
+
+local function liczbaOk(v)
+	return type(v) == "number" and v == v and v >= 0 and v < math.huge
+end
+
+local function wczytajTrening(gracz)
+	local f = danePakietu()
+	if not f or gracz.Parent ~= Players or gracz:GetAttribute(ZP.atrybut) == false then
+		return
+	end
+	local S = stan(gracz)
+	local ok, v = pcall(function()
+		return f:Invoke("czytaj", gracz, ZP.pakiet)
+	end)
+	if not ok then
+		return
+	end
+	S.zProfilu = true
+	if type(v) ~= "table" then
+		return
+	end
+	for _, st in D.statystyki do
+		local n = if type(v.w) == "table" then v.w[st.atrybut_sesji] else nil
+		if liczbaOk(n) and n > (gracz:GetAttribute(st.atrybut_sesji) or 0) then
+			gracz:SetAttribute(st.atrybut_sesji, n)
+		end
+	end
+	if type(v.paski) == "table" then
+		S.paski = S.paski or {}
+		for gra, x in v.paski do
+			if type(gra) == "string" and D.gry[gra] ~= nil and liczbaOk(x) then
+				S.paski[gra] = x
+			end
+		end
+	end
+end
+
+local function zapiszTrening(gracz)
+	local S = gracze[gracz]
+	if S and not S.zProfilu then
+		wczytajTrening(gracz) -- StanGracza pojawił się później niż gracz: najpierw odczyt
+	end
+	local f = danePakietu()
+	if not S or not S.zProfilu or not f or gracz:GetAttribute(ZP.atrybut) == false then
+		return
+	end
+	local w, paski = {}, {}
+	for _, st in D.statystyki do
+		local n = gracz:GetAttribute(st.atrybut_sesji)
+		if liczbaOk(n) and n > 0 then
+			w[st.atrybut_sesji] = n
+		end
+	end
+	for gra, x in S.paski or {} do
+		if type(gra) == "string" and liczbaOk(x) then
+			paski[gra] = x
+		end
+	end
+	local ok, r = pcall(function()
+		return f:Invoke("zapisz", gracz, ZP.pakiet, { w = w, paski = paski })
+	end)
+	if not ok or type(r) ~= "table" or r.ok ~= true then
+		warn(P .. "trening w profilu stanu gracza odrzucony: " .. tostring(if ok and type(r) == "table" then r.powod else r))
+	end
+end
+
 local function odmow(gracz, powod)
 	dolicz("LicznikOdmow")
 	kontener:SetAttribute("OstatniaOdmowa", gracz.Name .. ":" .. tostring(powod))
@@ -200,6 +283,7 @@ local function zakoncz(gracz, S, R, przerwana)
 	p.sesja = gracz:GetAttribute(st.atrybut_sesji) or 0
 	S.ostatnia = p
 	zdalne:FireClient(gracz, "koniec", p)
+	zapiszTrening(gracz) -- pasek po rundzie do profilu (zapis postępu)
 end
 
 -- werdykt (trafienie / pudło) → atrybut sesyjny, sygnał dla modułu statystyk, wiadomość do klienta
@@ -227,6 +311,9 @@ local function wynik(gracz, R, w)
 	if S then
 		S.paski = S.paski or {}
 		S.paski[R.gra] = R.pasek
+		if w.trafienie and w.przyrost > 0 then
+			zapiszTrening(gracz) -- nowy punkt: W i pasek do profilu od razu (wyjście w trakcie rundy go nie zgubi)
+		end
 	end
 	kontener:SetAttribute("OstatniWynik", string.format("%s:%s:%s:%s", gracz.Name, R.gra, tostring(w.nr), w.powod))
 	-- Runy: stan sekwencji po werdykcie (klient wyrównuje swoją kopię); Koniczyny: tor upadku
@@ -434,6 +521,17 @@ kontener:SetAttribute("Podpowiedzi", liczbaPodpowiedzi)
 
 ------------------------------------------------------------------ gracze: wyjście z gry i odrodzenie w trakcie treningu
 local function podepnij(gracz)
+	-- zapis postępu: początek wczytywania profilu → odczyt jeszcze raz po jego końcu
+	gracz:GetAttributeChangedSignal(ZP.atrybut):Connect(function()
+		local S = gracze[gracz]
+		if S then
+			S.zProfilu = false
+		end
+		if gracz:GetAttribute(ZP.atrybut) ~= false then
+			wczytajTrening(gracz)
+		end
+	end)
+	task.spawn(wczytajTrening, gracz)
 	gracz.CharacterAdded:Connect(function()
 		local S = gracze[gracz]
 		if S and S.gra then

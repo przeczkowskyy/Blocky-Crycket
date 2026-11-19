@@ -8,6 +8,10 @@ gra w tym oknie. Okno Studio jest wysuwane na wierzch (pomiary czasu klatki), wi
 komputerze. Całość trwa ok. godziny. Próby idą bez zrzutów do repozytorium (--bez-zrzutow tam, gdzie próba to umie);
 logi i wyniki z nazwą konta trafiają do podanego folderu — dlatego musi on leżeć poza repozytorium.
 
+Zapis postępu (D-110): każda próba włącza Play przez tools/studio_mcp.py, więc przez znacznik próby z tools/zapis_prob.py —
+serwer stanu gracza nie czyta i nie pisze wtedy prawdziwego zapisu człowieka (gracz zaczyna świeży); próba „zapis” pracuje
+na osobnym magazynie próby.
+
 Drugi argument ogranicza listę do podanych nazw (np. "proba dymna,dzungla,kowal"); pusty = wszystkie.
 Po każdej próbie do podsumowania idzie ogon jej wyjścia; pełny log jest w <folder>/<nazwa>.log. Kod wyjścia próby
 0 nie znaczy „wszystko OK” — czytaj wiersze z „BŁĄD” i „?”.
@@ -44,6 +48,8 @@ PROBY = [
     ("walka szybko", ["swiat/test_walki2/testy/test_walki_play.py", "--szybko"], 1500),
     ("walka v3", ["swiat/test_walki2/testy/test_v3_play.py", "--bez-zrzutow"], 1800),
     ("walka poprawki", ["swiat/test_walki2/testy/test_poprawek_play.py"], 1500),
+    # 19.11.2026 (D-110): zapis postępu — na magazynie próby (…_Studio_Proba), nie na zapisie człowieka
+    ("zapis", ["swiat/stan_gracza/testy/proba_zapisu.py", "{w}/zapis"], 1200),
 ]
 
 

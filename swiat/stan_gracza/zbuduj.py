@@ -8,6 +8,9 @@
     python -B swiat/stan_gracza/zbuduj.py --skrypty    # tylko moduły i skrypty do istniejącego kontenera
     python -B swiat/stan_gracza/zbuduj.py --usun       # usuwa Workspace/StanGracza (gra wraca do stanu sprzed pakietu)
     python -B swiat/stan_gracza/zbuduj.py --studio <studio_id>   # gdy otwartych jest kilka okien Studio
+    python -B swiat/stan_gracza/zbuduj.py --kasuj-zapis          # podgląd własnego zapisu postępu (magazyn Studio)
+    python -B swiat/stan_gracza/zbuduj.py --kasuj-zapis --tak    # skasowanie go — następne Play od nowego gracza
+    python -B swiat/stan_gracza/zbuduj.py --kasuj-zapis --proba [--tak]   # to samo w magazynie próby zapisu
 
 Co powstaje (tylko w Workspace/StanGracza z atrybutem Wygenerowane = true; cudzych obiektów budowa NIE zmienia):
   Moduly/DaneStanu, Moduly/LogikaStanu        ModuleScript (zrodla/; DaneStanu wygenerowany przez dane.py)
@@ -65,7 +68,70 @@ INNE = [
     ("BindableFunction", "Sygnaly/DanePakietu"),      # 18.11.2026: dane pakietów w profilu
 ]
 ATRYBUTY_TESTOWE = ["StatystykiKlasy", "KaraPrzegranej", "PunktyStatystyk", "SzczesciePoczatkujacego", "ZapisPostepu",
-                    "RozkladyKlas"]  # KaraPrzegranej (17.11.2026): false / ułamek kary w Edit
+                    "RozkladyKlas",  # KaraPrzegranej (17.11.2026): false / ułamek kary w Edit
+                    # 19.11.2026 (D-110): znacznik próby gry (tools/zapis_prob.py) przechodzi na odbudowany kontener
+                    "ZapisProbaDo", "ZapisProbaMagazyn", "ZapisProbaBledy"]
+
+# Własny zapis gracza zalogowanego w Studio (19.11.2026, D-110): podgląd albo skasowanie rekordu — TYLKO magazyn Studio
+# (nazwa z końcówką przyrostek_studio; magazyn opublikowanej gry jest nie do ruszenia) albo magazyn próby. Kasowanie
+# odmawia przy świeżej sesji (gra trwa — zapis przy wyjściu odtworzyłby rekord). Wynik bez identyfikatora gracza.
+KOD_ZAPISU = r'''
+local nazwa = "__MAGAZYN__"
+if not string.find(nazwa, "__STUDIO__", 1, true) then
+	return "STOP: tylko magazyn Studio (" .. nazwa .. ")"
+end
+local okU, uid = pcall(function()
+	return game:GetService("StudioService"):GetUserId()
+end)
+if not okU or type(uid) ~= "number" or uid <= 0 then
+	return "STOP: nie wiem, kto jest zalogowany w Studio (" .. tostring(uid) .. ")"
+end
+local ds = game:GetService("DataStoreService"):GetDataStore(nazwa)
+local klucz = "__KLUCZ__" .. tostring(uid)
+local okG, r = pcall(function()
+	return ds:GetAsync(klucz)
+end)
+if not okG then
+	return "STOP: odczyt nie powiódł się: " .. tostring(r)
+end
+local opis = "brak zapisu"
+local swieza = false
+if type(r) == "table" then
+	local p = if type(r.profil) == "table" then r.profil else {}
+	opis = string.format("poziom %s, doświadczenie %s, Złoto %s, Gemy %s, klasa %s, zapisano %s", tostring(p.poziom),
+		tostring(p.xp), tostring(p.zloto), tostring(p.gemy), tostring(p.idKlasy),
+		if type(r.zapisano) == "number" then os.date("!%Y-%m-%d %H:%M UTC", r.zapisano) else "?")
+	swieza = type(r.sesja) == "table" and type(r.sesja.czas) == "number" and os.time() - r.sesja.czas < __BLOKADA__
+	if swieza then
+		opis ..= " | świeża sesja: gra trwa albo skończyła się przed chwilą"
+	end
+end
+if not __KASUJ__ then
+	return "PODGLĄD " .. nazwa .. ": " .. opis
+end
+if r == nil then
+	return "NIC DO KASOWANIA (" .. nazwa .. ": brak zapisu)"
+end
+if swieza then
+	return "STOP: świeża sesja — zatrzymaj Play (każde okno) i spróbuj za kilka minut (" .. opis .. ")"
+end
+local okR, e = pcall(function()
+	ds:RemoveAsync(klucz)
+end)
+if not okR then
+	return "STOP: kasowanie nie powiodło się: " .. tostring(e)
+end
+return "SKASOWANO " .. nazwa .. " (było: " .. opis .. ")"
+'''
+
+
+def kod_zapisu(D, kasuj=False, proba=False):
+    """Luau (Edit) podglądu / skasowania własnego zapisu w magazynie Studio (albo próby)."""
+    G = D["zapis"]
+    nazwa = G["magazyn"] + G["przyrostek_studio"] + (G["proba"]["przyrostek"] if proba else "")
+    return (KOD_ZAPISU.replace("__MAGAZYN__", nazwa).replace("__STUDIO__", G["przyrostek_studio"])
+            .replace("__KLUCZ__", G["klucz"]).replace("__BLOKADA__", str(int(G["blokada_s"])))
+            .replace("__KASUJ__", "true" if kasuj else "false"))
 
 NAGLOWEK_MIEJSCA = ('if game.PlaceId ~= __MIEJSCE__ then return "STOP: inne miejsce (PlaceId " .. tostring(game.PlaceId) .. ")" end\n'
                     'if game:GetService("RunService"):IsRunning() then return "STOP: Studio jest w trybie Play — buduję tylko w trybie Edit" end\n')
@@ -229,7 +295,10 @@ def kod_konca(punkt_historii="zbudowano"):
 
 def wszystkie_kody():
     """Kod wysyłany do Studio (bez skryptów) — do --sucho i do testu parsowania."""
-    return {"start": kod_start(czas="x", skrot="x"), "usun": kod_start(True), "koniec": kod_konca()}
+    _, D = DANE.aktualny()
+    return {"start": kod_start(czas="x", skrot="x"), "usun": kod_start(True), "koniec": kod_konca(),
+            "zapis_podglad": kod_zapisu(D), "zapis_kasuj": kod_zapisu(D, kasuj=True),
+            "zapis_proby_kasuj": kod_zapisu(D, kasuj=True, proba=True)}
 
 
 def main():
@@ -241,9 +310,21 @@ def main():
     ap.add_argument("--skrypty", action="store_true", help="tylko moduły i skrypty do istniejącego kontenera")
     ap.add_argument("--usun", action="store_true", help="usuń Workspace/StanGracza")
     ap.add_argument("--studio", default=None, help="studio_id (gdy otwartych jest kilka okien Studio)")
+    ap.add_argument("--kasuj-zapis", action="store_true",
+                    help="własny zapis postępu (gracz zalogowany w Studio, magazyn Studio): bez --tak tylko podgląd")
+    ap.add_argument("--tak", action="store_true", help="z --kasuj-zapis: naprawdę skasuj (potwierdzenie)")
+    ap.add_argument("--proba", action="store_true", help="z --kasuj-zapis: magazyn próby zapisu zamiast magazynu Studio")
     a = ap.parse_args()
+    if (a.tak or a.proba) and not a.kasuj_zapis:
+        ap.error("--tak i --proba działają tylko z --kasuj-zapis")
 
-    if a.usun:
+    if a.kasuj_zapis:
+        zrodla, D = [], DANE.aktualny()[1]
+        G = D["zapis"]
+        print("Zapis postępu: magazyn %s%s%s, klucz %s<UserId gracza zalogowanego w Studio> — %s"
+              % (G["magazyn"], G["przyrostek_studio"], G["proba"]["przyrostek"] if a.proba else "", G["klucz"],
+                 "KASUJĘ" if a.tak else "podgląd (skasujesz dopiero z --tak)"))
+    elif a.usun:
         zrodla, D = [], None
     else:
         zrodla = zrodla_pakietu()
@@ -295,6 +376,13 @@ def main():
                     print("  skrypt:", wykonaj(kod_skryptu(sciezka, klasa, kontekst, tekst)))
 
             t0 = time.time()
+            if a.kasuj_zapis:
+                w = wykonaj(kod_zapisu(D, kasuj=a.tak, proba=a.proba))
+                print(w)
+                if a.tak and w.startswith("SKASOWANO"):
+                    print("Następne wejście (Play) zaczyna od nowego gracza. Rekord przez 30 dni da się odzyskać "
+                          "z wersji magazynu (DataStore: ListVersionsAsync).")
+                return
             if a.skrypty:
                 wykonaj('local f = workspace:FindFirstChild("%s") if not f or f:GetAttribute("Wygenerowane") ~= true '
                         'then return "STOP: brak kontenera — zbuduj całość" end '

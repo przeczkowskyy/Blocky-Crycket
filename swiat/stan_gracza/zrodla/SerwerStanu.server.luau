@@ -130,11 +130,41 @@ do
 	local a = kontener:GetAttribute(D.zapis.atrybut)
 	local wlaczony = a == true or (a ~= false and D.zapis.wlaczony == true)
 	local stan = "wyłączony"
+	-- próba gry w Play (19.11.2026, D-110): znacznik ZapisProbaDo (os.time() końca, ustawia tools/zapis_prob.py w Edit
+	-- tuż przed Play) → prawdziwego zapisu NIE czytamy i NIE piszemy (świeży gracz w pamięci, jak przed zapisem);
+	-- z ZapisProbaMagazyn = true — osobny magazyn próby (tylko on zna atrapę błędów ZapisProbaBledy)
+	local PR = D.zapis.proba
+	local studio = game:GetService("RunService"):IsStudio()
+	local doKiedy = kontener:GetAttribute(PR.atrybut_do)
+	local wProbie = studio and type(doKiedy) == "number" and os.time() < doKiedy
+	local magazynProby = wProbie and kontener:GetAttribute(PR.atrybut_magazynu) == true
+	local nazwa = D.zapis.magazyn .. (if studio then D.zapis.przyrostek_studio else "")
+	if magazynProby then
+		wlaczony = true
+		nazwa ..= PR.przyrostek
+	elseif wProbie then
+		wlaczony = false
+		stan = "wyłączony (próba gry)"
+	end
 	if wlaczony and modulZapisu then
 		local ok, magazyn, uslugi = pcall(function()
 			local DSS = game:GetService("DataStoreService")
-			local nazwa = D.zapis.magazyn .. (if game:GetService("RunService"):IsStudio() then D.zapis.przyrostek_studio else "")
-			return DSS:GetDataStore(nazwa), DSS
+			local ds = DSS:GetDataStore(nazwa)
+			if magazynProby then
+				-- atrapa błędów usługi tylko w magazynie próby: ZapisProbaBledy = ile kolejnych wywołań pada
+				local surowy = ds
+				ds = {
+					UpdateAsync = function(_, klucz: string, fn)
+						local n = kontener:GetAttribute(PR.atrybut_bledow)
+						if type(n) == "number" and n >= 1 then
+							kontener:SetAttribute(PR.atrybut_bledow, n - 1)
+							error("błąd magazynu na próbę (" .. PR.atrybut_bledow .. ")")
+						end
+						return surowy:UpdateAsync(klucz, fn)
+					end,
+				}
+			end
+			return ds, DSS
 		end)
 		if ok and magazyn then
 			local Z = require(modulZapisu)
@@ -154,7 +184,7 @@ do
 				end,
 				los = if math.random then math.random else nil,
 			})
-			stan = "włączony"
+			stan = if magazynProby then "włączony (magazyn próby)" else "włączony"
 		else
 			stan = "wyłączony (usługa danych niedostępna: " .. tostring(magazyn) .. ")"
 			warn(P .. "zapis: " .. stan)
@@ -162,6 +192,7 @@ do
 	end
 	kontener:SetAttribute("ZapisAktywny", zapis ~= nil)
 	kontener:SetAttribute("ZapisStan", stan)
+	kontener:SetAttribute("ZapisMagazyn", if zapis ~= nil then nazwa else nil)
 end
 for _, n in { "LicznikWczytan", "LicznikZapisow", "LicznikBledowZapisu", "LicznikBezZapisu" } do
 	kontener:SetAttribute(n, 0)
@@ -1089,9 +1120,10 @@ local function przygotujGracza(gracz: Player)
 	publikujPety(gracz)
 end
 
------------------------------------------------------------------- zapis postępu (18.11.2026, propozycja; DOMYŚLNIE WYŁĄCZONY)
+------------------------------------------------------------------ zapis postępu (18.11.2026; włączony 19.11.2026, D-110)
 -- Moduly/ZapisStanu (DataStore, blokada sesji, ponawianie); tu: kiedy wczytać i zapisać i jak przenieść profil do
--- atrybutów. Włączony tylko, gdy przy starcie serwera D.zapis.wlaczony albo atrybut kontenera D.zapis.atrybut = true.
+-- atrybutów. Włączony, gdy przy starcie serwera D.zapis.wlaczony (albo atrybut kontenera D.zapis.atrybut = true),
+-- atrybut nie jest false i nie trwa próba gry (znacznik D.zapis.proba — wtedy najwyżej magazyn próby).
 local zapisy: { [Player]: any } = {}
 local wTrakcie = 0 -- zapisy w toku i w kolejce (BindToClose czeka, aż spadnie do zera)
 
@@ -1231,13 +1263,15 @@ local function poWczytaniu(gracz: Player, stan: string, dane, powod: string?)
 		warn(P .. "zapis: gracz " .. tostring(gracz.UserId) .. " gra bez zapisu (" .. stan .. ", " .. tostring(powod) .. ")")
 	end
 	gracz:SetAttribute("StanGraczaZapis", z.stan)
+	-- czas od wejścia do końca wczytania (ms) — do prób zapisu (proba_zapisu.py)
+	gracz:SetAttribute("StanGraczaWczytanieMs", math.floor((os.clock() - (z.t0 or os.clock())) * 1000 + 0.5))
 	przygotujGracza(gracz)
 	gracz:SetAttribute("StanGraczaWczytany", true)
 end
 
 local function nowyGracz(gracz: Player)
 	if zapis and not zapis.wylaczony then
-		zapisy[gracz] = { stan = "wczytywanie", trwa = false, kolejka = {}, wyszedl = false }
+		zapisy[gracz] = { stan = "wczytywanie", trwa = false, kolejka = {}, wyszedl = false, t0 = os.clock() }
 		gracz:SetAttribute("StanGraczaWczytany", false)
 		zapis.wczytaj(gracz.UserId, function(stan: string, dane, powod: string?)
 			poWczytaniu(gracz, stan, dane, powod)

@@ -368,18 +368,32 @@ workspace.ChildRemoved:Connect(function(o)
 end)
 
 ------------------------------------------------------------------ gracze
+-- ceny jajek i skill aktywnego peta z profilu stanu gracza
+local function zProfilu(gracz: Player)
+	local st = wolajPety("stan", gracz)
+	ustawCeny(gracz, wydatki(st))
+	-- modyfikator od razu przy wejściu (przejmuje źródło "pety" w stanie gracza, zanim przyjdzie pierwszy łup)
+	ustawModyfikator(gracz, if st and type(st.aktywny) == "string" then st.aktywny else nil)
+end
+
+-- zapis postępu (D-110, 19.11.2026): StanGracza wczytuje profil po wejściu; do końca (atrybut gracza
+-- StanGraczaWczytany = false) Pety i Modyfikatory odmawiają — ceny i skill peta ustawiamy, gdy atrybut zmieni się na true
+local ATR_WCZYTANIA = "StanGraczaWczytany"
+
 local function nowyGracz(gracz: Player)
 	ustawCeny(gracz, {})
+	gracz:GetAttributeChangedSignal(ATR_WCZYTANIA):Connect(function()
+		if gracz:GetAttribute(ATR_WCZYTANIA) == true and graczOk(gracz) and sygnalPetow() then
+			zProfilu(gracz)
+		end
+	end)
 	-- stan gracza może ruszyć później (kolejność skryptów) — cena z profilu, gdy będzie
 	for _ = 1, 20 do
-		if not graczOk(gracz) then
-			return
+		if not graczOk(gracz) or gracz:GetAttribute(ATR_WCZYTANIA) == false then
+			return -- wczytywanie profilu: resztę zrobi słuchacz atrybutu
 		end
 		if sygnalPetow() then
-			local st = wolajPety("stan", gracz)
-			ustawCeny(gracz, wydatki(st))
-			-- modyfikator od razu przy wejściu (przejmuje źródło "pety" w stanie gracza, zanim przyjdzie pierwszy łup)
-			ustawModyfikator(gracz, if st and type(st.aktywny) == "string" then st.aktywny else nil)
+			zProfilu(gracz)
 			return
 		end
 		task.wait(1)

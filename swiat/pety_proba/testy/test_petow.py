@@ -583,6 +583,20 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertTrue(self.prompty["E wybor"][0].t.get("Enabled"), "bez MiasteczkoBazarGra — zapasowe E włączone")
         self.assertEqual(self.sw.ostrzezenia, [])
 
+    def test_5p_zapis_postepu_czeka_na_wczytanie_profilu(self):
+        # D-110 (19.11.2026): gracz wchodzi, StanGracza jeszcze wczytuje profil (StanGraczaWczytany = false — Pety
+        # i Modyfikatory odmawiają); pety nie ustawiają skilla od razu, tylko gdy atrybut zmieni się na true
+        self.uruchom()
+        n0 = self.kp.atrybuty.get("LicznikModyfikatorow", 0)
+        g2 = self.sw.gracz("Gracz2", {"Level": 1, "XP": 0, "Gold": 0, "Gems": 0, "StanGraczaWczytany": False})
+        self.sw.dolaczyl.odpal(g2.t)
+        self.assertEqual(self.kp.atrybuty.get("LicznikModyfikatorow", 0), n0, "w trakcie wczytywania nic nie wysłane")
+        self.assertEqual(g2.atrybuty.get(D["jajka"][0]["atrybuty"]["cena"]), D["jajka"][0]["cena"]["stala"])
+        g2.ustaw("StanGraczaWczytany", True)
+        self.assertEqual(self.kp.atrybuty.get("LicznikModyfikatorow", 0), n0 + 1)
+        self.assertEqual(self.kp.atrybuty.get("OstatniModyfikator"), "Gracz2:brak")
+        self.assertEqual([o for o in self.sw.ostrzezenia if "Gracz2" in o or "Modyfikatory" in o], [])
+
     def test_5b_bez_zlota_odmowa_z_kwota(self):
         self.uruchom(zloto=120)
         self.e_jajka()

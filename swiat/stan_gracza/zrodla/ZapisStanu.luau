@@ -1,7 +1,7 @@
 --[[
 	ZapisStanu — zapis postępu gracza między sesjami (ModuleScript w Workspace/StanGracza/Moduly; używa go tylko
-	SerwerStanu). 18.11.2026, propozycja: DOMYŚLNIE WYŁĄCZONY (D.zapis.wlaczony = false; atrybut kontenera
-	D.zapis.atrybut = true włącza). Zasady: skill projektu roblox-data.
+	SerwerStanu). 18.11.2026; włączony 19.11.2026 decyzją D-110 (D.zapis.wlaczony = true; atrybut kontenera
+	D.zapis.atrybut = false wyłącza, próba gry w Play — znacznik D.zapis.proba — też). Zasady: skill projektu roblox-data.
 
 	Rekord w DataStore pod kluczem D.zapis.klucz .. UserId (identyfikator gracza jako stały kawałek klucza — usuwanie
 	danych na żądanie):
