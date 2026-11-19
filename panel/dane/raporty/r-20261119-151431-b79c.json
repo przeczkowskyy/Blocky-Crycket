@@ -1,0 +1,21 @@
+{
+ "id": "r-20261119-151431-b79c",
+ "tytul": "Zapis postępu włączony: stan wraca po ponownym wejściu",
+ "opis_md": "- Zapis postępu jest włączony (D-110): po wyjściu z gry i ponownym wejściu wraca poziom, Złoto, Gemy, punkty, przedmioty (także ze sklepu) z ulepszeniami, pety, trening z mini-gier, pokonani Strażnicy, otwarte bramy i strój.\n- Sprawdzone w Studio na osobnym, testowym magazynie: po ponownym wejściu zero różnic. Prawdziwego zapisu żadnej osoby próby nie tknęły — pierwsze prawdziwe wejście zostaje dla Was.\n- Działa na razie tylko w Studio (tak jak cała gra na próbę) i pisze do osobnego magazynu, nie do magazynu opublikowanej gry.\n- Dwie rzeczy po stronie Pawła: po powrocie pokazuje się jeszcze ekran wyboru klasy, a zakupy w drzewku umiejętności się nie zapisują.\n\nSzczegóły:\n\n**Jak sprawdzić (Studio w trybie Edit)**\n1. Play — pierwsze wejście zaczyna nowego gracza: poziom 1, 0 Złota, 0 Gemów.\n2. Zagraj chwilę: walka, zakup u zbrojmistrza, jajko, mini-gra.\n3. Stop i odczekaj kilka sekund.\n4. `python -B swiat/stan_gracza/zbuduj.py --kasuj-zapis` — sam podgląd: pokaże zapisany poziom, Złoto, Gemy i klasę.\n5. Play jeszcze raz: wszystko wraca. Ekran klasy pokaże się ponownie — wybierz tę samą klasę, bo inna by się zapisała.\n\n**Zaczęcie od zera:** Stop, potem `python -B swiat/stan_gracza/zbuduj.py --kasuj-zapis --tak`. Kasuje tylko zapis osoby zalogowanej w Studio i tylko w magazynie Studio.\n\n**Próba zapisu w grze (19.11, ostatnie przebiegi 14:32 i 15:06): 9 punktów w porządku**\n\n| Co sprawdzone | Wynik |\n|---|---|\n| Nowy gracz | poziom 1, 0 Złota, 0 Gemów |\n| Gra i wyjście | łup i awans do poziomu 6, punkty statystyk, zakup w sklepie (pas leśny), ulepszenie u kowala, przymierzalnia, jajko, mini-gra, Strażnik Gaju, przelot lasu |\n| Ponowne wejście | zero różnic: poziom 6, Złoto 3501, Gemy 150, pas +1 posiadany i założony, pet, 4 punkty Siły z treningu, brama otwarta |\n| Czas wczytania | 0,9–1,9 s |\n| Błąd usługi przy zapisie wyjścia | ponowienie się udaje |\n| Usługa niedostępna cały czas | gracz gra w pamięci, zapisany rekord zostaje nietknięty |\n\n**Próby gry a zapis:** każda próba w grze startuje ze znacznikiem i idzie bez zapisu, od świeżego gracza. Po zmianie przeszły: stan gracza, pety, kowal 13, przymierzalnia 10, mini-gry 31, przelot 15, sklep 12. W próbie całej drogi gracza raz po przylocie do lasu kamera została zablokowana na 30 s; powtórka przeszła 14 z 14 — do obserwacji.\n\n**Poprawione po drodze:** kowal, pety i mini-gry czekają teraz na wczytanie profilu. Wcześniej kowal brał gracza za nowego, zanim profil się wczytał, i pierwszy łup albo zakup nadpisałby zapisane przedmioty.\n\n**Czego zapis nie obejmuje:** drzewka umiejętności i okna ekwipunku (pliki Pawła), pamięci poznanych gatunków w walce (druga walka z gatunkiem po powrocie znów jest bez POMIŃ).\n\n**Niesprawdzone:** dwa okna Studio z tym samym graczem (blokada sesji), próby Bagna, Dżungli, bazaru i chmur po włączeniu zapisu (pójdą w wieczornej próbie całej gry), gra opublikowana.\n\n**Dla Pawła (zadanie na liście):** wybór klasy ma czekać na wczytanie stanu i być jednorazowy; zakupy drzewka zapisywać przez dane pakietu stanu gracza — pliki i opis w `swiat/stan_gracza/README.md`, rozdział „Zapis postępu”.\n\nPliki: `swiat/stan_gracza/` (README, `testy/proba_zapisu.py`), `tools/zapis_prob.py`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-19T15:14:31+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/StanGracza",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/stan_gracza/README.md",
+   "etykieta": "Opis zapisu i lista dla Pawła"
+  }
+ ],
+ "zrzuty": []
+}

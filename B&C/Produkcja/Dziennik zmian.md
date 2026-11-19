@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-19 · Claude Code u Karola (zapis postępu włączony — sprawdzony w Studio)
+- **D-110 wdrożona** (`swiat/stan_gracza/`, `tools/zapis_prob.py`): zapis postępu jest włączony domyślnie (wyłącznik atrybutem `ZapisPostepu` jak dotąd). Zapisuje się poziom, doświadczenie, Złoto, Gemy, punkty statystyk, trening z mini-gier z paskiem malejącego zysku, przedmioty posiadane i założone (także ze sklepu) z ulepszeniami, pety, pokonani Strażnicy i bramy, obejrzane przeloty, strój. Działa w Studio, na magazynie z końcówką `_Studio`.
+- **Poprawione przed włączeniem:** kowal, pety i mini-gry czekają na wczytanie profilu — wcześniej kowal brał gracza za nowego w trakcie wczytywania i pierwszy łup albo zakup nadpisałby zapisane przedmioty; skill aktywnego peta nie działał po powrocie; pasek treningu ginął przy wyjściu.
+- **Próby gry nie dotykają zapisu ludzi:** każde włączenie Play przez `tools/studio_mcp.py` stawia znacznik próby i serwer stanu nie otwiera magazynu (świeży gracz jak dotąd). Uwaga dla agentów: Play włączony innym narzędziem omija znacznik. Próba zapisu pracuje na osobnym magazynie `_Studio_Proba`.
+- **Próba zapisu w grze (14:32 i 15:06):** 9 punktów w porządku — po ponownym wejściu zero różnic (poziom 6, Złoto 3501, Gemy 150, pas leśny +1 posiadany i założony, pet, trening, brama lasu); czas wczytania 0,9–1,9 s; przy błędach usługi rekord zostaje nietknięty. Próby stanu gracza, petów, kowala, przymierzalni, mini-gier, przelotu i sklepu przeszły. W próbie całej drogi gracza raz kamera została zablokowana na 30 s po przylocie do lasu (powtórka 14 z 14) — do obserwacji.
+- **Nowe polecenie:** `python -B swiat/stan_gracza/zbuduj.py --kasuj-zapis` (podgląd) i `--kasuj-zapis --tak` (kasuje zapis osoby zalogowanej w Studio, tylko magazyn Studio).
+- **Zostaje po stronie Pawła** (zadanie na liście): jednorazowy wybór klasy czekający na wczytanie, zapis drzewka umiejętności. Raport w panelu: „Zapis postępu włączony: stan wraca po ponownym wejściu”. Notatki: [[Zadania]].
+
 ## 2026-11-19 · Claude Code u Karola (Strażnicy Bagna i Dżungli −15% życia — w grze)
 - **D-111 wdrożona** (`swiat/bagno_pas_gra/przeciwnicy.py`, `swiat/dzungla_pas_gra/przeciwnicy.py`): Strażnik Topieli 2528 → 2149 życia na swoim poziomie, Wąż Stu Lian 2852 → 2424; inne cechy i inne potwory bez zmian, Strażnik Gaju bez zmian. Próby Bagna i Dżungli w Studio (13:47–14:03) i walka 111 z 111 bez błędów; silnik zgodny z portem (592 walki kontrolne).
 - **Symulacja przejścia po zmianie:** sam bohater na poziomie Strażnika wygrywa 24–30% walk z Topielą (było 12–20%) i 30–35% z Wężem (było 19–28%); przy samych walkach utyka 3–4% graczy (było 11–12%), niecierpliwy 16–18% (było 37–41%); koniec gry 72 minuty zamiast 75.
