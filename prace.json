@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-19T08:40:41+01:00",
+ "aktualizacja": "2026-11-19T08:40:45+01:00",
  "prace": [
   {
    "id": "minigry-scenerie",
@@ -81,6 +81,19 @@
    "aktualizacja": "2026-11-19T08:40:41+01:00",
    "obszary": [
     "model:npc_trener"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "przebudowa-npc_trener_sila",
+   "tytul": "Przebudowa modelu npc_trener_sila",
+   "stan": "w_toku",
+   "start": "2026-11-19T08:40:45+01:00",
+   "koniec_szacowany": "2026-11-19T09:00:45+01:00",
+   "aktualizacja": "2026-11-19T08:40:45+01:00",
+   "obszary": [
+    "model:npc_trener_sila"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
