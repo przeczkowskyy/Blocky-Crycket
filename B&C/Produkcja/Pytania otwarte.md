@@ -624,3 +624,11 @@ Dopisek z 2026-11-18 (po komplecie sześciu ras): doszły trzy punkty. (9) Rogi 
 Szczegóły: Karol 17.11 ustalił na czacie, że Strażnik Topieli ma być trudny — dlatego to pytanie, a nie zmiana. Z mini-grami, petami i kowalem utyka dziś 0–4% graczy, więc trudność Strażników wymusza korzystanie z dodatków; bez dodatków boli (niecierpliwy gracz utyka w 21–42% przypadków). Osobna sprawa z tego samego rachunku: kara za przegraną zabiera graczowi, który nie wydaje, 27% zarobionego Złota (niecierpliwemu 42%) — do rozstrzygnięcia razem z propozycjami D-097–D-100. Liczby i założenia: `swiat/przejscie_gry/PRZEJSCIE_W_LICZBACH.md`; raport w panelu „Przejście gry w liczbach…”.
 **Odpowiedź:**
 
+## 71. Paweł: makieta okna „Shop” a sklep zbrojmistrza
+- W Studio stoi skrypt Pawła `ShopClient` z makietą okna „Shop”; przy zbrojowni otwierał się razem z tymczasowym oknem sklepu Karola.
+- Sklep chowa dziś makietę u gracza przy zbrojowni (tylko w grze, niczego nie zmienia w miejscu); wyłącznik: atrybut `ChowajOknoShop = false` na `Workspace/SklepProba`.
+- Do wyboru: (a) tak zostaje do czasu docelowego okna Pawła; (b) wyłączyć chowanie; (c) Paweł podpina swoje okno pod kupno i tymczasowe okno znika.
+
+Szczegóły: Skryptu `ShopClient` nie ma w repozytorium ani w `src/` — jest tylko w miejscu gry, więc narzędzia go nie widzą; prośba do Pawła o dodanie go do repo razem z nowymi oknami (Kowal, Mag, sklepy). Umowa dla okna sklepu (pola przedmiotu, prośba `kup <id>`, odmowy) jest opisana w `swiat/sklep_proba/README.md` i `swiat/postacie/SKLEP_PRZEDMIOTY.md`. Kliknięcie w samą figurę zbrojmistrza otwiera dziś makietę Pawła, a E — okno sklepu. To pytanie do Pawła (jego okna, D-093).
+**Odpowiedź:**
+
