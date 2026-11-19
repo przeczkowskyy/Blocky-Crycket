@@ -7,6 +7,8 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] BONK (D-112): prototyp prostej gry w nocy 19/20.11 — rdzeń BONK z lotem potworów, monety i Moc, pałki, jajka i pety z Księgą, trzy krainy ze Strażnikami, pokazanie się (Moc nad głową, tablice, komunikaty), dzienny prezent, zapis, telefon i pad, ikona i miniatury; potem pomiar na prawdziwych graczach ([[BONK — projekt prototypu]]) · agent: Karol · #wysoki
+- [ ] Ring Potworów — druga gra: decyzja o kolejności (pytanie 73, [[Ring Potworów — pomysł]]) · #średni
 - [ ] Zapis postępu (D-110), dalej: włączony i sprawdzony w Studio 19.11 (raport „Zapis postępu włączony: stan wraca po ponownym wejściu”); do zrobienia: pierwsze prawdziwe wejście Karola i Pawła według pięciu kroków z raportu, blokada sesji z dwóch okien Studio, pamięć poznanych gatunków w walce, przeniesienie zapisu do gry opublikowanej (osobna decyzja) · agent: Karol · #wysoki
 - [ ] Paweł, po włączeniu zapisu (D-110): wybór klasy ma czekać na wczytanie stanu i być jednorazowy; zakupy drzewka umiejętności zapisywać przez dane pakietu stanu gracza (lista z plikami w `swiat/stan_gracza/README.md`, rozdział „Zapis postępu”) · agent: Paweł · #wysoki
 - [ ] **Kierunek od 19.11 (D-106): grywalność trzech biomów od startu do bramy Pustyni** — pięć prac agenta Karola niżej; Pustynia wstrzymana · agent: Karol · #wysoki

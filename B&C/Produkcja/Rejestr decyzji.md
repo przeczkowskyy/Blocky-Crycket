@@ -512,5 +512,9 @@ Karol: „Tak. Daj zapis postępu.” Poziom, Złoto, przedmioty, pety, trening 
 ✅ zatwierdzona · game design / balans · 2026-11-19 · źródło: rozmowa Karola z Claude Code 19.11 (odpowiedź na czacie ok. 13:30) · zdecydował: Karol 2026-11-19
 Na propozycję z symulacji przejścia (−30% życia) Karol: „Nie wiem, czy 30% to nie za dużo. Gracz słusznie ma się pomęczyć. Może jakieś 15%?” Strażnik Topieli i Wąż Stu Lian dostają 15% mniej życia. Według symulacji z samym bohaterem utyka wtedy ok. 6% graczy zamiast 13–14%. Strażnik Gaju bez zmian. Druga część propozycji — 25% więcej doświadczenia z potworów Dżungli — nie padła w odpowiedzi i zostaje otwarta. Zmienia wcześniejsze ustalenie Karola z 17.11, że Strażnik Topieli ma być trudny: zostaje trudny, ale mniej. Rozstrzyga pierwszą część pytania 70. Decyzja ma podpis Karola i czeka na potwierdzenie Pawła (D-043). Zob. [[Biomy — zarys siedmiu kolejnych]].
 
+### D-112 BONK: prosta gra z naszych zasobów, prototyp budowany w nocy 19/20.11
+✅ zatwierdzona · produkcja / kierunek · 2026-11-19 · źródło: rozmowa Karola z Claude Code 19.11 (wieczór) · zdecydował: Karol 2026-11-19
+Karol na propozycję z pytania 72: „Okej. Może to zrobimy. Podczas nocy na Opusie zrób tę grę w całości. To jest prosta gra, wedle twojego opisu. Zezwalam na wszystko w tej gestii oraz na korzystanie z Higgsfield.” Agent buduje wariant (b) jako osobną, samowystarczalną grę: uderzasz potwory, odlatują, monety, Moc, pałki, jajka i pety, trzy krainy ze Strażnikami (opis: [[BONK — projekt prototypu]]). B&C zostaje nietknięte — nic nie jest kasowane ani zamrażane w kodzie, pliki Pawła bez zmian. Zgoda obejmuje budowę i Higgsfield (także obrazy, np. ikonę i miniatury); publikacja gry na Roblox zostaje decyzją ludzi. Rozstrzyga pytanie 72. Decyzja ma podpis Karola i czeka na potwierdzenie Pawła (D-043).
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*

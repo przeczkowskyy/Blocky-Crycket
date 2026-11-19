@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-19 · Claude Code u Karola (BONK na noc; pomysł Ring Potworów)
+- **Karol, wieczór:** zgoda na budowę prostej gry z propozycji (wariant b) w nocy, na Opusie, „w całości”, z Higgsfield. Zapisane jako **D-112** (podpis Karola, czeka na Pawła); odpowiedź pod pytaniem 72. Projekt: [[BONK — projekt prototypu]] — osobny, samowystarczalny pakiet `swiat/bonk/`; B&C nietknięte; publikacja zostaje decyzją ludzi.
+- **Pomysł Karola i Pawła — druga gra:** jajka, potwory z Księgi, trening AFK, wspólny ring serwera do ostatniego potwora. Ocena agenta i sześć poprawek w [[Ring Potworów — pomysł]]; kolejność budowy — nowe pytanie 73.
+- [[Zadania]]: dwie nowe pozycje na górze listy.
+
 ## 2026-11-19 · Claude Code u Karola (rynek 19.11 i propozycja decyzji biznesowej)
 - **Karol, wieczór:** „Co realnie powinniśmy zrobić? Chcemy, żeby gra była viralem… Jaka powinna być decyzja biznesowa?”
 - **Przegląd rynku** (trackery z 18–19.11, dokumentacja Roblox o polecaniu, poradniki o reklamie): na szczycie jajka i pety z kradzieżą (fala się starzeje), fizyka i ragdoll, prosta czynność z uroczymi zwierzętami, horror ze znajomymi, „+1”; nowe RPG prawie nie wchodzą. Algorytm od czerwca 2026 patrzy na 28 dni powrotów i grę ze znajomymi; gracze z reklam nie liczą się do rankingu. Reklama ma sens od ok. 30% powrotów następnego dnia, minimum ok. 35 tys. Robux na tydzień.

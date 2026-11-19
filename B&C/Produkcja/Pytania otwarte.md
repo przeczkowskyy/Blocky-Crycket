@@ -647,4 +647,14 @@ Szczegóły: Skryptu `ShopClient` nie ma w repozytorium ani w `src/` — jest ty
 Szczegóły: Pełna analiza, tabela zasad i lista konfliktów z zatwierdzonymi decyzjami: [[Diagnoza 2026-11-19 — prostota i szansa na hit]]. Rekomendacja agenta: (a) jako najszybsza droga do graczy, (b) jeśli pomiar pokaże, że rdzeń jest za bierny. Zamrożenie nie kasuje kodu — systemy wracają, gdy gracze zostają (bramka z [[Ocena potencjału gry]]: powroty następnego dnia 15–20%). Przycięcie dotyka plików i decyzji Pawła (wybór klasy, drzewko, okna) — potrzebne zdanie obu osób. Przed jakimkolwiek wypuszczeniem i tak trzeba: sprawdzić grę na prawdziwym telefonie, przenieść ją z prób w Studio do prawdziwej gry i włączyć telemetrię (D-023).
 Dopisek z 2026-11-19 (wieczór, po przeglądzie rynku): rekomendacja agenta zmienia się na (b) BONK z fizyką — trendy listopada to ragdoll i rzucanie (Hyper Realistic Ragdoll, Throw Food For Animals), jajka i pety oraz urocze zwierzęta (Cat Battles), a algorytm od czerwca nagradza powroty w oknie 28 dni i grę ze znajomymi. Proponowana decyzja biznesowa: jedna gra naraz, publiczna wersja testowa w ok. 3 tygodnie, progi z góry (co najmniej 30% powrotów następnego dnia → reklama ok. 35 tys. Robux i aktualizacje co tydzień; 15–30% → poprawki rdzenia; poniżej 15% → inny rdzeń z tych samych zasobów), bez klonu „Steal an Egg”. Szczegóły: rozdział „Rynek 19.11.2026 i decyzja biznesowa” w [[Diagnoza 2026-11-19 — prostota i szansa na hit]].
 **Odpowiedź:**
+- Karol (2026-11-19): Okej. Może to zrobimy. Podczas nocy na Opusie zrób tę grę w całości. To jest prosta gra, wedle twojego opisu. Zezwalam na wszystko w tej gestii oraz na korzystanie z Higgsfield.
+Rozstrzyga: D-112
+
+## 73. Ring Potworów jako druga gra: kiedy budujemy?
+- Karol i Paweł 19.11: druga gra — jajka, potwory z Księgi, trening AFK, wspólny ring serwera, na którym kilka potworów bije się do ostatniego.
+- Ocena agenta: mocny pomysł, w pokazaniu się i momencie do nagrania mocniejszy od BONK; używa najwięcej z tego, co mamy (silnik walki, modele potworów, jajka, areny).
+- Do wyboru: (a) po pomiarze BONK jako druga próba; (b) zaraz po nocnej budowie BONK, równolegle; (c) Ring zamiast BONK.
+
+Szczegóły: Opis, ocena wobec zasad z filmu i sześć poprawek agenta (przycisk dopingu w walce, rundy po ligach Mocy, nagroda dla każdego uczestnika, rytm rund, bez skojarzeń z walkami zwierząt i hazardem, Siła trenera bez utraty postępu): [[Ring Potworów — pomysł]]. Nocna budowa BONK tworzy wspólne klocki (jajka, pety, zapis, efekty, mapy), które Ring też wykorzysta.
+**Odpowiedź:**
 
