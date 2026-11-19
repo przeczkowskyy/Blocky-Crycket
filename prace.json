@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-19T09:00:49+01:00",
+ "aktualizacja": "2026-11-19T09:00:52+01:00",
  "prace": [
   {
    "id": "minigry-scenerie",
@@ -42,19 +42,6 @@
    "aktualizacja": "2026-11-19T08:59:12+01:00",
    "obszary": [
     "model:stopnie_mag"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "przebudowa-stopnie_zwiadowca",
-   "tytul": "Przebudowa modelu stopnie_zwiadowca",
-   "stan": "w_toku",
-   "start": "2026-11-19T08:59:09+01:00",
-   "koniec_szacowany": "2026-11-19T09:19:09+01:00",
-   "aktualizacja": "2026-11-19T08:59:09+01:00",
-   "obszary": [
-    "model:stopnie_zwiadowca"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
