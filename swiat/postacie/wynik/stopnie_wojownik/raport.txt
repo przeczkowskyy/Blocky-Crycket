@@ -1,0 +1,285 @@
+RAPORT — stopnie_wojownik
+STOPNIE EKWIPUNKU — Rycerz Blocky w komplecie startowym i w trzech kompletach do kupienia: las, Bagno, Dżungla (D-106).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/stopnie_wojownik.py · wygenerowano 19.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py stopnie_wojownik
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: stopnie_wojownik_start, stopnie_wojownik_las, stopnie_wojownik_bagno, stopnie_wojownik_dzungla
+- przedmioty (akcesoria): 24
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 60 plików, zgodnych 60
+- ostrzeżenia z raportu: 3; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Przedmioty stopni to propozycja wyglądu; statystyki i ceny są w sklep_przedmioty.json (też propozycja).
+- Zbroje stopni to dzisiejsze bryły w nowych materiałach z dołożonymi ozdobami — pod spodem ta sama bryła hełmu, napierśnika i butów; całkiem nowe są broń, tarcze, nakrycia głowy kota i kostury.
+- Kontrola przenikania stopni obejmuje pozę spoczynku (test_stopnie.py); klipy walki w nowych kompletach nie były liczone klatka po klatce — poroże, pióropusze i skrzydła naramienników mogą wchodzić w ręce uniesione nad głowę.
+- Kot ma w każdym stopniu cztery przedmioty (nakrycie głowy, szata, szarfa, kostur) — tyle slotów ma dziś.
+- W Roblox Studio nic z tego nie było budowane ani oglądane.
+
+MODEL stopnie_wojownik_start „Rycerz Blocky — komplet startowy” (r15)
+  wymiary ciała: 4,77 × 5,71 × 1,98; z akcesoriami: 4,97 × 5,71 × 5,12
+  trójkąty: 3484 (siatek: 17)
+  budżety ciała R15: Head 944/4000, Torso 428/1750, LeftArm 376/1248, RightArm 376/1248, LeftLeg 320/1248, RightLeg 320/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: rycerz_miecz na RightGripAttachment (tylko podgląd, bez eksportu), rycerz_tarcza na LeftGripAttachment (tylko podgląd, bez eksportu)
+
+MODEL stopnie_wojownik_las „Rycerz Blocky — komplet leśny” (r15)
+  wymiary ciała: 4,67 × 5,94 × 1,99; z akcesoriami: 4,98 × 5,94 × 5,02
+  trójkąty: 3912 (siatek: 17)
+  budżety ciała R15: Head 1220/4000, Torso 572/1750, LeftArm 396/1248, RightArm 396/1248, LeftLeg 364/1248, RightLeg 364/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: rycerz_las_miecz na RightGripAttachment (tylko podgląd, bez eksportu), rycerz_las_tarcza na LeftGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało Head: wys 2.19 poza 0.50…2.00 studa (limit części ciała awatara)
+
+MODEL stopnie_wojownik_bagno „Rycerz Blocky — komplet bagienny” (r15)
+  wymiary ciała: 4,77 × 6,02 × 2,29; z akcesoriami: 5,10 × 6,02 × 5,05
+  trójkąty: 3536 (siatek: 17)
+  budżety ciała R15: Head 936/4000, Torso 624/1750, LeftArm 406/1248, RightArm 406/1248, LeftLeg 326/1248, RightLeg 326/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: rycerz_bagno_miecz na RightGripAttachment (tylko podgląd, bez eksportu), rycerz_bagno_tarcza na LeftGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało Head: wys 2.27 poza 0.50…2.00 studa (limit części ciała awatara)
+
+MODEL stopnie_wojownik_dzungla „Rycerz Blocky — komplet Dżungli” (r15)
+  wymiary ciała: 5,13 × 6,57 × 2,02; z akcesoriami: 5,13 × 6,57 × 5,43
+  trójkąty: 4076 (siatek: 17)
+  budżety ciała R15: Head 1060/4000, Torso 676/1750, LeftArm 408/1248, RightArm 408/1248, LeftLeg 392/1248, RightLeg 392/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  założone: rycerz_dzungla_miecz na RightGripAttachment (tylko podgląd, bez eksportu), rycerz_dzungla_tarcza na LeftGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało Head: wys 2.82 poza 0.50…2.00 studa (limit części ciała awatara)
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+rycerz_las_helm        EkwHeadAttachment          Inne         804  3,13 × 2,19 × 1,99   (-0,00; -4,84; 0,01)  
+rycerz_las_zbroja      EkwUpperTorsoAttachment    Inne         900  4,67 × 3,45 × 1,98   (-0,00; -2,46; -0,00) 
+rycerz_las_nogawice    EkwLowerTorsoAttachment    Inne         220  2,20 × 1,20 × 1,20   (-0,00; -1,70; -0,00) 
+rycerz_las_pas         EkwLowerTorsoAttachment    Inne         156  2,26 × 0,49 × 1,51   (-0,00; -2,02; -0,13) 
+rycerz_las_rekawice    EkwLeftHandAttachment      Inne         264  2,22 × 0,47 × 1,12   (-0,00; -1,99; -0,00) 
+rycerz_las_buty        EkwLeftLowerLegAttachment  Inne         552  2,31 × 1,20 × 1,51   (-0,00; -0,60; -0,15) 
+rycerz_las_miecz       RightGripAttachment        Bron         368  1,62 × 4,83 × 0,44   (-0,00; -1,60; -0,00) 
+rycerz_las_tarcza      LeftGripAttachment         Bron         232  0,54 × 1,74 × 1,76   (-0,75; 0,00; 0,35)   
+rycerz_bagno_helm      EkwHeadAttachment          Inne         520  2,02 × 2,27 × 2,23   (-0,00; -4,89; -0,18) 
+rycerz_bagno_zbroja    EkwUpperTorsoAttachment    Inne        1080  4,77 × 3,57 × 1,98   (-0,00; -2,52; -0,00) 
+rycerz_bagno_nogawice  EkwLowerTorsoAttachment    Inne         220  2,20 × 1,20 × 1,20   (-0,00; -1,70; -0,00) 
+rycerz_bagno_pas       EkwLowerTorsoAttachment    Inne         112  2,26 × 0,60 × 1,36   (-0,00; -1,97; -0,05) 
+rycerz_bagno_rekawice  EkwLeftHandAttachment      Inne         200  2,14 × 0,47 × 1,25   (-0,00; -1,99; -0,10) 
+rycerz_bagno_buty      EkwLeftLowerLegAttachment  Inne         476  2,19 × 1,20 × 1,52   (-0,00; -0,60; -0,21) 
+rycerz_bagno_miecz     RightGripAttachment        Bron         286  1,25 × 5,05 × 0,36   (-0,13; -1,46; -0,00) 
+rycerz_bagno_tarcza    LeftGripAttachment         Bron         226  0,66 × 1,91 × 2,26   (-0,81; -0,00; 0,35)  
+rycerz_dzungla_helm    EkwHeadAttachment          Inne         644  2,02 × 2,82 × 1,97   (-0,00; -5,16; -0,05) 
+rycerz_dzungla_zbroja  EkwUpperTorsoAttachment    Inne         984  5,13 × 3,77 × 1,98   (-0,00; -2,62; -0,00) 
+rycerz_dzungla_nogawice EkwLowerTorsoAttachment    Inne         220  2,20 × 1,20 × 1,20   (-0,00; -1,70; -0,00) 
+rycerz_dzungla_pas     EkwLowerTorsoAttachment    Inne         176  2,26 × 0,84 × 1,38   (-0,00; -1,94; -0,06) 
+rycerz_dzungla_rekawice EkwLeftHandAttachment      Inne         288  2,24 × 0,55 × 1,18   (-0,00; -2,03; -0,02) 
+rycerz_dzungla_buty    EkwLeftLowerLegAttachment  Inne         608  2,27 × 1,20 × 1,49   (-0,00; -0,60; -0,16) 
+rycerz_dzungla_miecz   RightGripAttachment        Bron         476  1,05 × 5,43 × 0,44   (-0,00; -1,38; -0,00) 
+rycerz_dzungla_tarcza  LeftGripAttachment         Bron         264  0,49 × 1,88 × 2,05   (-0,73; -0,00; 0,28)  
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+KONTROLA EKSPORTÓW
+- stopnie_wojownik_start.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje brak -> ZGODNE
+- stopnie_wojownik_start__idle.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje stopnie_wojownik_start|Scene 1-61 -> ZGODNE
+- stopnie_wojownik_start.glb: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje idle 0-60 -> ZGODNE
+- stopnie_wojownik_las.fbx: siatki 34, kości 17, trójkąty 3540, wzrost 5.94 st., akcje brak -> ZGODNE
+- stopnie_wojownik_las__idle.fbx: siatki 34, kości 17, trójkąty 3540, wzrost 5.94 st., akcje stopnie_wojownik_las|Scene 1-61 -> ZGODNE
+- stopnie_wojownik_las.glb: siatki 34, kości 17, trójkąty 3540, wzrost 5.94 st., akcje idle 0-60 -> ZGODNE
+- stopnie_wojownik_bagno.fbx: siatki 34, kości 17, trójkąty 3252, wzrost 6.02 st., akcje brak -> ZGODNE
+- stopnie_wojownik_bagno__idle.fbx: siatki 34, kości 17, trójkąty 3252, wzrost 6.02 st., akcje stopnie_wojownik_bagno|Scene 1-61 -> ZGODNE
+- stopnie_wojownik_bagno.glb: siatki 34, kości 17, trójkąty 3252, wzrost 6.02 st., akcje idle 0-60 -> ZGODNE
+- stopnie_wojownik_dzungla.fbx: siatki 34, kości 17, trójkąty 3564, wzrost 6.57 st., akcje brak -> ZGODNE
+- stopnie_wojownik_dzungla__idle.fbx: siatki 34, kości 17, trójkąty 3564, wzrost 6.57 st., akcje stopnie_wojownik_dzungla|Scene 1-61 -> ZGODNE
+- stopnie_wojownik_dzungla.glb: siatki 34, kości 17, trójkąty 3564, wzrost 6.57 st., akcje idle 0-60 -> ZGODNE
+- rycerz_las_helm.fbx: siatki 1, kości 0, trójkąty 804, wzrost 2.19 st., akcje brak -> ZGODNE
+- rycerz_las_helm.glb: siatki 1, kości 0, trójkąty 804, wzrost 2.19 st., akcje brak -> ZGODNE
+- rycerz_las_zbroja.fbx: siatki 1, kości 0, trójkąty 900, wzrost 3.45 st., akcje brak -> ZGODNE
+- rycerz_las_zbroja.glb: siatki 1, kości 0, trójkąty 900, wzrost 3.45 st., akcje brak -> ZGODNE
+- rycerz_las_nogawice.fbx: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE
+- rycerz_las_nogawice.glb: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE
+- rycerz_las_pas.fbx: siatki 1, kości 0, trójkąty 156, wzrost 0.49 st., akcje brak -> ZGODNE
+- rycerz_las_pas.glb: siatki 1, kości 0, trójkąty 156, wzrost 0.49 st., akcje brak -> ZGODNE
+- rycerz_las_rekawice.fbx: siatki 1, kości 0, trójkąty 264, wzrost 0.47 st., akcje brak -> ZGODNE
+- rycerz_las_rekawice.glb: siatki 1, kości 0, trójkąty 264, wzrost 0.47 st., akcje brak -> ZGODNE
+- rycerz_las_buty.fbx: siatki 1, kości 0, trójkąty 552, wzrost 1.20 st., akcje brak -> ZGODNE
+- rycerz_las_buty.glb: siatki 1, kości 0, trójkąty 552, wzrost 1.20 st., akcje brak -> ZGODNE
+- rycerz_las_miecz.fbx: siatki 1, kości 0, trójkąty 368, wzrost 4.83 st., akcje brak -> ZGODNE
+- rycerz_las_miecz.glb: siatki 1, kości 0, trójkąty 368, wzrost 4.83 st., akcje brak -> ZGODNE
+- rycerz_las_tarcza.fbx: siatki 1, kości 0, trójkąty 232, wzrost 1.74 st., akcje brak -> ZGODNE
+- rycerz_las_tarcza.glb: siatki 1, kości 0, trójkąty 232, wzrost 1.74 st., akcje brak -> ZGODNE
+- rycerz_bagno_helm.fbx: siatki 1, kości 0, trójkąty 520, wzrost 2.27 st., akcje brak -> ZGODNE
+- rycerz_bagno_helm.glb: siatki 1, kości 0, trójkąty 520, wzrost 2.27 st., akcje brak -> ZGODNE
+- rycerz_bagno_zbroja.fbx: siatki 1, kości 0, trójkąty 1080, wzrost 3.57 st., akcje brak -> ZGODNE
+- rycerz_bagno_zbroja.glb: siatki 1, kości 0, trójkąty 1080, wzrost 3.57 st., akcje brak -> ZGODNE
+- rycerz_bagno_nogawice.fbx: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE
+- rycerz_bagno_nogawice.glb: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE
+- rycerz_bagno_pas.fbx: siatki 1, kości 0, trójkąty 112, wzrost 0.60 st., akcje brak -> ZGODNE
+- rycerz_bagno_pas.glb: siatki 1, kości 0, trójkąty 112, wzrost 0.60 st., akcje brak -> ZGODNE
+- rycerz_bagno_rekawice.fbx: siatki 1, kości 0, trójkąty 200, wzrost 0.47 st., akcje brak -> ZGODNE
+- rycerz_bagno_rekawice.glb: siatki 1, kości 0, trójkąty 200, wzrost 0.47 st., akcje brak -> ZGODNE
+- rycerz_bagno_buty.fbx: siatki 1, kości 0, trójkąty 476, wzrost 1.20 st., akcje brak -> ZGODNE
+- rycerz_bagno_buty.glb: siatki 1, kości 0, trójkąty 476, wzrost 1.20 st., akcje brak -> ZGODNE
+- rycerz_bagno_miecz.fbx: siatki 1, kości 0, trójkąty 286, wzrost 5.05 st., akcje brak -> ZGODNE
+- rycerz_bagno_miecz.glb: siatki 1, kości 0, trójkąty 286, wzrost 5.05 st., akcje brak -> ZGODNE
+- rycerz_bagno_tarcza.fbx: siatki 1, kości 0, trójkąty 226, wzrost 1.91 st., akcje brak -> ZGODNE
+- rycerz_bagno_tarcza.glb: siatki 1, kości 0, trójkąty 226, wzrost 1.91 st., akcje brak -> ZGODNE
+- rycerz_dzungla_helm.fbx: siatki 1, kości 0, trójkąty 644, wzrost 2.82 st., akcje brak -> ZGODNE
+- rycerz_dzungla_helm.glb: siatki 1, kości 0, trójkąty 644, wzrost 2.82 st., akcje brak -> ZGODNE
+- rycerz_dzungla_zbroja.fbx: siatki 1, kości 0, trójkąty 984, wzrost 3.77 st., akcje brak -> ZGODNE
+- rycerz_dzungla_zbroja.glb: siatki 1, kości 0, trójkąty 984, wzrost 3.77 st., akcje brak -> ZGODNE
+- rycerz_dzungla_nogawice.fbx: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE
+- rycerz_dzungla_nogawice.glb: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE
+- rycerz_dzungla_pas.fbx: siatki 1, kości 0, trójkąty 176, wzrost 0.84 st., akcje brak -> ZGODNE
+- rycerz_dzungla_pas.glb: siatki 1, kości 0, trójkąty 176, wzrost 0.84 st., akcje brak -> ZGODNE
+- rycerz_dzungla_rekawice.fbx: siatki 1, kości 0, trójkąty 288, wzrost 0.55 st., akcje brak -> ZGODNE
+- rycerz_dzungla_rekawice.glb: siatki 1, kości 0, trójkąty 288, wzrost 0.55 st., akcje brak -> ZGODNE
+- rycerz_dzungla_buty.fbx: siatki 1, kości 0, trójkąty 608, wzrost 1.20 st., akcje brak -> ZGODNE
+- rycerz_dzungla_buty.glb: siatki 1, kości 0, trójkąty 608, wzrost 1.20 st., akcje brak -> ZGODNE
+- rycerz_dzungla_miecz.fbx: siatki 1, kości 0, trójkąty 476, wzrost 5.43 st., akcje brak -> ZGODNE
+- rycerz_dzungla_miecz.glb: siatki 1, kości 0, trójkąty 476, wzrost 5.43 st., akcje brak -> ZGODNE
+- rycerz_dzungla_tarcza.fbx: siatki 1, kości 0, trójkąty 264, wzrost 1.88 st., akcje brak -> ZGODNE
+- rycerz_dzungla_tarcza.glb: siatki 1, kości 0, trójkąty 264, wzrost 1.88 st., akcje brak -> ZGODNE
+
+PLIKI
+- stopnie_wojownik_start.blend
+- stopnie_wojownik_start.fbx
+- stopnie_wojownik_start.glb
+- stopnie_wojownik_start__idle.fbx
+- stopnie_wojownik_start_bohater.jpg
+- stopnie_wojownik_start_ikona.png
+- stopnie_wojownik_start_plansza.jpg
+- stopnie_wojownik_start_tekstury/
+- stopnie_wojownik_las.blend
+- stopnie_wojownik_las.fbx
+- stopnie_wojownik_las.glb
+- stopnie_wojownik_las__idle.fbx
+- stopnie_wojownik_las_bohater.jpg
+- stopnie_wojownik_las_ikona.png
+- stopnie_wojownik_las_plansza.jpg
+- stopnie_wojownik_las_tekstury/
+- stopnie_wojownik_bagno.blend
+- stopnie_wojownik_bagno.fbx
+- stopnie_wojownik_bagno.glb
+- stopnie_wojownik_bagno__idle.fbx
+- stopnie_wojownik_bagno_bohater.jpg
+- stopnie_wojownik_bagno_ikona.png
+- stopnie_wojownik_bagno_plansza.jpg
+- stopnie_wojownik_bagno_tekstury/
+- stopnie_wojownik_dzungla.blend
+- stopnie_wojownik_dzungla.fbx
+- stopnie_wojownik_dzungla.glb
+- stopnie_wojownik_dzungla__idle.fbx
+- stopnie_wojownik_dzungla_bohater.jpg
+- stopnie_wojownik_dzungla_ikona.png
+- stopnie_wojownik_dzungla_plansza.jpg
+- stopnie_wojownik_dzungla_tekstury/
+- przedmioty/rycerz_las_helm.fbx
+- przedmioty/rycerz_las_helm.glb
+- przedmioty/rycerz_las_helm_tekstury/
+- ikony/rycerz_las_helm_ikona.png
+- przedmioty/rycerz_las_zbroja.fbx
+- przedmioty/rycerz_las_zbroja.glb
+- przedmioty/rycerz_las_zbroja_tekstury/
+- ikony/rycerz_las_zbroja_ikona.png
+- przedmioty/rycerz_las_nogawice.fbx
+- przedmioty/rycerz_las_nogawice.glb
+- przedmioty/rycerz_las_nogawice_tekstury/
+- ikony/rycerz_las_nogawice_ikona.png
+- przedmioty/rycerz_las_pas.fbx
+- przedmioty/rycerz_las_pas.glb
+- przedmioty/rycerz_las_pas_tekstury/
+- ikony/rycerz_las_pas_ikona.png
+- przedmioty/rycerz_las_rekawice.fbx
+- przedmioty/rycerz_las_rekawice.glb
+- przedmioty/rycerz_las_rekawice_tekstury/
+- ikony/rycerz_las_rekawice_ikona.png
+- przedmioty/rycerz_las_buty.fbx
+- przedmioty/rycerz_las_buty.glb
+- przedmioty/rycerz_las_buty_tekstury/
+- ikony/rycerz_las_buty_ikona.png
+- przedmioty/rycerz_las_miecz.fbx
+- przedmioty/rycerz_las_miecz.glb
+- przedmioty/rycerz_las_miecz_tekstury/
+- ikony/rycerz_las_miecz_ikona.png
+- przedmioty/rycerz_las_tarcza.fbx
+- przedmioty/rycerz_las_tarcza.glb
+- przedmioty/rycerz_las_tarcza_tekstury/
+- ikony/rycerz_las_tarcza_ikona.png
+- przedmioty/rycerz_bagno_helm.fbx
+- przedmioty/rycerz_bagno_helm.glb
+- przedmioty/rycerz_bagno_helm_tekstury/
+- ikony/rycerz_bagno_helm_ikona.png
+- przedmioty/rycerz_bagno_zbroja.fbx
+- przedmioty/rycerz_bagno_zbroja.glb
+- przedmioty/rycerz_bagno_zbroja_tekstury/
+- ikony/rycerz_bagno_zbroja_ikona.png
+- przedmioty/rycerz_bagno_nogawice.fbx
+- przedmioty/rycerz_bagno_nogawice.glb
+- przedmioty/rycerz_bagno_nogawice_tekstury/
+- ikony/rycerz_bagno_nogawice_ikona.png
+- przedmioty/rycerz_bagno_pas.fbx
+- przedmioty/rycerz_bagno_pas.glb
+- przedmioty/rycerz_bagno_pas_tekstury/
+- ikony/rycerz_bagno_pas_ikona.png
+- przedmioty/rycerz_bagno_rekawice.fbx
+- przedmioty/rycerz_bagno_rekawice.glb
+- przedmioty/rycerz_bagno_rekawice_tekstury/
+- ikony/rycerz_bagno_rekawice_ikona.png
+- przedmioty/rycerz_bagno_buty.fbx
+- przedmioty/rycerz_bagno_buty.glb
+- przedmioty/rycerz_bagno_buty_tekstury/
+- ikony/rycerz_bagno_buty_ikona.png
+- przedmioty/rycerz_bagno_miecz.fbx
+- przedmioty/rycerz_bagno_miecz.glb
+- przedmioty/rycerz_bagno_miecz_tekstury/
+- ikony/rycerz_bagno_miecz_ikona.png
+- przedmioty/rycerz_bagno_tarcza.fbx
+- przedmioty/rycerz_bagno_tarcza.glb
+- przedmioty/rycerz_bagno_tarcza_tekstury/
+- ikony/rycerz_bagno_tarcza_ikona.png
+- przedmioty/rycerz_dzungla_helm.fbx
+- przedmioty/rycerz_dzungla_helm.glb
+- przedmioty/rycerz_dzungla_helm_tekstury/
+- ikony/rycerz_dzungla_helm_ikona.png
+- przedmioty/rycerz_dzungla_zbroja.fbx
+- przedmioty/rycerz_dzungla_zbroja.glb
+- przedmioty/rycerz_dzungla_zbroja_tekstury/
+- ikony/rycerz_dzungla_zbroja_ikona.png
+- przedmioty/rycerz_dzungla_nogawice.fbx
+- przedmioty/rycerz_dzungla_nogawice.glb
+- przedmioty/rycerz_dzungla_nogawice_tekstury/
+- ikony/rycerz_dzungla_nogawice_ikona.png
+- przedmioty/rycerz_dzungla_pas.fbx
+- przedmioty/rycerz_dzungla_pas.glb
+- przedmioty/rycerz_dzungla_pas_tekstury/
+- ikony/rycerz_dzungla_pas_ikona.png
+- przedmioty/rycerz_dzungla_rekawice.fbx
+- przedmioty/rycerz_dzungla_rekawice.glb
+- przedmioty/rycerz_dzungla_rekawice_tekstury/
+- ikony/rycerz_dzungla_rekawice_ikona.png
+- przedmioty/rycerz_dzungla_buty.fbx
+- przedmioty/rycerz_dzungla_buty.glb
+- przedmioty/rycerz_dzungla_buty_tekstury/
+- ikony/rycerz_dzungla_buty_ikona.png
+- przedmioty/rycerz_dzungla_miecz.fbx
+- przedmioty/rycerz_dzungla_miecz.glb
+- przedmioty/rycerz_dzungla_miecz_tekstury/
+- ikony/rycerz_dzungla_miecz_ikona.png
+- przedmioty/rycerz_dzungla_tarcza.fbx
+- przedmioty/rycerz_dzungla_tarcza.glb
+- przedmioty/rycerz_dzungla_tarcza_tekstury/
+- ikony/rycerz_dzungla_tarcza_ikona.png
+- stopnie_wojownik_ikony_arkusz.jpg
+- stopnie_wojownik_cztery_stopnie.jpg
+- raport.json
+- raport.txt

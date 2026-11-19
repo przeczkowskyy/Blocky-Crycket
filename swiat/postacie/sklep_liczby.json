@@ -1,0 +1,1863 @@
+{
+ "opis": "Sklep z przedmiotami (D-106): ceny, wymagane poziomy i statystyki przedmiotów trzech klas w czterech stopniach. WYGENEROWANE przez swiat/postacie/sklep_ceny.py (nie edytuj ręcznie). baza = statystyki przy +0, krok = przyrost za poziom ulepszenia — klucze i skala jak w swiat/kowal_proba/ustawienia.json (tarcza = ułamek bloku). cena 0 = gracz ma od startu. Propozycja do oceny, nie kanon.",
+ "status": "propozycja",
+ "wersja": 1,
+ "stopnie": [
+  {
+   "id": "start",
+   "nr": 0,
+   "nazwa": "Startowy",
+   "kraina": null,
+   "poziom": 1,
+   "poziom_do": 1,
+   "cena_kompletu": 300
+  },
+  {
+   "id": "las",
+   "nr": 1,
+   "nazwa": "Leśny",
+   "kraina": "las",
+   "poziom": 2,
+   "poziom_do": 7,
+   "cena_kompletu": 1400
+  },
+  {
+   "id": "bagno",
+   "nr": 2,
+   "nazwa": "Bagienny",
+   "kraina": "bagno",
+   "poziom": 10,
+   "poziom_do": 15,
+   "cena_kompletu": 3300
+  },
+  {
+   "id": "dzungla",
+   "nr": 3,
+   "nazwa": "Dżungli",
+   "kraina": "dzungla",
+   "poziom": 17,
+   "poziom_do": 22,
+   "cena_kompletu": 5200
+  }
+ ],
+ "zrodla": {
+  "pliki": {
+   "przegrody": [
+    "swiat/las_pas_gra/zrodla/DanePotworowPasa.luau",
+    "swiat/bagno_pas_gra/zrodla/DanePotworowBagna.luau",
+    "swiat/dzungla_pas_gra/zrodla/DanePotworowDzungli.luau"
+   ],
+   "lup": [
+    "tools/walka/dane_walki.json",
+    "swiat/bagno_pas_gra/przeciwnicy.py",
+    "swiat/dzungla_pas_gra/przeciwnicy.py"
+   ],
+   "silnik": "tools/walka/silnik.py",
+   "bohater": "swiat/stan_gracza/logika_stanu.py",
+   "przedmioty_startowe": "swiat/kowal_proba/ustawienia.json",
+   "jajka": "swiat/pety_proba/ustawienia.json"
+  },
+  "wzor_poziomu": {
+   "bron": [
+    8,
+    4
+   ],
+   "pancerz": [
+    3.0,
+    1.5
+   ],
+   "blok_tarczy_wojownika": 0.2828
+  },
+  "ceny_jajek": {
+   "las": 300,
+   "bagno": 750,
+   "dzungla": 1350
+  },
+  "kowal_ulepszenia": {
+   "zloto": [
+    150,
+    300,
+    450,
+    650,
+    900
+   ],
+   "materialy": [
+    1,
+    2,
+    3,
+    4,
+    6
+   ],
+   "maks": 5
+  },
+  "symulacja": {
+   "graczy_na_klase": 60,
+   "walk_na_komorke": 300,
+   "ziarno": 1,
+   "wizyta_w_sklepie_s": 40.0,
+   "wizyta_najwyzej_co_s": 300.0
+  },
+  "zalozenia": {
+   "udzial_sklepu": 0.4,
+   "udzial_sakiewki_w_symulacji": 0.5,
+   "udzial_slotu": {
+    "wojownik": {
+     "Weapon": 0.24,
+     "Chest": 0.24,
+     "Helmet": 0.14,
+     "OffHand": 0.14,
+     "Gloves": 0.08,
+     "Boots": 0.08,
+     "Belt": 0.08
+    },
+    "zwiadowca": {
+     "Weapon": 0.24,
+     "Chest": 0.24,
+     "Helmet": 0.14,
+     "OffHand": 0.14,
+     "Gloves": 0.08,
+     "Boots": 0.08,
+     "Belt": 0.08
+    },
+    "mag": {
+     "Weapon": 0.34,
+     "Chest": 0.3,
+     "Helmet": 0.2,
+     "Belt": 0.16
+    }
+   },
+   "wygranych_na_komplet_startowy": 8,
+   "poziom_startu_lasu": 2,
+   "przesuniecie_poziomu_slotu": {
+    "Belt": 0,
+    "Gloves": 1,
+    "Boots": 2,
+    "Helmet": 3,
+    "OffHand": 3,
+    "Chest": 4,
+    "Weapon": 5
+   },
+   "przepis_statystyk": {
+    "wojownik": {
+     "Weapon": {
+      "bron": 2
+     },
+     "Chest": {
+      "pancerz": 4
+     },
+     "OffHand": {
+      "Constitution": 1
+     },
+     "Helmet": {
+      "pancerz": 2,
+      "Constitution": 2
+     },
+     "Gloves": {
+      "Strength": 3
+     },
+     "Boots": {
+      "Dexterity": 3
+     },
+     "Belt": {
+      "Constitution": 2
+     }
+    },
+    "zwiadowca": {
+     "Weapon": {
+      "bron": 2
+     },
+     "Chest": {
+      "pancerz": 4
+     },
+     "OffHand": {
+      "bron": 2,
+      "Luck": 2
+     },
+     "Helmet": {
+      "pancerz": 2,
+      "Dexterity": 3
+     },
+     "Gloves": {
+      "Strength": 3
+     },
+     "Boots": {
+      "Dexterity": 3
+     },
+     "Belt": {
+      "Constitution": 2
+     }
+    },
+    "mag": {
+     "Weapon": {
+      "bron": 2,
+      "Intelligence": 2
+     },
+     "Chest": {
+      "pancerz": 5,
+      "Constitution": 2
+     },
+     "Helmet": {
+      "Constitution": 2,
+      "Intelligence": 3
+     },
+     "Belt": {
+      "Constitution": 2,
+      "Strength": 2
+     }
+    }
+   },
+   "mnoznik_stopnia": {
+    "las": 1.0,
+    "bagno": 2.0,
+    "dzungla": 3.0
+   },
+   "blok_tarczy_na_stopien": 0.02,
+   "krok_pancerza_na_stopien": 1
+  },
+  "krainy": {
+   "las": {
+    "przegrody": [
+     {
+      "id": "s1",
+      "potwor": "lesny_slime",
+      "nazwa": "Leśny Slime",
+      "ranga": "zwykly",
+      "poziomy": [
+       1,
+       3
+      ],
+      "straznik": false,
+      "zloto_za_wygrana": [
+       28,
+       44
+      ]
+     },
+     {
+      "id": "m1",
+      "potwor": "muchomornik",
+      "nazwa": "Muchomornik",
+      "ranga": "zwykly",
+      "poziomy": [
+       3,
+       5
+      ],
+      "straznik": false,
+      "zloto_za_wygrana": [
+       49,
+       67
+      ]
+     },
+     {
+      "id": "w1",
+      "potwor": "cierniowy_wilk",
+      "nazwa": "Cierniowy Wilk",
+      "ranga": "zwykly",
+      "poziomy": [
+       6,
+       8
+      ],
+      "straznik": false,
+      "zloto_za_wygrana": [
+       76,
+       94
+      ]
+     },
+     {
+      "id": "t1",
+      "potwor": "lesny_troll",
+      "nazwa": "Leśny Troll",
+      "ranga": "rzadki",
+      "poziomy": [
+       8,
+       9
+      ],
+      "straznik": false,
+      "zloto_za_wygrana": [
+       270,
+       295
+      ]
+     },
+     {
+      "id": "straznik",
+      "potwor": "straznik_lasu",
+      "nazwa": "Strażnik Gaju",
+      "ranga": "straznik",
+      "poziomy": [
+       10,
+       10
+      ],
+      "straznik": true,
+      "zloto_za_wygrana": [
+       650,
+       650
+      ]
+     }
+    ],
+    "poziom_potworow": [
+     1,
+     10
+    ],
+    "poziom_straznika": 10,
+    "dzis": {
+     "graczy": 180,
+     "graczy_na_starcie": 180,
+     "minut_do_straznika": 26.4,
+     "walk_do_straznika": 42,
+     "przegranych": 9,
+     "zloto_do_straznika": 3413.5,
+     "zloto_na_walke": 81.7,
+     "zloto_na_minute": 130.5,
+     "poziom_wejscia": 1,
+     "poziom_po_strazniku": 12,
+     "minut_wg_klas": {
+      "wojownik": 25.8,
+      "zwiadowca": 27.8,
+      "mag": 24.8
+     }
+    },
+    "ze_sklepem": {
+     "graczy": 180,
+     "graczy_na_starcie": 180,
+     "minut_do_straznika": 26.3,
+     "walk_do_straznika": 39,
+     "przegranych": 7,
+     "zloto_do_straznika": 3134,
+     "zloto_na_walke": 82.7,
+     "zloto_na_minute": 121.4,
+     "poziom_wejscia": 1,
+     "poziom_po_strazniku": 11,
+     "minut_wg_klas": {
+      "wojownik": 27.2,
+      "zwiadowca": 27.0,
+      "mag": 25.2
+     },
+     "kupionych_do_straznika": 5,
+     "komplet_przed_straznikiem_procent": 38,
+     "komplet_po_minutach": 27.1
+    },
+    "szansa_wygranej": {
+     "wojownik": {
+      "podstawowy": {
+       "potwory": 58.5,
+       "straznik": 41.0
+      },
+      "poprzedni": {
+       "potwory": 67.9,
+       "straznik": 44.3
+      },
+      "komplet": {
+       "potwory": 80.6,
+       "straznik": 58.3
+      },
+      "komplet_plus5": {
+       "potwory": 97.3,
+       "straznik": 90.3
+      }
+     },
+     "zwiadowca": {
+      "podstawowy": {
+       "potwory": 60.0,
+       "straznik": 39.0
+      },
+      "poprzedni": {
+       "potwory": 64.6,
+       "straznik": 44.7
+      },
+      "komplet": {
+       "potwory": 77.2,
+       "straznik": 57.3
+      },
+      "komplet_plus5": {
+       "potwory": 96.2,
+       "straznik": 88.0
+      }
+     },
+     "mag": {
+      "podstawowy": {
+       "potwory": 58.8,
+       "straznik": 32.0
+      },
+      "poprzedni": {
+       "potwory": 68.5,
+       "straznik": 41.3
+      },
+      "komplet": {
+       "potwory": 79.8,
+       "straznik": 55.7
+      },
+      "komplet_plus5": {
+       "potwory": 97.8,
+       "straznik": 94.3
+      }
+     }
+    }
+   },
+   "bagno": {
+    "przegrody": [
+     {
+      "id": "r1",
+      "potwor": "rechotek",
+      "nazwa": "Rechotek",
+      "ranga": "zwykly",
+      "poziomy": [
+       10,
+       12
+      ],
+      "straznik": false,
+      "zloto_za_wygrana": [
+       112,
+       130
+      ]
+     },
+     {
+      "id": "b1",
+      "potwor": "bulgotnik",
+      "nazwa": "Bulgotnik",
+      "ranga": "zwykly",
+      "poziomy": [
+       12,
+       14
+      ],
+      "straznik": false,
+      "zloto_za_wygrana": [
+       130,
+       148
+      ]
+     },
+     {
+      "id": "k1",
+      "potwor": "klodoklap",
+      "nazwa": "Kłodokłap",
+      "ranga": "zwykly",
+      "poziomy": [
+       14,
+       16
+      ],
+      "straznik": false,
+      "zloto_za_wygrana": [
+       148,
+       166
+      ]
+     },
+     {
+      "id": "t1",
+      "potwor": "ropucha_z_chatka",
+      "nazwa": "Ropucha z Chatką",
+      "ranga": "rzadki",
+      "poziomy": [
+       16,
+       16
+      ],
+      "straznik": false,
+      "zloto_za_wygrana": [
+       470,
+       470
+      ]
+     },
+     {
+      "id": "straznik",
+      "potwor": "straznik_topieli",
+      "nazwa": "Strażnik Topieli",
+      "ranga": "straznik",
+      "poziomy": [
+       16,
+       16
+      ],
+      "straznik": true,
+      "zloto_za_wygrana": [
+       950,
+       950
+      ]
+     }
+    ],
+    "poziom_potworow": [
+     10,
+     16
+    ],
+    "poziom_straznika": 16,
+    "dzis": {
+     "graczy": 180,
+     "graczy_na_starcie": 180,
+     "minut_do_straznika": 46.6,
+     "walk_do_straznika": 62,
+     "przegranych": 18,
+     "zloto_do_straznika": 8341.5,
+     "zloto_na_walke": 137.1,
+     "zloto_na_minute": 179.7,
+     "poziom_wejscia": 12,
+     "poziom_po_strazniku": 19,
+     "minut_wg_klas": {
+      "wojownik": 50.7,
+      "zwiadowca": 47.3,
+      "mag": 43.1
+     }
+    },
+    "ze_sklepem": {
+     "graczy": 180,
+     "graczy_na_starcie": 180,
+     "minut_do_straznika": 40.3,
+     "walk_do_straznika": 53.5,
+     "przegranych": 11,
+     "zloto_do_straznika": 7447.5,
+     "zloto_na_walke": 141.5,
+     "zloto_na_minute": 186.9,
+     "poziom_wejscia": 11,
+     "poziom_po_strazniku": 17,
+     "minut_wg_klas": {
+      "wojownik": 42.3,
+      "zwiadowca": 41.5,
+      "mag": 36.9
+     },
+     "kupionych_do_straznika": 7,
+     "komplet_przed_straznikiem_procent": 80,
+     "komplet_po_minutach": 37.2
+    },
+    "szansa_wygranej": {
+     "wojownik": {
+      "podstawowy": {
+       "potwory": 60.1,
+       "straznik": 15.0
+      },
+      "poprzedni": {
+       "potwory": 69.1,
+       "straznik": 29.3
+      },
+      "komplet": {
+       "potwory": 78.2,
+       "straznik": 39.3
+      },
+      "komplet_plus5": {
+       "potwory": 96.1,
+       "straznik": 84.7
+      }
+     },
+     "zwiadowca": {
+      "podstawowy": {
+       "potwory": 60.7,
+       "straznik": 18.0
+      },
+      "poprzedni": {
+       "potwory": 69.9,
+       "straznik": 37.7
+      },
+      "komplet": {
+       "potwory": 77.7,
+       "straznik": 38.3
+      },
+      "komplet_plus5": {
+       "potwory": 93.2,
+       "straznik": 78.0
+      }
+     },
+     "mag": {
+      "podstawowy": {
+       "potwory": 59.9,
+       "straznik": 12.3
+      },
+      "poprzedni": {
+       "potwory": 74.8,
+       "straznik": 15.3
+      },
+      "komplet": {
+       "potwory": 80.2,
+       "straznik": 32.7
+      },
+      "komplet_plus5": {
+       "potwory": 97.8,
+       "straznik": 78.3
+      }
+     }
+    }
+   },
+   "dzungla": {
+    "przegrody": [
+     {
+      "id": "z1",
+      "potwor": "zwijogon",
+      "nazwa": "Zwijogon",
+      "ranga": "zwykly",
+      "poziomy": [
+       17,
+       19
+      ],
+      "straznik": false,
+      "zloto_za_wygrana": [
+       175,
+       193
+      ]
+     },
+     {
+      "id": "g1",
+      "potwor": "gebokwiat",
+      "nazwa": "Gębokwiat",
+      "ranga": "zwykly",
+      "poziomy": [
+       19,
+       21
+      ],
+      "straznik": false,
+      "zloto_za_wygrana": [
+       193,
+       211
+      ]
+     },
+     {
+      "id": "o1",
+      "potwor": "kokosowy_silacz",
+      "nazwa": "Kokosowy Siłacz",
+      "ranga": "zwykly",
+      "poziomy": [
+       21,
+       23
+      ],
+      "straznik": false,
+      "zloto_za_wygrana": [
+       211,
+       229
+      ]
+     },
+     {
+      "id": "t1",
+      "potwor": "pancernik_ruin",
+      "nazwa": "Pancernik Ruin",
+      "ranga": "rzadki",
+      "poziomy": [
+       23,
+       23
+      ],
+      "straznik": false,
+      "zloto_za_wygrana": [
+       645,
+       645
+      ]
+     },
+     {
+      "id": "straznik",
+      "potwor": "waz_stu_lian",
+      "nazwa": "Wąż Stu Lian",
+      "ranga": "straznik",
+      "poziomy": [
+       23,
+       23
+      ],
+      "straznik": true,
+      "zloto_za_wygrana": [
+       1300,
+       1300
+      ]
+     }
+    ],
+    "poziom_potworow": [
+     17,
+     23
+    ],
+    "poziom_straznika": 23,
+    "dzis": {
+     "graczy": 180,
+     "graczy_na_starcie": 180,
+     "minut_do_straznika": 48.0,
+     "walk_do_straznika": 70,
+     "przegranych": 19,
+     "zloto_do_straznika": 13027.5,
+     "zloto_na_walke": 192.9,
+     "zloto_na_minute": 274.2,
+     "poziom_wejscia": 19,
+     "poziom_po_strazniku": 25,
+     "minut_wg_klas": {
+      "wojownik": 52.4,
+      "zwiadowca": 50.2,
+      "mag": 42.4
+     }
+    },
+    "ze_sklepem": {
+     "graczy": 180,
+     "graczy_na_starcie": 180,
+     "minut_do_straznika": 43.8,
+     "walk_do_straznika": 71,
+     "przegranych": 11,
+     "zloto_do_straznika": 13892,
+     "zloto_na_walke": 200.9,
+     "zloto_na_minute": 321.3,
+     "poziom_wejscia": 17,
+     "poziom_po_strazniku": 24,
+     "minut_wg_klas": {
+      "wojownik": 46.2,
+      "zwiadowca": 44.1,
+      "mag": 40.5
+     },
+     "kupionych_do_straznika": 4,
+     "komplet_przed_straznikiem_procent": 63,
+     "komplet_po_minutach": 40.9
+    },
+    "szansa_wygranej": {
+     "wojownik": {
+      "podstawowy": {
+       "potwory": 63.3,
+       "straznik": 17.3
+      },
+      "poprzedni": {
+       "potwory": 82.5,
+       "straznik": 41.3
+      },
+      "komplet": {
+       "potwory": 88.5,
+       "straznik": 53.3
+      },
+      "komplet_plus5": {
+       "potwory": 97.5,
+       "straznik": 85.0
+      }
+     },
+     "zwiadowca": {
+      "podstawowy": {
+       "potwory": 63.7,
+       "straznik": 22.3
+      },
+      "poprzedni": {
+       "potwory": 78.6,
+       "straznik": 37.3
+      },
+      "komplet": {
+       "potwory": 83.5,
+       "straznik": 42.7
+      },
+      "komplet_plus5": {
+       "potwory": 96.3,
+       "straznik": 78.3
+      }
+     },
+     "mag": {
+      "podstawowy": {
+       "potwory": 67.1,
+       "straznik": 16.3
+      },
+      "poprzedni": {
+       "potwory": 82.3,
+       "straznik": 28.3
+      },
+      "komplet": {
+       "potwory": 87.4,
+       "straznik": 35.7
+      },
+      "komplet_plus5": {
+       "potwory": 97.7,
+       "straznik": 84.7
+      }
+     }
+    }
+   }
+  }
+ },
+ "przedmioty": {
+  "rycerz_helm": {
+   "klasa": "wojownik",
+   "stopien": "start",
+   "slot": "Helmet",
+   "cena": 75,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 2,
+    "Constitution": 1
+   },
+   "krok": {
+    "Constitution": 1
+   }
+  },
+  "rycerz_las_helm": {
+   "klasa": "wojownik",
+   "stopien": "las",
+   "slot": "Helmet",
+   "cena": 200,
+   "poziom": 5,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 2,
+    "Constitution": 2
+   },
+   "krok": {
+    "Constitution": 1
+   }
+  },
+  "rycerz_bagno_helm": {
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "slot": "Helmet",
+   "cena": 450,
+   "poziom": 13,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 4,
+    "Constitution": 4
+   },
+   "krok": {
+    "Constitution": 2
+   }
+  },
+  "rycerz_dzungla_helm": {
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "slot": "Helmet",
+   "cena": 750,
+   "poziom": 20,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 6,
+    "Constitution": 6
+   },
+   "krok": {
+    "Constitution": 3
+   }
+  },
+  "rycerz_zbroja": {
+   "klasa": "wojownik",
+   "stopien": "start",
+   "slot": "Chest",
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1,
+   "baza": {},
+   "krok": {
+    "pancerz": 3
+   }
+  },
+  "rycerz_las_zbroja": {
+   "klasa": "wojownik",
+   "stopien": "las",
+   "slot": "Chest",
+   "cena": 350,
+   "poziom": 6,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 4
+   },
+   "krok": {
+    "pancerz": 3
+   }
+  },
+  "rycerz_bagno_zbroja": {
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "slot": "Chest",
+   "cena": 800,
+   "poziom": 14,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 8
+   },
+   "krok": {
+    "pancerz": 4
+   }
+  },
+  "rycerz_dzungla_zbroja": {
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "slot": "Chest",
+   "cena": 1250,
+   "poziom": 21,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 12
+   },
+   "krok": {
+    "pancerz": 5
+   }
+  },
+  "rycerz_pas": {
+   "klasa": "wojownik",
+   "stopien": "start",
+   "slot": "Belt",
+   "cena": 75,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 1
+   },
+   "krok": {
+    "Constitution": 1
+   }
+  },
+  "rycerz_las_pas": {
+   "klasa": "wojownik",
+   "stopien": "las",
+   "slot": "Belt",
+   "cena": 100,
+   "poziom": 2,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 2
+   },
+   "krok": {
+    "Constitution": 1
+   }
+  },
+  "rycerz_bagno_pas": {
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "slot": "Belt",
+   "cena": 250,
+   "poziom": 10,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 4
+   },
+   "krok": {
+    "Constitution": 2
+   }
+  },
+  "rycerz_dzungla_pas": {
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "slot": "Belt",
+   "cena": 400,
+   "poziom": 17,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 6
+   },
+   "krok": {
+    "Constitution": 3
+   }
+  },
+  "rycerz_rekawice": {
+   "klasa": "wojownik",
+   "stopien": "start",
+   "slot": "Gloves",
+   "cena": 75,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 2
+   },
+   "krok": {
+    "Strength": 1
+   }
+  },
+  "rycerz_las_rekawice": {
+   "klasa": "wojownik",
+   "stopien": "las",
+   "slot": "Gloves",
+   "cena": 100,
+   "poziom": 3,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 3
+   },
+   "krok": {
+    "Strength": 1
+   }
+  },
+  "rycerz_bagno_rekawice": {
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "slot": "Gloves",
+   "cena": 250,
+   "poziom": 11,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 6
+   },
+   "krok": {
+    "Strength": 2
+   }
+  },
+  "rycerz_dzungla_rekawice": {
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "slot": "Gloves",
+   "cena": 400,
+   "poziom": 18,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 9
+   },
+   "krok": {
+    "Strength": 3
+   }
+  },
+  "rycerz_buty": {
+   "klasa": "wojownik",
+   "stopien": "start",
+   "slot": "Boots",
+   "cena": 75,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 2
+   },
+   "krok": {
+    "Dexterity": 1
+   }
+  },
+  "rycerz_las_buty": {
+   "klasa": "wojownik",
+   "stopien": "las",
+   "slot": "Boots",
+   "cena": 100,
+   "poziom": 4,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 3
+   },
+   "krok": {
+    "Dexterity": 1
+   }
+  },
+  "rycerz_bagno_buty": {
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "slot": "Boots",
+   "cena": 250,
+   "poziom": 12,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 6
+   },
+   "krok": {
+    "Dexterity": 2
+   }
+  },
+  "rycerz_dzungla_buty": {
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "slot": "Boots",
+   "cena": 400,
+   "poziom": 19,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 9
+   },
+   "krok": {
+    "Dexterity": 3
+   }
+  },
+  "rycerz_miecz": {
+   "klasa": "wojownik",
+   "stopien": "start",
+   "slot": "Weapon",
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1,
+   "baza": {},
+   "krok": {
+    "bron": 1
+   }
+  },
+  "rycerz_las_miecz": {
+   "klasa": "wojownik",
+   "stopien": "las",
+   "slot": "Weapon",
+   "cena": 350,
+   "poziom": 7,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 2
+   },
+   "krok": {
+    "bron": 1
+   }
+  },
+  "rycerz_bagno_miecz": {
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "slot": "Weapon",
+   "cena": 850,
+   "poziom": 15,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 4
+   },
+   "krok": {
+    "bron": 2
+   }
+  },
+  "rycerz_dzungla_miecz": {
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "slot": "Weapon",
+   "cena": 1250,
+   "poziom": 22,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 6
+   },
+   "krok": {
+    "bron": 3
+   }
+  },
+  "rycerz_tarcza": {
+   "klasa": "wojownik",
+   "stopien": "start",
+   "slot": "OffHand",
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1,
+   "baza": {},
+   "krok": {
+    "tarcza": 0.01
+   }
+  },
+  "rycerz_las_tarcza": {
+   "klasa": "wojownik",
+   "stopien": "las",
+   "slot": "OffHand",
+   "cena": 200,
+   "poziom": 5,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 1,
+    "tarcza": 0.02
+   },
+   "krok": {
+    "tarcza": 0.01
+   }
+  },
+  "rycerz_bagno_tarcza": {
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "slot": "OffHand",
+   "cena": 450,
+   "poziom": 13,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 2,
+    "tarcza": 0.04
+   },
+   "krok": {
+    "tarcza": 0.01
+   }
+  },
+  "rycerz_dzungla_tarcza": {
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "slot": "OffHand",
+   "cena": 750,
+   "poziom": 20,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 3,
+    "tarcza": 0.06
+   },
+   "krok": {
+    "tarcza": 0.01
+   }
+  },
+  "zwiadowca_kaptur": {
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "slot": "Helmet",
+   "cena": 60,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 2,
+    "Dexterity": 1
+   },
+   "krok": {
+    "Luck": 1
+   }
+  },
+  "zwiadowca_las_kaptur": {
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "slot": "Helmet",
+   "cena": 200,
+   "poziom": 5,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 2,
+    "Dexterity": 3
+   },
+   "krok": {
+    "Luck": 1
+   }
+  },
+  "zwiadowca_bagno_kaptur": {
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "slot": "Helmet",
+   "cena": 450,
+   "poziom": 13,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 4,
+    "Dexterity": 6
+   },
+   "krok": {
+    "Luck": 2
+   }
+  },
+  "zwiadowca_dzungla_kaptur": {
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "slot": "Helmet",
+   "cena": 750,
+   "poziom": 20,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 6,
+    "Dexterity": 9
+   },
+   "krok": {
+    "Luck": 3
+   }
+  },
+  "zwiadowca_kurtka": {
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "slot": "Chest",
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1,
+   "baza": {},
+   "krok": {
+    "pancerz": 3
+   }
+  },
+  "zwiadowca_las_kurtka": {
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "slot": "Chest",
+   "cena": 350,
+   "poziom": 6,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 4
+   },
+   "krok": {
+    "pancerz": 3
+   }
+  },
+  "zwiadowca_bagno_kurtka": {
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "slot": "Chest",
+   "cena": 800,
+   "poziom": 14,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 8
+   },
+   "krok": {
+    "pancerz": 4
+   }
+  },
+  "zwiadowca_dzungla_kurtka": {
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "slot": "Chest",
+   "cena": 1250,
+   "poziom": 21,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 12
+   },
+   "krok": {
+    "pancerz": 5
+   }
+  },
+  "zwiadowca_pas": {
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "slot": "Belt",
+   "cena": 60,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 1
+   },
+   "krok": {
+    "Constitution": 1
+   }
+  },
+  "zwiadowca_las_pas": {
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "slot": "Belt",
+   "cena": 100,
+   "poziom": 2,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 2
+   },
+   "krok": {
+    "Constitution": 1
+   }
+  },
+  "zwiadowca_bagno_pas": {
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "slot": "Belt",
+   "cena": 250,
+   "poziom": 10,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 4
+   },
+   "krok": {
+    "Constitution": 2
+   }
+  },
+  "zwiadowca_dzungla_pas": {
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "slot": "Belt",
+   "cena": 400,
+   "poziom": 17,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 6
+   },
+   "krok": {
+    "Constitution": 3
+   }
+  },
+  "zwiadowca_rekawice": {
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "slot": "Gloves",
+   "cena": 60,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 1
+   },
+   "krok": {
+    "Strength": 1
+   }
+  },
+  "zwiadowca_las_rekawice": {
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "slot": "Gloves",
+   "cena": 100,
+   "poziom": 3,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 3
+   },
+   "krok": {
+    "Strength": 1
+   }
+  },
+  "zwiadowca_bagno_rekawice": {
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "slot": "Gloves",
+   "cena": 250,
+   "poziom": 11,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 6
+   },
+   "krok": {
+    "Strength": 2
+   }
+  },
+  "zwiadowca_dzungla_rekawice": {
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "slot": "Gloves",
+   "cena": 400,
+   "poziom": 18,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 9
+   },
+   "krok": {
+    "Strength": 3
+   }
+  },
+  "zwiadowca_buty": {
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "slot": "Boots",
+   "cena": 60,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 2
+   },
+   "krok": {
+    "Dexterity": 1
+   }
+  },
+  "zwiadowca_las_buty": {
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "slot": "Boots",
+   "cena": 100,
+   "poziom": 4,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 3
+   },
+   "krok": {
+    "Dexterity": 1
+   }
+  },
+  "zwiadowca_bagno_buty": {
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "slot": "Boots",
+   "cena": 250,
+   "poziom": 12,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 6
+   },
+   "krok": {
+    "Dexterity": 2
+   }
+  },
+  "zwiadowca_dzungla_buty": {
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "slot": "Boots",
+   "cena": 400,
+   "poziom": 19,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 9
+   },
+   "krok": {
+    "Dexterity": 3
+   }
+  },
+  "zwiadowca_sztylet": {
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "slot": "Weapon",
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1,
+   "baza": {},
+   "krok": {
+    "bron": 1
+   }
+  },
+  "zwiadowca_las_sztylet": {
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "slot": "Weapon",
+   "cena": 350,
+   "poziom": 7,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 2
+   },
+   "krok": {
+    "bron": 1
+   }
+  },
+  "zwiadowca_bagno_sztylet": {
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "slot": "Weapon",
+   "cena": 850,
+   "poziom": 15,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 4
+   },
+   "krok": {
+    "bron": 2
+   }
+  },
+  "zwiadowca_dzungla_sztylet": {
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "slot": "Weapon",
+   "cena": 1250,
+   "poziom": 22,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 6
+   },
+   "krok": {
+    "bron": 3
+   }
+  },
+  "zwiadowca_luk": {
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "slot": "OffHand",
+   "cena": 60,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Luck": 2
+   },
+   "krok": {
+    "bron": 1
+   }
+  },
+  "zwiadowca_las_luk": {
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "slot": "OffHand",
+   "cena": 200,
+   "poziom": 5,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 2,
+    "Luck": 2
+   },
+   "krok": {
+    "bron": 1
+   }
+  },
+  "zwiadowca_bagno_luk": {
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "slot": "OffHand",
+   "cena": 450,
+   "poziom": 13,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 4,
+    "Luck": 4
+   },
+   "krok": {
+    "bron": 2
+   }
+  },
+  "zwiadowca_dzungla_luk": {
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "slot": "OffHand",
+   "cena": 750,
+   "poziom": 20,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 6,
+    "Luck": 6
+   },
+   "krok": {
+    "bron": 3
+   }
+  },
+  "kot_mag_kapelusz": {
+   "klasa": "mag",
+   "stopien": "start",
+   "slot": "Helmet",
+   "cena": 150,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 2,
+    "Intelligence": 2
+   },
+   "krok": {
+    "Constitution": 1,
+    "Intelligence": 1
+   }
+  },
+  "kot_mag_las_kapelusz": {
+   "klasa": "mag",
+   "stopien": "las",
+   "slot": "Helmet",
+   "cena": 300,
+   "poziom": 5,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 2,
+    "Intelligence": 3
+   },
+   "krok": {
+    "Constitution": 1,
+    "Intelligence": 1
+   }
+  },
+  "kot_mag_bagno_kapelusz": {
+   "klasa": "mag",
+   "stopien": "bagno",
+   "slot": "Helmet",
+   "cena": 650,
+   "poziom": 13,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 4,
+    "Intelligence": 6
+   },
+   "krok": {
+    "Constitution": 2,
+    "Intelligence": 2
+   }
+  },
+  "kot_mag_dzungla_kapelusz": {
+   "klasa": "mag",
+   "stopien": "dzungla",
+   "slot": "Helmet",
+   "cena": 1050,
+   "poziom": 20,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 6,
+    "Intelligence": 9
+   },
+   "krok": {
+    "Constitution": 3,
+    "Intelligence": 3
+   }
+  },
+  "kot_mag_szata": {
+   "klasa": "mag",
+   "stopien": "start",
+   "slot": "Chest",
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1.75,
+   "baza": {},
+   "krok": {
+    "pancerz": 3,
+    "Constitution": 1
+   }
+  },
+  "kot_mag_las_szata": {
+   "klasa": "mag",
+   "stopien": "las",
+   "slot": "Chest",
+   "cena": 400,
+   "poziom": 6,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "pancerz": 5,
+    "Constitution": 2
+   },
+   "krok": {
+    "pancerz": 3,
+    "Constitution": 1
+   }
+  },
+  "kot_mag_bagno_szata": {
+   "klasa": "mag",
+   "stopien": "bagno",
+   "slot": "Chest",
+   "cena": 1000,
+   "poziom": 14,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "pancerz": 10,
+    "Constitution": 4
+   },
+   "krok": {
+    "pancerz": 4,
+    "Constitution": 2
+   }
+  },
+  "kot_mag_dzungla_szata": {
+   "klasa": "mag",
+   "stopien": "dzungla",
+   "slot": "Chest",
+   "cena": 1550,
+   "poziom": 21,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "pancerz": 15,
+    "Constitution": 6
+   },
+   "krok": {
+    "pancerz": 5,
+    "Constitution": 3
+   }
+  },
+  "kot_mag_pas": {
+   "klasa": "mag",
+   "stopien": "start",
+   "slot": "Belt",
+   "cena": 150,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 2,
+    "Strength": 1
+   },
+   "krok": {
+    "Constitution": 1,
+    "Strength": 1
+   }
+  },
+  "kot_mag_las_pas": {
+   "klasa": "mag",
+   "stopien": "las",
+   "slot": "Belt",
+   "cena": 200,
+   "poziom": 2,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 2,
+    "Strength": 2
+   },
+   "krok": {
+    "Constitution": 1,
+    "Strength": 1
+   }
+  },
+  "kot_mag_bagno_pas": {
+   "klasa": "mag",
+   "stopien": "bagno",
+   "slot": "Belt",
+   "cena": 550,
+   "poziom": 10,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 4,
+    "Strength": 4
+   },
+   "krok": {
+    "Constitution": 2,
+    "Strength": 2
+   }
+  },
+  "kot_mag_dzungla_pas": {
+   "klasa": "mag",
+   "stopien": "dzungla",
+   "slot": "Belt",
+   "cena": 850,
+   "poziom": 17,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 6,
+    "Strength": 6
+   },
+   "krok": {
+    "Constitution": 3,
+    "Strength": 3
+   }
+  },
+  "kot_mag_kostur": {
+   "klasa": "mag",
+   "stopien": "start",
+   "slot": "Weapon",
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1.75,
+   "baza": {},
+   "krok": {
+    "bron": 1,
+    "Intelligence": 1
+   }
+  },
+  "kot_mag_las_kostur": {
+   "klasa": "mag",
+   "stopien": "las",
+   "slot": "Weapon",
+   "cena": 500,
+   "poziom": 7,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "bron": 2,
+    "Intelligence": 2
+   },
+   "krok": {
+    "bron": 1,
+    "Intelligence": 1
+   }
+  },
+  "kot_mag_bagno_kostur": {
+   "klasa": "mag",
+   "stopien": "bagno",
+   "slot": "Weapon",
+   "cena": 1100,
+   "poziom": 15,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "bron": 4,
+    "Intelligence": 4
+   },
+   "krok": {
+    "bron": 2,
+    "Intelligence": 2
+   }
+  },
+  "kot_mag_dzungla_kostur": {
+   "klasa": "mag",
+   "stopien": "dzungla",
+   "slot": "Weapon",
+   "cena": 1750,
+   "poziom": 22,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "bron": 6,
+    "Intelligence": 6
+   },
+   "krok": {
+    "bron": 3,
+    "Intelligence": 3
+   }
+  }
+ }
+}

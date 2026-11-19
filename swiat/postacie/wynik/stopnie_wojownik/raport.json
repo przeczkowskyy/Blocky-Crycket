@@ -1,0 +1,3470 @@
+{
+ "modul": "stopnie_wojownik",
+ "modele": [
+  {
+   "id": "stopnie_wojownik_start",
+   "nazwa": "Rycerz Blocky — komplet startowy",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 244,
+     "wierzcholki": 152,
+     "wymiary": [
+      2.2,
+      1.566,
+      1.978
+     ],
+     "min": [
+      -1.1,
+      0.734,
+      -0.989
+     ],
+     "max": [
+      1.1,
+      2.3,
+      0.989
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 184,
+     "wierzcholki": 112,
+     "wymiary": [
+      2.2,
+      1.58,
+      1.395
+     ],
+     "min": [
+      -1.1,
+      2.3,
+      -0.675
+     ],
+     "max": [
+      1.1,
+      3.88,
+      0.72
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 944,
+     "wierzcholki": 544,
+     "wymiary": [
+      2.02,
+      1.96,
+      1.87
+     ],
+     "min": [
+      -1.01,
+      3.75,
+      -0.935
+     ],
+     "max": [
+      1.01,
+      5.71,
+      0.935
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 200,
+     "wierzcholki": 112,
+     "wymiary": [
+      1.37,
+      1.07,
+      1.32
+     ],
+     "min": [
+      1.015,
+      2.85,
+      -0.66
+     ],
+     "max": [
+      2.385,
+      3.92,
+      0.66
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.01,
+      0.83,
+      1.005
+     ],
+     "min": [
+      1.1,
+      2.1,
+      -0.53
+     ],
+     "max": [
+      2.11,
+      2.93,
+      0.475
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.04,
+      0.47,
+      1.04
+     ],
+     "min": [
+      1.055,
+      1.75,
+      -0.52
+     ],
+     "max": [
+      2.095,
+      2.22,
+      0.52
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.05,
+      0.8,
+      1.11
+     ],
+     "min": [
+      0.025,
+      1.1,
+      -0.525
+     ],
+     "max": [
+      1.075,
+      1.9,
+      0.585
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.05,
+      0.85,
+      1.21
+     ],
+     "min": [
+      0.025,
+      0.35,
+      -0.525
+     ],
+     "max": [
+      1.075,
+      1.2,
+      0.685
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.09,
+      0.35,
+      1.45
+     ],
+     "min": [
+      0.005,
+      0.0,
+      -0.545
+     ],
+     "max": [
+      1.095,
+      0.35,
+      0.905
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 200,
+     "wierzcholki": 112,
+     "wymiary": [
+      1.37,
+      1.07,
+      1.32
+     ],
+     "min": [
+      -2.385,
+      2.85,
+      -0.66
+     ],
+     "max": [
+      -1.015,
+      3.92,
+      0.66
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.01,
+      0.83,
+      1.005
+     ],
+     "min": [
+      -2.11,
+      2.1,
+      -0.53
+     ],
+     "max": [
+      -1.1,
+      2.93,
+      0.475
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.04,
+      0.47,
+      1.04
+     ],
+     "min": [
+      -2.095,
+      1.75,
+      -0.52
+     ],
+     "max": [
+      -1.055,
+      2.22,
+      0.52
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.05,
+      0.8,
+      1.11
+     ],
+     "min": [
+      -1.075,
+      1.1,
+      -0.525
+     ],
+     "max": [
+      -0.025,
+      1.9,
+      0.585
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.05,
+      0.85,
+      1.21
+     ],
+     "min": [
+      -1.075,
+      0.35,
+      -0.525
+     ],
+     "max": [
+      -0.025,
+      1.2,
+      0.685
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.09,
+      0.35,
+      1.45
+     ],
+     "min": [
+      -1.095,
+      0.0,
+      -0.545
+     ],
+     "max": [
+      -0.005,
+      0.35,
+      0.905
+     ]
+    },
+    {
+     "nazwa": "rycerz_miecz_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 520,
+     "wierzcholki": 290,
+     "wymiary": [
+      1.4,
+      0.53,
+      4.939
+     ],
+     "min": [
+      -2.275,
+      1.66,
+      -0.81
+     ],
+     "max": [
+      -0.875,
+      2.19,
+      4.129
+     ]
+    },
+    {
+     "nazwa": "rycerz_tarcza_Akc",
+     "kosc": "LeftHand",
+     "trojkaty": 200,
+     "wierzcholki": 124,
+     "wymiary": [
+      0.532,
+      1.8,
+      1.498
+     ],
+     "min": [
+      2.055,
+      1.325,
+      -0.749
+     ],
+     "max": [
+      2.587,
+      3.125,
+      0.749
+     ]
+    }
+   ],
+   "trojkaty_razem": 3484,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 21
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.77,
+    5.71,
+    1.978
+   ],
+   "wymiary_z_akcesoriami": [
+    4.972,
+    5.71,
+    5.118
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.385,
+     0.0,
+     -0.989
+    ],
+    [
+     2.587,
+     5.71,
+     4.129
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "rycerz_miecz",
+     "zaczep": "RightGripAttachment",
+     "eksport": false
+    },
+    {
+     "id": "rycerz_tarcza",
+     "zaczep": "LeftGripAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 944,
+     "limit": 4000,
+     "wymiary": [
+      2.02,
+      1.96,
+      1.87
+     ]
+    },
+    "Torso": {
+     "trojkaty": 428,
+     "limit": 1750,
+     "wymiary": [
+      2.2,
+      3.146,
+      1.978
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 376,
+     "limit": 1248,
+     "wymiary": [
+      1.37,
+      2.17,
+      1.32
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 376,
+     "limit": 1248,
+     "wymiary": [
+      1.37,
+      2.17,
+      1.32
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 320,
+     "limit": 1248,
+     "wymiary": [
+      1.09,
+      1.9,
+      1.45
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 320,
+     "limit": 1248,
+     "wymiary": [
+      1.09,
+      1.9,
+      1.45
+     ]
+    }
+   },
+   "ostrzezenia": []
+  },
+  {
+   "id": "stopnie_wojownik_las",
+   "nazwa": "Rycerz Blocky — komplet leśny",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 344,
+     "wierzcholki": 208,
+     "wymiary": [
+      2.26,
+      1.566,
+      1.978
+     ],
+     "min": [
+      -1.13,
+      0.734,
+      -0.989
+     ],
+     "max": [
+      1.13,
+      2.3,
+      0.989
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 228,
+     "wierzcholki": 136,
+     "wymiary": [
+      2.2,
+      1.65,
+      1.5
+     ],
+     "min": [
+      -1.1,
+      2.3,
+      -0.78
+     ],
+     "max": [
+      1.1,
+      3.95,
+      0.72
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 1220,
+     "wierzcholki": 696,
+     "wymiary": [
+      3.134,
+      2.19,
+      1.985
+     ],
+     "min": [
+      -1.567,
+      3.75,
+      -1.005
+     ],
+     "max": [
+      1.567,
+      5.94,
+      0.98
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.32,
+      1.337,
+      1.32
+     ],
+     "min": [
+      1.015,
+      2.85,
+      -0.66
+     ],
+     "max": [
+      2.335,
+      4.187,
+      0.66
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.01,
+      0.83,
+      1.005
+     ],
+     "min": [
+      1.1,
+      2.1,
+      -0.53
+     ],
+     "max": [
+      2.11,
+      2.93,
+      0.475
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.12,
+      0.47,
+      1.12
+     ],
+     "min": [
+      1.015,
+      1.75,
+      -0.56
+     ],
+     "max": [
+      2.135,
+      2.22,
+      0.56
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.05,
+      0.8,
+      1.11
+     ],
+     "min": [
+      0.025,
+      1.1,
+      -0.525
+     ],
+     "max": [
+      1.075,
+      1.9,
+      0.585
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.21,
+      0.85,
+      1.29
+     ],
+     "min": [
+      -0.055,
+      0.35,
+      -0.605
+     ],
+     "max": [
+      1.155,
+      1.2,
+      0.685
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.09,
+      0.35,
+      1.45
+     ],
+     "min": [
+      0.005,
+      0.0,
+      -0.545
+     ],
+     "max": [
+      1.095,
+      0.35,
+      0.905
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.32,
+      1.337,
+      1.32
+     ],
+     "min": [
+      -2.335,
+      2.85,
+      -0.66
+     ],
+     "max": [
+      -1.015,
+      4.187,
+      0.66
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.01,
+      0.83,
+      1.005
+     ],
+     "min": [
+      -2.11,
+      2.1,
+      -0.53
+     ],
+     "max": [
+      -1.1,
+      2.93,
+      0.475
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 132,
+     "wierzcholki": 72,
+     "wymiary": [
+      1.12,
+      0.47,
+      1.12
+     ],
+     "min": [
+      -2.135,
+      1.75,
+      -0.56
+     ],
+     "max": [
+      -1.015,
+      2.22,
+      0.56
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.05,
+      0.8,
+      1.11
+     ],
+     "min": [
+      -1.075,
+      1.1,
+      -0.525
+     ],
+     "max": [
+      -0.025,
+      1.9,
+      0.585
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.21,
+      0.85,
+      1.29
+     ],
+     "min": [
+      -1.155,
+      0.35,
+      -0.605
+     ],
+     "max": [
+      0.055,
+      1.2,
+      0.685
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.09,
+      0.35,
+      1.45
+     ],
+     "min": [
+      -1.095,
+      0.0,
+      -0.545
+     ],
+     "max": [
+      -0.005,
+      0.35,
+      0.905
+     ]
+    },
+    {
+     "nazwa": "rycerz_las_miecz_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 368,
+     "wierzcholki": 210,
+     "wymiary": [
+      1.62,
+      0.444,
+      4.826
+     ],
+     "min": [
+      -2.385,
+      1.703,
+      -0.81
+     ],
+     "max": [
+      -0.765,
+      2.147,
+      4.016
+     ]
+    },
+    {
+     "nazwa": "rycerz_las_tarcza_Akc",
+     "kosc": "LeftHand",
+     "trojkaty": 232,
+     "wierzcholki": 136,
+     "wymiary": [
+      0.541,
+      1.76,
+      1.743
+     ],
+     "min": [
+      2.055,
+      1.395,
+      -0.875
+     ],
+     "max": [
+      2.596,
+      3.155,
+      0.868
+     ]
+    }
+   ],
+   "trojkaty_razem": 3912,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 22
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.67,
+    5.94,
+    1.994
+   ],
+   "wymiary_z_akcesoriami": [
+    4.981,
+    5.94,
+    5.021
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.385,
+     0.0,
+     -1.005
+    ],
+    [
+     2.596,
+     5.94,
+     4.016
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "rycerz_las_miecz",
+     "zaczep": "RightGripAttachment",
+     "eksport": false
+    },
+    {
+     "id": "rycerz_las_tarcza",
+     "zaczep": "LeftGripAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 1220,
+     "limit": 4000,
+     "wymiary": [
+      3.134,
+      2.19,
+      1.985
+     ]
+    },
+    "Torso": {
+     "trojkaty": 572,
+     "limit": 1750,
+     "wymiary": [
+      2.26,
+      3.216,
+      1.978
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 396,
+     "limit": 1248,
+     "wymiary": [
+      1.32,
+      2.437,
+      1.32
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 396,
+     "limit": 1248,
+     "wymiary": [
+      1.32,
+      2.437,
+      1.32
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 364,
+     "limit": 1248,
+     "wymiary": [
+      1.21,
+      1.9,
+      1.51
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 364,
+     "limit": 1248,
+     "wymiary": [
+      1.21,
+      1.9,
+      1.51
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało Head: wys 2.19 poza 0.50…2.00 studa (limit części ciała awatara)"
+   ]
+  },
+  {
+   "id": "stopnie_wojownik_bagno",
+   "nazwa": "Rycerz Blocky — komplet bagienny",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 300,
+     "wierzcholki": 186,
+     "wymiary": [
+      2.26,
+      1.566,
+      1.978
+     ],
+     "min": [
+      -1.13,
+      0.734,
+      -0.989
+     ],
+     "max": [
+      1.13,
+      2.3,
+      0.989
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 324,
+     "wierzcholki": 200,
+     "wymiary": [
+      2.2,
+      1.58,
+      1.38
+     ],
+     "min": [
+      -1.1,
+      2.3,
+      -0.66
+     ],
+     "max": [
+      1.1,
+      3.88,
+      0.72
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 936,
+     "wierzcholki": 550,
+     "wymiary": [
+      2.02,
+      2.273,
+      2.235
+     ],
+     "min": [
+      -1.01,
+      3.75,
+      -0.935
+     ],
+     "max": [
+      1.01,
+      6.023,
+      1.3
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 218,
+     "wierzcholki": 127,
+     "wymiary": [
+      1.37,
+      1.458,
+      1.32
+     ],
+     "min": [
+      1.015,
+      2.85,
+      -0.66
+     ],
+     "max": [
+      2.385,
+      4.308,
+      0.66
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.01,
+      0.83,
+      1.005
+     ],
+     "min": [
+      1.1,
+      2.1,
+      -0.53
+     ],
+     "max": [
+      2.11,
+      2.93,
+      0.475
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 100,
+     "wierzcholki": 58,
+     "wymiary": [
+      1.04,
+      0.47,
+      1.25
+     ],
+     "min": [
+      1.055,
+      1.75,
+      -0.52
+     ],
+     "max": [
+      2.095,
+      2.22,
+      0.73
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.05,
+      0.8,
+      1.11
+     ],
+     "min": [
+      0.025,
+      1.1,
+      -0.525
+     ],
+     "max": [
+      1.075,
+      1.9,
+      0.585
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 138,
+     "wierzcholki": 77,
+     "wymiary": [
+      1.05,
+      0.85,
+      1.5
+     ],
+     "min": [
+      0.025,
+      0.35,
+      -0.525
+     ],
+     "max": [
+      1.075,
+      1.2,
+      0.975
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.09,
+      0.35,
+      1.45
+     ],
+     "min": [
+      0.005,
+      0.0,
+      -0.545
+     ],
+     "max": [
+      1.095,
+      0.35,
+      0.905
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 218,
+     "wierzcholki": 127,
+     "wymiary": [
+      1.37,
+      1.458,
+      1.32
+     ],
+     "min": [
+      -2.385,
+      2.85,
+      -0.66
+     ],
+     "max": [
+      -1.015,
+      4.308,
+      0.66
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.01,
+      0.83,
+      1.005
+     ],
+     "min": [
+      -2.11,
+      2.1,
+      -0.53
+     ],
+     "max": [
+      -1.1,
+      2.93,
+      0.475
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 100,
+     "wierzcholki": 58,
+     "wymiary": [
+      1.04,
+      0.47,
+      1.25
+     ],
+     "min": [
+      -2.095,
+      1.75,
+      -0.52
+     ],
+     "max": [
+      -1.055,
+      2.22,
+      0.73
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.05,
+      0.8,
+      1.11
+     ],
+     "min": [
+      -1.075,
+      1.1,
+      -0.525
+     ],
+     "max": [
+      -0.025,
+      1.9,
+      0.585
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 138,
+     "wierzcholki": 77,
+     "wymiary": [
+      1.05,
+      0.85,
+      1.5
+     ],
+     "min": [
+      -1.075,
+      0.35,
+      -0.525
+     ],
+     "max": [
+      -0.025,
+      1.2,
+      0.975
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.09,
+      0.35,
+      1.45
+     ],
+     "min": [
+      -1.095,
+      0.0,
+      -0.545
+     ],
+     "max": [
+      -0.005,
+      0.35,
+      0.905
+     ]
+    },
+    {
+     "nazwa": "rycerz_bagno_miecz_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 286,
+     "wierzcholki": 171,
+     "wymiary": [
+      1.249,
+      0.36,
+      5.05
+     ],
+     "min": [
+      -2.072,
+      1.745,
+      -1.07
+     ],
+     "max": [
+      -0.823,
+      2.105,
+      3.98
+     ]
+    },
+    {
+     "nazwa": "rycerz_bagno_tarcza_Akc",
+     "kosc": "LeftHand",
+     "trojkaty": 226,
+     "wierzcholki": 145,
+     "wymiary": [
+      0.664,
+      2.26,
+      1.91
+     ],
+     "min": [
+      2.055,
+      1.145,
+      -0.955
+     ],
+     "max": [
+      2.719,
+      3.405,
+      0.955
+     ]
+    }
+   ],
+   "trojkaty_razem": 3536,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 22
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    4.77,
+    6.023,
+    2.289
+   ],
+   "wymiary_z_akcesoriami": [
+    5.104,
+    6.023,
+    5.05
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.385,
+     0.0,
+     -1.07
+    ],
+    [
+     2.719,
+     6.023,
+     3.98
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "rycerz_bagno_miecz",
+     "zaczep": "RightGripAttachment",
+     "eksport": false
+    },
+    {
+     "id": "rycerz_bagno_tarcza",
+     "zaczep": "LeftGripAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 936,
+     "limit": 4000,
+     "wymiary": [
+      2.02,
+      2.273,
+      2.235
+     ]
+    },
+    "Torso": {
+     "trojkaty": 624,
+     "limit": 1750,
+     "wymiary": [
+      2.26,
+      3.146,
+      1.978
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 406,
+     "limit": 1248,
+     "wymiary": [
+      1.37,
+      2.558,
+      1.39
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 406,
+     "limit": 1248,
+     "wymiary": [
+      1.37,
+      2.558,
+      1.39
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 326,
+     "limit": 1248,
+     "wymiary": [
+      1.09,
+      1.9,
+      1.52
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 326,
+     "limit": 1248,
+     "wymiary": [
+      1.09,
+      1.9,
+      1.52
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało Head: wys 2.27 poza 0.50…2.00 studa (limit części ciała awatara)"
+   ]
+  },
+  {
+   "id": "stopnie_wojownik_dzungla",
+   "nazwa": "Rycerz Blocky — komplet Dżungli",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 364,
+     "wierzcholki": 224,
+     "wymiary": [
+      2.26,
+      1.626,
+      1.978
+     ],
+     "min": [
+      -1.13,
+      0.734,
+      -0.989
+     ],
+     "max": [
+      1.13,
+      2.36,
+      0.989
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 312,
+     "wierzcholki": 192,
+     "wymiary": [
+      2.2,
+      1.58,
+      1.42
+     ],
+     "min": [
+      -1.1,
+      2.3,
+      -0.7
+     ],
+     "max": [
+      1.1,
+      3.88,
+      0.72
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 1060,
+     "wierzcholki": 624,
+     "wymiary": [
+      2.02,
+      2.818,
+      1.965
+     ],
+     "min": [
+      -1.01,
+      3.75,
+      -0.935
+     ],
+     "max": [
+      1.01,
+      6.568,
+      1.03
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.551,
+      1.655,
+      1.32
+     ],
+     "min": [
+      1.015,
+      2.85,
+      -0.66
+     ],
+     "max": [
+      2.566,
+      4.505,
+      0.66
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.01,
+      0.83,
+      1.005
+     ],
+     "min": [
+      1.1,
+      2.1,
+      -0.53
+     ],
+     "max": [
+      2.11,
+      2.93,
+      0.475
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 144,
+     "wierzcholki": 80,
+     "wymiary": [
+      1.14,
+      0.551,
+      1.18
+     ],
+     "min": [
+      1.005,
+      1.75,
+      -0.57
+     ],
+     "max": [
+      2.145,
+      2.301,
+      0.61
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.05,
+      0.8,
+      1.11
+     ],
+     "min": [
+      0.025,
+      1.1,
+      -0.525
+     ],
+     "max": [
+      1.075,
+      1.9,
+      0.585
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 204,
+     "wierzcholki": 112,
+     "wymiary": [
+      1.17,
+      0.85,
+      1.33
+     ],
+     "min": [
+      -0.035,
+      0.35,
+      -0.585
+     ],
+     "max": [
+      1.135,
+      1.2,
+      0.745
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.09,
+      0.35,
+      1.45
+     ],
+     "min": [
+      0.005,
+      0.0,
+      -0.545
+     ],
+     "max": [
+      1.095,
+      0.35,
+      0.905
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.551,
+      1.655,
+      1.32
+     ],
+     "min": [
+      -2.566,
+      2.85,
+      -0.66
+     ],
+     "max": [
+      -1.015,
+      4.505,
+      0.66
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.01,
+      0.83,
+      1.005
+     ],
+     "min": [
+      -2.11,
+      2.1,
+      -0.53
+     ],
+     "max": [
+      -1.1,
+      2.93,
+      0.475
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 144,
+     "wierzcholki": 80,
+     "wymiary": [
+      1.14,
+      0.551,
+      1.18
+     ],
+     "min": [
+      -2.145,
+      1.75,
+      -0.57
+     ],
+     "max": [
+      -1.005,
+      2.301,
+      0.61
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.05,
+      0.8,
+      1.11
+     ],
+     "min": [
+      -1.075,
+      1.1,
+      -0.525
+     ],
+     "max": [
+      -0.025,
+      1.9,
+      0.585
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 204,
+     "wierzcholki": 112,
+     "wymiary": [
+      1.17,
+      0.85,
+      1.33
+     ],
+     "min": [
+      -1.135,
+      0.35,
+      -0.585
+     ],
+     "max": [
+      0.035,
+      1.2,
+      0.745
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      1.09,
+      0.35,
+      1.45
+     ],
+     "min": [
+      -1.095,
+      0.0,
+      -0.545
+     ],
+     "max": [
+      -0.005,
+      0.35,
+      0.905
+     ]
+    },
+    {
+     "nazwa": "rycerz_dzungla_miecz_Akc",
+     "kosc": "RightHand",
+     "trojkaty": 476,
+     "wierzcholki": 288,
+     "wymiary": [
+      1.048,
+      0.438,
+      5.431
+     ],
+     "min": [
+      -2.099,
+      1.706,
+      -1.331
+     ],
+     "max": [
+      -1.051,
+      2.144,
+      4.1
+     ]
+    },
+    {
+     "nazwa": "rycerz_dzungla_tarcza_Akc",
+     "kosc": "LeftHand",
+     "trojkaty": 264,
+     "wierzcholki": 166,
+     "wymiary": [
+      0.495,
+      2.05,
+      1.882
+     ],
+     "min": [
+      2.055,
+      1.175,
+      -0.941
+     ],
+     "max": [
+      2.55,
+      3.225,
+      0.941
+     ]
+    }
+   ],
+   "trojkaty_razem": 4076,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 25
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    5.132,
+    6.568,
+    2.019
+   ],
+   "wymiary_z_akcesoriami": [
+    5.132,
+    6.568,
+    5.431
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.566,
+     0.0,
+     -1.331
+    ],
+    [
+     2.566,
+     6.568,
+     4.1
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "rycerz_dzungla_miecz",
+     "zaczep": "RightGripAttachment",
+     "eksport": false
+    },
+    {
+     "id": "rycerz_dzungla_tarcza",
+     "zaczep": "LeftGripAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 1060,
+     "limit": 4000,
+     "wymiary": [
+      2.02,
+      2.818,
+      1.965
+     ]
+    },
+    "Torso": {
+     "trojkaty": 676,
+     "limit": 1750,
+     "wymiary": [
+      2.26,
+      3.146,
+      1.978
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 408,
+     "limit": 1248,
+     "wymiary": [
+      1.561,
+      2.755,
+      1.32
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 408,
+     "limit": 1248,
+     "wymiary": [
+      1.561,
+      2.755,
+      1.32
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 392,
+     "limit": 1248,
+     "wymiary": [
+      1.17,
+      1.9,
+      1.49
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 392,
+     "limit": 1248,
+     "wymiary": [
+      1.17,
+      1.9,
+      1.49
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało Head: wys 2.82 poza 0.50…2.00 studa (limit części ciała awatara)"
+   ]
+  },
+  {
+   "id": "rycerz_las_helm",
+   "nazwa": "Hełm Leśnego Strażnika",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_las_helm",
+     "kosc": null,
+     "trojkaty": 804,
+     "wierzcholki": 456,
+     "wymiary": [
+      3.134,
+      2.19,
+      1.985
+     ],
+     "min": [
+      -1.567,
+      3.75,
+      -1.005
+     ],
+     "max": [
+      1.567,
+      5.94,
+      0.98
+     ]
+    }
+   ],
+   "trojkaty_razem": 804,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "EkwHeadAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.567,
+     3.75,
+     -1.005
+    ],
+    [
+     1.567,
+     5.94,
+     0.98
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    4.845,
+    -0.012
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_las_zbroja",
+   "nazwa": "Zbroja Leśnego Strażnika",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_las_zbroja",
+     "kosc": null,
+     "trojkaty": 900,
+     "wierzcholki": 520,
+     "wymiary": [
+      4.67,
+      3.453,
+      1.978
+     ],
+     "min": [
+      -2.335,
+      0.734,
+      -0.989
+     ],
+     "max": [
+      2.335,
+      4.187,
+      0.989
+     ]
+    }
+   ],
+   "trojkaty_razem": 900,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 9
+   },
+   "zaczep": "EkwUpperTorsoAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -2.335,
+     0.734,
+     -0.989
+    ],
+    [
+     2.335,
+     4.187,
+     0.989
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    2.461,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_las_nogawice",
+   "nazwa": "Nogawice Leśnego Strażnika",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_las_nogawice",
+     "kosc": null,
+     "trojkaty": 220,
+     "wierzcholki": 120,
+     "wymiary": [
+      2.2,
+      1.2,
+      1.2
+     ],
+     "min": [
+      -1.1,
+      1.1,
+      -0.6
+     ],
+     "max": [
+      1.1,
+      2.3,
+      0.6
+     ]
+    }
+   ],
+   "trojkaty_razem": 220,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 3
+   },
+   "zaczep": "EkwLowerTorsoAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.1,
+     1.1,
+     -0.6
+    ],
+    [
+     1.1,
+     2.3,
+     0.6
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.7,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_las_pas",
+   "nazwa": "Pas Leśnika z Sakiewką",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_las_pas",
+     "kosc": null,
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      2.26,
+      0.49,
+      1.515
+     ],
+     "min": [
+      -1.13,
+      1.78,
+      -0.63
+     ],
+     "max": [
+      1.13,
+      2.27,
+      0.885
+     ]
+    }
+   ],
+   "trojkaty_razem": 156,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "EkwLowerTorsoAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.13,
+     1.78,
+     -0.63
+    ],
+    [
+     1.13,
+     2.27,
+     0.885
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    2.025,
+    0.128
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_las_rekawice",
+   "nazwa": "Rękawice z Futrem",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_las_rekawice",
+     "kosc": null,
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      2.22,
+      0.47,
+      1.12
+     ],
+     "min": [
+      -1.11,
+      1.75,
+      -0.56
+     ],
+     "max": [
+      1.11,
+      2.22,
+      0.56
+     ]
+    }
+   ],
+   "trojkaty_razem": 264,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 3
+   },
+   "zaczep": "EkwLeftHandAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.11,
+     1.75,
+     -0.56
+    ],
+    [
+     1.11,
+     2.22,
+     0.56
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.985,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_las_buty",
+   "nazwa": "Buty Leśnika z Futrem",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_las_buty",
+     "kosc": null,
+     "trojkaty": 552,
+     "wierzcholki": 304,
+     "wymiary": [
+      2.31,
+      1.2,
+      1.51
+     ],
+     "min": [
+      -1.155,
+      0.0,
+      -0.605
+     ],
+     "max": [
+      1.155,
+      1.2,
+      0.905
+     ]
+    }
+   ],
+   "trojkaty_razem": 552,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "EkwLeftLowerLegAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.155,
+     0.0,
+     -0.605
+    ],
+    [
+     1.155,
+     1.2,
+     0.905
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.6,
+    0.15
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_las_miecz",
+   "nazwa": "Liściasty Miecz Gaju",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_las_miecz",
+     "kosc": null,
+     "trojkaty": 368,
+     "wierzcholki": 210,
+     "wymiary": [
+      1.62,
+      4.826,
+      0.444
+     ],
+     "min": [
+      -0.81,
+      -0.81,
+      -0.222
+     ],
+     "max": [
+      0.81,
+      4.016,
+      0.222
+     ]
+    }
+   ],
+   "trojkaty_razem": 368,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.81,
+     -0.81,
+     -0.222
+    ],
+    [
+     0.81,
+     4.016,
+     0.222
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.603,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_las_tarcza",
+   "nazwa": "Dębowa Tarcza",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_las_tarcza",
+     "kosc": null,
+     "trojkaty": 232,
+     "wierzcholki": 136,
+     "wymiary": [
+      0.541,
+      1.743,
+      1.76
+     ],
+     "min": [
+      0.48,
+      -0.875,
+      -1.23
+     ],
+     "max": [
+      1.021,
+      0.868,
+      0.53
+     ]
+    }
+   ],
+   "trojkaty_razem": 232,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "LeftGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     0.48,
+     -0.875,
+     -1.23
+    ],
+    [
+     1.021,
+     0.868,
+     0.53
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.75,
+    -0.004,
+    -0.35
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_bagno_helm",
+   "nazwa": "Hełm Topielca",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_bagno_helm",
+     "kosc": null,
+     "trojkaty": 520,
+     "wierzcholki": 310,
+     "wymiary": [
+      2.02,
+      2.273,
+      2.235
+     ],
+     "min": [
+      -1.01,
+      3.75,
+      -0.935
+     ],
+     "max": [
+      1.01,
+      6.023,
+      1.3
+     ]
+    }
+   ],
+   "trojkaty_razem": 520,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 4
+   },
+   "zaczep": "EkwHeadAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.01,
+     3.75,
+     -0.935
+    ],
+    [
+     1.01,
+     6.023,
+     1.3
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    4.886,
+    0.182
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_bagno_zbroja",
+   "nazwa": "Łuskowa Zbroja Topieli",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_bagno_zbroja",
+     "kosc": null,
+     "trojkaty": 1080,
+     "wierzcholki": 646,
+     "wymiary": [
+      4.77,
+      3.574,
+      1.978
+     ],
+     "min": [
+      -2.385,
+      0.734,
+      -0.989
+     ],
+     "max": [
+      2.385,
+      4.308,
+      0.989
+     ]
+    }
+   ],
+   "trojkaty_razem": 1080,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 7
+   },
+   "zaczep": "EkwUpperTorsoAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -2.385,
+     0.734,
+     -0.989
+    ],
+    [
+     2.385,
+     4.308,
+     0.989
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    2.521,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_bagno_nogawice",
+   "nazwa": "Łuskowe Nogawice Topieli",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_bagno_nogawice",
+     "kosc": null,
+     "trojkaty": 220,
+     "wierzcholki": 120,
+     "wymiary": [
+      2.2,
+      1.2,
+      1.2
+     ],
+     "min": [
+      -1.1,
+      1.1,
+      -0.6
+     ],
+     "max": [
+      1.1,
+      2.3,
+      0.6
+     ]
+    }
+   ],
+   "trojkaty_razem": 220,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 3
+   },
+   "zaczep": "EkwLowerTorsoAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.1,
+     1.1,
+     -0.6
+    ],
+    [
+     1.1,
+     2.3,
+     0.6
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.7,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_bagno_pas",
+   "nazwa": "Pas z Kłami",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_bagno_pas",
+     "kosc": null,
+     "trojkaty": 112,
+     "wierzcholki": 66,
+     "wymiary": [
+      2.26,
+      0.6,
+      1.36
+     ],
+     "min": [
+      -1.13,
+      1.67,
+      -0.63
+     ],
+     "max": [
+      1.13,
+      2.27,
+      0.73
+     ]
+    }
+   ],
+   "trojkaty_razem": 112,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 4
+   },
+   "zaczep": "EkwLowerTorsoAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.13,
+     1.67,
+     -0.63
+    ],
+    [
+     1.13,
+     2.27,
+     0.73
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.97,
+    0.05
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_bagno_rekawice",
+   "nazwa": "Kolczaste Rękawice Topieli",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_bagno_rekawice",
+     "kosc": null,
+     "trojkaty": 200,
+     "wierzcholki": 116,
+     "wymiary": [
+      2.14,
+      0.47,
+      1.25
+     ],
+     "min": [
+      -1.07,
+      1.75,
+      -0.52
+     ],
+     "max": [
+      1.07,
+      2.22,
+      0.73
+     ]
+    }
+   ],
+   "trojkaty_razem": 200,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 3
+   },
+   "zaczep": "EkwLeftHandAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.07,
+     1.75,
+     -0.52
+    ],
+    [
+     1.07,
+     2.22,
+     0.73
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.985,
+    0.105
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_bagno_buty",
+   "nazwa": "Łuskowe Buty z Kolcem",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_bagno_buty",
+     "kosc": null,
+     "trojkaty": 476,
+     "wierzcholki": 266,
+     "wymiary": [
+      2.19,
+      1.2,
+      1.52
+     ],
+     "min": [
+      -1.095,
+      0.0,
+      -0.545
+     ],
+     "max": [
+      1.095,
+      1.2,
+      0.975
+     ]
+    }
+   ],
+   "trojkaty_razem": 476,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "EkwLeftLowerLegAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.095,
+     0.0,
+     -0.545
+    ],
+    [
+     1.095,
+     1.2,
+     0.975
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.6,
+    0.215
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_bagno_miecz",
+   "nazwa": "Kościany Tasak Topieli",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_bagno_miecz",
+     "kosc": null,
+     "trojkaty": 286,
+     "wierzcholki": 171,
+     "wymiary": [
+      1.249,
+      5.05,
+      0.36
+     ],
+     "min": [
+      -0.497,
+      -1.07,
+      -0.18
+     ],
+     "max": [
+      0.752,
+      3.98,
+      0.18
+     ]
+    }
+   ],
+   "trojkaty_razem": 286,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.497,
+     -1.07,
+     -0.18
+    ],
+    [
+     0.752,
+     3.98,
+     0.18
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.128,
+    1.455,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_bagno_tarcza",
+   "nazwa": "Tarcza ze Skorupy",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_bagno_tarcza",
+     "kosc": null,
+     "trojkaty": 226,
+     "wierzcholki": 145,
+     "wymiary": [
+      0.664,
+      1.91,
+      2.26
+     ],
+     "min": [
+      0.48,
+      -0.955,
+      -1.48
+     ],
+     "max": [
+      1.144,
+      0.955,
+      0.78
+     ]
+    }
+   ],
+   "trojkaty_razem": 226,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "LeftGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     0.48,
+     -0.955,
+     -1.48
+    ],
+    [
+     1.144,
+     0.955,
+     0.78
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.812,
+    0.0,
+    -0.35
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_dzungla_helm",
+   "nazwa": "Hełm Słońca z Pióropuszem",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_dzungla_helm",
+     "kosc": null,
+     "trojkaty": 644,
+     "wierzcholki": 384,
+     "wymiary": [
+      2.02,
+      2.818,
+      1.965
+     ],
+     "min": [
+      -1.01,
+      3.75,
+      -0.935
+     ],
+     "max": [
+      1.01,
+      6.568,
+      1.03
+     ]
+    }
+   ],
+   "trojkaty_razem": 644,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 9
+   },
+   "zaczep": "EkwHeadAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.01,
+     3.75,
+     -0.935
+    ],
+    [
+     1.01,
+     6.568,
+     1.03
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    5.159,
+    0.047
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_dzungla_zbroja",
+   "nazwa": "Złota Zbroja Słońca",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_dzungla_zbroja",
+     "kosc": null,
+     "trojkaty": 984,
+     "wierzcholki": 576,
+     "wymiary": [
+      5.132,
+      3.771,
+      1.978
+     ],
+     "min": [
+      -2.566,
+      0.734,
+      -0.989
+     ],
+     "max": [
+      2.566,
+      4.505,
+      0.989
+     ]
+    }
+   ],
+   "trojkaty_razem": 984,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 11
+   },
+   "zaczep": "EkwUpperTorsoAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -2.566,
+     0.734,
+     -0.989
+    ],
+    [
+     2.566,
+     4.505,
+     0.989
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    2.619,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_dzungla_nogawice",
+   "nazwa": "Złote Nogawice Słońca",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_dzungla_nogawice",
+     "kosc": null,
+     "trojkaty": 220,
+     "wierzcholki": 120,
+     "wymiary": [
+      2.2,
+      1.2,
+      1.2
+     ],
+     "min": [
+      -1.1,
+      1.1,
+      -0.6
+     ],
+     "max": [
+      1.1,
+      2.3,
+      0.6
+     ]
+    }
+   ],
+   "trojkaty_razem": 220,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 3
+   },
+   "zaczep": "EkwLowerTorsoAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.1,
+     1.1,
+     -0.6
+    ],
+    [
+     1.1,
+     2.3,
+     0.6
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.7,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_dzungla_pas",
+   "nazwa": "Pas z Jadeitowym Dyskiem",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_dzungla_pas",
+     "kosc": null,
+     "trojkaty": 176,
+     "wierzcholki": 104,
+     "wymiary": [
+      2.26,
+      0.84,
+      1.38
+     ],
+     "min": [
+      -1.13,
+      1.52,
+      -0.63
+     ],
+     "max": [
+      1.13,
+      2.36,
+      0.75
+     ]
+    }
+   ],
+   "trojkaty_razem": 176,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 7
+   },
+   "zaczep": "EkwLowerTorsoAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.13,
+     1.52,
+     -0.63
+    ],
+    [
+     1.13,
+     2.36,
+     0.75
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.94,
+    0.06
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_dzungla_rekawice",
+   "nazwa": "Rękawice z Jadeitem",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_dzungla_rekawice",
+     "kosc": null,
+     "trojkaty": 288,
+     "wierzcholki": 160,
+     "wymiary": [
+      2.24,
+      0.551,
+      1.18
+     ],
+     "min": [
+      -1.12,
+      1.75,
+      -0.57
+     ],
+     "max": [
+      1.12,
+      2.301,
+      0.61
+     ]
+    }
+   ],
+   "trojkaty_razem": 288,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 4
+   },
+   "zaczep": "EkwLeftHandAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.12,
+     1.75,
+     -0.57
+    ],
+    [
+     1.12,
+     2.301,
+     0.61
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    2.026,
+    0.02
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_dzungla_buty",
+   "nazwa": "Złote Buty z Jadeitem",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_dzungla_buty",
+     "kosc": null,
+     "trojkaty": 608,
+     "wierzcholki": 336,
+     "wymiary": [
+      2.27,
+      1.2,
+      1.49
+     ],
+     "min": [
+      -1.135,
+      0.0,
+      -0.585
+     ],
+     "max": [
+      1.135,
+      1.2,
+      0.905
+     ]
+    }
+   ],
+   "trojkaty_razem": 608,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 7
+   },
+   "zaczep": "EkwLeftLowerLegAttachment",
+   "typ_roblox": "Inne",
+   "zakres_od_zaczepu": [
+    [
+     -1.135,
+     0.0,
+     -0.585
+    ],
+    [
+     1.135,
+     1.2,
+     0.905
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.6,
+    0.16
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_dzungla_miecz",
+   "nazwa": "Zębaty Miecz Słońca",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_dzungla_miecz",
+     "kosc": null,
+     "trojkaty": 476,
+     "wierzcholki": 288,
+     "wymiary": [
+      1.048,
+      5.431,
+      0.438
+     ],
+     "min": [
+      -0.524,
+      -1.331,
+      -0.219
+     ],
+     "max": [
+      0.524,
+      4.1,
+      0.219
+     ]
+    }
+   ],
+   "trojkaty_razem": 476,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 8
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.524,
+     -1.331,
+     -0.219
+    ],
+    [
+     0.524,
+     4.1,
+     0.219
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    1.384,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "rycerz_dzungla_tarcza",
+   "nazwa": "Tarcza Słońca",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "rycerz_dzungla_tarcza",
+     "kosc": null,
+     "trojkaty": 264,
+     "wierzcholki": 166,
+     "wymiary": [
+      0.495,
+      1.882,
+      2.05
+     ],
+     "min": [
+      0.48,
+      -0.941,
+      -1.3
+     ],
+     "max": [
+      0.975,
+      0.941,
+      0.75
+     ]
+    }
+   ],
+   "trojkaty_razem": 264,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 8
+   },
+   "zaczep": "LeftGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     0.48,
+     -0.941,
+     -1.3
+    ],
+    [
+     0.975,
+     0.941,
+     0.75
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.728,
+    0.0,
+    -0.275
+   ],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [],
+ "kontrola": [
+  "stopnie_wojownik_start.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje brak -> ZGODNE",
+  "stopnie_wojownik_start__idle.fbx: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje stopnie_wojownik_start|Scene 1-61 -> ZGODNE",
+  "stopnie_wojownik_start.glb: siatki 34, kości 17, trójkąty 2992, wzrost 5.71 st., akcje idle 0-60 -> ZGODNE",
+  "stopnie_wojownik_las.fbx: siatki 34, kości 17, trójkąty 3540, wzrost 5.94 st., akcje brak -> ZGODNE",
+  "stopnie_wojownik_las__idle.fbx: siatki 34, kości 17, trójkąty 3540, wzrost 5.94 st., akcje stopnie_wojownik_las|Scene 1-61 -> ZGODNE",
+  "stopnie_wojownik_las.glb: siatki 34, kości 17, trójkąty 3540, wzrost 5.94 st., akcje idle 0-60 -> ZGODNE",
+  "stopnie_wojownik_bagno.fbx: siatki 34, kości 17, trójkąty 3252, wzrost 6.02 st., akcje brak -> ZGODNE",
+  "stopnie_wojownik_bagno__idle.fbx: siatki 34, kości 17, trójkąty 3252, wzrost 6.02 st., akcje stopnie_wojownik_bagno|Scene 1-61 -> ZGODNE",
+  "stopnie_wojownik_bagno.glb: siatki 34, kości 17, trójkąty 3252, wzrost 6.02 st., akcje idle 0-60 -> ZGODNE",
+  "stopnie_wojownik_dzungla.fbx: siatki 34, kości 17, trójkąty 3564, wzrost 6.57 st., akcje brak -> ZGODNE",
+  "stopnie_wojownik_dzungla__idle.fbx: siatki 34, kości 17, trójkąty 3564, wzrost 6.57 st., akcje stopnie_wojownik_dzungla|Scene 1-61 -> ZGODNE",
+  "stopnie_wojownik_dzungla.glb: siatki 34, kości 17, trójkąty 3564, wzrost 6.57 st., akcje idle 0-60 -> ZGODNE",
+  "rycerz_las_helm.fbx: siatki 1, kości 0, trójkąty 804, wzrost 2.19 st., akcje brak -> ZGODNE",
+  "rycerz_las_helm.glb: siatki 1, kości 0, trójkąty 804, wzrost 2.19 st., akcje brak -> ZGODNE",
+  "rycerz_las_zbroja.fbx: siatki 1, kości 0, trójkąty 900, wzrost 3.45 st., akcje brak -> ZGODNE",
+  "rycerz_las_zbroja.glb: siatki 1, kości 0, trójkąty 900, wzrost 3.45 st., akcje brak -> ZGODNE",
+  "rycerz_las_nogawice.fbx: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_las_nogawice.glb: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_las_pas.fbx: siatki 1, kości 0, trójkąty 156, wzrost 0.49 st., akcje brak -> ZGODNE",
+  "rycerz_las_pas.glb: siatki 1, kości 0, trójkąty 156, wzrost 0.49 st., akcje brak -> ZGODNE",
+  "rycerz_las_rekawice.fbx: siatki 1, kości 0, trójkąty 264, wzrost 0.47 st., akcje brak -> ZGODNE",
+  "rycerz_las_rekawice.glb: siatki 1, kości 0, trójkąty 264, wzrost 0.47 st., akcje brak -> ZGODNE",
+  "rycerz_las_buty.fbx: siatki 1, kości 0, trójkąty 552, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_las_buty.glb: siatki 1, kości 0, trójkąty 552, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_las_miecz.fbx: siatki 1, kości 0, trójkąty 368, wzrost 4.83 st., akcje brak -> ZGODNE",
+  "rycerz_las_miecz.glb: siatki 1, kości 0, trójkąty 368, wzrost 4.83 st., akcje brak -> ZGODNE",
+  "rycerz_las_tarcza.fbx: siatki 1, kości 0, trójkąty 232, wzrost 1.74 st., akcje brak -> ZGODNE",
+  "rycerz_las_tarcza.glb: siatki 1, kości 0, trójkąty 232, wzrost 1.74 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_helm.fbx: siatki 1, kości 0, trójkąty 520, wzrost 2.27 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_helm.glb: siatki 1, kości 0, trójkąty 520, wzrost 2.27 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_zbroja.fbx: siatki 1, kości 0, trójkąty 1080, wzrost 3.57 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_zbroja.glb: siatki 1, kości 0, trójkąty 1080, wzrost 3.57 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_nogawice.fbx: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_nogawice.glb: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_pas.fbx: siatki 1, kości 0, trójkąty 112, wzrost 0.60 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_pas.glb: siatki 1, kości 0, trójkąty 112, wzrost 0.60 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_rekawice.fbx: siatki 1, kości 0, trójkąty 200, wzrost 0.47 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_rekawice.glb: siatki 1, kości 0, trójkąty 200, wzrost 0.47 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_buty.fbx: siatki 1, kości 0, trójkąty 476, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_buty.glb: siatki 1, kości 0, trójkąty 476, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_miecz.fbx: siatki 1, kości 0, trójkąty 286, wzrost 5.05 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_miecz.glb: siatki 1, kości 0, trójkąty 286, wzrost 5.05 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_tarcza.fbx: siatki 1, kości 0, trójkąty 226, wzrost 1.91 st., akcje brak -> ZGODNE",
+  "rycerz_bagno_tarcza.glb: siatki 1, kości 0, trójkąty 226, wzrost 1.91 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_helm.fbx: siatki 1, kości 0, trójkąty 644, wzrost 2.82 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_helm.glb: siatki 1, kości 0, trójkąty 644, wzrost 2.82 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_zbroja.fbx: siatki 1, kości 0, trójkąty 984, wzrost 3.77 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_zbroja.glb: siatki 1, kości 0, trójkąty 984, wzrost 3.77 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_nogawice.fbx: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_nogawice.glb: siatki 1, kości 0, trójkąty 220, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_pas.fbx: siatki 1, kości 0, trójkąty 176, wzrost 0.84 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_pas.glb: siatki 1, kości 0, trójkąty 176, wzrost 0.84 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_rekawice.fbx: siatki 1, kości 0, trójkąty 288, wzrost 0.55 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_rekawice.glb: siatki 1, kości 0, trójkąty 288, wzrost 0.55 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_buty.fbx: siatki 1, kości 0, trójkąty 608, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_buty.glb: siatki 1, kości 0, trójkąty 608, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_miecz.fbx: siatki 1, kości 0, trójkąty 476, wzrost 5.43 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_miecz.glb: siatki 1, kości 0, trójkąty 476, wzrost 5.43 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_tarcza.fbx: siatki 1, kości 0, trójkąty 264, wzrost 1.88 st., akcje brak -> ZGODNE",
+  "rycerz_dzungla_tarcza.glb: siatki 1, kości 0, trójkąty 264, wzrost 1.88 st., akcje brak -> ZGODNE"
+ ]
+}
