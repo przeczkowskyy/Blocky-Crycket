@@ -1,8 +1,8 @@
 # Sklep zbrojmistrza na próbę — kupowanie przedmiotów za Złoto (D-106)
 
-Status: **propozycja (prototyp)** — część bez Roblox Studio. Kontener `Workspace/SklepProba` jeszcze NIE jest
-zbudowany, próba w grze (`testy/proba_play.py`) jest napisana, ale nie była uruchomiona. Okno jest tymczasowe:
-docelowe okno 2D zrobi druga osoba — podmienia się jeden moduł (`OknoSklepu.luau`).
+Status: **propozycja (prototyp)**. 19.11.2026 wdrożony w Studio (kontener `Workspace/SklepProba`, kowal z wejściem
+`Sygnaly/Sklep`, przymierzalnia z przedmiotami stopni); próba w grze 12/12 zielona (wyniki niżej). Okno jest
+tymczasowe: docelowe okno 2D zrobi druga osoba — podmienia się jeden moduł (`OknoSklepu.luau`).
 
 ## Co to jest
 Gracz podchodzi do zbrojmistrza w bazarze, naciska E i kupuje przedmioty swojej klasy za Złoto: komplet startowy
@@ -81,9 +81,15 @@ gracza). Dymek bazaru „broń i zbroje już wkrótce” wyłącza przewidziany 
 (`OknoMiejsca:SetAttribute("zbrojownia", true)` — haczyk z README bazaru). Okno zamyka X albo odejście dalej niż
 20 st od stoiska.
 
-Uwaga dla osoby od okien: bazar przy zbrojowni wysyła też sygnał HUD `Shop`. Jeśli docelowe okno sklepu będzie
-podpięte pod przycisk HUD, przy E otworzą się dwa okna — wtedy tymczasowe okno trzeba wyłączyć (usunąć kontener
-`SklepProba` albo podmienić `OknoSklepu.luau`).
+**Dwa okna przy zbrojowni (sprawdzone 19.11.2026).** W miejscu gry (tylko w Studio, nie w repo) stoi skrypt
+`StarterPlayerScripts/Client/ShopClient` — makieta okna sklepu z HUD (ScreenGui `Shop`, „WEAPON SHOP” / „MAGIC SHOP”,
+puste sloty). Słucha tego samego zdarzenia `OknoMiejsca` dla `zbrojownia` i `sklep_magiczny` (i kliknięcia
+w figurę sprzedawcy) i sam zgłasza oba miejsca atrybutem zdarzenia. Bez zmian po E przy zbrojowni stałyby dwa okna
+naraz. Dlatego klient sklepu, gdy otwiera okno po E zbrojowni, **chowa u gracza makietę `Shop`** (`Enabled = false`,
+tylko po stronie klienta; ShopClient przy następnym otwarciu włącza ją sam). Wyłącznik: atrybut kontenera
+`ChowajOknoShop = false`; licznik schowań: `SchowanoOknoShop`. Sklep magiczny dalej otwiera makietę `Shop`. Sygnał
+HUD `Shop`, który bazar też wysyła przy zbrojowni, dziś nic nie otwiera (nikt go nie słucha). Gdy docelowe okno
+przejmie kupno, kontener `SklepProba` usuwa się (`zbuduj.py --usun`) albo podmienia `OknoSklepu.luau`.
 
 ## Okno (tymczasowe)
 Nagłówek: tytuł z napisem PRÓBA, poziom, Złoto, X (co najmniej 44 px). Zakładki stopni (startowy / leśny / bagienny /
@@ -104,7 +110,8 @@ tekst 14 pt, pięć wierszy bez przewijania.
 | `sprawdz_luau_sklepu.py` | kontrola statyczna Luau (sklep nie płaci i nie zapisuje sam) |
 | `zbuduj.py` | budowa kontenera (`--sucho`, `--skrypty`, `--usun`) |
 | `testy/test_sklepu.py` | testy bez Studio (26) |
-| `testy/proba_play.py` | próba w Play S00–S10 (napisana, nieuruchomiona; `--sprawdz` bez Studio) |
+| `testy/proba_play.py` | próba w Play S00–S11 (`--sprawdz` bez Studio; `--wynik <plik>` — wynik poza repo) |
+| `klatki/` | zrzuty z próby 19.11.2026 (lista niżej) |
 
 Zmiany u kowala (`swiat/kowal_proba`): `dane.py` (wpisy z katalogu sklepu, pola `cena`, `poziom`, `stopien`,
 `nrStopnia`, lista `klasy[k].wszystkie`), `logika_kowala.py` + `zrodla/LogikaKowala.luau` (`kup`, `oferta`, `stacNa`,
@@ -176,11 +183,41 @@ dziennika wydatków.
 - Napis po łupie „Nowy przedmiot: … Założony.” pojawia się także wtedy, gdy reguła zostawiła lepszy przedmiot.
 - Sprzedaży przedmiotów (odkupu) nie ma.
 
+## Próba w grze 19.11.2026 (Studio, tryb Play) — 12 × OK
+Budowa: `stroje_proba/zbuduj.py --skrypty`, `kowal_proba/zbuduj.py` (pełna), `sklep_proba/zbuduj.py`; potem
+`testy/proba_play.py` (pełny przebieg 12/12; pierwszy przebieg 10/12 — poprawki niżej).
+
+| Punkt | Wynik |
+|---|---|
+| S00–S01 | kontenery, skrót danych = lokalny, serwer i klient gotowe, zgodność logiki „OK 42/42”, okno podpięte pod E |
+| S02 | prawdziwe E przy zbrojmistrzu → okno (zakładka startowa, 7 wierszy, oferta wojownika 28 pozycji); na ekranie jedno okno — makieta `Shop` schowana |
+| S03 | kupno prawdziwym kliknięciem: pas leśny za 100 Złota (20 000 → 19 900), „Kupiono: … Założono od razu.” |
+| S04 | pas w stroju przymierzalni |
+| S05 | hełm bagienny założył się sam, leśny (niższy stopień) nie; „Załóż” kliknięciem zmienia |
+| S06 | miecz leśny: wpis kowala broń 0 → 2, obrażenia bohatera 128 → 130 |
+| S07 | odmowy: za mało Złota, za niski poziom, posiadany, inna klasa, nieznany, część zbroi, daleko — dane i Złoto bez zmian |
+| S08 | ekran 667 × 375: tekst 14 pt, okno w ekranie (góra 3%, dół 97% wysokości) |
+| S09 | komplety leśny, bagienny, Dżungli trzech klas kupione i w całości na postaci (9 zrzutów) |
+| S11 | prawdziwa walka w kupionym komplecie Dżungli (TELEPORT → chmury → Las, E przy slime'ie): bohater L30 broń 134 / pancerz 66 = wzór + wpis kowala (broń 6, pancerz 18), model w walce w komplecie, karta wyniku |
+| S10 | konsola bez wierszy o sklepie i kowalu |
+
+Poprawki po pierwszym przebiegu: S08 mierzył okno względem całego ScreenGui (z `IgnoreGuiInset` pozycje są przesunięte
+o pasek u góry) — teraz względem ramki ekranu; S09 zakłada przyciskiem „Załóż” przedmiot kupiony wcześniej (hełm
+bagienny z S05 — reguła zakładania słusznie go nie zdjęła); zdjęcia postaci na placu startowym bazaru zamiast przy
+ladzie (kamera wpadała w ladę), plecami do tablicy „RANKING SERWERA” (nazwy graczy nie trafiają na zrzut). W kodzie
+gry jedna zmiana: chowanie makiety `Shop` po E zbrojowni (wyżej).
+
+Zrzuty (`klatki/`): `s02_okno_sklepu` (komputer), `s08_okno_maly_ekran` (667 × 375), `s03_po_kupnie`,
+`s05_zaloz_recznie`, `s04_postac_po_kupnie`, `s09_<klasa>_<stopień>` (9 postaci), `s11_walka_w_komplecie`.
+
+Zauważone: na zrzutach z komputera (tekst 14 pt, zrzut zmniejszony do 1280 px) w oknie nie widać liter „ś ę ż ń ć”
+(„Le ny”, „D ungli”). Sprawdzone osobno w grze w pełnej rozdzielczości: litery są, ale Roblox bierze je z cieńszej
+czcionki zastępczej (FredokaOne ich nie ma), więc przy małym tekście są blade i znikają po zmniejszeniu zrzutu; od
+ok. 18 pt i na ekranie telefonu (okno powiększone) są dobrze widoczne. Do decyzji przy docelowym oknie: większy tekst
+na komputerze albo czcionka z polskimi literami.
+
 ## Czego nie sprawdzono
-- Niczego w Roblox Studio: kontenery nie są przebudowane, okno nie było widziane na ekranie, `proba_play.py` nie była
-  uruchomiona (sprawdzone tylko parsowanie jej kawałków Luau).
-- Prawdziwego E bazaru i zdarzenia `OknoMiejsca` (testy bez Studio wołają serwer sklepu wprost; klient i okno
-  przechodzą tylko kontrolę statyczną i parser).
-- Wyglądu kupionych przedmiotów na postaci i w walce (to robi przymierzalnia i silnik walki; w testach bez Studio
-  sprawdzony jest napis stroju i wpis `Modyfikatory`).
 - Dwóch graczy naraz i zapisu postępu (przełącznik zapisu zostaje wyłączony).
+- Kliknięcia w figurę zbrojmistrza (ShopClient otwiera wtedy makietę `Shop`, a sklep — nie; okno sklepu otwiera
+  tylko E).
+- Prawdziwego telefonu (tylko emulacja 667 × 375 atrybutem `EmulacjaEkranu`).

@@ -105,12 +105,35 @@ local function zdarzenieOkien()
 	return z
 end
 
+-- Okno sklepu z HUD (ScreenGui „Shop”, skrypt ShopClient w miejscu gry — makieta bez towaru) słucha tego samego
+-- zdarzenia dla zbrojowni. Żeby po E nie stały dwa okna naraz, póki stoi ten kontener, po E zbrojowni chowamy
+-- u gracza tamto okno (Enabled = false, tylko u klienta; jego skrypt przy następnym otwarciu włącza je sam).
+-- Atrybut kontenera ChowajOknoShop = false wyłącza chowanie; licznik w atrybucie SchowanoOknoShop (haczyk prób).
+local CUDZE_OKNO = "Shop"
+local function schowajCudzeOkno()
+	if kontener:GetAttribute("ChowajOknoShop") == false or not stan.okno then
+		return
+	end
+	local g = gracz:FindFirstChild("PlayerGui") and gracz.PlayerGui:FindFirstChild(CUDZE_OKNO)
+	if g and g:IsA("ScreenGui") and g.Enabled then
+		g.Enabled = false
+		kontener:SetAttribute("SchowanoOknoShop", (kontener:GetAttribute("SchowanoOknoShop") or 0) + 1)
+	end
+end
+
 local zdarzenie = zdarzenieOkien()
 if zdarzenie:IsA("BindableEvent") then
 	zdarzenie:SetAttribute(D.miejsce.id, true) -- to miejsce ma już okno: bazar nie pokazuje dymku „w budowie”
 	zdarzenie.Event:Connect(function(id)
 		if id == D.miejsce.id then
 			otworz()
+			-- kolejność słuchaczy zdarzenia jest nieustalona: sprawdzamy po chwili, kilka razy
+			task.spawn(function()
+				for _ = 1, 4 do
+					task.wait(0.1)
+					schowajCudzeOkno()
+				end
+			end)
 		end
 	end)
 	kontener:SetAttribute("PodpietePodE", true)

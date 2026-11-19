@@ -12,11 +12,13 @@ Edit. Play tylko na czas próby (SesjaPlay z swiat/test_walki2/testy/sesja_play.
   S00 Edit: kontener i skrót danych = lokalne, Aktorzy w TestWalki2 z haczykiem
   S01 gotowość serwera i klienta, podpowiedź E włączona
   S02 prawdziwe E przy stojaku otwiera okno; X zamyka (kamera wraca)
-  S03 prawdziwe kliknięcie „>” w wierszu hełmu → serwer zmienia atrybut, podgląd w nowym stroju
+  S03 prawdziwe kliknięcie „>” w wierszu hełmu → serwer zmienia atrybut (następna opcja slotu), podgląd w nowym stroju
   S04 serwer odrzuca: przedmiot innej klasy, część zbroi, zła klasa, zły slot; za szybko; atrybut bez zmian
-  S05 każda klasa: goła, komplet, mieszany — podgląd ma dokładnie te bryły co dane (liczba, atrybut Stroj); zrzuty
-  S06 każdy klip każdej klasy w trzech strojach klatka po klatce: nic nie odpada (odejście od kości < 0,02),
-      nic głębiej pod ziemią niż komplet (0,05), w ostatniej klatce upadku kapelusz i kostur kota na ziemi; zawis ciała
+  S05 każda klasa: goła, komplet, mieszany i komplety trzech stopni sklepu (leśny, bagienny, Dżungli; 19.11.2026) —
+      podgląd ma dokładnie te bryły co dane (liczba, atrybut Stroj), cały podgląd nad oknem; zrzuty
+  S06 każdy klip każdej klasy w sześciu strojach klatka po klatce: nic nie odpada (odejście od kości < 0,02),
+      nic głębiej pod ziemią niż komplet (0,05; komplety stopni — granice GRANICA_STOPNI jak w test_strojow.py),
+      w ostatniej klatce upadku kapelusz i kostur kota na ziemi; zawis ciała
   S07 próba walki (tablica): bohater gracza w walce w stroju z przymierzalni; zrzuty w trzech chwilach
   S08 „Dawny wygląd”: walka z dawnym szablonem (bez atrybutu Stroj na modelu)
   S09 walka w lesie-pasie (jeśli LasPasGra jest w miejscu): bohater w stroju
@@ -56,6 +58,14 @@ MIESZANE = {"wojownik": ["rycerz_helm", "rycerz_buty", "rycerz_miecz", "rycerz_t
             "zwiadowca": ["zwiadowca_kaptur", "zwiadowca_rekawice", "zwiadowca_luk"],
             "mag": ["kot_mag_kapelusz", "kot_mag_kostur"]}
 PRZECIWNIK = {"wojownik": "cierniowy_wilk", "zwiadowca": "lesny_slime", "mag": "muchomornik"}
+# komplety stopni ze sklepu zbrojmistrza (D-106, dane: D["klasy"][k]["stopnie"]) — w S05 i S06 obok dzisiejszych strojów
+STOPNIE = ("las", "bagno", "dzungla")
+# o ile komplet stopnia może zejść w klipie głębiej pod ziemię niż komplet startowy (stud) — te same granice co
+# GRANICA_STOPNI w testy/test_strojow.py (stan z 19.11.2026 z zapasem; długie łuki i ozdoby, poprawki w stopnie.py);
+# dzisiejsze stroje: 0,05
+GRANICA_STOPNI = {"wojownik": {"las": 0.09, "bagno": 0.19, "dzungla": 0.03},
+                  "zwiadowca": {"las": 0.17, "bagno": 0.23, "dzungla": 0.55},
+                  "mag": {"las": 0.04, "bagno": 0.02, "dzungla": 0.02}}
 # tryb z kowalem (swiat/kowal_proba): odczyt i nadanie przedmiotów jego haczykiem testowym (tylko w Play)
 KW = ('local kw = workspace:FindFirstChild("KowalProba") local H = game:GetService("HttpService") '
       'local g = game:GetService("Players"):GetPlayers()[1] ')
@@ -198,7 +208,17 @@ def main():
             hak('"klasa", "wojownik"')
             time.sleep(0.8)
             sp.klik("StrojeProbaOkno.Ekran.Okno.Slot_Helmet.Nastepny")
-            ok, oczek = L.zdejmij(D, "wojownik", D["klasy"]["wojownik"]["odniesienie"], "Helmet")
+            # „>” idzie do następnej opcji slotu (nic + hełmy z oferty; z kowalem tylko posiadane — po nadaniu także
+            # hełmy stopni sklepu, więc po hełmie startowym jest leśny, a nie „bez hełmu”)
+            odn = D["klasy"]["wojownik"]["odniesienie"]
+            helmy = next((z["przedmioty"] for z in L.oferta(D, "wojownik") if z["slot"] == "Helmet"), [])
+            if kowal:
+                helmy = [i for i in helmy if i in set((tk.get("dostepne") or "").split(","))]
+            opcje = [None] + list(helmy)
+            teraz = next((i for i in odn if i in helmy), None)
+            nastepny = opcje[(opcje.index(teraz) + 1) % len(opcje)]
+            ok, oczek = (L.zdejmij(D, "wojownik", odn, "Helmet") if nastepny is None
+                         else L.zaloz(D, "wojownik", odn, nastepny))
             cel = L.na_napis(oczek)
             zgodne = czekaj(lambda: atrybut("wojownik") == cel and hak('"stan"').get("strojModelu") == cel, 5)
             st = hak('"stan"')
@@ -224,7 +244,11 @@ def main():
         # ------------------------------------------------------------------ S05 stroje w podglądzie
         if chce("S05") or chce("S06"):
             hak('"otworz"')
-        stroje = {k: [("golas", []), ("komplet", D["klasy"][k]["odniesienie"]), ("mieszany", MIESZANE[k])] for k in D["klasy"]}
+        def stopien(klasa, sid):
+            return next((list(z["przedmioty"]) for z in D["klasy"][klasa].get("stopnie") or [] if z["id"] == sid), None)
+
+        stroje = {k: [("golas", []), ("komplet", D["klasy"][k]["odniesienie"]), ("mieszany", MIESZANE[k])]
+                  + [(sid, stopien(k, sid)) for sid in STOPNIE if stopien(k, sid)] for k in D["klasy"]}
         if chce("S05"):
             zle = []
             for klasa in D["klasy"]:
@@ -248,8 +272,8 @@ def main():
                             and kd.get("x0", -1) >= 0.22 and kd.get("x1", 9) <= 0.78):
                         zle.append((klasa, nazwa, "kadr", {k: round(v, 3) for k, v in kd.items() if isinstance(v, float)}))
                     zrzut("03_%s_%s" % (klasa, nazwa), kd)
-            punkt("S05", not zle, "9 strojów w podglądzie = dane (bryły, atrybut Stroj, cały podgląd nad oknem)%s"
-                  % ("; ZŁE: %s" % zle if zle else ""))
+            punkt("S05", not zle, "%d strojów w podglądzie = dane (bryły, atrybut Stroj, cały podgląd nad oknem; z kompletami "
+                  "stopni)%s" % (sum(len(v) for v in stroje.values()), "; ZŁE: %s" % zle if zle else ""))
 
         # ------------------------------------------------------------------ S06 klipy klatka po klatce
         if chce("S06"):
@@ -257,7 +281,7 @@ def main():
             for klasa in D["klasy"]:
                 hak('"klasa", "%s"' % klasa)
                 ref = {}
-                for nazwa, ids in [stroje[klasa][1], stroje[klasa][0], stroje[klasa][2]]:   # komplet najpierw
+                for nazwa, ids in [stroje[klasa][1]] + [x for i, x in enumerate(stroje[klasa]) if i != 1]:   # komplet najpierw
                     time.sleep(0.3)
                     ustaw(klasa, ids)
                     czekaj(lambda: hak('"stan"').get("strojModelu") == napis(klasa, ids), 5)
@@ -274,7 +298,8 @@ def main():
                                                                   "koniec_grupy": {g: round(v, 3) for g, v in (w["koniec"]["grupy"] or {}).items()}}
                         if w["odchylenie"] > 0.02:
                             zle.append((klasa, nazwa, akcja, "odejście %.3f" % w["odchylenie"]))
-                        if akcja in ref and w["najnizej"] < ref[akcja] - 0.05:
+                        granica = GRANICA_STOPNI[klasa].get(nazwa, 0.05) + (0.01 if nazwa in STOPNIE else 0.0)
+                        if akcja in ref and w["najnizej"] < ref[akcja] - granica:
                             zle.append((klasa, nazwa, akcja, "pod ziemią %.3f (komplet %.3f)" % (w["najnizej"], ref[akcja])))
                         if akcja == "upadek":
                             for g in ("kot_mag_kapelusz", "kot_mag_kostur"):

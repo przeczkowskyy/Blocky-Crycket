@@ -456,3 +456,16 @@ z mapy zostaje w Studio; klient pakietu `NpcGra` chowa ją u gracza, gdy stoi NP
 bez zmian), a bez `NpcGra` albo przy `NpcWGrze = false` figura jest widoczna jak dawniej. Opis: `swiat/npc_gra/README.md`.
 Sprawdzone w grze 19.11.2026 próbą pakietu NPC (N00–N14: 15 × OK — figury schowane, ich kolizje zostały, podpowiedź E
 karczmy działa, tabliczka NPC ustępuje dymkowi bazaru).
+
+## Zbrojownia: okno sklepu zamiast dymku — próba B04 i B13 (19.11.2026)
+Rano 19.11 w próbie bazaru po E przy zbrojowni nie było dymku zastępczego (B04 i B13 BŁĄD). Przyczyna nie leży
+w NPC ani w bazarze: w miejscu gry (tylko w Studio) stoi skrypt `StarterPlayerScripts/Client/ShopClient` — makieta
+okna sklepu (ScreenGui `Shop`), która słucha `OknoMiejsca` dla `zbrojownia` i `sklep_magiczny` i zgłasza oba miejsca
+atrybutem zdarzenia, więc bazar zgodnie z zasadą dymku nie pokazuje. Okno `Shop` było najpewniej otwarte jeszcze od
+kroku sklepu magicznego (próba okien nie zamyka), więc klient bazaru nie zauważył „nowego” okna — próba nie dostała
+ani okna, ani dymku.
+Zmiana tylko w próbie (`testy/proba_play.py`; kod bazaru bez zmian): B04 przy zbrojowni oczekuje okna sklepu
+zbrojmistrza (`SklepProbaOkno`, jedno okno, bez dymku), gdy stoi `Workspace/SklepProba`; bez niego, przy oknie
+zgłoszonym atrybutem — okna `Shop` bez dymku; bez żadnego okna — dymku. B13 przy zbrojowni ze zgłoszonym oknem
+sprawdza wyłączanie dymku przy mistrzu gier (miejsce bez okna). Dwa okna naraz przy zbrojowni rozwiązuje pakiet
+sklepu (chowa makietę `Shop`, opis w `swiat/sklep_proba/README.md`).

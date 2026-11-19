@@ -437,6 +437,10 @@ przesunęły** względem zapisanego katalogu. Jedyne przesunięcie tego dnia zas
 minutę, a nie Złoto na walkę, od którego liczą się ceny.
 
 ## Plan części ze Studio (polecenia w kolejności)
+**Wykonane 19.11.2026** (kroki 1–5): próba sklepu 12 × OK, w tym prawdziwa walka w kupionym komplecie Dżungli —
+wyniki, zrzuty i to, co zauważone (dwa okna przy zbrojowni, litery z ogonkami na komputerze), w
+`swiat/sklep_proba/README.md`.
+
 Praca zgłoszona z obszarami `studio:StrojeProba`, `studio:KowalProba`, `studio:SklepProba`; Studio w trybie Edit.
 1. `python -B swiat/stroje_proba/zbuduj.py --skrypty` — cztery moduły danych i logika przymierzalni (bez tego kupiony
    przedmiot nie pokaże się na postaci).

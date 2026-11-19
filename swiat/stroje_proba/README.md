@@ -7,7 +7,7 @@ Gracz podchodzi do stojaka „Przymierzalnia” przy placu startowym, naciska **
 zdejmuje przedmioty po jednym na slot. Na podeście przed lustrem stoi jego bohater w tym stroju (z ruchami walki).
 Następna walka — próba walki przy tablicy i walki w lesie — pokazuje bohatera w tym samym stroju.
 
-## Przedmioty do kupienia w trzech stopniach (D-106, 19.11.2026 — bez Studio, jeszcze nie wgrane)
+## Przedmioty do kupienia w trzech stopniach (D-106, 19.11.2026 — wgrane do Studio tego dnia)
 
 Dane przymierzalni mają teraz **80 przedmiotów**: 20 dzisiejszych (bez zmian, na początku, w dawnej kolejności) i 60
 nowych z `swiat/postacie/stopnie.py` (las, bagno, dżungla; wpisy z `swiat/postacie/sklep_przedmioty.json`, te same
@@ -32,6 +32,13 @@ kontrole pól co dla dzisiejszych). Strój odniesienia dalej równa się szablon
 - Komplety stopni w klipach walki: test `3d` wypisuje, o ile głębiej pod ziemię schodzą niż strój odniesienia
   (najwięcej Zwiadowca w komplecie Dżungli: 0,535 studa w uniku), i pilnuje, żeby nie było gorzej. Przenikanie broni
   w ciało mierzy `python -B swiat/postacie/przenikanie_stopni.py`.
+- **W Studio 19.11.2026** (`zbuduj.py --skrypty`, próba w Play rozszerzona o komplety stopni): S05 — 18 strojów
+  (dzisiejsze 3 + komplety las / bagno / Dżungla w każdej klasie) w podglądzie z dokładnie tymi bryłami co w danych;
+  S06 — 186 przebiegów klipów klatka po klatce, nic nie odpada od kości, a komplety stopni schodzą pod ziemię
+  najwyżej tyle, ile pozwalają granice `GRANICA_STOPNI` z testu 3d (te same liczby w próbie). S03 z kowalem: „>” przy
+  hełmie przechodzi do następnego posiadanego hełmu (po nadaniu przedmiotów stopni — leśnego), nie do „bez hełmu”.
+  Wynik: 10 × OK, 1 × ? (S09 — las ręcznie), 0 × BŁĄD. S03 puszczony sam (`--tylko S03`, bez S02) bywa za szybki —
+  kliknięcie trafia przed narysowaniem okna; w pełnym przebiegu i z S02 przechodzi.
 
 ## W Studio (17.11.2026)
 
