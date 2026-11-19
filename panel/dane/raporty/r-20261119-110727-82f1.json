@@ -1,0 +1,35 @@
+{
+ "id": "r-20261119-110727-82f1",
+ "tytul": "Mini-gry w sceneriach krain: las, Bagno, Dżungla",
+ "opis_md": "- Mini-gry Training Center dzieją się teraz w sceneriach krain zamiast areny w murach (D-108): po dwie gry w lesie, na Bagnie i w Dżungli.\n- W Rozbijaniu lecą owoce i dynie zamiast skrzynek i rozpadają się przy trafieniu. Zasady wszystkich gier, przyrosty i kamera są bez zmian.\n- Przy grach stoją animowani trenerzy NPC (D-109): Borys, Iskra, Wiór, Runa i Fart; przy Bloku trenerem jest golem gry.\n- Czas klatki się nie zmienił (60 klatek na sekundę). Do oceny: dobór scenerii do gier i trzy drobne sprawy z kadrami (niżej).\n\nSzczegóły:\n\n**Jak sprawdzić w Studio:** Play → wybierz klasę → tablica „Training Center” przy starcie (E) albo trener Tymon w bazarze → wybierz grę. Gracz trafia prosto do scenerii gry; „INNA GRA” przenosi między sceneriami, „WYJDŹ” wraca do świata.\n\n**Gdzie która gra**\n\n| Gra | Sceneria | Kraina |\n|---|---|---|\n| Szczęście — Koniczyny | łąka pod starym dębem | las |\n| Siła — Rozbijanie | polana drwali, owoce i dynie | las |\n| Kondycja — Bieżnia | grobla z bali nad wodą | Bagno |\n| Zręczność — Kłody | okrągły pomost nad topielą | Bagno |\n| Pancerz — Blok | kamienny krąg strażnika | Dżungla |\n| Inteligencja — Runy | świątynia run | Dżungla |\n\n**Próba w grze (19.11, 10:23–10:35): 31 punktów w porządku za pierwszym razem**\n- Logika gier zgodna z serwerem 118 na 118; w Sile 45 z 45 trafień policzonych jak przed zmianą.\n- 2797 części (arena w murach miała 1658), wszystkie zakotwiczone, bez świateł.\n- Czas klatki w każdej scenerii 16,7 ms średnio, najgorsze 5% 17,7–18,0 ms — tyle co wcześniej.\n- Cała droga gracza, bohater w świecie i muzyka mini-gier działają dalej.\n\n**Trenerzy NPC:** stoją w miejscu dawnych figur i robią krótki gest w chwili rzutu owocem (Siła) i uderzenia w bęben (Bieżnia). Po każdej przebudowie scenerii trzeba ich postawić ponownie jednym poleceniem (`python -B swiat/npc_gra/zbuduj.py --trenerzy`).\n\n**Co nie pasuje (do poprawki albo decyzji):**\n- Bieżnia: tabliczka z imieniem trenerki wchodzi pod panel rundy.\n- Runy: trenerka stoi poza kadrem gry, a kula maga wisi nad jej księgą i z bliska nachodzi na tabliczkę.\n- Siła: prawa strefa ciosu wypada na tle twarzy trenera.\n\n**Niesprawdzone:** prawdziwy telefon, dotyk i pad; dwóch graczy naraz; czy gest trenera gra przy każdym rzucie (rundy przeszły bez błędów, ale samego gestu nikt nie obserwował). Starsze zrzuty pakietu (01–79) pokazują jeszcze arenę w murach.\n\n**Do oceny (`swiat/trening_proba/PROJEKT.md`):** dobór scenerii (np. Bieżnia na Bagnie zamiast leśnej ścieżki), wejście prosto do gry bez lobby albo mały obóz treningowy, liczba części.\n\nPliki: `swiat/trening_proba/` (`scenerie.py`, `README.md`, zrzuty `klatki/s1`–`s14`).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-19T11:07:27+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/TreningProba",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytanie 64"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/trening_proba/PROJEKT.md",
+   "etykieta": "Wybory do oceny"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}
