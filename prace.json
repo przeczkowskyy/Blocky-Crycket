@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-19T08:43:07+01:00",
+ "aktualizacja": "2026-11-19T08:43:09+01:00",
  "prace": [
   {
    "id": "minigry-scenerie",
@@ -29,19 +29,6 @@
     "swiat/npc_gra/**",
     "swiat/miasteczko_bazar_gra/**",
     "studio:NpcGra"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "przebudowa-npc_trener_szczescie",
-   "tytul": "Przebudowa modelu npc_trener_szczescie",
-   "stan": "w_toku",
-   "start": "2026-11-19T08:41:04+01:00",
-   "koniec_szacowany": "2026-11-19T09:01:04+01:00",
-   "aktualizacja": "2026-11-19T08:41:04+01:00",
-   "obszary": [
-    "model:npc_trener_szczescie"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
