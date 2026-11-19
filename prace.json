@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-19T22:28:15+01:00",
+ "aktualizacja": "2026-11-19T23:35:54+01:00",
  "prace": [
   {
    "id": "bonk-noc",
    "tytul": "BONK: prototyp prostej gry w nocy (D-112)",
    "stan": "w_toku",
+   "etap": "etap 2: jajka i pety, palki, Straznicy, tablice",
    "start": "2026-11-19T22:28:15+01:00",
-   "koniec_szacowany": "2026-11-20T07:30:00+01:00",
-   "aktualizacja": "2026-11-19T22:28:15+01:00",
+   "koniec_szacowany": "2026-11-20T05:00:00+01:00",
+   "aktualizacja": "2026-11-19T23:35:54+01:00",
    "obszary": [
     "swiat/bonk/**",
     "studio:BonkGra"
