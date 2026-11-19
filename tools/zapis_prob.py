@@ -11,6 +11,8 @@ SesjaPlay ze swiat/test_walki2 i swiat/przejscie_gry/regresja_calosci.py) przech
   • po Stop: znacznik zdjęty (razem z ZapisProbaMagazyn i ZapisProbaBledy).
 Kontener jest, a znacznika nie da się ustawić → Play NIE startuje (wyjątek). Brak kontenera → bez znacznika (bez
 kontenera nie ma zapisu).
+Ten sam znacznik (i zdjęcie po Stop) dostają też kontenery z KONTENERY_DODATKOWE — dziś Workspace/BonkGra (gra BONK,
+swiat/bonk, własny magazyn BONK_Gracz_v1): serwer BONK przy znaczniku nie otwiera magazynu (gracz w pamięci).
 
 Wyjątek od reguły: próba zapisu (swiat/stan_gracza/testy/proba_zapisu.py) przed Play ustawia też ZapisProbaMagazyn = true
 (funkcja kod_magazynu) — serwer pracuje wtedy na osobnym magazynie próby (…_Studio_Proba), nigdy na prawdziwym.
@@ -26,6 +28,7 @@ import sys
 import time
 
 KONTENER = "StanGracza"
+KONTENERY_DODATKOWE = ("BonkGra",)  # inne kontenery z własnym zapisem: ten sam znacznik próby (19.11.2026, BONK)
 ATR_DO = "ZapisProbaDo"
 ATR_MAGAZYNU = "ZapisProbaMagazyn"
 ATR_BLEDOW = "ZapisProbaBledy"
@@ -35,27 +38,38 @@ PONOW_KONIEC = 12  # prób zdjęcia znacznika po Stop (Studio wraca do Edit kilk
 _KONTENER_LUAU = ('local k = workspace:FindFirstChild("%s") '
                   'if not k or k:GetAttribute("Wygenerowane") ~= true then return "BRAK" end ' % KONTENER)
 
+_WSZYSTKIE = "{ %s }" % ", ".join('"%s"' % n for n in (KONTENER,) + KONTENERY_DODATKOWE)
+
 LUAU_START = ('if game:GetService("RunService"):IsRunning() then return "STOP: Studio jest w trybie Play" end '
-              + _KONTENER_LUAU +
-              'local d = os.time() + %d k:SetAttribute("%s", d) '
-              'if k:GetAttribute("%s") ~= d then return "STOP: znacznik próby się nie ustawił" end '
-              'return "OK " .. tostring(d)' % (CZAS_S, ATR_DO, ATR_DO))
+              'local d = os.time() + %d local ile = 0 '
+              'for _, n in %s do local k = workspace:FindFirstChild(n) '
+              'if k and k:GetAttribute("Wygenerowane") == true then k:SetAttribute("%s", d) '
+              'if k:GetAttribute("%s") ~= d then return "STOP: znacznik próby się nie ustawił (" .. n .. ")" end '
+              'ile += 1 end end '
+              'if ile == 0 then return "BRAK" end '
+              'return "OK " .. tostring(d)' % (CZAS_S, _WSZYSTKIE, ATR_DO, ATR_DO))
 
-LUAU_KONIEC = (_KONTENER_LUAU +
-               'for _, a in { "%s", "%s", "%s" } do k:SetAttribute(a, nil) end return "OK"' % (ATR_DO, ATR_MAGAZYNU, ATR_BLEDOW))
+LUAU_KONIEC = ('local ile = 0 '
+               'for _, n in %s do local k = workspace:FindFirstChild(n) '
+               'if k and k:GetAttribute("Wygenerowane") == true then '
+               'for _, a in { "%s", "%s", "%s" } do k:SetAttribute(a, nil) end ile += 1 end end '
+               'if ile == 0 then return "BRAK" end return "OK"' % (_WSZYSTKIE, ATR_DO, ATR_MAGAZYNU, ATR_BLEDOW))
 
-LUAU_STAN = (_KONTENER_LUAU +
-             'local d = k:GetAttribute("%s") '
-             'return string.format("znacznik %%s (zostało %%s s), magazyn próby %%s, błędy %%s, ZapisPostepu %%s", '
+LUAU_STAN = ('local w = {} for _, n in %s do local k = workspace:FindFirstChild(n) '
+             'if k and k:GetAttribute("Wygenerowane") == true then local d = k:GetAttribute("%s") '
+             'table.insert(w, string.format("%%s: znacznik %%s (zostało %%s s), magazyn próby %%s, błędy %%s, ZapisPostepu %%s", n, '
              'tostring(d), if type(d) == "number" then tostring(d - os.time()) else "-", '
-             'tostring(k:GetAttribute("%s")), tostring(k:GetAttribute("%s")), tostring(k:GetAttribute("ZapisPostepu")))'
-             % (ATR_DO, ATR_MAGAZYNU, ATR_BLEDOW))
+             'tostring(k:GetAttribute("%s")), tostring(k:GetAttribute("%s")), tostring(k:GetAttribute("ZapisPostepu")))) end end '
+             'if #w == 0 then return "BRAK" end return table.concat(w, "; ")'
+             % (_WSZYSTKIE, ATR_DO, ATR_MAGAZYNU, ATR_BLEDOW))
 
 
-# po starcie Play (serwer): stan zapisu, jaki wybrał serwer stanu gracza — do dziennika próby
-LUAU_PO_STARCIE = ('local k = workspace:FindFirstChild("%s") local z = k and k:GetAttribute("ZapisStan") '
-                   'return if z == nil then "" else tostring(z) .. " | magazyn " .. tostring(k:GetAttribute("ZapisMagazyn"))'
-                   % KONTENER)
+# po starcie Play (serwer): stan zapisu, jaki wybrały serwery z zapisem (stan gracza, BONK) — do dziennika próby
+LUAU_PO_STARCIE = ('local w = {} for _, n in %s do local k = workspace:FindFirstChild(n) '
+                   'local z = k and k:GetAttribute("ZapisStan") '
+                   'if z ~= nil then table.insert(w, (if n == "%s" then "" else n .. ": ") .. tostring(z) .. " | magazyn " '
+                   '.. tostring(k:GetAttribute("ZapisMagazyn"))) end end '
+                   'return table.concat(w, "; ")' % (_WSZYSTKIE, KONTENER))
 
 
 def sprawdz_po_starcie(wywolaj, sid, prob=20, czekaj=0.5):
@@ -74,11 +88,12 @@ def sprawdz_po_starcie(wywolaj, sid, prob=20, czekaj=0.5):
     return None
 
 
-def kod_magazynu(bledy=None):
-    """Luau (Edit) dla próby zapisu: ZapisProbaMagazyn = true i atrapa błędów (ile kolejnych wywołań usługi pada)."""
+def kod_magazynu(bledy=None, kontener=KONTENER):
+    """Luau (Edit) dla próby zapisu: ZapisProbaMagazyn = true i atrapa błędów (ile kolejnych wywołań usługi pada).
+    kontener = "BonkGra" → próba zapisu BONK (osobny magazyn …_Studio_Proba)."""
     b = "nil" if bledy is None else str(int(bledy))
-    return (_KONTENER_LUAU + 'k:SetAttribute("%s", true) k:SetAttribute("%s", %s) return "OK"'
-            % (ATR_MAGAZYNU, ATR_BLEDOW, b))
+    return (_KONTENER_LUAU.replace('"%s"' % KONTENER, '"%s"' % kontener)
+            + 'k:SetAttribute("%s", true) k:SetAttribute("%s", %s) return "OK"' % (ATR_MAGAZYNU, ATR_BLEDOW, b))
 
 
 def _luau(wywolaj, kod, sid, timeout=60):
