@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-19 · Claude Code u Karola (Strażnicy Bagna i Dżungli −15% życia — w grze)
+- **D-111 wdrożona** (`swiat/bagno_pas_gra/przeciwnicy.py`, `swiat/dzungla_pas_gra/przeciwnicy.py`): Strażnik Topieli 2528 → 2149 życia na swoim poziomie, Wąż Stu Lian 2852 → 2424; inne cechy i inne potwory bez zmian, Strażnik Gaju bez zmian. Próby Bagna i Dżungli w Studio (13:47–14:03) i walka 111 z 111 bez błędów; silnik zgodny z portem (592 walki kontrolne).
+- **Symulacja przejścia po zmianie:** sam bohater na poziomie Strażnika wygrywa 24–30% walk z Topielą (było 12–20%) i 30–35% z Wężem (było 19–28%); przy samych walkach utyka 3–4% graczy (było 11–12%), niecierpliwy 16–18% (było 37–41%); koniec gry 72 minuty zamiast 75.
+- **Uwaga do liczby z decyzji:** poranny wariant „−15%” w symulacji odejmował mniej życia (ok. 9–12%), stąd zapowiadane „ok. 6% utyka”. W grze jest równe −15%, zgodnie ze słowami Karola, więc wyszło trochę łatwiej (3–4%).
+- Druga część pytania 70 (doświadczenie z potworów Dżungli +25%) zostaje otwarta. Notatki: [[Zadania]].
+
 ## 2026-11-19 · Claude Code u Karola (decyzje Karola: zapis postępu, Strażnicy −15%)
 - **Karol, ok. 13:30 na czacie:** „Tak. Daj zapis postępu. Nie wiem czy 30% to nie za dużo. Gracz słusznie ma się pomęczyć. Może jakieś 15%?” Zapisane jako **D-110** (zapis postępu włączony; rozstrzyga pytanie 60) i **D-111** (Strażnik Topieli i Wąż Stu Lian −15% życia; rozstrzyga pierwszą część pytania 70). Obie mają podpis Karola i czekają na Pawła.
 - Sprawdzone przed startem: Studio ma dostęp do usług danych gry (odczyt z magazynu działa w trybie Edit), więc zapis da się włączyć bez zmiany ustawień gry. Zapis ze Studio idzie do osobnego magazynu.
