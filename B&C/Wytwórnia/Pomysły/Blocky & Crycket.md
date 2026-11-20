@@ -13,6 +13,7 @@ d7:
 sesja_min: 
 ccu: 
 miejsce: 129485428021967
+aliases: [B&C, Blocky&Crycket]
 tags: [wytwórnia, pomysł, bc]
 ---
 # Blocky & Crycket

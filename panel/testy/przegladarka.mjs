@@ -6,7 +6,7 @@
 // Klucze (lokalny, zatwierdzania — plik klucz_gd.txt) czyta z plików danych lokalnych serwera testowego i nigdzie
 // ich nie wypisuje. Strona: zmienna BC_TEST_STRONA (domyślnie „/”).
 // Scenariusze:
-//   N. nawigacja: Pulpit, Pytania, Sesja, Podgląd, Agent, Sieć, Assety, Analityka, Ustawienia; na dole telefonu
+//   N. nawigacja: Pulpit, Pytania, Wytwórnia, Sesja, Podgląd, Agent, Sieć, Assety, Analityka, Ustawienia; na dole telefonu
 //      Pulpit, Pytania, Sesja, Podgląd, Więcej;
 //   R. stare adresy #/decyzje, #/plan?zakladka=…, #/raporty i #/raporty/<id> prowadzą do zakładki Pytania
 //      (właściwa część, karta albo pełny raport); plakietka liczy listę „Do odpowiedzi”;
@@ -155,7 +155,7 @@ try {
 
   // ------------------------------------------------------------ N: nazwy w nawigacji
   const nawBok = await js(`[...document.querySelectorAll('.nav-bok .nav-link .nav-tekst')].map(e => e.textContent).join(',')`);
-  sprawdz("N: nawigacja boczna", nawBok === "Pulpit,Pytania,Sesja,Podgląd,Agent,Sieć,Assety,Analityka,Ustawienia", nawBok);
+  sprawdz("N: nawigacja boczna", nawBok === "Pulpit,Pytania,Wytwórnia,Sesja,Podgląd,Agent,Sieć,Assety,Analityka,Ustawienia", nawBok);
   const nawDol = await js(`[...document.querySelectorAll('.nav-dol .nav-link .nav-tekst')].map(e => e.textContent).join(',')`);
   sprawdz("N: dolny pasek telefonu", nawDol === "Pulpit,Pytania,Sesja,Podgląd,Więcej", nawDol);
 

@@ -1,13 +1,15 @@
 // Pulpit: najważniejsze na jednym ekranie, od góry: Czeka na Ciebie (liczba i trzy pierwsze sprawy), Rozmowa
 // (zakładka Sesja: kto jest, czy agent słucha), Co nowego (raporty, decyzje, wpisy ludzi), Synchronizacja (stan stałej
-// synchronizacji z GitHubem, Pobierz / Wyślij z podglądem zmian sejfu), a niżej reszta: Teraz (zadania), Kto pracuje,
-// Napisz do agenta, Ostatnia migawka.
+// synchronizacji z GitHubem, Pobierz / Wyślij z podglądem zmian sejfu), Gry (portfel z Wytwórni: gry w prototypie,
+// testach i publiczne z metrykami i „Pulpit gry”), a niżej reszta: Teraz (zadania), Kto pracuje, Napisz do agenta,
+// Ostatnia migawka.
 
 import { el, dopisz, zamien, ikona, czasTemu, dataKrotka, toast, arkusz, awatar, karta, pusty, stanBledu, ladowanie, odmiana, skroc } from "../wspolne/ui.js";
 import { mdLinia } from "../wspolne/markdown.js";
 import { zbudujKolejke } from "../wspolne/kolejka.js";
 import { pobierzPrace, ostatniePrace, napisKonca, etapPracy, postep as postepPracy, kluczPozycji, inni as praceInnych,
   zMain, kolizjeMojej, kolizjeCudzej, tekstKolizji, dopelniacz, miniaturaPracy } from "../wspolne/prace.js";
+import { kartaGry } from "../wspolne/wytwornia.js";
 
 const enc = encodeURIComponent;
 
@@ -80,6 +82,10 @@ export default {
     const kKto = karta("Kto pracuje", "zespol", { klasa: "karta-kto" });
     const kAgent = karta("Napisz do agenta", "agent", { klasa: "karta-agent" });
     const kMigawka = karta("Ostatnia migawka", "migawka", { klasa: "karta-migawka" });
+    // Portfel gier z Wytwórni (bc/wytwornia.py): gry na etapie prototyp / test / publiczna z metrykami i przyciskiem
+    // „Pulpit gry”; stary serwer bez Wytwórni — karta ukryta.
+    const kGry = karta("Gry", "rakieta", { klasa: "karta-gry" });
+    kGry.el.hidden = true;
 
     for (const k of [kCzeka, kRozmowa, kNowe, kSync, kTeraz, kKto, kMigawka]) k.cialo.appendChild(ladowanie());
 
@@ -107,7 +113,7 @@ export default {
     }
 
     // Najważniejsze na górze (telefon: jedna kolumna w tej kolejności); niżej reszta w siatce.
-    const glowne = el("div", { class: "pulpit-glowne" }, kCzeka.el, kRozmowa.el, kNowe.el, kSync.el);
+    const glowne = el("div", { class: "pulpit-glowne" }, kCzeka.el, kRozmowa.el, kNowe.el, kSync.el, kGry.el);
     const reszta = el("div", { class: "pulpit-reszta" }, kTeraz.el, kKto.el, ctx.statyczny ? null : kAgent.el, kMigawka.el);
     const korzen = el("div", { class: "widok pulpit" }, gora, kPrace.el, glowne,
       el("h2", { class: "pulpit-naglowek" }, "Reszta"), reszta);
@@ -565,6 +571,22 @@ export default {
       });
     }
 
+    function rysujGry(d, blad) {
+      if (blad || !d || !Array.isArray(d.pomysly)) {
+        kGry.el.hidden = true;
+        return;
+      }
+      kGry.el.hidden = false;
+      const po = new Map(d.pomysly.map((p) => [p.id, p]));
+      const gry = (d.gry || []).map((id) => po.get(id)).filter(Boolean);
+      const n = d.pomysly.length;
+      kGry.akcje.replaceChildren(el("a", { class: "przycisk cichy maly", href: "#/wytwornia" }, el("span", null, "Wytwórnia"), ikona("prawo")));
+      kGry.cialo.replaceChildren(
+        gry.length ? el("div", { class: "wyt-gry" }, gry.map((p) => kartaGry(p, { zwarta: true })))
+          : el("p", { class: "cichy-tekst" }, "Żadna gra nie jest jeszcze na etapie prototypu, testu ani publicznym."),
+        el("p", { class: "cichy-tekst" }, "W Wytwórni: " + n + " " + odmiana(n, ["pomysł", "pomysły", "pomysłów"]) + " (lejek, oceny, radar trendów)."));
+    }
+
     function rysujMigawke(d, blad) {
       const c = kMigawka.cialo;
       if (blad) return c.replaceChildren(stanBledu(blad, "Podgląd"));
@@ -588,9 +610,10 @@ export default {
     const bierz = (sciezka, modul) => (ctx.jest(modul) ? ctx.api(sciezka) : Promise.reject(Object.assign(new Error("moduł wyłączony"), { status: 404 })));
 
     async function odswiez() {
-      const [plan, rap, ob, git, pod, ag] = await Promise.allSettled([
+      const [plan, rap, ob, git, pod, ag, wyt] = await Promise.allSettled([
         bierz("/api/sejf/plan", "sejf"), bierz("/api/raporty", "raporty"), bierz("/api/obecnosc", "obecnosc"),
         bierz("/api/git/stan", "gitsync"), bierz("/api/podglad", "podglad"), bierz("/api/sesje/agenda", "sesje"),
+        bierz("/api/wytwornia", "wytwornia"),
       ]);
       const sygn = (r) => (r.status === "fulfilled" ? JSON.stringify(r.value) : "!" + (r.reason && r.reason.message));
       const rysuj = (klucz, s, fn) => {
@@ -624,6 +647,7 @@ export default {
       rysuj("teraz", sPlan, () => rysujTeraz(wart(plan), blad(plan)));
       rysuj("kto", sygn(ob), () => rysujKto(wart(ob), blad(ob)));
       rysuj("migawka", sygn(pod), () => rysujMigawke(wart(pod), blad(pod)));
+      rysuj("gry", sygn(wyt), () => rysujGry(wart(wyt), blad(wyt)));
     }
 
     window.addEventListener("bc:kto", () => {

@@ -11,6 +11,7 @@ import { pobierzPrace, godzina as godzinaPracy } from "./wspolne/prace.js";
 const WIDOKI = [
   { id: "pulpit", tytul: "Pulpit", ikona: "pulpit", kolejnosc: 10 },
   { id: "pytania", tytul: "Pytania", ikona: "pytanie", kolejnosc: 20 },
+  { id: "wytwornia", tytul: "Wytwórnia", ikona: "zarowka", kolejnosc: 25 },
   { id: "sesja", tytul: "Sesja", ikona: "mikrofon", kolejnosc: 30 },
   { id: "podglad", tytul: "Podgląd", ikona: "podglad", kolejnosc: 40 },
   { id: "agent", tytul: "Agent", ikona: "agent", kolejnosc: 50 },
@@ -20,7 +21,7 @@ const WIDOKI = [
   { id: "ustawienia", tytul: "Ustawienia", ikona: "ustawienia", kolejnosc: 80 },
 ];
 const NA_DOLE = ["pulpit", "pytania", "sesja", "podglad"];
-const PARAMETRY_W_ADRESIE = ["raport", "notatka", "migawka", "grupa", "zakladka", "watek", "sekcja", "sprawa", "szukaj"];
+const PARAMETRY_W_ADRESIE = ["raport", "notatka", "migawka", "grupa", "zakladka", "watek", "sekcja", "sprawa", "szukaj", "pomysl", "gra"];
 // dawne zakładki Planu i sekcje zakładki Decyzje -> części zakładki Pytania (Plan albo historia „Odpowiedziane”)
 const SEKCJE_PLANU = { harmonogram: "roadmapa", zadania: "zadania", decyzje: "historia", pytania: "historia", dziennik: "dziennik" };
 const SEKCJE_DECYZJI = { zadania: "zadania", roadmapa: "roadmapa", dziennik: "dziennik", raporty: "historia", rejestr: "historia", pytania: "historia" };
