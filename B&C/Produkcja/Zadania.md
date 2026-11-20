@@ -7,7 +7,7 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
-- [ ] BONK (D-112): prototyp prostej gry w nocy 19/20.11 — rdzeń BONK z lotem potworów, monety i Moc, pałki, jajka i pety z Księgą, trzy krainy ze Strażnikami, pokazanie się (Moc nad głową, tablice, komunikaty), dzienny prezent, zapis, telefon i pad, ikona i miniatury; potem pomiar na prawdziwych graczach ([[BONK — projekt prototypu]]) · agent: Karol · #wysoki
+- [ ] BONK: zagrać we dwóch (Team Test), sprawdzić na prawdziwym telefonie i padzie, zdecydować o publikacji jako osobnej gry (pytanie 74, kroki w `swiat/bonk/README.md`) · Karol, Paweł · #wysoki
 - [ ] Ring Potworów — druga gra: decyzja o kolejności (pytanie 73, [[Ring Potworów — pomysł]]) · #średni
 - [ ] Zapis postępu (D-110), dalej: włączony i sprawdzony w Studio 19.11 (raport „Zapis postępu włączony: stan wraca po ponownym wejściu”); do zrobienia: pierwsze prawdziwe wejście Karola i Pawła według pięciu kroków z raportu, blokada sesji z dwóch okien Studio, pamięć poznanych gatunków w walce, przeniesienie zapisu do gry opublikowanej (osobna decyzja) · agent: Karol · #wysoki
 - [ ] Paweł, po włączeniu zapisu (D-110): wybór klasy ma czekać na wczytanie stanu i być jednorazowy; zakupy drzewka umiejętności zapisywać przez dane pakietu stanu gracza (lista z plikami w `swiat/stan_gracza/README.md`, rozdział „Zapis postępu”) · agent: Paweł · #wysoki
@@ -125,6 +125,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-20: BONK (D-112) — prototyp zbudowany w nocy w trzech etapach: rdzeń BONK z lotem, trzy krainy, pałki, jajka i 15 petów z Księgą, Strażnicy bici wspólnie, pokazanie się, dzienny prezent, zapis, telefon i pad, ikona i miniatury, demo wideo; próba w Studio 33/33 ([[BONK — projekt prototypu]])
 - [x] 2026-11-19: Zapis postępu włączony (D-110) i sprawdzony w Studio: po ponownym wejściu wraca poziom, Złoto, Gemy, punkty, przedmioty ze sklepu i kowala z ulepszeniami, pety, trening, Strażnicy, bramy i strój; próba zapisu 9 punktów w porządku na osobnym magazynie; próby gry idą bez zapisu i nie dotykają zapisu ludzi; polecenie kasowania własnego zapisu
 - [x] 2026-11-19: Strażnik Topieli i Wąż Stu Lian mają 15% mniej życia (D-111; 2528 → 2149 i 2852 → 2424), w grze od 14:03; próby Bagna, Dżungli i walki bez błędów; w symulacji przy samych walkach utyka 3–4% graczy zamiast 11–12%, niecierpliwy 16–18% zamiast 37–41%
 - [x] 2026-11-19: Próba całej gry na stanie końcowym dnia (23 próby, 12:00–13:23; po walce bez przestojów, NPC, sceneriach mini-gier i sklepie): bez nowych błędów — jedyny błąd to znane za małe napisy w wyborze próby walki na ekranie telefonu (walka 44 z 46); symulacja przejścia na dzisiejszych liczbach bez zmian wniosków

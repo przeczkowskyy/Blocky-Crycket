@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-20 · Claude Code u Karola (BONK gotowy w całości)
+- **BONK (D-112), etap 3:** zamach ręką z pałką widoczny dla wszystkich, ruch petów i jajek, tupot Strażnika, napisy u góry w jednym stosie, pad, przyciski na telefon i tablet. Próba w Studio 33/33, testy 37 OK; obecna gra bez nowych błędów (próba dymna 14/14, zapis 10/10, bohater i stan gracza bez nowych błędów).
+- **Grafiki:** ikona „BONK!” i trzy miniatury z hasłami po angielsku (szkice z Higgsfield, 8 kredytów; napisy dodane u nas), w `swiat/bonk/grafika/`. Nic nie wgrane do Roblox. Krótkie demo wideo (ok. 43 s) dla Karola, poza repo.
+- **Do decyzji:** nowe pytanie 74 w [[Pytania otwarte]] — publikacja BONK jako osobnej gry do pomiaru. [[Zadania]]: prototyp odhaczony, nowa pozycja „zagrać we dwóch i zdecydować o publikacji”. Stan w [[BONK — projekt prototypu]]; `DOKUMENTACJA.md` — pakiet `swiat/bonk/` w strukturze repo.
+
 ## 2026-11-20 · Claude Code u Karola (BONK, etap 2 w nocy)
 - **BONK (D-112), etap 2:** pałki, jajka i pety z Księgą, Strażnicy bici wspólnie, Moc nad głową, korona, tablice, komunikaty serwera, dzienny prezent bez kary, zapis w wersji 2 z przeniesieniem postępu. Próba w Studio 27/27, testy bez Studio 34/34, 16,7 ms na klatkę. Jajka tylko za monety z gry, szanse jawne (D-086, D-015, D-105). Wszystkie liczby to propozycja.
 - Pakiet `swiat/bonk/`, raport w panelu z 8 zrzutami, stan w [[BONK — projekt prototypu]]. Szkice ikony i trzech miniatur z Higgsfield (8 kredytów) czekają na etap 3. Etap 3 w toku.

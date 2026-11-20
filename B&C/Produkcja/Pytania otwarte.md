@@ -658,3 +658,11 @@ Rozstrzyga: D-112
 Szczegóły: Opis, ocena wobec zasad z filmu i sześć poprawek agenta (przycisk dopingu w walce, rundy po ligach Mocy, nagroda dla każdego uczestnika, rytm rund, bez skojarzeń z walkami zwierząt i hazardem, Siła trenera bez utraty postępu): [[Ring Potworów — pomysł]]. Nocna budowa BONK tworzy wspólne klocki (jajka, pety, zapis, efekty, mapy), które Ring też wykorzysta.
 **Odpowiedź:**
 
+## 74. BONK: publikujemy jako osobną grę do pomiaru?
+- BONK zbudowany w nocy 19/20.11: trzy krainy, pałki, pety, Strażnicy; próba w Studio 33/33, ikona i trzy miniatury gotowe.
+- Publikacja to decyzja ludzi (D-112): nowe miejsce w grupie (D-044), kroki w `swiat/bonk/README.md`.
+- Do wyboru: (a) publikujemy po próbie we dwóch; (b) najpierw poprawki po waszym graniu, potem publikacja; (c) nie publikujemy, wracamy do B&C.
+
+Szczegóły: Cel pomiaru i progi z propozycji decyzji biznesowej (co najmniej 30% powrotów następnego dnia → reklama i aktualizacje co tydzień; 15–30% → poprawki rdzenia; poniżej 15% → inny rdzeń) w [[Diagnoza 2026-11-19 — prostota i szansa na hit]]. Opis gry i stan budowy: [[BONK — projekt prototypu]]. Raport w panelu ze zrzutami i planszą klatek demo.
+**Odpowiedź:**
+
