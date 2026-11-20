@@ -17,5 +17,12 @@ Co wiemy z własnych prób. Każdy wpis: data, gra, co się stało, wniosek, kto
 - Uczciwie: Karol grał sam w Studio (bez innych graczy) i nie jest graczem docelowym — samotna próba zaniża warstwę społeczną. Ale nawet z innymi graczami brak haka by został.
 - **Lekcja ogólna:** prostota i hak to nie przeciwieństwa. Prosta czynność musi prowadzić do **wyniku, którego nie znasz z góry** (losowanie, rzadki wariant, cel do trafienia, coś, co zrobi inny gracz). Każda nowa rzecz musi zmieniać to, co gracz robi lub widzi, a nie tylko liczbę.
 
+## 2026-11-20 · BONK porzucony (D-117) — co z niego zabieramy
+Karol: „To nie tak, że spędzony czas i tokeny na BONK-a i Blocky & Crycket były stracone.”
+- **Warsztat, który działa i zostaje:** samowystarczalny pakiet gry budowany skryptem w pustym miejscu (ok. 15 minut od zera do grywalnej wersji), liczby w jednym pliku, serwer liczy a klient rysuje (60 klatek na sekundę z tysiącami brył), testy logiki bez Studio i próba w Play ze zrzutami, zapis z ochroną prób, ikona i miniatury z Higgsfield z napisami dodanymi u nas, prywatna publikacja i zaproszenie testera, demo wideo ze skryptu.
+- **Zasoby, które przechodzą dalej:** 12 potworów, 15 petów, trzy jajka i scena wyklucia, Strażnicy, lot i komiksowe nokauty, Księga, okna na telefon i pad.
+- **Czego nie powtarzamy:** pętli „liczba rośnie” bez niewiadomej, nagród-mnożników, których nie widać, opcji zdominowanych, bossa bez zapowiedzi i mechaniki, budowy trzech etapów przed pierwszym graniem człowieka.
+- **Zmiana w sposobie pracy:** najpierw rdzeń do zagrania w kilka godzin, człowiek gra, dopiero potem warstwy.
+
 ## Powiązane
 - [[00 Wytwórnia pomysłów]] · [[BONK]] · [[Karta oceny pomysłu]]

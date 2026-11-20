@@ -7,10 +7,9 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
-- [ ] Wytwórnia (D-115): na sesji Karola i Pawła ocenić kartą BONK, Ring Potworów, B&C i nowe pomysły z badania 20.11; wybrać jeden do najtańszego testu ([[00 Wytwórnia pomysłów]]) · Karol, Paweł · #wysoki
+- [ ] Pet Arena (D-118): prototyp w budowie od 20.11 wieczór — etap 1 rdzeń (scena, rzut, walka, odrzut, RING OUT i KO, złoto za środek, dzikie pety), etap 2 jajka, kolekcja, trener, boss, tablice, zapis, demo; potem granie we dwóch i decyzja o prywatnej publikacji ([[Pet Arena — projekt prototypu]]) · agent: Karol · #wysoki
+- [ ] Paweł: ocenić kartą w panelu Pet Arenę i Super Kitty Brawlers (Karol ocenił Pet Arenę na 28/30) i potwierdzić albo zmienić D-116–D-118 · Paweł · #wysoki
 - [ ] Paweł: potwierdzić albo zmienić D-114 (prawo agenta do sprzeciwu) i D-115 (Wytwórnia pomysłów) · Paweł · #średni
-- [ ] BONK (D-113): zagrać we dwóch (Team Test), sprawdzić na prawdziwym telefonie i padzie — lista w `swiat/bonk/README.md`, krok 8 · Karol, Paweł · #wysoki
-- [ ] BONK (D-113): po próbie — przeniesienie gry do grupy (pytanie 31), ikona i miniatury w Creator Hub (`swiat/bonk/grafika/`), kwestionariusz dojrzałości, potem publiczne i pomiar powrotów · Karol, Paweł · #wysoki
 - [ ] Paweł: przełączyć repozytorium na prywatne w ustawieniach GitHub (D-044) — działanie właściciela, po zatwierdzeniu decyzji; wtedy lustro panelu na GitHub Pages odpada · #wysoki
 - [ ] Kroki założenia grupy Roblox, publikacji gry jako gry grupy i ponownego wgrania animacji — po odpowiedzi na pytanie 31 (D-044) · #średni
 
@@ -121,6 +120,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-20: Po sesji głównej — karty Pet Areny i Super Kitty Brawlers z oceną, krytyką i pre-mortem; opinia agenta o BONK; decyzje Karola: BONK porzucony (D-117), Pet Arena do budowy (D-118); zadania BONK (próba we dwóch, publikacja) zdjęte
 - [x] 2026-11-20: Porządki na polecenie Karola — zdjęte jako nieaktualne (wariant (a) z pytania 65 i kolejność Ringu): kolejność Ringu Potworów (zastąpiona oceną w Wytwórni, pytanie 75); odpowiedzi na pytania 50 i 51; mapa teleportacji z ramką i pinami (działa teleport przez chmury, D-075, D-076); odpowiedź na pytanie 52; zadania dla agenta osoby (D-072); walka v2 (zastąpił ją silnik v3); porównanie Krzywego Miasteczka Blender/Roblox (D-029); kolorystyka Krzywego Miasteczka (dziś bazar, D-084); demo Leśnej bazy z 12.11; pierwsze uruchomienie panelu u Pawła (pytanie 27); błędy starego prototypu `Workspace/TestWalki`
 - [x] 2026-11-20: Krytyczne myślenie (D-114) — 28 skilli `thinking-*` (MIT) w `.claude/skills/`, skill projektu `krytyczne-myslenie`, sekcja w `CLAUDE.md`; Wytwórnia pomysłów (D-115) — folder `B&C/Wytwórnia/` z zasadami hitu, kartą oceny, radarem trendów, lekcjami i notatkami gier (BONK, Ring Potworów, B&C), szablon „Pomysł gry”
 - [x] 2026-11-20: BONK — prywatna wersja testowa jako osobne doświadczenie „BONK!” (zbudowana `zbuduj.py --publikacja`, prywatna, wszystkie urządzenia), Paweł zaproszony jako tester; na koncie Karola, bo grupy nie było w wyborze ([[BONK — projekt prototypu]])

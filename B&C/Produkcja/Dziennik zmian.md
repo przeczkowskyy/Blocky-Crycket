@@ -6,6 +6,22 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-20 · Claude Code u Karola (po sesji: BONK porzucony, Pet Arena do budowy)
+- **Karol po sesji głównej, na czacie:** „OK, akceptuję te rzeczy… Porzucamy BONK, tak jak mówiłeś, ale wyciągamy z niego wiedzę… Robimy Pet Arenę.” [[Rejestr decyzji]]: D-116 i D-117 zatwierdzone podpisem Karola, nowa **D-118** (Pet Arena: budujemy prototyp) — wszystkie czekają na Pawła (D-043; Paweł na sesji miał wątpliwość co do pomysłu).
+- [[Pytania otwarte]]: odpowiedzi pod 75 (Pet Arena) i 76 (porzucamy BONK). [[Zadania]]: zadania BONK zdjęte, nowe zadanie Pet Arena, ocena kartą po stronie Pawła.
+- Wytwórnia: [[Pet Arena]] — etap prototyp, ocena agenta 28/30 po odpowiedzi Karola (złoto za środek, decyzje gracza, odrzut rosnący z ubytkiem życia), z dopiskami agenta (nagroda za głowę, tarcza słabszego, dwa pety na start); [[BONK]] porzucony, [[Ring Potworów]] wstrzymany jako rozwinięty w Pet Arenę; [[Lekcje z prototypów]] — co zabieramy z BONK. Nowa notatka projektu: [[Pet Arena — projekt prototypu]].
+- Budowa: nowe miejsce Roblox w pliku lokalnym, pakiet `swiat/pet_arena/`, agent na Opusie (sesja główna na Fable projektuje i sprawdza).
+
+## 2026-11-20 · Panel (ludzie)
+- Karol Balucki: ocena pomysłu Pet Arena (Karol): 28/30 ([[Pet Arena]])
+
+## 2026-11-20 · Claude Code (spisanie sesji głównej: Wytwórnia — nowe pomysły na gry)
+- **Sesja Karola i Pawła 18:52–19:08** o nowych pomysłach: pet-arena Karola i „Super Kitty Brawlers” Pawła. Zapis kompletny. Notatka ustaleń ze statusem propozycja: [[Sesja główna 2026-11-20 — zapis ustaleń]] (prywatny zapis rozmowy zostaje lokalnie, poza repozytorium).
+- [[Rejestr decyzji]]: dwie 💡 propozycje — D-116 (oba pomysły do lejka z kartą oceny), D-117 (BONK: porzucić — Karol sam zastrzegł, że to nie decyzja; w sprzeczności z D-112 i D-113). Niczego nie zatwierdzono.
+- [[Pytania otwarte]]: dopisek pod pytaniem 75 (wyboru do testu nie było); nowe pytanie 76 (BONK, rozstrzyga D-117). Żadnej odpowiedzi pod pytaniami nie dopisano — padła tylko prośba o ocenę kartą i opinię agenta. Pytanie 71 (do Pawła) nie padło.
+- [[Zadania]]: trzy zadania (karty pomysłów z oceną agenta, opinia o BONK, ocena Karola i Pawła w panelu). Bez przypisania do konkretnego agenta — nikt wprost nie wskazał, czyj Claude ma je zrobić.
+- [[Sesje główne]]: temat wytwórni przeniesiony do „Omówione”; do „Do omówienia” wróciły wybór pomysłu do testu oraz marketing i workflow do mózgu.
+
 ## 2026-11-20 · Claude Code u Karola (panel: poprawki Wytwórni, temat sesji)
 - **Karol (zrzuty):** „Popraw UI tej Wytwórni i dodaj w pozycji sesji wybór z listy, o jakim temacie sesja będzie”. Lejek i karta pomysłu: przyczyną była stara wersja widoku w karcie przeglądarki (zderzenie klasy CSS i „null” — poprawione w kodzie z 18:19); przy okazji Markdown w radarze, opisy kryteriów z prawdziwej [[Karta oceny pomysłu]], testy na kopiach prawdziwych notatek.
 - **Temat sesji** w zakładce Sesja (opis w [[Panel zespołu]]). 662 testy panelu OK; panel uruchomiony ponownie o 18:41 (nikt nie był wtedy w rozmowie). Link do panelu dla Pawła wysłany Karolowi.

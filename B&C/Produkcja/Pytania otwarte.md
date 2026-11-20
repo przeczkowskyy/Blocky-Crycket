@@ -699,5 +699,22 @@ Rozstrzyga: D-113
 - Do wyboru: jeden z pomysłów do testu albo inny — oceńcie kartą w panelu (Wytwórnia).
 
 Szczegóły: Notatki i oceny: [[00 Wytwórnia pomysłów]] (lejek, krytyka agenta, pre-mortem). Oceny agenta to szacunek, nie dane od graczy — spór rozstrzygnie test z ludźmi. Badanie rynku i zasady twórcy, którego ogląda Karol: [[Radar trendów]], [[Mózg — zasady hitu Roblox]].
+Dopisek z 2026-11-20 (sesja główna 18:59): Karol i Paweł przedstawili po jednym nowym pomyśle — pet-arenę Karola i „Super Kitty Brawlers” Pawła (propozycja D-116: karty do lejka). Karol: oba trzeba jeszcze ocenić kartą i krytyką agenta; wyboru do najtańszego testu nie było. Zapis: [[Sesja główna 2026-11-20 — zapis ustaleń]].
 **Odpowiedź:**
+- Karol (2026-11-20): do budowy idzie Pet Arena (pomysł z sesji 20.11; agent 27/30, Karol 28/30).
+Rozstrzyga: D-118
+
+
+
+## 76. BONK: porzucić czy dokończyć próbę i pomiar?
+- Karol na sesji 20.11 zaproponował porzucić BONK i budować nowe gry na jego zasobach, ale zastrzegł, że to nie jest ostateczna decyzja i czeka na opinię agenta.
+- D-113 (podpis Karola) mówi co innego: próba we dwóch, publikacja jako osobna gra i pomiar powrotów.
+- Do wyboru: (a) porzucamy, zasoby idą do nowych gier; (b) kończymy próbę i pomiar, potem decyzja według progów; (c) poprawiamy BONK (wariant Chain Reaction, 22/30) i traktujemy go jako jeden z testów obok nowych pomysłów.
+Rozstrzyga: D-117
+
+Szczegóły: Źródło: [[Sesja główna 2026-11-20 — zapis ustaleń]] (18:52 propozycja, 18:58 zastrzeżenie). Stan faktyczny: BONK ma prywatną wersję testową (D-113), w Wytwórni 19/30 z werdyktem „popraw” ([[BONK]]), a Karol po zagraniu napisał, że znudził mu się po paru minutach ([[Lekcje z prototypów]]). Uwaga agenta (D-114, nie z rozmowy): porzucenie bez pomiaru kłóci się z zasadą wytwórni „prawdziwi gracze rozstrzygają spory” ([[00 Wytwórnia pomysłów]]), a pomiar jest tani, bo gra już stoi; z drugiej strony czas jednej gry naraz jest ograniczony. Pełna opinia po krytycznym myśleniu jest zadaniem w [[Zadania]].
+**Odpowiedź:**
+- Karol (2026-11-20): (a) porzucamy BONK, zasoby i wiedza idą do Pet Areny — „to nie tak, że czas i tokeny były stracone”. Opinia agenta (zgodna): BONK nudzi nawet nas, naprawa i tak wymienia rdzeń, a pomiar słabej gry nie powie nic o rynku; prywatna wersja testowa zostaje.
+
+
 

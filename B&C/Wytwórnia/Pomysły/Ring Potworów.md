@@ -2,7 +2,7 @@
 status: propozycja
 typ: pomysł-gry
 gra: Ring Potworów
-etap: ocena
+etap: wstrzymana
 zdanie: "Hatch a monster, train it, throw it into the server ring and be the last one standing."
 ocena_agenta: 22
 werdykt_agenta: buduj
@@ -16,6 +16,9 @@ miejsce:
 tags: [wytwórnia, pomysł, ring]
 ---
 # Ring Potworów
+
+> [!note] Rozwinięty w [[Pet Arena]] (20.11.2026)
+> Arena bez kolejki, rzut w wybrane miejsce i złoto za środek zastąpiły rundy ringu. Ta notatka zostaje jako historia pomysłu.
 
 Pomysł Karola i Pawła z 19.11; pełny opis i sześć poprawek agenta: [[Ring Potworów — pomysł]]. Kolejność budowy: pytanie 73 w [[Pytania otwarte]].
 

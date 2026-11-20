@@ -2,7 +2,7 @@
 status: propozycja
 typ: pomysł-gry
 gra: BONK
-etap: test
+etap: porzucona
 zdanie: "Bonk monsters into the sky, hatch pets, get stronger, unlock bigger lands."
 ocena_agenta: 19
 werdykt_agenta: popraw
@@ -16,6 +16,9 @@ miejsce: 92789057272917
 tags: [wytwórnia, pomysł, bonk]
 ---
 # BONK
+
+> [!warning] Porzucony 20.11.2026 (D-117)
+> Nie rozwijamy i nie publikujemy. Prywatna wersja testowa zostaje. Zasoby i wiedza idą do [[Pet Arena]]: lot i nokauty, pety i jajka, Strażnicy jako bossowie, efekty, zapis, narzędzia budowy i prób. Co z niego wynieśliśmy: [[Lekcje z prototypów]].
 
 Prywatna wersja testowa od 20.11.2026 (D-113). Projekt i stan budowy: [[BONK — projekt prototypu]], kod: `swiat/bonk/`.
 

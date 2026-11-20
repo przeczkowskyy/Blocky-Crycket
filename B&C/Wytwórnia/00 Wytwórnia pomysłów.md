@@ -26,6 +26,7 @@ Gra Roblox, która **zarabia i ma realną szansę na viral**: prosta i logiczna 
 - **Wytwórnia ma skracać drogę do testu, a nie ją wydłużać** — narzędzia (panel, mózg) robimy tylko w takim zakresie, w jakim przyspieszają decyzję, co budować.
 
 ## Notatki
+- **W budowie od 20.11: [[Pet Arena]]** (D-118; agent 28/30, Karol 28/30) — projekt: [[Pet Arena — projekt prototypu]]. BONK porzucony (D-117), pomysł Pawła: [[Super Kitty Brawlers]] (21/30, do poprawy).
 - [[Mózg — zasady hitu Roblox]] — czego szukamy w grze (zasady z filmów twórców, rynku i naszych prób).
 - [[Karta oceny pomysłu]] — 10 kryteriów 0–3, progi.
 - [[Radar trendów]] — co rośnie, co się starzeje.

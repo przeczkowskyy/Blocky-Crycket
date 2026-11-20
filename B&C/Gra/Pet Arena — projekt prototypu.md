@@ -1,0 +1,82 @@
+---
+status: propozycja
+tags: [gra, pet-arena, prototyp, rdzeń]
+źródło: "D-118 — polecenie Karola z 20.11.2026 na czacie po sesji głównej; pomysł Karola z sesji 20.11; projekt agenta"
+---
+# Pet Arena — projekt prototypu
+
+> [!info] W skrócie
+> **Wrzucasz swojego peta do dołu-areny, trzymasz złoty środek i wybijasz innych.** Pet walczy sam, ale to gracz decyduje, gdzie go wrzucić i kiedy odpalić umiejętność. Złoto leci co sekundę — tym więcej, im bliżej środka. Za złoto jajka i lepsze pety. Osobna, samowystarczalna gra w pakiecie `swiat/pet_arena/`, we własnym miejscu Roblox. Wszystkie liczby to propozycja do pomiaru. Karta i krytyka: [[Pet Arena]].
+
+## Gra w jednym zdaniu
+*Throw your pet into the pit, hold the golden center, knock the others out.*
+
+## Scena
+Okrągły **dół**; gracze stoją dookoła na obrzeżu (trybuna) i patrzą w dół. W dole okrągła **platforma-arena** otoczona fosą. Na platformie trzy strefy: **złoty środek**, pierścień środkowy, pierścień zewnętrzny. Za plecami graczy stanowiska: jajka, mata treningowa, tablice. Styl jak nasze mapy z klocków, komiksowe efekty.
+
+## Pętla
+1. **THROW — gdzie.** Gracz wskazuje miejsce na arenie (telefon: stuknięcie w arenę, komputer: klik, pad: celownik i przycisk) — pet leci łukiem z jego ręki i tam ląduje. Bez kolejki, w dowolnej chwili; jeden pet gracza naraz, na arenie najwyżej 8 petów (gdy pełna — krótki napis, miejsce zwalnia się co chwilę).
+2. **Pet walczy sam:** idzie do środka i bije najbliższego w zasięgu. Cios to obrażenia i odrzut.
+3. **ABILITY — kiedy.** Pasek umiejętności ładuje się z czasem i od ciosów; gracz odpala ją jednym przyciskiem w wybranym momencie (budowanie napięcia: czekać, aż trzech stanie obok, aż rywal podejdzie do krawędzi).
+4. **Złoto na sekundę:** zewnętrzny pierścień ×1, środkowy ×2, złoty środek ×5 (mieści 1–2 pety) — razy stopień peta. Im dłużej pet się utrzyma i im bliżej środka, tym więcej złota. Liczba „+G/s” nad petem i u gracza.
+5. **Odrzut jak w bijatykach platformowych:** im mniej życia, tym dalej pet leci po ciosie; lekki leci dalej, ciężki bliżej, ale łatwiej go trafić. Trochę losowości: krytyki i mocniejsze wybicia — przyprawa, nie loteria.
+6. **Koniec peta:** **RING OUT** (wypchnięty za krawędź wpada do fosy, gejzer wystrzeliwuje go komicznie w niebo i pet wraca do właściciela) albo **KO** (życie 0 — gwiazdki i odlot). Bez kary: ten pet odpoczywa ok. minuty, w tym czasie można wrzucić innego — stąd sens posiadania kilku.
+7. **Nagroda za głowę:** pet w złotym środku nosi koronę i rosnącą nagrodę; kto go wybije, zgarnia ją. Środek zawsze ściąga ataki — silny nie stoi tam bezkarnie.
+8. **Dzikie pety** (boty) dopełniają arenę do 4–5, żeby zawsze była walka, także gdy gracz jest sam.
+9. **Wydarzenia serwera:** co ok. 3 minuty **BOSS** (wielki, zajmuje środek; wypchnięcie go to deszcz złota dla wszystkich, którzy trafili) i **GOLDEN PET** (złoty pet: każdy cios to monety), z zapowiedzią i odliczaniem.
+
+## Rozwój
+- **Jajka** przy arenie: trzy stopnie, stała cena, jawne szanse, tylko za złoto z gry (D-086, D-015, D-105). Pety w pięciu rzadkościach; rzadkość daje stopień (tier).
+- **Drużyna:** do 3 petów „w ręce” (wybór przyciskami), reszta w kolekcji; **Księga petów** z sylwetkami.
+- **Trener:** poziom gracza rośnie od czasu petów na arenie, wybić i treningu AFK na macie obok areny; daje procent życia i siły **wszystkim** petom — postęp nie przepada przy zmianie peta (pomysł Karola).
+- **Pokazanie się:** pet i jego rzadkość widoczne dla wszystkich, korona króla środka, komunikaty (legendarny pet, wybicie króla, boss), tablice: złoto na sekundę, najdłużej w środku, wybicia.
+
+## Uczciwość (propozycja agenta, wzór: ±2 stadia w Ant Evolution)
+Jedna arena na start. **Tarcza słabszego:** pet o co najmniej 2 stopnie silniejszy zadaje słabszemu ok. 35% obrażeń i odrzutu (ikona tarczy). Silny pet zarabia więcej złota na sekundę, ale nie wymiata nowych graczy. Docelowo osobne areny albo serwery według stopnia — po pomiarze.
+
+## Pety na start (propozycja, z istniejących modeli)
+Waga: lekki 0,7 / średni 1,0 / ciężki 1,5 (dzieli odrzut). Stopień = rzadkość 1–5.
+
+| Pet | Model | Rzadkość | Waga | Umiejętność |
+|---|---|---|---|---|
+| Slime | `lesny_slime` | Common | lekki | Bounce — odbija się rykoszetem między trzema najbliższymi |
+| Acornling | `zoledziak` | Common | lekki | Headbutt — krótka szarża z mocnym wybiciem |
+| Croaker | `rechotek` | Common | średni | Tongue — przyciąga wroga i przerzuca go za siebie |
+| Shroomling | `muchomornik` | Uncommon | lekki | Spore Cloud — ogłusza wszystkich wokół na 1,5 s |
+| Moss Snail | `mchowy_slimak` | Uncommon | ciężki | Shell — 3 s nie do ruszenia, ciosy odbijają napastników |
+| Leaf Fox | `lisciolis` | Uncommon | lekki | Dash — przelot przez arenę po linii |
+| Thorn Wolf | `cierniowy_wilk` | Rare | średni | Pounce — skok na króla środka |
+| Wisp | `ognik` | Rare | lekki | Burn — podpala w stożku (obrażenia w czasie) |
+| Dragonfly | `wazeczka` | Rare | lekki | Freeze — zamraża najbliższego na 2 s |
+| Forest Troll | `lesny_troll` | Epic | ciężki | Ground Slam — fala odrzutu wokół |
+| Ruin Armadillo | `pancernik_ruin` | Epic | ciężki | Roll — toczy się jak kula do kręgli przez całą arenę |
+| Hut Toad | `ropucha_z_chatka` | Legendary | ciężki | Sky Dive — wskakuje na ścianę dołu i spada na arenę z wielką falą |
+
+Bossowie: trzej Strażnicy z BONK (Grove Guardian, Mire Guardian, Vine Serpent).
+
+## Pierwsza minuta
+Gracz pojawia się na obrzeżu z dwoma petami startowymi; strzałka „Tap the arena to throw!”. Po 5 s jego pet już walczy, po 30–60 s pierwsze wybicie, w ciągu ok. 2 minut stać go na pierwsze jajko (pierwsze jajko może być darmowe jako krok samouczka). Cele do strojenia: pierwszy rzadki pet do 10 minut, pierwszy epicki ok. 30 minut.
+
+## Czego nie ma w pierwszej wersji
+Robuxów, handlu, krain, pałek, czatu głosowego. Koty i kot-policjant z pomysłu Pawła ([[Super Kitty Brawlers]]) — do rozważenia po teście rdzenia.
+
+## Technika
+- Pakiet `swiat/pet_arena/` na wzór `swiat/bonk/` (samowystarczalny: scena, wzorce petów, interfejs, dźwięki, zapis; nie importuje z BONK — kopiuje i przerabia). Własne miejsce Roblox (plik lokalny), kontener `Workspace/PetArenaGra`.
+- **Walkę liczy serwer w 2D** (pozycje, prędkości, odrzut z tarciem, krawędź) w stałym kroku, bez fizyki Roblox; klienci rysują modele z wygładzaniem, loty i efekty — tanio na telefonie i odporne na oszustwa. Od klienta tylko: „rzuć tu” i „umiejętność”.
+- Liczby w `ustawienia.json` → generator danych → moduł Luau; testy logiki bez Studio i próba w Play; interfejs po angielsku (D-045); telefon, komputer, pad.
+- Z BONK przechodzą: wzorce potworów i petów, jajka i wyklucie, Księga, efekty komiksowe i lot, zapis z ochroną prób, narzędzia budowy i prób, ikona i miniatury jako wzór.
+
+## Miary testu (granie we dwóch i z dziećmi znajomych)
+Czy po 10 minutach dalej wrzucają; czy mówią o tym, którego peta i gdzie wrzucić; czy czekają z umiejętnością na moment; ile razy się śmieją przy wybiciach; czy pytają „co wypadnie z jajka”.
+
+## Stan budowy
+- [ ] etap 1 — rdzeń: scena, rzut, walka, odrzut, RING OUT i KO, strefy złota, nagroda za głowę, dzikie pety, pierwsze pety z umiejętnościami, ekran.
+- [ ] etap 2 — jajka i kolekcja, drużyna, trener, boss i złoty pet, tarcza słabszego, tablice, zapis, pad, dopracowanie, demo.
+
+## Do ustalenia
+- Nazwa gry (robocza „Pet Arena”).
+- Czas odpoczynku peta (ok. minuty) i liczba petów na arenie (8) — po graniu.
+- Publikacja jako prywatna wersja testowa — decyzja ludzi.
+
+## Powiązane
+- [[Pet Arena]] · [[00 Wytwórnia pomysłów]] · [[Mózg — zasady hitu Roblox]] · [[Lekcje z prototypów]] · [[BONK — projekt prototypu]] · [[Rejestr decyzji]]
