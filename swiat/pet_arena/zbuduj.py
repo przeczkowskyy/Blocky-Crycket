@@ -35,7 +35,7 @@ sys.path.insert(0, TU)
 import dane as DN  # noqa: E402
 
 ZRODLA = os.path.join(TU, "zrodla")
-MODULY = ("LogikaPetArena", "EfektyPetArena", "InterfejsPetArena")      # obok wygenerowanego DanePetArena
+MODULY = ("LogikaPetArena", "EfektyPetArena", "InterfejsPetArena", "OknaPetArena")      # obok wygenerowanego DanePetArena
 SKRYPTY = (("SerwerPetArena", "SerwerPetArena.server.luau", "Server"), ("KlientPetArena", "KlientPetArena.client.luau", "Client"))
 ZDALNE = ("Akcja", "Zdarzenia")                               # RemoteEvent
 NIEPEWNE = ("Stan",)                                          # UnreliableRemoteEvent (migawki petów)
@@ -97,7 +97,7 @@ if not kont then
 end
 local zostaw = {}
 if __TYLKO_SKRYPTY__ then
-	zostaw = { Scena = true, Wzorce = true, Start = true }
+	zostaw = { Scena = true, Wzorce = true, Start = true, Stanowisko = true, Tablice = true }
 end
 for _, d in kont:GetChildren() do
 	if not zostaw[d.Name] then
@@ -294,9 +294,76 @@ if odmowa then
 	return odmowa
 end
 local sc = kont:FindFirstChild("Scena")
-local stare = kont:FindFirstChild("Start")
-if stare then
-	stare:Destroy()
+for _, n in { "Start", "Stanowisko", "Tablice" } do
+	local stare = kont:FindFirstChild(n)
+	if stare then
+		stare:Destroy()
+	end
+end
+local stan = Instance.new("Folder")
+stan.Name = "Stanowisko"
+stan.Parent = kont
+-- jajka z wzorców na cokołach stanowiska (zakotwiczone kopie)
+local wz = kont:FindFirstChild("Wzorce")
+for i, J in D.jajka do
+	local w = wz and wz:FindFirstChild(J.wzorzec)
+	if w then
+		local m = w:Clone()
+		m.Name = "Jajko" .. i
+		m:PivotTo(CFrame.new(J.poz[1], J.poz[2], J.poz[3]) * CFrame.Angles(0, math.rad(J.obrot), 0))
+		for _, d in m:GetDescendants() do
+			if d:IsA("BasePart") then
+				d.Anchored = true
+			end
+		end
+		m.Parent = stan
+	end
+end
+-- tablice wyników na ścianie dołu (wiersze uzupełnia serwer)
+local tab = Instance.new("Folder")
+tab.Name = "Tablice"
+tab.Parent = kont
+for _, T in D.tablice do
+	local cf = CFrame.lookAt(Vector3.new(T.poz[1], T.poz[2], T.poz[3]), Vector3.new(T.patrz[1], T.patrz[2], T.patrz[3]))
+	local m = Instance.new("Model")
+	m.Name = "Tablica" .. T.nr
+	local p = Instance.new("Part")
+	p.Name = "Tablica"
+	p.Anchored = true
+	p.CanCollide = false
+	p.CanTouch = false
+	p.Size = Vector3.new(T.szer, T.wys, 0.4)
+	p.CFrame = cf
+	p.Color = Color3.fromHex("1B1424")
+	p.Parent = m
+	local sg = Instance.new("SurfaceGui")
+	sg.Name = "Ekran"
+	sg.Face = Enum.NormalId.Front
+	sg.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	sg.PixelsPerStud = 30
+	sg.LightInfluence = 0
+	sg.Parent = p
+	local lista = Instance.new("UIListLayout")
+	lista.SortOrder = Enum.SortOrder.LayoutOrder
+	lista.Padding = UDim.new(0.01, 0)
+	lista.Parent = sg
+	local function linia(nazwa, tekst, wys, kolor, nr)
+		local l = Instance.new("TextLabel")
+		l.Name = nazwa
+		l.LayoutOrder = nr
+		l.BackgroundTransparency = 1
+		l.Size = UDim2.fromScale(1, wys)
+		l.Text = tekst
+		l.TextScaled = true
+		l.Font = if nr == 0 then Enum.Font.LuckiestGuy else Enum.Font.FredokaOne
+		l.TextColor3 = Color3.fromHex(kolor)
+		l.Parent = sg
+	end
+	linia("Tytul", T.tytul, 0.2, "FFC83D", 0)
+	for r = 1, T.wierszy do
+		linia("Rzad" .. r, "", 0.14, "FFF6E0", r)
+	end
+	m.Parent = tab
 end
 for _, N in D.napisy do
 	local cf = CFrame.lookAt(Vector3.new(N.poz[1], N.poz[2], N.poz[3]), Vector3.new(N.patrz[1], N.patrz[2], N.patrz[3]))
@@ -305,7 +372,7 @@ for _, N in D.napisy do
 	t.Anchored = true
 	t.CanCollide = false
 	t.CanTouch = false
-	t.Size = Vector3.new(11, 3, 0.4)
+	t.Size = Vector3.new(N.szer or 11, N.wys or 3, 0.4)
 	t.CFrame = cf
 	t.Color = Color3.fromHex("1B1424")
 	t.Material = Enum.Material.SmoothPlastic
@@ -317,7 +384,7 @@ for _, N in D.napisy do
 		s.CanCollide = false
 		s.CanTouch = false
 		s.Size = Vector3.new(0.5, 4.4, 0.5)
-		s.CFrame = cf * CFrame.new(sx, -2.6, 0)
+		s.CFrame = cf * CFrame.new(sx * (N.szer or 11) / 11, -(N.wys or 3) / 2 - 1.1, 0)
 		s.Color = Color3.fromHex("5E3A1A")
 		s.Material = Enum.Material.Wood
 		s.Parent = t.Parent
@@ -557,7 +624,10 @@ def oczekiwane_wzorce(U):
 
 def dane_otoczenia(U, D):
     S = U["scena"]
-    return {"napisy": DN.makiety_napisy(U), "strefy": DN.etykiety_stref(U), "start": D["sloty"][0]["poz"], "swiatlo": S["swiatlo"], "atmosfera": S["atmosfera"]}
+    st = DN.stanowisko_jajek(U)
+    jajka = [{"wzorzec": J["wzorzec"], "poz": [x, U["scena"]["obrzeze_y"] + 1.3, z], "obrot": 180 + U["scena"]["jajka_kat_st"]}
+             for J, (x, z) in zip(D["jajka"], st["cokoly"])]
+    return {"napisy": DN.makiety_napisy(U), "strefy": DN.etykiety_stref(U), "jajka": jajka, "tablice": D["tablice"], "start": D["sloty"][0]["poz"], "swiatlo": S["swiatlo"], "atmosfera": S["atmosfera"]}
 
 
 def plan(U, D, Z, scena):

@@ -1,11 +1,10 @@
 {
- "opis": "Pet Arena (D-118, etap 1 — rdzeń). Jedyne źródło liczb gry; dane.py robi z nich zrodla/DanePetArena.luau. Wszystkie liczby to propozycja do strojenia po graniu. Układ: środek areny w (0, 0, 0), wierzch areny y = 0, kierunki w poziomie x / z.",
+ "opis": "Pet Arena (D-118, etap 1 — rdzeń, etap 2 — jajka, wydarzenia, trener, zapis). Jedyne źródło liczb gry; dane.py robi z nich zrodla/DanePetArena.luau. Wszystkie liczby to propozycja do strojenia po graniu. Układ: środek areny w (0, 0, 0), wierzch areny y = 0, kierunki w poziomie x / z.",
  "kontener": "PetArenaGra",
  "prefiks": "[PetArena] ",
  "wylacznik": "PetArenaWlaczony",
  "folder_wzorcow_rs": "PetArenaWzorce",
  "limit_zrodla": 190000,
-
  "scena": {
   "opis": "okrągły dół: arena (platforma) r = arena_r, fosa do fosa_r (woda woda_y), ściana dołu do obrzeza_r[0], obrzeże-trybuna (wierzch obrzeze_y) do obrzeza_r[1], wyższe stopnie trybuny, drzewa dookoła. Strefy złota na arenie od środka. Sloty graczy na obrzeżu co 360/sloty stopni.",
   "arena_r": 24,
@@ -14,39 +13,90 @@
   "fosa_r": 32,
   "woda_y": -3,
   "dno_y": -8,
-  "obrzeze_r": [34, 48],
+  "obrzeze_r": [
+   34,
+   48
+  ],
   "obrzeze_y": 12,
   "segmenty": 48,
-  "trybuna": [[48, 54, 14], [54, 60, 16]],
+  "trybuna": [
+   [
+    48,
+    54,
+    14
+   ],
+   [
+    54,
+    60,
+    16
+   ]
+  ],
   "gejzery": 6,
   "gejzer_r": 28,
   "drzewa": 18,
-  "drzewa_r": [64, 78],
+  "drzewa_r": [
+   64,
+   78
+  ],
   "sloty": 8,
   "slot_r": 35.5,
-  "slot_przesuniecie_st": 25,
+  "slot_przesuniecie_st": 12,
   "jajka_r": 44,
   "jajka_kat_st": 0,
-  "mata_kat_st": 180,
-  "swiatlo": {"ClockTime": 14.5, "Brightness": 2.4, "Ambient": "6E6A78", "OutdoorAmbient": "9A94A8", "GlobalShadows": true, "EnvironmentDiffuseScale": 0.6, "EnvironmentSpecularScale": 0.3},
-  "atmosfera": {"Density": 0.22, "Offset": 0.1, "Color": "C8D8F0", "Decay": "9AA8C8", "Glare": 0.1, "Haze": 1.2}
+  "mata_kat_st": 9,
+  "swiatlo": {
+   "ClockTime": 14.5,
+   "Brightness": 2.4,
+   "Ambient": "6E6A78",
+   "OutdoorAmbient": "9A94A8",
+   "GlobalShadows": true,
+   "EnvironmentDiffuseScale": 0.6,
+   "EnvironmentSpecularScale": 0.3
+  },
+  "atmosfera": {
+   "Density": 0.22,
+   "Offset": 0.1,
+   "Color": "C8D8F0",
+   "Decay": "9AA8C8",
+   "Glare": 0.1,
+   "Haze": 1.2
+  },
+  "mata_r": 36.5
  },
-
  "strefy": [
-  {"id": "srodek", "nazwa": "GOLDEN CENTER", "r": 4.5, "mnoznik": 5, "kolor": "FFD84D"},
-  {"id": "pierscien2", "nazwa": "x2 RING", "r": 12, "mnoznik": 2, "kolor": "F2A35E"},
-  {"id": "pierscien1", "nazwa": "x1 RING", "r": 24, "mnoznik": 1, "kolor": "DCCB9E"}
+  {
+   "id": "srodek",
+   "nazwa": "GOLDEN CENTER",
+   "r": 5.5,
+   "mnoznik": 5,
+   "kolor": "FFD84D"
+  },
+  {
+   "id": "pierscien2",
+   "nazwa": "x2 RING",
+   "r": 13,
+   "mnoznik": 2,
+   "kolor": "F2A35E"
+  },
+  {
+   "id": "pierscien1",
+   "nazwa": "x1 RING",
+   "r": 24,
+   "mnoznik": 1,
+   "kolor": "DCCB9E"
+  }
  ],
-
  "kamera": {
-  "opis": "kamera stała (Scriptable) za slotem gracza: patrzy z wysokości pod kątem nachylenie_st na punkt cel_z studów od środka w stronę gracza, z odległości odleglosc; pole widzenia fov. Dobrane tak, by na telefonie 667 × 375 cała arena była w pasie 0,17–0,86 wysokości ekranu (sprawdza test).",
+  "opis": "kamera stała (Scriptable) za slotem gracza: patrzy z wysokości pod kątem nachylenie_st na punkt cel_z studów od środka w stronę gracza, z odległości odleglosc; pole widzenia fov. Etap 2: ciaśniej — na telefonie 667 × 375 cała arena w pasie 0,12–0,90 wysokości i 0,17–0,83 szerokości (sprawdza test na 4 ekranach), pet lekki ok. 78 pt.",
   "fov": 45,
-  "nachylenie_st": 45,
-  "odleglosc": 56,
-  "cel_z": 6,
-  "pas_ekranu": [0.15, 0.88]
+  "nachylenie_st": 40,
+  "odleglosc": 45,
+  "cel_z": 10,
+  "pas_ekranu": [
+   0.12,
+   0.9
+  ]
  },
-
  "walka": {
   "opis": "walka liczona na serwerze w 2D stałym krokiem krok_s. Odrzut: v0 = siła × (1 + wspolczynnik_odrzutu × ubytek życia) / waga (ubytek 0 przy pełnym życiu, 1 przy zerze), potem tarcie: v × (1 − tarcie × krok) co krok. Pet idzie do środka, a gdy wróg jest w zasieg_widzenia — do najbliższego; bije, gdy stoi w zasięgu (promienie + zasieg_ciosu). RING OUT: środek peta za arena_r; KO: życie 0. Wybicie zalicza się ostatniemu, kto trafił w ciągu ostatni_cios_s.",
   "krok_s": 0.05,
@@ -66,7 +116,6 @@
   "ladowanie_sila": 14,
   "stan_co_s": 0.066
  },
-
  "rzut": {
   "opis": "rzut z ręki gracza w wybrane miejsce areny: lot po łuku czas_s + na_stud × odległość, wysokość łuku. Serwer sprawdza: cel na arenie (≤ arena_r − margines), najwyżej limit_areny petów naraz, jeden pet gracza naraz, pet nie odpoczywa, wiadro tempa akcji.",
   "czas_s": 0.75,
@@ -77,14 +126,12 @@
   "wiadro_na_s": 3,
   "wiadro_zapas": 4
  },
-
  "zloto": {
   "opis": "co sekundę pet gracza na arenie daje baza × mnożnik strefy × stopień peta; premia za wybicie: premia_wybicia × stopień ofiary (dziki pet: premia_dzikiego × stopień).",
   "baza": 1,
   "premia_wybicia": 15,
   "premia_dzikiego": 10
  },
-
  "nagroda": {
   "opis": "król środka: pet najdłużej w złotym środku (co najmniej korona_po_s). Nosi koronę i nagrodę: start + na_s co sekundę; wybicie króla (RING OUT albo KO) daje nagrodę temu, kto zalicza wybicie. Pet poza środkiem dłużej niż zgubiona_po_s traci koronę i nagrodę.",
   "korona_po_s": 1.5,
@@ -92,80 +139,285 @@
   "na_s": 3,
   "zgubiona_po_s": 1.5
  },
-
  "umiejetnosc": {
   "opis": "pasek 0–1: ładuje się z czasem (na_s), za każdy zadany cios (za_cios) i przyjęty (za_trafienie); pełny — przycisk ABILITY. Pet ogłuszony albo zamrożony nie może jej użyć.",
   "na_s": 0.06,
   "za_cios": 0.06,
   "za_trafienie": 0.04
  },
-
- "odpoczynek_s": 60,
-
+ "odpoczynek_s": 30,
  "boty": {
   "opis": "dzikie pety dopełniają arenę do do_ilu petów (najwyżej maks), po jednym co co_s; stopnie losowane z wagi_stopni; umiejętność używają, gdy pełna i wróg w zasięgu, albo po czekaj_s; życie × zycie_x.",
   "do_ilu": 5,
   "maks": 5,
   "co_s": 2.2,
   "pierwszy_s": 1.0,
-  "wagi_stopni": [50, 30, 14, 5, 1],
-  "czekaj_s": [1.0, 4.0],
+  "wagi_stopni": [
+   50,
+   30,
+   14,
+   5,
+   1
+  ],
+  "czekaj_s": [
+   1.0,
+   4.0
+  ],
   "zycie_x": 0.9
  },
-
  "gracz": {
-  "opis": "dwa pety startowe; drużyna do 3 — trzeci slot w etapie 1 to pet próbny (losowy od Uncommon w górę, na czas wizyty), żeby ludzie mogli spróbować mocniejszych umiejętności przed jajkami z etapu 2. Profil w pamięci serwera (wersja do zapisu w etapie 2).",
-  "pety_startowe": ["lesny_slime", "zoledziak"],
-  "pet_probny": true,
+  "opis": "dwa pety startowe; drużyna do 3 (wybór w oknie PETS); pierwsze jajko darmowe (drugi krok samouczka). Profil w magazynie (zapis).",
+  "pety_startowe": [
+   "lesny_slime",
+   "zoledziak"
+  ],
+  "pet_probny": false,
   "druzyna_maks": 3,
-  "wersja_profilu": 1,
-  "kolory_slotow": ["FF5A5A", "4DA6FF", "6BD66B", "FFB13D", "C27BFF", "FF7FC8", "3DE0D0", "E0E05A"]
+  "wersja_profilu": 2,
+  "kolory_slotow": [
+   "FF5A5A",
+   "4DA6FF",
+   "6BD66B",
+   "FFB13D",
+   "C27BFF",
+   "FF7FC8",
+   "3DE0D0",
+   "E0E05A"
+  ]
  },
-
  "klasy_wagi": {
-  "opis": "waga dzieli odrzut; z niej i ze stopnia (rzadkość 1–5) generator liczy życie, siłę ciosu, odrzut ciosu, prędkość, przerwę między ciosami i wielkość modelu (wysokość w studach). Stopień: × (1 + na_stopien × (stopień − 1)).",
-  "lekki":  {"waga": 0.7, "zycie": 100, "obrazenia": 4.5, "odrzut": 12, "predkosc": 9.0, "przerwa_s": 0.85, "wysokosc": 5.0},
-  "sredni": {"waga": 1.0, "zycie": 120, "obrazenia": 5.2, "odrzut": 14, "predkosc": 7.5, "przerwa_s": 1.0, "wysokosc": 6.0},
-  "ciezki": {"waga": 1.5, "zycie": 150, "obrazenia": 6.0, "odrzut": 16, "predkosc": 6.0, "przerwa_s": 1.2, "wysokosc": 7.5},
-  "na_stopien": {"zycie": 0.2, "obrazenia": 0.15, "odrzut": 0.06},
-  "promien": [1.4, 3.0]
+  "opis": "waga dzieli odrzut; z niej i ze stopnia (rzadkość 1–5) generator liczy życie, siłę ciosu, odrzut ciosu, prędkość, przerwę między ciosami i wielkość modelu (wysokość w studach). Stopień: × (1 + na_stopien × (stopień − 1)). Etap 2: pety ok. 1,6 × większe (czytelność na telefonie: ≥ 70 pt), promień kolizji 0,5 × szerokość modelu w [1,8; 3,2].",
+  "lekki": {
+   "waga": 0.7,
+   "zycie": 100,
+   "obrazenia": 4.5,
+   "odrzut": 12,
+   "predkosc": 9.0,
+   "przerwa_s": 0.85,
+   "wysokosc": 8.8
+  },
+  "sredni": {
+   "waga": 1.0,
+   "zycie": 120,
+   "obrazenia": 5.2,
+   "odrzut": 14,
+   "predkosc": 7.5,
+   "przerwa_s": 1.0,
+   "wysokosc": 9.6
+  },
+  "ciezki": {
+   "waga": 1.5,
+   "zycie": 150,
+   "obrazenia": 6.0,
+   "odrzut": 16,
+   "predkosc": 6.0,
+   "przerwa_s": 1.2,
+   "wysokosc": 10.5
+  },
+  "na_stopien": {
+   "zycie": 0.2,
+   "obrazenia": 0.15,
+   "odrzut": 0.06
+  },
+  "promien": [
+   1.8,
+   3.2
+  ]
  },
-
  "rzadkosci": [
-  {"nazwa": "Common", "kolor": "B8C2CC"},
-  {"nazwa": "Uncommon", "kolor": "6BD66B"},
-  {"nazwa": "Rare", "kolor": "4FB3FF"},
-  {"nazwa": "Epic", "kolor": "C27BFF"},
-  {"nazwa": "Legendary", "kolor": "FFC23D"}
+  {
+   "nazwa": "Common",
+   "kolor": "B8C2CC"
+  },
+  {
+   "nazwa": "Uncommon",
+   "kolor": "6BD66B"
+  },
+  {
+   "nazwa": "Rare",
+   "kolor": "4FB3FF"
+  },
+  {
+   "nazwa": "Epic",
+   "kolor": "C27BFF"
+  },
+  {
+   "nazwa": "Legendary",
+   "kolor": "FFC23D"
+  }
  ],
-
  "pety": [
-  {"id": "lesny_slime", "nazwa": "Slime", "stopien": 1, "waga": "lekki",
-   "umiejetnosc": {"typ": "rykoszet", "nazwa": "BOUNCE", "celow": 3, "zasieg": 12, "sila": 18, "obrazenia": 8}},
-  {"id": "zoledziak", "nazwa": "Acornling", "stopien": 1, "waga": "lekki",
-   "umiejetnosc": {"typ": "szarza", "nazwa": "HEADBUTT", "dlugosc": 10, "predkosc": 45, "sila": 29, "obrazenia": 12, "przebija": false}},
-  {"id": "rechotek", "nazwa": "Croaker", "stopien": 1, "waga": "sredni",
-   "umiejetnosc": {"typ": "jezyk", "nazwa": "TONGUE", "zasieg": 13, "sila": 22, "obrazenia": 8}},
-  {"id": "muchomornik", "nazwa": "Shroomling", "stopien": 2, "waga": "lekki",
-   "umiejetnosc": {"typ": "ogluszenie", "nazwa": "SPORE CLOUD", "r": 7.5, "czas": 1.5, "obrazenia": 5}},
-  {"id": "mchowy_slimak", "nazwa": "Moss Snail", "stopien": 2, "waga": "ciezki",
-   "umiejetnosc": {"typ": "skorupa", "nazwa": "SHELL", "czas": 3, "sila": 19}},
-  {"id": "lisciolis", "nazwa": "Leaf Fox", "stopien": 2, "waga": "lekki",
-   "umiejetnosc": {"typ": "szarza", "nazwa": "DASH", "dlugosc": 22, "predkosc": 60, "sila": 19, "obrazenia": 9, "przebija": true}},
-  {"id": "cierniowy_wilk", "nazwa": "Thorn Wolf", "stopien": 3, "waga": "sredni",
-   "umiejetnosc": {"typ": "skok", "nazwa": "POUNCE", "cel": "krol", "czas": 0.7, "wysokosc": 8, "r": 4.5, "sila": 27, "obrazenia": 16}},
-  {"id": "ognik", "nazwa": "Wisp", "stopien": 3, "waga": "lekki",
-   "umiejetnosc": {"typ": "podpalenie", "nazwa": "BURN", "zasieg": 10, "kat_st": 80, "czas": 4, "na_s": 6, "sila": 10}},
-  {"id": "wazeczka", "nazwa": "Dragonfly", "stopien": 3, "waga": "lekki",
-   "umiejetnosc": {"typ": "zamrozenie", "nazwa": "FREEZE", "zasieg": 14, "czas": 2.2, "obrazenia": 6}},
-  {"id": "lesny_troll", "nazwa": "Forest Troll", "stopien": 4, "waga": "ciezki",
-   "umiejetnosc": {"typ": "fala", "nazwa": "GROUND SLAM", "r": 9, "sila": 26, "obrazenia": 12}},
-  {"id": "pancernik_ruin", "nazwa": "Ruin Armadillo", "stopien": 4, "waga": "ciezki",
-   "umiejetnosc": {"typ": "szarza", "nazwa": "ROLL", "dlugosc": 40, "predkosc": 42, "sila": 24, "obrazenia": 12, "przebija": true}},
-  {"id": "ropucha_z_chatka", "nazwa": "Hut Toad", "stopien": 5, "waga": "ciezki",
-   "umiejetnosc": {"typ": "skok", "nazwa": "SKY DIVE", "cel": "tlum", "czas": 1.6, "wysokosc": 30, "r": 11, "sila": 32, "obrazenia": 18}}
+  {
+   "id": "lesny_slime",
+   "nazwa": "Slime",
+   "stopien": 1,
+   "waga": "lekki",
+   "umiejetnosc": {
+    "typ": "rykoszet",
+    "nazwa": "BOUNCE",
+    "celow": 3,
+    "zasieg": 12,
+    "sila": 18,
+    "obrazenia": 8
+   }
+  },
+  {
+   "id": "zoledziak",
+   "nazwa": "Acornling",
+   "stopien": 1,
+   "waga": "lekki",
+   "umiejetnosc": {
+    "typ": "szarza",
+    "nazwa": "HEADBUTT",
+    "dlugosc": 10,
+    "predkosc": 45,
+    "sila": 29,
+    "obrazenia": 12,
+    "przebija": false
+   }
+  },
+  {
+   "id": "rechotek",
+   "nazwa": "Croaker",
+   "stopien": 1,
+   "waga": "sredni",
+   "umiejetnosc": {
+    "typ": "jezyk",
+    "nazwa": "TONGUE",
+    "zasieg": 13,
+    "sila": 22,
+    "obrazenia": 8
+   }
+  },
+  {
+   "id": "muchomornik",
+   "nazwa": "Shroomling",
+   "stopien": 2,
+   "waga": "lekki",
+   "umiejetnosc": {
+    "typ": "ogluszenie",
+    "nazwa": "SPORE CLOUD",
+    "r": 7.5,
+    "czas": 1.5,
+    "obrazenia": 5
+   }
+  },
+  {
+   "id": "mchowy_slimak",
+   "nazwa": "Moss Snail",
+   "stopien": 2,
+   "waga": "ciezki",
+   "umiejetnosc": {
+    "typ": "skorupa",
+    "nazwa": "SHELL",
+    "czas": 3,
+    "sila": 19
+   }
+  },
+  {
+   "id": "lisciolis",
+   "nazwa": "Leaf Fox",
+   "stopien": 2,
+   "waga": "lekki",
+   "umiejetnosc": {
+    "typ": "szarza",
+    "nazwa": "DASH",
+    "dlugosc": 22,
+    "predkosc": 60,
+    "sila": 19,
+    "obrazenia": 9,
+    "przebija": true
+   }
+  },
+  {
+   "id": "cierniowy_wilk",
+   "nazwa": "Thorn Wolf",
+   "stopien": 3,
+   "waga": "sredni",
+   "umiejetnosc": {
+    "typ": "skok",
+    "nazwa": "POUNCE",
+    "cel": "krol",
+    "czas": 0.7,
+    "wysokosc": 8,
+    "r": 4.5,
+    "sila": 27,
+    "obrazenia": 16
+   }
+  },
+  {
+   "id": "ognik",
+   "nazwa": "Wisp",
+   "stopien": 3,
+   "waga": "lekki",
+   "umiejetnosc": {
+    "typ": "podpalenie",
+    "nazwa": "BURN",
+    "zasieg": 10,
+    "kat_st": 80,
+    "czas": 4,
+    "na_s": 6,
+    "sila": 10
+   }
+  },
+  {
+   "id": "wazeczka",
+   "nazwa": "Dragonfly",
+   "stopien": 3,
+   "waga": "lekki",
+   "umiejetnosc": {
+    "typ": "zamrozenie",
+    "nazwa": "FREEZE",
+    "zasieg": 14,
+    "czas": 2.2,
+    "obrazenia": 6
+   }
+  },
+  {
+   "id": "lesny_troll",
+   "nazwa": "Forest Troll",
+   "stopien": 4,
+   "waga": "ciezki",
+   "umiejetnosc": {
+    "typ": "fala",
+    "nazwa": "GROUND SLAM",
+    "r": 9,
+    "sila": 26,
+    "obrazenia": 12
+   }
+  },
+  {
+   "id": "pancernik_ruin",
+   "nazwa": "Ruin Armadillo",
+   "stopien": 4,
+   "waga": "ciezki",
+   "umiejetnosc": {
+    "typ": "szarza",
+    "nazwa": "ROLL",
+    "dlugosc": 40,
+    "predkosc": 42,
+    "sila": 24,
+    "obrazenia": 12,
+    "przebija": true
+   }
+  },
+  {
+   "id": "ropucha_z_chatka",
+   "nazwa": "Hut Toad",
+   "stopien": 5,
+   "waga": "ciezki",
+   "umiejetnosc": {
+    "typ": "skok",
+    "nazwa": "SKY DIVE",
+    "cel": "tlum",
+    "czas": 1.6,
+    "wysokosc": 30,
+    "r": 11,
+    "sila": 32,
+    "obrazenia": 18
+   }
+  }
  ],
-
  "ui": {
   "opis": "teksty po angielsku (D-045); liczby jak w angielskim (1.2K).",
   "zloto": "GOLD",
@@ -190,15 +442,76 @@
   "dziki": "WILD",
   "ty": "YOU",
   "kryt": "CRIT!",
-  "slowa": ["POW!", "WHAM!", "BAM!", "BONK!", "SMACK!"],
+  "slowa": [
+   "POW!",
+   "WHAM!",
+   "BAM!",
+   "BONK!",
+   "SMACK!"
+  ],
   "plusk": "SPLASH!",
   "gracz_proby": "Player %d",
   "czcionka": "LuckiestGuy",
   "czcionka_cyfr": "FredokaOne",
-  "makiety": {"jajka": "EGGS — COMING SOON", "mata": "TRAINING MAT — SOON"},
-  "kolory": {"zloto": "FFC83D", "tusz": "1B1424", "papier": "FFF6E0", "przycisk": "FF4D4D", "przycisk_cien": "A3202A", "zycie": "5BE35B", "zycie_nisko": "FF4D4D", "pasek": "4FB3FF", "dziki": "9AA39A", "ty": "FFF35A"}
+  "makiety": {
+   "jajka": "EGGS — COMING SOON",
+   "mata": "TRAINING MAT — SOON"
+  },
+  "kolory": {
+   "zloto": "FFC83D",
+   "tusz": "1B1424",
+   "papier": "FFF6E0",
+   "przycisk": "FF4D4D",
+   "przycisk_cien": "A3202A",
+   "zycie": "5BE35B",
+   "zycie_nisko": "FF4D4D",
+   "pasek": "4FB3FF",
+   "dziki": "9AA39A",
+   "ty": "FFF35A",
+   "tarcza": "6FC8FF"
+  },
+  "jajka_przycisk": "EGGS",
+  "pety_przycisk": "PETS",
+  "trening": "TRAIN",
+  "trening_wl": "TRAINING",
+  "darmowe": "FREE",
+  "wyklij": "HATCH",
+  "nowy_pet": "NEW PET!",
+  "gwiazdka": "+1 STAR!",
+  "maks_gwiazdek": "MAX STARS! +%s G",
+  "za_malo": "NOT ENOUGH GOLD",
+  "podpowiedz_jajko": "Hatch your free egg!",
+  "druzyna": "TEAM",
+  "kolekcja": "COLLECTION",
+  "ksiega": "INDEX",
+  "ksiega_licznik": "INDEX %d/%d",
+  "w_druzynie": "IN TEAM",
+  "szanse": "CHANCES",
+  "zamknij": "X",
+  "poziom": "LV %d",
+  "boss_za": "BOSS IN %s",
+  "zloty_za": "GOLDEN PET IN %s",
+  "boss": "BOSS!",
+  "boss_pokonany": "BOSS DEFEATED! +%s G",
+  "boss_uciekl": "THE BOSS ESCAPED!",
+  "zloty": "GOLDEN PET!",
+  "zloty_uciekl": "THE GOLDEN PET ESCAPED!",
+  "ogl_legendarny": "%s hatched a %s %s!",
+  "ogl_krol": "%s took the king's bounty: %s G!",
+  "ogl_boss": "%s defeated! Gold for everyone who hit it!",
+  "tarcza": "SHIELD",
+  "wybierz_slot": "Pick a pet for slot %d",
+  "pad": {
+   "rzut": "A",
+   "umiejetnosc": "X",
+   "pety": "Y",
+   "jajka": "UP",
+   "zamknij": "B",
+   "druzyna": "LB RB",
+   "trening": "DOWN"
+  },
+  "boss_pokonany_bez": "BOSS DEFEATED!"
  },
-
  "dzwieki": {
   "opis": "odcinki arkusza efektów (ten sam arkusz co BONK: swiat/dzwiek_gra/identyfikatory.json, assets/audio/arkusz/sfx_arkusz_a.json); bez muzyki w etapie 1",
   "cios": "sfx_cios_trafiony",
@@ -209,6 +522,169 @@
   "umiejetnosc": "sfx_zarodniki",
   "krol": "sfx_fanfara_zwyciestwa",
   "ko": "sfx_awans_poziom",
-  "glosnosc": {"cios": 0.45, "kryt": 0.7, "monety": 0.4, "plusk": 0.6, "klik": 0.4, "umiejetnosc": 0.6, "krol": 0.5, "ko": 0.55}
+  "glosnosc": {
+   "cios": 0.45,
+   "kryt": 0.7,
+   "monety": 0.4,
+   "plusk": 0.6,
+   "klik": 0.4,
+   "umiejetnosc": 0.6,
+   "krol": 0.5,
+   "ko": 0.55,
+   "trzesienie": 0.5,
+   "wyklucie": 0.7,
+   "boss": 0.6,
+   "zakup": 0.6
+  },
+  "trzesienie": "sfx_zarodniki",
+  "wyklucie": "sfx_awans_poziom",
+  "boss": "sfx_ryk_kolos",
+  "zakup": "sfx_monety"
+ },
+ "odpoczynek_opis": "odpoczynek peta po RING OUT / KO: 30 s (decyzja projektanta etapu 2 na podstawie symulacji: przy 60 s gracz 40 % czasu nie ma kogo rzucić); Karol mówił o ok. minucie — do sprawdzenia graniem",
+ "gwiazdki": {
+  "opis": "kopia peta z jajka = gwiazdka (najwyżej maks); każda gwiazdka ponad pierwszą: + na_gwiazdke życia i siły (obrażenia i odrzut ciosu); kopia przy maks — zwrot ułamka ceny jajka w złocie",
+  "maks": 5,
+  "na_gwiazdke": 0.08,
+  "zwrot_przy_maks": 0.3
+ },
+ "jajka": [
+  {
+   "nazwa": "FOREST EGG",
+   "model": "jajko_lesne",
+   "cena": 360,
+   "szanse": [
+    0.58,
+    0.3,
+    0.11,
+    0.01,
+    0.0
+   ],
+   "kolor": "6BD66B"
+  },
+  {
+   "nazwa": "SWAMP EGG",
+   "model": "jajko_bagienne",
+   "cena": 2000,
+   "szanse": [
+    0.2,
+    0.42,
+    0.3,
+    0.075,
+    0.005
+   ],
+   "kolor": "4FB3FF"
+  },
+  {
+   "nazwa": "RUIN EGG",
+   "model": "jajko_dzungli",
+   "cena": 8000,
+   "szanse": [
+    0.0,
+    0.28,
+    0.42,
+    0.25,
+    0.05
+   ],
+   "kolor": "C27BFF"
+  }
+ ],
+ "jajka_opis": "trzy stopnie, stała cena, jawne szanse na rzadkość (pet losowany równo w rzadkości), tylko za złoto z gry (D-086, D-015, D-105); pierwsze jajko (stopień 1) darmowe w samouczku; tempo: tempo.py. Ceny i szanse z rachunku tempo.py: pierwsze kupione jajko ok. 2 min, pierwszy Rare do ok. 10 min, pierwszy Epic ok. 30 min (samotny gracz).",
+ "tarcza": {
+  "opis": "tarcza słabszego: pet o co najmniej roznica stopni silniejszy zadaje słabszemu mnoznik obrażeń i odrzutu (boss i złoty pet bez tarczy)",
+  "roznica": 2,
+  "mnoznik": 0.35
+ },
+ "trener": {
+  "opis": "poziom gracza z doświadczenia: za sekundę peta na arenie, za wybicie, za udział w bossie, za stanie na macie (TRAIN — awatar ćwiczy). Poziom n wymaga baza × n^wykladnik doświadczenia; każdy poziom ponad 1: + na_poziom życia i siły wszystkich petów.",
+  "baza": 60,
+  "wykladnik": 1.45,
+  "na_poziom": 0.03,
+  "za_s_na_arenie": 1,
+  "za_wybicie": 12,
+  "za_bossa": 40,
+  "mata_na_s": 0.6,
+  "maks_poziom": 50
+ },
+ "wydarzenia": {
+  "opis": "wydarzenia serwera na zmianę (boss, złoty pet) co co_s; pierwsze po pierwsze_s; zapowiedź z odliczaniem u góry przez zapowiedz_s",
+  "pierwsze_s": 90,
+  "co_s": 150,
+  "zapowiedz_s": 30,
+  "kolejnosc": [
+   "zloty",
+   "boss"
+  ]
+ },
+ "boss": {
+  "opis": "BOSS: Strażnik z BONK ląduje w środku; życie zycie + na_gracza × gracze; co fala_co_s fala odrzutu (r, sila, obrazenia); prawie nie do ruszenia (waga); po czas_s ucieka. Wybicie: pula złota dla każdego, kto trafił — udział w obrażeniach × pula, co najmniej minimum.",
+  "modele": [
+   {
+    "model": "straznik_topieli",
+    "nazwa": "MIRE GUARDIAN"
+   },
+   {
+    "model": "waz_stu_lian",
+    "nazwa": "VINE SERPENT"
+   }
+  ],
+  "wysokosc": 16,
+  "promien": 4.8,
+  "zycie": 1400,
+  "na_gracza": 500,
+  "waga": 8,
+  "fala_co_s": 3.2,
+  "fala_r": 10,
+  "fala_sila": 26,
+  "fala_obrazenia": 9,
+  "czas_s": 70,
+  "pula": 400,
+  "minimum": 80,
+  "stopien": 5
+ },
+ "zloty": {
+  "opis": "GOLDEN PET: złoty slime ucieka po arenie; każdy cios peta gracza = za_cios złota × stopień atakującego; wybicie = premia; po czas_s ucieka",
+  "model": "lesny_slime",
+  "nazwa": "GOLDEN PET",
+  "zycie": 260,
+  "predkosc": 10.5,
+  "waga": 0.8,
+  "za_cios": 6,
+  "premia": 150,
+  "czas_s": 45,
+  "kolor": "FFC83D"
+ },
+ "zapis": {
+  "opis": "własny magazyn (DataStore); w próbie (znacznik ZapisProbaDo z tools/zapis_prob.py) magazyn nieczytany — gracz w pamięci; bez udanego wczytania nie zapisujemy; zapis przy wyjściu i co co_s",
+  "magazyn": "PetArena_Gracz_v1",
+  "przyrostek_studio": "_Studio",
+  "przyrostek_proby": "_Proba",
+  "znacznik_proby": "ZapisProbaDo",
+  "znacznik_magazynu": "ZapisProbaMagazyn",
+  "proby": 3,
+  "co_s": 60
+ },
+ "tablice": {
+  "opis": "trzy tablice na ścianie dołu (widać je z każdego miejsca na przeciwległej ścianie); wiersze uzupełnia serwer co co_s",
+  "tytuly": [
+   "TOP GOLD/S",
+   "LONGEST KING",
+   "KNOCKOUTS"
+  ],
+  "katy_st": [
+   150,
+   270,
+   30
+  ],
+  "wierszy": 5,
+  "co_s": 2,
+  "szer": 13,
+  "wys": 8.5,
+  "r": 31.6,
+  "y": 3.5
+ },
+ "pokazanie": {
+  "opis": "komunikaty serwera: legendarny lub epicki pet z jajka, wybicie króla z nagrodą od nagroda_ogloszenie, boss pokonany",
+  "nagroda_ogloszenie": 40
  }
 }

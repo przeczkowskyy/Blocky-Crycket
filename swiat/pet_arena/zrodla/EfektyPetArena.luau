@@ -108,8 +108,11 @@ local function rzut(poz: Vector3, maks: number): (boolean, number, number)
 end
 Efekty.rzut = rzut
 
-function Efekty:slowo(poz: Vector3, tekst: string, kolor: Color3, wielkosc: number?)
+function Efekty:slowo(poz: Vector3, tekst: string, kolor: Color3, wielkosc: number?, czasZycia: number?, poKoncu: (() -> ())?)
 	if not self.warstwa then
+		if poKoncu then
+			poKoncu()
+		end
 		return
 	end
 	local w = (wielkosc or 1) * (self.skala or 1)
@@ -121,32 +124,34 @@ function Efekty:slowo(poz: Vector3, tekst: string, kolor: Color3, wielkosc: numb
 	t.TextScaled = true
 	t.Font = self.czcionka
 	t.TextColor3 = kolor
-	t.Rotation = math.random(-12, 12)
+	t.Rotation = math.random(-10, 10)
 	t.Visible = false
 	t.ZIndex = 5
 	local obrys = Instance.new("UIStroke")
 	obrys.Color = self.tusz
-	obrys.Thickness = 3.5 * w
+	obrys.Thickness = math.max(1.5, 3.5 * w)
 	obrys.Parent = t
 	local skala = Instance.new("UIScale")
 	skala.Scale = 0.2
 	skala.Parent = t
 	t.Parent = self.warstwa
-	local czas = 1.3 + 0.3 * w
+	local czas = czasZycia or (1.3 + 0.3 * (wielkosc or 1))
 	self:dodaj(czas, function(f)
-		local s = if f < 0.12 then 0.2 + (f / 0.12) * 1.0 elseif f < 0.22 then 1.2 - (f - 0.12) / 0.1 * 0.2 else 1
+		local s = if f < 0.15 then 0.2 + (f / 0.15) * 1.0 elseif f < 0.28 then 1.2 - (f - 0.15) / 0.13 * 0.2 else 1
 		skala.Scale = s
 		local jest, x, y = rzut(poz + Vector3.new(0, f * 3, 0), 400)
 		t.Visible = jest
 		t.Position = UDim2.fromOffset(x, y)
-		local zanik = math.clamp((f - 0.7) / 0.3, 0, 1)
+		local zanik = math.clamp((f - 0.6) / 0.4, 0, 1)
 		t.TextTransparency = zanik
 		obrys.Transparency = zanik
 	end, function()
 		t:Destroy()
+		if poKoncu then
+			poKoncu()
+		end
 	end)
 end
-
 function Efekty:liczba(poz: Vector3, tekst: string, kolor: Color3)
 	if not self.warstwa then
 		return
@@ -235,14 +240,14 @@ function Efekty:plask(poz: Vector3, kolor: Color3)
 	local cf = CFrame.new(poz + Vector3.new(0, 0.15, 0)) * CFrame.Angles(0, 0, math.pi / 2)
 	krag.CFrame = cf
 	self:dodaj(0.55, function(f)
-		local r = 2 + f * 9
+		local r = 2 + f * 14
 		krag.Size = Vector3.new(0.3, r, r)
 		krag.CFrame = cf
 		krag.Transparency = 0.2 + f * 0.8
 	end, function()
 		krag:Destroy()
 	end)
-	self:iskry(poz + Vector3.new(0, 0.5, 0), Color3.fromRGB(200, 185, 150), 6, 0.6)
+	self:iskry(poz + Vector3.new(0, 0.5, 0), kolor, 12, 1.0)
 end
 
 function Efekty:zamach(cf: CFrame)

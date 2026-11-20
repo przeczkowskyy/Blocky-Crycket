@@ -107,8 +107,45 @@ def wzorzec_peta(U, P):
             "wysokosc": _r(K["wysokosc"]), "szer": _r(S["szer"] * k)}
 
 
+def model_potwora(klucz):
+    """Model potwora z swiat/test_walki2/dane/<klucz>.json (te same dane, z których brał BONK) — tylko odczyt."""
+    s = sciezka_repo("swiat/test_walki2/dane/%s.json" % klucz)
+    if not os.path.isfile(s):
+        raise BladDanych("brak modelu potwora %s" % klucz)
+    return czytaj_json(s)
+
+
+def wzorzec_bossa(klucz, wysokosc):
+    d = model_potwora(klucz)
+    k = wysokosc / d["wymiary"]["wysokosc"]
+    bryly = []
+    for c in d["czesci"]:
+        mat = d["materialy"][int(c[13])]
+        bryly.append([int(c[1]), _r(c[3] * k, 4), _r(c[4] * k - d["wymiary"]["spod"] * k, 4), _r(c[5] * k, 4), _r(c[6], 5), _r(c[7], 5),
+                      _r(c[8], 5), _r(c[9] * k, 4), _r(c[10] * k, 4), _r(c[11] * k, 4), c[12], mat[0], _r(mat[1], 3), c[15] or ""])
+    return {"klucz": "Boss_" + klucz, "nazwa": d["nazwa"], "bryly": bryly, "wysokosc": wysokosc}
+
+
+def wzorzec_jajka(model_id, wysokosc):
+    S = model_surowy(model_id)
+    k = wysokosc / S["wys"]
+    bryly = [[b[0], _r(b[1] * k, 4), _r(b[2] * k, 4), _r(b[3] * k, 4), _r(b[4], 5), _r(b[5], 5), _r(b[6], 5), _r(b[7] * k, 4),
+              _r(b[8] * k, 4), _r(b[9] * k, 4), b[10], b[11], _r(b[12], 3), b[13]] for b in S["bryly"]]
+    return {"klucz": "Jajko_" + model_id, "nazwa": S["nazwa"], "bryly": bryly, "wysokosc": wysokosc}
+
+
+WYSOKOSC_JAJKA = 4.5
+
+
 def wzorce(U):
-    return {nazwa_wzorca(P["id"]): wzorzec_peta(U, P) for P in U["pety"]}
+    w = {nazwa_wzorca(P["id"]): wzorzec_peta(U, P) for P in U["pety"]}
+    for J in U["jajka"]:
+        x = wzorzec_jajka(J["model"], WYSOKOSC_JAJKA)
+        w[x["klucz"]] = x
+    for B in U["boss"]["modele"]:
+        x = wzorzec_bossa(B["model"], U["boss"]["wysokosc"])
+        w[x["klucz"]] = x
+    return w
 
 
 def pety(U, W=None):
@@ -225,30 +262,48 @@ def scena(U):
               nazwa="Czubek")
     # ziemia za trybuną
     pierscien("Teren", S["trybuna"][-1][1], 110, S["obrzeze_y"] - 4, S["obrzeze_y"] - 2, ["6FA34E", "68A048"], "Grass", nazwa="Laka", ile=36)
-    # makiety etapu 2: jajka i mata treningowa (za plecami graczy, na obrzeżu)
-    aj = _kol(S["jajka_kat_st"])
-    for k, kol in enumerate(["B8C2CC", "4FB3FF", "FFC23D"]):
-        da = (k - 1) * 0.11
-        x, z = math.sin(aj + da) * S["jajka_r"], math.cos(aj + da) * S["jajka_r"]
-        dodaj(2, "Makiety", (x, S["obrzeze_y"] + 0.6, z), (0, 0, math.pi / 2), (1.2, 4.2, 4.2), "8C8A84", "Slate", nazwa="Cokol")
-        dodaj(1, "Makiety", (x, S["obrzeze_y"] + 3.0, z), (0, 0, 0), (3.2, 4.0, 3.2), kol, "SmoothPlastic", nazwa="Jajko")
-    am = _kol(S["mata_kat_st"])
-    x, z = math.sin(am) * S["jajka_r"], math.cos(am) * S["jajka_r"]
-    dodaj(0, "Makiety", (x, S["obrzeze_y"] + 0.15, z), (0, am, 0), (12, 0.3, 7), "3DB36B", "Fabric", nazwa="Mata")
-    dodaj(0, "Makiety", (x, S["obrzeze_y"] + 0.35, z), (0, am, 0), (10.5, 0.12, 5.5), "62D18A", "Fabric", nazwa="MataSrodek")
+    # stanowisko jajek (cokoły; jajka z wzorców stawia zbuduj.py) i maty treningowe — po jednej obok każdego miejsca
+    for k, (x, z) in enumerate(stanowisko_jajek(U)["cokoly"]):
+        dodaj(2, "Jajka", (x, S["obrzeze_y"] + 0.6, z), (0, 0, math.pi / 2), (1.2, 5.2, 5.2), "8C8A84", "Slate", nazwa="Cokol")
+        dodaj(2, "Jajka", (x, S["obrzeze_y"] + 1.25, z), (0, 0, math.pi / 2), (0.15, 5.5, 5.5), U["jajka"][k]["kolor"], "Neon", koliz=0,
+              nazwa="Obrecz")
+    for s in sloty(U):
+        m = s["mata"]
+        dodaj(0, "Maty", (m[0], S["obrzeze_y"] + 0.12, m[2]), (0, s["kat"], 0), (5, 0.24, 5), "3DB36B", "Fabric", nazwa="Mata%d" % s["nr"])
+        dodaj(0, "Maty", (m[0], S["obrzeze_y"] + 0.26, m[2]), (0, s["kat"], 0), (4, 0.06, 4), "62D18A", "Fabric", koliz=0, nazwa="MataSrodek")
     return c
 
 
-def makiety_napisy(U):
+def stanowisko_jajek(U):
+    """Stanowisko jajek na obrzeżu (kąt jajka_kat_st): trzy cokoły w rzędzie i tablica szans za nimi."""
     S = U["scena"]
-    w = []
-    for klucz, kat in (("jajka", S["jajka_kat_st"]), ("mata", S["mata_kat_st"])):
-        a = _kol(kat)
-        r = S["jajka_r"] + 3.5
-        w.append({"tekst": U["ui"]["makiety"][klucz], "poz": [_r(math.sin(a) * r), S["obrzeze_y"] + 4.2, _r(math.cos(a) * r)],
-                  "patrz": [0, S["obrzeze_y"] + 4.2, 0]})
-    return w
+    a = _kol(S["jajka_kat_st"])
+    cokoly = []
+    for k in range(len(U["jajka"])):
+        da = (k - 1) * 0.15
+        cokoly.append((_r(math.sin(a + da) * S["jajka_r"]), _r(math.cos(a + da) * S["jajka_r"])))
+    r = S["jajka_r"] + 4.5
+    return {"cokoly": cokoly, "tablica": [_r(math.sin(a) * r), S["obrzeze_y"] + 5, _r(math.cos(a) * r)], "patrz": [0, S["obrzeze_y"] + 5, 0]}
 
+
+def makiety_napisy(U):
+    """Napisy w świecie (etap 2: tablica szans przy stanowisku jajek)."""
+    st = stanowisko_jajek(U)
+    linie = []
+    for J in U["jajka"]:
+        szanse = "  ".join("%s %g%%" % (R["nazwa"][0], s * 100) for R, s in zip(U["rzadkosci"], J["szanse"]) if s > 0)
+        linie.append("%s  %d G   %s" % (J["nazwa"], J["cena"], szanse))
+    return [{"tekst": "EGGS\n" + "\n".join(linie), "poz": st["tablica"], "patrz": st["patrz"], "szer": 16, "wys": 6}]
+
+
+def tablice(U):
+    T = U["tablice"]
+    w = []
+    for i, (tytul, kat) in enumerate(zip(T["tytuly"], T["katy_st"])):
+        a = _kol(kat)
+        w.append({"nr": i + 1, "tytul": tytul, "poz": [_r(math.sin(a) * T["r"]), T["y"], _r(math.cos(a) * T["r"])], "patrz": [0, T["y"], 0],
+                  "szer": T["szer"], "wys": T["wys"], "wierszy": T["wierszy"]})
+    return w
 
 def etykiety_stref(U):
     """Napisy na podłodze areny: „x5” w środku, „x2” i „x1” w pierścieniach (po 4, na skos)."""
@@ -271,8 +326,10 @@ def sloty(U):
     for i in range(S["sloty"]):
         a = _kol(360.0 * i / S["sloty"])
         ak = a + _kol(S["slot_przesuniecie_st"])
+        am = a + _kol(S["mata_kat_st"])
         w.append({"nr": i + 1, "poz": [_r(math.sin(a) * S["slot_r"]), S["obrzeze_y"], _r(math.cos(a) * S["slot_r"])],
-                  "kat": _r(a, 5), "katKamery": _r(ak, 5), "kolor": U["gracz"]["kolory_slotow"][i]})
+                  "kat": _r(a, 5), "katKamery": _r(ak, 5), "kolor": U["gracz"]["kolory_slotow"][i],
+                  "mata": [_r(math.sin(am) * S["mata_r"]), S["obrzeze_y"], _r(math.cos(am) * S["mata_r"])]})
     return w
 
 
@@ -339,7 +396,18 @@ def dane(U, W=None):
         "zloto": bez_opisu(U["zloto"]), "nagroda": bez_opisu(U["nagroda"]), "umiejetnosc": bez_opisu(U["umiejetnosc"]),
         "odpoczynek": U["odpoczynek_s"], "boty": bez_opisu(U["boty"]), "gracz": bez_opisu(U["gracz"]),
         "rzadkosci": U["rzadkosci"], "pety": P, "sloty": sloty(U), "ui": bez_opisu(U["ui"]), "dzwieki": dzwieki(U),
+        "gwiazdki": bez_opisu(U["gwiazdki"]), "tarcza": bez_opisu(U["tarcza"]), "trener": bez_opisu(U["trener"]),
+        "wydarzenia": bez_opisu(U["wydarzenia"]), "zapis": bez_opisu(U["zapis"]), "tablice": tablice(U),
+        "tabliceCo": U["tablice"]["co_s"], "pokazanie": bez_opisu(U["pokazanie"]),
+        "jajka": [{"nr": i + 1, "nazwa": J["nazwa"], "cena": J["cena"], "szanse": J["szanse"], "kolor": J["kolor"],
+                   "wzorzec": "Jajko_" + J["model"], "wysokosc": WYSOKOSC_JAJKA} for i, J in enumerate(U["jajka"])],
+        "stanowisko": stanowisko_jajek(U),
+        "boss": dict(bez_opisu(U["boss"]), modele=[{"wzorzec": "Boss_" + B["model"], "nazwa": B["nazwa"]} for B in U["boss"]["modele"]]),
+        "zloty": dict(bez_opisu(U["zloty"]), nr=[p["id"] for p in P].index(U["zloty"]["model"]) + 1),
     }
+    for J in U["jajka"]:
+        if abs(sum(J["szanse"]) - 1) > 1e-9 or len(J["szanse"]) != len(U["rzadkosci"]):
+            raise BladDanych("jajko %s: szanse na każdą rzadkość, suma 1" % J["nazwa"])
     tekst = json.dumps(D, sort_keys=True, ensure_ascii=False)
     D["skrot"] = hashlib.sha1((tekst + json.dumps(U["scena"], sort_keys=True)).encode("utf-8")).hexdigest()[:12]
     return D

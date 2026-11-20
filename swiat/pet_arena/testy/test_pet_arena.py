@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Testy Pet Arena bez Studio (D-118, etap 1).
 
@@ -60,6 +60,14 @@ def interpreter():
     m.set("sin", math.sin)
     m.set("atan2", lambda y, x: math.atan2(y, x))
     m.set("pi", math.pi)
+    m.set("clamp", lambda x, a, b: min(max(x, a), b))
+    tb = it.globalne.z["table"]
+
+    def klon(t):
+        n = LM.Tabela()
+        n.d = dict(t.d)
+        return n
+    tb.set("clone", klon)
     return it
 
 
@@ -151,7 +159,7 @@ class TestDanych(unittest.TestCase):
         c = DN.scena(U)
         self.assertLess(len(c), 2000)
         nazwy = {x[15] for x in c}
-        for n in ("Platforma", "Srodek", "Pierscien2", "Pierscien1", "Woda", "Gejzer1", "Trawa", "Bariera", "Jajko", "Mata"):
+        for n in ("Platforma", "Srodek", "Pierscien2", "Pierscien1", "Woda", "Gejzer1", "Trawa", "Bariera", "Cokol", "Mata1", "Mata8"):
             self.assertIn(n, nazwy)
 
     def test_1d_kamera_cala_arena_w_kadrze(self):
@@ -164,7 +172,8 @@ class TestDanych(unittest.TestCase):
                 for i in range(48):
                     a = 2 * math.pi * i / 48
                     x, y = DN.rzut_punktu(kam, cel, (math.sin(a) * R, 0, math.cos(a) * R), K["fov"], szer / wys)
-                    self.assertTrue(pas[0] <= y <= pas[1] and 0.03 <= x <= 0.97,
+                    xmin, xmax = (0.15, 0.85) if szer / wys > 1.5 else (0.03, 0.97)
+                    self.assertTrue(pas[0] <= y <= pas[1] and xmin <= x <= xmax,
                                     "arena poza kadrem %dx%d slot %d: (%.2f; %.2f)" % (szer, wys, s["nr"], x, y))
 
     def test_1e_dzwieki_z_arkusza(self):
@@ -195,8 +204,9 @@ class TestLogiki(unittest.TestCase):
         drogi = []
         for hp_frac in (1.0, 0.3):
             S = stan(Los(stala=0.5))                   # bez krytyka, bez rozrzutu
-            a = dodaj(S, "lesny_troll", -2, 0)
-            b = dodaj(S, "lesny_slime", 2, 0, wl=2)
+            a = dodaj(S, "lesny_troll", -6, 0)
+            b = dodaj(S, "lesny_slime", 6, 0, wl=2)
+            a.set("ogl", 99.0)
             b.set("hp", b.get("hpMax") * hp_frac)
             jeden("cios", S, a, b, 0, 20, 1, 0, True, zdarzenia(S))
             x0 = b.get("x")
@@ -291,22 +301,26 @@ class TestLogiki(unittest.TestCase):
 
     def test_2g_odpoczynek_i_druzyna(self):
         prof = jeden("profilNowy", DL)
-        dr = z(jeden("druzyna", DL, prof, 0.4))
-        self.assertEqual([w["id"] for w in dr[:2]], U["gracz"]["pety_startowe"])
-        self.assertEqual(len(dr), U["gracz"]["druzyna_maks"])
-        self.assertTrue(dr[2]["probny"])
-        self.assertGreaterEqual(D["pety"][int(dr[2]["nr"]) - 1]["stopien"], 2)
+        dr = z(jeden("druzyna", DL, prof, None))
+        self.assertEqual([w["id"] for w in dr], U["gracz"]["pety_startowe"])
         w = LM.do_luau({"odpoczynek": 0})
         self.assertTrue(jeden("gotowy", w, 100))
         wolaj("odpocznij", DL, w, 100)
+        self.assertEqual(D["odpoczynek"], 30)
         self.assertFalse(jeden("gotowy", w, 100 + D["odpoczynek"] - 1))
         self.assertEqual(jeden("zostalo", w, 100.5), D["odpoczynek"])
         self.assertTrue(jeden("gotowy", w, 100 + D["odpoczynek"]))
-        # profil z rekordu: nieznane pety pominięte
+        # profil v1 (etap 1: lista id) → v2 z gwiazdką 1; nieznane pety pominięte
         p = z(jeden("profil", DL, LM.do_luau({"zloto": 55, "pety": ["lesny_troll", "kot"]})))
         self.assertEqual(p["zloto"], 55)
-        self.assertEqual(p["pety"], ["lesny_troll"])
-
+        self.assertEqual(p["pety"], {"lesny_troll": 1})
+        self.assertEqual(p["druzyna"], ["lesny_troll"])
+        # drużyna: tylko posiadane, bez powtórzeń, do 3
+        prof = jeden("profilNowy", DL)
+        self.assertFalse(jeden("ustawDruzyne", DL, prof, LM.do_luau(["lesny_troll"])))
+        self.assertFalse(jeden("ustawDruzyne", DL, prof, LM.do_luau(["lesny_slime", "lesny_slime"])))
+        self.assertTrue(jeden("ustawDruzyne", DL, prof, LM.do_luau(["zoledziak"])))
+        self.assertEqual(z(prof.get("druzyna")), ["zoledziak"])
     def test_2h_wiadro_tempa(self):
         w = LM.do_luau({})
         ok = sum(1 for _ in range(30) if jeden("wiadro", w, 10.0, D["rzut"]["wiadro_na_s"], D["rzut"]["wiadro_zapas"]))
@@ -345,6 +359,15 @@ class TestLogiki(unittest.TestCase):
         return S, p, w, ok, z(zd) or []
 
     def test_2j_umiejetnosci(self):
+        tarcza = DL.get("tarcza")
+        stara = tarcza.get("roznica")
+        tarcza.set("roznica", 99.0)                    # tu sprawdzamy same umiejętności (tarcza: test_2l)
+        try:
+            self._umiejetnosci()
+        finally:
+            tarcza.set("roznica", stara)
+
+    def _umiejetnosci(self):
         # fala: wszyscy w zasięgu odrzuceni od środka
         S, p, w, ok, zd = self._arena("lesny_troll", [(5, 0), (-5, 0), (0, 15)])
         self.assertTrue(ok)
@@ -411,6 +434,166 @@ class TestLogiki(unittest.TestCase):
         u = [e for e in z(zd) if e["t"] == "umiejetnosc"][0]
         self.assertLess(math.hypot(u["x1"], u["z1"]), 4)
 
+    def test_2l_tarcza_slabszego(self):
+        S = stan(Los(stala=0.5))
+        silny = dodaj(S, "cierniowy_wilk", 0, 0, wl=1)          # stopień 3
+        slaby = dodaj(S, "lesny_slime", 4, 0, wl=2)             # stopień 1 → tarcza
+        rowny = dodaj(S, "lisciolis", -4, 0, wl=3)              # stopień 2 → bez tarczy
+        self.assertTrue(jeden("chroniony", S, slaby))
+        self.assertFalse(jeden("chroniony", S, rowny))
+        zd = LM.Tabela()
+        jeden("cios", S, silny, slaby, 10, 20, 1, 0, False, zd)
+        jeden("cios", S, silny, rowny, 10, 20, -1, 0, False, zd)
+        e = z(zd)
+        self.assertAlmostEqual(e[0]["o"], round(10 * D["tarcza"]["mnoznik"]))
+        self.assertEqual(e[1]["o"], 10)
+        self.assertLess(e[0]["v"], e[1]["v"])
+
+    def test_2m_boss(self):
+        S = stan(Los(stala=0.5))
+        a = dodaj(S, "lesny_troll", -8, 0, wl=1)
+        b = dodaj(S, "lesny_slime", 8, 0, wl=2)
+        boss = jeden("dodajBossa", S, 1, 2)
+        self.assertEqual(boss.get("hpMax"), D["boss"]["zycie"] + 2 * D["boss"]["na_gracza"])
+        zd = krok(S, int((1.4 + D["boss"]["fala_co_s"]) / D["walka"]["krok_s"]) + 4)
+        self.assertTrue(any(e["t"] == "ladowanie" and e["id"] == boss.get("id") for e in zd))
+        self.assertTrue(any(e["t"] == "boss_fala" for e in zd), "fala bossa")
+        self.assertNotEqual(S.get("krol"), boss.get("id"), "boss nie jest królem")
+        for pet_, ile in ((a, 300), (b, 100)):
+            jeden("cios", S, pet_, boss, ile, 1, 1, 0, False, LM.Tabela())
+        boss.set("hp", 1.0)
+        jeden("cios", S, a, boss, 5, 1, 1, 0, False, LM.Tabela())
+        zd = krok(S, 1)
+        ko = [e for e in zd if e["t"] == "ko" and e.get("boss")]
+        self.assertEqual(len(ko), 1)
+        n = ko[0]["nagrody"]
+        self.assertGreater(n[0] if isinstance(n, list) else n.get(1), D["boss"]["minimum"])
+        self.assertEqual(n[1] if isinstance(n, list) else n.get(2), max(D["boss"]["minimum"], round(D["boss"]["pula"] * 100 / 405)))
+        # nagrody: minimum dla drobnego udziału
+        w = z(jeden("nagrodyBossa", DL, LM.do_luau({1: 1000.0, 2: 1.0})))
+        self.assertEqual(w[1] if isinstance(w, list) else w[2], D["boss"]["minimum"])
+        # ucieczka po czasie
+        S2 = stan(Los(stala=0.5))
+        jeden("dodajBossa", S2, 2, 1)
+        zd = krok(S2, int((D["boss"]["czas_s"] + 0.5) / D["walka"]["krok_s"]))
+        self.assertTrue(any(e["t"] == "boss_uciekl" for e in zd))
+
+    def test_2n_zloty_pet(self):
+        S = stan(Los(stala=0.5))
+        a = dodaj(S, "lesny_troll", 0, 0, wl=1)
+        g = jeden("dodajZlotego", S, 0, 0, 0, 6, 0)
+        g.set("faza", "walka")
+        x0 = g.get("x")
+        krok(S, 10)
+        self.assertGreater(g.get("x"), x0 + 1, "ucieka od wroga")
+        zd = LM.Tabela()
+        jeden("cios", S, a, g, 5, 5, 1, 0, False, zd)
+        mon = [e for e in z(zd) if e["t"] == "zloto_cios"]
+        self.assertEqual(mon[0]["ile"], D["zloty"]["za_cios"] * 4)
+        g.set("hp", 0.0)
+        ko = [e for e in krok(S, 1) if e["t"] == "ko"]
+        self.assertEqual(ko[0]["premia"], D["zloty"]["premia"])
+
+    def test_2o_jajka_kolekcja_gwiazdki(self):
+        los = Los(5)
+        ile = {}
+        for _ in range(600):
+            nr, rz = wolaj("losujZJajka", DL, 1, los(), los())
+            ile[int(rz)] = ile.get(int(rz), 0) + 1
+            self.assertEqual(D["pety"][int(nr) - 1]["stopien"], rz)
+        sz = D["jajka"][0]["szanse"]
+        for r in range(1, 6):
+            self.assertAlmostEqual(ile.get(r, 0) / 600, sz[r - 1], delta=0.06)
+        self.assertNotIn(5, ile, "jajko 1 bez legendarnych")
+        self.assertEqual(int(wolaj("losujZJajka", DL, 3, 0.0, 0.0)[1]), 2, "jajko 3 zaczyna od Uncommon")
+        prof = jeden("profilNowy", DL)
+        w1 = z(jeden("dodajDoKolekcji", DL, prof, "lesny_troll", 1500))
+        self.assertTrue(w1["nowy"])
+        self.assertIn("lesny_troll", z(prof.get("druzyna")), "wolne miejsce w drużynie — nowy pet trafia do drużyny")
+        for g in range(2, D["gwiazdki"]["maks"] + 1):
+            self.assertEqual(z(jeden("dodajDoKolekcji", DL, prof, "lesny_troll", 1500))["gwiazdki"], g)
+        w = z(jeden("dodajDoKolekcji", DL, prof, "lesny_troll", 1500))
+        self.assertTrue(w["maks"])
+        self.assertEqual(prof.get("zloto"), round(1500 * D["gwiazdki"]["zwrot_przy_maks"]))
+        self.assertTrue(prof.get("ksiega").get("lesny_troll"))
+        m = z(jeden("mnoznikPeta", DL, 5, 1))
+        self.assertAlmostEqual(m["zycie"], 1 + 4 * D["gwiazdki"]["na_gwiazdke"])
+
+    def test_2p_trener(self):
+        self.assertEqual(wolaj("poziom", DL, 0)[0], 1)
+        n1 = jeden("potrzeba", DL, 1)
+        self.assertEqual(wolaj("poziom", DL, n1)[0], 2)
+        self.assertGreater(jeden("potrzeba", DL, 5), jeden("potrzeba", DL, 2))
+        m = z(jeden("mnoznikPeta", DL, 1, 11))
+        self.assertAlmostEqual(m["sila"], 1 + 10 * D["trener"]["na_poziom"])
+        # silniejszy pet (gwiazdki + poziom) zadaje więcej
+        S = stan(Los(stala=0.5))
+        a = jeden("dodajPeta", S, 1, 1, False, 0, 0, 0, 0, 0, LM.do_luau({"zycie": 1.3, "sila": 1.3, "gwiazdki": 3}))
+        a.set("faza", "walka")
+        b = dodaj(S, "lesny_slime", 3, 0, wl=2)
+        self.assertAlmostEqual(a.get("hpMax"), D["pety"][0]["zycie"] * 1.3)
+        zd = LM.Tabela()
+        jeden("cios", S, a, b, 10, 10, 1, 0, False, zd)
+        self.assertEqual(z(zd)[0]["o"], 13)
+
+    def test_2q_zapis_z_atrapa(self):
+        class Atrapa:
+            def __init__(self, bledy=0):
+                self.bledy, self.dane, self.wolania = bledy, {}, 0
+
+            def tabela(self):
+                t = LM.Tabela()
+
+                def get(_s, k):
+                    self.wolania += 1
+                    if self.bledy > 0:
+                        self.bledy -= 1
+                        raise LM.BladLuau("DataStore niedostępny")
+                    return self.dane.get(k)
+
+                def upd(_s, k, f):
+                    if self.bledy > 0:
+                        self.bledy -= 1
+                        raise LM.BladLuau("DataStore niedostępny")
+                    self.dane[k] = IT.wywolaj(f, [self.dane.get(k)])[0]
+                t.set("GetAsync", get)
+                t.set("UpdateAsync", upd)
+                return t
+        Z = D["zapis"]
+        self.assertEqual(wolaj("magazyn", DL.get("zapis"), True, 200, 100, False), [None, "wyłączony (próba gry)"])
+        self.assertEqual(wolaj("magazyn", DL.get("zapis"), True, 200, 100, True)[0], Z["magazyn"] + Z["przyrostek_studio"] + Z["przyrostek_proby"])
+        self.assertEqual(wolaj("magazyn", DL.get("zapis"), False, 200, 100, False)[0], Z["magazyn"])
+        # bez magazynu: gra w pamięci, zapis wyłączony
+        p, ok = wolaj("wczytajProfil", DL, None, "k", None)
+        self.assertFalse(ok)
+        self.assertFalse(jeden("zapiszProfil", DL, None, "k", p, True))
+        # magazyn pada zawsze → nowy profil, zapis wyłączony (nie nadpiszemy prawdziwego postępu)
+        a = Atrapa(bledy=99)
+        p, ok = wolaj("wczytajProfil", DL, a.tabela(), "k", None)
+        self.assertFalse(ok)
+        self.assertEqual(a.wolania, Z["proby"])
+        # pada raz, potem działa: tam i z powrotem
+        a = Atrapa(bledy=1)
+        t = a.tabela()
+        p, ok = wolaj("wczytajProfil", DL, t, "k", None)
+        self.assertTrue(ok)
+        p.set("zloto", 1234.0)
+        jeden("dodajDoKolekcji", DL, p, "ognik", 250)
+        jeden("dodajDoKolekcji", DL, p, "ognik", 250)
+        self.assertTrue(jeden("zapiszProfil", DL, t, "k", p, True))
+        p2, ok2 = wolaj("wczytajProfil", DL, t, "k", None)
+        p2 = z(p2)
+        self.assertEqual(p2["zloto"], 1234)
+        self.assertEqual(p2["pety"]["ognik"], 2)
+        self.assertIn("ognik", p2["druzyna"])
+        self.assertTrue(p2["ksiega"]["ognik"])
+
+    def test_2r_tablice_i_wydarzenia(self):
+        t = z(jeden("top", LM.do_luau([{"nazwa": "a", "w": 3}, {"nazwa": "b", "w": 9}, {"nazwa": "c", "w": 0}, {"nazwa": "d", "w": 5}]), 2))
+        self.assertEqual([x["nazwa"] for x in t], ["b", "d"])
+        k = D["wydarzenia"]["kolejnosc"]
+        self.assertEqual([jeden("typWydarzenia", DL, n) for n in (1, 2, 3)], [k[0], k[1], k[0]])
+        self.assertEqual(sorted(k), ["boss", "zloty"])
     def test_2k_symulacja_walki(self):
         """Pięć dzikich petów przez 60 s gry: liczby skończone, są wybicia; tabela tempa (--tabela)."""
         wynik = symulacja(60, Los(11))
@@ -476,7 +659,8 @@ class TestZrodel(unittest.TestCase):
         for slowo in ("L.wiadro", "L.mozeRzucic", "L.petGracza", "L.gotowy", '"rzut"', '"umiejetnosc"', '"wybierz"',
                       "type(rodzaj) ~= \"string\""):
             self.assertIn(slowo, serwer, slowo)
-        self.assertNotIn("GetDataStore", serwer, "etap 1: profil w pamięci, bez magazynu")
+        for slowo in ("L.magazyn", "L.wczytajProfil", "L.zapiszProfil", "BindToClose", "\"jajko\"", "\"druzyna\"", "\"trening\""):
+            self.assertIn(slowo, serwer, slowo)
 
     def test_3d_znacznik_prob(self):
         self.assertIn(U["kontener"], ZP.KONTENERY_DODATKOWE)

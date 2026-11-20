@@ -114,7 +114,7 @@ end
 
 ------------------------------------------------------------------ stan areny
 function L.nowyStan(D, los)
-	return { D = D, pety = {}, nastId = 1, czas = 0, krol = nil, nagroda = 0, los = los }
+	return { D = D, pety = {}, nastId = 1, czas = 0, krol = nil, nagroda = 0, los = los, bossUdzial = {} }
 end
 
 function L.petPoId(S, id: number)
@@ -165,16 +165,16 @@ function L.mozeRzucic(S, x: any, z: any): (boolean, string?)
 end
 
 -- nowy pet w locie: z (x0, y0, z0) do (x, z) na arenie; ląduje po czasie lotu
-function L.dodajPeta(S, nr: number, wl: number, dziki: boolean, x0: number, y0: number, z0: number, x: number, z: number)
+function L.dodajPeta(S, nr: number, wl: number, dziki: boolean, x0: number, y0: number, z0: number, x: number, z: number, mn: any?)
 	local D = S.D
 	local P = D.pety[nr]
-	local hpMax = P.zycie * (if dziki then D.boty.zycie_x else 1)
+	local hpMax = P.zycie * (if dziki then D.boty.zycie_x else 1) * (if mn then mn.zycie else 1)
 	local t = L.czasLotu(D, dlug(x - x0, z - z0))
 	local p = {
 		id = S.nastId, nr = nr, P = P, wl = wl, dziki = dziki, x = x, z = z, kx = 0, kz = 0, hp = hpMax, hpMax = hpMax,
 		faza = "lot", ladT = S.czas + t, lotCzas = t, x0 = x0, y0 = y0, z0 = z0, cd = 0.4, osz = 0, ogl = 0, lod = 0,
 		skor = 0, pal = 0, palNaS = 0, palOd = nil, akcja = nil, pasek = 0, ostatni = nil, wSrodku = 0, pozaSrodka = 99,
-		zl = 0, kier = 0, pelnyOd = nil,
+		zl = 0, kier = 0, pelnyOd = nil, mnSila = if mn then mn.sila else 1, gwiazdki = if mn then mn.gwiazdki else 1,
 	}
 	S.nastId += 1
 	table.insert(S.pety, p)
@@ -225,6 +225,14 @@ function L.cios(S, a, b, obrazenia: number, sila: number, dx: number, dz: number
 		table.insert(zdarzenia, { t = "odbicie", a = if a then a.id else 0, b = b.id, x = b.x, z = b.z })
 		return false
 	end
+	if a then
+		obrazenia *= (a.mnSila or 1)
+		sila *= (a.mnSila or 1)
+		if L.tarczaMiedzy(D, a, b) then
+			obrazenia *= D.tarcza.mnoznik
+			sila *= D.tarcza.mnoznik
+		end
+	end
 	local kryt = false
 	local mn = 1
 	if zwykly and S.los() < W.krytyk_szansa then
@@ -246,6 +254,13 @@ function L.cios(S, a, b, obrazenia: number, sila: number, dx: number, dz: number
 		end
 	end
 	b.pasek = math.min(1, b.pasek + D.umiejetnosc.za_trafienie)
+	if a and a.wl > 0 and not a.dziki then
+		if b.boss then
+			S.bossUdzial[a.wl] = (S.bossUdzial[a.wl] or 0) + obrazenia
+		elseif b.zloty then
+			table.insert(zdarzenia, { t = "zloto_cios", wl = a.wl, ile = D.zloty.za_cios * a.P.stopien, x = b.x, z = b.z })
+		end
+	end
 	table.insert(zdarzenia, { t = "cios", a = if a then a.id else 0, b = b.id, o = math.floor(obrazenia + 0.5), k = kryt,
 		x = b.x, z = b.z, v = v })
 	return true
@@ -538,8 +553,12 @@ local function wybicie(S, p, rodzaj: string, zdarzenia)
 	end
 	local byl_krol = S.krol == p.id
 	local premia = 0
-	if o and o.wl and o.wl > 0 and not o.dziki and o.wl ~= p.wl then
-		premia = (if p.dziki then D.zloto.premia_dzikiego else D.zloto.premia_wybicia) * p.P.stopien
+	local nagrody = nil
+	if p.boss then
+		nagrody = L.nagrodyBossa(D, S.bossUdzial)
+		S.bossUdzial = {}
+	elseif o and o.wl and o.wl > 0 and not o.dziki and o.wl ~= p.wl then
+		premia = if p.zloty then D.zloty.premia else (if p.dziki then D.zloto.premia_dzikiego else D.zloto.premia_wybicia) * p.P.stopien
 	end
 	local nagroda = 0
 	if byl_krol then
@@ -552,7 +571,7 @@ local function wybicie(S, p, rodzaj: string, zdarzenia)
 	table.insert(zdarzenia, {
 		t = rodzaj, id = p.id, nr = p.nr, wl = p.wl, dziki = p.dziki, x = p.x, z = p.z, kx = p.kx, kz = p.kz,
 		przez = if o and not o.dziki then o.wl else 0, przezId = if o then o.id else 0, premia = premia, nagroda = nagroda,
-		krol = byl_krol,
+		krol = byl_krol, boss = p.boss == true, zloty = p.zloty == true, nagrody = nagrody,
 	})
 end
 
@@ -587,6 +606,10 @@ function L.krok(S, dt: number)
 		if p.faza == "walka" then
 			p.cd -= dt
 			local zajety = krokAkcji(S, p, dt, zd)
+			if p.boss or p.zloty then
+				L.krokSpecjalny(S, p, dt, zd)
+				zajety = true
+			end
 			if not zajety and p.akcja == nil and p.ogl <= t and p.lod <= t and p.osz <= t then
 				local P = p.P
 				local q, d = najblizszy(S, p, nil)
@@ -612,8 +635,11 @@ function L.krok(S, dt: number)
 					if not stoi and dd > 1e-6 then
 						local krok = math.min(dd, P.predkosc * dt)
 						local nx, nz = p.x + dx / dd * krok, p.z + dz / dd * krok
-						nx, nz = wewnatrz(D, nx, nz, P.promien * 0.6)
-						p.x, p.z = nx, nz
+						-- sam nie wychodzi za krawędź, ale też nie jest do środka „przyciągany” (odrzut działa dalej)
+						local nr = dlug(nx, nz)
+						if not (nr > D.scena.arena_r - P.promien * 0.6 and nr > dlug(p.x, p.z)) then
+							p.x, p.z = nx, nz
+						end
 						p.kier = math.atan2(dx, dz)
 					end
 				end
@@ -683,7 +709,13 @@ function L.krok(S, dt: number)
 			if p.pasek >= 1 and p.pelnyOd == nil then
 				p.pelnyOd = t
 			end
-			if not (p.akcja and p.akcja.typ == "skok") and dlug(p.x, p.z) > D.scena.arena_r then
+			if (p.boss or p.zloty) and p.koniecT and t >= p.koniecT then
+				table.insert(zd, { t = if p.boss then "boss_uciekl" else "zloty_uciekl", id = p.id, x = p.x, z = p.z })
+				if p.boss then
+					S.bossUdzial = {}
+				end
+				out = true
+			elseif not (p.akcja and p.akcja.typ == "skok") and dlug(p.x, p.z) > D.scena.arena_r then
 				wybicie(S, p, "ringout", zd)
 				out = true
 			elseif p.hp <= 0 then
@@ -700,7 +732,7 @@ function L.krok(S, dt: number)
 	local N = D.nagroda
 	local rS = D.strefy[1].r
 	for _, p in S.pety do
-		if p.faza == "walka" and not (p.akcja and p.akcja.typ == "skok") and dlug(p.x, p.z) <= rS then
+		if p.faza == "walka" and not p.boss and not p.zloty and not (p.akcja and p.akcja.typ == "skok") and dlug(p.x, p.z) <= rS then
 			p.wSrodku += dt
 			p.pozaSrodka = 0
 		else
@@ -819,43 +851,207 @@ function L.botChce(S, p, czekaj: number): boolean
 	return p.pelnyOd ~= nil and S.czas - p.pelnyOd >= czekaj
 end
 
------------------------------------------------------------------- gracz: profil, drużyna, odpoczynek
-function L.profilNowy(D)
-	local pety = {}
-	for _, id in D.gracz.pety_startowe do
-		table.insert(pety, id)
-	end
-	return { v = D.gracz.wersja_profilu, zloto = 0, pety = pety, wybicia = 0, rzuty = 0 }
+------------------------------------------------------------------ tarcza słabszego, boss, złoty pet
+-- tarcza: atakujący o co najmniej D.tarcza.roznica stopni silniejszy (bez bossa i złotego peta)
+function L.tarczaMiedzy(D, a, b): boolean
+	return a ~= nil and b ~= nil and not a.boss and not b.boss and not a.zloty and not b.zloty
+		and a.P.stopien - b.P.stopien >= D.tarcza.roznica
 end
 
--- rekord z magazynu (etap 2) → profil; braki uzupełnione, nieznane pety pominięte
-function L.profil(D, rekord)
-	local p = L.profilNowy(D)
-	if type(rekord) ~= "table" then
-		return p
-	end
-	if type(rekord.zloto) == "number" and rekord.zloto >= 0 then
-		p.zloto = rekord.zloto
-	end
-	if type(rekord.pety) == "table" then
-		local znane = {}
-		for _, P in D.pety do
-			znane[P.id] = true
-		end
-		local lista = {}
-		for _, id in rekord.pety do
-			if znane[id] then
-				table.insert(lista, id)
-			end
-		end
-		if #lista > 0 then
-			p.pety = lista
+-- czy pet ma teraz tarczę (na arenie jest ktoś o roznica stopni silniejszy) — ikona przy pecie
+function L.chroniony(S, p): boolean
+	for _, q in S.pety do
+		if q ~= p and L.tarczaMiedzy(S.D, q, p) then
+			return true
 		end
 	end
-	if type(rekord.wybicia) == "number" then
-		p.wybicia = rekord.wybicia
-	end
+	return false
+end
+
+-- boss: wpis jak pet (P), ląduje w środku z nieba
+function L.dodajBossa(S, nrModelu: number, graczy: number)
+	local D = S.D
+	local B = D.boss
+	local P = { id = "boss", nazwa = B.modele[nrModelu].nazwa, stopien = B.stopien, waga = B.waga, zycie = B.zycie + B.na_gracza * graczy,
+		obrazenia = 0, odrzut = 0, predkosc = 2, przerwa = 99, promien = B.promien, wysokosc = B.wysokosc,
+		wzorzec = B.modele[nrModelu].wzorzec, umiejetnosc = { typ = "fala", nazwa = "STOMP", r = B.fala_r, sila = B.fala_sila,
+			obrazenia = B.fala_obrazenia } }
+	local p = L.dodajPeta(S, 1, 0, true, 0, 80, 0, 0, 0, nil)
+	p.P = P
+	p.hp, p.hpMax = P.zycie, P.zycie
+	p.boss = true
+	p.nrModelu = nrModelu
+	p.ladT = S.czas + 1.4
+	p.lotCzas = 1.4
+	p.koniecT = S.czas + B.czas_s
+	p.falaT = S.czas + 1.4 + B.fala_co_s
+	S.bossUdzial = {}
 	return p
+end
+
+function L.dodajZlotego(S, x0: number, y0: number, z0: number, x: number, z: number)
+	local D = S.D
+	local Zl = D.zloty
+	local p = L.dodajPeta(S, Zl.nr, 0, true, x0, y0, z0, x, z, nil)
+	local P = table.clone(p.P)
+	P.zycie, P.predkosc, P.waga, P.nazwa = Zl.zycie, Zl.predkosc, Zl.waga, Zl.nazwa
+	p.P = P
+	p.hp, p.hpMax = Zl.zycie, Zl.zycie
+	p.zloty = true
+	p.koniecT = S.czas + Zl.czas_s
+	return p
+end
+
+-- ruch bossa (stoi w środku, co fala_co_s fala) i złotego peta (ucieka od najbliższego, trzyma się areny)
+function L.krokSpecjalny(S, p, dt: number, zd)
+	local D = S.D
+	if p.boss then
+		local r = dlug(p.x, p.z)
+		if r > 0.5 and p.osz <= S.czas then
+			local k = math.min(r, p.P.predkosc * dt)
+			p.x -= p.x / r * k
+			p.z -= p.z / r * k
+		end
+		if S.czas >= p.falaT then
+			p.falaT = S.czas + D.boss.fala_co_s
+			local n = fala(S, p, p.x, p.z, D.boss.fala_r, D.boss.fala_sila, D.boss.fala_obrazenia, zd)
+			table.insert(zd, { t = "boss_fala", id = p.id, x = p.x, z = p.z, r = D.boss.fala_r, trafione = n })
+		end
+	elseif p.zloty and p.ogl <= S.czas and p.lod <= S.czas and p.osz <= S.czas then
+		local q, d = najblizszy(S, p, nil)
+		local dx, dz
+		if q and d < 12 then
+			dx, dz = p.x - q.x, p.z - q.z
+		else
+			p.cel = p.cel or { x = 0, z = 0 }
+			if dlug(p.cel.x - p.x, p.cel.z - p.z) < 1.5 then
+				local a = S.los() * math.pi * 2
+				local r = S.los() * (D.scena.arena_r - 6)
+				p.cel = { x = math.cos(a) * r, z = math.sin(a) * r }
+			end
+			dx, dz = p.cel.x - p.x, p.cel.z - p.z
+		end
+		local dd = dlug(dx, dz)
+		if dd > 1e-6 then
+			-- przy krawędzi skręca w bok (wzdłuż brzegu), żeby nie wypaść sam
+			local r = dlug(p.x, p.z)
+			if r > D.scena.arena_r - 5 and (dx * p.x + dz * p.z) > 0 then
+				dx, dz = -p.z, p.x
+				dd = dlug(dx, dz)
+			end
+			local k = p.P.predkosc * dt
+			local nx, nz = wewnatrz(D, p.x + dx / dd * k, p.z + dz / dd * k, p.P.promien + 1)
+			p.x, p.z = nx, nz
+			p.kier = math.atan2(dx, dz)
+		end
+	end
+end
+
+-- nagrody za bossa: udział w obrażeniach × pula, co najmniej minimum — { [wl] = złoto }
+function L.nagrodyBossa(D, udzial)
+	local suma = 0
+	for _, v in udzial do
+		suma += v
+	end
+	local w = {}
+	if suma <= 0 then
+		return w
+	end
+	for wl, v in udzial do
+		w[wl] = math.max(D.boss.minimum, math.floor(D.boss.pula * v / suma + 0.5))
+	end
+	return w
+end
+
+function L.typWydarzenia(D, nr: number): string
+	local k = D.wydarzenia.kolejnosc
+	return k[((nr - 1) % #k) + 1]
+end
+
+------------------------------------------------------------------ jajka, kolekcja, gwiazdki, trener
+-- pet z jajka: r1 — rzadkość wg jawnych szans, r2 — pet w rzadkości (po równo); zwraca numer peta i rzadkość
+function L.losujZJajka(D, nrJajka: number, r1: number, r2: number): (number, number)
+	local J = D.jajka[nrJajka]
+	local x = r1
+	local rz = #J.szanse
+	for i, s in J.szanse do
+		x -= s
+		if x < 0 then
+			rz = i
+			break
+		end
+	end
+	while rz > 1 and J.szanse[rz] <= 0 do
+		rz -= 1
+	end
+	local lista = {}
+	for i, P in D.pety do
+		if P.stopien == rz then
+			table.insert(lista, i)
+		end
+	end
+	return lista[math.min(#lista, math.floor(r2 * #lista) + 1)], rz
+end
+
+-- nowy pet albo kopia (gwiazdka, najwyżej maks; przy maks — zwrot złota): { nowy, gwiazdki, maks, zwrot }
+function L.dodajDoKolekcji(D, profil, id: string, cenaJajka: number)
+	local g = profil.pety[id]
+	profil.ksiega[id] = true
+	if g == nil then
+		profil.pety[id] = 1
+		if #profil.druzyna < D.gracz.druzyna_maks then
+			table.insert(profil.druzyna, id)
+		end
+		return { nowy = true, gwiazdki = 1, maks = false, zwrot = 0 }
+	end
+	if g >= D.gwiazdki.maks then
+		local zwrot = math.floor(cenaJajka * D.gwiazdki.zwrot_przy_maks + 0.5)
+		profil.zloto += zwrot
+		return { nowy = false, gwiazdki = g, maks = true, zwrot = zwrot }
+	end
+	profil.pety[id] = g + 1
+	return { nowy = false, gwiazdki = g + 1, maks = false, zwrot = 0 }
+end
+
+-- doświadczenie potrzebne na przejście z poziomu n na n + 1
+function L.potrzeba(D, n: number): number
+	return math.floor(D.trener.baza * n ^ D.trener.wykladnik + 0.5)
+end
+
+-- poziom z doświadczenia: poziom, doświadczenie w poziomie, potrzeba na następny
+function L.poziom(D, xp: number): (number, number, number)
+	local n = 1
+	local x = xp
+	while n < D.trener.maks_poziom and x >= L.potrzeba(D, n) do
+		x -= L.potrzeba(D, n)
+		n += 1
+	end
+	return n, x, L.potrzeba(D, n)
+end
+
+-- mnożniki peta z gwiazdek i poziomu trenera
+function L.mnoznikPeta(D, gwiazdki: number, poziom: number)
+	local m = (1 + D.gwiazdki.na_gwiazdke * (gwiazdki - 1)) * (1 + D.trener.na_poziom * (poziom - 1))
+	return { zycie = m, sila = m, gwiazdki = gwiazdki }
+end
+
+------------------------------------------------------------------ gracz: profil (wersja 2), drużyna, odpoczynek
+function L.profilNowy(D)
+	local pety, druzyna, ksiega = {}, {}, {}
+	for _, id in D.gracz.pety_startowe do
+		pety[id] = 1
+		ksiega[id] = true
+		table.insert(druzyna, id)
+	end
+	return { v = D.gracz.wersja_profilu, zloto = 0, pety = pety, druzyna = druzyna, ksiega = ksiega, xp = 0,
+		samouczek = { rzut = false, jajko = false }, wybicia = 0, rzuty = 0, jajek = 0, krolS = 0 }
+end
+
+local function liczba(v, domyslna: number, maks: number): number
+	if type(v) ~= "number" or v ~= v or v < 0 or v > maks then
+		return domyslna
+	end
+	return v
 end
 
 function L.nrPeta(D, id: string): number?
@@ -867,23 +1063,115 @@ function L.nrPeta(D, id: string): number?
 	return nil
 end
 
--- drużyna: pierwsze pety profilu (do druzyna_maks); w etapie 1 trzeci to pet próbny (losowy od stopnia 2)
-function L.druzyna(D, profil, r: number)
-	local w = {}
-	for _, id in profil.pety do
-		if #w < D.gracz.druzyna_maks then
-			table.insert(w, { id = id, nr = L.nrPeta(D, id), probny = false, odpoczynek = 0 })
-		end
+-- rekord z magazynu → profil wersji 2 (zła wartość = domyślna, nieznane pety pominięte). Wersja 1 (etap 1:
+-- pety = lista id, bez gwiazdek) → każdy pet z 1 gwiazdką.
+function L.profil(D, rekord)
+	local p = L.profilNowy(D)
+	if type(rekord) ~= "table" then
+		return p
 	end
-	if D.gracz.pet_probny and #w < D.gracz.druzyna_maks then
-		local lista = {}
-		for i, P in D.pety do
-			if P.stopien >= 2 then
-				table.insert(lista, i)
+	p.zloto = liczba(rekord.zloto, 0, 1e15)
+	p.xp = liczba(rekord.xp, 0, 1e12)
+	p.wybicia = liczba(rekord.wybicia, 0, 1e9)
+	p.rzuty = liczba(rekord.rzuty, 0, 1e9)
+	p.jajek = liczba(rekord.jajek, 0, 1e9)
+	p.krolS = liczba(rekord.krolS, 0, 1e9)
+	if type(rekord.pety) == "table" then
+		local pety = {}
+		for k, v in rekord.pety do
+			local id = if type(k) == "string" then k elseif type(v) == "string" then v else nil
+			local g = if type(k) == "string" and type(v) == "number" then math.clamp(math.floor(v), 1, D.gwiazdki.maks) else 1
+			if id and L.nrPeta(D, id) then
+				pety[id] = g
 			end
 		end
-		local nr = lista[math.min(#lista, math.floor(r * #lista) + 1)]
-		table.insert(w, { id = D.pety[nr].id, nr = nr, probny = true, odpoczynek = 0 })
+		if next(pety) ~= nil then
+			p.pety = pety
+		end
+	end
+	for id in p.pety do
+		p.ksiega[id] = true
+	end
+	if type(rekord.ksiega) == "table" then
+		for id, v in rekord.ksiega do
+			if type(id) == "string" and v == true and L.nrPeta(D, id) then
+				p.ksiega[id] = true
+			end
+		end
+	end
+	if type(rekord.druzyna) == "table" then
+		local dr, bylo = {}, {}
+		for _, id in rekord.druzyna do
+			if type(id) == "string" and p.pety[id] and not bylo[id] and #dr < D.gracz.druzyna_maks then
+				table.insert(dr, id)
+				bylo[id] = true
+			end
+		end
+		if #dr > 0 then
+			p.druzyna = dr
+		end
+	end
+	local zostaw = {}
+	for _, id in p.druzyna do
+		if p.pety[id] then
+			table.insert(zostaw, id)
+		end
+	end
+	if #zostaw == 0 then
+		for id in p.pety do
+			table.insert(zostaw, id)
+			break
+		end
+	end
+	p.druzyna = zostaw
+	if type(rekord.samouczek) == "table" then
+		p.samouczek = { rzut = rekord.samouczek.rzut == true, jajko = rekord.samouczek.jajko == true }
+	end
+	return p
+end
+
+-- profil do magazynu (tylko proste typy, klucze napisowe)
+function L.doZapisu(D, p)
+	local pety, ksiega, dr = {}, {}, {}
+	for id, g in p.pety do
+		pety[id] = g
+	end
+	for id in p.ksiega do
+		ksiega[id] = true
+	end
+	for _, id in p.druzyna do
+		table.insert(dr, id)
+	end
+	return { v = D.gracz.wersja_profilu, zloto = p.zloto, pety = pety, druzyna = dr, ksiega = ksiega, xp = p.xp,
+		samouczek = { rzut = p.samouczek.rzut, jajko = p.samouczek.jajko }, wybicia = p.wybicia, rzuty = p.rzuty, jajek = p.jajek,
+		krolS = p.krolS }
+end
+
+-- nowa drużyna z listy id: tylko posiadane, bez powtórzeń, 1..druzyna_maks
+function L.ustawDruzyne(D, profil, lista): boolean
+	if type(lista) ~= "table" then
+		return false
+	end
+	local dr, bylo = {}, {}
+	for _, id in lista do
+		if type(id) ~= "string" or not profil.pety[id] or bylo[id] or #dr >= D.gracz.druzyna_maks then
+			return false
+		end
+		bylo[id] = true
+		table.insert(dr, id)
+	end
+	if #dr == 0 then
+		return false
+	end
+	profil.druzyna = dr
+	return true
+end
+
+-- drużyna do rzutu: { id, nr, gwiazdki, odpoczynek } (odpoczynek z mapy id → czas)
+function L.druzyna(D, profil, odpoczynki)
+	local w = {}
+	for _, id in profil.druzyna do
+		table.insert(w, { id = id, nr = L.nrPeta(D, id), gwiazdki = profil.pety[id] or 1, odpoczynek = (odpoczynki and odpoczynki[id]) or 0 })
 	end
 	return w
 end
@@ -899,6 +1187,75 @@ end
 -- pozostały odpoczynek w sekundach (zaokrąglony w górę)
 function L.zostalo(wpis, teraz: number): number
 	return math.max(0, math.ceil((wpis.odpoczynek or 0) - teraz))
+end
+
+------------------------------------------------------------------ zapis (magazyn podany z zewnątrz — w testach atrapa)
+-- który magazyn: (nazwa albo nil, opis). Znacznik próby (tools/zapis_prob.py) → nil: prawdziwego zapisu nie ruszamy;
+-- z ZapisProbaMagazyn = true → osobny magazyn próby
+function L.magazyn(Z, studio: boolean, doKiedy, teraz: number, magazynProby: boolean)
+	local wProbie = studio and type(doKiedy) == "number" and teraz < doKiedy
+	local nazwa = Z.magazyn .. (if studio then Z.przyrostek_studio else "")
+	if wProbie and magazynProby then
+		return nazwa .. Z.przyrostek_proby, "włączony (magazyn próby)"
+	elseif wProbie then
+		return nil, "wyłączony (próba gry)"
+	end
+	return nazwa, "włączony"
+end
+
+-- wczytanie: (profil, zapisywalny). Bez magazynu albo po proby nieudanych próbach — nowy profil i zapis WYŁĄCZONY
+-- (nie nadpiszemy prawdziwego postępu świeżym profilem). czekaj(n) — pauza między próbami (w teście nic).
+function L.wczytajProfil(D, magazyn, klucz: string, czekaj)
+	if not magazyn then
+		return L.profilNowy(D), false
+	end
+	for proba = 1, D.zapis.proby do
+		local ok, w = pcall(function()
+			return magazyn:GetAsync(klucz)
+		end)
+		if ok then
+			return L.profil(D, w), true
+		end
+		if czekaj then
+			czekaj(proba)
+		end
+	end
+	return L.profilNowy(D), false
+end
+
+-- zapis: true, gdy się udał; bez zapisywalnego profilu nic nie robi
+function L.zapiszProfil(D, magazyn, klucz: string, profil, zapisywalny: boolean): boolean
+	if not magazyn or not zapisywalny then
+		return false
+	end
+	local dane = L.doZapisu(D, profil)
+	local ok = pcall(function()
+		magazyn:UpdateAsync(klucz, function()
+			return dane
+		end)
+	end)
+	return ok
+end
+
+------------------------------------------------------------------ tablice
+-- najlepsze n wpisów { nazwa, w } malejąco po w (bez table.sort — działa też w testach)
+function L.top(wpisy, n: number)
+	local w = {}
+	for _, x in wpisy do
+		if x.w > 0 then
+			local i = #w + 1
+			while i > 1 and w[i - 1].w < x.w do
+				w[i] = w[i - 1]
+				i -= 1
+			end
+			w[i] = x
+		end
+	end
+	local out = {}
+	for i = 1, math.min(n, #w) do
+		out[i] = w[i]
+	end
+	return out
 end
 
 return L
