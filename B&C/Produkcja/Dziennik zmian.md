@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-20 · Claude Code u Karola (panel: poprawki Wytwórni, temat sesji)
+- **Karol (zrzuty):** „Popraw UI tej Wytwórni i dodaj w pozycji sesji wybór z listy, o jakim temacie sesja będzie”. Lejek i karta pomysłu: przyczyną była stara wersja widoku w karcie przeglądarki (zderzenie klasy CSS i „null” — poprawione w kodzie z 18:19); przy okazji Markdown w radarze, opisy kryteriów z prawdziwej [[Karta oceny pomysłu]], testy na kopiach prawdziwych notatek.
+- **Temat sesji** w zakładce Sesja (opis w [[Panel zespołu]]). 662 testy panelu OK; panel uruchomiony ponownie o 18:41 (nikt nie był wtedy w rozmowie). Link do panelu dla Pawła wysłany Karolowi.
+
 ## 2026-11-20 · Claude Code u Karola (panel: zakładka Wytwórnia)
 - **Panel (D-115):** zakładka „Wytwórnia” — portfel gier z liczbami i pulpitem każdej gry, lejek pomysłów z werdyktem agenta i ocenami ludzi, karta pomysłu (ocena Karola i Pawła, zmiana etapu), dodawanie pomysłu z szablonu, radar trendów; karta „Gry” na Pulpicie. 652 testy panelu OK, próba w przeglądarce 30/30 (telefon i komputer). Panel uruchomiony ponownie na nowym kodzie; link przez tunel bez zmian.
 - Notatka [[Blocky & Crycket]] w Wytwórni ma aliasy (B&C, Blocky&Crycket) do dopasowania raportów i zadań. Opis w [[Panel zespołu]].

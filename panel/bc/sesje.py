@@ -21,6 +21,9 @@ Trzy części:
    i na przycisk agent (bc/agent.py, subskrypcja osoby przy komputerze) aktualizuje robocze notatki; „Zakończ sesję”
    uruchamia agenta, który spisuje ustalenia do sejfu jako PROPOZYCJE.
 
+TEMAT SESJI (od 20.11) — o czym jest sesja, wybór z listy (Wytwórnia, gry i pomysły z bc/wytwornia.py, Pytania, Inne
+z tekstem); zmienia decydent, widzą wszyscy, zapis przy sesji, a agent sesji dostaje go jako kontekst (kontekst_tematu).
+
 Prywatność: zapis rozmowy, notatki i odcinki dźwięku leżą tylko w danych lokalnych panelu
 (RUNTIME/sesje/<id sesji>/), nigdy w repozytorium ani w panel/dane. Bieżącą sesję widzą uczestnicy pokoju; dawne
 sesje (lista, pobranie, odczyt polem `sesja`) tylko osoba przy komputerze z panelem. Do sejfu trafiają wyłącznie

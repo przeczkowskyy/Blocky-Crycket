@@ -5,6 +5,8 @@
 // i Pytania (lista „Do odpowiedzi” z zakładki Pytania, wspolne/lista_pytan.js). Na telefonie pod paskiem pokoju
 // przełącznik Transkrypcja / Notatki / Agenda / Pytania (domyślnie Transkrypcja). Serwer: bc/sesje.py.
 // Rozmowa trwa także po przejściu do innej zakładki panelu (obiekt rozmowy żyje w tym module).
+// Pod nagłówkiem pasek „Temat sesji” (od 20.11): wybór z listy (Wytwórnia, gry z portfela, pomysły z lejka, Pytania,
+// Inne z tekstem) — POST /api/sesje/temat, widzą go wszyscy, agent sesji dostaje go jako kontekst.
 
 import { el, zamien, ikona, toast, arkusz, pusty, awatar, kopiuj, odmiana, dataKrotka, przelacznik } from "../wspolne/ui.js";
 import { md, mdLinia } from "../wspolne/markdown.js";

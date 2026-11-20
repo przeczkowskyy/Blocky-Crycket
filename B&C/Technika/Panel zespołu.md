@@ -150,6 +150,8 @@ Zakładka **Wytwórnia** (na telefonie w „Więcej”) czyta folder [[00 Wytwó
 - **Radar trendów** — tabela z [[Radar trendów]] z datą aktualizacji.
 Szczegóły techniczne i API: `panel/README.md`.
 
+**Temat sesji (od 20.11.2026):** w zakładce Sesja lista „Temat sesji” — Wytwórnia (nowe pomysły na gry), gra z portfela, pomysł z lejka, Pytania do odpowiedzi albo Inne (z tekstem). Wybiera Karol albo Paweł, widzą wszyscy w rozmowie; temat zapisuje się przy sesji, a agent sesji czyta pod niego notatki (Wytwórnia, notatka gry, karta pomysłu) i z niego proponuje agendę.
+
 ## Wejście z telefonu spoza domu (tunel)
 Sprawdzone naprawdę 13.11.2026: przenośny `cloudflared` (bez instalatora i uprawnień administratora) wystawia panel pod losowym adresem https, a wejście wymaga kodu dostępu. Gość z tunelu nie dostaje uprawnień osoby przy komputerze — nie uruchomi agenta, gita ani nowej migawki — nawet jeśli zna klucz lokalny. Przed udostępnieniem adresu drugiej osobie trzeba wyjąć z konfiguracji lokalnej prywatne sejfy podpięte do panelu. Kroki: `panel/INSTALACJA.md`.
 
