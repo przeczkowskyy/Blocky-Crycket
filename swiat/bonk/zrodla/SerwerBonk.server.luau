@@ -730,6 +730,7 @@ evBonk.OnServerEvent:Connect(function(gracz: Player)
 	end
 	local i = L.wybierzCel(pos.X, pos.Z, lista, D.bonk.zasieg)
 	if not i then
+		zdarzenie({ t = "zamach", g = gracz.UserId }) -- etap 3: zamach ręką widzą wszyscy (także pudło)
 		return
 	end
 	local p = potwory[i]
@@ -956,6 +957,25 @@ RunService.Heartbeat:Connect(function(dt)
 		akum = 0
 		local zegar = os.clock()
 		local t = teraz()
+		-- etap 3: tupot żywego Strażnika co kilka sekund, gdy ktoś w BONK stoi blisko (fala odpycha, bez obrażeń)
+		local TU = D.straznik.tupot
+		for _, p in straznicy do
+			if p.zywy and zegar >= (p.tupot or 0) then
+				p.tupot = zegar + losuj(TU.co_s[1], TU.co_s[2])
+				local x, z = polozenie(p, t)
+				local ktos = false
+				for g, s in stany do
+					local h = s.wBonk and hrpGracza(g)
+					if h and Vector3.new(h.Position.X - x, 0, h.Position.Z - z).Magnitude < TU.zasieg + 8 then
+						ktos = true
+						break
+					end
+				end
+				if ktos then
+					zdarzenie({ t = "tupot", nr = p.S.kraina, poz = Vector3.new(x, p.y, z) })
+				end
+			end
+		end
 		for _, p in potwory do
 			if not p.zywy then
 				if zegar >= p.odrodzenie then
@@ -1234,6 +1254,27 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 	elseif polecenie == "odswiez" then
 		odswiezPokazanie()
 		return true
+	elseif polecenie == "pety_profil" then
+		-- haczyk próby / demo: posiadane pety { [id] = kopie } (odkryte w Księdze), AUTO BEST
+		if type(a) == "table" then
+			local pety = {}
+			for id, n in a do
+				if D.pety[id] then
+					pety[id] = math.max(1, math.floor(tonumber(n) or 1))
+					s.profil.ksiega[id] = true
+				end
+			end
+			s.profil.pety = pety
+			s.profil.autoPety = true
+			przelicz(g)
+		end
+		return s.profil.aktywne
+	elseif polecenie == "palka" then
+		-- haczyk demo / próby: pałka nr w profilu (w dłoni od razu)
+		s.profil.palka = math.clamp(math.floor(tonumber(a) or 0), 0, #D.palki)
+		przelicz(g)
+		zalozPalke(g)
+		return s.profil.palka
 	end
 	return nil
 end

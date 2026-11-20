@@ -1,4 +1,4 @@
-# BONK — prosta gra z naszych zasobów (etap 1: rdzeń, etap 2: pałki, pety, Strażnicy)
+# BONK — prosta gra z naszych zasobów (etap 1: rdzeń, etap 2: pałki, pety, Strażnicy, etap 3: dopracowanie)
 
 > **Status: propozycja (prototyp, D-112).** Projekt gry: `B&C/Gra/BONK — projekt prototypu.md`. Wszystkie liczby
 > to propozycja do pomiaru. Każdy skrypt i moduł zaczyna się od strażnika `RunService:IsStudio()` (poza Studio serwer
@@ -7,7 +7,37 @@
 *Uderzasz potwory, a one odlatują daleko; rośnie Moc, otwierasz kolejne krainy.* Etap 1 to rdzeń: od wejścia do
 pokonywania potworów w trzech krainach. Etap 2 (noc 19/20.11.2026) dokłada drugą warstwę pętli: pałki za monety,
 jajka i pety z Księgą, Strażników bitych wspólnie, pokazanie się (Moc nad głową, korona, tablice, komunikaty) i dzienny
-prezent. Etap 3 (dopracowanie, zamach ręką, dźwięki, pad, ikona) — niżej, „Co zostaje na etap 3”.
+prezent. Etap 3 (ta sama noc, do rana 20.11) to dopracowanie: czytelny ekran, zamach ręką z pałką, ruch petów i jajka,
+tupot Strażnika, pad i telefon, ikona i miniatury, film demo. Publikacja jako osobna gra — lista kroków na końcu.
+
+## Co nowego (etap 3)
+
+| Część | Jak |
+|---|---|
+| **Stos napisów u góry** | podpowiedź samouczka, pasek Strażnika (z „back in 42s”), napis bramy i komunikaty serwera układają się jeden pod drugim pod POWER / COINS (`L.stos`, co klatkę, bez nakładania — komputer, telefon 667 × 375, tablet 1024 × 768). Nazwa krainy i HOME RUN! na środku, ale zawsze pod stosem; dymek („NOT ENOUGH COINS”…) nad przyciskiem przy stoisku i nad szansami jajka, nad oknami |
+| **Napis bramy** | przy bramie (30 st) tablica nad bramą chowa się u gracza, a jej tekst („NEED 4.5K POWER”, „BEAT THE GUARDIAN!”) jest paskiem w stosie |
+| **Samouczek** | „Walk up…” → „BONK!” (cel w zasięgu) → po pierwszym własnym ciosie „Get more Power…” na 6 s i koniec (wcześniej druga podpowiedź wisiała, aż potwór poleciał — przy Strażniku do końca walki) |
+| **Mnożniki dokładnie** | `L.mnoznikTekst`: sklep „x1.5 POWER”, okno petów „x2.95 POWER”, dymek zakupu „War Hammer!  x3 POWER” (było „x1”, bo `L.format` ucina poniżej 1000) |
+| **Zamach ręką z pałką** | każdy klient porusza ręką **każdego** gracza z pałką (bez wgranych animacji): obrót barku i łokcia doklejony do `Transform` stawu w `PreSimulation`, czyli po animacjach (chód działa dalej). Działa ze starymi stawami Motor6D i z nowymi `AnimationConstraint` (takie ma awatar z próby). Spoczynek: łokieć ok. 128° — pałka leży ukośnie na ramieniu; BONK: zamach z góry zza głowy do przodu (0,36 s). Serwer rozsyła zdarzenie zamachu do wszystkich także przy pudle (`zamach`), przy trafieniu wystarczają `cios` / `lot`. Łuk zamachu (efekt) idzie teraz z góry w dół |
+| **Pety w ruchu** | w biegu podskoki z przechyłem w przód i kiwaniem na boki, w miejscu oddech i bujanie; **latające** (`lata: true` w `ustawienia.json`: Glow Owl, Dragonfly, Wisp, Toucan Chick) unoszą się ok. 2,8 st nad ziemią i falują |
+| **Jajko w inkubatorze** | kołysze się, co 3,5 s krótko drży (u klienta, tylko w zasięgu 110 st) |
+| **Tupot Strażnika** | żywy Strażnik co 6–9 s tupie, gdy ktoś w BONK stoi blisko: pierścień fali, napis STOMP!, Strażnik drga; klient gracza w promieniu 24 st sam się lekko odpycha (bez obrażeń; `straznik.tupot` w ustawieniach) |
+| **Pad** | X / R2 = BONK (było), **B zamyka okno**, **LB = PETS, RB = INDEX, krzyżak w górę = GIFT, Y = przycisk przy stoisku / inkubatorze** (OPEN SHOP / HATCH). Okno otwarte padem zaznacza od razu sensowny przycisk (karta następnej pałki, AUTO BEST, CLAIM) — dalej krzyżak / gałka i A (zaznaczenie GuiService). Przy grze na padzie przyciski mają znaczki LB / RB / UP / Y / B |
+| **Telefon i tablet** | każdy przycisk ≥ 44 pt: cała karta sklepu jest przyciskiem (134 × 120), X okna 46 × 46, AUTO BEST 150 × 44; nic poza ekranem w 667 × 375 i 1024 × 768 (próba B32) |
+| **Wydajność** | atrybuty potworów w pamięci klienta (czytane raz i przy `AttributeChanged`), lista potworów bez `GetChildren()` co klatkę — oszczędność zjadła nowa praca co klatkę (ręce, jajka, stos): pętla 1,8–1,9 ms, klatka 16,7 ms (próba B27 / B11) |
+| **Telefon: pełny stos** | gdy napisy sięgają pasa przycisku BONK, element zwęża się (UIScale) i przesuwa w wolny pas obok; dymek bez miejsca nad przyciskiem dołącza do stosu; nazwa krainy, gdy nachodziłaby na przyciski, tym razem się nie pokazuje |
+| **Grafiki** | `grafika/`: ikona 512 × 512 z tytułem „BONK!” i trzy miniatury 1920 × 1080 z hasłem — niżej „Grafiki do strony gry” |
+| **Film demo** | `testy/demo_wideo.py` — ok. 40 s z Play (niżej „Film demo”) |
+
+## Sterowanie
+
+| | Komputer | Telefon / tablet | Pad |
+|---|---|---|---|
+| BONK (trzymanie = co 0,22 s) | klik, E, przycisk BONK | przycisk BONK (prawy dół, nad skokiem) | X albo R2 |
+| PETS / INDEX / GIFT | przyciski z lewej | przyciski z lewej | LB / RB / krzyżak w górę |
+| OPEN SHOP / HATCH (przy stoisku / inkubatorze) | przycisk na dole | przycisk na dole | Y |
+| w oknie | klik | dotyk | krzyżak / gałka + A |
+| zamknij okno | X w rogu | X w rogu | B |
 
 ## Co działa (etap 2)
 
@@ -79,6 +109,8 @@ python -B swiat/bonk/zbuduj.py --autostart on|off
 python -B swiat/bonk/zbuduj.py --wlacz off   # wyłącznik: serwer i klient BONK nic nie robią (on — z powrotem)
 python -B swiat/bonk/zbuduj.py --usun        # usuwa Workspace/BonkGra (przed publikacją obecnej gry)
 python -B swiat/bonk/testy/proba_play.py <folder poza repo>   # próba w Play (Play wyłącznie przez tools/studio_mcp.py)
+python -B swiat/bonk/testy/demo_wideo.py <plik.mp4 poza repo>  # film demo ok. 40 s (etap 3)
+python -B swiat/bonk/grafika/zrob_grafiki.py <folder szkiców>  # ikona i miniatury z napisami (etap 3)
 ```
 
 W grze: przejdź przez bramę BONK obok płyty startu (albo `AutoStart`). Wyjście: brama EXIT na starcie lasu.
@@ -89,15 +121,17 @@ strażnika Studio, bez bramy przy starcie obecnej gry, `AutoStart = true`).
 
 | Plik | Co |
 |---|---|
-| `ustawienia.json` | liczby: krainy i zagrody, gatunki, potwory, rzadki, **pałki, rzadkości, jajka i pety, Strażnicy, pokazanie się, prezent, akcje**, BONK, Moc, lot, zapis, portal, widok, interfejs, dźwięki, model tempa |
+| `ustawienia.json` | liczby: krainy i zagrody, gatunki, potwory, rzadki, **pałki, rzadkości, jajka i pety, Strażnicy, pokazanie się, prezent, akcje**, BONK, Moc, lot, zapis, portal, widok, interfejs, dźwięki, model tempa; etap 3: `pety.ruch` (podskoki, unoszenie, jajko), `lata` przy petach, `straznik.tupot`, `ui.pad` (znaczki pada) |
 | `dane.py` | generator `zrodla/DaneBonk.luau` (położenia w świecie BONK z `znaczniki.json` pasów, wymiary modeli, odcinki dźwięków) i wzorców: potwory i Strażnicy (bryły z `swiat/test_walki2/dane/<gatunek>.json`), pety i jajka (rig z klocków `swiat/postacie/<id>.py` przez `roblox_klocki.rig`, poza spoczynku), pałki (`swiat/postacie/bronie.py`, bryły w układzie RightGripAttachment) — wszystko tylko odczytem |
 | `tempo.py` | rachunek tempa (bez Studio): zakupy pałek i jajek, wyklucia „średnim szczęściem”, Strażnicy, bramy |
 | `zbuduj.py` | budowa w Studio: kontener, moduły i skrypty, sygnały, mapa (paczki po 400 części), wzorce (41), bramy, portale, **stanowiska** (inkubatory z tablicą szans, stoiska pałek, trzy tablice); `--teren`, `--stan`, `--usun`, `--publikacja` |
-| `zrodla/LogikaBonk.luau` | czyste rachunki (liczby, Moc, bramy ze Strażnikiem, wiadro tempa, wędrówka, wybór celu, lot, nagrody, magazyn, profil v2 z migracją, pałki, losowanie i wyklucie, najlepsze pety, mnożnik petów, Księga, nagroda Strażnika, prezent) — wykonywane też w testach bez Studio |
+| `zrodla/LogikaBonk.luau` | czyste rachunki (liczby, Moc, bramy ze Strażnikiem, wiadro tempa, wędrówka, wybór celu, lot, nagrody, magazyn, profil v2 z migracją, pałki, losowanie i wyklucie, najlepsze pety, mnożnik petów, Księga, nagroda Strażnika, prezent; etap 3: mnożnik dokładnie `L.mnoznikTekst`, stos napisów `L.stos`) — wykonywane też w testach bez Studio |
 | `zrodla/SerwerBonk.server.luau` | serwer: potwory i Strażnicy, BONK, nagrody, bramy, portale, zapis, akcje (sklep, jajko, pety, prezent), pałka w dłoni, korona, leaderstats, tablice, komunikaty, haczyki prób |
-| `zrodla/KlientBonk.client.luau` | klient: widoki potworów i Strażników, loty (Strażnik w niebo), wejście, cudze ekrany, bramy u gracza, muzyka, wyklucie przed kamerą, pety za graczami, Moc nad głowami, strefy stoiska i inkubatora, haczyki prób |
-| `zrodla/EfektyBonk.luau`, `zrodla/InterfejsBonk.luau`, `zrodla/OknaBonk.luau` | efekty w świecie (napisy, iskry, monety, plusk, ślad), ekran (Moc, monety, BONK) i okna etapu 2 (przyciski boczne, przycisk przy stoisku / inkubatorze z szansami, sklep, pety, Księga, prezent, komunikat, dymek, pasek Strażnika, napisy wyklucia) |
-| `testy/test_bonk.py`, `testy/proba_play.py` | testy bez Studio (34) i próba w Play (B00–B27; `--bez-okna` — bez wysuwania okna Studio) |
+| `zrodla/KlientBonk.client.luau` | klient: widoki potworów i Strażników, loty (Strażnik w niebo), wejście, cudze ekrany, bramy u gracza, muzyka, wyklucie przed kamerą, pety za graczami, Moc nad głowami, strefy stoiska i inkubatora, haczyki prób; etap 3: stos napisów, napis bramy, samouczek, ręka z pałką (spoczynek i zamach dla wszystkich graczy), ruch petów i jajka, tupot, pad, pamięć atrybutów potworów, kamera filmowa (haczyk `"kamera"`) |
+| `zrodla/EfektyBonk.luau`, `zrodla/InterfejsBonk.luau`, `zrodla/OknaBonk.luau` | efekty w świecie (napisy, iskry, monety, plusk, ślad), ekran (Moc, monety, BONK) i okna etapu 2 (przyciski boczne, przycisk przy stoisku / inkubatorze z szansami, sklep, pety, Księga, prezent, komunikat, dymek, pasek Strażnika, napisy wyklucia; etap 3: napis bramy, fala tupotu, łuk zamachu z góry, pad — `OknaBonk:pad`, znaczki, zaznaczanie GuiService) |
+| `testy/test_bonk.py`, `testy/proba_play.py` | testy bez Studio (37) i próba w Play (B00–B33; `--bez-okna` — bez wysuwania okna Studio) |
+| `testy/demo_wideo.py` | film demo z Play (etap 3) — plik MP4 poza repo |
+| `grafika/` | ikona i miniatury do strony gry + `zrob_grafiki.py` (etap 3) |
 
 W Studio (`Workspace/BonkGra`, atrybut `Wygenerowane`): `Mapa/{Las,Bagno,Dzungla}`, `Wzorce/<gatunek | Pet_<id> |
 Jajko_<n> | Palka_<n>>` (w grze serwer przenosi je do `ReplicatedStorage/BonkWzorce`), `Bramy/Brama1–3`,
@@ -128,6 +162,39 @@ między jajkami i wiadro akcji (4/s, zapas 4). Do klientów `Sygnaly/Zdarzenia`:
   true }`, `straznicy = { n1, n2, n3 }` (gęsta lista), `prezent = { dzien, seria }`, `jajek`. Nowe pole: podnieś
   `zapis.wersja_profilu` i dopisz migrację w `L.profil` (wzór: gałąź `wersja < 2`).
 - **Nowa akcja gracza:** dopisz rodzaj do `AKCJE` w serwerze i gałąź w `evAkcja` (wiadro akcji jest wspólne).
+- **Latający pet:** `"lata": true` przy pecie w `jajka[].pety` (etap 3), potem `dane.py` i `zbuduj.py --skrypty`.
+- **Nowy napis u góry ekranu:** dopisz ramkę (AnchorPoint 0,5 / 0, wysokość bazowa) do listy w `ukladNapisow`
+  (klient) — stos ułoży ją pod resztą; nie ustawiaj jej pozycji Y na sztywno.
+- **Poza ręki:** `POZY` w kliencie (bark x / z, łokieć — stopnie); zamach 0,36 s w `pozaZamachu`.
+
+## Próba w Studio (etap 3: noc 19/20.11.2026)
+
+`python -B swiat/bonk/testy/proba_play.py <folder poza repo>` — **33/33 OK** (czwarta próba etapu 3; wcześniejsze
+znalazły i poprawiły: stawy awatara z próby to `AnimationConstraint`, nie Motor6D — zmiana `C0` / ramy nic nie dawała,
+teraz obrót doklejony do `Transform` po animacjach; nazwa pola trybu pada przesłaniała metodę `pad`; tupot przez samą
+prędkość części nie ruszał postaci — teraz krótka `LinearVelocity`; pierwsza siła tupotu wypychała samotnego gracza poza
+zasięg i B20 nie kończył walki — siła zmniejszona, próba (jak człowiek) wraca pod Strażnika; na telefonie przy pełnym
+stosie komunikat wchodził pod przycisk BONK, a nazwa krainy i dymek na przycisk OPEN SHOP — teraz element zwęża się
+w wolny pas obok przycisku, dymek dołącza do stosu, nazwa krainy przy braku miejsca się nie pokazuje). Testy bez Studio:
+**37 OK** (nowe: mnożnik dokładnie, stos napisów, zasady etapu 3 w źródłach).
+
+| Punkt (etap 3) | Wynik |
+|---|---|
+| B28 zamach | staw `AnimationConstraint`; spoczynek bark 12° / 12°, łokieć 128° (pałka ukośnie na ramieniu, bark obrócony o 17°); BONK w pustym miejscu → zamach (poza uderzenia 22° / 4°) i zdarzenie `zamach` od serwera u klienta (u innych graczy tą samą drogą) |
+| B29 ruch petów | latające (Dragonfly, Glow Owl) 2,4–3,3 st nad ziemią; chodzący (Leaf Fox) w biegu 0,04–0,75 st (podskoki); jajko w inkubatorze kołysze się (−0,07…+0,06 rad) |
+| B30 stos (komputer 2041 × 1095) | podpowiedź, pasek Strażnika, napis bramy, komunikat, nazwa krainy, dymek, BONK — **bez nakładania i w ekranie**; podpowiedź po samouczku schowana; sklep: „x1.5 / x2 / x3 / x4 / x6 / x8 / x11 / x15 POWER” |
+| B31 pad | LB → PETS (zaznaczony AUTO BEST), B → zamknięte, RB → INDEX, w górę → GIFT (zaznaczony CLAIM), Y przy stoisku → sklep (zaznaczona karta następnej pałki), B → zamknięte |
+| B33 tupot | po 6,8 s fala; gracz odepchnięty o 8 st; bez obrażeń |
+| B32 telefon 667 × 375 i tablet 1024 × 768 | stos napisów (z dymkiem, przyciskiem BONK i OPEN SHOP) bez nakładania i w ekranie; wszystkie przyciski (sklep 14, pety 7, Księga 6, prezent 7, bez okna 5) **≥ 44 pt** i w ekranie; okna w ekranie |
+| B20 Strażnik sam (z tupotem) | **47,9 s** (etap 2 bez tupotu: 42 s; cel 45–60 s) |
+| B27 / B11 czas klatki | 3 pety + Strażnik: **śr. 16,7 ms (60 kl./s), najwyżej 18,6 ms**, pętla BONK śr. 1,81 ms; pełna zagroda lasu: 16,7 / 19,2 ms, pętla 1,9 ms (pamięć atrybutów zrównoważyła nową pracę co klatkę: ręce, jajka, stos — etap 2: 1,35–1,6 ms) |
+| B00–B27 | jak w etapie 2, wszystkie OK (B03 pierwszy BONK 4,2 s od pokazania się ekranu); B15 konsola bez błędów pakietu; B16 Studio w Edit, `AutoStart = false` |
+
+Zrzuty etapu 3 (`klatki/`, „Player 1”, bez nazwy konta i listy graczy): `bonk_palka_ramie.jpg`, `bonk_pety_ruch.jpg`,
+`bonk_napisy.jpg` (wszystkie napisy stosu naraz), `bonk_telefon_napisy.jpg`, `bonk_tablet.jpg`; pozostałe zrzuty
+odświeżone tą samą próbą.
+
+**Sąsiedzi** (`swiat/przejscie_gry/regresja_calosci.py`, wyniki poza repo): próba dymna gry **14/14 OK** (start, klasa, chmury, las, walka, bazar, czas klatki 16,7 ms), bohater **20 OK + 1 „?”** (B16 — informacja o rundzie treningu, której nikt nie gra; nie dotyczy BONK), zapis postępu **10/10 OK** (magazyn próby), stan gracza **14 OK + S00 „?”** (lista do przejrzenia, informacyjnie) — BONK nie psuje obecnej gry. Na koniec Studio w Edit, `AutoStart = false`, `BonkWlaczony = true`.
 
 ## Próba w Studio (etap 2: noc 19/20.11.2026)
 
@@ -185,27 +252,87 @@ z poprzedniej próby, kolejność próby bramy).
 Zrzuty: `klatki/bonk_lot.jpg`, `bonk_home_run.jpg`, `bonk_las.jpg`, `bonk_bagno.jpg`, `bonk_dzungla.jpg`,
 `bonk_telefon.jpg` (bez nazwy konta i listy graczy).
 
+## Grafiki do strony gry (etap 3)
+
+`grafika/` — do wgrania przez człowieka przy publikacji (nic nie jest wgrane do Roblox):
+
+| Plik | Co |
+|---|---|
+| `ikona_512.png` | ikona gry 512 × 512: postać z pałką, slime, tytuł **BONK!** (Luckiest Guy — ten sam krój co w grze, gruby obrys, cień), czytelna w 100–150 px |
+| `miniatura_home_run.jpg` | 1920 × 1080, hasło „BONK THEM TO THE SKY!” + mały znak BONK! |
+| `miniatura_pety.jpg` | 1920 × 1080, „HATCH PETS!” |
+| `miniatura_straznik.jpg` | 1920 × 1080, „BEAT GUARDIANS TOGETHER!” |
+| `podglad.jpg` | wszystko na jednej planszy, ikona także w 150 i 100 px |
+| `zrob_grafiki.py` | odtworzenie: `python -B swiat/bonk/grafika/zrob_grafiki.py <folder szkiców>` (szkice z Higgsfield bez napisów: `ikona.png`, `miniatura_*_1920.jpg` — leżą poza repo; napisy dokłada Pillow lokalnie) |
+
+## Film demo (etap 3)
+
+`python -B swiat/bonk/testy/demo_wideo.py <plik.mp4 POZA repo>` — Play tylko przez `tools/studio_mcp.py` (znacznik
+próby zapisu, rekord próby kasowany), stan profilu z haczyków próby (bez grindu), każda scena nagrana narzędziem MCP
+`video_capture` (obraz gry z Play 2032 × 1152, 30 kl./s, z dźwiękiem gry) z kamerą filmową z haczyka klienta
+`"kamera"`; ffmpeg przycina, kadruje do 16:9 i skleja (H.264 1280 × 720, CRF 25, AAC 96 kb/s). Sceny: wejście do lasu →
+BONK-i z lotem → HOME RUN → zakup pałki w oknie sklepu (pałka na ramieniu, zamach) → wyklucie peta i pety za graczem →
+Strażnik (pasek u góry, lot w niebo, nagroda) → otwarta brama i Bagno. W kadrze „Player 1”, bez listy graczy i czatu.
+
 ## Czego jeszcze nie ma i ograniczenia
 
-- Brak zamachu ręką awatara (jest tylko łuk zamachu przed graczem); pałka trzymana w dłoni sztywno (w pozie ręki
-  awatara celuje do przodu, jak Tool).
-- Pety i jajka to statyczne wzorce (poza spoczynku, bez klipów `chod` / `radosc` z próby petów): ruch to podskoki
-  w biegu, obrót i lekkie bujanie. Pety latające (Dragonfly, Wisp) też podskakują po ziemi.
-- Strażnicy stoją w miejscu i nie oddają ciosów (to „worek do bicia” dla całego serwera) — atak Strażnika, fazy
-  i zasięg areny zostają na później. Nagroda: każdy, kto trafił choćby raz, dostaje co najmniej 25%.
-- Tablice to SurfaceGui na częściach z Edit (serwer wpisuje wiersze) — widać je w zrzutach z Play. Dzień prezentu liczy
-  się w UTC (`os.time()`), nie w strefie gracza.
-- Księga liczy odkryte pety; kopie nie mają jeszcze innego użytku niż drugi i trzeci aktywny pet tego samego rodzaju
-  (brak łączenia kopii w lepszą wersję).
+- Pety i jajka to nadal statyczne wzorce (bez klipów `chod` / `radosc` z rigów próby petów) — ruch jest proceduralny
+  (podskoki, przechył, unoszenie latających, kołysanie jajka).
+- Zamach i spoczynek pałki to obrót barku i łokcia u każdego klienta; na awatarach R6 jest tylko bark (bez łokcia —
+  pałka w spoczynku nie leży na ramieniu). Nie ma osobnych póz dla krótkiej patelni i długiej chochli.
+- Strażnicy nie atakują: tupot tylko odpycha (bez obrażeń i bez faz walki). Samotny gracz traci przez tupot ok. 6 s
+  na powrót pod Strażnika (próba: 42 → 48 s, dalej w celu 45–60 s) — model tempa (`tempo.py`) tego nie liczy.
+- Pad sprawdzony haczykiem próby (ta sama funkcja `OknaBonk:pad`, którą woła `InputBegan`), nie prawdziwym padem;
+  telefon i tablet — emulacją prostokąta ekranu w Studio, nie na urządzeniu.
+- Tablice to SurfaceGui na częściach z Edit (serwer wpisuje wiersze). Dzień prezentu liczy się w UTC (`os.time()`).
+- Kopie petów nie łączą się w lepszą wersję.
 - `AutoStart` w obecnym miejscu: najpierw wybór klasy obecnej gry (dwa Entery), dopiero potem BONK.
-- Pętla klienta kosztuje ok. 1,7 ms na klatkę przy pełnej zagrodzie z 3 petami (komputer z próby) — na słabym
-  telefonie do sprawdzenia; następny krok to odczyt atrybutów potworów z pamięci zamiast co klatkę.
 - Liczby tempa z modelu, nie z graczy (pomiar D1 i czasu gry — `B&C/Gra/BONK — projekt prototypu.md`).
+- Dźwięki: arkusz efektów i muzyka lasu z obecnej gry; własnych dźwięków BONK (pęknięcie jajka, tupot) jeszcze nie ma.
 
-## Co zostaje na etap 3
+## Co dalej
 
-- Zamach ręką awatara przy BONK (klip ramienia z pałką), klipy petów (`chod`, `radosc`, `wyklucie`) i jajka
-  (`trzesienie`, `pekniecie`) z rigów próby petów zamiast statycznych wzorców.
-- Dopracowanie: atak Strażnika i jego okno „sprint” dla grupy, dźwięki BONK, pęknięcia jajka i Strażnika z własnych
-  nagrań (Higgsfield — etap 3), ikona gry i miniatura, pad (przyciski okien na krzyżaku), próba na prawdziwym telefonie.
-- Ekonomia z graczy: D1, czas do pierwszej pałki / jajka / Strażnika (strojenie liczb w `ustawienia.json`).
+- Próba z dwoma ludźmi (Team Test): zamach i pety drugiego gracza, wspólny Strażnik, tupot u obu, tablice z nazwami.
+- Próba na prawdziwym telefonie i z padem; strojenie ekonomii z graczy (D1, czas do pierwszej pałki / jajka / Strażnika).
+- Własne dźwięki BONK, klipy petów z rigów, atak Strażnika z oknem „sprint” dla grupy.
+- Decyzja ludzi o publikacji jako osobnej gry (lista niżej).
+
+## Publikacja jako osobna gra — lista kroków dla ludzi
+
+> To decyzja Karola i Pawła (D-044 / D-112: BONK jako osobna gra w grupie). Agent niczego nie publikuje ani nie wgrywa.
+
+1. **Decyzja i nazwa.** Zapisać w `Rejestr decyzji.md`: publikujemy BONK jako osobne doświadczenie (nazwa robocza
+   „BONK!”), kto wgrywa i kiedy.
+2. **Nowe miejsce w grupie.** Creator Hub → grupa gry → *Create Experience* (albo w Studio: *File → New* → Baseplate,
+   potem *File → Publish to Roblox* → właściciel: **grupa**, nie konto prywatne). Zapisać `placeId` / `universeId`.
+   Doświadczenie na razie **prywatne**.
+3. **Budowa w pustym miejscu.** Otworzyć nowe miejsce w Studio (obok miejsca obecnej gry). `python tools/studio_mcp.py
+   studios` → `studio_id` **nowego** okna. Potem `python -B swiat/bonk/zbuduj.py --teren --studio <id>` (obszar pusty)
+   i `python -B swiat/bonk/zbuduj.py --publikacja --studio <id>` — skrypty bez strażnika Studio, bez bramy przy
+   starcie obecnej gry i bez EXIT, `AutoStart = true`, mapa trzech krain (ok. 15 tys. części) i wzorce. Skrypt
+   odmawia, gdy wskazane okno wygląda na miejsce obecnej gry. Baseplate i SpawnLocation mogą zostać (leżą daleko
+   od mapy BONK, serwer i tak przenosi gracza do lasu). Zapisać (Ctrl+S) i opublikować (*File → Publish to Roblox*).
+4. **Dostęp do zasobów.** Modele są w miejscu (bryły), ale **dźwięki** (arkusz efektów, muzyka lasu — id w
+   `ustawienia.json` → `dzwieki`) należą do konta / grupy obecnej gry: jeśli nowe doświadczenie ma innego właściciela,
+   w Creator Hub → *Development Items → Audio* → zasób → *Permissions* dodać nowe doświadczenie (albo wgrać dźwięki
+   jeszcze raz do grupy). Bez tego gra jest cicha.
+5. **Magazyn danych.** Gra zapisuje do `BONK_Gracz_v1` (klucz `g_<UserId>`) — w nowym doświadczeniu to osobny, pusty
+   magazyn (nie miesza się z obecną grą). *Game Settings → Security → Enable Studio Access to API Services* tylko do
+   prób w Studio (w Studio i tak idzie do `…_Studio`).
+6. **Ustawienia gry** (*Game Settings* / Creator Hub → *Configure*): nazwa „BONK!”, opis po angielsku (2–3 zdania:
+   bonk monsters, hatch pets, beat guardians together), gatunek *Simulator*, urządzenia: komputer, telefon, tablet,
+   konsola (pad działa), awatar R15 (zamach działa też ze stawami AnimationConstraint), liczba graczy np. 12,
+   kwestionariusz dojrzałości (*Maturity & Compliance*) — wymagany przed publicznym startem; bez Robuxów (D-086:
+   pety i jajka tylko za monety z gry, szanse jawne — D-015).
+7. **Ikona i miniatury.** Creator Hub → doświadczenie → *Places → Configure* → **Icon**: `grafika/ikona_512.png`;
+   **Thumbnails**: `miniatura_home_run.jpg`, `miniatura_pety.jpg`, `miniatura_straznik.jpg` (kolejność jak tu).
+   Przejdą moderację Roblox (kilka minut do godzin).
+8. **Co sprawdzić przed startem** (doświadczenie dalej prywatne, serwer prywatny albo *Team Test* z dwiema osobami):
+   wejście od razu w lesie, ekran BONK bez cudzych ekranów; BONK, lot, HOME RUN, zapis po wyjściu i powrocie (Moc,
+   monety, pałka, pety zostają); sklep, jajko i szanse; drugi gracz widzi zamach, pałkę, pety i koronę; wspólny
+   Strażnik i nagroda dla obu; tupot; brama do Bagna; dzienny prezent; telefon (przycisk BONK, okna w ekranie) i pad;
+   tablice z prawdziwymi nazwami (w próbie były „Player 1”); konsola (F9) bez błędów `BonkGra`; dźwięk i muzyka grają.
+9. **Start.** Doświadczenie → *Public*. Obserwować pierwsze dni (D1, czas do pierwszej pałki / jajka / Strażnika) i
+   stroić liczby w `ustawienia.json` (potem `dane.py`, `zbuduj.py --publikacja --studio <id>`, publikacja).
+10. **Miejsce obecnej gry.** BONK w miejscu B&C zostaje za strażnikiem Studio (poza Studio serwer usuwa kontener).
+    Przed publikacją obecnej gry można go też usunąć: `python -B swiat/bonk/zbuduj.py --usun`.

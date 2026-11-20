@@ -12,8 +12,17 @@
 	atrybutu gracza BonkPety — rysuje każdy klient, tylko w zasięgu), Moc nad głową każdego gracza, pasek życia Strażnika
 	(wspólny), lot Strażnika w niebo, komunikaty serwera. Akcje gracza idą przez Sygnaly/Akcja (sprawdza serwer).
 
+	Etap 3: stos napisów u góry bez nakładania (podpowiedź, pasek Strażnika, napis bramy przy bramie, komunikat; nazwa
+	krainy, HOME RUN i dymek zawsze pod stosem), podpowiedź samouczka znika po wykonaniu kroku, zamach ręką z pałką przy
+	każdym BONK widoczny dla wszystkich (każdy klient porusza barkiem i łokciem gracza — Motor6D.C0, bez wgranych animacji;
+	zdarzenia „cios” / „lot” / „zamach” z serwera), pałka w spoczynku ukośnie na ramieniu, pety podskakują z przechyłem
+	(latające unoszą się i falują), jajko w inkubatorze się kołysze, tupot Strażnika (fala odpycha gracza, bez obrażeń),
+	pad (B zamyka okno, LB / RB / w górę / Y — OknaBonk:pad), atrybuty potworów w pamięci (AttributeChanged) zamiast
+	odczytu co klatkę.
+
 	Haczyki prób: Sygnaly/SterowanieKlienta (BindableFunction u klienta): "stan", "bonk", "pomiar_zeruj", "trzymaj",
-	"emulacja", "akcja", "okno".
+		"emulacja", "akcja", "okno"; etap 3: "napisy" (wszystkie napisy stosu naraz), "pad" (przycisk pada), "reka",
+		"kamera" (kamera filmowa do demo: { odl, wys, yaw, zaGraczem, cel, pozycja, gladko, fov } albo nil).
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return
@@ -290,12 +299,54 @@ local function usunWidok(w: any)
 	w.model:Destroy()
 end
 
-local function polozenie(cfg: Configuration, t: number): Vector3?
-	local od, cel = cfg:GetAttribute("Od"), cfg:GetAttribute("Cel")
+-- atrybuty potworów w pamięci (etap 3): czytane raz i przy AttributeChanged, nie co klatkę
+local pamiec: { [Configuration]: any } = {}
+local listaPotworow: { Configuration } = {}
+
+local function czytajAtrybuty(cfg: Configuration, m: any)
+	m.zywy = cfg:GetAttribute("Zywy") == true
+	m.od = cfg:GetAttribute("Od")
+	m.cel = cfg:GetAttribute("Cel")
+	m.t0 = cfg:GetAttribute("T0") or 0
+	m.pr = cfg:GetAttribute("Pr") or 0
+	m.nr = cfg:GetAttribute("Nr")
+	m.promien = cfg:GetAttribute("Promien") or 1.5
+end
+
+local function dodajPotwora(cfg: Instance)
+	if not cfg:IsA("Configuration") or pamiec[cfg] then
+		return
+	end
+	local m: any = {}
+	czytajAtrybuty(cfg, m)
+	m.pol = cfg.AttributeChanged:Connect(function()
+		czytajAtrybuty(cfg, m)
+	end)
+	pamiec[cfg] = m
+	table.insert(listaPotworow, cfg)
+end
+folderPotworow.ChildAdded:Connect(dodajPotwora)
+folderPotworow.ChildRemoved:Connect(function(cfg)
+	local m = pamiec[cfg]
+	if m then
+		m.pol:Disconnect()
+		pamiec[cfg] = nil
+		local i = table.find(listaPotworow, cfg)
+		if i then
+			table.remove(listaPotworow, i)
+		end
+	end
+end)
+for _, c in folderPotworow:GetChildren() do
+	dodajPotwora(c)
+end
+
+local function polozenie(m: any, t: number): Vector3?
+	local od, cel = m.od, m.cel
 	if typeof(od) ~= "Vector3" or typeof(cel) ~= "Vector3" then
 		return nil
 	end
-	local x, z = L.pozycja(od.X, od.Z, cel.X, cel.Z, cfg:GetAttribute("T0") or 0, cfg:GetAttribute("Pr") or 0, t)
+	local x, z = L.pozycja(od.X, od.Z, cel.X, cel.Z, m.t0, m.pr, t)
 	return Vector3.new(x, od.Y, z)
 end
 
@@ -392,6 +443,155 @@ local function hrp(): BasePart?
 	return if h and h:IsA("BasePart") then h else nil
 end
 
+------------------------------------------------------------------ ręka z pałką (etap 3): spoczynek na ramieniu, zamach przy BONK
+-- każdy klient porusza ręką każdego gracza z pałką: obrót stawu barku i łokcia doklejony do Transform (Motor6D albo —
+-- w nowych awatarach — AnimationConstraint) w PreSimulation, czyli po animacjach (chód dalej działa). Kąty w stopniach: bark w przód / do góry (x), bark na bok (z), łokieć (x). Pałka trzymana jak
+-- młotek, więc przy łokciu ok. 125° leży ukośnie na ramieniu, a zamach idzie z góry zza głowy do przodu.
+local POZY = {
+	spoczynek = { 12, 12, 128 },
+	zamach = { 168, 8, 40 },
+	uderzenie = { 22, 4, 4 },
+}
+local stawyPostaci: { [Model]: any } = {} -- bez słabych kluczy (opakowania instancji potrafią zniknąć); sprząta krokRak
+local zamachy: { [Player]: any } = {}
+local zamachowOdebranych = 0
+
+-- staw: { j, rama (CFrame wyjściowa), a (Attachment0 przy AnimationConstraint) } albo nil
+local function staw(postac: Model, nazwa: string, nazwaR6: string?): any
+	local j = postac:FindFirstChild(nazwa, true)
+	if not j and nazwaR6 then
+		local tulow = postac:FindFirstChild("Torso")
+		j = tulow and tulow:FindFirstChild(nazwaR6)
+	end
+	if j and (j:IsA("Motor6D") or j:IsA("AnimationConstraint")) then
+		local rama = if j:IsA("Motor6D") then j.C0 else (j.Attachment0 and j.Attachment0.CFrame or CFrame.new())
+		return { j = j, obr = rama.Rotation, dodatek = CFrame.new() }
+	end
+	return nil
+end
+
+-- obrót w układzie części 0 (tułów / ramię) przeliczony na układ stawu
+local function ustawStaw(st: any, x: number, z: number)
+	st.dodatek = st.obr:Inverse() * CFrame.Angles(math.rad(x), 0, math.rad(z)) * st.obr
+end
+
+-- po animacjach (PreSimulation): Transform = dodatek * Transform animacji. Gdy animacja nie nadpisała stawu od
+-- ostatniego razu (żaden klip go nie rusza), bierzemy zapamiętaną bazę — bez narastania obrotu.
+local function doklejStaw(st: any)
+	local j = st.j
+	local teraz = j.Transform
+	local baza = if st.zapisany and teraz == st.zapisany then st.baza else teraz
+	local nowy = st.dodatek * baza
+	st.baza, st.zapisany = baza, nowy
+	j.Transform = nowy
+end
+
+local function stawy(postac: Model): any
+	local s = stawyPostaci[postac]
+	if s and s.bark.j.Parent then
+		return s
+	end
+	local bark = staw(postac, "RightShoulder", "Right Shoulder")
+	if not bark then
+		return nil
+	end
+	s = { bark = bark, lokiec = staw(postac, "RightElbow", nil), ustawione = false, poza = POZY.spoczynek }
+	stawyPostaci[postac] = s
+	return s
+end
+
+local function miesznaj(a: { number }, b: { number }, f: number): { number }
+	return { a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f, a[3] + (b[3] - a[3]) * f }
+end
+
+-- poza w chwili t od początku zamachu (od = poza w chwili startu; t < 0 — spoczynek)
+local function pozaZamachu(t: number, od: { number }?): { number }
+	local S, Z, U = POZY.spoczynek, POZY.zamach, POZY.uderzenie
+	if t < 0 or t >= 0.36 then
+		return S
+	elseif t < 0.07 then
+		local f = t / 0.07
+		return miesznaj(od or S, Z, 1 - (1 - f) * (1 - f))
+	elseif t < 0.14 then
+		local f = (t - 0.07) / 0.07
+		return miesznaj(Z, U, f * f)
+	elseif t < 0.19 then
+		return U
+	end
+	local f = (t - 0.19) / 0.17
+	return miesznaj(U, S, f * f * (3 - 2 * f))
+end
+
+local function zacznijZamach(g: Player)
+	local postac = g.Character
+	local s = postac and stawyPostaci[postac]
+	zamachy[g] = { t0 = os.clock(), od = if s then s.poza else POZY.spoczynek }
+end
+
+local krokowRak, ostatnieZPalka = 0, nil
+local function krokRak(oko: Vector3)
+	krokowRak += 1
+	local teraz = os.clock()
+	for _, g in Players:GetPlayers() do
+		local postac = g.Character
+		local s = postac and stawyPostaci[postac]
+		local glowa = postac and postac:FindFirstChild("Head")
+		local zPalka = postac ~= nil and g:GetAttribute("BonkAktywny") == true and postac:FindFirstChild("BonkPalka") ~= nil
+			and glowa ~= nil and glowa:IsA("BasePart") and (glowa.Position - oko).Magnitude < 160
+		if g == gracz then
+			ostatnieZPalka = zPalka
+		end
+		if zPalka and postac then
+			s = s or stawy(postac)
+			if s then
+				local z = zamachy[g]
+				local t = if z then teraz - z.t0 else -1
+				local p = pozaZamachu(t, z and z.od)
+				s.poza = p
+				ustawStaw(s.bark, p[1], p[2])
+				if s.lokiec then
+					ustawStaw(s.lokiec, p[3], 0)
+				end
+				s.ustawione = true
+				if z and t > 0.4 then
+					zamachy[g] = nil
+				end
+			end
+		elseif s and s.ustawione then
+			for _, st in { s.bark, s.lokiec } do
+				if st.zapisany and st.j.Transform == st.zapisany then
+					st.j.Transform = st.baza
+				end
+				st.zapisany, st.baza = nil, nil
+				st.dodatek = CFrame.new()
+			end
+			s.ustawione = false
+			s.poza = POZY.spoczynek
+		end
+	end
+	for g in zamachy do
+		if not g.Parent then
+			zamachy[g] = nil
+		end
+	end
+	for postac in stawyPostaci do
+		if not postac.Parent then
+			stawyPostaci[postac] = nil
+		end
+	end
+end
+
+RunService.PreSimulation:Connect(function()
+	for _, s in stawyPostaci do
+		if s.ustawione and s.bark.j.Parent then
+			doklejStaw(s.bark)
+			if s.lokiec then
+				doklejStaw(s.lokiec)
+			end
+		end
+	end
+end)
+
 local function bonkRaz()
 	if not aktywny then
 		return
@@ -403,6 +603,7 @@ local function bonkRaz()
 	ostatniBonk = zegar
 	wyslane += 1
 	evBonk:FireServer()
+	zacznijZamach(gracz)
 	local h = hrp()
 	if h then
 		E:zamach(h.CFrame * CFrame.new(0, 0.5, 0))
@@ -413,11 +614,25 @@ local function cokolwiekTrzymane(): boolean
 	return next(trzymane) ~= nil
 end
 
+local function zPada(typ: Enum.UserInputType): boolean
+	return string.sub(typ.Name, 1, 7) == "Gamepad"
+end
+
 UserInputService.InputBegan:Connect(function(wejscie, przetworzone)
-	if not aktywny or przetworzone then
+	if not aktywny then
 		return
 	end
 	local k = wejscie.KeyCode
+	-- pad (etap 3): B zamyka okno, LB / RB / w górę / Y otwierają okna (krzyżak w górę tylko bez zaznaczenia w oknie)
+	if okna and zPada(wejscie.UserInputType) and (k == Enum.KeyCode.ButtonB or k == Enum.KeyCode.ButtonL1
+		or k == Enum.KeyCode.ButtonR1 or k == Enum.KeyCode.ButtonY or (k == Enum.KeyCode.DPadUp and not przetworzone)) then
+		if okna:pad(k) then
+			return
+		end
+	end
+	if przetworzone then
+		return
+	end
 	local typ = wejscie.UserInputType
 	if k == Enum.KeyCode.E or k == Enum.KeyCode.ButtonX or k == Enum.KeyCode.ButtonR2 then
 		trzymane[k] = true
@@ -425,6 +640,11 @@ UserInputService.InputBegan:Connect(function(wejscie, przetworzone)
 	elseif typ == Enum.UserInputType.MouseButton1 then
 		trzymane[typ] = true
 		bonkRaz()
+	end
+end)
+UserInputService.LastInputTypeChanged:Connect(function(typ)
+	if okna then
+		okna:trybPada(zPada(typ))
 	end
 end)
 UserInputService.InputEnded:Connect(function(wejscie)
@@ -534,7 +754,8 @@ local function modelPeta(id: string): any
 	m.Parent = lokalne
 	local n = liczCzesci(m)
 	czesciPetow += n
-	return { model = m, korzen = korzen, czesci = n, id = id, poz = nil, yaw = 0, faza = math.random() * 6 }
+	return { model = m, korzen = korzen, czesci = n, id = id, poz = nil, yaw = 0, faza = math.random() * 6, lata = P.lata == true,
+		wys = 0 }
 end
 
 local function krokPetow(dt: number, oko: Vector3, zegar: number)
@@ -586,13 +807,64 @@ local function krokPetow(dt: number, oko: Vector3, zegar: number)
 			local docelowy = if d.Magnitude > 0.3 then math.atan2(-d.X, -d.Z) else select(2, cf:ToOrientation())
 			local roznica = (docelowy - p.yaw + math.pi) % (2 * math.pi) - math.pi
 			p.yaw += roznica * math.min(1, dt * 8)
-			local skok = if ruch then math.abs(math.sin(zegar * 9 + p.faza)) * 0.6 else math.abs(math.sin(zegar * 2.5 + p.faza)) * 0.15
-			p.korzen.CFrame = CFrame.new(p.poz + Vector3.new(0, skok, 0)) * CFrame.Angles(0, p.yaw, 0)
+			local RU = PU.ruch
+			local y, przechyl, kiw
+			if p.lata then
+				-- latające: nad ziemią, falują, w locie nos lekko w dół
+				y = RU.lot_wys + math.sin(zegar * 2.2 + p.faza) * RU.lot_fala
+				przechyl = if ruch then -0.22 else math.sin(zegar * 1.3 + p.faza) * 0.06
+				kiw = math.sin(zegar * 3.1 + p.faza) * 0.14
+			elseif ruch then
+				-- w biegu: podskoki z przechyłem w przód i kiwaniem na boki
+				local f = zegar * RU.skok_tempo + p.faza
+				y = math.abs(math.sin(f)) * RU.skok_bieg
+				przechyl = -0.1 - math.cos(f * 2) * 0.08
+				kiw = math.sin(f) * RU.kiwanie
+			else
+				-- w miejscu: oddech i lekkie bujanie
+				y = math.abs(math.sin(zegar * 2.4 + p.faza)) * RU.oddech
+				przechyl = 0
+				kiw = math.sin(zegar * 1.5 + p.faza) * 0.07
+			end
+			p.wys = y
+			p.korzen.CFrame = CFrame.new(p.poz + Vector3.new(0, y, 0)) * CFrame.Angles(0, p.yaw, 0) * CFrame.Angles(przechyl, 0, kiw)
 		end
 	end
 	for g in petyGraczy do
 		if not g.Parent then
 			usunPety(g)
+		end
+	end
+end
+
+------------------------------------------------------------------ jajko w inkubatorze kołysze się (etap 3; tylko u klienta)
+local jajkaInkubatorow: { [number]: any } = {}
+
+local function krokJajek(oko: Vector3, zegar: number)
+	local st = kontener:FindFirstChild("Stanowiska")
+	local RU = PU.ruch
+	for _, J in D.jajka do
+		local w = jajkaInkubatorow[J.nr]
+		if not w or not w.model.Parent then
+			local ink = st and st:FindFirstChild("Inkubator" .. J.nr)
+			local m = ink and ink:FindFirstChild("Jajko")
+			if m and m:IsA("Model") then
+				local cf, roz = m:GetBoundingBox()
+				w = { model = m, baza = m:GetPivot(), dol = cf.Position - Vector3.new(0, roz.Y / 2, 0) }
+				jajkaInkubatorow[J.nr] = w
+			else
+				w = nil
+			end
+		end
+		if w and (w.dol - oko).Magnitude < 110 then
+			local kiw = math.sin(zegar * 2.1 + J.nr) * RU.jajko_kiwanie
+			local cykl = (zegar + J.nr * 1.3) % RU.jajko_drgawki_co_s
+			if cykl < 0.6 then
+				kiw += math.sin(cykl * 48) * 0.07 * (1 - cykl / 0.6)
+			end
+			local obr = CFrame.new(w.dol) * CFrame.Angles(kiw * 0.4, 0, kiw) * CFrame.new(-w.dol)
+			w.model:PivotTo(obr * w.baza)
+			w.kiw = kiw
 		end
 	end
 end
@@ -735,9 +1007,11 @@ local function krokWyklucia(dt: number)
 	end
 end
 
+local wymuszoneNapisy = 0 -- próby: do tej chwili (os.clock) strefy nie zmieniają napisów stosu
+
 ------------------------------------------------------------------ strefy: stoisko pałek i inkubator (przycisk na dole)
 local function krokStref(hp: Vector3?)
-	if not okna then
+	if not okna or os.clock() < wymuszoneNapisy then
 		return
 	end
 	if not hp then
@@ -765,7 +1039,7 @@ end
 
 -- wspólny pasek życia najbliższego Strażnika (w zasięgu)
 local function krokStraznika(hp: Vector3?)
-	if not okna then
+	if not okna or os.clock() < wymuszoneNapisy then
 		return
 	end
 	local naj, odl = nil, math.huge
@@ -790,6 +1064,147 @@ local function krokStraznika(hp: Vector3?)
 	okna:straznik({ nazwa = naj.nazwa, hp = tonumber(cfg:GetAttribute("Hp")) or 0, hpMax = tonumber(cfg:GetAttribute("HpMax")) or 1,
 		zywy = cfg:GetAttribute("Zywy") == true,
 		powrotZa = if type(powrot) == "number" then powrot - workspace:GetServerTimeNow() else 0 })
+end
+
+------------------------------------------------------------------ napis bramy (etap 3): przy bramie na ekranie, w stosie
+local BRAMA_BLISKO = 30
+
+local function krokNapisuBramy(hp: Vector3?)
+	if not okna or os.clock() < wymuszoneNapisy then
+		return
+	end
+	local tekst, kolor = nil, nil
+	local n = odblokowane()
+	for k = 1, #D.krainy do
+		local sciana = folderBram and folderBram:FindFirstChild("Brama" .. k)
+		if sciana and sciana:IsA("BasePart") then
+			local blisko = hp ~= nil and math.abs(hp.X - sciana.Position.X) < BRAMA_BLISKO
+				and math.abs(hp.Z - sciana.Position.Z) < sciana.Size.Z / 2 + 12
+			local tab = sciana:FindFirstChild("Tablica")
+			if tab and tab:IsA("BillboardGui") then
+				tab.Enabled = not blisko
+			end
+			if blisko and k >= n then
+				local napis = sciana:FindFirstChild("Napis", true)
+				if napis and napis:IsA("TextLabel") then
+					tekst = napis.Text
+					kolor = if napis.Text == D.ui.straznik_brama then D.ui.kolory.moc else nil
+				end
+			end
+		end
+	end
+	okna:brama(tekst, kolor)
+end
+
+local function tablicePrzywroc()
+	for k = 1, #D.krainy do
+		local sciana = folderBram and folderBram:FindFirstChild("Brama" .. k)
+		local tab = sciana and sciana:FindFirstChild("Tablica")
+		if tab and tab:IsA("BillboardGui") then
+			tab.Enabled = true
+		end
+	end
+end
+
+-- stos napisów u góry: podpowiedź, pasek Strażnika, napis bramy, komunikat — kolejno pod Mocą i monetami, bez nakładania;
+-- nazwa krainy i HOME RUN na środku, ale pod stosem; dymek nad przyciskiem przy stoisku (i nad szansami jajka), pod stosem
+-- element stosu u góry wpasowany między przeszkody (telefon: przycisk BONK sięga w pas stosu): gdy nachodzi, zwęża się
+-- (UIScale) i przesuwa w wolny pas obok; zwraca wysokość po wpasowaniu. y — górna krawędź (dol = true: y to dolna)
+local wpasowane: { [Instance]: boolean } = {}
+local function wpasuj(o: GuiObject, wBaz: number, hBaz: number, y: number, s: number, przeszkody: { { number } },
+	lewo: number, W: number, dol: boolean?): number
+	local w, h = wBaz * s, hBaz * s
+	local gora = if dol then y - h else y
+	local srodek, f = W / 2, 1
+	for _, q in przeszkody do
+		local x0, x1 = srodek - w * f / 2, srodek + w * f / 2
+		if gora < q[2] + q[4] and q[2] < gora + h * f and x0 < q[1] + q[3] and q[1] < x1 then
+			local Lw, Rw
+			if q[1] + q[3] / 2 > W / 2 then
+				Lw, Rw = lewo, q[1] - 4 * s
+			else
+				Lw, Rw = q[1] + q[3] + 4 * s, W - 4 * s
+			end
+			f = math.min(f, math.max(40, Rw - Lw) / w)
+			srodek = (Lw + Rw) / 2
+		end
+	end
+	local skala = o:FindFirstChildOfClass("UIScale")
+	if skala then
+		if f < 0.999 then
+			skala.Scale = s * f
+			wpasowane[o] = true
+		elseif wpasowane[o] then
+			skala.Scale = s
+			wpasowane[o] = nil
+		end
+	end
+	o.Position = UDim2.new(0, srodek, 0, if dol then gora + h * f else gora)
+	return h * f
+end
+
+-- stos napisów u góry: podpowiedź, pasek Strażnika, napis bramy, komunikat — kolejno pod Mocą i monetami, bez nakładania;
+-- dymek nad przyciskiem przy stoisku (i nad szansami jajka), a bez miejsca — w stosie; nazwa krainy i HOME RUN pod stosem
+local function ukladNapisow()
+	if not ui or not okna then
+		return
+	end
+	local s = ui.s or 1
+	local odstep = 5 * s
+	local H, W = ui.okno.AbsoluteSize.Y, ui.okno.AbsoluteSize.X
+	local o0 = ui.okno.AbsolutePosition
+	local function prost(g: GuiObject): { number }
+		return { g.AbsolutePosition.X - o0.X, g.AbsolutePosition.Y - o0.Y, g.AbsoluteSize.X, g.AbsoluteSize.Y }
+	end
+	-- przeszkody: przycisk BONK, przycisk przy stoisku / inkubatorze i szanse jajka; z lewej kolumna PETS / INDEX / GIFT
+	local przeszkody = { prost(ui.przycisk) }
+	local dolDymka = H - 150 * s
+	if okna.kontekstRamka.Visible then
+		local gorna = prost(okna.kontekstRamka)[2]
+		table.insert(przeszkody, prost(okna.kontekstPrzycisk))
+		if okna.szanseRamka.Visible then
+			gorna = prost(okna.szanseRamka)[2]
+			table.insert(przeszkody, prost(okna.szanseRamka))
+		end
+		dolDymka = math.min(dolDymka, gorna - 6 * s)
+	end
+	local boczne = prost(okna.boczne)
+	local lewo = boczne[1] + boczne[3] + 6 * s
+	local start = 6 + 44 * s + odstep
+	local wys = {}
+	local y = start
+	for _, e in { { ui.podpowiedzRamka, 330, 34 }, { okna.pasekStraznika, 420, 44 }, { okna.bramaRamka, 330, 34 }, { okna.ogl, 470, 40 } } do
+		if e[1].Visible then
+			local h = wpasuj(e[1], e[2], e[3], y, s, przeszkody, lewo, W)
+			table.insert(wys, h)
+			y += h + odstep
+		end
+	end
+	local _, dol = L.stos(wys, start, odstep)
+	-- dymek nad przyciskiem; gdy między stosem a przyciskiem nie ma miejsca (telefon, dużo napisów) — dołącza do stosu
+	local wStosie = dolDymka - 34 * s < dol
+	if wStosie then
+		dolDymka = dol + 34 * s
+	end
+	local hD = wpasuj(okna.dymek, 360, 34, dolDymka, s, przeszkody, lewo, W, true)
+	if okna.dymek.Visible and wStosie then
+		dol = dolDymka - 34 * s + hD + odstep
+	end
+	-- nazwa krainy: na środku pod stosem; gdy nachodziłaby na przycisk BONK / przy stoisku — tym razem jej nie ma
+	local srodekKrainy = math.max(0.3 * H, dol + 37 * s)
+	local kr = { W / 2 - 210 * s, srodekKrainy - 35 * s, 420 * s, 70 * s }
+	local miesci = true
+	for _, q in przeszkody do
+		if kr[1] < q[1] + q[3] and q[1] < kr[1] + kr[3] and kr[2] < q[2] + q[4] and q[2] < kr[2] + kr[4] then
+			miesci = false
+		end
+	end
+	ui.napisKrainy.Position = UDim2.new(0.5, 0, 0, srodekKrainy)
+	ui.napisKrainy.Visible = miesci
+	if ui.czasKrainy >= 0 and miesci then
+		dol = srodekKrainy + 35 * s + odstep -- nazwa krainy widać: HOME RUN pod nią
+	end
+	ui.napisHr.Position = UDim2.new(0.5, 0, 0, math.max(0.42 * H, dol + 48 * s))
 end
 
 ------------------------------------------------------------------ włączenie i wyłączenie BONK u gracza
@@ -847,6 +1262,7 @@ local function wlacz()
 			bonkRaz()
 		end
 	end)
+	okna:trybPada(zPada(UserInputService:GetLastInputType()))
 	odswiezLiczby()
 	krainaTeraz = 0
 	podpowiedzNr = if gracz:GetAttribute("BonkSamouczek") == true then nil else 1
@@ -874,6 +1290,7 @@ local function wylacz()
 		usunPety(g)
 	end
 	usunEtykiety()
+	tablicePrzywroc()
 	przywrocCudze()
 	muzyka:Stop()
 	pierscien.Parent = nil
@@ -956,6 +1373,26 @@ local function kolorGatunku(cfg: Configuration): Color3
 	return if cfg:GetAttribute("Rzadki") == true then Color3.fromHex(D.rzadki.kolor) else Color3.fromRGB(255, 240, 200)
 end
 
+-- podpowiedź 1 („podejdź”) → 2 („BONK!”) przy celu w zasięgu; po własnym ciosie 3 („Moc otwiera bramę”) na 6 s, potem nic
+local function samouczekPoCiosie()
+	if podpowiedzNr == 1 or podpowiedzNr == 2 then
+		podpowiedzNr = 3
+		if ui then
+			ui:podpowiedz(3)
+		end
+		task.delay(6, function()
+			if podpowiedzNr == 3 then
+				podpowiedzNr = nil
+				if ui then
+					ui:podpowiedz(nil)
+				end
+			end
+		end)
+	end
+end
+
+local tupotow = 0
+
 local slowoNr = 0
 local ostatnieWyklucie: any = nil
 local ostatnieOgloszenie: string? = nil
@@ -1012,7 +1449,7 @@ evZdarzenia.OnClientEvent:Connect(function(z)
 		zagraj("zakup")
 		local P = D.palki[z.nr]
 		if okna and P then
-			okna:toast(P.nazwa .. "!  " .. string.format(D.ui.mnoznik, L.format(P.mnoznik)), D.ui.kolory.monety)
+			okna:toast(P.nazwa .. "!  " .. string.format(D.ui.mnoznik, L.mnoznikTekst(P.mnoznik)), D.ui.kolory.monety)
 		end
 		return
 	elseif z.t == "odmowa" then
@@ -1048,6 +1485,60 @@ evZdarzenia.OnClientEvent:Connect(function(z)
 		return
 	end
 	local moj = z.g == gracz.UserId
+	-- zamach ręką: każdy klient dla każdego gracza (własny rusza od razu w bonkRaz)
+	if (z.t == "cios" or z.t == "lot" or z.t == "zamach") and type(z.g) == "number" then
+		if moj then
+			zamachowOdebranych += 1
+		else
+			local inny = Players:GetPlayerByUserId(z.g)
+			if inny then
+				zacznijZamach(inny)
+			end
+		end
+		if z.t == "zamach" then
+			return
+		end
+	end
+	if z.t == "tupot" then
+		local T = D.straznik.tupot
+		local cfgS = folderPotworow:FindFirstChild("straznik_" .. tostring(z.nr))
+		local wS = cfgS and widoki[cfgS]
+		if wS then
+			wS.drganie = 0.35
+		end
+		if typeof(z.poz) ~= "Vector3" then
+			return
+		end
+		if (z.poz - kamera.CFrame.Position).Magnitude < 170 then
+			E:fala(z.poz, T.zasieg)
+			E:slowo(z.poz + Vector3.new(0, 3, 0), "STOMP!", Color3.fromHex(D.ui.kolory.moc), 1.1)
+			zagraj("plask", 0.55)
+		end
+		local h = hrp()
+		if h and aktywny then
+			local d = Vector3.new(h.Position.X - z.poz.X, 0, h.Position.Z - z.poz.Z)
+			if d.Magnitude < T.zasieg then
+				local kier = if d.Magnitude > 0.1 then d.Unit else Vector3.xAxis
+				local sila = T.sila * (1 - 0.5 * d.Magnitude / T.zasieg)
+				-- krótka siła prędkości (0,22 s): sama prędkość części przegrywa ze sterowaniem postaci
+				local zaczep = Instance.new("Attachment")
+				zaczep.Name = "BonkTupot"
+				zaczep.Parent = h
+				local lv = Instance.new("LinearVelocity")
+				lv.Attachment0 = zaczep
+				lv.RelativeTo = Enum.ActuatorRelativeTo.World
+				lv.MaxForce = 4e5
+				lv.VectorVelocity = kier * sila + Vector3.new(0, T.w_gore, 0)
+				lv.Parent = h
+				task.delay(0.22, function()
+					lv:Destroy()
+					zaczep:Destroy()
+				end)
+				tupotow += 1
+			end
+		end
+		return
+	end
 	local cfg, w = widokDla(z.id)
 	if z.t == "cios" then
 		if w then
@@ -1066,6 +1557,7 @@ evZdarzenia.OnClientEvent:Connect(function(z)
 		end
 		if moj then
 			zagraj("cios", 1 + (math.random() - 0.5) * 0.15)
+			samouczekPoCiosie()
 		end
 	elseif z.t == "lot" then
 		startLotu(z, cfg, w)
@@ -1091,20 +1583,7 @@ evZdarzenia.OnClientEvent:Connect(function(z)
 					ui:homeRun()
 				end
 			end
-			if podpowiedzNr == 1 or podpowiedzNr == 2 then
-				podpowiedzNr = 3
-				if ui then
-					ui:podpowiedz(3)
-				end
-				task.delay(6, function()
-					if podpowiedzNr == 3 then
-						podpowiedzNr = nil
-						if ui then
-							ui:podpowiedz(nil)
-						end
-					end
-				end)
-			end
+			samouczekPoCiosie()
 			if z.brama then
 				zagraj("brama")
 			end
@@ -1217,13 +1696,11 @@ RunService.RenderStepped:Connect(function(dt)
 	local zegar = os.clock()
 	local W = D.widok
 	local najblizszy, najOdl = nil, math.huge
-	for _, cfg in folderPotworow:GetChildren() do
-		if not cfg:IsA("Configuration") then
-			continue
-		end
+	for _, cfg in listaPotworow do
+		local m = pamiec[cfg]
 		local w = widoki[cfg]
-		local zywy = cfg:GetAttribute("Zywy") == true
-		local poz = polozenie(cfg, t)
+		local zywy = m.zywy
+		local poz = polozenie(m, t)
 		if not zywy or not poz then
 			-- po BONK widok czeka chwilę na zdarzenie „lot” (ono zabiera model do lotu); bez lotu znika
 			if w then
@@ -1237,7 +1714,7 @@ RunService.RenderStepped:Connect(function(dt)
 			continue
 		end
 		local odl = (poz - oko).Magnitude
-		if w and (w.nr ~= cfg:GetAttribute("Nr") or odl > W.usuniecie) then
+		if w and (w.nr ~= m.nr or odl > W.usuniecie) then
 			usunWidok(w)
 			widoki[cfg] = nil
 			w = nil
@@ -1257,7 +1734,7 @@ RunService.RenderStepped:Connect(function(dt)
 				if hp and (hp - poz).Magnitude < 28 then
 					cel = hp
 				else
-					local c = cfg:GetAttribute("Cel")
+					local c = m.cel
 					if typeof(c) == "Vector3" and (c - poz).Magnitude > 0.3 then
 						cel = c
 					end
@@ -1307,7 +1784,7 @@ RunService.RenderStepped:Connect(function(dt)
 			end
 			if hp then
 				local dx, dz = poz.X - hp.X, poz.Z - hp.Z
-				local promien = (cfg:GetAttribute("Promien") or 1.5) * (if w.rzadki then D.rzadki.skala else 1)
+				local promien = m.promien * (if w.rzadki then D.rzadki.skala else 1)
 				local d = math.sqrt(dx * dx + dz * dz) - promien
 				if d <= D.bonk.zasieg and d < najOdl and math.abs(poz.Y - (hp.Y - 3)) < 14 then
 					najblizszy, najOdl = cfg, d
@@ -1347,10 +1824,14 @@ RunService.RenderStepped:Connect(function(dt)
 	end
 	krokPetow(dt, oko, zegar)
 	krokEtykiet(oko)
+	krokRak(oko)
+	krokJajek(oko, zegar)
 	if nrKlatki % 6 == 0 then
 		krokStref(hp)
 		krokStraznika(hp)
+		krokNapisuBramy(hp)
 	end
+	ukladNapisow()
 	akumBram += dt
 	if akumBram > 1 then
 		akumBram = 0
@@ -1362,6 +1843,35 @@ RunService.RenderStepped:Connect(function(dt)
 		pomiar.petlaMaks = koszt
 	end
 end)
+
+------------------------------------------------------------------ kamera filmowa (tylko próby / demo wideo)
+local film: any = nil
+local function krokFilmu(dt: number)
+	if not film then
+		return
+	end
+	local h = hrp()
+	local srodek: Vector3? = if typeof(film.cel) == "Vector3" then film.cel elseif h then h.Position + Vector3.new(0, 1.5, 0) else nil
+	if not srodek then
+		return
+	end
+	local od: Vector3
+	if typeof(film.pozycja) == "Vector3" then
+		od = film.pozycja
+	else
+		local yaw = math.rad(film.yaw or 0)
+		if film.zaGraczem and h then
+			local _, y = h.CFrame:ToOrientation()
+			yaw += y
+		end
+		local baza = if h then h.Position else srodek
+		od = baza + Vector3.new(math.sin(yaw) * (film.odl or 16), film.wys or 6, math.cos(yaw) * (film.odl or 16))
+	end
+	local a = 1 - math.exp(-dt * (film.gladko or 5))
+	film.p = if film.p then film.p:Lerp(od, a) else od
+	film.c = if film.c then film.c:Lerp(srodek, a) else srodek
+	kamera.CFrame = CFrame.lookAt(film.p, film.c)
+end
 
 ------------------------------------------------------------------ haczyki prób
 -- grające dźwięki innych pakietów (np. muzyka stref obecnej gry) — do próby
@@ -1431,7 +1941,24 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 				end
 				return { widoczne = n, moja = tekst }
 			end)(), wyklucie = if wyklucie then wyklucie.t else nil, ostatnieWyklucie = ostatnieWyklucie,
-			ogloszenie = ostatnieOgloszenie,
+			ogloszenie = ostatnieOgloszenie, tupotow = tupotow,
+			ruchPetow = (function()
+				local w = petyGraczy[gracz]
+				local lista = {}
+				if w then
+					for _, p in w.modele do
+						table.insert(lista, { p.id, p.lata, p.wys })
+					end
+				end
+				return lista
+			end)(),
+			jajka = (function()
+				local lista = {}
+				for nr, j in jajkaInkubatorow do
+					lista[tostring(nr)] = j.kiw
+				end
+				return lista
+			end)(),
 			pozPetow = (function()
 				local w = petyGraczy[gracz]
 				local lista = {}
@@ -1475,6 +2002,76 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 		return ui ~= nil
 	elseif polecenie == "pomiar_zeruj" then
 		pomiar = { klatek = 0, suma = 0, maks = 0, petlaSuma = 0, petlaMaks = 0 }
+		return true
+	elseif polecenie == "napisy" then
+		-- próby: wszystkie napisy stosu naraz (podpowiedź, pasek Strażnika, napis bramy, komunikat, dymek) → prostokąty
+		if not ui or not okna then
+			return nil
+		end
+		wymuszoneNapisy = os.clock() + (tonumber(a) or 3)
+		ui:podpowiedz(2)
+		okna:straznik({ nazwa = D.straznicy[1].nazwa, hp = D.straznicy[1].hp * 0.6, hpMax = D.straznicy[1].hp, zywy = true })
+		okna:brama(D.ui.straznik_brama, D.ui.kolory.moc)
+		okna:ogloszenie(string.format(D.ui.ogl_straznik, string.format(D.ui.gracz_proby, 1), D.straznicy[1].nazwa), D.ui.kolory.monety)
+		okna:toast(D.ui.za_malo, "FF8A8A")
+		ui:kraina(D.krainy[1].nazwa)
+		task.wait(0.6)
+		okna:toast(D.ui.za_malo, "FF8A8A")
+		task.wait(0.1)
+		local o = okna:stan()
+		local u = ui:stan()
+		return { podpowiedz = u.podpowiedzPoz, gora = u.goraRamka, kraina = if ui.napisKrainy.Visible then u.krainaPoz else nil,
+			straznik = o.stos.straznik, brama = o.stos.brama, ogloszenie = o.stos.ogloszenie, dymek = o.stos.dymek, ekran = u.okno,
+			bonk = u.przyciskPoz, kontekst = o.stos.kontekst, szanse = o.stos.szanse }
+	elseif polecenie == "pad" then
+		-- próby: przycisk pada tą samą drogą co InputBegan (OknaBonk:pad)
+		if not okna then
+			return nil
+		end
+		if a == "wylacz" then
+			okna:trybPada(false)
+			return true
+		end
+		local obsluzony = okna:pad(Enum.KeyCode[a])
+		task.wait(0.25)
+		local o = okna:stan()
+		return { obsluzony = obsluzony, otwarte = o.otwarte, zaznaczony = o.zaznaczony, pad = o.pad }
+	elseif polecenie == "reka" then
+		local postac = gracz.Character
+		local s = postac and stawyPostaci[postac]
+		return { palka = postac ~= nil and postac:FindFirstChild("BonkPalka") ~= nil, stawy = s ~= nil,
+			lokiec = s ~= nil and s.lokiec ~= nil, poza = if s then s.poza else nil, zamach = zamachy[gracz] ~= nil,
+			odebranych = zamachowOdebranych, krokow = krokowRak, zPalka = ostatnieZPalka, blad = (function()
+				local ok, e = pcall(krokRak, kamera.CFrame.Position)
+				return if ok then nil else tostring(e)
+			end)(),
+			rodzaj = if s then s.bark.j.ClassName else nil,
+			katBarku = if s then math.deg(math.acos(math.clamp(s.bark.dodatek.UpVector.Y, -1, 1))) else nil,
+			transform = if s then math.deg(math.acos(math.clamp(s.bark.j.Transform.UpVector.Y, -1, 1))) else nil }
+	elseif polecenie == "kraina_napis" then
+		-- demo: nazwa bieżącej krainy jeszcze raz (jak przy wejściu)
+		krainaTeraz = 0
+		return true
+	elseif polecenie == "kamera" then
+		-- demo: kamera filmowa (tabela ustawień) albo nil — z powrotem kamera gracza
+		if type(a) == "table" then
+			local stara = film
+			film = a
+			if stara and not a.skok then
+				film.p, film.c = stara.p, stara.c
+			end
+			kamera.CameraType = Enum.CameraType.Scriptable
+			if a.fov then
+				kamera.FieldOfView = a.fov
+			end
+			RunService:UnbindFromRenderStep("BonkFilm")
+			RunService:BindToRenderStep("BonkFilm", Enum.RenderPriority.Camera.Value + 1, krokFilmu)
+		else
+			film = nil
+			RunService:UnbindFromRenderStep("BonkFilm")
+			kamera.FieldOfView = 70
+			kameraNaPostac()
+		end
 		return true
 	end
 	return nil

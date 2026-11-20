@@ -10,7 +10,8 @@
 		E:iskry(poz, kolor, ile, sila)         -- odpryski
 		E:monety(poz, ile, cel)                -- monety wylatują i lecą do części `cel` (HumanoidRootPart)
 		E:plask(poz, kolor)                    -- plaśnięcie: płaski krąg i kurz
-		E:zamach(cf)                           -- łuk zamachu przed graczem
+		E:zamach(cf)                           -- łuk zamachu przed graczem (etap 3: z góry w dół)
+		E:fala(poz, r)                         -- etap 3: fala tupotu Strażnika
 		E:smuga(model, kolor)                  -- ślad (Trail) za lecącym modelem
 		E:krok(dt)   E:ile()   E:wyczysc()
 ]]
@@ -252,13 +253,37 @@ end
 
 function Efekty:zamach(cf: CFrame)
 	local luk = czesc(self.folder, Vector3.new(0.3, 5.5, 0.6), Color3.fromRGB(255, 250, 225), Enum.Material.Neon)
-	self:dodaj(0.16, function(f)
-		local a = -1.2 + f * 2.4
-		luk.CFrame = cf * CFrame.Angles(0, a, 0) * CFrame.new(0, 0, -3) * CFrame.Angles(0, 0, math.rad(55))
-		luk.Transparency = 0.3 + f * 0.7
+	-- etap 3: łuk z góry w dół przed graczem (jak zamach ręką z pałką), opóźniony do chwili uderzenia
+	self:dodaj(0.22, function(f)
+		local g = math.clamp((f - 0.3) / 0.7, 0, 1)
+		local a = 1.35 - g * 1.9
+		luk.CFrame = cf * CFrame.new(0.9, 0.7, 0) * CFrame.Angles(a, 0, 0) * CFrame.new(0, 0, -3.2)
+		luk.Transparency = if f < 0.3 then 1 else 0.25 + g * 0.75
 	end, function()
 		luk:Destroy()
 	end)
+end
+
+-- tupot Strażnika (etap 3): pierścień fali rozchodzi się po ziemi do promienia r
+function Efekty:fala(poz: Vector3, r: number)
+	local nos = czesc(self.folder, Vector3.new(0.2, 0.2, 0.2), Color3.new(1, 1, 1))
+	nos.Transparency = 1
+	nos.CFrame = CFrame.new(poz + Vector3.new(0, 0.35, 0))
+	local k = Instance.new("CylinderHandleAdornment")
+	k.Adornee = nos
+	k.Color3 = Color3.fromRGB(255, 236, 190)
+	k.Height = 0.5
+	k.CFrame = CFrame.Angles(math.pi / 2, 0, 0)
+	k.Parent = nos
+	self:dodaj(0.6, function(f)
+		local e = 1 - (1 - f) * (1 - f)
+		k.Radius = 1.5 + e * r
+		k.InnerRadius = math.max(0, k.Radius - 1.6)
+		k.Transparency = 0.15 + f * 0.85
+	end, function()
+		nos:Destroy()
+	end)
+	self:iskry(poz + Vector3.new(0, 0.6, 0), Color3.fromRGB(200, 185, 150), 12, 1.2)
 end
 
 -- ślad za lecącym modelem: dwa zaczepy w korzeniu i Trail; zwraca Trail (znika z modelem)

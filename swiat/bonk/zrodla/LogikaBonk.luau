@@ -7,6 +7,7 @@
 	L.mnoznikPetow = 1 + suma premii), Księga (L.ksiega), Strażnik i brama (L.mozePrzejsc: Moc i profil.straznicy[nr] > 0,
 	L.nagrodaStraznika), dzienny prezent (L.prezent, L.odbierzPrezent — opuszczony dzień nie zeruje serii), profil v2
 	z migracją z v1 (L.profil). Bez table.sort / table.clone / math.clamp (interpreter testów ich nie ma).
+	Etap 3: L.mnoznikTekst (mnożnik dokładnie: „x1.5 POWER”), L.stos (kolejka napisów u góry ekranu bez nakładania).
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -47,6 +48,39 @@ function L.format(n: number): string
 		end
 	end
 	return znak .. tekst .. PRZYROSTKI[i]
+end
+
+-- mnożnik dokładnie (etap 3): 1.5 → "1.5", 2 → "2", 1.35 → "1.35", 1.3 → "1.3", 28 → "28"; od 1000 jak L.format
+function L.mnoznikTekst(n: number): string
+	if n ~= n or n < 0 then
+		return "1"
+	end
+	if n >= 1000 then
+		return L.format(n)
+	end
+	local c = math.floor(n * 100 + 0.5)
+	local calk = math.floor(c / 100)
+	local reszta = c - calk * 100
+	if reszta == 0 then
+		return tostring(calk)
+	elseif reszta % 10 == 0 then
+		return tostring(calk) .. "." .. tostring(math.floor(reszta / 10))
+	elseif reszta < 10 then
+		return tostring(calk) .. ".0" .. tostring(reszta)
+	end
+	return tostring(calk) .. "." .. tostring(reszta)
+end
+
+-- stos napisów u góry ekranu (etap 3): wysokości widocznych elementów (punkty, już ze skalą) → górne krawędzie
+-- kolejno od `start` z odstępem; zwraca listę pozycji i dół stosu (pierwszy wolny punkt pod nim)
+function L.stos(wysokosci: { number }, start: number, odstep: number): ({ number }, number)
+	local poz = {}
+	local y = start
+	for i, h in wysokosci do
+		poz[i] = y
+		y = y + h + odstep
+	end
+	return poz, y
 end
 
 -- Moc = Moc z uderzeń × mnożnik pałki × mnożnik petów (etap 2); najmniej 1

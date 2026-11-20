@@ -1,6 +1,6 @@
 --[[
 	InterfejsBonk — ekran gracza w BONK (ModuleScript w Workspace/BonkGra/Moduly). Tylko to, co w projekcie etapu 1:
-	Moc i monety na górze, przycisk BONK (telefon: duży, prawy dolny róg, nad skokiem; komputer: mniejszy, z podpowiedzią
+	Moc i monety na górze (etap 3: pod nimi stos napisów bez nakładania — układa klient), przycisk BONK (telefon: duży, prawy dolny róg, nad skokiem; komputer: mniejszy, z podpowiedzią
 	„E”), trzy krótkie podpowiedzi startowe, nazwa krainy przy wejściu, napis HOME RUN!. Teksty po angielsku (D-045).
 
 	Ekran (ScreenGui „BonkEkran”) leży w folderze PlayerGui/BonkUI — nie bezpośrednio w PlayerGui, bo ekran wyboru klasy
@@ -74,6 +74,7 @@ function Interfejs.nowy(rodzic: Instance, D, L, opcje)
 	local gora = nowy("Frame", { Name = "Gora", BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, 6), Size = UDim2.fromOffset(330, 44) }, ekran)
 	self.skalaGory = nowy("UIScale", {}, gora)
+	self.gora = gora
 	nowy("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center,
 		Padding = UDim.new(0, 10), SortOrder = Enum.SortOrder.LayoutOrder }, gora)
 	local function pigulka(nazwa: string, etykieta: string, kolor: Color3, kolejnosc: number)
@@ -286,6 +287,11 @@ function Interfejs:stan()
 		goraPoz = { self.ramkaMocy.AbsolutePosition.X, self.ramkaMocy.AbsolutePosition.Y,
 			self.ramkaMonet.AbsolutePosition.X + self.ramkaMonet.AbsoluteSize.X, self.ramkaMocy.AbsoluteSize.Y },
 		kraina = if self.czasKrainy >= 0 then self.napisKrainy.Text else nil,
+		podpowiedzPoz = if self.podpowiedzRamka.Visible then { self.podpowiedzRamka.AbsolutePosition.X,
+			self.podpowiedzRamka.AbsolutePosition.Y, self.podpowiedzRamka.AbsoluteSize.X, self.podpowiedzRamka.AbsoluteSize.Y } else nil,
+		goraRamka = { self.gora.AbsolutePosition.X, self.gora.AbsolutePosition.Y, self.gora.AbsoluteSize.X, self.gora.AbsoluteSize.Y },
+		krainaPoz = if self.czasKrainy >= 0 then { self.napisKrainy.AbsolutePosition.X, self.napisKrainy.AbsolutePosition.Y,
+			self.napisKrainy.AbsoluteSize.X, self.napisKrainy.AbsoluteSize.Y } else nil,
 	}
 end
 

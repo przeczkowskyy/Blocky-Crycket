@@ -218,7 +218,8 @@ def etap2(U, krainy):
                 raise BladDanych("pet %s w dwóch jajkach" % p["id"])
             wp = W[nazwa_wzorca_peta(p["id"])]
             pety[p["id"]] = {"nazwa": p["nazwa"], "rzadkosc": r, "kraina": nr, "premia": J["premie"][r - 1],
-                             "wzorzec": nazwa_wzorca_peta(p["id"]), "wysokosc": wp["wysokosc"], "czesci": len(wp["bryly"])}
+                             "wzorzec": nazwa_wzorca_peta(p["id"]), "wysokosc": wp["wysokosc"], "czesci": len(wp["bryly"]),
+                             "lata": bool(p.get("lata"))}
             kolejnosc.append(p["id"])
     straznicy = []
     for S in U["straznicy"]:

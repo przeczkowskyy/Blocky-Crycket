@@ -671,6 +671,7 @@ return {
 		ananasik = {
 			czesci = 37,
 			kraina = 3,
+			lata = false,
 			nazwa = "Pineapple Pal",
 			premia = 0.9,
 			rzadkosc = 1,
@@ -680,6 +681,7 @@ return {
 		jaguarek = {
 			czesci = 44,
 			kraina = 3,
+			lata = false,
 			nazwa = "Jaguar Cub",
 			premia = 9,
 			rzadkosc = 5,
@@ -689,6 +691,7 @@ return {
 		jelonek_gaju = {
 			czesci = 42,
 			kraina = 1,
+			lata = false,
 			nazwa = "Crystal Fawn",
 			premia = 1,
 			rzadkosc = 5,
@@ -698,6 +701,7 @@ return {
 		leniwczyk = {
 			czesci = 35,
 			kraina = 3,
+			lata = false,
 			nazwa = "Sleepy Sloth",
 			premia = 1.8,
 			rzadkosc = 2,
@@ -707,6 +711,7 @@ return {
 		lisciolis = {
 			czesci = 38,
 			kraina = 1,
+			lata = false,
 			nazwa = "Leaf Fox",
 			premia = 0.35,
 			rzadkosc = 3,
@@ -716,6 +721,7 @@ return {
 		mchowy_slimak = {
 			czesci = 29,
 			kraina = 1,
+			lata = false,
 			nazwa = "Moss Snail",
 			premia = 0.2,
 			rzadkosc = 2,
@@ -725,6 +731,7 @@ return {
 		nenufarek = {
 			czesci = 31,
 			kraina = 2,
+			lata = false,
 			nazwa = "Lily Turtle",
 			premia = 0.6,
 			rzadkosc = 2,
@@ -734,6 +741,7 @@ return {
 		ognik = {
 			czesci = 42,
 			kraina = 2,
+			lata = true,
 			nazwa = "Wisp",
 			premia = 1.8,
 			rzadkosc = 4,
@@ -743,6 +751,7 @@ return {
 		palkus = {
 			czesci = 23,
 			kraina = 2,
+			lata = false,
 			nazwa = "Cattail Kid",
 			premia = 0.3,
 			rzadkosc = 1,
@@ -752,6 +761,7 @@ return {
 		perlowa_wydra = {
 			czesci = 44,
 			kraina = 2,
+			lata = false,
 			nazwa = "Pearl Otter",
 			premia = 3,
 			rzadkosc = 5,
@@ -761,6 +771,7 @@ return {
 		posazek = {
 			czesci = 38,
 			kraina = 3,
+			lata = false,
 			nazwa = "Ruin Idol",
 			premia = 5.4,
 			rzadkosc = 4,
@@ -770,6 +781,7 @@ return {
 		swietlikowka = {
 			czesci = 29,
 			kraina = 1,
+			lata = true,
 			nazwa = "Glow Owl",
 			premia = 0.6,
 			rzadkosc = 4,
@@ -779,6 +791,7 @@ return {
 		tukanik = {
 			czesci = 31,
 			kraina = 3,
+			lata = true,
 			nazwa = "Toucan Chick",
 			premia = 3,
 			rzadkosc = 3,
@@ -788,6 +801,7 @@ return {
 		wazeczka = {
 			czesci = 36,
 			kraina = 2,
+			lata = true,
 			nazwa = "Dragonfly",
 			premia = 1,
 			rzadkosc = 3,
@@ -797,6 +811,7 @@ return {
 		zoledziak = {
 			czesci = 31,
 			kraina = 1,
+			lata = false,
 			nazwa = "Acornling",
 			premia = 0.1,
 			rzadkosc = 1,
@@ -808,6 +823,17 @@ return {
 	petyUst = {
 		maks_aktywnych = 3,
 		przerwa_wyklucia_s = 3.2,
+		ruch = {
+			jajko_drgawki_co_s = 3.5,
+			jajko_kiwanie = 0.07,
+			kiwanie = 0.22,
+			lot_fala = 0.45,
+			lot_wys = 2.8,
+			oddech = 0.12,
+			opis = "etap 3: ruch petów u klienta (bez klipów): w biegu podskoki z przechyłem, w miejscu oddech; pety z lata = true (Glow Owl, Dragonfly, Wisp, Toucan Chick) unoszą się lot_wys nad ziemią i falują; jajko w inkubatorze kołysze się i co jajko_drgawki_co_s drży",
+			skok_bieg = 0.75,
+			skok_tempo = 9,
+		},
 		skala = 1.25,
 		skala_jajka = 1.7,
 		za_graczem = {
@@ -925,7 +951,7 @@ return {
 			miejsce = { 1968.88, 0, 1880 },
 		},
 	},
-	skrot = "0174bb0083c5",
+	skrot = "7e5c69e745f6",
 	straznicy = {
 		{
 			arena = { 1479, 0, 1900 },
@@ -968,6 +994,13 @@ return {
 		odrodzenie_s = { 60, 90 },
 		pasek_zasieg = 75,
 		skala = 1.35,
+		tupot = {
+			co_s = { 6, 9 },
+			opis = "etap 3: Strażnik co kilka sekund tupie — fala od areny lekko odpycha graczy w zasięgu (bez obrażeń); serwer wysyła zdarzenie, odpycha u siebie klient gracza",
+			sila = 32,
+			w_gore = 20,
+			zasieg = 24,
+		},
 		udzial_min = 0.25,
 	},
 	ui = {
@@ -1004,6 +1037,13 @@ return {
 		ogl_legendarny = "%s hatched a LEGENDARY %s!",
 		ogl_straznik = "%s defeated the %s!",
 		otworz_sklep = "OPEN SHOP",
+		pad = {
+			kontekst = "Y",
+			ksiega = "RB",
+			pety = "LB",
+			prezent = "UP",
+			zamknij = "B",
+		},
 		pety = "PETS",
 		plask = "SPLAT!",
 		podpowiedz_pc = "Click or press E to BONK!",

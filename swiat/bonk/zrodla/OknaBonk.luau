@@ -8,10 +8,16 @@
 	komunikat serwera (pasek u góry), krótki dymek, pasek życia Strażnika (wspólny), napisy wyklucia.
 	Nic nie liczy: stan z atrybutów gracza (serwer), akcje przez `akcja(rodzaj, arg)` (Sygnaly/Akcja — sprawdza serwer).
 
+	Etap 3: napis bramy na ekranie (pasek w stosie u góry, gdy gracz stoi przy bramie — klient chowa wtedy tablicę nad
+	bramą), mnożniki dokładnie („x1.5 POWER”), przyciski ≥ 44 pt (cała karta sklepu klikalna, X 46 × 46, AUTO BEST 44),
+	pad: B zamyka okno, LB = PETS, RB = INDEX, krzyżak w górę = GIFT, Y = przycisk przy stoisku / inkubatorze; okno
+	otwarte padem zaznacza pierwszy przycisk (GuiService.SelectedObject) — dalej krzyżak i A; znaczki LB / RB / UP / Y / B
+	widać, gdy gracz gra na padzie.
+
 	Użycie: local o = Okna.nowe(rodzic, D, L, { dotyk, emulacja }, akcja, wzorce)
 		o:otworz("sklep" | "pety" | "ksiega" | "prezent")  o:zamknij()  o:odswiez()  o:kontekst(rodzaj?, nr?)
 		o:toast(tekst, kolor?)  o:ogloszenie(tekst, kolor?)  o:straznik(dane?)  o:wyklucie(dane?)  o:krok(dt)
-		o:stan()  o:zniszcz()
+		o:brama(tekst?, kolor?)  o:pad(KeyCode) → bool  o:trybPada(bool)  o:stan()  o:zniszcz()
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -19,6 +25,7 @@ end
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local GuiService = game:GetService("GuiService")
 
 local Okna = {}
 Okna.__index = Okna
@@ -48,6 +55,27 @@ end
 
 local function hex(h: string): Color3
 	return Color3.fromHex(h)
+end
+
+-- znaczek przycisku pada (LB, RB, UP, Y, B) w rogu przycisku; widać tylko przy grze na padzie
+local function znaczek(rodzic: Instance, tekst: string, tusz: Color3, papier: Color3, czcionka: Enum.Font): TextLabel
+	local z = Instance.new("TextLabel")
+	z.Name = "ZnaczekPada"
+	z.AnchorPoint = Vector2.new(0.5, 0.5)
+	z.Position = UDim2.new(1, -2, 1, -2)
+	z.Size = UDim2.fromOffset(if #tekst > 1 then 30 else 22, 22)
+	z.BackgroundColor3 = tusz
+	z.Text = tekst
+	z.TextScaled = true
+	z.Font = czcionka
+	z.TextColor3 = papier
+	z.ZIndex = 14
+	z.Visible = false
+	local r = Instance.new("UICorner")
+	r.CornerRadius = UDim.new(0.5, 0)
+	r.Parent = z
+	z.Parent = rodzic
+	return z
 end
 
 -- „id:kopie,…” → { [id] = kopie }, kolejność
@@ -161,6 +189,10 @@ function Okna.nowe(rodzic: Instance, D, L, opcje, akcja: (string, any) -> (), wz
 	boczny("pety", U.pety, "4FB3FF", 1)
 	boczny("ksiega", U.ksiega, "C27BFF", 2)
 	local bp = boczny("prezent", U.prezent, "FF8A3D", 3)
+	self.znaczki = {}
+	for nazwa, b in self.przyciski do
+		table.insert(self.znaczki, znaczek(b, U.pad[nazwa] or "?", tusz, papier, self.czcionka))
+	end
 	self.kropka = nowy("Frame", { Name = "Kropka", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, 1, 0, -1),
 		Size = UDim2.fromOffset(16, 16), BackgroundColor3 = hex("FF3B3B"), Visible = false, ZIndex = 3 }, bp)
 	rogi(self.kropka, 9)
@@ -180,6 +212,7 @@ function Okna.nowe(rodzic: Instance, D, L, opcje, akcja: (string, any) -> (), wz
 	nowy("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12), PaddingTop = UDim.new(0, 10),
 		PaddingBottom = UDim.new(0, 10) }, kb)
 	self.kontekstPrzycisk = kb
+	table.insert(self.znaczki, znaczek(kont, U.pad.kontekst, tusz, papier, self.czcionka))
 	kb.Activated:Connect(function()
 		if self.kontekstRodzaj == "sklep" then
 			self:otworz("sklep")
@@ -202,7 +235,7 @@ function Okna.nowe(rodzic: Instance, D, L, opcje, akcja: (string, any) -> (), wz
 	------------------------------------------------------------ dymek (krótki napis nad przyciskiem kontekstu)
 	local toast = nowy("TextLabel", { Name = "Dymek", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -150),
 		Size = UDim2.fromOffset(360, 34), BackgroundTransparency = 1, Text = "", TextScaled = true, Font = self.czcionka,
-		TextColor3 = papier, Visible = false, ZIndex = 8 }, ekran)
+		TextColor3 = papier, Visible = false, ZIndex = 14 }, ekran)
 	tekstObrys(toast, 3, tusz)
 	skalowany(toast)
 	self.dymek, self.czasDymka = toast, -1
@@ -216,6 +249,16 @@ function Okna.nowe(rodzic: Instance, D, L, opcje, akcja: (string, any) -> (), wz
 		Text = "", TextScaled = true, Font = self.czcionka, TextColor3 = papier, ZIndex = 7 }, ogl)
 	self.skalaOgl = skalowany(ogl)
 	self.ogl, self.kolejkaOgl, self.czasOgl = ogl, {}, -1
+
+	------------------------------------------------------------ napis bramy (u góry, w stosie; gracz przy bramie)
+	local br = nowy("Frame", { Name = "NapisBramy", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 150),
+		Size = UDim2.fromOffset(330, 34), BackgroundColor3 = tusz, BackgroundTransparency = 0.1, Visible = false, ZIndex = 6 }, ekran)
+	rogi(br, 10)
+	self.obrysBramy = obrys(br, 2.5, papier)
+	self.tekstBramy = nowy("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(10, 3), Size = UDim2.new(1, -20, 1, -6),
+		Text = "", TextScaled = true, Font = self.czcionka, TextColor3 = papier, ZIndex = 6 }, br)
+	skalowany(br)
+	self.bramaRamka = br
 
 	------------------------------------------------------------ pasek życia Strażnika (wspólny, u góry)
 	local ps = nowy("Frame", { Name = "Straznik", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 104),
@@ -286,15 +329,17 @@ function Okna:okno(nazwa: string, tytul: string, szer: number, wys: number)
 	local t = nowy("TextLabel", { Name = "Tytul", BackgroundTransparency = 1, Position = UDim2.fromOffset(16, 8),
 		Size = UDim2.new(1, -150, 0, 30), Text = tytul, TextScaled = true, Font = self.czcionka, TextColor3 = tusz,
 		TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11 }, f)
-	local x = nowy("TextButton", { Name = "Zamknij", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 8, 0, -8),
-		Size = UDim2.fromOffset(40, 40), BackgroundColor3 = hex("E8433B"), Text = self.D.ui.zamknij, TextScaled = true,
+	local x = nowy("TextButton", { Name = "Zamknij", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 10, 0, -10),
+		Size = UDim2.fromOffset(46, 46), BackgroundColor3 = hex("E8433B"), Text = self.D.ui.zamknij, TextScaled = true,
 		Font = self.czcionka, TextColor3 = papier, ZIndex = 12 }, f)
 	rogi(x, 12)
 	obrys(x, 3, tusz)
-	nowy("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8) }, x)
+	nowy("UIPadding", { PaddingTop = UDim.new(0, 9), PaddingBottom = UDim.new(0, 9) }, x)
 	x.Activated:Connect(function()
 		self:zamknij()
 	end)
+	local zx = znaczek(x, self.D.ui.pad.zamknij, tusz, papier, self.czcionka)
+	zx.Visible = self.padWlaczony == true
 	local tresc = nowy("Frame", { Name = "Tresc", BackgroundTransparency = 1, Position = UDim2.fromOffset(12, 44),
 		Size = UDim2.new(1, -24, 1, -54), ZIndex = 10 }, f)
 	self.oknoRamka, self.otwarte, self.tytulOkna = f, nazwa, t
@@ -310,6 +355,12 @@ function Okna:zamknij()
 				table.remove(self.skale, i)
 				break
 			end
+		end
+		local zazn = GuiService.SelectedObject
+		if zazn and zazn:IsDescendantOf(self.oknoRamka) then
+			pcall(function()
+				GuiService.SelectedObject = nil
+			end)
 		end
 		self.oknoRamka:Destroy()
 	end
@@ -355,7 +406,7 @@ function Okna:sklep()
 		local k = karta(tresc, "Palka" .. nr, if nr <= mam then hex("FFF0C2") else hex("FFFFFF"), self.tusz, nr)
 		podglad(k, self.wzorce, P.wzorzec, UDim2.new(1, 0, 0, 52), UDim2.fromOffset(0, 2), false)
 		self:etykieta(k, P.nazwa, UDim2.fromOffset(4, 54), UDim2.new(1, -8, 0, 18))
-		self:etykieta(k, string.format(U.mnoznik, L.format(P.mnoznik)), UDim2.fromOffset(4, 72), UDim2.new(1, -8, 0, 14),
+		self:etykieta(k, string.format(U.mnoznik, L.mnoznikTekst(P.mnoznik)), UDim2.fromOffset(4, 72), UDim2.new(1, -8, 0, 14),
 			hex(U.kolory.moc), true)
 		local tekst, kolor, akcja = "", "9A9AA6", nil
 		if nr == mam then
@@ -375,8 +426,16 @@ function Okna:sklep()
 		else
 			tekst = U.zablokowane
 		end
-		local b = self:przycisk(k, tekst, UDim2.new(0, 6, 1, -30), UDim2.new(1, -12, 0, 26), kolor, akcja)
+		local b = self:przycisk(k, tekst, UDim2.new(0, 6, 1, -30), UDim2.new(1, -12, 0, 26), kolor, nil)
 		b.Name = "Przycisk"
+		b.AutoButtonColor = false
+		b.Selectable = false
+		-- cała karta to jeden przycisk (palec / pad): 134 × 120 pt
+		local klik = nowy("TextButton", { Name = "Karta", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Text = "",
+			ZIndex = 13, Selectable = true }, k)
+		if akcja then
+			klik.Activated:Connect(akcja)
+		end
 	end
 end
 
@@ -388,17 +447,17 @@ function Okna:pety()
 	local aktywne = czytajListe(self.gracz:GetAttribute("BonkPety"))
 	local auto = self.gracz:GetAttribute("BonkAutoPety") ~= false
 	local maks = D.petyUst.maks_aktywnych
-	local gora = nowy("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 30), ZIndex = 10 }, tresc)
-	self:etykieta(gora, string.format(U.aktywne, #aktywne, maks), UDim2.fromOffset(0, 0), UDim2.fromOffset(170, 28))
-	self:etykieta(gora, string.format(U.mnoznik, L.format(tonumber(self.gracz:GetAttribute("BonkMnoznikPetow")) or 1)),
-		UDim2.fromOffset(176, 2), UDim2.fromOffset(170, 24), hex(U.kolory.moc), true)
-	local ba = self:przycisk(gora, U.auto, UDim2.new(1, -150, 0, 0), UDim2.fromOffset(150, 28), if auto then "3DBE5A" else "9A9AA6",
+	local gora = nowy("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 44), ZIndex = 10 }, tresc)
+	self:etykieta(gora, string.format(U.aktywne, #aktywne, maks), UDim2.fromOffset(0, 8), UDim2.fromOffset(170, 28))
+	self:etykieta(gora, string.format(U.mnoznik, L.mnoznikTekst(tonumber(self.gracz:GetAttribute("BonkMnoznikPetow")) or 1)),
+		UDim2.fromOffset(176, 10), UDim2.fromOffset(170, 24), hex(U.kolory.moc), true)
+	local ba = self:przycisk(gora, U.auto, UDim2.new(1, -150, 0, 0), UDim2.fromOffset(150, 44), if auto then "3DBE5A" else "9A9AA6",
 		function()
 			self.akcja("auto", not auto)
 		end)
 	ba.Name = "Auto"
-	local siatka = nowy("ScrollingFrame", { Name = "Siatka", BackgroundTransparency = 1, Position = UDim2.fromOffset(0, 36),
-		Size = UDim2.new(1, 0, 1, -36), CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y,
+	local siatka = nowy("ScrollingFrame", { Name = "Siatka", BackgroundTransparency = 1, Position = UDim2.fromOffset(0, 50),
+		Size = UDim2.new(1, 0, 1, -50), CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		ScrollBarThickness = 6, BorderSizePixel = 0, ZIndex = 10 }, tresc)
 	nowy("UIGridLayout", { CellSize = UDim2.fromOffset(102, 102), CellPadding = UDim2.fromOffset(6, 6),
 		SortOrder = Enum.SortOrder.LayoutOrder }, siatka)
@@ -423,7 +482,7 @@ function Okna:pety()
 					Text = string.format("%d", zalozone[id]), TextScaled = true, Font = self.cyfry, TextColor3 = self.papier, ZIndex = 12 }, k)
 				rogi(z, 6)
 			end
-			local b = nowy("TextButton", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Text = "", ZIndex = 13 }, k)
+			local b = nowy("TextButton", { Name = "Karta", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Text = "", ZIndex = 13 }, k)
 			b.Activated:Connect(function()
 				self:przelaczPeta(id, aktywne, mam)
 			end)
@@ -537,6 +596,97 @@ function Okna:otworz(nazwa: string)
 	elseif nazwa == "prezent" then
 		self:prezent()
 	end
+	if self.padWlaczony and self.oknoRamka and not self.bezZaznaczenia then
+		self:zaznacz()
+	end
+end
+
+-- pad: pierwszy sensowny przycisk okna zaznaczony (krzyżak przesuwa, A klika); klucz = nazwa przycisku po odświeżeniu
+function Okna:zaznacz(klucz: string?)
+	local f = self.oknoRamka
+	if not f then
+		return
+	end
+	local cel: Instance? = nil
+	if klucz then
+		local o = f:FindFirstChild(klucz, true)
+		if o and o:IsA("GuiButton") then
+			cel = o
+		end
+	end
+	if not cel and self.otwarte == "sklep" then
+		local mam = tonumber(self.gracz:GetAttribute("BonkPalka")) or 0
+		local k = f:FindFirstChild("Palka" .. math.min(#self.D.palki, mam + 1), true)
+		cel = k and k:FindFirstChild("Karta")
+	elseif not cel and self.otwarte == "pety" then
+		cel = f:FindFirstChild("Auto", true)
+	elseif not cel and self.otwarte == "prezent" then
+		cel = f:FindFirstChild("Odbierz", true)
+	end
+	if not cel then
+		cel = f:FindFirstChild("Zamknij")
+	end
+	pcall(function()
+		GuiService.SelectedObject = cel
+	end)
+end
+
+-- przycisk pada → true, gdy obsłużony (B zamyka, LB / RB / w górę — okna, Y — przycisk przy stoisku / inkubatorze)
+function Okna:pad(kod: Enum.KeyCode): boolean
+	if kod == Enum.KeyCode.ButtonB then
+		if self.otwarte then
+			self:zamknij()
+			return true
+		end
+		return false
+	end
+	local nazwa = if kod == Enum.KeyCode.ButtonL1 then "pety" elseif kod == Enum.KeyCode.ButtonR1 then "ksiega"
+		elseif kod == Enum.KeyCode.DPadUp then "prezent" else nil
+	if nazwa then
+		self:trybPada(true)
+		if self.otwarte == nazwa then
+			self:zamknij()
+		else
+			self:otworz(nazwa)
+		end
+		return true
+	end
+	if kod == Enum.KeyCode.ButtonY and self.kontekstRodzaj then
+		self:trybPada(true)
+		if self.kontekstRodzaj == "sklep" then
+			if self.otwarte == "sklep" then
+				self:zamknij()
+			else
+				self:otworz("sklep")
+			end
+		elseif self.kontekstRodzaj == "jajko" and self.kontekstNr then
+			self.akcja("jajko", self.kontekstNr)
+		end
+		return true
+	end
+	return false
+end
+
+-- znaczki przycisków pada widać tylko przy grze na padzie
+function Okna:trybPada(tak: boolean)
+	if self.padWlaczony == tak then
+		return
+	end
+	self.padWlaczony = tak
+	for _, z in self.znaczki do
+		z.Visible = tak
+	end
+	if self.oknoRamka then
+		local zx = self.oknoRamka:FindFirstChild("ZnaczekPada", true)
+		if zx then
+			zx.Visible = tak
+		end
+	end
+	if not tak then
+		pcall(function()
+			GuiService.SelectedObject = nil
+		end)
+	end
 end
 
 -- odświeżenie po zmianie atrybutów gracza: kropka prezentu, otwarte okno od nowa
@@ -545,7 +695,27 @@ function Okna:odswiez()
 	if self.otwarte then
 		local s = self.skalaOkna
 		local nazwa = self.otwarte
+		local zazn = GuiService.SelectedObject
+		local klucz = nil
+		if zazn and self.oknoRamka and zazn:IsDescendantOf(self.oknoRamka) then
+			klucz = if zazn.Name == "Karta" and zazn.Parent then zazn.Parent.Name else zazn.Name
+		end
+		self.bezZaznaczenia = true -- bez zaznaczania w otworz: niżej po kluczu
 		self:otworz(nazwa)
+		self.bezZaznaczenia = false
+		if self.padWlaczony and self.oknoRamka then
+			local k = klucz and self.oknoRamka:FindFirstChild(klucz, true)
+			if k and not k:IsA("GuiButton") then
+				k = k:FindFirstChild("Karta")
+			end
+			if k and k:IsA("GuiButton") then
+				pcall(function()
+					GuiService.SelectedObject = k
+				end)
+			else
+				self:zaznacz()
+			end
+		end
 		if self.skalaOkna and s then
 			self.skalaOkna.Scale = self.s or 1
 		end
@@ -606,6 +776,16 @@ function Okna:ogloszenie(tekst: string, kolor: string?)
 	if #self.kolejkaOgl > 4 then
 		table.remove(self.kolejkaOgl, 1)
 	end
+end
+
+-- napis bramy w stosie u góry (gracz przy zamkniętej bramie) albo nil
+function Okna:brama(tekst: string?, kolor: string?)
+	self.bramaRamka.Visible = tekst ~= nil
+	if tekst then
+		self.tekstBramy.Text = tekst
+		self.obrysBramy.Color = if kolor then hex(kolor) else self.papier
+	end
+	self.bramaStan = tekst
 end
 
 -- dane: { nazwa, hp, hpMax, zywy, powrotZa } albo nil (gracz daleko od Strażnika)
@@ -726,7 +906,35 @@ function Okna:stan()
 			end
 		end
 	end
+	-- wszystkie widoczne przyciski (do próby: ≥ 44 pt, w ekranie); przycisk z przezroczystym tłem = cała karta
+	local guziki = {}
+	for _, d in self.gui:GetDescendants() do
+		if d:IsA("GuiButton") and d.Visible and d.Selectable and d.AbsoluteSize.X > 0 then
+			local widac = true
+			local o: Instance? = d.Parent
+			while o and o ~= self.gui do
+				if o:IsA("GuiObject") and not o.Visible then
+					widac = false
+					break
+				end
+				o = o.Parent
+			end
+			if widac and (d.BackgroundTransparency < 1 or d.Name == "Karta") then
+				table.insert(guziki, { d.Name, d.AbsolutePosition.X, d.AbsolutePosition.Y, d.AbsoluteSize.X, d.AbsoluteSize.Y })
+			end
+		end
+	end
+	local zazn = GuiService.SelectedObject
 	return {
+		stos = {
+			straznik = if self.pasekStraznika.Visible then prostokat(self.pasekStraznika) else nil,
+			brama = if self.bramaRamka.Visible then prostokat(self.bramaRamka) else nil,
+			ogloszenie = if self.ogl.Visible then prostokat(self.ogl) else nil,
+			dymek = if self.dymek.Visible then prostokat(self.dymek) else nil,
+			szanse = if self.szanseRamka.Visible and self.kontekstRamka.Visible then prostokat(self.szanseRamka) else nil,
+			kontekst = if self.kontekstRamka.Visible then prostokat(self.kontekstPrzycisk) else nil,
+		},
+		guziki = guziki, pad = self.padWlaczony == true, zaznaczony = if zazn then zazn.Name else nil, brama = self.bramaStan,
 		otwarte = self.otwarte, okno = prostokat(self.oknoRamka), przyciski = przyciski, kropka = self.kropka.Visible,
 		kontekst = self.kontekstRodzaj, kontekstNr = self.kontekstNr, kontekstPoz = if self.kontekstRodzaj then prostokat(self.kontekstPrzycisk) else nil,
 		szanse = if self.szanseRamka.Visible then prostokat(self.szanseRamka) else nil, podgladow = kart,

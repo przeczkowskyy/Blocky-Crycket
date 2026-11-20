@@ -391,6 +391,25 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(wolaj("prezent", p, dzien + 30, DL)[1], N[-1] * U["prezent"]["mnoznik_krainy"][2])
         self.assertEqual(jeden("dzien", 86400 * 3 + 5), 3)
 
+    def test_2p_mnoznik_dokladnie(self):
+        # etap 3: „x1.5 POWER”, nie „x1”
+        przypadki = {1: "1", 1.5: "1.5", 2: "2", 1.35: "1.35", 1.05: "1.05", 1.3: "1.3", 2.95: "2.95", 28: "28", 15: "15",
+                     11: "11", 0.1 + 0.2: "0.3", 12.25: "12.25", 2500: "2.5K"}
+        for n, w in przypadki.items():
+            self.assertEqual(jeden("mnoznikTekst", n), w, n)
+        for P in U["palki"]["lista"]:
+            self.assertNotEqual(jeden("mnoznikTekst", P["mnoznik"]), jeden("format", P["mnoznik"]) if P["mnoznik"] % 1 else "?",
+                                P["nazwa"])
+
+    def test_2q_stos_napisow(self):
+        # etap 3: napisy u góry jeden pod drugim, bez nakładania
+        poz, dol = wolaj("stos", [34.0, 44.0, 40.0], 61.0, 5.0)
+        self.assertEqual(z(poz), [61, 100, 149])
+        self.assertEqual(dol, 194)
+        poz, dol = wolaj("stos", [], 10.0, 5.0)
+        self.assertEqual(z(poz) or [], [])
+        self.assertEqual(dol, 10)
+
 
 # ============================================================================================== 3. tempo
 class TestTempa(unittest.TestCase):
@@ -464,6 +483,34 @@ class TestZrodel(unittest.TestCase):
         for f in ("L.kupPalke(", "L.wyklujJajko(", "L.odbierzPrezent(", "L.aktywneZListy("):
             self.assertIn(f, s)
             self.assertNotIn(f, k + o)
+
+    def test_4e_etap3_ruch_pad_napisy(self):
+        k = czytaj("KlientBonk.client.luau")
+        s = czytaj("SerwerBonk.server.luau")
+        o = czytaj("OknaBonk.luau")
+        # zamach widzą wszyscy: serwer rozsyła „zamach” także przy pudle, klient rusza ręką każdego gracza
+        self.assertIn('zdarzenie({ t = "zamach", g = gracz.UserId })', s)
+        self.assertIn('z.t == "cios" or z.t == "lot" or z.t == "zamach"', k)
+        self.assertIn("RunService.PreSimulation:Connect", k, "staw po animacjach (Transform), bez wgranych animacji")
+        self.assertNotIn("LoadAnimation", k)
+        self.assertIn('j:IsA("AnimationConstraint")', k, "nowe awatary: stawy AnimationConstraint")
+        # tupot: serwer wysyła, odpycha u siebie klient gracza (bez obrażeń)
+        self.assertIn('t = "tupot"', s)
+        self.assertNotIn("TakeDamage", s + k)
+        # pety latające z danych
+        self.assertEqual(sorted(i for i, P in D["pety"].items() if P.get("lata")), ["ognik", "swietlikowka", "tukanik", "wazeczka"])
+        # pad: B zamyka, LB / RB / w górę / Y
+        for kod in ("ButtonB", "ButtonL1", "ButtonR1", "DPadUp", "ButtonY"):
+            self.assertIn("Enum.KeyCode." + kod, o)
+        self.assertIn("GuiService.SelectedObject", o)
+        # mnożniki dokładnie, stos napisów
+        self.assertIn("L.mnoznikTekst(P.mnoznik)", o)
+        self.assertNotIn("L.format(P.mnoznik)", o + k)
+        self.assertIn("L.stos(", k)
+        # pamięć atrybutów potworów: pętla nie czyta atrybutów co klatkę
+        petla = k.split("RunService.RenderStepped:Connect(function(dt)", 1)[1].split("------------------------------------------------------------------ kamera filmowa", 1)[0]
+        self.assertNotIn(":GetAttribute(\"Zywy\")", petla)
+        self.assertNotIn("folderPotworow:GetChildren()", petla)
 
     def test_4d_cudze_ekrany_i_bohater(self):
         k = czytaj("KlientBonk.client.luau")

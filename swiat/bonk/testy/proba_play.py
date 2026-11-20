@@ -37,6 +37,17 @@ Etap 2 (po B08, przed B09):
   B27 czas klatki z 3 petami i Strażnikiem
   B24 (po B12) zapis v2 tam i z powrotem, migracja rekordu v1 → v2
   B25 (w B14) okna etapu 2 na telefonie 667 × 375: w ekranie, przyciski boczne i kontekstu nie nachodzą na BONK
+Etap 3 (po B27, przed B09; B32 po B25):
+  B28 zamach ręką z pałką: pałka w spoczynku na ramieniu (staw barku obrócony), BONK → zamach, zdarzenie zamachu
+      z serwera do wszystkich klientów (także pudło)
+  B29 ruch petów: latające nad ziemią (≥ 2 st), chodzące podskakują; jajko w inkubatorze się kołysze
+  B30 stos napisów (komputer): podpowiedź, pasek Strażnika, napis bramy, komunikat, dymek, nazwa krainy — bez
+      nakładania i w ekranie; podpowiedź samouczka po wykonaniu kroków schowana; mnożnik pałki dokładnie („x1.5 POWER”)
+  B31 pad: LB = PETS (zaznaczony AUTO BEST), RB = INDEX, w górę = GIFT (zaznaczony CLAIM), Y przy stoisku = sklep
+      (zaznaczona karta następnej pałki), B zamyka okno
+  B33 tupot Strażnika: fala co kilka sekund odpycha gracza w zasięgu (bez obrażeń)
+  B32 telefon 667 × 375 i tablet 1024 × 768: stos napisów bez nakładania i w ekranie, każdy przycisk ≥ 44 pt i w ekranie
+      (okna sklepu, petów, Księgi, prezentu), zrzuty
 """
 import argparse
 import io
@@ -343,7 +354,11 @@ def etap2(p, a, wyj):
         if not s1.get("zywy"):
             koniec = time.time() - t0
             break
-        time.sleep(0.25 if (s1.get("hp") or 0) < 0.15 * (s1.get("hpMax") or 1) else 1.0)
+        # etap 3: tupot Strażnika odpycha — jak człowiek, wracamy pod Strażnika
+        pz = p.poz()
+        if pz and ((pz[0] - sm[0]) ** 2 + (pz[2] - sm[2]) ** 2) ** 0.5 > 11.5:
+            p.idz(sm[0] - 10, K1["start"][1], sm[2])
+        time.sleep(0.25 if (s1.get("hp") or 0) < 0.15 * (s1.get("hpMax") or 1) else 0.6)
     time.sleep(0.3)
     k_lot = p.klient('"stan"')
     p.klient('"trzymaj", false')
@@ -427,6 +442,180 @@ def etap2(p, a, wyj):
             srKlatki_ms=round(1000 * k27.get("srKlatki", 0), 1), maksKlatki_ms=round(1000 * k27.get("maksKlatki", 0), 1),
             srPetli_ms=round(1000 * k27.get("srPetli", 0), 2), maksPetli_ms=round(1000 * k27.get("maksPetli", 0), 2),
             widokow=k27.get("widokow"), czesci=k27.get("czesciWidokow"), pety=k27.get("petow"))
+
+
+def nachodza(r, q):
+    return bool(r and q and r[0] < q[0] + q[2] - 0.5 and q[0] < r[0] + r[2] - 0.5 and r[1] < q[1] + q[3] - 0.5
+                and q[1] < r[1] + r[3] - 0.5)
+
+
+def wewnatrz(r, o, zapas=2):
+    return bool(r and o and r[0] >= o[0] - zapas and r[1] >= o[1] - zapas and r[0] + r[2] <= o[0] + o[2] + zapas
+                and r[1] + r[3] <= o[1] + o[3] + zapas)
+
+
+def stos_ok(n):
+    """Wynik haczyka "napisy": prostokąty parami bez nakładania i w ekranie → (ok, kolizje, poza)."""
+    # stos (wszystkie muszą być) + nazwa krainy (gdy się mieści) + przeszkody na dole: BONK, przycisk przy stoisku, szanse
+    nazwy = [k for k in ("gora", "podpowiedz", "straznik", "brama", "ogloszenie", "dymek", "kraina", "bonk", "kontekst", "szanse")
+             if n.get(k)]
+    kolizje = [(a, b) for i, a in enumerate(nazwy) for b in nazwy[i + 1:] if nachodza(n[a], n[b])
+               and not {a, b} <= {"bonk", "kontekst", "szanse"}]
+    ekran = n.get("ekran")
+    poza = [k for k in nazwy if not wewnatrz(n[k], ekran)]           # ekran: ScreenGui (0, 0) albo ramka emulacji
+    stos = all(n.get(k) for k in ("gora", "podpowiedz", "straznik", "brama", "ogloszenie", "dymek"))
+    return stos and not kolizje and not poza, kolizje, poza
+
+
+def etap3(p, a, wyj):
+    """B28–B31, B33: zamach ręką, ruch petów i jajka, stos napisów, pad, tupot Strażnika."""
+    K1 = D["krainy"][0]
+    zrzuty = not a.bez_zrzutow
+    y = K1["start"][1]
+    # ---------------------------------------------------------------- B28: pałka na ramieniu i zamach
+    p.serwer('"kraina", 1')
+    time.sleep(1.5)
+    st = K1["start"]
+    p.przenies(st[0] + 8, y, st[2] + 6)                               # z dala od potworów: BONK = pudło
+    time.sleep(1.0)
+    r0 = p.klient('"reka"')
+    p.klient('"bonk"')
+    time.sleep(0.09)
+    r1 = p.klient('"reka"')
+    time.sleep(0.8)
+    r2 = p.klient('"reka"')
+    spoczynek = r0.get("poza") == [12, 12, 128] or (r0.get("poza") or [0])[2] > 100
+    p.wynik("B28", r0.get("palka") and r0.get("stawy") and (r0.get("katBarku") or 0) > 5 and spoczynek
+            and r1.get("zamach") is True and r1.get("poza") != r0.get("poza") and r2.get("zamach") is False
+            and r2.get("odebranych", 0) > r0.get("odebranych", 0),
+            spoczynek=r0.get("poza"), w_zamachu=r1.get("poza"), staw=r0.get("rodzaj"), kat_barku=r0.get("katBarku"),
+            zdarzen_zamachu=r2.get("odebranych", 0) - r0.get("odebranych", 0))
+    if zrzuty:
+        pz = p.poz()
+        p.zrzut(os.path.join(KLATKI, "bonk_palka_ramie.jpg"), (pz[0] - 5.5, pz[1] + 1.8, pz[2] + 5), (pz[0], pz[1] + 0.8, pz[2]))
+    # ---------------------------------------------------------------- B29: pety w ruchu (latające w powietrzu), jajko
+    p.serwer('"pety_profil", {wazeczka = 1, swietlikowka = 1, lisciolis = 1}')
+    time.sleep(0.8)
+    jm = D["jajka"][0]["miejsce"]
+    p.przenies(jm[0] + 4, y, jm[2] - 12)
+    time.sleep(1.0)
+    p.idz(jm[0] + 40, y, jm[2] - 14)
+    probki, jajka = [], []
+    for przerwa in (0.11, 0.19, 0.07, 0.23, 0.13, 0.29, 0.05, 0.17):    # nierówno: bez zgrania z rytmem podskoków
+        time.sleep(przerwa)
+        k = p.klient('"stan"')
+        probki.append(k.get("ruchPetow") or [])
+        jajka.append((k.get("jajka") or {}).get("1"))
+    lata = [x[2] for pr in probki for x in pr if x[1]]
+    chodza = [x[2] for pr in probki for x in pr if not x[1]]
+    jajko_ok = len([j for j in jajka if j is not None]) >= 3 and len(set(round(j, 4) for j in jajka if j is not None)) >= 3
+    p.wynik("B29", len(lata) >= 6 and min(lata) >= 2.0 and len(chodza) >= 3 and max(chodza) - min(chodza) > 0.15 and jajko_ok,
+            latajace_wys=[round(min(lata or [0]), 2), round(max(lata or [0]), 2)],
+            chodzace_wys=[round(min(chodza or [0]), 2), round(max(chodza or [0]), 2)], jajko_kiw=[round(j or 0, 3) for j in jajka])
+    if zrzuty:
+        time.sleep(1.2)
+        pz = p.poz()
+        p.zrzut(os.path.join(KLATKI, "bonk_pety_ruch.jpg"), (pz[0] - 12, pz[1] + 3.5, pz[2] + 7), (pz[0] - 2, pz[1] + 0.5, pz[2]))
+    # ---------------------------------------------------------------- B30: stos napisów na komputerze, samouczek, mnożnik
+    k = p.klient('"stan"')
+    podp_po_samouczku = (k.get("ui") or {}).get("podpowiedz")
+    n = p.klient('"napisy"')
+    ok, kol, poza = stos_ok(n)
+    if zrzuty:
+        zapisz_zrzut(p.zrzut_bez_kamery(None), os.path.join(KLATKI, "bonk_napisy.jpg"))
+    time.sleep(3.2)
+    sk = D["sklepy"][0]["miejsce"]
+    p.przenies(sk[0], y, sk[2] + 5)
+    time.sleep(1.2)
+    p.klient('"okno", "sklep"')
+    time.sleep(0.6)
+    mn = p.luau('local g = game:GetService("Players").LocalPlayer.PlayerGui.BonkUI local w = {} for _, d in g:GetDescendants() do '
+                'if d:IsA("TextLabel") and string.find(d.Text, "POWER", 1, true) and d:FindFirstAncestor("Okno_sklep") then '
+                'table.insert(w, d.Text) end end return table.concat(w, "|")', "Client").split("|")
+    p.klient('"okno", nil')
+    P = U["palki"]["lista"]
+    p.wynik("B30", ok and podp_po_samouczku is None and {"x1.5 POWER", "x2 POWER", "x3 POWER"} <= set(mn),
+            kolizje=kol, poza_ekranem=poza, podpowiedz_po_samouczku=podp_po_samouczku, mnozniki=mn,
+            stos={k2: v for k2, v in n.items() if k2 != "ekran"})
+    # ---------------------------------------------------------------- B31: pad
+    kroki = {}
+    for kod in ("ButtonL1", "ButtonB", "ButtonR1", "ButtonB", "DPadUp", "ButtonB", "ButtonY"):
+        r = p.klient('"pad", "%s"' % kod)
+        kroki["%d_%s" % (len(kroki) + 1, kod)] = [r.get("otwarte"), r.get("zaznaczony")]
+    r = p.klient('"pad", "ButtonB"')
+    kroki["8_ButtonB"] = [r.get("otwarte"), r.get("zaznaczony")]
+    oczek = {"1_ButtonL1": ["pety", "Auto"], "2_ButtonB": [None, None], "3_ButtonR1": "ksiega", "4_ButtonB": [None, None],
+             "5_DPadUp": ["prezent", "Odbierz"], "6_ButtonB": [None, None], "7_ButtonY": ["sklep", "Karta"], "8_ButtonB": [None, None]}
+    zle = [k2 for k2, v in oczek.items() if (kroki[k2][0] != v if isinstance(v, str) else kroki[k2] != v)]
+    p.wynik("B31", not zle and r.get("pad") is True, kroki=kroki, zle=zle)
+    p.klient('"pad", "wylacz"')
+    # ---------------------------------------------------------------- B33: tupot Strażnika
+    S = D["straznicy"][0]
+    sm = S["miejsce"]
+    p.serwer('"straznik_odrodz", 1')
+    p.przenies(sm[0] - 12, y, sm[2])
+    time.sleep(0.8)
+    t0 = p.klient('"stan"').get("tupotow", 0)
+    poz0 = p.poz()
+    pchniecie, odl = None, 0
+    t_start = time.time()
+    while time.time() - t_start < 14:
+        k = p.klient('"stan"')
+        if k.get("tupotow", 0) > t0:
+            time.sleep(0.35)
+            poz1 = p.poz()
+            odl = ((poz1[0] - poz0[0]) ** 2 + (poz1[2] - poz0[2]) ** 2) ** 0.5
+            pchniecie = time.time() - t_start
+            break
+        time.sleep(0.3)
+    g = gracz(p.serwer('"stan"'))
+    p.wynik("B33", pchniecie is not None and odl > 1.5, po_s=round(pchniecie or -1, 1), odepchniety_st=round(odl, 1),
+            co_s=U["straznik"]["tupot"]["co_s"], moc=g.get("moc"))
+
+
+def etap3_ekrany(p, a, wyj):
+    """B32: telefon 667 × 375 i tablet 1024 × 768 — stos napisów, przyciski ≥ 44 pt i w ekranie, zrzuty."""
+    K1 = D["krainy"][0]
+    sk = D["sklepy"][0]["miejsce"]
+    wyniki = {}
+    for nazwa, (sx, sy), plik in (("telefon", (667, 375), "bonk_telefon_napisy.jpg"), ("tablet", (1024, 768), "bonk_tablet.jpg")):
+        p.klient('"emulacja", Vector2.new(%d, %d)' % (sx, sy))
+        time.sleep(1.0)
+        p.przenies(sk[0], K1["start"][1], sk[2] + 5)
+        time.sleep(1.2)
+        n = p.klient('"napisy"')
+        ok_stos, kol, poza = stos_ok(n)
+        ekran = n.get("ekran")
+        if not a.bez_zrzutow and ekran:
+            img = p.zrzut_bez_kamery(None)
+            vp = json.loads(p.luau('local v = workspace.CurrentCamera.ViewportSize local i = game:GetService("GuiService"):'
+                                   'GetGuiInset() return game:GetService("HttpService"):JSONEncode({ v.X, v.Y, i.Y })', "Client"))
+            skx, sky = img.width / vp[0], img.height / vp[1]
+            y0 = ekran[1] + vp[2]
+            img.crop((int(ekran[0] * skx), int(y0 * sky), int((ekran[0] + ekran[2]) * skx),
+                      int((y0 + ekran[3]) * sky))).save(os.path.join(KLATKI, plik), quality=90)
+        time.sleep(3.2)
+        male, poza_ekranem, okna = [], [], {}
+        for okno in ("sklep", "pety", "ksiega", "prezent", None):
+            p.klient('"okno", %s' % ('"%s"' % okno if okno else "nil"))
+            time.sleep(0.5)
+            k = p.klient('"stan"')
+            o = k.get("okna") or {}
+            ui = k.get("ui") or {}
+            ekr = ui.get("okno")
+            guziki = list(o.get("guziki") or [])
+            if ui.get("przyciskPoz"):
+                guziki.append(["BONK"] + ui["przyciskPoz"])
+            okna[okno or "bez_okna"] = {"okno_w_ekranie": wewnatrz(o.get("okno"), ekr) if okno else True, "guzikow": len(guziki)}
+            for g in guziki:
+                if g[3] < 43.5 or g[4] < 43.5:
+                    male.append([okno, g[0], round(g[3]), round(g[4])])
+                if not wewnatrz(g[1:5], ekr):
+                    poza_ekranem.append([okno, g[0]])
+        wyniki[nazwa] = dict(ok=ok_stos and not male and not poza_ekranem and all(v["okno_w_ekranie"] for v in okna.values()),
+                             kolizje=kol, napisy_poza=poza, male=male[:6], poza_ekranem=poza_ekranem[:6], okna=okna)
+    p.klient('"emulacja", nil')
+    p.wynik("B32", all(v["ok"] for v in wyniki.values()), **wyniki)
 
 
 def potwory(p, kraina, gatunek=None):
@@ -589,6 +778,8 @@ def main():
                             (t["x"] + 14, t["y"] + 10, t["z"]))
             # ---------------------------------------------------------------- B17–B23, B27: etap 2
             etap2(p, a, wyj)
+            # ---------------------------------------------------------------- B28–B31, B33: etap 3
+            etap3(p, a, wyj)
             # ---------------------------------------------------------------- B09: brama lasu (Strażnik pokonany w B20)
             p.serwer('"moc", %d' % K1["brama"]["wymagana"])
             time.sleep(0.5)
@@ -733,6 +924,8 @@ def main():
                         and not nachodza(kont, ui14.get("przyciskPoz")) and wewnatrz(kont, okno),
                         okna=okna_tel, boczne=boczne, kontekst=kont, bonk=ui14.get("przyciskPoz"))
                 p.klient('"emulacja", nil')
+                # ---------------------------------------------------------------- B32: telefon i tablet (etap 3)
+                etap3_ekrany(p, a, wyj)
             # ---------------------------------------------------------------- B15: konsola
             kons = p.call("get_console_output")["text"]
             linie = [x for x in kons.splitlines() if ("BonkGra" in x or "[BONK]" in x or "Bonk" in x)]
