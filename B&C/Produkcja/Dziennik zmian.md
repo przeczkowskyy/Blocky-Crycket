@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-20 · Claude Code u Karola (Pet Arena: prototyp gotowy do zagrania)
+- **Pet Arena (D-118)** zbudowana w nowym miejscu Roblox (plik lokalny, kontener `PetArenaGra`), pakiet `swiat/pet_arena/`. Etap 1 (20:30–21:30): rdzeń — rzut peta w wybrane miejsce, walka o złoty środek liczona na serwerze, odrzut rosnący z ubytkiem życia, RING OUT i KO, nagroda za głowę, 12 petów z umiejętnościami, dzikie pety. Etap 2 (21:35–22:30): większe pety i czytelny ekran, jajka i gwiazdki, drużyna i Księga, boss i złoty pet, tarcza słabszego, trener, tablice, zapis, pad, demo wideo. Próba w Studio 28/28, testy 28 OK, 60 klatek na sekundę.
+- **Zmiana względem słów Karola:** odpoczynek peta 30 s zamiast ok. minuty (przy 60 s ok. 40% czasu bez peta do rzucenia) — zapisane w „Do strojenia po graniu” w [[Pet Arena — projekt prototypu]].
+- [[Pytania otwarte]]: nowe pytanie 77 (prywatna wersja testowa). [[Zadania]]: zagrać i powiedzieć, co poprawić. Raport w panelu ze zrzutami; demo wideo i zrzuty wysłane Karolowi. Nic nie opublikowano.
+
 ## 2026-11-20 · Claude Code u Karola (po sesji: BONK porzucony, Pet Arena do budowy)
 - **Karol po sesji głównej, na czacie:** „OK, akceptuję te rzeczy… Porzucamy BONK, tak jak mówiłeś, ale wyciągamy z niego wiedzę… Robimy Pet Arenę.” [[Rejestr decyzji]]: D-116 i D-117 zatwierdzone podpisem Karola, nowa **D-118** (Pet Arena: budujemy prototyp) — wszystkie czekają na Pawła (D-043; Paweł na sesji miał wątpliwość co do pomysłu).
 - [[Pytania otwarte]]: odpowiedzi pod 75 (Pet Arena) i 76 (porzucamy BONK). [[Zadania]]: zadania BONK zdjęte, nowe zadanie Pet Arena, ocena kartą po stronie Pawła.

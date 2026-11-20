@@ -716,5 +716,11 @@ Szczegóły: Źródło: [[Sesja główna 2026-11-20 — zapis ustaleń]] (18:52 
 **Odpowiedź:**
 - Karol (2026-11-20): (a) porzucamy BONK, zasoby i wiedza idą do Pet Areny — „to nie tak, że czas i tokeny były stracone”. Opinia agenta (zgodna): BONK nudzi nawet nas, naprawa i tak wymienia rdzeń, a pomiar słabej gry nie powie nic o rynku; prywatna wersja testowa zostaje.
 
+## 77. Pet Arena: wystawić prywatną wersję testową dla Was dwóch?
+- Prototyp stoi w Studio w pliku lokalnym (próba 28/28); żeby zagrać we dwóch i z telefonu, trzeba go opublikować jako prywatną grę, jak BONK 20.11.
+- Do wyboru: (a) tak — agent publikuje prywatnie na koncie Karola i zaprasza Pawła; (b) najpierw Karol gra sam w Studio i mówi, co poprawić; (c) nie teraz.
+- Publicznie nic nie idzie bez osobnej decyzji.
 
+Szczegóły: Publikacja prywatna sprawdza też prawdziwy zapis postępu i telefon. Kroki są w `swiat/pet_arena/README.md`. Projekt i lista rzeczy do strojenia: [[Pet Arena — projekt prototypu]]; karta: [[Pet Arena]]. Przeniesienie do grupy przed startem publicznym — pytanie 31.
+**Odpowiedź:**
 

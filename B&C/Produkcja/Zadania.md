@@ -7,7 +7,7 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
-- [ ] Pet Arena (D-118): prototyp w budowie od 20.11 wieczór — etap 1 rdzeń (scena, rzut, walka, odrzut, RING OUT i KO, złoto za środek, dzikie pety), etap 2 jajka, kolekcja, trener, boss, tablice, zapis, demo; potem granie we dwóch i decyzja o prywatnej publikacji ([[Pet Arena — projekt prototypu]]) · agent: Karol · #wysoki
+- [ ] Pet Arena (D-118): zagrać 10 minut w Studio (Play w pliku `PetArena.rbxlx`) i powiedzieć, co poprawić — czy chce się dalej wrzucać, czy czeka się z umiejętnością, czy miejsce rzutu ma znaczenie; potem decyzja o prywatnej wersji testowej (pytanie 77) i strojenie z listy w [[Pet Arena — projekt prototypu]] · Karol, Paweł · #wysoki
 - [ ] Paweł: ocenić kartą w panelu Pet Arenę i Super Kitty Brawlers (Karol ocenił Pet Arenę na 28/30) i potwierdzić albo zmienić D-116–D-118 · Paweł · #wysoki
 - [ ] Paweł: potwierdzić albo zmienić D-114 (prawo agenta do sprzeciwu) i D-115 (Wytwórnia pomysłów) · Paweł · #średni
 - [ ] Paweł: przełączyć repozytorium na prywatne w ustawieniach GitHub (D-044) — działanie właściciela, po zatwierdzeniu decyzji; wtedy lustro panelu na GitHub Pages odpada · #wysoki
@@ -120,6 +120,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-20: Pet Arena (D-118) — prototyp zbudowany w jeden wieczór w dwóch etapach (rdzeń walki o złoty środek, jajka, kolekcja, boss, trener, zapis, demo); próba w Studio 28/28 ([[Pet Arena — projekt prototypu]])
 - [x] 2026-11-20: Po sesji głównej — karty Pet Areny i Super Kitty Brawlers z oceną, krytyką i pre-mortem; opinia agenta o BONK; decyzje Karola: BONK porzucony (D-117), Pet Arena do budowy (D-118); zadania BONK (próba we dwóch, publikacja) zdjęte
 - [x] 2026-11-20: Porządki na polecenie Karola — zdjęte jako nieaktualne (wariant (a) z pytania 65 i kolejność Ringu): kolejność Ringu Potworów (zastąpiona oceną w Wytwórni, pytanie 75); odpowiedzi na pytania 50 i 51; mapa teleportacji z ramką i pinami (działa teleport przez chmury, D-075, D-076); odpowiedź na pytanie 52; zadania dla agenta osoby (D-072); walka v2 (zastąpił ją silnik v3); porównanie Krzywego Miasteczka Blender/Roblox (D-029); kolorystyka Krzywego Miasteczka (dziś bazar, D-084); demo Leśnej bazy z 12.11; pierwsze uruchomienie panelu u Pawła (pytanie 27); błędy starego prototypu `Workspace/TestWalki`
 - [x] 2026-11-20: Krytyczne myślenie (D-114) — 28 skilli `thinking-*` (MIT) w `.claude/skills/`, skill projektu `krytyczne-myslenie`, sekcja w `CLAUDE.md`; Wytwórnia pomysłów (D-115) — folder `B&C/Wytwórnia/` z zasadami hitu, kartą oceny, radarem trendów, lekcjami i notatkami gier (BONK, Ring Potworów, B&C), szablon „Pomysł gry”

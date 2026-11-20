@@ -70,8 +70,16 @@ Robuxów, handlu, krain, pałek, czatu głosowego. Koty i kot-policjant z pomys�
 Czy po 10 minutach dalej wrzucają; czy mówią o tym, którego peta i gdzie wrzucić; czy czekają z umiejętnością na moment; ile razy się śmieją przy wybiciach; czy pytają „co wypadnie z jajka”.
 
 ## Stan budowy
-- [ ] etap 1 — rdzeń: scena, rzut, walka, odrzut, RING OUT i KO, strefy złota, nagroda za głowę, dzikie pety, pierwsze pety z umiejętnościami, ekran.
-- [ ] etap 2 — jajka i kolekcja, drużyna, trener, boss i złoty pet, tarcza słabszego, tablice, zapis, pad, dopracowanie, demo.
+- [x] 2026-11-20 (wieczór) — **etap 1, rdzeń:** dół-arena z trybuną, rzut w wybrane miejsce, walka liczona na serwerze w 2D, odrzut rosnący z ubytkiem życia, RING OUT i KO, strefy złota, nagroda za głowę, 12 petów z umiejętnościami, dzikie pety, drużyna z odpoczynkiem. Próba w Studio 17/17.
+- [x] 2026-11-20 (noc) — **etap 2:** większe pety i odkryty środek ekranu, „czucie” ciosu, odpoczynek 30 s, jajka w trzech stopniach (pierwsze darmowe), gwiazdki za kopie, drużyna i Księga, boss i złoty pet z odliczaniem, tarcza słabszego, trener i mata AFK, tablice, zapis, pad, demo wideo. Próba w Studio 28/28, testy 28 OK, 60 klatek na sekundę przy 8 petach. Szczegóły: `swiat/pet_arena/README.md`.
+- [ ] granie ludzi (Karol, potem we dwóch) i strojenie; prywatna wersja testowa — pytanie 77 w [[Pytania otwarte]].
+
+## Do strojenia po graniu
+- **Odpoczynek peta: 30 s** (Karol mówił o ok. minucie; przy 60 s gracz przez ok. 40% czasu nie miał kogo rzucić — jedna liczba w ustawieniach).
+- Tłok w środku przy 7–8 petach (mniej petów naraz albo większa arena).
+- Ceny jajek: pierwszy rzadki pet ok. 7 min (cel do 10), pierwszy epicki za wolno (ok. 29% graczy w 30 min).
+- Złoto z wydarzeń dla samotnego gracza (cała pula bossa trafia do jednej osoby).
+- Braki: muzyka, zamach rzutu widoczny dla innych graczy, prawdziwy magazyn zapisu (wymaga publikacji), próba na prawdziwym telefonie i padzie, ikona i miniatury.
 
 ## Do ustalenia
 - Nazwa gry (robocza „Pet Arena”).
