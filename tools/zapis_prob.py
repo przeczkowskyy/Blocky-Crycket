@@ -28,7 +28,7 @@ import sys
 import time
 
 KONTENER = "StanGracza"
-KONTENERY_DODATKOWE = ("BonkGra",)  # inne kontenery z własnym zapisem: ten sam znacznik próby (19.11.2026, BONK)
+KONTENERY_DODATKOWE = ("BonkGra", "PetArenaGra")  # inne kontenery z własnym zapisem: ten sam znacznik próby (19.11.2026 BONK, 20.11.2026 Pet Arena)
 ATR_DO = "ZapisProbaDo"
 ATR_MAGAZYNU = "ZapisProbaMagazyn"
 ATR_BLEDOW = "ZapisProbaBledy"
