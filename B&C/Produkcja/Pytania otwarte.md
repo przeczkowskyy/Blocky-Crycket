@@ -665,4 +665,7 @@ Szczegóły: Opis, ocena wobec zasad z filmu i sześć poprawek agenta (przycisk
 
 Szczegóły: Cel pomiaru i progi z propozycji decyzji biznesowej (co najmniej 30% powrotów następnego dnia → reklama i aktualizacje co tydzień; 15–30% → poprawki rdzenia; poniżej 15% → inny rdzeń) w [[Diagnoza 2026-11-19 — prostota i szansa na hit]]. Opis gry i stan budowy: [[BONK — projekt prototypu]]. Raport w panelu ze zrzutami i planszą klatek demo.
 **Odpowiedź:**
+- Karol (2026-11-20): A — publikujemy po próbie we dwóch.
+Rozstrzyga: D-113
+
 

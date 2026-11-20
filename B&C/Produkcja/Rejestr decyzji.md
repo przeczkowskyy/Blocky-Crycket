@@ -516,5 +516,9 @@ Na propozycję z symulacji przejścia (−30% życia) Karol: „Nie wiem, czy 30
 ✅ zatwierdzona · produkcja / kierunek · 2026-11-19 · źródło: rozmowa Karola z Claude Code 19.11 (wieczór) · zdecydował: Karol 2026-11-19
 Karol na propozycję z pytania 72: „Okej. Może to zrobimy. Podczas nocy na Opusie zrób tę grę w całości. To jest prosta gra, wedle twojego opisu. Zezwalam na wszystko w tej gestii oraz na korzystanie z Higgsfield.” Agent buduje wariant (b) jako osobną, samowystarczalną grę: uderzasz potwory, odlatują, monety, Moc, pałki, jajka i pety, trzy krainy ze Strażnikami (opis: [[BONK — projekt prototypu]]). B&C zostaje nietknięte — nic nie jest kasowane ani zamrażane w kodzie, pliki Pawła bez zmian. Zgoda obejmuje budowę i Higgsfield (także obrazy, np. ikonę i miniatury); publikacja gry na Roblox zostaje decyzją ludzi. Rozstrzyga pytanie 72. Decyzja ma podpis Karola i czeka na potwierdzenie Pawła (D-043).
 
+### D-113 BONK: publikujemy jako osobną grę po próbie we dwóch
+✅ zatwierdzona · produkcja / wydanie · 2026-11-20 · źródło: odpowiedź Karola na czacie na pytanie 74 („A”) · zdecydował: Karol 2026-11-20
+Wariant (a) z pytania 74: najpierw Karol i Paweł grają w BONK razem (Team Test albo prywatny serwer: zapis, drugi gracz widzi zamach, pety i koronę, wspólny Strażnik, telefon i pad), potem BONK idzie jako osobne doświadczenie w grupie (D-044), najpierw prywatne, potem publiczne do pomiaru powrotów graczy (progi w [[Diagnoza 2026-11-19 — prostota i szansa na hit]]). Kroki: `swiat/bonk/README.md` → „Publikacja jako osobna gra”. Utworzenie miejsca w grupie, ustawienia gry, ikona i miniatury oraz przełączenie na publiczne to czynności ludzi; agent buduje grę w nowym miejscu (`zbuduj.py --publikacja`) na prośbę. Rozstrzyga pytanie 74. Decyzja ma podpis Karola i czeka na potwierdzenie Pawła (D-043).
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*

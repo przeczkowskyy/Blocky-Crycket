@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-20 · Claude Code u Karola (BONK: decyzja o publikacji)
+- **Karol, rano:** odpowiedź „A” na pytanie 74 → **D-113**: BONK publikujemy jako osobną grę w grupie po próbie we dwóch (podpis Karola, czeka na Pawła — D-043). Odpowiedź pod pytaniem 74 w [[Pytania otwarte]].
+- [[Zadania]]: pozycja BONK rozbita na próbę we dwóch i publikację.
+
 ## 2026-11-20 · Claude Code u Karola (BONK gotowy w całości)
 - **BONK (D-112), etap 3:** zamach ręką z pałką widoczny dla wszystkich, ruch petów i jajek, tupot Strażnika, napisy u góry w jednym stosie, pad, przyciski na telefon i tablet. Próba w Studio 33/33, testy 37 OK; obecna gra bez nowych błędów (próba dymna 14/14, zapis 10/10, bohater i stan gracza bez nowych błędów).
 - **Grafiki:** ikona „BONK!” i trzy miniatury z hasłami po angielsku (szkice z Higgsfield, 8 kredytów; napisy dodane u nas), w `swiat/bonk/grafika/`. Nic nie wgrane do Roblox. Krótkie demo wideo (ok. 43 s) dla Karola, poza repo.
