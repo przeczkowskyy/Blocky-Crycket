@@ -1,0 +1,22 @@
+{
+ "id": "r-20261120-191241-6ddb",
+ "tytul": "Sesja główna 2026-11-20 — do zatwierdzenia",
+ "opis_md": "Spisałem sesję Karola i Pawła z 20.11 (18:52–19:08), temat: **Wytwórnia — nowe pomysły na gry**. Zapis rozmowy był kompletny. Nic nie zostało zatwierdzone ani zmienione na kanon.\n\n**Co padło**\n- **Pomysł Karola — pet-arena:** wspólna arena bez kolejki, do 10 petów, przegrany pet wraca z ok. minutą przerwy, wyrzucenie z areny jako przegrana, postęp peta przechodzi na kolejnego, dużo losowości.\n- **Pomysł Pawła — Super Kitty Brawlers:** koty w domku, łapanie z ucieczką przed policjantem albo karmienie z ulicy, stroje z pasywkami, rybki jako waluta. Karol: trzy źródła kasy to za dużo.\n- **BONK:** Karol zaproponował go porzucić, ale od razu zastrzegł, że to nie decyzja, i chce opinii agenta.\n\n**Propozycje do zatwierdzenia w panelu (zakładka Pytania)**\n- **D-116** — oba nowe pomysły wchodzą do lejka Wytwórni i dostają kartę oceny z krytyką agenta. Niczego jeszcze nie buduje.\n- **D-117** — BONK: porzucić jako grę docelową i wykorzystać zasoby w nowych grach. Uwaga: to jest sprzeczne z D-112 i D-113 (próba we dwóch i pomiar), więc to wymaga waszej rozmowy.\n\n**Pytania**\n- **#75** — który pomysł idzie do najtańszego testu: bez odpowiedzi, dopisałem tylko dopisek z sesji (Karol: oba pomysły najpierw ocenić kartą).\n- **#76 (nowe)** — BONK: porzucić czy dokończyć próbę i pomiar (rozstrzyga D-117).\n- Pod żadnym otwartym pytaniem nie dopisałem odpowiedzi, bo żadna nie padła wyraźnie. Pytanie #71 (do Pawła) nie było poruszane.\n\n**Zadania (bez przypisania do agenta)**\n- Karty pomysłów z oceną agenta dla pet-areny i kotów.\n- Opinia agenta o BONK.\n- Ocena obu pomysłów kartą w panelu przez Karola i Pawła, potem wybór jednego do testu.\n\n**Do potwierdzenia:** zapis jest niewyraźny w kilku miejscach — m.in. czy Paweł miał zastrzeżenie do gatunku pet-areny („teraz nikt już nie bawi takiej gierki”) i które z dwóch rozwiązań z kotami wybiera Karol (policjant czy ulica z jedzeniem).\n\nNa później wróciły do agendy: wybór pomysłu do testu oraz marketing i workflow do mózgu w Obsidianie (Karol zapowiedział, że o tym opowie).",
+ "kto": "Claude (sesja)",
+ "czas": "2026-11-20T19:12:41+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesja główna 2026-11-20 — zapis ustaleń.md",
+   "etykieta": "Zapis ustaleń z sesji"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytania otwarte (75 i 76)"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Zatwierdzacie D-116 i D-117 oraz co dalej z BONK?"
+}
