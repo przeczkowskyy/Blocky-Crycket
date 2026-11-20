@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-20 · Claude Code u Karola (badanie: TizzyRBLX, rynek, osiem pomysłów)
+- **Badanie agenta** (26 wyszukiwań, źródła w notatkach): [[TizzyRBLX — zasady twórcy]] (to on mówi w zapisie z 19.11; 31 zasad z oznaczeniem fakt/opinia; jego hity żyją krótko), [[Rozbiór hitów — listopad 2026]], nowy [[Radar trendów]] (20.11: fizyka i ragdoll rosną najszybciej, klony „Steal a…”, ogrody i „uderzaj dla liczby” spadają; platforma −9% graczy dziennie r/r w III kw.).
+- „Viral na bonki przeminął” — w połowie prawda: format „uderzaj dla liczby” umarł, „uderz i zobacz, co się stanie” rośnie (wniosek w notatce [[BONK]]).
+- Wytwórnia: siedem nowych pomysłów z kartą i pre-mortem — [[Monster Evolution]] 26/30, [[Sleeping Giant Heist]] 25, [[Smash Tower]] 23, [[BONK Chain Reaction]] 22, [[Monster Fishing]] 22, [[Monster Fusion Lab]] 21, [[Climb the Titan]] 17; [[Mózg — zasady hitu Roblox]] uzupełniony o zasady 15–20 i Tizzy'ego. Rekomendacja agenta w [[00 Wytwórnia pomysłów]]; wybór — pytanie 75.
+
 ## 2026-11-20 · Claude Code u Karola (porządki: pytania i zadania)
 - **Karol:** „Zaktualizuj dashboard i listę pytań, bo większość jest już zupełnie nieaktualna.”
 - [[Pytania otwarte]]: pytania 58, 59, 61–64, 67–69 oznaczone jako nieaktualne (szczegóły B&C wstrzymane do decyzji o kierunku, D-115; robocze ustawienia zostają w grze), 65 (dziewięć starych zadań zamkniętych), 66 (muzyka czeka z B&C), 73 (zastąpione oceną w Wytwórni). Otwarte zostaje 71 (pytanie do Pawła). Nowe pytanie 75: który pomysł idzie do najtańszego testu.

@@ -40,7 +40,18 @@ tags: [wytwórnia, mózg, zasady]
 
 ## Zasady z filmów twórców
 - Film z 19.11 (twórca udanej gry, zapis lokalny): 11 zasad spisanych w [[Diagnoza 2026-11-19 — prostota i szansa na hit]] — „simple scales, fancy fails”, jedna mechanika z głębią, fantazja, powód powrotu, pokazanie się, moment do nagrania, telefon i konsola, dopracowanie, dane i tempo.
-- TizzyRBLX (kanał polecony przez Karola 20.11) — zasady dopisze badanie z 20.11.
+- **TizzyRBLX** (kanał polecony przez Karola 20.11; to on mówi w zapisie z 19.11): 31 zasad z oznaczeniem fakt/opinia i testem — [[TizzyRBLX — zasady twórcy]]. Najważniejsze dla nas: fantazja = czasownik w tytule; weź sprawdzoną pętlę i zmień ok. 20% (fantazję i unikalną mechanikę), a nie tylko skórkę; popyt sprawdzaj też poza Roblox; napięcie i ulga — w pętli musi być coś do stracenia. **Uwaga krytyczna:** jego hity żyją krótko (Build a Base and Steal: 69 tys. graczy naraz → ok. 283 po trzech miesiącach) — to przepis na skok, nie na długie życie gry; mamy celować w jedno i drugie.
+
+## Wnioski z badania 20.11 (sześć rozebranych hitów)
+Każdy rosnący hit ma rzeczy, których BONK nie ma ([[Rozbiór hitów — listopad 2026]], [[Radar trendów]]):
+| # | Zasada | Test |
+|---|---|---|
+| 15 | **Coś nieznanego przy każdym powtórzeniu** (mutacja, reakcja fizyki, wydarzenie, ruch innego gracza). | Czy dziesiąte powtórzenie może skończyć się inaczej niż pierwsze? |
+| 16 | **Coś do stracenia** — kradzież, zjedzenie, przewrócenie, utrata stadium. Bez ryzyka nie ma napięcia ani ulgi. | W którym momencie gracz może coś stracić? |
+| 17 | **Inni gracze zmieniają twoją grę**, nie tylko stoją obok. | Czy gra z drugim graczem wygląda inaczej niż sama? |
+| 18 | **Pet i przedmiot robią coś widocznego** (zmieniają czynność albo jej efekt), a nie tylko mnożą liczbę. | Czy po zdobyciu peta widać różnicę bez patrzenia na liczby? |
+| 19 | **Boss jako wydarzenie dla całego serwera**, z zapowiedzią. | Czy gracze czekają na boss razem? |
+| 20 | **Łącz dwa rosnące trendy z naszą fantazją** zamiast kopiować lidera (kopie liderów umierają w miesiąc). | Jakie dwa trendy łączy pomysł i co jest nasze? |
 
 ## Powiązane
 - [[00 Wytwórnia pomysłów]] · [[Karta oceny pomysłu]] · [[Lekcje z prototypów]] · [[Radar trendów]]

@@ -30,7 +30,9 @@ Gra Roblox, która **zarabia i ma realną szansę na viral**: prosta i logiczna 
 - [[Karta oceny pomysłu]] — 10 kryteriów 0–3, progi.
 - [[Radar trendów]] — co rośnie, co się starzeje.
 - [[Lekcje z prototypów]] — co wiemy z własnych prób.
-- Gry i pomysły: [[Blocky & Crycket]], [[BONK]], [[Ring Potworów]] (oraz kolejne w `Wytwórnia/Pomysły/`).
+- Badanie 20.11: [[TizzyRBLX — zasady twórcy]] · [[Rozbiór hitów — listopad 2026]].
+- Gry i pomysły (ocena agenta / 30): [[Monster Evolution]] 26 · [[Sleeping Giant Heist]] 25 · [[Ring Potworów]] 22–23 · [[Smash Tower]] 23 · [[BONK Chain Reaction]] 22 · [[Monster Fishing]] 22 · [[Monster Fusion Lab]] 21 · [[BONK]] 19 · [[Climb the Titan]] 17 · [[Blocky & Crycket]] 13. Wybór do najtańszego testu — pytanie 75 w [[Pytania otwarte]].
+- **Rekomendacja agenta (badanie 20.11, do dyskusji):** najpierw dwa tanie testy po 2 dni na zasobach BONK — Sleeping Giant Heist i BONK Chain Reaction; Monster Evolution tylko planować (czy 30 modeli da się ułożyć w 3 gałęzie i czy mają chód); Ring jako trzeci albo tryb w innej grze; Climb the Titan i Fishing odrzucić na teraz.
 
 ## Powiązane
 - [[00 Start]] · [[Rejestr decyzji]] (D-112–D-115) · [[Pytania otwarte]] · [[Panel zespołu]]
