@@ -362,15 +362,24 @@ def karta_pomyslu(n):
 def kryteria():
     """[{nazwa, opis}] — opisy z notatki „Karta oceny pomysłu” (nagłówek, wiersz tabeli albo punkt listy z nazwą)."""
     n = _notatka_wytworni(PLIK_KARTY)
-    opisy = {}
+    opisy, skale = {}, {}
     if n:
         linie = n["tresc"].split("\n")
-        for _, dane, _ in _tabele(linie):                      # | Kryterium | Opis | …
+        for _, dane, naglowek in _tabele(linie):               # | # | Kryterium | Pytanie | 0 | 3 | albo | Kryterium | Opis |
+            h = [_proste(_czysta_komorka(x)) for x in naglowek]
+            k_nazwa = next((i for i, x in enumerate(h) if x.startswith("kryter")), 0)
+            k_opis = next((i for i, x in enumerate(h) if x.startswith("pytanie") or x.startswith("opis")), k_nazwa + 1)
+            k_0 = next((i for i, x in enumerate(h) if x == "0"), None)
+            k_3 = next((i for i, x in enumerate(h) if x == str(MAKS_KRYTERIUM)), None)
             for j in dane:
                 c = komorki(linie[j])
-                i = _indeks_kryterium(c[0]) if c else None
-                if i is not None and len(c) > 1 and i not in opisy:
-                    opisy[i] = _czysta_komorka(c[1])
+                i = _indeks_kryterium(c[k_nazwa]) if k_nazwa < len(c) else None
+                if i is None or i in opisy:
+                    continue
+                if k_opis < len(c) and _czysta_komorka(c[k_opis]):
+                    opisy[i] = _czysta_komorka(c[k_opis])
+                if k_0 is not None and k_3 is not None and max(k_0, k_3) < len(c):
+                    skale[i] = {"0": _czysta_komorka(c[k_0]), str(MAKS_KRYTERIUM): _czysta_komorka(c[k_3])}
         for naglowek, cialo in sejf._sekcje(n["tresc"], 2) + sejf._sekcje(n["tresc"], 3):
             i = _indeks_kryterium(naglowek)
             if i is not None and i not in opisy:
@@ -381,7 +390,7 @@ def kryteria():
                 i = _indeks_kryterium(m.group(1))
                 if i is not None and i not in opisy and m.group(2).strip():
                     opisy[i] = m.group(2).strip()[:300]
-    return [{"nazwa": k, "opis": opisy.get(i, "")} for i, k in enumerate(KRYTERIA)]
+    return [{"nazwa": k, "opis": opisy.get(i, ""), "skala": skale.get(i)} for i, k in enumerate(KRYTERIA)]
 
 
 def radar():

@@ -69,7 +69,9 @@
 .wyt-radar { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
 .wyt-trend { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 12px; background: var(--karta); border: 1px solid var(--obrys); min-width: 0; }
 .wyt-trend-gora { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.wyt-trend-nazwa { flex: 1; min-width: 0; font-weight: 800; }
+.wyt-trend-nazwa { flex: 1 1 160px; min-width: 0; font-weight: 800; }
+.wyt-chip-md { line-height: 1.3; white-space: normal; max-width: 100%; }
+.wyt-chip-md strong { font-weight: 800; }
 .wyt-trend-wiersz { display: flex; flex-direction: column; gap: 2px; font-size: 13px; min-width: 0; }
 .wyt-trend-wiersz .etykieta { margin: 0; font-size: 10px; }
 
@@ -114,6 +116,7 @@
 .wyt-skala-opcja[aria-pressed="true"] { background: var(--zloto); border-color: #0b0d12; color: #1a1300; }
 .wyt-skala-opcja:focus-visible { outline: 3px solid rgba(245, 184, 46, 0.5); outline-offset: 1px; }
 .wyt-suma { font-size: 16px; }
+.wyt-skala-opis { font-size: 12px; font-style: italic; }
 .wyt-etapy { display: flex; flex-direction: column; gap: 8px; }
 .wyt-etapy .przycisk { justify-content: flex-start; }
 

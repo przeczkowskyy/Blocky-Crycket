@@ -120,8 +120,8 @@ export default {
         pozycje.length ? el("div", { class: "wyt-radar" }, pozycje.map((t) => el("article", { class: "wyt-trend" },
           el("div", { class: "wyt-trend-gora" },
             mdEl(t.trend, { linia: true, klasa: "wyt-trend-nazwa" }),
-            t.sila ? el("span", { class: "chip zloto", title: "Siła" }, t.sila) : null,
-            t.kierunek ? el("span", { class: "chip " + kolorKierunku(t.kierunek), title: "Kierunek" }, t.kierunek) : null),
+            t.sila ? mdEl(t.sila, { linia: true, klasa: "chip zloto wyt-chip-md" }) : null,
+            t.kierunek ? mdEl(t.kierunek, { linia: true, klasa: "chip wyt-chip-md " + kolorKierunku(t.kierunek) }) : null),
           t.przyklady ? el("div", { class: "wyt-trend-wiersz" }, el("span", { class: "etykieta" }, "Przykłady"), mdEl(t.przyklady, { linia: true })) : null,
           t.zrodlo ? el("div", { class: "wyt-trend-wiersz" }, el("span", { class: "etykieta" }, "Źródło"), mdEl(t.zrodlo, { linia: true, klasa: "cichy-tekst" })) : null)))
           : el("p", { class: "cichy-tekst" }, "Tabela trendów jest pusta."));
@@ -272,6 +272,7 @@ export default {
       const ja = osoba();
       if (!ja) return;
       const opisy = new Map((kryteria || []).map((k) => [k.nazwa, k.opis]));
+      const skale = new Map((kryteria || []).filter((k) => k.skala).map((k) => [k.nazwa, k.skala]));
       const wartosci = (p.karta || []).map((w) => (w[ja.pole] === undefined ? null : w[ja.pole]));
       let wersja = p.wersja;
       const sumaEl = el("strong", { class: "wyt-suma" });
@@ -293,6 +294,7 @@ export default {
         return el("div", { class: "wyt-kryterium" },
           el("div", { class: "wyt-kryterium-tekst" }, el("strong", null, (i + 1) + ". " + w.kryterium),
             opisy.get(w.kryterium) ? el("span", { class: "cichy-tekst" }, opisy.get(w.kryterium)) : null,
+            skale.get(w.kryterium) ? el("span", { class: "cichy-tekst wyt-skala-opis" }, "0 — " + skale.get(w.kryterium)["0"] + " · 3 — " + skale.get(w.kryterium)["3"]) : null,
             w.agent !== null && w.agent !== undefined ? el("span", { class: "cichy-tekst" }, "Agent: " + w.agent) : null),
           skala);
       });

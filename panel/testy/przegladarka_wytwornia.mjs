@@ -119,8 +119,15 @@ try {
     await js(`[...document.querySelectorAll('.wyt-gra[data-gra="BONK"] .wyt-metryka')].map(x => x.textContent).join('|')`));
   sprawdz("2. lejek: pięć kolumn etapów", await js(`[...document.querySelectorAll('.wyt-lejek .wyt-kolumna')].map(k => k.dataset.etap).join(',') === 'pomysł,ocena,prototyp,test,publiczna'`));
   sprawdz("2. lejek: Ring Potworów w kolumnie „ocena” z werdyktem i paskami", await js(`(() => { const k = document.querySelector('.wyt-kolumna[data-etap="ocena"] .wyt-karta[data-pomysl="Ring Potworów"]'); return !!k && !!k.querySelector('.chip.zloto') && k.querySelectorAll('.wyt-ocena').length === 3; })()`));
+  // regresja 20.11 (zakładka otwarta na wersji sprzed poprawki: klasa „agent” zderzała się z widokiem Agent i rozciągała
+  // karty na wysokość ekranu, a „null” trafiał na stronę) — karty zwarte, kolumna „ocena” z obiema notatkami
+  sprawdz("2. lejek: kolumna „ocena” ma obie karty (w tym prawdziwą notatkę Monster Evolution)", await js(`document.querySelectorAll('.wyt-kolumna[data-etap="ocena"] .wyt-karta').length === 2 && !!document.querySelector('.wyt-karta[data-pomysl="Monster Evolution"]')`));
+  sprawdz("2. lejek: karty zwarte (każda niższa niż 420 px)", await js(`[...document.querySelectorAll('.wyt-lejek .wyt-karta')].every(k => k.getBoundingClientRect().height < 420)`),
+    await js(`[...document.querySelectorAll('.wyt-lejek .wyt-karta')].map(k => Math.round(k.getBoundingClientRect().height)).join(',')`));
   sprawdz("2. porzucone zwinięte na dole", await js(`(() => { const d = document.querySelector('details.wyt-zwiniete'); return !!d && !d.open && d.textContent.includes('Stary pomysł'); })()`));
-  sprawdz("2. radar: dwa trendy i data", await js(`document.querySelectorAll('.wyt-radar .wyt-trend').length === 2 && document.body.textContent.includes('Aktualizacja: 2026-11-20')`));
+  sprawdz("2. radar (prawdziwa notatka): co najmniej 10 trendów, data, pogrubienie w komórce bez gwiazdek", await js(`document.querySelectorAll('.wyt-radar .wyt-trend').length >= 10 &&
+    document.body.textContent.includes('Aktualizacja: 2026-11-20') && !document.querySelector('.wyt-radar').textContent.includes('**')`),
+    await js(`document.querySelectorAll('.wyt-radar .wyt-trend').length`));
   sprawdz("2. telefon: bez przewijania w bok", await bezPrzewijaniaWBok(), await js(`document.documentElement.scrollWidth + ' > ' + window.innerWidth`));
   await zrzut("wytwornia_telefon_lista");
 
@@ -131,7 +138,18 @@ try {
     await js(`(document.querySelector('.wyt-tabela tfoot') || {}).textContent`));
   sprawdz("3. krytyka agenta wyróżniona", await js(`!!document.querySelector('.wyt-krytyka') && document.querySelector('.wyt-krytyka').textContent.includes('Za mało powodu')`));
   sprawdz("3. telefon: bez przewijania w bok", await bezPrzewijaniaWBok(), await js(`document.documentElement.scrollWidth + ' > ' + window.innerWidth`));
+  sprawdz("3. bez „null” na stronie, ramka karty oceny zwarta", await js(`!document.querySelector('.wytwornia').textContent.includes('null') && !document.querySelector('.wytwornia').textContent.includes('[object') &&document.querySelector('.wyt-oceny').getBoundingClientRect().height < 160`),
+    await js(`Math.round(document.querySelector('.wyt-oceny').getBoundingClientRect().height)`));
   await zrzut("wytwornia_telefon_pomysl");
+  // prawdziwa notatka z badania: tabela, krytyka i wszystkie sekcje
+  await js(`location.hash = '#/wytwornia?pomysl=' + encodeURIComponent('Monster Evolution'); true`);
+  sprawdz("3. Monster Evolution: tabela 10 kryteriów, suma 26/30, krytyka i sekcje", await czekajNa(`(document.querySelector('.wyt-szczegol-nagl h1') || {}).textContent === 'Monster Evolution' &&
+    document.querySelectorAll('.wyt-tabela tbody tr').length === 10 && document.querySelector('.wyt-tabela tfoot td').textContent === '26/30' && !!document.querySelector('.wyt-krytyka') &&
+    ['Monetyzacja', 'Najtańszy test', 'Hak ciekawości'].every(s => [...document.querySelectorAll('.wyt-sekcja-notatki h2')].some(h => h.textContent === s))`),
+    await js(`[...document.querySelectorAll('.wyt-sekcja-notatki h2')].map(h => h.textContent).join('|')`));
+  await zrzut("wytwornia_telefon_monster_evolution");
+  await js(`location.hash = '#/wytwornia?pomysl=BONK'; true`);
+  await czekajNa(`(document.querySelector('.wyt-szczegol-nagl h1') || {}).textContent === 'BONK'`);
 
   // 4. ocena Karola
   sprawdz("4. „Oceń (Karol)”", await klikTekst('.wyt-akcje button', 'Oceń (Karol)'));

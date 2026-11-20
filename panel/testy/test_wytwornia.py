@@ -197,8 +197,14 @@ Nie o grze (bonkers to nie BONK? — słowo „bonkers” nie pasuje).
 """
 
 
-def zbuduj_sejf(korzen, szablon=True):
-    """Tymczasowy sejf: Produkcja (pliki z test_zapis + zadania i decyzje o grze), Wytwórnia, szablon."""
+# Kopie prawdziwych notatek sejfu (20.11.2026): pomysł wygenerowany skryptem z badania, notatka B&C pisana ręcznie
+# (z aliases), prawdziwy Radar trendów (Markdown w komórkach) i Karta oceny pomysłu — dane testowe, nie źródło prawdy.
+DANE_PRAWDZIWE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dane_wytwornia")
+
+
+def zbuduj_sejf(korzen, szablon=True, prawdziwe=False):
+    """Tymczasowy sejf: Produkcja (pliki z test_zapis + zadania i decyzje o grze), Wytwórnia, szablon; z prawdziwe=True
+    także kopie prawdziwych notatek (Monster Evolution, Blocky & Crycket, Radar trendów, Karta oceny pomysłu)."""
     os.makedirs(os.path.join(korzen, "Produkcja"))
     pliki = dict(PLIKI)
     pliki["zadania"] = ("Zadania.md", ZADANIA_GRY)
@@ -214,6 +220,11 @@ def zbuduj_sejf(korzen, szablon=True):
     for nazwa, tekst in (("Radar trendów.md", RADAR), ("Karta oceny pomysłu.md", KARTA)):
         with open(os.path.join(korzen, "Wytwórnia", nazwa), "w", encoding="utf-8", newline="\n") as f:
             f.write(tekst)
+    if prawdziwe:
+        for nazwa in ("Monster Evolution.md", "Blocky & Crycket.md"):
+            shutil.copyfile(os.path.join(DANE_PRAWDZIWE, nazwa), os.path.join(pom, nazwa))
+        for nazwa in ("Radar trendów.md", "Karta oceny pomysłu.md"):
+            shutil.copyfile(os.path.join(DANE_PRAWDZIWE, nazwa), os.path.join(korzen, "Wytwórnia", nazwa))
     if szablon:
         os.makedirs(os.path.join(korzen, "Szablony"))
         with open(os.path.join(korzen, "Szablony", "Pomysł gry.md"), "w", encoding="utf-8", newline="\n") as f:
@@ -222,11 +233,12 @@ def zbuduj_sejf(korzen, szablon=True):
 
 class Baza(unittest.TestCase):
     szablon = True
+    prawdziwe = False
 
     def setUp(self):
         self.tmp = tempfile.mkdtemp(prefix="bc_test_wytwornia_")
         self.sejf = os.path.join(self.tmp, "sejf")
-        zbuduj_sejf(self.sejf, self.szablon)
+        zbuduj_sejf(self.sejf, self.szablon, self.prawdziwe)
         self.latki = [
             mock.patch.object(sejf, "_sejfy", lambda: [("B&C", "Sejf testowy", self.sejf)]),
             mock.patch.object(zapis, "dzis", lambda: DZIS),
@@ -438,6 +450,57 @@ class TestOcenaIEtap(Baza):
         self.assertBlad(403, zapis.utworz_plik, os.path.join(self.sejf, "Inne.md"), "x", "Inne", b"x", "x", "Karol")
 
 
+class TestPrawdziweNotatki(Baza):
+    """Kopie prawdziwych notatek z sejfu (testy/dane_wytwornia/) — format pisany przez agenta i ręcznie."""
+    prawdziwe = True
+
+    def test_pomysl_z_badania(self):
+        p = wytwornia.szczegol("Monster Evolution")
+        self.assertEqual((p["etap"], p["ocena_agenta"], p["werdykt_agenta"]), ("ocena", 26, "popraw"))
+        self.assertEqual(p["zdanie"], "Start as a tiny slime, eat smaller monsters, evolve into a giant beast.")
+        self.assertEqual([w["kryterium"] for w in p["karta"]], list(wytwornia.KRYTERIA))
+        self.assertTrue(all(w["agent"] is not None for w in p["karta"]), p["karta"])
+        self.assertEqual(p["sumy"]["agent"], 26)
+        self.assertIsNone(p["sumy"]["karol"])
+        tytuly = [s["tytul"] for s in p["sekcje"]]
+        for t in ("W jednym zdaniu", "Hak ciekawości", "Monetyzacja", "Karta oceny", "Krytyka agenta", "Najtańszy test"):
+            self.assertIn(t, tytuly)
+        self.assertTrue(p["krytyka_md"])
+        self.assertTrue(all(v is None for v in p["metryki"].values()))           # puste pola „d1:” = brak danych
+
+    def test_lejek_i_gra_bc(self):
+        d = wytwornia.lista()
+        self.assertIn("Monster Evolution", d["lejek"]["ocena"])
+        po = {p["id"]: p for p in d["pomysly"]}
+        bc = po["Blocky & Crycket"]
+        self.assertEqual((bc["etap"], bc["miejsce"], bc["aliasy"]), ("prototyp", "129485428021967", ["B&C", "Blocky&Crycket"]))
+        self.assertIn("Blocky & Crycket", d["gry"])
+        self.assertEqual(wytwornia.nazwy_gry(bc), ["Blocky & Crycket", "B&C", "Blocky&Crycket"])
+
+    def test_radar_i_kryteria(self):
+        r = wytwornia.radar()
+        self.assertEqual(r["aktualizacja"], "2026-11-20")
+        self.assertGreaterEqual(len(r["pozycje"]), 10)
+        self.assertIn("Kradzież", r["pozycje"][0]["trend"])
+        self.assertTrue(all(p["trend"] and p["sila"] for p in r["pozycje"]), r["pozycje"])
+        k = wytwornia.kryteria()
+        self.assertEqual(len(k), 10)
+        self.assertTrue(all(x["opis"] for x in k), k)
+        self.assertEqual(k[0]["opis"], "Czy z tytułu i miniatury wiadomo, o co chodzi?")
+        self.assertEqual(k[0]["skala"], {"0": "trzeba tłumaczyć", "3": "„aha” w sekundę"})
+        self.assertIn("Radar trendów", k[8]["opis"])                              # wikilink jako zwykły tekst
+
+    def test_ocena_prawdziwej_tabeli(self):
+        przed = self.plik("Wytwórnia", "Pomysły", "Monster Evolution.md")
+        w = wytwornia.ocen("Monster Evolution", [2] * 10, self.wersja("Monster Evolution"), "Paweł")
+        po = self.plik("Wytwórnia", "Pomysły", "Monster Evolution.md")
+        self.assertEqual(w["pomysl"]["ocena_pawel"], 20)
+        self.assertEqual([x["pawel"] for x in w["pomysl"]["karta"]], [2] * 10)
+        self.assertIn("| Jedno zdanie | 3 | | 2 |", po)
+        self.assertEqual(po.count("\n"), przed.count("\n"))                       # żadnych nowych wierszy
+        self.assertEqual(po.replace("ocena_pawel: 20\n", "ocena_pawel:\n").replace(" | 2 |\n", " | |\n"), przed)
+
+
 class TestWytworniaAPI(test_api.SerwerTestowy):
     """Trasy Wytwórni na prawdziwym serwerze z tymczasowym sejfem."""
 
@@ -448,7 +511,7 @@ class TestWytworniaAPI(test_api.SerwerTestowy):
 
     @classmethod
     def przygotuj(cls, runtime):
-        zbuduj_sejf(cls.sejf)
+        zbuduj_sejf(cls.sejf, prawdziwe=True)
 
     def wersja(self, ident):
         s, o, _ = self.get("/api/wytwornia/pomysly/" + urllib_quote(ident))
