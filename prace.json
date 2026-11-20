@@ -2,6 +2,21 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-20T09:36:24+01:00",
- "prace": []
+ "aktualizacja": "2026-11-20T20:29:46+01:00",
+ "prace": [
+  {
+   "id": "pet-arena-noc",
+   "tytul": "Pet Arena: budowa prototypu (etap 1 rdzen)",
+   "stan": "w_toku",
+   "start": "2026-11-20T20:29:46+01:00",
+   "koniec_szacowany": "2026-11-20T23:45:00+01:00",
+   "aktualizacja": "2026-11-20T20:29:46+01:00",
+   "obszary": [
+    "swiat/pet_arena/**",
+    "studio:PetArenaGra"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  }
+ ]
 }
