@@ -10,6 +10,7 @@ Skille w tym katalogu pochodzą z dwóch repozytoriów na liberalnych licencjach
 | `roblox-monetization` | https://github.com/TabooHarmony/roblox-brain | `skills/design/roblox-monetization` | `ceee4aaa5004502e2a51d78b3c33bba44d84742b` | MIT |
 | `roblox-architecture` | https://github.com/TabooHarmony/roblox-brain | `skills/core/roblox-architecture` | `ceee4aaa5004502e2a51d78b3c33bba44d84742b` | MIT |
 | `roblox-simulator-economy` | https://github.com/gamedev-skills/awesome-gamedev-agent-skills | `skills/other-engines/roblox-simulator-economy` | `c6ca6c41c839b68319ffc08430b99ab768debc32` | Apache-2.0 |
+| `thinking-*` (28 skilli: bounded-rationality, circle-of-competence, cynefin, effectuation, first-principles, five-whys-plus, jobs-to-be-done, kepner-tregoe, lindy-effect, map-territory, margin-of-safety, model-combination, model-router, ooda, opportunity-cost, pre-mortem, probabilistic, red-team, reversibility, scientific-method, second-order, socratic, steel-manning, systems, theory-of-constraints, thought-experiment, triz, via-negativa) | https://github.com/tjboudreaux/cc-thinking-skills | `skills/thinking-*` | `7b8fece345dfaa11773be7152ccd194589cb5437` | MIT |
 
 Zmiany względem oryginałów: w każdym `SKILL.md` dopisano na końcu sekcję „Źródło”. W `roblox-simulator-economy` pominięto plik `agents/openai.yaml` (metadane dla innego agenta). Pozostałe pliki są identyczne z oryginałem (sprawdzone porównaniem bajtów).
 
@@ -269,4 +270,32 @@ only. Their use does not imply any affiliation with or endorsement by those owne
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+```
+
+## MIT: tjboudreaux/cc-thinking-skills
+
+Dotyczy: 28 skilli `thinking-*` (skopiowane 2026-11-20 po przeczytaniu treści; tylko pliki `SKILL.md`, bez skryptów, ewaluacji i eksperymentów repozytorium; na końcu każdego dopisano sekcję „Źródło”). Pliki mają `disable-model-invocation: true` — człowiek wywołuje je komendą `/thinking-…`, a agent czyta je przez skill projektu `krytyczne-myslenie`.
+
+```text
+MIT License
+
+Copyright (c) 2025 TJ Boudreaux
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```

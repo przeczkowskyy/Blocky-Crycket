@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-20 · Claude Code u Karola (krytyczne myślenie i Wytwórnia pomysłów)
+- **Karol po zagraniu w BONK:** „to nie jest to… znudziła mi się po paru minutach… jajka bez value, linie potworów bez sensu, brakuje bossów, głębi i haka”. Zapisane w [[Lekcje z prototypów]] z wnioskiem agenta; krytyka i propozycja „BONK 2.0” w notatce [[BONK]] w Wytwórni.
+- **D-114 — prawo agenta do sprzeciwu:** 28 skilli metod myślenia z repozytorium tjboudreaux/cc-thinking-skills (MIT, przeczytane przed kopiowaniem, bez skryptów; `.claude/skills/thinking-*`, licencja w `.claude/skills/LICENCJE-OBCE.md`), skill projektu `krytyczne-myslenie` i sekcja w `CLAUDE.md`. Ostatnie słowo zostaje przy ludziach („mimo to rób”).
+- **D-115 — Wytwórnia pomysłów:** nowy folder [[00 Wytwórnia pomysłów]]: [[Mózg — zasady hitu Roblox]], [[Karta oceny pomysłu]], [[Radar trendów]], [[Lekcje z prototypów]], notatki gier [[BONK]], [[Ring Potworów]], [[Blocky & Crycket]]; szablon „Pomysł gry”; link w [[00 Start]]. Panel: zakładka „Wytwórnia” w budowie (agent), badanie TizzyRBLX i trendów w toku.
+- [[Rejestr decyzji]]: D-114, D-115 (podpis Karola, czekają na Pawła). [[Zadania]]: ocena pomysłów na sesji, potwierdzenie Pawła.
+
 ## 2026-11-20 · Claude Code u Karola (BONK: prywatna wersja testowa)
 - **Karol:** „Nie ma mnie — wykonaj to za mnie”. Agent sterował Studio na komputerze Karola: nowe miejsce, budowa BONK w trybie publikacji (`zbuduj.py --publikacja`, kontrola zgodna, próba w Play bez błędów), publikacja jako **prywatne** doświadczenie „BONK!” (komputer, telefon, tablet, konsola), zaproszenie Pawła jako testera wczesnej wersji. Nic nie jest publiczne.
 - **Rozbieżność z D-044 / D-113:** w wyborze twórcy było tylko konto Karola (brak grupy), więc wersja testowa jest na koncie Karola. Dopisek pod pytaniem 31 w [[Pytania otwarte]] — przed publicznym startem przeniesienie do grupy. Dźwięki BONK są na koncie Karola, więc w wersji testowej grają.

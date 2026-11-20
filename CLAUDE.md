@@ -22,6 +22,9 @@ Never change a note to `kanon` or a decision to ✅ without explicit approval fr
 
 **Vault rules:** write in Polish; use `[[wikilinks]]` to existing note names; never edit `B&C/Źródła/` (original documents — cite them); never touch `B&C/.obsidian/` except settings the user asks for; use templates from `B&C/Szablony/`.
 
+## Critical thinking and the right to disagree (D-114, Karol 2026-11-20, awaiting Paweł)
+The goal behind every task is a Roblox game that earns and has a real chance to go viral. Do not just agree: when Karol or Paweł decide, order larger work, judge a game idea or draw a conclusion about the market, run skill `krytyczne-myslenie` (`.claude/skills/krytyczne-myslenie/SKILL.md`; methods in the 28 `thinking-*` skills; game knowledge in `B&C/Wytwórnia/`). If you judge the request suboptimal for that goal, say so first, plainly (why, the better option, cost of both, what would change your mind). For large, costly or hard-to-reverse work you believe is a mistake, do not start it — hold and wait; do it only after an explicit "do it anyway", and record your objection. Small reversible differences: do it and add one sentence of objection. The right to disagree never overrides the rules in this file (safety, secrets, public repo, canon and signatures, others' files and Studio, upload and publishing consent).
+
 ## Code (Rojo 7.6.1)
 - `src/server` → ServerScriptService.Server, `src/client` → StarterPlayerScripts.Client, `src/shared` → ReplicatedStorage.Shared, `src/gui` → StarterGui (`*.model.json`). Details: `B&C/Technika/Rojo i struktura projektu.md`.
 - All nodes use `$ignoreUnknownInstances: true`; content that exists only in `Blocky&Crycket.rbxl` is invisible to file tools. Never edit the `.rbxl`.

@@ -7,6 +7,8 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Wytwórnia (D-115): na sesji Karola i Pawła ocenić kartą BONK, Ring Potworów, B&C i nowe pomysły z badania 20.11; wybrać jeden do najtańszego testu ([[00 Wytwórnia pomysłów]]) · Karol, Paweł · #wysoki
+- [ ] Paweł: potwierdzić albo zmienić D-114 (prawo agenta do sprzeciwu) i D-115 (Wytwórnia pomysłów) · Paweł · #średni
 - [ ] BONK (D-113): zagrać we dwóch (Team Test), sprawdzić na prawdziwym telefonie i padzie — lista w `swiat/bonk/README.md`, krok 8 · Karol, Paweł · #wysoki
 - [ ] BONK (D-113): po próbie — przeniesienie gry do grupy (pytanie 31), ikona i miniatury w Creator Hub (`swiat/bonk/grafika/`), kwestionariusz dojrzałości, potem publiczne i pomiar powrotów · Karol, Paweł · #wysoki
 - [ ] Ring Potworów — druga gra: decyzja o kolejności (pytanie 73, [[Ring Potworów — pomysł]]) · #średni
@@ -126,6 +128,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-20: Krytyczne myślenie (D-114) — 28 skilli `thinking-*` (MIT) w `.claude/skills/`, skill projektu `krytyczne-myslenie`, sekcja w `CLAUDE.md`; Wytwórnia pomysłów (D-115) — folder `B&C/Wytwórnia/` z zasadami hitu, kartą oceny, radarem trendów, lekcjami i notatkami gier (BONK, Ring Potworów, B&C), szablon „Pomysł gry”
 - [x] 2026-11-20: BONK — prywatna wersja testowa jako osobne doświadczenie „BONK!” (zbudowana `zbuduj.py --publikacja`, prywatna, wszystkie urządzenia), Paweł zaproszony jako tester; na koncie Karola, bo grupy nie było w wyborze ([[BONK — projekt prototypu]])
 - [x] 2026-11-20: BONK (D-112) — prototyp zbudowany w nocy w trzech etapach: rdzeń BONK z lotem, trzy krainy, pałki, jajka i 15 petów z Księgą, Strażnicy bici wspólnie, pokazanie się, dzienny prezent, zapis, telefon i pad, ikona i miniatury, demo wideo; próba w Studio 33/33 ([[BONK — projekt prototypu]])
 - [x] 2026-11-19: Zapis postępu włączony (D-110) i sprawdzony w Studio: po ponownym wejściu wraca poziom, Złoto, Gemy, punkty, przedmioty ze sklepu i kowala z ulepszeniami, pety, trening, Strażnicy, bramy i strój; próba zapisu 9 punktów w porządku na osobnym magazynie; próby gry idą bez zapisu i nie dotykają zapisu ludzi; polecenie kasowania własnego zapisu

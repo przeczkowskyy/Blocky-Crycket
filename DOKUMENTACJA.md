@@ -227,6 +227,7 @@ Blocky&Crycket/
 │   ├── Jak prowadzimy sejf.md zasady sejfu
 │   ├── Gra/ Postacie/ Styl/ UI/ Technika/ Produkcja/
 │   ├── Badania/               rozeznanie rynku, mechanik i narzędzi (propozycje ze źródłami)
+│   ├── Wytwórnia/             💡 Wytwórnia pomysłów (D-115): zasady hitu Roblox, karta oceny pomysłu, radar trendów, lekcje z prototypów, notatka na każdą grę i pomysł (`Pomysły/`)
 │   ├── Szablony/              szablony notatek i decyzji
 │   ├── Źródła/                oryginalna dokumentacja (tylko do odczytu)
 │   └── .obsidian/             ustawienia Obsidiana
@@ -272,7 +273,7 @@ Blocky&Crycket/
 ├── tools/*.py                 narzędzia pipeline'u assetów (obróbka, upload, manifest)
 ├── assets/                    pipeline assetów: manifest.json, refs/, processed/, raw/ (poza Git); audio/ — 💡 muzyka i dźwięki z generatora (manifest_audio.json)
 ├── docs/                      instrukcja pipeline'u i wcześniejsze prompty (HUD, pasek ładowania)
-├── .claude/skills/            skille Claude Code (figma-to-roblox, asset)
+├── .claude/skills/            skille Claude Code (figma-to-roblox, asset, panel, skille Roblox; od 20.11 `krytyczne-myslenie` — prawo agenta do sprzeciwu, D-114 — i 28 metod myślenia `thinking-*`)
 ├── .mcp.json                  serwery MCP: Higgsfield (pipeline assetów) i Roblox Studio
 ├── requirements.txt           zależności Pythona pipeline'u
 ├── dashboard/                 ARCHIWUM: porzucona aplikacja „AI Development Studio”
