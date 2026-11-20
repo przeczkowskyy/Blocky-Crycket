@@ -550,6 +550,24 @@ class TestWytworniaAPI(test_api.SerwerTestowy):
         self.assertEqual(self.wersja("BONK"), v)                                    # nic się nie zmieniło
         self.assertBlad(self.post("/api/wytwornia/pomysly", {"nazwa": "X", "zdanie": "Y", "inne": 1}, zdalny=True), 400)
 
+    def test_temat_sesji(self):
+        """Zakładka Sesja: temat z listy (bc/sesje.py) — gość nie zmienia, osoba przy komputerze tak, widać w stanie."""
+        s, o, _ = self.get("/api/sesje/stan")
+        self.assertEqual(s, 200, o)
+        ids = [t["id"] for t in o["tematy"]]
+        self.assertIn("gra:BONK", ids)
+        self.assertIn("pomysl:Monster Evolution", ids)
+        s, o, _ = self.post("/api/sesje/temat", {"id": "gra:BONK"}, zdalny=True, kto="Paweł")
+        self.assertEqual((s, o.get("kod")), (403, "tylko_decydent"), o)
+        s, o, _ = self.post("/api/sesje/temat", {"id": "pomysl:Monster Evolution"}, kto="Karol")
+        self.assertEqual(s, 200, o)
+        self.assertEqual(o["temat"]["nazwa"], "Pomysł: Monster Evolution")
+        s, o, _ = self.get("/api/sesje/stan", zdalny=True)                       # widzi też druga osoba (telefon)
+        self.assertEqual((o["temat"]["id"], o["temat"]["kto"]), ("pomysl:Monster Evolution", "Karol"))
+        self.assertBlad(self.post("/api/sesje/temat", {"id": "gra:Nie ma"}, kto="Karol"), 400)
+        s, o, _ = self.post("/api/sesje/temat", {"id": ""}, kto="Karol")
+        self.assertEqual((s, o["temat"]), (200, None))
+
     def test_ocena_i_etap_przy_komputerze(self):
         # bez imienia z Ustawień: 400 (kolumna oceny to imię osoby)
         v = self.wersja("Ring Potworów")

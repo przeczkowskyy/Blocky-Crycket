@@ -490,6 +490,41 @@ def szczegol(ident):
     return p
 
 
+def gry_portfela(z_pomyslami=False):
+    """[{id, nazwa, etap, gra}] gier z portfela (etap prototyp / test / publiczna; `gra` = True), a z z_pomyslami=True
+    także pomysłów z lejka (pomysł, ocena, wstrzymana; bez porzuconych; `gra` = False) — lekko, bez radaru
+    i kryteriów (temat sesji w bc/sesje.py pyta o to przy każdym stanie pokoju)."""
+    out = []
+    for n in _notatki_pomyslow():
+        try:
+            p = karta_pomyslu(n)
+        except Exception:
+            continue
+        if p["etap"] in ETAPY_GIER or (z_pomyslami and p["etap"] != "porzucona"):
+            out.append({"id": p["id"], "nazwa": p["nazwa"], "etap": p["etap"], "gra": p["etap"] in ETAPY_GIER,
+                        "ocena_agenta": p["ocena_agenta"]})
+    return sorted(out, key=lambda g: (not g["gra"], -ETAPY_GIER.index(g["etap"]) if g["gra"] else 0,
+                                      -(g["ocena_agenta"] or 0) if not g["gra"] else 0, g["nazwa"].lower()))
+
+
+def pliki_kontekstu():
+    """Ścieżki (do pokazania) notatek Wytwórni dla agenta sesji: notatka główna, folder pomysłów, radar, karta oceny;
+    brak pliku = None. Plus nazwy pomysłów na etapie pomysł / ocena (do oceny na sesji)."""
+    sid, baza = _baza()
+    folder = os.path.join(baza, FOLDER)
+    jest = lambda *c: _pokaz(sid, baza, os.path.join(folder, *c)) if os.path.exists(os.path.join(folder, *c)) else None
+    do_oceny = []
+    for n in _notatki_pomyslow():
+        try:
+            p = karta_pomyslu(n)
+        except Exception:
+            continue
+        if p["etap"] in ("pomysł", "ocena"):
+            do_oceny.append(p["nazwa"])
+    return {"glowna": jest("00 Wytwórnia pomysłów.md"), "pomysly": jest(PODFOLDER), "radar": jest(PLIK_RADARU),
+            "karta": jest(PLIK_KARTY), "do_oceny": sorted(do_oceny, key=str.lower)}
+
+
 # =========================================================================== pulpit gry
 def nazwy_gry(p):
     nazwy = []

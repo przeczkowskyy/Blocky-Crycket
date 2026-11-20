@@ -125,7 +125,10 @@ export default {
     const naglowek = el("header", { class: "nagl-widoku" }, el("div", null, el("h1", null, "Sesja"),
       el("p", { class: "cichy-tekst" }, "Rozmowa głosowa w panelu. Agent słucha, spisuje i robi krótkie notatki.")));
     const audio = el("div", { class: "sesja-audio", hidden: true });
-    const korzen = el("div", { class: "widok sesja" }, naglowek, baner, komunikaty, kPokoj, pasekCzesci, czesci, audio);
+    // Temat sesji (20.11): wybór z listy pod nagłówkiem — widzą go wszyscy, zapis przy sesji (bc/sesje.py), agent
+    // sesji dostaje go jako kontekst. Stary serwer (bez pola `tematy` w stanie) — pasek ukryty.
+    const tematPasek = el("section", { class: "karta sesja-temat", hidden: true, "aria-label": "Temat sesji" });
+    const korzen = el("div", { class: "widok sesja" }, naglowek, tematPasek, baner, komunikaty, kPokoj, pasekCzesci, czesci, audio);
 
     function przewinDo(k) {
       k.scrollIntoView({ block: "start", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
@@ -153,7 +156,7 @@ export default {
     window.addEventListener("resize", () => dopasujWysokosc());
     if (typeof ResizeObserver === "function") {
       const obs = new ResizeObserver(() => dopasujWysokosc());
-      for (const e of [naglowek, baner, komunikaty, kPokoj, pasekCzesci]) obs.observe(e);
+      for (const e of [naglowek, tematPasek, baner, komunikaty, kPokoj, pasekCzesci]) obs.observe(e);
     }
 
     // ------------------------------------------------------------------ pomocnicze
@@ -226,6 +229,86 @@ export default {
         ikona(k.typ === "blad" ? "ostrzezenie" : "info"), el("span", null, k.tekst))));
     }
 
+    // ------------------------------------------------------------------ temat sesji
+    let podpisTematu = "";
+    let wybranyTemat = null;                                   // wybór w liście przed zapisem („Inne” czeka na tekst)
+    function rysujTemat() {
+      const st = S.stan;
+      if (!st || !Array.isArray(st.tematy)) {
+        tematPasek.hidden = true;
+        return;
+      }
+      tematPasek.hidden = false;
+      const t = st.temat || null;
+      const moze = !!ja().decydent && !S.statyczny;
+      const podpis = JSON.stringify([t, st.tematy, moze, wybranyTemat]);
+      if (podpis === podpisTematu || tematPasek.contains(document.activeElement)) return;
+      podpisTematu = podpis;
+      const kto = t && t.kto ? "wybrał(a) " + t.kto + (t.czas ? ", " + godzina(t.czas) : "") : "";
+      const otworz = t && t.adres ? el("a", { class: "przycisk cichy maly", href: t.adres }, el("span", null, "Otwórz"), ikona("prawo")) : null;
+      const etykieta = el("span", { class: "etykieta sesja-temat-etykieta" }, ikona("flaga"), "Temat sesji");
+      if (!moze) {
+        zamien(tematPasek, etykieta, el("div", { class: "sesja-temat-rzad" },
+          el("strong", { class: "sesja-temat-nazwa" }, t ? t.nazwa + (t.tekst ? ": " + t.tekst : "") : "nie wybrany"), otworz),
+          el("p", { class: "cichy-tekst" }, (kto ? kto + " · " : "") + "Temat wybiera Karol albo Paweł (przy komputerze z panelem albo z kluczem zatwierdzania)."));
+        return;
+      }
+      const wybor = wybranyTemat !== null ? wybranyTemat : t ? t.id : "";
+      // kolejność z serwera (Wytwórnia, gry, pomysły, Pytania, Inne); gry i pomysły w podpisanych grupach
+      const NAZWY_GRUP = { gry: "Gry z portfela Wytwórni", "pomysły": "Pomysły z lejka Wytwórni" };
+      const elementy = [];
+      for (const o of st.tematy) {
+        const opcja = el("option", { value: o.id, selected: o.id === wybor }, o.nazwa);
+        const ostatni = elementy[elementy.length - 1];
+        if (!NAZWY_GRUP[o.grupa]) elementy.push(opcja);
+        else if (ostatni && ostatni.tagName === "OPTGROUP" && ostatni.dataset.grupa === o.grupa) ostatni.append(opcja);
+        else elementy.push(el("optgroup", { label: NAZWY_GRUP[o.grupa], dataset: { grupa: o.grupa } }, opcja));
+      }
+      const lista = el("select", { class: "pole sesja-temat-lista", "aria-label": "Temat sesji" },
+        el("option", { value: "" }, "— bez tematu —"), elementy);
+      lista.value = wybor;
+      const pole = el("input", { class: "pole sesja-temat-tekst", maxlength: "200", placeholder: "O czym rozmawiacie?", value: t && t.id === "inne" ? t.tekst || "" : "", "aria-label": "Temat — własny opis" });
+      const zapiszInne = el("button", { type: "button", class: "przycisk glowny maly" }, "Zapisz");
+      const inne = el("div", { class: "sesja-temat-inne", hidden: wybor !== "inne" }, pole, zapiszInne);
+      lista.addEventListener("change", () => {
+        if (lista.value === "inne") {
+          wybranyTemat = "inne";
+          inne.hidden = false;
+          pole.focus();
+          return;
+        }
+        wybranyTemat = null;
+        zapiszTemat(lista.value, "");
+      });
+      zapiszInne.addEventListener("click", () => {
+        if (!pole.value.trim()) return pole.focus();
+        zapiszTemat("inne", pole.value.trim());
+      });
+      pole.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.isComposing) {
+          e.preventDefault();
+          zapiszInne.click();
+        }
+      });
+      zamien(tematPasek, etykieta, el("div", { class: "sesja-temat-rzad" }, lista, otworz), inne,
+        kto ? el("p", { class: "cichy-tekst" }, kto + " — widzą wszyscy w sesji, agent dostaje go jako kontekst.")
+          : el("p", { class: "cichy-tekst" }, "Wybierz, o czym jest sesja — agent przeczyta właściwe notatki i podpowie agendę z tego tematu."));
+    }
+
+    async function zapiszTemat(id, tekst) {
+      try {
+        const st = await ctx.api("/api/sesje/temat", { metoda: "POST", cialo: id ? { id, tekst } : { id: "" } });
+        wybranyTemat = null;
+        if (st && typeof st === "object" && st.pokoj) S.stan = Object.assign({}, S.stan || {}, st, { ja: (S.stan && S.stan.ja) || st.ja });
+        podpisTematu = "";
+        if (document.activeElement && tematPasek.contains(document.activeElement)) document.activeElement.blur();
+        rysujTemat();
+        toast(id ? "Temat sesji: " + ((st.temat && st.temat.nazwa) || id) + "." : "Sesja bez tematu.", "ok");
+      } catch (e) {
+        toast(e.status === 404 ? "Temat sesji zadziała po restarcie panelu." : bladTekst(e), "blad");
+      }
+    }
+
     // ------------------------------------------------------------------ pokój
     function rysujPokoj() {
       const st = S.stan;
@@ -279,6 +362,7 @@ export default {
         : "„Agent słucha” włącza Karol albo Paweł (przy komputerze z panelem albo z kluczem zatwierdzania).";
       rysujBaner();
       rysujKomunikaty();
+      rysujTemat();
       dopasujWysokosc();
     }
 
