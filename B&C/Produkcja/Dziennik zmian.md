@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-20 · Claude Code u Karola (porządki: pytania i zadania)
+- **Karol:** „Zaktualizuj dashboard i listę pytań, bo większość jest już zupełnie nieaktualna.”
+- [[Pytania otwarte]]: pytania 58, 59, 61–64, 67–69 oznaczone jako nieaktualne (szczegóły B&C wstrzymane do decyzji o kierunku, D-115; robocze ustawienia zostają w grze), 65 (dziewięć starych zadań zamkniętych), 66 (muzyka czeka z B&C), 73 (zastąpione oceną w Wytwórni). Otwarte zostaje 71 (pytanie do Pawła). Nowe pytanie 75: który pomysł idzie do najtańszego testu.
+- [[Zadania]]: w „Teraz” zostały bieżące sprawy (Wytwórnia, BONK, potwierdzenia Pawła, prywatne repo, grupa Roblox); zadania B&C przeniesione bez kasowania do sekcji „Wstrzymane: B&C do decyzji o kierunku”; jedenaście starych zdjętych jako nieaktualne (wpis w „Zrobione”).
+
 ## 2026-11-20 · Claude Code u Karola (krytyczne myślenie i Wytwórnia pomysłów)
 - **Karol po zagraniu w BONK:** „to nie jest to… znudziła mi się po paru minutach… jajka bez value, linie potworów bez sensu, brakuje bossów, głębi i haka”. Zapisane w [[Lekcje z prototypów]] z wnioskiem agenta; krytyka i propozycja „BONK 2.0” w notatce [[BONK]] w Wytwórni.
 - **D-114 — prawo agenta do sprzeciwu:** 28 skilli metod myślenia z repozytorium tjboudreaux/cc-thinking-skills (MIT, przeczytane przed kopiowaniem, bez skryptów; `.claude/skills/thinking-*`, licencja w `.claude/skills/LICENCJE-OBCE.md`), skill projektu `krytyczne-myslenie` i sekcja w `CLAUDE.md`. Ostatnie słowo zostaje przy ludziach („mimo to rób”).

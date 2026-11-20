@@ -516,6 +516,8 @@ Szczegóły: Sesja główna 17.11, 20:57 ([[Sesja główna 2026-11-17 — zapis 
 
 Szczegóły: Jedna liczba w `swiat/stan_gracza/dane.py` (`PUNKTY_SAMO_NA_POZIOM`, 0 = sam wariant z D-097); tabela wariantów w `swiat/stan_gracza/README.md`. Potwory były strojone pod 10 punktów na poziom. Zob. D-097, D-057, pytanie 55.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 59. Szczęście początkującego: premia do pierwszej wygranej?
 - Po skróceniu pasa (D-096) nowy gracz przegrywał pierwszą walkę w ok. co czwartej próbie (73–79% wygranych zależnie od klasy).
@@ -525,6 +527,8 @@ Szczegóły: Jedna liczba w `swiat/stan_gracza/dane.py` (`PUNKTY_SAMO_NA_POZIOM`
 Szczegóły: Jedna liczba (`SZCZESCIE_POCZATKUJACEGO` w `swiat/stan_gracza/dane.py`, 0 = wyłączone) albo atrybut kontenera `SzczesciePoczatkujacego`. Jeśli gracz trafi pierwszy na slime'a 2. poziomu, wygrywa w 73–88% prób. Premia nie dotyczy kolejnych walk, więc nie zmienia tempa lasu. Zob. pytanie 56 (profil klas).
 Dopisek z 2026-11-18 (po regresji końcowej): przy ×1,75 pierwsza walka została w próbach dymnych przegrana 2 razy na 7 — gracz podchodzi do najbliższego slime'a, a ten bywa na 2. albo 3. poziomie (ze slime'em 3. poziomu było 58–72% wygranych). Mnożnik podniesiony do ×2,75: slime 1. i 2. poziomu 99–100%, 3. poziomu 95–96%. Nadużyć się tego praktycznie nie da: gracz bez wygranej pokona trolla w 2–4% prób, Strażnika Gaju w 0%. Dalej jedna liczba z wyłącznikiem; opcje (a)–(c) bez zmian.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 60. Zapis postępu gracza: kiedy włączamy?
 - Kod zapisu jest gotowy w pakiecie stanu gracza i domyślnie wyłączony; sprawdzony tylko bez Studio, na atrapie usługi danych.
@@ -548,6 +552,8 @@ Rozstrzyga: D-110
 Szczegóły: Projekt i tabele: `swiat/kowal_proba/PROJEKT.md`; raport w panelu „Kowal w bazarze: rozbieranie i ulepszanie przedmiotów (D-102)”. Koszty: 150 / 300 / 450 / 650 / 900 Złota i 1 / 2 / 3 / 4 / 6 materiałów; w symulacji pierwsze ulepszenie po ok. 8 minutach lasu, las się nie skraca, Bagno skraca się o ok. 13%. Okno jest tymczasowe; docelowe robi Paweł (pytanie 57). Bez tierów przedmiotów (D-051: „nie teraz”).
 Dopisek z 2026-11-18: przy działającym kowalu przymierzalnia strojów (D-071) pokazuje i zakłada tylko posiadane przedmioty, a „Dawnego wyglądu” nie ma — nieposiadane po prostu znikają z listy, bez wyjaśnienia. Do wyboru przy okazji: przymierzalnia pozwala przymierzyć wszystko na podglądzie, a do walki liczą się tylko posiadane; albo zostają tylko posiadane z napisem „Resztę przedmiotów zdobędziesz w walkach”.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 62. Dżungla: czy potwory, nazwy i trudność z próby zostają?
 - Dżungla stoi w Studio jako trzeci biom; jej potwory to propozycje agenta na podstawie zarysu biomów.
@@ -558,6 +564,8 @@ Dopisek z 2026-11-18: przy działającym kowalu przymierzalnia strojów (D-071) 
 Szczegóły: Potwory i liczby: raport „Dżungla stoi w Studio: trzeci biom do przejścia”; modele: raport „Dżungla: pięć potworów z Blendera do oceny”. Poziomy potworów 17–23 z kalkulatora tempa. Zarys: `swiat/biomy/PLAN_BIOMOW.md` (propozycja). Karol 17.11 o Bagnie: „Strażnik Topieli musi być trudny” — tę samą miarę agent przyjął dla Dżungli.
 Dopisek z 2026-11-18 (własne efekty umiejętności): do oceny doszły (1) napisy na banerach inne niż nazwy w silniku — „Usypiający pyłek”, „Plunięcie jadem”, „Ukąszenie”, „Kokosy z góry”, „Kamuflaż”; (2) kły Węża mało kontrastowe na jasnej posadzce areny; (3) płyty Pancernika szare jak on sam; (4) czy Wąż ma mieć własną ozdobę trucizny; (5) fala na ziemi przy kokosach; (6) dźwięki: pyłek gra „zarodniki”, jad „plusk galarety” — do odsłuchu. Raport: „Dżungla: własne efekty umiejętności potworów”.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 63. Postać gracza w świecie: bohater klasy zamiast awatara?
 - Dziś po świecie chodzi zwykły awatar Roblox, a bohater klasy (Wojownik, Zwiadowca, Mag) pojawia się tylko w walce.
@@ -568,6 +576,8 @@ Szczegóły: Próba powstaje w `swiat/bohater_swiat/` (kontener `Workspace/Bohat
 Dopisek z 2026-11-18 (po próbie w Studio): bohater chodzi po świecie w stroju gracza u wszystkich trzech klas; raport w panelu „Bohater klasy chodzi po świecie zamiast awatara” ze zrzutami i modelami 3D. Wyłącznik bez przebudowy: atrybut `BohaterWSwiecie = false` na `Workspace/BohaterSwiat`. Na komputerze 60 klatek na sekundę także z dwunastoma bohaterami naraz; telefon niesprawdzony. Drugi wybór przy okazji: bieg liczony przez kod (jest dziś) czy ręcznie zrobiony klip biegu w modelach postaci.
 Dopisek z 2026-11-18 (wieczór): bieg liczony przez kod został poprawiony — prostsze kolana, praca rąk, poły stroju i szata kota w ruchu, brak ślizgu stopy przy przeszkodzie. Paski klatek trzech klas są w raporcie „Bohater w świecie: nowy bieg trzech klas”. Wybór „bieg z kodu czy ręczny klip w modelach” zostaje otwarty.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 64. Mini-gry w stylu walki: co zostaje, co zmienić?
 - Karol 18.11 zlecił mini-gry „pod takimi kątami i w takich efektach jak walki”; próba stoi w Studio (`Workspace/TreningProba`).
@@ -577,6 +587,8 @@ Dopisek z 2026-11-18 (wieczór): bieg liczony przez kod został poprawiony — p
 Szczegóły: Kamera stoi nisko i z ukosa (kąt 44–51° zamiast 70°), dojeżdża w odliczaniu i robi zbliżenie na postać po rundzie; przy trafieniach wyskakują komiksowe napisy, po rundzie z punktem statystyki sypie się konfetti; ćwiczy bohater klasy (zależy od pytania 63). Zasady gier, przyrosty i dźwięki są bez zmian. Drobne wybory: (1) duże słowa — „SERIA 5!” zajmuje ok. ćwierci szerokości ekranu 667 × 375 — zmniejszyć na telefonie czy zostawić; (2) Siła: bohater stoi półprzezroczysty przed kamerą, a kule stref zostają w kadrze zbliżenia po rundzie — chować je jak miecz; (3) Runy: kadr zza ramienia przycina bohatera przy lewej krawędzi; (4) konfetti za punkt statystyki (dziś), po każdej ukończonej rundzie albo tylko po rundzie bez pudła; (5) słowa Siły „PAF!”, „ŁUP!”, „TRACH!”, „BAM!”, „POW!” zamiast pochwał; (6) postać obraca się do kamery po rundzie; (7) radość kota-Maga jest mało widoczna (klip z pakietu bohatera). Zrzuty i wynik próby: raport w panelu „Mini-gry Training Center w stylu walki: kamera, napisy, konfetti”; opis wyborów 14–17 w `swiat/trening_proba/PROJEKT.md`.
 Dopisek z 2026-11-19: Karol zdecydował o otoczeniu (D-108) — mini-gry w sceneriach krain zamiast areny w murach; kamera, napisy i konfetti zostają do oceny jak wyżej.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 65. Stare zadania z 12–17.11: zamknąć te dziewięć?
 - Przy przeglądzie listy zadań dziewięć pozycji wygląda na nieaktualne, ale to nie agent o tym decyduje.
@@ -584,6 +596,8 @@ Dopisek z 2026-11-19: Karol zdecydował o otoczeniu (D-108) — mini-gry w scene
 
 Szczegóły: (1) obejrzeć walkę v2 i raport „Walka v2 na ekranie” z decyzją o obrysie postaci — walkę zastąpił silnik v3; (2) spisać błędy z 13.11 w `Workspace/TestWalki` — to stary prototyp; (3) mapa teleportacji jako grafika z ramką i pinami (Backlog) — działa teleport przez chmury (D-075, D-076); (4) porównanie Krzywego Miasteczka w Blenderze i w Roblox, prośba Pawła z 14.11 — decyzja o Blenderze zapadła (D-029); (5) obejrzeć demo `Workspace/DemoLesnaBaza` z 12.11; (6) Krzywe Miasteczko: kolorystyka i czytelność budynków (pytanie 33) — miasteczko jest dziś bazarem (D-084); (7) „odpowiedzieć na pytania 50 i 51” oraz „na pytanie 52” — pytania mają odpowiedzi, zostały tylko wybory z raportu „Kalkulator balansu” i dopiski pod pytaniami 6, 8, 9, 32 i 38; (8) Paweł: `git pull`, panel, imię w Ustawieniach, pytanie 27 — pytanie zdjęte 16.11, Paweł korzysta z panelu i Telegrama; (9) zadania dla agenta osoby (D-072) — decyzja zatwierdzona, nie wiadomo, czy część Pawła jest zrobiona.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — Karol 20.11: większość starych spraw jest nieaktualna — dziewięć zadań z listy zamknięte jak w wariancie (a) (przeniesione do „Zrobione” jako zdjęte).
+
 
 ## 66. Nowa muzyka: które z pięciu utworów zostają?
 - Karol 18.11 zlecił „zaprojektuj pozostałe muzyki”; powstało pięć utworów po 90 s: walka, walka ze Strażnikiem, mini-gry, drugi utwór Bagna, drugi utwór Dżungli.
@@ -593,6 +607,8 @@ Szczegóły: (1) obejrzeć walkę v2 i raport „Walka v2 na ekranie” z decyzj
 Szczegóły: Utwory są z tego samego generatora i w tej samej palecie instrumentów co pierwsza partia (ElevenLabs Music v2.5 przez Higgsfield, 65,4 kredytu, zostało 139,6). Nikt ich jeszcze nie słyszał — pliki poszły do Karola na telefon, gotowe wersje trafią do `assets/audio/muzyka/`. Do Roblox wejdą jako jeden plik z pięcioma utworami (gra odtwarza odcinki), żeby zużyć jedno wgranie zamiast pięciu: konto ma 10 wgrań audio na miesiąc, 6 zużytych, 2 pójdą na muzykę Bagna i Dżungli z pierwszej partii. Wgranie dopiero po odsłuchu i wyraźnej zgodzie. Kto wybiera: Karol (dźwięk i muzyka, D-093); Paweł może zgłosić uwagi.
 Dopisek z 2026-11-18 (po obróbce i próbie w Studio): gotowe wersje są w `assets/audio/muzyka/` (pełne `.mp3` do odsłuchu, `_petla.ogg` do gry), a wspólny plik na jedno wgranie to `assets/audio/arkusz/muzyka_arkusz_b.ogg` (6 min 35 s). Gra już przełącza muzykę na walkę, Strażnika i mini-grę — w próbie z dźwiękiem zastępczym, bo nic z tej partii nie jest wgrane. Uwaga do odsłuchu: utwór mini-gier ma w pełnej wersji cichszy wstęp (ok. 7,5 s), którego w grze nie będzie. Raport w panelu: „Muzyka: Bagno i Dżungla wgrane, pięć nowych utworów, muzyka walki i mini-gier w grze”.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — muzyka do B&C czeka razem z całą grą (D-115); limit wgrań audio w tym miesiącu prawie wykorzystany. Pliki zostają w `assets/audio/muzyka/`; wybór utworów wraca przy publikacji B&C.
+
 
 ## 67. Rasy: te same klocki co człowiek czy własne proporcje?
 - Pilotaż (elf, ork) stoi na klockach Rycerza: każdy przedmiot człowieka pasuje od razu, klipy klas działają bez zmian.
@@ -602,6 +618,8 @@ Dopisek z 2026-11-18 (po obróbce i próbie w Studio): gotowe wersje są w `asse
 Szczegóły: To pytanie z sekcji „Do ustalenia” notatki [[Rasy — rzuty dla modelarza]], teraz z modelami do porównania: raport w panelu „Modele ras z rzutów Pawła: elf i ork do oceny (pilotaż)” (plansze „rzut i model”, modele 3D). Na rzutach tułów z rękami to ok. 0,45 wzrostu, w modelu 0,78 (pomiar przybliżony). Przy (a) rasę odróżniają skóra, twarz, uszy, włosy, rogi, kły, ogon, aureola i kolor spodenek, a wielkość to mnożnik całego modelu, więc ekwipunek rośnie razem z postacią. Przy (b) kontrakt z D-071 („przedmiot pasuje do typu ciała”) oznacza osobne dopasowanie 20 przedmiotów bohaterów do każdej rasy. Pozostałe cztery rasy powstają na razie według (a). Opis: `swiat/postacie/RASY.md`.
 Dopisek z 2026-11-18: komplet sześciu ras stoi na tym założeniu — plansza zbiorcza obok człowieka w raporcie „Sześć ras z rzutów Pawła: komplet modeli do oceny”. Najdalej od rzutu jest goblin (na rysunku duża głowa i cienkie ręce) i ork (masywne ciało).
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 68. Rasa a klasa Mag: Mag jest kotem
 - Mag to kot z własnym ciałem; rasy są ciałem człowieka, więc szata i kapelusz Maga na nie nie pasują.
@@ -610,6 +628,8 @@ Dopisek z 2026-11-18: komplet sześciu ras stoi na tym założeniu — plansza z
 
 Szczegóły: Wyszło przy budowie modeli ras (D-104): przedmioty mają typ ciała (`czlowiek` albo `kot`, D-071) i założenie szaty kota na ciało człowieka kończy się błędem. Dotyczy też logiki ras, którą robi sesja Pawła (D-079), i ekranu wyboru (D-081). Opis: `swiat/postacie/RASY.md` pkt 9.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 69. Rasy: drobne wybory wyglądu
 - Przy modelach ras wyszło kilka małych wyborów; pilotaż przyjął robocze odpowiedzi.
@@ -619,6 +639,8 @@ Szczegóły: Wyszło przy budowie modeli ras (D-104): przedmioty mają typ ciał
 Szczegóły: (1) Hełm i kaptur dziś chowają włosy w całości, a uszy przechodzą przez ściankę — zostawić, chować też uszy czy robić hełmy z wycięciami na uszy i rogi; (2) spodenki orka: w zamówieniu rzutu brązowe, na rysunku wielokolorowe, model ma brązowe (zlewają się z butami); (3) goblin: pierwszy rzut czy „wariant 2” (większa głowa, cieńsze ręce) — w budowie jest pierwszy; (4) buty: rasy mają brązowe buty jako część ciała, goły Rycerz i Zwiadowca są boso — ujednolicić?; (5) rękawice bez palców mają dłoń w kolorze skóry człowieka, więc ork dostaje ludzkie dłonie — przedmioty mają brać kolor skóry rasy?; (6) spoczynek rasy na ekranie wyboru: klipy są skopiowane z Rycerza (ręka jak do miecza) — zrobić neutralny?; (7) demon: ikona wyboru ma spiczaste uszy, rzut ich nie ma — model będzie bez uszu; (8) Półbóg: czy aureola i świecące oczy zostają pod hełmem (wygląd zależy też od pytania 47). Opis i liczby: `swiat/postacie/RASY.md` pkt 8 i 9.
 Dopisek z 2026-11-18 (po komplecie sześciu ras): doszły trzy punkty. (9) Rogi demona: połowa siedzi w hełmie i kapturze, wystają ok. 0,4 studa nad nie — te same trzy możliwości co przy uszach. (10) Ogon demona jest sztywny na biodrach; ruchomy ogon wymagałby własnych kości, a wtedy demon nie dzieli klipów z człowiekiem. (11) Uszy goblina wystają przez hełm najbardziej (ok. 0,7 studa), uszy orka są prawie całe schowane. Raport: „Sześć ras z rzutów Pawła: komplet modeli do oceny”.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 70. Strażnicy Bagna i Dżungli: zdjąć im 30% życia?
 - Symulacja przejścia gry: z samym bohaterem gracz wygrywa ze Strażnikiem Topieli i Wężem Stu Lian 12–28% walk i co siódmy–ósmy gracz odbija się od nich pięć razy lub więcej.
@@ -658,6 +680,8 @@ Rozstrzyga: D-112
 
 Szczegóły: Opis, ocena wobec zasad z filmu i sześć poprawek agenta (przycisk dopingu w walce, rundy po ligach Mocy, nagroda dla każdego uczestnika, rytm rund, bez skojarzeń z walkami zwierząt i hazardem, Siła trenera bez utraty postępu): [[Ring Potworów — pomysł]]. Nocna budowa BONK tworzy wspólne klocki (jajka, pety, zapis, efekty, mapy), które Ring też wykorzysta.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — zastąpione oceną w Wytwórni pomysłów (D-115): Ring Potworów jest pomysłem w lejku (`Wytwórnia/Pomysły/Ring Potworów`), a kolejność budowy ustala sesja według karty oceny i najtańszego testu (pytanie 75).
+
 
 ## 74. BONK: publikujemy jako osobną grę do pomiaru?
 - BONK zbudowany w nocy 19/20.11: trzy krainy, pałki, pety, Strażnicy; próba w Studio 33/33, ikona i trzy miniatury gotowe.
@@ -669,4 +693,11 @@ Szczegóły: Cel pomiaru i progi z propozycji decyzji biznesowej (co najmniej 30
 - Karol (2026-11-20): A — publikujemy po próbie we dwóch.
 Rozstrzyga: D-113
 
+## 75. Wytwórnia: który pomysł idzie do najtańszego testu?
+- Na karcie oceny (agent, 20.11): Monster Evolution 26/30, Sleeping Giant Heist 25, Ring Potworów 23, Smash Tower 23, BONK naprawiony (Chain Reaction) 22, BONK dziś 19, B&C 13.
+- Każdy pomysł ma w notatce najtańszy test na 2–3 dni; buduje się jeden naraz.
+- Do wyboru: jeden z pomysłów do testu albo inny — oceńcie kartą w panelu (Wytwórnia).
+
+Szczegóły: Notatki i oceny: [[00 Wytwórnia pomysłów]] (lejek, krytyka agenta, pre-mortem). Oceny agenta to szacunek, nie dane od graczy — spór rozstrzygnie test z ludźmi. Badanie rynku i zasady twórcy, którego ogląda Karol: [[Radar trendów]], [[Mózg — zasady hitu Roblox]].
+**Odpowiedź:**
 
