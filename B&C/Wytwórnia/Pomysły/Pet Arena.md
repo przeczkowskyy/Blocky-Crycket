@@ -6,7 +6,7 @@ etap: ocena
 zdanie: "Throw your pet into the live arena — last pet standing wins."
 ocena_agenta: 27
 werdykt_agenta: buduj
-ocena_karol: 
+ocena_karol: 28
 ocena_pawel: 
 d1: 
 d7: 
@@ -43,16 +43,16 @@ Jajka, trening, wydarzenia, kolekcja petów (do dopracowania — niżej).
 ## Karta oceny
 | Kryterium | Agent | Karol | Paweł |
 |---|---|---|---|
-| Jedno zdanie | 3 | | |
-| Pierwsze 10 sekund | 3 | | |
-| Hak ciekawości | 3 | | |
-| Głębia | 2 | | |
-| Inni gracze | 3 | | |
-| Pokazanie się | 3 | | |
-| Moment do nagrania | 3 | | |
-| Powód powrotu | 2 | | |
-| Trend | 3 | | |
-| Koszt dla nas | 2 | | |
+| Jedno zdanie | 3 | 3 | |
+| Pierwsze 10 sekund | 3 | 3 | |
+| Hak ciekawości | 3 | 3 | |
+| Głębia | 2 | 3 | |
+| Inni gracze | 3 | 3 | |
+| Pokazanie się | 3 | 2 | |
+| Moment do nagrania | 3 | 3 | |
+| Powód powrotu | 2 | 2 | |
+| Trend | 3 | 3 | |
+| Koszt dla nas | 2 | 3 | |
 
 ## Krytyka agenta
 - **Najmocniejszy pomysł z lejka (27/30).** Łączy trzy rosnące trendy: fizyka i wyrzucanie (ragdoll, Cat Battles wyróżnione przez Roblox 16.11), jajka i pety (szczyt list), stanie w miejscu i rzucanie (Throw Food For Animals, nr 3 na platformie). Arena bez kolejki usuwa największą wadę [[Ring Potworów]] (czekanie na rundę).
