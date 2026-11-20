@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-20 · Claude Code u Karola (panel: zakładka Wytwórnia)
+- **Panel (D-115):** zakładka „Wytwórnia” — portfel gier z liczbami i pulpitem każdej gry, lejek pomysłów z werdyktem agenta i ocenami ludzi, karta pomysłu (ocena Karola i Pawła, zmiana etapu), dodawanie pomysłu z szablonu, radar trendów; karta „Gry” na Pulpicie. 652 testy panelu OK, próba w przeglądarce 30/30 (telefon i komputer). Panel uruchomiony ponownie na nowym kodzie; link przez tunel bez zmian.
+- Notatka [[Blocky & Crycket]] w Wytwórni ma aliasy (B&C, Blocky&Crycket) do dopasowania raportów i zadań. Opis w [[Panel zespołu]].
+
 ## 2026-11-20 · Claude Code u Karola (badanie: TizzyRBLX, rynek, osiem pomysłów)
 - **Badanie agenta** (26 wyszukiwań, źródła w notatkach): [[TizzyRBLX — zasady twórcy]] (to on mówi w zapisie z 19.11; 31 zasad z oznaczeniem fakt/opinia; jego hity żyją krótko), [[Rozbiór hitów — listopad 2026]], nowy [[Radar trendów]] (20.11: fizyka i ragdoll rosną najszybciej, klony „Steal a…”, ogrody i „uderzaj dla liczby” spadają; platforma −9% graczy dziennie r/r w III kw.).
 - „Viral na bonki przeminął” — w połowie prawda: format „uderzaj dla liczby” umarł, „uderz i zobacz, co się stanie” rośnie (wniosek w notatce [[BONK]]).
