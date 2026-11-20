@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-20 · Claude Code u Karola (BONK: prywatna wersja testowa)
+- **Karol:** „Nie ma mnie — wykonaj to za mnie”. Agent sterował Studio na komputerze Karola: nowe miejsce, budowa BONK w trybie publikacji (`zbuduj.py --publikacja`, kontrola zgodna, próba w Play bez błędów), publikacja jako **prywatne** doświadczenie „BONK!” (komputer, telefon, tablet, konsola), zaproszenie Pawła jako testera wczesnej wersji. Nic nie jest publiczne.
+- **Rozbieżność z D-044 / D-113:** w wyborze twórcy było tylko konto Karola (brak grupy), więc wersja testowa jest na koncie Karola. Dopisek pod pytaniem 31 w [[Pytania otwarte]] — przed publicznym startem przeniesienie do grupy. Dźwięki BONK są na koncie Karola, więc w wersji testowej grają.
+- Ikona i miniatury: w Studio nie ma już ich wgrywania (odsyła do Creator Hub) — zostają na przed publicznym startem. Stan w [[BONK — projekt prototypu]], [[Zadania]].
+- Rano Studio straciło połączenie z miejscem B&C (błąd połączenia z serwerem) i stało na stronie startowej; miejsce B&C nie jest teraz otwarte.
+
 ## 2026-11-20 · Claude Code u Karola (BONK: decyzja o publikacji)
 - **Karol, rano:** odpowiedź „A” na pytanie 74 → **D-113**: BONK publikujemy jako osobną grę w grupie po próbie we dwóch (podpis Karola, czeka na Pawła — D-043). Odpowiedź pod pytaniem 74 w [[Pytania otwarte]].
 - [[Zadania]]: pozycja BONK rozbita na próbę we dwóch i publikację.

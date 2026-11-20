@@ -8,7 +8,7 @@ tags: [produkcja, zadania]
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
 - [ ] BONK (D-113): zagrać we dwóch (Team Test), sprawdzić na prawdziwym telefonie i padzie — lista w `swiat/bonk/README.md`, krok 8 · Karol, Paweł · #wysoki
-- [ ] BONK (D-113): po próbie — nowe doświadczenie w grupie (prywatne), budowa `zbuduj.py --publikacja`, ustawienia gry, ikona i miniatury, potem publiczne i pomiar powrotów · Karol, Paweł, agent · #wysoki
+- [ ] BONK (D-113): po próbie — przeniesienie gry do grupy (pytanie 31), ikona i miniatury w Creator Hub (`swiat/bonk/grafika/`), kwestionariusz dojrzałości, potem publiczne i pomiar powrotów · Karol, Paweł · #wysoki
 - [ ] Ring Potworów — druga gra: decyzja o kolejności (pytanie 73, [[Ring Potworów — pomysł]]) · #średni
 - [ ] Zapis postępu (D-110), dalej: włączony i sprawdzony w Studio 19.11 (raport „Zapis postępu włączony: stan wraca po ponownym wejściu”); do zrobienia: pierwsze prawdziwe wejście Karola i Pawła według pięciu kroków z raportu, blokada sesji z dwóch okien Studio, pamięć poznanych gatunków w walce, przeniesienie zapisu do gry opublikowanej (osobna decyzja) · agent: Karol · #wysoki
 - [ ] Paweł, po włączeniu zapisu (D-110): wybór klasy ma czekać na wczytanie stanu i być jednorazowy; zakupy drzewka umiejętności zapisywać przez dane pakietu stanu gracza (lista z plikami w `swiat/stan_gracza/README.md`, rozdział „Zapis postępu”) · agent: Paweł · #wysoki
@@ -126,6 +126,7 @@ tags: [produkcja, zadania]
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-20: BONK — prywatna wersja testowa jako osobne doświadczenie „BONK!” (zbudowana `zbuduj.py --publikacja`, prywatna, wszystkie urządzenia), Paweł zaproszony jako tester; na koncie Karola, bo grupy nie było w wyborze ([[BONK — projekt prototypu]])
 - [x] 2026-11-20: BONK (D-112) — prototyp zbudowany w nocy w trzech etapach: rdzeń BONK z lotem, trzy krainy, pałki, jajka i 15 petów z Księgą, Strażnicy bici wspólnie, pokazanie się, dzienny prezent, zapis, telefon i pad, ikona i miniatury, demo wideo; próba w Studio 33/33 ([[BONK — projekt prototypu]])
 - [x] 2026-11-19: Zapis postępu włączony (D-110) i sprawdzony w Studio: po ponownym wejściu wraca poziom, Złoto, Gemy, punkty, przedmioty ze sklepu i kowala z ulepszeniami, pety, trening, Strażnicy, bramy i strój; próba zapisu 9 punktów w porządku na osobnym magazynie; próby gry idą bez zapisu i nie dotykają zapisu ludzi; polecenie kasowania własnego zapisu
 - [x] 2026-11-19: Strażnik Topieli i Wąż Stu Lian mają 15% mniej życia (D-111; 2528 → 2149 i 2852 → 2424), w grze od 14:03; próby Bagna, Dżungli i walki bez błędów; w symulacji przy samych walkach utyka 3–4% graczy zamiast 11–12%, niecierpliwy 16–18% zamiast 37–41%
