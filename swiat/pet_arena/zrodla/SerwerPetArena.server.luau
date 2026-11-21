@@ -4,8 +4,13 @@
 	etap 2: jajka i kolekcja (gwiazdki, Księga), drużyna, trener (poziom, mata), wydarzenia (BOSS, GOLDEN PET z
 	zapowiedzią), tarcza słabszego (w logice), tablice, komunikaty, zapis (własny magazyn z ochroną prób).
 
+	v3 (Throw & Catch Monsters): dzikie potwory z tabeli wchodzą bramą, cios kończący peta gracza = losowanie złapania
+	(litość, pierwsze pewne), odmiany BIG / GOLDEN / GIANT, ALPHA, zegar wydarzeń o stałych porach (UTC), wylęgarnia w czasie,
+	dzienny prezent, tablica CATCH CHANCES.
+
 	Od klienta tylko Sygnaly/Akcja (rodzaj, a, b, c): "rzut", nr w drużynie, x, z · "umiejetnosc" · "wybierz", nr ·
-	"jajko", nr · "druzyna", { id, … } · "trening", bool — serwer sprawdza typy, wiadro tempa (wspólne), cel, limit
+	"jajko", nr · "wykluj", miejsce · "przyspiesz", miejsce · "prezent" · "druzyna", { id, … } · "trening", bool ·
+	"ruch", x, z — serwer sprawdza typy, wiadro tempa (wspólne), cel, limit
 	areny, jednego peta gracza, odpoczynek, złoto, posiadanie petów. Do klientów: Sygnaly/Stan (UnreliableRemoteEvent,
 	bufor: pety co walka.stan_co_s) i Sygnaly/Zdarzenia (lista zdarzeń). Stan gracza w atrybutach PA_* (ustawia tylko
 	serwer). Haczyki prób: Sygnaly/SterowanieSerwera. W próbie (znacznik ZapisProbaDo z tools/zapis_prob.py) zamiast
@@ -68,6 +73,12 @@ local doWyslania = {}
 
 local function teraz(): number
 	return workspace:GetServerTimeNow()
+end
+
+-- v3: czas profilu (wylęgarnia, dzienny prezent) — sekundy UTC; próby mogą go przesunąć haczykiem "czas_plus"
+local przesuniecieCzasu = 0
+local function czasProfilu(): number
+	return os.time() + przesuniecieCzasu
 end
 
 ------------------------------------------------------------------ zapis
@@ -180,7 +191,32 @@ local function atrybuty(plr: Player, g: Gracz)
 	plr:SetAttribute("PA_Poziom", lv)
 	plr:SetAttribute("PA_Xp", x)
 	plr:SetAttribute("PA_XpPotrzeba", potrzeba)
-	plr:SetAttribute("PA_Samouczek", (if pr.samouczek.rzut then "1" else "0") .. (if pr.samouczek.jajko then "1" else "0"))
+	plr:SetAttribute("PA_Samouczek", (if pr.samouczek.rzut then "1" else "0") .. (if pr.samouczek.jajko then "1" else "0")
+		.. (if pr.samouczek.zlap then "1" else "0"))
+	-- v3: wylęgarnia („nr:koniec;…”), odmiany („id=big+golden,…”), złapane, dzienny prezent
+	local wy = {}
+	for _, j in pr.wylegarnia do
+		table.insert(wy, string.format("%d:%d", j.nr, math.floor(j.koniec)))
+	end
+	plr:SetAttribute("PA_Wylegarnia", table.concat(wy, ";"))
+	local od = {}
+	for id, o in pr.odmiany do
+		local ids = {}
+		for oid, n in o do
+			if n > 0 then
+				table.insert(ids, oid)
+			end
+		end
+		table.sort(ids)
+		table.insert(od, id .. "=" .. table.concat(ids, "+"))
+	end
+	plr:SetAttribute("PA_Odmiany", table.concat(od, ","))
+	plr:SetAttribute("PA_Zlapane", pr.zlapane or 0)
+	local ps = L.prezentStan(D, pr, czasProfilu())
+	plr:SetAttribute("PA_PrezentMozna", ps.mozna and g.wczytany == true)
+	plr:SetAttribute("PA_PrezentDzien", ps.dzien)
+	plr:SetAttribute("PA_PrezentNagroda", L.opisNagrody(D, ps.nagroda))
+	plr:SetAttribute("PA_PrezentJutro", L.opisNagrody(D, ps.jutro))
 	plr:SetAttribute("PA_Wybicia", pr.wybicia)
 	plr:SetAttribute("PA_Trening", g.trening)
 	local b, bg = najlepszy(pr)
@@ -284,7 +320,8 @@ local function wyslij(z)
 	liczniki[z.t] = (liczniki[z.t] or 0) + 1
 	if z.t ~= "ladowanie" and z.t ~= "koniec_akcji" then
 		table.insert(ostatnie, { t = z.t, a = z.a, b = z.b, id = z.id, v = z.v, k = z.k, o = z.o, przez = z.przez, premia = z.premia,
-			nagroda = z.nagroda, krol = z.krol, boss = z.boss, zloty = z.zloty, wl = z.wl, ile = z.ile })
+			nagroda = z.nagroda, krol = z.krol, boss = z.boss, zloty = z.zloty, wl = z.wl, ile = z.ile, nr = z.nr, odmiana = z.odmiana,
+			szansa = z.szansa, alfa = z.alfa, pewne = z.pewne, dziki = z.dziki, nowy = z.nowy, gwiazdki = z.gwiazdki })
 		if #ostatnie > 60 then
 			table.remove(ostatnie, 1)
 		end
@@ -306,12 +343,78 @@ local function zakonczKrola(id: number)
 	end
 end
 
+------------------------------------------------------------------ v3: „Wybijesz, to zabierasz” i odmiany
+local wymusLap: boolean? = nil
+local wymusOdmiane: string? = nil
+
+-- los odmiany (próby mogą wymusić: id odmiany albo "brak")
+local function losOdmiany(): number
+	if wymusOdmiane then
+		local suma = 0
+		for _, o in D.odmiany.lista do
+			if o.id == wymusOdmiane then
+				wymusOdmiane = nil
+				return suma + o.szansa * 0.5
+			end
+			suma += o.szansa
+		end
+		wymusOdmiane = nil
+		return 0.99999
+	end
+	return los:NextNumber()
+end
+
+local function ogloszenieOdmiany(g, Pd, odm: string?, rz: number, alfa: boolean?)
+	local O = L.odmiana(D, odm)
+	if (O and O.ogloszenie) or rz >= D.lapanie.ogloszenie_od_stopnia or alfa then
+		ogloszenie(string.format(D.ui.ogl_zlapal, g.nazwa, if O then O.nazwa .. " " else "", Pd.nazwa),
+			if O then O.kolor else D.rzadkosci[rz].kolor)
+	end
+end
+
+local function lapanie(plr: Player, g: Gracz, z)
+	local r1 = if wymusLap == true then 0 elseif wymusLap == false then 0.99999 else los:NextNumber()
+	wymusLap = nil
+	local Pd = D.pety[z.nr]
+	local st = Pd.stopien
+	local w = L.zlapanie(D, g.profil, z.nr, z.alfa, r1, losOdmiany())
+	if w.zlapany then
+		if z.alfa then
+			dodajZloto(plr, g, D.alfa.zloto)
+		end
+		dodajXp(plr, g, D.trener.za_wybicie)
+		atrybuty(plr, g)
+		wyslij({ t = "zlapanie", id = z.id, nr = z.nr, wl = g.slot, nowy = w.nowy, gwiazdki = w.gwiazdki, maks = w.maks, zwrot = w.zwrot,
+			odmiana = w.odmiana, rzadkosc = st, pewne = w.pewne, szansa = w.szansa, alfa = z.alfa })
+		ogloszenieOdmiany(g, Pd, w.odmiana, st, z.alfa)
+	else
+		local ile = D.lapanie.ucieczka_zloto * st + (if z.alfa then D.alfa.zloto else 0)
+		dodajZloto(plr, g, ile)
+		atrybuty(plr, g)
+		wyslij({ t = "ucieczka", id = z.id, nr = z.nr, wl = g.slot, szansa = w.szansa, ile = ile })
+	end
+end
+
 local function obsluzZdarzenia(lista)
 	for _, z in lista do
 		if z.t == "ringout" or z.t == "ko" then
 			if z.krol then
 				zakonczKrola(z.id)
 			end
+			-- dziki potwór wybity przez peta gracza: losowanie złapania; asysty dostają złoto
+			if z.dziki and z.wl == 0 and not z.boss and not z.zloty then
+				local lowca = poSlocie[z.przez]
+				if z.przez > 0 and lowca and gracze[lowca] then
+					task.defer(lapanie, lowca, gracze[lowca], z)
+				end
+				for wl in z.trafili or {} do
+					local ap = poSlocie[wl]
+					if wl ~= z.przez and ap and gracze[ap] then
+						dodajZloto(ap, gracze[ap], if z.alfa then D.alfa.asysta else D.lapanie.asysta_zloto * (z.stopien or 1))
+					end
+				end
+			end
+			z.trafili = nil
 			local ofiara = poSlocie[z.wl]
 			if z.wl > 0 and not z.dziki and ofiara and gracze[ofiara] then
 				local g = gracze[ofiara]
@@ -368,36 +471,85 @@ end
 ------------------------------------------------------------------ dzikie pety i wydarzenia
 local nastBot = D.boty.pierwszy_s
 local czekajBota: { [number]: number } = {}
-local nastWyd = D.wydarzenia.pierwsze_s
-local nrWyd = 1
 local nrBossa = 0
 
--- dzikie pety wskakują na arenę z bramy bossa albo z trybun (losowy punkt za krawędzią)
-local function zGejzera()
-	local a = los:NextNumber() * 2 * math.pi
-	local r = D.scena.arena_r + 6
-	return math.sin(a) * r, math.cos(a) * r
+-- flagi peta do migawki i zdarzeń (tarcza 1, boss 2, złoty boss 4, odmiany BIG 8 / GIANT 16 / GOLDEN 32, ALPHA 64)
+local function flagiPeta(p): number
+	local f2 = 0
+	if not p.dziki and L.chroniony(S, p) then
+		f2 += 1
+	end
+	if p.boss then
+		f2 += 2
+	end
+	if p.zloty then
+		f2 += 4
+	end
+	return f2 + (p.flagiOdm or 0)
 end
 
-local function rzutDzikiego(nr: number?, x: number?, z: number?)
-	local n = nr or L.losujPetaBota(D, los:NextNumber(), los:NextNumber())
-	local x0, z0 = zGejzera()
+-- v3: dzikie potwory wchodzą bramą (z wnętrza bramy, łukiem na arenę); rzadsze większe, ALPHA jeszcze większy
+local function zBramy()
+	local b = D.brama
+	local r = math.max(1, math.sqrt(b.x * b.x + b.z * b.z))
+	local rr = D.scena.mur_r[2] + 3
+	return b.x / r * rr, b.z / r * rr
+end
+
+local function rzutDzikiego(nr: number?, x: number?, z: number?, alfa: boolean?)
+	local n = nr or L.losujDzikiego(D, los:NextNumber(), if alfa then D.alfa.rzadkosc_min else nil)
+	local x0, z0 = zBramy()
 	local r = los:NextNumber() * 30
 	local b = los:NextNumber() * 2 * math.pi
 	local tx, tz = x or math.sin(b) * r, z or math.cos(b) * r
-	local y0 = D.scena.mur_y + 4
-	local p = L.dodajPeta(S, n, 0, true, x0, y0, z0, tx, tz)
-	wyslij({ t = "rzut", id = p.id, nr = p.nr, wl = 0, dziki = true, x0 = x0, y0 = y0, z0 = z0, x = tx, z = tz, czas = p.lotCzas })
+	local y0 = D.scena.brama_wys * 0.4
+	local p = L.dodajPeta(S, n, 0, true, x0, y0, z0, tx, tz, L.mnoznikDzikiego(D, n, alfa))
+	wyslij({ t = "rzut", id = p.id, nr = p.nr, wl = 0, dziki = true, x0 = x0, y0 = y0, z0 = z0, x = tx, z = tz, czas = p.lotCzas,
+		f2 = flagiPeta(p), alfa = alfa == true })
 	return p
 end
 
+-- v3: zegar wydarzeń o stałych porach (UTC); w próbach można go przyspieszyć (haczyk "zegar_tempo") albo wymusić wydarzenie
+local tempoZegara = 1
+local zegarBaza, zegarReal = os.time(), os.clock()
+local function zegar(): number
+	return zegarBaza + (os.clock() - zegarReal) * tempoZegara
+end
+local wydTyp, wydZegar = L.nastepneWydarzenie(D, zegar())
+local wydWymuszone: number? = nil
+
 local function wydarzenieAtrybuty()
-	kontener:SetAttribute("PA_WydTyp", L.typWydarzenia(D, nrWyd))
-	kontener:SetAttribute("PA_WydT", teraz() + math.max(0, nastWyd - S.czas))
+	kontener:SetAttribute("PA_WydTyp", wydTyp)
+	local za = if wydWymuszone then wydWymuszone - S.czas else (wydZegar - zegar()) / tempoZegara
+	kontener:SetAttribute("PA_WydT", teraz() + math.max(0, za))
 end
 
-local function zacznijWydarzenie()
-	local typ = L.typWydarzenia(D, nrWyd)
+local function jestNaArenie(warunek): boolean
+	for _, p in S.pety do
+		if warunek(p) then
+			return true
+		end
+	end
+	return false
+end
+
+local function zacznijWydarzenie(typ: string)
+	if typ == "alfa" then
+		if jestNaArenie(function(p)
+			return p.alfa == true
+		end) then
+			return
+		end
+		local p = rzutDzikiego(nil, nil, nil, true)
+		wyslij({ t = "alfa", id = p.id, nr = p.nr })
+		ogloszenie(string.format(D.ui.ogl_alfa, string.upper(p.P.nazwa)), D.rzadkosci[p.P.stopien].kolor)
+		return
+	end
+	if jestNaArenie(function(p)
+		return p.boss == true
+	end) then
+		return
+	end
 	local graczy = 0
 	for _ in gracze do
 		graczy += 1
@@ -408,9 +560,18 @@ local function zacznijWydarzenie()
 	local zloty = typ ~= "boss"
 	local p = L.dodajBossa(S, nrBossa, math.max(1, graczy), zloty)
 	wyslij({ t = "boss", id = p.id, nr = nrBossa, nazwa = p.P.nazwa, czas = p.lotCzas, hp = p.hpMax, zloty = zloty, x0 = p.x0, z0 = p.z0 })
-	nrWyd += 1
-	nastWyd = S.czas + D.wydarzenia.co_s
-	wydarzenieAtrybuty()
+end
+
+local function zegarKrok()
+	local teraz_ = zegar()
+	if (wydWymuszone and S.czas >= wydWymuszone) or (not wydWymuszone and teraz_ >= wydZegar) then
+		if not S.bezWydarzen or wydWymuszone then
+			zacznijWydarzenie(wydTyp)
+		end
+		wydWymuszone = nil
+		wydTyp, wydZegar = L.nastepneWydarzenie(D, math.max(teraz_, wydZegar))
+		wydarzenieAtrybuty()
+	end
 end
 
 local function botyKrok()
@@ -418,9 +579,7 @@ local function botyKrok()
 		rzutDzikiego()
 		nastBot = S.czas + (S.botyCo or D.boty.co_s)
 	end
-	if S.czas >= nastWyd and not S.bezWydarzen then
-		zacznijWydarzenie()
-	end
+	zegarKrok()
 	local zd = {}
 	for _, p in S.pety do
 		if p.dziki and p.faza == "walka" and not p.boss and not p.zloty then
@@ -471,7 +630,8 @@ local function rzut(plr: Player, g: Gracz, nr: any, x: any, z: any)
 	if reka and reka:IsA("BasePart") and (reka.Position - start).Magnitude < 12 then
 		start = reka.Position + Vector3.new(0, 1, 0)
 	end
-	local p = L.dodajPeta(S, w.nr, g.slot, false, start.X, start.Y, start.Z, x, z, L.mnoznikPeta(D, w.gwiazdki, poziomGracza(g)))
+	local p = L.dodajPeta(S, w.nr, g.slot, false, start.X, start.Y, start.Z, x, z,
+		L.mnoznikPeta(D, w.gwiazdki, poziomGracza(g), L.odmianyPeta(D, g.profil, w.id)))
 	g.naArenie = w.id
 	g.wybrany = nr
 	g.profil.rzuty += 1
@@ -479,7 +639,27 @@ local function rzut(plr: Player, g: Gracz, nr: any, x: any, z: any)
 	plr:SetAttribute("PA_Pet", p.id)
 	atrybuty(plr, g)
 	wyslij({ t = "rzut", id = p.id, nr = p.nr, wl = g.slot, dziki = false, x0 = start.X, y0 = start.Y, z0 = start.Z, x = x, z = z,
-		czas = p.lotCzas, gwiazdki = w.gwiazdki })
+		czas = p.lotCzas, gwiazdki = w.gwiazdki, f2 = flagiPeta(p) })
+end
+
+-- wyklucie (jajko z wylęgarni, darmowe, z prezentu): los peta i odmiany, kolekcja, scena u gracza
+local function wyklujJajko(plr: Player, g: Gracz, nr: number, cena: number)
+	g.profil.jajek += 1
+	local pnr, rz = L.losujZJajka(D, nr, los:NextNumber(), los:NextNumber())
+	local Pd = D.pety[pnr]
+	local w = L.dodajDoKolekcji(D, g.profil, Pd.id, D.jajka[nr].cena)
+	local odm = L.losujOdmiane(D, losOdmiany())
+	L.dodajOdmiane(g.profil, Pd.id, odm)
+	atrybuty(plr, g)
+	evZdarzenia:FireClient(plr, { { t = "wyklucie", jajko = nr, pet = pnr, rzadkosc = rz, nowy = w.nowy, gwiazdki = w.gwiazdki,
+		maks = w.maks, zwrot = w.zwrot, cena = cena, odmiana = odm } })
+	liczniki.wyklucie = (liczniki.wyklucie or 0) + 1
+	if rz >= 4 then
+		ogloszenie(string.format(D.ui.ogl_legendarny, g.nazwa, string.upper(D.rzadkosci[rz].nazwa), Pd.nazwa), D.rzadkosci[rz].kolor)
+	elseif odm and L.odmiana(D, odm).ogloszenie then
+		local O = L.odmiana(D, odm)
+		ogloszenie(string.format(D.ui.ogl_legendarny, g.nazwa, O.nazwa, Pd.nazwa), O.kolor)
+	end
 end
 
 local function jajko(plr: Player, g: Gracz, nr: any)
@@ -495,19 +675,61 @@ local function jajko(plr: Player, g: Gracz, nr: any)
 	if g.profil.zloto < cena then
 		return odmowa(plr, "zloto")
 	end
+	if darmowe then
+		-- pierwsze jajko (samouczek) od razu
+		g.ostJajko = os.clock()
+		g.profil.samouczek.jajko = true
+		return wyklujJajko(plr, g, nr, 0)
+	end
+	-- v3: kupione jajko trafia do wylęgarni i wylęga się w czasie (także poza grą)
+	if not L.wolneMiejsce(D, g.profil) then
+		return odmowa(plr, "wylegarnia")
+	end
 	g.ostJajko = os.clock()
 	g.profil.zloto -= cena
-	g.profil.samouczek.jajko = true
-	g.profil.jajek += 1
-	local pnr, rz = L.losujZJajka(D, nr, los:NextNumber(), los:NextNumber())
-	local Pd = D.pety[pnr]
-	local w = L.dodajDoKolekcji(D, g.profil, Pd.id, J.cena)
+	L.doWylegarni(D, g.profil, nr, czasProfilu())
 	atrybuty(plr, g)
-	evZdarzenia:FireClient(plr, { { t = "wyklucie", jajko = nr, pet = pnr, rzadkosc = rz, nowy = w.nowy, gwiazdki = w.gwiazdki,
-		maks = w.maks, zwrot = w.zwrot, cena = cena } })
-	liczniki.wyklucie = (liczniki.wyklucie or 0) + 1
-	if rz >= 4 then
-		ogloszenie(string.format(D.ui.ogl_legendarny, g.nazwa, string.upper(D.rzadkosci[rz].nazwa), Pd.nazwa), D.rzadkosci[rz].kolor)
+	evZdarzenia:FireClient(plr, { { t = "do_wylegarni", jajko = nr, czas = D.wylegarnia.czas_s[nr], cena = cena } })
+	liczniki.do_wylegarni = (liczniki.do_wylegarni or 0) + 1
+end
+
+-- jajko z wylęgarni: gotowe albo przyspieszone za złoto z gry
+local function wykluj(plr: Player, g: Gracz, i: any, przyspiesz: boolean)
+	if type(i) ~= "number" or i ~= math.floor(i) or not g.profil.wylegarnia[i] then
+		return odmowa(plr, "zle")
+	end
+	local tn = czasProfilu()
+	local cena = if przyspiesz then L.cenaPrzyspieszenia(D, g.profil.wylegarnia[i], tn) else 0
+	if g.profil.zloto < cena then
+		return odmowa(plr, "zloto")
+	end
+	local nr = L.zWylegarni(g.profil, i, tn, przyspiesz)
+	if not nr then
+		return odmowa(plr, "czekaj")
+	end
+	g.profil.zloto -= cena
+	wyklujJajko(plr, g, nr, cena)
+end
+
+-- dzienny prezent (seria nie przepada; jajko z prezentu wylęga się od razu)
+local function prezent(plr: Player, g: Gracz)
+	if not g.wczytany then
+		return odmowa(plr, "czekaj")
+	end
+	local n, jutro = L.odbierzPrezent(D, g.profil, czasProfilu())
+	if not n then
+		return odmowa(plr, "prezent")
+	end
+	atrybuty(plr, g)
+	evZdarzenia:FireClient(plr, { { t = "prezent", dzien = g.profil.prezent.seria, nagroda = n, opis = L.opisNagrody(D, n),
+		jutro = L.opisNagrody(D, jutro) } })
+	liczniki.prezent = (liczniki.prezent or 0) + 1
+	if n.jajko then
+		task.delay(1.2, function()
+			if gracze[plr] == g then
+				wyklujJajko(plr, g, n.jajko, 0)
+			end
+		end)
 	end
 end
 
@@ -550,6 +772,12 @@ evAkcja.OnServerEvent:Connect(function(plr: Player, rodzaj: any, a: any, b: any,
 		end
 	elseif rodzaj == "jajko" then
 		jajko(plr, g, a)
+	elseif rodzaj == "wykluj" then
+		wykluj(plr, g, a, false)
+	elseif rodzaj == "przyspiesz" then
+		wykluj(plr, g, a, true)
+	elseif rodzaj == "prezent" then
+		prezent(plr, g)
 	elseif rodzaj == "druzyna" then
 		if L.ustawDruzyne(D, g.profil, a) then
 			g.wybrany = math.min(g.wybrany, #g.profil.druzyna)
@@ -587,8 +815,25 @@ local function odswiezTablice()
 	for i, T in D.tablice do
 		local m = folderTablic:FindFirstChild("Tablica" .. i)
 		local sg = m and m:FindFirstChild("Ekran", true)
-		if sg then
-			local top = L.top(zrodla[i], T.wierszy)
+		if sg and i == 4 then
+			-- v3: CATCH CHANCES — jawne szanse złapania według rzadkości i odmian
+			local wiersze = {}
+			for r, R in D.rzadkosci do
+				table.insert(wiersze, string.format("%s  %g%%", R.nazwa, math.floor(D.lapanie.szanse[r] * 1000 + 0.5) / 10))
+			end
+			local od = {}
+			for _, O in D.odmiany.lista do
+				table.insert(od, string.format("%s %g%%", O.nazwa, math.floor(O.szansa * 1000 + 0.5) / 10))
+			end
+			table.insert(wiersze, table.concat(od, " · "))
+			for r = 1, T.wierszy do
+				local l = sg:FindFirstChild("Rzad" .. r, true)
+				if l then
+					l.Text = wiersze[r] or ""
+				end
+			end
+		elseif sg then
+			local top = L.top(zrodla[i] or {}, T.wierszy)
 			for r = 1, T.wierszy do
 				local l = sg:FindFirstChild("Rzad" .. r, true)
 				if l then
@@ -638,16 +883,7 @@ local function migawka(): buffer
 		if p.osz > t then
 			f += 128
 		end
-		local f2 = 0
-		if not p.dziki and L.chroniony(S, p) then
-			f2 += 1
-		end
-		if p.boss then
-			f2 += 2
-		end
-		if p.zloty then
-			f2 += 4
-		end
+		local f2 = flagiPeta(p)
 		buffer.writeu16(b, o, p.id % 65536)
 		buffer.writeu8(b, o + 2, if p.boss then 200 + (p.nrModelu or 1) else p.nr)
 		buffer.writeu8(b, o + 3, if p.dziki then 0 else p.wl)
@@ -710,6 +946,11 @@ RunService.Heartbeat:Connect(function(dt: number)
 				end
 				if xp > 0 then
 					dodajXp(plr, g, xp)
+				end
+				if os.clock() - (g.ostAtr or 0) > 15 then
+					-- dzienny prezent i gotowe jajka zmieniają się z czasem
+					g.ostAtr = os.clock()
+					atrybuty(plr, g)
 				end
 				if os.clock() - g.ostZapis > D.zapis.co_s then
 					g.ostZapis = os.clock()
@@ -791,12 +1032,14 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 				druzyna = dr, wybrany = g.wybrany, naArenie = naArenie, wybicia = g.profil.wybicia, rzuty = g.profil.rzuty,
 				odrzucone = g.odrzucone, pety = g.profil.pety, ksiega = g.profil.ksiega, xp = g.profil.xp, poziom = poziomGracza(g),
 				samouczek = g.profil.samouczek, trening = g.trening, zapisywalny = g.zapisywalny, wczytany = g.wczytany,
-				jajek = g.profil.jajek, krolS = g.profil.krolS })
+				jajek = g.profil.jajek, krolS = g.profil.krolS, wylegarnia = g.profil.wylegarnia, prezent = g.profil.prezent,
+				zlapane = g.profil.zlapane, odmiany = g.profil.odmiany, litosc = g.profil.litosc, czasProfilu = czasProfilu() })
 		end
+		local za = if wydWymuszone then wydWymuszone - S.czas else (wydZegar - zegar()) / tempoZegara
 		return { gotowy = true, czas = S.czas, pety = pety, krol = S.krol, nagroda = S.nagroda, gracze = lista,
 			dzikich = L.ileDzikich(S), liczniki = liczniki, ostatnie = ostatnie, zapis = kontener:GetAttribute("ZapisStan"),
 			odpoczynek = odpoczynekS, srKroku_ms = if ileKrokow > 0 then czasKroku / ileKrokow * 1000 else 0,
-			nastWyd = nastWyd - S.czas, typWyd = L.typWydarzenia(D, nrWyd), bossUdzial = S.bossUdzial }
+			nastWyd = za, typWyd = wydTyp, tempoZegara = tempoZegara, bossUdzial = S.bossUdzial }
 	elseif polecenie == "boty" then
 		S.botyDo = a
 		S.botyMaks = a
@@ -917,22 +1160,45 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 		end
 		return g and g.profil.xp
 	elseif polecenie == "wydarzenie" then
-		-- a: "boss" | "zloty"; b = sekund do startu (0 — teraz)
-		for n, typ in D.wydarzenia.kolejnosc do
-			if typ == a then
-				nrWyd = n
-			end
-		end
-		nrWyd = nrWyd
-		nastWyd = S.czas + (b or 0)
+		-- a: "boss" | "zloty" | "alfa"; b = sekund do startu (0 — teraz)
+		wydTyp = a
+		wydWymuszone = S.czas + (b or 0)
 		wydarzenieAtrybuty()
 		return true
 	elseif polecenie == "bez_wydarzen" then
 		S.bezWydarzen = a == true
 		if a then
-			nastWyd = S.czas + 9999
+			wydWymuszone = nil
+			wydTyp, wydZegar = L.nastepneWydarzenie(D, zegar())
 		end
 		wydarzenieAtrybuty()
+		return true
+	elseif polecenie == "zegar_tempo" then
+		-- przyspieszenie zegara wydarzeń (a razy); następne wydarzenie liczone od nowa
+		zegarBaza, zegarReal = zegar(), os.clock()
+		tempoZegara = math.max(1, a or 1)
+		wydTyp, wydZegar = L.nastepneWydarzenie(D, zegar())
+		wydarzenieAtrybuty()
+		return { typ = wydTyp, za = (wydZegar - zegar()) / tempoZegara }
+	elseif polecenie == "wymus_lap" then
+		wymusLap = a
+		return true
+	elseif polecenie == "wymus_odmiane" then
+		wymusOdmiane = a
+		return true
+	elseif polecenie == "czas_plus" then
+		-- czas profilu (wylęgarnia, prezent) do przodu o a sekund — atrapa zegara w próbach
+		przesuniecieCzasu += a or 0
+		kontener:SetAttribute("PA_CzasPrzes", przesuniecieCzasu)
+		for plr, g in gracze do
+			atrybuty(plr, g)
+		end
+		return przesuniecieCzasu
+	elseif polecenie == "samouczek_zlap" then
+		for plr, g in gracze do
+			g.profil.samouczek.zlap = a == true
+			atrybuty(plr, g)
+		end
 		return true
 	elseif polecenie == "zapisz" then
 		local plr = pierwszy()

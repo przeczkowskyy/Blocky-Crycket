@@ -1,10 +1,73 @@
-# Pet Arena — rdzeń, etap 2 i przebudowa v2 (koloseum, wielkość, fizyka, sterowanie) — D-118, propozycja
+# Pet Arena → „Throw & Catch Monsters” — rdzeń, etap 2, v2 (koloseum, fizyka, sterowanie), v3 (łapanie potworów, powód powrotu) — D-118, propozycja
 
-*Throw your pet into the pit, hold the golden center, knock the others out.* Osobna, samowystarczalna gra we własnym
+*Throw your pet into the pit, knock out wild monsters and catch them — then fight for the golden throne.* Osobna, samowystarczalna gra we własnym
 miejscu Roblox (plik lokalny `PetArena.rbxlx`, kontener `Workspace/PetArenaGra`). Projekt: `B&C/Gra/Pet Arena — projekt
 prototypu.md`. Warsztat skopiowany i przerobiony z `swiat/bonk/` (w czasie gry i budowy nic nie jest importowane z BONK;
 modele petów, jajek i bossów czytane są z tych samych danych — `swiat/postacie/<id>.py`, `swiat/test_walki2/dane/` —
 z których korzystał BONK).
+
+## Co nowego w v3 — „Throw & Catch Monsters” (21.11.2026 noc)
+
+Analiza trendu z 21.11: podobne gry z bitką petów na arenie miały skok i gasły po 4–8 tygodniach, bo nie dawały powodu
+do powrotu; rośnie pętla „pokonane potwory dołączają do ciebie”. Dlatego środek ciężkości przesunięty na **rzucaj i łap
+potwory**, a walka graczy o tron zostaje jako przyprawa. Tytuł w grze (atrapa, napis nad bramą): **THROW & CATCH
+MONSTERS**. Wszystkie liczby w `ustawienia.json` (sekcje `dzikie`, `lapanie`, `odmiany`, `alfa`, `zegar`, `wylegarnia`,
+`prezent`, `nowy_potwor`) — to propozycja do strojenia.
+
+**„Wybijesz, to zabierasz” (rdzeń):**
+- Dzikie potwory to osobny rodzaj z własną tabelą (`dzikie.tabela`: waga wejścia, Common często, Legendary rzadko).
+  Wchodzą **bramą**, dopełniają arenę jak dotąd (razem do 4, limit areny 6). Rzadsze są większe (× 1 / 1,08 / 1,18 / 1,3
+  / 1,45) i mają krążek w kolorze rzadkości (Common szary).
+- Cios kończący (RING OUT albo KO) peta gracza w dzikiego losuje złapanie z jawną szansą **35 / 22 / 12 / 6 / 3 %**
+  (Common → Legendary). Litość: każda nieudana próba danej rzadkości dodaje 3 pkt (najwyżej 90 %), udane złapanie ją
+  zeruje. **Pierwsze wybicie dzikiego u nowego gracza to pewne złapanie**; samouczek: „Knock out wild monsters to catch
+  them!” zaraz po rzucie.
+- Udane złapanie:
+  - w świecie pierścień w kolorze rzadkości, a potwór zwija się i leci do loży łowcy;
+  - u łowcy krótka scena **CAUGHT!** (wyklucie bez trzęsienia jajka, ok. 3 s, z tabliczką rzadkości i odmiany);
+  - potwór trafia do kolekcji jako nowy pet albo gwiazdka.
+- Nieudane: **ESCAPED!** i złoto (6 × stopień). Asysty (inni gracze, którzy trafili dzikiego) dostają 8 × stopień.
+- **Odmiany** (złapane i wyklute pety):
+  - **BIG** 8 %: × 1,25 rozmiaru, +15 % siły;
+  - **GOLDEN** 3 %: złoty i lśniący, × 1,5 złota na sekundę;
+  - **GIANT** 0,5 %: × 1,6 rozmiaru, +30 % siły.
+
+  Odmianę widzą wszyscy: napis nad petem, rozmiar i wygląd (flagi w migawce) oraz karta w kolekcji. GOLDEN, GIANT i
+  złapania od Rare są ogłaszane na serwerze („Player 2 caught a GIANT Forest Troll!”).
+- **ALPHA** (z zegara, co 5 minut):
+  - rzadki dziki potwór (od Rare) wchodzi bramą z zapowiedzią;
+  - jest 1,5 raza większy i ma 3 razy więcej życia;
+  - ostatni cios łapie z szansą +20 pkt, a złapana ALPHA ma co najmniej odmianę BIG;
+  - łowca dostaje 120 złota, asysty po 30.
+- **Jawne szanse**: tablica **CATCH CHANCES** na ścianie przy arenie (złapanie według rzadkości i odmiany) oraz dwa
+  wiersze w oknie PETS → INDEX. Jajka zostają jako drugi, pewniejszy sposób (złoto → jajko).
+
+**„Jutro na arenie” (powód powrotu):**
+- **Zegar wydarzeń o stałych porach** (czas serwera, UTC):
+  - boss o :00 i :30;
+  - złoty boss o :15 i :45;
+  - ALPHA co 5 minut (:02, :07, …).
+
+  Panel **NEXT: … in mm:ss** jest widoczny od wejścia (lewy dół), a pod nim **NEW MONSTER in N days** (data w
+  ustawieniach: 29.11.2026, dzień ósmy). W próbach zegar można przyspieszyć (haczyk `zegar_tempo`).
+- **Wylęgarnia w czasie**:
+  - kupione jajko trafia do jednego z **2 miejsc** i wylęga się w czasie rzeczywistym, także poza grą;
+  - czasy: Forest **2 min**, Swamp **30 min**, Ruin **4 h**; pierwsze jajko jest darmowe i wylęga się od razu;
+  - po powrocie gracz widzi „YOUR EGG IS READY!”, a przycisk EGGS pulsuje;
+  - w oknie przycisk **HATCH!** albo **SPEED UP** za złoto z gry (pozostałe sekundy × 1,5 / 1 / 0,6 G).
+- **Dzienny prezent**:
+  - przycisk GIFT obok złota pulsuje, gdy prezent czeka;
+  - nagrody po kolei: 200 G → 400 G → Forest Egg → 800 G → 1200 G → Swamp Egg → 2000 G, potem od nowa;
+  - seria nie przepada (przerwa ją tylko wstrzymuje), a przy odbiorze widać „Tomorrow: …”;
+  - powracającemu graczowi okno prezentu otwiera się samo.
+
+**Inne:**
+- **Kamera** (przyjęta propozycja z raportu v2): domyślnie cała arena, gdy pet walczy na autopilocie. Za petem tylko
+  przy ręcznym sterowaniu; kamera wraca do całości, gdy wraca autopilot. VIEW nadal przełącza widok.
+- **Przy tronie najwyżej jedno duże słowo naraz** (KING!, nazwa umiejętności, CRIT!, RING OUT!; reszta pomijana).
+- Profil v3: nowe pola `litosc`, `prezent`, `zlapane` i `samouczek.zlap`, wypełnione `odmiany` i `wylegarnia`. Stare
+  profile się wczytują, a pierwsze złapanie jest pewne także dla nich.
+- Efekty umiejętności bez zmian (zgodnie z priorytetami).
 
 ## Co nowego w v2 (21.11.2026 wieczór — po uwagach Karola)
 
@@ -128,7 +191,8 @@ król środka z koroną i nagrodą za głowę, dzikie pety (boty) dopełniające
 | Widok całości (v2) | VIEW | VIEW | — |
 | Umiejętność | ABILITY | spacja / Q | X |
 | Wybór peta | karta po lewej | 1 / 2 / 3 | LB / RB |
-| Jajka / Pety / Trening | EGGS / PETS / TRAIN | E / P / T | w górę / Y / w dół |
+| Jajka (wylęgarnia: HATCH! / SPEED UP) / Pety / Trening | EGGS / PETS / TRAIN | E / P / T | w górę / Y / w dół |
+| Dzienny prezent (v3) | GIFT (obok złota) | GIFT | — |
 | Zamknij okno | X | X | B |
 
 ## Liczby (propozycja do strojenia — wszystkie w `ustawienia.json`)
@@ -143,6 +207,12 @@ król środka z koroną i nagrodą za głowę, dzikie pety (boty) dopełniające
 | Premie | wybicie 15 × stopień (dziki 10 × stopień); nagroda za głowę 10 + 3/s; złoty pet 6 × stopień za cios, 150 za wybicie; boss pula 400 (min. 80) |
 | Jajka | 360 / 2000 / 8000 G; szanse (C/U/R/E/L): 58/30/11/1/0 · 20/42/30/7,5/0,5 · 0/28/42/25/5 % |
 | Odpoczynek / arena / tempo | 30 s / najwyżej **6 petów**, dzikie do 4 / akcje: wiadro 3/s (zapas 4), ruch: 20/s (zapas 10), autopilot po 2,5 s |
+| Łapanie (v3) | szansa 35 / 22 / 12 / 6 / 3 % (Common → Legendary), litość +3 pkt za nieudaną próbę (najwyżej 90 %), pierwsze wybicie dzikiego — pewne; ucieczka 6 × stopień G, asysta 8 × stopień G |
+| Odmiany (v3) | BIG 8 % (× 1,25 rozmiaru, +15 % siły) · GOLDEN 3 % (× 1,5 złota/s) · GIANT 0,5 % (× 1,6, +30 % siły) |
+| Dzikie i ALPHA (v3) | rozmiar według rzadkości × 1 / 1,08 / 1,18 / 1,3 / 1,45; ALPHA od Rare, × 1,5 rozmiaru, × 3 życia, +20 pkt szansy, co najmniej BIG, 120 G (asysta 30) |
+| Zegar (v3, UTC) | boss :00 i :30, złoty boss :15 i :45, ALPHA co 5 min (:02, :07, …) |
+| Wylęgarnia (v3) | 2 miejsca; 2 min / 30 min / 4 h; przyspieszenie 1,5 / 1 / 0,6 G za sekundę |
+| Prezent (v3) | 200 G, 400 G, Forest Egg, 800 G, 1200 G, Swamp Egg, 2000 G (w kółko; seria nie przepada) |
 | Lot (v2) | odrzut = siła × (1 + 1,6 × ubytek życia) / masa; od 40 st/s (i przy krytyku lub ciosie kończącym) w powietrze: vy = 0,55 × v (najwyżej 45), grawitacja 70, odbicie przy lądowaniu; zderzenie: odbicie sprężyste 0,6 |
 
 **Tempo jajek** (`tempo.py`, 2000 przebiegów, samotny gracz, model przybliżony): pierwsze jajko darmowe od razu,
@@ -162,12 +232,12 @@ python -B swiat/pet_arena/zbuduj.py --sucho          # plan i kontrola Luau bez 
 python -B swiat/pet_arena/zbuduj.py                  # budowa w otwartym miejscu PetArena (ok. 3 s; --studio <id>)
 python -B swiat/pet_arena/zbuduj.py --skrypty        # po zmianie samego kodu
 python -B swiat/pet_arena/zbuduj.py --stan | --usun | --wlacz on|off
-python -B swiat/pet_arena/testy/proba_play.py <folder poza repo> [--studio <id>]   # próba w Play (P00–P33)
+python -B swiat/pet_arena/testy/proba_play.py <folder poza repo> [--studio <id>]   # próba w Play (P00–P40)
 python -B swiat/pet_arena/testy/demo_wideo.py <plik.mp4 poza repo>                  # film demo ok. 40 s + plansza
 ```
 
 Zagrać: otworzyć plik miejsca `PetArena.rbxlx` w Studio, **Play** (F5) — gracz staje w swojej loży nad areną z petem w dłoni,
-stuka / klika w arenę, a po lądowaniu steruje petem (drążek po lewej, WASD / strzałki, lewa gałka pada). Budowa odmawia w miejscu obecnej gry B&C, działa tylko w trybie Edit i we własnym kontenerze.
+stuka / klika w arenę; pet walczy sam, a cios kończący w dzikiego potwora losuje złapanie (pierwsze pewne). Sterowanie petem jest dodatkiem (przytrzymanie lewej połowy ekranu, WASD / strzałki, lewa gałka pada). Budowa odmawia w miejscu obecnej gry B&C, działa tylko w trybie Edit i we własnym kontenerze.
 
 ## Publikacja jako prywatna wersja testowa — kroki dla ludzi (decyzja ludzi, agent nie publikuje)
 
@@ -183,7 +253,7 @@ stuka / klika w arenę, a po lądowaniu steruje petem (drążek po lewej, WASD /
 
 | Plik | Co |
 |---|---|
-| `ustawienia.json` | jedyne źródło liczb: scena, strefy, kamera, walka, rzut, złoto, nagroda, umiejętność, odpoczynek, boty, gracz, gwiazdki, jajka, tarcza, trener, wydarzenia, boss, złoty pet, zapis, tablice, pokazanie, klasy wagi, rzadkości, 12 petów, teksty, dźwięki |
+| `ustawienia.json` | jedyne źródło liczb (v3 także: dzikie, łapanie, odmiany, alfa, zegar, wylęgarnia, prezent, nowy potwór): scena, strefy, kamera, walka, rzut, złoto, nagroda, umiejętność, odpoczynek, boty, gracz, gwiazdki, jajka, tarcza, trener, wydarzenia, boss, złoty pet, zapis, tablice, pokazanie, klasy wagi, rzadkości, 12 petów, teksty, dźwięki |
 | `dane.py` | generator `zrodla/DanePetArena.luau`, wzorców (12 petów, 3 jajka, 2 bossowie) i części sceny (965, v2 koloseum: arena i wzgórze króla, mur z blankami, 5 stopni trybun, kibice w 8 sektorach, proporce, paleniska z ogniem, brama bossa, loże graczy, maty, cokoły jajek); rzut kamery na ekran (test kadru) |
 | `tempo.py` | rachunek tempa jajek (pierwsze jajko, pierwszy Rare, pierwszy Epic) |
 | `zbuduj.py` | budowa w Studio: kontener, moduły i skrypty, sygnały, scena, wzorce, stanowisko jajek, tablice wyników, napisy stref, SpawnLocation, Lighting; `--skrypty`, `--stan`, `--usun`, `--wlacz`, `--publikacja` |
@@ -195,19 +265,19 @@ stuka / klika w arenę, a po lądowaniu steruje petem (drążek po lewej, WASD /
 | `klatki/` | zrzuty z próby („Player 1”, bez nazwy konta i listy graczy) |
 
 W Studio (`Workspace/PetArenaGra`, atrybut `Wygenerowane`): `Scena/{Arena, Wzgorze, Mur, MurZewn, Trybuny, Kibice1–8,
-Proporce, Paleniska, Ogien1–7, Brama, Loze, Maty, Jajka}`, `Stanowisko/Jajko1–3`, `Tablice/Tablica1–3`, `Wzorce/{Pet_<id>, Jajko_<model>, Boss_<model>}`
+Proporce, Paleniska, Ogien1–7, Brama, Loze, Maty, Jajka}`, `Stanowisko/Jajko1–3`, `Tablice/{Tablica1–4, TytulGry}` (4 — CATCH CHANCES; tytuł nad bramą), `Wzorce/{Pet_<id>, Jajko_<model>, Boss_<model>}`
 (w grze serwer przenosi je do `ReplicatedStorage/PetArenaWzorce`), `Start` (SpawnLocation), `Moduly/*`, `SerwerPetArena`,
 `KlientPetArena`, `Sygnaly/{Akcja, Zdarzenia, Stan, SterowanieSerwera, SterowanieKlienta}`. Atrybuty kontenera:
 `PetArenaWlaczony`, `Skrot`, w grze `SerwerGotowy`, `WzorceGotowe`, `ZapisStan`, `ZapisMagazyn`, `PA_WydTyp`, `PA_WydT`.
 
 **Sieć:** od klienta tylko `Sygnaly/Akcja (rodzaj, a, b, c)`: `"rzut", nr, x, z` · `"umiejetnosc"` · `"wybierz", nr` ·
-`"jajko", nr` · `"druzyna", { id, … }` · `"trening", bool` · `"ruch", x, z` (v2: kierunek długości ≤ 1 albo nil =
+`"jajko", nr` (v3: kupione → wylęgarnia) · `"wykluj", miejsce` · `"przyspiesz", miejsce` · `"prezent"` · `"druzyna", { id, … }` · `"trening", bool` · `"ruch", x, z` (v2: kierunek długości ≤ 1 albo nil =
 autopilot; osobne wiadro 20/s) — serwer sprawdza typ rodzaju i argumentów, wiadro tempa,
 cel, limit areny, jednego peta gracza, odpoczynek, złoto (darmowe tylko pierwsze jajko), przerwę między jajkami,
 posiadanie petów w drużynie. Do klientów: `Sygnaly/Stan` (UnreliableRemoteEvent, bufor 14 + 28 bajtów na peta co
 0,066 s: id, pet / boss, właściciel, faza, flagi stanów, x, z, życie, pasek, złoto/s, kierunek, gwiazdki, tarcza / boss /
-złoty, v2: wysokość y) i `Sygnaly/Zdarzenia` (`rzut`, `ladowanie`, `cios`, `umiejetnosc`, `ladowanie_skoku`, `odbicie`, `odbicie_slime`,
-`ringout`, `ko`, `zderzenie`, `upadek`, `krol`, `krol_stracil`, `zloto`, `zloto_cios`, `boss`, `boss_fala`, `boss_uciekl`, `zloty`,
+złoty, v2: wysokość y; v3 w tym samym bajcie flag: BIG 8, GIANT 16, GOLDEN 32, ALPHA 64) i `Sygnaly/Zdarzenia` (`rzut`, `ladowanie`, `cios`, `umiejetnosc`, `ladowanie_skoku`, `odbicie`, `odbicie_slime`,
+`ringout`, `ko`, `zderzenie`, `upadek`, v3: `zlapanie`, `ucieczka`, `alfa`, `do_wylegarni`, `prezent`, `krol`, `krol_stracil`, `zloto`, `zloto_cios`, `boss`, `boss_fala`, `boss_uciekl`, `zloty`,
 `zloty_uciekl`, `wyklucie`, `poziom`, `ogloszenie`, `odmowa`). Stan gracza w atrybutach `PA_*` (tylko serwer): `PA_Slot`,
 `PA_Nazwa`, `PA_Zloto`, `PA_GS`, `PA_Pet`, `PA_Rzucil`, `PA_Wybicia`, `PA_Druzyna` („id:gwiazdki,…”), `PA_Odpoczynek`,
 `PA_Kolekcja`, `PA_Ksiega`, `PA_Wybrany`, `PA_NaArenie`, `PA_Poziom`, `PA_Xp`, `PA_XpPotrzeba`, `PA_Samouczek`,
@@ -215,43 +285,49 @@ złoty, v2: wysokość y) i `Sygnaly/Zdarzenia` (`rzut`, `ladowanie`, `cios`, `u
 
 ## Próby w Studio
 
-`python -B swiat/pet_arena/testy/proba_play.py <folder poza repo>` — **34/34 OK** (21.11.2026 ok. 19:45, v2, okno Studio
-na wierzchu przy bezczynności użytkownika). Testy bez Studio: **33 OK** (dane i kadr kamery na 4 ekranach, logika etapu
-1 i 2, v2: wielkość według wagi, zderzenia i przekazanie pędu, lot w powietrzu, sterowanie — walidacja wejścia,
-autopilot, wiadro, kierunek umiejętności — tron dla jednego, złoty boss, profil pod następny etap, źródła,
-`zbuduj.py --sucho`).
+`python -B swiat/pet_arena/testy/proba_play.py <folder poza repo>` — **41/41 OK** (21.11.2026 ok. 20:30, v3, miejsce w
+chmurze „Throw & Catch Monsters”, okno Studio zmaksymalizowane przy nocnym zaciemnieniu). Pierwszy przebieg v3: 39/41 —
+P02 (małe okno Studio 761 × 635: arena wychodziła poza kadr w poziomie → kamera całości cofa się na wąskich ekranach) i
+P13 (pulsujący EGGS nachodził na PETS → mniejszy puls). Testy bez Studio: **41 OK**:
+- etapy 1–2 i v2: dane, kadr kamery na 4 ekranach, logika, zapis z atrapą magazynu, sterowanie, zderzenia, lot, tron;
+- v3: dzicy z tabeli i rozmiar według rzadkości, pewne pierwsze złapanie i litość, odmiany, asysty, zegar wydarzeń,
+  wylęgarnia z atrapą zegara, dzienny prezent, profil v3 przez zapis.
 
 | Punkt | Wynik |
 |---|---|
-| P00–P02 | budowa zgodna (965 części, 17 wzorców); „Player 1”, zapis „wyłączony (próba gry)”; kamera całości: arena 0,16–0,84 × 0,10–0,86 (okno i telefon); awatar w loży w kadrze; dźwięki 26/26 |
-| P03 pierwszy rzut | **3,9 s** od wejścia, pet z dłoni ląduje i walczy sam (autopilot) |
-| P04 odrzut | ten sam cios: **14 przy pełnym życiu, 30 przy 25 %** |
-| P05–P07, P10, P11 | RING OUT z kamerą lotu (karta RESTING 28s), KO +20, złoto 5 / 2 / 1 G/s (tron / stopień 2 / stopień 1), król i nagroda, drugi pet sam wybrany |
-| P08 umiejętności | HEADBUTT przyciskiem, troll i ropucha na arenie |
-| P09, P12 | dzikie pety (3 w 4,7 s, umiejętności), limit **6** (ARENA FULL!), 26 z 30 akcji odrzuconych |
-| P14 czas klatki, 6 petów, emulacja telefonu | **16,7 ms (60 kl./s)**, najwyżej ok. 19 ms; pętla klienta ok. 0,8 ms; krok serwera 0,011 ms |
-| P17–P27 (etap 2) | jajka i nowe wyklucie, gwiazdki, drużyna i Księga, boss (+407), złoty boss (+158), tarcza, trener (LV 3), zapis w pamięci, pad, tablet, tablice |
-| P28 wielkość | wysokość 6 / 9,6 / 14,4 st (1 : 1,6 : 2,4), na ekranie 26 / 45 / 72 pt w widoku całości; limit areny 6 |
-| P29 zderzenie i lot | rozpędzony ciężki wpada w lekkiego — lekki odlatuje o 6 st (przekazanie pędu); wyrzucony pet w powietrzu, potem upadek |
-| P30 kamera | bez peta — cała arena; z petem — za petem, **pet 103 pt**; VIEW — cała arena |
-| P31 wzgórze | **36 monet** w 6 s leci do peta na tronie, korona × 1,23 z nagrodą, kibice w 8 sektorach, 21 płomieni |
-| P32 sterowanie | drążek w prawo → pet przesunięty o 19–20 st, tryb ręczny; po 2,5 s bez wejścia autopilot (AUTO); awatar w tym czasie stoi |
-| P33 opóźnienie 2 × 60 ms | u gracza pet rusza od razu (2,6–2,9 st w 0,15 s); ustawienia sieci przywrócone (0,0,0,0) |
-| P13 telefon 667 × 375 w bitce | wszystko w ekranie, bez nakładania, najmniejszy przycisk 46 pt, **mój pet 104 pt**, kamera za petem; **drążka nie ma, dopóki palec nie dotknie lewej strony** (pojawia się przy ruchu) |
+| P00–P04 | budowa zgodna (965 części, 17 wzorców); „Player 1”, zapis w próbie wyłączony; cała arena w kadrze (okno i telefon); dźwięki 28/28; pierwszy rzut **4,0 s** od wejścia; odrzut 14 → 30 przy 25 % życia |
+| P05–P12, P14 | RING OUT z kamerą lotu, KO, złoto 5 / 2 / 1 G/s, król i nagroda, umiejętności, dzikie pety, limit 6 (ARENA FULL!); **6 petów na emulacji telefonu: 16,7 ms (60 kl./s)** |
+| P17–P27 (etap 2) | jajka (darmowe od razu, kupione → wylęgarnia), gwiazdki, drużyna i INDEX, boss (zapowiedź w panelu NEXT), złoty boss, tarcza, trener, zapis w pamięci, pad, tablet, tablice |
+| P28–P33 (v2) | wielkość według wagi (dzicy dodatkowo według rzadkości: troll 18,7 st), zderzenia i lot, kamera (bez peta i na autopilocie cała arena, przy sterowaniu za petem — pet 103 pt), wzgórze (37 monet w 6 s), sterowanie, opóźnienie 2 × 60 ms |
+| P34 panel NEXT i zegar | „NEXT: BOSS in 1:02” i „NEW MONSTER in 8 days” od wejścia; przyspieszony zegar sam odpala wydarzenie |
+| P35 rzuć → wybij → złap | podpowiedź „Knock out wild monsters to catch them!”, wybity Leaf Fox — **pewne pierwsze złapanie**, scena CAUGHT!, pet w kolekcji |
+| P36 ucieczka | ESCAPED!, +19 złota, litość Common 1 |
+| P37 odmiana GIANT | ogłoszenie na serwerze; złapany troll GIANT na arenie: 23 st (× 1,6), napis „GIANT” nad petem |
+| P38 ALPHA | zapowiedź „ALPHA MONSTER!”, ALPHA Thorn Wolf 10,6 st (× 1,18 × 1,5), ostatni cios — złapany |
+| P39 wylęgarnia | Swamp Egg do wylęgarni, po 30 min (atrapa zegara) „YOUR EGG IS READY!” i HATCH!, przyspieszenie za 1800 G |
+| P40 prezent | okno DAILY GIFT, +200 G, „Tomorrow: +400 G”, następnego dnia seria 2 |
+| P13 telefon 667 × 375 | wszystko w ekranie bez nakładania (z panelem NEXT i GIFT), najmniejszy przycisk 46 pt; cała arena na autopilocie, za petem przy sterowaniu (pet 80–140 pt), drążek tylko pod palcem |
 | P15, P16 | konsola bez błędów pakietu; Studio w Edit |
-
-**Opóźnienie (punkt B):** narzędzie `settings().Network` w Studio (Inbound/Outbound MinDelay 60 ms = ok. 120 ms w obie
-strony). Własny pet przy ręcznym sterowaniu rusza w tej samej klatce (przewidywanie), a pozycja z serwera dociąga go
-łagodnie (4/s), więc nie ma szarpnięć przy stałym kierunku; przy ciosach, lotach i ogłuszeniu widok idzie za serwerem,
-więc odrzut pojawia się po ok. 120 ms — przy tej grze (automatyczne ciosy) to nie przeszkadza, ale przy ostrym skręcie
-tuż przed uderzeniem można zobaczyć lekkie cofnięcie. Prawdziwy telefon na sieci komórkowej — do sprawdzenia przez ludzi.
 
 Zrzuty (`klatki/`, „Player 1”, bez nazwy konta i listy graczy): `pa_wejscie`, `pa_rzut`, `pa_wybicie_lot`, `pa_ko`,
 `pa_krol`, `pa_umiejetnosc_troll`, `pa_umiejetnosc_toad`, `pa_arena`, `pa_szesc_petow`, `pa_wyklucie`, `pa_okno_pety`,
-`pa_ksiega`, `pa_boss`, `pa_boss_nagroda`, `pa_zloty`, `pa_trening`, `pa_kamera_pet`, `pa_wzgorze`, `pa_telefon`.
-Film demo v2 (35 s, 1280 × 720: arena z petami różnej wielkości i rzut, sterowanie, GROUND SLAM spycha króla, RING OUT króla ponad trybuny z nagrodą, wzgórze z monetami, wyklucie, złoty boss bramą) i plansza klatek — poza repo (`testy/demo_wideo.py`).
+`pa_ksiega`, `pa_boss`, `pa_boss_nagroda`, `pa_zloty`, `pa_trening`, `pa_kamera_pet`, `pa_wzgorze`, `pa_telefon`;
+v3: `pa_zlapanie` (CAUGHT!), `pa_odmiana` (GIANT), `pa_alfa`, `pa_wylegarnia`, `pa_prezent`.
+Film demo v3 (33 s, 1280 × 720) i plansza klatek leżą poza repo (`testy/demo_wideo.py`). Sceny: dzikie wchodzą bramą i
+rzut, wybicie i CAUGHT! (Croaker), CAUGHT! GIANT · EPIC Forest Troll, olbrzymi troll na tronie z napisem tytułu nad
+bramą, panel NEXT i ALPHA, jajko w wylęgarni (29:58 → HATCH!) i wyklucie BIG · RARE Dragonfly.
 
 ## Ograniczenia i znane problemy
+
+- v3: szanse, odmiany i czasy wylęgarni to propozycja bez pomiaru — rachunek tempa (`tempo.py`) nie liczy jeszcze łapania.
+  Złapane potwory dają kopie (gwiazdki) szybciej niż jajka; do strojenia po graniu.
+- v3: zegar wydarzeń jest wspólny dla wszystkich serwerów (UTC), więc nie zależy od liczby graczy. ALPHA co 5 minut może
+  być za często przy pustym serwerze.
+- v3: wylęgarnia i prezent liczą czas z `os.time()` serwera. Zapis w pliku lokalnym w Play działa w pamięci (znacznik
+  próby), więc „poza grą” sprawdzone tylko atrapą zegara (`czas_plus`) i testem logiki.
+- v3: ALPHA może na chwilę przekroczyć limit 6 petów (wchodzi zawsze).
+- Okno Studio było małe (761 × 635 — panele). Kamera całości cofa się teraz na wąskich ekranach (tablet 4:3, okno),
+  a do filmu i ostatniej próby okno Studio było zmaksymalizowane (potem przywrócone).
 
 - v2 zmieniła wygląd, skalę i sterowanie, ale **zasady walki** (siły, życie, umiejętności) są tylko przestrojone do nowej
   skali (symulacja: pet żyje średnio ok. 15 s) — Karol: system walki dopracujemy później.

@@ -98,6 +98,7 @@ function Okna:zamknij()
 		self.okno:Destroy()
 	end
 	self.okno, self.nazwa = nil, nil
+	self.miejscaW = nil
 	self.przyciski = {}
 	self.obroty = nil
 	if GuiService.SelectedObject then
@@ -129,7 +130,7 @@ end
 -- EGGS: trzy karty
 function Okna:jajka()
 	local D = self.D
-	local o = self:szkielet(D.ui.jajka_przycisk, 600, 318)
+	local o = self:szkielet(D.ui.jajka_przycisk, 600, 384)
 	self.nazwa = "jajka"
 	for i, J in D.jajka do
 		local k = nowy("Frame", { Name = "Jajko" .. i, Position = UDim2.fromOffset(12 + (i - 1) * 196, 46), Size = UDim2.fromOffset(188, 262),
@@ -156,12 +157,83 @@ function Okna:jajka()
 			end
 		end
 		local stac = self.st.zloto >= J.cena or darmowe
-		self:przycisk(k, D.ui.wyklij, UDim2.new(0.5, -70, 1, -52), UDim2.fromOffset(140, 46), if stac then "3DB36B" else "6A6474", function()
-			if self.opcje.naJajko then
-				self.opcje.naJajko(i)
-			end
-		end, "Wyklij" .. i)
+		self:przycisk(k, if darmowe then D.ui.wyklij else D.ui.kup, UDim2.new(0.5, -70, 1, -52), UDim2.fromOffset(140, 46),
+			if stac then "3DB36B" else "6A6474", function()
+				if self.opcje.naJajko then
+					self.opcje.naJajko(i)
+				end
+			end, "Wyklij" .. i)
 	end
+	-- v3: wylęgarnia — kupione jajka wylęgają się w czasie (także poza grą); gotowe: HATCH!, w trakcie: SPEED UP za złoto
+	self:tekst(o, D.ui.wylegarnia, UDim2.fromOffset(12, 314), UDim2.fromOffset(90, 18), Color3.fromHex(D.ui.kolory.zloto), false, "Wylegarnia")
+	self.miejscaW = {}
+	for i = 1, D.wylegarnia.miejsca do
+		local f = nowy("Frame", { Name = "Miejsce" .. i, Position = UDim2.fromOffset(108 + (i - 1) * 244, 312), Size = UDim2.fromOffset(236, 62),
+			BackgroundColor3 = Color3.fromHex("3A3148") }, o)
+		rog(f, 10)
+		local opis = self:tekst(f, "", UDim2.fromOffset(6, 4), UDim2.fromOffset(100, 24), self.papier, false, "Opis")
+		local czas = self:tekst(f, "", UDim2.fromOffset(6, 32), UDim2.fromOffset(100, 24), Color3.fromHex("9BE8FF"), true, "Czas")
+		local b = self:przycisk(f, "", UDim2.fromOffset(110, 8), UDim2.fromOffset(120, 46), "6A6474", function()
+			local wpis = self.st.wylegarnia and self.st.wylegarnia[i]
+			if wpis and self.opcje.naWylegarnie then
+				self.opcje.naWylegarnie(i, wpis.koniec > self.st.czas())
+			end
+		end, "Miejsce" .. i)
+		self.miejscaW[i] = { opis = opis, czas = czas, b = b }
+	end
+	self:krokWylegarni()
+	self:zaznacz()
+end
+
+-- liczniki wylęgarni w oknie EGGS (co klatkę)
+function Okna:krokWylegarni()
+	if self.nazwa ~= "jajka" or not self.miejscaW then
+		return
+	end
+	local D = self.D
+	local tn = if self.st.czas then self.st.czas() else 0
+	for i, m in self.miejscaW do
+		local wpis = self.st.wylegarnia and self.st.wylegarnia[i]
+		local napis = m.b:FindFirstChild("Napis")
+		if not wpis then
+			m.opis.Text = D.ui.pusto
+			m.czas.Text = ""
+			m.b.Visible = false
+		else
+			local J = D.jajka[wpis.nr]
+			m.opis.Text = J.nazwa
+			m.opis.TextColor3 = Color3.fromHex(J.kolor)
+			m.b.Visible = true
+			local zostalo = math.max(0, math.ceil(wpis.koniec - tn))
+			if zostalo <= 0 then
+				m.czas.Text = ""
+				napis.Text = D.ui.wyklij_teraz
+				m.b.BackgroundColor3 = Color3.fromHex("3DB36B")
+			else
+				m.czas.Text = if zostalo >= 3600 then string.format("%d:%02d:%02d", math.floor(zostalo / 3600), math.floor(zostalo / 60) % 60, zostalo % 60)
+					else string.format("%d:%02d", math.floor(zostalo / 60), zostalo % 60)
+				local cena = self.L.cenaPrzyspieszenia(D, wpis, tn)
+				napis.Text = string.format(D.ui.przyspiesz, self.L.format(cena))
+				m.b.BackgroundColor3 = Color3.fromHex(if self.st.zloto >= cena then "FFB13D" else "6A6474")
+			end
+		end
+	end
+end
+
+-- v3: dzienny prezent (dzień serii, nagroda, „Tomorrow: …”)
+function Okna:prezent()
+	local D = self.D
+	local o = self:szkielet(D.ui.prezent_tytul, 360, 230)
+	self.nazwa = "prezent"
+	local P = self.st.prezent or {}
+	self:tekst(o, string.format(D.ui.prezent_dzien, P.dzien or 1), UDim2.fromOffset(16, 50), UDim2.fromOffset(328, 34), Color3.fromHex("FF5AD8"), false, "Dzien")
+	self:tekst(o, P.nagroda or "", UDim2.fromOffset(16, 86), UDim2.fromOffset(328, 40), Color3.fromHex(D.ui.kolory.zloto), true, "Nagroda")
+	self:tekst(o, string.format(D.ui.jutro, P.jutro or ""), UDim2.fromOffset(16, 128), UDim2.fromOffset(328, 22), self.papier, true, "Jutro")
+	self:przycisk(o, D.ui.odbierz, UDim2.fromOffset(110, 164), UDim2.fromOffset(140, 50), if P.mozna then "3DB36B" else "6A6474", function()
+		if P.mozna and self.opcje.naPrezent then
+			self.opcje.naPrezent()
+		end
+	end, "Odbierz")
 	self:zaznacz()
 end
 
@@ -169,7 +241,7 @@ end
 function Okna:pety(zakladka: string?)
 	local D = self.D
 	zakladka = zakladka or "druzyna"
-	local o = self:szkielet(D.ui.pety_przycisk, 600, 318)
+	local o = self:szkielet(D.ui.pety_przycisk, 600, if zakladka == "ksiega" then 352 else 318)
 	self.nazwa = if zakladka == "ksiega" then "ksiega" else "pety"
 	self:przycisk(o, D.ui.druzyna, UDim2.fromOffset(150, 4), UDim2.fromOffset(118, 44), if zakladka == "druzyna" then "FFB13D" else "5A5566",
 		function()
@@ -198,6 +270,18 @@ function Okna:pety(zakladka: string?)
 			self:tekst(c, if zna then Pd.nazwa else "???", UDim2.fromOffset(4, 88), UDim2.fromOffset(82, 16), self.papier)
 			self:tekst(c, R.nazwa, UDim2.fromOffset(4, 104), UDim2.fromOffset(82, 14), Color3.fromHex(R.kolor), true)
 		end
+		-- v3: jawne szanse złapania i odmian
+		local sz, od = {}, {}
+		for r, R in D.rzadkosci do
+			table.insert(sz, string.format("%s %g%%", R.nazwa, math.floor(D.lapanie.szanse[r] * 1000 + 0.5) / 10))
+		end
+		for _, O in D.odmiany.lista do
+			table.insert(od, string.format("%s %g%%", O.nazwa, math.floor(O.szansa * 1000 + 0.5) / 10))
+		end
+		self:tekst(o, D.ui.szanse_lapania .. ": " .. table.concat(sz, " · "), UDim2.fromOffset(12, 314), UDim2.fromOffset(576, 16),
+			Color3.fromHex("9BE8FF"), true, "SzanseLapania")
+		self:tekst(o, D.ui.szanse_odmian .. ": " .. table.concat(od, " · "), UDim2.fromOffset(12, 331), UDim2.fromOffset(576, 15),
+			Color3.fromHex(D.ui.kolory.zloto), true, "SzanseOdmian")
 		self:zaznacz()
 		return
 	end
@@ -245,6 +329,19 @@ function Okna:pety(zakladka: string?)
 		self:tekst(c, Pd.nazwa, UDim2.fromOffset(3, 56), UDim2.fromOffset(84, 15), Color3.fromHex(R.kolor))
 		self:tekst(c, gwiazdki(self.st.kolekcja[Pd.id] or 1) .. (if wDruzynie then "  " .. D.ui.w_druzynie else ""), UDim2.fromOffset(3, 71),
 			UDim2.fromOffset(84, 14), Color3.fromHex(D.ui.kolory.zloto), true)
+		-- v3: odmiany (BIG / GOLDEN / GIANT) na karcie
+		local odm = self.st.odmiany and self.st.odmiany[Pd.id]
+		if odm and #odm > 0 then
+			local nazwy, kolor = {}, nil
+			for _, O in D.odmiany.lista do
+				if table.find(odm, O.id) then
+					table.insert(nazwy, O.nazwa)
+					kolor = kolor or O.kolor
+				end
+			end
+			local t = self:tekst(c, table.concat(nazwy, " "), UDim2.fromOffset(3, 2), UDim2.fromOffset(84, 13), Color3.fromHex(kolor or "FFFFFF"), false, "Odmiany")
+			t.ZIndex = 25
+		end
 		c.Activated:Connect(function()
 			self:wybierzPeta(Pd.id)
 		end)
@@ -289,6 +386,8 @@ function Okna:otworz(nazwa: string)
 		self:pety("druzyna")
 	elseif nazwa == "ksiega" then
 		self:pety("ksiega")
+	elseif nazwa == "prezent" then
+		self:prezent()
 	end
 end
 
@@ -300,7 +399,7 @@ function Okna:zaznacz()
 end
 
 function Okna:odswiez(st)
-	local zmiana = st.zloto ~= self.st.zloto or st.darmowe ~= self.st.darmowe
+	local zmiana = st.zloto ~= self.st.zloto or st.darmowe ~= self.st.darmowe or st.wylegarniaTxt ~= self.st.wylegarniaTxt
 	self.st = st
 	if self.nazwa == "jajka" and zmiana then
 		local zaz = GuiService.SelectedObject
@@ -355,7 +454,13 @@ function Okna:wyklucie(z)
 	rog(tabliczka, 14)
 	nowy("UIStroke", { Thickness = 4, Color = self.tusz, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, tabliczka)
 	local tabSkala = nowy("UIScale", { Scale = 1 }, tabliczka)
-	local rz = self:tekst(tabliczka, string.upper(R.nazwa), UDim2.fromScale(0.05, 0.08), UDim2.fromScale(0.9, 0.84), Color3.new(1, 1, 1))
+	-- v3: odmiana na tabliczce (GIANT · RARE) w kolorze odmiany
+	local O = self.L.odmiana(D, z.odmiana)
+	if O then
+		tabliczka.BackgroundColor3 = Color3.fromHex(O.kolor)
+	end
+	local rz = self:tekst(tabliczka, (if O then O.nazwa .. " · " else "") .. string.upper(R.nazwa), UDim2.fromScale(0.05, 0.08),
+		UDim2.fromScale(0.9, 0.84), Color3.new(1, 1, 1))
 	rz.ZIndex = 48
 	local napis = self:tekst(tlo, "", UDim2.new(0.5, -200 * s, 0.08, 0), UDim2.fromOffset(400 * s, 54 * s), Color3.fromHex(D.ui.kolory.zloto))
 	napis.ZIndex = 47
@@ -370,6 +475,19 @@ function Okna:wyklucie(z)
 		end
 	end)
 	self.scenaW = w
+	if z.zlapanie then
+		-- „CAUGHT!”: krótka wersja (bez trzęsienia jajka) — od razu błysk, pet i tabliczka
+		w.t = 2.85
+		w.kolorNr = z.rzadkosc
+		w.pole.Position = UDim2.fromScale(0.5, 0.45)
+		if jajko then
+			for _, d in jajko:GetDescendants() do
+				if d:IsA("BasePart") then
+					d.Transparency = 1
+				end
+			end
+		end
+	end
 	if self.opcje.naDzwiek then
 		self.opcje.naDzwiek("klik", 0.8)
 	end
@@ -479,8 +597,9 @@ function Okna:krokWyklucia(dt: number)
 	-- 4. tabliczka rzadkości z hukiem (3,4 s) i napis
 	if t >= 3.4 and not w.tabliczka.Visible then
 		w.tabliczka.Visible = true
-		w.napis.Text = if w.z.nowy then D.ui.nowy_pet elseif w.z.maks then string.format(D.ui.maks_gwiazdek, self.L.format(w.z.zwrot))
-			else D.ui.gwiazdka .. " " .. gwiazdki(w.z.gwiazdki)
+		w.napis.Text = (if w.z.zlapanie then D.ui.zlapany .. " " else "")
+			.. (if w.z.nowy then (if w.z.zlapanie then "" else D.ui.nowy_pet) elseif w.z.maks then string.format(D.ui.maks_gwiazdek, self.L.format(w.z.zwrot))
+				else D.ui.gwiazdka .. " " .. gwiazdki(w.z.gwiazdki))
 		w.nazwa.Text = w.Pd.nazwa
 		dzwiek("kryt", 0.9)
 	end
@@ -503,6 +622,7 @@ function Okna:krok(dt: number)
 		end
 	end
 	self:krokWyklucia(dt)
+	self:krokWylegarni()
 end
 
 local function prost(o: GuiObject): { number }

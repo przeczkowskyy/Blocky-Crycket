@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Krótki film z gry Pet Arena (v2, ok. 40 s, 16:9) — dla ludzi bez Studio. Plik MP4 i plansza klatek POZA repo.
+"""Krótki film z gry Pet Arena (v3 Throw & Catch Monsters, ok. 40 s, 16:9) — dla ludzi bez Studio. Plik MP4 i plansza klatek POZA repo.
 
     python -B swiat/pet_arena/testy/demo_wideo.py <plik.mp4 poza repo> [--studio <id>] [--zostaw-klipy]
 
 Jak (wzór: swiat/bonk/testy/demo_wideo.py): Play WYŁĄCZNIE przez tools/studio_mcp.py (znacznik próby — w kadrze
 „Player 1”, magazyn nieczytany), stan ustawiany haczykami próby (bez grindu), każda scena to osobne nagranie narzędziem
 MCP `video_capture` (obraz gry z Play, z dźwiękiem gry), klipy przycina i skleja ffmpeg (H.264 1280 × 720, AAC).
-Sceny (v2): cała arena z petami różnej wielkości i rzut z ręki → sterowanie petem → zepchnięcie króla z tronu
-umiejętnością → wielkie wybicie ponad trybuny → wzgórze ze złotem → wyklucie → złoty boss wchodzący bramą.
+Sceny (v3 Throw & Catch): dzikie wchodzą bramą i rzut → wybicie dzikiego i „CAUGHT!” → odmiana GIANT z ogłoszeniem →
+olbrzymi troll na tronie → panel NEXT i ALPHA → jajko w wylęgarni i wyklucie.
 """
 import argparse
 import json
@@ -52,105 +52,94 @@ class Film:
 
 
 def sceny(p, f):
-    """v2: duża arena z petami różnej wielkości, rzut z ręki, sterowanie petem, zepchnięcie króla z tronu, wielkie
-    wybicie ponad trybuny, wzgórze ze złotem, wyklucie, złoty boss wchodzący bramą."""
+    """v3 (Throw & Catch Monsters): rzut, wybicie dzikiego i „CAUGHT!” (pierwsze złapanie pewne), odmiana GIANT z ogłoszeniem,
+    olbrzymi troll na tronie, panel NEXT i ALPHA z zegara, jajko w wylęgarni i wyklucie."""
     S = lambda a: p.serwer(a)  # noqa: E731
     Kl = lambda a: p.klient(a)  # noqa: E731
+
+    def wyladowal(pid, limit=5):
+        PP.czekaj(lambda: (PP.pet(S('"stan"'), pid) or {}).get("faza") == "walka", limit, 0.2)
+
+    def wybij(pid, x, z=0):
+        S('"stoj", %d, 6' % pid)
+        S('"przenies", %d, %s, %s' % (pid, x, z))
+        S('"wyrzuc", %d, 80, 1' % pid)
+
     S('"bez_wydarzen", true')
     S('"boty", 0')
     S('"usun_dzikie"')
     S('"profil_nowy"')
     S('"zloto", 0')
-    S('"druzyna", {"lesny_troll", "lesny_slime"}, 2')
-    for nr, x, z in ((1, -14, 8), (3, 12, 10), (12, 0, 0), (9, -10, -12)):
-        S('"dziki", %d, %d, %d' % (nr, x, z))
-    time.sleep(2.5)
-    # ------------------------------------------------------------------ 1. cała arena: pety różnej wielkości, rzut z ręki
-    Kl('"widok", true')
-    time.sleep(0.8)
+    S('"druzyna", {"lesny_slime", "zoledziak"}, 1')
+    time.sleep(0.6)
+    # ------------------------------------------------------------------ 1. cała arena: dzikie wchodzą bramą, rzut z ręki
     f.nagrywaj("arena")
-    time.sleep(2.2)
-    Kl('"rzut", 14, -6')
+    dzikie = [S('"dziki", %d, %d, %d' % (nr, x, z)) for nr, x, z in ((3, 12, 8), (6, -14, 6), (9, 2, -8))]
     time.sleep(2.0)
-    Kl('"widok", false')
-    time.sleep(1.4)
+    Kl('"rzut", -10, -2')
+    time.sleep(2.6)
     f.stop()
     mid = PP.moj(S('"stan"')).get("pet")
-    # ------------------------------------------------------------------ 2. sterowanie: pet biegnie tam, gdzie każe gracz — na tron
-    f.nagrywaj("sterowanie")
-    Kl('"ster", Vector2.new(-0.7, 0.7), 1.6')
-    time.sleep(1.7)
-    Kl('"ster", Vector2.new(0, 1), 1.6')
-    time.sleep(1.8)
-    f.stop()
-    # ------------------------------------------------------------------ 3. zepchnięcie króla z tronu: umiejętność w dobrym momencie
-    st = S('"stan"')
-    krol = st.get("krol")
     if mid:
-        S('"przenies", %d, 9, 4' % mid)
-        S('"pasek", %d, 1' % mid)
-    f.nagrywaj("tron")
-    Kl('"ster", Vector2.new(0, 1), 1.0')
-    time.sleep(0.9)
-    Kl('"umiejetnosc"')
-    time.sleep(3.0)
+        S('"stoj", %d, 20' % mid)
+    # ------------------------------------------------------------------ 2. wybicie dzikiego → „CAUGHT!” (pierwsze złapanie pewne)
+    f.nagrywaj("zlapanie")
+    time.sleep(0.4)
+    wybij(dzikie[0], 12, 8)
+    time.sleep(4.4)
     f.stop()
-    # ------------------------------------------------------------------ 4. wielkie wybicie ponad trybuny (kamera za lecącym)
-    st = S('"stan"')
-    ofiara = next((x["id"] for x in st["pety"] if x.get("dziki") and not x.get("boss")), None)
-    if ofiara:
-        S('"przenies", %d, 28, 6' % ofiara)
-        f.nagrywaj("wybicie")
-        time.sleep(0.4)
-        S('"wyrzuc", %d, 75, 1' % ofiara)
-        time.sleep(3.0)
-        f.stop()
-    # ------------------------------------------------------------------ 5. wzgórze króla: mój pet na tronie, monety lecą, korona rośnie
+    # ------------------------------------------------------------------ 3. odmiana GIANT: ogłoszenie na serwerze
+    S('"wymus_lap", true')
+    S('"wymus_odmiane", "giant"')
+    tr = S('"dziki", 10, 14, -4')
+    wyladowal(tr)
+    f.nagrywaj("giant")
+    time.sleep(0.5)
+    wybij(tr, 14, -4)
+    time.sleep(4.0)
+    f.stop()
+    # ------------------------------------------------------------------ 4. olbrzymi troll (GIANT) na tronie, monety, korona
     S('"usun_dzikie"')
+    S('"druzyna", {"lesny_troll", "lesny_slime"}, 1')
+    mid = PP.rzuc_moim(p, 1, 0, 0)
     if mid:
         S('"przenies", %d, 0, 0' % mid)
-        S('"stoj", %d, 8' % mid)
-    time.sleep(1.5)
-    f.nagrywaj("wzgorze")
-    time.sleep(4.2)
+        S('"stoj", %d, 10' % mid)
+    for nr, x, z in ((1, -12, 6), (4, 12, -6)):
+        S('"dziki", %d, %d, %d' % (nr, x, z))
+    Kl('"widok", "pet"')
+    time.sleep(1.6)
+    f.nagrywaj("tron")
+    time.sleep(3.6)
     f.stop()
-    # ------------------------------------------------------------------ 6. wyklucie jajka
-    S('"zloto", 2500')
-    time.sleep(0.4)
+    Kl('"widok", false')
+    # ------------------------------------------------------------------ 5. panel NEXT odlicza, ALPHA wchodzi bramą
+    S('"wydarzenie", "alfa", 3')
+    f.nagrywaj("alfa")
+    time.sleep(6.0)
+    f.stop()
+    # ------------------------------------------------------------------ 6. jajko do wylęgarni, czas mija (atrapa zegara), HATCH!
+    S('"zloto", 3000')
     Kl('"okno", "jajka"')
     time.sleep(0.5)
-    f.nagrywaj("jajko")
-    time.sleep(0.6)
+    f.nagrywaj("wylegarnia")
+    time.sleep(0.4)
     Kl('"jajko", 2')
-    time.sleep(5.6)
+    time.sleep(1.8)
+    S('"czas_plus", %d' % D["wylegarnia"]["czas_s"][1])
+    time.sleep(1.6)
+    Kl('"wylegarnia", 1')
+    time.sleep(5.4)
     f.stop()
-    # ------------------------------------------------------------------ 7. złoty boss wchodzi bramą, bicie, deszcz złota
     Kl('"okno", nil')
-    S('"boty", 3, 0.5')
-    if mid:
-        S('"stoj", %d, 0' % mid)
-    time.sleep(1.5)
-    Kl('"widok", true')
-    S('"bez_wydarzen", false')
-    S('"wydarzenie", "zloty", 0')
-    f.nagrywaj("zloty_boss")
-    boss_id, _ = PP.czekaj(lambda: next((x["id"] for x in S('"stan"')["pety"] if x.get("boss")), None), 4, 0.2)
-    S('"bez_wydarzen", true')
-    time.sleep(3.0)
-    if mid:
-        S('"przenies", %d, -10.5, 2' % mid)
-    Kl('"widok", false')
-    time.sleep(2.2)
-    if boss_id:
-        S('"zycie", %d, 1' % boss_id)
-    time.sleep(2.8)
-    f.stop()
+
 
 def sklej(klipy, wyj, kat):
     gotowe = []
     for i, (k, od) in enumerate(klipy):
         c = os.path.join(kat, "c%02d.mp4" % i)
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", "%.2f" % od, "-i", k,
+        # klip z video_capture bywa z dwoma strumieniami obrazu — bierzemy pierwszy (inaczej wychodzi sam dźwięk)
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", "%.2f" % od, "-i", k, "-map", "0:v:0", "-map", "0:a?",
                         # kadr 16:9 ze środka niezależnie od proporcji okna Studio (szersze albo wyższe)
                         "-vf", r"crop=trunc(min(iw\,ih*16/9)/2)*2:trunc(min(ih\,iw*9/16)/2)*2,scale=1280:720,fps=30,format=yuv420p",
                         "-c:v", "libx264", "-preset", "medium", "-crf", "24", "-c:a", "aac", "-b:a", "96k", "-ar", "48000", "-ac", "2",

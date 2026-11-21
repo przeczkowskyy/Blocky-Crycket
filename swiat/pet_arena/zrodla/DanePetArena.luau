@@ -7,6 +7,16 @@ if not game:GetService("RunService"):IsStudio() then
 end
 
 return {
+	alfa = {
+		asysta = 30,
+		min_odmiana = "big",
+		rozmiar = 1.5,
+		rzadkosc_min = 3,
+		sila = 1.25,
+		szansa_plus = 0.2,
+		zloto = 120,
+		zycie_x = 3,
+	},
 	boss = {
 		czas_s = 70,
 		fala_co_s = 3.2,
@@ -46,6 +56,59 @@ return {
 		kat = 3.14159,
 		x = 0,
 		z = -72,
+	},
+	dzikie = {
+		rozmiar = { 1, 1.08, 1.18, 1.3, 1.45 },
+		tabela = {
+			{
+				nr = 1,
+				waga = 30,
+			},
+			{
+				nr = 2,
+				waga = 30,
+			},
+			{
+				nr = 3,
+				waga = 26,
+			},
+			{
+				nr = 4,
+				waga = 16,
+			},
+			{
+				nr = 5,
+				waga = 14,
+			},
+			{
+				nr = 6,
+				waga = 14,
+			},
+			{
+				nr = 7,
+				waga = 6,
+			},
+			{
+				nr = 8,
+				waga = 6,
+			},
+			{
+				nr = 9,
+				waga = 6,
+			},
+			{
+				nr = 10,
+				waga = 2,
+			},
+			{
+				nr = 11,
+				waga = 2,
+			},
+			{
+				nr = 12,
+				waga = 0.6,
+			},
+		},
 	},
 	dzwieki = {
 		arkusz = 93573204965127,
@@ -110,6 +173,11 @@ return {
 				koniec = 23.047,
 				od = 21.367,
 			},
+			zlapanie = {
+				glosnosc = 0.5,
+				koniec = 14.692,
+				od = 11.549,
+			},
 		},
 	},
 	folderWzorcow = "PetArenaWzorce",
@@ -118,7 +186,7 @@ return {
 		kolory_slotow = { "FF5A5A", "4DA6FF", "6BD66B", "FFB13D", "C27BFF", "FF7FC8", "3DE0D0", "E0E05A" },
 		pet_probny = false,
 		pety_startowe = { "lesny_slime", "zoledziak" },
-		wersja_profilu = 2,
+		wersja_profilu = 3,
 	},
 	gwiazdki = {
 		maks = 5,
@@ -166,11 +234,60 @@ return {
 		za_petem_nachylenie_st = 34,
 	},
 	kontener = "PetArenaGra",
+	lapanie = {
+		asysta_zloto = 8,
+		cena_zwrotu = 300,
+		litosc_krok = 0.03,
+		maks = 0.9,
+		ogloszenie_od_stopnia = 3,
+		szanse = { 0.35, 0.22, 0.12, 0.06, 0.03 },
+		ucieczka_zloto = 6,
+	},
 	nagroda = {
 		korona_po_s = 1.5,
 		na_s = 3,
 		start = 10,
 		zgubiona_po_s = 1.5,
+	},
+	nowyPotwor = {
+		czas = 1795910400,
+	},
+	odmiany = {
+		lista = {
+			{
+				flaga = 16,
+				id = "giant",
+				kolor = "FF5AD8",
+				nazwa = "GIANT",
+				ogloszenie = true,
+				rozmiar = 1.6,
+				sila = 1.3,
+				szansa = 0.005,
+				zloto = 1,
+			},
+			{
+				flaga = 32,
+				id = "golden",
+				kolor = "FFC83D",
+				nazwa = "GOLDEN",
+				ogloszenie = true,
+				rozmiar = 1,
+				sila = 1,
+				szansa = 0.03,
+				zloto = 1.5,
+			},
+			{
+				flaga = 8,
+				id = "big",
+				kolor = "4FB3FF",
+				nazwa = "BIG",
+				ogloszenie = false,
+				rozmiar = 1.25,
+				sila = 1.15,
+				szansa = 0.08,
+				zloto = 1,
+			},
+		},
 	},
 	odpoczynek = 30,
 	pety = {
@@ -493,6 +610,31 @@ return {
 		nagroda_ogloszenie = 40,
 	},
 	prefiks = "[PetArena] ",
+	prezent = {
+		nagrody = {
+			{
+				zloto = 200,
+			},
+			{
+				zloto = 400,
+			},
+			{
+				jajko = 1,
+			},
+			{
+				zloto = 800,
+			},
+			{
+				zloto = 1200,
+			},
+			{
+				jajko = 2,
+			},
+			{
+				zloto = 2000,
+			},
+		},
+	},
 	rzadkosci = {
 		{
 			kolor = "B8C2CC",
@@ -550,7 +692,7 @@ return {
 		trybuna_r = 68,
 		trybuna_stopnie = 5,
 	},
-	skrot = "2f32049d9c90",
+	skrot = "4c080305b703",
 	sloty = {
 		{
 			kat = 0.3927,
@@ -670,7 +812,7 @@ return {
 			poz = { 24.85, 3.5, -43.04 },
 			szer = 13,
 			tytul = "TOP GOLD/S",
-			wierszy = 5,
+			wierszy = 6,
 			wys = 8.5,
 		},
 		{
@@ -679,7 +821,7 @@ return {
 			poz = { -49.7, 3.5, 0 },
 			szer = 13,
 			tytul = "LONGEST KING",
-			wierszy = 5,
+			wierszy = 6,
 			wys = 8.5,
 		},
 		{
@@ -688,7 +830,16 @@ return {
 			poz = { 24.85, 3.5, 43.04 },
 			szer = 13,
 			tytul = "KNOCKOUTS",
-			wierszy = 5,
+			wierszy = 6,
+			wys = 8.5,
+		},
+		{
+			nr = 4,
+			patrz = { 0, 3.5, 0 },
+			poz = { 49.7, 3.5, 0 },
+			szer = 13,
+			tytul = "CATCH CHANCES",
+			wierszy = 6,
 			wys = 8.5,
 		},
 	},
@@ -708,6 +859,8 @@ return {
 		za_wybicie = 12,
 	},
 	ui = {
+		alfa = "ALPHA",
+		alfa_idzie = "ALPHA MONSTER!",
 		auto = "AUTO",
 		boss = "BOSS!",
 		boss_idzie = "BOSS IS COMING!",
@@ -718,12 +871,15 @@ return {
 		czcionka = "LuckiestGuy",
 		czcionka_cyfr = "FredokaOne",
 		darmowe = "FREE",
+		do_wylegarni = "EGG IN INCUBATOR — ready in %s",
 		druzyna = "TEAM",
 		dziki = "WILD",
 		gotowy = "READY",
 		gracz_proby = "Player %d",
 		gwiazdka = "+1 STAR!",
 		jajka_przycisk = "EGGS",
+		jajko_gotowe = "YOUR EGG IS READY!",
+		jutro = "Tomorrow: %s",
 		ko = "KO!",
 		kolekcja = "COLLECTION",
 		kolory = {
@@ -743,6 +899,7 @@ return {
 		kryt = "CRIT!",
 		ksiega = "INDEX",
 		ksiega_licznik = "INDEX %d/%d",
+		kup = "BUY",
 		makiety = {
 			jajka = "EGGS — COMING SOON",
 			mata = "TRAINING MAT — SOON",
@@ -751,13 +908,25 @@ return {
 		na_arenie = "IN ARENA",
 		na_s = "+%s G/s",
 		nagroda = "BOUNTY",
+		nagroda_zloto = "+%s G",
+		nastepne = "NEXT: %s in %s",
 		nastepny = "Next pet ready in %ds",
+		nazwy_wydarzen = {
+			alfa = "ALPHA",
+			boss = "BOSS",
+			zloty = "GOLDEN BOSS",
+		},
 		nowy_krol = "NEW KING!",
 		nowy_pet = "NEW PET!",
+		nowy_potwor = "NEW MONSTER in %d days",
+		nowy_potwor_jutro = "NEW MONSTER tomorrow!",
+		odbierz = "CLAIM",
 		odpoczywa = "RESTING",
+		ogl_alfa = "ALPHA %s is here! Last hit catches it!",
 		ogl_boss = "%s defeated! Gold for everyone who hit it!",
 		ogl_krol = "%s took the king's bounty: %s G!",
 		ogl_legendarny = "%s hatched a %s %s!",
+		ogl_zlapal = "%s caught a %s%s!",
 		pad = {
 			druzyna = "LB RB",
 			jajka = "UP",
@@ -772,6 +941,7 @@ return {
 		plusk = "SPLASH!",
 		podpowiedz_dotyk = "Tap the arena to throw your pet!",
 		podpowiedz_jajko = "Hatch your free egg!",
+		podpowiedz_lap = "Knock out wild monsters to catch them!",
 		podpowiedz_mysz = "Click the arena to throw your pet!",
 		podpowiedz_pad = "Aim with the stick, press A to throw!",
 		podpowiedz_ruch_dotyk = "Want to steer? Hold the left side of the screen!",
@@ -780,21 +950,34 @@ return {
 		podpowiedz_umiejetnosc = "Ability ready — tap ABILITY!",
 		poza = "Throw inside the arena!",
 		poziom = "LV %d",
+		prezent = "GIFT",
+		prezent_dzien = "DAY %d",
+		prezent_tytul = "DAILY GIFT",
 		probny = "TRIAL",
+		przyspiesz = "SPEED UP %s G",
+		pusto = "EMPTY",
 		ring_out = "RING OUT!",
 		slowa = { "POW!", "WHAM!", "BAM!", "BONK!", "SMACK!" },
 		szanse = "CHANCES",
+		szanse_lapania = "CATCH",
+		szanse_odmian = "VARIANTS",
 		tarcza = "SHIELD",
 		trening = "TRAIN",
 		trening_wl = "TRAINING",
 		ty = "YOU",
+		tytul_gry = "THROW & CATCH MONSTERS",
+		uciekl = "ESCAPED!",
 		umiejetnosc = "ABILITY",
 		w_druzynie = "IN TEAM",
 		widok = "VIEW",
 		wybierz_slot = "Pick a pet for slot %d",
 		wyklij = "HATCH",
+		wyklij_teraz = "HATCH!",
+		wylegarnia = "INCUBATOR",
+		wylegarnia_pelna = "INCUBATOR FULL",
 		za_malo = "NOT ENOUGH GOLD",
 		zamknij = "X",
+		zlapany = "CAUGHT!",
 		zloto = "GOLD",
 		zloty = "GOLDEN BOSS!",
 		zloty_uciekl = "THE GOLDEN BOSS ESCAPED!",
@@ -837,6 +1020,11 @@ return {
 		zapowiedz_s = 30,
 	},
 	wylacznik = "PetArenaWlaczony",
+	wylegarnia = {
+		czas_s = { 120, 1800, 14400 },
+		miejsca = 2,
+		zl_na_s = { 1.5, 1, 0.6 },
+	},
 	zapis = {
 		co_s = 60,
 		magazyn = "PetArena_Gracz_v1",
@@ -845,6 +1033,26 @@ return {
 		przyrostek_studio = "_Studio",
 		znacznik_magazynu = "ZapisProbaMagazyn",
 		znacznik_proby = "ZapisProbaDo",
+	},
+	zegar = {
+		reguly = {
+			{
+				co_min = 30,
+				od_min = 0,
+				typ = "boss",
+			},
+			{
+				co_min = 15,
+				od_min = 0,
+				typ = "zloty",
+			},
+			{
+				co_min = 5,
+				od_min = 2,
+				typ = "alfa",
+			},
+		},
+		tempo_prob = 30,
 	},
 	zloto = {
 		baza = 1,

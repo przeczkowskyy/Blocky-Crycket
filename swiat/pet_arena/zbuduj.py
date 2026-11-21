@@ -19,6 +19,7 @@ Lighting (pora dnia, jasność, Atmosphere, Sky) — wartości z ustawienia.json
 """
 import argparse
 import json
+import math
 import os
 import sys
 import time
@@ -361,9 +362,41 @@ for _, T in D.tablice do
 	end
 	linia("Tytul", T.tytul, 0.2, "FFC83D", 0)
 	for r = 1, T.wierszy do
-		linia("Rzad" .. r, "", 0.14, "FFF6E0", r)
+		linia("Rzad" .. r, "", 0.78 / T.wierszy, "FFF6E0", r)
 	end
 	m.Parent = tab
+end
+-- v3: tytuł gry nad bramą (atrapa)
+if D.tytul then
+	local T = D.tytul
+	local p = Instance.new("Part")
+	p.Name = "TytulGry"
+	p.Anchored = true
+	p.CanCollide = false
+	p.CanTouch = false
+	p.CanQuery = false
+	p.Size = Vector3.new(T.szer, T.wys, 0.6)
+	p.CFrame = CFrame.lookAt(Vector3.new(T.poz[1], T.poz[2], T.poz[3]), Vector3.new(T.patrz[1], T.patrz[2], T.patrz[3]))
+	p.Color = Color3.fromHex("2A1A3A")
+	p.Material = Enum.Material.SmoothPlastic
+	p.Parent = tab
+	local sg = Instance.new("SurfaceGui")
+	sg.Name = "Ekran"
+	sg.Face = Enum.NormalId.Front
+	sg.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	sg.PixelsPerStud = 30
+	sg.LightInfluence = 0
+	sg.Parent = p
+	local l = Instance.new("TextLabel")
+	l.BackgroundTransparency = 1
+	l.Size = UDim2.fromScale(1, 1)
+	l.Text = T.tekst
+	l.TextScaled = true
+	l.Font = Enum.Font.LuckiestGuy
+	l.TextColor3 = Color3.fromHex("FFC83D")
+	l.TextStrokeTransparency = 0
+	l.TextStrokeColor3 = Color3.fromHex("1B1424")
+	l.Parent = sg
 end
 for _, N in D.napisy do
 	local cf = CFrame.lookAt(Vector3.new(N.poz[1], N.poz[2], N.poz[3]), Vector3.new(N.patrz[1], N.patrz[2], N.patrz[3]))
@@ -627,7 +660,13 @@ def dane_otoczenia(U, D):
     st = DN.stanowisko_jajek(U)
     jajka = [{"wzorzec": J["wzorzec"], "poz": [x, U["scena"]["mur_y"] + 1.3, z], "obrot": 180 + U["scena"]["jajka_kat_st"]}
              for J, (x, z) in zip(D["jajka"], st["cokoly"])]
-    return {"napisy": DN.makiety_napisy(U), "strefy": DN.etykiety_stref(U), "jajka": jajka, "tablice": D["tablice"], "start": D["sloty"][0]["poz"], "swiatlo": S["swiatlo"], "atmosfera": S["atmosfera"]}
+    # v3: tytuł gry (atrapa) nad kratą bramy, przodem do areny
+    a = math.radians(S["brama_kat_st"])
+    r = S["mur_r"][0] - 1.2
+    tytul = {"tekst": U["ui"]["tytul_gry"], "poz": [round(math.sin(a) * r, 3), S["brama_wys"] - 2.5, round(math.cos(a) * r, 3)],
+             "patrz": [0, S["brama_wys"] - 2.5, 0], "szer": 26, "wys": 4.6}
+    return {"napisy": DN.makiety_napisy(U), "strefy": DN.etykiety_stref(U), "jajka": jajka, "tablice": D["tablice"], "start": D["sloty"][0]["poz"],
+            "swiatlo": S["swiatlo"], "atmosfera": S["atmosfera"], "tytul": tytul}
 
 
 def plan(U, D, Z, scena):

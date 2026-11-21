@@ -178,7 +178,7 @@
   ],
   "pet_probny": false,
   "druzyna_maks": 3,
-  "wersja_profilu": 2,
+  "wersja_profilu": 3,
   "kolory_slotow": [
    "FF5A5A",
    "4DA6FF",
@@ -521,7 +521,39 @@
   "auto": "AUTO",
   "podpowiedz_ruch_dotyk": "Want to steer? Hold the left side of the screen!",
   "podpowiedz_ruch_mysz": "WASD or arrows: move your pet!",
-  "podpowiedz_ruch_pad": "Left stick: move your pet!"
+  "podpowiedz_ruch_pad": "Left stick: move your pet!",
+  "tytul_gry": "THROW & CATCH MONSTERS",
+  "zlapany": "CAUGHT!",
+  "uciekl": "ESCAPED!",
+  "podpowiedz_lap": "Knock out wild monsters to catch them!",
+  "ogl_zlapal": "%s caught a %s%s!",
+  "alfa": "ALPHA",
+  "alfa_idzie": "ALPHA MONSTER!",
+  "ogl_alfa": "ALPHA %s is here! Last hit catches it!",
+  "nastepne": "NEXT: %s in %s",
+  "nazwy_wydarzen": {
+   "boss": "BOSS",
+   "zloty": "GOLDEN BOSS",
+   "alfa": "ALPHA"
+  },
+  "nowy_potwor": "NEW MONSTER in %d days",
+  "nowy_potwor_jutro": "NEW MONSTER tomorrow!",
+  "jajko_gotowe": "YOUR EGG IS READY!",
+  "wylegarnia": "INCUBATOR",
+  "pusto": "EMPTY",
+  "przyspiesz": "SPEED UP %s G",
+  "wyklij_teraz": "HATCH!",
+  "kup": "BUY",
+  "do_wylegarni": "EGG IN INCUBATOR — ready in %s",
+  "wylegarnia_pelna": "INCUBATOR FULL",
+  "prezent": "GIFT",
+  "prezent_tytul": "DAILY GIFT",
+  "prezent_dzien": "DAY %d",
+  "odbierz": "CLAIM",
+  "jutro": "Tomorrow: %s",
+  "nagroda_zloto": "+%s G",
+  "szanse_lapania": "CATCH",
+  "szanse_odmian": "VARIANTS"
  },
  "dzwieki": {
   "opis": "odcinki arkusza efektów (ten sam arkusz co BONK: swiat/dzwiek_gra/identyfikatory.json, assets/audio/arkusz/sfx_arkusz_a.json); bez muzyki w etapie 1",
@@ -550,7 +582,8 @@
   "trzesienie": "sfx_zarodniki",
   "wyklucie": "sfx_awans_poziom",
   "boss": "sfx_ryk_kolos",
-  "zakup": "sfx_monety"
+  "zakup": "sfx_monety",
+  "zlapanie": "sfx_fanfara_zwyciestwa"
  },
  "odpoczynek_opis": "odpoczynek peta po RING OUT / KO: 30 s (decyzja projektanta etapu 2 na podstawie symulacji: przy 60 s gracz 40 % czasu nie ma kogo rzucić); Karol mówił o ok. minucie — do sprawdzenia graniem",
  "gwiazdki": {
@@ -672,18 +705,20 @@
   "co_s": 60
  },
  "tablice": {
-  "opis": "trzy tablice na ścianie dołu (widać je z każdego miejsca na przeciwległej ścianie); wiersze uzupełnia serwer co co_s",
+  "opis": "tablice na ścianie dołu; trzy wyników (wiersze uzupełnia serwer co co_s) i v3: CATCH CHANCES (szanse złapania i odmian)",
   "tytuly": [
    "TOP GOLD/S",
    "LONGEST KING",
-   "KNOCKOUTS"
+   "KNOCKOUTS",
+   "CATCH CHANCES"
   ],
   "katy_st": [
    150,
    270,
-   30
+   30,
+   90
   ],
-  "wierszy": 5,
+  "wierszy": 6,
   "co_s": 2,
   "szer": 13,
   "wys": 8.5,
@@ -703,5 +738,159 @@
   "wiadro_zapas": 10,
   "skok_dystans": 18,
   "wysylanie_s": 0.1
+ },
+ "dzikie": {
+  "opis": "v3 (Throw & Catch): dzikie potwory to osobny rodzaj — losowane z tabeli (waga = jak często wchodzą bramą); rzadsze są większe (rozmiar_rzadkosci) i mają krążek w kolorze rzadkości. Dopełniają arenę jak boty (boty.do_ilu, boty.maks).",
+  "tabela": {
+   "lesny_slime": 30,
+   "zoledziak": 30,
+   "rechotek": 26,
+   "muchomornik": 16,
+   "mchowy_slimak": 14,
+   "lisciolis": 14,
+   "cierniowy_wilk": 6,
+   "ognik": 6,
+   "wazeczka": 6,
+   "lesny_troll": 2,
+   "pancernik_ruin": 2,
+   "ropucha_z_chatka": 0.6
+  },
+  "rozmiar_rzadkosci": [
+   1.0,
+   1.08,
+   1.18,
+   1.3,
+   1.45
+  ]
+ },
+ "lapanie": {
+  "opis": "„Wybijesz, to zabierasz”: cios kończący (RING OUT albo KO) peta gracza w dzikiego = losowanie złapania z jawną szansą według rzadkości; litość: każda nieudana próba danej rzadkości dodaje litosc_krok (do maks), udane zeruje; pierwsze wybicie dzikiego u nowego gracza = pewne złapanie. Nieudane: ESCAPED! i złoto (ucieczka_zloto × stopień). Asysty (inni gracze, którzy trafili dzikiego): asysta_zloto × stopień. Kopia złapanego = gwiazdka (przy maks zwrot cena_zwrotu × stopień × zwrot_przy_maks).",
+  "szanse": [
+   0.35,
+   0.22,
+   0.12,
+   0.06,
+   0.03
+  ],
+  "litosc_krok": 0.03,
+  "maks": 0.9,
+  "asysta_zloto": 8,
+  "ucieczka_zloto": 6,
+  "cena_zwrotu": 300,
+  "ogloszenie_od_stopnia": 3
+ },
+ "odmiany": {
+  "opis": "odmiana złapanego albo wyklutego peta (widoczna dla wszystkich, w kolekcji i nad petem); losowanie po kolei z listy (rzadsze najpierw). Rozmiar i siła mnożą peta na arenie, zloto mnoży złoto na sekundę. Gdy gracz ma kilka odmian tego samego peta, rozmiar i siła z największej, złoto z GOLDEN. Ogłoszenie na serwerze: każda odmiana z ogloszenie = true.",
+  "lista": [
+   {
+    "id": "giant",
+    "nazwa": "GIANT",
+    "szansa": 0.005,
+    "rozmiar": 1.6,
+    "sila": 1.3,
+    "zloto": 1.0,
+    "kolor": "FF5AD8",
+    "flaga": 16,
+    "ogloszenie": true
+   },
+   {
+    "id": "golden",
+    "nazwa": "GOLDEN",
+    "szansa": 0.03,
+    "rozmiar": 1.0,
+    "sila": 1.0,
+    "zloto": 1.5,
+    "kolor": "FFC83D",
+    "flaga": 32,
+    "ogloszenie": true
+   },
+   {
+    "id": "big",
+    "nazwa": "BIG",
+    "szansa": 0.08,
+    "rozmiar": 1.25,
+    "sila": 1.15,
+    "zloto": 1.0,
+    "kolor": "4FB3FF",
+    "flaga": 8,
+    "ogloszenie": false
+   }
+  ]
+ },
+ "alfa": {
+  "opis": "ALPHA: zapowiedziany rzadki dziki (rzadkość od rzadkosc_min) wchodzi bramą wg zegara wydarzeń; większy (rozmiar), życie × zycie_x; kto zada ostatni cios — złapanie z szansą + szansa_plus i co najmniej odmiana min_odmiana; złoto za wybicie i asysty.",
+  "rzadkosc_min": 3,
+  "rozmiar": 1.5,
+  "zycie_x": 3.0,
+  "sila": 1.25,
+  "szansa_plus": 0.2,
+  "min_odmiana": "big",
+  "zloto": 120,
+  "asysta": 30
+ },
+ "zegar": {
+  "opis": "„Jutro na arenie”: wydarzenia o stałych porach zegara serwera (UTC): reguła = co co_min minut, przesunięcie od_min; przy tej samej chwili wygrywa reguła wcześniej na liście. Panel NEXT od wejścia. tempo_prob — przyspieszenie zegara w próbach (haczyk).",
+  "reguly": [
+   {
+    "typ": "boss",
+    "co_min": 30,
+    "od_min": 0
+   },
+   {
+    "typ": "zloty",
+    "co_min": 15,
+    "od_min": 0
+   },
+   {
+    "typ": "alfa",
+    "co_min": 5,
+    "od_min": 2
+   }
+  ],
+  "tempo_prob": 30
+ },
+ "wylegarnia": {
+  "opis": "kupione jajko trafia do jednego z miejsca miejsc i wylęga się w czasie rzeczywistym (także poza grą): czas_s według jajka; pierwsze darmowe jajko od razu. Przyspieszenie tylko za złoto z gry: pozostałe sekundy × zl_na_s (zaokrąglone w górę).",
+  "miejsca": 2,
+  "czas_s": [
+   120,
+   1800,
+   14400
+  ],
+  "zl_na_s": [
+   1.5,
+   1.0,
+   0.6
+  ]
+ },
+ "prezent": {
+  "opis": "dzienny prezent (dzień = doba UTC); seria nie przepada (przerwa tylko wstrzymuje); nagrody po kolei w kółko: zloto albo jajko (nr jajka — wylęga się od razu). Przy odbiorze widać „Tomorrow: …”.",
+  "nagrody": [
+   {
+    "zloto": 200
+   },
+   {
+    "zloto": 400
+   },
+   {
+    "jajko": 1
+   },
+   {
+    "zloto": 800
+   },
+   {
+    "zloto": 1200
+   },
+   {
+    "jajko": 2
+   },
+   {
+    "zloto": 2000
+   }
+  ]
+ },
+ "nowy_potwor": {
+  "opis": "baner zapowiedzi „NEW MONSTER in N days” (data UTC, dzień ósmy od startu v3).",
+  "data": "2026-11-29"
  }
 }

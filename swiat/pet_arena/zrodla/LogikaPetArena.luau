@@ -168,6 +168,15 @@ end
 function L.dodajPeta(S, nr: number, wl: number, dziki: boolean, x0: number, y0: number, z0: number, x: number, z: number, mn: any?)
 	local D = S.D
 	local P = D.pety[nr]
+	-- v3: rozmiar (rzadki dziki, ALPHA, odmiana BIG / GIANT) skaluje ciało, wagę i wysokość
+	local roz = if mn and mn.rozmiar then mn.rozmiar else 1
+	if roz ~= 1 then
+		P = table.clone(P)
+		P.promien *= roz
+		P.wysokosc *= roz
+		P.waga *= roz
+		P.rozmiar = (P.rozmiar or 1) * roz
+	end
 	local hpMax = P.zycie * (if dziki then D.boty.zycie_x else 1) * (if mn then mn.zycie else 1)
 	local t = L.czasLotu(D, dlug(x - x0, z - z0))
 	local p = {
@@ -175,6 +184,8 @@ function L.dodajPeta(S, nr: number, wl: number, dziki: boolean, x0: number, y0: 
 		faza = "lot", ladT = S.czas + t, lotCzas = t, x0 = x0, y0 = y0, z0 = z0, cd = 0.4, osz = 0, ogl = 0, lod = 0,
 		skor = 0, pal = 0, palNaS = 0, palOd = nil, akcja = nil, pasek = 0, ostatni = nil, wSrodku = 0, pozaSrodka = 99,
 		zl = 0, kier = 0, pelnyOd = nil, mnSila = if mn then mn.sila else 1, gwiazdki = if mn then mn.gwiazdki else 1, y = 0, vy = 0,
+		mnZlota = if mn and mn.zloto then mn.zloto else 1, flagiOdm = if mn and mn.flagi then mn.flagi else 0, alfa = mn ~= nil and mn.alfa == true,
+		trafili = {},
 	}
 	S.nastId += 1
 	table.insert(S.pety, p)
@@ -262,6 +273,9 @@ function L.cios(S, a, b, obrazenia: number, sila: number, dx: number, dz: number
 	end
 	b.pasek = math.min(1, b.pasek + D.umiejetnosc.za_trafienie)
 	if a and a.wl > 0 and not a.dziki then
+		if b.dziki and b.trafili then
+			b.trafili[a.wl] = true
+		end
 		if b.boss then
 			S.bossUdzial[a.wl] = (S.bossUdzial[a.wl] or 0) + obrazenia
 		end
@@ -704,6 +718,7 @@ local function wybicie(S, p, rodzaj: string, zdarzenia)
 		t = rodzaj, id = p.id, nr = p.nr, wl = p.wl, dziki = p.dziki, x = p.x, z = p.z, kx = p.kx, kz = p.kz, y = p.y or 0, vy = p.vy or 0,
 		przez = if o and not o.dziki then o.wl else 0, przezId = if o then o.id else 0, premia = premia, nagroda = nagroda,
 		krol = byl_krol, boss = p.boss == true, zloty = p.zloty == true, nagrody = nagrody,
+		alfa = p.alfa == true, stopien = p.P.stopien, trafili = p.trafili,
 	})
 end
 
@@ -933,7 +948,7 @@ function L.zlotoPeta(D, p): number
 		return 0
 	end
 	local _, m = L.strefa(D, dlug(p.x, p.z))
-	return D.zloto.baza * m * p.P.stopien
+	return D.zloto.baza * m * p.P.stopien * (p.mnZlota or 1)
 end
 
 -- { [wl] = złoto }; ustawia p.zl (do napisu „+G/s”)
@@ -944,7 +959,7 @@ function L.zlotoTick(S)
 		p.zl = L.zlotoPeta(S.D, p)
 		if p.zl > 0 and p ~= tron and dlug(p.x, p.z) <= S.D.strefy[1].r then
 			-- na szczycie mieści się jeden: pozostali liczą się jak drugi stopień
-			p.zl = S.D.zloto.baza * S.D.strefy[2].mnoznik * p.P.stopien
+			p.zl = S.D.zloto.baza * S.D.strefy[2].mnoznik * p.P.stopien * (p.mnZlota or 1)
 		end
 		if p.zl > 0 then
 			w[p.wl] = (w[p.wl] or 0) + p.zl
@@ -1197,9 +1212,10 @@ function L.poziom(D, xp: number): (number, number, number)
 end
 
 -- mnożniki peta z gwiazdek i poziomu trenera
-function L.mnoznikPeta(D, gwiazdki: number, poziom: number)
+function L.mnoznikPeta(D, gwiazdki: number, poziom: number, odm: any?)
 	local m = (1 + D.gwiazdki.na_gwiazdke * (gwiazdki - 1)) * (1 + D.trener.na_poziom * (poziom - 1))
-	return { zycie = m, sila = m, gwiazdki = gwiazdki }
+	local o = odm or { rozmiar = 1, sila = 1, zloto = 1, flagi = 0 }
+	return { zycie = m, sila = m * o.sila, gwiazdki = gwiazdki, rozmiar = o.rozmiar, zloto = o.zloto, flagi = o.flagi }
 end
 
 ------------------------------------------------------------------ gracz: profil (wersja 2), drużyna, odpoczynek
@@ -1211,7 +1227,15 @@ function L.profilNowy(D)
 		table.insert(druzyna, id)
 	end
 	return { v = D.gracz.wersja_profilu, zloto = 0, pety = pety, druzyna = druzyna, ksiega = ksiega, xp = 0,
-		samouczek = { rzut = false, jajko = false }, wybicia = 0, rzuty = 0, jajek = 0, krolS = 0,
+		samouczek = { rzut = false, jajko = false, zlap = false }, wybicia = 0, rzuty = 0, jajek = 0, krolS = 0,
+		-- v3: litość złapań (nieudane próby według rzadkości), dzienny prezent (dzień UTC i seria), złapane
+		litosc = (function()
+			local z = {}
+			for i = 1, #D.rzadkosci do
+				z[i] = 0
+			end
+			return z
+		end)(), prezent = { dzien = 0, seria = 0 }, zlapane = 0,
 		-- pod następny etap (jeszcze nieużywane w grze): odmiany złapanych petów { [id] = { [odmiana] = ile } } i jajka
 		-- wylęgające się w czasie (także poza grą) { { nr = jajko, koniec = czas os.time() } }
 		odmiany = {}, wylegarnia = {} }
@@ -1295,7 +1319,16 @@ function L.profil(D, rekord)
 	end
 	p.druzyna = zostaw
 	if type(rekord.samouczek) == "table" then
-		p.samouczek = { rzut = rekord.samouczek.rzut == true, jajko = rekord.samouczek.jajko == true }
+		p.samouczek = { rzut = rekord.samouczek.rzut == true, jajko = rekord.samouczek.jajko == true, zlap = rekord.samouczek.zlap == true }
+	end
+	p.zlapane = liczba(rekord.zlapane, 0, 1e9)
+	if type(rekord.litosc) == "table" then
+		for i = 1, #D.rzadkosci do
+			p.litosc[i] = math.floor(liczba(rekord.litosc[i], 0, 1000))
+		end
+	end
+	if type(rekord.prezent) == "table" then
+		p.prezent = { dzien = math.floor(liczba(rekord.prezent.dzien, 0, 1e7)), seria = math.floor(liczba(rekord.prezent.seria, 0, 1e6)) }
 	end
 	if type(rekord.odmiany) == "table" then
 		for id, o in rekord.odmiany do
@@ -1315,7 +1348,7 @@ function L.profil(D, rekord)
 	if type(rekord.wylegarnia) == "table" then
 		for _, j in rekord.wylegarnia do
 			if type(j) == "table" and type(j.nr) == "number" and D.jajka[j.nr] and type(j.koniec) == "number"
-				and j.koniec == j.koniec and #p.wylegarnia < 8 then
+				and j.koniec == j.koniec and #p.wylegarnia < D.wylegarnia.miejsca then
 				table.insert(p.wylegarnia, { nr = j.nr, koniec = j.koniec })
 			end
 		end
@@ -1336,8 +1369,9 @@ function L.doZapisu(D, p)
 		table.insert(dr, id)
 	end
 	return { v = D.gracz.wersja_profilu, zloto = p.zloto, pety = pety, druzyna = dr, ksiega = ksiega, xp = p.xp,
-		samouczek = { rzut = p.samouczek.rzut, jajko = p.samouczek.jajko }, wybicia = p.wybicia, rzuty = p.rzuty, jajek = p.jajek,
-		krolS = p.krolS, odmiany = table.clone(p.odmiany or {}), wylegarnia = table.clone(p.wylegarnia or {}) }
+		samouczek = { rzut = p.samouczek.rzut, jajko = p.samouczek.jajko, zlap = p.samouczek.zlap == true }, wybicia = p.wybicia, rzuty = p.rzuty,
+		jajek = p.jajek, krolS = p.krolS, odmiany = table.clone(p.odmiany or {}), wylegarnia = table.clone(p.wylegarnia or {}),
+		litosc = table.clone(p.litosc or {}), prezent = { dzien = p.prezent.dzien, seria = p.prezent.seria }, zlapane = p.zlapane or 0 }
 end
 
 -- nowa drużyna z listy id: tylko posiadane, bez powtórzeń, 1..druzyna_maks
@@ -1449,6 +1483,217 @@ function L.top(wpisy, n: number)
 		out[i] = w[i]
 	end
 	return out
+end
+
+------------------------------------------------------------------ v3: Throw & Catch Monsters
+-- dziki potwór z tabeli (r — los 0–1; minStopien — tylko od tej rzadkości, ALPHA): numer peta
+function L.losujDzikiego(D, r: number, minStopien: number?): number
+	local od = minStopien or 1
+	local suma = 0
+	for _, w in D.dzikie.tabela do
+		if D.pety[w.nr].stopien >= od then
+			suma += w.waga
+		end
+	end
+	if suma <= 0 then
+		return D.dzikie.tabela[#D.dzikie.tabela].nr
+	end
+	local x = r * suma
+	local ost = D.dzikie.tabela[1].nr
+	for _, w in D.dzikie.tabela do
+		if D.pety[w.nr].stopien >= od then
+			ost = w.nr
+			x -= w.waga
+			if x < 0 then
+				return w.nr
+			end
+		end
+	end
+	return ost
+end
+
+-- mnożnik dzikiego: rzadszy = większy; ALPHA większy, mocniejszy, z flagą 64
+function L.mnoznikDzikiego(D, nr: number, alfa: boolean?)
+	local r = D.dzikie.rozmiar[D.pety[nr].stopien] or 1
+	if alfa then
+		return { zycie = D.alfa.zycie_x, sila = D.alfa.sila, gwiazdki = 1, rozmiar = r * D.alfa.rozmiar, zloto = 1, flagi = 64, alfa = true }
+	end
+	return { zycie = 1, sila = 1, gwiazdki = 1, rozmiar = r, zloto = 1, flagi = 0 }
+end
+
+-- szansa złapania: baza według rzadkości + litość + ALPHA (najwyżej maks); pierwsze wybicie dzikiego = pewne
+function L.szansaZlapania(D, profil, stopien: number, alfa: boolean?): number
+	if not profil.samouczek.zlap then
+		return 1
+	end
+	local Lp = D.lapanie
+	local s = Lp.szanse[stopien] + Lp.litosc_krok * (profil.litosc[stopien] or 0) + (if alfa then D.alfa.szansa_plus else 0)
+	return math.min(Lp.maks, s)
+end
+
+function L.odmiana(D, id: string?)
+	for _, o in D.odmiany.lista do
+		if o.id == id then
+			return o
+		end
+	end
+	return nil
+end
+
+-- odmiana: po kolei z listy (rzadsze najpierw); bez trafienia — minimum (ALPHA: co najmniej BIG) albo nil
+function L.losujOdmiane(D, r: number, minimum: string?): string?
+	local x = r
+	for _, o in D.odmiany.lista do
+		x -= o.szansa
+		if x < 0 then
+			return o.id
+		end
+	end
+	return minimum
+end
+
+function L.dodajOdmiane(profil, id: string, odm: string?)
+	if not odm then
+		return
+	end
+	profil.odmiany[id] = profil.odmiany[id] or {}
+	profil.odmiany[id][odm] = (profil.odmiany[id][odm] or 0) + 1
+end
+
+-- działanie odmian posiadanych dla peta id: rozmiar i siła z największej, złoto z najlepszej; flagi do migawki
+function L.odmianyPeta(D, profil, id: string)
+	local w = { rozmiar = 1, sila = 1, zloto = 1, flagi = 0 }
+	local o = profil and profil.odmiany and profil.odmiany[id]
+	if not o then
+		return w
+	end
+	local naj = nil
+	for _, O in D.odmiany.lista do
+		if (o[O.id] or 0) > 0 then
+			if O.rozmiar > w.rozmiar then
+				w.rozmiar, w.sila, naj = O.rozmiar, O.sila, O
+			end
+			if O.zloto > w.zloto then
+				w.zloto = O.zloto
+				w.flagi += O.flaga
+			end
+		end
+	end
+	if naj then
+		w.flagi += naj.flaga
+	end
+	return w
+end
+
+-- „Wybijesz, to zabierasz”: próba złapania (r1 — los złapania, r2 — los odmiany); zmienia profil (kolekcja, odmiany, litość,
+-- samouczek); zwraca { zlapany, szansa, pewne, nowy, gwiazdki, maks, zwrot, odmiana }
+function L.zlapanie(D, profil, nr: number, alfa: boolean?, r1: number, r2: number)
+	local Pd = D.pety[nr]
+	local st = Pd.stopien
+	local pewne = not profil.samouczek.zlap
+	local szansa = L.szansaZlapania(D, profil, st, alfa)
+	profil.samouczek.zlap = true
+	if r1 >= szansa then
+		profil.litosc[st] = (profil.litosc[st] or 0) + 1
+		return { zlapany = false, szansa = szansa, pewne = false }
+	end
+	profil.litosc[st] = 0
+	profil.zlapane = (profil.zlapane or 0) + 1
+	local w = L.dodajDoKolekcji(D, profil, Pd.id, D.lapanie.cena_zwrotu * st)
+	local odm = L.losujOdmiane(D, r2, if alfa then D.alfa.min_odmiana else nil)
+	L.dodajOdmiane(profil, Pd.id, odm)
+	w.zlapany, w.szansa, w.odmiana, w.pewne = true, szansa, odm, pewne
+	return w
+end
+
+-- zegar wydarzeń (sekundy UTC): najbliższe wydarzenie po chwili t; przy tej samej chwili wygrywa wcześniejsza reguła
+function L.nastepneWydarzenie(D, t: number): (string, number)
+	local typ, kiedy = "boss", math.huge
+	for _, R in D.zegar.reguly do
+		local okres, od = R.co_min * 60, R.od_min * 60
+		local n = math.floor((t - od) / okres) * okres + od
+		if n <= t then
+			n += okres
+		end
+		if n < kiedy then
+			typ, kiedy = R.typ, n
+		end
+	end
+	return typ, kiedy
+end
+
+-- wylęgarnia w czasie (teraz — sekundy UTC, także poza grą)
+function L.wolneMiejsce(D, profil): number?
+	if #profil.wylegarnia < D.wylegarnia.miejsca then
+		return #profil.wylegarnia + 1
+	end
+	return nil
+end
+
+function L.doWylegarni(D, profil, nr: number, teraz: number): boolean
+	if not L.wolneMiejsce(D, profil) then
+		return false
+	end
+	table.insert(profil.wylegarnia, { nr = nr, koniec = teraz + D.wylegarnia.czas_s[nr] })
+	return true
+end
+
+function L.cenaPrzyspieszenia(D, wpis, teraz: number): number
+	return math.ceil(math.max(0, wpis.koniec - teraz) * D.wylegarnia.zl_na_s[wpis.nr])
+end
+
+-- jajko z miejsca i: gotowe (albo przyspieszone) — numer jajka; inaczej nil
+function L.zWylegarni(profil, i: number, teraz: number, przyspiesz: boolean?): number?
+	local w = profil.wylegarnia[i]
+	if not w or (w.koniec > teraz and not przyspiesz) then
+		return nil
+	end
+	local lista = profil.wylegarnia
+	local n = #lista
+	for k = i, n - 1 do
+		lista[k] = lista[k + 1]
+	end
+	lista[n] = nil
+	return w.nr
+end
+
+-- dzienny prezent: dzień = doba UTC; seria nie przepada
+function L.dzien(teraz: number): number
+	return math.floor(teraz / 86400)
+end
+
+function L.nagrodaPrezentu(D, seria: number)
+	local n = D.prezent.nagrody
+	return n[((math.max(1, seria) - 1) % #n) + 1]
+end
+
+-- { mozna, dzien (numer dnia serii do odebrania albo ostatni), nagroda, jutro }
+function L.prezentStan(D, profil, teraz: number)
+	local pr = profil.prezent
+	local mozna = L.dzien(teraz) > pr.dzien
+	local d = if mozna then pr.seria + 1 else pr.seria
+	return { mozna = mozna, dzien = d, nagroda = L.nagrodaPrezentu(D, d), jutro = L.nagrodaPrezentu(D, d + 1) }
+end
+
+-- odbiór: nagroda (złoto dopisane do profilu; jajko — numer do wyklucia) i jutrzejsza; nil, gdy dziś już odebrany
+function L.odbierzPrezent(D, profil, teraz: number)
+	if L.dzien(teraz) <= profil.prezent.dzien then
+		return nil, nil
+	end
+	profil.prezent.dzien = L.dzien(teraz)
+	profil.prezent.seria += 1
+	local n = L.nagrodaPrezentu(D, profil.prezent.seria)
+	if n.zloto then
+		profil.zloto += n.zloto
+	end
+	return n, L.nagrodaPrezentu(D, profil.prezent.seria + 1)
+end
+
+function L.opisNagrody(D, n): string
+	if n.jajko then
+		return D.jajka[n.jajko].nazwa
+	end
+	return string.format(D.ui.nagroda_zloto, L.format(n.zloto or 0))
 end
 
 return L

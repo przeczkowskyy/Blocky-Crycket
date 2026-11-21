@@ -118,6 +118,37 @@ function Interfejs.nowy(rodzic: Instance, D, L, opcje)
 	self.lvPasek = nowy("Frame", { Name = "W", Size = UDim2.fromScale(0, 1), BackgroundColor3 = Color3.fromHex("9BE8FF"), BorderSizePixel = 0 }, pas)
 	rog(self.lvPasek, 4)
 	self.gora = gora
+	-- v3: dzienny prezent (obok złota, pulsuje, gdy można odebrać)
+	-- w warstwie złota (skaluje się razem z nią — nie wchodzi na złoto przy większej skali ekranu)
+	local pr = nowy("Frame", { Name = "Prezent", Position = UDim2.fromOffset(156, 0), Size = UDim2.fromOffset(58, 30), BackgroundTransparency = 1 }, gora)
+	local bp = nowy("TextButton", { Name = "Przycisk", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromHex("FF5AD8"), Text = "",
+		AutoButtonColor = true }, pr)
+	rog(bp, 10)
+	obrys(bp, 2.5, tusz)
+	local lp = nowy("TextLabel", { Name = "Napis", BackgroundTransparency = 1, Position = UDim2.fromScale(0.08, 0.15), Size = UDim2.fromScale(0.84, 0.7),
+		Text = D.ui.prezent, TextScaled = true, Font = czcionka, TextColor3 = papier }, bp)
+	obrysTekstu(lp, 1.5, tusz)
+	self.prezentSkala = nowy("UIScale", { Scale = 1 }, bp)
+	bp.Activated:Connect(function()
+		if opcje.naPrezent then
+			opcje.naPrezent()
+		end
+	end)
+	pr.Visible = false
+	self.prezentRamka = pr
+	self.bPrezent = bp
+	-- v3: panel NEXT (lewy dół, od wejścia): najbliższe wydarzenie zegara i zapowiedź nowego potwora
+	local nx = warstwa("Nastepne", Vector2.new(0, 1), UDim2.new(0, 8, 1, -8), Vector2.new(172, 40))
+	local nt = nowy("Frame", { Name = "Tlo", Size = UDim2.fromScale(1, 1), BackgroundColor3 = tusz, BackgroundTransparency = 0.3 }, nx)
+	rog(nt, 8)
+	self.nastTekst = nowy("TextLabel", { Name = "Wydarzenie", BackgroundTransparency = 1, Position = UDim2.fromOffset(6, 2), Size = UDim2.new(1, -12, 0, 20),
+		Text = "", TextScaled = true, Font = czcionka, TextColor3 = Color3.fromHex("FF9A5A"), TextXAlignment = Enum.TextXAlignment.Left }, nt)
+	obrysTekstu(self.nastTekst, 1.5, tusz)
+	self.nastTekst2 = nowy("TextLabel", { Name = "Potwor", BackgroundTransparency = 1, Position = UDim2.fromOffset(6, 22), Size = UDim2.new(1, -12, 0, 15),
+		Text = "", TextScaled = true, Font = cyfry, TextColor3 = Color3.fromHex("9BE8FF"), TextXAlignment = Enum.TextXAlignment.Left }, nt)
+	obrysTekstu(self.nastTekst2, 1.2, tusz)
+	nx.Visible = false
+	self.nastRamka = nx
 
 	------------------------------------------------------------ góra środek: wydarzenie, boss, komunikat, napisy zdarzeń
 	local srodek = warstwa("Srodek", Vector2.new(0.5, 0), UDim2.new(0.5, 0, 0, 2), Vector2.new(260, 40))
@@ -380,6 +411,12 @@ function Interfejs:wydarzenie(tekst: string?)
 	end
 end
 
+function Interfejs:nastepne(l1: string?, l2: string?)
+	self.nastRamka.Visible = l1 ~= nil or l2 ~= nil
+	self.nastTekst.Text = l1 or ""
+	self.nastTekst2.Text = l2 or ""
+end
+
 function Interfejs:boss(nazwa: string?, hp: number?, hpMax: number?)
 	self.bossRamka.Visible = nazwa ~= nil
 	if nazwa then
@@ -400,6 +437,7 @@ function Interfejs:przyciski(st)
 	self.bTrening.BackgroundColor3 = Color3.fromHex(if st.trening then "3DB36B" else "8A7AA8")
 	self.bTrening:FindFirstChild("Napis").Text = if st.trening then self.D.ui.trening_wl else self.D.ui.trening
 	self.jajkoPulsuje = st.jajkoPulsuje
+	self.prezentRamka.Visible = st.prezent == true
 end
 
 -- drążek: widoczność i położenie gałki (x, y w −1…1, y w górę); środek bazy w punktach ekranu (do dotyku)
@@ -452,7 +490,8 @@ function Interfejs:krok(dt: number)
 		end
 	end
 	self.przyciskSkala.Scale = if self.gotowa then 1 + math.sin(self.t * 7) * 0.05 else 1
-	self.jajkaSkala.Scale = if self.jajkoPulsuje then 1 + math.abs(math.sin(self.t * 5)) * 0.12 else 1
+	self.jajkaSkala.Scale = if self.jajkoPulsuje then 1 + math.abs(math.sin(self.t * 5)) * 0.06 else 1
+	self.prezentSkala.Scale = 1 + math.abs(math.sin(self.t * 4)) * 0.06
 end
 
 local function prost(o: GuiObject): { number }
@@ -490,6 +529,8 @@ function Interfejs:stan()
 		srodek = self:prost(self.srodek), wydarzenie = if self.wydTekst.Visible then self.wydTekst.Text else nil,
 		boss = if self.bossRamka.Visible then self.bossNazwa.Text else nil, ogloszenie = if self.oglTekst.Visible then self.oglTekst.Text else nil,
 		drazek = if self.drazekRamka.Visible then self:prost(self.drazekRamka) else nil,
+		nastepne = if self.nastRamka.Visible then self:prost(self.nastRamka) else nil, nastepneTekst = self.nastTekst.Text,
+		nastepneTekst2 = self.nastTekst2.Text, prezent = if self.prezentRamka.Visible then self:prost(self.prezentRamka) else nil,
 		zloto = self.zlotoTekst.Text, gs = self.gsTekst.Text, poziom = self.lvTekst.Text, przyciskNazwa = self.przyciskNazwa.Text,
 		gotowa = self.gotowa == true, dotyk = self.opcje.dotyk == true, skala = self.skala(), pad = self.padWl == true,
 	}

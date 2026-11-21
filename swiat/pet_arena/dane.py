@@ -11,11 +11,13 @@ assets/audio/arkusz/sfx_arkusz_a.json. Układ: środek areny (0, 0, 0), wierzch 
 poza tymi z ustawień.
 """
 import argparse
+import calendar
 import hashlib
 import json
 import math
 import os
 import sys
+import time
 
 sys.dont_write_bytecode = True
 TU = os.path.dirname(os.path.abspath(__file__))
@@ -395,6 +397,20 @@ def sloty(U):
     return w
 
 
+def dzikie(U, P):
+    """v3: tabela dzikich potworów (numer peta, waga wejścia) i rozmiar według rzadkości."""
+    nr = {p["id"]: i + 1 for i, p in enumerate(P)}
+    tab = []
+    for pid, w in U["dzikie"]["tabela"].items():
+        if pid not in nr:
+            raise BladDanych("dzikie.tabela: nieznany pet %s" % pid)
+        if w > 0:
+            tab.append({"nr": nr[pid], "waga": w})
+    if not tab:
+        raise BladDanych("dzikie.tabela: pusta")
+    return {"tabela": tab, "rozmiar": U["dzikie"]["rozmiar_rzadkosci"]}
+
+
 def brama(U):
     S = U["scena"]
     b = _kol(S["brama_kat_st"])
@@ -472,7 +488,20 @@ def dane(U, W=None):
         "stanowisko": stanowisko_jajek(U),
         "boss": dict(bez_opisu(U["boss"]), modele=[{"wzorzec": "Boss_" + B["model"], "nazwa": B["nazwa"]} for B in U["boss"]["modele"]]),
         "zloty": bez_opisu(U["zloty"]), "brama": brama(U), "sterowanie": bez_opisu(U["sterowanie"]),
+        # v3 (Throw & Catch Monsters)
+        "dzikie": dzikie(U, P), "lapanie": bez_opisu(U["lapanie"]), "odmiany": bez_opisu(U["odmiany"]), "alfa": bez_opisu(U["alfa"]),
+        "zegar": bez_opisu(U["zegar"]), "wylegarnia": bez_opisu(U["wylegarnia"]), "prezent": bez_opisu(U["prezent"]),
+        "nowyPotwor": {"czas": int(calendar.timegm(time.strptime(U["nowy_potwor"]["data"], "%Y-%m-%d")))},
     }
+    if len(U["lapanie"]["szanse"]) != len(U["rzadkosci"]) or len(U["dzikie"]["rozmiar_rzadkosci"]) != len(U["rzadkosci"]):
+        raise BladDanych("lapanie.szanse i dzikie.rozmiar_rzadkosci: po jednej wartości na rzadkość")
+    if len(U["wylegarnia"]["czas_s"]) != len(U["jajka"]) or len(U["wylegarnia"]["zl_na_s"]) != len(U["jajka"]):
+        raise BladDanych("wylegarnia: czas_s i zl_na_s po jednej wartości na jajko")
+    if U["alfa"]["min_odmiana"] not in {o["id"] for o in U["odmiany"]["lista"]}:
+        raise BladDanych("alfa.min_odmiana spoza odmiany.lista")
+    for R in U["zegar"]["reguly"]:
+        if R["typ"] not in ("boss", "zloty", "alfa") or R["co_min"] <= 0:
+            raise BladDanych("zegar.reguly: typ boss / zloty / alfa, co_min > 0")
     for J in U["jajka"]:
         if abs(sum(J["szanse"]) - 1) > 1e-9 or len(J["szanse"]) != len(U["rzadkosci"]):
             raise BladDanych("jajko %s: szanse na każdą rzadkość, suma 1" % J["nazwa"])

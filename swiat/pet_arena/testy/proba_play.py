@@ -203,6 +203,7 @@ def rzuc_moim(p, nr=None, x=0, zz=2):
     if moj(st).get("pet"):
         p.serwer('"przenies", %d, 60, 0' % moj(st)["pet"])
         czekaj(lambda: not moj(p.serwer('"stan"')).get("pet"), 3, 0.2)
+        time.sleep(1.6)                                      # kamera lotu wraca do całości (rzut celuje w punkt ekranu)
     p.serwer('"odpoczynki_zeruj"')
     time.sleep(0.3)
     if nr:
@@ -238,7 +239,7 @@ def etap2(p, zrzuty):
     p.serwer('"zloto", %d' % (D["jajka"][0]["cena"] + 40))
     time.sleep(0.3)
     p.klient('"jajko", 1')
-    czekaj(lambda: moj(p.serwer('"stan"')).get("jajek", 0) > s1.get("jajek", 0), 4, 0.2)
+    czekaj(lambda: len(moj(p.serwer('"stan"')).get("wylegarnia") or []) > 0, 4, 0.2)    # v3: kupione → wylęgarnia
     s2 = moj(p.serwer('"stan"'))
     time.sleep(2.8)
     odm = s2.get("odrzucone", 0)
@@ -249,9 +250,9 @@ def etap2(p, zrzuty):
     p.wynik("P17", o.get("okno") == "jajka" and len(przyc) >= 4 and min(min(b[2], b[3]) for b in przyc) >= 44
             and s1.get("jajek") == 1 and s1.get("zloto") == 0 and len(s1.get("pety", {})) + sum(s1.get("pety", {}).values()) >= 5
             and (k1.get("okna", {}).get("wyklucie") or {}).get("t") is not None
-            and s2.get("zloto") == 40 and s2.get("jajek") == 2 and s3.get("odrzucone", 0) > odm and s3.get("jajek") == 2,
+            and s2.get("zloto") == 40 and len(s2.get("wylegarnia") or []) == 1 and s3.get("odrzucone", 0) > odm and s3.get("jajek") == 1,
             przyciski=len(przyc), min_pt=round(min((min(b[2], b[3]) for b in przyc), default=0), 1), darmowe_zloto=s1.get("zloto"),
-            kolekcja=s1.get("pety"), wyklucie=(k1.get("okna") or {}).get("wyklucie"), po_zakupie=s2.get("zloto"),
+            kolekcja=s1.get("pety"), wyklucie=(k1.get("okna") or {}).get("wyklucie"), po_zakupie=s2.get("zloto"), wylegarnia=s2.get("wylegarnia"),
             baner_za_malo=k3["ui"].get("baner"))
     # ---------------------------------------------------------------- P18 gwiazdki: kopie → mocniejszy pet, gwiazdki przy pecie
     p.serwer('"druzyna", {"lesny_slime", "zoledziak"}, 3')
@@ -297,7 +298,7 @@ def etap2(p, zrzuty):
     p.serwer('"bez_wydarzen", false')
     p.serwer('"wydarzenie", "boss", 12')
     time.sleep(1.0)
-    zap = p.klient('"stan"')["ui"].get("wydarzenie")
+    zap = p.klient('"stan"')["ui"].get("nastepneTekst")
     p.serwer('"wydarzenie", "boss", 0')
     boss_id, _ = czekaj(lambda: next((x["id"] for x in p.serwer('"stan"')["pety"] if x.get("boss")), None), 5, 0.2)
     p.serwer('"bez_wydarzen", true')
@@ -319,7 +320,7 @@ def etap2(p, zrzuty):
         p.zrzut("pa_boss_nagroda.jpg")
     s20 = p.serwer('"stan"')
     przyrost = moj(s20).get("zloto", 0) - zl0
-    p.wynik("P20", bool(zap) and zap.startswith("BOSS IN") and bool(boss_id) and kb["ui"].get("boss") and bool(pokonany)
+    p.wynik("P20", bool(zap) and zap.startswith("NEXT: BOSS") and bool(boss_id) and kb["ui"].get("boss") and bool(pokonany)
             and przyrost >= D["boss"]["minimum"],
             zapowiedz=zap, pasek=kb["ui"].get("boss"), udzial=bool(udzial), zloto_przyrost=przyrost,
             ostatnie=[e for e in s20.get("ostatnie", []) if e.get("boss")][-1:])
@@ -405,7 +406,172 @@ def etap2(p, zrzuty):
     p.klient('"okno", nil')
     p.klient('"emulacja", nil')
     etap_v2(p, zrzuty)
+    etap_v3(p, zrzuty)
     p.serwer('"boty", %d' % D["boty"]["do_ilu"])
+
+
+def wybij_dzikiego(p, nr, x=10.0):
+    """Dziki z bramy; po lądowaniu wyrzucony poza arenę z zaliczeniem dla slotu 1 (jak cios kończący peta gracza)."""
+    d = p.serwer('"dziki", %d, %s, 0' % (nr, x))
+    czekaj(lambda: (pet(p.serwer('"stan"'), d) or {}).get("faza") == "walka", 5, 0.2)
+    p.serwer('"stoj", %d, 6' % d)
+    p.serwer('"przenies", %d, %s, 0' % (d, x))
+    p.serwer('"wyrzuc", %d, 80, 1' % d)
+    return d
+
+
+def etap_v3(p, zrzuty):
+    """P34–P40 (v3 Throw & Catch): panel NEXT i zegar, pewne pierwsze złapanie, ucieczka i litość, odmiana GIANT,
+    ALPHA, wylęgarnia w czasie, dzienny prezent."""
+    p.serwer('"usun_dzikie"')
+    p.serwer('"boty", 0')
+    # ---------------------------------------------------------------- P34 panel NEXT od wejścia, zegar wydarzeń sam odpala
+    k = p.klient('"stan"')
+    n1, n2 = k["ui"].get("nastepneTekst") or "", k["ui"].get("nastepneTekst2") or ""
+    p.serwer('"bez_wydarzen", false')
+    p.serwer('"liczniki_zeruj"')
+    z = p.serwer('"zegar_tempo", 120')                        # 5 min zegara = 2,5 s
+    def odpalil():
+        lk = p.serwer('"stan"').get("liczniki")
+        return isinstance(lk, dict) and (lk.get("boss", 0) + lk.get("alfa", 0)) > 0
+    odpalone, _ = czekaj(odpalil, 12, 0.5)
+    p.serwer('"zegar_tempo", 1')
+    p.serwer('"bez_wydarzen", true')
+    p.serwer('"usun_dzikie"')
+    time.sleep(0.5)
+    p.wynik("P34", n1.startswith("NEXT:") and "NEW MONSTER" in n2 and bool(odpalone),
+            panel=[n1, n2], przyspieszony=z, zegar_odpalil=bool(odpalone))
+    # ---------------------------------------------------------------- P35 rzuć → wybij → złap (pierwsze pewne), scena CAUGHT!
+    p.serwer('"profil_nowy"')
+    p.serwer('"druzyna", {"lesny_slime", "zoledziak"}, 1')
+    time.sleep(0.4)
+    mid = rzuc_moim(p, 1, -14, 0)
+    p.serwer('"stoj", %d, 30' % mid)
+    k0 = p.klient('"stan"')
+    pod = k0["ui"].get("podpowiedzTekst")
+    wybij_dzikiego(p, 6)
+    zl, _ = czekaj(lambda: (moj(p.serwer('"stan"')).get("zlapane") or 0) > 0, 6, 0.2)
+    time.sleep(0.9)
+    k35 = p.klient('"stan"')
+    if zrzuty:
+        p.zrzut("pa_zlapanie.jpg")
+    s35 = p.serwer('"stan"')
+    ev = [e for e in s35.get("ostatnie", []) if e["t"] == "zlapanie"]
+    p.wynik("P35", bool(zl) and ev and ev[-1].get("pewne") is True and "lisciolis" in (moj(s35).get("pety") or {})
+            and (k35.get("okna", {}).get("wyklucie") or {}).get("napis", "").startswith("CAUGHT") and pod == D["ui"]["podpowiedz_lap"],
+            podpowiedz=pod, zlapanie=ev[-1:] if ev else None, scena=(k35.get("okna") or {}).get("wyklucie"))
+    time.sleep(2.5)
+    # ---------------------------------------------------------------- P36 ucieczka: ESCAPED!, złoto, litość rośnie
+    zl0 = moj(p.serwer('"stan"')).get("zloto", 0)
+    p.serwer('"wymus_lap", false')
+    wybij_dzikiego(p, 1)
+    uc, _ = czekaj(lambda: any(e["t"] == "ucieczka" for e in p.serwer('"stan"').get("ostatnie", [])), 6, 0.2)
+    s36 = moj(p.serwer('"stan"'))
+    lit = s36.get("litosc") or []
+    p.wynik("P36", bool(uc) and (lit[0] if lit else 0) >= 1 and s36.get("zloto", 0) > zl0,
+            ucieczka=bool(uc), litosc=lit, zloto_przyrost=s36.get("zloto", 0) - zl0)
+    # ---------------------------------------------------------------- P37 odmiana GIANT: ogłoszenie, większy pet nad areną
+    p.serwer('"wymus_lap", true')
+    p.serwer('"wymus_odmiane", "giant"')
+    wybij_dzikiego(p, 10)
+    gi, _ = czekaj(lambda: "lesny_troll" in (moj(p.serwer('"stan"')).get("odmiany") or {}), 6, 0.2)
+    s37 = p.serwer('"stan"')
+    ogl = [e for e in s37.get("ostatnie", []) if e["t"] == "ogloszenie"]
+    time.sleep(3.2)
+    p.serwer('"druzyna", {"lesny_troll", "lesny_slime"}, 1')
+    p.serwer('"odpoczynki_zeruj"')
+    mid = rzuc_moim(p, 1, -12, 6)
+    p.serwer('"stoj", %d, 8' % mid)
+    time.sleep(1.0)
+    s37b = p.serwer('"stan"')
+    kw = next((w for w in p.klient('"stan"')["widoki"] if w["id"] == mid), {})
+    if zrzuty:
+        p.klient('"widok", "pet"')
+        time.sleep(1.0)
+        p.zrzut("pa_odmiana.jpg")
+        p.klient('"widok", false')
+    troll = D["pety"][9]
+    p.wynik("P37", bool(gi) and bool(ogl) and abs(((pet(s37b, mid) or {}).get("wys") or 0) - troll["wysokosc"] * 1.6) < 0.2
+            and abs((kw.get("skala") or 0) - 1.6) < 0.01 and "GIANT" in (kw.get("napis") or ""),
+            odmiany=moj(s37).get("odmiany"), ogloszenie=bool(ogl), wys=(pet(s37b, mid) or {}).get("wys"), skala=kw.get("skala"),
+            napis=kw.get("napis"))
+    # ---------------------------------------------------------------- P38 ALPHA: zapowiedź, większy, ostatni cios łapie
+    p.serwer('"przenies", %d, 60, 0' % mid)
+    p.serwer('"wydarzenie", "alfa", 0')
+    aid, _ = czekaj(lambda: next((x["id"] for x in p.serwer('"stan"')["pety"] if x.get("dziki") and (x.get("wys") or 0) > 0
+                                  and x["id"] != mid and x.get("faza") == "walka"), None), 6, 0.2)
+    k38 = p.klient('"stan"')
+    if zrzuty:
+        time.sleep(0.3)
+        p.zrzut("pa_alfa.jpg")
+    s38 = p.serwer('"stan"')
+    a = pet(s38, aid) or {}
+    kwa = next((w for w in k38["widoki"] if w["id"] == aid), {})
+    Pa = D["pety"][(a.get("nr") or 1) - 1]
+    oczek = Pa["wysokosc"] * D["dzikie"]["rozmiar"][Pa["stopien"] - 1] * D["alfa"]["rozmiar"]
+    p.serwer('"wymus_lap", true')
+    if aid:
+        p.serwer('"stoj", %d, 6' % aid)
+        p.serwer('"przenies", %d, 10, 0' % aid)
+        p.serwer('"wyrzuc", %d, 90, 1' % aid)
+    al, _ = czekaj(lambda: any(e["t"] == "zlapanie" and e.get("alfa") for e in p.serwer('"stan"').get("ostatnie", [])), 6, 0.2)
+    p.wynik("P38", bool(aid) and Pa["stopien"] >= D["alfa"]["rzadkosc_min"] and abs((a.get("wys") or 0) - oczek) < 0.2
+            and kwa.get("odm") == D["ui"]["alfa"] and bool(al),
+            alfa=Pa["nazwa"], wys=a.get("wys"), oczekiwana=round(oczek, 2), napis=kwa.get("odm"), zlapany=bool(al),
+            baner=k38["ui"].get("baner"))
+    time.sleep(3.0)
+    # ---------------------------------------------------------------- P39 wylęgarnia w czasie: kup, czas mija (atrapa), HATCH; SPEED UP
+    p.serwer('"zloto", 12000')
+    time.sleep(0.4)
+    p.klient('"jajko", 2')
+    czekaj(lambda: len(moj(p.serwer('"stan"')).get("wylegarnia") or []) > 0, 4, 0.2)
+    p.klient('"okno", "jajka"')
+    time.sleep(0.6)
+    ko = p.klient('"stan"')["okna"]
+    p.serwer('"czas_plus", %d' % D["wylegarnia"]["czas_s"][1])
+    time.sleep(1.2)
+    kg = p.klient('"stan"')
+    if zrzuty:
+        p.zrzut("pa_wylegarnia.jpg")
+    w0 = moj(p.serwer('"stan"')).get("jajek", 0)
+    p.klient('"wylegarnia", 1')
+    hat, _ = czekaj(lambda: moj(p.serwer('"stan"')).get("jajek", 0) > w0, 4, 0.2)
+    time.sleep(6.2)
+    p.klient('"okno", nil')
+    zl1 = moj(p.serwer('"stan"')).get("zloto", 0)
+    time.sleep(2.7)
+    p.klient('"jajko", 2')
+    czekaj(lambda: len(moj(p.serwer('"stan"')).get("wylegarnia") or []) > 0, 4, 0.2)
+    p.klient('"wylegarnia", 1, true')
+    sp, _ = czekaj(lambda: moj(p.serwer('"stan"')).get("jajek", 0) > w0 + 1, 4, 0.2)
+    zl2 = moj(p.serwer('"stan"')).get("zloto", 0)
+    koszt = zl1 - zl2 - D["jajka"][1]["cena"]
+    p.wynik("P39", ko.get("okno") == "jajka" and kg["ui"].get("baner") == D["ui"]["jajko_gotowe"] and bool(hat) and bool(sp)
+            and 0 < koszt <= D["wylegarnia"]["czas_s"][1] * D["wylegarnia"]["zl_na_s"][1] + 20,
+            gotowe_baner=kg["ui"].get("baner"), wyklute=bool(hat), przyspieszone=bool(sp), koszt_przyspieszenia=koszt)
+    time.sleep(6.2)
+    # ---------------------------------------------------------------- P40 dzienny prezent: odbiór, „Tomorrow”, seria następnego dnia
+    p.klient('"okno", "prezent"')
+    time.sleep(0.6)
+    if zrzuty:
+        p.zrzut("pa_prezent.jpg")
+    kp = p.klient('"stan"')
+    zp0 = moj(p.serwer('"stan"')).get("zloto", 0)
+    p.klient('"prezent"')
+    time.sleep(1.0)
+    kp2 = p.klient('"stan"')
+    s40 = moj(p.serwer('"stan"'))
+    p.serwer('"czas_plus", 86400')
+    time.sleep(0.6)
+    p.klient('"prezent"')
+    time.sleep(1.0)
+    s40b = moj(p.serwer('"stan"'))
+    N = D["prezent"]["nagrody"]
+    p.wynik("P40", kp["okna"].get("okno") == "prezent" and s40.get("zloto", 0) - zp0 >= N[0]["zloto"]
+            and "Tomorrow" in (kp2["ui"].get("ogloszenie") or "") and (s40b.get("prezent") or {}).get("seria") == 2,
+            okno=kp["okna"].get("okno"), zloto=s40.get("zloto", 0) - zp0, jutro=kp2["ui"].get("ogloszenie"), seria=(s40b.get("prezent") or {}).get("seria"))
+    p.klient('"okno", nil')
+    p.serwer('"usun_dzikie"')
 
 
 def etap_v2(p, zrzuty):
@@ -430,7 +596,10 @@ def etap_v2(p, zrzuty):
     wys = {x["id"]: x.get("wys") for x in s["pety"]}
     r1 = (wys.get(ids[1]) or 0) / max(1e-6, wys.get(ids[0]) or 1)
     r2 = (wys.get(ids[2]) or 0) / max(1e-6, wys.get(ids[0]) or 1)
-    p.wynik("P28", abs(r1 - 1.6) < 0.1 and abs(r2 - 2.4) < 0.1 and pt.get(ids[2], 0) > 1.8 * pt.get(ids[0], 99) and D["rzut"]["limit_areny"] == 6,
+    rz = D["dzikie"]["rozmiar"]
+    f1 = rz[D["pety"][2]["stopien"] - 1] / rz[D["pety"][0]["stopien"] - 1]
+    f2 = rz[D["pety"][9]["stopien"] - 1] / rz[D["pety"][0]["stopien"] - 1]
+    p.wynik("P28", abs(r1 - 1.6 * f1) < 0.1 and abs(r2 - 2.4 * f2) < 0.12 and pt.get(ids[2], 0) > 1.8 * pt.get(ids[0], 99) and D["rzut"]["limit_areny"] == 6,
             wysokosci=[wys.get(i) for i in ids], pt=[round(pt.get(i, 0)) for i in ids], limit_areny=D["rzut"]["limit_areny"])
     # ---------------------------------------------------------------- P29 zderzenia (przekazanie pędu) i lot w powietrzu
     p.serwer('"liczniki_zeruj"')
@@ -461,17 +630,22 @@ def etap_v2(p, zrzuty):
     time.sleep(0.8)
     k0 = p.klient('"stan"')
     mid = rzuc_moim(p, 1, 8, 8)
+    p.serwer('"stoj", %d, 4' % mid)
     time.sleep(1.5)
-    k1 = p.klient('"stan"')
+    k1a = p.klient('"stan"')                                 # autopilot → cała arena
+    p.klient('"ster", Vector2.new(0, 0.3), 2.0')
+    time.sleep(1.4)
+    k1 = p.klient('"stan"')                                  # sterowanie → za petem
     if zrzuty:
         p.zrzut("pa_kamera_pet.jpg")
+    p.klient('"ster", nil')
     p.klient('"widok", true')
     time.sleep(0.8)
     k2 = p.klient('"stan"')
     p.klient('"widok", false')
-    p.wynik("P30", k0.get("trybKamery") == "calosc" and k1.get("trybKamery") == "pet" and 80 <= (k1.get("mojPt") or 0) <= 140
-            and k2.get("trybKamery") == "calosc",
-            bez_peta=k0.get("trybKamery"), z_petem=k1.get("trybKamery"), pet_pt=round(k1.get("mojPt") or 0), przycisk_view=k2.get("trybKamery"))
+    p.wynik("P30", k0.get("trybKamery") == "calosc" and k1a.get("trybKamery") == "calosc" and k1.get("trybKamery") == "pet"
+            and 80 <= (k1.get("mojPt") or 0) <= 140 and k2.get("trybKamery") == "calosc",
+            bez_peta=k0.get("trybKamery"), autopilot=k1a.get("trybKamery"), sterowanie=k1.get("trybKamery"), pet_pt=round(k1.get("mojPt") or 0), przycisk_view=k2.get("trybKamery"))
     # ---------------------------------------------------------------- P31 wzgórze króla: monety lecą do peta, korona rośnie z nagrodą
     p.serwer('"przenies", %d, 0, 0' % mid)
     p.serwer('"stoj", %d, 12' % mid)
@@ -892,7 +1066,7 @@ def main():
             okno = u["okno"]
             elementy = {"gora": u["gora"], "przycisk": u["przycisk"], "pet": u["pet"] if u.get("petWidoczny") else None,
                         "podpowiedz": u.get("podpowiedz"), "eggs": u["przyciskiGorne"][0], "pets": u["przyciskiGorne"][1],
-                        "train": u["przyciskiGorne"][2], "view": u["przyciskiGorne"][3]}
+                        "train": u["przyciskiGorne"][2], "view": u["przyciskiGorne"][3], "nastepne": u.get("nastepne"), "prezent": u.get("prezent")}
             for i, kk in enumerate(u.get("karty") or []):
                 elementy["karta%d" % (i + 1)] = kk
             w_ekranie = {n: wewnatrz(r, okno) for n, r in elementy.items() if r}
@@ -904,13 +1078,16 @@ def main():
             moj13 = k13.get("mojPt") or 0
             # domyślna ścieżka bez drążka: drążka nie ma, dopóki palec nie dotknie lewej strony (tu: sterowanie z próby)
             drazek_ukryty = u.get("drazek") is None
-            p.klient('"ster", Vector2.new(0.6, 0.4), 0.8')
-            time.sleep(0.25)
-            u13b = p.klient('"stan"')["ui"]
+            p.klient('"ster", Vector2.new(0.6, 0.4), 1.6')
+            time.sleep(1.2)
+            k13b = p.klient('"stan"')
+            u13b = k13b["ui"]
             drazek_przy_ruchu = bool(u13b.get("drazek")) and wewnatrz(u13b["drazek"], okno)
+            moj13 = k13b.get("mojPt") or 0
             p.klient('"ster", nil')
             p.wynik("P13", all(w_ekranie.values()) and min_pt >= 44 and not nakladanie and w_pasie(tel) and 80 <= moj13 <= 140
-                    and k13.get("trybKamery") == "pet" and k13.get("duzychSlow", 0) <= 2 and drazek_ukryty and drazek_przy_ruchu,
+                    and k13.get("trybKamery") == "calosc" and k13b.get("trybKamery") == "pet" and k13.get("duzychSlow", 0) <= 2
+                    and drazek_ukryty and drazek_przy_ruchu,
                     okno=okno, w_ekranie=w_ekranie, min_przycisk_pt=round(min_pt, 1), nakladanie=nakladanie, skala=u.get("skala"),
                     pety_pt=wielkosci, moj_pet_pt=round(moj13), kamera=k13.get("trybKamery"), duze_slowa=k13.get("duzychSlow"),
                     podpowiedz=u.get("podpowiedzTekst"), drazek_domyslnie=not drazek_ukryty, drazek_przy_ruchu=drazek_przy_ruchu)

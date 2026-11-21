@@ -727,6 +727,168 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(nowy.get("odmiany") or {}, {})
         self.assertEqual(nowy.get("wylegarnia") or [], [])
 
+    # ------------------------------------------------------------------ v3: Throw & Catch Monsters
+    def test_3a_dzicy_z_tabeli_i_rozmiar(self):
+        los = Los(11)
+        ile = {}
+        for _ in range(1500):
+            nr = int(jeden("losujDzikiego", DL, los()))
+            ile[nr] = ile.get(nr, 0) + 1
+        tab = {nr_peta(k): v for k, v in U["dzikie"]["tabela"].items() if v > 0}
+        suma = sum(tab.values())
+        for nr, w in tab.items():
+            self.assertAlmostEqual(ile.get(nr, 0) / 1500, w / suma, delta=0.04)
+        for _ in range(200):
+            self.assertGreaterEqual(D["pety"][int(jeden("losujDzikiego", DL, los(), 3)) - 1]["stopien"], 3, "ALPHA od Rare")
+        S = stan()
+        zwykly = jeden("dodajPeta", S, nr_peta("lesny_slime"), 0, True, 0, 12, 30, 0, 0, jeden("mnoznikDzikiego", DL, nr_peta("lesny_slime")))
+        rzadki = jeden("dodajPeta", S, nr_peta("ropucha_z_chatka"), 0, True, 0, 12, 30, 5, 0, jeden("mnoznikDzikiego", DL, nr_peta("ropucha_z_chatka")))
+        alfa = jeden("dodajPeta", S, nr_peta("ropucha_z_chatka"), 0, True, 0, 12, 30, 9, 0,
+                     jeden("mnoznikDzikiego", DL, nr_peta("ropucha_z_chatka"), True))
+        P5 = D["pety"][nr_peta("ropucha_z_chatka") - 1]
+        r5 = U["dzikie"]["rozmiar_rzadkosci"][4]
+        self.assertAlmostEqual(zwykly.get("P").get("promien"), D["pety"][0]["promien"])
+        self.assertAlmostEqual(rzadki.get("P").get("promien"), P5["promien"] * r5)
+        self.assertAlmostEqual(alfa.get("P").get("wysokosc"), P5["wysokosc"] * r5 * U["alfa"]["rozmiar"])
+        self.assertTrue(alfa.get("alfa"))
+        self.assertEqual(alfa.get("flagiOdm"), 64)
+        self.assertAlmostEqual(D["pety"][nr_peta("ropucha_z_chatka") - 1]["promien"], P5["promien"], msg="dane peta bez zmian (kopia)")
+
+    def test_3b_zlapanie_pierwsze_pewne_i_litosc(self):
+        Lp = U["lapanie"]
+        prof = jeden("profilNowy", DL)
+        nr = nr_peta("cierniowy_wilk")                      # Rare (3)
+        w = z(jeden("zlapanie", DL, prof, nr, False, 0.999, 0.99))
+        self.assertTrue(w["zlapany"] and w["pewne"], "pierwsze wybicie dzikiego = pewne złapanie")
+        self.assertTrue(w["nowy"])
+        self.assertEqual(z(prof.get("pety"))["cierniowy_wilk"], 1)
+        self.assertAlmostEqual(jeden("szansaZlapania", DL, prof, 3), Lp["szanse"][2])
+        for i in range(3):
+            w = z(jeden("zlapanie", DL, prof, nr, False, 0.99, 0.99))
+            self.assertFalse(w["zlapany"])
+        self.assertEqual(z(prof.get("litosc"))[2], 3)
+        self.assertAlmostEqual(jeden("szansaZlapania", DL, prof, 3), Lp["szanse"][2] + 3 * Lp["litosc_krok"])
+        self.assertAlmostEqual(jeden("szansaZlapania", DL, prof, 3, True), Lp["szanse"][2] + 3 * Lp["litosc_krok"] + U["alfa"]["szansa_plus"])
+        w = z(jeden("zlapanie", DL, prof, nr, False, 0.0, 0.99))
+        self.assertTrue(w["zlapany"])
+        self.assertEqual(w["gwiazdki"], 2, "kopia = gwiazdka")
+        self.assertEqual(z(prof.get("litosc"))[2], 0, "udane zeruje litość")
+        prof.get("litosc").set(1, 999.0)
+        self.assertAlmostEqual(jeden("szansaZlapania", DL, prof, 1), Lp["maks"])
+
+    def test_3c_odmiany(self):
+        lista = U["odmiany"]["lista"]
+        self.assertEqual(jeden("losujOdmiane", DL, 0.0), "giant")
+        self.assertEqual(jeden("losujOdmiane", DL, lista[0]["szansa"] + 0.001), "golden")
+        self.assertEqual(jeden("losujOdmiane", DL, lista[0]["szansa"] + lista[1]["szansa"] + 0.001), "big")
+        self.assertIsNone(jeden("losujOdmiane", DL, 0.99))
+        self.assertEqual(jeden("losujOdmiane", DL, 0.99, "big"), "big", "ALPHA: co najmniej BIG")
+        prof = jeden("profilNowy", DL)
+        nr = nr_peta("lesny_troll")
+        jeden("zlapanie", DL, prof, nr, True, 0.0, 0.99)    # ALPHA → BIG
+        self.assertEqual(z(prof.get("odmiany")), {"lesny_troll": {"big": 1}})
+        o = z(jeden("odmianyPeta", DL, prof, "lesny_troll"))
+        self.assertEqual((o["rozmiar"], o["flagi"]), (1.25, 8))
+        wolaj("dodajOdmiane", prof, "lesny_troll", "golden")
+        wolaj("dodajOdmiane", prof, "lesny_troll", "giant")
+        o = z(jeden("odmianyPeta", DL, prof, "lesny_troll"))
+        self.assertEqual((o["rozmiar"], o["sila"], o["zloto"], o["flagi"]), (1.6, 1.3, 1.5, 16 + 32))
+        m = z(jeden("mnoznikPeta", DL, 1, 1, jeden("odmianyPeta", DL, prof, "lesny_troll")))
+        self.assertEqual((m["rozmiar"], m["zloto"]), (1.6, 1.5))
+        # złoty pet daje więcej złota na sekundę
+        S = stan()
+        p = jeden("dodajPeta", S, nr, 1, False, 0, 12, 30, 0, 0, jeden("mnoznikPeta", DL, 1, 1, jeden("odmianyPeta", DL, prof, "lesny_troll")))
+        p.set("faza", "walka")
+        self.assertAlmostEqual(jeden("zlotoPeta", DL, p), D["zloto"]["baza"] * D["strefy"][0]["mnoznik"] * 4 * 1.5)
+
+    def test_3d_asysty_i_wybicie_dzikiego(self):
+        S = stan(Los(3, stala=0.5))
+        dz = dodaj(S, "lesny_slime", 0, 0, wl=0, dziki=True)
+        a = dodaj(S, "lesny_troll", 3, 0, wl=1)
+        b = dodaj(S, "lesny_troll", -3, 0, wl=2)
+        jeden("cios", S, b, dz, 1, 1, 1, 0, False, LM.Tabela())
+        jeden("cios", S, a, dz, 999, 60, 1, 0, False, LM.Tabela())
+        zd = krok(S, 40)
+        w = [e for e in zd if e["t"] in ("ringout", "ko") and e["id"] == dz.get("id")]
+        self.assertTrue(w)
+        self.assertEqual((w[0]["przez"], w[0]["stopien"], w[0]["alfa"]), (1, 1, False))
+        self.assertEqual(len(w[0]["trafili"]), 2, "asysta: trafili oba pety graczy (sloty 1 i 2)")
+
+    def test_3e_zegar_wydarzen(self):
+        # 2026-11-21 20:00:00 UTC
+        t0 = 1795377600
+        self.assertEqual(t0 % 3600, 0)
+        typ, kiedy = wolaj("nastepneWydarzenie", DL, t0 - 1)
+        self.assertEqual((typ, kiedy), ("boss", t0), "pełna godzina: boss (wygrywa ze złotym)")
+        typ, kiedy = wolaj("nastepneWydarzenie", DL, t0)
+        self.assertEqual((typ, kiedy - t0), ("alfa", 120))
+        typ, kiedy = wolaj("nastepneWydarzenie", DL, t0 + 14 * 60 + 30)
+        self.assertEqual((typ, kiedy - t0), ("zloty", 15 * 60))
+        typ, kiedy = wolaj("nastepneWydarzenie", DL, t0 + 29 * 60)
+        self.assertEqual((typ, kiedy - t0), ("boss", 30 * 60))
+        typy = []
+        t = t0 - 1
+        while True:
+            typ, t = wolaj("nastepneWydarzenie", DL, t)
+            if t >= t0 + 3600:
+                break
+            typy.append(typ)
+        self.assertEqual((typy.count("boss"), typy.count("zloty"), typy.count("alfa")), (2, 2, 12), "w godzinie")
+
+    def test_3f_wylegarnia_w_czasie(self):
+        W = U["wylegarnia"]
+        prof = jeden("profilNowy", DL)
+        t = 1_800_000_000.0
+        self.assertTrue(jeden("doWylegarni", DL, prof, 1, t))
+        self.assertTrue(jeden("doWylegarni", DL, prof, 3, t + 10))
+        self.assertFalse(jeden("doWylegarni", DL, prof, 2, t + 20), "dwa miejsca")
+        self.assertIsNone(jeden("zWylegarni", prof, 1, t + W["czas_s"][0] - 1))
+        wp = z(prof.get("wylegarnia"))
+        self.assertEqual(jeden("cenaPrzyspieszenia", DL, prof.get("wylegarnia").get(2), t + 10), math.ceil(W["czas_s"][2] * W["zl_na_s"][2]))
+        self.assertEqual(jeden("zWylegarni", prof, 1, t + W["czas_s"][0]), 1, "po czasie (także poza grą) — gotowe")
+        self.assertEqual(jeden("zWylegarni", prof, 1, t + 100, True), 3, "przyspieszone")
+        self.assertEqual(z(prof.get("wylegarnia")) or [], [])
+        self.assertEqual(len(wp), 2)
+        # zapis: wylęgarnia przechodzi przez profil
+        jeden("doWylegarni", DL, prof, 2, t)
+        zp = z(jeden("doZapisu", DL, jeden("profil", DL, jeden("doZapisu", DL, prof))))
+        self.assertEqual(zp["wylegarnia"], [{"nr": 2, "koniec": t + W["czas_s"][1]}])
+
+    def test_3g_dzienny_prezent(self):
+        N = U["prezent"]["nagrody"]
+        prof = jeden("profilNowy", DL)
+        dzien = 86400.0
+        t = 20000 * dzien + 3600
+        st = z(jeden("prezentStan", DL, prof, t))
+        self.assertTrue(st["mozna"])
+        self.assertEqual((st["dzien"], st["nagroda"], st["jutro"]), (1, N[0], N[1]))
+        n, jutro = wolaj("odbierzPrezent", DL, prof, t)
+        self.assertEqual((z(n), z(jutro)), (N[0], N[1]))
+        self.assertEqual(prof.get("zloto"), N[0]["zloto"])
+        self.assertIsNone(wolaj("odbierzPrezent", DL, prof, t + 3600)[0], "raz dziennie")
+        # przerwa trzech dni nie zeruje serii
+        n, _ = wolaj("odbierzPrezent", DL, prof, t + 4 * dzien)
+        self.assertEqual(z(n), N[1])
+        self.assertEqual(z(prof.get("prezent"))["seria"], 2)
+        for _ in range(5):
+            t += dzien * 5
+            wolaj("odbierzPrezent", DL, prof, t)
+        self.assertEqual(z(jeden("prezentStan", DL, prof, t + dzien))["nagroda"], N[0], "po 7 dniach od nowa (seria rośnie dalej)")
+        self.assertEqual(jeden("opisNagrody", DL, LM.do_luau({"jajko": 2})), D["jajka"][1]["nazwa"])
+        self.assertEqual(jeden("opisNagrody", DL, LM.do_luau({"zloto": 1200})), "+1.2K G")
+
+    def test_3h_profil_v3_przez_zapis(self):
+        prof = jeden("profilNowy", DL)
+        jeden("zlapanie", DL, prof, nr_peta("ognik"), False, 0.5, 0.0)
+        jeden("odbierzPrezent", DL, prof, 86400.0 * 20001)
+        zp = z(jeden("doZapisu", DL, jeden("profil", DL, jeden("doZapisu", DL, prof))))
+        self.assertTrue(zp["samouczek"]["zlap"])
+        self.assertEqual(zp["zlapane"], 1)
+        self.assertEqual(zp["odmiany"], {"ognik": {"giant": 1}})
+        self.assertEqual(zp["prezent"], {"dzien": 20001, "seria": 1})
+        stary = z(jeden("doZapisu", DL, jeden("profil", DL, LM.do_luau({"zloto": 5, "samouczek": {"rzut": True, "jajko": True}}))))
+        self.assertFalse(stary["samouczek"]["zlap"], "profil v2: pierwsze złapanie też pewne")
+
     def test_2r_tablice_i_wydarzenia(self):
         t = z(jeden("top", LM.do_luau([{"nazwa": "a", "w": 3}, {"nazwa": "b", "w": 9}, {"nazwa": "c", "w": 0}, {"nazwa": "d", "w": 5}]), 2))
         self.assertEqual([x["nazwa"] for x in t], ["b", "d"])

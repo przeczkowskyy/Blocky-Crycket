@@ -154,14 +154,23 @@ E:warstwa2D(warstwa)
 -- słowa komiksowe: duże najwyżej 2 naraz i krótko; małe tylko przy ciosach własnego peta
 local duzychSlow = 0
 local duzychPomin = 0
+local duzychTron = 0
 local function duzeSlowo(poz: Vector3, tekst: string, kolor: Color3, wielkosc: number?)
-	if duzychSlow >= 2 then
+	-- v3: przy tronie (wzgórze) najwyżej jedno duże słowo naraz
+	local tron = Vector2.new(poz.X, poz.Z).Magnitude < D.strefy[2].r + 4
+	if duzychSlow >= 2 or (tron and duzychTron >= 1) then
 		duzychPomin += 1
 		return
 	end
 	duzychSlow += 1
+	if tron then
+		duzychTron += 1
+	end
 	E:slowo(poz, tekst, kolor, wielkosc or 1.1, 0.75, function()
 		duzychSlow -= 1
+		if tron then
+			duzychTron -= 1
+		end
 	end)
 end
 local function maleSlowo(poz: Vector3, tekst: string, kolor: Color3)
@@ -219,8 +228,37 @@ local function kolorKrazka(w): string
 		return K.ty
 	elseif w.slot > 0 then
 		return kolorSlotu(w.slot)
+	elseif w.alfa then
+		return "FF3D3D"
 	end
-	return K.dziki
+	-- v3: dziki potwór — krążek w kolorze rzadkości
+	local R = D.rzadkosci[w.Pd.stopien or 1]
+	return if R and (w.Pd.stopien or 1) > 1 then R.kolor else K.dziki
+end
+
+-- v3: rozmiar i napis odmiany z flag (BIG 8, GIANT 16, GOLDEN 32, ALPHA 64); dziki — rozmiar według rzadkości
+local function cechyWidoku(nr: number, slot: number, f2: number): (number, string?, string?)
+	if nr >= 200 then
+		return 1, nil, nil
+	end
+	local s, tekst, kolor = 1, nil, nil
+	for _, O in D.odmiany.lista do
+		if bit32.band(f2, O.flaga) ~= 0 then
+			if O.rozmiar > s then
+				s = O.rozmiar
+			end
+			tekst = if tekst then tekst .. " " .. O.nazwa else O.nazwa
+			kolor = kolor or O.kolor
+		end
+	end
+	if slot == 0 then
+		s *= D.dzikie.rozmiar[D.pety[nr].stopien] or 1
+		if bit32.band(f2, 64) ~= 0 then
+			s *= D.alfa.rozmiar
+			tekst, kolor = D.ui.alfa, "FF3D3D"
+		end
+	end
+	return s, tekst, kolor
 end
 
 local function nowyWidok(id: number, nr: number, slot: number, x: number, z: number, f2: number?): any
@@ -228,16 +266,38 @@ local function nowyWidok(id: number, nr: number, slot: number, x: number, z: num
 	if not Pd then
 		return nil
 	end
+	local skala, tekstOdm, kolorOdm = cechyWidoku(nr, slot, f2 or 0)
 	local m = wzorzec(Pd.wzorzec)
 	local korzen = m.PrimaryPart :: BasePart
 	korzen.Anchored = true
 	m.Name = "Pet" .. id
+	if skala ~= 1 then
+		pcall(function()
+			m:ScaleTo(skala)
+		end)
+		Pd = table.clone(Pd)
+		Pd.wysokosc *= skala
+		Pd.promien *= skala
+	end
 	local zloty = f2 ~= nil and bit32.band(f2, 4) ~= 0
 	local moj = slot > 0 and slot == mojSlot()
 	local w: any = { id = id, nr = nr, Pd = Pd, slot = slot, model = m, korzen = korzen, x = x, z = z, tx = x, tz = z, y = 0, kier = 0,
 		tkier = 0, hp = 1, hpMax = 1, pasek = 0, flagi = 0, f2 = f2 or 0, zl = 0, faza = 0, lot = nil, odlot = nil, skok = nil,
 		trafienie = 0, blysk = 0, puls = nil, brak = 0, faza0 = math.random() * 6, gwiazdki = 1, boss = nr >= 200, zloty = zloty,
-		ty = 0, yAir = 0, yBaza = podloga(x, z), yR = 0, statusy = {}, wypad = nil, monetyAcc = 0 }
+		ty = 0, yAir = 0, yBaza = podloga(x, z), yR = 0, statusy = {}, wypad = nil, monetyAcc = 0, skala = skala, tekstOdm = tekstOdm,
+		alfa = slot == 0 and f2 ~= nil and bit32.band(f2, 64) ~= 0 }
+	if nr < 200 and f2 and bit32.band(f2, 32) ~= 0 then
+		-- odmiana GOLDEN: złota i lśniąca (widać z daleka)
+		for _, d in m:GetDescendants() do
+			if d:IsA("BasePart") and d ~= korzen then
+				d.Color = Color3.fromHex("FFC83D"):Lerp(d.Color, 0.35)
+				d.Material = Enum.Material.Foil
+			end
+		end
+		local sp = Instance.new("Sparkles")
+		sp.SparkleColor = Color3.fromHex("FFE68A")
+		sp.Parent = korzen
+	end
 	if w.boss and zloty then
 		-- złoty boss: cały złoty i lśniący
 		for _, d in m:GetDescendants() do
@@ -392,6 +452,8 @@ local ruchPodpowiedzDo: number? = nil
 local wyslane = 0
 local padAktywny = false
 local wymuszonaCalosc = false
+local wymuszonyPet = false
+local trybKamery = "calosc"
 -- sterowanie petem: wektor ekranu (prawo, góra) → świat (x, z) według kamery; ostatnie dotknięcie (autopilot po
 -- sterowanie.autopilot_s); próby mogą podać wektor haczykiem "ster"
 local ster = Vector2.zero
@@ -449,7 +511,18 @@ local function stanOkien()
 			ks[id] = true
 		end
 	end
-	return { zloto = gracz:GetAttribute("PA_Zloto") or 0, darmowe = string.sub(sam, 2, 2) ~= "1", kolekcja = kolekcja(), druzyna = dr, ksiega = ks }
+	-- v3: odmiany („id=big+golden,…”), wylęgarnia, dzienny prezent
+	local odm = {}
+	for _, s in string.split(gracz:GetAttribute("PA_Odmiany") or "", ",") do
+		local id, l = string.match(s, "^([%w_]+)=(.*)$")
+		if id then
+			odm[id] = string.split(l, "+")
+		end
+	end
+	return { zloto = gracz:GetAttribute("PA_Zloto") or 0, darmowe = string.sub(sam, 2, 2) ~= "1", kolekcja = kolekcja(), druzyna = dr, ksiega = ks,
+		odmiany = odm, wylegarnia = wylegarniaLista(), wylegarniaTxt = gracz:GetAttribute("PA_Wylegarnia") or "", czas = czasProfilu,
+		prezent = { mozna = gracz:GetAttribute("PA_PrezentMozna") == true, dzien = gracz:GetAttribute("PA_PrezentDzien") or 1,
+			nagroda = gracz:GetAttribute("PA_PrezentNagroda") or "", jutro = gracz:GetAttribute("PA_PrezentJutro") or "" } }
 end
 
 local function wybierz(nr: number)
@@ -501,8 +574,15 @@ local function zbudujUI()
 		end, naPety = function()
 			przelaczOkno("pety")
 		end, naTrening = trening, naWidok = function()
-			wymuszonaCalosc = not wymuszonaCalosc
+			-- VIEW: z widoku za petem — cała arena; z całości — za petem
+			if trybKamery == "pet" then
+				wymuszonaCalosc, wymuszonyPet = true, false
+			else
+				wymuszonaCalosc, wymuszonyPet = false, true
+			end
 			dzwiek("klik")
+		end, naPrezent = function()
+			przelaczOkno("prezent")
 		end })
 	okna = Okna.nowe(ui.okno, D, L, wzorce, {
 		skala = ui.skala,
@@ -519,6 +599,16 @@ local function zbudujUI()
 			wyslane += 1
 			dzwiek("klik")
 		end,
+		naWylegarnie = function(i: number, przyspiesz: boolean)
+			evAkcja:FireServer(if przyspiesz then "przyspiesz" else "wykluj", i)
+			wyslane += 1
+			dzwiek("klik")
+		end,
+		naPrezent = function()
+			evAkcja:FireServer("prezent")
+			wyslane += 1
+			dzwiek("klik")
+		end,
 		naDzwiek = function(rola: string, ton: number)
 			dzwiek(rola, ton)
 		end,
@@ -531,6 +621,20 @@ local function zbudujUI()
 	})
 end
 zbudujUI()
+-- v3: powracający gracz z prezentem do odebrania — okno prezentu raz po wejściu (nowy gracz najpierw samouczek)
+task.spawn(function()
+	for _ = 1, 100 do
+		if gracz:GetAttribute("PA_ProfilGotowy") then
+			break
+		end
+		task.wait(0.2)
+	end
+	task.wait(1.5)
+	local sam = gracz:GetAttribute("PA_Samouczek") or "000"
+	if gracz:GetAttribute("PA_PrezentMozna") == true and string.sub(sam, 3, 3) == "1" and not okna:otwarte() then
+		przelaczOkno("prezent")
+	end
+end)
 
 ------------------------------------------------------------------ kamera stała nad areną (wstrząs przy wielkich chwilach)
 local kameraWolna = false
@@ -539,7 +643,7 @@ local wstrzas = { do_ = 0, sila = 0 }
 local stopDo = 0
 local sledzLot: any = nil
 local camCF: CFrame? = nil
-local trybKamery = "calosc"
+trybKamery = "calosc"
 local bossWejscieDo = 0
 
 local function pozycjaKamery(): (Vector3?, Vector3?)
@@ -550,8 +654,12 @@ local function pozycjaKamery(): (Vector3?, Vector3?)
 	local KK = D.kamera
 	local e = math.rad(KK.nachylenie_st)
 	local dx, dz = math.sin(s.katKamery), math.cos(s.katKamery)
-	local odl = KK.cel_z + KK.odleglosc * math.cos(e)
-	return Vector3.new(dx * odl, KK.odleglosc * math.sin(e), dz * odl), Vector3.new(dx * KK.cel_z, 0, dz * KK.cel_z)
+	-- v3: wąskie okno (tablet 4:3, okno Studio) — kamera cofa się, żeby cała arena mieściła się w poziomie
+	local v = kamera.ViewportSize
+	local k = math.max(1, 1.5 / math.max(0.5, v.X / math.max(1, v.Y)))
+	local d = KK.odleglosc * k
+	local odl = KK.cel_z + d * math.cos(e)
+	return Vector3.new(dx * odl, d * math.sin(e), dz * odl), Vector3.new(dx * KK.cel_z, 0, dz * KK.cel_z)
 end
 
 local function wstrzasnij(sila: number, czas: number)
@@ -577,7 +685,8 @@ local function celKamery(): (CFrame?, string)
 	end
 	sledzLot = nil
 	local mojPet = widoki[gracz:GetAttribute("PA_Pet") or 0]
-	if not wymuszonaCalosc and os.clock() >= bossWejscieDo and mojPet and not mojPet.lot and not mojPet.odlot then
+	-- v3: domyślnie cała arena (pet walczy na autopilocie); za petem tylko przy ręcznym sterowaniu albo po VIEW
+	if not wymuszonaCalosc and (reczne() or wymuszonyPet) and os.clock() >= bossWejscieDo and mojPet and not mojPet.lot and not mojPet.odlot then
 		local KK = D.kamera
 		local d = KK.za_petem * mojPet.Pd.wysokosc
 		local e = math.rad(KK.za_petem_nachylenie_st)
@@ -1142,7 +1251,7 @@ local function odlotRingOut(w, z)
 		w.korzen.CFrame = CFrame.new(p) * CFrame.Angles(t * 11, t * 5, t * 3)
 		if not slowo and t > 0.15 then
 			slowo = true
-			E:slowo(start + Vector3.new(0, 16, 0), D.ui.ring_out, Color3.fromHex("FF6A3D"), 1.5, 1.1)
+			duzeSlowo(start + Vector3.new(0, 16, 0), D.ui.ring_out, Color3.fromHex("FF6A3D"), 1.5)
 		end
 		w.krazek.Transparency = 1
 		w.etykieta.Visible = false
@@ -1226,12 +1335,13 @@ local function lotWidoku(w, od: Vector3, x: number, z: number, czas: number)
 end
 
 local wyklucia = 0
+local liczZlapan = 0
 local function zdarzenie(z)
 	liczZdarzen[z.t] = (liczZdarzen[z.t] or 0) + 1
 	local moj = mojSlot()
 	local mid = mojId()
 	if z.t == "rzut" or z.t == "zloty" then
-		local w = widoki[z.id] or nowyWidok(z.id, z.nr, if z.dziki or z.t == "zloty" then 0 else z.wl, z.x, z.z, if z.t == "zloty" then 4 else 0)
+		local w = widoki[z.id] or nowyWidok(z.id, z.nr, if z.dziki or z.t == "zloty" then 0 else z.wl, z.x, z.z, if z.t == "zloty" then 4 else (z.f2 or 0))
 		if w then
 			lotWidoku(w, Vector3.new(z.x0, z.y0, z.z0), z.x, z.z, z.czas)
 			if z.dziki or z.t == "zloty" then
@@ -1454,6 +1564,66 @@ local function zdarzenie(z)
 		okna:zamknij()
 		okna:wyklucie(z)
 		dzwiek("trzesienie", 0.9)
+	elseif z.t == "zlapanie" then
+		-- v3 „CAUGHT!”: pierścień w kolorze rzadkości, potwór zwija się i leci do loży łowcy; łowca — krótka scena wyklucia
+		local R = D.rzadkosci[z.rzadkosc] or D.rzadkosci[1]
+		local w = widoki[z.id]
+		local cel = pozSlotu(z.wl)
+		if w then
+			local od = w.korzen.Position
+			E:pierscien(od, 6, Color3.fromHex(R.kolor), 0.6)
+			local t = 0
+			w.lot = nil
+			w.odlot = function(dt: number): boolean
+				t += dt
+				if t >= 0.9 then
+					E:iskry(cel, Color3.fromHex(R.kolor), 16, 1.2)
+					return true
+				end
+				local f = t / 0.9
+				local p = od:Lerp(cel, f) + Vector3.new(0, 14 * math.sin(f * math.pi), 0)
+				pcall(function()
+					w.model:ScaleTo(math.max(0.05, (w.skala or 1) * (1 - f * 0.85)))
+				end)
+				w.korzen.CFrame = CFrame.new(p) * CFrame.Angles(t * 14, t * 9, 0)
+				w.krazek.Transparency = 1
+				w.etykieta.Visible = false
+				return false
+			end
+		end
+		liczZlapan += 1
+		if z.wl == moj and moj > 0 then
+			okna:zamknij()
+			okna:wyklucie({ zlapanie = true, jajko = 1, pet = z.nr, rzadkosc = z.rzadkosc, nowy = z.nowy, gwiazdki = z.gwiazdki, maks = z.maks,
+				zwrot = z.zwrot, odmiana = z.odmiana, alfa = z.alfa })
+			dzwiek("zlapanie")
+		else
+			E:slowo(cel + Vector3.new(0, 6, 0), D.ui.zlapany, Color3.fromHex(R.kolor), 0.8, 0.9)
+		end
+	elseif z.t == "ucieczka" then
+		local w = widoki[z.id]
+		local p = if w then w.korzen.Position else Vector3.new(0, 4, 0)
+		if z.wl == moj and moj > 0 then
+			ui:baner(D.ui.uciekl .. " +" .. L.format(z.ile) .. " G", Color3.fromHex("FFB13D"), 1.4)
+			duzeSlowo(p + Vector3.new(0, 6, 0), D.ui.uciekl, Color3.fromHex("FFB13D"), 1.0)
+		end
+	elseif z.t == "alfa" then
+		ui:baner(D.ui.alfa_idzie, Color3.fromHex("FF3D3D"), 2.0)
+		wstrzasnij(0.7, 0.5)
+		radoscDo = os.clock() + 2.5
+		bossWejscieDo = os.clock() + 2.4
+		dzwiek("boss", 1.2)
+	elseif z.t == "do_wylegarni" then
+		ui:baner(string.format(D.ui.do_wylegarni, string.format("%d:%02d", math.floor(z.czas / 60), z.czas % 60)), Color3.fromHex(K.zloto), 1.8)
+		dzwiek("zakup")
+	elseif z.t == "prezent" then
+		okna:zamknij()
+		ui:baner(string.format(D.ui.prezent_dzien, z.dzien) .. ": " .. z.opis, Color3.fromHex(K.zloto), 2.2)
+		ui:ogloszenie(string.format(D.ui.jutro, z.jutro), K.zloto)
+		dzwiek("krol")
+		if z.nagroda and z.nagroda.zloto then
+			zloteSlowo(pozSlotu(moj), z.nagroda.zloto)
+		end
 	elseif z.t == "ogloszenie" then
 		ui:ogloszenie(z.tekst, z.kolor)
 	elseif z.t == "poziom" then
@@ -1719,7 +1889,7 @@ local function rysujWidok(w, dt: number, dtW: number)
 		local f = w.puls.t / 0.24
 		local s = if f >= 1 then 1 else 1 - math.sin(f * math.pi) * 0.2 + (if f > 0.5 then math.sin((f - 0.5) * 2 * math.pi) * 0.06 else 0)
 		pcall(function()
-			w.model:ScaleTo(s)
+			w.model:ScaleTo(s * (w.skala or 1))
 		end)
 		if f >= 1 then
 			w.puls = nil
@@ -1761,11 +1931,12 @@ local function rysujWidok(w, dt: number, dtW: number)
 		if ikony ~= "" then
 			ikony ..= " "
 		end
+		local odm = if w.tekstOdm then w.tekstOdm .. " " else ""
 		if moj then
-			w.napis.Text = (if reczne() then "" else D.ui.auto .. " ") .. ikony .. gw
+			w.napis.Text = (if reczne() then "" else D.ui.auto .. " ") .. odm .. ikony .. gw
 				.. (if w.zl > 0 then (if gw ~= "" then " " else "") .. string.format(D.ui.na_s, L.naSekunde(w.zl)) else "")
 		else
-			w.napis.Text = ikony .. gw
+			w.napis.Text = odm .. ikony .. gw
 		end
 		w.nagrodaTekst.Visible = krol
 		if krol then
@@ -1842,18 +2013,59 @@ function krokSceny(dt: number)
 	end
 end
 
-local function wydarzenieTekst(): string?
+-- v3 panel NEXT (od wejścia): najbliższe wydarzenie zegara i zapowiedź nowego potwora
+local function czasTekst(s: number): string
+	s = math.max(0, math.ceil(s))
+	if s >= 3600 then
+		return string.format("%d:%02d:%02d", math.floor(s / 3600), math.floor(s / 60) % 60, s % 60)
+	end
+	return string.format("%d:%02d", math.floor(s / 60), s % 60)
+end
+
+function nastepneTekst(): (string?, string?)
 	local typ = kontener:GetAttribute("PA_WydTyp")
 	local t = kontener:GetAttribute("PA_WydT")
-	if type(t) ~= "number" or type(typ) ~= "string" then
-		return nil
+	local l1 = nil
+	if type(t) == "number" and type(typ) == "string" then
+		l1 = string.format(D.ui.nastepne, D.ui.nazwy_wydarzen[typ] or string.upper(typ), czasTekst(t - teraz()))
 	end
-	local zostalo = math.ceil(t - teraz())
-	if zostalo > 60 or zostalo < 0 then
-		return nil
+	local dni = math.ceil((D.nowyPotwor.czas - (teraz() + (kontener:GetAttribute("PA_CzasPrzes") or 0))) / 86400)
+	local l2 = if dni > 1 then string.format(D.ui.nowy_potwor, dni) elseif dni == 1 then D.ui.nowy_potwor_jutro else nil
+	return l1, l2
+end
+
+-- wylęgarnia: czy któreś jajko gotowe; „YOUR EGG IS READY!” raz na jajko
+local ogloszoneJajka: { [string]: boolean } = {}
+function wylegarniaLista(): { any }
+	local w = {}
+	for _, s in string.split(gracz:GetAttribute("PA_Wylegarnia") or "", ";") do
+		local nr, koniec = string.match(s, "^(%d+):(%d+)$")
+		if nr then
+			table.insert(w, { nr = tonumber(nr), koniec = tonumber(koniec) })
+		end
 	end
-	local czas = string.format("%d:%02d", math.floor(zostalo / 60), zostalo % 60)
-	return string.format(if typ == "boss" then D.ui.boss_za else D.ui.zloty_za, czas)
+	return w
+end
+
+function czasProfilu(): number
+	return teraz() + (kontener:GetAttribute("PA_CzasPrzes") or 0)
+end
+
+function krokWylegarni(): boolean
+	local jest = false
+	local tn = czasProfilu()
+	for _, j in wylegarniaLista() do
+		if j.koniec <= tn then
+			jest = true
+			local k = j.nr .. ":" .. j.koniec
+			if not ogloszoneJajka[k] then
+				ogloszoneJajka[k] = true
+				ui:baner(D.ui.jajko_gotowe, Color3.fromHex(K.zloto), 2.0)
+				dzwiek("krol", 1.2)
+			end
+		end
+	end
+	return jest
 end
 
 RunService.RenderStepped:Connect(function(dt: number)
@@ -1954,11 +2166,14 @@ RunService.RenderStepped:Connect(function(dt: number)
 			end
 		end
 		ui:boss(if boss then boss.Pd.nazwa else nil, boss and boss.hp, boss and boss.hpMax)
-		ui:wydarzenie(if boss then nil else wydarzenieTekst())
-		local sam = gracz:GetAttribute("PA_Samouczek") or "00"
+		ui:nastepne(nastepneTekst())
+		local sam = gracz:GetAttribute("PA_Samouczek") or "000"
 		local rzucil = string.sub(sam, 1, 1) == "1"
 		local jajkoZrobione = string.sub(sam, 2, 2) == "1"
-		ui:przyciski({ trening = gracz:GetAttribute("PA_Trening") == true, jajkoPulsuje = rzucil and not jajkoZrobione })
+		local zlapal = string.sub(sam, 3, 3) == "1"
+		local gotoweJajko = krokWylegarni()
+		ui:przyciski({ trening = gracz:GetAttribute("PA_Trening") == true, jajkoPulsuje = (zlapal and not jajkoZrobione) or gotoweJajko,
+			prezent = gracz:GetAttribute("PA_PrezentMozna") == true })
 		okna:odswiez(stanOkien())
 		local gotowych, najblizej = 0, math.huge
 		for _, w in lista do
@@ -1979,11 +2194,14 @@ RunService.RenderStepped:Connect(function(dt: number)
 			ui:podpowiedz(nil)
 		elseif mojPet and not mojPet.lot and mojPet.pasek >= 1 and not uzylUmiejetnosci then
 			ui:podpowiedz(D.ui.podpowiedz_umiejetnosc)
-		elseif rzucil and not jajkoZrobione then
-			ui:podpowiedz(D.ui.podpowiedz_jajko)
+		elseif mojPet and not mojPet.lot and not zlapal then
+			-- v3 samouczek: rzuć → wybij dzikiego → złap (pierwsze złapanie pewne)
+			ui:podpowiedz(D.ui.podpowiedz_lap)
 		elseif bezPeta and (gotowych > 0 or not rzucil) then
 			ui:podpowiedz(if padAktywny then D.ui.podpowiedz_pad elseif dotyk or ui.opcje.emulacja then D.ui.podpowiedz_dotyk
 				else D.ui.podpowiedz_mysz)
+		elseif zlapal and not jajkoZrobione then
+			ui:podpowiedz(D.ui.podpowiedz_jajko)
 		elseif bezPeta and najblizej < math.huge then
 			ui:podpowiedz(string.format(D.ui.nastepny, najblizej))
 		elseif ruchPodp and os.clock() < (ruchPodpowiedzDo or 0) then
@@ -2057,7 +2275,8 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 			local px, pt = rozmiarNaEkranie(w)
 			table.insert(lista, { id = id, x = w.x, z = w.z, y = w.y, slot = w.slot, lot = w.lot ~= nil, odlot = w.odlot ~= nil,
 				hp = w.hp, etykieta = w.etykieta.Visible, napis = w.napis.Text, px = px, pt = pt, boss = w.boss, zloty = w.zloty,
-				gwiazdki = w.gwiazdki, tarcza = bit32.band(w.f2, 1) ~= 0, krazek = w.krazek.Color:ToHex() })
+				gwiazdki = w.gwiazdki, tarcza = bit32.band(w.f2, 1) ~= 0, krazek = w.krazek.Color:ToHex(), skala = w.skala, odm = w.tekstOdm,
+				f2 = w.f2 })
 		end
 		local z, n = dzwiekiZaladowane()
 		local v = kamera.ViewportSize
@@ -2080,6 +2299,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 			wybrany = wybrany, dotyk = dotyk, duzychSlow = duzychSlow, duzychPominietych = duzychPomin, wDloni = wDloniId,
 			napisyGraczy = napisyG, wyklucia = wyklucia, pad = padAktywny, trybKamery = trybKamery, wymuszonaCalosc = wymuszonaCalosc,
 			koronaSkala = koronaSkala, monetLeci = monetLeci, kibicow = #kibice, plomieni = #plomienie,
+			zlapan = liczZlapan, zdarzenia = liczZdarzen, wylegarnia = wylegarniaLista(), wymuszonyPet = wymuszonyPet,
 			reczne = reczne(), ster = { ster.X, ster.Y }, sterowanieAwatara = sterowanieAwatara,
 			mojPt = (function()
 				local w = widoki[gracz:GetAttribute("PA_Pet") or 0]
@@ -2134,7 +2354,16 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 		end
 		return true
 	elseif polecenie == "widok" then
+		-- true — cała arena; "pet" — za petem (jak VIEW); false/nil — domyślnie (całość, za petem przy sterowaniu)
 		wymuszonaCalosc = a == true
+		wymuszonyPet = a == "pet"
+		return true
+	elseif polecenie == "wylegarnia" then
+		-- a: nr miejsca, b: true — przyspiesz
+		evAkcja:FireServer(if b then "przyspiesz" else "wykluj", a)
+		return true
+	elseif polecenie == "prezent" then
+		evAkcja:FireServer("prezent")
 		return true
 	elseif polecenie == "kadr" then
 		return kadr(a, b)
