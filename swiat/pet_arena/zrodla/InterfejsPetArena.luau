@@ -150,7 +150,7 @@ function Interfejs.nowy(rodzic: Instance, D, L, opcje)
 	self.banerRamka = baner
 
 	------------------------------------------------------------ prawy górny róg: EGGS, PETS, TRAIN
-	local pg = warstwa("Przyciski", Vector2.new(1, 0), UDim2.new(1, -8, 0, 4), Vector2.new(208, 50))
+	local pg = warstwa("Przyciski", Vector2.new(1, 0), UDim2.new(1, -8, 0, 4), Vector2.new(279, 50))
 	local function przycisk(nazwa: string, tekst: string, x: number, kolor: string, akcja, zn: string)
 		local b = nowy("TextButton", { Name = nazwa, Position = UDim2.fromOffset(x, 0), Size = UDim2.fromOffset(66, 46), BackgroundColor3 = Color3.fromHex(kolor),
 			Text = "", AutoButtonColor = true }, pg)
@@ -178,6 +178,11 @@ function Interfejs.nowy(rodzic: Instance, D, L, opcje)
 			opcje.naTrening()
 		end
 	end, D.ui.pad.trening)
+	self.bWidok = przycisk("Widok", D.ui.widok, 213, "5A5566", function()
+		if opcje.naWidok then
+			opcje.naWidok()
+		end
+	end, "")
 	self.jajkaSkala = nowy("UIScale", { Scale = 1 }, self.bJajka)
 	self.przyciskiGorne = pg
 
@@ -265,6 +270,19 @@ function Interfejs.nowy(rodzic: Instance, D, L, opcje)
 	znaczek(podTlo, D.ui.pad.rzut, UDim2.new(0, 0, 0.5, 0))
 	pod.Visible = false
 	self.podpowiedzRamka = pod
+
+	------------------------------------------------------------ drążek peta (telefon, lewy dół) — widoczny, gdy pet jest na arenie
+	local dr = warstwa("Drazek", Vector2.new(0, 1), UDim2.new(0, 14, 1, -10), Vector2.new(118, 118))
+	local baza = nowy("Frame", { Name = "Baza", Size = UDim2.fromScale(1, 1), BackgroundColor3 = tusz, BackgroundTransparency = 0.45 }, dr)
+	rog(baza, 59)
+	obrys(baza, 3, Color3.fromHex(K.ty))
+	self.galka = nowy("Frame", { Name = "Galka", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromOffset(50, 50), BackgroundColor3 = Color3.fromHex(K.ty), BackgroundTransparency = 0.1 }, baza)
+	rog(self.galka, 25)
+	obrys(self.galka, 2, tusz)
+	dr.Visible = false
+	self.drazekRamka = dr
+	self.drazekBaza = baza
 	self.t = 0
 	return self
 end
@@ -384,6 +402,31 @@ function Interfejs:przyciski(st)
 	self.jajkoPulsuje = st.jajkoPulsuje
 end
 
+-- drążek: widoczność i położenie gałki (x, y w −1…1, y w górę); środek bazy w punktach ekranu (do dotyku)
+function Interfejs:drazek(widoczny: boolean, x: number?, y: number?)
+	self.drazekRamka.Visible = widoczny
+	self.galka.Position = UDim2.new(0.5, (x or 0) * 34, 0.5, -(y or 0) * 34)
+end
+
+-- drążek pływający: środek pod palcem (punkty ekranu jak InputObject.Position); nil — wróć na miejsce w lewym dole
+function Interfejs:drazekTu(p: Vector2?)
+	local dr = self.drazekRamka
+	if not p then
+		dr.AnchorPoint = Vector2.new(0, 1)
+		dr.Position = UDim2.new(0, 14, 1, -10)
+		return
+	end
+	local e = self.okno
+	local s = self.skalaEmulacji or 1
+	dr.AnchorPoint = Vector2.new(0.5, 0.5)
+	dr.Position = UDim2.fromOffset((p.X - e.AbsolutePosition.X) / s, (p.Y - e.AbsolutePosition.Y) / s)
+end
+
+function Interfejs:drazekSrodek(): (Vector2, number)
+	local b = self.drazekBaza
+	return b.AbsolutePosition + b.AbsoluteSize / 2, b.AbsoluteSize.X / 2
+end
+
 function Interfejs:pad(wl: boolean)
 	for _, z in self.znaczki do
 		z.Visible = wl
@@ -443,9 +486,10 @@ function Interfejs:stan()
 		podpowiedz = if self.podpowiedzRamka.Visible then self:prost(self.podpowiedzRamka) else nil,
 		podpowiedzTekst = if self.podpowiedzRamka.Visible then self.podTekst.Text else nil,
 		baner = if self.banerTekst.Visible then self.banerTekst.Text else nil,
-		przyciskiGorne = { self:prost(self.bJajka), self:prost(self.bPety), self:prost(self.bTrening) },
+		przyciskiGorne = { self:prost(self.bJajka), self:prost(self.bPety), self:prost(self.bTrening), self:prost(self.bWidok) },
 		srodek = self:prost(self.srodek), wydarzenie = if self.wydTekst.Visible then self.wydTekst.Text else nil,
 		boss = if self.bossRamka.Visible then self.bossNazwa.Text else nil, ogloszenie = if self.oglTekst.Visible then self.oglTekst.Text else nil,
+		drazek = if self.drazekRamka.Visible then self:prost(self.drazekRamka) else nil,
 		zloto = self.zlotoTekst.Text, gs = self.gsTekst.Text, poziom = self.lvTekst.Text, przyciskNazwa = self.przyciskNazwa.Text,
 		gotowa = self.gotowa == true, dotyk = self.opcje.dotyk == true, skala = self.skala(), pad = self.padWl == true,
 	}

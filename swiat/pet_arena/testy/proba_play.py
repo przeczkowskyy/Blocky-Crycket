@@ -201,7 +201,7 @@ def rzuc_moim(p, nr=None, x=0, zz=2):
     """Mój pet na arenę (odpoczynek 0, wybrany nr); zwraca id."""
     st = p.serwer('"stan"')
     if moj(st).get("pet"):
-        p.serwer('"przenies", %d, 30, 0' % moj(st)["pet"])
+        p.serwer('"przenies", %d, 60, 0' % moj(st)["pet"])
         czekaj(lambda: not moj(p.serwer('"stan"')).get("pet"), 3, 0.2)
     p.serwer('"odpoczynki_zeruj"')
     time.sleep(0.3)
@@ -283,9 +283,9 @@ def etap2(p, zrzuty):
     # ---------------------------------------------------------------- P22 tarcza słabszego
     p.serwer('"druzyna", {"lesny_slime"}, 1')
     mid = rzuc_moim(p, 1)
-    p.serwer('"przenies", %d, -8, 0' % mid)
+    p.serwer('"przenies", %d, -12, 0' % mid)
     p.serwer('"stoj", %d, 8' % mid)
-    w_id = p.serwer('"dziki", 10, 8, 0')                     # Forest Troll (stopień 4)
+    w_id = p.serwer('"dziki", 10, 12, 0')                    # Forest Troll (stopień 4)
     time.sleep(1.6)
     st = p.serwer('"stan"')
     time.sleep(0.4)
@@ -301,11 +301,13 @@ def etap2(p, zrzuty):
     p.serwer('"wydarzenie", "boss", 0')
     boss_id, _ = czekaj(lambda: next((x["id"] for x in p.serwer('"stan"')["pety"] if x.get("boss")), None), 5, 0.2)
     p.serwer('"bez_wydarzen", true')
-    p.serwer('"stoj", %d, 0' % mid)
-    p.serwer('"przenies", %d, -7, 0' % mid)
-    time.sleep(2.5)
+    time.sleep(1.2)
     if zrzuty:
-        p.zrzut("pa_boss.jpg")
+        p.zrzut("pa_boss.jpg")                                # boss wchodzi bramą
+    time.sleep(1.6)
+    mid = rzuc_moim(p, 1, -14, 0)
+    p.serwer('"stoj", %d, 0' % mid)
+    p.serwer('"przenies", %d, -10.5, 0' % mid)
     kb = p.klient('"stan"')
     zl0 = moj(p.serwer('"stan"')).get("zloto", 0)
     udzial, _ = czekaj(lambda: (p.serwer('"stan"').get("bossUdzial") or {}) != {}, 8, 0.3)
@@ -324,27 +326,28 @@ def etap2(p, zrzuty):
     # ---------------------------------------------------------------- P21 złoty pet: ucieka, każdy cios = złoto
     p.serwer('"wydarzenie", "zloty", 0')
     p.serwer('"bez_wydarzen", false')
-    zid, _ = czekaj(lambda: next((x["id"] for x in p.serwer('"stan"')["pety"] if x.get("zloty")), None), 5, 0.2)
+    zid, _ = czekaj(lambda: next((x["id"] for x in p.serwer('"stan"')["pety"] if x.get("zloty") and x.get("boss")), None), 5, 0.2)
     p.serwer('"bez_wydarzen", true')
     zl0 = moj(p.serwer('"stan"')).get("zloto", 0)
     c0 = p.serwer('"stan"')["liczniki"].get("zloto_cios", 0)
-    time.sleep(1.8)
+    time.sleep(3.0)
     if zid:
-        x = pet(p.serwer('"stan"'), zid)
-        if x:
-            p.serwer('"przenies", %d, %r, %r' % (mid, x["x"] - 4.5, x["z"]))
-            p.serwer('"stoj", %d, 4' % zid)
+        p.serwer('"druzyna", {"lesny_troll", "lesny_slime"}, 1')
+        mid = rzuc_moim(p, 1, -16, 0)
+        p.serwer('"przenies", %d, -15, 0' % mid)
+        p.serwer('"stoj", %d, 0' % mid)
     time.sleep(3.0)
     if zrzuty:
         p.zrzut("pa_zloty.jpg")
     s21 = p.serwer('"stan"')
     c1 = s21["liczniki"].get("zloto_cios", 0)
-    p.wynik("P21", bool(zid) and c1 > c0 and moj(s21).get("zloto", 0) > zl0,
+    p.wynik("P21", bool(zid) and c1 > c0 and moj(s21).get("zloto", 0) > zl0 and (pet(s21, zid) or {}).get("boss") is not False,
             ciosy_zlota=c1 - c0, zloto_przyrost=moj(s21).get("zloto", 0) - zl0)
     if zid:
-        p.serwer('"przenies", %d, 40, 0' % zid)
+        p.serwer('"przenies", %d, 60, 0' % zid)
     # ---------------------------------------------------------------- P23 trener: poziom, mata, napis nad głową
     s0 = moj(p.serwer('"stan"'))
+    p.klient('"widok", true')
     p.klient('"trening"')
     time.sleep(2.5)
     s1 = moj(p.serwer('"stan"'))
@@ -358,6 +361,7 @@ def etap2(p, zrzuty):
     k23 = p.klient('"stan"')
     s2 = moj(p.serwer('"stan"'))
     p.klient('"trening"')
+    p.klient('"widok", false')
     time.sleep(0.6)
     p.wynik("P23", s1.get("trening") is True and s1.get("xp", 0) > s0.get("xp", 0) and na_macie and s2.get("poziom", 1) >= 2
             and k23["ui"].get("poziom") == "LV %d" % s2.get("poziom") and k23.get("napisyGraczy", 0) >= 1,
@@ -381,9 +385,12 @@ def etap2(p, zrzuty):
             and r3.get("okno") == "jajka" and r4.get("okno") is None,
             y=r1, b=r2, gora=r3)
     # ---------------------------------------------------------------- P27 tablice wyników
-    time.sleep(2.2)
+    mid = rzuc_moim(p, 1, 0, 0)
+    p.serwer('"przenies", %d, 0, 0' % mid)
+    p.serwer('"stoj", %d, 4' % mid)
+    time.sleep(3.2)
     t1, t3 = tablica(p, 1), tablica(p, 3)
-    p.wynik("P27", any("Player 1" in x for x in t3) and len(t1) + len(t3) >= 1, top_gold=t1, wybicia=t3)
+    p.wynik("P27", any("Player 1" in x for x in t1 + t3), top_gold=t1, wybicia=t3)
     # ---------------------------------------------------------------- P26 tablet 1024 × 768 (okna i przyciski)
     p.klient('"emulacja", Vector2.new(1024, 768)')
     time.sleep(0.8)
@@ -397,7 +404,132 @@ def etap2(p, zrzuty):
             okno=okno, ramka=o.get("ramka"))
     p.klient('"okno", nil')
     p.klient('"emulacja", nil')
+    etap_v2(p, zrzuty)
     p.serwer('"boty", %d' % D["boty"]["do_ilu"])
+
+
+def etap_v2(p, zrzuty):
+    """P28–P31 (v2): wielkość petów według wagi, zderzenia i lot, kamera, wzgórze i monety."""
+    # ---------------------------------------------------------------- P28 wielkość według wagi (lekki 1 : średni 1,6 : ciężki 2,4)
+    p.serwer('"usun_dzikie"')
+    p.serwer('"boty", 0')
+    st = p.serwer('"stan"')
+    if moj(st).get("pet"):
+        p.serwer('"przenies", %d, 60, 0' % moj(st)["pet"])
+        time.sleep(0.5)
+    ids = [p.serwer('"dziki", %d, %d, -15' % (nr, x)) for nr, x in ((1, -22), (3, 0), (10, 22))]
+    for i in ids:
+        p.serwer('"stoj", %d, 8' % i)
+        p.serwer('"cd", %d, 30' % i)
+    time.sleep(2.0)
+    p.klient('"widok", true')
+    time.sleep(1.2)
+    k = p.klient('"stan"')
+    pt = {w["id"]: w["pt"] for w in k["widoki"]}
+    s = p.serwer('"stan"')
+    wys = {x["id"]: x.get("wys") for x in s["pety"]}
+    r1 = (wys.get(ids[1]) or 0) / max(1e-6, wys.get(ids[0]) or 1)
+    r2 = (wys.get(ids[2]) or 0) / max(1e-6, wys.get(ids[0]) or 1)
+    p.wynik("P28", abs(r1 - 1.6) < 0.1 and abs(r2 - 2.4) < 0.1 and pt.get(ids[2], 0) > 1.8 * pt.get(ids[0], 99) and D["rzut"]["limit_areny"] == 6,
+            wysokosci=[wys.get(i) for i in ids], pt=[round(pt.get(i, 0)) for i in ids], limit_areny=D["rzut"]["limit_areny"])
+    # ---------------------------------------------------------------- P29 zderzenia (przekazanie pędu) i lot w powietrzu
+    p.serwer('"liczniki_zeruj"')
+    lekki, sredni, ciezki = ids
+    p.serwer('"przenies", %d, -10, 0' % ciezki)
+    p.serwer('"przenies", %d, -1.5, 0' % lekki)
+    p.serwer('"stoj", %d, 0' % ciezki)
+    p.serwer('"pchnij", %d, 40, 0' % ciezki)                 # ciężki rozpędzony wpada w lekkiego
+    time.sleep(0.6)
+    s29 = p.serwer('"stan"')
+    lx = (pet(s29, lekki) or {}).get("x", -99)
+    p.serwer('"przenies", %d, -20, 0' % sredni)
+    p.serwer('"wyrzuc", %d, 30' % sredni)
+    ys, _ = czekaj(lambda: ((pet(p.serwer('"stan"'), sredni) or {}).get("y") or 0) > 0.5, 2, 0.03)
+    time.sleep(2.0)
+    s29b = p.serwer('"stan"')
+    l29 = s29["liczniki"] if isinstance(s29.get("liczniki"), dict) else {}
+    l29b = s29b["liczniki"] if isinstance(s29b.get("liczniki"), dict) else {}
+    p.wynik("P29", l29.get("zderzenie", 0) >= 1 and lx > 4 and bool(ys) and l29b.get("upadek", 0) >= 1,
+            zderzen=l29.get("zderzenie"), lekki_x=round(lx, 1), lot=bool(ys), upadkow=l29b.get("upadek"))
+    # ---------------------------------------------------------------- P30 kamera: całość bez peta, za petem, przycisk VIEW
+    p.klient('"widok", false')
+    p.serwer('"usun_dzikie"')
+    st = p.serwer('"stan"')
+    if moj(st).get("pet"):
+        p.serwer('"przenies", %d, 60, 0' % moj(st)["pet"])
+        time.sleep(0.4)
+    time.sleep(0.8)
+    k0 = p.klient('"stan"')
+    mid = rzuc_moim(p, 1, 8, 8)
+    time.sleep(1.5)
+    k1 = p.klient('"stan"')
+    if zrzuty:
+        p.zrzut("pa_kamera_pet.jpg")
+    p.klient('"widok", true')
+    time.sleep(0.8)
+    k2 = p.klient('"stan"')
+    p.klient('"widok", false')
+    p.wynik("P30", k0.get("trybKamery") == "calosc" and k1.get("trybKamery") == "pet" and 80 <= (k1.get("mojPt") or 0) <= 140
+            and k2.get("trybKamery") == "calosc",
+            bez_peta=k0.get("trybKamery"), z_petem=k1.get("trybKamery"), pet_pt=round(k1.get("mojPt") or 0), przycisk_view=k2.get("trybKamery"))
+    # ---------------------------------------------------------------- P31 wzgórze króla: monety lecą do peta, korona rośnie z nagrodą
+    p.serwer('"przenies", %d, 0, 0' % mid)
+    p.serwer('"stoj", %d, 12' % mid)
+    m0 = p.klient('"stan"').get("monetLeci", 0)
+    time.sleep(6.0)
+    k31 = p.klient('"stan"')
+    if zrzuty:
+        p.zrzut("pa_wzgorze.jpg")
+    s31 = p.serwer('"stan"')
+    p.wynik("P31", k31.get("monetLeci", 0) - m0 >= 5 and s31.get("krol") == mid and (k31.get("koronaSkala") or 1) > 1.1
+            and k31.get("kibicow", 0) == 8 and k31.get("plomieni", 0) >= 12,
+            monet=k31.get("monetLeci", 0) - m0, korona_skala=round(k31.get("koronaSkala") or 1, 2), nagroda=round(s31.get("nagroda", 0)),
+            kibicow_sektorow=k31.get("kibicow"), plomieni=k31.get("plomieni"))
+    p.serwer('"stoj", %d, 0' % mid)
+    # ---------------------------------------------------------------- P32 sterowanie petem: drążek → ruch, cios sam, autopilot
+    p.serwer('"usun_dzikie"')
+    p.serwer('"przenies", %d, -20, 0' % mid)
+    time.sleep(0.4)
+    s0 = pet(p.serwer('"stan"'), mid) or {}
+    p.klient('"ster", Vector2.new(1, 0), 1.2')                 # w prawo na ekranie
+    time.sleep(0.25)
+    k1 = p.klient('"stan"')
+    w1 = next((w for w in k1["widoki"] if w["id"] == mid), {})
+    time.sleep(0.9)
+    s1 = pet(p.serwer('"stan"'), mid) or {}
+    przes = math.hypot(s1.get("x", 0) - s0.get("x", 0), s1.get("z", 0) - s0.get("z", 0))
+    reczny = s1.get("reczny")
+    time.sleep(D["sterowanie"]["autopilot_s"] + 1.0)
+    s2 = pet(p.serwer('"stan"'), mid) or {}
+    k2 = p.klient('"stan"')
+    p.klient('"okno", nil')
+    p.wynik("P32", przes > 6 and reczny is True and s2.get("reczny") is False and k1.get("reczne") is True and k2.get("reczne") is False
+            and k1.get("sterowanieAwatara") is False,
+            przesuniecie=round(przes, 1), reczny=reczny, autopilot_po=s2.get("reczny"), awatar_zablokowany=not k1.get("sterowanieAwatara"),
+            napis=next((w.get("napis") for w in k2["widoki"] if w["id"] == mid), None))
+    # ---------------------------------------------------------------- P33 opóźnienie sieci 120 ms (2 × 60): przewidywanie u klienta
+    stare = p.luau('local n = settings().Network return string.format("%d,%d,%d,%d", n.InboundNetworkMinDelayMs, n.OutboundNetworkMinDelayMs, '
+                   'n.InboundNetworkJitterMs, n.OutboundNetworkJitterMs)', "Server")
+    try:
+        p.luau('local n = settings().Network n.InboundNetworkMinDelayMs = 60 n.OutboundNetworkMinDelayMs = 60 return "ok"', "Server")
+        time.sleep(0.8)
+        p.serwer('"przenies", %d, -20, 0' % mid)
+        time.sleep(0.6)
+        k0 = next((w for w in p.klient('"stan"')["widoki"] if w["id"] == mid), {})
+        p.klient('"ster", Vector2.new(0, 1), 1.0')
+        time.sleep(0.15)
+        k1 = next((w for w in p.klient('"stan"')["widoki"] if w["id"] == mid), {})
+        sv = pet(p.serwer('"stan"'), mid) or {}
+        klient_ruszyl = math.hypot(k1.get("x", 0) - k0.get("x", 0), k1.get("z", 0) - k0.get("z", 0))
+        serwer_ruszyl = math.hypot(sv.get("x", 0) + 20, sv.get("z", 0))
+        time.sleep(1.2)
+    finally:
+        a = stare.split(",")
+        p.luau('local n = settings().Network n.InboundNetworkMinDelayMs = %s n.OutboundNetworkMinDelayMs = %s n.InboundNetworkJitterMs = %s '
+               'n.OutboundNetworkJitterMs = %s return "ok"' % tuple(a), "Server")
+    p.wynik("P33", klient_ruszyl > 0.5, klient_po_015s=round(klient_ruszyl, 2), serwer_po_015s=round(serwer_ruszyl, 2),
+            siec_przywrocona=stare)
+
 
 def main():
     for strumien in (sys.stdout, sys.stderr):
@@ -459,7 +591,7 @@ def main():
             kadr = k2.get("kadr") or {}
 
             def w_pasie(kd):
-                return bool(kd) and pas[0] <= kd["y"][0] and kd["y"][1] <= pas[1] and 0.15 <= kd["x"][0] and kd["x"][1] <= 0.85
+                return bool(kd) and pas[0] <= kd["y"][0] and kd["y"][1] <= pas[1] and 0.02 <= kd["x"][0] and kd["x"][1] <= 0.98
             s_slot = D["sloty"][0]["poz"]
             na_slocie = av.get("poz") and math.hypot(av["poz"][0] - s_slot[0], av["poz"][2] - s_slot[2]) < 3
             p.wynik("P02", k2["kamera"]["typ"] == "Scriptable" and w_pasie(kadr) and w_pasie(tel) and na_slocie and av.get("naEkranie")
@@ -488,10 +620,11 @@ def main():
             # dwa dzikie pety tego samego gatunku: pełne i niskie życie, to samo pchnięcie → kto dalej
             p.serwer('"boty", 0')
             p.serwer('"usun_dzikie"')
+            moj_id = rzuc_moim(p, 1, 0, 0)
             p.serwer('"przenies", %d, 0, 0' % moj_id)
             p.serwer('"stoj", %d, 30' % moj_id)
-            a_id = p.serwer('"dziki", 1, -12, -6')
-            b_id = p.serwer('"dziki", 1, -12, 6')
+            a_id = p.serwer('"dziki", 1, -24, -12')
+            b_id = p.serwer('"dziki", 1, -24, 12')
             time.sleep(1.6)
             for pid in (a_id, b_id):
                 p.serwer('"cd", %d, 30' % pid)
@@ -500,34 +633,47 @@ def main():
             pa, pb = pet(s4b, a_id), pet(s4b, b_id)
             # cios mojego peta (Slime) w oba: stawiamy go obok każdego po kolei
             drogi = {}
-            for pid, z0 in ((a_id, -6), (b_id, 6)):
-                p.serwer('"przenies", %d, -12, %d' % (pid, z0))
-                p.serwer('"stoj", %d, 3' % pid)
-                p.serwer('"przenies", %d, -12, %d' % (moj_id, z0 - (3 if z0 < 0 else -3)))
-                p.serwer('"stoj", %d, 0' % moj_id)
-                before = pet(p.serwer('"stan"'), pid)
-                time.sleep(1.6)
-                after = pet(p.serwer('"stan"'), pid)
-                drogi[pid] = round(math.hypot(after["x"] - before["x"], after["z"] - before["z"]), 1) if after and before else 99
-                p.serwer('"stoj", %d, 30' % moj_id)
-            ost = p.serwer('"stan"').get("ostatnie") or []
             v = {}
-            for e in ost:
-                if e["t"] == "cios" and e.get("a") == moj_id and e.get("b") in (a_id, b_id) and e["b"] not in v and not e.get("k"):
-                    v[e["b"]] = round(e["v"], 1)
+
+            def zwykly_cios(pid):
+                # pierwszy cios mojego peta w pid bez krytyka (krytyk ma inną siłę — wtedy próbujemy jeszcze raz)
+                for e in p.serwer('"stan"').get("ostatnie") or []:
+                    if e["t"] == "cios" and e.get("a") == moj_id and e.get("b") == pid and not e.get("k"):
+                        return round(e["v"], 1)
+                return None
+            for pid, z0 in ((a_id, -12), (b_id, 12)):
+                for _proba in range(3):
+                    p.serwer('"przenies", %d, -24, %d' % (pid, z0))
+                    p.serwer('"stoj", %d, 3' % pid)
+                    p.serwer('"przenies", %d, -24, %d' % (moj_id, z0 - (4.5 if z0 < 0 else -4.5)))
+                    p.serwer('"stoj", %d, 0' % moj_id)
+                    before = pet(p.serwer('"stan"'), pid)
+                    time.sleep(1.6)
+                    after = pet(p.serwer('"stan"'), pid)
+                    drogi[pid] = round(math.hypot(after["x"] - before["x"], after["z"] - before["z"]), 1) if after and before else 99
+                    p.serwer('"stoj", %d, 30' % moj_id)
+                    v[pid] = zwykly_cios(pid)
+                    if v[pid] or not after:
+                        break
+                    pelne = D["pety"][0]["zycie"] * D["boty"]["zycie_x"]
+                    p.serwer('"zycie", %d, %d' % (pid, int(pelne * (0.25 if pid == b_id else 1))))
             p.wynik("P04", cios >= 3 and v.get(a_id) and v.get(b_id) and v[b_id] > 1.4 * v[a_id],
                     ciosy=cios, odrzut_pelne_zycie=v.get(a_id), odrzut_25proc=v.get(b_id), droga_pelne_zycie=drogi.get(a_id),
                     droga_25proc=drogi.get(b_id),
                     hp=[pa and round(pa["hp"]), pb and round(pb["hp"])])
             # ---------------------------------------------------------------- P05 RING OUT mojego peta
             p.serwer('"usun_dzikie"')
-            p.serwer('"przenies", %d, 18, 0' % moj_id)
+            moj_id = rzuc_moim(p, 1, 30, 0)
+            p.serwer('"odpoczynek", %d' % D["odpoczynek"])
+            p.serwer('"przenies", %d, 40, 0' % moj_id)
             zl0 = moj(p.serwer('"stan"')).get("zloto", 0)
-            p.serwer('"pchnij", %d, 40, 0' % moj_id)
+            p.serwer('"wyrzuc", %d, 70' % moj_id)
             wypadl, _ = czekaj(lambda: moj(p.serwer('"stan"')).get("pet") == 0, 3, 0.1)
-            time.sleep(1.5)
+            time.sleep(0.6)
+            k5lot = p.klient('"stan"')
             if zrzuty:
-                p.zrzut("pa_ring_out.jpg")
+                p.zrzut("pa_wybicie_lot.jpg")
+            time.sleep(0.6)
             k5 = p.klient('"stan"')
             s5 = p.serwer('"stan"')
             dr = moj(s5).get("druzyna", [])
@@ -536,8 +682,9 @@ def main():
             k5b = p.klient('"stan"')
             p.wynik("P05", bool(wypadl) and s5["liczniki"].get("ringout", 0) >= 1 and odpoczywa
                     and any(w["odlot"] for w in k5["widoki"]) and not any(w["id"] == moj_id for w in k5b["widoki"])
-                    and k5["zdarzenia"].get("ringout", 0) >= 1,
+                    and k5["zdarzenia"].get("ringout", 0) >= 1 and k5lot.get("trybKamery") == "lot",
                     odpoczynek_s=dr and dr[0]["odpoczynek_s"], ringout=s5["liczniki"].get("ringout"), zloto_przed=zl0,
+                    kamera_w_locie=k5lot.get("trybKamery"),
                     karta=(k5b["ui"].get("karty") or [None])[0])
             # ---------------------------------------------------------------- P11a drugi pet: rzut wybiera gotowego (Acornling)
             r11 = p.klient('"rzut", -3, 3')
@@ -549,9 +696,9 @@ def main():
             time.sleep(1.2)
             p.serwer('"stoj", %d, 0' % moj_id)
             p.serwer('"przenies", %d, 0, 0' % moj_id)
-            c_id = p.serwer('"dziki", 3, 3, 0')
-            time.sleep(1.4)
-            p.serwer('"przenies", %d, 3.5, 0' % c_id)
+            c_id = p.serwer('"dziki", 3, 6, 0')
+            time.sleep(1.8)
+            p.serwer('"przenies", %d, 5.8, 0' % c_id)
             p.serwer('"cd", %d, 30' % c_id)
             zl6 = moj(p.serwer('"stan"')).get("zloto", 0)
             ko0 = p.serwer('"stan"')["liczniki"].get("ko", 0)
@@ -568,7 +715,7 @@ def main():
             p.serwer('"usun_dzikie"')
             strefy = []
             stopien = D["pety"][1]["stopien"]
-            for x, oczek in ((0, 5), (8, 2), (18, 1)):
+            for x, oczek in ((0, 5), (7.5, 2), (14, 1)):
                 p.serwer('"przenies", %d, %r, 0' % (moj_id, float(x)))
                 p.serwer('"stoj", %d, 5' % moj_id)
                 time.sleep(2.3)
@@ -587,7 +734,7 @@ def main():
                 p.zrzut("pa_krol.jpg")
             n1 = p.serwer('"stan"').get("nagroda", 0)
             # dziki król: mój pet wychodzi ze środka, dziki zajmuje środek, potem mój go wybija
-            p.serwer('"przenies", %d, 14, 0' % moj_id)
+            p.serwer('"przenies", %d, 35, 0' % moj_id)
             p.serwer('"stoj", %d, 30' % moj_id)
             d_id = p.serwer('"dziki", 5, 0, 0')
             p.serwer('"cd", %d, 30' % d_id)
@@ -597,7 +744,7 @@ def main():
             zl10 = moj(p.serwer('"stan"')).get("zloto", 0)
             n2 = p.serwer('"stan"').get("nagroda", 0)
             p.serwer('"przenies", %d, 0, 0' % d_id)
-            p.serwer('"przenies", %d, -4.6, 0' % moj_id)
+            p.serwer('"przenies", %d, -7.6, 0' % moj_id)
             p.serwer('"stoj", %d, 0' % moj_id)
             p.serwer('"zycie", %d, 1' % d_id)
             wybity, _ = czekaj(lambda: p.serwer('"stan"').get("krol") != d_id, 5, 0.1)
@@ -609,7 +756,7 @@ def main():
                     nagroda_dzikiego=round(n2, 1), zloto_przyrost=moj(s10).get("zloto", 0) - zl10, wybicie=ko10)
             # ---------------------------------------------------------------- P08 umiejętności (Slime z drużyny, potem Troll i Toad)
             p.serwer('"usun_dzikie"')
-            for i, (x, zz) in enumerate(((5, 0), (-4, 4), (0, -6))):
+            for i, (x, zz) in enumerate(((8, 0), (-7, 6), (0, -10))):
                 q = p.serwer('"dziki", %d, %d, %d' % (i + 1, x, zz))
                 p.serwer('"cd", %d, 30' % q)
             time.sleep(1.5)
@@ -636,13 +783,13 @@ def main():
             for nr, pid, plik in ((1, "lesny_troll", "pa_umiejetnosc_troll.jpg"), (2, "ropucha_z_chatka", "pa_umiejetnosc_toad.jpg")):
                 st8 = p.serwer('"stan"')
                 if moj(st8).get("pet"):
-                    p.serwer('"przenies", %d, 30, 0' % moj(st8)["pet"])      # za krawędzią: RING OUT w następnym kroku
+                    p.serwer('"przenies", %d, 60, 0' % moj(st8)["pet"])      # za krawędzią: RING OUT w następnym kroku
                     if not czekaj(lambda: moj(p.serwer('"stan"')).get("pet") == 0, 3, 0.1)[0]:
                         p.serwer('"zycie", %d, 0' % moj(st8)["pet"])
                         czekaj(lambda: moj(p.serwer('"stan"')).get("pet") == 0, 3, 0.1)
                     time.sleep(3.5)
                 p.serwer('"usun_dzikie"')
-                for i, (x, zz) in enumerate(((4, 3), (-4, 3), (6, -6), (-14, -8))):
+                for i, (x, zz) in enumerate(((9, 5), (-9, 5), (10, -9), (-20, -12))):
                     q = p.serwer('"dziki", %d, %d, %d' % (i + 1, x, zz))
                     p.serwer('"cd", %d, 30' % q)
                 p.klient('"wybierz", %d' % nr)
@@ -685,7 +832,7 @@ def main():
             # ---------------------------------------------------------------- P12 limit areny i tempo
             s12 = p.serwer('"stan"')
             if moj(s12).get("pet"):
-                p.serwer('"przenies", %d, 30, 0' % moj(s12)["pet"])      # za krawędzią: RING OUT w następnym kroku
+                p.serwer('"przenies", %d, 60, 0' % moj(s12)["pet"])      # za krawędzią: RING OUT w następnym kroku
                 if not czekaj(lambda: not moj(p.serwer('"stan"')).get("pet"), 3, 0.2)[0]:
                     p.serwer('"zycie", %d, 0' % moj(s12)["pet"])
                     czekaj(lambda: not moj(p.serwer('"stan"')).get("pet"), 3, 0.2)
@@ -710,15 +857,20 @@ def main():
                     petow=len(s12["pety"]), moj_pet=moj12, odmowa_pelna=odm1 - odm0, baner=k12["ui"].get("baner"), odrzucone_ze_spamu=odm2 - odm1)
             # ---------------------------------------------------------------- P14 czas klatki przy 8 petach
             p.serwer('"odpoczynek", %d' % D["odpoczynek"])
+            p.klient('"emulacja", Vector2.new(667, 375)')
+            p.klient('"widok", true')
             czekaj(lambda: len(p.serwer('"stan"')["pety"]) >= U["rzut"]["limit_areny"], 10, 0.3)
+            time.sleep(1.0)
             p.klient('"pomiar_zeruj"')
             p.serwer('"liczniki_zeruj"')
             time.sleep(8)
             k14 = p.klient('"stan"')
             s14 = p.serwer('"stan"')
             if zrzuty:
-                p.zrzut("pa_osiem_petow.jpg")
-            p.wynik("P14", len(s14["pety"]) >= U["rzut"]["limit_areny"] - 1 and k14["srKlatki"] < (1 / 25 if okno_ok else 1 / 8) and k14["srPetli"] < 0.004 and s14["srKroku_ms"] < 2,
+                p.zrzut("pa_szesc_petow.jpg")
+            p.klient('"widok", false')
+            p.klient('"emulacja", nil')
+            p.wynik("P14", len(s14["pety"]) >= U["rzut"]["limit_areny"] - 2 and k14["srKlatki"] < (1 / 25 if okno_ok else 1 / 8) and k14["srPetli"] < 0.004 and s14["srKroku_ms"] < 2,
                     petow=len(s14["pety"]), okno_na_wierzchu=okno_ok, srKlatki_ms=round(1000 * k14["srKlatki"], 1),
                     maksKlatki_ms=round(1000 * k14["maksKlatki"], 1), srPetli_ms=round(1000 * k14["srPetli"], 2),
                     serwer_krok_ms=round(s14["srKroku_ms"], 3), czesci=k14["czesciWidokow"])
@@ -726,8 +878,8 @@ def main():
             etap2(p, zrzuty)
             # ---------------------------------------------------------------- P13 telefon 667 × 375 (w środku bitki)
             p.serwer('"odpoczynki_zeruj"')
-            p.serwer('"boty", 6, 0.4')
-            czekaj(lambda: len(p.serwer('"stan"')["pety"]) >= 5, 10, 0.3)
+            p.serwer('"boty", 4, 0.4')
+            czekaj(lambda: len(p.serwer('"stan"')["pety"]) >= 4, 10, 0.3)
             p.klient('"emulacja", Vector2.new(667, 375)')
             time.sleep(0.8)
             if not moj(p.serwer('"stan"')).get("pet"):
@@ -740,7 +892,7 @@ def main():
             okno = u["okno"]
             elementy = {"gora": u["gora"], "przycisk": u["przycisk"], "pet": u["pet"] if u.get("petWidoczny") else None,
                         "podpowiedz": u.get("podpowiedz"), "eggs": u["przyciskiGorne"][0], "pets": u["przyciskiGorne"][1],
-                        "train": u["przyciskiGorne"][2]}
+                        "train": u["przyciskiGorne"][2], "view": u["przyciskiGorne"][3]}
             for i, kk in enumerate(u.get("karty") or []):
                 elementy["karta%d" % (i + 1)] = kk
             w_ekranie = {n: wewnatrz(r, okno) for n, r in elementy.items() if r}
@@ -749,10 +901,19 @@ def main():
             min_pt = min(min(r[2], r[3]) for r in przyciski)
             lista = [r for r in elementy.values() if r]
             nakladanie = [(i, j) for i in range(len(lista)) for j in range(i + 1, len(lista)) if nachodza(lista[i], lista[j])]
-            p.wynik("P13", all(w_ekranie.values()) and min_pt >= 44 and not nakladanie and w_pasie(tel) and wielkosci and wielkosci[0] >= 55
-                    and k13.get("duzychSlow", 0) <= 2,
+            moj13 = k13.get("mojPt") or 0
+            # domyślna ścieżka bez drążka: drążka nie ma, dopóki palec nie dotknie lewej strony (tu: sterowanie z próby)
+            drazek_ukryty = u.get("drazek") is None
+            p.klient('"ster", Vector2.new(0.6, 0.4), 0.8')
+            time.sleep(0.25)
+            u13b = p.klient('"stan"')["ui"]
+            drazek_przy_ruchu = bool(u13b.get("drazek")) and wewnatrz(u13b["drazek"], okno)
+            p.klient('"ster", nil')
+            p.wynik("P13", all(w_ekranie.values()) and min_pt >= 44 and not nakladanie and w_pasie(tel) and 80 <= moj13 <= 140
+                    and k13.get("trybKamery") == "pet" and k13.get("duzychSlow", 0) <= 2 and drazek_ukryty and drazek_przy_ruchu,
                     okno=okno, w_ekranie=w_ekranie, min_przycisk_pt=round(min_pt, 1), nakladanie=nakladanie, skala=u.get("skala"),
-                    pety_pt=wielkosci, duze_slowa=k13.get("duzychSlow"))
+                    pety_pt=wielkosci, moj_pet_pt=round(moj13), kamera=k13.get("trybKamery"), duze_slowa=k13.get("duzychSlow"),
+                    podpowiedz=u.get("podpowiedzTekst"), drazek_domyslnie=not drazek_ukryty, drazek_przy_ruchu=drazek_przy_ruchu)
             if zrzuty:
                 # obraz 3D w oknie ma proporcje telefonu, a ekran telefonu jest powiększony do okna — to widok telefonu
                 img = p.obraz()

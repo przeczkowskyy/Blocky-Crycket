@@ -625,7 +625,7 @@ def oczekiwane_wzorce(U):
 def dane_otoczenia(U, D):
     S = U["scena"]
     st = DN.stanowisko_jajek(U)
-    jajka = [{"wzorzec": J["wzorzec"], "poz": [x, U["scena"]["obrzeze_y"] + 1.3, z], "obrot": 180 + U["scena"]["jajka_kat_st"]}
+    jajka = [{"wzorzec": J["wzorzec"], "poz": [x, U["scena"]["mur_y"] + 1.3, z], "obrot": 180 + U["scena"]["jajka_kat_st"]}
              for J, (x, z) in zip(D["jajka"], st["cokoly"])]
     return {"napisy": DN.makiety_napisy(U), "strefy": DN.etykiety_stref(U), "jajka": jajka, "tablice": D["tablice"], "start": D["sloty"][0]["poz"], "swiatlo": S["swiatlo"], "atmosfera": S["atmosfera"]}
 
@@ -635,8 +635,8 @@ def plan(U, D, Z, scena):
     return ["do Studio: %d modułów i skryptów (%d kB), sygnały: %s" % (
         len(Z), sum(len(t.encode("utf-8")) for *_, t in Z) // 1000, ", ".join(ZDALNE + NIEPEWNE + LOKALNE)),
         "wzorce petów: %d, %d brył" % (len(W), sum(len(d["bryly"]) for _, d in W)),
-        "scena: %d części (arena r %s, fosa do %s, obrzeże %s)" % (len(scena), U["scena"]["arena_r"], U["scena"]["fosa_r"],
-                                                                   U["scena"]["obrzeze_r"])]
+        "scena: %d części (koloseum: arena r %s, mur %s, trybuny do r %s)" % (len(scena), U["scena"]["arena_r"], U["scena"]["mur_r"],
+                                                                            U["scena"]["trybuna_r"])]
 
 
 def wybierz_okno(s, studio):

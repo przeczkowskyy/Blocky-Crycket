@@ -153,13 +153,20 @@ class TestDanych(unittest.TestCase):
         lek = next(p for p in D["pety"] if p["id"] == "lesny_slime")
         ciez = next(p for p in D["pety"] if p["id"] == "mchowy_slimak")
         self.assertGreater(ciez["zycie"], lek["zycie"])
-        self.assertLess(ciez["predkosc"], lek["predkosc"])
+        # v2: wielkość według wagi (lekki 1, średni 1,6, ciężki 2,4): wysokość, promień ciała, masa
+        sr = next(p for p in D["pety"] if p["id"] == "rechotek")
+        self.assertAlmostEqual(ciez["wysokosc"] / lek["wysokosc"], 2.4, delta=0.05)
+        self.assertAlmostEqual(sr["wysokosc"] / lek["wysokosc"], 1.6, delta=0.05)
+        self.assertTrue(lek["promien"] < sr["promien"] < ciez["promien"])
+        self.assertTrue(lek["waga"] < sr["waga"] < ciez["waga"])
+        self.assertEqual(next(p for p in D["pety"] if p["id"] == "cierniowy_wilk")["klasa"], "lekki", "wilk mały (Karol)")
 
     def test_1c_scena_zwarta(self):
         c = DN.scena(U)
         self.assertLess(len(c), 2000)
         nazwy = {x[15] for x in c}
-        for n in ("Platforma", "Srodek", "Pierscien2", "Pierscien1", "Woda", "Gejzer1", "Trawa", "Bariera", "Cokol", "Mata1", "Mata8"):
+        for n in ("Podloga", "PasKrawedzi", "Stopien_szczyt", "Stopien_stopien2", "Stopien_stopien1", "SlupSwiatla", "Mur", "Kibic",
+                  "Plomien", "Wrota", "Krata", "Loza1", "Proporzec", "Cokol", "Mata1", "Mata8"):
             self.assertIn(n, nazwy)
 
     def test_1d_kamera_cala_arena_w_kadrze(self):
@@ -172,7 +179,7 @@ class TestDanych(unittest.TestCase):
                 for i in range(48):
                     a = 2 * math.pi * i / 48
                     x, y = DN.rzut_punktu(kam, cel, (math.sin(a) * R, 0, math.cos(a) * R), K["fov"], szer / wys)
-                    xmin, xmax = (0.15, 0.85) if szer / wys > 1.5 else (0.03, 0.97)
+                    xmin, xmax = 0.03, 0.97
                     self.assertTrue(pas[0] <= y <= pas[1] and xmin <= x <= xmax,
                                     "arena poza kadrem %dx%d slot %d: (%.2f; %.2f)" % (szer, wys, s["nr"], x, y))
 
@@ -223,8 +230,8 @@ class TestLogiki(unittest.TestCase):
 
     def test_2c_ring_out_i_ko_z_zaliczeniem(self):
         S = stan(Los(stala=0.5))
-        a = dodaj(S, "lesny_troll", 15, 0, wl=1)
-        b = dodaj(S, "lesny_slime", 20, 0, wl=2)
+        a = dodaj(S, "lesny_troll", 30, 0, wl=1)
+        b = dodaj(S, "lesny_slime", 36.5, 0, wl=2)
         b.set("hp", 10.0)
         jeden("cios", S, a, b, 0, 30, 1, 0, False, zdarzenia(S))
         zd = krok(S, 40)
@@ -242,7 +249,7 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(len(ko), 1)
         self.assertEqual(ko[0]["premia"], D["zloto"]["premia_dzikiego"] * 1)
         # wybicie bez ciosu gracza w ciągu ostatni_cios_s — bez premii
-        d = dodaj(S, "lesny_slime", 23.9, 0, wl=3)
+        d = dodaj(S, "lesny_slime", 39.9, 0, wl=3)
         d.set("kx", 30.0)
         zd = krok(S, 5)
         self.assertEqual([e["premia"] for e in zd if e["t"] == "ringout"], [0])
@@ -251,7 +258,7 @@ class TestLogiki(unittest.TestCase):
         S = stan()
         a = dodaj(S, "lesny_slime", 0, 1, wl=1)        # środek ×5
         b = dodaj(S, "lisciolis", 8, 0, wl=2)          # pierścień ×2, stopień 2
-        c = dodaj(S, "rechotek", 0, 20, wl=3)          # pierścień ×1
+        c = dodaj(S, "rechotek", 0, 14, wl=3)          # stopień ×1
         e = dodaj(S, "lesny_troll", -20, 0, wl=0, dziki=True)
         w = jeden("zlotoTick", S)
         baza = D["zloto"]["baza"]
@@ -283,7 +290,7 @@ class TestLogiki(unittest.TestCase):
     def test_2f_limit_areny_i_cel_rzutu(self):
         S = stan()
         self.assertEqual(wolaj("mozeRzucic", S, 0, 0), [True, None])
-        self.assertEqual(wolaj("mozeRzucic", S, 30, 0)[1], "poza")
+        self.assertEqual(wolaj("mozeRzucic", S, 60, 0)[1], "poza")
         self.assertEqual(wolaj("mozeRzucic", S, float("nan"), 0)[1], "zle")
         self.assertEqual(wolaj("mozeRzucic", S, "x", 0)[1], "zle")
         for i in range(D["rzut"]["limit_areny"]):
@@ -369,7 +376,7 @@ class TestLogiki(unittest.TestCase):
 
     def _umiejetnosci(self):
         # fala: wszyscy w zasięgu odrzuceni od środka
-        S, p, w, ok, zd = self._arena("lesny_troll", [(5, 0), (-5, 0), (0, 15)])
+        S, p, w, ok, zd = self._arena("lesny_troll", [(8.5, 0), (-8.5, 0), (0, 27)])
         self.assertTrue(ok)
         self.assertGreater(w[0].get("kx"), 10)
         self.assertLess(w[1].get("kx"), -10)
@@ -377,49 +384,49 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(p.get("pasek"), 0)
         self.assertFalse(jeden("uzyj", S, p, LM.Tabela()), "pasek pusty — drugi raz nie")
         # ogłuszenie
-        S, p, w, ok, zd = self._arena("muchomornik", [(4, 0), (0, 14)])
+        S, p, w, ok, zd = self._arena("muchomornik", [(7, 0), (0, 24)])
         self.assertGreater(w[0].get("ogl"), S.get("czas"))
         self.assertEqual(w[1].get("ogl"), 0)
         # zamrożenie najbliższego
-        S, p, w, ok, zd = self._arena("wazeczka", [(6, 0), (9, 3)])
+        S, p, w, ok, zd = self._arena("wazeczka", [(10, 0), (15, 5)])
         self.assertGreater(w[0].get("lod"), S.get("czas"))
         self.assertEqual(w[1].get("lod"), 0)
         # skorupa: cios odbity, bez obrażeń
-        S, p, w, ok, zd = self._arena("mchowy_slimak", [(4.5, 0)])
+        S, p, w, ok, zd = self._arena("mchowy_slimak", [(8.2, 0)])
         hp = p.get("hp")
         jeden("cios", S, w[0], p, 20, 20, -1, 0, True, LM.Tabela())
         self.assertEqual(p.get("hp"), hp)
         self.assertGreater(w[0].get("kx"), 5)
         # szarża (przebija): przejazd przez dwóch
-        S, p, w, ok, zd = self._arena("pancernik_ruin", [(6, 0), (12, 0.5)])
+        S, p, w, ok, zd = self._arena("pancernik_ruin", [(10, 0), (20, 1)])
         self.assertEqual(S.get("pety").get(1).get("akcja").get("typ"), "szarza")
         hp0 = [x.get("hp") for x in w]
         krok(S, 30)
         self.assertTrue(all(x.get("hp") < h for x, h in zip(w, hp0)) or len(z(S.get("pety"))) < 3)
         # skok na tłum: ląduje i fala
-        S, p, w, ok, zd = self._arena("ropucha_z_chatka", [(10, 0), (12, 2), (-15, 0)])
+        S, p, w, ok, zd = self._arena("ropucha_z_chatka", [(17, 0), (20, 6.5), (-25, 0)])
         zd2 = krok(S, int(D["pety"][nr_peta("ropucha_z_chatka") - 1]["umiejetnosc"]["czas"] / D["walka"]["krok_s"]) + 2)
         lad = [e for e in zd2 if e["t"] == "ladowanie_skoku"]
         self.assertEqual(len(lad), 1)
         self.assertGreaterEqual(lad[0]["trafione"], 2)
         self.assertGreater(p.get("x"), 5)
         # rykoszet: trzy cele po kolei
-        S, p, w, ok, zd = self._arena("lesny_slime", [(4, 0), (7, 3), (9, -3), (20, 0)])
+        S, p, w, ok, zd = self._arena("lesny_slime", [(7, 0), (12, 5), (15, -5), (40, 0)])
         zd2 = krok(S, 20)
         self.assertEqual(len([e for e in zd2 if e["t"] == "odbicie_slime"]), 3)
         # język: wróg przerzucony za plecy
-        S, p, w, ok, zd = self._arena("rechotek", [(8, 0)])
+        S, p, w, ok, zd = self._arena("rechotek", [(12, 0)])
         self.assertLess(w[0].get("x"), 0)
         self.assertLess(w[0].get("kx"), 0)
         # podpalenie w stożku
-        S, p, w, ok, zd = self._arena("ognik", [(5, 0), (-6, 0)])
+        S, p, w, ok, zd = self._arena("ognik", [(8, 0), (-10, 0)])
         self.assertGreater(w[0].get("pal"), S.get("czas"))
         self.assertEqual(w[1].get("pal"), 0)
         hp = w[0].get("hp")
         krok(S, 20)
         self.assertLess(w[0].get("hp"), hp)
         # szarża bez przebicia (Headbutt): staje na pierwszym
-        S, p, w, ok, zd = self._arena("zoledziak", [(5, 0), (8, 0)])
+        S, p, w, ok, zd = self._arena("zoledziak", [(8, 0), (15, 0)])
         krok(S, 10)
         self.assertIsNone(p.get("akcja"))
         # Pounce: skok na króla
@@ -427,7 +434,7 @@ class TestLogiki(unittest.TestCase):
         k = dodaj(S, "mchowy_slimak", 0, 0, wl=0, dziki=True)
         krok(S, 40)
         self.assertEqual(S.get("krol"), k.get("id"))
-        wolf = dodaj(S, "cierniowy_wilk", 15, 10, wl=4)
+        wolf = dodaj(S, "cierniowy_wilk", 25, 16, wl=4)
         wolf.set("pasek", 1.0)
         zd = LM.Tabela()
         self.assertTrue(jeden("uzyj", S, wolf, zd))
@@ -455,7 +462,7 @@ class TestLogiki(unittest.TestCase):
         b = dodaj(S, "lesny_slime", 8, 0, wl=2)
         boss = jeden("dodajBossa", S, 1, 2)
         self.assertEqual(boss.get("hpMax"), D["boss"]["zycie"] + 2 * D["boss"]["na_gracza"])
-        zd = krok(S, int((1.4 + D["boss"]["fala_co_s"]) / D["walka"]["krok_s"]) + 4)
+        zd = krok(S, int((D["boss"]["wejscie_s"] + D["boss"]["fala_co_s"]) / D["walka"]["krok_s"]) + 4)
         self.assertTrue(any(e["t"] == "ladowanie" and e["id"] == boss.get("id") for e in zd))
         self.assertTrue(any(e["t"] == "boss_fala" for e in zd), "fala bossa")
         self.assertNotEqual(S.get("krol"), boss.get("id"), "boss nie jest królem")
@@ -478,22 +485,142 @@ class TestLogiki(unittest.TestCase):
         zd = krok(S2, int((D["boss"]["czas_s"] + 0.5) / D["walka"]["krok_s"]))
         self.assertTrue(any(e["t"] == "boss_uciekl" for e in zd))
 
-    def test_2n_zloty_pet(self):
+    def test_2n_zloty_boss(self):
+        """Wydarzenie złote: boss cały złoty — wchodzi bramą, każdy cios peta gracza = złoto, pokonanie: pula + premia."""
         S = stan(Los(stala=0.5))
-        a = dodaj(S, "lesny_troll", 0, 0, wl=1)
-        g = jeden("dodajZlotego", S, 0, 0, 0, 6, 0)
+        a = dodaj(S, "lesny_troll", -14, 0, wl=1)
+        a.set("ogl", 99.0)
+        g = jeden("dodajBossa", S, 1, 1, True)
+        self.assertTrue(g.get("zloty") and g.get("boss"))
+        self.assertAlmostEqual(math.hypot(g.get("x0") - D["brama"]["x"], g.get("z0") - D["brama"]["z"]), 0, delta=0.01)
         g.set("faza", "walka")
-        x0 = g.get("x")
-        krok(S, 10)
-        self.assertGreater(g.get("x"), x0 + 1, "ucieka od wroga")
         zd = LM.Tabela()
         jeden("cios", S, a, g, 5, 5, 1, 0, False, zd)
         mon = [e for e in z(zd) if e["t"] == "zloto_cios"]
         self.assertEqual(mon[0]["ile"], D["zloty"]["za_cios"] * 4)
         g.set("hp", 0.0)
         ko = [e for e in krok(S, 1) if e["t"] == "ko"]
-        self.assertEqual(ko[0]["premia"], D["zloty"]["premia"])
+        n = ko[0]["nagrody"]
+        self.assertGreaterEqual(n[0] if isinstance(n, list) else n.get(1), D["boss"]["minimum"] + D["zloty"]["premia"])
 
+    def test_2s_zderzenia_i_ped(self):
+        """Ślizgający się pet przekazuje pęd według mas: lekki odbija się od ciężkiego, ciężki rozpędza lekkiego;
+        zaliczenie wybicia przechodzi na trafionego."""
+        S = stan(Los(stala=0.5))
+        lek = dodaj(S, "lesny_slime", 0, 0, wl=1)
+        ciez = dodaj(S, "lesny_troll", 6.9, 0, wl=2)
+        lek.set("kx", 30.0)
+        krok(S, 3)
+        self.assertLess(lek.get("kx"), 0, "lekki odbija się od ciężkiego")
+        self.assertGreater(ciez.get("kx"), 0)
+        self.assertLess(ciez.get("kx"), 15)
+        S = stan(Los(stala=0.5))
+        lek = dodaj(S, "lesny_slime", 6.9, 0, wl=1)
+        ciez = dodaj(S, "lesny_troll", 0, 0, wl=2)
+        ciez.set("kx", 30.0)
+        ciez.set("ostatni", LM.do_luau({"wl": 5, "id": 77, "t": 0.0, "dziki": False}))
+        zd = krok(S, 3)
+        self.assertGreater(lek.get("kx"), 1.5 * ciez.get("kx"), "ciężki rozpędza lekkiego")
+        self.assertGreater(max(e.get("j", 0) for e in zd), 20)
+        self.assertEqual(lek.get("ostatni").get("wl"), 5, "zaliczenie przechodzi na trafionego")
+        self.assertTrue(any(e["t"] == "zderzenie" for e in zd))
+        # przepychanie przy chodzeniu: lżejszy ustępuje bardziej
+        S = stan(Los(stala=0.5))
+        lek = dodaj(S, "lesny_slime", 0, 0, wl=1)
+        ciez = dodaj(S, "lesny_troll", 5, 0, wl=2)
+        krok(S, 1)
+        self.assertGreater(abs(lek.get("x")), abs(ciez.get("x") - 5))
+
+    def test_2t_lot_w_powietrzu(self):
+        """Mocny odrzut wyrzuca w powietrze: w locie nie chodzi i nie jest celem, ląduje (upadek); przez krawędź — RING OUT."""
+        S = stan(Los(stala=0.5))
+        a = dodaj(S, "mchowy_slimak", 0, 0, wl=1)                  # stopień 2 — bez tarczy słabszego
+        b = dodaj(S, "lesny_slime", 7, 0, wl=2)
+        zd = LM.Tabela()
+        jeden("cios", S, a, b, 0, 40, 1, 0, False, zd)
+        self.assertTrue(z(zd)[0]["lot"])
+        self.assertGreater(b.get("vy"), 0)
+        krok(S, 4)
+        self.assertGreater(b.get("y"), 1)
+        self.assertIsNone(wolaj("najblizszy", S, a, None)[0], "w locie nie jest celem")
+        zd = krok(S, 30)
+        self.assertTrue(any(e["t"] == "upadek" for e in zd))
+        self.assertEqual(b.get("y"), 0)
+        self.assertGreater(b.get("x"), 20)
+        # słaby cios: bez lotu
+        S = stan(Los(stala=0.5))
+        a = dodaj(S, "lesny_slime", 0, 0, wl=1)
+        b = dodaj(S, "lesny_troll", 7, 0, wl=2)
+        zd = LM.Tabela()
+        jeden("cios", S, a, b, 0, 18, 1, 0, False, zd)
+        self.assertFalse(z(zd)[0]["lot"])
+        # przez krawędź w locie: RING OUT
+        S = stan(Los(stala=0.5))
+        a = dodaj(S, "mchowy_slimak", 26, 0, wl=1)
+        b = dodaj(S, "lesny_slime", 33, 0, wl=2)
+        jeden("cios", S, a, b, 0, 60, 1, 0, False, LM.Tabela())
+        zd = krok(S, 40)
+        ro = [e for e in zd if e["t"] == "ringout"]
+        self.assertEqual(len(ro), 1)
+        self.assertEqual(ro[0]["przez"], 1)
+    def test_2u_sterowanie(self):
+        """Gracz kieruje petem: ruch w stronę drążka, cios automatyczny w zasięgu, autopilot po autopilot_s, walidacja,
+        umiejętność kierunkowa w stronę ruchu."""
+        Sd = D["sterowanie"]
+        S = stan(Los(stala=0.5))
+        p = dodaj(S, "lesny_slime", 0, 0, wl=1)
+        p.set("cd", 0.0)
+        self.assertTrue(jeden("steruj", S, p, 1, 0))
+        krok(S, 10)
+        self.assertGreater(p.get("x"), 4)
+        self.assertTrue(jeden("reczny", S, p))
+        # długość > 1 przycinana, śmieci odrzucane
+        self.assertTrue(jeden("steruj", S, p, 1.5, 0))
+        self.assertAlmostEqual(math.hypot(p.get("ster").get("x"), p.get("ster").get("z")), 1, places=5)
+        self.assertFalse(jeden("steruj", S, p, float("nan"), 0))
+        self.assertFalse(jeden("steruj", S, p, "x", 0))
+        self.assertFalse(jeden("steruj", S, p, 5, 0))
+        # bez dotknięcia sterowania — autopilot (idzie sam na wzgórze)
+        krok(S, int(Sd["autopilot_s"] / D["walka"]["krok_s"]) + 2)
+        self.assertFalse(jeden("reczny", S, p))
+        self.assertTrue(jeden("steruj", S, p, None, None))
+        self.assertFalse(jeden("reczny", S, p))
+        # cios automatyczny przy sterowaniu (wróg w zasięgu)
+        S = stan(Los(stala=0.5))
+        p = dodaj(S, "lesny_slime", 0, 0, wl=1)
+        q = dodaj(S, "lesny_slime", 4.5, 0, wl=0, dziki=True)
+        p.set("cd", 0.0)
+        jeden("steruj", S, p, 0, 1)
+        zd = krok(S, 2)
+        self.assertTrue(any(e["t"] == "cios" and e["a"] == p.get("id") for e in zd))
+        # umiejętność kierunkowa (Leaf Fox DASH) leci w stronę drążka, nie do najbliższego wroga
+        S = stan(Los(stala=0.5))
+        lis = dodaj(S, "lisciolis", 0, 0, wl=1)
+        dodaj(S, "rechotek", 8, 0, wl=0, dziki=True)
+        lis.set("pasek", 1.0)
+        jeden("steruj", S, lis, 0, 1)
+        self.assertTrue(jeden("uzyj", S, lis, LM.Tabela()))
+        a = lis.get("akcja")
+        self.assertAlmostEqual(a.get("dz"), 1, places=3)
+        # skok sterowany: cel przed petem w stronę drążka
+        S = stan(Los(stala=0.5))
+        t = dodaj(S, "ropucha_z_chatka", 0, 0, wl=1)
+        dodaj(S, "rechotek", -15, 0, wl=0, dziki=True)
+        t.set("pasek", 1.0)
+        jeden("steruj", S, t, 1, 0)
+        jeden("uzyj", S, t, LM.Tabela())
+        self.assertAlmostEqual(t.get("akcja").get("doX"), Sd["skok_dystans"], delta=0.5)
+
+    def test_2v_tron_dla_jednego(self):
+        """Złoty szczyt mieści jednego: x5 tylko dla peta najbliżej środka, drugi na szczycie liczy się jak x2."""
+        S = stan()
+        a = dodaj(S, "lesny_slime", 0.5, 0, wl=1)
+        b = dodaj(S, "lesny_slime", -3.8, 0, wl=2)
+        w = jeden("zlotoTick", S)
+        self.assertEqual(w.get(1.0), D["zloto"]["baza"] * 5)
+        self.assertEqual(w.get(2.0), D["zloto"]["baza"] * 2)
+        self.assertEqual(D["rzut"]["limit_areny"], 6)
+        self.assertLessEqual(D["boty"]["do_ilu"], 4)
     def test_2o_jajka_kolekcja_gwiazdki(self):
         los = Los(5)
         ile = {}
@@ -587,6 +714,18 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(p2["pety"]["ognik"], 2)
         self.assertIn("ognik", p2["druzyna"])
         self.assertTrue(p2["ksiega"]["ognik"])
+
+    def test_2w_profil_pod_nastepny_etap(self):
+        # odmiany złapanych petów i jajka wylęgające się w czasie: przechodzą przez zapis, złe wpisy odpadają
+        rek = LM.do_luau({"pety": {"ognik": 1}, "odmiany": {"ognik": {"giant": 2, "": 0}, "nie_ma_takiego": {"x": 1}},
+                          "wylegarnia": [{"nr": 2, "koniec": 1800000000}, {"nr": 99, "koniec": 1}, {"nr": 1}]})
+        p = jeden("profil", DL, rek)
+        zp = z(jeden("doZapisu", DL, p))
+        self.assertEqual(zp["odmiany"], {"ognik": {"giant": 2}})
+        self.assertEqual(zp["wylegarnia"], [{"nr": 2, "koniec": 1800000000}])
+        nowy = z(jeden("doZapisu", DL, jeden("profilNowy", DL)))
+        self.assertEqual(nowy.get("odmiany") or {}, {})
+        self.assertEqual(nowy.get("wylegarnia") or [], [])
 
     def test_2r_tablice_i_wydarzenia(self):
         t = z(jeden("top", LM.do_luau([{"nazwa": "a", "w": 3}, {"nazwa": "b", "w": 9}, {"nazwa": "c", "w": 0}, {"nazwa": "d", "w": 5}]), 2))

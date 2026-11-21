@@ -1,109 +1,108 @@
 {
- "opis": "Pet Arena (D-118, etap 1 — rdzeń, etap 2 — jajka, wydarzenia, trener, zapis). Jedyne źródło liczb gry; dane.py robi z nich zrodla/DanePetArena.luau. Wszystkie liczby to propozycja do strojenia po graniu. Układ: środek areny w (0, 0, 0), wierzch areny y = 0, kierunki w poziomie x / z.",
+ "opis": "Pet Arena (D-118). Etap 1 rdzeń, etap 2 jajka/wydarzenia/trener/zapis, v2 (21.11, po uwagach Karola): arena 2 × większa, pety różnej wielkości według wagi, fizyka zderzeń i lotu, koloseum, wzgórze króla. Jedyne źródło liczb; dane.py robi z nich zrodla/DanePetArena.luau. Układ: środek areny w (0, 0, 0), podłoga areny y = 0.",
  "kontener": "PetArenaGra",
  "prefiks": "[PetArena] ",
  "wylacznik": "PetArenaWlaczony",
  "folder_wzorcow_rs": "PetArenaWzorce",
  "limit_zrodla": 190000,
  "scena": {
-  "opis": "okrągły dół: arena (platforma) r = arena_r, fosa do fosa_r (woda woda_y), ściana dołu do obrzeza_r[0], obrzeże-trybuna (wierzch obrzeze_y) do obrzeza_r[1], wyższe stopnie trybuny, drzewa dookoła. Strefy złota na arenie od środka. Sloty graczy na obrzeżu co 360/sloty stopni.",
-  "arena_r": 24,
-  "arena_grubosc": 6,
-  "krawedz_pasow": 40,
-  "fosa_r": 32,
-  "woda_y": -3,
-  "dno_y": -8,
-  "obrzeze_r": [
-   34,
-   48
-  ],
-  "obrzeze_y": 12,
-  "segmenty": 48,
-  "trybuna": [
-   [
-    48,
-    54,
-    14
-   ],
-   [
-    54,
-    60,
-    16
-   ]
-  ],
-  "gejzery": 6,
-  "gejzer_r": 28,
-  "drzewa": 18,
-  "drzewa_r": [
-   64,
-   78
-  ],
+  "opis": "v2: jasne koloseum. Arena (podłoga) r = arena_r; za krawędzią strefa wybicia (piasek niżej) do mur_r[0]; mur areny do mur_r[1] (wierzch mur_y) z lożami graczy i paleniskami; trybuny z kibicami od mur_r[1] do trybuna_r (stopnie); mur zewnętrzny z blankami i proporcami; brama bossa w murze (kąt brama_kat_st). Wzgórze króla: trzy okrągłe stopnie ze strefami złota. v2b (21.11 wieczór): arena r 40 (ok. 2,8 × pow. etapu 1) — przy najwyżej 6 petach r 48 wyglądało pusto i wymagało długich dojść.",
+  "arena_r": 40,
+  "arena_grubosc": 4,
+  "krawedz_pasow": 56,
+  "segmenty": 56,
+  "drzewa": 0,
   "sloty": 8,
-  "slot_r": 35.5,
-  "slot_przesuniecie_st": 12,
-  "jajka_r": 44,
-  "jajka_kat_st": 0,
-  "mata_kat_st": 9,
+  "slot_r": 51.5,
+  "jajka_r": 51.5,
+  "jajka_kat_st": 112.5,
+  "mata_kat_st": 7,
   "swiatlo": {
-   "ClockTime": 14.5,
-   "Brightness": 2.4,
-   "Ambient": "6E6A78",
-   "OutdoorAmbient": "9A94A8",
+   "ClockTime": 13.2,
+   "Brightness": 3.0,
+   "Ambient": "8A8494",
+   "OutdoorAmbient": "B8B0C8",
    "GlobalShadows": true,
-   "EnvironmentDiffuseScale": 0.6,
+   "EnvironmentDiffuseScale": 0.7,
    "EnvironmentSpecularScale": 0.3
   },
   "atmosfera": {
-   "Density": 0.22,
-   "Offset": 0.1,
-   "Color": "C8D8F0",
-   "Decay": "9AA8C8",
-   "Glare": 0.1,
-   "Haze": 1.2
+   "Density": 0.18,
+   "Offset": 0.05,
+   "Color": "D8E8FF",
+   "Decay": "A8C0E8",
+   "Glare": 0.05,
+   "Haze": 0.8
   },
-  "mata_r": 36.5
+  "mata_r": 51.5,
+  "strefa_wybicia_y": -1.5,
+  "mur_r": [
+   50,
+   53
+  ],
+  "mur_y": 8,
+  "trybuna_r": 68,
+  "trybuna_stopnie": 5,
+  "mur_zewn_y": 28,
+  "slot_kat0_st": 22.5,
+  "brama_kat_st": 180,
+  "brama_szer": 26,
+  "brama_wys": 24,
+  "kibicow": 120,
+  "proporcow": 32,
+  "palenisk": 8
  },
  "strefy": [
   {
-   "id": "srodek",
-   "nazwa": "GOLDEN CENTER",
-   "r": 5.5,
+   "id": "szczyt",
+   "nazwa": "GOLDEN THRONE",
+   "r": 4.6,
    "mnoznik": 5,
-   "kolor": "FFD84D"
+   "kolor": "FFC83D",
+   "wysokosc": 4.2,
+   "material": "Foil"
   },
   {
-   "id": "pierscien2",
-   "nazwa": "x2 RING",
-   "r": 13,
+   "id": "stopien2",
+   "nazwa": "x2 STEP",
+   "r": 10,
    "mnoznik": 2,
-   "kolor": "F2A35E"
+   "kolor": "4F7CE0",
+   "wysokosc": 2.8,
+   "material": "Marble"
   },
   {
-   "id": "pierscien1",
-   "nazwa": "x1 RING",
-   "r": 24,
+   "id": "stopien1",
+   "nazwa": "x1 STEP",
+   "r": 18,
    "mnoznik": 1,
-   "kolor": "DCCB9E"
+   "kolor": "E07A4B",
+   "wysokosc": 1.4,
+   "material": "Slate"
   }
  ],
  "kamera": {
-  "opis": "kamera stała (Scriptable) za slotem gracza: patrzy z wysokości pod kątem nachylenie_st na punkt cel_z studów od środka w stronę gracza, z odległości odleglosc; pole widzenia fov. Etap 2: ciaśniej — na telefonie 667 × 375 cała arena w pasie 0,12–0,90 wysokości i 0,17–0,83 szerokości (sprawdza test na 4 ekranach), pet lekki ok. 78 pt.",
+  "opis": "dwa widoki: CAŁOŚĆ — stała kamera za lożą gracza (nachylenie, odległość, cel), cała arena w pasie ekranu; PET — kamera płynnie za własnym petem (odległość = za_petem × wysokość peta, pet ok. 90–120 pt na telefonie); przy wielkim wybiciu krótko za lecącym petem. Przycisk VIEW przełącza.",
   "fov": 45,
-  "nachylenie_st": 40,
-  "odleglosc": 45,
-  "cel_z": 10,
+  "nachylenie_st": 42,
+  "odleglosc": 72,
+  "cel_z": 16,
   "pas_ekranu": [
-   0.12,
-   0.9
-  ]
+   0.08,
+   0.92
+  ],
+  "za_petem": 3.7,
+  "za_petem_nachylenie_st": 34,
+  "gladkosc": 4.0,
+  "lot_s": 1.4
  },
  "walka": {
-  "opis": "walka liczona na serwerze w 2D stałym krokiem krok_s. Odrzut: v0 = siła × (1 + wspolczynnik_odrzutu × ubytek życia) / waga (ubytek 0 przy pełnym życiu, 1 przy zerze), potem tarcie: v × (1 − tarcie × krok) co krok. Pet idzie do środka, a gdy wróg jest w zasieg_widzenia — do najbliższego; bije, gdy stoi w zasięgu (promienie + zasieg_ciosu). RING OUT: środek peta za arena_r; KO: życie 0. Wybicie zalicza się ostatniemu, kto trafił w ciągu ostatni_cios_s.",
+  "opis": "walka liczona na serwerze w 2D stałym krokiem krok_s. Odrzut: v0 = siła × (1 + wspolczynnik_odrzutu × ubytek życia) / waga (ubytek 0 przy pełnym życiu, 1 przy zerze), potem tarcie: v × (1 − tarcie × krok) co krok. Pet idzie do środka, a gdy wróg jest w zasieg_widzenia — do najbliższego; bije, gdy stoi w zasięgu (promienie + zasieg_ciosu). RING OUT: środek peta za arena_r; KO: życie 0. Wybicie zalicza się ostatniemu, kto trafił w ciągu ostatni_cios_s. v2: masa (waga) dzieli odrzut i decyduje o przepychaniu; zderzenie ślizgającego się peta z innym przekazuje pęd (odbicie sprężyste, współczynnik odbicie) i zaliczenie wybicia; krytyk, cios kończący i odrzut ≥ wybicie_v wyrzucają peta w powietrze (vy = lot_vy_x × v, najwyżej lot_vy_maks; grawitacja; w powietrzu bez tarcia i chodzenia, opór_powietrza); za krawędzią — RING OUT (lot ponad trybuny rysuje klient).",
   "krok_s": 0.05,
   "tarcie": 5.5,
-  "wspolczynnik_odrzutu": 2.0,
-  "zasieg_ciosu": 1.3,
-  "zasieg_widzenia": 11,
+  "wspolczynnik_odrzutu": 1.6,
+  "zasieg_ciosu": 1.5,
+  "zasieg_widzenia": 20,
   "oszolomienie_s_na_odrzut": 0.012,
   "oszolomienie_maks_s": 0.6,
   "krytyk_szansa": 0.1,
@@ -112,17 +111,23 @@
   "rozrzut_st": 14,
   "ostatni_cios_s": 4,
   "lod_tarcie": 0.25,
-  "ladowanie_r": 4,
-  "ladowanie_sila": 14,
-  "stan_co_s": 0.066
+  "ladowanie_r": 6,
+  "ladowanie_sila": 20,
+  "stan_co_s": 0.066,
+  "grawitacja": 70,
+  "wybicie_v": 40,
+  "lot_vy_x": 0.55,
+  "lot_vy_maks": 45,
+  "odbicie": 0.6,
+  "opor_powietrza": 0.4
  },
  "rzut": {
   "opis": "rzut z ręki gracza w wybrane miejsce areny: lot po łuku czas_s + na_stud × odległość, wysokość łuku. Serwer sprawdza: cel na arenie (≤ arena_r − margines), najwyżej limit_areny petów naraz, jeden pet gracza naraz, pet nie odpoczywa, wiadro tempa akcji.",
   "czas_s": 0.75,
   "na_stud": 0.006,
-  "wysokosc": 9,
-  "margines": 1.2,
-  "limit_areny": 8,
+  "wysokosc": 14,
+  "margines": 2.5,
+  "limit_areny": 6,
   "wiadro_na_s": 3,
   "wiadro_zapas": 4
  },
@@ -148,8 +153,8 @@
  "odpoczynek_s": 30,
  "boty": {
   "opis": "dzikie pety dopełniają arenę do do_ilu petów (najwyżej maks), po jednym co co_s; stopnie losowane z wagi_stopni; umiejętność używają, gdy pełna i wróg w zasięgu, albo po czekaj_s; życie × zycie_x.",
-  "do_ilu": 5,
-  "maks": 5,
+  "do_ilu": 4,
+  "maks": 4,
   "co_s": 2.2,
   "pierwszy_s": 1.0,
   "wagi_stopni": [
@@ -186,43 +191,43 @@
   ]
  },
  "klasy_wagi": {
-  "opis": "waga dzieli odrzut; z niej i ze stopnia (rzadkość 1–5) generator liczy życie, siłę ciosu, odrzut ciosu, prędkość, przerwę między ciosami i wielkość modelu (wysokość w studach). Stopień: × (1 + na_stopien × (stopień − 1)). Etap 2: pety ok. 1,6 × większe (czytelność na telefonie: ≥ 70 pt), promień kolizji 0,5 × szerokość modelu w [1,8; 3,2].",
+  "opis": "v2: wielkość według wagi (lekki 1, średni 1,6, ciężki 2,4): wysokość modelu, promień ciała (promien_baza × rozmiar), zasięg ciosu i prędkość rosną z wielkością; masa dzieli odrzut i decyduje o przepychaniu. Stopień: × (1 + na_stopien × (stopień − 1)).",
   "lekki": {
-   "waga": 0.7,
+   "waga": 1.0,
+   "rozmiar": 1.0,
    "zycie": 100,
    "obrazenia": 4.5,
-   "odrzut": 12,
-   "predkosc": 9.0,
+   "odrzut": 13,
+   "predkosc": 11.0,
    "przerwa_s": 0.85,
-   "wysokosc": 8.8
+   "wysokosc": 6.0
   },
   "sredni": {
-   "waga": 1.0,
-   "zycie": 120,
-   "obrazenia": 5.2,
-   "odrzut": 14,
-   "predkosc": 7.5,
+   "waga": 1.8,
+   "rozmiar": 1.6,
+   "zycie": 130,
+   "obrazenia": 6.0,
+   "odrzut": 18,
+   "predkosc": 13.0,
    "przerwa_s": 1.0,
    "wysokosc": 9.6
   },
   "ciezki": {
-   "waga": 1.5,
-   "zycie": 150,
-   "obrazenia": 6.0,
-   "odrzut": 16,
-   "predkosc": 6.0,
+   "waga": 3.0,
+   "rozmiar": 2.4,
+   "zycie": 170,
+   "obrazenia": 8.0,
+   "odrzut": 26,
+   "predkosc": 15.0,
    "przerwa_s": 1.2,
-   "wysokosc": 10.5
+   "wysokosc": 14.4
   },
   "na_stopien": {
    "zycie": 0.2,
    "obrazenia": 0.15,
    "odrzut": 0.06
   },
-  "promien": [
-   1.8,
-   3.2
-  ]
+  "promien_baza": 2.0
  },
  "rzadkosci": [
   {
@@ -256,8 +261,8 @@
     "typ": "rykoszet",
     "nazwa": "BOUNCE",
     "celow": 3,
-    "zasieg": 12,
-    "sila": 18,
+    "zasieg": 19.2,
+    "sila": 28.8,
     "obrazenia": 8
    }
   },
@@ -269,9 +274,9 @@
    "umiejetnosc": {
     "typ": "szarza",
     "nazwa": "HEADBUTT",
-    "dlugosc": 10,
+    "dlugosc": 16.0,
     "predkosc": 45,
-    "sila": 29,
+    "sila": 46.4,
     "obrazenia": 12,
     "przebija": false
    }
@@ -284,8 +289,8 @@
    "umiejetnosc": {
     "typ": "jezyk",
     "nazwa": "TONGUE",
-    "zasieg": 13,
-    "sila": 22,
+    "zasieg": 20.8,
+    "sila": 35.2,
     "obrazenia": 8
    }
   },
@@ -293,11 +298,11 @@
    "id": "muchomornik",
    "nazwa": "Shroomling",
    "stopien": 2,
-   "waga": "lekki",
+   "waga": "sredni",
    "umiejetnosc": {
     "typ": "ogluszenie",
     "nazwa": "SPORE CLOUD",
-    "r": 7.5,
+    "r": 12.0,
     "czas": 1.5,
     "obrazenia": 5
    }
@@ -311,7 +316,7 @@
     "typ": "skorupa",
     "nazwa": "SHELL",
     "czas": 3,
-    "sila": 19
+    "sila": 30.4
    }
   },
   {
@@ -322,9 +327,9 @@
    "umiejetnosc": {
     "typ": "szarza",
     "nazwa": "DASH",
-    "dlugosc": 22,
+    "dlugosc": 35.2,
     "predkosc": 60,
-    "sila": 19,
+    "sila": 30.4,
     "obrazenia": 9,
     "przebija": true
    }
@@ -333,15 +338,15 @@
    "id": "cierniowy_wilk",
    "nazwa": "Thorn Wolf",
    "stopien": 3,
-   "waga": "sredni",
+   "waga": "lekki",
    "umiejetnosc": {
     "typ": "skok",
     "nazwa": "POUNCE",
     "cel": "krol",
     "czas": 0.7,
     "wysokosc": 8,
-    "r": 4.5,
-    "sila": 27,
+    "r": 7.2,
+    "sila": 43.2,
     "obrazenia": 16
    }
   },
@@ -353,11 +358,11 @@
    "umiejetnosc": {
     "typ": "podpalenie",
     "nazwa": "BURN",
-    "zasieg": 10,
+    "zasieg": 16.0,
     "kat_st": 80,
     "czas": 4,
     "na_s": 6,
-    "sila": 10
+    "sila": 16.0
    }
   },
   {
@@ -368,7 +373,7 @@
    "umiejetnosc": {
     "typ": "zamrozenie",
     "nazwa": "FREEZE",
-    "zasieg": 14,
+    "zasieg": 22.4,
     "czas": 2.2,
     "obrazenia": 6
    }
@@ -381,8 +386,8 @@
    "umiejetnosc": {
     "typ": "fala",
     "nazwa": "GROUND SLAM",
-    "r": 9,
-    "sila": 26,
+    "r": 14.4,
+    "sila": 41.6,
     "obrazenia": 12
    }
   },
@@ -394,9 +399,9 @@
    "umiejetnosc": {
     "typ": "szarza",
     "nazwa": "ROLL",
-    "dlugosc": 40,
+    "dlugosc": 64.0,
     "predkosc": 42,
-    "sila": 24,
+    "sila": 38.4,
     "obrazenia": 12,
     "przebija": true
    }
@@ -412,8 +417,8 @@
     "cel": "tlum",
     "czas": 1.6,
     "wysokosc": 30,
-    "r": 11,
-    "sila": 32,
+    "r": 17.6,
+    "sila": 51.2,
     "obrazenia": 18
    }
   }
@@ -490,12 +495,12 @@
   "zamknij": "X",
   "poziom": "LV %d",
   "boss_za": "BOSS IN %s",
-  "zloty_za": "GOLDEN PET IN %s",
+  "zloty_za": "GOLDEN BOSS IN %s",
   "boss": "BOSS!",
   "boss_pokonany": "BOSS DEFEATED! +%s G",
   "boss_uciekl": "THE BOSS ESCAPED!",
-  "zloty": "GOLDEN PET!",
-  "zloty_uciekl": "THE GOLDEN PET ESCAPED!",
+  "zloty": "GOLDEN BOSS!",
+  "zloty_uciekl": "THE GOLDEN BOSS ESCAPED!",
   "ogl_legendarny": "%s hatched a %s %s!",
   "ogl_krol": "%s took the king's bounty: %s G!",
   "ogl_boss": "%s defeated! Gold for everyone who hit it!",
@@ -510,7 +515,13 @@
    "druzyna": "LB RB",
    "trening": "DOWN"
   },
-  "boss_pokonany_bez": "BOSS DEFEATED!"
+  "boss_pokonany_bez": "BOSS DEFEATED!",
+  "widok": "VIEW",
+  "boss_idzie": "BOSS IS COMING!",
+  "auto": "AUTO",
+  "podpowiedz_ruch_dotyk": "Want to steer? Hold the left side of the screen!",
+  "podpowiedz_ruch_mysz": "WASD or arrows: move your pet!",
+  "podpowiedz_ruch_pad": "Left stick: move your pet!"
  },
  "dzwieki": {
   "opis": "odcinki arkusza efektów (ten sam arkusz co BONK: swiat/dzwiek_gra/identyfikatory.json, assets/audio/arkusz/sfx_arkusz_a.json); bez muzyki w etapie 1",
@@ -617,7 +628,7 @@
   ]
  },
  "boss": {
-  "opis": "BOSS: Strażnik z BONK ląduje w środku; życie zycie + na_gracza × gracze; co fala_co_s fala odrzutu (r, sila, obrazenia); prawie nie do ruszenia (waga); po czas_s ucieka. Wybicie: pula złota dla każdego, kto trafił — udział w obrażeniach × pula, co najmniej minimum.",
+  "opis": "BOSS: Strażnik z BONK wchodzi bramą (wejście wejscie_s) i staje w środku; życie zycie + na_gracza × gracze; co fala_co_s fala odrzutu; po czas_s ucieka. Wybicie: pula złota według udziału w obrażeniach (co najmniej minimum). Wydarzenie złote: ten sam boss cały złoty i lśniący — każdy cios peta gracza = złoto (zloty.za_cios × stopień), pokonanie: premia zloty.premia każdemu, kto trafił, plus pula.",
   "modele": [
    {
     "model": "straznik_topieli",
@@ -628,31 +639,27 @@
     "nazwa": "VINE SERPENT"
    }
   ],
-  "wysokosc": 16,
-  "promien": 4.8,
+  "wysokosc": 24,
+  "promien": 8,
   "zycie": 1400,
   "na_gracza": 500,
-  "waga": 8,
+  "waga": 20,
   "fala_co_s": 3.2,
-  "fala_r": 10,
-  "fala_sila": 26,
+  "fala_r": 17,
+  "fala_sila": 32,
   "fala_obrazenia": 9,
   "czas_s": 70,
   "pula": 400,
   "minimum": 80,
-  "stopien": 5
+  "stopien": 5,
+  "wejscie_s": 2.6
  },
  "zloty": {
-  "opis": "GOLDEN PET: złoty slime ucieka po arenie; każdy cios peta gracza = za_cios złota × stopień atakującego; wybicie = premia; po czas_s ucieka",
-  "model": "lesny_slime",
-  "nazwa": "GOLDEN PET",
-  "zycie": 260,
-  "predkosc": 10.5,
-  "waga": 0.8,
+  "opis": "wydarzenie złote = złoty boss (patrz boss); za_cios × stopień atakującego za każdy cios, premia za pokonanie",
   "za_cios": 6,
   "premia": 150,
-  "czas_s": 45,
-  "kolor": "FFC83D"
+  "kolor": "FFC83D",
+  "nazwa": "GOLDEN BOSS"
  },
  "zapis": {
   "opis": "własny magazyn (DataStore); w próbie (znacznik ZapisProbaDo z tools/zapis_prob.py) magazyn nieczytany — gracz w pamięci; bez udanego wczytania nie zapisujemy; zapis przy wyjściu i co co_s",
@@ -686,5 +693,15 @@
  "pokazanie": {
   "opis": "komunikaty serwera: legendarny lub epicki pet z jajka, wybicie króla z nagrodą od nagroda_ogloszenie, boss pokonany",
   "nagroda_ogloszenie": 40
+ },
+ "strefy_opis": "wzgórze króla: trzy okrągłe stopnie (wysokość tylko w obrazie); złoty szczyt (tron) mieści jednego peta — x5 dostaje tylko pet najbliżej środka, pozostali na szczycie liczą się jak x2; drugi stopień mieści 2–3 pety; poza wzgórzem bez złota",
+ "sterowanie": {
+  "opis": "gracz kieruje ruchem swojego peta (drążek / WASD / gałka): wektor kierunku o długości ≤ 1 (świat, x/z); cios automatyczny (najbliższy w zasięgu); bez dotknięcia sterowania przez autopilot_s — pet walczy sam (obecna logika); umiejętności kierunkowe w stronę ruchu lub patrzenia (skok: skok_dystans przed petem); serwer sprawdza wartości i tempo (wiadro ruchu)",
+  "autopilot_s": 2.5,
+  "martwa_strefa": 0.15,
+  "wiadro_na_s": 20,
+  "wiadro_zapas": 10,
+  "skok_dystans": 18,
+  "wysylanie_s": 0.1
  }
 }

@@ -313,7 +313,12 @@ function Okna:odswiez(st)
 	end
 end
 
------------------------------------------------------------- wyklucie
+------------------------------------------------------------ wyklucie (v2: cały ekran, 5–6 s, emocje)
+-- jajko wskakuje na środek, trzęsie się w trzech fazach (kolor poświaty „awansuje” aż do wylosowanej rzadkości),
+-- pęka błyskiem, konfetti, wirujące promienie, pet wyskakuje z obrotem i odbiciem, tabliczka rzadkości wjeżdża z hukiem,
+-- gwiazdki; stuknięcie przyspiesza. Wynik losuje serwer przed sceną.
+local KONFETTI = { "FF4D4D", "FFC83D", "4FB3FF", "6BD66B", "C27BFF", "FF8AD8", "FFFFFF", "3FE0D0" }
+
 function Okna:wyklucie(z)
 	local D = self.D
 	if self.scenaW then
@@ -322,29 +327,172 @@ function Okna:wyklucie(z)
 	local J = D.jajka[z.jajko]
 	local Pd = D.pety[z.pet]
 	local R = D.rzadkosci[z.rzadkosc]
-	local tlo = nowy("Frame", { Name = "Wyklucie", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45,
-		ZIndex = 40 }, self.ramka)
-	local pole = nowy("Frame", { Name = "Pole", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.45), Size = UDim2.fromOffset(230, 230),
-		BackgroundTransparency = 1, ZIndex = 41 }, tlo)
 	local s = self.opcje.skala and self.opcje.skala() or 1
-	nowy("UIScale", { Scale = s }, pole)
-	local blysk = nowy("Frame", { Name = "Blysk", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.2, 0.2),
-		BackgroundColor3 = Color3.fromHex(R.kolor), BackgroundTransparency = 1, ZIndex = 41 }, pole)
-	rog(blysk, 200)
+	local tlo = nowy("Frame", { Name = "Wyklucie", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromRGB(20, 14, 32),
+		BackgroundTransparency = 0.25, ZIndex = 40, Active = true }, self.ramka)
+	-- promienie (6 pasów przez środek = 12 promieni), obracają się
+	local promienie = nowy("Frame", { Name = "Promienie", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.45),
+		Size = UDim2.fromOffset(900 * s, 900 * s), BackgroundTransparency = 1, ZIndex = 40, Visible = false }, tlo)
+	local paski = {}
+	for k = 0, 5 do
+		local p = nowy("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(1, 0, 0, 44 * s),
+			Rotation = k * 30, BackgroundColor3 = Color3.fromHex(R.kolor), BackgroundTransparency = 0.55, BorderSizePixel = 0, ZIndex = 40 }, promienie)
+		nowy("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.5, 0),
+			NumberSequenceKeypoint.new(1, 1) }) }, p)
+		table.insert(paski, p)
+	end
+	-- poświata za jajkiem (kolor rośnie z fazami)
+	local poswiata = nowy("Frame", { Name = "Poswiata", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.45),
+		Size = UDim2.fromOffset(260 * s, 260 * s), BackgroundColor3 = Color3.fromHex(D.rzadkosci[1].kolor), BackgroundTransparency = 0.55, ZIndex = 41 }, tlo)
+	rog(poswiata, 400)
+	local pole = nowy("Frame", { Name = "Pole", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 1.3), Size = UDim2.fromOffset(300 * s, 300 * s),
+		BackgroundTransparency = 1, ZIndex = 42 }, tlo)
 	local vf, jajko = self:scena(pole, J.wzorzec, J.wysokosc * 1.15)
 	vf.ZIndex = 42
-	local napis = self:tekst(tlo, "", UDim2.new(0.5, -170 * s, 0.45, 118 * s), UDim2.fromOffset(340 * s, 44 * s), Color3.fromHex(R.kolor))
-	napis.ZIndex = 43
-	local nazwa = self:tekst(tlo, "", UDim2.new(0.5, -170 * s, 0.45, 160 * s), UDim2.fromOffset(340 * s, 30 * s), self.papier)
-	nazwa.ZIndex = 43
-	tlo.InputBegan:Connect(function(w: InputObject)
-		if self.scenaW and self.scenaW.t > 2.2 and (w.UserInputType == Enum.UserInputType.MouseButton1 or w.UserInputType == Enum.UserInputType.Touch) then
-			self.scenaW.t = 99
+	local blysk = nowy("Frame", { Name = "Blysk", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, ZIndex = 46 }, tlo)
+	local tabliczka = nowy("Frame", { Name = "Tabliczka", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.8),
+		Size = UDim2.fromOffset(330 * s, 60 * s), BackgroundColor3 = Color3.fromHex(R.kolor), Visible = false, ZIndex = 47, Rotation = -5 }, tlo)
+	rog(tabliczka, 14)
+	nowy("UIStroke", { Thickness = 4, Color = self.tusz, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, tabliczka)
+	local tabSkala = nowy("UIScale", { Scale = 1 }, tabliczka)
+	local rz = self:tekst(tabliczka, string.upper(R.nazwa), UDim2.fromScale(0.05, 0.08), UDim2.fromScale(0.9, 0.84), Color3.new(1, 1, 1))
+	rz.ZIndex = 48
+	local napis = self:tekst(tlo, "", UDim2.new(0.5, -200 * s, 0.08, 0), UDim2.fromOffset(400 * s, 54 * s), Color3.fromHex(D.ui.kolory.zloto))
+	napis.ZIndex = 47
+	local nazwa = self:tekst(tlo, "", UDim2.new(0.5, -170 * s, 0.88, 0), UDim2.fromOffset(340 * s, 30 * s), self.papier)
+	nazwa.ZIndex = 47
+	local w = { t = 0, tempo = 1, ramka = tlo, vf = vf, jajko = jajko, pet = nil, z = z, J = J, Pd = Pd, R = R, napis = napis, nazwa = nazwa,
+		blysk = blysk, poswiata = poswiata, pole = pole, promienie = promienie, paski = paski, tabliczka = tabliczka, tabSkala = tabSkala,
+		konfetti = {}, gwiazdki = {}, faza = 0, kolorNr = 1, s = s }
+	tlo.InputBegan:Connect(function(we: InputObject)
+		if we.UserInputType == Enum.UserInputType.MouseButton1 or we.UserInputType == Enum.UserInputType.Touch then
+			w.tempo = 3
 		end
 	end)
-	self.scenaW = { t = 0, ramka = tlo, vf = vf, jajko = jajko, pet = nil, z = z, J = J, Pd = Pd, R = R, napis = napis, nazwa = nazwa, blysk = blysk }
+	self.scenaW = w
+	if self.opcje.naDzwiek then
+		self.opcje.naDzwiek("klik", 0.8)
+	end
 end
 
+function Okna:krokWyklucia(dt: number)
+	local w = self.scenaW
+	if not w then
+		return
+	end
+	local D = self.D
+	w.t += dt * w.tempo
+	local t = w.t
+	local function dzwiek(rola: string, ton: number)
+		if self.opcje.naDzwiek then
+			self.opcje.naDzwiek(rola, ton)
+		end
+	end
+	-- 1. jajko wskakuje (0–0,5 s)
+	if t < 0.5 then
+		local f = t / 0.5
+		local y = 1.3 - (1.3 - 0.45) * (1 - (1 - f) ^ 3)
+		w.pole.Position = UDim2.fromScale(0.5, y)
+	elseif w.jajko then
+		w.pole.Position = UDim2.fromScale(0.5, 0.45)
+	end
+	-- 2. trzy fazy trzęsienia (0,5–2,9 s), kolor poświaty awansuje do wylosowanej rzadkości
+	if w.jajko and t >= 0.5 and t < 2.9 then
+		local faza = if t < 1.3 then 1 elseif t < 2.1 then 2 else 3
+		if faza ~= w.faza then
+			w.faza = faza
+			dzwiek("trzesienie", 0.8 + faza * 0.15)
+		end
+		local amp = ({ 0.06, 0.14, 0.26 })[faza]
+		local czest = ({ 18, 28, 40 })[faza]
+		local skok = if faza >= 2 then math.abs(math.sin(t * (6 + faza * 3))) * 0.25 * (faza - 1) else 0
+		w.jajko:PivotTo(CFrame.new(0, skok, 0) * CFrame.Angles(0, 0, math.sin(t * czest) * amp))
+		local cel = math.min(w.z.rzadkosc, math.floor(1 + (t - 0.5) / 2.4 * (w.z.rzadkosc + 0.3)))
+		if cel > w.kolorNr then
+			w.kolorNr = cel
+			w.poswiata.BackgroundColor3 = Color3.fromHex(D.rzadkosci[cel].kolor)
+			dzwiek("klik", 1 + cel * 0.15)
+		end
+		local p = 1 + math.sin(t * czest * 0.5) * 0.04 * faza
+		w.poswiata.Size = UDim2.fromOffset(260 * w.s * p, 260 * w.s * p)
+		w.poswiata.BackgroundTransparency = 0.55 - faza * 0.08
+	end
+	-- 3. pęknięcie (2,9 s): błysk, konfetti, promienie, pet wyskakuje
+	if w.jajko and t >= 2.9 then
+		w.jajko:Destroy()
+		w.jajko = nil
+		w.poswiata.BackgroundColor3 = Color3.fromHex(w.R.kolor)
+		local wz = self.wzorce and self.wzorce:FindFirstChild(w.Pd.wzorzec)
+		if wz then
+			w.pet = wz:Clone()
+			w.pet.Parent = w.vf
+			pcall(function()
+				w.pet:ScaleTo((w.J.wysokosc * 1.15) / math.max(1, w.Pd.wysokosc))
+			end)
+		end
+		w.blysk.BackgroundTransparency = 0
+		w.promienie.Visible = true
+		for i = 1, 80 do
+			local k = nowy("Frame", { Size = UDim2.fromOffset(10 * w.s, 16 * w.s), AnchorPoint = Vector2.new(0.5, 0.5),
+				Position = UDim2.fromScale(0.5, 0.45), BackgroundColor3 = Color3.fromHex(KONFETTI[(i % #KONFETTI) + 1]), BorderSizePixel = 0, ZIndex = 45 }, w.ramka)
+			local a = math.random() * math.pi * 2
+			local v = 0.35 + math.random() * 0.75
+			table.insert(w.konfetti, { k = k, x = 0.5, y = 0.45, vx = math.cos(a) * v * 0.6, vy = math.sin(a) * v - 0.55, obr = math.random(-600, 600) })
+		end
+		for i = 1, 6 do
+			local g = self:tekst(w.ramka, "★", UDim2.fromScale(0.5, 0.45), UDim2.fromOffset(40 * w.s, 40 * w.s), Color3.fromHex("FFE14D"))
+			g.ZIndex = 46
+			g.AnchorPoint = Vector2.new(0.5, 0.5)
+			table.insert(w.gwiazdki, { g = g, a = i / 6 * math.pi * 2 })
+		end
+		if self.opcje.naPekniecie then
+			self.opcje.naPekniecie(w.z.rzadkosc)
+		end
+	end
+	if t >= 2.9 then
+		local tp = t - 2.9
+		w.blysk.BackgroundTransparency = math.clamp(tp / 0.45, 0, 1)
+		w.promienie.Rotation = t * 40
+		for _, p in w.paski do
+			p.BackgroundColor3 = Color3.fromHex(w.R.kolor)
+		end
+		w.poswiata.Size = UDim2.fromOffset(260 * w.s * (1 + math.min(tp, 0.3) * 2), 260 * w.s * (1 + math.min(tp, 0.3) * 2))
+		if w.pet then
+			local h = w.J.wysokosc * 1.15
+			local skok = if tp < 0.6 then math.sin(tp / 0.6 * math.pi) * h * 0.45 elseif tp < 0.9 then math.sin((tp - 0.6) / 0.3 * math.pi) * h * 0.12 else 0
+			local obr = if tp < 0.7 then tp / 0.7 * math.pi * 4 else math.pi * 4 + math.sin(tp * 2) * 0.5
+			w.pet:PivotTo(CFrame.new(0, skok, 0) * CFrame.Angles(0, obr, 0))
+		end
+		for _, c in w.konfetti do
+			c.vy += dt * w.tempo * 0.9
+			c.x += c.vx * dt * w.tempo
+			c.y += c.vy * dt * w.tempo
+			c.k.Position = UDim2.fromScale(c.x, c.y)
+			c.k.Rotation += c.obr * dt * w.tempo
+		end
+		for i, g in w.gwiazdki do
+			local r = 0.12 + math.min(tp, 0.5) * 0.3
+			g.g.Position = UDim2.fromScale(0.5 + math.cos(g.a + tp * 1.5) * r * 0.6, 0.45 + math.sin(g.a + tp * 1.5) * r)
+			g.g.Rotation = tp * 200 + i * 30
+		end
+	end
+	-- 4. tabliczka rzadkości z hukiem (3,4 s) i napis
+	if t >= 3.4 and not w.tabliczka.Visible then
+		w.tabliczka.Visible = true
+		w.napis.Text = if w.z.nowy then D.ui.nowy_pet elseif w.z.maks then string.format(D.ui.maks_gwiazdek, self.L.format(w.z.zwrot))
+			else D.ui.gwiazdka .. " " .. gwiazdki(w.z.gwiazdki)
+		w.nazwa.Text = w.Pd.nazwa
+		dzwiek("kryt", 0.9)
+	end
+	if w.tabliczka.Visible then
+		local f = t - 3.4
+		w.tabSkala.Scale = if f < 0.12 then 3 - f / 0.12 * 2.2 elseif f < 0.24 then 0.8 + (f - 0.12) / 0.12 * 0.2 else 1
+	end
+	if t > 5.8 then
+		w.ramka:Destroy()
+		self.scenaW = nil
+	end
+end
 function Okna:krok(dt: number)
 	self.t += dt
 	if self.obroty then
@@ -354,54 +502,7 @@ function Okna:krok(dt: number)
 			end
 		end
 	end
-	local w = self.scenaW
-	if not w then
-		return
-	end
-	w.t += dt
-	if w.t < 1.6 then
-		local sila = 0.05 + w.t * 0.16
-		if w.jajko then
-			w.jajko:PivotTo(CFrame.Angles(0, 0, math.sin(w.t * (18 + w.t * 16)) * sila))
-		end
-	elseif not w.pet and w.t < 90 then
-		if w.jajko then
-			w.jajko:Destroy()
-			w.jajko = nil
-		end
-		local wz = self.wzorce and self.wzorce:FindFirstChild(w.Pd.wzorzec)
-		if wz then
-			w.pet = wz:Clone()
-			w.pet.Parent = w.vf
-			local m = (w.J.wysokosc * 1.15) / math.max(1, w.Pd.wysokosc)
-			pcall(function()
-				w.pet:ScaleTo(m)
-			end)
-			w.skalaPeta = m
-		end
-		w.blysk.BackgroundTransparency = 0
-		local D = self.D
-		w.napis.Text = if w.z.nowy then D.ui.nowy_pet elseif w.z.maks then string.format(D.ui.maks_gwiazdek, self.L.format(w.z.zwrot))
-			else D.ui.gwiazdka .. " " .. gwiazdki(w.z.gwiazdki)
-		w.nazwa.Text = w.Pd.nazwa .. "  ·  " .. w.R.nazwa
-		if self.opcje.naPekniecie then
-			self.opcje.naPekniecie(w.z.rzadkosc)
-		end
-	end
-	if w.t >= 1.6 then
-		local tp = w.t - 1.6
-		w.blysk.Size = UDim2.fromScale(0.2 + tp * 3, 0.2 + tp * 3)
-		w.blysk.BackgroundTransparency = math.clamp(tp / 0.5, 0, 1)
-		if w.pet then
-			local h = w.J.wysokosc * 1.15
-			local skok = if tp < 0.4 then math.sin(tp / 0.4 * math.pi) * h * 0.25 else 0
-			w.pet:PivotTo(CFrame.new(0, skok, 0) * CFrame.Angles(0, math.sin(tp * 2.2) * 0.6, 0))
-		end
-	end
-	if w.t > 4.2 then
-		w.ramka:Destroy()
-		self.scenaW = nil
-	end
+	self:krokWyklucia(dt)
 end
 
 local function prost(o: GuiObject): { number }

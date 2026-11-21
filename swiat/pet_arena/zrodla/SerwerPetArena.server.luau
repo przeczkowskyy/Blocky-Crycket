@@ -372,21 +372,22 @@ local nastWyd = D.wydarzenia.pierwsze_s
 local nrWyd = 1
 local nrBossa = 0
 
+-- dzikie pety wskakują na arenę z bramy bossa albo z trybun (losowy punkt za krawędzią)
 local function zGejzera()
-	local g = math.floor(los:NextNumber() * D.scena.gejzery)
-	local a = 2 * math.pi * (g + 0.5) / D.scena.gejzery
-	return math.sin(a) * D.scena.gejzer_r, math.cos(a) * D.scena.gejzer_r
+	local a = los:NextNumber() * 2 * math.pi
+	local r = D.scena.arena_r + 6
+	return math.sin(a) * r, math.cos(a) * r
 end
 
 local function rzutDzikiego(nr: number?, x: number?, z: number?)
 	local n = nr or L.losujPetaBota(D, los:NextNumber(), los:NextNumber())
 	local x0, z0 = zGejzera()
-	local r = los:NextNumber() * 14
+	local r = los:NextNumber() * 30
 	local b = los:NextNumber() * 2 * math.pi
 	local tx, tz = x or math.sin(b) * r, z or math.cos(b) * r
-	local p = L.dodajPeta(S, n, 0, true, x0, D.scena.woda_y, z0, tx, tz)
-	wyslij({ t = "rzut", id = p.id, nr = p.nr, wl = 0, dziki = true, x0 = x0, y0 = D.scena.woda_y, z0 = z0, x = tx, z = tz,
-		czas = p.lotCzas })
+	local y0 = D.scena.mur_y + 4
+	local p = L.dodajPeta(S, n, 0, true, x0, y0, z0, tx, tz)
+	wyslij({ t = "rzut", id = p.id, nr = p.nr, wl = 0, dziki = true, x0 = x0, y0 = y0, z0 = z0, x = tx, z = tz, czas = p.lotCzas })
 	return p
 end
 
@@ -401,16 +402,12 @@ local function zacznijWydarzenie()
 	for _ in gracze do
 		graczy += 1
 	end
-	if typ == "boss" then
-		nrBossa = (nrBossa % #D.boss.modele) + 1
-		S.bossModel = nrBossa
-		local p = L.dodajBossa(S, nrBossa, math.max(1, graczy))
-		wyslij({ t = "boss", id = p.id, nr = nrBossa, nazwa = p.P.nazwa, czas = p.lotCzas, hp = p.hpMax })
-	else
-		local x0, z0 = zGejzera()
-		local p = L.dodajZlotego(S, x0, D.scena.woda_y, z0, 0, 0)
-		wyslij({ t = "zloty", id = p.id, nr = p.nr, x0 = x0, y0 = D.scena.woda_y, z0 = z0, x = 0, z = 0, czas = p.lotCzas })
-	end
+	-- boss wchodzi bramą; wydarzenie złote — ten sam boss cały złoty (każdy cios = złoto)
+	nrBossa = (nrBossa % #D.boss.modele) + 1
+	S.bossModel = nrBossa
+	local zloty = typ ~= "boss"
+	local p = L.dodajBossa(S, nrBossa, math.max(1, graczy), zloty)
+	wyslij({ t = "boss", id = p.id, nr = nrBossa, nazwa = p.P.nazwa, czas = p.lotCzas, hp = p.hpMax, zloty = zloty, x0 = p.x0, z0 = p.z0 })
 	nrWyd += 1
 	nastWyd = S.czas + D.wydarzenia.co_s
 	wydarzenieAtrybuty()
@@ -519,6 +516,19 @@ evAkcja.OnServerEvent:Connect(function(plr: Player, rodzaj: any, a: any, b: any,
 	if not g or type(rodzaj) ~= "string" then
 		return
 	end
+	if rodzaj == "ruch" then
+		-- sterowanie petem: wektor kierunku (x, z) długości ≤ 1 albo nil (autopilot); własne wiadro tempa
+		g.wiadroRuchu = g.wiadroRuchu or {}
+		if not L.wiadro(g.wiadroRuchu, os.clock(), D.sterowanie.wiadro_na_s, D.sterowanie.wiadro_zapas) then
+			g.odrzucone += 1
+			return
+		end
+		local p = L.petGracza(S, g.slot)
+		if p and not L.steruj(S, p, a, b) then
+			g.odrzucone += 1
+		end
+		return
+	end
 	if not L.wiadro(g.wiadro, os.clock(), D.rzut.wiadro_na_s, D.rzut.wiadro_zapas) then
 		g.odrzucone += 1
 		return
@@ -592,7 +602,7 @@ local function odswiezTablice()
 end
 
 ------------------------------------------------------------------ stan do klientów (bufor)
-local ROZMIAR_PETA = 24
+local ROZMIAR_PETA = 28
 local function migawka(): buffer
 	local n = #S.pety
 	local b = buffer.create(14 + n * ROZMIAR_PETA)
@@ -652,6 +662,7 @@ local function migawka(): buffer
 		buffer.writei16(b, o + 20, math.clamp(math.floor((p.kier or 0) * 1000 + 0.5), -32000, 32000))
 		buffer.writeu8(b, o + 22, p.gwiazdki or 1)
 		buffer.writeu8(b, o + 23, f2)
+		buffer.writef32(b, o + 24, if p.faza == "walka" then (p.y or 0) else 0)
 	end
 	return b
 end
@@ -744,9 +755,10 @@ print(P .. "serwer gotowy (" .. D.skrot .. ")")
 ------------------------------------------------------------------ haczyki prób
 local function opisPeta(p)
 	return { id = p.id, nr = p.nr, pet = p.P.id, nazwa = p.P.nazwa, wl = p.wl, dziki = p.dziki, x = p.x, z = p.z, hp = p.hp,
-		hpMax = p.hpMax, faza = p.faza, pasek = p.pasek, krol = S.krol == p.id, zl = p.zl, boss = p.boss == true,
+		hpMax = p.hpMax, faza = p.faza, pasek = p.pasek, krol = S.krol == p.id, zl = p.zl, boss = p.boss == true, reczny = L.reczny(S, p),
 		zloty = p.zloty == true, gwiazdki = p.gwiazdki, chroniony = L.chroniony(S, p), mnSila = p.mnSila,
-		akcja = if p.akcja then p.akcja.typ else nil, r = L.dlug(p.x, p.z) }
+		akcja = if p.akcja then p.akcja.typ else nil, r = L.dlug(p.x, p.z), y = p.y, wys = p.P.wysokosc, promien = p.P.promien,
+		klasa = p.P.klasa }
 end
 
 local function pierwszy(): (Player?, Gracz?)
@@ -833,6 +845,21 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 			p.akcja = nil
 		end
 		return p ~= nil
+	elseif polecenie == "wyrzuc" then
+		-- próby i film: pet wyrzucony w powietrze na zewnątrz (siła b) — lot jak po mocnym ciosie
+		local p = L.petPoId(S, a)
+		if p then
+			local r = math.max(0.1, L.dlug(p.x, p.z))
+			local dx, dz = p.x / r, p.z / r
+			if r < 0.5 then
+				dx, dz = 1, 0
+			end
+			p.kx, p.kz = dx * b, dz * b
+			p.vy = math.min(D.walka.lot_vy_maks, b * D.walka.lot_vy_x)
+			p.y = 0.05
+			p.ostatni = c and { wl = c, id = 0, t = S.czas, dziki = false } or p.ostatni
+		end
+		return p ~= nil
 	elseif polecenie == "stoj" then
 		local p = L.petPoId(S, a)
 		if p then
@@ -896,6 +923,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 				nrWyd = n
 			end
 		end
+		nrWyd = nrWyd
 		nastWyd = S.czas + (b or 0)
 		wydarzenieAtrybuty()
 		return true

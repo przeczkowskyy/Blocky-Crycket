@@ -153,7 +153,6 @@ def pety(U, W=None):
     W = W or wzorce(U)
     KW = U["klasy_wagi"]
     ns = KW["na_stopien"]
-    pr = KW["promien"]
     lista = []
     for nr, P in enumerate(U["pety"], 1):
         if P["waga"] not in ("lekki", "sredni", "ciezki"):
@@ -170,7 +169,8 @@ def pety(U, W=None):
             "nr": nr, "id": P["id"], "nazwa": P["nazwa"], "stopien": P["stopien"], "klasa": P["waga"], "waga": K["waga"],
             "zycie": _r(K["zycie"] * (1 + ns["zycie"] * s), 1), "obrazenia": _r(K["obrazenia"] * (1 + ns["obrazenia"] * s), 2),
             "odrzut": _r(K["odrzut"] * (1 + ns["odrzut"] * s), 2), "predkosc": K["predkosc"], "przerwa": K["przerwa_s"],
-            "promien": _r(min(pr[1], max(pr[0], w["szer"] * 0.6))), "wysokosc": w["wysokosc"],
+            "promien": _r(min(1.25 * KW["promien_baza"] * K["rozmiar"], max(KW["promien_baza"] * K["rozmiar"], 0.6 * w["szer"]))),
+            "rozmiar": K["rozmiar"], "wysokosc": w["wysokosc"],
             "wzorzec": nazwa_wzorca(P["id"]), "czesci": len(w["bryly"]), "umiejetnosc": A,
         })
     return lista
@@ -181,9 +181,18 @@ def _kol(a):
     return math.radians(a)
 
 
+def _blisko_bramy(U, a):
+    """Czy kąt a (radiany) leży w otworze bramy bossa."""
+    S = U["scena"]
+    b = _kol(S["brama_kat_st"])
+    pol = math.atan2(S["brama_szer"] / 2 + 3, S["mur_r"][0])
+    d = (a - b + math.pi) % (2 * math.pi) - math.pi
+    return abs(d) < pol
+
+
 def scena(U):
-    """Części sceny: [kształt (0 blok, 1 kula, 2 walec), grupa, x, y, z, rx, ry, rz (radiany, fromOrientation),
-    sx, sy, sz, kolor, materiał, przezroczystość, kolizja (0/1), nazwa]. Walec: oś X (obrót rz = 90° stawia go)."""
+    """Części sceny (v2: jasne koloseum): [kształt (0 blok, 1 kula, 2 walec, 3 klin), grupa, x, y, z, rx, ry, rz (radiany,
+    fromOrientation), sx, sy, sz, kolor, materiał, przezroczystość, kolizja (0/1), nazwa]. Walec: oś X (rz = 90° stawia)."""
     S = U["scena"]
     R = S["arena_r"]
     n = S["segmenty"]
@@ -196,98 +205,148 @@ def scena(U):
     def walec(grupa, r, y_gora, grubosc, kolor, mat="SmoothPlastic", przez=0.0, koliz=1, nazwa="Walec"):
         dodaj(2, grupa, (0, y_gora - grubosc / 2, 0), (0, 0, math.pi / 2), (grubosc, 2 * r, 2 * r), kolor, mat, przez, koliz, nazwa)
 
-    def pierscien(grupa, r0, r1, y0, y1, kolory, mat="SmoothPlastic", koliz=1, nazwa="Segment", ile=None, przez=0.0):
+    def pierscien(grupa, r0, r1, y0, y1, kolory, mat="SmoothPlastic", koliz=1, nazwa="Segment", ile=None, przez=0.0, brama=False):
         m = ile or n
         rs = (r0 + r1) / 2
-        szer = 2 * math.pi * r1 / m + 0.15
+        szer = 2 * math.pi * r1 / m + 0.2
         for i in range(m):
             a = 2 * math.pi * i / m
-            x, z = math.sin(a) * rs, math.cos(a) * rs
-            dodaj(0, grupa, (x, (y0 + y1) / 2, z), (0, a, 0), (szer, y1 - y0, r1 - r0), kolory[i % len(kolory)], mat, przez,
-                  koliz, nazwa)
+            if brama and _blisko_bramy(U, a):
+                continue
+            dodaj(0, grupa, (math.sin(a) * rs, (y0 + y1) / 2, math.cos(a) * rs), (0, a, 0), (szer, y1 - y0, r1 - r0),
+                  kolory[i % len(kolory)], mat, przez, koliz, nazwa)
 
+    # arena: piaskowa podłoga, pasy krawędzi, strefa wybicia za krawędzią
+    walec("Arena", R, 0, S["arena_grubosc"], "EBCB8B", "Sand", nazwa="Podloga")
+    pierscien("Arena", R - 1.2, R, -0.3, 0.08, ["FF4D4D", "FFF6E0"], nazwa="PasKrawedzi", ile=S["krawedz_pasow"])
+    m0, m1 = S["mur_r"]
+    yw = S["strefa_wybicia_y"]
+    pierscien("Arena", R, m0, yw - 1, yw, ["C79E62", "BD9459"], "Sand", nazwa="StrefaWybicia", brama=False)
+    # wzgórze króla: trzy okrągłe stopnie (strefy złota), obwódki, tron i słup światła na szczycie
     st = U["strefy"]
-    # arena: platforma, pierścienie stref (coraz wyżej o 0,03 — bez migotania), środek, pasy krawędzi
-    walec("Arena", R, 0, S["arena_grubosc"], "8C7A5E", "Slate", nazwa="Platforma")
-    walec("Arena", st[2]["r"] - 0.9, 0.03, 0.2, st[2]["kolor"], "SmoothPlastic", nazwa="Pierscien1")
-    walec("Arena", st[1]["r"] + 0.35, 0.06, 0.2, "FFF6E0", "SmoothPlastic", nazwa="ObwodkaPierscien2")
-    walec("Arena", st[1]["r"], 0.09, 0.2, st[1]["kolor"], "SmoothPlastic", nazwa="Pierscien2")
-    walec("Arena", st[0]["r"] + 0.4, 0.12, 0.2, "FFF6E0", "Neon", nazwa="ObwodkaSrodka")
-    walec("Arena", st[0]["r"], 0.15, 0.2, st[0]["kolor"], "SmoothPlastic", nazwa="Srodek")
-    pierscien("Arena", R - 0.9, R, -0.2, 0.06, ["FF4D4D", "FFF6E0"], nazwa="PasKrawedzi", ile=S["krawedz_pasow"])
-    pierscien("Arena", R - 0.6, R + 0.15, -S["arena_grubosc"], -0.25, ["6E5E48", "5E503C"], "Slate", nazwa="BokAreny", ile=24)
-    # fosa: dno, woda, gejzery
-    walec("Fosa", S["fosa_r"] + 0.5, S["dno_y"], 1, "2B3A4A", "Slate", nazwa="Dno")
-    walec("Fosa", S["fosa_r"] + 0.2, S["woda_y"], 0.6, "3FA9F5", "SmoothPlastic", przez=0.25, koliz=0, nazwa="Woda")
-    for i in range(S["gejzery"]):
-        a = 2 * math.pi * (i + 0.5) / S["gejzery"]
-        x, z = math.sin(a) * S["gejzer_r"], math.cos(a) * S["gejzer_r"]
-        dodaj(2, "Fosa", (x, S["woda_y"] + 0.1, z), (0, 0, math.pi / 2), (1.2, 3.4, 3.4), "6B6B70", "Slate", nazwa="Gejzer%d" % (i + 1))
-        dodaj(2, "Fosa", (x, S["woda_y"] + 0.75, z), (0, 0, math.pi / 2), (0.2, 2.0, 2.0), "BFF2FF", "Neon", koliz=0,
-              nazwa="Wylot%d" % (i + 1))
-    # ściana dołu (dwa pasy kamieni), obrzeże, poręcz, niewidzialna ściana
-    r0, r1 = S["fosa_r"], S["obrzeze_r"][0]
-    pierscien("Sciana", r0, r1, S["dno_y"], S["woda_y"] + 2, ["5C5F66", "50535A", "676A70"], "Slate", nazwa="ScianaDol")
-    pierscien("Sciana", r0, r1, S["woda_y"] + 2, S["obrzeze_y"] - 1.2, ["7A7D84", "6E7178", "858890"], "Slate", nazwa="ScianaGora")
-    pierscien("Sciana", r0 - 0.3, r1, S["obrzeze_y"] - 1.2, S["obrzeze_y"], ["FFC83D", "FF8A3D"], nazwa="PasObrzeza")
-    pierscien("Obrzeze", r1, S["obrzeze_r"][1], S["obrzeze_y"] - 2, S["obrzeze_y"], ["7FB35A", "73A851"], "Grass", nazwa="Trawa")
+    for s in reversed(st):
+        walec("Wzgorze", s["r"] + 0.5, s["wysokosc"] - 0.25, 0.3, "FFF6E0", "SmoothPlastic", nazwa="Obwodka_" + s["id"])
+        walec("Wzgorze", s["r"], s["wysokosc"], s["wysokosc"], s["kolor"], s["material"], nazwa="Stopien_" + s["id"])
+    h = st[0]["wysokosc"]
+    dodaj(0, "Wzgorze", (0, h + 1.2, 1.4), (0, 0, 0), (4.2, 2.4, 1.0), "FFB000", "Foil", nazwa="TronOparcie")
+    dodaj(0, "Wzgorze", (0, h + 0.5, 0), (0, 0, 0), (4.2, 1.0, 3.6), "FFB000", "Foil", nazwa="TronSiedzisko")
+    # słup światła zaczyna się nad głowami (ciężki pet ma 14,4 st) — widać go z daleka, a nie zasłania bitki na tronie
+    dodaj(2, "Wzgorze", (0, h + 38, 0), (0, 0, math.pi / 2), (44, 2.6, 2.6), "FFE68A", "Neon", przez=0.7, koliz=0, nazwa="SlupSwiatla")
+    # mur areny (wewnętrzny) z pasem u góry; trybuny w kolorach sektorów; mur zewnętrzny z blankami
+    yt = S["mur_y"]
+    pierscien("Mur", m0, m1, yw - 1, yt - 1, ["D9A066", "CB9157", "E0AA70"], "Slate", nazwa="Mur", brama=True)
+    pierscien("Mur", m0 - 0.2, m1 + 0.2, yt - 1, yt, ["3F6FD8", "FFC83D"], nazwa="PasMuru", brama=True)
+    # niewidzialna bariera na krawędzi muru: awatar chodzi po murze i lożach, ale nie spada na arenę
+    pierscien("Mur", m0 - 0.6, m0 - 0.2, yt, yt + 10, ["FFFFFF"], przez=1.0, nazwa="BarieraWew", ile=40)
+    tr = S["trybuna_r"]
+    k = S["trybuna_stopnie"]
+    sz = (tr - m1) / k
+    sektory = ["E84A4A", "3F8CE8", "F2C230", "4CC46A", "B85CE0", "F2853A", "3FC8C8", "E85CA8"]
+    for t in range(k):
+        r0 = m1 + t * sz
+        y1 = yt + 3 * (t + 1)
+        kolory = []
+        for i in range(n):
+            kolory.append(sektory[(i * 8 // n) % 8] if t % 2 == 0 else "F3E6C8")
+        pierscien("Trybuny", r0, r0 + sz, yt - 1, y1, kolory, "SmoothPlastic", nazwa="Stopien%d" % (t + 1), brama=True)
+    yz = S["mur_zewn_y"]
+    pierscien("MurZewn", tr, tr + 2.5, yt - 1, yz, ["D9A066", "CB9157"], "Slate", nazwa="MurZewn", brama=True)
     for i in range(0, n, 2):
         a = 2 * math.pi * i / n
-        rr = r1 + 0.6
-        dodaj(0, "Obrzeze", (math.sin(a) * rr, S["obrzeze_y"] + 1.1, math.cos(a) * rr), (0, a, 0), (0.5, 2.2, 0.5), "5E3A1A", "Wood",
-              nazwa="Slupek")
-    pierscien("Obrzeze", r1 + 0.35, r1 + 0.85, S["obrzeze_y"] + 2.0, S["obrzeze_y"] + 2.45, ["9A6234"], "Wood", nazwa="Porecz")
-    pierscien("Obrzeze", r1 - 0.2, r1 + 0.6, S["obrzeze_y"], S["obrzeze_y"] + 12, ["FFFFFF"], przez=1.0, nazwa="Bariera", ile=24)
-    pierscien("Obrzeze", S["trybuna"][-1][1], S["trybuna"][-1][1] + 1, S["obrzeze_y"], S["obrzeze_y"] + 14, ["FFFFFF"], przez=1.0,
-              nazwa="BarieraZewn", ile=24)
-    for nr, (a0, a1, y) in enumerate(S["trybuna"]):
-        pierscien("Trybuna", a0, a1, S["obrzeze_y"] - 2, y, ["D98B4A", "E8A660"] if nr == 0 else ["B8653A", "C97548"], "Wood",
-                  nazwa="Stopien%d" % (nr + 1))
-    # sloty graczy: płytki w kolorach slotów
-    for i in range(S["sloty"]):
-        a = _kol(360.0 * i / S["sloty"])
+        if _blisko_bramy(U, a):
+            continue
+        dodaj(0, "MurZewn", (math.sin(a) * (tr + 1.25), yz + 1.2, math.cos(a) * (tr + 1.25)), (0, a, 0), (3.2, 2.4, 2.5), "E0AA70", "Slate",
+              nazwa="Blanka")
+    # proporce na murze zewnętrznym
+    for i in range(S["proporcow"]):
+        a = 2 * math.pi * (i + 0.5) / S["proporcow"]
+        if _blisko_bramy(U, a):
+            continue
+        x, z = math.sin(a) * (tr + 1.25), math.cos(a) * (tr + 1.25)
+        dodaj(0, "Proporce", (x, yz + 5, z), (0, a, 0), (0.4, 10, 0.4), "6B4426", "Wood", nazwa="Maszt")
+        dodaj(0, "Proporce", (x + math.cos(a) * 2.2, yz + 8.4, z - math.sin(a) * 2.2), (0, a, 0), (4, 2.8, 0.2), sektory[i % 8], "Fabric",
+              koliz=0, nazwa="Proporzec")
+    # kibice z klocków na trybunach (grupy według sektorów — klient podskakuje nimi)
+    for i in range(S["kibicow"]):
+        a = 2 * math.pi * ((i * 0.6180339887) % 1.0)
+        if _blisko_bramy(U, a):
+            continue
+        t = (i * 7) % k
+        r = m1 + t * sz + sz / 2
+        y = yt + 3 * (t + 1)
+        x, z = math.sin(a) * r, math.cos(a) * r
+        sek = int(((a % (2 * math.pi)) / (2 * math.pi)) * 8) + 1
+        kol = sektory[(i * 3) % 8]
+        dodaj(0, "Kibice%d" % sek, (x, y + 1.5, z), (0, a, 0), (2.0, 3.0, 1.4), kol, nazwa="Kibic")
+        dodaj(1, "Kibice%d" % sek, (x, y + 3.8, z), (0, a, 0), (1.8, 1.8, 1.8), ["F5D0A9", "C98E5E", "8A5A3A", "FFE0BD"][i % 4], nazwa="Glowa")
+    # paleniska z kolorowym ogniem na murze (między lożami)
+    ognie = ["FF8A1F", "3FA9F5", "B85CE0", "4CD964", "FF4DA6", "FFD23F", "3FE0D0", "FF5A3D"]
+    nr = 0
+    for i in range(S["palenisk"]):
+        a = 2 * math.pi * i / S["palenisk"]
+        if _blisko_bramy(U, a) or abs(((a - _kol(S["jajka_kat_st"])) + math.pi) % (2 * math.pi) - math.pi) < 0.2:
+            continue
+        nr += 1
+        x, z = math.sin(a) * (m0 + 1.5), math.cos(a) * (m0 + 1.5)
+        dodaj(2, "Paleniska", (x, yt + 1.2, z), (0, 0, math.pi / 2), (2.4, 2.2, 2.2), "6B6B70", "Slate", nazwa="Postument")
+        dodaj(2, "Paleniska", (x, yt + 2.8, z), (0, 0, math.pi / 2), (1.0, 4.2, 4.2), "3A3A40", "Metal", nazwa="Misa")
+        for j in range(3):
+            dodaj(1, "Ogien%d" % nr, (x + (j - 1) * 0.7, yt + 4.0 + (j % 2) * 0.8, z), (0, 0, 0), (1.6, 2.6 - (j % 2) * 0.6, 1.6),
+                  ognie[i % len(ognie)], "Neon", przez=0.15, koliz=0, nazwa="Plomien")
+    # brama bossa: dwie wieże, łuk, krata
+    b = _kol(S["brama_kat_st"])
+    bx, bz = math.sin(b), math.cos(b)
+    px, pz = math.cos(b), -math.sin(b)
+    rb = (m0 + tr) / 2
+    W2 = S["brama_szer"] / 2
+    for s in (-1, 1):
+        dodaj(0, "Brama", (bx * rb + px * s * (W2 + 3), (yw + S["brama_wys"] + 6) / 2, bz * rb + pz * s * (W2 + 3)), (0, b, 0),
+              (6, S["brama_wys"] + 6 - yw, tr - m0 + 2), "C98D55", "Slate", nazwa="Wieza")
+        dodaj(0, "Brama", (bx * rb + px * s * (W2 + 3), S["brama_wys"] + 7, bz * rb + pz * s * (W2 + 3)), (0, b, 0), (7, 2, tr - m0 + 3),
+              "3F6FD8", nazwa="WiezaPas")
+    dodaj(0, "Brama", (bx * rb, S["brama_wys"] + 2, bz * rb), (0, b, 0), (S["brama_szer"] + 2, 4, tr - m0 + 2), "C98D55", "Slate", nazwa="Luk")
+    dodaj(0, "Brama", (bx * (tr + 1), S["brama_wys"] / 2, bz * (tr + 1)), (0, b, 0), (S["brama_szer"], S["brama_wys"], 1), "2A1E18", "Wood",
+          koliz=0, nazwa="Wrota")
+    for i in range(5):
+        o = (i - 2) * S["brama_szer"] / 5
+        dodaj(0, "Brama", (bx * (m0 + 0.5) + px * o, S["brama_wys"] / 2 + 1, bz * (m0 + 0.5) + pz * o), (0, b, 0),
+              (0.5, S["brama_wys"] - 2, 0.5), "3A3A40", "Metal", koliz=0, nazwa="Krata")
+    # loże graczy na murze: podłoga w kolorze miejsca, poręcz, daszek
+    for s in sloty(U):
+        a = s["kat"]
         x, z = math.sin(a) * S["slot_r"], math.cos(a) * S["slot_r"]
-        dodaj(2, "Sloty", (x, S["obrzeze_y"] + 0.05, z), (0, 0, math.pi / 2), (0.2, 3.6, 3.6), U["gracz"]["kolory_slotow"][i],
-              "SmoothPlastic", nazwa="Slot%d" % (i + 1))
-    # drzewa z klocków dookoła
-    for i in range(S["drzewa"]):
-        a = 2 * math.pi * (i + 0.3) / S["drzewa"]
-        rr = S["drzewa_r"][0] + (S["drzewa_r"][1] - S["drzewa_r"][0]) * ((i * 7) % 5) / 4
-        x, z = math.sin(a) * rr, math.cos(a) * rr
-        h = 10 + (i * 3) % 6
-        dodaj(0, "Drzewa", (x, S["obrzeze_y"] + h / 2 - 1, z), (0, a, 0), (2.2, h, 2.2), "6B4426", "Wood", nazwa="Pien")
-        dodaj(0, "Drzewa", (x, S["obrzeze_y"] + h + 1.5, z), (0, a + 0.4, 0), (9, 6, 9), ["4E9A3A", "5DAA45", "3F8A32"][i % 3], "Grass",
-              nazwa="Korona")
-        dodaj(0, "Drzewa", (x, S["obrzeze_y"] + h + 5, z), (0, a, 0), (5.5, 3.5, 5.5), ["6DBA52", "4E9A3A", "5DAA45"][i % 3], "Grass",
-              nazwa="Czubek")
-    # ziemia za trybuną
-    pierscien("Teren", S["trybuna"][-1][1], 110, S["obrzeze_y"] - 4, S["obrzeze_y"] - 2, ["6FA34E", "68A048"], "Grass", nazwa="Laka", ile=36)
-    # stanowisko jajek (cokoły; jajka z wzorców stawia zbuduj.py) i maty treningowe — po jednej obok każdego miejsca
-    for k, (x, z) in enumerate(stanowisko_jajek(U)["cokoly"]):
-        dodaj(2, "Jajka", (x, S["obrzeze_y"] + 0.6, z), (0, 0, math.pi / 2), (1.2, 5.2, 5.2), "8C8A84", "Slate", nazwa="Cokol")
-        dodaj(2, "Jajka", (x, S["obrzeze_y"] + 1.25, z), (0, 0, math.pi / 2), (0.15, 5.5, 5.5), U["jajka"][k]["kolor"], "Neon", koliz=0,
-              nazwa="Obrecz")
+        dodaj(0, "Loze", (x, yt + 0.2, z), (0, a, 0), (8, 0.4, 5), s["kolor"], nazwa="Loza%d" % s["nr"])
+        dodaj(0, "Loze", (x - math.sin(a) * 2.6, yt + 1.3, z - math.cos(a) * 2.6), (0, a, 0), (8, 0.4, 0.4), "9A6234", "Wood", nazwa="Porecz")
+        for q in (-1, 1):
+            px2, pz2 = math.cos(a) * q * 3.8, -math.sin(a) * q * 3.8
+            dodaj(0, "Loze", (x + px2, yt + 3, z + pz2), (0, a, 0), (0.5, 6, 0.5), "9A6234", "Wood", nazwa="Slup")
+        px3, pz3 = math.cos(a) * 3.8, -math.sin(a) * 3.8
+        dodaj(0, "Loze", (x + px3 + math.cos(a) * 1.6, yt + 5.0, z + pz3 - math.sin(a) * 1.6), (0, a, 0), (3, 2, 0.15), s["kolor"], "Fabric",
+              koliz=0, nazwa="Choragiewka")
+    # wylęgarnia: cokoły jajek (jajka z wzorców stawia zbuduj.py) i maty treningowe przy lożach
+    for kk, (x, z) in enumerate(stanowisko_jajek(U)["cokoly"]):
+        dodaj(2, "Jajka", (x, yt + 0.6, z), (0, 0, math.pi / 2), (1.2, 5.2, 5.2), "8C8A84", "Slate", nazwa="Cokol")
+        dodaj(2, "Jajka", (x, yt + 1.25, z), (0, 0, math.pi / 2), (0.15, 5.5, 5.5), U["jajka"][kk]["kolor"], "Neon", koliz=0, nazwa="Obrecz")
     for s in sloty(U):
         m = s["mata"]
-        dodaj(0, "Maty", (m[0], S["obrzeze_y"] + 0.12, m[2]), (0, s["kat"], 0), (5, 0.24, 5), "3DB36B", "Fabric", nazwa="Mata%d" % s["nr"])
-        dodaj(0, "Maty", (m[0], S["obrzeze_y"] + 0.26, m[2]), (0, s["kat"], 0), (4, 0.06, 4), "62D18A", "Fabric", koliz=0, nazwa="MataSrodek")
+        dodaj(0, "Maty", (m[0], yt + 0.12, m[2]), (0, s["kat"], 0), (5, 0.24, 5), "3DB36B", "Fabric", nazwa="Mata%d" % s["nr"])
     return c
 
 
 def stanowisko_jajek(U):
-    """Stanowisko jajek na obrzeżu (kąt jajka_kat_st): trzy cokoły w rzędzie i tablica szans za nimi."""
+    """Wylęgarnia na murze areny (kąt jajka_kat_st): trzy cokoły w rzędzie i tablica szans za nimi."""
     S = U["scena"]
     a = _kol(S["jajka_kat_st"])
     cokoly = []
     for k in range(len(U["jajka"])):
-        da = (k - 1) * 0.15
+        da = (k - 1) * 0.11
         cokoly.append((_r(math.sin(a + da) * S["jajka_r"]), _r(math.cos(a + da) * S["jajka_r"])))
-    r = S["jajka_r"] + 4.5
-    return {"cokoly": cokoly, "tablica": [_r(math.sin(a) * r), S["obrzeze_y"] + 5, _r(math.cos(a) * r)], "patrz": [0, S["obrzeze_y"] + 5, 0]}
+    r = S["jajka_r"] + 3.5
+    return {"cokoly": cokoly, "tablica": [_r(math.sin(a) * r), S["mur_y"] + 5, _r(math.cos(a) * r)], "patrz": [0, S["mur_y"] + 5, 0]}
 
 
 def makiety_napisy(U):
-    """Napisy w świecie (etap 2: tablica szans przy stanowisku jajek)."""
+    """Tablica szans przy wylęgarni."""
     st = stanowisko_jajek(U)
     linie = []
     for J in U["jajka"]:
@@ -298,40 +357,49 @@ def makiety_napisy(U):
 
 def tablice(U):
     T = U["tablice"]
+    S = U["scena"]
     w = []
     for i, (tytul, kat) in enumerate(zip(T["tytuly"], T["katy_st"])):
         a = _kol(kat)
-        w.append({"nr": i + 1, "tytul": tytul, "poz": [_r(math.sin(a) * T["r"]), T["y"], _r(math.cos(a) * T["r"])], "patrz": [0, T["y"], 0],
+        r = S["mur_r"][0] - 0.3
+        w.append({"nr": i + 1, "tytul": tytul, "poz": [_r(math.sin(a) * r), T["y"], _r(math.cos(a) * r)], "patrz": [0, T["y"], 0],
                   "szer": T["szer"], "wys": T["wys"], "wierszy": T["wierszy"]})
     return w
 
+
 def etykiety_stref(U):
-    """Napisy na podłodze areny: „x5” w środku, „x2” i „x1” w pierścieniach (po 4, na skos)."""
+    """Małe znaki x1 / x2 / x5 na stopniach wzgórza (po 4 na stopień, na skos)."""
     st = U["strefy"]
-    w = [{"tekst": "x%d" % st[0]["mnoznik"], "poz": [0, 0.27, 0], "r": 0, "wielkosc": 5}]
-    for i, s in enumerate(st[1:], 1):
-        rr = (st[i - 1]["r"] + s["r"]) / 2
-        for k in range(4):
+    w = []
+    for i, s in enumerate(st):
+        r_in = st[i - 1]["r"] if i > 0 else 0
+        rr = (r_in + s["r"]) / 2 if i > 0 else 3.2
+        for k in range(4 if i > 0 else 1):
             a = math.pi / 4 + k * math.pi / 2 + (0 if i == 1 else math.pi / 4)
-            w.append({"tekst": "x%d" % s["mnoznik"], "poz": [_r(math.sin(a) * rr), 0.22, _r(math.cos(a) * rr)], "r": _r(a, 4),
-                      "wielkosc": 4})
+            w.append({"tekst": "x%d" % s["mnoznik"], "poz": [_r(math.sin(a) * rr) if i > 0 else 0, s["wysokosc"] + 0.07,
+                                                            _r(math.cos(a) * rr) if i > 0 else -2.4], "r": _r(a, 4),
+                      "wielkosc": 4 if i > 0 else 3})
     return w
 
 
 def sloty(U):
-    """Sloty graczy: miejsce stania (na obrzeżu, przy poręczy), kąt kamery (o slot_przesuniecie_st obok, by awatar
-    był w lewym dolnym rogu kadru) i kolor."""
+    """Loże graczy na murze areny: miejsce stania, kąt kamery (obok, by awatar był z boku kadru), kolor, mata."""
     S = U["scena"]
     w = []
     for i in range(S["sloty"]):
-        a = _kol(360.0 * i / S["sloty"])
-        ak = a + _kol(S["slot_przesuniecie_st"])
+        a = _kol(S["slot_kat0_st"] + 360.0 * i / S["sloty"])
         am = a + _kol(S["mata_kat_st"])
-        w.append({"nr": i + 1, "poz": [_r(math.sin(a) * S["slot_r"]), S["obrzeze_y"], _r(math.cos(a) * S["slot_r"])],
-                  "kat": _r(a, 5), "katKamery": _r(ak, 5), "kolor": U["gracz"]["kolory_slotow"][i],
-                  "mata": [_r(math.sin(am) * S["mata_r"]), S["obrzeze_y"], _r(math.cos(am) * S["mata_r"])]})
+        w.append({"nr": i + 1, "poz": [_r(math.sin(a) * S["slot_r"]), S["mur_y"] + 0.4, _r(math.cos(a) * S["slot_r"])],
+                  "kat": _r(a, 5), "katKamery": _r(a + _kol(8), 5), "kolor": U["gracz"]["kolory_slotow"][i],
+                  "mata": [_r(math.sin(am) * S["mata_r"]), S["mur_y"] + 0.4, _r(math.cos(am) * S["mata_r"])]})
     return w
 
+
+def brama(U):
+    S = U["scena"]
+    b = _kol(S["brama_kat_st"])
+    r = S["trybuna_r"] + 4
+    return {"x": _r(math.sin(b) * r), "z": _r(math.cos(b) * r), "kat": _r(b, 5)}
 
 def kamera_dla(U, kat):
     """Pozycja i cel kamery dla kąta (radiany): kamera na zewnątrz w kierunku (sin, cos)."""
@@ -381,8 +449,8 @@ def dane(U, W=None):
     W = W or wzorce(U)
     P = pety(U, W)
     st = U["strefy"]
-    if [s["r"] for s in st] != sorted(s["r"] for s in st) or st[-1]["r"] != U["scena"]["arena_r"]:
-        raise BladDanych("strefy od środka, ostatnia do krawędzi areny")
+    if [s["r"] for s in st] != sorted(s["r"] for s in st) or st[-1]["r"] >= U["scena"]["arena_r"]:
+        raise BladDanych("strefy od środka, wszystkie na arenie")
     for pid in U["gracz"]["pety_startowe"]:
         if pid not in {p["id"] for p in P}:
             raise BladDanych("pet startowy %s bez wpisu w pety" % pid)
@@ -403,7 +471,7 @@ def dane(U, W=None):
                    "wzorzec": "Jajko_" + J["model"], "wysokosc": WYSOKOSC_JAJKA} for i, J in enumerate(U["jajka"])],
         "stanowisko": stanowisko_jajek(U),
         "boss": dict(bez_opisu(U["boss"]), modele=[{"wzorzec": "Boss_" + B["model"], "nazwa": B["nazwa"]} for B in U["boss"]["modele"]]),
-        "zloty": dict(bez_opisu(U["zloty"]), nr=[p["id"] for p in P].index(U["zloty"]["model"]) + 1),
+        "zloty": bez_opisu(U["zloty"]), "brama": brama(U), "sterowanie": bez_opisu(U["sterowanie"]),
     }
     for J in U["jajka"]:
         if abs(sum(J["szanse"]) - 1) > 1e-9 or len(J["szanse"]) != len(U["rzadkosci"]):

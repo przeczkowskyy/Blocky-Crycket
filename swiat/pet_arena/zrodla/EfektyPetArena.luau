@@ -408,4 +408,73 @@ function Efekty:pierscien(poz: Vector3, r: number, kolor: Color3, czas: number?)
 		nos:Destroy()
 	end)
 end
+-- v2: krater (ciemny krąg na ziemi), cień spadającego (rośnie), pył (kłęby), trzy pierścienie fali, moneta z ziemi do peta
+function Efekty:krater(poz: Vector3, r: number)
+	local k = czesc(self.folder, Vector3.new(0.2, r * 2, r * 2), Color3.fromRGB(90, 70, 50), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+	k.CFrame = CFrame.new(poz + Vector3.new(0, 0.12, 0)) * CFrame.Angles(0, 0, math.pi / 2)
+	self:dodaj(2.2, function(f)
+		k.Transparency = 0.25 + f * 0.75
+	end, function()
+		k:Destroy()
+	end)
+end
+
+function Efekty:cien(poz: Vector3, r: number, czas: number)
+	local k = czesc(self.folder, Vector3.new(0.15, 1, 1), Color3.fromRGB(20, 20, 30), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+	local cf = CFrame.new(poz + Vector3.new(0, 0.15, 0)) * CFrame.Angles(0, 0, math.pi / 2)
+	self:dodaj(czas, function(f)
+		local s = 1 + f * (r * 2 - 1)
+		k.Size = Vector3.new(0.15, s, s)
+		k.CFrame = cf
+		k.Transparency = 0.75 - f * 0.4
+	end, function()
+		k:Destroy()
+	end)
+end
+
+function Efekty:pyl(poz: Vector3, r: number, ile: number?)
+	for i = 1, (ile or 8) do
+		local a = i / (ile or 8) * math.pi * 2 + math.random()
+		local k = czesc(self.folder, Vector3.new(1, 1, 1), Color3.fromRGB(225, 200, 160), Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+		local start = poz + Vector3.new(math.cos(a) * r * 0.3, 0.8, math.sin(a) * r * 0.3)
+		local cel = poz + Vector3.new(math.cos(a) * r, 2.5, math.sin(a) * r)
+		self:dodaj(0.7 + math.random() * 0.3, function(f)
+			local s = 1.5 + f * r * 0.35
+			k.Size = Vector3.new(s, s, s)
+			k.Position = start:Lerp(cel, 1 - (1 - f) * (1 - f))
+			k.Transparency = 0.2 + f * 0.8
+		end, function()
+			k:Destroy()
+		end)
+	end
+end
+
+function Efekty:pierscienie(poz: Vector3, r: number)
+	for i = 0, 2 do
+		task.delay(i * 0.09, function()
+			self:fala(poz, r * (1 - i * 0.18))
+		end)
+	end
+	self:pyl(poz, r, 10)
+	self:krater(poz, r * 0.35)
+end
+
+-- moneta: z ziemi obok peta wylatuje i wpada w peta (część `cel`)
+function Efekty:monetaDo(od: Vector3, cel: BasePart)
+	local zloto = hex(self.D.ui.kolory.zloto)
+	local m = czesc(self.folder, Vector3.new(0.3, 1.4, 1.4), zloto, Enum.Material.Neon, Enum.PartType.Cylinder)
+	local szczyt = od + Vector3.new(0, 5 + math.random() * 2, 0)
+	self:dodaj(0.7, function(f)
+		local p
+		if f < 0.45 then
+			p = od:Lerp(szczyt, 1 - (1 - f / 0.45) ^ 2)
+		else
+			local g = (f - 0.45) / 0.55
+			p = szczyt:Lerp(if cel.Parent then cel.Position + Vector3.new(0, 2, 0) else szczyt, g * g)
+		end
+		m.CFrame = CFrame.new(p) * CFrame.Angles(0, f * 14, math.pi / 2)
+	end, function()
+		m:Destroy()
+	end)
+end
 return Efekty

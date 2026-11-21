@@ -59,6 +59,17 @@ local czcionka = Enum.Font[D.ui.czcionka] or Enum.Font.LuckiestGuy
 local cyfry = Enum.Font[D.ui.czcionka_cyfr] or Enum.Font.FredokaOne
 local R = D.scena.arena_r
 
+-- wysokość podłogi pod punktem: stopnie wzgórza króla (tylko w obrazie)
+local function podloga(x: number, z: number): number
+	local r = math.sqrt(x * x + z * z)
+	for _, s in D.strefy do
+		if r <= s.r then
+			return s.wysokosc
+		end
+	end
+	return 0
+end
+
 local function teraz(): number
 	return workspace:GetServerTimeNow()
 end
@@ -164,9 +175,9 @@ local krolId, nagrodaKrola = 0, 0
 local nazwySlotow: { [number]: string } = {}
 local pulsow = 0
 
-local function opisBossa(nr: number)
+local function opisBossa(nr: number, zloty: boolean?)
 	local B = D.boss.modele[nr - 200] or D.boss.modele[1]
-	return { id = "boss", nazwa = B.nazwa, wzorzec = B.wzorzec, wysokosc = D.boss.wysokosc, promien = D.boss.promien, stopien = 5,
+	return { id = "boss", nazwa = if zloty then D.zloty.nazwa else B.nazwa, wzorzec = B.wzorzec, wysokosc = D.boss.wysokosc, promien = D.boss.promien, stopien = 5,
 		umiejetnosc = { nazwa = "STOMP" }, boss = true }
 end
 
@@ -213,7 +224,7 @@ local function kolorKrazka(w): string
 end
 
 local function nowyWidok(id: number, nr: number, slot: number, x: number, z: number, f2: number?): any
-	local Pd = if nr >= 200 then opisBossa(nr) else D.pety[nr]
+	local Pd = if nr >= 200 then opisBossa(nr, f2 ~= nil and bit32.band(f2, 4) ~= 0) else D.pety[nr]
 	if not Pd then
 		return nil
 	end
@@ -225,7 +236,21 @@ local function nowyWidok(id: number, nr: number, slot: number, x: number, z: num
 	local moj = slot > 0 and slot == mojSlot()
 	local w: any = { id = id, nr = nr, Pd = Pd, slot = slot, model = m, korzen = korzen, x = x, z = z, tx = x, tz = z, y = 0, kier = 0,
 		tkier = 0, hp = 1, hpMax = 1, pasek = 0, flagi = 0, f2 = f2 or 0, zl = 0, faza = 0, lot = nil, odlot = nil, skok = nil,
-		trafienie = 0, blysk = 0, puls = nil, brak = 0, faza0 = math.random() * 6, gwiazdki = 1, boss = nr >= 200, zloty = zloty }
+		trafienie = 0, blysk = 0, puls = nil, brak = 0, faza0 = math.random() * 6, gwiazdki = 1, boss = nr >= 200, zloty = zloty,
+		ty = 0, yAir = 0, yBaza = podloga(x, z), yR = 0, statusy = {}, wypad = nil, monetyAcc = 0 }
+	if w.boss and zloty then
+		-- złoty boss: cały złoty i lśniący
+		for _, d in m:GetDescendants() do
+			if d:IsA("BasePart") and d ~= korzen then
+				d.Color = Color3.fromHex("FFC83D"):Lerp(d.Color, 0.15)
+				d.Material = Enum.Material.Foil
+				d.Reflectance = 0.25
+			end
+		end
+		local sp = Instance.new("Sparkles")
+		sp.SparkleColor = Color3.fromHex("FFE68A")
+		sp.Parent = korzen
+	end
 	local hl = Instance.new("Highlight")
 	hl.FillTransparency = if zloty then 0.35 else 1
 	hl.FillColor = Color3.fromHex(D.zloty.kolor)
@@ -353,6 +378,8 @@ do
 	end
 end
 korona.Parent = nil
+local koronaSkala = 1
+local koronaAkt = 1
 
 ------------------------------------------------------------------ ekran i okna
 local dotyk = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
@@ -361,8 +388,23 @@ local okna: any = nil
 local wybrany = 1
 local ostatniaUmiejetnosc = 0
 local uzylUmiejetnosci = false
+local ruchPodpowiedzDo: number? = nil
 local wyslane = 0
 local padAktywny = false
+local wymuszonaCalosc = false
+-- sterowanie petem: wektor ekranu (prawo, góra) → świat (x, z) według kamery; ostatnie dotknięcie (autopilot po
+-- sterowanie.autopilot_s); próby mogą podać wektor haczykiem "ster"
+local ster = Vector2.zero
+local wektorSwiata = Vector3.zero
+local ostatniDotyk = -1e9
+local wyslanyRuch: Vector3? = nil
+local doRuchu = 0
+local dotykDrazka: InputObject? = nil
+local sterTest: any = nil
+local uzylRuchu = false
+local function reczne(): boolean
+	return os.clock() - ostatniDotyk <= D.sterowanie.autopilot_s
+end
 
 local function kolekcja(): { [string]: number }
 	local w = {}
@@ -458,7 +500,10 @@ local function zbudujUI()
 			przelaczOkno("jajka")
 		end, naPety = function()
 			przelaczOkno("pety")
-		end, naTrening = trening })
+		end, naTrening = trening, naWidok = function()
+			wymuszonaCalosc = not wymuszonaCalosc
+			dzwiek("klik")
+		end })
 	okna = Okna.nowe(ui.okno, D, L, wzorce, {
 		skala = ui.skala,
 		pad = function()
@@ -473,6 +518,9 @@ local function zbudujUI()
 			evAkcja:FireServer("druzyna", lista)
 			wyslane += 1
 			dzwiek("klik")
+		end,
+		naDzwiek = function(rola: string, ton: number)
+			dzwiek(rola, ton)
 		end,
 		naPekniecie = function(rz: number)
 			dzwiek("wyklucie")
@@ -489,6 +537,10 @@ local kameraWolna = false
 local kameraFilm: any = nil
 local wstrzas = { do_ = 0, sila = 0 }
 local stopDo = 0
+local sledzLot: any = nil
+local camCF: CFrame? = nil
+local trybKamery = "calosc"
+local bossWejscieDo = 0
 
 local function pozycjaKamery(): (Vector3?, Vector3?)
 	local s = D.sloty[mojSlot()]
@@ -511,34 +563,56 @@ local function zatrzymaj(czas: number)
 	stopDo = math.max(stopDo, os.clock() + czas)
 end
 
-local function ustawKamere()
+-- cel kamery: za lecącym po wielkim wybiciu, za własnym petem (pet ok. 100 pt), albo cała arena
+local function celKamery(): (CFrame?, string)
+	local poz, cel = pozycjaKamery()
+	if not poz or not cel then
+		return nil, "brak"
+	end
+	local s = D.sloty[mojSlot()]
+	local dx, dz = math.sin(s.katKamery), math.cos(s.katKamery)
+	if sledzLot and os.clock() < sledzLot.do_ and sledzLot.w.model.Parent then
+		local p = sledzLot.w.korzen.Position
+		return CFrame.lookAt(p + Vector3.new(dx, 0, dz) * 46 + Vector3.new(0, 30, 0), p), "lot"
+	end
+	sledzLot = nil
+	local mojPet = widoki[gracz:GetAttribute("PA_Pet") or 0]
+	if not wymuszonaCalosc and os.clock() >= bossWejscieDo and mojPet and not mojPet.lot and not mojPet.odlot then
+		local KK = D.kamera
+		local d = KK.za_petem * mojPet.Pd.wysokosc
+		local e = math.rad(KK.za_petem_nachylenie_st)
+		local c2 = Vector3.new(mojPet.x, mojPet.yR + mojPet.Pd.wysokosc * 0.45, mojPet.z)
+		return CFrame.lookAt(c2 + Vector3.new(dx, 0, dz) * d * math.cos(e) + Vector3.new(0, d * math.sin(e), 0), c2), "pet"
+	end
+	return CFrame.lookAt(poz, cel), "calosc"
+end
+
+local function ustawKamere(dt: number)
 	if kameraWolna then
 		return
 	end
-	local poz, cel = pozycjaKamery()
-	if not poz or not cel then
+	local cf, tryb = celKamery()
+	if not cf then
 		return
 	end
+	trybKamery = tryb
 	kamera.CameraType = Enum.CameraType.Scriptable
 	kamera.FieldOfView = D.kamera.fov
-	local cf = CFrame.lookAt(poz, cel)
-	if kameraFilm then
-		local f = kameraFilm
-		if f.pozycja and f.cel then
-			cf = CFrame.lookAt(f.pozycja, f.cel)
-		elseif f.zoom then
-			cf = CFrame.lookAt(poz:Lerp(cel, f.zoom), cel)
-		end
-		kamera.FieldOfView = f.fov or D.kamera.fov
+	if kameraFilm and kameraFilm.pozycja and kameraFilm.cel then
+		cf = CFrame.lookAt(kameraFilm.pozycja, kameraFilm.cel)
+		kamera.FieldOfView = kameraFilm.fov or D.kamera.fov
 	end
+	local gl = if tryb == "lot" then 7 else D.kamera.gladkosc
+	camCF = if camCF then camCF:Lerp(cf, 1 - math.exp(-dt * gl)) else cf
+	local wynik = camCF :: CFrame
 	local t = os.clock()
 	if t < wstrzas.do_ then
 		local s = wstrzas.sila * math.clamp((wstrzas.do_ - t) / 0.3, 0, 1)
-		cf *= CFrame.new(math.noise(t * 25, 1) * s, math.noise(t * 25, 2) * s, 0)
+		wynik *= CFrame.new(math.noise(t * 25, 1) * s, math.noise(t * 25, 2) * s, 0)
 	else
 		wstrzas.sila = 0
 	end
-	kamera.CFrame = cf
+	kamera.CFrame = wynik
 end
 
 -- sterowanie postacią wyłączone: gracz stoi na swoim miejscu, stuknięcia idą w arenę
@@ -823,6 +897,15 @@ UserInputService.InputBegan:Connect(function(wej: InputObject, przetworzone: boo
 	if przetworzone then
 		return
 	end
+	if typ == Enum.UserInputType.Touch and (gracz:GetAttribute("PA_Pet") or 0) > 0 and not okna:otwarte() then
+		-- pet na arenie: dotyk w lewej części ekranu pokazuje drążek pod palcem (domyślnie go nie ma — pet walczy sam)
+		local v = kamera.ViewportSize
+		if wej.Position.X < v.X * 0.5 then
+			dotykDrazka = wej
+			ui:drazekTu(Vector2.new(wej.Position.X, wej.Position.Y))
+		end
+		return
+	end
 	if typ == Enum.UserInputType.MouseButton1 or typ == Enum.UserInputType.Touch then
 		padAktywny = false
 		if not okna:otwarte() then
@@ -845,6 +928,114 @@ UserInputService.InputBegan:Connect(function(wej: InputObject, przetworzone: boo
 	end
 end)
 
+UserInputService.InputEnded:Connect(function(wej: InputObject)
+	if wej == dotykDrazka then
+		dotykDrazka = nil
+		ui:drazekTu(nil)
+	end
+end)
+
+-- wektor sterowania w tej klatce (ekran: prawo, góra) i wysyłka do serwera (co sterowanie.wysylanie_s)
+local sterowanieAwatara = false
+local function ustawSterowanieAwatara(wl: boolean)
+	if wl == sterowanieAwatara then
+		return
+	end
+	sterowanieAwatara = wl
+	pcall(function()
+		local m = require(gracz:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule", 5))
+		if wl then
+			m:GetControls():Enable()
+		else
+			m:GetControls():Disable()
+		end
+	end)
+end
+
+local function krokSterowania(dt: number)
+	local pid = gracz:GetAttribute("PA_Pet") or 0
+	local maPeta = pid > 0 and widoki[pid] ~= nil and not widoki[pid].lot
+	local okno = okna:otwarte() ~= nil
+	-- awatar chodzi tylko wtedy, gdy nie ma peta na arenie (jajka, mata)
+	ustawSterowanieAwatara(not maPeta)
+	local v = Vector2.zero
+	if maPeta and not okno then
+		local x, y = 0, 0
+		if UserInputService:IsKeyDown(Enum.KeyCode.W) or UserInputService:IsKeyDown(Enum.KeyCode.Up) then
+			y += 1
+		end
+		if UserInputService:IsKeyDown(Enum.KeyCode.S) or UserInputService:IsKeyDown(Enum.KeyCode.Down) then
+			y -= 1
+		end
+		if UserInputService:IsKeyDown(Enum.KeyCode.D) or UserInputService:IsKeyDown(Enum.KeyCode.Right) then
+			x += 1
+		end
+		if UserInputService:IsKeyDown(Enum.KeyCode.A) or UserInputService:IsKeyDown(Enum.KeyCode.Left) then
+			x -= 1
+		end
+		v = Vector2.new(x, y)
+		if v.Magnitude > 1 then
+			v = v.Unit
+		end
+		for _, s in UserInputService:GetGamepadState(Enum.UserInputType.Gamepad1) do
+			if s.KeyCode == Enum.KeyCode.Thumbstick1 and s.Position.Magnitude > 0.2 then
+				v = Vector2.new(s.Position.X, s.Position.Y)
+				padAktywny = true
+			end
+		end
+		if dotykDrazka then
+			local srodek, r = ui:drazekSrodek()
+			local d = Vector2.new(dotykDrazka.Position.X, dotykDrazka.Position.Y) - srodek
+			v = Vector2.new(d.X, -d.Y) / math.max(1, r)
+			if v.Magnitude > 1 then
+				v = v.Unit
+			end
+		end
+		if sterTest and os.clock() < sterTest.do_ then
+			v = sterTest.v
+		end
+	end
+	ster = v
+	local cf = kamera.CFrame
+	local f = Vector3.new(cf.LookVector.X, 0, cf.LookVector.Z)
+	local r = Vector3.new(cf.RightVector.X, 0, cf.RightVector.Z)
+	if f.Magnitude > 1e-3 and r.Magnitude > 1e-3 then
+		wektorSwiata = r.Unit * v.X + f.Unit * v.Y
+	else
+		wektorSwiata = Vector3.zero
+	end
+	if v.Magnitude > D.sterowanie.martwa_strefa then
+		ostatniDotyk = os.clock()
+		uzylRuchu = true
+	end
+	-- drążek widać tylko pod palcem (albo przy sterowaniu z próby na ekranie dotykowym)
+	local testDrazka = sterTest ~= nil and os.clock() < sterTest.do_ and (dotyk or ui.opcje.emulacja ~= nil)
+	ui:drazek(maPeta and not okno and (dotykDrazka ~= nil or testDrazka), v.X, v.Y)
+	if not maPeta then
+		wyslanyRuch = nil
+		return
+	end
+	doRuchu -= dt
+	if okno then
+		-- okno EGGS / PETS: pet walczy sam
+		if wyslanyRuch ~= Vector3.new(0, -1, 0) then
+			evAkcja:FireServer("ruch", nil)
+			wyslanyRuch = Vector3.new(0, -1, 0)
+			ostatniDotyk = -1e9
+		end
+		return
+	end
+	local aktywny = v.Magnitude > D.sterowanie.martwa_strefa
+	if aktywny and (doRuchu <= 0 or not wyslanyRuch or (wyslanyRuch - wektorSwiata).Magnitude > 0.25) then
+		doRuchu = D.sterowanie.wysylanie_s
+		evAkcja:FireServer("ruch", wektorSwiata.X, wektorSwiata.Z)
+		wyslanyRuch = wektorSwiata
+	elseif not aktywny and wyslanyRuch and wyslanyRuch.Magnitude > 0.01 and wyslanyRuch.Y == 0 then
+		evAkcja:FireServer("ruch", 0, 0)
+		wyslanyRuch = Vector3.zero
+	end
+end
+
 ------------------------------------------------------------------ migawki stanu
 local migawek = 0
 evStan.OnClientEvent:Connect(function(b: buffer)
@@ -857,8 +1048,8 @@ evStan.OnClientEvent:Connect(function(b: buffer)
 	nagrodaKrola = buffer.readu16(b, 12)
 	local widziane = {}
 	for i = 1, n do
-		local o = 14 + (i - 1) * 24
-		if o + 24 > buffer.len(b) then
+		local o = 14 + (i - 1) * 28
+		if o + 28 > buffer.len(b) then
 			break
 		end
 		local id = buffer.readu16(b, o)
@@ -884,6 +1075,7 @@ evStan.OnClientEvent:Connect(function(b: buffer)
 			w.tkier = buffer.readi16(b, o + 20) / 1000
 			w.gwiazdki = buffer.readu8(b, o + 22)
 			w.f2 = f2
+			w.ty = buffer.readf32(b, o + 24)
 			w.brak = 0
 			w.slot = slot
 		end
@@ -918,83 +1110,70 @@ local function mojId(): number
 	return gracz:GetAttribute("PA_Pet") or 0
 end
 
--- RING OUT: zsuwa się do fosy, rozbryzg, gejzer wystrzeliwuje go łukiem do właściciela (dziki — za trybunę)
+-- kibice wiwatują przy wielkich chwilach
+local radoscDo = 0
+
+-- RING OUT: wielki łuk ponad trybuny poza koloseum (ze śladem i obrotem); kamera pokazuje lot, gdy to mój pet
 local function odlotRingOut(w, z)
-	local start = Vector3.new(z.x, 0, z.z)
+	local start = Vector3.new(z.x, podloga(z.x, z.z) + (z.y or 0), z.z)
 	local kier = Vector3.new(z.kx, 0, z.kz)
 	if kier.Magnitude < 0.1 then
 		kier = Vector3.new(z.x, 0, z.z)
 	end
 	kier = kier.Unit
-	local woda = start + kier * 5
-	woda = Vector3.new(woda.X, D.scena.woda_y, woda.Z)
-	local cel = if z.wl > 0 and not z.dziki then pozSlotu(z.wl) else (start.Unit * 90 + Vector3.new(0, 20, 0))
-	local plusk, gejzer = false, false
+	local cel = Vector3.new(kier.X * 104, 4, kier.Z * 104)
+	local szczyt = 52 + math.random() * 14
+	local czas = 2.3
 	local t = 0
+	local slowo = false
 	pcall(function()
-		local tr = E:smuga(w.korzen, Color3.fromRGB(190, 235, 255), 2.4)
-		tr.Lifetime = 0.5
+		local tr = E:smuga(w.korzen, Color3.fromRGB(255, 240, 190), math.max(2, w.Pd.wysokosc * 0.4))
+		tr.Lifetime = 0.6
 	end)
+	radoscDo = os.clock() + 2.5
 	w.odlot = function(dt: number): boolean
 		t += dt
-		local cf
-		if t < 0.4 then
-			local f = t / 0.4
-			local p = start:Lerp(woda, f)
-			p = Vector3.new(p.X, -f * f * (0 - D.scena.woda_y) + 1.5 * math.sin(f * math.pi), p.Z)
-			cf = CFrame.new(p) * CFrame.Angles(f * 2, 0, f * 1.2)
-		elseif t < 0.85 then
-			if not plusk then
-				plusk = true
-				E:plask(woda + Vector3.new(0, 0.3, 0), Color3.fromRGB(150, 220, 255))
-				E:iskry(woda + Vector3.new(0, 1, 0), Color3.fromRGB(170, 230, 255), 16, 1.5)
-				dzwiek("plusk")
-			end
-			cf = CFrame.new(woda - Vector3.new(0, 4, 0))
-		elseif t < 2.9 then
-			if not gejzer then
-				gejzer = true
-				E:gejzer(woda)
-			end
-			local f = (t - 0.85) / 2.05
-			local p = woda:Lerp(cel, f)
-			p = Vector3.new(p.X, p.Y + 30 * math.sin(f * math.pi), p.Z)
-			cf = CFrame.new(p) * CFrame.Angles(t * 10, t * 6, 0)
-		else
-			E:iskry(cel, Color3.fromRGB(255, 255, 255), 8, 0.6)
+		if t >= czas then
+			E:iskry(w.korzen.Position, Color3.fromRGB(255, 255, 255), 14, 1.2)
 			return true
 		end
-		w.korzen.CFrame = cf
+		local f = t / czas
+		local p = start:Lerp(cel, f) + Vector3.new(0, szczyt * 4 * f * (1 - f), 0)
+		w.korzen.CFrame = CFrame.new(p) * CFrame.Angles(t * 11, t * 5, t * 3)
+		if not slowo and t > 0.15 then
+			slowo = true
+			E:slowo(start + Vector3.new(0, 16, 0), D.ui.ring_out, Color3.fromHex("FF6A3D"), 1.5, 1.1)
+		end
 		w.krazek.Transparency = 1
 		w.etykieta.Visible = false
 		return false
 	end
 end
 
--- KO: gwiazdki, wirujący lot przez pół ekranu w kierunku ciosu
+-- KO: gwiazdki, wirujący lot w górę i daleko w kierunku ciosu
 local function odlotKO(w, z)
-	local start = Vector3.new(z.x, 0, z.z)
+	local start = Vector3.new(z.x, podloga(z.x, z.z) + (z.y or 0), z.z)
 	local kier = Vector3.new(z.kx, 0, z.kz)
 	if kier.Magnitude < 0.1 then
 		kier = Vector3.new(math.random() - 0.5, 0, math.random() - 0.5)
 	end
 	kier = kier.Unit
-	local cel = start + kier * 46 + Vector3.new(0, 6, 0)
-	E:iskry(start + Vector3.new(0, 4, 0), Color3.fromHex(K.zloto), 18, 1.3)
+	local cel = start + kier * 60 + Vector3.new(0, -2, 0)
+	E:iskry(start + Vector3.new(0, 4, 0), Color3.fromHex(K.zloto), 22, 1.5)
 	dzwiek("ko")
 	pcall(function()
-		E:smuga(w.korzen, Color3.fromRGB(255, 240, 160), 2.4)
+		E:smuga(w.korzen, Color3.fromRGB(255, 240, 160), math.max(2, w.Pd.wysokosc * 0.4))
 	end)
+	radoscDo = os.clock() + 2
 	local t = 0
 	w.odlot = function(dt: number): boolean
 		t += dt
-		if t >= 1.5 then
-			E:iskry(w.korzen.Position, Color3.fromRGB(255, 255, 255), 10, 0.8)
+		if t >= 1.7 then
+			E:iskry(w.korzen.Position, Color3.fromRGB(255, 255, 255), 12, 1)
 			return true
 		end
-		local f = t / 1.5
-		local p = start:Lerp(cel, f)
-		p = Vector3.new(p.X, p.Y + 24 * math.sin(f * math.pi), p.Z)
+		local f = t / 1.7
+		local p = start:Lerp(cel, f) + Vector3.new(0, 38 * math.sin(f * math.pi), 0)
 		w.korzen.CFrame = CFrame.new(p) * CFrame.Angles(t * 16, t * 4, t * 9)
 		w.krazek.Transparency = 1
 		w.etykieta.Visible = false
@@ -1071,12 +1250,17 @@ local function zdarzenie(z)
 			dzwiek("krol")
 		end
 	elseif z.t == "boss" then
-		local w = widoki[z.id] or nowyWidok(z.id, 200 + z.nr, 0, 0, 0, 2)
+		local w = widoki[z.id] or nowyWidok(z.id, 200 + z.nr, 0, 0, 0, if z.zloty then 6 else 2)
 		if w then
-			lotWidoku(w, Vector3.new(0, 80, 0), 0, 0, z.czas)
-			w.lot.h = 0
+			-- wejście bramą: kilka ciężkich skoków do środka
+			lotWidoku(w, Vector3.new(z.x0 or 0, 0, z.z0 or 80), 0, 0, z.czas)
+			w.lot.h = 10
 		end
-		ui:baner(D.ui.boss, Color3.fromHex("FF4D4D"), 2.0)
+		-- wejście bossa widać w całości (brama i arena), potem kamera wraca za peta
+		bossWejscieDo = os.clock() + (z.czas or 2.6) + 0.8
+		ui:baner(if z.zloty then D.ui.zloty else D.ui.boss_idzie, Color3.fromHex(if z.zloty then K.zloto else "FF4D4D"), 2.2)
+		wstrzasnij(0.9, 0.6)
+		radoscDo = os.clock() + 3
 		dzwiek("boss")
 	elseif z.t == "ladowanie" then
 		local w = widoki[z.id]
@@ -1110,7 +1294,32 @@ local function zdarzenie(z)
 			if (mojeTrafienie or wMnie or (z.v or 0) > 25) and pulsow < 3 and not w.boss then
 				w.puls = { t = 0 }
 			end
+			if z.lot then
+				pcall(function()
+					local tr = E:smuga(w.korzen, Color3.fromRGB(255, 255, 255), math.max(1.5, w.Pd.wysokosc * 0.3))
+					task.delay(1.0, function()
+						tr:Destroy()
+					end)
+				end)
+				if mojeTrafienie or wMnie then
+					duzeSlowo(p + Vector3.new(0, 6, 0), if z.k then D.ui.kryt else "POW!", Color3.fromHex("FFE14D"), 1.0)
+				end
+			end
 		end
+		local wa = widoki[z.a]
+		if wa and z.dx then
+			wa.wypad = { t = 0, dx = z.dx, dz = z.dz }
+		end
+	elseif z.t == "zderzenie" then
+		local p = Vector3.new(z.x, 2, z.z)
+		E:pyl(p, 4, 5)
+		E:iskry(p + Vector3.new(0, 2, 0), Color3.fromRGB(255, 250, 230), 6, 0.8)
+		if z.a == mid or z.b == mid then
+			maleSlowo(p + Vector3.new(0, 5, 0), "BONK!", Color3.fromHex("FF8A3D"))
+		end
+		dzwiek("cios", 0.75)
+	elseif z.t == "upadek" then
+		E:pyl(Vector3.new(z.x, podloga(z.x, z.z), z.z), 3, 4)
 	elseif z.t == "zloto_cios" then
 		if z.wl == moj then
 			E:liczba(Vector3.new(z.x, 6, z.z), "+" .. z.ile .. " G", Color3.fromHex(K.zloto))
@@ -1127,7 +1336,8 @@ local function zdarzenie(z)
 		end
 		dzwiek("umiejetnosc")
 		if z.typ == "fala" then
-			E:fala(p, z.r)
+			E:pierscienie(p, z.r)
+			wstrzasnij(0.8, 0.3)
 		elseif z.typ == "ogluszenie" then
 			E:chmura(p, z.r)
 		elseif z.typ == "zamrozenie" then
@@ -1148,8 +1358,10 @@ local function zdarzenie(z)
 			if w then
 				w.skok = { t = 0, czas = z.czas, h = z.wysokosc }
 			end
-			E:pierscien(Vector3.new(z.x1, 0.2, z.z1), z.r, Color3.fromHex("FF4D4D"), z.czas + 0.2)
+			E:pierscien(Vector3.new(z.x1, podloga(z.x1, z.z1) + 0.2, z.z1), z.r, Color3.fromHex("FF4D4D"), z.czas + 0.2)
+			E:cien(Vector3.new(z.x1, podloga(z.x1, z.z1), z.z1), z.r * 0.6, z.czas)
 		elseif z.typ == "szarza" then
+			E:pyl(p, 5, 8)
 			if w then
 				pcall(function()
 					local tr = E:smuga(w.korzen, Color3.fromRGB(255, 230, 160), 2)
@@ -1160,8 +1372,8 @@ local function zdarzenie(z)
 			end
 		end
 	elseif z.t == "ladowanie_skoku" or z.t == "boss_fala" then
-		local p = Vector3.new(z.x, 0, z.z)
-		E:fala(p, z.r)
+		local p = Vector3.new(z.x, podloga(z.x, z.z), z.z)
+		E:pierscienie(p, z.r)
 		wstrzasnij(if z.t == "boss_fala" then 1.1 else 0.8, 0.35)
 		dzwiek("kryt", 0.7)
 	elseif z.t == "odbicie_slime" then
@@ -1186,6 +1398,9 @@ local function zdarzenie(z)
 		local p = Vector3.new(z.x, 0, z.z)
 		local nazwa = if z.t == "ringout" then D.ui.ring_out else D.ui.ko
 		if wazne then
+			if w and ((z.wl == moj and not z.dziki and moj > 0) or (z.przez == moj and moj > 0)) then
+				sledzLot = { w = w, do_ = os.clock() + D.kamera.lot_s }
+			end
 			zatrzymaj(0.07)
 			wstrzasnij(if z.boss then 1.8 else 0.9, 0.3)
 			duzeSlowo(p + Vector3.new(0, 9, 0), nazwa, Color3.fromHex(if z.t == "ringout" then "FF6A3D" else "FFE14D"), 1.2)
@@ -1314,6 +1529,7 @@ end
 ------------------------------------------------------------------ pętla rysowania
 local pomiar = { klatek = 0, suma = 0, maks = 0, petlaSuma = 0, petlaMaks = 0 }
 local doUI = 0
+local krokSceny
 local doNazw = 0
 local tGlob = 0
 
@@ -1326,8 +1542,90 @@ local function odswiezNazwy()
 	end
 end
 
+local function nowyStatus(nazwa: string, Pd): { BasePart }
+	local function c(rozmiar: Vector3, kolor: Color3, mat: Enum.Material, ksztalt: Enum.PartType?, przez: number?): BasePart
+		local p = Instance.new("Part")
+		p.Anchored = true
+		p.CanCollide = false
+		p.CanQuery = false
+		p.CanTouch = false
+		p.CastShadow = false
+		p.Size = rozmiar
+		p.Color = kolor
+		p.Material = mat
+		p.Shape = ksztalt or Enum.PartType.Block
+		p.Transparency = przez or 0
+		p.Parent = lokalne
+		return p
+	end
+	local r = Pd.promien
+	if nazwa == "lod" then
+		return { c(Vector3.new(r * 2.3, Pd.wysokosc * 1.05, r * 2.3), Color3.fromRGB(170, 230, 255), Enum.Material.Glass, nil, 0.4) }
+	elseif nazwa == "skor" then
+		local d = math.max(Pd.wysokosc * 1.15, r * 2.6)
+		return { c(Vector3.new(d, d, d), Color3.fromRGB(120, 255, 140), Enum.Material.ForceField, Enum.PartType.Ball, 0) }
+	elseif nazwa == "ogien" then
+		return { c(Vector3.new(r * 0.6, r * 0.9, r * 0.6), Color3.fromRGB(255, 140, 40), Enum.Material.Neon, Enum.PartType.Ball, 0.1),
+			c(Vector3.new(r * 0.5, r * 0.8, r * 0.5), Color3.fromRGB(255, 215, 80), Enum.Material.Neon, Enum.PartType.Ball, 0.1),
+			c(Vector3.new(r * 0.45, r * 0.7, r * 0.45), Color3.fromRGB(255, 90, 40), Enum.Material.Neon, Enum.PartType.Ball, 0.1) }
+	else
+		local s = math.max(0.8, r * 0.35)
+		return { c(Vector3.new(s, s, s), Color3.fromRGB(255, 230, 90), Enum.Material.Neon, Enum.PartType.Ball),
+			c(Vector3.new(s, s, s), Color3.fromRGB(255, 230, 90), Enum.Material.Neon, Enum.PartType.Ball),
+			c(Vector3.new(s, s, s), Color3.fromRGB(255, 230, 90), Enum.Material.Neon, Enum.PartType.Ball) }
+	end
+end
+
+local function krokStanow(w, f: number)
+	local chce = { lod = bit32.band(f, 2) ~= 0, skor = bit32.band(f, 4) ~= 0, ogien = bit32.band(f, 8) ~= 0, ogl = bit32.band(f, 1) ~= 0 }
+	for nazwa, wl in chce do
+		local s = w.statusy[nazwa]
+		if wl and not s then
+			w.statusy[nazwa] = nowyStatus(nazwa, w.Pd)
+		elseif not wl and s then
+			for _, c in s do
+				c:Destroy()
+			end
+			w.statusy[nazwa] = nil
+		end
+	end
+	local Pd = w.Pd
+	local sr = Vector3.new(w.x, w.yR + Pd.wysokosc * 0.5, w.z)
+	local gora = Vector3.new(w.x, w.yR + Pd.wysokosc, w.z)
+	if w.statusy.lod then
+		w.statusy.lod[1].CFrame = CFrame.new(sr) * CFrame.Angles(0, w.kier, 0)
+	end
+	if w.statusy.skor then
+		w.statusy.skor[1].CFrame = CFrame.new(sr)
+	end
+	if w.statusy.ogien then
+		for i, c in w.statusy.ogien do
+			c.CFrame = CFrame.new(gora + Vector3.new(math.cos(tGlob * 6 + i * 2) * Pd.promien * 0.35,
+				0.3 + math.abs(math.sin(tGlob * 9 + i)) * Pd.promien * 0.5, math.sin(tGlob * 6 + i * 2) * Pd.promien * 0.35))
+		end
+	end
+	if w.statusy.ogl then
+		for i, c in w.statusy.ogl do
+			local a = tGlob * 5 + i * 2.09
+			c.CFrame = CFrame.new(gora + Vector3.new(math.cos(a) * Pd.promien * 0.7, 1.2, math.sin(a) * Pd.promien * 0.7))
+		end
+	end
+end
+
+local function usunStany(w)
+	for _, s in w.statusy do
+		for _, c in s do
+			c:Destroy()
+		end
+	end
+	w.statusy = {}
+end
+
 local function rysujWidok(w, dt: number, dtW: number)
 	if w.odlot then
+		if next(w.statusy) then
+			usunStany(w)
+		end
 		if w.odlot(dtW) then
 			usunWidok(w)
 		end
@@ -1340,46 +1638,72 @@ local function rysujWidok(w, dt: number, dtW: number)
 		local l = w.lot
 		l.t += dtW
 		local f = math.clamp(l.t / l.czas, 0, 1)
-		local p = l.od:Lerp(Vector3.new(l.x, 0, l.z), f)
+		local p = l.od:Lerp(Vector3.new(l.x, podloga(l.x, l.z), l.z), f)
 		p += Vector3.new(0, l.h * 4 * f * (1 - f), 0)
 		w.x, w.z, y = p.X, p.Z, p.Y
-		obrot = CFrame.Angles(-f * math.pi * 2, 0, 0)
+		obrot = if w.boss then CFrame.new() else CFrame.Angles(-f * math.pi * 2, 0, 0)
 		if f >= 1 then
 			w.lot = nil
 			w.x, w.z = l.x, l.z
+			w.yBaza = podloga(l.x, l.z)
 		end
 	else
-		local a = 1 - math.exp(-dtW * 14)
+		local mojPrzew = w.slot > 0 and w.slot == mojSlot() and reczne() and bit32.band(w.flagi, 1 + 2 + 16 + 32 + 128) == 0 and w.ty <= 0.5
+		if mojPrzew and wektorSwiata.Magnitude > D.sterowanie.martwa_strefa then
+			-- własny pet reaguje od razu na drążek
+			w.x += wektorSwiata.X * Pd.predkosc * dtW
+			w.z += wektorSwiata.Z * Pd.predkosc * dtW
+			w.tkier = math.atan2(wektorSwiata.X, wektorSwiata.Z)
+		end
+		local a = 1 - math.exp(-dtW * (if mojPrzew then 4 else 14))
 		local dx, dz = w.tx - w.x, w.tz - w.z
-		if dx * dx + dz * dz > 400 then
+		if dx * dx + dz * dz > 900 then
 			w.x, w.z = w.tx, w.tz
 		else
 			w.x += dx * a
 			w.z += dz * a
 		end
+		w.yAir += (w.ty - w.yAir) * (1 - math.exp(-dtW * 20))
+		w.yBaza += (podloga(w.x, w.z) - w.yBaza) * math.min(1, dtW * 10)
+		y = w.yBaza + math.max(0, w.yAir)
 		local predkosc = math.sqrt(dx * dx + dz * dz)
 		if w.skok then
 			local s = w.skok
 			s.t += dtW
 			local f = math.clamp(s.t / s.czas, 0, 1)
-			y = s.h * 4 * f * (1 - f)
+			y += s.h * 4 * f * (1 - f)
 			obrot = CFrame.Angles(f * math.pi * 2, 0, 0)
 			if f >= 1 then
 				w.skok = nil
 			end
+		elseif w.yAir > 0.6 then
+			obrot = CFrame.Angles(tGlob * 9, 0, tGlob * 4)
+		elseif bit32.band(w.flagi, 16) ~= 0 and Pd.umiejetnosc and Pd.umiejetnosc.typ == "szarza" then
+			obrot = if Pd.id == "pancernik_ruin" then CFrame.Angles(-tGlob * 16, 0, 0) else CFrame.Angles(-0.35, 0, 0)
 		elseif predkosc > 0.12 and bit32.band(w.flagi, 2) == 0 and not w.boss then
-			y = math.abs(math.sin(tGlob * 10 + w.faza0)) * 0.9
+			y += math.abs(math.sin(tGlob * 10 + w.faza0)) * 0.9 * (Pd.rozmiar or 1)
 		end
 		local dk = (w.tkier - w.kier + math.pi) % (2 * math.pi) - math.pi
 		w.kier += dk * math.min(1, dtW * 10)
 	end
-	-- podskok i przechył po ciosie
 	if w.trafienie > 0 then
 		w.trafienie -= dtW
 		y += math.sin(math.max(0, w.trafienie) / 0.18 * math.pi) * 1.2
 	end
-	w.y = y
-	local cf = CFrame.new(w.x, y, w.z) * CFrame.Angles(0, w.kier + math.pi, 0) * obrot
+	-- wypad przy ciosie (do przodu i z powrotem)
+	local wx, wz = 0, 0
+	if w.wypad then
+		w.wypad.t += dtW
+		local f = w.wypad.t / 0.16
+		if f >= 1 then
+			w.wypad = nil
+		else
+			local s = math.sin(f * math.pi) * Pd.promien * 0.6
+			wx, wz = w.wypad.dx * s, w.wypad.dz * s
+		end
+	end
+	w.yR = y
+	local cf = CFrame.new(w.x + wx, y, w.z + wz) * CFrame.Angles(0, w.kier + math.pi, 0) * obrot
 	if w.trafienie > 0 then
 		cf *= CFrame.Angles(-math.sin(math.max(0, w.trafienie) / 0.18 * math.pi) * 0.35, 0, 0)
 	end
@@ -1387,7 +1711,6 @@ local function rysujWidok(w, dt: number, dtW: number)
 		cf *= CFrame.Angles(0, 0, math.sin(tGlob * 18) * 0.25)
 	end
 	w.korzen.CFrame = cf
-	-- spłaszczenie po ciosie (zmniejsza się i wraca z odbiciem) — tylko kilka naraz
 	if w.puls then
 		if w.puls.t == 0 then
 			pulsow += 1
@@ -1403,35 +1726,27 @@ local function rysujWidok(w, dt: number, dtW: number)
 			pulsow -= 1
 		end
 	end
-	w.krazek.CFrame = CFrame.new(w.x, 0.28, w.z) * CFrame.Angles(0, 0, math.pi / 2)
-	w.krazek.Transparency = if w.lot then 1 else (if w.slot > 0 and w.slot == mojSlot() then 0.1 elseif w.slot > 0 or w.zloty then 0.3 else 0.55)
-	-- stany i błysk trafienia (wypełnienie obrysu)
+	-- krążek zostaje na ziemi (jak cień w locie)
+	w.krazek.CFrame = CFrame.new(w.x, w.yBaza + 0.28, w.z) * CFrame.Angles(0, 0, math.pi / 2)
+	w.krazek.Transparency = if w.lot then 1 else (if w.slot > 0 and w.slot == mojSlot() then 0.05 elseif w.slot > 0 or w.zloty then 0.25 else 0.7)
 	local f = w.flagi
 	if w.blysk > 0 then
 		w.blysk -= dt
 		w.hl.FillColor = Color3.new(1, 1, 1)
 		w.hl.FillTransparency = if w.boss then 0.8 else 0.2
-	elseif bit32.band(f, 2) ~= 0 then
-		w.hl.FillColor = Color3.fromRGB(150, 225, 255)
-		w.hl.FillTransparency = 0.35
-	elseif bit32.band(f, 4) ~= 0 then
-		w.hl.FillColor = Color3.fromRGB(110, 230, 110)
-		w.hl.FillTransparency = 0.45
 	elseif bit32.band(f, 8) ~= 0 then
 		w.hl.FillColor = Color3.fromRGB(255, 140, 40)
-		w.hl.FillTransparency = 0.45 + math.sin(tGlob * 20) * 0.15
-	elseif bit32.band(f, 1) ~= 0 then
-		w.hl.FillColor = Color3.fromRGB(255, 240, 120)
-		w.hl.FillTransparency = 0.55
+		w.hl.FillTransparency = 0.55 + math.sin(tGlob * 20) * 0.15
 	elseif w.zloty then
 		w.hl.FillColor = Color3.fromHex(D.zloty.kolor)
-		w.hl.FillTransparency = 0.3 + math.sin(tGlob * 6) * 0.1
+		w.hl.FillTransparency = 0.45 + math.sin(tGlob * 6) * 0.15
 	else
 		w.hl.FillTransparency = 1
 	end
-	-- cienki pasek życia nad petem (warstwa 2D); własny: gwiazdki i „+G/s”; tarcza słabszego
+	krokStanow(w, f)
+	-- cienki pasek życia, ikony stanów, gwiazdki, „+G/s” (warstwa 2D)
 	local krol = krolId == w.id
-	local top = Vector3.new(w.x, y + Pd.wysokosc + (if krol then 4.6 else 0.6), w.z)
+	local top = Vector3.new(w.x, y + Pd.wysokosc + (if krol then 4.6 * koronaAkt else 0.6), w.z)
 	local v, na = kamera:WorldToViewportPoint(top)
 	w.etykieta.Visible = na and not w.lot and not w.boss
 	if na and not w.boss then
@@ -1441,15 +1756,88 @@ local function rysujWidok(w, dt: number, dtW: number)
 		w.pasekZ.BackgroundColor3 = Color3.fromHex(if fz < 0.35 then K.zycie_nisko else K.zycie)
 		local moj = w.slot > 0 and w.slot == mojSlot()
 		local gw = if w.gwiazdki > 1 then string.rep("★", w.gwiazdki) else ""
-		local tarcza = if bit32.band(w.f2, 1) ~= 0 then "🛡 " else ""
+		local ikony = (if bit32.band(f, 1) ~= 0 then "💫" else "") .. (if bit32.band(f, 2) ~= 0 then "❄" else "")
+			.. (if bit32.band(f, 8) ~= 0 then "🔥" else "") .. (if bit32.band(w.f2, 1) ~= 0 then "🛡" else "")
+		if ikony ~= "" then
+			ikony ..= " "
+		end
 		if moj then
-			w.napis.Text = tarcza .. gw .. (if w.zl > 0 then (if gw ~= "" then " " else "") .. string.format(D.ui.na_s, L.naSekunde(w.zl)) else "")
+			w.napis.Text = (if reczne() then "" else D.ui.auto .. " ") .. ikony .. gw
+				.. (if w.zl > 0 then (if gw ~= "" then " " else "") .. string.format(D.ui.na_s, L.naSekunde(w.zl)) else "")
 		else
-			w.napis.Text = tarcza .. gw
+			w.napis.Text = ikony .. gw
 		end
 		w.nagrodaTekst.Visible = krol
 		if krol then
 			w.nagrodaTekst.Text = D.ui.nagroda .. " " .. L.format(nagrodaKrola)
+		end
+	end
+end
+
+-- koloseum: kibice podskakują sektorami (mocniej przy wielkich chwilach), ogień w paleniskach migocze,
+-- monety lecą z podłogi do własnego peta w tempie złota na sekundę
+local kibice, plomienie = {}, {}
+local monetLeci = 0
+task.spawn(function()
+	local sc = kontener:WaitForChild("Scena", 20)
+	if not sc then
+		return
+	end
+	for _, m in sc:GetChildren() do
+		if m:IsA("Model") and string.sub(m.Name, 1, 6) == "Kibice" then
+			local cz, cf = {}, {}
+			for _, c in m:GetChildren() do
+				if c:IsA("BasePart") then
+					table.insert(cz, c)
+					table.insert(cf, c.CFrame)
+				end
+			end
+			table.insert(kibice, { czesci = cz, cf0 = cf, faza = #kibice * 0.9 })
+		elseif m:IsA("Model") and string.sub(m.Name, 1, 5) == "Ogien" then
+			for _, c in m:GetChildren() do
+				if c:IsA("BasePart") then
+					table.insert(plomienie, { c = c, cf0 = c.CFrame, faza = #plomienie * 1.3, wys = c.Size.Y })
+				end
+			end
+		end
+	end
+end)
+
+local doSceny = 0
+function krokSceny(dt: number)
+	-- kibice i ogień 20 razy na sekundę, jednym BulkMoveTo (tanio na telefonie)
+	doSceny -= dt
+	if doSceny <= 0 then
+		doSceny = 0.05
+		local amp = if os.clock() < radoscDo then 2.2 else 0.5
+		local szyb = if os.clock() < radoscDo then 11 else 5
+		local czesci, cfs = {}, {}
+		for _, k in kibice do
+			local off = Vector3.new(0, math.abs(math.sin(tGlob * szyb + k.faza)) * amp, 0)
+			for i, c in k.czesci do
+				table.insert(czesci, c)
+				table.insert(cfs, k.cf0[i] + off)
+			end
+		end
+		for _, p in plomienie do
+			local s = math.sin(tGlob * 13 + p.faza) * 0.15 + math.noise(tGlob * 3, p.faza) * 0.2
+			table.insert(czesci, p.c)
+			table.insert(cfs, p.cf0 * CFrame.new(0, s * p.wys * 0.4, 0) * CFrame.Angles(0, tGlob * 2 + p.faza, s * 0.3))
+		end
+		if #czesci > 0 then
+			workspace:BulkMoveTo(czesci, cfs, Enum.BulkMoveMode.FireCFrameChanged)
+		end
+	end
+	local w = widoki[gracz:GetAttribute("PA_Pet") or 0]
+	if w and not w.lot and not w.odlot and w.zl > 0 then
+		w.monetyAcc += dt * math.min(6, w.zl)
+		while w.monetyAcc >= 1 do
+			w.monetyAcc -= 1
+			local a = math.random() * math.pi * 2
+			local r = w.Pd.promien + 2 + math.random() * 4
+			local x, z = w.x + math.cos(a) * r, w.z + math.sin(a) * r
+			E:monetaDo(Vector3.new(x, podloga(x, z) + 0.5, z), w.korzen)
+			monetLeci += 1
 		end
 	end
 end
@@ -1472,18 +1860,30 @@ RunService.RenderStepped:Connect(function(dt: number)
 	local t0 = os.clock()
 	tGlob += dt
 	local dtW = if os.clock() < stopDo then 0 else dt
-	ustawKamere()
 	for _, w in widoki do
 		rysujWidok(w, dt, dtW)
 	end
+	krokSterowania(dt)
+	ustawKamere(dt)
 	krokRak(dt)
+	krokSceny(dt)
 	-- korona nad królem
 	local k = widoki[krolId]
 	if k and not k.odlot and not k.lot then
 		if korona.Parent ~= lokalne then
 			korona.Parent = lokalne
 		end
-		korona:PivotTo(CFrame.new(k.x, k.y + k.Pd.wysokosc + 1.2 + math.sin(tGlob * 4) * 0.3, k.z) * CFrame.Angles(0, tGlob * 1.5, 0))
+		-- korona rośnie z nagrodą (do × 1,7), a jej wielkość idzie za wielkością peta (lekki nie znika pod koroną)
+		local s = 1 + math.min(0.7, nagrodaKrola / 150)
+		local sc = s * (0.35 + 0.3 * (k.Pd.rozmiar or 1))
+		if math.abs(sc - koronaAkt) > 0.04 then
+			pcall(function()
+				korona:ScaleTo(sc)
+			end)
+			koronaAkt = sc
+		end
+		koronaSkala = s
+		korona:PivotTo(CFrame.new(k.x, k.yR + k.Pd.wysokosc + 1.2 + math.sin(tGlob * 4) * 0.3, k.z) * CFrame.Angles(0, tGlob * 1.5, 0))
 	elseif korona.Parent then
 		korona.Parent = nil
 	end
@@ -1569,8 +1969,16 @@ RunService.RenderStepped:Connect(function(dt: number)
 			end
 		end
 		local bezPeta = mojId() == 0
-		if okna:otwarte() then
+		-- samouczek bez drążka: rzuć → pet walczy sam → stuknij ABILITY (→ darmowe jajko); sterowanie to dodatek,
+		-- podpowiedź o nim dopiero po pierwszej umiejętności i najwyżej przez 8 s
+		local ruchPodp = mojPet and not mojPet.lot and uzylUmiejetnosci and not uzylRuchu
+		if ruchPodp and not ruchPodpowiedzDo then
+			ruchPodpowiedzDo = os.clock() + 8
+		end
+		if okna:otwarte() or okna.scenaW then
 			ui:podpowiedz(nil)
+		elseif mojPet and not mojPet.lot and mojPet.pasek >= 1 and not uzylUmiejetnosci then
+			ui:podpowiedz(D.ui.podpowiedz_umiejetnosc)
 		elseif rzucil and not jajkoZrobione then
 			ui:podpowiedz(D.ui.podpowiedz_jajko)
 		elseif bezPeta and (gotowych > 0 or not rzucil) then
@@ -1578,8 +1986,9 @@ RunService.RenderStepped:Connect(function(dt: number)
 				else D.ui.podpowiedz_mysz)
 		elseif bezPeta and najblizej < math.huge then
 			ui:podpowiedz(string.format(D.ui.nastepny, najblizej))
-		elseif mojPet and mojPet.pasek >= 1 and not uzylUmiejetnosci then
-			ui:podpowiedz(D.ui.podpowiedz_umiejetnosc)
+		elseif ruchPodp and os.clock() < (ruchPodpowiedzDo or 0) then
+			ui:podpowiedz(if padAktywny then D.ui.podpowiedz_ruch_pad elseif dotyk or ui.opcje.emulacja then D.ui.podpowiedz_ruch_dotyk
+				else D.ui.podpowiedz_ruch_mysz)
 		else
 			ui:podpowiedz(nil)
 		end
@@ -1635,8 +2044,8 @@ end
 
 -- wysokość peta na ekranie (piksele okna i punkty telefonu 375 wys.)
 local function rozmiarNaEkranie(w): (number, number)
-	local a = kamera:WorldToViewportPoint(Vector3.new(w.x, w.y, w.z))
-	local b = kamera:WorldToViewportPoint(Vector3.new(w.x, w.y + w.Pd.wysokosc, w.z))
+	local a = kamera:WorldToViewportPoint(Vector3.new(w.x, w.yR, w.z))
+	local b = kamera:WorldToViewportPoint(Vector3.new(w.x, w.yR + w.Pd.wysokosc, w.z))
 	local px = math.abs(a.Y - b.Y)
 	return px, px / kamera.ViewportSize.Y * 375
 end
@@ -1669,7 +2078,17 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 			klatki = pomiar.klatek, srKlatki = if pomiar.klatek > 0 then pomiar.suma / pomiar.klatek else 0, maksKlatki = pomiar.maks,
 			srPetli = if pomiar.klatek > 0 then pomiar.petlaSuma / pomiar.klatek else 0, maksPetli = pomiar.petlaMaks,
 			wybrany = wybrany, dotyk = dotyk, duzychSlow = duzychSlow, duzychPominietych = duzychPomin, wDloni = wDloniId,
-			napisyGraczy = napisyG, wyklucia = wyklucia, pad = padAktywny,
+			napisyGraczy = napisyG, wyklucia = wyklucia, pad = padAktywny, trybKamery = trybKamery, wymuszonaCalosc = wymuszonaCalosc,
+			koronaSkala = koronaSkala, monetLeci = monetLeci, kibicow = #kibice, plomieni = #plomienie,
+			reczne = reczne(), ster = { ster.X, ster.Y }, sterowanieAwatara = sterowanieAwatara,
+			mojPt = (function()
+				local w = widoki[gracz:GetAttribute("PA_Pet") or 0]
+				if not w then
+					return nil
+				end
+				local _, pt = rozmiarNaEkranie(w)
+				return pt
+			end)(),
 		}
 	elseif polecenie == "rzut" then
 		local v, na = kamera:WorldToScreenPoint(Vector3.new(a, 0, b))
@@ -1705,6 +2124,17 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 	elseif polecenie == "kamera" then
 		-- film: { zoom = 0..1 } (bliżej celu) albo { pozycja = Vector3, cel = Vector3, fov = n }; nil — kamera gry
 		kameraFilm = a
+		return true
+	elseif polecenie == "ster" then
+		-- próby: drążek (x, y ekranu) przez b sekund; nil — puść
+		if a == nil then
+			sterTest = nil
+		else
+			sterTest = { v = a, do_ = os.clock() + (b or 1) }
+		end
+		return true
+	elseif polecenie == "widok" then
+		wymuszonaCalosc = a == true
 		return true
 	elseif polecenie == "kadr" then
 		return kadr(a, b)

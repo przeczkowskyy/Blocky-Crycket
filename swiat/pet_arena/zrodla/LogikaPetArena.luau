@@ -174,7 +174,7 @@ function L.dodajPeta(S, nr: number, wl: number, dziki: boolean, x0: number, y0: 
 		id = S.nastId, nr = nr, P = P, wl = wl, dziki = dziki, x = x, z = z, kx = 0, kz = 0, hp = hpMax, hpMax = hpMax,
 		faza = "lot", ladT = S.czas + t, lotCzas = t, x0 = x0, y0 = y0, z0 = z0, cd = 0.4, osz = 0, ogl = 0, lod = 0,
 		skor = 0, pal = 0, palNaS = 0, palOd = nil, akcja = nil, pasek = 0, ostatni = nil, wSrodku = 0, pozaSrodka = 99,
-		zl = 0, kier = 0, pelnyOd = nil, mnSila = if mn then mn.sila else 1, gwiazdki = if mn then mn.gwiazdki else 1,
+		zl = 0, kier = 0, pelnyOd = nil, mnSila = if mn then mn.sila else 1, gwiazdki = if mn then mn.gwiazdki else 1, y = 0, vy = 0,
 	}
 	S.nastId += 1
 	table.insert(S.pety, p)
@@ -183,7 +183,7 @@ end
 
 ------------------------------------------------------------------ ciosy
 local function wrog(a, b): boolean
-	return a ~= b and b.faza == "walka" and not (b.akcja and b.akcja.typ == "skok")
+	return a ~= b and b.faza == "walka" and not (b.akcja and b.akcja.typ == "skok") and (b.y or 0) <= 1
 end
 
 local function najblizszy(S, p, maks: number?)
@@ -247,6 +247,13 @@ function L.cios(S, a, b, obrazenia: number, sila: number, dx: number, dz: number
 	local v = L.odrzut(D, sila, b.hp, b.hpMax, b.P.waga, mn)
 	b.kx, b.kz = dx * v, dz * v
 	b.osz = S.czas + math.min(W.oszolomienie_maks_s, v * W.oszolomienie_s_na_odrzut)
+	-- krytyk, cios kończący i mocny odrzut wyrzucają w powietrze (lot liczony w krok)
+	local lot = false
+	if not b.boss and (kryt or b.hp <= 0 or v >= W.wybicie_v) then
+		b.vy = math.min(W.lot_vy_maks, v * W.lot_vy_x)
+		b.y = math.max(b.y or 0, 0.05)
+		lot = true
+	end
 	if a then
 		b.ostatni = { wl = a.wl, id = a.id, t = S.czas, dziki = a.dziki }
 		if zwykly then
@@ -257,12 +264,13 @@ function L.cios(S, a, b, obrazenia: number, sila: number, dx: number, dz: number
 	if a and a.wl > 0 and not a.dziki then
 		if b.boss then
 			S.bossUdzial[a.wl] = (S.bossUdzial[a.wl] or 0) + obrazenia
-		elseif b.zloty then
+		end
+		if b.zloty then
 			table.insert(zdarzenia, { t = "zloto_cios", wl = a.wl, ile = D.zloty.za_cios * a.P.stopien, x = b.x, z = b.z })
 		end
 	end
 	table.insert(zdarzenia, { t = "cios", a = if a then a.id else 0, b = b.id, o = math.floor(obrazenia + 0.5), k = kryt,
-		x = b.x, z = b.z, v = v })
+		x = b.x, z = b.z, v = v, lot = lot, dx = dx, dz = dz })
 	return true
 end
 
@@ -391,6 +399,10 @@ function L.uzyj(S, p, zdarzenia): boolean
 	elseif A.typ == "podpalenie" then
 		local q = najblizszy(S, p, nil)
 		local fx, fz = wKierunku(p, q)
+		local rx, rz = L.kierunekGracza(S, p)
+		if rx then
+			fx, fz = rx, rz
+		end
 		local cosKat = math.cos(math.rad(A.kat_st / 2))
 		local n = 0
 		for _, w in S.pety do
@@ -450,10 +462,18 @@ function L.uzyj(S, p, zdarzenia): boolean
 	elseif A.typ == "szarza" then
 		local q = najblizszy(S, p, nil)
 		local dx, dz = wKierunku(p, q)
+		local rx, rz = L.kierunekGracza(S, p)
+		if rx then
+			dx, dz = rx, rz
+		end
 		p.akcja = { typ = "szarza", dx = dx, dz = dz, zostalo = A.dlugosc, trafieni = {} }
 		z.kx, z.kz, z.dlugosc = dx, dz, A.dlugosc
 	elseif A.typ == "skok" then
 		local cx, cz = celSkoku(S, p, A)
+		local rx, rz = L.kierunekGracza(S, p)
+		if rx then
+			cx, cz = p.x + rx * D.sterowanie.skok_dystans, p.z + rz * D.sterowanie.skok_dystans
+		end
 		cx, cz = wewnatrz(D, cx, cz, p.P.promien + 0.5)
 		p.akcja = { typ = "skok", t0 = S.czas, czas = A.czas, odX = p.x, odZ = p.z, doX = cx, doZ = cz }
 		z.x1, z.z1, z.czas, z.wysokosc, z.r = cx, cz, A.czas, A.wysokosc, A.r
@@ -544,6 +564,113 @@ local function krokAkcji(S, p, dt: number, zdarzenia): boolean
 	return false
 end
 
+------------------------------------------------------------------ sterowanie petem przez gracza
+-- wejście: wektor kierunku w świecie (x, z), długość ≤ 1; nil — oddaj autopilotowi
+function L.steruj(S, p, x: any, z: any): boolean
+	if p == nil then
+		return false
+	end
+	if x == nil then
+		p.ster, p.sterT = nil, -1e9
+		return true
+	end
+	if type(x) ~= "number" or type(z) ~= "number" or x ~= x or z ~= z or math.abs(x) > 2 or math.abs(z) > 2 then
+		return false
+	end
+	local d = dlug(x, z)
+	if d > 1 then
+		x, z = x / d, z / d
+	end
+	p.ster = { x = x, z = z }
+	p.sterT = S.czas
+	return true
+end
+
+-- czy gracz kieruje (dotknął sterowania w ciągu autopilot_s)
+function L.reczny(S, p): boolean
+	return p ~= nil and p.ster ~= nil and S.czas - (p.sterT or -1e9) <= S.D.sterowanie.autopilot_s
+end
+
+-- kierunek umiejętności w trybie ręcznym: ruch drążka albo patrzenie; nil — autopilot
+function L.kierunekGracza(S, p): (number?, number?)
+	if not L.reczny(S, p) then
+		return nil, nil
+	end
+	local d = dlug(p.ster.x, p.ster.z)
+	if d > S.D.sterowanie.martwa_strefa then
+		return p.ster.x / d, p.ster.z / d
+	end
+	return math.sin(p.kier or 0), math.cos(p.kier or 0)
+end
+
+-- krok peta sterowanego: idzie w stronę drążka (sam nie wychodzi za krawędź), bije najbliższego w zasięgu
+function L.krokReczny(S, p, dt: number, zd)
+	local D = S.D
+	local W = D.walka
+	local P = p.P
+	local q, d = najblizszy(S, p, nil)
+	if q and d <= P.promien + q.P.promien + W.zasieg_ciosu * (P.rozmiar or 1) and p.cd <= 0 then
+		local dx, dz = (q.x - p.x) / math.max(d, 1e-6), (q.z - p.z) / math.max(d, 1e-6)
+		p.kier = math.atan2(dx, dz)
+		L.cios(S, p, q, P.obrazenia, P.odrzut, dx, dz, true, zd)
+		p.cd = P.przerwa
+	end
+	local m = dlug(p.ster.x, p.ster.z)
+	if m > D.sterowanie.martwa_strefa then
+		local krok = P.predkosc * math.min(1, m) * dt
+		local nx, nz = p.x + p.ster.x / m * krok, p.z + p.ster.z / m * krok
+		local nr = dlug(nx, nz)
+		if not (nr > D.scena.arena_r - P.promien * 0.6 and nr > dlug(p.x, p.z)) then
+			p.x, p.z = nx, nz
+		end
+		p.kier = math.atan2(p.ster.x, p.ster.z)
+	end
+end
+
+-- pet na tronie (złotym szczycie): najbliżej środka spośród stojących na szczycie
+function L.naTronie(S)
+	local best, br = nil, S.D.strefy[1].r
+	for _, p in S.pety do
+		if p.faza == "walka" and not p.boss and (p.y or 0) <= 0.5 then
+			local r = dlug(p.x, p.z)
+			if r <= br then
+				best, br = p, r
+			end
+		end
+	end
+	return best
+end
+
+------------------------------------------------------------------ zderzenia (przekazanie pędu jak kule)
+-- a i b stykają się wzdłuż n (od a do b): gdy zbliżają się szybciej niż 2 st/s — odbicie sprężyste według mas
+-- (współczynnik odbicie); ślizgający się po ciosie pet przekazuje pęd i zaliczenie wybicia temu, w którego uderzył
+function L.zderzenie(S, a, b, nx: number, nz: number, zd)
+	local W = S.D.walka
+	local vrel = (b.kx - a.kx) * nx + (b.kz - a.kz) * nz
+	if vrel >= -2 then
+		return false
+	end
+	local ma = if a.skor > S.czas then 1e6 else a.P.waga
+	local mb = if b.skor > S.czas then 1e6 else b.P.waga
+	local j = -(1 + W.odbicie) * vrel / (1 / ma + 1 / mb)
+	a.kx -= j / ma * nx
+	a.kz -= j / ma * nz
+	b.kx += j / mb * nx
+	b.kz += j / mb * nz
+	-- kto pchał (szybszy wzdłuż n) przekazuje drugiemu swojego ostatniego atakującego
+	local pchal, pchniety = if a.kx * nx + a.kz * nz > -(b.kx * nx + b.kz * nz) then a else b, nil
+	pchniety = if pchal == a then b else a
+	local o = pchal.ostatni
+	if o and S.czas - o.t <= W.ostatni_cios_s and o.id ~= pchniety.id then
+		pchniety.ostatni = { wl = o.wl, id = o.id, t = S.czas, dziki = o.dziki }
+	end
+	pchniety.osz = math.max(pchniety.osz, S.czas + 0.25)
+	if math.abs(j) > 6 then
+		table.insert(zd, { t = "zderzenie", a = a.id, b = b.id, x = (a.x + b.x) / 2, z = (a.z + b.z) / 2, j = math.abs(j) })
+	end
+	return true
+end
+
 ------------------------------------------------------------------ krok walki
 local function wybicie(S, p, rodzaj: string, zdarzenia)
 	local D = S.D
@@ -556,6 +683,11 @@ local function wybicie(S, p, rodzaj: string, zdarzenia)
 	local nagrody = nil
 	if p.boss then
 		nagrody = L.nagrodyBossa(D, S.bossUdzial)
+		if p.zloty then
+			for wl, ile in nagrody do
+				nagrody[wl] = ile + D.zloty.premia
+			end
+		end
 		S.bossUdzial = {}
 	elseif o and o.wl and o.wl > 0 and not o.dziki and o.wl ~= p.wl then
 		premia = if p.zloty then D.zloty.premia else (if p.dziki then D.zloto.premia_dzikiego else D.zloto.premia_wybicia) * p.P.stopien
@@ -569,7 +701,7 @@ local function wybicie(S, p, rodzaj: string, zdarzenia)
 		S.nagroda = 0
 	end
 	table.insert(zdarzenia, {
-		t = rodzaj, id = p.id, nr = p.nr, wl = p.wl, dziki = p.dziki, x = p.x, z = p.z, kx = p.kx, kz = p.kz,
+		t = rodzaj, id = p.id, nr = p.nr, wl = p.wl, dziki = p.dziki, x = p.x, z = p.z, kx = p.kx, kz = p.kz, y = p.y or 0, vy = p.vy or 0,
 		przez = if o and not o.dziki then o.wl else 0, przezId = if o then o.id else 0, premia = premia, nagroda = nagroda,
 		krol = byl_krol, boss = p.boss == true, zloty = p.zloty == true, nagrody = nagrody,
 	})
@@ -590,11 +722,12 @@ function L.krok(S, dt: number)
 				if q ~= p and q.faza == "walka" and not (q.akcja and q.akcja.typ == "skok") then
 					local dx, dz = q.x - p.x, q.z - p.z
 					local d = dlug(dx, dz)
-					if d <= W.ladowanie_r + q.P.promien then
+					local lr = if p.boss then D.boss.fala_r else W.ladowanie_r * (p.P.rozmiar or 1)
+					if d <= lr + q.P.promien then
 						if d < 1e-6 then
 							dx, dz, d = 1, 0, 1
 						end
-						L.cios(S, p, q, 0, W.ladowanie_sila, dx / d, dz / d, false, zd)
+						L.cios(S, p, q, 0, if p.boss then D.boss.fala_sila else W.ladowanie_sila, dx / d, dz / d, false, zd)
 					end
 				end
 			end
@@ -606,18 +739,22 @@ function L.krok(S, dt: number)
 		if p.faza == "walka" then
 			p.cd -= dt
 			local zajety = krokAkcji(S, p, dt, zd)
-			if p.boss or p.zloty then
+			if (p.y or 0) > 0 then
+				zajety = true
+			elseif p.boss or p.zloty then
 				L.krokSpecjalny(S, p, dt, zd)
 				zajety = true
 			end
-			if not zajety and p.akcja == nil and p.ogl <= t and p.lod <= t and p.osz <= t then
+			if not zajety and p.akcja == nil and p.ogl <= t and p.lod <= t and p.osz <= t and L.reczny(S, p) then
+				L.krokReczny(S, p, dt, zd)
+			elseif not zajety and p.akcja == nil and p.ogl <= t and p.lod <= t and p.osz <= t then
 				local P = p.P
 				local q, d = najblizszy(S, p, nil)
 				local cel = nil
 				if q and d - P.promien - q.P.promien <= W.zasieg_widzenia then
 					cel = q
 				end
-				if cel and d <= P.promien + cel.P.promien + W.zasieg_ciosu then
+				if cel and d <= P.promien + cel.P.promien + W.zasieg_ciosu * (P.rozmiar or 1) then
 					p.kier = math.atan2(cel.x - p.x, cel.z - p.z)
 					if p.cd <= 0 then
 						local dx, dz = (cel.x - p.x) / math.max(d, 1e-6), (cel.z - p.z) / math.max(d, 1e-6)
@@ -648,7 +785,28 @@ function L.krok(S, dt: number)
 	end
 	-- odrzut i tarcie
 	for _, p in S.pety do
-		if p.faza == "walka" and not (p.akcja and p.akcja.typ ~= "rykoszet") then
+		if p.faza == "walka" and (p.y or 0) > 0 then
+			-- lot: bez tarcia (lekki opór powietrza), grawitacja, odbicie przy lądowaniu
+			p.x += p.kx * dt
+			p.z += p.kz * dt
+			local o = math.max(0, 1 - W.opor_powietrza * dt)
+			p.kx *= o
+			p.kz *= o
+			p.vy -= W.grawitacja * dt
+			p.y += p.vy * dt
+			if p.y <= 0 then
+				p.y = 0
+				if p.vy < -18 then
+					p.vy = -p.vy * 0.3
+					p.y = 0.05
+					p.kx *= 0.6
+					p.kz *= 0.6
+				else
+					p.vy = 0
+				end
+				table.insert(zd, { t = "upadek", id = p.id, x = p.x, z = p.z })
+			end
+		elseif p.faza == "walka" and not (p.akcja and p.akcja.typ ~= "rykoszet") then
 			if p.kx ~= 0 or p.kz ~= 0 then
 				p.x += p.kx * dt
 				p.z += p.kz * dt
@@ -669,7 +827,7 @@ function L.krok(S, dt: number)
 		for j = i + 1, n do
 			local b = S.pety[j]
 			if a.faza == "walka" and b.faza == "walka" and not (a.akcja and a.akcja.typ == "skok")
-				and not (b.akcja and b.akcja.typ == "skok") then
+				and not (b.akcja and b.akcja.typ == "skok") and (a.y or 0) <= 0.5 and (b.y or 0) <= 0.5 then
 				local dx, dz = b.x - a.x, b.z - a.z
 				local d = dlug(dx, dz)
 				local m = a.P.promien + b.P.promien
@@ -688,6 +846,7 @@ function L.krok(S, dt: number)
 						b.x += dx / d * nak * ub * s
 						b.z += dz / d * nak * ub * s
 					end
+					L.zderzenie(S, a, b, dx / d, dz / d, zd)
 				end
 			end
 		end
@@ -780,8 +939,13 @@ end
 -- { [wl] = złoto }; ustawia p.zl (do napisu „+G/s”)
 function L.zlotoTick(S)
 	local w = {}
+	local tron = L.naTronie(S)
 	for _, p in S.pety do
 		p.zl = L.zlotoPeta(S.D, p)
+		if p.zl > 0 and p ~= tron and dlug(p.x, p.z) <= S.D.strefy[1].r then
+			-- na szczycie mieści się jeden: pozostali liczą się jak drugi stopień
+			p.zl = S.D.zloto.baza * S.D.strefy[2].mnoznik * p.P.stopien
+		end
 		if p.zl > 0 then
 			w[p.wl] = (w[p.wl] or 0) + p.zl
 		end
@@ -869,22 +1033,25 @@ function L.chroniony(S, p): boolean
 end
 
 -- boss: wpis jak pet (P), ląduje w środku z nieba
-function L.dodajBossa(S, nrModelu: number, graczy: number)
+function L.dodajBossa(S, nrModelu: number, graczy: number, zloty: boolean?)
 	local D = S.D
 	local B = D.boss
-	local P = { id = "boss", nazwa = B.modele[nrModelu].nazwa, stopien = B.stopien, waga = B.waga, zycie = B.zycie + B.na_gracza * graczy,
-		obrazenia = 0, odrzut = 0, predkosc = 2, przerwa = 99, promien = B.promien, wysokosc = B.wysokosc,
-		wzorzec = B.modele[nrModelu].wzorzec, umiejetnosc = { typ = "fala", nazwa = "STOMP", r = B.fala_r, sila = B.fala_sila,
-			obrazenia = B.fala_obrazenia } }
-	local p = L.dodajPeta(S, 1, 0, true, 0, 80, 0, 0, 0, nil)
+	local P = { id = "boss", nazwa = if zloty then D.zloty.nazwa else B.modele[nrModelu].nazwa, stopien = B.stopien, waga = B.waga,
+		zycie = B.zycie + B.na_gracza * graczy, obrazenia = 0, odrzut = 0, predkosc = 2, przerwa = 99, promien = B.promien,
+		wysokosc = B.wysokosc, rozmiar = 4, wzorzec = B.modele[nrModelu].wzorzec, umiejetnosc = { typ = "fala", nazwa = "STOMP",
+			r = B.fala_r, sila = B.fala_sila, obrazenia = B.fala_obrazenia } }
+	-- wejście bramą: lot po ziemi od bramy do środka
+	local Bm = D.brama or { x = 0, z = 80 }
+	local p = L.dodajPeta(S, 1, 0, true, Bm.x, 0, Bm.z, 0, 0, nil)
 	p.P = P
 	p.hp, p.hpMax = P.zycie, P.zycie
 	p.boss = true
+	p.zloty = zloty == true
 	p.nrModelu = nrModelu
-	p.ladT = S.czas + 1.4
-	p.lotCzas = 1.4
+	p.ladT = S.czas + B.wejscie_s
+	p.lotCzas = B.wejscie_s
 	p.koniecT = S.czas + B.czas_s
-	p.falaT = S.czas + 1.4 + B.fala_co_s
+	p.falaT = S.czas + B.wejscie_s + B.fala_co_s
 	S.bossUdzial = {}
 	return p
 end
@@ -1044,7 +1211,10 @@ function L.profilNowy(D)
 		table.insert(druzyna, id)
 	end
 	return { v = D.gracz.wersja_profilu, zloto = 0, pety = pety, druzyna = druzyna, ksiega = ksiega, xp = 0,
-		samouczek = { rzut = false, jajko = false }, wybicia = 0, rzuty = 0, jajek = 0, krolS = 0 }
+		samouczek = { rzut = false, jajko = false }, wybicia = 0, rzuty = 0, jajek = 0, krolS = 0,
+		-- pod następny etap (jeszcze nieużywane w grze): odmiany złapanych petów { [id] = { [odmiana] = ile } } i jajka
+		-- wylęgające się w czasie (także poza grą) { { nr = jajko, koniec = czas os.time() } }
+		odmiany = {}, wylegarnia = {} }
 end
 
 local function liczba(v, domyslna: number, maks: number): number
@@ -1127,6 +1297,29 @@ function L.profil(D, rekord)
 	if type(rekord.samouczek) == "table" then
 		p.samouczek = { rzut = rekord.samouczek.rzut == true, jajko = rekord.samouczek.jajko == true }
 	end
+	if type(rekord.odmiany) == "table" then
+		for id, o in rekord.odmiany do
+			if type(id) == "string" and L.nrPeta(D, id) and type(o) == "table" then
+				local w = {}
+				for nazwa, ile in o do
+					if type(nazwa) == "string" and #nazwa <= 24 and type(ile) == "number" and ile >= 1 and ile <= 1e6 then
+						w[nazwa] = math.floor(ile)
+					end
+				end
+				if next(w) ~= nil then
+					p.odmiany[id] = w
+				end
+			end
+		end
+	end
+	if type(rekord.wylegarnia) == "table" then
+		for _, j in rekord.wylegarnia do
+			if type(j) == "table" and type(j.nr) == "number" and D.jajka[j.nr] and type(j.koniec) == "number"
+				and j.koniec == j.koniec and #p.wylegarnia < 8 then
+				table.insert(p.wylegarnia, { nr = j.nr, koniec = j.koniec })
+			end
+		end
+	end
 	return p
 end
 
@@ -1144,7 +1337,7 @@ function L.doZapisu(D, p)
 	end
 	return { v = D.gracz.wersja_profilu, zloto = p.zloto, pety = pety, druzyna = dr, ksiega = ksiega, xp = p.xp,
 		samouczek = { rzut = p.samouczek.rzut, jajko = p.samouczek.jajko }, wybicia = p.wybicia, rzuty = p.rzuty, jajek = p.jajek,
-		krolS = p.krolS }
+		krolS = p.krolS, odmiany = table.clone(p.odmiany or {}), wylegarnia = table.clone(p.wylegarnia or {}) }
 end
 
 -- nowa drużyna z listy id: tylko posiadane, bez powtórzeń, 1..druzyna_maks
