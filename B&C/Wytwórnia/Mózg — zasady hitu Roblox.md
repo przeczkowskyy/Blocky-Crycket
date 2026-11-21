@@ -53,5 +53,27 @@ Każdy rosnący hit ma rzeczy, których BONK nie ma ([[Rozbiór hitów — listo
 | 19 | **Boss jako wydarzenie dla całego serwera**, z zapowiedzią. | Czy gracze czekają na boss razem? |
 | 20 | **Łącz dwa rosnące trendy z naszą fantazją** zamiast kopiować lidera (kopie liderów umierają w miesiąc). | Jakie dwa trendy łączy pomysł i co jest nasze? |
 
+## Algorytm 2026 (film twórcy, notatka z 21.11)
+Twierdzenia autora filmu, do potwierdzenia w dokumentacji przed startem — pełna notatka: [[Algorytm Roblox 2026 — nowe zasady]].
+| # | Zasada | Test |
+|---|---|---|
+| 21 | **Liczy się 28 dni w trzech oknach** (dzień 1, dni 2–7, dni 8–28), nie pierwszy skok. | Czy mamy zaplanowany „dzień ósmy” — wydarzenie albo nowość tydzień po starcie? |
+| 22 | **Ikona obiecuje dokładnie pierwsze 30 sekund** — szybkie wyjścia po pierwszym wejściu karzą. | Czy to, co na ikonie, gracz robi w pierwszej pół minucie? |
+| 23 | **Gra lepsza ze znajomymi** dostaje więcej (dni wspólnej gry). | Czy jest powód, żeby wejść razem? |
+| 24 | **Wideo z prawdziwej rozgrywki na kafelku** (bez zwiastuna, lektora i podrasowanej grafiki). | Czy mamy 30 sekund czystej rozgrywki, która sama się broni? |
+| 25 | **Próg dla graczy poniżej 16 lat:** bez odpowiedniej liczby mocno zaangażowanych graczy dzieci gry nie zobaczą. | Ilu zaangażowanych graczy mamy i jaki jest aktualny próg? |
+| 26 | **Kopie są zdejmowane i gasną.** | Co w naszej grze jest własne? |
+
+## Nowa era 2026: tempo i wyróżnienie się (drugi film, notatka z 21.11)
+Tezy autora z naszą oceną: [[Nowa era Roblox 2026 — pięć zmian]].
+| # | Zasada | Test |
+|---|---|---|
+| 27 | **Budowa jest tania, wyróżnienie się drogie** — przewagą jest wiedza, co budować i jak to pokazać. | Czym nasza gra różni się na pierwszy rzut oka od trzech podobnych? |
+| 28 | **Okno trendu trwa tygodnie** — połowa dużych gier ma mniej niż 3 miesiące; spóźnienie o miesiąc zmienia wynik. | Ile dni minie od pomysłu do pierwszych prawdziwych graczy? |
+| 29 | **Wybór pomysłu:** co rośnie najszybciej w tym tygodniu → trzy nowe gry na tym samym pomyśle → wersja, której nikt nie zrobił. | Czy potrafimy wskazać te trzy gry i nasz zwrot? |
+| 30 | **Nie dopracowuj, zanim ktoś zagra;** nie kupuj reklam, zanim gracze zostają; nie kopiuj zeszłorocznego hitu. | Czy w grę grał już ktoś spoza zespołu? |
+| 31 | **Buduj też dla starszych** (najszybciej rosnąca i najwięcej wydająca grupa): jasno i prosto na wejściu, głębia, do której się wraca. | Co w grze zostaje ciekawe po tygodniu dla nastolatka? |
+| 32 | **Gra jako marka:** rozpoznawalne postacie i świat, nie tylko mechanika. | Czy nasze postacie da się rozpoznać poza grą? |
+
 ## Powiązane
 - [[00 Wytwórnia pomysłów]] · [[Karta oceny pomysłu]] · [[Lekcje z prototypów]] · [[Radar trendów]]

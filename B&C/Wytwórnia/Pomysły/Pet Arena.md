@@ -71,6 +71,12 @@ Jajka, trening, wydarzenia, kolekcja petów (do dopracowania — niżej).
 - **Co nadal ciągnie w dół:** powód powrotu (2/3) — potrzebne wydarzenia o stałych porach i nowy pet co tydzień; czytelność 8 petów na ekranie telefonu; wątpliwość Pawła, czy ktoś w to dziś gra — rozstrzygnie granie, nie karta.
 - Projekt budowy: [[Pet Arena — projekt prototypu]] (D-118).
 
+### Po pierwszym podglądzie Karola (sesja 21.11)
+- **Karol jest „bardzo niezadowolony” z wyglądu prototypu** — pomysłu nie podważa. Chce: areny ok. 4 razy większej i zamkniętej, wyraźnie różnej wielkości petów, wybicia w powietrze po krytycznym ciosie, wyklucia z konfetti i gładszych jajek (propozycje D-119–D-122; [[Sesja główna 2026-11-21 — zapis ustaleń]]).
+- **Zgadzam się z poprawką co do areny:** większa — tak (tłok był na liście strojenia), ale przy całej arenie w kadrze telefonu pety wyjdą dwa razy mniejsze, a walki rzadsze; sprawdzić dwie wielkości i zmierzyć czas do pierwszego wybicia.
+- **Styl: jaskrawa, zamknięta arena zamiast lochu** (pytanie 78) — gra dla każdej grupy wiekowej i bez skojarzeń z walkami zwierząt. Zmienię zdanie, jeśli dzieci wybiorą ciemną wersję ze zrzutów.
+- **Wciąż bez danych:** nikt jeszcze nie grał 10 minut; uwagi dotyczą wyglądu z podglądu, a nie tego, czy chce się dalej wrzucać.
+
 ## Najtańszy test
 2–3 dni na naszych zasobach (silnik walki z umiejętnościami i statusami, modele potworów, jajka i pety z BONK, lot i nokauty): jedna arena, 6 petów z jedną umiejętnością i wagą, wrzucanie w dowolnej chwili z celowaniem, minuta przerwy po przegranej, boty dopełniające arenę, boss co 3 min. Granie we dwóch i z dziećmi znajomych: czy po 10 min dalej wrzucają, czy rozmawiają o tym, którego peta wrzucić, ile razy się śmieją.
 

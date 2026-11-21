@@ -42,6 +42,9 @@ Gra Roblox: **RPG / Incremental / Tycoon / Pet Collector**. Komiksowy humor w st
 ## 🏭 Wytwórnia pomysłów (propozycja, D-115)
 - [[00 Wytwórnia pomysłów]] — mózg studia: [[Mózg — zasady hitu Roblox]] · [[Karta oceny pomysłu]] · [[Radar trendów]] · [[Lekcje z prototypów]] · gry i pomysły w `Wytwórnia/Pomysły/`
 
+## 📣 Marketing (propozycja)
+- [[00 Marketing]] — konta, klipy, twórcy, reklama; osobna sesja: `/marketing`
+
 ## 📋 Produkcja
 - [[Roadmapa]] — obecnie **Faza 1 — Frontend**
 - [[Zadania]]

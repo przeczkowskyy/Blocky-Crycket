@@ -7,7 +7,13 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Pet Arena, przebudowa po uwagach Karola z sesji 21.11: arena ok. 4 razy większa, pety różnej wielkości według wagi, przepychanie i wybicia ponad trybuny, jasne koloseum, wzgórze króla ze złotem, nowe wyklucie, złoty boss; demo wideo po etapie ([[Pet Arena — projekt prototypu]]) · agent: Karol · #wysoki
+- [ ] Pet Arena: po przebudowie prywatna wersja testowa i granie ludzi w tym tygodniu (pytanie 77); przed startem publicznym sprawdzić, czy są trzy nowe rosnące gry na pomyśle „pety walczą na arenie” i czym nasza się różni, oraz potwierdzić w dokumentacji Roblox próg zaangażowanych graczy dla osób poniżej 16 lat i zasady wideo na kafelku ([[Nowa era Roblox 2026 — pięć zmian]], [[Algorytm Roblox 2026 — nowe zasady]]) · #wysoki
+- [ ] Wytwórnia: cotygodniowy radar — co rośnie najszybciej w tym tygodniu, także wśród małych gier (propozycja agenta po notatce z 21.11; ok. 150–200 tys. tokenów na odświeżenie) — do decyzji Karola · #średni
+- [ ] Marketing: osobna sesja (`/marketing`) — wersja konta klipów (pytanie 80), obsada wirtualnych streamerów, wycena klipu w kredytach ([[00 Marketing]]) · Karol · #średni
 - [ ] Pet Arena (D-118): zagrać 10 minut w Studio (Play w pliku `PetArena.rbxlx`) i powiedzieć, co poprawić — czy chce się dalej wrzucać, czy czeka się z umiejętnością, czy miejsce rzutu ma znaczenie; potem decyzja o prywatnej wersji testowej (pytanie 77) i strojenie z listy w [[Pet Arena — projekt prototypu]] · Karol, Paweł · #wysoki
+- [ ] Pet Arena: poprawki po uwagach Karola z sesji 21.11 — arena z ok. 4 razy większym miejscem i zamknięta, wyraźnie różna wielkość petów, krytyk wybija w powietrze, złoty boss i więcej statusów, wyklucie z konfetti i gładsze jajka, efektowniejsze umiejętności, nowa strefa złota; interfejs na zaślepkach (propozycje D-119–D-123, [[Sesja główna 2026-11-21 — zapis ustaleń]]); styl sceny po odpowiedzi na pytanie 78 · Karol · #wysoki
+- [ ] Paweł: przyciski i interfejs Pet Areny w Higgsfield i Figmie (propozycja D-123); do tego czasu w grze stoją zaślepki · Paweł · #średni
 - [ ] Paweł: ocenić kartą w panelu Pet Arenę i Super Kitty Brawlers (Karol ocenił Pet Arenę na 28/30) i potwierdzić albo zmienić D-116–D-118 · Paweł · #wysoki
 - [ ] Paweł: potwierdzić albo zmienić D-114 (prawo agenta do sprzeciwu) i D-115 (Wytwórnia pomysłów) · Paweł · #średni
 - [ ] Paweł: przełączyć repozytorium na prywatne w ustawieniach GitHub (D-044) — działanie właściciela, po zatwierdzeniu decyzji; wtedy lustro panelu na GitHub Pages odpada · #wysoki
@@ -111,6 +117,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Włączyć telemetrię gry (decyzja D-023): skrypt startowy z `Telemetria.start()`, publikacja, klucz Open Cloud tylko do odczytu wpisany lokalnie ([[Telemetria gry]]) · #średni
 - [x] Wpisać do skilla `/asset` model Nano Banana 2.1 i przepisać prompty [[Mapa teleportacji]] na Glossy Ink (2026-11-14; szablony przepiął Karol 13.11, D-027) · #średni
 - [ ] [[Panel zespołu|Panel]]: lustro tylko-do-odczytu na GitHub Pages (właściciel repo włącza Pages → Source: GitHub Actions, potem uruchamia workflow „Panel — lustro”) · #niski
+- [ ] [[Panel zespołu|Panel]]: podgląd tylko wybranej gry — po wyborze gry zakładka podglądu ma nie pokazywać starych gier; Karol na sesji 21.11 mówił o osobnym serwerze lokalnym na grę i dodał „nieistotne teraz” ([[Sesja główna 2026-11-21 — zapis ustaleń]]) · #niski
 
 ## 🎨 Assety do stworzenia
 - [x] Rycerz (3D) · [x] Kot-Mag (3D) · [ ] Karczmarz (3D)

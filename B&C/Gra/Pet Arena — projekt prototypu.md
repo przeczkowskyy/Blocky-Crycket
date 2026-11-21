@@ -81,7 +81,17 @@ Czy po 10 minutach dalej wrzucają; czy mówią o tym, którego peta i gdzie wrz
 - Złoto z wydarzeń dla samotnego gracza (cała pula bossa trafia do jednej osoby).
 - Braki: muzyka, zamach rzutu widoczny dla innych graczy, prawdziwy magazyn zapisu (wymaga publikacji), próba na prawdziwym telefonie i padzie, ikona i miniatury.
 
+## Uwagi Karola po pierwszym podglądzie (sesja 21.11) — propozycje
+Karol jest z pierwszego podglądu „bardzo niezadowolony”. Nic z tej listy nie jest zatwierdzone; zapis: [[Sesja główna 2026-11-21 — zapis ustaleń]].
+- **Arena** ok. 4 razy większa (miejsce na ok. 10 petów, gra taktyczna) i zamknięta; strefa zbierania złota do poprawy — D-119. Agent: sprawdzić dwie wielkości, bo przy całej arenie w kadrze pety wyjdą mniejsze, a wybicia rzadsze.
+- **Wielkość petów** wyraźnie różna: duży pet duży, mały mały — D-120.
+- **Wybicia:** krytyczny cios wyrzuca peta w powietrze jak w BONK, lepsze wypychanie, więcej statusów, boss cały złoty; ataki do dopracowania później — D-121.
+- **Jajka i wyklucie:** jajka gładsze i podobne do jajek, konfetti i ozdobniki, efektowne umiejętności — D-122.
+- **Interfejs** robi Paweł (Higgsfield, Figma); w grze na razie zaślepki — D-123.
+- **Styl sceny** (loch czy jaskrawe kolory) — bez wyboru, pytanie 78 w [[Pytania otwarte]].
+
 ## Do ustalenia
+- Styl sceny: loch czy jaskrawa, zamknięta arena (pytanie 78).
 - Nazwa gry (robocza „Pet Arena”).
 - Czas odpoczynku peta (ok. minuty) i liczba petów na arenie (8) — po graniu.
 - Publikacja jako prywatna wersja testowa — decyzja ludzi.

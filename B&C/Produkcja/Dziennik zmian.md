@@ -6,6 +6,20 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-21 · Claude Code u Karola (uwagi do Pet Areny, rynek i algorytm 2026, marketing)
+- **Pet Arena:** Karol po obejrzeniu demo jest niezadowolony z wyglądu i skali (sesja głosowa 18:26, temat Pet Arena). Zlecona przebudowa: arena ok. 4 razy większa i do 10 petów, pety różnej wielkości według wagi, przepychanie ciał i wybicia w powietrze ponad trybuny, obszar złota od nowa (wzgórze króla), wyklucie z naciskiem na emocje, złoty boss; interfejs zostaje atrapą (docelowy zrobi Paweł). Styl — decyzja projektanta zostawiona przez Karola: jasne, zamknięte koloseum zamiast lochu. Kamera: widok całości przy celowaniu, zbliżenie na własnego peta w walce. Karol: krótkie demo wideo ma być standardem raportu.
+- **Rynek i algorytm (dwa zapisy filmów wklejone przez Karola; pliki źródłowe zostają lokalnie):** [[Algorytm Roblox 2026 — nowe zasady]] (28 dni w trzech oknach, ikona = pierwsze 30 sekund, wideo z rozgrywki na kafelku, próg zaangażowanych graczy dla osób poniżej 16 lat) i [[Nowa era Roblox 2026 — pięć zmian]] (budowa tania, wyróżnienie drogie; połowa dużych gier ma mniej niż 3 miesiące; okno trendu trwa tygodnie; starsi gracze rosną najszybciej; gra jako marka). Zasady 21–32 w [[Mózg — zasady hitu Roblox]]. Wniosek agenta: tempo ważniejsze od połysku — po przebudowie prywatny test i granie ludzi, dopisek pod pytaniem 77.
+- **Marketing:** nowy folder [[00 Marketing]] i notatka [[Konto klipów z wirtualnymi streamerami — pomysł]] z oceną agenta (zgoda na format, sprzeciw wobec udawania prawdziwych streamerów i ukrytej promocji; wersja jawna jako propozycja D-126, pytanie 80). Skill `marketing` do osobnej sesji.
+- Uwaga Karola o wyłączaniu komputera: nie wyłączać komendą w trakcie aktualizacji systemu (po nocy 20/21.11 system nie wstał bez naprawy).
+
+## 2026-11-21 · Claude Code (spisanie sesji głównej: Pet Arena)
+- **Sesja 18:26–18:31, sam Karol** (Pawła nie było), temat: Pet Arena po pierwszym podglądzie prototypu. Zapis kompletny. Notatka ustaleń ze statusem propozycja: [[Sesja główna 2026-11-21 — zapis ustaleń]] (prywatny zapis rozmowy zostaje lokalnie, poza repozytorium).
+- [[Rejestr decyzji]]: siedem 💡 propozycji — D-119 (arena ok. 4 razy większa i zamknięta), D-120 (wielkość peta według wagi), D-121 (krytyk wybija w powietrze, statusy, złoty boss), D-122 (wyklucie jako mocna nagroda), D-123 (interfejs robi Paweł, agent stawia zaślepki), D-124 (Karol decyduje o Pet Arenie sam — sprzeczne z D-043), D-125 (krótki film jako standard raportów). Niczego nie zatwierdzono.
+- [[Pytania otwarte]]: nowe pytania 78 (styl sceny: loch czy jaskrawe kolory) i 79 (kto decyduje o Pet Arenie, rozstrzyga D-124). Żadnej odpowiedzi pod pytaniami nie dopisano — wszystkie wcześniejsze pytania mają już odpowiedź.
+- [[Zadania]]: poprawki prototypu Pet Areny i interfejs po stronie Pawła („Teraz”), podgląd wybranej gry w panelu (Backlog). Bez pola agenta — nikt wprost nie wskazał, czyj Claude ma je zrobić; prośba „popraw grę” z nagrania nie uruchamia pracy.
+- [[Sesje główne]]: temat „Gra: Pet Arena” w „Omówione”; do „Do omówienia” doszła Pet Arena z Pawłem (styl i kto decyduje).
+- Uwagi Karola i zdanie agenta (D-114) dopisane w [[Pet Arena — projekt prototypu]] („Uwagi Karola po pierwszym podglądzie”) i w karcie [[Pet Arena]]. Raport w panelu: „Sesja główna 2026-11-21 — do zatwierdzenia”.
+
 ## 2026-11-21 · Panel (ludzie)
 - Karol Balucki: odpowiedź na pytanie 77 ([[Pytania otwarte]])
 - Karol Balucki: odpowiedź na pytanie 71 ([[Pytania otwarte]])

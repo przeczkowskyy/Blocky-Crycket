@@ -723,6 +723,33 @@ Szczegóły: Źródło: [[Sesja główna 2026-11-20 — zapis ustaleń]] (18:52 
 - Publicznie nic nie idzie bez osobnej decyzji.
 
 Szczegóły: Publikacja prywatna sprawdza też prawdziwy zapis postępu i telefon. Kroki są w `swiat/pet_arena/README.md`. Projekt i lista rzeczy do strojenia: [[Pet Arena — projekt prototypu]]; karta: [[Pet Arena]]. Przeniesienie do grupy przed startem publicznym — pytanie 31.
+Dopisek z 2026-11-21: po notatce [[Nowa era Roblox 2026 — pięć zmian]] agent poleca (a) zaraz po przebudowie z 21.11 — okno trendu trwa tygodnie, a dopracowywanie gry, zanim zagra w nią ktoś spoza zespołu, to błąd, przed którym film ostrzega.
 **Odpowiedź:**
 - Karol Balucki (2026-11-21): tak
+
+## 78. Pet Arena: loch czy jaskrawa, zamknięta arena?
+- Karol na sesji 21.11 myślał o lochu albo więzieniu, ale w grę będą grać też dzieci, a one wolą jaskrawe kolory; nie wybrał.
+- Pewne jest tylko, że arena ma być zamkniętą przestrzenią.
+- Do wyboru: (a) loch albo więzienie; (b) zamknięta arena w jaskrawych kolorach, np. stadion albo koloseum z zabawek; (c) agent pokazuje po jednym zrzucie obu wersji i wtedy wybór.
+
+Szczegóły: [[Sesja główna 2026-11-21 — zapis ustaleń]] (18:28–18:29). Karol dodał, że liczy się tu z cudzym zdaniem — z zapisu nie wynika, czy mówił do agenta, czy do Pawła. Zdanie agenta (D-114): (b) — gra ma być dla każdej grupy wiekowej (D-022), a ciemna klatka z bijącymi się zwierzakami budzi skojarzenie z walkami zwierząt, którego mieliśmy unikać ([[Ring Potworów]]); zmienię zdanie, jeśli dzieci znajomych wybiorą ciemną wersję ze zrzutów. Od odpowiedzi zależy przebudowa sceny (propozycja D-119).
+**Odpowiedź:**
+
+## 79. Pet Arena: czy Karol decyduje o niej sam?
+- Karol 21.11, sam na sesji: agent może wykonywać jego polecenia o Pet Arenie bez wiedzy Pawła, bo to jego pomysł i projekt.
+- D-043, ustalona przez obu 14.11, mówi: jedna osoba decyduje, druga potwierdza.
+- Do wyboru: (a) wyjątek — przy Pet Arenie wystarcza podpis Karola; (b) bez zmian — Karol prowadzi grę, a Paweł potwierdza albo cofa jak dotąd.
+
+Szczegóły: [[Sesja główna 2026-11-21 — zapis ustaleń]] (18:31). Pawła nie było na sesji; D-118 (budowa Pet Areny) dalej czeka na jego potwierdzenie, a 20.11 miał wątpliwość co do pomysłu. Dla pracy agenta oba warianty znaczą to samo: zlecenia Karola wykonuje od razu, na roboczych ustaleniach z jednym podpisem. Różnica jest tylko taka, czy Paweł może decyzję o Pet Arenie cofnąć. Zasadę podpisów zmieniają obaj, więc najlepiej, żeby odpowiedział tu Paweł.
+Rozstrzyga: D-124
+**Odpowiedź:**
+
+## 80. Konto klipów z wirtualnymi streamerami: w jakiej wersji?
+- Pomysł Karola (21.11): konto na Instagramie i TikToku, streamerzy z Higgsfield reagują na gry Roblox, w tym naszą.
+- Agent pomoże w wersji jawnej: postacie oznaczone jako AI, nasza gra oznaczona jako nasza; w wersji udającej prawdziwych streamerów i ukrywającej promocję — nie (zasady platform, prawo o ukrytej reklamie, widzowie-dzieci).
+- Do wyboru: (a) wersja jawna, próba 15 klipów; (b) odłożyć, aż gra będzie miała dobre powroty; (c) inaczej — jak.
+Rozstrzyga: D-126
+
+Szczegóły: Ocena, zasady i progi próby: [[Konto klipów z wirtualnymi streamerami — pomysł]]; zasady marketingu: [[00 Marketing]]. Koszt klipu w kredytach Higgsfield do wyceny w sesji marketingowej.
+**Odpowiedź:**
 
