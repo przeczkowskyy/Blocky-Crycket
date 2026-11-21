@@ -5,6 +5,9 @@ aktualizacja: 2026-11-20
 ---
 # Radar trendów
 
+> [!note] Nowsza analiza (21.11.2026)
+> [[Trend 2026-11-21 — co rośnie w tym tygodniu]] — co rośnie najszybciej w tym tygodniu (także małe gry), sąsiedzi Pet Areny i stan fali ragdolla. Tabela niżej to migawka z 20.11.
+
 > Migawka z 20.11.2026 (piątek). Liczby to gracze naraz (CCU). Trackery różnią się o 10–40%, dlatego podaję zakres. Główne źródła tego dnia: [RoWatcher, 20.11 16:50 UTC](https://rowatcher.com/roblox-player-count), [Statroblox](https://statroblox.com/leaderboards/playing) (ta sama pora, zmiana 24 h), [rblxdb](https://rblxdb.com/roblox-player-count) (odczyt godzinny, zmiana wobec średniej 7 dni), [GGRecon — najszybciej rosnące, 02.11](https://www.ggrecon.com/articles/fastest-growing-new-roblox-games-november-2026/), [Roblox Newsroom 16.11](https://about.roblox.com/newsroom/2026/11/new-standout-games-to-check-out-on-roblox-this-month). Zmiana 24 h w piątek po południu jest zawyżona (wieczór w USA), więc pojedynczego procentu nie traktuję jako trendu — liczy się kierunek w kilku źródłach.
 
 ## Tło platformy

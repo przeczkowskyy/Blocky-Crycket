@@ -4,8 +4,8 @@ typ: pomysł-gry
 gra: Pet Arena
 etap: prototyp
 zdanie: "Throw your pet into the pit, hold the golden center, knock the others out."
-ocena_agenta: 28
-werdykt_agenta: buduj
+ocena_agenta: 21
+werdykt_agenta: popraw
 ocena_karol: 28
 ocena_pawel: 
 d1: 
@@ -43,16 +43,16 @@ Jajka, trening, wydarzenia, kolekcja petów (do dopracowania — niżej).
 ## Karta oceny
 | Kryterium | Agent | Karol | Paweł |
 |---|---|---|---|
-| Jedno zdanie | 3 | 3 | |
-| Pierwsze 10 sekund | 3 | 3 | |
-| Hak ciekawości | 3 | 3 | |
+| Jedno zdanie | 2 | 3 | |
+| Pierwsze 10 sekund | 2 | 3 | |
+| Hak ciekawości | 2 | 3 | |
 | Głębia | 3 | 3 | |
 | Inni gracze | 3 | 3 | |
-| Pokazanie się | 3 | 2 | |
-| Moment do nagrania | 3 | 3 | |
-| Powód powrotu | 2 | 2 | |
-| Trend | 3 | 3 | |
-| Koszt dla nas | 2 | 3 | |
+| Pokazanie się | 2 | 2 | |
+| Moment do nagrania | 2 | 3 | |
+| Powód powrotu | 1 | 2 | |
+| Trend | 1 | 3 | |
+| Koszt dla nas | 3 | 3 | |
 
 ## Krytyka agenta
 - **Najmocniejszy pomysł z lejka (27/30).** Łączy trzy rosnące trendy: fizyka i wyrzucanie (ragdoll, Cat Battles wyróżnione przez Roblox 16.11), jajka i pety (szczyt list), stanie w miejscu i rzucanie (Throw Food For Animals, nr 3 na platformie). Arena bez kolejki usuwa największą wadę [[Ring Potworów]] (czekanie na rundę).
@@ -76,6 +76,12 @@ Jajka, trening, wydarzenia, kolekcja petów (do dopracowania — niżej).
 - **Zgadzam się z poprawką co do areny:** większa — tak (tłok był na liście strojenia), ale przy całej arenie w kadrze telefonu pety wyjdą dwa razy mniejsze, a walki rzadsze; sprawdzić dwie wielkości i zmierzyć czas do pierwszego wybicia.
 - **Styl: jaskrawa, zamknięta arena zamiast lochu** (pytanie 78) — gra dla każdej grupy wiekowej i bez skojarzeń z walkami zwierząt. Zmienię zdanie, jeśli dzieci wybiorą ciemną wersję ze zrzutów.
 - **Wciąż bez danych:** nikt jeszcze nie grał 10 minut; uwagi dotyczą wyglądu z podglądu, a nie tego, czy chce się dalej wrzucać.
+
+### Aktualizacja 21.11 — 21/30 po analizie trendu
+- **Moje 28/30 z 20.11 było zawyżone.** Dałem 3 za trend i 2 za powód powrotu bez danych. Analiza z 21.11 ([[Pet Arena — ocena wobec trendu 2026-11-21]], [[Trend 2026-11-21 — co rośnie w tym tygodniu]]): nie ma dziś ani jednej nowej, rosnącej gry, w której pety graczy walczą na arenie; trzy poprzednie (Knockout!, Grow a Chicken Fighter, Cat Battles) miały skok do 100–620 tys. graczy naraz i straciły ponad 90% w 4–8 tygodni. Format daje skok, nie daje jutra — a algorytm ocenia 28 dni.
+- **Nowa ocena:** ze sterowaniem 21/30, z samym oglądaniem 20/30. Ciągną w dół Trend (1) i Powód powrotu (1).
+- **Co z tym robimy (kierunek w [[Pet Arena — projekt prototypu]]):** sterowanie petem z autopilotem (pomysł Karola, 21.11), 6 petów zamiast 10 i jeden tron; przed testem dwa zwroty: „Wybijesz, to zabierasz” (łapanie dzikich potworów, rzadkie odmiany) i „Jutro na arenie” (wydarzenia o stałych porach, wylęganie w czasie). Dalszy połysk wstrzymany do grania ludzi spoza zespołu.
+- **Zmienię zdanie, jeśli:** w prywatnym teście gracze po 10 minutach dalej rzucają i następnego dnia sami wracają (ocena wraca do ok. 24–25) albo pojawią się trzy nowe, rosnące gry na tym pomyśle.
 
 ## Najtańszy test
 2–3 dni na naszych zasobach (silnik walki z umiejętnościami i statusami, modele potworów, jajka i pety z BONK, lot i nokauty): jedna arena, 6 petów z jedną umiejętnością i wagą, wrzucanie w dowolnej chwili z celowaniem, minuta przerwy po przegranej, boty dopełniające arenę, boss co 3 min. Granie we dwóch i z dziećmi znajomych: czy po 10 min dalej wrzucają, czy rozmawiają o tym, którego peta wrzucić, ile razy się śmieją.

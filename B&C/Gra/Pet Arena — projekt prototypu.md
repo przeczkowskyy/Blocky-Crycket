@@ -69,6 +69,17 @@ Robuxów, handlu, krain, pałek, czatu głosowego. Koty i kot-policjant z pomys�
 ## Miary testu (granie we dwóch i z dziećmi znajomych)
 Czy po 10 minutach dalej wrzucają; czy mówią o tym, którego peta i gdzie wrzucić; czy czekają z umiejętnością na moment; ile razy się śmieją przy wybiciach; czy pytają „co wypadnie z jajka”.
 
+## Kierunek po analizie trendu (21.11) — propozycja agenta z upoważnienia Karola
+Karol 21.11: gracz ma sterować petem zamiast tylko oglądać; 10 petów to za dużo („potwory stoją na potworach”); „przyspieszamy tempo, żeby wstrzelić się w trend”; decyzję o kształcie zostawił agentowi. Analiza: [[Pet Arena — ocena wobec trendu 2026-11-21]].
+- **Sterowanie z autopilotem:** po rzucie gracz kieruje petem (drążek, WASD, gałka), cios jest automatyczny, umiejętność na przycisk; gdy gracz puści sterowanie, pet walczy sam. Domyślna ścieżka nowego gracza nie wymaga drążka (rzuć → pet walczy → stuknij ABILITY).
+- **6 petów na arenie**, duża arena, ciała się przepychają; **na złotym szczycie mieści się jeden pet** (tron) — czytelna walka o tron zamiast tłoku.
+- **Zwrot 1 — „Wybijesz, to zabierasz”:** dzikie potwory na arenie to zdobycz: wybicie daje szansę na złapanie potwora albo jego jajko; rzadkie odmiany różnią się rozmiarem i kolorem; złapanie ogłaszane na serwerze. Trafia w najszybciej rosnącą pętlę z petami i daje niewiadomą przy każdym wybiciu.
+- **Zwrot 2 — „Jutro na arenie”:** wydarzenia o stałych porach (złoty pet co pełną godzinę, boss wieczorem), jajka wylęgające się także, gdy gracza nie ma, zapowiedziany nowy pet na dzień ósmy.
+- **Zwrot 3 — „Rzuć z kumplem”** (pierwsza aktualizacja): premia za znajomego na arenie, drużyny.
+- **Okno czasowe:** prywatny test z ludźmi spoza zespołu do ok. 28.11, publiczny test (pierwsi gracze to osoby 16+) najpóźniej ok. 5.12; po ok. 15.12 będziemy spóźnieni. Jeśli w prywatnym teście ludzie przestają rzucać po kilku minutach — nie publikować, wracamy do karty.
+- **Wstrzymane do grania ludzi spoza zespołu:** widowiskowe efekty umiejętności i dalsze dopieszczanie wyglądu (rdzeń, skala i wyklucie zostają w przebudowie).
+- **Tytuł roboczy do testu ikon:** „Throw Pets, Take the Throne” albo „Throw & Catch Monsters” (z czasownikiem; „Pet Arena” to rzeczownik podobny do wielu gier).
+
 ## Stan budowy
 - [x] 2026-11-20 (wieczór) — **etap 1, rdzeń:** dół-arena z trybuną, rzut w wybrane miejsce, walka liczona na serwerze w 2D, odrzut rosnący z ubytkiem życia, RING OUT i KO, strefy złota, nagroda za głowę, 12 petów z umiejętnościami, dzikie pety, drużyna z odpoczynkiem. Próba w Studio 17/17.
 - [x] 2026-11-20 (noc) — **etap 2:** większe pety i odkryty środek ekranu, „czucie” ciosu, odpoczynek 30 s, jajka w trzech stopniach (pierwsze darmowe), gwiazdki za kopie, drużyna i Księga, boss i złoty pet z odliczaniem, tarcza słabszego, trener i mata AFK, tablice, zapis, pad, demo wideo. Próba w Studio 28/28, testy 28 OK, 60 klatek na sekundę przy 8 petach. Szczegóły: `swiat/pet_arena/README.md`.

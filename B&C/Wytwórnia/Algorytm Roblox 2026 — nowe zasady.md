@@ -8,6 +8,9 @@ tags: [wytwórnia, rynek, algorytm, badania]
 > [!info] W skrócie
 > Film twórcy, który prowadzi serwis śledzący gry Roblox (ma w tym interes — reklamuje własne narzędzie). Mówi, jak od 2026 roku Roblox poleca gry. Najważniejsze dla nas: **liczy się 28 dni, nie pierwszy skok; gra ma być lepsza ze znajomymi; ikona musi obiecywać dokładnie to, co daje pierwsze 30 sekund; krótkie wideo z prawdziwej gry na kafelku; żeby dotrzeć do dzieci, trzeba przekroczyć próg zaangażowanych graczy.** Część zgadza się z tym, co już mamy z dokumentacji ([[Diagnoza 2026-11-19 — prostota i szansa na hit]]); resztę trzeba potwierdzić przed publicznym startem.
 
+> [!success] Sprawdzone 21.11 w źródłach Roblox
+> Potwierdzone: okno 28 dni w trzech oknach z sześcioma sygnałami (ogłoszone 15.06), liczą się tylko gracze z poleceń, wideo z rozgrywki na kafelkach, formularz „Standout Games”, cel reklamy „zaangażowanie” w becie. **Próg dla graczy poniżej 16 lat: od 19.11.2026 100 mocno zaangażowanych graczy w 60 dni, 25 do utrzymania; liczą się tylko gracze 16+ ze sprawdzonym wiekiem, stażem konta i wydatkami; przyspieszony przegląd kosztuje 50 000 Robux (zwrot po 90 dniach).** Niepotwierdzone jako zasada Roblox: „ikona = pierwsze 30 sekund” (rozsądny wniosek autora), czat znajomych między grami. Szczegóły i linki: [[Algorytm Roblox 2026 — weryfikacja w źródłach]].
+
 ## Co mówi film
 | # | Zmiana | Treść | Zgodność z tym, co wiemy |
 |---|---|---|---|

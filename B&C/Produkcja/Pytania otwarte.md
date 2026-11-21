@@ -724,6 +724,7 @@ Szczegóły: Źródło: [[Sesja główna 2026-11-20 — zapis ustaleń]] (18:52 
 
 Szczegóły: Publikacja prywatna sprawdza też prawdziwy zapis postępu i telefon. Kroki są w `swiat/pet_arena/README.md`. Projekt i lista rzeczy do strojenia: [[Pet Arena — projekt prototypu]]; karta: [[Pet Arena]]. Przeniesienie do grupy przed startem publicznym — pytanie 31.
 Dopisek z 2026-11-21: po notatce [[Nowa era Roblox 2026 — pięć zmian]] agent poleca (a) zaraz po przebudowie z 21.11 — okno trendu trwa tygodnie, a dopracowywanie gry, zanim zagra w nią ktoś spoza zespołu, to błąd, przed którym film ostrzega.
+Dopisek z 2026-11-21 (po analizie trendu): okno jest krótkie — prywatny test z ludźmi spoza zespołu do ok. 28.11 (Roblox pozwala zaprosić do 10 testerów; najlepiej osoby 16+, bo tacy będą pierwszymi publicznymi graczami), publiczny test najpóźniej ok. 5.12. Szczegóły: [[Pet Arena — ocena wobec trendu 2026-11-21]].
 **Odpowiedź:**
 - Karol Balucki (2026-11-21): tak
 

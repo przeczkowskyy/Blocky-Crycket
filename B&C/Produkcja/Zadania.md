@@ -7,6 +7,9 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Pet Arena (D-127): po przebudowie — zwrot „Wybijesz, to zabierasz” (łapanie dzikich potworów, rzadkie odmiany) i „Jutro na arenie” (wydarzenia o stałych porach, wylęganie w czasie) · agent: Karol · #wysoki
+- [ ] Pet Arena: zgoda na prywatną wersję testową (pytanie 77) i zaproszenie do 10 testerów spoza zespołu, najlepiej 16+ — **do ok. 28.11**; publiczny test najpóźniej ok. 5.12 ([[Pet Arena — ocena wobec trendu 2026-11-21]]) · Karol, Paweł · #wysoki
+- [ ] Pet Arena: wybrać tytuł z czasownikiem do testu ikon („Throw Pets, Take the Throne” albo „Throw & Catch Monsters”) · Karol, Paweł · #średni
 - [ ] Pet Arena, przebudowa po uwagach Karola z sesji 21.11: arena ok. 4 razy większa, pety różnej wielkości według wagi, przepychanie i wybicia ponad trybuny, jasne koloseum, wzgórze króla ze złotem, nowe wyklucie, złoty boss; demo wideo po etapie ([[Pet Arena — projekt prototypu]]) · agent: Karol · #wysoki
 - [ ] Pet Arena: po przebudowie prywatna wersja testowa i granie ludzi w tym tygodniu (pytanie 77); przed startem publicznym sprawdzić, czy są trzy nowe rosnące gry na pomyśle „pety walczą na arenie” i czym nasza się różni, oraz potwierdzić w dokumentacji Roblox próg zaangażowanych graczy dla osób poniżej 16 lat i zasady wideo na kafelku ([[Nowa era Roblox 2026 — pięć zmian]], [[Algorytm Roblox 2026 — nowe zasady]]) · #wysoki
 - [ ] Wytwórnia: cotygodniowy radar — co rośnie najszybciej w tym tygodniu, także wśród małych gier (propozycja agenta po notatce z 21.11; ok. 150–200 tys. tokenów na odświeżenie) — do decyzji Karola · #średni
