@@ -57,5 +57,10 @@ Dwie zabawki w jedną noc, wybór po graniu:
 
 Kierunki 3 i 4 zostają w kolejce: trzeci jest droższy (olbrzym), czwarty wymaga wielu graczy naraz. Po wyborze: gra wokół zwycięskiej zabawki w 2–3 dni, prywatny test do ok. 28.11, publiczny najpóźniej ok. 5.12 — jak w [[Pet Arena — ocena wobec trendu 2026-11-21]].
 
+## Stan (22.11, noc)
+- [x] Zabawki „Eat & Evolve” i „Lure a Monster” zbudowane (pakiet `swiat/zabawki/`), w prywatnym miejscu testowym na wejściu ekran wyboru; Pet Arena wyłączona wyłącznikiem. Próba w Studio 18/18, układ sprawdzony na emulacji telefonu, publikacja potwierdzona znacznikiem czasu wersji. Wejście: https://www.roblox.com/games/93704244631419
+- [ ] Karol (i Paweł) grają po dwie minuty w każdą i wybierają tę, przy której chcą „jeszcze raz” — albo żadną (wtedy kierunek 3 albo 4).
+- Ocena agenta budującego (do sprawdzenia w ręku): „Eat & Evolve” bawi bardziej (decyzja w każdej sekundzie, czytelne kolory „zjesz / zje cię”), ale pole bywa puste i boty są proste; „Lure a Monster” ma moment „tak!” przy trafieniu w biegnącego potwora, ale czynność jest spokojna i bliskie strefy szybko się powtarzają.
+
 ## Powiązane
 - [[00 Wytwórnia pomysłów]] · [[Lekcje z prototypów]] · [[Karta oceny pomysłu]] · [[Trend 2026-11-21 — co rośnie w tym tygodniu]] · [[Monster Evolution]] · [[Sleeping Giant Heist]]
