@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-21 · Claude Code u Karola (kierunki z rynku zamiast pomysłów z głowy)
+- **Karol:** „Postaraj się z lepszymi pomysłami i lepszą ich strukturą. Przed pomysłem wychodzimy z analizą rynku… musimy działać szybko.”
+- Nowa notatka [[Kierunki z rynku 2026-11-21]]: cztery kierunki z danych tygodnia w jednej strukturze (fala → czynność w każdej sekundzie → nasz zwrot → dlaczego my → powód powrotu → ryzyko i zabawka → okno); rekomendacja: dwie zabawki („Eat & Evolve”, „Lure a Monster”). [[00 Wytwórnia pomysłów]]: kolejność „rynek → czynność → zabawka → gra”; szablon „Pomysł gry” zaczyna się od fali na rynku; dopisek pod pytaniem 81.
+
 ## 2026-11-21 · Claude Code u Karola (Pet Arena po graniu: zalecenie zakończenia, propozycja zabawek)
 - **Karol po graniu na telefonie** (wersja testowa działa po naprawie): „bardzo mało wciągająca… cały czas to samo… zero dynamiki… to chyba nie ten pomysł. Chyba że masz inną wizję.”
 - **Agent:** warunek wyjścia spełniony — zaleca zakończyć Pet Arenę w tym kształcie (karta: werdykt „odrzuć”; decyzja o etapie zostaje u ludzi). Wspólny błąd trzech gier: czynność gracza sama nie bawi. [[Lekcje z prototypów]] — wpis i zmiana sposobu pracy; [[Karta oceny pomysłu]] — bramka „próba zabawki” (propozycja); [[Pytania otwarte]] — pytanie 81 o wieczór trzech zabawek.

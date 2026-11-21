@@ -763,5 +763,6 @@ Szczegóły: Ocena, zasady i progi próby: [[Konto klipów z wirtualnymi streame
 - Do wyboru: (a) wszystkie trzy (ok. 0,45 mln tokenów, jedna noc); (b) tylko wskazane; (c) inny pomysł Karola albo Pawła; (d) przerwa i rozmowa we dwóch.
 
 Szczegóły: Dlaczego zabawki, a nie gra: [[Lekcje z prototypów]] (wpis o Pet Arenie) i bramka „próba zabawki” w [[Karta oceny pomysłu]]. Zabawki stanęłyby w obecnym prywatnym miejscu testowym jako trzy wejścia; używają tego, co mamy (sterowanie potworem i wybicia z Pet Areny, generator klocków, Strażnicy i jajka).
+Dopisek z 2026-11-21 (po prośbie Karola o lepsze pomysły wyprowadzone z rynku): zamiast trzech zabawek z pierwszej wersji — cztery kierunki z danych tygodnia w [[Kierunki z rynku 2026-11-21]]; agent poleca dwie zabawki na jedną noc: „Eat & Evolve” (jesteś potworem, jesz i rośniesz) i „Lure a Monster” (rzut przynęty, zwabianie potworów).
 **Odpowiedź:**
 

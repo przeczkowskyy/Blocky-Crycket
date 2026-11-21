@@ -11,6 +11,9 @@ tags: [wytwórnia, mózg, pomysły]
 ## Cel
 Gra Roblox, która **zarabia i ma realną szansę na viral**: prosta i logiczna od pierwszego kliknięcia, a przy tym z hakiem ciekawości („co się zaraz stanie?”), głębią, grą z innymi i powodem powrotu. Słowa Karola (20.11): „Ja wiem, co się dzieje od początku w grze, gra jest logiczna. Ale brakuje mi tej kontynuacji — takiego hooka ciekawego”.
 
+## Kolejność od 21.11 (propozycja po trzech nieudanych grach)
+**Rynek → czynność → zabawka → gra.** Najpierw co rośnie w tym tygodniu ([[Radar trendów]]), potem jedna czynność, którą gracz wykonuje w każdej sekundzie, potem zabawka do zagrania w dwie minuty, i dopiero gdy człowiek chce „jeszcze raz” — karta i budowa gry. Szablon „Pomysł gry” zaczyna się od fali na rynku.
+
 ## Droga pomysłu
 1. **Sygnał** — trend z [[Radar trendów]], obserwacja z gry, klip, rozmowa.
 2. **Pomysł** — notatka w `Wytwórnia/Pomysły/` z szablonu „Pomysł gry” (w panelu: Wytwórnia → Dodaj pomysł). Etap `pomysł`.
@@ -26,6 +29,7 @@ Gra Roblox, która **zarabia i ma realną szansę na viral**: prosta i logiczna 
 - **Wytwórnia ma skracać drogę do testu, a nie ją wydłużać** — narzędzia (panel, mózg) robimy tylko w takim zakresie, w jakim przyspieszają decyzję, co budować.
 
 ## Notatki
+- **Teraz (21.11, po zamknięciu Pet Areny): [[Kierunki z rynku 2026-11-21]]** — cztery kierunki wyprowadzone z tego, co rośnie w tym tygodniu; wybór przez zabawki (pytanie 81).
 - **W budowie od 20.11: [[Pet Arena]]** (D-118; agent 28/30, Karol 28/30) — projekt: [[Pet Arena — projekt prototypu]]. BONK porzucony (D-117), pomysł Pawła: [[Super Kitty Brawlers]] (21/30, do poprawy).
 - [[Mózg — zasady hitu Roblox]] — czego szukamy w grze (zasady z filmów twórców, rynku i naszych prób).
 - [[Karta oceny pomysłu]] — 10 kryteriów 0–3, progi.
