@@ -19,6 +19,12 @@ Każde kryterium 0–3 (0 = nie ma, 1 = słabo, 2 = jest, 3 = mocna strona). Oce
 | 9 | Trend | Czy pasuje do tego, co rośnie teraz ([[Radar trendów]])? | starzejący się wzorzec | rosnący wzorzec, z własnym twistem |
 | 10 | Koszt dla nas | Czy zrobimy pierwszą wersję z naszych zasobów w tydzień? | miesiące | tydzień |
 
+## Bramka przed kartą: próba zabawki (propozycja po Pet Arenie, 21.11)
+Karta ocenia pomysł na papierze i dwa razy się pomyliła. Dlatego zanim cokolwiek dobudujemy:
+1. Powstaje **zabawka**: sama czynność gracza z pierwszych 10 sekund, bez nagród, złota, zapisu i ekranów (koszt: ułamek etapu gry).
+2. Człowiek gra w nią dwie minuty na telefonie. Pytanie jest jedno: **czy chcesz jeszcze raz?**
+3. „Tak” — dopiero wtedy karta i budowa gry wokół zabawki. „Nie” — zabawka do kosza, bez żalu.
+
 ## Progi (propozycja)
 - **22 i więcej** — prototyp (najpierw najtańszy test).
 - **16–21** — popraw pomysł: znajdź, które kryterium ciągnie w dół, i zmień pomysł, zanim cokolwiek zbudujemy.

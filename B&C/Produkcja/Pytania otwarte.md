@@ -756,3 +756,12 @@ Rozstrzyga: D-126
 Szczegóły: Ocena, zasady i progi próby: [[Konto klipów z wirtualnymi streamerami — pomysł]]; zasady marketingu: [[00 Marketing]]. Koszt klipu w kredytach Higgsfield do wyceny w sesji marketingowej.
 **Odpowiedź:**
 
+## 81. Po Pet Arenie: wieczór trzech zabawek?
+- Karol po graniu (21.11): Pet Arena jest mało wciągająca, „to chyba nie ten pomysł”. Agent zaleca zakończyć ją w tym kształcie.
+- Propozycja agenta: zamiast kolejnej całej gry — trzy małe zabawki (sama czynność, 2 minuty grania na telefonie każda), wybór tej, przy której chce się „jeszcze raz”.
+- Zabawki: (1) jesteś potworem i spychasz innych (drążek i szarża), (2) armata potworów — celujesz i burzysz zamki z klocków, (3) legowisko olbrzyma — skradasz się po jajka, hałas go budzi.
+- Do wyboru: (a) wszystkie trzy (ok. 0,45 mln tokenów, jedna noc); (b) tylko wskazane; (c) inny pomysł Karola albo Pawła; (d) przerwa i rozmowa we dwóch.
+
+Szczegóły: Dlaczego zabawki, a nie gra: [[Lekcje z prototypów]] (wpis o Pet Arenie) i bramka „próba zabawki” w [[Karta oceny pomysłu]]. Zabawki stanęłyby w obecnym prywatnym miejscu testowym jako trzy wejścia; używają tego, co mamy (sterowanie potworem i wybicia z Pet Areny, generator klocków, Strażnicy i jajka).
+**Odpowiedź:**
+

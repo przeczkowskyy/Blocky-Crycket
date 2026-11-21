@@ -5,7 +5,7 @@ gra: Pet Arena
 etap: test
 zdanie: "Throw your pet into the pit, hold the golden center, knock the others out."
 ocena_agenta: 21
-werdykt_agenta: popraw
+werdykt_agenta: odrzuć
 ocena_karol: 28
 ocena_pawel: 
 d1: 
@@ -82,6 +82,9 @@ Jajka, trening, wydarzenia, kolekcja petów (do dopracowania — niżej).
 - **Nowa ocena:** ze sterowaniem 21/30, z samym oglądaniem 20/30. Ciągną w dół Trend (1) i Powód powrotu (1).
 - **Co z tym robimy (kierunek w [[Pet Arena — projekt prototypu]]):** sterowanie petem z autopilotem (pomysł Karola, 21.11), 6 petów zamiast 10 i jeden tron; przed testem dwa zwroty: „Wybijesz, to zabierasz” (łapanie dzikich potworów, rzadkie odmiany) i „Jutro na arenie” (wydarzenia o stałych porach, wylęganie w czasie). Dalszy połysk wstrzymany do grania ludzi spoza zespołu.
 - **Zmienię zdanie, jeśli:** w prywatnym teście gracze po 10 minutach dalej rzucają i następnego dnia sami wracają (ocena wraca do ok. 24–25) albo pojawią się trzy nowe, rosnące gry na tym pomyśle.
+
+### Aktualizacja 21.11 (noc) — Karol zagrał, agent zaleca zakończyć
+Karol po graniu na telefonie w wersję z łapaniem potworów: „bardzo mało wciągająca… cały czas dzieje się to samo… zero dynamiki… to chyba nie ten pomysł”. To warunek wyjścia z projektu. **Zalecenie agenta: kończymy z tą grą w tym kształcie**; części idą do następnej próby. Wniosek i zmiana sposobu pracy: [[Lekcje z prototypów]].
 
 ## Najtańszy test
 2–3 dni na naszych zasobach (silnik walki z umiejętnościami i statusami, modele potworów, jajka i pety z BONK, lot i nokauty): jedna arena, 6 petów z jedną umiejętnością i wagą, wrzucanie w dowolnej chwili z celowaniem, minuta przerwy po przegranej, boty dopełniające arenę, boss co 3 min. Granie we dwóch i z dziećmi znajomych: czy po 10 min dalej wrzucają, czy rozmawiają o tym, którego peta wrzucić, ile razy się śmieją.

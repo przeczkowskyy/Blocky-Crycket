@@ -24,5 +24,15 @@ Karol: „To nie tak, że spędzony czas i tokeny na BONK-a i Blocky & Crycket b
 - **Czego nie powtarzamy:** pętli „liczba rośnie” bez niewiadomej, nagród-mnożników, których nie widać, opcji zdominowanych, bossa bez zapowiedzi i mechaniki, budowy trzech etapów przed pierwszym graniem człowieka.
 - **Zmiana w sposobie pracy:** najpierw rdzeń do zagrania w kilka godzin, człowiek gra, dopiero potem warstwy.
 
+## 2026-11-21 · Pet Arena / Throw & Catch Monsters — Karol zagrał na telefonie
+**Co się stało (słowa Karola):** „Gra jest bardzo mało wciągająca. Cały czas dzieje się to samo praktycznie. Zero dynamiki. Ta gra to chyba nie ten pomysł.” To spełnia warunek wyjścia zapisany w projekcie (ludzie przestają rzucać po kilku minutach).
+
+**Wniosek agenta (także wobec siebie):**
+- **Trzy gry, ten sam błąd:** w B&C walka toczy się sama, w BONK stukasz i rośnie liczba, w Pet Arenie rzucasz i czekasz. **Sama czynność gracza przez 10 sekund nie bawi** — a jajka, łapanie, wydarzenia i koloseum to warstwy dokładane wokół nudnego środka. Żadna warstwa tego nie naprawi.
+- **Karta oceny zawiodła dwa razy** (28/30, potem 21/30, a w ręku nuda): mierzy cechy na papierze, nie frajdę z czynności. Oceny agenta były zgadywaniem.
+- **Sposób pracy był za drogi na szukanie:** jedna noc i ok. 1,2 mln tokenów na całą grę, zanim człowiek dotknął środka gry.
+- **Zmiana (propozycja):** najpierw **zabawka** — sama czynność, bez jajek, złota, zapisu i ekranów, do zagrania na telefonie w dwie minuty. Kilka zabawek naraz, człowiek wybiera tę, przy której chce „jeszcze raz”. Dopiero wokół wybranej budujemy grę. Karta dostaje bramkę „próba zabawki”.
+- **Co zostaje z Pet Areny:** rzut, sterowanie potworem z przewidywaniem ruchu, zderzenia i wybicia, wielkości według wagi, koloseum, wyklucie i scena złapania, zegar wydarzeń, wylęgarnia, pełna droga budowa → próba → prywatna publikacja (z nauczką o trybie publikacji).
+
 ## Powiązane
 - [[00 Wytwórnia pomysłów]] · [[BONK]] · [[Karta oceny pomysłu]]

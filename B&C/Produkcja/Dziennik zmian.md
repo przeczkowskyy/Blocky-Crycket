@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-21 · Claude Code u Karola (Pet Arena po graniu: zalecenie zakończenia, propozycja zabawek)
+- **Karol po graniu na telefonie** (wersja testowa działa po naprawie): „bardzo mało wciągająca… cały czas to samo… zero dynamiki… to chyba nie ten pomysł. Chyba że masz inną wizję.”
+- **Agent:** warunek wyjścia spełniony — zaleca zakończyć Pet Arenę w tym kształcie (karta: werdykt „odrzuć”; decyzja o etapie zostaje u ludzi). Wspólny błąd trzech gier: czynność gracza sama nie bawi. [[Lekcje z prototypów]] — wpis i zmiana sposobu pracy; [[Karta oceny pomysłu]] — bramka „próba zabawki” (propozycja); [[Pytania otwarte]] — pytanie 81 o wieczór trzech zabawek.
+
 ## 2026-11-21 · Claude Code u Karola (naprawa wersji testowej Pet Areny)
 - **Karol:** „Aplikacja na telefonie nie działa.” Przyczyna — błąd agenta: prywatna wersja „Throw & Catch Monsters” została opublikowana z budowy do prób, w której skrypty mają blokadę „tylko w Studio” (poza Studio serwer usuwa grę). Naprawa: skrypty zbudowane w trybie publikacji (`zbuduj.py --publikacja`, atrybut `Publikacja = true`), aktualizacja opublikowana ze Studio i potwierdzona znacznikiem czasu wersji (21:33). Wcześniejsza „aktualizacja v3” najpewniej w ogóle nie doszła. Do potwierdzenia przez Karola z telefonu.
 - Zasada na przyszłość zapisana w `swiat/pet_arena/README.md` (rozdział o publikacji) — każda publikacja i aktualizacja tylko z budowy w trybie publikacji.
