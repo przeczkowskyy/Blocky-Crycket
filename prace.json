@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-21T18:34:27+01:00",
+ "aktualizacja": "2026-11-21T19:53:53+01:00",
  "prace": [
   {
    "id": "pet-arena-v2",
    "tytul": "Pet Arena: przebudowa po uwagach (wieksza arena, koloseum, wyklucie)",
    "stan": "w_toku",
+   "etap": "etap 3: lapanie potworow i powod powrotu",
    "start": "2026-11-21T18:34:27+01:00",
-   "koniec_szacowany": "2026-11-21T23:00:00+01:00",
-   "aktualizacja": "2026-11-21T18:34:27+01:00",
+   "koniec_szacowany": "2026-11-22T01:00:00+01:00",
+   "aktualizacja": "2026-11-21T19:53:53+01:00",
    "obszary": [
     "swiat/pet_arena/**",
     "studio:PetArenaGra"
