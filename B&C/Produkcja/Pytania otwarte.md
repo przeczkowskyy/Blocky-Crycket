@@ -726,6 +726,8 @@ Szczegóły: Publikacja prywatna sprawdza też prawdziwy zapis postępu i telefo
 Dopisek z 2026-11-21: po notatce [[Nowa era Roblox 2026 — pięć zmian]] agent poleca (a) zaraz po przebudowie z 21.11 — okno trendu trwa tygodnie, a dopracowywanie gry, zanim zagra w nią ktoś spoza zespołu, to błąd, przed którym film ostrzega.
 Dopisek z 2026-11-21 (po analizie trendu): okno jest krótkie — prywatny test z ludźmi spoza zespołu do ok. 28.11 (Roblox pozwala zaprosić do 10 testerów; najlepiej osoby 16+, bo tacy będą pierwszymi publicznymi graczami), publiczny test najpóźniej ok. 5.12. Szczegóły: [[Pet Arena — ocena wobec trendu 2026-11-21]].
 **Odpowiedź:**
+- Karol (2026-11-21): (a) tak — zgoda na prywatną wersję testową („zgadzam się na wszystko”); publicznie nic bez osobnej decyzji.
+
 - Karol Balucki (2026-11-21): tak
 
 ## 78. Pet Arena: loch czy jaskrawa, zamknięta arena?

@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-21 · Claude Code u Karola (zgoda Karola: kierunek Pet Areny i prywatny test)
+- **Karol:** „Zgadzam się na wszystko, ale jestem otwarty na zmiany koncepcji. Jeżeli będzie kosztować nas to czas i zasoby, a i tak wiem, że nie wyjdzie, to nie ma co testować.” [[Rejestr decyzji]]: D-127 zatwierdzona podpisem Karola (czeka na Pawła); [[Pytania otwarte]]: odpowiedź pod 77 — zgoda na prywatną wersję testową.
+- [[Pet Arena — projekt prototypu]]: tytuł roboczy „Throw & Catch Monsters”, środek ciężkości przesunięty na „rzucaj i łap potwory”, zapisany pułap nakładów i warunek wyjścia (koniec gry, jeśli w prywatnym teście ludzie przestają rzucać po kilku minutach albo nie wracają następnego dnia).
+
 ## 2026-11-21 · Claude Code u Karola (analiza trendu, nowa ocena Pet Areny 21/30)
 - **Karol, wieczór:** gracz po rzucie ma sterować petem; 10 petów to za dużo; „przyspieszamy tempo, żeby wstrzelić się w trend. Zrób ponowną analizę trendu i porównaj z naszą grą… porównajmy jeszcze raz ocenę”; decyzję o kształcie zostawił agentowi.
 - **Badanie agenta (trackery, API Roblox, DevForum):** [[Trend 2026-11-21 — co rośnie w tym tygodniu]], [[Algorytm Roblox 2026 — weryfikacja w źródłach]], [[Pet Arena — ocena wobec trendu 2026-11-21]]. Wynik: Pet Arena trafia w trend częściowo — nie ma dziś nowej, rosnącej gry z petami graczy na arenie, a trzy poprzednie miały skok i zgasły w 4–8 tygodni; rosną sąsiedzi (pety walczące za gracza, „wypchnij z mapy”, rzucanie dla zwierząt). **Nowa ocena kartą: 21/30 ze sterowaniem, 20/30 z oglądaniem; poprzednie 28 było zawyżone** (karta w [[Pet Arena]]). Zasady algorytmu w większości potwierdzone; próg dla graczy poniżej 16 lat to od 19.11 100 mocno zaangażowanych graczy 16+.

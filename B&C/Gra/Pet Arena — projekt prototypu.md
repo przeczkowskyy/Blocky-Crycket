@@ -78,7 +78,9 @@ Karol 21.11: gracz ma sterować petem zamiast tylko oglądać; 10 petów to za d
 - **Zwrot 3 — „Rzuć z kumplem”** (pierwsza aktualizacja): premia za znajomego na arenie, drużyny.
 - **Okno czasowe:** prywatny test z ludźmi spoza zespołu do ok. 28.11, publiczny test (pierwsi gracze to osoby 16+) najpóźniej ok. 5.12; po ok. 15.12 będziemy spóźnieni. Jeśli w prywatnym teście ludzie przestają rzucać po kilku minutach — nie publikować, wracamy do karty.
 - **Wstrzymane do grania ludzi spoza zespołu:** widowiskowe efekty umiejętności i dalsze dopieszczanie wyglądu (rdzeń, skala i wyklucie zostają w przebudowie).
-- **Tytuł roboczy do testu ikon:** „Throw Pets, Take the Throne” albo „Throw & Catch Monsters” (z czasownikiem; „Pet Arena” to rzeczownik podobny do wielu gier).
+- **Tytuł roboczy: „Throw & Catch Monsters”** (zgoda Karola 21.11 na rekomendację agenta; drugi kandydat: „Throw Pets, Take the Throne”).
+- **Środek ciężkości gry (propozycja agenta po zgodzie Karola „jestem otwarty na zmiany koncepcji”):** z „bitki graczy na arenie” na **„rzucaj i łap potwory”** — dzikie potwory do złapania są stałą treścią areny, kolekcja jest celem, a walka graczy o tron jest przyprawą i sposobem pokazania się. To ta sama budowa, ale bliżej tego, co dziś rośnie (pety zdobywane w walce), i z powodem powrotu.
+- **Pułap nakładów i warunek wyjścia (odpowiedź na „jeśli wiemy, że nie wyjdzie, nie ma co testować”):** do decyzji idą jeszcze tylko: dokończenie przebudowy, jeden etap ze zwrotami i prywatny test w tym tygodniu. Bez reklamy, bez publicznego startu i bez dalszego połysku przed wynikiem. **Kończymy z tą grą**, jeśli w prywatnym teście ludzie przestają rzucać po kilku minutach albo następnego dnia sami nie wracają; wtedy zasoby (rzut, pety, łapanie, wyklucie) idą do następnego pomysłu z lejka.
 
 ## Stan budowy
 - [x] 2026-11-20 (wieczór) — **etap 1, rdzeń:** dół-arena z trybuną, rzut w wybrane miejsce, walka liczona na serwerze w 2D, odrzut rosnący z ubytkiem życia, RING OUT i KO, strefy złota, nagroda za głowę, 12 petów z umiejętnościami, dzikie pety, drużyna z odpoczynkiem. Próba w Studio 17/17.
