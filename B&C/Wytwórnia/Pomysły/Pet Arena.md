@@ -2,7 +2,7 @@
 status: propozycja
 typ: pomysł-gry
 gra: Pet Arena
-etap: prototyp
+etap: test
 zdanie: "Throw your pet into the pit, hold the golden center, knock the others out."
 ocena_agenta: 21
 werdykt_agenta: popraw
@@ -12,7 +12,7 @@ d1:
 d7: 
 sesja_min: 
 ccu: 
-miejsce: 
+miejsce: 93704244631419
 tags: [wytwórnia, pomysł, pety, arena]
 ---
 # Pet Arena

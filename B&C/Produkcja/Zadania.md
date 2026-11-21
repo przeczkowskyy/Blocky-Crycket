@@ -8,9 +8,8 @@ tags: [produkcja, zadania]
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
 - [ ] Pet Arena (D-127): po przebudowie — zwrot „Wybijesz, to zabierasz” (łapanie dzikich potworów, rzadkie odmiany) i „Jutro na arenie” (wydarzenia o stałych porach, wylęganie w czasie) · agent: Karol · #wysoki
-- [ ] Pet Arena: zgoda na prywatną wersję testową (pytanie 77) i zaproszenie do 10 testerów spoza zespołu, najlepiej 16+ — **do ok. 28.11**; publiczny test najpóźniej ok. 5.12 ([[Pet Arena — ocena wobec trendu 2026-11-21]]) · Karol, Paweł · #wysoki
+- [ ] Pet Arena: zagrać w prywatną wersję testową „Throw & Catch Monsters” (https://www.roblox.com/games/93704244631419, także z telefonu) i zaprosić do 10 testerów spoza zespołu, najlepiej 16+ — **do ok. 28.11**; publiczny test najpóźniej ok. 5.12, tylko po osobnej decyzji · Karol, Paweł · #wysoki
 - [ ] Pet Arena: wybrać tytuł z czasownikiem do testu ikon („Throw Pets, Take the Throne” albo „Throw & Catch Monsters”) · Karol, Paweł · #średni
-- [ ] Pet Arena, przebudowa po uwagach Karola z sesji 21.11: arena ok. 4 razy większa, pety różnej wielkości według wagi, przepychanie i wybicia ponad trybuny, jasne koloseum, wzgórze króla ze złotem, nowe wyklucie, złoty boss; demo wideo po etapie ([[Pet Arena — projekt prototypu]]) · agent: Karol · #wysoki
 - [ ] Pet Arena: po przebudowie prywatna wersja testowa i granie ludzi w tym tygodniu (pytanie 77); przed startem publicznym sprawdzić, czy są trzy nowe rosnące gry na pomyśle „pety walczą na arenie” i czym nasza się różni, oraz potwierdzić w dokumentacji Roblox próg zaangażowanych graczy dla osób poniżej 16 lat i zasady wideo na kafelku ([[Nowa era Roblox 2026 — pięć zmian]], [[Algorytm Roblox 2026 — nowe zasady]]) · #wysoki
 - [ ] Wytwórnia: cotygodniowy radar — co rośnie najszybciej w tym tygodniu, także wśród małych gier (propozycja agenta po notatce z 21.11; ok. 150–200 tys. tokenów na odświeżenie) — do decyzji Karola · #średni
 - [ ] Marketing: osobna sesja (`/marketing`) — wersja konta klipów (pytanie 80), obsada wirtualnych streamerów, wycena klipu w kredytach ([[00 Marketing]]) · Karol · #średni
@@ -130,6 +129,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-21: Pet Arena — przebudowa v2 po uwagach Karola (większa arena, 6 petów, wielkości według wagi, przepychanie, wzgórze króla, koloseum, sterowanie z autopilotem, nowe wyklucie; próba 34/34) i prywatna wersja testowa „Throw & Catch Monsters” z zaproszeniem Pawła
 - [x] 2026-11-20: Pet Arena (D-118) — prototyp zbudowany w jeden wieczór w dwóch etapach (rdzeń walki o złoty środek, jajka, kolekcja, boss, trener, zapis, demo); próba w Studio 28/28 ([[Pet Arena — projekt prototypu]])
 - [x] 2026-11-20: Po sesji głównej — karty Pet Areny i Super Kitty Brawlers z oceną, krytyką i pre-mortem; opinia agenta o BONK; decyzje Karola: BONK porzucony (D-117), Pet Arena do budowy (D-118); zadania BONK (próba we dwóch, publikacja) zdjęte
 - [x] 2026-11-20: Porządki na polecenie Karola — zdjęte jako nieaktualne (wariant (a) z pytania 65 i kolejność Ringu): kolejność Ringu Potworów (zastąpiona oceną w Wytwórni, pytanie 75); odpowiedzi na pytania 50 i 51; mapa teleportacji z ramką i pinami (działa teleport przez chmury, D-075, D-076); odpowiedź na pytanie 52; zadania dla agenta osoby (D-072); walka v2 (zastąpił ją silnik v3); porównanie Krzywego Miasteczka Blender/Roblox (D-029); kolorystyka Krzywego Miasteczka (dziś bazar, D-084); demo Leśnej bazy z 12.11; pierwsze uruchomienie panelu u Pawła (pytanie 27); błędy starego prototypu `Workspace/TestWalki`

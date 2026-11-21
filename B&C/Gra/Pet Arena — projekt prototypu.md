@@ -85,7 +85,10 @@ Karol 21.11: gracz ma sterować petem zamiast tylko oglądać; 10 petów to za d
 ## Stan budowy
 - [x] 2026-11-20 (wieczór) — **etap 1, rdzeń:** dół-arena z trybuną, rzut w wybrane miejsce, walka liczona na serwerze w 2D, odrzut rosnący z ubytkiem życia, RING OUT i KO, strefy złota, nagroda za głowę, 12 petów z umiejętnościami, dzikie pety, drużyna z odpoczynkiem. Próba w Studio 17/17.
 - [x] 2026-11-20 (noc) — **etap 2:** większe pety i odkryty środek ekranu, „czucie” ciosu, odpoczynek 30 s, jajka w trzech stopniach (pierwsze darmowe), gwiazdki za kopie, drużyna i Księga, boss i złoty pet z odliczaniem, tarcza słabszego, trener i mata AFK, tablice, zapis, pad, demo wideo. Próba w Studio 28/28, testy 28 OK, 60 klatek na sekundę przy 8 petach. Szczegóły: `swiat/pet_arena/README.md`.
-- [ ] granie ludzi (Karol, potem we dwóch) i strojenie; prywatna wersja testowa — pytanie 77 w [[Pytania otwarte]].
+- [x] 2026-11-21 — **przebudowa v2** po uwagach Karola: arena o promieniu 40 i najwyżej 6 petów, wielkość według wagi, zderzenia z przekazaniem pędu i wybicia ponad trybuny, wzgórze króla z tronem dla jednego, jasne koloseum, sterowanie petem z autopilotem (domyślnie bez drążka), nowe wyklucie, złoty boss. Próba w Studio 34/34, testy 33 OK.
+- [x] 2026-11-21 — **prywatna wersja testowa** „Throw & Catch Monsters” (placeId 93704244631419, universe 10778282381; konto Karola, prywatna, wszystkie urządzenia; Paweł zaproszony jako tester). Wejście: aplikacja Roblox → https://www.roblox.com/games/93704244631419
+- [ ] etap v3 — „Wybijesz, to zabierasz” i „Jutro na arenie” (w budowie w nocy 21/22.11), potem aktualizacja wersji testowej.
+- [ ] granie ludzi spoza zespołu do ok. 28.11 i decyzja według warunku wyjścia.
 
 ## Do strojenia po graniu
 - **Odpoczynek peta: 30 s** (Karol mówił o ok. minucie; przy 60 s gracz przez ok. 40% czasu nie miał kogo rzucić — jedna liczba w ustawieniach).

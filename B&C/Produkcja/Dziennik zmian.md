@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-21 · Claude Code u Karola (Pet Arena v2 i prywatna wersja testowa)
+- **Pet Arena v2** (D-127): arena o promieniu 40, najwyżej 6 petów, wielkość według wagi, zderzenia z przekazaniem pędu, wybicia w powietrze ponad trybuny, wzgórze króla z tronem dla jednego i lecącymi monetami, jasne koloseum, sterowanie petem z autopilotem (domyślnie bez drążka), kamera za petem i widok całości, nowe wyklucie, złoty boss. Próba w Studio 34/34, testy 33 OK, 60 klatek na sekundę na emulacji telefonu. Demo wideo i zrzuty wysłane Karolowi.
+- **Prywatna wersja testowa** (zgoda Karola, pytanie 77): agent opublikował grę w Studio jako prywatne doświadczenie „Throw & Catch Monsters” (placeId 93704244631419; komputer, telefon, tablet, konsola) na koncie Karola i zaprosił Pawła jako testera wczesnej wersji. Nic nie jest publiczne. Przy zaproszeniu lista znajomych zmieniła kolejność i na chwilę zaznaczyła się inna osoba — odznaczona przed wysłaniem, zaproszenie poszło tylko do Pawła.
+- W nocy: etap v3 („Wybijesz, to zabierasz”, „Jutro na arenie”). Stan w [[Pet Arena — projekt prototypu]], karta [[Pet Arena]] (etap: test), [[Zadania]].
+
 ## 2026-11-21 · Claude Code u Karola (zgoda Karola: kierunek Pet Areny i prywatny test)
 - **Karol:** „Zgadzam się na wszystko, ale jestem otwarty na zmiany koncepcji. Jeżeli będzie kosztować nas to czas i zasoby, a i tak wiem, że nie wyjdzie, to nie ma co testować.” [[Rejestr decyzji]]: D-127 zatwierdzona podpisem Karola (czeka na Pawła); [[Pytania otwarte]]: odpowiedź pod 77 — zgoda na prywatną wersję testową.
 - [[Pet Arena — projekt prototypu]]: tytuł roboczy „Throw & Catch Monsters”, środek ciężkości przesunięty na „rzucaj i łap potwory”, zapisany pułap nakładów i warunek wyjścia (koniec gry, jeśli w prywatnym teście ludzie przestają rzucać po kilku minutach albo nie wracają następnego dnia).
