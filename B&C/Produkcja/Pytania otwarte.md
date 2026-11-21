@@ -660,6 +660,7 @@ Rozstrzyga: D-111 (życie −15%); doświadczenie z potworów Dżungli +25% zost
 
 Szczegóły: Skryptu `ShopClient` nie ma w repozytorium ani w `src/` — jest tylko w miejscu gry, więc narzędzia go nie widzą; prośba do Pawła o dodanie go do repo razem z nowymi oknami (Kowal, Mag, sklepy). Umowa dla okna sklepu (pola przedmiotu, prośba `kup <id>`, odmowy) jest opisana w `swiat/sklep_proba/README.md` i `swiat/postacie/SKLEP_PRZEDMIOTY.md`. Kliknięcie w samą figurę zbrojmistrza otwiera dziś makietę Pawła, a E — okno sklepu. To pytanie do Pawła (jego okna, D-093).
 **Odpowiedź:**
+- Karol Balucki (2026-11-21): a
 
 ## 72. Przyciąć grę do jednego rdzenia: który wariant?
 - Film twórcy hitu i nasza diagnoza z 13.11 mówią to samo: jedna prosta czynność, jedna liczba, moment do nagrania, telefon najpierw, szybko do prawdziwych graczy.
@@ -723,4 +724,5 @@ Szczegóły: Źródło: [[Sesja główna 2026-11-20 — zapis ustaleń]] (18:52 
 
 Szczegóły: Publikacja prywatna sprawdza też prawdziwy zapis postępu i telefon. Kroki są w `swiat/pet_arena/README.md`. Projekt i lista rzeczy do strojenia: [[Pet Arena — projekt prototypu]]; karta: [[Pet Arena]]. Przeniesienie do grupy przed startem publicznym — pytanie 31.
 **Odpowiedź:**
+- Karol Balucki (2026-11-21): tak
 

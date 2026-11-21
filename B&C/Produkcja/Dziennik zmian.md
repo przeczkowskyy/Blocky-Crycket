@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-21 · Panel (ludzie)
+- Karol Balucki: odpowiedź na pytanie 77 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 71 ([[Pytania otwarte]])
+
 ## 2026-11-20 · Claude Code u Karola (Pet Arena: prototyp gotowy do zagrania)
 - **Pet Arena (D-118)** zbudowana w nowym miejscu Roblox (plik lokalny, kontener `PetArenaGra`), pakiet `swiat/pet_arena/`. Etap 1 (20:30–21:30): rdzeń — rzut peta w wybrane miejsce, walka o złoty środek liczona na serwerze, odrzut rosnący z ubytkiem życia, RING OUT i KO, nagroda za głowę, 12 petów z umiejętnościami, dzikie pety. Etap 2 (21:35–22:30): większe pety i czytelny ekran, jajka i gwiazdki, drużyna i Księga, boss i złoty pet, tarcza słabszego, trener, tablice, zapis, pad, demo wideo. Próba w Studio 28/28, testy 28 OK, 60 klatek na sekundę.
 - **Zmiana względem słów Karola:** odpoczynek peta 30 s zamiast ok. minuty (przy 60 s ok. 40% czasu bez peta do rzucenia) — zapisane w „Do strojenia po graniu” w [[Pet Arena — projekt prototypu]].
