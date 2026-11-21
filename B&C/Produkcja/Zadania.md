@@ -7,7 +7,6 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
-- [ ] Pet Arena (D-127): po przebudowie — zwrot „Wybijesz, to zabierasz” (łapanie dzikich potworów, rzadkie odmiany) i „Jutro na arenie” (wydarzenia o stałych porach, wylęganie w czasie) · agent: Karol · #wysoki
 - [ ] Pet Arena: zagrać w prywatną wersję testową „Throw & Catch Monsters” (https://www.roblox.com/games/93704244631419, także z telefonu) i zaprosić do 10 testerów spoza zespołu, najlepiej 16+ — **do ok. 28.11**; publiczny test najpóźniej ok. 5.12, tylko po osobnej decyzji · Karol, Paweł · #wysoki
 - [ ] Pet Arena: wybrać tytuł z czasownikiem do testu ikon („Throw Pets, Take the Throne” albo „Throw & Catch Monsters”) · Karol, Paweł · #średni
 - [ ] Pet Arena: po przebudowie prywatna wersja testowa i granie ludzi w tym tygodniu (pytanie 77); przed startem publicznym sprawdzić, czy są trzy nowe rosnące gry na pomyśle „pety walczą na arenie” i czym nasza się różni, oraz potwierdzić w dokumentacji Roblox próg zaangażowanych graczy dla osób poniżej 16 lat i zasady wideo na kafelku ([[Nowa era Roblox 2026 — pięć zmian]], [[Algorytm Roblox 2026 — nowe zasady]]) · #wysoki
@@ -129,6 +128,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-21: Pet Arena v3 „Throw & Catch Monsters” — łapanie dzikich potworów, odmiany, ALPHA, zegar wydarzeń, wylęgarnia w czasie, dzienny prezent (próba 41/41); aktualizacja prywatnej wersji testowej
 - [x] 2026-11-21: Pet Arena — przebudowa v2 po uwagach Karola (większa arena, 6 petów, wielkości według wagi, przepychanie, wzgórze króla, koloseum, sterowanie z autopilotem, nowe wyklucie; próba 34/34) i prywatna wersja testowa „Throw & Catch Monsters” z zaproszeniem Pawła
 - [x] 2026-11-20: Pet Arena (D-118) — prototyp zbudowany w jeden wieczór w dwóch etapach (rdzeń walki o złoty środek, jajka, kolekcja, boss, trener, zapis, demo); próba w Studio 28/28 ([[Pet Arena — projekt prototypu]])
 - [x] 2026-11-20: Po sesji głównej — karty Pet Areny i Super Kitty Brawlers z oceną, krytyką i pre-mortem; opinia agenta o BONK; decyzje Karola: BONK porzucony (D-117), Pet Arena do budowy (D-118); zadania BONK (próba we dwóch, publikacja) zdjęte

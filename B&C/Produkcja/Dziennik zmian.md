@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-21 · Claude Code u Karola (Pet Arena v3 „Throw & Catch Monsters”)
+- **Etap v3** (D-127): „Wybijesz, to zabierasz” — cios kończący na dzikim potworze losuje złapanie (jawne szanse, licznik litości, pierwsze złapanie pewne), odmiany BIG / GOLDEN / GIANT, ALPHA co 5 minut; „Jutro na arenie” — zegar wydarzeń o stałych porach z panelem „NEXT”, wylęgarnia licząca czas poza grą, dzienny prezent, zapowiedź nowego potwora. Próba w Studio 41/41, testy 41 OK. Demo wideo wysłane Karolowi.
+- **Wersja testowa:** aktualizacja wysłana ze Studio (Plik → Opublikuj); Studio nie pokazało potwierdzenia, a uprawnienie Open Cloud do publikacji miejsc nie jest nadane, więc do potwierdzenia w grze. Ocena agenta budującego: pętla „rzuć → wybij → złap” daje haczyk, ale złapanie gracz raczej dostaje, niż zdobywa — propozycje na po graniu w [[Pet Arena — projekt prototypu]].
+
 ## 2026-11-21 · Claude Code u Karola (Pet Arena v2 i prywatna wersja testowa)
 - **Pet Arena v2** (D-127): arena o promieniu 40, najwyżej 6 petów, wielkość według wagi, zderzenia z przekazaniem pędu, wybicia w powietrze ponad trybuny, wzgórze króla z tronem dla jednego i lecącymi monetami, jasne koloseum, sterowanie petem z autopilotem (domyślnie bez drążka), kamera za petem i widok całości, nowe wyklucie, złoty boss. Próba w Studio 34/34, testy 33 OK, 60 klatek na sekundę na emulacji telefonu. Demo wideo i zrzuty wysłane Karolowi.
 - **Prywatna wersja testowa** (zgoda Karola, pytanie 77): agent opublikował grę w Studio jako prywatne doświadczenie „Throw & Catch Monsters” (placeId 93704244631419; komputer, telefon, tablet, konsola) na koncie Karola i zaprosił Pawła jako testera wczesnej wersji. Nic nie jest publiczne. Przy zaproszeniu lista znajomych zmieniła kolejność i na chwilę zaznaczyła się inna osoba — odznaczona przed wysłaniem, zaproszenie poszło tylko do Pawła.
