@@ -2,6 +2,20 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-22T19:21:43+01:00",
- "prace": []
+ "aktualizacja": "2026-11-22T20:30:32+01:00",
+ "prace": [
+  {
+   "id": "walidacja-baseball",
+   "tytul": "Sprawdzenie rynku: Baseball for treasure i wybór zwrotu",
+   "stan": "w_toku",
+   "start": "2026-11-22T20:30:31+01:00",
+   "koniec_szacowany": "2026-11-22T21:10:31+01:00",
+   "aktualizacja": "2026-11-22T20:30:31+01:00",
+   "obszary": [
+    "B&C/Wytwórnia/Pomysły"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  }
+ ]
 }
