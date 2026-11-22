@@ -83,55 +83,136 @@ def czesc(lista, grupa, nazwa, poz, roz, kolor, mat="SmoothPlastic", ksztalt="Bl
 
 
 def drzewo(L, cx, cy, cz, x, z, h, nazwa):
+    # drzewa w polu i w lesie: korona półprzezroczysta, żeby z kamery z góry było widać potwora pod nią
+    przez = 0.45 if nazwa in ("DrzewoPole", "DrzewoLas") else 0
     pien = max(1.6, h * 0.11)
     czesc(L, "Drzewa", nazwa, (cx + x, cy + h * 0.4, cz + z), (h * 0.8, pien, pien), "7A5232", "Wood", "Cylinder", (0, 0, math.pi / 2))
     for i, (dx, dy, dz, s, k) in enumerate([(0, 0.82, 0, 0.62, "4E9A3C"), (0.18, 0.7, 0.12, 0.45, "5DB047"), (-0.16, 0.68, -0.1, 0.42, "3F8A33")]):
-        czesc(L, "Drzewa", nazwa + "Korona", (cx + x + dx * h, cy + dy * h, cz + z + dz * h), (s * h, s * h * 0.85, s * h), k, "LeafyGrass", "Ball")
+        czesc(L, "Drzewa", nazwa + "Korona", (cx + x + dx * h, cy + dy * h, cz + z + dz * h), (s * h, s * h * 0.85, s * h), k, "LeafyGrass", "Ball",
+              (0, 0, 0), przez)
+
+
+def brama_lasu(D):
+    """Cięciwa przecięcia koła łąki i lasu: końce, środek, kierunek do lasu."""
+    LS = D["las"]
+    r1, r2 = D["pole"]["r"], LS["r"]
+    d = math.hypot(LS["x"], LS["z"])
+    ux, uz = LS["x"] / d, LS["z"] / d
+    a = (d * d + r1 * r1 - r2 * r2) / (2 * d)
+    h = math.sqrt(max(0.0, r1 * r1 - a * a))
+    return {"a": (ux * a - uz * h, uz * a + ux * h), "b": (ux * a + uz * h, uz * a - ux * h), "srodek": (ux * a, uz * a), "u": (ux, uz), "h": h}
 
 
 def scena(D):
     P = D["pole"]
+    LS = D["las"]
     cx, cy, cz = P["srodek"]
     R = P["r"]
     W = DN.wystroj(P)
+    WL = DN.wystroj_lasu(dict(DN.ustawienia()["las"]))
     L = []
-    czesc(L, "Teren", "Pole", (cx, cy - 2, cz), (4, 2 * R + 20, 2 * R + 20), "8FD46B", "Grass", "Cylinder", (0, 0, math.pi / 2))
-    czesc(L, "Teren", "Okolica", (cx, cy - 2.2, cz), (4, 2 * R + 140, 2 * R + 140), "6FB04F", "Grass", "Cylinder", (0, 0, math.pi / 2))
+    rot = (0, 0, math.pi / 2)
+    czesc(L, "Teren", "Pole", (cx, cy - 2, cz), (4, 2 * R + 20, 2 * R + 20), "8FD46B", "Grass", "Cylinder", rot)
+    czesc(L, "Teren", "Okolica", (cx, cy - 2.2, cz), (4, 2 * R + 140, 2 * R + 140), "6FB04F", "Grass", "Cylinder", rot)
+    lx, lz = cx + LS["x"], cz + LS["z"]
+    czesc(L, "Las", "Sciolka", (lx, cy - 2.05, lz), (4, 2 * LS["r"] + 14, 2 * LS["r"] + 14), "4A7A3A", "LeafyGrass", "Cylinder", rot)
+    czesc(L, "Las", "OkolicaLasu", (lx, cy - 2.25, lz), (4, 2 * LS["r"] + 120, 2 * LS["r"] + 120), "3F6B33", "Grass", "Cylinder", rot)
     for i, p in enumerate(W["plamy"]):
-        czesc(L, "Teren", "Plama", (cx + p["x"], cy + 0.02 + i * 0.002, cz + p["z"]), (0.12, p["r"] * 2, p["r"] * 2), p["c"], p["m"], "Cylinder",
-              (0, 0, math.pi / 2))
-    # ścieżka z piasku przez środek (punkt orientacyjny)
+        czesc(L, "Teren", "Plama", (cx + p["x"], cy + 0.02 + i * 0.002, cz + p["z"]), (0.12, p["r"] * 2, p["r"] * 2), p["c"], p["m"], "Cylinder", rot)
+    for i, p in enumerate(WL["plamy"]):
+        czesc(L, "Las", "Plama", (cx + p["x"], cy + 0.03 + i * 0.002, cz + p["z"]), (0.12, p["r"] * 2, p["r"] * 2), p["c"], p["m"], "Cylinder", rot)
     for i in range(9):
         a = -0.9 + i * 0.22
-        czesc(L, "Teren", "Sciezka", (cx + math.sin(a) * 60 * (i - 4) / 4, cy + 0.06, cz + (i - 4) * 30), (0.1, 9, 9), "E6D3A0", "Sand", "Cylinder",
-              (0, 0, math.pi / 2))
+        czesc(L, "Teren", "Sciezka", (cx + math.sin(a) * 60 * (i - 4) / 4, cy + 0.06, cz + (i - 4) * 30), (0.1, 9, 9), "E6D3A0", "Sand", "Cylinder", rot)
+    # mury: łąka bez odcinka przy lesie, las bez odcinka w łące
     n = 56
     for i in range(n):
         a = 2 * math.pi * i / n
         r = R + 1.5
-        czesc(L, "Mur", "Mur", (cx + math.sin(a) * r, cy + P["mur_y"] / 2, cz + math.cos(a) * r), (2 * math.pi * r / n + 0.6, P["mur_y"], 2.6),
-              ["F2C36B", "E8A85A"][i % 2], "Slate", "Block", (0, a, 0), 0, True)
-    for i, s in enumerate(D["przeszkody"]):
+        x, z = math.sin(a) * r, math.cos(a) * r
+        if math.hypot(x - LS["x"], z - LS["z"]) < LS["r"] + 1:
+            continue
+        czesc(L, "Mur", "Mur", (cx + x, cy + P["mur_y"] / 2, cz + z), (2 * math.pi * r / n + 0.6, P["mur_y"], 2.6), ["F2C36B", "E8A85A"][i % 2], "Slate",
+              "Block", (0, a, 0), 0, True)
+    n = 44
+    for i in range(n):
+        a = 2 * math.pi * i / n
+        r = LS["r"] + 1.5
+        x, z = LS["x"] + math.sin(a) * r, LS["z"] + math.cos(a) * r
+        if math.hypot(x, z) < R + 1:
+            continue
+        czesc(L, "Las", "MurLasu", (cx + x, cy + 2, cz + z), (2 * math.pi * r / n + 0.6, 4, 3), ["6B5A44", "5C4D3A"][i % 2], "Wood", "Block", (0, a, 0), 0, True)
+    # brama: niski płot z wikliny na cięciwie (klient chowa go, gdy las otwarty), słupki ze światłem, tablica
+    B = brama_lasu(D)
+    (ax, az), (bx, bz) = B["a"], B["b"]
+    dl = math.hypot(bx - ax, bz - az)
+    kat = math.atan2(bx - ax, bz - az)
+    k = int(dl // 6)
+    for i in range(k):
+        f = (i + 0.5) / k
+        czesc(L, "Brama", "Plot", (cx + ax + (bx - ax) * f, cy + 1.2, cz + az + (bz - az) * f), (0.8, 2.4, dl / k - 0.4), "8A6A3A", "Wood", "Block",
+              (0, kat, 0))
+        czesc(L, "Brama", "Plot", (cx + ax + (bx - ax) * f, cy + 1.9, cz + az + (bz - az) * f), (0.5, 0.35, dl / k + 0.1), "7CFF9A", "Neon", "Block",
+              (0, kat, 0), 0.2)
+    for (px, pz) in (B["a"], B["b"]):
+        czesc(L, "Brama", "Slup", (cx + px, cy + 4, cz + pz), (2.2, 8, 2.2), "6B5A44", "Wood", "Block")
+        czesc(L, "Brama", "SlupSwiatlo", (cx + px, cy + 8.6, cz + pz), (2.2, 2.2, 2.2), "7CFF9A", "Neon", "Ball")
+    # kępki trawy, grzyby, krzaki, stawy
+    for x, z, a in W["kepki"]:
+        if math.hypot(x - LS["x"], z - LS["z"]) > LS["r"]:
+            czesc(L, "Kepki", "Kepka", (cx + x, cy + 0.45, cz + z), (0.5, 0.9, 1.1), ["6FBF4A", "7ACC55", "5EAA3E"][int(a * 10) % 3], "Grass", "Wedge", (0, a, 0))
+    for x, z, s in W["grzyby"] + WL["grzyby"]:
+        czesc(L, "Grzyby", "Trzon", (cx + x, cy + s * 0.6, cz + z), (s * 1.2, s * 0.45, s * 0.45), "F2EBDD", "SmoothPlastic", "Cylinder", rot)
+        czesc(L, "Grzyby", "Kapelusz", (cx + x, cy + s * 1.25, cz + z), (s * 1.3, s * 0.7, s * 1.3), ["E0483C", "C9783A", "D64A8A"][int(s * 10) % 3],
+              "SmoothPlastic", "Ball")
+    for x, z, s in W["krzaki"]:
+        if math.hypot(x - LS["x"], z - LS["z"]) > LS["r"] + 6:
+            czesc(L, "Krzaki", "Krzak", (cx + x, cy + s * 0.45, cz + z), (s * 1.6, s, s * 1.6), ["4E9A3C", "5DB047", "3F8A33"][int(s * 10) % 3], "LeafyGrass", "Ball")
+    for s in D["przeszkody"]:
         if s["typ"] == "skala":
-            czesc(L, "Skaly", "Skala", (cx + s["x"], cy + 2.5, cz + s["z"]), (6, s["r"] * 2, s["r"] * 2), ["9C8C7A", "8A7C6C", "A89A86"][i % 3],
-                  "Slate", "Cylinder", (0, 0, math.pi / 2), 0, True)
+            i = int(abs(s["x"])) % 3
+            czesc(L, "Skaly", "Skala", (cx + s["x"], cy + 2.5, cz + s["z"]), (6, s["r"] * 2, s["r"] * 2), ["9C8C7A", "8A7C6C", "A89A86"][i],
+                  "Slate", "Cylinder", rot, 0, True)
             czesc(L, "Skaly", "SkalaCzubek", (cx + s["x"], cy + 5.6, cz + s["z"]), (s["r"] * 1.5, 4, s["r"] * 1.5), "B5A792", "Rock", "Ball")
             czesc(L, "Skaly", "SkalaMala", (cx + s["x"] + s["r"] * 0.9, cy + 1.2, cz + s["z"] - s["r"] * 0.5), (s["r"] * 0.7, s["r"] * 0.5, s["r"] * 0.7),
                   "8A7C6C", "Rock", "Ball")
+        elif s["typ"] == "staw":
+            czesc(L, "Stawy", "Brzeg", (cx + s["x"], cy + 0.05, cz + s["z"]), (0.14, s["r"] * 2 + 4, s["r"] * 2 + 4), "D9C58E", "Sand", "Cylinder", rot)
+            czesc(L, "Stawy", "Woda", (cx + s["x"], cy + 0.12, cz + s["z"]), (0.16, s["r"] * 2, s["r"] * 2), "4FA8E0", "Glass", "Cylinder", rot, 0.15)
+            for j in range(5):
+                a = j * 1.3
+                czesc(L, "Stawy", "Lilia", (cx + s["x"] + math.sin(a) * s["r"] * 0.55, cy + 0.2, cz + s["z"] + math.cos(a) * s["r"] * 0.5),
+                      (0.1, 2.2, 2.2), "6FBF4A", "SmoothPlastic", "Cylinder", rot)
         else:
-            drzewo(L, cx, cy, cz, s["x"], s["z"], s["h"], "DrzewoPole")
+            drzewo(L, cx, cy, cz, s["x"], s["z"], s["h"], "DrzewoLas" if s.get("las") else "DrzewoPole")
     for d in W["drzewa"]:
-        drzewo(L, cx, cy, cz, d["x"], d["z"], d["h"], "DrzewoZa")
-    # trzy menhiry za murem (orientacja) i staw
+        if math.hypot(d["x"] - LS["x"], d["z"] - LS["z"]) > LS["r"] + 8:
+            drzewo(L, cx, cy, cz, d["x"], d["z"], d["h"], "DrzewoZa")
+    for d in WL["drzewa"]:
+        drzewo(L, cx, cy, cz, d["x"], d["z"], d["h"], "DrzewoZaLasem")
     for i in range(3):
-        a = 2 * math.pi * i / 3 + 0.5
+        a = 2 * math.pi * i / 3 + 2.6
         r = R + 10
         czesc(L, "Znaki", "Menhir", (cx + math.sin(a) * r, cy + 7, cz + math.cos(a) * r), (4, 14, 3), "7C7486", "Slate", "Block", (0, a, 0.08))
-    czesc(L, "Znaki", "Staw", (cx - R - 34, cy + 0.05, cz + 30), (0.12, 34, 34), "5FB8E8", "Glass", "Cylinder", (0, 0, math.pi / 2), 0.2)
+    # znak w środku łąki: kamienny krąg (punkt orientacyjny przy starcie)
+    for i in range(8):
+        a = 2 * math.pi * i / 8
+        czesc(L, "Znaki", "Krag", (cx + 12 + math.sin(a) * 9, cy + 1.6, cz - 20 + math.cos(a) * 9), (1.6, 3.2, 1.6), "A8A0B4", "Slate", "Block", (0, a, 0))
     for i, (x, z) in enumerate(W["kwiaty"]):
         czesc(L, "Kwiaty", "Kwiat", (cx + x, cy + 0.08, cz + z), (0.1, 1.6, 1.6), ["FFF07A", "FF9AD8", "FFFFFF", "C8A8FF"][i % 4], "SmoothPlastic",
-              "Cylinder", (0, 0, math.pi / 2))
+              "Cylinder", rot)
     return L
+
+
+def tablica_lasu(D):
+    """Tablica przy bramie (po stronie łąki), przodem do łąki; sylwetki mieszkańców lasu nad nią."""
+    B = brama_lasu(D)
+    cx, cy, cz = D["pole"]["srodek"]
+    sx, sz = B["srodek"]
+    ux, uz = B["u"]
+    px, pz = cx + sx - ux * 10 + uz * 22, cz + sz - uz * 10 - ux * 22
+    return {"poz": [round(px, 2), cy + 5, round(pz, 2)], "patrz": [round(px - ux * 10, 2), cy + 5, round(pz - uz * 10, 2)],
+            "sylwetki": ["Pet_muchomornik", "Pet_lesny_troll", D["boss"]["wzorzec"]]}
 
 
 WSTEP = r'''
@@ -167,6 +248,7 @@ if tylkoSkrypty then
 	end
 	stary:SetAttribute("Zbudowano", "__CZAS__")
 	stary:SetAttribute("Publikacja", __PUBLIKACJA__)
+	stary:SetAttribute("Wydanie", "__WYDANIE__")
 	CH:SetWaypoint(K .. ": skrypty")
 	return "skrypty zaktualizowane"
 end
@@ -189,6 +271,7 @@ k:SetAttribute("Wygenerowane", true)
 k:SetAttribute("Zrodlo", "swiat/ewolucja")
 k:SetAttribute("Zbudowano", "__CZAS__")
 k:SetAttribute("Publikacja", __PUBLIKACJA__)
+k:SetAttribute("Wydanie", "__WYDANIE__")
 k:SetAttribute("__WYLACZNIK__", if wlaczona == nil then true else wlaczona)
 local mod = Instance.new("Folder")
 mod.Name = "Moduly"
@@ -248,6 +331,68 @@ for _, c in HS:JSONDecode(__SCENA__) do
 	p.TopSurface = Enum.SurfaceType.Smooth
 	p.BottomSurface = Enum.SurfaceType.Smooth
 	p.Parent = g
+end
+-- tablica DEEP WOODS z sylwetkami mieszkańców lasu (czarne kopie wzorców)
+do
+	local T = HS:JSONDecode(__TABLICA__)
+	local g = grupy.Brama or sc
+	local cf = CFrame.lookAt(Vector3.new(T.poz[1], T.poz[2], T.poz[3]), Vector3.new(T.patrz[1], T.patrz[2], T.patrz[3]))
+	local p = Instance.new("Part")
+	p.Name = "Tablica"
+	p.Anchored = true
+	p.Size = Vector3.new(16, 7, 0.6)
+	p.CFrame = cf
+	p.Color = Color3.fromHex("5C4632")
+	p.Material = Enum.Material.Wood
+	p.Parent = g
+	for _, dx in { -6.5, 6.5 } do
+		local n = Instance.new("Part")
+		n.Name = "Noga"
+		n.Anchored = true
+		n.Size = Vector3.new(0.8, 6, 0.8)
+		n.CFrame = cf * CFrame.new(dx, -5, 0)
+		n.Color = Color3.fromHex("4A3826")
+		n.Material = Enum.Material.Wood
+		n.Parent = g
+	end
+	local sg = Instance.new("SurfaceGui")
+	sg.Face = Enum.NormalId.Front
+	sg.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	sg.PixelsPerStud = 24
+	sg.LightInfluence = 0
+	sg.Parent = p
+	for i, tx in { "__NAPIS1__", "__NAPIS2__" } do
+		local l = Instance.new("TextLabel")
+		l.BackgroundTransparency = 1
+		l.Position = UDim2.fromScale(0.05, if i == 1 then 0.06 else 0.58)
+		l.Size = UDim2.fromScale(0.9, if i == 1 then 0.5 else 0.34)
+		l.Text = tx
+		l.TextScaled = true
+		l.Font = Enum.Font.LuckiestGuy
+		l.TextColor3 = if i == 1 then Color3.fromHex("9BFFB8") else Color3.fromHex("FFC83D")
+		l.Parent = sg
+	end
+	for i, n in T.sylwetki do
+		local m = wz:FindFirstChild(n)
+		if m then
+			m = m:Clone()
+			m.Name = "Sylwetka"
+			for _, d in m:GetDescendants() do
+				if d:IsA("BasePart") then
+					d.Color = Color3.fromHex("141018")
+					d.Material = Enum.Material.SmoothPlastic
+					d.CastShadow = false
+					d.CanCollide = false
+				end
+			end
+			local _, roz = m:GetBoundingBox()
+			pcall(function()
+				m:ScaleTo(m:GetScale() * 5 / math.max(roz.Y, 0.1))
+			end)
+			m:PivotTo(cf * CFrame.new((i - 2) * 5.2, 3.6, 0) * CFrame.Angles(0, math.pi, 0))
+			m.Parent = g
+		end
+	end
 end
 for _, s in { { "SerwerEwolucji", Enum.RunContext.Server }, { "KlientEwolucji", Enum.RunContext.Client } } do
 	local sk = Instance.new("Script")
@@ -333,6 +478,7 @@ def main():
     ap.add_argument("--wlacz", choices=["on", "off"])
     ap.add_argument("--publikacja", action="store_true")
     ap.add_argument("--studio", default=None)
+    ap.add_argument("--wydanie", default="studio", help="etykieta wydania (atrybut Wydanie kontenera), np. etap2")
     a = ap.parse_args()
     DN.main()
     D = DN.dane()
@@ -341,7 +487,7 @@ def main():
     for b in bledy:
         log("BŁĄD Luau:", b)
     sc = scena(D)
-    wzorce = sorted({f["wzorzec"] for f in D["formy"]})
+    wzorce = sorted({f["wzorzec"] for f in D["formy"]} | {D["boss"]["wzorzec"]})
     log("źródła: %s (%d kB); scena: %d części; wzorce: %d; %s" % (
         ", ".join(zr), sum(len(t.encode("utf-8")) for t in zr.values()) // 1000, len(sc), len(wzorce),
         "PUBLIKACJA: bez strażnika Studio" if a.publikacja else "ze strażnikiem Studio (tylko w Studio)"))
@@ -377,12 +523,14 @@ def main():
             return 0
         kod = wstaw(BUDOWA, CZAS=time.strftime("%Y-%m-%d %H:%M"), TYLKO="true" if a.skrypty else "false",
                     PUBLIKACJA="true" if a.publikacja else "false", WZORCE=luau_str(json.dumps(wzorce)),
-                    ZRODLA=luau_str(json.dumps(zr, ensure_ascii=False)), SCENA=luau_str(json.dumps(sc)), **wsp)
+                    ZRODLA=luau_str(json.dumps(zr, ensure_ascii=False)), SCENA=luau_str(json.dumps(sc)), TABLICA=luau_str(json.dumps(tablica_lasu(D))),
+                    NAPIS1=D["ui"]["las_tablica"], NAPIS2=D["ui"]["las_warunek"] % D["las"]["od_formy"], WYDANIE=a.wydanie.replace('"', ""), **wsp)
         log(wykonaj(kod, "budowa"))
         st = json.loads(wykonaj(wstaw(STAN, KONTENER=D["kontener"]), "stan"))
         zle = [n for n, t in zr.items() if (st["zrodla"].get(n) or {}).get("bajtow") != len(t.encode("utf-8"))]
-        log("sprawdzenie: %s; wyłącznik %s = %s; publikacja %s" % ("źródła zgodne" if not zle else "NIEZGODNE: " + ", ".join(zle),
-                                                                 D["wylacznik"], st["atrybuty"].get(D["wylacznik"]), st["atrybuty"].get("Publikacja")))
+        log("sprawdzenie: %s; wyłącznik %s = %s; publikacja %s; wydanie %s; części sceny %d" % (
+            "źródła zgodne" if not zle else "NIEZGODNE: " + ", ".join(zle), D["wylacznik"], st["atrybuty"].get(D["wylacznik"]),
+            st["atrybuty"].get("Publikacja"), st["atrybuty"].get("Wydanie"), st["czesci"]))
         return 1 if zle else 0
 
 

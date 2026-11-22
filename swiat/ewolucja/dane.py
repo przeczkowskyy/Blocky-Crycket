@@ -39,11 +39,11 @@ def ustawienia():
         return json.load(f)
 
 
-def przeszkody(P):
-    """Skały i drzewa w polu (koła dla logiki), powtarzalne."""
+def przeszkody(P, LS=None):
+    """Skały, drzewa i stawy w polu i w lesie (koła dla logiki), powtarzalne."""
     los = random.Random(11)
     R = P["r"]
-    w = []
+    w = [{"typ": "staw", "x": -78.0, "z": 58.0, "r": 11.0}]
     while len([s for s in w if s["typ"] == "skala"]) < P["skal"]:
         a, r = los.random() * 2 * math.pi, 34 + los.random() * (R - 60)
         s = {"typ": "skala", "x": round(math.sin(a) * r, 2), "z": round(math.cos(a) * r, 2), "r": round(5 + los.random() * 4.5, 2)}
@@ -52,15 +52,36 @@ def przeszkody(P):
     while len([s for s in w if s["typ"] == "drzewo"]) < P["drzew_w_polu"]:
         a, r = los.random() * 2 * math.pi, 40 + los.random() * (R - 58)
         s = {"typ": "drzewo", "x": round(math.sin(a) * r, 2), "z": round(math.cos(a) * r, 2), "r": 2.4, "h": round(16 + los.random() * 8, 1)}
-        if all(math.hypot(s["x"] - q["x"], s["z"] - q["z"]) > s["r"] + q["r"] + 20 for q in w):
+        if not (s["z"] > 100 and abs(s["x"]) < 85) and all(math.hypot(s["x"] - q["x"], s["z"] - q["z"]) > s["r"] + q["r"] + 20 for q in w):
             w.append(s)
+    if LS:
+        lx, lz, LR = LS["srodek"][0], LS["srodek"][1], LS["r"]
+        w.append({"typ": "staw", "x": lx + 42.0, "z": lz + 30.0, "r": 12.0})
+        n = 0
+        while n < LS["drzew_w_lesie"]:
+            a, r = los.random() * 2 * math.pi, 25 + los.random() * (LR - 40)
+            s = {"typ": "drzewo", "x": round(lx + math.sin(a) * r, 2), "z": round(lz + math.cos(a) * r, 2), "r": 3.0, "h": round(24 + los.random() * 10, 1),
+                 "las": True}
+            if s["z"] > 160 and all(math.hypot(s["x"] - q["x"], s["z"] - q["z"]) > s["r"] + q["r"] + 18 for q in w):
+                w.append(s)
+                n += 1
     return w
 
 
-def kulki(P, J, prz):
-    """Stałe miejsca kulek: [x, z, typ] (1 mała, 2 duża), z dala od przeszkód."""
+def kulki(P, J, prz, LS=None):
+    """Stałe miejsca kulek: [x, z, typ] (1 mała, 2 duża, 3 wielka — tylko w lesie), z dala od przeszkód."""
     los = random.Random(7)
     w = []
+    if LS:
+        lx, lz = LS["srodek"]
+        for typ, ile in ((3, LS["wielkie"]), (2, LS["duze"])):
+            n = 0
+            while n < ile:
+                a, r = los.random() * 2 * math.pi, math.sqrt(los.random()) * (LS["r"] - 6)
+                x, z = round(lx + math.sin(a) * r, 2), round(lz + math.cos(a) * r, 2)
+                if math.hypot(x, z) > P["r"] + 4 and all(math.hypot(x - s["x"], z - s["z"]) > s["r"] + 2.5 for s in prz):
+                    w.append([x, z, typ])
+                    n += 1
     for typ, ile in ((2, J["duze"]), (1, J["male"])):
         n = 0
         while n < ile:
@@ -93,7 +114,44 @@ def wystroj(P):
         a = i * 2.39996
         r = math.sqrt((i + 0.5) / P["kwiatow"]) * (R - 6)
         kwiaty.append([round(math.sin(a) * r, 2), round(math.cos(a) * r, 2)])
-    return {"plamy": plamy, "drzewa": drzewa, "kwiaty": kwiaty}
+    kepki = []
+    for i in range(P["kepek"]):
+        a, r = los.random() * 2 * math.pi, math.sqrt(los.random()) * (R - 4)
+        kepki.append([round(math.sin(a) * r, 2), round(math.cos(a) * r, 2), round(los.random() * 6.28, 2)])
+    grzyby = []
+    for i in range(P["grzybow"]):
+        a, r = los.random() * 2 * math.pi, 30 + los.random() * (R - 40)
+        grzyby.append([round(math.sin(a) * r, 2), round(math.cos(a) * r, 2), round(0.8 + los.random() * 0.8, 2)])
+    krzaki = []
+    for i in range(P["krzakow"]):
+        a = 2 * math.pi * (i + los.random() * 0.5) / P["krzakow"]
+        r = R + 5 + los.random() * 5
+        krzaki.append([round(math.sin(a) * r, 2), round(math.cos(a) * r, 2), round(3 + los.random() * 3, 1)])
+    return {"plamy": plamy, "drzewa": drzewa, "kwiaty": kwiaty, "kepki": kepki, "grzyby": grzyby, "krzaki": krzaki}
+
+
+def wystroj_lasu(LS):
+    """Tylko scena lasu: drzewa za murem lasu, grzyby, plamy ciemnej ściółki."""
+    los = random.Random(13)
+    lx, lz, R = LS["srodek"][0], LS["srodek"][1], LS["r"]
+    drzewa, grzyby, plamy = [], [], []
+    for i in range(LS["drzew_za_murem"]):
+        a = 2 * math.pi * (i + los.random() * 0.6) / LS["drzew_za_murem"]
+        x, z = lx + math.sin(a) * (R + 10 + los.random() * 22), lz + math.cos(a) * (R + 10 + los.random() * 22)
+        if math.hypot(x, z) > 170:
+            drzewa.append({"x": round(x, 2), "z": round(z, 2), "h": round(26 + los.random() * 16, 1)})
+    for i in range(LS["grzybow"]):
+        a, r = los.random() * 2 * math.pi, 10 + los.random() * (R - 16)
+        x, z = lx + math.sin(a) * r, lz + math.cos(a) * r
+        if math.hypot(x, z) > 158:
+            grzyby.append([round(x, 2), round(z, 2), round(1.0 + los.random() * 1.2, 2)])
+    for i in range(10):
+        a, r = los.random() * 2 * math.pi, math.sqrt(los.random()) * (R - 20)
+        x, z = lx + math.sin(a) * r, lz + math.cos(a) * r
+        if math.hypot(x, z) > 160:
+            plamy.append({"x": round(x, 2), "z": round(z, 2), "r": round(10 + los.random() * 14, 1), "c": ["3E7A33", "4A6B2E", "5C4A32"][i % 3],
+                          "m": ["LeafyGrass", "Grass", "Ground"][i % 3]})
+    return {"drzewa": drzewa, "grzyby": grzyby, "plamy": plamy}
 
 
 def dane():
@@ -115,16 +173,30 @@ def dane():
                 raise SystemExit("forma %d: nieznany boss %s" % (i + 1, F["boss"]))
             f["wzorzec"], f["model_r"], f["model_h"] = "Boss_" + F["boss"], B["promien"], B["wysokosc"]
         formy.append(f)
+    CHODY = {"skok": {"podskok": 0.32, "pochyl": 0.12, "krok": 1.0}, "klus": {"podskok": 0.1, "pochyl": 0.14, "krok": 1.3},
+             "dwunozny": {"podskok": 0.14, "pochyl": 0.1, "krok": 1.1}, "pelzanie": {"podskok": 0.02, "pochyl": 0.04, "krok": 0.8}}
+    for f in formy:
+        for k, v in CHODY[f.get("chod", "skok")].items():
+            f.setdefault(k, v)
+        f.setdefault("anim", None)  # opcjonalnie: {"chod": id, "gryz": id} dla modelu ze szkieletem (Animator)
     for a, b in zip(formy, formy[1:]):
         if b["r"] <= a["r"]:
             raise SystemExit("formy: promienie muszą rosnąć")
     P = dict(U["pole"])
     P.pop("opis", None)
-    prz = przeszkody(P)
+    LS = {k: v for k, v in U["las"].items() if k != "opis"}
+    prz = przeszkody(P, LS)
     J = {k: v for k, v in U["jedzenie"].items() if k != "opis"}
+    B = {k: v for k, v in U["boss"].items() if k != "opis"}
+    if B["model"] not in [b["model"] for b in UP["boss"]["modele"]]:
+        raise SystemExit("boss: nieznany model %s" % B["model"])
+    B["wzorzec"], B["model_r"], B["model_h"] = "Boss_" + B["model"], UP["boss"]["promien"], UP["boss"]["wysokosc"]
+    B["chod"] = "pelzanie"
+    B.update({"podskok": 0.02, "pochyl": 0.04, "krok": 0.8, "anim": None})
     D = {
         "kontener": U["kontener"], "prefiks": U["prefiks"], "wylacznik": U["wylacznik"], "wzorceRS": U["wzorce_rs"], "ui": U["ui"],
-        "pole": P, "przeszkody": prz, "kulkiPoz": kulki(P, J, prz), "jedzenie": J, "formy": formy,
+        "pole": P, "przeszkody": prz, "kulkiPoz": kulki(P, J, prz, LS), "jedzenie": J, "formy": formy,
+        "las": {"nazwa": LS["nazwa"], "x": LS["srodek"][0], "z": LS["srodek"][1], "r": LS["r"], "od_formy": LS["od_formy"]}, "boss": B,
         "ruch": {k: v for k, v in U["ruch"].items() if k != "opis"},
         "gryzienie": {k: v for k, v in U["gryzienie"].items() if k != "opis"},
         "ulepszenia": U["ulepszenia"],

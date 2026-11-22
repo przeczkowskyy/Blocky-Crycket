@@ -56,6 +56,14 @@ for f, ile in D.boty.formy do
 		L.dodajByt(S, 0, f)
 	end
 end
+for f, ile in D.boty.las_formy do
+	for _ = 1, ile do
+		L.dodajByt(S, 0, f, nil, nil, 2)
+	end
+end
+local boss = L.dodajBossa(S)
+kontener:SetAttribute("BossId", boss.id)
+kontener:SetAttribute("BossHP", 1)
 
 ------------------------------------------------------------------ gracze
 type Gracz = { slot: number, byt: any, wiadro: { t: number, z: number }, nazwa: string, start: number, miary: any,
@@ -286,6 +294,9 @@ local function migawka(): buffer
 		if e.gryzDo > S.czas then
 			f += 64
 		end
+		if e.boss then
+			f += 128
+		end
 		buffer.writeu16(b, o, e.id % 65536)
 		buffer.writeu8(b, o + 2, e.slot)
 		buffer.writeu8(b, o + 3, f)
@@ -319,6 +330,12 @@ local function poZdarzeniu(z)
 			plr:SetAttribute("EW_Miary", miaryJSON(g))
 		elseif z.t == "olbrzym" then
 			table.insert(doWyslania, { t = "ogloszenie", tekst = string.format(D.ui.ogl_olbrzym, g.nazwa) })
+		elseif z.t == "las_otwarty" then
+			g.miary.las = math.floor((os.clock() - g.start) * 10 + 0.5) / 10
+		elseif z.t == "boss_pokonany" then
+			g.miary.boss_pokonany = g.miary.boss_pokonany or math.floor((os.clock() - g.start) * 10 + 0.5) / 10
+			table.insert(doWyslania, { t = "ogloszenie", tekst = string.format(D.ui.ogl_boss, g.nazwa, D.boss.nazwa) })
+			plr:SetAttribute("EW_Miary", miaryJSON(g))
 		end
 	end
 end
@@ -367,6 +384,8 @@ RunService.Heartbeat:Connect(function(dt: number)
 	doAtr -= dt
 	if doAtr <= 0 then
 		doAtr = 0.2
+		local bb = L.bytPoId(S, S.boss)
+		kontener:SetAttribute("BossHP", if bb and not bb.martwyDo then math.floor(bb.hp / bb.hpMaks * 1000) / 1000 else 0)
 		for plr, g in gracze do
 			atrybuty(plr, g)
 			for _, m in g.miary.po_smierci do
@@ -422,6 +441,23 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 			martwy = byt and byt.martwyDo ~= nil, tarcza = byt and byt.tarczaDo > S.czas, byty = byty, kulek = zywe, strefy = #S.strefy,
 			laska = byt and byt.laskaDo > S.czas,
 			liczniki = liczniki, krok_ms = if ileKrokow > 0 then czasKroku / ileKrokow * 1000 else 0 }
+	elseif polecenie == "boss" then
+		local bb = L.bytPoId(S, S.boss)
+		return bb and { id = bb.id, hp = bb.hp, hpMaks = bb.hpMaks, x = bb.x, z = bb.z, martwy = bb.martwyDo ~= nil, cel = bb.cel }
+	elseif polecenie == "boss_hp" then
+		local bb = L.bytPoId(S, S.boss)
+		if bb then
+			bb.hp = a
+			bb.ostRana = S.czas
+		end
+		return true
+	elseif polecenie == "boss_stoj" then
+		local bb = L.bytPoId(S, S.boss)
+		if bb then
+			bb.wx, bb.wz = 0, 0
+			bb.myslDo = S.czas + (a or 3)
+		end
+		return true
 	elseif polecenie == "miary" then
 		return if g then HttpService:JSONDecode(miaryJSON(g)) else nil
 	elseif polecenie == "wzrost_pelny" then
@@ -460,6 +496,11 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 			e.myslDo = S.czas + (b or 3)
 		end
 		return e ~= nil
+	elseif polecenie == "laska_zeruj" then
+		if byt then
+			byt.laskaDo = 0
+		end
+		return true
 	elseif polecenie == "tarcza_zeruj" then
 		if byt then
 			byt.tarczaDo = 0

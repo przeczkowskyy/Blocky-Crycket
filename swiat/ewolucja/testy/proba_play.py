@@ -191,7 +191,8 @@ def przebieg(p, zrzuty):
     kup, _ = czekaj(lambda: p.atr().get("EW_Poz_szybkosc") == 2, 4, 0.3)
     st = p.serwer('"stan"')
     p.przycisk("zamknij")
-    wynik("P07 zakup (Szybkość)", kup and st["poziomy"]["szybkosc"] == 2 and 650 - 300 - 1 <= st["zloto"] <= 650 - 300 + 25,
+    cena = D["ulepszenia"][1]["ceny"][0]
+    wynik("P07 zakup (Szybkość)", kup and st["poziomy"]["szybkosc"] == 2 and 650 - cena - 1 <= st["zloto"] <= 650 - cena + 25,
           poziom=st["poziomy"]["szybkosc"], zloto_po=round(st["zloto"]), panel=p.atr().get("EW_K_Legowisko"))
     # P08 pościg i zjedzenie przez większego bota: forma niżej, legowisko / złoto / ulepszenia zostają
     st = p.serwer('"stan"')
@@ -204,6 +205,7 @@ def przebieg(p, zrzuty):
     st = p.serwer('"stan"')
     ja = moje(st)
     forma0, max0, zl0 = st["forma"], st["maxForma"], st["zloto"]
+    smierci0 = p.serwer('"miary"').get("smierci", 0)
     p.serwer('"tarcza_zeruj"')
     bot = next(b for b in st["byty"] if b["slot"] == 0 and not b["martwy"] and b["forma"] >= forma0 + 2)
     p.serwer('"przenies", %d, %f, %f' % (bot["id"], ja["x"] + 11, ja["z"] - 9))
@@ -214,7 +216,7 @@ def przebieg(p, zrzuty):
     st = p.serwer('"stan"')
     ja = moje(st)
     p.serwer('"przenies", %d, %f, %f' % (bot["id"], ja["x"] + 3, ja["z"]))
-    zj, _ = czekaj(lambda: p.serwer('"stan"')["martwy"], 4, 0.15)
+    zj, _ = czekaj(lambda: p.serwer('"miary"').get("smierci", 0) > smierci0, 5, 0.15)
     t_smierci = time.time()
     wrocil, _ = czekaj(lambda: not p.serwer('"stan"')["martwy"], 5, 0.2)
     st = p.serwer('"stan"')
@@ -275,8 +277,62 @@ def przebieg(p, zrzuty):
     # P12 klatka i liczba widoków
     a = p.atr()
     st = p.serwer('"stan"')
+    las_i_boss(p, zrzuty)
+    a = p.atr()
     wynik("P12 klatka", (a.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a.get("EW_K_Klatka") or 0, 1), widokow=a.get("EW_K_Widokow"),
           krok_serwera_ms=round(st.get("krok_ms") or 0, 2), okno=a.get("okno"), liczniki=st.get("liczniki"))
+
+
+def las_i_boss(p, zrzuty):
+    # P14 DEEP WOODS: brama otwiera się przy formie 4, gracz w lesie, boss z paskiem życia
+    st = p.serwer('"stan"')
+    while st["forma"] < 4:
+        p.serwer('"wzrost_pelny"')
+        p.przycisk("ewoluuj")
+        czekaj(lambda: p.serwer('"stan"')["forma"] > st["forma"], 5, 0.3)
+        st = p.serwer('"stan"')
+    time.sleep(2.0)
+    a = p.atr()
+    B = p.serwer('"boss"')
+    p.serwer('"boss_stoj", 3')
+    p.serwer('"przenies", %d, %f, %f' % (st["byt"], B["x"] + 24, B["z"] - 10))
+    time.sleep(1.2)
+    st = p.serwer('"stan"')
+    LS = D["las"]
+    w_lesie = math.hypot(st["x"] - LS["x"], st["z"] - LS["z"]) < LS["r"]
+    if zrzuty:
+        p.zrzut("07_las.jpg")
+    wynik("P14 DEEP WOODS", a.get("EW_K_Las") is True and st["maxForma"] >= 4 and w_lesie and B and not B["martwy"],
+          las=a.get("EW_K_Las"), forma=st["forma"], w_lesie=w_lesie, boss_hp=B and B["hp"])
+    # P15 mini-boss: BITE rani, pasek życia, pokonany → skrzynia i ogłoszenie
+    B = p.serwer('"boss"')
+    zl0 = p.serwer('"stan"')["zloto"]
+    r = D["formy"][st["forma"] - 1]["r"] + D["formy"][D["boss"]["forma"] - 1]["r"] + 1.5
+    p.serwer('"boss_hp", 120')
+    p.serwer('"boss_stoj", 4')
+    p.serwer('"tarcza_zeruj"')
+    p.serwer('"przenies", %d, %f, %f' % (st["byt"], B["x"] + r, B["z"]))
+    time.sleep(0.5)
+    p.przycisk("gryz")
+    rana, _ = czekaj(lambda: p.serwer('"boss"')["hp"] < 120, 3, 0.2)
+    time.sleep(0.4)
+    if zrzuty:
+        p.zrzut("08_boss.jpg")
+    pok = None
+    for _ in range(4):
+        p.serwer('"boss_hp", 3')
+        p.serwer('"boss_stoj", 3')
+        B = p.serwer('"boss"')
+        p.serwer('"przenies", %d, %f, %f' % (st["byt"], B["x"] + r, B["z"]))
+        time.sleep(0.9)
+        p.przycisk("gryz")
+        pok, _ = czekaj(lambda: p.serwer('"boss"')["martwy"], 1.5, 0.2)
+        if pok:
+            break
+    st2 = p.serwer('"stan"')
+    m = p.serwer('"miary"')
+    wynik("P15 mini-boss", rana and pok and st2["zloto"] - zl0 >= D["boss"]["skrzynia"] and m.get("boss_pokonany"), rana=bool(rana), pokonany=bool(pok),
+          zloto=[round(zl0), round(st2["zloto"])], miara_boss_s=m.get("boss_pokonany"), miara_las_s=m.get("las"))
 
 
 def bledy_konsoli(p):

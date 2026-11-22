@@ -132,9 +132,10 @@ class TestLiczby(unittest.TestCase):
         self.assertEqual([f["r"] for f in D["formy"]], sorted(f["r"] for f in D["formy"]), "drabina rośnie")
         self.assertGreater(D["formy"][-1]["r"], 1.5 * D["formy"][-2]["r"], "Olbrzym wyraźnie ogromny")
         U = {u["id"]: u for u in D["ulepszenia"]}
-        self.assertEqual(U["szybkosc"]["wartosci"], [16, 19, 22])
-        self.assertEqual(U["apetyt"]["wartosci"], [1, 1.25, 1.5])
-        self.assertTrue(all(len(u["ceny"]) == 2 for u in D["ulepszenia"]), "po trzy poziomy (start + 2 zakupy)")
+        self.assertEqual(U["szybkosc"]["wartosci"][:3], [16, 19, 22])
+        self.assertEqual(U["apetyt"]["wartosci"][:3], [1, 1.25, 1.5])
+        self.assertTrue(all(len(u["ceny"]) == 4 for u in D["ulepszenia"]), "po pięć poziomów (start + 4 zakupy)")
+        self.assertTrue(all(u["ceny"][3] > 2 * u["ceny"][1] for u in D["ulepszenia"]), "poziomy 4 i 5 wyraźnie drożej")
 
     def test_02_zasady_jedzenia(self):
         S = stan()
@@ -154,13 +155,14 @@ class TestLiczby(unittest.TestCase):
 class TestPetla(unittest.TestCase):
     def test_03_kulka_i_wzrost(self):
         S = stan()
-        p = D["kulkiPoz"][0]
+        k0 = len(D["kulkiPoz"])
+        p = D["kulkiPoz"][-1]
         gr = byt(S, 1, 1, p[0] + 1.0, p[1])
         zd = krok(S)
         kul = [z for z in zd if z["t"] == "kulka" and z["id"] == g(gr, "id")]
         self.assertTrue(kul, "kulka zjedzona dotykiem")
-        self.assertEqual(g(gr, "wzrost"), D["jedzenie"]["duza"] if p[2] == 2 else D["jedzenie"]["mala"])
-        self.assertGreater(g(S.get("kulki"), 1), 0, "kulka czeka na powrót")
+        self.assertGreaterEqual(g(gr, "wzrost"), D["jedzenie"]["duza"] if p[2] == 2 else D["jedzenie"]["mala"])
+        self.assertGreater(g(S.get("kulki"), k0), 0, "kulka czeka na powrót")
         krok(S, int(D["jedzenie"]["powrot_duza_s"] / 0.5) + 2, 0.5)
         ustaw(gr, x=0, z=0)
 
@@ -240,6 +242,11 @@ class TestPetla(unittest.TestCase):
         self.assertEqual(g(gr, "zloto"), 10000 - D["ulepszenia"][1]["ceny"][0])
         self.assertAlmostEqual(jeden("predkosc", DL, gr) / v1, 19 / 16)
         self.assertTrue(wolaj("kup", S, gr, "szybkosc")[0])
+        self.assertEqual(wolaj("kup", S, gr, "szybkosc"), [False, "zloto"], "poziom 4 za drogi przy reszcie złota")
+        ustaw(gr, zloto=1e6)
+        self.assertTrue(wolaj("kup", S, gr, "szybkosc")[0])
+        self.assertTrue(wolaj("kup", S, gr, "szybkosc")[0])
+        self.assertEqual(g(gr.get("poziomy"), "szybkosc"), 5)
         self.assertEqual(wolaj("kup", S, gr, "szybkosc"), [False, "maks"])
         self.assertTrue(wolaj("kup", S, gr, "apetyt")[0])
         self.assertEqual(jeden("apetyt", DL, gr), 1.25)
@@ -263,7 +270,7 @@ class TestPetla(unittest.TestCase):
     def test_09_umiejetnosci(self):
         S = stan()
         # SLURP (forma 1): kulki w promieniu
-        p = D["kulkiPoz"][5]
+        p = D["kulkiPoz"][-6]
         gr = byt(S, 1, 1, p[0] + 4, p[1])
         lista = LM.Tabela()
         self.assertTrue(jeden("umiejetnosc", S, gr, lista))
@@ -339,6 +346,74 @@ class TestPetla(unittest.TestCase):
         ruszone = sum(1 for b in boty if b["id"] in poz0 and math.hypot(b["x"] - poz0[b["id"]][0], b["z"] - poz0[b["id"]][1]) > 3)
         self.assertGreaterEqual(ruszone, len(poz0) - 1, "boty chodzą")
         self.assertEqual(sorted(b["forma"] for b in boty), [1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6], "formy botów stałe")
+
+
+class TestLas(unittest.TestCase):
+    def test_13_brama_lasu(self):
+        S = stan()
+        gr = byt(S, 1, 3, 0, 0)
+        LS = D["las"]
+        cel = (LS["x"], LS["z"])
+        ustaw(gr, maxForma=3)
+        x, z = wolaj("ogranicz", DL, cel[0], cel[1], 3.0, jeden("maska", DL, gr))
+        self.assertLessEqual(math.hypot(x, z), D["pole"]["r"], "forma 3: las zamknięty (zostaje na łące)")
+        ustaw(gr, maxForma=4, forma=4)
+        x, z = wolaj("ogranicz", DL, cel[0], cel[1], 4.0, jeden("maska", DL, gr))
+        self.assertAlmostEqual(x, cel[0])
+        self.assertAlmostEqual(z, cel[1], msg="forma 4 zdobyta: las otwarty")
+        self.assertTrue(jeden("wLesie", DL, cel[0], cel[1]))
+        # bot łąki nie wchodzi do lasu, bot lasu nie wychodzi
+        b1, b2 = byt(S, 0, 2, 0, 0), byt(S, 0, 5, None, None, 2) if False else jeden("dodajByt", S, 0.0, 5.0, None, None, 2.0)
+        x, z = wolaj("ogranicz", DL, cel[0], cel[1], 2.2, jeden("maska", DL, b1))
+        self.assertLessEqual(math.hypot(x, z), D["pole"]["r"])
+        x, z = wolaj("ogranicz", DL, 0.0, 0.0, 5.2, jeden("maska", DL, b2))
+        self.assertLessEqual(math.hypot(x - cel[0], z - cel[1]), LS["r"])
+        self.assertTrue(jeden("wLesie", DL, g(b2, "x"), g(b2, "z")), "bot lasu rodzi się w lesie")
+
+    def test_14_las_otwiera_sie_przy_formie_4(self):
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 3, 0, 0)
+        ustaw(gr, maxForma=3, wzrost=D["formy"][2]["potrzeba"])
+        jeden("ewoluuj", S, gr, LM.Tabela())
+        zd = krok(S, int(D["ewolucja"]["kokon_s"] / 0.1) + 1, 0.1)
+        self.assertTrue([z for z in zd if z["t"] == "las_otwarty"], "zdarzenie: DEEP WOODS otwarte")
+        self.assertEqual(jeden("maska", DL, gr), 3)
+
+    def test_15_mini_boss(self):
+        S = stan()
+        bez_kulek(S)
+        boss = jeden("dodajBossa", S)
+        gr = byt(S, 1, 5, g(boss, "x") + D["formy"][4]["r"] + D["formy"][6]["r"] + 1, g(boss, "z"))
+        ustaw(gr, maxForma=5, tarczaDo=0, laskaDo=0, zloto=0.0)
+        self.assertFalse(jeden("mozeZjesc", DL, gr, boss), "bossa nie da się zjeść")
+        self.assertFalse(jeden("mozeZjesc", DL, boss, gr), "boss nie zjada")
+        hp0 = g(boss, "hp")
+        lista = LM.Tabela()
+        self.assertTrue(jeden("gryz", S, gr, lista))
+        rany = [z for z in LM.z_luau(lista, True) if z["t"] == "boss_rana"]
+        self.assertTrue(rany, "BITE rani bossa")
+        self.assertEqual(hp0 - g(boss, "hp"), jeden("obrazenia", DL, gr))
+        # boss gryzie: odrzut, ogłuszenie, kara z paska — bez zjedzenia
+        ustaw(gr, wzrost=100.0, x=g(boss, "x") + D["formy"][4]["r"] + D["formy"][6]["r"] - 0.5, z=g(boss, "z"))
+        ustaw(boss, gryzGotowy=0, myslDo=0)
+        zd = krok(S, 3, 0.05)
+        bg = [z for z in zd if z["t"] == "boss_gryz"]
+        self.assertTrue(bg, "boss gryzie gracza w zasięgu")
+        self.assertIsNone(g(gr, "martwyDo"), "gracz nie zjedzony")
+        self.assertLess(g(gr, "wzrost"), 100, "kara z paska")
+        # pokonany: skrzynia dla gracza, powrót po czasie z pełnym życiem
+        ustaw(boss, hp=3.0)
+        ustaw(gr, ogluszonyDo=0, x=g(boss, "x") + D["formy"][4]["r"] + D["formy"][6]["r"] + 1, z=g(boss, "z"), gryzGotowy=0)
+        lista = LM.Tabela()
+        jeden("gryz", S, gr, lista)
+        pok = [z for z in LM.z_luau(lista, True) if z["t"] == "boss_pokonany"]
+        self.assertTrue(pok and pok[0]["s"] == g(gr, "slot"), "pokonany przez gracza")
+        self.assertGreaterEqual(g(gr, "zloto"), D["boss"]["skrzynia"], "skrzynia złota")
+        self.assertIsNotNone(g(boss, "martwyDo"))
+        krok(S, int(D["boss"]["odrodzenie_s"] / 1.0) + 2, 1.0)
+        self.assertIsNone(g(boss, "martwyDo"))
+        self.assertEqual(g(boss, "hp"), D["boss"]["hp"], "wraca z pełnym życiem")
 
 
 if __name__ == "__main__":

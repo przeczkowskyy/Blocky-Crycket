@@ -191,6 +191,24 @@ rog(pasekW, 9)
 local pasekNapis = napis(pasekTlo, "", UDim2.fromScale(0, 0.05), UDim2.fromScale(1, 0.9), papier, cyfry)
 pasekNapis.ZIndex = 2
 
+local pasekSkala = nowy("UIScale", { Scale = 1 }, pasekTlo)
+local pulsPaska = 99
+
+-- pasek bossa (pod paskiem wzrostu, gdy boss blisko)
+local ramkaBossa = warstwa("Boss", Vector2.new(0.5, 0), UDim2.new(0.5, -40, 0, 58), Vector2.new(250, 34))
+local bossNazwa = napis(ramkaBossa, D.boss.nazwa, UDim2.fromOffset(0, 0), UDim2.new(1, 0, 0, 16), hex("FF9AD8"))
+local bossTlo = nowy("Frame", { Position = UDim2.fromOffset(6, 17), Size = UDim2.new(1, -12, 0, 14), BackgroundColor3 = tusz }, ramkaBossa)
+rog(bossTlo, 7)
+obrys(bossTlo, 2, hex("FF9AD8"))
+local bossW = nowy("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = hex("FF4D8A"), BorderSizePixel = 0 }, bossTlo)
+rog(bossW, 7)
+ramkaBossa.Visible = false
+
+-- błysk ekranu przy ewolucji
+local blysk = nowy("Frame", { Name = "Blysk", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1,
+	ZIndex = 30, Active = false }, gui)
+local blyskT = 99
+
 -- złoto + DEN (góra, na prawo od paska)
 local ramkaZlota = warstwa("Zloto", Vector2.new(0, 0), UDim2.new(0.5, 82, 0, 6), Vector2.new(150, 46))
 local bLegowisko = nowy("TextButton", { Name = "Legowisko", Size = UDim2.fromScale(1, 1), BackgroundColor3 = hex("3A2F4A"), Text = "", AutoButtonColor = true }, ramkaZlota)
@@ -390,9 +408,58 @@ for i, U in D.ulepszenia do
 end
 
 ------------------------------------------------------------------ modele: klon, skala, części i przesunięcia (BulkMoveTo)
-local function zrobModel(f: number)
-	local F = D.formy[f]
-	local wz = wzorzecModelu(f)
+-- opis modelu: forma z drabiny albo boss lasu — wszystko z danych (wzorzec, skala, chód, opcjonalne animacje)
+local function spec(f: number, boss: boolean?)
+	if boss then
+		local B = D.boss
+		return { wzorzec = B.wzorzec, model_r = B.model_r, model_h = B.model_h, r = D.formy[B.forma].r * B.skala, chod = B.chod,
+			podskok = B.podskok, pochyl = B.pochyl, krok = B.krok, anim = B.anim }
+	end
+	return D.formy[f]
+end
+
+-- grupy części do ruchu kończyn (z geometrii, według typu chodu): 1–4 nogi, 5 ogon, 6 głowa (przód to −Z)
+local function grupy(F, poz)
+	local g, pv = {}, {}
+	local x0, x1, y0, y1, z0, z1 = math.huge, -math.huge, math.huge, -math.huge, math.huge, -math.huge
+	for _, p in poz do
+		x0, x1, y0, y1, z0, z1 = math.min(x0, p.X), math.max(x1, p.X), math.min(y0, p.Y), math.max(y1, p.Y), math.min(z0, p.Z), math.max(z1, p.Z)
+	end
+	local cx, cz, H, Gz = (x0 + x1) / 2, (z0 + z1) / 2, math.max(0.1, y1 - y0), math.max(0.1, z1 - z0)
+	local chod = F.chod or "skok"
+	local nogi = if chod == "klus" then y0 + 0.32 * H elseif chod == "dwunozny" then y0 + 0.28 * H else -math.huge
+	local sumy = {}
+	for i, p in poz do
+		local k = 0
+		if p.Y < nogi then
+			if chod == "klus" then
+				k = (if p.X < cx then 1 else 2) + (if p.Z < cz then 0 else 2)
+			else
+				k = if p.X < cx then 1 else 2
+			end
+		elseif chod == "klus" and p.Z > z1 - 0.2 * Gz and p.Y > nogi then
+			k = 5
+		elseif p.Z < z0 + 0.3 * Gz and p.Y > y0 + 0.4 * H then
+			k = 6
+		end
+		g[i] = k
+		if k > 0 then
+			local s = sumy[k] or { z = 0, n = 0 }
+			s.z += p.Z
+			s.n += 1
+			sumy[k] = s
+		end
+	end
+	for k, s in sumy do
+		local y = if k <= 4 then nogi elseif k == 5 then y0 + 0.55 * H else y0 + 0.5 * H
+		local z = if k == 5 then z1 - 0.2 * Gz elseif k == 6 then z0 + 0.3 * Gz else s.z / s.n
+		pv[k] = Vector3.new(cx, y, z)
+	end
+	return g, pv, (z1 - z0)
+end
+
+local function zrobModel(F)
+	local wz = wzorce and wzorce:FindFirstChild(F.wzorzec)
 	local m
 	if wz then
 		m = wz:Clone()
@@ -426,7 +493,29 @@ local function zrobModel(f: number)
 		end
 	end
 	m.Parent = lokalne
-	return m, czesci, offs, poz
+	-- model ze szkieletem i animacjami w danych: odtwarzane klipy zamiast ruchu części
+	local rig = nil
+	if F.anim then
+		local an = m:FindFirstChildWhichIsA("Animator", true)
+		if an then
+			rig = {}
+			for nazwa, id in F.anim do
+				local a = Instance.new("Animation")
+				a.AnimationId = "rbxassetid://" .. tostring(id)
+				local ok, tr = pcall(function()
+					return an:LoadAnimation(a)
+				end)
+				if ok then
+					rig[nazwa] = tr
+				end
+			end
+			if rig.chod then
+				rig.chod.Looped = true
+				rig.chod:Play()
+			end
+		end
+	end
+	return m, czesci, offs, poz, rig
 end
 
 local function krazek(r: number): Part
@@ -528,6 +617,14 @@ local function mojaForma(): number
 	return gracz:GetAttribute("EW_Forma") or 1
 end
 -- byt-atrapa do rachunków przewidywania (prędkość z Szybkości, zasięg Szczęki)
+-- kulka osiągalna dla mnie (las zamknięty → kulki lasu się nie liczą)
+local function osiagalna(p): boolean
+	return (gracz:GetAttribute("EW_MaxForma") or 1) >= D.las.od_formy or not L.wLesie(D, p[1], p[2])
+end
+
+local function mojSlot(): number
+	return gracz:GetAttribute("EW_Slot") or 0
+end
 local function ja()
 	return { slot = 1, forma = mojaForma(), poziomy = { szczeka = gracz:GetAttribute("EW_Poz_szczeka") or 1,
 		szybkosc = gracz:GetAttribute("EW_Poz_szybkosc") or 1, apetyt = gracz:GetAttribute("EW_Poz_apetyt") or 1 } }
@@ -547,7 +644,9 @@ local function zbudujModel(w, f: number)
 	if w.model then
 		w.model:Destroy()
 	end
-	w.model, w.czesci, w.offs, w.poz = zrobModel(f)
+	w.F = spec(f, w.boss)
+	w.model, w.czesci, w.offs, w.poz, w.rig = zrobModel(w.F)
+	w.grupa, w.pivoty, w.dl = grupy(w.F, w.poz)
 	w.cf = table.create(#w.czesci)
 	w.forma = f
 	w.przezr = -1
@@ -561,8 +660,8 @@ local function zbudujModel(w, f: number)
 	end
 end
 
-local function nowyWidok(id: number, slot: number, f: number, x: number, z: number)
-	local w = { id = id, slot = slot, x = x, z = z, tx = x, tz = z, kier = 0, tkier = 0, flagi = 0, martwy = false, brak = 0,
+local function nowyWidok(id: number, slot: number, f: number, x: number, z: number, boss: boolean?)
+	local w = { id = id, slot = slot, x = x, z = z, boss = boss == true, sOst = 1, tx = x, tz = z, kier = 0, tkier = 0, flagi = 0, martwy = false, brak = 0,
 		faza = math.random() * 6, v = 0, px = x, pz = z, skret = 0, gryzT = 99, pulsT = 99, pulsSila = 0, skokT = 0,
 		krazek = krazek(D.formy[f].r), kokon = kula(Color3.new(1, 1, 1), Enum.Material.Neon, 0.05),
 		tarcza = kula(hex("7FE9FF"), Enum.Material.ForceField, 0.2), vx = 0, vz = 0 }
@@ -612,7 +711,7 @@ evStan.OnClientEvent:Connect(function(b: buffer)
 		local f = buffer.readu8(b, o + 4)
 		local x, z = buffer.readf32(b, o + 5), buffer.readf32(b, o + 9)
 		widziane[id] = true
-		local w = widoki[id] or nowyWidok(id, slot, f, x, z)
+		local w = widoki[id] or nowyWidok(id, slot, f, x, z, bit32.band(fl, 128) ~= 0)
 		local martwy = bit32.band(fl, 4) ~= 0
 		if w.martwy and not martwy then
 			w.x, w.z = x, z -- odrodzenie: skok na nowe miejsce
@@ -726,7 +825,7 @@ local function krokSterowania(dt: number)
 		predX += predVX * dt
 		predZ += predVZ * dt
 		local r = D.formy[w.forma].r
-		predX, predZ = L.ogranicz(D, predX, predZ, r)
+		predX, predZ = L.ogranicz(D, predX, predZ, r, if (gracz:GetAttribute("EW_MaxForma") or 1) >= D.las.od_formy then 3 else 1)
 		-- odbicia od tych, których nie zjem i którzy mnie nie zjedzą (jak na serwerze)
 		local mf = w.forma
 		for id, q in widoki do
@@ -926,7 +1025,7 @@ local nrKlatki = 0
 
 local function rysuj(w, dt: number)
 	local moj = w.id == mojId
-	local F = D.formy[w.forma]
+	local F = w.F
 	local r = F.r
 	-- pozycja: własny z przewidywania, cudzy wygładzany do migawki
 	local ox, oz = w.x, w.z
@@ -992,11 +1091,20 @@ local function rysuj(w, dt: number)
 	-- ruch proceduralny
 	local vNom = math.max(4, L.predkosc(D, { slot = w.slot, forma = w.forma, poziomy = { szybkosc = 1 } }))
 	local mv = math.clamp(w.v / vNom, 0, 1.3)
-	w.faza += dt * (2.5 + 11 * mv) / (0.75 + r * 0.09)
+	-- ruch proceduralny z parametrów formy: chód, podskok, pochylenie, tempo kroku
+	w.faza += dt * (2.5 + 11 * mv) * (F.krok or 1) / (0.75 + r * 0.09)
 	local s = math.abs(math.sin(w.faza))
-	local hop = s * r * 0.28 * mv
-	local sy = 1 + 0.07 * mv * s - 0.13 * mv * (1 - s) ^ 3 + math.sin(tGlob * 2.3 + w.id) * 0.025 * (1 - math.min(1, mv))
-	local pochyl = 0.16 * math.min(1, mv)
+	local hop = s * r * (F.podskok or 0.2) * mv
+	local sy = 1 + 0.07 * mv * s - 0.13 * mv * (1 - s) ^ 3 + math.sin(tGlob * 2.3 + w.id) * 0.03 * (1 - math.min(1, mv))
+	local pochyl = (F.pochyl or 0.12) * math.min(1, mv)
+	-- kurz przy stawianiu kroku (tylko blisko kamery)
+	if s < 0.2 and w.sOst >= 0.2 and mv > 0.35 and (moj or (nrKlatki + w.id) % 2 == 0) then
+		local ja2 = widoki[mojId]
+		if moj or (ja2 and (w.x - ja2.x) ^ 2 + (w.z - ja2.z) ^ 2 < 3600) then
+			E:pyl(poz + Vector3.new(0, 0.3, 0), r * 0.45, 2)
+		end
+	end
+	w.sOst = s
 	local kiw = math.sin(w.faza) * 0.09 * mv + math.clamp(-w.skret * 0.07, -0.32, 0.32) * math.min(1, mv + 0.3)
 	local naprzod = 0
 	-- wypad przy gryzieniu
@@ -1029,12 +1137,48 @@ local function rysuj(w, dt: number)
 	local base = CFrame.new(poz + Vector3.new(math.sin(w.kier) * naprzod, hop + wysSkoku + 0.1, math.cos(w.kier) * naprzod))
 		* CFrame.Angles(0, w.kier + math.pi, 0) * CFrame.Angles(-pochyl, 0, kiw) -- przód modeli to −Z (układ rigów Pet Areny)
 	local skx, sky = sxz * puls, sy * puls
-	local cf = w.cf
-	for i, o in w.offs do
-		local p = w.poz[i]
-		cf[i] = base * CFrame.new(p.X * skx, p.Y * sky, p.Z * skx) * o
+	if w.rig then
+		w.model:PivotTo(base)
+		if w.rig.chod then
+			w.rig.chod:AdjustSpeed(0.2 + mv)
+		end
+		if w.gryzT == 0 and w.rig.gryz then
+			w.rig.gryz:Play()
+		end
+	else
+		-- kończyny: nogi w parach (kłus: po przekątnej), ogon macha, głowa kłapie przy gryzieniu
+		local T = {}
+		local kat = math.sin(w.faza) * 0.55 * math.min(1, mv)
+		local kGryz = if w.gryzT < 0.3 then math.sin(math.clamp(w.gryzT / 0.3, 0, 1) * math.pi) else 0
+		for k, pv in w.pivoty do
+			local ax, ay = 0, 0
+			if k <= 4 then
+				ax = if k == 1 or k == 4 then kat else -kat
+			elseif k == 5 then
+				ay = math.sin(w.faza * 2 + tGlob) * 0.35 * (0.3 + math.min(1, mv))
+			else
+				ax = -0.5 * kGryz + math.sin(tGlob * 2 + w.id) * 0.04
+			end
+			T[k] = CFrame.new(pv * Vector3.new(skx, sky, skx)) * CFrame.Angles(ax, ay, 0) * CFrame.new(-pv * Vector3.new(skx, sky, skx))
+		end
+		local fala = if F.chod == "pelzanie" then r * 0.12 * (0.3 + math.min(1, mv)) else 0
+		local cf = w.cf
+		local gr = w.grupa
+		for i, o in w.offs do
+			local p = w.poz[i]
+			local x = p.X * skx
+			if fala > 0 then
+				x += math.sin(w.faza + p.Z * 0.35) * fala
+			end
+			local t = T[gr[i]]
+			if t then
+				cf[i] = base * t * CFrame.new(x, p.Y * sky, p.Z * skx) * o
+			else
+				cf[i] = base * CFrame.new(x, p.Y * sky, p.Z * skx) * o
+			end
+		end
+		workspace:BulkMoveTo(w.czesci, cf, Enum.BulkMoveMode.FireCFrameChanged)
 	end
-	workspace:BulkMoveTo(w.czesci, cf, Enum.BulkMoveMode.FireCFrameChanged)
 	if w.id == olbrzymId then
 		korona.Parent = lokalne
 		pcall(function()
@@ -1110,7 +1254,33 @@ local function odswiezPanel()
 	end
 end
 
+local brama = nil
+local bramaOtwarta: boolean? = nil
+local function odswiezBrame()
+	local otw = (gracz:GetAttribute("EW_MaxForma") or 1) >= D.las.od_formy
+	if otw == bramaOtwarta then
+		return
+	end
+	bramaOtwarta = otw
+	brama = brama or (kontener:FindFirstChild("Scena") and kontener.Scena:FindFirstChild("Brama"))
+	if brama then
+		for _, d in brama:GetDescendants() do
+			if d:IsA("BasePart") and d.Name == "Plot" then
+				d.LocalTransparencyModifier = if otw then 0.85 else 0
+			end
+		end
+	end
+	gracz:SetAttribute("EW_K_Las", otw)
+end
+
 local function odswiezHUD()
+	odswiezBrame()
+	local bossId = kontener:GetAttribute("BossId") or 0
+	local bossHP = kontener:GetAttribute("BossHP") or 0
+	local bw, jw = widoki[bossId], widoki[mojId]
+	ramkaBossa.Visible = bossHP > 0 and bw ~= nil and jw ~= nil and odslona == nil and (bw.x - jw.x) ^ 2 + (bw.z - jw.z) ^ 2 < 90 * 90
+	bossW.Size = UDim2.fromScale(bossHP, 1)
+	ramkaBaneru.Position = if ramkaBossa.Visible then UDim2.new(0.5, -40, 0, 98) else UDim2.new(0.5, -40, 0, 62)
 	local f = mojaForma()
 	local wz = gracz:GetAttribute("EW_Wzrost") or 0
 	local pt = gracz:GetAttribute("EW_Potrzeba") or 1
@@ -1137,8 +1307,11 @@ local function odswiezHUD()
 	cienZryw.Size = UDim2.fromScale(1, math.clamp((zrywGotowy - teraz) / D.ruch.zryw_odnowa_s, 0, 1))
 	cienUm.Size = UDim2.fromScale(1, math.clamp((umGotowy - teraz) / A.odnowa_s, 0, 1))
 	cienGryz.Size = UDim2.fromScale(1, math.clamp((gryzGotowy - teraz) / 0.7, 0, 1))
-	-- podpowiedź: na start (do 5 kulek) i przy pełnym pasku
-	if pelny then
+	-- podpowiedź: na start (do 5 kulek), przy pełnym pasku i po otwarciu lasu
+	if lasPodp and os.clock() < lasPodp and not pelny then
+		podpNapis.Text = UI.las_podp
+		ramkaPodp.Visible = true
+	elseif pelny then
 		podpNapis.Text = UI.podpowiedz_ewo
 		ramkaPodp.Visible = true
 	else
@@ -1159,6 +1332,7 @@ end)
 mojId = gracz:GetAttribute("EW_Byt") or 0
 
 ------------------------------------------------------------------ strzałka do kulek (pierwsze sekundy)
+local lasPodp: number? = nil
 local strzalka = Instance.new("Part")
 strzalka.Name = "Strzalka"
 strzalka.Shape = Enum.PartType.Block
@@ -1177,17 +1351,22 @@ grot.Parent = lokalne
 
 local function krokStrzalki()
 	local w = widoki[mojId]
-	local pokaz = w and kulekZjedzonych < 5 and (gracz:GetAttribute("EW_MaxForma") or 1) == 1 and not w.martwy
+	local doLasu = w and lasPodp and os.clock() < lasPodp and not L.wLesie(D, w.x, w.z)
+	local pokaz = w and (doLasu or (kulekZjedzonych < 5 and (gracz:GetAttribute("EW_MaxForma") or 1) == 1)) and not w.martwy
 	if not pokaz then
 		strzalka.Transparency, grot.Transparency = 1, 1
 		return
 	end
 	local best, bd = nil, math.huge
-	for i, p in D.kulkiPoz do
-		if kulkiZywe[i] then
-			local d = (p[1] - w.x) ^ 2 + (p[2] - w.z) ^ 2
-			if d < bd and d > 4 then
-				best, bd = p, d
+	if doLasu then
+		best = { 0, D.pole.r - 10 }
+	else
+		for i, p in D.kulkiPoz do
+			if kulkiZywe[i] and osiagalna(p) then
+				local d = (p[1] - w.x) ^ 2 + (p[2] - w.z) ^ 2
+				if d < bd and d > 4 then
+					best, bd = p, d
+				end
 			end
 		end
 	end
@@ -1234,8 +1413,12 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				if k then
 					k.Transparency = 1
 					kulkiZywe[z.i] = false
-					E:iskry(k.Position, k.Color, 4, 0.5)
+					E:iskry(k.Position, k.Color, 5, 0.6)
+					local typ = D.kulkiPoz[z.i][3]
+					local ile = (if typ == 3 then D.jedzenie.wielka elseif typ == 2 then D.jedzenie.duza else D.jedzenie.mala) * L.apetyt(D, ja())
+					E:liczba(k.Position + Vector3.new(0, 2, 0), "+" .. tostring(math.floor(ile + 0.5)), k.Color)
 				end
+				pulsPaska = 0
 				dzwiek("klik", 1.5 + math.random() * 0.3)
 				local w = widoki[mojId]
 				if w then
@@ -1250,6 +1433,9 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 			end
 			if z.a == mojId then
 				liczZjadl += 1
+				pulsPaska = 0
+				dzwiek("kryt", 1.4)
+				E:iskry(p, hex("C8A070"), 16, 1.4)
 				dzwiek("plusk", 0.9)
 				E:slowo(p + Vector3.new(0, 4, 0), UI.zjedzony, hex(UI.kolory.ty), 0.9, 0.7)
 				E:liczba(p + Vector3.new(0, 6, 0), "+" .. tostring(z.zysk), hex("9BFFB8"))
@@ -1311,7 +1497,8 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 			if z.id == mojId then
 				liczOdslon += 1
 				dzwiek("krol", 1)
-				wstrzasnij(1.0, 0.4)
+				blyskT = 0
+				wstrzasnij(0.9 + D.formy[z.forma].r * 0.12, 0.55)
 				tabliczka(z.forma, z.nowa)
 				odslona = { t = 0, czas = D.ewolucja.tabliczka_s, nowa = z.nowa, forma = z.forma, faza = "tabliczka" }
 				if z.nowa then
@@ -1323,6 +1510,46 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				umGotowy = 0
 				odswiezDrabine()
 				gracz:SetAttribute("EW_K_Odslon", liczOdslon)
+			end
+		elseif t == "las_otwarty" then
+			if z.id == mojId then
+				task.delay(D.ewolucja.tabliczka_s + 0.2, function()
+					pokazBaner(UI.las_otwarty, hex("9BFFB8"), 2.2)
+					dzwiek("boss", 1.2)
+				end)
+				lasPodp = os.clock() + 45
+			end
+		elseif t == "boss_rana" then
+			local p = C + Vector3.new(z.x, D.formy[D.boss.forma].r * 1.5, z.z)
+			E:liczba(p, "-" .. tostring(z.ile), hex("FF7AA8"))
+			E:iskry(p, hex("FF9AD8"), 8, 1)
+			local bw = widoki[z.id]
+			if bw then
+				bw.pulsT, bw.pulsSila = 0, -0.08
+			end
+			if z.s == mojSlot() then
+				dzwiek("kryt", 0.9)
+				wstrzasnij(0.3, 0.15)
+			end
+		elseif t == "boss_gryz" then
+			local bw = widoki[z.id]
+			if bw then
+				bw.gryzT = 0
+			end
+			if z.cel == mojId then
+				pokazBaner(UI.au, hex("FF6A6A"), 0.9)
+				dzwiek("ko", 1.3)
+				wstrzasnij(1.0, 0.3)
+				predOK = false
+			end
+		elseif t == "boss_pokonany" then
+			local p = C + Vector3.new(z.x, 3, z.z)
+			E:iskry(p, zloto, 40, 2.2)
+			E:pierscien(C + Vector3.new(z.x, 0.3, z.z), 20, zloto, 0.8)
+			if z.s == mojSlot() then
+				pokazBaner(string.format(UI.skrzynia, z.zloto), zloto, 2.4)
+				dzwiek("monety", 1)
+				wstrzasnij(0.8, 0.4)
 			end
 		elseif t == "olbrzym" then
 			if z.id == mojId then
@@ -1421,7 +1648,7 @@ local function krokAutopilota(dt: number)
 		end
 	end
 	for i, p in D.kulkiPoz do
-		if kulkiZywe[i] then
+		if kulkiZywe[i] and osiagalna(p) then
 			local d = math.sqrt((p[1] - w.x) ^ 2 + (p[2] - w.z) ^ 2)
 			if d < 40 then
 				local wart = (if p[3] == 2 then D.jedzenie.duza else D.jedzenie.mala) / (d + 6)
@@ -1460,7 +1687,7 @@ end
 
 ------------------------------------------------------------------ układ ekranu (próby): prostokąty i nakładanie
 local function uklad(): string
-	local nazwy = { Wzrost = ramkaWzrostu, Zloto = ramkaZlota, Drabina = ramkaDrabiny, Gryz = ramkaGryz, Zryw = ramkaZryw,
+	local nazwy = { Boss = ramkaBossa, Wzrost = ramkaWzrostu, Zloto = ramkaZlota, Drabina = ramkaDrabiny, Gryz = ramkaGryz, Zryw = ramkaZryw,
 		Umiejetnosc = ramkaUm, Ewolucja = ramkaEwo, Podpowiedz = ramkaPodp, Toast = ramkaToastu, Tabliczka = ramkaTabl, Panel = panel }
 	local pr = {}
 	local v = kamera.ViewportSize
@@ -1589,6 +1816,16 @@ RunService.RenderStepped:Connect(function(dt: number)
 		elseif odslona.t > odslona.czas + 2 then
 			odslona = nil
 		end
+	end
+	if pulsPaska < 0.3 then
+		pulsPaska += dt
+		pasekSkala.Scale = 1 + math.sin(math.clamp(pulsPaska / 0.3, 0, 1) * math.pi) * 0.12
+	end
+	if blyskT < 0.5 then
+		blyskT += dt
+		blysk.BackgroundTransparency = math.clamp(0.15 + blyskT / 0.5 * 0.85, 0, 1)
+	elseif blysk.BackgroundTransparency < 1 then
+		blysk.BackgroundTransparency = 1
 	end
 	if ramkaEwo.Visible then
 		skalaEwo.Scale = 1 + math.sin(tGlob * 6) * 0.06

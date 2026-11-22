@@ -70,7 +70,7 @@ class Swiat:
         return w * self.D["jedzenie"]["gracz_x"] if b["slot"] else w
 
     def moze(self, a, b):
-        if a["forma"] < b["forma"] + 1:
+        if a.get("boss") or b.get("boss") or a["forma"] < b["forma"] + 1:
             return False
         return not (a["slot"] and b["slot"] and b["forma"] <= self.D["smierc"]["chronione_formy"])
 
@@ -83,11 +83,28 @@ class Swiat:
     def ster_serwer(self, b):
         return b["martwy"] is not None or b["kokon"] is not None or b["skok"] is not None or b["ogl"] > self.czas
 
-    def ogranicz(self, x, z, r):
-        d = dlug(x, z)
-        m = self.D["pole"]["r"] - r * 0.6
-        if d > m:
-            x, z = x / d * m, z / d * m
+    def maska(self, b):
+        if not b["slot"]:
+            return b.get("strefa", 1)
+        return 3 if b["max"] >= self.D["las"]["od_formy"] else 1
+
+    def w_lesie(self, x, z):
+        LS = self.D["las"]
+        return dlug(x - LS["x"], z - LS["z"]) < LS["r"] and dlug(x, z) > self.D["pole"]["r"] - 2
+
+    def ogranicz(self, x, z, r, maska=1):
+        LS = self.D["las"]
+        m1, m2 = self.D["pole"]["r"] - r * 0.6, LS["r"] - r * 0.6
+        d1 = dlug(x, z)
+        lx, lz = x - LS["x"], z - LS["z"]
+        d2 = dlug(lx, lz)
+        if not ((maska != 2 and d1 <= m1) or (maska >= 2 and d2 <= m2)):
+            e1 = d1 - m1 if maska != 2 else 1e9
+            e2 = d2 - m2 if maska >= 2 else 1e9
+            if e1 <= e2:
+                x, z = x / d1 * m1, z / d1 * m1
+            else:
+                x, z = LS["x"] + lx / d2 * m2, LS["z"] + lz / d2 * m2
         for s in self.D["przeszkody"]:
             ds = dlug(x - s["x"], z - s["z"])
             mn = s["r"] + r * 0.7
@@ -95,17 +112,23 @@ class Swiat:
                 x, z = s["x"] + (x - s["x"]) / ds * mn, s["z"] + (z - s["z"]) / ds * mn
         return x, z
 
-    def bezpieczne(self, forma, gracz):
+    def bezpieczne(self, forma, gracz, strefa=1):
         D = self.D
         best, wynik = -1, None
         for _ in range(24):
             if gracz:
                 k = D["kulkiPoz"][int(self.los.random() * len(D["kulkiPoz"]))]
                 x, z = k[0] * 0.97 + 3, k[1] * 0.97 - 3
+            elif strefa == 2:
+                LS = D["las"]
+                a, r = self.los.random() * 2 * math.pi, math.sqrt(self.los.random()) * (LS["r"] - 14)
+                x, z = LS["x"] + math.sin(a) * r, LS["z"] + math.cos(a) * r
+                if dlug(x, z) < D["pole"]["r"] + 6:
+                    x, z = LS["x"], LS["z"] + LS["r"] * 0.4
             else:
                 a, r = self.los.random() * 2 * math.pi, math.sqrt(self.los.random()) * (D["pole"]["r"] - 14)
                 x, z = math.sin(a) * r, math.cos(a) * r
-            x, z = self.ogranicz(x, z, D["formy"][forma - 1]["r"])
+            x, z = self.ogranicz(x, z, D["formy"][forma - 1]["r"], 1 if gracz else strefa)
             nb = 999
             for q in self.byty:
                 if q["martwy"] is None:
@@ -120,18 +143,49 @@ class Swiat:
                 break
         return wynik
 
-    def dodaj(self, slot, forma):
-        x, z = self.bezpieczne(forma, slot > 0)
+    def dodaj(self, slot, forma, strefa=1):
+        x, z = self.bezpieczne(forma, slot > 0, strefa)
         b = {"id": self.nast, "slot": slot, "forma": forma, "x": x, "z": z, "vx": 0.0, "vz": 0.0, "wx": 0.0, "wz": 0.0, "kier": 0.0,
              "tarcza": self.czas + (self.D["smierc"]["tarcza_s"] if slot else 0), "martwy": None, "kokon": None, "skok": None,
              "zryw": 0.0, "zryw_ok": 0.0, "gryz_ok": 0.0, "um_ok": 0.0, "ogl": 0.0, "szarza": 0.0, "szarza_v": 1.0, "mysl": 0.0,
              "cel": 0, "cel_od": 0.0, "odp": 0, "odp_do": 0.0, "wzrost": 0.0, "max": forma, "zloto": 0.0,
-             "pz": {"szczeka": 1, "szybkosc": 1, "apetyt": 1}, "laska": self.czas + self.D["boty"]["laska_s"] if slot else 0}
+             "pz": {"szczeka": 1, "szybkosc": 1, "apetyt": 1}, "laska": self.czas + self.D["boty"]["laska_s"] if slot else 0, "strefa": strefa}
         self.nast += 1
         self.byty.append(b)
         if slot:
             self.strefy.append((x, z, self.czas + self.D["boty"]["strefa_startu_s"]))
         return b
+
+    def dodaj_bossa(self):
+        B, LS = self.D["boss"], self.D["las"]
+        b = self.dodaj(0, B["forma"], 2)
+        b["x"], b["z"] = LS["x"], LS["z"]
+        b.update({"boss": True, "hp": B["hp"], "dom": (b["x"], b["z"]), "ost_rana": -99.0})
+        self.boss = b
+        return b
+
+    def obrazenia(self, g):
+        B = self.D["boss"]
+        return B["gryz_baza"] + B["gryz_na_forme"] * max(0, g["forma"] - 3) + 2 * (g["pz"]["szczeka"] - 1)
+
+    def boss_w(self, g, zas):
+        b = getattr(self, "boss", None)
+        if not b or b["martwy"] is not None or not g["slot"]:
+            return None
+        return b if dlug(b["x"] - g["x"], b["z"] - g["z"]) < self.r(g) + zas + self.r(b) else None
+
+    def ran(self, boss, g, ile):
+        if boss["martwy"] is not None or boss["hp"] <= 0:
+            return
+        boss["hp"] = max(0, boss["hp"] - ile)
+        boss["ost_rana"] = self.czas
+        if g["slot"]:
+            self.zdarzenia.append(("boss_rana", 0))
+        if boss["hp"] <= 0:
+            g["zloto"] += self.D["boss"]["skrzynia"]
+            self.zdarzenia.append(("boss_pokonany", 0))
+            self.boss_pokonany = True
+            boss["martwy"] = self.czas + self.D["boss"]["odrodzenie_s"]
 
     # ------------------------------------------------ jedzenie
     def kulki_w(self, x, z, r, ile):
@@ -156,9 +210,9 @@ class Swiat:
     def zjedz_kulke(self, b, i):
         J = self.D["jedzenie"]
         typ = self.D["kulkiPoz"][i][2]
-        self.kulki[i] = self.czas + (J["powrot_duza_s"] if typ == 2 else J["powrot_mala_s"])
+        self.kulki[i] = self.czas + (J["powrot_duza_s"] if typ >= 2 else J["powrot_mala_s"])
         if b["slot"]:
-            self.wzrost(b, (J["duza"] if typ == 2 else J["mala"]) * self.apetyt(b))
+            self.wzrost(b, (J["wielka"] if typ == 3 else (J["duza"] if typ == 2 else J["mala"])) * self.apetyt(b))
 
     def zgin(self, b):
         b["martwy"] = self.czas + (self.D["smierc"]["odrodzenie_s"] if b["slot"] else self.D["boty"]["odrodzenie_s"])
@@ -193,8 +247,11 @@ class Swiat:
             return False
         b["gryz_ok"] = self.czas + self.przerwa(b)
         q = self.ofiara(b, self.zasieg(b))
+        boss = None if q else self.boss_w(b, self.zasieg(b))
         if q:
             self.zjedz(b, q)
+        elif boss:
+            self.ran(boss, b, self.obrazenia(b))
         else:
             for i in self.kulki_w(b["x"], b["z"], self.r(b) + self.zasieg(b) + self.D["jedzenie"]["mala_r"], 3):
                 self.zjedz_kulke(b, i)
@@ -211,7 +268,7 @@ class Swiat:
         for q in self.byty:
             if q is not b and self.wolny(q) and q["tarcza"] <= self.czas and dlug(q["x"] - b["x"], q["z"] - b["z"]) < r + self.r(q) \
                     and not (b["slot"] and q["slot"] and q["forma"] <= self.D["smierc"]["chronione_formy"]):
-                q["ogl"] = self.czas + czas
+                q["ogl"] = self.czas + (czas * 0.5 if q.get("boss") else czas)
                 q["vx"] = q["vz"] = 0.0
 
     def umiejetnosc(self, b):
@@ -226,8 +283,11 @@ class Swiat:
                 self.zjedz_kulke(b, i)
         elif t == "jezyk":
             q = self.ofiara(b, A["r"])
+            boss = None if q else self.boss_w(b, A["r"])
             if q:
                 self.zjedz(b, q)
+            elif boss:
+                self.ran(boss, b, self.D["boss"]["um_obrazenia"])
             else:
                 for i in self.kulki_w(b["x"], b["z"], rb + A["r"], 4):
                     self.zjedz_kulke(b, i)
@@ -235,13 +295,17 @@ class Swiat:
             b["szarza"], b["szarza_v"] = self.czas + A["s"], A["v"]
         elif t == "ogluszenie":
             self.oglusz(b, rb + A["r"], A["s"])
+            if self.boss_w(b, A["r"]):
+                self.ran(self.boss, b, self.D["boss"]["um_obrazenia"])
         elif t == "skok":
             d = dlug(b["wx"], b["wz"]) or 1
             kx, kz = (b["wx"] / d, b["wz"] / d) if (b["wx"] or b["wz"]) else (math.sin(b["kier"]), math.cos(b["kier"]))
-            x1, z1 = self.ogranicz(b["x"] + kx * A["d"], b["z"] + kz * A["d"], rb)
+            x1, z1 = self.ogranicz(b["x"] + kx * A["d"], b["z"] + kz * A["d"], rb, self.maska(b))
             b["skok"] = (b["x"], b["z"], x1, z1, self.czas, self.czas + A["s"], A["r"])
         elif t == "fala":
             self.oglusz(b, rb + A["r"], A["s"])
+            if self.boss_w(b, A["r"]):
+                self.ran(self.boss, b, self.D["boss"]["um_obrazenia"])
             for i in self.kulki_w(b["x"], b["z"], rb + A["r"], 99):
                 self.zjedz_kulke(b, i)
         return True
@@ -294,12 +358,13 @@ class Swiat:
         if zagr:
             d = max(0.1, dz)
             ux, uz = (b["x"] - zagr["x"]) / d, (b["z"] - zagr["z"]) / d
-            dc = dlug(b["x"], b["z"])
-            if dc > D["pole"]["r"] - 20:
-                tx, tz = -b["z"] / dc, b["x"] / dc
+            cx, cz, R = (D["las"]["x"], D["las"]["z"], D["las"]["r"]) if b["strefa"] == 2 else (0, 0, D["pole"]["r"])
+            dc = dlug(b["x"] - cx, b["z"] - cz)
+            if dc > R - 20:
+                tx, tz = -(b["z"] - cz) / dc, (b["x"] - cx) / dc
                 if tx * ux + tz * uz < 0:
                     tx, tz = -tx, -tz
-                ux, uz = ux * 0.4 + tx * 0.6 - b["x"] / dc * 0.3, uz * 0.4 + tz * 0.6 - b["z"] / dc * 0.3
+                ux, uz = ux * 0.4 + tx * 0.6 - (b["x"] - cx) / dc * 0.3, uz * 0.4 + tz * 0.6 - (b["z"] - cz) / dc * 0.3
             n = max(0.01, dlug(ux, uz))
             b["wx"], b["wz"] = ux / n * B["panika"], uz / n * B["panika"]
             if dz < self.r(zagr) + r + 5 and self.los.random() < B["zryw_szansa"]:
@@ -329,9 +394,29 @@ class Swiat:
                 b["wx"], b["wz"] = (p[0] - b["x"]) / d * 0.85, (p[1] - b["z"]) / d * 0.85
             elif self.los.random() < 0.25 or (b["wx"] == 0 and b["wz"] == 0):
                 a = self.los.random() * 2 * math.pi
-                b["wx"] = math.sin(a) * 0.6 - b["x"] / D["pole"]["r"] * 0.3
-                b["wz"] = math.cos(a) * 0.6 - b["z"] / D["pole"]["r"] * 0.3
+                cx, cz, R = (D["las"]["x"], D["las"]["z"], D["las"]["r"]) if b["strefa"] == 2 else (0, 0, D["pole"]["r"])
+                b["wx"] = math.sin(a) * 0.6 - (b["x"] - cx) / R * 0.3
+                b["wz"] = math.cos(a) * 0.6 - (b["z"] - cz) / R * 0.3
         b["mysl"] = self.czas + B["myslenie_s"] * (0.7 + self.los.random() * 0.6)
+
+    def mysl_bossa(self, b):
+        B = self.D["boss"]
+        cel, dc = None, B["widzi"]
+        for q in self.byty:
+            if q["slot"] and self.wolny(q) and self.w_lesie(q["x"], q["z"]):
+                d = dlug(q["x"] - b["x"], q["z"] - b["z"])
+                if d < dc:
+                    cel, dc = q, d
+        if cel:
+            b["cel"] = cel["id"]
+            d = max(0.1, dc)
+            b["wx"], b["wz"] = (cel["x"] - b["x"]) / d * B["v"], (cel["z"] - b["z"]) / d * B["v"]
+        else:
+            b["cel"] = 0
+            dx, dz = b["dom"][0] - b["x"], b["dom"][1] - b["z"]
+            d = dlug(dx, dz)
+            b["wx"], b["wz"] = (dx / d * B["v"] * 0.6, dz / d * B["v"] * 0.6) if d > 6 else (0.0, 0.0)
+        b["mysl"] = self.czas + 0.3
 
     # ------------------------------------------------ krok
     def krok(self, dt):
@@ -351,7 +436,11 @@ class Swiat:
                     else:
                         b["tarcza"] = self.czas + 1
                     b["martwy"], b["ogl"] = None, 0.0
-                    b["x"], b["z"] = self.bezpieczne(b["forma"], b["slot"] > 0)
+                    if b.get("boss"):
+                        b["hp"] = D["boss"]["hp"]
+                        b["x"], b["z"] = b["dom"]
+                        continue
+                    b["x"], b["z"] = self.bezpieczne(b["forma"], b["slot"] > 0, b["strefa"])
                     if b["slot"]:
                         self.strefy.append((b["x"], b["z"], self.czas + D["boty"]["strefa_startu_s"]))
             elif b["kokon"] is not None:
@@ -363,6 +452,8 @@ class Swiat:
                         b["max"] = b["forma"]
                         if b["slot"]:
                             self.zdarzenia.append(("forma", b["forma"]))
+                            if b["forma"] == D["las"]["od_formy"]:
+                                self.zdarzenia.append(("las", 0))
                     b["wzrost"] = min(max(0, b["wzrost"] - p), self.potrzeba(b["forma"]) * D["ewolucja"]["nadmiar"]) if b["forma"] < len(D["formy"]) else 0
                     b["tarcza"] = max(b["tarcza"], self.czas + D["ewolucja"]["tarcza_po_s"])
                     b["um_ok"] = 0.0
@@ -378,13 +469,20 @@ class Swiat:
                             self.zjedz(b, q)
                             n += 1
                     self.oglusz(b, r + kr + 4, 1.0)
+                    if self.boss_w(b, kr + 2):
+                        self.ran(self.boss, b, D["boss"]["um_obrazenia"])
                     for i in self.kulki_w(b["x"], b["z"], r + kr, 99):
                         self.zjedz_kulke(b, i)
             elif b["ogl"] > self.czas:
                 b["vx"] *= 0.8
                 b["vz"] *= 0.8
             else:
-                if not b["slot"] and self.czas >= b["mysl"]:
+                if b.get("boss"):
+                    if self.czas >= b["mysl"]:
+                        self.mysl_bossa(b)
+                    if self.czas - b["ost_rana"] > D["boss"]["regen_po_s"]:
+                        b["hp"] = min(D["boss"]["hp"], b["hp"] + D["boss"]["hp"] * D["boss"]["regen_na_s"] * dt)
+                elif not b["slot"] and self.czas >= b["mysl"]:
                     self.mysl(b)
                 m = 1.0
                 if self.czas < b["zryw"]:
@@ -399,12 +497,28 @@ class Swiat:
                 b["z"] += b["vz"] * dt
                 if b["wx"] or b["wz"]:
                     b["kier"] = math.atan2(b["wx"], b["wz"])
-                b["x"], b["z"] = self.ogranicz(b["x"], b["z"], r)
-                if (not b["slot"] or self.czas < b["szarza"]) and self.czas >= b["gryz_ok"]:
+                b["x"], b["z"] = self.ogranicz(b["x"], b["z"], r, self.maska(b))
+                if b.get("boss"):
+                    q = next((x for x in self.byty if x["id"] == b["cel"]), None) if b["cel"] else None
+                    B = D["boss"]
+                    if q and self.czas >= b["gryz_ok"] and self.bezbronny(q) and dlug(q["x"] - b["x"], q["z"] - b["z"]) < r + B["zasieg"] + self.r(q) * 0.5:
+                        b["gryz_ok"] = self.czas + B["przerwa_s"]
+                        d = max(0.1, dlug(q["x"] - b["x"], q["z"] - b["z"]))
+                        nx, nz = (q["x"] - b["x"]) / d, (q["z"] - b["z"]) / d
+                        q["x"], q["z"] = self.ogranicz(q["x"] + nx * 5, q["z"] + nz * 5, self.r(q), self.maska(q))
+                        q["vx"], q["vz"] = nx * B["odrzut"], nz * B["odrzut"]
+                        q["ogl"] = self.czas + B["ogluszenie_s"]
+                        if q["forma"] < len(D["formy"]):
+                            q["wzrost"] = max(0, q["wzrost"] - self.potrzeba(q["forma"]) * B["kara"])
+                elif (not b["slot"] or self.czas < b["szarza"]) and self.czas >= b["gryz_ok"]:
                     q = self.ofiara(b, self.zasieg(b) if not b["slot"] else 2)
+                    boss = None if q or not b["slot"] else self.boss_w(b, 2)
                     if q:
                         b["gryz_ok"] = self.czas + self.przerwa(b)
                         self.zjedz(b, q)
+                    elif boss:
+                        b["gryz_ok"] = self.czas + self.przerwa(b)
+                        self.ran(boss, b, self.obrazenia(b))
         n = len(self.byty)
         for i in range(n):
             a = self.byty[i]
@@ -432,10 +546,10 @@ class Swiat:
         zz = D["jedzenie"]["zasieg_zbierania"]
         for b in self.byty:
             if self.wolny(b) and (b["slot"] or b["forma"] <= D["boty"]["kulki_do"]):
-                g = self.r(b) + 1.15 + zz
+                g = self.r(b) + 1.65 + zz
                 for i in self.kulki_w(b["x"], b["z"], g, 99):
                     p = D["kulkiPoz"][i]
-                    kr = D["jedzenie"]["duza_r"] if p[2] == 2 else D["jedzenie"]["mala_r"]
+                    kr = D["jedzenie"]["wielka_r"] if p[2] == 3 else (D["jedzenie"]["duza_r"] if p[2] == 2 else D["jedzenie"]["mala_r"])
                     if dlug(p[0] - b["x"], p[1] - b["z"]) < self.r(b) + kr + zz:
                         self.zjedz_kulke(b, i)
         for i in range(len(self.kulki)):
@@ -478,12 +592,34 @@ def gracz_mysl(S, g, styl):
             g["zagr_t"] = S.czas
         return
     # kulki w pobliżu: wartość / odległość
+    J = D["jedzenie"]
     for i in S.kulki_w(g["x"], g["z"], 30, 6):
         p = D["kulkiPoz"][i]
+        if S.maska(g) == 1 and S.w_lesie(p[0], p[1]):
+            continue  # las zamknięty: kulki za płotem się nie liczą
         d = dlug(p[0] - g["x"], p[1] - g["z"])
-        w = (D["jedzenie"]["duza"] if p[2] == 2 else D["jedzenie"]["mala"]) / (d + 6)
+        w = (J["wielka"] if p[2] == 3 else (J["duza"] if p[2] == 2 else J["mala"])) / (d + 6)
         if w > bw:
             best, bw = ("kulka", p), w
+    # mini-boss: sprawny gracz walczy od formy 4 (gryzie, po ugryzieniu bossa odskakuje zrywem)
+    boss = getattr(S, "boss", None)
+    if styl == "sprawny" and boss and boss["martwy"] is None and g["forma"] >= 4 and not getattr(S, "boss_pokonany", False):
+        db = dlug(boss["x"] - g["x"], boss["z"] - g["z"])
+        if db < 70 and not g.get("boss_widziany"):
+            g["boss_widziany"] = S.czas
+        if bw < 2.5:
+            d = max(0.1, db)
+            g["wx"], g["wz"] = (boss["x"] - g["x"]) / d, (boss["z"] - g["z"]) / d
+            if S.boss_w(g, S.zasieg(g)):
+                S.gryz(g)
+                S.umiejetnosc(g)
+            return
+    # las: od formy 4 sprawny gracz idzie tam, gdy w pobliżu nie ma nic lepszego
+    if (best is None or isinstance(best, tuple)) and g["forma"] >= D["las"]["od_formy"] and S.maska(g) == 3 and not S.w_lesie(g["x"], g["z"]):
+        tx, tz = D["las"]["x"], D["las"]["z"]
+        d = max(0.1, dlug(tx - g["x"], tz - g["z"]))
+        g["wx"], g["wz"] = (tx - g["x"]) / d, (tz - g["z"]) / d
+        return
     if best is None:
         if g["wx"] == 0 and g["wz"] == 0 or S.los.random() < 0.05:
             a = S.los.random() * 2 * math.pi
@@ -525,9 +661,14 @@ def przebieg(D, ziarno, minut, styl):
     for f, ile in enumerate(D["boty"]["formy"], 1):
         for _ in range(ile):
             S.dodaj(0, f)
+    for f, ile in enumerate(D["boty"]["las_formy"], 1):
+        for _ in range(ile):
+            S.dodaj(0, f, 2)
+    S.dodaj_bossa()
     g = S.dodaj(1, 1)
     dt = 0.1
-    wyn = {"forma": {1: 0.0}, "ulepszenie": None, "zagrozenie": None, "smierci": 0, "zakupy": []}
+    wyn = {"forma": {1: 0.0}, "ulepszenie": None, "zagrozenie": None, "smierci": 0, "zakupy": [], "las": None, "boss_rana": None,
+           "boss_pokonany": None}
     nast_mysl = 0.0
     rozpr = 0.0
     while S.czas < minut * 60:
@@ -552,10 +693,17 @@ def przebieg(D, ziarno, minut, styl):
                 wyn["forma"][z[1]] = S.czas
             elif z[0] == "smierc":
                 wyn["smierci"] += 1
+            elif z[0] in ("las", "boss_rana", "boss_pokonany") and wyn[z[0]] is None:
+                wyn[z[0]] = S.czas
         if wyn["zagrozenie"] is None and getattr(S, "poscig", None) is not None:
             wyn["zagrozenie"] = S.poscig
         if g["forma"] == len(D["formy"]) and g["max"] == len(D["formy"]) and minut * 60 - S.czas > 60:
             pass
+    wyn["boss_widziany"] = g.get("boss_widziany")
+    # najdłuższa przerwa bez czegoś nowego (forma, las, boss widziany, boss pokonany) w pierwszych 10 min
+    nowe = sorted([0.0, 600.0] + [t for t in list(wyn["forma"].values()) + [wyn["las"], wyn["boss_widziany"], wyn["boss_pokonany"]]
+                                  if t is not None and t <= 600])
+    wyn["przerwa"] = max(b - a for a, b in zip(nowe, nowe[1:]))
     wyn["koniec_forma"] = g["max"]
     wyn["zloto"] = round(g["zloto"])
     return wyn
@@ -603,7 +751,16 @@ def main():
     ok = ok and spel
     print("  1. ulepszenie       %6s  cel 1:30–2:00 %s" % (mmss(u), "OK" if spel else "NIE"))
     z = med([w["zagrozenie"] for w in wyniki])
-    print("  1. zagrożenie       %6s  (pierwszy bot goni gracza; cel ok. 2:00)" % mmss(z))
+    spel = z is not None and z >= 110
+    ok = ok and spel
+    print("  1. pościg bota      %6s  cel ≥ 1:50 %s" % (mmss(z), "OK" if spel else "NIE"))
+    for k, n in (("las", "DEEP WOODS otwarty"), ("boss_widziany", "boss spotkany"), ("boss_pokonany", "boss pokonany")):
+        print("  %-19s %6s" % (n, mmss(med([w[k] for w in wyniki]))))
+    prz = statistics.median([w["przerwa"] for w in wyniki])
+    spel = prz <= 150
+    ok = ok and spel
+    print("  najdłuższa przerwa bez nowości (0–10 min) %s  [%s–%s]  cel ≤ 2:30 %s" % (mmss(prz), mmss(min(w["przerwa"] for w in wyniki)),
+                                                                                mmss(max(w["przerwa"] for w in wyniki)), "OK" if spel else "NIE"))
     print("  śmierci (mediana)   %6s" % statistics.median([w["smierci"] for w in wyniki]))
     print("  zakupy (próba 1):   %s" % ", ".join("%s %s" % (mmss(t), i) for t, i in wyniki[0]["zakupy"]))
     print("  złoto na końcu (mediana): %d" % statistics.median([w["zloto"] for w in wyniki]))
