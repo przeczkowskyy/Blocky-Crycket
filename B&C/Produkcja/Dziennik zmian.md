@@ -6,6 +6,9 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: zwierzę — smok)
+- Karol skłania się ku smokowi („więcej zdolności uda nam się zrobić na smokach”), agent zmienił zalecenie z małpy na smoka; zapis pod pytaniem 84 jako ustalenie robocze (bez numeru decyzji). Smok chodzący, bez swobodnego latania; tytuł do wyboru spośród wolnych; przeróbka po etapie 3.
+
 ## 2026-11-22 · Claude Code u Karola (Monster Evolution: próba „jedno zwierzę na standardowym szkielecie”)
 - **Próba techniczna** (ten sam agent, ok. 45–75 tys. tokenów): jedna dwunożna małpa na standardowym szkielecie postaci Roblox odtwarza gotowe animacje w skali 0,5–6 razy, także jako boty. Ograniczenia i zalecenie (małpa jako model po stronie klienta, ruch zostaje nasz): [[Projekt próbki — Monster Evolution]], sekcja „Próba techniczna”. Dopiski pod pytaniami 83 i 84. Opublikowana wersja nietknięta; pliki próby w `swiat/ewolucja/`.
 
