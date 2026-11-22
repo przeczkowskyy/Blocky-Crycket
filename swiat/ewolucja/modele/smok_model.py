@@ -25,12 +25,16 @@ from swiat.postacie.biblioteka.postac import Postac, macierz_obrotu, razy_wektor
 
 NOGI = ("NogaPL", "NogaPP", "NogaTL", "NogaTP")          # przednia lewa / prawa, tylna lewa / prawa
 KOSCI = (["Tulow", "Szyja1", "Szyja2", "Glowa", "Szczeka", "SkrzydloL1", "SkrzydloL2", "SkrzydloP1", "SkrzydloP2",
-          "Ogon1", "Ogon2", "Ogon3", "Ogon4"] + [n + s for n in NOGI for s in ("1", "2")])
+          "Ogon1", "Ogon2", "Ogon3", "Ogon4"] + [n + s for n in NOGI for s in ("1", "2", "3")] + ["Powieki"])
 ZACZEPY = ("PyskAttachment", "GlowaAttachment", "OgonKoniecAttachment", "SkrzydloLKoniecAttachment",
-           "SkrzydloPKoniecAttachment", "BrzuchAttachment", "GrzbietAttachment")
-REGIONY = ("cialo", "luski", "brzuch", "blona", "kolce", "zar", "oko", "stale")
+           "SkrzydloPKoniecAttachment", "BrzuchAttachment", "GrzbietAttachment",
+           # miejsca na światło i cząsteczki żaru: gardło, pierś, trzy punkty wzdłuż grzbietu, ogon
+           "GardloAttachment", "PiersAttachment", "Zar1Attachment", "Zar2Attachment", "Zar3Attachment",
+           "ZarOgonAttachment")
+REGIONY = ("cialo", "luski", "brzuch", "blona", "kolce", "zar", "oko", "stale", "zar_rdzen")
 _REGION_KLUCZA = {"cialo": "cialo", "cialo_j": "cialo", "cialo_c": "luski", "brzuch": "brzuch", "brzuch_c": "brzuch",
-                  "blona": "blona", "blona_c": "blona", "kolce": "kolce", "kolce_c": "kolce", "zar": "zar", "oko": "oko"}
+                  "blona": "blona", "blona_c": "blona", "kolce": "kolce", "kolce_c": "kolce", "zar": "zar",
+                  "zar_c": "zar", "zar_j": "zar_rdzen", "oko": "oko"}
 
 # --------------------------------------------------------------------------- kolory
 PALETY = {   # pięć regionów + oko; wariant albo linia żywiołu = inny słownik
@@ -67,6 +71,8 @@ def paleta_stadium(nr, zmiany=None):
     p["brzuch_c"] = _mix(b["brzuch"], b["cialo"], 0.30)
     p["blona_c"] = _mix(b["blona"], "140A1E", 0.32)
     p["kolce_c"] = _mix(b["kolce"], "140A1E", 0.25)
+    p["zar_c"] = _mix(b["zar"], p["cialo_c"], 0.28)             # miękka zewnętrzna poświata żaru
+    p["zar_j"] = _mix(b["zar"], "FFFFFF", 0.6)                  # jasny rdzeń żaru
     return p
 
 
@@ -77,13 +83,13 @@ def paleta_stadium(nr, zmiany=None):
 # kolce (ile, wysokość, typ) · plyty łuski grzbietu · zar 0…1 · rogi typ · dodatki · waga 0 (pisklę) … 1 (prastary)
 STADIA = [
     {"nr": 1, "id": "smok_1", "nazwa": "HATCHLING", "r": 1.6, "waga": 0.0,
-     "T": (1.5, 1.25, 1.55), "nog": 0.42, "lw": 0.5, "gl": (1.75, 1.45, 1.5), "pysk": (0.9, 0.62, 0.46), "zuch": 0.36,
+     "T": (1.5, 1.25, 1.55), "nog": 0.42, "lw": 0.5, "gl": (1.75, 1.45, 1.5), "pysk": (0.74, 0.62, 0.64), "zuch": 0.3,
      "oczy": ("dziecko", 1.0), "szyja": (0.22, 0.2, 62, 40, 0.8),
      "ogon": ((0.5, 0.45, 0.4, 0.34), 0.72, (-18, -4, 14, 30), "grot_maly"),
      "skrz": (0.62, 0.86, 0.86), "skrz_spocz": (-10, 16, 46, 34),
      "kolce": (3, 0.26, "kolce"), "plyty": 2, "zar": 0.15, "rogi": "guzki", "dodatki": ("skorupka", "rumieniec")},
     {"nr": 2, "id": "smok_2", "nazwa": "WHELP", "r": 2.2, "waga": 0.12,
-     "T": (1.5, 1.2, 1.95), "nog": 0.6, "lw": 0.5, "gl": (1.5, 1.25, 1.4), "pysk": (0.9, 0.62, 0.72), "zuch": 0.36,
+     "T": (1.5, 1.2, 1.95), "nog": 0.6, "lw": 0.5, "gl": (1.5, 1.25, 1.4), "pysk": (0.74, 0.6, 0.84), "zuch": 0.3,
      "oczy": ("dziecko", 0.86), "szyja": (0.36, 0.3, 58, 36, 0.78),
      "ogon": ((0.7, 0.62, 0.52, 0.45), 0.72, (-16, -4, 10, 24), "grot"),
      "skrz": (0.9, 1.25, 1.15), "skrz_spocz": (-12, 18, 40, 36),
@@ -92,8 +98,8 @@ STADIA = [
      "T": (1.35, 1.15, 2.35), "nog": 0.98, "lw": 0.46, "gl": (1.2, 1.0, 1.25), "pysk": (0.8, 0.5, 1.0), "zuch": 0.38,
      "oczy": ("mlody", 0.7), "szyja": (0.7, 0.6, 54, 30, 0.7),
      "ogon": ((0.95, 0.88, 0.78, 0.66), 0.7, (-14, -4, 6, 16), "grot"),
-     "skrz": (1.35, 1.9, 1.5), "skrz_spocz": (-16, 24, 36, 38),
-     "kolce": (4, 0.4, "kolce"), "plyty": 3, "zar": 0.4, "rogi": "wstecz", "dodatki": ()},
+     "skrz": (0.95, 2.5, 1.2), "skrz_spocz": (-14, 36, 30, 44),
+     "kolce": (4, 0.4, "kolce"), "plyty": 3, "zar": 0.4, "rogi": "wstecz", "dodatki": ("kolnierz",)},
     {"nr": 4, "id": "smok_4", "nazwa": "FIRE DRAKE", "r": 4.0, "waga": 0.42,
      "T": (1.6, 1.32, 2.45), "nog": 1.0, "lw": 0.56, "gl": (1.3, 1.06, 1.32), "pysk": (0.9, 0.56, 1.1), "zuch": 0.4,
      "oczy": ("dorosly", 0.6), "szyja": (0.8, 0.7, 56, 30, 0.8),
@@ -103,9 +109,9 @@ STADIA = [
     {"nr": 5, "id": "smok_5", "nazwa": "DRAGON", "r": 5.2, "waga": 0.55,
      "T": (1.75, 1.45, 2.75), "nog": 1.12, "lw": 0.62, "gl": (1.42, 1.12, 1.45), "pysk": (1.0, 0.62, 1.38), "zuch": 0.46,
      "oczy": ("dorosly", 0.62), "szyja": (1.0, 0.9, 54, 28, 0.9),
-     "ogon": ((1.25, 1.12, 1.0, 0.86), 0.86, (-12, -3, 6, 14), "grot"),
-     "skrz": (2.4, 3.3, 2.55), "skrz_spocz": (-16, 24, 34, 38),
-     "kolce": (5, 0.6, "kolce"), "plyty": 4, "zar": 0.6, "rogi": "klasyczne", "dodatki": ()},
+     "ogon": ((1.25, 1.12, 1.0, 0.86), 0.86, (-12, -3, 6, 14), "dwa_ostrza"),
+     "skrz": (2.5, 3.7, 2.9), "skrz_spocz": (-16, 12, 30, 28),
+     "kolce": (5, 0.6, "kolce"), "plyty": 4, "zar": 0.6, "rogi": "klasyczne", "dodatki": ("szpony",)},
     {"nr": 6, "id": "smok_6", "nazwa": "WAR DRAGON", "r": 6.8, "waga": 0.72,
      "T": (2.8, 1.9, 2.9), "nog": 1.0, "lw": 0.95, "gl": (1.78, 1.3, 1.5), "pysk": (1.32, 0.86, 1.28), "zuch": 0.62,
      "oczy": ("dorosly", 0.6), "szyja": (0.8, 0.7, 42, 20, 1.34),
@@ -117,7 +123,7 @@ STADIA = [
      "oczy": ("dorosly", 0.6), "szyja": (1.6, 1.4, 64, 36, 0.78),
      "ogon": ((1.55, 1.45, 1.25, 1.05), 0.8, (-12, -4, 4, 12), "wachlarz"),
      "skrz": (2.9, 4.1, 3.0), "skrz_spocz": (-16, 24, 36, 40),
-     "kolce": (5, 0.62, "kolce"), "plyty": 5, "zar": 0.8, "rogi": "korona", "dodatki": ("kryza", "broda")},
+     "kolce": (5, 0.62, "kolce"), "plyty": 5, "zar": 0.8, "rogi": "korona", "dodatki": ("pletwy_szyi", "wasy", "broda")},
     {"nr": 8, "id": "smok_8", "nazwa": "ANCIENT DRAGON", "r": 15.0, "waga": 1.0,
      "T": (3.1, 2.25, 3.5), "nog": 1.9, "lw": 1.1, "gl": (2.1, 1.5, 1.8), "pysk": (1.5, 0.95, 1.78), "zuch": 0.62,
      "oczy": ("dorosly", 0.74), "szyja": (1.5, 1.3, 54, 28, 1.5),
@@ -171,7 +177,9 @@ def geometria(P):
     G["cz"] = (0.0, gh * 0.30, gd * 0.22)                       # środek czaszki względem stawu głowy
     zf = G["cz"][2] + gd / 2
     G["zf"] = zf
-    G["Szczeka"] = _plus(gs, (0.0, G["cz"][1] - gh / 2 + 0.1 * gh, zf - 0.18 * gd))
+    ph = P["pysk"][1]                                           # środek pyska: u maluchów na środku twarzy (pysk, nie dziób)
+    G["ys"] = (G["cz"][1] - gh * 0.17) if P["oczy"][0] == "dziecko" else (G["cz"][1] - gh / 2 + ph / 2 + 0.02 * gh)
+    G["Szczeka"] = _plus(gs, (0.0, G["ys"] - ph / 2 + 0.06, zf - 0.18 * gd))
     lens, gro, katy, _ = P["ogon"]
     pt = (0.0, yb + H * 0.08, -L / 2 + 0.1)
     for i in range(4):                                           # ogon: łańcuch w tył (−Z), wznios z kątów
@@ -188,13 +196,18 @@ def geometria(P):
         G["Skrzydlo%s1" % strona], G["Skrzydlo%s2" % strona] = j1, j2
     G["rot1"], G["rot2"] = (pit, swp, dih), (pit * 0.8, swp + fold, dih * 0.8)
     lw = P["lw"]
-    kol = max(nog * 0.5, 0.26)                                  # wysokość „kolana”
-    G["kol"] = kol
+    ya = 0.2 + 0.05 * lw                                        # wysokość kostki (staw stopy)
+    G["ya"] = ya
     for n, zn, z, dx in (("NogaPL", 1, L * 0.32, 0.12), ("NogaPP", -1, L * 0.32, 0.12),
                          ("NogaTL", 1, -L * 0.3, 0.02), ("NogaTP", -1, -L * 0.3, 0.02)):
         x = zn * (W / 2 - lw * dx)
-        G[n + "1"] = (x, nog + H * 0.3, z)
-        G[n + "2"] = (x, kol, z + (0.0 if n.startswith("NogaP") else lw * 0.2))
+        bio = (x, nog + H * 0.3, z)
+        D = bio[1] - ya
+        if n.startswith("NogaP"):                               # przednia: łokieć w tył, nadgarstek pod barkiem
+            kolano, kostka = (x, bio[1] - 0.52 * D, z - 0.26 * D), (x, ya, z + 0.05 * D)
+        else:                                                   # tylna: kolano w przód, pęcina w tył
+            kolano, kostka = (x, bio[1] - 0.46 * D, z + 0.32 * D), (x, ya, z - 0.1 * D)
+        G[n + "1"], G[n + "2"], G[n + "3"] = bio, kolano, kostka
     return G
 
 
@@ -208,6 +221,44 @@ def skala_stadium(P):
 
 
 # --------------------------------------------------------------------------- budowa
+def _szkielet(p, P, G):
+    """Ten sam szkielet w każdym stadium i w wersji uproszczonej (kolejność = KOSCI)."""
+    W, H, L = P["T"]
+    gw, gh, gd = P["gl"]
+    pw, ph, pl = P["pysk"]
+    lw, ya = P["lw"], G["ya"]
+    l1, l2, a1, a2, gr = P["szyja"]
+    p.kosc("Tulow", "Root", G["Tulow"], czesc=(W, H, L))
+    p.kosc("Szyja1", "Tulow", G["Szyja1"], czesc=(gr, gr, max(0.2, l1)), dl=0.3)
+    p.kosc("Szyja2", "Szyja1", G["Szyja2"], czesc=(gr * 0.9, gr * 0.9, max(0.2, l2)), dl=0.3)
+    p.kosc("Glowa", "Szyja2", G["Glowa"], czesc=(gw, gh, gd), srodek=G["cz"])
+    p.kosc("Szczeka", "Glowa", G["Szczeka"], czesc=(pw * 0.9, 0.2, pl + 0.3), srodek=(0, -0.08, pl / 2), dl=0.25)
+    for s in ("L", "P"):
+        p.kosc("Skrzydlo%s1" % s, "Tulow", G["Skrzydlo%s1" % s], czesc=(0.3, 0.3, 0.3), dl=0.3)
+        p.kosc("Skrzydlo%s2" % s, "Skrzydlo%s1" % s, G["Skrzydlo%s2" % s], czesc=(0.3, 0.3, 0.3), dl=0.3)
+    lens, gro = P["ogon"][0], P["ogon"][1]
+    for i in range(4):
+        p.kosc("Ogon%d" % (i + 1), "Ogon%d" % i if i else "Tulow", G["Ogon%d" % (i + 1)],
+               czesc=(gro * (1 - 0.18 * i), gro * (1 - 0.18 * i), lens[i]), dl=0.25)
+    for n in NOGI:
+        p.kosc(n + "1", "Tulow", G[n + "1"], czesc=(lw, 0.4, lw), srodek=(0, -0.2, 0), dl=0.25)
+        p.kosc(n + "2", n + "1", G[n + "2"], czesc=(lw * 0.8, 0.4, lw * 0.8), srodek=(0, -0.2, 0), dl=0.25)
+        p.kosc(n + "3", n + "2", G[n + "3"], czesc=(lw, ya, lw * 1.4), srodek=(0, -ya / 2, lw * 0.2), dl=0.2)
+    p.kosc("Powieki", "Glowa", _plus(G["Glowa"], _powieki_staw(P, G)), czesc=(gw, 0.2, 0.2), dl=0.2)
+
+
+def _powieki_staw(P, G):
+    return (0.0, G["cz"][1] + P["gl"][1] * 0.3, G["zf"] - 0.2)
+
+
+def _wzdluz(p, nazwa, a, b, gr1, gr2, kolor="cialo", nadl=0.0, faza=None, mat="zwykly"):
+    """Klocek wzdłuż odcinka a → b w płaszczyźnie YZ (układ stawu a): noga jako kość, nie słupek."""
+    dy, dz = b[1] - a[1], b[2] - a[2]
+    dl_ = math.hypot(dy, dz)
+    with p.uklad(obrot=(-math.degrees(math.atan2(dz, -dy)), 0, 0)):
+        p.blok(nazwa, (0, -dl_ / 2, 0), (gr1, dl_ + nadl, gr2), kolor, mat, faza=faza)
+
+
 def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
     P = stadium(nr)
     G = geometria(P)
@@ -216,7 +267,7 @@ def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
     p = Smok(id or P["id"], P["nazwa"].title(), typ="stwor", skala=skala or skala_stadium(P), faza=fz, paleta=pal)
     p.dane_stadium, p.geometria, p.styl = P, G, styl
     W, H, L = P["T"]
-    nog, lw, yb, kol, N = P["nog"], P["lw"], G["yb"], G["kol"], P["nr"]
+    nog, lw, yb, ya, N = P["nog"], P["lw"], G["yb"], G["ya"], P["nr"]
     ZAR = styl == "zar"
     g = P["zar"] if styl != "zabawka" else 0.0
     gw, gh, gd = P["gl"]
@@ -229,24 +280,10 @@ def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
     swiec_k = "swiecacy" if typ_k in ("plomienie", "krysztaly") else MK
     kol_k = "zar" if typ_k == "plomienie" else "kolce"
 
-    # ---------------------------------------------------------------- szkielet (ten sam we wszystkich stadiach)
+    _szkielet(p, P, G)
     l1, l2, a1, a2, gr = P["szyja"]
-    p.kosc("Tulow", "Root", G["Tulow"], czesc=(W, H, L))
-    p.kosc("Szyja1", "Tulow", G["Szyja1"], czesc=(gr, gr, max(0.2, l1)), dl=0.3)
-    p.kosc("Szyja2", "Szyja1", G["Szyja2"], czesc=(gr * 0.9, gr * 0.9, max(0.2, l2)), dl=0.3)
-    p.kosc("Glowa", "Szyja2", G["Glowa"], czesc=(gw, gh, gd), srodek=G["cz"])
-    p.kosc("Szczeka", "Glowa", G["Szczeka"], czesc=(pw * 0.9, 0.2, pl + 0.3), srodek=(0, -0.08, pl / 2), dl=0.25)
     L1, L2, C = P["skrz"]
-    for s in ("L", "P"):
-        p.kosc("Skrzydlo%s1" % s, "Tulow", G["Skrzydlo%s1" % s], czesc=(0.3, 0.3, 0.3), dl=0.3)
-        p.kosc("Skrzydlo%s2" % s, "Skrzydlo%s1" % s, G["Skrzydlo%s2" % s], czesc=(0.3, 0.3, 0.3), dl=0.3)
     lens, gro, katy, koniec = P["ogon"]
-    for i in range(4):
-        p.kosc("Ogon%d" % (i + 1), "Ogon%d" % i if i else "Tulow", G["Ogon%d" % (i + 1)],
-               czesc=(gro * (1 - 0.18 * i), gro * (1 - 0.18 * i), lens[i]), dl=0.25)
-    for n in NOGI:
-        p.kosc(n + "1", "Tulow", G[n + "1"], czesc=(lw, 0.4, lw), srodek=(0, -0.2, 0), dl=0.25)
-        p.kosc(n + "2", n + "1", G[n + "2"], czesc=(lw, kol, lw), srodek=(0, -kol / 2, 0), dl=0.25)
 
     def cialo(nazwa, pos, size, kolor="cialo", os_="z", faza=None, mat=None, t=0.5):
         """Bryła ciała: klocek; w stylu „krysztal” — dwie ścięte piramidy podstawami do siebie (fasety)."""
@@ -289,7 +326,9 @@ def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
             p.blok("Rdzen", (0, 0, 0), (W * 1.03, H * 1.03, 0.1 + 0.3 * g), "zar", "swiecacy", faza=0)
         if ZAR:
             n = P["plyty"]
-            p.blok("Zar grzbietu", (0, H / 2 + 0.03, 0.0), (W * (0.8 + 0.2 * g), 0.12, L * 0.97), "zar", "swiecacy",
+            p.blok("Zar grzbietu", (0, H / 2 + 0.03, 0.0), (W * (0.8 + 0.2 * g), 0.12, L * 0.97), "zar_c", "swiecacy",
+                   faza=0.0)
+            p.blok("Zar rdzen", (0, H / 2 + 0.05, 0.0), (W * (0.2 + 0.16 * g), 0.12, L * 0.99), "zar_j", "swiecacy",
                    faza=0.0)
             for i in range(n):                                   # szczelina rośnie z żarem
                 luska("Luska grzbietu", L / n * (0.86 - 0.22 * g), W * (1.16 - 0.03 * i), H / 2,
@@ -321,21 +360,31 @@ def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
                           "kolce", "swiecacy" if N == 8 else MK)
         p.zaczep("BrzuchAttachment", "Tulow", (0, -H / 2 - 0.1, 0))
         p.zaczep("GrzbietAttachment", "Tulow", (0, H / 2 + 0.3, 0))
+        p.zaczep("PiersAttachment", "Tulow", (0, -H * 0.06, L / 2 + 0.25))
+        for i, z in enumerate((L * 0.3, 0.0, -L * 0.3)):
+            p.zaczep("Zar%dAttachment" % (i + 1), "Tulow", (0, H / 2 + 0.2, z))
 
     # ---------------------------------------------------------------- szyja (dwa segmenty)
     for i, (nazwa, dl_, kat) in enumerate((("Szyja1", l1, a1), ("Szyja2", l2, a2))):
         gs = gr * (1.0 - 0.1 * i)
         with p.na(nazwa, obrot=(-kat, 0, 0)):                   # +Z biegnie wzdłuż szyi
             cialo(nazwa, (0, 0, dl_ / 2), (gs, gs, dl_ + gs * 0.55), faza=fz * 1.4)
+            if i == 1:
+                p.zaczep("GardloAttachment", "Szyja2",
+                         razy_wektor(macierz_obrotu(-kat, 0, 0), (0, -gs / 2 - 0.1, dl_ * 0.6)))
+            if "pletwy_szyi" in dod and styl != "zabawka":      # ELDER: pary poziomych płetw wzdłuż długiej szyi
+                for zn in (1, -1):
+                    p.klin("Pletwa szyi", (zn * gs * 1.2, gs * 0.12, dl_ * 0.5), (0.08, gs * 1.4, dl_ * 0.9), "blona",
+                           "matowy", rot=(0, 180, zn * 90), faza=0.0)
             if ZAR and dl_ > 0.3:
                 luska("Luska szyi", dl_ * 0.7, gs * 1.18, gs / 2, dl_ * 0.5, 0.16)
                 if g >= 0.5 and dl_ > 0.5:
-                    p.blok("Zar szyi", (0, gs / 2 + 0.02, dl_ * 0.5), (gs * 0.86, 0.1, dl_ * 1.02), "zar", "swiecacy",
+                    p.blok("Zar szyi", (0, gs / 2 + 0.02, dl_ * 0.5), (gs * 0.86, 0.1, dl_ * 1.02), "zar_c", "swiecacy",
                            faza=0.0)
-            if dl_ > 0.5 and i == 0 and N in (4, 5):
+            if False:
                 p.blok("Szyja spod", (0, -gs / 2 - 0.02, dl_ / 2), (gs * 0.66, 0.08, dl_ * 0.96), "brzuch", "matowy",
                        faza=0.0)
-            if dl_ > 0.5 and nk and styl != "zabawka" and N in (4, 5):
+            if dl_ > 0.5 and nk and styl != "zabawka" and N == 4:
                 h_ = hk * 0.6
                 kolec("Kolec szyi", (0, gs / 2 + 0.16 + h_ / 2 - 0.05, dl_ * 0.45), (max(0.16, gs * 0.2), h_, h_ * 0.9),
                       kol_k, swiec_k)
@@ -346,27 +395,32 @@ def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
     typ_oczu, eo = P["oczy"]
     with p.na("Glowa"):
         cialo("Czaszka", cz, (gw, gh, gd), faza=0.3 if N <= 2 and ZAR else fz * 2.0, t=0.62)
-        ys = cz[1] - gh / 2 + ph / 2 + 0.02 * gh                 # środek pyska (dół czaszki)
+        ys = G["ys"]
         p.blok("Pysk", (0, ys, zf + pl / 2 - 0.06), (pw, ph, pl + 0.12), "cialo", MC, faza=0.16 if N <= 2 else fz * 1.5)
-        if typ_oczu != "dziecko":                                # skos czoła do nosa
+        if True:  # skos czoła do nosa (także u maluchów)
             p.klin("Grzbiet nosa", (0, ys + ph / 2 + ph * 0.2 - 0.01, zf + pl * 0.42), (pw * 0.62, ph * 0.4, pl * 0.84),
                    "cialo_j", MC, rot=(0, 180, 0), faza=0.02)
-        for zn in ((1, -1) if N <= 5 else ()):
+        for zn in ((1, -1) if N <= 3 else ()):
             p.blok("Nozdrze", (zn * pw * 0.22, ys + ph / 2 + 0.005, zf + pl - 0.1), (pw * 0.14, 0.03, pw * 0.14),
                    "tusz", "matowy", faza=0.0)
         p.blok("Paszcza", (0, ys - ph / 2 + 0.0, zf + pl / 2 - 0.1), (pw * 0.86, 0.05, pl * 0.9),
                "zar" if g >= 0.95 else "pysk", "swiecacy" if g >= 0.95 else "matowy", faza=0.0)
         if typ_oczu == "dziecko":
-            ye, e = cz[1] + gh * 0.06, 0.62 * eo
+            # oko w narożniku czaszki: białko wystaje z przodu, z boku i z GÓRY, źrenica zawija się z przodu na górę
+            e = 0.66 * eo
+            xo, yo, zo = gw / 2 - e * 0.42, top - e * 0.38, zf - e * 0.3
             for zn in (1, -1):
-                x = zn * gw * 0.27
-                p.blok("Bialko", (x, ye, zf + 0.02), (e * 0.86, e, 0.06), "bialy", "polysk", faza=0.03)
-                p.blok("Zrenica", (x - zn * 0.04, ye - 0.02, zf + 0.05), (e * 0.58, e * 0.74, 0.05), "oko", "polysk",
-                       faza=0.03)
-                p.blok("Blysk", (x - zn * 0.04 + 0.1 * e, ye + 0.16 * e, zf + 0.08), (e * 0.2, e * 0.2, 0.03), "bialy",
+                p.blok("Bialko", (zn * xo, yo, zo), (e, e, e * 0.9), "bialy", "polysk", faza=0.05)
+                p.blok("Zrenica", (zn * (xo - e * 0.08), yo + e * 0.14, zo + e * 0.16), (e * 0.5, e * 0.78, e * 0.64),
+                       "oko", "polysk", faza=0.03)
+                p.blok("Zrenica bok", (zn * (xo + e * 0.5), yo, zo + 0.02), (0.05, e * 0.5, e * 0.46), "oko", "polysk",
                        faza=0.0)
+                p.blok("Blysk", (zn * (xo - e * 0.08) + e * 0.1, yo + e * 0.3, zo + e * 0.49), (e * 0.18, e * 0.18, 0.04),
+                       "bialy", faza=0.0)
+                p.blok("Brew", (zn * (xo - e * 0.14), yo + e * 0.56, zo + e * 0.38), (e * 0.5, 0.07, 0.12), "cialo_c", MC,
+                       rot=(0, 0, -zn * 18), faza=0.02)
                 if "rumieniec" in dod:
-                    p.blok("Rumieniec", (zn * gw * 0.4, ye - e * 0.66, zf + 0.02), (e * 0.36, e * 0.2, 0.04),
+                    p.blok("Rumieniec", (zn * gw * 0.34, G["ys"] - 0.02, zf + 0.02), (e * 0.34, e * 0.2, 0.04),
                            "rumieniec", "matowy", faza=0.0)
         elif typ_oczu == "mlody":
             ye, e = cz[1] + gh * 0.08, 0.62 * eo
@@ -387,10 +441,10 @@ def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
                 p.blok("Helm", (0, 0, 0), (gw * 1.12, 0.2, gd * 0.86), "cialo_c", "matowy" if ZAR else MC, faza=0.05)
         for zn in (1, -1):                                       # kły górne
             if typ_oczu == "dziecko":
-                if zn == 1:
-                    p.klin("Zabek", (zn * pw * 0.24, ys - ph / 2 - 0.05, zf + pl - 0.05), (0.1, 0.12, 0.08), "bialy",
+                if True:
+                    p.klin("Zabek", (zn * pw * 0.3, ys - ph / 2 - 0.05, zf + pl - 0.05), (0.1, 0.12, 0.08), "bialy",
                            "polysk", rot=(180, 0, 0), faza=0.0)
-            else:
+            elif "kly" not in dod:
                 p.klin("Kiel", (zn * pw * 0.38, ys - ph / 2 - ph * 0.22, zf + pl - 0.1 - ph * 0.1),
                        (0.12, ph * 0.5, ph * 0.36), "bialy", "polysk", rot=(180, 0, 0), faza=0.0)
         _rogi(p, P, styl, cz, top, tyl, zf)
@@ -399,15 +453,32 @@ def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
                 p.blok("Skorupka", (0, 0, 0), (gw * 0.5, 0.16, gd * 0.5), "skorupa", "matowy", faza=0.04)
                 p.klin("Skorupka zab", (0.1 * gw, 0.17, 0.12 * gd), (gw * 0.2, 0.2, gd * 0.2), "skorupa", "matowy",
                        faza=0.0)
-        if "kryza" in dod and styl != "zabawka":                 # kryza: kaptur z błony za głową, widoczny z tyłu
+        if "kolnierz" in dod and styl != "zabawka":             # DRAKE: płaski kołnierz za głową, czytelny z góry
             for zn in (1, -1):
-                with p.uklad(pos=(zn * gw * 0.42, cz[1] + gh * 0.1, tyl + 0.02), obrot=(-24, zn * 22, 0)):
-                    p.klin("Kryza", (zn * gw * 0.42, gh * 0.1, 0), (0.08, gw * 1.3, gh * 1.9), "blona", "matowy",
-                           rot=(90, 0, zn * 90), faza=0.0)
-                    p.blok("Promien kryzy", (zn * gw * 0.5, gh * 0.98, 0.05), (gw * 1.36, 0.12, 0.12), "kolce", MK,
-                           rot=(0, 0, zn * -34), faza=0.02)
+                with p.uklad(pos=(zn * gw * 0.34, cz[1] + gh * 0.16, tyl + 0.12), obrot=(-14, zn * 24, zn * 10)):
+                    p.klin("Kolnierz", (zn * gw * 0.62, 0, -gd * 0.62), (0.1, gw * 1.24, gd * 1.5), "blona", "matowy",
+                           rot=(0, 180, zn * 90), faza=0.0)
+                    p.klin("Kolec kolnierza", (zn * gw * 1.2, 0.04, -gd * 1.0), (0.14, gw * 0.36, gd * 0.9), "kolce", MK,
+                           rot=(0, 180, zn * 90), faza=0.0)
+        if "wasy" in dod and styl != "zabawka":                 # ELDER: dwa długie wąsy od pyska w tył
+            for zn in (1, -1):
+                p.blok("Was", (zn * (pw / 2 + pl * 0.36), ys - ph * 0.1, zf + pl * 0.42), (0.1, 0.1, pl * 1.5), "kolce", MK,
+                       rot=(8, zn * 148, 0), faza=0.02)
         p.zaczep("PyskAttachment", "Glowa", (0, ys - ph * 0.2, zf + pl + 0.1))
         p.zaczep("GlowaAttachment", "Glowa", (0, top + 0.3, cz[2]))
+
+    # ---------------------------------------------------------------- powieki (maluchy mrugają: staw „Powieki”)
+    if typ_oczu == "dziecko":
+        # płytki w kolorze ciała schowane w głowie; przesunięcie stawu o (0, 0.2, 0.2) zakrywa przód i górę oczu
+        e = 0.66 * eo
+        xo, yo, zo = gw / 2 - e * 0.42, top - e * 0.38, zf - e * 0.3
+        sx, sy, sz = _powieki_staw(P, G)
+        with p.na("Powieki"):
+            for zn in (1, -1):
+                p.blok("Powieka przod", (zn * (xo - e * 0.05), yo - 0.2 - sy, zo + e * 0.45 - 0.14 - sz),
+                       (e * 0.9, e * 1.02, 0.05), "cialo", MC, faza=0.0)
+                p.blok("Powieka gora", (zn * (xo - e * 0.05), yo + e * 0.5 - 0.14 - sy, zo - 0.2 - sz),
+                       (e * 0.9, 0.05, e * 0.92), "cialo", MC, faza=0.0)
 
     # ---------------------------------------------------------------- żuchwa
     with p.na("Szczeka"):
@@ -415,9 +486,9 @@ def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
         zh = ph * P["zuch"]
         yz = -0.05 - zh * 0.3
         p.blok("Zuchwa", (0, yz, zl / 2 - 0.02), (pw * 0.9, zh, zl), "cialo", MC, faza=fz)
-        if N <= 5:
+        if N <= 3:
             p.blok("Jezyk", (0, yz + zh / 2 + 0.01, zl * 0.5), (pw * 0.5, 0.04, zl * 0.74), "jezyk", "matowy", faza=0.0)
-        if typ_oczu != "dziecko":
+        if typ_oczu != "dziecko" and "kly" not in dod:
             p.blok("Zeby dolne", (0, yz + zh / 2 + 0.03, zl - 0.14), (pw * 0.82, 0.12, 0.12), "bialy", "polysk",
                    faza=0.0)
         if "kly" in dod:                                         # kły dolne wystające ku górze (ciężka szczęka)
@@ -428,43 +499,32 @@ def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
             p.klin("Broda", (0, yz - zh / 2 - ph * 0.42, zl * 0.5), (0.18, ph * 0.9, ph * 0.9), "kolce", MK,
                    rot=(180, 180, 0), faza=0.0)
 
-    # ---------------------------------------------------------------- skrzydła
+    # ---------------------------------------------------------------- skrzydła (palce + pola błony, lekko załamane)
     t = 0.07
     MB = "poswiata" if KR else "matowy"
+    npal = 2 if N <= 2 else (4 if "szpony" in dod else 3)
+    katy_p = (0.0, 34.0, 70.0) if npal == 2 else ((0.0, 26.0, 52.0, 78.0, 100.0) if npal == 4 else (0.0, 30.0, 60.0, 88.0))
+    dl_p = (L2, L2 * 0.9, L2 * 0.76, L2 * 0.6)
+    zebro, mzeb = ("zar", "swiecacy") if g >= 0.95 else ("cialo_c", MC)
+    ogn = "ogniste_skrzydla" in dod and ZAR
     for strona, zn in (("L", 1.0), ("P", -1.0)):
-
-        def plat(nazwa, x0, x1, z0, z1, kolor, y=0.0, mat=MB, gr_=t):
-            p.blok(nazwa, (zn * (x0 + x1) / 2, y, (z0 + z1) / 2), (x1 - x0, gr_, z1 - z0), kolor, mat, faza=0.0)
-
-        def troj(nazwa, x0, x1, z0, z1, kolor, zadzior=False, y=0.0, mat=MB, gr_=t):
-            """Płaski trójkąt błony: kąt prosty przy krawędzi natarcia (z1); zadzior=False — zwęża się ku końcowi
-            skrzydła, zadzior=True — ostrze w tył przy zewnętrznym końcu."""
-            p.klin(nazwa, (zn * (x0 + x1) / 2, y, (z0 + z1) / 2), (gr_, x1 - x0, z1 - z0), kolor, mat,
-                   rot=(0, 0, zn * (90 if zadzior else -90)), faza=0.0)
-
-        zebro, mzeb = ("zar", "swiecacy") if g >= 0.95 else ("cialo_c", MC)
-        ogn = "ogniste_skrzydla" in dod and ZAR
-        kz, mz = ("zar", "swiecacy") if ogn else ("blona", MB)
-        duze = N >= 3
         with p.na("Skrzydlo%s1" % strona, obrot=_lus(G["rot1"], zn)):
-            p.blok("Ramie", (zn * L1 / 2, 0.02, 0), (L1 + 0.16, 0.22, 0.22), "cialo", MC, faza=0.04)
-            plat("Blona 1", 0.0, L1, -C * 0.92, -0.04, "blona")
-            if N in (5, 7):
-                troj("Blona 1 zadzior", L1 * 0.35, L1, -C * 1.18, -C * 0.92, "blona", zadzior=True)
+            p.blok("Ramie", (zn * L1 / 2, 0.02, 0), (L1 + 0.16, 0.24, 0.24), "cialo", MC, faza=0.04)
+            p.blok("Blona ramienia", (zn * L1 / 2, -0.03, -C * 0.47), (L1, t, C * 0.9), "blona", MB, rot=(5, 0, 0), faza=0.0)
         with p.na("Skrzydlo%s2" % strona, obrot=_lus(G["rot2"], zn)):
-            p.blok("Palec", (zn * L2 / 2, 0.02, 0), (L2 + 0.1, 0.18, 0.18), "cialo", MC, faza=0.03)
-            pol = L2 * (0.5 if duze else 0.42)
-            plat("Blona 2", 0.0, pol, -C * 0.9, -0.04, "blona", y=0.03)
-            troj("Blona 2 koniec", pol, L2, -C * 0.9, -0.04, "blona", y=0.03)
-            if duze:
-                troj("Blona 2 zadzior", pol * 0.3, pol, -C * 1.22, -C * 0.9, kz, zadzior=True, y=0.03, mat=mz)
-                plat("Zebro", pol - 0.06, pol + 0.06, -C * 1.14, -0.05, zebro, y=0.08, mat=mzeb, gr_=0.08)
-            if N >= 5:                                           # drugi zadzior: postrzępiona krawędź spływu
-                troj("Blona 2 zadzior 2", pol, pol + (L2 - pol) * 0.6, -C * 0.96, -C * 0.5, "blona_c", zadzior=True,
-                     y=0.01)
-            if N in (4, 5):
-                p.klin("Pazur skrzydla", (zn * (L2 + 0.18), 0.02, 0.0), (0.16, 0.38, 0.22), "kolce", MK,
-                       rot=(90, 0, 0), faza=0.0)
+            for i in range(npal):
+                szer = dl_p[i] * math.tan(math.radians(katy_p[i + 1] - katy_p[i]))
+                kb, mb = ("zar", "swiecacy") if (ogn and i == npal - 1) else (("blona_c" if i % 2 else "blona"), MB)
+                with p.uklad(obrot=(6 if i % 2 else -5, zn * katy_p[i], 0)):     # pole błony przechylone wokół palca
+                    p.klin("Blona %d" % i, (zn * dl_p[i] / 2, 0.0, -szer / 2), (t, dl_p[i], szer), kb, mb,
+                           rot=(0, 0, zn * 90), faza=0.0)
+                with p.uklad(obrot=(0, zn * katy_p[i], 0)):                     # kość palca na wierzchu błony
+                    gp = 0.2 if i == 0 else 0.11
+                    p.blok("Palec %d" % i, (zn * (dl_p[i] + 0.1) / 2, 0.03 if i == 0 else 0.07, 0),
+                           (dl_p[i] + 0.1, gp, gp), "cialo" if i == 0 else zebro, MC if i == 0 else mzeb, faza=0.03)
+                    if (N >= 3 and i == 0) or ("szpony" in dod and i < 2):
+                        p.klin("Szpon", (zn * (dl_p[i] + 0.24), 0.02, 0.0), (0.16, 0.42, 0.26), "kolce", MK,
+                               rot=(90, 0, 0), faza=0.0)
             p.zaczep("Skrzydlo%sKoniecAttachment" % strona, "Skrzydlo%s2" % strona,
                      razy_wektor(macierz_obrotu(*_lus(G["rot2"], zn)), (zn * L2, 0, 0)))
 
@@ -476,9 +536,9 @@ def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
             if ZAR and i < 3:
                 luska("Luska ogona", lens[i] * 0.66, gt * 1.2, gt * 0.46, lens[i] * 0.5, 0.15)
                 if g >= 0.35:
-                    p.blok("Zar ogona", (0, gt * 0.46 + 0.01, lens[i] * 0.5), (gt * 0.86, 0.1, lens[i] * 1.0), "zar",
+                    p.blok("Zar ogona", (0, gt * 0.46 + 0.01, lens[i] * 0.5), (gt * 0.86, 0.1, lens[i] * 1.0), "zar_c",
                            "swiecacy", faza=0.0)
-            if i == 0 and N != 3 and N <= 5:
+            if i == 0 and N <= 2:
                 p.blok("Ogon spod", (0, -gt * 0.46 - 0.02, lens[i] / 2), (gt * 0.62, 0.06, lens[i]), "brzuch", "matowy",
                        faza=0.0)
             if nk and i < 2 and styl != "zabawka" and N == 4:
@@ -487,27 +547,24 @@ def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
                       (max(0.16, gt * 0.22), h_, h_ * 0.95), kol_k, swiec_k, rot=(0, 0, 0))
             if i == 3:
                 _koniec_ogona(p, P, styl, koniec, lens[i], gt, g)
+                p.zaczep("ZarOgonAttachment", "Ogon4", (0, gt * 0.6, 0))
                 p.zaczep("OgonKoniecAttachment", "Ogon4",
                          razy_wektor(macierz_obrotu(-katy[i], 180, 0), (0, 0, lens[i] + 0.3)))
 
-    # ---------------------------------------------------------------- nogi
+    # ---------------------------------------------------------------- nogi (udo / podudzie / stopa wzdłuż kości)
     for n in NOGI:
         przod = n.startswith("NogaP")
-        j1, j2 = G[n + "1"], G[n + "2"]
-        zn = 1.0 if j1[0] > 0 else -1.0
-        u = j1[1] - j2[1]                                        # długość uda
+        j1, j2, j3 = G[n + "1"], G[n + "2"], G[n + "3"]
         with p.na(n + "1"):
-            if przod and N >= 3:
-                cialo("Ramie nogi", (0, -u / 2 + 0.06, 0), (lw, u + 0.3, lw * 1.12), os_="y", faza=fz * 1.3)
-            elif not przod:
-                cialo("Udo", (zn * 0.03, -u / 2 + 0.1, lw * 0.12), (lw * 1.14, u + 0.42, lw * 1.62), os_="y",
-                      faza=fz * 1.5)
+            if N >= 3 or not przod:
+                _wzdluz(p, "Udo", j1, j2, lw * (1.0 if przod else 1.2), lw * (1.2 if przod else 1.75), nadl=lw * 0.55,
+                        faza=fz * 1.5, mat=MC)
         with p.na(n + "2"):
-            dz = j2[2] - j1[2]
-            cialo("Lydka", (0, -kol / 2 + 0.04, -dz * 0.5), (lw * 0.84, kol + 0.1, lw * 0.88), os_="y", faza=fz)
-            p.blok("Stopa", (0, -kol + 0.11, lw * 0.22 - dz * 0.5), (lw * 1.08, 0.22, lw * 1.5), "cialo_c", MC, faza=0.05)
-            if przod and N >= 3:
-                p.blok("Pazury", (0, -kol + 0.08, lw * 0.98 - dz * 0.5), (lw * 0.96, 0.14, 0.16), "kolce", MK, faza=0.03)
+            _wzdluz(p, "Podudzie", j2, j3, lw * 0.76, lw * (0.82 if przod else 0.9), nadl=lw * 0.3, faza=fz, mat=MC)
+        with p.na(n + "3"):
+            p.blok("Stopa", (0, -ya / 2, lw * 0.3), (lw * 1.1, ya, lw * 1.6), "cialo_c", MC, faza=0.05)
+            if N >= 3 and przod:
+                p.blok("Pazury", (0, -ya * 0.66, lw * 1.16), (lw * 0.98, ya * 0.6, 0.18), "kolce", MK, faza=0.03)
     return p
 
 
@@ -551,8 +608,7 @@ def _rogi(p, P, styl, cz, top, tyl, zf):
                                 faza=0.02)
         rog_nosa(0.86)
     elif typ == "korona":
-        rog(gw * 0.3, top - 0.06, tyl + gd * 0.22, -56, 12, 3.0, 0.36)
-        rog(gw * 0.46, top - gh * 0.2, tyl + gd * 0.2, -68, 32, 2.0, 0.3, tani=True)
+        rog(gw * 0.32, top - 0.06, tyl + gd * 0.22, -62, 16, 3.6, 0.44)
         if styl != "zabawka":                                    # grzebień-wachlarz na czubku głowy
             p.klin("Grzebien", (0, top + gh * 0.5, cz[2] - gd * 0.2), (0.1, gh * 0.9, gd * 1.0), "blona", "matowy",
                    rot=(0, 180, 0), faza=0.0)
@@ -570,14 +626,17 @@ def _koniec_ogona(p, P, styl, typ, dl_, gt, g):
     swiec = "swiecacy" if g >= 0.6 and styl != "zabawka" else MK
     kol = "zar" if (typ == "plomien" and styl != "zabawka") else "kolce"
 
-    def grot(sz, dl, y=0.0, kolor=kol, mat=swiec, gr=0.16):
+    def grot(sz, dl, y=0.0, kolor=kol, mat=swiec, gr=0.16, dz=0.0):
         for zn in (1, -1):                                       # pozioma strzała: czytelna z kamery gry
-            p.klin("Grot", (zn * sz / 4, y, z0 + dl / 2), (gr, sz / 2, dl), kolor, mat, rot=(0, 180, zn * 90), faza=0.0)
+            p.klin("Grot", (zn * sz / 4, y, z0 + dz + dl / 2), (gr, sz / 2, dl), kolor, mat, rot=(0, 180, zn * 90), faza=0.0)
 
     if typ == "grot_maly":
         grot(s * 1.7, s * 1.5, mat=MK)
     elif typ == "grot":
         grot(s * 2.6, s * 2.4, mat=MK)
+    elif typ == "dwa_ostrza":                                    # DRAGON: dwie strzały jedna za drugą
+        grot(s * 2.4, s * 1.9, mat=MK, dz=-s * 2.3)
+        grot(s * 3.6, s * 2.8, mat=MK, dz=s * 0.1)
     elif typ == "plomien":
         grot(s * 2.9, s * 2.9)
         p.klin("Plomien ogona", (0, s * 0.55, z0 + s * 0.9), (0.2, s * 1.4, s * 1.6), "kolce", MK, rot=(0, 0, 0), faza=0.0)
@@ -598,6 +657,99 @@ def _koniec_ogona(p, P, styl, typ, dl_, gt, g):
         for rz, k_, m_ in ((24, "zar", swiec), (-24, "zar", swiec)):
             with p.uklad(pos=(0, 0, z0), obrot=(0, 0, rz)):
                 p.klin("Krysztal ogona", (0, s * 0.9, s * 0.95), (0.26, s * 1.8, s * 2.0), k_, m_, rot=(0, 0, 0), faza=0.0)
+
+
+# --------------------------------------------------------------------------- wersja uproszczona (dalekie smoki)
+ROGI_LOD = {1: 0.32, 2: 0.6, 3: 1.2, 4: 1.5, 5: 2.2, 6: 1.6, 7: 3.4, 8: 3.0}
+
+
+def zbuduj_stadium_lod(nr, zmiany_kolorow=None, id=None):
+    """Wersja uproszczona (dzikie i dalekie smoki): najwyżej ok. 35 części, TE SAME stawy, zaczepy i klipy co pełna."""
+    P = stadium(nr)
+    G = geometria(P)
+    p = Smok(id or P["id"] + "_lod", P["nazwa"].title() + " (uproszczony)", typ="stwor", skala=skala_stadium(P),
+             faza=0.08, paleta=paleta_stadium(P["nr"], zmiany_kolorow))
+    p.dane_stadium, p.geometria, p.styl = P, G, "zar"
+    _szkielet(p, P, G)
+    W, H, L = P["T"]
+    gw, gh, gd = P["gl"]
+    pw, ph, pl = P["pysk"]
+    lw, ya, N, g = P["lw"], G["ya"], P["nr"], P["zar"]
+    l1, l2, a1, a2, gr = P["szyja"]
+    L1, L2, C = P["skrz"]
+    lens, gro, katy, koniec = P["ogon"]
+    cz, zf = G["cz"], G["zf"]
+    top, tyl = cz[1] + gh / 2, cz[2] - gd / 2
+    maly = P["oczy"][0] == "dziecko"
+    with p.na("Tulow"):
+        p.blok("Tulow", (0, 0, 0), (W, H, L), "cialo", faza=0.2)
+        p.blok("Zar grzbietu", (0, H / 2 + 0.03, 0), (W * (0.8 + 0.2 * g), 0.12, L * 0.97), "zar_c", "swiecacy", faza=0)
+        for z in (L * 0.25, -L * 0.25):
+            p.blok("Luska grzbietu", (0, H / 2 + 0.14, z), (W * 1.14, 0.22, L * (0.42 - 0.1 * g)), "cialo_c", "matowy",
+                   rot=(8, 0, 0))
+        p.zaczep("BrzuchAttachment", "Tulow", (0, -H / 2 - 0.1, 0))
+        p.zaczep("GrzbietAttachment", "Tulow", (0, H / 2 + 0.3, 0))
+        p.zaczep("PiersAttachment", "Tulow", (0, -H * 0.06, L / 2 + 0.25))
+        for i, z in enumerate((L * 0.3, 0.0, -L * 0.3)):
+            p.zaczep("Zar%dAttachment" % (i + 1), "Tulow", (0, H / 2 + 0.2, z))
+    for i, (nazwa, dl_, kat) in enumerate((("Szyja1", l1, a1), ("Szyja2", l2, a2))):
+        gs = gr * (1.0 - 0.1 * i)
+        with p.na(nazwa, obrot=(-kat, 0, 0)):
+            p.blok(nazwa, (0, 0, dl_ / 2), (gs, gs, dl_ + gs * 0.55), "cialo")
+            if i == 1:
+                p.zaczep("GardloAttachment", "Szyja2",
+                         razy_wektor(macierz_obrotu(-kat, 0, 0), (0, -gs / 2 - 0.1, dl_ * 0.6)))
+    with p.na("Glowa"):
+        p.blok("Czaszka", cz, (gw, gh, gd), "cialo", faza=0.2)
+        p.blok("Pysk", (0, G["ys"], zf + pl / 2 - 0.06), (pw, ph, pl + 0.12), "cialo")
+        e = 0.66 * P["oczy"][1]
+        for zn in (1, -1):
+            if maly:
+                p.blok("Bialko", (zn * (gw / 2 - e * 0.42), top - e * 0.38, zf - e * 0.3), (e, e, e * 0.9), "bialy", "polysk")
+                p.blok("Zrenica", (zn * (gw / 2 - e * 0.5), top - e * 0.24, zf - e * 0.14), (e * 0.5, e * 0.78, e * 0.64),
+                       "oko", "polysk")
+            else:
+                p.blok("Oko", (zn * (gw / 2 + 0.01), cz[1] + gh * 0.12, cz[2] + gd * 0.2), (0.06, e * 0.42, e * 1.05), "oko",
+                       "swiecacy", faza=0)
+            with p.uklad(pos=(zn * gw * 0.32, top - 0.06, tyl + gd * 0.22),
+                         obrot=(-52 if N > 2 else -25, 0, -zn * (72 if N == 6 else 16))):
+                p.klin("Rog", (0, ROGI_LOD[N] / 2, 0), (0.3, ROGI_LOD[N], 0.38), "kolce", "polysk", rot=(0, 180, 0), faza=0.02)
+        if not maly:
+            p.blok("Helm", (0, top + 0.06, cz[2] + gd * 0.06), (gw * 1.12, 0.2, gd * 0.86), "cialo_c", "matowy", rot=(9, 0, 0))
+        p.zaczep("PyskAttachment", "Glowa", (0, G["ys"] - ph * 0.2, zf + pl + 0.1))
+        p.zaczep("GlowaAttachment", "Glowa", (0, top + 0.3, cz[2]))
+    with p.na("Szczeka"):
+        zl, zh = pl + 0.18 * gd, ph * P["zuch"]
+        p.blok("Zuchwa", (0, -0.05 - zh * 0.3, zl / 2 - 0.02), (pw * 0.9, zh, zl), "cialo")
+    for strona, zn in (("L", 1.0), ("P", -1.0)):
+        with p.na("Skrzydlo%s1" % strona, obrot=_lus(G["rot1"], zn)):
+            p.blok("Blona ramienia", (zn * L1 / 2, 0, -C * 0.46), (L1, 0.09, C * 0.92), "blona", "matowy", faza=0)
+        with p.na("Skrzydlo%s2" % strona, obrot=_lus(G["rot2"], zn)):
+            p.blok("Palec", (zn * L2 / 2, 0.03, 0), (L2 + 0.1, 0.2, 0.2), "cialo", faza=0.03)
+            p.klin("Blona dloni", (zn * L2 / 2, 0, -C * 0.5), (0.09, L2, C * 1.0), "blona", "matowy", rot=(0, 0, -zn * 90),
+                   faza=0)
+            p.zaczep("Skrzydlo%sKoniecAttachment" % strona, "Skrzydlo%s2" % strona,
+                     razy_wektor(macierz_obrotu(*_lus(G["rot2"], zn)), (zn * L2, 0, 0)))
+    for i in range(4):
+        gt = gro * (1.0 - 0.19 * i)
+        with p.na("Ogon%d" % (i + 1), obrot=(-katy[i], 180, 0)):
+            p.blok("Ogon%d" % (i + 1), (0, 0, lens[i] / 2), (gt, gt * 0.92, lens[i] + gt * 0.4), "cialo")
+            if i == 0 and g >= 0.35:
+                p.blok("Zar ogona", (0, gt * 0.46 + 0.01, lens[i] * 0.5), (gt * 0.86, 0.1, lens[i]), "zar_c", "swiecacy", faza=0)
+            if i == 3:
+                s_ = max(gt, 0.34)
+                for zn in (1, -1):
+                    p.klin("Grot", (zn * s_ * 0.6, 0, lens[i] + s_ * 1.2), (0.16, s_ * 1.2, s_ * 2.2), "kolce", "polysk",
+                           rot=(0, 180, zn * 90), faza=0)
+                p.zaczep("ZarOgonAttachment", "Ogon4", (0, gt * 0.6, 0))
+                p.zaczep("OgonKoniecAttachment", "Ogon4",
+                         razy_wektor(macierz_obrotu(-katy[i], 180, 0), (0, 0, lens[i] + 0.3)))
+    for n in NOGI:
+        with p.na(n + "2"):
+            _wzdluz(p, "Podudzie", G[n + "2"], G[n + "3"], lw * 0.9, lw * 1.0, nadl=lw * 0.9)
+        with p.na(n + "3"):
+            p.blok("Stopa", (0, -ya / 2, lw * 0.3), (lw * 1.1, ya, lw * 1.6), "cialo_c", faza=0.05)
+    return p
 
 
 # --------------------------------------------------------------------------- jajo (osobny rig do klipu wyklucia)

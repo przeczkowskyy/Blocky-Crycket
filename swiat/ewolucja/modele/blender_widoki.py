@@ -91,6 +91,80 @@ def poza(sc, m, pz):
     bpy.context.view_layer.update()
 
 
+def kamera_persp(sc, kierunek, pts, szer, wys, ogniskowa=55.0, margines=1.08):
+    # Kamera perspektywiczna dla obrazu prostokątnego: kadr dopasowany do punktów.
+    d = (bp.C3 @ Vector(kierunek)).normalized()
+    przod = -d
+    prawo = przod.cross(Vector((0.0, 0.0, 1.0))).normalized()
+    gora = prawo.cross(przod).normalized()
+    xs, ys, zs = [p.dot(prawo) for p in pts], [p.dot(gora) for p in pts], [p.dot(d) for p in pts]
+    sr = prawo * ((min(xs) + max(xs)) / 2) + gora * ((min(ys) + max(ys)) / 2) + d * ((min(zs) + max(zs)) / 2)
+    cam = bpy.data.objects.get("_Kamera")
+    if cam is None:
+        cam = bpy.data.objects.new("_Kamera", bpy.data.cameras.new("_Kamera"))
+        sc.collection.objects.link(cam)
+    cd = cam.data
+    cd.type, cd.lens, cd.sensor_fit = "PERSP", ogniskowa, "HORIZONTAL"
+    tx = cd.sensor_width / 2.0 / ogniskowa
+    ty = tx * wys / float(szer)
+    odl = max((p - sr).dot(d) + max(abs((p - sr).dot(prawo)) / tx, abs((p - sr).dot(gora)) / ty) * margines for p in pts)
+    cd.clip_start, cd.clip_end = 0.05, odl + 800.0
+    cam.location = sr + d * odl
+    cam.rotation_euler = przod.to_track_quat("-Z", "Y").to_euler()
+    sc.camera = cam
+    return cam
+
+
+def scena(sc, z, modele, tex, wyj, probki):
+    # Kilka modeli w jednej scenie (każdy w swojej pozie, położeniu, obrocie, skali; opcjonalnie czarna sylwetka).
+    import math
+    czarny = None
+    pts = []
+    for e in z["modele"]:
+        m = bp.zbuduj_postac(modele[e["id"]], tex)
+        arm = m["arm"]
+        poza(sc, m, e.get("poza"))
+        wart = {pb.name: (pb.location.copy(), pb.rotation_euler.copy()) for pb in arm.pose.bones}
+        if arm.animation_data:
+            arm.animation_data.action = None                    # zamroź pozę: inne modele mają inne klatki
+        for pb in arm.pose.bones:
+            pb.location, pb.rotation_euler = wart[pb.name]
+        arm.location = bp.do_blendera(e.get("poz", (0.0, 0.0, 0.0)))
+        arm.rotation_euler = (0.0, 0.0, math.radians(e.get("obrot_y", 0.0)))
+        sk = float(e.get("skala", 1.0))
+        arm.scale = (sk, sk, sk)
+        if e.get("czarny"):
+            if czarny is None:
+                czarny = bp.nowy_material("_Czarny")
+                nt = czarny.node_tree
+                for n in list(nt.nodes):
+                    nt.nodes.remove(n)
+                wy, em = nt.nodes.new("ShaderNodeOutputMaterial"), nt.nodes.new("ShaderNodeEmission")
+                em.inputs["Color"].default_value = (0.004, 0.002, 0.008, 1.0)
+                nt.links.new(em.outputs["Emission"], wy.inputs["Surface"])
+            for ob in m["render"]:
+                ob.data.materials.clear()
+                ob.data.materials.append(czarny)
+        bpy.context.view_layer.update()
+        if not z.get("kadr") or e["id"] in z["kadr"]:
+            pts += bp.punkty(m["render"])
+    bp.przygotuj_render(sc, probki)
+    if z.get("ziemia"):
+        ziemia(400.0, z["ziemia"])
+    w, h = z["rozmiar"]
+    if z.get("orto"):
+        kamera_prost(sc, z["kierunek"], pts, w, h, margines=z.get("margines", 1.08))
+    else:
+        kamera_persp(sc, z["kierunek"], pts, w, h, z.get("ogniskowa", 55.0), z.get("margines", 1.08))
+    sc.render.resolution_x, sc.render.resolution_y = int(w), int(h)
+    sc.render.film_transparent = not z.get("ziemia")
+    sc.render.image_settings.file_format = "PNG"
+    sc.render.image_settings.color_mode = "RGBA"
+    sc.render.filepath = os.path.join(wyj, z["plik"])
+    bpy.ops.render.render(write_still=True)
+    bp.log("SCENA", z["plik"])
+
+
 def main():
     arg = sys.argv[sys.argv.index("--") + 1:]
     with open(arg[0], encoding="utf-8") as f:
@@ -102,6 +176,9 @@ def main():
     tex = os.path.join(wyj, "_tekstury")
     for z in zadania:
         probki = int(z.get("probki", 16))
+        if z["typ"] == "scena":
+            scena(bp.nowa_scena(30), z, modele, tex, wyj, probki)
+            continue
         if z["typ"] == "rzad":
             sc = bp.nowa_scena(30)
             x, pts_all, ms = 0.0, [], []

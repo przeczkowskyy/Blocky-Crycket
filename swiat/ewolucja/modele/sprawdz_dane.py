@@ -103,6 +103,11 @@ def main():
                 uwagi.append("%s: zdarzenie poza klipem" % n)
             if k["petla"] and max(abs(a - b) for a, b in zip(k["probki"][0], k["probki"][-1])) > 2:
                 uwagi.append("%s: pętla się nie domyka" % n)
+        lod = wczytaj(s["id"] + "_lod_rig.json")
+        if [k[0] for k in lod["kosci"]] != list(sm.KOSCI) or {z[0] for z in lod["zaczepy"]} != set(sm.ZACZEPY):
+            uwagi.append("wersja uproszczona: inne stawy albo zaczepy")
+        if lod["liczba_czesci"] > 36:
+            uwagi.append("wersja uproszczona: %d części" % lod["liczba_czesci"])
         spocz = poza(rig, None, 0)
         pysk0 = punkt_zaczepu(rig, spocz, "PyskAttachment")
         g = kl["klipy"]["gryz3"]

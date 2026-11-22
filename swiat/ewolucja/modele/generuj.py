@@ -227,7 +227,7 @@ def rig_modelu(m):
         wiersz.append(g)
     pud = pudelko([dict(c, r=tuple(c["r"])) for c in d["czesci"]])
     r.pop("klipy", None)
-    r.update({"format": "smok-ewolucji-rig/1", "skala": m.skala, "regiony": list(sm.REGIONY),
+    r.update({"format": "smok-ewolucji-rig/2", "skala": m.skala, "regiony": list(sm.REGIONY),
               "liczba_czesci": len(r["czesci"]), "liczba_stawow": len(r["kosci"]),
               "wymiary": {"szer": round(pud[1][0] - pud[0][0], 2), "wys": round(pud[1][1], 2),
                           "przod": round(pud[1][2], 2), "tyl": round(-pud[0][2], 2)}})
@@ -235,7 +235,7 @@ def rig_modelu(m):
     if P:
         r.update({"nr": P["nr"], "nazwa_gry": P["nazwa"], "promien_gry": P["r"], "waga": P["waga"],
                   "paleta": {k: v for k, v in sm.paleta_stadium(P["nr"]).items()
-                             if k in ("cialo", "cialo_c", "brzuch", "blona", "kolce", "zar", "oko")}})
+                             if k in ("cialo", "cialo_c", "brzuch", "blona", "kolce", "zar", "zar_c", "zar_j", "oko")}})
     return r
 
 
@@ -258,10 +258,14 @@ def klipy_modelu(m, r, pr):
                 rx, ry, rz = o[f] if o else (0.0, 0.0, 0.0)
                 w += [int(round(-rx * 10)), int(round(ry * 10)), int(round(-rz * 10))]
             wiersze.append(w)
-        klipy[kl.nazwa] = {"dl": kl.dlugosc, "petla": kl.petla, "zdarzenia": getattr(kl, "zdarzenia", {}),
+        if hasattr(kl, "predkosc"):                             # prędkość (studs/s), przy której stopy się nie ślizgają
+            dodatki = {"predkosc": round(kl.predkosc * m.skala, 2)}
+        else:
+            dodatki = {}
+        klipy[kl.nazwa] = {"dl": kl.dlugosc, "petla": kl.petla, "zdarzenia": getattr(kl, "zdarzenia", {}), **dodatki,
                            "stawy": [nazwy.index(n) + 1 for n in stawy], "przes": [nazwy.index(n) + 1 for n in zprzes],
                            "probki": wiersze}
-    return {"format": "smok-ewolucji-klipy/1", "id": m.id, "fps": 30, "krok": KROK, "stawy": nazwy, "klipy": klipy}
+    return {"format": "smok-ewolucji-klipy/2", "id": m.id, "fps": 30, "krok": KROK, "stawy": nazwy, "klipy": klipy}
 
 
 def cmd_dane():
@@ -273,7 +277,7 @@ def cmd_dane():
     blender(os.path.join(BIB, "blender_probki.py"), [pj, wj], "próbki klipów (9 modeli)")
     with open(wj, encoding="utf-8") as f:
         probki = json.load(f)
-    indeks = {"format": "smok-ewolucji-indeks/1", "fps": 30, "krok": KROK, "stawy": list(sm.KOSCI),
+    indeks = {"format": "smok-ewolucji-indeks/2", "wersja": 2, "fps": 30, "krok": KROK, "stawy": list(sm.KOSCI),
               "zaczepy": list(sm.ZACZEPY), "regiony": list(sm.REGIONY),
               "klipy_podstawowe": list(sk.KLIPY_PODSTAWOWE), "klipy_dodatkowe": list(sk.KLIPY_DODATKOWE),
               "zdarzenia": sk.ZDARZENIA_OPIS, "stadia": []}
@@ -283,14 +287,21 @@ def cmd_dane():
             print("UWAGA %s: %s" % (m.id, u))
         k = klipy_modelu(m, r, probki[m.id])
         a = _zapisz(r, os.path.join(DANE, m.id + "_rig.json"))
+        lod = None
+        if r.get("nr"):                                         # wersja uproszczona: te same stawy i klipy
+            lod = rig_modelu(sm.zbuduj_stadium_lod(r["nr"]))
+            _zapisz(lod, os.path.join(DANE, m.id + "_lod_rig.json"))
         b = _zapisz(k, os.path.join(DANE, m.id + "_klipy.json"))
         indeks["stadia"].append({"id": m.id, "nr": r.get("nr", 0), "nazwa": r.get("nazwa_gry", m.nazwa),
                                  "promien_gry": r.get("promien_gry"), "skala": m.skala, "czesci": r["liczba_czesci"],
                                  "stawy": r["liczba_stawow"], "wymiary": r["wymiary"], "klipy": len(m.klipy),
                                  "klatki": sum(x.dlugosc for x in m.klipy),
-                                 "pliki": [m.id + "_rig.json", m.id + "_klipy.json"]})
-        print("DANE | %-10s części %3d  stawy %2d  klipy %2d  rig %3d kB  klipy %3d kB" % (
-            m.id, r["liczba_czesci"], r["liczba_stawow"], len(m.klipy), a // 1024, b // 1024))
+                                 "pliki": [m.id + "_rig.json", m.id + "_klipy.json"],
+                                 "czesci_lod": lod["liczba_czesci"] if lod else None,
+                                 "plik_lod": (m.id + "_lod_rig.json") if lod else None})
+        print("DANE | %-10s części %3d (uproszczony %s)  stawy %2d  klipy %2d  rig %3d kB  klipy %3d kB" % (
+            m.id, r["liczba_czesci"], lod["liczba_czesci"] if lod else "-", r["liczba_stawow"], len(m.klipy),
+            a // 1024, b // 1024))
     stary = os.path.join(DANE, "indeks.json")
     if os.path.isfile(stary):                                   # liczby trójkątów dopisuje polecenie „siatki”
         with open(stary, encoding="utf-8") as f:
@@ -343,13 +354,31 @@ def cmd_eksport(*ids):
     print("EKSPORT | pliki w folderze wyników: eksport")
 
 
-def cmd_filmy(*klipy):
-    """Filmy MP4 (biblioteka) stadiów 1, 4 i 8 — poza repozytorium."""
+def cmd_filmy(*stadia):
+    # Filmy MP4 (biblioteka): chod, bieg, lancuch ugryzien i zioniecie; stadia 1, 3, 5, 8; poza repozytorium.
+    import glob
+    import shutil
     folder = wyjscie("filmy")
-    for kl in (klipy or ("chod", "gryz3", "ogien_petla", "ryk")):
-        for i in ("smok_1", "smok_4", "smok_8"):
+    for stary in glob.glob(os.path.join(folder, "smok_*")):
+        if os.path.isfile(stary):
+            os.remove(stary)
+    ffmpeg = shutil.which("ffmpeg")
+    for n in (stadia or ("1", "3", "5", "8")):
+        i = "smok_%s" % n
+        for kl in ("chod", "bieg", "gryz1", "gryz2", "gryz3", "ogien_start", "ogien_petla", "ogien_koniec"):
             _biblioteka(["--wyj", folder, "--tylko", i, "--klip", kl, "--bez-obrysu"], "film %s %s" % (i, kl))
-    print("FILMY | pliki w folderze wyników: filmy")
+        for nazwa, czesci in (("gryzienie", ("gryz1", "gryz2", "gryz3")), ("ogien", ("ogien_start", "ogien_petla", "ogien_koniec"))):
+            pliki = [os.path.join(folder, "%s_%s.mp4" % (i, c)) for c in czesci]
+            if ffmpeg and all(os.path.isfile(x) for x in pliki):
+                arg = [ffmpeg, "-y", "-loglevel", "error"]
+                for x in pliki:
+                    arg += ["-i", x]
+                arg += ["-filter_complex", "concat=n=%d:v=1:a=0" % len(pliki), "-c:v", "libx264", "-pix_fmt", "yuv420p",
+                        os.path.join(folder, "%s_%s.mp4" % (i, nazwa))]
+                subprocess.run(arg, capture_output=True)
+                for x in pliki:
+                    os.remove(x)
+    print("FILMY | pliki w folderze wyników: filmy (smok_N_chod, _bieg, _gryzienie, _ogien)")
 
 
 def cmd_podglady():
@@ -376,8 +405,15 @@ def cmd_podglady():
     z["dodatkowe"] = [jajo.id]
     zadania.append(z)
     warianty = [sm.zbuduj_stadium(5, zmiany_kolorow=zm, id="wariant_%d" % i) for i, (_, zm) in enumerate(WARIANTY)]
+    from swiat.ewolucja.modele import rekwizyty
+    lod = [sm.zbuduj_stadium_lod(n) for n in range(1, 9)]
+    rekw = [rekwizyty.skarb(1), rekwizyty.skarb(3), rekwizyty.cokol(), rekwizyty.gniazdo()]
+    from swiat.ewolucja.modele import stwory
+    rekw += [stwory.owca(), stwory.golem(1), stwory.golem(3), stwory.golem(5)]
+    zadania += [{"typ": "widoki", "model": m.id, "widoki": {"gra": GRA}, "rozmiar": 300, "przyrostek": "m"} for m in lod]
+    zadania += [{"typ": "widoki", "model": m.id, "widoki": {"przod": BOHATER}, "rozmiar": 300} for m in rekw]
     zadania += [{"typ": "widoki", "model": m.id, "widoki": {"przod": BOHATER, "gra": GRA}, "rozmiar": 300} for m in warianty]
-    widoki(modele + warianty, zadania, folder, "podglądy (%d zadań)" % len(zadania))
+    widoki(modele + warianty + lod + rekw, zadania, folder, "podglądy (%d zadań)" % len(zadania))
 
     from PIL import Image
     for plik, cel in (("rzad_bok.jpg", "02_rzad_stadiow_bok.jpg"), ("rzad_gra.jpg", "03_rzad_stadiow_kamera_gry.jpg")):
@@ -385,10 +421,10 @@ def cmd_podglady():
         im.save(os.path.join(PODGLAD, cel), quality=84, optimize=True)
         print("PLANSZA |", os.path.join(PODGLAD, cel))
     nazwy = [m.dane_stadium["nazwa"] for m in smoki]
-    siatka_obrazow([[os.path.join(folder, "%s_%sm.jpg" % (i, w)) for i in ids] for w in ("gra", "przod", "bok")],
+    siatka_obrazow([[os.path.join(folder, "%s_%sm.jpg" % (i + x, w)) for i in ids] for x, w in (("", "gra"), ("_lod", "gra"), ("", "przod"))],
                    os.path.join(PODGLAD, "04_stadia_przeglad.jpg"), kom=300, etykiety_kolumn=nazwy,
-                   tytul="Osiem stadiów (każde wykadrowane osobno): kamera gry / 3/4 z przodu / bok; wklejka = 64 px",
-                   miniatury={(0, c): 64 for c in range(8)})
+                   tytul="Osiem stadiów: kamera gry — pełny model / wersja uproszczona (35 części) / 3/4 z przodu; wklejka = 64 px",
+                   miniatury={(r_, c): 64 for c in range(8) for r_ in (0, 1)})
     for nr, n in ((5, 1), (6, 4), (7, 8)):
         i = "smok_%d" % n
         siatka_obrazow([[os.path.join(folder, "%s_przod.jpg" % i), os.path.join(folder, "%s_gra.jpg" % i)],
@@ -405,15 +441,71 @@ def cmd_podglady():
         siatka_obrazow(wiersze, os.path.join(PODGLAD, "%02d_klatki_%s.jpg" % (nr, nazwa)), kom=200, etykiety_wierszy=etyk)
     siatka_obrazow([wykl[:4], wykl[4:]], os.path.join(PODGLAD, "11_klatki_wyklucie.jpg"), kom=300,
                    tytul="wyklucie — pisklę + jajo (osobny rig smok_jajo)")
-    siatka_obrazow([[os.path.join(folder, "%s_%s.jpg" % (m.id, w)) for m in warianty] for w in ("przod", "gra")],
-                   os.path.join(PODGLAD, "12_warianty_kolorow.jpg"), kom=300, etykiety_kolumn=[n for n, _ in WARIANTY],
-                   tytul="Warianty = zmiana pięciu kolorów w danych (DRAGON)")
+    siatka_obrazow([[os.path.join(folder, "%s_przod.jpg" % m.id) for m in warianty], [os.path.join(folder, "%s_przod.jpg" % m.id) for m in rekw[:4]],
+                    [os.path.join(folder, "%s_przod.jpg" % m.id) for m in rekw[4:]]],
+                   os.path.join(PODGLAD, "12_warianty_i_rekwizyty.jpg"), kom=300, etykiety_kolumn=[n for n, _ in WARIANTY],
+                   tytul="Warianty kolorów · rekwizyty legowiska · owca i KNIGHT GOLEM (1, 3, 5)")
+
+
+def cmd_rekwizyty():
+    # Rekwizyty legowiska (skarb 1-3, cokol, gniazdo): rigi z czesci do dane/rekwizyt_<id>_rig.json
+    from swiat.ewolucja.modele import rekwizyty
+    ip = os.path.join(DANE, "indeks.json")
+    with open(ip, encoding="utf-8") as f:
+        indeks = json.load(f)
+    indeks["rekwizyty"] = []
+    for m in rekwizyty.wszystkie():
+        r = rig_modelu(m)
+        _zapisz(r, os.path.join(DANE, "rekwizyt_%s_rig.json" % m.id))
+        indeks["rekwizyty"].append({"id": m.id, "nazwa": m.nazwa, "czesci": r["liczba_czesci"], "wymiary": r["wymiary"],
+                                    "plik": "rekwizyt_%s_rig.json" % m.id})
+        print("REKWIZYT | %-8s czesci %2d" % (m.id, r["liczba_czesci"]))
+    _zapisz(indeks, ip)
+
+
+def cmd_stwory():
+    # Owca (ofiara) i KNIGHT GOLEM w pieciu stopniach: rigi i klipy do dane/
+    from swiat.ewolucja.modele import stwory
+    folder = wyjscie("dane_robocze")
+    modele = [stwory.owca()] + [stwory.golem(t) for t in range(1, 6)]
+    for m in modele:
+        for x in m.sprawdz()[0]:
+            raise SystemExit("BŁĄD danych: " + x)
+    pj, wj = os.path.join(folder, "_pakiet_stwory.json"), os.path.join(folder, "_probki_stwory.json")
+    zapisz_json(pakiet(modele), pj)
+    blender(os.path.join(BIB, "blender_probki.py"), [pj, wj], "próbki klipów (owca, golem)")
+    with open(wj, encoding="utf-8") as f:
+        probki = json.load(f)
+    ip = os.path.join(DANE, "indeks.json")
+    with open(ip, encoding="utf-8") as f:
+        indeks = json.load(f)
+    indeks["stwory"] = []
+    for m in modele:
+        r = rig_modelu(m)
+        k = klipy_modelu(m, r, probki[m.id])
+        _zapisz(r, os.path.join(DANE, m.id + "_rig.json"))
+        b = _zapisz(k, os.path.join(DANE, m.id + "_klipy.json"))
+        indeks["stwory"].append({"id": m.id, "nazwa": m.nazwa, "skala": m.skala, "czesci": r["liczba_czesci"],
+                                 "stawy": [x[0] for x in r["kosci"]], "zaczepy": [x[0] for x in r["zaczepy"]],
+                                 "klipy": {x.nazwa: getattr(x, "zdarzenia", {}) for x in m.klipy}, "wymiary": r["wymiary"],
+                                 "pliki": [m.id + "_rig.json", m.id + "_klipy.json"]})
+        print("STWOR | %-8s części %2d  stawy %2d  klipy %d (%d kB)" % (m.id, r["liczba_czesci"], len(r["kosci"]), len(m.klipy), b // 1024))
+    _zapisz(indeks, ip)
+
+
+def cmd_obrazy():
+    # Ikona i trzy miniatury strony gry (wymaga dane/)
+    from swiat.ewolucja.modele import obrazy_gry
+    obrazy_gry.zrob(sys.modules[__name__])
 
 
 def cmd_wszystko():
     cmd_dane()
+    cmd_rekwizyty()
+    cmd_stwory()
     cmd_styl()
     cmd_podglady()
+    cmd_obrazy()
     cmd_siatki()
     cmd_eksport()
 

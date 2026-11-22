@@ -12,6 +12,8 @@ Zdarzenia (klatka przy 30 kl./s) — ZDARZENIA_OPIS.
 """
 import math
 
+from swiat.postacie.biblioteka.postac import macierz_obrotu
+
 NOGI = ("NogaPL", "NogaPP", "NogaTL", "NogaTP")
 GRUPY = {"Skrz1": ("SkrzydloL1", "SkrzydloP1"), "Skrz2": ("SkrzydloL2", "SkrzydloP2"),
          "NogiP1": ("NogaPL1", "NogaPP1"), "NogiP2": ("NogaPL2", "NogaPP2"),
@@ -93,7 +95,7 @@ def petla(p, nazwa, n, poza, cykle, zdarzenia=None):
     return k
 
 
-def dodaj_klipy(p, dodatkowe=True):
+def _klipy_surowe(p, dodatkowe=True):
     P = p.dane_stadium
     w = P["waga"]
     b = 1.0 - w
@@ -128,6 +130,14 @@ def dodaj_klipy(p, dodatkowe=True):
         ("Ogon1", "obrot", (1.5, 5 + 4 * b, 0), 1, 0.0), ("Ogon2", "obrot", (1.5, 7 + 5 * b, 0), 1, -0.12),
         ("Ogon3", "obrot", (2, 9 + 6 * b, 0), 1, -0.24), ("Ogon4", "obrot", (3, 11 + 7 * b, 0), 1, -0.36)])
 
+    if P["oczy"][0] == "dziecko":                              # mrugnięcie: powieki wysuwają się na przód i górę oczu
+        ks = p.klipy[-1]
+        for f0 in (round(ks.dlugosc * 0.3), round(ks.dlugosc * 0.78)):
+            for df, v in ((-3, 0.0), (0, 0.2), (2, 0.2), (5, 0.0)):
+                ks.klucz(f0 + df, "Powieki", przes=(0, v, v), wyg="liniowo")
+        ks.klucz(0, "Powieki", przes=(0, 0, 0), wyg="liniowo")
+        ks.klucz(ks.dlugosc, "Powieki", przes=(0, 0, 0), wyg="liniowo")
+
     # ------------------------------------------------------------------ chód i bieg
     def nogi(k, fazy, A, B):
         n = k.dlugosc
@@ -145,7 +155,7 @@ def dodaj_klipy(p, dodatkowe=True):
         ("Skrz1", "obrot", (0, 0, 3 + 3 * b), 2, 0.3), ("Skrz2", "obrot", (0, 0, 4 + 2 * b), 2, 0.2),
         ("Ogon1", "obrot", (2, 7 + 3 * b, 0), 1, 0.5), ("Ogon2", "obrot", (2, 9 + 4 * b, 0), 1, 0.38),
         ("Ogon3", "obrot", (3, 11 + 5 * b, 0), 1, 0.26), ("Ogon4", "obrot", (3, 13 + 6 * b, 0), 1, 0.14)])
-    nogi(k, (0.0, 0.5, 0.5, 0.0), 27 - 7 * w, 36 - 10 * w)      # kłus po przekątnej
+    k.chod = {"fazy": (0.0, 0.5, 0.5, 0.0), "podpor": 0.62, "krok": 0.78 - 0.1 * w, "unies": 0.24 - 0.06 * w}
 
     k = petla(p, "bieg", F(14, 26), zl(T(rx=5 + 3 * w), S(0.3, 6), {"Szyja1": (10 + 6 * w, 0, 0), "Glowa": (-10 - 5 * w, 0, 0),
                                                                     "Ogon": (4, 0, 0)}), [
@@ -154,7 +164,7 @@ def dodaj_klipy(p, dodatkowe=True):
         ("Skrz1", "obrot", (0, 0, 9), 1, 0.2), ("Skrz2", "obrot", (0, 0, 8), 1, 0.1),
         ("Ogon1", "obrot", (5, 0, 0), 1, 0.6), ("Ogon2", "obrot", (6, 0, 0), 1, 0.48),
         ("Ogon3", "obrot", (7, 0, 0), 1, 0.36), ("Ogon4", "obrot", (8, 0, 0), 1, 0.24)])
-    nogi(k, (0.0, 0.06 + 0.1 * w, 0.5, 0.56 + 0.1 * w), 40 - 6 * w, 48 - 8 * w)   # pisklę kica, dorosły galopuje
+    k.chod = {"fazy": (0.0, 0.08 + 0.1 * w, 0.5, 0.58 + 0.1 * w), "podpor": 0.4, "krok": 0.95, "unies": 0.36}
 
     # ------------------------------------------------------------------ gryzienie
     def kasniecie(nazwa, zn, n, moc=1.0):
@@ -353,6 +363,115 @@ def dodaj_klipy(p, dodatkowe=True):
         "Ogon1": (2, 12, 0), "Ogon2": (3, 16, 0), "Ogon3": (4, 20, 0), "Ogon4": (6, 24, 0)}), [
         ("Tulow", "przes", (0, 0.02 + 0.01 * w, 0), 1, 0.0), ("Skrz1", "obrot", (0, 0, 2.5), 1, 0.1),
         ("Skrz2", "obrot", (0, 0, 2.5), 1, 0.0), ("Glowa", "obrot", (1.2, 0, 0), 1, 0.3), ("Ogon4", "obrot", (0, 4, 0), 1, 0.2)])
+    return p
+
+
+# --------------------------------------------------------------------------- nogi na ziemi (wypiekanie kluczy)
+def _gladko(k, kosc, kanal, f):
+    """Wartość kanału w klatce f: krzywa Catmulla-Roma po kluczach (odcinki „liniowo” — liniowo), pętla zawinięta."""
+    kl = k.kanaly.get((kosc, kanal))
+    if not kl:
+        return (0.0, 0.0, 0.0)
+    pts = [(x, kl[x]) for x in sorted(kl)]
+    n = float(k.dlugosc)
+    if k.petla:
+        baza = [(x, v) for x, v in pts if x < n - 1e-6] or pts
+        pts = [(x - n, v) for x, v in baza] + baza + [(x + n, v) for x, v in baza]
+    if f <= pts[0][0]:
+        return tuple(pts[0][1][:3])
+    if f >= pts[-1][0]:
+        return tuple(pts[-1][1][:3])
+    i = max(j for j in range(len(pts) - 1) if pts[j][0] <= f)
+    (f1, v1), (f2, v2) = pts[i], pts[i + 1]
+    u = (f - f1) / (f2 - f1)
+    if v1[3] == "liniowo":
+        return tuple(v1[c] + (v2[c] - v1[c]) * u for c in range(3))
+    f0, v0 = pts[i - 1] if i > 0 else (f1, v1)
+    f3, v3 = pts[i + 2] if i + 2 < len(pts) else (f2, v2)
+    wyn = []
+    for c in range(3):
+        m1 = (v2[c] - v0[c]) / (f2 - f0) * (f2 - f1) if (f2 > f0 and i > 0) else 0.0
+        m2 = (v3[c] - v1[c]) / (f3 - f1) * (f2 - f1) if (f3 > f1 and i + 2 < len(pts)) else 0.0
+        wyn.append((2 * u ** 3 - 3 * u ** 2 + 1) * v1[c] + (u ** 3 - 2 * u ** 2 + u) * m1
+                   + (-2 * u ** 3 + 3 * u ** 2) * v2[c] + (u ** 3 - u ** 2) * m2)
+    return tuple(wyn)
+
+
+def _posadz(p, k, krok_kl=2):
+    """Zastąp klucze nóg kluczami z odwrotnej kinematyki: stopa (kostka) trzyma się celu na ziemi mimo ruchu tułowia,
+    w chodzie i biegu idzie po torze kroku, stopa zostaje płaska. Gdy cel jest poza zasięgiem nogi (skok, lot),
+    noga płynnie przechodzi do pozy ręcznej z klipu. Klucze tułowia są zagęszczane tą samą krzywą, żeby Blender
+    i ten rachunek widziały ten sam ruch. Zwraca nic; ustawia k.predkosc (jednostki projektu na sekundę) dla chodu."""
+    P, G = p.dane_stadium, p.geometria
+    n = k.dlugosc
+    Tj = G["Tulow"]
+    klatki = list(range(0, n + 1, krok_kl))
+    tor = {f: (_gladko(k, "Tulow", "przes", f), _gladko(k, "Tulow", "obrot", f)) for f in klatki}
+    chod = getattr(k, "chod", None)
+    za_obrotem = k.nazwa == "ogon_zamach"                      # stopy idą za obrotem ciała wokół pionu
+    nowe = {}
+    for nr, noga in enumerate(NOGI):
+        H0, K0, A0 = G[noga + "1"], G[noga + "2"], G[noga + "3"]
+        l1 = math.hypot(K0[1] - H0[1], K0[2] - H0[2])
+        l2 = math.hypot(A0[1] - K0[1], A0[2] - K0[2])
+        a10 = math.atan2(K0[2] - H0[2], -(K0[1] - H0[1]))
+        a20 = math.atan2(A0[2] - K0[2], -(A0[1] - K0[1]))
+        przod = noga.startswith("NogaP")
+        D = H0[1] - A0[1]
+        for f in klatki:
+            tp, tr = tor[f]
+            R = macierz_obrotu(tr[0], 0.0 if za_obrotem else tr[1], tr[2])
+            cel = [A0[0], A0[1], A0[2]]
+            mach = 0.0
+            if chod:
+                u = (f / float(n) + chod["fazy"][nr]) % 1.0
+                S, b_ = chod["krok"] * D, chod["podpor"]
+                if u < b_:                                      # podpór: stopa jedzie w tył ze stałą prędkością
+                    cel[2] += S * (0.5 - u / b_)
+                else:                                           # przenoszenie: łuk do przodu
+                    mach = (u - b_) / (1.0 - b_)
+                    cel[2] += S * (-0.5 * math.cos(math.pi * mach))
+                    cel[1] += chod["unies"] * D * math.sin(math.pi * mach)
+            else:
+                zas = 0.4 * D                                   # tułów może odjechać o tyle, zanim stopa się przesunie
+                cel[2] += tp[2] - max(-zas, min(zas, tp[2]))
+                cel[0] += tp[0] - max(-zas, min(zas, tp[0]))
+            d = (cel[0] - Tj[0] - tp[0], cel[1] - Tj[1] - tp[1], cel[2] - Tj[2] - tp[2])
+            loc = tuple(R[0][i] * d[0] + R[1][i] * d[1] + R[2][i] * d[2] for i in range(3))   # Rᵀ · d
+            v = (loc[0] + Tj[0] - H0[0], loc[1] + Tj[1] - H0[1], loc[2] + Tj[2] - H0[2])
+            vy = -math.hypot(v[0], v[1])
+            odl, zasieg = math.hypot(vy, v[2]), l1 + l2
+            lot = max(0.0, min(1.0, (odl / zasieg - 0.97) / 0.2))  # 0 = stopa na ziemi, 1 = noga w powietrzu
+            dd = min(max(odl, abs(l1 - l2) + 1e-3), zasieg * 0.999)
+            gam = math.atan2(v[2], -vy)
+            kat = math.acos(max(-1.0, min(1.0, (l1 * l1 + dd * dd - l2 * l2) / (2 * l1 * dd))))
+            a1 = gam - kat if przod else gam + kat
+            a2 = math.atan2(dd * math.sin(gam) - l1 * math.sin(a1), dd * math.cos(gam) - l1 * math.cos(a1))
+            rx1 = -math.degrees(a1 - a10)
+            rx2 = -math.degrees((a2 - a20) - (a1 - a10))
+            rz1 = math.degrees(math.atan2(v[0], max(1e-6, -v[1]))) if v[1] < 0 else 0.0
+            m1, m2 = _gladko(k, noga + "1", "obrot", f), _gladko(k, noga + "2", "obrot", f)
+            o1 = (rx1 + (m1[0] - rx1) * lot, m1[1] * lot, rz1 + (m1[2] - rz1) * lot)
+            o2 = (rx2 + (m2[0] - rx2) * lot, 0.0, 0.0)
+            stopa = -(tr[0] + o1[0] + o2[0]) * (1.0 - lot) + 18.0 * lot + (20.0 * math.sin(math.pi * mach) if mach else 0.0)
+            nowe[(noga + "1", f)], nowe[(noga + "2", f)], nowe[(noga + "3", f)] = o1, o2, (stopa, 0.0, 0.0)
+    for noga in NOGI:
+        for c in "123":
+            k.kanaly[(noga + c, "obrot")] = {float(f): [nowe[(noga + c, f)][0], nowe[(noga + c, f)][1],
+                                                        nowe[(noga + c, f)][2], "gladko"] for f in klatki}
+    for i, kanal in enumerate(("przes", "obrot")):
+        if ("Tulow", kanal) in k.kanaly:
+            k.kanaly[("Tulow", kanal)] = {float(f): [tor[f][i][0], tor[f][i][1], tor[f][i][2], "gladko"] for f in klatki}
+    if chod:
+        D = G["NogaPL1"][1] - G["NogaPL3"][1]
+        k.predkosc = chod["krok"] * D * 30.0 / (chod["podpor"] * n)
+
+
+def dodaj_klipy(p, dodatkowe=True):
+    """Komplet klipów stadium: pozy i cykle z _klipy_surowe, potem nogi posadzone na ziemi (_posadz)."""
+    _klipy_surowe(p, dodatkowe)
+    for k in p.klipy:
+        _posadz(p, k)
     return p
 
 
