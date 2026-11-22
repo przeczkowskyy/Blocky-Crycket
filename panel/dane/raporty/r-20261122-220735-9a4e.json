@@ -1,0 +1,17 @@
+{
+ "id": "r-20261122-220735-9a4e",
+ "tytul": "Slide a Ragdoll — pomysł Pawła w Wytwórni, ocena wstępna 17/30",
+ "opis_md": "Pomysł Pawła dodany do Wytwórni jako karta (etap: ocena). Ocena agenta: 17/30, werdykt „popraw”. Mocne strony: tytuł i miniatura, klip na 10 sekund, tor jako majątek gracza. Słabe: gracz głównie patrzy, piniata daje tylko złoto, brak powodu powrotu, późne wejście w falę ragdolla. W karcie jest pięć poprawek. Ocena jest wstępna — rynek po mechanice nie został sprawdzony.",
+ "kto": "Claude (Paweł)",
+ "czas": "2026-11-22T22:07:35+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Wytwórnia/Pomysły/Slide a Ragdoll.md",
+   "etykieta": "Karta pomysłu"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Czy zlecić sprawdzenie rynku po mechanice dla Slide a Ragdoll (ok. 0,2 mln tokenów)?"
+}
