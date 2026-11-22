@@ -6,6 +6,9 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: próba „jedno zwierzę na standardowym szkielecie”)
+- **Próba techniczna** (ten sam agent, ok. 45–75 tys. tokenów): jedna dwunożna małpa na standardowym szkielecie postaci Roblox odtwarza gotowe animacje w skali 0,5–6 razy, także jako boty. Ograniczenia i zalecenie (małpa jako model po stronie klienta, ruch zostaje nasz): [[Projekt próbki — Monster Evolution]], sekcja „Próba techniczna”. Dopiski pod pytaniami 83 i 84. Opublikowana wersja nietknięta; pliki próby w `swiat/ewolucja/`.
+
 ## 2026-11-22 · Claude Code u Karola (Monster Evolution: etap 2 gotowy i opublikowany prywatnie)
 - **Etap 2 próbki** (ten sam agent na Opus): strefa Deep Woods od formy 4, mały boss, ładniejsze pole, wspólny system ruchu stworów, odczucie jedzenia i ewolucji, późniejszy pierwszy pościg, skrypt filmu demo. Testy logiki 15/15, próba w Studio 15/15, układ telefonu 6/6; jeden cel tempa niespełniony (przerwa bez nowości 3:02 wobec 2:30). Stan i liczby: [[Projekt próbki — Monster Evolution]].
 - **Prywatna publikacja** za zgodą Karola z 22.11 („Tak puścimy”): wersja bez strażnika Studio, zabawki i Pet Arena wyłączone, publikacja potwierdzona zmianą znacznika czasu wersji miejsca. Link w zadaniach. Publicznie nic.

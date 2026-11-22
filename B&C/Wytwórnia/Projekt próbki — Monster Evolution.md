@@ -103,6 +103,12 @@ Dobrze zrobiona druga generacja w tej fali ma zwykle szczyt 0,5–5 tys. graczy 
 ## Propozycja: jedno zwierzę zamiast ośmiu różnych potworów (2026-11-22)
 Karol zapytał, czy nie zrobić jednego zwierzęcia. Agent się zgadza: rosnące gry tej fali mają jednego rozpoznawalnego stwora w tytule, ogólne tytuły nie żyją, filmy niesie jedna historia („od słabego do króla”), a jedno zwierzę to jeden szkielet i jeden chód na osiem form. Wybór z liczb: [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]] — agent proponuje małpę (małpka → goryl → olbrzymi goryl), bo dwunożną postać da się najpewniej oprzeć na standardowym szkielecie postaci Roblox z gotowym chodem, co zamyka największą lukę wobec lidera bez pracy w Blenderze. Do sprawdzenia przez budującego na początku przeróbki. Kod etapu 1 ma formy w tabeli danych, więc zmiana nie rusza pętli. Decyzja: pytanie 84.
 
+### Próba techniczna (2026-11-22)
+- **Działa:** jedna dwunożna małpa z klocków na standardowym szkielecie postaci Roblox odtwarza gotowy chód, bieg i postój — jako gracz i jako boty — w skali od 0,5 do 6 razy, bez szkieletu z Blendera. Trzy przykładowe stadia z jednego modelu: wielkość, kolor futra i doczepiane dodatki (łuk brwiowy, srebrny grzbiet, płyty, korona). 25 botów i gracz: 16,7 ms na klatkę w emulacji telefonu (na procesorze komputera, nie telefonu).
+- **Ograniczenia:** gotowe animacje to wyprostowany ludzki chód, nie chód na knykciach (własne animacje wymagałyby wgrania, czyli zgody); przy ruchu standardowych postaci boty różnej wielkości piętrzą się i blokują; próbny model jest surowy — żeby wyglądał jak nasze potwory, potrzebne są części ciała w stylu klocków (16 elementów), ale już bez szkieletu i bez animacji.
+- **Zalecenie agenta budującego:** zostawić nasz ruch i przewidywanie, a małpę pokazywać jako model po stronie klienta, którego animacje idą za naszym ruchem. Ten wariant nie był jeszcze sprawdzony wprost. Szacunek przeróbki: 150–200 tys. tokenów; pełne przejście na standardowe postacie 350–450 tys.
+- Szczegóły w repozytorium: `swiat/ewolucja/PROBA_MALPY.md`, zrzuty `swiat/ewolucja/klatki/proba_malpy_*.jpg`.
+
 ## Stan implementacji
 - [x] Etap 1 — pełna pętla w najmniejszej postaci (2026-11-22: testy logiki 12/12, próba w Studio 13/13 bez błędów konsoli, układ telefonu 6/6, tempo z symulacji zgodne z celami)
 - [x] Etap 2 — pierwsze dziesięć minut (2026-11-22: testy logiki 15/15, próba w Studio 15/15 bez błędów konsoli, układ telefonu 6/6; jeden cel tempa niespełniony — najdłuższa przerwa bez nowości 3:02 wobec 2:30); wersja opublikowana prywatnie

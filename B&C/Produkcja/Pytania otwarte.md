@@ -792,6 +792,7 @@ Rozstrzyga: D-129 (budowa próbki Monster Evolution); zasada wyboru: D-128.
 
 Szczegóły: [[Projekt próbki — Monster Evolution]], sekcja „Po etapie 1”. Agent zaleca (c): pierwsze minuty decydują o pierwszym wrażeniu, a osiem pełnych animacji to dni pracy w oknie 2–4 tygodni.
 Dopisek z 2026-11-22: jedno dwunożne zwierzę na standardowym szkielecie postaci Roblox rozwiązałoby animacje bez pracy w Blenderze — zob. pytanie 84.
+Dopisek z 2026-11-22 (po próbie technicznej): gotowe animacje postaci Roblox działają na dwunożnym modelu w skali 0,5–6 razy; od Karola potrzebne byłyby najwyżej części ciała w stylu klocków, bez szkieletu i bez animacji. Chód jest ludzki, wyprostowany.
 **Odpowiedź:**
 
 ## 84. Monster Evolution: jedno zwierzę — które?
@@ -801,5 +802,6 @@ Dopisek z 2026-11-22: jedno dwunożne zwierzę na standardowym szkielecie postac
 - Agent przerobi drabinę na (a) po etapie 2, jeśli nikt nie wybierze inaczej; zmiana jest odwracalna (formy są w tabeli danych).
 
 Szczegóły: [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]]; uzasadnienie i ryzyka także w [[Projekt próbki — Monster Evolution]].
+Dopisek z 2026-11-22 (po próbie technicznej): wariant (a) jest wykonalny bez Blendera — zob. [[Projekt próbki — Monster Evolution]], „Próba techniczna”. Próbny model małpy jest surowy; przeróbka całej gry to 150–200 tys. tokenów i czeka na wybór zwierzęcia.
 **Odpowiedź:**
 
