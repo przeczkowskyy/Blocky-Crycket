@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-22T14:19:01+01:00",
+ "aktualizacja": "2026-11-22T14:31:04+01:00",
  "prace": [
   {
    "id": "budowa-ewolucja-etap2",
@@ -14,19 +14,6 @@
    "obszary": [
     "studio:EwolucjaGra",
     "swiat/ewolucja"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "wybor-zwierzecia",
-   "tytul": "Sprawdzenie rynku: które zwierzę do gry o ewolucji",
-   "stan": "w_toku",
-   "start": "2026-11-22T14:19:01+01:00",
-   "koniec_szacowany": "2026-11-22T14:44:01+01:00",
-   "aktualizacja": "2026-11-22T14:19:01+01:00",
-   "obszary": [
-    "B&C/Wytwórnia/Pomysły"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
