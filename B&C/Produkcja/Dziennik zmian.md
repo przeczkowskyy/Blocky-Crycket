@@ -6,6 +6,17 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (na czym stajemy)
+- Karol: „Co powinniśmy teraz zrobić… Musimy na czymś definitywnie przystanąć”. Agent zaleca grę o smoku jako jedyną grę studia przez dwa tygodnie, z progami zapisanymi z góry i trendami jako aktualizacjami; ocena ragdolla i propozycje aktualizacji — pytanie 87.
+
+## 2026-11-22 · Claude Code u Karola (ustalenia z drugiej sesji głównej: Baseball for treasure)
+- **Nowa notatka:** [[Sesja główna 2026-11-22 (2) — zapis ustaleń]] (status propozycja) — druga sesja tego dnia, 19:39–19:41, mówił tylko Karol; temat: pomysł [[Baseball for treasure]] po ocenie agenta 17/30. Notatka z pierwszej sesji (18:53–19:02) została bez zmian poza odnośnikiem do drugiej. Zapis rozmowy zostaje lokalnie u gospodarza panelu.
+- **Rejestr decyzji:** propozycje D-135 (karta oceny: „Inni gracze” nie obniża oceny gier solo) i D-136 (odmiana baseballu: potworek zamiast skarbu), obie ze zdaniem agenta (D-114: zgoda z poprawką). Nic nie zatwierdzone.
+- **Pytania otwarte:** bez nowych pytań; dopisek pod pytaniem 86 (Karol wrócił do pytania, nie wybrał). Pod żadnym otwartym pytaniem (78, 79, 80, 83, 85, 86) nie dopisano odpowiedzi — żadna nie padła.
+- **Zadania:** odmiany baseballu łatające słabe punkty oceny i pokrewne gry; panel — agenda i pytania pod temat sesji. Prośby z nagrania nie uruchomiły pracy — start po poleceniu na czacie.
+- **Sesje główne:** temat w „Omówione”; wybór po ocenie (pytanie 86) dalej w „Do omówienia”.
+- Dopiski w [[Baseball for treasure]], [[Karta oceny pomysłu]] (propozycja zmiany, karta działa bez zmian) i [[00 Wytwórnia pomysłów]]. Raport w panelu: „Sesja główna 2026-11-22 (2) — do zatwierdzenia”.
+
 ## 2026-11-22 · Claude Code u Karola (odświeżenie ocen całego lejka pomysłów)
 - **Karol:** „Odśwież cały lejek pomysłów, bo wiele z tych ocen jest już nieaktualne”. Agent (Opus, ok. 275 tys. tokenów) ocenił 15 kart na danych z 22.11 i graniu właściciela; zmienione tylko: kolumna Agent, werdykt agenta, etap i nowy blok na górze „Krytyki agenta”. Kolumny Karola i Pawła bez zmian. Zestawienie: [[Lejek pomysłów — ocena 2026-11-22]].
   - Monster Evolution: 26 → 21, popraw → popraw

@@ -806,3 +806,28 @@ Dopisek z 2026-11-22 (po próbie technicznej): wariant (a) jest wykonalny bez Bl
 **Odpowiedź:**
 - Karol (2026-11-22): „Nie wiem, może smok? Ale jeśli sugerujesz małpę, to może być, ale więcej zdolności uda nam się zrobić na smokach”. Agent zmienia zalecenie na smoka: w tej mechanice klon ze smokiem ma ok. cztery razy więcej graczy niż klon z małpą, pięć nowych gier ze smokami ma razem 27,5 tys. graczy, smok daje najwięcej zdolności i najlepszą ostatnią formę, a legowisko ze skarbem to naturalny motyw smoka; próba techniczna pokazała też, że przewaga małpy (gotowy chód) jest mniejsza, niż zakładał. Ustalenie robocze: smok chodzący, bez swobodnego latania (krótki ślizg jako zdolność późnych form); tytuł „Dragon Evolution” jest zajęty — wolne w wyszukiwarce 22.11: „Dragon Lair Evolution”, „Evolve a Dragon”, „Baby Dragon Evolution”. Przeróbka po etapie 3; modelu smoka nie mamy — na start złoży go agent z klocków, docelowy model w naszym stylu to praca Karola.
 
+## 85. Baseball for treasure: skąd gracz bierze siłę?
+- Na sesji 22.11 padły trzy wersje i żadna nie wygrała.
+- (a) hantla, którą postać podnosi sama (Paweł); (b) podciąganie albo pompki, jak drążek we wzorze (Karol); (c) bez osobnego treningu — siłę dają kij i ulepszenia (Karol pod koniec, zdanie urwane).
+- Karol zostawił to zdaniu agenta; Paweł do (c) się nie odniósł.
+
+Szczegóły: [[Sesja główna 2026-11-22 — zapis ustaleń]] (18:56–18:57, 19:00). Łączy się z propozycją D-132: kij roboczo daje mnożnik siły. Zdanie agenta (D-114): zostawić trening, czyli (a) albo (b) — różnica między nimi to tylko wygląd, a hantla odróżnia nas od drążka ze wzoru. Wariant (c) zabiera grze powód, żeby zostawić ją włączoną i wrócić następnego dnia, oraz jeden z trzech wydatków złota: we wzorze drążek robi powtórzenie co pół sekundy także pod nieobecność gracza, a drążków do kupienia jest 46 ([[Rozbiór wzoru — Throw Food For Animals]]). Zmienię zdanie, jeśli próbka bez treningu trzyma graczy tak samo długo. Karta: [[Baseball for treasure]].
+**Odpowiedź:**
+
+## 86. Baseball, ameba czy smok: co budujemy dalej?
+- Na sesji 22.11 Paweł przedstawił Baseball for treasure, a Karol rozbudowę gry o smoku: od ameby, z osobnymi serwerami na poziomy.
+- Karol: gra o smoku może zostać przerobiona, jeśli agent uzna nowe pomysły za lepsze; obaj czekają na ocenę.
+- Do wyboru po ocenie: (a) smok bez zmian idzie do próby z graczami, baseball jako następna próbka; (b) baseball od razu, smok wstrzymany; (c) smok rozbudowany od ameby; (d) żadne — szukamy dalej.
+
+Szczegóły: [[Sesja główna 2026-11-22 — zapis ustaleń]] (18:57–18:59, 19:01); propozycje D-133 (ameba) i D-134 (najpierw ocena). Pełnej oceny jeszcze nie ma — to zadanie w [[Zadania]] (sprawdzenie rynku po mechanice baseballu ok. 0,2 mln tokenów; start po poleceniu na czacie). Wstępne zdanie agenta (D-114, hipoteza): (a) z dopiskiem. Gra o smoku stoi, jest opublikowana prywatnie i czeka na graczy, nie na budowę, więc przerabianie jej przed pomiarem znów rozstrzygałoby gustem (D-128). Próbka jednej pętli baseballu może powstać równolegle, jeśli pomysł przejdzie sprawdzenie rynku — okno fali liczymy do ok. 6.12 ([[Baseball for treasure]], „Krytyka agenta”). Ameby w kształcie z sesji nie polecam: najbliższa gra o ewolucji komórki spadła z 11,5 tys. graczy do 62 ([[Walidacja kierunku jesteś potworem (2026-11-22)]]).
+Dopisek z 2026-11-22 (sesja główna 19:39): na drugiej, minutowej sesji Karol wrócił do tego pytania, ale nie wybrał żadnej z dróg. Poprosił agenta o odmiany baseballu łatające słabe punkty z oceny (jego przykład: potworek zamiast skarbu — propozycja D-136) i o pokrewne gry tego typu; uznał też, że kryterium „Inni gracze” nie powinno obniżać oceny (D-135). Paweł nie zabrał głosu. Zapis: [[Sesja główna 2026-11-22 (2) — zapis ustaleń]].
+**Odpowiedź:**
+
+## 87. Na czym stajemy: smok przez dwa tygodnie?
+- Karol 22.11: „Musimy na czymś definitywnie przystanąć”.
+- Agent zaleca: gra o smoku jako jedyna gra studia przez dwa tygodnie, z progami zapisanymi z góry; nowe pomysły i trendy wchodzą do niej jako cotygodniowe aktualizacje, a nie jako nowe gry.
+- Do wyboru: (a) smok przez dwa tygodnie, potem decyzja z liczb; (b) inny pomysł z lejka; (c) nowy kierunek po świeżym radarze.
+
+Szczegóły: plan dwóch tygodni — do środy pierwsze wrażenie (pisklę i skrzydła, tytuł, ikona), w czwartek cicha publikacja publiczna (osobna decyzja ludzi) i pierwsi gracze, w sobotę 29.11 pierwsza aktualizacja i sprawdzenie rynku, po siedmiu dniach danych progi z [[Projekt próbki — Monster Evolution]] (dalej / jedna poprawka / koniec). Ragdoll: czysta piaskownica — nie (ponad sto gier od października, pierwsza fala traci 25–45% tygodniowo, lider wygrywa realizmem fizyki ciała); ragdoll jako warstwa w grze — tak (smok po uderzeniu ogonem albo podmuchem leci bezwładnie). Propozycje aktualizacji: napady na legowiska z kradzieżą jaj między graczami (fala nr 1), bezwładne odlatywanie po trafieniu, sobotnie wydarzenie z bossem. Rezerwa, gdyby smok odpadł: [[Smash Tower]], [[Sleeping Giant Heist]], [[Baseball for treasure]] — zob. [[Lejek pomysłów — ocena 2026-11-22]].
+**Odpowiedź:**
+
