@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (walidacja kierunku „noc i Olbrzym”)
+- **Walidacja** wybranego przez Karola pomysłu (analityk na Fable, szukanie po mechanice: 105 haseł, ok. 2,5 tys. gier): [[Walidacja kierunku noc i Olbrzym (2026-11-22)]]. „Pusto wokół” było błędem szukania — to dwuletnia rodzina gier (typowo 7–20 tys. graczy w szczycie i szybki spadek); „przynieś zwierzęta do domu” to cmentarz; internet nagrywa cel z liczbą („przetrwałem 100 nocy”), wielkie widoczne zagrożenie i „coś weszło nocą do mojego domu”, a nie zmierzch; twórcy przychodzą po wejściu gry na listy Roblox, nie przed.
+- **Zmieniony pomysł i projekt próbki:** [[Projekt próbki — Guard Your Monsters From the Giant]] — Olbrzym co noc przychodzi do obozu i zabiera potwora, którego widać ponad płotem; licznik nocy; miary sukcesu u prawdziwych graczy; plan czterech sobotnich aktualizacji. Odświeżone: [[Następna gra — rekomendacja 2026-11-22]], [[Fale na Roblox 2026 i gdzie jest otwarcie]], [[Trzy pomysły na następną grę (2026-11-22)]]; karta [[Bring Monsters Home Before Dark]] ze zmianą na górze; dopisek pod pytaniem 82. Pewność: niska do średniej; nic nie jest budowane.
+
 ## 2026-11-22 · Claude Code u Karola (wybór kierunku: „Zdąż przed nocą”)
 - **Karol:** „Tutaj za bardzo nie ma znaczenia, co mnie pociąga, tylko co obecnie pociąga internet. Ale z tych pozycji akurat najlepsza druga — najlepiej brzmi.” Odpowiedź pod pytaniem 82; karta [[Bring Monsters Home Before Dark]] przechodzi do etapu oceny. Budowa nie jest zlecona.
 - W toku (analityk na Fable): walidacja tego kierunku pod kątem sieci — gry, które próbowały tego samego i przegrały, rozbiór najbliższych rosnących gier, filmy i krótkie formy wokół tej fantazji, poprawiony pomysł, projekt najmniejszej próbki z miarami sukcesu u prawdziwych graczy i planem czterech cotygodniowych aktualizacji.

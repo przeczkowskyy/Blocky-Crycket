@@ -3,7 +3,7 @@ status: propozycja
 typ: pomysł-gry
 gra: Bring Monsters Home Before Dark
 etap: ocena
-zdanie: "Lead monsters out of the wild and get them home before the Giant wakes at dusk."
+zdanie: "Lead monsters home by day — every night the Giant comes and takes the one that sticks out above your fence."
 ocena_agenta:
 werdykt_agenta:
 ocena_karol:
@@ -13,12 +13,15 @@ d7:
 sesja_min:
 ccu:
 miejsce:
-aliases: [Zdąż przed nocą]
+aliases: [Zdąż przed nocą, Guard Your Monsters From the Giant]
 tags: [wytwórnia, pomysł]
 ---
 # Bring Monsters Home Before Dark
 
 Roboczo „Zdąż przed nocą”. Rekomendowany z trzech pomysłów analizy z 22.11 ([[Następna gra — rekomendacja 2026-11-22]], [[Trzy pomysły na następną grę (2026-11-22)]]) — **pewność niska do średniej**; przed budową Karol gra po 10 minut w trzy istniejące gry. Bez oceny liczbowej: karta pomyliła się dwa razy ([[Lekcje z prototypów]]).
+
+## Zmiana po walidacji (22.11) — czytaj najpierw
+Pierwotny kształt („zdąż za bramę przed zmierzchem”) okazał się słabszy: wokół nie jest pusto (dwuletnia rodzina gier „schronienie w dzień, noc w środku”, typowo 7–20 tys. graczy w szczycie i szybki spadek), „przynieś zwierzęta do domu” ma co najmniej dziesięć gier bez graczy, a internet nie nagrywa zmierzchu. **Nowy kształt, tytuł roboczy „Guard Your Monsters From the Giant”:** w dzień wyprowadzasz potwory z nor do swojego obozu, a każdej nocy przychodzi Olbrzym i zabiera tego, którego widać ponad płotem. Duży potwór zarabia więcej, ale wystaje; licznik nocy zawsze na ekranie; Olbrzym w 12. sekundzie gry; porwanego można odebrać następnego dnia. Walidacja: [[Walidacja kierunku noc i Olbrzym (2026-11-22)]]; projekt próbki z miarami i planem aktualizacji: [[Projekt próbki — Guard Your Monsters From the Giant]]. Pewność: niska do średniej, że to najlepsza następna próbka; niska, że będzie hit.
 
 ## Fala na rynku
 Stay the Night (dom, lokatorzy płacący czynsz, nocna bestia): ok. 12 tys. graczy naraz, ocena 95%, rośnie od pięciu tygodni; obok grupa „coś poluje, grasz ze znajomymi” (100 Miles Down the River). Etap: wcześnie, jedna gra wprost. Liczby: [[Wschodzące trendy 2026-11-22]].

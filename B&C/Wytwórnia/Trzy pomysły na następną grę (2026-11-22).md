@@ -1,12 +1,14 @@
 ---
 status: propozycja
 tags: [wytwórnia, analiza, rynek, pomysły]
-źródło: "analiza agenta (Fable) z 2026-11-22 na zlecenie Karola: analiza i pomysł na kolejny hit we wschodzącym trendzie, bez kopiowania 1:1; dane: listy Roblox, trackery, własny spis ok. 3 tys. gier, rozbiór wzoru"
+źródło: "analiza agenta (Fable) z 2026-11-22 na zlecenie Karola; dane: listy Roblox, trackery, własne spisy gier po nazwach i po mechanice, YouTube"
 ---
 # Trzy pomysły na następną grę (2026-11-22)
 
 > [!info] W skrócie
-> Trzy własne pomysły w tej samej strukturze czternastu punktów, porównanie i rekomendacja z oceną pewności.
+> Trzy własne pomysły w tej samej strukturze czternastu punktów, porównanie i rekomendacja. Ze sprostowaniem: pomysł 2 w pierwotnym kształcie okazał się słabszy — zob. walidację.
+
+> **Sprostowanie (22.11, po walidacji):** ocena otwarcia „dom i noc” jako „pusto wokół” i „wczesny etap” okazała się błędna. To dwuletnia rodzina co najmniej siedmiu gier, a „przynieś zwierzęta do domu” to cmentarz. Aktualny stan: pliki [[Walidacja kierunku noc i Olbrzym (2026-11-22)]] i [[Projekt próbki — Guard Your Monsters From the Giant]]; jedna strona: [[Następna gra — rekomendacja 2026-11-22]].
 
 Stan na 22.11.2026. Podstawy: model pętli (plik [[Anatomia pętli, która trzyma (2026-11-22)]], zasady M1–M10), otwarcia na rynku (plik [[Fale na Roblox 2026 i gdzie jest otwarcie]], sekcja 3), liczby (plik [[Wschodzące trendy 2026-11-22]]).
 
@@ -132,4 +134,4 @@ Stan na 22.11.2026. Podstawy: model pętli (plik [[Anatomia pętli, która trzym
 - Przed budową jeszcze jedno szukanie przegranych: gry z nocą i domem, które mają 0–200 graczy, i dlaczego.
 
 ## Powiązane
-- [[00 Wytwórnia pomysłów]] · [[Anatomia pętli, która trzyma (2026-11-22)]] · [[Fale na Roblox 2026 i gdzie jest otwarcie]] · [[Wschodzące trendy 2026-11-22]] · [[Następna gra — rekomendacja 2026-11-22]] · [[Lekcje z prototypów]]
+- [[00 Wytwórnia pomysłów]] · [[Anatomia pętli, która trzyma (2026-11-22)]] · [[Fale na Roblox 2026 i gdzie jest otwarcie]] · [[Wschodzące trendy 2026-11-22]] · [[Następna gra — rekomendacja 2026-11-22]] · [[Walidacja kierunku noc i Olbrzym (2026-11-22)]] · [[Projekt próbki — Guard Your Monsters From the Giant]] · [[Lekcje z prototypów]]

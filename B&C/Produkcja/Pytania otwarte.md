@@ -773,6 +773,7 @@ Dopisek z 2026-11-21 (po prośbie Karola o lepsze pomysły wyprowadzone z rynku)
 - Do wyboru: (a) wciąga Stay the Night — próbka „Zdąż przed nocą” (3–4 wieczory); (b) wciąga Ballpit — próbka „Odkop potwora” (2–3 wieczory); (c) nic nie wciąga — nie budujemy; (d) inny kierunek.
 
 Szczegóły: [[Następna gra — rekomendacja 2026-11-22]] (jedna strona), pełne opisy: [[Trzy pomysły na następną grę (2026-11-22)]], karta pomysłu: [[Bring Monsters Home Before Dark]]. Ważny wniosek analizy: sam pomysł to mniejsza część wyniku — gra-wzór była mała przez pięć tygodni i wybiła się cotygodniowymi aktualizacjami.
+Dopisek z 2026-11-22 (po walidacji wybranego kierunku): pierwotny kształt „Zdąż przed nocą” jest słabszy, niż wyglądał — zob. [[Walidacja kierunku noc i Olbrzym (2026-11-22)]]. Agent proponuje zmieniony kształt „Guard Your Monsters From the Giant” ([[Projekt próbki — Guard Your Monsters From the Giant]]): budowa próbki 3–4 wieczory, bramka po pierwszym wieczorze (sama scena nocy pokazana dwóm–trzem osobom), potem próba z 8–12 osobami spoza zespołu. Do decyzji Karola (i Pawła): budujemy próbkę / rozmowa we dwóch / inny kierunek.
 **Odpowiedź:**
 - Karol (2026-11-22): wybiera pomysł drugi, „Zdąż przed nocą” („najlepiej brzmi”); nie chce testu własnego gustu — „nie ma znaczenia, co mnie pociąga, tylko co obecnie pociąga internet”. Budowy jeszcze nie zlecił; agent pogłębia analizę tego kierunku (przegrane próby, rozbiór najbliższych gier, dowody z filmów w sieci, projekt próbki).
 

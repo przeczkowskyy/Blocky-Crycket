@@ -1,47 +1,51 @@
 ---
 status: propozycja
 tags: [wytwórnia, analiza, rynek, pomysły]
-źródło: "analiza agenta (Fable) z 2026-11-22 na zlecenie Karola: analiza i pomysł na kolejny hit we wschodzącym trendzie, bez kopiowania 1:1; dane: listy Roblox, trackery, własny spis ok. 3 tys. gier, rozbiór wzoru"
+źródło: "analiza agenta (Fable) z 2026-11-22 na zlecenie Karola; dane: listy Roblox, trackery, własne spisy gier po nazwach i po mechanice, YouTube"
 ---
 # Następna gra — rekomendacja 2026-11-22
 
 > [!info] W skrócie
-> Jedna strona: wniosek, trzy pomysły, rekomendacja („Zdąż przed nocą”), pewność niska do średniej, następny krok bez kosztu — Karol gra po 10 minut w trzy istniejące gry.
+> Jedna strona po walidacji: kierunek „noc i Olbrzym” zostaje w zmienionym kształcie (Olbrzym co noc przychodzi do obozu i zabiera potwora, którego widać ponad płotem); pewność niska do średniej; uczciwa skala: pierwszy realny wynik studia, nie hit na miarę wzoru.
 
 ## Wniosek
-- **Przepis właściciela jest prawdziwy, ale to dopiero wejściówka.** „Czynność + ulepszanie bohatera + potworki dające złoto” mają dziś wszystkie gry tej rodziny, także kopie z sześcioma graczami.
-- **Gry różnią się jednym: miejscem, w którym siedzi emocja.** Każdy kolejny lider przeniósł ją gdzie indziej: okradanie ludzi (Steal a Brainrot) → ucieczka przed strażnikiem i wyklucie (Steal An Egg) → sama odsłona w kilku krokach (Throw Food For Animals).
-- **Kopie:** pierwsze pojawiają się 4 dni po wybiciu lidera, najlepsza dostaje ok. 10% jego graczy, a przetrwały tylko te, które zmieniły odsłonę. „Rzuć coś dla zwierząt” ma już ok. 25 gier, w tym wersję z potworami.
-- **Wzór wybił się nie pomysłem, tylko aktualizacjami:** pięć tygodni był mały, potem nowa mapa i wydarzenie w każdą sobotę.
+- **Kierunek „noc i Olbrzym” zostaje, ale w zmienionym kształcie.** Po dokładniejszym szukaniu pomysł 2 okazał się słabszy, niż napisałem rano.
+- **Nie jest „pusto wokół”.** „Urządź schronienie w dzień, zostań w środku w nocy” to dwuletnia rodzina co najmniej siedmiu gier. Poprzedniczka Stay the Night (My ASMR House) miała we wrześniu 15 tys. graczy, dziś 0,7 tys.
+- **„Przynieś zwierzęta do domu” to cmentarz:** co najmniej dziesięć gier, dwie po 14–23 mln wizyt, dziś po kilkadziesiąt osób.
+- **Internet nie nagrywa zmierzchu.** Stay the Night przy 12 tys. graczy nie ma filmu powyżej 2 tys. wyświetleń. Nagrywa się: „przetrwałem 100 nocy” (2–68 mln wyświetleń), wielkie widoczne zagrożenie (Stop The Tsunami: kilka filmów po 200–500 tys. w tydzień) i „coś weszło nocą do mojego domu” (0,7–1,1 mln).
 
-## Trzy pomysły
-1. **„Odkop potwora”.** Odgarniasz ziemię i po kawałku odsłaniasz śpiącego potwora, nie wiedząc, jak jest wielki. Najbliżej tego, co bawi właściciela, ale sześć podobnych gier nie ma graczy.
-2. **„Zdąż przed nocą”.** W dzień pukasz do nor (w ciemności otwierają się oczy: wysokość to rozmiar, kolor to rzadkość) i prowadzisz potwory do obozu, a o zmierzchu Olbrzym zabiera wszystko, co nie zdążyło za bramę. Jedna gra robi dziś coś takiego (Stay the Night, 12 tys. graczy, ocena 95%) i rośnie, a wokół jest pusto.
-3. **„Oswój i dosiądź”.** Wskakujesz na dzikiego potwora, trzymasz się grzbietu i jeździsz na nim tam, gdzie pieszo nie dojdziesz. Używa naszego sterowania potworem, ale ten format już raz dał skok i zgasł.
+## Co zmieniam w pomyśle
+**Jedno zdanie:** w dzień wyprowadzasz potwory z nor do swojego obozu, a każdej nocy przychodzi do niego Olbrzym i zabiera tego, którego widać ponad płotem.
+- Emocja siedzi w **nocnej wizycie Olbrzyma**, nie w biegu o zmierzchu.
+- **Duży potwór zarabia więcej, ale wystaje ponad płot.** Trzeba podnieść płot, schować go w chacie albo sprzedać.
+- **Licznik nocy na ekranie** („Noc 7”), żeby dało się nagrać „przetrwałem 100 nocy”.
+- Gra zaczyna się o zmierzchu: Olbrzym jest na ekranie w 12. sekundzie.
+- Porwanego potwora można odebrać następnego dnia spod wzgórza Olbrzyma.
+- Tytuł roboczy: **„Guard Your Monsters From the Giant”** (wolny w wyszukiwarce Roblox). Ikona: oko Olbrzyma nad płotem, za płotem kolorowe potwory, jeden za wysoki.
 
-## Rekomendacja
-**Budowałbym pomysł 2, „Zdąż przed nocą”.** Ma jedyny dowód „ktoś to robi i rośnie”, daje napięcie i stratę, których Throw Food nie ma, zmienia nastrój co kilka minut (odpowiedź na „cały czas to samo”) i zachowuje odsłonę w krokach oraz „co dalej”. Używa Strażników, generatora krain, sceny odsłony, zegara wydarzeń i wylęgarni.
+## Pewność
+- **Pierwotny pomysł 2: niska** (spadła).
+- **Poprawiona wersja: niska do średniej**, że to najlepsza następna próbka; **niska**, że będzie hit.
+- **Uczciwa skala:** ta rodzina gier daje zwykle 7–20 tys. graczy w szczycie i spadek do ok. 5% w dwa miesiące. To byłby pierwszy realny wynik studia, ale nie „banger” na miarę Throw Food. Wyżej prowadzą tylko cotygodniowe aktualizacje (plan czterech sobót jest gotowy).
+- Zgoda z właścicielem, że miarą nie jest jego gust. Miarą nie są też same wyświetlenia: Stop The Tsunami ma najwięcej filmów i sesję 7,3 min. Rozstrzygną prawdziwi gracze.
 
-**Uczciwie:** najpierw wskazałem pomysł 1 i zmieniłem zdanie, gdy poszukałem gier, które próbowały tego samego i przegrały. To pokazuje, jak kruche są wnioski zza biurka.
+## Następny krok i jego koszt
+1. **Budowa próbki: 3–4 wieczory.** Najpierw sama scena nocy (Olbrzym nad płotem), potem nory z odsłoną, potem złoto i ulepszenia. Koszt w tokenach poda agent budujący; poprzednia cała gra kosztowała ok. 1,2 mln, próbka powinna być wyraźnie tańsza.
+2. **Bramka po pierwszym wieczorze:** pokazać scenę nocy dwóm–trzem osobom. Jeśli Olbrzym nad płotem nie robi wrażenia, nie budować reszty.
+3. **Próba z ludźmi: 8–12 osób spoza zespołu, 20 minut, telefon** (ok. dwóch dni na zorganizowanie).
+   - **Budujemy dalej:** mediana gry co najmniej 12 min, 70% dochodzi do trzeciej nocy, połowa reaguje na Olbrzyma i prosi o więcej.
+   - **Poprawiamy raz:** mediana 7–12 min.
+   - **Porzucamy:** mediana poniżej 7 min albo brak reakcji na Olbrzyma.
 
-## Pewność: niska do średniej
-- Średnia, że to najlepiej uzasadniony z trzech kierunków.
-- Niska, że będzie hit: pięć naszych prób nie przeszło grania, nikt z nas nie grał w gry-wzory, dowód to jedna powoli rosnąca gra, a właściciel lubi grę bez presji czasu.
-- Zgrubnie: 1 na 3–4, że próbka przejdzie granie właściciela; kilka procent, że gra dojdzie do 10 tys. graczy naraz.
+## Jeśli próbka zawiedzie
+- Zawodzi dzień, a noc się podoba → czystsza wersja „zbuduj mur, Olbrzym w niego uderza” (wzór Stop The Tsunami). Scena nocy przechodzi bez zmian.
+- Zawodzi noc → kierunek do kosza, wracamy do listy otwarć z pliku 2.
 
-## Następny krok (pół godziny, zero tokenów)
-Zagraj po 10 minut i powiedz, przy której chcesz „jeszcze raz”:
-1. **Stay the Night** — czy zmierzch cię spina?
-2. **Steal An Egg** — czy niesienie zdobyczy do bazy bawi, czy męczy?
-3. **Clean The Ballpit!** — czy samo odgarnianie bawi?
+## Co zmieniłoby ocenę
+- **W górę:** Stay the Night utrzyma ponad 10 tys. przez dwa tygodnie albo zaczną ją nagrywać duzi twórcy.
+- **W dół:** Stay the Night traci ponad 30% w tygodniu.
 
-- Wciąga Stay the Night → próbka pomysłu 2: jeden krąg dziczy, nory z odsłoną, cykl dnia, brama, złoto na sekundę. **3–4 wieczory**, potem gra właściciel i dwie–trzy osoby spoza zespołu.
-- Nudzi, a wciąga Ballpit → próbka pomysłu 1 (2–3 wieczory), mimo złych precedensów.
-- Nic nie wciąga → nie budujemy, wracamy do stołu.
-
-**Porzucamy pomysł 2**, gdy po trzech dobach w grze tester nie przyspiesza o zmierzchu i nie chce „jeszcze jednego dnia”.
-
-Szczegóły: [[Anatomia pętli, która trzyma (2026-11-22)]] (model), [[Fale na Roblox 2026 i gdzie jest otwarcie]] (fale), [[Wschodzące trendy 2026-11-22]] (liczby z 22.11), [[Trzy pomysły na następną grę (2026-11-22)]] (pełne opisy, tytuły, ikona).
+Szczegóły: [[Walidacja kierunku noc i Olbrzym (2026-11-22)]] (przegrane próby, sąsiedzi, YouTube, werdykt), [[Projekt próbki — Guard Your Monsters From the Giant]] (poprawiony pomysł, scena, liczby, miary, cztery aktualizacje). Wcześniejsze: [[Anatomia pętli, która trzyma (2026-11-22)]], [[Fale na Roblox 2026 i gdzie jest otwarcie]], [[Wschodzące trendy 2026-11-22]], [[Trzy pomysły na następną grę (2026-11-22)]].
 
 ## Powiązane
-- [[00 Wytwórnia pomysłów]] · [[Anatomia pętli, która trzyma (2026-11-22)]] · [[Fale na Roblox 2026 i gdzie jest otwarcie]] · [[Wschodzące trendy 2026-11-22]] · [[Trzy pomysły na następną grę (2026-11-22)]] · [[Lekcje z prototypów]]
+- [[00 Wytwórnia pomysłów]] · [[Anatomia pętli, która trzyma (2026-11-22)]] · [[Fale na Roblox 2026 i gdzie jest otwarcie]] · [[Wschodzące trendy 2026-11-22]] · [[Trzy pomysły na następną grę (2026-11-22)]] · [[Walidacja kierunku noc i Olbrzym (2026-11-22)]] · [[Projekt próbki — Guard Your Monsters From the Giant]] · [[Lekcje z prototypów]]
