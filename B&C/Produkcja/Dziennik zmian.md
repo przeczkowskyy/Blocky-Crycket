@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: wybór z liczb, sprawdzenie, start budowy)
+- **Decyzje Karola (czekają na Pawła):** D-128 — o próbkach rozstrzygają liczby od prawdziwych graczy, nie gust; D-129 — budowa próbki Monster Evolution. Pytanie 82 rozstrzygnięte.
+- **Sprawdzenie kierunku** (agent na Opus, ok. 215 tys. tokenów): [[Walidacja kierunku jesteś potworem (2026-11-22)]] — fala w środkowej lub późnej fazie, realnie 0,5–5 tys. graczy naraz, okno 2–4 tygodnie; lider ma już loterię mutacji, więc projekt zmieniony na stałą drabinę form z legowiskiem jako wyróżnikiem.
+- **Projekt próbki:** [[Projekt próbki — Monster Evolution]] (cztery etapy, progi u graczy, warunek z rynku na 29.11). Karta [[Monster Evolution]]: etap „prototyp”. Budowa etapu 1 ruszyła (kod `swiat/ewolucja/`, kontener `EwolucjaGra`).
+- **Zadania:** nowe na górze listy (etap 1, gracze do próby, potwierdzenie Pawła); zadanie o zabawkach odhaczone.
+
 ## 2026-11-22 · Claude Code u Karola (pomysł z Olbrzymem porzucony, nowa krótka lista)
 - **Karol** porzucił pomysł „Guard Your Monsters From the Giant” po trzeciej analizie („lećmy gdzie indziej… znajdźmy wschodzący trend i dodajmy nasz wyjątkowy faktor”). Karta [[Bring Monsters Home Before Dark]]: etap „porzucona”, z listą tego, co zabieramy. Nic nie było budowane.
 - **Nowa krótka lista** z porannego pomiaru rynku, bez nowych kosztów: [[Kierunki z rynku 2026-11-22]] — jesteś potworem (fala Ant Evolution), armia potworów (Summon a Pet Army), odsłoń własnymi rękami (fala sprzątania), dwa kierunki rezerwowe. Żaden nie przeszedł jeszcze szukania przegranych.

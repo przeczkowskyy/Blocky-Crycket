@@ -7,7 +7,9 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
-- [ ] Zabawki: zagrać na telefonie po dwie minuty w „Eat & Evolve” i „Lure a Monster” (https://www.roblox.com/games/93704244631419) i powiedzieć, przy której chce się „jeszcze raz” — albo że przy żadnej ([[Kierunki z rynku 2026-11-21]]) · Karol, Paweł · #wysoki
+- [ ] Monster Evolution (D-129): próbka, etap 1 — pełna pętla w najmniejszej postaci; w budowie od 2026-11-22 ([[Projekt próbki — Monster Evolution]]) · agent · #wysoki
+- [ ] Zebrać 8–12 graczy spoza zespołu (9–15 lat, telefon) do próby Monster Evolution — bez nich o próbce znów rozstrzygnie gust (D-128) · Karol, Paweł · #wysoki
+- [ ] Paweł: potwierdzić albo zmienić D-128 (liczby rozstrzygają) i D-129 (budowa próbki Monster Evolution) · Paweł · #wysoki
 - [ ] Pet Arena: zagrać w prywatną wersję testową „Throw & Catch Monsters” (https://www.roblox.com/games/93704244631419, także z telefonu) i zaprosić do 10 testerów spoza zespołu, najlepiej 16+ — **do ok. 28.11**; publiczny test najpóźniej ok. 5.12, tylko po osobnej decyzji · Karol, Paweł · #wysoki
 - [ ] Pet Arena: wybrać tytuł z czasownikiem do testu ikon („Throw Pets, Take the Throne” albo „Throw & Catch Monsters”) · Karol, Paweł · #średni
 - [ ] Pet Arena: po przebudowie prywatna wersja testowa i granie ludzi w tym tygodniu (pytanie 77); przed startem publicznym sprawdzić, czy są trzy nowe rosnące gry na pomyśle „pety walczą na arenie” i czym nasza się różni, oraz potwierdzić w dokumentacji Roblox próg zaangażowanych graczy dla osób poniżej 16 lat i zasady wideo na kafelku ([[Nowa era Roblox 2026 — pięć zmian]], [[Algorytm Roblox 2026 — nowe zasady]]) · #wysoki
@@ -129,6 +131,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Zabawki: zagrać na telefonie po dwie minuty w „Eat & Evolve” i „Lure a Monster” (https://www.roblox.com/games/93704244631419) i powiedzieć, przy której chce się „jeszcze raz” — albo że przy żadnej ([[Kierunki z rynku 2026-11-21]]) · Karol, Paweł · #wysoki · zrobione 2026-11-22 (Karol zagrał w obie; obie odrzucone — [[Lekcje z prototypów]])
 - [x] 2026-11-21: Pet Arena v3 „Throw & Catch Monsters” — łapanie dzikich potworów, odmiany, ALPHA, zegar wydarzeń, wylęgarnia w czasie, dzienny prezent (próba 41/41); aktualizacja prywatnej wersji testowej
 - [x] 2026-11-21: Pet Arena — przebudowa v2 po uwagach Karola (większa arena, 6 petów, wielkości według wagi, przepychanie, wzgórze króla, koloseum, sterowanie z autopilotem, nowe wyklucie; próba 34/34) i prywatna wersja testowa „Throw & Catch Monsters” z zaproszeniem Pawła
 - [x] 2026-11-20: Pet Arena (D-118) — prototyp zbudowany w jeden wieczór w dwóch etapach (rdzeń walki o złoty środek, jajka, kolekcja, boss, trener, zapis, demo); próba w Studio 28/28 ([[Pet Arena — projekt prototypu]])

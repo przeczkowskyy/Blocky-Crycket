@@ -2,8 +2,8 @@
 status: propozycja
 typ: pomysł-gry
 gra: Monster Evolution
-etap: ocena
-zdanie: "Start as a tiny slime, eat smaller monsters, evolve into a giant beast."
+etap: prototyp
+zdanie: "Start as the tiniest monster, eat and evolve up a ladder of eight forms into the Giant — every form you reach lives in your den and earns gold."
 ocena_agenta: 26
 werdykt_agenta: popraw
 ocena_karol:
@@ -16,6 +16,11 @@ miejsce:
 tags: [wytwórnia, pomysł]
 ---
 # Monster Evolution
+
+## Stan 2026-11-22 — budowa próbki (D-129)
+Karol zdał wybór na liczby („liczą się liczby i statystyki”) i zlecił budowę. Kierunek wybrany z pomiaru rynku ([[Kierunki z rynku 2026-11-22]]), sprawdzony po mechanice ([[Walidacja kierunku jesteś potworem (2026-11-22)]]) i przeprojektowany według wyniku: **stała drabina ośmiu form zamiast losowania formy, legowisko z zarabiającymi formami jako nasz wyróżnik, łagodna strata**. Projekt, etapy, progi u prawdziwych graczy i warunek z rynku: [[Projekt próbki — Monster Evolution]]. Uczciwa skala: zwykle 0,5–5 tys. graczy naraz w szczycie, powyżej 10 tys. mniej więcej raz na dziesięć. Stara ocena liczbowa na karcie (26) pochodzi z 20.11 i nie była odnawiana — karta pomyliła się już dwa razy.
+
+Zastrzeżenie agenta (D-114): niski sufit fali, dwa z trzech elementów pierwotnego zwrotu ma już lider, a hity tego gatunku gasną w 4–8 tygodni. Dlatego budowa idzie etapami, z progami i z warunkiem z rynku na 29.11. Opis poniżej to pierwotny pomysł z 20.11 (rozgałęzienia, wydarzenie „Apex”) — obowiązuje projekt próbki.
 
 Pomysł agenta z badania 20.11.2026 (do oceny na sesji, pytanie 75). Wszystkie liczby karty to szacunek agenta, nie dane od graczy.
 

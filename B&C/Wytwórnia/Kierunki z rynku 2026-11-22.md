@@ -49,9 +49,10 @@ Z góry nie da się wiedzieć, że pomysł wygra; da się tylko tanio odrzucać.
 A, potem B. C tylko wtedy, gdy A i B odpadną. Powód: A ma największego lidera, który rośnie i nie ma dobrej kopii, oraz najwięcej naszego gotowego kodu.
 
 ## Stan
-- [ ] Weto Karola i Pawła na jednym zdaniu (pytanie 82).
-- [ ] Szukanie przegranych po mechanice i rozbiór lidera dla wybranych.
-- Nic nie jest budowane.
+- [x] Karol (22.11): bez weta — „liczą się liczby i statystyki” (D-128).
+- [x] Kierunek A sprawdzony po mechanice: [[Walidacja kierunku jesteś potworem (2026-11-22)]] — przechodzi minimum, niski sufit; losowanie formy zamienione na stałą drabinę.
+- [x] Budowa próbki zlecona (D-129): [[Projekt próbki — Monster Evolution]].
+- Kierunki B i C nie były sprawdzane; B zostaje w rezerwie, gdyby próbka A odpadła.
 
 ## Powiązane
 - [[00 Wytwórnia pomysłów]] · [[Wschodzące trendy 2026-11-22]] · [[Fale na Roblox 2026 i gdzie jest otwarcie]] · [[Kierunki z rynku 2026-11-21]] · [[Lekcje z prototypów]] · [[Bring Monsters Home Before Dark]]

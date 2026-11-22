@@ -578,5 +578,17 @@ Karol 21.11: gracz po rzucie powinien sterować petem; 10 petów to za dużo; �
 
 Uzasadnienie — Karol, 2026-11-21: „Zgadzam się na wszystko, ale jestem otwarty na zmiany koncepcji. Jeżeli będzie kosztować nas to czas i zasoby, a i tak wiem, że nie wyjdzie, to nie ma co testować.” Zgoda obejmuje prywatną wersję testową (pytanie 77) i tytuł według rekomendacji agenta („Throw & Catch Monsters”). Warunek wyjścia i pułap nakładów: [[Pet Arena — projekt prototypu]]. Czeka na potwierdzenie Pawła (D-043).
 
+### D-128 O próbkach gier rozstrzygają liczby od prawdziwych graczy
+✅ zatwierdzona · proces / Wytwórnia · 2026-11-22 · źródło: rozmowa Karola z agentem 22.11 (pytanie 82) · zaproponował: Claude Code · zdecydował: Karol 2026-11-22
+Falę wybieramy z danych rynku (gry rosnące dziś, młodsze niż pięć tygodni, po szukaniu przegranych po mechanice). O losie próbki decydują miary u prawdziwych graczy z progami zapisanymi przed próbą; **próbka idzie do graczy także wtedy, gdy właścicielom się nie spodoba** — gust jest jedną z obserwacji, nie werdyktem. Do zrobienia przez ludzi: zebrać 8–12 graczy spoza zespołu (9–15 lat). Kolejność pracy: [[Kierunki z rynku 2026-11-22]].
+
+Uzasadnienie — Karol, 2026-11-22: „Jakie znaczenie ma moje zdanie, skoro będzie ono subiektywne, a nie obiektywne? Liczą się liczby i statystyki” oraz „Okej. Zgoda. Zdajemy się na realne liczby i statystykę”. Czeka na potwierdzenie Pawła (D-043).
+
+### D-129 Monster Evolution: budowa próbki
+✅ zatwierdzona · produkcja / projekt gry · 2026-11-22 · źródło: wiadomość Karola na czacie 22.11 i [[Walidacja kierunku jesteś potworem (2026-11-22)]] · zaproponował: Claude Code (wybór z liczb na prośbę Karola) · zdecydował: Karol 2026-11-22
+Budujemy próbkę gry o ewolucji potwora (fala Ant Evolution) według [[Projekt próbki — Monster Evolution]]: cztery etapy, pierwszy od razu. Karol zlecił budowę, zanim przyszedł wynik sprawdzenia; wynik (niski sufit, okno 2–4 tygodnie, zwrot przeprojektowany) agent przekazał mu tego samego dnia i budowa idzie etapami, żeby dało się ją zatrzymać. Warunki wyjścia: progi u prawdziwych graczy z projektu próbki oraz warunek z rynku (spadek lidera fali o ponad 30% tygodniowo do 29.11 wstrzymuje budowę przed etapem 3). Publikacja, także prywatna, po osobnej zgodzie.
+
+Uzasadnienie — Karol, 2026-11-22: „Daj mi tu link do Ant Evolution i rozpocznij budowę”. Zastrzeżenie agenta (D-114) zapisane w karcie [[Monster Evolution]]. Czeka na potwierdzenie Pawła (D-043).
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*
