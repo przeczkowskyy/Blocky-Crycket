@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (baseball sprawdzony: cmentarz; zalecenie — smok publicznie w tym tygodniu)
+- Karol: „Czyli jaka decyzja — co robimy… musimy się czegoś trzymać”. Agent polecił baseball pod jednym warunkiem: sprawdzenie rynku po mechanice nie znajdzie cmentarza. Sprawdzenie (agent na Opus, ok. 190 tys. tokenów) znalazło: [[Walidacja Baseball for treasure (2026-11-22)]].
+- Karta [[Baseball for treasure]]: etap „wstrzymana”, werdykt agenta „odrzuć w tej fali”. Dopisek pod pytaniem 86: zalecenie — gra o smoku, wydana publicznie w tym tygodniu (okno do ok. 29.11), po wieczorze poprawek pierwszego wrażenia; publiczne wydanie po osobnej zgodzie. Lekcja w [[Lekcje z prototypów]]: termin wejścia waży więcej niż zwrot.
+
 ## 2026-11-22 · Claude Code u Karola (na czym stajemy)
 - Karol: „Co powinniśmy teraz zrobić… Musimy na czymś definitywnie przystanąć”. Agent zaleca wybór z datą: smok zamrożony idzie do graczy, baseball dostaje sprawdzenie rynku i (jeśli przejdzie) próbkę jednej pętli, ok. 30.11 jedna gra z liczb; ocena ragdolla i ameby — dopisek pod pytaniem 86 (pytanie 87 dublowało 86 i zostało scalone).
 

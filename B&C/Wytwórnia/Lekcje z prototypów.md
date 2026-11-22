@@ -49,5 +49,10 @@ Karol: „To nie tak, że spędzony czas i tokeny na BONK-a i Blocky & Crycket b
 - **Dwie obserwacje do Mózgu (do potwierdzenia):** wysoka ocena (94–98% polubień) nie chroni przed spadkiem; przegrana bez prawdziwej straty to wspólna cecha gier obronnych, które zgasły.
 - **Otwarty spór:** Karol odrzucił porwanie potwora, a dane mówią, że kradzież łączy wszystkie duże gry ze stworami i bazą. Rozstrzygnie próba z ludźmi, nie opinie.
 
+## 2026-11-22 · Termin wejścia waży więcej niż zwrot — wniosek z fali rzutu
+- Na 172 kopiach fali rzutu: wszystkie 9 powyżej 5 tys. graczy powstało w dwa tygodnie po wybiciu lidera, żadna z 53 późniejszych nie przekroczyła 1 tys. Odróżniała je jeszcze kategoria nagrody (coś żywego, zakryte w miniaturze); trening, opisy i zdarzenia w locie — nie. [[Walidacja Baseball for treasure (2026-11-22)]]
+- **Lekcja:** analiza i budowa, które zajmują nam trzy–cztery tygodnie, kończą się za oknem. Potrzebne są: radar, który łapie wybicie w ciągu kilku dni, i gotowy zestaw kodu (zapis, legowisko, ulepszenia, pomiar, telefon — jest w `swiat/ewolucja/`), żeby wydać wariant w około tydzień.
+- Agent ok. 20:30 polecił baseball „pod warunkiem braku cmentarza”, warunek nie przeszedł po 40 minutach i ok. 0,19 mln tokenów — tak ma działać sprawdzenie przed budową.
+
 ## Powiązane
 - [[00 Wytwórnia pomysłów]] · [[BONK]] · [[Karta oceny pomysłu]]

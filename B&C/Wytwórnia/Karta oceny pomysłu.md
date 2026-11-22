@@ -31,6 +31,9 @@ Karta ocenia pomysł na papierze i dwa razy się pomyliła. Dlatego zanim cokolw
 - **15 i mniej** — odrzuć albo zostaw w szufladzie.
 - **Weto jakości:** 0 w „Pierwsze 10 sekund” albo w „Hak ciekawości” = nie budujemy bez zmiany pomysłu, niezależnie od sumy.
 
+## Propozycja zmiany z sesji 22.11 (D-135, czeka na decyzję)
+Karol: kryterium 5 „Inni gracze” nie powinno obniżać oceny gier, w których inni gracze nie są istotni. Poprawka agenta: gdy wzór fali sam jest grą solo, kryterium się nie liczy (suma z 27 przeliczona na 30); „Pokazanie się” zostaje. Do czasu decyzji karta działa bez zmian. Zapis: [[Sesja główna 2026-11-22 (2) — zapis ustaleń]].
+
 ## Po teście na graczach
 Karta to tylko przewidywanie. Po teście decydują liczby (progi powrotów w [[00 Wytwórnia pomysłów]]), a różnica między kartą a wynikiem idzie do [[Lekcje z prototypów]].
 
