@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (decyzja: gra o smoku do końca, wydanie 24–25.11)
+- **Decyzja Karola D-137** (czeka na Pawła): trzymamy się gry o smoku, wydanie publiczne we wtorek–środę 24–25.11; priorytety — modele z Blendera we własnym stylu, walka, interfejs, responsywność, utrzymanie gracza, miejsce na aktualizacje. Pytanie 86 rozstrzygnięte. Sesja główna wróciła na Fable (Karol odnowił pulę).
+- **Ruszyły dwie prace:** modele smoka w Blenderze (osobny agent, bez Studio i bez wgrywania czegokolwiek; biblioteka postaci z `swiat/postacie/biblioteka` tylko do odczytu) oraz przebudowa walki (agent budujący). Miejsce testowe w Studio było zamknięte — otwarte ponownie.
+- Nowe zadania na górze listy.
+
 ## 2026-11-22 · Claude Code u Karola (baseball sprawdzony: cmentarz; zalecenie — smok publicznie w tym tygodniu)
 - Karol: „Czyli jaka decyzja — co robimy… musimy się czegoś trzymać”. Agent polecił baseball pod jednym warunkiem: sprawdzenie rynku po mechanice nie znajdzie cmentarza. Sprawdzenie (agent na Opus, ok. 190 tys. tokenów) znalazło: [[Walidacja Baseball for treasure (2026-11-22)]].
 - Karta [[Baseball for treasure]]: etap „wstrzymana”, werdykt agenta „odrzuć w tej fali”. Dopisek pod pytaniem 86: zalecenie — gra o smoku, wydana publicznie w tym tygodniu (okno do ok. 29.11), po wieczorze poprawek pierwszego wrażenia; publiczne wydanie po osobnej zgodzie. Lekcja w [[Lekcje z prototypów]]: termin wejścia waży więcej niż zwrot.
