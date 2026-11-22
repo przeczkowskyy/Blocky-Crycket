@@ -413,7 +413,145 @@ class TestLas(unittest.TestCase):
         self.assertIsNotNone(g(boss, "martwyDo"))
         krok(S, int(D["boss"]["odrodzenie_s"] / 1.0) + 2, 1.0)
         self.assertIsNone(g(boss, "martwyDo"))
-        self.assertEqual(g(boss, "hp"), D["boss"]["hp"], "wraca z pełnym życiem")
+        self.assertEqual(g(boss, "hp"), D["boss"]["stopnie_hp"][1], "wraca jako stopień 2 z pełnym życiem")
+
+
+class TestEtap3(unittest.TestCase):
+    def test_16_zapis_i_wczytanie(self):
+        S = stan()
+        gr = byt(S, 1, 5, 0, 0)
+        ustaw(gr, maxForma=6, zloto=1234.0, zlotoLeg=56.0, bossTrofea=2)
+        gr.get("poziomy").set("apetyt", 3.0)
+        gr.get("warianty").set(3.0, "rubin")
+        gr.get("trofea").set(2.0, 4.0)
+        mag = jeden("pamiec")
+        p = jeden("doProfilu", DL, gr, 1000)
+        ok, powod = wolaj("zapisz", DL, mag, "player_1", "job_a", p, 1000, True)
+        self.assertTrue(ok)
+        prof, zapisywalny, powod = wolaj("wczytaj", DL, mag, "player_1", "job_b", 1000)
+        self.assertTrue(zapisywalny, "zwolniona blokada: inny serwer wczytuje")
+        nowy = byt(S, 2, 1, 10, 10)
+        zarobek, sek = wolaj("zProfilu", DL, nowy, prof, 1000)
+        self.assertEqual((g(nowy, "forma"), g(nowy, "maxForma"), g(nowy, "zloto")), (1, 6, 1234), "forma od nowa, reszta zostaje")
+        self.assertEqual(g(nowy.get("poziomy"), "apetyt"), 3)
+        self.assertEqual(g(nowy.get("warianty"), 3), "rubin")
+        self.assertEqual(g(nowy.get("trofea"), 2), 4)
+        self.assertEqual(g(nowy, "bossTrofea"), 2)
+        self.assertEqual(zarobek, 0, "bez nieobecności")
+        # blokada: job_b trzyma sesję, job_c nie wczyta zapisywalnie i nie nadpisze
+        prof2, zapisywalny2, powod2 = wolaj("wczytaj", DL, mag, "player_1", "job_c", 1010)
+        self.assertEqual((zapisywalny2, powod2), (False, "zajety"))
+        ok3, powod3 = wolaj("zapisz", DL, mag, "player_1", "job_c", jeden("profilNowy", DL), 1011, False)
+        self.assertEqual((ok3, powod3), (False, "cudza_sesja"), "cudza sesja nie nadpisuje prawdziwego postępu")
+        # dane zepsute → szablon
+        zly = jeden("profilZ", DL, LM.do_luau({"zloto": "x", "maxForma": 99, "warianty": ["oszust"]}))
+        self.assertEqual((g(zly, "zloto"), g(zly, "maxForma"), g(zly.get("warianty"), 1)), (0, len(D["formy"]), ""))
+
+    def test_17_nieobecnosc_do_2_godzin(self):
+        S = stan()
+        gr = byt(S, 1, 1, 0, 0)
+        p = jeden("profilNowy", DL)
+        p.set("maxForma", 3.0)
+        p.set("ostatnio", 1000.0)
+        stawka = sum(f["trofeum"] for f in D["formy"][:3])
+        zar, sek = wolaj("zProfilu", DL, gr, p, 1000 + 600)
+        self.assertEqual((sek, zar), (600, stawka * 600))
+        gr2 = byt(S, 2, 1, 5, 5)
+        zar2, sek2 = wolaj("zProfilu", DL, gr2, p, 1000 + 99999)
+        self.assertEqual(sek2, D["zapis"]["nieobecnosc_maks_s"], "najwyżej 2 godziny")
+        self.assertEqual(zar2, stawka * 7200)
+
+    def test_18_szanse_wariantow(self):
+        import random
+        r = random.Random(5)
+        n = 20000
+        ile = {}
+        for _ in range(n):
+            w = jeden("losujWariant", DL, r.random())
+            ile[w] = ile.get(w, 0) + 1
+        for W in D["warianty"]:
+            p = ile.get(W["id"], 0) / n
+            self.assertAlmostEqual(p, W["szansa"], delta=max(0.004, W["szansa"] * 0.35), msg=W["id"])
+        self.assertEqual(jeden("losujWariant", DL, 0.0), "tecza", "najrzadszy na początku przedziału")
+        self.assertIsNone(jeden("losujWariant", DL, 0.5))
+        # najlepszy wariant zostaje, mnożnik w stawce
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 1, 0, 0)
+        ustaw(gr, wzrost=D["formy"][0]["potrzeba"])
+        S.set("wymusWariant", "krysztal")
+        jeden("ewoluuj", S, gr, LM.Tabela())
+        krok(S, int(D["ewolucja"]["kokon_s"] / 0.1) + 1, 0.1)
+        self.assertEqual(g(gr.get("warianty"), 2), "krysztal")
+        self.assertEqual(jeden("stawkaB", DL, gr), D["formy"][0]["trofeum"] + D["formy"][1]["trofeum"] * 4)
+
+    def test_19_poziomy_trofeow_i_legowisko(self):
+        S = stan()
+        bez_kulek(S)
+        lx, lz = D["legowiska"][0]
+        gr = byt(S, 1, 3, lx + 40, lz)
+        ustaw(gr, maxForma=3, zloto=1e6, laskaDo=0, tarczaDo=0)
+        self.assertEqual(wolaj("kupTrofeum", S, gr, 2), [False, "legowisko"], "poziom trofeum tylko w legowisku")
+        ustaw(gr, x=lx, z=lz)
+        for _ in range(4):
+            self.assertTrue(wolaj("kupTrofeum", S, gr, 2)[0])
+        self.assertEqual(wolaj("kupTrofeum", S, gr, 2), [False, "maks"], "pięć poziomów")
+        self.assertEqual(wolaj("kupTrofeum", S, gr, 5), [False, "brak"], "forma niezdobyta")
+        self.assertAlmostEqual(jeden("stawkaB", DL, gr), 1 + 2 * D["legowisko"]["poziomy_x"][4] + 4)
+        # złoto legowiska zbiera się w legowisku; legowisko to strefa bezpieczna; boty nie wchodzą
+        ustaw(gr, zloto=0.0, zlotoLeg=0.0)
+        bot = byt(S, 0, 6, lx + 3, lz)
+        ustaw(bot, myslDo=99, tarczaDo=0, cel=g(gr, "id"))
+        krok(S, 20, 0.05)
+        self.assertIsNone(g(gr, "martwyDo"), "nikt cię nie zje we własnym legowisku")
+        self.assertGreater(math.hypot(g(bot, "x") - lx, g(bot, "z") - lz), D["legowisko"]["r"], "bot wypchnięty z legowiska")
+        self.assertGreater(g(gr, "zloto"), 0, "złoto zebrane w legowisku")
+        ustaw(gr, x=lx + 60, z=lz, zloto=0.0)
+        krok(S, 20, 0.05)
+        self.assertEqual(g(gr, "zloto"), 0, "poza legowiskiem złoto czeka w legowisku")
+        self.assertGreater(g(gr, "zlotoLeg"), 0)
+
+    def test_20_stopnie_bossa(self):
+        S = stan()
+        bez_kulek(S)
+        boss = jeden("dodajBossa", S)
+        gr = byt(S, 1, 6, g(boss, "x") + D["formy"][5]["r"] + D["formy"][6]["r"] + 1, g(boss, "z"))
+        ustaw(gr, maxForma=6, tarczaDo=0, laskaDo=0, zloto=0.0)
+        hp = []
+        for st in range(1, 4):
+            hp.append(g(boss, "hpMaks"))
+            ustaw(boss, hp=1.0)
+            lista = LM.Tabela()
+            wolaj("ranBossa", S, boss, gr, 5, lista)
+            pok = [z for z in LM.z_luau(lista, True) if z["t"] == "boss_pokonany"]
+            self.assertTrue(pok and pok[0]["stopien"] == st and pok[0]["trofeum"])
+            krok(S, int(D["boss"]["odrodzenie_s"]) + 2, 1.0)
+        self.assertEqual(hp, D["boss"]["stopnie_hp"][:3], "coraz silniejszy")
+        self.assertEqual(g(gr, "bossTrofea"), 3, "trofea bossa za pierwsze wygrane stopnie")
+        self.assertGreaterEqual(g(gr, "zloto"), sum(D["boss"]["stopnie_skrzynia"][:3]))
+
+    def test_21_olbrzym_boss_serwera(self):
+        S = stan()
+        bez_kulek(S)
+        nf = len(D["formy"])
+        olb = byt(S, 1, nf, 0, 0)
+        ustaw(olb, maxForma=nf, tarczaDo=0, laskaDo=0, olbrzymHp=float(D["olbrzym"]["hp"]))
+        at = byt(S, 2, 5, D["formy"][nf - 1]["r"] + D["formy"][4]["r"] + 1, 0)
+        ustaw(at, maxForma=5, tarczaDo=0, laskaDo=0, zloto=0.0)
+        krok(S, 1)
+        lista = LM.Tabela()
+        self.assertTrue(jeden("gryz", S, at, lista))
+        zd = LM.z_luau(lista, True)
+        self.assertTrue([z for z in zd if z["t"] == "olbrzym_rana"], "inny gracz rani Olbrzyma")
+        self.assertEqual(g(at, "zloto"), D["olbrzym"]["za_trafienie"])
+        ustaw(olb, olbrzymHp=1.0)
+        ustaw(at, gryzGotowy=0)
+        lista = LM.Tabela()
+        jeden("gryz", S, at, lista)
+        self.assertTrue([z for z in LM.z_luau(lista, True) if z["t"] == "olbrzym_obalony"])
+        self.assertEqual(g(olb, "forma"), nf - 1, "Olbrzym spada o formę")
+        self.assertIsNone(g(olb, "martwyDo"), "nie ginie")
+        self.assertGreaterEqual(g(at, "zloto"), D["olbrzym"]["skrzynia"])
 
 
 if __name__ == "__main__":

@@ -67,7 +67,41 @@ Przed próbą Play inne gry wyłączone: `swiat/pet_arena/zbuduj.py --wlacz off`
   boss spotkany 4:29 i pokonany 5:26, forma 5 6:47, forma 6 8:20, Olbrzym 13:29, 1. pościg 1:59, 1. ulepszenie 1:33;
   **najdłuższa przerwa bez nowości w 10 min 3:02 — cel 2:30 niespełniony** (rozrzut między próbami 2:08–3:31).
 
-## Czego nie ma (etap 3 i dalej)
+## Etap 3 — legowisko w świecie, warianty, zapis (22.11.2026)
+- **Legowisko w świecie**: 12 działek na skraju łąki (po jednej na miejsce na serwerze). Gracz rodzi się w swoim legowisku.
+  Na 8 cokołach stoją trofea zdobytych form, widoczne dla wszystkich (u siebie także ciemne sylwetki niezdobytych
+  i tabliczki „LV n”). Złoto z trofeów zbiera się w legowisku (kupka złota rośnie) i trafia do gracza, gdy wejdzie.
+  HUD pokazuje osobno złoto zebrane i złoto w legowisku, a podpowiedź ze strzałką prowadzi po złoto. Własne
+  legowisko to strefa bezpieczna: nikt cię tam nie zje, ty też nie jesz, boty nie wchodzą.
+- W napisach dla gracza legowisko to **LAIR**, a kupka złota w nim to **HOARD** (pod przyszłego smoka; nazwy w kodzie
+  bez zmian).
+- **Poziomy trofeów** (5, ×1 / 1,5 / 2,2 / 3,2 / 4,5): kupowane w legowisku w zakładce TROPHIES panelu DEN, złotem
+  zebranym. Ulepszenia (zakładka UPGRADES) można kupować wszędzie.
+- **Warianty** przy każdej ewolucji, losuje je serwer: GOLD 8 %, CRYSTAL 3 %, RUBY 1 %, RAINBOW 0,2 %. Szanse są
+  pokazane w panelu. Kokon świeci kolorem wariantu przed odsłoną. Trofeum w wariancie mnoży dochód formy ×2 / ×4 / ×8 /
+  ×20 i stoi na cokole w kolorach wariantu. Zostaje najlepszy wariant formy. Niczego nie da się kupić.
+- **VINE SERPENT w stopniach 1–5**: życie 220 → 980, skrzynia 1500 → 20 000. Pierwsza wygrana na stopniu daje trofeum
+  bossa (dochód legowiska). Gwiazdki stopnia widać w pasku bossa.
+- **Olbrzym jako boss serwera** (od 2 graczy): inni gryzą go za 25 złota za trafienie. Kto zbije mu życie do zera,
+  dostaje skrzynię 3000, a Olbrzym spada o formę. Olbrzym z koroną dostaje 25 złota/s.
+- **Zapis** (`player_<UserId>` w magazynie `Ewolucja_Gracz_v1`, pole `wersja`, uzgadnianie z szablonem i walidacja
+  liczb): złoto zebrane i w legowisku, ulepszenia, zdobyte formy, najlepsze warianty, poziomy trofeów, trofea bossa,
+  czas ostatniej wizyty. Po wejściu gracz zaczyna od formy 1, reszta zostaje. Legowisko zarabia pod nieobecność
+  (najwyżej 2 h), a gra mówi, ile. Blokada sesji przez `UpdateAsync` (job serwera, 600 s). Zapis co 60 s, przy wyjściu
+  i przy zamknięciu serwera; cudza blokada albo nieudane wczytanie oznacza grę bez zapisu (nie nadpisujemy postępu).
+  **W Studio i w każdej próbie zawsze magazyn w pamięci** (atrybut kontenera `ZapisTryb = pamiec`), nigdy prawdziwy
+  DataStore. Kontener `EwolucjaGra` dopisany do listy znacznika prób w `tools/zapis_prob.py`.
+- **Tempo**: łaska 110 s, ceny i potrzeby przestrojone; najdłuższa przerwa bez nowości w pierwszych 10 min 2:27
+  (cel 2:30 spełniony), stopnie bossa wypełniają minuty 7–13.
+- **Wyniki etapu 3**: testy logiki 21/21 (zapis i wczytanie z magazynem w pamięci, blokada sesji, limit 2 h, szanse
+  wariantów na 20 000 losowaniach, poziomy trofeów, strefa bezpieczna, stopnie bossa, Olbrzym). Play 21/21 na wydaniu
+  do publikacji, w tym wyjście i powrót po godzinie: stan odtworzony, złoto legowiska +stawka × 3600, komunikat
+  u klienta. Telefon 7/7; klatka 16,7 ms; konsola bez błędów; film 30,7 s (`%TEMP%\ewolucja_demo\ewolucja_etap3.mp4`).
+  Tempo (8 prób): forma 2 0:22, forma 3 1:22, las 2:56, boss 3:30 / 4:38, forma 5 6:06, stopnie 2–3 7:00 / 8:41,
+  forma 6 8:26, forma 7 10:33, Olbrzym 13:15, 1. pościg 1:51, 1. ulepszenie 1:41.
+- W Studio ogłoszenia używają nazwy „Player N” zamiast nazwy konta (zrzuty i filmy bez prywatnych danych).
+
+## Czego nie ma (etap 4 i dalej)
 Legowisko jako miejsce w świecie, złoto pod nieobecność, zapis postępu, odmiany barwne, Olbrzym jako boss serwera,
 umiejętności botów, dźwięki poza arkuszem Pet Areny. Prawdziwego dotyku nie da się wywołać z prób — drążek i przyciski
 sprawdza wejście prób (to samo co palec po stronie logiki); dotyk trzeba potwierdzić na telefonie.

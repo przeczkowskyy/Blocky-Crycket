@@ -138,7 +138,7 @@ def przebieg(p, zrzuty):
     # P03 jedzenie: autopilot jak gracz (kulki i mniejsi), bez EVOLVE — czas do pierwszej kulki i pełnego paska
     t0 = time.time()
     p.ustaw("EW_TestAuto", "true")
-    pierwsza, _ = czekaj(lambda: p.atr().get("EW_K_Pierwsza"), 10, 0.3)
+    pierwsza, _ = czekaj(lambda: p.atr().get("EW_K_Pierwsza"), 20, 0.3)
     if zrzuty:
         time.sleep(3)
         p.zrzut("02_jedzenie.jpg")
@@ -155,7 +155,7 @@ def przebieg(p, zrzuty):
         p.zrzut("03_odslona.jpg")
     ew, _ = czekaj(lambda: p.atr().get("EW_Forma") == 2, 6, 0.3)
     a = p.atr()
-    wynik("P04 ewolucja 1 z odsłoną", kok and ew and a.get("EW_K_Odslon") == 1 and a.get("EW_ZlotoNaS") == 3 and a.get("EW_K_Drabina") == "ZZN????C",
+    wynik("P04 ewolucja 1 z odsłoną", kok and ew and a.get("EW_K_Odslon") == 1 and (a.get("EW_ZlotoNaS") or 0) >= 3 and a.get("EW_K_Drabina") == "ZZN????C",
           kokon=bool(kok), forma=a.get("EW_Forma"), odslon=a.get("EW_K_Odslon"), na_s=a.get("EW_ZlotoNaS"), drabina=a.get("EW_K_Drabina"),
           przed=a0.get("EW_Forma"))
     # P05 druga ewolucja: autopilot z EVOLVE (naturalnie), najwyżej 75 s; potem haczyk pełnego paska
@@ -172,13 +172,16 @@ def przebieg(p, zrzuty):
         ew2, _ = czekaj(lambda: p.atr().get("EW_Forma") == 3, 6, 0.3)
     a = p.atr()
     time.sleep(1.7)
-    wynik("P05 ewolucja 2 i drabina", ew2 and a.get("EW_K_Drabina") == "ZZZN???C" and a.get("EW_ZlotoNaS") == 7,
+    wynik("P05 ewolucja 2 i drabina", ew2 and a.get("EW_K_Drabina") == "ZZZN???C" and (a.get("EW_ZlotoNaS") or 0) >= 7,
           naturalnie_s=pomiary["ewolucja_2_naturalnie_s"], forma=a.get("EW_Forma"), drabina=a.get("EW_K_Drabina"), na_s=a.get("EW_ZlotoNaS"))
-    # P06 złoto z legowiska rośnie
-    z0 = p.serwer('"stan"')["zloto"]
+    # P06 złoto z legowiska rośnie (w legowisku; zbiera się przez wejście)
+    st = p.serwer('"stan"')
+    p.serwer('"przenies", %d, 0, -30' % st["byt"])
+    time.sleep(0.4)
+    z0 = p.serwer('"stan"')["zlotoLeg"]
     time.sleep(3)
     st = p.serwer('"stan"')
-    przyrost = st["zloto"] - z0
+    przyrost = st["zlotoLeg"] - z0
     wynik("P06 złoto legowiska", abs(przyrost - st["stawka"] * 3) < st["stawka"] * 1.2, przyrost_3s=round(przyrost, 1), stawka=st["stawka"])
     # P07 zakup ulepszenia w panelu legowiska
     p.serwer('"zloto", %d' % 650)
@@ -192,7 +195,7 @@ def przebieg(p, zrzuty):
     st = p.serwer('"stan"')
     p.przycisk("zamknij")
     cena = D["ulepszenia"][1]["ceny"][0]
-    wynik("P07 zakup (Szybkość)", kup and st["poziomy"]["szybkosc"] == 2 and 650 - cena - 1 <= st["zloto"] <= 650 - cena + 25,
+    wynik("P07 zakup (Szybkość)", kup and st["poziomy"]["szybkosc"] == 2 and 650 - cena - 1 <= st["zloto"] <= 650 - cena + 200,
           poziom=st["poziomy"]["szybkosc"], zloto_po=round(st["zloto"]), panel=p.atr().get("EW_K_Legowisko"))
     # P08 pościg i zjedzenie przez większego bota: forma niżej, legowisko / złoto / ulepszenia zostają
     st = p.serwer('"stan"')
@@ -203,11 +206,14 @@ def przebieg(p, zrzuty):
         st = p.serwer('"stan"')
     czekaj(lambda: (lambda x: x["strefy"] == 0 and not x["laska"])(p.serwer('"stan"')), 12, 0.5)
     st = p.serwer('"stan"')
+    p.serwer('"przenies", %d, 0, -30' % st["byt"])  # poza legowiskiem (tam nikt nie zje)
+    time.sleep(0.6)
+    st = p.serwer('"stan"')
     ja = moje(st)
     forma0, max0, zl0 = st["forma"], st["maxForma"], st["zloto"]
     smierci0 = p.serwer('"miary"').get("smierci", 0)
     p.serwer('"tarcza_zeruj"')
-    bot = next(b for b in st["byty"] if b["slot"] == 0 and not b["martwy"] and b["forma"] >= forma0 + 2)
+    bot = next(b for b in st["byty"] if b["slot"] == 0 and not b["martwy"] and b["forma"] >= forma0 + 2 and b.get("strefa") == 1)
     p.serwer('"przenies", %d, %f, %f' % (bot["id"], ja["x"] + 11, ja["z"] - 9))
     time.sleep(0.3)
     if zrzuty:
@@ -215,7 +221,10 @@ def przebieg(p, zrzuty):
     cel = next((b.get("cel") for b in p.serwer('"stan"')["byty"] if b["id"] == bot["id"]), 0)
     st = p.serwer('"stan"')
     ja = moje(st)
-    p.serwer('"przenies", %d, %f, %f' % (bot["id"], ja["x"] + 3, ja["z"]))
+    p.serwer('"laska_zeruj"')
+    p.serwer('"tarcza_zeruj"')
+    p.serwer('"bot_stoj", %d, 3' % bot["id"])
+    p.serwer('"przenies", %d, %f, %f' % (bot["id"], ja["x"] + 1, ja["z"]))  # środek gracza w botcie: połknięcie dotykiem
     zj, _ = czekaj(lambda: p.serwer('"miary"').get("smierci", 0) > smierci0, 5, 0.15)
     t_smierci = time.time()
     wrocil, _ = czekaj(lambda: not p.serwer('"stan"')["martwy"], 5, 0.2)
@@ -242,7 +251,9 @@ def przebieg(p, zrzuty):
     m = p.serwer('"miary"')
     wynik("P10 miary", m and m.get("smierci", 0) >= 1 and "2" in m.get("formy", {}) and "3" in m.get("formy", {}) and m.get("ulepszenia")
           and m.get("sesja_s", 0) > 30, miary=m)
-    # P11 odpowiedź na wejście: bez opóźnienia i przy 2 × 60 ms
+    # P11 odpowiedź na wejście: bez opóźnienia i przy 2 × 60 ms (start z otwartego miejsca łąki)
+    p.serwer('"przenies", %d, 0, -30' % p.serwer('"stan"')["byt"])
+    time.sleep(1.0)
     p.ustaw("EW_TestPoz", "true")
     time.sleep(1.2)  # liczniki klienta publikowane co 1 s
     a0 = p.atr()
@@ -270,7 +281,8 @@ def przebieg(p, zrzuty):
         p.ustaw("EW_TestPoz", "false")
     pomiary["opoznienie_120ms"] = {"ruch_po_015s_st": round(ruch, 2), "korekty": (b3.get("EW_K_Korekty") or 0) - (b0.get("EW_K_Korekty") or 0),
                                    "snapy": (b3.get("EW_K_Snapy") or 0) - (b0.get("EW_K_Snapy") or 0), "blad_maks_st": round(b3.get("EW_K_BladMaks") or 0, 2),
-                                   "gryz_od_razu": (b2.get("EW_K_Gryzy") or 0) > g0}
+                                   "gryz_od_razu": (b2.get("EW_K_Gryzy") or 0) > g0, "flagi": b1.get("EW_K_Flagi"), "odslona": b1.get("EW_K_Odslona"),
+                                   "ster": b1.get("EW_K_Ster"), "poz": [round(b0.get("EW_K_PozX") or 0), round(b0.get("EW_K_PozZ") or 0)]}
     wynik("P11 odpowiedź na wejście", ruch > 0.5 and pomiary["bez_opoznienia"]["korekty"] == 0 and pomiary["opoznienie_120ms"]["korekty"] == 0
           and pomiary["opoznienie_120ms"]["snapy"] == 0 and pomiary["opoznienie_120ms"]["gryz_od_razu"], **pomiary["bez_opoznienia"],
           **{"lag_" + k: v for k, v in pomiary["opoznienie_120ms"].items()})
@@ -278,6 +290,7 @@ def przebieg(p, zrzuty):
     a = p.atr()
     st = p.serwer('"stan"')
     las_i_boss(p, zrzuty)
+    etap3(p, zrzuty)
     a = p.atr()
     wynik("P12 klatka", (a.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a.get("EW_K_Klatka") or 0, 1), widokow=a.get("EW_K_Widokow"),
           krok_serwera_ms=round(st.get("krok_ms") or 0, 2), okno=a.get("okno"), liczniki=st.get("liczniki"))
@@ -307,19 +320,24 @@ def las_i_boss(p, zrzuty):
     # P15 mini-boss: BITE rani, pasek życia, pokonany → skrzynia i ogłoszenie
     B = p.serwer('"boss"')
     zl0 = p.serwer('"stan"')["zloto"]
-    r = D["formy"][st["forma"] - 1]["r"] + D["formy"][D["boss"]["forma"] - 1]["r"] + 1.5
+    r = D["formy"][st["forma"] - 1]["r"] + D["formy"][D["boss"]["forma"] - 1]["r"] - 0.5
     p.serwer('"boss_hp", 120')
     p.serwer('"boss_stoj", 4')
     p.serwer('"tarcza_zeruj"')
-    p.serwer('"przenies", %d, %f, %f' % (st["byt"], B["x"] + r, B["z"]))
-    time.sleep(0.5)
-    p.przycisk("gryz")
-    rana, _ = czekaj(lambda: p.serwer('"boss"')["hp"] < 120, 3, 0.2)
+    rana = None
+    for _ in range(3):
+        B = p.serwer('"boss"')
+        p.serwer('"przenies", %d, %f, %f' % (st["byt"], B["x"] + r, B["z"]))
+        time.sleep(0.6)
+        p.przycisk("gryz")
+        rana, _ = czekaj(lambda: p.serwer('"boss"')["hp"] < 120, 1.5, 0.2)
+        if rana:
+            break
     time.sleep(0.4)
     if zrzuty:
         p.zrzut("08_boss.jpg")
     pok = None
-    for _ in range(4):
+    for _ in range(6):
         p.serwer('"boss_hp", 3')
         p.serwer('"boss_stoj", 3')
         B = p.serwer('"boss"')
@@ -333,6 +351,107 @@ def las_i_boss(p, zrzuty):
     m = p.serwer('"miary"')
     wynik("P15 mini-boss", rana and pok and st2["zloto"] - zl0 >= D["boss"]["skrzynia"] and m.get("boss_pokonany"), rana=bool(rana), pokonany=bool(pok),
           zloto=[round(zl0), round(st2["zloto"])], miara_boss_s=m.get("boss_pokonany"), miara_las_s=m.get("las"))
+
+
+def etap3(p, zrzuty):
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    lx, lz = D["legowiska"][(st.get("slot") or 1) - 1] if st.get("slot") else D["legowiska"][0]
+    # P16 legowisko w świecie: trofea na cokołach, kupka złota, zbieranie przez wejście, strefa bezpieczna
+    p.serwer('"zloto_leg", 800')
+    zl0 = p.serwer('"stan"')["zloto"]
+    p.serwer('"przenies", %d, %f, %f' % (byt, lx * 0.8, lz * 0.8))
+    time.sleep(1.5)
+    if zrzuty:
+        p.zrzut("09_legowisko_swiat.jpg")
+    a0 = p.atr()
+    p.serwer('"do_legowiska"')
+    zeb, _ = czekaj(lambda: p.serwer('"stan"')["zloto"] >= zl0 + 790, 4, 0.3)
+    st = p.serwer('"stan"')
+    bot = next(b for b in st["byty"] if b["slot"] == 0 and not b["martwy"] and b["forma"] > st["forma"] and b.get("strefa") == 1)
+    p.serwer('"tarcza_zeruj"')
+    p.serwer('"przenies", %d, %f, %f' % (bot["id"], lx + 2, lz))
+    time.sleep(1.5)
+    st2 = p.serwer('"stan"')
+    botb = next(b for b in st2["byty"] if b["id"] == bot["id"])
+    wynik("P16 legowisko w świecie", zeb and not st2["martwy"] and math.hypot(botb["x"] - lx, botb["z"] - lz) > D["legowisko"]["r"] - 0.5
+          and (a0.get("EW_K_Legowisk") or 0) >= 1, zebrano=bool(zeb), zjedzony_w_legowisku=st2["martwy"],
+          bot_od_srodka=round(math.hypot(botb["x"] - lx, botb["z"] - lz), 1), legowisk_u_klienta=a0.get("EW_K_Legowisk"))
+    # P17 poziom trofeum (w legowisku, za zebrane złoto)
+    p.serwer('"zloto", 5000')
+    p.przycisk("trofeum:1")
+    lv, _ = czekaj(lambda: (p.atr().get("EW_Trofea") or "").startswith("2,"), 4, 0.3)
+    st = p.serwer('"stan"')
+    wynik("P17 poziom trofeum", lv and st["zloto"] <= 5000 - D["legowisko"]["ceny_x"][0] * D["formy"][0]["trofeum"] + 30,
+          trofea=p.atr().get("EW_Trofea"), zloto=round(st["zloto"]))
+    # P18 wariant przy ewolucji (wymuszony los serwera, kokon w kolorze, odsłona)
+    p.serwer('"przenies", %d, 0, -30' % byt)
+    p.serwer('"wymus_wariant", "zloty"')
+    p.serwer('"wzrost_pelny"')
+    p.przycisk("ewoluuj")
+    wa, _ = czekaj(lambda: p.atr().get("EW_K_Wariant") == "zloty", 5, 0.15)
+    if zrzuty:
+        time.sleep(0.25)
+        p.zrzut("10_wariant.jpg")
+    a = p.atr()
+    wynik("P18 wariant", wa and "zloty" in (a.get("EW_Warianty") or ""), warianty=a.get("EW_Warianty"), forma=a.get("EW_Forma"),
+          na_s=a.get("EW_ZlotoNaS"))
+    # P19 boss stopień 3: pasek z gwiazdkami, pokonany → trofeum bossa
+    for _ in range(4):
+        st = p.serwer('"stan"')
+        if st["forma"] >= 6:
+            break
+        p.serwer('"wzrost_pelny"')
+        p.przycisk("ewoluuj")
+        czekaj(lambda: p.serwer('"stan"')["forma"] > st["forma"], 5, 0.3)
+    time.sleep(1.5)
+    p.serwer('"boss_stopien", 3')
+    B = p.serwer('"boss"')
+    p.serwer('"boss_stoj", 6')
+    st = p.serwer('"stan"')
+    r = D["formy"][st["forma"] - 1]["r"] + D["formy"][D["boss"]["forma"] - 1]["r"] - 0.5
+    p.serwer('"tarcza_zeruj"')
+    p.serwer('"przenies", %d, %f, %f' % (byt, B["x"] + r, B["z"]))
+    time.sleep(0.8)
+    p.przycisk("gryz")
+    time.sleep(0.6)
+    if zrzuty:
+        p.zrzut("11_boss_stopien.jpg")
+    pok = None
+    for _ in range(6):
+        p.serwer('"boss_hp", 3')
+        p.serwer('"boss_stoj", 3')
+        B = p.serwer('"boss"')
+        p.serwer('"przenies", %d, %f, %f' % (byt, B["x"] + r, B["z"]))
+        time.sleep(0.9)
+        p.przycisk("gryz")
+        pok, _ = czekaj(lambda: p.serwer('"boss"')["martwy"], 1.5, 0.2)
+        if pok:
+            break
+    time.sleep(0.8)
+    a = p.atr()
+    m = p.serwer('"miary"')
+    wynik("P19 boss stopień 3", pok and (a.get("EW_BossTrofea") or 0) >= 3 and m.get("boss_stopien_3"), boss_trofea=a.get("EW_BossTrofea"),
+          miara=m.get("boss_stopien_3"))
+    # P20 Olbrzym: korona (z jednym graczem bez bossa serwera), zrzut
+    p.serwer('"forma_gracza", %d' % len(D["formy"]))
+    p.serwer('"przenies", %d, 20, -40' % byt)
+    time.sleep(2.0)
+    if zrzuty:
+        p.zrzut("12_olbrzym.jpg")
+    a = p.atr()
+    st = p.serwer('"stan"')
+    wynik("P20 Olbrzym", st["forma"] == len(D["formy"]) and a.get("EW_K_Korona") is True, forma=st["forma"], atr_forma=a.get("EW_Forma"),
+          korona=a.get("EW_K_Korona"), martwy=st["martwy"], kokon=st.get("kokon"), olbrzym=st.get("olbrzymId") == st["byt"])
+    # P21 wyjście i powrót po godzinie: stan z zapisu (magazyn w pamięci), złoto legowiska za nieobecność
+    w = p.serwer('"wyjdz_wroc", 3600')
+    time.sleep(1.0)
+    a = p.atr()
+    prz, po = (w or {}).get("przed", {}), (w or {}).get("po", {})
+    oczek = prz.get("zlotoLeg", 0) + prz.get("stawka", 0) * 3600
+    wynik("P21 wyjście i powrót", w and w.get("zapisano") and w.get("magazyn") == "pamiec" and po.get("forma") == 1 and po.get("zloto") == prz.get("zloto")
+          and po.get("maxForma") == prz.get("maxForma") and po.get("poziomy") == prz.get("poziomy") and abs(po.get("zlotoLeg", 0) - oczek) < 2
+          and (a.get("EW_K_Powrot") or 0) > 0, magazyn=w and w.get("magazyn"), przed=prz, po=po, powrot_u_klienta=a.get("EW_K_Powrot"))
 
 
 def bledy_konsoli(p):

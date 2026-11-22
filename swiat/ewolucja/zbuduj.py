@@ -198,6 +198,16 @@ def scena(D):
     for i in range(8):
         a = 2 * math.pi * i / 8
         czesc(L, "Znaki", "Krag", (cx + 12 + math.sin(a) * 9, cy + 1.6, cz - 20 + math.cos(a) * 9), (1.6, 3.2, 1.6), "A8A0B4", "Slate", "Block", (0, a, 0))
+    # legowiska graczy na skraju łąki: podłoga, obrzeże, 8 cokołów (trofea stawia klient)
+    kol = ["FFD9D9", "D9ECFF", "DDF7DD", "FFEBCF", "EBDDFF", "FFDDF0", "D6FAF6", "F7F7D2"]
+    for i, (x, z) in enumerate(D["legowiska"]):
+        R2 = D["legowisko"]["r"]
+        czesc(L, "Legowiska", "Obrzeze", (cx + x, cy + 0.1, cz + z), (0.2, 2 * R2 + 1.6, 2 * R2 + 1.6), "8A6A3A", "WoodPlanks", "Cylinder", rot)
+        czesc(L, "Legowiska", "Podloga", (cx + x, cy + 0.16, cz + z), (0.22, 2 * R2, 2 * R2), kol[i % len(kol)], "WoodPlanks", "Cylinder", rot)
+        for f in range(8):
+            a = f * 2 * math.pi / 8
+            czesc(L, "Legowiska", "Cokol", (cx + x + math.sin(a) * 8.5, cy + 0.65, cz + z + math.cos(a) * 8.5), (1.2, 3.2, 3.2), "B8B0C8", "Slate",
+                  "Cylinder", rot)
     for i, (x, z) in enumerate(W["kwiaty"]):
         czesc(L, "Kwiaty", "Kwiat", (cx + x, cy + 0.08, cz + z), (0.1, 1.6, 1.6), ["FFF07A", "FF9AD8", "FFFFFF", "C8A8FF"][i % 4], "SmoothPlastic",
               "Cylinder", rot)

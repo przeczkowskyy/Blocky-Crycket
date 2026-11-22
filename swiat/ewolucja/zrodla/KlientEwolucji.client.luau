@@ -44,6 +44,14 @@ local function hex(h: string): Color3
 	return Color3.fromHex(h)
 end
 local tusz, papier, zloto = hex(UI.kolory.tusz), hex(UI.kolory.papier), hex(UI.kolory.zloto)
+local function wariantD(id: string?)
+	for _, W in D.warianty do
+		if W.id == id then
+			return W
+		end
+	end
+	return nil
+end
 local czcionka = Enum.Font[UI.czcionka] or Enum.Font.LuckiestGuy
 local cyfry = Enum.Font[UI.czcionka_cyfr] or Enum.Font.FredokaOne
 
@@ -407,6 +415,50 @@ for i, U in D.ulepszenia do
 	karty[U.id] = { ramka = k, kropki = kropki, wart = wart, przycisk = b, napis = bn, U = U }
 end
 
+-- zakładki panelu (etap 3): TROPHIES (poziomy trofeów w legowisku, warianty, szanse) i UPGRADES
+local tabT = nowy("Frame", { Name = "TabTrofea", Position = UDim2.fromOffset(0, 52), Size = UDim2.new(1, 0, 1, -52), BackgroundTransparency = 1 }, panel)
+local tabU = nowy("Frame", { Name = "TabUlepszenia", Position = UDim2.fromOffset(0, 52), Size = UDim2.new(1, 0, 1, -52), BackgroundTransparency = 1,
+	Visible = false }, panel)
+panelStawka.Visible = false
+for _, d in panel:GetChildren() do
+	if d:IsA("TextLabel") and d.Text == UI.legowisko_opis then
+		d.Visible = false
+	end
+end
+local function zakladka(x: number, tekst: string, tab: Frame)
+	local b = nowy("TextButton", { Name = "Zakladka", Position = UDim2.fromOffset(x, 5), Size = UDim2.fromOffset(100, 44), BackgroundColor3 = hex("4A3A5A"),
+		Text = "", AutoButtonColor = true }, panel)
+	rog(b, 10)
+	obrys(b, 2, tusz)
+	napis(b, tekst, UDim2.fromScale(0.06, 0.18), UDim2.fromScale(0.88, 0.64))
+	b.Activated:Connect(function()
+		tabT.Visible = tab == tabT
+		tabU.Visible = tab == tabU
+	end)
+	return b
+end
+zakladka(196, UI.trofea, tabT)
+zakladka(302, UI.ulepszenia, tabU)
+for f, T in trofea do
+	T.ramka.Parent = tabT
+	T.ramka.Position = UDim2.fromOffset(14 + (f - 1) * 56, 2)
+	T.ramka.Size = UDim2.fromOffset(50, 144)
+	T.poziom = napis(T.ramka, "", UDim2.fromOffset(2, 60), UDim2.fromOffset(46, 14), papier, cyfry)
+	T.wariant = napis(T.ramka, "", UDim2.fromOffset(2, 74), UDim2.fromOffset(46, 12), zloto, cyfry)
+	T.kup = nowy("TextButton", { Name = "KupPoziom", Position = UDim2.fromOffset(2, 92), Size = UDim2.fromOffset(46, 48), BackgroundColor3 = hex("3DB36B"),
+		Text = "", AutoButtonColor = true }, T.ramka)
+	rog(T.kup, 10)
+	obrys(T.kup, 2, tusz)
+	T.kupNapis = napis(T.kup, "", UDim2.fromScale(0.06, 0.12), UDim2.fromScale(0.88, 0.76), papier, cyfry)
+end
+local szanseNapis = napis(tabT, UI.szanse, UDim2.fromOffset(14, 150), UDim2.new(1, -28, 0, 16), hex("C8B8D8"), cyfry)
+local bossTrofNapis = napis(tabT, "", UDim2.fromOffset(14, 170), UDim2.new(1, -28, 0, 16), hex("FF9AD8"), cyfry)
+local legInfo = napis(tabT, UI.tylko_w_legowisku, UDim2.fromOffset(14, 190), UDim2.new(1, -28, 0, 16), zloto, cyfry)
+for _, k in karty do
+	k.ramka.Parent = tabU
+	k.ramka.Position = UDim2.new(0, k.ramka.Position.X.Offset, 0, 30)
+end
+
 ------------------------------------------------------------------ modele: klon, skala, części i przesunięcia (BulkMoveTo)
 -- opis modelu: forma z drabiny albo boss lasu — wszystko z danych (wzorzec, skala, chód, opcjonalne animacje)
 local function spec(f: number, boss: boolean?)
@@ -656,6 +708,11 @@ local function zbudujModel(w, f: number)
 		hl.OutlineColor = hex(UI.kolory.ty)
 		hl.OutlineTransparency = 0.2
 		hl.DepthMode = Enum.HighlightDepthMode.Occluded
+		local W = wariantD(gracz:GetAttribute("EW_Wariant"))
+		if W then
+			hl.FillColor = hex(W.kolor)
+			hl.FillTransparency = 0.55
+		end
 		hl.Parent = w.model
 	end
 end
@@ -920,6 +977,9 @@ local function akcja(rodzaj: string, a: any?)
 	elseif rodzaj == "kup" then
 		evAkcja:FireServer("kup", a)
 		dzwiek("klik", 1)
+	elseif rodzaj == "kup_trofeum" then
+		evAkcja:FireServer("kup_trofeum", a)
+		dzwiek("klik", 1.1)
 	end
 end
 bGryz.Activated:Connect(function()
@@ -947,6 +1007,11 @@ end)
 for id, k in karty do
 	k.przycisk.Activated:Connect(function()
 		akcja("kup", id)
+	end)
+end
+for f, T in trofea do
+	T.kup.Activated:Connect(function()
+		akcja("kup_trofeum", f)
 	end)
 end
 
@@ -1055,7 +1120,9 @@ local function rysuj(w, dt: number)
 		w.kokon.Size = Vector3.one * s
 		w.kokon.CFrame = CFrame.new(C + Vector3.new(w.x, r * 1.1, w.z))
 		w.kokon.Transparency = 0.05
-		w.kokon.Color = Color3.fromHSV((tGlob * 0.4) % 1, 0.25, 1)
+		local W = wariantD(w.kokonWariant)
+		w.kokon.Color = if W and W.id == "tecza" then Color3.fromHSV((tGlob * 0.8) % 1, 0.6, 1) elseif W then hex(W.kolor)
+			else Color3.fromHSV((tGlob * 0.4) % 1, 0.25, 1)
 	elseif w.kokon.Transparency < 1 then
 		w.kokon.Transparency = 1
 	end
@@ -1232,8 +1299,42 @@ local function opisWartosci(U, p: number): string
 	return w(p) .. " > " .. w(p + 1)
 end
 
+local function csv(n: string): { string }
+	local w = {}
+	for x in string.gmatch((gracz:GetAttribute(n) or "") .. ",", "([^,]*),") do
+		table.insert(w, x)
+	end
+	return w
+end
+
 local function odswiezPanel()
 	local zl = gracz:GetAttribute("EW_Zloto") or 0
+	local mf = gracz:GetAttribute("EW_MaxForma") or 1
+	local wDomu = gracz:GetAttribute("EW_WDomu") == true
+	local war, tro = csv("EW_Warianty"), csv("EW_Trofea")
+	for f, T in trofea do
+		local lv = tonumber(tro[f]) or 1
+		local W = wariantD(war[f])
+		local G = D.legowisko
+		T.poziom.Text = if f <= mf then string.format(UI.poziom, lv) else ""
+		T.wariant.Text = if W then W.nazwa else ""
+		T.wariant.TextColor3 = if W then hex(W.kolor) else zloto
+		T.stawka.Text = "+" .. tostring(math.floor(D.formy[f].trofeum * G.poziomy_x[lv] * (if W then W.x else 1) * 10 + 0.5) / 10)
+		T.vf.ImageColor3 = if f > mf then Color3.new(0, 0, 0) elseif W then Color3.new(1, 1, 1):Lerp(hex(W.kolor), 0.55) else Color3.new(1, 1, 1)
+		local cena = if f <= mf and G.ceny_x[lv] then math.floor(G.ceny_x[lv] * D.formy[f].trofeum) else nil
+		T.kup.Visible = f <= mf
+		T.kupNapis.Text = if cena then tostring(cena) else UI.maks
+		local stac = cena ~= nil and wDomu and zl >= cena
+		T.kup.BackgroundColor3 = if stac then hex("3DB36B") else hex("6A5A7A")
+		T.kup.AutoButtonColor = stac
+	end
+	local bt = gracz:GetAttribute("EW_BossTrofea") or 0
+	local bs = 0
+	for i = 1, bt do
+		bs += D.legowisko.boss_trofea[i]
+	end
+	bossTrofNapis.Text = string.format(UI.boss_trofea, bt, bs)
+	legInfo.Text = if wDomu then UI.w_legowisku else UI.tylko_w_legowisku
 	panelStawka.Text = string.format(UI.na_s, gracz:GetAttribute("EW_ZlotoNaS") or 0) .. " gold"
 	for id, k in karty do
 		local p = gracz:GetAttribute("EW_Poz_" .. id) or 1
@@ -1252,6 +1353,20 @@ local function odswiezPanel()
 			k.przycisk.AutoButtonColor = zl >= cena
 		end
 	end
+end
+
+-- czy iść do legowiska po złoto: zebranego za mało na najtańszy zakup, z legowiskiem starczy
+local function doDomu(): boolean
+	local zl = gracz:GetAttribute("EW_Zloto") or 0
+	local leg = gracz:GetAttribute("EW_ZlotoLeg") or 0
+	local naj = math.huge
+	for _, U in D.ulepszenia do
+		local c = U.ceny[gracz:GetAttribute("EW_Poz_" .. U.id) or 1]
+		if c then
+			naj = math.min(naj, c)
+		end
+	end
+	return zl < naj and zl + leg >= naj and leg >= 20
 end
 
 local brama = nil
@@ -1280,6 +1395,7 @@ local function odswiezHUD()
 	local bw, jw = widoki[bossId], widoki[mojId]
 	ramkaBossa.Visible = bossHP > 0 and bw ~= nil and jw ~= nil and odslona == nil and (bw.x - jw.x) ^ 2 + (bw.z - jw.z) ^ 2 < 90 * 90
 	bossW.Size = UDim2.fromScale(bossHP, 1)
+	bossNazwa.Text = D.boss.nazwa .. " " .. string.rep("*", kontener:GetAttribute("BossStopien") or 1)
 	ramkaBaneru.Position = if ramkaBossa.Visible then UDim2.new(0.5, -40, 0, 98) else UDim2.new(0.5, -40, 0, 62)
 	local f = mojaForma()
 	local wz = gracz:GetAttribute("EW_Wzrost") or 0
@@ -1300,7 +1416,7 @@ local function odswiezHUD()
 	local pelny = f < NF and wz >= pt and not (w and serwerSteruje(w.flagi))
 	ramkaEwo.Visible = pelny
 	zlotoNapis.Text = tostring(gracz:GetAttribute("EW_Zloto") or 0)
-	naSNapis.Text = UI.legowisko .. "  " .. string.format(UI.na_s, gracz:GetAttribute("EW_ZlotoNaS") or 0)
+	naSNapis.Text = UI.skarb .. " " .. tostring(gracz:GetAttribute("EW_ZlotoLeg") or 0) .. "  " .. string.format(UI.na_s, gracz:GetAttribute("EW_ZlotoNaS") or 0)
 	local A = D.formy[wForma].um
 	napisUm.Text = A.nazwa
 	local teraz = os.clock()
@@ -1308,8 +1424,14 @@ local function odswiezHUD()
 	cienUm.Size = UDim2.fromScale(1, math.clamp((umGotowy - teraz) / A.odnowa_s, 0, 1))
 	cienGryz.Size = UDim2.fromScale(1, math.clamp((gryzGotowy - teraz) / 0.7, 0, 1))
 	-- podpowiedź: na start (do 5 kulek), przy pełnym pasku i po otwarciu lasu
-	if lasPodp and os.clock() < lasPodp and not pelny then
+	if gracz:GetAttribute("EW_WDomu") and not pelny then
+		podpNapis.Text = UI.w_legowisku
+		ramkaPodp.Visible = true
+	elseif lasPodp and os.clock() < lasPodp and not pelny then
 		podpNapis.Text = UI.las_podp
+		ramkaPodp.Visible = true
+	elseif doDomu() and not pelny then
+		podpNapis.Text = UI.do_legowiska
 		ramkaPodp.Visible = true
 	elseif pelny then
 		podpNapis.Text = UI.podpowiedz_ewo
@@ -1352,7 +1474,8 @@ grot.Parent = lokalne
 local function krokStrzalki()
 	local w = widoki[mojId]
 	local doLasu = w and lasPodp and os.clock() < lasPodp and not L.wLesie(D, w.x, w.z)
-	local pokaz = w and (doLasu or (kulekZjedzonych < 5 and (gracz:GetAttribute("EW_MaxForma") or 1) == 1)) and not w.martwy
+	local domu = w and not doLasu and doDomu() and not gracz:GetAttribute("EW_WDomu")
+	local pokaz = w and (doLasu or domu or (kulekZjedzonych < 5 and (gracz:GetAttribute("EW_MaxForma") or 1) == 1)) and not w.martwy
 	if not pokaz then
 		strzalka.Transparency, grot.Transparency = 1, 1
 		return
@@ -1360,6 +1483,9 @@ local function krokStrzalki()
 	local best, bd = nil, math.huge
 	if doLasu then
 		best = { 0, D.pole.r - 10 }
+	elseif domu then
+		local x, z = L.legowiskoPoz(D, mojSlot())
+		best = { x, z }
 	else
 		for i, p in D.kulkiPoz do
 			if kulkiZywe[i] and osiagalna(p) then
@@ -1476,6 +1602,9 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 			if w then
 				w.flagi = bit32.bor(w.flagi, 8)
 			end
+			if w then
+				w.kokonWariant = z.wariant
+			end
 			if z.id == mojId then
 				odslona = { t = 0, czas = z.czas, nowa = z.nowa, forma = z.forma, faza = "kokon" }
 				dzwiek("wyklucie", 0.8)
@@ -1500,6 +1629,16 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				blyskT = 0
 				wstrzasnij(0.9 + D.formy[z.forma].r * 0.12, 0.55)
 				tabliczka(z.forma, z.nowa)
+				local W = wariantD(z.wariant)
+				if W then
+					tablGora.Text = string.format(UI.wariant, W.nazwa)
+					tablGora.TextColor3 = hex(W.kolor)
+					E:iskry(C + Vector3.new(predX, 4, predZ), hex(W.kolor), 40, 2.4)
+					dzwiek("boss", 1.4)
+				else
+					tablGora.TextColor3 = hex("9BFFB8")
+				end
+				gracz:SetAttribute("EW_K_Wariant", z.wariant or "")
 				odslona = { t = 0, czas = D.ewolucja.tabliczka_s, nowa = z.nowa, forma = z.forma, faza = "tabliczka" }
 				if z.nowa then
 					task.delay(D.ewolucja.tabliczka_s, function()
@@ -1511,6 +1650,28 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				odswiezDrabine()
 				gracz:SetAttribute("EW_K_Odslon", liczOdslon)
 			end
+		elseif t == "zebrano" then
+			if z.id == mojId and z.ile > 0 then
+				pokazBaner(string.format(UI.zebrano, z.ile), zloto, 1.4)
+				dzwiek("monety", 1.1)
+				local w = widoki[mojId]
+				if w then
+					E:iskry(C + Vector3.new(w.x, 2, w.z), zloto, 14, 1.2)
+				end
+			end
+		elseif t == "powrot" then
+			tablGora.Text = "WELCOME BACK!"
+			tablGora.TextColor3 = hex("9BFFB8")
+			tablNazwa.Text = "+" .. tostring(z.ile) .. " GOLD"
+			tablDol.Text = string.format(UI.powrot, z.ile)
+			tablDol2.Text = ""
+			ramkaTabl.Visible = true
+			tablSkala.Scale = 0.3
+			odslona = { t = 0, czas = 3.5, faza = "tabliczka" }
+			dzwiek("monety", 0.9)
+			gracz:SetAttribute("EW_K_Powrot", z.ile)
+		elseif t == "olbrzym_rana" then
+			E:liczba(C + Vector3.new(z.x, 10, z.z), "+" .. tostring(z.zloto), zloto)
 		elseif t == "las_otwarty" then
 			if z.id == mojId then
 				task.delay(D.ewolucja.tabliczka_s + 0.2, function()
@@ -1714,7 +1875,13 @@ local function uklad(): string
 		end
 	end
 	local male = {}
-	for _, b in { bGryz, bZryw, bUm, bEwo, bLegowisko, bZamknij } do
+	local przyciski = { bGryz, bZryw, bUm, bEwo, bLegowisko, bZamknij }
+	for _, d in panel:GetDescendants() do
+		if d:IsA("TextButton") and d.Visible then
+			table.insert(przyciski, d)
+		end
+	end
+	for _, b in przyciski do
 		if b.Visible and b:FindFirstAncestorWhichIsA("GuiObject").Visible then
 			local s = b.AbsoluteSize
 			if s.X < 44 or s.Y < 44 then
@@ -1730,6 +1897,161 @@ local function uklad(): string
 	end
 	return HttpService:JSONEncode({ okno = { v.X, v.Y }, prostokaty = pr, nakladanie = naklad, poza = poza, male = male, skala = skalaEkranu(),
 		inset = ins.Y, rogi_paska = gora })
+end
+
+------------------------------------------------------------------ legowiska w świecie (trofea na cokołach, kupka złota)
+local legowiska: { [number]: any } = {}
+local function lista(p: Player, n: string): { string }
+	local w = {}
+	for x in string.gmatch((p:GetAttribute(n) or "") .. ",", "([^,]*),") do
+		table.insert(w, x)
+	end
+	return w
+end
+
+local function czesc3(roz: Vector3, cf: CFrame, kolor: Color3, mat: Enum.Material, ksztalt: Enum.PartType?, rodzic: Instance): Part
+	local p = Instance.new("Part")
+	p.Anchored = true
+	p.CanCollide = false
+	p.CanQuery = false
+	p.CanTouch = false
+	p.CastShadow = false
+	p.Size = roz
+	p.CFrame = cf
+	p.Color = kolor
+	p.Material = mat
+	if ksztalt then
+		p.Shape = ksztalt
+	end
+	p.Parent = rodzic
+	return p
+end
+
+local function napisNaGorze(rodzic: BasePart, tekst: string, kolor: Color3)
+	local sg = Instance.new("SurfaceGui")
+	sg.Face = Enum.NormalId.Top
+	sg.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	sg.PixelsPerStud = 40
+	sg.LightInfluence = 0
+	sg.Parent = rodzic
+	local l = Instance.new("TextLabel")
+	l.BackgroundTransparency = 1
+	l.Size = UDim2.fromScale(1, 1)
+	l.Text = tekst
+	l.TextScaled = true
+	l.Font = czcionka
+	l.TextColor3 = kolor
+	l.Parent = sg
+	nowy("UIStroke", { Thickness = 2, Color = tusz }, l)
+end
+
+local function zbudujLegowisko(p: Player, slot: number, sig: string)
+	local f0 = Instance.new("Folder")
+	f0.Name = "Legowisko" .. slot
+	f0.Parent = lokalne
+	local moj = p == gracz
+	local mf = p:GetAttribute("EW_MaxForma") or 1
+	local war, tro = lista(p, "EW_Warianty"), lista(p, "EW_Trofea")
+	local lx, lz = L.legowiskoPoz(D, slot)
+	for f = 1, NF do
+		local a = (f - 1) * math.pi * 2 / NF
+		local px, pz = lx + math.sin(a) * 8.5, lz + math.cos(a) * 8.5
+		local F = D.formy[f]
+		local wz = (f <= mf or moj) and wzorce and wzorce:FindFirstChild(F.wzorzec)
+		if wz then
+			local m = wz:Clone()
+			local W = wariantD(war[f])
+			local i = 0
+			for _, d in m:GetDescendants() do
+				if d:IsA("BasePart") then
+					i += 1
+					d.Anchored = true
+					d.CanCollide = false
+					d.CanQuery = false
+					d.CanTouch = false
+					d.CastShadow = false
+					if f > mf then
+						d.Color = Color3.fromRGB(20, 16, 24)
+						d.Material = Enum.Material.SmoothPlastic
+					elseif W and W.id == "tecza" then
+						d.Color = Color3.fromHSV((i * 0.137) % 1, 0.65, 1)
+					elseif W then
+						d.Color = d.Color:Lerp(hex(W.kolor), 0.6)
+						d.Material = Enum.Material.SmoothPlastic
+					end
+				end
+			end
+			pcall(function()
+				m:ScaleTo(1.4 / F.model_r)
+			end)
+			m:PivotTo(CFrame.new(C + Vector3.new(px, 1.25, pz)) * CFrame.Angles(0, math.atan2(px - lx, pz - lz) + math.pi, 0))
+			m.Parent = f0
+		end
+		if moj and f <= mf then
+			local tab = czesc3(Vector3.new(2.6, 0.12, 1.1), CFrame.new(C + Vector3.new(lx + math.sin(a) * 11.4, 0.3, lz + math.cos(a) * 11.4))
+				* CFrame.Angles(0, a, 0), tusz, Enum.Material.SmoothPlastic, nil, f0)
+			napisNaGorze(tab, string.format(UI.poziom, tonumber(tro[f]) or 1), zloto)
+		end
+	end
+	if moj then
+		local tab = czesc3(Vector3.new(7, 0.12, 1.6), CFrame.new(C + Vector3.new(lx * 0.9, 0.3, lz * 0.9)) * CFrame.Angles(0, math.atan2(lx, lz), 0), tusz,
+			Enum.Material.SmoothPlastic, nil, f0)
+		napisNaGorze(tab, UI.twoje_legowisko, hex("9BFFB8"))
+	end
+	local kupka = czesc3(Vector3.one, CFrame.new(C + Vector3.new(lx, 0, lz)), zloto, Enum.Material.Neon, Enum.PartType.Ball, f0)
+	return { folder = f0, sig = sig, kupka = kupka, x = lx, z = lz }
+end
+
+local doLeg = 0
+local function krokLegowisk(dt: number)
+	doLeg -= dt
+	if doLeg > 0 then
+		return
+	end
+	doLeg = 0.25
+	local ja2 = widoki[mojId]
+	local fx, fz = if ja2 then ja2.x else 0, if ja2 then ja2.z else 0
+	local zajete = {}
+	for _, p in Players:GetPlayers() do
+		local slot = p:GetAttribute("EW_Slot") or 0
+		if slot > 0 then
+			zajete[slot] = true
+			local lx, lz = L.legowiskoPoz(D, slot)
+			local d = legowiska[slot]
+			if (lx - fx) ^ 2 + (lz - fz) ^ 2 < 170 * 170 then
+				local sig = table.concat({ tostring(p:GetAttribute("EW_MaxForma")), p:GetAttribute("EW_Warianty") or "", p:GetAttribute("EW_Trofea") or "",
+					p.Name }, "|")
+				if not d or d.sig ~= sig then
+					if d then
+						d.folder:Destroy()
+					end
+					d = zbudujLegowisko(p, slot, sig)
+					legowiska[slot] = d
+				end
+				local leg = p:GetAttribute("EW_ZlotoLeg") or 0
+				local s = if leg < 1 then 0.01 else 1.2 + math.min(5, math.log10(leg + 1) * 1.4)
+				d.kupka.Size = Vector3.new(s, s * 0.6, s)
+				d.kupka.Transparency = if leg < 1 then 1 else 0
+				d.kupka.CFrame = CFrame.new(C + Vector3.new(lx, s * 0.3 + math.sin(tGlob * 2) * 0.1, lz))
+			elseif d then
+				d.folder:Destroy()
+				legowiska[slot] = nil
+			end
+		end
+	end
+	for slot, d in legowiska do
+		if not zajete[slot] then
+			d.folder:Destroy()
+			legowiska[slot] = nil
+		end
+	end
+	gracz:SetAttribute("EW_K_Legowisk", (function()
+		local n = 0
+		for _ in legowiska do
+			n += 1
+		end
+		return n
+	end)())
 end
 
 ------------------------------------------------------------------ kamera
@@ -1777,6 +2099,12 @@ RunService.RenderStepped:Connect(function(dt: number)
 			pokazPanel(false)
 		elseif string.sub(tp, 1, 4) == "kup:" then
 			akcja("kup", string.sub(tp, 5))
+		elseif string.sub(tp, 1, 8) == "trofeum:" then
+			akcja("kup_trofeum", tonumber(string.sub(tp, 9)))
+		elseif tp == "zakladka_u" then
+			tabT.Visible, tabU.Visible = false, true
+		elseif tp == "zakladka_t" then
+			tabT.Visible, tabU.Visible = true, false
 		else
 			akcja(tp)
 		end
@@ -1803,6 +2131,7 @@ RunService.RenderStepped:Connect(function(dt: number)
 	end
 	workspace:BulkMoveTo(cz, cf, Enum.BulkMoveMode.FireCFrameChanged)
 	krokStrzalki()
+	krokLegowisk(dt)
 	-- odsłona: tabliczka rośnie i znika
 	if odslona then
 		odslona.t += dt
@@ -1879,10 +2208,14 @@ RunService.RenderStepped:Connect(function(dt: number)
 		gracz:SetAttribute("EW_K_Zjedzony", liczZjedzen)
 		gracz:SetAttribute("EW_K_Zjadl", liczZjadl)
 		gracz:SetAttribute("EW_K_Legowisko", panel.Visible)
+		gracz:SetAttribute("EW_K_Korona", korona.Parent ~= nil)
 		gracz:SetAttribute("EW_K_KameraY", kamera.CFrame.Position.Y)
 		gracz:SetAttribute("EW_K_MigawkaS", os.clock() - czasMigawki)
 		local w = widoki[mojId]
 		if w then
+			gracz:SetAttribute("EW_K_Flagi", w.flagi)
+			gracz:SetAttribute("EW_K_Odslona", if odslona then tostring(odslona.faza) else "")
+			gracz:SetAttribute("EW_K_Ster", if sterTest then tostring(sterTest.v) .. "/" .. string.format("%.1f", sterTest.do_ - os.clock()) else "")
 			gracz:SetAttribute("EW_K_MojX", w.x)
 			gracz:SetAttribute("EW_K_MojZ", w.z)
 		end

@@ -14,6 +14,7 @@ if not game:GetService("RunService"):IsStudio() then
 end
 
 local Players = game:GetService("Players")
+local DataStoreService = game:GetService("DataStoreService")
 local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -47,6 +48,16 @@ do
 	end
 end
 
+-- magazyn zapisu: w Studio i przy znaczniku próby (tools/zapis_prob.py) ZAWSZE magazyn w pamięci — nigdy prawdziwy DataStore
+local znacznik = kontener:GetAttribute(D.zapis.znacznik_proby)
+local wProbie = RunService:IsStudio() or (type(znacznik) == "number" and os.time() < znacznik)
+local magazyn = if wProbie then L.pamiec() else DataStoreService:GetDataStore(D.zapis.magazyn)
+kontener:SetAttribute("ZapisTryb", if wProbie then "pamiec" else "datastore")
+local JOB = if game.JobId ~= "" then game.JobId else "studio"
+local function klucz(plr: Player): string
+	return "player_" .. tostring(plr.UserId)
+end
+
 local los = Random.new()
 local S = L.nowyStan(D, function()
 	return los:NextNumber()
@@ -67,7 +78,7 @@ kontener:SetAttribute("BossHP", 1)
 
 ------------------------------------------------------------------ gracze
 type Gracz = { slot: number, byt: any, wiadro: { t: number, z: number }, nazwa: string, start: number, miary: any,
-	ostKorekta: number, atr: { [string]: any } }
+	ostKorekta: number, atr: { [string]: any }, zapisywalny: boolean?, wczytany: boolean? }
 local gracze: { [Player]: Gracz } = {}
 local poSlocie: { [number]: Player } = {}
 local liczniki: { [string]: number } = {}
@@ -117,11 +128,56 @@ local function atrybuty(plr: Player, g: Gracz)
 	ustawAtr(plr, g, "EW_Wzrost", math.floor(b.wzrost))
 	ustawAtr(plr, g, "EW_Potrzeba", L.potrzeba(D, b.forma))
 	ustawAtr(plr, g, "EW_Zloto", math.floor(b.zloto))
-	ustawAtr(plr, g, "EW_ZlotoNaS", L.stawka(D, b.maxForma))
+	ustawAtr(plr, g, "EW_ZlotoLeg", math.floor(b.zlotoLeg))
+	ustawAtr(plr, g, "EW_ZlotoNaS", math.floor(L.stawkaB(D, b) * 10 + 0.5) / 10)
+	local w, tr = {}, {}
+	for f = 1, #D.formy do
+		w[f] = b.warianty[f] or ""
+		tr[f] = tostring(L.poziomTrofeum(b, f))
+	end
+	ustawAtr(plr, g, "EW_Warianty", table.concat(w, ","))
+	ustawAtr(plr, g, "EW_Trofea", table.concat(tr, ","))
+	ustawAtr(plr, g, "EW_BossTrofea", b.bossTrofea or 0)
+	ustawAtr(plr, g, "EW_Wariant", b.wariantTeraz or "")
+	ustawAtr(plr, g, "EW_WDomu", L.wLegowisku(D, b))
 	for _, U in D.ulepszenia do
 		ustawAtr(plr, g, "EW_Poz_" .. U.id, L.poziom(b, U.id))
 	end
 	ustawAtr(plr, g, "EW_Martwy", b.martwyDo ~= nil)
+end
+
+local function wczytajGracza(plr: Player, g: Gracz)
+	local prof, zapisywalny, powod
+	for proba = 1, D.zapis.proby do
+		prof, zapisywalny, powod = L.wczytaj(D, magazyn, klucz(plr), JOB, os.time())
+		if zapisywalny or not gracze[plr] then
+			break
+		end
+		task.wait(1.5 * proba)
+	end
+	if not gracze[plr] or gracze[plr] ~= g then
+		return
+	end
+	g.zapisywalny = zapisywalny
+	g.wczytany = true
+	local zarobek, sek = L.zProfilu(D, g.byt, prof, os.time())
+	plr:SetAttribute("EW_Zapis", if zapisywalny then "ok" else ("bez zapisu: " .. tostring(powod)))
+	atrybuty(plr, g)
+	if zarobek > 0 then
+		evZdarzenia:FireClient(plr, { { t = "powrot", ile = zarobek, sek = sek } })
+	end
+	licz("wczytano")
+end
+
+local function zapiszGracza(plr: Player, g: Gracz, zwolnij: boolean): boolean
+	if not g.zapisywalny or not g.wczytany then
+		return false
+	end
+	local ok = L.zapisz(D, magazyn, klucz(plr), JOB, L.doProfilu(D, g.byt, os.time()), os.time(), zwolnij)
+	if ok then
+		licz("zapisano")
+	end
+	return ok
 end
 
 local function dolacz(plr: Player)
@@ -134,7 +190,8 @@ local function dolacz(plr: Player)
 		return
 	end
 	local g: Gracz = { slot = slot, byt = L.dodajByt(S, slot, 1), wiadro = { t = os.clock(), z = D.siec.wiadro_zapas },
-		nazwa = plr.DisplayName, start = os.clock(), ostKorekta = 0, atr = {},
+		-- w Studio (próby, zrzuty, filmy) bez nazwy konta: „Player N”
+		nazwa = if RunService:IsStudio() then ("Player " .. tostring(slot)) else plr.DisplayName, start = os.clock(), ostKorekta = 0, atr = {},
 		miary = { formy = { ["1"] = 0 }, smierci = 0, po_smierci = {}, ulepszenia = {}, sesja_s = 0 } }
 	gracze[plr] = g
 	poSlocie[slot] = plr
@@ -150,6 +207,7 @@ local function dolacz(plr: Player)
 	end)
 	schowajAwatar(plr)
 	licz("dolaczyl")
+	task.spawn(wczytajGracza, plr, g)
 end
 
 local function odejdz(plr: Player)
@@ -157,6 +215,7 @@ local function odejdz(plr: Player)
 	if not g then
 		return
 	end
+	zapiszGracza(plr, g, true)
 	for _, z in g.miary.po_smierci do
 		if z.dalej == nil then
 			z.dalej = false
@@ -194,7 +253,7 @@ local function wyslijGraczowi(plr: Player, lista)
 	end
 end
 
-local RODZAJE = { ruch = true, gryz = true, zryw = true, umiejetnosc = true, ewoluuj = true, kup = true }
+local RODZAJE = { ruch = true, gryz = true, zryw = true, umiejetnosc = true, ewoluuj = true, kup = true, kup_trofeum = true }
 
 evAkcja.OnServerEvent:Connect(function(plr: Player, rodzaj: any, a: any, b: any, c: any, d: any)
 	local g = gracze[plr]
@@ -246,6 +305,13 @@ evAkcja.OnServerEvent:Connect(function(plr: Player, rodzaj: any, a: any, b: any,
 		end
 		atrybuty(plr, g)
 		wyslijGraczowi(plr, { { t = "kup", id = if type(a) == "string" then a else "", ok = ok, powod = powod } })
+	elseif rodzaj == "kup_trofeum" then
+		local ok, powod = L.kupTrofeum(S, byt, a)
+		if ok then
+			licz("kup_trofeum")
+		end
+		atrybuty(plr, g)
+		wyslijGraczowi(plr, { { t = "kup", id = "trofeum", f = if type(a) == "number" then a else 0, ok = ok, powod = powod } })
 	end
 end)
 
@@ -334,14 +400,17 @@ local function poZdarzeniu(z)
 			g.miary.las = math.floor((os.clock() - g.start) * 10 + 0.5) / 10
 		elseif z.t == "boss_pokonany" then
 			g.miary.boss_pokonany = g.miary.boss_pokonany or math.floor((os.clock() - g.start) * 10 + 0.5) / 10
-			table.insert(doWyslania, { t = "ogloszenie", tekst = string.format(D.ui.ogl_boss, g.nazwa, D.boss.nazwa) })
+			g.miary["boss_stopien_" .. tostring(z.stopien)] = math.floor((os.clock() - g.start) * 10 + 0.5) / 10
+			table.insert(doWyslania, { t = "ogloszenie", tekst = string.format(D.ui.ogl_boss, g.nazwa, D.boss.nazwa .. " " .. string.rep("*", z.stopien)) })
 			plr:SetAttribute("EW_Miary", miaryJSON(g))
+		elseif z.t == "olbrzym_obalony" then
+			table.insert(doWyslania, { t = "ogloszenie", tekst = string.format(D.ui.ogl_obalony, g.nazwa) })
 		end
 	end
 end
 
 ------------------------------------------------------------------ pętla
-local zb, doStan, doAtr, doMiar = 0, 0, 0, 0
+local zb, doStan, doAtr, doMiar, doZapisu = 0, 0, 0, 0, D.zapis.co_s
 local czasKroku, ileKrokow = 0, 0
 
 RunService.Heartbeat:Connect(function(dt: number)
@@ -386,6 +455,7 @@ RunService.Heartbeat:Connect(function(dt: number)
 		doAtr = 0.2
 		local bb = L.bytPoId(S, S.boss)
 		kontener:SetAttribute("BossHP", if bb and not bb.martwyDo then math.floor(bb.hp / bb.hpMaks * 1000) / 1000 else 0)
+		kontener:SetAttribute("BossStopien", S.bossStopien or 1)
 		for plr, g in gracze do
 			atrybuty(plr, g)
 			for _, m in g.miary.po_smierci do
@@ -401,6 +471,19 @@ RunService.Heartbeat:Connect(function(dt: number)
 		for plr, g in gracze do
 			plr:SetAttribute("EW_Miary", miaryJSON(g))
 		end
+	end
+	doZapisu -= dt
+	if doZapisu <= 0 then
+		doZapisu = D.zapis.co_s
+		for plr, g in gracze do
+			task.spawn(zapiszGracza, plr, g, false)
+		end
+	end
+end)
+
+game:BindToClose(function()
+	for plr, g in gracze do
+		zapiszGracza(plr, g, true)
 	end
 end)
 
@@ -427,7 +510,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 		local byty = {}
 		for _, e in S.byty do
 			table.insert(byty, { id = e.id, slot = e.slot, forma = e.forma, x = e.x, z = e.z, martwy = e.martwyDo ~= nil,
-				tarcza = e.tarczaDo > S.czas, kokon = e.kokonDo ~= nil, cel = e.cel, zjadl = e.zjadl })
+				tarcza = e.tarczaDo > S.czas, kokon = e.kokonDo ~= nil, cel = e.cel, zjadl = e.zjadl, strefa = e.strefa })
 		end
 		local zywe = 0
 		for _, k in S.kulki do
@@ -437,10 +520,66 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 		end
 		return { gotowy = true, czas = S.czas, byt = byt and byt.id, forma = byt and byt.forma, maxForma = byt and byt.maxForma,
 			wzrost = byt and byt.wzrost, potrzeba = byt and L.potrzeba(D, byt.forma), zloto = byt and byt.zloto,
-			stawka = byt and L.stawka(D, byt.maxForma), poziomy = byt and byt.poziomy, x = byt and byt.x, z = byt and byt.z,
+			stawka = byt and L.stawkaB(D, byt), poziomy = byt and byt.poziomy, x = byt and byt.x, z = byt and byt.z,
+			zlotoLeg = byt and byt.zlotoLeg, slot = g and g.slot, kokon = byt and byt.kokonDo ~= nil, olbrzymId = S.olbrzym,
 			martwy = byt and byt.martwyDo ~= nil, tarcza = byt and byt.tarczaDo > S.czas, byty = byty, kulek = zywe, strefy = #S.strefy,
 			laska = byt and byt.laskaDo > S.czas,
 			liczniki = liczniki, krok_ms = if ileKrokow > 0 then czasKroku / ileKrokow * 1000 else 0 }
+	elseif polecenie == "wymus_wariant" then
+		S.wymusWariant = a
+		return true
+	elseif polecenie == "boss_stopien" then
+		S.bossStopien = a
+		local bb = L.bytPoId(S, S.boss)
+		if bb then
+			bb.hpMaks = D.boss.stopnie_hp[a]
+			bb.hp = bb.hpMaks
+			if bb.martwyDo then
+				bb.martwyDo = nil
+				bb.x, bb.z = bb.domX, bb.domZ
+			end
+		end
+		return true
+	elseif polecenie == "forma_gracza" then
+		if byt then
+			byt.kokonDo, byt.skok, byt.martwyDo = nil, nil, nil
+			byt.forma = a
+			byt.maxForma = math.max(byt.maxForma, a)
+			byt.wzrost = 0
+			if a == #D.formy then
+				byt.olbrzymHp = D.olbrzym.hp
+				S.olbrzym = byt.id
+			end
+		end
+		return true
+	elseif polecenie == "zloto_leg" then
+		if byt then
+			byt.zlotoLeg = a
+		end
+		return true
+	elseif polecenie == "do_legowiska" then
+		if byt then
+			byt.x, byt.z = L.legowiskoPoz(D, byt.slot)
+			byt.ostRaport = S.czas
+		end
+		return true
+	elseif polecenie == "wyjdz_wroc" then
+		-- próba wyjścia i powrotu: zapis (zwolnienie sesji), czas nieobecności a sekund, nowe wejście z wczytaniem
+		if not (plr and g and g.wczytany) then
+			return nil
+		end
+		local przed = { zloto = math.floor(g.byt.zloto), zlotoLeg = math.floor(g.byt.zlotoLeg), maxForma = g.byt.maxForma,
+			poziomy = L.kopia(g.byt.poziomy), stawka = L.stawkaB(D, g.byt) }
+		local okZ = zapiszGracza(plr :: Player, g, true)
+		if magazyn.dane and magazyn.dane[klucz(plr :: Player)] then
+			magazyn.dane[klucz(plr :: Player)].ostatnio -= a
+		end
+		L.usunByt(S, g.byt)
+		g.byt = L.dodajByt(S, g.slot, 1)
+		g.wczytany = false
+		wczytajGracza(plr :: Player, g)
+		return { zapisano = okZ, przed = przed, po = { zloto = math.floor(g.byt.zloto), zlotoLeg = math.floor(g.byt.zlotoLeg), forma = g.byt.forma,
+			maxForma = g.byt.maxForma, poziomy = g.byt.poziomy }, magazyn = kontener:GetAttribute("ZapisTryb") }
 	elseif polecenie == "boss" then
 		local bb = L.bytPoId(S, S.boss)
 		return bb and { id = bb.id, hp = bb.hp, hpMaks = bb.hpMaks, x = bb.x, z = bb.z, martwy = bb.martwyDo ~= nil, cel = bb.cel }
@@ -456,6 +595,8 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 		if bb then
 			bb.wx, bb.wz = 0, 0
 			bb.myslDo = S.czas + (a or 3)
+			bb.cel = 0
+			bb.gryzGotowy = S.czas + (a or 3)
 		end
 		return true
 	elseif polecenie == "miary" then

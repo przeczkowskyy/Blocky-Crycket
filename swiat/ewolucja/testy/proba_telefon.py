@@ -98,6 +98,11 @@ def main():
             u4 = uklad(p)
             PP.wynik("T4 panel legowiska mieści się", u4 and "Panel" in u4["prostokaty"] and "Panel" not in u4["poza"] and not u4["male"],
                      panel=u4.get("prostokaty", {}).get("Panel"), okno=u4.get("okno"), male=u4.get("male"))
+            p.przycisk("zakladka_u")
+            time.sleep(0.4)
+            u5 = uklad(p)
+            PP.wynik("T4b zakładka ulepszeń mieści się", u5 and "Panel" in u5["prostokaty"] and "Panel" not in u5["poza"] and not u5["male"],
+                     male=u5.get("male"))
             p.przycisk("zamknij")
             a1 = p.atr()
             PP.wynik("T5 klatka na telefonie", (a1.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a1.get("EW_K_Klatka") or 0, 1))

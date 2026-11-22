@@ -154,6 +154,15 @@ def wystroj_lasu(LS):
     return {"drzewa": drzewa, "grzyby": grzyby, "plamy": plamy}
 
 
+def legowiska(G):
+    """Środki legowisk na skraju łąki (kąt 0 = północ, tam brama lasu — pomijamy)."""
+    w = []
+    for i in range(G["miejsc"]):
+        a = math.radians(G["kat_od"] + (G["kat_do"] - G["kat_od"]) * i / max(1, G["miejsc"] - 1))
+        w.append([round(math.sin(a) * G["odleglosc"], 2), round(math.cos(a) * G["odleglosc"], 2)])
+    return w
+
+
 def dane():
     U = ustawienia()
     PA = _pa()
@@ -197,6 +206,9 @@ def dane():
         "kontener": U["kontener"], "prefiks": U["prefiks"], "wylacznik": U["wylacznik"], "wzorceRS": U["wzorce_rs"], "ui": U["ui"],
         "pole": P, "przeszkody": prz, "kulkiPoz": kulki(P, J, prz, LS), "jedzenie": J, "formy": formy,
         "las": {"nazwa": LS["nazwa"], "x": LS["srodek"][0], "z": LS["srodek"][1], "r": LS["r"], "od_formy": LS["od_formy"]}, "boss": B,
+        "legowisko": {k: v for k, v in U["legowisko"].items() if k != "opis"}, "legowiska": legowiska(U["legowisko"]),
+        "warianty": U["warianty"], "zapis": {k: v for k, v in U["zapis"].items() if k != "opis"},
+        "olbrzym": {k: v for k, v in U["olbrzym"].items() if k != "opis"},
         "ruch": {k: v for k, v in U["ruch"].items() if k != "opis"},
         "gryzienie": {k: v for k, v in U["gryzienie"].items() if k != "opis"},
         "ulepszenia": U["ulepszenia"],

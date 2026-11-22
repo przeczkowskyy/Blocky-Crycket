@@ -5,10 +5,10 @@
     python -B swiat/ewolucja/testy/demo_wideo.py --studio <id> [--wyj <plik.mp4 poza repo>] [--zostaw-klipy]
 
 Domyślnie zapis do folderu tymczasowego systemu (zmienna środowiska TEMP; tak jak katalog roboczy demo Pet Areny):
-<TEMP>/ewolucja_demo/ewolucja_etap2.mp4 i ..._plansza.jpg. Wzór: swiat/pet_arena/testy/demo_wideo.py — Play / Stop przez
+<TEMP>/ewolucja_demo/ewolucja_etap3.mp4 i ..._plansza.jpg. Wzór: swiat/pet_arena/testy/demo_wideo.py — Play / Stop przez
 tools/studio_mcp.py (podproces), stan ustawiany haczykami próby (bez grindu), każda scena to osobne nagranie narzędziem
 MCP `video_capture` (obraz gry z Play z dźwiękiem), klipy przycina i skleja ffmpeg (H.264 1280 × 720, AAC).
-Sceny: start → jedzenie → odsłona nowej formy → panel legowiska → pościg → DEEP WOODS i mini-boss.
+Sceny (etap 3): start w legowisku → jedzenie → odsłona z wariantem → zebranie złota w legowisku → poziom trofeum → boss stopnia 2 → Olbrzym.
 W kadrze gracz próby, bez listy graczy i czatu. Okna Studio nie wysuwa (bez sterowania pulpitem).
 """
 import argparse
@@ -53,45 +53,48 @@ class Film:
 
 
 def sceny(p, f):
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    lx, lz = D["legowiska"][0]
+    # start w legowisku i jedzenie
     p.ustaw("EW_TestAuto", "true")
     f.nagrywaj("start")
+    time.sleep(4.5)
+    f.stop()
+    time.sleep(2)
+    f.nagrywaj("jedzenie")
     time.sleep(5)
     f.stop()
-    time.sleep(3)
-    f.nagrywaj("jedzenie")
-    time.sleep(6.5)
-    f.stop()
-    # odsłona nowej formy
+    # odsłona z wariantem (los serwera wymuszony haczykiem próby)
     p.ustaw("EW_TestAuto", "false")
+    p.serwer('"wymus_wariant", "krysztal"')
     p.serwer('"wzrost_pelny"')
-    f.nagrywaj("ewolucja")
+    f.nagrywaj("wariant")
     p.przycisk("ewoluuj")
     time.sleep(4.8)
     f.stop()
-    # panel legowiska z ulepszeniami
-    p.serwer('"zloto", 900')
-    p.przycisk("legowisko")
-    time.sleep(0.4)
-    f.nagrywaj("legowisko")
+    # legowisko w świecie: kupka złota, wejście i zebranie
+    p.serwer('"zloto_leg", 1500')
+    p.serwer('"przenies", %d, %f, %f' % (byt, lx * 0.78, lz * 0.78))
     time.sleep(1.2)
-    p.przycisk("kup:szybkosc")
-    time.sleep(1.6)
+    f.nagrywaj("legowisko")
+    p.ustaw("EW_TestSter", "Vector3.new(%f, %f, 2.2)" % (-lx / 126.0, lz / 126.0))
+    time.sleep(3.5)
+    f.stop()
+    # panel legowiska: poziom trofeum
+    p.serwer('"do_legowiska"')
+    p.serwer('"zloto", 3000')
+    p.przycisk("legowisko")
+    time.sleep(0.5)
+    f.nagrywaj("panel")
+    time.sleep(1.0)
+    p.przycisk("trofeum:2")
+    time.sleep(1.2)
+    p.przycisk("trofeum:1")
+    time.sleep(1.2)
     p.przycisk("zamknij")
     f.stop()
-    # pościg: większy bot goni (łaska nowicjusza zdjęta haczykiem), gracz ucieka zrywem
-    st = p.serwer('"stan"')
-    ja = PP.moje(st)
-    p.serwer('"laska_zeruj"')
-    p.serwer('"tarcza_zeruj"')
-    bot = next(b for b in st["byty"] if b["slot"] == 0 and not b["martwy"] and b["forma"] >= st["forma"] + 2 and b["forma"] <= 6)
-    p.serwer('"przenies", %d, %f, %f' % (bot["id"], ja["x"] + 14, ja["z"] + 8))
-    f.nagrywaj("poscig")
-    p.ustaw("EW_TestSter", "Vector3.new(1, -0.6, 3.5)")
-    time.sleep(0.6)
-    p.przycisk("zryw")
-    time.sleep(3.0)
-    f.stop()
-    # DEEP WOODS i mini-boss
+    # boss stopnia 2 w lesie
     for _ in range(4):
         st = p.serwer('"stan"')
         if st["forma"] >= 5:
@@ -100,19 +103,19 @@ def sceny(p, f):
         p.przycisk("ewoluuj")
         PP.czekaj(lambda: p.serwer('"stan"')["forma"] > st["forma"], 5, 0.3)
     time.sleep(1.5)
+    p.serwer('"boss_stopien", 2')
     st = p.serwer('"stan"')
     B = p.serwer('"boss"')
     r = D["formy"][st["forma"] - 1]["r"] + D["formy"][D["boss"]["forma"] - 1]["r"] + 1.5
-    p.serwer('"przenies", %d, %f, %f' % (st["byt"], B["x"] + 30, B["z"] - 20))
+    p.serwer('"przenies", %d, %f, %f' % (byt, B["x"] + 26, B["z"] - 14))
     time.sleep(1.0)
-    f.nagrywaj("las")
-    p.ustaw("EW_TestSter", "Vector3.new(-0.8, 0.5, 2.6)")
-    time.sleep(2.8)
-    p.serwer('"boss_hp", 40')
+    f.nagrywaj("boss")
+    time.sleep(1.2)
+    p.serwer('"boss_hp", 30')
     p.serwer('"boss_stoj", 6')
     B = p.serwer('"boss"')
     p.serwer('"tarcza_zeruj"')
-    p.serwer('"przenies", %d, %f, %f' % (st["byt"], B["x"] + r, B["z"]))
+    p.serwer('"przenies", %d, %f, %f' % (byt, B["x"] + r, B["z"]))
     for _ in range(5):
         time.sleep(0.75)
         p.przycisk("gryz")
@@ -121,7 +124,15 @@ def sceny(p, f):
     p.serwer('"boss_hp", 2')
     time.sleep(0.6)
     p.przycisk("gryz")
-    time.sleep(2.8)
+    time.sleep(2.4)
+    f.stop()
+    # Olbrzym z koroną
+    p.serwer('"forma_gracza", %d' % len(D["formy"]))
+    p.serwer('"przenies", %d, 20, -40' % byt)
+    time.sleep(1.5)
+    f.nagrywaj("olbrzym")
+    p.ustaw("EW_TestSter", "Vector3.new(0.6, 0.4, 3)")
+    time.sleep(3.5)
     f.stop()
 
 
@@ -154,7 +165,7 @@ def main():
             s.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
     ap.add_argument("--studio", required=True)
-    ap.add_argument("--wyj", default=os.path.join(tempfile.gettempdir(), "ewolucja_demo", "ewolucja_etap2.mp4"))
+    ap.add_argument("--wyj", default=os.path.join(tempfile.gettempdir(), "ewolucja_demo", "ewolucja_etap3.mp4"))
     ap.add_argument("--zostaw-klipy", action="store_true")
     a = ap.parse_args()
     wyj = os.path.abspath(a.wyj)

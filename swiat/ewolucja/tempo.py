@@ -52,6 +52,37 @@ class Swiat:
     def stawka(self, m):
         return sum(self.D["formy"][i]["trofeum"] for i in range(m))
 
+    def wx(self, w):
+        return next((W["x"] for W in self.D["warianty"] if W["id"] == w), 1)
+
+    def stawkaB(self, b):
+        G = self.D["legowisko"]
+        s = sum(self.D["formy"][f]["trofeum"] * G["poziomy_x"][b["trofea"].get(f + 1, 1) - 1] * self.wx(b["warianty"].get(f + 1))
+                for f in range(b["max"]))
+        return s + sum(G["boss_trofea"][:b["boss_trofea"]])
+
+    def leg(self, b):
+        return self.D["legowiska"][(b["slot"] - 1) % len(self.D["legowiska"])]
+
+    def w_legowisku(self, b):
+        if not b["slot"]:
+            return False
+        x, z = self.leg(b)
+        return dlug(b["x"] - x, b["z"] - z) < self.D["legowisko"]["r"]
+
+    def los_wariant(self):
+        x = self.los.random()
+        for W in reversed(self.D["warianty"]):
+            x -= W["szansa"]
+            if x < 0:
+                return W["id"]
+        return None
+
+    def cena_trofeum(self, b, f):
+        p = b["trofea"].get(f, 1)
+        c = self.D["legowisko"]["ceny_x"]
+        return None if p > len(c) else int(c[p - 1] * self.D["formy"][f - 1]["trofeum"])
+
     def v(self, b):
         baza = self.U["szybkosc"]["wartosci"][b["pz"]["szybkosc"] - 1] if b["slot"] else self.D["ruch"]["bot_v"]
         return baza * self.D["formy"][b["forma"] - 1]["v"]
@@ -78,7 +109,7 @@ class Swiat:
         return b["martwy"] is None and b["kokon"] is None and b["skok"] is None
 
     def bezbronny(self, b):
-        return self.wolny(b) and b["tarcza"] <= self.czas
+        return self.wolny(b) and b["tarcza"] <= self.czas and not (b["slot"] and self.w_legowisku(b))
 
     def ster_serwer(self, b):
         return b["martwy"] is not None or b["kokon"] is not None or b["skok"] is not None or b["ogl"] > self.czas
@@ -112,8 +143,11 @@ class Swiat:
                 x, z = s["x"] + (x - s["x"]) / ds * mn, s["z"] + (z - s["z"]) / ds * mn
         return x, z
 
-    def bezpieczne(self, forma, gracz, strefa=1):
+    def bezpieczne(self, forma, gracz, strefa=1, slot=0):
         D = self.D
+        if gracz and slot:
+            x, z = D["legowiska"][(slot - 1) % len(D["legowiska"])]
+            return x * 0.97, z * 0.97
         best, wynik = -1, None
         for _ in range(24):
             if gracz:
@@ -144,12 +178,13 @@ class Swiat:
         return wynik
 
     def dodaj(self, slot, forma, strefa=1):
-        x, z = self.bezpieczne(forma, slot > 0, strefa)
+        x, z = self.bezpieczne(forma, slot > 0, strefa, slot)
         b = {"id": self.nast, "slot": slot, "forma": forma, "x": x, "z": z, "vx": 0.0, "vz": 0.0, "wx": 0.0, "wz": 0.0, "kier": 0.0,
              "tarcza": self.czas + (self.D["smierc"]["tarcza_s"] if slot else 0), "martwy": None, "kokon": None, "skok": None,
              "zryw": 0.0, "zryw_ok": 0.0, "gryz_ok": 0.0, "um_ok": 0.0, "ogl": 0.0, "szarza": 0.0, "szarza_v": 1.0, "mysl": 0.0,
              "cel": 0, "cel_od": 0.0, "odp": 0, "odp_do": 0.0, "wzrost": 0.0, "max": forma, "zloto": 0.0,
-             "pz": {"szczeka": 1, "szybkosc": 1, "apetyt": 1}, "laska": self.czas + self.D["boty"]["laska_s"] if slot else 0, "strefa": strefa}
+             "pz": {"szczeka": 1, "szybkosc": 1, "apetyt": 1}, "laska": self.czas + self.D["boty"]["laska_s"] if slot else 0, "strefa": strefa,
+             "zloto_leg": 0.0, "warianty": {}, "trofea": {}, "boss_trofea": 0, "kokon_w": None}
         self.nast += 1
         self.byty.append(b)
         if slot:
@@ -160,7 +195,8 @@ class Swiat:
         B, LS = self.D["boss"], self.D["las"]
         b = self.dodaj(0, B["forma"], 2)
         b["x"], b["z"] = LS["x"], LS["z"]
-        b.update({"boss": True, "hp": B["hp"], "dom": (b["x"], b["z"]), "ost_rana": -99.0})
+        self.boss_st = 1
+        b.update({"boss": True, "hp": B["stopnie_hp"][0], "dom": (b["x"], b["z"]), "ost_rana": -99.0})
         self.boss = b
         return b
 
@@ -182,10 +218,16 @@ class Swiat:
         if g["slot"]:
             self.zdarzenia.append(("boss_rana", 0))
         if boss["hp"] <= 0:
-            g["zloto"] += self.D["boss"]["skrzynia"]
+            B = self.D["boss"]
+            st = self.boss_st
+            g["zloto"] += B["stopnie_skrzynia"][st - 1]
             self.zdarzenia.append(("boss_pokonany", 0))
+            if g["boss_trofea"] < st:
+                g["boss_trofea"] = st
+                self.zdarzenia.append(("boss_stopien", st))
             self.boss_pokonany = True
-            boss["martwy"] = self.czas + self.D["boss"]["odrodzenie_s"]
+            self.boss_st = min(len(B["stopnie_hp"]), st + 1)
+            boss["martwy"] = self.czas + (B["odrodzenie_s"] if st == 1 else B["odrodzenie_dalej_s"])
 
     # ------------------------------------------------ jedzenie
     def kulki_w(self, x, z, r, ile):
@@ -233,6 +275,8 @@ class Swiat:
         return q["laska"] > self.czas or (q["forma"] <= self.D["smierc"]["chronione_formy"] and a["cel"] != q["id"])
 
     def ofiara(self, a, zas):
+        if a["slot"] and self.w_legowisku(a):
+            return None
         ra = self.r(a)
         best, bd = None, 1e9
         for q in self.byty:
@@ -315,6 +359,7 @@ class Swiat:
             return False
         nowa = b["forma"] + 1 > b["max"]
         b["kokon"] = self.czas + (self.D["ewolucja"]["kokon_s"] if nowa else self.D["ewolucja"]["kokon_znana_s"])
+        b["kokon_w"] = self.los_wariant() if b["slot"] else None
         b["vx"] = b["vz"] = b["wx"] = b["wz"] = 0.0
         return True
 
@@ -425,7 +470,10 @@ class Swiat:
         self.strefy = [s for s in self.strefy if self.czas < s[2]]
         for b in self.byty:
             if b["slot"]:
-                b["zloto"] += self.stawka(b["max"]) * dt
+                b["zloto_leg"] += self.stawkaB(b) * dt
+                if b["martwy"] is None and self.w_legowisku(b):
+                    b["zloto"] += b["zloto_leg"]
+                    b["zloto_leg"] = 0.0
             r = self.r(b)
             if b["martwy"] is not None:
                 if self.czas >= b["martwy"]:
@@ -437,7 +485,7 @@ class Swiat:
                         b["tarcza"] = self.czas + 1
                     b["martwy"], b["ogl"] = None, 0.0
                     if b.get("boss"):
-                        b["hp"] = D["boss"]["hp"]
+                        b["hp"] = D["boss"]["stopnie_hp"][self.boss_st - 1]
                         b["x"], b["z"] = b["dom"]
                         continue
                     b["x"], b["z"] = self.bezpieczne(b["forma"], b["slot"] > 0, b["strefa"])
@@ -456,6 +504,9 @@ class Swiat:
                                 self.zdarzenia.append(("las", 0))
                     b["wzrost"] = min(max(0, b["wzrost"] - p), self.potrzeba(b["forma"]) * D["ewolucja"]["nadmiar"]) if b["forma"] < len(D["formy"]) else 0
                     b["tarcza"] = max(b["tarcza"], self.czas + D["ewolucja"]["tarcza_po_s"])
+                    w = b.get("kokon_w")
+                    if w and self.wx(w) > self.wx(b["warianty"].get(b["forma"])):
+                        b["warianty"][b["forma"]] = w
                     b["um_ok"] = 0.0
             elif b["skok"] is not None:
                 x0, z0, x1, z1, t0, t1, kr = b["skok"]
@@ -498,6 +549,12 @@ class Swiat:
                 if b["wx"] or b["wz"]:
                     b["kier"] = math.atan2(b["wx"], b["wz"])
                 b["x"], b["z"] = self.ogranicz(b["x"], b["z"], r, self.maska(b))
+                if not b["slot"]:
+                    for (px, pz) in D["legowiska"]:
+                        d = dlug(b["x"] - px, b["z"] - pz)
+                        mn = D["legowisko"]["r"] + r * 0.7
+                        if 0.01 < d < mn:
+                            b["x"], b["z"] = px + (b["x"] - px) / d * mn, pz + (b["z"] - pz) / d * mn
                 if b.get("boss"):
                     q = next((x for x in self.byty if x["id"] == b["cel"]), None) if b["cel"] else None
                     B = D["boss"]
@@ -532,7 +589,8 @@ class Swiat:
                 if d >= ra + rb:
                     continue
                 duzy, maly, rd, rm = (b, a, rb, ra) if b["forma"] > a["forma"] else (a, b, ra, rb)
-                moze = self.moze(duzy, maly) and not self.przypadkiem(duzy, maly)
+                moze = (self.moze(duzy, maly) and not self.przypadkiem(duzy, maly) and not (maly["slot"] and self.w_legowisku(maly))
+                        and not (duzy["slot"] and self.w_legowisku(duzy)))
                 if moze and maly["tarcza"] <= self.czas and d < rd - rm * D["gryzienie"]["polykanie"] and duzy["ogl"] <= self.czas:
                     self.zjedz(duzy, maly)
                 elif not moze or maly["tarcza"] > self.czas:
@@ -603,7 +661,7 @@ def gracz_mysl(S, g, styl):
             best, bw = ("kulka", p), w
     # mini-boss: sprawny gracz walczy od formy 4 (gryzie, po ugryzieniu bossa odskakuje zrywem)
     boss = getattr(S, "boss", None)
-    if styl == "sprawny" and boss and boss["martwy"] is None and g["forma"] >= 4 and not getattr(S, "boss_pokonany", False):
+    if styl == "sprawny" and boss and boss["martwy"] is None and g["forma"] >= 3 + S.boss_st:
         db = dlug(boss["x"] - g["x"], boss["z"] - g["z"])
         if db < 70 and not g.get("boss_widziany"):
             g["boss_widziany"] = S.czas
@@ -614,6 +672,12 @@ def gracz_mysl(S, g, styl):
                 S.gryz(g)
                 S.umiejetnosc(g)
             return
+    # legowisko: gdy złota (zebranego + w legowisku) starczy na najtańszy zakup — po złoto (i zakup na miejscu)
+    if g.get("do_domu") and best is None or g.get("do_domu") and isinstance(best, tuple):
+        x, z = S.leg(g)
+        d = max(0.1, dlug(x - g["x"], z - g["z"]))
+        g["wx"], g["wz"] = (x - g["x"]) / d, (z - g["z"]) / d
+        return
     # las: od formy 4 sprawny gracz idzie tam, gdy w pobliżu nie ma nic lepszego
     if (best is None or isinstance(best, tuple)) and g["forma"] >= D["las"]["od_formy"] and S.maska(g) == 3 and not S.w_lesie(g["x"], g["z"]):
         tx, tz = D["las"]["x"], D["las"]["z"]
@@ -681,12 +745,19 @@ def przebieg(D, ziarno, minut, styl):
                 gracz_mysl(S, g, styl)
             if g["forma"] < len(D["formy"]) and g["wzrost"] >= S.potrzeba(g["forma"]):
                 S.ewoluuj(g)
-            # najtańsze dostępne ulepszenie
+            # najtańszy zakup: ulepszenie (wszędzie) albo poziom trofeum (w legowisku); po złoto do legowiska
             ceny = sorted((u["ceny"][g["pz"][u["id"]] - 1], u["id"]) for u in D["ulepszenia"] if g["pz"][u["id"]] <= len(u["ceny"]))
+            tro = sorted((S.cena_trofeum(g, f), f) for f in range(1, g["max"] + 1) if S.cena_trofeum(g, f)) if wyn["ulepszenie"] else []
+            najt = min([c for c, _ in ceny[:1]] + [c for c, _ in tro[:1]] or [1e18])
+            g["do_domu"] = g["zloto"] < najt <= g["zloto"] + g["zloto_leg"] and g["forma"] < len(D["formy"])
             if ceny and g["zloto"] >= ceny[0][0] and S.kup(g, ceny[0][1]):
                 wyn["zakupy"].append((round(S.czas), ceny[0][1]))
                 if wyn["ulepszenie"] is None:
                     wyn["ulepszenie"] = S.czas
+            elif tro and S.w_legowisku(g) and g["zloto"] >= tro[0][0]:
+                g["zloto"] -= tro[0][0]
+                g["trofea"][tro[0][1]] = g["trofea"].get(tro[0][1], 1) + 1
+                wyn["zakupy"].append((round(S.czas), "trofeum%d" % tro[0][1]))
         S.krok(dt)
         for z in S.zdarzenia:
             if z[0] == "forma" and z[1] not in wyn["forma"]:
@@ -695,6 +766,8 @@ def przebieg(D, ziarno, minut, styl):
                 wyn["smierci"] += 1
             elif z[0] in ("las", "boss_rana", "boss_pokonany") and wyn[z[0]] is None:
                 wyn[z[0]] = S.czas
+            elif z[0] == "boss_stopien":
+                wyn.setdefault("stopnie", {})[z[1]] = S.czas
         if wyn["zagrozenie"] is None and getattr(S, "poscig", None) is not None:
             wyn["zagrozenie"] = S.poscig
         if g["forma"] == len(D["formy"]) and g["max"] == len(D["formy"]) and minut * 60 - S.czas > 60:
@@ -702,7 +775,7 @@ def przebieg(D, ziarno, minut, styl):
     wyn["boss_widziany"] = g.get("boss_widziany")
     # najdłuższa przerwa bez czegoś nowego (forma, las, boss widziany, boss pokonany) w pierwszych 10 min
     nowe = sorted([0.0, 600.0] + [t for t in list(wyn["forma"].values()) + [wyn["las"], wyn["boss_widziany"], wyn["boss_pokonany"]]
-                                  if t is not None and t <= 600])
+                                  + list(wyn.get("stopnie", {}).values()) if t is not None and t <= 600])
     wyn["przerwa"] = max(b - a for a, b in zip(nowe, nowe[1:]))
     wyn["koniec_forma"] = g["max"]
     wyn["zloto"] = round(g["zloto"])
@@ -756,6 +829,8 @@ def main():
     print("  1. pościg bota      %6s  cel ≥ 1:50 %s" % (mmss(z), "OK" if spel else "NIE"))
     for k, n in (("las", "DEEP WOODS otwarty"), ("boss_widziany", "boss spotkany"), ("boss_pokonany", "boss pokonany")):
         print("  %-19s %6s" % (n, mmss(med([w[k] for w in wyniki]))))
+    for st in range(2, 6):
+        print("  boss stopień %d      %6s" % (st, mmss(med([w.get("stopnie", {}).get(st) for w in wyniki]))))
     prz = statistics.median([w["przerwa"] for w in wyniki])
     spel = prz <= 150
     ok = ok and spel
