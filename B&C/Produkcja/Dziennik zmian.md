@@ -12,14 +12,14 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
   - Smash Tower: 23 → 20, popraw → popraw
   - Sleeping Giant Heist: 25 → 19, buduj → popraw
   - Monster Fishing: 22 → 19, odrzuć → odrzuć
-  - Baseball for treasure: werdykt_agenta: → 17, ocena_karol: → popraw, etap pomysł → ocena
+  - Baseball for treasure: — → 17, — → popraw, etap pomysł → ocena
   - Super Kitty Brawlers: 21 → 17, popraw → popraw
   - BONK Chain Reaction: 22 → 16, buduj → popraw
   - Monster Fusion Lab: 21 → 16, popraw → popraw
   - Climb the Titan: 17 → 15, odrzuć → odrzuć
-  - Bring Monsters Home Before Dark: werdykt_agenta: odrzuć → 15, odrzuć → odrzuć
+  - Bring Monsters Home Before Dark: — → 15, odrzuć → odrzuć
   - BONK: 19 → 15, popraw → odrzuć
-  - Cats Brawlers: werdykt_agenta: → 15, ocena_karol: → odrzuć, etap pomysł → ocena
+  - Cats Brawlers: — → 15, — → odrzuć, etap pomysł → ocena
   - Pet Arena: 21 → 14, odrzuć → odrzuć, etap test → porzucona
   - Ring Potworów: 22 → 14, buduj → odrzuć
   - Blocky & Crycket: 13 → 12, popraw → odrzuć, etap prototyp → wstrzymana
