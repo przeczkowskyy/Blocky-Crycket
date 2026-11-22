@@ -75,5 +75,17 @@ Tezy autora z naszą oceną: [[Nowa era Roblox 2026 — pięć zmian]].
 | 31 | **Buduj też dla starszych** (najszybciej rosnąca i najwięcej wydająca grupa): jasno i prosto na wejściu, głębia, do której się wraca. | Co w grze zostaje ciekawe po tygodniu dla nastolatka? |
 | 32 | **Gra jako marka:** rozpoznawalne postacie i świat, nie tylko mechanika. | Czy nasze postacie da się rozpoznać poza grą? |
 
+## Pętla z odsłonięciem (rozbiór wzoru, 22.11)
+Dlaczego gra, w którą Karol „mógłby grać cały czas”, trzyma — pełny rozbiór: [[Rozbiór wzoru — Throw Food For Animals]], zasady: [[Zasady pętli z odsłonięciem]], kopie: [[Kopie pętli rzutu — listopad 2026]].
+| # | Zasada | Test |
+|---|---|---|
+| 33 | **Niewiadoma do ostatniej sekundy, z coraz mocniejszymi zapowiedziami** (mnożnik szczęścia, stopień, rozmiar, kolor, zakryta nazwa). | Czy gracz zgaduje na głos, zanim pozna wynik? |
+| 34 | **Sygnały rzadkości przed odsłoną:** rozmiar i kolor widać wcześniej; małe niespodzianki często, ogromne rzadko. | Czy co piąte powtórzenie daje coś ponad zwykły wynik? |
+| 35 | **Widoczny horyzont:** następną krainę widać przed sobą; horyzont przesuwa się co tydzień. | Czy gracz wie, co chce zobaczyć dalej? |
+| 36 | **Bohater rośnie w jednej liczbie, a efekt widać w samej czynności** (rzut leci dalej). | Czy ulepszenie zmienia to, co gracz widzi przy następnej akcji? |
+| 37 | **Zdobycz od razu jest trofeum na widoku i źródłem dochodu**, także gdy gracza nie ma. | Czy zdobycz stoi tam, gdzie widzą ją inni? |
+| 38 | **Stała pora wydarzeń i odliczanie** (u wzoru każda sobota: nowa kraina). | Czy gracz wie, kiedy wrócić? |
+| 39 | **Przenosimy zasady, nie czynność i nie nazwy** — kopie ze zmienioną skórką mają po kilkaset graczy, a Roblox ogranicza polecanie gier łudząco podobnych. | Co jest naszą własną czynnością i odsłoną? |
+
 ## Powiązane
 - [[00 Wytwórnia pomysłów]] · [[Karta oceny pomysłu]] · [[Lekcje z prototypów]] · [[Radar trendów]]

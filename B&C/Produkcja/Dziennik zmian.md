@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (rozbiór gry-wzoru; analiza następnego kierunku w toku)
+- **Karol:** grałby w Throw Food For Animals „praktycznie cały czas” — ciekawość następnej krainy i jej potworów, wydarzenia; emocja w scence podejścia (rozmiar i kolor otoczki zdradzają rzadkość, tożsamość nieznana do końca). „Nie kopiuj tej gry 1:1. Chcę jedynie analizę i pomysł na kolejny hit, który wstrzeli się we wschodzący trend.” Analiza może iść na Fable — „bardzo ważna jest ta wiedza”.
+- **Rozbiór** (agent badawczy): [[Rozbiór wzoru — Throw Food For Animals]], [[Kopie pętli rzutu — listopad 2026]], [[Zasady pętli z odsłonięciem]]; zasady 33–39 w [[Mózg — zasady hitu Roblox]]. Najważniejsze fakty: gra wydana 18.09, przez ponad 5 tygodni mała, wystrzeliła po aktualizacji z 25.10; szczyt 2,5 mln graczy naraz 21.11; serwer na 5 osób; 19 krain odblokowywanych tylko odległością rzutu; nowa kraina w każdą sobotę; odsłona w kilku krokach; kopie ze zmienioną skórką mają po kilkaset graczy.
+- W toku: analiza na Fable — anatomia pętli, fale i otwarcie na rynku, wschodzące trendy, trzy własne pomysły i rekomendacja. Budowy nie ma, dopóki Karol nie wybierze.
+
 ## 2026-11-22 · Claude Code u Karola (zabawki odrzucone, kierunek: pętla jak w grze-wzorze)
 - **Karol po graniu w obie zabawki:** „bardzo słabe i nudne… nie mają głębi… nie ma elementów zaskoczenia… nie ma emocji, tak jak to robi rzucanie jedzeniem i scenka, gdy potwór podchodzi. Czynność, ulepszanie bohatera (siła, szybkość) i zasób w postaci potworków, które dają złoto na sekundę — to jest chyba teraz trendujące.”
 - **Agent:** zgoda i poprawka własnej metody — zabawka bez pętli testowała nie to ([[Lekcje z prototypów]]; bramka w [[Karta oceny pomysłu]] zmieniona na „próbkę pętli”). Kierunek 2 z [[Kierunki z rynku 2026-11-21]] w pełnej postaci. W toku: rozbiór gry-wzoru i jej kopii (agent badawczy), potem budowa.
