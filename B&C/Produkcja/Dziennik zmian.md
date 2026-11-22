@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (gra o ewolucji: pomiar do próby z graczami)
+- Sesja główna przeszła z Fable na Opus 5.5 (Karol: „Fable nam się na razie skończył”).
+- **Pomiar** (ten sam agent budujący, ok. 70 tys. tokenów): analityka Roblox (lejki, gospodarka, zdarzenia) i własny anonimowy zapis podsumowania każdej sesji, z odczytem tabeli progów D-128. Ograniczenie panelu twórcy przy małej liczbie graczy i ustawienie potrzebne do odczytu: [[Projekt próbki — Monster Evolution]], „Pomiar do próby z graczami”. Testy logiki 25/25, próba w Studio 22/22. Opublikowane prywatnie; publicznie nic.
+
 ## 2026-11-22 · Claude Code u Karola (Monster Evolution: smok gotowy i opublikowany prywatnie)
 - **Przeróbka na smoka** (ten sam agent na Opus; łącznie na etapy 1–3, próbę i przeróbkę ok. 0,9 mln tokenów): osiem stadiów jednego smoka z generatora klocków, zdolności smoka, odmiany widoczne u innych graczy, kulki przy wyjściu z legowiska, dawny zestaw potworów pod ustawieniem. Testy logiki 23/23, próba w Studio 21/21, układ telefonu 7/7. Stan, ocena wyglądu i wymagania dla ręcznie zrobionego modelu: [[Projekt próbki — Monster Evolution]].
 - **Prywatna publikacja** wersji ze smokiem (zgoda Karola z 22.11), potwierdzona zmianą znacznika czasu wersji. Publicznie nic.

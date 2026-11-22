@@ -5,6 +5,7 @@
     python -B swiat/ewolucja/testy/test_ewolucji.py
 """
 import functools
+import json
 import math
 import os
 import sys
@@ -460,6 +461,32 @@ class TestSmok(unittest.TestCase):
             self.assertEqual(D["formy"][i]["wzorzec"], "Smok_%d" % (i + 1))
         self.assertTrue(all(n <= 80 for n in czesci), "tanio na telefonie: %s" % czesci)
         self.assertEqual(czesci, sorted(czesci), "późniejsze stadia bogatsze")
+
+
+class TestPomiar(unittest.TestCase):
+    def test_24_podsumowanie_sesji(self):
+        M = LM.do_luau({"formy": {"1": 0, "2": 21.4, "3": 70.2}, "smierci": 2, "po_smierci": [{"t": 100, "forma": 3, "dalej": True}, {"t": 150}],
+                        "ulepszenia": [{"id": "szybkosc"}], "sesja_s": 400.4, "leg": 3, "zb": 2, "tr": 1, "bs": 2, "war": {"zloty": 1, "oszust": 5}})
+        r = LM.z_luau(jeden("podsumowanie", DL, M, "2026-11-23T10:00", False, 3))
+        self.assertEqual(r["t"], [0, 21, 70, -1, -1, -1, -1, -1])
+        self.assertEqual((r["maks"], r["sm"], r["dalej"], r["po"], r["dl"], r["ul"], r["bs"], r["nowy"], r["dni"], r["d"]),
+                         (3, 2, True, 300, 400, 1, 2, False, 3, "2026-11-23"))
+        self.assertEqual(set(r["war"]), {W["id"] for W in D["warianty"]}, "tylko znane warianty")
+        self.assertFalse({"UserId", "userId", "nazwa", "name", "id", "slot"} & set(r), "bez identyfikatora i nazwy gracza")
+        self.assertLess(len(json.dumps(r)), D["zapis"]["prob_maks_znakow"], "krótki rekord")
+        pusty = LM.z_luau(jeden("podsumowanie", DL, LM.do_luau({}), "2026-11-23", True, 0))
+        self.assertEqual((pusty["maks"], pusty["sm"], pusty["dalej"], pusty["nowy"]), (1, 0, False, True))
+
+    def test_25_tabela_d128(self):
+        sys.path.insert(0, TU)
+        import odczyt_prob as OP
+        Z = OP.zestawienie(json.load(open(os.path.join(TU, "fixtury_prob.json"), encoding="utf-8")))
+        self.assertEqual(Z["sesje"], 4)
+        self.assertEqual(Z["mediana_sesji_s"], 600)
+        self.assertEqual((Z["udzial_stadium_3"], Z["udzial_stadium_5"]), (0.75, 0.5))
+        self.assertEqual((Z["zginelo_sesji"], Z["gralo_dalej_po_1_smierci"]), (2, 0.5))
+        self.assertEqual(Z["udzial_powrotow_innego_dnia"], 0.25)
+        self.assertEqual(OP.zestawienie([])["sesje"], 0)
 
 
 class TestEtap3(unittest.TestCase):

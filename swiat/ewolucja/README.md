@@ -124,6 +124,23 @@ Przed próbą Play inne gry wyłączone: `swiat/pet_arena/zbuduj.py --wlacz off`
 - Tempo (6 prób, domyślnie): forma 2 0:17 i forma 5 5:12 — wcześniej niż cele (bez przestrajania). Reszta w celach:
   przerwa 2:18, pościg 1:52, ulepszenie 1:31, ANCIENT 13:55.
 
+## Pomiar prób z graczami (D-128, 22.11.2026)
+- **AnalyticsService** (tylko serwer opublikowanej gry; w Studio wywołania pomijamy):
+  - lejek startu: Spawned → FirstOrb → FirstEvolve → HoardCollected → FirstUpgrade;
+  - lejek stadiów `DragonStages` (sesja = losowy id);
+  - ekonomia `Gold`: źródła hoard i boss_chest, wydatki upgrade_* i trophy_*;
+  - zdarzenia `Death` (stadium), `BossTierBeaten`, `VariantRolled` (wariant, stadium).
+  - Według dokumentacji wykresy agregują się dziennie, do 24 h. Pełne wskaźniki pulpitu wymagają ponad 10 DAU i 10 h
+    gry przez 7 kolejnych dni (`production/analytics/analytics-dashboard`), więc przy ok. 10 graczach mogą się nie
+    pokazać.
+- **Własny, anonimowy zapis**: na koniec sesji jedno podsumowanie w magazynie `Ewolucja_Proby_v1`, klucz
+  `RRRR-MM-DD_<losowy id>`. Bez id i nazwy gracza; „nowy” i „dni od pierwszej gry” pochodzą z jego zapisu (pole
+  `pierwszy`). Limit: 60 zapisów na serwer i 900 znaków na rekord. W Studio i przy znaczniku próby magazyn jest tylko
+  w pamięci.
+- **Odczyt**: `testy/odczyt_prob.py` (`--fixtury`, `--play`, albo prawdziwy magazyn `--studio <id> --od --do`) drukuje
+  tabelę D-128. Prawdziwy magazyn Studio przeczyta tylko po włączeniu przez człowieka Game Settings → Security →
+  „Enable Studio Access to API Services” (skrypt tylko czyta). Nie przetestowane na prawdziwym magazynie.
+
 ## Czego nie ma (etap 4 i dalej)
 Legowisko jako miejsce w świecie, złoto pod nieobecność, zapis postępu, odmiany barwne, Olbrzym jako boss serwera,
 umiejętności botów, dźwięki poza arkuszem Pet Areny. Prawdziwego dotyku nie da się wywołać z prób — drążek i przyciski

@@ -291,6 +291,7 @@ def przebieg(p, zrzuty):
     st = p.serwer('"stan"')
     las_i_boss(p, zrzuty)
     etap3(p, zrzuty)
+    pomiar(p)
     a = p.atr()
     wynik("P12 klatka", (a.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a.get("EW_K_Klatka") or 0, 1), widokow=a.get("EW_K_Widokow"),
           krok_serwera_ms=round(st.get("krok_ms") or 0, 2), okno=a.get("okno"), liczniki=st.get("liczniki"))
@@ -452,6 +453,22 @@ def etap3(p, zrzuty):
     wynik("P21 wyjście i powrót", w and w.get("zapisano") and w.get("magazyn") == "pamiec" and po.get("forma") == 1 and po.get("zloto") == prz.get("zloto")
           and po.get("maxForma") == prz.get("maxForma") and po.get("poziomy") == prz.get("poziomy") and abs(po.get("zlotoLeg", 0) - oczek) < 2
           and (a.get("EW_K_Powrot") or 0) > 0, magazyn=w and w.get("magazyn"), przed=prz, po=po, powrot_u_klienta=a.get("EW_K_Powrot"))
+
+
+def pomiar(p):
+    # P22 pomiar prób: podsumowanie sesji trafia tylko do magazynu w pamięci (nigdy do prawdziwego), bez danych osoby
+    klucz = p.serwer('"zapisz_probe"')
+    w = p.serwer('"proby"')
+    rek = list((w or {}).get("rekordy", {}).values())
+    tryb = p.luau('return workspace.%s:GetAttribute("ZapisTryb")' % K, "Server")
+    sys.path.insert(0, TU)
+    import odczyt_prob as OP
+    Z = OP.zestawienie(rek)
+    zakazane = {"UserId", "userId", "name", "nazwa", "Name", "DisplayName"}
+    wynik("P22 pomiar prób (magazyn w pamięci)", w and w.get("tryb") == "pamiec" and tryb == "pamiec" and klucz and rek
+          and all(not (zakazane & set(r)) for r in rek) and Z["sesje"] == len(rek) and rek[0].get("maks", 0) >= 1,
+          tryb=w and w.get("tryb"), zapis_tryb=tryb, klucz_format=(klucz or "")[:11], rekordow=len(rek), tabela=Z,
+          pola=sorted(rek[0]) if rek else None)
 
 
 def bledy_konsoli(p):

@@ -1200,6 +1200,38 @@ function L.krok(S, dt: number)
 	return zd
 end
 
+------------------------------------------------------------------ pomiar prób (D-128): anonimowe podsumowanie jednej sesji
+-- M: miary sesji z serwera (formy, smierci, po_smierci, ulepszenia, leg, zb, tr, war, bs, sesja_s). Bez identyfikatora
+-- ani nazwy gracza; „nowy” i „dni” z jego własnego zapisu. Same liczby, krótkie napisy i krótkie tablice.
+function L.podsumowanie(D, M, dzien: string, nowy: boolean, dni: number)
+	local function n(x: any, maks: number): number
+		if type(x) ~= "number" or x ~= x then
+			return 0
+		end
+		return math.clamp(math.floor(x + 0.5), 0, maks)
+	end
+	local t, maks = {}, 1
+	for f = 1, #D.formy do
+		local v = type(M.formy) == "table" and M.formy[tostring(f)]
+		if type(v) == "number" then
+			t[f] = n(v, 86400)
+			maks = math.max(maks, f)
+		else
+			t[f] = -1
+		end
+	end
+	local dl = n(M.sesja_s, 86400)
+	local pierwsza = type(M.po_smierci) == "table" and M.po_smierci[1] or nil
+	local war = {}
+	for _, W in D.warianty do
+		war[W.id] = n(type(M.war) == "table" and M.war[W.id] or 0, 99)
+	end
+	return { v = 1, d = string.sub(tostring(dzien), 1, 10), dl = dl, maks = maks, t = t, sm = n(M.smierci, 999),
+		dalej = if pierwsza then pierwsza.dalej == true else false, po = if pierwsza then n(dl - (pierwsza.t or dl), 86400) else 0,
+		leg = n(M.leg, 9999), zb = n(M.zb, 9999), ul = n(type(M.ulepszenia) == "table" and #M.ulepszenia or 0, 99), tr = n(M.tr, 99),
+		bs = n(M.bs, #D.boss.stopnie_hp), war = war, nowy = nowy == true, dni = n(dni, 3650) }
+end
+
 ------------------------------------------------------------------ zapis (profil, nieobecność, blokada sesji)
 local function liczba(x: any, min: number, maks: number, dom: number): number
 	if type(x) ~= "number" or x ~= x or x == math.huge or x == -math.huge then
@@ -1210,7 +1242,7 @@ end
 
 function L.profilNowy(D)
 	return { wersja = D.zapis.wersja, zloto = 0, zlotoLeg = 0, poziomy = { szczeka = 1, szybkosc = 1, apetyt = 1 }, maxForma = 1,
-		warianty = {}, trofea = {}, bossTrofea = 0, ostatnio = 0 }
+		warianty = {}, trofea = {}, bossTrofea = 0, ostatnio = 0, pierwszy = 0 }
 end
 
 -- dane z magazynu → profil (migracja wersji, uzgodnienie z szablonem, walidacja liczb i nazw)
@@ -1225,6 +1257,7 @@ function L.profilZ(D, dane: any)
 	p.maxForma = math.floor(liczba(dane.maxForma, 1, nf, 1))
 	p.bossTrofea = math.floor(liczba(dane.bossTrofea, 0, #D.boss.stopnie_hp, 0))
 	p.ostatnio = liczba(dane.ostatnio, 0, 1e11, 0)
+	p.pierwszy = liczba(dane.pierwszy, 0, 1e11, 0)
 	if type(dane.poziomy) == "table" then
 		for _, U in D.ulepszenia do
 			p.poziomy[U.id] = math.floor(liczba(dane.poziomy[U.id], 1, #U.ceny + 1, 1))
@@ -1251,6 +1284,7 @@ function L.doProfilu(D, b, teraz: number)
 	p.maxForma = b.maxForma
 	p.bossTrofea = b.bossTrofea or 0
 	p.ostatnio = teraz
+	p.pierwszy = b.pierwszy or teraz
 	for _, U in D.ulepszenia do
 		p.poziomy[U.id] = L.poziom(b, U.id)
 	end
@@ -1267,6 +1301,7 @@ function L.zProfilu(D, b, p, teraz: number): (number, number)
 	b.zlotoLeg = p.zlotoLeg
 	b.maxForma = p.maxForma
 	b.bossTrofea = p.bossTrofea
+	b.pierwszy = if p.pierwszy > 0 then p.pierwszy else teraz
 	b.poziomy = { szczeka = p.poziomy.szczeka, szybkosc = p.poziomy.szybkosc, apetyt = p.poziomy.apetyt }
 	b.warianty, b.trofea = {}, {}
 	for f = 1, #D.formy do

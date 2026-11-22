@@ -112,7 +112,10 @@
   "nieobecnosc_maks_s": 7200,
   "blokada_s": 600,
   "proby": 3,
-  "znacznik_proby": "ZapisProbaDo"
+  "znacznik_proby": "ZapisProbaDo",
+  "magazyn_prob": "Ewolucja_Proby_v1",
+  "prob_na_serwer": 60,
+  "prob_maks_znakow": 900
  },
  "olbrzym": {
   "opis": "Olbrzym jako boss serwera (od graczy_od graczy): inni gracze gryzą go za złoto (za_trafienie), rana = rana_baza + rana_na_forme × forma gryzącego; gdy życie spadnie do zera, Olbrzym spada o formę, a ten, kto zadał ostatnią ranę, dostaje skrzynię. Olbrzym z koroną zarabia korona_na_s złota.",

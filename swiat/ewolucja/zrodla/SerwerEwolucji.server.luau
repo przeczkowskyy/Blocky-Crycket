@@ -54,6 +54,23 @@ local wProbie = RunService:IsStudio() or (type(znacznik) == "number" and os.time
 local magazyn = if wProbie then L.pamiec() else DataStoreService:GetDataStore(D.zapis.magazyn)
 kontener:SetAttribute("ZapisTryb", if wProbie then "pamiec" else "datastore")
 local JOB = if game.JobId ~= "" then game.JobId else "studio"
+-- pomiar prób: anonimowe podsumowania sesji (osobny magazyn; w Studio i przy znaczniku — tylko w pamięci)
+local magazynProb = if wProbie then L.pamiec() else DataStoreService:GetDataStore(D.zapis.magazyn_prob)
+local zapisowProb = 0
+local AnalyticsService = game:GetService("AnalyticsService")
+-- AnalyticsService: tylko serwer opublikowanej gry (w Studio wywołania są pomijane — nie wołamy ich wcale)
+local function analityka(metoda: string, ...)
+	if RunService:IsStudio() then
+		return
+	end
+	local a = table.pack(...)
+	pcall(function()
+		(AnalyticsService :: any)[metoda](AnalyticsService, table.unpack(a, 1, a.n))
+	end)
+end
+local function pole(x: any): string
+	return string.sub(tostring(x), 1, 40)
+end
 local function klucz(plr: Player): string
 	return "player_" .. tostring(plr.UserId)
 end
@@ -78,7 +95,8 @@ kontener:SetAttribute("BossHP", 1)
 
 ------------------------------------------------------------------ gracze
 type Gracz = { slot: number, byt: any, wiadro: { t: number, z: number }, nazwa: string, start: number, miary: any,
-	ostKorekta: number, atr: { [string]: any }, zapisywalny: boolean?, wczytany: boolean? }
+	ostKorekta: number, atr: { [string]: any }, zapisywalny: boolean?, wczytany: boolean?, nowy: boolean?, dni: number?,
+	sesja: string, wDomuOst: boolean?, krokOnb: number, maksEtap: number, zapisanoProbe: boolean? }
 local gracze: { [Player]: Gracz } = {}
 local poSlocie: { [number]: Player } = {}
 local liczniki: { [string]: number } = {}
@@ -139,7 +157,12 @@ local function atrybuty(plr: Player, g: Gracz)
 	ustawAtr(plr, g, "EW_Trofea", table.concat(tr, ","))
 	ustawAtr(plr, g, "EW_BossTrofea", b.bossTrofea or 0)
 	ustawAtr(plr, g, "EW_Wariant", b.wariantTeraz or "")
-	ustawAtr(plr, g, "EW_WDomu", L.wLegowisku(D, b))
+	local wd = L.wLegowisku(D, b)
+	if wd and not g.wDomuOst then
+		g.miary.leg = (g.miary.leg or 0) + 1
+	end
+	g.wDomuOst = wd
+	ustawAtr(plr, g, "EW_WDomu", wd)
 	for _, U in D.ulepszenia do
 		ustawAtr(plr, g, "EW_Poz_" .. U.id, L.poziom(b, U.id))
 	end
@@ -161,6 +184,8 @@ local function wczytajGracza(plr: Player, g: Gracz)
 	g.zapisywalny = zapisywalny
 	g.wczytany = true
 	local zarobek, sek = L.zProfilu(D, g.byt, prof, os.time())
+	g.nowy = prof.ostatnio == 0
+	g.dni = math.floor((os.time() - g.byt.pierwszy) / 86400)
 	plr:SetAttribute("EW_Zapis", if zapisywalny then "ok" else ("bez zapisu: " .. tostring(powod)))
 	atrybuty(plr, g)
 	if zarobek > 0 then
@@ -180,6 +205,38 @@ local function zapiszGracza(plr: Player, g: Gracz, zwolnij: boolean): boolean
 	return ok
 end
 
+-- jeden krok lejka startu (pierwsza minuta), każdy raz na gracza
+local function onboarding(plr: Player, g: Gracz, krok: number, nazwa: string)
+	if krok == g.krokOnb + 1 then
+		g.krokOnb = krok
+		analityka("LogOnboardingFunnelStepEvent", plr, krok, nazwa)
+	end
+end
+
+-- anonimowe podsumowanie sesji do osobnego magazynu (raz na sesję; limit zapisów na serwer i długości rekordu)
+local function zapiszProbe(plr: Player, g: Gracz)
+	if g.zapisanoProbe or zapisowProb >= D.zapis.prob_na_serwer then
+		return nil
+	end
+	g.zapisanoProbe = true
+	zapisowProb += 1
+	g.miary.sesja_s = math.floor(os.clock() - g.start)
+	local dzien = os.date("!%Y-%m-%d")
+	local r = L.podsumowanie(D, g.miary, dzien, g.nowy == true, g.dni or 0)
+	local tekst = HttpService:JSONEncode(r)
+	if #tekst > D.zapis.prob_maks_znakow then
+		r.t, r.war = nil, nil
+	end
+	local klucz = dzien .. "_" .. string.sub(HttpService:GenerateGUID(false), 1, 12)
+	local ok = pcall(function()
+		magazynProb.UpdateAsync(magazynProb, klucz, function()
+			return r
+		end)
+	end)
+	licz(if ok then "proba_zapisana" else "proba_blad")
+	return klucz
+end
+
 local function dolacz(plr: Player)
 	if gracze[plr] then
 		return
@@ -192,7 +249,8 @@ local function dolacz(plr: Player)
 	local g: Gracz = { slot = slot, byt = L.dodajByt(S, slot, 1), wiadro = { t = os.clock(), z = D.siec.wiadro_zapas },
 		-- w Studio (próby, zrzuty, filmy) bez nazwy konta: „Player N”
 		nazwa = if RunService:IsStudio() then ("Player " .. tostring(slot)) else plr.DisplayName, start = os.clock(), ostKorekta = 0, atr = {},
-		miary = { formy = { ["1"] = 0 }, smierci = 0, po_smierci = {}, ulepszenia = {}, sesja_s = 0 } }
+		miary = { formy = { ["1"] = 0 }, smierci = 0, po_smierci = {}, ulepszenia = {}, sesja_s = 0, leg = 0, zb = 0, tr = 0, bs = 0, war = {} },
+		sesja = string.sub(HttpService:GenerateGUID(false), 1, 8), krokOnb = 0, maksEtap = 1 }
 	gracze[plr] = g
 	poSlocie[slot] = plr
 	plr:SetAttribute("EW_Slot", slot)
@@ -207,6 +265,7 @@ local function dolacz(plr: Player)
 	end)
 	schowajAwatar(plr)
 	licz("dolaczyl")
+	onboarding(plr, g, 1, "Spawned")
 	task.spawn(wczytajGracza, plr, g)
 end
 
@@ -216,6 +275,7 @@ local function odejdz(plr: Player)
 		return
 	end
 	zapiszGracza(plr, g, true)
+	task.spawn(zapiszProbe, plr, g)
 	for _, z in g.miary.po_smierci do
 		if z.dalej == nil then
 			z.dalej = false
@@ -300,6 +360,9 @@ evAkcja.OnServerEvent:Connect(function(plr: Player, rodzaj: any, a: any, b: any,
 		if ok then
 			local p = L.poziom(byt, a)
 			table.insert(g.miary.ulepszenia, { id = a, poziom = p, t = math.floor(os.clock() - g.start) })
+			analityka("LogEconomyEvent", plr, Enum.AnalyticsEconomyFlowType.Sink, "Gold", L.ulepszenie(D, a).ceny[p - 1] or 0, math.floor(byt.zloto),
+				Enum.AnalyticsEconomyTransactionType.Shop.Name, "upgrade_" .. a)
+			onboarding(plr, g, 5, "FirstUpgrade")
 			plr:SetAttribute("EW_Miary", miaryJSON(g))
 			licz("kup")
 		end
@@ -309,6 +372,9 @@ evAkcja.OnServerEvent:Connect(function(plr: Player, rodzaj: any, a: any, b: any,
 		local ok, powod = L.kupTrofeum(S, byt, a)
 		if ok then
 			licz("kup_trofeum")
+			g.miary.tr = (g.miary.tr or 0) + 1
+			analityka("LogEconomyEvent", plr, Enum.AnalyticsEconomyFlowType.Sink, "Gold", 1, math.floor(byt.zloto),
+				Enum.AnalyticsEconomyTransactionType.Shop.Name, "trophy_" .. tostring(a))
 		end
 		atrybuty(plr, g)
 		wyslijGraczowi(plr, { { t = "kup", id = "trofeum", f = if type(a) == "number" then a else 0, ok = ok, powod = powod } })
@@ -385,7 +451,15 @@ local function poZdarzeniu(z)
 	if z.s and z.s > 0 and poSlocie[z.s] then
 		local plr = poSlocie[z.s]
 		local g = gracze[plr]
-		if z.t == "smierc" then
+		if z.t == "kulka" then
+			onboarding(plr, g, 2, "FirstOrb")
+		elseif z.t == "zebrano" then
+			g.miary.zb = (g.miary.zb or 0) + 1
+			analityka("LogEconomyEvent", plr, Enum.AnalyticsEconomyFlowType.Source, "Gold", z.ile, math.floor(g.byt.zloto),
+				Enum.AnalyticsEconomyTransactionType.Gameplay.Name, "hoard")
+			onboarding(plr, g, 4, "HoardCollected")
+		elseif z.t == "smierc" then
+			analityka("LogCustomEvent", plr, "Death", 1, { [Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = "Stage - " .. pole(z.forma) })
 			g.miary.smierci += 1
 			table.insert(g.miary.po_smierci, { t = math.floor(os.clock() - g.start), forma = z.forma, dalej = nil, wrocil = false })
 			plr:SetAttribute("EW_Miary", miaryJSON(g))
@@ -399,6 +473,20 @@ local function poZdarzeniu(z)
 		elseif z.t == "ewolucja" and z.nowa then
 			g.miary.formy[tostring(z.forma)] = math.floor((os.clock() - g.start) * 10 + 0.5) / 10
 			plr:SetAttribute("EW_Miary", miaryJSON(g))
+		end
+		if z.t == "ewolucja" then
+			if z.wariant then
+				g.miary.war[z.wariant] = (g.miary.war[z.wariant] or 0) + 1
+				analityka("LogCustomEvent", plr, "VariantRolled", 1, { [Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = "Variant - " .. pole(z.wariant),
+					[Enum.AnalyticsCustomFieldKeys.CustomField02.Name] = "Stage - " .. pole(z.forma) })
+			end
+			if z.forma > g.maksEtap then
+				g.maksEtap = z.forma
+				analityka("LogFunnelStepEvent", plr, "DragonStages", g.sesja, z.forma, D.formy[z.forma].nazwa)
+			end
+			if z.forma == 2 then
+				onboarding(plr, g, 3, "FirstEvolve")
+			end
 		elseif z.t == "olbrzym" then
 			table.insert(doWyslania, { t = "ogloszenie", tekst = string.format(D.ui.ogl_olbrzym, g.nazwa) })
 		elseif z.t == "las_otwarty" then
@@ -406,6 +494,10 @@ local function poZdarzeniu(z)
 		elseif z.t == "boss_pokonany" then
 			g.miary.boss_pokonany = g.miary.boss_pokonany or math.floor((os.clock() - g.start) * 10 + 0.5) / 10
 			g.miary["boss_stopien_" .. tostring(z.stopien)] = math.floor((os.clock() - g.start) * 10 + 0.5) / 10
+			g.miary.bs = math.max(g.miary.bs or 0, z.stopien)
+			analityka("LogCustomEvent", plr, "BossTierBeaten", z.stopien)
+			analityka("LogEconomyEvent", plr, Enum.AnalyticsEconomyFlowType.Source, "Gold", z.zloto, math.floor(g.byt.zloto),
+				Enum.AnalyticsEconomyTransactionType.Gameplay.Name, "boss_chest")
 			table.insert(doWyslania, { t = "ogloszenie", tekst = string.format(D.ui.ogl_boss, g.nazwa, D.boss.nazwa .. " " .. string.rep("*", z.stopien)) })
 			plr:SetAttribute("EW_Miary", miaryJSON(g))
 		elseif z.t == "olbrzym_obalony" then
@@ -489,6 +581,7 @@ end)
 game:BindToClose(function()
 	for plr, g in gracze do
 		zapiszGracza(plr, g, true)
+		zapiszProbe(plr, g)
 	end
 end)
 
@@ -530,6 +623,21 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 			martwy = byt and byt.martwyDo ~= nil, tarcza = byt and byt.tarczaDo > S.czas, byty = byty, kulek = zywe, strefy = #S.strefy,
 			laska = byt and byt.laskaDo > S.czas,
 			liczniki = liczniki, krok_ms = if ileKrokow > 0 then czasKroku / ileKrokow * 1000 else 0 }
+	elseif polecenie == "proby" then
+		-- próba: zawartość magazynu podsumowań (tylko magazyn w pamięci) + tryb
+		local w = {}
+		if magazynProb.dane then
+			for k, v in magazynProb.dane do
+				w[k] = v
+			end
+		end
+		return { tryb = if magazynProb.dane then "pamiec" else "datastore", zapisow = zapisowProb, rekordy = w }
+	elseif polecenie == "zapisz_probe" then
+		if plr and g then
+			g.zapisanoProbe = false
+			return zapiszProbe(plr :: Player, g)
+		end
+		return nil
 	elseif polecenie == "wymus_wariant" then
 		S.wymusWariant = a
 		return true

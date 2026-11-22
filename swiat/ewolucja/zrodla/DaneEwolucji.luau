@@ -884,6 +884,9 @@ return {
 		blokada_s = 600,
 		proby = 3,
 		znacznik_proby = "ZapisProbaDo",
+		magazyn_prob = "Ewolucja_Proby_v1",
+		prob_na_serwer = 60,
+		prob_maks_znakow = 900,
 	},
 	olbrzym = {
 		hp = 150,
