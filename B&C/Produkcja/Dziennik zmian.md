@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (wybór kierunku: „Zdąż przed nocą”)
+- **Karol:** „Tutaj za bardzo nie ma znaczenia, co mnie pociąga, tylko co obecnie pociąga internet. Ale z tych pozycji akurat najlepsza druga — najlepiej brzmi.” Odpowiedź pod pytaniem 82; karta [[Bring Monsters Home Before Dark]] przechodzi do etapu oceny. Budowa nie jest zlecona.
+- W toku (analityk na Fable): walidacja tego kierunku pod kątem sieci — gry, które próbowały tego samego i przegrały, rozbiór najbliższych rosnących gier, filmy i krótkie formy wokół tej fantazji, poprawiony pomysł, projekt najmniejszej próbki z miarami sukcesu u prawdziwych graczy i planem czterech cotygodniowych aktualizacji.
+
 ## 2026-11-22 · Claude Code u Karola (analiza następnej gry na Fable)
 - **Analiza** (agent na Fable, ok. 0,3 mln tokenów; własny spis ok. 3 tys. gier): [[Następna gra — rekomendacja 2026-11-22]], [[Anatomia pętli, która trzyma (2026-11-22)]], [[Fale na Roblox 2026 i gdzie jest otwarcie]], [[Wschodzące trendy 2026-11-22]], [[Trzy pomysły na następną grę (2026-11-22)]]. Wnioski: przepis Karola (czynność, wzrost bohatera, potworki dające złoto) to wejściówka, którą mają także kopie bez graczy — gry różnią się miejscem, w którym siedzi emocja; kopia tej samej czynności ma sens ok. 2 tygodnie, wariant z własną odsłoną ok. 6; gra-wzór wybiła się dopiero w piątym tygodniu dzięki cotygodniowym aktualizacjom.
 - **Trzy pomysły** (żaden nie jest kopią): „Odkop potwora”, „Zdąż przed nocą”, „Oswój i dosiądź”. Rekomendacja: „Zdąż przed nocą” ([[Bring Monsters Home Before Dark]]) z pewnością niską do średniej — analityk zmienił wybór po znalezieniu sześciu gier „wykop stwora” bez graczy. Następny krok bez kosztu: Karol gra po 10 minut w trzy istniejące gry (pytanie 82). Nic nie jest budowane.

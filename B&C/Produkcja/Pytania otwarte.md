@@ -774,4 +774,6 @@ Dopisek z 2026-11-21 (po prośbie Karola o lepsze pomysły wyprowadzone z rynku)
 
 Szczegóły: [[Następna gra — rekomendacja 2026-11-22]] (jedna strona), pełne opisy: [[Trzy pomysły na następną grę (2026-11-22)]], karta pomysłu: [[Bring Monsters Home Before Dark]]. Ważny wniosek analizy: sam pomysł to mniejsza część wyniku — gra-wzór była mała przez pięć tygodni i wybiła się cotygodniowymi aktualizacjami.
 **Odpowiedź:**
+- Karol (2026-11-22): wybiera pomysł drugi, „Zdąż przed nocą” („najlepiej brzmi”); nie chce testu własnego gustu — „nie ma znaczenia, co mnie pociąga, tylko co obecnie pociąga internet”. Budowy jeszcze nie zlecił; agent pogłębia analizę tego kierunku (przegrane próby, rozbiór najbliższych gier, dowody z filmów w sieci, projekt próbki).
+
 

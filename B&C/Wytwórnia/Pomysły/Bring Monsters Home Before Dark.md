@@ -2,7 +2,7 @@
 status: propozycja
 typ: pomysł-gry
 gra: Bring Monsters Home Before Dark
-etap: pomysł
+etap: ocena
 zdanie: "Lead monsters out of the wild and get them home before the Giant wakes at dusk."
 ocena_agenta:
 werdykt_agenta:
