@@ -2,20 +2,6 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-22T19:05:04+01:00",
- "prace": [
-  {
-   "id": "odswiezenie-lejka",
-   "tytul": "Wytwórnia: odświeżenie ocen całego lejka pomysłów",
-   "stan": "w_toku",
-   "start": "2026-11-22T19:05:04+01:00",
-   "koniec_szacowany": "2026-11-22T19:45:04+01:00",
-   "aktualizacja": "2026-11-22T19:05:04+01:00",
-   "obszary": [
-    "B&C/Wytwórnia/Pomysły"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  }
- ]
+ "aktualizacja": "2026-11-22T19:21:43+01:00",
+ "prace": []
 }
