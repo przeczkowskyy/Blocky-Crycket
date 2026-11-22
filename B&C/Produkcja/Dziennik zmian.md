@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (pierwsza ocena pomysłów Pawła z panelu)
+- Paweł dodał w panelu dwa pomysły: [[Baseball for treasure]] i [[Cats Brawlers]]. Agent wpisał w kartach pierwszą ocenę (sekcja „Krytyka agenta”, bez sprawdzenia rynku po mechanice, bez oceny liczbowej): baseball — pętla najmocniejszej fali z zwrotem w locie piłki, ale okno do ok. 6.12 i słabe precedensy kopania; koty — kolekcja i armia rosną, ale „jeden przycisk, walczą same” powtarza to, co odpadło w Pet Arenie.
+- Paweł zgłosił, że nie może sam prowadzić sesji: w panelu jest gościem (link z samym kodem dostępu). Potrzebny link z kluczem zatwierdzania — przygotowuje go Karol (agentowi odmówiono odczytu klucza; nie obchodzone).
+
 ## 2026-11-22 · Panel (ludzie)
 - Paweł (gość panelu): nowy pomysł w Wytwórni: Baseball for treasure ([[Baseball for treasure]])
 - Paweł (gość panelu): nowy pomysł w Wytwórni: Cats Brawlers ([[Cats Brawlers]])

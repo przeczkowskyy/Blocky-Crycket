@@ -56,6 +56,11 @@ kocie stroje, komlet aktywuje umiejetnosc, grind chec posiadania najelpeszgo kot
 | Koszt dla nas | | | |
 
 ## Krytyka agenta
+**Pierwsza ocena agenta (2026-11-22), bez sprawdzenia rynku po mechanice — to hipoteza, nie werdykt.**
+- **Za:** kolekcja i komplety strojów dają długi cel (grind „najlepszego kota”), a armia, która idzie za graczem i walczy, rośnie: Summon a Pet Army (od 20.10) — średnia z tygodnia 7,9 tys. wobec ok. 0,8 tys. tydzień wcześniej, sesja ok. 30 min. Koty mają dziś nowe gry z ponad tysiącem graczy (Cat Battles ok. 15 tys., 7 Days Cat-Sitting ok. 6 tys.).
+- **Przeciw:** „jeden przycisk, drużyna walczy sama” to dokładnie to, co odpadło w Pet Arenie — Karol po graniu: „cały czas to samo, zero dynamiki”; diagnoza z 13.11 nie znalazła hitu z biernym oglądaniem walki. Gry „armia i obrona bazy” tracą 20–53% tygodniowo ([[Walidacja wariantu nocne fale i potwory-obrońcy (2026-11-22)]]). Pomysł jest bliski wcześniejszej karcie [[Super Kitty Brawlers]].
+- **Co by go ratowało:** gracz sam steruje kotem-przywódcą i decyduje w każdej sekundzie (jak chciał Karol przy Pet Arenie), a drużyna idzie za nim; odsłona nowego kota w krokach (rozmiar, kolor) zamiast skrzynki z przedmiotem.
+- Sprawdzenie po mechanice: ok. 0,2 mln tokenów — agent radzi dopiero po próbie gry ze smokiem z graczami.
 
 ## Zabawka
 (sama czynność bez nagród i ekranów; po dwóch minutach grania: czy chcesz jeszcze raz?)
