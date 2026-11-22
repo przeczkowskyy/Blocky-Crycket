@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (pomysł z Olbrzymem porzucony, nowa krótka lista)
+- **Karol** porzucił pomysł „Guard Your Monsters From the Giant” po trzeciej analizie („lećmy gdzie indziej… znajdźmy wschodzący trend i dodajmy nasz wyjątkowy faktor”). Karta [[Bring Monsters Home Before Dark]]: etap „porzucona”, z listą tego, co zabieramy. Nic nie było budowane.
+- **Nowa krótka lista** z porannego pomiaru rynku, bez nowych kosztów: [[Kierunki z rynku 2026-11-22]] — jesteś potworem (fala Ant Evolution), armia potworów (Summon a Pet Army), odsłoń własnymi rękami (fala sprzątania), dwa kierunki rezerwowe. Żaden nie przeszedł jeszcze szukania przegranych.
+- **Zmieniona kolejność pracy (propozycja agenta):** weto ludzi na jednym zdaniu przed płatnym szukaniem; wąskie gardło to gracze do próby. Dopisek i odpowiedź Karola pod pytaniem 82.
+
 ## 2026-11-22 · Claude Code u Karola (noc w grze o Olbrzymie: porwanie odpada, fale sprawdzone)
 - **Karol** po wyjaśnieniu gry odrzucił porwanie potwora przez Olbrzyma („bez sensu jest ta kradzież”) i luźno zaproponował fale, przed którymi bronią zebrane potwory jak wieżyczki. Zapis pod pytaniem 82 i w karcie [[Bring Monsters Home Before Dark]].
 - **Walidacja po mechanice** (agent na Opus, ok. 190 tys. tokenów): [[Walidacja wariantu nocne fale i potwory-obrońcy (2026-11-22)]]. Odmiana „zebrane stwory bronią bazy” gaśnie; rosną tylko pełne gry tower defense z losowaniem jednostek i cotygodniową aktualizacją; „przetrwałem 100 fal” nie ma widzów. Agent zmienił własną ocenę z „zgadzam się z poprawką” na „nie polecam” — lekcja w [[Lekcje z prototypów]].

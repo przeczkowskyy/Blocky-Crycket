@@ -2,10 +2,10 @@
 status: propozycja
 typ: pomysł-gry
 gra: Bring Monsters Home Before Dark
-etap: ocena
+etap: porzucona
 zdanie: "Lead monsters home by day — every night the Giant comes and takes the one that sticks out above your fence."
 ocena_agenta:
-werdykt_agenta:
+werdykt_agenta: odrzuć
 ocena_karol:
 ocena_pawel:
 d1:
@@ -19,6 +19,9 @@ tags: [wytwórnia, pomysł]
 # Bring Monsters Home Before Dark
 
 Roboczo „Zdąż przed nocą”. Rekomendowany z trzech pomysłów analizy z 22.11 ([[Następna gra — rekomendacja 2026-11-22]], [[Trzy pomysły na następną grę (2026-11-22)]]) — **pewność niska do średniej**; przed budową Karol gra po 10 minut w trzy istniejące gry. Bez oceny liczbowej: karta pomyliła się dwa razy ([[Lekcje z prototypów]]).
+
+## Stan: porzucony (Karol, 2026-11-22)
+Karol po trzeciej analizie: „nie przywiązujmy się do tego pomysłu i lećmy gdzie indziej… jeżeli jakiś pomysł ma być porażką, to po co w niego inwestować”. Nic nie zostało zbudowane. **Co zabieramy:** odsłonę potwora w krokach (oczy w norze, litery imienia, kamera według rozmiaru), plan sobotnich aktualizacji i miary sukcesu u prawdziwych graczy. Następne kierunki: [[Kierunki z rynku 2026-11-22]].
 
 ## Zmiana po walidacji (22.11) — czytaj najpierw
 Pierwotny kształt („zdąż za bramę przed zmierzchem”) okazał się słabszy: wokół nie jest pusto (dwuletnia rodzina gier „schronienie w dzień, noc w środku”, typowo 7–20 tys. graczy w szczycie i szybki spadek), „przynieś zwierzęta do domu” ma co najmniej dziesięć gier bez graczy, a internet nie nagrywa zmierzchu. **Nowy kształt, tytuł roboczy „Guard Your Monsters From the Giant”:** w dzień wyprowadzasz potwory z nor do swojego obozu, a każdej nocy przychodzi Olbrzym i zabiera tego, którego widać ponad płotem. Duży potwór zarabia więcej, ale wystaje; licznik nocy zawsze na ekranie; Olbrzym w 12. sekundzie gry; porwanego można odebrać następnego dnia. Walidacja: [[Walidacja kierunku noc i Olbrzym (2026-11-22)]]; projekt próbki z miarami i planem aktualizacji: [[Projekt próbki — Guard Your Monsters From the Giant]]. Pewność: niska do średniej, że to najlepsza następna próbka; niska, że będzie hit.
