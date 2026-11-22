@@ -29,6 +29,7 @@ Gra Roblox, która **zarabia i ma realną szansę na viral**: prosta i logiczna 
 - **Wytwórnia ma skracać drogę do testu, a nie ją wydłużać** — narzędzia (panel, mózg) robimy tylko w takim zakresie, w jakim przyspieszają decyzję, co budować.
 
 ## Notatki
+- **Nowy pomysł Pawła (22.11, czat w panelu):** [[Slide a Ragdoll]] — kukła zjeżdża po torze, który gracz rozbudowuje; ocena wstępna agenta 17/30 („popraw”), rynek po mechanice jeszcze niesprawdzony.
 - **Ocena całego lejka (22.11, wieczór):** [[Lejek pomysłów — ocena 2026-11-22]] — żadnego „buduj”; smok 21/30 czeka na graczy; rezerwa: Smash Tower, Sleeping Giant Heist, Baseball for treasure.
 - **Do oceny (22.11 wieczór):** [[Baseball for treasure]] (pomysł Pawła) i rozbudowa gry o smoku od ameby (pomysł Karola) — omówione na sesji: [[Sesja główna 2026-11-22 — zapis ustaleń]]; pełna ocena agenta jest zadaniem, wybór w pytaniu 86. Druga sesja (19:39, Karol): [[Sesja główna 2026-11-22 (2) — zapis ustaleń]] — odmiany baseballu łatające słabe punkty (np. potworek zamiast skarbu, D-136) i kryterium „Inni gracze” w karcie (D-135).
 - **W budowie (od 22.11):** [[Monster Evolution]] — [[Projekt próbki — Monster Evolution]] · [[Walidacja kierunku jesteś potworem (2026-11-22)]]. Zasada D-128: o próbce rozstrzygają liczby od prawdziwych graczy.

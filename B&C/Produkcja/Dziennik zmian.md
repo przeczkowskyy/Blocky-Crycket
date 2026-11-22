@@ -6,6 +6,16 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22/23 · Claude Code u Karola (noc: modele smoka z Blendera, walka, świat, interfejs)
+- **Modele** (agent na Fable, cztery rundy, ok. 0,83 mln tokenów): styl „Żarołuska”, osiem stadiów z 23 klipami animacji, wersje uproszczone, jajo, owca, rycerz-golem, rekwizyty; 42 elementy świata z propozycją mapy i oświetlenia; ikona i miniatury; 24 ikony interfejsu, portrety stadiów i trzy wzory ekranów. Wszystko skryptami w Blenderze, bez wgrywania i bez Studio; kod i dane w `swiat/ewolucja/modele/`, duże pliki poza repozytorium.
+- **Walka** (agent budujący na Opus): jedno prawo życia i obrażeń, łańcuch ugryzień, linie FIRE i POWER, wyspa dla ślizgu, symulacja balansu; testy 28/28, w Studio 28 z 29 (czas klatki zawyżony, bo Studio zwalniało przy grającym właścicielu).
+- **W toku:** wpięcie nowych smoków i klipów do gry (pierwsze sprawdzenie modeli w Studio). Stan i lista spraw do ludzi: [[Projekt próbki — Monster Evolution]], sekcja „Droga do wydania”.
+- Monitory przygaszone do 07:30; miejsce testowe w Studio otwarte ponownie po tym, jak było zamknięte.
+
+## 2026-11-22 · Claude Code w panelu, okno Ogólny (pomysł Pawła: Slide a Ragdoll)
+- Paweł na czacie panelu opisał pomysł gry i poprosił o dodanie do Wytwórni oraz ocenę kartą. **Nowa notatka:** [[Slide a Ragdoll]] (status propozycja, etap „ocena”) — opis Pawła, karta agenta 17/30, werdykt „popraw”, krytyka (argument za, pre-mortem, pięć poprawek, co zmieni ocenę).
+- Ocena jest wstępna: rynku po mechanice agent nie sprawdzał (to okno nie szuka w sieci) — sprawdzenie jest nowym zadaniem w [[Zadania]], start po poleceniu na czacie. Odnośnik dopisany w [[00 Wytwórnia pomysłów]]. Nic nie zatwierdzone, kolumny Karola i Pawła puste.
+
 ## 2026-11-22 · Claude Code u Karola (tytuł, styl smoka, zgoda na wgrywanie modeli)
 - **Decyzja Karola D-138** (czeka na Pawła): tytuł gry „Dragon Lair Evolution”. Ta sama wiadomość („masz pełne zgody”) rozszerza zgodę z 14.11 na wgrywanie modeli smoka na konto Roblox do tej gry; audio, płatne generatory i przełączenie gry na publiczną agent potwierdza osobno.
 - **Styl smoka:** arkusz z trzema kierunkami z Blendera wysłany Karolowi; agent idzie kierunkiem „Żarołuska” (pasy ciemnych łusek, żar w szczelinach rosnący z wiekiem, kryształowe rogi), podgląd w `swiat/ewolucja/modele/podglad/`. Pytania 83 i 84 z odpowiedziami.
