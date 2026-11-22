@@ -2,21 +2,6 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-22T15:12:07+01:00",
- "prace": [
-  {
-   "id": "proba-jednego-zwierzecia",
-   "tytul": "Próba techniczna: jedno zwierzę na standardowym szkielecie postaci",
-   "stan": "w_toku",
-   "start": "2026-11-22T15:12:07+01:00",
-   "koniec_szacowany": "2026-11-22T15:47:07+01:00",
-   "aktualizacja": "2026-11-22T15:12:07+01:00",
-   "obszary": [
-    "studio:EwolucjaProbaMalpy",
-    "swiat/ewolucja"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  }
- ]
+ "aktualizacja": "2026-11-22T15:24:04+01:00",
+ "prace": []
 }
