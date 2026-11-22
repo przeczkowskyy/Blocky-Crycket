@@ -624,5 +624,11 @@ Trzymamy się gry o smoku ([[Monster Evolution]]) jako pierwszej gry studia zrob
 
 Uzasadnienie — Karol, 2026-11-22: „Zgadzam się z tą wizją. Lecimy ze smokami… postarajmy się faktycznie dowieźć tę grę do końca, żeby to była taka pierwsza gra od początku do końca, zostawmy miejsce na aktualizacje i wydarzenia… wtorek, środa to jest nasz dzień, w którym wypuszczamy grę”. Zastrzeżenie agenta (D-114): pobicie lidera na wszystkich polach w dwa–trzy dni nie jest realne; realne jest pierwsze wrażenie (model smoka, ruch, walka) i czysty interfejs, reszta w cotygodniowych aktualizacjach; we wtorek wieczorem sprawdzenie „wydajemy / jeszcze dzień”, bez przesuwania poza czwartek. Czeka na potwierdzenie Pawła (D-043).
 
+### D-138 Gra o smoku: tytuł „Dragon Lair Evolution”
+✅ zatwierdzona · produkcja / projekt gry · 2026-11-22 · źródło: wiadomość Karola na czacie 22.11 (pytanie 84) · zaproponował: Claude Code · zdecydował: Karol 2026-11-22
+Gra o smoku ([[Monster Evolution]]) wychodzi pod tytułem „Dragon Lair Evolution” (wolny w wyszukiwarce Roblox 22.11; „Dragon Evolution” jest zajęty). Tytuł mówi o legowisku, czyli o tym, czym gra różni się od lidera fali.
+
+Uzasadnienie — Karol, 2026-11-22: „Tak. Masz pełne zgody, tytuł jest dobry.” Ta sama wiadomość rozszerza jego zgodę z 14.11 na wgrywanie modeli smoka na konto Roblox do tej gry. Czeka na potwierdzenie Pawła (D-043).
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*

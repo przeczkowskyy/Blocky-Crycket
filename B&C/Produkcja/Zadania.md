@@ -18,7 +18,6 @@ tags: [produkcja, zadania]
 - [ ] Panel: po wyborze tematu sesji (gra albo pomysł) agenda i lista pytań w zakładce Sesja dostosowują się do tej gry; prośba Karola z drugiej sesji 22.11, start po poleceniu na czacie ([[Sesja główna 2026-11-22 (2) — zapis ustaleń]]) · #średni
 - [ ] Gra o ewolucji: po próbie z graczami włączyć w Studio „Enable Studio Access to API Services” (Ustawienia gry → Bezpieczeństwo) na czas odczytu wyników i uruchomić `swiat/ewolucja/testy/odczyt_prob.py`; potem można wyłączyć ([[Projekt próbki — Monster Evolution]], „Pomiar do próby z graczami”) · Karol · #średni
 - [ ] Monster Evolution: zagrać z telefonu w prywatną wersję (https://www.roblox.com/games/93704244631419, teraz wersja ze smokiem i legowiskiem) i zapisać, czy gra startuje, w której minucie chciało się wyjść oraz co nie działało w sterowaniu — to obserwacja, nie werdykt (D-128) · Karol, Paweł · #wysoki
-- [ ] Monster Evolution: wybrać tytuł ze słowem „Dragon” (wolne 22.11: „Dragon Lair Evolution”, „Evolve a Dragon”, „Baby Dragon Evolution”) i zdecydować o docelowym modelu smoka w naszym stylu (osobne nogi, ogon, skrzydła; bez szkieletu) · Karol, Paweł · #średni
 - [ ] Zebrać 8–12 graczy spoza zespołu (9–15 lat, telefon) do próby Monster Evolution — bez nich o próbce znów rozstrzygnie gust (D-128) · Karol, Paweł · #wysoki
 - [ ] Paweł: potwierdzić albo zmienić D-128 (liczby rozstrzygają) i D-129 (budowa próbki Monster Evolution) · Paweł · #wysoki
 - [ ] Pet Arena: zagrać w prywatną wersję testową „Throw & Catch Monsters” (https://www.roblox.com/games/93704244631419, także z telefonu) i zaprosić do 10 testerów spoza zespołu, najlepiej 16+ — **do ok. 28.11**; publiczny test najpóźniej ok. 5.12, tylko po osobnej decyzji · Karol, Paweł · #wysoki
@@ -142,6 +141,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Monster Evolution: wybrać tytuł ze słowem „Dragon” (wolne 22.11: „Dragon Lair Evolution”, „Evolve a Dragon”, „Baby Dragon Evolution”) i zdecydować o docelowym modelu smoka w naszym stylu (osobne nogi, ogon, skrzydła; bez szkieletu) · Karol, Paweł · #średni · 2026-11-22: tytuł „Dragon Lair Evolution” (D-138); modele robi agent w Blenderze, Karol ocenia styl
 - [x] Gra o ewolucji: pomiar do próby z graczami — analityka Roblox i własny anonimowy zapis sesji z odczytem tabeli D-128 · zrobione 2026-11-22: testy 25/25, próba w Studio 22/22; opublikowane prywatnie
 - [x] Monster Evolution: przeróbka na smoka — osiem stadiów, model z klocków na start (pytanie 84); zrobione 2026-11-22: testy 23/23, próba w Studio 21/21, telefon 7/7; opublikowana prywatnie · agent · #wysoki
 - [x] Monster Evolution: etap 3 — legowisko w świecie, zapis, odmiany, Olbrzym jako boss ([[Projekt próbki — Monster Evolution]]) · agent · #wysoki · zrobione 2026-11-22: testy 21/21, próba w Studio 21/21, telefon 7/7; opublikowany prywatnie

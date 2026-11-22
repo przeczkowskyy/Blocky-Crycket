@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (tytuł, styl smoka, zgoda na wgrywanie modeli)
+- **Decyzja Karola D-138** (czeka na Pawła): tytuł gry „Dragon Lair Evolution”. Ta sama wiadomość („masz pełne zgody”) rozszerza zgodę z 14.11 na wgrywanie modeli smoka na konto Roblox do tej gry; audio, płatne generatory i przełączenie gry na publiczną agent potwierdza osobno.
+- **Styl smoka:** arkusz z trzema kierunkami z Blendera wysłany Karolowi; agent idzie kierunkiem „Żarołuska” (pasy ciemnych łusek, żar w szczelinach rosnący z wiekiem, kryształowe rogi), podgląd w `swiat/ewolucja/modele/podglad/`. Pytania 83 i 84 z odpowiedziami.
+
 ## 2026-11-22 · Claude Code u Karola (decyzja: gra o smoku do końca, wydanie 24–25.11)
 - **Decyzja Karola D-137** (czeka na Pawła): trzymamy się gry o smoku, wydanie publiczne we wtorek–środę 24–25.11; priorytety — modele z Blendera we własnym stylu, walka, interfejs, responsywność, utrzymanie gracza, miejsce na aktualizacje. Pytanie 86 rozstrzygnięte. Sesja główna wróciła na Fable (Karol odnowił pulę).
 - **Ruszyły dwie prace:** modele smoka w Blenderze (osobny agent, bez Studio i bez wgrywania czegokolwiek; biblioteka postaci z `swiat/postacie/biblioteka` tylko do odczytu) oraz przebudowa walki (agent budujący). Miejsce testowe w Studio było zamknięte — otwarte ponownie.

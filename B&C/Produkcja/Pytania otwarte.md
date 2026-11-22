@@ -794,6 +794,7 @@ Szczegóły: [[Projekt próbki — Monster Evolution]], sekcja „Po etapie 1”
 Dopisek z 2026-11-22: jedno dwunożne zwierzę na standardowym szkielecie postaci Roblox rozwiązałoby animacje bez pracy w Blenderze — zob. pytanie 84.
 Dopisek z 2026-11-22 (po próbie technicznej): gotowe animacje postaci Roblox działają na dwunożnym modelu w skali 0,5–6 razy; od Karola potrzebne byłyby najwyżej części ciała w stylu klocków, bez szkieletu i bez animacji. Chód jest ludzki, wyprostowany.
 **Odpowiedź:**
+- Karol (2026-11-22): zgoda na wgrywanie modeli smoka („masz pełne zgody”). Animacje robi agent w Blenderze jako klipy z biblioteki postaci; smok czworonożny, bez standardowego szkieletu postaci.
 
 ## 84. Monster Evolution: jedno zwierzę — które?
 - Karol zapytał, czy nie robić jednego zwierzęcia; dane to popierają (jeden rozpoznawalny stwór w tytule, jeden szkielet na osiem form).
@@ -805,6 +806,9 @@ Szczegóły: [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]]; uzasadnienie
 Dopisek z 2026-11-22 (po próbie technicznej): wariant (a) jest wykonalny bez Blendera — zob. [[Projekt próbki — Monster Evolution]], „Próba techniczna”. Próbny model małpy jest surowy; przeróbka całej gry to 150–200 tys. tokenów i czeka na wybór zwierzęcia.
 **Odpowiedź:**
 - Karol (2026-11-22): „Nie wiem, może smok? Ale jeśli sugerujesz małpę, to może być, ale więcej zdolności uda nam się zrobić na smokach”. Agent zmienia zalecenie na smoka: w tej mechanice klon ze smokiem ma ok. cztery razy więcej graczy niż klon z małpą, pięć nowych gier ze smokami ma razem 27,5 tys. graczy, smok daje najwięcej zdolności i najlepszą ostatnią formę, a legowisko ze skarbem to naturalny motyw smoka; próba techniczna pokazała też, że przewaga małpy (gotowy chód) jest mniejsza, niż zakładał. Ustalenie robocze: smok chodzący, bez swobodnego latania (krótki ślizg jako zdolność późnych form); tytuł „Dragon Evolution” jest zajęty — wolne w wyszukiwarce 22.11: „Dragon Lair Evolution”, „Evolve a Dragon”, „Baby Dragon Evolution”. Przeróbka po etapie 3; modelu smoka nie mamy — na start złoży go agent z klocków, docelowy model w naszym stylu to praca Karola.
+- Karol (2026-11-22): „Tak. Masz pełne zgody, tytuł jest dobry.” — tytuł „Dragon Lair Evolution”; styl smoka: kierunek „Żarołuska” z arkusza stylu (zalecenie agenta, bez sprzeciwu Karola).
+
+Rozstrzyga: D-138 (tytuł); zwierzę — smok, w D-137.
 
 ## 85. Baseball for treasure: skąd gracz bierze siłę?
 - Na sesji 22.11 padły trzy wersje i żadna nie wygrała.
