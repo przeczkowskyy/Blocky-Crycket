@@ -6,6 +6,9 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Panel (ludzie)
+- Paweł (gość panelu): nowy pomysł w Wytwórni: Baseball for treasure ([[Baseball for treasure]])
+
 ## 2026-11-22 · Claude Code u Karola (gra o ewolucji: pomiar do próby z graczami)
 - Sesja główna przeszła z Fable na Opus 5.5 (Karol: „Fable nam się na razie skończył”).
 - **Pomiar** (ten sam agent budujący, ok. 70 tys. tokenów): analityka Roblox (lejki, gospodarka, zdarzenia) i własny anonimowy zapis podsumowania każdej sesji, z odczytem tabeli progów D-128. Ograniczenie panelu twórcy przy małej liczbie graczy i ustawienie potrzebne do odczytu: [[Projekt próbki — Monster Evolution]], „Pomiar do próby z graczami”. Testy logiki 25/25, próba w Studio 22/22. Opublikowane prywatnie; publicznie nic.
