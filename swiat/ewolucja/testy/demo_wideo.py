@@ -235,6 +235,91 @@ def sceny_walka(p, f):
     f.stop()
 
 
+def sceny_blender(p, f):
+    """Smoki z Blendera (smok-blender1): wyklucie → jedzenie → ewolucja → walka z ogniem → szybowanie na SKY NEST → legowisko → stadium 8."""
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    p.serwer('"przenies", %d, %f, %f' % (byt, D["legowiska"][(st.get("slot") or 1) - 1][0] * 0.97, D["legowiska"][(st.get("slot") or 1) - 1][1] * 0.97))
+    time.sleep(0.5)
+    p.przycisk("jajko")
+    time.sleep(0.15)
+    f.nagrywaj("wyklucie")
+    time.sleep(4.4)
+    f.stop(0.1)
+    p.ustaw("EW_TestAuto", "true")
+    f.nagrywaj("jedzenie")
+    time.sleep(7.0)
+    f.stop()
+    p.ustaw("EW_TestAuto", "false")
+    p.serwer('"wzrost_pelny"')
+    f.nagrywaj("ewolucja")
+    p.przycisk("ewoluuj")
+    time.sleep(5.4)
+    f.stop()
+    p.serwer('"laska_zeruj"')
+    p.serwer('"forma_gracza", 4')
+    p.serwer('"zdolnosci_zeruj"')
+    p.serwer('"przenies", %d, 10, -15' % byt)
+    time.sleep(1.0)
+    p.serwer('"tarcza_zeruj"')
+    p.serwer('"hp", nil, 5000')
+    st = p.serwer('"stan"')
+    r4 = D["formy"][3]["r"]
+    for dx in (-3, 4):
+        b = PP.bot_obok(p, st, 3, dx, r4 + D["formy"][2]["r"] + 2)
+        p.serwer('"bot_cisza", %d, 8' % b)
+    p.ustaw("EW_TestSter", "Vector3.new(0, 1, 0.3)")
+    f.nagrywaj("walka")
+    time.sleep(0.3)
+    for _ in range(3):
+        p.przycisk("gryz")
+        time.sleep(0.55)
+    p.przycisk("ogien")
+    time.sleep(0.9)
+    p.ustaw("EW_TestSter", "Vector3.new(0.5, 1, 0.8)")
+    time.sleep(2.6)
+    p.ustaw("EW_TestSter", "Vector3.new(-0.6, 0.4, 1.5)")
+    time.sleep(1.6)
+    f.stop()
+    WY = D["wyspa"]
+    p.serwer('"forma_gracza", 5')
+    p.serwer('"zdolnosci_zeruj"')
+    p.serwer('"przenies", %d, %f, %f' % (byt, WY["x"], WY["z"] - WY["r_zew"] - 8))
+    time.sleep(1.0)
+    p.ustaw("EW_TestSter", "Vector3.new(0, 1, 0.3)")
+    time.sleep(0.3)
+    f.nagrywaj("szybowanie")
+    p.przycisk("moc")
+    time.sleep(3.4)
+    f.stop()
+    lx, lz = D["legowiska"][(st.get("slot") or 1) - 1]
+    p.serwer('"przenies", %d, %f, %f' % (byt, lx * 0.82, lz * 0.82))
+    p.serwer('"zloto_leg", 2500')
+    time.sleep(1.2)
+    f.nagrywaj("legowisko")
+    p.ustaw("EW_TestSter", "Vector3.new(%f, %f, 1.2)" % (-lx / 126.0, lz / 126.0))
+    time.sleep(4.8)
+    f.stop()
+    p.serwer('"forma_gracza", %d' % len(D["formy"]))
+    p.serwer('"zdolnosci_zeruj"')
+    p.serwer('"przenies", %d, 30, -10' % byt)
+    time.sleep(1.2)
+    p.serwer('"tarcza_zeruj"')
+    p.serwer('"hp", nil, 9000')
+    st = p.serwer('"stan"')
+    A = D["zdolnosci"]["moc"][-1]
+    for dx, dz in ((0, 0), (7, 3), (-7, 2)):
+        PP.bot_obok(p, st, 6, dx, A["d"] + dz)
+    p.ustaw("EW_TestSter", "Vector3.new(0, 1, 0.3)")
+    f.nagrywaj("stadium8")
+    time.sleep(0.5)
+    p.przycisk("moc")
+    time.sleep(3.0)
+    p.ustaw("EW_TestSter", "Vector3.new(0.7, 0.7, 2)")
+    time.sleep(2.0)
+    f.stop()
+
+
 def sklej(klipy, wyj, kat):
     gotowe = []
     for i, (k, od) in enumerate(klipy):
@@ -267,6 +352,7 @@ def main():
     ap.add_argument("--wyj", default=os.path.join(tempfile.gettempdir(), "ewolucja_demo", "ewolucja_smok.mp4"))
     ap.add_argument("--zostaw-klipy", action="store_true")
     ap.add_argument("--walka", action="store_true", help="sceny walki (walka1) zamiast przeglądu gry")
+    ap.add_argument("--blender", action="store_true", help="smoki z Blendera: wyklucie → … → stadium 8 (smok-blender1)")
     a = ap.parse_args()
     wyj = os.path.abspath(a.wyj)
     if wyj.startswith(os.path.abspath(PP.REPO)):
@@ -283,7 +369,7 @@ def main():
             PP.czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
             p.luau(PP.BEZ_LISTY, "Client")
             time.sleep(1.0)
-            (sceny_walka if a.walka else sceny)(p, f)
+            (sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
         finally:
             log("Stop:", PP.play(a.studio, False)[-40:])
             PP.czekaj(lambda: "Current Studio Mode: Edit" in p.call("get_studio_state")["text"], 40, 0.5)

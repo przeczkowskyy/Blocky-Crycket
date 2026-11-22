@@ -184,7 +184,8 @@ class Swiat:
              "zryw": 0.0, "zryw_ok": 0.0, "gryz_ok": 0.0, "um_ok": 0.0, "ogl": 0.0, "szarza": 0.0, "szarza_v": 1.0, "mysl": 0.0,
              "cel": 0, "cel_od": 0.0, "odp": 0, "odp_do": 0.0, "wzrost": 0.0, "max": forma, "zloto": 0.0,
              "pz": {"szczeka": 1, "szybkosc": 1, "apetyt": 1}, "laska": self.czas + self.D["boty"]["laska_s"] if slot else 0, "strefa": strefa,
-             "zloto_leg": 0.0, "warianty": {}, "trofea": {}, "boss_trofea": 0, "kokon_w": None}
+             "zloto_leg": 0.0, "warianty": {}, "trofea": {}, "boss_trofea": 0, "kokon_w": None,
+             "zyc": 0.0, "zycm": 0.0, "ost_r": -99.0, "lanc": 0, "lanc_do": 0.0}
         self.nast += 1
         self.byty.append(b)
         if slot:
@@ -201,8 +202,47 @@ class Swiat:
         return b
 
     def obrazenia(self, g):
-        B = self.D["boss"]
-        return B["gryz_baza"] + B["gryz_na_forme"] * max(0, g["forma"] - 3) + 2 * (g["pz"]["szczeka"] - 1)
+        W = self.D["walka"]
+        s = W["gryz_baza"] * W["gryz_wzrost"] ** (g["forma"] - 1)
+        if g["slot"]:
+            s *= W["szczeka_x"][g["pz"]["szczeka"] - 1]
+        return s
+
+    # ------------------------------------------------ walka1 (jak LogikaEwolucji: życie, łańcuch BITE, rozmiar)
+    def zycm(self, b):
+        W = self.D["walka"]
+        return W["hp_baza"] * W["hp_wzrost"] ** (b["forma"] - 1)
+
+    def rozm(self, a, q):
+        if a.get("boss") or q.get("boss"):
+            return 1.0
+        return self.D["walka"]["rozmiar_x"][max(-3, min(3, a["forma"] - q["forma"])) + 3]
+
+    def rana(self, a, q, ile, kryt=True):
+        W = self.D["walka"]
+        if q.get("boss"):
+            self.ran(q, a, ile)
+            return
+        ile *= self.rozm(a, q)
+        if kryt and self.los.random() < W["kryt_szansa"]:
+            ile *= W["kryt_x"]
+        q["zyc"] -= max(1, round(ile))
+        q["ost_r"] = self.czas
+        if q["zyc"] <= 0:
+            self.zjedz(a, q)
+
+    def cios(self, b, q):
+        """Jeden cios łańcucha BITE w q (rytm lancuch_s, trzeci mocniejszy)."""
+        W = self.D["walka"]
+        if self.czas > b["lanc_do"]:
+            b["lanc"] = 0
+        k = b["lanc"] % 3 + 1
+        b["lanc"] = k
+        b["gryz_ok"] = self.czas + W["lancuch_s"][k - 1]
+        b["lanc_do"] = b["gryz_ok"] + W["lancuch_reset_s"]
+        self.rana(b, q, self.obrazenia(b) * W["lancuch_x"][k - 1])
+        if k == 3 and not q.get("boss") and q["martwy"] is None:
+            q["ogl"] = max(q["ogl"], self.czas + W["przewrot_s"])
 
     def boss_w(self, g, zas):
         b = getattr(self, "boss", None)
@@ -252,6 +292,8 @@ class Swiat:
     def zjedz_kulke(self, b, i):
         J = self.D["jedzenie"]
         typ = self.D["kulkiPoz"][i][2]
+        if b["zycm"]:
+            b["zyc"] = min(b["zycm"], b["zyc"] + b["zycm"] * self.D["walka"]["kulka_leczy"][typ - 1])
         self.kulki[i] = self.czas + (J["powrot_duza_s"] if typ >= 2 else J["powrot_mala_s"])
         if b["slot"]:
             self.wzrost(b, (J["wielka"] if typ == 3 else (J["duza"] if typ == 2 else J["mala"])) * self.apetyt(b))
@@ -261,6 +303,7 @@ class Swiat:
         b["vx"] = b["vz"] = b["wx"] = b["wz"] = 0.0
         b["szarza"] = b["zryw"] = 0.0
         b["skok"] = None
+        b["zycm"] = 0.0  # pełne życie po odrodzeniu (krok ustawia z nowej formy)
         if b["slot"]:
             self.zdarzenia.append(("smierc", b["forma"]))
 
@@ -282,21 +325,19 @@ class Swiat:
         for q in self.byty:
             if q is not a and self.bezbronny(q) and self.moze(a, q) and not self.przypadkiem(a, q):
                 d = dlug(q["x"] - a["x"], q["z"] - a["z"])
-                if d < ra + zas + self.r(q) * 0.5 and d < bd:
+                if d < ra + zas + self.r(q) and d < bd:
                     best, bd = q, d
         return best
 
     def gryz(self, b):
         if self.ster_serwer(b) or self.czas < b["gryz_ok"]:
             return False
-        b["gryz_ok"] = self.czas + self.przerwa(b)
         q = self.ofiara(b, self.zasieg(b))
         boss = None if q else self.boss_w(b, self.zasieg(b))
-        if q:
-            self.zjedz(b, q)
-        elif boss:
-            self.ran(boss, b, self.obrazenia(b))
+        if q or boss:
+            self.cios(b, q or boss)
         else:
+            b["gryz_ok"] = self.czas + self.D["walka"]["lancuch_s"][0]
             for i in self.kulki_w(b["x"], b["z"], self.r(b) + self.zasieg(b) + self.D["jedzenie"]["mala_r"], 3):
                 self.zjedz_kulke(b, i)
         return True
@@ -329,7 +370,7 @@ class Swiat:
             q = self.ofiara(b, A["r"])
             boss = None if q else self.boss_w(b, A["r"])
             if q:
-                self.zjedz(b, q)
+                self.rana(b, q, self.obrazenia(b) * 6)
             elif boss:
                 self.ran(boss, b, self.D["boss"]["um_obrazenia"])
             else:
@@ -366,7 +407,7 @@ class Swiat:
                 n = 0
                 for q in list(self.byty):
                     if n < 3 and q is not b and self.bezbronny(q) and self.moze(b, q) and not self.przypadkiem(b, q) and w_st(q["x"], q["z"], rb + A["r"] + self.r(q) * 0.5):
-                        self.zjedz(b, q)
+                        self.rana(b, q, self.obrazenia(b) * 6)
                         n += 1
                 for i in self.kulki_w(b["x"], b["z"], rb + A["r"], 99):
                     p = self.D["kulkiPoz"][i]
@@ -503,6 +544,13 @@ class Swiat:
                 if b["martwy"] is None and self.w_legowisku(b):
                     b["zloto"] += b["zloto_leg"]
                     b["zloto_leg"] = 0.0
+            # walka1: życie z formy (pełne po zmianie formy / odrodzeniu), regeneracja bez ran
+            if not b.get("boss"):
+                hm = self.zycm(b)
+                if b["zycm"] != hm:
+                    b["zyc"], b["zycm"] = hm, hm
+                elif b["martwy"] is None and b["zyc"] < hm and self.czas - b["ost_r"] > D["walka"]["regen_po_s"]:
+                    b["zyc"] = min(hm, b["zyc"] + hm * D["walka"]["regen_na_s"] * dt)
             r = self.r(b)
             if b["martwy"] is not None:
                 if self.czas >= b["martwy"]:
@@ -546,7 +594,7 @@ class Swiat:
                     n = 0
                     for q in self.byty:
                         if q is not b and self.bezbronny(q) and self.moze(b, q) and n < 3 and dlug(q["x"] - b["x"], q["z"] - b["z"]) < r + kr + self.r(q) * 0.5:
-                            self.zjedz(b, q)
+                            self.rana(b, q, self.obrazenia(b) * 8)
                             n += 1
                     self.oglusz(b, r + kr + 4, 1.0)
                     if self.boss_w(b, kr + 2):
@@ -587,24 +635,19 @@ class Swiat:
                 if b.get("boss"):
                     q = next((x for x in self.byty if x["id"] == b["cel"]), None) if b["cel"] else None
                     B = D["boss"]
-                    if q and self.czas >= b["gryz_ok"] and self.bezbronny(q) and dlug(q["x"] - b["x"], q["z"] - b["z"]) < r + B["zasieg"] + self.r(q) * 0.5:
-                        b["gryz_ok"] = self.czas + B["przerwa_s"]
+                    if q and self.czas >= b["gryz_ok"] and self.bezbronny(q) and dlug(q["x"] - b["x"], q["z"] - b["z"]) < r + B["zasieg"] + self.r(q):
+                        b["gryz_ok"] = self.czas + B["przerwa_s"] + (B.get("zamach_s") or 0)
                         d = max(0.1, dlug(q["x"] - b["x"], q["z"] - b["z"]))
                         nx, nz = (q["x"] - b["x"]) / d, (q["z"] - b["z"]) / d
                         q["x"], q["z"] = self.ogranicz(q["x"] + nx * 5, q["z"] + nz * 5, self.r(q), self.maska(q))
                         q["vx"], q["vz"] = nx * B["odrzut"], nz * B["odrzut"]
                         q["ogl"] = self.czas + B["ogluszenie_s"]
-                        if q["forma"] < len(D["formy"]):
-                            q["wzrost"] = max(0, q["wzrost"] - self.potrzeba(q["forma"]) * B["kara"])
+                        self.rana(b, q, B["stopnie_gryz"][self.boss_st - 1], False)
                 elif (not b["slot"] or self.czas < b["szarza"]) and self.czas >= b["gryz_ok"]:
                     q = self.ofiara(b, self.zasieg(b) if not b["slot"] else 2)
                     boss = None if q or not b["slot"] else self.boss_w(b, 2)
-                    if q:
-                        b["gryz_ok"] = self.czas + self.przerwa(b)
-                        self.zjedz(b, q)
-                    elif boss:
-                        b["gryz_ok"] = self.czas + self.przerwa(b)
-                        self.ran(boss, b, self.obrazenia(b))
+                    if q or boss:
+                        self.cios(b, q or boss)
         n = len(self.byty)
         for i in range(n):
             a = self.byty[i]
@@ -620,9 +663,8 @@ class Swiat:
                 duzy, maly, rd, rm = (b, a, rb, ra) if b["forma"] > a["forma"] else (a, b, ra, rb)
                 moze = (self.moze(duzy, maly) and not self.przypadkiem(duzy, maly) and not (maly["slot"] and self.w_legowisku(maly))
                         and not (duzy["slot"] and self.w_legowisku(duzy)))
-                if moze and maly["tarcza"] <= self.czas and d < rd - rm * D["gryzienie"]["polykanie"] and duzy["ogl"] <= self.czas:
-                    self.zjedz(duzy, maly)
-                elif not moze or maly["tarcza"] > self.czas:
+                if True:  # walka1: bez połykania dotykiem
+
                     nx, nz = (dx / d, dz / d) if d > 0.01 else (1, 0)
                     w = ra + rb - d
                     wa = 0.25 if a["forma"] > b["forma"] else (0.75 if a["forma"] < b["forma"] else 0.5)

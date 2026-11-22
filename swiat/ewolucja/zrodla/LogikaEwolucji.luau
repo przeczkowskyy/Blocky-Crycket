@@ -571,7 +571,7 @@ local function zgin(S, b, zd)
 	b.martwyDo = S.czas + (if b.slot > 0 then D.smierc.odrodzenie_s else D.boty.odrodzenie_s)
 	b.vx, b.vz, b.wx, b.wz = 0, 0, 0, 0
 	b.szarzaDo, b.zrywDo = 0, 0
-	b.skok, b.zamach, b.kanal = nil, nil, nil
+	b.skok, b.zamach, b.kanal, b.bossZamach = nil, nil, nil, nil
 	b.lancuch = 0
 	table.insert(zd, { t = "smierc", id = b.id, s = b.slot, forma = b.forma })
 end
@@ -808,14 +808,22 @@ function L.zdolnosc(S, b, linia: any, zd): boolean
 	if b.slot > 0 and L.wLegowisku(D, b) and A.typ ~= "lot" then
 		return false
 	end
-	b.gotowy[linia] = S.czas + A.zamach_s + A.odnowa_s
-	b.zamach = { A = A, t1 = S.czas + A.zamach_s }
+	local zs = L.zamachS(D, A, b.forma)
+	-- boty rzadziej (czytelna łąka): dłuższa odnowa
+	b.gotowy[linia] = S.czas + zs + A.odnowa_s * (if b.slot == 0 then D.boty.zdolnosci_odnowa_x or 1 else 1)
+	b.zamach = { A = A, t1 = S.czas + zs }
 	if b.wx ~= 0 or b.wz ~= 0 then
 		b.kier = math.atan2(b.wx, b.wz)
 	end
-	table.insert(zd, { t = "zamach", id = b.id, s = b.slot, ab = A.id, czas = A.zamach_s, kier = b.kier, x = b.x, z = b.z })
+	table.insert(zd, { t = "zamach", id = b.id, s = b.slot, ab = A.id, czas = zs, kier = b.kier, x = b.x, z = b.z })
 	return true
 end
+-- czas zamachu: chwila efektu w klipie stadium (zestaw blender: zdarzenie klipu), inaczej z danych zdolności
+function L.zamachS(D, A, forma: number): number
+	local F = D.formy[forma]
+	return (F and F.czasy and F.czasy[A.id]) or A.zamach_s
+end
+
 -- zgodność: dawny jeden przycisk = FIRE
 function L.umiejetnosc(S, b, zd, linia: any): boolean
 	return L.zdolnosc(S, b, linia or "ogien", zd)
@@ -1016,7 +1024,7 @@ end
 -- bot: zdolność swojego stadium przy celu (te same zasady i zamach co u gracza; bez szybowania)
 local function botZdolnosc(S, b, q, d: number, zd)
 	local D = S.D
-	if b.zamach or b.kanal or S.los() > 0.45 then
+	if b.zamach or b.kanal or S.los() > (D.boty.zdolnosci_szansa or 0.45) then
 		return
 	end
 	local rb, rq = L.promien(D, b.forma), L.promien(D, q.forma)
@@ -1415,7 +1423,8 @@ function L.krok(S, dt: number)
 				ladowanie(S, b, k, zd)
 			end
 		elseif b.ogluszonyDo > S.czas then
-			-- ogłuszony / przewrócony: leci z odrzutem i hamuje
+			-- ogłuszony / przewrócony: leci z odrzutem i hamuje (zamach bossa przerwany)
+			b.bossZamach = nil
 			b.vx, b.vz = b.vx * 0.82, b.vz * 0.82
 			b.x += b.vx * dt
 			b.z += b.vz * dt
@@ -1456,9 +1465,23 @@ function L.krok(S, dt: number)
 			if b.boss then
 				-- boss gryzie: rana z życia, odrzut i krótkie ogłuszenie (zero życia → zjada jak każdy)
 				local q = b.cel ~= 0 and L.bytPoId(S, b.cel)
-				if q and S.czas >= b.gryzGotowy and L.mozeRanic(S, b, q)
-					and dlug(q.x - b.x, q.z - b.z) < r + D.boss.zasieg + L.promien(D, q.forma) then
-					b.gryzGotowy = S.czas + D.boss.przerwa_s
+				local zasB = r + D.boss.zasieg + (if q then L.promien(D, q.forma) else 0)
+				-- golem: zamach widoczny dla gracza (klip „zamach”), cios w chwili zdarzenia klipu, jeśli cel nadal w zasięgu
+				if (D.boss.zamach_s or 0) > 0 and not b.bossZamach and q and S.czas >= b.gryzGotowy and L.mozeRanic(S, b, q)
+					and dlug(q.x - b.x, q.z - b.z) < zasB then
+					b.bossZamach = S.czas + D.boss.zamach_s
+					b.gryzGotowy = S.czas + D.boss.zamach_s + D.boss.przerwa_s
+					table.insert(zd, { t = "boss_zamach", id = b.id, cel = q.id, czas = D.boss.zamach_s })
+				end
+				local gotowyCios = if (D.boss.zamach_s or 0) > 0 then (b.bossZamach ~= nil and S.czas >= b.bossZamach) else S.czas >= b.gryzGotowy
+				if gotowyCios then
+					b.bossZamach = nil
+				end
+				if q and gotowyCios and L.mozeRanic(S, b, q)
+					and dlug(q.x - b.x, q.z - b.z) < zasB + (if (D.boss.zamach_s or 0) > 0 then 2 else 0) then
+					if (D.boss.zamach_s or 0) <= 0 then
+						b.gryzGotowy = S.czas + D.boss.przerwa_s
+					end
 					b.gryzDo = S.czas + D.gryzienie.slad_s
 					local d = math.max(0.1, dlug(q.x - b.x, q.z - b.z))
 					local nx, nz = (q.x - b.x) / d, (q.z - b.z) / d

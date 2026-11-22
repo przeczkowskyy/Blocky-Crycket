@@ -25,15 +25,16 @@ Bez zapisu między sesjami. Napisy w grze po angielsku.
 ## Jak zbudować i sprawdzić
 ```
 python -B swiat/ewolucja/dane.py                         # ustawienia.json + dane Pet Areny → zrodla/DaneEwolucji.luau
-python -B swiat/ewolucja/testy/test_ewolucji.py          # logika bez Studio (28 testów)
+python -B swiat/ewolucja/testy/test_ewolucji.py          # logika bez Studio (30 testów, w tym dane modeli i klipy)
 python -B swiat/ewolucja/tempo.py [--prob 8]             # symulacja tempa „sprawnego gracza”
 python -B swiat/ewolucja/testy/walka_sim.py [--pojedynkow 40] # walka1: pojedynki, boss, zdolności na prawdziwej logice
 python -B swiat/ewolucja/zbuduj.py --studio <id>         # budowa (--sucho, --skrypty, --stan, --usun, --publikacja)
 python -B swiat/ewolucja/zbuduj.py --wlacz on|off --studio <id>     # wyłącznik EwolucjaWlaczona
-python -B swiat/ewolucja/testy/proba_play.py --studio <id>          # próba Play (P01–P28, zrzuty do klatki/)
+python -B swiat/ewolucja/testy/proba_play.py --studio <id>          # próba Play (P01–P30, zrzuty do klatki/)
 python -B swiat/ewolucja/testy/proba_telefon.py --studio <id>       # Device Simulator: najmniejszy telefon, układ HUD
 python -B swiat/ewolucja/testy/demo_wideo.py --studio <id>          # film demo ok. 35 s + plansza (poza repo)
 python -B swiat/ewolucja/testy/demo_wideo.py --studio <id> --walka --wyj <TEMP>/ewolucja_demo/ewolucja_walka.mp4   # film walki
+python -B swiat/ewolucja/testy/demo_wideo.py --studio <id> --blender --wyj <TEMP>/ewolucja_demo/ewolucja_smok_blender.mp4   # smoki z Blendera
 ```
 Przed próbą Play inne gry wyłączone: `swiat/pet_arena/zbuduj.py --wlacz off`, `swiat/zabawki/zbuduj.py --wlacz off`.
 
@@ -169,9 +170,45 @@ Jedna zasada dla wszystkich (gracz, dziki smok, boss) — liczby w `ustawienia.j
   Szczęka = stopień): 6/6 wygranych, 11–23 s, gracz kończy z 35–51% życia. Zdolności względem samego BITE: EMBER ×0,66,
   BREATH ×0,74, INFERNO ×1,56 (z płonącą ziemią), TAIL ×0,62, GLIDE ×0,59, ROAR ×0,58, METEOR ×0,70 (jeden cel;
   ogień, ogon, ryk i meteor trafiają wielu).
-- `tempo.py` liczy jeszcze dawne zasady (natychmiastowe zjadanie) — tempo po walce1 nie jest przeliczone.
 - Zrzuty: `klatki/14_walka_gryzienie.jpg`, `15_ogien.jpg`, `16_moc.jpg`, `17_telefon_walka.jpg`; film
   `%TEMP%\ewolucja_demo\ewolucja_walka.mp4` (poza repo).
+
+## Smoki z Blendera (smok-blender1, 22.11.2026)
+Zestaw `"zestaw": "blender"` (domyślny; `smok` = dawny generator części, `potwory` = Pet Arena — jedna wartość
+w `ustawienia.json`). Dane tylko do odczytu z `modele/dane/` (format /2, opis: `modele/README.md`).
+- **Budowa** (`zbuduj.py`, krok RIGI po pełnej budowie, 9 wywołań): z `<id>_rig.json` i `<id>_lod_rig.json` powstają w
+  `Wzorce` modele `SmokB_1…8` (74–92 części + 26 kości) i `SmokB_1…8_lod` (35 + 26), `SmokB_jajo`, rekwizyty
+  `Rekwizyt_cokol|gniazdo|skarb_1–3`, `Stwor_golem_1–5`, `Stwor_owca`. Kość = niewidzialna część, `Motor6D` w dziecku,
+  bryły na `WeldConstraint` z atrybutem `Region`, 13 zaczepów na kościach; korzeń `Korzen` zakotwiczony, punkt modelu
+  na ziemi. Klipy jako `StringValue` (JSON) w `Wzorce/Klipy/<id>`. Tablica DEEP WOODS dostaje sylwetki po rigach.
+- **Odtwarzanie** po stronie klienta, bez Animatora i bez wgrań: `KlipyEwolucji` (czyste liczby: próbka, mieszanie kątów
+  najkrótszą drogą, zdarzenia, tempo z `predkosc`), `RigiEwolucji` (pętla z przenikaniem 0,18 s + akcja na wierzchu,
+  `Motor6D.Transform`), `SmokiKlienta` (klony, warianty, koszt, efekty, golem), `LegowiskaKlienta` (cokoły, trofea,
+  gniazdo, skarb).
+- **Stany → klipy**: spoczynek / chod / bieg z prędkości (tempo `v / predkosc`, granice 0,55–2,4); BITE gryz1–3
+  (ugryzienie 0,08 s po naciśnięciu); EMBER `splun`; BREATH/INFERNO `ogien_start` → `ogien_petla` → `ogien_koniec`;
+  TAIL `ogon_zamach`; ROAR `ryk`; GLIDE `szybowanie_start` → `_petla` → `_ladowanie`; METEOR `nurkowanie_skok` →
+  `nurkowanie_ladowanie`; trafienie `trafienie`, przewrót `koziolek`, zjedzenie `pozarcie`, ewolucja `radosc`,
+  start `wyklucie` (z jajem `smok_jajo`), trofea na cokołach `cokol` (poza nieruchoma). Zamach zdolności na serwerze =
+  chwila zdarzenia w klipie stadium (`formy[f].czasy`, z `dane.py`), więc rana, sygnał i ruch wypadają razem.
+- **Koszt** (`blender.lod`): własny smok — pełny rig co klatkę; inni gracze pełny do 90 st., boty do 45 st.; dalej
+  uproszczony; animacja co 2 klatki blisko, co 4 dalej, co 12 poza kadrem / ponad 170 st. (histereza 8 st.).
+- **Efekty z zaczepów**: żar (cząsteczki na `Zar1–3`) i światło (`Gardlo` / `Piers`) rosną ze stadium; ślady ogona
+  i skrzydeł w zrywie i locie; stożek ognia: trzy `Beam` od `PyskAttachment` + cząsteczki (INFERNO różowo-pomarańczowy).
+- **Warianty**: przemalowanie regionów (`blender.warianty`: cialo, luski, brzuch, blona, kolce, zar, zar_rdzen; oko
+  i stałe zostają). **Korona** Olbrzyma nad `GlowaAttachment`, rozmiar głowy (koniec żółtego bloku).
+- **KNIGHT GOLEM** zamiast węża: rig stopnia 1–5, klipy spoczynek/chod/zamach/zachwianie/upadek; serwer czeka
+  `boss.zamach_s` (= „uderzenie” w klipie „zamach”, 0,6 s) przed ciosem, krąg zasięgu na ziemi. Owcy nie ma w grze
+  (wymaga nowego rodzaju stworka na serwerze — poza budżetem).
+- **Niezgodności z umową danych**: `indeks.json → stadia` zawiera też `smok_jajo` (pomijamy); `predkosc` biegu
+  maluchów (2,78 st./s pisklęcia) a prędkość gry 16 st./s — tempo przycięte do 2,4×, stopy stadiów 1–4 ślizgają się;
+  `koziolek` trwa 1,2 s, przewrót w grze 0,5 s — grany szybciej; jajo ma korzeń przesunięty w Z (−0,19).
+- `tempo.py` liczy już zasady walki1 (życie, łańcuch, bez połykania dotykiem). Tempo (6 prób, mediana): forma 2 0:21,
+  forma 3 1:10, forma 5 6:08, ANCIENT 14:55 (5/6 doszło), 1. ulepszenie 1:38, 1. pościg 1:59 — w celach; najdłuższa
+  przerwa bez nowości 2:51 (cel ≤ 2:30, wcześniej 2:18) — liczb wzrostu nie zmieniałem (przekroczenie niewielkie).
+- Wyniki: testy offline 30 (29 OK + 1 pominięty: stary generator części), Play P01–P30, telefon T1–T7; zrzuty
+  `01_start` (wyklucie w gnieździe), `02_jedzenie`, `09_legowisko_swiat` (cokoły z trofeami), `12_olbrzym` (stadium 8,
+  korona), `14`–`16` walka, `18_szybowanie`, `06`/`17` telefon; film `%TEMP%\ewolucja_demo\ewolucja_smok_blender.mp4`.
 
 ## Pomiar prób z graczami (D-128, 22.11.2026)
 - **AnalyticsService** (tylko serwer opublikowanej gry; w Studio wywołania pomijamy):

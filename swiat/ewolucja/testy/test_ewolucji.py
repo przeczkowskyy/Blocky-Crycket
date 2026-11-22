@@ -448,9 +448,11 @@ class TestLas(unittest.TestCase):
         sila = jeden("obrazenia", DL, gr)
         self.assertIn(hp0 - g(boss, "hp"), (math.floor(sila + 0.5), math.floor(sila * D["walka"]["kryt_x"] + 0.5)), "rana jak każdemu (bez rozmiaru)")
         # boss gryzie: rana z życia gracza, odrzut i ogłuszenie
-        ustaw(gr, x=g(boss, "x") + r5 + rB, z=g(boss, "z"), hp=100.0)
+        ustaw(gr, x=g(boss, "x") + r5 + rB, z=g(boss, "z"), hp=100.0, ostRana=1e9)
         ustaw(boss, gryzGotowy=0, myslDo=0)
-        zd = krok(S, 3, 0.05)
+        zd = krok(S, 3 + int((D["boss"].get("zamach_s") or 0) / 0.05) + 1, 0.05)
+        if D["boss"].get("zamach_s"):
+            self.assertTrue([z for z in zd if z["t"] == "boss_zamach"], "golem: zamach przed ciosem")
         self.assertTrue([z for z in zd if z["t"] == "boss_gryz"], "boss gryzie gracza w zasięgu")
         self.assertIsNone(g(gr, "martwyDo"))
         self.assertAlmostEqual(g(gr, "hp"), 100 - D["boss"]["stopnie_gryz"][0], delta=1)
@@ -458,7 +460,7 @@ class TestLas(unittest.TestCase):
         # boss zjada gracza z zerem życia (spada o stadium jak zawsze)
         ustaw(gr, x=g(boss, "x") + r5 + rB, z=g(boss, "z"), hp=1.0, ogluszonyDo=0, tarczaDo=0)
         ustaw(boss, gryzGotowy=0, myslDo=0)
-        zd = krok(S, 3, 0.05)
+        zd = krok(S, 3 + int((D["boss"].get("zamach_s") or 0) / 0.05) + 1, 0.05)
         self.assertTrue([z for z in zd if z["t"] == "zjedz" and z["b"] == g(gr, "id")], "boss zjada przy zerze")
         krok(S, int(D["smierc"]["odrodzenie_s"] / 0.1) + 2, 0.1)
         self.assertEqual(g(gr, "forma"), 4)
@@ -489,7 +491,7 @@ class TestSmok(unittest.TestCase):
         ustaw(przod, tarczaDo=0, myslDo=99)
         ustaw(tyl, tarczaDo=0, myslDo=99)
         self.assertTrue(jeden("zdolnosc", S, gr, "ogien", LM.Tabela()))
-        zd = krok(S, 45, 0.05)
+        zd = krok(S, 60, 0.05)
         self.assertTrue([z for z in zd if z["t"] == "oddech"])
         rp = [z for z in zd if z["t"] == "rana" and z["id"] == g(przod, "id")]
         self.assertGreaterEqual(len(rp), 5, "FIRE BREATH rani przed pyskiem co tik")
@@ -766,6 +768,107 @@ class TestWalka(unittest.TestCase):
         for _ in range(40):
             b = byt(S, 0, 2)
             self.assertGreater(math.hypot(g(b, "x") - WY["x"], g(b, "z") - WY["z"]), WY["r_zew"])
+
+
+class TestModele(unittest.TestCase):
+    """Dane modeli Blendera (modele/dane, format /2) i próbkowanie klipów (zrodla/KlipyEwolucji.luau)."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.I = DN.modele_wczytaj("indeks.json")
+        cls.KL = IT.wykonaj(open(os.path.join(PAKIET, "zrodla", "KlipyEwolucji.luau"), encoding="utf-8").read(), "KlipyEwolucji")[0]
+
+    def test_29_wczytanie_danych(self):
+        I = self.I
+        self.assertEqual(I["wersja"], 2)
+        self.assertEqual(len(I["stawy"]), 26)
+        self.assertEqual(len(I["zaczepy"]), 13)
+        self.assertEqual(len(I["regiony"]), 9)
+        st = DN.stadia_smoka(I)
+        self.assertEqual([S["promien_gry"] for S in st], [f["r"] for f in D["formy"]], "promienie stadiów = promienie gry")
+        for S in st:
+            R = DN.modele_wczytaj(S["pliki"][0])
+            Lr = DN.modele_wczytaj(S["plik_lod"])
+            K = DN.modele_wczytaj(S["pliki"][1])
+            self.assertEqual([k[0] for k in R["kosci"]], I["stawy"], S["id"])
+            self.assertEqual([k[0] for k in Lr["kosci"]], I["stawy"], "LOD: te same stawy")
+            self.assertEqual(sorted(z[0] for z in R["zaczepy"]), sorted(I["zaczepy"]))
+            self.assertEqual(sorted(z[0] for z in Lr["zaczepy"]), sorted(I["zaczepy"]), "LOD: te same zaczepy")
+            self.assertEqual(len(R["czesci"]), S["czesci"])
+            self.assertEqual(len(Lr["czesci"]), S["czesci_lod"])
+            self.assertTrue(all(0 <= c[16] < 9 for c in R["czesci"] + Lr["czesci"]), "region 0–8")
+            self.assertTrue(all(0 <= c[13] < len(R["materialy"]) for c in R["czesci"]), "materiał w tablicy")
+            self.assertTrue(all(1 <= c[0] <= 26 for c in R["czesci"]), "kość części")
+            self.assertEqual(K["stawy"], I["stawy"])
+            nazwy = set(K["klipy"])
+            self.assertTrue(set(I["klipy_podstawowe"]) | set(I["klipy_dodatkowe"]) <= nazwy, S["id"])
+            for n, c in K["klipy"].items():
+                self.assertEqual(len(c["probki"]), c["dl"] // K["krok"] + 1, n)
+                self.assertTrue(all(len(w) == 3 * (len(c["stawy"]) + len(c["przes"])) for w in c["probki"]), n)
+                self.assertTrue(set(c["zdarzenia"]) <= set(I["zdarzenia"]), n)
+                self.assertTrue(all(0 <= k <= c["dl"] for k in c["zdarzenia"].values()), n)
+            self.assertGreater(K["klipy"]["chod"]["predkosc"], 0)
+            self.assertGreater(K["klipy"]["bieg"]["predkosc"], K["klipy"]["chod"]["predkosc"])
+        # rigi do budowy: 8 × (pełny, uproszczony) + jajo + rekwizyty + stwory; klipy 8 + jajo + stwory
+        rigi, klipy = DN.modele_do_budowy(DN.ustawienia())
+        self.assertEqual(len([n for n, _ in rigi if n.startswith("SmokB_") and n != "SmokB_jajo"]), 16)
+        self.assertIn("SmokB_jajo", [n for n, _ in rigi])
+        self.assertIn("smok_jajo", [i for i, _ in klipy])
+        # serwer: zamach zdolności = zdarzenie w klipie stadium
+        for i, F in enumerate(D["formy"]):
+            K = DN.modele_wczytaj("smok_%d_klipy.json" % (i + 1))
+            self.assertAlmostEqual(F["czasy"]["zar"], K["klipy"]["splun"]["zdarzenia"]["strzal"] / 30, places=2)
+            self.assertAlmostEqual(F["czasy"]["ryk"], K["klipy"]["ryk"]["zdarzenia"]["ryk_start"] / 30, places=2)
+
+    def test_30_probkowanie_klipow(self):
+        J = DN.modele_wczytaj("smok_3_klipy.json")
+        W = T_KL(self.KL, "przygotuj", J)
+        k = W.get("klipy").get("chod")
+        n = int(W.get("n"))
+        poza = T_KL(self.KL, "nowaPoza", n)
+        # Python: ta sama interpolacja liczb co w README (próbka co 2 klatki)
+        c = J["klipy"]["chod"]
+        for t in (0.0, 0.1, 0.37, c["dl"] / 30 + 0.05):
+            T_KL(self.KL, "probka", W, k, t, poza)
+            p = LM.z_luau(poza, True)
+            tt = t % (c["dl"] / 30)
+            f = tt * 30 / 2
+            a, u = int(math.floor(f)), f % 1
+            A, B = c["probki"][min(a, len(c["probki"]) - 1)], c["probki"][min(a + 1, len(c["probki"]) - 1)]
+            o = 0
+            for i in c["stawy"]:
+                b = (i - 1) * 6
+                if i in c["przes"]:
+                    for q in range(3):
+                        self.assertAlmostEqual(p[b + q], (A[o + q] + (B[o + q] - A[o + q]) * u) / 1000, places=6)
+                    o += 3
+                for q in range(3):
+                    self.assertAlmostEqual(p[b + 3 + q], A[o + q] + (B[o + q] - A[o + q]) * u, places=6)
+                o += 3
+        # mieszanie: kąty najkrótszą drogą (3590 → 10 przez 3600, nie wstecz)
+        a, b = T_KL(self.KL, "nowaPoza", 1), T_KL(self.KL, "nowaPoza", 1)
+        a.set(4.0, 3590.0)
+        b.set(4.0, 10.0)
+        T_KL(self.KL, "mieszaj", a, b, 0.5, 1)
+        self.assertAlmostEqual(LM.z_luau(a.get(4.0)), 3600.0, places=6)
+        # zdarzenia: gryz3 „ugryzienie” w swojej klatce; tempo chodu z prędkości
+        g3 = W.get("klipy").get("gryz3")
+        tz = J["klipy"]["gryz3"]["zdarzenia"]["ugryzienie"] / 30
+        wyn = LM.z_luau(T_KL(self.KL, "zdarzenia", g3, tz - 0.05, tz + 0.01, LM.Tabela()), True)
+        self.assertEqual(wyn, ["ugryzienie"])
+        self.assertEqual(LM.z_luau(T_KL(self.KL, "zdarzenia", g3, tz + 0.01, tz + 0.2, LM.Tabela()), True), [])
+        bieg = W.get("klipy").get("bieg")
+        self.assertAlmostEqual(T_KL(self.KL, "tempo", bieg, J["klipy"]["bieg"]["predkosc"], 1.0, 0.5, 3.0), 1.0, places=6)
+        self.assertEqual(T_KL(self.KL, "tempo", bieg, 100.0, 1.0, 0.5, 2.4), 2.4, "granica tempa")
+        # ogon_zamach przechodzi przez 360° — liczby, nie CFrame
+        oz = J["klipy"]["ogon_zamach"]
+        maks = max(abs(v) for w in oz["probki"] for v in w)
+        self.assertGreater(maks, 1800, "obrót ciała w ogon_zamach (dziesiąte stopnia)")
+
+
+def T_KL(KL, n, *a):
+    r = IT.wywolaj(KL.get(n), [lu(x) for x in a])
+    return r[0] if r else None
 
 
 if __name__ == "__main__":

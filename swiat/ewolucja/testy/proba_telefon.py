@@ -120,7 +120,9 @@ def main():
                      prostokaty={k: v for k, v in pr7.items() if k in ("Gryz", "Zryw", "Ogien", "Moc", "OgienNast", "MocNast", "Zycie")})
             p.zrzut("17_telefon_walka.jpg")
             a1 = p.atr()
-            PP.wynik("T5 klatka na telefonie", (a1.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a1.get("EW_K_Klatka") or 0, 1))
+            PP.wynik("T5 klatka na telefonie", (a1.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a1.get("EW_K_Klatka") or 0, 1),
+                     praca_skryptu_ms=round(a1.get("EW_K_Praca") or 0, 2), widokow=a1.get("EW_K_Widokow"), czesci_smokow=a1.get("EW_K_CzesciSmokow"),
+                     rigi=a1.get("EW_K_Rigi"))
         finally:
             zle, _ = PP.bledy_konsoli(p)
             PP.wynik("T6 konsola bez błędów", not zle, bledy=zle[:10])

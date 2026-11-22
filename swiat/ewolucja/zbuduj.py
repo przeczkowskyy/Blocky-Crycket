@@ -30,7 +30,7 @@ sys.path.append(os.path.join(REPO, "tools"))
 import dane as DN  # noqa: E402
 
 ZR = os.path.join(PAKIET, "zrodla")
-MODULY = ["DaneEwolucji", "LogikaEwolucji", "EfektyEwolucji"]
+MODULY = ["DaneEwolucji", "LogikaEwolucji", "EfektyEwolucji", "KlipyEwolucji", "RigiEwolucji", "SmokiKlienta", "LegowiskaKlienta"]
 SKRYPTY = [("SerwerEwolucji", "SerwerEwolucji.server.luau", "Server"), ("KlientEwolucji", "KlientEwolucji.client.luau", "Client")]
 
 
@@ -224,7 +224,7 @@ def scena(D):
         R2 = D["legowisko"]["r"]
         czesc(L, "Legowiska", "Obrzeze", (cx + x, cy + 0.1, cz + z), (0.2, 2 * R2 + 1.6, 2 * R2 + 1.6), "8A6A3A", "WoodPlanks", "Cylinder", rot)
         czesc(L, "Legowiska", "Podloga", (cx + x, cy + 0.16, cz + z), (0.22, 2 * R2, 2 * R2), kol[i % len(kol)], "WoodPlanks", "Cylinder", rot)
-        for f in range(8):
+        for f in range(8 if not D.get("blender") else 0):  # zestaw blender: cokoły z danych stawia klient
             a = f * 2 * math.pi / 8
             czesc(L, "Legowiska", "Cokol", (cx + x + math.sin(a) * 8.5, cy + 0.65, cz + z + math.cos(a) * 8.5), (1.2, 3.2, 3.2), "B8B0C8", "Slate",
                   "Cylinder", rot)
@@ -307,7 +307,7 @@ k:SetAttribute("__WYLACZNIK__", if wlaczona == nil then true else wlaczona)
 local mod = Instance.new("Folder")
 mod.Name = "Moduly"
 mod.Parent = k
-for _, n in { "DaneEwolucji", "LogikaEwolucji", "EfektyEwolucji" } do
+for _, n in HS:JSONDecode(__MODULY__) do
 	local m = Instance.new("ModuleScript")
 	m.Name = n
 	m.Source = zr[n]
@@ -477,27 +477,7 @@ do
 		l.TextColor3 = if i == 1 then Color3.fromHex("9BFFB8") else Color3.fromHex("FFC83D")
 		l.Parent = sg
 	end
-	for i, n in T.sylwetki do
-		local m = wz:FindFirstChild(n)
-		if m then
-			m = m:Clone()
-			m.Name = "Sylwetka"
-			for _, d in m:GetDescendants() do
-				if d:IsA("BasePart") then
-					d.Color = Color3.fromHex("141018")
-					d.Material = Enum.Material.SmoothPlastic
-					d.CastShadow = false
-					d.CanCollide = false
-				end
-			end
-			local _, roz = m:GetBoundingBox()
-			pcall(function()
-				m:ScaleTo(m:GetScale() * 5 / math.max(roz.Y, 0.1))
-			end)
-			m:PivotTo(cf * CFrame.new((i - 2) * 5.2, 3.6, 0) * CFrame.Angles(0, math.pi, 0))
-			m.Parent = g
-		end
-	end
+	p:SetAttribute("Sylwetki", HS:JSONEncode(T.sylwetki))
 end
 for _, s in { { "SerwerEwolucji", Enum.RunContext.Server }, { "KlientEwolucji", Enum.RunContext.Client } } do
 	local sk = Instance.new("Script")
@@ -537,6 +517,181 @@ CH:SetWaypoint(K .. ": usunięto")
 return "USUNIĘTO Workspace/" .. K
 '''
 
+# sylwetki mieszkańców lasu na tablicy (po budowie rigów: czarne, nieruchome kopie wzorców)
+SYLWETKI = WSTEP + r'''
+if not stary then
+	return "STOP: brak kontenera"
+end
+local wz = stary:FindFirstChild("Wzorce")
+local tab = stary:FindFirstChild("Tablica", true)
+if not (wz and tab) then
+	return "bez tablicy"
+end
+for _, s in tab.Parent:GetChildren() do
+	if s.Name == "Sylwetka" then
+		s:Destroy()
+	end
+end
+local cf = tab.CFrame
+local n = 0
+for i, nazwa in HS:JSONDecode(tab:GetAttribute("Sylwetki") or "[]") do
+	local m = wz:FindFirstChild(nazwa)
+	if m then
+		m = m:Clone()
+		m.Name = "Sylwetka"
+		for _, d in m:GetDescendants() do
+			if d:IsA("BasePart") then
+				d.Color = Color3.fromHex("141018")
+				d.Material = Enum.Material.SmoothPlastic
+				d.CastShadow = false
+				d.CanCollide = false
+				d.Anchored = true
+			end
+		end
+		for _, d in m:GetDescendants() do
+			if d:IsA("JointInstance") or d:IsA("WeldConstraint") or d:IsA("Attachment") then
+				d:Destroy()
+			end
+		end
+		local _, roz = m:GetBoundingBox()
+		pcall(function()
+			m:ScaleTo(m:GetScale() * 5 / math.max(roz.Y, 0.1))
+		end)
+		m:PivotTo(cf * CFrame.new((i - 2) * 5.2, 3.6, 0) * CFrame.Angles(0, math.pi, 0))
+		m.Parent = tab.Parent
+		n += 1
+	end
+end
+return "sylwetki: " .. n
+'''
+
+# rigi z danych Blendera (modele/dane, format /2): kość = niewidzialna część, Motor6D w dziecku (C0 = staw − środek rodzica,
+# C1 = staw − środek), bryły na WeldConstraint (atrybut Region), zaczepy na kościach; klipy jako StringValue (JSON) w Wzorce/Klipy
+RIGI = WSTEP + r'''
+if not stary then
+	return "STOP: brak kontenera — najpierw pełna budowa"
+end
+local wz = stary:FindFirstChild("Wzorce")
+local P = HS:JSONDecode(__PACZKA__)
+CH:SetWaypoint(K .. ": przed rigami")
+local function bezFizyki(p)
+	p.CanCollide = false
+	p.CanQuery = false
+	p.CanTouch = false
+	p.Massless = true
+end
+local zbudowane = {}
+for _, e in P.rigi do
+	local D = HS:JSONDecode(e.json)
+	local poprz = wz:FindFirstChild(e.nazwa)
+	if poprz then
+		poprz:Destroy()
+	end
+	local m = Instance.new("Model")
+	m.Name = e.nazwa
+	local hrp = Vector3.new(D.hrp[1], D.hrp[2], D.hrp[3])
+	local korzen = Instance.new("Part")
+	korzen.Name = "Korzen"
+	korzen.Size = Vector3.new(0.4, 0.4, 0.4)
+	korzen.Transparency = 1
+	korzen.Anchored = true
+	korzen.CastShadow = false
+	bezFizyki(korzen)
+	korzen.CFrame = CFrame.new(hrp)
+	korzen.Parent = m
+	m.PrimaryPart = korzen
+	local kosci = {}
+	for i, k in D.kosci do
+		local p = Instance.new("Part")
+		p.Name = k[1]
+		p.Size = Vector3.new(math.max(0.05, k[9]), math.max(0.05, k[10]), math.max(0.05, k[11]))
+		p.Transparency = 1
+		p.CastShadow = false
+		p.Anchored = false
+		bezFizyki(p)
+		p.CFrame = CFrame.new(k[6], k[7], k[8])
+		p.Parent = m
+		kosci[i] = p
+	end
+	for i, k in D.kosci do
+		local rodzic, srodekRodzica
+		if k[2] == 0 then
+			rodzic, srodekRodzica = korzen, hrp
+		else
+			local kr = D.kosci[k[2]]
+			rodzic, srodekRodzica = kosci[k[2]], Vector3.new(kr[6], kr[7], kr[8])
+		end
+		local staw = Vector3.new(k[3], k[4], k[5])
+		local mo = Instance.new("Motor6D")
+		mo.Name = k[12]
+		mo.C0 = CFrame.new(staw - srodekRodzica)
+		mo.C1 = CFrame.new(staw - Vector3.new(k[6], k[7], k[8]))
+		mo.Part0 = rodzic
+		mo.Part1 = kosci[i]
+		mo.Parent = kosci[i]
+	end
+	local n = 0
+	for _, c in D.czesci do
+		local ks = c[2]
+		local p
+		if ks == 3 then
+			p = Instance.new("WedgePart")
+		elseif ks == 4 then
+			p = Instance.new("CornerWedgePart")
+		else
+			p = Instance.new("Part")
+			p.Shape = if ks == 1 then Enum.PartType.Ball elseif ks == 2 then Enum.PartType.Cylinder else Enum.PartType.Block
+		end
+		p.Name = c[3]
+		p.Size = Vector3.new(c[10], c[11], c[12])
+		p.CFrame = CFrame.new(c[4], c[5], c[6]) * CFrame.fromOrientation(c[7], c[8], c[9])
+		p.Color = Color3.fromHex(c[13])
+		local mat = D.materialy[c[14] + 1]
+		p.Material = Enum.Material[mat[1]]
+		p.Reflectance = mat[2]
+		p.TopSurface, p.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
+		p.Anchored = false
+		bezFizyki(p)
+		p:SetAttribute("Region", c[17])
+		local w = Instance.new("WeldConstraint")
+		w.Part0 = kosci[c[1]]
+		w.Part1 = p
+		w.Parent = p
+		p.Parent = m
+		n += 1
+	end
+	for _, zc in D.zaczepy do
+		local a = Instance.new("Attachment")
+		a.Name = zc[1]
+		a.CFrame = CFrame.new(zc[3], zc[4], zc[5]) * CFrame.fromOrientation(zc[6], zc[7], zc[8])
+		a.Parent = kosci[zc[2]]
+	end
+	korzen.PivotOffset = CFrame.new(-hrp)
+	m:SetAttribute("KorzenPoz", hrp)
+	m:SetAttribute("Rig", D.id)
+	m:SetAttribute("Czesci", n)
+	m:SetAttribute("Kosci", #D.kosci)
+	m:PivotTo(CFrame.new(0, -200, 0))
+	m.Parent = wz
+	table.insert(zbudowane, e.nazwa .. ":" .. n)
+end
+local fk = wz:FindFirstChild("Klipy")
+if not fk then
+	fk = Instance.new("Folder")
+	fk.Name = "Klipy"
+	fk.Parent = wz
+end
+for _, e in P.klipy do
+	local v = fk:FindFirstChild(e.id) or Instance.new("StringValue")
+	v.Name = e.id
+	v.Value = e.json
+	v.Parent = fk
+	table.insert(zbudowane, "klipy " .. e.id .. ":" .. #e.json)
+end
+CH:SetWaypoint(K .. ": rigi")
+return table.concat(zbudowane, ", ")
+'''
+
 STAN = r'''
 local HS = game:GetService("HttpService")
 local k = workspace:FindFirstChild("__KONTENER__")
@@ -556,6 +711,21 @@ for _, m in k.Wzorce:GetChildren() do
 end
 return HS:JSONEncode(w)
 '''
+
+
+def paczki_rigow():
+    """Rigi i klipy zestawu blender w paczkach (jedno stadium na wywołanie: pełny rig, uproszczony, klipy; potem reszta)."""
+    rigi, klipy = DN.modele_do_budowy(DN.ustawienia())
+
+    def czyt(f):
+        return open(os.path.join(DN.MODELE, f), encoding="utf-8").read()
+    w = []
+    for nr in range(1, 9):
+        w.append({"rigi": [{"nazwa": n, "json": czyt(f)} for n, f in rigi if n in ("SmokB_%d" % nr, "SmokB_%d_lod" % nr)],
+                  "klipy": [{"id": i, "json": czyt(f)} for i, f in klipy if i == "smok_%d" % nr]})
+    w.append({"rigi": [{"nazwa": n, "json": czyt(f)} for n, f in rigi if not n.startswith("SmokB_") or n == "SmokB_jajo"],
+              "klipy": [{"id": i, "json": czyt(f)} for i, f in klipy if not i.startswith("smok_") or i == "smok_jajo"]})
+    return w
 
 
 def luau_str(t):
@@ -592,7 +762,8 @@ def main():
     for b in bledy:
         log("BŁĄD Luau:", b)
     sc = scena(D)
-    wzorce = sorted({f["wzorzec"] for f in D["formy"]} | {D["boss"]["wzorzec"]})
+    # wzorce z Pet Areny / generatora części (rigi zestawu blender powstają osobno, krokiem RIGI)
+    wzorce = sorted({f["wzorzec"] for f in D["formy"] if not f.get("rig")} | {D["boss"]["wzorzec"]})
     log("źródła: %s (%d kB); scena: %d części; wzorce: %d; %s" % (
         ", ".join(zr), sum(len(t.encode("utf-8")) for t in zr.values()) // 1000, len(sc), len(wzorce),
         "PUBLIKACJA: bez strażnika Studio" if a.publikacja else "ze strażnikiem Studio (tylko w Studio)"))
@@ -627,12 +798,17 @@ def main():
             log(wykonaj(wstaw(WLACZ, WARTOSC="true" if a.wlacz == "on" else "false", **wsp), "wyłącznik"))
             return 0
         kod = wstaw(BUDOWA, CZAS=time.strftime("%Y-%m-%d %H:%M"), TYLKO="true" if a.skrypty else "false",
-                    PUBLIKACJA="true" if a.publikacja else "false", WZORCE=luau_str(json.dumps(wzorce)),
+                    PUBLIKACJA="true" if a.publikacja else "false", WZORCE=luau_str(json.dumps(wzorce)), MODULY=luau_str(json.dumps(MODULY)),
                     ZRODLA=luau_str(json.dumps(zr, ensure_ascii=False)), SCENA=luau_str(json.dumps(sc)), TABLICA=luau_str(json.dumps(tablica_lasu(D))),
                     SMOKI=luau_str(json.dumps(DN.smoki(DN.ustawienia()) or {"_": None}).replace('"_": null', "")),
                     TX=str(D["pole"]["srodek"][0] + 12), TY=str(D["pole"]["srodek"][1]), TZ=str(D["pole"]["srodek"][2] - 52), TYTUL=D["ui"]["tytul_gry"],
                     NAPIS1=D["ui"]["las_tablica"], NAPIS2=D["ui"]["las_warunek"] % D["las"]["od_formy"], WYDANIE=a.wydanie.replace('"', ""), **wsp)
         log(wykonaj(kod, "budowa"))
+        if not a.skrypty and D.get("blender"):
+            for P in paczki_rigow():
+                log("rigi:", wykonaj(wstaw(RIGI, PACZKA=luau_str(json.dumps(P, ensure_ascii=False)), **wsp), "rigi")[:300])
+        if not a.skrypty:
+            log(wykonaj(wstaw(SYLWETKI, **wsp), "sylwetki"))
         st = json.loads(wykonaj(wstaw(STAN, KONTENER=D["kontener"]), "stan"))
         zle = [n for n, t in zr.items() if (st["zrodla"].get(n) or {}).get("bajtow") != len(t.encode("utf-8"))]
         log("sprawdzenie: %s; wyłącznik %s = %s; publikacja %s; wydanie %s; części sceny %d" % (

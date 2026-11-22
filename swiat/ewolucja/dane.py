@@ -25,6 +25,69 @@ PLIK = os.path.join(ZR, "DaneEwolucji.luau")
 STRAZNIK = 'if not game:GetService("RunService"):IsStudio() then'
 
 
+MODELE = os.path.join(PAKIET, "modele", "dane")
+
+
+def modele_wczytaj(plik):
+    """Plik z danych modeli Blendera (swiat/ewolucja/modele/dane, format /2) — tylko do odczytu."""
+    with open(os.path.join(MODELE, plik), encoding="utf-8") as f:
+        return json.load(f)
+
+
+def stadia_smoka(I):
+    """Stadia 1–8 z indeksu (indeks wymienia w „stadia” także jajo `smok_jajo` — pomijamy je tutaj)."""
+    w = [S for S in I["stadia"] if S["id"] != "smok_jajo" and isinstance(S.get("nr"), int)]
+    if [S["nr"] for S in w] != list(range(1, 9)):
+        raise SystemExit("modele/dane/indeks.json: oczekiwane stadia 1–8, są %s" % [S.get("nr") for S in w])
+    return w
+
+
+def czasy_klipow(K):
+    """Chwile z klipów (sekundy od startu) dla serwera: zamach zdolności = zdarzenie w klipie (efekt w tej klatce)."""
+    fps = K["fps"]
+
+    def zd(klip, nazwa, zapas):
+        c = K["klipy"].get(klip)
+        return round(c["zdarzenia"][nazwa] / fps, 3) if c and nazwa in c.get("zdarzenia", {}) else zapas
+    o = zd("ogien_start", "ogien_start", 0.35)
+    return {"zar": zd("splun", "strzal", 0.3), "oddech": o, "inferno": o, "ogon": zd("ogon_zamach", "uderzenie_start", 0.3),
+            "lot": zd("szybowanie_start", "odbicie", 0.2), "ryk": zd("ryk", "ryk_start", 0.45), "meteor": zd("nurkowanie_skok", "odbicie", 0.45)}
+
+
+def blender(U):
+    """Zestaw „blender”: osiem stadiów z modele/dane (rig pełny i uproszczony, klipy), jajo, rekwizyty, owca, golem."""
+    I = modele_wczytaj("indeks.json")
+    if I.get("wersja") != 2:
+        raise SystemExit("modele/dane/indeks.json: oczekiwana wersja 2, jest %s" % I.get("wersja"))
+    st = []
+    for S in stadia_smoka(I):
+        K = modele_wczytaj(S["pliki"][1])
+        st.append({"nr": S["nr"], "rig": S["id"], "nazwa": S["nazwa"], "promien": S["promien_gry"], "wys": S["wymiary"]["wys"],
+                   "czasy": czasy_klipow(K), "chod": K["klipy"]["chod"].get("predkosc"), "bieg": K["klipy"]["bieg"].get("predkosc")})
+    G = U.get("blender", {})
+    return {"stadia": st, "stawy": I["stawy"], "zaczepy": I["zaczepy"], "regiony": I["regiony"],
+            "rekwizyty": [r["id"] for r in I.get("rekwizyty", [])], "stwory": [s["id"] for s in I.get("stwory", [])],
+            "lod": G.get("lod", {}), "warianty": G.get("warianty", {}), "golem": G.get("golem")}
+
+
+def modele_do_budowy(U):
+    """Dla zbuduj.py: [(wzorzec, plik rigu)] i [(id klipów, plik klipów)] zestawu „blender”."""
+    I = modele_wczytaj("indeks.json")
+    rigi, klipy = [], []
+    for S in stadia_smoka(I):
+        rigi.append(("SmokB_%d" % S["nr"], S["pliki"][0]))
+        rigi.append(("SmokB_%d_lod" % S["nr"], S["plik_lod"]))
+        klipy.append((S["id"], S["pliki"][1]))
+    rigi.append(("SmokB_jajo", "smok_jajo_rig.json"))
+    klipy.append(("smok_jajo", "smok_jajo_klipy.json"))
+    for r in I.get("rekwizyty", []):
+        rigi.append(("Rekwizyt_" + r["id"], r["plik"]))
+    for s in I.get("stwory", []):
+        rigi.append(("Stwor_" + s["id"], s["pliki"][0]))
+        klipy.append((s["id"], s["pliki"][1]))
+    return rigi, klipy
+
+
 def _pa():
     spec = importlib.util.spec_from_file_location("dane_pet_arena", os.path.join(REPO, "swiat", "pet_arena", "dane.py"))
     m = importlib.util.module_from_spec(spec)
@@ -196,9 +259,14 @@ def dane():
     pety = {p["id"]: p for p in DP["pety"]}
     formy = []
     zestaw = U.get("zestaw", "smok")
-    for i, F in enumerate(U["formy_" + zestaw]):
+    BL = blender(U) if zestaw == "blender" else None
+    for i, F in enumerate(U["formy_" + ("smok" if zestaw == "blender" else zestaw)]):
         f = {k: v for k, v in F.items() if k not in ("pet", "boss", "smok")}
-        if "smok" in F:
+        if BL:
+            S = BL["stadia"][i]
+            f["wzorzec"], f["wzorzecLod"], f["rig"] = "SmokB_%d" % (i + 1), "SmokB_%d_lod" % (i + 1), S["rig"]
+            f["model_r"], f["model_h"], f["czasy"] = S["promien"], S["wys"], S["czasy"]
+        elif "smok" in F:
             S = SMOK.stadium(F["smok"])
             f["wzorzec"], f["model_r"], f["model_h"] = "Smok_%d" % (i + 1), S["promien"], S["wysokosc"]
         elif "pet" in F:
@@ -231,6 +299,11 @@ def dane():
         raise SystemExit("boss: nieznany model %s" % B["model"])
     B["wzorzec"], B["model_r"], B["model_h"] = "Boss_" + B["model"], UP["boss"]["promien"], UP["boss"]["wysokosc"]
     B["chod"] = "pelzanie"
+    if zestaw == "blender" and U.get("blender", {}).get("golem"):
+        # KNIGHT GOLEM zamiast węża: zamach do chwili ciosu w klipie „zamach” (serwer czeka tyle przed raną)
+        K = modele_wczytaj("golem_1_klipy.json")
+        B["zamach_s"] = round(K["klipy"]["zamach"]["zdarzenia"]["uderzenie"] / K["fps"], 3)
+        B["golem"] = True
     B.update({"podskok": 0.02, "pochyl": 0.04, "krok": 0.8, "anim": None})
     D = {
         "kontener": U["kontener"], "prefiks": U["prefiks"], "wylacznik": U["wylacznik"], "wzorceRS": U["wzorce_rs"], "ui": U["ui"],
@@ -252,6 +325,8 @@ def dane():
         "kamera": U["kamera"],
         "dzwieki": {"arkusz": DP["dzwieki"]["arkusz"], "efekty": {r: DP["dzwieki"]["efekty"][r] for r in U["dzwieki"] if r in DP["dzwieki"]["efekty"]}},
         "miejsceBC": U["miejsce_bc"],
+        "zestaw": zestaw,
+        "blender": BL,
     }
     return D
 

@@ -298,7 +298,8 @@ def przebieg(p, zrzuty):
     pomiar(p)
     walka(p, zrzuty)
     a = p.atr()
-    wynik("P12 klatka", (a.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a.get("EW_K_Klatka") or 0, 1), widokow=a.get("EW_K_Widokow"),
+    wynik("P12 klatka", (a.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a.get("EW_K_Klatka") or 0, 1), praca_skryptu_ms=round(a.get("EW_K_Praca") or 0, 2),
+          czesci_smokow=a.get("EW_K_CzesciSmokow"), rigi=a.get("EW_K_Rigi"), widokow=a.get("EW_K_Widokow"),
           krok_serwera_ms=round(st.get("krok_ms") or 0, 2), okno=a.get("okno"), liczniki=st.get("liczniki"))
 
 
@@ -510,6 +511,11 @@ def walka(p, zrzuty):
     wi = p.serwer('"walka_info", %d' % bid)
     ja = p.serwer('"walka_info"')
     rany = (a1.get("EW_K_RanyZad") or 0) - (a0.get("EW_K_RanyZad") or 0)
+    # klipy zdolności stadium 3: EMBER SPIT (splun) i TAIL SWEEP (ogon_zamach)
+    p.przycisk("ogien")
+    time.sleep(0.9)
+    p.przycisk("moc")
+    time.sleep(0.9)
     wynik("P24 łańcuch BITE", rany >= 3 and ja and ja.get("lancuch") == 3 and wi and wi["hp"] < 300, rany_zadane=rany, lancuch=ja and ja.get("lancuch"),
           hp_celu=wi and round(wi["hp"]), efekty=a1.get("EW_K_Efekty"))
     # P25 FIRE: stadium 4, FIRE BREATH w bota przed pyskiem (kanał, rany co tik)
@@ -551,6 +557,9 @@ def walka(p, zrzuty):
     time.sleep(0.25)
     t_lot = time.time()
     p.przycisk("moc")
+    if zrzuty:
+        time.sleep(0.45)
+        p.zrzut("18_szybowanie.jpg")
     wysp, _ = czekaj(lambda: p.serwer('"walka_info"').get("naWyspie"), 4, 0.25)
     time.sleep(0.6)
     st = p.serwer('"stan"')
@@ -604,6 +613,18 @@ def walka(p, zrzuty):
     l1 = p.serwer('"stan"')["liczniki"]
     ogl = sum(1 for i in ids2 if (p.serwer('"walka_info", %d' % i) or {}).get("hp", 999) < 999)
     wynik("P27b ROAR", (l1.get("ryk") or 0) > (l0.get("ryk") or 0) and ogl >= 2, ryki=l1.get("ryk"), ranni=ogl)
+    # P29 klipy: każdy podpięty stan zagrał swój klip (własny smok albo inne stworki w tej sesji), trofea w pozie cokołu
+    a = p.atr()
+    own = json.loads(a.get("EW_K_Klipy") or "{}")
+    inni = json.loads(a.get("EW_K_KlipyInni") or "{}")
+    wymagane = ["wyklucie", "spoczynek", "bieg", "gryz1", "gryz2", "gryz3", "ogien_start", "ogien_petla", "ogien_koniec", "splun", "ogon_zamach",
+                "ryk", "szybowanie_start", "szybowanie_petla", "szybowanie_ladowanie", "nurkowanie_skok", "nurkowanie_ladowanie", "trafienie",
+                "koziolek", "pozarcie", "radosc"]
+    brak = [k for k in wymagane if not own.get(k) and not inni.get(k)]
+    wynik("P29 klipy stanów", D.get("zestaw") != "blender" or (not brak and (a.get("EW_K_Cokol") or 0) > 0 and inni.get("upadek")),
+          brak=brak, wlasne=own, inne_upadek_golema=inni.get("upadek"), cokol=a.get("EW_K_Cokol"))
+    wynik("P30 koszt rigów", D.get("zestaw") != "blender" or ("pełne" in (a.get("EW_K_Rigi") or "") and (a.get("EW_K_CzesciSmokow") or 0) > 0),
+          rigi=a.get("EW_K_Rigi"), czesci_smokow=a.get("EW_K_CzesciSmokow"), klatka_ms=round(a.get("EW_K_Klatka") or 0, 1))
     # P28 boty walczą tymi samymi zasadami: zamachy botów (wszystkie zamachy minus moje) i rany w świecie
     a = p.atr()
     l = p.serwer('"stan"')["liczniki"]

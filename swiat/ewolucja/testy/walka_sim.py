@@ -103,7 +103,8 @@ def manekin(forma, linia, czas_s=30.0, ziarno=5):
     r = D["formy"][forma - 1]["r"]
     A = next((x for x in D["zdolnosci"].get(linia or "", []) if x["od"] == forma), None)
     mx = A["d"] if A and A["typ"] in ("lot", "meteor") else r * 2 + 0.6
-    a = stworek(S, forma, 0.0, 0.0)
+    # BITE: bot (gryzie sam, gdy cel w zasięgu); zdolność: gracz (boty mają dłuższą odnowę — rzadziej, dla czytelności łąki)
+    a = stworek(S, forma, 0.0, 0.0, 1 if linia else 0)
     m = stworek(S, forma, mx, 0.0)
     T.ustaw(a, kier=math.pi / 2, cel=T.g(m, "id"))
     suma, t = 0.0, 0.0

@@ -732,6 +732,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 			bb.wx, bb.wz = 0, 0
 			bb.myslDo = S.czas + (a or 3)
 			bb.cel = 0
+			bb.bossZamach = nil
 			bb.gryzGotowy = S.czas + (a or 3)
 		end
 		return true

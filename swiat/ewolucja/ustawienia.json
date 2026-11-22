@@ -179,8 +179,19 @@
   "za_forme": [8, 20, 45, 100, 210, 420, 800, 1500],
   "gracz_x": 1.5
  },
- "zestaw": "smok",
- "zestaw_opis": "Zestaw form: smok (domyślny, osiem stadiów jednego smoka z generatora smok.py) albo potwory (osiem modeli Pet Areny, etapy 1–3) — porównanie i powrót jedną zmianą.",
+ "zestaw": "blender",
+ "zestaw_opis": "Zestaw form: blender (domyślny od smok-blender1: osiem stadiów z modeli Blendera — rig, klipy, jajo, rekwizyty z modele/dane), smok (dawny generator części smok.py) albo potwory (modele Pet Areny) — zmiana jedną wartością.",
+ "blender": {
+  "opis": "Zestaw blender: progi kosztu (lod) — własny smok pełny rig co klatkę; inni gracze pełny rig do odl_pelny_gracz, boty do odl_pelny_bot (co co_blisko klatek), dalej uproszczony rig co co_daleko klatek, poza kadrem albo dalej niż odl_stop — poza zamrożona. Tempo chodu i biegu = prędkość / predkosc klipu w granicach tempo_min–tempo_maks. warianty: kolory regionów (cialo, luski, brzuch, blona, kolce, zar, zar_rdzen) dla każdego wariantu; tecza tęczuje cialo i blona.",
+  "lod": {"odl_pelny_gracz": 90, "odl_pelny_bot": 45, "odl_stop": 170, "co_blisko": 2, "co_daleko": 4, "co_stop": 12, "histereza": 8, "tempo_min": 0.55, "tempo_maks": 2.4},
+  "warianty": {
+   "zloty": {"cialo": "F2B53A", "luski": "8A5A0A", "brzuch": "FFF1B8", "blona": "FFD86B", "kolce": "FFFFFF", "zar": "FFE27A", "zar_rdzen": "FFF8D0"},
+   "krysztal": {"cialo": "9EEBFF", "luski": "2E7FA8", "brzuch": "E8FBFF", "blona": "7FE9FF", "kolce": "FFFFFF", "zar": "5BE8FF", "zar_rdzen": "D8FAFF"},
+   "rubin": {"cialo": "D8284A", "luski": "5A0A1E", "brzuch": "FFB3C2", "blona": "FF5C80", "kolce": "FFE0E8", "zar": "FF3D6A", "zar_rdzen": "FFD0DA"},
+   "tecza": {"cialo": "FF7AF0", "luski": "3A1A5A", "brzuch": "FFFFFF", "blona": "7AF0FF", "kolce": "FFFFFF", "zar": "FFE27A", "zar_rdzen": "FFFFFF"}
+  },
+  "golem": {"model": "Stwor_golem_%d", "klipy": "golem_%d", "skala": 1.0}
+ },
  "formy_potwory": [
   {"pet": "lesny_slime", "chod": "skok", "nazwa": "SLIME", "r": 1.6, "v": 1.0, "potrzeba": 32, "trofeum": 1,
    "um": {"typ": "wsysanie", "nazwa": "SLURP", "r": 9, "odnowa_s": 6}},
@@ -308,7 +319,9 @@
   "zryw_szansa": 0.3,
   "panika": 1.08,
   "kulki_do": 3,
-  "laska_s": 110
+  "laska_s": 110,
+  "zdolnosci_szansa": 0.18,
+  "zdolnosci_odnowa_x": 1.8
  },
  "siec": {
   "opis": "Klient przewiduje własnego potwora i co ruch_co_s wysyła kierunek i pozycję; serwer przyjmuje pozycję, jeśli zgadza się z prędkością (+ tolerancja), inaczej poprawia klienta. Stan świata co stan_co_s (bufor, UnreliableRemoteEvent). Wiadro: limit akcji na gracza.",
