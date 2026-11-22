@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-22T20:48:15+01:00",
+ "aktualizacja": "2026-11-22T21:02:44+01:00",
  "prace": [
   {
    "id": "smok-pierwsze-wrazenie",
    "tytul": "Gra o smoku: poprawki pierwszego wrażenia przed wydaniem",
    "stan": "w_toku",
+   "etap": "wyklucie z jaja, potem przebudowa walki",
    "start": "2026-11-22T20:48:15+01:00",
-   "koniec_szacowany": "2026-11-22T22:18:15+01:00",
-   "aktualizacja": "2026-11-22T20:48:15+01:00",
+   "koniec_szacowany": "2026-11-23T00:22:44+01:00",
+   "aktualizacja": "2026-11-22T21:02:44+01:00",
    "obszary": [
     "studio:EwolucjaGra",
     "swiat/ewolucja"
