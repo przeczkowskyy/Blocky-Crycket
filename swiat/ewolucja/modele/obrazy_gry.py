@@ -107,10 +107,41 @@ def poswiata(t, prog=178, r=16):
     return ImageChops.screen(t, jasne)
 
 
-def tytul(t, x_srodek, y, kom1=19, kom2=25):
-    a, b = napis("DRAGON LAIR", kom1), napis("EVOLUTION", kom2)
+def _font(rozmiar):
+    """Gruba, czysta czcionka zainstalowana w systemie (Cooper Black; dalej zamienniki)."""
+    from PIL import ImageFont
+    for nazwa in ("COOPBL.TTF", "GILSANUB.TTF", "seguibl.ttf", "ariblk.ttf", "impact.ttf", "arialbd.ttf", "DejaVuSans-Bold.ttf"):
+        try:
+            return ImageFont.truetype(nazwa, rozmiar)
+        except OSError:
+            continue
+    return ImageFont.load_default()
+
+
+def litery(tekst, wys, gora=(255, 248, 160), dol=(255, 146, 26), obrys=(58, 20, 88), cien=(18, 6, 30)):
+    """Napis czcionką: gruby ciemny obrys, cień, pionowy gradient i jaśniejsza górna połowa (połysk)."""
+    font = _font(int(wys))
+    gr = max(4, int(wys * 0.09))
+    l, g_, r, b = ImageDraw.Draw(Image.new("L", (8, 8))).textbbox((0, 0), tekst, font=font, stroke_width=gr)
+    W, H = r - l + int(wys * 0.16), b - g_ + int(wys * 0.2)
+    ox, oy = -l, -g_
+    maska, obr = Image.new("L", (W, H), 0), Image.new("L", (W, H), 0)
+    ImageDraw.Draw(maska).text((ox, oy), tekst, font=font, fill=255)
+    ImageDraw.Draw(obr).text((ox, oy), tekst, font=font, fill=255, stroke_width=gr, stroke_fill=255)
+    wyn = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    wyn.paste(Image.new("RGBA", (W, H), cien + (225,)), (int(wys * 0.05), int(wys * 0.1)), obr)
+    wyn.paste(Image.new("RGBA", (W, H), obrys + (255,)), (0, 0), obr)
+    wyn.paste(ImageOps.colorize(Image.linear_gradient("L").resize((W, H)), black=gora, white=dol).convert("RGBA"), (0, 0), maska)
+    polysk = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(polysk).rectangle((0, 0, W, int(oy + (b - g_) * 0.5)), fill=64)
+    wyn.paste(Image.new("RGBA", (W, H), (255, 255, 255, 255)), (0, 0), ImageChops.multiply(maska, polysk))
+    return wyn
+
+
+def tytul(t, x_srodek, y, w1=150, w2=214):
+    a, b = litery("DRAGON LAIR", w1), litery("EVOLUTION", w2)
     t.paste(a, (int(x_srodek - a.width / 2), int(y)), a)
-    t.paste(b, (int(x_srodek - b.width / 2), int(y + a.height - kom1 * 2.2)), b)
+    t.paste(b, (int(x_srodek - b.width / 2), int(y + a.height - w1 * 0.3)), b)
 
 
 def zrob(g):
@@ -127,8 +158,10 @@ def zrob(g):
     pr = sd.punkt_zaczepu(rig, sd.poza(rig, klipy["ogien_petla"], 0), "PyskAttachment")
     S4, X4, XO = 1.3, -9.5, 9.5
     pysk = (X4 - pr[2] * S4, pr[1] * S4, pr[0] * S4)
-    ogien = rekwizyty.ogien(max(4.0, XO - 4.0 - pysk[0]))
-    dodatki = [rekwizyty.skarb(3), rekwizyty.skarb(1), rekwizyty.gniazdo(), ogien]
+    from swiat.ewolucja.modele import swiat_zestaw
+    ogien = rekwizyty.ogien2(max(4.0, XO - 3.4 - pysk[0]))
+    dodatki = [swiat_zestaw.zbuduj("stos_zlota_3"), swiat_zestaw.zbuduj("stos_zlota_1"), swiat_zestaw.zbuduj("legowisko_krag"),
+               rekwizyty.gniazdo(), rekwizyty.cokol(), ogien]
     zad = [{"typ": "scena", "plik": "ik_piskle.png", "rozmiar": [900, 900], "kierunek": [0.34, 0.24, 1.0],
             "modele": [{"id": "smok_1", "poza": ["cokol", 0]}]},
            {"typ": "scena", "plik": "ik_prastary.png", "rozmiar": [1400, 1400], "kierunek": [0.06, 0.05, 1.0],
@@ -136,9 +169,12 @@ def zrob(g):
     zad += [{"typ": "scena", "plik": "m1_%d.png" % n, "rozmiar": [800, 800], "orto": True, "kierunek": [0.8, 0.18, 1.0],
              "modele": [{"id": "smok_%d" % n, "poza": ["cokol", 0], "czarny": n == 8}]} for n in range(1, 9)]
     zad.append({"typ": "scena", "plik": "m2.png", "rozmiar": [1920, 1080], "kierunek": [0.4, 0.2, 1.0], "margines": 1.04,
-                "modele": [{"id": "skarb_3"}, {"id": "smok_5", "poz": [0, 2.3, -0.6], "poza": ["cokol", 0]},
-                           {"id": "smok_1", "poz": [7.8, 0, 5.2], "obrot_y": -35, "poza": ["spoczynek", 0]},
-                           {"id": "gniazdo", "poz": [-9.8, 0, 3.4]}, {"id": "skarb_1", "poz": [9.8, 0, -2.0]}]})
+                "kadr": ["stos_zlota_3", "smok_5", "smok_1", "gniazdo", "stos_zlota_1"],
+                "modele": [{"id": "legowisko_krag", "poz": [0, 0, -1.0]}, {"id": "stos_zlota_3"},
+                           {"id": "smok_5", "poz": [0, 2.2, -0.8], "poza": ["cokol", 0]},
+                           {"id": "smok_1", "poz": [7.6, 0, 6.4], "obrot_y": -35, "poza": ["spoczynek", 0]},
+                           {"id": "gniazdo", "poz": [-8.6, 0, 5.4], "skala": 0.8}, {"id": "stos_zlota_1", "poz": [9.6, 0, 1.0]}]
+                          + [{"id": "cokol", "poz": [x, 0, -7.4 + abs(x) * 0.25], "skala": 0.4} for x in (-7.0, 7.0)]})
     zad.append({"typ": "scena", "plik": "m3.png", "rozmiar": [1920, 1080], "kierunek": [0.0, 0.1, 1.0], "margines": 1.04,
                 "modele": [{"id": "smok_4", "poz": [X4, 0, 0], "obrot_y": 90, "skala": S4, "poza": ["ogien_petla", 0]},
                            {"id": "smok_3", "poz": [XO, 0, 0], "obrot_y": -90, "skala": 1.6, "poza": kl(3, "trafienie", 0.25)},
@@ -152,8 +188,8 @@ def zrob(g):
     W = 1024
     t = tlo(W, W, (0.5, 0.4), ((255, 232, 120), (255, 132, 44), (104, 26, 100)), promienie=16)
     wklej(t, wytnij(r("ik_prastary.png"), szer=int(W * 1.3)), W * 0.5, W * 0.92)
-    q = napis("?", 34, gora=(255, 252, 200), dol=(255, 196, 40), obrys=(70, 22, 100))
-    t.paste(q, (int(W * 0.5 - q.width / 2), int(W * 0.15)), q)
+    q = litery("?", 330, gora=(255, 252, 200), dol=(255, 190, 40), obrys=(70, 22, 100))
+    t.paste(q, (int(W * 0.5 - q.width / 2), int(W * 0.1)), q)
     ImageDraw.Draw(t).ellipse((-0.3 * W, 0.8 * W, 1.3 * W, 1.4 * W), fill=(58, 22, 72))
     cien(t, W * 0.5, W * 0.93, W * 0.6, W * 0.1)
     wklej(t, naklejka(wytnij(r("ik_piskle.png"), wys=int(W * 0.56)), 10), W * 0.5, W * 0.975)
@@ -164,8 +200,8 @@ def zrob(g):
     t = tlo(1920, 1080, (0.74, 0.6), ((255, 236, 150), (255, 150, 70), (64, 30, 110)), promienie=18)
     ImageDraw.Draw(t).ellipse((-400, 870, 2320, 1700), fill=(84, 160, 78))
     wklej(t, wytnij(r("m1_8.png"), wys=930), 1560, 1030)
-    q = napis("?", 40, gora=(255, 252, 200), dol=(255, 196, 40), obrys=(70, 22, 100))
-    t.paste(q, (1560 - q.width // 2, 420), q)
+    q = litery("?", 340, gora=(255, 252, 200), dol=(255, 190, 40), obrys=(70, 22, 100))
+    t.paste(q, (1560 - q.width // 2, 400), q)
     for n, wys_, x in ((7, 470, 1215), (6, 380, 1000), (5, 330, 800), (4, 270, 615), (3, 220, 450), (2, 180, 300), (1, 150, 150)):
         im = naklejka(ImageOps.mirror(wytnij(r("m1_%d.png" % n), wys=wys_)), 5)
         cien(t, x, 992, im.width * 0.7, 36, 90)
@@ -182,17 +218,17 @@ def zrob(g):
     sc_ = wytnij(r("m2.png"), wys=720)
     cien(t, 960, 1010, sc_.width * 0.9, 90, 130)
     wklej(t, sc_, 960, 1050)
-    tytul(t, 960, 14, 17, 22)
+    tytul(t, 960, 6, 128, 184)
     m2 = poswiata(t, 186, 18)
 
     # ---- miniatura 3: walka — smok zieje ogniem w drugiego
-    t = tlo(1920, 1080, (0.5, 0.62), ((255, 238, 160), (236, 92, 40), (56, 20, 70)), promienie=20, kolor_p=(255, 206, 130), sila=36)
-    ImageDraw.Draw(t).ellipse((-300, 860, 2220, 1500), fill=(50, 30, 58))
+    t = tlo(1920, 1080, (0.5, 0.66), ((150, 60, 96), (70, 28, 84), (18, 10, 34)), promienie=20, kolor_p=(255, 150, 70), sila=22)
+    ImageDraw.Draw(t).ellipse((-300, 860, 2220, 1500), fill=(30, 18, 44))
     sc_ = wytnij(r("m3.png"), szer=1800)
     cien(t, 960, 1010, 1650, 80, 130)
     wklej(t, sc_, 960, 1045)
-    tytul(t, 960, 14, 17, 22)
-    m3 = poswiata(t, 170, 22)
+    tytul(t, 960, 6, 128, 184)
+    m3 = poswiata(poswiata(t, 168, 26), 228, 8)
 
     for i, im in enumerate((m1, m2, m3), 1):
         im.save(os.path.join(cel, "miniatura_%d_1920x1080.png" % i))

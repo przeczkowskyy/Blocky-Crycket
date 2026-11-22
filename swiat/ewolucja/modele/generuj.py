@@ -493,6 +493,64 @@ def cmd_stwory():
     _zapisz(indeks, ip)
 
 
+def cmd_swiat():
+    # Zestaw swiata (laka, las, legowisko, wyspa lawy, woda, znaki, kule, stos zlota): nowe pliki rekwizyt_<id>_rig.json
+    from swiat.ewolucja.modele import swiat_zestaw
+    ip = os.path.join(DANE, "indeks.json")
+    with open(ip, encoding="utf-8") as f:
+        indeks = json.load(f)
+    indeks["swiat"] = []
+    for m, strefa, limit in swiat_zestaw.wszystkie():
+        r = rig_modelu(m)
+        _zapisz(r, os.path.join(DANE, "rekwizyt_%s_rig.json" % m.id))
+        indeks["swiat"].append({"id": m.id, "nazwa": m.nazwa, "strefa": strefa, "czesci": r["liczba_czesci"], "limit": limit,
+                                "wymiary": r["wymiary"], "plik": "rekwizyt_%s_rig.json" % m.id})
+        print("SWIAT | %-22s %-10s części %2d / %2d%s" % (m.id, strefa, r["liczba_czesci"], limit,
+                                                      "  PONAD LIMIT" if r["liczba_czesci"] > limit else ""))
+    _zapisz(indeks, ip)
+
+
+def cmd_mapa():
+    # Propozycja mapy: dane/mapa_propozycja.json, render z gory i z kamery gry, plansza zestawu
+    from swiat.ewolucja.modele import mapa
+    inst, czesci, strefy, razem = mapa.zrob(sys.modules[__name__])
+    ip = os.path.join(DANE, "indeks.json")
+    with open(ip, encoding="utf-8") as f:
+        indeks = json.load(f)
+    indeks["mapa"] = {"plik": "mapa_propozycja.json", "czesci_razem": razem, "czesci_stref": strefy}
+    _zapisz(indeks, ip)
+
+
+def cmd_golem_grozny():
+    # KNIGHT GOLEM w wersji groznej: NOWE pliki golem_grozny_<1-5>_rig.json i _klipy.json, plansza podgladu 20
+    from swiat.ewolucja.modele import stwory_grozne
+    folder = wyjscie("dane_robocze")
+    modele = [stwory_grozne.golem_grozny(t) for t in range(1, 6)]
+    pj, wj = os.path.join(folder, "_pakiet_golem2.json"), os.path.join(folder, "_probki_golem2.json")
+    zapisz_json(pakiet(modele), pj)
+    blender(os.path.join(BIB, "blender_probki.py"), [pj, wj], "próbki klipów (golem groźny)")
+    with open(wj, encoding="utf-8") as f:
+        probki = json.load(f)
+    ip = os.path.join(DANE, "indeks.json")
+    with open(ip, encoding="utf-8") as f:
+        indeks = json.load(f)
+    indeks["stwory_grozne"] = []
+    for m in modele:
+        r = rig_modelu(m)
+        _zapisz(r, os.path.join(DANE, m.id + "_rig.json"))
+        _zapisz(klipy_modelu(m, r, probki[m.id]), os.path.join(DANE, m.id + "_klipy.json"))
+        indeks["stwory_grozne"].append({"id": m.id, "nazwa": m.nazwa, "skala": m.skala, "czesci": r["liczba_czesci"],
+                                        "wymiary": r["wymiary"], "pliki": [m.id + "_rig.json", m.id + "_klipy.json"]})
+        print("GOLEM | %-16s części %2d" % (m.id, r["liczba_czesci"]))
+    _zapisz(indeks, ip)
+    rob = wyjscie("podglady")
+    wyb = [modele[0], modele[2], modele[4]]
+    zad = [{"typ": "widoki", "model": m.id, "widoki": {"przod": [0.5, 0.12, 1.0], "bok": [-1.0, 0.1, 0.25]}, "rozmiar": 360} for m in wyb]
+    widoki(wyb, zad, rob, "golem groźny: plansza")
+    siatka_obrazow([[os.path.join(rob, "%s_przod.jpg" % m.id) for m in wyb], [os.path.join(rob, "%s_bok.jpg" % m.id) for m in wyb]],
+                   os.path.join(PODGLAD, "20_golem_grozny.jpg"), kom=360, tytul="KNIGHT GOLEM — wersja groźna, stopnie 1, 3, 5")
+
+
 def cmd_obrazy():
     # Ikona i trzy miniatury strony gry (wymaga dane/)
     from swiat.ewolucja.modele import obrazy_gry
@@ -503,9 +561,12 @@ def cmd_wszystko():
     cmd_dane()
     cmd_rekwizyty()
     cmd_stwory()
+    cmd_swiat()
+    cmd_golem_grozny()
     cmd_styl()
     cmd_podglady()
     cmd_obrazy()
+    cmd_mapa()
     cmd_siatki()
     cmd_eksport()
 

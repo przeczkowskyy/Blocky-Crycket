@@ -25,7 +25,7 @@ if BIB not in sys.path:
 
 import bmesh  # noqa: E402
 import bpy  # noqa: E402
-from mathutils import Vector  # noqa: E402
+from mathutils import Matrix, Vector  # noqa: E402
 
 import blender_postac as bp  # noqa: E402
 
@@ -148,9 +148,45 @@ def scena(sc, z, modele, tex, wyj, probki):
         bpy.context.view_layer.update()
         if not z.get("kadr") or e["id"] in z["kadr"]:
             pts += bp.punkty(m["render"])
+    for nr, dsk in enumerate(z.get("dyski", [])):               # płaty ziemi: koła w kolorze strefy
+        me = bpy.data.meshes.new("_dysk")
+        bm = bmesh.new()
+        bmesh.ops.create_circle(bm, cap_ends=True, radius=dsk["r"], segments=48)
+        bm.to_mesh(me)
+        bm.free()
+        if dsk.get("swieci"):
+            mat = bp.nowy_material("_Dysk%d" % nr)
+            nt = mat.node_tree
+            for n in list(nt.nodes):
+                nt.nodes.remove(n)
+            wy, em = nt.nodes.new("ShaderNodeOutputMaterial"), nt.nodes.new("ShaderNodeEmission")
+            em.inputs["Color"].default_value = (*bp.lin(dsk["kolor"]), 1.0)
+            em.inputs["Strength"].default_value = 2.5
+            nt.links.new(em.outputs["Emission"], wy.inputs["Surface"])
+        else:
+            mat = bp.material_prosty("_Dysk%d" % nr, dsk["kolor"], 0.95)
+        me.materials.append(mat)
+        ob = bpy.data.objects.new("_Dysk%d" % nr, me)
+        bpy.context.scene.collection.objects.link(ob)
+        ob.location = bp.do_blendera((dsk["x"], dsk["y"], dsk["z"]))
+    for ins in z.get("instancje", []):                         # rekwizyt zbudowany raz, potem kopie z położeniem
+        m = bp.zbuduj_postac(modele[ins["id"]], tex)
+        for x, zz, rot, sk in ins["m"]:
+            for ob in m["render"]:
+                c = ob.copy()
+                bpy.context.scene.collection.objects.link(c)
+                c.parent = None
+                for mod in list(c.modifiers):
+                    c.modifiers.remove(mod)
+                c.matrix_world = (Matrix.Translation(bp.do_blendera((x, 0.0, zz))) @ Matrix.Rotation(math.radians(rot), 4, "Z")
+                                  @ Matrix.Scale(sk, 4))
+        for ob in m["render"]:
+            ob.hide_render = True
+    if z.get("kadr_punkty"):
+        pts = [bp.do_blendera(q) for q in z["kadr_punkty"]]
     bp.przygotuj_render(sc, probki)
     if z.get("ziemia"):
-        ziemia(400.0, z["ziemia"])
+        ziemia(700.0, z["ziemia"])
     w, h = z["rozmiar"]
     if z.get("orto"):
         kamera_prost(sc, z["kierunek"], pts, w, h, margines=z.get("margines", 1.08))

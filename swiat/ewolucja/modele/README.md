@@ -24,7 +24,7 @@ python -B swiat/ewolucja/modele/generuj.py wszystko     # dane + podglądy + obr
 python -B swiat/ewolucja/modele/sprawdz_dane.py          # sprawdzian danych bez Studio
 python -B swiat/ewolucja/modele/generuj.py filmy         # filmy stadiów 1, 3, 5, 8 (ok. 10 min)
 ```
-Części: `dane` · `rekwizyty` · `stwory` · `styl` · `podglady` · `obrazy` · `siatki` · `eksport [id…]` · `licz`;
+Części: `dane` · `rekwizyty` · `stwory` · `swiat` · `golem_grozny` · `styl` · `podglady` · `obrazy` · `mapa` · `siatki` · `eksport [id…]` · `licz`;
 robocze: `przeglad [nr…]`, `paski <nr> [klipy…]`. Blender 5.0 startuje w tle pod wspólną blokadą biblioteki.
 Duże pliki trafiają POZA repozytorium: `%LOCALAPPDATA%\BlockyCrycket\modele\smok_ewolucja\` (`obrazy`, `filmy`,
 `eksport`, `siatki`, `podglady` i foldery robocze).
@@ -39,7 +39,7 @@ Duże pliki trafiają POZA repozytorium: `%LOCALAPPDATA%\BlockyCrycket\modele\sm
 | `generuj.py`, `sprawdz_dane.py`, `smoki.py` | polecenia, sprawdzian, moduł dla `podglad_postaci.py` biblioteki |
 | `blender_widoki.py`, `blender_siatki.py` | skrypty uruchamiane w Blenderze |
 | `dane/` | **przekazanie dla gry** (opis niżej) |
-| `podglad/` | 16 małych JPG: styl, rzędy stadiów, przegląd z wersją uproszczoną, plansze 1/4/8, paski klatek, wyklucie, warianty i rekwizyty, ikona, trzy miniatury |
+| `podglad/` | 20 małych JPG (17–19 mapa i zestaw świata, 20 groźny golem): styl, rzędy stadiów, przegląd z wersją uproszczoną, plansze 1/4/8, paski klatek, wyklucie, warianty i rekwizyty, ikona, trzy miniatury |
 
 ## Styl i regiony koloru
 Klockowa bryła w kolorze ciała; od karku po ogon ciemne **łuski-dachówki**, w szczelinach **żar**: miękka poświata
@@ -157,7 +157,69 @@ w `indeks.json` → `siatki`. `generuj.py eksport` → `…\eksport\`: `<id>.fbx
 `<id>.blend` (szkielet, siatka na staw, wszystkie klipy), każdy plik wczytany z powrotem i porównany.
 **Import do Studio nie był testowany** (uwagi o kierunku FBX: `swiat/postacie/biblioteka/README.md`).
 
+## Zestaw świata i propozycja mapy (runda 3 — tylko NOWE pliki, wersja danych 2 bez zmian)
+Polecenia: `generuj.py swiat` (rigi zestawu), `generuj.py mapa` (mapa + rendery + plansza zestawu),
+`generuj.py golem_grozny`. Istniejących plików smoków, jaja, owcy, golema i rekwizytów te polecenia nie dotykają;
+`indeks.json` dostał tylko nowe klucze `swiat`, `mapa`, `stwory_grozne`. Kod: `swiat_zestaw.py`, `mapa.py`, `stwory_grozne.py`.
+
+**Język:** te same fazowane klocki co smok, ciemna opaska-dachówka na pniach, głazach i filarach, żar (Neon) tylko tam,
+gdzie coś jest gorące albo magiczne (lawa, ołtarz, brama, grzyby, runy), kryształowe ostrza jako akcent.
+Każdy rekwizyt: `rekwizyt_<id>_rig.json`, jedna kość `Podstawa`, przód rekwizytu = −Z rigu. Części (limit):
+
+| Strefa | id · części |
+|---|---|
+| Łąka (drobiazg ≤ 8, drzewa i skały ≤ 20) | `trawa_1` 3 · `trawa_2` 5 · `kwiat_czerwony`, `kwiat_zolty`, `kwiat_niebieski`, `kwiat_bialy` 5 · `kamyk` 2 · `glaz_1` 5 · `glaz_2` 7 · `krzak` 7 · `drzewo_1` 9 · `drzewo_2` 10 · `drzewo_3` 9 · `grzyb` 5 · `kloda` 7 · `drogowskaz` 7 · `sciana_skalna` 7 (odcinek obrzeża 24 studs) |
+| Deep Woods | `sosna_1` 7 · `sosna_2` 8 · `grzyb_wielki` 11 · `grzyby_swiecace` 7 · `luk_korzeni` 14 · `filar_ruin` 8 · `krag_kamienny` 16 |
+| Legowisko | `legowisko_krag` 26 (podkowa skał r 13, otwarta ku przodowi) · `legowisko_brama` 10 · `sztandar` 7 (płat w regionie `cialo` = kolor gracza) · `stos_zlota_1|2|3` 14 / 27 / 56 (kopiec monet i klejnotów; zastępuje wizualnie `skarb_*`) |
+| Wyspa lawy | `bazalt_1` 6 · `bazalt_2` 8 · `skala_lawy` 7 · `oltarz_kul` 22 (zaczep `KulaAttachment`) |
+| Woda | `lilia` 5 · `trzcina` 7 |
+| Punkty charakterystyczne (≤ 80) | `czaszka_smoka` 33 · `posag_prastarego` 41 (z brył uproszczonego ANCIENT) · `brama_zapieczetowana` 30 |
+| Kule | `kula_mala` 3 (żółta, bez pierścienia) · `kula_duza` 4 (błękitna, jeden złoty pierścień) · `kula_wielka` 8 (różowa, dwa pierścienie i kryształy) — promienie jak w grze: 0,6 / 1,15 / 1,6 |
+
+Groźny golem: `golem_grozny_<1–5>_rig.json` + `_klipy.json` (55–62 części, te same stawy i klipy co `golem_<n>`).
+
+**Mapa: `dane/mapa_propozycja.json`** — układ gry (środek łąki = (0, 0), DEEP WOODS w +Z, studs, obrót w stopniach wokół
+pionu): `instancje` = `{id: [[x, z, obrót, skala], …]}`, `platy_ziemi` = `[x, z, promień, kolor, wysokość, świeci]`
+(płaskie koła — tanie urozmaicenie ziemi), `szablon_legowiska` = `[id, w prawo, ku środkowi łąki, obrót]` do
+powtórzenia w każdym legowisku gry (pozycje 12 legowisk w pliku są przykładowe: kąt 42°–318° od kierunku lasu).
+Razem **3761 części statycznych**: łąka 1951, las 602, legowiska 516 (12 ×), woda 312, wyspa lawy 174, znaki 104,
+płaty ziemi 102. Kule, cokoły, złoto i smoki są dynamiczne i nie wchodzą do tej liczby.
+
+Gdzie co stoi (gęstości):
+- **Łąka (koło 150):** 110 pojedynczych kępek + 16 kęp po 5; kwiaty w kwietnikach (4 kolory × 4 kwietniki × 6) — bogato
+  w kępach, pusto pomiędzy; 20 kamyków, 8 głazów, 30 krzaków (20 w zewnętrznej jednej trzeciej), 10 drzew w środku
+  i 22 za obrzeżem; 14 grzybów, 4 kłody, 3 drogowskazy (do lasu, do wyspy, do bramy); obrzeże: 31 odcinków
+  `sciana_skalna` na promieniu 158 z przerwami na bramy; plac r 17 pośrodku, ścieżka z płatów do lasu i wzdłuż legowisk.
+- **Woda:** dwa stawy (r 16 i r 11) po 6 lilii i 6 trzcin na brzegu; jezioro r 80 wokół wyspy (14 + 14).
+- **Deep Woods (koło 115):** 26 sosen na obwodzie (nie zasłaniają wejścia od łąki), 8 w środku, 8 wielkich grzybów,
+  20 kęp świecących grzybków, łuk z korzeni jako brama wejściowa (skala 1,3) + 3 w lesie, kamienny krąg i posąg
+  Prastarego z ruinami filarów wokół.
+- **Wyspa lawy (r 42):** 10 skupisk bazaltu na brzegu, 12 skał z żarem, ołtarz wielkich kul pośrodku; brzeg świeci.
+- **Punkty charakterystyczne:** czaszka smoka na łące (widać ją z pierwszych kroków), zapieczętowana brama na obrzeżu
+  naprzeciw wyspy, posąg w głębi lasu — każdy widoczny z daleka i stawia pytanie „co tam jest?”.
+
+**Światło i niebo (propozycja dla agenta gry, liczby do `Lighting`):** późne popołudnie, ciepłe słońce i chłodny,
+fioletowawy cień — żar i kryształy mają świecić na tle spokojnej zieleni.
+- `ClockTime` 16,2 · `GeographicLatitude` 35 · `Technology` Future (ShadowMap na słabszych telefonach) ·
+  `Brightness` 2,6 · `ExposureCompensation` 0,15 · `ShadowSoftness` 0,25 · `EnvironmentDiffuseScale` 0,6 ·
+  `EnvironmentSpecularScale` 0,4.
+- `Ambient` (30, 26, 44) · `OutdoorAmbient` (128, 118, 150) · `ColorShift_Top` (255, 226, 178).
+- `Atmosphere`: `Density` 0,28 · `Offset` 0,15 · `Color` (255, 217, 176) · `Decay` (122, 90, 168) · `Glare` 0,25 ·
+  `Haze` 1,6. Bez Atmosphere: `FogColor` (190, 200, 230), `FogStart` 250, `FogEnd` 900.
+- Niebo: zwykłe z chmurami — `Clouds.Cover` 0,55, `Density` 0,3, `Color` (255, 238, 220); `SunAngularSize` 14, gwiazdy 0.
+- Efekty: `Bloom` (`Intensity` 0,45, `Size` 28, `Threshold` 1,1 — to on robi żar), `ColorCorrection`
+  (`Saturation` 0,12, `Contrast` 0,08, `TintColor` (255, 248, 236)), `SunRays` (`Intensity` 0,06, `Spread` 0,6).
+- Nastrój stref (płynna zmiana po wejściu): las — `Atmosphere.Density` 0,42, `Color` (120, 150, 140), `Brightness` 1,9;
+  wyspa lawy — `Color` (255, 150, 90), `Density` 0,35. `PointLight` tylko na znakach i w zaczepach żaru własnego smoka
+  i bossa (zasięg ok. 8 × skala, jasność 0,8), najwyżej kilkanaście naraz.
+- Woda: płaska część `Glass`, kolor 3E8FD8, przezroczystość 0,25, `Reflectance` 0,15.
+
+Rendery mapy: `…\smok_ewolucja\mapa\mapa_z_gory.png`, `mapa_kamera_gry.png`; podglądy `podglad/17–19` (19 = cały zestaw).
+
 ## Co jest słabe (uczciwie)
+- Świat (runda 3): ziemia jest płaska — bez wzniesień i klifów w środku łąki; drobiazg z kamery gry nadal jest rzadki
+  poza kępami (budżet 4000 części na koło o średnicy 300 studów); rekwizytów nie sprawdzono w Studio; kolizje
+  i przeszkody dla logiki gry trzeba wskazać osobno. Groźny golem ma krótkie, schowane nogi.
 - Stopy stoją na ziemi, ale poślizg w poprzek przy kołysaniu tułowia i obrót stóp w `ogon_zamach` zostają;
   w galopie nogi maluchów chwilami wiszą w powietrzu (to zamierzone „kicanie”, nie każdemu się spodoba).
 - Mrugają tylko maluchy; z boku powieka nie zakrywa oka. Oczy dorosłych to świecące szczeliny bez mrugania.

@@ -103,5 +103,33 @@ def ogien(dl=9.0):
     return p
 
 
+def ogien2(dl=9.0):
+    # Strumień ognia do obrazów (wersja 2): jasny rdzeń z obłych brył, wokół języki ognia (ostrosłupy szpicem w przód,
+    # odchylone na zewnątrz) od żółtych przy osi po czerwone na obrzeżu i końcu, na końcu iskry.
+    p = _nowy("ogien", "Strumień ognia")
+    los = random.Random(5)
+    with p.na("Podstawa"):
+        for i, kolor in enumerate(("FFFDF0", "FFF7C8", "FFEE9A", "FFE070", "FFD050")):
+            f = i / 4.0
+            p.kula("Rdzen", (0, 0, dl * (0.06 + 0.5 * f)), (0.7 + 1.6 * f, 0.7 + 1.4 * f, dl * 0.22), kolor, "swiecacy", segm=12)
+        for i in range(52):
+            f = los.random() ** 0.8
+            r_max = 0.25 + 1.9 * f
+            a, rr = los.uniform(0, 2 * math.pi), r_max * los.uniform(0.3, 1.0)
+            dlug, gr = (1.0 + 2.4 * f) * los.uniform(0.7, 1.3), (0.3 + 0.8 * f) * los.uniform(0.7, 1.2)
+            brzeg = rr / r_max
+            kolor = "FFE680" if (brzeg < 0.45 and f < 0.7) else ("FFA62E" if (brzeg < 0.75 or f < 0.45) else ("FF6A1A" if f < 0.85 else "E8381A"))
+            th = math.radians(10 + 16 * brzeg)
+            rx = -math.degrees(math.asin(math.sin(th) * math.sin(a)))
+            ry = math.degrees(math.asin(max(-1.0, min(1.0, math.sin(th) * math.cos(a) / math.cos(math.radians(rx))))))
+            with p.uklad(pos=(rr * math.cos(a), rr * math.sin(a), dl * (0.08 + 0.9 * f)), obrot=(rx, ry, 0)):
+                p.ostroslup("Jezyk ognia", (0, 0, dlug / 2), (gr, dlug, gr), kolor, "swiecacy", rot=(90, 0, 0), gora=(0.0, 0.0), faza=0.0)
+        for i in range(14):
+            a, rr = los.uniform(0, 2 * math.pi), los.uniform(1.0, 2.8)
+            p.blok("Iskra", (rr * math.cos(a), rr * math.sin(a), dl * los.uniform(0.75, 1.15)), (0.22, 0.22, 0.22), "FFE680", "swiecacy",
+                   rot=(45, los.uniform(0, 90), 45), faza=0.0)
+    return p
+
+
 def wszystkie():
     return [skarb(1), skarb(2), skarb(3), cokol(), gniazdo()]
