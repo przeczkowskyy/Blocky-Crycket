@@ -691,6 +691,48 @@ function L.umiejetnosc(S, b, zd): boolean
 		local x1, z1 = L.ogranicz(D, b.x + kx * A.d, b.z + kz * A.d, rb, L.maska(D, b))
 		b.skok = { x0 = b.x, z0 = b.z, x1 = x1, z1 = z1, t0 = S.czas, t1 = S.czas + A.s, r = A.r }
 		b.kier = math.atan2(kx, kz)
+	elseif A.typ == "podmuch" then
+		-- WING GUST: odpycha (i krótko ogłusza) wszystkich w promieniu, poza chronionymi graczami i bossem
+		for _, q in S.byty do
+			local d = dlug(q.x - b.x, q.z - b.z)
+			if q ~= b and wolny(S, q) and q.tarczaDo <= S.czas and not q.boss and d < rb + A.r + L.promien(D, q.forma)
+				and not (b.slot > 0 and q.slot > 0 and q.forma <= D.smierc.chronione_formy) then
+				d = math.max(0.1, d)
+				local nx, nz = (q.x - b.x) / d, (q.z - b.z) / d
+				q.x, q.z = L.ogranicz(D, q.x + nx * A.sila, q.z + nz * A.sila, L.promien(D, q.forma), L.maska(D, q))
+				q.vx, q.vz = nx * A.sila * 2, nz * A.sila * 2
+				q.ogluszonyDo = S.czas + A.s
+				table.insert(zd, { t = "ogluszony", id = q.id, s = q.slot, czas = A.s })
+			end
+		end
+	elseif A.typ == "oddech" then
+		-- FIRE BREATH: stożek przed pyskiem — do 3 jadalnych, kulki w stożku, rana bossa
+		local kx, kz = math.sin(b.kier), math.cos(b.kier)
+		local cosK = math.cos(math.rad(A.kat_st / 2))
+		local function wStozku(x: number, z: number, zas: number): boolean
+			local dx, dz = x - b.x, z - b.z
+			local d = dlug(dx, dz)
+			return d < zas and (d < 0.5 or (dx * kx + dz * kz) / d >= cosK)
+		end
+		if not (b.slot > 0 and L.wLegowisku(D, b)) then
+			local n = 0
+			for _, q in S.byty do
+				if n < 3 and q ~= b and bezbronny(S, q) and L.mozeZjesc(D, b, q) and not przypadkiem(D, b, q)
+					and wStozku(q.x, q.z, rb + A.r + L.promien(D, q.forma) * 0.5) then
+					zjedz(S, b, q, zd, "oddech")
+					n += 1
+				end
+			end
+			for i, p in D.kulkiPoz do
+				if S.kulki[i] == 0 and wStozku(p[1], p[2], rb + A.r) then
+					zjedzKulke(S, b, i, zd)
+				end
+			end
+			local boss = bossW(S, b, A.r)
+			if boss and wStozku(boss.x, boss.z, rb + A.r + L.promien(D, boss.forma)) then
+				L.ranBossa(S, boss, b, D.boss.um_obrazenia, zd)
+			end
+		end
 	elseif A.typ == "fala" then
 		oglusz(S, b, rb + A.r, A.s, zd)
 		local boss = bossW(S, b, A.r)

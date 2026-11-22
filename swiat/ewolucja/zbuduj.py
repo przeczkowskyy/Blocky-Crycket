@@ -222,7 +222,7 @@ def tablica_lasu(D):
     ux, uz = B["u"]
     px, pz = cx + sx - ux * 10 + uz * 22, cz + sz - uz * 10 - ux * 22
     return {"poz": [round(px, 2), cy + 5, round(pz, 2)], "patrz": [round(px - ux * 10, 2), cy + 5, round(pz - uz * 10, 2)],
-            "sylwetki": ["Pet_muchomornik", "Pet_lesny_troll", D["boss"]["wzorzec"]]}
+            "sylwetki": [D["formy"][3]["wzorzec"], D["formy"][5]["wzorzec"], D["boss"]["wzorzec"]]}
 
 
 WSTEP = r'''
@@ -267,8 +267,9 @@ if not zrodloWz then
 	return "STOP: brak wzorców potworów (Workspace/PetArenaGra/Wzorce)"
 end
 local potrzebne = HS:JSONDecode(__WZORCE__)
+local smoki = HS:JSONDecode(__SMOKI__)
 for _, n in potrzebne do
-	if not zrodloWz:FindFirstChild(n) then
+	if not smoki[n] and not zrodloWz:FindFirstChild(n) then
 		return "STOP: brak wzorca " .. n
 	end
 end
@@ -310,9 +311,79 @@ local wz = Instance.new("Folder")
 wz.Name = "Wzorce"
 wz.Parent = k
 for _, n in potrzebne do
-	local m = zrodloWz:FindFirstChild(n):Clone()
+	if not smoki[n] then
+		local m = zrodloWz:FindFirstChild(n):Clone()
+		m:PivotTo(CFrame.new(0, -200, 0))
+		m.Parent = wz
+	end
+end
+-- stadia smoka z generatora (smok.py): części z atrybutem Grupa, punkty obrotu jako atrybuty modelu Pivot<k>
+for nazwa, S in smoki do
+	local m = Instance.new("Model")
+	m.Name = nazwa
+	for _, c in S.czesci do
+		local p = Instance.new("Part")
+		p.Name = c.n
+		p.Anchored = true
+		p.CanCollide = false
+		p.CanTouch = false
+		p.Shape = Enum.PartType[c.k] or Enum.PartType.Block
+		if c.k == "Wedge" then
+			p:Destroy()
+			p = Instance.new("WedgePart")
+			p.Name = c.n
+			p.Anchored = true
+			p.CanCollide = false
+			p.CanTouch = false
+		end
+		p.Size = Vector3.new(c.s[1], c.s[2], c.s[3])
+		p.CFrame = CFrame.new(c.p[1], c.p[2], c.p[3]) * CFrame.Angles(c.r[1], c.r[2], c.r[3])
+		p.Color = Color3.fromHex(c.c)
+		p.Material = Enum.Material[c.m]
+		p.Transparency = c.t
+		p.TopSurface, p.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
+		if c.g and c.g > 0 then
+			p:SetAttribute("Grupa", c.g)
+		end
+		p.Parent = m
+		if c.n == "Korzen" then
+			m.PrimaryPart = p
+		end
+	end
+	for k, v in S.pivoty do
+		m:SetAttribute("Pivot" .. k, Vector3.new(v[1], v[2], v[3]))
+	end
 	m:PivotTo(CFrame.new(0, -200, 0))
 	m.Parent = wz
+end
+-- napis tytułu gry na łące (czytelny z kamery z góry)
+do
+	local p = Instance.new("Part")
+	p.Name = "TytulGry"
+	p.Anchored = true
+	p.CanCollide = false
+	p.CanQuery = false
+	p.Size = Vector3.new(44, 0.2, 7)
+	p.CFrame = CFrame.new(__TX__, __TY__ + 0.3, __TZ__)
+	p.Color = Color3.fromHex("2A2236")
+	p.Material = Enum.Material.SmoothPlastic
+	p.Transparency = 0.15
+	p.Parent = sc
+	local sg = Instance.new("SurfaceGui")
+	sg.Face = Enum.NormalId.Top
+	sg.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	sg.PixelsPerStud = 20
+	sg.LightInfluence = 0
+	sg.Parent = p
+	local l = Instance.new("TextLabel")
+	l.BackgroundTransparency = 1
+	l.Size = UDim2.fromScale(1, 1)
+	l.Rotation = 180
+	l.Text = "__TYTUL__"
+	l.TextScaled = true
+	l.Font = Enum.Font.LuckiestGuy
+	l.TextColor3 = Color3.fromHex("FFC83D")
+	l.Parent = sg
 end
 local sc = Instance.new("Folder")
 sc.Name = "Scena"
@@ -534,6 +605,8 @@ def main():
         kod = wstaw(BUDOWA, CZAS=time.strftime("%Y-%m-%d %H:%M"), TYLKO="true" if a.skrypty else "false",
                     PUBLIKACJA="true" if a.publikacja else "false", WZORCE=luau_str(json.dumps(wzorce)),
                     ZRODLA=luau_str(json.dumps(zr, ensure_ascii=False)), SCENA=luau_str(json.dumps(sc)), TABLICA=luau_str(json.dumps(tablica_lasu(D))),
+                    SMOKI=luau_str(json.dumps(DN.smoki(DN.ustawienia()) or {"_": None}).replace('"_": null', "")),
+                    TX=str(D["pole"]["srodek"][0] + 12), TY=str(D["pole"]["srodek"][1]), TZ=str(D["pole"]["srodek"][2] - 52), TYTUL=D["ui"]["tytul_gry"],
                     NAPIS1=D["ui"]["las_tablica"], NAPIS2=D["ui"]["las_warunek"] % D["las"]["od_formy"], WYDANIE=a.wydanie.replace('"', ""), **wsp)
         log(wykonaj(kod, "budowa"))
         st = json.loads(wykonaj(wstaw(STAN, KONTENER=D["kontener"]), "stan"))

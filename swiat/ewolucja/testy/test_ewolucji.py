@@ -284,16 +284,17 @@ class TestPetla(unittest.TestCase):
         ustaw(bot, tarczaDo=0)
         self.assertTrue(jeden("umiejetnosc", S, gr, LM.Tabela()))
         self.assertGreater(g(bot, "ogluszonyDo"), g(S, "czas"), "ogłuszony większy")
-        # POUNCE (forma 6): skok i lądowanie z połknięciem mniejszego
+        # skok (forma z umiejętnością typu „skok”): lądowanie z połknięciem mniejszego
+        fs = next(i + 1 for i, f in enumerate(D["formy"]) if f["um"]["typ"] == "skok")
         S = stan()
         bez_kulek(S)
-        gr = byt(S, 1, 6, 0, 0)
+        gr = byt(S, 1, fs, 0, 0)
         ustaw(gr, tarczaDo=0, kier=0.0)
-        ofiara = byt(S, 0, 3, 0, D["formy"][5]["um"]["d"])
+        ofiara = byt(S, 0, fs - 3, 0, D["formy"][fs - 1]["um"]["d"])
         ustaw(ofiara, tarczaDo=0, myslDo=99)
         self.assertTrue(jeden("umiejetnosc", S, gr, LM.Tabela()))
         self.assertIsNotNone(gr.get("skok"))
-        zd = krok(S, 14, 0.05)
+        zd = krok(S, int(D["formy"][fs - 1]["um"]["s"] / 0.05) + 4, 0.05)
         self.assertTrue([z for z in zd if z["t"] == "ladowanie"], "lądowanie")
         self.assertIsNotNone(g(ofiara, "martwyDo"), "połknięty przy lądowaniu")
 
@@ -414,6 +415,51 @@ class TestLas(unittest.TestCase):
         krok(S, int(D["boss"]["odrodzenie_s"] / 1.0) + 2, 1.0)
         self.assertIsNone(g(boss, "martwyDo"))
         self.assertEqual(g(boss, "hp"), D["boss"]["stopnie_hp"][1], "wraca jako stopień 2 z pełnym życiem")
+
+
+class TestSmok(unittest.TestCase):
+    def test_22_oddech_i_podmuch(self):
+        fo = next((i + 1 for i, f in enumerate(D["formy"]) if f["um"]["typ"] == "oddech"), None)
+        fp = next((i + 1 for i, f in enumerate(D["formy"]) if f["um"]["typ"] == "podmuch"), None)
+        if not fo or not fp:
+            self.skipTest("zestaw bez oddechu / podmuchu")
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, fo, 0, 0)
+        ustaw(gr, tarczaDo=0, kier=0.0, laskaDo=0)
+        przod = byt(S, 0, fo - 2, 0, D["formy"][fo - 1]["r"] + 6)
+        tyl = byt(S, 0, fo - 2, 0, -(D["formy"][fo - 1]["r"] + 6))
+        ustaw(przod, tarczaDo=0, myslDo=99)
+        ustaw(tyl, tarczaDo=0, myslDo=99)
+        self.assertTrue(jeden("umiejetnosc", S, gr, LM.Tabela()))
+        self.assertIsNotNone(g(przod, "martwyDo"), "FIRE BREATH zjada przed pyskiem")
+        self.assertIsNone(g(tyl, "martwyDo"), "a nie za plecami")
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, fp, 0, 0)
+        ustaw(gr, tarczaDo=0)
+        bot = byt(S, 0, fp + 1, 8, 0)
+        ustaw(bot, tarczaDo=0)
+        self.assertTrue(jeden("umiejetnosc", S, gr, LM.Tabela()))
+        self.assertGreater(g(bot, "x"), 8 + D["formy"][fp - 1]["um"]["sila"] * 0.8, "WING GUST odpycha nawet większego")
+        self.assertGreater(g(bot, "ogluszonyDo"), g(S, "czas"))
+
+    def test_23_smok_generator(self):
+        import smok as SM
+        U = DN.ustawienia()
+        if U.get("zestaw") != "smok":
+            self.skipTest("zestaw potworów")
+        czesci = []
+        for i, F in enumerate(U["formy_smok"]):
+            St = SM.stadium(F["smok"])
+            czesci.append(len(St["czesci"]))
+            grupy = {c["g"] for c in St["czesci"]}
+            self.assertTrue({1, 2, 3, 4, 6, 7, 8, 9}.issubset(grupy), F["nazwa"] + ": nogi, głowa, szczęka, skrzydła")
+            self.assertTrue(any(k >= 11 for k in grupy), "segmenty ogona")
+            self.assertTrue(all(str(k) in St["pivoty"] for k in grupy if k), "każda grupa ma punkt obrotu")
+            self.assertEqual(D["formy"][i]["wzorzec"], "Smok_%d" % (i + 1))
+        self.assertTrue(all(n <= 80 for n in czesci), "tanio na telefonie: %s" % czesci)
+        self.assertEqual(czesci, sorted(czesci), "późniejsze stadia bogatsze")
 
 
 class TestEtap3(unittest.TestCase):

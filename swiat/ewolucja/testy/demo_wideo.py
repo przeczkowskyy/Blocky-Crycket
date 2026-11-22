@@ -5,7 +5,7 @@
     python -B swiat/ewolucja/testy/demo_wideo.py --studio <id> [--wyj <plik.mp4 poza repo>] [--zostaw-klipy]
 
 Domyślnie zapis do folderu tymczasowego systemu (zmienna środowiska TEMP; tak jak katalog roboczy demo Pet Areny):
-<TEMP>/ewolucja_demo/ewolucja_etap3.mp4 i ..._plansza.jpg. Wzór: swiat/pet_arena/testy/demo_wideo.py — Play / Stop przez
+<TEMP>/ewolucja_demo/ewolucja_smok.mp4 i ..._plansza.jpg. Wzór: swiat/pet_arena/testy/demo_wideo.py — Play / Stop przez
 tools/studio_mcp.py (podproces), stan ustawiany haczykami próby (bez grindu), każda scena to osobne nagranie narzędziem
 MCP `video_capture` (obraz gry z Play z dźwiękiem), klipy przycina i skleja ffmpeg (H.264 1280 × 720, AAC).
 Sceny (etap 3): start w legowisku → jedzenie → odsłona z wariantem → zebranie złota w legowisku → poziom trofeum → boss stopnia 2 → Olbrzym.
@@ -165,7 +165,7 @@ def main():
             s.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
     ap.add_argument("--studio", required=True)
-    ap.add_argument("--wyj", default=os.path.join(tempfile.gettempdir(), "ewolucja_demo", "ewolucja_etap3.mp4"))
+    ap.add_argument("--wyj", default=os.path.join(tempfile.gettempdir(), "ewolucja_demo", "ewolucja_smok.mp4"))
     ap.add_argument("--zostaw-klipy", action="store_true")
     a = ap.parse_args()
     wyj = os.path.abspath(a.wyj)

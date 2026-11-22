@@ -545,6 +545,28 @@ local function zrobModel(F)
 		end
 	end
 	m.Parent = lokalne
+	-- grupy ruchu z modelu: atrybut części „Grupa” i atrybuty modelu „Pivot<k>” (w skali 1)
+	local grupyM, pivotyM = nil, nil
+	for i, d in czesci do
+		local k = d:GetAttribute("Grupa")
+		if k then
+			grupyM = grupyM or {}
+			grupyM[i] = k
+		end
+	end
+	if grupyM then
+		local sk = m:GetScale()
+		pivotyM = {}
+		for i = 1, #czesci do
+			grupyM[i] = grupyM[i] or 0
+		end
+		for n, v in m:GetAttributes() do
+			local k = tonumber(string.match(n, "^Pivot(%d+)$"))
+			if k and typeof(v) == "Vector3" then
+				pivotyM[k] = v * sk
+			end
+		end
+	end
 	-- model ze szkieletem i animacjami w danych: odtwarzane klipy zamiast ruchu części
 	local rig = nil
 	if F.anim then
@@ -567,7 +589,34 @@ local function zrobModel(F)
 			end
 		end
 	end
-	return m, czesci, offs, poz, rig
+	return m, czesci, offs, poz, rig, grupyM, pivotyM
+end
+
+-- wygląd wariantu (części: kolor i materiał) — ten sam dla potworów graczy i trofeów w legowisku
+local function wyglad(m: Instance, W)
+	if not W then
+		return
+	end
+	local i = 0
+	for _, d in m:GetDescendants() do
+		if d:IsA("BasePart") and d.Transparency < 1 and d.Name ~= "Oko" then
+			i += 1
+			if W.id == "tecza" then
+				d.Color = Color3.fromHSV((i * 0.137) % 1, 0.65, 1)
+				d.Material = if i % 4 == 0 then Enum.Material.Neon else Enum.Material.SmoothPlastic
+			elseif W.id == "krysztal" then
+				d.Color = d.Color:Lerp(hex(W.kolor), 0.7)
+				d.Material = Enum.Material.Glass
+				d.Transparency = math.max(d.Transparency, 0.15)
+			elseif W.id == "rubin" then
+				d.Color = d.Color:Lerp(hex(W.kolor), 0.75)
+				d.Material = Enum.Material.Glass
+			else
+				d.Color = d.Color:Lerp(hex(W.kolor), 0.75)
+				d.Material = Enum.Material.Metal
+			end
+		end
+	end
 end
 
 local function krazek(r: number): Part
@@ -697,8 +746,15 @@ local function zbudujModel(w, f: number)
 		w.model:Destroy()
 	end
 	w.F = spec(f, w.boss)
-	w.model, w.czesci, w.offs, w.poz, w.rig = zrobModel(w.F)
-	w.grupa, w.pivoty, w.dl = grupy(w.F, w.poz)
+	local gM, pM
+	w.model, w.czesci, w.offs, w.poz, w.rig, gM, pM = zrobModel(w.F)
+	if gM then
+		w.grupa, w.pivoty = gM, pM
+	else
+		w.grupa, w.pivoty, w.dl = grupy(w.F, w.poz)
+	end
+	wyglad(w.model, D.warianty[w.wariant or 0])
+	w.skrz = 0
 	w.cf = table.create(#w.czesci)
 	w.forma = f
 	w.przezr = -1
@@ -708,11 +764,6 @@ local function zbudujModel(w, f: number)
 		hl.OutlineColor = hex(UI.kolory.ty)
 		hl.OutlineTransparency = 0.2
 		hl.DepthMode = Enum.HighlightDepthMode.Occluded
-		local W = wariantD(gracz:GetAttribute("EW_Wariant"))
-		if W then
-			hl.FillColor = hex(W.kolor)
-			hl.FillTransparency = 0.55
-		end
 		hl.Parent = w.model
 	end
 end
@@ -761,7 +812,7 @@ evStan.OnClientEvent:Connect(function(b: buffer)
 	local widziane = {}
 	local o0 = 12 + nb
 	for i = 1, n do
-		local o = o0 + (i - 1) * 15
+		local o = o0 + (i - 1) * 16
 		local id = buffer.readu16(b, o)
 		local slot = buffer.readu8(b, o + 2)
 		local fl = buffer.readu8(b, o + 3)
@@ -783,6 +834,11 @@ evStan.OnClientEvent:Connect(function(b: buffer)
 			w.gryzT = 0 -- cudzy wypad przy gryzieniu
 		end
 		w.tx, w.tz, w.flagi, w.martwy = x, z, fl, martwy
+		local wr = buffer.readu8(b, o + 15)
+		if wr ~= (w.wariant or 0) then
+			w.wariant = wr
+			zbudujModel(w, w.forma)
+		end
 		w.tkier = if id == mojId and not martwy and bit32.band(fl, 8 + 16 + 32) == 0 then w.tkier else buffer.readi16(b, o + 13) / 1000
 		if f ~= w.forma then
 			zbudujModel(w, f)
@@ -1088,6 +1144,10 @@ end
 local CZERWONY, ZIELONY, BIALY, MOJ = hex(UI.kolory.zje_cie), hex(UI.kolory.zjesz), Color3.fromRGB(235, 235, 235), hex(UI.kolory.ty)
 local nrKlatki = 0
 
+local function pivotyNazwane(w): boolean
+	return w.pivoty ~= nil and w.pivoty[7] ~= nil
+end
+
 local function rysuj(w, dt: number)
 	local moj = w.id == mojId
 	local F = w.F
@@ -1217,16 +1277,35 @@ local function rysuj(w, dt: number)
 		local T = {}
 		local kat = math.sin(w.faza) * 0.55 * math.min(1, mv)
 		local kGryz = if w.gryzT < 0.3 then math.sin(math.clamp(w.gryzT / 0.3, 0, 1) * math.pi) else 0
+		local otw = bit32.band(w.flagi, 2 + 32) ~= 0 or (moj and os.clock() < zrywDo)
+		w.skrz = (w.skrz or 0) + ((if otw then 1 else 0) - (w.skrz or 0)) * math.min(1, dt * 8)
+		local maxOgon = 0
 		for k, pv in w.pivoty do
-			local ax, ay = 0, 0
+			local ax, ay, az = 0, 0, 0
 			if k <= 4 then
 				ax = if k == 1 or k == 4 then kat else -kat
 			elseif k == 5 then
 				ay = math.sin(w.faza * 2 + tGlob) * 0.35 * (0.3 + math.min(1, mv))
-			else
-				ax = -0.5 * kGryz + math.sin(tGlob * 2 + w.id) * 0.04
+			elseif k == 6 then
+				ax = (if w.grupa and pivotyNazwane(w) then 0.15 else -0.5) * kGryz + math.sin(tGlob * 2 + w.id) * 0.04
+			elseif k == 7 then
+				ax = -0.65 * kGryz + math.abs(math.sin(tGlob * 1.3 + w.id)) * 0.04
+			elseif k == 8 or k == 9 then
+				local s = if k == 8 then -1 else 1
+				local o = w.skrz
+				ay = s * (o * 1.35 + math.sin(tGlob * 2 + w.id) * 0.03)
+				az = -s * (o * (0.35 + math.sin(tGlob * 14) * 0.35) + 0.03 * math.sin(tGlob * 1.7))
+			elseif k >= 11 then
+				ay = math.sin(w.faza * 1.1 + tGlob * 1.4 - (k - 11) * 0.7) * 0.16 * (0.35 + math.min(1, mv))
+				maxOgon = math.max(maxOgon, k)
 			end
-			T[k] = CFrame.new(pv * Vector3.new(skx, sky, skx)) * CFrame.Angles(ax, ay, 0) * CFrame.new(-pv * Vector3.new(skx, sky, skx))
+			local pS = pv * Vector3.new(skx, sky, skx)
+			T[k] = CFrame.new(pS) * CFrame.Angles(0, 0, az) * CFrame.Angles(ax, ay, 0) * CFrame.new(-pS)
+		end
+		for k = 12, maxOgon do
+			if T[k] and T[k - 1] then
+				T[k] = T[k - 1] * T[k] -- ogon łańcuchem: każdy segment niesie następne
+			end
 		end
 		local fala = if F.chod == "pelzanie" then r * 0.12 * (0.3 + math.min(1, mv)) else 0
 		local cf = w.cf
@@ -1722,7 +1801,33 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 		elseif t == "umiejetnosc" then
 			local w = widoki[z.id]
 			local p = C + Vector3.new(z.x, 0.4, z.z)
-			if z.typ == "wsysanie" then
+			local Ef = w and D.formy[w.forma] and D.formy[w.forma].um.efekt
+			local kier = Vector3.new(math.sin(z.kier or 0), 0, math.cos(z.kier or 0))
+			local rw = if w then D.formy[w.forma].r else 2
+			if Ef == "ogien" or Ef == "ogien_strzal" then
+				E:plomien(p + kier * rw, kier, math.max(4, z.r - rw), if Ef == "ogien" then D.formy[w.forma].um.kat_st else 16)
+				dzwiek("kryt", 0.7)
+			elseif Ef == "inferno" then
+				for i = 0, 5 do
+					local a = i * math.pi / 3
+					E:plomien(p, Vector3.new(math.sin(a), 0, math.cos(a)), z.r * 0.8, 40)
+				end
+				E:fala(p, z.r)
+				if z.id == mojId then
+					wstrzasnij(1.2, 0.5)
+				end
+			elseif Ef == "podmuch" then
+				E:pierscien(p, z.r, Color3.new(1, 1, 1), 0.5)
+				E:pyl(p, z.r * 0.5, 10)
+			elseif Ef == "ryk" then
+				E:pierscien(p, z.r, hex("FF6A3D"), 0.6)
+				E:pierscien(p, z.r * 0.6, hex("FFC83D"), 0.4)
+				if z.id == mojId then
+					wstrzasnij(0.8, 0.4)
+				end
+			elseif Ef == "lot" then
+				E:pyl(p, rw, 12)
+			elseif z.typ == "wsysanie" then
 				E:pierscien(p, z.r, hex(UI.kolory.kulka_mala), 0.4)
 			elseif z.typ == "ogluszenie" then
 				E:chmura(p + Vector3.new(0, 1.5, 0), z.r)
@@ -1973,13 +2078,11 @@ local function zbudujLegowisko(p: Player, slot: number, sig: string)
 					if f > mf then
 						d.Color = Color3.fromRGB(20, 16, 24)
 						d.Material = Enum.Material.SmoothPlastic
-					elseif W and W.id == "tecza" then
-						d.Color = Color3.fromHSV((i * 0.137) % 1, 0.65, 1)
-					elseif W then
-						d.Color = d.Color:Lerp(hex(W.kolor), 0.6)
-						d.Material = Enum.Material.SmoothPlastic
 					end
 				end
+			end
+			if f <= mf then
+				wyglad(m, W)
 			end
 			pcall(function()
 				m:ScaleTo(1.4 / F.model_r)

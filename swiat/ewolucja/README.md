@@ -101,6 +101,29 @@ Przed próbą Play inne gry wyłączone: `swiat/pet_arena/zbuduj.py --wlacz off`
   forma 6 8:26, forma 7 10:33, Olbrzym 13:15, 1. pościg 1:51, 1. ulepszenie 1:41.
 - W Studio ogłoszenia używają nazwy „Player N” zamiast nazwy konta (zrzuty i filmy bez prywatnych danych).
 
+## Smok (22.11.2026) — jeden smok w ośmiu stadiach
+- `"zestaw": "smok"` w `ustawienia.json` (domyślnie); `"potwory"` przywraca osiem modeli Pet Areny jedną zmianą.
+- **Generator** `smok.py`: smok z klocków, bez wgrywania. Tułów, brzuch, szyja, głowa z pyskiem, szczęką, oczami
+  i rogami, cztery nogi, ogon z segmentów, dwa skrzydła, kolce; płyty, grzebień i świecenie zależnie od stadium.
+  Stadia: HATCHLING 31, WHELP 35, DRAKE 42, FIRE DRAKE 43, DRAGON 45, WAR DRAGON 51, ELDER DRAGON 51,
+  ANCIENT DRAGON 60 części (potwory Pet Areny miały 32–545).
+  Parametry stadium (proporcje, kolory, dodatki) są danymi w `formy_smok[].smok`. Zrzut `klatki/13_stadia_smoka.jpg`
+  pokazuje stadia obok siebie w wyrównanej wysokości; w grze różnica wielkości jest dużo większa.
+- **Model do podmiany bez kodu**: części z atrybutem `Grupa` — 1–4 nogi (LP, PP, LT, PT), 6 głowa, 7 szczęka,
+  8/9 skrzydło L/P, 11+ kolejne segmenty ogona — oraz atrybuty modelu `Pivot<k>` (punkt obrotu w skali 1).
+  Część `Korzen` w (0, 0, 0) jest PrimaryPart, przód to −Z. Opcjonalnie pole `anim` z klipami dla modelu z Animatorem.
+- **Ruch**: nogi kłusem po przekątnej, ogon łańcuchem segmentów, skrzydła złożone z lekkim drżeniem i otwarte
+  w zrywie, szarży i szybowaniu, szczęka kłapie przy BITE, oddech w spoczynku. Większe stadia stąpają wolniej i ciężej.
+- **Umiejętności**: NIBBLE, TAIL WHIP, EMBER SPIT, WING GUST (nowy typ: odepchnięcie), FIRE BREATH (nowy typ: stożek),
+  ROAR, WING GLIDE (niskie szybowanie nad mniejszymi — jedyny „lot”), INFERNO. Efekty dobierane polem `efekt`.
+- **Warianty** jako wygląd smoka: GOLD (metal), CRYSTAL (szkło), RUBY, RAINBOW. Widać je także u innych graczy
+  (bajt wariantu w migawce stanu).
+- **Legowisko**: na cokołach stoją stadia smoka; sylwetki na tablicy lasu i rozmiar na cokole biorą się z danych.
+  Na łące napis „DRAGON LAIR EVOLUTION”. Przy każdym legowisku 6 kulek startowych: pierwsza kulka w 1–3 s.
+- Mini-boss VINE SERPENT bez zmian. Bossem serwera jest teraz ANCIENT DRAGON (ostatnie stadium).
+- Tempo (6 prób, domyślnie): forma 2 0:17 i forma 5 5:12 — wcześniej niż cele (bez przestrajania). Reszta w celach:
+  przerwa 2:18, pościg 1:52, ulepszenie 1:31, ANCIENT 13:55.
+
 ## Czego nie ma (etap 4 i dalej)
 Legowisko jako miejsce w świecie, złoto pod nieobecność, zapis postępu, odmiany barwne, Olbrzym jako boss serwera,
 umiejętności botów, dźwięki poza arkuszem Pet Areny. Prawdziwego dotyku nie da się wywołać z prób — drążek i przyciski

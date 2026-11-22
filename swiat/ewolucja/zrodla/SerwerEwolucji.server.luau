@@ -316,7 +316,11 @@ evAkcja.OnServerEvent:Connect(function(plr: Player, rodzaj: any, a: any, b: any,
 end)
 
 ------------------------------------------------------------------ migawki (bufor)
-local ROZ = 15
+local ROZ = 16
+local NR_WARIANTU = {}
+for i, W in D.warianty do
+	NR_WARIANTU[W.id] = i
+end
 local function migawka(): buffer
 	local n = #S.byty
 	local nk = #D.kulkiPoz
@@ -370,6 +374,7 @@ local function migawka(): buffer
 		buffer.writef32(b, o + 5, e.x)
 		buffer.writef32(b, o + 9, e.z)
 		buffer.writei16(b, o + 13, math.clamp(math.floor(e.kier * 1000 + 0.5), -32000, 32000))
+		buffer.writeu8(b, o + 15, if e.slot > 0 and e.wariantTeraz then (NR_WARIANTU[e.wariantTeraz] or 0) else 0)
 	end
 	return b
 end

@@ -14,6 +14,8 @@ import math
 import os
 import random
 import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import smok as SMOK  # noqa: E402
 
 sys.dont_write_bytecode = True
 PAKIET = os.path.dirname(os.path.abspath(__file__))
@@ -72,6 +74,14 @@ def kulki(P, J, prz, LS=None):
     """Stałe miejsca kulek: [x, z, typ] (1 mała, 2 duża, 3 wielka — tylko w lesie), z dala od przeszkód."""
     los = random.Random(7)
     w = []
+    G = ustawienia()["legowisko"]
+    for (dx, dz) in legowiska(G):
+        d = math.hypot(dx, dz)
+        ux, uz = -dx / d, -dz / d
+        for j in range(G.get("kulki_startowe", 0)):
+            odl = G["r"] + 2.5 + j * 2.2
+            bok = (j % 3 - 1) * 2.2
+            w.append([round(dx + ux * odl - uz * bok, 2), round(dz + uz * odl + ux * bok, 2), 1])
     if LS:
         lx, lz = LS["srodek"]
         for typ, ile in ((3, LS["wielkie"]), (2, LS["duze"])):
@@ -130,6 +140,16 @@ def wystroj(P):
     return {"plamy": plamy, "drzewa": drzewa, "kwiaty": kwiaty, "kepki": kepki, "grzyby": grzyby, "krzaki": krzaki}
 
 
+def smoki(U):
+    """Modele stadiów smoka do budowy w Studio (zbuduj.py): {wzorzec: {czesci, pivoty}}."""
+    w = {}
+    if U.get("zestaw", "smok") != "smok":
+        return w
+    for i, F in enumerate(U["formy_smok"]):
+        w["Smok_%d" % (i + 1)] = SMOK.stadium(F["smok"])
+    return w
+
+
 def wystroj_lasu(LS):
     """Tylko scena lasu: drzewa za murem lasu, grzyby, plamy ciemnej ściółki."""
     los = random.Random(13)
@@ -169,9 +189,13 @@ def dane():
     UP, DP, _ = PA.wszystkie_pliki()
     pety = {p["id"]: p for p in DP["pety"]}
     formy = []
-    for i, F in enumerate(U["formy"]):
-        f = {k: v for k, v in F.items() if k not in ("pet", "boss")}
-        if "pet" in F:
+    zestaw = U.get("zestaw", "smok")
+    for i, F in enumerate(U["formy_" + zestaw]):
+        f = {k: v for k, v in F.items() if k not in ("pet", "boss", "smok")}
+        if "smok" in F:
+            S = SMOK.stadium(F["smok"])
+            f["wzorzec"], f["model_r"], f["model_h"] = "Smok_%d" % (i + 1), S["promien"], S["wysokosc"]
+        elif "pet" in F:
             P = pety.get(F["pet"])
             if not P:
                 raise SystemExit("forma %d: nieznany pet %s" % (i + 1, F["pet"]))

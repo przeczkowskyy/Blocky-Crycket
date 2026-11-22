@@ -57,7 +57,8 @@
   "las_warunek": "REACH FORM %d",
   "ogl_boss": "%s defeated the %s!",
   "skrzynia": "+%d GOLD CHEST!",
-  "au": "OUCH!"
+  "au": "OUCH!",
+  "tytul_gry": "DRAGON LAIR EVOLUTION"
  },
  "pole": {
   "opis": "Koło o promieniu r wokół srodek (dala od Pet Areny i zabawek). Przeszkody (skały i drzewa w polu) liczy logika jako koła; wystrój (plamy trawy, drzewa za murem, kwiaty) tylko w scenie.",
@@ -94,7 +95,8 @@
   "kat_do": 318,
   "poziomy_x": [1, 1.5, 2.2, 3.2, 4.5],
   "ceny_x": [150, 400, 1000, 2400],
-  "boss_trofea": [6, 12, 22, 36, 60]
+  "boss_trofea": [6, 12, 22, 36, 60],
+  "kulki_startowe": 6
  },
  "warianty": [
   {"id": "zloty", "nazwa": "GOLD", "szansa": 0.08, "x": 2, "kolor": "FFC83D"},
@@ -164,7 +166,9 @@
   "za_forme": [8, 20, 45, 100, 210, 420, 800, 1500],
   "gracz_x": 1.5
  },
- "formy": [
+ "zestaw": "smok",
+ "zestaw_opis": "Zestaw form: smok (domyślny, osiem stadiów jednego smoka z generatora smok.py) albo potwory (osiem modeli Pet Areny, etapy 1–3) — porównanie i powrót jedną zmianą.",
+ "formy_potwory": [
   {"pet": "lesny_slime", "chod": "skok", "nazwa": "SLIME", "r": 1.6, "v": 1.0, "potrzeba": 32, "trofeum": 1,
    "um": {"typ": "wsysanie", "nazwa": "SLURP", "r": 9, "odnowa_s": 6}},
   {"pet": "zoledziak", "chod": "dwunozny", "nazwa": "ACORNLING", "r": 2.2, "v": 1.0, "potrzeba": 70, "trofeum": 2,
@@ -181,6 +185,16 @@
    "um": {"typ": "fala", "nazwa": "GROUND SLAM", "r": 20, "s": 1.4, "odnowa_s": 7}},
   {"boss": "straznik_topieli", "chod": "dwunozny", "nazwa": "GIANT", "r": 15.0, "v": 0.8, "potrzeba": 0, "trofeum": 60,
    "um": {"typ": "fala", "nazwa": "GIANT STOMP", "r": 36, "s": 1.8, "odnowa_s": 6}}
+ ],
+ "formy_smok": [
+  {"nazwa": "HATCHLING", "chod": "skok", "r": 1.6, "v": 1.0, "potrzeba": 32, "trofeum": 1, "um": {"typ": "wsysanie", "nazwa": "NIBBLE", "r": 9, "odnowa_s": 6, "efekt": "pierscien"}, "smok": {"glowa": 1.45, "szyja": 1, "nogi": 0.75, "dlugosc": 0.75, "grubosc": 0.9, "ogon": 3, "skrzydla": 0.15, "kolce": 0, "rogi": 0.25, "kolor": "8FD86B", "brzuch": "E8F2B0", "blona": "B8E68F", "rogi_kolor": "F2EBDD"}, "podskok": 0.3, "pochyl": 0.1, "krok": 1.25},
+  {"nazwa": "WHELP", "chod": "skok", "r": 2.2, "v": 1.0, "potrzeba": 70, "trofeum": 2, "um": {"typ": "ogluszenie", "nazwa": "TAIL WHIP", "r": 8, "s": 1.0, "odnowa_s": 6, "efekt": "fala"}, "smok": {"glowa": 1.3, "szyja": 1, "nogi": 0.85, "dlugosc": 0.85, "grubosc": 0.95, "ogon": 4, "skrzydla": 0.25, "kolce": 3, "rogi": 0.35, "kolor": "4FB89A", "brzuch": "D9F2D0", "blona": "8FD8C0", "rogi_kolor": "F2EBDD"}, "podskok": 0.24, "pochyl": 0.11, "krok": 1.2},
+  {"nazwa": "DRAKE", "chod": "klus", "r": 3.0, "v": 0.98, "potrzeba": 170, "trofeum": 4, "um": {"typ": "jezyk", "nazwa": "EMBER SPIT", "r": 14, "odnowa_s": 6, "efekt": "ogien_strzal"}, "smok": {"glowa": 1.15, "szyja": 2, "nogi": 0.95, "dlugosc": 1.0, "grubosc": 1.0, "ogon": 5, "skrzydla": 0.55, "kolce": 4, "rogi": 0.5, "kolor": "4F8FD8", "brzuch": "D0E4FF", "blona": "7FB0F0", "rogi_kolor": "F2EBDD"}, "podskok": 0.12, "pochyl": 0.13, "krok": 1.3},
+  {"nazwa": "FIRE DRAKE", "chod": "klus", "r": 4.0, "v": 0.95, "potrzeba": 480, "trofeum": 7, "um": {"typ": "podmuch", "nazwa": "WING GUST", "r": 13, "sila": 14, "s": 0.5, "odnowa_s": 7, "efekt": "podmuch"}, "smok": {"glowa": 1.1, "szyja": 2, "nogi": 1.0, "dlugosc": 1.05, "grubosc": 1.05, "ogon": 5, "skrzydla": 0.7, "kolce": 5, "rogi": 0.6, "kolor": "E0553A", "brzuch": "FFD08A", "blona": "FF9A3D", "rogi_kolor": "2A1A1A"}, "podskok": 0.11, "pochyl": 0.14, "krok": 1.25},
+  {"nazwa": "DRAGON", "chod": "klus", "r": 5.2, "v": 0.93, "potrzeba": 1000, "trofeum": 12, "um": {"typ": "oddech", "nazwa": "FIRE BREATH", "r": 16, "kat_st": 70, "odnowa_s": 5, "efekt": "ogien"}, "smok": {"glowa": 1.05, "szyja": 2, "nogi": 1.05, "dlugosc": 1.15, "grubosc": 1.1, "ogon": 6, "skrzydla": 1.0, "kolce": 6, "rogi": 0.7, "kolor": "8A5AD8", "brzuch": "E6D0FF", "blona": "C08AF0", "rogi_kolor": "F2EBDD"}, "podskok": 0.1, "pochyl": 0.13, "krok": 1.15},
+  {"nazwa": "WAR DRAGON", "chod": "klus", "r": 6.8, "v": 0.9, "potrzeba": 4200, "trofeum": 20, "um": {"typ": "ogluszenie", "nazwa": "ROAR", "r": 16, "s": 1.4, "odnowa_s": 8, "efekt": "ryk"}, "smok": {"glowa": 1.0, "szyja": 2, "nogi": 1.05, "dlugosc": 1.2, "grubosc": 1.2, "ogon": 6, "skrzydla": 1.05, "kolce": 8, "rogi": 0.8, "plyty": true, "kolor": "4A4E5E", "brzuch": "9A8070", "blona": "C0403A", "rogi_kolor": "E8E0C8", "plyty_kolor": "8A8EA0"}, "podskok": 0.08, "pochyl": 0.12, "krok": 1.05},
+  {"nazwa": "ELDER DRAGON", "chod": "klus", "r": 9.0, "v": 0.86, "potrzeba": 13800, "trofeum": 35, "um": {"typ": "skok", "nazwa": "WING GLIDE", "d": 30, "s": 0.8, "r": 4, "odnowa_s": 6, "efekt": "lot"}, "smok": {"glowa": 1.0, "szyja": 3, "nogi": 1.1, "dlugosc": 1.25, "grubosc": 1.15, "ogon": 7, "skrzydla": 1.15, "kolce": 7, "rogi": 1.4, "grzebien": true, "kolor": "E8E0C8", "brzuch": "FFF6E0", "blona": "FFC83D", "rogi_kolor": "C89A3A"}, "podskok": 0.07, "pochyl": 0.11, "krok": 0.95},
+  {"nazwa": "ANCIENT DRAGON", "chod": "klus", "r": 15.0, "v": 0.8, "potrzeba": 0, "trofeum": 60, "um": {"typ": "fala", "nazwa": "INFERNO", "r": 36, "s": 1.8, "odnowa_s": 6, "efekt": "inferno"}, "smok": {"glowa": 1.0, "szyja": 3, "nogi": 1.15, "dlugosc": 1.35, "grubosc": 1.3, "ogon": 8, "skrzydla": 1.3, "kolce": 9, "rogi": 1.6, "grzebien": true, "plyty": true, "swiecenie": true, "kolor": "2A2230", "brzuch": "4A3A5A", "blona": "FF4DD8", "rogi_kolor": "7FF8FF", "plyty_kolor": "3A3048"}, "podskok": 0.05, "pochyl": 0.09, "krok": 0.8}
  ],
  "ruch": {
   "opis": "Prędkość gracza = Szybkość (ulepszenie) × v formy; bota = bot_v × v formy (× panika przy ucieczce). Zryw (DASH) × zryw_v na zryw_s.",

@@ -346,6 +346,35 @@ class Swiat:
             kx, kz = (b["wx"] / d, b["wz"] / d) if (b["wx"] or b["wz"]) else (math.sin(b["kier"]), math.cos(b["kier"]))
             x1, z1 = self.ogranicz(b["x"] + kx * A["d"], b["z"] + kz * A["d"], rb, self.maska(b))
             b["skok"] = (b["x"], b["z"], x1, z1, self.czas, self.czas + A["s"], A["r"])
+        elif t == "podmuch":
+            for q in self.byty:
+                d = dlug(q["x"] - b["x"], q["z"] - b["z"])
+                if q is not b and self.wolny(q) and q["tarcza"] <= self.czas and not q.get("boss") and d < rb + A["r"] + self.r(q) \
+                        and not (b["slot"] and q["slot"] and q["forma"] <= self.D["smierc"]["chronione_formy"]):
+                    d = max(0.1, d)
+                    q["x"], q["z"] = self.ogranicz(q["x"] + (q["x"] - b["x"]) / d * A["sila"], q["z"] + (q["z"] - b["z"]) / d * A["sila"], self.r(q), self.maska(q))
+                    q["ogl"] = self.czas + A["s"]
+        elif t == "oddech":
+            kx, kz = math.sin(b["kier"]), math.cos(b["kier"])
+            ck = math.cos(math.radians(A["kat_st"] / 2))
+
+            def w_st(x, z, zas):
+                dx, dz = x - b["x"], z - b["z"]
+                d = dlug(dx, dz)
+                return d < zas and (d < 0.5 or (dx * kx + dz * kz) / d >= ck)
+            if not (b["slot"] and self.w_legowisku(b)):
+                n = 0
+                for q in list(self.byty):
+                    if n < 3 and q is not b and self.bezbronny(q) and self.moze(b, q) and not self.przypadkiem(b, q) and w_st(q["x"], q["z"], rb + A["r"] + self.r(q) * 0.5):
+                        self.zjedz(b, q)
+                        n += 1
+                for i in self.kulki_w(b["x"], b["z"], rb + A["r"], 99):
+                    p = self.D["kulkiPoz"][i]
+                    if w_st(p[0], p[1], rb + A["r"]):
+                        self.zjedz_kulke(b, i)
+                boss = self.boss_w(b, A["r"])
+                if boss and w_st(boss["x"], boss["z"], rb + A["r"] + self.r(boss)):
+                    self.ran(boss, b, self.D["boss"]["um_obrazenia"])
         elif t == "fala":
             self.oglusz(b, rb + A["r"], A["s"])
             if self.boss_w(b, A["r"]):
@@ -644,7 +673,7 @@ def gracz_mysl(S, g, styl):
         g["wx"], g["wz"] = ux / n, uz / n
         if dz < S.r(zagr) + r + 4:
             S.zryw(g)
-            if D["formy"][g["forma"] - 1]["um"]["typ"] in ("ogluszenie", "fala", "skok"):
+            if D["formy"][g["forma"] - 1]["um"]["typ"] in ("ogluszenie", "fala", "skok", "podmuch"):
                 S.umiejetnosc(g)
         if not g.get("zagr_t"):
             g["zagr_t"] = S.czas
@@ -701,18 +730,18 @@ def gracz_mysl(S, g, styl):
             S.gryz(g)
         elif d < r + S.r(best) + 10 and styl == "sprawny":
             S.zryw(g)
-        if A["typ"] == "jezyk" and d < r + A["r"]:
+        if A["typ"] in ("jezyk", "oddech") and d < r + A["r"]:
             S.umiejetnosc(g)
         elif A["typ"] == "szarza" and d < 18:
             S.umiejetnosc(g)
         elif A["typ"] == "skok" and d < A["d"] + 2:
             S.umiejetnosc(g)
-        elif A["typ"] in ("ogluszenie", "fala") and d < r + A["r"]:
+        elif A["typ"] in ("ogluszenie", "fala", "podmuch") and d < r + A["r"]:
             S.umiejetnosc(g)
     else:
         if A["typ"] in ("wsysanie", "fala") and len(S.kulki_w(g["x"], g["z"], r + A.get("r", 0), 5)) >= 3:
             S.umiejetnosc(g)
-        elif A["typ"] == "jezyk" and len(S.kulki_w(g["x"], g["z"], r + A["r"], 5)) >= 3:
+        elif A["typ"] in ("jezyk", "oddech") and len(S.kulki_w(g["x"], g["z"], r + A["r"], 5)) >= 3:
             S.umiejetnosc(g)
         if d < r + S.zasieg(g) + 1:
             S.gryz(g)
