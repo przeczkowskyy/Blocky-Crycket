@@ -2,6 +2,21 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-22T23:15:32+01:00",
- "prace": []
+ "aktualizacja": "2026-11-22T23:18:42+01:00",
+ "prace": [
+  {
+   "id": "smok-swiat-w-grze",
+   "tytul": "Gra o smoku: świat, oświetlenie i owce w grze",
+   "stan": "w_toku",
+   "start": "2026-11-22T23:18:42+01:00",
+   "koniec_szacowany": "2026-11-23T02:18:42+01:00",
+   "aktualizacja": "2026-11-22T23:18:42+01:00",
+   "obszary": [
+    "studio:EwolucjaGra",
+    "swiat/ewolucja/zrodla"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  }
+ ]
 }
