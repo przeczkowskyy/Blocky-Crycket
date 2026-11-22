@@ -8,6 +8,7 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 
 ## 2026-11-22 · Panel (ludzie)
 - Paweł (gość panelu): nowy pomysł w Wytwórni: Baseball for treasure ([[Baseball for treasure]])
+- Paweł (gość panelu): nowy pomysł w Wytwórni: Cats Brawlers ([[Cats Brawlers]])
 
 ## 2026-11-22 · Claude Code u Karola (gra o ewolucji: pomiar do próby z graczami)
 - Sesja główna przeszła z Fable na Opus 5.5 (Karol: „Fable nam się na razie skończył”).
