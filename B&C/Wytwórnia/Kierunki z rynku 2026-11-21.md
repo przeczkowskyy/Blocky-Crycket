@@ -62,5 +62,8 @@ Kierunki 3 i 4 zostają w kolejce: trzeci jest droższy (olbrzym), czwarty wymag
 - [ ] Karol (i Paweł) grają po dwie minuty w każdą i wybierają tę, przy której chcą „jeszcze raz” — albo żadną (wtedy kierunek 3 albo 4).
 - Ocena agenta budującego (do sprawdzenia w ręku): „Eat & Evolve” bawi bardziej (decyzja w każdej sekundzie, czytelne kolory „zjesz / zje cię”), ale pole bywa puste i boty są proste; „Lure a Monster” ma moment „tak!” przy trafieniu w biegnącego potwora, ale czynność jest spokojna i bliskie strefy szybko się powtarzają.
 
+## Wynik grania (22.11) i wybór kierunku
+Karol: obie zabawki słabe i nudne — bez głębi, bez „co będzie dalej”, bez emocji scenki, w której potwór podchodzi. Wskazał kierunek 2 w pełnej postaci: czynność + ulepszanie bohatera + potworki dające złoto na sekundę, tak jak w grze-wzorze. Agent się zgadza (to najmocniejsza fala tygodnia), z zastrzeżeniem: kopie tej pętli szybko gasną (Throw a Seed: szczyt 171 tys., dwa tygodnie później 29 tys.), więc potrzebny własny zwrot i szybkie wyjście. Następny krok: rozbiór gry-wzoru i budowa pełnej pętli.
+
 ## Powiązane
 - [[00 Wytwórnia pomysłów]] · [[Lekcje z prototypów]] · [[Karta oceny pomysłu]] · [[Trend 2026-11-21 — co rośnie w tym tygodniu]] · [[Monster Evolution]] · [[Sleeping Giant Heist]]

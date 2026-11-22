@@ -34,5 +34,14 @@ Karol: „To nie tak, że spędzony czas i tokeny na BONK-a i Blocky & Crycket b
 - **Zmiana (propozycja):** najpierw **zabawka** — sama czynność, bez jajek, złota, zapisu i ekranów, do zagrania na telefonie w dwie minuty. Kilka zabawek naraz, człowiek wybiera tę, przy której chce „jeszcze raz”. Dopiero wokół wybranej budujemy grę. Karta dostaje bramkę „próba zabawki”.
 - **Co zostaje z Pet Areny:** rzut, sterowanie potworem z przewidywaniem ruchu, zderzenia i wybicia, wielkości według wagi, koloseum, wyklucie i scena złapania, zegar wydarzeń, wylęgarnia, pełna droga budowa → próba → prywatna publikacja (z nauczką o trybie publikacji).
 
+## 2026-11-22 · Dwie zabawki („Eat & Evolve”, „Lure a Monster”) — Karol zagrał na telefonie
+**Co się stało (słowa Karola):** „Obie są bardzo słabe i nudne i nie mają tej głębi. Nie ma elementów zaskoczenia — co będzie dalej. Nie ma tego fragmentu emocji, tak jak to robi rzucanie jedzeniem i ta scenka, gdy potwór podchodzi.” Wskazał przepis, który jego zdaniem dziś działa: **czynność + ulepszanie bohatera (siła, szybkość) + zasób w postaci potworków, które dają złoto na sekundę.**
+
+**Wniosek agenta (poprawka własnej metody):**
+- **Zabawka bez pętli testowała nie to.** Po Pet Arenie uznałem, że sama czynność ma bawić przez 10 sekund, i wyciąłem z zabawek nagrody, postęp i niespodziankę. Tymczasem w gatunku, który Karol wskazuje (i który dziś rośnie najszybciej), **grą jest pętla**: rzut → napięcie → scenka z niewiadomą → nagroda → ulepszenie → dalej. Sam rzut bez tego jest pusty.
+- **Poprawiona bramka:** najmniejsza próbka pomysłu to nie „czynność”, tylko **jedna pełna pętla z niespodzianką i pierwszym ulepszeniem** — tyle, żeby po dwóch minutach gracz wiedział, co chce zdobyć dalej.
+- **Karol jako miara:** trzy razy trafnie wskazał brak (hak w BONK, dynamika w Pet Arenie, emocja i „co dalej” w zabawkach). Jego odczucie z grania w cudze hity jest lepszym źródłem niż moja karta — pytać go o konkretną grę-wzór przed budową.
+- **Co dalej:** dokładny rozbiór gry-wzoru (Throw Food For Animals) i jej najszybszych kopii, potem własna gra w tej pętli z naszymi potworami i jednym zwrotem.
+
 ## Powiązane
 - [[00 Wytwórnia pomysłów]] · [[BONK]] · [[Karta oceny pomysłu]]

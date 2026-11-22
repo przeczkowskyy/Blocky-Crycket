@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (zabawki odrzucone, kierunek: pętla jak w grze-wzorze)
+- **Karol po graniu w obie zabawki:** „bardzo słabe i nudne… nie mają głębi… nie ma elementów zaskoczenia… nie ma emocji, tak jak to robi rzucanie jedzeniem i scenka, gdy potwór podchodzi. Czynność, ulepszanie bohatera (siła, szybkość) i zasób w postaci potworków, które dają złoto na sekundę — to jest chyba teraz trendujące.”
+- **Agent:** zgoda i poprawka własnej metody — zabawka bez pętli testowała nie to ([[Lekcje z prototypów]]; bramka w [[Karta oceny pomysłu]] zmieniona na „próbkę pętli”). Kierunek 2 z [[Kierunki z rynku 2026-11-21]] w pełnej postaci. W toku: rozbiór gry-wzoru i jej kopii (agent badawczy), potem budowa.
+
 ## 2026-11-22 · Claude Code u Karola (dwie zabawki w wersji testowej)
 - **Karol (21.11 wieczór):** „Ok, puść je” — zgoda na dwie zabawki z [[Kierunki z rynku 2026-11-21]]. Odpowiedź pod pytaniem 81.
 - **Zabawki** (pakiet `swiat/zabawki/`, kontener `ZabawkiGra` w prywatnym miejscu testowym): „Eat & Evolve” — gracz od razu jest potworem, zjada kulki i mniejszych, ucieka przed większymi, sześć form, zryw, 20 botów; „Lure a Monster” — proca z przynętą, ruchome cele, zwabione potwory w zagrodzie. Bez warstw (złota, jajek, zapisu). Ekran wyboru na wejściu; Pet Arena wyłączona wyłącznikiem, kontener został. Próba w Studio 18/18, testy 7 OK, układ sprawdzony na emulacji telefonu (poprawione: przycisk MENU, zasłanianie łąki, wysokość kamery).

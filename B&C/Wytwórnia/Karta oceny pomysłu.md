@@ -21,8 +21,8 @@ Każde kryterium 0–3 (0 = nie ma, 1 = słabo, 2 = jest, 3 = mocna strona). Oce
 
 ## Bramka przed kartą: próba zabawki (propozycja po Pet Arenie, 21.11)
 Karta ocenia pomysł na papierze i dwa razy się pomyliła. Dlatego zanim cokolwiek dobudujemy:
-1. Powstaje **zabawka**: sama czynność gracza z pierwszych 10 sekund, bez nagród, złota, zapisu i ekranów (koszt: ułamek etapu gry).
-2. Człowiek gra w nią dwie minuty na telefonie. Pytanie jest jedno: **czy chcesz jeszcze raz?**
+1. Powstaje **próbka pętli** (poprawka z 22.11 po dwóch zabawkach bez pętli, które nudziły): jedna pełna pętla gry-wzoru — czynność, chwila napięcia z niewiadomą, nagroda i pierwsze ulepszenie — bez sklepów, zapisu i dodatków (koszt: ułamek etapu gry).
+2. Człowiek gra w nią kilka minut na telefonie. Pytania są dwa: **czy chcesz jeszcze raz** i **czy wiesz, co chcesz zdobyć dalej?**
 3. „Tak” — dopiero wtedy karta i budowa gry wokół zabawki. „Nie” — zabawka do kosza, bez żalu.
 
 ## Progi (propozycja)
