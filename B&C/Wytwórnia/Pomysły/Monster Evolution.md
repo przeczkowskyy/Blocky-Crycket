@@ -3,7 +3,7 @@ status: propozycja
 typ: pomysł-gry
 gra: Monster Evolution
 etap: prototyp
-zdanie: "Start as the tiniest monster, eat and evolve up a ladder of eight forms into the Giant — every form you reach lives in your den and earns gold."
+zdanie: "Hatch as a tiny dragon, eat and evolve through eight stages into the Ancient Dragon — every stage you reach guards your lair and grows your hoard."
 ocena_agenta: 26
 werdykt_agenta: popraw
 ocena_karol:
@@ -13,11 +13,14 @@ d7:
 sesja_min:
 ccu:
 miejsce:
+aliases: [Dragon Lair Evolution]
 tags: [wytwórnia, pomysł]
 ---
 # Monster Evolution
 
 ## Stan 2026-11-22 — budowa próbki (D-129)
+**Stan wieczorem 22.11:** etapy 1–3 i przeróbka na smoka są zbudowane i opublikowane prywatnie (https://www.roblox.com/games/93704244631419); roboczy tytuł „Dragon Lair Evolution” (pytanie 84, bez decyzji). Czeka: granie z telefonu, wybór tytułu, docelowy model smoka, gracze do próby.
+
 Karol zdał wybór na liczby („liczą się liczby i statystyki”) i zlecił budowę. Kierunek wybrany z pomiaru rynku ([[Kierunki z rynku 2026-11-22]]), sprawdzony po mechanice ([[Walidacja kierunku jesteś potworem (2026-11-22)]]) i przeprojektowany według wyniku: **stała drabina ośmiu form zamiast losowania formy, legowisko z zarabiającymi formami jako nasz wyróżnik, łagodna strata**. Projekt, etapy, progi u prawdziwych graczy i warunek z rynku: [[Projekt próbki — Monster Evolution]]. Uczciwa skala: zwykle 0,5–5 tys. graczy naraz w szczycie, powyżej 10 tys. mniej więcej raz na dziesięć. Stara ocena liczbowa na karcie (26) pochodzi z 20.11 i nie była odnawiana — karta pomyliła się już dwa razy.
 
 Zastrzeżenie agenta (D-114): niski sufit fali, dwa z trzech elementów pierwotnego zwrotu ma już lider, a hity tego gatunku gasną w 4–8 tygodni. Dlatego budowa idzie etapami, z progami i z warunkiem z rynku na 29.11. Opis poniżej to pierwotny pomysł z 20.11 (rozgałęzienia, wydarzenie „Apex”) — obowiązuje projekt próbki.

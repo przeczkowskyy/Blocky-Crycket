@@ -7,8 +7,7 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
-- [ ] Monster Evolution: zagrać z telefonu w prywatną wersję (https://www.roblox.com/games/93704244631419, teraz etap 3 z legowiskiem) i zapisać, czy gra startuje, w której minucie chciało się wyjść oraz co nie działało w sterowaniu — to obserwacja, nie werdykt (D-128) · Karol, Paweł · #wysoki
-- [ ] Monster Evolution: przeróbka na smoka — osiem stadiów, model z klocków na start (pytanie 84); w budowie od 2026-11-22 · agent · #wysoki
+- [ ] Monster Evolution: zagrać z telefonu w prywatną wersję (https://www.roblox.com/games/93704244631419, teraz wersja ze smokiem i legowiskiem) i zapisać, czy gra startuje, w której minucie chciało się wyjść oraz co nie działało w sterowaniu — to obserwacja, nie werdykt (D-128) · Karol, Paweł · #wysoki
 - [ ] Monster Evolution: wybrać tytuł ze słowem „Dragon” (wolne 22.11: „Dragon Lair Evolution”, „Evolve a Dragon”, „Baby Dragon Evolution”) i zdecydować o docelowym modelu smoka w naszym stylu (osobne nogi, ogon, skrzydła; bez szkieletu) · Karol, Paweł · #średni
 - [ ] Zebrać 8–12 graczy spoza zespołu (9–15 lat, telefon) do próby Monster Evolution — bez nich o próbce znów rozstrzygnie gust (D-128) · Karol, Paweł · #wysoki
 - [ ] Paweł: potwierdzić albo zmienić D-128 (liczby rozstrzygają) i D-129 (budowa próbki Monster Evolution) · Paweł · #wysoki
@@ -133,6 +132,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Monster Evolution: przeróbka na smoka — osiem stadiów, model z klocków na start (pytanie 84); zrobione 2026-11-22: testy 23/23, próba w Studio 21/21, telefon 7/7; opublikowana prywatnie · agent · #wysoki
 - [x] Monster Evolution: etap 3 — legowisko w świecie, zapis, odmiany, Olbrzym jako boss ([[Projekt próbki — Monster Evolution]]) · agent · #wysoki · zrobione 2026-11-22: testy 21/21, próba w Studio 21/21, telefon 7/7; opublikowany prywatnie
 - [x] Monster Evolution: wybrać zwierzę (pytanie 84) i sposób animacji (pytanie 83) · Karol, Paweł · #wysoki · 2026-11-22: zwierzę — smok (ustalenie robocze pod pytaniem 84); animacje — ruch w naszym systemie, bez szkieletu
 - [x] Monster Evolution: zagrać z telefonu w prywatną wersję etapu 2 (https://www.roblox.com/games/93704244631419) i zapisać, w której minucie chciało się wyjść oraz co nie działało w sterowaniu — to obserwacja, nie werdykt (D-128) · Karol, Paweł · #wysoki · zastąpione 2026-11-22 graniem w wersję z etapem 3

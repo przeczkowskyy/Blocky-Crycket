@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: smok gotowy i opublikowany prywatnie)
+- **Przeróbka na smoka** (ten sam agent na Opus; łącznie na etapy 1–3, próbę i przeróbkę ok. 0,9 mln tokenów): osiem stadiów jednego smoka z generatora klocków, zdolności smoka, odmiany widoczne u innych graczy, kulki przy wyjściu z legowiska, dawny zestaw potworów pod ustawieniem. Testy logiki 23/23, próba w Studio 21/21, układ telefonu 7/7. Stan, ocena wyglądu i wymagania dla ręcznie zrobionego modelu: [[Projekt próbki — Monster Evolution]].
+- **Prywatna publikacja** wersji ze smokiem (zgoda Karola z 22.11), potwierdzona zmianą znacznika czasu wersji. Publicznie nic.
+- Karta [[Monster Evolution]]: nowe zdanie i roboczy tytuł „Dragon Lair Evolution” jako alias. `DOKUMENTACJA.md` zaktualizowana. Budowa wstrzymana do czasu grania ludzi z telefonu, wyboru tytułu i zebrania graczy do próby (D-128).
+
 ## 2026-11-22 · Claude Code u Karola (Monster Evolution: etap 3 gotowy i opublikowany prywatnie; start przeróbki na smoka)
 - **Etap 3 próbki** (ten sam agent na Opus): legowisko w świecie ze skarbem i strefą bezpieczną, poziomy trofeów, odmiany przy ewolucji z jawnymi szansami, zapis postępu z blokadą sesji i zarobkiem pod nieobecność do 2 godzin, boss w pięciu stopniach, Olbrzym jako boss serwera. Testy logiki 21/21, próba w Studio 21/21 (z wyjściem i powrotem gracza), układ telefonu 7/7. Stan, liczby i wady: [[Projekt próbki — Monster Evolution]]. `tools/zapis_prob.py`: kontener gry dopisany do listy znacznika próby.
 - **Prywatność:** agent budujący złapał zrzut z prawdziwą nazwą konta w ogłoszeniu o bossie, usunął go i zrobił na nowo; w Studio ogłoszenia mówią teraz „Player N”. Do repozytorium nic takiego nie trafiło.

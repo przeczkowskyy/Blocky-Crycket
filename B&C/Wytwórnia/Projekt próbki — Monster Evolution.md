@@ -111,6 +111,15 @@ Dobrze zrobiona druga generacja w tej fali ma zwykle szczyt 0,5–5 tys. graczy 
 - **Ocena agenta budującego:** minuty 5–15 są lepsze (co 1–2 minuty jest powód do działania), ale to głównie rosnące liczby; powroty do legowiska mogą nużyć, a odmiany przy łącznie 12% będą rzadkie w krótkiej sesji.
 - **Opublikowany prywatnie** (https://www.roblox.com/games/93704244631419), potwierdzony zmianą znacznika czasu wersji.
 
+## Po przeróbce na smoka (2026-11-22)
+- **Osiem stadiów jednego smoka** z generatora klocków (bez wgrywania modeli): HATCHLING, WHELP, DRAKE, FIRE DRAKE, DRAGON, WAR DRAGON, ELDER DRAGON, ANCIENT DRAGON; od 31 do 60 części na stadium. Ruch w naszym systemie: nogi kłusują parami po przekątnej, ogon faluje, szczęka kłapie, skrzydła złożone i rozkładane przy zrywie i ślizgu.
+- **Zdolności:** NIBBLE, TAIL WHIP, EMBER SPIT, WING GUST (odpycha), FIRE BREATH (stożek ognia), ROAR, WING GLIDE (krótki niski ślizg — jedyne „latanie”), INFERNO.
+- **Odmiany** jako wygląd smoka (złoty, kryształowy, rubinowy, tęczowy), widoczne także u innych graczy. Sześć kulek stoi tuż przy wyjściu z każdego legowiska. Dzikie smoki zamiast dawnych botów; mały boss bez zmian; bossem serwera jest ANCIENT DRAGON. Napis na łące: „DRAGON LAIR EVOLUTION” (tytuł roboczy). Dawny zestaw ośmiu potworów wraca jednym ustawieniem (`"zestaw": "potwory"`).
+- **Tempo z symulacji:** dwa cele wypadają za wcześnie (druga forma po 0:17 zamiast 0:20–0:30, piąta po 5:12 zamiast 6–7 min) — nie strojone celowo; reszta w normie, najdłuższa przerwa bez nowości 2:18.
+- **Ocena wyglądu (agent budujący i agent prowadzący):** do próby wystarczy — stadia 4–8 czyta się jako smoki, a ostatnie robi wrażenie; na ikonę i reklamę nie wystarczy. Najsłabsze są dwa pierwsze stadia (wyglądają jak małe jaszczurki) i skrzydła, których z kamery od góry prawie nie widać. DRAKE i FIRE DRAKE różnią się głównie kolorem.
+- **Czego potrzebuje ręcznie zrobiony model, żeby wejść bez przeróbek kodu:** model z częścią główną „Korzen” na poziomie ziemi pod środkiem ciała, zwrócony w stronę −Z; na każdej części atrybut `Grupa` (1 lewa przednia noga, 2 prawa przednia, 3 lewa tylna, 4 prawa tylna, 6 głowa, 7 szczęka, 8 lewe skrzydło, 9 prawe skrzydło, 11 i dalej segmenty ogona od nasady); atrybuty `Pivot<k>` z położeniem stawu każdej grupy przy skali 1. Potrzebna drobna zmiana: źródło modelu jako pole danych. Przebarwianie odmian nie zadziała na częściach z teksturą.
+- **Opublikowana prywatnie** (https://www.roblox.com/games/93704244631419), potwierdzona zmianą znacznika czasu wersji.
+
 ## Propozycja: jedno zwierzę zamiast ośmiu różnych potworów (2026-11-22)
 Karol zapytał, czy nie zrobić jednego zwierzęcia. Agent się zgadza: rosnące gry tej fali mają jednego rozpoznawalnego stwora w tytule, ogólne tytuły nie żyją, filmy niesie jedna historia („od słabego do króla”), a jedno zwierzę to jeden szkielet i jeden chód na osiem form. Wybór z liczb: [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]] — agent proponuje małpę (małpka → goryl → olbrzymi goryl), bo dwunożną postać da się najpewniej oprzeć na standardowym szkielecie postaci Roblox z gotowym chodem, co zamyka największą lukę wobec lidera bez pracy w Blenderze. Do sprawdzenia przez budującego na początku przeróbki. Kod etapu 1 ma formy w tabeli danych, więc zmiana nie rusza pętli. Decyzja: pytanie 84.
 
@@ -124,7 +133,7 @@ Karol zapytał, czy nie zrobić jednego zwierzęcia. Agent się zgadza: rosnące
 - [x] Etap 1 — pełna pętla w najmniejszej postaci (2026-11-22: testy logiki 12/12, próba w Studio 13/13 bez błędów konsoli, układ telefonu 6/6, tempo z symulacji zgodne z celami)
 - [x] Etap 2 — pierwsze dziesięć minut (2026-11-22: testy logiki 15/15, próba w Studio 15/15 bez błędów konsoli, układ telefonu 6/6; jeden cel tempa niespełniony — najdłuższa przerwa bez nowości 3:02 wobec 2:30); wersja opublikowana prywatnie
 - [x] Etap 3 — legowisko w świecie, skarb, poziomy trofeów, odmiany, zapis z zarobkiem pod nieobecność, boss w pięciu stopniach, Olbrzym jako boss serwera (2026-11-22: testy logiki 21/21, próba w Studio 21/21, układ telefonu 7/7; opublikowany prywatnie; wydarzenia z zegara odłożone)
-- [ ] Przeróbka na smoka — osiem stadiów jednego zwierzęcia, model z klocków na start (w budowie od 2026-11-22; pytanie 84)
+- [x] Przeróbka na smoka — osiem stadiów jednego zwierzęcia, model z klocków (2026-11-22: testy logiki 23/23, próba w Studio 21/21, układ telefonu 7/7; opublikowana prywatnie; pytanie 84)
 - [ ] Etap 4 — próba z 8–12 graczami
 
 ## Powiązane
