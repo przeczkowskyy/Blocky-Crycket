@@ -257,6 +257,32 @@ def main():
                           ogniskowa=z.get("ogniskowa", 60.0))
                 render(sc, os.path.join(wyj, "%s_%s%s.jpg" % (d["id"], nazwa, z.get("przyrostek", ""))), roz, roz)
             bp.log("WIDOKI", d["id"], ", ".join(z["widoki"]))
+        elif z["typ"] == "bieg":
+            kl = next(k for k in d["klipy"] if k["n"] == z["klip"])
+            bp.ustaw_akcje(m["arm"], m["akcje"][kl["n"]])
+            n, tempo = kl["dlugosc"], z["v_gry"] / z["v_klipu"]
+            krata = ziemia(600.0, "FFFFFF")
+            mat = krata.data.materials[0]
+            nt = mat.node_tree
+            bsdf = next(x for x in nt.nodes if x.type == "BSDF_PRINCIPLED")
+            tc, sz_ = nt.nodes.new("ShaderNodeTexCoord"), nt.nodes.new("ShaderNodeTexChecker")
+            sz_.inputs["Scale"].default_value = 1.0 / z.get("kratka", 4.0)
+            sz_.inputs["Color1"].default_value = (*bp.lin("5FB04C"), 1.0)
+            sz_.inputs["Color2"].default_value = (*bp.lin("4A953F"), 1.0)
+            nt.links.new(tc.outputs["Object"], sz_.inputs["Vector"])
+            nt.links.new(sz_.outputs["Color"], bsdf.inputs["Base Color"])
+            pts = []
+            for i in range(13):
+                f = n * i / 12.0
+                sc.frame_set(int(f), subframe=f - int(f))
+                pts += bp.punkty(m["render"])
+            bp.kamera(sc, z["kierunek"], pts, True, margines=1.5)
+            for i in range(int(z["klatek"])):                   # klip w tempie gry, ziemia jedzie w tył z prędkością gry
+                f = (i * tempo) % n
+                sc.frame_set(int(f), subframe=f - int(f))
+                krata.location = bp.do_blendera((0.0, 0.02, -z["v_gry"] * i / 30.0))
+                render(sc, os.path.join(wyj, "%s_%s_%03d.jpg" % (d["id"], z.get("nazwa", "bieg"), i)), roz, roz)
+            bp.log("BIEG", d["id"], kl["n"], "tempo %.2f" % tempo)
         elif z["typ"] == "pasek":
             kl = next(k for k in d["klipy"] if k["n"] == z["klip"])
             bp.ustaw_akcje(m["arm"], m["akcje"][kl["n"]])

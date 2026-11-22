@@ -557,6 +557,12 @@ def cmd_interfejs():
     interfejs.zrob(sys.modules[__name__])
 
 
+def cmd_etap():
+    # Etap: zmienione i nowe pliki danych do dane_nastepne/ (folderu dane/ nie dotyka), film biegu nad krata
+    from swiat.ewolucja.modele import etap
+    etap.zrob(sys.modules[__name__])
+
+
 def cmd_obrazy():
     # Ikona i trzy miniatury strony gry (wymaga dane/)
     from swiat.ewolucja.modele import obrazy_gry

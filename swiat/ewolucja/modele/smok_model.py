@@ -259,8 +259,8 @@ def _wzdluz(p, nazwa, a, b, gr1, gr2, kolor="cialo", nadl=0.0, faza=None, mat="z
         p.blok(nazwa, (0, -dl_ / 2, 0), (gr1, dl_ + nadl, gr2), kolor, mat, faza=faza)
 
 
-def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
-    P = stadium(nr)
+def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None, nadpisz=None):
+    P = dict(stadium(nr), **(nadpisz or {}))                    # nadpisz: zmiany danych stadium dla wariantu modelu
     G = geometria(P)
     pal = paleta_stadium(P["nr"], zmiany_kolorow)
     fz = {"zar": 0.06, "zabawka": 0.15, "krysztal": 0.0}[styl]
@@ -417,8 +417,12 @@ def zbuduj_stadium(nr, styl="zar", zmiany_kolorow=None, id=None, skala=None):
                        faza=0.0)
                 p.blok("Blysk", (zn * (xo - e * 0.08) + e * 0.1, yo + e * 0.3, zo + e * 0.49), (e * 0.18, e * 0.18, 0.04),
                        "bialy", faza=0.0)
-                p.blok("Brew", (zn * (xo - e * 0.14), yo + e * 0.56, zo + e * 0.38), (e * 0.5, 0.07, 0.12), "cialo_c", MC,
-                       rot=(0, 0, -zn * 18), faza=0.02)
+                if "lagodne_brwi" in dod:                       # wariant łagodny: krótka jasna brew uniesiona na zewnątrz
+                    p.blok("Brew", (zn * (xo - e * 0.06), yo + e * 0.6, zo + e * 0.4), (e * 0.4, 0.06, 0.1), "cialo_j", MC,
+                           rot=(0, 0, zn * 12), faza=0.02)
+                else:
+                    p.blok("Brew", (zn * (xo - e * 0.14), yo + e * 0.56, zo + e * 0.38), (e * 0.5, 0.07, 0.12), "cialo_c", MC,
+                           rot=(0, 0, -zn * 18), faza=0.02)
                 if "rumieniec" in dod:
                     p.blok("Rumieniec", (zn * gw * 0.34, G["ys"] - 0.02, zf + 0.02), (e * 0.34, e * 0.2, 0.04),
                            "rumieniec", "matowy", faza=0.0)

@@ -22,7 +22,7 @@ OGON = ("Ogon1", "Ogon2", "Ogon3", "Ogon4")
 KLIPY_PODSTAWOWE = ("spoczynek", "chod", "bieg", "gryz1", "gryz2", "gryz3", "ogien_start", "ogien_petla",
                     "ogien_koniec", "trafienie", "wyklucie")
 KLIPY_DODATKOWE = ("splun", "ogon_zamach", "ryk", "szybowanie_start", "szybowanie_petla", "szybowanie_ladowanie",
-                   "nurkowanie_skok", "nurkowanie_ladowanie", "koziolek", "pozarcie", "radosc", "cokol")
+                   "nurkowanie_skok", "nurkowanie_ladowanie", "koziolek", "koziolek_dlugi", "pozarcie", "radosc", "cokol", "portret")
 ZDARZENIA_OPIS = {
     "ugryzienie": "szczęki się zatrzaskują — policz trafienie",
     "ogien_start": "pysk otwarty i wycelowany — włącz strumień ognia",
@@ -147,24 +147,36 @@ def _klipy_surowe(p, dodatkowe=True):
                 t = i / 12.0
                 k.klucz(n * t, noga + "2", obrot=(max(0.0, -math.cos(2 * math.pi * (t + fz))) * B, 0, 0))
 
-    k = petla(p, "chod", F(20, 40), {}, [
-        ("Tulow", "przes", (0, 0.03 + 0.07 * b, 0), 2, 0.3), ("Tulow", "obrot", (2 + w, 0, 0), 2, 0.05),
-        ("Tulow", "obrot", (0, 2 + 6 * b, 1.5 + 9 * b), 1, 0.0),
+    # Gra porusza każde stadium z tą samą prędkością (16–26 studs/s), więc klipy są pisane pod prędkość po ziemi:
+    # chód 7 studs/s, bieg 18 studs/s. Maluchy drepczą i kicają długimi susami, średnie galopują, wielkie stawiają
+    # długie kroki. Liczby: (klatki cyklu, klatki podporu jednej stopy) — parzyste, bo dane gry mają próbkę co 2 klatki.
+    N = P["nr"]
+    D0 = p.geometria["NogaPL1"][1] - p.geometria["NogaPL3"][1]
+    ogon = [("Ogon1", "obrot", (2, 7 + 3 * b, 0), 1, 0.5), ("Ogon2", "obrot", (2, 9 + 4 * b, 0), 1, 0.38),
+            ("Ogon3", "obrot", (3, 11 + 5 * b, 0), 1, 0.26), ("Ogon4", "obrot", (3, 13 + 6 * b, 0), 1, 0.14)]
+    n_, s_ = ((8, 4), (8, 4), (12, 6), (12, 6), (16, 8), (18, 10), (22, 12), (30, 16))[N - 1]
+    k = petla(p, "chod", n_, {}, [
+        ("Tulow", "obrot", (0, 2 + 5 * b, 1.5 + 6 * b), 1, 0.0),
         ("Szyja1", "obrot", (3, 0, 0), 2, 0.15), ("Glowa", "obrot", (2, 0, 0), 2, 0.3),
-        ("Glowa", "obrot", (0, -(1.5 + 5 * b), -(1 + 7 * b)), 1, 0.0),
-        ("Skrz1", "obrot", (0, 0, 3 + 3 * b), 2, 0.3), ("Skrz2", "obrot", (0, 0, 4 + 2 * b), 2, 0.2),
-        ("Ogon1", "obrot", (2, 7 + 3 * b, 0), 1, 0.5), ("Ogon2", "obrot", (2, 9 + 4 * b, 0), 1, 0.38),
-        ("Ogon3", "obrot", (3, 11 + 5 * b, 0), 1, 0.26), ("Ogon4", "obrot", (3, 13 + 6 * b, 0), 1, 0.14)])
-    k.chod = {"fazy": (0.0, 0.5, 0.5, 0.0), "podpor": 0.62, "krok": 0.78 - 0.1 * w, "unies": 0.24 - 0.06 * w}
+        ("Glowa", "obrot", (0, -(1.5 + 4 * b), -(1 + 5 * b)), 1, 0.0),
+        ("Skrz1", "obrot", (0, 0, 3 + 3 * b), 2, 0.3), ("Skrz2", "obrot", (0, 0, 4 + 2 * b), 2, 0.2)] + ogon)
+    k.chod = {"v": 7.0, "podpor": s_, "start": (0, n_ // 2, n_ // 2, 0), "kappa": 0.0, "unies": 0.24 - 0.06 * w,
+              "podskok": (0.02 + 0.03 * b, 2, s_ / 2.0 / n_), "pochyl": (0.0, 0.0)}             # kłus po przekątnej
 
-    k = petla(p, "bieg", F(14, 26), zl(T(rx=5 + 3 * w), S(0.3, 6), {"Szyja1": (10 + 6 * w, 0, 0), "Glowa": (-10 - 5 * w, 0, 0),
-                                                                    "Ogon": (4, 0, 0)}), [
-        ("Tulow", "przes", (0, 0.07 + 0.16 * b, 0), 1, 0.15), ("Tulow", "obrot", (4 + 7 * b, 0, 0), 1, 0.4),
+    n_, s_, kappa = ((10, 2, 0.6), (10, 2, 0.5), (12, 2, 0.15), (12, 2, 0.0), (16, 4, 0.0), (16, 4, 0.0), (20, 6, 0.0),
+                     (24, 8, 0.0))[N - 1]
+    k = petla(p, "bieg", n_, zl(T(rx=5 + 3 * w), S(0.3, 6), {"Szyja1": (10 + 6 * w, 0, 0), "Glowa": (-10 - 5 * w, 0, 0),
+                                                              "Ogon": (4, 0, 0)}), [
         ("Szyja1", "obrot", (4, 0, 0), 1, 0.55), ("Glowa", "obrot", (4 + 3 * b, 0, 0), 1, 0.0),
         ("Skrz1", "obrot", (0, 0, 9), 1, 0.2), ("Skrz2", "obrot", (0, 0, 8), 1, 0.1),
         ("Ogon1", "obrot", (5, 0, 0), 1, 0.6), ("Ogon2", "obrot", (6, 0, 0), 1, 0.48),
         ("Ogon3", "obrot", (7, 0, 0), 1, 0.36), ("Ogon4", "obrot", (8, 0, 0), 1, 0.24)])
-    k.chod = {"fazy": (0.0, 0.08 + 0.1 * w, 0.5, 0.58 + 0.1 * w), "podpor": 0.4, "krok": 0.95, "unies": 0.36}
+    if N <= 2:                                                  # kicanie: przednie razem, tylne tuż po nich, potem długi sus
+        k.chod = {"v": 18.0, "podpor": s_, "start": (0, 0, s_, s_), "kappa": kappa, "unies": 0.5,
+                  "podskok": (0.34 * D0, 1, s_ / float(n_)), "pochyl": (9.0, 1.0 / n_)}
+    else:                                                       # galop: przednie jedna po drugiej, potem tylne
+        k.chod = {"v": 18.0, "podpor": s_, "start": (0, 2, n_ // 2, n_ // 2 + 2), "kappa": kappa, "unies": 0.42 - 0.1 * w,
+                  "podskok": (0.07 * D0 * (1 + b), 2, (1 + s_ / 2.0) / n_), "pochyl": (3.0, (1 + s_ / 2.0) / n_)}
 
     # ------------------------------------------------------------------ gryzienie
     def kasniecie(nazwa, zn, n, moc=1.0):
@@ -318,7 +330,7 @@ def _klipy_surowe(p, dodatkowe=True):
                 "Ogon": (-14 * f, 6 * f, 0), "Skrz1": (0, 0, -22 * f), "Skrz2": (0, 10 * f, -14 * f),
                 "NogiP1": (-36 * f, 0, 14), "NogiP2": (20, 0, 0), "NogiT1": (34 * f, 0, 14), "NogiT2": (24, 0, 0)}
 
-    sekwencja(p, "koziolek", F(36, 54), [
+    sekwencja(p, "koziolek_dlugi", F(36, 54), [
         (0.1, zl(T(y=0.3 * H, rx=-40, rz=6), bezwl(0.6))),
         (0.24, zl(T(y=0.9 * H + 0.4 * nog, rx=-150, rz=-8), bezwl(1.0))),
         (0.4, zl(T(y=0.6 * H, rx=-275, rz=8), bezwl(-0.8))),
@@ -328,6 +340,18 @@ def _klipy_surowe(p, dodatkowe=True):
                                                  "NogiP2": (30, 0, 0), "NogiT2": (34, 0, 0), "Ogon": (-6, 0, 0)})),
         (0.9, zl(T(y=-0.05 * nog, rx=-360), {"Glowa": (-3, 10, -5)})),
         (1.0, T(rx=-360))], {"upadek": 0.52})
+
+    sekwencja(p, "koziolek", 14, [                              # koziołek gry trwa 0,5 s: jeden czysty obrót w tył
+        (2 / 14.0, zl(T(y=0.35 * H, rx=-50), bezwl(0.5))),
+        (6 / 14.0, zl(T(y=0.8 * H + 0.3 * nog, rx=-180), bezwl(1.0))),
+        (10 / 14.0, zl(T(y=0.45 * H, rx=-310), bezwl(0.6))),
+        (12 / 14.0, zl(T(y=-0.15 * nog, rx=-356), bezwl(0.2))),
+        (1.0, T(rx=-360))], {"upadek": 12 / 14.0})
+
+    # ------------------------------------------------------------------ poza do portretu (drabina, panel): jedna klatka
+    petla(p, "portret", 2, zl(T(rx=-5), S(0.5, 12), {
+        "Szyja1": (-6, 14, 0), "Szyja2": (-2, 14, 0), "Glowa": (4, 22, 0), "Szczeka": (7, 0, 0),
+        "Ogon1": (2, -10, 0), "Ogon2": (3, -14, 0), "Ogon3": (4, -18, 0), "Ogon4": (6, -22, 0)}), [])
 
     # ------------------------------------------------------------------ pożarcie (finisher)
     sekwencja(p, "pozarcie", F(36, 56), [
@@ -467,11 +491,107 @@ def _posadz(p, k, krok_kl=2):
         k.predkosc = chod["krok"] * D * 30.0 / (chod["podpor"] * n)
 
 
+def _ik(G, noga, tp, tr, cel):
+    """Kąty nogi dla kostki w punkcie `cel` przy tułowiu przesuniętym o tp i obróconym o tr:
+    (udo rx, podudzie rx, udo rz, odległość / zasięg nogi)."""
+    Tj = G["Tulow"]
+    H0, K0, A0 = G[noga + "1"], G[noga + "2"], G[noga + "3"]
+    l1 = math.hypot(K0[1] - H0[1], K0[2] - H0[2])
+    l2 = math.hypot(A0[1] - K0[1], A0[2] - K0[2])
+    a10 = math.atan2(K0[2] - H0[2], -(K0[1] - H0[1]))
+    a20 = math.atan2(A0[2] - K0[2], -(A0[1] - K0[1]))
+    R = macierz_obrotu(*tr)
+    d = (cel[0] - Tj[0] - tp[0], cel[1] - Tj[1] - tp[1], cel[2] - Tj[2] - tp[2])
+    loc = tuple(R[0][i] * d[0] + R[1][i] * d[1] + R[2][i] * d[2] for i in range(3))
+    v = (loc[0] + Tj[0] - H0[0], loc[1] + Tj[1] - H0[1], loc[2] + Tj[2] - H0[2])
+    vy = -math.hypot(v[0], v[1])
+    odl, zasieg = math.hypot(vy, v[2]), l1 + l2
+    dd = min(max(odl, abs(l1 - l2) + 1e-3), zasieg * 0.999)
+    gam = math.atan2(v[2], -vy)
+    kat = math.acos(max(-1.0, min(1.0, (l1 * l1 + dd * dd - l2 * l2) / (2 * l1 * dd))))
+    a1 = gam - kat if noga.startswith("NogaP") else gam + kat
+    a2 = math.atan2(dd * math.sin(gam) - l1 * math.sin(a1), dd * math.cos(gam) - l1 * math.cos(a1))
+    rz1 = math.degrees(math.atan2(v[0], max(1e-6, -v[1]))) if v[1] < 0 else 0.0
+    return -math.degrees(a1 - a10), -math.degrees((a2 - a20) - (a1 - a10)), rz1, odl / zasieg
+
+
+def _posadz_chod(p, k):
+    """Chód i bieg pod prędkość gry. Stopa w podporze cofa się względem korzenia dokładnie z prędkością `v` (studs/s),
+    więc gdy gra przesuwa smoka z tą prędkością, stopa stoi na ziemi. Maluchy mają za krótkie nogi na taki krok,
+    dlatego w susie tułów zostaje w tyle nad stopami (kappa) i nadrabia w locie, a w chodzie przysiada tyle, ile trzeba,
+    żeby noga sięgnęła końców kroku. Klucze co klatkę; k.predkosc = v w jednostkach projektu na sekundę."""
+    G, ch, n, sk = p.geometria, k.chod, k.dlugosc, p.skala
+    s = ch["podpor"]
+    beta = s / float(n)
+    Sd = ch["v"] * s / 30.0 / sk                                # droga stopy w podporze (jednostki projektu)
+    g0, g1 = min(ch["start"]), max(ch["start"]) + s             # faza naziemna (klatki)
+    c = ch["kappa"] * ch["v"] * (g1 - g0) / 30.0 / sk           # o tyle tułów cofa się nad stopami w fazie naziemnej
+    A, czest, umin = ch["podskok"]
+    pa, upa = ch["pochyl"]
+
+    def tz(f):
+        if c == 0.0:
+            return 0.0
+        ff = (f - g0) % n
+        if ff <= g1 - g0:
+            return c * (0.5 - ff / float(g1 - g0))
+        return -c / 2.0 * math.cos(math.pi * (ff - (g1 - g0)) / float(n - (g1 - g0)))
+
+    baza = {f: (_gladko(k, "Tulow", "przes", f), _gladko(k, "Tulow", "obrot", f)) for f in range(n + 1)}
+
+    def tulow(f, przysiad):
+        tp, tr = baza[f]
+        u = f / float(n)
+        return ((tp[0], tp[1] - A * math.cos(2 * math.pi * czest * (u - umin)) - przysiad, tp[2] + tz(f)),
+                (tr[0] + pa * math.cos(2 * math.pi * (u - upa)), tr[1], tr[2]))
+
+    def cel(nr, f):
+        A0, H0 = G[NOGI[nr] + "3"], G[NOGI[nr] + "1"]
+        st = ch["start"][nr]
+        u = ((f - st) % n) / float(n)
+        sr = tz(st + s / 2.0)                                   # w połowie podporu stopa jest pod biodrem
+        if u < beta - 1e-9:
+            return (A0[0], A0[1], A0[2] + sr + Sd * (0.5 - u / beta)), 0.0
+        m = (u - beta) / (1.0 - beta)
+        return (A0[0], A0[1] + ch["unies"] * (H0[1] - A0[1]) * math.sin(math.pi * m), A0[2] + sr - Sd / 2.0 * math.cos(math.pi * m)), m
+
+    dmin = min(G[x + "1"][1] - G[x + "3"][1] for x in NOGI)
+    przysiad = 0.0
+    while przysiad < 0.5 * dmin:                                # najmniejszy przysiad, przy którym stopy w podporze sięgają ziemi
+        ok = True
+        for f in range(n):
+            tp, tr = tulow(f, przysiad)
+            for nr, noga in enumerate(NOGI):
+                c_, m = cel(nr, f)
+                if m == 0.0 and _ik(G, noga, tp, tr, c_)[3] > 0.985:
+                    ok = False
+        if ok:
+            break
+        przysiad += 0.02 * dmin
+    nowe = {}
+    for f in range(n + 1):
+        tp, tr = tulow(f, przysiad)
+        nowe[("Tulow", f)] = (tp, tr)
+        for nr, noga in enumerate(NOGI):
+            c_, m = cel(nr, f)
+            rx1, rx2, rz1, _ = _ik(G, noga, tp, tr, c_)
+            nowe[(noga + "1", f)] = (rx1, 0.0, rz1)
+            nowe[(noga + "2", f)] = (rx2, 0.0, 0.0)
+            nowe[(noga + "3", f)] = (-(tr[0] + rx1 + rx2) + (26.0 * math.sin(math.pi * m) if m else 0.0), 0.0, 0.0)
+    for noga in NOGI:
+        for x in "123":
+            k.kanaly[(noga + x, "obrot")] = {float(f): list(nowe[(noga + x, f)]) + ["gladko"] for f in range(n + 1)}
+    k.kanaly[("Tulow", "przes")] = {float(f): list(nowe[("Tulow", f)][0]) + ["gladko"] for f in range(n + 1)}
+    k.kanaly[("Tulow", "obrot")] = {float(f): list(nowe[("Tulow", f)][1]) + ["gladko"] for f in range(n + 1)}
+    k.predkosc = ch["v"] / sk
+    k.przysiad = przysiad
+
+
 def dodaj_klipy(p, dodatkowe=True):
     """Komplet klipów stadium: pozy i cykle z _klipy_surowe, potem nogi posadzone na ziemi (_posadz)."""
     _klipy_surowe(p, dodatkowe)
     for k in p.klipy:
-        _posadz(p, k)
+        (_posadz_chod if hasattr(k, "chod") else _posadz)(p, k)
     return p
 
 

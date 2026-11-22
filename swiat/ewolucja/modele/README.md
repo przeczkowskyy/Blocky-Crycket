@@ -256,7 +256,40 @@ Podglądy: `podglad/21_ikony.jpg`, `22_portrety.jpg`, `23_makieta_hud.jpg`, `24_
   Przyciski w prawym dolnym rogu: BITE 103 pt, pozostałe 68 pt (minimum 44 pt), odstęp co najmniej 10 pt, ułożone
   łukiem wokół BITE w zasięgu kciuka.
 
+## Runda 5 — etap (`dane_nastepne/`): prędkość ruchu, krótki koziołek, ogień, indeks 3
+`generuj.py etap` zapisuje zmienione i nowe pliki do **`dane_nastepne/`** pod tymi samymi nazwami i **nie dotyka `dane/`**
+(agent gry czyta `dane/` przy każdej budowie). Po przeniesieniu plików przez sesję główną zwykłe `generuj.py dane`
+da to samo. Do tego czasu **nie uruchamiać `dane` ani `wszystko`** — nadpisałyby `dane/` nowymi klipami.
+`sprawdz_dane.py` czyta najpierw `dane_nastepne/`, potem `dane/`. Rigi smoków są bez zmian (porównane bajt w bajt).
+
+- **Chód i bieg pod prędkość gry.** Każde stadium: `chod` = **7 studs/s**, `bieg` = **18 studs/s** (pole `predkosc`).
+  Grać z szybkością `prędkość po ziemi / predkosc`: przy 16–26 studs/s bieg idzie w tempie 0,89–1,44. Maluchy kicają —
+  przednie i tylne łapy po 2 klatki na ziemi, potem długi sus, a tułów zostaje nad stopami i nadrabia w locie
+  (pisklę ±0,7 studa w przód i w tył względem korzenia: kamerę i pole trafienia trzymać na korzeniu, nie na tułowiu);
+  średnie galopują, wielkie stawiają długie kroki. Sprawdzian liczy poślizg stopy w podporze: chód do 0,2, bieg do
+  0,4 studs/s przy prędkości z `predkosc`. Cykle (klatki): chód 8, 8, 12, 12, 16, 18, 22, 30; bieg 10, 10, 12, 12, 16, 16, 20, 24.
+- **`koziolek`** ma teraz 14 klatek (0,47 s, jeden obrót; `upadek` w klatce 12) — gra trzyma ostatnią pozę do 0,5 s.
+  Dawny długi koziołek z wstawaniem to **`koziolek_dlugi`**.
+- **`portret`** — poza na jedną klatkę (klip 2-klatkowy, obie takie same): głowa zwrócona w lewo-przód smoka, skrzydła
+  półotwarte, pysk lekko uchylony; kamera z przodu po lewej stronie smoka (trzy czwarte).
+- **Indeks w wersji 3:** `stadia` = tylko osiem stadiów (każde z polem `predkosc`), jajo pod kluczem `jajo`; nowe
+  klucze `efekty`, `warianty_modeli`, `predkosc_stworow`. Format plików rigów i klipów bez zmian (`/2`).
+- **`predkosc` u stworów:** owca `chod` 1,76 i `ucieczka` 5,0 studs/s; golem `chod` 6,5–8,5 (rośnie ze stopniem),
+  groźny golem 6,9–9,1.
+- **Stożek ognia** `ogien_stozek_rig.json` + `ogien_stozek_klipy.json` (28 części; stawy `Podstawa` > `Rdzen`,
+  `Pierscien1`, `Pierscien2`, `Pierscien3`; zaczep `KoniecAttachment`; klip `migotanie`, pętla 12 klatek): wachlarz
+  języków ognia ok. 60° z jasnym rdzeniem, początek układu w pysku, długość 10 studów wzdłuż przodu (−Z rigu) —
+  przypiąć do `PyskAttachment`, skala = zasięg / 10 (kąt wachlarza stały). **Przypalenie** `rekwizyt_przypalenie_rig.json`
+  (12 części, promień 10; skala = promień INFERNO / 10): krąg sadzy z żarem i świecącymi pęknięciami.
+- **Łagodne pisklę** `smok_1_lagodny_rig.json`: mniejsze oczy (84%) i krótkie jasne brwi uniesione na zewnątrz; te same
+  stawy, zaczepy i klipy co `smok_1` — do wyboru przez ludzi (`podglad/05_stadium_1.jpg`); wybrany plik podmienia rig.
+- Film: `…\smok_ewolucja\filmy\smok_<1|3|8>_bieg_16_studs_krata.mp4` (bieg przy 16 studs/s nad kratą jadącą z prędkością
+  gry); pasek klatek `podglad/26_bieg_16_studs.jpg`.
+
 ## Co jest słabe (uczciwie)
+- Ruch (runda 5): kicanie maluchów jest zrywne (tułów staje nad łapami i skacze) — tak musi być przy 16–26 studs/s
+  na łapach długości pół studa, ale to kwestia gustu; przy 26 studs/s (tempo 1,44) susy są bardzo szybkie.
+  Uproszczone pisklę ma oczy wielkości starego wariantu. Stożek ognia to nadal klocki — z bliska kanciasty.
 - Interfejs (runda 4): ikony `wing_glide`, `meteor_dive`, `czaszka` i `korona` są najmniej czytelne w 44 px; makiety są
   obrazami — układu nie sprawdzono na prawdziwym telefonie ani w Studio; nazwy czcionek Roblox podane z pamięci.
 - Świat (runda 3): ziemia jest płaska — bez wzniesień i klifów w środku łąki; drobiazg z kamery gry nadal jest rzadki

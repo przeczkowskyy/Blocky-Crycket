@@ -20,11 +20,32 @@ from swiat.postacie.biblioteka.postac import macierz_obrotu, mnoz, razy_wektor, 
 from swiat.ewolucja.modele import smok_klipy as sk, smok_model as sm  # noqa: E402
 
 DANE = os.path.join(TU, "dane")
+ETAP = os.path.join(TU, "dane_nastepne")       # pliki czekające na przeniesienie do dane/
 
 
 def wczytaj(nazwa):
-    with open(os.path.join(DANE, nazwa), encoding="utf-8") as f:
+    """Plik danych: z folderu etapu, jeśli tam jest, inaczej z dane/."""
+    sciezka = os.path.join(ETAP, nazwa)
+    if not os.path.isfile(sciezka):
+        sciezka = os.path.join(DANE, nazwa)
+    with open(sciezka, encoding="utf-8") as f:
         return json.load(f)
+
+
+def poslizg(rig, kl, klip):
+    """Największa prędkość stopy względem ziemi (studs/s), gdy smok jedzie z prędkością `predkosc` klipu:
+    liczona na odcinkach, na których kostka leży przy ziemi."""
+    k = kl["klipy"][klip]
+    v, dt = k["predkosc"], kl["krok"] / 30.0
+    stopy = [i for i, x in enumerate(rig["kosci"], 1) if x[0].startswith("Noga") and x[0].endswith("3")]
+    pozy = [poza(rig, k, i) for i in range(len(k["probki"]))]
+    najw = 0.0
+    for i in stopy:
+        y0 = min(pz[i][1][1] for pz in pozy)
+        for a, b in zip(pozy, pozy[1:]):
+            if a[i][1][1] < y0 + 0.02 * v / 18.0 + 0.03 and b[i][1][1] < y0 + 0.02 * v / 18.0 + 0.03:
+                najw = max(najw, abs((b[i][1][2] - a[i][1][2]) / dt - v))    # przód to −Z: stopa w podporze jedzie w +Z z prędkością v
+    return najw
 
 
 def poza(rig, klip, nr_probki):
@@ -92,7 +113,7 @@ def main():
         uwagi = []
         if [k[0] for k in rig["kosci"]] != list(sm.KOSCI):
             uwagi.append("stawy inne niż KOSCI")
-        if set(kl["klipy"]) != klipy_wszystkie:
+        if not klipy_wszystkie <= set(kl["klipy"]):
             uwagi.append("brak klipów: %s" % sorted(klipy_wszystkie - set(kl["klipy"])))
         if {z[0] for z in rig["zaczepy"]} != set(sm.ZACZEPY):
             uwagi.append("zaczepy inne niż ZACZEPY")
@@ -122,6 +143,17 @@ def main():
         z = kl["klipy"]["ogon_zamach"]
         konce = [punkt_zaczepu(rig, poza(rig, z, i), "OgonKoniecAttachment") for i in range(len(z["probki"]))]
         zasieg = max(math.hypot(p[0], p[2]) for p in konce)
+        pr = {x: kl["klipy"][x].get("predkosc") for x in ("chod", "bieg")}
+        if pr["chod"] and pr["bieg"]:
+            slizg = {x: poslizg(rig, kl, x) for x in pr}
+            if not (6 <= pr["chod"] <= 8 and 16 <= pr["bieg"] <= 20):
+                uwagi.append("prędkości poza celem: %s" % pr)
+            if max(slizg.values()) > 1.5:
+                uwagi.append("poślizg stóp %.1f / %.1f studs/s" % (slizg["chod"], slizg["bieg"]))
+            if kl["klipy"]["koziolek"]["dl"] != 14 or "portret" not in kl["klipy"]:
+                uwagi.append("brak krótkiego koziołka albo pozy portret")
+            print("           chód %.1f studs/s (poślizg %.2f), bieg %.1f studs/s (poślizg %.2f), koziołek %d kl." % (
+                pr["chod"], slizg["chod"], pr["bieg"], slizg["bieg"], kl["klipy"]["koziolek"]["dl"]))
         print("%-10s części %3d  klipy %2d  wypad pyska %.2f  stopy min %.2f  zasięg ogona %.1f  (promień gry %.1f)%s" % (
             s["id"], rig["liczba_czesci"], len(kl["klipy"]), wypad, dol, zasieg, s["promien_gry"],
             ("  UWAGI: " + "; ".join(uwagi)) if uwagi else "  OK"))
