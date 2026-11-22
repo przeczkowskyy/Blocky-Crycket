@@ -2,22 +2,8 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-22T22:28:54+01:00",
+ "aktualizacja": "2026-11-22T22:29:33+01:00",
  "prace": [
-  {
-   "id": "smok-modele-v2",
-   "tytul": "Gra o smoku: poprawki modeli, ikona i miniatury z Blendera",
-   "stan": "w_toku",
-   "start": "2026-11-22T21:52:25+01:00",
-   "koniec_szacowany": "2026-11-23T00:52:25+01:00",
-   "aktualizacja": "2026-11-22T21:52:25+01:00",
-   "obszary": [
-    "model:smok-ewolucja",
-    "swiat/ewolucja/modele"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
   {
    "id": "smok-wpiecie-modeli",
    "tytul": "Gra o smoku: nowe modele i animacje w grze",
