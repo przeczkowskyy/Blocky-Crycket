@@ -7,7 +7,7 @@ tags: [produkcja, dziennik]
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
 ## 2026-11-22 · Claude Code u Karola (na czym stajemy)
-- Karol: „Co powinniśmy teraz zrobić… Musimy na czymś definitywnie przystanąć”. Agent zaleca grę o smoku jako jedyną grę studia przez dwa tygodnie, z progami zapisanymi z góry i trendami jako aktualizacjami; ocena ragdolla i propozycje aktualizacji — pytanie 87.
+- Karol: „Co powinniśmy teraz zrobić… Musimy na czymś definitywnie przystanąć”. Agent zaleca wybór z datą: smok zamrożony idzie do graczy, baseball dostaje sprawdzenie rynku i (jeśli przejdzie) próbkę jednej pętli, ok. 30.11 jedna gra z liczb; ocena ragdolla i ameby — dopisek pod pytaniem 86 (pytanie 87 dublowało 86 i zostało scalone).
 
 ## 2026-11-22 · Claude Code u Karola (ustalenia z drugiej sesji głównej: Baseball for treasure)
 - **Nowa notatka:** [[Sesja główna 2026-11-22 (2) — zapis ustaleń]] (status propozycja) — druga sesja tego dnia, 19:39–19:41, mówił tylko Karol; temat: pomysł [[Baseball for treasure]] po ocenie agenta 17/30. Notatka z pierwszej sesji (18:53–19:02) została bez zmian poza odnośnikiem do drugiej. Zapis rozmowy zostaje lokalnie u gospodarza panelu.
