@@ -7,7 +7,9 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
-- [ ] Monster Evolution (D-129): próbka, etap 1 — pełna pętla w najmniejszej postaci; w budowie od 2026-11-22 ([[Projekt próbki — Monster Evolution]]) · agent · #wysoki
+- [ ] Monster Evolution (D-129): etap 2 — pierwsze dziesięć minut (wygląd, ruch stworów, strefa i mały boss w środku drabiny, film demo); w budowie od 2026-11-22 ([[Projekt próbki — Monster Evolution]]) · agent · #wysoki
+- [ ] Monster Evolution: zagrać 5 minut w etap 1 w Studio (Play, klawisz F5) i zapisać, w której minucie chciało się wyjść — to obserwacja, nie werdykt (D-128) · Karol, Paweł · #wysoki
+- [ ] Monster Evolution: zgoda albo odmowa prywatnej publikacji próbki na miejscu testowym (granie z telefonu) · Karol · #wysoki
 - [ ] Zebrać 8–12 graczy spoza zespołu (9–15 lat, telefon) do próby Monster Evolution — bez nich o próbce znów rozstrzygnie gust (D-128) · Karol, Paweł · #wysoki
 - [ ] Paweł: potwierdzić albo zmienić D-128 (liczby rozstrzygają) i D-129 (budowa próbki Monster Evolution) · Paweł · #wysoki
 - [ ] Pet Arena: zagrać w prywatną wersję testową „Throw & Catch Monsters” (https://www.roblox.com/games/93704244631419, także z telefonu) i zaprosić do 10 testerów spoza zespołu, najlepiej 16+ — **do ok. 28.11**; publiczny test najpóźniej ok. 5.12, tylko po osobnej decyzji · Karol, Paweł · #wysoki
@@ -131,6 +133,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Monster Evolution (D-129): próbka, etap 1 — pełna pętla w najmniejszej postaci; zrobione 2026-11-22: testy 12/12, próba w Studio 13/13, telefon 6/6 ([[Projekt próbki — Monster Evolution]]) · agent · #wysoki
 - [x] Zabawki: zagrać na telefonie po dwie minuty w „Eat & Evolve” i „Lure a Monster” (https://www.roblox.com/games/93704244631419) i powiedzieć, przy której chce się „jeszcze raz” — albo że przy żadnej ([[Kierunki z rynku 2026-11-21]]) · Karol, Paweł · #wysoki · zrobione 2026-11-22 (Karol zagrał w obie; obie odrzucone — [[Lekcje z prototypów]])
 - [x] 2026-11-21: Pet Arena v3 „Throw & Catch Monsters” — łapanie dzikich potworów, odmiany, ALPHA, zegar wydarzeń, wylęgarnia w czasie, dzienny prezent (próba 41/41); aktualizacja prywatnej wersji testowej
 - [x] 2026-11-21: Pet Arena — przebudowa v2 po uwagach Karola (większa arena, 6 petów, wielkości według wagi, przepychanie, wzgórze króla, koloseum, sterowanie z autopilotem, nowe wyklucie; próba 34/34) i prywatna wersja testowa „Throw & Catch Monsters” z zaproszeniem Pawła

@@ -1,0 +1,345 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Testy logiki Monster Evolution bez Studio (zrodla/LogikaEwolucji.luau w interpreterze tools/walka/luau_mini.py).
+
+    python -B swiat/ewolucja/testy/test_ewolucji.py
+"""
+import functools
+import math
+import os
+import sys
+import unittest
+
+sys.dont_write_bytecode = True
+TU = os.path.dirname(os.path.abspath(__file__))
+PAKIET = os.path.dirname(TU)
+REPO = os.path.dirname(os.path.dirname(PAKIET))
+for _s in (os.path.join(REPO, "tools"), os.path.join(REPO, "tools", "walka")):
+    if _s not in sys.path:
+        sys.path.append(_s)
+sys.path.insert(0, PAKIET)
+import dane as DN  # noqa: E402
+import luau_mini as LM  # noqa: E402
+
+DN.main()
+D = DN.dane()
+
+
+def interpreter():
+    it = LM.Interpreter()
+    m = it.globalne.z["math"]
+    for n, f in (("rad", math.radians), ("cos", math.cos), ("sin", math.sin), ("sqrt", math.sqrt), ("exp", math.exp)):
+        m.set(n, f)
+    m.set("atan2", lambda y, x: math.atan2(y, x))
+    m.set("pi", math.pi)
+    m.set("clamp", lambda x, a, b: min(max(x, a), b))
+    t = it.globalne.z["table"]
+
+    def tsort(tab, cmp=None):
+        n = int(tab.dlugosc())
+        el = [tab.d[float(i)] for i in range(1, n + 1)]
+
+        def k(a, b):
+            if cmp is None:
+                return -1 if a < b else (1 if b < a else 0)
+            if it.wywolaj(cmp, [a, b])[0]:
+                return -1
+            return 1 if it.wywolaj(cmp, [b, a])[0] else 0
+        el.sort(key=functools.cmp_to_key(k))
+        for i, v in enumerate(el):
+            tab.d[float(i + 1)] = v
+    t.set("sort", tsort)
+    return it
+
+
+IT = interpreter()
+L = IT.wykonaj(open(os.path.join(PAKIET, "zrodla", "LogikaEwolucji.luau"), encoding="utf-8").read(), "LogikaEwolucji")[0]
+DL = IT.wykonaj(open(os.path.join(PAKIET, "zrodla", "DaneEwolucji.luau"), encoding="utf-8").read(), "DaneEwolucji")[0]
+
+
+class Los:
+    def __init__(self, s=1):
+        self.s = s
+
+    def __call__(self, *_a):
+        self.s = (self.s * 1103515245 + 12345) % 2147483648
+        return self.s / 2147483648.0
+
+
+def lu(x):
+    if isinstance(x, (dict, list)):
+        return LM.do_luau(x)
+    if isinstance(x, (int, float)) and not isinstance(x, bool):
+        return float(x)
+    return x
+
+
+def wolaj(n, *a):
+    return IT.wywolaj(L.get(n), [lu(x) for x in a])
+
+
+def jeden(n, *a):
+    r = wolaj(n, *a)
+    return r[0] if r else None
+
+
+def stan(dane=None, ziarno=3):
+    return jeden("nowyStan", dane or DL, Los(ziarno))
+
+
+def byt(S, slot, forma, x=None, z=None):
+    if x is None:
+        return jeden("dodajByt", S, slot, forma)
+    return jeden("dodajByt", S, slot, forma, x, z)
+
+
+def krok(S, n=1, dt=0.05):
+    zd = []
+    for _ in range(n):
+        zd += LM.z_luau(jeden("krok", S, dt), True)
+    return zd
+
+
+def ustaw(b, **kw):
+    for k, v in kw.items():
+        b.set(k, lu(v))
+
+
+def g(b, k):
+    return LM.z_luau(b.get(k))
+
+
+def bez_kulek(S):
+    """Wszystkie kulki „zjedzone” na długo (testy bez przypadkowego zbierania)."""
+    k = S.get("kulki")
+    for i in range(1, int(k.dlugosc()) + 1):
+        k.set(float(i), 1e9)
+
+
+def daleko(S, b, x=0, z=0):
+    ustaw(b, x=x, z=z, tarczaDo=0)
+
+
+class TestLiczby(unittest.TestCase):
+    def test_01_formy_stawka_ceny(self):
+        self.assertEqual(jeden("promien", DL, 1), D["formy"][0]["r"])
+        self.assertEqual(jeden("potrzeba", DL, 2), D["formy"][1]["potrzeba"])
+        tro = [f["trofeum"] for f in D["formy"]]
+        self.assertEqual(tro, [1, 2, 4, 7, 12, 20, 35, 60], "trofea z projektu")
+        self.assertEqual(jeden("stawka", DL, 1), 1)
+        self.assertEqual(jeden("stawka", DL, 3), 7)
+        self.assertEqual(jeden("stawka", DL, 8), sum(tro))
+        self.assertEqual([f["r"] for f in D["formy"]], sorted(f["r"] for f in D["formy"]), "drabina rośnie")
+        self.assertGreater(D["formy"][-1]["r"], 1.5 * D["formy"][-2]["r"], "Olbrzym wyraźnie ogromny")
+        U = {u["id"]: u for u in D["ulepszenia"]}
+        self.assertEqual(U["szybkosc"]["wartosci"], [16, 19, 22])
+        self.assertEqual(U["apetyt"]["wartosci"], [1, 1.25, 1.5])
+        self.assertTrue(all(len(u["ceny"]) == 2 for u in D["ulepszenia"]), "po trzy poziomy (start + 2 zakupy)")
+
+    def test_02_zasady_jedzenia(self):
+        S = stan()
+        g1, g2, g3 = byt(S, 1, 1, 0, 0), byt(S, 2, 2, 10, 0), byt(S, 3, 3, 20, 0)
+        b2, b4 = byt(S, 0, 2, 30, 0), byt(S, 0, 4, 40, 0)
+        mz = lambda a, b: jeden("mozeZjesc", DL, a, b)  # noqa: E731
+        self.assertTrue(mz(b2, g1), "bot formy 2 zjada gracza formy 1 (zagrażają mu boty)")
+        self.assertFalse(mz(g3, g2), "gracz formy 2 chroniony przed graczami")
+        self.assertFalse(mz(g3, g1), "gracz formy 1 chroniony przed graczami")
+        self.assertTrue(mz(b4, g3), "bot o formę większy zjada gracza formy 3")
+        self.assertFalse(mz(g2, b2), "ta sama forma się nie zjada")
+        self.assertTrue(mz(g3, b2), "o jedną formę większy zjada")
+        ustaw(g2, forma=4)
+        self.assertTrue(mz(g2, g3), "gracz formy 4 zjada gracza formy 3")
+
+
+class TestPetla(unittest.TestCase):
+    def test_03_kulka_i_wzrost(self):
+        S = stan()
+        p = D["kulkiPoz"][0]
+        gr = byt(S, 1, 1, p[0] + 1.0, p[1])
+        zd = krok(S)
+        kul = [z for z in zd if z["t"] == "kulka" and z["id"] == g(gr, "id")]
+        self.assertTrue(kul, "kulka zjedzona dotykiem")
+        self.assertEqual(g(gr, "wzrost"), D["jedzenie"]["duza"] if p[2] == 2 else D["jedzenie"]["mala"])
+        self.assertGreater(g(S.get("kulki"), 1), 0, "kulka czeka na powrót")
+        krok(S, int(D["jedzenie"]["powrot_duza_s"] / 0.5) + 2, 0.5)
+        ustaw(gr, x=0, z=0)
+
+    def test_04_gryz_i_przerwa(self):
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 3, 0, 0)
+        ustaw(gr, tarczaDo=0)
+        ofiara = byt(S, 0, 2, D["formy"][2]["r"] + 2.5, 0)
+        ustaw(ofiara, myslDo=99)
+        zd = LM.z_luau(LM.Tabela(), True)
+        lista = LM.Tabela()
+        self.assertTrue(jeden("gryz", S, gr, lista))
+        zd = LM.z_luau(lista, True)
+        zj = [z for z in zd if z["t"] == "zjedz"]
+        self.assertTrue(zj and zj[0]["b"] == g(ofiara, "id"), "BITE zjada mniejszego w zasięgu Szczęki")
+        self.assertIsNotNone(g(ofiara, "martwyDo"))
+        self.assertEqual(g(gr, "wzrost"), D["jedzenie"]["za_forme"][1])
+        self.assertFalse(jeden("gryz", S, gr, LM.Tabela()), "przerwa między ugryzieniami")
+        # bot wraca po odrodzenie_s w tej samej formie
+        krok(S, int(D["boty"]["odrodzenie_s"] / 0.1) + 2, 0.1)
+        self.assertIsNone(g(ofiara, "martwyDo"))
+        self.assertEqual(g(ofiara, "forma"), 2)
+
+    def test_05_ewolucja_kokon_trofeum(self):
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 1, 0, 0)
+        lista = LM.Tabela()
+        self.assertFalse(jeden("ewoluuj", S, gr, lista), "pasek niepełny")
+        ustaw(gr, wzrost=D["formy"][0]["potrzeba"] + 5)
+        self.assertTrue(jeden("ewoluuj", S, gr, lista))
+        self.assertIsNotNone(g(gr, "kokonDo"))
+        self.assertFalse(jeden("pozycjaKlienta", S, gr, 1, 1), "w kokonie serwer prowadzi")
+        zd = krok(S, int(D["ewolucja"]["kokon_s"] / 0.1) + 1, 0.1)
+        ew = [z for z in zd if z["t"] == "ewolucja"]
+        self.assertTrue(ew and ew[0]["nowa"] and ew[0]["forma"] == 2)
+        self.assertEqual((g(gr, "forma"), g(gr, "maxForma")), (2, 2))
+        self.assertAlmostEqual(g(gr, "wzrost"), 5, places=6, msg="nadmiar przechodzi")
+        self.assertEqual(jeden("stawka", DL, g(gr, "maxForma")), 3)
+
+    def test_06_smierc_forma_nizej_legowisko_zostaje(self):
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 3, 0, 0)
+        ustaw(gr, maxForma=4, zloto=123.0, tarczaDo=0, laskaDo=0)
+        gr.get("poziomy").set("szybkosc", 2.0)
+        bot = byt(S, 0, 5, D["formy"][2]["r"] + 2, 0)
+        ustaw(bot, myslDo=99, tarczaDo=0)
+        zd = krok(S)
+        self.assertTrue([z for z in zd if z["t"] == "smierc" and z["id"] == g(gr, "id")], "bot zjada gracza")
+        krok(S, int(D["smierc"]["odrodzenie_s"] / 0.1) + 1, 0.1)
+        self.assertIsNone(g(gr, "martwyDo"))
+        self.assertEqual(g(gr, "forma"), 2, "o jedną formę niżej")
+        self.assertEqual(g(gr, "maxForma"), 4, "legowisko zostaje")
+        self.assertGreaterEqual(g(gr, "zloto"), 123, "złoto zostaje")
+        self.assertEqual(g(gr.get("poziomy"), "szybkosc"), 2, "ulepszenia zostają")
+        self.assertGreater(g(gr, "tarczaDo"), g(S, "czas") + D["smierc"]["tarcza_s"] - 1, "tarcza ok. 5 s")
+        self.assertAlmostEqual(g(gr, "wzrost"), D["formy"][1]["potrzeba"] * D["smierc"]["pasek_po"])
+        # forma 1 nigdy niżej
+        ustaw(gr, forma=1, tarczaDo=0, x=50, z=50)
+        ustaw(bot, x=50 + D["formy"][0]["r"] + 2, z=50)
+        krok(S, 1)
+        krok(S, int(D["smierc"]["odrodzenie_s"] / 0.1) + 1, 0.1)
+        self.assertEqual(g(gr, "forma"), 1)
+
+    def test_07_kup(self):
+        S = stan()
+        gr = byt(S, 1, 1, 0, 0)
+        ok, powod = wolaj("kup", S, gr, "szybkosc")
+        self.assertEqual((ok, powod), (False, "zloto"))
+        self.assertEqual(wolaj("kup", S, gr, 5)[0], False, "zły typ")
+        self.assertEqual(wolaj("kup", S, gr, "nie_ma")[0], False)
+        ustaw(gr, zloto=10000.0)
+        v1 = jeden("predkosc", DL, gr)
+        self.assertTrue(wolaj("kup", S, gr, "szybkosc")[0])
+        self.assertEqual(g(gr, "zloto"), 10000 - D["ulepszenia"][1]["ceny"][0])
+        self.assertAlmostEqual(jeden("predkosc", DL, gr) / v1, 19 / 16)
+        self.assertTrue(wolaj("kup", S, gr, "szybkosc")[0])
+        self.assertEqual(wolaj("kup", S, gr, "szybkosc"), [False, "maks"])
+        self.assertTrue(wolaj("kup", S, gr, "apetyt")[0])
+        self.assertEqual(jeden("apetyt", DL, gr), 1.25)
+        self.assertTrue(wolaj("kup", S, gr, "szczeka")[0])
+        self.assertEqual(jeden("zasiegGryzu", DL, gr), D["ulepszenia"][0]["zasieg"][1])
+
+    def test_08_pozycja_od_klienta(self):
+        S = stan()
+        gr = byt(S, 1, 1, 0, 0)
+        krok(S, 2, 0.05)
+        self.assertTrue(jeden("pozycjaKlienta", S, gr, 1.0, 0.5), "krok w zasięgu prędkości")
+        self.assertFalse(jeden("pozycjaKlienta", S, gr, 80.0, 0.0), "teleport odrzucony")
+        self.assertFalse(jeden("pozycjaKlienta", S, gr, float("nan"), 0.0), "NaN odrzucony")
+        self.assertFalse(jeden("pozycjaKlienta", S, gr, "x", 0.0), "zły typ odrzucony")
+        self.assertFalse(jeden("steruj", gr, float("nan"), 0.0))
+        jeden("steruj", gr, 5.0, 0.0)
+        self.assertAlmostEqual(g(gr, "wx"), 1.0, msg="kierunek przycięty do 1")
+        x, z = wolaj("ogranicz", DL, 500.0, 0.0, 1.6)
+        self.assertLessEqual(math.hypot(x, z), D["pole"]["r"], "pole ograniczone")
+
+    def test_09_umiejetnosci(self):
+        S = stan()
+        # SLURP (forma 1): kulki w promieniu
+        p = D["kulkiPoz"][5]
+        gr = byt(S, 1, 1, p[0] + 4, p[1])
+        lista = LM.Tabela()
+        self.assertTrue(jeden("umiejetnosc", S, gr, lista))
+        self.assertTrue([z for z in LM.z_luau(lista, True) if z["t"] == "kulka"], "SLURP zjada kulki w pobliżu")
+        self.assertFalse(jeden("umiejetnosc", S, gr, LM.Tabela()), "odnowa")
+        # SPORE CLOUD (forma 4): ogłusza bota obok
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 4, 0, 0)
+        bot = byt(S, 0, 6, 12, 0)
+        ustaw(bot, tarczaDo=0)
+        self.assertTrue(jeden("umiejetnosc", S, gr, LM.Tabela()))
+        self.assertGreater(g(bot, "ogluszonyDo"), g(S, "czas"), "ogłuszony większy")
+        # POUNCE (forma 6): skok i lądowanie z połknięciem mniejszego
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 6, 0, 0)
+        ustaw(gr, tarczaDo=0, kier=0.0)
+        ofiara = byt(S, 0, 3, 0, D["formy"][5]["um"]["d"])
+        ustaw(ofiara, tarczaDo=0, myslDo=99)
+        self.assertTrue(jeden("umiejetnosc", S, gr, LM.Tabela()))
+        self.assertIsNotNone(gr.get("skok"))
+        zd = krok(S, 14, 0.05)
+        self.assertTrue([z for z in zd if z["t"] == "ladowanie"], "lądowanie")
+        self.assertIsNotNone(g(ofiara, "martwyDo"), "połknięty przy lądowaniu")
+
+    def test_10_odbicie_chronionych(self):
+        S = stan()
+        bez_kulek(S)
+        a = byt(S, 1, 4, 0, 0)
+        b = byt(S, 2, 2, 1.0, 0)
+        ustaw(a, tarczaDo=0)
+        ustaw(b, tarczaDo=0)
+        zd = krok(S)
+        self.assertFalse([z for z in zd if z["t"] == "zjedz"], "gracz formy 2 nie do zjedzenia przez gracza")
+        self.assertIsNone(g(b, "martwyDo"))
+        self.assertTrue([z for z in zd if z["t"] == "odbicie"], "odbicie")
+
+    def test_12_bot_nie_zjada_mlodego_przypadkiem(self):
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 1, 0, 0)
+        bot = byt(S, 0, 3, D["formy"][0]["r"] + 1.5, 0)
+        ustaw(gr, tarczaDo=0, laskaDo=0)
+        ustaw(bot, myslDo=99, tarczaDo=0)
+        krok(S, 2)
+        self.assertIsNone(g(gr, "martwyDo"), "bot idący do kulek nie zjada gracza formy 1 przypadkiem")
+        ustaw(bot, cel=g(gr, "id"), x=D["formy"][0]["r"] + 1.5, z=0)
+        ustaw(gr, x=0, z=0, laskaDo=g(S, "czas") + 30)
+        krok(S, 1)
+        self.assertIsNone(g(gr, "martwyDo"), "łaska nowicjusza: w pierwszej minucie boty nie zjadają")
+        ustaw(bot, cel=g(gr, "id"), x=D["formy"][0]["r"] + 1.5, z=0)
+        ustaw(gr, x=0, z=0, laskaDo=0)
+        krok(S, 1)
+        self.assertIsNotNone(g(gr, "martwyDo"), "bot, który poluje na gracza formy 1, zjada go")
+
+    def test_11_boty_zyja_i_nie_stoja_przy_starcie(self):
+        S = stan(ziarno=9)
+        for f, ile in enumerate([3, 3, 2, 2, 1, 1], 1):
+            for _ in range(ile):
+                byt(S, 0, f)
+        gr = byt(S, 1, 3)
+        x0, z0 = g(gr, "x"), g(gr, "z")
+        # większe boty nie zaczynają przy miejscu startu gracza
+        wieksze = [b for b in LM.z_luau(S.get("byty"), True) if b["slot"] == 0 and b["forma"] > 3]
+        self.assertTrue(all(math.hypot(b["x"] - x0, b["z"] - z0) > 20 for b in wieksze), "start z dala od większych")
+        # 8 s świata: boty się ruszają, ten sam skład form
+        poz0 = {b["id"]: (b["x"], b["z"]) for b in wieksze}
+        krok(S, 40, 0.2)
+        byty = LM.z_luau(S.get("byty"), True)
+        boty = [b for b in byty if b["slot"] == 0]
+        self.assertEqual(len(boty), 12)
+        ruszone = sum(1 for b in boty if b["id"] in poz0 and math.hypot(b["x"] - poz0[b["id"]][0], b["z"] - poz0[b["id"]][1]) > 3)
+        self.assertGreaterEqual(ruszone, len(poz0) - 1, "boty chodzą")
+        self.assertEqual(sorted(b["forma"] for b in boty), [1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6], "formy botów stałe")
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

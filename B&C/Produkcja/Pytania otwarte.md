@@ -785,3 +785,11 @@ Dopisek z 2026-11-22 (wybór z liczb): Karol nie chce rozstrzygać gustem; agent
 
 Rozstrzyga: D-129 (budowa próbki Monster Evolution); zasada wyboru: D-128.
 
+## 83. Monster Evolution: animacje chodu potworów
+- Żaden z ośmiu modeli nie ma szkieletu; w próbce ruszają się proceduralnie (podskok, ściskanie, pochylenie).
+- Lider fali wygrywa wykonaniem: Karol wskazał u niego grafikę, responsywność i animacje chodzenia.
+- Do wyboru: (a) zostajemy przy ruchu proceduralnym do próby z graczami; (b) Karol robi szkielety i chód dla ośmiu form w Blenderze przed próbą; (c) tylko dla dwóch–trzech pierwszych form, które widzi każdy gracz.
+
+Szczegóły: [[Projekt próbki — Monster Evolution]], sekcja „Po etapie 1”. Agent zaleca (c): pierwsze minuty decydują o pierwszym wrażeniu, a osiem pełnych animacji to dni pracy w oknie 2–4 tygodni.
+**Odpowiedź:**
+

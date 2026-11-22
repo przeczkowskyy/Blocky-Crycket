@@ -63,8 +63,8 @@ Start jako forma 1 obok kulek → strzałka do kulek → pasek pełny ok. 25. se
 
 ## Etapy budowy
 1. **Etap 1 (ten):** pole, jedzenie, boty, drabina 8 form z odsłoną i panelem, zasady jedzenia i straty, legowisko jako panel ze złotem, trzy ulepszenia, sterowanie na telefon, zapis miar w grze. Bez zapisu między sesjami.
-2. **Etap 2:** legowisko jako miejsce w świecie, złoto także pod nieobecność gracza, odmiany barwne przy ewolucji (jawne szanse, tylko waluta z gry), zapis postępu.
-3. **Etap 3:** Olbrzym jako boss serwera z nagrodą dla atakujących, wydarzenia z zegara, dopracowane pierwsze 60 sekund, wersja do prywatnej publikacji.
+2. **Etap 2 (zakres zmieniony 22.11 po etapie 1):** pierwsze dziesięć minut — wygląd pola i ruch stworów, odczucie jedzenia, nowa strefa i mały boss między formą 3 a 5, późniejsze pierwsze zagrożenie, krótki film demo ze skryptu.
+3. **Etap 3:** legowisko jako miejsce w świecie ze stałym ujściem złota, złoto także pod nieobecność gracza, odmiany barwne przy ewolucji (jawne szanse, tylko waluta z gry), zapis postępu, Olbrzym jako boss serwera z nagrodą dla atakujących, wydarzenia z zegara, wersja do prywatnej publikacji.
 4. **Etap 4:** próba z 8–12 graczami spoza zespołu.
 
 ## Czego w próbce nie robimy
@@ -87,10 +87,16 @@ Jeśli do 29.11 średnia 7-dniowa lidera fali (Ant Evolution) zacznie spadać o 
 ## Uczciwa skala
 Dobrze zrobiona druga generacja w tej fali ma zwykle szczyt 0,5–5 tys. graczy naraz; 10 tys. i więcej mniej więcej raz na dziesięć. Hity tego gatunku gasną w 4–8 tygodni, jeśli nie mają powodu powrotu — dlatego legowisko jest najważniejszą rzeczą do sprawdzenia.
 
+## Po etapie 1 (2026-11-22)
+- **Co stoi:** pole z 216 kulkami i 25 botami, drabina SLIME → ACORNLING → CROAKER → SHROOMLING → LEAF FOX → THORN WOLF → FOREST TROLL → GIANT (po jednej umiejętności), pasek wzrostu, ewolucja z odsłoną, panel drabiny, panel legowiska z trzema ulepszeniami, łagodna strata, miary gracza w pamięci. Kod `swiat/ewolucja/`, kontener `EwolucjaGra`; zrzuty w `swiat/ewolucja/klatki/`.
+- **Tempo z symulacji:** forma 2 po 0:29, forma 3 po 1:14, pierwsze ulepszenie 1:34, forma 5 po 6:30, Olbrzym po ok. 14 min.
+- **Słabe miejsca (ocena agenta budującego):** między formą 3 a 5 przez ok. pięć minut nie ma nic nowego; legowisko jest tylko panelem; po 18 minutach zostaje ok. 47 tys. złota bez celu; pierwszy bot goni już po 1:22; dotyk nie był sprawdzony na prawdziwym telefonie.
+- **Największa luka wobec lidera:** żaden z naszych modeli nie ma szkieletu, więc wszystkie formy ruszają się proceduralnie (podskok, ściskanie, pochylenie, wypad przy gryzieniu), a pole jest proste. Karol po zagraniu w Ant Evolution wskazał właśnie grafikę, responsywność i animacje chodzenia jako jej mocne strony — dlatego etap 2 dostał ten zakres, a legowisko w świecie przeszło do etapu 3. Pytanie o prawdziwe animacje: pytanie 83.
+
 ## Stan implementacji
-- [ ] Etap 1 — pełna pętla w najmniejszej postaci (w budowie od 2026-11-22)
-- [ ] Etap 2 — legowisko w świecie, złoto pod nieobecność, odmiany, zapis
-- [ ] Etap 3 — Olbrzym jako boss, wydarzenia, pierwsze 60 sekund, wersja do prywatnej publikacji
+- [x] Etap 1 — pełna pętla w najmniejszej postaci (2026-11-22: testy logiki 12/12, próba w Studio 13/13 bez błędów konsoli, układ telefonu 6/6, tempo z symulacji zgodne z celami)
+- [ ] Etap 2 — pierwsze dziesięć minut: wygląd, ruch stworów, odczucie jedzenia, strefa i mały boss w środku drabiny, film demo (w budowie od 2026-11-22)
+- [ ] Etap 3 — legowisko w świecie, złoto pod nieobecność, odmiany, zapis, Olbrzym jako boss, wydarzenia, wersja do prywatnej publikacji
 - [ ] Etap 4 — próba z 8–12 graczami
 
 ## Powiązane

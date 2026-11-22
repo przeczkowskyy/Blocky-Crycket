@@ -1,0 +1,27 @@
+{
+ "id": "r-20261122-141231-df10",
+ "tytul": "Monster Evolution: etap 1 próbki stoi w Studio",
+ "opis_md": "**Monster Evolution — etap 1 próbki stoi w Studio (kontener `EwolucjaGra`). Nic nie zostało opublikowane.**\n\n## Co jest\n- Jesteś potworem na polu: jesz świecące kulki i mniejsze stworki, pasek wzrostu się zapełnia.\n- Przycisk EVOLVE odsłania następną formę. Drabina ma osiem form: SLIME, ACORNLING, CROAKER, SHROOMLING, LEAF FOX, THORN WOLF, FOREST TROLL, GIANT.\n- Panel z boku pokazuje drabinę: zdobyte formy, następną jako sylwetkę, na szczycie cień Olbrzyma.\n- Legowisko (panel): każda zdobyta forma zarabia złoto. Złoto kupuje Szczękę, Szybkość i Apetyt.\n- Większy stwór może cię zjeść. Spadasz o jedną formę, legowisko i złoto zostają.\n\n## Sprawdzone\n- Testy logiki 12/12, próba w Studio 13/13 bez błędów konsoli, układ na telefonie 6/6.\n- Tempo z symulacji: druga forma po ok. 0:29, trzecia po 1:14, pierwsze ulepszenie 1:34, piąta forma po 6:30, Olbrzym po ok. 14 minutach.\n- Ruch reaguje od razu także przy sztucznym opóźnieniu sieci.\n\n## Słabe miejsca\n- Żaden model nie ma szkieletu, więc stwory ruszają się proceduralnie (podskok, ściskanie, wypad przy gryzieniu). Pole jest proste. To największa luka wobec Ant Evolution.\n- Między trzecią a piątą formą przez ok. pięć minut nie ma nic nowego.\n- Legowisko jest na razie tylko panelem, a po kwadransie złota jest za dużo.\n\n## Co dalej\n- Etap 2 (w budowie): pierwsze dziesięć minut — wygląd pola, ruch stworów, odczucie jedzenia, nowa strefa i mały boss w środku drabiny, krótki film demo.\n- Jak zagrać teraz: w Roblox Studio naciśnij F5 (Play).\n- Do decyzji: prywatna publikacja na miejscu testowym (granie z telefonu) i pytanie 83 o animacje chodu.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-22T14:12:31+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "EwolucjaGra",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Projekt próbki — Monster Evolution",
+   "etykieta": "Projekt próbki — Monster Evolution"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg"
+ ]
+}

@@ -57,7 +57,9 @@ python -B swiat/zabawki/testy/test_zabawek.py        # logika bez Studio
 python -B swiat/zabawki/zbuduj.py --studio <id>      # budowa (--skrypty: same skrypty; --sucho: bez Studio)
 python -B swiat/zabawki/testy/proba_play.py --studio <id> [--tylko 1|2] [--bez-zrzutow]
 ```
-Budowa odmawia w miejscu gry B&C, poza trybem Edit i przy obcym obiekcie `ZabawkiGra`. Wzorce potworów kopiuje z
+Budowa odmawia w miejscu gry B&C, poza trybem Edit i przy obcym obiekcie `ZabawkiGra`.
+Wyłącznik (22.11.2026, dodany przy Monster Evolution): `python -B swiat/zabawki/zbuduj.py --wlacz on|off --studio <id>` —
+atrybut `ZabawkiWlaczone` i `Enabled` obu skryptów (źródła bez zmian; pełna budowa zachowuje stan). Wzorce potworów kopiuje z
 `Workspace/PetArenaGra/Wzorce`.
 
 ## Próby (22.11.2026 ok. 00:00–00:05)

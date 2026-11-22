@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: etap 1 gotowy, etap 2 w budowie)
+- **Etap 1 próbki** (agent na Opus, ok. 415 tys. tokenów): pełna pętla w najmniejszej postaci — pole, kulki, 25 botów, drabina ośmiu form z odsłoną, panel legowiska ze złotem i trzema ulepszeniami, łagodna strata. Testy logiki 12/12, próba w Studio 13/13, układ telefonu 6/6, tempo zgodne z celami. Kod `swiat/ewolucja/`, kontener `EwolucjaGra`; pakiet zabawek dostał wyłącznik. Nic nie opublikowano.
+- **Luka wobec lidera:** modele nie mają szkieletów (ruch proceduralny), pole jest proste. Po uwadze Karola o Ant Evolution (grafika, responsywność, animacje) etap 2 dostał nowy zakres „pierwsze dziesięć minut”, a legowisko w świecie przeszło do etapu 3: [[Projekt próbki — Monster Evolution]]. Pytanie 83 o prawdziwe animacje.
+- **Zadania:** etap 1 odhaczony; nowe — etap 2, zagranie w etap 1 w Studio, zgoda na prywatną publikację. Raport ze zrzutami w panelu. `DOKUMENTACJA.md`: nowy pakiet `swiat/ewolucja/`.
+
 ## 2026-11-22 · Claude Code u Karola (Monster Evolution: wybór z liczb, sprawdzenie, start budowy)
 - **Decyzje Karola (czekają na Pawła):** D-128 — o próbkach rozstrzygają liczby od prawdziwych graczy, nie gust; D-129 — budowa próbki Monster Evolution. Pytanie 82 rozstrzygnięte.
 - **Sprawdzenie kierunku** (agent na Opus, ok. 215 tys. tokenów): [[Walidacja kierunku jesteś potworem (2026-11-22)]] — fala w środkowej lub późnej fazie, realnie 0,5–5 tys. graczy naraz, okno 2–4 tygodnie; lider ma już loterię mutacji, więc projekt zmieniony na stałą drabinę form z legowiskiem jako wyróżnikiem.

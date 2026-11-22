@@ -3,6 +3,7 @@
 """Budowa zabawek w Studio: Workspace/ZabawkiGra (moduły, skrypty, sygnały, wzorce potworów, dwa tereny).
 
     python -B swiat/zabawki/zbuduj.py [--sucho] [--skrypty] [--studio <id>]
+    python -B swiat/zabawki/zbuduj.py --wlacz on|off --studio <id>   # wyłącznik (atrybut ZabawkiWlaczone + Enabled skryptów)
 
 Skrypty bez strażnika „tylko Studio” (działają w prywatnej wersji testowej na telefonie). Budowa odmawia w miejscu gry
 B&C, poza trybem Edit i gdy w Workspace jest obcy obiekt o tej nazwie (bez atrybutu Wygenerowane). Wzorce potworów
@@ -138,6 +139,7 @@ local zrodloWz = (workspace:FindFirstChild("PetArenaGra") and workspace.PetArena
 if not zrodloWz then
 	return "STOP: brak wzorców potworów (Workspace/PetArenaGra/Wzorce) — zbuduj Pet Arenę"
 end
+local wlaczone = if stary then stary:GetAttribute("ZabawkiWlaczone") else nil
 if stary then
 	stary:Destroy()
 end
@@ -234,8 +236,10 @@ for _, s in { { "SerwerZabawek", Enum.RunContext.Server }, { "KlientZabawek", En
 	sk.Name = s[1]
 	sk.RunContext = s[2]
 	sk.Source = zr[s[1]]
+	sk.Enabled = wlaczone ~= false
 	sk.Parent = k
 end
+k:SetAttribute("ZabawkiWlaczone", wlaczone ~= false)
 k.Parent = workspace
 local czesci = 0
 for _, d in sc:GetDescendants() do
@@ -244,6 +248,33 @@ for _, d in sc:GetDescendants() do
 	end
 end
 return string.format("zbudowano: %d części sceny, %d wzorców, %d modułów", czesci, ileWz, #mod:GetChildren())
+'''
+
+
+WLACZNIK = "ZabawkiWlaczone"
+# --wlacz on|off (22.11.2026, dodane przy Monster Evolution, żeby zabawki nie działały w cudzych próbach Play):
+# atrybut ZabawkiWlaczone kontenera + Enabled obu skryptów; źródła skryptów bez zmian. Pełna budowa zachowuje stan.
+LUAU_WLACZ = r'''
+if game:GetService("RunService"):IsRunning() then
+	return "STOP: Studio jest w trybie Play"
+end
+local k = workspace:FindFirstChild("__KONTENER__")
+if not k or k:GetAttribute("Wygenerowane") ~= true then
+	return "STOP: brak własnego kontenera __KONTENER__"
+end
+local CH = game:GetService("ChangeHistoryService")
+CH:SetWaypoint("__KONTENER__: przed __WLACZNIK__")
+k:SetAttribute("__WLACZNIK__", __WARTOSC__)
+local n = 0
+for _, nazwa in { "SerwerZabawek", "KlientZabawek" } do
+	local s = k:FindFirstChild(nazwa)
+	if s and s:IsA("BaseScript") then
+		s.Enabled = __WARTOSC__
+		n += 1
+	end
+end
+CH:SetWaypoint("__KONTENER__: __WLACZNIK__ = " .. tostring(__WARTOSC__))
+return string.format("__WLACZNIK__ = %s (skryptów: %d)", tostring(k:GetAttribute("__WLACZNIK__")), n)
 '''
 
 
@@ -263,7 +294,22 @@ def main():
     ap.add_argument("--sucho", action="store_true")
     ap.add_argument("--skrypty", action="store_true")
     ap.add_argument("--studio", default=None)
+    ap.add_argument("--wlacz", choices=["on", "off"], help="wyłącznik ZabawkiWlaczone (atrybut + Enabled skryptów)")
     a = ap.parse_args()
+    if a.wlacz:
+        from studio_mcp import StudioMCP
+        if not a.studio:
+            raise SystemExit("podaj --studio <id>")
+        kod = (LUAU_WLACZ.replace("__KONTENER__", "ZabawkiGra").replace("__WLACZNIK__", WLACZNIK)
+               .replace("__WARTOSC__", "true" if a.wlacz == "on" else "false"))
+        with StudioMCP(timeout=120) as s:
+            if "Current Studio Mode: Edit" not in s.call("get_studio_state", {"studio_id": a.studio})["text"]:
+                log("PRZERWANO — Studio nie jest w trybie Edit")
+                return 1
+            r = s.call("execute_luau", {"code": kod, "datamodel_type": "Edit", "studio_id": a.studio})
+            t = (r["text"] or "").strip()
+            log(t[:300])
+            return 1 if r["is_error"] or t.startswith("STOP") else 0
     DN.main()
     D = DN.dane()
     zr = zrodla()
