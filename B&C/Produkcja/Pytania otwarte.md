@@ -791,5 +791,15 @@ Rozstrzyga: D-129 (budowa próbki Monster Evolution); zasada wyboru: D-128.
 - Do wyboru: (a) zostajemy przy ruchu proceduralnym do próby z graczami; (b) Karol robi szkielety i chód dla ośmiu form w Blenderze przed próbą; (c) tylko dla dwóch–trzech pierwszych form, które widzi każdy gracz.
 
 Szczegóły: [[Projekt próbki — Monster Evolution]], sekcja „Po etapie 1”. Agent zaleca (c): pierwsze minuty decydują o pierwszym wrażeniu, a osiem pełnych animacji to dni pracy w oknie 2–4 tygodni.
+Dopisek z 2026-11-22: jedno dwunożne zwierzę na standardowym szkielecie postaci Roblox rozwiązałoby animacje bez pracy w Blenderze — zob. pytanie 84.
+**Odpowiedź:**
+
+## 84. Monster Evolution: jedno zwierzę — które?
+- Karol zapytał, czy nie robić jednego zwierzęcia; dane to popierają (jeden rozpoznawalny stwór w tytule, jeden szkielet na osiem form).
+- Sama zamiana zwierzęcia nie robi hitu: klony lidera z innym zwierzęciem mają 27–427 graczy.
+- Do wyboru: (a) małpka → goryl → olbrzymi goryl — zaleca agent; (b) jaszczurka → smok chodzący, wymaga szkieletu z Blendera, tytuł zajęty; (c) wilk; (d) zostaje osiem różnych potworów.
+- Agent przerobi drabinę na (a) po etapie 2, jeśli nikt nie wybierze inaczej; zmiana jest odwracalna (formy są w tabeli danych).
+
+Szczegóły: [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]]; uzasadnienie i ryzyka także w [[Projekt próbki — Monster Evolution]].
 **Odpowiedź:**
 

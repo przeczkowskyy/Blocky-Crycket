@@ -93,6 +93,9 @@ Dobrze zrobiona druga generacja w tej fali ma zwykle szczyt 0,5–5 tys. graczy 
 - **Słabe miejsca (ocena agenta budującego):** między formą 3 a 5 przez ok. pięć minut nie ma nic nowego; legowisko jest tylko panelem; po 18 minutach zostaje ok. 47 tys. złota bez celu; pierwszy bot goni już po 1:22; dotyk nie był sprawdzony na prawdziwym telefonie.
 - **Największa luka wobec lidera:** żaden z naszych modeli nie ma szkieletu, więc wszystkie formy ruszają się proceduralnie (podskok, ściskanie, pochylenie, wypad przy gryzieniu), a pole jest proste. Karol po zagraniu w Ant Evolution wskazał właśnie grafikę, responsywność i animacje chodzenia jako jej mocne strony — dlatego etap 2 dostał ten zakres, a legowisko w świecie przeszło do etapu 3. Pytanie o prawdziwe animacje: pytanie 83.
 
+## Propozycja: jedno zwierzę zamiast ośmiu różnych potworów (2026-11-22)
+Karol zapytał, czy nie zrobić jednego zwierzęcia. Agent się zgadza: rosnące gry tej fali mają jednego rozpoznawalnego stwora w tytule, ogólne tytuły nie żyją, filmy niesie jedna historia („od słabego do króla”), a jedno zwierzę to jeden szkielet i jeden chód na osiem form. Wybór z liczb: [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]] — agent proponuje małpę (małpka → goryl → olbrzymi goryl), bo dwunożną postać da się najpewniej oprzeć na standardowym szkielecie postaci Roblox z gotowym chodem, co zamyka największą lukę wobec lidera bez pracy w Blenderze. Do sprawdzenia przez budującego na początku przeróbki. Kod etapu 1 ma formy w tabeli danych, więc zmiana nie rusza pętli. Decyzja: pytanie 84.
+
 ## Stan implementacji
 - [x] Etap 1 — pełna pętla w najmniejszej postaci (2026-11-22: testy logiki 12/12, próba w Studio 13/13 bez błędów konsoli, układ telefonu 6/6, tempo z symulacji zgodne z celami)
 - [ ] Etap 2 — pierwsze dziesięć minut: wygląd, ruch stworów, odczucie jedzenia, strefa i mały boss w środku drabiny, film demo (w budowie od 2026-11-22)
