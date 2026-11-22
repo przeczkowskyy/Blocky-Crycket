@@ -92,14 +92,20 @@ def kulki(P, J, prz, LS=None):
                 if math.hypot(x, z) > P["r"] + 4 and all(math.hypot(x - s["x"], z - s["z"]) > s["r"] + 2.5 for s in prz):
                     w.append([x, z, typ])
                     n += 1
+    WY = ustawienia().get("wyspa")
     for typ, ile in ((2, J["duze"]), (1, J["male"])):
         n = 0
         while n < ile:
             a, r = los.random() * 2 * math.pi, math.sqrt(los.random()) * (P["r"] - 5)
             x, z = round(math.sin(a) * r, 2), round(math.cos(a) * r, 2)
-            if all(math.hypot(x - s["x"], z - s["z"]) > s["r"] + 2.5 for s in prz):
+            if all(math.hypot(x - s["x"], z - s["z"]) > s["r"] + 2.5 for s in prz) and not (WY and math.hypot(x - WY["x"], z - WY["z"]) < WY["r_zew"] + 2):
                 w.append([x, z, typ])
                 n += 1
+    if WY:
+        # SKY NEST: wielkie kulki na wyspie (tylko szybowaniem albo skokiem meteoru)
+        for i in range(WY["kulek"]):
+            a = 2 * math.pi * i / WY["kulek"]
+            w.append([round(WY["x"] + math.sin(a) * WY["r_wew"] * 0.55, 2), round(WY["z"] + math.cos(a) * WY["r_wew"] * 0.55, 2), 3])
     return w
 
 
@@ -235,6 +241,9 @@ def dane():
         "olbrzym": {k: v for k, v in U["olbrzym"].items() if k != "opis"},
         "ruch": {k: v for k, v in U["ruch"].items() if k != "opis"},
         "gryzienie": {k: v for k, v in U["gryzienie"].items() if k != "opis"},
+        "walka": {k: v for k, v in U["walka"].items() if k != "opis"},
+        "zdolnosci": {k: v for k, v in U["zdolnosci"].items() if k != "opis"},
+        "wyspa": {k: v for k, v in U["wyspa"].items() if k != "opis"},
         "ulepszenia": U["ulepszenia"],
         "smierc": {k: v for k, v in U["smierc"].items() if k != "opis"},
         "ewolucja": {k: v for k, v in U["ewolucja"].items() if k != "opis"},

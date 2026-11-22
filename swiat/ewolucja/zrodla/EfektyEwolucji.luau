@@ -12,7 +12,7 @@
 local Efekty = {}
 Efekty.__index = Efekty
 
-local MAKS = 90 -- najwięcej naraz (części i napisy); nadmiar = najstarsze kończą się od razu
+local MAKS = 140 -- najwięcej naraz (części i napisy); nadmiar = najstarsze kończą się od razu
 
 local function hex(h: string): Color3
 	return Color3.fromHex(h)
@@ -472,5 +472,119 @@ function Efekty:monetaDo(od: Vector3, cel: BasePart)
 	end, function()
 		m:Destroy()
 	end)
+end
+
+------------------------------------------------------------------ walka1: ogień (linia FIRE) i moc (linia POWER) — wbudowane części
+-- strumień ognia z punktu (kotwica pyska) w kierunku kier: kule rosną i gasną; inferno — szerszy, różowo-pomarańczowy
+function Efekty:strumien(od: Vector3, kier: Vector3, zasieg: number, kat: number, inferno: boolean?)
+	for i = 1, (if inferno then 11 else 8) do
+		local kol = if inferno then (if i % 3 == 0 then Color3.fromRGB(255, 77, 216) elseif i % 2 == 0 then Color3.fromRGB(255, 120, 40) else Color3.fromRGB(255, 220, 90))
+			else (if i % 2 == 0 then Color3.fromRGB(255, 140, 40) else Color3.fromRGB(255, 225, 90))
+		local k = czesc(self.folder, Vector3.new(1, 1, 1), kol, Enum.Material.Neon, Enum.PartType.Ball)
+		local a = math.rad((math.random() * 2 - 1) * kat / 2)
+		local d = Vector3.new(kier.X * math.cos(a) - kier.Z * math.sin(a), 0, kier.X * math.sin(a) + kier.Z * math.cos(a))
+		local opozn = i * 0.025
+		local y0 = od.Y
+		self:dodaj(0.45 + opozn, function(f)
+			local g = math.clamp((f * (0.45 + opozn) - opozn) / 0.45, 0, 1)
+			local p = od + d * zasieg * g
+			k.Position = Vector3.new(p.X, y0 + (1.2 - y0) * g * 0.6 + g * 1.2, p.Z)
+			local s = 0.9 + g * (if inferno then 4.2 else 3.2)
+			k.Size = Vector3.new(s, s, s)
+			k.Transparency = if g <= 0 then 1 else 0.05 + g * 0.95
+		end, function()
+			k:Destroy()
+		end)
+	end
+end
+
+-- płonąca ziemia: żarzący się krąg i unoszące się płomyki przez czas
+function Efekty:plama(poz: Vector3, r: number, czas: number)
+	local k = czesc(self.folder, Vector3.new(0.18, r * 2, r * 2), Color3.fromRGB(255, 90, 30), Enum.Material.Neon, Enum.PartType.Cylinder)
+	k.CFrame = CFrame.new(poz + Vector3.new(0, 0.16, 0)) * CFrame.Angles(0, 0, math.pi / 2)
+	local nast = 0
+	self:dodaj(czas, function(f, dt)
+		k.Transparency = 0.35 + 0.25 * math.sin(f * czas * 9) * 0.5 + math.max(0, f - 0.8) * 3
+		nast -= dt
+		if nast <= 0 then
+			nast = 0.18
+			local a, d = math.random() * math.pi * 2, math.random() * r * 0.8
+			local p = poz + Vector3.new(math.cos(a) * d, 0.4, math.sin(a) * d)
+			local m = czesc(self.folder, Vector3.new(0.7, 0.7, 0.7), if math.random() < 0.5 then Color3.fromRGB(255, 200, 70) else Color3.fromRGB(255, 110, 40),
+				Enum.Material.Neon, Enum.PartType.Ball)
+			self:dodaj(0.6, function(g)
+				m.Position = p + Vector3.new(0, g * 3, 0)
+				local s = 0.7 * (1 - g) + 0.15
+				m.Size = Vector3.new(s, s, s)
+			end, function()
+				m:Destroy()
+			end)
+		end
+	end, function()
+		k:Destroy()
+	end)
+end
+
+-- zapowiedź (zamach): krąg zasięgu wypełnia się od środka przez czas — sygnał dla innych, gdzie uderzy
+function Efekty:zapowiedz(poz: Vector3, r: number, kolor: Color3, czas: number)
+	local nos = czesc(self.folder, Vector3.new(0.2, 0.2, 0.2), Color3.new(1, 1, 1))
+	nos.Transparency = 1
+	nos.CFrame = CFrame.new(poz + Vector3.new(0, 0.25, 0))
+	local brzeg = Instance.new("CylinderHandleAdornment")
+	brzeg.Adornee = nos
+	brzeg.Color3 = kolor
+	brzeg.Height = 0.2
+	brzeg.Radius = r
+	brzeg.InnerRadius = math.max(0, r - 0.5)
+	brzeg.CFrame = CFrame.Angles(math.pi / 2, 0, 0)
+	brzeg.Transparency = 0.15
+	brzeg.Parent = nos
+	local srodek = Instance.new("CylinderHandleAdornment")
+	srodek.Adornee = nos
+	srodek.Color3 = kolor
+	srodek.Height = 0.15
+	srodek.Radius = 0.1
+	srodek.CFrame = CFrame.Angles(math.pi / 2, 0, 0)
+	srodek.Transparency = 0.55
+	srodek.Parent = nos
+	self:dodaj(czas, function(f)
+		srodek.Radius = math.max(0.1, r * f)
+	end, function()
+		nos:Destroy()
+	end)
+end
+
+-- kula ognia (EMBER SPIT): leci prosto, iskry za nią; zwraca uchwyt do zgaszenia (trafienie / koniec)
+function Efekty:kulaOgnia(od: Vector3, kier: Vector3, v: number, czas: number)
+	local k = czesc(self.folder, Vector3.new(1.6, 1.6, 1.6), Color3.fromRGB(255, 150, 40), Enum.Material.Neon, Enum.PartType.Ball)
+	local j = czesc(self.folder, Vector3.new(0.9, 0.9, 0.9), Color3.fromRGB(255, 240, 150), Enum.Material.Neon, Enum.PartType.Ball)
+	local u = { koniec = false, poz = od }
+	local nast = 0
+	self:dodaj(czas + 0.3, function(f, dt, e)
+		if u.koniec then
+			return false
+		end
+		u.poz = od + kier * v * e.t
+		k.Position = u.poz
+		j.Position = u.poz
+		local s = 1.6 + math.sin(e.t * 30) * 0.2
+		k.Size = Vector3.new(s, s, s)
+		nast -= dt
+		if nast <= 0 then
+			nast = 0.05
+			local m = czesc(self.folder, Vector3.new(0.6, 0.6, 0.6), Color3.fromRGB(255, 120, 30), Enum.Material.Neon, Enum.PartType.Ball)
+			local p = u.poz
+			self:dodaj(0.35, function(g)
+				m.Position = p + Vector3.new(0, g * 0.8, 0)
+				m.Transparency = g
+			end, function()
+				m:Destroy()
+			end)
+		end
+	end, function()
+		k:Destroy()
+		j:Destroy()
+	end)
+	return u
 end
 return Efekty

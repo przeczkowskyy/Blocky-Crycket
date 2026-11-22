@@ -1,8 +1,9 @@
 --[[
 	LogikaEwolucji — czyste rachunki Monster Evolution (ModuleScript w Workspace/EwolucjaGra/Moduly; też w testach bez Studio).
-	Byty (gracze i boty) w 2D na polu-kole: formy 1–8 (stała drabina), jedzenie kulek i mniejszych (co najmniej o jedną
-	formę), BITE, DASH, umiejętność formy, pasek wzrostu i EVOLVE z kokonem, legowisko (złoto na sekundę za każdą
-	zdobytą formę), ulepszenia (Szczęka, Szybkość, Apetyt), śmierć o formę niżej z tarczą, proste boty.
+	Byty (gracze i boty) w 2D na polu-kole: formy 1–8 (stała drabina), jedzenie kulek, pasek wzrostu i EVOLVE z kokonem,
+	legowisko (złoto na sekundę za każdą zdobytą formę), ulepszenia (Szczęka, Szybkość, Apetyt), śmierć o formę niżej z tarczą.
+	Walka (walka1): jedna zasada dla wszystkich — życie według stadium, BITE w łańcuchu trzech ciosów, dwie linie zdolności
+	(FIRE, POWER) ewoluujące ze stadiami, zamach widoczny dla innych, zero życia = zjedzony. Boty walczą tymi samymi zasadami.
 	Serwer woła krok stałym krokiem; zdarzenia wracają listą. Wszystko liczy serwer — klient tylko przewiduje ruch.
 ]]
 local L = {}
@@ -155,10 +156,7 @@ function L.zasiegGryzu(D, b): number
 end
 
 function L.przerwaGryzu(D, b): number
-	if b.slot == 0 then
-		return D.gryzienie.bot_przerwa_s
-	end
-	return L.ulepszenie(D, "szczeka").przerwa_s[L.poziom(b, "szczeka")]
+	return D.walka.lancuch_s[1]
 end
 
 -- wartość zjedzonego stworka (przed Apetytem)
@@ -197,7 +195,7 @@ function L.nowyStan(D, los)
 	for i = 1, #D.kulkiPoz do
 		kulki[i] = 0
 	end
-	return { D = D, los = los, czas = 0, byty = {}, nastId = 1, kulki = kulki, strefy = {}, olbrzym = 0 }
+	return { D = D, los = los, czas = 0, byty = {}, nastId = 1, kulki = kulki, strefy = {}, olbrzym = 0, pociski = {}, plamy = {}, nastPocisk = 0 }
 end
 
 -- strefy ruchu: 1 — łąka, 2 — DEEP WOODS, 3 — obie (gracz z formą od_formy zdobytą); boty i boss tylko swoja strefa
@@ -239,7 +237,22 @@ function L.ogranicz(D, x: number, z: number, r: number, maska: number?): (number
 			z = s.z + (z - s.z) / ds * min
 		end
 	end
+	local WY = D.wyspa
+	if WY then
+		local dw = dlug(x - WY.x, z - WY.z)
+		local wew, zew = math.max(0.5, WY.r_wew - r * 0.6), WY.r_zew + r * 0.6
+		if dw > wew and dw < zew and dw > 0.01 then
+			local cel = if dw - wew < zew - dw then wew else zew
+			x, z = WY.x + (x - WY.x) / dw * cel, WY.z + (z - WY.z) / dw * cel
+		end
+	end
 	return x, z
+end
+
+-- czy punkt jest na wyspie (SKY NEST)
+function L.naWyspie(D, x: number, z: number): boolean
+	local WY = D.wyspa
+	return WY ~= nil and dlug(x - WY.x, z - WY.z) < WY.r_wew
 end
 
 -- miejsce z dala od większych (dla gracza: obok kulki; dla bota: z dala od graczy)
@@ -269,6 +282,12 @@ function L.bezpieczneMiejsce(S, forma: number, gracz: boolean, strefa: number?, 
 			x, z = math.sin(a) * r, math.cos(a) * r
 		end
 		x, z = L.ogranicz(D, x, z, D.formy[forma].r, if gracz then 1 else (strefa or 1))
+		if D.wyspa and L.naWyspie(D, x, z) then
+			local WY = D.wyspa
+			local dw = math.max(0.1, dlug(x - WY.x, z - WY.z))
+			local m = WY.r_zew + D.formy[forma].r + 2
+			x, z = WY.x + (x - WY.x) / dw * m, WY.z + (z - WY.z) / dw * m
+		end
 		-- ocena: odległość do najbliższego zagrożenia (dla bota: do najbliższego gracza)
 		local najbl = 999
 		for _, q in S.byty do
@@ -306,7 +325,11 @@ function L.dodajByt(S, slot: number, forma: number, x: number?, z: number?, stre
 		skok = nil, myslDo = 0, cel = 0, celOd = 0, odpuszcza = 0, odpuszczaDo = 0, zjadl = 0, ostRaport = S.czas,
 		wzrost = 0, maxForma = forma, zloto = 0, poziomy = { szczeka = 1, szybkosc = 1, apetyt = 1 },
 		laskaDo = if slot > 0 then S.czas + D.boty.laska_s else 0, teraz = S.czas, strefa = strefa or 1,
-		zlotoLeg = 0, warianty = {}, trofea = {}, bossTrofea = 0, wariantTeraz = nil }
+		zlotoLeg = 0, warianty = {}, trofea = {}, bossTrofea = 0, wariantTeraz = nil,
+		hp = 0, hpMaks = 0, ostRana = -99, lancuch = 0, lancuchDo = 0, gotowy = { ogien = 0, moc = 0 }, zamach = nil, kanal = nil,
+		napastnik = 0, napastnikDo = 0, uciekaOd = 0, uciekaDo = 0 }
+	b.hpMaks = L.hpMaks(D, b)
+	b.hp = b.hpMaks
 	S.nastId += 1
 	table.insert(S.byty, b)
 	if slot > 0 then
@@ -367,26 +390,35 @@ function L.ranBossa(S, boss, g, ile: number, zd)
 	end
 end
 
+-- siła BITE (przed łańcuchem i rozmiarem): stadium × Szczęka — także podstawa ran zdolności
 function L.obrazenia(D, g): number
-	local B = D.boss
-	return B.gryz_baza + B.gryz_na_forme * math.max(0, g.forma - 3) + 2 * (L.poziom(g, "szczeka") - 1)
+	local W = D.walka
+	local s = W.gryz_baza * W.gryz_wzrost ^ (g.forma - 1)
+	if g.slot > 0 then
+		s *= W.szczeka_x[L.poziom(g, "szczeka")]
+	end
+	return s
+end
+L.silaGryzu = L.obrazenia
+
+-- życie według stadium (boss: stopień)
+function L.hpMaks(D, b): number
+	if b.boss then
+		return b.hpMaks
+	end
+	return D.walka.hp_baza * D.walka.hp_wzrost ^ (b.forma - 1)
 end
 
--- Olbrzym jako boss serwera: inny gracz w zasięgu gryzie go za złoto; zero życia → Olbrzym spada o formę, skrzynia
-local function olbrzymW(S, g, zasieg: number)
-	local D = S.D
-	if g.slot == 0 or (S.graczy or 0) < D.olbrzym.graczy_od then
-		return nil
+-- mnożnik rozmiaru: różnica stadiów atakującego i celu (−3…+3); boss bez mnożnika
+function L.rozmiarX(D, a, q): number
+	if a.boss or q.boss then
+		return 1
 	end
-	for _, q in S.byty do
-		if q ~= g and q.slot > 0 and q.forma == #D.formy and wolny(S, q) and not L.mozeZjesc(D, g, q)
-			and dlug(q.x - g.x, q.z - g.z) < L.promien(D, g.forma) + zasieg + L.promien(D, q.forma) then
-			return q
-		end
-	end
-	return nil
+	local d = math.clamp(a.forma - q.forma, -3, 3)
+	return D.walka.rozmiar_x[d + 4]
 end
 
+-- Olbrzym jako boss serwera: inny gracz rani go za złoto (L.ran kieruje tu trafienia); zero życia → Olbrzym spada o formę
 function L.ranOlbrzyma(S, q, g, zd)
 	local D = S.D
 	local O = D.olbrzym
@@ -468,6 +500,9 @@ local function mnoznik(S, b): number
 	if S.czas < b.szarzaDo then
 		m = math.max(m, b.szarzaV)
 	end
+	if b.zamach or b.kanal then
+		m *= D.walka.zamach_v
+	end
 	return m
 end
 L.mnoznik = mnoznik
@@ -512,6 +547,9 @@ local function zjedzKulke(S, b, i: number, zd)
 	if b.slot > 0 then
 		L.dodajWzrost(S, b, (if typ == 3 then D.jedzenie.wielka elseif typ == 2 then D.jedzenie.duza else D.jedzenie.mala) * L.apetyt(D, b))
 	end
+	if not b.boss and b.hp < b.hpMaks then
+		b.hp = math.min(b.hpMaks, b.hp + b.hpMaks * D.walka.kulka_leczy[typ])
+	end
 	table.insert(zd, { t = "kulka", i = i, id = b.id, s = b.slot })
 end
 
@@ -533,7 +571,8 @@ local function zgin(S, b, zd)
 	b.martwyDo = S.czas + (if b.slot > 0 then D.smierc.odrodzenie_s else D.boty.odrodzenie_s)
 	b.vx, b.vz, b.wx, b.wz = 0, 0, 0, 0
 	b.szarzaDo, b.zrywDo = 0, 0
-	b.skok = nil
+	b.skok, b.zamach, b.kanal = nil, nil, nil
+	b.lancuch = 0
 	table.insert(zd, { t = "smierc", id = b.id, s = b.slot, forma = b.forma })
 end
 
@@ -602,26 +641,129 @@ local function kulkiW(S, x: number, z: number, r: number, ile: number)
 end
 L.kulkiW = kulkiW
 
--- BITE gracza: najbliższy jadalny w zasięgu Szczęki, inaczej do 3 kulek w zasięgu
-function L.gryz(S, b, zd): boolean
+------------------------------------------------------------------ walka (walka1): jedna zasada — życie, BITE w łańcuchu, zdolności
+-- czy a może teraz zranić q: żywe, bez tarczy, nie w kokonie ani w locie, gracz nie we własnym legowisku; stadia 1–2 graczy
+-- chronione przed graczami (w obie strony); boss rani tylko graczy i tylko gracze ranią bossa; bot nie rani młodego gracza
+-- „przypadkiem” (tylko gdy na niego poluje i po łasce nowicjusza). zdalnie: pocisk / płonąca ziemia (stan atakującego bez znaczenia)
+function L.mozeRanic(S, a, q, zdalnie: boolean?): boolean
 	local D = S.D
-	if sterowanyPrzezSerwer(S, b) or S.czas < b.gryzGotowy then
+	if q == a or not bezbronny(S, q) then
 		return false
 	end
-	b.gryzGotowy = S.czas + L.przerwaGryzu(D, b)
+	if not zdalnie and not wolny(S, a) then
+		return false
+	end
+	if a.boss then
+		return q.slot > 0
+	end
+	if q.boss then
+		return a.slot > 0
+	end
+	if a.slot > 0 and L.wLegowisku(D, a) then
+		return false
+	end
+	if a.slot > 0 and q.slot > 0 and (a.forma <= D.smierc.chronione_formy or q.forma <= D.smierc.chronione_formy) then
+		return false
+	end
+	if przypadkiem(D, a, q) then
+		return false
+	end
+	return true
+end
+
+-- rana: rozmiar, kryt, odrzut (z przewrotem przerywa zamach i kanał), zero życia → zjedzony (finisher)
+function L.ran(S, a, q, ile: number, zd, jak: string, nx: number?, nz: number?, sila: number?, przewrot: number?, losKryt: boolean?)
+	local D = S.D
+	local W = D.walka
+	ile *= L.rozmiarX(D, a, q)
+	local kryt = losKryt == true and S.los() < W.kryt_szansa
+	if kryt then
+		ile *= W.kryt_x
+	end
+	ile = math.max(1, math.floor(ile + 0.5))
+	if a.slot > 0 and a.tarczaDo > S.czas then
+		a.tarczaDo = S.czas -- atak zdejmuje tarczę
+	end
+	if q.boss then
+		L.ranBossa(S, q, a, ile, zd)
+		return
+	end
+	if q.slot > 0 and a.slot > 0 and q.forma == #D.formy and (S.graczy or 0) >= D.olbrzym.graczy_od then
+		L.ranOlbrzyma(S, q, a, zd)
+		return
+	end
+	q.hp -= ile
+	q.ostRana = S.czas
+	q.napastnik, q.napastnikDo = a.id, S.czas + 5
+	if sila and sila > 0 and nx and nz then
+		q.vx, q.vz = nx * sila, nz * sila
+		if przewrot then
+			q.ogluszonyDo = math.max(q.ogluszonyDo, S.czas + przewrot)
+			q.przewrotDo = S.czas + przewrot
+			q.zamach, q.kanal = nil, nil
+		end
+	end
+	table.insert(zd, { t = "rana", a = a.id, id = q.id, s = q.slot, sa = a.slot, ile = ile, hp = math.max(0, q.hp) / q.hpMaks, x = q.x, z = q.z,
+		kr = kryt, jak = jak, pw = przewrot ~= nil })
+	if q.hp <= 0 then
+		zjedz(S, a, q, zd, jak)
+	end
+end
+
+-- zasięg liczony od brzegu celu (odbicia trzymają stworki na styku r + R)
+local function zasiegDo(D, q): number
+	return L.promien(D, q.forma)
+end
+
+-- cel BITE z lekkim celowaniem: najpierw przed pyskiem (stożek celowanie_st), potem najbliższy w zasięgu;
+-- bot gryzie tylko mniejszych, swój cel albo tego, kto go ranił
+local function celGryzu(S, b, zas: number)
+	local D = S.D
+	local ra = L.promien(D, b.forma)
+	local cosK = math.cos(math.rad(D.walka.celowanie_st))
+	local kx, kz = math.sin(b.kier), math.cos(b.kier)
+	local best, bw = nil, math.huge
+	for _, q in S.byty do
+		if L.mozeRanic(S, b, q) and (b.slot > 0 or q.forma < b.forma or q.id == b.cel or (q.id == b.napastnik and S.czas < b.napastnikDo)) then
+			local dx, dz = q.x - b.x, q.z - b.z
+			local d = dlug(dx, dz)
+			if d < ra + zas + zasiegDo(D, q) then
+				local przod = d < 0.5 or (dx * kx + dz * kz) / d >= cosK
+				local w = d + (if przod then 0 else 8 + zas)
+				if w < bw then
+					best, bw = q, w
+				end
+			end
+		end
+	end
+	return best
+end
+L.celGryzu = celGryzu
+
+-- BITE: łańcuch trzech ciosów (snap, snap, chomp z odrzutem i przewrotem); bez celu gracz zjada do 3 kulek w zasięgu
+function L.gryz(S, b, zd): boolean
+	local D = S.D
+	local W = D.walka
+	if sterowanyPrzezSerwer(S, b) or S.czas < b.gryzGotowy or b.zamach or b.kanal then
+		return false
+	end
+	if S.czas > b.lancuchDo then
+		b.lancuch = 0
+	end
+	local k = b.lancuch % 3 + 1
+	b.lancuch = k
+	b.gryzGotowy = S.czas + W.lancuch_s[k]
+	b.lancuchDo = S.czas + W.lancuch_s[k] + W.lancuch_reset_s
 	b.gryzDo = S.czas + D.gryzienie.slad_s
 	local zas = L.zasiegGryzu(D, b)
-	local q = najblizszaOfiara(S, b, zas)
-	local boss = if q then nil else bossW(S, b, zas)
-	local olb = if q or boss then nil else olbrzymW(S, b, zas)
-	table.insert(zd, { t = "gryz", id = b.id, x = b.x, z = b.z, trafil = q ~= nil or boss ~= nil or olb ~= nil })
+	local q = celGryzu(S, b, zas)
+	table.insert(zd, { t = "gryz", id = b.id, x = b.x, z = b.z, k = k, trafil = q ~= nil })
 	if q then
-		zjedz(S, b, q, zd, "gryz")
-	elseif boss then
-		L.ranBossa(S, boss, b, L.obrazenia(D, b), zd)
-	elseif olb then
-		L.ranOlbrzyma(S, olb, b, zd)
-	else
+		local d = math.max(0.1, dlug(q.x - b.x, q.z - b.z))
+		b.kier = math.atan2(q.x - b.x, q.z - b.z)
+		L.ran(S, b, q, L.obrazenia(D, b) * W.lancuch_x[k], zd, "gryz", (q.x - b.x) / d, (q.z - b.z) / d,
+			if k == 3 then W.odrzut else W.odrzut_maly, if k == 3 then W.przewrot_s else nil, true)
+	elseif b.slot > 0 then
 		for _, i in kulkiW(S, b.x, b.z, L.promien(D, b.forma) + zas + D.jedzenie.mala_r, 3) do
 			zjedzKulke(S, b, i, zd)
 		end
@@ -629,121 +771,269 @@ function L.gryz(S, b, zd): boolean
 	return true
 end
 
------------------------------------------------------------------- umiejętności (jeden przycisk; każda forma ma swoją)
-local function oglusz(S, b, r: number, czas: number, zd)
-	local D = S.D
-	local n = 0
-	for _, q in S.byty do
-		if q ~= b and wolny(S, q) and q.tarczaDo <= S.czas and dlug(q.x - b.x, q.z - b.z) < r + L.promien(D, q.forma)
-			and not (b.slot > 0 and q.slot > 0 and q.forma <= D.smierc.chronione_formy) then
-			q.ogluszonyDo = S.czas + (if q.boss then czas * 0.5 else czas)
-			q.vx, q.vz = 0, 0
-			n += 1
-			table.insert(zd, { t = "ogluszony", id = q.id, s = q.slot, czas = czas })
+------------------------------------------------------------------ zdolności: FIRE (ogien) i POWER (moc), ewoluują ze stadiami
+-- działająca wersja linii dla stadium (największe od ≤ forma) i następna (do pokazania w HUD)
+function L.zdolnoscFormy(D, linia: string, forma: number)
+	local w = nil
+	for _, A in D.zdolnosci[linia] or {} do
+		if A.od <= forma then
+			w = A
 		end
 	end
-	return n
+	return w
 end
 
-function L.umiejetnosc(S, b, zd): boolean
+function L.nastepnaZdolnosc(D, linia: string, forma: number)
+	for _, A in D.zdolnosci[linia] or {} do
+		if A.od > forma then
+			return A
+		end
+	end
+	return nil
+end
+
+-- przycisk FIRE / POWER: najpierw zamach (widoczny dla innych), efekt po zamach_s
+function L.zdolnosc(S, b, linia: any, zd): boolean
 	local D = S.D
-	if sterowanyPrzezSerwer(S, b) or S.czas < b.umGotowy then
+	if (linia ~= "ogien" and linia ~= "moc") or b.boss then
 		return false
 	end
-	local A = D.formy[b.forma].um
-	b.umGotowy = S.czas + A.odnowa_s
+	if sterowanyPrzezSerwer(S, b) or b.zamach or b.kanal then
+		return false
+	end
+	local A = L.zdolnoscFormy(D, linia, b.forma)
+	if not A or S.czas < (b.gotowy[linia] or 0) then
+		return false
+	end
+	if b.slot > 0 and L.wLegowisku(D, b) and A.typ ~= "lot" then
+		return false
+	end
+	b.gotowy[linia] = S.czas + A.zamach_s + A.odnowa_s
+	b.zamach = { A = A, t1 = S.czas + A.zamach_s }
+	if b.wx ~= 0 or b.wz ~= 0 then
+		b.kier = math.atan2(b.wx, b.wz)
+	end
+	table.insert(zd, { t = "zamach", id = b.id, s = b.slot, ab = A.id, czas = A.zamach_s, kier = b.kier, x = b.x, z = b.z })
+	return true
+end
+-- zgodność: dawny jeden przycisk = FIRE
+function L.umiejetnosc(S, b, zd, linia: any): boolean
+	return L.zdolnosc(S, b, linia or "ogien", zd)
+end
+
+local function wStozku(b, x: number, z: number, zas: number, cosK: number): boolean
+	local kx, kz = math.sin(b.kier), math.cos(b.kier)
+	local dx, dz = x - b.x, z - b.z
+	local d = dlug(dx, dz)
+	return d < zas and (d < 0.5 or (dx * kx + dz * kz) / d >= cosK)
+end
+
+-- efekt po zamachu
+local function wykonaj(S, b, A, zd)
+	local D = S.D
 	local rb = L.promien(D, b.forma)
-	table.insert(zd, { t = "umiejetnosc", id = b.id, s = b.slot, typ = A.typ, x = b.x, z = b.z, r = rb + (A.r or 0), kier = b.kier })
-	if A.typ == "wsysanie" then
-		for _, i in kulkiW(S, b.x, b.z, rb + A.r, 99) do
+	local kx, kz = math.sin(b.kier), math.cos(b.kier)
+	local sila = L.obrazenia(D, b)
+	if A.typ == "pocisk" then
+		S.nastPocisk += 1
+		local p = { n = S.nastPocisk, w = b.id, x = b.x + kx * rb, z = b.z + kz * rb, kx = kx, kz = kz, v = A.v, do_ = S.czas + A.zasieg / A.v,
+			r = A.r, ile = sila * A.x, odrzut = A.odrzut }
+		table.insert(S.pociski, p)
+		table.insert(zd, { t = "pocisk", n = p.n, id = b.id, x = p.x, z = p.z, kx = kx, kz = kz, v = A.v, czas = A.zasieg / A.v })
+	elseif A.typ == "oddech" then
+		b.kanal = { A = A, do_ = S.czas + A.trwa_s, tik = S.czas, plama = S.czas }
+		table.insert(zd, { t = "oddech", id = b.id, ab = A.id, czas = A.trwa_s })
+	elseif A.typ == "ogon" then
+		for _, q in S.byty do
+			if L.mozeRanic(S, b, q) then
+				local d = dlug(q.x - b.x, q.z - b.z)
+				if d < rb + A.r + L.promien(D, q.forma) then
+					d = math.max(0.1, d)
+					L.ran(S, b, q, sila * A.x, zd, "ogon", (q.x - b.x) / d, (q.z - b.z) / d, A.odrzut, A.przewrot_s)
+				end
+			end
+		end
+		table.insert(zd, { t = "ogon", id = b.id, x = b.x, z = b.z, r = rb + A.r })
+	elseif A.typ == "lot" or A.typ == "meteor" then
+		local x1, z1 = L.ogranicz(D, b.x + kx * A.d, b.z + kz * A.d, rb, L.maska(D, b))
+		b.skok = { x0 = b.x, z0 = b.z, x1 = x1, z1 = z1, t0 = S.czas, t1 = S.czas + A.s, A = A, r = A.r }
+		b.kier = math.atan2(kx, kz)
+		table.insert(zd, { t = A.typ, id = b.id, x0 = b.x, z0 = b.z, x1 = x1, z1 = z1, czas = A.s })
+	elseif A.typ == "ryk" then
+		for _, q in S.byty do
+			local d = dlug(q.x - b.x, q.z - b.z)
+			if L.mozeRanic(S, b, q) and d < rb + A.r + L.promien(D, q.forma) then
+				L.ran(S, b, q, sila * A.x, zd, "ryk")
+				if q.martwyDo == nil then
+					if q.slot == 0 and not q.boss and q.forma < b.forma then
+						q.uciekaOd, q.uciekaDo = b.id, S.czas + A.ucieczka_s
+						q.myslDo = 0
+					else
+						local czas = if q.boss or q.forma > b.forma then A.ogluszenie_s * 0.5 else A.ogluszenie_s
+						q.ogluszonyDo = math.max(q.ogluszonyDo, S.czas + czas)
+						q.vx, q.vz = 0, 0
+						q.zamach, q.kanal = nil, nil
+						table.insert(zd, { t = "ogluszony", id = q.id, s = q.slot, czas = czas })
+					end
+				end
+			end
+		end
+		table.insert(zd, { t = "ryk", id = b.id, x = b.x, z = b.z, r = rb + A.r })
+	end
+end
+L.wykonaj = wykonaj
+
+-- lądowanie po szybowaniu / meteorze: rany w kręgu, odrzut; meteor zbiera kulki w kręgu
+local function ladowanie(S, b, k, zd)
+	local D = S.D
+	local A = k.A
+	local r = L.promien(D, b.forma)
+	if not A then
+		return
+	end
+	for _, q in S.byty do
+		if L.mozeRanic(S, b, q) then
+			local d = dlug(q.x - b.x, q.z - b.z)
+			if d < r + A.r + L.promien(D, q.forma) then
+				d = math.max(0.1, d)
+				L.ran(S, b, q, L.obrazenia(D, b) * A.x, zd, A.typ, (q.x - b.x) / d, (q.z - b.z) / d, A.odrzut, A.przewrot_s)
+			end
+		end
+	end
+	if A.typ == "meteor" and b.slot > 0 then
+		for _, i in kulkiW(S, b.x, b.z, r + A.r, 99) do
 			zjedzKulke(S, b, i, zd)
 		end
-	elseif A.typ == "jezyk" then
-		local q = najblizszaOfiara(S, b, A.r)
-		local boss = if q then nil else bossW(S, b, A.r)
-		if q then
-			zjedz(S, b, q, zd, "jezyk")
-		elseif boss then
-			L.ranBossa(S, boss, b, D.boss.um_obrazenia, zd)
-		else
-			for _, i in kulkiW(S, b.x, b.z, rb + A.r, 4) do
+	end
+	table.insert(zd, { t = "ladowanie", id = b.id, x = b.x, z = b.z, r = r + A.r, typ = A.typ })
+end
+
+-- kanał oddechu: co tik_s stożek przed pyskiem (kierunek = kierunek ruchu), kulki w stożku zjedzone; inferno pali ziemię
+local function krokKanalu(S, b, zd)
+	local D = S.D
+	local K = b.kanal
+	if S.czas >= K.do_ then
+		b.kanal = nil
+		return
+	end
+	if S.czas < K.tik then
+		return
+	end
+	local A = K.A
+	K.tik += A.tik_s
+	local rb = L.promien(D, b.forma)
+	local cosK = math.cos(math.rad(A.kat_st / 2))
+	local sila = L.obrazenia(D, b)
+	for _, q in S.byty do
+		if L.mozeRanic(S, b, q) and wStozku(b, q.x, q.z, rb + A.zasieg + zasiegDo(D, q), cosK) then
+			local d = math.max(0.1, dlug(q.x - b.x, q.z - b.z))
+			L.ran(S, b, q, sila * A.x, zd, "ogien", (q.x - b.x) / d, (q.z - b.z) / d, 3, nil)
+		end
+	end
+	if b.slot > 0 then
+		for i, p in D.kulkiPoz do
+			if S.kulki[i] == 0 and wStozku(b, p[1], p[2], rb + A.zasieg, cosK) then
 				zjedzKulke(S, b, i, zd)
 			end
 		end
-	elseif A.typ == "szarza" then
-		b.szarzaDo = S.czas + A.s
-		b.szarzaV = A.v
-		if b.wx == 0 and b.wz == 0 then
-			b.wx, b.wz = math.sin(b.kier), math.cos(b.kier)
-		end
-	elseif A.typ == "ogluszenie" then
-		oglusz(S, b, rb + A.r, A.s, zd)
-		local boss = bossW(S, b, A.r)
-		if boss then
-			L.ranBossa(S, boss, b, D.boss.um_obrazenia, zd)
-		end
-	elseif A.typ == "skok" then
+	end
+	if A.plama_r and S.czas >= K.plama then
+		K.plama = S.czas + 0.6
 		local kx, kz = math.sin(b.kier), math.cos(b.kier)
-		if b.wx ~= 0 or b.wz ~= 0 then
-			local d = dlug(b.wx, b.wz)
-			kx, kz = b.wx / d, b.wz / d
-		end
-		local x1, z1 = L.ogranicz(D, b.x + kx * A.d, b.z + kz * A.d, rb, L.maska(D, b))
-		b.skok = { x0 = b.x, z0 = b.z, x1 = x1, z1 = z1, t0 = S.czas, t1 = S.czas + A.s, r = A.r }
-		b.kier = math.atan2(kx, kz)
-	elseif A.typ == "podmuch" then
-		-- WING GUST: odpycha (i krótko ogłusza) wszystkich w promieniu, poza chronionymi graczami i bossem
-		for _, q in S.byty do
-			local d = dlug(q.x - b.x, q.z - b.z)
-			if q ~= b and wolny(S, q) and q.tarczaDo <= S.czas and not q.boss and d < rb + A.r + L.promien(D, q.forma)
-				and not (b.slot > 0 and q.slot > 0 and q.forma <= D.smierc.chronione_formy) then
-				d = math.max(0.1, d)
-				local nx, nz = (q.x - b.x) / d, (q.z - b.z) / d
-				q.x, q.z = L.ogranicz(D, q.x + nx * A.sila, q.z + nz * A.sila, L.promien(D, q.forma), L.maska(D, q))
-				q.vx, q.vz = nx * A.sila * 2, nz * A.sila * 2
-				q.ogluszonyDo = S.czas + A.s
-				table.insert(zd, { t = "ogluszony", id = q.id, s = q.slot, czas = A.s })
-			end
-		end
-	elseif A.typ == "oddech" then
-		-- FIRE BREATH: stożek przed pyskiem — do 3 jadalnych, kulki w stożku, rana bossa
-		local kx, kz = math.sin(b.kier), math.cos(b.kier)
-		local cosK = math.cos(math.rad(A.kat_st / 2))
-		local function wStozku(x: number, z: number, zas: number): boolean
-			local dx, dz = x - b.x, z - b.z
-			local d = dlug(dx, dz)
-			return d < zas and (d < 0.5 or (dx * kx + dz * kz) / d >= cosK)
-		end
-		if not (b.slot > 0 and L.wLegowisku(D, b)) then
-			local n = 0
+		local x, z = b.x + kx * (rb + A.zasieg * 0.65), b.z + kz * (rb + A.zasieg * 0.65)
+		table.insert(S.plamy, { w = b.id, x = x, z = z, r = A.plama_r, do_ = S.czas + A.plama_s, nast = S.czas, co = A.plama_co_s, ile = sila * A.plama_x })
+		table.insert(zd, { t = "plama", id = b.id, x = x, z = z, r = A.plama_r, czas = A.plama_s })
+	end
+end
+
+-- pociski (EMBER SPIT): lecą prosto, trafiają pierwszego na drodze, gasną na skale / drzewie albo po zasięgu
+local function krokPociskow(S, dt: number, zd)
+	local D = S.D
+	local zost = {}
+	for _, p in S.pociski do
+		local w = L.bytPoId(S, p.w)
+		local dx, dz = p.kx * p.v * dt, p.kz * p.v * dt
+		local traf, ts = nil, math.huge
+		if w then
 			for _, q in S.byty do
-				if n < 3 and q ~= b and bezbronny(S, q) and L.mozeZjesc(D, b, q) and not przypadkiem(D, b, q)
-					and wStozku(q.x, q.z, rb + A.r + L.promien(D, q.forma) * 0.5) then
-					zjedz(S, b, q, zd, "oddech")
-					n += 1
+				if L.mozeRanic(S, w, q, true) then
+					-- odległość od odcinka lotu w tym kroku
+					local qx, qz = q.x - p.x, q.z - p.z
+					local t = math.clamp((qx * dx + qz * dz) / math.max(1e-6, dx * dx + dz * dz), 0, 1)
+					local ex, ez = qx - dx * t, qz - dz * t
+					if dlug(ex, ez) < p.r + L.promien(D, q.forma) * (if q.boss then 1 else 0.8) and t < ts then
+						traf, ts = q, t
+					end
 				end
 			end
-			for i, p in D.kulkiPoz do
-				if S.kulki[i] == 0 and wStozku(p[1], p[2], rb + A.r) then
-					zjedzKulke(S, b, i, zd)
+		end
+		if traf and w then
+			table.insert(zd, { t = "pocisk_koniec", n = p.n, x = p.x + dx * ts, z = p.z + dz * ts, trafil = true })
+			L.ran(S, w, traf, p.ile, zd, "zar", p.kx, p.kz, p.odrzut, nil, true)
+		else
+			p.x += dx
+			p.z += dz
+			local kamien = false
+			for _, o in D.przeszkody do
+				if o.typ ~= "staw" and dlug(p.x - o.x, p.z - o.z) < o.r then
+					kamien = true
 				end
 			end
-			local boss = bossW(S, b, A.r)
-			if boss and wStozku(boss.x, boss.z, rb + A.r + L.promien(D, boss.forma)) then
-				L.ranBossa(S, boss, b, D.boss.um_obrazenia, zd)
+			if kamien or S.czas >= p.do_ or not w then
+				table.insert(zd, { t = "pocisk_koniec", n = p.n, x = p.x, z = p.z, trafil = false })
+			else
+				table.insert(zost, p)
 			end
-		end
-	elseif A.typ == "fala" then
-		oglusz(S, b, rb + A.r, A.s, zd)
-		local boss = bossW(S, b, A.r)
-		if boss then
-			L.ranBossa(S, boss, b, D.boss.um_obrazenia, zd)
-		end
-		for _, i in kulkiW(S, b.x, b.z, rb + A.r, 99) do
-			zjedzKulke(S, b, i, zd)
 		end
 	end
-	return true
+	S.pociski = zost
+end
+
+-- płonąca ziemia (INFERNO): co co_s rani stojących w środku (poza właścicielem)
+local function krokPlam(S, zd)
+	local D = S.D
+	if #S.plamy == 0 then
+		return
+	end
+	local zost = {}
+	for _, p in S.plamy do
+		if S.czas < p.do_ then
+			table.insert(zost, p)
+			local w = L.bytPoId(S, p.w)
+			if w and S.czas >= p.nast then
+				p.nast = S.czas + p.co
+				for _, q in S.byty do
+					if L.mozeRanic(S, w, q, true) and dlug(q.x - p.x, q.z - p.z) < p.r + L.promien(D, q.forma) * 0.5 then
+						L.ran(S, w, q, p.ile, zd, "plama")
+					end
+				end
+			end
+		end
+	end
+	S.plamy = zost
+end
+
+-- bot: zdolność swojego stadium przy celu (te same zasady i zamach co u gracza; bez szybowania)
+local function botZdolnosc(S, b, q, d: number, zd)
+	local D = S.D
+	if b.zamach or b.kanal or S.los() > 0.45 then
+		return
+	end
+	local rb, rq = L.promien(D, b.forma), L.promien(D, q.forma)
+	local A = L.zdolnoscFormy(D, "ogien", b.forma)
+	if A and S.czas >= (b.gotowy.ogien or 0) and d > rb + 1 and d < rb + A.zasieg * 0.75 + rq * 0.5 then
+		b.kier = math.atan2(q.x - b.x, q.z - b.z)
+		L.zdolnosc(S, b, "ogien", zd)
+		return
+	end
+	local M = L.zdolnoscFormy(D, "moc", b.forma)
+	if M and S.czas >= (b.gotowy.moc or 0) then
+		if (M.typ == "ogon" and d < rb + M.r + rq * 0.5) or (M.typ == "ryk" and d < rb + M.r * 0.6)
+			or (M.typ == "meteor" and d > rb + 6 and d < M.d + rb) then
+			b.kier = math.atan2(q.x - b.x, q.z - b.z)
+			L.zdolnosc(S, b, "moc", zd)
+		end
+	end
 end
 
 ------------------------------------------------------------------ ewolucja, ulepszenia
@@ -755,6 +1045,7 @@ function L.ewoluuj(S, b, zd): boolean
 	local nowa = b.forma + 1 > b.maxForma
 	b.kokonDo = S.czas + (if nowa then D.ewolucja.kokon_s else D.ewolucja.kokon_znana_s)
 	b.kokonNowa = nowa
+	b.zamach, b.kanal = nil, nil
 	b.kokonWariant = if b.slot > 0 then (S.wymusWariant or L.losujWariant(D, S.los())) else nil
 	S.wymusWariant = nil
 	b.vx, b.vz, b.wx, b.wz = 0, 0, 0, 0
@@ -808,9 +1099,10 @@ function L.kupTrofeum(S, b, f: any): (boolean, string?)
 end
 
 ------------------------------------------------------------------ boty
-function L.mysl(S, b)
+function L.mysl(S, b, zd)
 	local D = S.D
 	local B = D.boty
+	zd = zd or {}
 	local r = L.promien(D, b.forma)
 	local zagr, dz = nil, math.huge
 	local ofiara, dof = nil, math.huge
@@ -834,6 +1126,22 @@ function L.mysl(S, b)
 					ofiara, dof = q, d
 				end
 			end
+		end
+	end
+	-- odwet (walka1): kto mnie ranił, a jest najwyżej o stadium większy — walczę z nim zamiast uciekać
+	local nap = if b.napastnikDo > S.czas then L.bytPoId(S, b.napastnik) else nil
+	if nap and nap.martwyDo == nil and nap.forma <= b.forma + 1 and bezbronny(S, nap) and not (nap.slot > 0 and nap.laskaDo > S.czas) then
+		ofiara, dof = nap, dlug(nap.x - b.x, nap.z - b.z)
+		if zagr == nap or (zagr and zagr.forma <= b.forma + 1) then
+			zagr = nil
+		end
+	end
+	-- ROAR: uciekam przed tym, kto ryknął
+	if b.uciekaDo > S.czas then
+		local u = L.bytPoId(S, b.uciekaOd)
+		if u and u.martwyDo == nil then
+			zagr, dz = u, dlug(u.x - b.x, u.z - b.z)
+			ofiara = nil
 		end
 	end
 	-- świeże miejsca odrodzenia graczy: większe boty nie polują tam i wychodzą
@@ -882,21 +1190,28 @@ function L.mysl(S, b)
 	elseif ofiara then
 		if b.cel ~= ofiara.id then
 			b.cel, b.celOd = ofiara.id, S.czas
-		elseif S.czas - b.celOd > B.goni_maks_s then
+		elseif S.czas - b.celOd > B.goni_maks_s and ofiara.id ~= b.napastnik then
 			b.odpuszcza, b.odpuszczaDo = ofiara.id, S.czas + B.odpuszcza_s
 			b.cel = 0
 		end
 		local d = math.max(0.1, dof)
-		b.wx, b.wz = (ofiara.x - b.x) / d, (ofiara.z - b.z) / d
-		if dof < r + L.promien(D, ofiara.forma) + 6 and S.los() < B.zryw_szansa then
+		-- w zasięgu gryzienia: krąży przy celu (nie wchodzi w niego), dalej — goni
+		local styk = r + L.promien(D, ofiara.forma) + 0.5
+		if dof < styk then
+			b.wx, b.wz = (ofiara.x - b.x) / d * 0.3, (ofiara.z - b.z) / d * 0.3
+		else
+			b.wx, b.wz = (ofiara.x - b.x) / d, (ofiara.z - b.z) / d
+		end
+		if dof < r + L.promien(D, ofiara.forma) + 6 and dof > styk + 2 and S.los() < B.zryw_szansa then
 			L.zryw(S, b)
 		end
+		botZdolnosc(S, b, ofiara, dof, zd)
 	else
 		b.cel = 0
 		local best, bd = nil, 34
 		if b.forma <= B.kulki_do then
 			for i, p in D.kulkiPoz do
-				if S.kulki[i] == 0 then
+				if S.kulki[i] == 0 and not L.naWyspie(D, p[1], p[2]) then
 					local d = dlug(p[1] - b.x, p[2] - b.z)
 					if d < bd then
 						best, bd = p, d
@@ -962,6 +1277,11 @@ local function odrodz(S, b, zd)
 	end
 	b.martwyDo = nil
 	b.ogluszonyDo = 0
+	b.lancuch, b.zamach, b.kanal = 0, nil, nil
+	if not b.boss then
+		b.hpMaks = L.hpMaks(D, b)
+		b.hp = b.hpMaks
+	end
 	if b.boss then
 		b.hpMaks = D.boss.stopnie_hp[S.bossStopien or 1]
 		b.hp = b.hpMaks
@@ -980,6 +1300,7 @@ end
 
 function L.krok(S, dt: number)
 	local D = S.D
+	local W = D.walka
 	S.czas += dt
 	local zd = {}
 	-- strefy startu: wygasłe precz
@@ -997,6 +1318,13 @@ function L.krok(S, dt: number)
 		end
 	end
 	S.graczy = graczy
+	-- Olbrzym, który już nie jest na ostatnim stadium (zjedzony, próba), traci koronę
+	if S.olbrzym ~= 0 then
+		local o = L.bytPoId(S, S.olbrzym)
+		if not o or o.forma < #D.formy then
+			S.olbrzym = 0
+		end
+	end
 	for _, b in S.byty do
 		b.teraz = S.czas
 		if b.slot > 0 then
@@ -1013,6 +1341,17 @@ function L.krok(S, dt: number)
 				end
 			end
 			b.wDomu = L.wLegowisku(D, b)
+		end
+		-- życie: maksimum z formy (ewolucja, śmierć, próby), regeneracja bez ran
+		if not b.boss then
+			local hm = L.hpMaks(D, b)
+			if b.hpMaks ~= hm then
+				b.hp = math.max(1, b.hp / math.max(1, b.hpMaks) * hm)
+				b.hpMaks = hm
+			end
+			if b.martwyDo == nil and b.hp < b.hpMaks and S.czas - b.ostRana > W.regen_po_s then
+				b.hp = math.min(b.hpMaks, b.hp + b.hpMaks * W.regen_na_s * dt)
+			end
 		end
 		local r = L.promien(D, b.forma)
 		if b.martwyDo then
@@ -1031,6 +1370,9 @@ function L.krok(S, dt: number)
 				b.wzrost = if b.forma < #D.formy then math.min(math.max(0, b.wzrost - p), L.potrzeba(D, b.forma) * D.ewolucja.nadmiar) else 0
 				b.tarczaDo = math.max(b.tarczaDo, S.czas + D.ewolucja.tarcza_po_s)
 				b.umGotowy = 0
+				b.gotowy = { ogien = 0, moc = 0 }
+				b.hpMaks = L.hpMaks(D, b)
+				b.hp = b.hpMaks
 				b.x, b.z = L.ogranicz(D, b.x, b.z, L.promien(D, b.forma), L.maska(D, b))
 				b.wariantTeraz = b.kokonWariant
 				local najlepszy = false
@@ -1041,7 +1383,16 @@ function L.krok(S, dt: number)
 				if b.forma == #D.formy then
 					b.olbrzymHp = D.olbrzym.hp
 				end
-				table.insert(zd, { t = "ewolucja", id = b.id, s = b.slot, forma = b.forma, nowa = nowa, wariant = b.kokonWariant, najlepszy = najlepszy })
+				-- nowa wersja linii FIRE / POWER na tym stadium
+				local nowe = {}
+				for _, linia in { "ogien", "moc" } do
+					local A = L.zdolnoscFormy(D, linia, b.forma)
+					if A and A.od == b.forma then
+						table.insert(nowe, A.id)
+					end
+				end
+				table.insert(zd, { t = "ewolucja", id = b.id, s = b.slot, forma = b.forma, nowa = nowa, wariant = b.kokonWariant, najlepszy = najlepszy,
+					zd = nowe })
 				if nowa and b.forma == D.las.od_formy and b.slot > 0 then
 					table.insert(zd, { t = "las_otwarty", id = b.id, s = b.slot })
 				end
@@ -1051,6 +1402,7 @@ function L.krok(S, dt: number)
 				end
 			end
 		elseif b.skok then
+			-- szybowanie / skok meteoru: lot nad wszystkim (nietykalny), lądowanie w kręgu
 			local k = b.skok
 			local f = math.clamp((S.czas - k.t0) / (k.t1 - k.t0), 0, 1)
 			b.x = k.x0 + (k.x1 - k.x0) * f
@@ -1058,27 +1410,23 @@ function L.krok(S, dt: number)
 			b.ostRaport = S.czas
 			if f >= 1 then
 				b.skok = nil
-				local zjedzone = 0
-				for _, q in S.byty do
-					if q ~= b and bezbronny(S, q) and L.mozeZjesc(D, b, q) and zjedzone < 3
-						and dlug(q.x - b.x, q.z - b.z) < r + k.r + L.promien(D, q.forma) * 0.5 then
-						zjedz(S, b, q, zd, "skok")
-						zjedzone += 1
-					end
-				end
-				oglusz(S, b, r + k.r + 4, 1.0, zd)
-				local boss = bossW(S, b, k.r + 2)
-				if boss then
-					L.ranBossa(S, boss, b, D.boss.um_obrazenia, zd)
-				end
-				for _, i in kulkiW(S, b.x, b.z, r + k.r, 99) do
-					zjedzKulke(S, b, i, zd)
-				end
-				table.insert(zd, { t = "ladowanie", id = b.id, x = b.x, z = b.z, r = r + k.r })
+				b.x, b.z = L.ogranicz(D, b.x, b.z, r, L.maska(D, b))
+				b.vx, b.vz = 0, 0
+				ladowanie(S, b, k, zd)
 			end
 		elseif b.ogluszonyDo > S.czas then
-			b.vx, b.vz = b.vx * 0.8, b.vz * 0.8
+			-- ogłuszony / przewrócony: leci z odrzutem i hamuje
+			b.vx, b.vz = b.vx * 0.82, b.vz * 0.82
+			b.x += b.vx * dt
+			b.z += b.vz * dt
+			b.x, b.z = L.ogranicz(D, b.x, b.z, r, L.maska(D, b))
+			b.ostRaport = S.czas
 		else
+			if b.zamach and S.czas >= b.zamach.t1 then
+				local A = b.zamach.A
+				b.zamach = nil
+				wykonaj(S, b, A, zd)
+			end
 			if b.boss then
 				if S.czas >= b.myslDo then
 					L.myslBossa(S, b)
@@ -1087,7 +1435,7 @@ function L.krok(S, dt: number)
 					b.hp = math.min(b.hpMaks, b.hp + b.hpMaks * D.boss.regen_na_s * dt)
 				end
 			elseif b.slot == 0 and S.czas >= b.myslDo then
-				L.mysl(S, b)
+				L.mysl(S, b, zd)
 			end
 			local v = L.predkosc(D, b) * mnoznik(S, b)
 			local a = math.min(1, D.ruch.przyspieszenie * dt * (if mnoznik(S, b) > 1 then 3 else 1))
@@ -1102,39 +1450,31 @@ function L.krok(S, dt: number)
 			if b.slot == 0 then
 				b.x, b.z = L.pozaLegowiskami(D, b.x, b.z, r)
 			end
+			if b.kanal then
+				krokKanalu(S, b, zd)
+			end
 			if b.boss then
-				-- boss gryzie: odrzut, krótkie ogłuszenie, kara z paska (nie zjada)
+				-- boss gryzie: rana z życia, odrzut i krótkie ogłuszenie (zero życia → zjada jak każdy)
 				local q = b.cel ~= 0 and L.bytPoId(S, b.cel)
-				if q and S.czas >= b.gryzGotowy and bezbronny(S, q)
-					and dlug(q.x - b.x, q.z - b.z) < r + D.boss.zasieg + L.promien(D, q.forma) * 0.5 then
+				if q and S.czas >= b.gryzGotowy and L.mozeRanic(S, b, q)
+					and dlug(q.x - b.x, q.z - b.z) < r + D.boss.zasieg + L.promien(D, q.forma) then
 					b.gryzGotowy = S.czas + D.boss.przerwa_s
 					b.gryzDo = S.czas + D.gryzienie.slad_s
 					local d = math.max(0.1, dlug(q.x - b.x, q.z - b.z))
 					local nx, nz = (q.x - b.x) / d, (q.z - b.z) / d
-					q.x, q.z = L.ogranicz(D, q.x + nx * 5, q.z + nz * 5, L.promien(D, q.forma), L.maska(D, q))
-					q.vx, q.vz = nx * D.boss.odrzut, nz * D.boss.odrzut
-					q.ogluszonyDo = S.czas + D.boss.ogluszenie_s
-					local kara = if q.forma < #D.formy then L.potrzeba(D, q.forma) * D.boss.kara * D.boss.stopnie_rana_x[S.bossStopien or 1] else 0
-					q.wzrost = math.max(0, q.wzrost - kara)
-					table.insert(zd, { t = "boss_gryz", id = b.id, cel = q.id, s = q.slot, x = q.x, z = q.z, kara = math.floor(kara) })
+					q.x, q.z = L.ogranicz(D, q.x + nx * 1.5, q.z + nz * 1.5, L.promien(D, q.forma), L.maska(D, q))
+					table.insert(zd, { t = "boss_gryz", id = b.id, cel = q.id, s = q.slot, x = q.x, z = q.z })
+					L.ran(S, b, q, D.boss.stopnie_gryz[S.bossStopien or 1], zd, "boss", nx, nz, D.boss.odrzut, D.boss.ogluszenie_s)
 				end
-			elseif (b.slot == 0 or S.czas < b.szarzaDo) and S.czas >= b.gryzGotowy then
-				local q = najblizszaOfiara(S, b, if b.slot == 0 then L.zasiegGryzu(D, b) else 2)
-				local boss = if q or b.slot == 0 then nil else bossW(S, b, 2)
-				if q or boss then
-					b.gryzGotowy = S.czas + L.przerwaGryzu(D, b)
-					b.gryzDo = S.czas + D.gryzienie.slad_s
-					table.insert(zd, { t = "gryz", id = b.id, x = b.x, z = b.z, trafil = true })
-					if q then
-						zjedz(S, b, q, zd, "gryz")
-					else
-						L.ranBossa(S, boss, b, L.obrazenia(D, b), zd)
-					end
+			elseif b.slot == 0 and S.czas >= b.gryzGotowy and not b.zamach and not b.kanal then
+				-- bot: BITE łańcuchem, gdy cel w zasięgu (te same zasady co u gracza)
+				if celGryzu(S, b, L.zasiegGryzu(D, b)) then
+					L.gryz(S, b, zd)
 				end
 			end
 		end
 	end
-	-- połknięcie dotykiem i odbicia
+	-- odbicia (walka1: bez połykania dotykiem — zjada się tylko przez życie); mniejszy odlatuje mocniej
 	local n = #S.byty
 	for i = 1, n do
 		local a = S.byty[i]
@@ -1145,39 +1485,30 @@ function L.krok(S, dt: number)
 				local dx, dz = b.x - a.x, b.z - a.z
 				local d = dlug(dx, dz)
 				if d < ra + rb then
-					local duzy, maly, rd, rm = a, b, ra, rb
-					if b.forma > a.forma then
-						duzy, maly, rd, rm = b, a, rb, ra
-					end
-					local moze = L.mozeZjesc(D, duzy, maly) and not przypadkiem(D, duzy, maly)
-						and not (maly.slot > 0 and L.wLegowisku(D, maly)) and not (duzy.slot > 0 and L.wLegowisku(D, duzy))
-					if moze and maly.tarczaDo <= S.czas and d < rd - rm * D.gryzienie.polykanie and duzy.ogluszonyDo <= S.czas then
-						zjedz(S, duzy, maly, zd, "dotyk")
-					elseif not moze or maly.tarczaDo > S.czas then
-						-- odbicie (rozsuń; mniejszy odlatuje mocniej)
-						local nx, nz = if d > 0.01 then dx / d else 1, if d > 0.01 then dz / d else 0
-						local wnik = ra + rb - d
-						local wa = if a.forma > b.forma then 0.25 elseif a.forma < b.forma then 0.75 else 0.5
-						a.x -= nx * wnik * wa
-						a.z -= nz * wnik * wa
-						b.x += nx * wnik * (1 - wa)
-						b.z += nz * wnik * (1 - wa)
-						local va = a.vx * nx + a.vz * nz
-						local vb = b.vx * nx + b.vz * nz
-						local imp = math.max(0, va - vb) * 0.6 + 3
-						a.vx -= nx * imp
-						a.vz -= nz * imp
-						b.vx += nx * imp
-						b.vz += nz * imp
-						if not a.odbicieDo or a.odbicieDo < S.czas then
-							a.odbicieDo = S.czas + 0.35
-							table.insert(zd, { t = "odbicie", a = a.id, b = b.id, x = (a.x + b.x) / 2, z = (a.z + b.z) / 2 })
-						end
+					local nx, nz = if d > 0.01 then dx / d else 1, if d > 0.01 then dz / d else 0
+					local wnik = ra + rb - d
+					local wa = if a.forma > b.forma then 0.25 elseif a.forma < b.forma then 0.75 else 0.5
+					a.x -= nx * wnik * wa
+					a.z -= nz * wnik * wa
+					b.x += nx * wnik * (1 - wa)
+					b.z += nz * wnik * (1 - wa)
+					local va = a.vx * nx + a.vz * nz
+					local vb = b.vx * nx + b.vz * nz
+					local imp = math.max(0, va - vb) * 0.6 + 3
+					a.vx -= nx * imp
+					a.vz -= nz * imp
+					b.vx += nx * imp
+					b.vz += nz * imp
+					if not a.odbicieDo or a.odbicieDo < S.czas then
+						a.odbicieDo = S.czas + 0.35
+						table.insert(zd, { t = "odbicie", a = a.id, b = b.id, x = (a.x + b.x) / 2, z = (a.z + b.z) / 2 })
 					end
 				end
 			end
 		end
 	end
+	krokPociskow(S, dt, zd)
+	krokPlam(S, zd)
 	-- kulki: zbieranie dotykiem, powrót
 	local zz = D.jedzenie.zasieg_zbierania
 	for i, p in D.kulkiPoz do

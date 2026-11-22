@@ -198,6 +198,26 @@ def scena(D):
     for i in range(8):
         a = 2 * math.pi * i / 8
         czesc(L, "Znaki", "Krag", (cx + 12 + math.sin(a) * 9, cy + 1.6, cz - 20 + math.cos(a) * 9), (1.6, 3.2, 1.6), "A8A0B4", "Slate", "Block", (0, a, 0))
+    # SKY NEST (walka1): wyspa w fosie lawy — tylko szybowanie albo skok meteoru
+    WY = D.get("wyspa")
+    if WY:
+        wx, wz, rw, rz = WY["x"], WY["z"], WY["r_wew"], WY["r_zew"]
+        czesc(L, "Wyspa", "Brzeg", (cx + wx, cy + 0.06, cz + wz), (0.14, rz * 2 + 2.4, rz * 2 + 2.4), "3A2A2A", "Basalt", "Cylinder", rot)
+        czesc(L, "Wyspa", "Lawa", (cx + wx, cy + 0.1, cz + wz), (0.16, rz * 2, rz * 2), "FF6A1A", "Neon", "Cylinder", rot)
+        czesc(L, "Wyspa", "Skorupa", (cx + wx, cy + 0.14, cz + wz), (0.12, rw * 2 + 3, rw * 2 + 3), "4A2E26", "CrackedLava", "Cylinder", rot)
+        czesc(L, "Wyspa", "Trawa", (cx + wx, cy + 0.2, cz + wz), (0.16, rw * 2, rw * 2), "8FD86B", "Grass", "Cylinder", rot)
+        for i in range(10):
+            a = i * 2 * math.pi / 10 + 0.3
+            czesc(L, "Wyspa", "Kamien", (cx + wx + math.sin(a) * (rw + 0.6), cy + 0.6, cz + wz + math.cos(a) * (rw + 0.6)), (2.2, 1.2, 1.8), "5A4A48",
+                  "Slate", "Ball")
+        for i in range(3):
+            a = i * 2 * math.pi / 3
+            czesc(L, "Wyspa", "Krysztal", (cx + wx + math.sin(a) * rw * 0.82, cy + 3, cz + wz + math.cos(a) * rw * 0.82), (1.4, 6, 1.4), "7FE9FF", "Neon",
+                  "Block", (0.15, a, 0.1), 0.15)
+        for i in range(14):
+            a = i * 2 * math.pi / 14
+            r = (rw + rz) / 2 + (0.8 if i % 2 else -0.8)
+            czesc(L, "Wyspa", "Iskra", (cx + wx + math.sin(a) * r, cy + 0.35, cz + wz + math.cos(a) * r), (0.6, 0.5, 0.6), "FFC83D", "Neon", "Ball")
     # legowiska graczy na skraju łąki: podłoga, obrzeże, 8 cokołów (trofea stawia klient)
     kol = ["FFD9D9", "D9ECFF", "DDF7DD", "FFEBCF", "EBDDFF", "FFDDF0", "D6FAF6", "F7F7D2"]
     for i, (x, z) in enumerate(D["legowiska"]):
@@ -352,6 +372,10 @@ for nazwa, S in smoki do
 	end
 	for k, v in S.pivoty do
 		m:SetAttribute("Pivot" .. k, Vector3.new(v[1], v[2], v[3]))
+	end
+	-- kotwice zdolności (walka1): Kotwica_<Nazwa> w skali 1 (Pysk, Brzuch, Ogon, SkrzydloL, SkrzydloP)
+	for n, v in S.kotwice or {} do
+		m:SetAttribute("Kotwica_" .. n, Vector3.new(v[1], v[2], v[3]))
 	end
 	m:PivotTo(CFrame.new(0, -200, 0))
 	m.Parent = wz

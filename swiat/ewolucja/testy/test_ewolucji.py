@@ -170,24 +170,49 @@ class TestPetla(unittest.TestCase):
     def test_04_gryz_i_przerwa(self):
         S = stan()
         bez_kulek(S)
+        W = D["walka"]
         gr = byt(S, 1, 3, 0, 0)
-        ustaw(gr, tarczaDo=0)
-        ofiara = byt(S, 0, 2, D["formy"][2]["r"] + 2.5, 0)
-        ustaw(ofiara, myslDo=99)
-        zd = LM.z_luau(LM.Tabela(), True)
+        ustaw(gr, tarczaDo=0, laskaDo=0, kier=math.pi / 2)
+        ofiara = byt(S, 0, 3, D["formy"][2]["r"] * 2 + 1.5, 0)
+        ustaw(ofiara, myslDo=99, tarczaDo=0)
+        hp0 = g(ofiara, "hp")
+        self.assertAlmostEqual(hp0, W["hp_baza"] * W["hp_wzrost"] ** 2, msg="życie według stadium")
+        rany, k = [], []
+        for i in range(3):
+            lista = LM.Tabela()
+            ustaw(ofiara, x=D["formy"][2]["r"] * 2 + 1.5, z=0, ogluszonyDo=0)
+            self.assertTrue(jeden("gryz", S, gr, lista))
+            zd = LM.z_luau(lista, True)
+            k += [z["k"] for z in zd if z["t"] == "gryz"]
+            rany += [z for z in zd if z["t"] == "rana"]
+            self.assertFalse(jeden("gryz", S, gr, LM.Tabela()), "przerwa między ciosami")
+            ustaw(gr, gryzGotowy=0)
+        self.assertEqual(k, [1, 2, 3], "łańcuch trzech ciosów")
+        sila = W["gryz_baza"] * W["gryz_wzrost"] ** 2
+        oczek = [max(1, math.floor(sila * x + 0.5)) for x in W["lancuch_x"]]
+        for z, o in zip(rany, oczek):
+            self.assertIn(z["ile"], (o, max(1, math.floor(sila * W["lancuch_x"][rany.index(z)] * W["kryt_x"] + 0.5))), "rana z łańcucha (albo kryt)")
+        self.assertTrue(rany[2]["pw"] and not rany[0]["pw"], "trzeci cios przewraca")
+        self.assertGreater(g(ofiara, "ogluszonyDo"), g(S, "czas"), "przewrócony")
+        self.assertGreater(abs(g(ofiara, "vx")), W["odrzut"] * 0.9, "trzeci cios odrzuca")
+        # przerwa dłuższa niż lancuch_reset_s → łańcuch od nowa
+        krok(S, int((W["lancuch_s"][2] + W["lancuch_reset_s"]) / 0.1) + 2, 0.1)
         lista = LM.Tabela()
-        self.assertTrue(jeden("gryz", S, gr, lista))
+        ustaw(ofiara, x=D["formy"][2]["r"] * 2 + 1.5, z=0, ogluszonyDo=0, hp=1.0)
+        ustaw(gr, x=0, z=0, gryzGotowy=0)
+        jeden("gryz", S, gr, lista)
         zd = LM.z_luau(lista, True)
+        self.assertEqual([z["k"] for z in zd if z["t"] == "gryz"], [1], "łańcuch od nowa po przerwie")
+        # zero życia → zjedzony, wzrost dla zjadającego
         zj = [z for z in zd if z["t"] == "zjedz"]
-        self.assertTrue(zj and zj[0]["b"] == g(ofiara, "id"), "BITE zjada mniejszego w zasięgu Szczęki")
+        self.assertTrue(zj and zj[0]["b"] == g(ofiara, "id"), "zero życia = zjedzony")
         self.assertIsNotNone(g(ofiara, "martwyDo"))
-        self.assertEqual(g(gr, "wzrost"), D["jedzenie"]["za_forme"][1])
-        self.assertFalse(jeden("gryz", S, gr, LM.Tabela()), "przerwa między ugryzieniami")
-        # bot wraca po odrodzenie_s w tej samej formie
+        self.assertEqual(g(gr, "wzrost"), D["jedzenie"]["za_forme"][2])
+        # bot wraca po odrodzenie_s w tej samej formie z pełnym życiem
         krok(S, int(D["boty"]["odrodzenie_s"] / 0.1) + 2, 0.1)
         self.assertIsNone(g(ofiara, "martwyDo"))
-        self.assertEqual(g(ofiara, "forma"), 2)
-
+        self.assertEqual(g(ofiara, "forma"), 3)
+        self.assertAlmostEqual(g(ofiara, "hp"), hp0)
     def test_05_ewolucja_kokon_trofeum(self):
         S = stan()
         bez_kulek(S)
@@ -209,27 +234,27 @@ class TestPetla(unittest.TestCase):
         S = stan()
         bez_kulek(S)
         gr = byt(S, 1, 3, 0, 0)
-        ustaw(gr, maxForma=4, zloto=123.0, tarczaDo=0, laskaDo=0)
+        ustaw(gr, maxForma=4, zloto=123.0, tarczaDo=0, laskaDo=0, hp=1.0)
         gr.get("poziomy").set("szybkosc", 2.0)
-        bot = byt(S, 0, 5, D["formy"][2]["r"] + 2, 0)
-        ustaw(bot, myslDo=99, tarczaDo=0)
-        zd = krok(S)
-        self.assertTrue([z for z in zd if z["t"] == "smierc" and z["id"] == g(gr, "id")], "bot zjada gracza")
+        bot = byt(S, 0, 5, D["formy"][2]["r"] + D["formy"][4]["r"] + 1, 0)
+        ustaw(bot, myslDo=99, tarczaDo=0, cel=g(gr, "id"))
+        zd = krok(S, 2)
+        self.assertTrue([z for z in zd if z["t"] == "smierc" and z["id"] == g(gr, "id")], "bot gryzie gracza do zera")
         krok(S, int(D["smierc"]["odrodzenie_s"] / 0.1) + 1, 0.1)
         self.assertIsNone(g(gr, "martwyDo"))
         self.assertEqual(g(gr, "forma"), 2, "o jedną formę niżej")
+        self.assertAlmostEqual(g(gr, "hp"), g(gr, "hpMaks"), msg="pełne życie po odrodzeniu")
         self.assertEqual(g(gr, "maxForma"), 4, "legowisko zostaje")
         self.assertGreaterEqual(g(gr, "zloto"), 123, "złoto zostaje")
         self.assertEqual(g(gr.get("poziomy"), "szybkosc"), 2, "ulepszenia zostają")
         self.assertGreater(g(gr, "tarczaDo"), g(S, "czas") + D["smierc"]["tarcza_s"] - 1, "tarcza ok. 5 s")
         self.assertAlmostEqual(g(gr, "wzrost"), D["formy"][1]["potrzeba"] * D["smierc"]["pasek_po"])
         # forma 1 nigdy niżej
-        ustaw(gr, forma=1, tarczaDo=0, x=50, z=50)
-        ustaw(bot, x=50 + D["formy"][0]["r"] + 2, z=50)
-        krok(S, 1)
+        ustaw(gr, forma=1, tarczaDo=0, x=50, z=50, hp=1.0)
+        ustaw(bot, x=50 + D["formy"][0]["r"] + D["formy"][4]["r"] + 1, z=50, gryzGotowy=0, cel=g(gr, "id"))
+        krok(S, 2)
         krok(S, int(D["smierc"]["odrodzenie_s"] / 0.1) + 1, 0.1)
         self.assertEqual(g(gr, "forma"), 1)
-
     def test_07_kup(self):
         S = stan()
         gr = byt(S, 1, 1, 0, 0)
@@ -269,36 +294,59 @@ class TestPetla(unittest.TestCase):
         self.assertLessEqual(math.hypot(x, z), D["pole"]["r"], "pole ograniczone")
 
     def test_09_umiejetnosci(self):
+        Z = D["zdolnosci"]
+        # linie ewoluują: stadium 1 bez zdolności, potem wersje z danych; następna wersja do pokazania w HUD
+        self.assertIsNone(jeden("zdolnoscFormy", DL, "ogien", 1))
+        self.assertIsNone(jeden("zdolnoscFormy", DL, "moc", 2))
+        for linia in ("ogien", "moc"):
+            for f in range(1, len(D["formy"]) + 1):
+                A = jeden("zdolnoscFormy", DL, linia, f)
+                oczek = [x for x in Z[linia] if x["od"] <= f]
+                self.assertEqual(LM.z_luau(A)["id"] if A else None, oczek[-1]["id"] if oczek else None)
+        self.assertEqual(LM.z_luau(jeden("nastepnaZdolnosc", DL, "ogien", 2))["id"], "oddech")
+        self.assertEqual([x["od"] for x in Z["ogien"]], [2, 4, 7])
+        self.assertEqual([x["od"] for x in Z["moc"]], [3, 5, 6, 8])
+        # EMBER SPIT: zamach widoczny, potem pocisk trafia bota przed pyskiem
         S = stan()
-        # SLURP (forma 1): kulki w promieniu
-        p = D["kulkiPoz"][-6]
-        gr = byt(S, 1, 1, p[0] + 4, p[1])
+        bez_kulek(S)
+        gr = byt(S, 1, 2, 0, 0)
+        ustaw(gr, tarczaDo=0, laskaDo=0, kier=0.0)
+        bot = byt(S, 0, 2, 0, 15)
+        ustaw(bot, tarczaDo=0, myslDo=99)
         lista = LM.Tabela()
-        self.assertTrue(jeden("umiejetnosc", S, gr, lista))
-        self.assertTrue([z for z in LM.z_luau(lista, True) if z["t"] == "kulka"], "SLURP zjada kulki w pobliżu")
-        self.assertFalse(jeden("umiejetnosc", S, gr, LM.Tabela()), "odnowa")
-        # SPORE CLOUD (forma 4): ogłusza bota obok
+        self.assertFalse(jeden("zdolnosc", S, gr, "moc", lista), "POWER zamknięte na stadium 2")
+        self.assertFalse(jeden("zdolnosc", S, gr, "zle", lista), "zła linia odrzucona")
+        self.assertTrue(jeden("zdolnosc", S, gr, "ogien", lista))
+        self.assertTrue([z for z in LM.z_luau(lista, True) if z["t"] == "zamach" and z["ab"] == "zar"], "zamach widoczny dla innych")
+        self.assertFalse(jeden("zdolnosc", S, gr, "ogien", LM.Tabela()), "odnowa")
+        zd = krok(S, 20, 0.05)
+        self.assertTrue([z for z in zd if z["t"] == "pocisk"], "pocisk po zamachu")
+        tr = [z for z in zd if z["t"] == "rana" and z["id"] == g(bot, "id") and z["jak"] == "zar"]
+        self.assertTrue(tr, "EMBER SPIT trafia")
+        # ogłuszenie w zamachu przerywa zdolność
         S = stan()
         bez_kulek(S)
-        gr = byt(S, 1, 4, 0, 0)
-        bot = byt(S, 0, 6, 12, 0)
-        ustaw(bot, tarczaDo=0)
-        self.assertTrue(jeden("umiejetnosc", S, gr, LM.Tabela()))
-        self.assertGreater(g(bot, "ogluszonyDo"), g(S, "czas"), "ogłuszony większy")
-        # skok (forma z umiejętnością typu „skok”): lądowanie z połknięciem mniejszego
-        fs = next(i + 1 for i, f in enumerate(D["formy"]) if f["um"]["typ"] == "skok")
+        gr = byt(S, 1, 3, 0, 0)
+        ustaw(gr, tarczaDo=0, laskaDo=0)
+        self.assertTrue(jeden("zdolnosc", S, gr, "moc", LM.Tabela()))
+        ustaw(gr, ogluszonyDo=g(S, "czas") + 1)
+        jeden("ran", S, byt(S, 0, 3, 40, 40), gr, 1, LM.Tabela(), "test", 1.0, 0.0, 5.0, 1.0)
+        zd = krok(S, 30, 0.05)
+        self.assertFalse([z for z in zd if z["t"] == "ogon"], "przewrót w zamachu przerywa TAIL SWEEP")
+        # TAIL SWEEP: krąg wokół, odrzut i przewrót (także większego), bez ran dla chronionego gracza
         S = stan()
         bez_kulek(S)
-        gr = byt(S, 1, fs, 0, 0)
-        ustaw(gr, tarczaDo=0, kier=0.0)
-        ofiara = byt(S, 0, fs - 3, 0, D["formy"][fs - 1]["um"]["d"])
-        ustaw(ofiara, tarczaDo=0, myslDo=99)
-        self.assertTrue(jeden("umiejetnosc", S, gr, LM.Tabela()))
-        self.assertIsNotNone(gr.get("skok"))
-        zd = krok(S, int(D["formy"][fs - 1]["um"]["s"] / 0.05) + 4, 0.05)
-        self.assertTrue([z for z in zd if z["t"] == "ladowanie"], "lądowanie")
-        self.assertIsNotNone(g(ofiara, "martwyDo"), "połknięty przy lądowaniu")
-
+        gr = byt(S, 1, 3, 0, 0)
+        ustaw(gr, tarczaDo=0, laskaDo=0)
+        za = byt(S, 0, 4, 0, -(D["formy"][2]["r"] + D["formy"][3]["r"] + 1))
+        mlody = byt(S, 2, 2, D["formy"][2]["r"] + D["formy"][1]["r"] + 1, 0)
+        ustaw(za, tarczaDo=0, myslDo=99)
+        ustaw(mlody, tarczaDo=0, laskaDo=0)
+        self.assertTrue(jeden("zdolnosc", S, gr, "moc", LM.Tabela()))
+        zd = krok(S, 8, 0.05)
+        self.assertTrue([z for z in zd if z["t"] == "ogon"])
+        self.assertTrue([z for z in zd if z["t"] == "rana" and z["id"] == g(za, "id") and z["pw"]], "za plecami też (360°)")
+        self.assertFalse([z for z in zd if z["t"] == "rana" and z["id"] == g(mlody, "id")], "gracz stadium 2 chroniony")
     def test_10_odbicie_chronionych(self):
         S = stan()
         bez_kulek(S)
@@ -315,20 +363,20 @@ class TestPetla(unittest.TestCase):
         S = stan()
         bez_kulek(S)
         gr = byt(S, 1, 1, 0, 0)
-        bot = byt(S, 0, 3, D["formy"][0]["r"] + 1.5, 0)
-        ustaw(gr, tarczaDo=0, laskaDo=0)
+        odl = D["formy"][0]["r"] + D["formy"][2]["r"] + 1
+        bot = byt(S, 0, 3, odl, 0)
+        ustaw(gr, tarczaDo=0, laskaDo=0, hp=1.0)
         ustaw(bot, myslDo=99, tarczaDo=0)
         krok(S, 2)
-        self.assertIsNone(g(gr, "martwyDo"), "bot idący do kulek nie zjada gracza formy 1 przypadkiem")
-        ustaw(bot, cel=g(gr, "id"), x=D["formy"][0]["r"] + 1.5, z=0)
+        self.assertIsNone(g(gr, "martwyDo"), "bot idący do kulek nie gryzie gracza formy 1 przypadkiem")
+        ustaw(bot, cel=g(gr, "id"), x=odl, z=0, gryzGotowy=0)
         ustaw(gr, x=0, z=0, laskaDo=g(S, "czas") + 30)
         krok(S, 1)
-        self.assertIsNone(g(gr, "martwyDo"), "łaska nowicjusza: w pierwszej minucie boty nie zjadają")
-        ustaw(bot, cel=g(gr, "id"), x=D["formy"][0]["r"] + 1.5, z=0)
+        self.assertIsNone(g(gr, "martwyDo"), "łaska nowicjusza: w pierwszych minutach boty nie gryzą")
+        ustaw(bot, cel=g(gr, "id"), x=odl, z=0, gryzGotowy=0)
         ustaw(gr, x=0, z=0, laskaDo=0)
         krok(S, 1)
-        self.assertIsNotNone(g(gr, "martwyDo"), "bot, który poluje na gracza formy 1, zjada go")
-
+        self.assertIsNotNone(g(gr, "martwyDo"), "bot, który poluje na gracza formy 1, gryzie go do zera")
     def test_11_boty_zyja_i_nie_stoja_przy_starcie(self):
         S = stan(ziarno=9)
         for f, ile in enumerate([3, 3, 2, 2, 1, 1], 1):
@@ -386,27 +434,37 @@ class TestLas(unittest.TestCase):
         S = stan()
         bez_kulek(S)
         boss = jeden("dodajBossa", S)
-        gr = byt(S, 1, 5, g(boss, "x") + D["formy"][4]["r"] + D["formy"][6]["r"] + 1, g(boss, "z"))
+        rB, r5 = D["formy"][D["boss"]["forma"] - 1]["r"], D["formy"][4]["r"]
+        gr = byt(S, 1, 5, g(boss, "x") + r5 + rB + 1, g(boss, "z"))
         ustaw(gr, maxForma=5, tarczaDo=0, laskaDo=0, zloto=0.0)
         self.assertFalse(jeden("mozeZjesc", DL, gr, boss), "bossa nie da się zjeść")
-        self.assertFalse(jeden("mozeZjesc", DL, boss, gr), "boss nie zjada")
+        self.assertFalse(jeden("mozeRanic", S, byt(S, 0, 6, 300, 300), boss), "boty nie ranią bossa")
         hp0 = g(boss, "hp")
+        self.assertEqual(hp0, D["boss"]["stopnie_hp"][0])
         lista = LM.Tabela()
         self.assertTrue(jeden("gryz", S, gr, lista))
         rany = [z for z in LM.z_luau(lista, True) if z["t"] == "boss_rana"]
         self.assertTrue(rany, "BITE rani bossa")
-        self.assertEqual(hp0 - g(boss, "hp"), jeden("obrazenia", DL, gr))
-        # boss gryzie: odrzut, ogłuszenie, kara z paska — bez zjedzenia
-        ustaw(gr, wzrost=100.0, x=g(boss, "x") + D["formy"][4]["r"] + D["formy"][6]["r"] - 0.5, z=g(boss, "z"))
+        sila = jeden("obrazenia", DL, gr)
+        self.assertIn(hp0 - g(boss, "hp"), (math.floor(sila + 0.5), math.floor(sila * D["walka"]["kryt_x"] + 0.5)), "rana jak każdemu (bez rozmiaru)")
+        # boss gryzie: rana z życia gracza, odrzut i ogłuszenie
+        ustaw(gr, x=g(boss, "x") + r5 + rB, z=g(boss, "z"), hp=100.0)
         ustaw(boss, gryzGotowy=0, myslDo=0)
         zd = krok(S, 3, 0.05)
-        bg = [z for z in zd if z["t"] == "boss_gryz"]
-        self.assertTrue(bg, "boss gryzie gracza w zasięgu")
-        self.assertIsNone(g(gr, "martwyDo"), "gracz nie zjedzony")
-        self.assertLess(g(gr, "wzrost"), 100, "kara z paska")
+        self.assertTrue([z for z in zd if z["t"] == "boss_gryz"], "boss gryzie gracza w zasięgu")
+        self.assertIsNone(g(gr, "martwyDo"))
+        self.assertAlmostEqual(g(gr, "hp"), 100 - D["boss"]["stopnie_gryz"][0], delta=1)
+        self.assertGreater(g(gr, "ogluszonyDo"), g(S, "czas") - 0.2)
+        # boss zjada gracza z zerem życia (spada o stadium jak zawsze)
+        ustaw(gr, x=g(boss, "x") + r5 + rB, z=g(boss, "z"), hp=1.0, ogluszonyDo=0, tarczaDo=0)
+        ustaw(boss, gryzGotowy=0, myslDo=0)
+        zd = krok(S, 3, 0.05)
+        self.assertTrue([z for z in zd if z["t"] == "zjedz" and z["b"] == g(gr, "id")], "boss zjada przy zerze")
+        krok(S, int(D["smierc"]["odrodzenie_s"] / 0.1) + 2, 0.1)
+        self.assertEqual(g(gr, "forma"), 4)
         # pokonany: skrzynia dla gracza, powrót po czasie z pełnym życiem
         ustaw(boss, hp=3.0)
-        ustaw(gr, ogluszonyDo=0, x=g(boss, "x") + D["formy"][4]["r"] + D["formy"][6]["r"] + 1, z=g(boss, "z"), gryzGotowy=0)
+        ustaw(gr, forma=5, ogluszonyDo=0, x=g(boss, "x") + r5 + rB + 1, z=g(boss, "z"), gryzGotowy=0, tarczaDo=0)
         lista = LM.Tabela()
         jeden("gryz", S, gr, lista)
         pok = [z for z in LM.z_luau(lista, True) if z["t"] == "boss_pokonany"]
@@ -417,34 +475,42 @@ class TestLas(unittest.TestCase):
         self.assertIsNone(g(boss, "martwyDo"))
         self.assertEqual(g(boss, "hp"), D["boss"]["stopnie_hp"][1], "wraca jako stopień 2 z pełnym życiem")
 
-
 class TestSmok(unittest.TestCase):
     def test_22_oddech_i_podmuch(self):
-        fo = next((i + 1 for i, f in enumerate(D["formy"]) if f["um"]["typ"] == "oddech"), None)
-        fp = next((i + 1 for i, f in enumerate(D["formy"]) if f["um"]["typ"] == "podmuch"), None)
-        if not fo or not fp:
-            self.skipTest("zestaw bez oddechu / podmuchu")
+        # FIRE BREATH: kanał, stożek przed pyskiem (nie za plecami), kulki w stożku zjedzone
         S = stan()
         bez_kulek(S)
+        fo = 4
+        r = D["formy"][fo - 1]["r"]
         gr = byt(S, 1, fo, 0, 0)
         ustaw(gr, tarczaDo=0, kier=0.0, laskaDo=0)
-        przod = byt(S, 0, fo - 2, 0, D["formy"][fo - 1]["r"] + 6)
-        tyl = byt(S, 0, fo - 2, 0, -(D["formy"][fo - 1]["r"] + 6))
+        przod = byt(S, 0, fo, 0, r * 2 + 4)
+        tyl = byt(S, 0, fo, 0, -(r * 2 + 4))
         ustaw(przod, tarczaDo=0, myslDo=99)
         ustaw(tyl, tarczaDo=0, myslDo=99)
-        self.assertTrue(jeden("umiejetnosc", S, gr, LM.Tabela()))
-        self.assertIsNotNone(g(przod, "martwyDo"), "FIRE BREATH zjada przed pyskiem")
-        self.assertIsNone(g(tyl, "martwyDo"), "a nie za plecami")
+        self.assertTrue(jeden("zdolnosc", S, gr, "ogien", LM.Tabela()))
+        zd = krok(S, 45, 0.05)
+        self.assertTrue([z for z in zd if z["t"] == "oddech"])
+        rp = [z for z in zd if z["t"] == "rana" and z["id"] == g(przod, "id")]
+        self.assertGreaterEqual(len(rp), 5, "FIRE BREATH rani przed pyskiem co tik")
+        self.assertFalse([z for z in zd if z["t"] == "rana" and z["id"] == g(tyl, "id")], "a nie za plecami")
+        self.assertIsNone(gr.get("kanal"), "kanał się kończy")
+        # INFERNO BREATH: płonąca ziemia rani stojącego w niej
         S = stan()
         bez_kulek(S)
-        gr = byt(S, 1, fp, 0, 0)
-        ustaw(gr, tarczaDo=0)
-        bot = byt(S, 0, fp + 1, 8, 0)
-        ustaw(bot, tarczaDo=0)
-        self.assertTrue(jeden("umiejetnosc", S, gr, LM.Tabela()))
-        self.assertGreater(g(bot, "x"), 8 + D["formy"][fp - 1]["um"]["sila"] * 0.8, "WING GUST odpycha nawet większego")
-        self.assertGreater(g(bot, "ogluszonyDo"), g(S, "czas"))
-
+        fi = 7
+        r = D["formy"][fi - 1]["r"]
+        gr = byt(S, 1, fi, 0, 0)
+        ustaw(gr, tarczaDo=0, kier=0.0, laskaDo=0)
+        self.assertTrue(jeden("zdolnosc", S, gr, "ogien", LM.Tabela()))
+        zd = krok(S, 20, 0.05)
+        pl = [z for z in zd if z["t"] == "plama"]
+        self.assertTrue(pl, "INFERNO zostawia płonącą ziemię")
+        ofiara = byt(S, 0, 5, pl[0]["x"], pl[0]["z"])
+        ustaw(ofiara, tarczaDo=0, myslDo=99)
+        ustaw(gr, x=-60.0, z=0.0)
+        zd = krok(S, 25, 0.05)
+        self.assertTrue([z for z in zd if z["t"] == "rana" and z["id"] == g(ofiara, "id") and z["jak"] == "plama"], "płonąca ziemia rani")
     def test_23_smok_generator(self):
         import smok as SM
         U = DN.ustawienia()
@@ -625,6 +691,81 @@ class TestEtap3(unittest.TestCase):
         self.assertEqual(g(olb, "forma"), nf - 1, "Olbrzym spada o formę")
         self.assertIsNone(g(olb, "martwyDo"), "nie ginie")
         self.assertGreaterEqual(g(at, "zloto"), D["olbrzym"]["skrzynia"])
+
+
+class TestWalka(unittest.TestCase):
+    def test_26_zasady_ran(self):
+        S = stan()
+        bez_kulek(S)
+        mr = lambda a, b: jeden("mozeRanic", S, a, b)  # noqa: E731
+        g1, g3, g4 = byt(S, 1, 2, 0, 0), byt(S, 2, 3, 20, 0), byt(S, 3, 4, 40, 0)
+        b1 = byt(S, 0, 1, 60, 0)
+        for b in (g1, g3, g4, b1):
+            ustaw(b, tarczaDo=0, laskaDo=0)
+        self.assertFalse(mr(g4, g1), "gracz stadium 2 chroniony przed graczami")
+        self.assertFalse(mr(g1, g4), "… i sam nie rani graczy")
+        self.assertTrue(mr(g3, g4), "mniejszy też może ranić (o stadium większego)")
+        self.assertTrue(mr(g1, b1), "chroniony gracz gryzie boty")
+        ustaw(g4, tarczaDo=g(S, "czas") + 3)
+        self.assertFalse(mr(g3, g4), "tarcza chroni")
+        ustaw(g4, tarczaDo=0)
+        lx, lz = wolaj("legowiskoPoz", DL, 3)
+        ustaw(g4, x=lx, z=lz)
+        self.assertFalse(mr(g3, g4), "we własnym legowisku nikt nie rani")
+        self.assertFalse(mr(g4, g3), "… ani z legowiska")
+        # rozmiar: o dwa stadia większy zabija w 1–2 ugryzieniach, mniejszy o dwa ledwo drapie
+        import walka_sim as WS
+        for f in range(3, len(D["formy"]) + 1):
+            self.assertLessEqual(WS.ugryzien_na_zabicie(f, f - 2), 2, "o dwa stadia większy: 1–2 ugryzienia")
+            self.assertGreaterEqual(WS.ugryzien_na_zabicie(f - 2, f), 20, "o dwa mniejszy: ponad 20")
+        # kulki leczą, bez ran regeneracja
+        S = stan()
+        p = D["kulkiPoz"][-1]
+        gr = byt(S, 1, 3, p[0] + 1.0, p[1])
+        ustaw(gr, hp=10.0, ostRana=g(S, "czas"))
+        krok(S, 1)
+        self.assertGreater(g(gr, "hp"), 10.0 + g(gr, "hpMaks") * 0.01, "kulka leczy")
+        h = g(gr, "hp")
+        ustaw(gr, x=0, z=0)
+        bez_kulek(S)
+        krok(S, int(D["walka"]["regen_po_s"] / 0.1) + 10, 0.1)
+        self.assertGreater(g(gr, "hp"), h, "regeneracja bez ran")
+
+    def test_27_pojedynki(self):
+        import walka_sim as WS
+        czasy = [WS.pojedynek(4, 4, 100 + i)[1] for i in range(8)]
+        import statistics
+        m = statistics.median(czasy)
+        self.assertTrue(4.0 <= m <= 6.0, "równe stadia: 4–6 s (mediana %.2f)" % m)
+        wyg = sum(WS.pojedynek(5, 4, 500 + i)[0] == "a" for i in range(16))
+        self.assertTrue(10 <= wyg <= 15, "o stadium większy wygrywa ok. 3 z 4 (%d/16)" % wyg)
+        for linia in ("ogien", "moc"):
+            for A in D["zdolnosci"][linia]:
+                x = WS.manekin(A["od"], linia, 15.0) / WS.manekin(A["od"], None, 15.0)
+                self.assertTrue(0.45 <= x <= 2.0, "%s: x%.2f BITE (0,5–2)" % (A["id"], x))
+
+    def test_28_wyspa_tylko_lotem(self):
+        WY = D["wyspa"]
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 5, WY["x"], WY["z"] - WY["r_zew"] - 4)
+        ustaw(gr, tarczaDo=0, laskaDo=0, maxForma=5, kier=0.0)
+        # pieszo: fosa nie do przejścia
+        x, z = wolaj("ogranicz", DL, float(WY["x"]), float(WY["z"] - (WY["r_wew"] + WY["r_zew"]) / 2), D["formy"][4]["r"], 1.0)
+        self.assertGreaterEqual(math.hypot(x - WY["x"], z - WY["z"]), WY["r_zew"], "pieszo nie wejdzie do fosy")
+        self.assertFalse(jeden("naWyspie", DL, x, z))
+        # WING GLIDE nad fosą: ląduje na wyspie, kulki wyspy osiągalne
+        self.assertTrue(jeden("zdolnosc", S, gr, "moc", LM.Tabela()))
+        krok(S, 30, 0.05)
+        self.assertTrue(jeden("naWyspie", DL, g(gr, "x"), g(gr, "z")), "szybowanie przenosi przez fosę")
+        wysp = [p for p in D["kulkiPoz"] if math.hypot(p[0] - WY["x"], p[1] - WY["z"]) < WY["r_wew"]]
+        self.assertEqual(len(wysp), WY["kulek"], "wielkie kulki na wyspie")
+        self.assertFalse([p for p in D["kulkiPoz"] if WY["r_wew"] <= math.hypot(p[0] - WY["x"], p[1] - WY["z"]) < WY["r_zew"]], "nic w fosie")
+        # boty nie rodzą się na wyspie
+        S = stan(ziarno=4)
+        for _ in range(40):
+            b = byt(S, 0, 2)
+            self.assertGreater(math.hypot(g(b, "x") - WY["x"], g(b, "z") - WY["z"]), WY["r_zew"])
 
 
 if __name__ == "__main__":

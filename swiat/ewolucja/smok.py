@@ -29,8 +29,9 @@ def stadium(P):
     yb = Lg + Hb / 2
     _c(L, "Korzen", (0, 0, 0), (1, 1, 1), k1, przez=1)
     _c(L, "Korpus", (0, yb, 0), (Wb, Hb, Lb), k1, mat_ciala)
-    _c(L, "Brzuch", (0, Lg + 0.12, 0), (Wb * 0.82, 0.26, Lb * 0.8), k2)
-    _c(L, "Piers", (0, yb - 0.05, -Lb / 2 - 0.2), (Wb * 0.86, Hb * 0.9, 0.5), k2)
+    zar = P.get("zar")
+    _c(L, "Brzuch", (0, Lg + 0.12, 0), (Wb * 0.82, 0.26, Lb * 0.8), "FF8A3D" if zar else k2, "Neon" if zar else "SmoothPlastic")
+    _c(L, "Piers", (0, yb - 0.05, -Lb / 2 - 0.2), (Wb * 0.86, Hb * 0.9, 0.5), "FFB347" if zar else k2, "Neon" if zar else "SmoothPlastic")
     # szyja i głowa
     ns = P.get("szyja", 1)
     x, y, z = 0.0, Lg + Hb * 0.72, -Lb / 2 - 0.25
@@ -42,17 +43,28 @@ def stadium(P):
     hz, hy = z - 0.35 - hs * 0.5, y + hs * 0.25
     piv[6] = [0, y, z]
     _c(L, "Glowa", (0, hy, hz), (hs * 1.0, hs * 0.85, hs * 1.1), k1, mat_ciala, grupa=6)
-    _c(L, "Pysk", (0, hy + hs * 0.05, hz - hs * 0.8), (hs * 0.78, hs * 0.42, hs * 0.65), k1, mat_ciala, grupa=6)
-    _c(L, "Nozdrza", (0, hy + hs * 0.28, hz - hs * 1.05), (hs * 0.5, hs * 0.08, hs * 0.12), "1B1424", grupa=6)
+    py = P.get("pysk", 1.0)
+    _c(L, "Pysk", (0, hy + hs * 0.05, hz - hs * (0.55 + 0.25 * py)), (hs * 0.78, hs * 0.42, hs * 0.65 * py), k1, mat_ciala, grupa=6)
+    _c(L, "Nozdrza", (0, hy + hs * 0.28, hz - hs * (0.55 + 0.5 * py)), (hs * 0.5, hs * 0.08, hs * 0.12), "1B1424", grupa=6)
     piv[7] = [0, hy - hs * 0.2, hz - hs * 0.45]
-    _c(L, "Szczeka", (0, hy - hs * 0.28, hz - hs * 0.75), (hs * 0.7, hs * 0.22, hs * 0.62), k2, grupa=7)
+    # kotwice zdolności (walka1): nazwane punkty w układzie modelu — to samo nazewnictwo co Attachment w modelach z Blendera
+    kot = {"Pysk": [0, hy - hs * 0.05, hz - hs * (0.55 + 0.6 * py)], "Brzuch": [0, Lg * 0.6, 0]}
+    _c(L, "Szczeka", (0, hy - hs * 0.28, hz - hs * (0.5 + 0.25 * py)), (hs * 0.7, hs * 0.22, hs * 0.62 * py), k2, grupa=7)
+    oc = P.get("oczy", 1.0)
     for s in (-1, 1):
         oko = "FFE14D" if not swiat else "7FF8FF"
-        _c(L, "Oko", (s * hs * 0.42, hy + hs * 0.16, hz - hs * 0.45), (hs * 0.16, hs * 0.2, hs * 0.2), oko, "Neon", grupa=6)
+        _c(L, "Oko", (s * hs * 0.42, hy + hs * 0.16, hz - hs * 0.45), (hs * 0.16, hs * 0.2 * oc, hs * 0.2 * oc), oko, "Neon", grupa=6)
+        if oc > 1.05:
+            _c(L, "Zrenica", (s * hs * (0.42 + 0.06), hy + hs * 0.16, hz - hs * 0.5), (hs * 0.06, hs * 0.11 * oc, hs * 0.08 * oc), "1B1424", grupa=6)
         rg = P.get("rogi", 0.5) * hs
         if rg > 0:
             _c(L, "Rog", (s * hs * 0.32, hy + hs * 0.5 + rg * 0.2, hz + hs * 0.35 + rg * 0.35), (hs * 0.18, hs * 0.18, rg), k4, "SmoothPlastic", "Block",
                (math.radians(35), s * math.radians(12), 0), grupa=6)
+    if P.get("skorupka"):
+        # kawałek skorupki jajka na głowie i na grzbiecie (pisklę)
+        _c(L, "Skorupka", (0, hy + hs * 0.52, hz + hs * 0.05), (hs * 0.8, hs * 0.18, hs * 0.75), "FFF6E0", grupa=6)
+        _c(L, "Skorupka", (hs * 0.25, hy + hs * 0.66, hz + hs * 0.1), (hs * 0.22, hs * 0.18, hs * 0.22), "FFF6E0", "SmoothPlastic", "Wedge", grupa=6)
+        _c(L, "Skorupka", (0, Lg + Hb + 0.08, Lb * 0.15), (Wb * 0.7, 0.16, Lb * 0.45), "F2EBDD")
     if P.get("grzebien"):
         for i in range(3):
             _c(L, "Grzebien", (0, hy + hs * 0.5 + 0.12, hz - hs * 0.2 + i * hs * 0.32), (hs * 0.12, hs * (0.42 - i * 0.08), hs * 0.25), k3,
@@ -73,6 +85,7 @@ def stadium(P):
         _c(L, "Ogon%d" % (i + 1), (0, ty - 0.04, tz + 0.42), (sz, sz, 0.9), k1, mat_ciala, grupa=11 + i)
         tz += 0.82
         ty -= 0.08
+    kot["Ogon"] = [0, ty, tz + 0.35]
     _c(L, "OgonKolec", (0, ty, tz + 0.15), (0.12, 0.42, 0.42), k4 if not swiat else k3, "Neon" if swiat else "SmoothPlastic", "Wedge",
        (0, 0, 0), grupa=10 + nt)
     # skrzydła (8 L, 9 P): złożone wzdłuż boku; ramię + błony
@@ -80,8 +93,10 @@ def stadium(P):
     for k, s in ((8, -1), (9, 1)):
         rx, ry, rz = s * Wb * 0.42, Lg + Hb * 0.95, -Lb * 0.18
         piv[k] = [rx, ry, rz]
+        kot["Skrzydlo" + ("L" if k == 8 else "P")] = [rx + s * 0.1, ry + 0.25 + (0.75 * sk if sk >= 0.3 else 0.5), rz + (1.8 * sk if sk >= 0.3 else 0.4)]
         if sk < 0.3:
-            _c(L, "Paczek", (rx + s * 0.1, ry + 0.12, rz + 0.2), (0.22, 0.3, 0.45), k3, grupa=k)
+            _c(L, "Paczek", (rx + s * 0.14, ry + 0.2, rz + 0.25), (0.16, 0.5 + sk, 0.75 + sk), k3, grupa=k)
+            _c(L, "Paczek", (rx + s * 0.12, ry + 0.45, rz + 0.05), (0.2, 0.2, 0.25), k1, mat_ciala, grupa=k)
             continue
         dl = 1.8 * sk
         _c(L, "Ramie", (rx + s * 0.08, ry + 0.25, rz + dl * 0.45), (0.22, 0.22, dl), k1, mat_ciala, "Block", (math.radians(-10), 0, 0), grupa=k)
@@ -90,10 +105,16 @@ def stadium(P):
                "Block", (0, 0, s * math.radians(14)), grupa=k)
     # kolce na grzbiecie
     nk = P.get("kolce", 0)
+    plom = P.get("plomien")
     for i in range(nk):
         f = (i + 0.5) / max(1, nk)
-        _c(L, "Kolec", (0, Lg + Hb + 0.18, -Lb * 0.45 + Lb * 0.95 * f), (0.16, 0.42 + 0.1 * (i % 2), 0.36), k3 if swiat else k4,
-           "Neon" if swiat else "SmoothPlastic", "Wedge", (0, math.pi, 0))
+        if plom:
+            # płomienny grzbiet: wysokie języki ognia na przemian pomarańczowe i żółte
+            _c(L, "Plomien", (0, Lg + Hb + 0.3 + 0.1 * (i % 2), -Lb * 0.45 + Lb * 0.95 * f), (0.2, 0.75 + 0.25 * (i % 2), 0.42),
+               ["FF6A1A", "FFC83D"][i % 2], "Neon", "Wedge", (0, math.pi, 0))
+        else:
+            _c(L, "Kolec", (0, Lg + Hb + 0.18, -Lb * 0.45 + Lb * 0.95 * f), (0.16, 0.42 + 0.1 * (i % 2), 0.36), k3 if swiat else k4,
+               "Neon" if swiat else "SmoothPlastic", "Wedge", (0, math.pi, 0))
     if P.get("plyty"):
         for s in (-1, 1):
             for z0 in (-Lb * 0.25, Lb * 0.2):
@@ -104,6 +125,7 @@ def stadium(P):
     xs = [abs(c["p"][0]) + c["s"][0] / 2 for c in L]
     zs = [c["p"][2] for c in L]
     return {"czesci": L, "pivoty": {str(k): [round(v, 3) for v in p] for k, p in piv.items()},
+            "kotwice": {n: [round(v, 3) for v in p] for n, p in kot.items()},
             "promien": round(max(Wb / 2 + 0.3, (Lb + 1.2) * 0.38), 3), "wysokosc": round(max(c["p"][1] + c["s"][1] / 2 for c in L), 3),
             "dlugosc": round(max(zs) - min(zs), 2), "szerokosc": round(2 * max(xs), 2)}
 

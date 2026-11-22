@@ -136,6 +136,105 @@ def sceny(p, f):
     f.stop()
 
 
+def sceny_walka(p, f):
+    """walka1: łańcuch BITE, EMBER SPIT, FIRE BREATH, TAIL SWEEP, WING GLIDE na SKY NEST, ROAR, INFERNO, METEOR DIVE."""
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    p.serwer('"laska_zeruj"')
+
+    def stadium(forma, x, z):
+        p.serwer('"forma_gracza", %d' % forma)
+        p.serwer('"zdolnosci_zeruj"')
+        p.serwer('"przenies", %d, %f, %f' % (byt, x, z))
+        time.sleep(1.0)
+        p.serwer('"tarcza_zeruj"')
+        p.serwer('"hp", nil, 9999')
+        return p.serwer('"stan"')
+
+    def patrz(x, z, czas=0.3):
+        p.ustaw("EW_TestSter", "Vector3.new(%f, %f, %f)" % (-x, z, czas))
+        time.sleep(czas)
+
+    # łańcuch BITE z odwetem bota tego samego stadium, kończy chrupnięciem
+    st = stadium(3, 0, -20)
+    r = D["formy"][2]["r"]
+    bid = PP.bot_obok(p, st, 3, 2 * r + 1, 0)
+    p.serwer('"hp", %d, 75' % bid)
+    patrz(1, 0.05)
+    f.nagrywaj("gryz")
+    for _ in range(7):
+        p.przycisk("gryz")
+        time.sleep(0.5)
+    time.sleep(1.2)
+    f.stop()
+    # EMBER SPIT na odległość
+    st = stadium(2, -10, 10)
+    bid = PP.bot_obok(p, st, 2, 0, 16)
+    patrz(0, 1)
+    f.nagrywaj("ember")
+    p.przycisk("ogien")
+    time.sleep(1.6)
+    f.stop()
+    # FIRE BREATH sterowany w dwa boty
+    st = stadium(4, 10, -15)
+    PP.bot_obok(p, st, 3, -3, 10)
+    PP.bot_obok(p, st, 3, 4, 11)
+    patrz(0, 1)
+    f.nagrywaj("oddech")
+    p.przycisk("ogien")
+    time.sleep(0.8)
+    patrz(0.4, 1, 0.6)
+    patrz(-0.4, 1, 0.6)
+    time.sleep(0.8)
+    f.stop()
+    # TAIL SWEEP w otoczeniu
+    st = stadium(3, 20, 20)
+    for dx, dz in ((6, 0), (-6, 1), (0, -6)):
+        PP.bot_obok(p, st, 2, dx, dz)
+    f.nagrywaj("ogon")
+    time.sleep(0.4)
+    p.przycisk("moc")
+    time.sleep(1.8)
+    f.stop()
+    # WING GLIDE nad lawą na SKY NEST
+    WY = D["wyspa"]
+    stadium(5, WY["x"], WY["z"] - WY["r_zew"] - 8)
+    patrz(0, 1)
+    f.nagrywaj("szybowanie")
+    p.przycisk("moc")
+    time.sleep(2.6)
+    f.stop()
+    # ROAR: mniejsze uciekają, reszta ogłuszona
+    st = stadium(6, -20, 40)
+    for dx, dz in ((10, 2), (-9, 4), (2, 11)):
+        PP.bot_obok(p, st, 4, dx, dz)
+    f.nagrywaj("ryk")
+    time.sleep(0.3)
+    p.przycisk("moc")
+    time.sleep(2.2)
+    f.stop()
+    # INFERNO BREATH: płonąca ziemia
+    st = stadium(7, 30, -30)
+    PP.bot_obok(p, st, 5, 0, 18)
+    patrz(0, 1)
+    f.nagrywaj("inferno")
+    p.przycisk("ogien")
+    time.sleep(1.0)
+    patrz(0.5, 1, 0.8)
+    time.sleep(1.8)
+    f.stop()
+    # METEOR DIVE w grupę
+    st = stadium(len(D["formy"]), 0, -60)
+    A = D["zdolnosci"]["moc"][-1]
+    for dx, dz in ((0, 0), (7, 3), (-7, 2)):
+        PP.bot_obok(p, st, 6, dx, A["d"] + dz)
+    patrz(0, 1)
+    f.nagrywaj("meteor")
+    p.przycisk("moc")
+    time.sleep(2.6)
+    f.stop()
+
+
 def sklej(klipy, wyj, kat):
     gotowe = []
     for i, (k, od) in enumerate(klipy):
@@ -167,6 +266,7 @@ def main():
     ap.add_argument("--studio", required=True)
     ap.add_argument("--wyj", default=os.path.join(tempfile.gettempdir(), "ewolucja_demo", "ewolucja_smok.mp4"))
     ap.add_argument("--zostaw-klipy", action="store_true")
+    ap.add_argument("--walka", action="store_true", help="sceny walki (walka1) zamiast przeglądu gry")
     a = ap.parse_args()
     wyj = os.path.abspath(a.wyj)
     if wyj.startswith(os.path.abspath(PP.REPO)):
@@ -183,7 +283,7 @@ def main():
             PP.czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
             p.luau(PP.BEZ_LISTY, "Client")
             time.sleep(1.0)
-            sceny(p, f)
+            (sceny_walka if a.walka else sceny)(p, f)
         finally:
             log("Stop:", PP.play(a.studio, False)[-40:])
             PP.czekaj(lambda: "Current Studio Mode: Edit" in p.call("get_studio_state")["text"], 40, 0.5)

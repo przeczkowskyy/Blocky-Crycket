@@ -199,7 +199,9 @@ def przebieg(p, zrzuty):
           poziom=st["poziomy"]["szybkosc"], zloto_po=round(st["zloto"]), panel=p.atr().get("EW_K_Legowisko"))
     # P08 pościg i zjedzenie przez większego bota: forma niżej, legowisko / złoto / ulepszenia zostają
     st = p.serwer('"stan"')
-    while st["forma"] < 3:  # gracz mógł zostać zjedzony w P05 — wróć do formy 3 (bez strefy startu i łaski nowicjusza)
+    for _ in range(6):  # gracz mógł zostać zjedzony w P05 — wróć do formy 3 (bez strefy startu i łaski nowicjusza)
+        if st["forma"] >= 3:
+            break
         p.serwer('"wzrost_pelny"')
         p.przycisk("ewoluuj")
         czekaj(lambda: p.serwer('"stan"')["forma"] > st["forma"], 4, 0.3)
@@ -224,7 +226,9 @@ def przebieg(p, zrzuty):
     p.serwer('"laska_zeruj"')
     p.serwer('"tarcza_zeruj"')
     p.serwer('"bot_stoj", %d, 3' % bot["id"])
-    p.serwer('"przenies", %d, %f, %f' % (bot["id"], ja["x"] + 1, ja["z"]))  # środek gracza w botcie: połknięcie dotykiem
+    p.serwer('"hp", nil, 1')  # walka1: zjada się przez życie — jeden punkt, bot gryzie z bliska
+    p.serwer('"bot_cel", %d, %d' % (bot["id"], st["byt"]))
+    p.serwer('"przenies", %d, %f, %f' % (bot["id"], ja["x"] + D["formy"][bot["forma"] - 1]["r"] + D["formy"][forma0 - 1]["r"] + 0.5, ja["z"]))
     zj, _ = czekaj(lambda: p.serwer('"miary"').get("smierci", 0) > smierci0, 5, 0.15)
     t_smierci = time.time()
     wrocil, _ = czekaj(lambda: not p.serwer('"stan"')["martwy"], 5, 0.2)
@@ -292,6 +296,7 @@ def przebieg(p, zrzuty):
     las_i_boss(p, zrzuty)
     etap3(p, zrzuty)
     pomiar(p)
+    walka(p, zrzuty)
     a = p.atr()
     wynik("P12 klatka", (a.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a.get("EW_K_Klatka") or 0, 1), widokow=a.get("EW_K_Widokow"),
           krok_serwera_ms=round(st.get("krok_ms") or 0, 2), okno=a.get("okno"), liczniki=st.get("liczniki"))
@@ -300,7 +305,9 @@ def przebieg(p, zrzuty):
 def las_i_boss(p, zrzuty):
     # P14 DEEP WOODS: brama otwiera się przy formie 4, gracz w lesie, boss z paskiem życia
     st = p.serwer('"stan"')
-    while st["forma"] < 4:
+    for _ in range(6):
+        if st["forma"] >= 4:
+            break
         p.serwer('"wzrost_pelny"')
         p.przycisk("ewoluuj")
         czekaj(lambda: p.serwer('"stan"')["forma"] > st["forma"], 5, 0.3)
@@ -453,6 +460,156 @@ def etap3(p, zrzuty):
     wynik("P21 wyjście i powrót", w and w.get("zapisano") and w.get("magazyn") == "pamiec" and po.get("forma") == 1 and po.get("zloto") == prz.get("zloto")
           and po.get("maxForma") == prz.get("maxForma") and po.get("poziomy") == prz.get("poziomy") and abs(po.get("zlotoLeg", 0) - oczek) < 2
           and (a.get("EW_K_Powrot") or 0) > 0, magazyn=w and w.get("magazyn"), przed=prz, po=po, powrot_u_klienta=a.get("EW_K_Powrot"))
+
+
+def bot_obok(p, st, forma, dx, dz, strefa=1):
+    """Najbliższy żywy bot łąki: forma ustawiona, postawiony obok gracza (dx, dz od środka gracza), stoi."""
+    ja = moje(st)
+    boty = sorted((b for b in st["byty"] if b["slot"] == 0 and not b["martwy"] and b.get("strefa") == strefa),
+                  key=lambda b: math.hypot(b["x"] - ja["x"], b["z"] - ja["z"]))
+    b = boty[0]
+    p.serwer('"bot_forma", %d, %d' % (b["id"], forma))
+    p.serwer('"bot_stoj", %d, 8' % b["id"])
+    p.serwer('"przenies", %d, %f, %f' % (b["id"], ja["x"] + dx, ja["z"] + dz))
+    p.serwer('"hp", %d, 999' % b["id"])
+    return b["id"]
+
+
+def walka(p, zrzuty):
+    """walka1: przyciski i sylwetki, łańcuch BITE, FIRE, POWER (szybowanie na SKY NEST, meteor), boty ze zdolnościami."""
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    time.sleep(1.2)
+    a = p.atr()
+    zd = json.loads(a.get("EW_K_Zd") or "{}")
+    o, m = zd.get("ogien", {}), zd.get("moc", {})
+    wynik("P23 FIRE i POWER zamknięte na stadium 1", st["forma"] == 1 and o.get("zamkniete") and m.get("zamkniete") and o.get("od", "").startswith("at ")
+          and m.get("od", "").startswith("at "), ogien=o, moc=m)
+    # P24 łańcuch BITE: trzy ciosy, rany u celu, trzeci odrzuca (bot o tym samym stadium)
+    p.serwer('"forma_gracza", 3')
+    p.serwer('"przenies", %d, 0, -20' % byt)
+    p.serwer('"laska_zeruj"')
+    time.sleep(1.0)
+    p.serwer('"tarcza_zeruj"')
+    p.serwer('"hp", nil, 5000')  # próba: gracz nie ginie od odwetu i botów wokół
+    st = p.serwer('"stan"')
+    r3 = D["formy"][2]["r"]
+    bid = bot_obok(p, st, 3, -(2 * r3 + 1.0), 0)
+    p.serwer('"hp", %d, 300' % bid)
+    p.serwer('"bot_cisza", %d, 6' % bid)  # manekin: bez odwetu (przewrót przerwałby łańcuch)
+    p.ustaw("EW_TestSter", "Vector3.new(1, 0, 0.15)")
+    time.sleep(0.4)
+    a0 = p.atr()
+    for _ in range(3):
+        p.przycisk("gryz")
+        time.sleep(0.62)
+    time.sleep(0.15)
+    if zrzuty:
+        p.zrzut("14_walka_gryzienie.jpg")
+    a1 = p.atr()
+    wi = p.serwer('"walka_info", %d' % bid)
+    ja = p.serwer('"walka_info"')
+    rany = (a1.get("EW_K_RanyZad") or 0) - (a0.get("EW_K_RanyZad") or 0)
+    wynik("P24 łańcuch BITE", rany >= 3 and ja and ja.get("lancuch") == 3 and wi and wi["hp"] < 300, rany_zadane=rany, lancuch=ja and ja.get("lancuch"),
+          hp_celu=wi and round(wi["hp"]), efekty=a1.get("EW_K_Efekty"))
+    # P25 FIRE: stadium 4, FIRE BREATH w bota przed pyskiem (kanał, rany co tik)
+    p.serwer('"forma_gracza", 4')
+    p.serwer('"przenies", %d, 10, -15' % byt)
+    time.sleep(0.8)
+    p.serwer('"tarcza_zeruj"')
+    p.serwer('"zdolnosci_zeruj"')
+    p.serwer('"hp", nil, 5000')
+    st = p.serwer('"stan"')
+    r4 = D["formy"][3]["r"]
+    bid = bot_obok(p, st, 3, 0, r4 + D["formy"][2]["r"] + 5)
+    p.serwer('"hp", %d, 400' % bid)
+    p.serwer('"bot_cisza", %d, 6' % bid)
+    p.ustaw("EW_TestSter", "Vector3.new(0, 1, 0.25)")
+    time.sleep(0.35)
+    a0 = p.atr()
+    l0 = p.serwer('"stan"')["liczniki"]
+    p.przycisk("ogien")
+    time.sleep(1.0)
+    if zrzuty:
+        p.zrzut("15_ogien.jpg")
+    time.sleep(1.4)
+    a1 = p.atr()
+    l1 = p.serwer('"stan"')["liczniki"]
+    wi = p.serwer('"walka_info", %d' % bid)
+    zd = json.loads(a1.get("EW_K_Zd") or "{}")
+    wynik("P25 FIRE BREATH", (a1.get("EW_K_Zamachy") or 0) > (a0.get("EW_K_Zamachy") or 0) and (l1.get("oddech") or 0) > (l0.get("oddech") or 0)
+          and wi and wi["hp"] < 400 and zd.get("ogien", {}).get("nazwa") == "oddech" and zd.get("ogien", {}).get("pigulka"),
+          zamachy=a1.get("EW_K_Zamachy"), oddechy=l1.get("oddech"), hp_celu=wi and round(wi["hp"]), przycisk=zd.get("ogien"))
+    # P26 POWER: stadium 5, WING GLIDE nad fosą lawy na SKY NEST
+    WY = D["wyspa"]
+    p.serwer('"forma_gracza", 5')
+    p.serwer('"zdolnosci_zeruj"')
+    p.serwer('"przenies", %d, %f, %f' % (byt, WY["x"], WY["z"] - WY["r_zew"] - 7))
+    time.sleep(0.8)
+    p.serwer('"hp", nil, 5000')
+    p.ustaw("EW_TestSter", "Vector3.new(0, 1, 0.3)")
+    time.sleep(0.25)
+    t_lot = time.time()
+    p.przycisk("moc")
+    wysp, _ = czekaj(lambda: p.serwer('"walka_info"').get("naWyspie"), 4, 0.25)
+    time.sleep(0.6)
+    st = p.serwer('"stan"')
+    wynik("P26 WING GLIDE na SKY NEST", wysp and not st["martwy"], na_wyspie=bool(wysp), x=round(st["x"], 1), z=round(st["z"], 1))
+    # P27 POWER: stadium 8, METEOR DIVE w grupę botów (wybuch przy lądowaniu)
+    p.serwer('"forma_gracza", %d' % len(D["formy"]))
+    p.serwer('"zdolnosci_zeruj"')
+    p.serwer('"przenies", %d, 30, -10' % byt)
+    time.sleep(1.0)
+    p.serwer('"tarcza_zeruj"')
+    p.serwer('"hp", nil, 9000')
+    time.sleep(max(0.0, 6.6 - (time.time() - t_lot)))  # odnowa POWER u klienta (po szybowaniu)
+    st = p.serwer('"stan"')
+    A = D["zdolnosci"]["moc"][-1]
+    ids = []
+    ja = moje(st)
+    boty = sorted((b for b in st["byty"] if b["slot"] == 0 and not b["martwy"] and b.get("strefa") == 1),
+                  key=lambda b: math.hypot(b["x"] - ja["x"], b["z"] - ja["z"]))[:3]
+    for b, (dx, dz) in zip(boty, ((0, 0), (6, 3), (-6, 2))):
+        p.serwer('"bot_stoj", %d, 8' % b["id"])
+        p.serwer('"przenies", %d, %f, %f' % (b["id"], ja["x"] + dx, ja["z"] + A["d"] + dz))
+        p.serwer('"hp", %d, 999' % b["id"])
+        ids.append(b["id"])
+    p.ustaw("EW_TestSter", "Vector3.new(0, 1, 0.25)")
+    time.sleep(0.3)
+    l0 = p.serwer('"stan"')["liczniki"]
+    t_met = time.time()
+    p.przycisk("moc")
+    time.sleep(2.0)
+    l1 = p.serwer('"stan"')["liczniki"]
+    ranni = sum(1 for i in ids if (p.serwer('"walka_info", %d' % i) or {}).get("hp", 999) < 999)
+    wynik("P27 METEOR DIVE", (l1.get("meteor") or 0) > (l0.get("meteor") or 0) and (l1.get("ladowanie") or 0) > (l0.get("ladowanie") or 0) and ranni >= 1,
+          meteory=l1.get("meteor"), ladowania=l1.get("ladowanie"), ranni=ranni)
+    # P27b POWER: stadium 6, ROAR w trzy boty (zrzut 16_moc)
+    p.serwer('"forma_gracza", 6')
+    p.serwer('"zdolnosci_zeruj"')
+    p.serwer('"przenies", %d, -30, 30' % byt)
+    time.sleep(1.0)
+    p.serwer('"tarcza_zeruj"')
+    p.serwer('"hp", nil, 9000')
+    st = p.serwer('"stan"')
+    r6 = D["formy"][5]["r"]
+    ids2 = [bot_obok(p, st, f, dx, dz) for f, dx, dz in ((4, r6 + 6, 2), (5, -(r6 + 6), 3), (4, 2, r6 + 7))]
+    time.sleep(max(0.0, 8.8 - (time.time() - t_met)))  # odnowa POWER u klienta (po meteorze)
+    l0 = p.serwer('"stan"')["liczniki"]
+    p.przycisk("moc")
+    time.sleep(0.62)
+    if zrzuty:
+        p.zrzut("16_moc.jpg")
+    time.sleep(0.5)
+    l1 = p.serwer('"stan"')["liczniki"]
+    ogl = sum(1 for i in ids2 if (p.serwer('"walka_info", %d' % i) or {}).get("hp", 999) < 999)
+    wynik("P27b ROAR", (l1.get("ryk") or 0) > (l0.get("ryk") or 0) and ogl >= 2, ryki=l1.get("ryk"), ranni=ogl)
+    # P28 boty walczą tymi samymi zasadami: zamachy botów (wszystkie zamachy minus moje) i rany w świecie
+    a = p.atr()
+    l = p.serwer('"stan"')["liczniki"]
+    bot_zamachy = (l.get("zamach") or 0) - (a.get("EW_K_Zamachy") or 0)
+    wynik("P28 boty: BITE i zdolności", bot_zamachy >= 1 and (l.get("rana") or 0) > (a.get("EW_K_RanyZad") or 0), zamachy_botow=bot_zamachy,
+          rany_w_swiecie=l.get("rana"), pociski=l.get("pocisk"), ogony=l.get("ogon"), oddechy=l.get("oddech"), zjedzenia=l.get("zjedz"))
 
 
 def pomiar(p):

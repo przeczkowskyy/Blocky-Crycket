@@ -4,7 +4,7 @@
 	Serwer liczy wszystko: jedzenie, wzrost, ewolucję, złoto, zakupy. Klient tylko przewiduje własny ruch.
 
 	Od klienta tylko Sygnaly/Akcja (rodzaj, ...): "ruch", kx, kz, px, pz (kierunek ≤ 1 i pozycja z przewidywania) ·
-	"gryz" · "zryw" · "umiejetnosc" · "ewoluuj" · "kup", id. Serwer sprawdza typy, stan bytu i wiadro tempa.
+	"gryz" · "zryw" · "umiejetnosc", "ogien"|"moc" · "ewoluuj" · "kup", id. Serwer sprawdza typy, stan bytu i wiadro tempa.
 	Do klientów: Sygnaly/Stan (UnreliableRemoteEvent, bufor) i Sygnaly/Zdarzenia (lista). Atrybuty gracza EW_*.
 	Miary (w pamięci, bez DataStore): atrybut EW_Miary (JSON) i haczyk "miary". Haczyki prób tylko po stronie
 	serwera: Sygnaly/SterowanieSerwera (BindableFunction — klient nie ma do niej dostępu).
@@ -348,7 +348,8 @@ evAkcja.OnServerEvent:Connect(function(plr: Player, rodzaj: any, a: any, b: any,
 			licz("zryw")
 		end
 	elseif rodzaj == "umiejetnosc" then
-		if L.umiejetnosc(S, byt, doWyslania) then
+		-- a: linia "ogien" (FIRE) albo "moc" (POWER) — logika odrzuca wszystko inne
+		if type(a) == "string" and L.zdolnosc(S, byt, a, doWyslania) then
 			licz("umiejetnosc")
 		end
 	elseif rodzaj == "ewoluuj" then
@@ -382,10 +383,21 @@ evAkcja.OnServerEvent:Connect(function(plr: Player, rodzaj: any, a: any, b: any,
 end)
 
 ------------------------------------------------------------------ migawki (bufor)
-local ROZ = 16
+local ROZ = 18
 local NR_WARIANTU = {}
 for i, W in D.warianty do
 	NR_WARIANTU[W.id] = i
+end
+-- bajt akcji (walka1): numer zdolności (1–7) + 16 zamach + 32 kanał oddechu; 64 przewrót (po ciosie z odrzutem)
+local NR_ZDOLNOSCI = {}
+do
+	local i = 0
+	for _, linia in { "ogien", "moc" } do
+		for _, A in D.zdolnosci[linia] do
+			i += 1
+			NR_ZDOLNOSCI[A.id] = i
+		end
+	end
 end
 local function migawka(): buffer
 	local n = #S.byty
@@ -441,6 +453,17 @@ local function migawka(): buffer
 		buffer.writef32(b, o + 9, e.z)
 		buffer.writei16(b, o + 13, math.clamp(math.floor(e.kier * 1000 + 0.5), -32000, 32000))
 		buffer.writeu8(b, o + 15, if e.slot > 0 and e.wariantTeraz then (NR_WARIANTU[e.wariantTeraz] or 0) else 0)
+		buffer.writeu8(b, o + 16, math.clamp(math.floor((e.hp or 0) / math.max(1, e.hpMaks or 1) * 255 + 0.5), 0, 255))
+		local ak = 0
+		if e.zamach then
+			ak = (NR_ZDOLNOSCI[e.zamach.A.id] or 0) + 16
+		elseif e.kanal then
+			ak = (NR_ZDOLNOSCI[e.kanal.A.id] or 0) + 32
+		end
+		if (e.przewrotDo or 0) > S.czas then
+			ak += 64
+		end
+		buffer.writeu8(b, o + 17, ak)
 	end
 	return b
 end
@@ -748,6 +771,39 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 		if e then
 			e.wx, e.wz = 0, 0
 			e.myslDo = S.czas + (b or 3)
+		end
+		return e ~= nil
+	elseif polecenie == "hp" then
+		-- próba walki: życie bytu a (albo gracza) na b
+		local e = if a then L.bytPoId(S, a) else byt
+		if e then
+			e.hp = b
+			e.ostRana = S.czas
+		end
+		return e ~= nil
+	elseif polecenie == "walka_info" then
+		local e = if a then L.bytPoId(S, a) else byt
+		return e and { hp = e.hp, hpMaks = e.hpMaks, forma = e.forma, lancuch = e.lancuch, zamach = e.zamach and e.zamach.A.id,
+			kanal = e.kanal and e.kanal.A.id, gotowy = e.gotowy, x = e.x, z = e.z, martwy = e.martwyDo ~= nil, skok = e.skok ~= nil,
+			naWyspie = L.naWyspie(D, e.x, e.z), ogluszony = e.ogluszonyDo > S.czas }
+	elseif polecenie == "bot_cisza" then
+		-- próba: bot a nie gryzie i nie używa zdolności przez b sekund (manekin)
+		local e = L.bytPoId(S, a)
+		if e and e.slot == 0 then
+			e.gryzGotowy = S.czas + (b or 3)
+			e.gotowy = { ogien = S.czas + (b or 3), moc = S.czas + (b or 3) }
+		end
+		return e ~= nil
+	elseif polecenie == "zdolnosci_zeruj" then
+		if byt then
+			byt.gotowy = { ogien = 0, moc = 0 }
+		end
+		return true
+	elseif polecenie == "bot_cel" then
+		local e = L.bytPoId(S, a)
+		if e and e.slot == 0 then
+			e.cel, e.celOd = b, S.czas
+			e.napastnik, e.napastnikDo = b, S.czas + 30
 		end
 		return e ~= nil
 	elseif polecenie == "laska_zeruj" then

@@ -104,6 +104,21 @@ def main():
             PP.wynik("T4b zakładka ulepszeń mieści się", u5 and "Panel" in u5["prostokaty"] and "Panel" not in u5["poza"] and not u5["male"],
                      male=u5.get("male"))
             p.przycisk("zamknij")
+            # T7 (walka1): cztery przyciski (BITE, DASH, FIRE, POWER) i ciemne sylwetki zamkniętych / następnych wersji
+            pr1 = u1.get("prostokaty", {}) if u1 else {}
+            zd1 = json.loads(p.atr().get("EW_K_Zd") or "{}")
+            p.serwer('"forma_gracza", 4')
+            time.sleep(2.6)
+            u7 = uklad(p)
+            pr7 = u7.get("prostokaty", {}) if u7 else {}
+            zd7 = json.loads(p.atr().get("EW_K_Zd") or "{}")
+            cztery = all(n in pr1 for n in ("Gryz", "Zryw", "Ogien", "Moc")) and all(n in pr7 for n in ("Gryz", "Zryw", "Ogien", "Moc"))
+            PP.wynik("T7 cztery przyciski + sylwetki", cztery and u7 and not u7["nakladanie"] and not u7["poza"] and not u7["male"]
+                     and "OgienNast" in pr7 and "MocNast" in pr7 and zd7.get("ogien", {}).get("nazwa") == "oddech"
+                     and (zd1.get("moc", {}).get("zamkniete") or zd1.get("ogien", {}).get("zamkniete")),
+                     przed=zd1, po=zd7, nakladanie=u7 and u7.get("nakladanie"), poza=u7 and u7.get("poza"),
+                     prostokaty={k: v for k, v in pr7.items() if k in ("Gryz", "Zryw", "Ogien", "Moc", "OgienNast", "MocNast", "Zycie")})
+            p.zrzut("17_telefon_walka.jpg")
             a1 = p.atr()
             PP.wynik("T5 klatka na telefonie", (a1.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a1.get("EW_K_Klatka") or 0, 1))
         finally:

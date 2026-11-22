@@ -25,13 +25,15 @@ Bez zapisu między sesjami. Napisy w grze po angielsku.
 ## Jak zbudować i sprawdzić
 ```
 python -B swiat/ewolucja/dane.py                         # ustawienia.json + dane Pet Areny → zrodla/DaneEwolucji.luau
-python -B swiat/ewolucja/testy/test_ewolucji.py          # logika bez Studio (15 testów)
+python -B swiat/ewolucja/testy/test_ewolucji.py          # logika bez Studio (28 testów)
 python -B swiat/ewolucja/tempo.py [--prob 8]             # symulacja tempa „sprawnego gracza”
+python -B swiat/ewolucja/testy/walka_sim.py [--pojedynkow 40] # walka1: pojedynki, boss, zdolności na prawdziwej logice
 python -B swiat/ewolucja/zbuduj.py --studio <id>         # budowa (--sucho, --skrypty, --stan, --usun, --publikacja)
 python -B swiat/ewolucja/zbuduj.py --wlacz on|off --studio <id>     # wyłącznik EwolucjaWlaczona
-python -B swiat/ewolucja/testy/proba_play.py --studio <id>          # próba Play (15 punktów, zrzuty do klatki/)
+python -B swiat/ewolucja/testy/proba_play.py --studio <id>          # próba Play (P01–P28, zrzuty do klatki/)
 python -B swiat/ewolucja/testy/proba_telefon.py --studio <id>       # Device Simulator: najmniejszy telefon, układ HUD
 python -B swiat/ewolucja/testy/demo_wideo.py --studio <id>          # film demo ok. 35 s + plansza (poza repo)
+python -B swiat/ewolucja/testy/demo_wideo.py --studio <id> --walka --wyj <TEMP>/ewolucja_demo/ewolucja_walka.mp4   # film walki
 ```
 Przed próbą Play inne gry wyłączone: `swiat/pet_arena/zbuduj.py --wlacz off`, `swiat/zabawki/zbuduj.py --wlacz off`.
 
@@ -124,6 +126,53 @@ Przed próbą Play inne gry wyłączone: `swiat/pet_arena/zbuduj.py --wlacz off`
 - Tempo (6 prób, domyślnie): forma 2 0:17 i forma 5 5:12 — wcześniej niż cele (bez przestrajania). Reszta w celach:
   przerwa 2:18, pościg 1:52, ulepszenie 1:31, ANCIENT 13:55.
 
+## Pierwsze wrażenie (22.11.2026)
+- HATCHLING i WHELP jako małe smoki: duża głowa, duże oczy ze źrenicą, krótki pysk, widoczne pąki skrzydeł; pisklę
+  ma kawałki skorupki, WHELP jest większy i ma małe rogi. FIRE DRAKE ma płomienny grzbiet i żarzący się brzuch
+  i pierś (Neon). Parametry `oczy`, `pysk`, `skorupka`, `plomien`, `zar` są w `formy_smok[].smok`.
+- Skrzydła: większe, z kontrastową błoną, w spoczynku półuniesione; w zrywie i szybowaniu rozłożone.
+- Start: pisklę wykluwa się z jajka w legowisku (2,6 s, ruch pomija), potem zwykła pierwsza minuta.
+- Obrazy strony gry: `testy/obrazy_gry.py --studio <id>` renderuje w Studio z własnych modeli ikonę 512 × 512 i dwie
+  miniatury 1920 × 1080 (tytuł nanosi PIL). Pliki trafiają do `%TEMP%\ewolucja_demo\`, podglądy do `klatki/20–22`.
+
+## Walka (walka1, 22.11.2026)
+Jedna zasada dla wszystkich (gracz, dziki smok, boss) — liczby w `ustawienia.json` → `walka`, `zdolnosci`, `wyspa`, `boss`.
+- **Życie** według stadium (`hp_baza × hp_wzrost^(stadium−1)`; boss: `boss.stopnie_hp`). **BITE** zadaje
+  `gryz_baza × gryz_wzrost^(stadium−1) × Szczęka × cios łańcucha × rozmiar`; rozmiar zależy od różnicy stadiów
+  (`rozmiar_x`: −3…+3). Zero życia = zjedzony z chrupnięciem na koniec: zjadający rośnie, zjedzony gracz spada
+  o stadium. Kulki leczą (`kulka_leczy`), bez ran regeneracja. Połykania dotykiem już nie ma — wszyscy się odbijają.
+  Stadia 1–2 graczy chronione przed graczami w obie strony; w legowisku nikt nie rani i nikogo; atak zdejmuje tarczę.
+- **Przyciski** (4): BITE, DASH, FIRE, POWER. BITE to łańcuch trzech ciosów (snap, snap, chomp): trzeci odrzuca
+  i przewraca na chwilę; lekkie celowanie (najpierw cel przed pyskiem). Linie zdolności ewoluują:
+  FIRE: EMBER SPIT (2, pocisk) → FIRE BREATH (4, kanał sterowany ruchem) → INFERNO BREATH (7, szerzej, płonąca ziemia);
+  POWER: TAIL SWEEP (3, krąg 360°, odrzut) → WING GLIDE (5, szybowanie nad mniejszymi i nad lawą) → ROAR (6, mniejsze
+  boty uciekają, reszta ogłuszona) → METEOR DIVE (8, skok i wybuch). Każda ma widoczny zamach (pozy, żar w pysku,
+  krąg zasięgu na ziemi); przewrót w zamachu go przerywa. Zamknięta linia: ciemny przycisk „at <STADIUM>”; następna
+  wersja: ciemna sylwetka nad przyciskiem. Klawisze: Spacja/klik BITE, Shift DASH, E FIRE, Q/R POWER; pad A/B/X/R1.
+- **SKY NEST**: wyspa w fosie lawy na łące (−36, −42) z wielkimi kulkami — tylko WING GLIDE albo METEOR DIVE.
+- **Odczucie trafienia**: liczby ran (kryt złoty), błysk trafionego (Highlight), zatrzymanie klatki 40–140 ms
+  i wstrząs według siły ciosu (gdy dotyczy mnie), paski życia nad zranionymi, własny pasek HP pod paskiem wzrostu,
+  spowolnienie 0,7 s przy zjedzeniu gracza, dźwięki z arkusza (cios, kryt, złapanie, plusk, trzęsienie, boss).
+- **Boty** walczą tymi samymi zasadami: łańcuch BITE, zdolności swojego stadium (bez szybowania) z tym samym zamachem,
+  odwet na tym, kto je ranił (do stadium większego), ucieczka przed rykiem.
+- **Modele z Blendera**: efekty zaczepione w nazwanych punktach — `Pysk`, `Ogon`, `SkrzydloL`, `SkrzydloP`, `Brzuch`
+  (Attachment albo Bone o tej nazwie w modelu ze szkieletem; w smokach z generatora atrybut `Kotwica_<Nazwa>`).
+  Opcjonalne klipy w danych formy: `anim.chod`, `anim.gryz`, `anim.ogien`, `anim.moc`, `anim.przewrot`.
+- **Sieć**: migawka 18 bajtów na byt (+ życie u8, akcja u8: zdolność, zamach, kanał, przewrót); FIRE/POWER przez
+  `Akcja("umiejetnosc", "ogien"|"moc")`, serwer sprawdza typ, stan, odnowę i wiadro.
+- **Symulacja** (`testy/walka_sim.py`, prawdziwa logika w interpreterze, model gracza: gryzie od razu, gdy cel
+  w zasięgu, z opóźnieniem 0–0,35 s): wyniki w raporcie etapu; testy `test_26–28` pilnują progów (równe stadia 4–6 s,
+  o stadium większy wygrywa 10–15 z 16, o dwa — 1–2 ugryzienia, każda zdolność 0,45–2 × BITE).
+- Wyniki symulacji (40 pojedynków na parę, 6 walk z bossem na stopień): równe stadia 4,7–5,2 s; o stadium większy
+  wygrywa 85% (cel „ok. 3 z 4”; przy tym modelu gracza wynik prawie nie zależy od wzrostu na stadium — decyduje kto
+  zaczyna i krytyki); o dwa stadia większy zabija w 2 ugryzieniach; boss stopnie 1–5 solo (stadium 3 + stopień,
+  Szczęka = stopień): 6/6 wygranych, 11–23 s, gracz kończy z 35–51% życia. Zdolności względem samego BITE: EMBER ×0,66,
+  BREATH ×0,74, INFERNO ×1,56 (z płonącą ziemią), TAIL ×0,62, GLIDE ×0,59, ROAR ×0,58, METEOR ×0,70 (jeden cel;
+  ogień, ogon, ryk i meteor trafiają wielu).
+- `tempo.py` liczy jeszcze dawne zasady (natychmiastowe zjadanie) — tempo po walce1 nie jest przeliczone.
+- Zrzuty: `klatki/14_walka_gryzienie.jpg`, `15_ogien.jpg`, `16_moc.jpg`, `17_telefon_walka.jpg`; film
+  `%TEMP%\ewolucja_demo\ewolucja_walka.mp4` (poza repo).
+
 ## Pomiar prób z graczami (D-128, 22.11.2026)
 - **AnalyticsService** (tylko serwer opublikowanej gry; w Studio wywołania pomijamy):
   - lejek startu: Spawned → FirstOrb → FirstEvolve → HoardCollected → FirstUpgrade;
@@ -142,6 +191,5 @@ Przed próbą Play inne gry wyłączone: `swiat/pet_arena/zbuduj.py --wlacz off`
   „Enable Studio Access to API Services” (skrypt tylko czyta). Nie przetestowane na prawdziwym magazynie.
 
 ## Czego nie ma (etap 4 i dalej)
-Legowisko jako miejsce w świecie, złoto pod nieobecność, zapis postępu, odmiany barwne, Olbrzym jako boss serwera,
-umiejętności botów, dźwięki poza arkuszem Pet Areny. Prawdziwego dotyku nie da się wywołać z prób — drążek i przyciski
+Dźwięki poza arkuszem Pet Areny, modele z Blendera z klipami (podpięcie przez dane — patrz Walka), tempo po walce1. Prawdziwego dotyku nie da się wywołać z prób — drążek i przyciski
 sprawdza wejście prób (to samo co palec po stronie logiki); dotyk trzeba potwierdzić na telefonie.
