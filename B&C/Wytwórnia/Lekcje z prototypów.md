@@ -43,5 +43,11 @@ Karol: „To nie tak, że spędzony czas i tokeny na BONK-a i Blocky & Crycket b
 - **Karol jako miara:** trzy razy trafnie wskazał brak (hak w BONK, dynamika w Pet Arenie, emocja i „co dalej” w zabawkach). Jego odczucie z grania w cudze hity jest lepszym źródłem niż moja karta — pytać go o konkretną grę-wzór przed budową.
 - **Co dalej:** dokładny rozbiór gry-wzoru (Throw Food For Animals) i jej najszybszych kopii, potem własna gra w tej pętli z naszymi potworami i jednym zwrotem.
 
+## 2026-11-22 · Ocena przed szukaniem po mechanice — agent pomylił się w ciągu godziny
+- Po trzech szybkich wyszukiwaniach agent napisał „zgadzam się z poprawką” na fale i potwory-wieżyczki. Godzinę później szukanie po mechanice (109 haseł, ok. 1,6 tys. gier) pokazało, że ta odmiana gaśnie: [[Walidacja wariantu nocne fale i potwory-obrońcy (2026-11-22)]].
+- **Lekcja:** werdykt o pomyśle dopiero po szukaniu po mechanice; wcześniej uczciwa odpowiedź brzmi „jeszcze nie wiem”.
+- **Dwie obserwacje do Mózgu (do potwierdzenia):** wysoka ocena (94–98% polubień) nie chroni przed spadkiem; przegrana bez prawdziwej straty to wspólna cecha gier obronnych, które zgasły.
+- **Otwarty spór:** Karol odrzucił porwanie potwora, a dane mówią, że kradzież łączy wszystkie duże gry ze stworami i bazą. Rozstrzygnie próba z ludźmi, nie opinie.
+
 ## Powiązane
 - [[00 Wytwórnia pomysłów]] · [[BONK]] · [[Karta oceny pomysłu]]

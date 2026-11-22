@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (noc w grze o Olbrzymie: porwanie odpada, fale sprawdzone)
+- **Karol** po wyjaśnieniu gry odrzucił porwanie potwora przez Olbrzyma („bez sensu jest ta kradzież”) i luźno zaproponował fale, przed którymi bronią zebrane potwory jak wieżyczki. Zapis pod pytaniem 82 i w karcie [[Bring Monsters Home Before Dark]].
+- **Walidacja po mechanice** (agent na Opus, ok. 190 tys. tokenów): [[Walidacja wariantu nocne fale i potwory-obrońcy (2026-11-22)]]. Odmiana „zebrane stwory bronią bazy” gaśnie; rosną tylko pełne gry tower defense z losowaniem jednostek i cotygodniową aktualizacją; „przetrwałem 100 fal” nie ma widzów. Agent zmienił własną ocenę z „zgadzam się z poprawką” na „nie polecam” — lekcja w [[Lekcje z prototypów]].
+- **Otwarte:** jak wygląda noc (oblężenie / kradzież między graczami / fale mimo danych / inny kierunek) — dopisek pod pytaniem 82. Nic nie jest budowane.
+
 ## 2026-11-22 · Claude Code u Karola (walidacja kierunku „noc i Olbrzym”)
 - **Walidacja** wybranego przez Karola pomysłu (analityk na Fable, szukanie po mechanice: 105 haseł, ok. 2,5 tys. gier): [[Walidacja kierunku noc i Olbrzym (2026-11-22)]]. „Pusto wokół” było błędem szukania — to dwuletnia rodzina gier (typowo 7–20 tys. graczy w szczycie i szybki spadek); „przynieś zwierzęta do domu” to cmentarz; internet nagrywa cel z liczbą („przetrwałem 100 nocy”), wielkie widoczne zagrożenie i „coś weszło nocą do mojego domu”, a nie zmierzch; twórcy przychodzą po wejściu gry na listy Roblox, nie przed.
 - **Zmieniony pomysł i projekt próbki:** [[Projekt próbki — Guard Your Monsters From the Giant]] — Olbrzym co noc przychodzi do obozu i zabiera potwora, którego widać ponad płotem; licznik nocy; miary sukcesu u prawdziwych graczy; plan czterech sobotnich aktualizacji. Odświeżone: [[Następna gra — rekomendacja 2026-11-22]], [[Fale na Roblox 2026 i gdzie jest otwarcie]], [[Trzy pomysły na następną grę (2026-11-22)]]; karta [[Bring Monsters Home Before Dark]] ze zmianą na górze; dopisek pod pytaniem 82. Pewność: niska do średniej; nic nie jest budowane.
