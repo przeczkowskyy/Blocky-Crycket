@@ -6,6 +6,34 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (odświeżenie ocen całego lejka pomysłów)
+- **Karol:** „Odśwież cały lejek pomysłów, bo wiele z tych ocen jest już nieaktualne”. Agent (Opus, ok. 275 tys. tokenów) ocenił 15 kart na danych z 22.11 i graniu właściciela; zmienione tylko: kolumna Agent, werdykt agenta, etap i nowy blok na górze „Krytyki agenta”. Kolumny Karola i Pawła bez zmian. Zestawienie: [[Lejek pomysłów — ocena 2026-11-22]].
+  - Monster Evolution: 26 → 21, popraw → popraw
+  - Smash Tower: 23 → 20, popraw → popraw
+  - Sleeping Giant Heist: 25 → 19, buduj → popraw
+  - Monster Fishing: 22 → 19, odrzuć → odrzuć
+  - Baseball for treasure: werdykt_agenta: → 17, ocena_karol: → popraw, etap pomysł → ocena
+  - Super Kitty Brawlers: 21 → 17, popraw → popraw
+  - BONK Chain Reaction: 22 → 16, buduj → popraw
+  - Monster Fusion Lab: 21 → 16, popraw → popraw
+  - Climb the Titan: 17 → 15, odrzuć → odrzuć
+  - Bring Monsters Home Before Dark: werdykt_agenta: odrzuć → 15, odrzuć → odrzuć
+  - BONK: 19 → 15, popraw → odrzuć
+  - Cats Brawlers: werdykt_agenta: → 15, ocena_karol: → odrzuć, etap pomysł → ocena
+  - Pet Arena: 21 → 14, odrzuć → odrzuć, etap test → porzucona
+  - Ring Potworów: 22 → 14, buduj → odrzuć
+  - Blocky & Crycket: 13 → 12, popraw → odrzuć, etap prototyp → wstrzymana
+- Etapy: Pet Arena „porzucona” na prośbę Karola o odświeżenie (po jego ocenie z grania 21.11; da się cofnąć w panelu); Blocky & Crycket „wstrzymana” (zadania stoją do decyzji o kierunku); pomysły Pawła „ocena”; Ring Potworów zostaje „wstrzymana” (agent proponował „porzucona”, brak decyzji ludzi).
+- Jeden odczyt na żywo (22.11, 18:10 UTC): lider fali ewolucji (Ant Evolution) 36,4 tys. graczy wobec 41,5–42,2 tys. rano, gdy większość rosnących gier miała o tej porze 1,1–1,7 razy więcej niż rano — możliwy początek spadku; warunek z rynku dla gry o smoku sprawdzamy 29.11.
+
+## 2026-11-22 · Claude Code u Karola (ustalenia z sesji głównej: Baseball for treasure)
+- **Nowa notatka:** [[Sesja główna 2026-11-22 — zapis ustaleń]] (status propozycja) — sesja Karola i Pawła 18:53–19:02, temat: pomysł [[Baseball for treasure]]; Karol dorzucił rozbudowę gry o smoku od ameby. Zapis rozmowy zostaje lokalnie u gospodarza panelu.
+- **Rejestr decyzji:** propozycje D-130 (pętla gry), D-131 (gracz wybiera siłę i kierunek), D-132 (złoto tylko z gabloty; piłki i kije), D-133 (ewolucja od ameby z serwerami poziomów), D-134 (najpierw ocena agenta, gra o smoku bez zmian do próby z graczami). Nic nie zatwierdzone.
+- **Pytania otwarte:** nowe 85 (skąd gracz bierze siłę) i 86 (baseball, ameba czy smok). Pod starszymi otwartymi pytaniami (78, 79, 80, 83) nic nie dopisano — na sesji o nich nie mówiono.
+- **Zadania:** pełna ocena baseballu, ocena pomysłu z amebą i porównanie, ocena kartą przez Karola i Pawła. Prośba o ocenę z nagrania nie uruchomiła pracy — start po poleceniu na czacie.
+- **Sesje główne:** temat w „Omówione”; do agendy — wybór po ocenie agenta.
+- Dopiski z sesji w kartach [[Baseball for treasure]] i [[Monster Evolution]] oraz w [[00 Wytwórnia pomysłów]]. Raport w panelu: „Sesja główna 2026-11-22 — do zatwierdzenia”.
+
 ## 2026-11-22 · Claude Code u Karola (pierwsza ocena pomysłów Pawła z panelu)
 - Paweł dodał w panelu dwa pomysły: [[Baseball for treasure]] i [[Cats Brawlers]]. Agent wpisał w kartach pierwszą ocenę (sekcja „Krytyka agenta”, bez sprawdzenia rynku po mechanice, bez oceny liczbowej): baseball — pętla najmocniejszej fali z zwrotem w locie piłki, ale okno do ok. 6.12 i słabe precedensy kopania; koty — kolekcja i armia rosną, ale „jeden przycisk, walczą same” powtarza to, co odpadło w Pet Arenie.
 - Paweł zgłosił, że nie może sam prowadzić sesji: w panelu jest gościem (link z samym kodem dostępu). Potrzebny link z kluczem zatwierdzania — przygotowuje go Karol (agentowi odmówiono odczytu klucza; nie obchodzone).

@@ -29,6 +29,8 @@ Gra Roblox, która **zarabia i ma realną szansę na viral**: prosta i logiczna 
 - **Wytwórnia ma skracać drogę do testu, a nie ją wydłużać** — narzędzia (panel, mózg) robimy tylko w takim zakresie, w jakim przyspieszają decyzję, co budować.
 
 ## Notatki
+- **Ocena całego lejka (22.11, wieczór):** [[Lejek pomysłów — ocena 2026-11-22]] — żadnego „buduj”; smok 21/30 czeka na graczy; rezerwa: Smash Tower, Sleeping Giant Heist, Baseball for treasure.
+- **Do oceny (22.11 wieczór):** [[Baseball for treasure]] (pomysł Pawła) i rozbudowa gry o smoku od ameby (pomysł Karola) — omówione na sesji: [[Sesja główna 2026-11-22 — zapis ustaleń]]; pełna ocena agenta jest zadaniem, wybór w pytaniu 86.
 - **W budowie (od 22.11):** [[Monster Evolution]] — [[Projekt próbki — Monster Evolution]] · [[Walidacja kierunku jesteś potworem (2026-11-22)]]. Zasada D-128: o próbce rozstrzygają liczby od prawdziwych graczy.
 - **Aktualna krótka lista (22.11):** [[Kierunki z rynku 2026-11-22]] — pomysł z Olbrzymem porzucony; trzy kierunki z fal rosnących (jesteś potworem / armia potworów / odsłoń własnymi rękami) i zmieniona kolejność pracy: najpierw weto ludzi, potem szukanie przegranych, dopiero potem budowa.
 - **Noc do ustalenia (22.11):** [[Walidacja wariantu nocne fale i potwory-obrońcy (2026-11-22)]] — Karol odrzucił porwanie przez Olbrzyma i zaproponował fale z potworami-wieżyczkami; szukanie po mechanice pokazało, że ta odmiana gaśnie. Otwarte w pytaniu 82.

@@ -2,9 +2,9 @@
 status: propozycja
 typ: pomysł-gry
 gra: Pet Arena
-etap: test
+etap: porzucona
 zdanie: "Throw your pet into the pit, hold the golden center, knock the others out."
-ocena_agenta: 21
+ocena_agenta: 14
 werdykt_agenta: odrzuć
 ocena_karol: 28
 ocena_pawel: 
@@ -45,16 +45,18 @@ Jajka, trening, wydarzenia, kolekcja petów (do dopracowania — niżej).
 |---|---|---|---|
 | Jedno zdanie | 2 | 3 | |
 | Pierwsze 10 sekund | 2 | 3 | |
-| Hak ciekawości | 2 | 3 | |
-| Głębia | 3 | 3 | |
-| Inni gracze | 3 | 3 | |
-| Pokazanie się | 2 | 2 | |
-| Moment do nagrania | 2 | 3 | |
+| Hak ciekawości | 1 | 3 | |
+| Głębia | 1 | 3 | |
+| Inni gracze | 2 | 3 | |
+| Pokazanie się | 1 | 2 | |
+| Moment do nagrania | 1 | 3 | |
 | Powód powrotu | 1 | 2 | |
-| Trend | 1 | 3 | |
+| Trend | 0 | 3 | |
 | Koszt dla nas | 3 | 3 | |
 
 ## Krytyka agenta
+**Ocena odświeżona 2026-11-22 (agent): 14/30, werdykt: odrzuć.** Karol zagrał 21.11 na telefonie: „bardzo mało wciągająca, cały czas dzieje się to samo, zero dynamiki” — to warunek wyjścia zapisany w projekcie; dlatego hak, głębia i moment do nagrania mają dziś oceny z grania, nie z papieru. Format nie ma fali: Cat Battles spadła ze 100 tys. w październiku do 4,9 tys. (22.11 o 18:10 UTC), Knockout z 620 tys. do 1,3 tys. Karta pomyliła się tu dwa razy (28, potem 21, w ręku nuda); rzut, zderzenia, wyklucie i droga do prywatnej publikacji już przeszły do kolejnych prób. Etap: test → porzucona. Źródła: [[Lekcje z prototypów]] · [[Pet Arena — ocena wobec trendu 2026-11-21]] · [[Trend 2026-11-21 — co rośnie w tym tygodniu]] · [[Karta oceny pomysłu]].
+
 - **Najmocniejszy pomysł z lejka (27/30).** Łączy trzy rosnące trendy: fizyka i wyrzucanie (ragdoll, Cat Battles wyróżnione przez Roblox 16.11), jajka i pety (szczyt list), stanie w miejscu i rzucanie (Throw Food For Animals, nr 3 na platformie). Arena bez kolejki usuwa największą wadę [[Ring Potworów]] (czekanie na rundę).
 - **Najmocniejszy argument przeciw** (Paweł na sesji: „teraz nikt już nie bawi takiej gierki”): wojny kurczaków to stara fala. Odpowiedź: liczy się nie motyw, tylko czy rdzeń daje niespodziankę i ryzyko — tu daje; ale **sprawdzić testem, nie opinią**.
 - **Pre-mortem:**

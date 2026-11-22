@@ -4,8 +4,8 @@ typ: pomysł-gry
 gra: BONK: Chain Reaction
 etap: ocena
 zdanie: "Bonk monsters into each other — every monster reacts differently."
-ocena_agenta: 22
-werdykt_agenta: buduj
+ocena_agenta: 16
+werdykt_agenta: popraw
 ocena_karol:
 ocena_pawel:
 d1:
@@ -51,18 +51,20 @@ cały pakiet `swiat/bonk/` (3 krainy, 12 potworów, 8 pałek, 15 petów, Strażn
 ## Karta oceny
 | Kryterium | Agent | Karol | Paweł |
 |---|---|---|---|
-| Jedno zdanie | 3 | | |
+| Jedno zdanie | 2 | | |
 | Pierwsze 10 sekund | 3 | | |
 | Hak ciekawości | 2 | | |
-| Głębia | 2 | | |
-| Inni gracze | 2 | | |
-| Pokazanie się | 2 | | |
-| Moment do nagrania | 3 | | |
+| Głębia | 1 | | |
+| Inni gracze | 1 | | |
+| Pokazanie się | 1 | | |
+| Moment do nagrania | 2 | | |
 | Powód powrotu | 1 | | |
-| Trend | 2 | | |
+| Trend | 1 | | |
 | Koszt dla nas | 2 | | |
 
 ## Krytyka agenta
+**Ocena odświeżona 2026-11-22 (agent): 16/30, werdykt: popraw.** Fizyka nadal rośnie, ale w drugiej generacji: Hyper Realistic Ragdoll miał 22.11 o 18:10 UTC 141 tys. graczy, a czyste piaskownice pierwszej fali (ponad 100 gier) tracą 25–45% tygodniowo. Pomysł nie ma ani majątku z dochodem, ani niczego do stracenia, a bez tego gasną nawet gry z oceną 98%; głębia kombo istnieje tylko na papierze (gracze klikną najbliższego potwora). Wyrasta z gry o uderzaniu, którą właściciel porzucił jako nudną i której falę uznał za minioną — stąd 22 → 16, dolna granica „popraw”, na końcu kolejki. Źródła: [[Fale na Roblox 2026 i gdzie jest otwarcie]] · [[Wschodzące trendy 2026-11-22]] · [[Anatomia pętli, która trzyma (2026-11-22)]] · [[Walidacja wariantu nocne fale i potwory-obrońcy (2026-11-22)]] · [[Lekcje z prototypów]].
+
 Pre-mortem — dlaczego może przegrać:
 1. Fizyka wielu potworów na serwerze → przycięcia na telefonie i rozjazd obrazu między graczami.
   2. Gracze nie planują kombo, tylko klikają najbliższego — głębia istnieje tylko na papierze.

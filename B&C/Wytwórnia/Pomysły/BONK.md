@@ -4,8 +4,8 @@ typ: pomysł-gry
 gra: BONK
 etap: porzucona
 zdanie: "Bonk monsters into the sky, hatch pets, get stronger, unlock bigger lands."
-ocena_agenta: 19
-werdykt_agenta: popraw
+ocena_agenta: 15
+werdykt_agenta: odrzuć
 ocena_karol: 
 ocena_pawel: 
 d1: 
@@ -49,15 +49,17 @@ Dzienny prezent i kolejne krainy — słaby.
 | Jedno zdanie | 3 | | |
 | Pierwsze 10 sekund | 3 | | |
 | Hak ciekawości | 1 | | |
-| Głębia | 1 | | |
+| Głębia | 0 | | |
 | Inni gracze | 1 | | |
 | Pokazanie się | 2 | | |
-| Moment do nagrania | 2 | | |
+| Moment do nagrania | 1 | | |
 | Powód powrotu | 1 | | |
-| Trend | 2 | | |
+| Trend | 0 | | |
 | Koszt dla nas | 3 | | |
 
 ## Krytyka agenta
+**Ocena odświeżona 2026-11-22 (agent): 15/30, werdykt: odrzuć.** Karol zagrał 20.11 i gra znudziła go po kilku minutach: następny krok zawsze wiadomo z góry, a słabsze potwory nie mają sensu, bo opłaca się bić tylko najlepszą zagrodę — to dosłownie „tylko większa liczba”, więc głębia 0. Właściciel uznał, że fala gier „uderzaj dla liczby” minęła (Kick a Lucky Block spadł z 1,7 mln do ok. 11 tys. graczy naraz), stąd trend 0. Wysoko zostają tylko łatwe wejście i koszt, bo wszystko jest zbudowane; dawny werdykt „popraw” był sprzeczny z porzuceniem. Źródła: [[Lekcje z prototypów]] · [[Radar trendów]] · [[Karta oceny pomysłu]].
+
 - **Karol ma rację** (20.11, [[Lekcje z prototypów]]): BONK jest prosty i logiczny, ale nie ma haka ani głębi — nudzi po kilku minutach. To nie wina motywu „bonk”, tylko pętli „liczba rośnie” bez niczego nieznanego.
 - **Najmocniejszy argument za obecną wersją:** symulatory „liczba rośnie” trzymają dzieci (np. Pet Simulator); Karol grał sam, bez innych graczy, i nie jest graczem docelowym. **Odpowiedź:** tamte gry mają ogromną głębię (setki petów, handel, wydarzenia); my nie mamy żadnej warstwy, która to zastępuje — więc ten argument nie ratuje obecnej wersji.
 - **„Viral na bonki przeminął” — w połowie prawda** (badanie 20.11, [[Radar trendów]]): format „uderzaj dla liczby” umarł (Kick a Lucky Block: 1,7 mln graczy naraz → ok. 11 tys.), a BONK dziś to właśnie on. Ale „uderz i zobacz, co się stanie” rośnie najszybciej (Hyper Realistic Ragdoll: od zera do 113–132 tys. w trzy tygodnie). BONK ma czasownik z trendu, ale każdy lot jest taki sam — wariant z reakcjami potworów i prawdziwą fizyką: [[BONK Chain Reaction]] (22/30).

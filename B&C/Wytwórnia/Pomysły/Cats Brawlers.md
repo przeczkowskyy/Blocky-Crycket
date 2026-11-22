@@ -2,10 +2,10 @@
 status: propozycja
 typ: pomysł-gry
 gra: Cats Brawlers
-etap: pomysł
+etap: ocena
 zdanie: "kompletowanie kociej druzyny, autonomiczna farma, jeden przycisk kocia ekipa rosza pokonywac rywali na mapie, zdobywa za to zloto ( rybki ), skrzynki zabawamki = itemki dla kotow, caly kompletny set kotka = skill, trenowanie kotkow hp def speed"
-ocena_agenta:
-werdykt_agenta:
+ocena_agenta: 15
+werdykt_agenta: odrzuć
 ocena_karol:
 ocena_pawel:
 d1:
@@ -44,18 +44,20 @@ kocie stroje, komlet aktywuje umiejetnosc, grind chec posiadania najelpeszgo kot
 ## Karta oceny
 | Kryterium | Agent | Karol | Paweł |
 |---|---|---|---|
-| Jedno zdanie | | | |
-| Pierwsze 10 sekund | | | |
-| Hak ciekawości | | | |
-| Głębia | | | |
-| Inni gracze | | | |
-| Pokazanie się | | | |
-| Moment do nagrania | | | |
-| Powód powrotu | | | |
-| Trend | | | |
-| Koszt dla nas | | | |
+| Jedno zdanie | 1 | | |
+| Pierwsze 10 sekund | 2 | | |
+| Hak ciekawości | 1 | | |
+| Głębia | 2 | | |
+| Inni gracze | 1 | | |
+| Pokazanie się | 2 | | |
+| Moment do nagrania | 1 | | |
+| Powód powrotu | 2 | | |
+| Trend | 1 | | |
+| Koszt dla nas | 2 | | |
 
 ## Krytyka agenta
+**Ocena odświeżona 2026-11-22 (agent): 15/30, werdykt: odrzuć.** Rdzeń „jeden przycisk i drużyna walczy sama” to bierne oglądanie walki, które odpadło po graniu w Pet Arenę 21.11 i w automatycznej walce głównej gry. Armia rośnie (Summon a Pet Army: średnia z 7 dni 7,9 tys. wobec ok. 0,8 tys. tydzień wcześniej; 22.11 o 18:10 UTC 11,6 tys.), ale gry „armia i obrona bazy” tracą 20–53% tygodniowo, a Cat Battles, na którą powołuje się pierwsza ocena, ma 4,9 tys., nie 15 tys. Nagrodą są skrzynki z przedmiotami zamiast żywej odsłony i nie widać momentu do nagrania; wcześniejsza karta tego samego autora ma lepszą część (pościg kota-policjanta). Ocena wzrośnie, jeśli gracz sam steruje kotem-przywódcą, a drużyna idzie za nim. Etap: pomysł → ocena. Źródła: [[Wschodzące trendy 2026-11-22]] · [[Walidacja wariantu nocne fale i potwory-obrońcy (2026-11-22)]] · [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]] · [[Lekcje z prototypów]] · [[Super Kitty Brawlers]].
+
 **Pierwsza ocena agenta (2026-11-22), bez sprawdzenia rynku po mechanice — to hipoteza, nie werdykt.**
 - **Za:** kolekcja i komplety strojów dają długi cel (grind „najlepszego kota”), a armia, która idzie za graczem i walczy, rośnie: Summon a Pet Army (od 20.10) — średnia z tygodnia 7,9 tys. wobec ok. 0,8 tys. tydzień wcześniej, sesja ok. 30 min. Koty mają dziś nowe gry z ponad tysiącem graczy (Cat Battles ok. 15 tys., 7 Days Cat-Sitting ok. 6 tys.).
 - **Przeciw:** „jeden przycisk, drużyna walczy sama” to dokładnie to, co odpadło w Pet Arenie — Karol po graniu: „cały czas to samo, zero dynamiki”; diagnoza z 13.11 nie znalazła hitu z biernym oglądaniem walki. Gry „armia i obrona bazy” tracą 20–53% tygodniowo ([[Walidacja wariantu nocne fale i potwory-obrońcy (2026-11-22)]]). Pomysł jest bliski wcześniejszej karcie [[Super Kitty Brawlers]].

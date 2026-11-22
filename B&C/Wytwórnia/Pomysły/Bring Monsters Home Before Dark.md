@@ -4,7 +4,7 @@ typ: pomysł-gry
 gra: Bring Monsters Home Before Dark
 etap: porzucona
 zdanie: "Lead monsters home by day — every night the Giant comes and takes the one that sticks out above your fence."
-ocena_agenta:
+ocena_agenta: 15
 werdykt_agenta: odrzuć
 ocena_karol:
 ocena_pawel:
@@ -51,18 +51,20 @@ Stay the Night (dom, lokatorzy płacący czynsz, nocna bestia): ok. 12 tys. grac
 ## Karta oceny
 | Kryterium | Agent | Karol | Paweł |
 |---|---|---|---|
-| Jedno zdanie | | | |
-| Pierwsze 10 sekund | | | |
-| Hak ciekawości | | | |
-| Głębia | | | |
-| Inni gracze | | | |
-| Pokazanie się | | | |
-| Moment do nagrania | | | |
-| Powód powrotu | | | |
-| Trend | | | |
-| Koszt dla nas | | | |
+| Jedno zdanie | 1 | | |
+| Pierwsze 10 sekund | 2 | | |
+| Hak ciekawości | 2 | | |
+| Głębia | 2 | | |
+| Inni gracze | 1 | | |
+| Pokazanie się | 2 | | |
+| Moment do nagrania | 1 | | |
+| Powód powrotu | 2 | | |
+| Trend | 1 | | |
+| Koszt dla nas | 1 | | |
 
 ## Krytyka agenta
+**Ocena odświeżona 2026-11-22 (agent): 15/30, werdykt: odrzuć.** Karol porzucił pomysł 22.11; ocenę dopisuję tylko dla porządku lejka. Szukanie po mechanice pokazało, że „przynieś zwierzęta do domu” to cmentarz (najbliższa gra, Save Animals z 03.11, miała ok. 160 graczy po 19 dniach), rodzina „dom i noc” daje zwykle 7–20 tys. w szczycie i spadek do kilku procent w dwa miesiące, a zmierzchu nikt nie nagrywa. Jedyny sygnał przeciw: Stay the Night miała 22.11 o 18:10 UTC 22,7 tys. graczy, więcej niż jej wcześniejszy szczyt 20 tys. — to jeden niedzielny odczyt, nie średnia, i porzucenia nie zmienia. Źródła: [[Walidacja kierunku noc i Olbrzym (2026-11-22)]] · [[Walidacja wariantu nocne fale i potwory-obrońcy (2026-11-22)]] · [[Kierunki z rynku 2026-11-22]] · [[Wschodzące trendy 2026-11-22]].
+
 Największe ryzyka: najwięcej części ruchomych z trzech pomysłów; chodzenie tam i z powrotem może nużyć; Karol lubi grę bez presji czasu, a ten pomysł ją wprowadza; dowód z rynku to jedna powoli rosnąca gra. Przed budową poszukać szerzej gier, które próbowały tego samego i przegrały.
 
 ## Zabawka

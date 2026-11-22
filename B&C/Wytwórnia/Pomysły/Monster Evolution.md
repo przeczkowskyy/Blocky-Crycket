@@ -4,7 +4,7 @@ typ: pomysł-gry
 gra: Monster Evolution
 etap: prototyp
 zdanie: "Hatch as a tiny dragon, eat and evolve through eight stages into the Ancient Dragon — every stage you reach guards your lair and grows your hoard."
-ocena_agenta: 26
+ocena_agenta: 21
 werdykt_agenta: popraw
 ocena_karol:
 ocena_pawel:
@@ -22,6 +22,8 @@ tags: [wytwórnia, pomysł]
 **Stan wieczorem 22.11:** etapy 1–3 i przeróbka na smoka są zbudowane i opublikowane prywatnie (https://www.roblox.com/games/93704244631419); roboczy tytuł „Dragon Lair Evolution” (pytanie 84, bez decyzji). Czeka: granie z telefonu, wybór tytułu, docelowy model smoka, gracze do próby.
 
 Karol zdał wybór na liczby („liczą się liczby i statystyki”) i zlecił budowę. Kierunek wybrany z pomiaru rynku ([[Kierunki z rynku 2026-11-22]]), sprawdzony po mechanice ([[Walidacja kierunku jesteś potworem (2026-11-22)]]) i przeprojektowany według wyniku: **stała drabina ośmiu form zamiast losowania formy, legowisko z zarabiającymi formami jako nasz wyróżnik, łagodna strata**. Projekt, etapy, progi u prawdziwych graczy i warunek z rynku: [[Projekt próbki — Monster Evolution]]. Uczciwa skala: zwykle 0,5–5 tys. graczy naraz w szczycie, powyżej 10 tys. mniej więcej raz na dziesięć. Stara ocena liczbowa na karcie (26) pochodzi z 20.11 i nie była odnawiana — karta pomyliła się już dwa razy.
+
+**Pomysł Karola z sesji głównej 22.11 (propozycja D-133, nic nie zatwierdzone):** zacząć od ameby i iść przez kolejne organizmy aż do gadów, z osobnym serwerem na każdy poziom. Budowy to nie zmienia; agent w tym kształcie nie poleca (uzasadnienie w D-133), wybór w pytaniu 86. Zapis: [[Sesja główna 2026-11-22 — zapis ustaleń]].
 
 Zastrzeżenie agenta (D-114): niski sufit fali, dwa z trzech elementów pierwotnego zwrotu ma już lider, a hity tego gatunku gasną w 4–8 tygodni. Dlatego budowa idzie etapami, z progami i z warunkiem z rynku na 29.11. Opis poniżej to pierwotny pomysł z 20.11 (rozgałęzienia, wydarzenie „Apex”) — obowiązuje projekt próbki.
 
@@ -61,16 +63,18 @@ ok. 30 potworów jako stadia (3 gałęzie po 8–10), silnik walki (jedna umiej�
 |---|---|---|---|
 | Jedno zdanie | 3 | | |
 | Pierwsze 10 sekund | 3 | | |
-| Hak ciekawości | 3 | | |
-| Głębia | 2 | | |
-| Inni gracze | 3 | | |
-| Pokazanie się | 3 | | |
-| Moment do nagrania | 3 | | |
-| Powód powrotu | 2 | | |
-| Trend | 3 | | |
-| Koszt dla nas | 1 | | |
+| Hak ciekawości | 2 | | |
+| Głębia | 1 | | |
+| Inni gracze | 2 | | |
+| Pokazanie się | 2 | | |
+| Moment do nagrania | 2 | | |
+| Powód powrotu | 1 | | |
+| Trend | 2 | | |
+| Koszt dla nas | 3 | | |
 
 ## Krytyka agenta
+**Ocena odświeżona 2026-11-22 (agent): 21/30, werdykt: popraw.** Gra jest zbudowana i opublikowana prywatnie, więc następny krok kosztuje mało: próba z 8–12 graczami spoza zespołu, bez dobudowywania czegokolwiek, bo rozstrzygać mają liczby od graczy. Fala jest w środkowej lub późnej fazie: dobra druga generacja ma zwykle szczyt 0,5–5 tys. graczy naraz, gotowy klon lidera ze smokiem miał 22.11 o 18:10 UTC 421 graczy, a sam lider Ant Evolution 36,4 tys., czyli mniej niż rano i w południe (41,5–42,2 tys.), podczas gdy FERAL, Sandworm Playground czy Clean The Ballpit miały o tej porze 1,1–1,7 razy więcej niż rano. To jeden odczyt, możliwy początek spadku lidera (wniosek), a nie pomiar trendu. Ocena spada z 26 na 21 przez głębię i powód powrotu: agent budujący sam pisze, że minuty 5–15 to głównie rosnące liczby, a wydarzeń z zegara jeszcze nie ma; warunek z rynku na 29.11 (średnia lidera spada o ponad 30% w tygodniu) zostaje. Źródła: [[Projekt próbki — Monster Evolution]] · [[Walidacja kierunku jesteś potworem (2026-11-22)]] · [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]] · [[Wschodzące trendy 2026-11-22]] · [[Lekcje z prototypów]] · [[Karta oceny pomysłu]].
+
 Pre-mortem — dlaczego może przegrać:
 1. Frustracja: dzieci zjadane przez większych wychodzą po pierwszej śmierci (Ant Evolution łagodzi to limitem stadiów i utratą tylko części postępu — trzeba to skopiować).
   2. Koszt: 30 form × animacje ruchu, hitboxy, umiejętności — to 2–3 tygodnie, nie tydzień; nasze modele mogą nie mieć animacji chodu.

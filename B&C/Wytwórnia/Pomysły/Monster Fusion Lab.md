@@ -4,7 +4,7 @@ typ: pomysł-gry
 gra: Monster Fusion Lab
 etap: ocena
 zdanie: "Throw two monsters into the cauldron — what comes out?"
-ocena_agenta: 21
+ocena_agenta: 16
 werdykt_agenta: popraw
 ocena_karol:
 ocena_pawel:
@@ -53,16 +53,18 @@ potwory z Blendera (klockowe, więc części da się łączyć), jajka, efekty.
 |---|---|---|---|
 | Jedno zdanie | 2 | | |
 | Pierwsze 10 sekund | 2 | | |
-| Hak ciekawości | 3 | | |
+| Hak ciekawości | 2 | | |
 | Głębia | 2 | | |
-| Inni gracze | 2 | | |
-| Pokazanie się | 3 | | |
+| Inni gracze | 1 | | |
+| Pokazanie się | 2 | | |
 | Moment do nagrania | 2 | | |
-| Powód powrotu | 2 | | |
-| Trend | 2 | | |
+| Powód powrotu | 1 | | |
+| Trend | 1 | | |
 | Koszt dla nas | 1 | | |
 
 ## Krytyka agenta
+**Ocena odświeżona 2026-11-22 (agent): 16/30, werdykt: popraw.** Fali nie ma: gry z łączeniem stworów są dziś małe (Merge Plants VS Zombies ok. 0,8 tys., Merge Titan Army 237, Merge an Animal 169 graczy; łączenie jako dodatek w Throw Food For Baddies 4,4 tys.). Hak „co wyjdzie z kotła” jest prawdziwy, ale to odsłona w jednym kroku i bez czynności między fuzjami, a właściciel 22.11 wskazał jako działający przepis czynność, ulepszanie bohatera i stwory dające złoto na sekundę. Łączenie części modeli o różnych kształtach pozostaje największym ryzykiem kosztu; 21 → 16. Źródła: [[Walidacja wariantu nocne fale i potwory-obrońcy (2026-11-22)]] · [[Walidacja kierunku jesteś potworem (2026-11-22)]] · [[Kopie pętli rzutu — listopad 2026]] · [[Anatomia pętli, która trzyma (2026-11-22)]] · [[Lekcje z prototypów]].
+
 Pre-mortem — dlaczego może przegrać:
 (1) technika: łączenie części 30 modeli o różnych szkieletach — hybrydy wyglądają jak błąd, a nie jak żart; (2) brak czynności między fuzjami — co robię przez 5 minut?; (3) handel ściąga oszustwa, a bez handlu gra z innymi jest słaba.
 

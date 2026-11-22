@@ -4,7 +4,7 @@ typ: pomysł-gry
 gra: Super Kitty Brawlers
 etap: ocena
 zdanie: "Catch street cats, dress them as heroes, train them and brawl."
-ocena_agenta: 21
+ocena_agenta: 17
 werdykt_agenta: popraw
 ocena_karol: 
 ocena_pawel: 
@@ -45,16 +45,18 @@ Lepsze koty, wskaźnik szczęścia do rzadkich kotów, waluta-rybki płynąca pa
 |---|---|---|---|
 | Jedno zdanie | 2 | | |
 | Pierwsze 10 sekund | 3 | | |
-| Hak ciekawości | 3 | | |
-| Głębia | 2 | | |
-| Inni gracze | 2 | | |
+| Hak ciekawości | 2 | | |
+| Głębia | 1 | | |
+| Inni gracze | 1 | | |
 | Pokazanie się | 2 | | |
-| Moment do nagrania | 3 | | |
+| Moment do nagrania | 2 | | |
 | Powód powrotu | 2 | | |
 | Trend | 1 | | |
 | Koszt dla nas | 1 | | |
 
 ## Krytyka agenta
+**Ocena odświeżona 2026-11-22 (agent): 17/30, werdykt: popraw.** Karta liczyła Cat Battles jako rosnącą (ok. 15 tys.); 22.11 o 18:10 UTC miała 4,9 tys. przy szczycie 100 tys. w październiku, a koty w nowych grach mają po 1–6 tys. (7 Days Cat-Sitting ok. 6 tys., Steal a cat 1,3 tys.). Najmocniejsza część to pościg kota-policjanta: kradzież i ucieczka to szablon Steal An Egg (696 tys. graczy o tej samej porze), z którego nowa fantazja wciąż daje gry po kilkanaście tysięcy (Scare Your Favorite Streamer ok. 18 tys.). Reszta to za dużo systemów, cudze kostiumy bohaterów i najwyższy koszt nowych modeli; 21 → 17 — zostawić jedną czynność, pościg. Źródła: [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]] · [[Wschodzące trendy 2026-11-22]] · [[Fale na Roblox 2026 i gdzie jest otwarcie]] · [[Pet Arena — ocena wobec trendu 2026-11-21]] · [[Karta oceny pomysłu]].
+
 - **Mocne:** kot-policjant (ryzyko utraty i najzabawniejszy klip), koty idące ulicą z dymkami (ciekawość, co przyjdzie), koty jako bohater (Cat Battles rośnie).
 - **Karol ma rację, że za dużo systemów** — trzy źródła waluty (pasywne z działki, walki, środek mapy) plus działka, ulica, policjant, stroje, kopanie, trening, drabinka walk i arena. Każda z tych rzeczy to osobna gra; razem nie ma jednej czynności, o której Karol pytał na sesji („po co te kotki, czy mają się bić?”).
 - **Trend 1/3:** „taśma z przechodzącymi stworkami do zgarniania” to wzorzec Steal a Brainrot, a jego kopie gasną w miesiąc ([[Radar trendów]]).

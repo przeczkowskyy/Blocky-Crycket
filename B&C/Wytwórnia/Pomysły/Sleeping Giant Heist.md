@@ -4,8 +4,8 @@ typ: pomysł-gry
 gra: Sleeping Giant Heist
 etap: ocena
 zdanie: "Sneak into a sleeping giant's lair, steal its eggs — don't wake it up."
-ocena_agenta: 25
-werdykt_agenta: buduj
+ocena_agenta: 19
+werdykt_agenta: popraw
 ocena_karol:
 ocena_pawel:
 d1:
@@ -53,16 +53,18 @@ Strażnicy z BONK jako olbrzymi, jajka i 15 petów, generator klocków na legowi
 |---|---|---|---|
 | Jedno zdanie | 3 | | |
 | Pierwsze 10 sekund | 2 | | |
-| Hak ciekawości | 3 | | |
+| Hak ciekawości | 2 | | |
 | Głębia | 2 | | |
-| Inni gracze | 3 | | |
+| Inni gracze | 2 | | |
 | Pokazanie się | 2 | | |
-| Moment do nagrania | 3 | | |
-| Powód powrotu | 2 | | |
-| Trend | 3 | | |
-| Koszt dla nas | 2 | | |
+| Moment do nagrania | 2 | | |
+| Powód powrotu | 1 | | |
+| Trend | 2 | | |
+| Koszt dla nas | 1 | | |
 
 ## Krytyka agenta
+**Ocena odświeżona 2026-11-22 (agent): 19/30, werdykt: popraw.** Wspólne skradanie i „coś poluje, grasz ze znajomymi” rośnie: 22.11 o 18:10 UTC Fake Sick (utworzona 30.10) miała 27 tys. graczy, a 100 Miles Down the River 76,6 tys.; zarazem gry tej grupy zwykle gasną w 2–4 tygodnie, potrzebują znajomych na serwerze, a Fake Sick przy 10 tys. graczy miała filmy do 455 wyświetleń. Jajka jako łup to teren pełen kopii: gry „… and Steal an Egg” po 10 tygodniach mają poniżej 2 tys., hasło „hatch” to 24 nowe gry z łącznie 11 tys. graczy. Najtrudniejsza część to olbrzym, który słyszy i szuka drogi (koszt 1), a powrót opiera się tylko na wykluwaniu w czasie. 25 → 19: kierunek żywy, ale łup i olbrzym do zmiany, i jeszcze bez szukania przegranych po mechanice. Źródła: [[Wschodzące trendy 2026-11-22]] · [[Fale na Roblox 2026 i gdzie jest otwarcie]] · [[Walidacja kierunku noc i Olbrzym (2026-11-22)]] · [[Kierunki z rynku 2026-11-22]] · [[Karta oceny pomysłu]].
+
 Pre-mortem — dlaczego może przegrać:
 1. SI olbrzyma (słyszenie, szukanie drogi w generowanych korytarzach) wychodzi głupio — to najtrudniejsza część.
   2. Po trzech legowiskach każda runda jest taka sama — za mało odmian.
