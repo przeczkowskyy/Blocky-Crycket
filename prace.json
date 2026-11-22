@@ -2,6 +2,20 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-22T12:39:15+01:00",
- "prace": []
+ "aktualizacja": "2026-11-22T13:02:58+01:00",
+ "prace": [
+  {
+   "id": "walidacja-jestes-potworem",
+   "tytul": "Walidacja kierunku: jesteś potworem i ewoluujesz",
+   "stan": "w_toku",
+   "start": "2026-11-22T13:02:58+01:00",
+   "koniec_szacowany": "2026-11-22T13:42:58+01:00",
+   "aktualizacja": "2026-11-22T13:02:58+01:00",
+   "obszary": [
+    "B&C/Wytwórnia/Pomysły"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  }
+ ]
 }
