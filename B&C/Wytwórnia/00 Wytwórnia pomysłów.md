@@ -29,6 +29,7 @@ Gra Roblox, która **zarabia i ma realną szansę na viral**: prosta i logiczna 
 - **Wytwórnia ma skracać drogę do testu, a nie ją wydłużać** — narzędzia (panel, mózg) robimy tylko w takim zakresie, w jakim przyspieszają decyzję, co budować.
 
 ## Notatki
+- **Analiza następnej gry (22.11, na Fable):** [[Następna gra — rekomendacja 2026-11-22]] (jedna strona) · [[Anatomia pętli, która trzyma (2026-11-22)]] · [[Fale na Roblox 2026 i gdzie jest otwarcie]] · [[Wschodzące trendy 2026-11-22]] · [[Trzy pomysły na następną grę (2026-11-22)]]. Rekomendowany pomysł: [[Bring Monsters Home Before Dark]] — po 30 minutach grania Karola w trzy istniejące gry.
 - **Rozbiór wzoru (22.11):** [[Rozbiór wzoru — Throw Food For Animals]] · [[Kopie pętli rzutu — listopad 2026]] · [[Zasady pętli z odsłonięciem]] — nie kopiujemy gry, bierzemy zasady.
 - **Teraz (21.11, po zamknięciu Pet Areny): [[Kierunki z rynku 2026-11-21]]** — cztery kierunki wyprowadzone z tego, co rośnie w tym tygodniu; wybór przez zabawki (pytanie 81).
 - **W budowie od 20.11: [[Pet Arena]]** (D-118; agent 28/30, Karol 28/30) — projekt: [[Pet Arena — projekt prototypu]]. BONK porzucony (D-117), pomysł Pawła: [[Super Kitty Brawlers]] (21/30, do poprawy).

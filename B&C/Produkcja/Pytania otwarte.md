@@ -767,4 +767,11 @@ Dopisek z 2026-11-21 (po prośbie Karola o lepsze pomysły wyprowadzone z rynku)
 **Odpowiedź:**
 - Karol (2026-11-21): „Ok, puść je” — dwie zabawki polecone przez agenta („Eat & Evolve” i „Lure a Monster”). Wybór po graniu na telefonie.
 
+## 82. Następna gra: zagrać w trzy gry i wybrać kierunek
+- Analiza z 22.11 poleca pomysł „Zdąż przed nocą” (w dzień wyprowadzasz potwory z nor do obozu, o zmierzchu Olbrzym zabiera to, co nie zdążyło za bramę); pewność niska do średniej.
+- Zanim cokolwiek zbudujemy: Karol gra po 10 minut w Stay the Night, Steal An Egg i Clean The Ballpit! (pół godziny, bez kosztu).
+- Do wyboru: (a) wciąga Stay the Night — próbka „Zdąż przed nocą” (3–4 wieczory); (b) wciąga Ballpit — próbka „Odkop potwora” (2–3 wieczory); (c) nic nie wciąga — nie budujemy; (d) inny kierunek.
+
+Szczegóły: [[Następna gra — rekomendacja 2026-11-22]] (jedna strona), pełne opisy: [[Trzy pomysły na następną grę (2026-11-22)]], karta pomysłu: [[Bring Monsters Home Before Dark]]. Ważny wniosek analizy: sam pomysł to mniejsza część wyniku — gra-wzór była mała przez pięć tygodni i wybiła się cotygodniowymi aktualizacjami.
+**Odpowiedź:**
 
