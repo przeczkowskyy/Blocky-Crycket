@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: etap 3 gotowy i opublikowany prywatnie; start przeróbki na smoka)
+- **Etap 3 próbki** (ten sam agent na Opus): legowisko w świecie ze skarbem i strefą bezpieczną, poziomy trofeów, odmiany przy ewolucji z jawnymi szansami, zapis postępu z blokadą sesji i zarobkiem pod nieobecność do 2 godzin, boss w pięciu stopniach, Olbrzym jako boss serwera. Testy logiki 21/21, próba w Studio 21/21 (z wyjściem i powrotem gracza), układ telefonu 7/7. Stan, liczby i wady: [[Projekt próbki — Monster Evolution]]. `tools/zapis_prob.py`: kontener gry dopisany do listy znacznika próby.
+- **Prywatność:** agent budujący złapał zrzut z prawdziwą nazwą konta w ogłoszeniu o bossie, usunął go i zrobił na nowo; w Studio ogłoszenia mówią teraz „Player N”. Do repozytorium nic takiego nie trafiło.
+- **Prywatna publikacja** etapu 3 (zgoda Karola z 22.11), potwierdzona zmianą znacznika czasu wersji. Publicznie nic.
+- **Przeróbka na smoka** ruszyła po ustaleniu roboczym pod pytaniem 84. Zadania zaktualizowane; raport ze zrzutami w panelu, film demo wysłany Karolowi.
+
 ## 2026-11-22 · Claude Code u Karola (Monster Evolution: zwierzę — smok)
 - Karol skłania się ku smokowi („więcej zdolności uda nam się zrobić na smokach”), agent zmienił zalecenie z małpy na smoka; zapis pod pytaniem 84 jako ustalenie robocze (bez numeru decyzji). Smok chodzący, bez swobodnego latania; tytuł do wyboru spośród wolnych; przeróbka po etapie 3.
 

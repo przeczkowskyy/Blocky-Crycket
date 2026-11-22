@@ -100,6 +100,17 @@ Dobrze zrobiona druga generacja w tej fali ma zwykle szczyt 0,5–5 tys. graczy 
 - **Prywatna publikacja:** Karol 22.11 („Tak puścimy”); wersja etapu 2 opublikowana na prywatnym miejscu testowym (https://www.roblox.com/games/93704244631419), potwierdzona zmianą znacznika czasu wersji. Dotyk na prawdziwym telefonie sprawdzi dopiero to granie.
 - **Formy są w tabeli danych** (nazwa, model, skala, umiejętność, ustawienia ruchu, opcjonalne animacje); nowy model spoza Pet Areny wymaga drobnej zmiany w wyszukiwaniu modelu.
 
+## Po etapie 3 (2026-11-22)
+- **Legowisko w świecie:** 12 działek na brzegu łąki, gracz startuje we własnej. Na ośmiu postumentach stoją zdobyte formy, widoczne dla wszystkich; złoto z trofeów rośnie jako widoczna kupka i zbiera się je, wchodząc do środka. Własne legowisko to strefa bezpieczna. W grze nazywa się LAIR, a złoto w nim HOARD.
+- **Ujście złota:** pięć poziomów każdego trofeum (kupowane tylko w legowisku), poziomy 4–5 ulepszeń.
+- **Odmiany** losuje serwer przy każdej ewolucji: GOLD 8%, CRYSTAL 3%, RUBY 1%, RAINBOW 0,2% (szanse widoczne w panelu); kokon świeci kolorem odmiany przed odsłoną; trofeum odmiany mnoży dochód formy razy 2, 4, 8 albo 20. Nic nie da się kupić.
+- **Zapis:** złoto, skarb, ulepszenia, zdobyte formy, odmiany, poziomy trofeów, stopień bossa; po wejściu gracz zaczyna od formy 1, reszta zostaje. Legowisko zarabia pod nieobecność do 2 godzin. Blokada sesji chroni przed nadpisaniem; w Studio i w próbach zawsze magazyn w pamięci.
+- **Boss** wraca w pięciu stopniach (życie 220 → 980, skrzynia 1500 → 20 000), pierwszy raz na każdym stopniu daje trofeum bossa. **Olbrzym** od dwóch graczy staje się celem serwera.
+- **Tempo z symulacji:** forma 2 po 0:20, forma 3 po 1:18, pierwsze ulepszenie 1:38, pierwszy pościg 1:52, forma 5 po ok. 5:30–6:00 (przy sześciu przebiegach 27 s szybciej niż okno 6–7 min), Olbrzym po ok. 13:15, najdłuższa przerwa bez nowości 2:27.
+- **Znane wady:** z legowiska na brzegu do pierwszej kulki bywa ponad 10 s; odmiany widać tylko na własnym stworze i trofeach; tryb Olbrzyma-bossa sprawdzony tylko w testach bez Studio (w próbie jest jeden gracz).
+- **Ocena agenta budującego:** minuty 5–15 są lepsze (co 1–2 minuty jest powód do działania), ale to głównie rosnące liczby; powroty do legowiska mogą nużyć, a odmiany przy łącznie 12% będą rzadkie w krótkiej sesji.
+- **Opublikowany prywatnie** (https://www.roblox.com/games/93704244631419), potwierdzony zmianą znacznika czasu wersji.
+
 ## Propozycja: jedno zwierzę zamiast ośmiu różnych potworów (2026-11-22)
 Karol zapytał, czy nie zrobić jednego zwierzęcia. Agent się zgadza: rosnące gry tej fali mają jednego rozpoznawalnego stwora w tytule, ogólne tytuły nie żyją, filmy niesie jedna historia („od słabego do króla”), a jedno zwierzę to jeden szkielet i jeden chód na osiem form. Wybór z liczb: [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]] — agent proponuje małpę (małpka → goryl → olbrzymi goryl), bo dwunożną postać da się najpewniej oprzeć na standardowym szkielecie postaci Roblox z gotowym chodem, co zamyka największą lukę wobec lidera bez pracy w Blenderze. Do sprawdzenia przez budującego na początku przeróbki. Kod etapu 1 ma formy w tabeli danych, więc zmiana nie rusza pętli. Decyzja: pytanie 84.
 
@@ -112,7 +123,8 @@ Karol zapytał, czy nie zrobić jednego zwierzęcia. Agent się zgadza: rosnące
 ## Stan implementacji
 - [x] Etap 1 — pełna pętla w najmniejszej postaci (2026-11-22: testy logiki 12/12, próba w Studio 13/13 bez błędów konsoli, układ telefonu 6/6, tempo z symulacji zgodne z celami)
 - [x] Etap 2 — pierwsze dziesięć minut (2026-11-22: testy logiki 15/15, próba w Studio 15/15 bez błędów konsoli, układ telefonu 6/6; jeden cel tempa niespełniony — najdłuższa przerwa bez nowości 3:02 wobec 2:30); wersja opublikowana prywatnie
-- [ ] Etap 3 — legowisko w świecie, złoto pod nieobecność, odmiany, zapis, Olbrzym jako boss, wydarzenia, wersja do prywatnej publikacji
+- [x] Etap 3 — legowisko w świecie, skarb, poziomy trofeów, odmiany, zapis z zarobkiem pod nieobecność, boss w pięciu stopniach, Olbrzym jako boss serwera (2026-11-22: testy logiki 21/21, próba w Studio 21/21, układ telefonu 7/7; opublikowany prywatnie; wydarzenia z zegara odłożone)
+- [ ] Przeróbka na smoka — osiem stadiów jednego zwierzęcia, model z klocków na start (w budowie od 2026-11-22; pytanie 84)
 - [ ] Etap 4 — próba z 8–12 graczami
 
 ## Powiązane

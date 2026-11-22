@@ -1,0 +1,26 @@
+{
+ "id": "r-20261122-163339-d007",
+ "tytul": "Monster Evolution: etap 3 (legowisko, zapis, odmiany) opublikowany prywatnie",
+ "opis_md": "**Monster Evolution — etap 3 gotowy i opublikowany prywatnie: https://www.roblox.com/games/93704244631419**\n\n## Co doszło\n- Legowisko w świecie (w grze: LAIR): własna działka na brzegu łąki, zdobyte formy stoją na postumentach i widzą je inni gracze.\n- Skarb (HOARD): złoto z trofeów rośnie jako kupka; zbierasz je, wchodząc do legowiska. W swoim legowisku nikt cię nie zje.\n- Poziomy trofeów jako stałe ujście złota.\n- Odmiany przy ewolucji: złota 8%, kryształowa 3%, rubinowa 1%, tęczowa 0,2%. Kokon świeci kolorem odmiany przed odsłoną. Szanse są widoczne w panelu.\n- Zapis postępu; legowisko zarabia także pod nieobecność gracza, do 2 godzin.\n- Boss wraca w pięciu coraz mocniejszych stopniach; gracz-Olbrzym staje się celem serwera.\n\n## Sprawdzone\n- Testy logiki 21/21, próba w Studio 21/21 bez błędów (także wyjście i powrót gracza), układ na telefonie 7/7.\n- Najdłuższa przerwa bez nowości w pierwszych 10 minutach: 2:27 (cel 2:30).\n\n## Słabe miejsca\n- Z legowiska do pierwszej kulki bywa ponad 10 sekund.\n- Odmiany widać tylko na własnym stworze.\n- Tryb Olbrzyma jako bossa serwera nie był sprawdzony z dwoma prawdziwymi graczami.\n- Powroty do legowiska mogą nużyć.\n\n## Co dalej\n- Przeróbka na smoka: osiem stadiów jednego zwierzęcia (pytanie 84).\n- Do ludzi: zagrać z telefonu, wybrać tytuł ze słowem „Dragon”, zebrać graczy do próby.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-22T16:33:39+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "EwolucjaGra",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Projekt próbki — Monster Evolution",
+   "etykieta": "Projekt próbki — Monster Evolution"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ]
+}
