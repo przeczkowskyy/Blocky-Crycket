@@ -551,6 +551,12 @@ def cmd_golem_grozny():
                    os.path.join(PODGLAD, "20_golem_grozny.jpg"), kom=360, tytul="KNIGHT GOLEM — wersja groźna, stopnie 1, 3, 5")
 
 
+def cmd_interfejs():
+    # Grafika interfejsu: ikony, portrety, makiety (czyta dane/ i render mapy; niczego w dane/ nie zmienia)
+    from swiat.ewolucja.modele import interfejs
+    interfejs.zrob(sys.modules[__name__])
+
+
 def cmd_obrazy():
     # Ikona i trzy miniatury strony gry (wymaga dane/)
     from swiat.ewolucja.modele import obrazy_gry

@@ -216,7 +216,49 @@ fioletowawy cień — żar i kryształy mają świecić na tle spokojnej zieleni
 
 Rendery mapy: `…\smok_ewolucja\mapa\mapa_z_gory.png`, `mapa_kamera_gry.png`; podglądy `podglad/17–19` (19 = cały zestaw).
 
+## Interfejs: ikony, portrety, makiety i przewodnik stylu (runda 4)
+`generuj.py interfejs` (kod: `interfejs.py`; tylko czyta `dane/` i render mapy, żadnego pliku danych nie zmienia).
+Pełne pliki poza repozytorium, `…\smok_ewolucja\interfejs\`:
+- `ikony\*.png` — 24 ikony 256 × 256, przezroczyste, sprawdzone w 64 i 44 px: `bite`, `dash`, linia OGNIA `ember_spit`,
+  `fire_breath`, `inferno_breath`, linia MOCY `tail_sweep`, `wing_glide`, `roar`, `meteor_dive`, `zablokowane` (kłódka),
+  `moneta`, `skarb`, `kula_mala`, `kula_duza`, `kula_wielka`, `wariant_gold`, `wariant_crystal`, `wariant_ruby`,
+  `wariant_rainbow`, `korona`, `ulepszenie_jaw`, `ulepszenie_speed`, `ulepszenie_appetite`, `czaszka`.
+- `portrety\stadium_<1–8>.png` i `stadium_<1–8>_sylwetka.png` — popiersia 256 × 256 i pasujące czarne sylwetki
+  (drabina ewolucji, odsłona, panel legowiska).
+- `makiety\hud_telefon_1280x590.png`, `panel_legowiska_1280x590.png`, `odslona_ewolucji_1280x590.png` — docelowy wygląd.
+  Napisy w makietach to czcionka zastępcza z tego komputera (Arial Rounded, tytuły Cooper Black) — w grze czcionki Roblox.
+Podglądy: `podglad/21_ikony.jpg`, `22_portrety.jpg`, `23_makieta_hud.jpg`, `24_makieta_legowisko.jpg`, `25_makieta_ewolucja.jpg`.
+
+**Przewodnik stylu.** Punkt odniesienia: telefon poziomo 844 × 390 pt (makieta 1280 × 590 px, 1 pt ≈ 1,5 px).
+- **Kolory:** panel `#2B2238` · karta / wypukłość `#3E3250` · pas tytułu i tło pasków `#1C162C` · obrys `#1A1424` ·
+  tekst `#FFF6E0` · tekst pomocniczy `#BEB2D4` · żar (postęp, przycisk główny, aktywna zakładka) `#FF7A2A` z jasną
+  górą `#FFD23F` · życie `#FF4D6A` / `#FF9AA8` · złoto `#FFC934` · kryształ (paski ulepszeń) `#7FF8FF` · kup / plus
+  `#7CE38B`. Płytki przycisków: BITE `#FFF6E0`, DASH `#60C8DC`, linia OGNIA `#E84C2C`, linia MOCY `#3A80EA`,
+  zablokowany `#463C58`.
+- **Kształt:** panele — promień 16 pt, karty 11 pt, pigułki i paski w pełni zaokrąglone, przyciski akcji okrągłe.
+  Obrys `#1A1424`: 3 pt na panelach i przyciskach, 2 pt na pigułkach i paskach (`UIStroke`); ikony mają własny obrys
+  (ok. 2,7% boku). Cień: ciemna kopia kształtu przesunięta o 3 pt w dół (`#080410`, ok. 40%) — bez rozmycia też działa.
+  Pod pasem tytułu panelu linia żaru 4 pt — to jest „żar w szczelinie” przeniesiony do interfejsu.
+- **Czcionka (z dostępnych w Studio; do potwierdzenia przez agenta gry):** tytuły, nazwy stadiów i liczby —
+  `FredokaOne` (zamienniki: `LuckiestGuy`, `Bangers`); etykiety i opisy — `GothamBold` / Montserrat Bold albo
+  `BuilderSansExtraBold` (zamiennik: `Nunito` w grubym kroju). Zawsze jasny tekst z ciemnym obrysem 2 pt; rozmiary
+  na telefonie: nazwa stadium 17 pt, liczniki 11 pt, pigułki 8–9 pt (nigdy mniej niż 8), podpisy przycisków 9 pt.
+- **Stany przycisku:** zwykły — płytka w kolorze linii, obrys, wewnątrz jasny pierścień (biel 27%) i połysk u góry,
+  ikona na 81% średnicy; wciśnięty — skala 0,92, płytka o 15% ciemniejsza, bez cienia, 0,08 s; odnowa — ciemny
+  wycinek (`#100A1C`, 67%) kurczący się zgodnie z zegarem od godziny 12 i liczba sekund pośrodku, na koniec błysk
+  pierścienia żaru 0,15 s; zablokowany — płytka `#463C58`, zamiast ikony kłódka, nad przyciskiem pigułka
+  „<UMIEJĘTNOŚĆ> at <STADIUM>”.
+- **Rozstaw na telefonie:** marginesy bezpieczne 24 pt z lewej i prawej, 10 pt u góry, 14 pt u dołu. Górne rogi puste
+  (lewy zajmują przyciski Roblox, prawy bywa pod wcięciem ekranu) — pasek wzrostu 290 × 18 pt z portretem i nazwą na
+  środku u góry, pod nim pasek życia, liczniki złota i skarbu tuż obok paska. Drabina ewolucji przy lewej krawędzi,
+  w połowie wysokości: węzły 24 pt (obecne stadium 36 pt z pierścieniem żaru, następne jako sylwetka ze znakiem
+  zapytania, dalsze jako kropki), odstęp 28 pt. Lewy dół (35% szerokości, 55% wysokości) zostaje dla drążka.
+  Przyciski w prawym dolnym rogu: BITE 103 pt, pozostałe 68 pt (minimum 44 pt), odstęp co najmniej 10 pt, ułożone
+  łukiem wokół BITE w zasięgu kciuka.
+
 ## Co jest słabe (uczciwie)
+- Interfejs (runda 4): ikony `wing_glide`, `meteor_dive`, `czaszka` i `korona` są najmniej czytelne w 44 px; makiety są
+  obrazami — układu nie sprawdzono na prawdziwym telefonie ani w Studio; nazwy czcionek Roblox podane z pamięci.
 - Świat (runda 3): ziemia jest płaska — bez wzniesień i klifów w środku łąki; drobiazg z kamery gry nadal jest rzadki
   poza kępami (budżet 4000 części na koło o średnicy 300 studów); rekwizytów nie sprawdzono w Studio; kolizje
   i przeszkody dla logiki gry trzeba wskazać osobno. Groźny golem ma krótkie, schowane nogi.
