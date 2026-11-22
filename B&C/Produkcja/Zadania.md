@@ -7,9 +7,9 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
-- [ ] Monster Evolution (D-129): etap 2 — pierwsze dziesięć minut (wygląd, ruch stworów, strefa i mały boss w środku drabiny, film demo); w budowie od 2026-11-22 ([[Projekt próbki — Monster Evolution]]) · agent · #wysoki
-- [ ] Monster Evolution: zagrać 5 minut w etap 1 w Studio (Play, klawisz F5) i zapisać, w której minucie chciało się wyjść — to obserwacja, nie werdykt (D-128) · Karol, Paweł · #wysoki
-- [ ] Monster Evolution: zgoda albo odmowa prywatnej publikacji próbki na miejscu testowym (granie z telefonu) · Karol · #wysoki
+- [ ] Monster Evolution: zagrać z telefonu w prywatną wersję etapu 2 (https://www.roblox.com/games/93704244631419) i zapisać, w której minucie chciało się wyjść oraz co nie działało w sterowaniu — to obserwacja, nie werdykt (D-128) · Karol, Paweł · #wysoki
+- [ ] Monster Evolution: wybrać zwierzę (pytanie 84) i sposób animacji (pytanie 83) · Karol, Paweł · #wysoki
+- [ ] Monster Evolution: etap 3 — legowisko w świecie, zapis, odmiany, Olbrzym jako boss ([[Projekt próbki — Monster Evolution]]) · agent · #wysoki
 - [ ] Zebrać 8–12 graczy spoza zespołu (9–15 lat, telefon) do próby Monster Evolution — bez nich o próbce znów rozstrzygnie gust (D-128) · Karol, Paweł · #wysoki
 - [ ] Paweł: potwierdzić albo zmienić D-128 (liczby rozstrzygają) i D-129 (budowa próbki Monster Evolution) · Paweł · #wysoki
 - [ ] Pet Arena: zagrać w prywatną wersję testową „Throw & Catch Monsters” (https://www.roblox.com/games/93704244631419, także z telefonu) i zaprosić do 10 testerów spoza zespołu, najlepiej 16+ — **do ok. 28.11**; publiczny test najpóźniej ok. 5.12, tylko po osobnej decyzji · Karol, Paweł · #wysoki
@@ -133,6 +133,9 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Monster Evolution (D-129): etap 2 — pierwsze dziesięć minut (wygląd, ruch stworów, strefa i mały boss w środku drabiny, film demo); zrobione 2026-11-22: testy 15/15, próba w Studio 15/15, telefon 6/6; cel przerwy bez nowości niespełniony (3:02 wobec 2:30) ([[Projekt próbki — Monster Evolution]]) · agent · #wysoki
+- [x] Monster Evolution: zgoda albo odmowa prywatnej publikacji próbki na miejscu testowym (granie z telefonu) · Karol · #wysoki · zrobione 2026-11-22 (Karol: „Tak puścimy”; etap 2 opublikowany prywatnie)
+- [x] Monster Evolution: zagrać 5 minut w etap 1 w Studio (Play, klawisz F5) i zapisać, w której minucie chciało się wyjść — to obserwacja, nie werdykt (D-128) · Karol, Paweł · #wysoki · zastąpione 2026-11-22 graniem z telefonu w wersję prywatną
 - [x] Monster Evolution (D-129): próbka, etap 1 — pełna pętla w najmniejszej postaci; zrobione 2026-11-22: testy 12/12, próba w Studio 13/13, telefon 6/6 ([[Projekt próbki — Monster Evolution]]) · agent · #wysoki
 - [x] Zabawki: zagrać na telefonie po dwie minuty w „Eat & Evolve” i „Lure a Monster” (https://www.roblox.com/games/93704244631419) i powiedzieć, przy której chce się „jeszcze raz” — albo że przy żadnej ([[Kierunki z rynku 2026-11-21]]) · Karol, Paweł · #wysoki · zrobione 2026-11-22 (Karol zagrał w obie; obie odrzucone — [[Lekcje z prototypów]])
 - [x] 2026-11-21: Pet Arena v3 „Throw & Catch Monsters” — łapanie dzikich potworów, odmiany, ALPHA, zegar wydarzeń, wylęgarnia w czasie, dzienny prezent (próba 41/41); aktualizacja prywatnej wersji testowej

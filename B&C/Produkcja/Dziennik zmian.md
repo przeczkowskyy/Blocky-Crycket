@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: etap 2 gotowy i opublikowany prywatnie)
+- **Etap 2 próbki** (ten sam agent na Opus): strefa Deep Woods od formy 4, mały boss, ładniejsze pole, wspólny system ruchu stworów, odczucie jedzenia i ewolucji, późniejszy pierwszy pościg, skrypt filmu demo. Testy logiki 15/15, próba w Studio 15/15, układ telefonu 6/6; jeden cel tempa niespełniony (przerwa bez nowości 3:02 wobec 2:30). Stan i liczby: [[Projekt próbki — Monster Evolution]].
+- **Prywatna publikacja** za zgodą Karola z 22.11 („Tak puścimy”): wersja bez strażnika Studio, zabawki i Pet Arena wyłączone, publikacja potwierdzona zmianą znacznika czasu wersji miejsca. Link w zadaniach. Publicznie nic.
+- **Zadania:** etap 2 i zgoda odhaczone; nowe — granie z telefonu, wybór zwierzęcia i animacji (pytania 83–84), etap 3. Raport z filmem demo wysłany Karolowi; raport ze zrzutami w panelu.
+
 ## 2026-11-22 · Claude Code u Karola (Monster Evolution: jedno zwierzę — wybór z liczb)
 - **Karol** zapytał, czy nie zrobić jednego zwierzęcia zamiast ośmiu różnych potworów. Agent się zgodził (dowody w [[Projekt próbki — Monster Evolution]]) i sprawdził ok. 25 kandydatów (agent na Opus, ok. 185 tys. tokenów): [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]]. Wniosek: zwierzę podnosi sufit, ale hitu nie robi; propozycja — małpka → goryl → olbrzymi goryl na standardowym szkielecie postaci Roblox.
 - Pytanie 84 (które zwierzę) i dopisek pod pytaniem 83 (animacje). Etap 2 próbki idzie bez zmian, bo nie zależy od zwierzęcia.

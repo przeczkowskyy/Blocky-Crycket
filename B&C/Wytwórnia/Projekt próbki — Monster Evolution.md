@@ -93,12 +93,19 @@ Dobrze zrobiona druga generacja w tej fali ma zwykle szczyt 0,5–5 tys. graczy 
 - **Słabe miejsca (ocena agenta budującego):** między formą 3 a 5 przez ok. pięć minut nie ma nic nowego; legowisko jest tylko panelem; po 18 minutach zostaje ok. 47 tys. złota bez celu; pierwszy bot goni już po 1:22; dotyk nie był sprawdzony na prawdziwym telefonie.
 - **Największa luka wobec lidera:** żaden z naszych modeli nie ma szkieletu, więc wszystkie formy ruszają się proceduralnie (podskok, ściskanie, pochylenie, wypad przy gryzieniu), a pole jest proste. Karol po zagraniu w Ant Evolution wskazał właśnie grafikę, responsywność i animacje chodzenia jako jej mocne strony — dlatego etap 2 dostał ten zakres, a legowisko w świecie przeszło do etapu 3. Pytanie o prawdziwe animacje: pytanie 83.
 
+## Po etapie 2 (2026-11-22)
+- **Co doszło:** strefa Deep Woods za płotkiem (tablica z sylwetkami, otwiera się od formy 4), mały boss VINE SERPENT z paskiem życia i skrzynią 1500 złota, ładniejsze pole (stawy, kamienny krąg, grzyby, drzewa), wspólny system ruchu dla wszystkich stworów (skok, kłus, machanie ogonem, kurz), „+N” nad kulkami, błysk i wstrząs przy ewolucji, kamera dalej dla większych form, boty ignorują nowego gracza przez pierwsze 110 s, poziomy 4–5 ulepszeń, skrypt filmu demo.
+- **Tempo z symulacji:** forma 2 po 0:20, forma 3 po 1:09, pierwsze ulepszenie 1:33, pierwszy pościg 1:59, forma 4 i las 2:49, boss spotkany 4:29 i pokonany 5:26, forma 5 po 6:47, Olbrzym po ok. 13:30. Najdłuższa przerwa bez nowości w pierwszych 10 minutach: 3:02 (cel 2:30 — niespełniony, luka między formą 6 a 7).
+- **Ocena agenta budującego:** pierwsze minuty mają już ruch, ale po bossie gra wraca do czekania na pasek; legowisko nadal jest tylko panelem, a złoto znów się piętrzy po ok. 10 minutach. Etap 3 potrzebuje powtarzalnego celu w środku gry (kolejne stopnie bossa albo legowisko widoczne w świecie).
+- **Prywatna publikacja:** Karol 22.11 („Tak puścimy”); wersja etapu 2 opublikowana na prywatnym miejscu testowym (https://www.roblox.com/games/93704244631419), potwierdzona zmianą znacznika czasu wersji. Dotyk na prawdziwym telefonie sprawdzi dopiero to granie.
+- **Formy są w tabeli danych** (nazwa, model, skala, umiejętność, ustawienia ruchu, opcjonalne animacje); nowy model spoza Pet Areny wymaga drobnej zmiany w wyszukiwaniu modelu.
+
 ## Propozycja: jedno zwierzę zamiast ośmiu różnych potworów (2026-11-22)
 Karol zapytał, czy nie zrobić jednego zwierzęcia. Agent się zgadza: rosnące gry tej fali mają jednego rozpoznawalnego stwora w tytule, ogólne tytuły nie żyją, filmy niesie jedna historia („od słabego do króla”), a jedno zwierzę to jeden szkielet i jeden chód na osiem form. Wybór z liczb: [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]] — agent proponuje małpę (małpka → goryl → olbrzymi goryl), bo dwunożną postać da się najpewniej oprzeć na standardowym szkielecie postaci Roblox z gotowym chodem, co zamyka największą lukę wobec lidera bez pracy w Blenderze. Do sprawdzenia przez budującego na początku przeróbki. Kod etapu 1 ma formy w tabeli danych, więc zmiana nie rusza pętli. Decyzja: pytanie 84.
 
 ## Stan implementacji
 - [x] Etap 1 — pełna pętla w najmniejszej postaci (2026-11-22: testy logiki 12/12, próba w Studio 13/13 bez błędów konsoli, układ telefonu 6/6, tempo z symulacji zgodne z celami)
-- [ ] Etap 2 — pierwsze dziesięć minut: wygląd, ruch stworów, odczucie jedzenia, strefa i mały boss w środku drabiny, film demo (w budowie od 2026-11-22)
+- [x] Etap 2 — pierwsze dziesięć minut (2026-11-22: testy logiki 15/15, próba w Studio 15/15 bez błędów konsoli, układ telefonu 6/6; jeden cel tempa niespełniony — najdłuższa przerwa bez nowości 3:02 wobec 2:30); wersja opublikowana prywatnie
 - [ ] Etap 3 — legowisko w świecie, złoto pod nieobecność, odmiany, zapis, Olbrzym jako boss, wydarzenia, wersja do prywatnej publikacji
 - [ ] Etap 4 — próba z 8–12 graczami
 

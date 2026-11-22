@@ -1,0 +1,26 @@
+{
+ "id": "r-20261122-151120-57d5",
+ "tytul": "Monster Evolution: etap 2 gotowy i opublikowany prywatnie",
+ "opis_md": "**Monster Evolution — etap 2 gotowy i opublikowany prywatnie: https://www.roblox.com/games/93704244631419**\n\n## Co doszło\n- Strefa Deep Woods za płotkiem: tablica z sylwetkami, otwiera się od czwartej formy.\n- Mały boss VINE SERPENT z paskiem życia; za pokonanie skrzynia złota i ogłoszenie na serwerze.\n- Ładniejsze pole: stawy, kamienny krąg, grzyby, drzewa.\n- Stwory ruszają się bogaciej (skok, kłus, ogon, kurz), a jedzenie i ewolucja mają mocniejszy efekt.\n- Pierwszy pościg dopiero ok. drugiej minuty.\n\n## Sprawdzone\n- Testy logiki 15/15, próba w Studio 15/15 bez błędów, układ na telefonie 6/6.\n- Jeden cel niespełniony: najdłuższa przerwa bez nowości w pierwszych 10 minutach to 3:02, cel był 2:30.\n\n## Słabe miejsca\n- Po bossie gra wraca do czekania na pasek; legowisko nadal jest tylko panelem.\n- Ruch stworów jest nadal proceduralny, bez prawdziwych animacji.\n- Dotyk nie był jeszcze sprawdzony na prawdziwym telefonie — to pokaże pierwsze granie.\n\n## Do ludzi\n- Zagrać z telefonu i zapisać, w której minucie chciało się wyjść oraz co nie działało w sterowaniu.\n- Pytania 83 i 84: animacje i wybór jednego zwierzęcia.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-22T15:11:20+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "EwolucjaGra",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Projekt próbki — Monster Evolution",
+   "etykieta": "Projekt próbki — Monster Evolution"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ]
+}
