@@ -1,0 +1,22 @@
+{
+ "id": "r-20261122-191016-0508",
+ "tytul": "Sesja główna 2026-11-22 — do zatwierdzenia",
+ "opis_md": "**Sesja 22.11, 18:53–19:02 — Karol i Paweł, temat: Baseball for treasure.** Zapis kompletny. Spisałem ustalenia jako propozycje; nic nie jest zatwierdzone.\n\nPaweł opowiedział swój pomysł, Karol dorzucił drugi (ewolucja od ameby). Obaj poprosili agenta o ocenę: czy to ma sens i czy jest lepsze od gry o smoku.\n\n## Propozycje do zatwierdzenia (Pytania → „Czy zatwierdzamy…?”)\n- **D-130** — pętla gry: siła z treningu → uderzenie piłki → lot przez mapę 3D (ściany zatrzymują; trampolina, ptak i postać z kijem niosą dalej) → kopanie łopatą → skarb w gablocie daje złoto na sekundę. Scenka kopania Karola: kamera z dziury, mina postaci. *To opis pomysłu, nie zgoda na budowę.*\n- **D-131** — gracz wybiera siłę i kierunek uderzenia (strzałka); piłka nie wypada za mapę, lot ograniczony na boki.\n- **D-132** — złoto tylko z gabloty, nadmiar skarbów na sprzedaż; lepsze piłki i kije za złoto. *Kij roboczo daje mnożnik siły — odpowiedzi Pawła nie ma w zapisie.*\n- **D-133** — pomysł Karola: gra o ewolucji od ameby do gadów, z osobnym serwerem na każdy poziom. *Agent w tym kształcie nie poleca: podobna gra o komórce spadła z 11,5 tys. graczy do 62, a osobne serwery rozdzielają graczy.*\n- **D-134** — kolejność: najpierw pełna ocena agenta i Wasze karty, gra o smoku bez zmian idzie do próby z graczami; jeśli baseball przejdzie sprawdzenie rynku, powstaje najpierw próbka jednej pętli (okno fali do ok. 6.12).\n\n## Nowe pytania\n- **85** — skąd gracz bierze siłę: hantla (Paweł), podciąganie albo pompki (Karol), czy bez treningu? *Agent: zostawić trening — bez niego gra traci powód, żeby wrócić jutro.*\n- **86** — baseball, ameba czy smok: co budujemy dalej? *Wstępnie agent: smok do graczy bez zmian, próbka baseballu równolegle, jeśli przejdzie sprawdzenie.*\n\n## Odpowiedzi dopisane pod pytaniami\nŻadnej — o otwartych pytaniach 78, 79, 80 i 83 na sesji nie mówiono.\n\n## Zadania\n- Pełna ocena baseballu: sprawdzenie rynku (ok. 0,2 mln tokenów), karta z krytyką, celownik i tempo.\n- Ocena pomysłu z amebą i porównanie trzech dróg.\n- Karol i Paweł: ocena baseballu kartą w panelu i odpowiedź na pytanie 85.\n\nProśba „oceń” z nagrania jest zapisana jako zadanie i **nie ruszyła sama** — żeby zacząć, napisz to na czacie. Na następną sesję dopisałem temat: wybór po ocenie agenta.\n\nPełny zapis: notatka „Sesja główna 2026-11-22 — zapis ustaleń”.",
+ "kto": "Claude (sesja)",
+ "czas": "2026-11-22T19:10:16+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesja główna 2026-11-22 — zapis ustaleń.md",
+   "etykieta": "Zapis ustaleń z sesji"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Wytwórnia/Pomysły/Baseball for treasure.md",
+   "etykieta": "Karta pomysłu"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Czy zapis sesji o Baseball for treasure zgadza się z tym, co ustaliliście?"
+}
