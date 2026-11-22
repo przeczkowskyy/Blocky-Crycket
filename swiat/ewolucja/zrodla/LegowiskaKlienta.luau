@@ -139,7 +139,28 @@ function Lg:zbuduj(p: Player, slot: number, sig: string)
 		SK:rekwizyt("Rekwizyt_gniazdo", CFrame.new(C + Vector3.new(lx * 0.97, 0, lz * 0.97)) * CFrame.Angles(0, math.atan2(lx, lz), 0), 0.8, f0)
 	end
 	local kupka = self:czesc3(Vector3.one, CFrame.new(C + Vector3.new(lx, 0, lz)), c.zloto, Enum.Material.Neon, Enum.PartType.Ball, f0)
-	return { folder = f0, sig = sig, kupka = kupka, x = lx, z = lz, skarb = nil, skarbN = 0 }
+	self:sztandar(slot, true)
+	return { folder = f0, sig = sig, kupka = kupka, x = lx, z = lz, skarb = nil, skarbN = 0, slot = slot }
+end
+
+-- sztandar legowiska (świat, rekwizyt w scenie): płat w kolorze właściciela (kolor miejsca), wolne legowisko — kolor z danych
+function Lg:sztandar(slot: number, zajete: boolean)
+	local c = self.c
+	local sw = c.kontener and c.kontener:FindFirstChild("Scena") and c.kontener.Scena:FindFirstChild("Swiat")
+	local m = sw and sw:FindFirstChild("legowisko") and sw.legowisko:FindFirstChild("sztandar_" .. slot)
+	local kol = c.D.swiat and c.D.swiat.kolory_legowisk and c.D.swiat.kolory_legowisk[((slot - 1) % #c.D.swiat.kolory_legowisk) + 1]
+	if not (m and kol) then
+		return
+	end
+	for _, d in m:GetDescendants() do
+		if d:IsA("BasePart") and d:GetAttribute("Region") == 0 then
+			if d:GetAttribute("KolorDanych") == nil then
+				d:SetAttribute("KolorDanych", d.Color)
+			end
+			d.Color = if zajete then Color3.fromHex(kol) else d:GetAttribute("KolorDanych")
+			d.Material = if zajete then Enum.Material.SmoothPlastic else d.Material
+		end
+	end
 end
 
 -- kopiec skarbu: rekwizyt 1–3 według zebranego w legowisku złota (zestaw blender), inaczej świecąca kula
@@ -155,7 +176,9 @@ function Lg:skarb(d, leg: number, t: number)
 				d.skarb = nil
 			end
 			if n > 0 then
-				d.skarb = c.SK:rekwizyt("Rekwizyt_skarb_" .. n, CFrame.new(C + Vector3.new(d.x, 0, d.z)), 0.75, d.folder)
+				-- świat: kopiec monet i klejnotów (stos_zlota), inaczej dawny skarb
+				local nazwa = if c.wzorce:FindFirstChild("Rekwizyt_stos_zlota_" .. n) then "Rekwizyt_stos_zlota_" .. n else "Rekwizyt_skarb_" .. n
+				d.skarb = c.SK:rekwizyt(nazwa, CFrame.new(C + Vector3.new(d.x, 0, d.z)), 0.75, d.folder)
 			end
 			d.skarbN = n
 		end
@@ -195,6 +218,7 @@ function Lg:krok(dt: number, t: number)
 				self:skarb(d, p:GetAttribute("EW_ZlotoLeg") or 0, t)
 			elseif d then
 				d.folder:Destroy()
+				self:sztandar(slot, false)
 				self.leg[slot] = nil
 			end
 		end
@@ -202,6 +226,7 @@ function Lg:krok(dt: number, t: number)
 	for slot, d in self.leg do
 		if not zajete[slot] then
 			d.folder:Destroy()
+			self:sztandar(slot, false)
 			self.leg[slot] = nil
 		end
 	end

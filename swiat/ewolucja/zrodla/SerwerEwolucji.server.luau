@@ -90,6 +90,7 @@ for f, ile in D.boty.las_formy do
 	end
 end
 local boss = L.dodajBossa(S)
+L.dodajOwce(S)
 kontener:SetAttribute("BossId", boss.id)
 kontener:SetAttribute("BossHP", 1)
 
@@ -403,7 +404,8 @@ local function migawka(): buffer
 	local n = #S.byty
 	local nk = #D.kulkiPoz
 	local nb = math.ceil(nk / 8)
-	local b = buffer.create(12 + nb + n * ROZ)
+	local no = if S.owce then #S.owce else 0
+	local b = buffer.create(12 + nb + n * ROZ + 1 + no * 11)
 	buffer.writef64(b, 0, workspace:GetServerTimeNow())
 	buffer.writeu16(b, 8, n)
 	buffer.writeu16(b, 10, S.olbrzym % 65536)
@@ -464,6 +466,17 @@ local function migawka(): buffer
 			ak += 64
 		end
 		buffer.writeu8(b, o + 17, ak)
+	end
+	-- owce (swiat1): liczba, potem po 11 bajtów: x f32, z f32, kier i16 (× 1000), stan u8 (0 stoi, 1 idzie, 2 ucieka, 3 zjedzona)
+	local oo = o0 + n * ROZ
+	buffer.writeu8(b, oo, no)
+	for i = 1, no do
+		local w = S.owce[i]
+		local q = oo + 1 + (i - 1) * 11
+		buffer.writef32(b, q, w.x)
+		buffer.writef32(b, q + 4, w.z)
+		buffer.writei16(b, q + 8, math.clamp(math.floor((w.kier or 0) * 1000 + 0.5), -32000, 32000))
+		buffer.writeu8(b, q + 10, if w.martwyDo then 3 else w.stan)
 	end
 	return b
 end
@@ -645,7 +658,13 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 			zlotoLeg = byt and byt.zlotoLeg, slot = g and g.slot, kokon = byt and byt.kokonDo ~= nil, olbrzymId = S.olbrzym,
 			martwy = byt and byt.martwyDo ~= nil, tarcza = byt and byt.tarczaDo > S.czas, byty = byty, kulek = zywe, strefy = #S.strefy,
 			laska = byt and byt.laskaDo > S.czas,
-			liczniki = liczniki, krok_ms = if ileKrokow > 0 then czasKroku / ileKrokow * 1000 else 0 }
+			liczniki = liczniki, krok_ms = if ileKrokow > 0 then czasKroku / ileKrokow * 1000 else 0, owce = (function()
+				local w = {}
+				for _, o in S.owce or {} do
+					table.insert(w, { i = o.i, x = o.x, z = o.z, martwa = o.martwyDo ~= nil })
+				end
+				return w
+			end)() }
 	elseif polecenie == "proby" then
 		-- próba: zawartość magazynu podsumowań (tylko magazyn w pamięci) + tryb
 		local w = {}

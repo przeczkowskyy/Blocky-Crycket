@@ -301,7 +301,7 @@ local function emiter(rodzic: Instance, kolor: Color3, rozm: number, tempo: numb
 end
 
 -- żar i światło rosną ze stadium; ślady ogona i skrzydeł (włączane w zrywie i locie)
-function S:efekty(w, stadium: number, wlacz: boolean)
+function S:efekty(w, stadium: number, wlacz: boolean, swiatlo: boolean?)
 	if not wlacz then
 		if w.efekty then
 			for _, o in w.efekty.lista do
@@ -328,7 +328,7 @@ function S:efekty(w, stadium: number, wlacz: boolean)
 		end
 	end
 	local g = w.model:FindFirstChild(if stadium >= 4 then "PiersAttachment" else "GardloAttachment", true)
-	if g and stadium >= 2 and self.swiatla < 10 then
+	if g and stadium >= 2 and swiatlo and self.swiatla < 10 then
 		local l = Instance.new("PointLight")
 		l.Color = Color3.fromRGB(255, 140, 60)
 		l.Range = 3 + stadium * 1.6
@@ -383,63 +383,61 @@ function S.slady(w, wlacz: boolean)
 	end
 end
 
--- stożek ognia (FIRE BREATH / INFERNO): Beamy od pyska do punktu na końcu zasięgu + cząsteczki; zwraca uchwyt
+-- stożek ognia (FIRE BREATH / INFERNO) jako objętość: 7 półprzezroczystych kul Neon wzdłuż stożka (rosną ku końcowi,
+-- migoczą; od pyska żółte → pomarańczowe → czerwone / różowe przy INFERNO) i cząsteczki z PyskAttachment; uchwyt do kroku
 function S.stozek(w, zasieg: number, kat: number, inferno: boolean)
 	local pysk = S.zaczep(w, "Pysk")
-	local korzen = w.model and w.model.PrimaryPart
-	if not (pysk and korzen) then
+	if not pysk then
 		return nil
 	end
-	local H = { lista = {} }
-	local koniec = Instance.new("Attachment")
-	koniec.Name = "StozekKoniec"
-	koniec.Parent = korzen
-	H.koniec = koniec
-	table.insert(H.lista, koniec)
-	local szer = 2 * zasieg * math.tan(math.rad(kat / 2))
-	local function beam(w0: number, w1: number, k0: Color3, k1: Color3, prz: number)
-		local b = Instance.new("Beam")
-		b.Attachment0, b.Attachment1 = pysk, koniec
-		b.Width0, b.Width1 = w0, w1
-		b.FaceCamera = true
-		b.LightEmission = 0.45
-		b.LightInfluence = 0
-		b.Segments = 12
-		b.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.new(1, 1, 0.85)), ColorSequenceKeypoint.new(0.35, k0),
-			ColorSequenceKeypoint.new(1, k1) })
-		b.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, prz), NumberSequenceKeypoint.new(0.7, prz + 0.15),
-			NumberSequenceKeypoint.new(1, 1) })
-		b.Parent = korzen
-		table.insert(H.lista, b)
-		return b
+	local H = { lista = {}, kule = {}, zasieg = zasieg, szer = 2 * zasieg * math.tan(math.rad(kat / 2)) }
+	local kol = if inferno then { Color3.fromRGB(255, 240, 150), Color3.fromRGB(255, 150, 60), Color3.fromRGB(255, 70, 190) }
+		else { Color3.fromRGB(255, 245, 160), Color3.fromRGB(255, 160, 40), Color3.fromRGB(230, 60, 20) }
+	for i = 1, 7 do
+		local p = Instance.new("Part")
+		p.Shape = Enum.PartType.Ball
+		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+		p.Material = Enum.Material.Neon
+		local f = (i - 1) / 6
+		p.Color = if f < 0.5 then kol[1]:Lerp(kol[2], f * 2) else kol[2]:Lerp(kol[3], (f - 0.5) * 2)
+		p.Transparency = 0.25 + f * 0.4
+		p.Parent = w.model
+		table.insert(H.kule, p)
+		table.insert(H.lista, p)
 	end
-	local zew = if inferno then Color3.fromRGB(255, 70, 190) else Color3.fromRGB(255, 90, 20)
-	H.b0 = beam(1.2, szer * 1.25, Color3.fromRGB(255, 110, 20), Color3.fromRGB(200, 30, 10), 0.45)
-	H.b1 = beam(0.9, szer, Color3.fromRGB(255, 130, 20), zew, 0.1)
-	H.b2 = beam(0.5, szer * 0.5, Color3.fromRGB(255, 215, 80), Color3.fromRGB(255, 120, 30), 0.0)
-	local p = emiter(pysk, zew, 1.2 + zasieg * 0.06, 70)
+	local zew = kol[3]
+	local p = emiter(pysk, zew, 1.2 + zasieg * 0.06, 60)
 	p.EmissionDirection = Enum.NormalId.Front
 	p.Speed = NumberRange.new(zasieg * 1.6, zasieg * 2.2)
 	p.Lifetime = NumberRange.new(0.35, 0.5)
-	p.SpreadAngle = Vector2.new(kat / 2, kat / 6)
+	p.SpreadAngle = Vector2.new(kat / 2, kat / 3)
 	p.Acceleration = Vector3.new(0, 2, 0)
 	p.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.6), NumberSequenceKeypoint.new(1, 2.4 + zasieg * 0.12) })
 	table.insert(H.lista, p)
-	H.zasieg = zasieg
 	return H
 end
 
--- co klatkę: koniec stożka przed pyskiem (w układzie korzenia; przód −Z), lekkie migotanie
+-- co klatkę: kule od pyska w kierunku patrzenia smoka (przód korzenia, −Z), lekko opadające, z migotaniem
 function S.stozekKrok(w, H, t: number)
 	local pysk = S.zaczep(w, "Pysk")
-	if not (H and pysk and H.koniec.Parent) then
+	local korzen = w.model and w.model.PrimaryPart
+	if not (H and pysk and korzen) then
 		return
 	end
-	local korzen = H.koniec.Parent :: BasePart
-	local p = korzen.CFrame:PointToObjectSpace(pysk.WorldPosition)
-	H.koniec.Position = Vector3.new(p.X, math.max(0.5, p.Y * 0.5), p.Z - H.zasieg)
-	H.b2.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.05 + 0.05 * math.sin(t * 37)), NumberSequenceKeypoint.new(0.7, 0.25),
-		NumberSequenceKeypoint.new(1, 1) })
+	local od = pysk.WorldPosition
+	local kier = -korzen.CFrame.LookVector
+	kier = Vector3.new(-kier.X, 0, -kier.Z)
+	kier = if kier.Magnitude > 0.01 then kier.Unit else Vector3.new(0, 0, -1)
+	local cz, cf = {}, {}
+	for i, p in H.kule do
+		local f = i / #H.kule
+		local d = H.zasieg * (f * 0.92)
+		local s = math.max(0.6, H.szer * f * 0.75) * (1 + math.sin(t * 23 + i * 1.7) * 0.08)
+		p.Size = Vector3.new(s, s * 0.8, s)
+		table.insert(cz, p)
+		table.insert(cf, CFrame.new(od + kier * d + Vector3.new(0, -f * 0.6, 0)))
+	end
+	workspace:BulkMoveTo(cz, cf, Enum.BulkMoveMode.FireCFrameChanged)
 end
 
 function S.stozekKoniec(H)

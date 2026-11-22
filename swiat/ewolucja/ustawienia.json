@@ -272,6 +272,21 @@
    {"id": "meteor", "nazwa": "METEOR DIVE", "krotko": "METEOR", "od": 8, "typ": "meteor", "zamach_s": 0.45, "odnowa_s": 8, "d": 24, "s": 0.85, "r": 14, "x": 12, "odrzut": 26, "przewrot_s": 0.6}
   ]
  },
+ "swiat": {
+  "opis": "Świat (swiat1): mapa z modele/dane/mapa_propozycja.json (swiat_mapa.py) — płaty ziemi, rekwizyty łąki, lasu, wody, znaki, legowiska (krąg, brama, sztandar w kolorze właściciela), rekwizyty lawy na wyspie gry. gestosc < 1 przerzedza drobną dekorację. Przeszkody serwera = koła blokujących rekwizytów (głazy, pnie, ruiny, krąg legowiska, znaki) i stawy. swiatlo: liczby z modele/README (ustawiane w grze przez klienta, nie w trybie Edit); nastroj: las i wyspa lawy. owce: stadka na łące — pasą się, uciekają przed smokami, zjedzone dotykiem dają wzrost i życie jak duża kulka, wracają po powrot_s.",
+  "mapa": true,
+  "gestosc": 1.0,
+  "kolory_legowisk": ["FF5A5A", "4FB3FF", "6BD66B", "FFC83D", "C27BFF", "FF8A3D", "3DD6C8", "FF7AF0", "F2EBDD", "8A5AD8", "E0553A", "9BFFB8"],
+  "swiatlo": {"ClockTime": 16.2, "GeographicLatitude": 35, "Brightness": 2.6, "ExposureCompensation": 0.15, "ShadowSoftness": 0.25,
+   "EnvironmentDiffuseScale": 0.6, "EnvironmentSpecularScale": 0.4, "Ambient": [30, 26, 44], "OutdoorAmbient": [128, 118, 150], "ColorShift_Top": [255, 226, 178],
+   "atmosfera": {"Density": 0.28, "Offset": 0.15, "Color": [255, 217, 176], "Decay": [122, 90, 168], "Glare": 0.25, "Haze": 1.6},
+   "chmury": {"Cover": 0.55, "Density": 0.3, "Color": [255, 238, 220]}, "SunAngularSize": 14,
+   "bloom": {"Intensity": 0.45, "Size": 28, "Threshold": 1.1}, "korekta": {"Saturation": 0.12, "Contrast": 0.08, "TintColor": [255, 248, 236]},
+   "promienie": {"Intensity": 0.06, "Spread": 0.6},
+   "las": {"Density": 0.42, "Color": [120, 150, 140], "Brightness": 1.9}, "lawa": {"Density": 0.35, "Color": [255, 150, 90]}},
+  "owce": {"stada": [[-20, 35], [70, -30], [-95, -10], [30, 90]], "na_stado": 3, "r": 1.0, "v": 5, "v_ucieczka": 13, "widzi": 16, "wzrost": 5,
+   "leczy": 0.06, "powrot_s": 25, "myslenie_s": 0.5}
+ },
  "wyspa": {
   "opis": "SKY NEST (walka1): wyspa na łące otoczona fosą lawy — pieszo nie da się jej przejść (ani wejść, ani zejść); tylko WING GLIDE albo METEOR DIVE. Na wyspie wielkie kulki. Środek względem pola, r_wew — wyspa, r_zew — zewnętrzny brzeg fosy.",
   "nazwa": "SKY NEST",

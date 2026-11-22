@@ -320,6 +320,64 @@ def sceny_blender(p, f):
     f.stop()
 
 
+def sceny_swiat(p, f):
+    """Świat (swiat1): wyklucie w legowisku → wyjście na łąkę → czaszka smoka → owca → DEEP WOODS i posąg → SKY NEST → stadium 8."""
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    lx, lz = D["legowiska"][(st.get("slot") or 1) - 1]
+    p.serwer('"przenies", %d, %f, %f' % (byt, lx * 0.97, lz * 0.97))
+    p.serwer('"laska_zeruj"')
+    time.sleep(0.5)
+    p.przycisk("jajko")
+    time.sleep(0.15)
+    f.nagrywaj("legowisko")
+    time.sleep(4.0)
+    p.ustaw("EW_TestSter", "Vector3.new(%f, %f, 5)" % (lx / 126.0, -lz / 126.0))
+    time.sleep(4.6)
+    f.stop(0.1)
+    p.serwer('"przenies", %d, -36, 22' % byt)
+    time.sleep(0.8)
+    f.nagrywaj("czaszka")
+    p.ustaw("EW_TestSter", "Vector3.new(0.6, 0.7, 6)")
+    time.sleep(5.8)
+    f.stop()
+    st = p.serwer('"stan"')
+    ow = [o for o in st.get("owce", []) if not o["martwa"]]
+    if ow:
+        o = ow[0]
+        p.serwer('"przenies", %d, %f, %f' % (byt, o["x"] + 9, o["z"]))
+        time.sleep(0.6)
+        f.nagrywaj("owca")
+        p.ustaw("EW_TestSter", "Vector3.new(1, 0, 4)")
+        time.sleep(4.4)
+        f.stop()
+    p.serwer('"forma_gracza", 4')
+    p.serwer('"przenies", %d, 0, 205' % byt)
+    time.sleep(1.4)
+    f.nagrywaj("las")
+    p.ustaw("EW_TestSter", "Vector3.new(0, 1, 7)")
+    time.sleep(6.8)
+    f.stop()
+    WY = D["wyspa"]
+    p.serwer('"forma_gracza", 5')
+    p.serwer('"zdolnosci_zeruj"')
+    p.serwer('"przenies", %d, %f, %f' % (byt, WY["x"], WY["z"] - WY["r_zew"] - 8))
+    time.sleep(1.2)
+    p.ustaw("EW_TestSter", "Vector3.new(0, 1, 0.3)")
+    time.sleep(0.3)
+    f.nagrywaj("wyspa")
+    p.przycisk("moc")
+    time.sleep(3.6)
+    f.stop()
+    p.serwer('"forma_gracza", %d' % len(D["formy"]))
+    p.serwer('"przenies", %d, 20, -70' % byt)
+    time.sleep(1.4)
+    f.nagrywaj("stadium8")
+    p.ustaw("EW_TestSter", "Vector3.new(-0.5, -0.8, 8)")
+    time.sleep(7.4)
+    f.stop()
+
+
 def sklej(klipy, wyj, kat):
     gotowe = []
     for i, (k, od) in enumerate(klipy):
@@ -353,6 +411,7 @@ def main():
     ap.add_argument("--zostaw-klipy", action="store_true")
     ap.add_argument("--walka", action="store_true", help="sceny walki (walka1) zamiast przeglądu gry")
     ap.add_argument("--blender", action="store_true", help="smoki z Blendera: wyklucie → … → stadium 8 (smok-blender1)")
+    ap.add_argument("--swiat", action="store_true", help="wycieczka po świecie (swiat1)")
     a = ap.parse_args()
     wyj = os.path.abspath(a.wyj)
     if wyj.startswith(os.path.abspath(PP.REPO)):
@@ -369,7 +428,7 @@ def main():
             PP.czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
             p.luau(PP.BEZ_LISTY, "Client")
             time.sleep(1.0)
-            (sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
+            (sceny_swiat if a.swiat else sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
         finally:
             log("Stop:", PP.play(a.studio, False)[-40:])
             PP.czekaj(lambda: "Current Studio Mode: Edit" in p.call("get_studio_state")["text"], 40, 0.5)

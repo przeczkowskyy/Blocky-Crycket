@@ -871,5 +871,81 @@ def T_KL(KL, n, *a):
     return r[0] if r else None
 
 
+class TestSwiat(unittest.TestCase):
+    """Świat z mapy (swiat1): przeszkody serwera z rekwizytów, wyjście z legowiska, owce."""
+
+    def test_31_przeszkody_i_wyjscie_z_legowiska(self):
+        if not D.get("swiat"):
+            self.skipTest("bez świata z mapy")
+        prz = D["przeszkody"]
+        leg = [p for p in prz if p["typ"] == "legowisko"]
+        self.assertEqual(len(leg), 12 * 13, "krąg (11 skał) i brama (2 filary) w każdym z 12 legowisk")
+        self.assertTrue(any(p.get("rid") in ("glaz_1", "glaz_2") for p in prz), "głazy blokują")
+        self.assertTrue(any(p.get("rid") == "czaszka_smoka" for p in prz), "czaszka smoka blokuje")
+        self.assertFalse(any(p.get("rid") in ("trawa_1", "kwiat_zolty", "krzak", "kamyk") for p in prz), "dekoracja bez kolizji")
+        # nic nie blokuje wyspy gry ani jej fosy (poza ołtarzem pośrodku wyspy)
+        WY = D["wyspa"]
+        self.assertFalse([p for p in prz if p["typ"] != "lawa" and math.hypot(p["x"] - WY["x"], p["z"] - WY["z"]) < WY["r_zew"] + p["r"]])
+        for i, (lx, lz) in enumerate(D["legowiska"]):
+            # miejsce wyklucia (start gracza) i wejście do legowiska wolne
+            for (x, z) in ((lx * 0.97, lz * 0.97), (lx - lx / 126 * 15, lz - lz / 126 * 15)):
+                for f in (1, 3):
+                    r = D["formy"][f - 1]["r"]
+                    x2, z2 = wolaj("ogranicz", DL, float(x), float(z), r, 1.0)
+                    self.assertLess(math.hypot(x2 - x, z2 - z), 0.01, "legowisko %d: punkt (%.0f, %.0f) wolny dla stadium %d" % (i + 1, x, z, f))
+        # pisklę idzie z każdego legowiska prosto na środek łąki i nie utyka
+        S = stan()
+        bez_kulek(S)
+        for slot in range(1, 13):
+            b = byt(S, slot, 1)
+            ustaw(b, tarczaDo=0, laskaDo=1e9)
+        krok(S, 1)
+        for _ in range(60):
+            for b in LM.z_luau(S.get("byty"), True):
+                pass
+            for bt in [S.get("byty").get(float(k)) for k in range(1, 13)]:
+                x, z = g(bt, "x"), g(bt, "z")
+                d = max(0.1, math.hypot(x, z))
+                ustaw(bt, wx=-x / d, wz=-z / d)
+            krok(S, 5, 0.05)
+        for k in range(1, 13):
+            bt = S.get("byty").get(float(k))
+            self.assertLess(math.hypot(g(bt, "x"), g(bt, "z")), 70, "pisklę z legowiska %d doszło na łąkę" % k)
+        # boty nie rodzą się w przeszkodach
+        S = stan(ziarno=5)
+        for f in (1, 3, 6):
+            for _ in range(15):
+                b = byt(S, 0, f)
+                r = D["formy"][f - 1]["r"]
+                for p in prz:
+                    self.assertGreater(math.hypot(g(b, "x") - p["x"], g(b, "z") - p["z"]), p["r"] + r * 0.7 - 0.15)
+
+    def test_32_owce(self):
+        if not (D.get("swiat") and D["swiat"].get("owce")):
+            self.skipTest("bez owiec")
+        O = D["swiat"]["owce"]
+        S = stan()
+        bez_kulek(S)
+        owce = LM.z_luau(jeden("dodajOwce", S), True)
+        self.assertEqual(len(owce), len(O["stada"]) * O["na_stado"])
+        o = S.get("owce").get(1.0)
+        ox, oz = g(o, "x"), g(o, "z")
+        gr = byt(S, 1, 2, ox + 8.0, oz)
+        ustaw(gr, tarczaDo=0, laskaDo=0)
+        krok(S, 20, 0.05)
+        self.assertGreater(math.hypot(g(o, "x") - g(gr, "x"), g(o, "z") - g(gr, "z")), 8.5, "owca ucieka przed smokiem")
+        # dotyk: zjedzona — wzrost jak duża kulka, potem wraca
+        w0 = g(gr, "wzrost")
+        ustaw(gr, x=g(o, "x") + 1.0, z=g(o, "z"))
+        zd = krok(S, 1, 0.05)
+        zj = [z for z in zd if z["t"] == "owca"]
+        self.assertTrue(zj and zj[0]["id"] == g(gr, "id"), "owca zjedzona dotykiem")
+        self.assertAlmostEqual(g(gr, "wzrost") - w0, O["wzrost"] * len([z for z in zd if z["t"] == "owca" and z["id"] == g(gr, "id")]), places=6)
+        self.assertIsNotNone(g(o, "martwyDo"))
+        zd = krok(S, int(O["powrot_s"] / 0.5) + 2, 0.5)
+        self.assertIsNone(g(o, "martwyDo"), "owca wraca po czasie")
+        self.assertTrue([z for z in zd if z["t"] == "owca_wraca"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -100,9 +100,12 @@ end
 
 -- boty nie wchodzą do żadnego legowiska
 function L.pozaLegowiskami(D, x: number, z: number, r: number): (number, number)
+	-- świat: krąg skał legowiska stoi na promieniu ok. 13,5 (skały r 2,3) — boty trzymają się za nim
+	-- (+8: wejście legowiska i kulki startowe przed nim zostają dla graczy, boty nie tarasują wyjścia)
+	local poza = D.legowisko.r + (if D.swiat then 8 else 0)
 	for _, p in D.legowiska do
 		local d = dlug(x - p[1], z - p[2])
-		local min = D.legowisko.r + r * 0.7
+		local min = poza + r * 0.7
 		if d < min and d > 0.01 then
 			x, z = p[1] + (x - p[1]) / d * min, p[2] + (z - p[2]) / d * min
 		end
@@ -229,12 +232,22 @@ function L.ogranicz(D, x: number, z: number, r: number, maska: number?): (number
 			x, z = D.las.x + lx / d2 * m2, D.las.z + lz / d2 * m2
 		end
 	end
-	for _, s in D.przeszkody do
-		local ds = dlug(x - s.x, z - s.z)
-		local min = s.r + r * 0.7
-		if ds < min and ds > 0.01 then
-			x = s.x + (x - s.x) / ds * min
-			z = s.z + (z - s.z) / ds * min
+	-- przeszkody: tylko z komórki siatki (świat ma ich setki); zapas siatki 12 st. ≥ 0,7 × największy promień
+	local G = D.przSiatka
+	local lista = nil
+	if G then
+		local kl = tostring((math.floor(x / G.krok) + 100) * 1000 + (math.floor(z / G.krok) + 100))
+		lista = G.komorki[kl]
+	end
+	if not G or lista then
+		for _, i in lista or D.przeszkody do
+			local s = if lista then D.przeszkody[i] else i
+			local ds = dlug(x - s.x, z - s.z)
+			local min = s.r + r * 0.7
+			if ds < min and ds > 0.01 then
+				x = s.x + (x - s.x) / ds * min
+				z = s.z + (z - s.z) / ds * min
+			end
 		end
 	end
 	local WY = D.wyspa
@@ -287,6 +300,12 @@ function L.bezpieczneMiejsce(S, forma: number, gracz: boolean, strefa: number?, 
 			local dw = math.max(0.1, dlug(x - WY.x, z - WY.z))
 			local m = WY.r_zew + D.formy[forma].r + 2
 			x, z = WY.x + (x - WY.x) / dw * m, WY.z + (z - WY.z) / dw * m
+		end
+		if not gracz then
+			-- świat: poza legowiskami i jeszcze raz przeszkody (skały kręgu legowiska stoją blisko siebie)
+			x, z = L.pozaLegowiskami(D, x, z, D.formy[forma].r)
+			x, z = L.ogranicz(D, x, z, D.formy[forma].r, strefa or 1)
+			x, z = L.ogranicz(D, x, z, D.formy[forma].r, strefa or 1)
 		end
 		-- ocena: odległość do najbliższego zagrożenia (dla bota: do najbliższego gracza)
 		local najbl = 999
@@ -1273,6 +1292,101 @@ function L.myslBossa(S, b)
 	b.myslDo = S.czas + 0.3
 end
 
+------------------------------------------------------------------ owce (swiat1): stadka na łące — pasą się, uciekają, zjedzone dotykiem
+function L.dodajOwce(S)
+	local D = S.D
+	local O = D.swiat and D.swiat.owce
+	S.owce = {}
+	if not O then
+		return S.owce
+	end
+	for _, st in O.stada do
+		for k = 1, O.na_stado do
+			local a = k * 2.1
+			local x, z = L.ogranicz(D, st[1] + math.sin(a) * 3, st[2] + math.cos(a) * 3, O.r, 1)
+			table.insert(S.owce, { i = #S.owce + 1, x = x, z = z, kier = a, wx = 0, wz = 0, domX = st[1], domZ = st[2], martwyDo = nil, myslDo = 0,
+				stan = 0 })
+		end
+	end
+	return S.owce
+end
+
+local function owcaMysl(S, o)
+	local D = S.D
+	local O = D.swiat.owce
+	o.myslDo = S.czas + O.myslenie_s * (0.7 + S.los() * 0.6)
+	local best, bd = nil, O.widzi
+	for _, b in S.byty do
+		if wolny(S, b) and not b.boss then
+			local d = dlug(b.x - o.x, b.z - o.z) - L.promien(D, b.forma)
+			if d < bd then
+				best, bd = b, d
+			end
+		end
+	end
+	if best then
+		local d = math.max(0.1, dlug(o.x - best.x, o.z - best.z))
+		o.wx, o.wz = (o.x - best.x) / d, (o.z - best.z) / d
+		o.stan = 2
+	elseif S.los() < 0.45 then
+		o.wx, o.wz = 0, 0
+		o.stan = 0
+	else
+		-- spacer przy stadzie
+		local a = S.los() * 2 * math.pi
+		local dx, dz = o.domX - o.x, o.domZ - o.z
+		local dd = math.max(1, dlug(dx, dz))
+		o.wx, o.wz = math.sin(a) * 0.7 + dx / dd * math.min(1, dd / 20) * 0.6, math.cos(a) * 0.7 + dz / dd * math.min(1, dd / 20) * 0.6
+		local n = math.max(0.01, dlug(o.wx, o.wz))
+		o.wx, o.wz = o.wx / n, o.wz / n
+		o.stan = 1
+	end
+end
+
+-- krok owiec: ruch, zjedzenie dotykiem (gracz dowolnego stadium, boty do kulki_do): wzrost i życie jak duża kulka
+function L.krokOwiec(S, dt: number, zd)
+	local D = S.D
+	if not S.owce then
+		return
+	end
+	local O = D.swiat.owce
+	for _, o in S.owce do
+		if o.martwyDo then
+			if S.czas >= o.martwyDo then
+				o.martwyDo = nil
+				o.x, o.z = L.ogranicz(D, o.domX + (S.los() - 0.5) * 8, o.domZ + (S.los() - 0.5) * 8, O.r, 1)
+				o.stan = 0
+				table.insert(zd, { t = "owca_wraca", i = o.i, x = o.x, z = o.z })
+			end
+		else
+			if S.czas >= o.myslDo then
+				owcaMysl(S, o)
+			end
+			local v = if o.stan == 2 then O.v_ucieczka elseif o.stan == 1 then O.v else 0
+			o.x += o.wx * v * dt
+			o.z += o.wz * v * dt
+			if o.wx ~= 0 or o.wz ~= 0 then
+				o.kier = math.atan2(o.wx, o.wz)
+			end
+			o.x, o.z = L.ogranicz(D, o.x, o.z, O.r, 1)
+			o.x, o.z = L.pozaLegowiskami(D, o.x, o.z, O.r)
+			for _, b in S.byty do
+				if wolny(S, b) and not b.boss and (b.slot > 0 or b.forma <= D.boty.kulki_do)
+					and dlug(b.x - o.x, b.z - o.z) < L.promien(D, b.forma) + O.r + D.jedzenie.zasieg_zbierania then
+					o.martwyDo = S.czas + O.powrot_s
+					o.stan = 3
+					if b.slot > 0 then
+						L.dodajWzrost(S, b, O.wzrost * L.apetyt(D, b))
+					end
+					b.hp = math.min(b.hpMaks, b.hp + b.hpMaks * O.leczy)
+					table.insert(zd, { t = "owca", i = o.i, id = b.id, s = b.slot, x = o.x, z = o.z, zysk = O.wzrost })
+					break
+				end
+			end
+		end
+	end
+end
+
 ------------------------------------------------------------------ krok
 local function odrodz(S, b, zd)
 	local D = S.D
@@ -1455,10 +1569,10 @@ function L.krok(S, dt: number)
 			if b.wx ~= 0 or b.wz ~= 0 then
 				b.kier = math.atan2(b.wx, b.wz)
 			end
-			b.x, b.z = L.ogranicz(D, b.x, b.z, r, L.maska(D, b))
 			if b.slot == 0 then
 				b.x, b.z = L.pozaLegowiskami(D, b.x, b.z, r)
 			end
+			b.x, b.z = L.ogranicz(D, b.x, b.z, r, L.maska(D, b))
 			if b.kanal then
 				krokKanalu(S, b, zd)
 			end
@@ -1531,6 +1645,7 @@ function L.krok(S, dt: number)
 		end
 	end
 	krokPociskow(S, dt, zd)
+	L.krokOwiec(S, dt, zd)
 	krokPlam(S, zd)
 	-- kulki: zbieranie dotykiem, powrót
 	local zz = D.jedzenie.zasieg_zbierania

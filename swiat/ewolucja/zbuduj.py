@@ -30,7 +30,7 @@ sys.path.append(os.path.join(REPO, "tools"))
 import dane as DN  # noqa: E402
 
 ZR = os.path.join(PAKIET, "zrodla")
-MODULY = ["DaneEwolucji", "LogikaEwolucji", "EfektyEwolucji", "KlipyEwolucji", "RigiEwolucji", "SmokiKlienta", "LegowiskaKlienta"]
+MODULY = ["DaneEwolucji", "LogikaEwolucji", "EfektyEwolucji", "KlipyEwolucji", "RigiEwolucji", "SmokiKlienta", "LegowiskaKlienta", "SwiatKlienta"]
 SKRYPTY = [("SerwerEwolucji", "SerwerEwolucji.server.luau", "Server"), ("KlientEwolucji", "KlientEwolucji.client.luau", "Client")]
 
 
@@ -73,7 +73,12 @@ def kontrola_luau():
         t = mod.wczytaj(s)
         nazwa = os.path.relpath(s, REPO).replace("\\", "/")
         bez_kom, bez_kom_nap = mod.rozbierz(t)
-        bledy += mod.sprawdz_tekst(t, nazwa, pelne=False) + mod.zakazane(bez_kom, bez_kom_nap, nazwa)
+        zak = mod.zakazane(bez_kom, bez_kom_nap, nazwa)
+        if n == "SwiatKlienta":
+            # wyjątek jawny (swiat1): światło i niebo ustawia w czasie gry tylko ten moduł klienta (lokalnie u gracza, nigdy w trybie
+            # Edit ani na serwerze) — zlecone w zadaniu „świat”; pozostałe zakazy (loadstring, getfenv, …) obowiązują
+            zak = [b for b in zak if not b.endswith("zakazane `Lighting`")]
+        bledy += mod.sprawdz_tekst(t, nazwa, pelne=False) + zak
     return bledy
 
 
@@ -104,6 +109,8 @@ def brama_lasu(D):
 
 
 def scena(D):
+    if D.get("swiat"):
+        return scena_swiata(D)
     P = D["pole"]
     LS = D["las"]
     cx, cy, cz = P["srodek"]
@@ -231,6 +238,35 @@ def scena(D):
     for i, (x, z) in enumerate(W["kwiaty"]):
         czesc(L, "Kwiaty", "Kwiat", (cx + x, cy + 0.08, cz + z), (0.1, 1.6, 1.6), ["FFF07A", "FF9AD8", "FFFFFF", "C8A8FF"][i % 4], "SmoothPlastic",
               "Cylinder", rot)
+    return L
+
+
+def scena_swiata(D):
+    """Świat z mapy: w scenie zostają brama lasu (płot chowany przez klienta) i wyspa gry w fosie lawy (SKY NEST)."""
+    P = D["pole"]
+    cx, cy, cz = P["srodek"]
+    L = []
+    rot = (0, 0, math.pi / 2)
+    B = brama_lasu(D)
+    (ax, az), (bx, bz) = B["a"], B["b"]
+    dl = math.hypot(bx - ax, bz - az)
+    kat = math.atan2(bx - ax, bz - az)
+    k = int(dl // 6)
+    for i in range(k):
+        f = (i + 0.5) / k
+        czesc(L, "Brama", "Plot", (cx + ax + (bx - ax) * f, cy + 1.2, cz + az + (bz - az) * f), (0.8, 2.4, dl / k - 0.4), "8A6A3A", "Wood", "Block",
+              (0, kat, 0))
+        czesc(L, "Brama", "Plot", (cx + ax + (bx - ax) * f, cy + 1.9, cz + az + (bz - az) * f), (0.5, 0.35, dl / k + 0.1), "7CFF9A", "Neon", "Block",
+              (0, kat, 0), 0.2)
+    for (px, pz) in (B["a"], B["b"]):
+        czesc(L, "Brama", "Slup", (cx + px, cy + 4, cz + pz), (2.2, 8, 2.2), "6B5A44", "Wood", "Block")
+        czesc(L, "Brama", "SlupSwiatlo", (cx + px, cy + 8.6, cz + pz), (2.2, 2.2, 2.2), "7CFF9A", "Neon", "Ball")
+    WY = D["wyspa"]
+    wx, wz, rw, rz = WY["x"], WY["z"], WY["r_wew"], WY["r_zew"]
+    czesc(L, "Wyspa", "Brzeg", (cx + wx, cy + 0.06, cz + wz), (0.14, rz * 2 + 2.4, rz * 2 + 2.4), "37323F", "Basalt", "Cylinder", rot)
+    czesc(L, "Wyspa", "Lawa", (cx + wx, cy + 0.1, cz + wz), (0.16, rz * 2, rz * 2), "C2410F", "Neon", "Cylinder", rot)
+    czesc(L, "Wyspa", "Skorupa", (cx + wx, cy + 0.14, cz + wz), (0.12, rw * 2 + 3, rw * 2 + 3), "4A2E26", "CrackedLava", "Cylinder", rot)
+    czesc(L, "Wyspa", "Wyspa", (cx + wx, cy + 0.2, cz + wz), (0.16, rw * 2, rw * 2), "37323F", "Basalt", "Cylinder", rot)
     return L
 
 
@@ -517,6 +553,135 @@ CH:SetWaypoint(K .. ": usunięto")
 return "USUNIĘTO Workspace/" .. K
 '''
 
+# świat z mapy (swiat1): rekwizyty jako zakotwiczone bryły (bez stawów — statyczne), płaty ziemi, stawy; foldery według stref
+SWIAT = WSTEP + r'''
+if not stary then
+	return "STOP: brak kontenera"
+end
+local P = HS:JSONDecode(__PACZKA__)
+local sc = stary:FindFirstChild("Scena")
+if not sc then
+	return "STOP: brak sceny"
+end
+CH:SetWaypoint(K .. ": przed światem")
+local stare = sc:FindFirstChild("Swiat")
+if stare then
+	stare:Destroy()
+end
+local sw = Instance.new("Folder")
+sw.Name = "Swiat"
+local C = Vector3.new(P.C[1], P.C[2], P.C[3])
+local foldery = {}
+local function folder(n)
+	local f = foldery[n]
+	if not f then
+		f = Instance.new("Folder")
+		f.Name = n
+		f.Parent = sw
+		foldery[n] = f
+	end
+	return f
+end
+local dekor = {}
+for _, n in P.dekoracja do
+	dekor[n] = true
+end
+local n = 0
+for _, e in P.inst do
+	local d = P.defs[e[1]]
+	local cf = CFrame.new(C + Vector3.new(e[2], 0, e[3])) * CFrame.Angles(0, math.rad(e[4]), 0)
+	local sk = e[5]
+	local rodzic = folder(e[6])
+	if e[6] == "legowisko" or e[6] == "znak" or e[6] == "lawa" then
+		local m = Instance.new("Model")
+		m.Name = if e[7] > 0 then e[1] .. "_" .. e[7] else e[1]
+		m.Parent = rodzic
+		rodzic = m
+	end
+	local cien = not dekor[e[1]]
+	for _, c in d.czesci do
+		local ks = c[1]
+		local p
+		if ks == 3 then
+			p = Instance.new("WedgePart")
+		elseif ks == 4 then
+			p = Instance.new("CornerWedgePart")
+		else
+			p = Instance.new("Part")
+			p.Shape = if ks == 1 then Enum.PartType.Ball elseif ks == 2 then Enum.PartType.Cylinder else Enum.PartType.Block
+		end
+		p.Name = e[1]
+		p.Anchored = true
+		p.CanCollide = false
+		p.CanTouch = false
+		p.CanQuery = false
+		p.CastShadow = cien
+		p.Size = Vector3.new(c[8] * sk, c[9] * sk, c[10] * sk)
+		p.CFrame = cf * CFrame.new(c[2] * sk, c[3] * sk, c[4] * sk) * CFrame.fromOrientation(c[5], c[6], c[7])
+		p.Color = Color3.fromHex(c[11])
+		local mat = d.materialy[c[12] + 1]
+		p.Material = Enum.Material[mat[1]]
+		p.Reflectance = mat[2]
+		p.TopSurface, p.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
+		if e[1] == "sztandar" and c[13] == 0 then
+			p:SetAttribute("Region", 0)
+		end
+		p.Parent = rodzic
+		n += 1
+	end
+end
+-- płaty ziemi: [x, z, promień, kolor, wysokość, świeci]
+local ziemia = folder("ziemia")
+local np = 0
+for i, pl in P.platy do
+	local p = Instance.new("Part")
+	p.Name = "Plat"
+	p.Shape = Enum.PartType.Cylinder
+	p.Anchored, p.CanCollide, p.CanTouch, p.CanQuery, p.CastShadow = true, false, false, false, false
+	local gr = if pl[3] > 200 then 2 else 0.2
+	p.Size = Vector3.new(gr, pl[3] * 2, pl[3] * 2)
+	p.CFrame = CFrame.new(C + Vector3.new(pl[1], pl[5] - gr / 2 + i * 0.0005, pl[2])) * CFrame.Angles(0, 0, math.pi / 2)
+	p.Color = Color3.fromHex(pl[4])
+	local kol = string.upper(pl[4])
+	p.Material = if pl[6] then Enum.Material.Neon elseif kol == "C7B285" or kol == "B9A47C" then Enum.Material.Sand
+		else Enum.Material.Grass
+	p.TopSurface, p.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
+	p.Parent = ziemia
+	np += 1
+end
+-- stawy: woda (Glass 3E8FD8, przezroczystość 0,25, połysk 0,15) z piaszczystym brzegiem
+local woda = folder("woda")
+for _, st in P.stawy do
+	for k, w in { { st[3] + 2.2, "D9C58E", Enum.Material.Sand, 0.08, 0, 0 }, { st[3], "3E8FD8", Enum.Material.Glass, 0.14, 0.25, 0.15 } } do
+		local p = Instance.new("Part")
+		p.Name = if k == 1 then "Brzeg" else "Woda"
+		p.Shape = Enum.PartType.Cylinder
+		p.Anchored, p.CanCollide, p.CanTouch, p.CanQuery, p.CastShadow = true, false, false, false, false
+		p.Size = Vector3.new(0.16, w[1] * 2, w[1] * 2)
+		p.CFrame = CFrame.new(C + Vector3.new(st[1], w[4], st[2])) * CFrame.Angles(0, 0, math.pi / 2)
+		p.Color = Color3.fromHex(w[2])
+		p.Material = w[3]
+		p.Transparency = w[5]
+		p.Reflectance = w[6]
+		p.Parent = woda
+		np += 1
+	end
+end
+sw.Parent = sc
+CH:SetWaypoint(K .. ": świat")
+local liczby = {}
+for nazwa, f in foldery do
+	local c = 0
+	for _, d in f:GetDescendants() do
+		if d:IsA("BasePart") then
+			c += 1
+		end
+	end
+	table.insert(liczby, nazwa .. " " .. c)
+end
+return string.format("rekwizyty: %d części, płaty i woda: %d; %s", n, np, table.concat(liczby, ", "))
+'''
+
 # sylwetki mieszkańców lasu na tablicy (po budowie rigów: czarne, nieruchome kopie wzorców)
 SYLWETKI = WSTEP + r'''
 if not stary then
@@ -713,6 +878,17 @@ return HS:JSONEncode(w)
 '''
 
 
+def paczka_swiata(D):
+    """Instancje rekwizytów, płaty ziemi i stawy z mapy (swiat_mapa.py) + bryły rekwizytów dla kroku SWIAT."""
+    import swiat_mapa as SM
+    U = DN.ustawienia()
+    W = {k: v for k, v in U["wyspa"].items() if k != "opis"}
+    M = SM.mapa(W, D["legowiska"], D["pole"]["r"], {"x": D["las"]["x"], "z": D["las"]["z"], "r": D["las"]["r"]}, U["swiat"].get("gestosc", 1.0))
+    ids = sorted({i[0] for i in M["instancje"]})
+    return {"C": D["pole"]["srodek"], "defs": SM.definicje(ids), "inst": M["instancje"], "platy": M["platy"], "stawy": M["stawy"],
+            "dekoracja": sorted(SM.DEKORACJA)}
+
+
 def paczki_rigow():
     """Rigi i klipy zestawu blender w paczkach (jedno stadium na wywołanie: pełny rig, uproszczony, klipy; potem reszta)."""
     rigi, klipy = DN.modele_do_budowy(DN.ustawienia())
@@ -807,6 +983,8 @@ def main():
         if not a.skrypty and D.get("blender"):
             for P in paczki_rigow():
                 log("rigi:", wykonaj(wstaw(RIGI, PACZKA=luau_str(json.dumps(P, ensure_ascii=False)), **wsp), "rigi")[:300])
+        if not a.skrypty and D.get("swiat"):
+            log("świat:", wykonaj(wstaw(SWIAT, PACZKA=luau_str(json.dumps(paczka_swiata(D), ensure_ascii=False)), **wsp), "świat")[:300])
         if not a.skrypty:
             log(wykonaj(wstaw(SYLWETKI, **wsp), "sylwetki"))
         st = json.loads(wykonaj(wstaw(STAN, KONTENER=D["kontener"]), "stan"))

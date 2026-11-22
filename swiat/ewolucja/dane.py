@@ -82,6 +82,10 @@ def modele_do_budowy(U):
     klipy.append(("smok_jajo", "smok_jajo_klipy.json"))
     for r in I.get("rekwizyty", []):
         rigi.append(("Rekwizyt_" + r["id"], r["plik"]))
+    # świat (swiat1): kule trzech rozmiarów i kopce złota legowiska jako wzorce dla klienta
+    for rid in ("kula_mala", "kula_duza", "kula_wielka", "stos_zlota_1", "stos_zlota_2", "stos_zlota_3"):
+        if os.path.exists(os.path.join(MODELE, "rekwizyt_%s_rig.json" % rid)):
+            rigi.append(("Rekwizyt_" + rid, "rekwizyt_%s_rig.json" % rid))
     for s in I.get("stwory", []):
         rigi.append(("Stwor_" + s["id"], s["pliki"][0]))
         klipy.append((s["id"], s["pliki"][1]))
@@ -131,6 +135,20 @@ def przeszkody(P, LS=None):
                 w.append(s)
                 n += 1
     return w
+
+
+SIATKA = 24
+
+
+def siatka_przeszkod(prz, zapas=12.0):
+    """Siatka komórek SIATKA st.: klucz (cx + 100) * 1000 + (cz + 100) → indeksy przeszkód (od 1) w zasięgu r + zapas."""
+    w = {}
+    for i, s in enumerate(prz, 1):
+        R = s["r"] + zapas
+        for cx in range(int(math.floor((s["x"] - R) / SIATKA)), int(math.floor((s["x"] + R) / SIATKA)) + 1):
+            for cz in range(int(math.floor((s["z"] - R) / SIATKA)), int(math.floor((s["z"] + R) / SIATKA)) + 1):
+                w.setdefault(str((cx + 100) * 1000 + (cz + 100)), []).append(i)
+    return {"krok": SIATKA, "komorki": w}
 
 
 def kulki(P, J, prz, LS=None):
@@ -293,6 +311,14 @@ def dane():
     P.pop("opis", None)
     LS = {k: v for k, v in U["las"].items() if k != "opis"}
     prz = przeszkody(P, LS)
+    SW = None
+    if zestaw == "blender" and U.get("swiat", {}).get("mapa"):
+        # świat z propozycji mapy: przeszkody = koła blokujących rekwizytów + stawy (swiat_mapa.py)
+        import swiat_mapa as SM
+        WY0 = {k: v for k, v in U["wyspa"].items() if k != "opis"}
+        SW = SM.mapa(WY0, legowiska(U["legowisko"]), P["r"], {"x": LS["srodek"][0], "z": LS["srodek"][1], "r": LS["r"]},
+                     U["swiat"].get("gestosc", 1.0))
+        prz = SW["przeszkody"]
     J = {k: v for k, v in U["jedzenie"].items() if k != "opis"}
     B = {k: v for k, v in U["boss"].items() if k != "opis"}
     if B["model"] not in [b["model"] for b in UP["boss"]["modele"]]:
@@ -304,10 +330,11 @@ def dane():
         K = modele_wczytaj("golem_1_klipy.json")
         B["zamach_s"] = round(K["klipy"]["zamach"]["zdarzenia"]["uderzenie"] / K["fps"], 3)
         B["golem"] = True
+        B["nazwa"] = "KNIGHT GOLEM"
     B.update({"podskok": 0.02, "pochyl": 0.04, "krok": 0.8, "anim": None})
     D = {
         "kontener": U["kontener"], "prefiks": U["prefiks"], "wylacznik": U["wylacznik"], "wzorceRS": U["wzorce_rs"], "ui": U["ui"],
-        "pole": P, "przeszkody": prz, "kulkiPoz": kulki(P, J, prz, LS), "jedzenie": J, "formy": formy,
+        "pole": P, "przeszkody": prz, "przSiatka": siatka_przeszkod(prz), "kulkiPoz": kulki(P, J, prz, LS), "jedzenie": J, "formy": formy,
         "las": {"nazwa": LS["nazwa"], "x": LS["srodek"][0], "z": LS["srodek"][1], "r": LS["r"], "od_formy": LS["od_formy"]}, "boss": B,
         "legowisko": {k: v for k, v in U["legowisko"].items() if k != "opis"}, "legowiska": legowiska(U["legowisko"]),
         "warianty": U["warianty"], "zapis": {k: v for k, v in U["zapis"].items() if k != "opis"},
@@ -327,6 +354,7 @@ def dane():
         "miejsceBC": U["miejsce_bc"],
         "zestaw": zestaw,
         "blender": BL,
+        "swiat": ({k: v for k, v in U["swiat"].items() if k not in ("opis", "mapa", "gestosc")} | {"stawy": SW["stawy"]}) if SW else None,
     }
     return D
 

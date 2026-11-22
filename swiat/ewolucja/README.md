@@ -25,16 +25,17 @@ Bez zapisu między sesjami. Napisy w grze po angielsku.
 ## Jak zbudować i sprawdzić
 ```
 python -B swiat/ewolucja/dane.py                         # ustawienia.json + dane Pet Areny → zrodla/DaneEwolucji.luau
-python -B swiat/ewolucja/testy/test_ewolucji.py          # logika bez Studio (30 testów, w tym dane modeli i klipy)
+python -B swiat/ewolucja/testy/test_ewolucji.py          # logika bez Studio (32 testy: dane modeli, klipy, przeszkody świata, owce)
 python -B swiat/ewolucja/tempo.py [--prob 8]             # symulacja tempa „sprawnego gracza”
 python -B swiat/ewolucja/testy/walka_sim.py [--pojedynkow 40] # walka1: pojedynki, boss, zdolności na prawdziwej logice
 python -B swiat/ewolucja/zbuduj.py --studio <id>         # budowa (--sucho, --skrypty, --stan, --usun, --publikacja)
 python -B swiat/ewolucja/zbuduj.py --wlacz on|off --studio <id>     # wyłącznik EwolucjaWlaczona
-python -B swiat/ewolucja/testy/proba_play.py --studio <id>          # próba Play (P01–P30, zrzuty do klatki/)
+python -B swiat/ewolucja/testy/proba_play.py --studio <id>          # próba Play (P01–P33, zrzuty do klatki/)
 python -B swiat/ewolucja/testy/proba_telefon.py --studio <id>       # Device Simulator: najmniejszy telefon, układ HUD
 python -B swiat/ewolucja/testy/demo_wideo.py --studio <id>          # film demo ok. 35 s + plansza (poza repo)
 python -B swiat/ewolucja/testy/demo_wideo.py --studio <id> --walka --wyj <TEMP>/ewolucja_demo/ewolucja_walka.mp4   # film walki
 python -B swiat/ewolucja/testy/demo_wideo.py --studio <id> --blender --wyj <TEMP>/ewolucja_demo/ewolucja_smok_blender.mp4   # smoki z Blendera
+python -B swiat/ewolucja/testy/demo_wideo.py --studio <id> --swiat --wyj <TEMP>/ewolucja_demo/ewolucja_swiat.mp4   # wycieczka po świecie
 ```
 Przed próbą Play inne gry wyłączone: `swiat/pet_arena/zbuduj.py --wlacz off`, `swiat/zabawki/zbuduj.py --wlacz off`.
 
@@ -172,6 +173,35 @@ Jedna zasada dla wszystkich (gracz, dziki smok, boss) — liczby w `ustawienia.j
   ogień, ogon, ryk i meteor trafiają wielu).
 - Zrzuty: `klatki/14_walka_gryzienie.jpg`, `15_ogien.jpg`, `16_moc.jpg`, `17_telefon_walka.jpg`; film
   `%TEMP%\ewolucja_demo\ewolucja_walka.mp4` (poza repo).
+
+## Świat (swiat1, 22.11.2026)
+Mapa z `modele/dane/mapa_propozycja.json` (tylko odczyt) przez `swiat_mapa.py`; ustawienia `ustawienia.json → swiat`.
+- **Budowa** (`zbuduj.py`, krok SWIAT): rekwizyty jako zakotwiczone bryły w `Scena/Swiat/<strefa>` (łąka, las, woda, lawa,
+  znaki, legowiska z modelami `legowisko_krag_<n>`, `legowisko_brama_<n>`, `sztandar_<n>`), płaty ziemi, stawy (Glass
+  3E8FD8). W scenie z dawnej łąki zostają tylko brama lasu (płot chowany przez klienta) i fosa wyspy. Razem ok. 4080
+  części statycznych (rekwizyty 3468, płaty i woda 101).
+- **Zmiany względem propozycji**: wyspa lawy z propozycji leży za łąką w jeziorze (−250, 70) — szybowanie (34 st.) nie
+  przeleci 68 st. wody, więc jej bazalt, skały lawy i ołtarz kul stoją na wyspie gry SKY NEST (−36, −42) w fosie lawy
+  (× 0,55); jeziora nie ma; mały staw przesunięty o (−4, −4) od fosy; nic nie stoi na wyspie i w fosie. Fosa ciemniejsza
+  (C2410F), bo pomarańcz Neon z bloomem świecił na biało. Boss to KNIGHT GOLEM (nazwa w HUD).
+- **Kolizje**: blokują głazy, pnie drzew i sosen, trzon wielkiego grzyba, filary ruin, kłody, nogi łuku korzeni, menhiry
+  kamiennego kręgu, czaszka smoka, posąg, ołtarz, 11 skał kręgu każdego legowiska i 2 filary bramy (wejście od łąki
+  wolne) — koła w `D.przeszkody` (233) z siatką komórek 24 st. (`przSiatka`) w `L.ogranicz`. Trawa, kwiaty, krzaki,
+  kamyki, grzybki, lilie, trzcina, drogowskazy i sztandary — bez kolizji. Boty rodzą się poza przeszkodami i legowiskami
+  i trzymają się 8 st. dalej od legowisk niż ich promień (wejście i kulki startowe zostają dla graczy). Autopilot prób
+  wychodzi z legowiska wejściem.
+- **Światło i niebo** ustawia klient w czasie gry (moduł `SwiatKlienta`, lokalnie; liczby z modele/README): Atmosphere,
+  Sky, chmury, Bloom, ColorCorrection, SunRays; nastrój stref: las (gęściej, zielono, ciemniej), wyspa lawy (pomarańcz).
+  `Technology` (Future) nie da się ustawić skryptem — zostaje z miejsca. Wyjątek w kontroli Luau (`zakazane Lighting`)
+  tylko dla `SwiatKlienta`, jawnie w `zbuduj.py`.
+- **Światło PointLight** tylko w zaczepach żaru własnego smoka (inne smoki: żar bez światła).
+- **Owce**: 4 stadka po 3 na łące; pasą się, uciekają przed smokami (16 st.), zjedzone dotykiem przez gracza dowolnego
+  stadium albo boty do stadium 3 dają +5 wzrostu (× Apetyt) i 6% życia; wracają po 25 s. Klipy: spoczynek, chod,
+  ucieczka, zjedzona. Migawka: owce po bytach (11 bajtów na owcę).
+- **Kule** z modeli danych (kula_mala / duza / wielka), unoszą się tylko blisko gracza. Kopiec złota legowiska:
+  `stos_zlota_1–3`. Sztandar legowiska w kolorze właściciela (`swiat.kolory_legowisk`, kolor miejsca).
+- **Poprawki**: miniatury drabiny i panelu w pozie cokołu (WorldModel w ViewportFrame), przenikanie 0,25 s przy zmianie
+  pełny ↔ uproszczony rig, stożek ognia jako bryła (7 kul Neon wzdłuż stożka + cząsteczki zamiast płaskich Beamów).
 
 ## Smoki z Blendera (smok-blender1, 22.11.2026)
 Zestaw `"zestaw": "blender"` (domyślny; `smok` = dawny generator części, `potwory` = Pet Arena — jedna wartość

@@ -66,6 +66,9 @@ local E = Efekty.nowe(lokalne, D)
 -- zestaw blender: rigi i klipy smoków z modele/dane (moduł SmokiKlienta); inne zestawy — dawny ruch części
 local SK = if D.blender then require(Moduly:WaitForChild("SmokiKlienta")).nowe({ D = D, wzorce = wzorce, lokalne = lokalne, Http = HttpService })
 	else nil
+-- świat (swiat1): światło i niebo w grze, nastrój stref, kule z modeli danych, owce (moduł SwiatKlienta)
+local SWK = if D.swiat and SK then require(Moduly:WaitForChild("SwiatKlienta")).nowe({ D = D, wzorce = wzorce, lokalne = lokalne, C = C, SK = SK, L = L })
+	else nil
 
 ------------------------------------------------------------------ dźwięki (odcinki arkusza efektów Pet Areny)
 local folderDz = Instance.new("Folder")
@@ -376,7 +379,17 @@ local function miniatura(rodzic: Instance, f: number, rozmiar: UDim2, poz: UDim2
 	if wz then
 		local m = wz:Clone()
 		m:PivotTo(CFrame.new(0, 0, 0) * CFrame.Angles(0, math.rad(200), 0))
-		m.Parent = vf
+		local F = D.formy[f]
+		local Wk = SK and F.rig and SK:klipy(F.rig)
+		if Wk then
+			local wm = Instance.new("WorldModel")
+			wm.Parent = vf
+			m.Parent = wm
+			local r = SK.Rigi.zamroz(m, Wk, "cokol", 0.4)
+			r:ustaw(CFrame.Angles(0, math.rad(200), 0))
+		else
+			m.Parent = vf
+		end
 		local cf, roz = m:GetBoundingBox()
 		local cam = Instance.new("Camera")
 		cam.FieldOfView = 40
@@ -775,6 +788,9 @@ for i, p in D.kulkiPoz do
 	kulkiCzesci[i] = k
 	kulkiCF[i] = k.CFrame
 	kulkiZywe[i] = true
+	if SWK then
+		SWK:ubierzKule(i, k, p[3])
+	end
 end
 
 local function mojaForma(): number
@@ -880,6 +896,9 @@ local function usunWidok(w)
 	if w.zar then
 		w.zar:Destroy()
 	end
+	if w.znika then
+		w.znika.m:Destroy()
+	end
 	if w.stozek and SK then
 		SK.stozekKoniec(w.stozek)
 	end
@@ -911,7 +930,9 @@ evStan.OnClientEvent:Connect(function(b: buffer)
 				local zywa = bit32.band(bajt, 2 ^ k) ~= 0
 				if zywa ~= kulkiZywe[idx] then
 					kulkiZywe[idx] = zywa
-					kulkiCzesci[idx].Transparency = if zywa then 0 else 1
+					if not (SWK and SWK:kula(idx, zywa)) then
+						kulkiCzesci[idx].Transparency = if zywa then 0 else 1
+					end
 				end
 			end
 		end
@@ -957,6 +978,9 @@ evStan.OnClientEvent:Connect(function(b: buffer)
 			zbudujModel(w, f)
 		end
 		w.brak = 0
+	end
+	if SWK then
+		SWK:owceZMigawki(b, o0 + n * 18)
 	end
 	for id, w in widoki do
 		if not widziane[id] then
@@ -1487,10 +1511,40 @@ local function rysuj(w, dt: number)
 				end
 			end
 			if lod ~= w.lod then
+				local stary = w.model
+				local doFade = not w.boss and stary ~= nil and (moj or wWidoku(poz + Vector3.new(0, r, 0), r * 1.5))
+				if doFade then
+					w.model = nil -- zbudujModel nie niszczy: stary gaśnie
+				end
 				zbudujModel(w, w.forma, lod)
 				if not w.R then
 					return
 				end
+				w.przezr = -1
+				if doFade then
+					if w.znika then
+						w.znika.m:Destroy()
+					end
+					w.znika = { m = stary, t = 0 }
+				end
+			end
+		end
+		if w.znika then
+			-- przenikanie przy zmianie rigu: stary zastyga i gaśnie, nowy rośnie z przezroczystości
+			local Z = w.znika
+			Z.t += dt
+			local f = math.clamp(Z.t / 0.25, 0, 1)
+			for _, d in Z.m:GetDescendants() do
+				if d:IsA("BasePart") then
+					d.LocalTransparencyModifier = f
+				end
+			end
+			for _, p in w.czesci do
+				p.LocalTransparencyModifier = 1 - f
+			end
+			if f >= 1 then
+				Z.m:Destroy()
+				w.znika = nil
 				w.przezr = -1
 			end
 		end
@@ -1536,7 +1590,7 @@ local function rysuj(w, dt: number)
 			w.animDt = 0
 		end
 		-- żar i światło (pełny rig blisko), ślady ogona i skrzydeł w zrywie i locie
-		SK:efekty(w, w.forma, not w.lod and (moj or odl < 60))
+		SK:efekty(w, w.forma, not w.lod and (moj or odl < 60), moj)
 		SK.slady(w, bit32.band(w.flagi, 2 + 32) ~= 0)
 		-- kanał ognia: mocny stożek od pyska (Beam + cząsteczki), sterowany kierunkiem patrzenia
 		local wKan = bit32.band(w.akcja, 32) ~= 0 or (moj and w.kanalDo ~= nil and os.clock() < w.kanalDo)
@@ -2201,7 +2255,9 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				end
 				local k = kulkiCzesci[z.i]
 				if k then
-					k.Transparency = 1
+					if not (SWK and SWK:kula(z.i, false)) then
+						k.Transparency = 1
+					end
 					kulkiZywe[z.i] = false
 					E:iskry(k.Position, k.Color, 5, 0.6)
 					local typ = D.kulkiPoz[z.i][3]
@@ -2439,6 +2495,23 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 			end
 		elseif t == "ogloszenie" then
 			pokazBaner(z.tekst, zloto, 2.6)
+		elseif t == "owca" then
+			if SWK then
+				SWK:owcaZjedzona(z.i)
+			end
+			local p = C + Vector3.new(z.x, 1.5, z.z)
+			if z.id == mojId then
+				E:iskry(p, Color3.new(1, 1, 1), 14, 1.2)
+				E:liczba(p + Vector3.new(0, 2, 0), "+" .. tostring(z.zysk), hex("9BFFB8"))
+				E:slowo(p + Vector3.new(0, 3.5, 0), UI.zjedzony, hex(UI.kolory.ty), 0.7, 0.6)
+				dzwiek("plusk", 1.1)
+				pulsPaska = 0
+				gracz:SetAttribute("EW_K_Owce", (gracz:GetAttribute("EW_K_Owce") or 0) + 1)
+				local wj = widoki[mojId]
+				if wj and wj.R and SK then
+					SK.grajNa(wj, "pozarcie", "ugryzienie", 0.04, { wejscie = 0.04 })
+				end
+			end
 		elseif t == "rana" then
 			-- walka1: liczba ran, błysk, zatrzymanie klatki i wstrząs (gdy dotyczy mnie), przewrót
 			local q, a = widoki[z.id], widoki[z.a]
@@ -2733,6 +2806,13 @@ local function krokAutopilota(dt: number)
 	else
 		kx, kz = -w.x / D.pole.r, -w.z / D.pole.r + 0.3
 	end
+	-- świat: z legowiska wychodzi wejściem (krąg skał wokół), jak gracz
+	if mojSlot() > 0 then
+		local lx, lz = L.legowiskoPoz(D, mojSlot())
+		if (w.x - lx) ^ 2 + (w.z - lz) ^ 2 < 17 * 17 then
+			kx, kz = -lx / 126, -lz / 126
+		end
+	end
 	local n = math.max(0.01, math.sqrt(kx * kx + kz * kz))
 	-- świat → drążek: prawo = −x, góra = +z
 	sterTest = { v = Vector2.new(-kx / n, kz / n), do_ = os.clock() + 0.4 }
@@ -2795,7 +2875,7 @@ local function uklad(): string
 end
 
 ------------------------------------------------------------------ legowiska w świecie (moduł LegowiskaKlienta)
-local Legowiska = require(Moduly:WaitForChild("LegowiskaKlienta")).nowe({ D = D, L = L, C = C, NF = NF, lokalne = lokalne, gracz = gracz,
+local Legowiska = require(Moduly:WaitForChild("LegowiskaKlienta")).nowe({ D = D, L = L, C = C, NF = NF, lokalne = lokalne, gracz = gracz, kontener = kontener,
 	Players = Players, wzorce = wzorce, SK = SK, wariantD = wariantD, wyglad = wyglad, czcionka = czcionka, tusz = tusz, zloto = zloto, UI = UI,
 	nowy = nowy, hex = hex, mojaPoz = function()
 		local ja2 = widoki[mojId]
@@ -2874,15 +2954,19 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 	if olbrzymId == 0 or not widoki[olbrzymId] then
 		korona.Parent = nil
 	end
-	-- kulki: lekkie unoszenie (jedno BulkMoveTo)
-	local cz, cf = {}, {}
-	for i, k in kulkiCzesci do
-		if kulkiZywe[i] then
-			table.insert(cz, k)
-			table.insert(cf, kulkiCF[i] + Vector3.new(0, math.sin(tGlob * 3 + i) * 0.25, 0))
+	-- kulki: lekkie unoszenie (jedno BulkMoveTo); świat: modele kul blisko gracza, nastrój stref, owce
+	if SWK then
+		SWK:krok(dtPrawdziwe, tGlob, widoki[mojId])
+	else
+		local cz, cf = {}, {}
+		for i, k in kulkiCzesci do
+			if kulkiZywe[i] then
+				table.insert(cz, k)
+				table.insert(cf, kulkiCF[i] + Vector3.new(0, math.sin(tGlob * 3 + i) * 0.25, 0))
+			end
 		end
+		workspace:BulkMoveTo(cz, cf, Enum.BulkMoveMode.FireCFrameChanged)
 	end
-	workspace:BulkMoveTo(cz, cf, Enum.BulkMoveMode.FireCFrameChanged)
 	WK.krokStrzalki()
 	Legowiska:krok(dt, tGlob)
 	krokJajka(dt)
