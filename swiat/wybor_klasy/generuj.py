@@ -332,8 +332,9 @@ def okno(s):
                     gx, gy = k * 3.35 + rnd.choice((-0.75, -0.55, 0.55, 0.75)), y0 + rnd.uniform(0.4, ph + 0.5)
                     a = rnd.choice((0.16, 0.2, 0.26))
                     s.blok("Gwiazda", (gx, gy, 0.6), (a, a, 0.1), "gwiazda", "Neon", rot=(0, 0, 45))
-            s.walec("Księżyc", (0.6, y0 + ph + 0.45, 0.63), 0.72, 0.1, "ksiezyc", "Neon", os="z")
-            s.walec("Księżyc cień", (0.92, y0 + ph + 0.63, 0.68), 0.58, 0.1, "noc", "Neon", os="z")
+            # księżyc mniejszy i bliżej środka łuku środkowego okna (Paweł 24.11: „cień” księżyca wychodził na ramę)
+            s.walec("Księżyc", (0.35, y0 + ph + 0.15, 0.63), 0.5, 0.1, "ksiezyc", "Neon", os="z")
+            s.walec("Księżyc cień", (0.56, y0 + ph + 0.28, 0.68), 0.4, 0.1, "noc", "SmoothPlastic", os="z")
         swiatlo(s, "Księżyc okna", (0, 3.6, 3.2), 20, 1.3, "7FA8FF")
     s.obrys_sylwetki("Okno")
 
