@@ -532,6 +532,13 @@ def cmd_mapa():
     _zapisz(indeks, ip)
 
 
+def cmd_mapa2(*opcje):
+    # Runda 7: mapa v2 (teren z wysokościami, bramy rozmiaru, kryjówki, sekrety, prądy) — TYLKO dane_nastepne/,
+    # podglad/27–31 i folder wyników; dane/ tylko czyta. Opcje: „szkic” (bez Blendera), nazwy widoków (np. „spawn”).
+    from swiat.ewolucja.modele import mapa2
+    mapa2.zrob(sys.modules[__name__], *opcje)
+
+
 def cmd_golem_grozny():
     # KNIGHT GOLEM w wersji groznej: NOWE pliki golem_grozny_<1-5>_rig.json i _klipy.json, plansza podgladu 20
     from swiat.ewolucja.modele import stwory_grozne

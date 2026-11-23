@@ -40,6 +40,7 @@ Duże pliki trafiają POZA repozytorium: `%LOCALAPPDATA%\BlockyCrycket\modele\sm
 | `blender_widoki.py`, `blender_siatki.py` | skrypty uruchamiane w Blenderze |
 | `dane/` | **przekazanie dla gry** (opis niżej) |
 | `podglad/` | 20 małych JPG (17–19 mapa i zestaw świata, 20 groźny golem): styl, rzędy stadiów, przegląd z wersją uproszczoną, plansze 1/4/8, paski klatek, wyklucie, warianty i rekwizyty, ikona, trzy miniatury |
+| `mapa2.py`, `swiat_zestaw2.py`, `blender_mapa2.py` | mapa v2 (runda 7, propozycja): teren z wysokościami, bramy rozmiaru, kryjówki, sekrety, prądy — wyniki tylko w `dane_nastepne/` i `podglad/27–31` (sekcja „Mapa v2”) |
 
 ## Styl i regiony koloru
 Klockowa bryła w kolorze ciała; od karku po ogon ciemne **łuski-dachówki**, w szczelinach **żar**: miękka poświata
@@ -295,6 +296,158 @@ da to samo. Do tego czasu **nie uruchamiać `dane` ani `wszystko`** — nadpisa�
 - `generuj.py krok1` odtwarza `smok_<n>_klipy.json` z próbek Blendera ostatniego etapu (`_probki_etap.json`
   w dane_robocze) bez uruchamiania Blendera; pozostałe klipy sprawdzane bajt w bajt z dane/ (bez różnic). Pliki
   w dane_nastepne/ i dane/ (przeniesione przez agenta gry). Rozmiar klipów +2,5–5%.
+
+## Mapa v2 (runda 7, 23.11.2026) — propozycja, nic niewpięte w grę
+Cel (Karol, 23.11): „lepszy i taktyczniejszy 3D environment, ładniejszy i ciekawszy do odkrycia”. Mapa ma zmieniać
+sposób gry i ciągnąć graczy na zewnątrz, nie tylko dokładać rekwizyty. **Tylko nowe pliki**: `dane/` (w tym
+`mapa_propozycja.json`) bez zmian; w `generuj.py` doszło tylko polecenie `mapa2`.
+```
+python -B swiat/ewolucja/modele/generuj.py mapa2          # dane_nastepne/ + szkic + rendery (Blender ok. 70 s, całość ok. 2 min)
+python -B swiat/ewolucja/modele/generuj.py mapa2 szkic    # tylko dane, sprawdziany i szybki szkic z góry, bez Blendera (2 s)
+python -B swiat/ewolucja/modele/generuj.py mapa2 spawn    # wybrane widoki: z_gory, spawn, nora, punkt_widokowy, kanion, wodospad, kaldera
+```
+Kod: `mapa2.py` (układ, teren, flagi, sprawdziany, zapis, rendery), `swiat_zestaw2.py` (26 nowych rekwizytów),
+`blender_mapa2.py` (scena z wysokościami i prawdziwą kamerą gry). Wyniki: `dane_nastepne/mapa_v2.json` (103 kB),
+`dane_nastepne/rekwizyt_<id>_rig.json` (26), `podglad/27–31`, pełne PNG w `…\smok_ewolucja\mapa\mapa2_*.png`
+(+ `mapa2_wodospad.png`, `mapa2_kaldera.png`, `mapa2_szkic.png` — tylko lokalnie).
+
+Nowe rekwizyty (części Roblox): `trawa_wysoka` 9 · `paproc` 7 · `skala_lamliwa` 9 · `drzewo_martwe` 9 · `kloda_martwa` 7 ·
+`luk_niski` 10 · `nora` 8 · `skrzynia_ukryta` 10 · `kamien_runiczny` 7 · `gniazdo_orle` 8 · `punkt_widokowy` 12 ·
+`krysztaly_skupisko` 8 · `grota_wejscie` 11 · `wodospad` 10 · `most` 16 · `kamien_brodu` 2 · `luk_skalny` 12 ·
+`iglica_skalna` 7 · `ruiny_mur` 9 · `wiatr_kolumna` 8 · `szczelina_lawy` 5 · `latarnia_las|zar|magia|zlota` 4 ·
+`czaszka_wielka` 41. Język: żar w pęknięciach = „rozbij mnie”, żółta łapka nad przejściem = brama mała, błękitna =
+średnia, białobłękitne wiry = prąd wznoszący.
+
+### Układ (gra: N = +Z u góry ekranu, −X po prawej)
+| Strefa (`strefy.lista`) | Gdzie | Stadia | Co tu jest |
+|---|---|---|---|
+| MEADOW `laka` | koło r 150 jak dziś | 1–3 | plac startu (gniazdo z jajami pośrodku) i 12 legowisk bez zmian; rzeka z 3 mostami i 2 brodami; Kwietny Pagór (5) i Bazaltowy Stół (6) z rampą i uskokami; Grzbiet Nory z tunelem; olbrzymia czaszka z otwartą paszczą; 10 kęp wysokiej trawy; 4 linie latarni |
+| HIDDEN GLADE `polana` | za murem na 54,5° | 1–3 | kieszeń tylko przez niski łuk w murze (B03); kamień R2 |
+| WATERFALL BASIN `wodospad` | kotlina NW za murem | 1–5 | ostroga wyżyny; wodospad z jej południowego lica do jeziorka; jaskinia za kurtyną wody (B04); półka z gniazdem; rampa na ostrogę |
+| DEEP WOODS `las` | (0, 240) r 115 jak dziś | 4–6 | dawny las + Wzgórze Mchu z grotą (B05), skalny próg z barykadą (L03), zakątek ze skrzynią (L04), paprocie |
+| WINDY HIGHLANDS `wyzyna` | x −330…−188, z 52…256 | 5–7 | płaskowyż 14, stopień północny 18, wzgórze widokowe 20/26, przełęcz martwych drzew (L05), krąg kamienny, wychodnie |
+| WIND CANYON `kanion` | z przerwy W muru (280°) na zachód | 6–8 | dno 42 szer.; wysoka prążkowana ściana N, niska grań S; łuk skalny; grota za pękającą skałą (L02); rampa za osypiskiem (L01); prądy W01, W05 |
+| LAVA CALDERA `kaldera` | (−318, −96) r 66 | 7–8 | jezioro lawy r 44 z krą, SKY NEST r 16 pośrodku (fosa 28 < szybowanie 34), półka startowa (7) z prądem W02, szczeliny lawy |
+| ASH TRAIL `szlak_popiolu` | z wyłomu w murze (230°, L06) | 6–8 | skrót od legowisk SW prosto do wschodniego wejścia kaldery |
+| LILY LAKE `jezioro` | (8, −214) za przerwą S | 1–8 | jezioro (głębokie), płytki bród z kamieniami na wysepkę ze skrzynią |
+| SEALED GATE `brama` | wąwóz z przerwy E (104,7°) | 1–8 | ruiny, kryształy, latarnie magii, zapieczętowana brama; za nią `przyszla_kraina` (x 240…440) pusta na aktualizację |
+
+**SKY NEST zmienia miejsce**: dziś wyspa stoi na łące (−36, −42), tuż przy placu startu, więc smoki od stadium 5 krążą
+po żłobku. W v2 jest w kalderze (`wyspa` w JSON: x −318, z −96, r_wew 16, r_zew 44); w grze to zmiana
+`ustawienia.json → wyspa` — decyzja ludzi i agenta gry. Ranking (−18, −96) i stado owiec (−20, 35) z ustawień stoją
+w nurcie rzeki albo tuż przy niej — nowe miejsca w `punkty_gry`.
+
+**Zasada kamery (najważniejsza nauka tej rundy).** Kamera gry patrzy zawsze na północ pod 58° (pisklę widzi ok. 33 studa
+w przód i ±33–60 w bok). Dlatego: (1) wszystko, co ma być widać, ma lico na **południe** (wodospad spada z południowego
+lica ostrogi, wejścia grot i ściana kanionu z prążkami patrzą na południe); (2) ściany po południowej stronie przejść są
+**niskie** (grań kanionu 8–12, ściany zakątka i progu w lesie 4–4,5), wysokie stoją od północy; (3) odległych znaków nie
+widać z placu, więc z placu wychodzą 4 linie latarni w kolorach celów (błękit — las, żar — kanion, złoto — wodospad,
+róż — brama), a pierwsza latarnia każdej linii, rzeka z Mostem Startowym i kępa wysokiej trawy są w pierwszym kadrze;
+(4) kadr rośnie ze stadium (smok 5 widzi już czaszkę i Grzbiet Nory, ELDER — pół kanionu) — świat „otwiera się” z
+wiekiem; (5) punkt widokowy ma własną kamerę-nagrodę (panorama na łąkę).
+
+### Części statyczne na strefę (budżet ≤ 5500; było 3761)
+| Strefa | Razem | Teren | Rekwizyty |
+|---|---|---|---|
+| łąka | 1799 | 23 | 1776 |
+| las | 800 | 23 | 777 |
+| legowiska (12 ×) | 516 | 0 | 516 |
+| wyżyna (z punktem widokowym) | 428 | 87 | 341 |
+| obramowanie świata (drzewa poza obszarem gry) | 365 | 0 | 365 |
+| kanion | 274 | 40 | 234 |
+| kotlina wodospadu | 265 | 16 | 249 |
+| kaldera | 194 | 34 | 160 |
+| jezioro | 182 | 3 | 179 |
+| brama | 103 | 7 | 96 |
+| rzeka (tafla, brzegi, mosty, brody) | 88 | 28 | 60 |
+| płaty ziemi | 76 | 76 | 0 |
+| polana | 73 | 21 | 52 |
+| znak (czaszka) | 41 | 0 | 41 |
+| szlak popiołu | 37 | 11 | 26 |
+| przyszła kraina (mur) | 3 | 3 | 0 |
+| **razem** | **5244** | 372 | 4872 |
+
+Liczba zawiera obiekty interaktywne (10 skrzyń/gniazdo/punkt ≈ 120, 6 kamieni runicznych 42, 5 prądów 40, 7 rzeczy do
+rozbicia ≈ 59). Bez nich ≈ 5000. Kule, cokoły, złoto, smoki i owce są dynamiczne i poza liczbą, jak w v1. Najtańsze
+cięcia, gdyby telefon nie dawał rady: obramowanie (365) i drobna trawa łąki.
+
+### Format `mapa_v2.json` (`smok-ewolucji-mapa/2`, nadzbiór formatu 1)
+- Klucze formatu 1 bez zmian znaczenia: `strefy.laka_r / las / wyspa_lawy / jezioro_r / stawy`, `szablon_legowiska`,
+  `platy_ziemi`, `instancje`, `czesci_rekwizytu`, `czesci_stref`, `czesci_razem`. **Instancja ma piąty element y**
+  (`[x, z, obrót, skala, y]` — wysokość podstawy; stary czytnik bierze 4 pierwsze i stawia na y = 0).
+- `teren` (299 brył, w tym 3 niewidoczne pomosty mostów) — `{id, k: blok|klin|walec, ksztalt: 0|3|2, p: [x, y, z] (środek), s: [sx, sy, sz], o, kolor,
+  material (SmoothPlastic|Glass|Neon), chodzi, strefa}` + flagi: `woda` (płytka, spowalnia), `glebia` (nie wejdziesz),
+  `lawa`, `ozdoba` (opaska, mech, kra — nie blokuje), `przenikalny` (dach tunelu/groty — wygaszać), `widoczny: false`
+  (tylko dane: pomost mostu, nie budować). CFrame = `CFrame.new(p) * CFrame.Angles(0, rad(o), 0)`. Klin = WedgePart
+  (wysoka ściana na lokalnym +Z). Walec = Part Cylinder: `Size = (s.y, s.x, s.x)`, `CFrame.new(p) * CFrame.Angles(0, 0, rad(90))`.
+  W renderze bryła idzie do układu biblioteki jako (−x, y, −z) z obrotem o + 180.
+- `kontrola_wysokosci.punkty` — `[x, z, y smoka, h, zablokowane, woda, lawa]` (27 punktów) i `sciezki_kontrolne` —
+  22 przejścia pieszo krokiem 0,5 studa (rampy, uskoki, tunel, mosty, bród, jaskinia, drogi do każdej strefy); dziś
+  wszystkie wychodzą tak, jak zamierzono — gotowy test dla kodu gry.
+- `strefy.lista` — obszar gry jako suma kształtów (`kolo [x, z, r]`, `prostokat [x0, x1, z0, z1]`, `pas [x, z, szer,
+  dl, o]`), stadia, zagrożenie 0–5, nastrój światła, opcjonalnie `kamera`.
+- `sekrety`, `bramy_rozmiaru`, `kryjowki`, `lamliwe`, `wiatry`, `linie_latarni`, `spawn`, `punkty_gry`, `wyspa`,
+  `legowiska`, `kolizje_rekwizytow` (koła nowych rekwizytów w układzie rigu; stare jak w `swiat_mapa.KOLA`),
+  `bez_kolizji`, `interaktywne`, `rekwizyty_nowe`, `kontrakt` (zasady słowami), `parametry`.
+
+### Kontrakt rozgrywki dla agenta gry (liczby są propozycją)
+- **Wysokość** `h(x, z, y)` = max(0, wierzchy brył `chodzi` zawierających punkt, których spód ≤ y + `krok` (2,0)).
+  Wierzch: blok `p.y + s.y/2`; klin liniowo od `p.y − s.y/2` (lokalne −Z) do `p.y + s.y/2` (lokalne +Z), gdzie lokalne
+  z = (x − px)·sin o + (z − pz)·cos o; walec — koło średnicy `s.x`. Bryły ze spodem wyżej niż y + krok są nad głową
+  (tunel pod dachem, grota pod płaskowyżem). Siatka komórek jak `przSiatka` (24 st.) wystarczy; wzór w `mapa2.Teren.wysokosc`.
+- **Ruch**: zablokowany, gdy h − y > krok (urwisko), w skale (`chodzi=false`, bez `ozdoba`, wierzch > y + krok), na
+  `glebia`/`lawa` bez wyższej bryły do chodzenia nad nią (most, bród, wyspa) i poza sumą obszarów stref. **W dół wolno
+  zawsze** (bez obrażeń) — uskoki pagórów to ucieczki w jedną stronę, pościg musi obejść rampą. Rampy ≤ 0,55.
+- **Woda** (`woda`): prędkość × 0,7, gracze i boty — mosty i brody są szybkie, rzeka spowalnia pościg.
+- **Kamera**: cel na (x, h, z) z wygładzeniem ~0,15 s; części `przenikalny` między kamerą a własnym smokiem —
+  `LocalTransparencyModifier` 0,65. Strefa `punkt_widokowy`: nachylenie 30°, odległość × 1,8, patrzy na (0, 60), 1,2 s.
+- **Bramy rozmiaru** (5): prostokąt bramy jest przeszkodą dla smoka o promieniu > `r_maks` — **mała 3,0 (stadia 1–3:
+  B01 czaszka, B02 tunel Grzbietu Nory, B03 polana)**, **średnia 5,2 (stadia 1–5: B04 jaskinia za wodospadem, B05 grota
+  w lesie)**; boty też. Odbicie z napisem „TOO BIG!”.
+- **Do rozbicia** (6 miejsc, 7 obiektów, od **stadium 6**): `lekka` 200 HP / odrost 120 s / 25 zł (L05), `srednia` 420 /
+  180 s / 60 zł (L03, L04, L06), `ciezka` 800 / 240 s / 120 zł (L01, L02). Rany jak stworkowi bez mnożnika rozmiaru,
+  TAIL i METEOR × 2 (stadium 6 bez ulepszeń: lekka ok. 4 s, ciężka ok. 15 s). Po rozbiciu `kola` nie blokują; przy
+  odroście smok w środku jest wypychany. Mniejsi: odbicie i „STAGE 6 TO SMASH”.
+- **Kryjówki** (22): środek smoka w kole i promień ≤ `r_maks_smoka` (wysoka trawa 5,2 · paproć 6,8 · trzcina 3,0) —
+  nazwa nad głową znika dla innych; boty dalej niż 8 studów gubią cel i nie wybierają go; atak odkrywa na 1,5 s.
+- **Prądy wznoszące** (5, od stadium 5 = WING GLIDE): środek w kole podczas szybowania — wysokość lotu rośnie do `y_cel`
+  w 0,6 s, pozostały zasięg × 1,5 (raz na lot); stojąc w prądzie, POWER startuje od razu z `y_cel`. Szybowanie mija
+  wszystko niższe niż bieżąca wysokość lotu, ląduje na h(x, z). W01 kanion → wyżyna (20), W02 półka → SKY NEST (24),
+  W03 kotlina → gniazdo/ostroga (20), W04 → szczyt wzgórza (30), W05 → grań kanionu z R5 (22).
+- **Sekrety** (14) — złoto raz na gracza na dzień UTC (dzienna pętla odkrywania): S01 skrzynia pod mostem 150 · S02 paszcza
+  czaszki 300 (mała) · S03 wysoka trawa na pagórze 200 · S04 tunel Grzbietu Nory 250 (mała) · S05 jaskinia za wodospadem
+  600 (średnia) · S06 gniazdo na półce 900 (szybowanie) · S07 grota Wzgórza Mchu 800 (średnia) · S08 skrzynia za martwym
+  drzewem 1000 (rozbij L04) · S09 kryształowa grota kanionu 1800 (rozbij L02) · S10 punkt widokowy 1200 · S11 wysepka 300 ·
+  S12 SKY NEST 500 (pierwsza wizyta) · S13 zapieczętowana brama 150 (odkrycie). **S14 = 6 kamieni runicznych** (R1 Stół na
+  łące, R2 polana — mały, R3 jaskinia za wodospadem — średni, R4 las przy posągu, R5 grań kanionu — szybowanie, R6 SKY
+  NEST — szybowanie): raz na zawsze, każdy zapala gniazdo pieczęci bramy, komplet = 5000 zł + tytuł RUNE SEEKER.
+- **Strefy**: `stadia` i `zagrozenie` to zalecenia dla botów i tablic, nie blokady (las dalej od formy 4). Proponowane
+  boty: wyżyna 5–6, kanion 6–7, kaldera 7, szlak popiołu 6 (dziś boty żyją tylko na łące i w lesie).
+
+**Nastrój stref** (płynna zmiana jak dziś las i lawa; liczby w `strefy.lista[].nastroj`): kotlina — chłodna mgła (Density
+0,36, Color 200/230/255, Haze 2,2); wyżyna — przejrzyście (0,22, 220/235/255, Saturation +0,15); kanion — ochra (0,32,
+255/196/140, Decay 150/90/80); kaldera — żar (0,38, 255/130/80, Bloom 0,6); brama — fiolet magii (0,34, 220/170/255,
+Decay 90/60/160); jezioro — Haze 2,0. Lawa w danych ma kolor C2410F (jak dzisiejsza fosa), bo czysty pomarańcz Neon
+z Bloom świeci na biało; jasny pomarańcz tylko na krawędzi.
+
+**Podglądy**: `podglad/27_mapa2_z_gory.jpg` (z góry, znaczniki S/R/B/L/W), `28_mapa2_spawn.jpg` (kamera gry pisklęcia na
+placu, kadr telefonu 2,16 : 1), `29_mapa2_nora.jpg` (pisklę w tunelu, dach wygaszony, FIRE DRAKE przed wejściem),
+`30_mapa2_punkt_widokowy.jpg` (panorama ze szczytu), `31_mapa2_kanion.jpg` (kamera ELDER DRAGON w kanionie).
+
+### Słabe miejsca mapy v2 (uczciwie)
+- **Ryzyko na premierę**: rzeźba wymaga w kodzie gry wysokości ziemi (ruch serwera, boty, kamera, kule, efekty,
+  lądowanie szybowania). To nie jest zmiana na wtorek–środę. Bez kodu wysokości da się użyć tylko płaskich części
+  (rzeka, czaszka, tunel, trawa, rzeczy do rozbicia, jezioro, brama) — pagóry, wyżyna i grań byłyby wtedy przeszkodami.
+- Nic nie było w Studio: części, przezroczystość wody, czytelność łapek i wirów z kamery i wydajność na telefonie to
+  rendery z Blendera, nie próba.
+- Wyżyna jest duża i na wierzchu wciąż dość pusta; grań kanionu i ściany kaldery z góry to płaskie bloki. Łuk skalny z
+  kamery gry wygląda jak belka (kamera patrzy z góry).
+- Wodospad to klocki (Glass + Neon), bez cząsteczek i ruchu; wiry prądów to statyczne płaskie krążki — ruch i cząsteczki
+  musi dodać gra.
+- Obszar gry jest ok. 1,8 × większy niż dziś (łąka z lasem); bez botów w nowych strefach będą puste — to decyzja projektowa, nie
+  tylko dane.
+- Liczby (HP, złoto, promienie bram, × 0,7 w wodzie, prądy) są z rachunku, nie z próby; sekrety dzienne zakładają pole
+  w zapisie gracza.
 
 ## Co jest słabe (uczciwie)
 - Ruch (runda 5): kicanie maluchów jest zrywne (tułów staje nad łapami i skacze) — tak musi być przy 16–26 studs/s
