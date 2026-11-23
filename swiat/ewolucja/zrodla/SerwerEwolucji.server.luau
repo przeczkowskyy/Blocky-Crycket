@@ -168,6 +168,21 @@ local function atrybuty(plr: Player, g: Gracz)
 		ustawAtr(plr, g, "EW_Poz_" .. U.id, L.poziom(b, U.id))
 	end
 	ustawAtr(plr, g, "EW_Martwy", b.martwyDo ~= nil)
+	-- odrodzenie1: odrodzenia, linia, mnożnik, postęp pozostałych linii (JSON), jajo dnia
+	ustawAtr(plr, g, "EW_Odrodzenia", b.odrodzenia or 0)
+	ustawAtr(plr, g, "EW_Linia", b.linia or 1)
+	ustawAtr(plr, g, "EW_Mnoznik", math.floor(L.mnoznikOdr(D, b) * 1000 + 0.5) / 1000)
+	ustawAtr(plr, g, "EW_JajoDnia", L.jajoDostepne(D, b, os.time() + (S.dzienPrzes or 0) * 86400))
+	local li = {}
+	for l, q in b.linie or {} do
+		local w2, t2 = {}, {}
+		for f = 1, #D.formy do
+			w2[f] = (q.warianty and q.warianty[f]) or ""
+			t2[f] = (q.trofea and q.trofea[f]) or 1
+		end
+		li[tostring(l)] = { m = q.maxForma, w = w2, t = t2 }
+	end
+	ustawAtr(plr, g, "EW_Linie", HttpService:JSONEncode(li))
 end
 
 local function wczytajGracza(plr: Player, g: Gracz)
@@ -314,7 +329,8 @@ local function wyslijGraczowi(plr: Player, lista)
 	end
 end
 
-local RODZAJE = { ruch = true, gryz = true, zryw = true, umiejetnosc = true, ewoluuj = true, kup = true, kup_trofeum = true }
+local RODZAJE = { ruch = true, gryz = true, zryw = true, umiejetnosc = true, ewoluuj = true, kup = true, kup_trofeum = true, odrodzenie = true,
+	jajo_dnia = true }
 
 evAkcja.OnServerEvent:Connect(function(plr: Player, rodzaj: any, a: any, b: any, c: any, d: any)
 	local g = gracze[plr]
@@ -357,6 +373,19 @@ evAkcja.OnServerEvent:Connect(function(plr: Player, rodzaj: any, a: any, b: any,
 		if L.ewoluuj(S, byt, doWyslania) then
 			licz("ewoluuj")
 		end
+	elseif rodzaj == "odrodzenie" then
+		-- REBIRTH: tylko na ostatnim stadium, poza kokonem i walką sterowaną przez serwer (sprawdza logika)
+		if L.odrodzenie(S, byt, doWyslania) then
+			licz("rebirth")
+			g.miary.odr = (g.miary.odr or 0) + 1
+		end
+	elseif rodzaj == "jajo_dnia" then
+		local ok, id, lepszy, f = L.jajoDnia(S, byt, os.time() + (S.dzienPrzes or 0) * 86400, S.los())
+		if ok then
+			licz("jajo_dnia")
+		end
+		atrybuty(plr, g)
+		wyslijGraczowi(plr, { { t = "jajo_dnia", ok = ok, wariant = if ok then id else nil, powod = if ok then nil else id, lepszy = lepszy, f = f } })
 	elseif rodzaj == "kup" then
 		local ok, powod = L.kup(S, byt, a)
 		if ok then
@@ -454,7 +483,7 @@ local function migawka(): buffer
 		buffer.writef32(b, o + 5, e.x)
 		buffer.writef32(b, o + 9, e.z)
 		buffer.writei16(b, o + 13, math.clamp(math.floor(e.kier * 1000 + 0.5), -32000, 32000))
-		buffer.writeu8(b, o + 15, if e.slot > 0 and e.wariantTeraz then (NR_WARIANTU[e.wariantTeraz] or 0) else 0)
+		buffer.writeu8(b, o + 15, L.kodWariantu(if e.slot > 0 and e.wariantTeraz then (NR_WARIANTU[e.wariantTeraz] or 0) else 0, if e.slot > 0 then e.linia or 1 else 1))
 		buffer.writeu8(b, o + 16, math.clamp(math.floor((e.hp or 0) / math.max(1, e.hpMaks or 1) * 255 + 0.5), 0, 255))
 		local ak = 0
 		if e.zamach then
@@ -589,6 +618,13 @@ RunService.Heartbeat:Connect(function(dt: number)
 		local bb = L.bytPoId(S, S.boss)
 		kontener:SetAttribute("BossHP", if bb and not bb.martwyDo then math.floor(bb.hp / bb.hpMaks * 1000) / 1000 else 0)
 		kontener:SetAttribute("BossStopien", S.bossStopien or 1)
+		-- wydarzenia zegarowe: chwile w czasie serwera (workspace:GetServerTimeNow) dla odliczania u klientów
+		local E = L.wyd(S)
+		local tn = workspace:GetServerTimeNow()
+		kontener:SetAttribute("WydDeszczNast", tn + (E.deszczNast - S.czas))
+		kontener:SetAttribute("WydDeszczDo", if E.deszczDo then tn + (E.deszczDo - S.czas) else 0)
+		kontener:SetAttribute("WydRampNast", tn + (E.rampNast - S.czas))
+		kontener:SetAttribute("WydRampDo", if E.rampDo then tn + (E.rampDo - S.czas) else 0)
 		for plr, g in gracze do
 			atrybuty(plr, g)
 			for _, m in g.miary.po_smierci do
@@ -680,6 +716,42 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 			return zapiszProbe(plr :: Player, g)
 		end
 		return nil
+	elseif polecenie == "wymus_deszcz" then
+		L.wymusWydarzenie(S, "deszcz")
+		return true
+	elseif polecenie == "wymus_rampage" then
+		L.wymusWydarzenie(S, "rampage")
+		return true
+	elseif polecenie == "wyd" then
+		local E = L.wyd(S)
+		local zywe = 0
+		for i in D.kulkiPoz do
+			if S.kulki[i] == 0 and L.deszczNa(S, i) then
+				zywe += 1
+			end
+		end
+		local bb = L.bytPoId(S, S.boss)
+		return { deszcz = E.deszczDo ~= nil, rampage = E.rampDo ~= nil, zloteKule = zywe, bossX = bb and bb.x, bossZ = bb and bb.z,
+			bossLas = bb ~= nil and L.wLesie(D, bb.x, bb.z), stopien = S.bossStopien, bossHp = bb and bb.hp, bossMartwy = bb ~= nil and bb.martwyDo ~= nil }
+	elseif polecenie == "dzien_przesun" then
+		S.dzienPrzes = (S.dzienPrzes or 0) + (a or 1)
+		return S.dzienPrzes
+	elseif polecenie == "odrodzenie" then
+		-- próba: gracz na ANCIENT i REBIRTH od razu (jak przycisk)
+		if byt then
+			byt.kokonDo, byt.skok, byt.martwyDo = nil, nil, nil
+			byt.forma = #D.formy
+			byt.maxForma = #D.formy
+			return L.odrodzenie(S, byt, doWyslania)
+		end
+		return false
+	elseif polecenie == "odr_stan" then
+		local li = {}
+		for l, q in (byt and byt.linie) or {} do
+			li[tostring(l)] = q.maxForma
+		end
+		return byt and { odrodzenia = byt.odrodzenia or 0, linia = byt.linia or 1, mnoznik = L.mnoznikOdr(D, byt), forma = byt.forma,
+			maxForma = byt.maxForma, linie = li, stawka = L.stawkaB(D, byt), dzienJaja = byt.dzienJaja }
 	elseif polecenie == "wymus_wariant" then
 		S.wymusWariant = a
 		return true
@@ -806,6 +878,15 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 		return e and { hp = e.hp, hpMaks = e.hpMaks, forma = e.forma, lancuch = e.lancuch, zamach = e.zamach and e.zamach.A.id,
 			kanal = e.kanal and e.kanal.A.id, gotowy = e.gotowy, x = e.x, z = e.z, martwy = e.martwyDo ~= nil, skok = e.skok ~= nil,
 			naWyspie = L.naWyspie(D, e.x, e.z), ogluszony = e.ogluszonyDo > S.czas }
+	elseif polecenie == "boty_cisza" then
+		-- próba: wszystkie boty bez BITE i zdolności przez a sekund (pomiary HUD i poślizgu bez walki w tle)
+		for _, e in S.byty do
+			if e.slot == 0 and not e.boss then
+				e.gryzGotowy = S.czas + (a or 10)
+				e.gotowy = { ogien = S.czas + (a or 10), moc = S.czas + (a or 10) }
+			end
+		end
+		return true
 	elseif polecenie == "bot_cisza" then
 		-- próba: bot a nie gryzie i nie używa zdolności przez b sekund (manekin)
 		local e = L.bytPoId(S, a)

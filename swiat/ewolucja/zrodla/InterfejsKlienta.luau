@@ -52,6 +52,8 @@ function H.nowe(c)
 	self:zbudujPrzyciski()
 	self:zbudujPanel()
 	self:zbudujOdslone()
+	self:zbudujWydarzenia()
+	self.linia = 1
 	return self
 end
 
@@ -127,6 +129,9 @@ function H:portret(vf: ViewportFrame, f: number, o)
 	end
 	-- wzorzec leży gdzieś w magazynie: najpierw cały model do początku układu (stawy w WorldModel liczą się dopiero później)
 	m:PivotTo(CFrame.new())
+	if o.linia and SK then
+		SK.barwLinii(m, o.linia)
+	end
 	if o.wariant and SK then
 		SK.przemaluj(m, o.wariant.id, self.D.blender.warianty[o.wariant.id])
 	end
@@ -349,12 +354,12 @@ end
 -- obecne stadium f (portret pełnego rigu) i następne (sylwetka); przebudowa tylko przy zmianie
 function H:ustawStadium(f: number, W0)
 	local NF = #self.D.formy
-	local klucz = tostring(f) .. (if W0 then W0.id else "")
+	local klucz = tostring(f) .. (if W0 then W0.id else "") .. "/" .. tostring(self.linia)
 	if self.formaHUD == klucz then
 		return
 	end
 	self.formaHUD = klucz
-	self:portret(self.portretHUD, f, { pelny = true, wariant = W0 })
+	self:portret(self.portretHUD, f, { pelny = true, wariant = W0, linia = self.linia })
 	if f < NF then
 		self:portret(self.nastHUD, f + 1, { ciemny = true })
 		self.nastHUD.Parent.Visible = true
@@ -367,8 +372,8 @@ end
 function H:zbudujDrabine()
 	local c, S, D = self.c, self.S, self.D
 	local NF = #D.formy
-	local wys = 30 + (NF - 1) * 29 + 30
-	local L = c.warstwa("Drabina", Vector2.new(0, 0), UDim2.new(0, 22, 0, 80), Vector2.new(130, wys))
+	local wys = 34 + 30 + (NF - 1) * 30 + 30
+	local L = c.warstwa("Drabina", Vector2.new(0, 0), UDim2.new(0, 22, 0, 78), Vector2.new(130, wys))
 	self.ramkaDrabiny = L
 	self.dlugoscDrabiny = wys
 	local os_ = self:nowy("Frame", { Name = "Os", Position = UDim2.fromOffset(18, 18), Size = UDim2.fromOffset(4, wys - 36), BackgroundColor3 = S.pas,
@@ -376,7 +381,7 @@ function H:zbudujDrabine()
 	self:rog(os_)
 	self.wezly = {}
 	for f = 1, NF do
-		local y = wys - 18 - (f - 1) * 29
+		local y = wys - 19 - (f - 1) * 30
 		local k = self:nowy("Frame", { Name = "Szczebel" .. f, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(20, y), Size = UDim2.fromOffset(24, 24),
 			BackgroundColor3 = S.karta, ZIndex = 2 }, L)
 		self:rog(k)
@@ -393,6 +398,44 @@ function H:zbudujDrabine()
 	self:obrys(pig, 2)
 	self.drabinaNazwa = self:tekst(pig, "", UDim2.fromOffset(6, 2), UDim2.new(1, -12, 1, -4), 11, S.tekst, self.fTytul)
 	self.drabinaPig = pig
+	-- odrodzenie1: następna linia smoków (czarna sylwetka ANCIENT w pierścieniu jej koloru) i liczba odrodzeń
+	local k = self:nowy("Frame", { Name = "NastepnaLinia", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(20, 17), Size = UDim2.fromOffset(30, 30),
+		BackgroundColor3 = rgb("6A5C88"), ZIndex = 2 }, L)
+	self:rog(k)
+	self.liniaObrys = self:obrys(k, 3)
+	self.liniaOkno = self:okno(k, "Okno", UDim2.fromScale(0, 0), UDim2.fromScale(1, 1))
+	self:rog(self.liniaOkno)
+	local lp = self:nowy("Frame", { Name = "LiniaPig", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.fromOffset(40, 17), Size = UDim2.fromOffset(84, 20),
+		BackgroundColor3 = S.pas, BackgroundTransparency = 0.1, ZIndex = 2 }, L)
+	self:rog(lp)
+	self:obrys(lp, 2)
+	self.liniaNapis = self:tekst(lp, "", UDim2.fromOffset(6, 2), UDim2.new(1, -12, 1, -4), 10, S.tekst, self.fTytul)
+	self.liniaKlucz = ""
+end
+
+-- linia smoków: obecna (kolory portretów) i następna (sylwetka w drabinie), odrodzenia i mnożnik
+function H:ustawLinie(linia: number, odrodzenia: number, mnoznik: number)
+	local LI = self.D.odrodzenie and self.D.odrodzenie.linie
+	if not LI then
+		return
+	end
+	local klucz = string.format("%d/%d", linia, odrodzenia)
+	if self.liniaKlucz == klucz then
+		return
+	end
+	self.liniaKlucz = klucz
+	if self.linia ~= linia then
+		self.linia = linia
+		self.formaHUD = ""
+		for _, K in self.wezly do
+			K.stan = ""
+		end
+	end
+	local nast = LI[linia % #LI + 1]
+	self.liniaObrys.Color = rgb(nast.kolor)
+	self:portret(self.liniaOkno, #self.D.formy, { ciemny = true })
+	self.liniaNapis.Text = if odrodzenia > 0 then string.format("R%d  x%.2f", odrodzenia, mnoznik) else nast.nazwa
+	self.liniaNapis.TextColor3 = if odrodzenia > 0 then rgb(LI[linia].kolor) else rgb(nast.kolor)
 end
 
 -- stan drabiny: Z zdobyte, N następne (sylwetka), ? dalsze; obecne 36 pt z pierścieniem żaru; zwraca napis stanu dla prób
@@ -405,7 +448,7 @@ function H:drabina(mf: number, f0: number, warianty): string
 		local zdobyta = f <= mf
 		local nastepna = f == mf + 1
 		local s = if zdobyta then "Z" elseif nastepna then "N" else "?"
-		local rozm = if f == f0 then 36 elseif zdobyta then 24 elseif nastepna then 26 else 18
+		local rozm = if f == f0 then 38 elseif zdobyta then 27 elseif nastepna then 28 else 20
 		K.ramka.Size = UDim2.fromOffset(rozm, rozm)
 		local wid = zdobyta or nastepna
 		K.vf.Visible = wid
@@ -416,7 +459,7 @@ function H:drabina(mf: number, f0: number, warianty): string
 		local W0 = warianty and warianty[f]
 		local klucz = s .. (if W0 then W0.id else "")
 		if wid and K.stan ~= klucz then
-			self:portret(K.vf, f, { ciemny = not zdobyta, wariant = if zdobyta then W0 else nil })
+			self:portret(K.vf, f, { ciemny = not zdobyta, wariant = if zdobyta then W0 else nil, linia = self.linia })
 		end
 		K.stan = klucz
 		table.insert(stan, if f == NF and s == "?" then "C" else s)
@@ -628,7 +671,7 @@ function H:zbudujPanel()
 	local P = {}
 	self.panel = P
 	-- panel 697 × 345 pt wzoru (makieta 1280 × 590 px), na środku ekranu
-	local R = self:nowy("Frame", { Name = "PanelLegowiska", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(697, 345),
+	local R = self:nowy("Frame", { Name = "PanelLegowiska", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(697, 392),
 		BackgroundTransparency = 1, ZIndex = 20, Visible = false }, c.ekran)
 	table.insert(c.skale, self:nowy("UIScale", { Scale = c.skalaEkranu() }, R))
 	P.ramka = R
@@ -680,7 +723,7 @@ function H:zbudujPanel()
 	P.trofea = {}
 	for f = 1, NF do
 		local kol, wie = (f - 1) % 4, (f - 1) // 4
-		local k = self:nowy("TextButton", { Name = "Trofeum" .. f, Position = UDim2.fromOffset(14 + kol * 113, 8 + wie * 124), Size = UDim2.fromOffset(105, 116),
+		local k = self:nowy("TextButton", { Name = "Trofeum" .. f, Position = UDim2.fromOffset(14 + kol * 113, 56 + wie * 124), Size = UDim2.fromOffset(105, 116),
 			BackgroundColor3 = S.karta, Text = "", AutoButtonColor = false, ZIndex = 22 }, P.tabT)
 		self:rog(k, 11)
 		local ob = self:obrys(k, 2)
@@ -716,11 +759,11 @@ function H:zbudujPanel()
 	P.karty = {}
 	P.duze = {}
 	for i, U in D.ulepszenia do
-		P.karty[U.id] = self:kartaUlepszenia(P.tabT, U, UDim2.fromOffset(470, 8 + (i - 1) * 82), false)
+		P.karty[U.id] = self:kartaUlepszenia(P.tabT, U, UDim2.fromOffset(470, 56 + (i - 1) * 82), false)
 		P.duze[U.id] = self:kartaUlepszenia(P.tabU, U, UDim2.fromOffset(14 + (i - 1) * 226, 10), true)
 	end
 	-- szanse wariantów
-	local sz = self:nowy("Frame", { Name = "Szanse", Position = UDim2.fromOffset(14, 256), Size = UDim2.fromOffset(669, 30), BackgroundColor3 = S.pas, ZIndex = 22 }, P.tabT)
+	local sz = self:nowy("Frame", { Name = "Szanse", Position = UDim2.fromOffset(14, 306), Size = UDim2.fromOffset(669, 30), BackgroundColor3 = S.pas, ZIndex = 22 }, P.tabT)
 	self:rog(sz)
 	local st = self:tekst(sz, UI.szanse_tytul or "VARIANT ODDS", UDim2.fromOffset(14, 7), UDim2.fromOffset(100, 16), 10, S.tekst2, self.fEtyk, Enum.TextXAlignment.Left)
 	st.ZIndex = 23
@@ -735,6 +778,25 @@ function H:zbudujPanel()
 	end
 	P.info = self:tekst(P.tabU, UI.tylko_w_legowisku, UDim2.fromOffset(14, 254), UDim2.fromOffset(669, 18), 11, S.tekst2, self.fEtyk)
 	P.info.ZIndex = 23
+	-- linie smoków: przyciski z polem dotyku 44 pt, widoczna pigułka 22 pt
+	P.chipy = {}
+	P.pokazLinia = nil
+	for i, LI in (self.D.odrodzenie and self.D.odrodzenie.linie) or {} do
+		local b = self:nowy("TextButton", { Name = "Linia_" .. LI.id, Position = UDim2.fromOffset(14 + (i - 1) * 113, 0), Size = UDim2.fromOffset(105, 54),
+			BackgroundTransparency = 1, Text = "", AutoButtonColor = false, ZIndex = 23 }, P.tabT)
+		local pl = self:nowy("Frame", { Name = "Pigulka", Position = UDim2.fromOffset(0, 14), Size = UDim2.fromOffset(105, 26), BackgroundColor3 = S.karta, ZIndex = 23 }, b)
+		self:rog(pl)
+		local ob = self:obrys(pl, 2, rgb(LI.kolor))
+		local l = self:tekst(pl, LI.nazwa, UDim2.fromOffset(6, 3), UDim2.new(1, -12, 1, -6), 12, rgb(LI.kolor), self.fTytul)
+		l.ZIndex = 24
+		P.chipy[i] = { b = b, p = pl, obrys = ob, napis = l, LI = LI }
+		b.Activated:Connect(function()
+			P.pokazLinia = i
+			if self.ostatniPanel then
+				self:panelOdswiez(self.ostatniPanel)
+			end
+		end)
+	end
 	self:pokazZakladke("T")
 end
 
@@ -795,16 +857,38 @@ function H:panelOdswiez(s)
 	local D, S, UI = self.D, self.S, self.UI
 	local P = self.panel
 	local G = D.legowisko
+	self.ostatniPanel = s
 	P.zloto.Text = H.liczba(s.zl)
 	P.boss.Text = string.format("%d/5", s.bossT)
+	-- linia w kartach: wybrana przyciskiem albo obecna; inne linie z zapisu (bez zakupu poziomów)
+	local obecna = s.linia or 1
+	local l = P.pokazLinia or obecna
+	local mf, tro, war = s.mf, s.tro, s.warianty
+	local inna = l ~= obecna
+	if inna then
+		local z = s.linie and s.linie[tostring(l)]
+		mf, tro, war = if z then z.m else 0, {}, {}
+		for f = 1, #D.formy do
+			tro[f] = (z and z.t and z.t[f]) or 1
+			war[f] = z and z.w and s.wariantD(z.w[f]) or nil
+		end
+	end
+	for i, C in P.chipy do
+		local z = s.linie and s.linie[tostring(i)]
+		local ma = i == obecna or (z ~= nil and z.m > 0)
+		C.p.BackgroundColor3 = if i == l then rgb(C.LI.kolor) else S.karta
+		C.napis.TextColor3 = if i == l then S.obrys else rgb(C.LI.kolor)
+		C.napis.Text = if ma then C.LI.nazwa else "?"
+	end
+	P.liniaPokazana = l
 	for f, T in P.trofea do
-		local zdobyta = f <= s.mf
-		local lv = s.tro[f] or 1
-		local W0 = s.warianty[f]
-		local klucz = (if zdobyta then "Z" else "?") .. (if W0 then W0.id else "")
+		local zdobyta = f <= mf
+		local lv = tro[f] or 1
+		local W0 = war[f]
+		local klucz = (if zdobyta then "Z" else "?") .. (if W0 then W0.id else "") .. "/" .. tostring(l)
 		if T.stan ~= klucz then
 			T.stan = klucz
-			self:portret(T.vf, f, { ciemny = not zdobyta, wariant = if zdobyta then W0 else nil })
+			self:portret(T.vf, f, { ciemny = not zdobyta, wariant = if zdobyta then W0 else nil, linia = l })
 			T.ramka.BackgroundColor3 = if zdobyta then S.karta else rgb("241C30")
 			T.zamek.Visible = not zdobyta
 			T.wariant.Visible = zdobyta and W0 ~= nil
@@ -821,8 +905,8 @@ function H:panelOdswiez(s)
 		end
 		T.dochod.Visible = zdobyta
 		T.dochod.Text = "+" .. tostring(math.floor(D.formy[f].trofeum * G.poziomy_x[lv] * (if W0 then W0.x else 1) * 10 + 0.5) / 10) .. "/s"
-		local cena = if zdobyta and G.ceny_x[lv] then math.floor(G.ceny_x[lv] * D.formy[f].trofeum) else nil
-		T.cena.Visible = zdobyta
+		local cena = if zdobyta and G.ceny_x[lv] and not inna then math.floor(G.ceny_x[lv] * D.formy[f].trofeum) else nil
+		T.cena.Visible = zdobyta and not inna
 		T.cenaN.Text = if cena then H.liczba(cena) else UI.maks
 		local stac = cena ~= nil and s.wDomu and s.zl >= cena
 		T.cena.BackgroundColor3 = if stac then S.kup else S.zamkniety
@@ -997,6 +1081,54 @@ function H:odslonaPokaz(f: number, nowa: boolean, W0, moce, czas: number)
 	O.kokon.Position = UDim2.fromOffset(212, 220)
 end
 
+function H:odrodzenieCeremonia(linia: number, n: number, mnoznik: number, czas: number)
+	local O, UI, S = self.odsl, self.UI, self.S
+	local LI = self.D.odrodzenie.linie[linia]
+	O.faza = "odrodzenie"
+	O.t = 0
+	O.czas = czas + 2.4
+	O.ramka.Visible = true
+	O.gora.Visible = true
+	O.gora.Text = string.format(UI.odrodzenie, n)
+	O.gora.TextColor3 = S.zar_gora
+	O.nazwa.Text = LI.nazwa .. " LINE"
+	O.nazwa.Visible = true
+	O.kokon.Visible = true
+	O.kokon.Position = UDim2.fromOffset(422, 212)
+	O.kokon.BackgroundColor3 = Color3.new(1, 1, 1):Lerp(rgb(LI.kolor), 0.45)
+	O.kokonObrys.Color = rgb(LI.kolor)
+	O.strzalki.Visible = false
+	O.portret.Visible = false
+	O.nastKolo.Visible = false
+	O.nastNapis.Visible = false
+	O.dalej.Visible = false
+	O.plytka.Visible = true
+	O.mocGora.Text = UI.linia_nast
+	O.mocNapis.Text = string.format(UI.odrodzenie_opis, LI.nazwa, mnoznik)
+	O.mocSlot.BackgroundColor3 = rgb(LI.kolor)
+	self:ikona(O.mocIkona, "korona")
+end
+
+function H:zbudujWydarzenia()
+	local S = self.S
+	local R = self.c.warstwa("Wydarzenie", Vector2.new(1, 0), UDim2.new(1, -146, 0, 76), Vector2.new(150, 24))
+	local t = self:nowy("Frame", { Name = "Tlo", Size = UDim2.fromScale(1, 1), BackgroundColor3 = S.pas, BackgroundTransparency = 0.08 }, R)
+	self:rog(t)
+	self.wydObrys = self:obrys(t, 2)
+	self.wydNapis = self:tekst(t, "", UDim2.fromOffset(8, 3), UDim2.new(1, -16, 1, -6), 11, S.tekst, self.fLiczby)
+	self.ramkaWyd = R
+	R.Visible = false
+end
+
+function H:wydarzenie(tekst: string?, kolor: Color3?, aktywne: boolean)
+	self.ramkaWyd.Visible = tekst ~= nil
+	if tekst then
+		self.wydNapis.Text = tekst
+		self.wydNapis.TextColor3 = if aktywne then self.S.zar_gora else self.S.tekst
+		self.wydObrys.Color = if aktywne then (kolor or self.S.zar) else self.S.obrys
+	end
+end
+
 function H:odslonaKoniec()
 	local O = self.odsl
 	O.faza = nil
@@ -1047,6 +1179,16 @@ function H:krok(dt: number, t: number)
 		O.kokonObrys.Thickness = 4 + math.sin(t * 9) * 2.5
 		if O.faza == "kokon" then
 			O.kokonSkala.Scale = 1 + math.sin(t * 7) * 0.06
+		elseif O.faza == "odrodzenie" then
+			O.kokonSkala.Scale = math.min(1, 0.3 + tt * 1.4) * (1 + math.sin(t * 9) * 0.07)
+			local fN = math.clamp(tt / 0.2, 0, 1)
+			O.nazwaSkala.Scale = 0.4 + fN * 0.6
+			O.plytka.Position = UDim2.fromOffset(262, 310 + (1 - math.clamp((tt - 0.4) / 0.2, 0, 1)) * 14)
+			if tt > O.czas then
+				O.kokon.BackgroundColor3 = rgb("FFF3B0")
+				O.kokonObrys.Color = self.S.zar_gora
+				self:odslonaKoniec()
+			end
 		else
 			local fN = widac(O.nazwa, tt, 0, 0.18)
 			O.nazwaSkala.Scale = if fN < 1 then 0.4 + fN * 0.8 else 1 + math.max(0, 0.2 - (tt - 0.18) * 1.5)

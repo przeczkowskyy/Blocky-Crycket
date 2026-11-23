@@ -128,7 +128,15 @@ gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = playerGui
-E:warstwa2D(gui)
+E:warstwa2D((function()
+	local f = Instance.new("Frame")
+	f.Name = "Efekty2D"
+	f.Size = UDim2.fromScale(1, 1)
+	f.BackgroundTransparency = 1
+	f.ZIndex = 0
+	f.Parent = gui
+	return f
+end)())
 
 local function nowy(klasa: string, wl, rodzic: Instance?): any
 	local o = Instance.new(klasa)
@@ -231,7 +239,7 @@ local blysk = nowy("Frame", { Name = "Blysk", Size = UDim2.fromScale(1, 1), Back
 local blyskT = 99
 
 -- toast (dymek pod złotem)
-local ramkaToastu = warstwa("Toast", Vector2.new(1, 0), UDim2.new(1, -146, 0, 76), Vector2.new(150, 30))
+local ramkaToastu = warstwa("Toast", Vector2.new(1, 0), UDim2.new(1, -146, 0, 106), Vector2.new(150, 30))
 local toastTlo = nowy("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = hex(UI.styl.zloto) }, ramkaToastu)
 rog(toastTlo, 15)
 obrys(toastTlo, 2, hex(UI.styl.obrys))
@@ -251,7 +259,7 @@ local bEwo = nowy("TextButton", { Name = "Ewoluuj", Size = UDim2.fromScale(1, 1)
 rog(bEwo, 31)
 nowy("UIGradient", { Color = ColorSequence.new(hex(UI.styl.zar_gora), hex(UI.styl.zar)), Rotation = 90 }, bEwo)
 local obrysEwo = obrys(bEwo, 4, hex(UI.styl.obrys))
-napis(bEwo, UI.ewoluuj, UDim2.fromScale(0.06, 0.14), UDim2.fromScale(0.88, 0.72))
+local napisEwo = napis(bEwo, UI.ewoluuj, UDim2.fromScale(0.06, 0.14), UDim2.fromScale(0.88, 0.72))
 local skalaEwo = nowy("UIScale", { Scale = 1 }, bEwo)
 ramkaEwo.Visible = false
 
@@ -736,8 +744,9 @@ evStan.OnClientEvent:Connect(function(b: buffer)
 		end
 		w.akcja = ak
 		local wr = buffer.readu8(b, o + 15)
-		if wr ~= (w.wariant or 0) then
-			w.wariant = wr
+		if wr ~= (w.wariantBajt or 0) then
+			w.wariantBajt = wr
+			w.wariant, w.linia = L.dekodWariantu(wr)
 			zbudujModel(w, w.forma)
 		end
 		w.tkier = if id == mojId and not martwy and bit32.band(fl, 8 + 16 + 32) == 0 then w.tkier else buffer.readi16(b, o + 13) / 1000
@@ -955,8 +964,15 @@ local function akcja(rodzaj: string, a: any?)
 		WK.wolnoDo = teraz + A.zamach_s -- zamach spowalnia jak na serwerze (bez poprawek pozycji)
 		evAkcja:FireServer("umiejetnosc", rodzaj)
 	elseif rodzaj == "ewoluuj" then
-		evAkcja:FireServer("ewoluuj")
+		if mojaForma() >= NF then
+			evAkcja:FireServer("odrodzenie")
+		else
+			evAkcja:FireServer("ewoluuj")
+		end
 		dzwiek("klik", 1.2)
+	elseif rodzaj == "jajo_dnia" then
+		evAkcja:FireServer("jajo_dnia")
+		dzwiek("klik", 1.15)
 	elseif rodzaj == "kup" then
 		evAkcja:FireServer("kup", a)
 		dzwiek("klik", 1)
@@ -1672,7 +1688,8 @@ function WK.odswiezPanel()
 		poz[U.id] = gracz:GetAttribute("EW_Poz_" .. U.id) or 1
 	end
 	HUD:panelOdswiez({ zl = gracz:GetAttribute("EW_Zloto") or 0, mf = gracz:GetAttribute("EW_MaxForma") or 1, wDomu = gracz:GetAttribute("EW_WDomu") == true,
-		warianty = wm, tro = lv, poz = poz, bossT = gracz:GetAttribute("EW_BossTrofea") or 0, opisWartosci = WK.opisWartosci })
+		warianty = wm, tro = lv, poz = poz, bossT = gracz:GetAttribute("EW_BossTrofea") or 0, opisWartosci = WK.opisWartosci,
+		linia = gracz:GetAttribute("EW_Linia") or 1, linie = HttpService:JSONDecode(gracz:GetAttribute("EW_Linie") or "{}"), wariantD = wariantD })
 	local st, ceny = {}, {}
 	for f, T in HUD.panel.trofea do
 		st[f] = string.sub(T.stan, 1, 1) .. (if T.wariant.Visible then "w" else "")
@@ -1681,7 +1698,7 @@ function WK.odswiezPanel()
 		ceny[id] = K.napis.Text
 	end
 	gracz:SetAttribute("EW_K_Panel", HttpService:JSONEncode({ trofea = table.concat(st, ","), ceny = ceny, zakladka = if HUD.panel.tabU.Visible then "U" else "T",
-		zloto = HUD.panel.zloto.Text }))
+		zloto = HUD.panel.zloto.Text, linia = HUD.panel.liniaPokazana }))
 end
 
 -- czy iść do legowiska po złoto: zebranego za mało na najtańszy zakup, z legowiskiem starczy
@@ -1750,7 +1767,13 @@ local function odswiezHUD()
 	local wForma = if w then w.forma else f
 	local hpJa = if w then w.hp else 1
 	local pelny = f < NF and wz >= pt and not (w and serwerSteruje(w.flagi))
-	ramkaEwo.Visible = pelny
+	-- odrodzenie1: na ANCIENT przycisk REBIRTH (ceremonia → pisklę nowej linii)
+	local odr = f >= NF and w ~= nil and not serwerSteruje(w.flagi) and not WK.odr
+	ramkaEwo.Visible = pelny or odr
+	napisEwo.Text = if odr then UI.odrodz else UI.ewoluuj
+	HUD:ustawLinie(gracz:GetAttribute("EW_Linia") or 1, gracz:GetAttribute("EW_Odrodzenia") or 0, gracz:GetAttribute("EW_Mnoznik") or 1)
+	WK.krokWyd()
+	WK.krokJajaDnia()
 	HUD:gora({ forma = wForma, wz = wz, pt = pt, maks = f >= NF, hp = hpJa, zloto = gracz:GetAttribute("EW_Zloto") or 0,
 		skarb = gracz:GetAttribute("EW_ZlotoLeg") or 0, naS = gracz:GetAttribute("EW_ZlotoNaS") or 0, wariant = wariantD(WK.csv("EW_Warianty")[wForma]) })
 	local teraz = os.clock()
@@ -1860,6 +1883,10 @@ local function krokJajka(dt: number)
 		local Wj = SK and SK:klipy("smok_jajo")
 		if wz and Wj and w.R then
 			local m = wz:Clone()
+			if WK.jajoLinia then
+				SK.barwLinii(m, WK.jajoLinia)
+				WK.jajoLinia = nil
+			end
 			m.Parent = lokalne
 			local R = SK.Rigi.nowy(m, Wj, 1)
 			R:graj("wyklucie", { wejscie = 0.01, trzymaj = true })
@@ -2124,6 +2151,71 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				odswiezDrabine()
 				gracz:SetAttribute("EW_K_Odslon", WK.liczOdslon)
 			end
+		elseif t == "odr_start" then
+			-- ceremonia: ANCIENT zwija się w jajo nowej linii (jajo rośnie, smok gaśnie), potem wykluwa się pisklę
+			local w = widoki[z.id]
+			if w and z.id == mojId then
+				WK.odr = { t = 0, czas = z.czas, linia = z.linia, w = w }
+				HUD:odrodzenieCeremonia(z.linia, z.n, z.x, z.czas)
+				dzwiek("wyklucie", 0.7)
+				wstrzasnij(0.4, z.czas)
+				gracz:SetAttribute("EW_K_Odr", "ceremonia")
+				local wz = SK and wzorce and wzorce:FindFirstChild("SmokB_jajo")
+				if wz then
+					local m = wz:Clone()
+					SK.barwLinii(m, z.linia)
+					for _, d in m:GetDescendants() do
+						if d:IsA("BasePart") then
+							d.Anchored, d.CanCollide, d.CanQuery, d.CanTouch = true, false, false, false
+						end
+					end
+					m.Parent = lokalne
+					WK.odr.m = m
+				end
+			end
+			if w then
+				E:iskry(C + Vector3.new(w.x, 3, w.z), hex(D.odrodzenie.linie[z.linia].kolor), 30, 2.2)
+			end
+		elseif t == "odr_koniec" then
+			if z.id == mojId then
+				if WK.odr and WK.odr.m then
+					WK.odr.m:Destroy()
+				end
+				WK.odr = nil
+				WK.jajoLinia = z.linia
+				jajkoBylo = false
+				WK.liczOdr = (WK.liczOdr or 0) + 1
+				gracz:SetAttribute("EW_K_Odr", "wyklute")
+				pokazBaner(string.format(UI.odrodzenie, z.n), hex(D.odrodzenie.linie[z.linia].kolor), 2)
+			end
+		elseif t == "wydarzenie" then
+			if z.start then
+				pokazBaner(if z.co == "deszcz" then UI.deszcz .. "!" else UI.rampage .. "!", if z.co == "deszcz" then zloto else hex("FF4D6A"), 2.4)
+				toast(if z.co == "deszcz" then UI.deszcz_ogl else UI.rampage_ogl, 4)
+				dzwiek("boss", if z.co == "deszcz" then 1.3 else 0.8)
+			end
+			WK.liczWyd = (WK.liczWyd or 0) + (if z.start then 1 else 0)
+		elseif t == "rampage_skrzynia" then
+			toast(string.format(UI.rampage_skrzynia, z.dzial), 4)
+			E:iskry(C + Vector3.new(z.x, 6, z.z), zloto, 40, 3)
+			dzwiek("monety", 1)
+			WK.rampSkrzynia = z.dzial
+		elseif t == "jajo_dnia" then
+			if z.ok then
+				local W = wariantD(z.wariant)
+				local F = D.formy[z.f or 1]
+				if z.lepszy then
+					pokazBaner(string.format(UI.jajo_wynik, W and W.nazwa or "", F.nazwa), W and hex(W.kolor) or zloto, 2.4)
+				else
+					toast(string.format(UI.jajo_bez, W and W.nazwa or "", F.nazwa), 3)
+				end
+				dzwiek("wyklucie", 1.3)
+				if WK.jajoNaGniezdzie then
+					local p = WK.jajoNaGniezdzie:GetPivot().Position
+					E:iskry(p, W and hex(W.kolor) or zloto, 34, 2)
+				end
+			end
+			gracz:SetAttribute("EW_K_JajoWynik", HttpService:JSONEncode({ ok = z.ok, wariant = z.wariant, lepszy = z.lepszy, f = z.f, powod = z.powod }))
 		elseif t == "zebrano" then
 			if z.id == mojId and z.ile > 0 then
 				pokazBaner(string.format(UI.zebrano, z.ile), zloto, 1.4)
@@ -2541,6 +2633,112 @@ local function krokAutopilota(dt: number)
 	end
 end
 
+------------------------------------------------------------------ odrodzenie1: ceremonia, wydarzenia, jajo dnia
+function WK.krokOdr(dt: number)
+	local w = widoki[mojId]
+	local O = WK.odr
+	if O then
+		O.t += dt
+		local f = math.clamp(O.t / math.max(0.2, O.czas * 0.8), 0, 1)
+		if w and w.model then
+			ustawPrzezroczystosc(w, f)
+			if O.m then
+				local r = D.formy[w.forma].r
+				pcall(function()
+					O.m:ScaleTo(math.max(0.05, (0.4 + 0.6 * f) * r * 0.45))
+				end)
+				O.m:PivotTo(CFrame.new(C + Vector3.new(w.x, 0, w.z)) * CFrame.Angles(0, O.t * 1.5, math.sin(O.t * 14) * 0.08 * f))
+			end
+		end
+		if O.t > O.czas + 3 then
+			if O.m then
+				O.m:Destroy()
+			end
+			WK.odr = nil
+		end
+	end
+	-- odsłona z portretem: własny smok w świecie schowany (bez dwóch smoków naraz)
+	local pokaz = HUD.odsl.faza == "pokaz"
+	if w and pokaz ~= (WK.schowanyPodOdslona == true) then
+		WK.schowanyPodOdslona = pokaz
+		if w.model then
+			ustawPrzezroczystosc(w, if pokaz then 1 else 0)
+		end
+	end
+end
+
+local function zegar(sek: number): string
+	sek = math.max(0, math.floor(sek))
+	return string.format("%d:%02d", sek // 60, sek % 60)
+end
+WK.zegar = zegar
+
+-- pigułka wydarzeń: trwające albo najbliższe (czasy z serwera)
+function WK.krokWyd()
+	local tn = workspace:GetServerTimeNow()
+	local dDo, rDo = kontener:GetAttribute("WydDeszczDo") or 0, kontener:GetAttribute("WydRampDo") or 0
+	local dN, rN = kontener:GetAttribute("WydDeszczNast") or 0, kontener:GetAttribute("WydRampNast") or 0
+	local tekst, kolor, akt
+	if rDo > tn then
+		tekst, kolor, akt = string.format(UI.trwa, UI.rampage, zegar(rDo - tn)), hex("FF4D6A"), true
+	elseif dDo > tn then
+		tekst, kolor, akt = string.format(UI.trwa, UI.deszcz, zegar(dDo - tn)), zloto, true
+	elseif dN > 0 or rN > 0 then
+		if dN > 0 and (rN <= 0 or dN <= rN) then
+			tekst = string.format(UI.za, UI.deszcz, zegar(dN - tn))
+		else
+			tekst = string.format(UI.za, UI.rampage, zegar(rN - tn))
+		end
+		akt = false
+	end
+	HUD:wydarzenie(if odslona == nil then tekst else nil, kolor, akt == true)
+	if SWK then
+		SWK:deszcz(dDo > tn)
+	end
+	gracz:SetAttribute("EW_K_Wyd", tekst or "")
+	gracz:SetAttribute("EW_K_ZloteKule", if SWK then SWK.zloteKule or 0 else 0)
+end
+
+-- jajo dnia: na gnieździe własnego legowiska, przycisk DAILY EGG w legowisku
+WK.ramkaJaja = warstwa("JajoDnia", Vector2.new(0.5, 1), UDim2.new(0.5, -20, 1, -122), Vector2.new(156, 54))
+WK.bJajo = nowy("TextButton", { Name = "JajoDnia", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), Text = "", AutoButtonColor = true },
+	WK.ramkaJaja)
+rog(WK.bJajo, 27)
+nowy("UIGradient", { Color = ColorSequence.new(hex(UI.styl.kup), hex("3DB36B")), Rotation = 90 }, WK.bJajo)
+obrys(WK.bJajo, 3, hex(UI.styl.obrys))
+napis(WK.bJajo, UI.jajo_dnia, UDim2.fromScale(0.08, 0.18), UDim2.fromScale(0.84, 0.64))
+WK.ramkaJaja.Visible = false
+WK.bJajo.Activated:Connect(function()
+	akcja("jajo_dnia")
+end)
+function WK.krokJajaDnia()
+	local dost = gracz:GetAttribute("EW_JajoDnia") == true
+	local dom = gracz:GetAttribute("EW_WDomu") == true
+	WK.ramkaJaja.Visible = dost and dom and odslona == nil and not WK.panel.Visible
+	if dost and not WK.jajoNaGniezdzie and SK and wzorce and wzorce:FindFirstChild("SmokB_jajo") and mojSlot() > 0 then
+		local lx, lz = L.legowiskoPoz(D, mojSlot())
+		local m = wzorce.SmokB_jajo:Clone()
+		SK.barwLinii(m, gracz:GetAttribute("EW_Linia") or 1)
+		for _, d in m:GetDescendants() do
+			if d:IsA("BasePart") then
+				d.Anchored, d.CanCollide, d.CanQuery, d.CanTouch = true, false, false, false
+			end
+		end
+		pcall(function()
+			m:ScaleTo(1.4)
+		end)
+		m:PivotTo(CFrame.new(C + Vector3.new(lx * 0.97, 1.1, lz * 0.97)))
+		local sw = Instance.new("PointLight")
+		sw.Color, sw.Range, sw.Brightness = zloto, 12, 2
+		sw.Parent = m.PrimaryPart or m:FindFirstChildWhichIsA("BasePart")
+		m.Parent = lokalne
+		WK.jajoNaGniezdzie = m
+	elseif not dost and WK.jajoNaGniezdzie then
+		WK.jajoNaGniezdzie:Destroy()
+		WK.jajoNaGniezdzie = nil
+	end
+end
+
 ------------------------------------------------------------------ poślizg stóp (próby, dane 3): stopa w podporze ma stać
 -- Pozycję stopy liczymy z łańcucha stawów tej klatki (korzeń × C0 × Transform × C1⁻¹ do kości stopy, potem stała odległość
 -- części „Stopa” przyspawanej do kości) — dokładnie to, co odtwarzacz ustawił, bez opóźnienia silnika. Podpora = środek
@@ -2640,7 +2838,7 @@ local function uklad(): string
 	local nazwy = { Boss = ramkaBossa, Wzrost = HUD.ramkaWzrostu, Zloto = HUD.ramkaZlota, Drabina = HUD.ramkaDrabiny, Gryz = HUD.gryz.ramka, Zryw = HUD.zryw.ramka,
 		Ogien = WK.zdOgien.ramka, Moc = WK.zdMoc.ramka, OgienNast = WK.nastOgien.ramka, MocNast = WK.nastMoc.ramka, Ewolucja = ramkaEwo, Podpowiedz = ramkaPodp,
 		Toast = ramkaToastu, Tabliczka = ramkaTabl, Panel = WK.panel, Odslona = HUD.odsl.ramka, Baner = ramkaBaneru,
-		OdslonaSrodek = HUD.odsl.ramka:FindFirstChild("Srodek") }
+		OdslonaSrodek = HUD.odsl.ramka:FindFirstChild("Srodek"), Wydarzenie = HUD.ramkaWyd, JajoDnia = WK.ramkaJaja }
 	local pr = {}
 	local v = kamera.ViewportSize
 	local ins = GuiService:GetGuiInset() -- przy IgnoreGuiInset AbsolutePosition liczy się od dołu górnego paska
@@ -2666,7 +2864,7 @@ local function uklad(): string
 		end
 	end
 	local male = {}
-	local przyciski = { bGryz, bZryw, WK.zdOgien.b, WK.zdMoc.b, bEwo, bLegowisko, WK.bZamknij, HUD.odsl.dalej }
+	local przyciski = { bGryz, bZryw, WK.zdOgien.b, WK.zdMoc.b, bEwo, bLegowisko, WK.bZamknij, HUD.odsl.dalej, WK.bJajo }
 	for _, d in WK.panel:GetDescendants() do
 		if d:IsA("TextButton") and d.Visible then
 			table.insert(przyciski, d)
@@ -2756,6 +2954,11 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 			HUD:pokazZakladke("T")
 		elseif tp == "dalej" then
 			HUD:odslonaKoniec()
+		elseif tp == "jajo_dnia" then
+			akcja("jajo_dnia")
+		elseif string.sub(tp, 1, 6) == "linia:" then
+			HUD.panel.pokazLinia = tonumber(string.sub(tp, 7))
+			WK.odswiezPanel()
 		elseif tp == "odnowa_zeruj" then
 			zdGotowy = { ogien = 0, moc = 0 }
 			zrywGotowy, gryzGotowy = 0, 0
@@ -2819,6 +3022,7 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 		end
 	end
 	HUD:krok(dt, tGlob)
+	WK.krokOdr(dt)
 	if blyskT < 0.5 then
 		blyskT += dt
 		blysk.BackgroundTransparency = math.clamp(0.15 + blyskT / 0.5 * 0.85, 0, 1)
@@ -2916,6 +3120,9 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 		end
 		gracz:SetAttribute("EW_K_Legowisko", WK.panel.Visible)
 		gracz:SetAttribute("EW_K_Ogien", WK.mojOgien or 0)
+		local jw = widoki[mojId]
+		gracz:SetAttribute("EW_K_LiniaModelu", if jw then jw.linia or 1 else 0)
+		gracz:SetAttribute("EW_K_Wydarzen", WK.liczWyd or 0)
 		gracz:SetAttribute("EW_K_Przypalenia", if SK then SK.licznikPrzypalen or 0 else 0)
 		gracz:SetAttribute("EW_K_Korona", korona.Parent ~= nil)
 		gracz:SetAttribute("EW_K_KameraY", kamera.CFrame.Position.Y)

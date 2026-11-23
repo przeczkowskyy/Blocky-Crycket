@@ -22,6 +22,7 @@ function S.nowe(c)
 	-- c: D, wzorce, lokalne, Http, kamera
 	local self = setmetatable({}, S)
 	self.c, self.D = c, c.D
+	S.Dlinie = c.D.odrodzenie and c.D.odrodzenie.linie
 	self.LOD = (c.D.blender and c.D.blender.lod) or {}
 	self.zestawy = {}
 	self.swiatla = 0
@@ -69,6 +70,30 @@ function S.przemaluj(model: Instance, id: string?, paleta)
 	end
 end
 
+-- odrodzenie1: kolory linii smoków (regiony z palety linii; bez regionów — części zabarwione kolorem linii)
+function S.barwLinii(model: Instance, linia: number?)
+	local LI = S.Dlinie and linia and S.Dlinie[linia]
+	if not (LI and LI.paleta) then
+		return
+	end
+	local ile = 0
+	for _, d in model:GetDescendants() do
+		if d:IsA("BasePart") and d:GetAttribute("Region") ~= nil then
+			ile += 1
+		end
+	end
+	if ile > 0 then
+		S.przemaluj(model, LI.id, LI.paleta)
+	else
+		local k = Color3.fromHex(LI.kolor)
+		for _, d in model:GetDescendants() do
+			if d:IsA("BasePart") and d.Transparency < 1 then
+				d.Color = d.Color:Lerp(k, 0.6)
+			end
+		end
+	end
+end
+
 -- pełny albo uproszczony rig widoku (klon wzorca, wariant, odtwarzacz); zwraca model
 function S:zbuduj(w, F, lod: boolean, W0)
 	local nazwa = if lod then (F.wzorzecLod or F.wzorzec) else F.wzorzec
@@ -77,6 +102,9 @@ function S:zbuduj(w, F, lod: boolean, W0)
 		return nil
 	end
 	local m = wz:Clone()
+	if w.linia and w.linia > 1 then
+		S.barwLinii(m, w.linia)
+	end
 	if W0 then
 		S.przemaluj(m, W0.id, self.D.blender.warianty[W0.id])
 	end

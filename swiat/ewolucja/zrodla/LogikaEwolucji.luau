@@ -63,16 +63,37 @@ function L.poziomTrofeum(b, f: number): number
 end
 
 -- pełna stawka gracza: trofea × poziom × najlepszy wariant + trofea bossa
-function L.stawkaB(D, b): number
+local function stawkaLinii(D, maxForma: number, trofea, warianty): number
 	local G = D.legowisko
 	local s = 0
-	for f = 1, b.maxForma do
-		s += D.formy[f].trofeum * G.poziomy_x[L.poziomTrofeum(b, f)] * L.wariantX(D, b.warianty and b.warianty[f])
+	for f = 1, maxForma do
+		s += D.formy[f].trofeum * G.poziomy_x[(trofea and trofea[f]) or 1] * L.wariantX(D, warianty and warianty[f])
+	end
+	return s
+end
+
+-- odrodzenie1: stały mnożnik wzrostu i złota legowiska za każde odrodzenie (× x, najwyżej maks_x)
+function L.mnoznikOdr(D, b): number
+	local O = D.odrodzenie
+	if not O then
+		return 1
+	end
+	return math.min(O.maks_x, O.x ^ (b.odrodzenia or 0))
+end
+
+function L.stawkaB(D, b): number
+	local G = D.legowisko
+	local s = stawkaLinii(D, b.maxForma, b.trofea, b.warianty)
+	-- trofea poprzednich linii smoków zostają w legowisku i dalej zarabiają
+	if b.linie then
+		for _, z in b.linie do
+			s += stawkaLinii(D, z.maxForma, z.trofea, z.warianty)
+		end
 	end
 	for t = 1, math.min(b.bossTrofea or 0, #G.boss_trofea) do
 		s += G.boss_trofea[t]
 	end
-	return s
+	return s * L.mnoznikOdr(D, b)
 end
 
 function L.cenaTrofeum(D, b, f: number): number?
@@ -184,7 +205,7 @@ end
 
 -- czy b da się teraz zjeść / dotknąć (żywy, bez tarczy, nie w kokonie, nie w skoku)
 local function wolny(S, b): boolean
-	return b.martwyDo == nil and b.kokonDo == nil and b.skok == nil
+	return b.martwyDo == nil and b.kokonDo == nil and b.skok == nil and b.odrDo == nil
 end
 
 local function bezbronny(S, b): boolean
@@ -393,6 +414,23 @@ function L.ranBossa(S, boss, g, ile: number, zd)
 		local st = S.bossStopien or 1
 		local skrzynia = D.boss.stopnie_skrzynia[st]
 		local nowe = false
+		local E = S.wyd
+		if E and E.rampDo then
+			-- rampage: pula skrzyni × pula_x po równo dla każdego, kto trafił (także jeden gracz)
+			local trafili = {}
+			for _, q in S.byty do
+				if q.slot > 0 and (boss.rany[tostring(q.slot)] or 0) > 0 then
+					table.insert(trafili, q)
+				end
+			end
+			local dzial = math.floor(skrzynia * D.wydarzenia.rampage.pula_x / math.max(1, #trafili))
+			for _, q in trafili do
+				q.zloto += dzial
+			end
+			table.insert(zd, { t = "rampage_skrzynia", ile = #trafili, dzial = dzial, x = boss.x, z = boss.z })
+			E.rampDo = S.czas
+			skrzynia = 0
+		end
 		if naj then
 			naj.zloto += skrzynia
 			if (naj.bossTrofea or 0) < st then
@@ -505,7 +543,7 @@ function L.steruj(b, x: any, z: any): boolean
 end
 
 local function sterowanyPrzezSerwer(S, b): boolean
-	return b.martwyDo ~= nil or b.kokonDo ~= nil or b.skok ~= nil or b.ogluszonyDo > S.czas
+	return b.martwyDo ~= nil or b.kokonDo ~= nil or b.skok ~= nil or b.odrDo ~= nil or b.ogluszonyDo > S.czas
 end
 L.sterowanyPrzezSerwer = sterowanyPrzezSerwer
 
@@ -562,9 +600,14 @@ end
 local function zjedzKulke(S, b, i: number, zd)
 	local D = S.D
 	local typ = D.kulkiPoz[i][3]
-	S.kulki[i] = S.czas + (if typ >= 2 then D.jedzenie.powrot_duza_s else D.jedzenie.powrot_mala_s)
+	local deszcz = L.deszczNa(S, i)
+	S.kulki[i] = S.czas + (if deszcz then D.wydarzenia.deszcz.powrot_s elseif typ >= 2 then D.jedzenie.powrot_duza_s else D.jedzenie.powrot_mala_s)
 	if b.slot > 0 then
-		L.dodajWzrost(S, b, (if typ == 3 then D.jedzenie.wielka elseif typ == 2 then D.jedzenie.duza else D.jedzenie.mala) * L.apetyt(D, b))
+		L.dodajWzrost(S, b, (if typ == 3 then D.jedzenie.wielka elseif typ == 2 then D.jedzenie.duza else D.jedzenie.mala) * L.apetyt(D, b)
+			* (if deszcz then D.wydarzenia.deszcz.wzrost_x else 1))
+		if deszcz then
+			b.zloto += D.wydarzenia.deszcz.zloto
+		end
 	end
 	if not b.boss and b.hp < b.hpMaks then
 		b.hp = math.min(b.hpMaks, b.hp + b.hpMaks * D.walka.kulka_leczy[typ])
@@ -578,6 +621,9 @@ function L.dodajWzrost(S, b, ile: number)
 		return
 	end
 	local p = L.potrzeba(D, b.forma)
+	if b.slot > 0 then
+		ile *= L.mnoznikOdr(D, b)
+	end
 	b.wzrost = math.min(p * D.ewolucja.pasek_maks, b.wzrost + ile)
 end
 
@@ -1266,8 +1312,12 @@ end
 function L.myslBossa(S, b)
 	local D = S.D
 	local cel, dc = nil, D.boss.widzi
+	local szal = S.wyd ~= nil and S.wyd.rampDo ~= nil
+	if szal then
+		dc = D.boss.widzi * D.wydarzenia.rampage.widzi_x
+	end
 	for _, q in S.byty do
-		if q.slot > 0 and wolny(S, q) and L.wLesie(D, q.x, q.z) then
+		if q.slot > 0 and wolny(S, q) and (szal or L.wLesie(D, q.x, q.z)) and not L.wLegowisku(D, q) then
 			local d = dlug(q.x - b.x, q.z - b.z)
 			if d < dc then
 				cel, dc = q, d
@@ -1476,7 +1526,11 @@ function L.krok(S, dt: number)
 			end
 		end
 		local r = L.promien(D, b.forma)
-		if b.martwyDo then
+		if b.odrDo then
+			if S.czas >= b.odrDo then
+				L.odrodzenieKoniec(S, b, zd)
+			end
+		elseif b.martwyDo then
 			if S.czas >= b.martwyDo then
 				odrodz(S, b, zd)
 			end
@@ -1647,6 +1701,7 @@ function L.krok(S, dt: number)
 	krokPociskow(S, dt, zd)
 	L.krokOwiec(S, dt, zd)
 	krokPlam(S, zd)
+	L.krokWydarzen(S, zd)
 	-- kulki: zbieranie dotykiem, powrót
 	local zz = D.jedzenie.zasieg_zbierania
 	for i, p in D.kulkiPoz do
@@ -1667,6 +1722,219 @@ function L.krok(S, dt: number)
 		end
 	end
 	return zd
+end
+
+------------------------------------------------------------------ odrodzenie1: odrodzenie, linie smoków, wydarzenia, jajo dnia
+-- bajt wariantu w migawce: numer wariantu (0–7) + 8 × (linia − 1)
+function L.kodWariantu(nr: number, linia: number): number
+	return (nr % 8) + 8 * (math.clamp(linia, 1, 31) - 1)
+end
+
+function L.dekodWariantu(bajt: number): (number, number)
+	return bajt % 8, bajt // 8 + 1
+end
+
+function L.liniaPo(D, linia: number): number
+	return linia % #D.odrodzenie.linie + 1
+end
+
+function L.mozeOdrodzic(S, b): boolean
+	return b.slot > 0 and b.forma >= #S.D.formy and not sterowanyPrzezSerwer(S, b)
+end
+
+-- REBIRTH na ANCIENT: ceremonia (nieruchomo, nietykalnie), potem pisklę nowej linii; złoto, ulepszenia i legowisko zostają
+function L.odrodzenie(S, b, zd): boolean
+	if not L.mozeOdrodzic(S, b) then
+		return false
+	end
+	local D = S.D
+	b.odrDo = S.czas + D.odrodzenie.ceremonia_s
+	b.zamach, b.kanal = nil, nil
+	b.vx, b.vz, b.wx, b.wz = 0, 0, 0, 0
+	table.insert(zd, { t = "odr_start", id = b.id, s = b.slot, linia = L.liniaPo(D, b.linia or 1), n = (b.odrodzenia or 0) + 1,
+		czas = D.odrodzenie.ceremonia_s, x = math.min(D.odrodzenie.maks_x, D.odrodzenie.x ^ ((b.odrodzenia or 0) + 1)) })
+	return true
+end
+
+function L.odrodzenieKoniec(S, b, zd)
+	local D = S.D
+	b.odrDo = nil
+	b.linie = b.linie or {}
+	local stara = b.linia or 1
+	b.linie[stara] = { maxForma = b.maxForma, warianty = b.warianty or {}, trofea = b.trofea or {} }
+	local nowa = L.liniaPo(D, stara)
+	local z = b.linie[nowa]
+	b.linie[nowa] = nil
+	b.linia = nowa
+	b.maxForma = if z then z.maxForma else 1
+	b.warianty = if z then z.warianty else {}
+	b.trofea = if z then z.trofea else {}
+	b.odrodzenia = (b.odrodzenia or 0) + 1
+	b.forma = 1
+	b.wzrost = 0
+	b.wariantTeraz = nil
+	b.skok = nil
+	if S.olbrzym == b.id then
+		S.olbrzym = 0
+	end
+	b.olbrzymHp = nil
+	b.hpMaks = L.hpMaks(D, b)
+	b.hp = b.hpMaks
+	b.gotowy = { ogien = 0, moc = 0 }
+	b.tarczaDo = math.max(b.tarczaDo, S.czas + D.ewolucja.tarcza_po_s)
+	table.insert(zd, { t = "odr_koniec", id = b.id, s = b.slot, linia = nowa, n = b.odrodzenia, x = L.mnoznikOdr(D, b) })
+end
+
+-- wydarzenia zegarowe na cały serwer (działają też z jednym graczem): DRAGON RAIN i GOLEM RAMPAGE
+local function wyd(S)
+	if not S.wyd then
+		local W = S.D.wydarzenia
+		S.wyd = { deszczNast = W.deszcz.pierwszy_s, rampNast = W.rampage.pierwszy_s }
+	end
+	return S.wyd
+end
+L.wyd = wyd
+
+function L.deszczNa(S, i: number): boolean
+	local E = S.wyd
+	if not (E and E.deszczDo) then
+		return false
+	end
+	local p = S.D.kulkiPoz[i]
+	return not L.wLesie(S.D, p[1], p[2]) and not L.naWyspie(S.D, p[1], p[2])
+end
+
+function L.wymusWydarzenie(S, co: string)
+	local E = wyd(S)
+	if co == "deszcz" then
+		E.deszczNast = S.czas
+	elseif co == "rampage" then
+		E.rampNast = S.czas
+	end
+end
+
+-- najwyższy stopień golema osiągnięty na serwerze: obecny stopień serwera albo trofea bossa gracza + 1 (najwyżej 5)
+function L.stopienRampage(S): number
+	local D = S.D
+	local st = S.bossStopien or 1
+	for _, q in S.byty do
+		if q.slot > 0 then
+			st = math.max(st, (q.bossTrofea or 0) + 1)
+		end
+	end
+	return math.min(st, #D.boss.stopnie_hp)
+end
+
+local function rampageStart(S, zd)
+	local D = S.D
+	local R = D.wydarzenia.rampage
+	local b = L.bytPoId(S, S.boss)
+	if not b then
+		return false
+	end
+	S.bossStopien = L.stopienRampage(S)
+	b.martwyDo = nil
+	b.hpMaks = math.floor(D.boss.stopnie_hp[S.bossStopien] * R.hp_x)
+	b.hp = b.hpMaks
+	b.rany = {}
+	b.strefa = 3
+	-- wychodzi z lasu bramą na łąkę (staje tuż za bramą, idzie do domu na łące)
+	local d = math.max(1, dlug(D.las.x, D.las.z))
+	local brama = D.pole.r - 12
+	b.x, b.z = D.las.x / d * brama, D.las.z / d * brama
+	b.domX, b.domZ = R.x, R.z
+	b.myslDo = 0
+	table.insert(zd, { t = "wydarzenie", co = "rampage", start = true, czas = R.trwa_s, stopien = S.bossStopien, id = b.id })
+	return true
+end
+
+local function rampageKoniec(S, zd)
+	local D = S.D
+	local b = L.bytPoId(S, S.boss)
+	if b then
+		b.strefa = 2
+		b.domX, b.domZ = D.las.x, D.las.z
+		if not b.martwyDo then
+			b.x, b.z = D.las.x, D.las.z
+			b.hpMaks = D.boss.stopnie_hp[S.bossStopien or 1]
+			b.hp = math.min(b.hp, b.hpMaks)
+		end
+	end
+	table.insert(zd, { t = "wydarzenie", co = "rampage", koniec = true })
+end
+
+function L.krokWydarzen(S, zd)
+	local D = S.D
+	if not D.wydarzenia then
+		return
+	end
+	local W = D.wydarzenia
+	local E = wyd(S)
+	if E.deszczDo and S.czas >= E.deszczDo then
+		E.deszczDo = nil
+		table.insert(zd, { t = "wydarzenie", co = "deszcz", koniec = true })
+	end
+	if not E.deszczDo and S.czas >= E.deszczNast then
+		E.deszczDo = S.czas + W.deszcz.trwa_s
+		E.deszczNast = S.czas + W.deszcz.co_s
+		-- złote kule spadają na całą łąkę: wszystkie kule łąki od razu żywe
+		for i in D.kulkiPoz do
+			if L.deszczNa(S, i) then
+				S.kulki[i] = 0
+			end
+		end
+		table.insert(zd, { t = "wydarzenie", co = "deszcz", start = true, czas = W.deszcz.trwa_s })
+	end
+	if E.rampDo and S.czas >= E.rampDo then
+		E.rampDo = nil
+		rampageKoniec(S, zd)
+	end
+	if not E.rampDo and S.czas >= E.rampNast then
+		E.rampNast = S.czas + W.rampage.co_s
+		if rampageStart(S, zd) then
+			E.rampDo = S.czas + W.rampage.trwa_s
+		end
+	end
+end
+
+-- jajo dnia (raz na dzień UTC, w legowisku): darmowe losowanie wariantu trofeum obecnego stadium (tylko na lepsze)
+function L.dzienUTC(t: number): number
+	return math.floor(t / 86400)
+end
+
+function L.jajoDostepne(D, b, teraz: number): boolean
+	return b.slot > 0 and (b.dzienJaja or -1) < L.dzienUTC(teraz)
+end
+
+function L.jajoDnia(S, b, teraz: number, r: number): (boolean, string?, boolean?, number?)
+	local D = S.D
+	if not L.jajoDostepne(D, b, teraz) then
+		return false, "jutro"
+	end
+	if not L.wLegowisku(D, b) then
+		return false, "legowisko"
+	end
+	b.dzienJaja = L.dzienUTC(teraz)
+	local f = math.clamp(b.forma, 1, b.maxForma)
+	local J = D.jajo_dnia
+	local suma = 0
+	for _, w in J.wagi do
+		suma += w[2]
+	end
+	local x, id = r * suma, J.wagi[1][1]
+	for _, w in J.wagi do
+		if x < w[2] then
+			id = w[1]
+			break
+		end
+		x -= w[2]
+	end
+	b.warianty = b.warianty or {}
+	local lepszy = L.wariantX(D, id) > L.wariantX(D, b.warianty[f])
+	if lepszy then
+		b.warianty[f] = id
+	end
+	return true, id, lepszy, f
 end
 
 ------------------------------------------------------------------ pomiar prób (D-128): anonimowe podsumowanie jednej sesji
@@ -1711,7 +1979,7 @@ end
 
 function L.profilNowy(D)
 	return { wersja = D.zapis.wersja, zloto = 0, zlotoLeg = 0, poziomy = { szczeka = 1, szybkosc = 1, apetyt = 1 }, maxForma = 1,
-		warianty = {}, trofea = {}, bossTrofea = 0, ostatnio = 0, pierwszy = 0 }
+		warianty = {}, trofea = {}, bossTrofea = 0, ostatnio = 0, pierwszy = 0, odrodzenia = 0, linia = 1, linie = {}, dzienJaja = -1 }
 end
 
 -- dane z magazynu → profil (migracja wersji, uzgodnienie z szablonem, walidacja liczb i nazw)
@@ -1742,6 +2010,25 @@ function L.profilZ(D, dane: any)
 		local t = type(dane.trofea) == "table" and dane.trofea[f]
 		p.trofea[f] = math.floor(liczba(t, 1, #D.legowisko.poziomy_x, 1))
 	end
+	-- odrodzenie1: liczba odrodzeń, obecna linia, postęp pozostałych linii (klucze „1”–„4”), dzień jaja
+	local nl = if D.odrodzenie then #D.odrodzenie.linie else 1
+	p.odrodzenia = math.floor(liczba(dane.odrodzenia, 0, 1000, 0))
+	p.linia = math.floor(liczba(dane.linia, 1, nl, 1))
+	p.dzienJaja = math.floor(liczba(dane.dzienJaja, -1, 1e7, -1))
+	if type(dane.linie) == "table" then
+		for l = 1, nl do
+			local z = dane.linie[tostring(l)]
+			if l ~= p.linia and type(z) == "table" then
+				local q = { maxForma = math.floor(liczba(z.maxForma, 1, nf, 1)), warianty = {}, trofea = {} }
+				for f = 1, nf do
+					local w = type(z.warianty) == "table" and z.warianty[f]
+					q.warianty[f] = if type(w) == "string" and L.wariant(D, w) then w else ""
+					q.trofea[f] = math.floor(liczba(type(z.trofea) == "table" and z.trofea[f], 1, #D.legowisko.poziomy_x, 1))
+				end
+				p.linie[tostring(l)] = q
+			end
+		end
+	end
 	return p
 end
 
@@ -1761,6 +2048,17 @@ function L.doProfilu(D, b, teraz: number)
 		p.warianty[f] = b.warianty[f] or ""
 		p.trofea[f] = L.poziomTrofeum(b, f)
 	end
+	p.odrodzenia = b.odrodzenia or 0
+	p.linia = b.linia or 1
+	p.dzienJaja = b.dzienJaja or -1
+	for l, z in b.linie or {} do
+		local q = { maxForma = z.maxForma, warianty = {}, trofea = {} }
+		for f = 1, #D.formy do
+			q.warianty[f] = (z.warianty and z.warianty[f]) or ""
+			q.trofea[f] = (z.trofea and z.trofea[f]) or 1
+		end
+		p.linie[tostring(l)] = q
+	end
 	return p
 end
 
@@ -1776,6 +2074,20 @@ function L.zProfilu(D, b, p, teraz: number): (number, number)
 	for f = 1, #D.formy do
 		b.warianty[f] = if p.warianty[f] ~= "" then p.warianty[f] else nil
 		b.trofea[f] = p.trofea[f]
+	end
+	b.odrodzenia = p.odrodzenia or 0
+	b.linia = p.linia or 1
+	b.dzienJaja = p.dzienJaja or -1
+	b.linie = {}
+	for k, q in p.linie or {} do
+		local l = tonumber(k)
+		if l and l ~= b.linia then
+			local w = {}
+			for f = 1, #D.formy do
+				w[f] = if q.warianty[f] ~= "" then q.warianty[f] else nil
+			end
+			b.linie[l] = { maxForma = q.maxForma, warianty = w, trofea = q.trofea }
+		end
 	end
 	local sek = 0
 	if p.ostatnio > 0 then

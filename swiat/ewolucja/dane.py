@@ -350,6 +350,10 @@ def dane():
         "kontener": U["kontener"], "prefiks": U["prefiks"], "wylacznik": U["wylacznik"], "wzorceRS": U["wzorce_rs"], "ui": U["ui"],
         # interfejs1: numery obrazów ikon (0 = brak, zastępstwo w grze) — tabela w ustawienia.json, klucz „ikony.id”
         "ikony": {k: v for k, v in U.get("ikony", {}).get("id", {}).items()},
+        # odrodzenie1: odrodzenie i linie smoków, wydarzenia zegarowe, jajo dnia
+        "odrodzenie": {k: v for k, v in U["odrodzenie"].items() if k != "opis"},
+        "wydarzenia": {k: v for k, v in U["wydarzenia"].items() if k != "opis"},
+        "jajo_dnia": {k: v for k, v in U["jajo_dnia"].items() if k != "opis"},
         "pole": P, "przeszkody": prz, "przSiatka": siatka_przeszkod(prz), "kulkiPoz": kulki(P, J, prz, LS), "jedzenie": J, "formy": formy,
         "las": {"nazwa": LS["nazwa"], "x": LS["srodek"][0], "z": LS["srodek"][1], "r": LS["r"], "od_formy": LS["od_formy"]}, "boss": B,
         "legowisko": {k: v for k, v in U["legowisko"].items() if k != "opis"}, "legowiska": legowiska(U["legowisko"]),

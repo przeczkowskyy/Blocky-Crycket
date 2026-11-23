@@ -988,6 +988,152 @@ class TestRuchIIkony(unittest.TestCase):
         self.assertEqual(wybierz(ids, "cos_nowego")["typ"], "napis")
 
 
+class TestOdrodzenie(unittest.TestCase):
+    """odrodzenie1: REBIRTH (mnożnik, linie, trofea), migawka linii, wydarzenia zegarowe, jajo dnia, zapis nowych pól."""
+
+    def test_35_odrodzenie_i_mnoznik(self):
+        S = stan()
+        bez_kulek(S)
+        NF = len(D["formy"])
+        O = D["odrodzenie"]
+        gr = byt(S, 1, 3, 0, 0)
+        lista = LM.Tabela()
+        self.assertFalse(jeden("odrodzenie", S, gr, lista), "tylko na ANCIENT")
+        ustaw(gr, forma=NF, maxForma=NF, zloto=777)
+        gr.set("warianty", LM.do_luau({}))
+        gr.get("warianty").set(3.0, "zloty")
+        przed = jeden("stawkaB", DL, gr)
+        self.assertTrue(jeden("odrodzenie", S, gr, lista))
+        ev = [z for z in LM.z_luau(lista, True) if z["t"] == "odr_start"]
+        self.assertEqual((ev[0]["linia"], ev[0]["n"]), (2, 1))
+        self.assertTrue(jeden("sterowanyPrzezSerwer", S, gr), "ceremonia: serwer prowadzi")
+        zd = krok(S, int(O["ceremonia_s"] / 0.1) + 2, 0.1)
+        self.assertTrue([z for z in zd if z["t"] == "odr_koniec" and z["linia"] == 2])
+        self.assertEqual((g(gr, "forma"), g(gr, "maxForma"), g(gr, "linia"), g(gr, "odrodzenia"), g(gr, "zloto") >= 777), (1, 1, 2, 1, True))
+        # trofea linii 1 zostają (8 stadiów, wariant) i zarabiają × 1,25
+        self.assertEqual(g(gr, "linie")[0]["maxForma"] if isinstance(g(gr, "linie"), list) else g(gr, "linie")["1"]["maxForma"], NF)
+        self.assertAlmostEqual(jeden("mnoznikOdr", DL, gr), O["x"], places=6)
+        self.assertAlmostEqual(jeden("stawkaB", DL, gr), (przed + D["formy"][0]["trofeum"]) * O["x"], places=4)
+        # wzrost × mnożnik
+        ustaw(gr, wzrost=0)
+        wolaj("dodajWzrost", S, gr, 10)
+        self.assertAlmostEqual(g(gr, "wzrost"), 10 * O["x"], places=6)
+        # mnożnik z sufitem; linie po kolei, po ostatniej znów pierwsza
+        ustaw(gr, odrodzenia=50)
+        self.assertAlmostEqual(jeden("mnoznikOdr", DL, gr), O["maks_x"], places=6)
+        self.assertEqual([jeden("liniaPo", DL, l) for l in (1, 2, 3, 4)], [2, 3, 4, 1])
+
+    def test_36_linie_kolory_i_migawka(self):
+        L4 = D["odrodzenie"]["linie"]
+        self.assertEqual([x["id"] for x in L4], ["ember", "frost", "storm", "shadow"])
+        regiony = {"cialo", "luski", "brzuch", "blona", "kolce", "zar", "zar_rdzen"}
+        self.assertIsNone(L4[0].get("paleta"), "EMBER = dzisiejsze kolory")
+        for x in L4[1:]:
+            self.assertEqual(set(x["paleta"]), regiony, x["id"])
+            self.assertTrue(all(len(v) == 6 and int(v, 16) >= 0 for v in x["paleta"].values()))
+        # bajt migawki: wariant 0–4 i linia 1–4 w jednym bajcie, tam i z powrotem
+        for nr in range(0, 5):
+            for linia in range(1, 5):
+                bajt = jeden("kodWariantu", nr, linia)
+                self.assertTrue(0 <= bajt <= 255)
+                self.assertEqual(wolaj("dekodWariantu", bajt)[:2], [nr, linia])
+
+    def test_37_wydarzenia_zegarowe(self):
+        S = stan()
+        W = D["wydarzenia"]
+        gr = byt(S, 1, 3, 0, 0)
+        bez_kulek(S)
+        zd = krok(S, int(W["deszcz"]["pierwszy_s"] / 2) + 2, 2.0)
+        start = [z for z in zd if z["t"] == "wydarzenie" and z["co"] == "deszcz" and z.get("start")]
+        self.assertEqual(len(start), 1, "deszcz po pierwszy_s")
+        E = LM.z_luau(S.get("wyd"))
+        self.assertIsNotNone(E.get("deszczDo"))
+        k = LM.z_luau(S.get("kulki"), True)
+        zywe = [i for i, v in enumerate(k) if v == 0]
+        self.assertGreater(len(zywe), 20, "kule łąki od razu żywe")
+        # kula w deszczu: wzrost × wzrost_x i złoto
+        ustaw(gr, wzrost=0, zloto=0)
+        i = zywe[0] + 1
+        pk = D["kulkiPoz"][i - 1]
+        ustaw(gr, x=pk[0], z=pk[1])
+        krok(S, 1)
+        self.assertGreaterEqual(g(gr, "zloto"), W["deszcz"]["zloto"])
+        self.assertGreater(g(gr, "wzrost"), 0)
+        zd = krok(S, int(W["deszcz"]["trwa_s"] / 2) + 2, 2.0)
+        self.assertTrue([z for z in zd if z["t"] == "wydarzenie" and z["co"] == "deszcz" and z.get("koniec")])
+        self.assertAlmostEqual(LM.z_luau(S.get("wyd"))["deszczNast"], W["deszcz"]["pierwszy_s"] + W["deszcz"]["co_s"], delta=2.1)
+        # rampage wymuszony z jednym graczem: golem wychodzi z lasu, trafienie → dzielona skrzynia
+        wolaj("dodajBossa", S)
+        wolaj("wymusWydarzenie", S, "rampage")
+        zd = krok(S, 1)
+        st = [z for z in zd if z["t"] == "wydarzenie" and z["co"] == "rampage" and z.get("start")]
+        self.assertTrue(st)
+        boss = jeden("bytPoId", S, S.get("boss"))
+        self.assertFalse(jeden("wLesie", DL, g(boss, "x"), g(boss, "z")), "golem na łące")
+        self.assertEqual(g(boss, "strefa"), 3)
+        zl = g(gr, "zloto")
+        lista = LM.Tabela()
+        wolaj("ranBossa", S, boss, gr, g(boss, "hp") + 1, lista)
+        sk = [z for z in LM.z_luau(lista, True) if z["t"] == "rampage_skrzynia"]
+        self.assertTrue(sk and sk[0]["ile"] == 1)
+        dzial = int(D["boss"]["stopnie_skrzynia"][st[0]["stopien"] - 1] * W["rampage"]["pula_x"])
+        self.assertEqual(g(gr, "zloto") - zl, dzial)
+        zd = krok(S, 2)
+        self.assertTrue([z for z in zd if z["t"] == "wydarzenie" and z["co"] == "rampage" and z.get("koniec")])
+        self.assertEqual(g(boss, "strefa"), 2)
+
+    def test_38_jajo_dnia(self):
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 4, 0, 0)
+        ustaw(gr, maxForma=4)
+        dzien = 20000 * 86400 + 3600
+        self.assertEqual(jeden("dzienUTC", dzien), 20000)
+        self.assertEqual(jeden("dzienUTC", dzien + 86400 - 3601 - 1), 20000)
+        r = wolaj("jajoDnia", S, gr, dzien, 0.1)
+        self.assertEqual(r[:2], [False, "legowisko"], "tylko w legowisku")
+        lx, lz = wolaj("legowiskoPoz", DL, 1)[:2]
+        ustaw(gr, x=lx, z=lz)
+        r = wolaj("jajoDnia", S, gr, dzien, 0.1)
+        self.assertTrue(r[0])
+        self.assertEqual((r[1], r[2], r[3]), ("zloty", True, 4))
+        self.assertEqual(LM.z_luau(gr.get("warianty").get(4.0)), "zloty")
+        self.assertEqual(wolaj("jajoDnia", S, gr, dzien + 3000, 0.99)[:2], [False, "jutro"], "raz na dzień UTC")
+        self.assertTrue(jeden("jajoDostepne", DL, gr, dzien + 86400))
+        r = wolaj("jajoDnia", S, gr, dzien + 86400, 0.99)
+        self.assertEqual((r[0], r[1], r[2]), (True, "tecza", True))
+        r = wolaj("jajoDnia", S, gr, dzien + 2 * 86400, 0.0)
+        self.assertEqual((r[1], r[2]), ("zloty", False), "gorszy wariant nie zastępuje")
+
+    def test_39_zapis_odrodzen(self):
+        S = stan()
+        bez_kulek(S)
+        NF = len(D["formy"])
+        gr = byt(S, 1, NF, 0, 0)
+        ustaw(gr, maxForma=NF, dzienJaja=20001)
+        lista = LM.Tabela()
+        self.assertTrue(jeden("odrodzenie", S, gr, lista))
+        krok(S, int(D["odrodzenie"]["ceremonia_s"] / 0.1) + 2, 0.1)
+        ustaw(gr, maxForma=3)
+        P = jeden("doProfilu", DL, gr, 1000)
+        surowe = json.loads(json.dumps(LM.z_luau(P)))
+        self.assertEqual((surowe["odrodzenia"], surowe["linia"], surowe["dzienJaja"]), (1, 2, 20001))
+        self.assertEqual(surowe["linie"]["1"]["maxForma"], NF)
+        p2 = jeden("profilZ", DL, lu(surowe))
+        b2 = byt(S, 2, 1, 50, 50)
+        wolaj("zProfilu", DL, b2, p2, 1000)
+        self.assertEqual((g(b2, "odrodzenia"), g(b2, "linia"), g(b2, "maxForma"), g(b2, "dzienJaja")), (1, 2, 3, 20001))
+        self.assertAlmostEqual(jeden("stawkaB", DL, b2), jeden("stawkaB", DL, gr), places=4)
+        # złe dane: liczby przycięte, obecna linia nie wraca jako zarchiwizowana, nieznany wariant → pusty
+        zle = dict(surowe, odrodzenia=-5, linia=99, dzienJaja="x")
+        zle["linie"] = {"2": {"maxForma": 99, "warianty": ["hack"], "trofea": [9]}}
+        p3 = LM.z_luau(jeden("profilZ", DL, lu(zle)))
+        self.assertEqual((p3["odrodzenia"], p3["linia"], p3["dzienJaja"]), (0, 4, -1))
+        self.assertEqual(p3["linie"]["2"]["maxForma"], NF)
+        self.assertEqual(p3["linie"]["2"]["warianty"][0], "")
+        self.assertEqual(p3["linie"]["2"]["trofea"][0], len(D["legowisko"]["poziomy_x"]))
+
+
 def T_KL(KL, n, *a):
     r = IT.wywolaj(KL.get(n), [lu(x) for x in a])
     return r[0] if r else None

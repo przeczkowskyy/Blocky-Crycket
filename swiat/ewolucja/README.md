@@ -294,6 +294,45 @@ min(szer./844, wys./390) w granicach 0,6–1,8):
   `30_odslona`, `31_ogien_rig`, `32_inferno_przypalenie`, `33_telefon_odslona`, `34_telefon_panel`, `06`/`17` telefon
   (`_tablet` — iPad); film `%TEMP%\ewolucja_demo\ewolucja_interfejs.mp4` (35 s, `demo_wideo.py --interfejs`).
 
+## Powody, by wrócić (odrodzenie1, 23.11.2026)
+Ustawienia: `ustawienia.json → odrodzenie`, `wydarzenia`, `jajo_dnia`; logika w `LogikaEwolucji` (czyste funkcje,
+testy offline), serwer i klient tylko wołają.
+- **REBIRTH** na ANCIENT DRAGON (przycisk EVOLVE zmienia się w REBIRTH!): ceremonia 3,2 s (smok nieruchomy i nietykalny,
+  gaśnie w rosnącym jaju koloru nowej linii, nakładka „REBIRTH n / <LINIA> LINE”), potem pisklę wykluwa się z jaja nowej
+  linii. Złoto, ulepszenia i legowisko zostają. Mnożnik wzrostu i złota legowiska ×1,25 za odrodzenie (najwyżej ×3,0 —
+  od 5. odrodzenia). Linie po kolei: EMBER (dzisiejsze kolory) → FROST (lodowe błękity, biała poświata) → STORM (fiolet,
+  elektryczna żółć) → SHADOW (czerń, karmazyn) → znów EMBER z zachowanym postępem. Te same modele, przemalowane przez
+  regiony (`SmokiKlienta.barwLinii`); linia jedzie w migawce w bajcie wariantu (wariant + 8 × (linia − 1)).
+- **Trofea linii**: każda linia ma swoje 8 trofeów (poziomy, warianty); trofea poprzednich linii zostają w legowisku
+  i zarabiają (× mnożnik). Panel legowiska: przyciski linii EMBER / FROST / STORM / SHADOW nad kartami (inne linie —
+  podgląd i dochód, zakup poziomów tylko w obecnej). W HUD na szczycie drabiny: sylwetka ANCIENT następnej linii
+  w pierścieniu jej koloru i pigułka „R<n> x<mnożnik>” (przed pierwszym odrodzeniem nazwa następnej linii).
+- **Zapis**: `odrodzenia`, `linia`, `linie` (postęp pozostałych linii: maxForma, warianty, poziomy) i `dzienJaja` w tym
+  samym profilu (walidacja i migracja w `L.profilZ`; w Studio magazyn w pamięci).
+- **DRAGON RAIN** co 20 min (pierwszy po 20 min od startu serwera) na 2 min: wszystkie kule łąki od razu żywe i złote
+  (u klienta Neon, nowe spadają z nieba złotą kroplą), wracają po 2,5 s, wzrost ×3 i +2 złota za kulę.
+- **GOLEM RAMPAGE** co 45 min na 3 min: KNIGHT GOLEM najwyższego stopnia osiągniętego na serwerze (stopień serwera albo
+  trofea bossa gracza + 1) wychodzi bramą na łąkę, ściga graczy poza legowiskami (zasięg × 1,6); każdy, kto go trafił,
+  dostaje równą część skrzyni × 2 (z jednym graczem — całą). Koniec po czasie albo po pokonaniu, golem wraca do lasu.
+  Pigułka pod złotem: odliczanie do najbliższego wydarzenia albo czas trwającego; ogłoszenie banerem i dymkiem.
+- **DAILY EGG**: raz na dzień UTC jajo w gnieździe własnego legowiska (świeci); przycisk DAILY EGG w legowisku wykluwa
+  darmowe losowanie wariantu dla trofeum obecnego stadium (GOLD 70, CRYSTAL 22, RUBY 7, RAINBOW 1; zostaje tylko lepszy).
+- **Poprawki**: liczby i napisy nad stworkami w warstwie pod całym HUD (panel i odsłona zawsze na wierzchu); własny smok
+  w świecie schowany, gdy odsłona pokazuje portret; drabina większa (węzły 27 pt, obecne 38 pt, odstęp 30 pt); P05
+  (druga ewolucja) i P15 (mini-boss) bez przypadku (pewna ścieżka z ponowieniem, gracz zwrócony do bossa, odnowa
+  zerowana); pigułki i dymek przesunięte pod pigułkę wydarzeń.
+- **Tempo** (`tempo.py`, teraz z owcami; 6 prób): przed strojeniem pierwszy ANCIENT tylko w 3/6 prób do 22 min
+  (18:23–20:55), forma 5 9:07. Zmiana: `potrzeba` FIRE DRAKE 480 → 340, WAR DRAGON 4200 → 3400, ELDER DRAGON 13800 → 11500.
+  Po strojeniu (6 prób, 24 min): forma 3 0:59, forma 4 3:33, forma 5 8:40, forma 6 11:21, forma 7 14:56, **pierwszy
+  ANCIENT, czyli pierwsze odrodzenie: 19:31** (11:41–23:47, 6/6) — w celu 15–20 min; nadal poza celami: forma 5 (cel 6–7
+  min) i najdłuższa przerwa bez nowości 3:48 (cel ≤ 2:30; stadium 4 w lesie trwa ok. 5 min) — do strojenia z ludźmi.
+- Wyniki: testy offline 39 (38 OK + 1 pominięty), nowe `test_35`–`test_39` (odrodzenie i mnożnik, kolory linii i bajt
+  migawki, wydarzenia zegarowe z rampage jednego gracza, jajo dnia po dniu UTC, zapis nowych pól); Play P01–P47 (P42
+  REBIRTH z ceremonią i linią FROST, P43 DRAGON RAIN, P44 GOLEM RAMPAGE z jednym graczem, P45 jajo dnia, P46 wyjście
+  i powrót, P47 legowisko z dwiema liniami), telefon A06 8/8, iPad 8/8; zrzuty `35_odrodzenie`, `36_frost`,
+  `37_deszcz`, `38_rampage`, `39_legowisko_linie`, `40_jajo_dnia`; film `%TEMP%\ewolucja_demo\ewolucja_odrodzenie.mp4`
+  (39 s, `demo_wideo.py --odrodzenie`). Próby: hak `boty_cisza` (boty bez ciosów na czas pomiarów HUD i poślizgu).
+
 ## Pomiar prób z graczami (D-128, 22.11.2026)
 - **AnalyticsService** (tylko serwer opublikowanej gry; w Studio wywołania pomijamy):
   - lejek startu: Spawned → FirstOrb → FirstEvolve → HoardCollected → FirstUpgrade;

@@ -36,6 +36,16 @@ class Swiat:
         self.D, self.los, self.czas = D, los, 0.0
         self.byty, self.nast = [], 1
         self.kulki = [0.0] * len(D["kulkiPoz"])
+        # owce (swiat1): stadka na łące jako zdobycz dotykiem (bez ucieczki — sprawny gracz i tak dogania: 16+ st./s > 13)
+        Ow = (D.get("swiat") or {}).get("owce")
+        self.owce = []
+        if Ow:
+            for sx, sz in Ow["stada"]:
+                for k in range(Ow["na_stado"]):
+                    a = k * 2.1
+                    self.owce.append({"x": sx + math.cos(a) * 4, "z": sz + math.sin(a) * 4, "do": 0.0})
+        self.owce_wzrost = Ow["wzrost"] if Ow else 0
+        self.owce_powrot = Ow["powrot_s"] if Ow else 0
         self.strefy = []
         self.siatka = {}
         for i, p in enumerate(D["kulkiPoz"]):
@@ -730,6 +740,18 @@ def gracz_mysl(S, g, styl):
         w = (J["wielka"] if p[2] == 3 else (J["duza"] if p[2] == 2 else J["mala"])) / (d + 6)
         if w > bw:
             best, bw = ("kulka", p), w
+    # owce: wartość wzrostu / odległość; dotyk zjada
+    for o in S.owce:
+        if o["do"] <= S.czas:
+            d = dlug(o["x"] - g["x"], o["z"] - g["z"])
+            if d < r + 1.6:
+                S.wzrost(g, S.owce_wzrost * S.apetyt(g))
+                o["do"] = S.czas + S.owce_powrot
+                continue
+            if d < 34:
+                w = S.owce_wzrost / (d + 6)
+                if w > bw:
+                    best, bw = ("owca", (o["x"], o["z"])), w
     # mini-boss: sprawny gracz walczy od formy 4 (gryzie, po ugryzieniu bossa odskakuje zrywem)
     boss = getattr(S, "boss", None)
     if styl == "sprawny" and boss and boss["martwy"] is None and g["forma"] >= 3 + S.boss_st:

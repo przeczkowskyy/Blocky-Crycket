@@ -18,6 +18,8 @@ function SW.nowe(c)
 	self.c = c
 	self.D = c.D
 	self.kule = {}
+	self.krople = {}
+	self.zloteKule = 0
 	self.owce = {}
 	self.blisko = {}
 	self.doBliskich = 0
@@ -142,8 +144,67 @@ function SW:kula(i: number, zywa: boolean): boolean
 		for j, p in k.czesci do
 			p.Transparency = if zywa then k.przez[j] else 1
 		end
+		if zywa and self.deszczTeraz and k.lakowa then
+			self:kropla(k.baza.Position)
+		end
 	end
 	return true
+end
+
+-- odrodzenie1: DRAGON RAIN — kule łąki złote (Neon), nowa kula spada z nieba złotą kroplą
+function SW:deszcz(tak: boolean)
+	if self.deszczTeraz == tak then
+		return
+	end
+	self.deszczTeraz = tak
+	local L, D = self.c.L, self.c.D
+	local zlote = 0
+	for i, k in self.kule do
+		local p = D.kulkiPoz[i]
+		k.lakowa = p ~= nil and not L.wLesie(D, p[1], p[2]) and not L.naWyspie(D, p[1], p[2])
+		if k.lakowa then
+			k.kolory = k.kolory or {}
+			for j, c in k.czesci do
+				if tak then
+					k.kolory[j] = k.kolory[j] or { c.Color, c.Material }
+					c.Color = Color3.fromRGB(255, 201, 52)
+					c.Material = Enum.Material.Neon
+				elseif k.kolory[j] then
+					c.Color, c.Material = k.kolory[j][1], k.kolory[j][2]
+				end
+			end
+			zlote += 1
+		end
+	end
+	self.zloteKule = if tak then zlote else 0
+end
+
+function SW:kropla(cel: Vector3)
+	if #self.krople > 24 then
+		return
+	end
+	local p = Instance.new("Part")
+	p.Shape = Enum.PartType.Ball
+	p.Size = Vector3.new(1.1, 1.1, 1.1)
+	p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+	p.Material = Enum.Material.Neon
+	p.Color = Color3.fromRGB(255, 214, 90)
+	p.Position = cel + Vector3.new(0, 30, 0)
+	p.Parent = self.c.lokalne
+	table.insert(self.krople, { p = p, t = 0, cel = cel })
+end
+
+function SW:krokKropli(dt: number)
+	for i = #self.krople, 1, -1 do
+		local q = self.krople[i]
+		q.t += dt
+		local f = math.min(1, q.t / 0.55)
+		q.p.Position = q.cel + Vector3.new(0, 30 * (1 - f * f), 0)
+		if f >= 1 then
+			q.p:Destroy()
+			table.remove(self.krople, i)
+		end
+	end
 end
 
 -- unoszenie i obrót kul blisko gracza (lista bliskich odświeżana co 0,5 s)
@@ -284,6 +345,7 @@ function SW:krok(dt: number, t: number, ja)
 	self:krokNastroju(dt, ja)
 	self:krokKul(dt, t, ja)
 	self:krokOwiec(dt, ja)
+	self:krokKropli(dt)
 end
 
 return SW

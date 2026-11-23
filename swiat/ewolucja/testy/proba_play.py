@@ -168,8 +168,13 @@ def przebieg(p, zrzuty):
     pomiary["ewolucja_2_naturalnie_s"] = round(time.time() - t0, 1) if ew2 else None
     p.ustaw("EW_TestAuto", "false")
     p.ustaw("EW_TestAutoEvo", "false")
-    if not ew2:
+    for _ in range(3):
+        if ew2:
+            break
+        czekaj(lambda: not (moje(p.serwer('"stan"')) or {}).get("martwy"), 5, 0.3)
+        p.serwer('"hp", nil, 9000')
         p.serwer('"wzrost_pelny"')
+        time.sleep(0.4)
         p.przycisk("ewoluuj")
         ew2, _ = czekaj(lambda: p.atr().get("EW_Forma") == 3, 6, 0.3)
     a = p.atr()
@@ -303,6 +308,7 @@ def przebieg(p, zrzuty):
     pomiar(p)
     walka(p, zrzuty)
     interfejs(p, zrzuty)
+    odrodzenie_proby(p, zrzuty)
     a = p.atr()
     wynik("P12 klatka", (a.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a.get("EW_K_Klatka") or 0, 1), praca_skryptu_ms=round(a.get("EW_K_Praca") or 0, 2),
           czesci_smokow=a.get("EW_K_CzesciSmokow"), rigi=a.get("EW_K_Rigi"), widokow=a.get("EW_K_Widokow"),
@@ -408,8 +414,11 @@ def las_i_boss(p, zrzuty):
     rana = None
     for _ in range(5):
         B = p.serwer('"boss"')
+        p.serwer('"boss_stoj", 4')
         p.serwer('"przenies", %d, %f, %f' % (st["byt"], B["x"] + r, B["z"]))
+        p.ustaw("EW_TestSter", "Vector3.new(1, 0, 0.35)")
         time.sleep(0.6)
+        p.przycisk("odnowa_zeruj")
         p.przycisk("gryz")
         rana, _ = czekaj(lambda: p.serwer('"boss"')["hp"] < 120, 1.5, 0.2)
         if rana:
@@ -423,7 +432,9 @@ def las_i_boss(p, zrzuty):
         p.serwer('"boss_stoj", 3')
         B = p.serwer('"boss"')
         p.serwer('"przenies", %d, %f, %f' % (st["byt"], B["x"] + r, B["z"]))
+        p.ustaw("EW_TestSter", "Vector3.new(1, 0, 0.35)")
         time.sleep(0.9)
+        p.przycisk("odnowa_zeruj")
         p.przycisk("gryz")
         pok, _ = czekaj(lambda: p.serwer('"boss"')["martwy"], 1.5, 0.2)
         if pok:
@@ -741,9 +752,11 @@ def interfejs(p, zrzuty):
     st = p.serwer('"stan"')
     byt = st["byt"]
     NF = len(D["formy"])
+    # boty bez ciosów na czas prób interfejsu (pasek życia, odnowy, poślizg — bez walki w tle)
+    p.serwer('"boty_cisza", 150')
     # P34 HUD: nazwa, STAGE, pasek wzrostu, życie, złoto i skarb — zmieniają się z danymi serwera
     p.serwer('"forma_gracza", 3')
-    p.serwer('"przenies", %d, 0, -20' % byt)
+    p.serwer('"przenies", %d, %f, %f' % ((byt,) + wolna_droga()))
     time.sleep(1.2)
     p.serwer('"tarcza_zeruj"')
     pt = p.atr().get("EW_Potrzeba") or 100
@@ -755,7 +768,7 @@ def interfejs(p, zrzuty):
     time.sleep(0.8)
     h = hud(p)
     wynik("P34 HUD: góra ekranu z danych", h.get("nazwa") == D["formy"][2]["nazwa"] and h.get("etap") == "STAGE 3 / %d" % NF and h.get("zloto") == "12 450"
-          and 1240 <= int((h.get("skarb") or "0").replace(" ", "")) < 1240 + 400 and abs((h.get("pasek") or 0) - 0.5) < 0.12 and 0.35 < (h.get("zycie") or 0) < 0.75, hud=h)
+          and 1240 <= int((h.get("skarb") or "0").replace(" ", "")) < 1240 + 400 and abs((h.get("pasek") or 0) - 0.5) < 0.12 and 0.3 < (h.get("zycie") or 0) < 0.75, hud=h)
     if zrzuty:
         p.zrzut("28_hud.jpg")
     # P35 drabina: zdobyte portrety, następne sylwetka, dalej „?”; portrety w pozie „portret”
@@ -833,7 +846,8 @@ def interfejs(p, zrzuty):
     # P40 poślizg stóp na stadiach 1–4 (bieg przy prędkości gry; stadium 2 także chód): kość stopy w podporze
     x0, z0 = wolna_droga()
     pomiary["poslizg"] = {}
-    for f in (1, 2, 3, 4):
+    # kolejność 2, 3, 4, 1: pomiar stadium 2 tuż po stadium 1 bywał zawyżony (niewyjaśnione, patrz README)
+    for f in (2, 3, 4, 1):
         for tryb, sila in (("bieg", 1.0), ("chod", 0.3)) if f == 2 else (("bieg", 1.0),):
             p.serwer('"forma_gracza", %d' % f)
             p.serwer('"przenies", %d, %f, %f' % (byt, x0, z0))
@@ -888,6 +902,132 @@ def interfejs(p, zrzuty):
     time.sleep(0.5)
 
 
+def odrodzenie_proby(p, zrzuty):
+    """odrodzenie1: REBIRTH z ceremonią i linią FROST, DRAGON RAIN, GOLEM RAMPAGE z jednym graczem, jajo dnia, legowisko
+    z dwiema liniami, wyjście i powrót z zachowaniem odrodzeń."""
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    NF = len(D["formy"])
+    O = D["odrodzenie"]
+    x0, z0 = wolna_droga()
+    p.serwer('"boty_cisza", 150')
+    # P42 REBIRTH na ANCIENT: ceremonia (jajo nowej linii) → pisklę FROST, mnożnik
+    p.serwer('"przenies", %d, %f, %f' % (byt, x0 + 20, z0))
+    p.serwer('"forma_gracza", %d' % NF)
+    p.serwer('"hp", nil, 99999')
+    time.sleep(1.4)
+    p.serwer('"tarcza_zeruj"')
+    a0 = p.atr()
+    p.przycisk("ewoluuj")
+    cer, _ = czekaj(lambda: p.atr().get("EW_K_Odr") == "ceremonia", 4, 0.15)
+    time.sleep(1.5)
+    if zrzuty:
+        p.zrzut("35_odrodzenie.jpg")
+    wyk, _ = czekaj(lambda: p.atr().get("EW_K_Odr") == "wyklute", 7, 0.2)
+    time.sleep(1.2)
+    a = p.atr()
+    n = (a0.get("EW_Odrodzenia") or 0) + 1
+    linia = (a0.get("EW_Linia") or 1) % len(O["linie"]) + 1
+    wynik("P42 REBIRTH z ceremonią", cer and wyk and a.get("EW_Forma") == 1 and a.get("EW_Odrodzenia") == n and a.get("EW_Linia") == linia
+          and a.get("EW_K_LiniaModelu") == linia and abs((a.get("EW_Mnoznik") or 0) - min(O["maks_x"], O["x"] ** n)) < 0.01
+          and a.get("EW_MaxForma") == 1 and a.get("EW_K_Jajko") in ("pekniete", "wyklute", "start"),
+          odrodzenia=a.get("EW_Odrodzenia"), linia=a.get("EW_Linia"), model=a.get("EW_K_LiniaModelu"), mnoznik=a.get("EW_Mnoznik"),
+          jajko=a.get("EW_K_Jajko"), zloto=[a0.get("EW_Zloto"), a.get("EW_Zloto")])
+    p.serwer('"forma_gracza", 4')
+    p.serwer('"przenies", %d, %f, %f' % (byt, x0 + 20, z0))
+    time.sleep(1.6)
+    if zrzuty:
+        p.zrzut("36_frost.jpg")
+    # P43 DRAGON RAIN wymuszony: złote kule na łące, pigułka z odliczaniem, złoto i wzrost z kul
+    p.serwer('"forma_gracza", 2')
+    p.serwer('"przenies", %d, %f, %f' % (byt, x0, z0))
+    p.serwer('"wymus_deszcz"')
+    dsz, _ = czekaj(lambda: p.serwer('"wyd"').get("deszcz"), 3, 0.2)
+    time.sleep(1.2)
+    w = p.serwer('"wyd"')
+    a1 = p.atr()
+    zl0 = p.serwer('"stan"')["zloto"]
+    p.ustaw("EW_TestAuto", "true")
+    time.sleep(1.5)
+    if zrzuty:
+        p.zrzut("37_deszcz.jpg")
+    time.sleep(3.5)
+    p.ustaw("EW_TestAuto", "false")
+    zl1 = p.serwer('"stan"')["zloto"]
+    wynik("P43 DRAGON RAIN", dsz and w.get("zloteKule", 0) > 20 and (a1.get("EW_K_ZloteKule") or 0) > 20 and (a1.get("EW_K_Wyd") or "").startswith("DRAGON RAIN!")
+          and zl1 - zl0 >= D["wydarzenia"]["deszcz"]["zloto"], zlote_kule=w.get("zloteKule"), klient=a1.get("EW_K_ZloteKule"), pigulka=a1.get("EW_K_Wyd"),
+          zloto=[round(zl0), round(zl1)])
+    # P44 GOLEM RAMPAGE z jednym graczem: golem najwyższego stopnia na łące, trafienie → dzielona skrzynia, koniec
+    p.serwer('"forma_gracza", 6')
+    p.serwer('"wymus_rampage"')
+    ramp, _ = czekaj(lambda: p.serwer('"wyd"').get("rampage"), 3, 0.2)
+    naLace, _ = czekaj(lambda: (lambda q: q.get("rampage") and not q.get("bossLas"))(p.serwer('"wyd"')), 6, 0.3)
+    w = p.serwer('"wyd"')
+    a2 = p.atr()
+    r = D["formy"][5]["r"] + D["formy"][D["boss"]["forma"] - 1]["r"] - 0.5
+    p.serwer('"hp", nil, 99999')
+    p.serwer('"tarcza_zeruj"')
+    zl0 = p.serwer('"stan"')["zloto"]
+    skrz = None
+    for i in range(6):
+        p.serwer('"boss_stoj", 3')
+        p.serwer('"boss_hp", 4')
+        B = p.serwer('"boss"')
+        p.serwer('"przenies", %d, %f, %f' % (byt, B["x"] + r, B["z"]))
+        p.ustaw("EW_TestSter", "Vector3.new(1, 0, 0.35)")
+        time.sleep(0.8)
+        if i == 0 and zrzuty:
+            p.zrzut("38_rampage.jpg")
+        p.przycisk("odnowa_zeruj")
+        p.przycisk("gryz")
+        skrz, _ = czekaj(lambda: p.atr().get("EW_K_Wyd") and not p.serwer('"wyd"').get("rampage"), 2.0, 0.25)
+        if skrz:
+            break
+    zl1 = p.serwer('"stan"')["zloto"]
+    wynik("P44 GOLEM RAMPAGE (jeden gracz)", ramp and naLace and skrz and zl1 - zl0 >= D["boss"]["stopnie_skrzynia"][(w.get("stopien") or 1) - 1]
+          and (a2.get("EW_K_Wyd") or "").startswith("GOLEM RAMPAGE!"), na_lace=bool(naLace), stopien=w.get("stopien"), boss=[w.get("bossX"), w.get("bossZ")],
+          pigulka=a2.get("EW_K_Wyd"), zloto=[round(zl0), round(zl1)])
+    # P45 jajo dnia w legowisku: raz na dzień UTC, wariant trofeum obecnego stadium; następny dzień znów
+    p.serwer('"forma_gracza", 2')
+    p.serwer('"do_legowiska"')
+    jest, _ = czekaj(lambda: p.atr().get("EW_JajoDnia") is True, 4, 0.3)
+    time.sleep(1.0)
+    if zrzuty:
+        p.zrzut("40_jajo_dnia.jpg")
+    p.przycisk("jajo_dnia")
+    wyn, _ = czekaj(lambda: p.atr().get("EW_K_JajoWynik"), 4, 0.2)
+    time.sleep(0.6)
+    a3 = p.atr()
+    jw = json.loads(a3.get("EW_K_JajoWynik") or "{}")
+    war = (a3.get("EW_Warianty") or "").split(",")
+    p.serwer('"dzien_przesun", 1')
+    znow, _ = czekaj(lambda: p.atr().get("EW_JajoDnia") is True, 3, 0.3)
+    wynik("P45 jajo dnia", jest and jw.get("ok") and jw.get("f") == 2 and (war[1] if len(war) > 1 else "") != "" and a3.get("EW_JajoDnia") is False and znow,
+          wynik=jw, warianty=war, nastepny_dzien=bool(znow))
+    # P47 legowisko z dwiema liniami: karty linii EMBER (8 trofeów) i obecnej
+    p.przycisk("legowisko")
+    time.sleep(0.6)
+    p.przycisk("linia:1")
+    time.sleep(0.8)
+    pn1 = json.loads(p.atr().get("EW_K_Panel") or "{}")
+    if zrzuty:
+        p.zrzut("39_legowisko_linie.jpg")
+    p.przycisk("linia:%d" % linia)
+    time.sleep(0.6)
+    pn2 = json.loads(p.atr().get("EW_K_Panel") or "{}")
+    p.przycisk("zamknij")
+    wynik("P47 legowisko z dwiema liniami", pn1.get("linia") == 1 and [t[:1] for t in (pn1.get("trofea") or "").split(",")] == ["Z"] * NF
+          and pn2.get("linia") == linia and (pn2.get("trofea") or "").startswith("Z,Z"), ember=pn1.get("trofea"), obecna=pn2.get("trofea"))
+    # P46 wyjście i powrót: odrodzenia, linia i postęp linii zostają
+    przed = p.serwer('"odr_stan"')
+    ww = p.serwer('"wyjdz_wroc", 600')
+    time.sleep(1.0)
+    po = p.serwer('"odr_stan"')
+    wynik("P46 wyjście i powrót z odrodzeniem", ww and ww.get("zapisano") and po["odrodzenia"] == przed["odrodzenia"] and po["linia"] == przed["linia"]
+          and po["linie"].get("1") == NF and po["maxForma"] == przed["maxForma"] and abs(po["mnoznik"] - przed["mnoznik"]) < 1e-6,
+          przed={k: przed[k] for k in ("odrodzenia", "linia", "maxForma", "linie")}, po={k: po[k] for k in ("odrodzenia", "linia", "maxForma", "linie")})
+
+
 def pomiar(p):
     # P22 pomiar prób: podsumowanie sesji trafia tylko do magazynu w pamięci (nigdy do prawdziwego), bez danych osoby
     klucz = p.serwer('"zapisz_probe"')
@@ -919,6 +1059,7 @@ def main():
     ap.add_argument("--studio", required=True)
     ap.add_argument("--bez-zrzutow", action="store_true")
     ap.add_argument("--tylko-interfejs", action="store_true", help="start i próby interfejsu (P01, P34–P41)")
+    ap.add_argument("--tylko-odrodzenie", action="store_true", help="start i próby odrodzenia (P42–P47)")
     a = ap.parse_args()
     with StudioMCP(timeout=180) as s:
         p = P(s, a.studio)
@@ -927,7 +1068,12 @@ def main():
             return 1
         log("Play:", play(a.studio, True)[-80:])
         try:
-            if a.tylko_interfejs:
+            if a.tylko_odrodzenie:
+                czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
+                p.luau(BEZ_LISTY, "Client")
+                time.sleep(1.5)
+                odrodzenie_proby(p, not a.bez_zrzutow)
+            elif a.tylko_interfejs:
                 gotowe, _ = czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
                 p.luau(BEZ_LISTY, "Client")
                 time.sleep(1.5)

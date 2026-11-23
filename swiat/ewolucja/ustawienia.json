@@ -21,6 +21,20 @@
   "nieznane": "???",
   "lv": "Lv %d",
   "odslona_s": 3.4,
+  "odrodz": "REBIRTH!",
+  "odrodzenie": "REBIRTH %d",
+  "odrodzenie_opis": "%s LINE  x%.2f growth & lair gold",
+  "linia_nast": "NEXT LINE",
+  "deszcz": "DRAGON RAIN",
+  "rampage": "GOLEM RAMPAGE",
+  "za": "%s in %s",
+  "trwa": "%s! %s",
+  "deszcz_ogl": "DRAGON RAIN! Golden orbs on the meadow!",
+  "rampage_ogl": "GOLEM RAMPAGE! The KNIGHT GOLEM is in the meadow!",
+  "rampage_skrzynia": "+%d GOLD - shared chest!",
+  "jajo_dnia": "DAILY EGG",
+  "jajo_wynik": "%s %s!",
+  "jajo_bez": "%s - %s already better",
   "kolory": {"tusz": "1B1424", "papier": "FFF6E0", "zloto": "FFC83D", "ty": "FFE14D", "zjesz": "5BFF7A", "zje_cie": "FF4040", "kulka_mala": "7FE9FF", "kulka_duza": "FF9A3D"},
   "gryz": "BITE",
   "zryw": "DASH",
@@ -236,10 +250,10 @@
   {"nazwa": "HATCHLING", "chod": "skok", "r": 1.6, "v": 1.0, "potrzeba": 32, "trofeum": 1, "um": {"typ": "wsysanie", "nazwa": "NIBBLE", "r": 9, "odnowa_s": 6, "efekt": "pierscien"}, "smok": {"glowa": 1.75, "szyja": 1, "nogi": 0.7, "dlugosc": 0.7, "grubosc": 0.9, "ogon": 3, "skrzydla": 0.12, "kolce": 0, "rogi": 0.0, "kolor": "8FD86B", "brzuch": "E8F2B0", "blona": "FFB347", "rogi_kolor": "F2EBDD", "oczy": 1.6, "pysk": 0.45, "skorupka": true}, "podskok": 0.3, "pochyl": 0.1, "krok": 1.25},
   {"nazwa": "WHELP", "chod": "skok", "r": 2.2, "v": 1.0, "potrzeba": 70, "trofeum": 2, "um": {"typ": "ogluszenie", "nazwa": "TAIL WHIP", "r": 8, "s": 1.0, "odnowa_s": 6, "efekt": "fala"}, "smok": {"glowa": 1.5, "szyja": 1, "nogi": 0.85, "dlugosc": 0.9, "grubosc": 1.0, "ogon": 4, "skrzydla": 0.28, "kolce": 3, "rogi": 0.45, "kolor": "4FB89A", "brzuch": "D9F2D0", "blona": "FFD24D", "rogi_kolor": "F2EBDD", "oczy": 1.35, "pysk": 0.65}, "podskok": 0.24, "pochyl": 0.11, "krok": 1.2},
   {"nazwa": "DRAKE", "chod": "klus", "r": 3.0, "v": 0.98, "potrzeba": 170, "trofeum": 4, "um": {"typ": "jezyk", "nazwa": "EMBER SPIT", "r": 14, "odnowa_s": 6, "efekt": "ogien_strzal"}, "smok": {"glowa": 1.15, "szyja": 2, "nogi": 0.95, "dlugosc": 1.0, "grubosc": 1.0, "ogon": 5, "skrzydla": 0.75, "kolce": 4, "rogi": 0.5, "kolor": "4F8FD8", "brzuch": "D0E4FF", "blona": "FF7A59", "rogi_kolor": "F2EBDD"}, "podskok": 0.12, "pochyl": 0.13, "krok": 1.3},
-  {"nazwa": "FIRE DRAKE", "chod": "klus", "r": 4.0, "v": 0.95, "potrzeba": 480, "trofeum": 7, "um": {"typ": "podmuch", "nazwa": "WING GUST", "r": 13, "sila": 14, "s": 0.5, "odnowa_s": 7, "efekt": "podmuch"}, "smok": {"glowa": 1.1, "szyja": 2, "nogi": 1.0, "dlugosc": 1.05, "grubosc": 1.05, "ogon": 5, "skrzydla": 0.85, "kolce": 6, "rogi": 0.6, "kolor": "E0553A", "brzuch": "FFD08A", "blona": "FFD24D", "rogi_kolor": "2A1A1A", "plomien": true, "zar": true}, "podskok": 0.11, "pochyl": 0.14, "krok": 1.25},
+  {"nazwa": "FIRE DRAKE", "chod": "klus", "r": 4.0, "v": 0.95, "potrzeba": 340, "trofeum": 7, "um": {"typ": "podmuch", "nazwa": "WING GUST", "r": 13, "sila": 14, "s": 0.5, "odnowa_s": 7, "efekt": "podmuch"}, "smok": {"glowa": 1.1, "szyja": 2, "nogi": 1.0, "dlugosc": 1.05, "grubosc": 1.05, "ogon": 5, "skrzydla": 0.85, "kolce": 6, "rogi": 0.6, "kolor": "E0553A", "brzuch": "FFD08A", "blona": "FFD24D", "rogi_kolor": "2A1A1A", "plomien": true, "zar": true}, "podskok": 0.11, "pochyl": 0.14, "krok": 1.25},
   {"nazwa": "DRAGON", "chod": "klus", "r": 5.2, "v": 0.93, "potrzeba": 1000, "trofeum": 12, "um": {"typ": "oddech", "nazwa": "FIRE BREATH", "r": 16, "kat_st": 70, "odnowa_s": 5, "efekt": "ogien"}, "smok": {"glowa": 1.05, "szyja": 2, "nogi": 1.05, "dlugosc": 1.15, "grubosc": 1.1, "ogon": 6, "skrzydla": 1.2, "kolce": 6, "rogi": 0.7, "kolor": "8A5AD8", "brzuch": "E6D0FF", "blona": "5BE8C0", "rogi_kolor": "F2EBDD"}, "podskok": 0.1, "pochyl": 0.13, "krok": 1.15},
-  {"nazwa": "WAR DRAGON", "chod": "klus", "r": 6.8, "v": 0.9, "potrzeba": 4200, "trofeum": 20, "um": {"typ": "ogluszenie", "nazwa": "ROAR", "r": 16, "s": 1.4, "odnowa_s": 8, "efekt": "ryk"}, "smok": {"glowa": 1.0, "szyja": 2, "nogi": 1.05, "dlugosc": 1.2, "grubosc": 1.2, "ogon": 6, "skrzydla": 1.25, "kolce": 8, "rogi": 0.8, "plyty": true, "kolor": "4A4E5E", "brzuch": "9A8070", "blona": "C0403A", "rogi_kolor": "E8E0C8", "plyty_kolor": "8A8EA0"}, "podskok": 0.08, "pochyl": 0.12, "krok": 1.05},
-  {"nazwa": "ELDER DRAGON", "chod": "klus", "r": 9.0, "v": 0.86, "potrzeba": 13800, "trofeum": 35, "um": {"typ": "skok", "nazwa": "WING GLIDE", "d": 30, "s": 0.8, "r": 4, "odnowa_s": 6, "efekt": "lot"}, "smok": {"glowa": 1.0, "szyja": 3, "nogi": 1.1, "dlugosc": 1.25, "grubosc": 1.15, "ogon": 7, "skrzydla": 1.35, "kolce": 7, "rogi": 1.4, "grzebien": true, "kolor": "E8E0C8", "brzuch": "FFF6E0", "blona": "4F8FD8", "rogi_kolor": "C89A3A"}, "podskok": 0.07, "pochyl": 0.11, "krok": 0.95},
+  {"nazwa": "WAR DRAGON", "chod": "klus", "r": 6.8, "v": 0.9, "potrzeba": 3400, "trofeum": 20, "um": {"typ": "ogluszenie", "nazwa": "ROAR", "r": 16, "s": 1.4, "odnowa_s": 8, "efekt": "ryk"}, "smok": {"glowa": 1.0, "szyja": 2, "nogi": 1.05, "dlugosc": 1.2, "grubosc": 1.2, "ogon": 6, "skrzydla": 1.25, "kolce": 8, "rogi": 0.8, "plyty": true, "kolor": "4A4E5E", "brzuch": "9A8070", "blona": "C0403A", "rogi_kolor": "E8E0C8", "plyty_kolor": "8A8EA0"}, "podskok": 0.08, "pochyl": 0.12, "krok": 1.05},
+  {"nazwa": "ELDER DRAGON", "chod": "klus", "r": 9.0, "v": 0.86, "potrzeba": 11500, "trofeum": 35, "um": {"typ": "skok", "nazwa": "WING GLIDE", "d": 30, "s": 0.8, "r": 4, "odnowa_s": 6, "efekt": "lot"}, "smok": {"glowa": 1.0, "szyja": 3, "nogi": 1.1, "dlugosc": 1.25, "grubosc": 1.15, "ogon": 7, "skrzydla": 1.35, "kolce": 7, "rogi": 1.4, "grzebien": true, "kolor": "E8E0C8", "brzuch": "FFF6E0", "blona": "4F8FD8", "rogi_kolor": "C89A3A"}, "podskok": 0.07, "pochyl": 0.11, "krok": 0.95},
   {"nazwa": "ANCIENT DRAGON", "chod": "klus", "r": 15.0, "v": 0.8, "potrzeba": 0, "trofeum": 60, "um": {"typ": "fala", "nazwa": "INFERNO", "r": 36, "s": 1.8, "odnowa_s": 6, "efekt": "inferno"}, "smok": {"glowa": 1.0, "szyja": 3, "nogi": 1.15, "dlugosc": 1.35, "grubosc": 1.3, "ogon": 8, "skrzydla": 1.5, "kolce": 9, "rogi": 1.6, "grzebien": true, "plyty": true, "swiecenie": true, "kolor": "2A2230", "brzuch": "4A3A5A", "blona": "FF4DD8", "rogi_kolor": "7FF8FF", "plyty_kolor": "3A3048"}, "podskok": 0.05, "pochyl": 0.09, "krok": 0.8}
  ],
  "ruch": {
@@ -279,6 +293,27 @@
   "regen_po_s": 5,
   "regen_na_s": 0.04,
   "zamach_v": 0.35
+ },
+ "odrodzenie": {
+  "opis": "odrodzenie1: na ANCIENT DRAGON (stadium 8) REBIRTH — ceremonia ceremonia_s (smok zwija się w jajo nowej linii), potem pisklę. Złoto, ulepszenia i legowisko zostają; trofea każdej linii zostają w legowisku i zarabiają. Stały mnożnik wzrostu i złota legowiska x^odrodzeń (najwyżej maks_x). Linie po kolei (po ostatniej wraca pierwsza z zachowanym postępem): te same modele, inne kolory regionów (paleta null = kolory stadiów).",
+  "x": 1.25,
+  "maks_x": 3.0,
+  "ceremonia_s": 3.2,
+  "linie": [
+   {"id": "ember", "nazwa": "EMBER", "kolor": "FF7A2A", "paleta": null},
+   {"id": "frost", "nazwa": "FROST", "kolor": "7FF8FF", "paleta": {"cialo": "BFE6FF", "luski": "3A6EA8", "brzuch": "F4FBFF", "blona": "8FD8FF", "kolce": "FFFFFF", "zar": "7FF8FF", "zar_rdzen": "E8FFFF"}},
+   {"id": "storm", "nazwa": "STORM", "kolor": "B48CFF", "paleta": {"cialo": "7A4FD8", "luski": "2E1A66", "brzuch": "D8C8FF", "blona": "FFE14D", "kolce": "FFF27A", "zar": "FFE600", "zar_rdzen": "FFFFC0"}},
+   {"id": "shadow", "nazwa": "SHADOW", "kolor": "E0283C", "paleta": {"cialo": "26222E", "luski": "0E0B12", "brzuch": "5A1A24", "blona": "B0122E", "kolce": "D8283C", "zar": "FF2040", "zar_rdzen": "FFC0C8"}}
+  ]
+ },
+ "wydarzenia": {
+  "opis": "Wydarzenia zegarowe na cały serwer (działają z jednym graczem). DRAGON RAIN: co co_s na trwa_s wszystkie kule łąki od razu żywe i złote, wracają po powrot_s, wzrost × wzrost_x i +zloto złota. GOLEM RAMPAGE: co co_s KNIGHT GOLEM najwyższego stopnia osiągniętego na serwerze wychodzi bramą na łąkę (dom x, z), ściga graczy (widzi × widzi_x), życie × hp_x; kto trafił, dostaje równą część skrzyni × pula_x; koniec po trwa_s albo po pokonaniu. pierwszy_s: pierwsze wydarzenie od startu serwera.",
+  "deszcz": {"co_s": 1200, "pierwszy_s": 1200, "trwa_s": 120, "powrot_s": 2.5, "wzrost_x": 3, "zloto": 2},
+  "rampage": {"co_s": 2700, "pierwszy_s": 2700, "trwa_s": 180, "x": 0, "z": 55, "hp_x": 1.0, "pula_x": 2.0, "widzi_x": 1.6}
+ },
+ "jajo_dnia": {
+  "opis": "DAILY EGG: raz na dzień UTC w gnieździe własnego legowiska; wykluwa darmowe losowanie wariantu dla trofeum obecnego stadium (wariant zostaje tylko, jeśli lepszy). Wagi wariantów.",
+  "wagi": [["zloty", 70], ["krysztal", 22], ["rubin", 7], ["tecza", 1]]
  },
  "zdolnosci": {
   "opis": "Dwa przyciski zdolności (walka1): FIRE (linia ogien) i POWER (linia moc). Każda linia ewoluuje: działa wersja z największym od ≤ stadium; wcześniej przycisk jest ciemny z napisem „at <STADIUM>”. Każda zdolność: zamach_s (widoczny zamach — sygnał dla innych; ogłuszenie w zamachu go przerywa), potem efekt i odnowa_s. Rany = siła BITE stadium (z Szczęką) × x × mnożnik rozmiaru. pocisk: kula lecąca prosto z prędkością v do zasieg (trafia pierwszego); oddech: kanał trwa_s, co tik_s stożek kat_st na zasieg przed pyskiem (sterowany kierunkiem ruchu), inferno zostawia płonącą ziemię (plama_r, plama_s, co plama_co_s × plama_x); ogon: krąg r wokół, odrzut i przewrót; lot: szybowanie d w s (nad mniejszymi i nad fosą wyspy), lądowanie rani w r; ryk: krąg r — mniejsze boty uciekają (ucieczka_s), reszta ogłuszona (ogluszenie_s, więksi i boss o połowę krócej); meteor: skok d w s i wybuch r przy lądowaniu.",

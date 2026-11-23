@@ -454,6 +454,81 @@ def sceny_interfejs(p, f):
     f.stop()
 
 
+def sceny_odrodzenie(p, f):
+    """odrodzenie1: REBIRTH na ANCIENT (jajo FROST → pisklę) → smok FROST biegnie → DRAGON RAIN → GOLEM RAMPAGE na łące →
+    jajo dnia w legowisku → panel z dwiema liniami."""
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    NF = len(D["formy"])
+    x0, z0 = PP.wolna_droga()
+    p.serwer('"forma_gracza", %d' % NF)
+    p.serwer('"przenies", %d, %f, %f' % (byt, x0 + 20, z0))
+    p.serwer('"hp", nil, 99999')
+    time.sleep(1.6)
+    p.serwer('"tarcza_zeruj"')
+    f.nagrywaj("odrodzenie")
+    time.sleep(1.0)
+    p.przycisk("ewoluuj")
+    time.sleep(D["odrodzenie"]["ceremonia_s"] + 3.6)
+    f.stop()
+    p.serwer('"forma_gracza", 4')
+    time.sleep(1.4)
+    f.nagrywaj("frost")
+    p.ustaw("EW_TestSter", "Vector3.new(-1, 0, 5)")
+    time.sleep(4.6)
+    f.stop()
+    p.serwer('"forma_gracza", 2')
+    p.serwer('"przenies", %d, %f, %f' % (byt, x0, z0))
+    time.sleep(0.8)
+    f.nagrywaj("deszcz")
+    p.serwer('"wymus_deszcz"')
+    time.sleep(1.0)
+    p.ustaw("EW_TestAuto", "true")
+    time.sleep(6.5)
+    p.ustaw("EW_TestAuto", "false")
+    f.stop()
+    p.serwer('"forma_gracza", 6')
+    p.serwer('"wymus_rampage"')
+    time.sleep(1.5)
+    B = p.serwer('"boss"')
+    p.serwer('"przenies", %d, %f, %f' % (byt, B["x"] + 18, B["z"] - 14))
+    p.serwer('"hp", nil, 99999')
+    time.sleep(0.8)
+    f.nagrywaj("rampage")
+    p.ustaw("EW_TestSter", "Vector3.new(0.7, 0.7, 1.5)")
+    time.sleep(2.0)
+    r = D["formy"][5]["r"] + D["formy"][D["boss"]["forma"] - 1]["r"] - 0.5
+    for _ in range(3):
+        p.serwer('"boss_hp", 3')
+        B = p.serwer('"boss"')
+        p.serwer('"przenies", %d, %f, %f' % (byt, B["x"] + r, B["z"]))
+        p.ustaw("EW_TestSter", "Vector3.new(1, 0, 0.35)")
+        time.sleep(0.6)
+        p.przycisk("odnowa_zeruj")
+        p.przycisk("gryz")
+        time.sleep(0.9)
+        if not p.serwer('"wyd"').get("rampage"):
+            break
+    time.sleep(1.6)
+    f.stop()
+    p.serwer('"forma_gracza", 3')
+    p.serwer('"do_legowiska"')
+    time.sleep(1.6)
+    f.nagrywaj("jajo")
+    time.sleep(1.4)
+    p.przycisk("jajo_dnia")
+    time.sleep(3.0)
+    p.przycisk("legowisko")
+    time.sleep(1.6)
+    p.przycisk("linia:1")
+    time.sleep(2.4)
+    p.przycisk("linia:2")
+    time.sleep(1.8)
+    p.przycisk("zamknij")
+    time.sleep(0.6)
+    f.stop()
+
+
 def sklej(klipy, wyj, kat, pasy=False):
     gotowe = []
     vf = (r"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=0x1C162C,fps=30,format=yuv420p" if pasy
@@ -491,6 +566,7 @@ def main():
     ap.add_argument("--blender", action="store_true", help="smoki z Blendera: wyklucie → … → stadium 8 (smok-blender1)")
     ap.add_argument("--swiat", action="store_true", help="wycieczka po świecie (swiat1)")
     ap.add_argument("--interfejs", action="store_true", help="interfejs z makiet (interfejs1)")
+    ap.add_argument("--odrodzenie", action="store_true", help="odrodzenie, wydarzenia, jajo dnia (odrodzenie1)")
     a = ap.parse_args()
     wyj = os.path.abspath(a.wyj)
     if wyj.startswith(os.path.abspath(PP.REPO)):
@@ -507,11 +583,11 @@ def main():
             PP.czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
             p.luau(PP.BEZ_LISTY, "Client")
             time.sleep(1.0)
-            (sceny_interfejs if a.interfejs else sceny_swiat if a.swiat else sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
+            (sceny_odrodzenie if a.odrodzenie else sceny_interfejs if a.interfejs else sceny_swiat if a.swiat else sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
         finally:
             log("Stop:", PP.play(a.studio, False)[-40:])
             PP.czekaj(lambda: "Current Studio Mode: Edit" in p.call("get_studio_state")["text"], 40, 0.5)
-    sklej(f.klipy, wyj, kat, pasy=a.interfejs)
+    sklej(f.klipy, wyj, kat, pasy=a.interfejs or a.odrodzenie)
     pl = plansza(wyj)
     if not a.zostaw_klipy:
         shutil.rmtree(kat, ignore_errors=True)
