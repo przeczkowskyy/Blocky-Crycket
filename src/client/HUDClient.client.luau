@@ -78,6 +78,44 @@ do
 	end
 end
 
+------------------------------------------------ portret rasy w ramce (Paweł 23.11)
+pcall(function()
+	-- ramka z portretem rasy przykrywa górną część grafiki ramki (FrameArt); pasek i poziom zostają na wierzchu
+	-- Tor paska w ramce rasy (RaceFrame 512 × 556): x 0,158–0,843, y 0,832–0,966 obrazka. FrameArt (0,38298 × 0,9717
+	-- panelu, proporcje 0,874) skaluje obrazek przez Fit, a ramka rasy ma proporcje 0,921 — obrazek jest niższy
+	-- o 5 % i wyśrodkowany w pionie, stąd przesunięcie. Pasek o 1 px węższy od toru z każdej strony, bez obrysu.
+	local fa = panel:WaitForChild("FrameArt") :: ImageLabel
+	local rama = fa.Size
+	local wys = 0.874 / 0.921 -- część wysokości FrameArt zajęta przez obrazek (Fit przy szerszym obrazku)
+	local gora = (1 - wys) / 2
+	local TOR = {
+		fa.Position.X.Scale + rama.X.Scale * 0.158 + 0.0034,
+		fa.Position.Y.Scale + rama.Y.Scale * (gora + 0.832 * wys) + 0.0076,
+		rama.X.Scale * 0.685 - 0.0069,
+		rama.Y.Scale * 0.134 * wys - 0.0152,
+	}
+	local xp = panel:WaitForChild("XPBar")
+	-- cyferka poziomu: wyśrodkowana i w całości wewnątrz toru paska (Paweł 23.11), zapas na obrys liter
+	local NAPIS = { TOR[1], TOR[2] + TOR[4] * 0.08, TOR[3], TOR[4] * 0.84 }
+	levelLbl.TextXAlignment = Enum.TextXAlignment.Center
+	levelLbl.TextYAlignment = Enum.TextYAlignment.Center
+	require(RS:WaitForChild("Shared"):WaitForChild("RacePortraitUI")).attach({
+		podmien = fa,
+		uklad = {
+			{ obj = xp, rect = TOR },
+			{ obj = levelLbl, rect = NAPIS },
+			-- ikonka klasy (kotwica w środku, rozmiar z wysokości): większa, na lewym końcu paska (Paweł 23.11)
+			{ obj = panel:WaitForChild("ClassBadge") :: GuiObject, rect = { TOR[1] + 0.004, TOR[2] + TOR[4] / 2, 0, TOR[4] * 1.6 } },
+		},
+		wylacz = { xp:FindFirstChildOfClass("UIStroke") },
+	})
+	-- ikonka klasy przed paskiem i liczbą poziomu (Paweł 23.11)
+	local znak = panel:FindFirstChild("ClassBadge") :: GuiObject?
+	if znak then
+		znak.ZIndex = math.max(xp.ZIndex, levelLbl.ZIndex) + 2
+	end
+end)
+
 ------------------------------------------------ staty
 local function fmt(n)
 	local s = tostring(math.floor(n + 0.5))

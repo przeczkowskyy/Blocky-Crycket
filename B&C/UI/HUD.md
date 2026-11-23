@@ -26,6 +26,7 @@ implementacja: wersja z Figmy (panel gracza + 6 przycisków) w Roblox, 2026-11-1
 - Pliki: `src/gui/HUD.model.json`, `src/client/HUDClient.client.luau`, `src/server/PlayerStatsDefaults.server.luau`.
 
 ## Stan implementacji
+- [x] 2026-11-23: ramka portretu z portretem rasy gracza (`RaceFrame<Rasa>`, Shared.RacePortraitUI podmienia FrameArt; bez rasy pusta PlayerFrame).
 - [x] ScreenGui `HUD` (`src/gui/HUD.model.json`), zgodny z Figmą 9:1571 (2026-11-11)
 - [x] Logika HUD: `src/client/HUDClient.client.luau` (2026-11-11)
 - [x] Ikony walut: moneta i diament z Figmy (2026-11-11)

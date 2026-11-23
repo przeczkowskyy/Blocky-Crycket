@@ -36,6 +36,7 @@ tags: [ui, klasy, wybór]
 - Zapis wyboru w DataStore (dziś stan znika po wyjściu, jak reszta statystyk).
 
 ## Stan implementacji
+- [x] 2026-11-23: wybrana rasa ma ramkę z portretem (7 grafik `RaceFrame<Id>`), widoczną w HUD, ekwipunku i sklepach.
 - [x] 2026-11-23: klasa przywrócona z zapisu (`StanGracza`) bez rasy → ekran otwiera się od razu na wyborze rasy (wcześniej UI w ogóle się nie pokazywało).
 - [x] Grafiki i makieta w Figmie (2026-11-16)
 - [x] Scena 3D: generator, render w Blenderze z bohaterami, sala w Studio (2026-11-16)

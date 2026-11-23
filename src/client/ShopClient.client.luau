@@ -186,6 +186,36 @@ local function rysujPoziom()
 	local c = ok and ok2 and ClassData.byId(player:GetAttribute("Class") or "")
 	panel.ClassEmblem.Image = c and Icons[c.emblem] or ""
 end
+-- portret rasy w ramce bohatera (Paweł 23.11); emblemat klasy tylko wtedy, gdy portretu nie ma
+pcall(function()
+	-- ramka z portretem rasy w miejscu starej ramki bohatera (wymazanej z grafiki sklepu w tools/sklep_okno.py)
+	panel.ExpBar.BackgroundTransparency = 1
+	for _, d in ipairs(panel.ExpBar:GetDescendants()) do
+		if d:IsA("UICorner") then
+			d.CornerRadius = UDim.new(0.5, 0)
+		end
+	end
+	local c0 = panel.ExpBar:FindFirstChildOfClass("UICorner")
+	if c0 then
+		c0.CornerRadius = UDim.new(0.5, 0)
+	end
+	local granica = panel.Level:FindFirstChildOfClass("UITextSizeConstraint")
+	if granica then
+		granica.MaxTextSize = 60 -- napis skaluje się do wysokości paska jak w EQ
+	end
+	require(RS:WaitForChild("Shared"):WaitForChild("RacePortraitUI")).attach({
+		rodzic = panel,
+		prostokat = { 0.1908, 0.1959, 0.1629, 0.2419 }, -- px 916–1698 × 702–1569 z 4800 × 3584
+		zindex = 2,
+		nad = { panel.ExpBar, panel.Level, panel.ClassEmblem },
+		-- pasek i „LV” w torze ramki WYBRANEJ rasy — wymiary z Figmy (Shared.RacePortraits.Tor), jak w EQ
+		pasek = {
+			{ obj = panel.ExpBar, ramka = { 0.1908, 0.1959, 0.1629, 0.2419 } },
+			{ obj = panel.Level, ramka = { 0.1908, 0.1959, 0.1629, 0.2419 }, wnetrze = { 0.03, 0.2, 0.94, 0.75 } },
+		},
+		zastepstwo = panel.ClassEmblem,
+	})
+end)
 for _, a in ipairs({ "Level", "XP", "XPMax", "Class" }) do
 	player:GetAttributeChangedSignal(a):Connect(function()
 		if gui.Enabled then

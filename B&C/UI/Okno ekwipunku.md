@@ -25,6 +25,7 @@ Statystyki na grafice (Strength, Constitution, Intelligence, Dexterity, Luck, Ar
 - Napisy po angielsku czy po polsku ([[Pytania otwarte]] #5).
 
 ## Stan implementacji
+- [x] 2026-11-23: ramka postaci z portretem rasy (`RaceFrame<Rasa>`); stara ramka wymazana z tła `EqBg1` (tools/wymaz_stare_ramki.py).
 - [x] Grafika oczyszczona z tekstu i pocięta na elementy (2026-11-13)
 - [x] Ramka w Figmie z warstwami i natywnym tekstem (2026-11-13)
 - [x] `EquipmentPanel.model.json` + `EquipmentPanelClient` (otwieranie z HUD, zakładki, hover slotów, „+”) (2026-11-13)

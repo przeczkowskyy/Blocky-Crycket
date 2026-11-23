@@ -104,9 +104,9 @@ local expBar = Instance.new("Frame")
 expBar.Name = "ExpBar"
 expBar.BorderSizePixel = 0
 expBar.BackgroundColor3 = Color3.fromRGB(14, 10, 16)
-expBar.ZIndex = 2
+expBar.ZIndex = 3 -- nad ramką rasy (2), pod napisem i ikonką klasy (LevelBadge 4) — Paweł 23.11
 expBar.Position, expBar.Size = px(444, 378, 189, 50)
-expBar.Parent = panel.Background
+expBar.Parent = panel.Character -- ta sama warstwa co LevelBadge, żeby ikonka klasy była PRZED paskiem
 local function corner(parent: Instance, r: number)
 	local c = Instance.new("UICorner")
 	c.CornerRadius = UDim.new(r, 0)
@@ -689,6 +689,55 @@ do
 	end
 end
 refreshLevel()
+
+------------------------------------------------ portret rasy w ramce (Paweł 23.11)
+pcall(function()
+	-- ramka z portretem rasy w miejscu starej ramki (wymazanej z EqBg1); poziom i przycisk drzewka na wierzchu
+	local ch = panel.Character
+	-- ramka rasy w miejscu starej ramki; pasek, napis „LV” i ikonka klasy na jej torze (Paweł 23.11)
+	local badge = ch:WaitForChild("LevelBadge")
+	local napis = badge:WaitForChild("LevelText") :: TextLabel
+	-- ikonka klasy może być większa niż pasek (ScaleWithParentSize ograniczało ją do wysokości LevelBadge)
+	local ikonka = badge:WaitForChild("ClassBadge") :: GuiObject
+	-- pasek bez własnego ciemnego tła i z okrągłymi końcami: tor w ramce rasy jest ciemny i mocno zaokrąglony
+	expBar.BackgroundTransparency = 1
+	for _, d in ipairs(expBar:GetDescendants()) do
+		if d:IsA("UICorner") then
+			d.CornerRadius = UDim.new(0.5, 0)
+		elseif d.Name == "Track" and d:IsA("Frame") then
+			d.BackgroundTransparency = 1
+			d.Position, d.Size = UDim2.fromScale(0, 0), UDim2.fromScale(1, 1)
+		end
+	end
+	local proporcje = ikonka:FindFirstChildOfClass("UIAspectRatioConstraint")
+	if proporcje then
+		proporcje.AspectType = Enum.AspectType.FitWithinMaxSize
+	end
+	local granica = napis:FindFirstChildOfClass("UITextSizeConstraint")
+	if granica then
+		granica.MaxTextSize = 60
+	end
+	local RAMKA_EQ = { 405 / BG_W, 145 / BG_H, 265 / BG_W, 292 / BG_H } -- ramka rasy na tle: px 405–670 × 145–437
+	require(RS:WaitForChild("Shared"):WaitForChild("RacePortraitUI")).attach({
+		rodzic = ch,
+		prostokat = { 0.1981, 0.1246, 0.1296, 0.2508 }, -- stara ramka w EqBg1: px 405–670 × 145–437 z 2045 × 1164
+		zindex = 2,
+		nad = { badge, ch:WaitForChild("SkillTreeButton") },
+		-- zielony pasek i kontener napisu w torze ramki WYBRANEJ rasy — wymiary z Figmy (Shared.RacePortraits.Tor;
+		-- prostokąty ExpBar w ramkach RaceFrame<Id>, 4 px od złota obrazka ≈ 1 px w grze; Paweł 23.11)
+		pasek = {
+			{ obj = expBar, ramka = RAMKA_EQ },
+			{ obj = badge, ramka = RAMKA_EQ },
+		},
+		uklad = {
+			-- napis „LV” obniżony o kilka pikseli (Paweł 23.11), dalej w całości w pasku
+			{ obj = napis, rect = { 0.03, 0.2, 0.94, 0.75 } },
+			-- ikonka klasy: większa, na lewym końcu paska, przed nim (Paweł 23.11)
+			{ obj = ikonka, rect = { 0.02, 0.5, 1.3 * 39 / 181, 1.3 } }, -- kwadrat 1,3 × wysokość toru
+		},
+	})
+	badge.ZIndex = 4 -- napis „LV” i ikonka klasy (dziecko LevelBadge) przed paskiem (ExpBar 3)
+end)
 
 ------------------------------------------------ otwieranie / zamykanie
 local isOpen, busy = false, false

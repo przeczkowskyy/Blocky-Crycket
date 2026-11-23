@@ -148,7 +148,12 @@
     },
     "EqBg1": {
       "created_at": "2026-11-12T23:12:33+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "87296522726461",
+          "replaced_at": "2026-11-23T21:46:04+00:00"
+        }
+      ],
       "category": "frame",
       "status": "in_roblox",
       "processed": "assets/processed/EquipmentPanel/EqBg1.png",
@@ -156,12 +161,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-12T23:16:55+00:00",
+      "updated_at": "2026-11-23T21:46:04+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-12T23:15:40+00:00",
-      "approved_sha256": "3646c2d625059de523304cfb3648778a6188c939f03dbd9559f9cd8825e05989",
-      "roblox_image": "87296522726461",
-      "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
+      "approved_at": "2026-11-23T21:44:19+00:00",
+      "approved_sha256": "e4e4484609ef03312f48530b96e993a1a20966636b79d7c2971e7e666065d6cd",
+      "roblox_image": "83001630510802",
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (ramki ras z paskiem / tlo bez starej ramki)"
     },
     "EqBg2": {
       "created_at": "2026-11-12T23:12:33+00:00",
@@ -2499,18 +2504,22 @@
         {
           "roblox_image": "83915846297526",
           "replaced_at": "2026-11-18T21:05:07+00:00"
+        },
+        {
+          "roblox_image": "94433869045018",
+          "replaced_at": "2026-11-23T21:46:04+00:00"
         }
       ],
       "category": "frame",
       "status": "in_roblox",
       "processed": "assets/processed/Sklepy/SklepBron1.png",
       "usage": "Okno sklepu",
-      "updated_at": "2026-11-18T21:05:07+00:00",
+      "updated_at": "2026-11-23T21:46:04+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-18T21:03:54+00:00",
-      "approved_sha256": "1896e51bc7c83784253989534742a9c1389e7c5dd8c8414488b74191dc4e8eb4",
-      "roblox_image": "94433869045018",
-      "notes": "18.11: wersja bez bialego tla, po tak Pawla"
+      "approved_at": "2026-11-23T21:44:19+00:00",
+      "approved_sha256": "5277c483a2d55422f183d68abdbac9cc1cac94a98b132128d06b1ea7b05d0cd1",
+      "roblox_image": "75919375534056",
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (ramki ras z paskiem / tlo bez starej ramki)"
     },
     "SklepBron2": {
       "created_at": "2026-11-18T20:52:22+00:00",
@@ -2575,18 +2584,22 @@
         {
           "roblox_image": "114002204028629",
           "replaced_at": "2026-11-18T21:05:07+00:00"
+        },
+        {
+          "roblox_image": "91909406024436",
+          "replaced_at": "2026-11-23T21:46:05+00:00"
         }
       ],
       "category": "frame",
       "status": "in_roblox",
       "processed": "assets/processed/Sklepy/SklepMagia1.png",
       "usage": "Okno sklepu",
-      "updated_at": "2026-11-18T21:05:07+00:00",
+      "updated_at": "2026-11-23T21:46:05+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-18T21:03:54+00:00",
-      "approved_sha256": "88e70a7c508f74eee02c77163b69dc97f445b92c5d5c36067f6a38cb3ba60ddf",
-      "roblox_image": "91909406024436",
-      "notes": "18.11: wersja bez bialego tla, po tak Pawla"
+      "approved_at": "2026-11-23T21:44:19+00:00",
+      "approved_sha256": "553514e9e6f9efafb7f469964a9cbcd6ac30b4ec77a329da2ebbf14a5c35e6be",
+      "roblox_image": "124157100358312",
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (ramki ras z paskiem / tlo bez starej ramki)"
     },
     "SklepMagia2": {
       "created_at": "2026-11-18T20:52:22+00:00",
@@ -2645,72 +2658,536 @@
       "roblox_image": "90477826007829",
       "notes": "18.11: wersja bez bialego tla, po tak Pawla"
     },
+    "PortraitHuman": {
+      "created_at": "2026-11-23T21:08:22+00:00",
+      "history": [
+        {
+          "roblox_image": "110365832003673",
+          "replaced_at": "2026-11-23T21:22:22+00:00"
+        }
+      ],
+      "category": "portrait",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/PortraitHuman.png",
+      "usage": "Portret rasy w ramkach (HUD, ekwipunek, sklepy)",
+      "raw": "assets/raw/RacePortraits/portrety_v3.png",
+      "updated_at": "2026-11-23T21:32:25+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:21:40+00:00",
+      "approved_sha256": "9e9176163cf1a85e34731a8722923b3fe11bb95ac77d858ea272dcea6b87f401",
+      "roblox_image": "92242786883382",
+      "notes": "v3 (kwadrat z tlem) - zastapione ramkami RaceFrame, nieuzywane"
+    },
+    "PortraitDemon": {
+      "created_at": "2026-11-23T21:08:22+00:00",
+      "history": [
+        {
+          "roblox_image": "71455256178043",
+          "replaced_at": "2026-11-23T21:22:22+00:00"
+        }
+      ],
+      "category": "portrait",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/PortraitDemon.png",
+      "usage": "Portret rasy w ramkach (HUD, ekwipunek, sklepy)",
+      "raw": "assets/raw/RacePortraits/portrety_v3.png",
+      "updated_at": "2026-11-23T21:32:25+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:21:40+00:00",
+      "approved_sha256": "823639bffc82da3def1e2fc4c9007156743cd7ef463b8ff4bb4838b4d9f1e691",
+      "roblox_image": "138803954639820",
+      "notes": "v3 (kwadrat z tlem) - zastapione ramkami RaceFrame, nieuzywane"
+    },
+    "PortraitDarkElf": {
+      "created_at": "2026-11-23T21:08:22+00:00",
+      "history": [
+        {
+          "roblox_image": "136113809473448",
+          "replaced_at": "2026-11-23T21:22:22+00:00"
+        }
+      ],
+      "category": "portrait",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/PortraitDarkElf.png",
+      "usage": "Portret rasy w ramkach (HUD, ekwipunek, sklepy)",
+      "raw": "assets/raw/RacePortraits/portrety_v3.png",
+      "updated_at": "2026-11-23T21:32:26+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:21:40+00:00",
+      "approved_sha256": "823c749e1344dfe1341d1619551ed194bcee7399dc4c94aefd879a9b4d8d091f",
+      "roblox_image": "104644723932462",
+      "notes": "v3 (kwadrat z tlem) - zastapione ramkami RaceFrame, nieuzywane"
+    },
+    "PortraitElf": {
+      "created_at": "2026-11-23T21:08:22+00:00",
+      "history": [
+        {
+          "roblox_image": "74713218370454",
+          "replaced_at": "2026-11-23T21:22:23+00:00"
+        }
+      ],
+      "category": "portrait",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/PortraitElf.png",
+      "usage": "Portret rasy w ramkach (HUD, ekwipunek, sklepy)",
+      "raw": "assets/raw/RacePortraits/portrety_v3.png",
+      "updated_at": "2026-11-23T21:32:26+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:21:40+00:00",
+      "approved_sha256": "42d2692416b4efd45a5016b0a4a73572200a32f6870600ed324f152b7058e8c5",
+      "roblox_image": "81304930029776",
+      "notes": "v3 (kwadrat z tlem) - zastapione ramkami RaceFrame, nieuzywane"
+    },
+    "PortraitOrc": {
+      "created_at": "2026-11-23T21:08:22+00:00",
+      "history": [
+        {
+          "roblox_image": "76334156691468",
+          "replaced_at": "2026-11-23T21:22:23+00:00"
+        }
+      ],
+      "category": "portrait",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/PortraitOrc.png",
+      "usage": "Portret rasy w ramkach (HUD, ekwipunek, sklepy)",
+      "raw": "assets/raw/RacePortraits/portrety_v3.png",
+      "updated_at": "2026-11-23T21:32:26+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:21:41+00:00",
+      "approved_sha256": "d4c36ad7d20b68fce8981fb70be3e819b2e634ab47361c68ab76ff81a92d98ff",
+      "roblox_image": "104101553302871",
+      "notes": "v3 (kwadrat z tlem) - zastapione ramkami RaceFrame, nieuzywane"
+    },
+    "PortraitGoblin": {
+      "created_at": "2026-11-23T21:08:23+00:00",
+      "history": [
+        {
+          "roblox_image": "79973789489832",
+          "replaced_at": "2026-11-23T21:22:23+00:00"
+        }
+      ],
+      "category": "portrait",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/PortraitGoblin.png",
+      "usage": "Portret rasy w ramkach (HUD, ekwipunek, sklepy)",
+      "raw": "assets/raw/RacePortraits/portrety_v3.png",
+      "updated_at": "2026-11-23T21:32:26+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:21:41+00:00",
+      "approved_sha256": "26c45ed733019f7bf2ead97c1a2ef7f93ae3fd338dde15d72c2d44d711830a84",
+      "roblox_image": "80171714328252",
+      "notes": "v3 (kwadrat z tlem) - zastapione ramkami RaceFrame, nieuzywane"
+    },
+    "PortraitDemigod": {
+      "created_at": "2026-11-23T21:08:23+00:00",
+      "history": [
+        {
+          "roblox_image": "130768602582715",
+          "replaced_at": "2026-11-23T21:22:23+00:00"
+        }
+      ],
+      "category": "portrait",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/PortraitDemigod.png",
+      "usage": "Portret rasy w ramkach (HUD, ekwipunek, sklepy)",
+      "raw": "assets/raw/RacePortraits/portrety_v3.png",
+      "updated_at": "2026-11-23T21:32:26+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:21:41+00:00",
+      "approved_sha256": "7e198c46f1a0b012d21aa6b12e850f1f5806c4e28c382010c81b2d0bfe28d852",
+      "roblox_image": "128383245872784",
+      "notes": "v3 (kwadrat z tlem) - zastapione ramkami RaceFrame, nieuzywane"
+    },
     "ItemBucketHelm": {
       "created_at": "2026-11-23T21:29:50+00:00",
       "history": [],
       "category": "item",
-      "status": "processed",
+      "status": "in_roblox",
       "raw": "assets/raw/PrzedmiotyLv01",
       "processed": "assets/processed/Przedmioty/ItemBucketHelm.png",
       "usage": "Przedmiot zwykly, pula Lv 1-10 (D-142)",
       "notes": "arkusz nano_banana_2_1, 1 wariant, ref KeyArt + BronieStartowe_arkusz; prompt w assets/raw/PrzedmiotyLv01/prompt.txt",
-      "updated_at": "2026-11-23T21:29:50+00:00"
+      "updated_at": "2026-11-23T22:32:24+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:08+00:00",
+      "approved_sha256": "5d856822895c54c8fb28830618c641de909021e74ff2e52ab745960ec09f975d",
+      "roblox_image": "85428350231003"
     },
     "ItemBarrelVest": {
       "created_at": "2026-11-23T21:29:50+00:00",
       "history": [],
       "category": "item",
-      "status": "processed",
+      "status": "in_roblox",
       "raw": "assets/raw/PrzedmiotyLv01",
       "processed": "assets/processed/Przedmioty/ItemBarrelVest.png",
       "usage": "Przedmiot zwykly, pula Lv 1-10 (D-142)",
       "notes": "arkusz nano_banana_2_1, 1 wariant, ref KeyArt + BronieStartowe_arkusz; prompt w assets/raw/PrzedmiotyLv01/prompt.txt",
-      "updated_at": "2026-11-23T21:29:50+00:00"
+      "updated_at": "2026-11-23T22:32:24+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:08+00:00",
+      "approved_sha256": "a3878d65482035a381735d5a3eb90bafea37873406d36eb589a43909dad31cbd",
+      "roblox_image": "128594048871683"
     },
     "ItemOvenMitts": {
       "created_at": "2026-11-23T21:29:50+00:00",
       "history": [],
       "category": "item",
-      "status": "processed",
+      "status": "in_roblox",
       "raw": "assets/raw/PrzedmiotyLv01",
       "processed": "assets/processed/Przedmioty/ItemOvenMitts.png",
       "usage": "Przedmiot zwykly, pula Lv 1-10 (D-142)",
       "notes": "arkusz nano_banana_2_1, 1 wariant, ref KeyArt + BronieStartowe_arkusz; prompt w assets/raw/PrzedmiotyLv01/prompt.txt",
-      "updated_at": "2026-11-23T21:29:50+00:00"
+      "updated_at": "2026-11-23T22:32:24+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:09+00:00",
+      "approved_sha256": "d0cfd95e891ab1bcd8e34005e59b1902b86872d23aac37a6ae465d29e2e815f6",
+      "roblox_image": "87311245997746"
     },
     "ItemMossyClogs": {
       "created_at": "2026-11-23T21:29:50+00:00",
       "history": [],
       "category": "item",
-      "status": "processed",
+      "status": "in_roblox",
       "raw": "assets/raw/PrzedmiotyLv01",
       "processed": "assets/processed/Przedmioty/ItemMossyClogs.png",
       "usage": "Przedmiot zwykly, pula Lv 1-10 (D-142)",
       "notes": "arkusz nano_banana_2_1, 1 wariant, ref KeyArt + BronieStartowe_arkusz; prompt w assets/raw/PrzedmiotyLv01/prompt.txt",
-      "updated_at": "2026-11-23T21:29:50+00:00"
+      "updated_at": "2026-11-23T22:32:24+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:09+00:00",
+      "approved_sha256": "320c4c09ccda9304905db5708371425f478c62be6b0946cee620520f66f43e5b",
+      "roblox_image": "89568530202333"
     },
     "ItemPineconeBelt": {
       "created_at": "2026-11-23T21:29:50+00:00",
       "history": [],
       "category": "item",
-      "status": "processed",
+      "status": "in_roblox",
       "raw": "assets/raw/PrzedmiotyLv01",
       "processed": "assets/processed/Przedmioty/ItemPineconeBelt.png",
       "usage": "Przedmiot zwykly, pula Lv 1-10 (D-142)",
       "notes": "arkusz nano_banana_2_1, 1 wariant, ref KeyArt + BronieStartowe_arkusz; prompt w assets/raw/PrzedmiotyLv01/prompt.txt",
-      "updated_at": "2026-11-23T21:29:50+00:00"
+      "updated_at": "2026-11-23T22:32:24+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:09+00:00",
+      "approved_sha256": "00ad9b424ed0c7fbf228c8919f0c705bcd4be5e0ec87fb1a833116f1c9a0bf47",
+      "roblox_image": "72189108200822"
     },
     "ItemSplintersword": {
       "created_at": "2026-11-23T21:29:50+00:00",
       "history": [],
       "category": "item",
-      "status": "processed",
+      "status": "in_roblox",
       "raw": "assets/raw/PrzedmiotyLv01",
       "processed": "assets/processed/Przedmioty/ItemSplintersword.png",
       "usage": "Przedmiot zwykly, pula Lv 1-10 (D-142)",
       "notes": "arkusz nano_banana_2_1, 1 wariant, ref KeyArt + BronieStartowe_arkusz; prompt w assets/raw/PrzedmiotyLv01/prompt.txt",
-      "updated_at": "2026-11-23T21:29:50+00:00"
+      "updated_at": "2026-11-23T22:32:24+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:09+00:00",
+      "approved_sha256": "dd14d3e442c421586e88b79515472246d8106b201ea9267a1d11e6d2252c3235",
+      "roblox_image": "119494245808012"
+    },
+    "RaceFrameHuman": {
+      "created_at": "2026-11-23T21:32:25+00:00",
+      "history": [
+        {
+          "roblox_image": "125002765592393",
+          "replaced_at": "2026-11-23T21:46:04+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/RaceFrameHuman.png",
+      "raw": "assets/raw/RacePortraits/ramki_v2.png",
+      "usage": "Ramka portretu z portretem rasy (HUD, ekwipunek, sklepy)",
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (ramki ras z paskiem / tlo bez starej ramki)",
+      "updated_at": "2026-11-23T21:46:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:44:18+00:00",
+      "approved_sha256": "809ba7cbf3ff985f494b5a221fc597f424da87366b65dac6f97ccc8b1fd3a67b",
+      "roblox_image": "138949299258612"
+    },
+    "RaceFrameDemon": {
+      "created_at": "2026-11-23T21:32:25+00:00",
+      "history": [
+        {
+          "roblox_image": "108952371786479",
+          "replaced_at": "2026-11-23T21:46:04+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/RaceFrameDemon.png",
+      "raw": "assets/raw/RacePortraits/ramki_v2.png",
+      "usage": "Ramka portretu z portretem rasy (HUD, ekwipunek, sklepy)",
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (ramki ras z paskiem / tlo bez starej ramki)",
+      "updated_at": "2026-11-23T21:46:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:44:18+00:00",
+      "approved_sha256": "d6dd21dc3ddaed814101de8aa160be555bc11cd556184bebecc70a3828dfba31",
+      "roblox_image": "74617039464563"
+    },
+    "RaceFrameDarkElf": {
+      "created_at": "2026-11-23T21:32:26+00:00",
+      "history": [
+        {
+          "roblox_image": "134313403531456",
+          "replaced_at": "2026-11-23T21:46:04+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/RaceFrameDarkElf.png",
+      "raw": "assets/raw/RacePortraits/ramki_v2.png",
+      "usage": "Ramka portretu z portretem rasy (HUD, ekwipunek, sklepy)",
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (ramki ras z paskiem / tlo bez starej ramki)",
+      "updated_at": "2026-11-23T21:46:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:44:18+00:00",
+      "approved_sha256": "3901ad7f4eab0a824666d5fe638994af776548d1b86af45030a4fbf98391b786",
+      "roblox_image": "110988852796894"
+    },
+    "RaceFrameElf": {
+      "created_at": "2026-11-23T21:32:26+00:00",
+      "history": [
+        {
+          "roblox_image": "82806922817097",
+          "replaced_at": "2026-11-23T21:46:04+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/RaceFrameElf.png",
+      "raw": "assets/raw/RacePortraits/ramki_v2.png",
+      "usage": "Ramka portretu z portretem rasy (HUD, ekwipunek, sklepy)",
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (ramki ras z paskiem / tlo bez starej ramki)",
+      "updated_at": "2026-11-23T21:46:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:44:18+00:00",
+      "approved_sha256": "c277d1f9f63b0ff7dbd7e857920e8abd5aa367ab40f7bb409f669c28d28fcfa8",
+      "roblox_image": "99120945621378"
+    },
+    "RaceFrameOrc": {
+      "created_at": "2026-11-23T21:32:26+00:00",
+      "history": [
+        {
+          "roblox_image": "138409310251880",
+          "replaced_at": "2026-11-23T21:46:04+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/RaceFrameOrc.png",
+      "raw": "assets/raw/RacePortraits/ramki_v2.png",
+      "usage": "Ramka portretu z portretem rasy (HUD, ekwipunek, sklepy)",
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (ramki ras z paskiem / tlo bez starej ramki)",
+      "updated_at": "2026-11-23T21:46:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:44:19+00:00",
+      "approved_sha256": "1de9f46968acd4f12175b7c755942ff67e6d295ce47744666ce823a560ed6509",
+      "roblox_image": "121335756356038"
+    },
+    "RaceFrameGoblin": {
+      "created_at": "2026-11-23T21:32:26+00:00",
+      "history": [
+        {
+          "roblox_image": "137943131368633",
+          "replaced_at": "2026-11-23T21:46:04+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/RaceFrameGoblin.png",
+      "raw": "assets/raw/RacePortraits/ramki_v2.png",
+      "usage": "Ramka portretu z portretem rasy (HUD, ekwipunek, sklepy)",
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (ramki ras z paskiem / tlo bez starej ramki)",
+      "updated_at": "2026-11-23T21:46:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:44:19+00:00",
+      "approved_sha256": "b69eab115fbc6a4a090b2072ef99d717d0322d313d6296cb5dbcada574974134",
+      "roblox_image": "100913428896819"
+    },
+    "RaceFrameDemigod": {
+      "created_at": "2026-11-23T21:32:26+00:00",
+      "history": [
+        {
+          "roblox_image": "88002470520331",
+          "replaced_at": "2026-11-23T21:46:04+00:00"
+        }
+      ],
+      "category": "frame",
+      "status": "in_roblox",
+      "processed": "assets/processed/RacePortraits/RaceFrameDemigod.png",
+      "raw": "assets/raw/RacePortraits/ramki_v2.png",
+      "usage": "Ramka portretu z portretem rasy (HUD, ekwipunek, sklepy)",
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (ramki ras z paskiem / tlo bez starej ramki)",
+      "updated_at": "2026-11-23T21:46:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T21:44:19+00:00",
+      "approved_sha256": "8532e97f0afba9badf8e4f4b42ac10b860a93ad54c70de3fade02eaeb27de199",
+      "roblox_image": "102089606596303"
+    },
+    "TreningPanel": {
+      "created_at": "2026-11-23T22:28:55+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/TreningAFK",
+      "processed": "assets/processed/TreningAFK/TreningPanel.png",
+      "figma_node": "49:115",
+      "usage": "Ekran treningu AFK (D-141), galaz pawel/diamenty-afk",
+      "notes": "nano_banana_2_1, 1 wariant; makieta Figma strona HUD Buttons, ramka 49:115",
+      "updated_at": "2026-11-23T22:32:23+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:07+00:00",
+      "approved_sha256": "cdc17b2d0ceef10029cc5f9c4a9638295c6c8f532db5de2cf00f843b46f858d7",
+      "roblox_image": "113367842595549"
+    },
+    "TreningPasek": {
+      "created_at": "2026-11-23T22:28:55+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/TreningAFK",
+      "processed": "assets/processed/TreningAFK/TreningPasek.png",
+      "figma_node": "49:115",
+      "usage": "Ekran treningu AFK (D-141), galaz pawel/diamenty-afk",
+      "notes": "wgrany 23.11, ale NIEUZYWANY: Pawel - obrazek paska sie pikselowal, pasek jest natywny (ramka z gradientem) w grze i w Figmie",
+      "updated_at": "2026-11-23T22:37:10+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:07+00:00",
+      "approved_sha256": "3e5dceb0ed5add80e11c3fe68ff09015de69fc656d4afeddd4359a4a81e3c3b6",
+      "roblox_image": "108314406155572"
+    },
+    "TreningStop": {
+      "created_at": "2026-11-23T22:28:55+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/TreningAFK",
+      "processed": "assets/processed/TreningAFK/TreningStop.png",
+      "figma_node": "49:115",
+      "usage": "Ekran treningu AFK (D-141), galaz pawel/diamenty-afk",
+      "notes": "nano_banana_2_1, 1 wariant; makieta Figma strona HUD Buttons, ramka 49:115",
+      "updated_at": "2026-11-23T22:32:23+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:08+00:00",
+      "approved_sha256": "99f4d541b9397aacf4e0842bacbfe56a9c44f2b784a64c1bad13873e5d49a0a6",
+      "roblox_image": "136347965162300"
+    },
+    "TreningSkillCheck": {
+      "created_at": "2026-11-23T22:28:55+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/TreningAFK",
+      "processed": "assets/processed/TreningAFK/TreningSkillCheck.png",
+      "figma_node": "49:115",
+      "usage": "Ekran treningu AFK (D-141), galaz pawel/diamenty-afk",
+      "notes": "nano_banana_2_1, 1 wariant; makieta Figma strona HUD Buttons, ramka 49:115",
+      "updated_at": "2026-11-23T22:32:23+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:08+00:00",
+      "approved_sha256": "6ba5ab393a5ae8ee8ae5d8b52868646d7ec885a29f17efc5366b807faa40f784",
+      "roblox_image": "87414657975804"
+    },
+    "TreningIkonaSila": {
+      "created_at": "2026-11-23T22:28:56+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/TreningAFK",
+      "processed": "assets/processed/TreningAFK/TreningIkonaSila.png",
+      "figma_node": "49:115",
+      "usage": "Ekran treningu AFK (D-141), galaz pawel/diamenty-afk",
+      "notes": "nano_banana_2_1, 1 wariant; makieta Figma strona HUD Buttons, ramka 49:115",
+      "updated_at": "2026-11-23T22:32:24+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:08+00:00",
+      "approved_sha256": "d417891fa5b2b11d475651d0e3c7014856b1166d841355001ce8aeddd2cb9a76",
+      "roblox_image": "80829675491231"
+    },
+    "TreningIkonaKondycja": {
+      "created_at": "2026-11-23T22:28:56+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/TreningAFK",
+      "processed": "assets/processed/TreningAFK/TreningIkonaKondycja.png",
+      "figma_node": "49:115",
+      "usage": "Ekran treningu AFK (D-141), galaz pawel/diamenty-afk",
+      "notes": "nano_banana_2_1, 1 wariant; makieta Figma strona HUD Buttons, ramka 49:115",
+      "updated_at": "2026-11-23T22:32:24+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:08+00:00",
+      "approved_sha256": "7d3c6e1896243d40ef3be1223bb8795df4a7763189cc88ff37ca0491640cb858",
+      "roblox_image": "129848880606537"
+    },
+    "TreningIkonaPancerz": {
+      "created_at": "2026-11-23T22:28:56+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/TreningAFK",
+      "processed": "assets/processed/TreningAFK/TreningIkonaPancerz.png",
+      "figma_node": "49:115",
+      "usage": "Ekran treningu AFK (D-141), galaz pawel/diamenty-afk",
+      "notes": "nano_banana_2_1, 1 wariant; makieta Figma strona HUD Buttons, ramka 49:115",
+      "updated_at": "2026-11-23T22:32:24+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:08+00:00",
+      "approved_sha256": "161a1d8310db9e69791d0c41e15c9bf702919bd1d0875ee315b5887fd7b6f46b",
+      "roblox_image": "121315147202267"
+    },
+    "TreningIkonaZrecznosc": {
+      "created_at": "2026-11-23T22:28:56+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/TreningAFK",
+      "processed": "assets/processed/TreningAFK/TreningIkonaZrecznosc.png",
+      "figma_node": "49:115",
+      "usage": "Ekran treningu AFK (D-141), galaz pawel/diamenty-afk",
+      "notes": "nano_banana_2_1, 1 wariant; makieta Figma strona HUD Buttons, ramka 49:115",
+      "updated_at": "2026-11-23T22:32:24+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:08+00:00",
+      "approved_sha256": "8f0971d4088d07a14131c0f5650316bcf8446cd6ca02c74f3b9d5c83fbefa17d",
+      "roblox_image": "121602116084315"
+    },
+    "TreningIkonaInteligencja": {
+      "created_at": "2026-11-23T22:28:56+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/TreningAFK",
+      "processed": "assets/processed/TreningAFK/TreningIkonaInteligencja.png",
+      "figma_node": "49:115",
+      "usage": "Ekran treningu AFK (D-141), galaz pawel/diamenty-afk",
+      "notes": "nano_banana_2_1, 1 wariant; makieta Figma strona HUD Buttons, ramka 49:115",
+      "updated_at": "2026-11-23T22:32:24+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:08+00:00",
+      "approved_sha256": "337b9edf7594a321e02dafc3c20e7a783bd912b0d2402a548385819ecf68c57d",
+      "roblox_image": "137985641979179"
+    },
+    "TreningIkonaSzczescie": {
+      "created_at": "2026-11-23T22:28:56+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_roblox",
+      "raw": "assets/raw/TreningAFK",
+      "processed": "assets/processed/TreningAFK/TreningIkonaSzczescie.png",
+      "figma_node": "49:115",
+      "usage": "Ekran treningu AFK (D-141), galaz pawel/diamenty-afk",
+      "notes": "nano_banana_2_1, 1 wariant; makieta Figma strona HUD Buttons, ramka 49:115",
+      "updated_at": "2026-11-23T22:32:24+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:30:08+00:00",
+      "approved_sha256": "acf0a3cbf39808f4414284c52ed445a55f7d4f1a02da37737c81d68a86ef0870",
+      "roblox_image": "87096405792117"
     }
   },
-  "updated_at": "2026-11-18T21:05:08+00:00"
+  "updated_at": "2026-11-23T22:37:10+00:00"
 }
