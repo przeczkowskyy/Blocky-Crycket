@@ -282,6 +282,7 @@ local function pokazBaner(t: string, kolor: Color3, czas: number?)
 	baner.Visible = true
 	baner.Rotation = math.random(-3, 3)
 	banerT, banerDo = 0, czas or 1.3
+	gracz:SetAttribute("EW_K_Baner", t)
 end
 
 local ramkaTabl = warstwa("Tabliczka", Vector2.new(0.5, 0), UDim2.new(0.5, 0, 0, 80), Vector2.new(330, 116))
@@ -518,6 +519,45 @@ for k, v in { liczRanZad = 0, liczRanOtrz = 0, liczZamachow = 0, liczPociskow = 
 end
 -- przewidywanie własnego potwora (pozycja i prędkość u klienta)
 local predX, predZ, predVX, predVZ = 0, 0, 0, 0
+-- odczucie1: liczniki wrażeń walki (próby) i tabela dźwięków gry (ustawienia.json → dzwieki_gry.id; 0 = cisza do czasu wgrania)
+WK.czucie = { stopy = 0, stopMs = 0, wstrzasy = 0, wstrzasMaks = 0, liczby = 0, luski = 0, smierci = 0, pop = 0, slowmo = 0, polowy = 0 }
+WK.dzw, WK.hakiDzw = {}, {}
+function WK.graj(rola: string, ton: number?): boolean
+	WK.hakiDzw[rola] = (WK.hakiDzw[rola] or 0) + 1
+	local id = D.dzwiekiGry and D.dzwiekiGry[rola]
+	if type(id) ~= "number" or id <= 0 then
+		return false
+	end
+	local s = WK.dzw[rola]
+	if not s then
+		s = Instance.new("Sound")
+		s.SoundId = "rbxassetid://" .. tostring(id)
+		s.Volume = 0.6
+		s.Parent = folderDz
+		WK.dzw[rola] = s
+	end
+	s.PlaybackSpeed = ton or 1
+	s.TimePosition = 0
+	s:Play()
+	return true
+end
+-- kolor ciała stworka (część regionu 0 modelu) — łuski przy trafieniu
+function WK.kolorCiala(q): Color3
+	if q.kolorCiala and q.kolorModel == q.model then
+		return q.kolorCiala
+	end
+	local k = Color3.fromRGB(200, 200, 210)
+	if q.model then
+		for _, d in q.model:GetDescendants() do
+			if d:IsA("BasePart") and d:GetAttribute("Region") == 0 and d.Transparency < 1 then
+				k = d.Color
+				break
+			end
+		end
+	end
+	q.kolorCiala, q.kolorModel = k, q.model
+	return k
+end
 local predOK = false
 
 local korona = Instance.new("Model")
@@ -914,6 +954,7 @@ local function akcja(rodzaj: string, a: any?)
 		if teraz < gryzGotowy then
 			return
 		end
+		WK.graj("gryz", 0.95 + math.random() * 0.1)
 		if teraz > WK.lancuchDoL then
 			WK.lancuchK = 0
 		end
@@ -1027,6 +1068,10 @@ end)
 WK.ileIkon = require(Moduly:WaitForChild("IkonyEwolucji")).ileObrazow(D.ikony)
 
 UserInputService.InputBegan:Connect(function(wej: InputObject, przetworzone: boolean)
+	-- odczucie1: ekran powitania znika przy pierwszym dotknięciu / klawiszu / przycisku pada (zadania zostają w pigułce HUD)
+	if wej.UserInputType ~= Enum.UserInputType.MouseMovement then
+		WK.wejscieZamykaPowitanie()
+	end
 	if wej.UserInputType == Enum.UserInputType.Gamepad1 then
 		local k = wej.KeyCode
 		if k == Enum.KeyCode.ButtonA then
@@ -1712,7 +1757,25 @@ function WK.doDomu(): boolean
 			naj = math.min(naj, c)
 		end
 	end
+	-- odczucie1: samodzielne „wracaj po trofeum” spowalniało stadium 5 o ok. 1:20 (tempo.py, TEMPO_TROFEA=pelne: 7:13);
+	-- poziom trofeum podpowiadamy tylko przy drodze do domu po złoto i w legowisku
 	return zl < naj and zl + leg >= naj and leg >= 20
+end
+
+-- najtańszy poziom trofeum obecnej linii (nil, gdy wszystkie na maksimum)
+function WK.trofeumCena(): number?
+	local mf = gracz:GetAttribute("EW_MaxForma") or 1
+	local tro = WK.csv("EW_Trofea")
+	local G = D.legowisko
+	local naj = nil
+	for f = 1, mf do
+		local lv = tonumber(tro[f]) or 1
+		if G.ceny_x[lv] then
+			local c = math.floor(G.ceny_x[lv] * D.formy[f].trofeum)
+			naj = if naj then math.min(naj, c) else c
+		end
+	end
+	return naj
 end
 
 WK.brama = nil
@@ -1750,6 +1813,40 @@ function WK.zdHUD(P, NB, linia: string, wForma: number, teraz: number)
 		nast = if N then N.id else "", pigulka = pig, odnowa = math.floor((P.p or 0) * 100 + 0.5) / 100, ikona = P.slot:GetAttribute("IkonaTyp") }
 end
 
+-- odczucie1: połowa paska do następnego stadium — baner z zapowiedzią stadium i zdolności (mały cel między ewolucjami);
+-- raz na stadium w danym odrodzeniu, bez banera, gdy gracz wchodzi do gry z paskiem już ponad połową
+WK.polowy = {}
+function WK.krokPolowy(f: number, wz: number, pt: number)
+	if f >= NF or pt <= 1 then
+		return
+	end
+	local klucz = tostring(gracz:GetAttribute("EW_Odrodzenia") or 0) .. ":" .. f
+	if WK.polowy[klucz] or wz < pt * 0.5 then
+		return
+	end
+	WK.polowy[klucz] = true
+	if not WK.polowyStart then
+		WK.polowyStart = true
+		return
+	end
+	if f < 2 or odslona ~= nil or wz >= pt then
+		return -- pełny pasek: liczy się już „EVOLVE”, nie połowa
+	end
+	local zd = nil
+	for _, linia in { "ogien", "moc" } do
+		local N = L.nastepnaZdolnosc(D, linia, f)
+		if N and N.od == f + 1 then
+			zd = N.krotko or N.nazwa
+		end
+	end
+	local nast = D.formy[f + 1].nazwa
+	local t = if zd then string.format(UI.polowa_zd, nast, zd) else string.format(UI.polowa, nast)
+	pokazBaner(t, hex(UI.styl.kup), 1.8)
+	gracz:SetAttribute("EW_K_Polowa", t)
+	WK.czucie.polowy += 1
+	WK.graj("poziom", 0.85)
+end
+
 local function odswiezHUD()
 	WK.odswiezBrame()
 	local bossId = kontener:GetAttribute("BossId") or 0
@@ -1767,6 +1864,10 @@ local function odswiezHUD()
 	local wForma = if w then w.forma else f
 	local hpJa = if w then w.hp else 1
 	local pelny = f < NF and wz >= pt and not (w and serwerSteruje(w.flagi))
+	if pt > 1 then
+		WK.polowyStart = WK.polowyStart or wz < pt * 0.5
+		WK.krokPolowy(f, wz, pt)
+	end
 	-- odrodzenie1: na ANCIENT przycisk REBIRTH (ceremonia → pisklę nowej linii)
 	local odr = f >= NF and w ~= nil and not serwerSteruje(w.flagi) and not WK.odr
 	ramkaEwo.Visible = pelny or odr
@@ -1774,9 +1875,12 @@ local function odswiezHUD()
 	HUD:ustawLinie(gracz:GetAttribute("EW_Linia") or 1, gracz:GetAttribute("EW_Odrodzenia") or 0, gracz:GetAttribute("EW_Mnoznik") or 1)
 	WK.krokWyd()
 	WK.krokJajaDnia()
+	WK.ramkaSklepu.Visible = gracz:GetAttribute("EW_Sklep") == true and odslona == nil
+	gracz:SetAttribute("EW_K_Sklep", WK.ramkaSklepu.Visible)
 	-- retencja1: pigułka zadań dnia, ekran powitania zamyka się sam po 20 s, tablica rankingu w świecie
 	local zl = HttpService:JSONDecode(gracz:GetAttribute("EW_Zadania") or "[]")
 	gracz:SetAttribute("EW_K_Zadania", HUD:zadania(zl))
+	gracz:SetAttribute("EW_K_PowitanieWidoczne", HUD:powitanieAktywne())
 	if HUD:powitanieAktywne() then
 		HUD:powitanieZadania(zl)
 		if WK.powitanieDo and os.clock() > WK.powitanieDo then
@@ -1799,14 +1903,16 @@ local function odswiezHUD()
 	gracz:SetAttribute("EW_K_Odsl", HttpService:JSONEncode({ faza = O.faza or "", nazwa = O.nazwa.Text, moc = O.mocNapis.Text, plytka = O.plytka.Visible,
 		nast = O.nastKolo.Visible, dalej = O.dalej.Visible, portret = O.portret.Visible, kokon = O.kokon.Visible }))
 	-- podpowiedź: na start (do 5 kulek), przy pełnym pasku i po otwarciu lasu
+	local troC = WK.trofeumCena()
+	local troGot = troC ~= nil and (gracz:GetAttribute("EW_Zloto") or 0) + (gracz:GetAttribute("EW_ZlotoLeg") or 0) >= troC
 	if gracz:GetAttribute("EW_WDomu") and not pelny then
-		podpNapis.Text = UI.w_legowisku
+		podpNapis.Text = if troGot then UI.trofeum_w_legowisku else UI.w_legowisku
 		ramkaPodp.Visible = true
 	elseif WK.lasPodp and os.clock() < WK.lasPodp and not pelny then
 		podpNapis.Text = UI.las_podp
 		ramkaPodp.Visible = true
 	elseif WK.doDomu() and not pelny then
-		podpNapis.Text = UI.do_legowiska
+		podpNapis.Text = if troGot then UI.trofeum_gotowe else UI.do_legowiska
 		ramkaPodp.Visible = true
 	elseif pelny then
 		podpNapis.Text = UI.podpowiedz_ewo
@@ -2020,7 +2126,17 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 					E:iskry(k.Position, k.Color, 5, 0.6)
 					local typ = D.kulkiPoz[z.i][3]
 					local ile = (if typ == 3 then D.jedzenie.wielka elseif typ == 2 then D.jedzenie.duza else D.jedzenie.mala) * L.apetyt(D, ja())
+					-- odczucie1: liczba z mnożnikami (odrodzenia, przyspieszenie serii, deszcz) i „pop” dużych kul
+					ile *= (gracz:GetAttribute("EW_Mnoznik") or 1) * (if (gracz:GetAttribute("EW_Boost") or 0) > 0 and D.seria then D.seria.boost_x else 1)
+					if (kontener:GetAttribute("WydDeszczDo") or 0) > workspace:GetServerTimeNow() and D.wydarzenia then
+						ile *= D.wydarzenia.deszcz.wzrost_x
+					end
 					E:liczba(k.Position + Vector3.new(0, 2, 0), "+" .. tostring(math.floor(ile + 0.5)), k.Color)
+					if typ >= 2 then
+						E:pierscien(k.Position - Vector3.new(0, 0.6, 0), 1.6 + typ, k.Color, 0.25)
+					end
+					WK.czucie.pop += 1
+					WK.graj("jedzenie", 1.2 + typ * 0.05)
 				end
 				HUD:puls()
 				dzwiek("klik", 1.5 + math.random() * 0.3)
@@ -2059,6 +2175,10 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				E:slowo(p + Vector3.new(0, 4, 0), UI.zjedzony, hex(UI.kolory.ty), 0.9, 0.7)
 				E:liczba(p + Vector3.new(0, 6, 0), "+" .. tostring(z.zysk), hex("9BFFB8"))
 				E:iskry(p, Color3.new(1, 1, 1), 12, 1)
+				-- odczucie1: wybuch przy zjedzeniu (pierścień w kolorze żaru)
+				E:pierscien(C + Vector3.new(z.x, 0.3, z.z), 2 + D.formy[math.clamp(z.f or 1, 1, NF)].r * 2.2, hex(UI.styl.zar_gora), 0.35)
+				WK.czucie.smierci += 1
+				WK.graj("jedzenie", 0.9)
 				local w = widoki[mojId]
 				if w then
 					w.pulsT, w.pulsSila = 0, 0.12
@@ -2128,6 +2248,10 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 			if z.id == mojId then
 				WK.liczOdslon += 1
 				dzwiek("krol", 1)
+				-- odczucie1: krótkie spowolnienie przy ewolucji (błysk ekranu już jest)
+				WK.zwolnienieDo = os.clock() + 0.45
+				WK.czucie.slowmo += 1
+				WK.graj("ewolucja")
 				blyskT = 0
 				wstrzasnij(0.9 + D.formy[z.forma].r * 0.12, 0.55)
 				local W = wariantD(z.wariant)
@@ -2200,17 +2324,24 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 			end
 		elseif t == "powitanie" then
 			-- retencja1: ekran powitania (seria 7 dni, nagroda dnia, zadania)
-			WK.powitanieDo = os.clock() + 20
+			WK.powitanieDo = os.clock() + (UI.powitanie_s or 6)
 			HUD:powitanie(z, HttpService:JSONDecode(gracz:GetAttribute("EW_Zadania") or "[]"))
 			gracz:SetAttribute("EW_K_Powitanie", z.dni)
 			dzwiek("monety", 1)
 		elseif t == "zadanie" then
 			if z.id == mojId then
 				pokazBaner(UI.zadanie_gotowe, hex(UI.styl.kup), 2)
+				WK.graj("zadanie")
 				toast(string.format(UI.zadanie_nagroda, z.zloto), 3)
 				dzwiek("krol", 1.2)
 				WK.liczZadan = (WK.liczZadan or 0) + 1
 				gracz:SetAttribute("EW_K_ZadaniaGotowe", WK.liczZadan)
+			end
+		elseif t == "zakup_sklep" then
+			if z.id then
+				pokazBaner(string.format(UI.kupiono_sklep, tostring(z.id)), zloto, 2)
+				WK.graj("poziom", 1.2)
+				dzwiek("monety", 1)
 			end
 		elseif t == "zadania_nowe" then
 			if z.id == mojId then
@@ -2342,6 +2473,9 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				E:iskry(p, Color3.new(1, 1, 1), 14, 1.2)
 				E:liczba(p + Vector3.new(0, 2, 0), "+" .. tostring(z.zysk), hex("9BFFB8"))
 				E:slowo(p + Vector3.new(0, 3.5, 0), UI.zjedzony, hex(UI.kolory.ty), 0.7, 0.6)
+				E:pierscien(p - Vector3.new(0, 1.2, 0), 3.2, Color3.new(1, 1, 1), 0.3)
+				WK.czucie.pop += 1
+				WK.graj("jedzenie", 1.05)
 				dzwiek("plusk", 1.1)
 				HUD:puls()
 				gracz:SetAttribute("EW_K_Owce", (gracz:GetAttribute("EW_K_Owce") or 0) + 1)
@@ -2361,7 +2495,7 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 			if q then
 				q.hp = z.hp
 				q.ranaT = os.clock()
-				q.pulsT, q.pulsSila = 0, -0.07
+				q.pulsT, q.pulsSila = 0, if z.pw then -0.14 else -0.07
 				if jaA or jaQ or blisko then
 					WK.blysnij(q, if jaQ then hex("FF5A5A") else Color3.new(1, 1, 1))
 				end
@@ -2374,17 +2508,33 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				end
 				local ogien = z.jak == "ogien" or z.jak == "zar" or z.jak == "plama"
 				E:iskry(p + Vector3.new(0, wys * 0.55, 0), if ogien then Color3.fromRGB(255, 150, 50) else Color3.new(1, 1, 1), if z.kr then 10 else 5, 0.8)
+				WK.czucie.liczby += 1
+				if q and (jaA or jaQ) then
+					-- łuski w kolorze ciała trafionego (odczucie1)
+					E:iskry(p + Vector3.new(0, wys * 0.5, 0), WK.kolorCiala(q), if z.kr or z.pw then 7 else 4, 0.65)
+					WK.czucie.luski += 1
+				end
 			end
 			if jaA or jaQ then
 				local frac = math.clamp(z.ile / (D.walka.hp_baza * 0.6), 0, 1)
-				local stop = os.clock() + 0.04 + 0.07 * frac + (if z.kr then 0.03 else 0)
+				-- odczucie1: zatrzymanie klatki 50–90 ms tylko u atakującego i trafionego
+				local stopS = math.min(0.09, 0.05 + 0.03 * frac + (if z.kr then 0.01 else 0))
+				local stop = os.clock() + stopS
+				WK.czucie.stopy += 1
+				WK.czucie.stopMs = math.floor(stopS * 1000 + 0.5)
 				if q then
 					q.stopDo = stop
 				end
 				if a then
 					a.stopDo = stop
 				end
-				wstrzasnij(if jaQ then 0.45 + frac * 1.5 else 0.2 + frac * 0.9, 0.12 + frac * 0.2)
+				-- wstrząs łagodny, rośnie ze stadium i siłą trafienia
+				local etapS = 0.6 + 0.07 * (if ja0 then ja0.forma else 1)
+				local sila = (if jaQ then 0.3 + frac * 0.9 else 0.15 + frac * 0.55) * etapS
+				wstrzasnij(sila, 0.1 + frac * 0.15)
+				WK.czucie.wstrzasy += 1
+				WK.czucie.wstrzasMaks = math.max(WK.czucie.wstrzasMaks, math.floor(sila * 100) / 100)
+				WK.graj(if jaA then "trafienie" else "rana", if z.kr then 1.15 else 1)
 				if z.jak == "gryz" or z.jak == "boss" then
 					dzwiek(if z.kr then "kryt" else "cios", (if jaQ then 0.85 else 1.05) + math.random() * 0.15)
 				elseif z.jak ~= "ogien" and z.jak ~= "plama" then
@@ -2465,6 +2615,9 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				dzwiek("plusk", 1.3)
 			end
 		elseif t == "oddech" then
+			if z.id == mojId then
+				WK.graj("ogien")
+			end
 			local w = widoki[z.id]
 			if w then
 				w.kanalDo, w.kanalAb = os.clock() + z.czas, z.ab
@@ -2569,6 +2722,7 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 			if z.ok then
 				local U = L.ulepszenie(D, z.id)
 				pokazBaner(string.format(UI.kupiono, U and U.nazwa or ""), hex("9BFFB8"), 1.2)
+				WK.graj("poziom")
 				dzwiek("monety", 1.2)
 			elseif z.powod == "zloto" then
 				local cena = L.cena(D, ja(), z.id)
@@ -2746,6 +2900,14 @@ function WK.krokTablicy()
 	end
 end
 
+function WK.wejscieZamykaPowitanie()
+	if HUD:powitanieAktywne() then
+		HUD:powitanieKoniec()
+		WK.powitanieWejscie = (WK.powitanieWejscie or 0) + 1
+		gracz:SetAttribute("EW_K_PowitanieWejscie", WK.powitanieWejscie)
+	end
+end
+
 local function zegar(sek: number): string
 	sek = math.max(0, math.floor(sek))
 	return string.format("%d:%02d", sek // 60, sek % 60)
@@ -2790,6 +2952,62 @@ WK.ramkaJaja.Visible = false
 WK.bJajo.Activated:Connect(function()
 	akcja("jajo_dnia")
 end)
+-- odczucie1: przycisk SHOP (tylko gdy flaga sklepu włączona i jest numer ≠ 0 — serwer: atrybut EW_Sklep) i prosty panel
+WK.ramkaSklepu = warstwa("Sklep", Vector2.new(0.5, 1), UDim2.new(0.5, 160, 1, -16), Vector2.new(56, 56))
+WK.bSklep = nowy("TextButton", { Name = "Sklep", Size = UDim2.fromScale(1, 1), BackgroundColor3 = hex(UI.styl.zloto), Text = "", AutoButtonColor = true },
+	WK.ramkaSklepu)
+rog(WK.bSklep, 28)
+obrys(WK.bSklep, 3, hex(UI.styl.obrys))
+napis(WK.bSklep, UI.sklep, UDim2.fromScale(0.1, 0.28), UDim2.fromScale(0.8, 0.44), hex(UI.styl.obrys))
+WK.ramkaSklepu.Visible = false
+function WK.pokazSklep()
+	if WK.panelSklepu then
+		WK.panelSklepu.Visible = not WK.panelSklepu.Visible
+		return
+	end
+	local MS = game:GetService("MarketplaceService")
+	local P = nowy("Frame", { Name = "PanelSklepu", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(420, 300),
+		BackgroundColor3 = hex(UI.styl.panel), ZIndex = 30 }, ekran)
+	table.insert(skale, nowy("UIScale", { Scale = skalaEkranu() }, P))
+	rog(P, 16)
+	obrys(P, 3, hex(UI.styl.obrys))
+	napis(P, UI.sklep, UDim2.fromOffset(16, 8), UDim2.fromOffset(200, 34), hex(UI.styl.tekst))
+	local x = nowy("TextButton", { Name = "Zamknij", Position = UDim2.fromOffset(360, 0), Size = UDim2.fromOffset(56, 56), BackgroundTransparency = 1, Text = "" }, P)
+	napis(x, UI.zamknij, UDim2.fromOffset(14, 12), UDim2.fromOffset(28, 28), hex(UI.styl.zycie))
+	x.Activated:Connect(function()
+		P.Visible = false
+	end)
+	local y = 52
+	local function wiersz(nazwa: string, opis: string, kup)
+		local w = nowy("TextButton", { Position = UDim2.fromOffset(14, y), Size = UDim2.fromOffset(392, 54), BackgroundColor3 = hex(UI.styl.karta), Text = "",
+			AutoButtonColor = true }, P)
+		rog(w, 11)
+		napis(w, nazwa, UDim2.fromOffset(12, 4), UDim2.fromOffset(240, 24), hex(UI.styl.tekst))
+		napis(w, opis, UDim2.fromOffset(12, 28), UDim2.fromOffset(300, 20), hex(UI.styl.tekst2), cyfry)
+		w.Activated:Connect(kup)
+		y += 60
+	end
+	for _, Pp in D.sklep.przepustki do
+		if (Pp.pass_id or 0) > 0 then
+			wiersz(Pp.nazwa, Pp.opis, function()
+				MS:PromptGamePassPurchase(gracz, Pp.pass_id)
+			end)
+		end
+	end
+	for _, Pr in D.sklep.produkty do
+		if (Pr.product_id or 0) > 0 then
+			wiersz(Pr.nazwa, Pr.opis, function()
+				MS:PromptProductPurchase(gracz, Pr.product_id)
+			end)
+		end
+	end
+	P.Size = UDim2.fromOffset(420, y + 8)
+	WK.panelSklepu = P
+end
+WK.bSklep.Activated:Connect(function()
+	WK.pokazSklep()
+end)
+
 function WK.krokJajaDnia()
 	local dost = gracz:GetAttribute("EW_JajoDnia") == true
 	local dom = gracz:GetAttribute("EW_WDomu") == true
@@ -2975,7 +3193,7 @@ local function uklad(): string
 	local nazwy = { Boss = ramkaBossa, Wzrost = HUD.ramkaWzrostu, Zloto = HUD.ramkaZlota, Drabina = HUD.ramkaDrabiny, Gryz = HUD.gryz.ramka, Zryw = HUD.zryw.ramka,
 		Ogien = WK.zdOgien.ramka, Moc = WK.zdMoc.ramka, OgienNast = WK.nastOgien.ramka, MocNast = WK.nastMoc.ramka, Ewolucja = ramkaEwo, Podpowiedz = ramkaPodp,
 		Toast = ramkaToastu, Tabliczka = ramkaTabl, Panel = WK.panel, Odslona = HUD.odsl.ramka, Baner = ramkaBaneru,
-		OdslonaSrodek = HUD.odsl.ramka:FindFirstChild("Srodek"), Wydarzenie = HUD.ramkaWyd, JajoDnia = WK.ramkaJaja, Zadania = HUD.ramkaZadan,
+		OdslonaSrodek = HUD.odsl.ramka:FindFirstChild("Srodek"), Wydarzenie = HUD.ramkaWyd, JajoDnia = WK.ramkaJaja, Zadania = HUD.ramkaZadan, Sklep = WK.ramkaSklepu,
 		PowitanieSrodek = HUD.pow.ramka:FindFirstChild("Srodek") }
 	local pr = {}
 	local v = kamera.ViewportSize
@@ -3098,6 +3316,8 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 			HUD:pokazZakladke("T")
 		elseif tp == "dalej" then
 			HUD:odslonaKoniec()
+		elseif tp == "dotyk" then
+			WK.wejscieZamykaPowitanie() -- próby: to samo co pierwsze dotknięcie ekranu
 		elseif tp == "powitanie_zamknij" then
 			HUD:powitanieKoniec()
 		elseif tp == "jajo_dnia" then
@@ -3269,6 +3489,8 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 		local jw = widoki[mojId]
 		gracz:SetAttribute("EW_K_LiniaModelu", if jw then jw.linia or 1 else 0)
 		gracz:SetAttribute("EW_K_Wydarzen", WK.liczWyd or 0)
+		gracz:SetAttribute("EW_K_Czucie", HttpService:JSONEncode(WK.czucie))
+		gracz:SetAttribute("EW_K_DzwiekiHaki", HttpService:JSONEncode(WK.hakiDzw))
 		local lb = {}
 		for _, q in widoki do
 			if q.slot == 0 and not q.boss and q.linia then

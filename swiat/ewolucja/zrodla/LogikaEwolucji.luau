@@ -93,7 +93,98 @@ function L.stawkaB(D, b): number
 	for t = 1, math.min(b.bossTrofea or 0, #G.boss_trofea) do
 		s += G.boss_trofea[t]
 	end
-	return s * L.mnoznikOdr(D, b)
+	return s * L.mnoznikOdr(D, b) * L.przepustkaX(D, b, "zloto_x")
+end
+
+------------------------------------------------------------------ odczucie1: sklep (kod gotowy, flaga wyłączona)
+-- mnożnik z posiadanych przepustek (pole „wzrost_x” albo „zloto_x” definicji przepustki)
+function L.przepustkaX(D, b, pole: string): number
+	local x = 1
+	if D.sklep and b.przepustki then
+		for _, Pp in D.sklep.przepustki do
+			if b.przepustki[Pp.id] and Pp[pole] then
+				x *= Pp[pole]
+			end
+		end
+	end
+	return x
+end
+
+-- produkt po numerze Roblox (0 = ukryty, nigdy nie pasuje)
+function L.produktPoId(D, productId: any)
+	if not D.sklep or type(productId) ~= "number" or productId <= 0 then
+		return nil
+	end
+	for _, Pr in D.sklep.produkty do
+		if Pr.product_id == productId then
+			return Pr
+		end
+	end
+	return nil
+end
+
+-- nagroda produktu; zwraca zapis do cofnięcia (gdy zapis gracza się nie uda)
+function L.przyznajProdukt(D, b, Pr)
+	local cofka = { zloto = Pr.zloto or 0, boostS = Pr.boost_s or 0 }
+	b.zloto += cofka.zloto
+	b.boostS = (b.boostS or 0) + cofka.boostS
+	return cofka
+end
+
+function L.cofnijProdukt(b, cofka)
+	b.zloto -= cofka.zloto
+	b.boostS = math.max(0, (b.boostS or 0) - cofka.boostS)
+end
+
+-- paragony (PurchaseId) w zapisie gracza: idempotencja ProcessReceipt
+function L.paragonZnany(b, pid: string): boolean
+	for _, p in b.paragony or {} do
+		if p == pid then
+			return true
+		end
+	end
+	return false
+end
+
+function L.zapamietajParagon(D, b, pid: string)
+	b.paragony = b.paragony or {}
+	table.insert(b.paragony, pid)
+	local maks = (D.sklep and D.sklep.paragony_max) or 200
+	while #b.paragony > maks do
+		for i = 1, #b.paragony - 1 do
+			b.paragony[i] = b.paragony[i + 1]
+		end
+		b.paragony[#b.paragony] = nil
+	end
+end
+
+function L.zapomnijParagon(b, pid: string)
+	local nowe = {}
+	for _, p in b.paragony or {} do
+		if p ~= pid then
+			table.insert(nowe, p)
+		end
+	end
+	b.paragony = nowe
+end
+
+-- czy pokazać przycisk sklepu: flaga i co najmniej jeden numer ≠ 0
+function L.sklepWidoczny(D): boolean
+	local S = D.sklep
+	if not (S and S.wlaczony) then
+		return false
+	end
+	for _, Pp in S.przepustki do
+		if (Pp.pass_id or 0) > 0 then
+			return true
+		end
+	end
+	for _, Pr in S.produkty do
+		if (Pr.product_id or 0) > 0 then
+			return true
+		end
+	end
+	return false
 end
 
 function L.cenaTrofeum(D, b, f: number): number?
@@ -624,7 +715,7 @@ function L.dodajWzrost(S, b, ile: number)
 	end
 	local p = L.potrzeba(D, b.forma)
 	if b.slot > 0 then
-		ile *= L.mnoznikOdr(D, b) * (if (b.boostS or 0) > 0 and D.seria then D.seria.boost_x else 1)
+		ile *= L.mnoznikOdr(D, b) * (if (b.boostS or 0) > 0 and D.seria then D.seria.boost_x else 1) * L.przepustkaX(D, b, "wzrost_x")
 	end
 	b.wzrost = math.min(p * D.ewolucja.pasek_maks, b.wzrost + ile)
 end
@@ -2153,7 +2244,7 @@ end
 function L.profilNowy(D)
 	return { wersja = D.zapis.wersja, zloto = 0, zlotoLeg = 0, poziomy = { szczeka = 1, szybkosc = 1, apetyt = 1 }, maxForma = 1,
 		warianty = {}, trofea = {}, bossTrofea = 0, ostatnio = 0, pierwszy = 0, odrodzenia = 0, linia = 1, linie = {}, dzienJaja = -1,
-		seria = { dzien = -1, dni = 0 }, zadania = { dzien = -1, lista = {} }, boostS = 0 }
+		seria = { dzien = -1, dni = 0 }, zadania = { dzien = -1, lista = {} }, boostS = 0, paragony = {} }
 end
 
 -- dane z magazynu → profil (migracja wersji, uzgodnienie z szablonem, walidacja liczb i nazw)
@@ -2190,6 +2281,15 @@ function L.profilZ(D, dane: any)
 		p.seria.dni = math.floor(liczba(dane.seria.dni, 0, if D.seria then #D.seria.nagrody else 7, 0))
 	end
 	p.boostS = liczba(dane.boostS, 0, 86400, 0)
+	-- odczucie1: paragony sklepu (PurchaseId jako napisy, najwyżej paragony_max)
+	if type(dane.paragony) == "table" then
+		local maks = (D.sklep and D.sklep.paragony_max) or 200
+		for _, x in dane.paragony do
+			if type(x) == "string" and #x <= 64 and #p.paragony < maks then
+				table.insert(p.paragony, x)
+			end
+		end
+	end
 	if type(dane.zadania) == "table" and type(dane.zadania.lista) == "table" and D.zadania then
 		p.zadania.dzien = math.floor(liczba(dane.zadania.dzien, -1, 1e7, -1))
 		for _, q in dane.zadania.lista do
@@ -2242,6 +2342,9 @@ function L.doProfilu(D, b, teraz: number)
 	p.dzienJaja = b.dzienJaja or -1
 	p.seria = { dzien = (b.seria and b.seria.dzien) or -1, dni = (b.seria and b.seria.dni) or 0 }
 	p.boostS = math.floor(b.boostS or 0)
+	for _, x in b.paragony or {} do
+		table.insert(p.paragony, x)
+	end
 	if b.zadania then
 		p.zadania.dzien = b.zadania.dzien
 		for _, q in b.zadania.lista do
@@ -2278,6 +2381,10 @@ function L.zProfilu(D, b, p, teraz: number): (number, number)
 	b.seria = { dzien = p.seria.dzien, dni = p.seria.dni }
 	b.boostS = p.boostS or 0
 	b.ziarno = math.floor(b.pierwszy or 0) % 100003
+	b.paragony = {}
+	for _, x in p.paragony or {} do
+		table.insert(b.paragony, x)
+	end
 	b.zadania = nil
 	if p.zadania and p.zadania.dzien >= 0 then
 		local lista = {}

@@ -21,6 +21,11 @@
   "nieznane": "???",
   "lv": "Lv %d",
   "odslona_s": 3.4,
+  "powitanie_s": 6,
+  "trofeum_gotowe": "Trophy LEVEL UP ready - go to your LAIR!",
+  "sklep": "SHOP",
+  "kupiono_sklep": "THANK YOU! %s",
+  "trofeum_w_legowisku": "Open the LAIR panel - LEVEL UP a trophy!",
   "odrodz": "REBIRTH!",
   "odrodzenie": "REBIRTH %d",
   "odrodzenie_opis": "%s LINE  x%.2f growth & lair gold",
@@ -42,6 +47,8 @@
   "boost": "x2 GROWTH %d MIN",
   "zadania_tytul": "DAILY QUESTS",
   "zadanie_gotowe": "QUEST DONE!",
+  "polowa": "HALFWAY to %s!",
+  "polowa_zd": "HALFWAY to %s + %s!",
   "zadanie_nagroda": "+%d gold",
   "zadania_pigulka": "%s %d/%d",
   "zadania_wszystkie": "ALL QUESTS DONE! New ones at 00:00 UTC",
@@ -322,6 +329,25 @@
   "opis": "Wydarzenia zegarowe na cały serwer (działają z jednym graczem). DRAGON RAIN: co co_s na trwa_s wszystkie kule łąki od razu żywe i złote, wracają po powrot_s, wzrost × wzrost_x i +zloto złota. GOLEM RAMPAGE: co co_s KNIGHT GOLEM najwyższego stopnia osiągniętego na serwerze wychodzi bramą na łąkę (dom x, z), ściga graczy (widzi × widzi_x), życie × hp_x; kto trafił, dostaje równą część skrzyni × pula_x; koniec po trwa_s albo po pokonaniu. retencja1: rozkład z zegara UTC (os.time) — aktywne, gdy (czas UTC − przesun_s) mod co_s < trwa_s; ten sam na każdym serwerze.",
   "deszcz": {"co_s": 1200, "przesun_s": 0, "trwa_s": 120, "powrot_s": 2.5, "wzrost_x": 3, "zloto": 2},
   "rampage": {"co_s": 2700, "przesun_s": 600, "trwa_s": 180, "x": 0, "z": 55, "hp_x": 1.0, "pula_x": 2.0, "widzi_x": 1.6}
+ },
+ "sklep": {
+  "opis": "odczucie1: SKLEP — kod gotowy, FLAGA WYŁĄCZONA (ceny i tworzenie produktów to decyzja ludzi; nic nie utworzono). Przepustki: 2x GROWTH (wzrost × wzrost_x) i VIP LAIR (złoto legowiska × zloto_x, złoty sztandar). Produkty: paczki złota i przyspieszenie wzrostu 15 min. BEZ płatnych losowań (żadnych płatnych jaj ani wariantów). Numer 0 = ukryte (przycisk się nie pokazuje). Przycisk SHOP tylko przy wlaczony = true i co najmniej jednym numerze ≠ 0. ProcessReceipt: idempotentny po PurchaseId (lista paragonów w zapisie gracza), nagroda zapisana przed PurchaseGranted, NotProcessedYet przy każdym błędzie.",
+  "wlaczony": false,
+  "paragony_max": 200,
+  "przepustki": [
+   {"id": "wzrost2x", "nazwa": "2x GROWTH", "opis": "Grow twice as fast - forever", "pass_id": 0, "wzrost_x": 2.0},
+   {"id": "vip", "nazwa": "VIP LAIR", "opis": "x1.5 lair gold + golden banner", "pass_id": 0, "zloto_x": 1.5}
+  ],
+  "produkty": [
+   {"id": "zloto_1", "nazwa": "GOLD POUCH", "opis": "+1 000 gold", "product_id": 0, "zloto": 1000},
+   {"id": "zloto_2", "nazwa": "GOLD CHEST", "opis": "+6 000 gold", "product_id": 0, "zloto": 6000},
+   {"id": "zloto_3", "nazwa": "DRAGON HOARD", "opis": "+25 000 gold", "product_id": 0, "zloto": 25000},
+   {"id": "boost15", "nazwa": "x2 GROWTH 15 MIN", "opis": "Double growth for 15 minutes of play", "product_id": 0, "boost_s": 900}
+  ]
+ },
+ "dzwieki_gry": {
+  "opis": "odczucie1: TABELA DŹWIĘKÓW GRY (rbxassetid) — haki w kliencie: gryz (BITE), trafienie (cios zadany), rana (cios otrzymany), ogien (oddech), jedzenie (kula, owca, zjedzenie), ewolucja, zadanie (zadanie dnia), poziom (zakup ulepszenia). 0 = cisza (wgranie audio czeka na zgodę Karola); po wpisaniu numeru dźwięk gra sam, bez zmian w kodzie.",
+  "id": {"gryz": 0, "trafienie": 0, "rana": 0, "ogien": 0, "jedzenie": 0, "ewolucja": 0, "zadanie": 0, "poziom": 0}
  },
  "seria": {
   "opis": "retencja1: seria logowań (dzień UTC). Wejście dzień po dniu = następny dzień kalendarza 7 dni (po 7. znów 1.), przerwa = od 1. Nagroda dnia od razu przy wejściu: złoto, przyspieszenie wzrostu (boost_s sekund gry × boost_x), w 7. dniu losowanie wariantu (wagi jajo_dnia) dla najwyższego trofeum obecnej linii. Tylko waluta gry.",

@@ -320,6 +320,7 @@ def przebieg(p, zrzuty):
     interfejs(p, zrzuty)
     odrodzenie_proby(p, zrzuty)
     retencja_proby(p, zrzuty)
+    odczucie_proby(p, zrzuty)
     a = p.atr()
     wynik("P12 klatka", (a.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a.get("EW_K_Klatka") or 0, 1), praca_skryptu_ms=round(a.get("EW_K_Praca") or 0, 2),
           czesci_smokow=a.get("EW_K_CzesciSmokow"), rigi=a.get("EW_K_Rigi"), widokow=a.get("EW_K_Widokow"),
@@ -1126,6 +1127,134 @@ def retencja_proby(p, zrzuty):
           linie_botow=a.get("EW_K_LinieBotow"), trofea=a.get("EW_K_TrofeaLinia"), linia=a.get("EW_Linia"))
 
 
+def czucie(p):
+    return json.loads(p.atr().get("EW_K_Czucie") or "{}")
+
+
+def odczucie_proby(p, zrzuty):
+    """odczucie1: wrażenia walki (zatrzymanie 50–90 ms, wstrząs, liczby, łuski, wybuch przy zjedzeniu, pop kul, spowolnienie
+    przy ewolucji, haki dźwięków), krótki ekran powitania, sklep z atrapą MarketplaceService (flaga wyłączona)."""
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    p.serwer('"boty_cisza", 150')
+    # P53 walka z bliska: trzy BITE w manekina, potem zjedzenie (wybuch), kule (pop), ewolucja (spowolnienie)
+    p.serwer('"forma_gracza", 3')
+    x0, z0 = wolna_droga()
+    p.serwer('"przenies", %d, %f, %f' % (byt, x0, z0))
+    p.serwer('"hp", nil, 9000')
+    time.sleep(1.0)
+    p.serwer('"tarcza_zeruj"')
+    st = p.serwer('"stan"')
+    r3 = D["formy"][2]["r"]
+    bid = bot_obok(p, st, 3, -(2 * r3 + 1.0), 0)
+    p.serwer('"hp", %d, 5000' % bid)
+    p.serwer('"bot_cisza", %d, 8' % bid)
+    p.ustaw("EW_TestSter", "Vector3.new(1, 0, 0.15)")
+    p.ustaw("EW_TestZoom", "0.45")
+    time.sleep(0.5)
+    c0 = czucie(p)
+    h0 = json.loads(p.atr().get("EW_K_DzwiekiHaki") or "{}")
+    h0 = h0 if isinstance(h0, dict) else {}
+    for i in range(3):
+        p.przycisk("odnowa_zeruj")
+        p.przycisk("gryz")
+        time.sleep(0.62)
+        if i == 1 and zrzuty:
+            p.zrzut("47_trafienie.jpg")
+    time.sleep(1.1)
+    c1 = czucie(p)
+    p.serwer('"hp", %d, 3' % bid)
+    p.serwer('"przenies", %d, %f, %f' % (bid, x0 - (2 * r3 + 1.0), z0))
+    p.ustaw("EW_TestSter", "Vector3.new(1, 0, 0.15)")
+    zjad, _ = czekaj(lambda: (p.przycisk("odnowa_zeruj"), p.przycisk("gryz"), czucie(p).get("smierci", 0) > c1.get("smierci", 0))[2], 6, 0.6)
+    p.ustaw("EW_TestZoom", "nil")
+    p.ustaw("EW_TestAuto", "true")
+    time.sleep(3.0)
+    p.ustaw("EW_TestAuto", "false")
+    p.serwer('"wzrost_pelny"')
+    time.sleep(0.4)
+    p.przycisk("ewoluuj")
+    czekaj(lambda: czucie(p).get("slowmo", 0) > c1.get("slowmo", 0), 6, 0.3)
+    time.sleep(1.2)
+    c2 = czucie(p)
+    h2 = json.loads(p.atr().get("EW_K_DzwiekiHaki") or "{}")
+    h2 = h2 if isinstance(h2, dict) else {}
+    p.przycisk("dalej")
+    wynik("P53 wrażenia walki i wzrostu", c1["stopy"] - c0.get("stopy", 0) >= 3 and 50 <= c1["stopMs"] <= 90 and c1["wstrzasy"] > c0.get("wstrzasy", 0)
+          and c1["liczby"] > c0.get("liczby", 0) and c1["luski"] > c0.get("luski", 0) and zjad and c2["pop"] > c1["pop"] and c2["slowmo"] > c1["slowmo"]
+          and h2.get("gryz", 0) - h0.get("gryz", 0) >= 3 and h2.get("trafienie", 0) > h0.get("trafienie", 0) and h2.get("ewolucja", 0) > h0.get("ewolucja", 0),
+          czucie={k: c2.get(k) for k in ("stopy", "stopMs", "wstrzasy", "wstrzasMaks", "liczby", "luski", "smierci", "pop", "slowmo")},
+          haki_dzwiekow=h2, zjedzenie=bool(zjad))
+    # P56 połowa paska: baner „HALFWAY to …” z zapowiedzią następnego stadium (mały cel między ewolucjami), raz na stadium
+    time.sleep(2.5)  # baner „NEW POWER” po ewolucji z P53 mija
+    st = p.serwer('"stan"')
+    pt = st.get("potrzeba") or 1
+    c3 = czucie(p)
+    p.serwer('"wzrost", %f' % (pt * 0.2))
+    time.sleep(0.8)
+    p.serwer('"wzrost", %f' % (pt * 0.6))
+    pol, _ = czekaj(lambda: czucie(p).get("polowy", 0) > c3.get("polowy", 0), 4, 0.25)
+    time.sleep(0.3)
+    ban = p.atr().get("EW_K_Polowa") or ""
+    if zrzuty:
+        p.zrzut("48_polowa.jpg")
+    p.serwer('"wzrost", %f' % (pt * 0.3))
+    time.sleep(0.8)
+    p.serwer('"wzrost", %f' % (pt * 0.7))
+    time.sleep(1.2)
+    c4 = czucie(p)
+    nast = D["formy"][min(len(D["formy"]), (st.get("forma") or 1) + 1) - 1]["nazwa"]
+    wynik("P56 baner połowy paska", pol and "HALFWAY" in ban and nast in ban and c4.get("polowy", 0) == c3.get("polowy", 0) + 1,
+          baner=ban, forma=st.get("forma"), raz_na_stadium=c4.get("polowy", 0) - c3.get("polowy", 0))
+    # P54 ekran powitania: znika po dotknięciu (to samo co pierwsze dotknięcie) i sam po ok. 6 s; zadania zostają w pigułce
+    p.serwer('"logowanie"')
+    wid, _ = czekaj(lambda: p.atr().get("EW_K_PowitanieWidoczne") is True, 3, 0.2)
+    p.przycisk("dotyk")
+    znik, _ = czekaj(lambda: p.atr().get("EW_K_PowitanieWidoczne") is False, 2, 0.15)
+    p.serwer('"logowanie"')
+    czekaj(lambda: p.atr().get("EW_K_PowitanieWidoczne") is True, 3, 0.2)
+    t0 = time.time()
+    sam, t6 = czekaj(lambda: p.atr().get("EW_K_PowitanieWidoczne") is False, 9, 0.25)
+    a = p.atr()
+    wynik("P54 krótkie powitanie", wid and znik and sam and 5.0 <= t6 <= 7.5 and bool(a.get("EW_K_Zadania")),
+          po_dotyku=bool(znik), sam_po_s=round(t6, 1), pigulka=a.get("EW_K_Zadania"))
+    # P55 sklep (flaga wyłączona, atrapa MarketplaceService): przycisk ukryty, przepustki, paragony idempotentne, błąd zapisu
+    a = p.atr()
+    ukryty = a.get("EW_Sklep") is False and a.get("EW_K_Sklep") is False
+    pr1 = p.serwer('"sklep_atrapa", {wzrost2x = true}')
+    time.sleep(0.4)
+    pa = p.atr().get("EW_Przepustki")
+    p.serwer('"sklep_atrapa", {vip = true}')
+    time.sleep(0.4)
+    vip = p.atr().get("EW_VIP")
+    p.serwer('"produkt_id", "zloto_1", 7001')
+    zl = lambda: p.serwer('"stan"')["zloto"]
+    z0 = zl()
+    d1 = p.serwer('"zakup_symuluj", 7001, "proba-1"')
+    z1 = zl()
+    d2 = p.serwer('"zakup_symuluj", 7001, "proba-1"')
+    z2 = zl()
+    p.serwer('"zapis_awaria", true')
+    d3 = p.serwer('"zakup_symuluj", 7001, "proba-2"')
+    z3 = zl()
+    p.serwer('"zapis_awaria", false')
+    d4 = p.serwer('"zakup_symuluj", 7001, "proba-2"')
+    z4 = zl()
+    d5 = p.serwer('"zakup_symuluj", 9999, "proba-3"')
+    ww = p.serwer('"wyjdz_wroc", 60')
+    time.sleep(1.0)
+    p.przycisk("powitanie_zamknij")
+    z5 = zl()
+    d6 = p.serwer('"zakup_symuluj", 7001, "proba-1"')
+    z6 = zl()
+    p.serwer('"produkt_id", "zloto_1", 0')
+    p.serwer('"sklep_atrapa", {}')
+    wynik("P55 sklep (atrapa, flaga wyłączona)", ukryty and pa == "wzrost2x" and vip is True and d1 == "PurchaseGranted" and z1 - z0 == 1000
+          and d2 == "PurchaseGranted" and z2 == z1 and d3 == "NotProcessedYet" and z3 == z2 and d4 == "PurchaseGranted" and z4 - z3 == 1000
+          and d5 == "NotProcessedYet" and ww and d6 == "PurchaseGranted" and z6 - z5 < 1000,  # po powrocie: bez drugiej nagrody (złoto skarbu może dojść)
+          ukryty=ukryty, przepustki=pa, vip=vip, decyzje=[d1, d2, d3, d4, d5, d6], zloto=[z0, z1, z2, z3, z4, z5, z6])
+
+
 def pomiar(p):
     # P22 pomiar prób: podsumowanie sesji trafia tylko do magazynu w pamięci (nigdy do prawdziwego), bez danych osoby
     klucz = p.serwer('"zapisz_probe"')
@@ -1159,6 +1288,7 @@ def main():
     ap.add_argument("--tylko-interfejs", action="store_true", help="start i próby interfejsu (P01, P34–P41)")
     ap.add_argument("--tylko-odrodzenie", action="store_true", help="start i próby odrodzenia (P42–P47)")
     ap.add_argument("--tylko-retencja", action="store_true", help="start, powitanie i próby retencji (P48–P52)")
+    ap.add_argument("--tylko-odczucie", action="store_true", help="start i próby odczucia walki, powitania i sklepu (P53–P55)")
     a = ap.parse_args()
     with StudioMCP(timeout=180) as s:
         p = P(s, a.studio)
@@ -1169,7 +1299,13 @@ def main():
         try:
             # rozkład wydarzeń z zegara UTC wyłączony na czas prób (deszcz i rampage tylko wymuszone) — wyniki nie zależą od godziny
             czekaj(lambda: p.serwer('"wydarzenia_zegar", false'), 30, 0.5)
-            if a.tylko_retencja:
+            if a.tylko_odczucie:
+                czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
+                p.luau(BEZ_LISTY, "Client")
+                czekaj(lambda: p.atr().get("EW_K_Powitanie"), 8, 0.3)
+                p.przycisk("powitanie_zamknij")
+                odczucie_proby(p, not a.bez_zrzutow)
+            elif a.tylko_retencja:
                 czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
                 p.luau(BEZ_LISTY, "Client")
                 pw, _ = czekaj(lambda: p.atr().get("EW_K_Powitanie"), 8, 0.3)

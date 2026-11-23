@@ -77,6 +77,9 @@ def main():
             p.luau(PP.BEZ_LISTY, "Client")
             # T8 (retencja1): ekran powitania mieści się na ekranie, CONTINUE ≥ 44 pt; potem zamknięty
             PP.czekaj(lambda: p.atr().get("EW_K_Powitanie"), 8, 0.3)
+            # odczucie1: powitanie zamyka się samo po ok. 6 s — otwarte jeszcze raz tuż przed pomiarem
+            p.serwer('"logowanie"')
+            PP.czekaj(lambda: p.atr().get("EW_K_PowitanieWidoczne") is True, 4, 0.2)
             time.sleep(0.6)
             u8 = uklad(p)
             p.zrzut("46_telefon_powitanie%s.jpg" % a.przyrostek)
@@ -134,9 +137,32 @@ def main():
                      prostokaty={k: v for k, v in pr7.items() if k in ("Gryz", "Zryw", "Ogien", "Moc", "OgienNast", "MocNast", "Zycie")})
             p.zrzut("17_telefon_walka%s.jpg" % a.przyrostek)
             a1 = p.atr()
-            PP.wynik("T5 klatka na telefonie", (a1.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a1.get("EW_K_Klatka") or 0, 1),
+            PP.wynik("T5 klatka na telefonie (≤ 16,7 ms)", (a1.get("EW_K_Klatka") or 99) <= 16.9, klatka_ms=round(a1.get("EW_K_Klatka") or 0, 1),
                      praca_skryptu_ms=round(a1.get("EW_K_Praca") or 0, 2), widokow=a1.get("EW_K_Widokow"), czesci_smokow=a1.get("EW_K_CzesciSmokow"),
                      rigi=a1.get("EW_K_Rigi"))
+            # T9 (odczucie1): klatka w walce z bliska — BITE i FIRE BREATH co chwilę (iskry, łuski, liczby, wstrząs), najgorsza sekunda
+            st = p.serwer('"stan"')
+            p.serwer('"boty_cisza", 60')
+            p.serwer('"hp", nil, 9000')
+            p.serwer('"tarcza_zeruj"')
+            r4 = PP.D["formy"][3]["r"]
+            bid = PP.bot_obok(p, st, 4, -(2 * r4 + 1.0), 0)
+            p.serwer('"hp", %d, 9000' % bid)
+            p.serwer('"bot_cisza", %d, 10' % bid)
+            c0 = json.loads(p.atr().get("EW_K_Czucie") or "{}")
+            c0 = c0 if isinstance(c0, dict) else {}
+            klatki = []
+            for i in range(8):
+                p.ustaw("EW_TestSter", "Vector3.new(1, 0, 0.2)")
+                p.przycisk("odnowa_zeruj")
+                p.przycisk("ogien" if i % 3 == 0 else "gryz")
+                time.sleep(0.5)
+                klatki.append(p.atr().get("EW_K_Klatka") or 99)
+            c1 = json.loads(p.atr().get("EW_K_Czucie") or "{}")
+            c1 = c1 if isinstance(c1, dict) else {}
+            trafien = c1.get("stopy", 0) - c0.get("stopy", 0)
+            PP.wynik("T9 klatka w walce z bliska (≤ 16,7 ms)", max(klatki[2:]) <= 16.9 and trafien >= 3,
+                     klatka_maks_ms=round(max(klatki[2:]), 1), klatki=[round(k, 1) for k in klatki], trafien=trafien)
         finally:
             zle, _ = PP.bledy_konsoli(p)
             PP.wynik("T6 konsola bez błędów", not zle, bledy=zle[:10])

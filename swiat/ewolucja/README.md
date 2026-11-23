@@ -349,7 +349,7 @@ testy offline), serwer i klient tylko wołają.
   (CustomField01 = id), `LoginStreakDay`, przepływy złota `quest_*` i `streak_day_*`.
 - **Ekran powitania** przy każdym wejściu: WELCOME BACK! / WELCOME, DRAGON!, „DAY n STREAK”, kalendarz 7 dni
   (dzisiaj na pomarańczowo, odebrane „OK”), nagroda dnia i złoto skarbu z nieobecności, 3 zadania z paskami, CONTINUE
-  (zamyka się też sam po 20 s; telefon 620 × 330 pt × skala).
+  (zamyka się też sam — od odczucie1 po 6 s albo przy pierwszym dotknięciu; telefon 620 × 330 pt × skala).
 - **Zapis w wersji 2**: `seria`, `zadania`, `boostS` w tym samym profilu; migracja z wersji 1 = wartości domyślne;
   walidacja w `L.profilZ`. Blokada sesji bez zmian; w Studio i próbach magazyn w pamięci.
 - **Ranking**: leaderstats `Stage` i `Rebirths`; tablica TOP REBIRTHS w świecie na łące (−18, −96): globalny top 10
@@ -374,6 +374,39 @@ testy offline), serwer i klient tylko wołają.
   9/9 (nowe T8 powitanie); zrzuty `41_powitanie`–`46_telefon_powitanie`; film
   `%TEMP%\ewolucja_demo\ewolucja_retencja.mp4` (30 s, `demo_wideo.py --retencja`; kamera z bliska: `EW_TestZoom`,
   `EW_TestKat`).
+
+## Odczucie walki, krótkie powitanie, tempo, sklep (odczucie1, 23.11.2026)
+- **Trafienie** (klient, tylko atakujący i trafiony): zatrzymanie klatki 50–90 ms (0,05 + 0,03 × siła, +0,01 przy
+  krytyku, najwyżej 0,09 s); wstrząs kamery łagodny, rośnie ze stadium gracza i siłą trafienia (u obcych smoków brak);
+  liczby obrażeń i „+wzrost”; łuski w kolorze ciała trafionego obok iskier (ogień: pomarańczowe); mocniejsze zgniecenie
+  celu przy odrzucie. Zjedzenie: pierścień w kolorze żaru, „GULP!”. Kule i owce: „pop” (pierścień dużych kul), liczba
+  wzrostu z mnożnikami (odrodzenia, przyspieszenie serii, deszcz). Ewolucja: błysk i 0,45 s spowolnienia. Ślad zrywu
+  bez zmian. Cząsteczki: `Efekty:iskry` nie przekracza limitu efektów naraz (160).
+- **Tabela dźwięków** `ustawienia.json → dzwieki_gry.id`: gryz, trafienie, rana, ogien, jedzenie, ewolucja, zadanie,
+  poziom; **0 = cisza** (wgranie audio czeka na zgodę). Po wpisaniu numeru dźwięk gra sam (`WK.graj`, haki w kodzie
+  liczone w próbach: `EW_K_DzwiekiHaki`).
+- **Połowa paska** (mały cel między ewolucjami): baner „HALFWAY to DRAGON + GLIDE!” (stadium i zdolność, która przyjdzie),
+  raz na stadium w danym odrodzeniu; nie przy pełnym pasku ani przy wejściu do gry z paskiem ponad połową.
+- **Powitanie**: zamyka się samo po `ui.powitanie_s` = 6 s albo przy pierwszym dotknięciu / klawiszu / przycisku pada;
+  zadania zostają w pigułce HUD (teraz bez osieroconego „times”: „Collect your hoard 0/2”).
+- **Podpowiedź trofeum**: samodzielne „wracaj po poziom trofeum” sprawdzone w `tempo.py` (`TEMPO_TROFEA=pelne`) —
+  stadium 5 z 5:49 na 7:13, więc zostało tylko przy drodze do domu po złoto i w legowisku.
+- **Tempo** (`tempo.py`, 12 prób, 26 min; nowość = forma, las, boss, zadanie dnia, zakup, baner połowy paska): forma 5
+  **5:49** (cel ≤ 7:00), pierwszy ANCIENT = pierwsze odrodzenie **20:11** (10/12 prób; cel 18–22), najdłuższa przerwa
+  bez nowości w 0–10 min **2:00** (cel ≤ 2:30; bez liczenia banera połowy 2:37).
+- **Sklep — kod gotowy, FLAGA WYŁĄCZONA** (`ustawienia.json → sklep`, `wlaczony: false`; nic nie utworzono w Roblox):
+  przepustki 2x GROWTH (wzrost × 2) i VIP LAIR (złoto legowiska × 1,5, złoty sztandar); produkty GOLD POUCH 1 000,
+  GOLD CHEST 6 000, DRAGON HOARD 25 000, x2 GROWTH 15 MIN. **Bez płatnych losowań.** Numer 0 = ukryte; przycisk SHOP
+  tylko przy `wlaczony: true` i co najmniej jednym numerze ≠ 0 (`pass_id` / `product_id` wpisują ludzie). Jedyny
+  `ProcessReceipt` w miejscu (serwer, tylko przy włączonej fladze): gracz albo dane niegotowe → NotProcessedYet;
+  `PurchaseId` już w zapisie → PurchaseGranted bez drugiej nagrody; nagroda + paragon zapisane (`zapiszGracza`) przed
+  PurchaseGranted, błąd zapisu → cofnięcie i NotProcessedYet; nieznany produkt → NotProcessedYet. Paragony: lista
+  `paragony` w profilu (najwyżej 200, walidacja w `L.profilZ`). Przepustki sprawdzane przy wejściu
+  (`UserOwnsGamePassAsync` w pcall) i po `PromptGamePassPurchaseFinished`.
+- Wyniki: testy offline 43 (42 OK + 1 pominięty; nowy `test_43` sklep); Play P01–P56 (57/57; nowe P53 wrażenia walki,
+  P54 krótkie powitanie, P55 sklep z atrapą MarketplaceService, P56 baner połowy paska); telefon A06 10/10 i iPad 10/10
+  (nowe T9 klatka w walce z bliska: 16,7 ms; T8 otwiera powitanie przed pomiarem); zrzuty `47_trafienie`,
+  `48_polowa`; film `%TEMP%\ewolucja_demo\ewolucja_odczucie.mp4` (21 s, `demo_wideo.py --odczucie`).
 
 ## Pomiar prób z graczami (D-128, 22.11.2026)
 - **AnalyticsService** (tylko serwer opublikowanej gry; w Studio wywołania pomijamy):

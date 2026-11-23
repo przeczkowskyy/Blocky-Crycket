@@ -358,6 +358,9 @@ def dane():
         "seria": {k: v for k, v in U["seria"].items() if k != "opis"},
         "zadania": {k: v for k, v in U["zadania"].items() if k != "opis"},
         "ranking": {k: v for k, v in U["ranking"].items() if k != "opis"},
+        # odczucie1: tabela dźwięków gry (0 = cisza), sklep (flaga i numery produktów)
+        "dzwiekiGry": dict(U["dzwieki_gry"]["id"]),
+        "sklep": {k: v for k, v in U["sklep"].items() if k != "opis"},
         "pole": P, "przeszkody": prz, "przSiatka": siatka_przeszkod(prz), "kulkiPoz": kulki(P, J, prz, LS), "jedzenie": J, "formy": formy,
         "las": {"nazwa": LS["nazwa"], "x": LS["srodek"][0], "z": LS["srodek"][1], "r": LS["r"], "od_formy": LS["od_formy"]}, "boss": B,
         "legowisko": {k: v for k, v in U["legowisko"].items() if k != "opis"}, "legowiska": legowiska(U["legowisko"]),

@@ -592,6 +592,99 @@ def sceny_retencja(p, f):
     f.stop()
 
 
+def sceny_odczucie(p, f):
+    """odczucie1 (ok. 25 s): z bliska ZRYW w bota i seria BITE (zatrzymanie klatki, wstrząs, łuski, liczby, odrzut) →
+    zjedzenie (wybuch) → FIRE BREATH w dwa boty → kule z „pop” i banerem połowy paska → ewolucja (błysk i spowolnienie)."""
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    x0, z0 = 6.0, -24.0  # otwarta łąka (jak w scenach walki), kamera bez skał w kadrze
+    PP.czekaj(lambda: p.serwer('"wydarzenia_zegar", false'), 30, 0.5)  # bez GOLEM RAMPAGE z zegara UTC w kadrze
+    p.przycisk("powitanie_zamknij")
+    p.serwer('"boty_cisza", 200')
+    p.serwer('"forma_gracza", 3')
+    p.serwer('"przenies", %d, %f, %f' % (byt, x0, z0))
+    p.serwer('"hp", nil, 9000')
+    p.serwer('"boty_stoj_wszystkie", 45')  # inne boty nie wchodzą w kadr zbliżeń
+    time.sleep(1.2)
+    p.serwer('"tarcza_zeruj"')
+    st = p.serwer('"stan"')
+    r3 = D["formy"][2]["r"]
+    bid = PP.bot_obok(p, st, 3, -(2 * r3 + 7.0), 0)
+    p.serwer('"hp", %d, 160' % bid)
+    p.serwer('"bot_cisza", %d, 12' % bid)
+    p.ustaw("EW_TestZoom", "0.5")
+    p.ustaw("EW_TestKat", "28")
+    p.ustaw("EW_TestSter", "Vector3.new(1, 0, 0.2)")
+    time.sleep(0.8)
+    # 1. ZRYW w bota i seria BITE, ostatni gryz zjada
+    f.nagrywaj("trafienia")
+    p.ustaw("EW_TestSter", "Vector3.new(1, 0, 0.5)")
+    p.przycisk("zryw")
+    time.sleep(0.45)
+    for i in range(4):
+        p.przycisk("odnowa_zeruj")
+        p.przycisk("gryz")
+        time.sleep(0.6)
+        if i == 2:
+            p.serwer('"hp", %d, 3' % bid)
+    for _ in range(3):
+        p.ustaw("EW_TestSter", "Vector3.new(1, 0, 0.3)")
+        p.przycisk("odnowa_zeruj")
+        p.przycisk("gryz")
+        time.sleep(0.55)
+    time.sleep(0.8)
+    f.stop()
+    # 2. FIRE BREATH w dwa boty z bliska
+    p.serwer('"forma_gracza", 4')
+    p.serwer('"zdolnosci_zeruj"')
+    time.sleep(0.8)
+    p.serwer('"tarcza_zeruj"')
+    st = p.serwer('"stan"')
+    ja = PP.moje(st)
+    wolne = sorted((b for b in st["byty"] if b["slot"] == 0 and not b["martwy"] and b.get("strefa") == 1 and b["id"] != bid),
+                   key=lambda b: (b["x"] - ja["x"]) ** 2 + (b["z"] - ja["z"]) ** 2)
+    for b, (dx, dz) in zip(wolne, ((-3, 11), (4, 12))):
+        p.serwer('"bot_forma", %d, 3' % b["id"])
+        p.serwer('"bot_stoj", %d, 8' % b["id"])
+        p.serwer('"przenies", %d, %f, %f' % (b["id"], ja["x"] + dx, ja["z"] + dz))
+        p.serwer('"hp", %d, 400' % b["id"])
+        p.serwer('"bot_cisza", %d, 8' % b["id"])
+    p.ustaw("EW_TestSter", "Vector3.new(0, 1, 0.3)")
+    p.ustaw("EW_TestZoom", "0.5")
+    time.sleep(0.5)
+    f.nagrywaj("oddech")
+    p.przycisk("odnowa_zeruj")
+    p.przycisk("ogien")
+    time.sleep(2.6)
+    f.stop()
+    # 3. kule z „pop” (liczby wzrostu) i baner połowy paska
+    p.serwer('"przenies", %d, 20, 20' % byt)
+    st = p.serwer('"stan"')
+    p.serwer('"wzrost", %f' % ((st.get("potrzeba") or 1) * 0.46))
+    p.ustaw("EW_TestZoom", "0.6")
+    p.ustaw("EW_TestKat", "nil")
+    time.sleep(0.8)
+    f.nagrywaj("kule")
+    p.ustaw("EW_TestAuto", "true")
+    ok, _ = PP.czekaj(lambda: (p.atr().get("EW_K_Polowa") or "") != "", 2.5, 0.3)
+    if not ok:  # kul w pobliżu mało: pasek przesunięty tuż za połowę (baner jak przy jedzeniu)
+        p.serwer('"wzrost", %f' % ((st.get("potrzeba") or 1) * 0.53))
+        PP.czekaj(lambda: (p.atr().get("EW_K_Polowa") or "") != "", 3, 0.2)
+    time.sleep(2.6)
+    p.ustaw("EW_TestAuto", "false")
+    f.stop()
+    # 4. ewolucja: błysk i krótkie spowolnienie, odsłona
+    p.serwer('"wzrost_pelny"')
+    time.sleep(0.4)
+    p.ustaw("EW_TestZoom", "0.5")
+    f.nagrywaj("ewolucja")
+    p.przycisk("ewoluuj")
+    time.sleep(6.4)
+    f.stop()
+    p.przycisk("dalej")
+    p.ustaw("EW_TestZoom", "nil")
+
+
 def sklej(klipy, wyj, kat, pasy=False):
     gotowe = []
     vf = (r"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=0x1C162C,fps=30,format=yuv420p" if pasy
@@ -631,6 +724,7 @@ def main():
     ap.add_argument("--interfejs", action="store_true", help="interfejs z makiet (interfejs1)")
     ap.add_argument("--odrodzenie", action="store_true", help="odrodzenie, wydarzenia, jajo dnia (odrodzenie1)")
     ap.add_argument("--retencja", action="store_true", help="powitanie, zadania, pisklę z bliska, linie, ranking (retencja1)")
+    ap.add_argument("--odczucie", action="store_true", help="trafienia z bliska, ogień, kule z „pop”, połowa paska, ewolucja (odczucie1)")
     a = ap.parse_args()
     wyj = os.path.abspath(a.wyj)
     if wyj.startswith(os.path.abspath(PP.REPO)):
@@ -647,11 +741,11 @@ def main():
             PP.czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
             p.luau(PP.BEZ_LISTY, "Client")
             time.sleep(1.0)
-            (sceny_retencja if a.retencja else sceny_odrodzenie if a.odrodzenie else sceny_interfejs if a.interfejs else sceny_swiat if a.swiat else sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
+            (sceny_odczucie if a.odczucie else sceny_retencja if a.retencja else sceny_odrodzenie if a.odrodzenie else sceny_interfejs if a.interfejs else sceny_swiat if a.swiat else sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
         finally:
             log("Stop:", PP.play(a.studio, False)[-40:])
             PP.czekaj(lambda: "Current Studio Mode: Edit" in p.call("get_studio_state")["text"], 40, 0.5)
-    sklej(f.klipy, wyj, kat, pasy=a.interfejs or a.odrodzenie or a.retencja)
+    sklej(f.klipy, wyj, kat, pasy=a.interfejs or a.odrodzenie or a.retencja or a.odczucie)
     pl = plansza(wyj)
     if not a.zostaw_klipy:
         shutil.rmtree(kat, ignore_errors=True)

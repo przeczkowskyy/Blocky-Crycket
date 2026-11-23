@@ -142,12 +142,12 @@ function Lg:zbuduj(p: Player, slot: number, sig: string)
 		SK:rekwizyt("Rekwizyt_gniazdo", CFrame.new(C + Vector3.new(lx * 0.97, 0, lz * 0.97)) * CFrame.Angles(0, math.atan2(lx, lz), 0), 0.8, f0)
 	end
 	local kupka = self:czesc3(Vector3.one, CFrame.new(C + Vector3.new(lx, 0, lz)), c.zloto, Enum.Material.Neon, Enum.PartType.Ball, f0)
-	self:sztandar(slot, true)
+	self:sztandar(slot, true, p:GetAttribute("EW_VIP") == true)
 	return { folder = f0, sig = sig, kupka = kupka, x = lx, z = lz, skarb = nil, skarbN = 0, slot = slot }
 end
 
 -- sztandar legowiska (świat, rekwizyt w scenie): płat w kolorze właściciela (kolor miejsca), wolne legowisko — kolor z danych
-function Lg:sztandar(slot: number, zajete: boolean)
+function Lg:sztandar(slot: number, zajete: boolean, vip: boolean?)
 	local c = self.c
 	local sw = c.kontener and c.kontener:FindFirstChild("Scena") and c.kontener.Scena:FindFirstChild("Swiat")
 	local m = sw and sw:FindFirstChild("legowisko") and sw.legowisko:FindFirstChild("sztandar_" .. slot)
@@ -160,8 +160,9 @@ function Lg:sztandar(slot: number, zajete: boolean)
 			if d:GetAttribute("KolorDanych") == nil then
 				d:SetAttribute("KolorDanych", d.Color)
 			end
-			d.Color = if zajete then Color3.fromHex(kol) else d:GetAttribute("KolorDanych")
-			d.Material = if zajete then Enum.Material.SmoothPlastic else d.Material
+			-- odczucie1: VIP LAIR — złoty sztandar
+			d.Color = if zajete and vip then Color3.fromHex("FFC934") elseif zajete then Color3.fromHex(kol) else d:GetAttribute("KolorDanych")
+			d.Material = if zajete and vip then Enum.Material.Foil elseif zajete then Enum.Material.SmoothPlastic else d.Material
 		end
 	end
 end
@@ -210,7 +211,7 @@ function Lg:krok(dt: number, t: number)
 			local d = self.leg[slot]
 			if (lx - fx) ^ 2 + (lz - fz) ^ 2 < 170 * 170 then
 				local sig = table.concat({ tostring(p:GetAttribute("EW_MaxForma")), p:GetAttribute("EW_Warianty") or "", p:GetAttribute("EW_Trofea") or "",
-					tostring(p:GetAttribute("EW_Linia") or 1),
+					tostring(p:GetAttribute("EW_Linia") or 1), tostring(p:GetAttribute("EW_VIP") == true),
 					p.Name }, "|")
 				if not d or d.sig ~= sig then
 					if d then

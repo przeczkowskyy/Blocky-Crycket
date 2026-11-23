@@ -1254,6 +1254,61 @@ class TestRetencja(unittest.TestCase):
         self.assertEqual(p3["zadania"]["lista"][0]["postep"], next(q for q in D["zadania"]["pula"] if q["id"] == "kulki")["cel"])
 
 
+class TestSklep(unittest.TestCase):
+    """odczucie1: sklep (flaga wyłączona) — produkty po numerze, nagroda i cofnięcie, paragony (idempotencja), przepustki,
+    zapis paragonów; bez płatnych losowań."""
+
+    def test_43_sklep_logika(self):
+        SK = D["sklep"]
+        self.assertFalse(SK["wlaczony"], "flaga sklepu wyłączona")
+        self.assertFalse(jeden("sklepWidoczny", DL), "bez przycisku SHOP")
+        self.assertTrue(all(x["product_id"] == 0 for x in SK["produkty"]) and all(x["pass_id"] == 0 for x in SK["przepustki"]), "nic nie utworzono")
+        ids = {x["id"] for x in SK["produkty"]} | {x["id"] for x in SK["przepustki"]}
+        self.assertFalse({i for i in ids if "jaj" in i or "wariant" in i or "los" in i}, "bez płatnych losowań")
+        self.assertIsNone(jeden("produktPoId", DL, 0), "numer 0 = ukryty")
+        # numery tylko w kopii danych testu (ustawienia.json zostają z zerami)
+        D2 = json.loads(json.dumps(D))
+        D2["sklep"]["produkty"][0]["product_id"] = 111
+        D2["sklep"]["produkty"][3]["product_id"] = 444
+        D2["sklep"]["wlaczony"] = True
+        DL2 = lu(D2)
+        self.assertTrue(jeden("sklepWidoczny", DL2))
+        P1 = jeden("produktPoId", DL2, 111)
+        self.assertEqual(LM.z_luau(P1)["zloto"], 1000)
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 2, 0, 0)
+        ustaw(gr, zloto=50, boostS=0)
+        cof = jeden("przyznajProdukt", DL2, gr, P1)
+        self.assertEqual(g(gr, "zloto"), 1050)
+        wolaj("zapamietajParagon", DL2, gr, "abc-1")
+        self.assertTrue(jeden("paragonZnany", gr, "abc-1"))
+        self.assertFalse(jeden("paragonZnany", gr, "abc-2"))
+        wolaj("cofnijProdukt", gr, cof)
+        wolaj("zapomnijParagon", gr, "abc-1")
+        self.assertEqual((g(gr, "zloto"), jeden("paragonZnany", gr, "abc-1")), (50, False), "cofnięcie po błędzie zapisu")
+        jeden("przyznajProdukt", DL2, gr, jeden("produktPoId", DL2, 444))
+        self.assertEqual(g(gr, "boostS"), 900)
+        # lista paragonów przycięta do paragony_max
+        D2["sklep"]["paragony_max"] = 3
+        DL3 = lu(D2)
+        for i in range(6):
+            wolaj("zapamietajParagon", DL3, gr, "p%d" % i)
+        self.assertEqual(LM.z_luau(gr.get("paragony"), True), ["p3", "p4", "p5"])
+        # przepustki: 2x GROWTH na wzrost, VIP ×1,5 na złoto legowiska
+        ustaw(gr, wzrost=0, boostS=0, maxForma=2)
+        przed = jeden("stawkaB", DL, gr)
+        gr.set("przepustki", lu({"wzrost2x": True, "vip": True}))
+        wolaj("dodajWzrost", S, gr, 3)
+        self.assertAlmostEqual(g(gr, "wzrost"), 6, places=6)
+        self.assertAlmostEqual(jeden("stawkaB", DL, gr), przed * 1.5, places=6)
+        # zapis: paragony w profilu (napisy, przycięte), złe wpisy odrzucone
+        P = LM.z_luau(jeden("doProfilu", DL, gr, 1000))
+        self.assertEqual(P["paragony"], ["p3", "p4", "p5"])
+        zle = dict(P, paragony=["ok", 5, "x" * 99])
+        self.assertEqual(LM.z_luau(jeden("profilZ", DL, lu(zle)))["paragony"], ["ok"])
+
+
 def T_KL(KL, n, *a):
     r = IT.wywolaj(KL.get(n), [lu(x) for x in a])
     return r[0] if r else None

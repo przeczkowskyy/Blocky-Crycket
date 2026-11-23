@@ -1165,7 +1165,8 @@ function H:zadania(lista)
 	self.zadIle.Text = string.format("%d/%d", gotowe, #lista)
 	if pierwsze then
 		local Q = self:zadanieDef(pierwsze.id)
-		local t = Q and string.gsub(Q.tekst, " ?%%d ?", " ") or pierwsze.id
+		-- odczucie1: „Collect your hoard %d times” → „Collect your hoard 0/2” (bez osieroconego „times”)
+		local t = Q and string.gsub((string.gsub(Q.tekst, " ?%%d times", "")), " ?%%d ?", " ") or pierwsze.id
 		self.zadNapis.Text = string.format(UI.zadania_pigulka, t, pierwsze.p, pierwsze.c)
 	else
 		self.zadNapis.Text = UI.zadania_wszystkie

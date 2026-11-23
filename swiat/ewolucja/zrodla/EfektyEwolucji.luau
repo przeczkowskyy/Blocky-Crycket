@@ -182,6 +182,8 @@ end
 
 function Efekty:iskry(poz: Vector3, kolor: Color3, ile: number, sila: number?)
 	local s = sila or 1
+	-- odczucie1: górna granica efektów naraz (budżet klatki na telefonie)
+	ile = math.min(ile, math.max(0, (self.limit or 160) - #self.lista))
 	for _ = 1, ile do
 		local r = 0.25 + math.random() * 0.35
 		local p = czesc(self.folder, Vector3.new(r, r, r), kolor, Enum.Material.Neon)

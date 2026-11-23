@@ -26,6 +26,11 @@ TU = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, TU)
 import dane as DN  # noqa: E402
 
+# odczucie1: warianty małych celów do porównań (domyślnie: jak w grze)
+# czy gracz idzie do legowiska specjalnie po poziom trofeum: brak (jak w grze od odczucie1) | pelne | przy_zlocie
+TROFEA_DOM = os.environ.get("TEMPO_TROFEA", "brak")
+POLOWA = os.environ.get("TEMPO_POLOWA", "1") == "1"  # baner połowy paska liczony jako nowość
+
 
 def dlug(x, z):
     return math.sqrt(x * x + z * z)
@@ -848,7 +853,7 @@ def przebieg(D, ziarno, minut, styl):
     S.dodaj_bossa()
     g = S.dodaj(1, 1)
     dt = 0.1
-    wyn = {"forma": {1: 0.0}, "ulepszenie": None, "zagrozenie": None, "smierci": 0, "zakupy": [], "las": None, "boss_rana": None,
+    wyn = {"forma": {1: 0.0}, "ulepszenie": None, "zagrozenie": None, "smierci": 0, "zakupy": [], "polowy": {}, "las": None, "boss_rana": None,
            "boss_pokonany": None}
     nast_mysl = 0.0
     rozpr = 0.0
@@ -866,7 +871,14 @@ def przebieg(D, ziarno, minut, styl):
             ceny = sorted((u["ceny"][g["pz"][u["id"]] - 1], u["id"]) for u in D["ulepszenia"] if g["pz"][u["id"]] <= len(u["ceny"]))
             tro = sorted((S.cena_trofeum(g, f), f) for f in range(1, g["max"] + 1) if S.cena_trofeum(g, f)) if wyn["ulepszenie"] else []
             najt = min([c for c, _ in ceny[:1]] + [c for c, _ in tro[:1]] or [1e18])
-            g["do_domu"] = g["zloto"] < najt <= g["zloto"] + g["zloto_leg"] and g["forma"] < len(D["formy"])
+            # odczucie1 (wariant TEMPO_TROFEA=pelne / przy_zlocie): do legowiska także, gdy najtańszy jest poziom trofeum
+            # (kupowany tylko w legowisku); w grze tej podpowiedzi nie ma — trofeum kupuje się przy drodze po złoto
+            tro_tani = bool(tro) and (not ceny or tro[0][0] < ceny[0][0]) and tro[0][0] <= g["zloto"] + g["zloto_leg"]
+            if TROFEA_DOM == "brak":
+                tro_tani = False
+            elif TROFEA_DOM == "przy_zlocie":
+                tro_tani = tro_tani and tro[0][0] <= g["zloto"]
+            g["do_domu"] = ((g["zloto"] < najt <= g["zloto"] + g["zloto_leg"]) or (tro_tani and not S.w_legowisku(g))) and g["forma"] < len(D["formy"])
             if ceny and g["zloto"] >= ceny[0][0] and S.kup(g, ceny[0][1]):
                 wyn["zakupy"].append((round(S.czas), ceny[0][1]))
                 if wyn["ulepszenie"] is None:
@@ -876,6 +888,9 @@ def przebieg(D, ziarno, minut, styl):
                 g["trofea"][tro[0][1]] = g["trofea"].get(tro[0][1], 1) + 1
                 wyn["zakupy"].append((round(S.czas), "trofeum%d" % tro[0][1]))
         S.krok(dt)
+        # odczucie1: połowa paska do następnego stadium (baner „HALFWAY to …” z zapowiedzią zdolności) — mały cel
+        if 2 <= g["forma"] < len(D["formy"]) and g["forma"] not in wyn["polowy"] and g["wzrost"] >= 0.5 * S.potrzeba(g["forma"]):
+            wyn["polowy"][g["forma"]] = S.czas
         for z in S.zdarzenia:
             if z[0] == "forma" and z[1] not in wyn["forma"]:
                 wyn["forma"][z[1]] = S.czas
@@ -892,10 +907,15 @@ def przebieg(D, ziarno, minut, styl):
         if g["forma"] == len(D["formy"]) and g["max"] == len(D["formy"]) and minut * 60 - S.czas > 60:
             pass
     wyn["boss_widziany"] = g.get("boss_widziany")
-    # najdłuższa przerwa bez czegoś nowego (forma, las, boss widziany, boss pokonany, zadanie dnia) w pierwszych 10 min
+    # najdłuższa przerwa bez czegoś nowego (forma, las, boss widziany, boss pokonany, zadanie dnia, zakup: ulepszenie albo
+    # poziom trofeum — małe cele odczucie1) w pierwszych 10 min
     nowe = sorted([0.0, 600.0] + [t for t in list(wyn["forma"].values()) + [wyn["las"], wyn["boss_widziany"], wyn["boss_pokonany"]]
-                                  + list(wyn.get("stopnie", {}).values()) + wyn.get("zadania", []) if t is not None and t <= 600])
+                                  + list(wyn.get("stopnie", {}).values()) + wyn.get("zadania", []) + [float(t) for t, _ in wyn["zakupy"]]
+                                  + (list(wyn["polowy"].values()) if POLOWA else [])
+                                  if t is not None and t <= 600])
     wyn["przerwa"] = max(b - a for a, b in zip(nowe, nowe[1:]))
+    bez = sorted(set(nowe) - set(wyn["polowy"].values()) | {0.0, 600.0})
+    wyn["przerwa_bez_polowy"] = max(b - a for a, b in zip(bez, bez[1:]))
     wyn["koniec_forma"] = g["max"]
     wyn["zloto"] = round(g["zloto"])
     return wyn
@@ -955,6 +975,7 @@ def main():
     ok = ok and spel
     print("  najdłuższa przerwa bez nowości (0–10 min) %s  [%s–%s]  cel ≤ 2:30 %s" % (mmss(prz), mmss(min(w["przerwa"] for w in wyniki)),
                                                                                 mmss(max(w["przerwa"] for w in wyniki)), "OK" if spel else "NIE"))
+    print("  (bez banera połowy paska: %s; trofea: %s)" % (mmss(statistics.median([w["przerwa_bez_polowy"] for w in wyniki])), TROFEA_DOM))
     print("  śmierci (mediana)   %6s" % statistics.median([w["smierci"] for w in wyniki]))
     print("  zakupy (próba 1):   %s" % ", ".join("%s %s" % (mmss(t), i) for t, i in wyniki[0]["zakupy"]))
     print("  złoto na końcu (mediana): %d" % statistics.median([w["zloto"] for w in wyniki]))

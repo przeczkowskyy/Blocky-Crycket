@@ -17,6 +17,7 @@ local Players = game:GetService("Players")
 local DataStoreService = game:GetService("DataStoreService")
 local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
+local MarketplaceService = game:GetService("MarketplaceService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local kontener = script.Parent
@@ -188,6 +189,14 @@ local function atrybuty(plr: Player, g: Gracz)
 	ustawAtr(plr, g, "EW_Linie", HttpService:JSONEncode(li))
 	-- retencja1: seria, zadania dnia, przyspieszenie, leaderstats
 	ustawAtr(plr, g, "EW_Seria", (b.seria and b.seria.dni) or 0)
+	local pr = {}
+	for id in b.przepustki or {} do
+		table.insert(pr, id)
+	end
+	table.sort(pr)
+	ustawAtr(plr, g, "EW_Przepustki", table.concat(pr, ","))
+	ustawAtr(plr, g, "EW_VIP", (b.przepustki or {}).vip == true)
+	ustawAtr(plr, g, "EW_Sklep", L.sklepWidoczny(D))
 	ustawAtr(plr, g, "EW_Boost", math.ceil(b.boostS or 0))
 	if b.zadania then
 		local zl = {}
@@ -199,6 +208,34 @@ local function atrybuty(plr: Player, g: Gracz)
 	if g.ls then
 		g.ls.stage.Value = b.forma
 		g.ls.rebirths.Value = b.odrodzenia or 0
+	end
+end
+
+------------------------------------------------------------------ odczucie1: sklep (kod gotowy, flaga D.sklep.wlaczony = false)
+-- Atrapa MarketplaceService w próbach (S.rynekAtrapa = { posiada = { [id przepustki] = true } }); prawdziwy serwis tylko
+-- przy włączonej fladze i numerze ≠ 0. Żadnych płatnych losowań.
+local function posiadaPrzepustke(plr: Player, Pp): boolean
+	if S.rynekAtrapa then
+		return S.rynekAtrapa.posiada[Pp.id] == true
+	end
+	if not (D.sklep.wlaczony and (Pp.pass_id or 0) > 0) then
+		return false
+	end
+	local ok, ma = pcall(function()
+		return MarketplaceService:UserOwnsGamePassAsync(plr.UserId, Pp.pass_id)
+	end)
+	return ok and ma == true
+end
+
+local function sprawdzPrzepustki(plr: Player, g)
+	if not D.sklep then
+		return
+	end
+	g.byt.przepustki = g.byt.przepustki or {}
+	for _, Pp in D.sklep.przepustki do
+		if posiadaPrzepustke(plr, Pp) then
+			g.byt.przepustki[Pp.id] = true
+		end
 	end
 end
 
@@ -221,6 +258,7 @@ local function wczytajGracza(plr: Player, g: Gracz)
 	g.dni = math.floor((os.time() - g.byt.pierwszy) / 86400)
 	plr:SetAttribute("EW_Zapis", if zapisywalny then "ok" else ("bez zapisu: " .. tostring(powod)))
 	local pow = L.logowanie(D, g.byt, os.time() + (S.dzienPrzes or 0) * 86400, S.los())
+	sprawdzPrzepustki(plr, g)
 	atrybuty(plr, g)
 	if zarobek > 0 then
 		evZdarzenia:FireClient(plr, { { t = "powrot", ile = zarobek, sek = sek } })
@@ -236,7 +274,7 @@ local function wczytajGracza(plr: Player, g: Gracz)
 end
 
 local function zapiszGracza(plr: Player, g: Gracz, zwolnij: boolean): boolean
-	if not g.zapisywalny or not g.wczytany then
+	if not g.zapisywalny or not g.wczytany or g.awariaZapisu then
 		return false
 	end
 	local ok = L.zapisz(D, magazyn, klucz(plr), JOB, L.doProfilu(D, g.byt, os.time()), os.time(), zwolnij)
@@ -695,6 +733,64 @@ RunService.Heartbeat:Connect(function(dt: number)
 	end
 end)
 
+local function przetworzParagon(info): Enum.ProductPurchaseDecision
+	local plr = Players:GetPlayerByUserId(info.PlayerId)
+	if not plr then
+		return Enum.ProductPurchaseDecision.NotProcessedYet
+	end
+	local g = gracze[plr]
+	if not (g and g.wczytany and g.zapisywalny) then
+		return Enum.ProductPurchaseDecision.NotProcessedYet -- dane gracza jeszcze nie gotowe: Roblox ponowi
+	end
+	local b = g.byt
+	local pid = tostring(info.PurchaseId)
+	if L.paragonZnany(b, pid) then
+		return Enum.ProductPurchaseDecision.PurchaseGranted -- już przyznane i zapisane (ponowienie)
+	end
+	local Pr = L.produktPoId(D, info.ProductId)
+	if not Pr then
+		return Enum.ProductPurchaseDecision.NotProcessedYet -- nieznany produkt: nie zamykamy paragonu
+	end
+	local cofka = L.przyznajProdukt(D, b, Pr)
+	L.zapamietajParagon(D, b, pid)
+	if not zapiszGracza(plr, g, false) then
+		L.cofnijProdukt(b, cofka)
+		L.zapomnijParagon(b, pid)
+		return Enum.ProductPurchaseDecision.NotProcessedYet
+	end
+	licz("zakup_robux")
+	analityka("LogEconomyEvent", plr, Enum.AnalyticsEconomyFlowType.Source, "Gold", Pr.zloto or 0, math.floor(b.zloto),
+		Enum.AnalyticsEconomyTransactionType.IAP.Name, "product_" .. pole(Pr.id))
+	atrybuty(plr, g)
+	wyslijGraczowi(plr, { { t = "zakup_sklep", id = Pr.id } })
+	return Enum.ProductPurchaseDecision.PurchaseGranted
+end
+
+-- jedyny ProcessReceipt w miejscu — przypisany tylko przy włączonej fladze (wyłączona: Roblox sam zatwierdza, nic nie sprzedajemy)
+if D.sklep and D.sklep.wlaczony then
+	MarketplaceService.ProcessReceipt = function(info)
+		local ok, decyzja = pcall(przetworzParagon, info)
+		if ok then
+			return decyzja
+		end
+		return Enum.ProductPurchaseDecision.NotProcessedYet
+	end
+	MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(plr: Player, passId: number, kupiono: boolean)
+		local g = gracze[plr]
+		if not (kupiono and g) then
+			return
+		end
+		for _, Pp in D.sklep.przepustki do
+			if Pp.pass_id == passId then
+				g.byt.przepustki = g.byt.przepustki or {}
+				g.byt.przepustki[Pp.id] = true
+				atrybuty(plr, g)
+				wyslijGraczowi(plr, { { t = "zakup_sklep", id = Pp.id } })
+			end
+		end
+	end)
+end
+
 local function odswiezRanking()
 	local lista = {}
 	if wProbie then
@@ -854,6 +950,35 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 	elseif polecenie == "ranking_odswiez" then
 		odswiezRanking()
 		return HttpService:JSONDecode(kontener:GetAttribute("Ranking") or "[]")
+	elseif polecenie == "sklep_atrapa" then
+		-- próby: atrapa MarketplaceService (posiadane przepustki), przepustki sprawdzone od nowa
+		S.rynekAtrapa = { posiada = a or {} }
+		if plr and g then
+			g.byt.przepustki = {}
+			sprawdzPrzepustki(plr, g)
+			atrybuty(plr, g)
+		end
+		return g and g.byt.przepustki
+	elseif polecenie == "zakup_symuluj" then
+		-- próby: paragon jak od Roblox (ProductId, PurchaseId) → decyzja handlera (bez prawdziwego zakupu)
+		if not plr then
+			return nil
+		end
+		local ok, d = pcall(przetworzParagon, { PlayerId = plr.UserId, ProductId = a, PurchaseId = b, CurrencySpent = 0 })
+		return if ok then d.Name else ("blad: " .. tostring(d))
+	elseif polecenie == "zapis_awaria" then
+		if g then
+			g.awariaZapisu = a == true
+		end
+		return true
+	elseif polecenie == "produkt_id" then
+		-- próby: numer produktu w danych na czas sesji (ustawienia.json zostaje z zerami)
+		for _, Pr in D.sklep.produkty do
+			if Pr.id == a then
+				Pr.product_id = b
+			end
+		end
+		return true
 	elseif polecenie == "boty_stoj_wszystkie" then
 		-- próby pomiaru stóp: wszystkie boty stoją i nie gryzą przez a s (bez potrąceń na torze pomiaru)
 		for _, e in S.byty do
