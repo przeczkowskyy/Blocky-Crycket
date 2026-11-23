@@ -178,6 +178,22 @@
         {
           "roblox_image": "117392641173966",
           "replaced_at": "2026-11-17T19:25:31+00:00"
+        },
+        {
+          "roblox_image": "117611283650151",
+          "replaced_at": "2026-11-23T22:52:19+00:00"
+        },
+        {
+          "roblox_image": "138414324449697",
+          "replaced_at": "2026-11-23T22:53:46+00:00"
+        },
+        {
+          "roblox_image": "96294113137184",
+          "replaced_at": "2026-11-23T22:59:38+00:00"
+        },
+        {
+          "roblox_image": "85129393825558",
+          "replaced_at": "2026-11-23T23:19:44+00:00"
         }
       ],
       "category": "frame",
@@ -187,12 +203,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-17T19:25:31+00:00",
+      "updated_at": "2026-11-23T23:19:44+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:21:44+00:00",
-      "approved_sha256": "dc52fc41d54b4feb1ce3c8dd71e70155b3129883a52fe7df00bbd9e1a0210587",
-      "roblox_image": "117611283650151",
-      "notes": "17.11: wrocono do oryginalu (wymazywanie przyciskow cofniete)"
+      "approved_at": "2026-11-23T23:19:24+00:00",
+      "approved_sha256": "74c08cf0ab45d9dcdafe1b8cbf928a0b5f4b8ef91a261a52df691eb78d702dca",
+      "roblox_image": "105995639800617",
+      "notes": "wgrane 2026-11-24 przez Studio MCP po tak Pawla (tlo odbudowane: sciana, brzeg ramek, lustrzane rogi)"
     },
     "EqBg3": {
       "created_at": "2026-11-12T23:12:33+00:00",
@@ -220,6 +236,22 @@
         {
           "roblox_image": "78261838372747",
           "replaced_at": "2026-11-17T19:22:01+00:00"
+        },
+        {
+          "roblox_image": "136695799877394",
+          "replaced_at": "2026-11-23T22:52:19+00:00"
+        },
+        {
+          "roblox_image": "75221509981810",
+          "replaced_at": "2026-11-23T22:53:46+00:00"
+        },
+        {
+          "roblox_image": "81111933136528",
+          "replaced_at": "2026-11-23T22:59:38+00:00"
+        },
+        {
+          "roblox_image": "137015978348578",
+          "replaced_at": "2026-11-23T23:19:44+00:00"
         }
       ],
       "category": "frame",
@@ -229,17 +261,26 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-17T19:25:31+00:00",
+      "updated_at": "2026-11-23T23:19:44+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:21:44+00:00",
-      "approved_sha256": "0f37bf9216b1110eeba8d3fa7a7441116143f360c928476ee75a18e29721bff5",
-      "roblox_image": "136695799877394",
-      "notes": "17.11: wrocono do oryginalu (wymazywanie przyciskow cofniete)",
+      "approved_at": "2026-11-23T23:19:24+00:00",
+      "approved_sha256": "d4e636c2b6ae8194c520943151c962909d57b42bb67ec641030467b3d28b8a1d",
+      "roblox_image": "105641588997700",
+      "notes": "wgrane 2026-11-24 przez Studio MCP po tak Pawla (tlo odbudowane: sciana, brzeg ramek, lustrzane rogi)",
       "moderation": "approved"
     },
     "EqBg4": {
       "created_at": "2026-11-12T23:12:33+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "73109775075879",
+          "replaced_at": "2026-11-23T22:52:19+00:00"
+        },
+        {
+          "roblox_image": "77426393320449",
+          "replaced_at": "2026-11-23T22:53:46+00:00"
+        }
+      ],
       "category": "frame",
       "status": "in_roblox",
       "processed": "assets/processed/EquipmentPanel/EqBg4.png",
@@ -247,12 +288,12 @@
       "raw": "assets/raw/EquipmentPanel",
       "usage": "Panel ekwipunku (Character+Backpack), StarterGui.EquipmentPanel",
       "roblox_target": "StarterGui.EquipmentPanel",
-      "updated_at": "2026-11-12T23:16:55+00:00",
+      "updated_at": "2026-11-23T22:53:46+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-12T23:15:40+00:00",
-      "approved_sha256": "105b55a371818ef38678eba9861efe8de2c4590d6e90ca7ac77bf35a562e80a0",
+      "approved_at": "2026-11-23T22:53:19+00:00",
+      "approved_sha256": "253d5fc6acb6c1b641112c34f68cca156727cbc8925ea89b5ee4ebc133474478",
       "roblox_image": "73109775075879",
-      "notes": "Upload przez Roblox Studio MCP (upload_image) 2026-11-13"
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (tlo bez wypalonych zakladek, z przezroczystoscia)"
     },
     "EqTabAttributes": {
       "created_at": "2026-11-12T23:12:33+00:00",
@@ -3187,7 +3228,35 @@
       "approved_at": "2026-11-23T22:30:08+00:00",
       "approved_sha256": "acf0a3cbf39808f4414284c52ed445a55f7d4f1a02da37737c81d68a86ef0870",
       "roblox_image": "87096405792117"
+    },
+    "EqTabAttributes_v2": {
+      "created_at": "2026-11-23T22:59:07+00:00",
+      "history": [],
+      "category": "button",
+      "status": "in_roblox",
+      "processed": "assets/processed/EquipmentPanel/EqTabAttributes_v2.png",
+      "usage": "Zakladka okna ekwipunku (jednolity ksztalt)",
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (jednolite zakladki, tlo bez rozmazan)",
+      "updated_at": "2026-11-23T22:59:38+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:59:07+00:00",
+      "approved_sha256": "0092ac1679c600f7c8be00c52cdb6104c0d555235cc72d735054c113795099e4",
+      "roblox_image": "126052999948745"
+    },
+    "EqTabWeapons_v2": {
+      "created_at": "2026-11-23T22:59:07+00:00",
+      "history": [],
+      "category": "button",
+      "status": "in_roblox",
+      "processed": "assets/processed/EquipmentPanel/EqTabWeapons_v2.png",
+      "usage": "Zakladka okna ekwipunku (jednolity ksztalt)",
+      "notes": "wgrane 2026-11-23 przez Studio MCP po tak Pawla (jednolite zakladki, tlo bez rozmazan)",
+      "updated_at": "2026-11-23T22:59:38+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-23T22:59:07+00:00",
+      "approved_sha256": "8f64330f2dd63feec88921e1545b18ad393a388c78536f729246ec708091c2df",
+      "roblox_image": "117543226238584"
     }
   },
-  "updated_at": "2026-11-23T22:37:10+00:00"
+  "updated_at": "2026-11-23T23:19:44+00:00"
 }

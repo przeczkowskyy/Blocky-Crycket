@@ -192,12 +192,12 @@ pcall(function()
 	panel.ExpBar.BackgroundTransparency = 1
 	for _, d in ipairs(panel.ExpBar:GetDescendants()) do
 		if d:IsA("UICorner") then
-			d.CornerRadius = UDim.new(0.5, 0)
+			d.CornerRadius = UDim.new(0.25, 0) -- jak w EQ: końce lekko zaokrąglone
 		end
 	end
 	local c0 = panel.ExpBar:FindFirstChildOfClass("UICorner")
 	if c0 then
-		c0.CornerRadius = UDim.new(0.5, 0)
+		c0.CornerRadius = UDim.new(0.25, 0) -- jak w EQ: końce lekko zaokrąglone
 	end
 	local granica = panel.Level:FindFirstChildOfClass("UITextSizeConstraint")
 	if granica then
